@@ -1,0 +1,55 @@
+---
+title: "Rehacer en AutoCAD: comando REHACER (REDO)"
+metaTitle: "Rehacer en AutoCAD: REHACER, Ctrl+Y y MREHACER"
+description: "Cómo funciona REHACER (REDO) de AutoCAD en español: recupera lo que deshizo el último H o DESHACER, justo después; MREHACER y Ctrl+Y rehacen paso a paso."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el atajo de REHACER en AutoCAD?","answer":"Ctrl+Y, que rehace un paso (MREHACER 1). REHACER no tiene alias: escribe REHACER, o _REDO en cualquier idioma de AutoCAD."},{"question":"¿Por qué no funciona REHACER?","answer":"REHACER solo invierte el H o DESHACER que va justo antes. Después de cualquier otro comando no hay nada que rehacer, aunque no haya cambiado nada: deshaz y rehaz en el acto."},{"question":"¿Qué diferencia hay entre REHACER y MREHACER?","answer":"REHACER recupera todo el último deshacer, y solo justo después de él. MREHACER rehace un número de los pasos deshechos, uno a uno, o todos, y sigue funcionando después de un REHACER."},{"question":"¿Cómo repito el último comando en AutoCAD?","answer":"Pulsa Intro o la barra espaciadora en la solicitud de comando: el último comando vuelve a empezar. REHACER no repite un comando; invierte un deshacer."}]
+---
+
+REHACER (REDO en inglés) invierte el último `H` o [`DESHACER`](/docs/commands/undo): lo que deshizo se vuelve a dibujar, todo, así que tras un DESHACER de cinco comandos REHACER recupera los cinco. Escribe los nombres de los comandos a medida que lo hace, y después `Todo repetido` cuando ya no queda nada que rehacer. No pregunta nada y no tiene opciones.
+
+Solo funciona justo después del deshacer. En cualquier otro momento dice `REHACER debe ir directamente a continuación del comando H o DESHACER.`, y una vez ejecutado otro comando, incluso uno que no cambia nada, como LIST o ZOOM, `Nada que repetir`. Con el deshacer desactivado por la opción Control Ninguna de DESHACER, REHACER dice que está desactivado.
+
+`MREHACER` rehace paso a paso: pide un número de acciones, o `Todas` o `úLtima`, y rehace ese número de los pasos que deshicieron los deshacer, aunque se hayan ejecutado H, DESHACER y REHACER desde entonces; úLtima es todo el último deshacer, una vez (`Ya se ha repetido la última operación DESHACER.`). Ctrl+Y y el Rehacer del menú contextual ejecutan MREHACER con 1, cancelando el comando en curso.
+
+- **Comando:** `REHACER`
+- **En inglés:** `REDO`, que se escribe `_REDO` en cualquier idioma
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `REHACER` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="redo" caption="Un agujero dibujado en una placa, deshecho con H y recuperado con REHACER." />
+
+## Lo que aún no hace [#missing]
+
+Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada. Los botones Deshacer y Rehacer de la barra superior no escriben nada en el historial, donde la barra de herramientas de acceso rápido de AutoCAD escribe lo suyo.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el atajo de REHACER en AutoCAD?
+
+Ctrl+Y, que rehace un paso (MREHACER 1). REHACER no tiene alias: escribe `REHACER`, o `_REDO` en cualquier idioma de AutoCAD.
+
+### ¿Por qué no funciona REHACER?
+
+REHACER solo invierte el H o DESHACER que va justo antes. Después de cualquier otro comando no hay nada que rehacer, aunque no haya cambiado nada: deshaz y rehaz en el acto.
+
+### ¿Qué diferencia hay entre REHACER y MREHACER?
+
+REHACER recupera todo el último deshacer, y solo justo después de él. `MREHACER` rehace un número de los pasos deshechos, uno a uno, o todos, y sigue funcionando después de un REHACER.
+
+### ¿Cómo repito el último comando en AutoCAD?
+
+Pulsa Intro o la barra espaciadora en la solicitud de comando: el último comando vuelve a empezar. REHACER no repite un comando; invierte un deshacer.
+
+## Comandos relacionados [#related]
+
+- [Deshacer en AutoCAD: comando DESHACER (UNDO)](/docs/commands/undo)
+- [H (U)](/docs/commands#u): Deshacer la última acción
+- [MREHACER (MREDO)](/docs/commands#mredo): Rehacer varias

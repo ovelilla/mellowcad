@@ -1,0 +1,55 @@
+---
+title: "Comando REDO (REFAZER) no AutoCAD"
+metaTitle: "REDO (REFAZER) no AutoCAD: Ctrl+Y e REFAZERM"
+description: "Como funciona o REDO do AutoCAD em português, REFAZER: devolve o que o último D ou DESFAZER desfez, logo depois; REFAZERM e Ctrl+Y refazem passo a passo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o atalho do REFAZER no AutoCAD?","answer":"Ctrl+Y, que refaz um passo (REFAZERM 1). O REFAZER em si não tem alias: digite REFAZER, ou _REDO em qualquer idioma do AutoCAD."},{"question":"Por que o REFAZER não funciona?","answer":"O REFAZER só reverte o D ou o DESFAZER logo antes dele. Depois de qualquer outro comando não há nada a refazer, mesmo que ele não tenha mudado nada: desfaça e refaça em seguida."},{"question":"Qual é a diferença entre o REDO e o MREDO (REFAZER e REFAZERM)?","answer":"O REFAZER devolve o último desfazer inteiro, e só logo depois dele. O REFAZERM refaz um número dos passos desfeitos, um a um, ou todos, e ainda funciona depois de um REFAZER."},{"question":"Como repetir o último comando no AutoCAD?","answer":"Pressione Enter ou a barra de espaço no prompt Comando: o último comando começa de novo. O REFAZER não repete um comando; ele reverte um desfazer."}]
+---
+
+O REDO, REFAZER no AutoCAD em português, reverte o último `D` ou [`DESFAZER`](/docs/commands/undo): o que ele desfez é desenhado de novo, por inteiro, então depois de um DESFAZER de cinco comandos o REFAZER devolve os cinco. Ele escreve os nomes dos comandos enquanto isso, e depois `Tudo foi refeito` quando não sobra nada a refazer. Não pergunta nada e não tem opções.
+
+Ele só funciona logo depois do desfazer. Em qualquer outro momento diz `REFAZER deve seguir imediatamente após o comando D ou DESFAZER.`, e depois que outro comando foi executado, mesmo um que não muda nada, como o LISTA ou o ZOOM, `Nada a refazer`. Com o desfazer desativado pelo Controle Nenhum do DESFAZER, o REFAZER diz que está desativado.
+
+O `REFAZERM` refaz passo a passo: pede um número de ações, ou `Tudo` ou `úLtimo`, e refaz essa quantidade dos passos que os desfazer desfizeram, quaisquer que sejam os D, DESFAZER e REFAZER executados desde então; Último é o último desfazer inteiro, uma vez (`A última operação DESFAZER já foi refeita.`). Ctrl+Y e o Refazer do menu de atalho executam o REFAZERM com 1, cancelando o comando em andamento.
+
+- **Comando:** `REFAZER`
+- **Em inglês:** `REDO`, que se digita `_REDO` em qualquer idioma
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `REFAZER` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="redo" caption="Um furo desenhado numa placa, desfeito com o D e devolvido com o REFAZER." />
+
+## O que ainda não faz [#missing]
+
+Ctrl+Shift+Z também refaz, em silêncio, embora o AutoCAD não associe nada a ele. Os botões Desfazer e Refazer da barra superior não escrevem nada no histórico, onde a barra de ferramentas de acesso rápido do AutoCAD escreve as suas linhas.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o atalho do REFAZER no AutoCAD?
+
+Ctrl+Y, que refaz um passo (REFAZERM 1). O REFAZER em si não tem alias: digite `REFAZER`, ou `_REDO` em qualquer idioma do AutoCAD.
+
+### Por que o REFAZER não funciona?
+
+O REFAZER só reverte o D ou o DESFAZER logo antes dele. Depois de qualquer outro comando não há nada a refazer, mesmo que ele não tenha mudado nada: desfaça e refaça em seguida.
+
+### Qual é a diferença entre o REDO e o MREDO (REFAZER e REFAZERM)?
+
+O REFAZER devolve o último desfazer inteiro, e só logo depois dele. O `REFAZERM` refaz um número dos passos desfeitos, um a um, ou todos, e ainda funciona depois de um REFAZER.
+
+### Como repetir o último comando no AutoCAD?
+
+Pressione Enter ou a barra de espaço no prompt Comando: o último comando começa de novo. O REFAZER não repete um comando; ele reverte um desfazer.
+
+## Comandos relacionados [#related]
+
+- [Comando UNDO (DESFAZER) no AutoCAD](/docs/commands/undo)
+- [D (U)](/docs/commands#u): Desfaz a última ação
+- [REFAZERM (MREDO)](/docs/commands#mredo): Refazer múltiplo

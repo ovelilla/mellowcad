@@ -1,0 +1,53 @@
+---
+title: "Forzcursor en AutoCAD: comando FORZCURSOR (SNAP)"
+metaTitle: "Forzcursor en AutoCAD: FORZCURSOR (SNAP) y F9"
+description: "Cómo funciona FORZCURSOR (SNAP, alias FC, F9) de AutoCAD en español: el cursor sujeto a una retícula con la distancia que fijas, asPecto y la referencia polar."
+figure: "FORZCURSOR 10 con la rejilla activada, y después LINEA señalada fuera de la retícula: cada punto cae en ella, y también el cursor."
+sourceHash: "a1089484f2f1"
+---
+
+El modo Forzcursor sujeta el cursor a una retícula: cada punto señalado cae en el más cercano de sus puntos, así que con una distancia de 10 un clic en 13,7 es 10,10. La retícula es la del SCP actual, desde su origen a lo largo de sus ejes. F9 activa y desactiva el modo Forzcursor, escribiendo `<Forzcursor activado>` o `<Forzcursor desactivado>`, y también su botón de la barra de estado. Solo se redondean los puntos señalados: una coordenada escrita se toma tal cual, y una referencia a objetos gana a la retícula. La rejilla (F7) dibuja una retícula propia, y la muestra esté o no activado el forzcursor.
+
+El comando FORZCURSOR (SNAP en inglés) fija la distancia: escríbela, o da dos puntos a esa distancia, y el modo Forzcursor se activa con ella en X y en Y. Intro lo activa tal como está. Una distancia de 0 o menos se rechaza con <Message id="positiveNonzero" />. Escrito con un apóstrofo delante, `'FORZCURSOR`, funciona dentro de otro comando. El modo Forzcursor y su distancia se guardan con el dibujo, y H deshace un FORZCURSOR.
+
+El menú Forzcursor de la barra de estado elige en su lugar Referencia polar: a lo largo de un camino de rastreo polar el cursor avanza de POLARDIST en POLARDIST, o según la distancia X del forzcursor mientras POLARDIST vale 0.
+
+## Options
+
+### ON
+
+Activa el modo Forzcursor con la distancia actual, como Intro.
+
+### OFF
+
+Desactiva el modo Forzcursor; la distancia se conserva.
+
+### Aspect
+
+Pide una distancia horizontal y después una vertical, y activa el modo Forzcursor: una retícula más alta o más ancha que cuadrada. La opción por defecto de la solicitud pasa a ser asPecto, así que Intro las vuelve a pedir.
+
+## Missing
+
+Estilo, el forzcursor isométrico, y Tipo, rejilla o polar, en la solicitud: el menú de la barra de estado elige el tipo. Original, el oculto Girar (SNAPANG) y SNAPBASE. Una POLARDIST negativa, por la que la referencia polar de AutoCAD avanza como por su valor absoluto: −10 avanza 10.
+
+## Questions
+
+### ¿Cómo se llama el comando SNAP en español?
+
+FORZCURSOR, con el alias `FC`, y después Intro o la barra espaciadora, para fijar la distancia; F9 activa y desactiva el modo Forzcursor. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_SNAP`.
+
+### ¿Qué diferencia hay entre el forzcursor y la referencia a objetos?
+
+El modo Forzcursor redondea el cursor a una retícula de puntos en el espacio. La referencia a objetos (F3) lo fija a puntos de los objetos: puntos finales, puntos medios, centros. Funcionan juntos, y la referencia a objetos gana donde los dos encuentran un punto.
+
+### ¿Por qué el cursor va a saltos?
+
+Está activado el modo Forzcursor: pulsa F9, o el botón de forzcursor de la barra de estado, para desactivarlo. Fija una distancia menor con FORZCURSOR si quieres pasos más finos.
+
+### ¿Cómo pongo distancias de forzcursor distintas en X y en Y?
+
+Ejecuta FORZCURSOR, elige <Keyword id="Aspect" /> y da la distancia horizontal y después la vertical.
+
+### ¿Hay forzcursor isométrico?
+
+Todavía no: no se ofrece la opción Estilo de FORZCURSOR, que gira la retícula para el dibujo isométrico.

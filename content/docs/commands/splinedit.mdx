@@ -1,0 +1,90 @@
+---
+title: "SPLINEDIT in AutoCAD"
+metaTitle: "SPLINEDIT in AutoCAD: edit splines, alias SPE"
+description: "How AutoCAD's SPLINEDIT (SPE) works: Close, Join, Fit data, Edit vertex, convert to Polyline and Reverse, prompt by prompt. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for SPLINEDIT in AutoCAD?","answer":"SPE, then Enter or Space. The full name works too, and _SPLINEDIT in any language of AutoCAD. Double-clicking a spline also runs it."},{"question":"How do I convert a spline to a polyline?","answer":"Run SPLINEDIT, pick the spline and choose Polyline; a precision of 10 gives a smooth polyline. PEDIT on a spline offers to convert it too."},{"question":"How do I add or move points on a spline?","answer":"Choose Fit to work on the points it passes through, then Add or Move. Choose Edit to work on the control vertices that frame it."},{"question":"How do I close a spline?","answer":"Choose Close: it closes smoothly, without a corner where it meets itself. Open opens it again."},{"question":"How do I join two splines?","answer":"Choose Join and select the spline whose end meets this one's, or use JOIN."}]
+---
+
+SPLINEDIT edits a spline. Pick one at `Select spline:`, or select it before the command; double-clicking a spline runs SPLINEDIT on it too. Anything else says `Object selected is not a spline.` and asks again; a polyline fitted by PEDIT's Spline is turned into a spline of the same curve, without a word. Then it asks for an option again and again, each applied at once, until `EXit` or Enter. The spline shows its fit points' grips, and while you edit its vertices, its control vertices and frame. The whole edit is one step that `U` takes back. Typed `'ZOOM` works at any of its prompts.
+
+- **Command:** `SPLINEDIT`
+- **Aliases:** `SPE`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `SPE` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="splinedit" caption="A spline through five fit points, closed by SPLINEDIT: a smooth loop through them all." />
+
+## Options [#options]
+
+### `Close` (`C`) [#close]
+
+Closes the spline smoothly: a fit spline through its fit points, a CV spline on its vertices. On a closed spline the option is `Open`, and Join is not offered.
+
+### `Join` (`J`) [#join]
+
+Joins open curves that meet its ends, by JOIN's rules for a spline, and says how many it joined.
+
+### `Fit data` (`F`) [#fit-data]
+
+Edits the points the spline passes through. A CV spline, which has none, is first given fit points on its curve. Its options: `Add` picks a fit point and adds new ones after it, again and again (at an open spline's first point, `After` or `Before`); `Delete` removes fit points, down to two, three on a closed spline (`Cannot delete beyond this.`); `Move` steps through the fit points with `Next` and `Previous`, or `Select`, and moves the current one to the point you give; `Purge` drops the fit data, leaving a CV spline; `Tangents` sets the start and end directions, or `System`; `Close` and `EXit` as at the first prompt. A pick that is no fit point says `Not a fit point.`.
+
+### `Edit vertex` (`E`) [#edit-vertex]
+
+Edits the control vertices; a fit spline loses its fit data at the first edit. `Add` puts a vertex at the point you pick on the spline; `Delete` removes one, down to two, three on a closed spline; `Elevate` raises the order, up to 26, never down; `Move` moves vertices, stepping as Fit data's Move does; `Weight` sets a vertex's weight, after `Spline is not rational. Will make it so.`, so the curve pulls nearer to it or further away. A pick that is no vertex says `Not a control vertex.`.
+
+### `convert to Polyline` (`P`) [#convert-to-polyline]
+
+Asks a precision from 0 to 99, 10 by default, and replaces the spline with a polyline of straight segments, more of them the higher the precision; a 3D polyline where the spline does not lie flat, parallel to the XY plane. It ends the command. The precision is kept for the session, and PEDIT's conversion uses it too.
+
+### `Reverse` (`RE`) [#reverse]
+
+Turns the spline round, its first point last: `Spline has been reversed.`.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last option, a whole Fit data or Edit vertex at once. With none left: `Command has been completely undone.`.
+
+### `eXit` (`EX`) [#exit]
+
+Ends the command, as Enter does.
+
+## What it does not do yet [#missing]
+
+Kink, which puts a sharp corner at a fit point or vertex; toLerance, which refits the spline within a tolerance; Tangents of a closed spline. convert to Polyline makes far more vertices of a fit spline than AutoCAD does, never arcs, and always replaces the spline. Group at `Select spline:`. The `+` AutoCAD draws on the current point while you step through the points.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl)
+
+## Questions [#questions]
+
+### What is the shortcut for SPLINEDIT in AutoCAD?
+
+`SPE`, then Enter or Space. The full name works too, and `_SPLINEDIT` in any language of AutoCAD. Double-clicking a spline also runs it.
+
+### How do I convert a spline to a polyline?
+
+Run SPLINEDIT, pick the spline and choose `Polyline`; a precision of 10 gives a smooth polyline. [`PEDIT`](/docs/commands/pedit) on a spline offers to convert it too.
+
+### How do I add or move points on a spline?
+
+Choose `Fit` to work on the points it passes through, then `Add` or `Move`. Choose `Edit` to work on the control vertices that frame it.
+
+### How do I close a spline?
+
+Choose `Close`: it closes smoothly, without a corner where it meets itself. `Open` opens it again.
+
+### How do I join two splines?
+
+Choose `Join` and select the spline whose end meets this one's, or use [`JOIN`](/docs/commands/join).
+
+## Related commands [#related]
+
+- [SPLINE in AutoCAD](/docs/commands/spline)
+- [PEDIT in AutoCAD](/docs/commands/pedit)
+- [JOIN in AutoCAD](/docs/commands/join)
+- [LIST in AutoCAD](/docs/commands/list)

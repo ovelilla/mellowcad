@@ -8,6 +8,7 @@ import {
   offsetRectangle,
 } from "./demos/docs"
 import { sessions as orbit3dSessions } from "./demos/commands/3dorbit"
+import { sessions as poly3dSessions } from "./demos/commands/3dpoly"
 import { sessions as arcSessions } from "./demos/commands/arc"
 import { sessions as areaSessions } from "./demos/commands/area"
 import { sessions as arraySessions } from "./demos/commands/array"
@@ -22,10 +23,12 @@ import { sessions as boxSessions } from "./demos/commands/box"
 import { sessions as breakSessions } from "./demos/commands/break"
 import { sessions as chamferSessions } from "./demos/commands/chamfer"
 import { sessions as chamferedgeSessions } from "./demos/commands/chamferedge"
+import { sessions as chpropSessions } from "./demos/commands/chprop"
 import { sessions as circleSessions } from "./demos/commands/circle"
 import { sessions as colorSessions } from "./demos/commands/color"
 import { sessions as coneSessions } from "./demos/commands/cone"
 import { sessions as copySessions } from "./demos/commands/copy"
+import { sessions as copyclipSessions } from "./demos/commands/copyclip"
 import { sessions as cylinderSessions } from "./demos/commands/cylinder"
 import { sessions as dimalignedSessions } from "./demos/commands/dimaligned"
 import { sessions as dimangularSessions } from "./demos/commands/dimangular"
@@ -46,12 +49,14 @@ import { sessions as extrudeSessions } from "./demos/commands/extrude"
 import { sessions as filletSessions } from "./demos/commands/fillet"
 import { sessions as filletedgeSessions } from "./demos/commands/filletedge"
 import { sessions as hatchSessions } from "./demos/commands/hatch"
+import { sessions as idSessions } from "./demos/commands/id"
 import { sessions as insertSessions } from "./demos/commands/insert"
 import { sessions as intersectSessions } from "./demos/commands/intersect"
 import { sessions as joinSessions } from "./demos/commands/join"
 import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
 import { sessions as linetypeSessions } from "./demos/commands/linetype"
+import { sessions as listSessions } from "./demos/commands/list"
 import { sessions as ltscaleSessions } from "./demos/commands/ltscale"
 import { sessions as lweightSessions } from "./demos/commands/lweight"
 import { sessions as masspropSessions } from "./demos/commands/massprop"
@@ -60,6 +65,7 @@ import { sessions as mirrorSessions } from "./demos/commands/mirror"
 import { sessions as moveSessions } from "./demos/commands/move"
 import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
+import { sessions as panSessions } from "./demos/commands/pan"
 import { sessions as peditSessions } from "./demos/commands/pedit"
 import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
@@ -68,15 +74,18 @@ import { sessions as propertiesSessions } from "./demos/commands/properties"
 import { sessions as purgeSessions } from "./demos/commands/purge"
 import { sessions as pyramidSessions } from "./demos/commands/pyramid"
 import { sessions as rectangSessions } from "./demos/commands/rectang"
+import { sessions as redoSessions } from "./demos/commands/redo"
 import { sessions as regionSessions } from "./demos/commands/region"
 import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
 import { sessions as sectionSessions } from "./demos/commands/section"
 import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as snapSessions } from "./demos/commands/snap"
 import { sessions as solideditSessions } from "./demos/commands/solidedit"
 import { sessions as sphereSessions } from "./demos/commands/sphere"
 import { sessions as splineSessions } from "./demos/commands/spline"
+import { sessions as splineditSessions } from "./demos/commands/splinedit"
 import { sessions as stretchSessions } from "./demos/commands/stretch"
 import { sessions as styleSessions } from "./demos/commands/style"
 import { sessions as subtractSessions } from "./demos/commands/subtract"
@@ -85,6 +94,7 @@ import { sessions as texteditSessions } from "./demos/commands/textedit"
 import { sessions as torusSessions } from "./demos/commands/torus"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as ucsSessions } from "./demos/commands/ucs"
+import { sessions as undoSessions } from "./demos/commands/undo"
 import { sessions as unionSessions } from "./demos/commands/union"
 import { sessions as unitsSessions } from "./demos/commands/units"
 import { sessions as vscurrentSessions } from "./demos/commands/vscurrent"
@@ -187,6 +197,7 @@ export type FigureId = keyof typeof FIGURES
  */
 export const COMMAND_SESSIONS = {
   ...orbit3dSessions,
+  ...poly3dSessions,
   ...arcSessions,
   ...areaSessions,
   ...arraySessions,
@@ -201,10 +212,12 @@ export const COMMAND_SESSIONS = {
   ...breakSessions,
   ...chamferSessions,
   ...chamferedgeSessions,
+  ...chpropSessions,
   ...circleSessions,
   ...colorSessions,
   ...coneSessions,
   ...copySessions,
+  ...copyclipSessions,
   ...cylinderSessions,
   ...dimalignedSessions,
   ...dimangularSessions,
@@ -225,12 +238,14 @@ export const COMMAND_SESSIONS = {
   ...filletSessions,
   ...filletedgeSessions,
   ...hatchSessions,
+  ...idSessions,
   ...insertSessions,
   ...intersectSessions,
   ...joinSessions,
   ...layerSessions,
   ...lineSessions,
   ...linetypeSessions,
+  ...listSessions,
   ...ltscaleSessions,
   ...lweightSessions,
   ...masspropSessions,
@@ -239,6 +254,7 @@ export const COMMAND_SESSIONS = {
   ...moveSessions,
   ...mtextSessions,
   ...offsetSessions,
+  ...panSessions,
   ...peditSessions,
   ...plineSessions,
   ...polygonSessions,
@@ -247,15 +263,18 @@ export const COMMAND_SESSIONS = {
   ...purgeSessions,
   ...pyramidSessions,
   ...rectangSessions,
+  ...redoSessions,
   ...regionSessions,
   ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
   ...sectionSessions,
   ...sliceSessions,
+  ...snapSessions,
   ...solideditSessions,
   ...sphereSessions,
   ...splineSessions,
+  ...splineditSessions,
   ...stretchSessions,
   ...styleSessions,
   ...subtractSessions,
@@ -264,6 +283,7 @@ export const COMMAND_SESSIONS = {
   ...torusSessions,
   ...trimSessions,
   ...ucsSessions,
+  ...undoSessions,
   ...unionSessions,
   ...unitsSessions,
   ...vscurrentSessions,

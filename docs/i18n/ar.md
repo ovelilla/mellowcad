@@ -162,6 +162,16 @@ marks a choice between competing terms that a native review should settle first 
 |  | Purge, unused; Nested items, Orphaned data; verify each name | تنظيف، غير المستخدمة (C, as the ribbon's Purge) †؛ العناصر المتداخلة، البيانات اليتيمة (L) †؛ تأكيد كل اسم (L) |
 |  | Linetype scale; global linetype scale factor; paper space | مقياس نوع الخط (C)؛ معامل المقياس العام لأنواع الخطوط (L, as Drawing aids)؛ فضاء الورق (C) |
 |  | True colour; index colour; Color Books; transparency | اللون الحقيقي؛ لون الفهرس (L) †؛ كتب الألوان (L)؛ الشفافية (M) |
+|  | Undo step; mark (UNDO's Mark); group (BEgin…End) | خطوة تراجع (L)؛ علامة (L)؛ مجموعة (L) † |
+|  | Quick Access Toolbar; top bar; menu item | شريط أدوات الوصول السريع (C)؛ الشريط العلوي؛ بند قائمة (L) |
+|  | Browser session; system clipboard | جلسة المتصفح؛ حافظة النظام (L) |
+|  | Text window (LIST's); handle (an object's) | نافذة النص (L)؛ معرّف فريد (L) † — المعرّف alone is already an attribute's Tag |
+|  | Hand cursor; trackpad; displacement (-PAN) | مؤشر اليد (L)؛ لوحة اللمس (M)؛ إزاحة (M) |
+|  | Snap spacing; lattice (snap mode's points); polar snap; isometric snap | تباعد الالتقاط؛ شبكة نقاط؛ الالتقاط القطبي؛ الالتقاط متساوي القياس (L) † — شبكة نقاط keeps the snap's lattice apart from the grid, الشبكة |
+|  | 3D polyline; curve-fit polyline; work plane; elevation plane | خط متعدد ثلاثي الأبعاد (M)؛ خط متعدد ملاءَم بمنحنى؛ مستوى العمل؛ مستوى المنسوب (L) |
+|  | Fit data; order (a spline's), Elevate order | بيانات الملاءمة (L)؛ الرتبة، رفع الرتبة (M) |
+|  | Thickness; extents, bounding box | السماكة (M)؛ المستطيل المحيط (M) |
+|  | Insertion point; base point | نقطة الإدراج؛ نقطة الأساس (C) |
 
 ## Register
 

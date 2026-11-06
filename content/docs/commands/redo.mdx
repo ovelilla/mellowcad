@@ -1,0 +1,54 @@
+---
+title: "REDO in AutoCAD"
+metaTitle: "REDO in AutoCAD: command, Ctrl+Y and MREDO"
+description: "How AutoCAD's REDO works: it puts back what the last U or UNDO took, right after it; MREDO and Ctrl+Y redo step by step. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for REDO in AutoCAD?","answer":"Ctrl+Y, which redoes one step (MREDO 1). REDO itself has no alias: type REDO, or _REDO in any language of AutoCAD."},{"question":"Why does REDO not work?","answer":"REDO only reverses the U or UNDO just before it. After any other command there is nothing to redo, even if it changed nothing: undo, then redo at once."},{"question":"What is the difference between REDO and MREDO?","answer":"REDO puts back the whole of the last undo, and only right after it. MREDO redoes a number of the steps taken back, one by one, or all of them, and still works after a REDO."},{"question":"How do I repeat the last command in AutoCAD?","answer":"Press Enter or Space at the Command prompt: the last command starts again. REDO does not repeat a command; it reverses an undo."}]
+---
+
+REDO reverses the last `U` or [`UNDO`](/docs/commands/undo): what it took back is drawn again, all of it, so after an UNDO of five commands REDO puts back the five. It writes the commands' names as it does, then `Everything has been redone` once nothing is left to redo. It asks nothing and has no options.
+
+It works only right after the undo. Anywhere else it says `REDO must immediately follow the U or UNDO command.`, and once another command has run, even one that changes nothing such as LIST or ZOOM, `Nothing to redo`. With undo turned off by UNDO's Control None, REDO says it is disabled.
+
+`MREDO` redoes step by step: it asks for a number of actions, or `All` or `Last`, and redoes that many of the steps the undos took back, whatever U, UNDO and REDO ran since; Last is the whole of the last undo, once (`The last UNDO operation has been already redone.`). Ctrl+Y and the shortcut menu's Redo run MREDO with 1, cancelling the command that is running.
+
+- **Command:** `REDO`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `REDO` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="redo" caption="A hole drawn in a plate, taken back with U and put back with REDO." />
+
+## What it does not do yet [#missing]
+
+Ctrl+Shift+Z redoes too, silently, though AutoCAD binds nothing to it. The top bar's Undo and Redo buttons write nothing in the history, where AutoCAD's Quick Access Toolbar writes its own.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Questions [#questions]
+
+### What is the shortcut for REDO in AutoCAD?
+
+Ctrl+Y, which redoes one step (MREDO 1). REDO itself has no alias: type `REDO`, or `_REDO` in any language of AutoCAD.
+
+### Why does REDO not work?
+
+REDO only reverses the U or UNDO just before it. After any other command there is nothing to redo, even if it changed nothing: undo, then redo at once.
+
+### What is the difference between REDO and MREDO?
+
+REDO puts back the whole of the last undo, and only right after it. `MREDO` redoes a number of the steps taken back, one by one, or all of them, and still works after a REDO.
+
+### How do I repeat the last command in AutoCAD?
+
+Press Enter or Space at the Command prompt: the last command starts again. REDO does not repeat a command; it reverses an undo.
+
+## Related commands [#related]
+
+- [UNDO in AutoCAD](/docs/commands/undo)
+- [U](/docs/commands#u): Undo the last action
+- [MREDO](/docs/commands#mredo): Multiple redo

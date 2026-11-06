@@ -9,7 +9,7 @@ faq: [{"question":"How do I draw a cone in AutoCAD?","answer":"Run CONE, give th
 
 CONE draws a 3D solid cone: give the centre of its base, then the radius, then the height, and it narrows to a point. It asks what [`CYLINDER`](/docs/commands/cylinder) asks, with `Top` at the height for a cone cut short. The base lies on the UCS's XY plane, at the centre's Z, and the height rises along its Z; a negative one points it down, and a point gives it by how far it is from the base. The radius and the height are offered as defaults that Enter takes, shared with the other primitives. The cone lies on the current layer, and Undo takes it back in one step.
 
-`LIST` shows its position, normal, base radius, top radius and height, and the Properties palette lets you type them. Its grips move it, set its height, its base radius at each quarter of the base, and its top radius. The apex snaps as an endpoint. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
+[`LIST`](/docs/commands/list) shows its position, normal, base radius, top radius and height, and the Properties palette lets you type them. Its grips move it, set its height, its base radius at each quarter of the base, and its top radius. The apex snaps as an endpoint. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
 
 - **Command:** `CONE`
 - **Panel:** [Draw](/docs/commands#draw)

@@ -106,26 +106,29 @@ lo pidió por el coste.
 
 ## Lo que queda (estado del 6/11/2026)
 
-La mecánica está hecha y 83 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+La mecánica está hecha y 93 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
 tanda y la segunda ola entera, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN
 y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM;
 la cuarta tanda, CYLINDER, SPHERE, CONE, WEDGE, TORUS, PYRAMID, REGION y MASSPROP; la quinta, el
 resto del 3D: UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT; la sexta,
-ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR.
+ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR; la séptima,
+UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP.
 Cada tanda siguiente es una sesión con la skill `command-page`, un commit, y el push del dueño; F1,
 el índice, el sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. Del
 resto, decidido el 6/11 por lo que se busca (el autocompletado de la auditoría) y por lo que cada
-comando tiene que contar, en este orden:
+comando tiene que contar:
 
-1. **La séptima tanda**: UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP
-   (con CUTCLIP y COPYBASE nombrados en su página). Los diez se buscan por su nombre
-   («undo command», «list command», «3dpoly», «copyclip»…).
-2. **Una octava, si llenan una página**: VIEW, PLAN, PASTECLIP y BREAKATPOINT; lo que no la llene se
-   queda en el índice.
-3. **Se quedan en el índice**, sin página propia: NEW, OPEN, SAVE, SAVEAS y QSAVE (lo que se busca
-   de ellos es DWG y versiones, que el formato propio no contesta: «Claims and copy» de
-   `i18n.md`), VPOINT y ELEV (sin búsquedas), BLOCKSPALETTE (la página de INSERT lo cuenta),
-   CUTCLIP y COPYBASE (los cuenta COPYCLIP); los de guion (-HATCH, -BLOCK…), los que cierran una
-   paleta (LAYERCLOSE, PROPERTIESCLOSE), las variables (AUPREC, SETVAR) y los que solo repiten a
-   otro (QNEW, MREDO, REGENALL, CLEANSCREENOFF, DIMHORIZONTAL, DIMVERTICAL, DIMROTATED). F1 los
-   lleva a su ancla.
+1. **La octava tanda**: VIEW y PLAN. Las dos llenan una página: VIEW, las vistas
+   ortogonales e isométricas de -VIEW con el SCP que alinea cada una (lo que más se busca de ella,
+   «isometric view»), y PLAN, sus tres opciones y la pregunta de cómo volver a la planta
+   («autocad plan command», «autocad ucs plan command»).
+2. **Se quedan en el índice**, sin página propia: PASTECLIP (su única solicitud es el punto de
+   inserción, que la página de COPYCLIP cuenta entera con CUTCLIP y COPYBASE, la misma entrada de
+   cobertura) y BREAKATPOINT (un solo punto de ruptura: la página de BREAK lo cuenta y lo enlaza en
+   sus relacionados, y responde «break at point»); NEW, OPEN, SAVE, SAVEAS y QSAVE (lo que se busca
+   de ellos es DWG y versiones, que el formato propio no contesta: «Claims and copy» de `i18n.md`),
+   VPOINT y ELEV (sin búsquedas), BLOCKSPALETTE (la página de INSERT lo cuenta), CUTCLIP y COPYBASE
+   (los cuenta COPYCLIP), U y MREDO (los cuentan UNDO y REDO); los de guion (-HATCH, -BLOCK, -PAN…),
+   los que cierran una paleta (LAYERCLOSE, PROPERTIESCLOSE), las variables (AUPREC, SETVAR) y los que
+   solo repiten a otro (QNEW, REGENALL, CLEANSCREENOFF, DIMHORIZONTAL, DIMVERTICAL, DIMROTATED). F1
+   los lleva a su ancla.

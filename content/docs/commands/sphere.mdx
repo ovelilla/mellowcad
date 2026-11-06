@@ -9,7 +9,7 @@ faq: [{"question":"How do I make a sphere in AutoCAD?","answer":"Run SPHERE, giv
 
 SPHERE draws a 3D solid sphere: give the centre, then the radius. A radius picked with the mouse is read on the plane through the centre, and the last radius is offered as a default that Enter takes, shared with [`CYLINDER`](/docs/commands/cylinder), [`CONE`](/docs/commands/cone) and the other primitives. The sphere lies on the current layer, and Undo takes it back in one step.
 
-In 2D Wireframe and Hidden it is drawn as lines: meridians and parallels, as many as `ISOLINES` says, and nothing else snaps on it but its centre. `LIST` shows its position and radius, and the Properties palette lets you type the radius or the diameter. Its grips move it and, at each quarter of its equator, set its radius. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
+In 2D Wireframe and Hidden it is drawn as lines: meridians and parallels, as many as `ISOLINES` says, and nothing else snaps on it but its centre. [`LIST`](/docs/commands/list) shows its position and radius, and the Properties palette lets you type the radius or the diameter. Its grips move it and, at each quarter of its equator, set its radius. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
 
 - **Command:** `SPHERE`
 - **Panel:** [Draw](/docs/commands#draw)

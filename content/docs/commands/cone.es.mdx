@@ -9,7 +9,7 @@ faq: [{"question":"¿Cómo dibujar un cono en AutoCAD?","answer":"Ejecuta CONO y
 
 CONO (CONE en inglés) dibuja un cono, un sólido 3D: precisa el centro de su base, después el radio y después la altura, y el cono se estrecha hasta un punto. Pide lo mismo que [`CILINDRO`](/docs/commands/cylinder), con `Radio` en la altura para un cono truncado. La base queda en el plano XY del SCP, a la Z del centro, y la altura sube por su eje Z; una negativa lo hace apuntar hacia abajo, y un punto la da por su distancia a la base. El radio y la altura se ofrecen como valores por defecto que Intro acepta, compartidos con las demás primitivas. El cono va a la capa actual, y Deshacer lo revierte en un paso.
 
-`LIST` muestra su posición, su normal, el radio de la base, el radio superior y la altura, y la paleta Propiedades deja escribirlos. Sus pinzamientos lo desplazan y fijan su altura, el radio de la base en cada cuadrante de la base y el radio superior. La referencia a objetos Punto final encuentra su vértice. Es un sólido 3D para [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial.
+[`LIST`](/docs/commands/list) muestra su posición, su normal, el radio de la base, el radio superior y la altura, y la paleta Propiedades deja escribirlos. Sus pinzamientos lo desplazan y fijan su altura, el radio de la base en cada cuadrante de la base y el radio superior. La referencia a objetos Punto final encuentra su vértice. Es un sólido 3D para [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial.
 
 - **Comando:** `CONO`
 - **En inglés:** `CONE`, que se escribe `_CONE` en cualquier idioma

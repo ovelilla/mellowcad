@@ -1,0 +1,65 @@
+---
+title: "Comando 3DPOLY (POLI3D) no AutoCAD"
+metaTitle: "3DPOLY (POLI3D) no AutoCAD: polilinha 3D"
+description: "Como funciona o 3DPOLY do AutoCAD em português, POLI3D (P3): uma polilinha 3D de segmentos retos, cada ponto no seu Z, Fechar, Desfazer e como difere da PLINHA."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando 3DPOLY no AutoCAD em português?","answer":"POLI3D, com o alias P3, depois Enter ou a barra de espaço. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _3DPOLY."},{"question":"Qual é a diferença entre polilinha e polilinha 3D?","answer":"Uma PLINHA fica num só plano e pode ter arcos e larguras. Uma polilinha 3D só tem segmentos retos, mas cada vértice pode estar numa altura diferente: uma tubulação, o eixo de uma estrada, um cabo."},{"question":"Como desenhar uma polilinha 3D em alturas diferentes?","answer":"Digite cada ponto com o seu Z, x,y,z, ou use o snap em objetos nas alturas que você quer. Com a entrada dinâmica, um ponto depois do primeiro é relativo: 60,0,15 vai 60 ao longo de X e sobe 15 a partir do último."},{"question":"Como suavizar uma polilinha 3D?","answer":"Execute o EDITARP nela e escolha a opção Spline: uma curva suave emoldurada pelos vértices. A opção desfCurva a deixa reta de novo."}]
+---
+
+O 3DPOLY, POLI3D no AutoCAD em português, desenha uma polilinha 3D: segmentos retos por pontos que têm cada um o seu próprio Z, como um só objeto. Especifique o ponto inicial e depois um ponto final para cada segmento, até que Enter a encerre; até um ponto inicial sozinho é mantido, como uma polilinha de um vértice. Enter no ponto inicial é recusado com `Ponto inválido.`: não há a opção Continuar, que a LINHA tem. Um ponto digitado com Z o mantém, `30,0,15`; um digitado sem ele, ou clicado, fica na elevação do plano de trabalho, e um ponto com snap a um objeto toma o Z do objeto ali. Os pontos são lidos no UCS atual.
+
+Ao contrário de uma [`PLINHA`](/docs/commands/pline), ela não tem plano, arcos, larguras nem espessura, e é desenhada contínua qualquer que seja o seu tipo de linha, que ela mantém. A polilinha inteira é um passo que o `D` desfaz; Esc mantém o que foi desenhado. O EDITARP a edita com uma lista mais curta de opções, e a sua opção Spline ajusta a ela uma curva suave.
+
+- **Comando:** `POLI3D`
+- **Em inglês:** `3DPOLY`, que se digita `_3DPOLY` em qualquer idioma
+- **Aliases:** `P3`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `P3` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="3dpoly" caption="Uma polilinha 3D que sobe 15 em cada canto de um retângulo de 60 por 40 no chão, vista do sudeste." />
+
+## Opções [#options]
+
+### `Fechar` (`F`) [#close]
+
+A partir do segundo segmento: desenha um segmento de volta ao ponto inicial e encerra.
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz o último vértice e continua a partir do anterior. Sem nenhum segmento: `Todos os segmentos já foram desfeitos.`.
+
+## O que ainda não faz [#missing]
+
+Uma polilinha 3D ajustada em curva mostra Nenhum em Ajustar/Suavizar na paleta Propriedades, onde o AutoCAD diz Quadrática ou Cúbica, e não pode ser mudada ali. Ela não pode ser o contorno de uma hachura nem o caminho do MATRIZCAMINHO, e a paleta não tem a linha Material. A entrada dinâmica pede o ponto inicial numa só caixa, com o Z digitado depois de uma segunda vírgula, onde o AutoCAD mostra campos X, Y e Z. Os menus das alças ao passar o cursor: Esticar, Adicionar vértice, Remover vértice e o resto.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando 3DPOLY no AutoCAD em português?
+
+POLI3D, com o alias `P3`, depois Enter ou a barra de espaço. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_3DPOLY`.
+
+### Qual é a diferença entre polilinha e polilinha 3D?
+
+Uma [`PLINHA`](/docs/commands/pline) fica num só plano e pode ter arcos e larguras. Uma polilinha 3D só tem segmentos retos, mas cada vértice pode estar numa altura diferente: uma tubulação, o eixo de uma estrada, um cabo.
+
+### Como desenhar uma polilinha 3D em alturas diferentes?
+
+Digite cada ponto com o seu Z, `x,y,z`, ou use o snap em objetos nas alturas que você quer. Com a entrada dinâmica, um ponto depois do primeiro é relativo: `60,0,15` vai 60 ao longo de X e sobe 15 a partir do último.
+
+### Como suavizar uma polilinha 3D?
+
+Execute o [`EDITARP`](/docs/commands/pedit) nela e escolha a opção Spline: uma curva suave emoldurada pelos vértices. A opção desfCurva a deixa reta de novo.
+
+## Comandos relacionados [#related]
+
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Comando PEDIT (EDITARP) no AutoCAD](/docs/commands/pedit)
+- [Comando SPLINE no AutoCAD: curvas spline](/docs/commands/spline)
+- [Comando UCS no AutoCAD 3D](/docs/commands/ucs)

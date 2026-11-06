@@ -9,7 +9,7 @@ faq: [{"question":"What is the shortcut for WEDGE in AutoCAD?","answer":"WE. Typ
 
 WEDGE draws a 3D solid wedge: a box whose top slopes from one end down to the other. It asks what [`BOX`](/docs/commands/box) asks: the first corner, the other corner, then the height. The tall end is at the first corner, and the slope falls along the UCS's X to the other corner's side; a corner at a smaller X turns it round. The height rises along the UCS's Z, a negative one goes down. The length, width and height are [`BOX`](/docs/commands/box)'s defaults, which Enter takes. The wedge lies on the current layer, and Undo takes it back in one step.
 
-`LIST` shows its position, length, width, height and rotation, and the Properties palette lets you type them. Its grips are [`BOX`](/docs/commands/box)'s. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial; [`EXPLODE`](/docs/commands/explode) turns it into a region per face.
+[`LIST`](/docs/commands/list) shows its position, length, width, height and rotation, and the Properties palette lets you type them. Its grips are [`BOX`](/docs/commands/box)'s. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial; [`EXPLODE`](/docs/commands/explode) turns it into a region per face.
 
 - **Command:** `WEDGE`
 - **Aliases:** `WE`

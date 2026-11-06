@@ -1,0 +1,47 @@
+---
+title: "Comando ID no AutoCAD"
+metaTitle: "Comando ID no AutoCAD: coordenadas de um ponto"
+description: "Como funciona o ID do AutoCAD em português: indique um ponto, com ou sem snap, e leia X, Y e Z no UCS atual, também dentro de outro comando. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"O que faz o comando ID no AutoCAD?","answer":"Informa onde está um ponto: X, Y e Z, no UCS atual. Não desenha nem muda nada."},{"question":"Como saber as coordenadas de um ponto no AutoCAD?","answer":"Digite ID e clique no ponto com um snap ao objeto, Ponto final ou Centro, para cair exatamente nele. As coordenadas são escritas no prompt de comando."},{"question":"Como obter a coordenada Z de um ponto?","answer":"Use um snap ao objeto nele: o ID escreve ali o Z do objeto. Um clique simples dá o Z do plano de elevação, 0 a não ser que o ELEVATION ou o UCS o elevem."},{"question":"Por que o ID mostra coordenadas que eu não esperava?","answer":"O ID lê no UCS atual. Se o UCS foi movido ou girado, os números são medidos a partir da origem dele, ao longo dos seus eixos: UCS Universal para ler as coordenadas universais."}]
+---
+
+O ID escreve as coordenadas de um ponto, e tem o mesmo nome no AutoCAD em português. Em `Especificar ponto:` indique o ponto, use um snap nele ou digite-o, e o ID escreve o seu X, Y e Z numa linha no prompt de comando, e encerra. Os valores estão no UCS atual, na precisão do desenho. Com um snap ao objeto, o Z é a altura do objeto nesse ponto; senão, é a do plano de elevação. Enter o encerra sem dizer nada, e os objetos selecionados antes do ID são descartados quando ele começa. Digitado com um apóstrofo na frente, `'ID`, ele funciona dentro de outro comando, que continua depois.
+
+- **Comando:** `ID`
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ID` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="id" caption="O ID com o snap Centro no furo de uma placa: o X, o Y e o Z do centro." />
+
+## Perguntas frequentes [#questions]
+
+### O que faz o comando ID no AutoCAD?
+
+Informa onde está um ponto: X, Y e Z, no UCS atual. Não desenha nem muda nada.
+
+### Como saber as coordenadas de um ponto no AutoCAD?
+
+Digite `ID` e clique no ponto com um snap ao objeto, Ponto final ou Centro, para cair exatamente nele. As coordenadas são escritas no prompt de comando.
+
+### Como obter a coordenada Z de um ponto?
+
+Use um snap ao objeto nele: o ID escreve ali o Z do objeto. Um clique simples dá o Z do plano de elevação, 0 a não ser que o ELEVATION ou o UCS o elevem.
+
+### Por que o ID mostra coordenadas que eu não esperava?
+
+O ID lê no UCS atual. Se o UCS foi movido ou girado, os números são medidos a partir da origem dele, ao longo dos seus eixos: [`UCS`](/docs/commands/ucs) Universal para ler as coordenadas universais.
+
+## Comandos relacionados [#related]
+
+- [Medir distância no AutoCAD: comando DIST](/docs/commands/dist)
+- [Comando LIST (LISTA) no AutoCAD](/docs/commands/list)
+- [Comando UCS no AutoCAD 3D](/docs/commands/ucs)
+- [Calcular área no AutoCAD: comando AREA](/docs/commands/area)
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#id--es-id--pt-br-id)

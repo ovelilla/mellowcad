@@ -1,0 +1,59 @@
+---
+title: "Comando LIST en AutoCAD: propiedades de un objeto"
+metaTitle: "Comando LIST en AutoCAD: propiedades y alias LS"
+description: "Cómo funciona LIST (alias LS, LT) de AutoCAD en español: designa objetos y lee el tipo, la capa, el color, los puntos, la longitud y el área de cada uno."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el atajo de LIST en AutoCAD?","answer":"LS o LT, y después Intro o la barra espaciadora. El nombre completo también funciona, igual en AutoCAD en español, y _LIST en cualquier idioma de AutoCAD."},{"question":"¿Qué muestra el comando LIST?","answer":"Todo lo que dice del objeto el LIST de AutoCAD: su tipo, su capa, su espacio y las propiedades que no son PorCapa, y después su geometría, cada punto y cada longitud en números. Designa varios objetos y cada uno tiene su informe."},{"question":"¿Cómo saco la longitud o el área de un objeto?","answer":"Pásalo por LIST: la longitud de una línea, la circunferencia y el área de un círculo, la longitud o el perímetro y el área de una polilínea. Para sumar varias áreas, usa AREA."},{"question":"¿Cómo veo las coordenadas de los extremos de una línea?","answer":"Pasa la línea por LIST: «de punto» y «hasta punto», en el SCP actual. Para un solo punto, ID con una referencia a objetos."},{"question":"¿Qué diferencia hay entre LIST y PROPIEDADES?","answer":"LIST escribe un informe que lees y copias del historial. PROPIEDADES muestra los mismos valores en una paleta, donde puedes cambiarlos."}]
+---
+
+LIST, con el mismo nombre en español, escribe en la solicitud de comando un informe de cada objeto que designas, con las columnas y las palabras de AutoCAD 2027. Cada uno empieza por su tipo, su capa y su espacio; después, su color, su tipo de línea, su grosor de línea y su altura de objeto donde no son PorCapa o cero, y después lo propio de su tipo: los extremos, la longitud, el ángulo y los incrementos de una línea; el centro, el radio, la circunferencia y el área de un círculo; los ángulos y la longitud de un arco; los vértices, los grosores, el área y la longitud de una polilínea; los puntos de control y de ajuste de una spline; el estilo, la altura y la justificación de un texto; el tipo, los puntos y el estilo de una cota; el patrón, la escala y el área de un sombreado; el nombre, el punto de inserción, las escalas y los atributos de una referencia a bloque; las filas y los elementos de una matriz; el área, el perímetro y el cuadro delimitador de una región.
+
+Los puntos están en el SCP actual, las longitudes a la precisión del dibujo y los ángulos a AUPREC. Los objetos designados antes de LIST se enumeran en el acto, sin la solicitud, e Intro sin nada designado lo termina sin decir nada. Todas las líneas salen a la vez: la ventana de texto de AutoCAD se detiene en `Pulse INTRO para continuar:` a cada pantalla llena, mientras que aquí el historial se desplaza. No hay línea `Identificador`: aquí los objetos no tienen identificador.
+
+- **Comando:** `LIST`
+- **Alias:** `LS`, `LT`
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `LS` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="list" caption="LIST del agujero de una placa: la capa, el centro, el radio, la circunferencia y el área del círculo." />
+
+## Lo que aún no hace [#missing]
+
+El área de una polilínea abierta ajustada con curVar: aquí es la de la curva cerrada por su cuerda, y la de AutoCAD es mayor. La longitud de una spline es exacta aquí, donde la de AutoCAD es una aproximación cercana. Una ACOANGULAR hecha a partir de dos líneas se enumera por sus tres puntos, y ninguna cota es nunca `asociativo: sí`. La pausa y la ventana de texto de AutoCAD. Lo que aquí no tienen los objetos: PorBloque, un grosor de línea Por defecto, una escala de tipo de línea propia, transparencia y grupos.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#list--li--ls--es-list--ls--lt--pt-br-lista--li--ls--mostrarmat)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el atajo de LIST en AutoCAD?
+
+`LS` o `LT`, y después Intro o la barra espaciadora. El nombre completo también funciona, igual en AutoCAD en español, y `_LIST` en cualquier idioma de AutoCAD.
+
+### ¿Qué muestra el comando LIST?
+
+Todo lo que dice del objeto el LIST de AutoCAD: su tipo, su capa, su espacio y las propiedades que no son PorCapa, y después su geometría, cada punto y cada longitud en números. Designa varios objetos y cada uno tiene su informe.
+
+### ¿Cómo saco la longitud o el área de un objeto?
+
+Pásalo por LIST: la longitud de una línea, la circunferencia y el área de un círculo, la longitud o el perímetro y el área de una polilínea. Para sumar varias áreas, usa [`AREA`](/docs/commands/area).
+
+### ¿Cómo veo las coordenadas de los extremos de una línea?
+
+Pasa la línea por LIST: `de punto` y `hasta punto`, en el SCP actual. Para un solo punto, [`ID`](/docs/commands/id) con una referencia a objetos.
+
+### ¿Qué diferencia hay entre LIST y PROPIEDADES?
+
+LIST escribe un informe que lees y copias del historial. [`PROPIEDADES`](/docs/commands/properties) muestra los mismos valores en una paleta, donde puedes cambiarlos.
+
+## Comandos relacionados [#related]
+
+- [Paleta Propiedades en AutoCAD: PROPIEDADES (PROPERTIES)](/docs/commands/properties)
+- [Coordenadas de un punto en AutoCAD: comando ID](/docs/commands/id)
+- [Medir distancias en AutoCAD: comando DIST](/docs/commands/dist)
+- [Calcular áreas en AutoCAD: comando AREA](/docs/commands/area)
+- [Propiedades físicas en AutoCAD: PROPFIS (MASSPROP)](/docs/commands/massprop)

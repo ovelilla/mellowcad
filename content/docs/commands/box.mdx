@@ -9,7 +9,7 @@ faq: [{"question":"How do I draw a 3D box in AutoCAD?","answer":"Run BOX, give o
 
 BOX draws a 3D solid box with its sides along the UCS's axes: give the first corner, the other corner, then the height. The height rises along the UCS's Z, a negative one goes down, and a point gives it by how far it is from the corner; a corner given at another Z than the first sets the height without asking. The last height, and the last length and width of a cube or Length, are offered as defaults that Enter takes, shared with the other primitives and [`EXTRUDE`](/docs/commands/extrude). The box lies on the current layer, and Undo takes it back in one step.
 
-The box keeps its sizes: `LIST` shows its position, length, width, height and rotation, and the Properties palette lets you type the first four. Its grips move it, stretch it and, off the plan, set its height. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
+The box keeps its sizes: [`LIST`](/docs/commands/list) shows its position, length, width, height and rotation, and the Properties palette lets you type the first four. Its grips move it, stretch it and, off the plan, set its height. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
 
 - **Command:** `BOX`
 - **Panel:** [Draw](/docs/commands#draw)

@@ -1,0 +1,73 @@
+---
+title: "CHPROP in AutoCAD"
+metaTitle: "CHPROP in AutoCAD: change properties by prompt"
+description: "How AutoCAD's CHPROP works: select objects, then change their colour, layer, linetype, lineweight or thickness at the command line. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Is there a shortcut for CHPROP in AutoCAD?","answer":"It has no alias: type CHPROP, or _CHPROP in any language of AutoCAD. Enter at the Command prompt repeats it."},{"question":"What is the difference between CHPROP and PROPERTIES?","answer":"They change the same properties. PROPERTIES shows them in a palette, with each object's geometry too; CHPROP asks for them at the command line, which keeps your hands on the keyboard."},{"question":"How do I change the colour of objects from the command line?","answer":"Type CHPROP, select the objects, press Enter, choose Color and type the colour, such as 1 for red. Press Enter again to finish."},{"question":"How do I move several objects to another layer?","answer":"Run CHPROP, select them, choose LAyer and type the layer's name. The layer must exist: create it in LAYER first."}]
+---
+
+CHPROP changes the properties of the objects you select, at the command line: the Properties palette's General rows, asked as prompts. Select the objects, or select them before the command, then choose a property to change; it asks for one again after each, until Enter ends it. Each property's prompt offers the set's value as its default, `varies` where the objects differ, and Enter there leaves each object its own. What you set is applied as the command ends, so Escape leaves every object as it was. Objects on a locked layer are counted and left out, each saying `The object is on a locked layer.`. The whole run is one step that `U` takes back.
+
+- **Command:** `CHPROP`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `CHPROP` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="chprop" caption="CHPROP on a line across a plate's hole: colour 1 and linetype Center, an axis, on the layer it was on." />
+
+## Options [#options]
+
+### `Color` (`C`) [#color]
+
+A colour number from 1 to 255, a name such as `red`, `BYLAYER`, or `Truecolor` and its `Red,Green,Blue`, as [`COLOR`](/docs/commands/color) takes them; what COLOR refuses is refused here and asked again.
+
+### `LAyer` (`LA`) [#layer]
+
+A layer's name, in any case. A name that cannot be a layer's says `Invalid layer name.`, one that is not in the drawing says it cannot be found; both ask again. CHPROP does not create layers.
+
+### `LType` (`LT`) [#ltype]
+
+A linetype's name, in any case, or `ByLayer`. Every linetype here is loaded; another name says it is not found and goes back to the property prompt.
+
+### `LWeight` (`LW`) [#lweight]
+
+A lineweight in millimetres, rounded to the nearest standard one as [`LWEIGHT`](/docs/commands/lweight) rounds it, or `ByLayer`; `?` lists them.
+
+### `Thickness` (`T`) [#thickness]
+
+A distance, typed or measured by two points, negative and zero too. It is set on the lines, circles, arcs and polylines in the set, along each one's own normal; for each other type it says, as it ends, that it cannot change its thickness.
+
+## What it does not do yet [#missing]
+
+ltScale, TRansparency, Material and Annotative, which objects here do not have, so the prompt does not list them. ByBlock at Color, LType and LWeight, and LWeight's Default. A true colour equal to an index colour reads back as the index one: `255,0,0` is offered as `1 (red)`. Color books. A text's and an attribute definition's thickness, left as they are. CHANGE, whose Properties asks the same prompt with Elev.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop)
+
+## Questions [#questions]
+
+### Is there a shortcut for CHPROP in AutoCAD?
+
+It has no alias: type `CHPROP`, or `_CHPROP` in any language of AutoCAD. Enter at the Command prompt repeats it.
+
+### What is the difference between CHPROP and PROPERTIES?
+
+They change the same properties. [`PROPERTIES`](/docs/commands/properties) shows them in a palette, with each object's geometry too; CHPROP asks for them at the command line, which keeps your hands on the keyboard.
+
+### How do I change the colour of objects from the command line?
+
+Type `CHPROP`, select the objects, press Enter, choose `Color` and type the colour, such as `1` for red. Press Enter again to finish.
+
+### How do I move several objects to another layer?
+
+Run CHPROP, select them, choose `LAyer` and type the layer's name. The layer must exist: create it in [`LAYER`](/docs/commands/layer) first.
+
+## Related commands [#related]
+
+- [PROPERTIES in AutoCAD](/docs/commands/properties)
+- [MATCHPROP in AutoCAD](/docs/commands/matchprop)
+- [COLOR in AutoCAD](/docs/commands/color)
+- [LAYER in AutoCAD](/docs/commands/layer)

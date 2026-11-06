@@ -1,0 +1,33 @@
+---
+title: "Comando COPYCLIP (COPIACORTE) no AutoCAD"
+metaTitle: "Copiar e colar no AutoCAD: COPYCLIP e Ctrl+C"
+description: "Como funciona o COPYCLIP (Ctrl+C) do AutoCAD em português, COPIACORTE, com RECORTAT, COPIABASE e COLARAT: copie para a área de transferência e cole num ponto."
+figure: "O COPIACORTE do furo de uma placa e depois o COLARAT em 65,20: a cópia posta ali pelo canto inferior esquerdo, um segundo furo."
+sourceHash: "f84c995e7c2b"
+---
+
+O COPYCLIP, COPIACORTE no AutoCAD em português, copia os objetos que você seleciona para a área de transferência, com as camadas, os estilos e os blocos que eles usam; o desenho não muda, e os objetos selecionados antes dele continuam selecionados. Ctrl+C o executa, cancelando um comando em andamento. O <Command id="PASTECLIP" />, Ctrl+V, pede então um ponto de inserção: os objetos acompanham o cursor e caem com o canto inferior esquerdo da sua extensão no ponto, no UCS atual, tudo num passo que o <Command id="U" /> desfaz. Cole no mesmo desenho ou em outro: a área de transferência é a do sistema, então um desenho em outra aba pode lê-la, se o navegador deixar a página ler a área de transferência. Quando uma camada, um estilo ou um bloco colado tem o nome de um que o desenho já tem, é usado o do desenho.
+
+O <Command id="CUTCLIP" />, Ctrl+X, copia os objetos e os apaga, como o APAGAR. O <Command id="COPYBASE" />, Ctrl+Shift+C, pede antes um ponto base, e o COLARAT então coloca os objetos por esse ponto em vez do canto deles, de modo que caem exatamente onde você quer. Ctrl+A seleciona todos os objetos do desenho.
+
+## Missing
+
+COLARB e RECORTARBASE, e portanto Ctrl+Shift+V e Ctrl+Shift+X, que ficam com o navegador, como Ctrl+Shift+A. COLARORIG, COLARESPEC, arrastar objetos entre janelas e o texto de outro programa colado como texto multilinha. As opções ocultas do INSERIR no ponto do COLARAT, então uma colagem não pode ser escalada, girada nem explodida ao cair.
+
+## Questions
+
+### Qual é a diferença entre COPY e COPYCLIP (COPIAR e COPIACORTE)?
+
+O <Command id="COPY" /> coloca cópias no mesmo desenho, de um ponto base a um segundo ponto. O COPIACORTE põe os objetos na área de transferência, para colá-los com o COLARAT neste desenho ou em outro.
+
+### Como copiar com ponto base no AutoCAD?
+
+Pressione Ctrl+Shift+C, ou digite `COPIABASE`, dê o ponto base e selecione os objetos. Ctrl+V então os coloca por esse ponto.
+
+### Como copiar objetos de um desenho para outro?
+
+Selecione-os e pressione Ctrl+C, abra o outro desenho e pressione Ctrl+V, e indique o ponto de inserção. As camadas, os estilos e os blocos deles vêm junto.
+
+### Por que colar não funciona?
+
+O navegador pode perguntar se a página pode ler a área de transferência: permita. Se ele recusar, o COLARAT cola o que foi copiado por último na mesma página. Sem nada copiado, ele não cola nada.

@@ -1,7 +1,7 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 48 comandos publicada el 6/11 y 35 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 58 comandos publicada el 6/11 y 35 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
 > dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
 > quedan y lo que queda de §7. Esperan detrás
@@ -333,7 +333,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    salta, sin gastar cuota, una URL que aún no responde 200 (`not live`), y la vuelve a intentar en
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
    push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual, y las 28 de la quinta (UCS a
-   SOLIDEDIT). **6/11:** las 40 de la sexta (ATTDEF a COLOR), igual: 217 en la cola.
+   SOLIDEDIT). **6/11:** las 40 de la sexta (ATTDEF a COLOR), igual, y las 40 de la séptima (UNDO a
+   COPYCLIP): 257 en la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -389,7 +390,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   publicada el 6/11** (`26626a1d`): ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE,
   JOIN y BREAK (40 URLs, en la cola de indexación de §7). En portugués, el título lleva delante la
   palabra que se busca también en retângulo, polígono, elipse, arco, apagar y explodir (la skill lo
-  dice). **Tercera tanda, hecha el 6/11 y sin publicar:** SPLINE, PEDIT, MATCHPROP, PROPERTIES,
+  dice). **Tercera tanda, hecha y publicada el 6/11** (`dd93d98b`): SPLINE, PEDIT, MATCHPROP, PROPERTIES,
   LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM (40 URLs más, ya al final de la cola de §7), con lo que
   la segunda ola está completa: 58 comandos con página. LINETYPE y LWEIGHT cuentan la forma de
   guion que ejecutan (no hay Administrador ni cuadro de grosores); la figura de UNITS y la de
@@ -415,8 +416,17 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   con un antes encima de la sesión: el `before` de las notas, `<slug>Before` en las sesiones. STYLE
   y COLOR cuentan lo que hacen la paleta de estilos y la forma de guion; la figura de STYLE, el `?`
   de TEXT, lo que guarda un estilo. Arreglado de paso en el motor: una imagen fija (las figuras, las
-  miniaturas) no seguía ATTDISP ni FILL. **Quedan 57 comandos sin página**, por tandas con la
-  skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
+  miniaturas) no seguía ATTDISP ni FILL. **Séptima tanda, hecha el 6/11 y sin publicar:** UNDO,
+  REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP (40 URLs más, al final de la cola
+  de §7): 93 comandos con página. U y MREDO los cuentan UNDO y REDO; CUTCLIP, COPYBASE y PASTECLIP,
+  COPYCLIP; -PAN, PAN. Fijas salvo PAN y SNAP, en vivo (la vista y la rejilla), y 3DPOLY, en vivo
+  desde el sureste como BOX; UNDO con un antes encima (`undoBefore`). Arreglado de paso en el
+  motor: el historial de una sesión escribía `PAN:` o `3DORBIT:` al Intro que lo acaba y perdía la
+  línea con que empieza PAN (la de 3DORBIT, publicada, también cambia). Publicadas (`origin/main`)
+  las tres primeras tandas, 58 comandos; de la cuarta a la séptima, 35 sin publicar.
+  **Quedan 47 comandos sin página**: la octava tanda, VIEW y PLAN, con la skill `command-page`;
+  PASTECLIP (lo cuenta COPYCLIP) y BREAKATPOINT (lo cuenta BREAK) se quedan en el índice, porque no
+  llenan una página (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,
   «Request indexing» de `/`, `/es`, `/pt-br` y `/ar` en Bing (aceptadas, cuota 97 de 100) e IndexNow

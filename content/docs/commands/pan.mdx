@@ -1,0 +1,53 @@
+---
+title: "PAN in AutoCAD"
+metaTitle: "PAN in AutoCAD: command, shortcut P and -PAN"
+description: "How AutoCAD's PAN (P) works: drag the view with the hand cursor or the wheel button, -PAN by two points, and PAN inside another command. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for PAN in AutoCAD?","answer":"P, then Enter or Space. Or no command at all: hold the mouse wheel down and drag. The full name works too, and _PAN in any language of AutoCAD."},{"question":"How do I pan with the mouse in AutoCAD?","answer":"Hold the wheel button down and drag: the view follows the cursor. Roll the wheel to zoom in and out about the cursor. On a trackpad, run PAN and drag with the left button."},{"question":"How do I pan while drawing?","answer":"Drag with the wheel button, or type 'P at the command's prompt: the command waits while you pan, then asks again where it was."},{"question":"How do I pan by an exact distance?","answer":"Use -PAN: type the displacement, such as 100,0, and press Enter at the second point. The view moves 100 units along X."}]
+---
+
+PAN slides the view; nothing in the drawing moves. It starts with `Press ESC or ENTER to exit, or right-click to display shortcut menu.` and asks nothing more: the cursor becomes a hand, and dragging with the left button moves the view with it, as often as you like, until Enter or Escape ends it. Without PAN, dragging with the mouse wheel button pans at any time, even in the middle of a command. Each PAN is an undo step, joined with the ZOOMs and PANs around it, so `U` takes the view back. Typed with an apostrophe, `'PAN` or `'P`, it works inside another command, which goes on after it.
+
+`-PAN` pans by two points instead: a base point and a second point, the view moving by the distance between them; or a displacement typed at the first prompt, such as `50,0`, and Enter at the second. It is transparent too, and its own undo step.
+
+- **Command:** `PAN`
+- **Aliases:** `P`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `P` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="pan" caption="PAN dragged to the right and down, then Enter: the plate slides in the view, its coordinates unchanged." />
+
+## What it does not do yet [#missing]
+
+The shortcut menu AutoCAD shows on a right-click while panning, with Exit, Pan, Zoom, 3D Orbit, Zoom Window, Zoom Original and Zoom Extents.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e--pt-br-pan--p---pan---p)
+
+## Questions [#questions]
+
+### What is the shortcut for PAN in AutoCAD?
+
+`P`, then Enter or Space. Or no command at all: hold the mouse wheel down and drag. The full name works too, and `_PAN` in any language of AutoCAD.
+
+### How do I pan with the mouse in AutoCAD?
+
+Hold the wheel button down and drag: the view follows the cursor. Roll the wheel to zoom in and out about the cursor. On a trackpad, run PAN and drag with the left button.
+
+### How do I pan while drawing?
+
+Drag with the wheel button, or type `'P` at the command's prompt: the command waits while you pan, then asks again where it was.
+
+### How do I pan by an exact distance?
+
+Use `-PAN`: type the displacement, such as `100,0`, and press Enter at the second point. The view moves 100 units along X.
+
+## Related commands [#related]
+
+- [ZOOM in AutoCAD](/docs/commands/zoom)
+- [VIEW](/docs/commands#view): Preset views
+- [3DORBIT in AutoCAD](/docs/commands/3dorbit)

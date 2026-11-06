@@ -1,0 +1,65 @@
+---
+title: "Polilínea 3D en AutoCAD: comando 3DPOL (3DPOLY)"
+metaTitle: "Polilínea 3D en AutoCAD: comando 3DPOL (3DPOLY)"
+description: "Cómo funciona 3DPOL (3DPOLY, alias 3P) de AutoCAD en español: polilínea 3D de segmentos rectos, cada punto a su Z, Cerrar y desHacer, y en qué difiere de POL."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando 3DPOLY en español?","answer":"3DPOL, con el alias 3P, y después Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _3DPOLY."},{"question":"¿Qué diferencia hay entre POL y 3DPOL?","answer":"Una polilínea de POL está en un solo plano y puede tener arcos y grosores. Una polilínea 3D solo tiene segmentos rectos, pero cada vértice puede estar a una altura distinta: el trazado de una tubería, el eje de una carretera, un cable."},{"question":"¿Cómo dibujo una polilínea 3D a distintas alturas?","answer":"Escribe cada punto con su Z, x,y,z, o fuérzalo a objetos que estén a las alturas que quieres. Con la entrada dinámica, un punto que viene después del primero es relativo: 60,0,15 avanza 60 en X y sube 15 desde el anterior."},{"question":"¿Cómo suavizo una polilínea 3D?","answer":"Pásala por EDITPOL y elige su curva Spline: una curva suave que los vértices enmarcan. anularcuRVatura la vuelve a dejar recta."}]
+---
+
+3DPOL (3DPOLY en inglés) dibuja una polilínea 3D: segmentos rectos por puntos que tienen cada uno su propia Z, como un solo objeto. Precisa el punto inicial y después un punto final para cada segmento, hasta que Intro lo termina; incluso un punto inicial solo se conserva, como una polilínea de un vértice. Intro en el punto inicial se rechaza con `Punto no válido.`: no tiene la opción Continuar que tiene LINEA. Un punto escrito con Z la conserva, `30,0,15`; uno escrito sin ella, o señalado, queda a la elevación del plano de trabajo, y un punto forzado a un objeto toma la Z del objeto en ese punto. Los puntos se leen en el SCP actual.
+
+A diferencia de una polilínea de [`POL`](/docs/commands/pline), no tiene plano, ni arcos, ni grosores, ni altura de objeto, y se dibuja continua sea cual sea su tipo de línea, que conserva. La polilínea entera es un paso que `H` deshace; Esc conserva lo dibujado. EDITPOL la edita con una lista de opciones más corta, y su curva Spline le ajusta una curva suave.
+
+- **Comando:** `3DPOL`
+- **En inglés:** `3DPOLY`, que se escribe `_3DPOLY` en cualquier idioma
+- **Alias:** `3P`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `3P` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="3dpoly" caption="Una polilínea 3D que sube 15 en cada esquina de un rectángulo de 60 por 40 en el suelo, vista desde el sureste." />
+
+## Opciones [#options]
+
+### `Cerrar` (`C`) [#close]
+
+Desde el segundo segmento: dibuja un segmento de vuelta al punto inicial y termina.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace el último vértice y sigue desde el anterior. Si no queda ningún segmento: `Ya se han deshecho todos los segmentos.`.
+
+## Lo que aún no hace [#missing]
+
+Una polilínea 3D ajustada con curva aparece como Ninguna en la fila Ajustar/Suavizar de la paleta Propiedades, donde AutoCAD dice Cuadrática o Cúbica, y ahí no se puede cambiar. No puede ser contorno de un sombreado ni el camino de MATRIZCAMINO, y la paleta no tiene fila Material. La entrada dinámica pide el punto inicial en un solo cuadro, con su Z escrita tras una segunda coma, donde AutoCAD muestra campos X, Y y Z. Los menús de los pinzamientos al pasar el cursor: Estirar, Añadir vértice, Eliminar vértice y los demás.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando 3DPOLY en español?
+
+3DPOL, con el alias `3P`, y después Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_3DPOLY`.
+
+### ¿Qué diferencia hay entre POL y 3DPOL?
+
+Una polilínea de [`POL`](/docs/commands/pline) está en un solo plano y puede tener arcos y grosores. Una polilínea 3D solo tiene segmentos rectos, pero cada vértice puede estar a una altura distinta: el trazado de una tubería, el eje de una carretera, un cable.
+
+### ¿Cómo dibujo una polilínea 3D a distintas alturas?
+
+Escribe cada punto con su Z, `x,y,z`, o fuérzalo a objetos que estén a las alturas que quieres. Con la entrada dinámica, un punto que viene después del primero es relativo: `60,0,15` avanza 60 en X y sube 15 desde el anterior.
+
+### ¿Cómo suavizo una polilínea 3D?
+
+Pásala por [`EDITPOL`](/docs/commands/pedit) y elige su curva Spline: una curva suave que los vértices enmarcan. anularcuRVatura la vuelve a dejar recta.
+
+## Comandos relacionados [#related]
+
+- [Polilínea en AutoCAD: POL (PLINE)](/docs/commands/pline)
+- [Editar polilíneas en AutoCAD: EDITPOL (PEDIT)](/docs/commands/pedit)
+- [Comando SPLINE en AutoCAD: curvas spline](/docs/commands/spline)
+- [SCP en AutoCAD: comando SCP (UCS)](/docs/commands/ucs)

@@ -1,0 +1,91 @@
+---
+title: "Editar splines en AutoCAD: EDITSPLINE (SPLINEDIT)"
+metaTitle: "Editar splines en AutoCAD: comando EDITSPLINE"
+description: "Cómo funciona EDITSPLINE (SPLINEDIT, alias SPE) de AutoCAD en español: Cerrar, Unir, Ajustar datos, Editar vértices, coNvertir en polilínea e Invertir."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando SPLINEDIT en español?","answer":"EDITSPLINE, con el alias SPE, y después Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _SPLINEDIT. Un doble clic en una spline también lo ejecuta."},{"question":"¿Cómo convierto una spline en polilínea?","answer":"Ejecuta EDITSPLINE, designa la spline y elige coNvertir; una precisión de 10 da una polilínea suave. EDITPOL sobre una spline también ofrece convertirla."},{"question":"¿Cómo añado o desplazo puntos de una spline?","answer":"Elige Ajustar para trabajar con los puntos por los que pasa, y después Añadir o Desplazar. Elige Editar para trabajar con los vértices de control que la enmarcan."},{"question":"¿Cómo cierro una spline?","answer":"Elige Cerrar: se cierra de forma suave, sin esquina donde se encuentra consigo misma. aBrir la vuelve a abrir."},{"question":"¿Cómo uno dos splines?","answer":"Elige Unir y designa la spline cuyo extremo toca el de esta, o usa UNIR."}]
+---
+
+EDITSPLINE (SPLINEDIT en inglés) edita una spline. Desígnala en `Designe spline:` o antes del comando; un doble clic en una spline también ejecuta EDITSPLINE sobre ella. Cualquier otra cosa dice `El objeto designado no es una spline.` y vuelve a preguntar; una polilínea ajustada con la opción Spline de EDITPOL se convierte, sin decir nada, en una spline de la misma curva. Después pide una opción una y otra vez, cada una aplicada en el acto, hasta `Salir` o Intro. La spline muestra los pinzamientos de sus puntos de ajuste y, mientras editas sus vértices, sus vértices de control y su marco. Toda la edición es un paso que `H` deshace. `'ZOOM` escrito funciona en cualquiera de sus solicitudes.
+
+- **Comando:** `EDITSPLINE`
+- **En inglés:** `SPLINEDIT`, que se escribe `_SPLINEDIT` en cualquier idioma
+- **Alias:** `SPE`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `SPE` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="splinedit" caption="Una spline por cinco puntos de ajuste, cerrada con EDITSPLINE: un bucle suave que pasa por todos ellos." />
+
+## Opciones [#options]
+
+### `Cerrar` (`C`) [#close]
+
+Cierra la spline de forma suave: una spline de ajuste por sus puntos de ajuste, una de VC sobre sus vértices. En una spline cerrada la opción es `aBrir`, y no se ofrece Unir.
+
+### `Unir` (`U`) [#join]
+
+Une las curvas abiertas que tocan sus extremos, con las reglas de UNIR para una spline, y dice cuántas ha unido.
+
+### `Ajustar datos` (`A`) [#fit-data]
+
+Edita los puntos por los que pasa la spline. A una spline de VC, que no tiene, se le dan primero puntos de ajuste sobre su curva. Sus opciones: `Añadir` elige un punto de ajuste y añade otros nuevos tras él, una y otra vez (en el primer punto de una spline abierta, `Después` o `Antes`); `sUprimir` quita puntos de ajuste, hasta dejar dos, tres en una spline cerrada (`Imposible eliminar nada más.`); `Desplazar` recorre los puntos de ajuste con `siGuiente` y `Previo`, o `Designar`, y desplaza el actual al punto que das; `Limpiar` elimina los datos de ajuste y deja una spline de VC; `Tangentes` fija las direcciones inicial y final, o `Defecto`; `Cerrar` y `Salir`, como en la primera solicitud. Un punto señalado que no es un punto de ajuste dice `No es ningún punto de ajuste.`.
+
+### `Editar vértices` (`E`) [#edit-vertex]
+
+Edita los vértices de control; una spline de ajuste pierde sus datos de ajuste en la primera edición. `Añadir` pone un vértice en el punto que señalas en la spline; `sUprimir` quita uno, hasta dejar dos, tres en una spline cerrada; `Elevar` sube el orden, hasta 26, nunca lo baja; `Desplazar` desplaza vértices, recorriéndolos como el Desplazar de Ajustar datos; `Peso` fija el peso de un vértice, tras `Spline no racional. Se va a convertir.`, para que la curva se acerque más a él o se aleje. Un punto señalado que no es un vértice dice `No es un vértice de control.`.
+
+### `coNvertir en polilínea` (`N`) [#convert-to-polyline]
+
+Pide una precisión de 0 a 99, 10 por defecto, y sustituye la spline por una polilínea de segmentos rectos, más cuanto mayor sea la precisión; una polilínea 3D donde la spline no queda plana, paralela al plano XY. Termina el comando. La precisión se conserva durante la sesión, y la conversión de EDITPOL también la usa.
+
+### `Invertir` (`I`) [#reverse]
+
+Da la vuelta a la spline, su primer punto al final: `Se ha invertido la spline.`.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace la última opción, un Ajustar datos o un Editar vértices enteros de una vez. Si no queda ninguna: `Todos los efectos del comando han sido deshechos.`.
+
+### `Salir` (`S`) [#exit]
+
+Termina el comando, como Intro.
+
+## Lo que aún no hace [#missing]
+
+Punto de torsión, que pone una esquina viva en un punto de ajuste o un vértice; tOlerancia, que reajusta la spline dentro de una tolerancia; Tangentes de una spline cerrada. coNvertir en polilínea hace con una spline de ajuste muchos más vértices que AutoCAD, nunca arcos, y siempre sustituye la spline. Grupo en `Designe spline:`. La `+` que AutoCAD dibuja en el punto actual mientras recorres los puntos.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando SPLINEDIT en español?
+
+EDITSPLINE, con el alias `SPE`, y después Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_SPLINEDIT`. Un doble clic en una spline también lo ejecuta.
+
+### ¿Cómo convierto una spline en polilínea?
+
+Ejecuta EDITSPLINE, designa la spline y elige `coNvertir`; una precisión de 10 da una polilínea suave. [`EDITPOL`](/docs/commands/pedit) sobre una spline también ofrece convertirla.
+
+### ¿Cómo añado o desplazo puntos de una spline?
+
+Elige `Ajustar` para trabajar con los puntos por los que pasa, y después `Añadir` o `Desplazar`. Elige `Editar` para trabajar con los vértices de control que la enmarcan.
+
+### ¿Cómo cierro una spline?
+
+Elige `Cerrar`: se cierra de forma suave, sin esquina donde se encuentra consigo misma. `aBrir` la vuelve a abrir.
+
+### ¿Cómo uno dos splines?
+
+Elige `Unir` y designa la spline cuyo extremo toca el de esta, o usa [`UNIR`](/docs/commands/join).
+
+## Comandos relacionados [#related]
+
+- [Comando SPLINE en AutoCAD: curvas spline](/docs/commands/spline)
+- [Editar polilíneas en AutoCAD: EDITPOL (PEDIT)](/docs/commands/pedit)
+- [Unir en AutoCAD: comando UNIR (JOIN)](/docs/commands/join)
+- [Comando LIST en AutoCAD: propiedades de un objeto](/docs/commands/list)

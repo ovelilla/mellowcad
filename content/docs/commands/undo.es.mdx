@@ -1,0 +1,86 @@
+---
+title: "Deshacer en AutoCAD: comando DESHACER (UNDO)"
+metaTitle: "Deshacer en AutoCAD: DESHACER, H y Ctrl+Z"
+description: "Cómo funciona DESHACER (UNDO) de AutoCAD en español: varios pasos atrás, Marca y Retorno, Inicio y Fin, Control, y en qué se diferencia de H y Ctrl+Z."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el atajo de DESHACER en AutoCAD?","answer":"Ctrl+Z, o H e Intro: un paso atrás (en AutoCAD en español, U es UNIR). DESHACER no tiene alias; escríbelo entero para un número de pasos o sus opciones, o _UNDO en cualquier idioma de AutoCAD."},{"question":"¿Qué diferencia hay entre H y DESHACER?","answer":"H deshace el último comando y no pregunta nada. DESHACER pregunta cuántos deshacer, y tiene Marca y Retorno para volver a un punto marcado, Inicio y Fin para hacer de varios comandos un solo paso, y Control para limitar el deshacer o desactivarlo."},{"question":"¿Cómo deshago varios comandos a la vez?","answer":"Escribe DESHACER y el número de comandos, por ejemplo 5. O elige Marca antes de una serie que quizá quieras descartar, y Retorno para volver a ella."},{"question":"¿Por qué no funciona DESHACER?","answer":"Se desactivó el deshacer con Control Ninguna: H lo dice, y DESHACER pide Control. Responde Todas para volver a activarlo. Los pasos dados antes se han perdido."},{"question":"¿Cómo rehago lo que he deshecho?","answer":"REHACER, justo después de H o DESHACER, lo recupera entero. Ctrl+Y rehace un paso cada vez."}]
+---
+
+DESHACER (UNDO en inglés) deshace comandos. Un paso es un comando entero: todo lo que dibujó una LINEA se va de una vez, tuviera los segmentos que tuviera, y lo mismo lo que fijó un comando, como ESCALATL. DESHACER escribe sus parámetros actuales y después pide el número de operaciones que deshacer o una opción; Intro deshace una. Escribe en una línea los nombres de los comandos que ha deshecho, `CIRCULO LINEA`, y `Ya se ha deshecho todo` cuando se le acaban; a partir de ahí, `No hay nada que se pueda deshacer`. Un comando que no cambió nada, como ID o LIST, también es un paso, y también lo es lo que ZOOM y ENCUADRE hicieron con la vista.
+
+`H` es la forma corta: un paso atrás, sin preguntar nada. Ctrl+Z en la solicitud de comando ejecuta H; dentro de un comando es la opción desHacer de ese comando, como la escribe la macro de AutoCAD: LINEA deshace su último segmento y sigue. [`REHACER`](/docs/commands/redo), justo después, recupera lo que deshizo el último H o DESHACER.
+
+- **Comando:** `DESHACER`
+- **En inglés:** `UNDO`, que se escribe `_UNDO` en cualquier idioma
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `DESHACER` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="undoBefore" caption="Una placa con dos agujeros y una línea que la cruza, dibujados con cuatro comandos: RECTANG, CIRCULO dos veces y LINEA." />
+
+<Session name="undo" caption="DESHACER 2: se deshacen los dos últimos comandos, la línea y el segundo agujero, y la placa conserva su primer agujero." />
+
+## Opciones [#options]
+
+### `Auto` (`A`) [#auto]
+
+Pregunta `ACT` o `DES`, ofreciendo el parámetro actual, que después muestra la línea de parámetros. En AutoCAD hace un solo paso de los comandos que ejecuta una opción de menú; aquí ningún menú ejecuta más de uno, así que no agrupa nada.
+
+### `Control` (`C`) [#control]
+
+Pregunta cuánto deshacer se conserva, `Todas` por defecto. `Ninguna` descarta todos los pasos guardados y desactiva el deshacer: H dice entonces `Comando H desactivado. Utilice el comando DESHACER para activarlo`, y DESHACER pide Control directamente. `Una` conserva solo el último paso, y DESHACER pide entonces 1 o Control. Todas vuelve a activar el deshacer completo. `Combinar` dice si varios ZOOM y ENCUADRE seguidos son un solo paso, y `CApa` si lo son varias ediciones seguidas en el Administrador de propiedades de capas, Sí por defecto en los dos. Los parámetros son del dibujo y no se guardan con él: un dibujo nuevo o abierto empieza en Todas, Combinar Sí y CApa Sí.
+
+### `Inicio` (`I`) [#begin]
+
+Empieza un grupo: los comandos ejecutados hasta `Fin` forman un paso, que H deshace entero y nombra `GRUPO` junto con ellos. Mientras hay un grupo abierto, H, un número y Retorno se detienen en su inicio. Inicio con un grupo abierto lo cierra primero.
+
+### `Fin` (`F`) [#end]
+
+Cierra el grupo que abrió Inicio.
+
+### `Marca` (`M`) [#mark]
+
+Deja una marca entre los pasos. Retorno, H y un número se detienen en ella, con `Marca encontrada`.
+
+### `Retorno` (`R`) [#back]
+
+Deshace todos los pasos hasta la última marca, y la marca con ellos. Sin marca, pregunta si se deshace todo, Sí por defecto.
+
+## Lo que aún no hace [#missing]
+
+Auto no agrupa nada, ya que aquí ningún menú ejecuta más de un comando. Combinar y CApa duran lo que la sesión del navegador, donde AutoCAD los conserva de una sesión a otra. Los botones Deshacer y Rehacer de la barra superior no escriben nada en el historial, donde la barra de herramientas de acceso rápido de AutoCAD escribe lo suyo. Ctrl+Mayús+Z también rehace, sin decir nada, aunque AutoCAD no le asigna nada.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el atajo de DESHACER en AutoCAD?
+
+Ctrl+Z, o `H` e Intro: un paso atrás (en AutoCAD en español, `U` es [`UNIR`](/docs/commands/join)). DESHACER no tiene alias; escríbelo entero para un número de pasos o sus opciones, o `_UNDO` en cualquier idioma de AutoCAD.
+
+### ¿Qué diferencia hay entre H y DESHACER?
+
+`H` deshace el último comando y no pregunta nada. DESHACER pregunta cuántos deshacer, y tiene Marca y Retorno para volver a un punto marcado, Inicio y Fin para hacer de varios comandos un solo paso, y Control para limitar el deshacer o desactivarlo.
+
+### ¿Cómo deshago varios comandos a la vez?
+
+Escribe `DESHACER` y el número de comandos, por ejemplo `5`. O elige `Marca` antes de una serie que quizá quieras descartar, y `Retorno` para volver a ella.
+
+### ¿Por qué no funciona DESHACER?
+
+Se desactivó el deshacer con Control `Ninguna`: H lo dice, y DESHACER pide Control. Responde `Todas` para volver a activarlo. Los pasos dados antes se han perdido.
+
+### ¿Cómo rehago lo que he deshecho?
+
+[`REHACER`](/docs/commands/redo), justo después de H o DESHACER, lo recupera entero. Ctrl+Y rehace un paso cada vez.
+
+## Comandos relacionados [#related]
+
+- [H (U)](/docs/commands#u): Deshacer la última acción
+- [Rehacer en AutoCAD: comando REHACER (REDO)](/docs/commands/redo)
+- [MREHACER (MREDO)](/docs/commands#mredo): Rehacer varias
+- [Borrar en AutoCAD: BORRA (ERASE)](/docs/commands/erase)

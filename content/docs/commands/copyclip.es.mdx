@@ -1,0 +1,55 @@
+---
+title: "Copiar y pegar en AutoCAD: COPIAPP (COPYCLIP)"
+metaTitle: "Copiar y pegar en AutoCAD: COPIAPP y Ctrl+C"
+description: "Cómo funciona COPIAPP (COPYCLIP, Ctrl+C) de AutoCAD en español con CORTAPP, COPIARBASE y PEGAPP: copia objetos al portapapeles y pégalos en un punto. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Qué diferencia hay entre COPIA y COPIAPP?","answer":"COPIA coloca copias en el mismo dibujo, de un punto base a un segundo punto. COPIAPP pone los objetos en el portapapeles, para pegarlos con PEGAPP en este dibujo o en otro."},{"question":"¿Cómo copio con punto base?","answer":"Pulsa Ctrl+Mayús+C, o escribe COPIARBASE, da el punto base y designa los objetos. Ctrl+V los coloca entonces por ese punto."},{"question":"¿Cómo copio objetos de un dibujo a otro?","answer":"Desígnalos y pulsa Ctrl+C, abre el otro dibujo y pulsa Ctrl+V, y después señala el punto de inserción. Sus capas, estilos y bloques vienen con ellos."},{"question":"¿Por qué no funciona pegar?","answer":"El navegador puede preguntar si la página puede leer el portapapeles: permítelo. Si lo rechaza, PEGAPP pega lo último que se copió en la misma página. Sin nada copiado, no pega nada."}]
+---
+
+COPIAPP (COPYCLIP en inglés) copia al portapapeles los objetos que designas, con las capas, los estilos y los bloques que usan; el dibujo no cambia, y los objetos designados antes siguen designados. Ctrl+C lo ejecuta, cancelando el comando en curso. Después `PEGAPP`, Ctrl+V, pide un punto de inserción: los objetos siguen al cursor y caen con la esquina inferior izquierda de su extensión en el punto, en el SCP actual, todo en un paso que `H` deshace. Pega en el mismo dibujo o en otro: el portapapeles es el del sistema, así que un dibujo en otra pestaña puede leerlo, si el navegador deja a la página leer el portapapeles. Donde una capa, un estilo o un bloque pegado tiene el nombre de uno que el dibujo ya tiene, se usa el del dibujo.
+
+`CORTAPP`, Ctrl+X, copia los objetos y los borra, como BORRA. `COPIARBASE`, Ctrl+Mayús+C, pide antes un punto base, y PEGAPP coloca entonces los objetos por ese punto en lugar de por su esquina, así que caen exactamente donde quieres. Ctrl+A designa todos los objetos del dibujo.
+
+- **Comando:** `COPIAPP`
+- **En inglés:** `COPYCLIP`, que se escribe `_COPYCLIP` en cualquier idioma
+- **Grupo:** [Archivos y portapapeles](/docs/commands#files)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `COPIAPP` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="copyclip" caption="COPIAPP del agujero de una placa y después PEGAPP en 65,20: la copia colocada ahí por su esquina inferior izquierda, un segundo agujero." />
+
+## Lo que aún no hace [#missing]
+
+PEGABLQ y CORTARBASE, y por tanto Ctrl+Mayús+V y Ctrl+Mayús+X, que quedan para el navegador, como Ctrl+Mayús+A. PEGARORIG, PEGAESP, arrastrar objetos entre ventanas y el texto de otro programa pegado como texto de líneas múltiples. Las opciones ocultas de INSERT en el punto de PEGAPP, así que un pegado no se puede escalar, girar ni descomponer al colocarlo.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp--pt-br-copiacorte--recortat--copiabase--colarat)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Qué diferencia hay entre COPIA y COPIAPP?
+
+[`COPIA`](/docs/commands/copy) coloca copias en el mismo dibujo, de un punto base a un segundo punto. COPIAPP pone los objetos en el portapapeles, para pegarlos con PEGAPP en este dibujo o en otro.
+
+### ¿Cómo copio con punto base?
+
+Pulsa Ctrl+Mayús+C, o escribe `COPIARBASE`, da el punto base y designa los objetos. Ctrl+V los coloca entonces por ese punto.
+
+### ¿Cómo copio objetos de un dibujo a otro?
+
+Desígnalos y pulsa Ctrl+C, abre el otro dibujo y pulsa Ctrl+V, y después señala el punto de inserción. Sus capas, estilos y bloques vienen con ellos.
+
+### ¿Por qué no funciona pegar?
+
+El navegador puede preguntar si la página puede leer el portapapeles: permítelo. Si lo rechaza, PEGAPP pega lo último que se copió en la misma página. Sin nada copiado, no pega nada.
+
+## Comandos relacionados [#related]
+
+- [Copiar en AutoCAD: COPIA (COPY)](/docs/commands/copy)
+- [PEGAPP (PASTECLIP)](/docs/commands#pasteclip): Pegar el portapapeles en el dibujo
+- [COPIARBASE (COPYBASE)](/docs/commands#copybase): Copiar con punto base
+- [CORTAPP (CUTCLIP)](/docs/commands#cutclip): Cortar
+- [Insertar bloques en AutoCAD: INSERT](/docs/commands/insert)

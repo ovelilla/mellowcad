@@ -1,0 +1,28 @@
+---
+title: "ID in AutoCAD"
+metaTitle: "ID in AutoCAD: point coordinates command"
+description: "How AutoCAD's ID command works: pick or snap a point and read its X, Y and Z in the current UCS at the command prompt, inside a command too. Try it free."
+figure: "ID with a Center snap on a plate's hole: the centre's X, Y and Z."
+related: ["DIST", "LIST", "UCS", "AREA"]
+coverage: "e3b0c44298fc"
+---
+
+ID writes the coordinates of a point. At `Specify point:` pick it, snap to it or type it, and ID writes its X, Y and Z on one line at the command prompt, then ends. The values are in the current UCS, at the drawing's precision. With an object snap, Z is the object's height at that point; otherwise it is the elevation plane's. Enter ends it without a word, and objects selected before ID are dropped as it starts. Typed with an apostrophe, `'ID`, it runs inside another command, which goes on after it.
+
+## Questions
+
+### What does the ID command do in AutoCAD?
+
+It reports where a point is: X, Y and Z, in the current UCS. It draws and changes nothing.
+
+### How do I find the coordinates of a point?
+
+Type `ID`, then click the point with an object snap, Endpoint or Center, so it lands exactly on it. The coordinates are written at the command prompt.
+
+### How do I get the Z coordinate of a point?
+
+Snap to it with an object snap: ID writes the object's Z there. A plain click gives the Z of the elevation plane, 0 unless ELEVATION or the UCS raise it.
+
+### Why does ID show coordinates I did not expect?
+
+ID reads in the current UCS. If the UCS was moved or turned, the numbers are measured from its origin along its axes: <Command id="UCS" /> World to read world coordinates.
