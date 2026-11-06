@@ -39,7 +39,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "bidi-js": "^1.1.0",
     "class-variance-authority": "^0.7.1",
-    "cn": "^0.5.0",
+    "cn": "^0.5.2",
     "fumadocs-core": "^16.17.10",
     "fumadocs-mdx": "^15.4.10",
     "icu-minify": "^4.14.9",
