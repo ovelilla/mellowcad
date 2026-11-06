@@ -178,6 +178,11 @@ marks a choice between competing terms that a native review should settle first 
 |  | Upright (a view); seen end-on; sloping face | معتدل (L) †؛ يُرى من طرفه (L)؛ وجه مائل (M) |
 |  | Arm (of the UCS icon); 2D style; line width | ذراع (L)؛ النمط ثنائي الأبعاد (L)؛ عرض الخط (L) † — not وزن الخط, which is lineweight |
 |  | Stepped block (a figure's solid) | مجسم متدرّج (L) — كتلة is BLOCK |
+|  | Running snaps; one-point override; check box | أوضاع الالتقاط الجارية (L, as the engine's -OSNAP description)؛ تجاوز (L, as تجاوزات الالتقاط)؛ خانة اختيار (M) — the Drafting Settings dialog and its Object Snap tab keep their English names |
+|  | Snap markers: square, triangle, circle, diamond, cross, plus, right angle, circle with a bar, hourglass; dashed path | مربع، مثلث، دائرة، معيّن، علامة ✕، علامة +، زاوية قائمة، دائرة بخط، ساعة رملية (M)؛ مسار متقطع (L) |
+|  | Foot of the perpendicular | قدم العمود (M) |
+|  | Node, Geometric Center, Mid Between 2 Points, temporary track point (snaps not built) | العقدة، المركز الهندسي، المنتصف بين نقطتين، نقطة التتبع المؤقتة (L) — written with the English name beside them |
+|  | Aperture (APERTURE) | فتحة الالتقاط (L) † |
 
 ## Register
 

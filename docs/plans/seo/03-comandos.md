@@ -104,9 +104,9 @@ Otras sesiones pueden estar trabajando en el árbol: añade solo tus ficheros. P
 para investigación independiente, con moderación (pocos a la vez y sin que lancen otros): el dueño
 lo pidió por el coste.
 
-## Lo que queda (estado del 6/11/2026)
+## Lo que queda (estado del 7/11/2026)
 
-La mecánica está hecha y 96 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+La mecánica está hecha y 97 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
 tanda y la segunda ola entera, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN
 y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM;
 la cuarta tanda, CYLINDER, SPHERE, CONE, WEDGE, TORUS, PYRAMID, REGION y MASSPROP; la quinta, el
@@ -114,18 +114,17 @@ resto del 3D: UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDE
 ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR; la séptima,
 UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP; la octava, VIEW, PLAN y
 UCSICON (de los seis que esta lista aún no nombraba, el único que llena una página: «autocad ucs
-icon», «ucs icon command», «ucs icon settings» y, en Brasil, «comando ucs icon»). Quedan 44 comandos sin página, decididos el 6/11 por lo que se busca (el autocompletado
-de la auditoría) y por lo que cada uno tiene que contar. Cada tanda es una sesión con la skill
-`command-page`, un commit, y el push del dueño; F1, el índice, el sitemap y los enlaces
-relacionados se ponen al día solos al añadir las notas.
+icon», «ucs icon command», «ucs icon settings» y, en Brasil, «comando ucs icon»); y la novena,
+-OSNAP, con slug `-osnap`, la primera de guion (el generador, F1 y el índice ya tomaban un slug con
+guion: `#-osnap` era su ancla). Su página es la de las referencias a objetos, porque no hay OSNAP:
+los modos de -OSNAP, F3 y el menú de la barra de estado, las de un solo uso (las palabras y
+Mayús + clic derecho) y FROM. Quedan 43 comandos sin página, decididos el 6/11 por lo que se busca
+(el autocompletado de la auditoría) y por lo que cada uno tiene que contar, y ninguno la llena:
+la serie de páginas de comando está completa. Un comando nuevo que llene una la tendrá en su
+propia sesión con la skill `command-page`, un commit y el push del dueño; F1, el índice, el
+sitemap y los enlaces relacionados se ponen al día solos al añadir las notas.
 
-1. **La novena tanda**: -OSNAP, con slug `-osnap`, el único comando de las referencias a objetos
-   que hay (no hay cuadro de Parámetros de dibujo). Se busca y nada lo cuenta: «autocad osnap
-   command», «osnap settings», «osnap not working», «osnap shortcut key» (8, 8, 8 y 7 en el
-   autocompletado inglés). La decisión anterior lo dejaba entre «los de guion», que cuenta la página
-   de su comando, pero aquí no hay OSNAP: su página contaría los modos de -OSNAP, F3 y las
-   referencias de un solo uso (Mayús + clic derecho, FROM). Leer antes su entrada de cobertura.
-2. **Se quedan en el índice**, sin página propia; F1 los lleva a su ancla:
+1. **Se quedan en el índice**, sin página propia; F1 los lleva a su ancla:
 
    - **Los cuenta la página de otro**: PASTECLIP, CUTCLIP y COPYBASE (COPYCLIP, la misma entrada de
      cobertura); BREAKATPOINT (BREAK lo cuenta, lo enlaza en sus relacionados y responde «break at

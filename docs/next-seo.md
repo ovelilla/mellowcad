@@ -1,10 +1,11 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 58 comandos publicada el 6/11 y 38 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 58 comandos publicada el 6/11 y 39 más hechos el 6/11 y el 7/11, sin publicar (la
+> serie de comandos, completa), la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
-> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: la novena tanda de comandos
-> (-OSNAP) y lo que queda de §7. Esperan detrás
+> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, y la sesión
+> 06 (práctica y guías). Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -335,7 +336,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
    push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual, y las 28 de la quinta (UCS a
    SOLIDEDIT). **6/11:** las 40 de la sexta (ATTDEF a COLOR), igual, y las 40 de la séptima (UNDO a
-   COPYCLIP), y las 12 de la octava (VIEW, PLAN y UCSICON): 269 en la cola.
+   COPYCLIP), y las 12 de la octava (VIEW, PLAN y UCSICON): 269 en la cola. **7/11:** la tanda
+   del día, 11 pedidas (las cuatro portadas, TRIM en árabe, HATCH en los cuatro idiomas y SCALE en
+   inglés y español) hasta la cuota, a las 23:09 UTC del 6/11; y las 4 de la novena (-OSNAP),
+   añadidas al final antes de su push: 262 en la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -433,9 +437,20 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   página y REGEN, FILL, NAVVCUBE, FROM y CLEANSCREENON se quedan en el índice, cada uno con su motivo
   en `docs/plans/seo/03-comandos.md`. En el motor, de paso: una demo puede mostrar el icono SCP
   (`demo({ ucsIcon: true })`, `18fab8f6`). Publicadas (`origin/main`) las tres primeras tandas, 58
-  comandos; de la cuarta a la octava, 38 sin publicar. **Quedan 44 comandos sin página**: la
-  novena tanda, -OSNAP (se busca y nada lo cuenta), con la skill `command-page`; los otros 43 se
-  quedan en el índice (la lista y sus motivos, en `docs/plans/seo/03-comandos.md`, «Lo que
+  comandos; de la cuarta a la octava, 38 sin publicar. **Novena tanda, hecha el 7/11 y sin
+  publicar:** -OSNAP (4 URLs más, al final de la cola de §7): 97 comandos con página, la primera
+  de un comando de guion (`/docs/commands/-osnap`; F1 y el índice ya tomaban el slug). Es la página
+  de las referencias a objetos, porque no hay OSNAP ni su cuadro: los modos de -OSNAP, una `###`
+  por modo con lo que encuentra y su marcador, F3 y el menú de la barra de estado, las de un solo
+  uso (sus mayúsculas o Mayús + clic derecho) y FROM; sus preguntas, las del autocompletado («osnap
+  command», «osnap not working», «osnap shortcut key», «osnap settings»; en español «comando osnap
+  en español», en Brasil «para que serve» y «não funciona»). En vivo: -OSNAP `_MID,_CEN` sin
+  referencias activas y una línea del punto medio de un borde al centro de un círculo, con el
+  marcador de Punto medio en otro borde. En el motor, de paso: `-REF` arranca -REFENT, como dice
+  el acad.pgp español de 2027 (`a5e046c4`; los historiales de las 105 sesiones, iguales en los
+  cuatro idiomas), y la sonda names/p30 confirma la `D` de Desativado (OFF) en pt-BR. **Quedan 43
+  comandos sin página, y ninguno la llena**: la
+  serie está completa (la lista y sus motivos, en `docs/plans/seo/03-comandos.md`, «Lo que
   queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,

@@ -7,6 +7,7 @@ import {
   firstLine,
   offsetRectangle,
 } from "./demos/docs"
+import { sessions as osnapDashSessions } from "./demos/commands/-osnap"
 import { sessions as orbit3dSessions } from "./demos/commands/3dorbit"
 import { sessions as poly3dSessions } from "./demos/commands/3dpoly"
 import { sessions as arcSessions } from "./demos/commands/arc"
@@ -199,6 +200,7 @@ export type FigureId = keyof typeof FIGURES
  * shows it.
  */
 export const COMMAND_SESSIONS = {
+  ...osnapDashSessions,
   ...orbit3dSessions,
   ...poly3dSessions,
   ...arcSessions,
