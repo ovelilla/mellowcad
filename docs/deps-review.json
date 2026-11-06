@@ -1,16 +1,16 @@
 {
-  "lastReview": "2026-10-30",
+  "lastReview": "2026-11-06",
   "intervalDays": 7,
   "deferred": [
     {
       "name": "typescript",
       "version": "7.0.2",
-      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0 until its 7.1 native-parser support lands (typescript-eslint#12803), and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
+      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0, still so in 8.72.1, until its 7.1 native-parser support lands (typescript-eslint#12803, open), and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
     },
     {
       "name": "@babel/core",
-      "version": "8.0.9",
-      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, open), and the editor's build runs it through @rolldown/plugin-babel"
+      "version": "8.1.0",
+      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, still open on 2026-11-06; neither 8.0.10 nor 8.1.0 touches it), and the editor build runs it through @rolldown/plugin-babel"
     }
   ],
   "acceptedAdvisories": [
@@ -18,6 +18,11 @@
       "id": "GHSA-gcqx-w48m-w2h4",
       "reason": "deepmerge 4.3.1 has no fixed version; only the shadcn CLI and @shadcn/registry 0.2.1 use it, merging a registry item's theme we chose into our own config, in dev. Watch @shadcn/registry for a release without it",
       "date": "2026-10-30"
+    },
+    {
+      "id": "GHSA-g3hv-75wg-m249",
+      "reason": "minimatch <11.0.1 amplifies attacker-supplied glob patterns; only dev tooling has it (eslint 10.14, @eslint/config-array, typescript-eslint, the shadcn CLI through ts-morph), fed our own config, tsconfig and registry globs, and every one requires minimatch ^10, so only an overrides would fix it. Watch eslint, typescript-eslint and @ts-morph/common for a minimatch ^11 range",
+      "date": "2026-11-06"
     }
   ],
   "keptUnmaintained": [
