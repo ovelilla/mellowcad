@@ -1,0 +1,52 @@
+---
+title: "EXPLODE in AutoCAD"
+metaTitle: "EXPLODE in AutoCAD: command, alias and undo"
+description: "How AutoCAD's EXPLODE (X) works: a polyline into lines and arcs, a block into its objects, text into lines, a hatch into its lines. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for EXPLODE in AutoCAD?","answer":"X, then Enter or Space. The full name works too, and _EXPLODE in any language of AutoCAD."},{"question":"How do I undo an explode in AutoCAD?","answer":"Type U or press Ctrl+Z straight away: the explode is one undo step. Later, JOIN turns lines and arcs that meet end to end back into one polyline, and BLOCK makes objects one block again."},{"question":"Can I explode text in AutoCAD?","answer":"Multiline text, yes: each line becomes a single-line text. Single-line text is already the smallest piece, and EXPLODE refuses it."},{"question":"How do I explode a block in AutoCAD?","answer":"Select the block reference and press Enter: it becomes the objects of its block, where the reference drew them. A block inside it stays a block: explode it again. Attributes come back as their definitions, without the values."}]
+---
+
+EXPLODE breaks a compound object into the objects it is made of. Select the objects and press Enter: a polyline becomes lines and arcs along its centreline, a block reference the objects of its block, one level down, multiline text one line of text for each line it shows, and a pattern hatch the lines of its pattern. Each piece keeps the object's layer and properties; a block's pieces keep their own. A wide polyline loses its width, and EXPLODE says so. Lines, circles, arcs, single-line text and dimensions cannot be exploded: they are refused as they are selected, and a spline, an ellipse or a solid hatch when the selection closes. The explode is one step that Undo takes back.
+
+- **Command:** `EXPLODE`
+- **Aliases:** `X`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `X` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="explode" caption="A rectangle, one polyline, exploded into four lines, and one of them then erased on its own." />
+
+## What it does not do yet [#missing]
+
+Dimensions, which AutoCAD explodes into lines, arrowheads and text and MellowCAD refuses. A hatch whose pattern is not shipped here is refused as a solid one, and exploded multiline text sits where the font draws it, a hair off AutoCAD's place.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x)
+
+## Questions [#questions]
+
+### What is the shortcut for EXPLODE in AutoCAD?
+
+`X`, then Enter or Space. The full name works too, and `_EXPLODE` in any language of AutoCAD.
+
+### How do I undo an explode in AutoCAD?
+
+Type `U` or press Ctrl+Z straight away: the explode is one undo step. Later, [`JOIN`](/docs/commands/join) turns lines and arcs that meet end to end back into one polyline, and [`BLOCK`](/docs/commands/block) makes objects one block again.
+
+### Can I explode text in AutoCAD?
+
+Multiline text, yes: each line becomes a single-line text. Single-line text is already the smallest piece, and EXPLODE refuses it.
+
+### How do I explode a block in AutoCAD?
+
+Select the block reference and press Enter: it becomes the objects of its block, where the reference drew them. A block inside it stays a block: explode it again. Attributes come back as their definitions, without the values.
+
+## Related commands [#related]
+
+- [JOIN in AutoCAD](/docs/commands/join)
+- [BLOCK in AutoCAD](/docs/commands/block)
+- [PEDIT](/docs/commands#pedit): Edit Polyline
+- [INSERT in AutoCAD](/docs/commands/insert)

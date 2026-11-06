@@ -1,0 +1,52 @@
+---
+title: "Apagar no AutoCAD: comando APAGAR (ERASE)"
+description: "Como funciona o ERASE do AutoCAD em português, APAGAR (alias APG): selecione, Enter e pronto; a tecla Delete, apagar tudo e recuperar. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ERASE no AutoCAD em português?","answer":"APAGAR, com os aliases APG e DELETE. Ou selecione os objetos no Comando: e pressione a tecla Delete. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _ERASE."},{"question":"Como apagar tudo no AutoCAD?","answer":"Execute o APAGAR, digite _ALL, o modo que seleciona tudo em qualquer idioma, em “Selecionar objetos:” e pressione Enter. Os objetos de uma camada bloqueada ficam de fora, e a seleção diz quantos eram."},{"question":"Como recuperar o que eu apaguei?","answer":"Digite D ou pressione Ctrl+Z logo em seguida: o apagamento é um único passo de desfazer. O OOPS, que recupera o último conjunto apagado mesmo depois de outros comandos, ainda não foi feito."},{"question":"Qual a diferença entre APAGAR e APARAR?","answer":"O APAGAR tira objetos inteiros. O APARAR tira só a parte de um objeto que passa das arestas que ele encontra, e mantém o resto."}]
+---
+
+O APAGAR, ERASE no AutoCAD em inglês, tira do desenho os objetos que você seleciona. Selecione-os no prompt `Selecionar objetos:`, clicando neles ou com qualquer um dos modos de seleção do AutoCAD, entre eles uma janela ou uma janela de intersecção, e pressione Enter ou a barra de espaço: eles somem, e o comando não diz mais nada. Esc o encerra sem apagar nada. Como no AutoCAD, se havia objetos selecionados antes do comando, eles são apagados na hora, e a tecla Delete com objetos selecionados executa o APAGAR sobre eles. Enquanto você seleciona, o objeto sob o cursor e os já escolhidos aparecem esmaecidos, como o AutoCAD antecipa o que vai apagar. Todo o apagamento é um passo que o Desfazer reverte.
+
+- **Comando:** `APAGAR`
+- **Em inglês:** `ERASE`, que se digita `_ERASE` em qualquer idioma
+- **Aliases:** `APG`, `DELETE`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `APG` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="erase" caption="Um retângulo e as suas duas diagonais: uma diagonal selecionada, depois Enter, e ela é apagada." />
+
+## O que ainda não faz [#missing]
+
+O OOPS, que no AutoCAD recupera o último conjunto que o APAGAR apagou, mesmo depois de outros comandos. Aqui `D` ou Ctrl+Z desfazem o apagamento, com tudo o que veio depois.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#erase--e--delete--es-borra--b--delete--pt-br-apagar--apg--delete)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ERASE no AutoCAD em português?
+
+APAGAR, com os aliases `APG` e `DELETE`. Ou selecione os objetos no `Comando:` e pressione a tecla Delete. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_ERASE`.
+
+### Como apagar tudo no AutoCAD?
+
+Execute o APAGAR, digite `_ALL`, o modo que seleciona tudo em qualquer idioma, em `Selecionar objetos:` e pressione Enter. Os objetos de uma camada bloqueada ficam de fora, e a seleção diz quantos eram.
+
+### Como recuperar o que eu apaguei?
+
+Digite `D` ou pressione Ctrl+Z logo em seguida: o apagamento é um único passo de desfazer. O OOPS, que recupera o último conjunto apagado mesmo depois de outros comandos, ainda não foi feito.
+
+### Qual a diferença entre APAGAR e APARAR?
+
+O APAGAR tira objetos inteiros. O [`APARAR`](/docs/commands/trim) tira só a parte de um objeto que passa das arestas que ele encontra, e mantém o resto.
+
+## Comandos relacionados [#related]
+
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)
+- [Comando BREAK (QUEBRAR) no AutoCAD](/docs/commands/break)
+- [Explodir no AutoCAD: comando EXPLODIR (EXPLODE)](/docs/commands/explode)
+- [DESFAZER (UNDO)](/docs/commands#undo): Desfazer

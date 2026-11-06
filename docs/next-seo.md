@@ -1,7 +1,7 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 38 comandos publicada el 6/11, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 38 comandos publicada el 6/11 y 10 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
 > dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
 > quedan y lo que queda de §7. Esperan detrás
@@ -326,7 +326,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    de esa carpeta abierto), que salta las ya pedidas. **La cola la llevan las sesiones**, no el
    dueño: el hook de inicio (`.claude/hooks/session-start.mjs`) avisa cuando quedan URLs y ha
    pasado un día desde que la cuota cortó la última tanda, y la sesión la envía al empezar. Las URLs
-   de una tanda nueva, ya publicada, se añaden a esa lista.
+   de una tanda nueva, ya publicada, se añaden a esa lista. **6/11:** las 40 de la segunda tanda de
+   comandos (ERASE a BREAK en los cuatro idiomas), añadidas al final antes de su push: el script
+   salta, sin gastar cuota, una URL que aún no responde 200 (`not live`), y la vuelve a intentar en
+   la tanda siguiente.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -377,9 +380,12 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   (`content/commands/`) y del motor, y `docs:check` la tiene al día con su entrada de cobertura; F1
   abre la página del comando. El índice, «AutoCAD commands list» / «Lista de comandos de AutoCAD
   en español e inglés» / «Comandos do AutoCAD em português e inglês» / «قائمة أوامر الأوتوكاد
-  واختصاراتها», con los dos nombres y un enlace a cada página. **Quedan 102 comandos sin página**,
-  por tandas con la skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`,
-  «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
+  واختصاراتها», con los dos nombres y un enlace a cada página. **Segunda tanda, hecha el
+  6/11 y sin publicar:** ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN y
+  BREAK (40 URLs más, ya en la cola de indexación de §7): 48 comandos con página en total. En
+  portugués, el título lleva delante la palabra que se busca también en retângulo, polígono, elipse,
+  arco, apagar y explodir (la skill lo dice). **Quedan 92 comandos sin página**, por tandas con la
+  skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,
   «Request indexing» de `/`, `/es`, `/pt-br` y `/ar` en Bing (aceptadas, cuota 97 de 100) e IndexNow

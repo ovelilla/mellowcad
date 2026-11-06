@@ -7,12 +7,15 @@ import {
   firstLine,
   offsetRectangle,
 } from "./demos/docs"
+import { sessions as arcSessions } from "./demos/commands/arc"
 import { sessions as arraySessions } from "./demos/commands/array"
 import { sessions as arraypathSessions } from "./demos/commands/arraypath"
 import { sessions as arraypolarSessions } from "./demos/commands/arraypolar"
 import { sessions as arrayrectSessions } from "./demos/commands/arrayrect"
 import { sessions as blockSessions } from "./demos/commands/block"
 import { sessions as boxSessions } from "./demos/commands/box"
+import { sessions as breakSessions } from "./demos/commands/break"
+import { sessions as chamferSessions } from "./demos/commands/chamfer"
 import { sessions as circleSessions } from "./demos/commands/circle"
 import { sessions as copySessions } from "./demos/commands/copy"
 import { sessions as dimalignedSessions } from "./demos/commands/dimaligned"
@@ -23,12 +26,16 @@ import { sessions as dimdiameterSessions } from "./demos/commands/dimdiameter"
 import { sessions as dimlinearSessions } from "./demos/commands/dimlinear"
 import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
+import { sessions as ellipseSessions } from "./demos/commands/ellipse"
+import { sessions as eraseSessions } from "./demos/commands/erase"
+import { sessions as explodeSessions } from "./demos/commands/explode"
 import { sessions as extendSessions } from "./demos/commands/extend"
 import { sessions as extrudeSessions } from "./demos/commands/extrude"
 import { sessions as filletSessions } from "./demos/commands/fillet"
 import { sessions as hatchSessions } from "./demos/commands/hatch"
 import { sessions as insertSessions } from "./demos/commands/insert"
 import { sessions as intersectSessions } from "./demos/commands/intersect"
+import { sessions as joinSessions } from "./demos/commands/join"
 import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
 import { sessions as mirrorSessions } from "./demos/commands/mirror"
@@ -36,11 +43,14 @@ import { sessions as moveSessions } from "./demos/commands/move"
 import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
 import { sessions as plineSessions } from "./demos/commands/pline"
+import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
+import { sessions as rectangSessions } from "./demos/commands/rectang"
 import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
 import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as stretchSessions } from "./demos/commands/stretch"
 import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as trimSessions } from "./demos/commands/trim"
@@ -141,12 +151,15 @@ export type FigureId = keyof typeof FIGURES
  * shows it.
  */
 export const COMMAND_SESSIONS = {
+  ...arcSessions,
   ...arraySessions,
   ...arraypathSessions,
   ...arraypolarSessions,
   ...arrayrectSessions,
   ...blockSessions,
   ...boxSessions,
+  ...breakSessions,
+  ...chamferSessions,
   ...circleSessions,
   ...copySessions,
   ...dimalignedSessions,
@@ -157,12 +170,16 @@ export const COMMAND_SESSIONS = {
   ...dimlinearSessions,
   ...dimradiusSessions,
   ...dimstyleSessions,
+  ...ellipseSessions,
+  ...eraseSessions,
+  ...explodeSessions,
   ...extendSessions,
   ...extrudeSessions,
   ...filletSessions,
   ...hatchSessions,
   ...insertSessions,
   ...intersectSessions,
+  ...joinSessions,
   ...layerSessions,
   ...lineSessions,
   ...mirrorSessions,
@@ -170,11 +187,14 @@ export const COMMAND_SESSIONS = {
   ...mtextSessions,
   ...offsetSessions,
   ...plineSessions,
+  ...polygonSessions,
   ...presspullSessions,
+  ...rectangSessions,
   ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
   ...sliceSessions,
+  ...stretchSessions,
   ...subtractSessions,
   ...textSessions,
   ...trimSessions,

@@ -1,0 +1,74 @@
+---
+title: "ELLIPSE in AutoCAD"
+metaTitle: "ELLIPSE in AutoCAD: axis, center, arc and alias"
+description: "How AutoCAD's ELLIPSE (EL) works, prompt by prompt: an axis and the other half-axis, by its Center, Rotation, an elliptical Arc. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for ELLIPSE in AutoCAD?","answer":"EL, then Enter or Space. The full name works too, and _ELLIPSE in any language of AutoCAD."},{"question":"How do I draw half an ellipse in AutoCAD?","answer":"Choose Arc, give the axis and the distance, then a start angle of 0 and an end angle of 180. Or press Enter at Included, which sweeps 180 by default."},{"question":"How do I draw an ellipse from its center?","answer":"Choose Center, give the centre, then the end of one axis, then the distance from the centre to the end of the other: the ellipse's two half-axes."},{"question":"How do I draw an isometric circle in AutoCAD?","answer":"AutoCAD draws it with ELLIPSE's Isocircle, once the snap style is isometric. Neither is built in MellowCAD yet."}]
+---
+
+ELLIPSE draws an ellipse from the two ends of one axis, then the distance from its middle to the end of the other axis: half the other axis's length. Either axis can be the longer one. It is a true ellipse, as AutoCAD's, not a polyline, so Center, Quadrant and Nearest snap to it, and its grips move it and set each half-axis. While you give the second end, an amber dashed line runs from the first; at the distance, the ellipse follows the cursor. The ellipse is made on the current layer, with the properties current when it is fixed.
+
+- **Command:** `ELLIPSE`
+- **Aliases:** `EL`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `EL` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="ellipse" caption="An ellipse by the two ends of an axis, one by its Center, and half an elliptical Arc, from 0 to 180 degrees." />
+
+## Options [#options]
+
+### `Arc` (`A`) [#arc]
+
+Draws an elliptical arc: the same prompts as an ellipse, then a start angle and an end angle, counter-clockwise from the end of the first axis you gave.
+
+### `Center` (`C`) [#center]
+
+Starts from the centre: then the end of one axis, then the distance to the other.
+
+### `Rotation` (`R`) [#rotation]
+
+Instead of the distance: the angle the ellipse is turned by about its first axis, as a circle seen at that angle. 0 draws a circle; an angle within 0.6 degrees of 90 is refused with `*Invalid*`.
+
+### `Parameter` (`P`) [#parameter]
+
+In an arc, instead of the start or end angle: the angle on the circle the ellipse is drawn from, AutoCAD's parameter. `Angle` goes back to angles.
+
+### `Included angle` (`I`) [#included-angle]
+
+In an arc, instead of the end angle: how far it sweeps from the start. Enter takes 180, half the ellipse.
+
+## What it does not do yet [#missing]
+
+Isocircle, offered by AutoCAD only with the isometric snap style, which is not built here. PELLIPSE 1, an ellipse drawn as a polyline. Hatching or dimensioning an ellipse, and the Intersection, Tangent and Perpendicular snaps on it. The arrow grips at an elliptical arc's ends, drawn square here, and typing a length or angle while a grip is hot. A point with a Z at the distance is measured in plan, where AutoCAD measures it in space.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ellipse--el--es-elipse--el--pt-br-elipse--el)
+
+## Questions [#questions]
+
+### What is the shortcut for ELLIPSE in AutoCAD?
+
+`EL`, then Enter or Space. The full name works too, and `_ELLIPSE` in any language of AutoCAD.
+
+### How do I draw half an ellipse in AutoCAD?
+
+Choose `Arc`, give the axis and the distance, then a start angle of `0` and an end angle of `180`. Or press Enter at `Included`, which sweeps 180 by default.
+
+### How do I draw an ellipse from its center?
+
+Choose `Center`, give the centre, then the end of one axis, then the distance from the centre to the end of the other: the ellipse's two half-axes.
+
+### How do I draw an isometric circle in AutoCAD?
+
+AutoCAD draws it with ELLIPSE's Isocircle, once the snap style is isometric. Neither is built in MellowCAD yet.
+
+## Related commands [#related]
+
+- [CIRCLE in AutoCAD](/docs/commands/circle)
+- [ARC in AutoCAD](/docs/commands/arc)
+- [OFFSET in AutoCAD](/docs/commands/offset)
+- [BREAK in AutoCAD](/docs/commands/break)

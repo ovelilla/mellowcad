@@ -45,7 +45,10 @@ languages, the pages generated from them and `content/demos/commands/offset.ts`.
 - **Titles by language**: English `"<NAME> in AutoCAD"`, its metaTitle adding what the page has
   (`: command, options and alias`); Spanish the everyday word first, Spain's search, then both names
   («Recortar en AutoCAD: comando RECORTA (TRIM)»); Brazilian Portuguese the English name first, but
-  for escala, hachura, polilinha, cotas («Comando OFFSET (DESLOCAMENTO) no AutoCAD»); Arabic «أمر
+  where the Portuguese word is the one searched — escala, hachura, polilinha, cotas, the shapes
+  (retângulo, polígono, elipse, arco), apagar, explodir: the audit's
+  `keywords-es-pt-command-names-autocomplete.csv` counts both — («Comando OFFSET (DESLOCAMENTO) no
+  AutoCAD», «Retângulo no AutoCAD: comando RETANGULO (RECTANG)»); Arabic «أمر
   ‹NAME› في الأوتوكاد: ‹term›», its metaTitle with the alias. Every Latin run in Arabic text outside
   code is isolated (FSI…PDI, `i18n.md`).
 - Register: English plain and dry; Spanish «tú» with Autodesk's terms (designar, precisar,

@@ -1,0 +1,75 @@
+---
+title: "Chaflán en AutoCAD: CHAFLAN (CHAMFER)"
+metaTitle: "Chaflán en AutoCAD: comando CHAFLAN (CHAMFER)"
+description: "Cómo funciona CHAFLAN (CHAMFER, alias CH) de AutoCAD en español: dos distancias, dos líneas o una polilínea, múLtiple y Mayús. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando CHAMFER en español?","answer":"CHAFLAN, con el alias CH. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _CHAMFER."},{"question":"¿Cómo hago un chaflán a 45 grados en AutoCAD?","answer":"Elige Distancia, escribe la distancia y pulsa Intro en la segunda: en una esquina en escuadra, dos distancias iguales dan un bisel a 45 grados."},{"question":"¿Qué diferencia hay entre chaflán y empalme?","answer":"CHAFLAN une dos líneas con un bisel recto; EMPALME, con un arco tangente a las dos. Los dos recortan o alargan las líneas hasta él, y los dos hacen una esquina viva con 0 o manteniendo pulsada Mayús al designar la segunda línea."},{"question":"¿Por qué no funciona el chaflán?","answer":"Dice por qué: «Distancia de chaflán es demasiado grande» cuando una distancia pasa del final de su línea, «Las líneas son paralelas» con líneas paralelas, y «Chaflán requiere 2 líneas (no segmentos de arco).» con un arco o un círculo. Con las dos distancias a 0 hace una esquina, no un bisel."},{"question":"¿Cómo achaflano todas las esquinas de un rectángulo?","answer":"Un rectángulo es una polilínea: elige Polilínea y desígnalo, y todas las esquinas se achaflanan con las distancias actuales."}]
+---
+
+CHAFLAN (CHAMFER en inglés) corta la esquina entre dos líneas con un bisel recto. Designa la primera línea y después la segunda: cada una se recorta o se alarga hasta el bisel, la primera según la primera distancia y la segunda según la segunda, y el bisel las une. Funciona con dos líneas, con dos tramos rectos de una polilínea, o con una línea y una polilínea, que une en una sola polilínea. Como en AutoCAD, su primera línea dice las distancias actuales, que se guardan en el dibujo; con las dos a 0, como al empezar, hace una esquina viva, las líneas encontrándose. Mientras designas la segunda línea, la esquina que haría se muestra sobre las líneas.
+
+- **Comando:** `CHAFLAN`
+- **En inglés:** `CHAMFER`, que se escribe `_CHAMFER` en cualquier idioma
+- **Alias:** `CH`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `CH` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="chamfer" caption="Cuatro líneas, después Distancia 10 para las dos y múLtiple: dos esquinas achaflanadas y dos que quedan vivas." />
+
+## Opciones [#options]
+
+### `desHacer` (`H`) [#undo]
+
+Deshace el último chaflán de esta ejecución, y con él un cambio de las distancias.
+
+### `Polilínea` (`P`) [#polyline]
+
+Pide una polilínea 2D y achaflana todas sus esquinas; después dice cuántas líneas se han unido con chaflán y por qué alguna no.
+
+### `Distancia` (`D`) [#distance]
+
+Pide la primera y la segunda distancia de chaflán. La segunda propone la primera, así que Intro en ella hace el bisel igual, a 45 grados en una esquina en escuadra.
+
+### `múLtiple` (`L`) [#multiple]
+
+Vuelve a pedir una primera línea después de cada chaflán, hasta Intro o Esc.
+
+## Lo que aún no hace [#missing]
+
+Ángulo, que fija el bisel con una distancia y un ángulo, Método y Recortar: CHAFLAN siempre trabaja con dos distancias y siempre recorta las líneas. En AutoCAD el bisel toma la escala de tipo de línea de la segunda línea; aquí no.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando CHAMFER en español?
+
+CHAFLAN, con el alias `CH`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_CHAMFER`.
+
+### ¿Cómo hago un chaflán a 45 grados en AutoCAD?
+
+Elige `Distancia`, escribe la distancia y pulsa Intro en la segunda: en una esquina en escuadra, dos distancias iguales dan un bisel a 45 grados.
+
+### ¿Qué diferencia hay entre chaflán y empalme?
+
+CHAFLAN une dos líneas con un bisel recto; [`EMPALME`](/docs/commands/fillet), con un arco tangente a las dos. Los dos recortan o alargan las líneas hasta él, y los dos hacen una esquina viva con 0 o manteniendo pulsada Mayús al designar la segunda línea.
+
+### ¿Por qué no funciona el chaflán?
+
+Dice por qué: `Distancia de chaflán es demasiado grande` cuando una distancia pasa del final de su línea, `Las líneas son paralelas` con líneas paralelas, y `Chaflán requiere 2 líneas (no segmentos de arco).` con un arco o un círculo. Con las dos distancias a 0 hace una esquina, no un bisel.
+
+### ¿Cómo achaflano todas las esquinas de un rectángulo?
+
+Un rectángulo es una polilínea: elige `Polilínea` y desígnalo, y todas las esquinas se achaflanan con las distancias actuales.
+
+## Comandos relacionados [#related]
+
+- [Empalme en AutoCAD: EMPALME (FILLET)](/docs/commands/fillet)
+- [Recortar en AutoCAD: RECORTA (TRIM)](/docs/commands/trim)
+- [Alargar en AutoCAD: ALARGA (EXTEND)](/docs/commands/extend)
+- [ACHAFLANAARISTA (CHAMFEREDGE)](/docs/commands#chamferedge): Achaflanar aristas

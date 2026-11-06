@@ -1,0 +1,86 @@
+---
+title: "RECTANG in AutoCAD"
+metaTitle: "RECTANG in AutoCAD: rectangle command and alias"
+description: "How AutoCAD's RECTANG (REC) draws a rectangle: two corners, Dimensions, Area and Rotation, rounded with Fillet or cut with Chamfer. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for RECTANG in AutoCAD?","answer":"REC, then Enter or Space; RECTANGLE works too. The full name works as well, and _RECTANG in any language of AutoCAD."},{"question":"How do I draw a rectangle with exact dimensions?","answer":"Give the first corner, then type the other one relative to it: 100,50 with dynamic input on, as it starts, or @100,50 without, makes it 100 long and 50 wide. Or choose Dimensions and type the two sides."},{"question":"How do I draw a rectangle with rounded corners?","answer":"Choose Fillet at the first prompt and type the radius, then give the two corners."},{"question":"Why does my rectangle come out with rounded or cut corners?","answer":"RECTANG keeps Fillet and Chamfer for the session, so a rectangle drawn after one carries it too: its first line says so. Choose Fillet and type 0 to draw plain corners again."},{"question":"Is a rectangle a polyline in AutoCAD?","answer":"Yes: one closed polyline. EXPLODE breaks it into four lines, and OFFSET offsets it whole."}]
+---
+
+RECTANG draws a rectangle from two opposite corners, picked or typed: `0,0` then `100,50`, relative to the first under dynamic input, makes one 100 by 50. It is one closed polyline of four vertices, made on the current layer. The first prompt's options set how the next rectangles are drawn, and each keeps its value for the rest of the session: the next RECTANG says the ones in force in its first line. Its width option gives every side a polyline width. While you place the other corner, the rectangle follows the cursor; with dynamic input on, you can type its length, Tab, and its width.
+
+- **Command:** `RECTANG`
+- **Aliases:** `REC`, `RECTANGLE`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `REC` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="rectang" caption="Two rectangles from two corners, the second typed relative to the first: one with Fillet 8, the next with Chamfer 8." />
+
+## Options [#options]
+
+### `Chamfer` (`C`) [#chamfer]
+
+Asks a first and a second chamfer distance, and cuts each corner by them: eight vertices. A distance of 0 turns it off. It replaces Fillet.
+
+### `Elevation` (`E`) [#elevation]
+
+Asks the height the rectangle is drawn at, its Z.
+
+### `Fillet` (`F`) [#fillet]
+
+Asks a radius and rounds each corner by it. A radius of 0 turns it off. It replaces Chamfer.
+
+### `Thickness` (`T`) [#thickness]
+
+Asks a thickness: the rectangle stands that high, as a wall would, in a 3D view.
+
+### `Area` (`A`) [#area]
+
+At the other corner: asks the area, then whether to give the `Length` or the `Width`, then that side. The other side is worked out, the corners counted in, and the rectangle is made at once.
+
+### `Dimensions` (`D`) [#dimensions]
+
+At the other corner: asks the length and the width, then a point that sets in which direction from the first corner the rectangle lies.
+
+### `Rotation` (`R`) [#rotation]
+
+At the other corner: asks the angle the rectangle is turned to, typed or as a point from the first corner, or two points with `Pick`. The angle is kept for the session.
+
+## What it does not do yet [#missing]
+
+A length or width of 0 under `Area`, which here draws nothing and in AutoCAD draws a broken polyline. After a refused answer at Rotation's prompt, MellowCAD asks the prompt again in full, where AutoCAD writes nothing more.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret)
+
+## Questions [#questions]
+
+### What is the shortcut for RECTANG in AutoCAD?
+
+`REC`, then Enter or Space; `RECTANGLE` works too. The full name works as well, and `_RECTANG` in any language of AutoCAD.
+
+### How do I draw a rectangle with exact dimensions?
+
+Give the first corner, then type the other one relative to it: `100,50` with dynamic input on, as it starts, or `@100,50` without, makes it 100 long and 50 wide. Or choose `Dimensions` and type the two sides.
+
+### How do I draw a rectangle with rounded corners?
+
+Choose `Fillet` at the first prompt and type the radius, then give the two corners.
+
+### Why does my rectangle come out with rounded or cut corners?
+
+RECTANG keeps Fillet and Chamfer for the session, so a rectangle drawn after one carries it too: its first line says so. Choose `Fillet` and type `0` to draw plain corners again.
+
+### Is a rectangle a polyline in AutoCAD?
+
+Yes: one closed polyline. [`EXPLODE`](/docs/commands/explode) breaks it into four lines, and [`OFFSET`](/docs/commands/offset) offsets it whole.
+
+## Related commands [#related]
+
+- [POLYGON in AutoCAD](/docs/commands/polygon)
+- [PLINE in AutoCAD](/docs/commands/pline)
+- [EXPLODE in AutoCAD](/docs/commands/explode)
+- [FILLET in AutoCAD](/docs/commands/fillet)

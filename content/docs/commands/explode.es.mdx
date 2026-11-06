@@ -1,0 +1,53 @@
+---
+title: "Descomponer en AutoCAD: DESCOMP (EXPLODE)"
+metaTitle: "Descomponer en AutoCAD: DESCOMP (EXPLODE)"
+description: "Cómo funciona DESCOMP (EXPLODE, alias DP) de AutoCAD en español: una polilínea en líneas y arcos, un bloque en sus objetos, un texto en líneas. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando EXPLODE en español?","answer":"DESCOMP, con el alias DP. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _EXPLODE."},{"question":"¿Cómo deshago una descomposición en AutoCAD?","answer":"Escribe H o pulsa Ctrl+Z en seguida: la descomposición es un solo paso de deshacer. Más tarde, UNIR vuelve a hacer una sola polilínea de líneas y arcos que se tocan por sus extremos, y BLOQUE vuelve a hacer un bloque con unos objetos."},{"question":"¿Se puede descomponer un texto en AutoCAD?","answer":"Un texto de líneas múltiples, sí: cada línea pasa a ser un texto de una línea. El texto de una línea ya es la pieza más pequeña, y DESCOMP lo rechaza."},{"question":"¿Cómo descompongo un bloque en AutoCAD?","answer":"Designa la referencia a bloque y pulsa Intro: pasa a ser los objetos de su bloque, donde la referencia los dibujaba. Un bloque que hubiera dentro sigue siendo un bloque: descomponlo otra vez. Los atributos vuelven como sus definiciones, sin los valores."}]
+---
+
+DESCOMP (EXPLODE en inglés) descompone un objeto compuesto en los objetos de los que está hecho. Designa los objetos y pulsa Intro: una polilínea pasa a ser líneas y arcos sobre su eje, una referencia a bloque los objetos de su bloque, un nivel hacia abajo, un texto de líneas múltiples un texto de una línea por cada línea que muestra, y un sombreado de patrón las líneas de su patrón. Cada pieza conserva la capa y las propiedades del objeto; las de un bloque, las suyas propias. Una polilínea con grosor lo pierde, y DESCOMP lo dice. Las líneas, los círculos, los arcos, los textos de una línea y las cotas no se pueden descomponer: se rechazan al designarlos, y una spline, una elipse o un sombreado sólido al cerrar la designación. La descomposición es un paso que Deshacer revierte.
+
+- **Comando:** `DESCOMP`
+- **En inglés:** `EXPLODE`, que se escribe `_EXPLODE` en cualquier idioma
+- **Alias:** `DP`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `DP` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="explode" caption="Un rectángulo, una sola polilínea, descompuesto en cuatro líneas, y después una de ellas borrada por separado." />
+
+## Lo que aún no hace [#missing]
+
+Las cotas, que AutoCAD descompone en líneas, puntas de flecha y texto y MellowCAD rechaza. Un sombreado cuyo patrón no se incluye aquí se rechaza como uno sólido, y el texto de líneas múltiples descompuesto queda donde lo dibuja la fuente, apenas desplazado del sitio de AutoCAD.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando EXPLODE en español?
+
+DESCOMP, con el alias `DP`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_EXPLODE`.
+
+### ¿Cómo deshago una descomposición en AutoCAD?
+
+Escribe `H` o pulsa Ctrl+Z en seguida: la descomposición es un solo paso de deshacer. Más tarde, [`UNIR`](/docs/commands/join) vuelve a hacer una sola polilínea de líneas y arcos que se tocan por sus extremos, y [`BLOQUE`](/docs/commands/block) vuelve a hacer un bloque con unos objetos.
+
+### ¿Se puede descomponer un texto en AutoCAD?
+
+Un texto de líneas múltiples, sí: cada línea pasa a ser un texto de una línea. El texto de una línea ya es la pieza más pequeña, y DESCOMP lo rechaza.
+
+### ¿Cómo descompongo un bloque en AutoCAD?
+
+Designa la referencia a bloque y pulsa Intro: pasa a ser los objetos de su bloque, donde la referencia los dibujaba. Un bloque que hubiera dentro sigue siendo un bloque: descomponlo otra vez. Los atributos vuelven como sus definiciones, sin los valores.
+
+## Comandos relacionados [#related]
+
+- [Unir en AutoCAD: comando UNIR (JOIN)](/docs/commands/join)
+- [Crear bloques en AutoCAD: BLOQUE (BLOCK)](/docs/commands/block)
+- [EDITPOL (PEDIT)](/docs/commands#pedit): Editar polilínea
+- [Insertar bloques en AutoCAD: INSERT](/docs/commands/insert)

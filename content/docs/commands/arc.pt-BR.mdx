@@ -1,0 +1,58 @@
+---
+title: "Arco no AutoCAD: comando ARCO (ARC)"
+description: "Como funciona o ARC do AutoCAD em português, ARCO (alias A), prompt a prompt: três pontos, início-centro-fim ou centro-início-fim, e o Ctrl. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ARC no AutoCAD em português?","answer":"ARCO, com o alias A. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _ARC."},{"question":"Como fazer um arco por três pontos no AutoCAD?","answer":"Execute o ARCO e dê três pontos: o início, qualquer ponto por onde o arco passe e o fim. É a forma padrão, sem escolher nenhuma opção."},{"question":"Por que o arco sai invertido?","answer":"Um arco desenhado pelo centro corre no sentido anti-horário a partir do início, como no AutoCAD. Troque o início pelo fim, ou mantenha o Ctrl pressionado enquanto dá o ponto final para ele correr no sentido horário."},{"question":"Como fazer um arco tangente a duas linhas?","answer":"Com o CONCORD e um raio: ele desenha o arco tangente às duas linhas e as apara até ele. Para um arco tangente ao trecho anterior, desenhe-o numa polilinha, com a opção de arco do PLINHA."}]
+---
+
+O ARCO, ARC no AutoCAD em inglês, desenha por padrão um arco por três pontos: o início, um ponto por onde ele passa e o fim. Ou o desenha em torno de um centro, de um ponto inicial até um final, como os botões Início, centro, fim e Centro, início, fim da faixa de opções o executam. Como no AutoCAD, um arco dado pelo centro corre no sentido anti-horário a partir do início, e o fim só marca onde ele para: não precisa estar sobre o arco. Enquanto você indica os pontos, o arco acompanha o cursor, com uma linha tracejada âmbar a partir do início ou do centro. O arco fica no plano do seu primeiro ponto. Um arco que não pode ser feito, três pontos alinhados ou um fim sobre o início, diz `*Inválido*` e não desenha nada.
+
+- **Comando:** `ARCO`
+- **Em inglês:** `ARC`, que se digita `_ARC` em qualquer idioma
+- **Aliases:** `A`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `A` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="arc" caption="Três arcos: por três pontos, de um início em torno de um Centro até um fim, e de um Centro, o seu início e depois o seu fim." />
+
+## Opções [#options]
+
+### `Centro` (`C`) [#center]
+
+No primeiro prompt: dê primeiro o centro, depois o ponto inicial e o final. No segundo, depois do início: o centro vem em seguida, e depois o fim. No fim de qualquer um dos dois, mantenha o Ctrl pressionado para o arco correr no sentido horário.
+
+## O que ainda não faz [#missing]
+
+As opções que terminam um arco pelo ângulo, pelo comprimento da corda, por uma direção ou por um raio em vez de um ponto final, e Fim no segundo ponto, que leva a elas; os botões da faixa de opções para essas formas também faltam. Continuar: Enter no primeiro prompt, que no AutoCAD desenha um arco tangente à última linha ou arco, aqui encerra o ARCO. A caixa do ângulo incluído que a entrada dinâmica mostra no fim de um modo com centro.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#arc--a--es-arco--a--pt-br-arco--a)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ARC no AutoCAD em português?
+
+ARCO, com o alias `A`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_ARC`.
+
+### Como fazer um arco por três pontos no AutoCAD?
+
+Execute o ARCO e dê três pontos: o início, qualquer ponto por onde o arco passe e o fim. É a forma padrão, sem escolher nenhuma opção.
+
+### Por que o arco sai invertido?
+
+Um arco desenhado pelo centro corre no sentido anti-horário a partir do início, como no AutoCAD. Troque o início pelo fim, ou mantenha o Ctrl pressionado enquanto dá o ponto final para ele correr no sentido horário.
+
+### Como fazer um arco tangente a duas linhas?
+
+Com o [`CONCORD`](/docs/commands/fillet) e um raio: ele desenha o arco tangente às duas linhas e as apara até ele. Para um arco tangente ao trecho anterior, desenhe-o numa polilinha, com a opção de arco do [`PLINHA`](/docs/commands/pline).
+
+## Comandos relacionados [#related]
+
+- [Comando CIRCLE (CIRCULO) no AutoCAD](/docs/commands/circle)
+- [Elipse no AutoCAD: comando ELIPSE (ELLIPSE)](/docs/commands/ellipse)
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)

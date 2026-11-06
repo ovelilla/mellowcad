@@ -1,0 +1,87 @@
+---
+title: "Retângulo no AutoCAD: comando RETANGULO (RECTANG)"
+metaTitle: "Retângulo no AutoCAD: comando RETANGULO"
+description: "Como o RECTANG do AutoCAD em português, RETANGULO (alias RET), desenha um retângulo: dois cantos, Dimensões, Área e Rotação, com concordância ou chanfro."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando do retângulo no AutoCAD em português?","answer":"RETANGULO, com o alias RET. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _RECTANG."},{"question":"Como fazer um retângulo com medidas no AutoCAD?","answer":"Dê o primeiro canto e digite o outro em relação a ele: 100,50 com a entrada dinâmica ativada, como ao começar, ou @100,50 sem ela, o faz com 100 de comprimento e 50 de largura. Ou escolha Dimensões e digite os dois lados."},{"question":"Como fazer um retângulo com cantos arredondados?","answer":"Escolha COncordância no primeiro prompt e digite o raio; depois dê os dois cantos."},{"question":"Por que o retângulo sai com os cantos arredondados ou cortados?","answer":"O RETANGULO mantém a concordância e o chanfro pela sessão, então um retângulo desenhado depois de um com eles também os leva: a primeira linha dele o diz. Escolha COncordância e digite 0 para voltar a desenhar cantos vivos."},{"question":"O retângulo é uma polilinha no AutoCAD?","answer":"Sim: uma única polilinha fechada. O EXPLODIR a divide em quatro linhas, e o DESLOCAMENTO a desloca inteira."}]
+---
+
+O RETANGULO, RECTANG no AutoCAD em inglês, desenha um retângulo a partir de dois cantos opostos, indicados ou digitados: `0,0` e depois `100,50`, relativo ao primeiro com a entrada dinâmica, faz um de 100 por 50. É uma única polilinha fechada de quatro vértices, na camada atual. As opções do primeiro prompt definem como os retângulos seguintes são desenhados, e cada uma mantém o seu valor pelo resto da sessão: o próximo RETANGULO diz na primeira linha as que estão valendo. A sua opção de largura dá a cada lado uma largura de polilinha. Enquanto você posiciona o outro canto, o retângulo acompanha o cursor; com a entrada dinâmica ativada, você pode digitar o comprimento, Tab e a largura.
+
+- **Comando:** `RETANGULO`
+- **Em inglês:** `RECTANG`, que se digita `_RECTANG` em qualquer idioma
+- **Aliases:** `RET`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `RET` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="rectang" caption="Dois retângulos por dois cantos, o segundo digitado em relação ao primeiro: um com Concordância 8 e o seguinte com Chanfro 8." />
+
+## Opções [#options]
+
+### `CHanfro` (`CH`) [#chamfer]
+
+Pede uma primeira e uma segunda distância de chanfro, e corta cada canto com elas: oito vértices. Uma distância de 0 o desativa. Substitui a concordância.
+
+### `Elevação` (`E`) [#elevation]
+
+Pede a altura em que o retângulo é desenhado, o seu Z.
+
+### `COncordância` (`CO`) [#fillet]
+
+Pede um raio e arredonda cada canto com ele. Um raio de 0 o desativa. Substitui o chanfro.
+
+### `espessURa` (`UR`) [#thickness]
+
+Pede uma espessura: o retângulo se ergue essa altura, como uma parede, numa vista 3D.
+
+### `árEa` (`E`) [#area]
+
+No outro canto: pede a área, depois se você vai dar o `Comprimento` ou a `Largura`, e depois esse lado. O outro lado é calculado, contando os cantos, e o retângulo é criado na hora.
+
+### `Dimensões` (`D`) [#dimensions]
+
+No outro canto: pede o comprimento e a largura, e depois um ponto que define para que lado do primeiro canto fica o retângulo.
+
+### `Rotação` (`R`) [#rotation]
+
+No outro canto: pede o ângulo em que o retângulo é girado, digitado ou como um ponto a partir do primeiro canto, ou dois pontos com `SElecionar`. O ângulo vale pela sessão.
+
+## O que ainda não faz [#missing]
+
+Um comprimento ou largura de 0 em `árEa`, que aqui não desenha nada e no AutoCAD desenha uma polilinha quebrada. Depois de uma resposta recusada no prompt de rotação, o MellowCAD repete o prompt inteiro, onde o AutoCAD não escreve mais nada.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando do retângulo no AutoCAD em português?
+
+RETANGULO, com o alias `RET`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_RECTANG`.
+
+### Como fazer um retângulo com medidas no AutoCAD?
+
+Dê o primeiro canto e digite o outro em relação a ele: `100,50` com a entrada dinâmica ativada, como ao começar, ou `@100,50` sem ela, o faz com 100 de comprimento e 50 de largura. Ou escolha `Dimensões` e digite os dois lados.
+
+### Como fazer um retângulo com cantos arredondados?
+
+Escolha `COncordância` no primeiro prompt e digite o raio; depois dê os dois cantos.
+
+### Por que o retângulo sai com os cantos arredondados ou cortados?
+
+O RETANGULO mantém a concordância e o chanfro pela sessão, então um retângulo desenhado depois de um com eles também os leva: a primeira linha dele o diz. Escolha `COncordância` e digite `0` para voltar a desenhar cantos vivos.
+
+### O retângulo é uma polilinha no AutoCAD?
+
+Sim: uma única polilinha fechada. O [`EXPLODIR`](/docs/commands/explode) a divide em quatro linhas, e o [`DESLOCAMENTO`](/docs/commands/offset) a desloca inteira.
+
+## Comandos relacionados [#related]
+
+- [Polígono no AutoCAD: comando POLIGONO (POLYGON)](/docs/commands/polygon)
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Explodir no AutoCAD: comando EXPLODIR (EXPLODE)](/docs/commands/explode)
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)

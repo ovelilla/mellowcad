@@ -47,7 +47,7 @@ La altura como expresión: `2*3` es 6. Por ahora, solo aritmética.
 
 ## Lo que aún no hace [#missing]
 
-`Trayectoria`, el barrido a lo largo de una trayectoria. El modo `SUperficie` y los perfiles abiertos, de los que AutoCAD hace superficies: aún no hay objetos de superficie. Las caras de los sólidos y las áreas que un clic encuentra dentro de unos objetos, que toma [`PRESIONARTIRAR`](/docs/commands/presspull). Una inclinación sobre una elipse, una spline o un arco que se une al segmento siguiente en una esquina. Los parámetros y las funciones de `Expresión`. `DESCOMP` de un sólido extruido con lados curvos, que AutoCAD convierte en superficies y regiones. Sus pinzamientos, y su altura y su ángulo de inclinación editados en la paleta Propiedades.
+`Trayectoria`, el barrido a lo largo de una trayectoria. El modo `SUperficie` y los perfiles abiertos, de los que AutoCAD hace superficies: aún no hay objetos de superficie. Las caras de los sólidos y las áreas que un clic encuentra dentro de unos objetos, que toma [`PRESIONARTIRAR`](/docs/commands/presspull). Una inclinación sobre una elipse, una spline o un arco que se une al segmento siguiente en una esquina. Los parámetros y las funciones de `Expresión`. [`DESCOMP`](/docs/commands/explode) de un sólido extruido con lados curvos, que AutoCAD convierte en superficies y regiones. Sus pinzamientos, y su altura y su ángulo de inclinación editados en la paleta Propiedades.
 
 [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex)
 
@@ -63,7 +63,7 @@ Dibuja el contorno como un solo objeto cerrado —una polilínea cerrada, un cí
 
 ### ¿Por qué EXTRUSION no crea un sólido?
 
-El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice `No se puede barrer ni extruir un objeto de este tipo.` y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe `No se puede barrer ni extruir una curva que interseca consigo misma.`, y también sale. Une las piezas con `UNIR`, haz con ellas una región con `REGION` o haz clic dentro de ellas con [`PRESIONARTIRAR`](/docs/commands/presspull).
+El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice `No se puede barrer ni extruir un objeto de este tipo.` y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe `No se puede barrer ni extruir una curva que interseca consigo misma.`, y también sale. Une las piezas con [`UNIR`](/docs/commands/join), haz con ellas una región con `REGION` o haz clic dentro de ellas con [`PRESIONARTIRAR`](/docs/commands/presspull).
 
 ### ¿Cómo extruir una forma con un agujero?
 

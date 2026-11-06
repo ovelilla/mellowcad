@@ -1,0 +1,67 @@
+---
+title: "Polígono no AutoCAD: comando POLIGONO (POLYGON)"
+metaTitle: "Polígono no AutoCAD: comando POLIGONO"
+description: "Como o POLYGON do AutoCAD em português, POLIGONO (alias POL), desenha um polígono regular: lados, centro, Inscrito ou Circunscrito, ou uma Aresta. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando POLYGON no AutoCAD em português?","answer":"POLIGONO, com o alias POL. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _POLYGON."},{"question":"Como fazer um hexágono no AutoCAD?","answer":"Execute o POLIGONO, digite 6 como número de lados, dê o centro, escolha Inscrito ou Circunscrito e digite o raio. Entre faces planas, um hexágono circunscrito mede o dobro do raio digitado."},{"question":"Qual a diferença entre inscrito e circunscrito?","answer":"Com Inscrito, os cantos do polígono tocam o círculo, então ele cabe dentro do círculo. Com Circunscrito, são os lados que tocam o círculo, então o círculo cabe dentro do polígono. Com o mesmo raio, o circunscrito é o maior."},{"question":"Como fazer um polígono com um comprimento de lado dado?","answer":"Escolha Aresta e dê as duas pontas de um lado: 0,0 e depois o comprimento digitado em relação a ela, como 40,0. Os outros lados seguem no sentido anti-horário."}]
+---
+
+O POLIGONO, POLYGON no AutoCAD em inglês, desenha um polígono regular, com todos os lados e ângulos iguais, como uma única polilinha fechada. Ele pede o número de lados, de 3 a 1024, depois o centro e se o polígono fica inscrito num círculo ou circunscrito sobre ele, e depois o raio desse círculo. Ou é construído sobre um dos seus lados. O número de lados e a escolha entre inscrito e circunscrito são os padrões do próximo POLIGONO, naquele desenho. Um raio digitado como número desenha o lado de baixo na horizontal; um dado como ponto, indicado ou digitado, define ao mesmo tempo o tamanho e o giro do polígono. Enquanto você dá o raio, o polígono acompanha o cursor, com uma linha tracejada âmbar a partir do centro.
+
+- **Comando:** `POLIGONO`
+- **Em inglês:** `POLYGON`, que se digita `_POLYGON` em qualquer idioma
+- **Aliases:** `POL`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `POL` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="polygon" caption="Dois círculos de raio 30, um hexágono inscrito num e circunscrito sobre o outro, e um pentágono pela Aresta." />
+
+## Opções [#options]
+
+### `Aresta` (`A`) [#edge]
+
+Em vez de um centro: dê as duas pontas de um lado, e o polígono é construído a partir dele no sentido anti-horário.
+
+### `Inscrito no círculo` (`I`) [#inscribed]
+
+Os vértices ficam sobre o círculo: o raio vai do centro a um vértice. É o padrão.
+
+### `Circunscrito sobre o círculo` (`C`) [#circumscribed]
+
+Os lados tocam o círculo no ponto médio: o raio vai do centro ao meio de um lado.
+
+## O que ainda não faz [#missing]
+
+O snap girado: um raio digitado como número sempre desenha o lado de baixo na horizontal em relação ao UCS, onde o AutoCAD o gira pelo ângulo do snap, SNAPANG.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando POLYGON no AutoCAD em português?
+
+POLIGONO, com o alias `POL`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_POLYGON`.
+
+### Como fazer um hexágono no AutoCAD?
+
+Execute o POLIGONO, digite `6` como número de lados, dê o centro, escolha `Inscrito` ou `Circunscrito` e digite o raio. Entre faces planas, um hexágono circunscrito mede o dobro do raio digitado.
+
+### Qual a diferença entre inscrito e circunscrito?
+
+Com `Inscrito`, os cantos do polígono tocam o círculo, então ele cabe dentro do círculo. Com `Circunscrito`, são os lados que tocam o círculo, então o círculo cabe dentro do polígono. Com o mesmo raio, o circunscrito é o maior.
+
+### Como fazer um polígono com um comprimento de lado dado?
+
+Escolha `Aresta` e dê as duas pontas de um lado: `0,0` e depois o comprimento digitado em relação a ela, como `40,0`. Os outros lados seguem no sentido anti-horário.
+
+## Comandos relacionados [#related]
+
+- [Retângulo no AutoCAD: comando RETANGULO (RECTANG)](/docs/commands/rectang)
+- [Comando CIRCLE (CIRCULO) no AutoCAD](/docs/commands/circle)
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Explodir no AutoCAD: comando EXPLODIR (EXPLODE)](/docs/commands/explode)

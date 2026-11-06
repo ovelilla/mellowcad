@@ -1,0 +1,74 @@
+---
+title: "Comando CHAMFER (CHANFRO) no AutoCAD"
+description: "Como funciona o CHAMFER do AutoCAD em português, CHANFRO (alias CHA), prompt a prompt: duas distâncias, duas linhas ou uma polilinha, múlTiplo e Shift."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando CHAMFER no AutoCAD em português?","answer":"CHANFRO, com o alias CHA. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _CHAMFER."},{"question":"Como fazer um chanfro de 45 graus no AutoCAD?","answer":"Escolha Distância, digite a distância e pressione Enter na segunda: num canto em esquadro, duas distâncias iguais dão um chanfro de 45 graus."},{"question":"Qual a diferença entre CHAMFER e FILLET?","answer":"O CHANFRO une duas linhas com um chanfro reto; o CONCORD, com um arco tangente às duas. Os dois aparam ou estendem as linhas até ele, e os dois fazem um canto vivo com 0 ou com o Shift pressionado ao selecionar a segunda linha."},{"question":"Por que o chanfro não funciona?","answer":"Ele diz por quê: “Distância do chanfro é grande demais” quando uma distância passa do fim da sua linha, “As linhas são paralelas” com linhas paralelas, e “Chanfro requer 2 linhas (não segmentos de arco).” com um arco ou um círculo. Com as duas distâncias em 0 ele faz um canto, não um chanfro."},{"question":"Como chanfrar todos os cantos de um retângulo?","answer":"Um retângulo é uma polilinha: escolha Polilinha e selecione-o, e todos os cantos são chanfrados com as distâncias atuais."}]
+---
+
+O CHAMFER, CHANFRO no AutoCAD em português, corta o canto entre duas linhas com um chanfro reto. Selecione a primeira linha e depois a segunda: cada uma é aparada ou estendida até o chanfro, a primeira pela primeira distância e a segunda pela segunda, e o chanfro as une. Funciona com duas linhas, com dois trechos retos de uma polilinha, ou com uma linha e uma polilinha, que ele une numa única polilinha. Como no AutoCAD, a primeira linha dele diz as distâncias atuais, que ficam salvas no desenho; com as duas em 0, como ao começar, ele faz um canto vivo, as linhas se encontrando. Enquanto você seleciona a segunda linha, o canto que ele faria aparece sobre as linhas.
+
+- **Comando:** `CHANFRO`
+- **Em inglês:** `CHAMFER`, que se digita `_CHAMFER` em qualquer idioma
+- **Aliases:** `CHA`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CHA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="chamfer" caption="Quatro linhas, depois Distância 10 para as duas e múlTiplo: dois cantos chanfrados e dois que ficam vivos." />
+
+## Opções [#options]
+
+### `desFazer` (`F`) [#undo]
+
+Desfaz o último chanfro desta execução, e com ele uma mudança das distâncias.
+
+### `Polilinha` (`P`) [#polyline]
+
+Pede uma polilinha 2D e chanfra todos os cantos dela; depois diz quantas linhas foram chanfradas e por que alguma não foi.
+
+### `Distância` (`D`) [#distance]
+
+Pede a primeira e a segunda distância do chanfro. A segunda propõe a primeira, então Enter nela faz o chanfro igual, a 45 graus num canto em esquadro.
+
+### `múlTiplo` (`T`) [#multiple]
+
+Volta a pedir uma primeira linha depois de cada chanfro, até Enter ou Esc.
+
+## O que ainda não faz [#missing]
+
+Ângulo, que define o chanfro por uma distância e um ângulo, Método e Aparar: o CHANFRO sempre trabalha com duas distâncias e sempre apara as linhas. No AutoCAD o chanfro toma a escala do tipo de linha da segunda linha; aqui não.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando CHAMFER no AutoCAD em português?
+
+CHANFRO, com o alias `CHA`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_CHAMFER`.
+
+### Como fazer um chanfro de 45 graus no AutoCAD?
+
+Escolha `Distância`, digite a distância e pressione Enter na segunda: num canto em esquadro, duas distâncias iguais dão um chanfro de 45 graus.
+
+### Qual a diferença entre CHAMFER e FILLET?
+
+O CHANFRO une duas linhas com um chanfro reto; o [`CONCORD`](/docs/commands/fillet), com um arco tangente às duas. Os dois aparam ou estendem as linhas até ele, e os dois fazem um canto vivo com 0 ou com o Shift pressionado ao selecionar a segunda linha.
+
+### Por que o chanfro não funciona?
+
+Ele diz por quê: `Distância do chanfro é grande demais` quando uma distância passa do fim da sua linha, `As linhas são paralelas` com linhas paralelas, e `Chanfro requer 2 linhas (não segmentos de arco).` com um arco ou um círculo. Com as duas distâncias em 0 ele faz um canto, não um chanfro.
+
+### Como chanfrar todos os cantos de um retângulo?
+
+Um retângulo é uma polilinha: escolha `Polilinha` e selecione-o, e todos os cantos são chanfrados com as distâncias atuais.
+
+## Comandos relacionados [#related]
+
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)
+- [Comando EXTEND (ESTENDER) no AutoCAD](/docs/commands/extend)
+- [CHANFRARARESTA (CHAMFEREDGE)](/docs/commands#chamferedge): Chanfrar aresta

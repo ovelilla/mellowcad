@@ -1,0 +1,74 @@
+---
+title: "CHAMFER in AutoCAD"
+metaTitle: "CHAMFER in AutoCAD: command, distances and alias"
+description: "How AutoCAD's CHAMFER (CHA) works, prompt by prompt: two distances, two lines or a polyline's corners, Multiple, Shift. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for CHAMFER in AutoCAD?","answer":"CHA, then Enter or Space. The full name works too, and _CHAMFER in any language of AutoCAD."},{"question":"How do I make a 45-degree chamfer in AutoCAD?","answer":"Choose Distance, type the distance and press Enter at the second: on a square corner, two equal distances make a 45-degree bevel."},{"question":"What is the difference between CHAMFER and FILLET?","answer":"CHAMFER joins two lines with a straight bevel; FILLET with an arc tangent to both. Both trim or extend the lines to it, and both make a sharp corner at 0 or with Shift held on the second line."},{"question":"Why does CHAMFER not work?","answer":"It says why: “Chamfer distance is too large” when a distance runs past the end of its line, “Lines are parallel” for parallel lines, and “Chamfer requires 2 lines (not arc segments).” for an arc or a circle. With both distances 0 it makes a corner, not a bevel."},{"question":"How do I chamfer every corner of a rectangle?","answer":"A rectangle is a polyline: choose Polyline and pick it, and every corner is chamfered at the current distances."}]
+---
+
+CHAMFER cuts the corner between two lines with a straight bevel. Pick the first line, then the second: each is trimmed or extended to the bevel, the first by the first distance and the second by the second, and the bevel joins them. It works on two lines, on two straight segments of a polyline, or on a line and a polyline, which it joins into one polyline. As in AutoCAD, its first line says the current distances, which are kept in the drawing; both 0, the default, makes a sharp corner, the lines meeting. While you pick the second line, the corner it would make is shown over the lines.
+
+- **Command:** `CHAMFER`
+- **Aliases:** `CHA`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `CHA` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="chamfer" caption="Four lines, then Distance 10 for both and Multiple: two corners cut, two left sharp." />
+
+## Options [#options]
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last chamfer of this run, and a change of the distances with it.
+
+### `Polyline` (`P`) [#polyline]
+
+Asks for a 2D polyline and chamfers every corner of it, then says how many lines were chamfered and why any were not.
+
+### `Distance` (`D`) [#distance]
+
+Asks the first and the second chamfer distance. The second offers the first, so Enter there makes the bevel even, at 45 degrees on a square corner.
+
+### `Multiple` (`M`) [#multiple]
+
+Keeps asking for a first line after each chamfer, until Enter or Escape.
+
+## What it does not do yet [#missing]
+
+Angle, which sets the bevel by one distance and an angle, Method and Trim: CHAMFER always works by two distances and always trims the lines. The bevel takes the second line's linetype scale in AutoCAD, not here.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha)
+
+## Questions [#questions]
+
+### What is the shortcut for CHAMFER in AutoCAD?
+
+`CHA`, then Enter or Space. The full name works too, and `_CHAMFER` in any language of AutoCAD.
+
+### How do I make a 45-degree chamfer in AutoCAD?
+
+Choose `Distance`, type the distance and press Enter at the second: on a square corner, two equal distances make a 45-degree bevel.
+
+### What is the difference between CHAMFER and FILLET?
+
+CHAMFER joins two lines with a straight bevel; [`FILLET`](/docs/commands/fillet) with an arc tangent to both. Both trim or extend the lines to it, and both make a sharp corner at 0 or with Shift held on the second line.
+
+### Why does CHAMFER not work?
+
+It says why: `Chamfer distance is too large` when a distance runs past the end of its line, `Lines are parallel` for parallel lines, and `Chamfer requires 2 lines (not arc segments).` for an arc or a circle. With both distances 0 it makes a corner, not a bevel.
+
+### How do I chamfer every corner of a rectangle?
+
+A rectangle is a polyline: choose `Polyline` and pick it, and every corner is chamfered at the current distances.
+
+## Related commands [#related]
+
+- [FILLET in AutoCAD](/docs/commands/fillet)
+- [TRIM in AutoCAD](/docs/commands/trim)
+- [EXTEND in AutoCAD](/docs/commands/extend)
+- [CHAMFEREDGE](/docs/commands#chamferedge): Chamfer Edge

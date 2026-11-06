@@ -1,0 +1,53 @@
+---
+title: "Explodir no AutoCAD: comando EXPLODIR (EXPLODE)"
+metaTitle: "Explodir no AutoCAD: comando EXPLODIR"
+description: "Como funciona o EXPLODE do AutoCAD em português, EXPLODIR (alias X): polilinha em linhas e arcos, um bloco nos seus objetos, um texto em linhas. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando EXPLODE no AutoCAD em português?","answer":"EXPLODIR, com o alias X. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _EXPLODE."},{"question":"Como desfazer um explodir no AutoCAD?","answer":"Digite D ou pressione Ctrl+Z logo em seguida: a explosão é um único passo de desfazer. Mais tarde, o UNIR volta a fazer uma única polilinha de linhas e arcos que se tocam pelas pontas, e o BLOCO volta a fazer um bloco com os objetos."},{"question":"Dá para explodir um texto no AutoCAD?","answer":"Um texto multilinha, sim: cada linha vira um texto de uma linha. O texto de uma linha já é a menor peça, e o EXPLODIR o recusa."},{"question":"Como explodir um bloco no AutoCAD?","answer":"Selecione a referência de bloco e pressione Enter: ela vira os objetos do seu bloco, onde a referência os desenhava. Um bloco dentro dela continua sendo um bloco: exploda-o de novo. Os atributos voltam como as suas definições, sem os valores."}]
+---
+
+O EXPLODIR, EXPLODE no AutoCAD em inglês, desfaz um objeto composto nos objetos de que ele é feito. Selecione os objetos e pressione Enter: uma polilinha vira linhas e arcos sobre o seu eixo, uma referência de bloco os objetos do seu bloco, um nível abaixo, um texto multilinha um texto de uma linha para cada linha que ele mostra, e uma hachura de padrão as linhas do seu padrão. Cada peça mantém a camada e as propriedades do objeto; as de um bloco, as suas próprias. Uma polilinha com largura a perde, e o EXPLODIR avisa. Linhas, círculos, arcos, textos de uma linha e cotas não podem ser explodidos: são recusados ao serem selecionados, e uma spline, uma elipse ou uma hachura sólida ao fechar a seleção. A explosão é um passo que o Desfazer reverte.
+
+- **Comando:** `EXPLODIR`
+- **Em inglês:** `EXPLODE`, que se digita `_EXPLODE` em qualquer idioma
+- **Aliases:** `X`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `X` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="explode" caption="Um retângulo, uma única polilinha, explodido em quatro linhas, e depois uma delas apagada sozinha." />
+
+## O que ainda não faz [#missing]
+
+As cotas, que o AutoCAD explode em linhas, pontas de seta e texto e o MellowCAD recusa. Uma hachura cujo padrão não vem incluído aqui é recusada como uma sólida, e o texto multilinha explodido fica onde a fonte o desenha, um tantinho fora do lugar do AutoCAD.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando EXPLODE no AutoCAD em português?
+
+EXPLODIR, com o alias `X`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_EXPLODE`.
+
+### Como desfazer um explodir no AutoCAD?
+
+Digite `D` ou pressione Ctrl+Z logo em seguida: a explosão é um único passo de desfazer. Mais tarde, o [`UNIR`](/docs/commands/join) volta a fazer uma única polilinha de linhas e arcos que se tocam pelas pontas, e o [`BLOCO`](/docs/commands/block) volta a fazer um bloco com os objetos.
+
+### Dá para explodir um texto no AutoCAD?
+
+Um texto multilinha, sim: cada linha vira um texto de uma linha. O texto de uma linha já é a menor peça, e o EXPLODIR o recusa.
+
+### Como explodir um bloco no AutoCAD?
+
+Selecione a referência de bloco e pressione Enter: ela vira os objetos do seu bloco, onde a referência os desenhava. Um bloco dentro dela continua sendo um bloco: exploda-o de novo. Os atributos voltam como as suas definições, sem os valores.
+
+## Comandos relacionados [#related]
+
+- [Comando JOIN (UNIR) no AutoCAD](/docs/commands/join)
+- [Comando BLOCK (BLOCO) no AutoCAD](/docs/commands/block)
+- [EDITARP (PEDIT)](/docs/commands#pedit): Editar polilinha
+- [Comando INSERT (INSERIR) no AutoCAD](/docs/commands/insert)

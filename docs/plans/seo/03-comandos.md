@@ -104,15 +104,16 @@ Otras sesiones pueden estar trabajando en el árbol: añade solo tus ficheros. P
 para investigación independiente, con moderación (pocos a la vez y sin que lancen otros): el dueño
 lo pidió por el coste.
 
-## Lo que queda (estado del 5/11/2026)
+## Lo que queda (estado del 6/11/2026)
 
-La mecánica está hecha y 38 comandos tienen página (`docs/next-seo.md` §8). Cada tanda siguiente
+La mecánica está hecha y 48 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+tanda y, de la segunda ola, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN y
+BREAK. Cada tanda siguiente
 es una sesión con la skill `command-page`, un commit, y el push del dueño; F1, el índice, el
 sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. En este orden:
 
-1. **El resto de la segunda ola** (demanda en `keywords-en.md` §5.4): STRETCH, CHAMFER, EXPLODE,
-   JOIN, BREAK, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, SPLINE, PEDIT, MATCHPROP, PROPERTIES,
-   LINETYPE, LWEIGHT, UNITS, AREA, DIST, ZOOM.
+1. **El resto de la segunda ola** (demanda en `keywords-en.md` §5.4): SPLINE, PEDIT, MATCHPROP,
+   PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST, ZOOM.
 2. **El resto del 3D**: UCS, 3DORBIT, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT, CYLINDER, SPHERE,
    CONE, WEDGE, TORUS, PYRAMID, REGION, MASSPROP, VSCURRENT.
 3. **El resto, si da para una página propia**: ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE,
