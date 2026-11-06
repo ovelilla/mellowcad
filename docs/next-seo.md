@@ -1,10 +1,9 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 38 comandos publicada el 6/11 y la 04 (la landing) hecha el 6/11, a la espera de que el
-> dueño la revise y la publique; por decisión del dueño la visibilidad va antes que cualquier
-> funcionalidad; siguiente: las tandas de comandos que quedan, lo que queda de §7 y la 05 cuando la
-> 04 esté publicada. Esperan detrás
+> mecánica y 38 comandos publicada el 6/11 y la 04 (la landing) publicada el 6/11; por decisión del
+> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
+> quedan, lo que queda de §7 y la 05 (lanzamiento). Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -283,7 +282,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    **Tras la sesión 03 (6/11, hecho a petición del dueño):** el sitemap reenviado (Google lo leyó al
    momento: 195 páginas) y «Solicitar indexación» de los cuatro índices `/docs/commands` y de
    OFFSET y TRIM en casi todos los idiomas, 11 URLs, hasta la cuota diaria de Google. Quedan 33 de
-   la lista (diez comandos por idioma), una docena al día:
+   la lista (diez comandos por idioma), y tras publicar la 04 las cuatro portadas delante (37), una
+   docena al día:
    `node gsc-request.mjs gsc-request-pending.txt` en ~/seo-data/scripts (con el Chrome del README
    de esa carpeta abierto), que salta las ya pedidas. **La cola la llevan las sesiones**, no el
    dueño: el hook de inicio (`.claude/hooks/session-start.mjs`) avisa cuando quedan URLs y ha
@@ -342,9 +342,10 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   por tandas con la skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`,
   «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
-- 04 Rediseño de la landing: hecha el 6/11/2026, **sin publicar**: el dueño la revisa antes del
-  push, y tras el push `/`, `/es`, `/pt-br` y `/ar` entran en la cola de «Solicitar indexación»
-  (§7) e IndexNow se reenvía. El plan, lo cambiado al construir, lo medido y el test de cinco
+- 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,
+  «Request indexing» de `/`, `/es`, `/pt-br` y `/ar` en Bing (aceptadas, cuota 97 de 100) e IndexNow
+  con las 195 URLs del sitemap (200); en Google, las cuatro portadas encabezan la cola de «Solicitar
+  indexación» (37 URLs, §7), que no admite más hasta pasadas las 23:03 UTC del 6/11. El plan, lo cambiado al construir, lo medido y el test de cinco
   segundos antes y después, en `docs/plans/seo/04-landing-plan.md`. Concepto A con el hero del B y
   el «para quién» del C: el H1 es la categoría («CAD online gratis con comandos de AutoCAD»), la
   píldora gratis / sin registro / nada que instalar encima, el lead con los alias del motor en el
