@@ -204,10 +204,11 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
 | lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
-| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado (decidir si se paga la revisión prioritaria, 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto | kit §6 | — |
+| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño | kit §6 | — |
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | — |
+| lun 16/11 y cada lunes | Seguimiento: ¿aprobados SaaSHub y AlternativeTo (su página `/software/mellowcad/`)?, correo en hello@; si AlternativeTo sigue sin revisar el 30/11, reconsiderar los 15 $ antes de Product Hunt | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
 | mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
 | jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
