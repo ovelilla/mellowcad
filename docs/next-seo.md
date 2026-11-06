@@ -1,9 +1,10 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 38 comandos publicada el 6/11 y la 04 (la landing) publicada el 6/11; por decisión del
+> mecánica y 38 comandos publicada el 6/11, la 04 (la landing) publicada el 6/11 y la 05
+> (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
 > dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
-> quedan, lo que queda de §7 y la 05 (lanzamiento). Esperan detrás
+> quedan y lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -183,18 +184,55 @@ decisiones, dentro de los presupuestos de `.claude/rules/i18n.md`.
 ### L5. Lanzamiento y autoridad
 
 Objetivo: los primeros 20–30 dominios que enlazan y el tráfico de lanzamiento, la causa de más
-peso. El kit (`docs/plans/seo/launch-kit.md`) tiene los textos de Reddit, Product Hunt,
-AlternativeTo y SaaSHub, el guion de Show HN (Hacker News pide que ese texto lo escriba a mano su
-autor, sin LLM), el correo de outreach en inglés y en español, la galería y el vídeo, y el
-calendario; la lista de los 73 artículos de seis idiomas con los contactos de sus autores, y la de
-creadores, quedan fuera del repo, que es público (`~/seo-data/audit-2026-11-05/authority-*.csv`).
+peso. El kit (`docs/plans/seo/launch-kit.md`, al día con la landing publicada y con las reglas de
+cada sitio leídas el 6/11) tiene los textos de Reddit, Product Hunt, AlternativeTo, SaaSHub y los
+demás directorios, el guion de Show HN (Hacker News prohíbe ya en sus normas el texto generado o
+editado con IA, también en los comentarios: lo escribe a mano el dueño) y el correo base; los
+materiales (8 imágenes de galería, el vídeo de 46 s, el logotipo) y los 50 correos de outreach,
+uno por artículo y en su idioma, están en `~/seo-data/launch/`, fuera del repo, que es público,
+como la lista de los 73 artículos y sus contactos (`~/seo-data/audit-2026-11-05/authority-*.csv`).
 Lo medido: ninguno de los 73 nombra a MellowCAD, 53 nombran alguna herramienta del navegador (casi
 todas modeladores 3D) y 36 enlazan sin `nofollow`: los enlaces que cuentan salen del outreach, no de
-las plataformas de lanzamiento. Los directorios pueden ir ya; Show HN, Reddit y Product Hunt, cuando
-L2 y L4 estén publicados; el outreach, en diciembre, antes de que los listados se reescriban para
-2027. **Ninguna publicación la hace una sesión.**
+las plataformas de lanzamiento. El outreach va en diciembre, antes de que los listados se reescriban
+para 2027. **Ninguna publicación la hace una sesión.**
 **Terminado:** el kit al día con la landing nueva y las publicaciones hechas por el dueño, con su
 fecha aquí.
+
+**Calendario** (preparado el 6/11/2026; las fechas son objetivos y cada paso espera a su condición;
+el texto de cada uno, en la sección del kit indicada; anota la fecha real al hacerlo):
+
+| Cuándo | Qué (lo hace el dueño) | Texto | Condición |
+| --- | --- | --- | --- |
+| lun 9/11 | GitHub: descripción, temas y vista previa social; las cuentas (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
+| 9–13/11 | Directorios: AlternativeTo (decidir si se paga la revisión prioritaria), SaaSHub con sus competidores, G2, TheCADHub, OpenAlternative; Appvizer y Quelle-Alternative | kit §6 | — |
+| 9–13/11 | Lanzamiento suave con cinco usuarios de AutoCAD; participar de verdad en r/AutoCAD y r/cad | kit §0 | — |
+| semana del 16/11 | Arreglar lo que salga del lanzamiento suave (sesiones) | — | — |
+| mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
+| jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
+| vie 20/11 | r/SideProject | kit §3 | — |
+| lun 23/11 | r/AutoCAD | kit §3 | los fallos de Show HN, arreglados |
+| mar 24/11 | En español: r/programacion (dentro de su 10 %), foros y grupos de estudiantes | kit §3 | — |
+| mié 25/11 | r/cad | kit §3 | — |
+| jue 26/11 | r/Arquitectura, con la etiqueta «Software» | kit §3 | — |
+| sáb 28/11 | r/webdev, Showoff Saturday, escrito a mano | kit §3 | — |
+| mar 1 – jue 3/12 | Outreach, tanda 1: los artículos A en inglés, MakeUseOf y Hackaday | `~/seo-data/launch/outreach/` | — |
+| sáb 5/12, 00:01 PT (09:01 en España) | **Product Hunt**, programado desde el día antes | kit §4 | cuenta con una semana; vídeo en YouTube |
+| mar 8 – vie 11/12 | Outreach, tanda 2: los A en español, portugués, árabe, francés y alemán; recordatorio único de la tanda 1 (jue 10) | ídem | — |
+| lun 14 – mié 16/12 | Outreach, tanda 3 (B y C); los creadores (`authority-creators.csv`) con los hilos de HN y PH como contexto; profesores (correo del kit §3) | ídem | — |
+| vie 18/12 | Recordatorio único de la tanda 2 | ídem | — |
+| lun 4/1/2027 | Recordatorio único de la tanda 3; volver a escribir a las listas que publiquen su edición de 2027 | ídem | — |
+| enero | Medir (sesión 10, §6) | — | — |
+
+**Qué mirar después de cada paso**: Vercel Analytics, los referentes (news.ycombinator.com,
+reddit.com, producthunt.com, dev.to, alternativeto.net) y las visitas de `/draw` por visita a la
+landing, por idioma; GitHub, Insights → Traffic (referentes) y las estrellas; Search Console,
+Enlaces (dominios que enlazan, tarda semanas) y Rendimiento; Bing, Backlinks. Un enlace nuevo de
+una lista se comprueba con su página (que lleve `href` a mellowcad.com, con o sin `nofollow`) y
+se anota aquí.
+
+**Visto al preparar los materiales (6/11)**, para su sesión: ZOOM Extensión no encuadra un sólido
+en una vista isométrica (anotado en `docs/next-solids.md`, fase 6c); no frena el lanzamiento, pero
+quien pruebe el 3D lo verá.
 
 ### L6. Práctica y guías
 
@@ -302,11 +340,12 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    engine»). La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
    y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
    engine» y el editor, tres idiomas.
-5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, TheCADHub y los demás del kit, §6):
-   ya, no esperan a la landing.
-6. **Show HN, Reddit, Product Hunt**, con los textos y el calendario del kit, cuando 02–04 estén
-   publicados.
-7. **Outreach** a los autores de los artículos de la lista, con el correo del kit.
+5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
+   §6): ya, la semana del 9/11 (calendario de L5).
+6. **Show HN, Reddit, Product Hunt y dev.to**, con los textos del kit y en las fechas del
+   calendario de L5 (02–04 ya están publicados).
+7. **Outreach** a los autores de los artículos de la lista: los 50 correos de
+   `~/seo-data/launch/outreach/`, en tres tandas de diciembre (calendario de L5).
 
 ## 8. Estado
 
@@ -360,7 +399,15 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   y 275; Lighthouse igual antes y después. El motor: Conceptual corta las celdas de una cara plana
   en sus aristas (sin escalones) y `recordDemo` devuelve el último estado. La tarjeta OG dibuja la
   brida y su sólido.
-- 05 Lanzamiento: pendiente (los directorios pueden ir ya).
+- 05 Lanzamiento: preparado el 6/11/2026; lo publica el dueño según el calendario de L5. El kit,
+  al día con la landing publicada y con las reglas de cada sitio leídas ese día (Hacker News
+  prohíbe ya el texto generado o editado con IA; Product Hunt pide una semana de cuenta;
+  AlternativeTo, una descripción sin URLs, y su cola gratuita puede no llegar nunca; r/brdev,
+  r/arquitetura y otros prohíben promocionar productos; no hay subreddit de AutoCAD en español).
+  Los materiales en `~/seo-data/launch/`, dibujados por MellowCAD desde un build de producción
+  local: 8 imágenes de galería a 1270×760 (2×), el vídeo de 46 s a 1920×1080 (inglés, español y
+  3D), el logotipo de 240 a 1024 px; 50 correos de outreach, uno por artículo y en su idioma, 5
+  fichas de directorio en su lugar y 3 competidores descartados. Publicado: nada todavía.
 - 06 Práctica y guías: pendiente.
 - 07 DXF: pendiente.
 - 08 Francés: pendiente.
