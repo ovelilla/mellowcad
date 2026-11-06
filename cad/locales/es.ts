@@ -983,7 +983,8 @@ export const es: EngineLocale = {
         "FC"
       ],
       "-OSNAP": [
-        "-REFENT"
+        "-REFENT",
+        "-REF"
       ],
       "FROM": [
         "DESDE"

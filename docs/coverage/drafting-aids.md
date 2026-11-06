@@ -183,7 +183,7 @@ LINE's distance and angle, d01; here a coordinate box, as FROM's); a filter insi
 FROM's base point as the filter's (f32; the desktop refuses it, d05, as here); the menu's icons
 (d04).
 
-### `-OSNAP` / `-OS` · es `-REFENT` · pt-BR `-OSNAP` / `-OS`
+### `-OSNAP` / `-OS` · es `-REFENT` / `-REF` · pt-BR `-OSNAP` / `-OS`
 
 **Implemented:** `Current osnap modes: End,Cen,Int,Ext` (no line when none runs), each mode by its
 short name in OSMODE's order (`Quad,Int,Ins,Perp,Near,App Int,Ext,Par`; es `Fin,Med,Cen,Cua…`,
@@ -199,7 +199,7 @@ letters, so a keyword's single letter stays the keyword (pt-BR `A` at PLINE is A
 at LINE are `Ponto inválido.`, names/p09).
 
 **Missing:** OSNAP / OS (the Drafting Settings dialog; the status bar's Object snap menu stands in),
-GCEnter and NODe in the list, a Spanish alias (none verified)
+GCEnter and NODe in the list
 
 ### `OSNAP` tracking (OTRACK)
 

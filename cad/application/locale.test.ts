@@ -1072,6 +1072,14 @@ describe("Spanish AutoCAD's command language", () => {
     }
   })
 
+  // Spanish AutoCAD 2027's acad.pgp: `-REF, *-REFENT`.
+  it("sets the running snaps with -REF, -REFENT's acad.pgp alias", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("-REF").type("MED,CEN").enter()
+    cad.command("-REF")
+    expect(cad.commandLog().at(-1)).toBe("Modos refent actuales: Med,Cen")
+  })
+
   it("defines an attribute with AT, its modes line as the product prints it", () => {
     const cad = createHarness({ locale: es })
     cad.command("AT")

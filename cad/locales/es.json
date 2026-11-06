@@ -570,7 +570,7 @@
       "REDO": ["REHACER"],
       "MREDO": ["MREHACER"],
       "SNAP": ["FORZCURSOR", "FC"],
-      "-OSNAP": ["-REFENT"],
+      "-OSNAP": ["-REFENT", "-REF"],
       "FROM": ["DESDE"],
       "NEW": ["NUEVO"],
       "QNEW": ["RNUEVO"],
