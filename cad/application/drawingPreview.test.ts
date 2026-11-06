@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest"
 import { THEME } from "../scene/theme"
-import { circleOf, documentWith, lineOf, p } from "../../test/builders"
+import { DEFAULT_DOCUMENT_SETTINGS } from "../domain/units"
+import {
+  circleOf,
+  documentWith,
+  hatchOf,
+  lineOf,
+  loopOf,
+  p,
+} from "../../test/builders"
 import { buildDrawingPreview, previewCamera } from "./drawingPreview"
 
 describe("buildDrawingPreview", () => {
@@ -84,6 +92,19 @@ describe("buildDrawingPreview", () => {
       return segment.kind === "segment" ? segment.stroke.width : 0
     }
     expect(widthOf(true)).toBeGreaterThan(widthOf(false))
+  })
+
+  it("draws a hatch only with FILL on, as the editor does", () => {
+    const hatch = hatchOf([loopOf(p(0, 0), p(10, 10))], { patternId: "SOLID" })
+    const drawn = (fillMode: boolean) =>
+      buildDrawingPreview(
+        documentWith([hatch], {
+          settings: { ...DEFAULT_DOCUMENT_SETTINGS, fillMode },
+        }),
+        { width: 100, height: 100 }
+      )!.primitives.length
+    expect(drawn(true)).toBeGreaterThan(0)
+    expect(drawn(false)).toBe(0)
   })
 })
 

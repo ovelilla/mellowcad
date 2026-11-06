@@ -93,6 +93,8 @@ export function previewScene(
     ucsIcon: null,
     ltScale: document.getSettings().ltScale,
     lwDisplay,
+    attributeDisplay: document.getSettings().attributeDisplay,
+    fillMode: document.getSettings().fillMode,
     snap: null,
     snapLabel: "",
     acquiredTrackingPoints: [],

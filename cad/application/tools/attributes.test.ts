@@ -17,6 +17,7 @@ import {
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { es } from "../../locales/es"
 import { THEME } from "../../scene/theme"
+import { buildDrawingPreview } from "../drawingPreview"
 
 type Harness = ReturnType<typeof createHarness>
 
@@ -576,6 +577,23 @@ describe("ATTDISP", () => {
     cad.moveTo(p(50, 0))
 
     expect(drawnTexts(cad)).not.toContain("SECRET")
+  })
+
+  // A thumbnail and a docs figure are stills of the drawing: they show what
+  // the editor does.
+  it("is followed by a still of the drawing", () => {
+    const cad = withHidden()
+    const still = () =>
+      buildDrawingPreview(cad.runtime.document, {
+        width: 200,
+        height: 100,
+      })!.primitives.flatMap((prim) =>
+        prim.kind === "text" ? [prim.text] : []
+      )
+    expect(still()).not.toContain("SECRET")
+
+    cad.command("ATTDISP").option("ON")
+    expect(still()).toContain("SECRET")
   })
 
   it("undoes the setting", () => {
