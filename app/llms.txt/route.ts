@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
+import { FAQ_QUESTIONS } from "@/content/faq"
 import { loadEngineLocale } from "@/i18n/engine"
 import { localeUrl } from "@/i18n/navigation"
 import {
@@ -29,7 +30,6 @@ import {
 
 export const dynamic = "force-static"
 
-const FAQ = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 const STATUS_TODAY = [1, 2, 3, 4, 5, 6] as const
 const STATUS_NOT_YET = [1, 2, 3, 4, 5] as const
 
@@ -80,7 +80,7 @@ export async function GET() {
   const facts = productFacts()
 
   const link = (url: string) => (chunks: string) => `[${chunks}](${url})`
-  const answers = FAQ.map(
+  const answers = FAQ_QUESTIONS.map(
     (n) =>
       `**${faq(`q${n}`)}** ${faq.markup(`a${n}`, {
         github: link(REPOSITORY_URL),

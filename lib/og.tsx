@@ -9,6 +9,7 @@ import {
   buildDrawingPreview,
   recordDemo,
 } from "@mellowcad/engine"
+import { heroSolid } from "@/content/demos/hero"
 import { HERO_FIGURE } from "@/content/figures"
 import {
   BRAND,
@@ -21,7 +22,10 @@ import { type AppLocale, DIRECTION } from "@/i18n/routing"
 
 export const OG_SIZE = { width: 1200, height: 630 }
 
-const DRAWING = { width: 640, height: 426 }
+/** The card's drawing column: the flange drafted at its top, its solid below at the end. */
+const AREA = { width: 640, height: 518 }
+const DRAWING = { width: 540, height: 360 }
+const SOLID = { width: 290, height: 188 }
 
 /** Geist Mono: capitals 0.71 em, every glyph 0.6 em wide, baseline 0.8 em down. */
 const MONO_CAP_RATIO = 0.71
@@ -52,6 +56,13 @@ async function flange() {
     src: `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`,
     texts,
   }
+}
+
+/** The flange's solid, as the hero ends on it: Hidden, from the south-west, in THEME's own colours. */
+async function solid() {
+  const { scene } = await recordDemo(heroSolid)
+  const svg = new SvgScenePresenter().render(scene, { background: false })
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`
 }
 
 async function font(file: string) {
@@ -173,8 +184,9 @@ export async function ogImage({
   title: string
 }) {
   const rtl = DIRECTION[locale as AppLocale] === "rtl"
-  const [{ src, texts }, inter, mono, arabic] = await Promise.all([
+  const [{ src, texts }, model, inter, mono, arabic] = await Promise.all([
     flange(),
+    solid(),
     font("inter-latin-600-normal.woff"),
     font("geist-mono-latin-400-normal.woff"),
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
@@ -302,48 +314,67 @@ export async function ogImage({
         style={{
           display: "flex",
           position: "relative",
-          width: DRAWING.width,
-          height: DRAWING.height,
+          width: AREA.width,
+          height: AREA.height,
           [rtl ? "marginRight" : "marginLeft"]: "auto",
-          marginTop: "auto",
-          marginBottom: "auto",
         }}
       >
+        {/* The same flange, modelled: the solid the hero turns to, under
+            the drawing's section, clear of it. */}
         {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders <img>, not next/image */}
-        <img src={src} width={DRAWING.width} height={DRAWING.height} alt="" />
-        {texts.map((text, index) => {
-          // Geist Mono is monospaced (0.6 em advance), so the text's width
-          // — and so where its justification point sits — is known exactly.
-          const size = text.height / MONO_CAP_RATIO
-          const width = text.text.length * MONO_ADVANCE * size
-          const anchorX =
-            text.align === "center"
-              ? width / 2
-              : text.align === "right"
-                ? width
-                : 0
-          const baseline = EM_ASCENT * size
-          return (
-            <span
-              key={index}
-              style={{
-                position: "absolute",
-                left: text.at.x - anchorX,
-                top: text.at.y - baseline,
-                width,
-                height: size,
-                fontFamily: "Geist Mono",
-                fontSize: size,
-                lineHeight: 1,
-                color: text.color,
-                transform: `rotate(${(text.rotation * 180) / Math.PI}deg)`,
-                transformOrigin: `${anchorX}px ${baseline}px`,
-              }}
-            >
-              {text.text}
-            </span>
-          )
-        })}
+        <img
+          src={model}
+          width={SOLID.width}
+          height={SOLID.height}
+          alt=""
+          style={{ position: "absolute", right: 0, bottom: 0 }}
+        />
+        <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: DRAWING.width,
+            height: DRAWING.height,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders <img>, not next/image */}
+          <img src={src} width={DRAWING.width} height={DRAWING.height} alt="" />
+          {texts.map((text, index) => {
+            // Geist Mono is monospaced (0.6 em advance), so the text's width
+            // — and so where its justification point sits — is known exactly.
+            const size = text.height / MONO_CAP_RATIO
+            const width = text.text.length * MONO_ADVANCE * size
+            const anchorX =
+              text.align === "center"
+                ? width / 2
+                : text.align === "right"
+                  ? width
+                  : 0
+            const baseline = EM_ASCENT * size
+            return (
+              <span
+                key={index}
+                style={{
+                  position: "absolute",
+                  left: text.at.x - anchorX,
+                  top: text.at.y - baseline,
+                  width,
+                  height: size,
+                  fontFamily: "Geist Mono",
+                  fontSize: size,
+                  lineHeight: 1,
+                  color: text.color,
+                  transform: `rotate(${(text.rotation * 180) / Math.PI}deg)`,
+                  transformOrigin: `${anchorX}px ${baseline}px`,
+                }}
+              >
+                {text.text}
+              </span>
+            )
+          })}
+        </div>
       </div>
     </div>,
     {

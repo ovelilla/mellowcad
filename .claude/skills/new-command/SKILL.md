@@ -64,7 +64,8 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
     `cad/application/tools/currentProperties.test.ts`. A new drawing setting it saves follows skill
     `extend-model` (AUPREC's `drawingFile.ts` and its tolerance test, 88090fd).
 11. **The landing.** `COMMAND_FILING` in `content/commands.ts`. **Enforced** by
-    `content/commands.test.ts`: it fails until every registered command is filed.
+    `content/commands.test.ts`: it fails until every registered command is filed. A 3D command
+    goes in `SOLID_COMMANDS` too, the 3D section's "Works today" (not enforced).
 12. **The coverage entry** in `docs/coverage/`: what the command does and what it still
     lacks; edit the entry, never append a narrative (6d870a7, 85565ad, 88090fd).
 13. **Close** with skill `finish-feature`: `npm run typecheck`, `npm run lint`,

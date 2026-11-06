@@ -174,7 +174,7 @@ marks a choice between competing terms that a native review should settle first 
 - Title: «رسم هندسي أون لاين مجانًا بأوامر أوتوكاد — MellowCAD» (52), with no room left for «ثنائي
   وثلاثي الأبعاد», which the description carries: «برنامج رسم هندسي مجاني في متصفحك، بديل لأوتوكاد
   بأوامره واختصاراتها: رسم ثنائي الأبعاد ومجسمات ثلاثية الأبعاد لا تزال جزئية. بلا تثبيت ولا
-  تسجيل.» (145). The H1's eyebrow, the share card and the footer: «رسم هندسي أون لاين مجانًا بأوامر
+  تسجيل.» (145). The H1, the share card's eyebrow and the footer: «رسم هندسي أون لاين مجانًا بأوامر
   أوتوكاد», which fills the card's line (445 of 470 px at 24 px in Readex Pro): a longer one would
   run off it, as the card never wraps a right-to-left line (`marketing.md`).
 
@@ -198,8 +198,10 @@ available. Where one should look first, if one ever is, in this order:
    the layer dialogs (`Layers.dialog`), the rail's flyouts and MTEXT's unsaved-changes dialog;
    in `messages/ar.json`, 79 new keys (the docs' pages and shortcuts, `Docs.*`) and 18 rewritten
    (the FAQ, the Status section), and on 05/11/2026 the search texts (`Metadata`'s title and
-   descriptions, `Hero.eyebrow` and `Hero.lead`, the taglines, `Toolset.title`) and the FAQ's 3D
-   question (`Faq.q10`, `Faq.a10`).
+   descriptions, the H1 and `Hero.lead`, the taglines) and the FAQ's 3D question (`Faq.q10`,
+   `Faq.a10`); on 06/11/2026 the landing's redesign, about 70 keys (`Hero`, `Proof`, `Commands`,
+   `Precision`, `Toolset`, `Solids`, `LocalFirst`, `Audience`, the FAQ's DWG and class questions,
+   `Footer.trademark`).
 3. **The rest** of `messages/ar.json` and `cad/locales/ar.json`, the plurals' six categories first.
 
 A review received goes in as any fix, and the status lines then name its date.

@@ -160,7 +160,7 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
   «AutoCAD online gratis»: it is Autodesk's brand query and would read as if this were AutoCAD.
   Title: «CAD online gratis: 2D, 3D y comandos de AutoCAD — MellowCAD» (59); description: «Programa
   CAD gratis en tu navegador, con los comandos y alias de AutoCAD en español: dibujo 2D y sólidos
-  3D, aún parciales. Sin descargas ni registro.» (150); the H1's eyebrow, the share card and the
+  3D, aún parciales. Sin descargas ni registro.» (150); the H1, the share card's eyebrow and the
   footer: «CAD online gratis con comandos de AutoCAD». The lead carries the terms the H1 lacks
   (navegador, en español, 2D, 3D).
 

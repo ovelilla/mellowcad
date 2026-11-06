@@ -9,7 +9,7 @@ import { sitePaths } from "@/i18n/site-paths"
 import { Logo } from "./logo"
 import { ForwardArrow } from "./forward-arrow"
 
-const SECTIONS = ["features", "commands", "roadmap", "faq"] as const
+const SECTIONS = ["commands", "features", "solids", "roadmap", "faq"] as const
 
 /**
  * Sticky, with the call to action always in reach. The landing's sections

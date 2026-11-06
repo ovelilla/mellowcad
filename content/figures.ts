@@ -1,10 +1,6 @@
 import type { Bounds, DemoScript } from "@mellowcad/engine"
 
-import {
-  engineLayers,
-  localFirst,
-  type LocalFirstLabels,
-} from "./demos/diagrams"
+import { localFirst, type LocalFirstLabels } from "./demos/diagrams"
 import {
   circleDiameter,
   endpointSnap,
@@ -49,8 +45,7 @@ import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as unionSessions } from "./demos/commands/union"
-import { hero } from "./demos/hero"
-import { offsetSession } from "./demos/offset"
+import { hero, heroDrawing } from "./demos/hero"
 import {
   crossingSelection,
   osnapTangent,
@@ -58,11 +53,10 @@ import {
   polar,
   windowSelection,
 } from "./demos/precision"
+import { conceptualSolid, hiddenSolid, wireframeSolid } from "./demos/solids"
 import {
   annotateGroup,
   drawGroup,
-  filesGroup,
-  inquiryGroup,
   modifyGroup,
   organizeGroup,
 } from "./demos/toolset"
@@ -83,19 +77,32 @@ export interface FigureSpec {
 }
 
 /**
- * The hero's frame is set by hand because a dimension's text runs past its
- * definition points, which is all a drawing's extents know about.
+ * The hero: the flange drafted in plan, its objects plotted stroke by stroke,
+ * then modelled as a solid and seen as the editor's last frame from the step
+ * that turns the view (-VIEW's answer). Its plan's frame is set by hand
+ * because a dimension's text runs past its definition points, which is all a
+ * drawing's extents know about.
  */
 export const HERO_FIGURE = {
   script: hero,
+  /** The flange drafted, the steps whose objects are plotted in plan. */
+  drawing: heroDrawing,
   width: 720,
   height: 480,
   padding: 12,
   frame: { min: { x: -78, y: -62 }, max: { x: 104, y: 86 } },
-} satisfies FigureSpec
+  drafted: heroDrawing.actions.length,
+  turn:
+    hero.actions.findIndex(
+      (action) => action.kind === "command" && action.text === "_-VIEW"
+    ) + 1,
+} satisfies FigureSpec & {
+  readonly drawing: DemoScript
+  readonly drafted: number
+  readonly turn: number
+}
 
 export const FIGURES = {
-  offset: { script: offsetSession, width: 360, height: 200, padding: 16 },
   osnap: { script: osnapTangent, width: 320, height: 220, live: true },
   otrack: { script: otrack, width: 320, height: 220, live: true },
   polar: { script: polar, width: 320, height: 220, live: true },
@@ -111,8 +118,9 @@ export const FIGURES = {
     frame: { min: { x: -4, y: -4 }, max: { x: 104, y: 68 } },
   },
   organize: { script: organizeGroup, width: 240, height: 150, padding: 14 },
-  inquiry: { script: inquiryGroup, width: 240, height: 150, live: true },
-  files: { script: filesGroup, width: 240, height: 150, live: true },
+  wireframe: { script: wireframeSolid, width: 320, height: 200, live: true },
+  hidden: { script: hiddenSolid, width: 320, height: 200, live: true },
+  conceptual: { script: conceptualSolid, width: 320, height: 200, live: true },
 } satisfies Record<string, FigureSpec>
 
 /** The figures that carry words, built in the page's language. */
@@ -122,13 +130,6 @@ export const DIAGRAMS = {
     width: 560,
     height: 250,
     padding: 8,
-  }),
-  engineLayers: (imports: string) => ({
-    script: engineLayers(imports),
-    width: 420,
-    height: 300,
-    padding: 8,
-    frame: { min: { x: -28, y: -4 }, max: { x: 92, y: 79 } },
   }),
 } satisfies Record<string, (labels: never) => FigureSpec>
 

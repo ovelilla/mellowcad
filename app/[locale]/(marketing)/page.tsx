@@ -1,16 +1,16 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 
+import { AudienceSection } from "@/components/marketing/audience-section"
 import { CommandsSection } from "@/components/marketing/commands-section"
-import { EngineSection } from "@/components/marketing/engine-section"
+import { DraftingSection } from "@/components/marketing/drafting-section"
 import { FaqSection } from "@/components/marketing/faq-section"
 import { FinalCta } from "@/components/marketing/final-cta"
 import { Hero } from "@/components/marketing/hero"
 import { JsonLd } from "@/components/marketing/json-ld"
 import { LocalFirstSection } from "@/components/marketing/local-first-section"
-import { PrecisionSection } from "@/components/marketing/precision-section"
+import { SolidsSection } from "@/components/marketing/solids-section"
 import { StatusSection } from "@/components/marketing/status-section"
-import { ToolsetSection } from "@/components/marketing/toolset-section"
 import { pageMetadata } from "@/lib/metadata"
 import { homeStructuredData } from "@/lib/structured-data"
 
@@ -24,8 +24,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The landing, in the order it argues: show (hero, commands, precision,
- * toolset), reassure (local-first, engine, status), then answer (FAQ).
+ * The landing, in the order a visitor from a search asks: what it is and the
+ * proof (hero), the commands they know, 2D, 3D, the price and their files,
+ * who it is for, then where it stands and the answers.
  */
 export default async function HomePage() {
   return (
@@ -37,10 +38,10 @@ export default async function HomePage() {
       />
       <Hero />
       <CommandsSection />
-      <PrecisionSection />
-      <ToolsetSection />
+      <DraftingSection />
+      <SolidsSection />
       <LocalFirstSection />
-      <EngineSection />
+      <AudienceSection />
       <StatusSection />
       <FaqSection />
       <FinalCta />

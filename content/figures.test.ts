@@ -75,18 +75,50 @@ describe.each(
 })
 
 describe("the hero", () => {
-  it("plots in 8 to 12 seconds, as the brief budgets it", async () => {
+  it("plots in 8 to 12 seconds, as the brief budgets it, and turns at its end", async () => {
     const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
     expect(plot.duration).toBeGreaterThanOrEqual(8_000)
     expect(plot.duration).toBeLessThanOrEqual(12_000)
+    expect(plot.turned?.at).toBeGreaterThan(plot.lines[0].at)
+    expect(plot.turned?.at).toBeLessThanOrEqual(plot.duration)
   })
 
-  it("stays inside the SVG budget of about 600 primitives", async () => {
+  it("turns the view as -VIEW's answer ends", () => {
+    const actions = HERO_FIGURE.script.actions
+    expect(actions[HERO_FIGURE.turn - 1]).toEqual({
+      kind: "command",
+      text: "_-VIEW",
+    })
+    expect(actions[HERO_FIGURE.turn].kind).toBe("option")
+    expect(HERO_FIGURE.drawing.actions).toEqual(
+      actions.slice(0, HERO_FIGURE.drafted)
+    )
+  })
+
+  it("stays inside the SVG budget of about 600 primitives, both its frames", async () => {
     const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
+    const markup = plot.markup + (plot.turned?.markup ?? "")
     expect(
-      plot.markup.match(/<(line|circle|path|rect|text) /g)?.length
+      markup.match(/<(line|circle|ellipse|path|rect|text) /g)?.length
     ).toBeLessThanOrEqual(600)
-    expect(plot.markup.length).toBeLessThan(60_000)
+    expect(markup.length).toBeLessThan(60_000)
+  })
+
+  it("plots in plan only what was drafted: the solid is the last frame's", async () => {
+    const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
+    const drafted = await recordDemo(HERO_FIGURE.drawing)
+    expect(plot.markup.match(/<(line|circle|path|rect|text) /g)?.length).toBe(
+      (await plotDemo(HERO_FIGURE.drawing, HERO_FIGURE)).markup.match(
+        /<(line|circle|path|rect|text) /g
+      )?.length
+    )
+    expect(drafted.state.view.preset).toBe("Top")
+    expect(plot.recording.state.view.preset).toBe("SWiso")
+    expect(
+      [...plot.recording.document.getEntities()].filter(
+        (entity) => entity.type === "solid3d"
+      )
+    ).toHaveLength(1)
   })
 
   it("is drawn with the commands the brief names", async () => {
@@ -102,6 +134,9 @@ describe("the hero", () => {
         "HATCH",
         "DIMDIAMETER",
         "DIMLINEAR",
+        "CYLINDER",
+        "SUBTRACT",
+        "-VIEW",
       ])
     )
   })

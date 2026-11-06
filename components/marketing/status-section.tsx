@@ -46,7 +46,7 @@ export async function StatusSection() {
     <section
       aria-labelledby="roadmap-title"
       id="roadmap"
-      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-14 px-4 py-12 sm:px-6 lg:py-20"
+      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-10 sm:px-6"
     >
       <SectionHeading
         id="roadmap-title"
@@ -56,9 +56,9 @@ export async function StatusSection() {
       />
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-3">
         {columns.map((column) => (
-          <div key={column.title} className="flex flex-col gap-5 bg-bg p-6">
+          <div key={column.title} className="flex flex-col gap-4 bg-bg p-5">
             <h3 className="label-mono">{column.title}</h3>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2 text-sm">
               {column.items.map((item) => (
                 <li key={item} className="flex gap-3">
                   <span

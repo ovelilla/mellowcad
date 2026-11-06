@@ -1,4 +1,4 @@
-import { HardDrive, Save, UserX } from "lucide-react"
+import { Gift, HardDrive, Save, UserX } from "lucide-react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
@@ -24,6 +24,7 @@ export async function LocalFirstSection() {
   const paths = await sitePaths()
 
   const facts = [
+    { icon: Gift, title: t("freeTitle"), body: t("freeBody") },
     { icon: HardDrive, title: t("autosaveTitle"), body: t("autosaveBody") },
     { icon: Save, title: t("fileTitle"), body: t("fileBody") },
     { icon: UserX, title: t("privateTitle"), body: t("privateBody") },
@@ -33,35 +34,30 @@ export async function LocalFirstSection() {
     <section
       aria-labelledby="privacy-title"
       id="privacy"
-      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-14 px-4 py-12 sm:px-6 lg:py-20"
+      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-10 sm:px-6"
     >
       <SectionHeading
         id="privacy-title"
         label={t("label")}
         title={t("title")}
       />
-      <div className="grid items-start gap-12 lg:grid-cols-12">
-        <ul className="flex flex-col gap-8 lg:col-span-5">
-          {facts.map(({ icon: Icon, title, body }) => (
-            <li key={title} className="flex gap-4">
-              <Icon
-                className="mt-1 size-5 shrink-0 text-fg-subtle"
-                aria-hidden="true"
-              />
-              <div className="flex flex-col gap-1">
-                <h3 className="text-h3">{title}</h3>
-                <p className="text-fg-muted">{body}</p>
-              </div>
-            </li>
-          ))}
-          <li className="rounded-md border border-border bg-bg-raised p-4 text-sm text-fg-muted">
-            {t("warning")}{" "}
-            <Link href={paths.privacy} className="underline-link">
-              {t("privacyLink")}
-            </Link>
+      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {facts.map(({ icon: Icon, title, body }) => (
+          <li key={title} className="flex flex-col gap-2">
+            <Icon className="size-5 text-fg-subtle" aria-hidden="true" />
+            <h3 className="text-lg font-semibold">{title}</h3>
+            <p className="text-fg-muted">{body}</p>
           </li>
-        </ul>
-        <div className="reveal overflow-hidden rounded-lg border border-border bg-bg lg:col-span-7">
+        ))}
+      </ul>
+      <div className="grid items-center gap-8 lg:grid-cols-12">
+        <p className="rounded-md border border-border bg-bg-raised p-4 text-sm text-fg-muted lg:col-span-7">
+          {t("formats")} {t("warning")}{" "}
+          <Link href={paths.privacy} className="underline-link">
+            {t("privacyLink")}
+          </Link>
+        </p>
+        <div className="reveal overflow-hidden rounded-lg border border-border bg-bg lg:col-span-5">
           <Drawing
             markup={figure.markup}
             width={figure.width}

@@ -132,8 +132,17 @@
   font-weight: 600;
 }
 
+/* The landing's H1: the category a search typed, big enough to read first,
+   short of the display size a slogan had. */
+@utility text-hero {
+  font-size: clamp(2.375rem, 1.6rem + 2.2vw, 3.375rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}
+
 @utility text-h2 {
-  font-size: clamp(2rem, 1.4rem + 2.2vw, 3.25rem);
+  font-size: clamp(1.875rem, 1.4rem + 1.4vw, 2.5rem);
   line-height: 1.08;
   letter-spacing: -0.032em;
   font-weight: 600;
@@ -190,6 +199,7 @@ html:lang(ar) body,
 }
 
 .text-display:lang(ar),
+.text-hero:lang(ar),
 .text-h2:lang(ar),
 .text-h3:lang(ar) {
   line-height: 1.3;
@@ -202,8 +212,12 @@ html:lang(ar) body,
   font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.75rem);
 }
 
+.text-hero:lang(ar) {
+  font-size: clamp(2.125rem, 1.4rem + 1.9vw, 3rem);
+}
+
 .text-h2:lang(ar) {
-  font-size: clamp(1.875rem, 1.3rem + 2vw, 3rem);
+  font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.25rem);
 }
 
 /* Geist Mono has no Arabic but does have a space, 0.6em wide: an Arabic
@@ -391,6 +405,17 @@ html:lang(ar) body,
     animation: fade calc(var(--d) * 0.6) ease-out var(--t) forwards;
   }
 
+  /* The hero's turn: as -VIEW answers, the plan gives way to the editor's
+     last frame, and the view's label and the ViewCube turn with it. */
+  .plot .turn-out {
+    animation: fade-out 400ms ease-in var(--t) forwards;
+  }
+
+  .plot .turn-in {
+    opacity: 0;
+    animation: fade 400ms ease-out var(--t) forwards;
+  }
+
   /* Typing, in step with the plot: a line opens at --t and its answer is
      typed character by character over --d. */
   .typing .cl-line {
@@ -448,6 +473,12 @@ html:lang(ar) body,
   }
 }
 
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes line-in {
   to {
     height: 1.5em;
@@ -481,10 +512,15 @@ html:lang(ar) body,
   }
 }
 
-/* Controls for motion that does not happen under reduced motion. */
+/* Controls for motion that does not happen under reduced motion; and the
+   hero in its final state, already turned. */
 @media (prefers-reduced-motion: reduce) {
   .motion-only {
     display: none;
+  }
+
+  .plot .turn-out {
+    visibility: hidden;
   }
 }
 

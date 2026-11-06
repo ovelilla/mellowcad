@@ -1,79 +1,96 @@
 idle: Command:
 ## hero
-237 +186 command |  | CIRCLE
-423 +126 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
-549 +106 input | Specify radius of circle or [Diameter]: | 50
-987 +186 command |  | OFFSET
-987 +0 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
-1173 +106 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 30
-1279 +123 input | Select object to offset or [Exit/Undo] <Exit>: | 
-1402 +123 input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
-1924 +186 command |  | CIRCLE
-2110 +146 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 36,0
-2256 +86 input | Specify radius of circle or [Diameter] <50.00>: | 6
-2342 +265 command |  | ARRAYPOLAR
-2607 +123 input | Select objects: | 1 found
-2731 +66 input | Select objects: | 
-2731 +0 info |  | Type = Polar  Associative = Yes
-2797 +126 input | Specify center point of array: | 0,0
-2923 +66 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: | 
-3315 +206 command |  | RECTANG
-3521 +166 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
-3687 +186 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
-4110 +206 command |  | RECTANG
-4316 +186 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,-50
-4502 +186 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
-5076 +146 command |  | LINE
-5222 +166 input | Specify first point: | -58,0
-5388 +186 input | Specify next point or [Undo]: | @160,0
-5972 +146 command |  | LINE
-6118 +166 input | Specify first point: | 0,-58
-6284 +186 input | Specify next point or [Undo]: | @0,116
-6868 +186 command |  | CIRCLE
-7054 +126 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
-7180 +106 input | Specify radius of circle or [Diameter] <6.00>: | 36
-7785 +166 command |  | HATCH
-7785 +0 info |  | Current hatch pattern:  ANGLE
-7951 +86 input | Specify internal point or [Properties/Select objects]: | P
-8038 +186 input | Enter a pattern name or [?/Solid] <ANGLE>: | ANSI31
-8223 +126 input | Specify a scale for the pattern <1.0000>: | 0.8
-8350 +66 input | Specify an angle for the pattern <0>: | 
-8350 +0 info |  | Current hatch pattern:  ANSI31
-8416 +123 input | Specify internal point or [Properties/Select objects]: | 
-8416 +0 info |  | Selecting everything...
-8416 +0 info |  | Selecting everything visible...
-8416 +0 info |  | Analyzing the selected data...
-8416 +0 info |  | Analyzing internal islands...
-8416 +0 info |  | Current hatch pattern:  ANSI31
-8539 +123 input | Specify internal point or [Properties/Select objects]: | 
-8539 +0 info |  | Analyzing internal islands...
-8539 +0 info |  | Current hatch pattern:  ANSI31
-8662 +66 input | Specify internal point or [Properties/Select objects]: | 
-9632 +285 command |  | DIMDIAMETER
-9917 +123 input | Select arc or circle: | 
-9917 +0 info |  | Dimension text = 100
-10040 +123 input | Specify dimension line location or [Text/Angle]: | 
-10513 +246 command |  | DIMLINEAR
-10758 +123 input | Specify first extension line origin or <select object>: | 
-10881 +123 input | Specify second extension line origin: | 
-10881 +0 info |  | Non-associative dimension created.
-11005 +123 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
-11005 +0 info |  | Dimension text = 14
-## offset
-command |  | PLINE
-input | Specify start point: | 0,0
-info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @80,0
-input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,40
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | L
-input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-80,0
-input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
-command |  | OFFSET
-info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
-input | Specify offset distance or [Through/Erase/Layer] <Through>: | 6
-input | Select object to offset or [Exit/Undo] <Exit>: | 
-input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
+169 +132 command |  | CIRCLE
+301 +90 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
+391 +76 input | Specify radius of circle or [Diameter]: | 50
+703 +132 command |  | OFFSET
+703 +0 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+835 +76 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 30
+910 +88 input | Select object to offset or [Exit/Undo] <Exit>: | 
+998 +88 input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
+1369 +132 command |  | CIRCLE
+1502 +104 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 36,0
+1605 +61 input | Specify radius of circle or [Diameter] <50.00>: | 6
+1667 +189 command |  | ARRAYPOLAR
+1856 +88 input | Select objects: | 1 found
+1944 +47 input | Select objects: | 
+1944 +0 info |  | Type = Polar  Associative = Yes
+1991 +90 input | Specify center point of array: | 0,0
+2081 +47 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: | 
+2360 +146 command |  | RECTANG
+2506 +118 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
+2624 +132 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
+2925 +146 command |  | RECTANG
+3072 +132 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,-50
+3204 +132 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
+3613 +104 command |  | LINE
+3717 +118 input | Specify first point: | -58,0
+3835 +132 input | Specify next point or [Undo]: | @160,0
+4251 +104 command |  | LINE
+4355 +118 input | Specify first point: | 0,-58
+4473 +132 input | Specify next point or [Undo]: | @0,116
+4889 +132 command |  | CIRCLE
+5021 +90 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
+5111 +76 input | Specify radius of circle or [Diameter] <6.00>: | 36
+5541 +118 command |  | HATCH
+5541 +0 info |  | Current hatch pattern:  ANGLE
+5659 +61 input | Specify internal point or [Properties/Select objects]: | P
+5721 +132 input | Enter a pattern name or [?/Solid] <ANGLE>: | ANSI31
+5853 +90 input | Specify a scale for the pattern <1.0000>: | 0.8
+5943 +47 input | Specify an angle for the pattern <0>: | 
+5943 +0 info |  | Current hatch pattern:  ANSI31
+5990 +88 input | Specify internal point or [Properties/Select objects]: | 
+5990 +0 info |  | Selecting everything...
+5990 +0 info |  | Selecting everything visible...
+5990 +0 info |  | Analyzing the selected data...
+5990 +0 info |  | Analyzing internal islands...
+5990 +0 info |  | Current hatch pattern:  ANSI31
+6078 +88 input | Specify internal point or [Properties/Select objects]: | 
+6078 +0 info |  | Analyzing internal islands...
+6078 +0 info |  | Current hatch pattern:  ANSI31
+6166 +47 input | Specify internal point or [Properties/Select objects]: | 
+6855 +203 command |  | DIMDIAMETER
+7058 +88 input | Select arc or circle: | 
+7058 +0 info |  | Dimension text = 100
+7146 +88 input | Specify dimension line location or [Text/Angle]: | 
+7482 +175 command |  | DIMLINEAR
+7657 +88 input | Specify first extension line origin or <select object>: | 
+7745 +88 input | Specify second extension line origin: | 
+7745 +0 info |  | Non-associative dimension created.
+7833 +88 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+7833 +0 info |  | Dimension text = 14
+8293 +161 command |  | CYLINDER
+8454 +189 input | Specify center point of base or [3P/2P/Ttr/Elliptical]: | -90,-150,0
+8643 +76 input | Specify base radius or [Diameter]: | 50
+8718 +76 input | Specify height or [2Point/Axis endpoint]: | 14
+8794 +161 command |  | CYLINDER
+8954 +189 input | Specify center point of base or [3P/2P/Ttr/Elliptical]: | -90,-150,0
+9143 +76 input | Specify base radius or [Diameter] <50.00>: | 20
+9219 +76 input | Specify height or [2Point/Axis endpoint] <14.00>: | 14
+9295 +161 command |  | CYLINDER
+9455 +189 input | Specify center point of base or [3P/2P/Ttr/Elliptical]: | -54,-150,0
+9644 +61 input | Specify base radius or [Diameter] <20.00>: | 6
+9706 +76 input | Specify height or [2Point/Axis endpoint] <14.00>: | 14
+9781 +189 command |  | ARRAYPOLAR
+9970 +88 input | Select objects: | 1 found
+10058 +47 input | Select objects: | 
+10058 +0 info |  | Type = Polar  Associative = Yes
+10105 +161 input | Specify center point of array: | -90,-150
+10266 +76 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: | AS
+10341 +61 input | Create associative array [Yes/No] <Yes>: | N
+10403 +47 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: | 
+10450 +161 command |  | SUBTRACT
+10450 +0 info |  | Select solids, surfaces, and regions to subtract from ..
+10611 +88 input | Select objects: | 1 found
+10698 +47 input | Select objects: | 
+10698 +0 info |  | Select solids, surfaces, and regions to subtract ..
+10746 +88 input | Select objects: | 
+10833 +88 input | Specify opposite corner: | 
+10921 +47 input | Select objects: | 
+10968 +175 command |  | VSCURRENT
+11143 +61 input | Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: | H
+11204 +118 command |  | -VIEW
+11323 +90 input | Enter an option [Orthographic]: | SWI
 ## osnap
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 10,0
@@ -186,36 +203,76 @@ input | Specify other corner point or [Area/Dimensions/Rotation]: | @20,40
 command |  | LINE
 input | Specify first point: | 45,-8
 input | Specify next point or [Undo]: | @0,56
-## inquiry
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @70,40
-command |  | DIST
-input | Specify first point: | 
-## files
-command |  | CIRCLE
-input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
-input | Specify radius of circle or [Diameter]: | 16
-command |  | HATCH
-info |  | Current hatch pattern:  ANGLE
-input | Specify internal point or [Properties/Select objects]: | P
-input | Enter a pattern name or [?/Solid] <ANGLE>: | ANSI31
-input | Specify a scale for the pattern <1.0000>: | 0.5
-input | Specify an angle for the pattern <0>: | 
-info |  | Current hatch pattern:  ANSI31
-input | Specify internal point or [Properties/Select objects]: | 
-info |  | Selecting everything...
-info |  | Selecting everything visible...
-info |  | Analyzing the selected data...
-info |  | Analyzing internal islands...
-info |  | Current hatch pattern:  ANSI31
-input | Specify internal point or [Properties/Select objects]: | 
-command |  | COPYBASE
-input | Specify base point: | 0,0
-input | Select objects: | 1 found
-input | Select objects: | 1 found, 2 total
-input | Select objects: | 
-command |  | PASTECLIP
+## wireframe
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: | H
+command |  | PLINE
+input | Specify start point: | 0,0
+info |  | Current line-width is 0.00
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,15
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-45,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,25
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-15,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
+command |  | EXTRUDE
+info |  | Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+input | Select objects to extrude or [MOde]: | 1 found
+input | Select objects to extrude or [MOde]: | 
+input | Specify height of extrusion or [Direction/Path/Taper angle/Expression]: | 20
+command |  | -VIEW
+input | Enter an option [Orthographic]: | SEI
+command |  | ZOOM
+input | Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: | 0.8x
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>: | 2
+info |  | Regenerating model.
+## hidden
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: | H
+command |  | PLINE
+input | Specify start point: | 0,0
+info |  | Current line-width is 0.00
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,15
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-45,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,25
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-15,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
+command |  | EXTRUDE
+info |  | Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+input | Select objects to extrude or [MOde]: | 1 found
+input | Select objects to extrude or [MOde]: | 
+input | Specify height of extrusion or [Direction/Path/Taper angle/Expression]: | 20
+command |  | -VIEW
+input | Enter an option [Orthographic]: | SEI
+command |  | ZOOM
+input | Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: | 0.8x
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>: | H
+## conceptual
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: | H
+command |  | PLINE
+input | Specify start point: | 0,0
+info |  | Current line-width is 0.00
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,15
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-45,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,25
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-15,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
+command |  | EXTRUDE
+info |  | Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+input | Select objects to extrude or [MOde]: | 1 found
+input | Select objects to extrude or [MOde]: | 
+input | Specify height of extrusion or [Direction/Path/Taper angle/Expression]: | 20
+command |  | -VIEW
+input | Enter an option [Orthographic]: | SEI
+command |  | ZOOM
+input | Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: | 0.8x
+command |  | VSCURRENT
+input | Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>: | C
 ## localFirst
 command |  | RECTANG
 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
@@ -279,62 +336,3 @@ input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotat
 input | Enter dimension text <66>: | Ctrl+S / Ctrl+O
 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
 info |  | Dimension text = 66
-## engineLayers
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,64
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
-command |  | TEXT
-info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
-input | Specify start point of text or [Justify/Style]: | 6,67.5
-input | Specify height <2.50>: | 4
-input | Specify rotation angle of text <0>: | 0
-input | Enter text: | adapters
-input | Enter text: | 
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,48
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
-command |  | TEXT
-info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
-input | Specify start point of text or [Justify/Style]: | 6,51.5
-input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0>: | 0
-input | Enter text: | application
-input | Enter text: | 
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,32
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
-command |  | TEXT
-info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
-input | Specify start point of text or [Justify/Style]: | 6,35.5
-input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0>: | 0
-input | Enter text: | scene
-input | Enter text: | 
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,16
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
-command |  | TEXT
-info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
-input | Specify start point of text or [Justify/Style]: | 6,19.5
-input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0>: | 0
-input | Enter text: | domain
-input | Enter text: | 
-command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
-input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
-command |  | TEXT
-info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
-input | Specify start point of text or [Justify/Style]: | 6,3.5
-input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0>: | 0
-input | Enter text: | geometry
-input | Enter text: | 
-command |  | DIMLINEAR
-input | Specify first extension line origin or <select object>: | 
-input | Specify second extension line origin: | 
-info |  | Non-associative dimension created.
-input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | T
-input | Enter dimension text <75>: | imports point down
-input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
-info |  | Dimension text = 75

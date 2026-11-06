@@ -7,7 +7,7 @@ import ptBR from "@/messages/pt-BR.json"
 import { DIAGRAMS, type FigureSpec } from "./figures"
 
 type Words = Readonly<Record<string, string>>
-type Catalog = { readonly LocalFirst?: Words; readonly Engine?: Words }
+type Catalog = { readonly LocalFirst?: Words }
 
 const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
   en,
@@ -20,7 +20,6 @@ const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
 export function diagramsIn(locale: AppLocale): Record<string, FigureSpec> {
   const catalog = CATALOGS[locale]
   const local: Words = { ...en.LocalFirst, ...catalog.LocalFirst }
-  const engine: Words = { ...en.Engine, ...catalog.Engine }
   return {
     [`localFirst.${locale}`]: DIAGRAMS.localFirst({
       editor: local.diagramEditor,
@@ -29,7 +28,6 @@ export function diagramsIn(locale: AppLocale): Record<string, FigureSpec> {
       device: local.diagramDevice,
       autosave: local.diagramAutosave,
     }),
-    [`engineLayers.${locale}`]: DIAGRAMS.engineLayers(engine.diagramImports),
   }
 }
 
@@ -38,6 +36,5 @@ export function englishDiagrams(): Record<string, FigureSpec> {
   const figures = diagramsIn("en")
   return {
     localFirst: figures["localFirst.en"],
-    engineLayers: figures["engineLayers.en"],
   }
 }

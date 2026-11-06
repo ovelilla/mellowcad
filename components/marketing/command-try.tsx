@@ -7,9 +7,10 @@ import { matchCommands, type CommandInfo } from "@mellowcad/engine"
 const SUGGESTIONS = 6
 
 /**
- * A `Command:` prompt with the editor's own autocomplete over the real command
- * list. Enter takes you to the editor — the prompt here is a taste, not a
- * second editor.
+ * The hero's command line, its last line: a `Command:` prompt with the
+ * editor's own autocomplete over the real command list, its suggestions
+ * opening upwards over the drawing as AutoCAD's do. Enter takes you to the
+ * editor — the prompt here is a taste, not a second editor.
  */
 export function CommandTry({
   commands,
@@ -42,23 +43,17 @@ export function CommandTry({
   const open = () => window.location.assign(editorHref)
 
   return (
-    <div className="relative">
-      <label
-        htmlFor={`${listId}-input`}
-        className="mb-2 block label-mono text-fg-subtle"
-      >
-        {label}
-      </label>
-      {/* A command line: the command language, left to right in every page. */}
-      <div
-        dir="ltr"
-        className="flex items-center gap-2 rounded-md border border-border bg-bg-sunken px-3 font-mono text-sm focus-within:border-fg-subtle"
-      >
-        <span aria-hidden="true" className="text-fg-subtle">
-          {prompt}
-        </span>
-        {/* WHY a smaller placeholder on a phone: an input cannot wrap it, and
-        at 360 px Spanish's and Portuguese's lost their example command. */}
+    // A command line: the command language, left to right in every page.
+    <div dir="ltr" className="relative font-mono text-[0.8125rem]">
+      <div className="flex h-8 items-center gap-2 rounded-sm px-1 focus-within:bg-bg focus-within:outline-1 focus-within:outline-fg-subtle">
+        <label
+          htmlFor={`${listId}-input`}
+          lang={lang}
+          className="shrink-0 text-fg-subtle"
+        >
+          <span aria-hidden="true">{prompt}</span>
+          <span className="sr-only">{label}</span>
+        </label>
         <input
           id={`${listId}-input`}
           role="combobox"
@@ -69,6 +64,9 @@ export function CommandTry({
           aria-activedescendant={
             matches.length > 0 ? `${listId}-${active}` : undefined
           }
+          // A placeholder in the page's language reads in its own direction;
+          // what is typed is a command, left to right.
+          dir="auto"
           autoComplete="off"
           autoCapitalize="characters"
           spellCheck={false}
@@ -92,20 +90,23 @@ export function CommandTry({
               setText("")
             }
           }}
-          className="h-11 min-w-0 flex-1 bg-transparent text-fg uppercase outline-none placeholder:text-xs placeholder:text-fg-subtle placeholder:normal-case sm:placeholder:text-sm"
+          className="h-8 min-w-0 flex-1 bg-transparent text-fg uppercase outline-none placeholder:text-fg-subtle placeholder:normal-case"
         />
+        <span
+          id={hintId}
+          dir="auto"
+          className="hidden shrink-0 font-sans text-xs text-fg-subtle lg:inline"
+        >
+          {typed !== "" && matches.length === 0
+            ? unknown.replace("{command}", typed)
+            : hint}
+        </span>
       </div>
-      <p id={hintId} className="mt-2 text-xs text-fg-subtle">
-        {typed !== "" && matches.length === 0
-          ? unknown.replace("{command}", typed)
-          : hint}
-      </p>
       {matches.length > 0 && (
         <ul
           id={listId}
           role="listbox"
-          dir="ltr"
-          className="absolute inset-x-0 top-[5.25rem] z-10 overflow-hidden rounded-md border border-border bg-bg-raised font-mono text-sm shadow-lg"
+          className="absolute inset-x-0 bottom-full z-10 mb-1 overflow-hidden rounded-md border border-border bg-bg-raised shadow-lg"
         >
           {matches.map((match, index) => (
             <li
@@ -115,12 +116,12 @@ export function CommandTry({
               aria-selected={index === active}
               onMouseDown={(event) => event.preventDefault()}
               onClick={open}
-              className="flex cursor-pointer gap-3 px-3 py-2 aria-selected:bg-bg"
+              className="flex cursor-pointer gap-3 px-3 py-1.5 aria-selected:bg-bg"
             >
               <span lang={lang} className="font-medium text-fg">
                 {match.name}
               </span>
-              <span className="truncate text-fg-subtle">
+              <span dir="auto" className="truncate font-sans text-fg-subtle">
                 {match.description}
               </span>
             </li>

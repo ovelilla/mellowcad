@@ -14,7 +14,7 @@ export async function FinalCta() {
   return (
     <section
       aria-labelledby="final-cta-title"
-      className="mx-auto flex w-full max-w-[1200px] flex-col items-center gap-8 px-4 py-24 text-center sm:px-6 lg:py-40"
+      className="mx-auto flex w-full max-w-[1200px] flex-col items-center gap-8 px-4 py-10 text-center sm:px-6 lg:py-12"
     >
       <h2 id="final-cta-title" className="max-w-2xl text-h2">
         {t("title")}

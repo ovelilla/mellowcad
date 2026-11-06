@@ -15,6 +15,7 @@ import {
   COMMAND_GROUPS,
   type CommandGroup,
 } from "@/content/commands"
+import { LIVE_LOCALES } from "@/i18n/routing"
 
 /**
  * Every number and list the landing states about the product, derived from
@@ -61,6 +62,8 @@ export interface ProductFacts {
   readonly lineweights: number
   readonly linetypes: number
   readonly hatchPatterns: number
+  /** The languages the site, the editor and the engine are published in. */
+  readonly languages: number
   /** Automated tests in the repository, rounded down to the hundred. */
   readonly tests: number
   /**
@@ -81,6 +84,7 @@ export function productFacts(locale?: EngineLocale): ProductFacts {
     lineweights: LINEWEIGHTS.length,
     linetypes: LINETYPES.length,
     hatchPatterns: HATCH_PATTERNS.length,
+    languages: LIVE_LOCALES.length,
     tests: Math.floor(countTests() / 100) * 100,
     version: engineVersion(),
   }

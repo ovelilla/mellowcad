@@ -117,31 +117,3 @@ export function localFirst(labels: LocalFirstLabels): DemoScript {
     .enter()
     .click(52 + span / 2, 19)
 }
-
-const LAYERS = ["adapters", "application", "scene", "domain", "geometry"]
-
-/**
- * The engine's layers as a stack — named as their folders are — with a
- * dimension along it for the one rule that holds it together.
- */
-export function engineLayers(imports: string): DemoScript {
-  return LAYERS.reduce(
-    (script, name, index) => {
-      const y = (LAYERS.length - 1 - index) * 16
-      return label(box(script, `0,${y}`, "@90,11"), `6,${y + 3.5}`, name)
-    },
-    demo({
-      width: 420,
-      height: 300,
-      dimScale: 1.6,
-      view: { min: { x: -26, y: -6 }, max: { x: 96, y: 81 } },
-    })
-  )
-    .command("_DIMLINEAR")
-    .click(0, 75)
-    .click(0, 0)
-    .option("Text")
-    .type(imports)
-    .enter()
-    .click(-12, 37)
-}

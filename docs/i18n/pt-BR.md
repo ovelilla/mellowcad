@@ -165,7 +165,7 @@ grátis», «programa cad gratuito» and «sem cadastro». «grátis» and «gra
 the title says one, the description the other. Title: «CAD online grátis: 2D, 3D e comandos do
 AutoCAD — MellowCAD» (59); description: «Programa CAD gratuito no navegador, com os comandos e
 atalhos do AutoCAD em português: desenho 2D e sólidos 3D, ainda parciais. Sem instalar, sem
-cadastro.» (155); the H1's eyebrow, the share card and the footer: «CAD online grátis com os
+cadastro.» (155); the H1, the share card's eyebrow and the footer: «CAD online grátis com os
 comandos do AutoCAD». «AutoCAD online grátis» is never written, as it would read as AutoCAD itself.
 
 ## Command language

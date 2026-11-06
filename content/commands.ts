@@ -16,6 +16,41 @@ export const COMMAND_GROUPS = [
 
 export type CommandGroup = (typeof COMMAND_GROUPS)[number]
 
+/**
+ * The commands the landing's 3D section lists as working today, by global
+ * name: the solids, their edits and inquiry, and the ways of looking at them.
+ */
+export const SOLID_COMMANDS = [
+  "BOX",
+  "CYLINDER",
+  "CONE",
+  "SPHERE",
+  "WEDGE",
+  "TORUS",
+  "PYRAMID",
+  "EXTRUDE",
+  "REVOLVE",
+  "PRESSPULL",
+  "UNION",
+  "SUBTRACT",
+  "INTERSECT",
+  "SLICE",
+  "SECTION",
+  "FILLETEDGE",
+  "CHAMFEREDGE",
+  "SOLIDEDIT",
+  "MASSPROP",
+  "3DORBIT",
+  "VSCURRENT",
+] as const
+
+/**
+ * The commands whose aliases the hero's lead teaches, read from the engine in
+ * the page's command language: each has an alias in every one (Portuguese's
+ * OFFSET has none), which `content/commands.test.ts` holds.
+ */
+export const HERO_ALIASES = ["LINE", "TRIM", "EXTRUDE"] as const
+
 interface Filing {
   readonly group: CommandGroup
   /**

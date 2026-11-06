@@ -2,13 +2,12 @@ import { Plus } from "lucide-react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
+import { FAQ_QUESTIONS } from "@/content/faq"
 import { sitePaths } from "@/i18n/site-paths"
 import { productFacts } from "@/lib/facts"
 
 import { SectionHeading } from "./section-heading"
 import { sourceLinks } from "./source-links"
-
-const QUESTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 /** Native disclosure widgets: no script, and every answer is in the HTML. */
 export async function FaqSection() {
@@ -25,13 +24,13 @@ export async function FaqSection() {
     <section
       aria-labelledby="faq-title"
       id="faq"
-      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-14 px-4 py-12 sm:px-6 lg:py-20"
+      className="defer mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-10 sm:px-6"
     >
       <SectionHeading id="faq-title" label={t("label")} title={t("title")} />
-      <div className="flex max-w-3xl flex-col border-t border-border">
-        {QUESTIONS.map((n) => (
+      <div className="grid items-start gap-x-10 border-t border-border lg:grid-cols-2">
+        {FAQ_QUESTIONS.map((n) => (
           <details key={n} className="group border-b border-border">
-            <summary className="flex items-center justify-between gap-6 py-5 text-lg font-medium">
+            <summary className="flex items-center justify-between gap-6 py-4 text-lg font-medium">
               <h3>{t(`q${n}`)}</h3>
               <Plus
                 aria-hidden="true"

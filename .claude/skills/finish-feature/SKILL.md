@@ -33,7 +33,8 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    something a user would want named, then carried to every `live` language of
    `LOCALE_STATUS` (a draft may lag):
    - the landing's copy in `messages/<tag>.json`: `Status` (`today*`, `notYet*`, `next1`),
-     `Faq`, and the section the feature belongs to (`Precision`, `Toolset`, `LocalFirst`);
+     `Faq`, and the section the feature belongs to (`Precision`, `Toolset`, `Solids`,
+     `LocalFirst`);
    - the written "Use" pages (`getting-started`, `content/docs/*.mdx`), each with its
      translations' `sourceHash` (`docs.md`);
    - a command's notes (`content/commands/<slug>.md` and its languages), when it has a page:

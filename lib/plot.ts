@@ -63,6 +63,16 @@ export interface PlotOptions {
   readonly frame?: Bounds
   /** The engine's language to record in; English by default. */
   readonly locale?: EngineLocale
+  /**
+   * The steps whose objects are plotted in plan, from the first: the rest
+   * model what the last frame shows (the hero's solid). All by default.
+   */
+  readonly drafted?: number
+  /**
+   * The step that turns the view off the plan: as it ends, the editor's last
+   * frame takes the plan's place.
+   */
+  readonly turn?: number
 }
 
 /** The engine's language for the page being rendered. */
@@ -86,6 +96,8 @@ export interface Plot {
   /** When the last stroke lands. */
   readonly duration: number
   readonly recording: DemoRecording
+  /** The editor's last frame, off the plan, and when it takes the plan's place. */
+  readonly turned?: { readonly at: number; readonly markup: string }
 }
 
 /** How long a step takes the scripted user before its effect shows. */
@@ -154,13 +166,14 @@ export async function plotDemo(
   // When each object's first stroke starts; the rest follow it, staggered.
   const firstStroke = new Map<EntityId, number>()
   let clock = LEAD_IN_MS
+  const drafted = options.drafted ?? recording.steps.length
   recording.steps.forEach((step, index) => {
     starts[index] = clock
     clock += actionMs(step)
     ends[index] = clock
     let span = 0
     let order = 0
-    for (const id of step.added) {
+    for (const id of index < drafted ? step.added : []) {
       const entity = document.get(id)
       if (!entity) continue
       firstStroke.set(id, clock + order * STAGGER_MS)
@@ -188,10 +201,13 @@ export async function plotDemo(
   })
 
   // Paint in the drawing's own order (hatches behind), each object's strokes
-  // timed from the step that made it.
-  const entities = [...document.getEntities()].sort(
-    (a, b) => entityDrawOrder(a) - entityDrawOrder(b)
-  )
+  // timed from the step that made it; what the steps after the drafted ones
+  // made is the last frame's.
+  const entities = [...document.getEntities()]
+    .filter(
+      (entity) => options.drafted === undefined || firstStroke.has(entity.id)
+    )
+    .sort((a, b) => entityDrawOrder(a) - entityDrawOrder(b))
   let markup = ""
   for (const entity of entities) {
     const first = firstStroke.get(entity.id) ?? 0
@@ -218,6 +234,20 @@ export async function plotDemo(
     return { ...line, at: ms(at), typing: ms(typing) }
   })
 
+  const turned =
+    options.turn === undefined
+      ? undefined
+      : {
+          at: ms(ends[options.turn]),
+          markup: new SvgScenePresenter({
+            palette: themePalette(),
+            fontFamily: DRAWING_FONT,
+            capHeightRatio: DRAWING_FONT_CAP_RATIO,
+            frame: options,
+            lang: recording.scene.lang,
+          }).elements(recording.scene.primitives),
+        }
+
   return {
     width: options.width,
     height: options.height,
@@ -225,6 +255,7 @@ export async function plotDemo(
     lines,
     duration: ms(natural),
     recording,
+    ...(turned && { turned }),
   }
 }
 

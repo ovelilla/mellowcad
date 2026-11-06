@@ -17,9 +17,9 @@ export function SectionHeading({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-10", className)}>
+    <div className={cn("flex flex-col gap-5", className)}>
       <DimensionDivider label={label} />
-      <div className="flex max-w-3xl flex-col gap-5">
+      <div className="flex max-w-3xl flex-col gap-4">
         <h2 id={id} className="text-h2">
           {title}
         </h2>

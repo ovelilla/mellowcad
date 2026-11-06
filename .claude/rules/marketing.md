@@ -56,7 +56,7 @@ script — updates it in the same change.
   build-time data (OG images, manifests) exports `dynamic = "force-static"`.
 - **Server Components by default.** A client island exists only where there is browser state:
   `ContinueDrawing` (the autosave), `HeroControls` (pause), `TransitionSheet` (the sheet's name for
-  the trip into the editor), `CommandTry` (autocomplete), `SendToDesktop` (share sheet),
+  the trip into the editor), `CommandTry` (the hero's command line), `SendToDesktop` (share sheet),
   `UnknownCommand` (a URL only the browser knows) and `LanguageLinks` (`i18n.md`). It takes its copy
   as props (`i18n.md`).
 - **An island imports nothing heavy.** The engine is safe _only_ because `cad/package.json`
@@ -95,14 +95,17 @@ script — updates it in the same change.
   OTRACK acquires by dwelling, so use `hover`, which elapses the engine's dwell at once
   (`elapseDwell`). A recording never waits on a timer: a loaded prerender ran a longer one first.
 - `content/figures.test.ts` replays every figure (no error lines, something drawn) and holds the
-  hero to 8–12 s and ≤ 600 primitives.
+  hero, both frames, to 8–12 s and ≤ 600 primitives.
 - The hero plots with CSS only: each element carries `--t` / `--d`, solid strokes have
   `pathLength="1"`, dashed ones and text fade. The transcript is `transcript(recording)`, timed by
   `plotDemo` — **the prompts are the engine's, never typed into the copy**, and so are `Command:` and
   `Unknown command` (`engineText(locale)`); a prompt is drawn from its `segments`, never taken apart.
-  `option(id)` names a keyword by its global id and the transcript shows what its user types. Keep
-  animation selectors scoped (`.plot svg …`): a bare `[style*="--t"]` also caught the command-line
-  rows.
+  Keep animation selectors scoped (`.plot svg …`): a bare `[style*="--t"]` caught the command line.
+- **The hero is one script, two phases**: what is drafted (`drafted`) plots in plan; as -VIEW
+  answers (`turn`) the editor's last frame (`Plot.turned`) fades in. Its chrome (the view's label,
+  the ViewCube) is drawn on the server from the recording's `EngineState` and the engine's names,
+  never the editor's components. Its solid stands clear of the 2D objects on the screen: Hidden
+  does not hide a line behind a solid yet.
 - Drawing colours are `var(--cad-*)`, written from `THEME` by `themeCustomProperties()`. The OG
   image cannot read CSS variables: `lib/og.tsx` uses literal colours and lays the dimension text
   over the drawing itself (the rasteriser has no fonts for SVG text).
@@ -133,8 +136,8 @@ script — updates it in the same change.
   time (`commandCatalog()`, `SnapType`, `LINEWEIGHTS`, the test files).
 - `content/commands.ts` files each registered command under a ribbon group and marks the ribbon
   options this app names as commands of its own (`variant`) — neither shown nor counted as AutoCAD
-  commands. `content/commands.test.ts` fails when a command is registered but not filed.
-- Split a headline by sentence with `Intl.Segmenter`, never on a hard-coded full stop.
+  commands; it lists the 3D section's commands and the hero's aliases too. `content/commands.test.ts`
+  fails when a command is registered but not filed, or an alias missing in a language.
 
 ## Metadata and SEO
 
@@ -142,8 +145,9 @@ script — updates it in the same change.
   `twitter` shallowly, so a page that sets either sets all of it.
 - **The landing's title opens with its language's main query**, the description carries the
   rest, and both are written from what that language searches, never translated (its
-  `docs/i18n/<tag>.md`, "Search texts"). The H1's category is `Hero.eyebrow`; `Og.tagline`,
-  `Footer.tagline` and `SendToDesktop.shareTitle` say the same. `i18n/messages.test.ts` holds the
+  `docs/i18n/<tag>.md`, "Search texts"). The H1, `Hero.title`, is the category, and each H2 a
+  family its language searches; `Og.tagline`, `Footer.tagline` and `SendToDesktop.shareTitle` say
+  the H1, and `Hero.tagline` is the slogan. `i18n/messages.test.ts` holds the
   title to 60 characters with the brand, and the landing's and the editor's descriptions to 155.
 - **The OG images and manifests are named route handlers**: the language's `/og`
   (`app/[locale]/og/route.tsx`), the editor's `/og/draw`, referenced by path (`OG_IMAGE_PATH`), and
@@ -198,8 +202,8 @@ script — updates it in the same change.
 - **Right to left** (`ui.md`): the composition mirrors, the drawings do not. `Drawing` and `Glyph`
   are `direction="ltr"`, their text tagged with the command language (`drawingMarkup(…, lang)` from
   `recording.scene.lang`); the hero sheet, `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and
-  so is everything in the command language — transcripts, the try-it box, the 404's line, the final
-  call's `Command:`, the command board's key caps and the toolset's lists (`-MTEXT` read `MTEXT-`
+  so is everything in the command language — transcripts, the hero's command line, the 404's line,
+  the final call's `Command:` and the command board's key caps (`-MTEXT` read `MTEXT-`
   in a right-to-left paragraph) — with the command language's `lang`. A page-language label inside
   an LTR island takes `dir="auto"`. A call to action's arrow is `ForwardArrow`: the text's `→`,
   mirrored, since U+2192 has no bidi mirror.

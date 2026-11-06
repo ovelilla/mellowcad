@@ -27,5 +27,5 @@ export async function GET(
   }
   const og = await getTranslations({ locale, namespace: "Og" })
   const hero = await getTranslations({ locale, namespace: "Hero" })
-  return ogImage({ locale, eyebrow: og("tagline"), title: hero("title") })
+  return ogImage({ locale, eyebrow: og("tagline"), title: hero("tagline") })
 }

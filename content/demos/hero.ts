@@ -1,12 +1,12 @@
-import { demo } from "@mellowcad/engine"
+import { demo, type DemoScript } from "@mellowcad/engine"
 
 /**
- * The hero: a flange, front view and section A–A, drawn the way someone
- * sitting at AutoCAD would — typed coordinates, OFFSET for the bore, a polar
- * array for the bolt holes, centre lines on their own layer, ANSI31 in the
- * section and two dimensions.
+ * The hero, drafted: a flange, front view and section A–A, drawn the way
+ * someone sitting at AutoCAD would — typed coordinates, OFFSET for the bore,
+ * a polar array for the bolt holes, centre lines on their own layer, ANSI31 in
+ * the section and two dimensions.
  */
-export const hero = demo({
+export const heroDrawing = demo({
   width: 720,
   height: 480,
   dimScale: 1.6,
@@ -86,3 +86,74 @@ export const hero = demo({
   .click(94, 50)
   .click(87, 60)
   .moveTo(130, -70)
+
+/** Where the hero's solid is built: south-west of the drawing, below it once the view turns. */
+const SOLID_AT = { x: -90, y: -150 }
+
+/**
+ * The flange as a solid, centred at `at`: a cylinder less its bore and six
+ * bolt holes, the holes a polar array that is not associative, so SUBTRACT
+ * takes them as solids — in Hidden, the view turned to SW Isometric.
+ */
+function modelled(script: DemoScript, at: { x: number; y: number }) {
+  const p = (x: number, y: number, z?: number) =>
+    `${at.x + x},${at.y + y}${z === undefined ? "" : `,${z}`}`
+  return (
+    script
+      .command("_CYLINDER")
+      .type(p(0, 0, 0))
+      .enter()
+      .type("50")
+      .enter()
+      .type("14")
+      .enter()
+      .command("_CYLINDER")
+      .type(p(0, 0, 0))
+      .enter()
+      .type("20")
+      .enter()
+      .type("14")
+      .enter()
+      .command("_CYLINDER")
+      .type(p(36, 0, 0))
+      .enter()
+      .type("6")
+      .enter()
+      .type("14")
+      .enter()
+      .command("_ARRAYPOLAR")
+      .click(at.x + 42, at.y)
+      .enter()
+      .type(p(0, 0))
+      .enter()
+      .option("ASsociative")
+      .option("No")
+      .enter()
+      .command("_SUBTRACT")
+      .click(at.x + 50, at.y)
+      .enter()
+      // A window round the bore and the holes, short of the cylinder's rim.
+      .click(at.x - 43, at.y - 43)
+      .click(at.x + 43, at.y + 43)
+      .enter()
+      .command("_VSCURRENT")
+      .option("Hidden")
+      .command("_-VIEW")
+      .option("SWiso")
+      .moveTo(-1e6, -1e6)
+  )
+}
+
+/**
+ * The hero, then modelled: the same flange as a solid beside the drawing. On
+ * the screen the solid stands clear of the drawing: Hidden does not yet hide
+ * a line behind a solid (`docs/coverage/view.md`), and an overlap would show
+ * it.
+ */
+export const hero = modelled(heroDrawing.layer("0"), SOLID_AT)
+
+/** The flange's solid alone, for the share card beside the drawing. */
+export const heroSolid = modelled(demo({ width: 400, height: 260 }), {
+  x: 0,
+  y: 0,
+})
