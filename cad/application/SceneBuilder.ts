@@ -1826,10 +1826,15 @@ function pushEntities(
         viewDirection,
         viewUp
       )
-      for (const { points, fill } of shaded) {
+      for (const { points, holes, fill } of shaded) {
         out.push({
           kind: "path",
           points: points.map((point) => camera.worldToScreen(point)),
+          ...(holes && {
+            subpaths: holes.map((hole) =>
+              hole.map((point) => camera.worldToScreen(point))
+            ),
+          }),
           closed: true,
           fill,
           // Stroked in its own fill, so neighbours leave no seam of background.

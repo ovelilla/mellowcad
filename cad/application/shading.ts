@@ -3,16 +3,17 @@ import { Brep } from "../geometry/solids"
 import { brepMesh } from "../geometry/faceMesh"
 
 /**
- * The Conceptual visual style's faces: each solid's triangles that face the
+ * The Conceptual visual style's faces: each solid's cells that face the
  * viewer, coloured by AutoCAD's Gooch shading (VSFACESTYLE 2, visualstyle/
  * v06) and painted back to front. The mesh is the B-rep's, made once
  * (`brepMesh`); what is kept here depends on the line of sight alone, so a
  * pan or a zoom only projects it again.
  */
 
-/** A cell of a face, its two triangles painted as one: they share a colour and a depth. */
+/** A cell of a face, painted as one: its outline, then the holes an edge leaves in it. */
 export interface ShadedCell {
   readonly points: readonly Vec3[]
+  readonly holes?: readonly (readonly Vec3[])[]
   readonly fill: string
   /** Its solid's layer is locked: already shaded so (`goochFill`'s `locked`). */
   readonly locked?: boolean
@@ -105,9 +106,9 @@ let last: {
 const same = (a: Vec3, b: Vec3) => a.x === b.x && a.y === b.y && a.z === b.z
 
 /**
- * The triangles of the solids that face the viewer, far first (by their
- * middles' depth: a painter's order, which a long face beside a short one
- * can get wrong, the more so the larger the cells; the edges drawn on top
+ * The cells of the solids that face the viewer, far first (by their
+ * outlines' mean depth: a painter's order, which a long face beside a short
+ * one can get wrong, the more so the larger the cells; the edges drawn on top
  * are exact).
  */
 export function shadedCells(
@@ -132,24 +133,16 @@ export function shadedCells(
   const light = lightDirection(toViewer, up)
   const found: { cell: ShadedCell; depth: number }[] = []
   for (const { brep, color, locked } of solids) {
-    const mesh = brepMesh(brep)
-    for (let i = 0; i < mesh.length; i++) {
-      const t = mesh[i]
-      if (dot3(t.normal, toViewer) <= 0) continue
-      // A cell's second triangle shares its first's corner and diagonal.
-      const next = mesh[i + 1]
-      let points: Vec3[] = [t.a, t.b, t.c]
-      if (next && next.normal === t.normal && next.a === t.a) {
-        if (next.b === t.c) points = [t.a, t.b, t.c, next.c]
-        else if (next.c === t.b) points = [t.a, next.b, t.b, t.c]
-        if (points.length === 4) i++
-      }
+    for (const { loops, normal } of brepMesh(brep)) {
+      if (dot3(normal, toViewer) <= 0) continue
+      const [points, ...holes] = loops
       const depth =
         points.reduce((sum, p) => sum + dot3(p, toViewer), 0) / points.length
       found.push({
         cell: {
           points,
-          fill: goochFill(color, t.normal, light, locked),
+          ...(holes.length > 0 ? { holes } : {}),
+          fill: goochFill(color, normal, light, locked),
           ...(locked ? { locked } : {}),
         },
         depth,

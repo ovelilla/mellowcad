@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { Vec3, cross3, dot3, scale3, sub3 } from "./Vec3"
+import { Vec3, dot3, scale3 } from "./Vec3"
 import {
   Brep,
   boxBrep,
@@ -10,7 +10,7 @@ import {
   torusBrep,
 } from "./solids"
 import { brepBoolean } from "./solidBooleans"
-import { brepMesh, meshArea } from "./faceMesh"
+import { brepMesh, loopAreaVector, meshArea } from "./faceMesh"
 
 const X: Vec3 = { x: 1, y: 0, z: 0 }
 const Y: Vec3 = { x: 0, y: 1, z: 0 }
@@ -18,10 +18,16 @@ const Z: Vec3 = { x: 0, y: 0, z: 1 }
 const box = (x: number, y: number, z: number, d: number) =>
   boxBrep({ x, y, z }, scale3(X, d), scale3(Y, d), scale3(Z, d))
 
-/** Every triangle runs counter-clockwise about its outward normal. */
+/**
+ * Every cell's outline runs counter-clockwise about its outward normal and
+ * every hole in it clockwise.
+ */
 function facesOut(brep: Brep): boolean {
-  return brepMesh(brep).every(
-    (t) => dot3(cross3(sub3(t.b, t.a), sub3(t.c, t.a)), t.normal) >= -1e-12
+  return brepMesh(brep).every(({ loops, normal }) =>
+    loops.every(
+      (loop, i) =>
+        (i === 0 ? 1 : -1) * dot3(loopAreaVector(loop), normal) >= -1e-9
+    )
   )
 }
 
@@ -47,14 +53,16 @@ describe("a solid's mesh", () => {
     }
   })
 
-  it("covers a compound's faces to the halving at their edges (union/k01, k04)", () => {
+  it("covers a compound's planar faces exactly, cut at their edges (union/k01, k04)", () => {
     const k01 = brepBoolean(
       "union",
       box(0, 0, 0, 10),
       boxBrep({ x: 5, y: 5, z: 5 }, scale3(X, 10), scale3(Y, 10), scale3(Z, 15))
     )!
-    // An L-shaped face's inner corner lies off the grid: a halving's step.
-    expect(Math.abs(meshArea(brepMesh(k01)) - 1250) / 1250).toBeLessThan(0.002)
+    // An L-shaped face's inner corner lies off the grid: its cells are cut
+    // there, not stepped.
+    expect(meshArea(brepMesh(k01))).toBeCloseTo(1250, 9)
+    expect(facesOut(k01)).toBe(true)
     const drilled = brepBoolean(
       "subtract",
       box(0, 0, 0, 10),
@@ -64,6 +72,33 @@ describe("a solid's mesh", () => {
     expect(Math.abs(meshArea(brepMesh(drilled)) - exact) / exact).toBeLessThan(
       0.02
     )
+    expect(facesOut(drilled)).toBe(true)
+  })
+
+  it("cuts a plane's cells at a round edge, never past it", () => {
+    // A cylinder of radius 5 drilled with a hole of radius 2: its caps' cells
+    // reach the rim and the hole's edge, and stop there.
+    const drilled = brepBoolean(
+      "subtract",
+      roundBrep({ x: 0, y: 0, z: 0 }, Z, X, 5, 5, 4, 1),
+      roundBrep({ x: 0, y: 0, z: -1 }, Z, X, 2, 2, 6, 1)
+    )!
+    const caps = brepMesh(drilled).filter(
+      (cell) => Math.abs(cell.normal.z) === 1
+    )
+    expect(caps.length).toBeGreaterThan(0)
+    for (const { loops } of caps) {
+      for (const p of loops.flat()) {
+        const r = Math.hypot(p.x, p.y)
+        expect(r).toBeLessThanOrEqual(5 + 1e-9)
+        expect(r).toBeGreaterThanOrEqual(2 - 1e-9)
+      }
+    }
+    // Two caps, each a ring, in chords a hair inside the rim and outside the
+    // hole.
+    const ring = Math.PI * (25 - 4)
+    const area = caps.reduce((sum, cell) => sum + meshArea([cell]), 0)
+    expect(Math.abs(area - 2 * ring) / (2 * ring)).toBeLessThan(1e-3)
     expect(facesOut(drilled)).toBe(true)
   })
 })

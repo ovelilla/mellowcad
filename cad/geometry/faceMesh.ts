@@ -1,26 +1,30 @@
 import { Vec2 } from "./Vec2"
-import { Vec3, cross3, length3, normalize3, scale3, sub3 } from "./Vec3"
+import { Vec3, cross3, dot3, normalize3, scale3, sub3 } from "./Vec3"
 import { axesToWorld } from "./ocs"
 import { Param, parameters, surfaceFrame } from "./faceDomains"
 import { UV, faceRegion, regionContains } from "./faceRegions"
-import { curveBox } from "./planarCurves"
-import { pointInFaces } from "./planarRegions"
+import { Box2, curveBox, curveTessellation } from "./planarCurves"
+import { RegionFace, pointInFaces, regionBoolean } from "./planarRegions"
 import { Brep, BrepFace, planarFace } from "./solids"
 
 /**
  * What a shaded visual style paints of a solid (docs/next-solids.md §2): its
- * faces cut into triangles, derived from the B-rep and never kept as the
- * solid. A face is a grid over its parameters — a planar one over its plane,
- * a curved one over `(u, v)` — whose cells inside the face are kept and
- * whose cells across its edge are halved until {@link MESH_DEPTH}: the
- * edges drawn over the faces cover what is left of the steps.
+ * faces cut into cells, derived from the B-rep and never kept as the solid. A
+ * face is a grid over its parameters — a planar one over its plane, a curved
+ * one over `(u, v)` — whose cells across an edge are halved until
+ * {@link MESH_DEPTH}. A plane's last halving is cut to the face exactly, so
+ * a round edge is never stepped; a curved face's is kept where its middle is
+ * inside, and the edges drawn over the faces cover what is left of the
+ * steps.
  */
 
-export interface MeshTriangle {
-  readonly a: Vec3
-  readonly b: Vec3
-  readonly c: Vec3
-  /** The face's outward unit normal at the triangle's middle: the exact surface's, so a curved face shades smoothly. */
+export interface MeshCell {
+  /**
+   * Its outline, counter-clockwise about {@link normal}, then the holes an
+   * edge leaves in it (a plane's cell round a bolt hole), clockwise.
+   */
+  readonly loops: readonly (readonly Vec3[])[]
+  /** The face's outward unit normal at the cell's middle: the exact surface's, so a curved face shades smoothly. */
   readonly normal: Vec3
 }
 
@@ -35,13 +39,19 @@ const CELLS_PLANE = 4
 /** Halvings of a cell across a face's edge. */
 const MESH_DEPTH = 3
 
-const meshes = new WeakMap<Brep, readonly MeshTriangle[]>()
+/**
+ * A plane's round edge is cut in chords no further than this share of the
+ * face's size from it: well under a pixel at any zoom the face fills.
+ */
+const PLANE_CHORD = 2e-4
 
-/** The solid's faces as triangles, made once per B-rep. */
-export function brepMesh(brep: Brep): readonly MeshTriangle[] {
+const meshes = new WeakMap<Brep, readonly MeshCell[]>()
+
+/** The solid's faces as cells, made once per B-rep. */
+export function brepMesh(brep: Brep): readonly MeshCell[] {
   const found = meshes.get(brep)
   if (found) return found
-  const out: MeshTriangle[] = []
+  const out: MeshCell[] = []
   for (const face of brep.faces) out.push(...faceMesh(brep, face))
   meshes.set(brep, out)
   return out
@@ -53,6 +63,28 @@ interface Cell {
   readonly y0: number
   readonly x1: number
   readonly y1: number
+}
+
+function gridCells(
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  nx: number,
+  ny: number
+): Cell[] {
+  const out: Cell[] = []
+  for (let i = 0; i < nx; i++) {
+    for (let j = 0; j < ny; j++) {
+      out.push({
+        x0: x0 + ((x1 - x0) * i) / nx,
+        x1: x0 + ((x1 - x0) * (i + 1)) / nx,
+        y0: y0 + ((y1 - y0) * j) / ny,
+        y1: y0 + ((y1 - y0) * (j + 1)) / ny,
+      })
+    }
+  }
+  return out
 }
 
 /**
@@ -105,42 +137,170 @@ function insideCells(
       }
     }
   }
-  for (let i = 0; i < nx; i++) {
-    for (let j = 0; j < ny; j++) {
-      visit(
-        {
-          x0: x0 + ((x1 - x0) * i) / nx,
-          x1: x0 + ((x1 - x0) * (i + 1)) / nx,
-          y0: y0 + ((y1 - y0) * j) / ny,
-          y1: y0 + ((y1 - y0) * (j + 1)) / ny,
-        },
-        0
-      )
-    }
-  }
+  for (const cell of gridCells(x0, x1, y0, y1, nx, ny)) visit(cell, 0)
   return out
 }
 
-/** A cell's two triangles, run so that `(b − a) × (c − a)` faces out where `flip` is false. */
-function cellTriangles(
+/** A cell's corners, run so that it turns counter-clockwise about the normal where `flip` is false. */
+function cellLoop(
   at: (x: number, y: number) => Vec3,
   cell: Cell,
-  normal: Vec3,
   flip: boolean
-): MeshTriangle[] {
-  const p00 = at(cell.x0, cell.y0)
-  const p10 = at(cell.x1, cell.y0)
-  const p11 = at(cell.x1, cell.y1)
-  const p01 = at(cell.x0, cell.y1)
-  return flip
-    ? [
-        { a: p00, b: p11, c: p10, normal },
-        { a: p00, b: p01, c: p11, normal },
-      ]
-    : [
-        { a: p00, b: p10, c: p11, normal },
-        { a: p00, b: p11, c: p01, normal },
-      ]
+): Vec3[] {
+  const loop = [
+    at(cell.x0, cell.y0),
+    at(cell.x1, cell.y0),
+    at(cell.x1, cell.y1),
+    at(cell.x0, cell.y1),
+  ]
+  return flip ? loop.reverse() : loop
+}
+
+function cellFace(cell: Cell): RegionFace {
+  const corners: Vec2[] = [
+    { x: cell.x0, y: cell.y0 },
+    { x: cell.x1, y: cell.y0 },
+    { x: cell.x1, y: cell.y1 },
+    { x: cell.x0, y: cell.y1 },
+  ]
+  return {
+    loops: [
+      corners.map((start, i) => ({
+        kind: "line" as const,
+        start,
+        end: corners[(i + 1) % 4],
+      })),
+    ],
+  }
+}
+
+/** A segment of a face's edge, in chords, with its box. */
+interface Chord {
+  readonly a: Vec2
+  readonly b: Vec2
+  readonly box: Box2
+}
+
+/**
+ * Whether the chord runs through the cell's open interior: one lying along
+ * the cell's side (a box face's edge on the grid's line) does not, so a cell
+ * is cut only where an edge truly crosses it (Liang–Barsky).
+ */
+function crosses(chord: Chord, cell: Cell, eps: number): boolean {
+  const x0 = cell.x0 + eps
+  const x1 = cell.x1 - eps
+  const y0 = cell.y0 + eps
+  const y1 = cell.y1 - eps
+  const { box } = chord
+  if (box.max.x <= x0 || box.min.x >= x1) return false
+  if (box.max.y <= y0 || box.min.y >= y1) return false
+  const dx = chord.b.x - chord.a.x
+  const dy = chord.b.y - chord.a.y
+  let t0 = 0
+  let t1 = 1
+  for (const [p, q] of [
+    [-dx, chord.a.x - x0],
+    [dx, x1 - chord.a.x],
+    [-dy, chord.a.y - y0],
+    [dy, y1 - chord.a.y],
+  ]) {
+    if (p === 0) {
+      if (q <= 0) return false
+      continue
+    }
+    const r = q / p
+    if (p < 0) t0 = Math.max(t0, r)
+    else t1 = Math.min(t1, r)
+    if (t0 >= t1) return false
+  }
+  return true
+}
+
+/**
+ * A planar face's cells: whole where no edge crosses them, halved where one
+ * does until {@link MESH_DEPTH} — small cells along the edges keep the
+ * painter's order local, as a curved face's do — and the last halving cut to
+ * the face exactly: the face and the cell intersected as regions, each
+ * piece's loops in chords.
+ */
+function planeCells(brep: Brep, face: BrepFace, normal: Vec3): MeshCell[] {
+  const flat = planarFace(brep, face)
+  const curves = flat.face.loops.flat()
+  if (curves.length === 0) return []
+  const boxes = curves.map(curveBox)
+  const x0 = Math.min(...boxes.map((b) => b.min.x))
+  const x1 = Math.max(...boxes.map((b) => b.max.x))
+  const y0 = Math.min(...boxes.map((b) => b.min.y))
+  const y1 = Math.max(...boxes.map((b) => b.max.y))
+  const size = Math.max(x1 - x0, y1 - y0)
+  if (!(size > 0)) return []
+  const nx = Math.max(1, Math.round((CELLS_PLANE * (x1 - x0)) / size))
+  const ny = Math.max(1, Math.round((CELLS_PLANE * (y1 - y0)) / size))
+  const at = (x: number, y: number) =>
+    axesToWorld(flat.axes, { x, y, z: flat.elevation })
+  const tolerance = size * PLANE_CHORD
+  const eps = size * 1e-9
+  const chords: Chord[] = curves.flatMap((curve) => {
+    const { points } = curveTessellation(curve, tolerance)
+    return points.slice(1).map((b, i) => {
+      const a = points[i]
+      return {
+        a,
+        b,
+        box: {
+          min: { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) },
+          max: { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) },
+        },
+      }
+    })
+  })
+  const out: MeshCell[] = []
+  const visit = (cell: Cell, near: readonly Chord[], depth: number) => {
+    const crossing = near.filter((chord) => crosses(chord, cell, eps))
+    if (crossing.length === 0) {
+      // No edge through it: the cell is all in or all out.
+      const middle = { x: (cell.x0 + cell.x1) / 2, y: (cell.y0 + cell.y1) / 2 }
+      if (pointInFaces(middle, [flat.face])) {
+        out.push({ loops: [cellLoop(at, cell, false)], normal })
+      }
+      return
+    }
+    if (depth < MESH_DEPTH) {
+      const xm = (cell.x0 + cell.x1) / 2
+      const ym = (cell.y0 + cell.y1) / 2
+      for (const [a, b] of [
+        [cell.x0, xm],
+        [xm, cell.x1],
+      ]) {
+        for (const [c, d] of [
+          [cell.y0, ym],
+          [ym, cell.y1],
+        ]) {
+          visit({ x0: a, y0: c, x1: b, y1: d }, crossing, depth + 1)
+        }
+      }
+      return
+    }
+    for (const piece of regionBoolean(
+      "intersect",
+      [flat.face],
+      [cellFace(cell)]
+    )) {
+      out.push({
+        loops: piece.loops.map((loop) =>
+          loop.flatMap((curve) =>
+            // Each curve's end is the next one's start: drop it.
+            curveTessellation(curve, tolerance)
+              .points.slice(0, -1)
+              .map((p) => at(p.x, p.y))
+          )
+        ),
+        normal,
+      })
+    }
+  }
+  for (const cell of gridCells(x0, x1, y0, y1, nx, ny)) visit(cell, chords, 0)
+  return out
 }
 
 function cellsAlong(param: Param, span: number): number {
@@ -153,28 +313,9 @@ function cellsAlong(param: Param, span: number): number {
   return param === "linear" ? CELLS_LINEAR : CELLS_PROFILE
 }
 
-export function faceMesh(brep: Brep, face: BrepFace): MeshTriangle[] {
+export function faceMesh(brep: Brep, face: BrepFace): MeshCell[] {
   const s = face.surface
-  if (s.kind === "plane") {
-    const flat = planarFace(brep, face)
-    const boxes = flat.face.loops.flat().map(curveBox)
-    if (boxes.length === 0) return []
-    const x0 = Math.min(...boxes.map((b) => b.min.x))
-    const x1 = Math.max(...boxes.map((b) => b.max.x))
-    const y0 = Math.min(...boxes.map((b) => b.min.y))
-    const y1 = Math.max(...boxes.map((b) => b.max.y))
-    const size = Math.max(x1 - x0, y1 - y0)
-    if (!(size > 0)) return []
-    const nx = Math.max(1, Math.round((CELLS_PLANE * (x1 - x0)) / size))
-    const ny = Math.max(1, Math.round((CELLS_PLANE * (y1 - y0)) / size))
-    const at = (x: number, y: number) =>
-      axesToWorld(flat.axes, { x, y, z: flat.elevation })
-    const inside = (x: number, y: number) =>
-      pointInFaces({ x, y } as Vec2, [flat.face])
-    return insideCells(x0, x1, y0, y1, nx, ny, inside).flatMap((cell) =>
-      cellTriangles(at, cell, s.normal, false)
-    )
-  }
+  if (s.kind === "plane") return planeCells(brep, face, s.normal)
   const region = faceRegion(brep, face)
   if (!region) return []
   const { u, v } = region.domain
@@ -186,7 +327,7 @@ export function faceMesh(brep: Brep, face: BrepFace): MeshTriangle[] {
   const at = (x: number, y: number) => surfaceFrame(s, x, y).p
   const inside = (x: number, y: number) =>
     regionContains(region, { u: x, v: y } as UV)
-  const out: MeshTriangle[] = []
+  const out: MeshCell[] = []
   for (const cell of insideCells(
     u0,
     u1,
@@ -211,16 +352,33 @@ export function faceMesh(brep: Brep, face: BrepFace): MeshTriangle[] {
           region.sense
         )
       ) ?? { x: 0, y: 0, z: 1 }
-    out.push(...cellTriangles(at, cell, normal, region.sense < 0))
+    out.push({ loops: [cellLoop(at, cell, region.sense < 0)], normal })
   }
   return out
 }
 
-/** The area of the triangles: what a test holds against the face's exact area. */
-export function meshArea(triangles: readonly MeshTriangle[]): number {
+/** Twice a loop's area vector (Newell's), so its sense about a normal is its sign. */
+export function loopAreaVector(loop: readonly Vec3[]): Vec3 {
+  let x = 0
+  let y = 0
+  let z = 0
+  for (let i = 0; i < loop.length; i++) {
+    const a = loop[i]
+    const b = loop[(i + 1) % loop.length]
+    x += (a.y - b.y) * (a.z + b.z)
+    y += (a.z - b.z) * (a.x + b.x)
+    z += (a.x - b.x) * (a.y + b.y)
+  }
+  return { x, y, z }
+}
+
+/** The cells' area, holes taken out: what a test holds against the face's exact area. */
+export function meshArea(cells: readonly MeshCell[]): number {
   let sum = 0
-  for (const t of triangles) {
-    sum += length3(cross3(sub3(t.b, t.a), sub3(t.c, t.a))) / 2
+  for (const cell of cells) {
+    for (const loop of cell.loops) {
+      sum += dot3(loopAreaVector(loop), cell.normal) / 2
+    }
   }
   return sum
 }

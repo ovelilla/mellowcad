@@ -234,8 +234,9 @@ desktop d01; 3DORBIT and the ViewCube keep the same rule here, **unverified**).
 **Hidden** draws each solid's edges and the outlines of its curved faces where no face of any solid
 hides them, in the object's colour, and no isolines (plotted with Shade plot As displayed, p02;
 `cad/geometry/hiddenLines.ts`); a solid behind another is hidden by it, also along an edge they
-share. **Conceptual** paints the faces towards the viewer back to front, cut into triangles
-(`cad/geometry/faceMesh.ts`, never saved), in the object's colour with Gooch's cool blue on the side
+share. **Conceptual** paints the faces towards the viewer back to front, cut into cells halved
+along their edges, a plane's last cut to the face exactly, so a round edge or a hole is never
+stepped (`cad/geometry/faceMesh.ts`, never saved), in the object's colour with Gooch's cool blue on the side
 turned from the light (VSFACESTYLE 2, v06), the light following the viewpoint (DEFAULTLIGHTING 1),
 the light and the shading fitted to the screen: a white sphere's pixels (desktop solid-inquiry/d02,
 within 0.4 on average) and a red box's faces (d06: 230,102,76, 207,91,88, 114,44,134), which a
@@ -267,8 +268,8 @@ hide a line behind the solids); solids inside block references and associative a
 shaded in AutoCAD, p304, p305; drawn in 2D Wireframe here, isolines and all); AutoCAD's faceted
 outlines (p02 draws a sphere's as a polygon, the screen too, d02; here the exact curve; its
 silhouettes are as wide as its edges on the screen, 1 or 2 px, whatever VSSILHWIDTH 3 says, d02,
-d03, as here); Conceptual's smooth shading across a curved face (here flat per triangle, 11.25° a
-step), and a painter's order that a long face beside a short one can get wrong where the triangles
+d03, as here); Conceptual's smooth shading across a curved face (here flat per cell, 11.25° a
+step), and a painter's order that a long face beside a short one can get wrong where the cells
 overlap on the screen (the edges on top are exact); the faces' tint under the rollover, a preview,
 the selection and Ctrl: Hidden fills a solid's visible faces 49,71,112 hovered and 40,74,140
 selected, Conceptual turns them blue (a white box's top 184,201,224 hovered, 148,179,230 selected),
