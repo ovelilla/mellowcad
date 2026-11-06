@@ -1,0 +1,84 @@
+---
+title: "Comando PYRAMID (PIRAMIDE) no AutoCAD 3D"
+description: "Como funciona o PYRAMID do AutoCAD em português, PIRAMIDE (alias PIR), prompt a prompt: lados, base, altura, Aresta, Inscrito e Raio superior. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando PYRAMID no AutoCAD em português?","answer":"PIRAMIDE, com o alias PIR. Digite-o e pressione Enter ou a barra de espaço, depois dê o centro da base, o raio e a altura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _PYRAMID."},{"question":"Como desenhar uma pirâmide hexagonal no AutoCAD?","answer":"Escolha Lados antes do centro da base e digite 6, depois dê o centro, o raio e a altura: 0,0, 25 e 40 desenham a pirâmide da figura. O próximo PIRAMIDE mantém os seis lados."},{"question":"Como desenhar uma pirâmide pela medida do lado da base?","answer":"Escolha Aresta e dê as duas pontas de um lado: um lado de 0,0 a 50,0 faz uma base quadrada de 50, com os 4 lados do padrão."},{"question":"Como fazer um tronco de pirâmide no AutoCAD?","answer":"Na altura, escolha Raio, digite o raio superior e depois a altura. A pirâmide termina num polígono menor, com tantos lados quanto a base."}]
+---
+
+O PYRAMID, PIRAMIDE no AutoCAD em português, desenha uma pirâmide, um sólido 3D: a sua primeira linha diz quantos lados a base tem e como o raio é lido, e depois ele pede o centro da base, o raio e a altura. A base é um polígono regular, como o [`POLIGONO`](/docs/commands/polygon) o desenha, de 4 lados no início: um raio digitado o vira para o cursor; um ponto, para si mesmo. A altura sobe pelo eixo Z do UCS, uma negativa desce, e um ponto a dá pela distância até a base. Os lados e o modo como o raio é lido ficam guardados para o próximo PIRAMIDE; o raio e a altura são os padrões compartilhados das primitivas. A pirâmide fica na camada atual, e o Desfazer a reverte num passo.
+
+O `LISTA` mostra posição, os dois raios da base e do topo, altura, rotação e número de lados, e a paleta Propriedades permite digitar os raios, os lados e a altura. Suas alças a movem, definem a altura e dimensionam a base a partir de um canto ou do meio de um lado. É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial; o [`EXPLODIR`](/docs/commands/explode) a transforma numa região por face.
+
+- **Comando:** `PIRAMIDE`
+- **Em inglês:** `PYRAMID`, que se digita `_PYRAMID` em qualquer idioma
+- **Aliases:** `PIR`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `PIR` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="pyramid" caption="Uma pirâmide de seis lados, com a base de 25 até o meio de cada lado e 40 de altura, vista do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `Aresta` (`A`) [#edge]
+
+No centro da base: pede as duas pontas de um lado da base, que é desenhada à esquerda desse lado.
+
+### `Lados` (`L`) [#sides]
+
+No centro da base: pede o número de lados, de 3 a 32, e depois o centro de novo.
+
+### `Inscrito` (`I`) [#inscribed]
+
+No raio: lê o raio até um canto da base, o polígono inscrito nesse círculo, e o pede de novo.
+
+### `Circunscrito` (`C`) [#circumscribed]
+
+No raio, depois de escolher `Inscrito`: lê o raio até o meio de um lado, o polígono em volta desse círculo, como no início, e o pede de novo.
+
+### `2Pontos` (`2P`) [#2point]
+
+Na altura: pede dois pontos, e a altura é a distância entre eles.
+
+### `ponto final Eixo` (`E`) [#axis]
+
+Na altura: pede o vértice. A pirâmide vai do centro da base até esse ponto, em qualquer direção, com a base perpendicular ao eixo.
+
+### `Raio superior` (`R`) [#top]
+
+Na altura: pede o raio superior, lido como o da base, e depois a altura de novo. A pirâmide termina num polígono menor em vez de numa ponta, um tronco de pirâmide; um topo tão grande quanto a base faz um prisma.
+
+## O que ainda não faz [#missing]
+
+O que falta ao [`CAIXA`](/docs/commands/box): Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, os comandos 3D próprios e os estilos visuais que faltam ao `EVATUAL`. O seu tipo, inscrito ou circunscrito, digitado na paleta Propriedades. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o raio e uma aresta.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pyramid--pyr--es-piramide--pir--pt-br-piramide--pir)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando PYRAMID no AutoCAD em português?
+
+PIRAMIDE, com o alias `PIR`. Digite-o e pressione Enter ou a barra de espaço, depois dê o centro da base, o raio e a altura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_PYRAMID`.
+
+### Como desenhar uma pirâmide hexagonal no AutoCAD?
+
+Escolha `Lados` antes do centro da base e digite `6`, depois dê o centro, o raio e a altura: `0,0`, `25` e `40` desenham a pirâmide da figura. O próximo PIRAMIDE mantém os seis lados.
+
+### Como desenhar uma pirâmide pela medida do lado da base?
+
+Escolha `Aresta` e dê as duas pontas de um lado: um lado de `0,0` a `50,0` faz uma base quadrada de 50, com os 4 lados do padrão.
+
+### Como fazer um tronco de pirâmide no AutoCAD?
+
+Na altura, escolha `Raio`, digite o raio superior e depois a altura. A pirâmide termina num polígono menor, com tantos lados quanto a base.
+
+## Comandos relacionados [#related]
+
+- [Comando CONE no AutoCAD 3D](/docs/commands/cone)
+- [Polígono no AutoCAD: comando POLIGONO (POLYGON)](/docs/commands/polygon)
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
+- [Comando WEDGE (CUNHA) no AutoCAD 3D](/docs/commands/wedge)

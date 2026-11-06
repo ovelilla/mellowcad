@@ -1,0 +1,76 @@
+---
+title: "TORUS in AutoCAD"
+metaTitle: "TORUS in AutoCAD: 3D torus, options and alias"
+description: "How AutoCAD's TORUS (TOR) draws a 3D solid ring, prompt by prompt: centre, the ring's radius, the tube's radius, Diameter, 3P, 2P and Ttr. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for TORUS in AutoCAD?","answer":"TOR. Type it and press Enter or Space, then give the centre, the ring's radius and the tube's: 0,0,0, 30 and 8 draw the session's torus."},{"question":"What is the difference between the radius and the tube radius?","answer":"The radius runs from the centre of the torus to the middle of the tube; the tube radius is the tube's own. A torus 76 across the outside with a tube 16 thick has a radius of 30 and a tube radius of 8."},{"question":"How do I draw a torus shaped like a rugby ball?","answer":"Give a negative radius, then a tube radius larger than its size: -5 and 8 make a closed shape pointed at both ends. A tube radius no larger than that is refused, and asked again."},{"question":"Why does my torus look like two circles?","answer":"You are looking at it from above, in plan. Turn the view: a corner of the ViewCube, -VIEW and SEIso, or 3DORBIT. VSCURRENT with Conceptual shades it."}]
+---
+
+TORUS draws a 3D solid ring, a doughnut: give the centre, then the radius of the ring, from the centre to the middle of the tube, then the radius of the tube. The ring lies on the UCS's XY plane, at the centre's Z. A point at the tube's prompt is measured from the ring's point, the one the radius was given at. The ring's radius is the primitives' shared default, and the tube's radius a default of its own, which Enter takes. The torus lies on the current layer, and Undo takes it back in one step.
+
+A negative ring radius with a wider tube makes a ball like a rugby ball, its ends pointed; a ring narrower than its tube, an apple. In 2D Wireframe and Hidden it is drawn as lines round the tube and round the ring, as many as `ISOLINES` says. `LIST` shows its position, normal, torus radius and tube radius, and the Properties palette lets you type both. Its grips move it, set the ring's radius and set the tube's. It is a 3D solid for [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) and the rest of MellowCAD's 3D, which is solids only and still partial.
+
+- **Command:** `TORUS`
+- **Aliases:** `TOR`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `TOR` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="torus" caption="A torus of radius 30 round a tube of radius 8, seen from the south-east in the Conceptual visual style." />
+
+## Options [#options]
+
+### `3P` [#3p]
+
+At the centre: asks for three points, and the ring is the circle through them, in their plane.
+
+### `2P` [#2p]
+
+At the centre: asks for the two ends of the ring's diameter.
+
+### `Ttr` (`T`) [#ttr]
+
+At the centre: pick two lines, circles or arcs, under the Tangent snap, and give a radius: the ring touches both, at their height.
+
+### `Diameter` (`D`) [#diameter]
+
+At the ring's radius: asks for the torus' diameter instead. At the tube's: asks for the tube's diameter. Each offers twice its default.
+
+### `2Point` (`2P`) [#2point]
+
+At the tube's radius: asks for two points, and the tube's radius is the distance between them.
+
+## What it does not do yet [#missing]
+
+[`EXPLODE`](/docs/commands/explode) of a torus, which AutoCAD turns into a surface: MellowCAD has no surfaces, so it says it could not explode it. Move, Rotate, Scale and Mirror from a hot grip, and the silhouette AutoCAD's `DISPSILH` draws.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro)
+
+## Questions [#questions]
+
+### What is the shortcut for TORUS in AutoCAD?
+
+`TOR`. Type it and press Enter or Space, then give the centre, the ring's radius and the tube's: `0,0,0`, `30` and `8` draw the session's torus.
+
+### What is the difference between the radius and the tube radius?
+
+The radius runs from the centre of the torus to the middle of the tube; the tube radius is the tube's own. A torus 76 across the outside with a tube 16 thick has a radius of 30 and a tube radius of 8.
+
+### How do I draw a torus shaped like a rugby ball?
+
+Give a negative radius, then a tube radius larger than its size: `-5` and `8` make a closed shape pointed at both ends. A tube radius no larger than that is refused, and asked again.
+
+### Why does my torus look like two circles?
+
+You are looking at it from above, in plan. Turn the view: a corner of the ViewCube, `-VIEW` and `SEIso`, or `3DORBIT`. `VSCURRENT` with `Conceptual` shades it.
+
+## Related commands [#related]
+
+- [SPHERE in AutoCAD](/docs/commands/sphere)
+- [CYLINDER in AutoCAD](/docs/commands/cylinder)
+- [REVOLVE in AutoCAD](/docs/commands/revolve)
+- [SUBTRACT in AutoCAD](/docs/commands/subtract)

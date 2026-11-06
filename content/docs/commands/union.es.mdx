@@ -36,7 +36,7 @@ UNION, igual que en inglés, con el alias `UNI`. El nombre inglés con un guion 
 
 ### ¿Por qué no funciona UNION?
 
-Necesita dos sólidos, o dos regiones del mismo plano: con menos dice `Hay que designar al menos 2 sólidos, superficies o regiones coplanares.` y no cambia nada. Las líneas, los arcos y las polilíneas no son regiones, aunque estén cerradas: conviértelas antes en regiones con `REGION`. Los objetos designados antes de UNION se descartan, como en AutoCAD 2027: desígnalos en su solicitud. Cuando dice que ha fallado una operación booleana, los sólidos se cortan de un modo que MellowCAD aún no sabe calcular, y se quedan como estaban.
+Necesita dos sólidos, o dos regiones del mismo plano: con menos dice `Hay que designar al menos 2 sólidos, superficies o regiones coplanares.` y no cambia nada. Las líneas, los arcos y las polilíneas no son regiones, aunque estén cerradas: conviértelas antes en regiones con [`REGION`](/docs/commands/region). Los objetos designados antes de UNION se descartan, como en AutoCAD 2027: desígnalos en su solicitud. Cuando dice que ha fallado una operación booleana, los sólidos se cortan de un modo que MellowCAD aún no sabe calcular, y se quedan como estaban.
 
 ### ¿Cómo deshago una unión?
 
@@ -44,12 +44,12 @@ Con `H` o Ctrl+Z justo después: todo el comando vuelve atrás en un solo paso, 
 
 ### ¿Cómo uno regiones con UNION?
 
-Convierte cada contorno cerrado en una región con `REGION` y únelas con UNION: las regiones de cada plano pasan a ser una sola, con los lados comunes fundidos. Las formas que se cierran alrededor de un hueco dejan un agujero, y las regiones separadas pasan a ser una sola región de varias piezas. Una región sola en su plano se queda como está.
+Convierte cada contorno cerrado en una región con [`REGION`](/docs/commands/region) y únelas con UNION: las regiones de cada plano pasan a ser una sola, con los lados comunes fundidos. Las formas que se cierran alrededor de un hueco dejan un agujero, y las regiones separadas pasan a ser una sola región de varias piezas. Una región sola en su plano se queda como está.
 
 ## Comandos relacionados [#related]
 
 - [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)
 - [Intersección de sólidos en AutoCAD: INTERSEC (INTERSECT)](/docs/commands/intersect)
-- [REGION](/docs/commands#region): Región
+- [Regiones en AutoCAD: comando REGION](/docs/commands/region)
 - [Prisma rectangular en AutoCAD: PRISMARECT (BOX)](/docs/commands/box)
 - [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)

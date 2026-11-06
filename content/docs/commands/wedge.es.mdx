@@ -1,0 +1,73 @@
+---
+title: "Cuña en AutoCAD: comando CUÑA (WEDGE)"
+metaTitle: "Cuña en AutoCAD 3D: comando CUÑA (WEDGE)"
+description: "Cómo funciona CUÑA (WEDGE, alias CU) de AutoCAD en español, solicitud a solicitud: dos esquinas y una altura, Centro, Cubo, Longitud y 2Puntos. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando WEDGE en español?","answer":"CUÑA, con el alias CU. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _WEDGE. Escríbelo y pulsa Intro o la barra espaciadora, y después precisa la primera esquina, la otra esquina y la altura: 0,0, 60,40 y 25 dibujan la cuña de la figura."},{"question":"¿Hacia dónde baja la pendiente de la cuña?","answer":"Desde el lado de la primera esquina, a lo largo del eje X del SCP. Para girarla, precisa la otra esquina con una X menor, que la gira 180°, o gírala después con GIRA."},{"question":"¿Cómo dibujar un prisma triangular?","answer":"Una cuña lo es: un triángulo rectángulo en cada extremo, prolongado a lo largo de la anchura. Para cualquier otro triángulo, dibújalo cerrado con POL y extrúyelo con EXTRUSION."},{"question":"¿Cómo dibujar una cuña desde su centro?","answer":"Elige Centro y precisa el centro, y después una esquina, Cubo o Longitud: la cuña queda centrada en el punto, también en altura."}]
+---
+
+CUÑA (WEDGE en inglés) dibuja una cuña, un sólido 3D: un prisma rectangular cuya cara superior baja en pendiente de un extremo al otro. Pide lo mismo que [`PRISMARECT`](/docs/commands/box): la primera esquina, la otra esquina y después la altura. El extremo alto está en la primera esquina, y la pendiente baja a lo largo del eje X del SCP hacia el lado de la otra esquina; una esquina con una X menor le da la vuelta. La altura sube por el eje Z del SCP, una negativa baja. La longitud, la anchura y la altura son los valores por defecto de [`PRISMARECT`](/docs/commands/box), que Intro acepta. La cuña va a la capa actual, y Deshacer la revierte en un paso.
+
+`LIST` muestra su posición, longitud, anchura, altura y rotación, y la paleta Propiedades deja escribirlas. Sus pinzamientos son los de [`PRISMARECT`](/docs/commands/box). Es un sólido 3D para [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial; [`DESCOMP`](/docs/commands/explode) la convierte en una región por cara.
+
+- **Comando:** `CUÑA`
+- **En inglés:** `WEDGE`, que se escribe `_WEDGE` en cualquier idioma
+- **Alias:** `CU`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `CU` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="wedge" caption="Una cuña de 60 por 40 por 25, con dos esquinas y una altura, con la pendiente bajando desde el lado de la primera esquina, vista desde el sureste con el estilo visual Oculto." />
+
+## Opciones [#options]
+
+### `Centro` (`C`) [#center]
+
+En la primera solicitud: pide el centro y después una esquina, `Cubo` o `Longitud`. La cuña queda centrada en el punto, también en altura, con el extremo alto en el lado opuesto a la esquina precisada.
+
+### `Cubo` (`C`) [#cube]
+
+En la otra esquina: pide una longitud y crea una cuña con todos los lados de esa longitud. A diferencia del de [`PRISMARECT`](/docs/commands/box), va a lo largo del eje X del SCP, hacia atrás si es negativa.
+
+### `Longitud` (`L`) [#length]
+
+En la otra esquina: pide la longitud, a lo largo del eje X del SCP, y después la anchura, a lo largo de su eje Y; una negativa va hacia atrás. Un punto da solo su distancia, nunca su dirección.
+
+### `2Puntos` (`2P`) [#2point]
+
+En la altura: pide dos puntos, y la altura es la distancia entre ellos.
+
+## Lo que aún no hace [#missing]
+
+Lo que le falta a [`PRISMARECT`](/docs/commands/box): Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, los comandos 3D propios, las cotas punteadas mientras precisas la esquina y los estilos visuales que le faltan a `ESTVISACTUAL`. En planta, la referencia a objetos Punto final bajo el extremo alto encuentra la esquina de arriba, donde AutoCAD encuentra la de la base.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando WEDGE en español?
+
+CUÑA, con el alias `CU`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_WEDGE`. Escríbelo y pulsa Intro o la barra espaciadora, y después precisa la primera esquina, la otra esquina y la altura: `0,0`, `60,40` y `25` dibujan la cuña de la figura.
+
+### ¿Hacia dónde baja la pendiente de la cuña?
+
+Desde el lado de la primera esquina, a lo largo del eje X del SCP. Para girarla, precisa la otra esquina con una X menor, que la gira 180°, o gírala después con [`GIRA`](/docs/commands/rotate).
+
+### ¿Cómo dibujar un prisma triangular?
+
+Una cuña lo es: un triángulo rectángulo en cada extremo, prolongado a lo largo de la anchura. Para cualquier otro triángulo, dibújalo cerrado con [`POL`](/docs/commands/pline) y extrúyelo con [`EXTRUSION`](/docs/commands/extrude).
+
+### ¿Cómo dibujar una cuña desde su centro?
+
+Elige `Centro` y precisa el centro, y después una esquina, `Cubo` o `Longitud`: la cuña queda centrada en el punto, también en altura.
+
+## Comandos relacionados [#related]
+
+- [Prisma rectangular en AutoCAD: PRISMARECT (BOX)](/docs/commands/box)
+- [Pirámide en AutoCAD: comando PIRAMIDE (PYRAMID)](/docs/commands/pyramid)
+- [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)
+- [Unión de sólidos en AutoCAD: UNION](/docs/commands/union)

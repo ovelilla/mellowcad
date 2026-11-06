@@ -18,7 +18,9 @@ import { sessions as boxSessions } from "./demos/commands/box"
 import { sessions as breakSessions } from "./demos/commands/break"
 import { sessions as chamferSessions } from "./demos/commands/chamfer"
 import { sessions as circleSessions } from "./demos/commands/circle"
+import { sessions as coneSessions } from "./demos/commands/cone"
 import { sessions as copySessions } from "./demos/commands/copy"
+import { sessions as cylinderSessions } from "./demos/commands/cylinder"
 import { sessions as dimalignedSessions } from "./demos/commands/dimaligned"
 import { sessions as dimangularSessions } from "./demos/commands/dimangular"
 import { sessions as dimbaselineSessions } from "./demos/commands/dimbaseline"
@@ -42,6 +44,7 @@ import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
 import { sessions as linetypeSessions } from "./demos/commands/linetype"
 import { sessions as lweightSessions } from "./demos/commands/lweight"
+import { sessions as masspropSessions } from "./demos/commands/massprop"
 import { sessions as matchpropSessions } from "./demos/commands/matchprop"
 import { sessions as mirrorSessions } from "./demos/commands/mirror"
 import { sessions as moveSessions } from "./demos/commands/move"
@@ -52,18 +55,23 @@ import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
 import { sessions as propertiesSessions } from "./demos/commands/properties"
+import { sessions as pyramidSessions } from "./demos/commands/pyramid"
 import { sessions as rectangSessions } from "./demos/commands/rectang"
+import { sessions as regionSessions } from "./demos/commands/region"
 import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
 import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as sphereSessions } from "./demos/commands/sphere"
 import { sessions as splineSessions } from "./demos/commands/spline"
 import { sessions as stretchSessions } from "./demos/commands/stretch"
 import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
+import { sessions as torusSessions } from "./demos/commands/torus"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as unionSessions } from "./demos/commands/union"
 import { sessions as unitsSessions } from "./demos/commands/units"
+import { sessions as wedgeSessions } from "./demos/commands/wedge"
 import { sessions as zoomSessions } from "./demos/commands/zoom"
 import { hero, heroDrawing } from "./demos/hero"
 import {
@@ -172,7 +180,9 @@ export const COMMAND_SESSIONS = {
   ...breakSessions,
   ...chamferSessions,
   ...circleSessions,
+  ...coneSessions,
   ...copySessions,
+  ...cylinderSessions,
   ...dimalignedSessions,
   ...dimangularSessions,
   ...dimbaselineSessions,
@@ -196,6 +206,7 @@ export const COMMAND_SESSIONS = {
   ...lineSessions,
   ...linetypeSessions,
   ...lweightSessions,
+  ...masspropSessions,
   ...matchpropSessions,
   ...mirrorSessions,
   ...moveSessions,
@@ -206,18 +217,23 @@ export const COMMAND_SESSIONS = {
   ...polygonSessions,
   ...presspullSessions,
   ...propertiesSessions,
+  ...pyramidSessions,
   ...rectangSessions,
+  ...regionSessions,
   ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
   ...sliceSessions,
+  ...sphereSessions,
   ...splineSessions,
   ...stretchSessions,
   ...subtractSessions,
   ...textSessions,
+  ...torusSessions,
   ...trimSessions,
   ...unionSessions,
   ...unitsSessions,
+  ...wedgeSessions,
   ...zoomSessions,
 }
 

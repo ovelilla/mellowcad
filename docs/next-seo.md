@@ -1,7 +1,7 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 48 comandos publicada el 6/11 y 10 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 48 comandos publicada el 6/11 y 18 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
 > dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
 > quedan y lo que queda de §7. Esperan detrás
@@ -332,7 +332,7 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    comandos (ERASE a BREAK en los cuatro idiomas), añadidas al final antes de su push: el script
    salta, sin gastar cuota, una URL que aún no responde 200 (`not live`), y la vuelve a intentar en
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
-   push.
+   push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -394,7 +394,12 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   guion que ejecutan (no hay Administrador ni cuadro de grosores); la figura de UNITS y la de
   PROPERTIES muestran lo que dibuja el motor (el cuadro y la paleta son del editor), y las de
   LWEIGHT, PROPERTIES y ZOOM son el último fotograma del editor (`live`), porque una imagen fija no
-  dibuja grosores, pinzamientos ni la vista. **Quedan 82 comandos sin página**, por tandas con la
+  dibuja grosores, pinzamientos ni la vista. **Cuarta tanda, hecha el 6/11 y sin publicar:** la
+  primera mitad del resto del 3D, las primitivas y la consulta: CYLINDER, SPHERE, CONE, WEDGE,
+  TORUS, PYRAMID, REGION y MASSPROP (32 URLs más, al final de la cola de §7): 66 comandos con
+  página. Las primitivas, como BOX, en vivo desde el sureste; la esfera y el toroide con el estilo
+  Conceptual, porque Oculto solo dibuja su contorno; REGION, cuatro líneas y un círculo con su
+  recuento, y MASSPROP, el informe de un prisma. **Quedan 74 comandos sin página**, por tandas con la
   skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,

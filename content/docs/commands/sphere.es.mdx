@@ -1,0 +1,72 @@
+---
+title: "Esfera en AutoCAD: comando ESFERA (SPHERE)"
+metaTitle: "Esfera en AutoCAD 3D: comando ESFERA (SPHERE)"
+description: "Cómo funciona ESFERA (SPHERE) de AutoCAD en español, solicitud a solicitud: centro y radio, Diámetro, 3P, 2P y Ttr, y por qué se ve con líneas. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo hacer una esfera en AutoCAD?","answer":"Ejecuta ESFERA, precisa el centro y después el radio: 0,0,0 y 25 dibujan la esfera de la figura. Gira la vista para verla redonda, con una esquina del ViewCube o con -VISTA y SEIso."},{"question":"¿Por qué la esfera se ve como un círculo con líneas?","answer":"Estructura alámbrica 2D y Oculto dibujan una esfera con sus meridianos y paralelos; en planta son un círculo y unas líneas que lo cruzan. ESTVISACTUAL con Conceptual la sombrea, y ISOLINES fija cuántas líneas muestra."},{"question":"¿Cómo hacer una semiesfera?","answer":"Dibuja la esfera y córtala por su centro con CORTE: tres puntos del plano, o XY y el centro, y después el lado que conservas."},{"question":"¿Cómo dibujar una esfera por su diámetro?","answer":"En el radio, elige Diámetro y escribe el diámetro. Con 2P, los dos extremos de un diámetro también la sitúan."}]
+---
+
+ESFERA (SPHERE en inglés) dibuja una esfera, un sólido 3D: precisa el centro y después el radio. Un radio señalado con el ratón se lee en el plano que pasa por el centro, y el último radio se ofrece como valor por defecto que Intro acepta, compartido con [`CILINDRO`](/docs/commands/cylinder), [`CONO`](/docs/commands/cone) y las demás primitivas. La esfera va a la capa actual, y Deshacer la revierte en un paso.
+
+En Estructura alámbrica 2D y Oculto se dibuja con líneas: meridianos y paralelos, tantos como dice `ISOLINES`, y la referencia a objetos no encuentra en ella nada más que su centro. `LIST` muestra su posición y su radio, y la paleta Propiedades deja escribir el radio o el diámetro. Sus pinzamientos la desplazan y, en cada cuadrante de su ecuador, fijan su radio. Es un sólido 3D para [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial.
+
+- **Comando:** `ESFERA`
+- **En inglés:** `SPHERE`, que se escribe `_SPHERE` en cualquier idioma
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ESFERA` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="sphere" caption="Una esfera de radio 25 desde su centro, vista desde el sureste con el estilo visual Conceptual." />
+
+## Opciones [#options]
+
+### `3P` [#3p]
+
+En el centro: pide tres puntos, y la esfera queda centrada en el círculo que pasa por ellos, con su radio.
+
+### `2P` [#2p]
+
+En el centro: pide los dos extremos de un diámetro, en cualquier lugar del espacio.
+
+### `Ttr` (`T`) [#ttr]
+
+En el centro: designa dos líneas, círculos o arcos, con la referencia a objetos Tangente, y precisa un radio: el centro queda en el círculo de ese radio que toca los dos, a su altura.
+
+### `Diámetro` (`D`) [#diameter]
+
+En el radio: pide en su lugar el diámetro, y ofrece el doble del último radio.
+
+## Lo que aún no hace [#missing]
+
+[`DESCOMP`](/docs/commands/explode) de una esfera, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerla. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y los comandos 3D propios (desplazar, girar y escalar en 3D). La silueta que dibuja `DISPSILH` en AutoCAD. Los estilos visuales que le faltan a `ESTVISACTUAL` además de Estructura alámbrica 2D, Oculto y Conceptual.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo hacer una esfera en AutoCAD?
+
+Ejecuta ESFERA, precisa el centro y después el radio: `0,0,0` y `25` dibujan la esfera de la figura. Gira la vista para verla redonda, con una esquina del ViewCube o con `-VISTA` y `SEIso`.
+
+### ¿Por qué la esfera se ve como un círculo con líneas?
+
+Estructura alámbrica 2D y Oculto dibujan una esfera con sus meridianos y paralelos; en planta son un círculo y unas líneas que lo cruzan. `ESTVISACTUAL` con `Conceptual` la sombrea, y `ISOLINES` fija cuántas líneas muestra.
+
+### ¿Cómo hacer una semiesfera?
+
+Dibuja la esfera y córtala por su centro con [`CORTE`](/docs/commands/slice): tres puntos del plano, o `XY` y el centro, y después el lado que conservas.
+
+### ¿Cómo dibujar una esfera por su diámetro?
+
+En el radio, elige `Diámetro` y escribe el diámetro. Con `2P`, los dos extremos de un diámetro también la sitúan.
+
+## Comandos relacionados [#related]
+
+- [Toroide en AutoCAD: comando TOROIDE (TORUS)](/docs/commands/torus)
+- [Cilindro en AutoCAD: comando CILINDRO (CYLINDER)](/docs/commands/cylinder)
+- [Cortar sólidos en AutoCAD: CORTE (SLICE)](/docs/commands/slice)
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)

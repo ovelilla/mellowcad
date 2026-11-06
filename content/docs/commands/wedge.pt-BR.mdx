@@ -1,0 +1,72 @@
+---
+title: "Comando WEDGE (CUNHA) no AutoCAD 3D"
+description: "Como funciona o WEDGE do AutoCAD em português, CUNHA (alias CN), prompt a prompt: dois cantos e uma altura, Centro, CUbo, COmprimento e 2Pontos. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando WEDGE no AutoCAD em português?","answer":"CUNHA, com o alias CN. Digite-o e pressione Enter ou a barra de espaço, depois dê o primeiro canto, o outro canto e a altura: 0,0, 60,40 e 25 desenham a cunha da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _WEDGE."},{"question":"Para que lado a cunha é inclinada?","answer":"Ela desce a partir da ponta do primeiro canto, ao longo do eixo X do UCS. Para virá-la, dê o outro canto num X menor, o que a gira 180°, ou rotacione-a depois com o ROTAC."},{"question":"Como desenhar um prisma triangular no AutoCAD?","answer":"Uma cunha é um: um triângulo retângulo em cada ponta, estendido ao longo da largura. Para qualquer outro triângulo, desenhe-o fechado com o PLINHA e faça a extrusão dele com o EXTRUSAO."},{"question":"Como desenhar uma cunha a partir do centro?","answer":"Escolha Centro e especifique o centro, depois um canto, CUbo ou COmprimento: a cunha fica centrada no ponto, também na altura."}]
+---
+
+O WEDGE, CUNHA no AutoCAD em português, desenha uma cunha, um sólido 3D: uma caixa cujo topo desce em rampa de uma ponta até a outra. Ele pergunta o que o [`CAIXA`](/docs/commands/box) pergunta: o primeiro canto, o outro canto e depois a altura. A ponta alta fica no primeiro canto, e a rampa desce ao longo do eixo X do UCS até o lado do outro canto; um canto num X menor a vira ao contrário. A altura sobe pelo eixo Z do UCS, uma negativa desce. O comprimento, a largura e a altura são os padrões do [`CAIXA`](/docs/commands/box), que o Enter aceita. A cunha fica na camada atual, e o Desfazer a reverte num passo.
+
+O `LISTA` mostra posição, comprimento, largura, altura e rotação, e a paleta Propriedades permite digitá-los. Suas alças são as do [`CAIXA`](/docs/commands/box). É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial; o [`EXPLODIR`](/docs/commands/explode) a transforma numa região por face.
+
+- **Comando:** `CUNHA`
+- **Em inglês:** `WEDGE`, que se digita `_WEDGE` em qualquer idioma
+- **Aliases:** `CN`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CN` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="wedge" caption="Uma cunha de 60 por 40 por 25, com dois cantos e uma altura, a rampa descendo a partir do lado do primeiro canto, vista do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `Centro` (`C`) [#center]
+
+No primeiro prompt: pede o centro e depois um canto, `CUbo` ou `COmprimento`. A cunha fica centrada no ponto, também na altura, com a ponta alta do lado oposto ao canto dado.
+
+### `CUbo` (`CU`) [#cube]
+
+No outro canto: pede um comprimento e faz uma cunha com todos os lados desse tamanho. Diferente do cubo do [`CAIXA`](/docs/commands/box), ele vai ao longo do eixo X do UCS, para trás quando negativo.
+
+### `COmprimento` (`CO`) [#length]
+
+No outro canto: pede o comprimento, ao longo do eixo X do UCS, e depois a largura, ao longo do Y; um negativo vai para trás. Um ponto dá só a sua distância, nunca a sua direção.
+
+### `2Pontos` (`2P`) [#2point]
+
+Na altura: pede dois pontos, e a altura é a distância entre eles.
+
+## O que ainda não faz [#missing]
+
+O que falta ao [`CAIXA`](/docs/commands/box): Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, os comandos 3D próprios, as cotas pontilhadas enquanto você dá o canto, e os estilos visuais que faltam ao `EVATUAL`. Em planta, o snap ao objeto Ponto final debaixo da ponta alta encontra o canto do topo, onde o AutoCAD encontra o da base.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando WEDGE no AutoCAD em português?
+
+CUNHA, com o alias `CN`. Digite-o e pressione Enter ou a barra de espaço, depois dê o primeiro canto, o outro canto e a altura: `0,0`, `60,40` e `25` desenham a cunha da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_WEDGE`.
+
+### Para que lado a cunha é inclinada?
+
+Ela desce a partir da ponta do primeiro canto, ao longo do eixo X do UCS. Para virá-la, dê o outro canto num X menor, o que a gira 180°, ou rotacione-a depois com o [`ROTAC`](/docs/commands/rotate).
+
+### Como desenhar um prisma triangular no AutoCAD?
+
+Uma cunha é um: um triângulo retângulo em cada ponta, estendido ao longo da largura. Para qualquer outro triângulo, desenhe-o fechado com o [`PLINHA`](/docs/commands/pline) e faça a extrusão dele com o [`EXTRUSAO`](/docs/commands/extrude).
+
+### Como desenhar uma cunha a partir do centro?
+
+Escolha `Centro` e especifique o centro, depois um canto, `CUbo` ou `COmprimento`: a cunha fica centrada no ponto, também na altura.
+
+## Comandos relacionados [#related]
+
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
+- [Comando PYRAMID (PIRAMIDE) no AutoCAD 3D](/docs/commands/pyramid)
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)

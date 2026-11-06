@@ -63,11 +63,11 @@ Dibuja el contorno como un solo objeto cerrado —una polilínea cerrada, un cí
 
 ### ¿Por qué EXTRUSION no crea un sólido?
 
-El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice `No se puede barrer ni extruir un objeto de este tipo.` y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe `No se puede barrer ni extruir una curva que interseca consigo misma.`, y también sale. Une las piezas con [`UNIR`](/docs/commands/join), haz con ellas una región con `REGION` o haz clic dentro de ellas con [`PRESIONARTIRAR`](/docs/commands/presspull).
+El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice `No se puede barrer ni extruir un objeto de este tipo.` y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe `No se puede barrer ni extruir una curva que interseca consigo misma.`, y también sale. Une las piezas con [`UNIR`](/docs/commands/join), haz con ellas una región con [`REGION`](/docs/commands/region) o haz clic dentro de ellas con [`PRESIONARTIRAR`](/docs/commands/presspull).
 
 ### ¿Cómo extruir una forma con un agujero?
 
-Haz de ella una sola región: `REGION` sobre el contorno y el agujero, y después resta con [`DIFERENCIA`](/docs/commands/subtract) la región del agujero de la del contorno. Extruye esa región y el agujero atraviesa el sólido. O ejecuta [`PRESIONARTIRAR`](/docs/commands/presspull) y haz clic entre el contorno y el agujero.
+Haz de ella una sola región: [`REGION`](/docs/commands/region) sobre el contorno y el agujero, y después resta con [`DIFERENCIA`](/docs/commands/subtract) la región del agujero de la del contorno. Extruye esa región y el agujero atraviesa el sólido. O ejecuta [`PRESIONARTIRAR`](/docs/commands/presspull) y haz clic entre el contorno y el agujero.
 
 ### ¿Cómo extruir a lo largo de una trayectoria?
 
@@ -77,5 +77,5 @@ Todavía no se puede: `Trayectoria` aparece, pero se rechaza, y el barrido aún 
 
 - [Presionar/Tirar en AutoCAD: PRESIONARTIRAR (PRESSPULL)](/docs/commands/presspull)
 - [Sólidos de revolución en AutoCAD: REVOLUCION (REVOLVE)](/docs/commands/revolve)
-- [REGION](/docs/commands#region): Región
+- [Regiones en AutoCAD: comando REGION](/docs/commands/region)
 - [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)

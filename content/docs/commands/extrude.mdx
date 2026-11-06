@@ -62,11 +62,11 @@ Draw the outline as one closed object — a closed polyline, a circle, or a regi
 
 ### Why does EXTRUDE not make a solid?
 
-The profile is open, or crosses itself. A line, an arc or an open polyline makes a surface in AutoCAD, and MellowCAD has none yet: EXTRUDE says `Cannot sweep or extrude an object of this type.` and removes them from the selection; a profile that crosses itself gets `Cannot sweep or extrude a self-intersecting curve.`, and is removed too. Join the pieces with [`JOIN`](/docs/commands/join), make a region of them with `REGION`, or click inside them with [`PRESSPULL`](/docs/commands/presspull).
+The profile is open, or crosses itself. A line, an arc or an open polyline makes a surface in AutoCAD, and MellowCAD has none yet: EXTRUDE says `Cannot sweep or extrude an object of this type.` and removes them from the selection; a profile that crosses itself gets `Cannot sweep or extrude a self-intersecting curve.`, and is removed too. Join the pieces with [`JOIN`](/docs/commands/join), make a region of them with [`REGION`](/docs/commands/region), or click inside them with [`PRESSPULL`](/docs/commands/presspull).
 
 ### How do I extrude a shape with a hole?
 
-Make one region of it: `REGION` on the outline and the hole, then [`SUBTRACT`](/docs/commands/subtract) the hole's region from the outline's. Extrude that region, and the hole runs through the solid. Or run [`PRESSPULL`](/docs/commands/presspull) and click between the outline and the hole.
+Make one region of it: [`REGION`](/docs/commands/region) on the outline and the hole, then [`SUBTRACT`](/docs/commands/subtract) the hole's region from the outline's. Extrude that region, and the hole runs through the solid. Or run [`PRESSPULL`](/docs/commands/presspull) and click between the outline and the hole.
 
 ### How do I extrude along a path?
 
@@ -76,5 +76,5 @@ Not yet: `Path` is listed but refused, and SWEEP is not built. `Direction` extru
 
 - [PRESSPULL in AutoCAD](/docs/commands/presspull)
 - [REVOLVE in AutoCAD](/docs/commands/revolve)
-- [REGION](/docs/commands#region): Region
+- [REGION in AutoCAD](/docs/commands/region)
 - [SUBTRACT in AutoCAD](/docs/commands/subtract)

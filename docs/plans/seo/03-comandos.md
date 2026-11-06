@@ -106,15 +106,16 @@ lo pidió por el coste.
 
 ## Lo que queda (estado del 6/11/2026)
 
-La mecánica está hecha y 58 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+La mecánica está hecha y 66 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
 tanda y la segunda ola entera, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN
-y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM.
+y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM;
+la cuarta tanda, CYLINDER, SPHERE, CONE, WEDGE, TORUS, PYRAMID, REGION y MASSPROP.
 Cada tanda siguiente es una sesión con la skill `command-page`, un commit, y el push del dueño; F1,
 el índice, el sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. En este
 orden:
 
-1. **El resto del 3D**: UCS, 3DORBIT, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT, CYLINDER, SPHERE,
-   CONE, WEDGE, TORUS, PYRAMID, REGION, MASSPROP, VSCURRENT.
+1. **El resto del 3D** (la quinta tanda): UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE
+   y SOLIDEDIT.
 2. **El resto, si da para una página propia**: ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE,
    TEXTEDIT, PURGE, LTSCALE, COLOR, LIST, ID, PAN, UNDO, REDO, SNAP, VIEW, PLAN, VPOINT, ELEV,
    SPLINEDIT, 3DPOLY, BREAKATPOINT, CHPROP, BLOCKSPALETTE, NEW, OPEN, SAVE, SAVEAS, QSAVE, los del

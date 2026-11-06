@@ -1,0 +1,55 @@
+---
+title: "Comando REGION (REGIAO) no AutoCAD"
+description: "Como funciona o REGION do AutoCAD em português, REGIAO (alias REG): formas fechadas em regiões, que loops encontra e por que não cria nenhuma. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como usar o comando REGION no AutoCAD?","answer":"Execute o REGIAO (ou REG), selecione as formas fechadas ou as linhas que fecham uma ponta a ponta e pressione Enter. A janela da figura, em volta de quatro linhas e um círculo, faz duas regiões, e a linha de comando conta dois loops extraídos e duas regiões criadas."},{"question":"Por que o REGION não cria a região?","answer":"A forma não está fechada ponta a ponta. Linhas que se cruzam, ou que param antes de se encontrar, não fecham nada: o REGIAO só encadeia objetos abertos pelas pontas, e uma folga de um fio de cabelo basta para descartar a cadeia. Um loop que cruza a si mesmo, como uma gravata-borboleta, é rejeitado e contado nas autointersecções. Junte as pontas com o CONCORD de raio 0, ou corte o que passa do ponto com o APARAR, e tente de novo."},{"question":"Como fazer uma região com furo?","answer":"Faça uma região do contorno e uma do furo, depois execute o SUBTRAIR: selecione o contorno, Enter, o furo, Enter. O resultado é uma só região, e o EXTRUSAO a transforma num sólido com o furo atravessando-o."},{"question":"Como saber a área de uma região?","answer":"Selecione-a e leia Área na paleta Propriedades, ou execute o AREA, escolha Objeto e selecione-a. O PROPMASS acrescenta o perímetro, o centroide e os momentos de inércia."}]
+---
+
+O REGION, REGIAO no AutoCAD em português, transforma formas fechadas em regiões: áreas planas sem espessura, cada uma delimitada pelos seus loops. Selecione os objetos e pressione Enter; cada loop que eles formam vira uma região. Um objeto fechado é um loop por si só: um círculo, uma elipse, uma polilinha ou uma spline fechadas. Os abertos — linhas, arcos, arcos elípticos, polilinhas e splines abertas — são encadeados ponta a ponta, nunca onde se cruzam, e uma cadeia que não se fecha é descartada. A linha de comando então conta os loops que encontrou, os que rejeitou e por quê, e as regiões que criou; Enter sem nada selecionado diz `Não foi encontrado nada.`.
+
+Os objetos que formaram uma região são apagados, os outros ficam, e as regiões recebem a camada e as propriedades atuais, não as dos objetos. Um loop dentro de outro faz uma região própria, não um furo nela: o [`SUBTRAIR`](/docs/commands/subtract) tira uma da outra. Uma região é desenhada pelas suas arestas e tem snap nelas; a paleta Propriedades mostra a sua área e o seu perímetro, que o [`AREA`](/docs/commands/area), o `LISTA` e o [`PROPMASS`](/docs/commands/massprop) também medem. O [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o [`INTERSEC`](/docs/commands/intersect) combinam regiões de um mesmo plano, o [`EXTRUSAO`](/docs/commands/extrude), o [`REVOLUCAO`](/docs/commands/revolve) e o [`PRESSIONARPUXAR`](/docs/commands/presspull) as transformam em sólidos 3D, e o [`EXPLODIR`](/docs/commands/explode) devolve as suas linhas, arcos e círculos. O comando inteiro é um só passo de desfazer.
+
+- **Comando:** `REGIAO`
+- **Em inglês:** `REGION`, que se digita `_REGION` em qualquer idioma
+- **Aliases:** `REG`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `REG` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="region" caption="Quatro linhas fechadas ponta a ponta e um círculo dentro delas: o REGIAO, com uma janela em volta dos dois, faz duas regiões e apaga os objetos." />
+
+## O que ainda não faz [#missing]
+
+O `DELOBJ` do AutoCAD: aqui os objetos que formaram uma região são sempre apagados. O BOUNDARY, que pode fazer uma região da área em volta de um ponto, e uma região feita do contorno de uma hachura. Editar uma região pelas alças: elas aparecem, mas arrastar uma não muda nada. As suas arestas como arestas de corte ou de limite para o [`APARAR`](/docs/commands/trim) e o [`ESTENDER`](/docs/commands/extend) no modo Rápido, e o [`HACHURA`](/docs/commands/hatch) de uma região com uma aresta elíptica ou de spline. Regiões combinadas com superfícies, que o MellowCAD não tem, e a linha Material na paleta Propriedades.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg)
+
+## Perguntas frequentes [#questions]
+
+### Como usar o comando REGION no AutoCAD?
+
+Execute o REGIAO (ou `REG`), selecione as formas fechadas ou as linhas que fecham uma ponta a ponta e pressione Enter. A janela da figura, em volta de quatro linhas e um círculo, faz duas regiões, e a linha de comando conta dois loops extraídos e duas regiões criadas.
+
+### Por que o REGION não cria a região?
+
+A forma não está fechada ponta a ponta. Linhas que se cruzam, ou que param antes de se encontrar, não fecham nada: o REGIAO só encadeia objetos abertos pelas pontas, e uma folga de um fio de cabelo basta para descartar a cadeia. Um loop que cruza a si mesmo, como uma gravata-borboleta, é rejeitado e contado nas autointersecções. Junte as pontas com o [`CONCORD`](/docs/commands/fillet) de raio 0, ou corte o que passa do ponto com o [`APARAR`](/docs/commands/trim), e tente de novo.
+
+### Como fazer uma região com furo?
+
+Faça uma região do contorno e uma do furo, depois execute o [`SUBTRAIR`](/docs/commands/subtract): selecione o contorno, Enter, o furo, Enter. O resultado é uma só região, e o [`EXTRUSAO`](/docs/commands/extrude) a transforma num sólido com o furo atravessando-o.
+
+### Como saber a área de uma região?
+
+Selecione-a e leia Área na paleta Propriedades, ou execute o [`AREA`](/docs/commands/area), escolha `Objeto` e selecione-a. O [`PROPMASS`](/docs/commands/massprop) acrescenta o perímetro, o centroide e os momentos de inércia.
+
+## Comandos relacionados [#related]
+
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)
+- [Calcular área no AutoCAD: comando AREA](/docs/commands/area)
+- [Comando MASSPROP (PROPMASS) no AutoCAD](/docs/commands/massprop)

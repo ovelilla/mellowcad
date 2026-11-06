@@ -1,0 +1,39 @@
+---
+title: "Comando MASSPROP (PROPMASS) no AutoCAD"
+metaTitle: "MASSPROP no AutoCAD: volume, centroide, inércia"
+description: "Como funciona o MASSPROP do AutoCAD em português, PROPMASS: volume, área, centroide e inércia de sólidos 3D e regiões, e o arquivo .mpr. Experimente grátis."
+figure: "Uma caixa de 60 por 40 por 25 na origem: o PROPMASS escreve o volume, a caixa delimitadora, o centroide e os momentos, e o Enter recusa o arquivo."
+sourceHash: "a0286a5d599e"
+---
+
+O MASSPROP, PROPMASS no AutoCAD em português, mede sólidos 3D e regiões. Selecione-os e pressione Enter: o relatório é escrito no prompt de comando, nas colunas do AutoCAD, e depois ele pergunta se deve gravá-lo num arquivo. Um conjunto sem nenhum dos dois diz <Message id="massPropNoneSelected" /> e encerra.
+
+Para sólidos, o conjunto é medido como um só corpo com densidade 1, então a massa é o volume: massa, volume, caixa delimitadora, centroide, momentos de inércia, produtos de inércia e raios de giro, todos em relação ao UCS atual, e depois os momentos principais em relação ao centroide, com as suas direções. Sólidos que se sobrepõem são contados duas vezes. Para regiões no plano XY do UCS: área, perímetro, caixa delimitadora, centroide, momentos e produto de inércia, raios de giro e momentos principais; uma região fora desse plano dá só a área, o perímetro, a caixa delimitadora e o centroide. As regiões vêm primeiro, depois os sólidos; regiões fora do plano da primeira são deixadas de fora e contadas. Os números são escritos na precisão do desenho, definida com o <Command id="UNITS" />, e são exatos, os dos sólidos integrados face a face. O PROPMASS não muda nada no desenho; ele é digitado, como no AutoCAD, cuja faixa de opções não tem botão para ele.
+
+## Options
+
+### Yes
+
+Na pergunta do arquivo, cujo padrão é <Keyword id="No" />: grava o relatório num arquivo, como o AutoCAD o grava, linha por linha. No AutoCAD, uma caixa de diálogo pergunta onde; num navegador, o download é essa caixa, e o arquivo recebe o nome do desenho, `.mpr`.
+
+## Missing
+
+As unidades depois de cada número com unidades arquitetônicas ou de engenharia (`sq in`, `cu in`, `lb`), que o AutoCAD escreve: aqui nenhuma unidade segue um número. Escolher o nome do arquivo, e a pergunta antes de substituir um. Longe da origem, o AutoCAD escreve números grandes em notação exponencial e perde dígitos, e o seu último dígito pode diferir pelo seu próprio arredondamento: os do MellowCAD são exatos. Para um sólido com dois momentos principais iguais, o par de direções que o arredondamento do AutoCAD escolhe.
+
+## Questions
+
+### Como calcular o volume de um sólido no AutoCAD?
+
+Execute o PROPMASS, selecione o sólido e pressione Enter: Volume é a segunda linha do relatório. A caixa de 60 por 40 por 25 da figura dá 60000. Pressione Enter na pergunta do arquivo para encerrar.
+
+### Como encontrar o centroide de uma forma no AutoCAD?
+
+Transforme-a numa região com o <Command id="REGION" />, ou num sólido, depois execute o PROPMASS e selecione-a: Centroide dá o seu X e Y, e o Z num sólido, no UCS atual.
+
+### Por que o MASSPROP diz que não há sólidos ou regiões selecionados?
+
+O que você selecionou não é nem um nem outro: linhas, polilinhas, círculos e hachuras não têm propriedades de massa, e um bloco que contém um sólido não é um sólido. Transforme formas fechadas em regiões com o <Command id="REGION" />, ou em sólidos com o <Command id="EXTRUDE" />.
+
+### Por que a massa é igual ao volume?
+
+O PROPMASS mede com densidade 1, como o AutoCAD: aqui os sólidos não têm material. Multiplique o volume pela densidade do material para obter a massa real.

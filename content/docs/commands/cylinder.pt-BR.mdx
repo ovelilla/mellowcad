@@ -1,0 +1,84 @@
+---
+title: "Comando CYLINDER (CILINDRO) no AutoCAD 3D"
+description: "Como funciona o CYLINDER do AutoCAD em português, CILINDRO (alias CIL), prompt a prompt: base, raio, altura, 3P, 2P, Ttr, Elíptico e Eixo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando CYLINDER no AutoCAD em português?","answer":"CILINDRO, com o alias CIL. Digite-o e pressione Enter ou a barra de espaço, depois dê o centro da base, o raio e a altura: 0,0, 20 e 40 desenham o cilindro da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _CYLINDER."},{"question":"Como desenhar um cilindro deitado?","answer":"Escolha Eixo na altura e dê a outra ponta do eixo: com a base em 0,0,0, o ponto 60,0,0 deita o cilindro ao longo do X."},{"question":"Como fazer um cilindro oco ou um tubo?","answer":"Desenhe dois cilindros com o mesmo centro, o interno mais estreito, e execute o SUBTRAIR: selecione o externo, Enter, o interno, Enter."},{"question":"Por que o cilindro aparece como um círculo?","answer":"Você o está vendo de cima, em planta. Gire a vista: um canto do ViewCube, -VISTA e isoSE, ou ORBITA3D."}]
+---
+
+O CYLINDER, CILINDRO no AutoCAD em português, desenha um cilindro, um sólido 3D: especifique o centro da base, depois o raio e depois a altura. A base fica no plano XY do UCS, no Z do centro, e a altura sobe pelo eixo Z do UCS; uma negativa desce, e um ponto a dá pela distância até a base, como no [`CAIXA`](/docs/commands/box). O raio e a altura são oferecidos como padrões que o Enter aceita, compartilhados com as outras primitivas e com o [`EXTRUSAO`](/docs/commands/extrude). O cilindro fica na camada atual, e o Desfazer o reverte num passo.
+
+O cilindro guarda as suas medidas: o `LISTA` mostra posição, normal, raio e altura, e a paleta Propriedades permite digitar o raio e a altura. Suas alças o movem, definem a altura e, em cada quarto da base, o raio. É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial.
+
+- **Comando:** `CILINDRO`
+- **Em inglês:** `CYLINDER`, que se digita `_CYLINDER` em qualquer idioma
+- **Aliases:** `CIL`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CIL` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="cylinder" caption="Um cilindro de raio 20 e altura 40, a partir do centro da base, visto do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `3P` [#3p]
+
+No centro da base: pede três pontos, e a base é o círculo que passa por eles, no plano deles. Três pontos no plano XY do UCS continuam fazendo o cilindro subir pelo Z.
+
+### `2P` [#2p]
+
+No centro da base: pede as duas pontas do diâmetro da base; a segunda é lida no plano da primeira.
+
+### `Ttr` (`T`) [#ttr]
+
+No centro da base: selecione duas linhas, círculos ou arcos, com o snap ao objeto Tangente, e dê um raio: a base toca os dois, o mais perto possível dos pontos selecionados, na altura deles.
+
+### `Elíptico` (`E`) [#elliptical]
+
+No centro da base: a base é uma elipse. Dê as duas pontas do primeiro eixo e depois a ponta do segundo; ou escolha `Centro` e dê o centro, a metade do comprimento do primeiro eixo e depois a ponta do segundo eixo.
+
+### `Diâmetro` (`D`) [#diameter]
+
+No raio: pede o diâmetro no lugar dele, oferecendo o dobro do último raio.
+
+### `2Pontos` (`2P`) [#2point]
+
+Na altura: pede dois pontos, e a altura é a distância entre eles.
+
+### `ponto final Eixo` (`E`) [#axis]
+
+Na altura: pede a outra ponta do eixo. O cilindro vai do centro da base até esse ponto, em qualquer direção, com a base perpendicular ao eixo.
+
+## O que ainda não faz [#missing]
+
+O [`EXPLODIR`](/docs/commands/explode) de um cilindro, que o AutoCAD transforma nas suas duas bases e numa superfície: o MellowCAD não tem superfícies, então diz que não conseguiu explodi-lo. Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, e uma altura arrastada além da base. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o raio, os pontos da elipse e o eixo. Transformar um cilindro redondo num elíptico digitando na paleta Propriedades. As silhuetas que o `DISPSILH` do AutoCAD desenha. Em planta, onde o círculo de cima esconde o da base, o snap ao objeto Mais próximo encontra o círculo da base, onde o AutoCAD encontra o de cima. Os estilos visuais que faltam ao `EVATUAL` além de Estrutura de arame 2D, Oculto e Conceitual.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando CYLINDER no AutoCAD em português?
+
+CILINDRO, com o alias `CIL`. Digite-o e pressione Enter ou a barra de espaço, depois dê o centro da base, o raio e a altura: `0,0`, `20` e `40` desenham o cilindro da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_CYLINDER`.
+
+### Como desenhar um cilindro deitado?
+
+Escolha `Eixo` na altura e dê a outra ponta do eixo: com a base em `0,0,0`, o ponto `60,0,0` deita o cilindro ao longo do X.
+
+### Como fazer um cilindro oco ou um tubo?
+
+Desenhe dois cilindros com o mesmo centro, o interno mais estreito, e execute o [`SUBTRAIR`](/docs/commands/subtract): selecione o externo, Enter, o interno, Enter.
+
+### Por que o cilindro aparece como um círculo?
+
+Você o está vendo de cima, em planta. Gire a vista: um canto do ViewCube, `-VISTA` e `isoSE`, ou `ORBITA3D`.
+
+## Comandos relacionados [#related]
+
+- [Comando CONE no AutoCAD 3D](/docs/commands/cone)
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)

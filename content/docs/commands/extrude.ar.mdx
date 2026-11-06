@@ -62,11 +62,11 @@ faq: [{"question":"ما اختصار أمر EXTRUDE في الأوتوكاد؟","
 
 ### لماذا لا ينتج البثق مجسمًا؟
 
-لأن المقطع مفتوح، أو يتقاطع مع نفسه. فالخط والقوس والخط المتعدد المفتوح تصنع سطحًا في أوتوكاد، ولا أسطح في ⁨MellowCAD⁩ بعد: يقول ⁨EXTRUDE⁩ `Cannot sweep or extrude an object of this type.` ويُخرجها من مجموعة التحديد؛ والمقطع الذي يتقاطع مع نفسه يتلقى `Cannot sweep or extrude a self-intersecting curve.`، ويُخرج هو أيضًا. اضمم القطع بـ[`JOIN`](/docs/commands/join)، أو اصنع منها منطقة بـ`REGION`، أو انقر داخلها بـ[`PRESSPULL`](/docs/commands/presspull).
+لأن المقطع مفتوح، أو يتقاطع مع نفسه. فالخط والقوس والخط المتعدد المفتوح تصنع سطحًا في أوتوكاد، ولا أسطح في ⁨MellowCAD⁩ بعد: يقول ⁨EXTRUDE⁩ `Cannot sweep or extrude an object of this type.` ويُخرجها من مجموعة التحديد؛ والمقطع الذي يتقاطع مع نفسه يتلقى `Cannot sweep or extrude a self-intersecting curve.`، ويُخرج هو أيضًا. اضمم القطع بـ[`JOIN`](/docs/commands/join)، أو اصنع منها منطقة بـ[`REGION`](/docs/commands/region)، أو انقر داخلها بـ[`PRESSPULL`](/docs/commands/presspull).
 
 ### كيف أبثق شكلًا فيه ثقب؟
 
-اجعله منطقة واحدة: `REGION` على المحيط والثقب، ثم اطرح منطقة الثقب من منطقة المحيط بـ[`SUBTRACT`](/docs/commands/subtract). ابثق تلك المنطقة، فيخترق الثقب المجسم. أو شغّل [`PRESSPULL`](/docs/commands/presspull) وانقر بين المحيط والثقب.
+اجعله منطقة واحدة: [`REGION`](/docs/commands/region) على المحيط والثقب، ثم اطرح منطقة الثقب من منطقة المحيط بـ[`SUBTRACT`](/docs/commands/subtract). ابثق تلك المنطقة، فيخترق الثقب المجسم. أو شغّل [`PRESSPULL`](/docs/commands/presspull) وانقر بين المحيط والثقب.
 
 ### كيف أبثق على امتداد مسار؟
 
@@ -76,5 +76,5 @@ faq: [{"question":"ما اختصار أمر EXTRUDE في الأوتوكاد؟","
 
 - [أمر ⁨PRESSPULL⁩ في الأوتوكاد: الضغط والسحب](/docs/commands/presspull)
 - [أمر ⁨REVOLVE⁩ في الأوتوكاد: مجسمات الدوران](/docs/commands/revolve)
-- [⁨REGION⁩](/docs/commands#region): منطقة
+- [أمر ⁨REGION⁩ في الأوتوكاد: إنشاء المناطق](/docs/commands/region)
 - [أمر ⁨SUBTRACT⁩ في الأوتوكاد: طرح المجسمات](/docs/commands/subtract)

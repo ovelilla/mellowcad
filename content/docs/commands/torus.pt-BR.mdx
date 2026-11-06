@@ -1,0 +1,76 @@
+---
+title: "Comando TORUS (TOROIDE) no AutoCAD 3D"
+description: "Como funciona o TORUS do AutoCAD em português, TOROIDE (alias TORO), prompt a prompt: centro, raio do anel e do tubo, Diâmetro, 3P, 2P e Ttr. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando TORUS no AutoCAD em português?","answer":"TOROIDE, com o alias TORO: TOR, o alias em inglês, não existe no AutoCAD em português, cujo console o recusa, e aqui também não. Digite TORO e pressione Enter ou a barra de espaço, depois dê o centro, o raio do anel e o do tubo: 0,0,0, 30 e 8 desenham o toroide da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _TORUS."},{"question":"Qual é a diferença entre o raio e o raio do tubo?","answer":"O raio vai do centro do toroide até o meio do tubo; o raio do tubo é o do próprio tubo. Um toroide de 76 de diâmetro externo com um tubo de 16 de espessura tem raio 30 e raio do tubo 8."},{"question":"Como desenhar um toroide em forma de bola de rúgbi?","answer":"Dê um raio negativo e depois um raio do tubo maior que o seu valor absoluto: -5 e 8 fazem uma forma fechada com as duas pontas agudas. Um raio do tubo que não seja maior que isso é recusado e pedido de novo."},{"question":"Por que o toroide aparece como dois círculos?","answer":"Você o está vendo de cima, em planta. Gire a vista: um canto do ViewCube, -VISTA e isoSE, ou ORBITA3D. O EVATUAL com Conceitual o sombreia."}]
+---
+
+O TORUS, TOROIDE no AutoCAD em português, desenha um anel, um sólido 3D em forma de rosca: especifique o centro, depois o raio do anel, do centro até o meio do tubo, e depois o raio do tubo. O anel fica no plano XY do UCS, no Z do centro. Um ponto no prompt do tubo é medido a partir do ponto do anel, aquele em que o raio foi dado. O raio do anel é o padrão compartilhado das primitivas, e o raio do tubo tem um padrão próprio, que o Enter aceita. O toroide fica na camada atual, e o Desfazer o reverte num passo.
+
+Um raio de anel negativo com um tubo mais largo faz uma bola como a de rúgbi, com as pontas agudas; um anel mais estreito que o seu tubo, uma maçã. Em Estrutura de arame 2D e Oculto ele é desenhado em linhas em volta do tubo e em volta do anel, tantas quantas o `ISOLINES` diz. O `LISTA` mostra posição, normal, raio do toroide e raio do tubo, e a paleta Propriedades permite digitar os dois. Suas alças o movem, definem o raio do anel e definem o do tubo. É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial.
+
+- **Comando:** `TOROIDE`
+- **Em inglês:** `TORUS`, que se digita `_TORUS` em qualquer idioma
+- **Aliases:** `TORO`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `TORO` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="torus" caption="Um toroide de raio 30 em volta de um tubo de raio 8, visto do sudeste no estilo visual Conceitual." />
+
+## Opções [#options]
+
+### `3P` [#3p]
+
+No centro: pede três pontos, e o anel é o círculo que passa por eles, no plano deles.
+
+### `2P` [#2p]
+
+No centro: pede as duas pontas do diâmetro do anel.
+
+### `Ttr` (`T`) [#ttr]
+
+No centro: selecione duas linhas, círculos ou arcos, com o snap ao objeto Tangente, e dê um raio: o anel toca os dois, na altura deles.
+
+### `Diâmetro` (`D`) [#diameter]
+
+No raio do anel: pede o diâmetro do toroide no lugar dele. No do tubo: pede o diâmetro do tubo. Cada um oferece o dobro do seu padrão.
+
+### `2Pontos` (`2P`) [#2point]
+
+No raio do tubo: pede dois pontos, e o raio do tubo é a distância entre eles.
+
+## O que ainda não faz [#missing]
+
+O [`EXPLODIR`](/docs/commands/explode) de um toroide, que o AutoCAD transforma numa superfície: o MellowCAD não tem superfícies, então diz que não conseguiu explodi-lo. Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, e a silhueta que o `DISPSILH` do AutoCAD desenha.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando TORUS no AutoCAD em português?
+
+TOROIDE, com o alias `TORO`: `TOR`, o alias em inglês, não existe no AutoCAD em português, cujo console o recusa, e aqui também não. Digite `TORO` e pressione Enter ou a barra de espaço, depois dê o centro, o raio do anel e o do tubo: `0,0,0`, `30` e `8` desenham o toroide da figura. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_TORUS`.
+
+### Qual é a diferença entre o raio e o raio do tubo?
+
+O raio vai do centro do toroide até o meio do tubo; o raio do tubo é o do próprio tubo. Um toroide de 76 de diâmetro externo com um tubo de 16 de espessura tem raio 30 e raio do tubo 8.
+
+### Como desenhar um toroide em forma de bola de rúgbi?
+
+Dê um raio negativo e depois um raio do tubo maior que o seu valor absoluto: `-5` e `8` fazem uma forma fechada com as duas pontas agudas. Um raio do tubo que não seja maior que isso é recusado e pedido de novo.
+
+### Por que o toroide aparece como dois círculos?
+
+Você o está vendo de cima, em planta. Gire a vista: um canto do ViewCube, `-VISTA` e `isoSE`, ou `ORBITA3D`. O `EVATUAL` com `Conceitual` o sombreia.
+
+## Comandos relacionados [#related]
+
+- [Comando SPHERE (ESFERA) no AutoCAD 3D](/docs/commands/sphere)
+- [Comando CYLINDER (CILINDRO) no AutoCAD 3D](/docs/commands/cylinder)
+- [Comando REVOLVE (REVOLUCAO) no AutoCAD](/docs/commands/revolve)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)

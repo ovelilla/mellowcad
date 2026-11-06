@@ -37,7 +37,7 @@ UNIAO, com o alias `U`: no AutoCAD em português, `U` une sólidos e não desfaz
 
 ### Por que o UNION não funciona?
 
-Ele precisa de dois sólidos, ou de duas regiões do mesmo plano: com menos, diz `Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.` e não muda nada. Linhas, arcos e polilinhas não são regiões, mesmo fechados: transforme-os antes em regiões com o `REGIAO`. Os objetos selecionados antes do UNIAO são descartados, como no AutoCAD 2027: selecione-os no prompt dele. Quando ele diz que uma operação booleana falhou, os sólidos se cortam de um jeito que o MellowCAD ainda não sabe calcular, e ficam como estavam.
+Ele precisa de dois sólidos, ou de duas regiões do mesmo plano: com menos, diz `Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.` e não muda nada. Linhas, arcos e polilinhas não são regiões, mesmo fechados: transforme-os antes em regiões com o [`REGIAO`](/docs/commands/region). Os objetos selecionados antes do UNIAO são descartados, como no AutoCAD 2027: selecione-os no prompt dele. Quando ele diz que uma operação booleana falhou, os sólidos se cortam de um jeito que o MellowCAD ainda não sabe calcular, e ficam como estavam.
 
 ### Como desfazer um UNION no AutoCAD?
 
@@ -45,12 +45,12 @@ Com `D` ou Ctrl+Z logo depois: o comando inteiro volta atrás num só passo, com
 
 ### Como unir regiões com o UNION?
 
-Transforme cada contorno fechado numa região com o `REGIAO` e una-as com o UNIAO: as regiões de cada plano passam a ser uma só, com os lados comuns fundidos. Formas que se fecham em volta de um vão deixam um furo, e regiões separadas passam a ser uma só região de várias peças. Uma região sozinha no seu plano fica como está.
+Transforme cada contorno fechado numa região com o [`REGIAO`](/docs/commands/region) e una-as com o UNIAO: as regiões de cada plano passam a ser uma só, com os lados comuns fundidos. Formas que se fecham em volta de um vão deixam um furo, e regiões separadas passam a ser uma só região de várias peças. Uma região sozinha no seu plano fica como está.
 
 ## Comandos relacionados [#related]
 
 - [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)
 - [Comando INTERSECT (INTERSEC) no AutoCAD](/docs/commands/intersect)
-- [REGIAO (REGION)](/docs/commands#region): Região
+- [Comando REGION (REGIAO) no AutoCAD](/docs/commands/region)
 - [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
 - [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)

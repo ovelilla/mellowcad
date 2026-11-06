@@ -62,11 +62,11 @@ Desenhe o contorno como um só objeto fechado — uma polilinha fechada, um cír
 
 ### Por que a extrusão não vira um sólido?
 
-O perfil está aberto ou cruza a si mesmo. Uma linha, um arco ou uma polilinha aberta viram superfície no AutoCAD, e o MellowCAD ainda não tem superfícies: o EXTRUSAO diz `Não é possível efetuar a varredura de um objeto deste tipo.` e os tira do conjunto de seleção; um perfil que cruza a si mesmo recebe `Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção.` e também sai. Una as peças com [`UNIR`](/docs/commands/join), faça delas uma região com `REGIAO` ou clique dentro delas com [`PRESSIONARPUXAR`](/docs/commands/presspull).
+O perfil está aberto ou cruza a si mesmo. Uma linha, um arco ou uma polilinha aberta viram superfície no AutoCAD, e o MellowCAD ainda não tem superfícies: o EXTRUSAO diz `Não é possível efetuar a varredura de um objeto deste tipo.` e os tira do conjunto de seleção; um perfil que cruza a si mesmo recebe `Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção.` e também sai. Una as peças com [`UNIR`](/docs/commands/join), faça delas uma região com [`REGIAO`](/docs/commands/region) ou clique dentro delas com [`PRESSIONARPUXAR`](/docs/commands/presspull).
 
 ### Como extrudar uma forma com furo?
 
-Faça dela uma só região: `REGIAO` no contorno e no furo, depois [`SUBTRAIR`](/docs/commands/subtract) para tirar a região do furo da região do contorno. Faça a extrusão dessa região, e o furo atravessa o sólido. Ou execute o [`PRESSIONARPUXAR`](/docs/commands/presspull) e clique entre o contorno e o furo.
+Faça dela uma só região: [`REGIAO`](/docs/commands/region) no contorno e no furo, depois [`SUBTRAIR`](/docs/commands/subtract) para tirar a região do furo da região do contorno. Faça a extrusão dessa região, e o furo atravessa o sólido. Ou execute o [`PRESSIONARPUXAR`](/docs/commands/presspull) e clique entre o contorno e o furo.
 
 ### Como fazer extrusão ao longo de um caminho?
 
@@ -76,5 +76,5 @@ Ainda não dá: `Caminho` aparece, mas é recusado, e a varredura ainda não exi
 
 - [Comando PRESSPULL (PRESSIONARPUXAR) no AutoCAD](/docs/commands/presspull)
 - [Comando REVOLVE (REVOLUCAO) no AutoCAD](/docs/commands/revolve)
-- [REGIAO (REGION)](/docs/commands#region): Região
+- [Comando REGION (REGIAO) no AutoCAD](/docs/commands/region)
 - [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)

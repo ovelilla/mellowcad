@@ -36,7 +36,7 @@ Surfaces, which do not exist here. Curved faces that meet along a curve MellowCA
 
 ### Why is UNION not working?
 
-It needs two solids, or two regions in the same plane: with fewer it says `At least 2 solids, surfaces, or coplanar regions must be selected.` and changes nothing. Lines, arcs and polylines are not regions, even closed: make them regions first with `REGION`. Objects selected before UNION are dropped, as in AutoCAD 2027: select them at its prompt. When it says that one boolean operation failed, the solids meet in a way MellowCAD cannot work out yet, and are left as they were.
+It needs two solids, or two regions in the same plane: with fewer it says `At least 2 solids, surfaces, or coplanar regions must be selected.` and changes nothing. Lines, arcs and polylines are not regions, even closed: make them regions first with [`REGION`](/docs/commands/region). Objects selected before UNION are dropped, as in AutoCAD 2027: select them at its prompt. When it says that one boolean operation failed, the solids meet in a way MellowCAD cannot work out yet, and are left as they were.
 
 ### How do I undo a UNION?
 
@@ -44,12 +44,12 @@ It needs two solids, or two regions in the same plane: with fewer it says `At le
 
 ### How do I join regions with UNION?
 
-Make each closed shape a region with `REGION`, then UNION them: the regions of each plane become one region, their shared sides merged. Shapes that close around a gap leave a hole, and regions apart become one region of separate pieces. A region alone in its plane is left as it is.
+Make each closed shape a region with [`REGION`](/docs/commands/region), then UNION them: the regions of each plane become one region, their shared sides merged. Shapes that close around a gap leave a hole, and regions apart become one region of separate pieces. A region alone in its plane is left as it is.
 
 ## Related commands [#related]
 
 - [SUBTRACT in AutoCAD](/docs/commands/subtract)
 - [INTERSECT in AutoCAD](/docs/commands/intersect)
-- [REGION](/docs/commands#region): Region
+- [REGION in AutoCAD](/docs/commands/region)
 - [BOX in AutoCAD](/docs/commands/box)
 - [EXTRUDE in AutoCAD](/docs/commands/extrude)

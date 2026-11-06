@@ -1,0 +1,87 @@
+---
+title: "Comando CONE no AutoCAD 3D"
+metaTitle: "Comando CONE no AutoCAD: cone e tronco de cone"
+description: "Como funciona o CONE do AutoCAD, igual em português: cone ou tronco de cone, prompt a prompt: base, raio, altura, Raio superior, Elíptico e Eixo. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como desenhar um cone no AutoCAD?","answer":"Execute o CONE, especifique o centro da base, o raio e a altura: 0,0, 20 e 40 desenham o cone da figura. Gire a vista para vê-lo, com um canto do ViewCube ou com -VISTA e isoSE."},{"question":"Como fazer um tronco de cone no AutoCAD?","answer":"Na altura, escolha Raio, digite o raio superior e depois a altura. O cone termina num círculo desse raio."},{"question":"Como desenhar um cone invertido?","answer":"Digite uma altura negativa: o cone aponta para baixo a partir da base. Ou escolha Eixo e dê o vértice onde ele deve ficar."},{"question":"A base de um cone pode ser uma elipse?","answer":"Sim: escolha Elíptico no centro da base e dê os seus eixos. Um raio superior faz do topo a mesma elipse, menor."}]
+---
+
+O CONE, com o mesmo nome no AutoCAD em português, desenha um cone, um sólido 3D: especifique o centro da base, depois o raio e depois a altura, e ele se estreita até uma ponta. Ele pergunta o que o [`CILINDRO`](/docs/commands/cylinder) pergunta, com `Raio` na altura para um cone truncado. A base fica no plano XY do UCS, no Z do centro, e a altura sobe pelo eixo Z do UCS; uma negativa o faz apontar para baixo, e um ponto a dá pela distância até a base. O raio e a altura são oferecidos como padrões que o Enter aceita, compartilhados com as outras primitivas. O cone fica na camada atual, e o Desfazer o reverte num passo.
+
+O `LISTA` mostra posição, normal, raio da base, raio superior e altura, e a paleta Propriedades permite digitá-los. Suas alças o movem e definem a altura, o raio da base em cada quarto da base e o raio superior. O snap ao objeto Ponto final encontra o vértice. É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial.
+
+- **Comando:** `CONE`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CONE` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="cone" caption="Um cone de raio 20 e altura 40, a partir do centro da base, visto do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `3P` [#3p]
+
+No centro da base: pede três pontos, e a base é o círculo que passa por eles, no plano deles.
+
+### `2P` [#2p]
+
+No centro da base: pede as duas pontas do diâmetro da base.
+
+### `Ttr` (`T`) [#ttr]
+
+No centro da base: selecione duas linhas, círculos ou arcos, com o snap ao objeto Tangente, e dê um raio: a base toca os dois.
+
+### `Elíptico` (`E`) [#elliptical]
+
+No centro da base: a base é uma elipse, dada pelas duas pontas do primeiro eixo e pela ponta do segundo, ou com `Centro` a partir do centro. Um raio superior reduz a mesma elipse.
+
+### `Diâmetro` (`D`) [#diameter]
+
+No raio: pede o diâmetro no lugar dele, oferecendo o dobro do último raio.
+
+### `2Pontos` (`2P`) [#2point]
+
+Na altura: pede dois pontos, e a altura é a distância entre eles.
+
+### `ponto final Eixo` (`E`) [#axis]
+
+Na altura: pede o vértice. O cone vai do centro da base até esse ponto, em qualquer direção, com a base perpendicular ao eixo.
+
+### `Raio superior` (`R`) [#top]
+
+Na altura: pede o raio superior e depois a altura de novo. O cone termina num círculo em vez de numa ponta, um tronco de cone; um topo tão largo quanto a base faz os lados de um cilindro, e um mais largo, um cone que se alarga para cima. Ele oferece o raio superior do último cone, 0 no início.
+
+## O que ainda não faz [#missing]
+
+O [`EXPLODIR`](/docs/commands/explode) de um cone, que o AutoCAD transforma na sua base e numa superfície: o MellowCAD não tem superfícies, então diz que não conseguiu explodi-lo. Transformar um cone redondo num elíptico digitando na paleta Propriedades. Com o `ISOLINES` em 0, o ponto que o AutoCAD desenha no vértice. E o que falta ao [`CILINDRO`](/docs/commands/cylinder): Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, as cotas pontilhadas enquanto você dá o raio, e os estilos visuais que faltam ao `EVATUAL`.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cone--es-cono--pt-br-cone)
+
+## Perguntas frequentes [#questions]
+
+### Como desenhar um cone no AutoCAD?
+
+Execute o CONE, especifique o centro da base, o raio e a altura: `0,0`, `20` e `40` desenham o cone da figura. Gire a vista para vê-lo, com um canto do ViewCube ou com `-VISTA` e `isoSE`.
+
+### Como fazer um tronco de cone no AutoCAD?
+
+Na altura, escolha `Raio`, digite o raio superior e depois a altura. O cone termina num círculo desse raio.
+
+### Como desenhar um cone invertido?
+
+Digite uma altura negativa: o cone aponta para baixo a partir da base. Ou escolha `Eixo` e dê o vértice onde ele deve ficar.
+
+### A base de um cone pode ser uma elipse?
+
+Sim: escolha `Elíptico` no centro da base e dê os seus eixos. Um raio superior faz do topo a mesma elipse, menor.
+
+## Comandos relacionados [#related]
+
+- [Comando CYLINDER (CILINDRO) no AutoCAD 3D](/docs/commands/cylinder)
+- [Comando PYRAMID (PIRAMIDE) no AutoCAD 3D](/docs/commands/pyramid)
+- [Comando REVOLVE (REVOLUCAO) no AutoCAD](/docs/commands/revolve)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)

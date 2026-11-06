@@ -1,0 +1,55 @@
+---
+title: "Regiones en AutoCAD: comando REGION"
+metaTitle: "Crear regiones en AutoCAD: comando REGION"
+description: "Cómo funciona REGION (alias REG) de AutoCAD en español: formas cerradas en regiones, qué bucles encuentra, por qué no crea ninguna y para qué sirven. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se usa el comando REGION en AutoCAD?","answer":"Ejecuta REGION (o REG), designa las formas cerradas o las líneas que cierran una extremo con extremo, y pulsa Intro. En la figura, una ventana alrededor de cuatro líneas y un círculo crea dos regiones, y la línea de comandos cuenta dos bucles extraídos y dos regiones creadas."},{"question":"¿Por qué REGION no crea la región?","answer":"La forma no está cerrada extremo con extremo. Las líneas que se cruzan, o que se quedan cortas unas de otras, no cierran nada: REGION encadena los objetos abiertos solo por sus extremos, y basta un hueco mínimo para que descarte la cadena. Un bucle que se cruza consigo mismo, como una pajarita, se rechaza y se cuenta entre las autointersecciones. Une los extremos con EMPALME de radio 0, o recorta con RECORTA lo que sobresale, y vuelve a intentarlo."},{"question":"¿Cómo hacer una región con un agujero?","answer":"Crea una región del contorno y otra del agujero, y ejecuta DIFERENCIA: designa el contorno, Intro, el agujero, Intro. El resultado es una sola región, y EXTRUSION la convierte en un sólido con el agujero pasante."},{"question":"¿Cómo saber el área de una región?","answer":"Desígnala y lee Área en la paleta Propiedades, o ejecuta AREA, elige Objeto y desígnala. PROPFIS añade el perímetro, el centro de gravedad y los momentos de inercia."}]
+---
+
+REGION convierte formas cerradas en regiones: áreas planas sin grosor, cada una limitada por sus bucles. Designa los objetos y pulsa Intro; cada bucle que forman se convierte en una región. Un objeto cerrado es un bucle por sí mismo: un círculo, una elipse, una polilínea o una spline cerradas. Los abiertos —líneas, arcos, arcos elípticos, polilíneas y splines abiertas— se encadenan extremo con extremo, nunca donde se cruzan, y una cadena que no se cierra se descarta. Después, la línea de comandos cuenta los bucles que ha encontrado, los que ha rechazado y por qué, y las regiones que ha creado; Intro sin nada designado dice `No se ha encontrado ninguno.`.
+
+Los objetos que han formado una región se borran, los demás se conservan, y las regiones toman la capa y las propiedades actuales, no las de los objetos. Un bucle dentro de otro forma una región propia, no un agujero en ella: [`DIFERENCIA`](/docs/commands/subtract) resta una de la otra. Una región se dibuja con sus aristas, y la referencia a objetos las encuentra; la paleta Propiedades muestra su área y su perímetro, que también miden [`AREA`](/docs/commands/area), `LIST` y [`PROPFIS`](/docs/commands/massprop). [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) e [`INTERSEC`](/docs/commands/intersect) combinan regiones de un mismo plano, [`EXTRUSION`](/docs/commands/extrude), [`REVOLUCION`](/docs/commands/revolve) y [`PRESIONARTIRAR`](/docs/commands/presspull) las convierten en sólidos 3D, y [`DESCOMP`](/docs/commands/explode) devuelve sus líneas, arcos y círculos. Todo el comando es un solo paso de deshacer.
+
+- **Comando:** `REGION`
+- **Alias:** `REG`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `REG` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="region" caption="Cuatro líneas cerradas extremo con extremo y un círculo dentro de ellas: REGION, con una ventana alrededor de ambos, crea dos regiones y borra los objetos." />
+
+## Lo que aún no hace [#missing]
+
+El `DELOBJ` de AutoCAD: aquí los objetos que han formado una región siempre se borran. CONTORNO (BOUNDARY), que puede crear una región con el área que rodea un punto, y una región a partir del contorno de un sombreado. Editar una región con sus pinzamientos: se muestran, pero arrastrar uno no cambia nada. Sus aristas como arista de corte o de contorno para [`RECORTA`](/docs/commands/trim) y [`ALARGA`](/docs/commands/extend) en modo Rápido, y [`SOMBREA`](/docs/commands/hatch) de una región con una arista elíptica o de spline. Las regiones combinadas con superficies, que MellowCAD no tiene, y la fila Material de la paleta Propiedades.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se usa el comando REGION en AutoCAD?
+
+Ejecuta REGION (o `REG`), designa las formas cerradas o las líneas que cierran una extremo con extremo, y pulsa Intro. En la figura, una ventana alrededor de cuatro líneas y un círculo crea dos regiones, y la línea de comandos cuenta dos bucles extraídos y dos regiones creadas.
+
+### ¿Por qué REGION no crea la región?
+
+La forma no está cerrada extremo con extremo. Las líneas que se cruzan, o que se quedan cortas unas de otras, no cierran nada: REGION encadena los objetos abiertos solo por sus extremos, y basta un hueco mínimo para que descarte la cadena. Un bucle que se cruza consigo mismo, como una pajarita, se rechaza y se cuenta entre las autointersecciones. Une los extremos con [`EMPALME`](/docs/commands/fillet) de radio 0, o recorta con [`RECORTA`](/docs/commands/trim) lo que sobresale, y vuelve a intentarlo.
+
+### ¿Cómo hacer una región con un agujero?
+
+Crea una región del contorno y otra del agujero, y ejecuta [`DIFERENCIA`](/docs/commands/subtract): designa el contorno, Intro, el agujero, Intro. El resultado es una sola región, y [`EXTRUSION`](/docs/commands/extrude) la convierte en un sólido con el agujero pasante.
+
+### ¿Cómo saber el área de una región?
+
+Desígnala y lee Área en la paleta Propiedades, o ejecuta [`AREA`](/docs/commands/area), elige `Objeto` y desígnala. [`PROPFIS`](/docs/commands/massprop) añade el perímetro, el centro de gravedad y los momentos de inercia.
+
+## Comandos relacionados [#related]
+
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)
+- [Unión de sólidos en AutoCAD: UNION](/docs/commands/union)
+- [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)
+- [Calcular áreas en AutoCAD: comando AREA](/docs/commands/area)
+- [Propiedades físicas en AutoCAD: PROPFIS (MASSPROP)](/docs/commands/massprop)

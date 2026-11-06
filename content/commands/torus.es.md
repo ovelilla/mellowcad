@@ -1,0 +1,55 @@
+---
+title: "Toroide en AutoCAD: comando TOROIDE (TORUS)"
+metaTitle: "Toroide en AutoCAD 3D: comando TOROIDE (TORUS)"
+description: "Cómo funciona TOROIDE (TORUS, alias TOR) de AutoCAD en español, solicitud a solicitud: centro, radio, radio de sección, Diámetro, 3P, 2P y Ttr. Pruébalo gratis."
+figure: "Un toroide de radio 30 alrededor de un tubo de radio 8, visto desde el sureste con el estilo visual Conceptual."
+sourceHash: "a19600f3e357"
+---
+
+TOROIDE (TORUS en inglés) dibuja un anillo, un sólido 3D con forma de rosquilla: precisa el centro, después el radio del toroide, del centro al centro del tubo, y después el radio de sección, el del tubo. El anillo queda en el plano XY del SCP, a la Z del centro. Un punto en la solicitud del radio de sección se mide desde el punto del anillo, aquel en el que se dio el radio. El radio del toroide es el valor por defecto compartido de las primitivas, y el radio de sección tiene uno propio, que Intro acepta. El toroide va a la capa actual, y Deshacer lo revierte en un paso.
+
+Un radio del toroide negativo con un tubo más ancho da un cuerpo como un balón de rugby, con los extremos en punta; un anillo más estrecho que su tubo, una manzana. En Estructura alámbrica 2D y Oculto se dibuja con líneas alrededor del tubo y alrededor del anillo, tantas como dice `ISOLINES`. <Command id="LIST" /> muestra su posición, su normal, el radio del toroide y el radio de sección, y la paleta Propiedades deja escribir los dos. Sus pinzamientos lo desplazan, fijan el radio del anillo y fijan el del tubo. Es un sólido 3D para <Command id="UNION" />, <Command id="SUBTRACT" /> y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial.
+
+## Options
+
+### 3P
+
+En el centro: pide tres puntos, y el anillo es el círculo que pasa por ellos, en su plano.
+
+### 2P
+
+En el centro: pide los dos extremos del diámetro del anillo.
+
+### Ttr
+
+En el centro: designa dos líneas, círculos o arcos, con la referencia a objetos Tangente, y precisa un radio: el anillo toca los dos, a su altura.
+
+### Diameter
+
+En el radio del toroide: pide en su lugar el diámetro del toroide. En el radio de sección: pide el diámetro del tubo. Cada uno ofrece el doble de su valor por defecto.
+
+### 2Point
+
+En el radio de sección: pide dos puntos, y el radio de sección es la distancia entre ellos.
+
+## Missing
+
+<Command id="EXPLODE" /> de un toroide, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerlo. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y la silueta que dibuja `DISPSILH` en AutoCAD.
+
+## Questions
+
+### ¿Cómo se llama el comando TORUS en español?
+
+TOROIDE, con el alias `TOR`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_TORUS`. Escríbelo y pulsa Intro o la barra espaciadora, y después precisa el centro, el radio del toroide y el de sección: `0,0,0`, `30` y `8` dibujan el toroide de la figura.
+
+### ¿Qué diferencia hay entre el radio y el radio de sección?
+
+El radio va del centro del toroide al centro del tubo; el radio de sección es el del propio tubo. Un toroide de 76 de diámetro exterior con un tubo de 16 de grosor tiene un radio de 30 y un radio de sección de 8.
+
+### ¿Cómo dibujar un toroide con forma de balón de rugby?
+
+Precisa un radio negativo y después un radio de sección mayor que su valor absoluto: `-5` y `8` dan una forma cerrada acabada en punta por los dos extremos. Un radio de sección que no lo supera se rechaza, y se vuelve a pedir.
+
+### ¿Por qué el toroide se ve como dos círculos?
+
+Lo estás mirando desde arriba, en planta. Gira la vista: una esquina del ViewCube, <Command id="-VIEW" /> y <Keyword command="VIEW" id="SEiso" />, o <Command id="3DORBIT" />. <Command id="VSCURRENT" /> con <Keyword command="VSCURRENT" id="Conceptual" /> lo sombrea.

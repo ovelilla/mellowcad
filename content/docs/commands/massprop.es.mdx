@@ -1,0 +1,61 @@
+---
+title: "Propiedades físicas en AutoCAD: PROPFIS (MASSPROP)"
+metaTitle: "Propiedades físicas en AutoCAD: comando PROPFIS"
+description: "Cómo funciona PROPFIS (MASSPROP) de AutoCAD en español: volumen, área, centro de gravedad e inercia de sólidos 3D y regiones, y el archivo .mpr. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo calcular el volumen de un sólido en AutoCAD?","answer":"Ejecuta PROPFIS, designa el sólido y pulsa Intro: Volumen es la segunda línea del informe. El prisma de 60 por 40 por 25 de la figura da 60000. Pulsa Intro en la pregunta del archivo para terminar."},{"question":"¿Cómo encontrar el centroide de una figura en AutoCAD?","answer":"Conviértela en una región con REGION, o en un sólido, y después ejecuta PROPFIS y desígnala: Centro de gravedad da su X y su Y, y también su Z en un sólido, en el SCP actual."},{"question":"¿Por qué PROPFIS dice que no se ha designado ningún sólido o región?","answer":"Lo que has designado no es ninguna de las dos cosas: las líneas, las polilíneas, los círculos y los sombreados no tienen propiedades físicas, y un bloque que contiene un sólido no es un sólido. Convierte las formas cerradas en regiones con REGION, o en sólidos con EXTRUSION."},{"question":"¿Por qué la masa es igual al volumen?","answer":"PROPFIS mide con una densidad de 1, como AutoCAD: aquí los sólidos no tienen material. Multiplica el volumen por la densidad del material para obtener su masa real."}]
+---
+
+PROPFIS (MASSPROP en inglés) mide sólidos 3D y regiones. Desígnalos y pulsa Intro: el informe se escribe en la solicitud de comando, en las columnas de AutoCAD, y después pregunta si se escribe en un archivo. Un conjunto sin sólidos ni regiones dice `No se ha designado ningún sólido o región.` y termina.
+
+En los sólidos, el conjunto se mide como un solo cuerpo con una densidad de 1, así que la masa es el volumen: masa, volumen, cuadro delimitador, centro de gravedad, momentos de inercia, productos de inercia y radios de giro, todos respecto al SCP actual, y después los momentos principales respecto al centro de gravedad, con sus direcciones. Los sólidos que se solapan se cuentan dos veces. En las regiones del plano XY del SCP: área, perímetro, cuadro delimitador, centro de gravedad, momentos y producto de inercia, radios de giro y momentos principales; una región fuera de ese plano da solo su área, su perímetro, su cuadro delimitador y su centro de gravedad. Primero van las regiones y después los sólidos; las regiones que no están en el plano de la primera se dejan fuera y se cuentan. Los números se escriben a la precisión del dibujo, que se fija con [`UNIDADES`](/docs/commands/units), y son exactos: los de los sólidos se integran cara a cara. PROPFIS no cambia nada en el dibujo; se ejecuta escribiéndolo, como en AutoCAD, cuya cinta de opciones no tiene un botón para él.
+
+- **Comando:** `PROPFIS`
+- **En inglés:** `MASSPROP`, que se escribe `_MASSPROP` en cualquier idioma
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `PROPFIS` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="massprop" caption="Un prisma rectangular de 60 por 40 por 25 en el origen: PROPFIS escribe su volumen, su cuadro delimitador, su centro de gravedad y sus momentos, e Intro rechaza el archivo." />
+
+## Opciones [#options]
+
+### `Sí` (`S`) [#yes]
+
+En la pregunta del archivo, cuya opción por defecto es `No`: escribe el informe en un archivo, como lo escribe AutoCAD, línea a línea. En AutoCAD, un cuadro de diálogo pregunta dónde; en un navegador, la descarga hace de ese cuadro de diálogo, y el archivo toma el nombre del dibujo, con la extensión `.mpr`.
+
+## Lo que aún no hace [#missing]
+
+Las unidades detrás de cada número con unidades arquitectónicas o de ingeniería (`sq in`, `cu in`, `lb`), que AutoCAD escribe: aquí ningún número lleva unidad. Elegir el nombre del archivo, y la pregunta antes de sustituir uno. Lejos del origen, AutoCAD escribe los números grandes en forma exponencial y pierde cifras, y su última cifra puede variar por su propio redondeo: los de MellowCAD son exactos. En un sólido con dos momentos principales iguales, el par de direcciones que elige el redondeo de AutoCAD.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#massprop--es-propfis--pt-br-propmass)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo calcular el volumen de un sólido en AutoCAD?
+
+Ejecuta PROPFIS, designa el sólido y pulsa Intro: Volumen es la segunda línea del informe. El prisma de 60 por 40 por 25 de la figura da 60000. Pulsa Intro en la pregunta del archivo para terminar.
+
+### ¿Cómo encontrar el centroide de una figura en AutoCAD?
+
+Conviértela en una región con [`REGION`](/docs/commands/region), o en un sólido, y después ejecuta PROPFIS y desígnala: Centro de gravedad da su X y su Y, y también su Z en un sólido, en el SCP actual.
+
+### ¿Por qué PROPFIS dice que no se ha designado ningún sólido o región?
+
+Lo que has designado no es ninguna de las dos cosas: las líneas, las polilíneas, los círculos y los sombreados no tienen propiedades físicas, y un bloque que contiene un sólido no es un sólido. Convierte las formas cerradas en regiones con [`REGION`](/docs/commands/region), o en sólidos con [`EXTRUSION`](/docs/commands/extrude).
+
+### ¿Por qué la masa es igual al volumen?
+
+PROPFIS mide con una densidad de 1, como AutoCAD: aquí los sólidos no tienen material. Multiplica el volumen por la densidad del material para obtener su masa real.
+
+## Comandos relacionados [#related]
+
+- [Calcular áreas en AutoCAD: comando AREA](/docs/commands/area)
+- [LIST](/docs/commands#list): Lista
+- [Regiones en AutoCAD: comando REGION](/docs/commands/region)
+- [Prisma rectangular en AutoCAD: PRISMARECT (BOX)](/docs/commands/box)
+- [Unidades en AutoCAD: comando UNIDADES (UNITS)](/docs/commands/units)
