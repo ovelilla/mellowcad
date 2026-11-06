@@ -149,6 +149,10 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    **6c, lo siguiente:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
    ROTATE, SCALE y ERASE sobre ellos y el modo SUbobject de `Select objects:`, que la consola mostró
    en solid-edits/p241–p264: SUB-01 de `docs/plans/solid-edits-review.md`), UCS Face y el SCP dinámico (UCSDETECT).
+   **Visto el 6/11/2026 (sesión 05 de la visibilidad, en el navegador, sin sonda de AutoCAD):**
+   ZOOM Extensión en Isométrica SO no encuadra un sólido: el cilindro de la brida de la landing
+   (Ø100 × 14, VSCURRENT Conceptual) se sale por abajo de la vista, también tras repetir ZOOM E.
+   Comprobarlo en el arnés y contra la consola antes de 6c; un visitante que pruebe el 3D lo verá.
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
 ## 5. Riesgos
