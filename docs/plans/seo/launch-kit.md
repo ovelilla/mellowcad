@@ -41,8 +41,9 @@ words, and answer every reply yourself.
    newsletter for immediate access), AlternativeTo, SaaSHub, dev.to, YouTube (for the video).
    On Reddit, take part in r/AutoCAD and r/cad before posting there: an account with only its own
    link reads as spam, and AutoModerator's karma and age limits are not public.
-4. **A soft launch** with five AutoCAD users: do they understand what it is, and how long until
-   their first line? What they hit gets fixed before Show HN.
+4. **A soft launch**: r/SideProject, asking for feedback, the week before Show HN (the owner has no
+   AutoCAD users at hand to try it first). Do they understand what it is, and how long until their
+   first line? What they hit gets fixed before Show HN.
 5. **The materials**, in `~/seo-data/launch/`: eight gallery images at 1270×760 (2×), the
    46-second video, the logo at 240–1024 px. All drawn by MellowCAD; never a screenshot of
    Autodesk software, an Autodesk logo or its colours.

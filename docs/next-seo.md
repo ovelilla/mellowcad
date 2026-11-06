@@ -203,13 +203,13 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
-| lun 9/11 | GitHub: descripción, temas y vista previa social; las cuentas (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
+| lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
 | 9–13/11 | Directorios: AlternativeTo (decidir si se paga la revisión prioritaria), SaaSHub con sus competidores, G2, TheCADHub, OpenAlternative; Appvizer y Quelle-Alternative | kit §6 | — |
-| 9–13/11 | Lanzamiento suave con cinco usuarios de AutoCAD; participar de verdad en r/AutoCAD y r/cad | kit §0 | — |
-| semana del 16/11 | Arreglar lo que salga del lanzamiento suave (sesiones) | — | — |
+| 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
+| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | — |
+| semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
 | mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
 | jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
-| vie 20/11 | r/SideProject | kit §3 | — |
 | lun 23/11 | r/AutoCAD | kit §3 | los fallos de Show HN, arreglados |
 | mar 24/11 | En español: r/programacion (dentro de su 10 %), foros y grupos de estudiantes | kit §3 | — |
 | mié 25/11 | r/cad | kit §3 | — |
