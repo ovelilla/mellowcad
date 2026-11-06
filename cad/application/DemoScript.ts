@@ -399,7 +399,16 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
             ? ""
             : null
     typed = ""
-    if (answer !== null) {
+    // A command that asks nothing (PAN, 3DORBIT: their prompt is a line
+    // saying how to leave) writes nothing when Enter ends it, as AutoCAD's
+    // history shows: no `PAN:` line for it.
+    const asksNothing =
+      step.prompt.command !== null &&
+      step.prompt.field === null &&
+      step.prompt.echo === null &&
+      step.prompt.options.length === 0 &&
+      step.output.length === 0
+    if (answer !== null && !(asksNothing && answer === "")) {
       const segments = promptSegments(step.prompt, answer, recording.locale)
       const prompt = promptString(segments)
       // The engine's own line, when it wrote one, also says what a pick found
@@ -415,11 +424,13 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
         step: index,
       })
     }
-    // The prompts the engine wrote answered are the ones folded in above.
+    // The prompts the engine wrote answered are the ones folded in above, but
+    // for the line a command starts with in place of a question (PAN's
+    // `Press ESC or ENTER to exit…`).
     for (const entry of step.output) {
-      if (entry.kind === "prompt") continue
+      if (entry.kind === "prompt" && action.kind !== "command") continue
       lines.push({
-        kind: entry.kind,
+        kind: entry.kind === "prompt" ? "info" : entry.kind,
         prompt: "",
         segments: [],
         text: entry.text,

@@ -229,6 +229,22 @@ describe("transcript", () => {
     expect(offset.at(-1)).toMatchObject({ text: "R" })
   })
 
+  // view/p200: AutoCAD writes PAN's exit line as it starts, nothing at Enter.
+  it("writes the line a command asking nothing starts with, and no answer to it", async () => {
+    const lines = transcript(
+      await recordDemo(
+        demo().command("_PAN").down(0, 0).moveTo(10, 0).up(10, 0).enter()
+      )
+    )
+    expect(lines.map(({ kind, text }) => [kind, text])).toEqual([
+      ["command", "PAN"],
+      [
+        "info",
+        "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+      ],
+    ])
+  })
+
   it("names the step every line came from, for timing an animation", async () => {
     const lines = transcript(
       await recordDemo(demo().command("LINE").type("0,0").enter())
