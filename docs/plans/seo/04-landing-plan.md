@@ -2,7 +2,8 @@
 
 > Written on 2026-11-06 by session 04 (`docs/plans/seo/04-landing.md`) before building, from the
 > audit (`~/seo-data/audit-2026-11-05/landing.md`, its captures and keyword studies), the rules and
-> the engine as it is. Its after-test (§9) was added once the page was built.
+> the engine as it is. What changed while building, the measurements and the after-test (§9–§10)
+> were added once the page was built.
 
 ## 1. Concept
 
@@ -132,21 +133,21 @@ the same option letters." The board stays (it is the page's keyword-dense list),
 a page of its own a link to it (`commandPageIds`, `Link prefetch={false}`), the rest to the
 reference; under `md` each group shows its first commands and the reference link. One line names a
 command in the three command languages from the engine: "OFFSET is DESFASE in Spanish AutoCAD and
-DESLOCAMENTO in Brazilian Portuguese, and _OFFSET works in every language." The OFFSET transcript
-card stays; the try-it box goes to the hero.
+DESLOCAMENTO in Brazilian Portuguese, and _OFFSET works in every language." The try-it box goes
+to the hero, and the OFFSET transcript card goes too (§9).
 
 **02 2D drafting.** Lead: "Object snaps, tracking and polar angles behave the way your hands
-expect. Each figure is the editor's own frame or a drawing the engine made." Eight cards, four
-across: the four aids (Tangent snap, OTRACK, Polar, window and crossing — live frames, their keys)
-and four drawings (draw, modify, annotate, organize — stills, one sentence each). The dynamic-input
-line stays. The command lists and the inquiry and files cards go.
+expect, and coordinates are typed the AutoCAD way, right at the cursor: @100<30 for relative polar,
+#120,80 for absolute." Eight cards, four across: the four aids (Tangent snap, OTRACK, Polar, window
+and crossing — live frames, their keys) and four drawings (draw, modify, annotate, organize —
+stills, one sentence each). The command lists and the inquiry and files cards go.
 
-**03 3D solids** (new). Lead: "Primitives, extrusions and revolutions, unions and subtractions,
-slices and filleted edges: solids are edited directly, without a feature history, and seen from
-the ViewCube, in orbit or in a visual style." Four cards, each a session the engine draws and the
-command it is (a link where it has a page): a profile extruded (EXTRUDE's session), a subtraction
-(SUBTRACT's), a slice (SLICE's), one solid in 2D Wireframe, Hidden and Conceptual (VSCURRENT, new
-script). Then "Works today": the 3D commands as key caps in the command language
+**03 3D solids** (new). Lead: "Solids built and edited directly, without a feature history:
+primitives, extrusions and revolutions, booleans, slices and filleted edges, seen from the ViewCube
+or in orbit." Three cards, each a session the engine draws and the
+commands it stands for (links where they have a page): a profile revolved (REVOLVE's session), a
+subtraction (SUBTRACT's), and EXTRUDE's L-shaped solid in 2D Wireframe, Hidden and Conceptual
+(§9). Then "Works today": the 3D commands as key caps in the command language
 (`SOLID_COMMANDS`, held to the registry by `content/commands.test.ts`), and "Not yet: sweeps and
 lofts, meshes and rendering, and moving or rotating solids in 3D."
 
@@ -183,11 +184,11 @@ The header's links follow the sections: Commands, 2D drafting, 3D solids, Roadma
 | Hero | one script, two phases (§3), Hidden | the solid, the second phase, the chrome |
 | Precision ×4 | live frames (as now) | — |
 | Draw, modify, annotate, organize | stills (as now) | — |
-| EXTRUDE, SUBTRACT, SLICE | their pages' sessions (`COMMAND_SESSIONS`), live, Hidden | reused |
-| Visual styles | one script, three live frames (2D Wireframe, Hidden, Conceptual) | yes |
+| REVOLVE, SUBTRACT | their pages' sessions (`COMMAND_SESSIONS`), live, Hidden | reused |
+| Visual styles | EXTRUDE's L-shaped solid, three live frames (2D Wireframe, Hidden, Conceptual) | yes |
 | Local-first diagram | as now | — |
-| OG card | the hero's two drawings: the flange in plan and its last frame | yes |
-| Engine layers, inquiry, files | — | removed |
+| OG card | the flange drafted, and its solid (`heroSolid`) under the section | yes |
+| Engine layers, OFFSET card, inquiry, files | — | removed |
 
 **Conceptual, trimmed** (engine, `fix(engine)`): a planar face's cells that an edge crosses are cut
 to the face exactly (`regionBoolean` of the face and the cell, its loops tessellated) instead of
@@ -200,7 +201,9 @@ grid.
 
 - `EngineSection` and the `Engine` messages; `DIAGRAMS.engineLayers` and its script.
 - `ToolsetSection`'s command lists and its inquiry and files cards; `PrecisionSection` and
-  `ToolsetSection` become one section.
+  `ToolsetSection` become one section (`DraftingSection`).
+- The OFFSET transcript card and its figure: the hero's command line types the real prompts, and
+  the page needed the room.
 - `Hero.eyebrow` (it is the H1 now, `Hero.title`), `Hero.proof` (the pill), the board's try-it box.
 - The hero's static caret line (the command box takes its place).
 
@@ -211,9 +214,11 @@ grid.
   and `Hero.tagline` the slogan; an H2 carries its section's search family; the figures test's
   numbers apply to both phases.
 - `i18n.md`: nothing (its claims already hold the 3D as partial).
-- The hero's test (`content/figures.test.ts`): both phases inside 8–12 s and 600 primitives; the
-  hero's 3D frame shows the solid clear of the 2D objects; the lead's aliases exist in every live
-  command language.
+- The hero's test (`content/figures.test.ts`): both phases inside 8–12 s and 600 primitives, the
+  turn at -VIEW's answer, only the drafted objects plotted in plan; the lead's aliases exist in
+  every live command language and the 3D section's commands are filed
+  (`content/commands.test.ts`). Where the solid stands, clear of the 2D objects, is chosen in the
+  script and said there: no test reads overlaps off a frame.
 
 ## 8. Five-second test: before
 
@@ -227,6 +232,74 @@ From the audit (`landing.md` §2.2), 2026-11-05, desktop:
 | What next? | ✓ CTA | ✓ CTA | gone |
 | Why trust it? | ~ Spanish prompts | ~ verbatim prompts | ✗ |
 
-## 9. Five-second test: after
+## 9. What changed while building, and why
 
-Written once the page is built (§ below).
+- **The 3D section's figures**: REVOLVE's session and EXTRUDE's L-shaped solid in the three styles,
+  not EXTRUDE, SLICE and SUBTRACT's plate. The plate's hole is a few hundred cells in Conceptual,
+  written twice (the HTML and the RSC payload): 5 KB of Brotli that took the first load past 250
+  KB; the L costs 1 KB.
+- **The OFFSET card** left the commands section, and the lead lost "your drawings stay on your
+  device" (section 04 says it): the page was 11.7 screens at the first build of this design too.
+- **The FAQ** sits in two columns; **free and private** shows its four points in a row, then the
+  formats line and the diagram.
+- **On a phone** the figure comes right under the H1 (`order`; the DOM keeps the desktop's order,
+  and the only control it moves is the figure's pause).
+- **The OG card** keeps the category as its eyebrow and the slogan as its headline: Satori sets a
+  right-to-left line only as one sentence per line (`lib/og.tsx`), and the H1 is one long
+  sentence in Arabic. It draws the flange drafted and, under its section, the solid.
+- **The engine** (two commits of their own): Conceptual cuts a planar face's cells to the face at
+  its edges, halving along them as a curved face does, so the painter's order stays local (the
+  first cut, without the halving, let a hole's walls show through the face round it); and
+  `recordDemo` returns the last `EngineState` (`DemoRecording.state`).
+
+## 10. Measured (2026-11-06)
+
+On production builds of the page before (`82c1eaf2`) and after, in worktrees, `next start`:
+
+| | Before | After |
+| --- | --- | --- |
+| Desktop screens at 1440×900 (en, es, pt-BR, ar) | 11.7 (en, the audit) | 7.6, 7.8, 7.9, 7.4 |
+| Phone screens at 390×844 (en, es) | 19.3 (en, the audit) | 15.1, 15.8 |
+| Where DWG is answered (es) | 78–88 % of the scroll | 58 % (section 04), and the FAQ at 84 % |
+| First load, Brotli q11 (en, es, pt-BR, ar) | 241.2, 242.2, 242.5, 265.2 KB | 247.4, 248.5, 248.9, 271.7 KB |
+| Lighthouse mobile, median of 3 (en, es) | 95, 95 | 95, 95 (ar 96) |
+| Lighthouse desktop (en) | 100 | 100 |
+| Accessibility, SEO; CLS | 100, 100; 0 | 100, 100; 0 |
+
+Budgets: 250 KB and 275 with a script's font, so the four fit, with 1–3 KB to spare. Production
+adds Vercel's two analytics scripts to both (about 6 KB: production measured 247.2–248.5 and 271.2
+before), which local builds do not load; the next addition to the landing measures again. Local
+Lighthouse is 95 on mobile both before and after (production, on Vercel's CDN, was 100); its best
+practices are 96 locally for the analytics scripts' 404s. No chunk of `/` holds the engine.
+
+## 11. Five-second test: after
+
+Desktop, the production build, frames at 1, 3 and 5 s (es and en), read in the order of visual
+weight as the audit read them:
+
+- **(a) Student, «autocad online gratis» → `/es`.** 0–2 s: «CAD online gratis con comandos de
+  AutoCAD» at 54 px, the pill «Gratis · Sin registro · Nada que instalar» above it: not AutoCAD,
+  free, nothing to install, its commands. 3–5 s: the lead's «con los comandos de AutoCAD en español.
+  Escribe L para LINEA, RR para RECORTA…», while the sheet plots the flange with RECTANG's Spanish
+  prompts; «Los 140 comandos» and «Nuevo: sólidos 3D, aún parciales» beside the button; the
+  numbers under it. Still not in the first screen: DWG and PDF, now at 58 % of the page, and the
+  class question in the FAQ.
+- **(b) Drafter, "free online cad" → `/`.** 0–2 s: the H1 is the query, with "AutoCAD commands";
+  the pill says free and no sign-up. 3–5 s: the prompts typed in the sheet, "Type L for LINE, TR
+  for TRIM and EXT for EXTRUDE"; 140 commands, 131 aliases, 6,000+ tests, the MIT link. DWG: "not
+  yet", a scroll away (section 04 and "Not yet for…" in section 05).
+- **(c) Engineer, "cad 3d online".** 0–2 s: online CAD, AutoCAD commands; 3–5 s: "2D drafting and
+  3D solids, still partial" and the 3D link in the first screen; at 11 s the sheet turns to SW
+  Isometric and the flange stands as a solid. The 3D section is the third (45 %), with what works
+  and, beside it, what does not.
+
+| After 5 s | (a) student | (b) drafter | (c) engineer |
+| --- | --- | --- | --- |
+| What is it? | ✓ free online CAD, AutoCAD's commands in Spanish | ✓ | ✓ 2D and 3D, partial |
+| Is it for me? | ✓ practice (the FAQ asks it) ~ DWG a scroll away | ~ DWG a scroll away | ~ partial 3D, said so |
+| Is it free? | ✓ pill and H1 | ✓ pill and H1 | ✓ |
+| What next? | ✓ CTA, the commands | ✓ CTA, the command line | ✓ the 3D link |
+| Why trust it? | ✓ Spanish prompts, the numbers | ✓ prompts, numbers, MIT | ~ the solid at 11 s |
+
+A self-administered walkthrough, as the audit's was; a test with real people per persona (its
+§5.7) remains open.

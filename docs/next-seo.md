@@ -1,9 +1,10 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), y la 03 con su
-> mecánica y 38 comandos publicada el 6/11, y por decisión del dueño la visibilidad va antes que
-> cualquier funcionalidad; siguiente: la sesión 04 (§5), las tandas de comandos que quedan y lo que
-> queda de §7. Esperan detrás
+> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
+> mecánica y 38 comandos publicada el 6/11 y la 04 (la landing) hecha el 6/11, a la espera de que el
+> dueño la revise y la publique; por decisión del dueño la visibilidad va antes que cualquier
+> funcionalidad; siguiente: las tandas de comandos que quedan, lo que queda de §7 y la 05 cuando la
+> 04 esté publicada. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -341,7 +342,23 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   por tandas con la skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`,
   «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
-- 04 Rediseño de la landing: pendiente.
+- 04 Rediseño de la landing: hecha el 6/11/2026, **sin publicar**: el dueño la revisa antes del
+  push, y tras el push `/`, `/es`, `/pt-br` y `/ar` entran en la cola de «Solicitar indexación»
+  (§7) e IndexNow se reenvía. El plan, lo cambiado al construir, lo medido y el test de cinco
+  segundos antes y después, en `docs/plans/seo/04-landing-plan.md`. Concepto A con el hero del B y
+  el «para quién» del C: el H1 es la categoría («CAD online gratis con comandos de AutoCAD»), la
+  píldora gratis / sin registro / nada que instalar encima, el lead con los alias del motor en el
+  idioma de la página, el hero con forma de editor (la brida trazada en planta y, al responder
+  -VIEW, el mismo dibujo con su sólido en Isométrica SO, Oculto; la etiqueta de vista y el
+  ViewCube dibujados desde el `EngineState` de la grabación; la última línea de comando es la caja
+  real), las cifras en la primera pantalla; secciones con los términos de búsqueda en sus H2
+  (comandos, dibujo 2D, sólidos 3D, gratis y privado, para quién, estado y el FAQ con la pregunta
+  de clase), el tablero enlazando las 38 páginas de comando; fuera la sección del motor, las listas
+  repetidas y la tarjeta del OFFSET. De 11,7 a 7,4–7,9 pantallas de escritorio (móvil, de 19,3 a
+  15,1); primera carga 247,4–248,9 KB en Brotli (árabe 271,7; antes 241–243 y 265), dentro de 250
+  y 275; Lighthouse igual antes y después. El motor: Conceptual corta las celdas de una cara plana
+  en sus aristas (sin escalones) y `recordDemo` devuelve el último estado. La tarjeta OG dibuja la
+  brida y su sólido.
 - 05 Lanzamiento: pendiente (los directorios pueden ir ya).
 - 06 Práctica y guías: pendiente.
 - 07 DXF: pendiente.
