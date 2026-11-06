@@ -339,7 +339,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    URLs → «Request indexing» de `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»;
    un Site Scan para que el informe de SEO tenga datos. **6/11:** IndexNow enviado con las 195 URLs
    (202) y «Request indexing» de las 44 URLs de la lista de Google (los índices y diez comandos por
-   idioma; cuota de 100 al día); quedan `/pt-br` y el Site Scan.
+   idioma; cuota de 100 al día); quedan `/pt-br` y el Site Scan. El 6/11, tras el push de la segunda tanda, IndexNow con
+   las 235 URLs del sitemap (200).
 4. **GitHub y npm**: la descripción y los temas del repositorio, puestos el 6/11 (el `gh repo edit`
    de `docs/plans/seo/launch-kit.md` §0); queda a mano la vista previa social (Settings → Social
    preview, `og-card-en.png`), que GitHub no deja poner por API. La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
