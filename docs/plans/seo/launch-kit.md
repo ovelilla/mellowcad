@@ -26,8 +26,8 @@ words, and answer every reply yourself.
 ## 0. Before any post
 
 1. **The push** of sessions 01–04: done (the landing went live on 2026-11-06).
-2. **GitHub**: still 0 stars, no topics, and a description that says "2D engine" (checked
-   2026-11-06). Topics are free discovery; the description opens with the home's main query:
+2. **GitHub**: description and topics set on 2026-11-06 with this command (the description opens
+   with the home's main query; topics are free discovery):
 
    ```sh
    gh repo edit ovelilla/mellowcad \
@@ -35,7 +35,7 @@ words, and answer every reply yourself.
      --add-topic cad,online-cad,autocad,drafting,cad-software,2d-drafting,3d,solid-modeling,b-rep,geometry,browser,typescript,canvas,react,open-source
    ```
 
-   Then Settings → Social preview: `gallery/og-card-en.png`.
+   Still by hand (GitHub has no API for it): Settings → Social preview, `gallery/og-card-en.png`.
 3. **Accounts**, personal ones, all with a verified email: Hacker News (a personal username, not
    the project's), Reddit, Product Hunt (**at least a week before launching**, or subscribe to its
    newsletter for immediate access), AlternativeTo, SaaSHub, dev.to, YouTube (for the video).

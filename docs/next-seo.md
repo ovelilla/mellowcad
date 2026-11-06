@@ -335,9 +335,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    un Site Scan para que el informe de SEO tenga datos. **6/11:** IndexNow enviado con las 195 URLs
    (202) y «Request indexing» de las 44 URLs de la lista de Google (los índices y diez comandos por
    idioma; cuota de 100 al día); quedan `/pt-br` y el Site Scan.
-4. **GitHub y npm**: la descripción y los temas del repositorio, ya, con el comando `gh repo edit`
-   de `docs/plans/seo/launch-kit.md` §0, al día con la sesión 02 (hoy 0 estrellas, sin temas, «2D
-   engine»). La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
+4. **GitHub y npm**: la descripción y los temas del repositorio, puestos el 6/11 (el `gh repo edit`
+   de `docs/plans/seo/launch-kit.md` §0); queda a mano la vista previa social (Settings → Social
+   preview, `og-card-en.png`), que GitHub no deja poner por API. La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
    y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
    engine» y el editor, tres idiomas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
@@ -366,7 +366,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   los recuentos de idiomas), cada una con su motivo en los commits. Titles de 52 a 59 caracteres y
   descriptions de 145 a 155, con la consulta principal delante, sostenidos por
   `i18n/messages.test.ts`; el FAQ pregunta por el 3D; las tarjetas OG, vistas en los cuatro
-  idiomas. Quedan del dueño (§7): el `gh repo edit` y la próxima publicación en npm.
+  idiomas. Quedan del dueño (§7): la vista previa social de GitHub y la próxima publicación en npm.
 - 03 Una página por comando: la mecánica y la primera tanda hechas el 5/11/2026 y publicadas el
   6/11 (`4f005c37` a `1ca32508`), con IndexNow, el sitemap reenviado y la indexación pedida en
   Google y Bing (§7). **38 comandos con página** en los cuatro
