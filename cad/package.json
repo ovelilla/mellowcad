@@ -66,6 +66,6 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
     "publint": "^0.3.25",
-    "tsdown": "^0.23.2"
+    "tsdown": "^0.23.4"
   }
 }

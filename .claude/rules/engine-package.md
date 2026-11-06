@@ -26,7 +26,7 @@ paths:
 
 # The packages
 
-> Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**,
+> Verified against **tsdown 0.23.4**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**,
 > **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**, **tailwindcss 4.3.4**,
 > **@changesets/cli 3.0.3**.
 
