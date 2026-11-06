@@ -1,10 +1,10 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 58 comandos publicada el 6/11 y 35 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 58 comandos publicada el 6/11 y 38 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
-> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
-> quedan y lo que queda de §7. Esperan detrás
+> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: la novena tanda de comandos
+> (-OSNAP) y lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -334,7 +334,7 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
    push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual, y las 28 de la quinta (UCS a
    SOLIDEDIT). **6/11:** las 40 de la sexta (ATTDEF a COLOR), igual, y las 40 de la séptima (UNDO a
-   COPYCLIP): 257 en la cola.
+   COPYCLIP), y las 12 de la octava (VIEW, PLAN y UCSICON): 269 en la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -422,11 +422,20 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   COPYCLIP; -PAN, PAN. Fijas salvo PAN y SNAP, en vivo (la vista y la rejilla), y 3DPOLY, en vivo
   desde el sureste como BOX; UNDO con un antes encima (`undoBefore`). Arreglado de paso en el
   motor: el historial de una sesión escribía `PAN:` o `3DORBIT:` al Intro que lo acaba y perdía la
-  línea con que empieza PAN (la de 3DORBIT, publicada, también cambia). Publicadas (`origin/main`)
-  las tres primeras tandas, 58 comandos; de la cuarta a la séptima, 35 sin publicar.
-  **Quedan 47 comandos sin página**: la octava tanda, VIEW y PLAN, con la skill `command-page`;
-  PASTECLIP (lo cuenta COPYCLIP) y BREAKATPOINT (lo cuenta BREAK) se quedan en el índice, porque no
-  llenan una página (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
+  línea con que empieza PAN (la de 3DORBIT, publicada, también cambia). **Octava tanda, hecha el
+  6/11 y sin publicar:** VIEW, PLAN y UCSICON (12 URLs más, al final de la cola de §7): 96 comandos
+  con página. Las tres en vivo, sobre un bloque escalonado: VIEW, Isométrica SO respondida en la
+  primera solicitud, como la escriben los menús de AutoCAD; PLAN, la planta de un SCP girado 30°
+  desde esa isométrica; UCSICON, Sin origen y luego Origen con el SCP en el escalón. VIEW cuenta
+  las vistas ortogonales con el SCP que alinean y las isométricas, y el ViewCube y el control de
+  vista como otros caminos. De los seis candidatos que «Lo que queda» no nombraba, UCSICON llena una
+  página y REGEN, FILL, NAVVCUBE, FROM y CLEANSCREENON se quedan en el índice, cada uno con su motivo
+  en `docs/plans/seo/03-comandos.md`. En el motor, de paso: una demo puede mostrar el icono SCP
+  (`demo({ ucsIcon: true })`, `18fab8f6`). Publicadas (`origin/main`) las tres primeras tandas, 58
+  comandos; de la cuarta a la octava, 38 sin publicar. **Quedan 44 comandos sin página**: la
+  novena tanda, -OSNAP (se busca y nada lo cuenta), con la skill `command-page`; los otros 43 se
+  quedan en el índice (la lista y sus motivos, en `docs/plans/seo/03-comandos.md`, «Lo que
+  queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,
   «Request indexing» de `/`, `/es`, `/pt-br` y `/ar` en Bing (aceptadas, cuota 97 de 100) e IndexNow

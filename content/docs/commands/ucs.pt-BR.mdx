@@ -9,7 +9,7 @@ faq: [{"question":"Como voltar o UCS para o Universal no AutoCAD?","answer":"Exe
 
 O UCS, com o mesmo nome no AutoCAD em português, define o sistema de coordenadas do usuário: uma origem e os eixos X e Y em qualquer lugar do espaço, de modo que o plano XY dele pode ficar inclinado. As coordenadas que você digita são lidas nele, e o que você desenha fica no plano XY dele: com a origem levada ao topo de uma caixa, um círculo com centro em `30,20` fica no topo. Primeiro ele diz o nome do UCS atual — `*UNIVERSAL*`, `*SEM NOME*` ou o nome com que foi salvo — e depois pede a nova origem ou uma opção; o Enter ali volta ao Universal. Um ponto é a origem, com o seu Z, e um ponto sem Z fica na elevação atual. Depois, um ponto no lado positivo do eixo X e um ponto no plano XY, lidos no UCS atual: o Enter em qualquer um deles mantém os eixos como estão. Um ponto move o UCS; três o giram de qualquer jeito.
 
-Os comandos então trabalham no plano XY do UCS: o [`LINHA`](/docs/commands/line) e o [`CIRCULO`](/docs/commands/circle) desenham nele, e o [`CAIXA`](/docs/commands/box) e o [`EXTRUSAO`](/docs/commands/extrude) sobem a partir dele pelo seu Z. Cada objeto mantém o seu próprio plano quando o UCS muda, e o `PLANTA` mostra o UCS atual visto de cima, em planta. O UCS é salvo no desenho, e cada execução é um passo de desfazer. O 3D do MellowCAD é só de sólidos e ainda parcial.
+Os comandos então trabalham no plano XY do UCS: o [`LINHA`](/docs/commands/line) e o [`CIRCULO`](/docs/commands/circle) desenham nele, e o [`CAIXA`](/docs/commands/box) e o [`EXTRUSAO`](/docs/commands/extrude) sobem a partir dele pelo seu Z. Cada objeto mantém o seu próprio plano quando o UCS muda, e o [`PLANTA`](/docs/commands/plan) mostra o UCS atual visto de cima, em planta. O UCS é salvo no desenho, e cada execução é um passo de desfazer. O 3D do MellowCAD é só de sólidos e ainda parcial.
 
 - **Comando:** `UCS`
 - **Aliases:** `UCSDD`
@@ -66,7 +66,7 @@ Uma nova origem, o Enter mantendo a atual, e depois um ponto no lado positivo do
 
 ## O que ainda não faz [#missing]
 
-`Face`, que alinha o UCS a uma face de um sólido: pede uma, mas ainda não encontra nenhuma. Aplicar e Seção, previstas no primeiro prompt e recusadas aqui, já que há uma só viewport e não há objetos de seção. A caixa de diálogo UCS (UCSMAN, GERUCS em português), as alças do ícone e o seu menu de atalho, e o ícone mostrando o novo UCS enquanto você o posiciona. A cruz do cursor girando com o UCS: ela fica reta na tela até o `PLANTA` alinhar a vista com ele. UCSFOLLOW, UCSVP e o UCS dinâmico. `OBjeto` numa cota, e Grupo na sua seleção. A profundidade que um UCS ortogonal mantém. A pausa, Pressione ENTER para continuar, numa lista longa.
+`Face`, que alinha o UCS a uma face de um sólido: pede uma, mas ainda não encontra nenhuma. Aplicar e Seção, previstas no primeiro prompt e recusadas aqui, já que há uma só viewport e não há objetos de seção. A caixa de diálogo UCS (UCSMAN, GERUCS em português), as alças do ícone e o seu menu de atalho, e o ícone mostrando o novo UCS enquanto você o posiciona. A cruz do cursor girando com o UCS: ela fica reta na tela até o [`PLANTA`](/docs/commands/plan) alinhar a vista com ele. UCSFOLLOW, UCSVP e o UCS dinâmico. `OBjeto` numa cota, e Grupo na sua seleção. A profundidade que um UCS ortogonal mantém. A pausa, Pressione ENTER para continuar, numa lista longa.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd)
 
@@ -74,7 +74,7 @@ Uma nova origem, o Enter mantendo a atual, e depois um ponto no lado positivo do
 
 ### Como voltar o UCS para o Universal no AutoCAD?
 
-Execute o UCS e pressione Enter: `Universal` é o padrão. Para voltar a olhar o desenho de cima, execute o `PLANTA` e escolha `UNiversal`.
+Execute o UCS e pressione Enter: `Universal` é o padrão. Para voltar a olhar o desenho de cima, execute o [`PLANTA`](/docs/commands/plan) e escolha `UNiversal`.
 
 ### Como rotacionar o UCS no AutoCAD?
 
@@ -90,7 +90,7 @@ Leve o UCS até ela. No topo de uma caixa, basta a origem: UCS, depois um canto 
 
 ## Comandos relacionados [#related]
 
-- [PLANTA (PLAN)](/docs/commands#plan): Vista em planta
+- [Comando PLAN (PLANTA) no AutoCAD: vista em planta](/docs/commands/plan)
 - [Comando 3DORBIT (ORBITA3D) no AutoCAD](/docs/commands/3dorbit)
 - [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
 - [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)

@@ -1,0 +1,47 @@
+---
+title: "Comando PLAN (PLANTA) no AutoCAD: vista em planta"
+metaTitle: "Vista em planta no AutoCAD: PLAN (PLANTA)"
+description: "Como o PLAN do AutoCAD em português, PLANTA, olha de cima para o UCS atual, um salvo ou o Universal, e como voltar à vista em planta depois do 3D. Teste grátis."
+figure: "O bloco em degraus visto do sudoeste com o UCS girado 30 graus em torno do Z: PLANTA e Enter olham de cima para esse UCS, com o eixo X dele para a direita, então o bloco aparece girado."
+sourceHash: "50d157803309"
+---
+
+O PLAN, PLANTA no AutoCAD em português, olha de cima, na perpendicular, para o plano XY de um UCS, com o eixo X dele apontando para a direita: a vista em planta, como você desenhou. Ele pergunta qual UCS — o atual, um salvo ou o universal — e o Enter escolhe o atual. Depois enquadra o desenho inteiro e diz <Message id="regeneratingModel" />.
+
+Nada no desenho se move, e o UCS fica como estava: o PLANTA só gira a vista. É um passo de desfazer, então o <Command id="U" /> devolve a vista, e o <Keyword command="ZOOM" id="Previous" /> do <Command id="ZOOM" /> volta à vista de antes. É o caminho de volta à planta depois do <Command id="3DORBIT" /> ou de uma vista isométrica do <Command id="VIEW" />. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+## Options
+
+### Current ucs
+
+A planta do UCS atual, o padrão. Depois de o <Command id="UCS" /> girar o UCS 30 graus em torno do Z, o desenho aparece girado 30 graus no sentido horário, para que o eixo X do UCS aponte para a direita; depois de um UCS numa face inclinada, ele olha de frente para essa face.
+
+### Ucs
+
+A planta de um UCS salvo com o <Keyword command="UCS" id="NAmed" /> do <Command id="UCS" />, que você digita pelo nome. Para um nome que não está salvo, ele diz que não encontra esse UCS e pergunta de novo; <Keyword id="?" /> lista os salvos, como faz o UCS, e também pergunta de novo. O UCS atual não muda.
+
+### World
+
+A planta do sistema de coordenadas universal: o desenho como estava no início, X para a direita e Y para cima, qualquer que seja o UCS atual, que fica como estava.
+
+## Missing
+
+Sem nada desenhado, o PLANTA mantém o zoom onde estava, onde o AutoCAD enquadra os limites do desenho.
+
+## Questions
+
+### Como voltar para a vista em planta no AutoCAD?
+
+Digite `PLANTA` e pressione Enter duas vezes: o segundo Enter escolhe <Keyword id="Current ucs" />. Se o UCS está girado e você quer a planta universal, escolha <Keyword id="World" />.
+
+### Qual é o comando da vista em planta do UCS?
+
+O PLANTA com <Keyword id="Current ucs" />: ele olha de cima para o UCS atual, com o eixo X dele para a direita. Gire primeiro o UCS com o <Command id="UCS" />, depois execute o PLANTA e pressione Enter duas vezes, e você desenha na planta girada como se ela estivesse reta.
+
+### Por que o desenho aparece girado na vista em planta?
+
+A vista é a planta de um UCS girado. Execute o PLANTA e escolha <Keyword id="World" /> para ver o desenho de novo com o X universal para a direita; o <Command id="UCS" /> e Enter também voltam o UCS para o Universal.
+
+### O PLANTA muda o UCS?
+
+Não. Ele só gira a vista; o UCS fica como estava. As vistas ortogonais do <Command id="VIEW" /> é que também giram o UCS.

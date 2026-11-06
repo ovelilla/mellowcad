@@ -67,6 +67,7 @@ import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
 import { sessions as panSessions } from "./demos/commands/pan"
 import { sessions as peditSessions } from "./demos/commands/pedit"
+import { sessions as planSessions } from "./demos/commands/plan"
 import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
@@ -94,9 +95,11 @@ import { sessions as texteditSessions } from "./demos/commands/textedit"
 import { sessions as torusSessions } from "./demos/commands/torus"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as ucsSessions } from "./demos/commands/ucs"
+import { sessions as ucsiconSessions } from "./demos/commands/ucsicon"
 import { sessions as undoSessions } from "./demos/commands/undo"
 import { sessions as unionSessions } from "./demos/commands/union"
 import { sessions as unitsSessions } from "./demos/commands/units"
+import { sessions as viewSessions } from "./demos/commands/view"
 import { sessions as vscurrentSessions } from "./demos/commands/vscurrent"
 import { sessions as wedgeSessions } from "./demos/commands/wedge"
 import { sessions as zoomSessions } from "./demos/commands/zoom"
@@ -256,6 +259,7 @@ export const COMMAND_SESSIONS = {
   ...offsetSessions,
   ...panSessions,
   ...peditSessions,
+  ...planSessions,
   ...plineSessions,
   ...polygonSessions,
   ...presspullSessions,
@@ -283,9 +287,11 @@ export const COMMAND_SESSIONS = {
   ...torusSessions,
   ...trimSessions,
   ...ucsSessions,
+  ...ucsiconSessions,
   ...undoSessions,
   ...unionSessions,
   ...unitsSessions,
+  ...viewSessions,
   ...vscurrentSessions,
   ...wedgeSessions,
   ...zoomSessions,

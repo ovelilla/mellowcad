@@ -106,29 +106,45 @@ lo pidió por el coste.
 
 ## Lo que queda (estado del 6/11/2026)
 
-La mecánica está hecha y 93 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+La mecánica está hecha y 96 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
 tanda y la segunda ola entera, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN
 y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM;
 la cuarta tanda, CYLINDER, SPHERE, CONE, WEDGE, TORUS, PYRAMID, REGION y MASSPROP; la quinta, el
 resto del 3D: UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT; la sexta,
 ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR; la séptima,
-UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP.
-Cada tanda siguiente es una sesión con la skill `command-page`, un commit, y el push del dueño; F1,
-el índice, el sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. Del
-resto, decidido el 6/11 por lo que se busca (el autocompletado de la auditoría) y por lo que cada
-comando tiene que contar:
+UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP; la octava, VIEW, PLAN y
+UCSICON (de los seis que esta lista aún no nombraba, el único que llena una página: «autocad ucs
+icon», «ucs icon command», «ucs icon settings» y, en Brasil, «comando ucs icon»). Quedan 44 comandos sin página, decididos el 6/11 por lo que se busca (el autocompletado
+de la auditoría) y por lo que cada uno tiene que contar. Cada tanda es una sesión con la skill
+`command-page`, un commit, y el push del dueño; F1, el índice, el sitemap y los enlaces
+relacionados se ponen al día solos al añadir las notas.
 
-1. **La octava tanda**: VIEW y PLAN. Las dos llenan una página: VIEW, las vistas
-   ortogonales e isométricas de -VIEW con el SCP que alinea cada una (lo que más se busca de ella,
-   «isometric view»), y PLAN, sus tres opciones y la pregunta de cómo volver a la planta
-   («autocad plan command», «autocad ucs plan command»).
-2. **Se quedan en el índice**, sin página propia: PASTECLIP (su única solicitud es el punto de
-   inserción, que la página de COPYCLIP cuenta entera con CUTCLIP y COPYBASE, la misma entrada de
-   cobertura) y BREAKATPOINT (un solo punto de ruptura: la página de BREAK lo cuenta y lo enlaza en
-   sus relacionados, y responde «break at point»); NEW, OPEN, SAVE, SAVEAS y QSAVE (lo que se busca
-   de ellos es DWG y versiones, que el formato propio no contesta: «Claims and copy» de `i18n.md`),
-   VPOINT y ELEV (sin búsquedas), BLOCKSPALETTE (la página de INSERT lo cuenta), CUTCLIP y COPYBASE
-   (los cuenta COPYCLIP), U y MREDO (los cuentan UNDO y REDO); los de guion (-HATCH, -BLOCK, -PAN…),
-   los que cierran una paleta (LAYERCLOSE, PROPERTIESCLOSE), las variables (AUPREC, SETVAR) y los que
-   solo repiten a otro (QNEW, REGENALL, CLEANSCREENOFF, DIMHORIZONTAL, DIMVERTICAL, DIMROTATED). F1
-   los lleva a su ancla.
+1. **La novena tanda**: -OSNAP, con slug `-osnap`, el único comando de las referencias a objetos
+   que hay (no hay cuadro de Parámetros de dibujo). Se busca y nada lo cuenta: «autocad osnap
+   command», «osnap settings», «osnap not working», «osnap shortcut key» (8, 8, 8 y 7 en el
+   autocompletado inglés). La decisión anterior lo dejaba entre «los de guion», que cuenta la página
+   de su comando, pero aquí no hay OSNAP: su página contaría los modos de -OSNAP, F3 y las
+   referencias de un solo uso (Mayús + clic derecho, FROM). Leer antes su entrada de cobertura.
+2. **Se quedan en el índice**, sin página propia; F1 los lleva a su ancla:
+
+   - **Los cuenta la página de otro**: PASTECLIP, CUTCLIP y COPYBASE (COPYCLIP, la misma entrada de
+     cobertura); BREAKATPOINT (BREAK lo cuenta, lo enlaza en sus relacionados y responde «break at
+     point»); BLOCKSPALETTE (INSERT); U y MREDO (UNDO y REDO); -VIEW (VIEW, que lo ejecuta).
+   - **Lo que se busca de ellos no lo contesta MellowCAD**: NEW, OPEN, SAVE, SAVEAS y QSAVE (se busca
+     DWG y versiones; «Claims and copy» de `i18n.md`); FILL (se busca «cómo rellenar un rectángulo o
+     un círculo», que contesta HATCH con SOLID; de FILL mismo, solo «comando preencher» en Brasil, y
+     sus dos opciones las cuentan PLINE y HATCH).
+   - **No llenan una página**: REGEN (se busca, sobre todo en la India: «regen command in autocad»,
+     «what does regen do», «regen not working»; pero no pregunta nada y aquí no tiene nada que
+     regenerar, porque todo se dibuja al momento: su página diría eso en una línea, sin figura que
+     mostrar); NAVVCUBE (lo más buscado de los seis candidatos: «viewcube not showing / missing / not
+     working», «turn off»; pero su única opción es ACT/DES, y la figura de una página, una imagen
+     fija o el último fotograma de la escena, no dibuja el ViewCube, que es del editor: no mostraría
+     aquello de lo que trata. La página de VIEW cuenta el ViewCube como otro camino a las mismas
+     vistas); FROM (un modificador de punto, no un comando, sin búsquedas propias: lo cuenta la
+     cobertura de las referencias a objetos); CLEANSCREENON y CLEANSCREENOFF (sin búsquedas en
+     ningún idioma, y solo esconden paletas); VPOINT, -VPOINT y ELEV (sin búsquedas).
+   - **Formas de guion, paletas y variables**: -HATCH, -BLOCK, -INSERT, -ATTDEF, -TEXT, -MTEXT,
+     -DIMSTYLE, -PURGE, -COLOR, -LINETYPE, -LWEIGHT y -PAN (los cuenta la página de su comando);
+     LAYERCLOSE y PROPERTIESCLOSE (cierran una paleta); AUPREC y SETVAR (variables); y los que solo
+     repiten a otro: QNEW, REGENALL, DIMHORIZONTAL, DIMVERTICAL y DIMROTATED.

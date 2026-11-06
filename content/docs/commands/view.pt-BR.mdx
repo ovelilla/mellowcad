@@ -1,0 +1,84 @@
+---
+title: "Comando VIEW (VISTA) no AutoCAD: vistas isométricas"
+metaTitle: "Vista isométrica no AutoCAD: VIEW (VISTA)"
+description: "Como o VIEW do AutoCAD em português, VISTA (alias V), gira para as seis vistas ortogonais e as quatro isométricas, e o UCS de cada ortogonal. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer vista isométrica no AutoCAD?","answer":"Digite -VISTA e depois isoSO para o isométrico sudoeste; isoSE, isoNE e isoNO dão os outros três cantos. Ou escolha Isométrico SO nos controles de vista, no canto superior esquerdo, ou clique num canto de cima do ViewCube. O EVATUAL com ocUlto oculta as arestas de trás."},{"question":"Qual é o comando da vista superior no AutoCAD?","answer":"-VISTA e depois SUperior, que também põe o UCS nos eixos universais. Já o PLANTA olha de cima para o UCS atual, e o deixa como está."},{"question":"Por que o UCS mudou depois de uma vista frontal?","answer":"Uma vista ortogonal gira o UCS para ficar de frente para você, para que o que você desenha fique na tela. O UCS e Enter voltam ao Universal; o D desfaz a vista e o UCS dela juntos."},{"question":"Vista isométrica é o mesmo que desenho isométrico?","answer":"Não. Uma vista isométrica olha para um modelo 3D a partir de um canto. Um desenho isométrico é 2D, desenhado nos planos isométricos com o estilo isométrico do SNAP, que o MellowCAD ainda não tem."},{"question":"Onde fica o Gerenciador de vistas?","answer":"O VISTA executa o -VISTA na linha de comando: não há Gerenciador de vistas, e as vistas nomeadas (Salvar, Restaurar) ainda não existem aqui."}]
+---
+
+O VIEW, VISTA no AutoCAD em português, gira a vista para uma das dez vistas predefinidas do AutoCAD: seis ortogonais, que olham de frente para um lado do modelo, e quatro isométricas, que olham de cima a partir de um canto. Nada no desenho se move. O VISTA executa o `-VISTA`, a forma de linha de comando: o seu primeiro prompt lista `Ortogonal`, que então pede o lado, e ele também aceita o nome de uma vista diretamente, como os menus do AutoCAD respondem: `-VISTA`, depois `isoSO`. Cada vista enquadra o desenho inteiro e diz `Regenerando modelo.`.
+
+Os controles de vista, no canto superior esquerdo do desenho, listam as mesmas dez vistas e executam o `-VISTA`, e as faces e os cantos do ViewCube também giram para elas, deixando o UCS como está. Cada VISTA é um passo de desfazer, então o `D` devolve a vista, com o UCS que ela definiu. Digitado com um apóstrofo dentro de outro comando, ele recusa com `** Exige uma regeneração, não pode ser transparente.`. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `VISTA`
+- **Em inglês:** `VIEW`, que se digita `_VIEW` em qualquer idioma
+- **Aliases:** `V`, `VISTADD`
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `V` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="view" caption="Um bloco em degraus desenhado em planta: -VISTA e Isométrico SO, e ele é visto do sudoeste e de cima, no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `Ortogonal` (`O`) [#orthographic]
+
+Pede o lado para onde olhar, `SUperior` por padrão, então o Enter ali dá a planta: `SUperior`, `Inferior`, `Frontal`, `Posterior`, `ESquerdo` ou `Direito`. Cada uma fica de pé: a Superior mostra o X para a direita e o Y para cima, a Frontal o X para a direita e o Z para cima, e a Inferior, vista de baixo, o X para a esquerda. Digitado no primeiro prompt, cada lado funciona sem a opção.
+
+Cada uma também gira o UCS para ficar de frente para você, a partir dos eixos universais qualquer que fosse o UCS, com a origem em `0,0,0`, como faz a opção ortogonal do [`UCS`](/docs/commands/ucs): depois da Frontal, o plano XY dele é a frente, então o que você desenha fica plano na tela, e o UCS se chama `*FRONTAL*`. Depois da Superior, ele tem os eixos universais e se chama `*SUPERIOR*`.
+
+### `isoSO` (`SO`) [#swiso]
+
+Isométrico sudoeste: olha de cima a partir do canto da frente e à esquerda, vendo a frente, o lado esquerdo e o topo. O UCS fica como está. É a vista da figura.
+
+### `isoSE` (`SE`) [#seiso]
+
+Isométrico sudeste: olha de cima a partir do canto da frente e à direita, vendo a frente, o lado direito e o topo. O UCS fica como está.
+
+### `isoNE` (`NE`) [#neiso]
+
+Isométrico nordeste: olha de cima a partir do canto de trás e à direita, vendo a parte de trás, o lado direito e o topo. O UCS fica como está.
+
+### `isoNO` (`NO`) [#nwiso]
+
+Isométrico noroeste: olha de cima a partir do canto de trás e à esquerda, vendo a parte de trás, o lado esquerdo e o topo. O UCS fica como está.
+
+## O que ainda não faz [#missing]
+
+As vistas nomeadas: `Ortogonal` é a única opção que o primeiro prompt lista, onde o do AutoCAD lista também `?`, Excluir, Restaurar, Salvar, Configurações e Janela, e um nome digitado ali é recusado. O Gerenciador de vistas, que o VISTA abre no AutoCAD. Sem nada desenhado, uma vista mantém o zoom, onde o AutoCAD enquadra os limites do desenho. UCSORTHO e UCSBASE como variáveis: uma vista ortogonal sempre alinha o UCS, a partir dos eixos universais. O UCS alinhado na lista do `Anterior` do [`UCS`](/docs/commands/ucs).
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer vista isométrica no AutoCAD?
+
+Digite `-VISTA` e depois `isoSO` para o isométrico sudoeste; `isoSE`, `isoNE` e `isoNO` dão os outros três cantos. Ou escolha Isométrico SO nos controles de vista, no canto superior esquerdo, ou clique num canto de cima do ViewCube. O [`EVATUAL`](/docs/commands/vscurrent) com `ocUlto` oculta as arestas de trás.
+
+### Qual é o comando da vista superior no AutoCAD?
+
+`-VISTA` e depois `SUperior`, que também põe o UCS nos eixos universais. Já o [`PLANTA`](/docs/commands/plan) olha de cima para o UCS atual, e o deixa como está.
+
+### Por que o UCS mudou depois de uma vista frontal?
+
+Uma vista ortogonal gira o UCS para ficar de frente para você, para que o que você desenha fique na tela. O [`UCS`](/docs/commands/ucs) e Enter voltam ao Universal; o `D` desfaz a vista e o UCS dela juntos.
+
+### Vista isométrica é o mesmo que desenho isométrico?
+
+Não. Uma vista isométrica olha para um modelo 3D a partir de um canto. Um desenho isométrico é 2D, desenhado nos planos isométricos com o estilo isométrico do SNAP, que o MellowCAD ainda não tem.
+
+### Onde fica o Gerenciador de vistas?
+
+O VISTA executa o `-VISTA` na linha de comando: não há Gerenciador de vistas, e as vistas nomeadas (Salvar, Restaurar) ainda não existem aqui.
+
+## Comandos relacionados [#related]
+
+- [Comando PLAN (PLANTA) no AutoCAD: vista em planta](/docs/commands/plan)
+- [Comando 3DORBIT (ORBITA3D) no AutoCAD](/docs/commands/3dorbit)
+- [Comando UCS no AutoCAD 3D](/docs/commands/ucs)
+- [Comando VSCURRENT (EVATUAL) no AutoCAD](/docs/commands/vscurrent)
+- [Comando ZOOM no AutoCAD: opções e atalhos](/docs/commands/zoom)

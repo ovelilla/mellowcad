@@ -1,0 +1,69 @@
+---
+title: "Vista en planta en AutoCAD: comando PLANTA (PLAN)"
+metaTitle: "Vista en planta en AutoCAD: PLANTA (PLAN)"
+description: "Cómo funciona PLANTA (PLAN) de AutoCAD en español: la vista en planta del SCP actual, de uno guardado o del Universal, y cómo volver a la planta. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo volver a la vista en planta en AutoCAD?","answer":"Escribe PLANTA y pulsa Intro dos veces: el segundo Intro elige Actual. Si el SCP está girado y quieres la planta del universal, elige Universal."},{"question":"¿Qué comando pone la vista en planta del SCP?","answer":"PLANTA con Actual: mira en perpendicular al SCP actual, con su eje X a la derecha. Gira primero el SCP con SCP, después ejecuta PLANTA y pulsa Intro dos veces, y dibujas sobre la planta girada como si estuviera derecha."},{"question":"¿Por qué mi dibujo sale girado en la vista en planta?","answer":"La vista es la planta de un SCP girado. Ejecuta PLANTA y elige Universal para ver el dibujo otra vez con la X universal a la derecha; SCP e Intro también devuelven el SCP al Universal."},{"question":"¿PLANTA cambia el SCP?","answer":"No. Solo gira la vista; el SCP sigue como estaba. Las vistas ortogonales de VISTA son las que también giran el SCP."}]
+---
+
+PLANTA (PLAN en inglés) mira desde arriba, en perpendicular, al plano XY de un SCP, con su eje X apuntando a la derecha: la vista en planta, tal como dibujaste. Pregunta qué SCP —el actual, uno guardado o el universal— e Intro elige el actual. Después encuadra todo el dibujo y dice `Regenerando modelo.`.
+
+Nada del dibujo se mueve, y el SCP sigue como estaba: PLANTA solo gira la vista. Es un paso de deshacer, así que `H` devuelve la vista, y [`ZOOM`](/docs/commands/zoom) `Previo` retrocede a la vista de antes. Es el camino de vuelta a la planta después de [`3DORBITA`](/docs/commands/3dorbit) o de una vista isométrica de [`VISTA`](/docs/commands/view). El 3D de MellowCAD es solo de sólidos y aún parcial.
+
+- **Comando:** `PLANTA`
+- **En inglés:** `PLAN`, que se escribe `_PLAN` en cualquier idioma
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `PLANTA` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="plan" caption="La pieza escalonada vista desde el suroeste, con su SCP girado 30 grados alrededor de Z: PLANTA e Intro miran desde arriba en perpendicular a ese SCP, con su eje X a la derecha, así que la pieza se ve girada." />
+
+## Opciones [#options]
+
+### `scp Actual` (`A`) [#current-ucs]
+
+La planta del SCP actual, la opción por defecto. Después de girar el SCP 30 grados alrededor de Z con [`SCP`](/docs/commands/ucs), el dibujo se ve girado 30 grados en el sentido de las agujas del reloj, de modo que el eje X del SCP apunta a la derecha; después de un SCP sobre una cara inclinada, mira de frente a esa cara.
+
+### `SCP` [#ucs]
+
+La planta de un SCP guardado con `gUArdado` de [`SCP`](/docs/commands/ucs), que escribes por su nombre. Si ese nombre no está guardado, dice que no encuentra ese SCP y vuelve a preguntar; `?` lista los guardados, como hace SCP, y también vuelve a preguntar. El SCP actual no cambia.
+
+### `Universal` (`U`) [#world]
+
+La planta del sistema de coordenadas universal: el dibujo como estaba al principio, X a la derecha e Y arriba, sea cual sea el SCP actual, que sigue como estaba.
+
+## Lo que aún no hace [#missing]
+
+Sin nada dibujado, PLANTA deja el zoom donde estaba, donde AutoCAD encuadra los límites del dibujo.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo volver a la vista en planta en AutoCAD?
+
+Escribe `PLANTA` y pulsa Intro dos veces: el segundo Intro elige `Actual`. Si el SCP está girado y quieres la planta del universal, elige `Universal`.
+
+### ¿Qué comando pone la vista en planta del SCP?
+
+PLANTA con `Actual`: mira en perpendicular al SCP actual, con su eje X a la derecha. Gira primero el SCP con [`SCP`](/docs/commands/ucs), después ejecuta PLANTA y pulsa Intro dos veces, y dibujas sobre la planta girada como si estuviera derecha.
+
+### ¿Por qué mi dibujo sale girado en la vista en planta?
+
+La vista es la planta de un SCP girado. Ejecuta PLANTA y elige `Universal` para ver el dibujo otra vez con la X universal a la derecha; [`SCP`](/docs/commands/ucs) e Intro también devuelven el SCP al Universal.
+
+### ¿PLANTA cambia el SCP?
+
+No. Solo gira la vista; el SCP sigue como estaba. Las vistas ortogonales de [`VISTA`](/docs/commands/view) son las que también giran el SCP.
+
+## Comandos relacionados [#related]
+
+- [SCP en AutoCAD: comando SCP (UCS)](/docs/commands/ucs)
+- [Vistas en AutoCAD: comando VISTA (VIEW)](/docs/commands/view)
+- [Órbita 3D en AutoCAD: comando 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [Zoom en AutoCAD: comando ZOOM y sus opciones](/docs/commands/zoom)
+- [Icono SCP en AutoCAD: comando SIMBSCP (UCSICON)](/docs/commands/ucsicon)

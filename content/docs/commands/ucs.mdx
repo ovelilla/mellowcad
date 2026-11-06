@@ -9,7 +9,7 @@ faq: [{"question":"How do I reset the UCS to World in AutoCAD?","answer":"Run UC
 
 UCS sets the user coordinate system: an origin and X and Y axes anywhere in space, so its XY plane can tilt. The coordinates you type are read in it, and what you draw lies in its XY plane: with the origin moved to a box's top, a circle centred at `30,20` lies on the top. It first says the current UCS's name — `*WORLD*`, `*NO NAME*` or the name it was saved under — then asks for the new origin or an option; Enter there goes back to World. A point is the origin, with its Z, and a point without a Z lies at the current elevation. Then a point on the positive X axis and a point on the XY plane, read in the current UCS: Enter at either keeps the axes as they are. One point moves the UCS; three turn it any way.
 
-The commands then work in the UCS's XY plane: [`LINE`](/docs/commands/line) and [`CIRCLE`](/docs/commands/circle) draw on it, and [`BOX`](/docs/commands/box) and [`EXTRUDE`](/docs/commands/extrude) rise from it along its Z. Every object keeps its own plane when the UCS changes, and `PLAN` looks straight down on the current UCS. The UCS is saved in the drawing, and each run is one undo step. MellowCAD's 3D is solids only, and still partial.
+The commands then work in the UCS's XY plane: [`LINE`](/docs/commands/line) and [`CIRCLE`](/docs/commands/circle) draw on it, and [`BOX`](/docs/commands/box) and [`EXTRUDE`](/docs/commands/extrude) rise from it along its Z. Every object keeps its own plane when the UCS changes, and [`PLAN`](/docs/commands/plan) looks straight down on the current UCS. The UCS is saved in the drawing, and each run is one undo step. MellowCAD's 3D is solids only, and still partial.
 
 - **Command:** `UCS`
 - **Panel:** [Inquiry & view](/docs/commands#inquiry)
@@ -65,7 +65,7 @@ A new origin, Enter keeping the current one, then a point on the positive Z axis
 
 ## What it does not do yet [#missing]
 
-`Face`, which aligns the UCS with a solid's face: it asks for one but finds none yet. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until `PLAN` lines the view up with it. UCSFOLLOW, UCSVP and the dynamic UCS. `OBject` on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
+`Face`, which aligns the UCS with a solid's face: it asks for one but finds none yet. Apply and SEction, listed at the first prompt and refused here, since there is one viewport and there are no section objects. The UCS dialog (UCSMAN), the icon's grips and its right-click menu, and the icon showing the new UCS while you place it. The crosshair turning with the UCS: it stays upright on screen until [`PLAN`](/docs/commands/plan) lines the view up with it. UCSFOLLOW, UCSVP and the dynamic UCS. `OBject` on a dimension, and Group at its pick. The depth an orthographic UCS keeps. The pause, Press ENTER to continue, in a long list.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd)
 
@@ -73,7 +73,7 @@ A new origin, Enter keeping the current one, then a point on the positive Z axis
 
 ### How do I reset the UCS to World in AutoCAD?
 
-Run UCS and press Enter: `World` is the default. To look straight down on the drawing again, run `PLAN` and choose `World`.
+Run UCS and press Enter: `World` is the default. To look straight down on the drawing again, run [`PLAN`](/docs/commands/plan) and choose `World`.
 
 ### How do I rotate the UCS?
 
@@ -89,7 +89,7 @@ Move the UCS onto it. On a box's top, its origin alone is enough: UCS, then a co
 
 ## Related commands [#related]
 
-- [PLAN](/docs/commands#plan): Plan view
+- [PLAN in AutoCAD](/docs/commands/plan)
 - [3DORBIT in AutoCAD](/docs/commands/3dorbit)
 - [BOX in AutoCAD](/docs/commands/box)
 - [EXTRUDE in AutoCAD](/docs/commands/extrude)

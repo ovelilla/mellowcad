@@ -65,7 +65,8 @@ frontmatter's `before`, in every language. A portable script (`marketing.md`, "F
 names with `_`, keywords by id, world coordinates, relative points after the first under dynamic
 input, `frame` for dimensions; the setup drawn first, then the command as the page explains it.
 PASTECLIP waits on the clipboard: a `moveTo` before its point is typed, or the point is lost
-(`copyclip.ts`). Print its history in every language before trusting it (`renderSession` and `historyLine`, from a
+(`copyclip.ts`). A demo draws no UCS icon unless the figure is about it: `demo({ ucsIcon: true })`
+(`ucsicon.ts`, `plan.ts`). Print its history in every language before trusting it (`renderSession` and `historyLine`, from a
 scratch test you delete): no error line, something drawn.
 
 ## Generate and check

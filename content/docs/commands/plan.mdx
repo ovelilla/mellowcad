@@ -1,0 +1,68 @@
+---
+title: "PLAN in AutoCAD"
+metaTitle: "PLAN in AutoCAD: plan view of the UCS or World"
+description: "How AutoCAD's PLAN looks straight down on the current UCS, a saved one or the world's: Current ucs, Ucs, World, and how to get back to plan. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I get back to plan view in AutoCAD?","answer":"Type PLAN and press Enter twice: the second Enter takes Current. If the UCS is turned and you want the world's plan, choose World instead."},{"question":"What is the UCS plan command?","answer":"PLAN with Current: it looks down on the current UCS, its X axis to the right. Turn the UCS first with UCS, then run PLAN and press Enter twice, and you draw on the turned plan as if it were square."},{"question":"Why is my drawing rotated in plan view?","answer":"The view is the plan of a turned UCS. Run PLAN and choose World to see the drawing with the world's X to the right again; UCS and Enter set the UCS back to World too."},{"question":"Does PLAN change the UCS?","answer":"No. It only turns the view; the UCS stays as it was. VIEW's orthographic views are the ones that turn the UCS as well."}]
+---
+
+PLAN looks straight down on the XY plane of a UCS, with its X axis pointing right: the plan view, as you drew it. It asks which UCS — the current one, a saved one or the world's — and Enter takes the current one. Then it frames the whole drawing and says `Regenerating model.`.
+
+Nothing in the drawing moves, and the UCS stays as it was: PLAN only turns the view. It is one undo step, so `U` takes the view back, and [`ZOOM`](/docs/commands/zoom) `Previous` steps back to the view before. It is the way back to the plan after [`3DORBIT`](/docs/commands/3dorbit) or an isometric [`VIEW`](/docs/commands/view). MellowCAD's 3D is solids only, and still partial.
+
+- **Command:** `PLAN`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `PLAN` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="plan" caption="The stepped block seen from the south-west with its UCS turned 30 degrees about Z: PLAN and Enter look straight down on that UCS, its X axis to the right, so the block shows turned." />
+
+## Options [#options]
+
+### `Current ucs` (`C`) [#current-ucs]
+
+The plan of the current UCS, the default. After [`UCS`](/docs/commands/ucs) turned the UCS 30 degrees about Z, the drawing shows turned 30 degrees clockwise, so that the UCS's X axis points right; after a UCS on a sloping face, it looks square onto that face.
+
+### `Ucs` (`U`) [#ucs]
+
+The plan of a UCS saved with [`UCS`](/docs/commands/ucs)'s `NAmed`, which you type by name. For a name that is not saved it says it cannot find that UCS and asks again; `?` lists the saved ones, as UCS does, and asks again too. The current UCS does not change.
+
+### `World` (`W`) [#world]
+
+The plan of the world coordinate system: the drawing as it was at the start, X to the right and Y up, whatever the current UCS is, which stays as it was.
+
+## What it does not do yet [#missing]
+
+With nothing drawn, PLAN keeps the zoom where it was, where AutoCAD frames the drawing limits.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta)
+
+## Questions [#questions]
+
+### How do I get back to plan view in AutoCAD?
+
+Type `PLAN` and press Enter twice: the second Enter takes `Current`. If the UCS is turned and you want the world's plan, choose `World` instead.
+
+### What is the UCS plan command?
+
+PLAN with `Current`: it looks down on the current UCS, its X axis to the right. Turn the UCS first with [`UCS`](/docs/commands/ucs), then run PLAN and press Enter twice, and you draw on the turned plan as if it were square.
+
+### Why is my drawing rotated in plan view?
+
+The view is the plan of a turned UCS. Run PLAN and choose `World` to see the drawing with the world's X to the right again; [`UCS`](/docs/commands/ucs) and Enter set the UCS back to World too.
+
+### Does PLAN change the UCS?
+
+No. It only turns the view; the UCS stays as it was. [`VIEW`](/docs/commands/view)'s orthographic views are the ones that turn the UCS as well.
+
+## Related commands [#related]
+
+- [UCS in AutoCAD](/docs/commands/ucs)
+- [VIEW in AutoCAD](/docs/commands/view)
+- [3DORBIT in AutoCAD](/docs/commands/3dorbit)
+- [ZOOM in AutoCAD](/docs/commands/zoom)
+- [UCSICON in AutoCAD](/docs/commands/ucsicon)

@@ -172,6 +172,12 @@ marks a choice between competing terms that a native review should settle first 
 |  | Fit data; order (a spline's), Elevate order | بيانات الملاءمة (L)؛ الرتبة، رفع الرتبة (M) |
 |  | Thickness; extents, bounding box | السماكة (M)؛ المستطيل المحيط (M) |
 |  | Insertion point; base point | نقطة الإدراج؛ نقطة الأساس (C) |
+|  | Orthographic view; isometric view; isometric drawing | منظر إسقاطي (L) † — as the orthographic UCS's إسقاطي, against منظر متعامد؛ منظر متساوي القياس (M)؛ الرسم متساوي القياس، الأيزومتري (C) † — أيزومتري is the loanword courses use |
+|  | SW / SE / NE / NW isometric (in prose) | متساوي القياس الجنوبي الغربي / الجنوبي الشرقي / الشمالي الشرقي / الشمالي الغربي (M) † — the view list's words, made definite |
+|  | View control; View Manager; named view; drawing limits | عنصر التحكم في العرض (L) † — the editor's «عناصر التحكم في العرض» in the singular؛ مدير المناظر (L) †؛ منظر مسمى (L)؛ حدود الرسم (C) |
+|  | Upright (a view); seen end-on; sloping face | معتدل (L) †؛ يُرى من طرفه (L)؛ وجه مائل (M) |
+|  | Arm (of the UCS icon); 2D style; line width | ذراع (L)؛ النمط ثنائي الأبعاد (L)؛ عرض الخط (L) † — not وزن الخط, which is lineweight |
+|  | Stepped block (a figure's solid) | مجسم متدرّج (L) — كتلة is BLOCK |
 
 ## Register
 

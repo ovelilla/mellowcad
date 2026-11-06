@@ -1,0 +1,84 @@
+---
+title: "Vistas en AutoCAD: comando VISTA (VIEW)"
+metaTitle: "Vista isométrica en AutoCAD: VISTA (VIEW)"
+description: "Cómo funciona VISTA (VIEW, alias VI) de AutoCAD en español: las seis vistas ortogonales, las cuatro isométricas y el SCP que fija cada ortogonal. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se pone la vista isométrica en AutoCAD?","answer":"Escribe -VISTA y después SOIso para la isométrica suroeste; SEIso, NEIso y NOIso dan las otras tres esquinas. O elige Isométrica SO en los controles de vista de la esquina superior izquierda, o haz clic en una esquina superior del ViewCube. ESTVISACTUAL con ocUlto oculta las aristas de detrás."},{"question":"¿Cuál es el comando de la vista superior?","answer":"-VISTA y después sUperior, que además pone el SCP con los ejes universales. PLANTA, en cambio, mira en perpendicular al SCP actual y lo deja como está."},{"question":"¿Por qué ha cambiado el SCP después de una vista frontal?","answer":"Una vista ortogonal gira el SCP para que quede de cara a ti, de modo que lo que dibujas queda en el plano de la pantalla. SCP e Intro vuelven al Universal; H deshace la vista y su SCP a la vez."},{"question":"¿Una vista isométrica es lo mismo que un dibujo isométrico?","answer":"No. Una vista isométrica mira un modelo 3D desde una esquina. Un dibujo isométrico es 2D, dibujado sobre los planos isométricos con el estilo isométrico de FORZCURSOR, que MellowCAD aún no tiene."},{"question":"¿Dónde está el Administrador de vistas?","answer":"VISTA ejecuta -VISTA en la línea de comando: no hay Administrador de vistas, y las vistas con nombre (Guardar, Restituir) aún no están."}]
+---
+
+VISTA (VIEW en inglés) gira la vista hacia una de las diez vistas predefinidas de AutoCAD: seis ortogonales, que miran de frente a un lado del modelo, y cuatro isométricas, que miran hacia abajo desde una esquina. Nada del dibujo se mueve. VISTA ejecuta `-VISTA`, la forma de la línea de comando: su primera solicitud ofrece `Ortogonal`, que después pide el lado, y también admite directamente el nombre de una vista, como hacen los menús de AutoCAD: `-VISTA` y después `SOIso`. Cada vista encuadra todo el dibujo y dice `Regenerando modelo.`.
+
+Los controles de vista de la esquina superior izquierda del dibujo listan las mismas diez vistas y ejecutan `-VISTA`, y las caras y las esquinas del ViewCube también giran hacia ellas, sin cambiar el SCP. Cada VISTA es un paso de deshacer, así que `H` deshace la vista junto con el SCP que fijó. Escrito con un apóstrofo dentro de otro comando, se niega con `** Regeneración necesaria, no puede ser transparente.`. El 3D de MellowCAD es solo de sólidos y aún parcial.
+
+- **Comando:** `VISTA`
+- **En inglés:** `VIEW`, que se escribe `_VIEW` en cualquier idioma
+- **Alias:** `VI`
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `VI` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="view" caption="Una pieza escalonada dibujada en planta: -VISTA e Isométrica SO, y se ve desde el suroeste y desde arriba, con el estilo visual Oculto." />
+
+## Opciones [#options]
+
+### `Ortogonal` (`O`) [#orthographic]
+
+Pide el lado al que mirar, `sUperior` por defecto, así que Intro ahí da la planta: `sUperior`, `Inferior`, `Frontal`, `Posterior`, `IZquierda` o `Derecha`. Todas se ven derechas: Superior muestra X a la derecha e Y arriba, Frontal X a la derecha y Z arriba, e Inferior, vista desde abajo, X a la izquierda. Escrito en la primera solicitud, cada lado funciona sin elegir la opción.
+
+Cada una gira además el SCP para que quede de cara a ti, a partir de los ejes universales sea cual sea el SCP, con su origen en `0,0,0`, como hace la opción ortogonal de [`SCP`](/docs/commands/ucs): después de Frontal su plano XY es la cara frontal, así que lo que dibujas queda plano en la pantalla, y el SCP se llama `*FRONTAL*`. Después de Superior tiene los ejes universales, y se llama `*SUPERIOR*`.
+
+### `SOIso` (`SOI`) [#swiso]
+
+Isométrica suroeste: mira hacia abajo desde la esquina de delante a la izquierda, y ve la cara frontal, el lado izquierdo y la parte superior. El SCP se queda como está. Es la vista de la figura.
+
+### `SEIso` (`SEI`) [#seiso]
+
+Isométrica sureste: mira hacia abajo desde la esquina de delante a la derecha, y ve la cara frontal, el lado derecho y la parte superior. El SCP se queda como está.
+
+### `NEIso` (`NEI`) [#neiso]
+
+Isométrica noreste: mira hacia abajo desde la esquina de detrás a la derecha, y ve la cara posterior, el lado derecho y la parte superior. El SCP se queda como está.
+
+### `NOIso` (`NOI`) [#nwiso]
+
+Isométrica noroeste: mira hacia abajo desde la esquina de detrás a la izquierda, y ve la cara posterior, el lado izquierdo y la parte superior. El SCP se queda como está.
+
+## Lo que aún no hace [#missing]
+
+Las vistas con nombre: `Ortogonal` es la única opción que lista la primera solicitud, donde la de AutoCAD lista también `?`, Suprimir, Restituir, Guardar, Parámetros y Ventana, y un nombre escrito ahí se rechaza. El Administrador de vistas, que VISTA abre en AutoCAD. Sin nada dibujado, una vista conserva el zoom, donde AutoCAD encuadra los límites del dibujo. UCSORTHO y UCSBASE como variables: una vista ortogonal siempre alinea el SCP, a partir de los ejes universales. El SCP alineado en la lista de `PRev` de [`SCP`](/docs/commands/ucs).
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se pone la vista isométrica en AutoCAD?
+
+Escribe `-VISTA` y después `SOIso` para la isométrica suroeste; `SEIso`, `NEIso` y `NOIso` dan las otras tres esquinas. O elige Isométrica SO en los controles de vista de la esquina superior izquierda, o haz clic en una esquina superior del ViewCube. [`ESTVISACTUAL`](/docs/commands/vscurrent) con `ocUlto` oculta las aristas de detrás.
+
+### ¿Cuál es el comando de la vista superior?
+
+`-VISTA` y después `sUperior`, que además pone el SCP con los ejes universales. [`PLANTA`](/docs/commands/plan), en cambio, mira en perpendicular al SCP actual y lo deja como está.
+
+### ¿Por qué ha cambiado el SCP después de una vista frontal?
+
+Una vista ortogonal gira el SCP para que quede de cara a ti, de modo que lo que dibujas queda en el plano de la pantalla. [`SCP`](/docs/commands/ucs) e Intro vuelven al Universal; `H` deshace la vista y su SCP a la vez.
+
+### ¿Una vista isométrica es lo mismo que un dibujo isométrico?
+
+No. Una vista isométrica mira un modelo 3D desde una esquina. Un dibujo isométrico es 2D, dibujado sobre los planos isométricos con el estilo isométrico de FORZCURSOR, que MellowCAD aún no tiene.
+
+### ¿Dónde está el Administrador de vistas?
+
+VISTA ejecuta `-VISTA` en la línea de comando: no hay Administrador de vistas, y las vistas con nombre (Guardar, Restituir) aún no están.
+
+## Comandos relacionados [#related]
+
+- [Vista en planta en AutoCAD: comando PLANTA (PLAN)](/docs/commands/plan)
+- [Órbita 3D en AutoCAD: comando 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [SCP en AutoCAD: comando SCP (UCS)](/docs/commands/ucs)
+- [Estilos visuales en AutoCAD: ESTVISACTUAL (VSCURRENT)](/docs/commands/vscurrent)
+- [Zoom en AutoCAD: comando ZOOM y sus opciones](/docs/commands/zoom)
