@@ -63,6 +63,42 @@ describe("recordDemo", () => {
     expect(layer).toMatchObject({ name: "Centre", linetype: "Center" })
   })
 
+  it("writes a typed object snap with the point it finds, on one line", async () => {
+    const recording = await recordDemo(
+      demo()
+        .command("CIRCLE")
+        .type("0,0")
+        .enter()
+        .type("20")
+        .enter()
+        .command("CIRCLE")
+        .type("90,0")
+        .enter()
+        .type("12")
+        .enter()
+        .command("LINE")
+        .type("_TAN")
+        .enter()
+        .click(2, 19.9)
+        .type("_TAN")
+        .enter()
+        .click(91, 11.95)
+        .enter()
+    )
+
+    const lines = transcript(recording)
+    expect(
+      lines
+        .slice(lines.findIndex((line) => line.text === "LINE"))
+        .map((line) => `${line.prompt} ${line.text}`.trim())
+    ).toEqual([
+      "LINE",
+      "Specify first point: _TAN to",
+      "Specify next point or [Undo]: _TAN to",
+      "Specify next point or [Undo]:",
+    ])
+  })
+
   it("records the prompt each input answered, as the engine showed it", async () => {
     const recording = await recordDemo(
       demo().command("CIRCLE").type("0,0").enter().type("12").enter()

@@ -420,7 +420,11 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
       step.prompt.echo === null &&
       step.prompt.options.length === 0 &&
       step.output.length === 0
-    if (answer !== null && !(asksNothing && answer === "")) {
+    if (
+      answer !== null &&
+      !(asksNothing && answer === "") &&
+      !writtenWithNext(recording.steps, index, answer)
+    ) {
       const segments = promptSegments(step.prompt, answer, recording.locale)
       const prompt = promptString(segments)
       // The engine's own line, when it wrote one, also says what a pick found
@@ -451,6 +455,34 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
     }
   })
   return lines
+}
+
+/**
+ * Whether an answer typed at step `index` is written on the line of the
+ * answer after it: an object snap override (`_TAN`) is no answer of its own,
+ * and the command line writes it with the point it finds, `Specify first
+ * point: _TAN to` (drafting-aids coverage: line/p24, p25), so its Enter
+ * writes nothing.
+ */
+function writtenWithNext(
+  steps: readonly DemoStep[],
+  index: number,
+  answer: string
+): boolean {
+  const step = steps[index]
+  if (step.action.kind !== "enter" || answer === "" || step.output.length > 0) {
+    return false
+  }
+  const next = steps.slice(index + 1).find((later) => later.output.length > 0)
+  const question = step.prompt.echo?.map((segment) => segment.text).join("")
+  return (
+    question !== undefined &&
+    next?.output.some(
+      (entry) =>
+        entry.kind === "prompt" &&
+        entry.text.startsWith(`${question} ${answer} `)
+    ) === true
+  )
 }
 
 /**
