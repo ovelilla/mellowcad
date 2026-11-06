@@ -84,7 +84,7 @@ PLINEGEN: a new polyline lays its linetype segment by segment, as with PLINEGEN 
 
 ### How do I draw a curved polyline?
 
-Choose `Arc`: each point then ends an arc tangent to the segment before it, until `Line`. To smooth a polyline already drawn through its vertices, use `PEDIT` and its `Fit` or `Spline`.
+Choose `Arc`: each point then ends an arc tangent to the segment before it, until `Line`. To smooth a polyline already drawn through its vertices, use [`PEDIT`](/docs/commands/pedit) and its `Fit` or `Spline`.
 
 ### Why is my polyline drawn thick?
 
@@ -92,15 +92,15 @@ A width given in an earlier PLINE is kept, and the next polyline starts with it,
 
 ### How do I join lines into a polyline?
 
-Run [`JOIN`](/docs/commands/join) and select lines, arcs and polylines that meet end to end: each chain becomes one polyline. Or run `PEDIT` on a line, answer `Yes` to turn it into a polyline, and add the rest with `Join`.
+Run [`JOIN`](/docs/commands/join) and select lines, arcs and polylines that meet end to end: each chain becomes one polyline. Or run [`PEDIT`](/docs/commands/pedit) on a line, answer `Yes` to turn it into a polyline, and add the rest with `Join`.
 
 ### How do I find the area or length of a polyline?
 
-Run `AREA`, press Enter for `Object` and pick the polyline: a closed one reports its area and perimeter, an open one its length.
+Run [`AREA`](/docs/commands/area), press Enter for `Object` and pick the polyline: a closed one reports its area and perimeter, an open one its length.
 
 ## Related commands [#related]
 
-- [PEDIT](/docs/commands#pedit): Edit Polyline
+- [PEDIT in AutoCAD](/docs/commands/pedit)
 - [JOIN in AutoCAD](/docs/commands/join)
 - [RECTANG in AutoCAD](/docs/commands/rectang)
 - [EXPLODE in AutoCAD](/docs/commands/explode)

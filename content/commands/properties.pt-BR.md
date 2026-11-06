@@ -1,0 +1,33 @@
+---
+title: "Propriedades no AutoCAD: comando PROPRIEDADES (PROPERTIES)"
+metaTitle: "Paleta Propriedades no AutoCAD: PROPRIEDADES"
+description: "Como funciona a paleta PROPRIEDADES (PROPERTIES, Ctrl+1) do AutoCAD em português: linhas Geral e Geometria, *VARIA*, um tipo de objeto por vez. Experimente."
+figure: "Um círculo selecionado no prompt Comando, com os seus grips, e depois PROPRIEDADES: a paleta abre ao lado do desenho com as linhas do círculo."
+sourceHash: "696137498888"
+---
+
+O PROPERTIES, PROPRIEDADES no AutoCAD em português, abre a paleta Propriedades. Como no AutoCAD, é uma paleta, não uma caixa de diálogo: ela fica aberta ao lado do desenho, aqui como uma aba do painel de paletas, enquanto você seleciona e desenha, até que o <Command id="PROPERTIESCLOSE" /> a feche. Ctrl+1 a mostra e a esconde, e digitado com um apóstrofo na frente, `'PROPRIEDADES`, ele a abre dentro de um comando em andamento. Numa janela larga ela já vem aberta.
+
+Com objetos selecionados, ela mostra as propriedades deles, e você muda uma digitando ou escolhendo um novo valor na sua linha. Primeiro vem Geral, na ordem do AutoCAD: Cor, Camada, Tipo de linha, Espessura de linha e Espessura, com `*VARIA*` onde os objetos selecionados diferem. Abaixo, as linhas de cada tipo: o início e o fim de uma linha, o comprimento e o ângulo; o centro, o raio, o diâmetro, a circunferência e a área de um círculo; as de um arco, de uma elipse, os vértices e as larguras de uma polilinha, os pontos de uma spline, as de um texto ou de uma referência de bloco. As coordenadas estão no SCU atual, e as linhas que só informam, como o comprimento de uma linha, ficam em cinza. A lista suspensa no topo mostra `Todos` e cada tipo com a sua contagem: escolha um para ver e editar só aquele tipo. Sem nada selecionado, Geral mostra a camada, a cor, o tipo de linha e a espessura de linha atuais, que você define ali para os novos objetos. Cada edição é um passo que o <Command id="U" /> desfaz.
+
+## Missing
+
+A escala do tipo de linha, o estilo de plotagem, a transparência e o hiperlink de Geral, e o material. As linhas de geometria de vários objetos do mesmo tipo de uma vez, o conteúdo de um texto e os valores dos atributos não são editados aqui. Seleção rápida, a alternância de PICKADD, ocultar automaticamente, ancorar e deixar a paleta flutuante.
+
+## Questions
+
+### Qual é o comando PROPERTIES no AutoCAD em português?
+
+PROPRIEDADES, com os atalhos `ALT`, `PROPS`, `ALTPROPD` e `MODIFICARD`, e Ctrl+1, que também a esconde de novo. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_PROPERTIES`.
+
+### A janela Propriedades do AutoCAD sumiu: como recuperá-la?
+
+Pressione Ctrl+1 ou digite `PROPS`: a paleta volta a aparecer, como uma aba do painel de paletas ao lado do desenho. Ctrl+1 pressionado enquanto ela aparece a esconde, e muitas vezes foi assim que ela sumiu.
+
+### Como mudar as propriedades de vários objetos de uma vez?
+
+Selecione todos e mude a linha: cada objeto selecionado recebe o novo valor. Uma linha cujos valores diferem mostra `*VARIA*` até você defini-la. Para mudar só os círculos entre eles, por exemplo, escolha esse tipo na lista suspensa do topo.
+
+### Qual é a diferença entre PROPRIEDADES e PROPIG?
+
+O PROPRIEDADES mostra e define os valores dos objetos selecionados. O <Command id="MATCHPROP" /> os copia de um objeto para outros, sem digitar nenhum valor.

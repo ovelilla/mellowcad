@@ -8,6 +8,7 @@ import {
   offsetRectangle,
 } from "./demos/docs"
 import { sessions as arcSessions } from "./demos/commands/arc"
+import { sessions as areaSessions } from "./demos/commands/area"
 import { sessions as arraySessions } from "./demos/commands/array"
 import { sessions as arraypathSessions } from "./demos/commands/arraypath"
 import { sessions as arraypolarSessions } from "./demos/commands/arraypolar"
@@ -26,6 +27,7 @@ import { sessions as dimdiameterSessions } from "./demos/commands/dimdiameter"
 import { sessions as dimlinearSessions } from "./demos/commands/dimlinear"
 import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
+import { sessions as distSessions } from "./demos/commands/dist"
 import { sessions as ellipseSessions } from "./demos/commands/ellipse"
 import { sessions as eraseSessions } from "./demos/commands/erase"
 import { sessions as explodeSessions } from "./demos/commands/explode"
@@ -38,23 +40,31 @@ import { sessions as intersectSessions } from "./demos/commands/intersect"
 import { sessions as joinSessions } from "./demos/commands/join"
 import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
+import { sessions as linetypeSessions } from "./demos/commands/linetype"
+import { sessions as lweightSessions } from "./demos/commands/lweight"
+import { sessions as matchpropSessions } from "./demos/commands/matchprop"
 import { sessions as mirrorSessions } from "./demos/commands/mirror"
 import { sessions as moveSessions } from "./demos/commands/move"
 import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
+import { sessions as peditSessions } from "./demos/commands/pedit"
 import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
+import { sessions as propertiesSessions } from "./demos/commands/properties"
 import { sessions as rectangSessions } from "./demos/commands/rectang"
 import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
 import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as splineSessions } from "./demos/commands/spline"
 import { sessions as stretchSessions } from "./demos/commands/stretch"
 import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as unionSessions } from "./demos/commands/union"
+import { sessions as unitsSessions } from "./demos/commands/units"
+import { sessions as zoomSessions } from "./demos/commands/zoom"
 import { hero, heroDrawing } from "./demos/hero"
 import {
   crossingSelection,
@@ -152,6 +162,7 @@ export type FigureId = keyof typeof FIGURES
  */
 export const COMMAND_SESSIONS = {
   ...arcSessions,
+  ...areaSessions,
   ...arraySessions,
   ...arraypathSessions,
   ...arraypolarSessions,
@@ -170,6 +181,7 @@ export const COMMAND_SESSIONS = {
   ...dimlinearSessions,
   ...dimradiusSessions,
   ...dimstyleSessions,
+  ...distSessions,
   ...ellipseSessions,
   ...eraseSessions,
   ...explodeSessions,
@@ -182,23 +194,31 @@ export const COMMAND_SESSIONS = {
   ...joinSessions,
   ...layerSessions,
   ...lineSessions,
+  ...linetypeSessions,
+  ...lweightSessions,
+  ...matchpropSessions,
   ...mirrorSessions,
   ...moveSessions,
   ...mtextSessions,
   ...offsetSessions,
+  ...peditSessions,
   ...plineSessions,
   ...polygonSessions,
   ...presspullSessions,
+  ...propertiesSessions,
   ...rectangSessions,
   ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
   ...sliceSessions,
+  ...splineSessions,
   ...stretchSessions,
   ...subtractSessions,
   ...textSessions,
   ...trimSessions,
   ...unionSessions,
+  ...unitsSessions,
+  ...zoomSessions,
 }
 
 /**

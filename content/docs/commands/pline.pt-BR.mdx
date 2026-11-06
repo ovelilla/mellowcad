@@ -72,7 +72,7 @@ Modo arco: um ponto por onde o arco passa e depois o ponto final: um arco por tr
 
 ## O que ainda não faz [#missing]
 
-PLINEGEN: uma polilinha nova aplica o tipo de linha segmento a segmento, como com PLINEGEN 0 (`Tipolinha` do `EDITARP` o ativa numa polilinha). Um tipo de linha tracejado num segmento com largura é desenhado contínuo. A visualização de um segmento com largura não é desenhada num tom mais apagado, e o prompt do arco é escrito numa só linha, onde o AutoCAD o divide em duas.
+PLINEGEN: uma polilinha nova aplica o tipo de linha segmento a segmento, como com PLINEGEN 0 (`Tipolinha` do [`EDITARP`](/docs/commands/pedit) o ativa numa polilinha). Um tipo de linha tracejado num segmento com largura é desenhado contínuo. A visualização de um segmento com largura não é desenhada num tom mais apagado, e o prompt do arco é escrito numa só linha, onde o AutoCAD o divide em duas.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl)
 
@@ -84,7 +84,7 @@ PLINHA, com o alias `PL`. Como no AutoCAD em português, o nome em inglês tamb�
 
 ### Como fazer uma polyline curva?
 
-Escolha `Arco`: cada ponto passa a terminar um arco tangente ao segmento anterior, até `LInha`. Para suavizar pelos vértices uma polilinha já desenhada, use o `EDITARP` e a opção `AJustar` ou `Spline`.
+Escolha `Arco`: cada ponto passa a terminar um arco tangente ao segmento anterior, até `LInha`. Para suavizar pelos vértices uma polilinha já desenhada, use o [`EDITARP`](/docs/commands/pedit) e a opção `AJustar` ou `Spline`.
 
 ### Como engrossar uma polilinha?
 
@@ -92,15 +92,15 @@ Escolha `LArgura` e dê a largura inicial e a final. Essa largura fica guardada,
 
 ### Como unir linhas numa polyline?
 
-Execute o [`UNIR`](/docs/commands/join) e selecione linhas, arcos e polilinhas que se tocam pelas pontas: cada cadeia vira uma polilinha. Ou execute o `EDITARP` numa linha, responda `Sim` para transformá-la em polilinha e acrescente as outras com `Unir`.
+Execute o [`UNIR`](/docs/commands/join) e selecione linhas, arcos e polilinhas que se tocam pelas pontas: cada cadeia vira uma polilinha. Ou execute o [`EDITARP`](/docs/commands/pedit) numa linha, responda `Sim` para transformá-la em polilinha e acrescente as outras com `Unir`.
 
 ### Como medir uma polilinha?
 
-Execute o `AREA`, pressione Enter para escolher `Objeto` e selecione a polilinha: uma fechada mostra a área e o perímetro; uma aberta, o comprimento.
+Execute o [`AREA`](/docs/commands/area), pressione Enter para escolher `Objeto` e selecione a polilinha: uma fechada mostra a área e o perímetro; uma aberta, o comprimento.
 
 ## Comandos relacionados [#related]
 
-- [EDITARP (PEDIT)](/docs/commands#pedit): Editar polilinha
+- [Comando PEDIT (EDITARP) no AutoCAD](/docs/commands/pedit)
 - [Comando JOIN (UNIR) no AutoCAD](/docs/commands/join)
 - [Retângulo no AutoCAD: comando RETANGULO (RECTANG)](/docs/commands/rectang)
 - [Explodir no AutoCAD: comando EXPLODIR (EXPLODE)](/docs/commands/explode)

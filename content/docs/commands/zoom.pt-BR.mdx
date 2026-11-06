@@ -1,0 +1,81 @@
+---
+title: "Comando ZOOM no AutoCAD: opções e atalhos"
+metaTitle: "Comando ZOOM no AutoCAD: opções e atalhos"
+description: "Como funciona o ZOOM (Z) do AutoCAD em português: ESTendido, Janela, Anterior, ESCala com nX, Objeto e TOtal, a roda do mouse e o zoom transparente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o atalho do ZOOM no AutoCAD?","answer":"Z, depois Enter ou a barra de espaço. O comando tem o mesmo nome no AutoCAD em português, e _ZOOM funciona em qualquer idioma. Para o Estendido, digite em seguida a letra de ESTendido."},{"question":"Como dar zoom para ver o desenho inteiro?","answer":"ESTendido: digite Z, Enter, a letra da opção e Enter. Ou dê um clique duplo no botão da roda do mouse."},{"question":"O que significa ZOOM XP no AutoCAD?","answer":"nXP ajusta uma viewport de layout a uma escala em relação ao espaço do papel: 1/50XP mostra o modelo em 1:50 na folha. O MellowCAD não tem layouts, então XP é lido como X."},{"question":"Como dar zoom num objeto no AutoCAD?","answer":"Escolha Objeto e selecione-o, ou selecione-o antes e execute o ZOOM Objeto: a vista o enquadra."},{"question":"Como voltar à vista anterior?","answer":"Anterior, de novo e de novo para as vistas de antes, até 20."}]
+---
+
+O ZOOM aumenta ou diminui a vista; nada no desenho se move nem muda de tamanho. O seu primeiro prompt aceita um canto, que começa uma janela, um fator de escala ou uma opção. Digitado com um apóstrofo na frente, `'ZOOM` ou `'Z`, ele funciona dentro de outro comando, que continua depois. A roda do mouse aproxima e afasta em torno do cursor, e um clique duplo no botão da roda é o ZOOM Estendido. Cada ZOOM é um passo de desfazer, e vários seguidos um só, então o `D` também devolve a vista.
+
+- **Comando:** `ZOOM`
+- **Aliases:** `Z`
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `Z` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="zoom" caption="Uma placa com um furo pequeno perto do canto: ZOOM ESTendido e depois uma janela em volta do furo, que então enche a vista." />
+
+## Opções [#options]
+
+### `TOtal` (`TO`) [#all]
+
+Enquadra tudo o que está desenhado, como `ESTendido`.
+
+### `ESTendido` (`EST`) [#extents]
+
+Enquadra tudo o que está desenhado, tão grande quanto a janela permite. Sem nada desenhado, diz `Regenerando modelo.`, e digitado dentro de outro comando recusa com `** Exige uma regeneração, não pode ser transparente.`, como o do AutoCAD.
+
+### `Anterior` (`A`) [#previous]
+
+Volta à vista anterior, até 20 vistas atrás. Se não sobrar nenhuma: `Nenhuma vista anterior foi gravada.`.
+
+### `ESCala` (`ESC`) [#scale]
+
+Um fator: `2X` aproxima o dobro da vista atual, `0.5X` a metade, e `2` sem o X o dobro da escala da vista do ZOOM Total. `nXP`, o fator do espaço do papel, é lido como `nX`: aqui só há o espaço do modelo. Um fator digitado no primeiro prompt faz o mesmo sem escolher a opção.
+
+### `Janela` (`J`) [#window]
+
+Dois cantos, indicados ou arrastados, enquadram esse retângulo. Um canto indicado no primeiro prompt faz o mesmo.
+
+### `Objeto` (`O`) [#object]
+
+Enquadra os objetos que você seleciona, ou os selecionados antes do ZOOM.
+
+## O que ainda não faz [#missing]
+
+Tempo real: Enter no primeiro prompt encerra o ZOOM, onde o AutoCAD começa a dar zoom com o mouse; aqui a roda faz isso. Dinâmico, Centro e os ocultos Esquerda e Vmax.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o atalho do ZOOM no AutoCAD?
+
+`Z`, depois Enter ou a barra de espaço. O comando tem o mesmo nome no AutoCAD em português, e `_ZOOM` funciona em qualquer idioma. Para o Estendido, digite em seguida a letra de `ESTendido`.
+
+### Como dar zoom para ver o desenho inteiro?
+
+`ESTendido`: digite `Z`, Enter, a letra da opção e Enter. Ou dê um clique duplo no botão da roda do mouse.
+
+### O que significa ZOOM XP no AutoCAD?
+
+`nXP` ajusta uma viewport de layout a uma escala em relação ao espaço do papel: `1/50XP` mostra o modelo em 1:50 na folha. O MellowCAD não tem layouts, então `XP` é lido como `X`.
+
+### Como dar zoom num objeto no AutoCAD?
+
+Escolha `Objeto` e selecione-o, ou selecione-o antes e execute o ZOOM Objeto: a vista o enquadra.
+
+### Como voltar à vista anterior?
+
+`Anterior`, de novo e de novo para as vistas de antes, até 20.
+
+## Comandos relacionados [#related]
+
+- [PAN](/docs/commands#pan): Pan
+- [VISTA (VIEW)](/docs/commands#view): Vistas predefinidas
+- [REGEN](/docs/commands#regen): Regenerar

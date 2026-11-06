@@ -1,0 +1,43 @@
+---
+title: "Grosor de línea en AutoCAD: GROSORLIN (LWEIGHT)"
+metaTitle: "Grosor de línea en AutoCAD: comando GROSORLIN"
+description: "Cómo funciona GROSORLIN (LWEIGHT) de AutoCAD en español: el grosor de línea de los objetos nuevos en milímetros, los 24 valores estándar y verlo en pantalla."
+figure: "Una placa contorneada a 0.70 mm y después 0.1 escrito para su agujero, redondeado a 0.09 mm: los dos grosores como los muestra la pantalla."
+sourceHash: "154784b2b402"
+---
+
+GROSORLIN (LWEIGHT en inglés) fija el grosor de línea con que se dibujan los objetos nuevos, en milímetros. AutoCAD abre el cuadro Parámetros de grosor de línea; MellowCAD aún no lo tiene, así que GROSORLIN ejecuta la forma de línea de comando que AutoCAD también tiene, <Command id="-LWEIGHT" />. Dice el grosor de línea actual, `BYLAYER` al principio, y pide uno nuevo: uno de los 24 valores estándar de AutoCAD, de 0.00 a 2.11 mm. Cualquier otro valor se fija al estándar más cercano, avisándolo, y uno negativo se rechaza con <Message id="invalidLineweightNumber" />. Intro conserva el grosor actual. Cada cambio es un paso que <Command id="U" /> deshace.
+
+Aquí los grosores de línea se ven en pantalla desde el principio: AutoCAD solo los muestra con el botón Grosor de línea de la barra de estado (LWDISPLAY) activado, pero sin presentaciones ni trazado en MellowCAD, la pantalla es el único sitio donde pueden verse. El botón los oculta y los muestra. Una polilínea con grosor muestra en planta su grosor de polilínea, no su grosor de línea.
+
+## Options
+
+### ?
+
+Enumera los valores que admite, PorCapa y los 24 grosores estándar, y vuelve a preguntar.
+
+### BYLAYER
+
+Los objetos nuevos toman el grosor de línea de su capa, como al principio.
+
+## Missing
+
+PorBloque y Por defecto (LWDEFAULT), los grosores en pulgadas, el cuadro Parámetros de grosor de línea y la entrada Parámetros de grosor de línea… de la lista desplegable.
+
+## Questions
+
+### ¿Cómo se llama el comando LWEIGHT en español?
+
+GROSORLIN, con el alias `LINEWEIGHT`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_LWEIGHT`.
+
+### ¿Por qué no se ve el grosor de línea en AutoCAD?
+
+En AutoCAD, los grosores solo se ven en pantalla con el botón Grosor de línea de la barra de estado activado (LWDISPLAY 1), que empieza desactivado. Aquí empieza activado. Los grosores finos se dibujan todos como la línea más fina de la pantalla, así que la diferencia se ve en los gruesos; y un objeto con grosor PorCapa toma el de su capa.
+
+### ¿Cómo cambio el grosor de línea de un objeto ya dibujado?
+
+Desígnalo y elige el grosor en la fila Grosor de línea de la paleta Propiedades, o en el grosor de su capa en el Administrador de propiedades de capas si el objeto es PorCapa. GROSORLIN solo fija el grosor de lo que se dibuja después.
+
+### ¿Qué grosores de línea tiene AutoCAD?
+
+24 valores fijos en milímetros: 0.00, 0.05, 0.09, 0.13, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.53, 0.60, 0.70, 0.80, 0.90, 1.00, 1.06, 1.20, 1.40, 1.58, 2.00 y 2.11. Si escribes otro, 0.45 por ejemplo, GROSORLIN toma el más cercano, el más fino si empatan.

@@ -1,0 +1,37 @@
+---
+title: "Unidades no AutoCAD: comando UNIDADES (UNITS)"
+metaTitle: "Unidades no AutoCAD: comando UNIDADES (UNITS)"
+description: "Como funciona o UNITS do AutoCAD em português, UNIDADES: a caixa Unidades do desenho, a precisão de 0 a 8 casas e a escala em milímetros, centímetros ou metros."
+figure: "UNIDADES aberto sobre uma placa de 100 por 60 e depois ID no seu canto oposto: as coordenadas na precisão do desenho, duas casas."
+sourceHash: "1fd1973c3ebf"
+---
+
+O UNITS, UNIDADES no AutoCAD em português, abre a caixa Unidades do desenho, que define como o desenho escreve os comprimentos e o que uma unidade de desenho representa. Como no AutoCAD, a caixa é modal: o comando dura até que OK ou Cancelar a feche, a mudança do OK é um passo que o <Command id="U" /> desfaz, e Cancelar ou Esc não mudam nada. Digitado com um apóstrofo na frente, `'UNIDADES`, ele abre dentro de um comando em andamento, que continua quando a caixa fecha. As unidades da barra de status e Unidades do desenho do menu do aplicativo também a abrem.
+
+O Tipo do Comprimento é Decimal, e a sua Precisão, de 0 a 8 casas decimais, é a usada em cada comprimento escrito: coordenadas, distâncias, áreas e os valores padrão que os prompts oferecem. Um desenho novo começa aqui com duas casas, onde o modelo métrico do AutoCAD começa com quatro. A Escala de inserção diz o que é uma unidade de desenho, milímetros, centímetros ou metros; a barra de status e a entrada dinâmica a mostram. O Exemplo mostra um ponto na precisão escolhida.
+
+## Missing
+
+Os outros tipos de comprimento, Arquitetônico, Engenharia, Fracionário e Científico, e a notação científica para um comprimento enorme. O grupo Ângulo: os ângulos são graus decimais, no sentido anti-horário a partir do leste, na precisão que o AUPREC define, digitado. As outras unidades de inserção, polegadas e pés entre elas; Iluminação; Direção; e o -UNIDADES, a forma de linha de comando.
+
+## Questions
+
+### Qual é o comando UNITS no AutoCAD em português?
+
+UNIDADES, com os atalhos `UN` e `UNIDADESD`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_UNITS`.
+
+### Como mudar as unidades de medida do desenho para milímetros ou metros?
+
+Abra o UNIDADES e escolha Milímetros, Centímetros ou Metros em Escala de inserção. Uma unidade de desenho continua sendo uma unidade: uma parede de 5 m é desenhada como 5 em metros ou como 5000 em milímetros. A escolha diz qual, e a barra de status e a entrada dinâmica a mostram.
+
+### Como mudar o número de casas decimais?
+
+Escolha a Precisão no UNIDADES, de `0` a `0.00000000`. Ela muda como os comprimentos são escritos, nunca a geometria: uma linha desenhada com 10.125 continua medindo 10.125 em qualquer precisão.
+
+### Por que as cotas não seguem a precisão do UNIDADES?
+
+Uma cota escreve o seu valor com a precisão do seu próprio estilo de cota, não com a do desenho. Mude-a no <Command id="DIMSTYLE" />, em Unidades primárias.
+
+### Dá para desenhar em pés e polegadas?
+
+Ainda não: os comprimentos são decimais, e a escala de inserção oferece milímetros, centímetros e metros. Faltam as unidades de arquitetura e de engenharia.

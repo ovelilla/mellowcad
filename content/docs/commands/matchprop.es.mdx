@@ -1,0 +1,55 @@
+---
+title: "Igualar propiedades en AutoCAD: IGUALARPROP (MATCHPROP)"
+metaTitle: "Igualar propiedades en AutoCAD: IGUALARPROP"
+description: "Cómo funciona IGUALARPROP (MATCHPROP, alias IP) de AutoCAD en español: un objeto de origen y los que toman su capa, color, tipo de línea y estilos. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando MATCHPROP en español?","answer":"IGUALARPROP, con los alias IP y COPIARPROP. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _MATCHPROP."},{"question":"¿Cómo copio las propiedades de una línea a otra?","answer":"Ejecuta IGUALARPROP, designa la línea cuyas propiedades quieres y después las líneas que deben tomarlas, y pulsa Intro. Pasan a su capa, con su color, su tipo de línea y su grosor."},{"question":"¿Por qué no funciona Igualar propiedades?","answer":"Un destino en una capa bloqueada no cambia: desbloquea antes la capa. Una propiedad solo se copia entre objetos que la tienen: el estilo de cota solo a cotas, el estilo de texto solo a textos, el patrón solo a sombreados. Y el tipo de línea no se copia a un sombreado ni a un texto de líneas múltiples, como en AutoCAD."},{"question":"¿Cómo igualo las propiedades de una cota o de un sombreado?","answer":"Designa una cota como origen y otras cotas como destino: toman su estilo de cota, con su capa y su color. Un sombreado pasa su patrón, su escala y su ángulo a otros sombreados, y cada uno conserva su propio origen."}]
+---
+
+IGUALARPROP (MATCHPROP en inglés) copia las propiedades de un objeto en otros: la brocha de Igualar propiedades de AutoCAD. Designa el objeto de origen, o uno antes del comando; también lo toma de una capa bloqueada. Después dice qué propiedades copia, `Parámetros activos actuales:` y la lista, y pide los objetos de destino: cada designación o ventana los pinta en el acto, hasta que Intro lo termina. Un destino en una capa bloqueada se queda como estaba, con `El objeto de destino no puede actualizarse porque se encuentra en una capa bloqueada.`. El cursor lleva la brocha de AutoCAD, y toda la ejecución es un paso que `H` deshace. Escrito con un apóstrofo delante, `'IGUALARPROP`, funciona dentro de otro comando.
+
+Copia lo que marca por defecto el cuadro Parámetros de propiedades: la capa, el color y el grosor de línea; el tipo de línea, salvo a los sombreados, los textos de líneas múltiples y las definiciones de atributo; la altura de objeto; entre textos, el estilo, la altura y la rotación, y de un texto de una línea a otro también la justificación; entre cotas, el estilo de cota; entre sombreados, el patrón, la escala y el ángulo, pero no el origen.
+
+- **Comando:** `IGUALARPROP`
+- **En inglés:** `MATCHPROP`, que se escribe `_MATCHPROP` en cualquier idioma
+- **Alias:** `IP`, `COPIARPROP`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `IP` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="matchprop" caption="Una placa y su agujero, un eje vertical rojo y de trazo y punto en su capa, y una línea horizontal en la capa 0 que IGUALARPROP convierte en el mismo eje." />
+
+## Lo que aún no hace [#missing]
+
+La opción Parámetros y su cuadro Parámetros de propiedades: siempre copia todas las propiedades que conoce, y la primera solicitud no ofrece `[Parámetros]`. La escala del tipo de línea, la transparencia y el estilo de trazado, que los objetos no tienen aquí; los grosores de una polilínea, el factor de anchura y el ángulo oblicuo de un texto, y las propiedades anotativas. La vista previa de AutoCAD del cambio bajo el cursor.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop--pt-br-propig--pi--pintor)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando MATCHPROP en español?
+
+IGUALARPROP, con los alias `IP` y `COPIARPROP`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_MATCHPROP`.
+
+### ¿Cómo copio las propiedades de una línea a otra?
+
+Ejecuta IGUALARPROP, designa la línea cuyas propiedades quieres y después las líneas que deben tomarlas, y pulsa Intro. Pasan a su capa, con su color, su tipo de línea y su grosor.
+
+### ¿Por qué no funciona Igualar propiedades?
+
+Un destino en una capa bloqueada no cambia: desbloquea antes la capa. Una propiedad solo se copia entre objetos que la tienen: el estilo de cota solo a cotas, el estilo de texto solo a textos, el patrón solo a sombreados. Y el tipo de línea no se copia a un sombreado ni a un texto de líneas múltiples, como en AutoCAD.
+
+### ¿Cómo igualo las propiedades de una cota o de un sombreado?
+
+Designa una cota como origen y otras cotas como destino: toman su estilo de cota, con su capa y su color. Un sombreado pasa su patrón, su escala y su ángulo a otros sombreados, y cada uno conserva su propio origen.
+
+## Comandos relacionados [#related]
+
+- [Paleta Propiedades en AutoCAD: PROPIEDADES (PROPERTIES)](/docs/commands/properties)
+- [Capas en AutoCAD: CAPA (LAYER)](/docs/commands/layer)
+- [Tipos de línea en AutoCAD: TIPOLIN (LINETYPE)](/docs/commands/linetype)
+- [Grosor de línea en AutoCAD: GROSORLIN (LWEIGHT)](/docs/commands/lweight)

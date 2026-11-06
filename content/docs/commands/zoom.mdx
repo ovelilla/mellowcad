@@ -1,0 +1,81 @@
+---
+title: "ZOOM in AutoCAD"
+metaTitle: "ZOOM in AutoCAD: Extents, Window, All and alias"
+description: "How AutoCAD's ZOOM (Z) works: Extents, Window, Previous, Scale with nX, Object and All, the mouse wheel, zooming inside a command. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for ZOOM in AutoCAD?","answer":"Z, then Enter or Space. The full name works too, and _ZOOM in any language of AutoCAD. Z then E is ZOOM Extents."},{"question":"How do I zoom to fit the whole drawing?","answer":"Extents: type Z, Enter, E, Enter. Or double-click the mouse wheel button."},{"question":"What does ZOOM XP mean in AutoCAD?","answer":"nXP zooms a layout viewport to a scale relative to paper space: 1/50XP shows the model at 1:50 on the sheet. MellowCAD has no layouts, so XP is read as X."},{"question":"How do I zoom to an object in AutoCAD?","answer":"Choose Object and select it, or select it first and then run ZOOM Object: the view frames it."},{"question":"How do I go back to the previous view?","answer":"Previous, again and again for the views before it, up to 20."}]
+---
+
+ZOOM makes the view larger or smaller; nothing in the drawing moves or changes size. Its first prompt takes a corner, which starts a window, a scale factor, or an option. Typed with an apostrophe, `'ZOOM` or `'Z`, it works inside another command, which goes on after it. The mouse wheel zooms in and out about the cursor, and a double-click of the wheel button is ZOOM Extents. Each ZOOM is an undo step, consecutive ones a single step, so `U` takes the view back too.
+
+- **Command:** `ZOOM`
+- **Aliases:** `Z`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `Z` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="zoom" caption="A plate with a small hole near its corner: ZOOM Extents, then a window round the hole, which then fills the view." />
+
+## Options [#options]
+
+### `All` (`A`) [#all]
+
+Frames everything drawn, as `Extents` does.
+
+### `Extents` (`E`) [#extents]
+
+Frames everything drawn, as large as the window allows. With nothing drawn, it says `Regenerating model.`, and typed inside another command it refuses with `** Requires a regen, cannot be transparent.`, as AutoCAD's does.
+
+### `Previous` (`P`) [#previous]
+
+Goes back to the view before, up to 20 views back. With none left: `No previous view saved.`.
+
+### `Scale` (`S`) [#scale]
+
+A factor: `2X` zooms twice as close as the current view, `0.5X` half as close, and `2` without the X twice the scale of ZOOM All's view. `nXP`, paper space's factor, is read as `nX`: there is only model space here. A factor typed at the first prompt does the same without choosing the option.
+
+### `Window` (`W`) [#window]
+
+Two corners, picked or dragged, frame that rectangle. A corner picked at the first prompt does the same.
+
+### `Object` (`O`) [#object]
+
+Frames the objects you select, or those selected before ZOOM.
+
+## What it does not do yet [#missing]
+
+Realtime: Enter at the first prompt ends ZOOM, where AutoCAD starts zooming with the mouse; the wheel does that here. Dynamic, Center and the hidden Left and Vmax.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z)
+
+## Questions [#questions]
+
+### What is the shortcut for ZOOM in AutoCAD?
+
+`Z`, then Enter or Space. The full name works too, and `_ZOOM` in any language of AutoCAD. `Z` then `E` is ZOOM Extents.
+
+### How do I zoom to fit the whole drawing?
+
+`Extents`: type `Z`, Enter, `E`, Enter. Or double-click the mouse wheel button.
+
+### What does ZOOM XP mean in AutoCAD?
+
+`nXP` zooms a layout viewport to a scale relative to paper space: `1/50XP` shows the model at 1:50 on the sheet. MellowCAD has no layouts, so `XP` is read as `X`.
+
+### How do I zoom to an object in AutoCAD?
+
+Choose `Object` and select it, or select it first and then run ZOOM Object: the view frames it.
+
+### How do I go back to the previous view?
+
+`Previous`, again and again for the views before it, up to 20.
+
+## Related commands [#related]
+
+- [PAN](/docs/commands#pan): Pan
+- [VIEW](/docs/commands#view): Preset views
+- [REGEN](/docs/commands#regen): Regen

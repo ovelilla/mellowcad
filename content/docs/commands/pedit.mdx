@@ -1,0 +1,102 @@
+---
+title: "PEDIT in AutoCAD"
+metaTitle: "PEDIT in AutoCAD: edit polylines, Join and Width"
+description: "How AutoCAD's PEDIT (PE) works: turn lines into a polyline, Join, Width, Fit and Spline, Edit vertex, Multiple, prompt by prompt. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for PEDIT in AutoCAD?","answer":"PE, then Enter or Space. The full name works too, and _PEDIT in any language of AutoCAD. Double-clicking a polyline also runs it."},{"question":"How do I join lines into a polyline?","answer":"Run PEDIT, pick one of the lines and press Enter to turn it into a polyline, then choose Join and select the others: those that meet end to end become one polyline. JOIN does the same in one step."},{"question":"Why is PEDIT not working on my object?","answer":"PEDIT edits polylines, and offers to convert lines, arcs and splines; anything else, text, a circle, a block, is refused and asked again. An object on a locked layer says “The object is on a locked layer.”. Join adds only objects whose ends meet the polyline's exactly: for gaps, use Multiple and a fuzz distance."},{"question":"How do I change the width of a polyline?","answer":"Choose Width and type the width: every segment takes it. For one segment, use Edit, step to the vertex where it starts and choose its Width."},{"question":"How do I make a polyline curved?","answer":"Fit passes arcs through every vertex; Spline makes a smoother curve that its vertices frame. Decurve straightens it again."}]
+---
+
+PEDIT edits a polyline. Pick one at `Select polyline or [Multiple]:`, or select it before the command; double-clicking a polyline runs PEDIT on it too. Pick a line, an arc or a spline instead and it says `Object selected is not a polyline` and asks whether to turn it into one, Yes by default: the new polyline takes its place and its properties. Then it asks for an option again and again, each one applied at once, until Enter ends it. A 3D polyline gets a shorter list, with no width, no curve fit and no linetype generation, and its spline option is `Spline`. Escape keeps what was done; the whole edit is one step that `U` takes back.
+
+- **Command:** `PEDIT`
+- **Aliases:** `PE`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `PE` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="pedit" caption="Three lines meeting end to end: PEDIT turns the first into a polyline, joins the other two to it and gives it a width of 2." />
+
+## Options [#options]
+
+### `Multiple` (`M`) [#multiple]
+
+Edits several polylines at once: select them, say whether to convert the lines, arcs and splines among them, then each option is applied to all. Its Join asks a fuzz distance and a `Jointype`: `Extend` trims or extends the end segments to meet, `Add` bridges the gap with a new segment, `Both` extends where it can and adds where it cannot.
+
+### `Close` (`C`) [#close]
+
+Closes the polyline with a segment from its last vertex to its first, an arc where the last segment is an arc. On a closed polyline the option is `Open`, which takes that segment away.
+
+### `Join` (`J`) [#join]
+
+Adds lines, arcs and open polylines that meet the polyline's ends, end to end, and says how many segments it added. A closed polyline cannot be joined to: `Can't join to a closed polyline`.
+
+### `Width` (`W`) [#width]
+
+One width for every segment, typed or measured by two points; 0 takes the width away.
+
+### `Edit vertex` (`E`) [#edit-vertex]
+
+Puts an X on the first vertex and asks what to do there: `Next` and `Previous` step the X, `Move` moves the vertex, `Insert` adds one after it, `Break` and `Straighten` remember the vertex, you step the X to another, and `Go` breaks the polyline between the two or makes one straight segment of what lies between, `Width` sets the next segment's start and end widths, `Tangent` gives the vertex a direction for a later Fit, and `eXit` goes back.
+
+### `Fit` (`F`) [#fit]
+
+Draws a smooth curve of arcs through every vertex, tangent where they meet, as AutoCAD's curve fit lays them. The vertices stay, and editing them reshapes the curve.
+
+### `Spline` (`S`) [#spline]
+
+Fits a B-spline to the polyline, framed by its vertices rather than passing through them: quadratic or cubic, with SPLINETYPE, and as fine as SPLINESEGS. A 3D polyline's is `Spline`. SPLINE's Object turns such a polyline into a true spline.
+
+### `Decurve` (`D`) [#decurve]
+
+Takes the Fit or Spline curve away: straight segments between the vertices again.
+
+### `Ltype gen` (`L`) [#ltype-gen]
+
+`ON` lays the linetype in one pattern along the whole polyline, so a dashed polyline with short segments still shows dashes; `OFf`, the default, starts the pattern again at each vertex.
+
+### `Reverse` (`R`) [#reverse]
+
+Turns the polyline round: its vertices the other way, the arcs and widths with them.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last option of this run, and goes on asking.
+
+## What it does not do yet [#missing]
+
+PEDITACCEPT: picking a line, an arc or a spline always asks before converting it. PLINECONVERTMODE: a spline becomes a polyline of straight segments, far more of them than AutoCAD makes, never arcs. A fitted polyline shows in the Properties palette as a plain polyline, without AutoCAD's 2D Polyline title and its Fit/Smooth row. Multiple with only 3D polylines in the set asks the 3D prompt, where AutoCAD asks the 2D one. There are no meshes to edit.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp)
+
+## Questions [#questions]
+
+### What is the shortcut for PEDIT in AutoCAD?
+
+`PE`, then Enter or Space. The full name works too, and `_PEDIT` in any language of AutoCAD. Double-clicking a polyline also runs it.
+
+### How do I join lines into a polyline?
+
+Run PEDIT, pick one of the lines and press Enter to turn it into a polyline, then choose `Join` and select the others: those that meet end to end become one polyline. [`JOIN`](/docs/commands/join) does the same in one step.
+
+### Why is PEDIT not working on my object?
+
+PEDIT edits polylines, and offers to convert lines, arcs and splines; anything else, text, a circle, a block, is refused and asked again. An object on a locked layer says `The object is on a locked layer.`. Join adds only objects whose ends meet the polyline's exactly: for gaps, use `Multiple` and a fuzz distance.
+
+### How do I change the width of a polyline?
+
+Choose `Width` and type the width: every segment takes it. For one segment, use `Edit`, step to the vertex where it starts and choose its `Width`.
+
+### How do I make a polyline curved?
+
+`Fit` passes arcs through every vertex; `Spline` makes a smoother curve that its vertices frame. `Decurve` straightens it again.
+
+## Related commands [#related]
+
+- [PLINE in AutoCAD](/docs/commands/pline)
+- [JOIN in AutoCAD](/docs/commands/join)
+- [EXPLODE in AutoCAD](/docs/commands/explode)
+- [SPLINE in AutoCAD](/docs/commands/spline)

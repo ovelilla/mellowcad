@@ -1,0 +1,56 @@
+---
+title: "Comando MATCHPROP (PROPIG) no AutoCAD"
+metaTitle: "Copiar propriedades no AutoCAD: MATCHPROP"
+description: "Como funciona o MATCHPROP do AutoCAD em português, PROPIG: um objeto de origem e os que recebem a sua camada, cor, tipo de linha e estilos. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando MATCHPROP no AutoCAD em português?","answer":"PROPIG, com os atalhos PI e PINTOR. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _MATCHPROP."},{"question":"Como copiar as propriedades de uma linha para outra no AutoCAD?","answer":"Execute o PROPIG, selecione a linha cujas propriedades você quer e depois as linhas que devem recebê-las, e pressione Enter. Elas passam para a camada dela, com a sua cor, o seu tipo de linha e a sua espessura de linha."},{"question":"Por que o Corresponder propriedades não funciona?","answer":"Um destino numa camada bloqueada não muda: desbloqueie a camada antes. Uma propriedade só é copiada entre objetos que a têm: o estilo de cota só para cotas, o estilo de texto só para textos, o padrão só para hachuras. E o tipo de linha não é copiado para uma hachura nem para um texto multilinha, como no AutoCAD."},{"question":"Como copiar as propriedades de uma cota ou de uma hachura?","answer":"Selecione uma cota como origem e outras cotas como destino: elas recebem o estilo de cota dela, com a sua camada e a sua cor. Uma hachura passa o padrão, a escala e o ângulo para outras hachuras, e cada uma mantém a própria origem."}]
+---
+
+O MATCHPROP, PROPIG no AutoCAD em português, copia as propriedades de um objeto para outros: o pincel de Corresponder propriedades do AutoCAD. Selecione o objeto de origem, ou um antes do comando; ele aceita um numa camada bloqueada também. Depois diz quais propriedades copia, `Configurações ativas atuais:` e a lista, e pede os objetos de destino: cada seleção ou janela os pinta na hora, até que Enter o encerre. Um destino numa camada bloqueada fica como estava, com `O objeto de destino está em uma camada bloqueada.
+Não é possível atualizá-lo.`. O cursor leva o pincel do AutoCAD, e toda a execução é um passo que o `D` desfaz. Digitado com um apóstrofo na frente, `'PROPIG`, ele funciona dentro de outro comando.
+
+Ele copia o que a caixa Configurações de propriedades marca por padrão: a camada, a cor e a espessura de linha; o tipo de linha, exceto para hachuras, textos multilinha e definições de atributo; a espessura do objeto; entre textos, o estilo, a altura e a rotação, e de um texto de uma linha para outro também a justificação; entre cotas, o estilo de cota; entre hachuras, o padrão, a escala e o ângulo, mas não a origem.
+
+- **Comando:** `PROPIG`
+- **Em inglês:** `MATCHPROP`, que se digita `_MATCHPROP` em qualquer idioma
+- **Aliases:** `PI`, `PINTOR`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `PI` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="matchprop" caption="Uma placa e o seu furo, um eixo vertical vermelho e traço-ponto na sua camada, e uma linha horizontal na camada 0 que o PROPIG transforma no mesmo eixo." />
+
+## O que ainda não faz [#missing]
+
+A opção Configurações e a sua caixa Configurações de propriedades: ele sempre copia todas as propriedades que conhece, e o primeiro prompt não oferece `[Configurações]`. A escala do tipo de linha, a transparência e o estilo de plotagem, que os objetos não têm aqui; as larguras de uma polilinha, o fator de largura e o ângulo oblíquo de um texto, e as propriedades anotativas. A prévia do AutoCAD da mudança sob o cursor.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop--pt-br-propig--pi--pintor)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando MATCHPROP no AutoCAD em português?
+
+PROPIG, com os atalhos `PI` e `PINTOR`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_MATCHPROP`.
+
+### Como copiar as propriedades de uma linha para outra no AutoCAD?
+
+Execute o PROPIG, selecione a linha cujas propriedades você quer e depois as linhas que devem recebê-las, e pressione Enter. Elas passam para a camada dela, com a sua cor, o seu tipo de linha e a sua espessura de linha.
+
+### Por que o Corresponder propriedades não funciona?
+
+Um destino numa camada bloqueada não muda: desbloqueie a camada antes. Uma propriedade só é copiada entre objetos que a têm: o estilo de cota só para cotas, o estilo de texto só para textos, o padrão só para hachuras. E o tipo de linha não é copiado para uma hachura nem para um texto multilinha, como no AutoCAD.
+
+### Como copiar as propriedades de uma cota ou de uma hachura?
+
+Selecione uma cota como origem e outras cotas como destino: elas recebem o estilo de cota dela, com a sua camada e a sua cor. Uma hachura passa o padrão, a escala e o ângulo para outras hachuras, e cada uma mantém a própria origem.
+
+## Comandos relacionados [#related]
+
+- [Propriedades no AutoCAD: comando PROPRIEDADES (PROPERTIES)](/docs/commands/properties)
+- [Comando LAYER (CAMADA) no AutoCAD](/docs/commands/layer)
+- [Comando LINETYPE (TIPOLINHA) no AutoCAD](/docs/commands/linetype)
+- [Espessura de linha no AutoCAD: ESPLINHA (LWEIGHT)](/docs/commands/lweight)

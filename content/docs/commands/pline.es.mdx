@@ -73,7 +73,7 @@ Modo arco: un punto por el que pasa el arco y después su punto final: un arco p
 
 ## Lo que aún no hace [#missing]
 
-PLINEGEN: una polilínea nueva aplica su tipo de línea segmento a segmento, como con PLINEGEN 0 (`generarTlínea` de `EDITPOL` lo activa en una polilínea). Un tipo de línea discontinuo sobre un segmento con grosor se dibuja continuo. La vista previa de un segmento con grosor no se dibuja en un tono más tenue, y la solicitud del arco se escribe en una sola línea donde AutoCAD la parte en dos.
+PLINEGEN: una polilínea nueva aplica su tipo de línea segmento a segmento, como con PLINEGEN 0 (`generarTlínea` de [`EDITPOL`](/docs/commands/pedit) lo activa en una polilínea). Un tipo de línea discontinuo sobre un segmento con grosor se dibuja continuo. La vista previa de un segmento con grosor no se dibuja en un tono más tenue, y la solicitud del arco se escribe en una sola línea donde AutoCAD la parte en dos.
 
 [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl)
 
@@ -85,7 +85,7 @@ POL, con el alias `PL`. Como en AutoCAD en español, el nombre inglés también 
 
 ### ¿Cómo hago una polilínea curva?
 
-Elige `Arco`: cada punto termina entonces un arco tangente al segmento anterior, hasta `líNea`. Para suavizar por sus vértices una polilínea ya dibujada, usa `EDITPOL` y su opción `curVar` o `Spline`.
+Elige `Arco`: cada punto termina entonces un arco tangente al segmento anterior, hasta `líNea`. Para suavizar por sus vértices una polilínea ya dibujada, usa [`EDITPOL`](/docs/commands/pedit) y su opción `curVar` o `Spline`.
 
 ### ¿Por qué la polilínea me sale gruesa?
 
@@ -93,15 +93,15 @@ El grosor dado en una polilínea anterior se mantiene, y la siguiente empieza co
 
 ### ¿Cómo uno varias líneas en una polilínea?
 
-Ejecuta [`UNIR`](/docs/commands/join) y designa líneas, arcos y polilíneas que se toquen por sus extremos: cada cadena se convierte en una polilínea. O ejecuta `EDITPOL` sobre una línea, responde `Sí` para convertirla en polilínea y añade las demás con `Juntar`.
+Ejecuta [`UNIR`](/docs/commands/join) y designa líneas, arcos y polilíneas que se toquen por sus extremos: cada cadena se convierte en una polilínea. O ejecuta [`EDITPOL`](/docs/commands/pedit) sobre una línea, responde `Sí` para convertirla en polilínea y añade las demás con `Juntar`.
 
 ### ¿Cómo mido una polilínea?
 
-Ejecuta `AREA`, pulsa Intro para elegir `Objeto` y designa la polilínea: una cerrada da su área y su perímetro; una abierta, su longitud.
+Ejecuta [`AREA`](/docs/commands/area), pulsa Intro para elegir `Objeto` y designa la polilínea: una cerrada da su área y su perímetro; una abierta, su longitud.
 
 ## Comandos relacionados [#related]
 
-- [EDITPOL (PEDIT)](/docs/commands#pedit): Editar polilínea
+- [Editar polilíneas en AutoCAD: EDITPOL (PEDIT)](/docs/commands/pedit)
 - [Unir en AutoCAD: comando UNIR (JOIN)](/docs/commands/join)
 - [Rectángulo en AutoCAD: RECTANG](/docs/commands/rectang)
 - [Descomponer en AutoCAD: DESCOMP (EXPLODE)](/docs/commands/explode)

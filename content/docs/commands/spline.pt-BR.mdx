@@ -1,0 +1,89 @@
+---
+title: "Comando SPLINE no AutoCAD: curvas spline"
+description: "Como funciona o SPLINE (SPL) do AutoCAD em português: uma curva por pontos de ajuste ou por vértices de controle, Nós, Grau, tangentes e Fechar. Experimente."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o atalho do SPLINE no AutoCAD?","answer":"SPL, depois Enter ou a barra de espaço. O comando tem o mesmo nome no AutoCAD em português, e _SPLINE funciona em qualquer idioma."},{"question":"Qual é a diferença entre Ajustar e VC?","answer":"Uma spline de ajuste passa pelos pontos que você clica, o que serve quando a curva precisa tocá-los. Uma VC é formada pelos vértices de controle, dos quais ela só se aproxima, o que dá uma forma suave e regular. A escolha é feita com Método no primeiro prompt."},{"question":"Como converter uma spline em polilinha?","answer":"Execute o EDITARP e selecione a spline: ele diz “O objeto selecionado não é uma polilinha”, oferece transformá-la e pede uma precisão de 0 a 99, 10 por padrão. A polilinha acompanha a spline com segmentos retos curtos, mais do que o AutoCAD faz."},{"question":"Como converter uma polilinha em spline?","answer":"Ajuste a polilinha com a opção Spline do EDITARP, depois execute o SPLINE e escolha Objeto: a polilinha vira uma spline da mesma curva."},{"question":"Dá para explodir uma spline no AutoCAD?","answer":"Não: o EXPLODIR recusa uma spline, como no AutoCAD. Para quebrá-la em pedaços, converta-a antes em polilinha com o EDITARP e exploda a polilinha em linhas."}]
+---
+
+O SPLINE desenha uma curva suave de duas maneiras: passando pelos pontos que você dá (Ajustar, o padrão) ou puxada pelos vértices de controle que você posiciona (VC). Ele começa mostrando as configurações, `Método=Ajustar Nós=Banzo`, e pede o primeiro ponto; Enter ali é recusado, como no AutoCAD. Cada ponto seguinte curva a spline, cuja imagem acompanha o cursor, e Enter a encerra. Os pontos são indicados, com ou sem snap a objetos, ou digitados; um comprimento digitado segue a direção do cursor, e cada ponto mantém o seu Z, então uma spline pode subir no espaço. Esc descarta a curva; a spline inteira é um único passo que o `D` desfaz. Os botões Spline de ajuste e Spline VC da faixa de opções executam o SPLINE com o método já respondido.
+
+- **Comando:** `SPLINE`
+- **Aliases:** `SPL`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `SPL` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="spline" caption="Uma spline de ajuste por cinco pontos e, abaixo, uma spline VC sobre cinco vértices dispostos do mesmo jeito: a primeira passa por eles, a segunda se aproxima deles." />
+
+## Opções [#options]
+
+### `Método` (`M`) [#method]
+
+`Ajustar` ou `VC`. Uma spline de ajuste passa por cada ponto que você dá; uma de vértices de controle passa só pelo primeiro e pelo último, e os outros a puxam, então ela sai mais suave e mais longe deles. O método, como os nós e o grau, vale pelo resto da sessão.
+
+### `Nós` (`N`) [#knots]
+
+Como uma spline de ajuste distribui os pontos ao longo da curva: `Banzo` (o padrão, pela distância entre eles), `Raiz` dessa distância ou `Uniforme`, todos iguais. Pelos mesmos pontos, cada um dá uma curva um pouco diferente.
+
+### `Grau` (`G`) [#degree]
+
+O grau de uma spline VC, de 1 (retas entre os vértices) a 10; 3, o padrão, é uma cúbica. Com menos vértices do que o grau pede, a curva fica com o maior grau possível.
+
+### `Objeto` (`O`) [#object]
+
+Converte uma polilinha ajustada pela opção Spline do [`EDITARP`](/docs/commands/pedit), 2D ou 3D, numa spline VC da mesma curva e apaga a polilinha, num único passo. Qualquer outra coisa é recusada com `Somente spline  ajustada a polilinhas podem ser convertidas em splines.`.
+
+### `Tangência inicial` (`T`) [#start-tangency]
+
+Oferecida depois do primeiro ponto: a direção em que a curva sai dele, indicada ou digitada a partir desse ponto.
+
+### `Tangência final` (`T`) [#end-tangency]
+
+A direção em que a curva chega ao último ponto; depois a spline termina.
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz o último ponto, até o primeiro.
+
+### `Fechar` (`F`) [#close]
+
+A partir do terceiro ponto: liga o fim ao começo num laço suave, sem canto, e encerra o comando.
+
+## O que ainda não faz [#missing]
+
+A tolerância de ajuste: uma spline de ajuste passa sempre exatamente pelos pontos, e a opção de tolerância não é oferecida. Enquanto é desenhada, a spline ainda não é um objeto para o snap ou o rastreamento, como é no AutoCAD. Objeto sempre apaga a polilinha (DELOBJ). Numa spline pronta não há CVSHOW nem CVHIDE nem os menus de grip para adicionar ou remover um ponto; a paleta Propriedades edita os pontos, mas não o método, o grau, os nós, os pesos nem o fechamento, e Centro geométrico, Perpendicular e Tangente não a encontram. O [`HACHURA`](/docs/commands/hatch) não reconhece uma spline como contorno, e o BLEND ainda não existe.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o atalho do SPLINE no AutoCAD?
+
+`SPL`, depois Enter ou a barra de espaço. O comando tem o mesmo nome no AutoCAD em português, e `_SPLINE` funciona em qualquer idioma.
+
+### Qual é a diferença entre Ajustar e VC?
+
+Uma spline de ajuste passa pelos pontos que você clica, o que serve quando a curva precisa tocá-los. Uma VC é formada pelos vértices de controle, dos quais ela só se aproxima, o que dá uma forma suave e regular. A escolha é feita com `Método` no primeiro prompt.
+
+### Como converter uma spline em polilinha?
+
+Execute o [`EDITARP`](/docs/commands/pedit) e selecione a spline: ele diz `O objeto selecionado não é uma polilinha`, oferece transformá-la e pede uma precisão de 0 a 99, 10 por padrão. A polilinha acompanha a spline com segmentos retos curtos, mais do que o AutoCAD faz.
+
+### Como converter uma polilinha em spline?
+
+Ajuste a polilinha com a opção Spline do [`EDITARP`](/docs/commands/pedit), depois execute o SPLINE e escolha `Objeto`: a polilinha vira uma spline da mesma curva.
+
+### Dá para explodir uma spline no AutoCAD?
+
+Não: o [`EXPLODIR`](/docs/commands/explode) recusa uma spline, como no AutoCAD. Para quebrá-la em pedaços, converta-a antes em polilinha com o [`EDITARP`](/docs/commands/pedit) e exploda a polilinha em linhas.
+
+## Comandos relacionados [#related]
+
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Comando PEDIT (EDITARP) no AutoCAD](/docs/commands/pedit)
+- [EDITARSPLINE (SPLINEDIT)](/docs/commands#splinedit): Editar spline
+- [Elipse no AutoCAD: comando ELIPSE (ELLIPSE)](/docs/commands/ellipse)

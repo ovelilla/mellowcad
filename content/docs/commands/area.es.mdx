@@ -1,0 +1,78 @@
+---
+title: "Calcular áreas en AutoCAD: comando AREA"
+metaTitle: "Calcular áreas en AutoCAD: comando AREA"
+description: "Cómo funciona AREA (AA) de AutoCAD en español: el área y el perímetro de unos puntos o de un objeto, y un total con Añadir área y Sustraer área. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el comando para calcular áreas en AutoCAD?","answer":"AREA, con el alias AA, y después Intro o la barra espaciadora. Se llama igual en AutoCAD en español y en inglés, y _AREA funciona en cualquier idioma."},{"question":"¿Cómo saco el área de una polilínea o de un sombreado?","answer":"Ejecuta AREA, pulsa Intro para elegir Objeto y designa la polilínea cerrada o el sombreado: su área y su perímetro se escriben en la solicitud de comando. El área de un sombreado deja fuera sus islas."},{"question":"¿Cómo resto un área en AutoCAD?","answer":"Elige Añadir y después Objeto, designa la forma exterior y pulsa Intro; luego elige Sustraer, Objeto, y designa cada agujero. AREA escribe el total que queda tras cada uno; Intro dos veces termina."},{"question":"¿Cómo saco el área en metros cuadrados?","answer":"AREA escribe unidades de dibujo al cuadrado. Si dibujas en milímetros, divide entre 1.000.000: 6.000.000 son 6 m². En centímetros, entre 10.000."},{"question":"¿Por qué AREA dice que el objeto no tiene área?","answer":"Solo tienen área las formas y curvas cerradas: las líneas, los arcos sueltos, los textos y las cotas no. Designa una polilínea cerrada, un círculo o un sombreado, o une antes las líneas en una polilínea con UNIR; o perfila la forma por sus esquinas."}]
+---
+
+AREA mide el área y el perímetro de una forma cerrada, ya sea una que perfilas por sus esquinas o un objeto que designas. Precisa la primera esquina y después las siguientes: desde la segunda, la forma cerrada por el cursor se rellena de verde translúcido, como la sombrea AutoCAD. Intro o `Total` escriben `Área = …, Perímetro = …` en la solicitud de comando y terminan; Intro antes de la tercera esquina no se admite. Con Añadir área y Sustraer área lleva un total de varias formas. Los números se escriben a la precisión del dibujo, y la última área medida se puede volver a leer escribiendo `'AREA`.
+
+- **Comando:** `AREA`
+- **Alias:** `AA`
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `AA` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="area" caption="Una placa de 100 por 60 con un agujero de radio 18: AREA añade el área de la placa, resta la del agujero y escribe el total que queda." />
+
+## Opciones [#options]
+
+### `Objeto` (`O`) [#object]
+
+La opción por defecto de la primera solicitud, así que Intro la elige: designa un círculo, una elipse, una polilínea o una spline cerradas, un sombreado o una región, y AREA escribe su área con su perímetro, o la circunferencia de un círculo. Una polilínea, una spline o un arco elíptico abiertos se cierran con una recta de extremo a extremo, y AREA escribe su longitud. Una línea o un texto no tienen área: `El objeto seleccionado no tiene área`, y vuelve a preguntar.
+
+### `Añadir área` (`A`) [#add]
+
+Empieza un total: cada área medida después, por esquinas o con `Objeto`, se suma, y AREA la escribe junto con el total. Intro termina los objetos o las esquinas y vuelve a preguntar, hasta que Intro en la primera solicitud termina.
+
+### `Sustraer área` (`S`) [#subtract]
+
+Lo mismo, restando cada área del total: la placa y después sus agujeros.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace la última esquina precisada.
+
+### `Total` (`T`) [#total]
+
+Escribe el área y el perímetro de las esquinas precisadas y termina.
+
+## Lo que aún no hace [#missing]
+
+MEDIRGEOM (MEASUREGEOM), las herramientas Medir de la cinta de opciones, con sus Radio, Ángulo, Volumen y Rápido: aquí los botones Distancia y Área de la cinta ejecutan DIST y AREA. Las opciones Arco y Longitud en el punto siguiente de AREA. Las esquinas fuera del plano del SCP actual se miden en planta, donde AutoCAD las mide en 3D, y no se dice el `Object not parallel with UCS.` de AutoCAD para un objeto inclinado respecto al SCP.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el comando para calcular áreas en AutoCAD?
+
+AREA, con el alias `AA`, y después Intro o la barra espaciadora. Se llama igual en AutoCAD en español y en inglés, y `_AREA` funciona en cualquier idioma.
+
+### ¿Cómo saco el área de una polilínea o de un sombreado?
+
+Ejecuta AREA, pulsa Intro para elegir `Objeto` y designa la polilínea cerrada o el sombreado: su área y su perímetro se escriben en la solicitud de comando. El área de un sombreado deja fuera sus islas.
+
+### ¿Cómo resto un área en AutoCAD?
+
+Elige `Añadir` y después `Objeto`, designa la forma exterior y pulsa Intro; luego elige `Sustraer`, `Objeto`, y designa cada agujero. AREA escribe el total que queda tras cada uno; Intro dos veces termina.
+
+### ¿Cómo saco el área en metros cuadrados?
+
+AREA escribe unidades de dibujo al cuadrado. Si dibujas en milímetros, divide entre 1.000.000: 6.000.000 son 6 m². En centímetros, entre 10.000.
+
+### ¿Por qué AREA dice que el objeto no tiene área?
+
+Solo tienen área las formas y curvas cerradas: las líneas, los arcos sueltos, los textos y las cotas no. Designa una polilínea cerrada, un círculo o un sombreado, o une antes las líneas en una polilínea con [`UNIR`](/docs/commands/join); o perfila la forma por sus esquinas.
+
+## Comandos relacionados [#related]
+
+- [Medir distancias en AutoCAD: comando DIST](/docs/commands/dist)
+- [LIST](/docs/commands#list): Lista
+- [Sombreado en AutoCAD: SOMBREA (HATCH)](/docs/commands/hatch)
+- [Unidades en AutoCAD: comando UNIDADES (UNITS)](/docs/commands/units)

@@ -1,0 +1,103 @@
+---
+title: "Editar polilíneas en AutoCAD: EDITPOL (PEDIT)"
+metaTitle: "Editar polilíneas en AutoCAD: comando EDITPOL"
+description: "Cómo funciona EDITPOL (PEDIT, alias PE) de AutoCAD en español: líneas a polilínea, Juntar, Grosor, curVar, Spline, Editar vértices y Múltiple. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando PEDIT en español?","answer":"EDITPOL, con el alias PE. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _PEDIT. Un doble clic en una polilínea también lo ejecuta."},{"question":"¿Cómo convierto líneas en una polilínea?","answer":"Ejecuta EDITPOL, designa una de las líneas y pulsa Intro para transformarla en polilínea; después elige Juntar y designa las demás: las que se tocan por sus extremos pasan a ser una sola polilínea. UNIR hace lo mismo en un paso."},{"question":"¿Por qué EDITPOL no funciona con mi objeto?","answer":"EDITPOL edita polilíneas y ofrece convertir líneas, arcos y splines; cualquier otra cosa, un texto, un círculo, un bloque, se rechaza y vuelve a preguntar. Un objeto de una capa bloqueada dice «El objeto está en una capa bloqueada.». Juntar solo añade objetos cuyos extremos coinciden exactamente con los de la polilínea: para huecos, usa Múltiple y una distancia de aproximación."},{"question":"¿Cómo cambio el grosor de una polilínea?","answer":"Elige Grosor y escribe el grosor: todos los segmentos lo toman. Para uno solo, usa Editar, lleva la X al vértice donde empieza y elige su Grosor."},{"question":"¿Cómo curvo una polilínea?","answer":"curVar pasa arcos por todos los vértices; Spline hace una curva más suave que los vértices enmarcan. anularcuRVatura la vuelve recta."}]
+---
+
+EDITPOL (PEDIT en inglés) edita una polilínea. Desígnala en `Designe polilínea o [Múltiple]:` o antes del comando; un doble clic en una polilínea también la abre en EDITPOL. Si designas una línea, un arco o una spline, dice `El objeto designado no es una polilínea` y pregunta si la transforma en una, Sí por defecto: la polilínea nueva ocupa su lugar con sus propiedades. Después pide una opción una y otra vez, cada una aplicada en el acto, hasta que Intro lo termina. Una polilínea 3D tiene una lista más corta, sin grosor, sin ajuste de curva y sin generación del tipo de línea, y su opción de spline es `Spline`. Esc conserva lo hecho; toda la edición es un paso que `H` deshace.
+
+- **Comando:** `EDITPOL`
+- **En inglés:** `PEDIT`, que se escribe `_PEDIT` en cualquier idioma
+- **Alias:** `PE`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `PE` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="pedit" caption="Tres líneas unidas por sus extremos: EDITPOL convierte la primera en polilínea, le junta las otras dos y le da un grosor de 2." />
+
+## Opciones [#options]
+
+### `Múltiple` (`M`) [#multiple]
+
+Edita varias polilíneas a la vez: desígnalas, di si se convierten las líneas, arcos y splines que haya entre ellas, y cada opción se aplica a todas. Su Juntar pide una distancia de aproximación y un `Tipodejunta`: `Alargar` recorta o alarga los segmentos finales hasta que se encuentren, `aÑadir` salva el hueco con un segmento nuevo y `aMbos` alarga donde puede y añade donde no.
+
+### `Cerrar` (`C`) [#close]
+
+Cierra la polilínea con un segmento de su último vértice al primero, un arco si el último segmento es un arco. En una polilínea cerrada la opción es `Abrir`, que quita ese segmento.
+
+### `Juntar` (`J`) [#join]
+
+Añade las líneas, arcos y polilíneas abiertas que tocan los extremos de la polilínea, extremo con extremo, y dice cuántos segmentos ha añadido. A una polilínea cerrada no se le puede juntar nada: `Imposible unir a una polilínea cerrada`.
+
+### `Grosor` (`G`) [#width]
+
+Un grosor para todos los segmentos, escrito o medido con dos puntos; 0 lo quita.
+
+### `Editar vértices` (`E`) [#edit-vertex]
+
+Pone una X en el primer vértice y pregunta qué hacer ahí: `sigUiente` y `Precedente` mueven la X, `Desplazar` desplaza el vértice, `Insertar` añade uno detrás, `Cortar` y `Alisar` recuerdan el vértice, llevas la X a otro y `Ejecutar` corta la polilínea entre los dos o deja un solo segmento recto en lo que hay entre ellos, `Grosor` da al segmento siguiente sus grosores inicial y final, `Tangente` da al vértice una dirección para un ajuste posterior y `Salir` vuelve atrás.
+
+### `curVar` (`V`) [#fit]
+
+Dibuja una curva suave de arcos que pasa por todos los vértices, tangentes donde se encuentran, como el ajuste de curva de AutoCAD. Los vértices se conservan, y editarlos cambia la curva.
+
+### `Spline` (`S`) [#spline]
+
+Ajusta a la polilínea una B-spline que sus vértices enmarcan en lugar de atravesar: cuadrática o cúbica, según SPLINETYPE, y tan fina como diga SPLINESEGS. La de una polilínea 3D es `Spline`. La opción Objeto de [`SPLINE`](/docs/commands/spline) convierte esa polilínea en una spline de verdad.
+
+### `anularcuRVatura` (`RV`) [#decurve]
+
+Quita la curva de curVar o de Spline: otra vez segmentos rectos entre los vértices.
+
+### `generarTlínea` (`T`) [#ltype-gen]
+
+`ACT` extiende el tipo de línea en un solo patrón a lo largo de toda la polilínea, de modo que una polilínea de trazos con segmentos cortos sigue mostrando trazos; `DES`, por defecto, empieza el patrón de nuevo en cada vértice.
+
+### `Invertir` (`I`) [#reverse]
+
+Le da la vuelta a la polilínea: sus vértices al revés, y con ellos los arcos y los grosores.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace la última opción de esta ejecución y sigue preguntando.
+
+## Lo que aún no hace [#missing]
+
+PEDITACCEPT: al designar una línea, un arco o una spline, siempre pregunta antes de convertirla. PLINECONVERTMODE: una spline pasa a ser una polilínea de segmentos rectos, muchos más que los que hace AutoCAD, nunca de arcos. Una polilínea ajustada aparece en la paleta Propiedades como una polilínea normal, sin el título Polilínea 2D de AutoCAD ni su fila Ajustar/Suavizar. Múltiple con solo polilíneas 3D en el conjunto pide la solicitud 3D, donde AutoCAD pide la 2D. No hay mallas que editar.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando PEDIT en español?
+
+EDITPOL, con el alias `PE`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_PEDIT`. Un doble clic en una polilínea también lo ejecuta.
+
+### ¿Cómo convierto líneas en una polilínea?
+
+Ejecuta EDITPOL, designa una de las líneas y pulsa Intro para transformarla en polilínea; después elige `Juntar` y designa las demás: las que se tocan por sus extremos pasan a ser una sola polilínea. [`UNIR`](/docs/commands/join) hace lo mismo en un paso.
+
+### ¿Por qué EDITPOL no funciona con mi objeto?
+
+EDITPOL edita polilíneas y ofrece convertir líneas, arcos y splines; cualquier otra cosa, un texto, un círculo, un bloque, se rechaza y vuelve a preguntar. Un objeto de una capa bloqueada dice `El objeto está en una capa bloqueada.`. Juntar solo añade objetos cuyos extremos coinciden exactamente con los de la polilínea: para huecos, usa `Múltiple` y una distancia de aproximación.
+
+### ¿Cómo cambio el grosor de una polilínea?
+
+Elige `Grosor` y escribe el grosor: todos los segmentos lo toman. Para uno solo, usa `Editar`, lleva la X al vértice donde empieza y elige su `Grosor`.
+
+### ¿Cómo curvo una polilínea?
+
+`curVar` pasa arcos por todos los vértices; `Spline` hace una curva más suave que los vértices enmarcan. `anularcuRVatura` la vuelve recta.
+
+## Comandos relacionados [#related]
+
+- [Polilínea en AutoCAD: POL (PLINE)](/docs/commands/pline)
+- [Unir en AutoCAD: comando UNIR (JOIN)](/docs/commands/join)
+- [Descomponer en AutoCAD: DESCOMP (EXPLODE)](/docs/commands/explode)
+- [Comando SPLINE en AutoCAD: curvas spline](/docs/commands/spline)

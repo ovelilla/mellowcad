@@ -1,0 +1,57 @@
+---
+title: "Calcular área no AutoCAD: comando AREA"
+metaTitle: "Calcular área no AutoCAD: comando AREA"
+description: "Como funciona o AREA (AA) do AutoCAD em português: a área e o perímetro de pontos ou de um objeto, e um total com Adicionar área e Subtrair área. Experimente."
+figure: "Uma placa de 100 por 60 com um furo de raio 18: o AREA adiciona a área da placa, subtrai a do furo e escreve o total que sobra."
+sourceHash: "a8ad70c08b3a"
+---
+
+O AREA mede a área e o perímetro de uma forma fechada, seja uma que você contorna pelos cantos, seja um objeto que você seleciona. Especifique o primeiro canto e depois os seguintes: a partir do segundo, a forma fechada pelo cursor é preenchida de verde translúcido, como o AutoCAD a sombreia. Enter ou <Keyword id="Total" /> escrevem a área e o perímetro no prompt de comando e encerram; Enter antes do terceiro canto é recusado. Com Adicionar área e Subtrair área ele mantém um total de várias formas. Os números são escritos na precisão do desenho, e a última área medida pode ser lida de novo digitando `'AREA`.
+
+## Options
+
+### Object
+
+O padrão do primeiro prompt, então Enter o escolhe: selecione um círculo, uma elipse, uma polilinha ou uma spline fechadas, uma hachura ou uma região, e o AREA escreve a sua área com o perímetro, ou a circunferência de um círculo. Uma polilinha, uma spline ou um arco elíptico abertos são fechados por uma reta de ponta a ponta, e o AREA escreve o seu comprimento. Uma linha ou um texto não têm área: <Message id="objectHasNoArea" />, e a pergunta volta.
+
+### Add
+
+Começa um total: cada área medida depois, pelos cantos ou com <Keyword id="Object" />, é somada, e o AREA a escreve com o total. Enter encerra os objetos ou os cantos e pergunta de novo, até que Enter no primeiro prompt encerre.
+
+### Subtract
+
+O mesmo, tirando cada área do total: a placa e depois os seus furos.
+
+### Undo
+
+Desfaz o último canto especificado.
+
+### Total
+
+Escreve a área e o perímetro dos cantos especificados e encerra.
+
+## Missing
+
+O MEASUREGEOM, as ferramentas Medir da faixa de opções, com Raio, Ângulo, Volume e Rápido: aqui os botões Distância e Área da faixa executam o DIST e o AREA. As opções Arco e Comprimento no ponto seguinte do AREA. Os cantos fora do plano do SCU atual são medidos em planta, onde o AutoCAD os mede em 3D, e o `Object not parallel with UCS.` do AutoCAD para um objeto inclinado em relação ao SCU não é dito.
+
+## Questions
+
+### Qual é o comando para calcular área no AutoCAD?
+
+AREA, com o atalho `AA`, depois Enter ou a barra de espaço. Ele tem o mesmo nome no AutoCAD em português e em inglês, e `_AREA` funciona em qualquer idioma.
+
+### Como medir a área de uma polilinha ou de uma hachura?
+
+Execute o AREA, pressione Enter para escolher <Keyword id="Object" /> e selecione a polilinha fechada ou a hachura: a área e o perímetro são escritos no prompt de comando. A área de uma hachura deixa de fora as suas ilhas.
+
+### Como subtrair uma área no AutoCAD?
+
+Escolha <Keyword id="Add" /> e depois <Keyword id="Object" />, selecione a forma externa e pressione Enter; depois escolha <Keyword id="Subtract" />, <Keyword id="Object" />, e selecione cada furo. O AREA escreve o total que sobra depois de cada um; Enter duas vezes encerra.
+
+### Como obter a área em metros quadrados?
+
+O AREA escreve unidades de desenho ao quadrado. Se você desenha em milímetros, divida por 1.000.000: 6.000.000 são 6 m². Em centímetros, por 10.000.
+
+### Por que o AREA diz que o objeto não tem área?
+
+Só formas e curvas fechadas têm área: linhas, arcos soltos, textos e cotas não. Selecione uma polilinha fechada, um círculo ou uma hachura, ou junte antes as linhas numa polilinha com o <Command id="JOIN" />; ou contorne a forma pelos cantos.

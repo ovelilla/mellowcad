@@ -1,0 +1,58 @@
+---
+title: "AREA in AutoCAD"
+metaTitle: "AREA in AutoCAD: measure, add and subtract area"
+description: "How AutoCAD's AREA (AA) works: the area and perimeter of points you pick or of an object, and a running total with Add area and Subtract area. Try it free."
+figure: "A 100 by 60 plate with a hole of radius 18: AREA adds the plate's area, subtracts the hole's, and writes the total left."
+related: ["DIST", "LIST", "HATCH", "UNITS"]
+coverage: "35c7e8a81fd9"
+---
+
+AREA measures the area and the perimeter of a closed shape, either one you outline by its corners or an object you pick. Give the first corner, then the next ones: from the second, the shape closed through the cursor fills in translucent green, as AutoCAD shades it. Enter or <Keyword id="Total" /> writes `Area = …, Perimeter = …` at the command prompt and ends; Enter before the third corner is refused. With Add area and Subtract area it keeps a running total over several shapes. Numbers are written at the drawing's precision, and the last area measured can be read back by typing `'AREA`.
+
+## Options
+
+### Object
+
+The first prompt's default, so Enter chooses it: pick a circle, an ellipse, a closed polyline or spline, a hatch or a region, and AREA writes its area with its perimeter, or a circle's circumference. An open polyline, spline or elliptical arc is closed by a straight line from end to end, and AREA writes its length. A line or a text has no area: <Message id="objectHasNoArea" />, and it asks again.
+
+### Add
+
+Starts a running total: each area measured after it, by corners or with <Keyword id="Object" />, is added, and AREA writes it and the total. Enter ends the objects or the corners and asks again, until Enter at the first prompt ends.
+
+### Subtract
+
+The same, taking each area away from the total: the plate, then its holes.
+
+### Undo
+
+Takes back the last corner given.
+
+### Total
+
+Writes the area and the perimeter of the corners given, and ends.
+
+## Missing
+
+MEASUREGEOM, the ribbon's Measure tools, with their Radius, Angle, Volume and Quick: here the ribbon's Distance and Area buttons run DIST and AREA. The Arc and Length options at AREA's next point. Corners off the current UCS's plane are measured in plan, where AutoCAD measures them in 3D, and AutoCAD's `Object not parallel with UCS.` for an object at an angle to the UCS is not said.
+
+## Questions
+
+### What is the shortcut for AREA in AutoCAD?
+
+`AA`, then Enter or Space. The full name works too, and `_AREA` in any language of AutoCAD.
+
+### How do I find the area of a polyline or a hatch?
+
+Run AREA, press Enter to choose <Keyword id="Object" />, and pick the closed polyline or the hatch: its area and perimeter are written at the command prompt. A hatch's area leaves its islands out.
+
+### How do I subtract an area in AutoCAD?
+
+Choose <Keyword id="Add" /> and then <Keyword id="Object" />, pick the outer shape and press Enter; then choose <Keyword id="Subtract" />, <Keyword id="Object" />, and pick each hole. AREA writes the total left after each one; Enter twice ends.
+
+### How do I get the area in square metres?
+
+AREA writes square drawing units. If you draw in millimetres, divide by 1,000,000: 6,000,000 is 6 m². In centimetres, by 10,000.
+
+### Why does AREA say the object has no area?
+
+Only closed shapes and curves have one: lines, arcs on their own, text and dimensions do not. Pick a closed polyline, a circle or a hatch, or join the lines into a polyline with <Command id="JOIN" /> first; or outline the shape by its corners.

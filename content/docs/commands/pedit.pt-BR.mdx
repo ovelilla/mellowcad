@@ -1,0 +1,103 @@
+---
+title: "Comando PEDIT (EDITARP) no AutoCAD"
+metaTitle: "Editar polilinha no AutoCAD: PEDIT (EDITARP)"
+description: "Como funciona o PEDIT do AutoCAD em português, EDITARP: linhas em polilinha, Unir, Largura, AJustar, Spline, Editar vértice e Múltiplo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando PEDIT no AutoCAD em português?","answer":"EDITARP, com o atalho EDP. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _PEDIT. Um clique duplo numa polilinha também o executa."},{"question":"Como transformar linhas em polilinha no AutoCAD?","answer":"Execute o EDITARP, selecione uma das linhas e pressione Enter para transformá-la em polilinha; depois escolha Unir e selecione as outras: as que se tocam pelas extremidades viram uma única polilinha. O UNIR faz o mesmo num passo."},{"question":"Por que o PEDIT não funciona no meu objeto?","answer":"O EDITARP edita polilinhas e oferece converter linhas, arcos e splines; qualquer outra coisa, um texto, um círculo, um bloco, é recusada e a pergunta volta. Um objeto numa camada bloqueada diz “O objeto está em uma camada bloqueada.”. O Unir só adiciona objetos cujas extremidades coincidem exatamente com as da polilinha: para espaços entre elas, use Múltiplo e uma distância de aproximação."},{"question":"Como mudar a largura de uma polilinha?","answer":"Escolha Largura e digite a largura: todos os segmentos ficam com ela. Para um só, use Editar, leve o X ao vértice onde ele começa e escolha a sua Largura."},{"question":"Como deixar uma polilinha curva?","answer":"AJustar passa arcos por todos os vértices; Spline faz uma curva mais suave que os vértices emolduram. desfCurva a deixa reta de novo."}]
+---
+
+O PEDIT, EDITARP no AutoCAD em português, edita uma polilinha. Selecione uma em `Selecionar polilinha ou [Múltiplo]:` ou antes do comando; um clique duplo numa polilinha também abre o EDITARP nela. Se você selecionar uma linha, um arco ou uma spline, ele diz `O objeto selecionado não é uma polilinha` e pergunta se deve transformá-la em uma, Sim por padrão: a nova polilinha toma o lugar dela, com as suas propriedades. Depois ele pede uma opção de novo e de novo, cada uma aplicada na hora, até que Enter o encerre. Uma polilinha 3D tem uma lista mais curta, sem largura, sem ajuste de curva e sem geração do tipo de linha, e a sua opção de spline é `Spline`. Esc mantém o que foi feito; toda a edição é um passo que o `D` desfaz.
+
+- **Comando:** `EDITARP`
+- **Em inglês:** `PEDIT`, que se digita `_PEDIT` em qualquer idioma
+- **Aliases:** `EDP`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EDP` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="pedit" caption="Três linhas ligadas pelas extremidades: o EDITARP transforma a primeira em polilinha, une as outras duas a ela e dá a ela uma largura de 2." />
+
+## Opções [#options]
+
+### `Múltiplo` (`M`) [#multiple]
+
+Edita várias polilinhas de uma vez: selecione-as, diga se as linhas, os arcos e as splines entre elas devem ser convertidos, e cada opção é aplicada a todas. O Unir dele pede uma distância de aproximação e um `Tipounião`: `Estender` apara ou estende os segmentos finais até se encontrarem, `Adicionar` cobre o espaço com um novo segmento e `aMbos` estende onde pode e adiciona onde não pode.
+
+### `Fechar` (`F`) [#close]
+
+Fecha a polilinha com um segmento do último vértice ao primeiro, um arco se o último segmento for um arco. Numa polilinha fechada a opção é `Abrir`, que tira esse segmento.
+
+### `Unir` (`U`) [#join]
+
+Adiciona as linhas, os arcos e as polilinhas abertas que tocam as extremidades da polilinha, ponta com ponta, e diz quantos segmentos adicionou. Nada pode ser unido a uma polilinha fechada: `Não é possível unir a uma polilinha fechada`.
+
+### `Largura` (`L`) [#width]
+
+Uma largura para todos os segmentos, digitada ou medida por dois pontos; 0 tira a largura.
+
+### `Editar vértice` (`E`) [#edit-vertex]
+
+Põe um X no primeiro vértice e pergunta o que fazer ali: `Próximo` e `Anterior` movem o X, `Mover` move o vértice, `Inserir` adiciona um depois dele, `Quebrar` e `rEta` guardam o vértice, você leva o X a outro e `Ir` quebra a polilinha entre os dois ou deixa um único segmento reto no que há entre eles, `Largura` dá ao segmento seguinte as larguras inicial e final, `Tangente` dá ao vértice uma direção para um ajuste posterior e `Sair` volta.
+
+### `AJustar` (`AJ`) [#fit]
+
+Desenha uma curva suave de arcos que passa por todos os vértices, tangentes onde se encontram, como o ajuste de curva do AutoCAD. Os vértices continuam lá, e editá-los muda a curva.
+
+### `Spline` (`S`) [#spline]
+
+Ajusta à polilinha uma B-spline que os vértices emolduram em vez de atravessar: quadrática ou cúbica, conforme SPLINETYPE, e tão fina quanto SPLINESEGS mandar. A de uma polilinha 3D é `Spline`. A opção Objeto do [`SPLINE`](/docs/commands/spline) converte essa polilinha numa spline de verdade.
+
+### `desfCurva` (`C`) [#decurve]
+
+Tira a curva do AJustar ou do Spline: de novo segmentos retos entre os vértices.
+
+### `gerar Tipolinha` (`T`) [#ltype-gen]
+
+`Ativado` aplica o tipo de linha num único padrão ao longo de toda a polilinha, de modo que uma polilinha tracejada de segmentos curtos continua mostrando traços; `Desativado`, o padrão, recomeça o padrão em cada vértice.
+
+### `Reverter` (`R`) [#reverse]
+
+Inverte a polilinha: os vértices na outra ordem, e com eles os arcos e as larguras.
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz a última opção desta execução e continua perguntando.
+
+## O que ainda não faz [#missing]
+
+PEDITACCEPT: ao selecionar uma linha, um arco ou uma spline, ele sempre pergunta antes de convertê-la. PLINECONVERTMODE: uma spline vira uma polilinha de segmentos retos, muito mais do que o AutoCAD faz, nunca de arcos. Uma polilinha ajustada aparece na paleta Propriedades como uma polilinha comum, sem o título Polilinha 2D do AutoCAD e sem a sua linha Ajustar/Suavizar. Múltiplo com só polilinhas 3D no conjunto mostra o prompt 3D, onde o AutoCAD mostra o 2D. Não há malhas para editar.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando PEDIT no AutoCAD em português?
+
+EDITARP, com o atalho `EDP`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_PEDIT`. Um clique duplo numa polilinha também o executa.
+
+### Como transformar linhas em polilinha no AutoCAD?
+
+Execute o EDITARP, selecione uma das linhas e pressione Enter para transformá-la em polilinha; depois escolha `Unir` e selecione as outras: as que se tocam pelas extremidades viram uma única polilinha. O [`UNIR`](/docs/commands/join) faz o mesmo num passo.
+
+### Por que o PEDIT não funciona no meu objeto?
+
+O EDITARP edita polilinhas e oferece converter linhas, arcos e splines; qualquer outra coisa, um texto, um círculo, um bloco, é recusada e a pergunta volta. Um objeto numa camada bloqueada diz `O objeto está em uma camada bloqueada.`. O Unir só adiciona objetos cujas extremidades coincidem exatamente com as da polilinha: para espaços entre elas, use `Múltiplo` e uma distância de aproximação.
+
+### Como mudar a largura de uma polilinha?
+
+Escolha `Largura` e digite a largura: todos os segmentos ficam com ela. Para um só, use `Editar`, leve o X ao vértice onde ele começa e escolha a sua `Largura`.
+
+### Como deixar uma polilinha curva?
+
+`AJustar` passa arcos por todos os vértices; `Spline` faz uma curva mais suave que os vértices emolduram. `desfCurva` a deixa reta de novo.
+
+## Comandos relacionados [#related]
+
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Comando JOIN (UNIR) no AutoCAD](/docs/commands/join)
+- [Explodir no AutoCAD: comando EXPLODIR (EXPLODE)](/docs/commands/explode)
+- [Comando SPLINE no AutoCAD: curvas spline](/docs/commands/spline)

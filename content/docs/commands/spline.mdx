@@ -1,0 +1,90 @@
+---
+title: "SPLINE in AutoCAD"
+metaTitle: "SPLINE in AutoCAD: command, Fit, CV and alias"
+description: "How AutoCAD's SPLINE (SPL) works, prompt by prompt: a curve through fit points or pulled by control vertices, Knots, Degree, tangents and Close. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for SPLINE in AutoCAD?","answer":"SPL, then Enter or Space. The full name works too, and _SPLINE in any language of AutoCAD."},{"question":"What is the difference between Fit and CV?","answer":"A fit spline goes through the points you click, which suits a curve that must touch them. A CV spline is shaped by its control vertices, which it only approaches, which suits a fair, smooth shape. Choose with Method at the first prompt."},{"question":"How do I convert a spline to a polyline?","answer":"Run PEDIT and pick the spline: it says “Object selected is not a polyline” and offers to turn it into one, then asks a precision from 0 to 99, 10 by default. The polyline follows the spline with short straight segments, more of them than AutoCAD makes."},{"question":"How do I convert a polyline to a spline?","answer":"Fit the polyline with PEDIT's Spline option, then run SPLINE and choose Object: the polyline becomes a spline of the same curve."},{"question":"Can I explode a spline in AutoCAD?","answer":"No: EXPLODE refuses a spline, as AutoCAD does. To break it into pieces, convert it to a polyline with PEDIT first, then explode that into lines."}]
+---
+
+SPLINE draws a smooth curve, in one of two ways: through points you give (Fit, the default), or pulled towards control vertices you place (CV). It opens by saying its settings, `Method=Fit   Knots=Chord`, then asks for the first point; Enter there is refused, as in AutoCAD. Each point after it bends the curve, the ghost following the cursor, and Enter ends it. Points can be picked, snapped or typed, a typed length runs along the cursor, and a point keeps its Z, so a spline can rise in space. Escape drops the curve; the whole spline is one step that `U` takes back. The ribbon's Spline Fit and Spline CV buttons run SPLINE with the method already answered.
+
+- **Command:** `SPLINE`
+- **Aliases:** `SPL`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `SPL` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="spline" caption="A fit spline through five points, and below it a CV spline on five vertices placed the same way: the first passes through them, the second is pulled towards them." />
+
+## Options [#options]
+
+### `Method` (`M`) [#method]
+
+`Fit` or `CV`. A fit spline passes through every point you give; a CV spline passes through its first and last vertex only, and the others pull it towards them, so it comes out smoother and further from them. The method, like the knots and the degree, is kept for the rest of the session.
+
+### `Knots` (`K`) [#knots]
+
+How a fit spline spaces its points along the curve: `Chord` (the default, by the distance between them), `Square` of that distance, or `Uniform`, all the same. Through the same points each makes a slightly different curve.
+
+### `Degree` (`D`) [#degree]
+
+A CV spline's degree, from 1 (straight lines between the vertices) to 10; 3, the default, is a cubic. With fewer vertices than the degree needs, the curve takes the highest it can.
+
+### `Object` (`O`) [#object]
+
+Turns a polyline that PEDIT's Spline option has fitted, 2D or 3D, into a CV spline of the same curve, and erases the polyline, in one step. Anything else is refused with `Only spline fitted polylines can be converted to splines.`.
+
+### `start Tangency` (`T`) [#start-tangency]
+
+Offered after the first point: the direction the curve leaves it in, picked or typed from that point.
+
+### `end Tangency` (`T`) [#end-tangency]
+
+The direction the curve arrives at its last point in, then the spline ends.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last point, down to the first.
+
+### `Close` (`C`) [#close]
+
+From the third point: joins the end back to the start in one smooth loop, with no corner, and ends the command.
+
+## What it does not do yet [#missing]
+
+Fit tolerance: a fit spline always passes exactly through its points, and the toLerance option is not offered. While it is drawn, the spline is no object to snap or track to yet, as AutoCAD's is. Object always erases the polyline (DELOBJ). On a finished spline there are no CVSHOW or CVHIDE and no grip menus to add or remove a point, the Properties palette edits its points but not its method, degree, knots, weights or closing, and Geometric Center, Perpendicular and Tangent do not snap to it. HATCH does not find a spline as a boundary, and BLEND does not exist yet.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl)
+
+## Questions [#questions]
+
+### What is the shortcut for SPLINE in AutoCAD?
+
+`SPL`, then Enter or Space. The full name works too, and `_SPLINE` in any language of AutoCAD.
+
+### What is the difference between Fit and CV?
+
+A fit spline goes through the points you click, which suits a curve that must touch them. A CV spline is shaped by its control vertices, which it only approaches, which suits a fair, smooth shape. Choose with `Method` at the first prompt.
+
+### How do I convert a spline to a polyline?
+
+Run [`PEDIT`](/docs/commands/pedit) and pick the spline: it says `Object selected is not a polyline` and offers to turn it into one, then asks a precision from 0 to 99, 10 by default. The polyline follows the spline with short straight segments, more of them than AutoCAD makes.
+
+### How do I convert a polyline to a spline?
+
+Fit the polyline with [`PEDIT`](/docs/commands/pedit)'s Spline option, then run SPLINE and choose `Object`: the polyline becomes a spline of the same curve.
+
+### Can I explode a spline in AutoCAD?
+
+No: [`EXPLODE`](/docs/commands/explode) refuses a spline, as AutoCAD does. To break it into pieces, convert it to a polyline with [`PEDIT`](/docs/commands/pedit) first, then explode that into lines.
+
+## Related commands [#related]
+
+- [PLINE in AutoCAD](/docs/commands/pline)
+- [PEDIT in AutoCAD](/docs/commands/pedit)
+- [SPLINEDIT](/docs/commands#splinedit): Edit Spline
+- [ELLIPSE in AutoCAD](/docs/commands/ellipse)

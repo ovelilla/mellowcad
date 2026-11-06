@@ -1,0 +1,82 @@
+---
+title: "DIST in AutoCAD"
+metaTitle: "DIST in AutoCAD: measure distance, alias DI"
+description: "How AutoCAD's DIST (DI) works: the distance between two points with its angles and its X, Y and Z deltas, or the length of a run of points. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for DIST in AutoCAD?","answer":"DI, then Enter or Space. The full name works too, and _DIST in any language of AutoCAD."},{"question":"How do I measure a distance in AutoCAD?","answer":"Type DI, then pick the two points, with object snaps to land on the objects' endpoints or centres. The distance is written at the command prompt with the angle and the deltas."},{"question":"How do I measure the total length of several segments?","answer":"At the second point choose Multiple points and go on picking: the distance so far is shown at each point, and Enter writes the total."},{"question":"How do I measure a distance in 3D?","answer":"Give the points with their Z, or snap to objects at their height: DIST measures the true distance in space and writes the angle from the XY plane and the delta in Z."},{"question":"Why does DIST show fewer decimals than I need?","answer":"It writes lengths at the drawing's precision, two places in a new drawing here. Set more in UNITS, up to eight."}]
+---
+
+DIST measures the distance between two points. Pick, snap or type the first point and the second, and it writes at the command prompt the distance, the angle in the XY plane and the angle from it, and the deltas in X, Y and Z, then ends. Each point is measured where it is, its Z included, so the distance is the true one in space. Enter at the first point starts from the last point given, and at the second measures back to the first. The numbers follow the drawing's precision, and the angles AUPREC.
+
+- **Command:** `DIST`
+- **Aliases:** `DI`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `DI` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="dist" caption="DIST along a 100 by 60 plate's diagonal: the distance, the angle in the XY plane and the deltas." />
+
+## Options [#options]
+
+### `Multiple points` (`M`) [#multiple]
+
+`Multiple` points, at the second prompt: a run of points instead of one span, the distance so far written before each next point and shown above the cursor, until Enter or `Total`.
+
+### `Arc` (`A`) [#arc]
+
+Measures along arcs instead, with PLINE's arc options: `Angle`, `CEnter`, `Close`, `Direction`, `Line`, `Radius`, `Second pt`, `Undo`. Each arc's length is added to the run.
+
+### `Close` (`C`) [#close]
+
+Goes back to the first point, adds that last span, writes the total and ends.
+
+### `Length` (`L`) [#length]
+
+Adds a span of the length you type along the last one.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last point of the run.
+
+### `Total` (`T`) [#total]
+
+Writes the run's total and ends; Enter does the same.
+
+## What it does not do yet [#missing]
+
+MEASUREGEOM, the ribbon's Measure tools, which ask DIST's prompts inside a loop with Radius, Angle, Area, Volume and Quick: here the ribbon's Distance button runs DIST. At the Arc option's `CEnter`, the included angle is read in degrees, where AutoCAD 2027 reads a number there as a distance along the cursor.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di)
+
+## Questions [#questions]
+
+### What is the shortcut for DIST in AutoCAD?
+
+`DI`, then Enter or Space. The full name works too, and `_DIST` in any language of AutoCAD.
+
+### How do I measure a distance in AutoCAD?
+
+Type `DI`, then pick the two points, with object snaps to land on the objects' endpoints or centres. The distance is written at the command prompt with the angle and the deltas.
+
+### How do I measure the total length of several segments?
+
+At the second point choose `Multiple` points and go on picking: the distance so far is shown at each point, and Enter writes the total.
+
+### How do I measure a distance in 3D?
+
+Give the points with their Z, or snap to objects at their height: DIST measures the true distance in space and writes the angle from the XY plane and the delta in Z.
+
+### Why does DIST show fewer decimals than I need?
+
+It writes lengths at the drawing's precision, two places in a new drawing here. Set more in [`UNITS`](/docs/commands/units), up to eight.
+
+## Related commands [#related]
+
+- [AREA in AutoCAD](/docs/commands/area)
+- [ID](/docs/commands#id): ID Point
+- [LIST](/docs/commands#list): List
+- [UNITS in AutoCAD](/docs/commands/units)

@@ -1,0 +1,82 @@
+---
+title: "Medir distancias en AutoCAD: comando DIST"
+metaTitle: "Medir distancias en AutoCAD: comando DIST"
+description: "Cómo funciona DIST (DI) de AutoCAD en español: la distancia entre dos puntos con sus ángulos e incrementos en X, Y y Z, o la longitud de una serie de puntos."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el comando para medir distancias en AutoCAD?","answer":"DIST, con el alias DI, y después Intro o la barra espaciadora. Se llama igual en AutoCAD en español y en inglés, y _DIST funciona en cualquier idioma."},{"question":"¿Cómo mido una distancia en AutoCAD?","answer":"Escribe DI y señala los dos puntos, con referencia a objetos para caer en los puntos finales o los centros de los objetos. La distancia se escribe en la solicitud de comando con el ángulo y los incrementos."},{"question":"¿Cómo mido la longitud total de varios tramos?","answer":"En el segundo punto elige Múltiples y sigue señalando: la distancia acumulada se muestra en cada punto, e Intro escribe el total."},{"question":"¿Cómo mido una distancia en 3D?","answer":"Da los puntos con su Z, o fuérzalos a objetos a su altura: DIST mide la distancia verdadera en el espacio y escribe el ángulo a partir del plano XY y el incremento en Z."},{"question":"¿Por qué DIST muestra menos decimales de los que necesito?","answer":"Escribe las longitudes a la precisión del dibujo, dos decimales en un dibujo nuevo aquí. Pon más en UNIDADES, hasta ocho."}]
+---
+
+DIST mide la distancia entre dos puntos. Señala, fuerza con referencia a objetos o escribe el primer punto y el segundo, y escribe en la solicitud de comando la distancia, el ángulo en el plano XY y el ángulo a partir de él, y los incrementos en X, Y y Z, y termina. Cada punto se mide donde está, con su Z, así que la distancia es la verdadera en el espacio. Intro en el primer punto parte del último punto dado, y en el segundo mide de vuelta al primero. Los números siguen la precisión del dibujo, y los ángulos AUPREC.
+
+- **Comando:** `DIST`
+- **Alias:** `DI`
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `DI` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="dist" caption="DIST a lo largo de la diagonal de una placa de 100 por 60: la distancia, el ángulo en el plano XY y los incrementos." />
+
+## Opciones [#options]
+
+### `puntos Múltiples` (`M`) [#multiple]
+
+`Múltiples`, en la segunda solicitud: una serie de puntos en lugar de un tramo, con la distancia acumulada escrita antes de cada punto siguiente y mostrada sobre el cursor, hasta Intro o `Total`.
+
+### `Arco` (`A`) [#arc]
+
+Mide a lo largo de arcos, con las opciones de arco de [`POL`](/docs/commands/pline): `ángUlo`, `cEntro`, `Cerrar`, `Dirección`, `líNea`, `Radio`, `Segundo`, `desHacer`. La longitud de cada arco se suma a la serie.
+
+### `Cerrar` (`C`) [#close]
+
+Vuelve al primer punto, suma ese último tramo, escribe el total y termina.
+
+### `Longitud` (`L`) [#length]
+
+Añade un tramo de la longitud que escribes en la dirección del último.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace el último punto de la serie.
+
+### `Total` (`T`) [#total]
+
+Escribe el total de la serie y termina; Intro hace lo mismo.
+
+## Lo que aún no hace [#missing]
+
+MEDIRGEOM (MEASUREGEOM), las herramientas Medir de la cinta de opciones, que piden las solicitudes de DIST dentro de un bucle con Radio, Ángulo, Área, Volumen y Rápido: aquí el botón Distancia de la cinta ejecuta DIST. En el `cEntro` de la opción Arco, el ángulo incluido se lee en grados, donde AutoCAD 2027 lee ahí un número como una distancia en la dirección del cursor.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el comando para medir distancias en AutoCAD?
+
+DIST, con el alias `DI`, y después Intro o la barra espaciadora. Se llama igual en AutoCAD en español y en inglés, y `_DIST` funciona en cualquier idioma.
+
+### ¿Cómo mido una distancia en AutoCAD?
+
+Escribe `DI` y señala los dos puntos, con referencia a objetos para caer en los puntos finales o los centros de los objetos. La distancia se escribe en la solicitud de comando con el ángulo y los incrementos.
+
+### ¿Cómo mido la longitud total de varios tramos?
+
+En el segundo punto elige `Múltiples` y sigue señalando: la distancia acumulada se muestra en cada punto, e Intro escribe el total.
+
+### ¿Cómo mido una distancia en 3D?
+
+Da los puntos con su Z, o fuérzalos a objetos a su altura: DIST mide la distancia verdadera en el espacio y escribe el ángulo a partir del plano XY y el incremento en Z.
+
+### ¿Por qué DIST muestra menos decimales de los que necesito?
+
+Escribe las longitudes a la precisión del dibujo, dos decimales en un dibujo nuevo aquí. Pon más en [`UNIDADES`](/docs/commands/units), hasta ocho.
+
+## Comandos relacionados [#related]
+
+- [Calcular áreas en AutoCAD: comando AREA](/docs/commands/area)
+- [ID](/docs/commands#id): Coordenadas punto
+- [LIST](/docs/commands#list): Lista
+- [Unidades en AutoCAD: comando UNIDADES (UNITS)](/docs/commands/units)
