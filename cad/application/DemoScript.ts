@@ -12,6 +12,7 @@ import type { EngineState } from "./EngineState"
 import type { SnapType } from "./snapping/types"
 import type { EngineLocale } from "../locales/types"
 import { engineText, promptString, type PromptSegment } from "./EngineText"
+import type { DrawingStore } from "./ports"
 
 /**
  * A scripted drafting session, written in the same chained style as the test
@@ -202,6 +203,13 @@ export interface RecordOptions {
    * language it publishes without any state shared between them.
    */
   readonly locale?: EngineLocale
+  /**
+   * Where the session autosaves its drawing, and what it starts from, as a
+   * `CadDriver`'s store: once it is recorded, the store holds the drawing as
+   * the session left it, the file a user would open (a page that opens an
+   * exercise's drawing in the editor serves one).
+   */
+  readonly store?: DrawingStore | null
 }
 
 /**
@@ -211,10 +219,11 @@ export interface RecordOptions {
  */
 export async function recordDemo(
   script: DemoScript,
-  { locale }: RecordOptions = {}
+  { locale, store }: RecordOptions = {}
 ): Promise<DemoRecording> {
   const { options } = script
   const driver = new CadDriver({
+    store: store ?? null,
     width: options.width,
     height: options.height,
     snap: options.snap ?? false,

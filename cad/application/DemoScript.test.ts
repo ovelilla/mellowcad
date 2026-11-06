@@ -2,6 +2,8 @@ import { describe, expect, it, onTestFinished, vi } from "vitest"
 import type { CircleEntity, LineEntity } from "../domain/entities"
 import { THEME } from "../scene/theme"
 import { p } from "../../test/builders"
+import { createMemoryDrawingStore } from "../adapters/memoryDrawingStore"
+import { CadDriver } from "./CadDriver"
 import { demo, promptText, recordDemo, transcript } from "./DemoScript"
 
 describe("recordDemo", () => {
@@ -34,6 +36,31 @@ describe("recordDemo", () => {
     ]
     expect(line.end).toBeCloseToPoint(p(100, 0))
     expect(circle.radius).toBeCloseTo(20)
+  })
+
+  it("leaves its drawing in a store, as the file a user would open", async () => {
+    const store = createMemoryDrawingStore()
+    await recordDemo(
+      demo({
+        layers: [{ name: "Centre", color: "#ff0000", linetype: "Center" }],
+      })
+        .layer("Centre")
+        .command("CIRCLE")
+        .type("0,0")
+        .enter()
+        .type("12")
+        .enter(),
+      { store }
+    )
+
+    const opened = new CadDriver({
+      store: createMemoryDrawingStore(store.read()),
+    })
+    onTestFinished(() => opened.dispose())
+    const [circle] = opened.entities() as [CircleEntity]
+    expect(circle.radius).toBeCloseTo(12)
+    const layer = opened.runtime.document.getLayer(circle.layerId)
+    expect(layer).toMatchObject({ name: "Centre", linetype: "Center" })
   })
 
   it("records the prompt each input answered, as the engine showed it", async () => {

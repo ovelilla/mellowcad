@@ -147,4 +147,7 @@ buildDrawingPreview(recording.document, { width: 400, height: 200 }) // the obje
 A recording holds each step with the prompt it answered and the objects it added or removed, the
 drawing as the session left it, the last frame, and the editor's last state (`state`): what a
 host draws around the frame as the editor would, such as the ViewCube's projected faces and the
-view's name. `recordDemo(script, { locale })` records the same script in another language.
+view's name. `recordDemo(script, { locale })` records the same script in another language, and
+`recordDemo(script, { store })` leaves the drawing in a store, as an editor's autosave would: with
+`createMemoryDrawingStore()`, `store.read()` is then the drawing file a user can open, the way a
+site hands out a drawing to start from.

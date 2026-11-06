@@ -2843,6 +2843,13 @@ export interface RecordOptions {
      * language it publishes without any state shared between them.
      */
     readonly locale?: EngineLocale;
+    /**
+     * Where the session autosaves its drawing, and what it starts from, as a
+     * `CadDriver`'s store: once it is recorded, the store holds the drawing as
+     * the session left it, the file a user would open (a page that opens an
+     * exercise's drawing in the editor serves one).
+     */
+    readonly store?: DrawingStore | null;
 }
 
 export { transcript }
