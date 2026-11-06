@@ -82,8 +82,9 @@ claims follow `i18n.md`.
   (`offset.es.md`): what is written by hand — title, description, lead, what each option does,
   what it lacks, the questions its searchers ask — around what the engine says: names, aliases,
   each keyword with its letters, a session (`content/demos/commands/<slug>.ts`, registered in
-  `COMMAND_SESSIONS`). No notes, no page: a command that does not fill one stays in the reference.
-  How to write one: skill `command-page`.
+  `COMMAND_SESSIONS`), and above it `<slug>Before` where the notes caption one (`before`). No
+  notes, no page: a command that does not fill one stays in the reference. How to write one:
+  skill `command-page`.
 - Notes never type the engine's words: `<Keyword id="Yes" />`, `<Message id="…" />` and
   `<Command id="TRIM" />` (a link where TRIM has a page) are the command language's; option and
   section headings are ids, the same in every language (`parseNotes`).

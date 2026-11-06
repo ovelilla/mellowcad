@@ -1,7 +1,7 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 48 comandos publicada el 6/11 y 18 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
+> mecánica y 48 comandos publicada el 6/11 y 35 más hechos el 6/11, sin publicar, la 04 (la landing) publicada el 6/11 y la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
 > dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las tandas de comandos que
 > quedan y lo que queda de §7. Esperan detrás
@@ -333,7 +333,7 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    salta, sin gastar cuota, una URL que aún no responde 200 (`not live`), y la vuelve a intentar en
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
    push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual, y las 28 de la quinta (UCS a
-   SOLIDEDIT).
+   SOLIDEDIT). **6/11:** las 40 de la sexta (ATTDEF a COLOR), igual: 217 en la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -408,7 +408,14 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   taladrado en Conceptual; SECTION, el perfil de ese bloque por el plano ZX, sacado delante con
   MOVE. UCS y SOLIDEDIT, con una `###` por palabra clave que se elige y las subrespuestas dentro.
   Los términos árabes sin glosario, en la tabla de `docs/i18n/ar.md` («Command pages»), para la
-  revisión nativa. **Quedan 67 comandos sin página**, por tandas con la
+  revisión nativa. **Sexta tanda, hecha el 6/11 y sin publicar:** los atributos, ATTDEF, ATTEDIT,
+  EATTEDIT y ATTDISP, y STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR (40 URLs más, al final de
+  la cola de §7): 83 comandos con página. Todas fijas, ninguna trata de una ayuda; DIMSPACE (tres
+  cotas en cadena, escalonadas, alineadas con 0) y LTSCALE (una placa de 4 m a escala 1 y a 20)
+  con un antes encima de la sesión: el `before` de las notas, `<slug>Before` en las sesiones. STYLE
+  y COLOR cuentan lo que hacen la paleta de estilos y la forma de guion; la figura de STYLE, el `?`
+  de TEXT, lo que guarda un estilo. Arreglado de paso en el motor: una imagen fija (las figuras, las
+  miniaturas) no seguía ATTDISP ni FILL. **Quedan 57 comandos sin página**, por tandas con la
   skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,

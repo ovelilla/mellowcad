@@ -1,0 +1,93 @@
+---
+title: "Color en AutoCAD: comando COLOR"
+metaTitle: "Color de objetos en AutoCAD: COLOR y PorCapa"
+description: "Cómo funciona COLOR (alias COL) de AutoCAD en español: el color de los objetos nuevos, PorCapa, un color de índice por nombre o número, o RGB. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando COLOR en español?","answer":"COLOR, igual que en inglés, con el alias COL. El nombre inglés con un guion bajo delante, _COLOR, funciona en cualquier idioma de AutoCAD."},{"question":"¿Cómo cambio el color de un objeto en AutoCAD?","answer":"Desígnalo y elige el color en la lista desplegable de colores de la barra superior o en la fila Color de la paleta Propiedades: cambia en un paso. O copia el color de otro objeto con IGUALARPROP. COLOR solo fija el color de los objetos que se dibujan después."},{"question":"¿Qué significa PorCapa en AutoCAD?","answer":"Que el objeto toma el color de su capa, así que cambiar el color de la capa en el Administrador de propiedades de capas cambia todos los objetos PorCapa que contiene. Es el valor por defecto, y mantiene los colores de un dibujo organizados por capas: CAPA."},{"question":"¿Cómo uso colores RGB en AutoCAD?","answer":"Elige COlorverdadero y escribe los tres valores separados por comas, como 0,128,255."}]
+---
+
+COLOR, con el mismo nombre en español, fija el color con que se dibujan los objetos nuevos. AutoCAD abre el cuadro de diálogo Seleccionar color; MellowCAD aún no lo tiene, así que COLOR ejecuta la forma de línea de comando que AutoCAD también tiene, `-COLOR`. Pide el color de objeto por defecto y ofrece el actual, `PORCAPA` en un dibujo nuevo: PorCapa significa que cada objeto toma el color de su capa, y un color elegido en su lugar es el del propio objeto. Escribe el número o el nombre de un color de índice, o elige `COlorverdadero`. Intro conserva el color actual, y el cambio es un paso que `H` deshace.
+
+Una palabra que no entiende dice `Se necesita un número o nombre de color normalizado.`, y 0, un número negativo o uno mayor que 255, `Número de color no válido.`; después vuelve a preguntar. Escrito con un apóstrofo dentro de un comando, `'COLOR`, cada objeto dibujado después toma el color nuevo: cada segmento de [`LINEA`](/docs/commands/line) toma el color actual al empezar. COLOR solo fija lo que viene después; la paleta Propiedades o la lista desplegable de colores de la barra superior cambian los objetos ya dibujados.
+
+- **Comando:** `COLOR`
+- **Alias:** `COL`
+- **Grupo:** [Organizar](/docs/commands#organize)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `COL` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="color" caption="Una placa dibujada PorCapa, su agujero en rojo, su taladro en el color verdadero 0,128,255, y después COLOR de nuevo a PorCapa." />
+
+## Opciones [#options]
+
+### `COlorverdadero` (`CO`) [#truecolor]
+
+Pide un color como tres valores de 0 a 255, rojo, verde y azul, separados por comas sin espacios: `0,128,255` es un azul medio. Un color que también es un color de índice, `255,0,0`, se guarda como ese color de índice.
+
+### `porCapa` (`C`) [#bylayer]
+
+Los objetos nuevos toman el color de su capa, como al principio.
+
+### `Rojo` (`R`) [#red]
+
+Color de índice 1, que también se escribe `1`.
+
+### `Amarillo` (`A`) [#yellow]
+
+Color de índice 2, que también se escribe `2`.
+
+### `Verde` (`V`) [#green]
+
+Color de índice 3, que también se escribe `3`.
+
+### `cIán` (`I`) [#cyan]
+
+Color de índice 4, que también se escribe `4`.
+
+### `aZul` (`Z`) [#blue]
+
+Color de índice 5, que también se escribe `5`.
+
+### `Magenta` (`M`) [#magenta]
+
+Color de índice 6, que también se escribe `6`.
+
+### `bLanco` (`L`) [#white]
+
+Color de índice 7, que también se escribe `7`: blanco sobre un fondo oscuro y negro sobre uno claro.
+
+## Lo que aún no hace [#missing]
+
+El cuadro de diálogo Seleccionar color, los cuadernos de colores y la forma HSL. Los colores de índice 8 a 255: solo se aceptan del 1 al 7. PorBloque. Un color verdadero que coincide con un color de índice se guarda como ese color de índice, donde AutoCAD conserva el RGB. La transparencia (CETRANSPARENCY) y los valores por defecto de cada tipo de objeto, HPCOLOR, HPLAYER, DIMLAYER y TEXTLAYER.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando COLOR en español?
+
+COLOR, igual que en inglés, con el alias `COL`. El nombre inglés con un guion bajo delante, `_COLOR`, funciona en cualquier idioma de AutoCAD.
+
+### ¿Cómo cambio el color de un objeto en AutoCAD?
+
+Desígnalo y elige el color en la lista desplegable de colores de la barra superior o en la fila Color de la paleta Propiedades: cambia en un paso. O copia el color de otro objeto con [`IGUALARPROP`](/docs/commands/matchprop). COLOR solo fija el color de los objetos que se dibujan después.
+
+### ¿Qué significa PorCapa en AutoCAD?
+
+Que el objeto toma el color de su capa, así que cambiar el color de la capa en el Administrador de propiedades de capas cambia todos los objetos PorCapa que contiene. Es el valor por defecto, y mantiene los colores de un dibujo organizados por capas: [`CAPA`](/docs/commands/layer).
+
+### ¿Cómo uso colores RGB en AutoCAD?
+
+Elige `COlorverdadero` y escribe los tres valores separados por comas, como `0,128,255`.
+
+## Comandos relacionados [#related]
+
+- [Capas en AutoCAD: CAPA (LAYER)](/docs/commands/layer)
+- [Paleta Propiedades en AutoCAD: PROPIEDADES (PROPERTIES)](/docs/commands/properties)
+- [Igualar propiedades en AutoCAD: IGUALARPROP (MATCHPROP)](/docs/commands/matchprop)
+- [Tipos de línea en AutoCAD: TIPOLIN (LINETYPE)](/docs/commands/linetype)
+- [Grosor de línea en AutoCAD: GROSORLIN (LWEIGHT)](/docs/commands/lweight)

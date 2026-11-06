@@ -106,20 +106,26 @@ lo pidió por el coste.
 
 ## Lo que queda (estado del 6/11/2026)
 
-La mecánica está hecha y 73 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
+La mecánica está hecha y 83 comandos tienen página (`docs/next-seo.md` §8): los 38 de la primera
 tanda y la segunda ola entera, ERASE, ARC, RECTANG, POLYGON, ELLIPSE, CHAMFER, STRETCH, EXPLODE, JOIN
 y BREAK, y después SPLINE, PEDIT, MATCHPROP, PROPERTIES, LINETYPE, LWEIGHT, UNITS, AREA, DIST y ZOOM;
 la cuarta tanda, CYLINDER, SPHERE, CONE, WEDGE, TORUS, PYRAMID, REGION y MASSPROP; la quinta, el
-resto del 3D: UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT.
+resto del 3D: UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT; la sexta,
+ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR.
 Cada tanda siguiente es una sesión con la skill `command-page`, un commit, y el push del dueño; F1,
-el índice, el sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. En este
-orden:
+el índice, el sitemap y los enlaces relacionados se ponen al día solos al añadir las notas. Del
+resto, decidido el 6/11 por lo que se busca (el autocompletado de la auditoría) y por lo que cada
+comando tiene que contar, en este orden:
 
-1. **La sexta tanda**: ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE
-   y COLOR.
-2. **El resto, si da para una página propia**: LIST, ID, PAN, UNDO, REDO, SNAP, VIEW, PLAN, VPOINT, ELEV,
-   SPLINEDIT, 3DPOLY, BREAKATPOINT, CHPROP, BLOCKSPALETTE, NEW, OPEN, SAVE, SAVEAS, QSAVE, los del
-   portapapeles. Los de guion (-HATCH, -BLOCK…), los que cierran una paleta (LAYERCLOSE,
-   PROPERTIESCLOSE), las variables (AUPREC, SETVAR) y los que solo repiten a otro (QNEW, MREDO,
-   REGENALL, CLEANSCREENOFF, DIMHORIZONTAL, DIMVERTICAL, DIMROTATED) se quedan en el índice: F1 los
+1. **La séptima tanda**: UNDO, REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP
+   (con CUTCLIP y COPYBASE nombrados en su página). Los diez se buscan por su nombre
+   («undo command», «list command», «3dpoly», «copyclip»…).
+2. **Una octava, si llenan una página**: VIEW, PLAN, PASTECLIP y BREAKATPOINT; lo que no la llene se
+   queda en el índice.
+3. **Se quedan en el índice**, sin página propia: NEW, OPEN, SAVE, SAVEAS y QSAVE (lo que se busca
+   de ellos es DWG y versiones, que el formato propio no contesta: «Claims and copy» de
+   `i18n.md`), VPOINT y ELEV (sin búsquedas), BLOCKSPALETTE (la página de INSERT lo cuenta),
+   CUTCLIP y COPYBASE (los cuenta COPYCLIP); los de guion (-HATCH, -BLOCK…), los que cierran una
+   paleta (LAYERCLOSE, PROPERTIESCLOSE), las variables (AUPREC, SETVAR) y los que solo repiten a
+   otro (QNEW, MREDO, REGENALL, CLEANSCREENOFF, DIMHORIZONTAL, DIMVERTICAL, DIMROTATED). F1 los
    lleva a su ancla.

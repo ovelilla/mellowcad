@@ -1,0 +1,60 @@
+---
+title: "Mostrar u ocultar atributos en AutoCAD: ATRVIS (ATTDISP)"
+metaTitle: "Mostrar u ocultar atributos en AutoCAD: ATRVIS"
+description: "Cómo funciona ATRVIS (ATTDISP) de AutoCAD en español: Normal, ACT para ver también los atributos invisibles, DES para ocultarlos todos. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo muestro los atributos invisibles en AutoCAD?","answer":"Escribe ATRVIS y elige ACT: se muestran todos los atributos, también los invisibles. Normal los vuelve a ocultar."},{"question":"¿Por qué no se ven los atributos de mi bloque?","answer":"ATRVIS puede estar en DES, que oculta todos los atributos, o en Normal con los atributos definidos como invisibles. Elige ACT para verlos todos. Una referencia cuyo bloque no tiene atributos no muestra ninguno, sea cual sea el parámetro."},{"question":"¿Cómo oculto los valores de atributo en AutoCAD?","answer":"Defínelos invisibles: el modo Invisible de ATRDEF, antes de crear el bloque. ATRVIS DES oculta todos los atributos a la vez, en todo el dibujo."}]
+---
+
+ATRVIS (ATTDISP en inglés) fija qué atributos muestran las referencias a bloque del dibujo. Pide el parámetro y ofrece el actual, Normal en un dibujo nuevo; cualquier otra palabra dice que la opción no es válida y vuelve a preguntar, e Intro lo conserva. Un cambio vuelve a dibujar todo el dibujo, `Regenerando modelo.` como lo dice AutoCAD 2027, y se guarda con el dibujo como ATTMODE, un paso que `H` deshace. Escrito con un apóstrofo dentro de un comando, también se ejecuta ahí.
+
+Solo cambia lo que se ve: un atributo invisible conserva su valor, y uno oculto se puede seguir editando con [`ATREDIT`](/docs/commands/attedit) o [`EDITATR`](/docs/commands/eattedit).
+
+- **Comando:** `ATRVIS`
+- **En inglés:** `ATTDISP`, que se escribe `_ATTDISP` en cualquier idioma
+- **Grupo:** [Organizar](/docs/commands#organize)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ATRVIS` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="attdisp" caption="Dos mesas cuyos números de pieza son atributos invisibles: ATRVIS ACT los muestra bajo cada mesa, junto a los números visibles." />
+
+## Opciones [#options]
+
+### `Normal` (`N`) [#normal]
+
+Muestra cada atributo como se definió: los visibles, no los definidos con el modo `Invisible` de [`ATRDEF`](/docs/commands/attdef).
+
+### `ACT` [#on]
+
+Muestra todos los atributos, también los invisibles.
+
+### `DES` [#off]
+
+Oculta todos los atributos, también los visibles.
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo muestro los atributos invisibles en AutoCAD?
+
+Escribe `ATRVIS` y elige `ACT`: se muestran todos los atributos, también los invisibles. `Normal` los vuelve a ocultar.
+
+### ¿Por qué no se ven los atributos de mi bloque?
+
+`ATRVIS` puede estar en `DES`, que oculta todos los atributos, o en `Normal` con los atributos definidos como invisibles. Elige `ACT` para verlos todos. Una referencia cuyo bloque no tiene atributos no muestra ninguno, sea cual sea el parámetro.
+
+### ¿Cómo oculto los valores de atributo en AutoCAD?
+
+Defínelos invisibles: el modo `Invisible` de [`ATRDEF`](/docs/commands/attdef), antes de crear el bloque. ATRVIS `DES` oculta todos los atributos a la vez, en todo el dibujo.
+
+## Comandos relacionados [#related]
+
+- [Atributos de bloque en AutoCAD: ATRDEF (ATTDEF)](/docs/commands/attdef)
+- [Editar atributos en AutoCAD: ATREDIT (ATTEDIT)](/docs/commands/attedit)
+- [Editor de atributos mejorado en AutoCAD: EDITATR (EATTEDIT)](/docs/commands/eattedit)
+- [Crear bloques en AutoCAD: BLOQUE (BLOCK)](/docs/commands/block)
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib)

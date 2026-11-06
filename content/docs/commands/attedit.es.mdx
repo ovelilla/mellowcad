@@ -1,0 +1,55 @@
+---
+title: "Editar atributos en AutoCAD: ATREDIT (ATTEDIT)"
+metaTitle: "Editar atributos en AutoCAD: comando ATREDIT"
+description: "Cómo funciona ATREDIT (ATTEDIT, alias ATR) de AutoCAD en español: cambiar los valores de atributo de un bloque, un campo por solicitud. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando ATTEDIT en español?","answer":"ATREDIT, con los alias ATR y DDATTE. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _ATTEDIT."},{"question":"¿Cómo edito los atributos de un bloque en AutoCAD?","answer":"Escribe ATR y designa la referencia, o haz doble clic en ella, que ejecuta EDITATR. Cambia los valores en el cuadro y pulsa Intro. Para cambiar los propios atributos, su identificador, su solicitud o su posición, edita las definiciones y redefine el bloque con BLOQUE."},{"question":"¿Por qué ATREDIT dice que el bloque no tiene atributos editables?","answer":"Porque el bloque de la referencia que designaste no contiene atributos: ATREDIT edita los valores de una referencia a un bloque que los tiene. Una definición que aún no ha entrado en un bloque se edita con EDITARTEXTO, con un doble clic en ella."},{"question":"¿Qué diferencia hay entre ATREDIT y EDITATR?","answer":"Las dos editan los valores de una referencia. El cuadro de ATREDIT rotula cada campo con la solicitud del atributo, como el cuadro de diálogo Editar atributos de AutoCAD; el de EDITATR, el Editor de atributos mejorado, con su identificador. En AutoCAD, EDITATR también tiene fichas para las opciones de texto y las propiedades de cada atributo."}]
+---
+
+ATREDIT (ATTEDIT en inglés) cambia los valores de atributo de una referencia a bloque. Pide que designes la referencia y después abre un cuadro con un campo por cada uno de sus atributos, rotulado con la solicitud del atributo y relleno con su valor, como el cuadro de diálogo Editar atributos de AutoCAD. Vuelve a escribir los valores, con Tab para pasar de un campo al siguiente, e Intro, el Aceptar de AutoCAD, los aplica en un paso que `H` deshace; Esc, su Cancelar, no cambia nada.
+
+La designación toma el objeto que queda bajo el cursor. Cualquier cosa que no sea una referencia a bloque se rechaza, igual que una referencia cuyo bloque no tiene atributos, y se vuelve a preguntar; un clic en vacío vuelve a preguntar en silencio. No cambia la definición del bloque, ni sus demás referencias: cada una tiene valores propios. [`EDITATR`](/docs/commands/eattedit) edita los mismos valores en un cuadro rotulado por identificador, y un doble clic en una referencia con atributos lo ejecuta.
+
+- **Comando:** `ATREDIT`
+- **En inglés:** `ATTEDIT`, que se escribe `_ATTEDIT` en cualquier idioma
+- **Alias:** `ATR`, `DDATTE`
+- **Grupo:** [Organizar](/docs/commands#organize)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ATR` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="attedit" caption="Tres rótulos de puerta, referencias a un bloque con el atributo NUM: ATREDIT designa el último, insertado como 2, y su cuadro lo cambia a 3." />
+
+## Lo que aún no hace [#missing]
+
+`-ATTEDIT` (-ATREDIT en español), la forma de línea de comandos que edita los atributos uno a uno o de forma global, y su alias `-ATR`. Los botones Anterior y Siguiente de Editar atributos, para un bloque con más atributos de los que caben en una página, y su línea Nombre de bloque. EDITATRINSITU (`_ATTIPEDIT`), que edita un atributo en su sitio, y su Ctrl+doble clic. El pinzamiento propio de un atributo desbloqueado en una referencia, y las filas de atributos de la paleta Propiedades.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando ATTEDIT en español?
+
+ATREDIT, con los alias `ATR` y `DDATTE`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_ATTEDIT`.
+
+### ¿Cómo edito los atributos de un bloque en AutoCAD?
+
+Escribe `ATR` y designa la referencia, o haz doble clic en ella, que ejecuta [`EDITATR`](/docs/commands/eattedit). Cambia los valores en el cuadro y pulsa Intro. Para cambiar los propios atributos, su identificador, su solicitud o su posición, edita las definiciones y redefine el bloque con [`BLOQUE`](/docs/commands/block).
+
+### ¿Por qué ATREDIT dice que el bloque no tiene atributos editables?
+
+Porque el bloque de la referencia que designaste no contiene atributos: ATREDIT edita los valores de una referencia a un bloque que los tiene. Una definición que aún no ha entrado en un bloque se edita con [`EDITARTEXTO`](/docs/commands/textedit), con un doble clic en ella.
+
+### ¿Qué diferencia hay entre ATREDIT y EDITATR?
+
+Las dos editan los valores de una referencia. El cuadro de ATREDIT rotula cada campo con la solicitud del atributo, como el cuadro de diálogo Editar atributos de AutoCAD; el de [`EDITATR`](/docs/commands/eattedit), el Editor de atributos mejorado, con su identificador. En AutoCAD, EDITATR también tiene fichas para las opciones de texto y las propiedades de cada atributo.
+
+## Comandos relacionados [#related]
+
+- [Editor de atributos mejorado en AutoCAD: EDITATR (EATTEDIT)](/docs/commands/eattedit)
+- [Atributos de bloque en AutoCAD: ATRDEF (ATTDEF)](/docs/commands/attdef)
+- [Insertar bloques en AutoCAD: INSERT](/docs/commands/insert)
+- [Mostrar u ocultar atributos en AutoCAD: ATRVIS (ATTDISP)](/docs/commands/attdisp)

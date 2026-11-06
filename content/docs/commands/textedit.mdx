@@ -1,0 +1,64 @@
+---
+title: "TEXTEDIT in AutoCAD"
+metaTitle: "TEXTEDIT in AutoCAD: edit text, ED and DDEDIT"
+description: "How AutoCAD's TEXTEDIT (ED) edits text, multiline text and attribute definitions, one after another, with Undo and Mode. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for TEXTEDIT in AutoCAD?","answer":"ED, then Enter or Space; DDEDIT and TEDIT too, AutoCAD's older names. _TEXTEDIT works in any language of AutoCAD."},{"question":"How do I edit text in AutoCAD?","answer":"Double-click it, or type ED and pick it; retype it and press Enter. TEXTEDIT then asks for the next text to edit, until Escape. Its height and rotation are rows of the Properties palette, and its style the Style row."},{"question":"How do I edit several texts one after another?","answer":"Leave TEXTEDIT in Multiple mode, its default: after each text it asks for the next. Mode and Single make it end after one, as a double-click does."},{"question":"Why does double-click not edit my text?","answer":"The text may be on a locked layer: unlock the layer in the Layer Properties Manager. A dimension's text is not edited by TEXTEDIT yet, and a block's attribute values open EATTEDIT."}]
+---
+
+TEXTEDIT edits annotation objects: it says the current edit mode, Multiple at first, and asks you to select one. A single-line text opens to be retyped where it is, a multiline text in [`MTEXT`](/docs/commands/mtext)'s editor, an attribute definition as its tag, prompt and default value. In Multiple mode it then asks for the next object, until Escape or Enter ends the command, and the whole run is one step that `U` takes back. A double-click on a text or an attribute definition runs TEXTEDIT, and on a multiline text it opens the editor for that one object.
+
+Escape in a single-line text's editor drops that edit and asks for the next object; a second Escape ends the command. An object on a locked layer says `The object is on a locked layer.` and asks again, and a pick on anything else asks again in silence. One text selected before the command opens at once.
+
+- **Command:** `TEXTEDIT`
+- **Aliases:** `DDEDIT`, `ED`, `TEDIT`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `ED` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="textedit" caption="A nameplate's misspelt PALTE picked with TEXTEDIT and retyped PLATE, then Escape to end the command." />
+
+## Options [#options]
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last edit of this run and asks again; with none left, it says the command has been completely undone.
+
+### `Mode` (`M`) [#mode]
+
+Asks for the edit mode: `Single` ends the command after one object, `Multiple` asks for another. The mode is kept for the next TEXTEDIT, in every drawing.
+
+## What it does not do yet [#missing]
+
+Dimension text: TEXTEDIT does not edit a dimension's text, which [`DIMLINEAR`](/docs/commands/dimlinear)'s Text option sets as it is placed. Editing a text's content in the Properties palette. MTEDIT, typed, and -MTEDIT. While the editor is open the command line reads `TEXTEDIT:`, as AutoCAD edits in place and asks nothing.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit--pt-br-editartexto--tedit--ddedit--ed)
+
+## Questions [#questions]
+
+### What is the shortcut for TEXTEDIT in AutoCAD?
+
+`ED`, then Enter or Space; `DDEDIT` and `TEDIT` too, AutoCAD's older names. `_TEXTEDIT` works in any language of AutoCAD.
+
+### How do I edit text in AutoCAD?
+
+Double-click it, or type `ED` and pick it; retype it and press Enter. TEXTEDIT then asks for the next text to edit, until Escape. Its height and rotation are rows of the Properties palette, and its style the Style row.
+
+### How do I edit several texts one after another?
+
+Leave TEXTEDIT in `Multiple` mode, its default: after each text it asks for the next. `Mode` and `Single` make it end after one, as a double-click does.
+
+### Why does double-click not edit my text?
+
+The text may be on a locked layer: unlock the layer in the Layer Properties Manager. A dimension's text is not edited by TEXTEDIT yet, and a block's attribute values open [`EATTEDIT`](/docs/commands/eattedit).
+
+## Related commands [#related]
+
+- [TEXT in AutoCAD](/docs/commands/text)
+- [MTEXT in AutoCAD](/docs/commands/mtext)
+- [ATTDEF in AutoCAD](/docs/commands/attdef)
+- [PROPERTIES in AutoCAD](/docs/commands/properties)

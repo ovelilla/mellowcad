@@ -1,0 +1,86 @@
+---
+title: "Atributos de bloque en AutoCAD: ATRDEF (ATTDEF)"
+metaTitle: "Atributos en AutoCAD: comando ATRDEF (ATTDEF)"
+description: "Cómo funciona ATRDEF (ATTDEF, alias AT) de AutoCAD en español: sus modos, identificador, solicitud y valor por defecto, y dónde va su texto. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando ATTDEF en español?","answer":"ATRDEF, con el alias AT. -AT es -ATRDEF, la forma de línea de comandos, que ATRDEF también ejecuta aquí. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _ATTDEF."},{"question":"¿Cómo se crea un bloque con atributos en AutoCAD?","answer":"Dibuja el símbolo, ejecuta ATRDEF para cada atributo y coloca su texto donde debe verse el valor. Ejecuta BLOQUE, precisa un punto base y designa el símbolo y los atributos, en el orden en que INSERT debe pedirlos. Cada INSERT del bloque pide entonces un valor para cada atributo, ofreciendo su valor por defecto."},{"question":"¿Qué diferencia hay entre el identificador, la solicitud y el valor por defecto?","answer":"El identificador da nombre al atributo: es lo que muestra la definición y lo que rotula su campo en EDITATR. La solicitud es la pregunta con la que INSERT pide su valor. El valor por defecto es el que se ofrece, y que Intro acepta."},{"question":"¿Cómo edito una definición de atributo?","answer":"Haz doble clic en ella antes de que entre en un bloque: EDITARTEXTO abre su identificador, su solicitud y su valor por defecto. Una vez en un bloque, los valores de cada referencia se editan con ATREDIT o EDITATR."}]
+---
+
+ATRDEF (ATTDEF en inglés) define un atributo: un identificador, una solicitud y un valor por defecto, colocados en el dibujo como una línea de texto. Desígnalo con los demás objetos al crear un bloque con [`BLOQUE`](/docs/commands/block), y cada referencia a ese bloque guarda un valor propio para él: el número de una puerta, el código de una pieza, el nombre de un local. Hasta entonces, la definición muestra su identificador.
+
+El ATRDEF de AutoCAD abre el cuadro de diálogo Definir atributos, que MellowCAD no tiene: aquí ATRDEF pide en la línea de comandos lo mismo que `-ATRDEF`, como hace la consola de AutoCAD. Indica los modos actuales y pide uno para cambiar, hasta que Intro sigue adelante. Después, el identificador: sin espacios, porque un espacio lo termina, y las minúsculas pasan a mayúsculas; Intro solo dice `El identificador no puede ser nulo`. Después, la solicitud con la que [`INSERT`](/docs/commands/insert) pedirá el valor, con Intro para tomar el identificador, y el valor por defecto. Por último, dónde va el texto, con las preguntas de [`TEXTO`](/docs/commands/text): un punto inicial, la altura y la rotación. La altura y la justificación son las de TEXTO, compartidas en los dos sentidos. Intro en el punto inicial coloca la definición una línea por debajo de la última definida, con su altura, rotación, estilo y justificación, así que los atributos de un bloque se apilan uno bajo otro.
+
+- **Comando:** `ATRDEF`
+- **En inglés:** `ATTDEF`, que se escribe `_ATTDEF` en cualquier idioma
+- **Alias:** `AT`
+- **Grupo:** [Organizar](/docs/commands#organize)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `AT` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="attdef" caption="Un rótulo de puerta: el atributo NUM centrado en un círculo, con su identificador como solicitud y 1 como valor por defecto, listo para entrar en un bloque." />
+
+## Opciones [#options]
+
+### `Invisible` (`I`) [#invisible]
+
+El valor no se muestra en las referencias, hasta que [`ATRVIS`](/docs/commands/attdisp) lo activa. Cada modo es un conmutador: elegirlo lo cambia entre `S` y `N`, vuelve a escribir los modos y pregunta otra vez. Los modos se conservan para el siguiente ATRDEF.
+
+### `Constante` (`C`) [#constant]
+
+Todas las referencias tienen el mismo valor, que ATRDEF pide en lugar de una solicitud y un valor por defecto; INSERT nunca lo pregunta.
+
+### `Verificable` (`V`) [#verify]
+
+INSERT pide el valor una segunda vez, para comprobarlo, después de pedir cada valor una vez.
+
+### `Predefinido` (`P`) [#preset]
+
+INSERT no pide el valor: cada referencia toma el valor por defecto.
+
+### `Bloquear posición` (`B`) [#lock-position]
+
+Activado al principio: el atributo se queda donde lo coloca el bloque.
+
+### `jUstificar` (`U`) [#justify]
+
+Pregunta desde qué punto cuelga el texto, como TEXTO: `Izquierda`, `Centro`, `Derecha`, `Medio` o uno de los nueve puntos, superior, medio e inferior por izquierda, centro y derecha. Después, la solicitud del punto inicial pide el punto que nombra: medio centro centra el valor en un rótulo.
+
+### `Estilo` (`E`) [#style]
+
+Pide el estilo de texto que se usa, que pasa a ser el actual; `?` enumera los estilos del dibujo.
+
+## Lo que aún no hace [#missing]
+
+El cuadro de diálogo Definir atributos: ATRDEF pregunta en la línea de comandos. Los modos Anotativo y Líneas múltiples, que AutoCAD 2027 enumera después de Bloquear posición, y las líneas de un atributo de líneas múltiples. Los campos, las justificaciones Alinear y Ajustar, y que el `?` de Estilo pregunte qué estilos enumerar.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando ATTDEF en español?
+
+ATRDEF, con el alias `AT`. `-AT` es `-ATRDEF`, la forma de línea de comandos, que ATRDEF también ejecuta aquí. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_ATTDEF`.
+
+### ¿Cómo se crea un bloque con atributos en AutoCAD?
+
+Dibuja el símbolo, ejecuta ATRDEF para cada atributo y coloca su texto donde debe verse el valor. Ejecuta [`BLOQUE`](/docs/commands/block), precisa un punto base y designa el símbolo y los atributos, en el orden en que INSERT debe pedirlos. Cada [`INSERT`](/docs/commands/insert) del bloque pide entonces un valor para cada atributo, ofreciendo su valor por defecto.
+
+### ¿Qué diferencia hay entre el identificador, la solicitud y el valor por defecto?
+
+El identificador da nombre al atributo: es lo que muestra la definición y lo que rotula su campo en [`EDITATR`](/docs/commands/eattedit). La solicitud es la pregunta con la que INSERT pide su valor. El valor por defecto es el que se ofrece, y que Intro acepta.
+
+### ¿Cómo edito una definición de atributo?
+
+Haz doble clic en ella antes de que entre en un bloque: [`EDITARTEXTO`](/docs/commands/textedit) abre su identificador, su solicitud y su valor por defecto. Una vez en un bloque, los valores de cada referencia se editan con [`ATREDIT`](/docs/commands/attedit) o [`EDITATR`](/docs/commands/eattedit).
+
+## Comandos relacionados [#related]
+
+- [Crear bloques en AutoCAD: BLOQUE (BLOCK)](/docs/commands/block)
+- [Insertar bloques en AutoCAD: INSERT](/docs/commands/insert)
+- [Editar atributos en AutoCAD: ATREDIT (ATTEDIT)](/docs/commands/attedit)
+- [Mostrar u ocultar atributos en AutoCAD: ATRVIS (ATTDISP)](/docs/commands/attdisp)
+- [Editor de atributos mejorado en AutoCAD: EDITATR (EATTEDIT)](/docs/commands/eattedit)

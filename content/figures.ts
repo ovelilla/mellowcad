@@ -14,12 +14,16 @@ import { sessions as arraySessions } from "./demos/commands/array"
 import { sessions as arraypathSessions } from "./demos/commands/arraypath"
 import { sessions as arraypolarSessions } from "./demos/commands/arraypolar"
 import { sessions as arrayrectSessions } from "./demos/commands/arrayrect"
+import { sessions as attdefSessions } from "./demos/commands/attdef"
+import { sessions as attdispSessions } from "./demos/commands/attdisp"
+import { sessions as atteditSessions } from "./demos/commands/attedit"
 import { sessions as blockSessions } from "./demos/commands/block"
 import { sessions as boxSessions } from "./demos/commands/box"
 import { sessions as breakSessions } from "./demos/commands/break"
 import { sessions as chamferSessions } from "./demos/commands/chamfer"
 import { sessions as chamferedgeSessions } from "./demos/commands/chamferedge"
 import { sessions as circleSessions } from "./demos/commands/circle"
+import { sessions as colorSessions } from "./demos/commands/color"
 import { sessions as coneSessions } from "./demos/commands/cone"
 import { sessions as copySessions } from "./demos/commands/copy"
 import { sessions as cylinderSessions } from "./demos/commands/cylinder"
@@ -30,8 +34,10 @@ import { sessions as dimcontinueSessions } from "./demos/commands/dimcontinue"
 import { sessions as dimdiameterSessions } from "./demos/commands/dimdiameter"
 import { sessions as dimlinearSessions } from "./demos/commands/dimlinear"
 import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
+import { sessions as dimspaceSessions } from "./demos/commands/dimspace"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
 import { sessions as distSessions } from "./demos/commands/dist"
+import { sessions as eatteditSessions } from "./demos/commands/eattedit"
 import { sessions as ellipseSessions } from "./demos/commands/ellipse"
 import { sessions as eraseSessions } from "./demos/commands/erase"
 import { sessions as explodeSessions } from "./demos/commands/explode"
@@ -46,6 +52,7 @@ import { sessions as joinSessions } from "./demos/commands/join"
 import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
 import { sessions as linetypeSessions } from "./demos/commands/linetype"
+import { sessions as ltscaleSessions } from "./demos/commands/ltscale"
 import { sessions as lweightSessions } from "./demos/commands/lweight"
 import { sessions as masspropSessions } from "./demos/commands/massprop"
 import { sessions as matchpropSessions } from "./demos/commands/matchprop"
@@ -58,6 +65,7 @@ import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
 import { sessions as propertiesSessions } from "./demos/commands/properties"
+import { sessions as purgeSessions } from "./demos/commands/purge"
 import { sessions as pyramidSessions } from "./demos/commands/pyramid"
 import { sessions as rectangSessions } from "./demos/commands/rectang"
 import { sessions as regionSessions } from "./demos/commands/region"
@@ -70,8 +78,10 @@ import { sessions as solideditSessions } from "./demos/commands/solidedit"
 import { sessions as sphereSessions } from "./demos/commands/sphere"
 import { sessions as splineSessions } from "./demos/commands/spline"
 import { sessions as stretchSessions } from "./demos/commands/stretch"
+import { sessions as styleSessions } from "./demos/commands/style"
 import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
+import { sessions as texteditSessions } from "./demos/commands/textedit"
 import { sessions as torusSessions } from "./demos/commands/torus"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { sessions as ucsSessions } from "./demos/commands/ucs"
@@ -183,12 +193,16 @@ export const COMMAND_SESSIONS = {
   ...arraypathSessions,
   ...arraypolarSessions,
   ...arrayrectSessions,
+  ...attdefSessions,
+  ...attdispSessions,
+  ...atteditSessions,
   ...blockSessions,
   ...boxSessions,
   ...breakSessions,
   ...chamferSessions,
   ...chamferedgeSessions,
   ...circleSessions,
+  ...colorSessions,
   ...coneSessions,
   ...copySessions,
   ...cylinderSessions,
@@ -199,8 +213,10 @@ export const COMMAND_SESSIONS = {
   ...dimdiameterSessions,
   ...dimlinearSessions,
   ...dimradiusSessions,
+  ...dimspaceSessions,
   ...dimstyleSessions,
   ...distSessions,
+  ...eatteditSessions,
   ...ellipseSessions,
   ...eraseSessions,
   ...explodeSessions,
@@ -215,6 +231,7 @@ export const COMMAND_SESSIONS = {
   ...layerSessions,
   ...lineSessions,
   ...linetypeSessions,
+  ...ltscaleSessions,
   ...lweightSessions,
   ...masspropSessions,
   ...matchpropSessions,
@@ -227,6 +244,7 @@ export const COMMAND_SESSIONS = {
   ...polygonSessions,
   ...presspullSessions,
   ...propertiesSessions,
+  ...purgeSessions,
   ...pyramidSessions,
   ...rectangSessions,
   ...regionSessions,
@@ -239,8 +257,10 @@ export const COMMAND_SESSIONS = {
   ...sphereSessions,
   ...splineSessions,
   ...stretchSessions,
+  ...styleSessions,
   ...subtractSessions,
   ...textSessions,
+  ...texteditSessions,
   ...torusSessions,
   ...trimSessions,
   ...ucsSessions,

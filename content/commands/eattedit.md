@@ -1,0 +1,34 @@
+---
+title: "EATTEDIT in AutoCAD"
+metaTitle: "EATTEDIT in AutoCAD: Enhanced Attribute Editor"
+description: "How AutoCAD's EATTEDIT edits a block's attribute values in the Enhanced Attribute Editor, and why a double-click on a block runs it. Try it free online."
+figure: "Two desks, references to a block with the attributes NUM and PART: EATTEDIT picks the second and its PART field becomes B-200."
+related: ["ATTEDIT", "ATTDEF", "ATTDISP", "INSERT"]
+coverage: "5c6313d43bc8"
+---
+
+EATTEDIT opens AutoCAD's Enhanced Attribute Editor for one block reference: it asks you to select a block, then shows a field for each of its attributes, labelled by tag and filled with its value, as the editor's Attribute tab lists them. Retype the values, Tab moving from field to field, and Enter applies them in one step that <Command id="U" /> takes back; Escape changes nothing.
+
+A double-click on a reference with attributes runs EATTEDIT, as in AutoCAD: the command line writes it with the point you double-clicked as its answer, and the box opens at once. The pick takes the object under the box: anything but a block reference is refused, and so is a block with no attributes, and the question is asked again. Only the reference picked changes; the block's definition and its other references keep their values.
+
+## Missing
+
+The editor's Text Options tab (style, justification, height, rotation, width factor and the rest of each attribute's text) and its Properties tab (layer, linetype, colour, lineweight), and its Select Block button. ATTIPEDIT, which edits one attribute in place, and its Ctrl+double-click. An unlocked attribute's own grip on a reference, and the attribute rows of the Properties palette. `-ATTEDIT`.
+
+## Questions
+
+### How do I open the Enhanced Attribute Editor in AutoCAD?
+
+Double-click a block reference that has attributes, or type `EATTEDIT` and pick it. `_EATTEDIT` works in any language of AutoCAD.
+
+### How do I change an attribute value in AutoCAD?
+
+Double-click the block, type the new value in the attribute's field and press Enter. Each reference keeps its own values: changing one leaves the others as they are.
+
+### Why can't I double-click to edit a block's attributes?
+
+EATTEDIT opens for a reference whose block holds attributes, and a block made without them has none: define them with <Command id="ATTDEF" /> and select them with the other objects when you make the block. If an attribute's value does not show, check <Command id="ATTDISP" />, which can hide the invisible attributes or every one.
+
+### What is the difference between EATTEDIT and ATTEDIT?
+
+They edit the same values. EATTEDIT labels each field by its tag, as the Enhanced Attribute Editor's Attribute tab does; <Command id="ATTEDIT" /> by its prompt, as the Edit Attributes dialog does. In AutoCAD, EATTEDIT also edits each attribute's text options and properties.

@@ -1,0 +1,60 @@
+---
+title: "Comando ATTDISP (VISATRIB) no AutoCAD"
+metaTitle: "ATTDISP no AutoCAD: exibir ou ocultar atributos"
+description: "Como o ATTDISP do AutoCAD em português, VISATRIB, exibe os atributos: Normal, Ativado mostra os invisíveis, Desativado oculta todos. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como mostrar atributos invisíveis no AutoCAD?","answer":"Digite VISATRIB e escolha Ativado: todos os atributos aparecem, também os invisíveis. Normal volta a ocultá-los. O nome em inglês funciona com um sublinhado na frente em qualquer idioma do AutoCAD: _ATTDISP."},{"question":"Por que os atributos do bloco não aparecem?","answer":"O VISATRIB pode estar em Desativado, que oculta todos os atributos, ou em Normal com os atributos definidos como invisíveis. Escolha Ativado para ver todos. Uma referência cujo bloco não tem atributos não mostra nenhum, qualquer que seja a configuração."},{"question":"Como ocultar os valores dos atributos no AutoCAD?","answer":"Defina-os como invisíveis: o modo Invisível do DEFATRIB, antes de criar o bloco. O VISATRIB Desativado oculta todos os atributos de uma vez, no desenho inteiro."}]
+---
+
+O ATTDISP, VISATRIB no AutoCAD em português, define quais atributos as referências de bloco do desenho mostram. Ele pede a configuração, oferecendo a atual, Normal num desenho novo; qualquer outra palavra é recusada como palavra-chave inválida e a pergunta se repete, e Enter mantém a atual. Uma mudança redesenha o desenho inteiro, `Regenerando modelo.` como diz o AutoCAD 2027 em português, e é salva com o desenho como ATTMODE, um passo que o `D` desfaz. Digitado com um apóstrofo dentro de um comando, ele também funciona ali.
+
+Ele só muda o que aparece: um atributo invisível mantém o seu valor, e um oculto ainda pode ser editado com o [`EDITARATRIB`](/docs/commands/attedit) ou o [`EDITARATRIBA`](/docs/commands/eattedit).
+
+- **Comando:** `VISATRIB`
+- **Em inglês:** `ATTDISP`, que se digita `_ATTDISP` em qualquer idioma
+- **Painel:** [Organizar](/docs/commands#organize)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `VISATRIB` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="attdisp" caption="Duas mesas cujos números de peça são atributos invisíveis: o VISATRIB Ativado os mostra embaixo de cada mesa, ao lado dos números visíveis." />
+
+## Opções [#options]
+
+### `Normal` (`N`) [#normal]
+
+Mostra cada atributo como foi definido: os visíveis, não os definidos com o modo `Invisível` do [`DEFATRIB`](/docs/commands/attdef).
+
+### `ATivado` (`A`) [#on]
+
+Mostra todos os atributos, também os invisíveis.
+
+### `Desativado` (`D`) [#off]
+
+Oculta todos os atributos, também os visíveis.
+
+## Perguntas frequentes [#questions]
+
+### Como mostrar atributos invisíveis no AutoCAD?
+
+Digite `VISATRIB` e escolha `Ativado`: todos os atributos aparecem, também os invisíveis. `Normal` volta a ocultá-los. O nome em inglês funciona com um sublinhado na frente em qualquer idioma do AutoCAD: `_ATTDISP`.
+
+### Por que os atributos do bloco não aparecem?
+
+O `VISATRIB` pode estar em `Desativado`, que oculta todos os atributos, ou em `Normal` com os atributos definidos como invisíveis. Escolha `Ativado` para ver todos. Uma referência cujo bloco não tem atributos não mostra nenhum, qualquer que seja a configuração.
+
+### Como ocultar os valores dos atributos no AutoCAD?
+
+Defina-os como invisíveis: o modo `Invisível` do [`DEFATRIB`](/docs/commands/attdef), antes de criar o bloco. O VISATRIB `Desativado` oculta todos os atributos de uma vez, no desenho inteiro.
+
+## Comandos relacionados [#related]
+
+- [Atributos no AutoCAD: comando ATTDEF (DEFATRIB)](/docs/commands/attdef)
+- [Editar atributos no AutoCAD: comando ATTEDIT (EDITARATRIB)](/docs/commands/attedit)
+- [Comando EATTEDIT (EDITARATRIBA) no AutoCAD](/docs/commands/eattedit)
+- [Comando BLOCK (BLOCO) no AutoCAD](/docs/commands/block)
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib)

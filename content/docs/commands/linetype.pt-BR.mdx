@@ -35,7 +35,7 @@ Pede o nome do tipo de linha e oferece o atual; digite o nome de um carregado, o
 
 ## O que ainda não faz [#missing]
 
-O Gerenciador de tipos de linha, e carregar, criar ou descrever tipos de linha: só existem os seis acima, e a lista só descreve Continuous. Uma escala de tipo de linha por objeto (CELTSCALE): só a do desenho, `ESCALATL`. PorBloco. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. Os nomes de tipo de linha do AutoCAD em espanhol: aqui eles são em inglês em todos os idiomas. PLINEGEN: uma nova polilinha recomeça o padrão em cada vértice, a menos que a opção gerar Tipolinha do [`EDITARP`](/docs/commands/pedit) o ative.
+O Gerenciador de tipos de linha, e carregar, criar ou descrever tipos de linha: só existem os seis acima, e a lista só descreve Continuous. Uma escala de tipo de linha por objeto (CELTSCALE): só a do desenho, [`ESCALATL`](/docs/commands/ltscale). PorBloco. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. Os nomes de tipo de linha do AutoCAD em espanhol: aqui eles são em inglês em todos os idiomas. PLINEGEN: uma nova polilinha recomeça o padrão em cada vértice, a menos que a opção gerar Tipolinha do [`EDITARP`](/docs/commands/pedit) o ative.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl)
 
@@ -47,7 +47,7 @@ TIPOLINHA, com os atalhos `TL` e `DDLTYPE`. Como no AutoCAD em português, o nom
 
 ### Por que a minha linha tracejada aparece contínua?
 
-Uma linha mais curta do que uma repetição do seu padrão é desenhada contínua, como no AutoCAD: o padrão do CENTER mede umas 51 unidades na escala padrão. Aumente ou diminua o `ESCALATL` para ajustar o padrão ao desenho. Confira também se o tipo de linha do objeto, ou o da camada dele quando é PorCamada, não é Continuous.
+Uma linha mais curta do que uma repetição do seu padrão é desenhada contínua, como no AutoCAD: o padrão do CENTER mede umas 51 unidades na escala padrão. Aumente ou diminua o [`ESCALATL`](/docs/commands/ltscale) para ajustar o padrão ao desenho. Confira também se o tipo de linha do objeto, ou o da camada dele quando é PorCamada, não é Continuous.
 
 ### Como mudar o tipo de linha de um objeto já desenhado?
 
@@ -55,11 +55,11 @@ Selecione-o e escolha o tipo de linha na linha Tipo de linha da paleta Proprieda
 
 ### Como mudar a escala do tipo de linha no AutoCAD?
 
-Digite `ESCALATL` e o novo fator: 2 deixa cada traço duas vezes mais longo, no desenho inteiro.
+Digite [`ESCALATL`](/docs/commands/ltscale) e o novo fator: 2 deixa cada traço duas vezes mais longo, no desenho inteiro.
 
 ## Comandos relacionados [#related]
 
-- [ESCALATL (LTSCALE)](/docs/commands#ltscale): Escala do tipo de linha
+- [Escala de linha no AutoCAD: comando LTSCALE (ESCALATL)](/docs/commands/ltscale)
 - [Comando LAYER (CAMADA) no AutoCAD](/docs/commands/layer)
 - [Espessura de linha no AutoCAD: ESPLINHA (LWEIGHT)](/docs/commands/lweight)
 - [Propriedades no AutoCAD: comando PROPRIEDADES (PROPERTIES)](/docs/commands/properties)

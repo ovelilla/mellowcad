@@ -9,7 +9,7 @@ faq: [{"question":"What is the shortcut for TEXT in AutoCAD?","answer":"DT, then
 
 TEXT writes single-line text. You give a start point, a height and a rotation angle, then type a line and press Enter: the line becomes an object of its own, and the next one starts a line below it. An empty line ends the command. A click elsewhere before that starts the next lines at that point, and Escape keeps the lines already entered and drops the one being typed. For a paragraph that wraps to a width, as one object, use [`MTEXT`](/docs/commands/mtext).
 
-The first line says the current style, height and justification. The height is the one it shares with [`MTEXT`](/docs/commands/mtext) and `ATTDEF`, kept in the drawing, and the next TEXT offers it as its default; a style with a height of its own skips the height prompt. Enter at the start point carries on below the last line TEXT wrote, without asking the height or the angle again. U takes back the whole run.
+The first line says the current style, height and justification. The height is the one it shares with [`MTEXT`](/docs/commands/mtext) and [`ATTDEF`](/docs/commands/attdef), kept in the drawing, and the next TEXT offers it as its default; a style with a height of its own skips the height prompt. Enter at the start point carries on below the last line TEXT wrote, without asking the height or the angle again. U takes back the whole run.
 
 - **Command:** `TEXT`
 - **Aliases:** `DT`, `DTEXT`
@@ -30,7 +30,7 @@ Asks where the text hangs from its point: `Left` (the default), `Center`, `Right
 
 ### `Style` (`S`) [#style]
 
-Asks for the name of the text style to make current, Enter keeping the one there is. `?` lists the drawing's styles; a name the drawing does not have is refused and asked again. Styles are made in the palette that `STYLE` opens.
+Asks for the name of the text style to make current, Enter keeping the one there is. `?` lists the drawing's styles; a name the drawing does not have is refused and asked again. Styles are made in the palette that [`STYLE`](/docs/commands/style) opens.
 
 ## What it does not do yet [#missing]
 
@@ -54,11 +54,11 @@ TEXT makes one object per line, each moved, edited and justified on its own, and
 
 ### How do I edit text in AutoCAD?
 
-Double-click it: `TEXTEDIT` opens it to be retyped, then asks for the next text to edit until you press Escape. Its height and rotation are rows of the Properties palette, and its grips move it.
+Double-click it: [`TEXTEDIT`](/docs/commands/textedit) opens it to be retyped, then asks for the next text to edit until you press Escape. Its height and rotation are rows of the Properties palette, and its grips move it.
 
 ## Related commands [#related]
 
 - [MTEXT in AutoCAD](/docs/commands/mtext)
-- [TEXTEDIT](/docs/commands#textedit): Edit text
-- [STYLE](/docs/commands#style): Create and modify text styles
+- [TEXTEDIT in AutoCAD](/docs/commands/textedit)
+- [STYLE in AutoCAD: text styles](/docs/commands/style)
 - [MATCHPROP in AutoCAD](/docs/commands/matchprop)

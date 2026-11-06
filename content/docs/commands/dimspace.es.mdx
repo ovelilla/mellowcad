@@ -1,0 +1,62 @@
+---
+title: "Alinear y espaciar cotas en AutoCAD: ACOESPAC (DIMSPACE)"
+metaTitle: "Alinear y espaciar cotas en AutoCAD: ACOESPAC"
+description: "Cómo funciona ACOESPAC (DIMSPACE) de AutoCAD en español: igualar el espacio entre cotas o alinearlas con 0, y Auto según la altura de texto. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo alineo cotas en AutoCAD?","answer":"Ejecuta ACOESPAC, designa la cota con la que deben alinearse las demás, desígnalas, pulsa Intro y escribe 0: cada línea de cota pasa a la línea de la base."},{"question":"¿Cómo hago que la separación entre cotas sea igual?","answer":"Ejecuta ACOESPAC, designa como base la cota más cercana al objeto, designa las demás y pulsa Intro dos veces: Auto las espacia con el doble de la altura de texto. O escribe la distancia que quieras, como 8."},{"question":"¿Cuál es la separación entre cotas por defecto en AutoCAD?","answer":"El Auto de ACOESPAC es el doble de la altura de texto del estilo de cota. ACOLINEABASE usa en cambio el intervalo de línea base del estilo, 3,75 en ISO-25, para cada cota que añade."},{"question":"¿Por qué ACOESPAC no desplaza una cota?","answer":"Solo espacia cotas paralelas a la base: una con otro ángulo se cuenta y se deja donde está. Las cotas angulares aún no se espacian."}]
+---
+
+ACOESPAC (DIMSPACE en inglés) ajusta el espacio entre cotas lineales y alineadas paralelas. Designas la cota base, que se queda donde está, y después las cotas que se van a espaciar; Intro termina la designación y pide el intervalo. La línea de cada cota se desplaza entonces, alejándose de la base en el orden en que están, a esa distancia de la anterior. Un intervalo de 0 las alinea todas en la línea de la base: una cadena escalonada tal como se dibujó se lee como una sola. Lo único que cambia es dónde quedan las líneas de cota, en un paso que `H` deshace.
+
+La base se designa, se escribe como un punto o se toma con `úLTimo`; una que no es una cota dice `El objeto designado no es una cota.` y vuelve a preguntar. Un conjunto designado antes del comando es el que se espacia. Una cota con otro ángulo que la base se cuenta y se deja donde está, y un intervalo negativo se rechaza con `Valor de intervalo no válido, el valor de intervalo no puede ser negativo.`.
+
+- **Comando:** `ACOESPAC`
+- **En inglés:** `DIMSPACE`, que se escribe `_DIMSPACE` en cualquier idioma
+- **Grupo:** [Anotación](/docs/commands#annotate)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ACOESPAC` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="dimspaceBefore" caption="El borde superior de una placa acotado en una cadena de tres, cada cota colocada a una altura propia, tal como se dibujaron." />
+
+<Session name="dimspace" caption="ACOESPAC desde la primera cota, las otras dos designadas y el intervalo 0: la cadena alineada en una sola línea." />
+
+## Opciones [#options]
+
+### `Auto` (`A`) [#auto]
+
+La opción por defecto, con Intro: un intervalo del doble de la altura de texto del estilo de cota de la base, multiplicado por su escala general, para que la pila quepa con su propio texto.
+
+## Lo que aún no hace [#missing]
+
+Las cotas angulares, que ACOESPAC aún no espacia. AutoCAD solo desplaza una cota donde hace falta; aquí se vuelve a espaciar cada cota designada.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo alineo cotas en AutoCAD?
+
+Ejecuta ACOESPAC, designa la cota con la que deben alinearse las demás, desígnalas, pulsa Intro y escribe `0`: cada línea de cota pasa a la línea de la base.
+
+### ¿Cómo hago que la separación entre cotas sea igual?
+
+Ejecuta ACOESPAC, designa como base la cota más cercana al objeto, designa las demás y pulsa Intro dos veces: `Auto` las espacia con el doble de la altura de texto. O escribe la distancia que quieras, como `8`.
+
+### ¿Cuál es la separación entre cotas por defecto en AutoCAD?
+
+El `Auto` de ACOESPAC es el doble de la altura de texto del estilo de cota. [`ACOLINEABASE`](/docs/commands/dimbaseline) usa en cambio el intervalo de línea base del estilo, 3,75 en ISO-25, para cada cota que añade.
+
+### ¿Por qué ACOESPAC no desplaza una cota?
+
+Solo espacia cotas paralelas a la base: una con otro ángulo se cuenta y se deja donde está. Las cotas angulares aún no se espacian.
+
+## Comandos relacionados [#related]
+
+- [Acotar en AutoCAD: ACOLINEAL (DIMLINEAR)](/docs/commands/dimlinear)
+- [Cota continua en AutoCAD: ACOCONTINUA (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Cota de línea base en AutoCAD: ACOLINEABASE (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Estilos de cota en AutoCAD: ACOESTIL (DIMSTYLE)](/docs/commands/dimstyle)

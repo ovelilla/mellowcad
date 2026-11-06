@@ -1,0 +1,93 @@
+---
+title: "COLOR in AutoCAD"
+metaTitle: "COLOR in AutoCAD: object color, ByLayer, alias"
+description: "How AutoCAD's COLOR (COL) sets the colour of new objects: ByLayer, an index colour by name or number, or a true colour in RGB. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for COLOR in AutoCAD?","answer":"COL, then Enter or Space; COLOUR too. The full name works as well, and _COLOR in any language of AutoCAD."},{"question":"How do I change the color of an object in AutoCAD?","answer":"Select it and choose the colour in the top bar's colour list or in the Color row of the Properties palette: it changes in one step. Or copy another object's colour with MATCHPROP. COLOR only sets the colour of objects drawn after it."},{"question":"What does ByLayer mean in AutoCAD?","answer":"That the object takes its layer's colour, so changing the layer's colour in the Layer Properties Manager changes every ByLayer object on it. It is the default, and keeps a drawing's colours organised by layer: LAYER."},{"question":"How do I use RGB colors in AutoCAD?","answer":"Choose Truecolor and type the three values separated by commas, such as 0,128,255."}]
+---
+
+COLOR sets the colour new objects are drawn with. AutoCAD opens the Select Color dialog; MellowCAD has none yet, so COLOR runs the command-line form AutoCAD has too, `-COLOR`. It asks for the default object colour, offering the current one, `BYLAYER` in a new drawing: ByLayer means each object takes its layer's colour, and a colour chosen instead is the object's own. Type an index colour's number or its name, or choose `Truecolor`. Enter keeps the current colour, and the change is a step that `U` takes back.
+
+A word it cannot read says `A color number or standard color name is required.`, and 0, a negative number or one past 255 `Invalid color number.`; it asks again. Typed with an apostrophe inside a command, `'COLOR`, each object drawn after it takes the new colour: each segment of a [`LINE`](/docs/commands/line) takes the colour current as it starts. COLOR sets only what comes next; the Properties palette or the top bar's colour list changes objects already drawn.
+
+- **Command:** `COLOR`
+- **Aliases:** `COL`, `COLOUR`
+- **Panel:** [Organize](/docs/commands#organize)
+- **Try it:** [Open the editor](/draw), type `COL` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="color" caption="A plate drawn ByLayer, its hole in red, its bore in the true colour 0,128,255, then COLOR set back to ByLayer." />
+
+## Options [#options]
+
+### `Truecolor` (`T`) [#truecolor]
+
+Asks for a colour as three values from 0 to 255, red, green and blue, separated by commas with no space: `0,128,255` is a mid blue. A colour that is also an index colour, `255,0,0`, is stored as that index colour.
+
+### `BYLayer` (`BYL`) [#bylayer]
+
+New objects take their layer's colour, as they do at first.
+
+### `Red` (`R`) [#red]
+
+Index colour 1, also typed as `1`.
+
+### `Yellow` (`Y`) [#yellow]
+
+Index colour 2, also typed as `2`.
+
+### `Green` (`G`) [#green]
+
+Index colour 3, also typed as `3`.
+
+### `Cyan` (`C`) [#cyan]
+
+Index colour 4, also typed as `4`.
+
+### `Blue` (`B`) [#blue]
+
+Index colour 5, also typed as `5`.
+
+### `Magenta` (`M`) [#magenta]
+
+Index colour 6, also typed as `6`.
+
+### `White` (`W`) [#white]
+
+Index colour 7, also typed as `7`: white on a dark background and black on a light one.
+
+## What it does not do yet [#missing]
+
+The Select Color dialog, Color Books and the HSL form. The index colours 8 to 255: only 1 to 7 are taken. ByBlock. A true colour that matches an index colour is stored as that index colour, where AutoCAD keeps the RGB. Transparency (CETRANSPARENCY), and the per-type defaults HPCOLOR, HPLAYER, DIMLAYER and TEXTLAYER.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor)
+
+## Questions [#questions]
+
+### What is the shortcut for COLOR in AutoCAD?
+
+`COL`, then Enter or Space; `COLOUR` too. The full name works as well, and `_COLOR` in any language of AutoCAD.
+
+### How do I change the color of an object in AutoCAD?
+
+Select it and choose the colour in the top bar's colour list or in the Color row of the Properties palette: it changes in one step. Or copy another object's colour with [`MATCHPROP`](/docs/commands/matchprop). COLOR only sets the colour of objects drawn after it.
+
+### What does ByLayer mean in AutoCAD?
+
+That the object takes its layer's colour, so changing the layer's colour in the Layer Properties Manager changes every ByLayer object on it. It is the default, and keeps a drawing's colours organised by layer: [`LAYER`](/docs/commands/layer).
+
+### How do I use RGB colors in AutoCAD?
+
+Choose `Truecolor` and type the three values separated by commas, such as `0,128,255`.
+
+## Related commands [#related]
+
+- [LAYER in AutoCAD](/docs/commands/layer)
+- [PROPERTIES in AutoCAD](/docs/commands/properties)
+- [MATCHPROP in AutoCAD](/docs/commands/matchprop)
+- [LINETYPE in AutoCAD](/docs/commands/linetype)
+- [LWEIGHT in AutoCAD](/docs/commands/lweight)

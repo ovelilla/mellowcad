@@ -1,0 +1,86 @@
+---
+title: "Atributos no AutoCAD: comando ATTDEF (DEFATRIB)"
+metaTitle: "Atributos de bloco no AutoCAD: ATTDEF (DEFATRIB)"
+description: "Como criar atributos de bloco com o ATTDEF do AutoCAD em português, DEFATRIB (alias DA): modos, identificador, prompt e valor padrão. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ATTDEF no AutoCAD em português?","answer":"DEFATRIB, com os aliases DA, DEFATR e DEFATRIBD; ATT não é comando nenhum no AutoCAD em português. -DA é o -DEFATRIB, a forma de linha de comando, que aqui o DEFATRIB também executa. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _ATTDEF."},{"question":"Como criar um bloco com atributos no AutoCAD?","answer":"Desenhe o símbolo e execute o DEFATRIB para cada atributo, colocando o texto onde o valor deve aparecer. Execute o BLOCO, indique um ponto base e selecione o símbolo e os atributos, na ordem em que o INSERIR deve perguntá-los. Cada INSERIR do bloco pede então um valor para cada atributo, oferecendo o padrão."},{"question":"Qual é a diferença entre identificador, prompt e valor padrão?","answer":"O identificador dá nome ao atributo, como um nome de campo: é o que a definição mostra, e o rótulo do campo no EDITARATRIBA. O prompt é a pergunta que o INSERIR faz pelo valor. O padrão é o valor oferecido, que o Enter aceita."},{"question":"Como editar a definição de um atributo?","answer":"Clique duas vezes nela antes que ela entre num bloco: o EDITARTEXTO abre o identificador, o prompt e o valor padrão. Já num bloco, os valores de cada referência são editados com o EDITARATRIB ou o EDITARATRIBA."}]
+---
+
+O ATTDEF, DEFATRIB no AutoCAD em português, define um atributo: um identificador, um prompt e um valor padrão, colocados no desenho como uma linha de texto. Selecione-o junto com os outros objetos ao criar um bloco com o [`BLOCO`](/docs/commands/block), e cada referência a esse bloco guarda um valor próprio para ele: o número de uma porta, o código de uma peça, o nome de um cômodo. Até lá, a definição mostra o seu identificador.
+
+O DEFATRIB do AutoCAD abre a caixa de diálogo Definição do atributo, que o MellowCAD não tem: aqui o DEFATRIB pede na linha de comando o mesmo que o `-DEFATRIB`, como faz o console do AutoCAD. Ele mostra os modos atuais e pede um para alterar, até que Enter siga adiante. Depois, o identificador: sem espaços, porque um espaço o encerra, e as minúsculas viram maiúsculas; Enter sozinho mostra `O identificador não pode ser nulo`. Depois, o prompt com que o [`INSERIR`](/docs/commands/insert) vai pedir o valor, Enter usando o identificador, e o valor padrão. Por último, onde o texto fica, com as perguntas do [`TEXTO`](/docs/commands/text): um ponto inicial, a altura e a rotação. A altura e a justificação são as do TEXTO, compartilhadas nos dois sentidos. Enter no ponto inicial coloca a definição uma linha abaixo da última definida, com a altura, a rotação, o estilo e a justificação dela, de modo que os atributos de um bloco ficam empilhados um embaixo do outro.
+
+- **Comando:** `DEFATRIB`
+- **Em inglês:** `ATTDEF`, que se digita `_ATTDEF` em qualquer idioma
+- **Aliases:** `DA`, `DEFATR`, `DEFATRIBD`
+- **Painel:** [Organizar](/docs/commands#organize)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `DA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="attdef" caption="Uma etiqueta de porta: o atributo NUM centralizado num círculo, com o próprio identificador como prompt e o valor padrão 1, pronto para entrar num bloco." />
+
+## Opções [#options]
+
+### `Invisível` (`I`) [#invisible]
+
+O valor não aparece nas referências, até que o [`VISATRIB`](/docs/commands/attdisp) o mostre. Cada modo é uma chave: escolhê-lo o alterna entre `S` e `N`, escreve os modos de novo e pergunta outra vez. Os modos continuam definidos para o próximo DEFATRIB.
+
+### `Constante` (`C`) [#constant]
+
+Toda referência guarda o mesmo valor, que o DEFATRIB pede no lugar de um prompt e de um padrão; o INSERIR nunca o pergunta.
+
+### `Verificação` (`V`) [#verify]
+
+O INSERIR pede o valor uma segunda vez, para conferi-lo, depois de pedir cada valor uma vez.
+
+### `Predefinido` (`P`) [#preset]
+
+O INSERIR não pede o valor: cada referência recebe o padrão.
+
+### `Bloquear posição` (`B`) [#lock-position]
+
+Ativado no início: o atributo fica onde o bloco o coloca.
+
+### `Justificar` (`J`) [#justify]
+
+Pergunta de que ponto o texto fica pendurado, como o TEXTO: `Esquerda`, `Centro`, `Direita`, `Meio` ou um dos nove pontos, superior, meio e inferior por esquerda, centro e direita. Depois, o prompt do ponto inicial pede o ponto que ela nomeia: meio centro centraliza o valor numa etiqueta.
+
+### `Estilo` (`E`) [#style]
+
+Pede o estilo de texto a usar, que passa a ser o atual; `?` lista os estilos do desenho.
+
+## O que ainda não faz [#missing]
+
+A caixa de diálogo Definição do atributo: o DEFATRIB pergunta na linha de comando. Os modos Anotativo e Múltiplas linhas, que o AutoCAD 2027 lista depois de Bloquear posição, e as linhas de um atributo de múltiplas linhas. Campos, as justificações Alinhar e Ajustar, e o `?` de Estilo perguntar quais estilos listar.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ATTDEF no AutoCAD em português?
+
+DEFATRIB, com os aliases `DA`, `DEFATR` e `DEFATRIBD`; `ATT` não é comando nenhum no AutoCAD em português. `-DA` é o `-DEFATRIB`, a forma de linha de comando, que aqui o DEFATRIB também executa. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_ATTDEF`.
+
+### Como criar um bloco com atributos no AutoCAD?
+
+Desenhe o símbolo e execute o DEFATRIB para cada atributo, colocando o texto onde o valor deve aparecer. Execute o [`BLOCO`](/docs/commands/block), indique um ponto base e selecione o símbolo e os atributos, na ordem em que o INSERIR deve perguntá-los. Cada [`INSERIR`](/docs/commands/insert) do bloco pede então um valor para cada atributo, oferecendo o padrão.
+
+### Qual é a diferença entre identificador, prompt e valor padrão?
+
+O identificador dá nome ao atributo, como um nome de campo: é o que a definição mostra, e o rótulo do campo no [`EDITARATRIBA`](/docs/commands/eattedit). O prompt é a pergunta que o INSERIR faz pelo valor. O padrão é o valor oferecido, que o Enter aceita.
+
+### Como editar a definição de um atributo?
+
+Clique duas vezes nela antes que ela entre num bloco: o [`EDITARTEXTO`](/docs/commands/textedit) abre o identificador, o prompt e o valor padrão. Já num bloco, os valores de cada referência são editados com o [`EDITARATRIB`](/docs/commands/attedit) ou o [`EDITARATRIBA`](/docs/commands/eattedit).
+
+## Comandos relacionados [#related]
+
+- [Comando BLOCK (BLOCO) no AutoCAD](/docs/commands/block)
+- [Comando INSERT (INSERIR) no AutoCAD](/docs/commands/insert)
+- [Editar atributos no AutoCAD: comando ATTEDIT (EDITARATRIB)](/docs/commands/attedit)
+- [Comando ATTDISP (VISATRIB) no AutoCAD](/docs/commands/attdisp)
+- [Comando EATTEDIT (EDITARATRIBA) no AutoCAD](/docs/commands/eattedit)

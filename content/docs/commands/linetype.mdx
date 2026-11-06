@@ -34,7 +34,7 @@ Asks the linetype's name, offering the current one; type a loaded linetype's nam
 
 ## What it does not do yet [#missing]
 
-The Linetype Manager, and loading, creating or describing linetypes: only the six above exist, and the listing describes only Continuous. A linetype scale for each object (CELTSCALE): only the drawing's, `LTSCALE`. ByBlock. PSLTSCALE and MSLTSCALE, as there is no paper space. Spanish AutoCAD's linetype names: they are English here in every language. PLINEGEN: a new polyline starts its pattern again at each vertex, unless PEDIT's Ltype gen turns it on.
+The Linetype Manager, and loading, creating or describing linetypes: only the six above exist, and the listing describes only Continuous. A linetype scale for each object (CELTSCALE): only the drawing's, [`LTSCALE`](/docs/commands/ltscale). ByBlock. PSLTSCALE and MSLTSCALE, as there is no paper space. Spanish AutoCAD's linetype names: they are English here in every language. PLINEGEN: a new polyline starts its pattern again at each vertex, unless PEDIT's Ltype gen turns it on.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl)
 
@@ -46,7 +46,7 @@ The Linetype Manager, and loading, creating or describing linetypes: only the si
 
 ### Why does my dashed line show as a solid line?
 
-A line shorter than one repeat of its pattern is drawn solid, as in AutoCAD: CENTER's pattern is about 51 units long at the default scale. Raise or lower `LTSCALE` to fit the pattern to the drawing. Check, too, that the object's linetype, or its layer's when it is ByLayer, is not Continuous.
+A line shorter than one repeat of its pattern is drawn solid, as in AutoCAD: CENTER's pattern is about 51 units long at the default scale. Raise or lower [`LTSCALE`](/docs/commands/ltscale) to fit the pattern to the drawing. Check, too, that the object's linetype, or its layer's when it is ByLayer, is not Continuous.
 
 ### How do I change the linetype of an existing object?
 
@@ -54,11 +54,11 @@ Select it and choose the linetype in the Linetype row of the Properties palette,
 
 ### How do I change the linetype scale in AutoCAD?
 
-Type `LTSCALE` and the new factor: 2 makes every dash twice as long, in the whole drawing.
+Type [`LTSCALE`](/docs/commands/ltscale) and the new factor: 2 makes every dash twice as long, in the whole drawing.
 
 ## Related commands [#related]
 
-- [LTSCALE](/docs/commands#ltscale): Linetype scale
+- [LTSCALE in AutoCAD: linetype scale](/docs/commands/ltscale)
 - [LAYER in AutoCAD](/docs/commands/layer)
 - [LWEIGHT in AutoCAD](/docs/commands/lweight)
 - [PROPERTIES in AutoCAD](/docs/commands/properties)

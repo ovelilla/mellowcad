@@ -59,7 +59,9 @@ languages, the pages generated from them and `content/demos/commands/offset.ts`.
 
 Exports `sessions`: the main one named after the slug with `from` its global name, spread into
 `COMMAND_SESSIONS` (`content/figures.ts`); one more only where a figure per option says more
-(HATCH's pattern gallery, up to 640 wide). A portable script (`marketing.md`, "Figures"): global
+(HATCH's pattern gallery, up to 640 wide), or `<slug>Before`, the drawing as it was, drawn above
+the session where the change reads best beside it (DIMSPACE, LTSCALE): its caption is the
+frontmatter's `before`, in every language. A portable script (`marketing.md`, "Figures"): global
 names with `_`, keywords by id, world coordinates, relative points after the first under dynamic
 input, `frame` for dimensions; the setup drawn first, then the command as the page explains it.
 Print its history in every language before trusting it (`renderSession` and `historyLine`, from a

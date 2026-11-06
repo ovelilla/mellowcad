@@ -1,0 +1,55 @@
+---
+title: "Editar atributos no AutoCAD: comando ATTEDIT (EDITARATRIB)"
+metaTitle: "Editar atributos de bloco no AutoCAD: ATTEDIT"
+description: "Como o ATTEDIT do AutoCAD em português, EDITARATRIB (alias EAT), muda os valores dos atributos de uma referência de bloco, num só passo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ATTEDIT no AutoCAD em português?","answer":"EDITARATRIB, com os aliases EAT e EATRIBD; ATE não é comando nenhum no AutoCAD em português. Como lá, o nome em inglês também funciona com um sublinhado na frente: _ATTEDIT."},{"question":"Como editar atributos de bloco no AutoCAD?","answer":"Digite EAT e selecione a referência, ou clique duas vezes nela, o que executa o EDITARATRIBA. Mude os valores na caixa e pressione Enter. Para mudar os próprios atributos, o identificador, o prompt ou a posição, edite as definições e redefina o bloco com o BLOCO."},{"question":"Por que o EDITARATRIB diz que o bloco não tem atributos editáveis?","answer":"Porque o bloco da referência selecionada não tem atributos: o EDITARATRIB edita os valores de uma referência a um bloco que os tem. Uma definição que ainda não entrou num bloco é editada com o EDITARTEXTO, com um clique duplo nela."},{"question":"Qual é a diferença entre EDITARATRIB e EDITARATRIBA?","answer":"Os dois editam os valores de uma referência. A caixa do EDITARATRIB rotula cada campo pelo prompt do atributo, como a caixa de diálogo Editar atributos do AutoCAD; a do EDITARATRIBA, o Editor de atributos aprimorados, pelo identificador. No AutoCAD, o EDITARATRIBA também tem guias para as opções de texto e as propriedades de cada atributo."}]
+---
+
+O ATTEDIT, EDITARATRIB no AutoCAD em português, muda os valores dos atributos de uma referência de bloco. Ele pede que você selecione a referência e abre uma caixa com um campo para cada um dos seus atributos, com o prompt do atributo como rótulo e o valor preenchido, como a caixa de diálogo Editar atributos do AutoCAD. Redigite os valores, com Tab passando de um campo ao seguinte, e Enter, o OK do AutoCAD, os aplica num passo que o `D` desfaz; Esc, o seu Cancelar, não muda nada.
+
+A seleção pega o objeto sob a caixa de seleção do cursor. Qualquer coisa que não seja uma referência de bloco é recusada, assim como uma referência cujo bloco não tem atributos, e a pergunta se repete; um clique no vazio pergunta de novo em silêncio. A definição do bloco não muda, nem as suas outras referências: cada uma guarda os seus próprios valores. O [`EDITARATRIBA`](/docs/commands/eattedit) edita os mesmos valores numa caixa rotulada pelo identificador, e um clique duplo numa referência com atributos o executa.
+
+- **Comando:** `EDITARATRIB`
+- **Em inglês:** `ATTEDIT`, que se digita `_ATTEDIT` em qualquer idioma
+- **Aliases:** `EAT`, `EATRIBD`
+- **Painel:** [Organizar](/docs/commands#organize)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EAT` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="attedit" caption="Três etiquetas de porta, referências a um bloco com o atributo NUM: o EDITARATRIB seleciona a última, inserida como 2, e a sua caixa a muda para 3." />
+
+## O que ainda não faz [#missing]
+
+O `-EDITARATRIB`, a forma de linha de comando que edita os atributos um a um ou globalmente, e o seu alias `-EAT`. Os botões Anterior e Avançar da caixa Editar atributos, para um bloco com mais atributos do que cabem numa página, e a sua linha Nome do bloco. O ATTIPEDIT, que edita um atributo no lugar, e o seu Ctrl+clique duplo. A alça própria de um atributo desbloqueado numa referência, e as linhas de atributos da paleta Propriedades.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ATTEDIT no AutoCAD em português?
+
+EDITARATRIB, com os aliases `EAT` e `EATRIBD`; `ATE` não é comando nenhum no AutoCAD em português. Como lá, o nome em inglês também funciona com um sublinhado na frente: `_ATTEDIT`.
+
+### Como editar atributos de bloco no AutoCAD?
+
+Digite `EAT` e selecione a referência, ou clique duas vezes nela, o que executa o [`EDITARATRIBA`](/docs/commands/eattedit). Mude os valores na caixa e pressione Enter. Para mudar os próprios atributos, o identificador, o prompt ou a posição, edite as definições e redefina o bloco com o [`BLOCO`](/docs/commands/block).
+
+### Por que o EDITARATRIB diz que o bloco não tem atributos editáveis?
+
+Porque o bloco da referência selecionada não tem atributos: o EDITARATRIB edita os valores de uma referência a um bloco que os tem. Uma definição que ainda não entrou num bloco é editada com o [`EDITARTEXTO`](/docs/commands/textedit), com um clique duplo nela.
+
+### Qual é a diferença entre EDITARATRIB e EDITARATRIBA?
+
+Os dois editam os valores de uma referência. A caixa do EDITARATRIB rotula cada campo pelo prompt do atributo, como a caixa de diálogo Editar atributos do AutoCAD; a do [`EDITARATRIBA`](/docs/commands/eattedit), o Editor de atributos aprimorados, pelo identificador. No AutoCAD, o EDITARATRIBA também tem guias para as opções de texto e as propriedades de cada atributo.
+
+## Comandos relacionados [#related]
+
+- [Comando EATTEDIT (EDITARATRIBA) no AutoCAD](/docs/commands/eattedit)
+- [Atributos no AutoCAD: comando ATTDEF (DEFATRIB)](/docs/commands/attdef)
+- [Comando INSERT (INSERIR) no AutoCAD](/docs/commands/insert)
+- [Comando ATTDISP (VISATRIB) no AutoCAD](/docs/commands/attdisp)

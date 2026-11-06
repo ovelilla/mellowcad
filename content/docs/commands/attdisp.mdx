@@ -1,0 +1,59 @@
+---
+title: "ATTDISP in AutoCAD"
+metaTitle: "ATTDISP in AutoCAD: show or hide attributes"
+description: "How AutoCAD's ATTDISP shows block attributes: Normal, ON to show the invisible ones too, OFF to hide them all. Saved with the drawing. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I show invisible attributes in AutoCAD?","answer":"Type ATTDISP and choose ON: every attribute shows, the invisible ones too. Normal hides them again."},{"question":"Why are my block attributes not showing?","answer":"ATTDISP may be OFf, which hides every attribute, or Normal with the attributes defined as invisible. Choose ON to see them all. A reference whose block has no attributes shows none, whatever the setting."},{"question":"How do I hide attribute values in AutoCAD?","answer":"Define them invisible: ATTDEF's Invisible mode, before you make the block. ATTDISP OFf hides every attribute at once, in the whole drawing."}]
+---
+
+ATTDISP sets which attributes the block references in the drawing show. It asks for the setting, offering the current one, Normal in a new drawing; any other word says the keyword is invalid and asks again, and Enter keeps it. A change redraws the whole drawing, `Regenerating model.` as AutoCAD 2027 says it, and is saved with the drawing as ATTMODE, a step that `U` takes back. Typed with an apostrophe inside a command, it runs there too.
+
+It changes only what shows: an invisible attribute keeps its value, and a hidden one can still be edited with [`ATTEDIT`](/docs/commands/attedit) or [`EATTEDIT`](/docs/commands/eattedit).
+
+- **Command:** `ATTDISP`
+- **Panel:** [Organize](/docs/commands#organize)
+- **Try it:** [Open the editor](/draw), type `ATTDISP` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="attdisp" caption="Two desks whose part numbers are invisible attributes: ATTDISP ON shows them under each desk, beside the visible numbers." />
+
+## Options [#options]
+
+### `Normal` (`N`) [#normal]
+
+Shows each attribute as it was defined: the visible ones, not those defined with [`ATTDEF`](/docs/commands/attdef)'s `Invisible`.
+
+### `ON` [#on]
+
+Shows every attribute, the invisible ones too.
+
+### `OFF` (`OF`) [#off]
+
+Hides every attribute, the visible ones too.
+
+## Questions [#questions]
+
+### How do I show invisible attributes in AutoCAD?
+
+Type `ATTDISP` and choose `ON`: every attribute shows, the invisible ones too. `Normal` hides them again.
+
+### Why are my block attributes not showing?
+
+`ATTDISP` may be `OFf`, which hides every attribute, or `Normal` with the attributes defined as invisible. Choose `ON` to see them all. A reference whose block has no attributes shows none, whatever the setting.
+
+### How do I hide attribute values in AutoCAD?
+
+Define them invisible: [`ATTDEF`](/docs/commands/attdef)'s `Invisible` mode, before you make the block. ATTDISP `OFf` hides every attribute at once, in the whole drawing.
+
+## Related commands [#related]
+
+- [ATTDEF in AutoCAD](/docs/commands/attdef)
+- [ATTEDIT in AutoCAD](/docs/commands/attedit)
+- [EATTEDIT in AutoCAD](/docs/commands/eattedit)
+- [BLOCK in AutoCAD](/docs/commands/block)
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib)

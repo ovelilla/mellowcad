@@ -1,0 +1,61 @@
+---
+title: "Comando PURGE (ELIMINAR) no AutoCAD"
+metaTitle: "PURGE no AutoCAD: eliminar blocos não usados"
+description: "Como o PURGE do AutoCAD em português, ELIMINAR (alias ELM), exclui os blocos que nenhuma referência usa, por nome ou todos, e os aninhados. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando PURGE no AutoCAD em português?","answer":"ELIMINAR, com o alias ELM; PU não é comando nenhum no AutoCAD em português. -ELM é o -ELIMINAR, a forma de linha de comando, que aqui o ELIMINAR também executa. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _PURGE."},{"question":"Como eliminar blocos não usados no AutoCAD?","answer":"Digite ELM, escolha Blocos, pressione Enter para todos os nomes e responda Não para excluí-los todos sem perguntar sobre cada um."},{"question":"Por que não consigo eliminar um bloco?","answer":"Porque ele está em uso: uma referência no desenho o coloca, ou um bloco em uso o contém, talvez aninhado vários níveis abaixo. Apague as referências dele, ou exploda os blocos que o contêm, e o ELIMINAR pode excluí-lo."},{"question":"Como eliminar layers no AutoCAD?","answer":"No AutoCAD, com o tipo Camadas do ELIMINAR. Aqui ainda não, porque o ELIMINAR só elimina blocos; exclua uma camada vazia no Gerenciador de propriedades de camadas."}]
+---
+
+O PURGE, ELIMINAR no AutoCAD em português, remove o que um desenho define mas não usa; aqui, os blocos. O ELIMINAR do AutoCAD abre a caixa de diálogo Eliminar; o MellowCAD não a tem, então o ELIMINAR pergunta na linha de comando o mesmo que o `-ELIMINAR`, como faz o console do AutoCAD. Ele mostra as configurações Itens aninhados e Dados órfãos, ambas desativadas, e pergunta que tipo de objetos não usados eliminar, oferecendo só `Blocos`; Enter ali o encerra.
+
+Um bloco está em uso enquanto uma referência no desenho o coloca, ou a definição de um bloco em uso o contém, em qualquer profundidade. Apagar a última referência de um bloco deixa a definição dele no desenho, onde o [`INSERIR`](/docs/commands/insert) pode colocá-lo de novo: é o ELIMINAR que a exclui. Um bloco contido num bloco que fica nunca é eliminado, e uma cadeia de blocos que só contêm uns aos outros sai numa só execução. Sem nenhum a eliminar, ele diz `Nenhum blocos sem referência encontrado.`. Cada execução é um passo que o `D` desfaz.
+
+- **Comando:** `ELIMINAR`
+- **Em inglês:** `PURGE`, que se digita `_PURGE` em qualquer idioma
+- **Aliases:** `ELM`
+- **Painel:** [Organizar](/docs/commands#organize)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ELM` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="purge" caption="Dois blocos, TAG colocado numa parede e BOX, cuja única referência foi apagada: o ELIMINAR, todos os nomes, sem verificar, exclui só o BOX." />
+
+## Opções [#options]
+
+### `Blocos` (`B`) [#blocks]
+
+Pede os nomes a eliminar, `*` para todos os blocos não usados por padrão, ou nomes com curingas, separados por vírgulas. Depois pergunta se cada nome deve ser verificado: `Sim`, o padrão, pergunta sobre cada bloco antes de excluí-lo, `Não` exclui todos e diz cada nome e quantos foram.
+
+## O que ainda não faz [#missing]
+
+A caixa de diálogo Eliminar, e todos os outros tipos: camadas, tipos de linha, estilos de texto e de cota, grupos, materiais, estilos de linha de chamada múltipla, de tabela e visuais, aplicativos registrados, geometria de comprimento zero, objetos de texto vazios, dados órfãos e Todos. As configurações Itens aninhados e Dados órfãos não podem ser alteradas.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando PURGE no AutoCAD em português?
+
+ELIMINAR, com o alias `ELM`; `PU` não é comando nenhum no AutoCAD em português. `-ELM` é o `-ELIMINAR`, a forma de linha de comando, que aqui o ELIMINAR também executa. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_PURGE`.
+
+### Como eliminar blocos não usados no AutoCAD?
+
+Digite `ELM`, escolha `Blocos`, pressione Enter para todos os nomes e responda `Não` para excluí-los todos sem perguntar sobre cada um.
+
+### Por que não consigo eliminar um bloco?
+
+Porque ele está em uso: uma referência no desenho o coloca, ou um bloco em uso o contém, talvez aninhado vários níveis abaixo. Apague as referências dele, ou exploda os blocos que o contêm, e o ELIMINAR pode excluí-lo.
+
+### Como eliminar layers no AutoCAD?
+
+No AutoCAD, com o tipo Camadas do ELIMINAR. Aqui ainda não, porque o ELIMINAR só elimina blocos; exclua uma camada vazia no Gerenciador de propriedades de camadas.
+
+## Comandos relacionados [#related]
+
+- [Comando BLOCK (BLOCO) no AutoCAD](/docs/commands/block)
+- [Comando INSERT (INSERIR) no AutoCAD](/docs/commands/insert)
+- [Apagar no AutoCAD: comando APAGAR (ERASE)](/docs/commands/erase)
+- [PALETABLOCOS (BLOCKSPALETTE)](/docs/commands#blockspalette): Exibe a paleta Blocos

@@ -9,7 +9,7 @@ faq: [{"question":"¿Cómo se llama el comando TEXT en español?","answer":"TEXT
 
 TEXTO (TEXT en inglés) escribe texto en una línea. Precisas un punto inicial, una altura y un ángulo de rotación, y después escribes una línea y pulsas Intro: la línea se convierte en un objeto propio y la siguiente empieza una línea más abajo. Una línea vacía termina el comando. Si antes señalas otro punto, las líneas siguientes empiezan allí, y Esc conserva las líneas ya escritas y descarta la que estabas escribiendo. Para un párrafo que se ajusta a una anchura, en un solo objeto, usa [`TEXTOM`](/docs/commands/mtext).
 
-La primera línea indica el estilo, la altura y la justificación actuales. La altura es la que comparte con [`TEXTOM`](/docs/commands/mtext) y `ATRDEF`, se guarda en el dibujo y el siguiente TEXTO la propone por defecto; un estilo con altura propia se salta la solicitud de altura. Intro en la solicitud del punto inicial continúa debajo de la última línea que escribió TEXTO, sin volver a pedir la altura ni el ángulo. Deshacer revierte toda la ejecución.
+La primera línea indica el estilo, la altura y la justificación actuales. La altura es la que comparte con [`TEXTOM`](/docs/commands/mtext) y [`ATRDEF`](/docs/commands/attdef), se guarda en el dibujo y el siguiente TEXTO la propone por defecto; un estilo con altura propia se salta la solicitud de altura. Intro en la solicitud del punto inicial continúa debajo de la última línea que escribió TEXTO, sin volver a pedir la altura ni el ángulo. Deshacer revierte toda la ejecución.
 
 - **Comando:** `TEXTO`
 - **En inglés:** `TEXT`, que se escribe `_TEXT` en cualquier idioma
@@ -31,7 +31,7 @@ Pregunta desde qué punto cuelga el texto: `Izquierda` (por defecto), `Centro`, 
 
 ### `Estilo` (`E`) [#style]
 
-Pide el nombre del estilo de texto que se hace actual; Intro conserva el que hay. `?` muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza y se vuelve a pedir. Los estilos se crean en la paleta que abre `ESTILO`.
+Pide el nombre del estilo de texto que se hace actual; Intro conserva el que hay. `?` muestra los estilos del dibujo, y un nombre que el dibujo no tiene se rechaza y se vuelve a pedir. Los estilos se crean en la paleta que abre [`ESTILO`](/docs/commands/style).
 
 ## Lo que aún no hace [#missing]
 
@@ -55,11 +55,11 @@ TEXTO crea un objeto por línea, que se desplaza, se edita y se justifica por se
 
 ### ¿Cómo edito un texto en AutoCAD?
 
-Haz doble clic en él: `EDITARTEXTO` lo abre para que lo vuelvas a escribir y después pide el siguiente texto, hasta que pulsas Esc. Su altura y su rotación son filas de la paleta Propiedades, y sus pinzamientos lo desplazan.
+Haz doble clic en él: [`EDITARTEXTO`](/docs/commands/textedit) lo abre para que lo vuelvas a escribir y después pide el siguiente texto, hasta que pulsas Esc. Su altura y su rotación son filas de la paleta Propiedades, y sus pinzamientos lo desplazan.
 
 ## Comandos relacionados [#related]
 
 - [MTEXT en AutoCAD: TEXTOM, texto de líneas múltiples](/docs/commands/mtext)
-- [EDITARTEXTO (TEXTEDIT)](/docs/commands#textedit): Editar texto
-- [ESTILO (STYLE)](/docs/commands#style): Crear y modificar estilos de texto
+- [Editar texto en AutoCAD: EDITARTEXTO (TEXTEDIT)](/docs/commands/textedit)
+- [Estilo de texto en AutoCAD: ESTILO (STYLE)](/docs/commands/style)
 - [Igualar propiedades en AutoCAD: IGUALARPROP (MATCHPROP)](/docs/commands/matchprop)

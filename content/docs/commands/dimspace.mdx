@@ -1,0 +1,61 @@
+---
+title: "DIMSPACE in AutoCAD"
+metaTitle: "DIMSPACE in AutoCAD: align and space dimensions"
+description: "How AutoCAD's DIMSPACE evens out the gap between dimensions or lines them up at 0, with Auto's spacing from the text height. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I align dimensions in AutoCAD?","answer":"Run DIMSPACE, pick the dimension the others should line up with, select them, press Enter and type 0: every dimension line moves onto the base's."},{"question":"How do I make the spacing between dimensions equal?","answer":"Run DIMSPACE, pick the dimension nearest the object as the base, select the rest and press Enter twice: Auto spaces them by twice the text height. Or type the distance you want, such as 8."},{"question":"What is the default dimension spacing in AutoCAD?","answer":"DIMSPACE's Auto is twice the text height of the dimension style. DIMBASELINE uses the style's baseline spacing instead, 3.75 in ISO-25, for each dimension it adds."},{"question":"Why does DIMSPACE not move a dimension?","answer":"It only spaces dimensions parallel to the base: one at another angle is counted and left where it is. Angular dimensions are not spaced yet."}]
+---
+
+DIMSPACE adjusts the space between parallel linear and aligned dimensions. You select the base dimension, which stays where it is, then the dimensions to space; Enter ends the selection and asks for the spacing. Each dimension's line is then moved, away from the base in the order they lie, at that distance from the one before it. A spacing of 0 lines them all up on the base's line: a chain staggered as it was drawn reads as one. Its only change is where the dimension lines lie, in one step that `U` takes back.
+
+The base is picked, or typed as a point, or taken with `Last`; one that is no dimension says `Selected object is not a dimension.` and asks again. A set selected before the command is the set to space. A dimension at an angle to the base is counted and left where it is, and a negative spacing is refused with `Invalid spacing value, spacing value cannot be negative.`.
+
+- **Command:** `DIMSPACE`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `DIMSPACE` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="dimspaceBefore" caption="A plate's top edge dimensioned in a chain of three, each dimension placed at a height of its own, as they were drawn." />
+
+<Session name="dimspace" caption="DIMSPACE from the first dimension, the other two selected and the spacing 0: the chain lined up on one line." />
+
+## Options [#options]
+
+### `Auto` (`A`) [#auto]
+
+The default, Enter: a spacing of twice the text height of the base's dimension style, scaled by its overall scale, so the stack fits its own text.
+
+## What it does not do yet [#missing]
+
+Angular dimensions, which DIMSPACE does not space yet. AutoCAD moves a dimension only where it needs to; here every dimension selected is respaced.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota)
+
+## Questions [#questions]
+
+### How do I align dimensions in AutoCAD?
+
+Run DIMSPACE, pick the dimension the others should line up with, select them, press Enter and type `0`: every dimension line moves onto the base's.
+
+### How do I make the spacing between dimensions equal?
+
+Run DIMSPACE, pick the dimension nearest the object as the base, select the rest and press Enter twice: `Auto` spaces them by twice the text height. Or type the distance you want, such as `8`.
+
+### What is the default dimension spacing in AutoCAD?
+
+DIMSPACE's `Auto` is twice the text height of the dimension style. [`DIMBASELINE`](/docs/commands/dimbaseline) uses the style's baseline spacing instead, 3.75 in ISO-25, for each dimension it adds.
+
+### Why does DIMSPACE not move a dimension?
+
+It only spaces dimensions parallel to the base: one at another angle is counted and left where it is. Angular dimensions are not spaced yet.
+
+## Related commands [#related]
+
+- [Dimensioning in AutoCAD: DIMLINEAR](/docs/commands/dimlinear)
+- [DIMCONTINUE in AutoCAD](/docs/commands/dimcontinue)
+- [DIMBASELINE in AutoCAD](/docs/commands/dimbaseline)
+- [DIMSTYLE in AutoCAD](/docs/commands/dimstyle)

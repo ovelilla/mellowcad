@@ -154,6 +154,14 @@ marks a choice between competing terms that a native review should settle first 
 |  | Solid editing (SOLIDEDIT's tool and rail group) | تحرير المجسمات (C) |
 |  | Frustum; prism | جذع (جذع هرم، جذع مخروط)؛ منشور (M) |
 |  | Block reference; wildcards; backquote | مرجع كتلة (C)؛ أحرف البدل؛ علامة الاقتباس الخلفية (L) |
+|  | Attribute; tag, prompt, default value; mode (an attribute's); pickbox | سمة، سمات البلوك (C)؛ المعرّف، المطالبة، القيمة الافتراضية؛ الوضع؛ مربع التحديد (L) † — المعرّف as the palette's Tag; the dialogs (Attribute Definition, Edit Attributes) keep their English names, as Block Definition does |
+|  | Enhanced Attribute Editor | محرر السمات المحسّن (L) † |
+|  | Text style; font; big font; width factor, oblique angle; Upside down, Backwards, Vertical | نمط النص (C)؛ خط الكتابة (الفونت) (C) † — «خطوط اوتوكاد» is what searchers type for fonts, الخط alone is also a line; الخط الكبير (L) †؛ معامل العرض، زاوية الميل (M)؛ مقلوب، معكوس، رأسي (L) |
+|  | Dimension spacing; base dimension (DIMSPACE) | تباعد الأبعاد؛ البُعد الأساسي (L) † |
+|  | Edit mode (TEXTEDIT); annotation objects | وضع التحرير؛ كائنات التعليقات التوضيحية (L) |
+|  | Purge, unused; Nested items, Orphaned data; verify each name | تنظيف، غير المستخدمة (C, as the ribbon's Purge) †؛ العناصر المتداخلة، البيانات اليتيمة (L) †؛ تأكيد كل اسم (L) |
+|  | Linetype scale; global linetype scale factor; paper space | مقياس نوع الخط (C)؛ معامل المقياس العام لأنواع الخطوط (L, as Drawing aids)؛ فضاء الورق (C) |
+|  | True colour; index colour; Color Books; transparency | اللون الحقيقي؛ لون الفهرس (L) †؛ كتب الألوان (L)؛ الشفافية (M) |
 
 ## Register
 

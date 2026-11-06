@@ -380,8 +380,9 @@ export async function commandPage(id: string, locale: AppLocale): Promise<string
     access.join("\n"),
     `## ${prose(labels.session)} [#session]`,
     prose(labels.sessionLead),
+    notes.data.before && `<Session name="${commandSlug(id)}Before" caption="${notes.data.before}" />`,
     `<Session name="${commandSlug(id)}" caption="${notes.data.figure}" />`,
-  ]
+  ].filter((block): block is string => Boolean(block))
 
   if (notes.options.length > 0) {
     blocks.push(`## ${prose(labels.options)} [#options]`)

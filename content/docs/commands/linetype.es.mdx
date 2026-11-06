@@ -35,7 +35,7 @@ Pide el nombre del tipo de línea y ofrece el actual; escribe el nombre de uno c
 
 ## Lo que aún no hace [#missing]
 
-El Administrador de tipos de línea, y cargar, crear o describir tipos de línea: solo existen los seis de arriba, y la lista solo describe Continuous. Una escala de tipo de línea por objeto (CELTSCALE): solo la del dibujo, `ESCALATL`. PorBloque. PSLTSCALE y MSLTSCALE, porque no hay espacio papel. Los nombres de tipo de línea de AutoCAD en español: aquí son ingleses en todos los idiomas. PLINEGEN: una polilínea nueva empieza el patrón de nuevo en cada vértice, salvo que la opción generarTlínea de [`EDITPOL`](/docs/commands/pedit) lo active.
+El Administrador de tipos de línea, y cargar, crear o describir tipos de línea: solo existen los seis de arriba, y la lista solo describe Continuous. Una escala de tipo de línea por objeto (CELTSCALE): solo la del dibujo, [`ESCALATL`](/docs/commands/ltscale). PorBloque. PSLTSCALE y MSLTSCALE, porque no hay espacio papel. Los nombres de tipo de línea de AutoCAD en español: aquí son ingleses en todos los idiomas. PLINEGEN: una polilínea nueva empieza el patrón de nuevo en cada vértice, salvo que la opción generarTlínea de [`EDITPOL`](/docs/commands/pedit) lo active.
 
 [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl)
 
@@ -47,7 +47,7 @@ TIPOLIN, con los alias `TL`, `TLINEA` y `DDLTYPE`. Como en AutoCAD en español, 
 
 ### ¿Por qué mi línea de trazos se ve continua?
 
-Una línea más corta que una repetición de su patrón se dibuja continua, como en AutoCAD: el patrón de CENTER mide unas 51 unidades a la escala por defecto. Sube o baja `ESCALATL` para ajustar el patrón al dibujo. Comprueba también que el tipo de línea del objeto, o el de su capa si es PorCapa, no sea Continuous.
+Una línea más corta que una repetición de su patrón se dibuja continua, como en AutoCAD: el patrón de CENTER mide unas 51 unidades a la escala por defecto. Sube o baja [`ESCALATL`](/docs/commands/ltscale) para ajustar el patrón al dibujo. Comprueba también que el tipo de línea del objeto, o el de su capa si es PorCapa, no sea Continuous.
 
 ### ¿Cómo cambio el tipo de línea de un objeto ya dibujado?
 
@@ -55,11 +55,11 @@ Desígnalo y elige el tipo de línea en la fila Tipo de línea de la paleta Prop
 
 ### ¿Cómo cambio la escala del tipo de línea en AutoCAD?
 
-Escribe `ESCALATL` y el nuevo factor: 2 hace cada trazo el doble de largo, en todo el dibujo.
+Escribe [`ESCALATL`](/docs/commands/ltscale) y el nuevo factor: 2 hace cada trazo el doble de largo, en todo el dibujo.
 
 ## Comandos relacionados [#related]
 
-- [ESCALATL (LTSCALE)](/docs/commands#ltscale): Escala de tipo de línea
+- [Escala de tipo de línea en AutoCAD: ESCALATL (LTSCALE)](/docs/commands/ltscale)
 - [Capas en AutoCAD: CAPA (LAYER)](/docs/commands/layer)
 - [Grosor de línea en AutoCAD: GROSORLIN (LWEIGHT)](/docs/commands/lweight)
 - [Paleta Propiedades en AutoCAD: PROPIEDADES (PROPERTIES)](/docs/commands/properties)

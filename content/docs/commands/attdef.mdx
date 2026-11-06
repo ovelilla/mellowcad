@@ -1,0 +1,85 @@
+---
+title: "ATTDEF in AutoCAD"
+metaTitle: "ATTDEF in AutoCAD: block attributes and alias"
+description: "How AutoCAD's ATTDEF (ATT) defines a block attribute: its modes, tag, prompt and default value, then where its text goes. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for ATTDEF in AutoCAD?","answer":"ATT, then Enter or Space; DDATTDEF too. -ATT is -ATTDEF, the command-line form, which ATTDEF runs here too. _ATTDEF works in any language of AutoCAD."},{"question":"How do I create a block with attributes in AutoCAD?","answer":"Draw the symbol, then run ATTDEF for each attribute and place its text where the value should show. Run BLOCK, pick a base point and select the symbol and the attributes, in the order INSERT should ask them. Each INSERT of the block then asks a value for each attribute, offering its default."},{"question":"What is the difference between the tag, the prompt and the default value?","answer":"The tag names the attribute, as an identifier: it is what the definition shows, and the field EATTEDIT labels. The prompt is the question INSERT asks for its value. The default is the value offered, which Enter accepts."},{"question":"How do I edit an attribute definition?","answer":"Double-click it before it joins a block: TEXTEDIT opens its tag, prompt and default value. Once in a block, the values of each reference are edited with ATTEDIT or EATTEDIT."}]
+---
+
+ATTDEF defines an attribute: a tag, a prompt and a default value, placed in the drawing as a line of text. Select it with the other objects when you make a block with [`BLOCK`](/docs/commands/block), and each reference to that block holds a value of its own for it: a door's number, a part's code, a room's name. Until then the definition shows its tag.
+
+AutoCAD's ATTDEF opens the Attribute Definition dialog, which MellowCAD does not have: here ATTDEF asks at the command line what `-ATTDEF` asks, as AutoCAD's console does. It says the current modes and asks for one to change, until Enter goes on. Then the tag: no spaces, as a space ends it, and lower case is made upper case; Enter alone says `Tag cannot be null`. Then the prompt that [`INSERT`](/docs/commands/insert) will ask the value by, Enter taking the tag, and the default value. Last, where the text goes, with [`TEXT`](/docs/commands/text)'s questions: a start point, the height and the rotation. The height and the justification are TEXT's, shared both ways. Enter at the start point puts the definition one line below the last one defined, with its height, rotation, style and justification, so a block's attributes stack one under another.
+
+- **Command:** `ATTDEF`
+- **Aliases:** `ATT`, `DDATTDEF`
+- **Panel:** [Organize](/docs/commands#organize)
+- **Try it:** [Open the editor](/draw), type `ATT` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="attdef" caption="A door tag: the attribute NUM centred in a circle, its prompt the tag itself and its default value 1, ready to join a block." />
+
+## Options [#options]
+
+### `Invisible` (`I`) [#invisible]
+
+The value does not show on the references, until [`ATTDISP`](/docs/commands/attdisp) turns it on. Each mode is a switch: choosing it flips it between `Y` and `N`, writes the modes again and asks once more. The modes stay set for the next ATTDEF.
+
+### `Constant` (`C`) [#constant]
+
+Every reference holds the same value, which ATTDEF asks for instead of a prompt and a default; INSERT never asks it.
+
+### `Verify` (`V`) [#verify]
+
+INSERT asks the value a second time, to check it, after asking every value once.
+
+### `Preset` (`P`) [#preset]
+
+INSERT does not ask the value: each reference takes the default.
+
+### `Lock position` (`L`) [#lock-position]
+
+On at first: the attribute stays where the block puts it.
+
+### `Justify` (`J`) [#justify]
+
+Asks where the text hangs from its point, as TEXT does: `Left`, `Center`, `Right`, `Middle`, or one of the nine points by top, middle and bottom, left, centre and right. The start point prompt then asks for the point it names: middle centre centres the value in a tag.
+
+### `Style` (`S`) [#style]
+
+Asks for the text style to use, which becomes the current one; `?` lists the drawing's styles.
+
+## What it does not do yet [#missing]
+
+The Attribute Definition dialog: ATTDEF asks at the command line. The Annotative and Multiple lines modes, which AutoCAD 2027 lists after Lock position, and a multiline attribute's lines. Fields, the Align and Fit justifications, and Style's `?` asking which styles to list.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr)
+
+## Questions [#questions]
+
+### What is the shortcut for ATTDEF in AutoCAD?
+
+`ATT`, then Enter or Space; `DDATTDEF` too. `-ATT` is `-ATTDEF`, the command-line form, which ATTDEF runs here too. `_ATTDEF` works in any language of AutoCAD.
+
+### How do I create a block with attributes in AutoCAD?
+
+Draw the symbol, then run ATTDEF for each attribute and place its text where the value should show. Run [`BLOCK`](/docs/commands/block), pick a base point and select the symbol and the attributes, in the order INSERT should ask them. Each [`INSERT`](/docs/commands/insert) of the block then asks a value for each attribute, offering its default.
+
+### What is the difference between the tag, the prompt and the default value?
+
+The tag names the attribute, as an identifier: it is what the definition shows, and the field [`EATTEDIT`](/docs/commands/eattedit) labels. The prompt is the question INSERT asks for its value. The default is the value offered, which Enter accepts.
+
+### How do I edit an attribute definition?
+
+Double-click it before it joins a block: [`TEXTEDIT`](/docs/commands/textedit) opens its tag, prompt and default value. Once in a block, the values of each reference are edited with [`ATTEDIT`](/docs/commands/attedit) or [`EATTEDIT`](/docs/commands/eattedit).
+
+## Related commands [#related]
+
+- [BLOCK in AutoCAD](/docs/commands/block)
+- [INSERT in AutoCAD](/docs/commands/insert)
+- [ATTEDIT in AutoCAD](/docs/commands/attedit)
+- [ATTDISP in AutoCAD](/docs/commands/attdisp)
+- [EATTEDIT in AutoCAD](/docs/commands/eattedit)

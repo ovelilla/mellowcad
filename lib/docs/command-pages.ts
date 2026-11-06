@@ -57,6 +57,11 @@ export interface CommandNotesData {
   readonly description: string
   /** What the session's figure shows: its caption and its accessible name. */
   readonly figure: string
+  /**
+   * The caption of the drawing before the command (session `<slug>Before`),
+   * shown above the session where the change says more beside it (DIMSPACE).
+   */
+  readonly before?: string
   /** English only: the commands a reader goes on to, by global name. */
   readonly related?: readonly string[]
   /** English only: `sourceHash` of the coverage entry's Missing, as the notes last said it. */
@@ -117,8 +122,10 @@ export function parseNotes(text: string, file: string): CommandNotes {
       throw new Error(`${file}: frontmatter ${key} is missing`)
     }
   }
-  if ((fields.figure as string).includes('"')) {
-    throw new Error(`${file}: the figure's caption is an attribute, without "`)
+  for (const key of ["figure", "before"] as const) {
+    if (typeof fields[key] === "string" && (fields[key] as string).includes('"')) {
+      throw new Error(`${file}: the ${key} caption is an attribute, without "`)
+    }
   }
   const [lead, ...rest] = content.split(/^## +/m)
   if (!lead.trim()) throw new Error(`${file}: the lead is missing`)
@@ -372,6 +379,9 @@ export function checkCommandNotes(
       }
       if (Boolean(notes.missing) !== Boolean(english.missing)) {
         report(file, `## Missing goes with the English notes'`)
+      }
+      if (Boolean(notes.data.before) !== Boolean(english.data.before)) {
+        report(file, `before goes with the English notes'`)
       }
     }
   }

@@ -226,7 +226,7 @@ describe("a command's notes", () => {
     tree["content/commands/offset.md"] = english
     const [stale, missing] = LIVE
     tree[`content/commands/offset.${stale}.md`] = notes(
-      'title: "O2"\ndescription: "D2"\nfigure: "F2"\nsourceHash: "old"',
+      'title: "O2"\ndescription: "D2"\nfigure: "F2"\nbefore: "B2"\nsourceHash: "old"',
       `Lead.\n\n## Options\n\n### Through\n\nT.\n\n## Missing\n\nM.\n\n${questions}`
     )
     for (const locale of LIVE) {
@@ -254,6 +254,7 @@ describe("a command's notes", () => {
       `content/commands/offset.${stale}.md: out of date with content/commands/offset.md: bring it up to date, then set sourceHash: "${hash}"`,
       `content/commands/offset.${stale}.md: its options are the English notes', in order: Through, Spin`,
       `content/commands/offset.${stale}.md: ## Missing goes with the English notes'`,
+      `content/commands/offset.${stale}.md: before goes with the English notes'`,
       `content/commands/offset.${missing}.md: missing: OFFSET's notes in ${missing}, a live language`,
       ...others.flatMap((locale) => [unwritten(locale), `content/commands/offset.${locale}.md: Spin is no keyword of OFFSET (cad/locales/en.json)`]),
     ])
@@ -274,6 +275,9 @@ describe("a command's notes", () => {
     expect(() => parseNotes(notes(fields, "Lead.\n\n## Steps\n\nS."), "x.md")).toThrow('"## Steps" is none of')
     expect(() => parseNotes(notes(fields, `Lead.\n\n${questions}\n\n## Options`), "x.md")).toThrow("in this order")
     expect(() => parseNotes(notes(fields, "Lead.\n\n## Questions\n\n### Q?\n\nA."), "x.md")).toThrow("two at least")
+    expect(() => parseNotes(notes(`${fields}\nbefore: 'A "B"'`, `Lead.\n\n${questions}`), "x.md")).toThrow(
+      "the before caption is an attribute"
+    )
     const parsed = parseNotes(notes(fields, `Lead.\n\n## Options\n\n### Through\n\nT.\n\n${questions}`), "offset.es.md")
     expect([parsed.id, parsed.locale, parsed.options, parsed.questions.length]).toEqual([
       "OFFSET",
