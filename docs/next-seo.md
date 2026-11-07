@@ -4,8 +4,8 @@
 > de comandos, completa) publicada el 6/11 y el 7/11, la 04 (la landing) publicada el 6/11, la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
-> un DXF con OPEN y DXFIN) hechas y publicadas el 7/11, y la 05b (un sitio para reportar
-> problemas) hecha el 7/11, que espera el push del dueño antes del 12/11; por decisión del dueño la
+> un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
+> lanzamiento suave del 12/11) hechas y publicadas el 7/11; por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, la 08 (francés),
 > las páginas «abrir DXF online» y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
@@ -210,7 +210,7 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño | kit §6 | — |
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
-| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b, hecha el 7/11), publicado y probado (§7, punto 8) |
+| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
 | 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún | kit §6 | — |
 | lun 16/11 y cada lunes | Seguimiento: ¿aprobado SaaSHub?, ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
@@ -366,14 +366,14 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    calendario de L5 (02–04 ya están publicados).
 7. **Outreach** a los autores de los artículos de la lista: los 50 correos de
    `~/seo-data/launch/outreach/`, en tres tandas de diciembre (calendario de L5).
-8. **Tras el push de la sesión 05b**, antes del 12/11 (GitHub lee las plantillas solo de `main`):
-   en el repositorio, Settings → Advanced Security (antes «Code security») → Private vulnerability
-   reporting → Enable, que es lo que `SECURITY.md` promete; y abrir de verdad Send Feedback, el
-   último del menú de la aplicación del editor, y Report a problem en el pie del sitio. El selector
-   de GitHub debe mostrar los dos formularios, «No GitHub account? Write to hello@mellowcad.com» y
-   «A security vulnerability»; el formulario elegido, la versión y el idioma rellenos, y desde el
-   editor también el navegador. Si el enlace del correo (`mailto:`) no aparece en el selector, que
-   una sesión lo cambie por una página con la dirección.
+8. **Lo de la sesión 05b, hecho por una sesión a petición del dueño (7/11):** el push, el reporte
+   privado de vulnerabilidades activado (Settings → Advanced Security; la API responde
+   `{"enabled":true}`) y los enlaces abiertos de verdad. GitHub lee los formularios de `main` (su
+   vista previa los dibuja) y la política de seguridad, pero descartó el enlace `mailto:` del
+   correo (también descarta el de Mbed TLS) y solo enseña el selector a quien ha iniciado sesión:
+   quitado de `config.yml`; quien no tiene cuenta tiene el correo junto a Report a problem en el
+   pie. Queda del dueño mirar un formulario ya relleno con su sesión de GitHub (el Chrome de
+   `~/seo-data` no la tiene): abrir Send Feedback en `/draw` → «Something does not work».
 
 ## 8. Estado
 
@@ -494,16 +494,19 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   local: 8 imágenes de galería a 1270×760 (2×), el vídeo de 46 s a 1920×1080 (inglés, español y
   3D), el logotipo de 240 a 1024 px; 50 correos de outreach, uno por artículo y en su idioma, 5
   fichas de directorio en su lugar y 3 competidores descartados. Publicado: nada todavía.
-- 05b Reportar problemas: hecha el 7/11/2026 (`e5b445ff` a `07457557`), sin publicar: el push del
-  dueño es la condición del lanzamiento suave del 12/11, y después lo suyo de §7 (punto 8). Dos
+- 05b Reportar problemas: hecha y publicada el 7/11/2026 (`e5b445ff` a `07457557`; el push, el
+  reporte privado de vulnerabilidades y la prueba de los enlaces, hechos por la sesión a petición
+  del dueño: §7, punto 8), con lo que la condición del lanzamiento suave del 12/11 está cumplida. Dos
   formularios de issues de GitHub (`.github/ISSUE_TEMPLATE/`), en inglés, diciendo que se puede
   escribir en español, portugués o árabe y que una issue es pública: algo que no funciona (qué
   hiciste, qué pasó, qué hace AutoCAD) y un comando u opción que falta o no hace lo de AutoCAD 2027;
-  `config.yml` quita la issue en blanco y ofrece hello@mellowcad.com a quien no tiene cuenta, y la
-  política de seguridad, `SECURITY.md`: el reporte privado de GitHub, nunca una issue. Los dos
-  enlaces abren el selector (`/issues/new/choose`), que según la documentación de GitHub pasa los
-  campos al formulario elegido, con la versión (la del motor y el commit que construyó Vercel) y el
-  idioma, y el navegador desde el editor; nada pasa por un servidor nuestro y `/privacy` no cambia.
+  `config.yml` quita la issue en blanco y lleva a la política de seguridad, `SECURITY.md`: el
+  reporte privado de GitHub, nunca una issue. El correo para quien no tiene cuenta no cabe en
+  GitHub (descarta el `mailto:` y pide sesión para ver el selector): está junto al enlace del pie.
+  Los dos enlaces abren el selector (`/issues/new/choose`), que según la documentación de GitHub
+  pasa los campos al formulario elegido, con la versión (la del motor y el commit que construyó
+  Vercel) y el idioma, y el navegador desde el editor; nada pasa por un servidor nuestro y
+  `/privacy` no cambia.
   En el editor, Send Feedback / Enviar comentarios / Enviar feedback, los nombres de AutoCAD 2027
   (su menú Ayuda, acad.cuix `ID_SendFeedback`, y el botón del panel Connect de la pestaña Inicio,
   visto en el escritorio), al final del menú de la aplicación con su WHY hasta que haya pestaña
@@ -516,9 +519,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   esta sesión, por lo añadido en 06 y 07: pt-BR lo pasaba (250,5 KB contra 250) y es lo tocaba
   (250,0); en, 248,8, y ar, 273,3 (contra 275); la 04 midió de 247,4 a 271,7. Por eso el pie no pone
   el navegador, que pediría una isla; su enlace suma 0,1–0,2 KB de HTML (es 250,2). Queda para quien
-  toque la landing después: volver bajo 250. De
-  paso, el README y el kit de lanzamiento decían que no abre DXF, y el texto de r/SideProject dice
-  dónde reportar un fallo.
+  toque la landing después: volver bajo 250. De paso, el README y el kit de lanzamiento decían que
+  no abre DXF, y el texto de r/SideProject dice dónde reportar un fallo.
 - 06 Práctica y guías: hecha y publicada el 7/11/2026 (`7c988f39` a `08a26c98`). La biblioteca
   `/docs/exercises` («AutoCAD practice exercises», «Ejercicios de AutoCAD para practicar», «Exercícios
   de AutoCAD para praticar», «تمارين أوتوكاد»), con 12 ejercicios por nivel —junta, escuadra en L,

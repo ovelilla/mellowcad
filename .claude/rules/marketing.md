@@ -55,9 +55,10 @@ script — updates it in the same change.
 (`ui.md`) open the issue forms' chooser through `reportUrl` (`lib/report.ts`), with the version and
 the language filled in by the `id` of an input every form in `.github/ISSUE_TEMPLATE` has
 (`lib/report.test.ts`), and from the editor the browser too: on the landing that would take an
-island the first load has no room for. The reporter reads them and sends from GitHub, and the
-forms' `config.yml` gives the contact address to whoever has no account. Nothing reaches a server
-of ours, so `/privacy` stays. Ruled out by the owner (2026-11-07): a form of our own that
+island the first load has no room for. The reporter reads them and sends from GitHub. GitHub
+shows the chooser only to someone signed in and drops a `mailto:` contact link, so whoever has no
+account writes to the address beside the footer's link, never one in `config.yml`. Nothing reaches
+a server of ours, so `/privacy` stays. Ruled out by the owner (2026-11-07): a form of our own that
 opens issues or sends mail (a server holding a token, a public board open to spam and to anyone's
 personal data, no way to answer the reporter, a new processor in `/privacy`), and automatic error
 reports, for the same promise.

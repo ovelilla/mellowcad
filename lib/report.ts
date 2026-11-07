@@ -15,8 +15,8 @@ export type ReportFields = Partial<
  * The repository's form chooser with the forms' fields filled in, which the
  * reporter reads before sending: nothing passes through a server of ours.
  * The chooser rather than a form, because GitHub carries the fields into the
- * form picked, and the chooser also offers the contact address to whoever
- * has no GitHub account (`config.yml`).
+ * form picked. GitHub shows it only to someone signed in, so the footer gives
+ * the contact address beside the link.
  */
 export function reportUrl(fields: ReportFields): string {
   const query = new URLSearchParams()
