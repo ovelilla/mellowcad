@@ -619,6 +619,113 @@ describe("parseDxf: files AutoCAD discards whole open here (t-*, x009, x010)", (
 })
 
 describe("parseDxf: text and tables written by other programs", () => {
+  it("reads no further than EOF, as AutoCAD opens a file with words past it", () => {
+    // ezdxf's R12_with_trash_beyond_EOF.dxf, which AutoCAD 2027's console
+    // opens with its one circle.
+    const circle = [
+      "  0",
+      "SECTION",
+      "  2",
+      "ENTITIES",
+      "  0",
+      "CIRCLE",
+      "  8",
+      "0",
+      " 10",
+      "0.0",
+      " 20",
+      "0.0",
+      " 40",
+      "1.5",
+      "  0",
+      "ENDSEC",
+      "  0",
+      "EOF",
+    ]
+    const trash = ["ignore", "invalid", "data", "beyond", "EOF"]
+    expect(parseDxf(dxf(...circle, ...trash)).drawing.entities).toHaveLength(1)
+    // The same circle as a binary file: a code in two bytes, then a string
+    // ended by a zero byte or a double in eight.
+    const text = new TextEncoder()
+    const group = (code: number, value: string | number): number[] => {
+      if (typeof value === "string") return [code, 0, ...text.encode(value), 0]
+      const double = new Uint8Array(8)
+      new DataView(double.buffer).setFloat64(0, value, true)
+      return [code, 0, ...double]
+    }
+    const binary = new Uint8Array([
+      ...text.encode("AutoCAD Binary DXF\r\n\x1a\0"),
+      ...group(0, "SECTION"),
+      ...group(2, "ENTITIES"),
+      ...group(0, "CIRCLE"),
+      ...group(8, "0"),
+      ...group(10, 0),
+      ...group(20, 0),
+      ...group(40, 1.5),
+      ...group(0, "ENDSEC"),
+      ...group(0, "EOF"),
+      ...text.encode("ignore invalid data"),
+    ])
+    expect(parseDxf(binary).drawing.entities).toHaveLength(1)
+  })
+
+  it("draws a hatch whose pattern's name carries its style code", () => {
+    // AutoCAD 2027 writes old hatches so (five of its sample drawings), as
+    // -HATCH takes a pattern's name followed by its style code.
+    const hatch = (name: string) => [
+      "  0",
+      "HATCH",
+      "  8",
+      "0",
+      "  2",
+      name,
+      " 70",
+      "0",
+      " 91",
+      "1",
+      " 92",
+      "2",
+      " 72",
+      "0",
+      " 73",
+      "1",
+      " 93",
+      "3",
+      " 10",
+      "0.0",
+      " 20",
+      "0.0",
+      " 10",
+      "10.0",
+      " 20",
+      "0.0",
+      " 10",
+      "10.0",
+      " 20",
+      "10.0",
+      " 97",
+      "0",
+    ]
+    const parsed = parseDxf(
+      dxf(
+        "  0",
+        "SECTION",
+        "  2",
+        "ENTITIES",
+        ...hatch("ANSI31,_O"),
+        ...hatch("LINE,_I"),
+        ...hatch("U,_N"),
+        "  0",
+        "ENDSEC",
+        "  0",
+        "EOF"
+      )
+    )
+    expect(
+      ofType<HatchEntity>(parsed, "hatch").map((h) => h.patternId)
+    ).toEqual(["ANSI31", "LINE", "U"])
+  })
+
   it("decodes the code page $DWGCODEPAGE names", () => {
     const head =
       "  0\r\nSECTION\r\n  2\r\nHEADER\r\n  9\r\n$ACADVER\r\n  1\r\nAC1015\r\n  9\r\n$DWGCODEPAGE\r\n  3\r\nANSI_1251\r\n  0\r\nENDSEC\r\n  0\r\nSECTION\r\n  2\r\nENTITIES\r\n  0\r\nTEXT\r\n  8\r\n0\r\n 10\r\n0.0\r\n 20\r\n0.0\r\n 40\r\n2.5\r\n  1\r\n"

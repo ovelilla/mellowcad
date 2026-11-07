@@ -1012,7 +1012,10 @@ function hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
     return []
   }
   const solid = ((int(r, 70) ?? 0) & 1) !== 0
-  const name = str(r, 2)?.trim() ?? ""
+  // A pattern's name may carry a hatch style code after it (`ANSI31,_O`,
+  // Outer), as -HATCH takes it (its help page), and AutoCAD 2027 writes old
+  // hatches so in five of its sample drawings; the islands are the loops here.
+  const name = (str(r, 2)?.trim() ?? "").replace(/,_?[NOI]$/i, "")
   const patternId = solid
     ? SOLID_HATCH_PATTERN_ID
     : (resolveHatchPatternId(name) ?? name)

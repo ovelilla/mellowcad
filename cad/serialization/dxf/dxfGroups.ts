@@ -18,7 +18,11 @@ export interface DxfGroups {
   readonly count: number
 }
 
-/** Reads a DXF's groups; throws a {@link DxfReadError} for what is no DXF. */
+/**
+ * Reads a DXF's groups up to EOF; throws a {@link DxfReadError} for what is no
+ * DXF. What a program leaves after EOF is no part of it: AutoCAD 2027 opens
+ * ezdxf's `R12_with_trash_beyond_EOF.dxf`, one circle and five lines of words.
+ */
 export function dxfGroups(file: Uint8Array | string): DxfGroups {
   if (typeof file !== "string" && isBinaryDxf(file)) return binaryGroups(file)
   return asciiGroups(typeof file === "string" ? file : decodeAscii(file))
@@ -41,6 +45,7 @@ function asciiGroups(text: string): DxfGroups {
     values[n] = lines[i + 1]
     at[n] = i + 1
     n++
+    if (code === 0 && lines[i + 1].trim() === "EOF") break
   }
   return { codes, values, lines: at, count: n }
 }
@@ -224,6 +229,7 @@ function binaryGroups(bytes: Uint8Array): DxfGroups {
     codes.push(code)
     values.push(value)
     at.push(codes.length)
+    if (code === 0 && value === "EOF") break
     if (code === 9 && value === "$DWGCODEPAGE") strings.expectCodePage = true
     else if (strings.expectCodePage && code === 3) {
       strings.codePage(value)

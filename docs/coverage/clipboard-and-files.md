@@ -107,7 +107,8 @@ its fit points, end tangents and knot spacing (70's 32, 64, 128, f006) or its co
 knots and weights (a closed one, which AutoCAD writes on open knots, as that curve), TEXT, MTEXT,
 ATTDEF, INSERT with its attributes taken into the block's coordinates, the linear, aligned,
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
-text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata); the tables: layers (on,
+text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
+without the style code AutoCAD may write after it (`ANSI31,_O`); the tables: layers (on,
 off, locked), text and dimension styles (a group left out at the DXF reference's value, not
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
 CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
@@ -115,7 +116,8 @@ PLINEWID, FILLMODE, ATTMODE, ORTHOMODE, ELEVATION, THICKNESS, SPLINETYPE, SPLINE
 the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
 (`Error in drawing header on line 1.`, `<file> is not valid DXF file`, `Invalid or incomplete DXF
 input -- drawing discarded.`, x010) and one ending inside a section in its two (`DXF read error on
-line 23.`, t-no-eof), the drawing left as it was; es and pt-BR's from their consoles (pt-BR's
+line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as AutoCAD opens ezdxf's
+`R12_with_trash_beyond_EOF.dxf`; es and pt-BR's from their consoles (pt-BR's
 `online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
 
 **Deviations:** what the model has no object for is left out and counted at the command line by
