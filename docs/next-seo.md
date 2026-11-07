@@ -211,7 +211,7 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
-| 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún | kit §6 | — |
+| 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún. **7/11, 13:34:** acceso de desarrollador aprobado (los cambios se publican al momento) y la ficha dice ya «Developed by ovelilla». **7/11, noche:** su descripción decía que no lee DXF; la sesión 05b, a petición del dueño, la cambió por la frase del kit §6 («It opens DXF files but does not save them yet, and has no DWG or printing.»), visible con sesión al momento y en la página pública cuando caduque su caché | kit §6 | — |
 | lun 16/11 y cada lunes | Seguimiento: ¿aprobado SaaSHub?, ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
 | mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
@@ -373,7 +373,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    correo (también descarta el de Mbed TLS) y solo enseña el selector a quien ha iniciado sesión:
    quitado de `config.yml`; quien no tiene cuenta tiene el correo junto a Report a problem en el
    pie. Queda del dueño mirar un formulario ya relleno con su sesión de GitHub (el Chrome de
-   `~/seo-data` no la tiene): abrir Send Feedback en `/draw` → «Something does not work».
+   `~/seo-data` no la tiene): abrir Send Feedback en `/draw` → «Something does not work». Y la
+   ficha de SaaSHub, que aún dice que no lee DXF: pide iniciar sesión con hello@mellowcad.com, y
+   su texto nuevo es el del kit §6 (la de AlternativeTo ya está cambiada: calendario de L5).
 
 ## 8. Estado
 
