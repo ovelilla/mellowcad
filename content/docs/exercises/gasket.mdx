@@ -1,0 +1,58 @@
+---
+title: "AutoCAD exercise: a gasket"
+metaTitle: "AutoCAD exercise for beginners: a gasket"
+description: "Draw a gasket in AutoCAD: a rounded plate, a bore, four holes copied from one, centre lines and dimensions, solved step by step. Practise it free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this gasket, in millimetres: a plate 120 by 80 with its corners rounded to a radius of 10, a bore of 40 in the middle and four holes of 10, their centres 12 from the edges, with the bore's centre lines and the dimensions. Everything is typed: the first point of a command is where you type it, and each point after it is measured from the last one. The outline, the centre lines and the dimensions each go on their own layer.
+
+- **Exercise:** Beginner · Mechanical · 2D
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **In the editor:** [Open it with its drawing](/draw?drawing=gasket), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/gasket" caption="The gasket, 120 by 80, dimensioned." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the outline [#outline]
+
+Make Outline the current layer in the Layer control. [`RECTANG`](/docs/commands/rectang) draws the plate in one go: choose `Fillet` and type the radius, `10`, then the first corner, `0,0`, and the other corner, `120,80`, measured from the first.
+
+<Session name="exercises/gasket/outline" caption="1. Draw the outline" />
+
+### 2. Draw the bore [#bore]
+
+[`CIRCLE`](/docs/commands/circle) at the plate's middle, `60,40`: choose `Diameter` and type `40`.
+
+<Session name="exercises/gasket/bore" caption="2. Draw the bore" />
+
+### 3. Copy the holes [#holes]
+
+Draw one hole, a circle at `12,12` with a `Diameter` of `10`, then copy it with [`COPY`](/docs/commands/copy): pick the circle, press Enter, take its centre, `12,12`, as the base point, and type where each copy goes from there: `96,0`, then `96,56`, then `0,56`. Enter ends the copies.
+
+<Session name="exercises/gasket/holes" caption="3. Copy the holes" />
+
+### 4. Draw the centre lines [#centreLines]
+
+Make Centre lines current. Two lines with [`LINE`](/docs/commands/line) cross at the bore's centre and run 6 past its edge: from `60,14`, `0,52` up; from `34,40`, `52,0` across. Enter ends each one.
+
+<Session name="exercises/gasket/centreLines" caption="4. Draw the centre lines" />
+
+### 5. Dimension it [#dimensions]
+
+Make Dimensions current. [`DIMLINEAR`](/docs/commands/dimlinear) takes two points and then where the dimension line goes: the length from `0,10` to `120,0` further on, placed below; the height on the right; the holes' spacing, 96 and 56. A point typed at its prompts touches no object, so each of these is created non-associative, and the command line says so. [`DIMDIAMETER`](/docs/commands/dimdiameter) picks a circle and places its diameter: the bore's, then one hole's.
+
+<Session name="exercises/gasket/dimensions" caption="5. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: an L bracket](/docs/exercises/l-bracket): Beginner · Mechanical · 2D
+- [AutoCAD exercise: stairs in plan](/docs/exercises/stairs): Beginner · Architecture · 2D
+- [AutoCAD 3D exercise: a mounting plate](/docs/exercises/mounting-plate): Beginner · Mechanical · 3D solid
+- [AutoCAD practice exercises](/docs/exercises)

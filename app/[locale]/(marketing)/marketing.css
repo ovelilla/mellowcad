@@ -645,3 +645,46 @@ details > summary::-webkit-details-marker {
     display: none;
   }
 }
+
+/*
+ * Printed, a page of the docs is its article alone, dark on white: an
+ * exercise is printed to be worked from, or saved as a PDF. The tokens turn
+ * light, and a drawing prints as AutoCAD's monochrome plot style plots it,
+ * every line, letter and arrowhead black; a face (a filled path stroked in
+ * its own colour: Hidden's in the background's, Conceptual's shaded) keeps
+ * its colour. `:root:root` outranks the layout's own `--cad-*`, written
+ * after this sheet.
+ */
+@media print {
+  :root:root {
+    --bg: #ffffff;
+    --bg-raised: #ffffff;
+    --bg-sunken: #f1f5f9;
+    --border: #cbd5e1;
+    --text: #0b0f14;
+    --text-muted: #1e293b;
+    --text-subtle: #334155;
+    --syntax-background: #f1f5f9;
+    --syntax-foreground: #0b0f14;
+    /* Hidden's faces are painted the background's colour to hide what is behind them. */
+    --cad-background: #ffffff;
+    color-scheme: light;
+  }
+
+  .sheet-frame {
+    display: none;
+  }
+
+  article svg[role="img"] [stroke]:not([stroke="none"]):not([fill-rule]) {
+    stroke: #000000;
+  }
+
+  article svg[role="img"] text,
+  article svg[role="img"] [fill-rule]:not([stroke]) {
+    fill: #000000;
+  }
+
+  article figure {
+    break-inside: avoid;
+  }
+}

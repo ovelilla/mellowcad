@@ -1,0 +1,64 @@
+---
+title: "AutoCAD exercise: a stepped shaft"
+metaTitle: "AutoCAD mechanical exercise: a stepped shaft"
+description: "Draw a stepped shaft in AutoCAD: half its outline as a polyline, chamfered, mirrored about the axis, and its lengths as chain dimensions. Free, step by step."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this stepped shaft in side view, in millimetres: 150 long, with diameters of 30, 40 and 30 over lengths of 40, 60 and 50, and both ends chamfered 2 by 2. Draw the half above the axis as one polyline, chamfer it and mirror it; then the edges seen across the shaft, the axis and the lengths. The diameters are the ones given here.
+
+- **Exercise:** Intermediate · Mechanical · 2D
+- **Commands:** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- **In the editor:** [Open it with its drawing](/draw?drawing=shaft), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/shaft" caption="A stepped shaft in side view, 150 long, its lengths dimensioned in a chain." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the upper half [#half]
+
+On the Outline layer, one [`PLINE`](/docs/commands/pline) from `0,0`: up `0,15`, along `40,0`, up `0,5`, along `60,0`, down `0,-5`, along `50,0` and down `0,-15`, back to the axis. Enter ends it.
+
+<Session name="exercises/shaft/half" caption="1. Draw the upper half" />
+
+### 2. Chamfer the ends [#chamfers]
+
+[`CHAMFER`](/docs/commands/chamfer), then `Distance`: `2`, and Enter takes `2` for the second distance too. `Multiple` chamfers one corner after another without starting again: pick the two segments at each end's corner.
+
+<Session name="exercises/shaft/chamfers" caption="2. Chamfer the ends" />
+
+### 3. Mirror it [#mirror]
+
+[`MIRROR`](/docs/commands/mirror): pick the polyline, press Enter, then the mirror line from `0,0` to `150,0`, the axis, and Enter to keep the original.
+
+<Session name="exercises/shaft/mirror" caption="3. Mirror it" />
+
+### 4. Draw the edges [#edges]
+
+With [`LINE`](/docs/commands/line), the edges seen across the shaft, each `0,30` up from the bottom: from `2,-15` and `148,-15` at the chamfers, and from `40,-15` and `100,-15` at the shoulders.
+
+<Session name="exercises/shaft/edges" caption="4. Draw the edges" />
+
+### 5. Draw the axis [#axis]
+
+On Centre lines, the axis: a line from `-8,0` to `166,0` further on.
+
+<Session name="exercises/shaft/axis" caption="5. Draw the axis" />
+
+### 6. Dimension it [#dimensions]
+
+On Dimensions, [`DIMLINEAR`](/docs/commands/dimlinear) for the first length, 40, placed below. [`DIMCONTINUE`](/docs/commands/dimcontinue) carries on from its second extension line: `#100,-20`, then `#150,-15`, typed from the origin with #, and Enter twice to end it. A last [`DIMLINEAR`](/docs/commands/dimlinear) gives the whole length, 150, further below.
+
+<Session name="exercises/shaft/dimensions" caption="6. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD isometric exercise: a stepped block](/docs/exercises/isometric-block): Intermediate · Mechanical · Isometric
+- [AutoCAD 3D exercise: a pulley](/docs/exercises/pulley): Intermediate · Mechanical · 3D solid
+- [AutoCAD exercise: a link with tangent lines](/docs/exercises/link): Advanced · Mechanical · 2D
+- [AutoCAD practice exercises](/docs/exercises)

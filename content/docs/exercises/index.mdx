@@ -1,0 +1,166 @@
+---
+title: "AutoCAD practice exercises"
+metaTitle: "AutoCAD practice exercises, free, with solutions"
+description: "AutoCAD practice drawings for beginners and up, in 2D, isometric and 3D, each solved step by step and opened with its drawing in a free online editor."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Where can I find AutoCAD exercises to practise?","answer":"Here: each exercise has its drawing dimensioned, the commands it practises and its solution step by step, and opens in a free editor that works like AutoCAD, in the browser. Start with the beginner ones; each command they use leads to what it does and the options it asks for."},{"question":"Can I practise AutoCAD online for free?","answer":"Yes. MellowCAD runs in the browser, free and with no account: you type AutoCAD's commands and aliases, in your language's names, and answer their prompts in the same order, with the same option letters. It is not AutoCAD: it does not open DWG or DXF files yet, and its 3D solids are still partial."},{"question":"Do the exercises have solutions?","answer":"Every exercise is solved step by step under its drawing. The engine draws each step and writes the command line's history, so you can compare yours with it line by line."},{"question":"Can I print the exercises or save them as a PDF?","answer":"Yes. An exercise's page prints on its own, dark lines on white, the drawing first and the steps after, and your browser's print dialog saves it as a PDF."}]
+---
+
+Drawings to practise AutoCAD on, from a first gasket to 3D solids, each with its dimensions, the commands it practises and its solution step by step. The engine draws every step and writes its command-line history as you will type it: the prompts in AutoCAD 2027's order, with the same option letters. Open one in the editor and its drawing is there beside the space where you draw yours, in your browser, with nothing to install and no account to make.
+
+## Beginner [#beginner]
+
+### AutoCAD exercise: a gasket [#gasket]
+
+<Session name="exercises/gasket" caption="The gasket, 120 by 80, dimensioned." />
+
+Draw a gasket in AutoCAD: a rounded plate, a bore, four holes copied from one, centre lines and dimensions, solved step by step. Practise it free online.
+
+- **Exercise:** Beginner · Mechanical · 2D
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD exercise: a gasket](/docs/exercises/gasket)
+
+### AutoCAD exercise: an L bracket [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="The L bracket, 100 by 80, dimensioned from its bottom left corner." />
+
+Draw an L bracket in AutoCAD with relative coordinates: its outline, a fillet, two holes and baseline dimensions, solved step by step. Practise it free online.
+
+- **Exercise:** Beginner · Mechanical · 2D
+- **Commands:** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD exercise: an L bracket](/docs/exercises/l-bracket)
+
+### AutoCAD exercise: stairs in plan [#stairs]
+
+<Session name="exercises/stairs" caption="A straight flight of stairs in plan, 280 by 100 centimetres, its arrow pointing up the flight." />
+
+Draw a straight flight of stairs in plan in AutoCAD: ten treads from one line and a rectangular array, the arrow going up and dimensions. Free, step by step.
+
+- **Exercise:** Beginner · Architecture · 2D
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`LINE`](/docs/commands/line), [`ARRAYRECT`](/docs/commands/arrayrect), [`PLINE`](/docs/commands/pline), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD exercise: stairs in plan](/docs/exercises/stairs)
+
+### AutoCAD 3D exercise: a mounting plate [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="The plate's outline, 100 by 60 with four holes, dimensioned." />
+
+Model a mounting plate in AutoCAD 3D: regions, a subtraction for the holes and one extrusion make the solid, solved step by step. Practise 3D free online.
+
+- **Exercise:** Beginner · Mechanical · 3D solid
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D exercise: a mounting plate](/docs/exercises/mounting-plate)
+
+## Intermediate [#intermediate]
+
+### AutoCAD exercise: a flange [#flange]
+
+<Session name="exercises/flange" caption="The flange, 140 across, with its keyway, eight holes and diameters." />
+
+Draw a flange in AutoCAD: a bore with a keyway trimmed into it, eight holes in a polar array, centre lines and diameters, solved step by step. Free online.
+
+- **Exercise:** Intermediate · Mechanical · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD exercise: a flange](/docs/exercises/flange)
+
+### AutoCAD exercise: a round table and chairs [#round-table]
+
+<Session name="exercises/round-table" caption="A round table of 120 with six chairs, in plan, dimensioned in centimetres." />
+
+Draw a round table with six chairs in AutoCAD: one chair, then a polar array round the table's centre, and its dimensions, step by step. Free online.
+
+- **Exercise:** Intermediate · Architecture · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD exercise: a round table and chairs](/docs/exercises/round-table)
+
+### AutoCAD exercise: a plot of land [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="A plot of land of five sides, in metres, each side dimensioned and one angle." />
+
+Draw a plot of land in AutoCAD from its sides' lengths and angles with polar coordinates, then measure its area and dimension it. Free, step by step, online.
+
+- **Exercise:** Intermediate · Civil · 2D
+- **Commands:** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- [AutoCAD exercise: a plot of land](/docs/exercises/plot-of-land)
+
+### AutoCAD exercise: a stepped shaft [#shaft]
+
+<Session name="exercises/shaft" caption="A stepped shaft in side view, 150 long, its lengths dimensioned in a chain." />
+
+Draw a stepped shaft in AutoCAD: half its outline as a polyline, chamfered, mirrored about the axis, and its lengths as chain dimensions. Free, step by step.
+
+- **Exercise:** Intermediate · Mechanical · 2D
+- **Commands:** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- [AutoCAD exercise: a stepped shaft](/docs/exercises/shaft)
+
+### AutoCAD isometric exercise: a stepped block [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="A stepped block in isometric, 60 long, 40 deep and 40 high, its sizes dimensioned along its edges." />
+
+Draw a stepped block in isometric in AutoCAD with LINE and polar coordinates along the 30°, 90° and 150° axes, and dimension it. Free, step by step, online.
+
+- **Exercise:** Intermediate · Mechanical · Isometric
+- **Commands:** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- [AutoCAD isometric exercise: a stepped block](/docs/exercises/isometric-block)
+
+### AutoCAD 3D exercise: a pulley [#pulley]
+
+<Session name="exercises/pulley" caption="The pulley's half section beside its axis, its distances from the axis dimensioned." />
+
+Model a pulley in AutoCAD 3D: its half section as a closed polyline, revolved round the Y axis into a solid, solved step by step. Practise 3D free online.
+
+- **Exercise:** Intermediate · Mechanical · 3D solid
+- **Commands:** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D exercise: a pulley](/docs/exercises/pulley)
+
+## Advanced [#advanced]
+
+### AutoCAD exercise: a link with tangent lines [#link]
+
+<Session name="exercises/link" caption="A link of two bosses 90 apart, joined by tangent lines, dimensioned." />
+
+Draw a link in AutoCAD: two bosses joined by lines tangent to both with the Tangent object snap, the arcs between them trimmed, and its dimensions. Free online.
+
+- **Exercise:** Advanced · Mechanical · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD exercise: a link with tangent lines](/docs/exercises/link)
+
+### AutoCAD 3D exercise: a bearing block [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="The bearing block in plan, 100 by 60, its boss, bore and holes dimensioned." />
+
+Model a bearing block in AutoCAD 3D: extrude, unite, then subtract a bore and two bolt holes as cylinders, solved step by step. Practise 3D solids free online.
+
+- **Exercise:** Advanced · Mechanical · 3D solid
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D exercise: a bearing block](/docs/exercises/bearing-block)
+
+## Step-by-step guides [#guides]
+
+The exercises' skills one at a time: typing points, a house's floor plan, a 2D drawing turned into a solid. Each guide shows every step's drawing and its history.
+
+- [AutoCAD coordinates](/docs/coordinates): How to type points in AutoCAD: absolute, relative and polar coordinates, a line of a given length at an angle, and polar tracking. Practise them free online.
+- [How to draw a floor plan in AutoCAD](/docs/floor-plan): How to draw a house's floor plan in AutoCAD: walls with OFFSET, an inner wall, openings cut with TRIM, doors with their swing, windows and dimensions.
+- [From 2D to 3D in AutoCAD](/docs/2d-to-3d): How to turn a 2D drawing into a 3D solid in AutoCAD: extrude, press pull and revolve a closed profile, add and subtract. Free online 3D solids, still partial.
+
+## How the exercises work [#how]
+
+An exercise opens in the editor with its drawing, dimensioned, left of the origin: draw yours from 0,0, as its solution does. What you draw is kept in this browser for that exercise alone. The drawing you were working on stays as it was, and the editor opened on its own brings it back. To start an exercise again, run NEW, then open it from its page. Every page prints on its own, the drawing first and the steps after, and your browser's print dialog saves it as a PDF.
+
+## Questions [#questions]
+
+### Where can I find AutoCAD exercises to practise?
+
+Here: each exercise has its drawing dimensioned, the commands it practises and its solution step by step, and opens in a free editor that works like AutoCAD, in the browser. Start with the beginner ones; each command they use leads to what it does and the options it asks for.
+
+### Can I practise AutoCAD online for free?
+
+Yes. MellowCAD runs in the browser, free and with no account: you type AutoCAD's commands and aliases, in your language's names, and answer their prompts in the same order, with the same option letters. It is not AutoCAD: it does not open DWG or DXF files yet, and its 3D solids are still partial.
+
+### Do the exercises have solutions?
+
+Every exercise is solved step by step under its drawing. The engine draws each step and writes the command line's history, so you can compare yours with it line by line.
+
+### Can I print the exercises or save them as a PDF?
+
+Yes. An exercise's page prints on its own, dark lines on white, the drawing first and the steps after, and your browser's print dialog saves it as a PDF.

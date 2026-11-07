@@ -1,0 +1,48 @@
+---
+title: "AutoCAD 3D exercise: a pulley"
+metaTitle: "AutoCAD 3D exercise: revolve a pulley"
+description: "Model a pulley in AutoCAD 3D: its half section as a closed polyline, revolved round the Y axis into a solid, solved step by step. Practise 3D free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Model this pulley by revolving its half section round its axis, in millimetres: a bore of 20, a hub 30 long and 40 across, a web 10 thick and a rim 24 wide from 90 to 110 across, centred on the hub. The section is drawn as distances from the axis, which runs up the Y axis, so each diameter is drawn as its half.
+
+- **Exercise:** Intermediate · Mechanical · 3D solid
+- **Commands:** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **In the editor:** [Open it with its drawing](/draw?drawing=pulley), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/pulley" caption="The pulley's half section beside its axis, its distances from the axis dimensioned." />
+
+<Session name="exercises/pulley/model" caption="The pulley as a solid, seen from the south-east in the Conceptual visual style." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the half section [#profile]
+
+On the Outline layer, one closed [`PLINE`](/docs/commands/pline) from `10,0`, each point after it a step from the last: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` and `-10,0`, then `Close`.
+
+<Session name="exercises/pulley/profile" caption="1. Draw the half section" />
+
+### 2. Turn the view [#view]
+
+`-VIEW` and `SEIso` look at it from the south-east and above; [`VSCURRENT`](/docs/commands/vscurrent) and `Conceptual` shade the faces, which shows a turned part best.
+
+<Session name="exercises/pulley/view" caption="2. Turn the view" />
+
+### 3. Revolve it [#revolve]
+
+[`REVOLVE`](/docs/commands/revolve): pick the section and press Enter, then `Y`: the Y axis is the pulley's. Enter takes the default angle, a whole turn. [`ZOOM`](/docs/commands/zoom) `Extents` frames it, and a scale of 0.8x leaves room round it.
+
+<Session name="exercises/pulley/revolve" caption="3. Revolve it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a link with tangent lines](/docs/exercises/link): Advanced · Mechanical · 2D
+- [AutoCAD 3D exercise: a bearing block](/docs/exercises/bearing-block): Advanced · Mechanical · 3D solid
+- [AutoCAD exercise: a gasket](/docs/exercises/gasket): Beginner · Mechanical · 2D
+- [AutoCAD practice exercises](/docs/exercises)

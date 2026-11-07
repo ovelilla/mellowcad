@@ -1,0 +1,46 @@
+---
+title: "AutoCAD exercise: a plot of land"
+metaTitle: "AutoCAD civil exercise: plot area and sides"
+description: "Draw a plot of land in AutoCAD from its sides' lengths and angles with polar coordinates, then measure its area and dimension it. Free, step by step, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this plot of land, in metres, from its sides' lengths and directions: 40 at 0°, 30 at 80°, 35 at 155° and 25 at 230°, then back to the start. Measure its area and perimeter, and dimension each side and the angle at its second corner. Polar coordinates, a length and an angle, draw each side from the end of the one before. The drawing's dimension scale is set for metres.
+
+- **Exercise:** Intermediate · Civil · 2D
+- **Commands:** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- **In the editor:** [Open it with its drawing](/draw?drawing=plot-of-land), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/plot-of-land" caption="A plot of land of five sides, in metres, each side dimensioned and one angle." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the boundary [#boundary]
+
+On the Outline layer, [`PLINE`](/docs/commands/pline) from `0,0`, then each side as its length and its angle: `40<0`, `30<80`, `35<155` and `25<230`, each measured from the last point. `Close` draws the fifth side and closes the boundary: one object, which [`AREA`](/docs/commands/area) can measure.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Draw the boundary" />
+
+### 2. Measure its area [#area]
+
+[`AREA`](/docs/commands/area), then `Object`, and pick the boundary: the command line gives its area, in square metres, and its perimeter.
+
+<Session name="exercises/plot-of-land/area" caption="2. Measure its area" />
+
+### 3. Dimension it [#dimensions]
+
+On Dimensions, [`DIMALIGNED`](/docs/commands/dimaligned) and Enter at its first prompt: it then asks for an object, and a pick on a side dimensions that side, parallel to it. Place each one outside the plot. [`DIMANGULAR`](/docs/commands/dimangular) on the two sides that meet at `40,0` gives the angle between them, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a stepped shaft](/docs/exercises/shaft): Intermediate · Mechanical · 2D
+- [AutoCAD isometric exercise: a stepped block](/docs/exercises/isometric-block): Intermediate · Mechanical · Isometric
+- [AutoCAD 3D exercise: a pulley](/docs/exercises/pulley): Intermediate · Mechanical · 3D solid
+- [AutoCAD practice exercises](/docs/exercises)

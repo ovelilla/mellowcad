@@ -1,0 +1,64 @@
+---
+title: "Exercício de AutoCAD: um eixo escalonado"
+metaTitle: "Exercício de AutoCAD mecânico: eixo escalonado"
+description: "Desenhe um eixo escalonado no AutoCAD: meio contorno em polilinha, chanfrado e espelhado, e os comprimentos cotados em série. Grátis, passo a passo."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe este eixo escalonado em vista lateral, em milímetros: 150 de comprimento, com diâmetros de 30, 40 e 30 em trechos de 40, 60 e 50, e as duas pontas chanfradas 2 por 2. Desenhe a metade acima da linha de centro como uma só polilinha, chanfre-a e espelhe-a; depois as arestas transversais, a linha de centro e as cotas dos comprimentos. Os diâmetros não são cotados: são os dados neste enunciado.
+
+- **Exercício:** Intermediário · Mecânica · 2D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`CHANFRO`](/docs/commands/chamfer), [`ESPELHAR`](/docs/commands/mirror), [`LINHA`](/docs/commands/line), [`COTALINEAR`](/docs/commands/dimlinear), [`COTASERIE`](/docs/commands/dimcontinue)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=shaft), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/shaft" caption="Um eixo escalonado em vista lateral, de 150 de comprimento, com os comprimentos cotados em série." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe a metade de cima [#half]
+
+Na camada Contorno, uma só polilinha com o [`PLINHA`](/docs/commands/pline), a partir de `0,0`: para cima `0,15`, para a direita `40,0`, para cima `0,5`, para a direita `60,0`, para baixo `0,-5`, para a direita `50,0` e para baixo `0,-15`, de volta à linha de centro. Enter encerra o comando.
+
+<Session name="exercises/shaft/half" caption="1. Desenhe a metade de cima" />
+
+### 2. Chanfre as pontas [#chamfers]
+
+Execute o [`CHANFRO`](/docs/commands/chamfer), escolha `Distância` e digite `2`; Enter aceita `2` também para a segunda distância. `múlTiplo` chanfra um canto depois do outro sem recomeçar: selecione os dois segmentos no canto de cada ponta.
+
+<Session name="exercises/shaft/chamfers" caption="2. Chanfre as pontas" />
+
+### 3. Espelhe a metade [#mirror]
+
+[`ESPELHAR`](/docs/commands/mirror): selecione a polilinha, pressione Enter, depois a linha de espelhamento de `0,0` a `150,0`, que é a linha de centro, e Enter para manter o original.
+
+<Session name="exercises/shaft/mirror" caption="3. Espelhe a metade" />
+
+### 4. Desenhe as arestas [#edges]
+
+Com o [`LINHA`](/docs/commands/line), as arestas transversais do eixo, cada uma `0,30` para cima a partir de baixo: de `2,-15` e `148,-15`, nos chanfros, e de `40,-15` e `100,-15`, nos ressaltos.
+
+<Session name="exercises/shaft/edges" caption="4. Desenhe as arestas" />
+
+### 5. Desenhe a linha de centro [#axis]
+
+Na camada Linhas de centro, a linha de centro do eixo: de `-8,0` até `166,0` a partir dali.
+
+<Session name="exercises/shaft/axis" caption="5. Desenhe a linha de centro" />
+
+### 6. Cote o desenho [#dimensions]
+
+Na camada Cotas, o [`COTALINEAR`](/docs/commands/dimlinear) para o primeiro comprimento, 40, colocado embaixo. O [`COTASERIE`](/docs/commands/dimcontinue) continua a partir da segunda linha de extensão dessa cota: `#100,-20`, depois `#150,-15`, digitados a partir da origem com #, e Enter duas vezes para encerrá-lo. Um último [`COTALINEAR`](/docs/commands/dimlinear) dá o comprimento total, 150, mais abaixo.
+
+<Session name="exercises/shaft/dimensions" caption="6. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD isométrico: um bloco escalonado](/docs/exercises/isometric-block): Intermediário · Mecânica · Isométrico
+- [Exercício de AutoCAD 3D: uma polia](/docs/exercises/pulley): Intermediário · Mecânica · Sólido 3D
+- [Exercício de AutoCAD: biela com linhas tangentes](/docs/exercises/link): Avançado · Mecânica · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

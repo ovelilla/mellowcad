@@ -3,6 +3,7 @@ description: The site's /docs — one source per page, languages, Fumadocs and t
 paths:
   - "content/docs/**"
   - "content/commands/**"
+  - "content/exercises/**"
   - "lib/docs/**"
   - "components/docs/**"
   - "app/*/*marketing*/docs/**"
@@ -111,6 +112,28 @@ claims follow `i18n.md`.
   `docs:check` names a stale one and the hash to set once it is brought up to date.
 - In a right-to-left page a command's name in a heading is isolated (FSI…PDI) and inline code is
   `dir="ltr"`: `-HATCH` read `HATCH-` in the heading and its table of contents.
+
+## The practice library and the guides
+
+- `/docs/exercises` is a "Use" page, generated (`exercisesPage`) from the exercises' notes and the
+  messages (`Docs.pages.exercises`): each exercise by level with its drawing, the guides, how they
+  open in the editor, and its searchers' questions (`faq`).
+- **An exercise's page**, `/docs/exercises/<slug>` (`exercisePage`), is its **notes**
+  (`content/exercises/<slug>.md` and one per language: the statement, then a `### Title [#id]` per
+  step of its script, ids the same in every language) around what the engine draws: the drawing
+  dimensioned (a 3D one's profile, and its solid, `model`), each step as far as it goes with that
+  step's history alone (`fromAction`), the commands its solution runs, read from the script, and a
+  link that opens it in `/draw` with its drawing (`ui.md`). The script is
+  `content/demos/exercises/<slug>.ts`, its level, discipline and kind in `EXERCISES`; `docs:check`
+  holds the notes as a command's (`checkExerciseNotes`). Typed input goes in code spans: MDX reads
+  `40<0` as a tag. A command's page lists the exercises that run it ("Practise it").
+- Like a command's own page, an exercise is in neither the navigation (`isIndexedPage`) nor
+  `llms.txt`. A heading never holds a link: the table of contents wraps every heading in one.
+- **The how-to guides** (`GUIDE_PAGES`: coordinates, floor-plan, 2d-to-3d) are written "Use" pages,
+  their sessions `content/demos/guides/` (`GUIDE_SESSIONS`), or a command's.
+- **An exercise prints** on its own, dark on white (`marketing.css`, `@media print`): its drawing as
+  AutoCAD's monochrome plot style plots it, the site's chrome `print:hidden`; `PrintButton` is the
+  docs' island for it.
 
 ## Fumadocs
 

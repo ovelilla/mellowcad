@@ -1,0 +1,66 @@
+---
+title: "AutoCAD 3D exercise: a bearing block"
+metaTitle: "AutoCAD advanced 3D exercise: a bearing block"
+description: "Model a bearing block in AutoCAD 3D: extrude, unite, then subtract a bore and two bolt holes as cylinders, solved step by step. Practise 3D solids free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Model this bearing block, in millimetres: a base 100 by 60 with corners of radius 10, 12 thick; a boss of 40 across standing 40 high in the middle; a bore of 20 through the boss and two bolt holes of 10 through the base, 76 apart. The base and the boss are extruded from their outlines and united into one solid; the bore and the holes are cylinders subtracted from it.
+
+- **Exercise:** Advanced · Mechanical · 3D solid
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **In the editor:** [Open it with its drawing](/draw?drawing=bearing-block), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/bearing-block" caption="The bearing block in plan, 100 by 60, its boss, bore and holes dimensioned." />
+
+<Session name="exercises/bearing-block/model" caption="The bearing block as a solid, seen from the south-east in the Conceptual visual style." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the plan [#plan]
+
+On the Outline layer, [`RECTANG`](/docs/commands/rectang) with a `Fillet` of `10`, from `0,0` to `100,60`, and a circle at its centre, `50,30`, with a `Diameter` of `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Draw the plan" />
+
+### 2. Extrude the base and the boss [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude) the outline `12` high, then the circle `40` high: two solids.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Extrude the base and the boss" />
+
+### 3. Unite them [#union]
+
+[`UNION`](/docs/commands/union): pick both and press Enter. They are one solid.
+
+<Session name="exercises/bearing-block/union" caption="3. Unite them" />
+
+### 4. Draw the cylinders [#holes]
+
+The bore and a bolt hole as cylinders, with [`CYLINDER`](/docs/commands/cylinder): the bore at `50,30`, `Diameter` `20` and `40` high; a bolt hole at `12,30`, diameter `10` and `12` high. Then [`COPY`](/docs/commands/copy) the hole from `12,30` to `76,0` further on.
+
+<Session name="exercises/bearing-block/holes" caption="4. Draw the cylinders" />
+
+### 5. Subtract them [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract): pick the block and press Enter, then the three cylinders and Enter. The bore and the holes go through.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Subtract them" />
+
+### 6. Turn the view [#view]
+
+`-VIEW` and `SEIso`, [`VSCURRENT`](/docs/commands/vscurrent) and `Conceptual`, then [`ZOOM`](/docs/commands/zoom) `Extents` and 0.8x to frame it.
+
+<Session name="exercises/bearing-block/view" caption="6. Turn the view" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a gasket](/docs/exercises/gasket): Beginner · Mechanical · 2D
+- [AutoCAD exercise: an L bracket](/docs/exercises/l-bracket): Beginner · Mechanical · 2D
+- [AutoCAD exercise: stairs in plan](/docs/exercises/stairs): Beginner · Architecture · 2D
+- [AutoCAD practice exercises](/docs/exercises)

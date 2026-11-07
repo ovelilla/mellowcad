@@ -164,6 +164,7 @@
     "teachersBody": "Todos tus alumnos tienen los mismos comandos en el mismo orden, en el aula o en casa, y no hay nada que instalar.",
     "makersTitle": "Makers",
     "makersBody": "Dibuja a medida un soporte o una placa, o modélalos como sólido, gratis.",
+    "practice": "Estudiantes y profesores: <link>ejercicios de AutoCAD para practicar</link>, desde una primera junta hasta sólidos 3D, cada uno resuelto paso a paso y abierto en el editor con su dibujo.",
     "notFor": "Todavía no sirve para intercambiar archivos DWG o DXF ni para trazar planos en papel o en PDF."
   },
   "Status": {
@@ -224,6 +225,7 @@
     "code": "Código",
     "docs": "Documentación",
     "commands": "Referencia de comandos",
+    "exercises": "Ejercicios para practicar",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "Licencia MIT",
@@ -316,6 +318,34 @@
         "metaTitle": "Atajos de teclado de AutoCAD: teclas F y Ctrl",
         "description": "Las teclas que responde MellowCAD: las ayudas al dibujo, la edición y los archivos, la ventana y la línea de comandos.",
         "lead": "Las teclas que responde MellowCAD, las que un usuario de AutoCAD ya tiene en los dedos. Cada comando se nombra como lo escribirías; sus alias están en la página de comandos."
+      },
+      "exercises": {
+        "title": "Ejercicios de AutoCAD para practicar",
+        "metaTitle": "Ejercicios de AutoCAD 2D y 3D resueltos, gratis",
+        "description": "Ejercicios y planos de AutoCAD para principiantes y más, en 2D, isométrico y 3D, resueltos paso a paso y abiertos con su dibujo en un editor online gratis.",
+        "lead": "Planos para practicar AutoCAD, desde una primera junta hasta sólidos 3D, cada uno con sus cotas, los comandos que practica y su solución paso a paso. El motor dibuja cada paso y escribe el historial de la línea de comandos tal como lo teclearás: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Abre uno en el editor y su dibujo estará junto al espacio donde dibujas el tuyo, en tu navegador, sin nada que instalar ni cuenta que crear.",
+        "guidesTitle": "Guías paso a paso",
+        "guides": "Las técnicas de los ejercicios, una a una: escribir puntos, el plano de una casa, un dibujo 2D convertido en sólido. Cada guía muestra el dibujo y el historial de cada paso.",
+        "howTitle": "Cómo funcionan los ejercicios",
+        "how": "Un ejercicio se abre en el editor con su dibujo, acotado, a la izquierda del origen: dibuja el tuyo desde 0,0, como hace su solución. Lo que dibujas se guarda en este navegador solo para ese ejercicio. El dibujo en el que estabas trabajando se queda como estaba, y vuelve al abrir el editor sin ningún ejercicio. Para empezar de nuevo un ejercicio, ejecuta NUEVO y vuelve a abrirlo desde su página. Cada página se imprime sin la navegación del sitio, primero el dibujo y después los pasos, y el cuadro de diálogo de impresión del navegador la guarda como PDF.",
+        "questions": {
+          "where": {
+            "question": "¿Dónde puedo encontrar ejercicios de AutoCAD para practicar?",
+            "answer": "Aquí: cada ejercicio tiene su dibujo acotado, los comandos que practica y su solución paso a paso, y se abre en un editor gratuito que funciona como AutoCAD, en el navegador. Empieza por los básicos; cada comando que usan lleva a lo que hace y a las opciones que pide."
+          },
+          "online": {
+            "question": "¿Puedo practicar AutoCAD online gratis?",
+            "answer": "Sí. MellowCAD funciona en el navegador, gratis y sin cuenta: escribes los comandos y alias de AutoCAD con sus nombres en español y respondes a sus solicitudes en el mismo orden, con las mismas letras de opción. No es AutoCAD: todavía no abre archivos DWG ni DXF, y sus sólidos 3D aún son parciales."
+          },
+          "solutions": {
+            "question": "¿Los ejercicios están resueltos?",
+            "answer": "Todos están resueltos paso a paso bajo su dibujo. El motor dibuja cada paso y escribe el historial de la línea de comandos, así que puedes comparar el tuyo con él línea a línea."
+          },
+          "pdf": {
+            "question": "¿Puedo imprimir los ejercicios o guardarlos en PDF?",
+            "answer": "Sí. La página de un ejercicio se imprime sin la navegación del sitio, en líneas oscuras sobre blanco, primero el dibujo y después los pasos, y el cuadro de diálogo de impresión del navegador la guarda como PDF."
+          }
+        }
       }
     },
     "reference": {
@@ -335,6 +365,7 @@
       "options": "Opciones",
       "missing": "Lo que aún no hace",
       "questions": "Preguntas frecuentes",
+      "practice": "Practícalo",
       "related": "Comandos relacionados"
     },
     "shortcuts": {
@@ -374,9 +405,35 @@
       "gettingStarted": "Primeros pasos",
       "howTo": "Cómo…",
       "reference": "Referencia",
-      "concept": "Conceptos"
+      "concept": "Conceptos",
+      "practice": "Práctica"
     },
     "exercise": {
+      "kind": "Ejercicio",
+      "commands": "Comandos",
+      "editor": "En el editor",
+      "editorText": "<editor>Ábrelo con su dibujo</editor>, acotado junto a donde dibujas el tuyo",
+      "drawing": "El dibujo",
+      "steps": "Paso a paso",
+      "stepsLead": "El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; # mide desde el origen.",
+      "more": "Más ejercicios",
+      "open": "Abrir en el editor",
+      "print": "Imprimir o guardar como PDF",
+      "levels": {
+        "beginner": "Básico",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzado"
+      },
+      "disciplines": {
+        "mechanical": "Mecánica",
+        "architecture": "Arquitectura",
+        "civil": "Civil"
+      },
+      "spaces": {
+        "2d": "2D",
+        "isometric": "Isométrico",
+        "3d": "Sólido 3D"
+      },
       "layers": {
         "outline": "Contorno",
         "centre": "Ejes",

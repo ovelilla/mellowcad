@@ -1,0 +1,52 @@
+---
+title: "Exercício de AutoCAD isométrico: um bloco escalonado"
+metaTitle: "Exercício de desenho isométrico no AutoCAD"
+description: "Desenhe um bloco escalonado em isométrico no AutoCAD com linhas e coordenadas polares nos eixos de 30°, 90° e 150°, e cote-o. Grátis, passo a passo, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe este bloco escalonado em isométrico, em milímetros: 60 de comprimento, 40 de profundidade e 40 de altura, com um degrau de 20 de profundidade e 20 de altura ao longo da frente. Cada aresta segue um dos eixos isométricos: 30° e 210° para o comprimento, 150° e 330° para a profundidade, 90° e 270° para a altura. O MellowCAD ainda não tem o desenho isométrico do AutoCAD, com o snap isométrico e os círculos isométricos, então as arestas são linhas digitadas com coordenadas polares, um comprimento e um ângulo.
+
+- **Exercício:** Intermediário · Mecânica · Isométrico
+- **Comandos:** [`LINHA`](/docs/commands/line), [`COTAALIN`](/docs/commands/dimaligned)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=isometric-block), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/isometric-block" caption="Um bloco escalonado em isométrico, de 60 de comprimento, 40 de profundidade e 40 de altura, com as medidas cotadas ao longo das arestas." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe a frente do degrau [#front]
+
+Na camada Contorno, comece o [`LINHA`](/docs/commands/line) em `0,0`, o canto inferior da frente: `60<30`, `20<90`, `60<210` e depois `Fechar`.
+
+<Session name="exercises/isometric-block/front" caption="1. Desenhe a frente do degrau" />
+
+### 2. Desenhe a lateral [#side]
+
+De novo a partir de `0,0`, a lateral esquerda: `40<150`, `40<90`, `20<330`, `20<270` e `20<330`. Enter encerra a linha na aresta da frente do degrau.
+
+<Session name="exercises/isometric-block/side" caption="2. Desenhe a lateral" />
+
+### 3. Desenhe o topo [#top]
+
+O resto começa em cantos já desenhados: digite `_END`, o snap ao objeto Ponto final para um só ponto, e clique no canto. A partir do canto superior direito da frente: `20<150`, `20<90`, `20<150` e `60<210`. Depois duas linhas de `60<210`, uma do pé do espelho do degrau e outra do topo dele.
+
+<Session name="exercises/isometric-block/top" caption="3. Desenhe o topo" />
+
+### 4. Cote o desenho [#dimensions]
+
+Na camada Cotas, o [`COTAALIN`](/docs/commands/dimaligned) ao longo das arestas, cada cota ao lado da sua: 60 e 40 embaixo, 40 subindo pela esquerda, 20 subindo pela direita.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD 3D: uma polia](/docs/exercises/pulley): Intermediário · Mecânica · Sólido 3D
+- [Exercício de AutoCAD: biela com linhas tangentes](/docs/exercises/link): Avançado · Mecânica · 2D
+- [Exercício de AutoCAD 3D: um mancal](/docs/exercises/bearing-block): Avançado · Mecânica · Sólido 3D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

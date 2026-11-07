@@ -1,0 +1,48 @@
+---
+title: "Exercício de AutoCAD 3D: uma polia"
+metaTitle: "Exercício de AutoCAD 3D: polia por revolução"
+description: "Modele uma polia no AutoCAD 3D: a meia seção como polilinha fechada, girada em torno do eixo Y até virar um sólido, passo a passo. Pratique 3D online grátis."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modele esta polia girando a meia seção dela em torno do eixo, em milímetros: um furo de 20, um cubo de 30 de comprimento e 40 de diâmetro, uma alma de 10 de espessura e um aro de 24 de largura, de 90 a 110 de diâmetro, centrados no cubo. A seção é desenhada como distâncias ao eixo, que segue o eixo Y para cima, então cada diâmetro é desenhado como a metade dele.
+
+- **Exercício:** Intermediário · Mecânica · Sólido 3D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`REVOLUCAO`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=pulley), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/pulley" caption="A meia seção da polia ao lado do eixo, com as distâncias ao eixo cotadas." />
+
+<Session name="exercises/pulley/model" caption="A polia como sólido, vista do sudeste no estilo visual Conceitual." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe a meia seção [#profile]
+
+Na camada Contorno, uma só polilinha fechada com o [`PLINHA`](/docs/commands/pline), a partir de `10,0`, cada ponto seguinte um passo a partir do último: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` e `-10,0`, e depois `Fechar`.
+
+<Session name="exercises/pulley/profile" caption="1. Desenhe a meia seção" />
+
+### 2. Gire a vista [#view]
+
+O `-VISTA` com `isoSE` mostra a peça do sudeste e de cima; o [`EVATUAL`](/docs/commands/vscurrent) com `Conceitual` sombreia as faces, o que mostra melhor uma peça torneada.
+
+<Session name="exercises/pulley/view" caption="2. Gire a vista" />
+
+### 3. Faça a revolução [#revolve]
+
+[`REVOLUCAO`](/docs/commands/revolve): selecione a seção e pressione Enter, depois `Y`: o eixo Y é o da polia. Enter aceita o ângulo padrão, uma volta inteira. O [`ZOOM`](/docs/commands/zoom) `ESTendido` a enquadra, e uma escala de 0.8x deixa uma margem em volta.
+
+<Session name="exercises/pulley/revolve" caption="3. Faça a revolução" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD: biela com linhas tangentes](/docs/exercises/link): Avançado · Mecânica · 2D
+- [Exercício de AutoCAD 3D: um mancal](/docs/exercises/bearing-block): Avançado · Mecânica · Sólido 3D
+- [Exercício de AutoCAD: uma junta](/docs/exercises/gasket): Iniciante · Mecânica · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

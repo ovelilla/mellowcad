@@ -1,3 +1,7 @@
+import { existsSync, readFileSync } from "node:fs"
+import path from "node:path"
+
+import { frontmatter as readFrontmatter } from "fumadocs-core/content/md/frontmatter"
 import {
   commandCatalog,
   demo,
@@ -10,6 +14,9 @@ import type { EditorLocale } from "@mellowcad/editor"
 import { en as editorEnglish } from "@mellowcad/editor/locales/en"
 
 import { COMMAND_GROUPS } from "@/content/commands"
+import { EXERCISES, LEVELS, isExerciseSlug, type ExerciseSlug } from "@/content/demos/exercises"
+import { exerciseCommands } from "@/content/demos/exercises/exercise"
+import { exerciseSessionName } from "@/content/demos/exercises/sessions"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
 import { loadMessages } from "@/i18n/messages"
@@ -29,15 +36,24 @@ import {
   type CommandNotes,
 } from "./command-pages"
 import {
+  EXERCISES_PATH,
+  exercisePagePath,
+  readExerciseNotes,
+} from "./exercise-pages"
+import {
   SHORTCUT_SECTIONS,
   type KeyCombo,
   type Shortcut,
   type ShortcutMode,
 } from "./shortcuts"
-import { COVERAGE_DIR, githubAnchor } from "./use"
+import { COVERAGE_DIR, GUIDE_PAGES, githubAnchor } from "./use"
 
 /** The generated pages that are not a command's own, by their file's base. */
-export const GENERATED_PAGES = { commands: "commands/index", shortcuts: "shortcuts" } as const
+export const GENERATED_PAGES = {
+  commands: "commands/index",
+  shortcuts: "shortcuts",
+  exercises: "exercises/index",
+} as const
 
 export type GeneratedPage = keyof typeof GENERATED_PAGES
 
@@ -405,6 +421,17 @@ export async function commandPage(id: string, locale: AppLocale): Promise<string
     blocks.push(`### ${words(question)}`, words(answer))
   }
 
+  // The exercises whose solution runs it, in the library's order.
+  const practice = (Object.keys(EXERCISES) as ExerciseSlug[]).flatMap((slug) => {
+    const exercise = readExerciseNotes(root, slug, locale)
+    return exercise && exerciseCommands(EXERCISES[slug].exercise).includes(id)
+      ? [`- [${prose(exercise.data.title)}](${exercisePagePath(slug)})`]
+      : []
+  })
+  if (practice.length > 0) {
+    blocks.push(`## ${prose(labels.practice)} [#practice]`, practice.join("\n"))
+  }
+
   const related = english.data.related ?? []
   if (related.length > 0) {
     const catalog = new Map(autocadCommands(engineLocale).map((entry) => [entry.id, entry]))
@@ -439,5 +466,166 @@ export async function commandPage(id: string, locale: AppLocale): Promise<string
 
 /** Where a command's notes are, for an error that names them. */
 const COMMAND_NOTES_NOTE = "content/commands/"
+
+/**
+ * The commands an exercise practises, as its page lists them: each named in
+ * the page's command language, leading to its own page where it has one and
+ * to its entry in the reference where not.
+ */
+function practisedCommands(slug: ExerciseSlug, text: EngineText, paged: ReadonlySet<string>): string {
+  return exerciseCommands(EXERCISES[slug].exercise)
+    .map((id) => {
+      const [name] = text.commandNames(id)
+      if (!name) throw new Error(`${slug} runs ${id}, no command of the engine's catalog`)
+      return `[${code(name)}](${paged.has(id) ? commandPagePath(id) : `${COMMANDS_PATH}#${commandSlug(id)}`})`
+    })
+    .join(", ")
+}
+
+/** An exercise's level, discipline and kind of drawing, as a line. */
+function exerciseKind(slug: ExerciseSlug, labels: Messages["Docs"]["exercise"]): string {
+  const { level, discipline, space } = EXERCISES[slug]
+  return [labels.levels[level], labels.disciplines[discipline], labels.spaces[space]].join(" · ")
+}
+
+/**
+ * An exercise's own page in `locale`: its notes (the statement, what each
+ * step does) around what the engine draws and writes — the drawing, the solid
+ * a 3D one ends in, each step drawn as far as it goes with its history — and
+ * the commands its solution runs. A link opens it in the editor with its
+ * drawing (`/draw?drawing=gasket`).
+ */
+export async function exercisePage(slug: string, locale: AppLocale): Promise<string> {
+  const root = process.cwd()
+  if (!isExerciseSlug(slug)) throw new Error(`${slug} is no exercise of content/demos/exercises`)
+  const notes = readExerciseNotes(root, slug, locale)
+  if (!notes) throw new Error(`${slug} has no notes in ${locale} (content/exercises/)`)
+  const { exercise } = EXERCISES[slug]
+  const ids = (steps: readonly { id: string }[]) => steps.map((step) => step.id).join(", ")
+  if (ids(notes.steps) !== ids(exercise.steps)) {
+    throw new Error(`${slug}'s notes in ${locale} tell the steps ${ids(notes.steps)}; its script takes ${ids(exercise.steps)}`)
+  }
+  const t = await loadMessages(locale)
+  const labels = t.Docs.exercise
+  const text = engineText(await loadEngineLocale(locale))
+  const paged = new Set(notedCommands(root))
+  const words = (markdown: string) => engineWords(markdown, "", text, paged)
+  const editor = `${localePath(locale, EDITOR_PATH)}?drawing=${slug}`
+
+  const facts = [
+    `- **${prose(labels.kind)}:** ${prose(exerciseKind(slug, labels))}`,
+    `- **${prose(labels.commands)}:** ${practisedCommands(slug, text, paged)}`,
+    `- **${prose(labels.editor)}:** ${fill(labels.editorText, {}, { editor: (words) => `[${words}](${editor})` })}`,
+  ]
+  const blocks: string[] = [
+    words(notes.statement),
+    facts.join("\n"),
+    `## ${prose(labels.drawing)} [#drawing]`,
+    `<Session name="${exerciseSessionName(slug)}" caption="${notes.data.figure}" />`,
+  ]
+  if (notes.data.model) {
+    blocks.push(`<Session name="${exerciseSessionName(slug, "model")}" caption="${notes.data.model}" />`)
+  }
+  blocks.push(`## ${prose(labels.steps)} [#steps]`, prose(labels.stepsLead))
+  notes.steps.forEach((step, index) => {
+    const title = `${index + 1}. ${step.title}`
+    blocks.push(
+      `### ${prose(title)} [#${step.id}]`,
+      words(step.text),
+      `<Session name="${exerciseSessionName(slug, step.id)}" caption="${title}" />`
+    )
+  })
+
+  // The next ones in the library's order, round to its start.
+  const slugs = Object.keys(EXERCISES) as ExerciseSlug[]
+  const at = slugs.indexOf(slug)
+  const more = [1, 2, 3].map((step) => slugs[(at + step) % slugs.length])
+  blocks.push(
+    `## ${prose(labels.more)} [#more]`,
+    [
+      ...more.map((other) => {
+        const page = readExerciseNotes(root, other, locale)
+        if (!page) throw new Error(`${other} has no notes in ${locale}`)
+        return `- [${prose(page.data.title)}](${exercisePagePath(other)}): ${prose(exerciseKind(other, labels))}`
+      }),
+      `- [${prose(t.Docs.pages.exercises.title)}](${EXERCISES_PATH})`,
+    ].join("\n")
+  )
+
+  return `${frontmatter({
+    title: notes.data.title,
+    metaTitle: notes.data.metaTitle,
+    description: notes.data.description,
+    type: "practice",
+    generated: GENERATOR,
+  })}\n${blocks.join("\n\n")}\n`
+}
+
+/**
+ * The how-to guides as a list, each its title and description in `locale`,
+ * read from its page: a live language has its own (`docs:check`).
+ */
+function guideLinks(locale: AppLocale): string {
+  return GUIDE_PAGES.map((guide) => {
+    const own = path.join(process.cwd(), "content/docs", locale === routing.defaultLocale ? `${guide}.mdx` : `${guide}.${locale}.mdx`)
+    const file = existsSync(own) ? own : path.join(process.cwd(), "content/docs", `${guide}.mdx`)
+    const { title, description } = readFrontmatter(readFileSync(file, "utf8")).data as {
+      title: string
+      description: string
+    }
+    return `- [${prose(title)}](/docs/${guide}): ${prose(description)}`
+  }).join("\n")
+}
+
+/**
+ * The practice library's index: every exercise by level, each with its
+ * drawing, what it is and the commands it practises; then how they open in
+ * the editor and the questions its searchers ask.
+ */
+export async function exercisesPage(locale: AppLocale): Promise<string> {
+  const root = process.cwd()
+  const t = await loadMessages(locale)
+  const page = t.Docs.pages.exercises
+  const labels = t.Docs.exercise
+  const text = engineText(await loadEngineLocale(locale))
+  const paged = new Set(notedCommands(root))
+  const slugs = Object.keys(EXERCISES) as ExerciseSlug[]
+  const blocks: string[] = [markdown(page.lead)]
+  for (const level of LEVELS) {
+    blocks.push(`## ${prose(labels.levels[level])} [#${level}]`)
+    for (const slug of slugs.filter((other) => EXERCISES[other].level === level)) {
+      const notes = readExerciseNotes(root, slug, locale)
+      if (!notes) throw new Error(`${slug} has no notes in ${locale} (content/exercises/)`)
+      // No link in a heading: the table of contents puts each heading in
+      // a link of its own. The exercise's own page is the list's last line.
+      blocks.push(
+        `### ${prose(notes.data.title)} [#${slug}]`,
+        `<Session name="${exerciseSessionName(slug)}" caption="${notes.data.figure}" />`,
+        prose(notes.data.description),
+        [
+          `- **${prose(labels.kind)}:** ${prose(exerciseKind(slug, labels))}`,
+          `- **${prose(labels.commands)}:** ${practisedCommands(slug, text, paged)}`,
+          `- [${prose(notes.data.title)}](${exercisePagePath(slug)})`,
+        ].join("\n")
+      )
+    }
+  }
+  blocks.push(`## ${prose(page.guidesTitle)} [#guides]`, markdown(page.guides), guideLinks(locale))
+  blocks.push(`## ${prose(page.howTitle)} [#how]`, markdown(page.how))
+  const questions = Object.values(page.questions)
+  blocks.push(`## ${prose(t.Docs.command.questions)} [#questions]`)
+  for (const { question, answer } of questions) blocks.push(`### ${prose(question)}`, markdown(answer))
+  return `${frontmatter({
+    title: page.title,
+    metaTitle: page.metaTitle,
+    description: page.description,
+    type: "practice",
+    generated: GENERATOR,
+    faq: questions.map(({ question, answer }) => ({
+      question: plainText(question, locale),
+      answer: plainText(answer, locale),
+    })),
+  })}\n${blocks.join("\n\n")}\n`
+}
 
 export type { CommandNotes }

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { localeUrl } from "@/i18n/navigation"
 import { routing } from "@/i18n/routing"
 import { pageMarkdown } from "@/lib/docs/markdown"
-import { canonicalPath, isCommandPage, ownPages } from "@/lib/docs/pages"
+import { canonicalPath, isIndexedPage, ownPages } from "@/lib/docs/pages"
 import { SITE_NAME } from "@/lib/site"
 
 export const dynamic = "force-static"
@@ -20,7 +20,7 @@ export async function GET() {
   const metadata = await getTranslations({ locale, namespace: "Metadata" })
   const pages = await Promise.all(
     ownPages(locale)
-      .filter((page) => !isCommandPage(page))
+      .filter((page) => !isIndexedPage(page))
       .map(
         async (page) =>
           `Source: ${localeUrl(locale, canonicalPath(page))}\n\n${await pageMarkdown(page)}`

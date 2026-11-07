@@ -183,7 +183,31 @@ marks a choice between competing terms that a native review should settle first 
 |  | Foot of the perpendicular | قدم العمود (M) |
 |  | Node, Geometric Center, Mid Between 2 Points, temporary track point (snaps not built) | العقدة، المركز الهندسي، المنتصف بين نقطتين، نقطة التتبع المؤقتة (L) — written with the English name beside them |
 |  | Aperture (APERTURE) | فتحة الالتقاط (L) † |
-| Exercises | Their drawings' layers: Outline, Centre lines, Hidden lines, Dimensions | المحيط، خطوط المحاور، الخطوط المخفية، الأبعاد (M) † — the names a drafting template gives its layers, short enough for the Layer control |
+| Exercises | Their drawings' layers: Outline, Centre lines, Hidden lines, Dimensions | الخطوط الظاهرة، خطوط المحاور، الخطوط المخفية، الأبعاد (M) † — the names a drafting template gives its layers, short enough for the Layer control; الخطوط الظاهرة (visible lines) pairs with the hidden ones, where المحيط is also the circumference |
+|  | Exercise; Practice (a page's type); step by step; solved | تمرين؛ تدريب؛ خطوة بخطوة؛ محلول (M) — «تمارين محلولة» is how exercise books and searchers say «with solutions» |
+|  | Beginner, Intermediate, Advanced; Mechanical, Architecture, Civil; 2D, Isometric, 3D solid | مبتدئ، متوسط، متقدم؛ ميكانيكي، معماري، مدني؛ ثنائي الأبعاد، أيزومتري، مجسم ثلاثي الأبعاد (M; أيزومتري C †, the loanword of the isometric drawing's row, short enough for a label) |
+|  | Gasket; L bracket; mounting plate | حشية (M) † — جوان is the workshop word in Egypt and the Levant؛ حامل على شكل L (L) † — كتيفة is the everyday shelf bracket؛ لوح تثبيت (L) † — against صفيحة تثبيت |
+|  | Flange; keyway; pitch circle (a flange's holes) | شفة (فلنجة) (M) † — the title gives both, فلنجة being the workshops' and the searchers' word؛ مجرى الخابور (M)؛ دائرة المراكز (L) † — دائرة الخطوة is a gear's |
+|  | Bore; hole; bolt hole | تجويف (M) † — against ثقب مركزي؛ ثقب؛ ثقب برغي (M) |
+|  | Boss (a link's, a bearing block's); hub, web, rim (a pulley's) | صُرّة (M) † — the hub's word, kept for a boss؛ القرص، الطوق (M) † |
+|  | Stepped shaft; shoulder; side view; turned part | عمود متدرّج (M)؛ كتف (M)؛ منظر جانبي (M)؛ قطعة خراطة (L) — not مخروطة, which reads «conical» |
+|  | Link (the part); bearing block | ذراع توصيل (L) † — against وصلة؛ كرسي محمل (C) † — كرسي رولمان in the workshop |
+|  | Stairs; tread; a step's riser (the isometric block's) | درج (M) † — سلم is as common, «اوتوكاد درج» is the suggestion found؛ نائمة (C, the architects' word)؛ الوجه القائم للدرجة (L) — قائمة, the architects' riser, is opaque outside architecture |
+|  | Plot of land; boundary; round table, seat, chair back | قطعة أرض (M)؛ الحدود (M)؛ طاولة مستديرة، مقعد، مسند الظهر (M) |
+|  | Relative, polar coordinates; origin; isometric axes; isometric drafting, isocircles | الإحداثيات النسبية، القطبية (C)؛ نقطة الأصل (M)؛ المحاور الأيزومترية (C)؛ وضع الرسم الأيزومتري، الدوائر متساوية القياس (L) |
+|  | Dimension scale; non-associative (a dimension); baseline, chain dimensions | مقياس الأبعاد (L)؛ غير ترابطي (L, as a hatch's Associative)؛ أبعاد من خط أساس، أبعاد متتابعة (C, as DIMBASELINE's and DIMCONTINUE's titles) |
+|  | The Layer control | قائمة الطبقات المنسدلة (L) — as LAYER's notes, not عنصر التحكم في الطبقات |
+|  | Conceptual (a caption's visual style); hidden lines removed | النمط المفاهيمي (L, as the landing's figures)؛ مع إزالة الخطوط المخفية (M) |
+| Guides | How-to guide; floor plan (a house's) | دليل، أدلة (M)؛ مخطط منزل، المسقط الأفقي (C) — «رسم مخطط منزل» is the searched phrase, المسقط الأفقي the drawing's name |
+|  | A plan's layers: Walls, Doors, Windows, Dimensions (the reader's own) | الجدران، الأبواب، النوافذ، الأبعاد (M) |
+|  | Outer and inner face (a wall's); inner wall; opening; entrance | الوجه الخارجي والداخلي؛ الجدار الداخلي؛ فتحة؛ المدخل (M) |
+|  | Jamb | جانب الفتحة (L) † — حلق is the door's frame |
+|  | Door leaf; swing; hinge | ضلفة (C) † — مصراع is the literary word؛ قوس فتح الباب (L)؛ المفصّلة (M) |
+|  | Absolute coordinates; anticlockwise; holding an angle | الإحداثيات المطلقة (C)؛ عكس اتجاه عقارب الساعة (M)؛ تثبيت الزاوية (L) |
+|  | Polar tracking's guide | مسار التتبع (L) † — as the -OSNAP notes' «مسار تتبع قطبي», against خط إرشادي |
+|  | Profile (a solid's); closed area (PRESSPULL's) | مقطع (M, as EXTRUDE's notes)؛ مساحة مغلقة (M) — not منطقة, which is a region |
+|  | Sweeps, lofts, meshes, rendering (what 3D still lacks) | المسح على مسار، الانتقال بين المقاطع، الشبكات، الإظهار (L, as the FAQ's 3D answer) |
+|  | Overall scale (a dimension style's) | المقياس العام لنمط البُعد (L, as the Dimension styles row) |
 
 ## Register
 
@@ -220,6 +244,11 @@ marks a choice between competing terms that a native review should settle first 
   تسجيل.» (145). The H1, the share card's eyebrow and the footer: «رسم هندسي أون لاين مجانًا بأوامر
   أوتوكاد», which fills the card's line (445 of 470 px at 24 px in Readex Pro): a longer one would
   run off it, as the card never wraps a right-to-left line (`marketing.md`).
+- **The exercises** (the audit's autocomplete, 05/11/2026): «تمارين اوتوكاد للمبتدئين», «رسومات
+  اوتوكاد للمبتدئين» and «رسم اوتوكاد ثلاثي الابعاد» are suggested in six countries, «اوتوكاد رسم
+  ميكانيكي», «اوتوكاد درج» and «رسومات اوتوكاد صعبه» in Egypt and Saudi Arabia. So the library's
+  title is «تمارين أوتوكاد», its search title «تمارين أوتوكاد للمبتدئين، محلولة ومجانية», and each
+  exercise's «تمرين أوتوكاد…» with the discipline or «ثلاثي الأبعاد» where it fits.
 
 ## Font
 

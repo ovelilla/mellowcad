@@ -8,6 +8,7 @@ import { LIVE_LOCALES, routing } from "@/i18n/routing"
 import { REPOSITORY_URL } from "@/lib/site"
 
 import { COMMANDS_PATH } from "./command-pages"
+import { EXERCISES_PATH } from "./exercise-pages"
 import { docsSource } from "./docs-source"
 import {
   DOCS_PACKAGES,
@@ -72,11 +73,20 @@ export function navSections(nodes: Node[]): { use: Node[]; build: Node[] } {
 }
 
 /**
- * Whether the page is a command's own (`/docs/commands/offset`): not in the
- * navigation, which lists the reference that leads to each.
+ * Whether the page is one its folder's index lists — a command's own
+ * (`/docs/commands/offset`) or an exercise (`/docs/exercises/gasket`): not in
+ * the navigation, which lists the index that leads to each.
  */
-export function isCommandPage(page: DocsPage): boolean {
-  return page.slugs.length === 2 && `${DOCS_PATH}/${page.slugs[0]}` === COMMANDS_PATH
+export function isIndexedPage(page: DocsPage): boolean {
+  return (
+    page.slugs.length === 2 &&
+    [COMMANDS_PATH, EXERCISES_PATH].includes(`${DOCS_PATH}/${page.slugs[0]}`)
+  )
+}
+
+/** Whether the page is an exercise of the practice library (`/docs/exercises/gasket`). */
+export function isExercisePage(page: DocsPage): boolean {
+  return page.slugs.length === 2 && `${DOCS_PATH}/${page.slugs[0]}` === EXERCISES_PATH
 }
 
 /**

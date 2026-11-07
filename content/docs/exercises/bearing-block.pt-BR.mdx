@@ -1,0 +1,66 @@
+---
+title: "Exercício de AutoCAD 3D: um mancal"
+metaTitle: "Exercício de AutoCAD 3D avançado: um mancal"
+description: "Modele um mancal no AutoCAD 3D: extrusão, união e a subtração de um furo e dois furos de fixação como cilindros, passo a passo. Pratique sólidos 3D grátis."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modele este mancal, em milímetros: uma base de 100 por 60 com cantos de raio 10 e 12 de espessura; no meio, um cubo de 40 de diâmetro e 40 de altura; um furo central de 20 que atravessa o cubo e dois furos de fixação de 10 que atravessam a base, a 76 um do outro. A base e o cubo são extrudados a partir dos contornos e unidos num só sólido; o furo central e os furos de fixação são cilindros subtraídos dele.
+
+- **Exercício:** Avançado · Mecânica · Sólido 3D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`EXTRUSAO`](/docs/commands/extrude), [`UNIAO`](/docs/commands/union), [`CILINDRO`](/docs/commands/cylinder), [`COPIAR`](/docs/commands/copy), [`SUBTRAIR`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=bearing-block), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/bearing-block" caption="O mancal em vista superior, de 100 por 60, com o cubo, o furo central e os furos cotados." />
+
+<Session name="exercises/bearing-block/model" caption="O mancal como sólido, visto do sudeste no estilo visual Conceitual." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe a vista superior [#plan]
+
+Na camada Contorno, o [`RETANGULO`](/docs/commands/rectang) com `COncordância` de `10`, de `0,0` a `100,60`, e um círculo no centro dele, `50,30`, com `Diâmetro` de `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Desenhe a vista superior" />
+
+### 2. Extrude a base e o cubo [#extrude]
+
+Com o [`EXTRUSAO`](/docs/commands/extrude), o contorno com `12` de altura e depois o círculo com `40`: dois sólidos.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Extrude a base e o cubo" />
+
+### 3. Una os sólidos [#union]
+
+[`UNIAO`](/docs/commands/union): selecione os dois e pressione Enter. Agora são um só sólido.
+
+<Session name="exercises/bearing-block/union" caption="3. Una os sólidos" />
+
+### 4. Desenhe os cilindros [#holes]
+
+O furo central e um furo de fixação como cilindros, com o [`CILINDRO`](/docs/commands/cylinder): o furo central em `50,30`, `Diâmetro` `20` e `40` de altura; um furo de fixação em `12,30`, diâmetro `10` e `12` de altura. Depois copie o furo de fixação com o [`COPIAR`](/docs/commands/copy), de `12,30` para `76,0` a partir dali.
+
+<Session name="exercises/bearing-block/holes" caption="4. Desenhe os cilindros" />
+
+### 5. Subtraia os cilindros [#subtract]
+
+[`SUBTRAIR`](/docs/commands/subtract): selecione o mancal e pressione Enter, depois os três cilindros e Enter. O furo central e os furos de fixação atravessam a peça.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Subtraia os cilindros" />
+
+### 6. Gire a vista [#view]
+
+O `-VISTA` com `isoSE`, o [`EVATUAL`](/docs/commands/vscurrent) com `Conceitual` e depois o [`ZOOM`](/docs/commands/zoom) `ESTendido` e 0.8x para enquadrá-lo.
+
+<Session name="exercises/bearing-block/view" caption="6. Gire a vista" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD: uma junta](/docs/exercises/gasket): Iniciante · Mecânica · 2D
+- [Exercício de AutoCAD: um suporte em L](/docs/exercises/l-bracket): Iniciante · Mecânica · 2D
+- [Exercício de AutoCAD: escada em planta baixa](/docs/exercises/stairs): Iniciante · Arquitetura · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

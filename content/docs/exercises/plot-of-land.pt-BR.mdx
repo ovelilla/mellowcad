@@ -1,0 +1,46 @@
+---
+title: "Exercício de AutoCAD: um terreno"
+metaTitle: "Exercício de AutoCAD civil: área de um terreno"
+description: "Desenhe um terreno no AutoCAD pelos comprimentos e ângulos dos lados, com coordenadas polares, depois calcule a área e cote-o. Grátis, passo a passo, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe este terreno, em metros, pelos comprimentos e direções dos lados: 40 a 0°, 30 a 80°, 35 a 155° e 25 a 230°, e depois de volta ao início. Calcule a área e o perímetro, e cote cada lado e o ângulo no segundo vértice. Coordenadas polares, um comprimento e um ângulo, desenham cada lado a partir do fim do anterior. A escala das cotas do desenho já está ajustada para metros.
+
+- **Exercício:** Intermediário · Civil · 2D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`COTAALIN`](/docs/commands/dimaligned), [`COTAANG`](/docs/commands/dimangular)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=plot-of-land), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Um terreno de cinco lados, em metros, com cada lado e um ângulo cotados." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe o contorno do terreno [#boundary]
+
+Na camada Contorno, comece o [`PLINHA`](/docs/commands/pline) em `0,0` e digite cada lado pelo comprimento e pelo ângulo: `40<0`, `30<80`, `35<155` e `25<230`, cada um medido a partir do último ponto. `Fechar` desenha o quinto lado e fecha o contorno: um só objeto, que o [`AREA`](/docs/commands/area) pode medir.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Desenhe o contorno do terreno" />
+
+### 2. Calcule a área [#area]
+
+Execute o [`AREA`](/docs/commands/area), escolha `Objeto` e selecione o contorno: a linha de comando dá a área, em metros quadrados, e o perímetro.
+
+<Session name="exercises/plot-of-land/area" caption="2. Calcule a área" />
+
+### 3. Cote o desenho [#dimensions]
+
+Na camada Cotas, execute o [`COTAALIN`](/docs/commands/dimaligned) e pressione Enter no primeiro prompt: ele então pede um objeto, e um clique num lado cota esse lado, paralelo a ele. Coloque cada cota do lado de fora do terreno. O [`COTAANG`](/docs/commands/dimangular) nos dois lados que se encontram em `40,0` dá o ângulo entre eles, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD: um eixo escalonado](/docs/exercises/shaft): Intermediário · Mecânica · 2D
+- [Exercício de AutoCAD isométrico: um bloco escalonado](/docs/exercises/isometric-block): Intermediário · Mecânica · Isométrico
+- [Exercício de AutoCAD 3D: uma polia](/docs/exercises/pulley): Intermediário · Mecânica · Sólido 3D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

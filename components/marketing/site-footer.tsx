@@ -47,12 +47,13 @@ export async function SiteFooter() {
   const links = [
     [common("startDrawing"), paths.editor],
     [t("commands"), paths.commands],
+    [t("exercises"), paths.exercises],
     [header("roadmap"), `${paths.home}#roadmap`],
     [header("faq"), `${paths.home}#faq`],
   ] as const
 
   return (
-    <footer className="mx-auto w-full max-w-[1200px] px-4 pb-10 sm:px-6">
+    <footer className="mx-auto w-full max-w-[1200px] px-4 pb-10 sm:px-6 print:hidden">
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border lg:grid-cols-[1.1fr_1.6fr_1fr]">
         <div className="flex flex-col gap-2 bg-bg-raised p-5">
           <span className="inline-flex items-center gap-2 font-semibold tracking-[-0.02em]">

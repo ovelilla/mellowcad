@@ -1,0 +1,42 @@
+---
+title: Do 2D ao 3D no AutoCAD
+metaTitle: "AutoCAD 3D: do desenho 2D ao sólido"
+description: "Como transformar desenho 2D em 3D no AutoCAD: extrudar, pressionar/puxar ou girar um perfil fechado, unir e subtrair. Sólidos 3D online grátis, ainda parciais."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+No AutoCAD, um sólido costuma começar como um desenho 2D: um perfil fechado, desenhado como qualquer planta, depois extrudado até uma altura ou girado em torno de um eixo, e unido a outros sólidos ou cortado por eles. Os sólidos 3D do MellowCAD são feitos do mesmo jeito, com os mesmos comandos. Eles ainda são parciais: ainda não há varreduras, lofts, malhas nem renderização. Cada seção mostra uma sessão desenhada pelo motor, com o histórico como você o digitaria.
+
+## Desenhe um perfil fechado [#profile]
+
+Um sólido precisa de um perfil fechado: uma polilinha fechada, um retângulo, um círculo ou uma região. Linhas que se encontram ponta a ponta continuam sendo objetos separados: o <Command id="JOIN" /> faz delas uma só polilinha, e o <Command id="REGION" />, uma região. Desenhe o perfil em planta, onde digitar os pontos é mais fácil.
+
+## Faça a extrusão [#extrude]
+
+<Command id="EXTRUDE" />: selecione o perfil, pressione Enter e digite a altura. Visto de cima, um sólido parece igual ao perfil: gire a vista com o <Command id="VIEW" /> ou com o ViewCube para vê-lo, e escolha como ele é desenhado com o <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="Um perfil em L como uma só polilinha fechada, extrudado 30, visto do sudeste." />
+
+## Pressione e puxe uma área [#presspull]
+
+O <Command id="PRESSPULL" /> não precisa de perfil: clique dentro de qualquer área fechada, mesmo uma delimitada por linhas separadas, e digite a altura. Clicado na face de um sólido, ele empurra ou puxa essa face.
+
+<Session name="presspull" caption="Uma área fechada, pressionada e puxada por dentro: ela vira um sólido." />
+
+## Faça a revolução [#revolve]
+
+O <Command id="REVOLVE" /> gira um perfil em torno de um eixo: selecione o perfil, dê o eixo por dois pontos, por um objeto ou pelo eixo X, Y ou Z, e depois o ângulo, uma volta inteira por padrão.
+
+<Session name="revolve" caption="Uma meia seção girada em torno do eixo Y." />
+
+## Una e subtraia sólidos [#booleans]
+
+O <Command id="UNION" /> faz um só sólido de vários, o <Command id="SUBTRACT" /> tira um ou mais de outro, e o <Command id="INTERSECT" /> mantém o que eles têm em comum. Um furo é um cilindro subtraído do sólido que ele atravessa.
+
+<Session name="subtract" caption="Um cilindro subtraído de uma caixa: um furo passante." />
+
+## A seguir [#next]
+
+- Os [exercícios](/docs/exercises) de 3D: [uma placa de fixação](/docs/exercises/mounting-plate) feita de regiões e uma só extrusão, [uma polia](/docs/exercises/pulley) girada a partir da seção e [um mancal](/docs/exercises/bearing-block) unido e furado.
+- O <Command id="3DORBIT" /> gira a vista com o mouse, e o <Command id="VSCURRENT" /> sombreia as faces.

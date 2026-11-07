@@ -1,0 +1,52 @@
+---
+title: "Ejercicio de AutoCAD: una escuadra en L"
+metaTitle: "Ejercicio de AutoCAD 2D básico: escuadra en L"
+description: "Dibuja una escuadra en L en AutoCAD con coordenadas relativas: su contorno, un empalme, dos agujeros y cotas de línea base, resuelto paso a paso. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja esta escuadra, en milímetros: 100 de largo, un ala horizontal de 20 de alto y un ala vertical de 30 de ancho y 80 de alto, la esquina interior redondeada con un radio de 10, un agujero de 8 en el ala horizontal y otro de 10 en la vertical, cada uno centrado en su ala. El contorno es una sola ejecución de [`LINEA`](/docs/commands/line), cada punto escrito como su desplazamiento desde el anterior, y todas sus cotas parten de la esquina inferior izquierda.
+
+- **Ejercicio:** Básico · Mecánica · 2D
+- **Comandos:** [`LINEA`](/docs/commands/line), [`EMPALME`](/docs/commands/fillet), [`CIRCULO`](/docs/commands/circle), [`ACOLINEAL`](/docs/commands/dimlinear), [`ACOLINEABASE`](/docs/commands/dimbaseline), [`ACORADIO`](/docs/commands/dimradius), [`ACODIAMETRO`](/docs/commands/dimdiameter)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=l-bracket), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/l-bracket" caption="La escuadra en L, de 100 por 80, acotada desde su esquina inferior izquierda." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja el contorno [#outline]
+
+En la capa Contorno, [`LINEA`](/docs/commands/line) desde `0,0` y después cada punto como un desplazamiento desde el anterior: `100,0`, `0,20`, `-70,0`, `0,60` y `-30,0`. `Cerrar` dibuja el último lado de vuelta al inicio y termina el comando.
+
+<Session name="exercises/l-bracket/outline" caption="1. Dibuja el contorno" />
+
+### 2. Redondea la esquina interior [#fillet]
+
+[`EMPALME`](/docs/commands/fillet): elige `RAdio`, escribe `10` y designa las dos líneas que se encuentran en la esquina interior, la parte superior del ala horizontal y el lado del ala vertical.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Redondea la esquina interior" />
+
+### 3. Dibuja los agujeros [#holes]
+
+Dos círculos con [`CIRCULO`](/docs/commands/circle), cada uno por su `Diámetro`: `8` en `80,10`, en el ala horizontal, y `10` en `15,65`, en la vertical.
+
+<Session name="exercises/l-bracket/holes" caption="3. Dibuja los agujeros" />
+
+### 4. Acótala [#dimensions]
+
+En la capa Cotas, [`ACOLINEAL`](/docs/commands/dimlinear) desde `0,0` hasta el agujero del ala horizontal, `80,10`, colocada debajo: 80. [`ACOLINEABASE`](/docs/commands/dimbaseline) sigue desde la misma primera línea de referencia: escribe el extremo derecho, `#100,0`, donde # mide desde el origen, y pulsa Intro dos veces para terminarlo. Lo mismo por el lado izquierdo, hasta el agujero de arriba y después hasta lo alto, `#0,80`. [`ACORADIO`](/docs/commands/dimradius) en el empalme y [`ACODIAMETRO`](/docs/commands/dimdiameter) en cada agujero la terminan.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Acótala" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD: una escalera en planta](/docs/exercises/stairs): Básico · Arquitectura · 2D
+- [Ejercicio de AutoCAD 3D: una placa de montaje](/docs/exercises/mounting-plate): Básico · Mecánica · Sólido 3D
+- [Ejercicio de AutoCAD: una brida](/docs/exercises/flange): Intermedio · Mecánica · 2D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

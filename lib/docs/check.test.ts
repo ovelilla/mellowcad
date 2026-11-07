@@ -105,7 +105,7 @@ describe("docs:check", () => {
     tree["cad/package.json"] = JSON.stringify({ homepage: "https://github.com/x" })
     expect(checkDocs(repo(tree))).toEqual([
       'content/docs/guide.mdx: "guide" is not in USE_PAGES (lib/docs/use.ts)',
-      "content/docs/engine/index.mdx: frontmatter type: Invalid option: expected one of \"gettingStarted\"|\"howTo\"|\"reference\"|\"concept\"",
+      "content/docs/engine/index.mdx: frontmatter type: Invalid option: expected one of \"gettingStarted\"|\"howTo\"|\"reference\"|\"concept\"|\"practice\"",
       'content/docs/guide.mdx: the link "/docs/nope#x" names no page',
       "content/docs/react/api.mdx: the page is its file and nothing else: <include>../../../packages/react/api.md</include>",
       "cad/package.json: a published package's homepage is https://mellowcad.com/docs/engine",

@@ -43,7 +43,7 @@ export async function DocsSession({
           tabIndex={0}
           dir="ltr"
           lang={text.commandTag}
-          className="overflow-x-auto rounded-md bg-bg-sunken p-3 data-mono text-[0.8125rem] whitespace-nowrap"
+          className="overflow-x-auto rounded-md bg-bg-sunken p-3 data-mono text-[0.8125rem] whitespace-nowrap print:overflow-visible print:whitespace-pre-wrap"
         >
           {lines.map((line, index) => (
             <li

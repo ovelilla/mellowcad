@@ -1,0 +1,64 @@
+---
+title: "Ejercicio de AutoCAD: un eje escalonado"
+metaTitle: "Pieza para practicar AutoCAD: eje escalonado"
+description: "Dibuja un eje escalonado en AutoCAD: medio contorno como polilínea, achaflanado y reflejado con simetría, y sus longitudes en cadena. Gratis, paso a paso."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja este eje escalonado en vista lateral, en milímetros: 150 de largo, con diámetros de 30, 40 y 30 en longitudes de 40, 60 y 50, y los dos extremos achaflanados a 2 por 2. Dibuja como una sola polilínea la mitad que queda por encima de la línea de eje, achaflánala y haz su simetría; después, las aristas que se ven a lo ancho del eje, la línea de eje y las longitudes. Los diámetros son los que se indican aquí.
+
+- **Ejercicio:** Intermedio · Mecánica · 2D
+- **Comandos:** [`POL`](/docs/commands/pline), [`CHAFLAN`](/docs/commands/chamfer), [`SIMETRIA`](/docs/commands/mirror), [`LINEA`](/docs/commands/line), [`ACOLINEAL`](/docs/commands/dimlinear), [`ACOCONTINUA`](/docs/commands/dimcontinue)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=shaft), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/shaft" caption="Un eje escalonado en vista lateral, de 150 de largo, con sus longitudes acotadas en cadena." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja la mitad superior [#half]
+
+En la capa Contorno, una sola [`POL`](/docs/commands/pline) desde `0,0`: hacia arriba `0,15`, a la derecha `40,0`, hacia arriba `0,5`, a la derecha `60,0`, hacia abajo `0,-5`, a la derecha `50,0` y hacia abajo `0,-15`, de vuelta a la línea de eje. Intro la termina.
+
+<Session name="exercises/shaft/half" caption="1. Dibuja la mitad superior" />
+
+### 2. Achaflana los extremos [#chamfers]
+
+[`CHAFLAN`](/docs/commands/chamfer) y después `Distancia`: `2`, e Intro toma `2` también para la segunda distancia. `múLtiple` achaflana una esquina tras otra sin volver a empezar: designa los dos segmentos de la esquina de cada extremo.
+
+<Session name="exercises/shaft/chamfers" caption="2. Achaflana los extremos" />
+
+### 3. Haz la simetría [#mirror]
+
+[`SIMETRIA`](/docs/commands/mirror): designa la polilínea, pulsa Intro, después la línea de simetría de `0,0` a `150,0`, la línea de eje, e Intro para conservar el original.
+
+<Session name="exercises/shaft/mirror" caption="3. Haz la simetría" />
+
+### 4. Dibuja las aristas [#edges]
+
+Con [`LINEA`](/docs/commands/line), las aristas que se ven a lo ancho del eje, cada una `0,30` hacia arriba desde abajo: desde `2,-15` y `148,-15` en los chaflanes, y desde `40,-15` y `100,-15` en los escalones.
+
+<Session name="exercises/shaft/edges" caption="4. Dibuja las aristas" />
+
+### 5. Dibuja la línea de eje [#axis]
+
+En la capa Ejes, la línea de eje: una línea de `-8,0` a `166,0` más allá.
+
+<Session name="exercises/shaft/axis" caption="5. Dibuja la línea de eje" />
+
+### 6. Acótalo [#dimensions]
+
+En la capa Cotas, [`ACOLINEAL`](/docs/commands/dimlinear) para la primera longitud, 40, colocada debajo. [`ACOCONTINUA`](/docs/commands/dimcontinue) sigue desde su segunda línea de referencia: `#100,-20` y después `#150,-15`, escritos desde el origen con #, y pulsa Intro dos veces para terminarlo. Un último [`ACOLINEAL`](/docs/commands/dimlinear) da la longitud total, 150, más abajo.
+
+<Session name="exercises/shaft/dimensions" caption="6. Acótalo" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio isométrico de AutoCAD: un bloque escalonado](/docs/exercises/isometric-block): Intermedio · Mecánica · Isométrico
+- [Ejercicio de AutoCAD 3D: una polea](/docs/exercises/pulley): Intermedio · Mecánica · Sólido 3D
+- [Ejercicio de AutoCAD: una biela con líneas tangentes](/docs/exercises/link): Avanzado · Mecánica · 2D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

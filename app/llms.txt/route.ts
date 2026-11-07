@@ -14,7 +14,7 @@ import { docsSource } from "@/lib/docs/docs-source"
 import { llmsText, markdownUrl, pageLink } from "@/lib/docs/markdown"
 import { DOCS_PATH } from "@/lib/docs/packages"
 import {
-  isCommandPage,
+  isIndexedPage,
   navSections,
   ownPages,
   pageSource,
@@ -55,7 +55,7 @@ async function languages(): Promise<string[]> {
         locale === routing.defaultLocale
           ? ""
           : `; docs: ${ownPages(locale)
-              .filter((page) => !isCommandPage(page))
+              .filter((page) => !isIndexedPage(page))
               .map((page) => `[${page.data.title}](${markdownUrl(page)})`)
               .join(", ")}`
       return `[${LANGUAGE_NAMES[locale]}](${localeUrl(locale, "/")}): ${english.of(locale)}, with ${commands}${pages}`

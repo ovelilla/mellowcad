@@ -1,5 +1,8 @@
 import { BookOpen, PencilRuler, School, Wrench } from "lucide-react"
+import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+
+import { sitePaths } from "@/i18n/site-paths"
 
 import { SectionHeading } from "./section-heading"
 
@@ -12,10 +15,12 @@ const AUDIENCES = [
 
 /**
  * Who MellowCAD serves today, students first — practice needs neither DWG nor
- * a plotter — and, as plainly, who it does not serve yet.
+ * a plotter, and the practice library is linked here — and, as plainly, who
+ * it does not serve yet.
  */
 export async function AudienceSection() {
   const t = await getTranslations("Audience")
+  const paths = await sitePaths()
 
   return (
     <section
@@ -37,6 +42,19 @@ export async function AudienceSection() {
           </li>
         ))}
       </ul>
+      <p className="measure text-fg-muted">
+        {t.rich("practice", {
+          link: (words) => (
+            <Link
+              href={paths.exercises}
+              prefetch={false}
+              className="underline-link"
+            >
+              {words}
+            </Link>
+          ),
+        })}
+      </p>
       <p className="measure text-sm text-fg-subtle">{t("notFor")}</p>
     </section>
   )

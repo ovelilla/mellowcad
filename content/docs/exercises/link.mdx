@@ -1,0 +1,58 @@
+---
+title: "AutoCAD exercise: a link with tangent lines"
+metaTitle: "AutoCAD advanced exercise: a link, tangents"
+description: "Draw a link in AutoCAD: two bosses joined by lines tangent to both with the Tangent object snap, the arcs between them trimmed, and its dimensions. Free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this link, in millimetres: two bosses 90 apart, of radius 20 and 12, bored to radius 10 and 6, joined by lines tangent to both, with the arcs between the lines trimmed away. The tangent lines take the Tangent object snap at both ends; [`TRIM`](/docs/commands/trim) then turns each boss's circle into an arc.
+
+- **Exercise:** Advanced · Mechanical · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **In the editor:** [Open it with its drawing](/draw?drawing=link), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/link" caption="A link of two bosses 90 apart, joined by tangent lines, dimensioned." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the bosses [#bosses]
+
+On the Outline layer, four circles with [`CIRCLE`](/docs/commands/circle), each by its radius: `20` and `10` at `0,0`, `12` and `6` at `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Draw the bosses" />
+
+### 2. Draw the tangent lines [#tangents]
+
+[`LINE`](/docs/commands/line), then type `_TAN`, the Tangent object snap for one point, and pick the large circle near its top; `_TAN` again and pick the small one near its top. The line touches both. The same along the bottom.
+
+<Session name="exercises/link/tangents" caption="2. Draw the tangent lines" />
+
+### 3. Trim the arcs [#trim]
+
+[`TRIM`](/docs/commands/trim): pick each boss between the two lines, on the side that faces the other. The inner arcs are gone and each circle is an arc.
+
+<Session name="exercises/link/trim" caption="3. Trim the arcs" />
+
+### 4. Draw the centre lines [#centreLines]
+
+On Centre lines, the axis through both centres and a line across each boss.
+
+<Session name="exercises/link/centreLines" caption="4. Draw the centre lines" />
+
+### 5. Dimension it [#dimensions]
+
+On Dimensions, the distance between the centres with [`DIMLINEAR`](/docs/commands/dimlinear), the bosses' radii with [`DIMRADIUS`](/docs/commands/dimradius) and their bores with [`DIMDIAMETER`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD 3D exercise: a bearing block](/docs/exercises/bearing-block): Advanced · Mechanical · 3D solid
+- [AutoCAD exercise: a gasket](/docs/exercises/gasket): Beginner · Mechanical · 2D
+- [AutoCAD exercise: an L bracket](/docs/exercises/l-bracket): Beginner · Mechanical · 2D
+- [AutoCAD practice exercises](/docs/exercises)

@@ -1,0 +1,58 @@
+---
+title: "AutoCAD exercise: stairs in plan"
+metaTitle: "AutoCAD architecture exercise: stairs in plan"
+description: "Draw a straight flight of stairs in plan in AutoCAD: ten treads from one line and a rectangular array, the arrow going up and dimensions. Free, step by step."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw a straight flight of stairs in plan, in centimetres: 280 long and 100 wide, ten treads of 28, and the arrow that shows the way up. The drawing's dimension scale is set for a plan in centimetres, so its dimensions read at this size. One tread's edge is drawn; a rectangular array places the others.
+
+- **Exercise:** Beginner · Architecture · 2D
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`LINE`](/docs/commands/line), [`ARRAYRECT`](/docs/commands/arrayrect), [`PLINE`](/docs/commands/pline), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **In the editor:** [Open it with its drawing](/draw?drawing=stairs), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/stairs" caption="A straight flight of stairs in plan, 280 by 100 centimetres, its arrow pointing up the flight." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the outline [#outline]
+
+On the Outline layer, [`RECTANG`](/docs/commands/rectang) from `0,0` to `280,100`: the flight's outline.
+
+<Session name="exercises/stairs/outline" caption="1. Draw the outline" />
+
+### 2. Draw the first tread [#tread]
+
+The first tread's edge, a [`LINE`](/docs/commands/line) from `28,0`, `0,100` up, and Enter.
+
+<Session name="exercises/stairs/tread" caption="2. Draw the first tread" />
+
+### 3. Array the treads [#array]
+
+[`ARRAYRECT`](/docs/commands/arrayrect) copies it along the flight: pick the line and press Enter, then choose `COUnt`, `9` columns and `1` row, and `Spacing`, `28` between the columns and `1` between the rows, which does nothing with a single row. `eXit` keeps it as an associative array, which its grips edit later.
+
+<Session name="exercises/stairs/array" caption="3. Array the treads" />
+
+### 4. Draw the arrow [#arrow]
+
+[`PLINE`](/docs/commands/pline) from `14,50`, along the flight to `226,0` further on; then `Width`, `10` at the start and `0` at the end, and a last segment of `24,0`: the arrowhead. Enter ends it.
+
+<Session name="exercises/stairs/arrow" caption="4. Draw the arrow" />
+
+### 5. Dimension it [#dimensions]
+
+On Dimensions, [`DIMLINEAR`](/docs/commands/dimlinear) three times: the length below, the width on the right and one tread, 28, above.
+
+<Session name="exercises/stairs/dimensions" caption="5. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD 3D exercise: a mounting plate](/docs/exercises/mounting-plate): Beginner · Mechanical · 3D solid
+- [AutoCAD exercise: a flange](/docs/exercises/flange): Intermediate · Mechanical · 2D
+- [AutoCAD exercise: a round table and chairs](/docs/exercises/round-table): Intermediate · Architecture · 2D
+- [AutoCAD practice exercises](/docs/exercises)

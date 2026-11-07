@@ -164,6 +164,7 @@
     "teachersBody": "Every student gets the same commands in the same order, in the lab or at home, and there is nothing to install.",
     "makersTitle": "Makers",
     "makersBody": "Draw a bracket or a plate to size, or model it as a solid, for free.",
+    "practice": "Students and teachers: <link>AutoCAD practice exercises</link>, from a first gasket to 3D solids, each solved step by step and opening in the editor with its drawing.",
     "notFor": "Not yet for exchanging DWG or DXF files, or for plotting sheets to paper or PDF."
   },
   "Status": {
@@ -224,6 +225,7 @@
     "code": "Code",
     "docs": "Docs",
     "commands": "Command reference",
+    "exercises": "Practice exercises",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "MIT licence",
@@ -316,6 +318,34 @@
         "metaTitle": "AutoCAD shortcut keys: F-keys and Ctrl keys",
         "description": "The keys MellowCAD answers: the drafting aids, editing and files, the window and the command line.",
         "lead": "The keys MellowCAD answers, the ones an AutoCAD user already has in their fingers. A command is named as you would type it; its aliases are on the commands page."
+      },
+      "exercises": {
+        "title": "AutoCAD practice exercises",
+        "metaTitle": "AutoCAD practice exercises, free, with solutions",
+        "description": "AutoCAD practice drawings for beginners and up, in 2D, isometric and 3D, each solved step by step and opened with its drawing in a free online editor.",
+        "lead": "Drawings to practise AutoCAD on, from a first gasket to 3D solids, each with its dimensions, the commands it practises and its solution step by step. The engine draws every step and writes its command-line history as you will type it: the prompts in AutoCAD 2027's order, with the same option letters. Open one in the editor and its drawing is there beside the space where you draw yours, in your browser, with nothing to install and no account to make.",
+        "guidesTitle": "Step-by-step guides",
+        "guides": "The exercises' skills one at a time: typing points, a house's floor plan, a 2D drawing turned into a solid. Each guide shows every step's drawing and its history.",
+        "howTitle": "How the exercises work",
+        "how": "An exercise opens in the editor with its drawing, dimensioned, left of the origin: draw yours from 0,0, as its solution does. What you draw is kept in this browser for that exercise alone. The drawing you were working on stays as it was, and the editor opened on its own brings it back. To start an exercise again, run NEW, then open it from its page. Every page prints on its own, the drawing first and the steps after, and your browser's print dialog saves it as a PDF.",
+        "questions": {
+          "where": {
+            "question": "Where can I find AutoCAD exercises to practise?",
+            "answer": "Here: each exercise has its drawing dimensioned, the commands it practises and its solution step by step, and opens in a free editor that works like AutoCAD, in the browser. Start with the beginner ones; each command they use leads to what it does and the options it asks for."
+          },
+          "online": {
+            "question": "Can I practise AutoCAD online for free?",
+            "answer": "Yes. MellowCAD runs in the browser, free and with no account: you type AutoCAD's commands and aliases, in your language's names, and answer their prompts in the same order, with the same option letters. It is not AutoCAD: it does not open DWG or DXF files yet, and its 3D solids are still partial."
+          },
+          "solutions": {
+            "question": "Do the exercises have solutions?",
+            "answer": "Every exercise is solved step by step under its drawing. The engine draws each step and writes the command line's history, so you can compare yours with it line by line."
+          },
+          "pdf": {
+            "question": "Can I print the exercises or save them as a PDF?",
+            "answer": "Yes. An exercise's page prints on its own, dark lines on white, the drawing first and the steps after, and your browser's print dialog saves it as a PDF."
+          }
+        }
       }
     },
     "reference": {
@@ -335,6 +365,7 @@
       "options": "Options",
       "missing": "What it does not do yet",
       "questions": "Questions",
+      "practice": "Practise it",
       "related": "Related commands"
     },
     "shortcuts": {
@@ -374,9 +405,35 @@
       "gettingStarted": "Getting started",
       "howTo": "How-to",
       "reference": "Reference",
-      "concept": "Concepts"
+      "concept": "Concepts",
+      "practice": "Practice"
     },
     "exercise": {
+      "kind": "Exercise",
+      "commands": "Commands",
+      "editor": "In the editor",
+      "editorText": "<editor>Open it with its drawing</editor>, dimensioned beside where you draw yours",
+      "drawing": "The drawing",
+      "steps": "Step by step",
+      "stepsLead": "The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; # measures from the origin.",
+      "more": "More exercises",
+      "open": "Open in the editor",
+      "print": "Print or save as PDF",
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "disciplines": {
+        "mechanical": "Mechanical",
+        "architecture": "Architecture",
+        "civil": "Civil"
+      },
+      "spaces": {
+        "2d": "2D",
+        "isometric": "Isometric",
+        "3d": "3D solid"
+      },
       "layers": {
         "outline": "Outline",
         "centre": "Centre lines",

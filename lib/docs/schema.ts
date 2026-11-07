@@ -3,12 +3,16 @@ import { z } from "zod"
 
 export { metaSchema }
 
-/** The four kinds of page (Diátaxis), each written to a purpose of its own. */
+/**
+ * The kinds of page, each written to a purpose of its own: Diátaxis's four,
+ * and the practice library's exercises.
+ */
 export const DOCS_PAGE_TYPES = [
   "gettingStarted",
   "howTo",
   "reference",
   "concept",
+  "practice",
 ] as const
 
 export const docsPageSchema = pageSchema.extend({

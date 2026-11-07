@@ -1,0 +1,41 @@
+---
+title: From 2D to 3D in AutoCAD
+metaTitle: "AutoCAD 3D: from a 2D drawing to a solid"
+description: "How to turn a 2D drawing into a 3D solid in AutoCAD: extrude, press pull and revolve a closed profile, add and subtract. Free online 3D solids, still partial."
+type: howTo
+---
+
+In AutoCAD a solid usually starts as a 2D drawing: a closed profile, drawn as any plan is, then extruded to a height or turned round an axis, and joined to other solids or cut by them. MellowCAD's 3D solids are made the same way, with the same commands. They are still partial: there are no sweeps, lofts, meshes or rendering yet. Each section shows a session the engine draws, its history as you would type it.
+
+## Draw a closed profile [#profile]
+
+A solid needs a closed profile: a closed polyline, a rectangle, a circle or a region. Lines that meet end to end are still separate objects: <Command id="JOIN" /> makes one polyline of them, or <Command id="REGION" /> a region. Draw the profile in plan, where typing its points is easiest.
+
+## Extrude it [#extrude]
+
+<Command id="EXTRUDE" />: pick the profile, press Enter and type the height. Seen from above, a solid looks just like its profile: turn the view with <Command id="VIEW" /> or the ViewCube to see it, and choose how it is drawn with <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="An L profile as one closed polyline, extruded 30, seen from the south-east." />
+
+## Press and pull an area [#presspull]
+
+<Command id="PRESSPULL" /> needs no profile: click inside any closed area, even one bounded by separate lines, and type the height. Clicked on a solid's face, it pushes or pulls that face.
+
+<Session name="presspull" caption="A closed area, pressed and pulled from inside: it becomes a solid." />
+
+## Revolve it [#revolve]
+
+<Command id="REVOLVE" /> turns a profile round an axis: pick the profile, give the axis by two points, an object or the X, Y or Z axis, then the angle, a whole turn by default.
+
+<Session name="revolve" caption="A half section revolved round the Y axis." />
+
+## Add and subtract solids [#booleans]
+
+<Command id="UNION" /> makes one solid of several, <Command id="SUBTRACT" /> takes one or more away from another, and <Command id="INTERSECT" /> keeps what they share. A hole is a cylinder subtracted from the solid it goes through.
+
+<Session name="subtract" caption="A cylinder subtracted from a box: a hole through it." />
+
+## What next [#next]
+
+- The 3D [exercises](/docs/exercises): [a mounting plate](/docs/exercises/mounting-plate) made of regions and one extrusion, [a pulley](/docs/exercises/pulley) revolved from its section and [a bearing block](/docs/exercises/bearing-block) united and drilled.
+- <Command id="3DORBIT" /> turns the view with the mouse, and <Command id="VSCURRENT" /> shades the faces.

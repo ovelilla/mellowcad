@@ -1,0 +1,166 @@
+---
+title: "Exercícios de AutoCAD para praticar"
+metaTitle: "Exercícios de AutoCAD 2D e 3D resolvidos, grátis"
+description: "Desenhos para praticar AutoCAD, do iniciante ao avançado, em 2D, isométrico e 3D, resolvidos passo a passo e abertos com o desenho num editor online gratuito."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Onde encontrar exercícios de AutoCAD para praticar?","answer":"Aqui: cada exercício tem o desenho cotado, os comandos que ele pratica e a resolução passo a passo, e abre num editor gratuito que funciona como o AutoCAD, no navegador. Comece pelos de iniciante; cada comando que eles usam leva ao que ele faz e às opções que pede."},{"question":"Posso praticar AutoCAD online grátis?","answer":"Sim. O MellowCAD funciona no navegador, grátis e sem cadastro: você digita os comandos e os aliases do AutoCAD com os nomes em português e responde aos prompts deles na mesma ordem, com as mesmas letras de opção. Ele não é o AutoCAD: ainda não abre arquivos DWG nem DXF, e os sólidos 3D dele ainda são parciais."},{"question":"Os exercícios têm resolução?","answer":"Todo exercício é resolvido passo a passo, embaixo do desenho. O motor desenha cada passo e escreve o histórico da linha de comando, para você comparar o seu com ele linha por linha."},{"question":"Posso imprimir os exercícios ou salvá-los em PDF?","answer":"Sim. A página de um exercício é impressa sem o resto do site, em linhas escuras sobre fundo branco, primeiro o desenho e depois os passos, e a janela de impressão do navegador a salva como PDF."}]
+---
+
+Desenhos para praticar AutoCAD, de uma primeira junta a sólidos 3D, cada um com as cotas, os comandos que ele pratica e a resolução passo a passo. O motor desenha cada passo e escreve o histórico da linha de comando como você vai digitá-lo: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Abra um no editor e o desenho dele estará ao lado do espaço onde você desenha o seu, no navegador, sem nada para instalar e sem conta para criar.
+
+## Iniciante [#beginner]
+
+### Exercício de AutoCAD: uma junta [#gasket]
+
+<Session name="exercises/gasket" caption="A junta, de 120 por 80, cotada." />
+
+Desenhe uma junta no AutoCAD: placa arredondada, furo central, quatro furos copiados de um, linhas de centro e cotas, passo a passo. Pratique grátis online.
+
+- **Exercício:** Iniciante · Mecânica · 2D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`COPIAR`](/docs/commands/copy), [`LINHA`](/docs/commands/line), [`COTALINEAR`](/docs/commands/dimlinear), [`COTADIAMETRO`](/docs/commands/dimdiameter)
+- [Exercício de AutoCAD: uma junta](/docs/exercises/gasket)
+
+### Exercício de AutoCAD: um suporte em L [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="O suporte em L, de 100 por 80, cotado a partir do canto inferior esquerdo." />
+
+Desenhe um suporte em L no AutoCAD com coordenadas relativas: o contorno, uma concordância, dois furos e cotas de linha de base, passo a passo, para iniciantes.
+
+- **Exercício:** Iniciante · Mecânica · 2D
+- **Comandos:** [`LINHA`](/docs/commands/line), [`CONCORD`](/docs/commands/fillet), [`CIRCULO`](/docs/commands/circle), [`COTALINEAR`](/docs/commands/dimlinear), [`COTALINBASE`](/docs/commands/dimbaseline), [`COTARAIOS`](/docs/commands/dimradius), [`COTADIAMETRO`](/docs/commands/dimdiameter)
+- [Exercício de AutoCAD: um suporte em L](/docs/exercises/l-bracket)
+
+### Exercício de AutoCAD: escada em planta baixa [#stairs]
+
+<Session name="exercises/stairs" caption="Uma escada reta em planta baixa, de 280 por 100 centímetros, com a seta apontando a subida." />
+
+Desenhe uma escada reta em planta baixa no AutoCAD: dez degraus com uma linha e uma matriz retangular, a seta de subida e as cotas. Grátis, passo a passo.
+
+- **Exercício:** Iniciante · Arquitetura · 2D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`LINHA`](/docs/commands/line), [`MATRIZRETANG`](/docs/commands/arrayrect), [`PLINHA`](/docs/commands/pline), [`COTALINEAR`](/docs/commands/dimlinear)
+- [Exercício de AutoCAD: escada em planta baixa](/docs/exercises/stairs)
+
+### Exercício de AutoCAD 3D: uma placa de fixação [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="O contorno da placa, de 100 por 60 com quatro furos, cotado." />
+
+Modele uma placa de fixação no AutoCAD 3D: regiões, uma subtração para os furos e uma só extrusão fazem o sólido, passo a passo. Pratique 3D online grátis.
+
+- **Exercício:** Iniciante · Mecânica · Sólido 3D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`COPIAR`](/docs/commands/copy), [`REGIAO`](/docs/commands/region), [`SUBTRAIR`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`EXTRUSAO`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [Exercício de AutoCAD 3D: uma placa de fixação](/docs/exercises/mounting-plate)
+
+## Intermediário [#intermediate]
+
+### Exercício de AutoCAD: um flange [#flange]
+
+<Session name="exercises/flange" caption="O flange, de 140 de diâmetro, com o rasgo de chaveta, os oito furos e os diâmetros." />
+
+Desenhe um flange no AutoCAD: furo com rasgo de chaveta aparado, oito furos em matriz polar, linhas de centro e diâmetros, passo a passo. Grátis online.
+
+- **Exercício:** Intermediário · Mecânica · 2D
+- **Comandos:** [`CIRCULO`](/docs/commands/circle), [`RETANGULO`](/docs/commands/rectang), [`APARAR`](/docs/commands/trim), [`MATRIZPOLAR`](/docs/commands/arraypolar), [`LINHA`](/docs/commands/line), [`COTADIAMETRO`](/docs/commands/dimdiameter), [`COTALINEAR`](/docs/commands/dimlinear)
+- [Exercício de AutoCAD: um flange](/docs/exercises/flange)
+
+### Exercício de AutoCAD: mesa redonda com cadeiras [#round-table]
+
+<Session name="exercises/round-table" caption="Uma mesa redonda de 120 com seis cadeiras, em planta, cotada em centímetros." />
+
+Desenhe uma mesa redonda com seis cadeiras no AutoCAD: uma cadeira e uma matriz polar em volta do centro da mesa, e as cotas, passo a passo. Grátis online.
+
+- **Exercício:** Intermediário · Arquitetura · 2D
+- **Comandos:** [`CIRCULO`](/docs/commands/circle), [`RETANGULO`](/docs/commands/rectang), [`MATRIZPOLAR`](/docs/commands/arraypolar), [`COTADIAMETRO`](/docs/commands/dimdiameter), [`COTALINEAR`](/docs/commands/dimlinear)
+- [Exercício de AutoCAD: mesa redonda com cadeiras](/docs/exercises/round-table)
+
+### Exercício de AutoCAD: um terreno [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="Um terreno de cinco lados, em metros, com cada lado e um ângulo cotados." />
+
+Desenhe um terreno no AutoCAD pelos comprimentos e ângulos dos lados, com coordenadas polares, depois calcule a área e cote-o. Grátis, passo a passo, online.
+
+- **Exercício:** Intermediário · Civil · 2D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`COTAALIN`](/docs/commands/dimaligned), [`COTAANG`](/docs/commands/dimangular)
+- [Exercício de AutoCAD: um terreno](/docs/exercises/plot-of-land)
+
+### Exercício de AutoCAD: um eixo escalonado [#shaft]
+
+<Session name="exercises/shaft" caption="Um eixo escalonado em vista lateral, de 150 de comprimento, com os comprimentos cotados em série." />
+
+Desenhe um eixo escalonado no AutoCAD: meio contorno em polilinha, chanfrado e espelhado, e os comprimentos cotados em série. Grátis, passo a passo.
+
+- **Exercício:** Intermediário · Mecânica · 2D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`CHANFRO`](/docs/commands/chamfer), [`ESPELHAR`](/docs/commands/mirror), [`LINHA`](/docs/commands/line), [`COTALINEAR`](/docs/commands/dimlinear), [`COTASERIE`](/docs/commands/dimcontinue)
+- [Exercício de AutoCAD: um eixo escalonado](/docs/exercises/shaft)
+
+### Exercício de AutoCAD isométrico: um bloco escalonado [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="Um bloco escalonado em isométrico, de 60 de comprimento, 40 de profundidade e 40 de altura, com as medidas cotadas ao longo das arestas." />
+
+Desenhe um bloco escalonado em isométrico no AutoCAD com linhas e coordenadas polares nos eixos de 30°, 90° e 150°, e cote-o. Grátis, passo a passo, online.
+
+- **Exercício:** Intermediário · Mecânica · Isométrico
+- **Comandos:** [`LINHA`](/docs/commands/line), [`COTAALIN`](/docs/commands/dimaligned)
+- [Exercício de AutoCAD isométrico: um bloco escalonado](/docs/exercises/isometric-block)
+
+### Exercício de AutoCAD 3D: uma polia [#pulley]
+
+<Session name="exercises/pulley" caption="A meia seção da polia ao lado do eixo, com as distâncias ao eixo cotadas." />
+
+Modele uma polia no AutoCAD 3D: a meia seção como polilinha fechada, girada em torno do eixo Y até virar um sólido, passo a passo. Pratique 3D online grátis.
+
+- **Exercício:** Intermediário · Mecânica · Sólido 3D
+- **Comandos:** [`PLINHA`](/docs/commands/pline), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`REVOLUCAO`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [Exercício de AutoCAD 3D: uma polia](/docs/exercises/pulley)
+
+## Avançado [#advanced]
+
+### Exercício de AutoCAD: biela com linhas tangentes [#link]
+
+<Session name="exercises/link" caption="Uma biela de dois olhais a 90 um do outro, ligados por linhas tangentes, cotada." />
+
+Desenhe uma biela no AutoCAD: dois olhais ligados por linhas tangentes com o snap ao objeto Tangente, os arcos entre elas aparados, e as cotas. Grátis online.
+
+- **Exercício:** Avançado · Mecânica · 2D
+- **Comandos:** [`CIRCULO`](/docs/commands/circle), [`LINHA`](/docs/commands/line), [`APARAR`](/docs/commands/trim), [`COTALINEAR`](/docs/commands/dimlinear), [`COTARAIOS`](/docs/commands/dimradius), [`COTADIAMETRO`](/docs/commands/dimdiameter)
+- [Exercício de AutoCAD: biela com linhas tangentes](/docs/exercises/link)
+
+### Exercício de AutoCAD 3D: um mancal [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="O mancal em vista superior, de 100 por 60, com o cubo, o furo central e os furos cotados." />
+
+Modele um mancal no AutoCAD 3D: extrusão, união e a subtração de um furo e dois furos de fixação como cilindros, passo a passo. Pratique sólidos 3D grátis.
+
+- **Exercício:** Avançado · Mecânica · Sólido 3D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`EXTRUSAO`](/docs/commands/extrude), [`UNIAO`](/docs/commands/union), [`CILINDRO`](/docs/commands/cylinder), [`COPIAR`](/docs/commands/copy), [`SUBTRAIR`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [Exercício de AutoCAD 3D: um mancal](/docs/exercises/bearing-block)
+
+## Guias passo a passo [#guides]
+
+As habilidades dos exercícios, uma de cada vez: digitar pontos, a planta baixa de uma casa, um desenho 2D transformado em sólido. Cada guia mostra o desenho de cada passo e o histórico dele.
+
+- [Coordenadas no AutoCAD](/docs/coordinates): Como digitar pontos no AutoCAD: coordenadas absolutas, relativas e polares, uma linha com comprimento e ângulo e o rastreamento polar. Pratique grátis online.
+- [Como fazer planta baixa no AutoCAD](/docs/floor-plan): Como fazer a planta baixa de uma casa no AutoCAD: paredes com deslocamento, parede interna, vãos aparados, portas com o arco de abertura, janelas e cotas.
+- [Do 2D ao 3D no AutoCAD](/docs/2d-to-3d): Como transformar desenho 2D em 3D no AutoCAD: extrudar, pressionar/puxar ou girar um perfil fechado, unir e subtrair. Sólidos 3D online grátis, ainda parciais.
+
+## Como funcionam os exercícios [#how]
+
+Um exercício abre no editor com o desenho dele, cotado, à esquerda da origem: desenhe o seu a partir de 0,0, como faz a resolução. O que você desenha fica guardado neste navegador, só para aquele exercício. O desenho em que você estava trabalhando continua como estava, e o editor aberto diretamente o traz de volta. Para recomeçar um exercício, execute NOVO e depois abra-o pela página dele. Cada página é impressa sem o resto do site, primeiro o desenho e depois os passos, e a janela de impressão do navegador a salva como PDF.
+
+## Perguntas frequentes [#questions]
+
+### Onde encontrar exercícios de AutoCAD para praticar?
+
+Aqui: cada exercício tem o desenho cotado, os comandos que ele pratica e a resolução passo a passo, e abre num editor gratuito que funciona como o AutoCAD, no navegador. Comece pelos de iniciante; cada comando que eles usam leva ao que ele faz e às opções que pede.
+
+### Posso praticar AutoCAD online grátis?
+
+Sim. O MellowCAD funciona no navegador, grátis e sem cadastro: você digita os comandos e os aliases do AutoCAD com os nomes em português e responde aos prompts deles na mesma ordem, com as mesmas letras de opção. Ele não é o AutoCAD: ainda não abre arquivos DWG nem DXF, e os sólidos 3D dele ainda são parciais.
+
+### Os exercícios têm resolução?
+
+Todo exercício é resolvido passo a passo, embaixo do desenho. O motor desenha cada passo e escreve o histórico da linha de comando, para você comparar o seu com ele linha por linha.
+
+### Posso imprimir os exercícios ou salvá-los em PDF?
+
+Sim. A página de um exercício é impressa sem o resto do site, em linhas escuras sobre fundo branco, primeiro o desenho e depois os passos, e a janela de impressão do navegador a salva como PDF.

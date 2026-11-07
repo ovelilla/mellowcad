@@ -104,6 +104,8 @@ import { sessions as viewSessions } from "./demos/commands/view"
 import { sessions as vscurrentSessions } from "./demos/commands/vscurrent"
 import { sessions as wedgeSessions } from "./demos/commands/wedge"
 import { sessions as zoomSessions } from "./demos/commands/zoom"
+import { EXERCISE_SESSIONS } from "./demos/exercises/sessions"
+import { GUIDE_SESSIONS } from "./demos/guides/sessions"
 import { hero, heroDrawing } from "./demos/hero"
 import {
   crossingSelection,
@@ -301,10 +303,13 @@ export const COMMAND_SESSIONS = {
 
 /**
  * The docs' sessions (`<Session name="…" />` in a page): a figure and its
- * history from the command `from` names on, or none for a live figure.
+ * history from the command `from` names on, or from the action `fromAction`
+ * (an exercise's step), or none for a live figure.
  */
 export const DOCS_SESSIONS = {
   ...COMMAND_SESSIONS,
+  ...EXERCISE_SESSIONS,
+  ...GUIDE_SESSIONS,
   firstLine: {
     figure: { script: firstLine, width: 320, height: 200, padding: 20 },
     from: "LINE",
@@ -322,7 +327,11 @@ export const DOCS_SESSIONS = {
   },
 } satisfies Record<
   string,
-  { readonly figure: FigureSpec; readonly from?: string }
+  {
+    readonly figure: FigureSpec
+    readonly from?: string
+    readonly fromAction?: number
+  }
 >
 
 export type DocsSessionId = keyof typeof DOCS_SESSIONS

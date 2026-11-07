@@ -13,6 +13,8 @@ export async function sitePaths(): Promise<{
   readonly docs: string
   /** The command reference, the docs' page a searcher for a command wants. */
   readonly commands: string
+  /** The practice library, the docs' page a searcher for exercises wants. */
+  readonly exercises: string
 }> {
   const locale = await getLocale()
   return {
@@ -21,5 +23,6 @@ export async function sitePaths(): Promise<{
     privacy: localePath(locale, "/privacy"),
     docs: localePath(locale, DOCS_PATH),
     commands: localePath(locale, `${DOCS_PATH}/commands`),
+    exercises: localePath(locale, `${DOCS_PATH}/exercises`),
   }
 }

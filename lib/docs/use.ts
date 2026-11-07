@@ -9,10 +9,17 @@ export const USE_PAGES = [
   "getting-started",
   "commands",
   "shortcuts",
+  "exercises",
+  "coordinates",
+  "floor-plan",
+  "2d-to-3d",
   "differences",
 ] as const
 
 export type UsePage = (typeof USE_PAGES)[number]
+
+/** The how-to guides among them, which the practice library's index lists too. */
+export const GUIDE_PAGES = ["coordinates", "floor-plan", "2d-to-3d"] as const satisfies readonly UsePage[]
 
 /**
  * The repository's coverage notes, where the reference sends each command:

@@ -1,0 +1,55 @@
+---
+title: Cómo dibujar el plano de una casa en AutoCAD
+metaTitle: "Dibujar un plano de casa en AutoCAD, paso a paso"
+description: "Cómo dibujar el plano de una casa en AutoCAD: muros con DESFASE, un muro interior, huecos recortados con RECORTA, puertas con su apertura, ventanas y cotas."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Un plano de planta es la casa cortada a un metro y medio de altura, más o menos, y vista desde arriba: cada muro como dos líneas con su espesor entre ellas, sus huecos, las puertas dibujadas abiertas con su arco de apertura, las ventanas y las cotas. Esta guía dibuja una casa de dos habitaciones, de 8 por 6 metros, en centímetros: una unidad es un centímetro, así que los muros exteriores tienen 20 de espesor y el interior, 10. Cada paso muestra su dibujo y el historial de la línea de comandos tal como lo teclearías. [Abre el editor](/es/draw) junto a esta página y síguela.
+
+## Prepara las capas [#layers]
+
+Cada tipo de objeto va en su propia capa, con su color, para que puedas desactivar cualquiera de ellas: Muros, Puertas, Ventanas y Cotas. Créalas en la paleta de capas, <Command id="LAYER" />, y antes de cada paso haz actual la que toque en el control de capas. Para que las cotas se lean al tamaño de una casa, define la escala general de su estilo en <Command id="DIMSTYLE" />: aquí, 12, así que su texto mide 30 de alto.
+
+## Dibuja los muros exteriores [#walls]
+
+En la capa Muros, <Command id="RECTANG" /> de `0,0` a `800,600`: la cara exterior de los muros. <Command id="OFFSET" /> da la interior: escribe el espesor, `20`, designa el rectángulo y haz clic dentro de él.
+
+<Session name="floorPlanWalls" caption="Los muros exteriores: un rectángulo y su desfase, 20 hacia dentro." />
+
+## Dibuja el muro interior [#inner-wall]
+
+Una línea con <Command id="LINE" /> desde `500,20`, `0,560` hacia arriba hasta la cara interior de los muros exteriores, y un <Command id="OFFSET" /> de `10` a su derecha: el muro entre las dos habitaciones.
+
+<Session name="floorPlanInnerWall" caption="El muro interior: una línea y su desfase, 10 a su derecha." />
+
+## Abre los huecos [#openings]
+
+Un hueco se abre entre dos líneas que cruzan el muro, sus jambas. Dibújalas con <Command id="LINE" /> y después recorta con <Command id="TRIM" /> las líneas del muro entre ellas, con una designación cada una: la entrada, de 90 de ancho, desde `100,0`; la puerta interior, de 80, desde `500,200`; las ventanas, de 120, desde `200,580` en el muro de arriba y desde `780,250` en el de la derecha.
+
+<Session name="floorPlanOpenings" caption="Cuatro huecos: dos jambas en cada uno, y las líneas del muro recortadas entre ellas." />
+
+## Dibuja las puertas [#doors]
+
+En la capa Puertas, cada puerta es su hoja, dibujada abierta con <Command id="LINE" />, y su arco de apertura, con <Command id="ARC" />: elige su opción Centro y da la bisagra como centro, y después el inicio del arco y su final. Los dos extremos son puntos ya dibujados, la esquina de la jamba y el extremo de la hoja: escribe `_END`, la referencia a objetos Punto final para un solo punto, y señala cada uno.
+
+<Session name="floorPlanDoors" caption="Cada puerta: su hoja abierta a 90° y su arco de apertura." />
+
+## Dibuja las ventanas [#windows]
+
+En la capa Ventanas, un <Command id="RECTANG" /> llena cada hueco desde su jamba, y una línea por su centro representa el vidrio.
+
+<Session name="floorPlanWindows" caption="Las ventanas: un rectángulo en cada hueco y una línea para el vidrio." />
+
+## Acota el plano [#dimensions]
+
+En la capa Cotas, acota con <Command id="DIMLINEAR" /> las medidas exteriores, y después las habitaciones por dentro: el ancho de la primera habitación con <Command id="DIMLINEAR" />, y el muro interior y la segunda habitación con <Command id="DIMCONTINUE" />, escritos desde el origen con `#`.
+
+<Session name="floorPlanDimensions" caption="El plano acotado: 800 por 600 por fuera, y las habitaciones por dentro." />
+
+## Después [#next]
+
+- Pon nombre a cada habitación con <Command id="TEXT" />, y rellena los muros con <Command id="HATCH" />, designando un punto entre sus dos líneas.
+- Practica con los [ejercicios](/docs/exercises): [la escalera en planta](/docs/exercises/stairs) y [la mesa redonda con sillas](/docs/exercises/round-table) también se dibujan en centímetros.
+- [Coordenadas](/docs/coordinates): todas las formas de escribir un punto.

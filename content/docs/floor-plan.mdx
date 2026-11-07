@@ -1,0 +1,54 @@
+---
+title: How to draw a floor plan in AutoCAD
+metaTitle: "Draw a floor plan in AutoCAD, step by step"
+description: "How to draw a house's floor plan in AutoCAD: walls with OFFSET, an inner wall, openings cut with TRIM, doors with their swing, windows and dimensions."
+type: howTo
+---
+
+A floor plan is the house cut through at about one and a half metres up and seen from above: each wall as two lines with its thickness between them, the openings in it, the doors drawn open with their swing, the windows and the dimensions. This guide draws a house of two rooms, 8 by 6 metres, in centimetres: one unit is one centimetre, so the outside walls are 20 thick and the inner one 10. Each step shows its drawing and the command line's history as you would type it. [Open the editor](/draw) beside this page and follow it.
+
+## Set up the layers [#layers]
+
+Each kind of object goes on a layer of its own, with its colour, so you can turn any of them off: Walls, Doors, Windows and Dimensions. Create them in the layer palette, <Command id="LAYER" />, and make the right one current in the Layer control before each step. For the dimensions to read at the size of a house, set their style's overall scale in <Command id="DIMSTYLE" />: 12 here, so their text is 30 high.
+
+## Draw the outside walls [#walls]
+
+On Walls, <Command id="RECTANG" /> from `0,0` to `800,600`: the walls' outer face. <Command id="OFFSET" /> gives the inner one: type the thickness, `20`, pick the rectangle and click inside it.
+
+<Session name="floorPlanWalls" caption="The outside walls: a rectangle and its offset, 20 inside." />
+
+## Draw the inner wall [#inner-wall]
+
+A line with <Command id="LINE" /> from `500,20`, `0,560` up to the outside walls' inner face, and an <Command id="OFFSET" /> of `10` to its right: the wall between the two rooms.
+
+<Session name="floorPlanInnerWall" caption="The inner wall: a line and its offset, 10 to its right." />
+
+## Cut the openings [#openings]
+
+An opening is cut between two lines across the wall, its jambs. Draw them with <Command id="LINE" />, then <Command id="TRIM" /> the wall's lines between them, a pick each: the entrance, 90 wide, from `100,0`; the inner door, 80 wide, from `500,200`; the windows, 120 wide, from `200,580` in the top wall and `780,250` in the right one.
+
+<Session name="floorPlanOpenings" caption="Four openings: two jambs each, and the wall's lines trimmed between them." />
+
+## Draw the doors [#doors]
+
+On Doors, each door is its leaf, drawn open with <Command id="LINE" />, and its swing, an arc with <Command id="ARC" />: choose its centre option, then give the hinge as the centre, the swing's start and its end. Both ends are points already drawn, the jamb's corner and the leaf's end: type `_END`, the Endpoint object snap for one point, and pick each.
+
+<Session name="floorPlanDoors" caption="Each door: its leaf open at 90° and the arc of its swing." />
+
+## Draw the windows [#windows]
+
+On Windows, a <Command id="RECTANG" /> fills each opening from its jamb, and a line through its middle stands for the glass.
+
+<Session name="floorPlanWindows" caption="The windows: a rectangle in each opening and a line for the glass." />
+
+## Dimension the plan [#dimensions]
+
+On Dimensions, <Command id="DIMLINEAR" /> the outside sizes, then the rooms from inside: the first room's width with <Command id="DIMLINEAR" />, then the inner wall and the second room with <Command id="DIMCONTINUE" />, typed from the origin with `#`.
+
+<Session name="floorPlanDimensions" caption="The plan dimensioned: 800 by 600 outside, the rooms inside." />
+
+## What next [#next]
+
+- Name each room with <Command id="TEXT" />, and fill the walls with <Command id="HATCH" />, picking a point between their two lines.
+- Practise with the [exercises](/docs/exercises): the [stairs in plan](/docs/exercises/stairs) and [a round table and chairs](/docs/exercises/round-table) are drawn in centimetres too.
+- [Coordinates](/docs/coordinates): every way to type a point.

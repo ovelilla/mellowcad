@@ -1,0 +1,43 @@
+---
+title: AutoCAD coordinates
+metaTitle: "AutoCAD coordinates: absolute, relative, polar"
+description: "How to type points in AutoCAD: absolute, relative and polar coordinates, a line of a given length at an angle, and polar tracking. Practise them free online."
+type: howTo
+---
+
+Every point a command asks for can be picked on the drawing or typed. Typed, a point is two numbers, X and Y, separated by a comma, and where they are measured from depends on how you write them: from the origin, from the last point, or as a length and an angle from it. MellowCAD reads them as AutoCAD does with dynamic input on, its default. Each section draws one figure and shows its history.
+
+## Absolute coordinates [#absolute]
+
+Measured from the origin, `0,0`. The first point a command asks for is read this way: `20,10` is 20 along X and 10 along Y. After it, dynamic input reads a typed point from the last one, so a point measured from the origin takes `#` before it: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="A triangle, each corner measured from the origin." />
+
+## Relative coordinates [#relative]
+
+Measured from the last point: how far to go along X, then along Y. After a command's first point, that is what a typed point means, and the history writes it with `@` before it, as the command line reads it: `100,0` is 100 to the right of the last point, `-50,70` 50 back and 70 up. Typed with `@` yourself, a point is relative wherever you type it.
+
+<Session name="coordinatesRelative" caption="The same triangle, each corner measured from the one before." />
+
+## Polar coordinates [#polar]
+
+A length and an angle, measured from the last point: `100<0` goes 100 along X, `60<120` goes 60 at 120°. Angles are measured from the X axis, anticlockwise: 90° is up, 180° left and 270°, or -90°, down. The history writes them with `@` too.
+
+<Session name="coordinatesPolar" caption="Three sides, each a length and an angle from the end of the last." />
+
+## A line at an angle [#angle]
+
+To draw a line of a given length at a given angle, type the end as polar coordinates, `100<30`. Or hold the angle first: type `<30` and Enter, and the next point stays on that direction, on the cursor's side; then type the length, `100`.
+
+<Session name="coordinatesAngle" caption="A line held to 30°, then given its length, 100." />
+
+## Polar tracking [#tracking]
+
+With polar tracking on, `F10` or its button on the status bar, the cursor shows a guide at every multiple of its angle, set from that button's menu, and a typed length goes along the guide. The tooltip says how far and at what angle the cursor is.
+
+<Session name="coordinatesTracking" caption="Polar tracking at 30°: its guide, and the distance and angle at the cursor." />
+
+## What next [#next]
+
+- [Exercises](/docs/exercises) that are typed from start to finish: [an L bracket](/docs/exercises/l-bracket) with relative coordinates, [a plot of land](/docs/exercises/plot-of-land) with polar ones and [a block in isometric](/docs/exercises/isometric-block) along the isometric angles.
+- <Command id="LINE" />'s own page, and [getting started](/docs/getting-started) for the command line's first steps.

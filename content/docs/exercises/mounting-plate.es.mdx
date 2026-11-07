@@ -1,0 +1,60 @@
+---
+title: "Ejercicio de AutoCAD 3D: una placa de montaje"
+metaTitle: "Ejercicio de AutoCAD 3D básico: placa de montaje"
+description: "Modela una placa de montaje en AutoCAD 3D: regiones, una diferencia para los agujeros y una extrusión crean el sólido, resuelto paso a paso. Practica 3D gratis."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modela una placa de montaje de 10 de espesor, en milímetros: su contorno de 100 por 60 con esquinas de radio 8, y cuatro agujeros de 10 con los centros a 15 de los bordes. Empieza plana. El contorno y los círculos se convierten en regiones, los agujeros se restan mientras la placa sigue plana, y una sola extrusión la convierte en un sólido con sus agujeros.
+
+- **Ejercicio:** Básico · Mecánica · Sólido 3D
+- **Comandos:** [`RECTANG`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`COPIA`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`DIFERENCIA`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`ESTVISACTUAL`](/docs/commands/vscurrent), [`EXTRUSION`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=mounting-plate), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/mounting-plate" caption="El contorno de la placa, de 100 por 60 con cuatro agujeros, acotado." />
+
+<Session name="exercises/mounting-plate/model" caption="La placa como sólido, de 10 de espesor, vista desde el sureste sin las líneas ocultas." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja el perfil [#profile]
+
+En la capa Contorno, [`RECTANG`](/docs/commands/rectang) con un `eMpalme` de `8`, de `0,0` a `100,60`. Después, un círculo en `15,15` con un `Diámetro` de `10`, y cópialo con [`COPIA`](/docs/commands/copy) desde su centro a `70,0`, `70,30` y `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Dibuja el perfil" />
+
+### 2. Crea las regiones [#region]
+
+[`REGION`](/docs/commands/region) convierte objetos cerrados en regiones: designa el contorno y los cuatro círculos, y pulsa Intro. Cinco bucles, cinco regiones.
+
+<Session name="exercises/mounting-plate/region" caption="2. Crea las regiones" />
+
+### 3. Resta los agujeros [#subtract]
+
+[`DIFERENCIA`](/docs/commands/subtract): designa la región de la placa y pulsa Intro; después, las regiones de los cuatro círculos, e Intro. Queda una sola región, con cuatro agujeros.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Resta los agujeros" />
+
+### 4. Gira la vista [#view]
+
+`-VISTA` y `SEIso` la muestran desde el sureste y desde arriba; [`ESTVISACTUAL`](/docs/commands/vscurrent) y `ocUlto` ocultan lo que tapan las caras. El ViewCube también gira la vista con un clic.
+
+<Session name="exercises/mounting-plate/view" caption="4. Gira la vista" />
+
+### 5. Extrúyela [#extrude]
+
+[`EXTRUSION`](/docs/commands/extrude): designa la región, pulsa Intro y escribe la altura, `10`. La placa es un sólido, con sus agujeros. [`ZOOM`](/docs/commands/zoom) `Extensión` la encuadra, y una escala de 0.8x deja margen alrededor.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Extrúyela" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD: una brida](/docs/exercises/flange): Intermedio · Mecánica · 2D
+- [Ejercicio de AutoCAD: una mesa redonda con sillas](/docs/exercises/round-table): Intermedio · Arquitectura · 2D
+- [Ejercicio de AutoCAD: una parcela](/docs/exercises/plot-of-land): Intermedio · Civil · 2D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

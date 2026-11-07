@@ -1,0 +1,42 @@
+---
+title: Del 2D al 3D en AutoCAD
+metaTitle: "Cómo hacer sólidos en AutoCAD: del 2D al 3D"
+description: "Cómo convertir un dibujo 2D en sólido 3D en AutoCAD: extruir, presionar y tirar o girar un perfil cerrado, y unir y restar sólidos. Sólidos 3D, aún parciales."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+En AutoCAD, un sólido suele empezar como un dibujo 2D: un perfil cerrado, dibujado como cualquier plano, que después se extruye hasta una altura o se gira alrededor de un eje, y se une a otros sólidos o se corta con ellos. Los sólidos 3D de MellowCAD se hacen igual, con los mismos comandos. Aún son parciales: todavía no hay barridos, solevaciones, mallas ni renderizado. Cada sección muestra una sesión que dibuja el motor, con su historial tal como lo teclearías.
+
+## Dibuja un perfil cerrado [#profile]
+
+Un sólido necesita un perfil cerrado: una polilínea cerrada, un rectángulo, un círculo o una región. Unas líneas que se tocan por sus extremos siguen siendo objetos separados: <Command id="JOIN" /> hace con ellas una polilínea, o <Command id="REGION" />, una región. Dibuja el perfil en planta, donde escribir sus puntos es más fácil.
+
+## Extruye el perfil [#extrude]
+
+<Command id="EXTRUDE" />: designa el perfil, pulsa Intro y escribe la altura. Visto desde arriba, un sólido se ve igual que su perfil: gira la vista con <Command id="VIEW" /> o con el ViewCube para verlo, y elige cómo se dibuja con <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="Un perfil en L como una sola polilínea cerrada, extruido 30, visto desde el sureste." />
+
+## Presiona y tira de un área [#presspull]
+
+<Command id="PRESSPULL" /> no necesita perfil: haz clic dentro de cualquier área cerrada, aunque la limiten líneas separadas, y escribe la altura. Con un clic en una cara de un sólido, presiona o tira de esa cara.
+
+<Session name="presspull" caption="Un área cerrada, presionada y tirada desde dentro: se convierte en un sólido." />
+
+## Genera un sólido de revolución [#revolve]
+
+<Command id="REVOLVE" /> gira un perfil alrededor de un eje: designa el perfil, da el eje por dos puntos, por un objeto o como el eje X, Y o Z, y después el ángulo, una vuelta entera por defecto.
+
+<Session name="revolve" caption="Una media sección girada alrededor del eje Y." />
+
+## Une y resta sólidos [#booleans]
+
+<Command id="UNION" /> hace un solo sólido de varios, <Command id="SUBTRACT" /> resta uno o más de otro, e <Command id="INTERSECT" /> conserva lo que comparten. Un agujero es un cilindro restado del sólido que atraviesa.
+
+<Session name="subtract" caption="Un cilindro restado de un prisma rectangular: un agujero pasante." />
+
+## Después [#next]
+
+- Los [ejercicios](/docs/exercises) 3D: [una placa de montaje](/docs/exercises/mounting-plate) hecha con regiones y una sola extrusión, [una polea](/docs/exercises/pulley) generada por revolución de su sección y [un soporte de cojinete](/docs/exercises/bearing-block) unido y taladrado.
+- <Command id="3DORBIT" /> gira la vista con el ratón, y <Command id="VSCURRENT" /> sombrea las caras.

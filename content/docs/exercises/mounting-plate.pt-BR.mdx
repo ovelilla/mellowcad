@@ -1,0 +1,60 @@
+---
+title: "Exercício de AutoCAD 3D: uma placa de fixação"
+metaTitle: "Exercício de AutoCAD 3D para iniciantes: placa"
+description: "Modele uma placa de fixação no AutoCAD 3D: regiões, uma subtração para os furos e uma só extrusão fazem o sólido, passo a passo. Pratique 3D online grátis."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modele uma placa de fixação de 10 de espessura, em milímetros: o contorno de 100 por 60 com cantos de raio 8, e quatro furos de 10 com os centros a 15 das bordas. Ela começa plana. O contorno e os círculos viram regiões, os furos são subtraídos enquanto a placa ainda é plana, e uma só extrusão a transforma num sólido com os furos.
+
+- **Exercício:** Iniciante · Mecânica · Sólido 3D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`COPIAR`](/docs/commands/copy), [`REGIAO`](/docs/commands/region), [`SUBTRAIR`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`EVATUAL`](/docs/commands/vscurrent), [`EXTRUSAO`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=mounting-plate), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/mounting-plate" caption="O contorno da placa, de 100 por 60 com quatro furos, cotado." />
+
+<Session name="exercises/mounting-plate/model" caption="A placa como sólido, de 10 de espessura, vista do sudeste com as linhas ocultas removidas." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe o perfil [#profile]
+
+Na camada Contorno, o [`RETANGULO`](/docs/commands/rectang) com `COncordância` de `8`, de `0,0` a `100,60`. Depois um círculo em `15,15` com `Diâmetro` de `10`; copie-o com o [`COPIAR`](/docs/commands/copy), a partir do centro dele, para `70,0`, `70,30` e `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Desenhe o perfil" />
+
+### 2. Crie as regiões [#region]
+
+O [`REGIAO`](/docs/commands/region) transforma objetos fechados em regiões: selecione o contorno e os quatro círculos, e Enter. Cinco loops, cinco regiões.
+
+<Session name="exercises/mounting-plate/region" caption="2. Crie as regiões" />
+
+### 3. Subtraia os furos [#subtract]
+
+[`SUBTRAIR`](/docs/commands/subtract): selecione a região da placa e pressione Enter, depois as regiões dos quatro círculos e Enter. Sobra uma região, com quatro furos.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Subtraia os furos" />
+
+### 4. Gire a vista [#view]
+
+O `-VISTA` com `isoSE` mostra a peça do sudeste e de cima; o [`EVATUAL`](/docs/commands/vscurrent) com `ocUlto` oculta o que as faces escondem. O ViewCube também gira a vista com um clique.
+
+<Session name="exercises/mounting-plate/view" caption="4. Gire a vista" />
+
+### 5. Faça a extrusão [#extrude]
+
+[`EXTRUSAO`](/docs/commands/extrude): selecione a região, pressione Enter e digite a altura, `10`. A placa vira um sólido, com furos e tudo. O [`ZOOM`](/docs/commands/zoom) `ESTendido` a enquadra, e uma escala de 0.8x deixa uma margem em volta.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Faça a extrusão" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD: um flange](/docs/exercises/flange): Intermediário · Mecânica · 2D
+- [Exercício de AutoCAD: mesa redonda com cadeiras](/docs/exercises/round-table): Intermediário · Arquitetura · 2D
+- [Exercício de AutoCAD: um terreno](/docs/exercises/plot-of-land): Intermediário · Civil · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

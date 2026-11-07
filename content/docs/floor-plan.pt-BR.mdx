@@ -1,0 +1,55 @@
+---
+title: Como fazer planta baixa no AutoCAD
+metaTitle: "Planta baixa no AutoCAD: passo a passo"
+description: "Como fazer a planta baixa de uma casa no AutoCAD: paredes com deslocamento, parede interna, vãos aparados, portas com o arco de abertura, janelas e cotas."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+A planta baixa é a casa cortada a cerca de um metro e meio de altura e vista de cima: cada parede como duas linhas com a espessura entre elas, os vãos das paredes, as portas desenhadas abertas com o arco de abertura, as janelas e as cotas. Este guia desenha uma casa de dois cômodos, de 8 por 6 metros, em centímetros: uma unidade é um centímetro, então as paredes externas têm 20 de espessura e a interna, 10. Cada passo mostra o desenho e o histórico da linha de comando como você o digitaria. [Abra o editor](/pt-br/draw) ao lado desta página e acompanhe.
+
+## Crie as camadas [#layers]
+
+Cada tipo de objeto vai numa camada própria, com a sua cor, para que você possa desativar qualquer uma delas: Paredes, Portas, Janelas e Cotas. Crie-as na paleta Camadas, com o <Command id="LAYER" />, e torne atual a camada certa no controle de camada antes de cada passo. Para que as cotas fiquem legíveis no tamanho de uma casa, defina a escala global do estilo delas no <Command id="DIMSTYLE" />: aqui, 12, para que o texto tenha 30 de altura.
+
+## Desenhe as paredes externas [#walls]
+
+Na camada Paredes, o <Command id="RECTANG" /> de `0,0` a `800,600`: a face externa das paredes. O <Command id="OFFSET" /> dá a face interna: digite a espessura, `20`, selecione o retângulo e clique dentro dele.
+
+<Session name="floorPlanWalls" caption="As paredes externas: um retângulo e a cópia deslocada dele, 20 para dentro." />
+
+## Desenhe a parede interna [#inner-wall]
+
+Uma linha com o <Command id="LINE" /> de `500,20`, `0,560` para cima, até a face interna das paredes externas, e, com o <Command id="OFFSET" />, uma cópia dela a `10` para a direita: a parede entre os dois cômodos.
+
+<Session name="floorPlanInnerWall" caption="A parede interna: uma linha e a cópia deslocada dela, 10 à direita." />
+
+## Abra os vãos [#openings]
+
+Um vão é aberto entre duas linhas que atravessam a parede, as ombreiras. Desenhe-as com o <Command id="LINE" /> e depois apare com o <Command id="TRIM" /> as linhas da parede entre elas, uma seleção para cada: a entrada, de 90 de largura, a partir de `100,0`; a porta interna, de 80, a partir de `500,200`; as janelas, de 120, a partir de `200,580` na parede de cima e de `780,250` na da direita.
+
+<Session name="floorPlanOpenings" caption="Quatro vãos: duas ombreiras em cada um, e as linhas da parede aparadas entre elas." />
+
+## Desenhe as portas [#doors]
+
+Na camada Portas, cada porta é a folha, desenhada aberta com o <Command id="LINE" />, e o arco de abertura, com o <Command id="ARC" />: escolha a opção Centro e dê a dobradiça como centro, depois o início e o fim do arco. As duas pontas são pontos já desenhados, o canto da ombreira e a ponta da folha: digite `_END`, o snap ao objeto Ponto final para um só ponto, e clique em cada um.
+
+<Session name="floorPlanDoors" caption="Cada porta: a folha aberta a 90° e o arco de abertura." />
+
+## Desenhe as janelas [#windows]
+
+Na camada Janelas, um <Command id="RECTANG" /> preenche cada vão a partir da ombreira, e uma linha pelo meio dele representa o vidro.
+
+<Session name="floorPlanWindows" caption="As janelas: um retângulo em cada vão e uma linha para o vidro." />
+
+## Cote a planta [#dimensions]
+
+Na camada Cotas, cote as medidas externas com o <Command id="DIMLINEAR" /> e depois os cômodos por dentro: a largura do primeiro cômodo com o <Command id="DIMLINEAR" />, depois a parede interna e o segundo cômodo com o <Command id="DIMCONTINUE" />, digitados a partir da origem com `#`.
+
+<Session name="floorPlanDimensions" caption="A planta cotada: 800 por 600 por fora, os cômodos por dentro." />
+
+## A seguir [#next]
+
+- Dê nome a cada cômodo com o <Command id="TEXT" /> e preencha as paredes com o <Command id="HATCH" />, indicando um ponto entre as duas linhas delas.
+- Pratique com os [exercícios](/docs/exercises): a [escada em planta baixa](/docs/exercises/stairs) e [a mesa redonda com cadeiras](/docs/exercises/round-table) também são desenhadas em centímetros.
+- [Coordenadas](/docs/coordinates): todos os jeitos de digitar um ponto.

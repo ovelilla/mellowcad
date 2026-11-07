@@ -1,0 +1,52 @@
+---
+title: "AutoCAD exercise: a round table and chairs"
+metaTitle: "AutoCAD exercise: a round table, six chairs"
+description: "Draw a round table with six chairs in AutoCAD: one chair, then a polar array round the table's centre, and its dimensions, step by step. Free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw a round table of 120 with six chairs, in centimetres: each chair a seat 44 by 40 with corners rounded to 4 and a back 8 deep, its front 8 from the table's edge. Draw one chair above the table and let a polar array place all six. The drawing's dimension scale is set for centimetres.
+
+- **Exercise:** Intermediate · Architecture · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **In the editor:** [Open it with its drawing](/draw?drawing=round-table), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/round-table" caption="A round table of 120 with six chairs, in plan, dimensioned in centimetres." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the table [#table]
+
+On the Outline layer, [`CIRCLE`](/docs/commands/circle) at `0,0`, `Diameter` `120`.
+
+<Session name="exercises/round-table/table" caption="1. Draw the table" />
+
+### 2. Draw a chair [#chair]
+
+The seat, above the table: [`RECTANG`](/docs/commands/rectang) with a `Fillet` of `4`, from `-22,68` to `44,40` further on. Then the back, with the fillet set back to `0`, from `-22,108` to `44,8` further on. [`RECTANG`](/docs/commands/rectang) keeps its fillet radius until you change it.
+
+<Session name="exercises/round-table/chair" caption="2. Draw a chair" />
+
+### 3. Array the chairs [#array]
+
+[`ARRAYPOLAR`](/docs/commands/arraypolar): pick the seat and the back, press Enter, give the table's centre, `0,0`, then `Items`, `6`. Each chair turns as it is placed, so all six face the table.
+
+<Session name="exercises/round-table/array" caption="3. Array the chairs" />
+
+### 4. Dimension it [#dimensions]
+
+On Dimensions, [`DIMDIAMETER`](/docs/commands/dimdiameter) on the table, placed inside, and [`DIMLINEAR`](/docs/commands/dimlinear) for the top chair's width, 44, and its depth with the back, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a plot of land](/docs/exercises/plot-of-land): Intermediate · Civil · 2D
+- [AutoCAD exercise: a stepped shaft](/docs/exercises/shaft): Intermediate · Mechanical · 2D
+- [AutoCAD isometric exercise: a stepped block](/docs/exercises/isometric-block): Intermediate · Mechanical · Isometric
+- [AutoCAD practice exercises](/docs/exercises)

@@ -1,0 +1,58 @@
+---
+title: "Ejercicio de AutoCAD: una escalera en planta"
+metaTitle: "Plano para practicar AutoCAD: escalera en planta"
+description: "Ejercicio de arquitectura: dibuja en AutoCAD una escalera recta en planta, diez huellas con una línea y una matriz rectangular, la flecha de subida y las cotas."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja un tramo recto de escalera en planta, en centímetros: 280 de largo y 100 de ancho, diez huellas de 28 y la flecha que indica el sentido de subida. La escala de cota general del dibujo está ajustada para un plano en centímetros, así que sus cotas se leen bien a este tamaño. Se dibuja el borde de una huella; una matriz rectangular coloca los demás.
+
+- **Ejercicio:** Básico · Arquitectura · 2D
+- **Comandos:** [`RECTANG`](/docs/commands/rectang), [`LINEA`](/docs/commands/line), [`MATRIZRECTANG`](/docs/commands/arrayrect), [`POL`](/docs/commands/pline), [`ACOLINEAL`](/docs/commands/dimlinear)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=stairs), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/stairs" caption="Un tramo recto de escalera en planta, de 280 por 100 centímetros, con su flecha en el sentido de subida." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja el contorno [#outline]
+
+En la capa Contorno, [`RECTANG`](/docs/commands/rectang) de `0,0` a `280,100`: el contorno del tramo.
+
+<Session name="exercises/stairs/outline" caption="1. Dibuja el contorno" />
+
+### 2. Dibuja la primera huella [#tread]
+
+El borde de la primera huella, una [`LINEA`](/docs/commands/line) desde `28,0`, `0,100` hacia arriba, e Intro.
+
+<Session name="exercises/stairs/tread" caption="2. Dibuja la primera huella" />
+
+### 3. Haz la matriz de las huellas [#array]
+
+[`MATRIZRECTANG`](/docs/commands/arrayrect) la copia a lo largo del tramo: designa la línea y pulsa Intro; después elige `COntar`, `9` columnas y `1` fila, y `Espaciado`, `28` entre columnas y `1` entre filas, que no hace nada con una sola fila. `Salir` la deja como una matriz asociativa, que sus pinzamientos editan después.
+
+<Session name="exercises/stairs/array" caption="3. Haz la matriz de las huellas" />
+
+### 4. Dibuja la flecha [#arrow]
+
+[`POL`](/docs/commands/pline) desde `14,50`, a lo largo del tramo hasta `226,0` más allá; después `Grosor`, `10` al principio y `0` al final, y un último segmento de `24,0`: la punta de la flecha. Intro la termina.
+
+<Session name="exercises/stairs/arrow" caption="4. Dibuja la flecha" />
+
+### 5. Acótala [#dimensions]
+
+En la capa Cotas, [`ACOLINEAL`](/docs/commands/dimlinear) tres veces: la longitud debajo, la anchura a la derecha y una huella, 28, encima.
+
+<Session name="exercises/stairs/dimensions" caption="5. Acótala" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD 3D: una placa de montaje](/docs/exercises/mounting-plate): Básico · Mecánica · Sólido 3D
+- [Ejercicio de AutoCAD: una brida](/docs/exercises/flange): Intermedio · Mecánica · 2D
+- [Ejercicio de AutoCAD: una mesa redonda con sillas](/docs/exercises/round-table): Intermedio · Arquitectura · 2D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

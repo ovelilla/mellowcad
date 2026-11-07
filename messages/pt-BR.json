@@ -164,6 +164,7 @@
     "teachersBody": "Todos os alunos têm os mesmos comandos na mesma ordem, no laboratório ou em casa, e não há nada para instalar.",
     "makersTitle": "Makers",
     "makersBody": "Desenhe sob medida um suporte ou uma placa, ou modele-os como sólido, de graça.",
+    "practice": "Estudantes e professores: <link>exercícios de AutoCAD para praticar</link>, de uma primeira junta a sólidos 3D, cada um resolvido passo a passo e aberto no editor com o seu desenho.",
     "notFor": "Ainda não serve para trocar arquivos DWG ou DXF nem para plotar folhas em papel ou em PDF."
   },
   "Status": {
@@ -224,6 +225,7 @@
     "code": "Código",
     "docs": "Documentação",
     "commands": "Referência de comandos",
+    "exercises": "Exercícios para praticar",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "Licença MIT",
@@ -316,6 +318,34 @@
         "metaTitle": "Atalhos de teclado do AutoCAD: teclas F e Ctrl",
         "description": "As teclas a que o MellowCAD responde: os auxílios de desenho, a edição e os arquivos, a janela e a linha de comando.",
         "lead": "As teclas a que o MellowCAD responde, as que um usuário do AutoCAD já tem nos dedos. Cada comando é nomeado como você o digitaria; seus aliases estão na página de comandos."
+      },
+      "exercises": {
+        "title": "Exercícios de AutoCAD para praticar",
+        "metaTitle": "Exercícios de AutoCAD 2D e 3D resolvidos, grátis",
+        "description": "Desenhos para praticar AutoCAD, do iniciante ao avançado, em 2D, isométrico e 3D, resolvidos passo a passo e abertos com o desenho num editor online gratuito.",
+        "lead": "Desenhos para praticar AutoCAD, de uma primeira junta a sólidos 3D, cada um com as cotas, os comandos que ele pratica e a resolução passo a passo. O motor desenha cada passo e escreve o histórico da linha de comando como você vai digitá-lo: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Abra um no editor e o desenho dele estará ao lado do espaço onde você desenha o seu, no navegador, sem nada para instalar e sem conta para criar.",
+        "guidesTitle": "Guias passo a passo",
+        "guides": "As habilidades dos exercícios, uma de cada vez: digitar pontos, a planta baixa de uma casa, um desenho 2D transformado em sólido. Cada guia mostra o desenho de cada passo e o histórico dele.",
+        "howTitle": "Como funcionam os exercícios",
+        "how": "Um exercício abre no editor com o desenho dele, cotado, à esquerda da origem: desenhe o seu a partir de 0,0, como faz a resolução. O que você desenha fica guardado neste navegador, só para aquele exercício. O desenho em que você estava trabalhando continua como estava, e o editor aberto diretamente o traz de volta. Para recomeçar um exercício, execute NOVO e depois abra-o pela página dele. Cada página é impressa sem o resto do site, primeiro o desenho e depois os passos, e a janela de impressão do navegador a salva como PDF.",
+        "questions": {
+          "where": {
+            "question": "Onde encontrar exercícios de AutoCAD para praticar?",
+            "answer": "Aqui: cada exercício tem o desenho cotado, os comandos que ele pratica e a resolução passo a passo, e abre num editor gratuito que funciona como o AutoCAD, no navegador. Comece pelos de iniciante; cada comando que eles usam leva ao que ele faz e às opções que pede."
+          },
+          "online": {
+            "question": "Posso praticar AutoCAD online grátis?",
+            "answer": "Sim. O MellowCAD funciona no navegador, grátis e sem cadastro: você digita os comandos e os aliases do AutoCAD com os nomes em português e responde aos prompts deles na mesma ordem, com as mesmas letras de opção. Ele não é o AutoCAD: ainda não abre arquivos DWG nem DXF, e os sólidos 3D dele ainda são parciais."
+          },
+          "solutions": {
+            "question": "Os exercícios têm resolução?",
+            "answer": "Todo exercício é resolvido passo a passo, embaixo do desenho. O motor desenha cada passo e escreve o histórico da linha de comando, para você comparar o seu com ele linha por linha."
+          },
+          "pdf": {
+            "question": "Posso imprimir os exercícios ou salvá-los em PDF?",
+            "answer": "Sim. A página de um exercício é impressa sem o resto do site, em linhas escuras sobre fundo branco, primeiro o desenho e depois os passos, e a janela de impressão do navegador a salva como PDF."
+          }
+        }
       }
     },
     "reference": {
@@ -335,6 +365,7 @@
       "options": "Opções",
       "missing": "O que ainda não faz",
       "questions": "Perguntas frequentes",
+      "practice": "Pratique",
       "related": "Comandos relacionados"
     },
     "shortcuts": {
@@ -374,9 +405,35 @@
       "gettingStarted": "Primeiros passos",
       "howTo": "Como fazer",
       "reference": "Referência",
-      "concept": "Conceitos"
+      "concept": "Conceitos",
+      "practice": "Prática"
     },
     "exercise": {
+      "kind": "Exercício",
+      "commands": "Comandos",
+      "editor": "No editor",
+      "editorText": "<editor>Abra-o com o desenho</editor>, cotado, ao lado de onde você desenha o seu",
+      "drawing": "O desenho",
+      "steps": "Passo a passo",
+      "stepsLead": "O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; # mede a partir da origem.",
+      "more": "Mais exercícios",
+      "open": "Abrir no editor",
+      "print": "Imprimir ou salvar como PDF",
+      "levels": {
+        "beginner": "Iniciante",
+        "intermediate": "Intermediário",
+        "advanced": "Avançado"
+      },
+      "disciplines": {
+        "mechanical": "Mecânica",
+        "architecture": "Arquitetura",
+        "civil": "Civil"
+      },
+      "spaces": {
+        "2d": "2D",
+        "isometric": "Isométrico",
+        "3d": "Sólido 3D"
+      },
       "layers": {
         "outline": "Contorno",
         "centre": "Linhas de centro",

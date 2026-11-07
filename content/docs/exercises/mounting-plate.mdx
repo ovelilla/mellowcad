@@ -1,0 +1,60 @@
+---
+title: "AutoCAD 3D exercise: a mounting plate"
+metaTitle: "AutoCAD 3D exercise for beginners: a plate"
+description: "Model a mounting plate in AutoCAD 3D: regions, a subtraction for the holes and one extrusion make the solid, solved step by step. Practise 3D free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Model a mounting plate 10 thick, in millimetres: its outline 100 by 60 with corners of radius 8, and four holes of 10 whose centres are 15 from the edges. It starts flat. The outline and the circles become regions, the holes are subtracted while the plate is still flat, and one extrusion turns it into a solid with its holes.
+
+- **Exercise:** Beginner · Mechanical · 3D solid
+- **Commands:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **In the editor:** [Open it with its drawing](/draw?drawing=mounting-plate), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/mounting-plate" caption="The plate's outline, 100 by 60 with four holes, dimensioned." />
+
+<Session name="exercises/mounting-plate/model" caption="The plate as a solid, 10 thick, seen from the south-east with hidden lines removed." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the profile [#profile]
+
+On the Outline layer, [`RECTANG`](/docs/commands/rectang) with a `Fillet` of `8`, from `0,0` to `100,60`. Then a circle at `15,15` with a `Diameter` of `10`, and [`COPY`](/docs/commands/copy) it from its centre to `70,0`, `70,30` and `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Draw the profile" />
+
+### 2. Make regions [#region]
+
+[`REGION`](/docs/commands/region) turns closed objects into regions: pick the outline and the four circles, then Enter. Five loops, five regions.
+
+<Session name="exercises/mounting-plate/region" caption="2. Make regions" />
+
+### 3. Subtract the holes [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract): pick the plate's region and press Enter, then the four circles' regions and Enter. One region is left, with four holes in it.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Subtract the holes" />
+
+### 4. Turn the view [#view]
+
+`-VIEW` and `SEIso` look at it from the south-east and above; [`VSCURRENT`](/docs/commands/vscurrent) and `Hidden` hide what faces hide. The ViewCube turns the view with a click too.
+
+<Session name="exercises/mounting-plate/view" caption="4. Turn the view" />
+
+### 5. Extrude it [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude): pick the region, press Enter and type the height, `10`. The plate is a solid, holes and all. [`ZOOM`](/docs/commands/zoom) `Extents` frames it, and a scale of 0.8x leaves room round it.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Extrude it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a flange](/docs/exercises/flange): Intermediate · Mechanical · 2D
+- [AutoCAD exercise: a round table and chairs](/docs/exercises/round-table): Intermediate · Architecture · 2D
+- [AutoCAD exercise: a plot of land](/docs/exercises/plot-of-land): Intermediate · Civil · 2D
+- [AutoCAD practice exercises](/docs/exercises)

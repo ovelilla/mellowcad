@@ -1,0 +1,58 @@
+---
+title: "AutoCAD exercise: a flange"
+metaTitle: "AutoCAD practice drawing: a flange with keyway"
+description: "Draw a flange in AutoCAD: a bore with a keyway trimmed into it, eight holes in a polar array, centre lines and diameters, solved step by step. Free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this flange, in millimetres: 140 across, a bore of 60 with a keyway 16 wide whose top is 36 from the centre, eight holes of 14 on a pitch circle of 110, and its centre lines. The keyway is a rectangle trimmed into the bore; the holes are one circle and a polar array.
+
+- **Exercise:** Intermediate · Mechanical · 2D
+- **Commands:** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **In the editor:** [Open it with its drawing](/draw?drawing=flange), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/flange" caption="The flange, 140 across, with its keyway, eight holes and diameters." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the circles [#circles]
+
+On the Outline layer, two circles at `0,0`, each by its `Diameter`: `140` and `60`.
+
+<Session name="exercises/flange/circles" caption="1. Draw the circles" />
+
+### 2. Cut the keyway [#keyway]
+
+[`RECTANG`](/docs/commands/rectang) from `-8,20` to `16,16` further on: it crosses the bore. [`TRIM`](/docs/commands/trim) cuts an object where the others cross it: pick the bore's arc between the rectangle's sides, then the rectangle's bottom, inside the bore. What is left is the keyway, its two sides and its top.
+
+<Session name="exercises/flange/keyway" caption="2. Cut the keyway" />
+
+### 3. Array the holes [#holes]
+
+A hole on the pitch circle: a circle at `55<22.5`, 55 from the origin at 22.5°, with a `Diameter` of `14`. [`ARRAYPOLAR`](/docs/commands/arraypolar): pick it, press Enter and give the centre, `0,0`; `ASsociative` and `No` leave eight separate circles, which a dimension can pick, and `Items`, `8`, spreads them round the whole circle. Then, on Centre lines, the pitch circle at `0,0`, its diameter `110`.
+
+<Session name="exercises/flange/holes" caption="3. Array the holes" />
+
+### 4. Draw the centre lines [#centreLines]
+
+Still on Centre lines, two lines with [`LINE`](/docs/commands/line) through the centre, 156 long: from `-78,0`, `156,0` across; from `0,-78`, `0,156` up.
+
+<Session name="exercises/flange/centreLines" caption="4. Draw the centre lines" />
+
+### 5. Dimension it [#dimensions]
+
+On Dimensions, [`DIMDIAMETER`](/docs/commands/dimdiameter) on the bore, a hole, the pitch circle and the outline, each picked where no dimension crosses it yet, then [`DIMLINEAR`](/docs/commands/dimlinear) across the keyway's top: 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: a round table and chairs](/docs/exercises/round-table): Intermediate · Architecture · 2D
+- [AutoCAD exercise: a plot of land](/docs/exercises/plot-of-land): Intermediate · Civil · 2D
+- [AutoCAD exercise: a stepped shaft](/docs/exercises/shaft): Intermediate · Mechanical · 2D
+- [AutoCAD practice exercises](/docs/exercises)

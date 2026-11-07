@@ -1,0 +1,60 @@
+---
+title: "تمرين أوتوكاد ثلاثي الأبعاد: لوح تثبيت"
+metaTitle: "تمرين أوتوكاد ثلاثي الأبعاد للمبتدئين: لوح"
+description: "ابنِ لوح تثبيت في أوتوكاد ثلاثي الأبعاد: مناطق، وطرح للثقوب، وبثق واحد يصنع المجسم، مع الحل خطوة بخطوة. تدرّب على الرسم ثلاثي الأبعاد مجانًا أون لاين."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+ابنِ لوح تثبيت سماكته 10، بالمليمتر: محيطه 100 في 60 بزوايا نصف قطرها 8، وفيه أربعة ثقوب قطر كلٍّ منها 10 تبعد مراكزها 15 عن الحواف. يبدأ مسطحًا: يصير المحيط والدوائر مناطق، وتُطرح الثقوب واللوح لا يزال مسطحًا، ثم يحوّله بثق واحد إلى مجسم بثقوبه.
+
+- **التمرين:** مبتدئ · ميكانيكي · مجسم ثلاثي الأبعاد
+- **الأوامر:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **في المحرر:** [افتحه مع رسمه](/ar/draw?drawing=mounting-plate)، بأبعاده، بجانب المكان الذي ترسم فيه رسمك
+
+## الرسم المطلوب [#drawing]
+
+<Session name="exercises/mounting-plate" caption="محيط اللوح، 100 في 60 بأربعة ثقوب، بأبعاده." />
+
+<Session name="exercises/mounting-plate/model" caption="اللوح مجسمًا سماكته 10، منظورًا إليه من الجنوب الشرقي مع إزالة الخطوط المخفية." />
+
+## خطوة بخطوة [#steps]
+
+يرسم المحرك كل خطوة ويكتب سجلّها كما تكتبه أنت: المطالبات بترتيب أوتوكاد 2027، وبحروف الخيارات نفسها. وبعد النقطة الأولى للأمر، تُقاس النقطة المكتوبة من النقطة السابقة، كما يقيسها الإدخال الديناميكي، ويكتبها السجل مسبوقةً بـ⁨@⁩؛ و⁨\#⁩ يقيس من نقطة الأصل.
+
+### 1. ارسم المقطع [#profile]
+
+في طبقة «الخطوط الظاهرة»، [`RECTANG`](/docs/commands/rectang) بخيار `Fillet` ونصف قطر `8`، من `0,0` إلى `100,60`. ثم دائرة مركزها `15,15` وقطرها `10` بخيار `Diameter`، وانسخها بـ[`COPY`](/docs/commands/copy) من مركزها إلى `70,0` و`70,30` و`0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. ارسم المقطع" />
+
+### 2. أنشئ المناطق [#region]
+
+يحوّل [`REGION`](/docs/commands/region) الكائنات المغلقة إلى مناطق: حدّد المحيط والدوائر الأربع، ثم ⁨Enter⁩. خمس حلقات، خمس مناطق.
+
+<Session name="exercises/mounting-plate/region" caption="2. أنشئ المناطق" />
+
+### 3. اطرح الثقوب [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract): حدّد منطقة اللوح واضغط ⁨Enter⁩، ثم مناطق الدوائر الأربع و⁨Enter⁩. فتبقى منطقة واحدة فيها أربعة ثقوب.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. اطرح الثقوب" />
+
+### 4. أدِر المنظر [#view]
+
+`-VIEW` ثم `SEIso`: منظر من الجنوب الشرقي ومن أعلى؛ و[`VSCURRENT`](/docs/commands/vscurrent) ثم `Hidden`: يُخفى ما تحجبه الأوجه. ويدير مكعب العرض المنظر بنقرة أيضًا.
+
+<Session name="exercises/mounting-plate/view" caption="4. أدِر المنظر" />
+
+### 5. ابثقه [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude): حدّد المنطقة، واضغط ⁨Enter⁩، واكتب الارتفاع، `10`. صار اللوح مجسمًا بثقوبه كلها. ويؤطّره [`ZOOM`](/docs/commands/zoom) مع `Extents`، ويترك مقياس ⁨0.8x⁩ فسحة حوله.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. ابثقه" />
+
+## تمارين أخرى [#more]
+
+- [تمرين أوتوكاد: شفة (فلنجة)](/docs/exercises/flange): متوسط · ميكانيكي · ثنائي الأبعاد
+- [تمرين أوتوكاد: طاولة مستديرة وكراسي](/docs/exercises/round-table): متوسط · معماري · ثنائي الأبعاد
+- [تمرين أوتوكاد: قطعة أرض](/docs/exercises/plot-of-land): متوسط · مدني · ثنائي الأبعاد
+- [تمارين أوتوكاد](/docs/exercises)

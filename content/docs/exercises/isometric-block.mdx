@@ -1,0 +1,52 @@
+---
+title: "AutoCAD isometric exercise: a stepped block"
+metaTitle: "AutoCAD isometric drawing exercise: a block"
+description: "Draw a stepped block in isometric in AutoCAD with LINE and polar coordinates along the 30°, 90° and 150° axes, and dimension it. Free, step by step, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this stepped block in isometric, in millimetres: 60 long, 40 deep and 40 high, with a step 20 deep and 20 high along its front. Every edge runs along one of the isometric axes: 30° and 210° for the length, 150° and 330° for the depth, 90° and 270° for the height. MellowCAD does not have AutoCAD's isometric drafting yet, its isometric snap and isocircles, so the edges are lines typed with polar coordinates, a length and an angle.
+
+- **Exercise:** Intermediate · Mechanical · Isometric
+- **Commands:** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- **In the editor:** [Open it with its drawing](/draw?drawing=isometric-block), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/isometric-block" caption="A stepped block in isometric, 60 long, 40 deep and 40 high, its sizes dimensioned along its edges." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the front of the step [#front]
+
+On the Outline layer, [`LINE`](/docs/commands/line) from `0,0`, the bottom front corner: `60<30`, `20<90`, `60<210`, then `Close`.
+
+<Session name="exercises/isometric-block/front" caption="1. Draw the front of the step" />
+
+### 2. Draw the side [#side]
+
+From `0,0` again, the left side: `40<150`, `40<90`, `20<330`, `20<270` and `20<330`. Enter ends the line on the step's front edge.
+
+<Session name="exercises/isometric-block/side" caption="2. Draw the side" />
+
+### 3. Draw the top [#top]
+
+The rest starts at corners already drawn: type `_END`, the Endpoint object snap for one point, and pick the corner. From the front's top right corner: `20<150`, `20<90`, `20<150` and `60<210`. Then two lines of `60<210`, from the riser's foot and from its top.
+
+<Session name="exercises/isometric-block/top" caption="3. Draw the top" />
+
+### 4. Dimension it [#dimensions]
+
+On Dimensions, [`DIMALIGNED`](/docs/commands/dimaligned) along the edges, each placed beside its own: 60 and 40 at the bottom, 40 up the left, 20 up the right.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD 3D exercise: a pulley](/docs/exercises/pulley): Intermediate · Mechanical · 3D solid
+- [AutoCAD exercise: a link with tangent lines](/docs/exercises/link): Advanced · Mechanical · 2D
+- [AutoCAD 3D exercise: a bearing block](/docs/exercises/bearing-block): Advanced · Mechanical · 3D solid
+- [AutoCAD practice exercises](/docs/exercises)

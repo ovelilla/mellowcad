@@ -1,0 +1,58 @@
+---
+title: "Exercício de AutoCAD: escada em planta baixa"
+metaTitle: "Exercício de planta baixa no AutoCAD: escada"
+description: "Desenhe uma escada reta em planta baixa no AutoCAD: dez degraus com uma linha e uma matriz retangular, a seta de subida e as cotas. Grátis, passo a passo."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe uma escada reta em planta baixa, em centímetros: 280 de comprimento e 100 de largura, dez degraus com piso de 28 e a seta que indica a subida. A escala das cotas do desenho já está ajustada para uma planta em centímetros, então as cotas ficam legíveis nesse tamanho. A linha de um degrau é desenhada; uma matriz retangular posiciona as outras.
+
+- **Exercício:** Iniciante · Arquitetura · 2D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`LINHA`](/docs/commands/line), [`MATRIZRETANG`](/docs/commands/arrayrect), [`PLINHA`](/docs/commands/pline), [`COTALINEAR`](/docs/commands/dimlinear)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=stairs), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/stairs" caption="Uma escada reta em planta baixa, de 280 por 100 centímetros, com a seta apontando a subida." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe o contorno [#outline]
+
+Na camada Contorno, o contorno do lance com o [`RETANGULO`](/docs/commands/rectang), de `0,0` a `280,100`.
+
+<Session name="exercises/stairs/outline" caption="1. Desenhe o contorno" />
+
+### 2. Desenhe o primeiro degrau [#tread]
+
+A linha do primeiro degrau, com o [`LINHA`](/docs/commands/line): de `28,0`, `0,100` para cima, e Enter.
+
+<Session name="exercises/stairs/tread" caption="2. Desenhe o primeiro degrau" />
+
+### 3. Faça a matriz dos degraus [#array]
+
+O [`MATRIZRETANG`](/docs/commands/arrayrect) copia a linha ao longo do lance: selecione-a e pressione Enter, depois escolha `CONtagem`, `9` colunas e `1` linha, e `Espaçamento`, `28` entre as colunas e `1` entre as linhas, o que não faz diferença com uma linha só. `saIr` a mantém como uma matriz associativa, que se edita depois pelas alças.
+
+<Session name="exercises/stairs/array" caption="3. Faça a matriz dos degraus" />
+
+### 4. Desenhe a seta [#arrow]
+
+Com o [`PLINHA`](/docs/commands/pline), comece em `14,50` e siga ao longo do lance até `226,0` a partir dali; depois `LArgura`, `10` no início e `0` no fim, e um último segmento de `24,0`: a ponta da seta. Enter encerra o comando.
+
+<Session name="exercises/stairs/arrow" caption="4. Desenhe a seta" />
+
+### 5. Cote o desenho [#dimensions]
+
+Na camada Cotas, o [`COTALINEAR`](/docs/commands/dimlinear) três vezes: o comprimento embaixo, a largura à direita e um degrau, 28, em cima.
+
+<Session name="exercises/stairs/dimensions" caption="5. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD 3D: uma placa de fixação](/docs/exercises/mounting-plate): Iniciante · Mecânica · Sólido 3D
+- [Exercício de AutoCAD: um flange](/docs/exercises/flange): Intermediário · Mecânica · 2D
+- [Exercício de AutoCAD: mesa redonda com cadeiras](/docs/exercises/round-table): Intermediário · Arquitetura · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

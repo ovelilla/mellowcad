@@ -1,0 +1,52 @@
+---
+title: "AutoCAD exercise: an L bracket"
+metaTitle: "AutoCAD exercise for beginners: an L bracket"
+description: "Draw an L bracket in AutoCAD with relative coordinates: its outline, a fillet, two holes and baseline dimensions, solved step by step. Practise it free online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Draw this bracket, in millimetres: 100 long, a foot 20 high and an upright 30 wide and 80 high, the inside corner rounded to a radius of 10, a hole of 8 in the foot and one of 10 in the upright, each centred in its leg. The outline is one run of [`LINE`](/docs/commands/line), each point typed as how far it goes from the last, and its dimensions all start from the bottom left corner.
+
+- **Exercise:** Beginner · Mechanical · 2D
+- **Commands:** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **In the editor:** [Open it with its drawing](/draw?drawing=l-bracket), dimensioned beside where you draw yours
+
+## The drawing [#drawing]
+
+<Session name="exercises/l-bracket" caption="The L bracket, 100 by 80, dimensioned from its bottom left corner." />
+
+## Step by step [#steps]
+
+The engine draws each step and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters. After a command's first point, a typed point is measured from the last one, as dynamic input measures it, and the history writes it with @; \# measures from the origin.
+
+### 1. Draw the outline [#outline]
+
+On the Outline layer, [`LINE`](/docs/commands/line) from `0,0`, then each point as a step from the last: `100,0`, `0,20`, `-70,0`, `0,60` and `-30,0`. `Close` draws the last side back to the start and ends the command.
+
+<Session name="exercises/l-bracket/outline" caption="1. Draw the outline" />
+
+### 2. Round the inside corner [#fillet]
+
+[`FILLET`](/docs/commands/fillet): choose `Radius`, type `10`, then pick the two lines that meet at the inside corner, the foot's top and the upright's side.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Round the inside corner" />
+
+### 3. Draw the holes [#holes]
+
+Two circles with [`CIRCLE`](/docs/commands/circle), each by its `Diameter`: `8` at `80,10`, in the foot, and `10` at `15,65`, in the upright.
+
+<Session name="exercises/l-bracket/holes" caption="3. Draw the holes" />
+
+### 4. Dimension it [#dimensions]
+
+On Dimensions, [`DIMLINEAR`](/docs/commands/dimlinear) from `0,0` to the foot's hole, `80,10`, placed below: 80. [`DIMBASELINE`](/docs/commands/dimbaseline) goes on from the same first extension line: type the right end, `#100,0`, where # measures from the origin, then Enter twice to end it. The same up the left side, to the upper hole and then to the top, `#0,80`. [`DIMRADIUS`](/docs/commands/dimradius) on the fillet and [`DIMDIAMETER`](/docs/commands/dimdiameter) on each hole finish it.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Dimension it" />
+
+## More exercises [#more]
+
+- [AutoCAD exercise: stairs in plan](/docs/exercises/stairs): Beginner · Architecture · 2D
+- [AutoCAD 3D exercise: a mounting plate](/docs/exercises/mounting-plate): Beginner · Mechanical · 3D solid
+- [AutoCAD exercise: a flange](/docs/exercises/flange): Intermediate · Mechanical · 2D
+- [AutoCAD practice exercises](/docs/exercises)

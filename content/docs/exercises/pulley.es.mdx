@@ -1,0 +1,48 @@
+---
+title: "Ejercicio de AutoCAD 3D: una polea"
+metaTitle: "Ejercicio de AutoCAD 3D: polea por revolución"
+description: "Modela una polea en AutoCAD 3D: su media sección, una polilínea cerrada, girada en torno al eje Y hasta un sólido de revolución, paso a paso. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modela esta polea haciendo girar su media sección alrededor de su eje, en milímetros: un agujero de 20, un cubo de 30 de largo y 40 de diámetro, un alma de 10 de espesor y una llanta de 24 de ancho, de 90 a 110 de diámetro, centrada en el cubo. La sección se dibuja como distancias al eje, que sube por el eje Y, así que cada diámetro se dibuja como su mitad.
+
+- **Ejercicio:** Intermedio · Mecánica · Sólido 3D
+- **Comandos:** [`POL`](/docs/commands/pline), [`-VISTA`](/docs/commands#-view), [`ESTVISACTUAL`](/docs/commands/vscurrent), [`REVOLUCION`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=pulley), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/pulley" caption="La media sección de la polea junto a su eje, con sus distancias al eje acotadas." />
+
+<Session name="exercises/pulley/model" caption="La polea como sólido, vista desde el sureste con el estilo visual Conceptual." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja la media sección [#profile]
+
+En la capa Contorno, una sola [`POL`](/docs/commands/pline) cerrada desde `10,0`, cada punto siguiente como un desplazamiento desde el anterior: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` y `-10,0`, y después `Cerrar`.
+
+<Session name="exercises/pulley/profile" caption="1. Dibuja la media sección" />
+
+### 2. Gira la vista [#view]
+
+`-VISTA` y `SEIso` la muestran desde el sureste y desde arriba; [`ESTVISACTUAL`](/docs/commands/vscurrent) y `Conceptual` sombrean las caras, que es como mejor se ve una pieza torneada.
+
+<Session name="exercises/pulley/view" caption="2. Gira la vista" />
+
+### 3. Genera el sólido de revolución [#revolve]
+
+[`REVOLUCION`](/docs/commands/revolve): designa la sección y pulsa Intro; después, `Y`: el eje Y es el de la polea. Intro toma el ángulo por defecto, una vuelta entera. [`ZOOM`](/docs/commands/zoom) `Extensión` la encuadra, y una escala de 0.8x deja margen alrededor.
+
+<Session name="exercises/pulley/revolve" caption="3. Genera el sólido de revolución" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD: una biela con líneas tangentes](/docs/exercises/link): Avanzado · Mecánica · 2D
+- [Ejercicio de AutoCAD 3D: un soporte de cojinete](/docs/exercises/bearing-block): Avanzado · Mecánica · Sólido 3D
+- [Ejercicio de AutoCAD: una junta](/docs/exercises/gasket): Básico · Mecánica · 2D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

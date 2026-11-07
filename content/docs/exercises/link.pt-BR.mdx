@@ -1,0 +1,58 @@
+---
+title: "Exercício de AutoCAD: biela com linhas tangentes"
+metaTitle: "Exercício de AutoCAD avançado: biela e tangentes"
+description: "Desenhe uma biela no AutoCAD: dois olhais ligados por linhas tangentes com o snap ao objeto Tangente, os arcos entre elas aparados, e as cotas. Grátis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe esta biela, em milímetros: dois olhais a 90 um do outro, de raio 20 e 12, com furos de raio 10 e 6, ligados por linhas tangentes aos dois, com os arcos entre as linhas aparados. As linhas tangentes usam o snap ao objeto Tangente nas duas pontas; depois o [`APARAR`](/docs/commands/trim) transforma o círculo de cada olhal num arco.
+
+- **Exercício:** Avançado · Mecânica · 2D
+- **Comandos:** [`CIRCULO`](/docs/commands/circle), [`LINHA`](/docs/commands/line), [`APARAR`](/docs/commands/trim), [`COTALINEAR`](/docs/commands/dimlinear), [`COTARAIOS`](/docs/commands/dimradius), [`COTADIAMETRO`](/docs/commands/dimdiameter)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=link), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/link" caption="Uma biela de dois olhais a 90 um do outro, ligados por linhas tangentes, cotada." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe os olhais [#bosses]
+
+Na camada Contorno, quatro círculos com o [`CIRCULO`](/docs/commands/circle), cada um pelo raio: `20` e `10` em `0,0`, `12` e `6` em `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Desenhe os olhais" />
+
+### 2. Desenhe as linhas tangentes [#tangents]
+
+Execute o [`LINHA`](/docs/commands/line), digite `_TAN`, o snap ao objeto Tangente para um só ponto, e clique no círculo grande perto do topo; `_TAN` de novo e clique no pequeno perto do topo. A linha toca os dois. O mesmo por baixo.
+
+<Session name="exercises/link/tangents" caption="2. Desenhe as linhas tangentes" />
+
+### 3. Apare os arcos [#trim]
+
+[`APARAR`](/docs/commands/trim): selecione cada olhal entre as duas linhas, do lado voltado para o outro. Os arcos internos somem e cada círculo vira um arco.
+
+<Session name="exercises/link/trim" caption="3. Apare os arcos" />
+
+### 4. Desenhe as linhas de centro [#centreLines]
+
+Na camada Linhas de centro, a linha que passa pelos dois centros e uma linha atravessando cada olhal.
+
+<Session name="exercises/link/centreLines" caption="4. Desenhe as linhas de centro" />
+
+### 5. Cote o desenho [#dimensions]
+
+Na camada Cotas, a distância entre os centros com o [`COTALINEAR`](/docs/commands/dimlinear), os raios dos olhais com o [`COTARAIOS`](/docs/commands/dimradius) e os furos deles com o [`COTADIAMETRO`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD 3D: um mancal](/docs/exercises/bearing-block): Avançado · Mecânica · Sólido 3D
+- [Exercício de AutoCAD: uma junta](/docs/exercises/gasket): Iniciante · Mecânica · 2D
+- [Exercício de AutoCAD: um suporte em L](/docs/exercises/l-bracket): Iniciante · Mecânica · 2D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

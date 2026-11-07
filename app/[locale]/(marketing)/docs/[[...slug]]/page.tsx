@@ -8,6 +8,7 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { DocsMobileNav } from "@/components/docs/docs-mobile-nav"
 import { docsMdxComponents } from "@/components/docs/docs-mdx-components"
 import { DocsNav } from "@/components/docs/docs-nav"
+import { PrintButton } from "@/components/docs/print-button"
 import { DocsSearch } from "@/components/docs/docs-search"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { ForwardArrow } from "@/components/marketing/forward-arrow"
@@ -20,7 +21,8 @@ import {
   canonicalPath,
   type DocsPage,
   englishBuildNodes,
-  isCommandPage,
+  isExercisePage,
+  isIndexedPage,
   isPublished,
   isTranslated,
   navSections,
@@ -30,7 +32,7 @@ import {
 } from "@/lib/docs/pages"
 import { USE_PAGES } from "@/lib/docs/use"
 import { pageMetadata } from "@/lib/metadata"
-import { SITE_NAME } from "@/lib/site"
+import { EDITOR_PATH, SITE_NAME } from "@/lib/site"
 import { breadcrumbStructuredData } from "@/lib/structured-data"
 
 // Every page of every language is prerendered; any other slug is a 404.
@@ -312,7 +314,9 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
         </p>
       )}
       <article lang={language} dir={DIRECTION[language]} className="min-w-0">
-        <DocsBreadcrumbs steps={steps} locale={locale} />
+        <div className="print:hidden">
+          <DocsBreadcrumbs steps={steps} locale={locale} />
+        </div>
         <header className="mb-10 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <p className="label-mono" lang={locale} dir="auto">
@@ -328,12 +332,29 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
           </div>
           <h1 className="text-h2">{page.data.title}</h1>
           <p className="text-lead">{page.data.description}</p>
+          {isExercisePage(page) && (
+            // An exercise opens in the editor with its drawing, a full page
+            // load into the other root layout, and prints to be worked from.
+            <div className="flex flex-wrap items-center gap-3 print:hidden" lang={locale} dir={DIRECTION[locale]}>
+              <a
+                href={`${localePath(locale, EDITOR_PATH)}?drawing=${page.slugs[1]}`}
+                className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
+              >
+                {t("exercise.open")}
+                <span aria-hidden="true">
+                  &nbsp;
+                  <ForwardArrow />
+                </span>
+              </a>
+              <PrintButton label={t("exercise.print")} />
+            </div>
+          )}
         </header>
         <Body
           components={docsMdxComponents(locale, { copy: t("copy"), copied: t("copied") })}
         />
       </article>
-      <footer className="flex flex-col gap-6 border-t border-border pt-6 text-sm">
+      <footer className="flex flex-col gap-6 border-t border-border pt-6 text-sm print:hidden">
         <div className="flex flex-wrap gap-x-5 gap-y-1">
           <a href={`${localePath(language, canonicalPath(page))}.md`} className="underline-link">
             {t("markdown")}
@@ -389,9 +410,10 @@ export default async function DocsPageRoute({
   if (slug?.length && !page) notFound()
   const t = await getTranslations("Docs")
   const tree = docsSource.getPageTree(locale)
-  // A command's own page is not in the navigation: the reference stands for it.
+  // A command's own page and an exercise are not in the navigation: their
+  // folder's index stands for them.
   const active =
-    page && isCommandPage(page)
+    page && isIndexedPage(page)
       ? (docsSource.getPage(page.slugs.slice(0, 1), locale)?.url ?? page.url)
       : (page?.url ?? localePath(locale, DOCS_PATH))
   const { use, build } = navSections(tree.children)
@@ -416,7 +438,7 @@ export default async function DocsPageRoute({
 
   return (
     <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
-      <div className="flex h-14 items-center justify-between gap-4 border-b border-border">
+      <div className="flex h-14 items-center justify-between gap-4 border-b border-border print:hidden">
         <div className="flex items-center gap-2">
           <DocsMobileNav labels={{ menu: t("menu"), close: t("closeMenu") }}>
             {nav}
@@ -438,15 +460,15 @@ export default async function DocsPageRoute({
           }}
         />
       </div>
-      <div className="grid gap-10 py-10 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_13rem] lg:py-12">
-        <div className="hidden lg:block">
+      <div className="grid gap-10 py-10 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_13rem] lg:py-12 print:block print:py-0">
+        <div className="hidden lg:block print:hidden">
           <div className="sticky top-24">{nav}</div>
         </div>
         <div className="min-w-0">
           {page ? <DocsArticle page={page} locale={locale} /> : <DocsIndex locale={locale} />}
         </div>
         {page && (
-          <div className="hidden xl:block">
+          <div className="hidden xl:block print:hidden">
             <div className="sticky top-24 flex max-h-[calc(100svh-8rem)] flex-col">
               <DocsToc items={page.data.toc} title={t("onThisPage")} />
             </div>

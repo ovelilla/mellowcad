@@ -1,0 +1,66 @@
+---
+title: "تمرين أوتوكاد ثلاثي الأبعاد: كرسي محمل"
+metaTitle: "تمرين أوتوكاد ثلاثي الأبعاد متقدم: كرسي محمل"
+description: "ابنِ كرسي محمل في أوتوكاد ثلاثي الأبعاد: بثق واتحاد، ثم طرح تجويف وثقبين للبراغي أسطواناتٍ، مع الحل خطوة بخطوة. تدرّب على المجسمات مجانًا أون لاين."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+ابنِ كرسي المحمل هذا، بالمليمتر: قاعدة 100 في 60 بزوايا نصف قطرها 10، سماكتها 12؛ وصُرّة قطرها 40 ترتفع 40 في الوسط؛ وتجويف قطره 20 ينفذ في الصُّرّة، وثقبان للبراغي قطر كلٍّ منهما 10 ينفذان في القاعدة، المسافة بينهما 76. تُبثق القاعدة والصُّرّة من محيطيهما وتُضمّان في مجسم واحد؛ والتجويف والثقبان أسطوانات تُطرح منه.
+
+- **التمرين:** متقدم · ميكانيكي · مجسم ثلاثي الأبعاد
+- **الأوامر:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **في المحرر:** [افتحه مع رسمه](/ar/draw?drawing=bearing-block)، بأبعاده، بجانب المكان الذي ترسم فيه رسمك
+
+## الرسم المطلوب [#drawing]
+
+<Session name="exercises/bearing-block" caption="كرسي المحمل في المسقط الأفقي، 100 في 60، بأبعاد صُرّته وتجويفه وثقوبه." />
+
+<Session name="exercises/bearing-block/model" caption="كرسي المحمل مجسمًا، منظورًا إليه من الجنوب الشرقي بالنمط المفاهيمي." />
+
+## خطوة بخطوة [#steps]
+
+يرسم المحرك كل خطوة ويكتب سجلّها كما تكتبه أنت: المطالبات بترتيب أوتوكاد 2027، وبحروف الخيارات نفسها. وبعد النقطة الأولى للأمر، تُقاس النقطة المكتوبة من النقطة السابقة، كما يقيسها الإدخال الديناميكي، ويكتبها السجل مسبوقةً بـ⁨@⁩؛ و⁨\#⁩ يقيس من نقطة الأصل.
+
+### 1. ارسم المسقط [#plan]
+
+في طبقة «الخطوط الظاهرة»، [`RECTANG`](/docs/commands/rectang) بخيار `Fillet` ونصف قطر `10`، من `0,0` إلى `100,60`، ودائرة في مركزه، `50,30`، قطرها `40` بخيار `Diameter`.
+
+<Session name="exercises/bearing-block/plan" caption="1. ارسم المسقط" />
+
+### 2. ابثق القاعدة والصُّرّة [#extrude]
+
+ابثق بـ[`EXTRUDE`](/docs/commands/extrude) المحيط بارتفاع `12`، ثم الدائرة بارتفاع `40`: مجسمان.
+
+<Session name="exercises/bearing-block/extrude" caption="2. ابثق القاعدة والصُّرّة" />
+
+### 3. ضُمّهما [#union]
+
+[`UNION`](/docs/commands/union): حدّد الاثنين واضغط ⁨Enter⁩. فيصيران مجسمًا واحدًا.
+
+<Session name="exercises/bearing-block/union" caption="3. ضُمّهما" />
+
+### 4. ارسم الأسطوانات [#holes]
+
+التجويف وثقب برغي أسطوانتين، بـ[`CYLINDER`](/docs/commands/cylinder): التجويف عند `50,30`، و`Diameter` `20` وارتفاع `40`؛ وثقب البرغي عند `12,30`، بقطر `10` وارتفاع `12`. ثم انسخ الثقب بـ[`COPY`](/docs/commands/copy) من `12,30` إلى `76,0` نسبةً إليها.
+
+<Session name="exercises/bearing-block/holes" caption="4. ارسم الأسطوانات" />
+
+### 5. اطرحها [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract): حدّد المجسم واضغط ⁨Enter⁩، ثم الأسطوانات الثلاث و⁨Enter⁩. فينفذ التجويف والثقبان.
+
+<Session name="exercises/bearing-block/subtract" caption="5. اطرحها" />
+
+### 6. أدِر المنظر [#view]
+
+`-VIEW` ثم `SEIso`، و[`VSCURRENT`](/docs/commands/vscurrent) ثم `Conceptual`، ثم [`ZOOM`](/docs/commands/zoom) مع `Extents` و⁨0.8x⁩ لتأطيره.
+
+<Session name="exercises/bearing-block/view" caption="6. أدِر المنظر" />
+
+## تمارين أخرى [#more]
+
+- [تمرين أوتوكاد: حشية](/docs/exercises/gasket): مبتدئ · ميكانيكي · ثنائي الأبعاد
+- [تمرين أوتوكاد: حامل على شكل ⁨L⁩](/docs/exercises/l-bracket): مبتدئ · ميكانيكي · ثنائي الأبعاد
+- [تمرين أوتوكاد: درج في المسقط الأفقي](/docs/exercises/stairs): مبتدئ · معماري · ثنائي الأبعاد
+- [تمارين أوتوكاد](/docs/exercises)

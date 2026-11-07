@@ -1,0 +1,46 @@
+---
+title: "Ejercicio de AutoCAD: una parcela"
+metaTitle: "Ejercicio de AutoCAD: área y lados de un terreno"
+description: "Dibuja una parcela en AutoCAD con coordenadas polares, a partir de la longitud y el ángulo de sus lados; mide su área y acótala. Gratis, paso a paso, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja esta parcela, en metros, a partir de la longitud y la dirección de sus lados: 40 a 0°, 30 a 80°, 35 a 155° y 25 a 230°, y de vuelta al inicio. Mide su área y su perímetro, y acota cada lado y el ángulo de su segundo vértice. Las coordenadas polares, una longitud y un ángulo, dibujan cada lado desde el final del anterior. La escala de cota general del dibujo está ajustada para metros.
+
+- **Ejercicio:** Intermedio · Civil · 2D
+- **Comandos:** [`POL`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`ACOALINEADA`](/docs/commands/dimaligned), [`ACOANGULAR`](/docs/commands/dimangular)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=plot-of-land), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Una parcela de cinco lados, en metros, con cada lado acotado y un ángulo." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja el contorno [#boundary]
+
+En la capa Contorno, [`POL`](/docs/commands/pline) desde `0,0` y después cada lado como su longitud y su ángulo: `40<0`, `30<80`, `35<155` y `25<230`, cada uno medido desde el último punto. `Cerrar` dibuja el quinto lado y cierra el contorno: un solo objeto, que [`AREA`](/docs/commands/area) puede medir.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Dibuja el contorno" />
+
+### 2. Mide su área [#area]
+
+[`AREA`](/docs/commands/area), después `Objeto`, y designa el contorno: la línea de comandos da su área, en metros cuadrados, y su perímetro.
+
+<Session name="exercises/plot-of-land/area" caption="2. Mide su área" />
+
+### 3. Acótala [#dimensions]
+
+En la capa Cotas, [`ACOALINEADA`](/docs/commands/dimaligned) e Intro en su primera solicitud: entonces pide un objeto, y al designar un lado se acota ese lado, en paralelo a él. Coloca cada cota fuera de la parcela. [`ACOANGULAR`](/docs/commands/dimangular) en los dos lados que se encuentran en `40,0` da el ángulo entre ellos, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Acótala" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD: un eje escalonado](/docs/exercises/shaft): Intermedio · Mecánica · 2D
+- [Ejercicio isométrico de AutoCAD: un bloque escalonado](/docs/exercises/isometric-block): Intermedio · Mecánica · Isométrico
+- [Ejercicio de AutoCAD 3D: una polea](/docs/exercises/pulley): Intermedio · Mecánica · Sólido 3D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

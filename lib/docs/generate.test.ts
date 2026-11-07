@@ -6,10 +6,13 @@ import { describe, expect, test } from "vitest"
 import { LIVE_LOCALES, routing } from "@/i18n/routing"
 
 import { COMMAND_PAGES_DIR, localizedFile, notedCommands, readNotes } from "./command-pages"
+import { EXERCISE_PAGES_DIR, exerciseFile, notedExercises, readExerciseNotes } from "./exercise-pages"
 import {
   GENERATED_PAGES,
   commandPage,
   commandsPage,
+  exercisePage,
+  exercisesPage,
   pageFile,
   shortcutsPage,
   translatesPage,
@@ -17,7 +20,7 @@ import {
 } from "./generate"
 import { githubAnchor } from "./use"
 
-const PAGES = { commands: commandsPage, shortcuts: shortcutsPage }
+const PAGES = { commands: commandsPage, shortcuts: shortcutsPage, exercises: exercisesPage }
 
 // The generated pages are file snapshots: a catalog, a message, a command's
 // notes or a coverage heading that changes fails here until
@@ -45,6 +48,20 @@ describe.each(notedCommands(process.cwd()))("the page of %s", (id) => {
       return
     }
     await expect(await commandPage(id, locale)).toMatchFileSnapshot(file)
+  })
+})
+
+// An exercise with notes has a page in every language its notes are written
+// in, every live one at least.
+describe.each(notedExercises(process.cwd()))("the exercise %s", (slug) => {
+  test.each(routing.locales)("in %s", async (locale) => {
+    const file = `../../${EXERCISE_PAGES_DIR}/${exerciseFile(slug, locale, "mdx")}`
+    if (!readExerciseNotes(process.cwd(), slug, locale)) {
+      expect(LIVE_LOCALES).not.toContain(locale)
+      expect(existsSync(join(__dirname, file))).toBe(false)
+      return
+    }
+    await expect(await exercisePage(slug, locale)).toMatchFileSnapshot(file)
   })
 })
 

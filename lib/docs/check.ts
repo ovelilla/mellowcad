@@ -18,6 +18,7 @@ import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
 import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
 import { COMMAND_PAGES_DIR, checkCommandNotes } from "./command-pages.ts"
+import { EXERCISE_PAGES_DIR, checkExerciseNotes } from "./exercise-pages.ts"
 import { LOCALE_STATUS, routing } from "../../i18n/routing.ts"
 import { SITE_NAME, SITE_URL } from "../site.ts"
 
@@ -112,8 +113,8 @@ export function checkDocs(root: string): string[] {
     }
   }
   for (const page of pages.filter((page) => page.includes("/") && !pagePackage(`${CONTENT_DIR}/${page}`))) {
-    if (`${CONTENT_DIR}/${page.split("/")[0]}` !== COMMAND_PAGES_DIR) {
-      report(`${CONTENT_DIR}/${page}`, "a folder of the docs is a package's, or the commands' pages")
+    if (![COMMAND_PAGES_DIR, EXERCISE_PAGES_DIR].includes(`${CONTENT_DIR}/${page.split("/")[0]}`)) {
+      report(`${CONTENT_DIR}/${page}`, "a folder of the docs is a package's, the commands' pages or the exercises'")
     }
   }
   for (const name of USE_PAGES) {
@@ -148,15 +149,13 @@ export function checkDocs(root: string): string[] {
     }
   }
 
-  checkCommandNotes(
-    root,
-    {
-      all: routing.locales,
-      live: routing.locales.filter((locale) => LOCALE_STATUS[locale] === "live"),
-      english: routing.defaultLocale,
-    },
-    report
-  )
+  const locales = {
+    all: routing.locales,
+    live: routing.locales.filter((locale) => LOCALE_STATUS[locale] === "live"),
+    english: routing.defaultLocale,
+  }
+  checkCommandNotes(root, locales, report)
+  checkExerciseNotes(root, locales, report)
 
   const flat = (text: string) => text.replace(/\s+/g, " ")
   for (const { id, sources } of DIFFERENCES) {

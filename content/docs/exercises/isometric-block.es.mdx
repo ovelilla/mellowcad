@@ -1,0 +1,52 @@
+---
+title: "Ejercicio isométrico de AutoCAD: un bloque escalonado"
+metaTitle: "Dibujo isométrico para practicar AutoCAD: bloque"
+description: "Dibuja un bloque escalonado en isométrico en AutoCAD con LINEA y coordenadas polares según los ejes de 30°, 90° y 150°, y acótalo. Gratis, paso a paso, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja este bloque escalonado en isométrico, en milímetros: 60 de largo, 40 de fondo y 40 de alto, con un escalón de 20 de fondo y 20 de alto a lo largo de su frente. Cada arista sigue uno de los ejes isométricos: 30° y 210° para la longitud, 150° y 330° para el fondo, 90° y 270° para la altura. MellowCAD aún no tiene el dibujo isométrico de AutoCAD —su resolución isométrica y sus isocírculos—, así que las aristas son líneas escritas con coordenadas polares: una longitud y un ángulo.
+
+- **Ejercicio:** Intermedio · Mecánica · Isométrico
+- **Comandos:** [`LINEA`](/docs/commands/line), [`ACOALINEADA`](/docs/commands/dimaligned)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=isometric-block), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/isometric-block" caption="Un bloque escalonado en isométrico, de 60 de largo, 40 de fondo y 40 de alto, con sus medidas acotadas a lo largo de sus aristas." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja el frente del escalón [#front]
+
+En la capa Contorno, [`LINEA`](/docs/commands/line) desde `0,0`, la esquina delantera inferior: `60<30`, `20<90`, `60<210` y después `Cerrar`.
+
+<Session name="exercises/isometric-block/front" caption="1. Dibuja el frente del escalón" />
+
+### 2. Dibuja el lateral [#side]
+
+Otra vez desde `0,0`, el lateral izquierdo: `40<150`, `40<90`, `20<330`, `20<270` y `20<330`. Intro termina la línea en la arista delantera del escalón.
+
+<Session name="exercises/isometric-block/side" caption="2. Dibuja el lateral" />
+
+### 3. Dibuja la parte superior [#top]
+
+El resto empieza en esquinas ya dibujadas: escribe `_END`, la referencia a objetos Punto final para un solo punto, y señala la esquina. Desde la esquina superior derecha del frente: `20<150`, `20<90`, `20<150` y `60<210`. Después, dos líneas de `60<210`, desde el pie de la contrahuella del escalón y desde su borde superior.
+
+<Session name="exercises/isometric-block/top" caption="3. Dibuja la parte superior" />
+
+### 4. Acótalo [#dimensions]
+
+En la capa Cotas, [`ACOALINEADA`](/docs/commands/dimaligned) a lo largo de las aristas, cada cota junto a la suya: 60 y 40 abajo, 40 en vertical por la izquierda y 20 en vertical por la derecha.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Acótalo" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD 3D: una polea](/docs/exercises/pulley): Intermedio · Mecánica · Sólido 3D
+- [Ejercicio de AutoCAD: una biela con líneas tangentes](/docs/exercises/link): Avanzado · Mecánica · 2D
+- [Ejercicio de AutoCAD 3D: un soporte de cojinete](/docs/exercises/bearing-block): Avanzado · Mecánica · Sólido 3D
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

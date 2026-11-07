@@ -1,0 +1,58 @@
+---
+title: "Exercício de AutoCAD: uma junta"
+metaTitle: "Exercício de AutoCAD para iniciantes: junta"
+description: "Desenhe uma junta no AutoCAD: placa arredondada, furo central, quatro furos copiados de um, linhas de centro e cotas, passo a passo. Pratique grátis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Desenhe esta junta, em milímetros: uma placa de 120 por 80 com os cantos arredondados, de raio 10, um furo central de 40 e quatro furos de 10 com os centros a 12 das bordas, além das linhas de centro do furo central e das cotas. Tudo é digitado: o primeiro ponto de um comando fica nas coordenadas que você digita, e cada ponto seguinte é medido a partir do último. O contorno, as linhas de centro e as cotas vão cada um na sua própria camada.
+
+- **Exercício:** Iniciante · Mecânica · 2D
+- **Comandos:** [`RETANGULO`](/docs/commands/rectang), [`CIRCULO`](/docs/commands/circle), [`COPIAR`](/docs/commands/copy), [`LINHA`](/docs/commands/line), [`COTALINEAR`](/docs/commands/dimlinear), [`COTADIAMETRO`](/docs/commands/dimdiameter)
+- **No editor:** [Abra-o com o desenho](/pt-br/draw?drawing=gasket), cotado, ao lado de onde você desenha o seu
+
+## O desenho [#drawing]
+
+<Session name="exercises/gasket" caption="A junta, de 120 por 80, cotada." />
+
+## Passo a passo [#steps]
+
+O motor desenha cada passo e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção. Depois do primeiro ponto de um comando, um ponto digitado é medido a partir do último, como a entrada dinâmica o mede, e o histórico o escreve com @; \# mede a partir da origem.
+
+### 1. Desenhe o contorno [#outline]
+
+No controle de camada, torne atual a camada Contorno. O [`RETANGULO`](/docs/commands/rectang) desenha a placa de uma vez: escolha `COncordância` e digite o raio, `10`, depois o primeiro canto, `0,0`, e o outro canto, `120,80`, medido a partir do primeiro.
+
+<Session name="exercises/gasket/outline" caption="1. Desenhe o contorno" />
+
+### 2. Desenhe o furo central [#bore]
+
+Com o [`CIRCULO`](/docs/commands/circle), dê o centro no meio da placa, `60,40`, escolha `Diâmetro` e digite `40`.
+
+<Session name="exercises/gasket/bore" caption="2. Desenhe o furo central" />
+
+### 3. Copie os furos [#holes]
+
+Desenhe um furo, um círculo em `12,12` com `Diâmetro` de `10`, e copie-o com o [`COPIAR`](/docs/commands/copy): selecione o círculo, pressione Enter, use o centro dele, `12,12`, como ponto base e digite onde fica cada cópia a partir dali: `96,0`, depois `96,56` e depois `0,56`. Enter encerra as cópias.
+
+<Session name="exercises/gasket/holes" caption="3. Copie os furos" />
+
+### 4. Desenhe as linhas de centro [#centreLines]
+
+Torne atual a camada Linhas de centro. Duas linhas com o [`LINHA`](/docs/commands/line) se cruzam no centro do furo central e passam 6 além da borda dele: de `60,14`, `0,52` para cima; de `34,40`, `52,0` na horizontal. Enter encerra cada uma.
+
+<Session name="exercises/gasket/centreLines" caption="4. Desenhe as linhas de centro" />
+
+### 5. Cote o desenho [#dimensions]
+
+Torne atual a camada Cotas. O [`COTALINEAR`](/docs/commands/dimlinear) pede dois pontos e depois onde fica a linha de cota: o comprimento, de `0,10` até `120,0` a partir dele, colocado embaixo; a altura, à direita; o espaçamento entre os furos, 96 e 56. Um ponto digitado nos prompts dele não toca nenhum objeto, então cada uma dessas cotas é criada não associativa, como a linha de comando avisa. Com o [`COTADIAMETRO`](/docs/commands/dimdiameter), selecione um círculo e posicione o diâmetro dele: o do furo central e depois o de um dos furos.
+
+<Session name="exercises/gasket/dimensions" caption="5. Cote o desenho" />
+
+## Mais exercícios [#more]
+
+- [Exercício de AutoCAD: um suporte em L](/docs/exercises/l-bracket): Iniciante · Mecânica · 2D
+- [Exercício de AutoCAD: escada em planta baixa](/docs/exercises/stairs): Iniciante · Arquitetura · 2D
+- [Exercício de AutoCAD 3D: uma placa de fixação](/docs/exercises/mounting-plate): Iniciante · Mecânica · Sólido 3D
+- [Exercícios de AutoCAD para praticar](/docs/exercises)

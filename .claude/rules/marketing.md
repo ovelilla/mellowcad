@@ -39,7 +39,8 @@ claims and tone: `i18n.md`.
 comparison, a file format the product opens, a changelog) is welcome, decided on the demand data
 at hand, since a page that does not exist cannot show demand of its own. A page of the product's
 facts is generated from their source (the engine's catalog, `docs/coverage/`, `lib/facts.ts`) so it
-stays true, and every indexable page is in the sitemap, the hreflang set and the internal links.
+stays true, and every indexable page is in the sitemap, the hreflang set and the internal links:
+the practice library is linked from "who it's for" (`Audience.practice`) and the footer.
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact
@@ -96,6 +97,10 @@ script — updates it in the same change.
   (`elapseDwell`). A recording never waits on a timer: a loaded prerender ran a longer one first.
 - `content/figures.test.ts` replays every figure (no error lines, something drawn) and holds the
   hero, both frames, to 8–12 s and ≤ 600 primitives.
+- **An exercise is one script of steps** (`content/demos/exercises/`): its pages' figures, each step
+  as far as it goes, and the drawing it opens with in the editor, the same steps recorded into a
+  store (`recordDemo(…, { store })`, `app/[locale]/drawings`) with its template's layers named in
+  the page's language (`Docs.exercise.layers`) and moved left of the origin (`docs.md`).
 - The hero plots with CSS only: each element carries `--t` / `--d`, solid strokes have
   `pathLength="1"`, dashed ones and text fade. The transcript is `transcript(recording)`, timed by
   `plotDemo` — **the prompts are the engine's, never typed into the copy**, and so are `Command:` and

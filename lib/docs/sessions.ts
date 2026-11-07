@@ -19,16 +19,23 @@ export interface RenderedSession {
 /**
  * A `<Session>` of a written page, recorded in the page's language: its
  * figure, and its history as the command line writes it from the command it
- * shows on (`DOCS_SESSIONS`).
+ * shows on, or an exercise's step alone (`DOCS_SESSIONS`).
  */
 export async function renderSession(
   id: DocsSessionId,
   locale: EngineLocale | undefined
 ): Promise<RenderedSession> {
-  const session: { figure: (typeof DOCS_SESSIONS)[DocsSessionId]["figure"]; from?: string } =
-    DOCS_SESSIONS[id]
+  const session: {
+    figure: (typeof DOCS_SESSIONS)[DocsSessionId]["figure"]
+    from?: string
+    fromAction?: number
+  } = DOCS_SESSIONS[id]
   const figure = await renderFigure({ ...session.figure, locale })
   const text = engineText(locale)
+  if (session.fromAction !== undefined) {
+    const from = session.fromAction
+    return { figure, lines: transcript(figure.recording).filter((line) => line.step >= from), text }
+  }
   if (!session.from) return { figure, lines: [], text }
   const lines = transcript(figure.recording)
   // The command as its language names it (DESFASE in Spanish).

@@ -1,0 +1,52 @@
+---
+title: "Ejercicio de AutoCAD: una mesa redonda con sillas"
+metaTitle: "Ejercicio de AutoCAD: mesa redonda y seis sillas"
+description: "Dibuja una mesa redonda con seis sillas en AutoCAD: una silla y una matriz polar alrededor del centro de la mesa, y sus cotas, paso a paso. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dibuja una mesa redonda de 120 con seis sillas, en centímetros: cada silla, un asiento de 44 por 40 con las esquinas redondeadas con radio 4 y un respaldo de 8 de fondo, con su frente a 8 del borde de la mesa. Dibuja una silla por encima de la mesa y deja que una matriz polar coloque las seis. La escala de cota general del dibujo está ajustada para centímetros.
+
+- **Ejercicio:** Intermedio · Arquitectura · 2D
+- **Comandos:** [`CIRCULO`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`MATRIZPOLAR`](/docs/commands/arraypolar), [`ACODIAMETRO`](/docs/commands/dimdiameter), [`ACOLINEAL`](/docs/commands/dimlinear)
+- **En el editor:** [Ábrelo con su dibujo](/es/draw?drawing=round-table), acotado junto a donde dibujas el tuyo
+
+## El dibujo [#drawing]
+
+<Session name="exercises/round-table" caption="Una mesa redonda de 120 con seis sillas, en planta, acotada en centímetros." />
+
+## Paso a paso [#steps]
+
+El motor dibuja cada paso y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción. Después del primer punto de un comando, un punto escrito se mide desde el anterior, como lo mide la entrada dinámica, y el historial lo escribe con @; \# mide desde el origen.
+
+### 1. Dibuja la mesa [#table]
+
+En la capa Contorno, [`CIRCULO`](/docs/commands/circle) en `0,0`, `Diámetro` `120`.
+
+<Session name="exercises/round-table/table" caption="1. Dibuja la mesa" />
+
+### 2. Dibuja una silla [#chair]
+
+El asiento, por encima de la mesa: [`RECTANG`](/docs/commands/rectang) con un `eMpalme` de `4`, de `-22,68` a `44,40` más allá. Después, el respaldo, con el empalme de nuevo a `0`, de `-22,108` a `44,8` más allá. [`RECTANG`](/docs/commands/rectang) conserva su radio de empalme hasta que lo cambias.
+
+<Session name="exercises/round-table/chair" caption="2. Dibuja una silla" />
+
+### 3. Haz la matriz de las sillas [#array]
+
+[`MATRIZPOLAR`](/docs/commands/arraypolar): designa el asiento y el respaldo, pulsa Intro, da el centro de la mesa, `0,0`, y después `Elementos`, `6`. Cada silla gira al colocarse, así que las seis miran hacia la mesa.
+
+<Session name="exercises/round-table/array" caption="3. Haz la matriz de las sillas" />
+
+### 4. Acótala [#dimensions]
+
+En la capa Cotas, [`ACODIAMETRO`](/docs/commands/dimdiameter) en la mesa, colocada dentro, y [`ACOLINEAL`](/docs/commands/dimlinear) para la anchura de la silla de arriba, 44, y su fondo con el respaldo, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Acótala" />
+
+## Más ejercicios [#more]
+
+- [Ejercicio de AutoCAD: una parcela](/docs/exercises/plot-of-land): Intermedio · Civil · 2D
+- [Ejercicio de AutoCAD: un eje escalonado](/docs/exercises/shaft): Intermedio · Mecánica · 2D
+- [Ejercicio isométrico de AutoCAD: un bloque escalonado](/docs/exercises/isometric-block): Intermedio · Mecánica · Isométrico
+- [Ejercicios de AutoCAD para practicar](/docs/exercises)

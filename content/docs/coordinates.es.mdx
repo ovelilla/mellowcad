@@ -1,0 +1,44 @@
+---
+title: Coordenadas en AutoCAD
+metaTitle: "Coordenadas en AutoCAD: relativas y polares"
+description: "Cómo escribir puntos en AutoCAD: coordenadas absolutas, relativas y polares, una línea con longitud y ángulo, y el rastreo polar. Practícalas gratis online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Cada punto que pide un comando se puede señalar en el dibujo o escribir. Escrito, un punto son dos números, X e Y, separados por una coma, y desde dónde se miden depende de cómo los escribas: desde el origen, desde el último punto o como una longitud y un ángulo desde él. MellowCAD los lee como AutoCAD con la entrada dinámica activada, su valor por defecto. Cada sección dibuja una figura y muestra su historial.
+
+## Coordenadas absolutas [#absolute]
+
+Se miden desde el origen, `0,0`. El primer punto que pide un comando se lee así: `20,10` es 20 en X y 10 en Y. Después, la entrada dinámica lee un punto escrito desde el último, así que un punto medido desde el origen lleva `#` delante: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Un triángulo, cada vértice medido desde el origen." />
+
+## Coordenadas relativas [#relative]
+
+Se miden desde el último punto: cuánto avanzar en X y después en Y. Después del primer punto de un comando, eso es lo que significa un punto escrito, y el historial lo escribe con `@` delante, como lo lee la línea de comandos: `100,0` está 100 a la derecha del último punto, y `-50,70`, 50 a la izquierda y 70 hacia arriba. Si escribes tú la `@`, el punto es relativo lo escribas donde lo escribas.
+
+<Session name="coordinatesRelative" caption="El mismo triángulo, cada vértice medido desde el anterior." />
+
+## Coordenadas polares [#polar]
+
+Una longitud y un ángulo, medidos desde el último punto: `100<0` avanza 100 en X, y `60<120`, 60 a 120°. Los ángulos se miden desde el eje X en sentido antihorario: 90° es hacia arriba, 180° hacia la izquierda y 270°, o -90°, hacia abajo. El historial también los escribe con `@`.
+
+<Session name="coordinatesPolar" caption="Tres lados, cada uno una longitud y un ángulo desde el final del anterior." />
+
+## Una línea con ángulo [#angle]
+
+Para dibujar una línea de una longitud y un ángulo dados, escribe su final en coordenadas polares, `100<30`. O fija antes el ángulo: escribe `<30` y pulsa Intro, y el punto siguiente se queda en esa dirección, del lado del cursor; después escribe la longitud, `100`.
+
+<Session name="coordinatesAngle" caption="Una línea fijada a 30° y después con su longitud, 100." />
+
+## Rastreo polar [#tracking]
+
+Con el rastreo polar activado, con `F10` o con su botón de la barra de estado, el cursor muestra una guía en cada múltiplo de su ángulo, que se elige en el menú de ese botón, y una longitud escrita va a lo largo de la guía. La información de herramientas dice a qué distancia y con qué ángulo está el cursor.
+
+<Session name="coordinatesTracking" caption="Rastreo polar a 30°: su guía, y la distancia y el ángulo junto al cursor." />
+
+## Después [#next]
+
+- [Ejercicios](/docs/exercises) que se escriben de principio a fin: [una escuadra en L](/docs/exercises/l-bracket) con coordenadas relativas, [una parcela](/docs/exercises/plot-of-land) con polares y [un bloque en isométrico](/docs/exercises/isometric-block) según los ángulos isométricos.
+- La página de <Command id="LINE" />, y [Primeros pasos](/docs/getting-started) para los primeros pasos en la línea de comandos.

@@ -26,7 +26,7 @@ export async function SiteHeader() {
   const locale = await getLocale()
 
   return (
-    <header className="header-surface sticky top-0 z-40 border-b border-border bg-bg-raised/92 backdrop-blur-md">
+    <header className="header-surface sticky top-0 z-40 border-b border-border bg-bg-raised/92 backdrop-blur-md print:hidden">
       <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-6 px-4 sm:px-6">
         {/* WHY no prefetch: on every page, the home's own included, it
             fetched the home's payload (28 KB), unasked. */}
