@@ -135,11 +135,37 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    los tests de su desarrollo. R12 convierte lo que R12 no tiene (como hace AutoCAD: una elipse,
    polilínea): fase propia si pesa.
 3. **Las páginas «abrir DXF online»** por idioma, en una sesión de contenido (`docs/next-seo.md`).
-4. **Lo que más falta en los DXF reales**, en el orden en que aparezca: POINT (y PDMODE), SOLID,
-   LEADER y MLEADER, XLINE y RAY, MINSERT, los tipos de línea del dibujo (su LTYPE) y los patrones
-   que no están en el registro (el resto de `acadiso.lin` y `acadiso.pat`), los colores índice
-   como tales, las sustituciones de estilo de cada cota (XDATA `DSTYLE`), TABLE. Cada uno, con su
-   comando cuando lo haya.
+4. **Lo que más falta en los DXF reales**, en el orden medido el 8/11/2026 (sesión 07b) abriendo
+   con el lector los 154 dibujos de muestra de AutoCAD 2027 (su carpeta `Sample`, guardados como
+   DXF 2018 por la consola) y 577 DXF de otros programas (la biblioteca de piezas de LibreCAD, los
+   ficheros de prueba de ezdxf, dxf-parser y OpenSCAD, y cinco de Inkscape). Todos abren: de las
+   muestras, 45 enteras, y de los otros, 552; la más grande (6,8 MB, 12.944 objetos) se lee en
+   0,15 s. Cada uno, con su comando cuando lo haya:
+   1. **SOLID**: en 67 de las 154 muestras (2.831 objetos: flechas y rellenos de bloques
+      antiguos).
+   2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros).
+   3. **POINT** y PDMODE: 20 muestras y 18 ficheros de otros (16 piezas de LibreCAD, el
+      levantamiento de un medidor láser Leica DISTO).
+   4. **Los tipos de línea del dibujo**, su tabla LTYPE: ACAD_ISO02W100 a ISO09W100 (de 6 a 12
+      muestras cada uno), los escalados (HIDDEN2, CENTER2, DASHED2…), DOT, los nombres del
+      `acadiso.lin` español y brasileño (OCULTO, PONTOS, HÍFEN) y los complejos (BATTING, GAS,
+      ZIGZAG); en LibreCAD, los K5LT de un conversor (27 piezas). Hoy dibujan continuo. Es una
+      tabla por dibujo, no más entradas en el registro de los seis, que saldrían en todos los
+      selectores con un nombre en cada catálogo.
+   5. **Las referencias externas**: 16 muestras (los planos de los conjuntos de planos tienen su
+      modelo en referencias).
+   6. **El patrón de cada sombreado**: un DXF trae las líneas de cualquier patrón (53, 43–46, 79,
+      49), y dibujarlas del fichero cubre los que no están entre los 24 (HOUND, GRASS, INSUL), los
+      definidos por el usuario (`_USER`, `U`: 9 muestras) y los propios de cada programa. Los
+      degradados (6 muestras, 144 sombreados), aparte.
+   7. 3DFACE (8 muestras), WIPEOUT (3), IMAGE (1, y 1 de otros), TABLE (las de las muestras están
+      en presentaciones; 1 de otros), y sin ningún caso medido XLINE, RAY, MINSERT como tal, los
+      colores índice como tales y las sustituciones de estilo de cada cota (XDATA `DSTYLE`).
+
+   Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
+   algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado
+   de paso (`242d031f`): lo que sigue a EOF no se lee, como lo abre AutoCAD, y un patrón con su
+   código de estilo (`ANSI31,_O`, 5 muestras) dibuja su relleno.
 5. **El resto**: el informe de lo que se pierde al guardar, las vistas preliminares, ACIS con los
    sólidos.
 

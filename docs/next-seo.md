@@ -346,6 +346,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    inglés y español) hasta la cuota, a las 23:09 UTC del 6/11; y las 4 de la novena (-OSNAP),
    añadidas al final antes de su push: 262 en la cola. **7/11:** las 64 de la sesión 06 (el índice
    de ejercicios, las tres guías y los doce ejercicios, en los cuatro idiomas), añadidas igual: 326.
+   **7/11, 23:10 UTC (sesión 07b):** la tanda del día, 11 pedidas (SCALE en portugués y árabe,
+   FILLET y BLOCK en los cuatro idiomas, TEXT en inglés) hasta la cuota, a las 23:14 UTC: 315 en
+   la cola.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
