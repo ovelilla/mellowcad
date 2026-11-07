@@ -49,8 +49,9 @@ us to walk again, whereas a command costs the same before or after it.
    reviews of what is built under "Command reviews": 26 to 31 are done (2026-11-05), 32 remains.
    The rest of the visual styles are wanted by the owner (2026-11-08), a delivery of their own
    after phase 6, not yet scheduled: VSCURRENT's Wireframe, Shaded, Shaded with edges, Shades of
-   Gray, Sketchy, X-ray and Realistic (with its materials), and the viewport controls' visual
-   style menu to switch them as AutoCAD's does (view.md's VSCURRENT lists what each lacks).
+   Gray, Sketchy and X-ray, and the viewport controls' visual style menu to switch them as
+   AutoCAD's does (view.md's VSCURRENT lists what each lacks). Realistic and materials stay out:
+   textures, specular light and smooth shading call for a WebGL presenter, not the canvas.
 5. **DXF** — under way, ahead of the rest by the owner's decision of 2026-11-05 (the visibility
    plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
    types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
