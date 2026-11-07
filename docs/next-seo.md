@@ -285,6 +285,7 @@ actualiza §2.1 y §8.
 | 05 Lanzamiento | `docs/plans/seo/05-lanzamiento.md` | 02, 03, 04 publicados | — |
 | 06 Práctica y guías | `docs/plans/seo/06-practica.md` | 03 | 07 |
 | 07 DXF | `docs/plans/seo/07-dxf.md` | — (motor) | 01–06 |
+| 07b Abrir DXF online | `docs/plans/seo/07b-dxf-paginas.md` | 07 | 08 |
 | 08 Francés | `docs/plans/seo/08-frances.md` | 03, 04 | 07 |
 | 09 Italiano | `docs/plans/seo/09-italiano.md` | 08 | 07 |
 | 10 Medición | `docs/plans/seo/10-medicion.md` | cada mes desde el push de 01–02 | — |
@@ -522,6 +523,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   pregunta de la práctica. Queda: las páginas «abrir DXF online» por idioma (ya pueden hacerse, en
   una sesión de contenido), guardar como DXF (fase 2), y lo que más falta en los DXF reales (fase 4:
   POINT, SOLID, LEADER y MLEADER, los tipos de línea y patrones del dibujo).
+- 07b Abrir DXF online: pendiente; su prompt, `docs/plans/seo/07b-dxf-paginas.md`.
 - 08 Francés: pendiente.
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.
