@@ -4,7 +4,8 @@
 > con el razonamiento al máximo, antes del lanzamiento suave en r/SideProject (jueves 12/11, L5).
 
 Eres la sesión 05b del plan de visibilidad de MellowCAD. Lee primero `AGENTS.md`,
-`docs/next-seo.md` (L5 y su calendario, §7 y §8), `.claude/rules/ui.md`,
+`docs/next-seo.md` (L5 y su calendario, §7 y §8), `docs/next-autocad-ui.md` (la disposición de la
+interfaz pasa a ser la de AutoCAD 2027), `.claude/rules/ui.md`,
 `.claude/rules/marketing.md`, `.claude/rules/i18n.md` («Claims and copy») y
 `.claude/rules/engine-package.md`. Responde en español; el código, los comentarios y el
 conocimiento del repo, en inglés. Decide sin preguntar.
@@ -35,7 +36,8 @@ Lo habitual en un proyecto abierto sin servidor propio:
 - **En el editor**, donde lo busca un usuario de AutoCAD: AutoCAD 2027 tiene **Send Feedback** en
   la pestaña Inicio (su ayuda, «How to Provide Feedback»), que aquí no existe. Compruébalo en el
   escritorio (skill `autocad-research`), toma su nombre en cada idioma de sus tablas de cadenas y
-  ponlo donde menos se aparte, con la desviación en un `WHY`. `@mellowcad/editor` es un paquete
+  ponlo donde menos se aparte, con la desviación en un `WHY`; cuando la interfaz tenga su pestaña
+  Inicio (`docs/next-autocad-ui.md`), irá allí. `@mellowcad/editor` es un paquete
   publicado: la URL se la pasa la app, como los enlaces de idioma; el paquete no conoce el
   repositorio de MellowCAD.
 - **En el sitio**: «Reportar un problema» en el pie, en los cuatro idiomas, junto al correo.
