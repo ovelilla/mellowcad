@@ -10,6 +10,11 @@ paths:
 
 > Verified against **@base-ui/react 1.9.0**, **cn 0.5.2**, **lucide-react 1.67.0**.
 
+**The layout follows AutoCAD 2027** (owner, 2026-11-07): the ribbon, the application menu, the
+palettes and the bars in AutoCAD's places, order and states, with our own icons and no Autodesk
+mark. A size, a test or a WHY below that defends the current layout against AutoCAD's yields to it
+and changes in the same commit (`docs/next-autocad-ui.md`).
+
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from
 `@mellowcad/engine` only. The landing has its own rules (`marketing.md`).
@@ -189,7 +194,7 @@ the tool palette would fold on a Full HD laptop at 125 %).
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
 - `packages/editor/src/control-size.test.ts` holds the system, and `Button`'s sizes to the table; a new size is
-  argued here first.
+  argued here first — AutoCAD's own measure (the ribbon's large buttons) is the argument.
 
 ## Base UI gotchas
 

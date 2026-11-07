@@ -183,7 +183,7 @@ run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as
 application menu runs it, `^C^C_UNITS`: see UNITS); the Home tab's Layers and Properties
 panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,
 Blocks and the command line — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
-height, which a wide screen is short of
+height, which a wide screen is short of (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** the rest of the application menu and its whole order (**unverified**: the help
 documents Create, Open, Save and Units), Undo's and Redo's lists (split buttons in AutoCAD, plain
@@ -208,7 +208,7 @@ whose macros are transparent, `'_attdisp _n` / `_on` / `_off` (ID_AttdispNo/On/O
 a running command too, which resumes (probe workspace/p313); Edit Text has a slot of its own
 (TEXTEDIT's `^C^C_textedit` is on the Text toolbar, not the ribbon); Utilities is Measure ▾
 (Distance and Area, as 2026 names them) and ID Point, `'_id` (the panel's expanded part); under
-700 px of height Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: as the top bar
+700 px of height Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: as the top bar (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** DIM, Arc Length, Jogged and Ordinate in Dimension (the commands do not exist), the
 panels' other expanded tools, Edit Attributes ▸ Multiple (`^C^C_-attedit`, ID_AtteditGlo: -ATTEDIT
@@ -222,7 +222,7 @@ end (AutoCAD's are separate modeless palettes: LAYERDLGMODE 1, "It can remain op
 open from 1600 px of window and folded below to a strip of their icons, its width (280 to 480 px)
 and its fold remembered on this device, as AutoCAD keeps them in the profile; LAYER, PROPERTIES,
 DIMSTYLE, STYLE and BLOCKSPALETTE open it on their tab — WHY one docked panel: floating palettes
-covered the drawing, and as popovers the first click on it closed them
+covered the drawing, and as popovers the first click on it closed them (revoked by the owner on 2026-11-07: the chrome follows AutoCAD's layout, `docs/next-autocad-ui.md`)
 
 **Missing:** floating, docking anywhere, auto-hide and anchoring, Tool Palettes, Quick Properties
 (QPMODE −1: off by default)

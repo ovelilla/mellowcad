@@ -81,9 +81,9 @@ and what each option does must be the ones they already know.
   Research has repeatedly overturned the "obvious" design here.
 - **What must match**: the functional and interaction contract — commands, aliases, prompt
   sequences, keywords, defaults, option semantics, what a gesture produces.
-- **What may differ, a little**: styling and chrome, and what the browser cannot reproduce. An
-  AutoCAD user must find each thing where they expect it and recognise it on sight (markers,
-  grips, cursor, tooltips, palettes): a look that slows them down is a finding.
+- **The layout is AutoCAD's too** (ribbon, palettes, bars: `docs/next-autocad-ui.md`). What may
+  differ, a little: styling, our own icons, and what the browser cannot reproduce. An AutoCAD user
+  must find each thing where they expect it and recognise it on sight: else it is a finding.
 - **Do not "improve" a behaviour that looks awkward** — it is usually load-bearing. OFFSET really
   is one object at a time; the Center-Diameter guide really does extend past the rim, because its
   length _is_ the diameter cue. Bespoke visuals invented to compensate get rejected.
