@@ -1266,6 +1266,27 @@ describe("persistence", () => {
 
     expect(store.writes).toHaveLength(0)
   })
+
+  // WHY: localStorage holds about 5 MB; indented, a 50,000-object DXF's
+  // drawing was 10.8 MB, unindented 5.5 MB (docs/next-dxf.md).
+  it("autosaves the drawing unindented, the file it downloads indented", () => {
+    vi.useFakeTimers()
+    try {
+      const store = new MemoryStore()
+      const cad = createHarness({ store })
+      cad.runtime.document.add(lineOf(p(0, 0), p(100, 0), { id: "L1" }))
+      cad.runtime.flushAutosave()
+      const saved = store.writes.at(-1) ?? ""
+      expect(saved).not.toContain("\n")
+      expect(JSON.parse(saved)).toEqual(
+        JSON.parse(cad.runtime.serializeDrawing())
+      )
+      expect(cad.runtime.serializeDrawing()).toContain("\n  ")
+      expect(createHarness({ store }).entityCount).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
 
 describe("file save and open", () => {

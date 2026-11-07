@@ -457,7 +457,7 @@ describe("CadEngine embedded in a scope", () => {
     expect(engine.getState().entityCount).toBe(1)
     engine.loadDrawing(drawingOf(lineOf(p(0, 0), p(10, 0))))
 
-    expect(store.read()).toContain('"type": "line"')
+    expect(store.read()).toContain('"type":"line"')
     expect(page.storage.getItem).not.toHaveBeenCalled()
     expect(page.storage.setItem).not.toHaveBeenCalled()
   })

@@ -245,6 +245,7 @@ import {
 import { fragmentInUcs } from "./clipboard"
 import {
   applyDrawingFile,
+  autosaveText,
   copyToClipboard,
   readClipboardFragment,
   selectAll,
@@ -756,7 +757,9 @@ export class CadRuntime extends Observable {
       () => (this.osnapZ === 1 ? this.workPlaneZ() : null),
       () => this.activeTool.ignoresOrtho?.() === true
     )
-    this.autosave = new AutosaveService(store, () => this.serializeDrawing())
+    this.autosave = new AutosaveService(store, () =>
+      autosaveText(this.document)
+    )
 
     // The single surface tools may touch: read-only document + command bus.
     const doc = this.document

@@ -6,6 +6,7 @@ import {
   DrawingSnapshot,
   ParsedDrawing,
   serializeDrawing as serializeDrawingFile,
+  toDrawingFile,
 } from "../serialization/drawingFile"
 import {
   ClipboardFragment,
@@ -38,6 +39,16 @@ export function documentSnapshot(document: CadDocument): DrawingSnapshot {
 /** Serialises the current drawing to a downloadable JSON string. */
 export function serializeDrawing(document: CadDocument): string {
   return serializeDrawingFile(documentSnapshot(document))
+}
+
+/**
+ * The drawing as the autosave keeps it: the file's JSON unindented. WHY:
+ * localStorage holds about 5 MB, and indented a 50,000-object DXF's drawing
+ * was 10.8 MB, unindented 5.5 (docs/next-dxf.md); the downloaded file stays
+ * indented, to be read.
+ */
+export function autosaveText(document: CadDocument): string {
+  return JSON.stringify(toDrawingFile(documentSnapshot(document)))
 }
 
 /**
