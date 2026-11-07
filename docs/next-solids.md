@@ -169,4 +169,6 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
 
 Leer y escribir el SAT de ACIS en DXF / DWG (sólidos de otros ficheros), el modelado de mallas
 (MESH, SMOOTH), las superficies como objetos propios (PLANESURF, NETWORK), la perspectiva y los
-estilos Realistic y materiales.
+estilos Realistic y materiales. Los estilos visuales que faltan (Realistic incluido) y el menú de
+estilo de los controles de la ventana gráfica los quiere el dueño (8/11/2026): una entrega propia
+tras la fase 6, anotada en `docs/coverage/roadmap.md`.
