@@ -47,6 +47,11 @@ us to walk again, whereas a command costs the same before or after it.
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
    `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
    reviews of what is built under "Command reviews": 26 to 31 are done (2026-11-05), 32 remains.
+5. **DXF** — under way, ahead of the rest by the owner's decision of 2026-11-05 (the visibility
+   plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
+   types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
+   (POINT, SOLID, LEADER and MLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch
+   patterns, index colours). The brief is `docs/next-dxf.md`.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
@@ -81,7 +86,8 @@ palette's Fit/Smooth words and the meshes. LIST is done, every type of the model
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object
-ltscale, isometric drafting mode.
+ltscale, isometric drafting mode. DXF's fourth phase may bring POINT and XLINE/RAY forward, for the
+files that carry them.
 
 Blocks family, not on the near-term path: ByBlock resolution, inserting external drawing files +
 INSUNITS,
@@ -89,7 +95,7 @@ INSUNITS,
 XREF, BREPLACE, dynamic blocks, DIVIDE/MEASURE with a block, a block table manager, ATTSYNC,
 BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
 
-DXF import/export and plot-to-PDF remain end-of-roadmap and unscheduled.
+Plot-to-PDF remains end-of-roadmap and unscheduled (there are no layouts).
 
 ## Command reviews
 

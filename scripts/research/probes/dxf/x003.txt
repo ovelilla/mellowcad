@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_SAVEAS
+_DXF
+_V
+FOO
+_R12
+
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x003.dxf
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x003-back.dwg

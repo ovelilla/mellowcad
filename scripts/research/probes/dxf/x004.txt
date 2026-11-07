@@ -1,0 +1,4 @@
+_DXFIN
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\in-2018.dxf
+(getvar "DWGNAME")
+(sslength (ssget "_X"))

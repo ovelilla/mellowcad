@@ -1,0 +1,210 @@
+(if (findfile "C:/Users/oveli/AppData/Local/Temp/mcaddxf/fixture.dwg") (vl-file-delete "C:/Users/oveli/AppData/Local/Temp/mcaddxf/fixture.dwg"))
+_-LINETYPE
+_L
+DASHED,CENTER,HIDDEN
+acadiso.lin
+
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "Walls") (70 . 0) (62 . 1) (6 . "DASHED") (370 . 50)))
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "Hidden") (70 . 0) (62 . -3) (6 . "Continuous")))
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "Locked") (70 . 4) (62 . 5) (6 . "Continuous")))
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "Frozen") (70 . 1) (62 . 6) (6 . "Continuous")))
+(entmake '((0 . "LAYER") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLayerTableRecord") (2 . "Señales") (70 . 0) (62 . 30) (420 . 16744448) (6 . "Continuous")))
+(entmake '((0 . "LINE") (8 . "Walls") (10 0.0 0.0 0.0) (11 100.0 0.0 0.0)))
+(entmake '((0 . "LINE") (8 . "0") (62 . 3) (6 . "CENTER") (370 . 35) (10 0.0 10.0 0.0) (11 100.0 10.0 5.0)))
+(entmake '((0 . "LINE") (8 . "Hidden") (10 0.0 12.0 0.0) (11 10.0 12.0 0.0)))
+(entmake '((0 . "LINE") (8 . "Locked") (10 0.0 14.0 0.0) (11 10.0 14.0 0.0)))
+(entmake '((0 . "LINE") (8 . "Frozen") (10 0.0 16.0 0.0) (11 10.0 16.0 0.0)))
+(entmake '((0 . "CIRCLE") (8 . "Señales") (10 20.0 30.0 0.0) (40 . 5.0) (39 . 2.0)))
+(entmake '((0 . "ARC") (8 . "0") (10 40.0 30.0 0.0) (40 . 5.0) (50 . 30.0) (51 . 150.0)))
+(entmake '((0 . "CIRCLE") (8 . "0") (10 60.0 30.0 0.0) (40 . 4.0) (420 . 16744448)))
+(entmake '((0 . "CIRCLE") (8 . "0") (10 0.0 0.0 5.0) (40 . 3.0) (210 0.0 -1.0 0.0)))
+_ELLIPSE
+_C
+80,30
+90,30
+3
+_ELLIPSE
+_A
+_C
+100,30
+110,30
+3
+0
+270
+_PLINE
+0,50
+_W
+0.5
+1
+20,50
+_A
+30,60
+_L
+_W
+0
+0
+0,60
+_C
+_PLINE
+0,70
+10,75
+20,70
+30,75
+
+_PEDIT
+_L
+_F
+
+_PLINE
+40,70
+50,75
+60,70
+70,75
+
+_PEDIT
+_L
+_S
+
+_3DPOLY
+0,90,0
+10,90,5
+20,95,0
+
+_SPLINE
+0,110
+10,115
+20,110
+30,115
+
+_SPLINE
+_M
+_CV
+40,110
+50,115
+60,110
+70,115
+
+_-STYLE
+Notes
+arial.ttf
+0
+0.8
+10
+_N
+_N
+_-TEXT
+_S
+Standard
+_J
+_MC
+120,0
+2.5
+30
+Ñandú ø 50°
+(entmake '((0 . "TEXT") (8 . "0") (7 . "Notes") (10 120.0 5.0 0.0) (40 . 2.5) (1 . "alpha \\U+03B1 end")))
+_-MTEXT
+120,20
+_W
+40
+First line
+Second line ü
+
+(entmake '((0 . "BLOCK") (2 . "Part") (70 . 2) (10 0.0 0.0 0.0)))
+(entmake '((0 . "LWPOLYLINE") (100 . "AcDbEntity") (8 . "0") (100 . "AcDbPolyline") (90 . 4) (70 . 1) (10 -5.0 -5.0) (10 5.0 -5.0) (10 5.0 5.0) (10 -5.0 5.0)))
+(entmake '((0 . "ATTDEF") (8 . "0") (10 -4.0 -7.0 0.0) (40 . 2.0) (1 . "A-1") (3 . "Part no") (2 . "TAG") (70 . 0)))
+(entmake '((0 . "ENDBLK")))
+_-INSERT
+Part
+150,0
+2
+
+15
+(progn (setq a (entnext (entlast))) (if (= (cdr (assoc 0 (entget a))) "ATTRIB") (entmod (subst (cons 1 "B-7") (assoc 1 (entget a)) (entget a)))) (cdr (assoc 0 (entget a))))
+_ZOOM
+_E
+_DIMLINEAR
+0,-20
+40,-20
+20,-30
+_DIMALIGNED
+50,-20
+80,-10
+70,-30
+_DIMANGULAR
+
+100,-20
+120,-20
+110,-5
+105,-15
+_DIMRADIUS
+25,30
+30,36
+_DIMDIAMETER
+64,30
+66,36
+(setvar "DIMSCALE" 2)
+_-DIMSTYLE
+_S
+Arch
+_DIMLINEAR
+0,-70
+40,-70
+20,-80
+_RECTANG
+0,-60
+30,-40
+_-HATCH
+_P
+ANSI31
+1
+0
+_S
+_L
+
+
+_CIRCLE
+50,-50
+8
+_-HATCH
+_P
+_S
+_S
+_L
+
+
+_POINT
+200,0
+_SOLID
+200,10
+210,10
+200,20
+210,20
+
+_XLINE
+_H
+0,150
+
+_RAY
+200,40
+210,50
+
+_LEADER
+200,60
+210,70
+
+
+_N
+_BOX
+220,0,0
+230,10,0
+5
+_CIRCLE
+260,0
+5
+_REGION
+_L
+
+(entmake '((0 . "LINE") (67 . 1) (8 . "0") (10 0.0 0.0 0.0) (11 50.0 50.0 0.0)))
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\fixture.dwg

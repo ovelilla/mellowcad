@@ -1,0 +1,3 @@
+_OPEN
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\trunc.dxf
+(getvar "DWGNAME")

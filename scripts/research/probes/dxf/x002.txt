@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x002.dxf
+
+(getvar "DWGNAME")
+(getvar "DBMOD")

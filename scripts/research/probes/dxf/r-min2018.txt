@@ -1,0 +1,3 @@
+_RECOVER
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\min2018.dxf
+(list (getvar "DWGNAME") (if (ssget "_X") (sslength (ssget "_X")) 0))

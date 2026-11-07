@@ -1,0 +1,9 @@
+_OPEN
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\in-2018.dxf
+_CIRCLE
+0,0
+3
+_QSAVE
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x013.dwg
+(getvar "DWGNAME")

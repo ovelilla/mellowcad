@@ -1,0 +1,12 @@
+_LINE
+0,0
+10,0
+
+_SAVEAS
+_DXF
+
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x001.dxf
+(getvar "DWGNAME")
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x001-back.dwg

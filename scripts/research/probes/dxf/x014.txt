@@ -1,0 +1,19 @@
+(entmake '((0 . "TEXT") (8 . "0") (10 0.0 0.0 0.0) (40 . 2.5) (1 . "Ñandú ø 50°")))
+(entmake '((0 . "TEXT") (8 . "0") (10 0.0 5.0 0.0) (40 . 2.5) (1 . "alpha \\U+03B1 end")))
+_SAVEAS
+_DXF
+_V
+_2004
+
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x014-2004.dxf
+_SAVEAS
+_DXF
+
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x014-2018.dxf
+_SAVEAS
+_DXF
+_B
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x014-bin.dxf
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x014-back.dwg

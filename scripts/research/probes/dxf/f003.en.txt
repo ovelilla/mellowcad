@@ -1,0 +1,12 @@
+(progn (setq i 0) (repeat 200 (setq j 0) (repeat 100 (entmake (list '(0 . "LINE") '(8 . "0") (list 10 (* i 10.0) (* j 10.0) 0.0) (list 11 (+ (* i 10.0) 8.0) (+ (* j 10.0) 3.0) 0.0))) (entmake (list '(0 . "CIRCLE") '(8 . "0") (list 10 (+ (* i 10.0) 5.0) (+ (* j 10.0) 5.0) 0.0) '(40 . 2.0))) (setq j (1+ j))) (setq i (1+ i))) (princ))
+(progn (setq i 0) (repeat 50 (setq j 0) (repeat 100 (entmake (list '(0 . "TEXT") '(8 . "0") (list 10 (* i 40.0) (+ 1000.0 (* j 5.0)) 0.0) '(40 . 2.0) (cons 1 (strcat "Text " (itoa i) "-" (itoa j))))) (entmake (list '(0 . "LWPOLYLINE") '(100 . "AcDbEntity") '(8 . "0") '(100 . "AcDbPolyline") '(90 . 4) '(70 . 1) (list 10 (* i 40.0) (+ 1500.0 (* j 5.0))) (list 10 (+ (* i 40.0) 30.0) (+ 1500.0 (* j 5.0))) (list 10 (+ (* i 40.0) 30.0) (+ 1503.0 (* j 5.0))) (list 10 (* i 40.0) (+ 1503.0 (* j 5.0))))) (setq j (1+ j))) (setq i (1+ i))) (princ))
+(sslength (ssget "_X"))
+_SAVEAS
+_DXF
+_V
+_2018
+
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\big-2018.dxf
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\big.dwg
