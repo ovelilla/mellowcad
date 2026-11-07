@@ -413,7 +413,11 @@ PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…, and the `?`
 DIST's, AREA's and ID's prompts, desktop inquiry/d01-2, d08-1, e03-1); whether a `+` badge shows with
 PICKADD 0 (**unverified**); the crosshair hidden at `Select objects:` (AutoCAD shows the pick box
 alone there, desktop erase/d09-1); the rollover tooltip on a selected object, its other rows (QPMODE's
-properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables; a copy by
+properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables; the 3D
+crosshair: off the plan view ours stays the flat screen-upright cross, where AutoCAD draws its arms
+along the UCS's X and Y and, with Show Z Axis in Crosshairs on, a third along Z, optionally labelled
+X, Y, Z or N, E, z (Options › 3D Modeling › 3D Crosshairs, help 2027; its default state, the visual
+styles that show the Z arm and the axes' tint **unverified**: to probe in the desktop); a copy by
 a selection dragged with Ctrl (**unverified**: Ctrl held from the press drags nothing, it is the
 sub-object pick, desktop move/d09); the right-button drag's menu (workspace.md)
 
