@@ -72,19 +72,19 @@ describe("the issue forms", () => {
     expect(new Set(names).size).toBe(names.length)
   })
 
-  it("leave no blank issue, and send a vulnerability to the security policy", () => {
+  it("leave no blank issue, and add no contact link", () => {
     const config = read("config.yml") as {
       blank_issues_enabled: boolean
-      contact_links: { url: string }[]
+      contact_links?: unknown[]
     }
     expect(config.blank_issues_enabled).toBe(false)
-    // No address here: GitHub drops a `mailto:` contact link (this
-    // repository's and Mbed TLS's, read through its API on 2026-11-07), and
-    // shows the chooser only to someone signed in. Whoever has no account
-    // finds the address beside the footer's Report a problem.
-    expect(config.contact_links.map((link) => link.url)).toEqual([
-      `${REPOSITORY_URL}/security/policy`,
-    ])
+    // None, as seen on GitHub on 2026-11-07: it drops a `mailto:` contact
+    // link (this repository's and Mbed TLS's, read through its API) and shows
+    // the chooser only to someone signed in, so whoever has no account finds
+    // the address beside the footer's Report a problem; and with private
+    // vulnerability reporting on it lists Report a security vulnerability
+    // itself, which a link of ours to the policy only repeated.
+    expect(config.contact_links ?? []).toEqual([])
   })
 })
 

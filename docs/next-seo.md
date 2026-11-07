@@ -207,7 +207,7 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
 | lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
-| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño | kit §6 | — |
+| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño. **7/11, noche:** la descripción de SaaSHub dice ya que abre DXF (la sesión 05b, con la sesión del dueño) | kit §6 | — |
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
@@ -368,14 +368,14 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    `~/seo-data/launch/outreach/`, en tres tandas de diciembre (calendario de L5).
 8. **Lo de la sesión 05b, hecho por una sesión a petición del dueño (7/11):** el push, el reporte
    privado de vulnerabilidades activado (Settings → Advanced Security; la API responde
-   `{"enabled":true}`) y los enlaces abiertos de verdad. GitHub lee los formularios de `main` (su
-   vista previa los dibuja) y la política de seguridad, pero descartó el enlace `mailto:` del
-   correo (también descarta el de Mbed TLS) y solo enseña el selector a quien ha iniciado sesión:
-   quitado de `config.yml`; quien no tiene cuenta tiene el correo junto a Report a problem en el
-   pie. Queda del dueño mirar un formulario ya relleno con su sesión de GitHub (el Chrome de
-   `~/seo-data` no la tiene): abrir Send Feedback en `/draw` → «Something does not work». Y la
-   ficha de SaaSHub, que aún dice que no lee DXF: pide iniciar sesión con hello@mellowcad.com, y
-   su texto nuevo es el del kit §6 (la de AlternativeTo ya está cambiada: calendario de L5).
+   `{"enabled":true}`) y los enlaces abiertos de verdad, con la sesión de GitHub del dueño: desde
+   Enviar comentarios en `/es/draw`, el selector muestra los dos formularios y Report a security
+   vulnerability, y los dos traen la versión (`0.2.0+de8d801`), el navegador y el idioma. Visto de
+   paso: GitHub solo enseña el selector a quien ha iniciado sesión, descarta un enlace `mailto:`
+   (también el de Mbed TLS) y, con el reporte privado activo, pone él mismo el de la política de
+   seguridad; `config.yml` se queda sin enlaces y quien no tiene cuenta tiene el correo junto a
+   Report a problem en el pie. Las fichas de AlternativeTo y SaaSHub dicen ya que abre DXF (la de
+   AlternativeTo, en su página pública cuando caduque la caché; calendario de L5).
 
 ## 8. Estado
 
@@ -502,8 +502,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   formularios de issues de GitHub (`.github/ISSUE_TEMPLATE/`), en inglés, diciendo que se puede
   escribir en español, portugués o árabe y que una issue es pública: algo que no funciona (qué
   hiciste, qué pasó, qué hace AutoCAD) y un comando u opción que falta o no hace lo de AutoCAD 2027;
-  `config.yml` quita la issue en blanco y lleva a la política de seguridad, `SECURITY.md`: el
-  reporte privado de GitHub, nunca una issue. El correo para quien no tiene cuenta no cabe en
+  `config.yml` quita la issue en blanco, y la política de seguridad, `SECURITY.md`, la enlaza GitHub
+  en el selector: el reporte privado, nunca una issue. El correo para quien no tiene cuenta no cabe en
   GitHub (descarta el `mailto:` y pide sesión para ver el selector): está junto al enlace del pie.
   Los dos enlaces abren el selector (`/issues/new/choose`), que según la documentación de GitHub
   pasa los campos al formulario elegido, con la versión (la del motor y el commit que construyó
