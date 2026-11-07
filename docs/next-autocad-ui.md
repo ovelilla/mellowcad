@@ -47,10 +47,10 @@ que la rodea, con su WHY, como dice `AGENTS.md`.
   UI a 9 pt equivale a nuestros 12 px).
 - Las pestañas y los paneles muestran solo herramientas que existen aquí. Lo que falta se apunta
   en la cobertura, nunca se pone un botón muerto.
-- `@mellowcad/editor` está en npm: `TopBar` y `ToolRail` son exportaciones públicas
-  (`packages/editor/src/index.ts`, `packages/editor/docs/customizing.md`). Sustituirlas es un
-  cambio que rompe la API: sube la versión menor (0.x), con su nota, y la guía cambia en el mismo
-  commit.
+- `@mellowcad/editor` está en npm, pero nadie lo usa (el dueño, 7/11/2026): sus exportaciones
+  (`TopBar`, `ToolRail`, `packages/editor/src/index.ts`) cambian o desaparecen sin miramientos
+  por compatibilidad. Solo se exige que la guía (`packages/editor/docs/customizing.md`) y el README
+  digan la verdad en el mismo commit.
 
 ## 4. Fases
 

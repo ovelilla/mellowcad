@@ -1,7 +1,7 @@
 # DXF: abrir y guardar como en AutoCAD — brief
 
-> **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos el 7/11/2026,
-> sin publicar (sesión 07 del plan de visibilidad); siguiente, la fase 2 (guardar como DXF), y las
+> **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
+> publicados el 7/11/2026 (sesión 07 del plan de visibilidad); siguiente, la fase 2 (guardar como DXF), y las
 > páginas «abrir DXF online» (fase 3), que ya pueden hacerse. Se borra cuando la fase 5 esté hecha;
 > hasta entonces cada fase cerrada se marca aquí.
 

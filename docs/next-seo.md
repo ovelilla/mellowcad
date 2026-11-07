@@ -1,13 +1,13 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
-> mecánica y 58 comandos publicada el 6/11 y 39 más hechos el 6/11 y el 7/11, sin publicar (la
-> serie de comandos, completa), la 04 (la landing) publicada el 6/11, la 05
+> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 (la serie
+> de comandos, completa) publicada el 6/11 y el 7/11, la 04 (la landing) publicada el 6/11, la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
-> ejercicios y 3 guías en los cuatro idiomas) hecha el 7/11, sin publicar, y la 07 (DXF: su brief,
-> `docs/next-dxf.md`, y abrir un DXF con OPEN y DXFIN) hecha el 7/11, sin publicar; por decisión del
-> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, la sesión
-> 08 (francés), las páginas «abrir DXF online» y guardar como DXF. Esperan detrás
+> ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
+> un DXF con OPEN y DXFIN) hechas y publicadas el 7/11; por decisión del dueño la visibilidad va
+> antes que cualquier funcionalidad; siguiente: lo que queda de §7, la sesión 05b (un sitio para
+> reportar problemas, antes del 12/11), la 08 (francés), las páginas «abrir DXF online» y guardar
+> como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -210,7 +210,7 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño | kit §6 | — |
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
-| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | — |
+| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b), publicado |
 | 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún | kit §6 | — |
 | lun 16/11 y cada lunes | Seguimiento: ¿aprobado SaaSHub?, ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
@@ -283,6 +283,7 @@ actualiza §2.1 y §8.
 | 03 Una página por comando | `docs/plans/seo/03-comandos.md` | 01, 02 | 04, 07 |
 | 04 Rediseño de la landing | `docs/plans/seo/04-landing.md` | 02 | 03, 07 |
 | 05 Lanzamiento | `docs/plans/seo/05-lanzamiento.md` | 02, 03, 04 publicados | — |
+| 05b Reportar problemas | `docs/plans/seo/05b-reportes.md` | — | 07b, 08 |
 | 06 Práctica y guías | `docs/plans/seo/06-practica.md` | 03 | 07 |
 | 07 DXF | `docs/plans/seo/07-dxf.md` | — (motor) | 01–06 |
 | 07b Abrir DXF online | `docs/plans/seo/07b-dxf-paginas.md` | 07 | 08 |
@@ -405,12 +406,12 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   guion que ejecutan (no hay Administrador ni cuadro de grosores); la figura de UNITS y la de
   PROPERTIES muestran lo que dibuja el motor (el cuadro y la paleta son del editor), y las de
   LWEIGHT, PROPERTIES y ZOOM son el último fotograma del editor (`live`), porque una imagen fija no
-  dibuja grosores, pinzamientos ni la vista. **Cuarta tanda, hecha el 6/11 y sin publicar:** la
+  dibuja grosores, pinzamientos ni la vista. **Cuarta tanda, hecha el 6/11 y publicada el 7/11:** la
   primera mitad del resto del 3D, las primitivas y la consulta: CYLINDER, SPHERE, CONE, WEDGE,
   TORUS, PYRAMID, REGION y MASSPROP (32 URLs más, al final de la cola de §7): 66 comandos con
   página. Las primitivas, como BOX, en vivo desde el sureste; la esfera y el toroide con el estilo
   Conceptual, porque Oculto solo dibuja su contorno; REGION, cuatro líneas y un círculo con su
-  recuento, y MASSPROP, el informe de un prisma. **Quinta tanda, hecha el 6/11 y sin publicar:** el
+  recuento, y MASSPROP, el informe de un prisma. **Quinta tanda, hecha el 6/11 y publicada el 7/11:** el
   resto del 3D, UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT (28 URLs más,
   al final de la cola de §7), con lo que el 3D está entero: 73 comandos con página. Todas en vivo
   (las de vista porque una imagen fija enmarca la planta): UCS lleva el origen a la cara superior de
@@ -418,21 +419,21 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   taladrado en Conceptual; SECTION, el perfil de ese bloque por el plano ZX, sacado delante con
   MOVE. UCS y SOLIDEDIT, con una `###` por palabra clave que se elige y las subrespuestas dentro.
   Los términos árabes sin glosario, en la tabla de `docs/i18n/ar.md` («Command pages»), para la
-  revisión nativa. **Sexta tanda, hecha el 6/11 y sin publicar:** los atributos, ATTDEF, ATTEDIT,
+  revisión nativa. **Sexta tanda, hecha el 6/11 y publicada el 7/11:** los atributos, ATTDEF, ATTEDIT,
   EATTEDIT y ATTDISP, y STYLE, DIMSPACE, TEXTEDIT, PURGE, LTSCALE y COLOR (40 URLs más, al final de
   la cola de §7): 83 comandos con página. Todas fijas, ninguna trata de una ayuda; DIMSPACE (tres
   cotas en cadena, escalonadas, alineadas con 0) y LTSCALE (una placa de 4 m a escala 1 y a 20)
   con un antes encima de la sesión: el `before` de las notas, `<slug>Before` en las sesiones. STYLE
   y COLOR cuentan lo que hacen la paleta de estilos y la forma de guion; la figura de STYLE, el `?`
   de TEXT, lo que guarda un estilo. Arreglado de paso en el motor: una imagen fija (las figuras, las
-  miniaturas) no seguía ATTDISP ni FILL. **Séptima tanda, hecha el 6/11 y sin publicar:** UNDO,
+  miniaturas) no seguía ATTDISP ni FILL. **Séptima tanda, hecha el 6/11 y publicada el 7/11:** UNDO,
   REDO, LIST, ID, PAN, SNAP, 3DPOLY, SPLINEDIT, CHPROP y COPYCLIP (40 URLs más, al final de la cola
   de §7): 93 comandos con página. U y MREDO los cuentan UNDO y REDO; CUTCLIP, COPYBASE y PASTECLIP,
   COPYCLIP; -PAN, PAN. Fijas salvo PAN y SNAP, en vivo (la vista y la rejilla), y 3DPOLY, en vivo
   desde el sureste como BOX; UNDO con un antes encima (`undoBefore`). Arreglado de paso en el
   motor: el historial de una sesión escribía `PAN:` o `3DORBIT:` al Intro que lo acaba y perdía la
   línea con que empieza PAN (la de 3DORBIT, publicada, también cambia). **Octava tanda, hecha el
-  6/11 y sin publicar:** VIEW, PLAN y UCSICON (12 URLs más, al final de la cola de §7): 96 comandos
+  6/11 y publicada el 7/11:** VIEW, PLAN y UCSICON (12 URLs más, al final de la cola de §7): 96 comandos
   con página. Las tres en vivo, sobre un bloque escalonado: VIEW, Isométrica SO respondida en la
   primera solicitud, como la escriben los menús de AutoCAD; PLAN, la planta de un SCP girado 30°
   desde esa isométrica; UCSICON, Sin origen y luego Origen con el SCP en el escalón. VIEW cuenta
@@ -440,9 +441,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   vista como otros caminos. De los seis candidatos que «Lo que queda» no nombraba, UCSICON llena una
   página y REGEN, FILL, NAVVCUBE, FROM y CLEANSCREENON se quedan en el índice, cada uno con su motivo
   en `docs/plans/seo/03-comandos.md`. En el motor, de paso: una demo puede mostrar el icono SCP
-  (`demo({ ucsIcon: true })`, `18fab8f6`). Publicadas (`origin/main`) las tres primeras tandas, 58
-  comandos; de la cuarta a la octava, 38 sin publicar. **Novena tanda, hecha el 7/11 y sin
-  publicar:** -OSNAP (4 URLs más, al final de la cola de §7): 97 comandos con página, la primera
+  (`demo({ ucsIcon: true })`, `18fab8f6`). Publicadas las tres primeras tandas el 6/11, 58
+  comandos, y de la cuarta a la novena el 7/11. **Novena tanda, hecha y publicada el
+  7/11:** -OSNAP (4 URLs más, al final de la cola de §7): 97 comandos con página, la primera
   de un comando de guion (`/docs/commands/-osnap`; F1 y el índice ya tomaban el slug). Es la página
   de las referencias a objetos, porque no hay OSNAP ni su cuadro: los modos de -OSNAP, una `###`
   por modo con lo que encuentra y su marcador, F3 y el menú de la barra de estado, las de un solo
@@ -484,7 +485,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   local: 8 imágenes de galería a 1270×760 (2×), el vídeo de 46 s a 1920×1080 (inglés, español y
   3D), el logotipo de 240 a 1024 px; 50 correos de outreach, uno por artículo y en su idioma, 5
   fichas de directorio en su lugar y 3 competidores descartados. Publicado: nada todavía.
-- 06 Práctica y guías: hecha el 7/11/2026 y sin publicar (`7c988f39` a `08a26c98`). La biblioteca
+- 05b Reportar problemas: pendiente, antes del lanzamiento suave del 12/11. Su prompt,
+  `docs/plans/seo/05b-reportes.md`, lleva lo decidido el 7/11: formularios de issues de GitHub que
+  la app y el pie abren ya rellenos, el correo para quien no tiene cuenta y un SECURITY.md; ni
+  formulario propio ni correo enviado por el sitio (react-email), ni informes de errores automáticos.
+- 06 Práctica y guías: hecha y publicada el 7/11/2026 (`7c988f39` a `08a26c98`). La biblioteca
   `/docs/exercises` («AutoCAD practice exercises», «Ejercicios de AutoCAD para practicar», «Exercícios
   de AutoCAD para praticar», «تمارين أوتوكاد»), con 12 ejercicios por nivel —junta, escuadra en L,
   escalera y placa de montaje; brida, mesa redonda, parcela, eje, bloque isométrico y polea; biela y
@@ -505,7 +510,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   entero el saliente grande de la biela (`1bfe25ac`). Lo decidido, los datos y lo que queda (más
   ejercicios, «aprender AutoCAD desde cero», la página de alternativa), en
   `docs/plans/seo/06-practica-plan.md`; las 64 URLs, al final de la cola de §7.
-- 07 DXF: hecha el 7/11/2026 y sin publicar (`827fb5ef` a `4c31ea2c`). Investigado en la consola y el
+- 07 DXF: hecha y publicada el 7/11/2026 (`827fb5ef` a `4c31ea2c`). Investigado en la consola y el
   escritorio de AutoCAD 2027 (sondas `scripts/research/probes/dxf/`): OPEN y DXFIN (CARGADXF,
   IMPDXF) abren un DXF con el _Select File_ de siempre, SAVEAS y DXFOUT lo escriben desde _Save
   Drawing As_ o con FILEDIA 0 (versiones R12 a 2018, precisión, binario), y el lector de AutoCAD
