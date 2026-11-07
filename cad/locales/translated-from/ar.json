@@ -136,6 +136,7 @@
   "interface.description.SAVEAS": "Save the drawing to a file under a new name",
   "interface.description.SAVE": "Save the drawing to a file",
   "interface.description.OPEN": "Open a drawing file",
+  "interface.description.DXFIN": "Open a DXF file",
   "interface.description.PASTECLIP": "Paste the clipboard into the drawing",
   "interface.description.DIMSTYLE": "Create and modify dimension styles",
   "interface.description.STYLE": "Create and modify text styles",

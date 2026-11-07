@@ -198,6 +198,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Dimension scale; non-associative (a dimension); baseline, chain dimensions | مقياس الأبعاد (L)؛ غير ترابطي (L, as a hatch's Associative)؛ أبعاد من خط أساس، أبعاد متتابعة (C, as DIMBASELINE's and DIMCONTINUE's titles) |
 |  | The Layer control | قائمة الطبقات المنسدلة (L) — as LAYER's notes, not عنصر التحكم في الطبقات |
 |  | Conceptual (a caption's visual style); hidden lines removed | النمط المفاهيمي (L, as the landing's figures)؛ مع إزالة الخطوط المخفية (M) |
+|  | Leaders, layouts (the FAQ's DXF answer); a binary file; Open a DXF file (DXFIN) | خطوط الإشارة، التخطيطات (L) †؛ ثنائية (M)؛ فتح ملف ⁨DXF⁩ (L) |
 | Guides | How-to guide; floor plan (a house's) | دليل، أدلة (M)؛ مخطط منزل، المسقط الأفقي (C) — «رسم مخطط منزل» is the searched phrase, المسقط الأفقي the drawing's name |
 |  | A plan's layers: Walls, Doors, Windows, Dimensions (the reader's own) | الجدران، الأبواب، النوافذ، الأبعاد (M) |
 |  | Outer and inner face (a wall's); inner wall; opening; entrance | الوجه الخارجي والداخلي؛ الجدار الداخلي؛ فتحة؛ المدخل (M) |

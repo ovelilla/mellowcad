@@ -141,6 +141,7 @@ declare const source: {
       "SAVEAS": string
       "SAVE": string
       "OPEN": string
+      "DXFIN": string
       "PASTECLIP": string
       "DIMSTYLE": string
       "STYLE": string
@@ -618,6 +619,7 @@ declare const source: {
       "SAVEAS": string[]
       "SAVE": string[]
       "OPEN": string[]
+      "DXFIN": string[]
       "PASTECLIP": string[]
       "DIMSTYLE": string[]
       "-DIMSTYLE": string[]
@@ -2287,6 +2289,13 @@ declare const source: {
       "saveUnavailable": string
       "openUnavailable": string
       "openFailed": string
+      "dxfHeaderError": string
+      "dxfReadError": string
+      "dxfNotValid": string
+      "dxfDiscarded": string
+      "dxfLeftOut": string
+      "dxfInLayouts": string
+      "dxfUnreadable": string
       "fileError": {
         "invalidJson": string
         "unrecognised": string

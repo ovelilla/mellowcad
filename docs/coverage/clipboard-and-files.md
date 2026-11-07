@@ -61,7 +61,7 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` / `IMPDXF`
+### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
@@ -88,4 +88,64 @@ titled drawing in d08)
 
 **Missing:** File System Access API handles (QSAVE on a titled drawing saves silently, p203; SAVE
 asks and writes a copy, p215), the `Save drawing as` and SAVEAS's format prompts (FILEDIA 0),
-drag-and-drop open, unsaved-changes prompt, the drawing's name and the file tab's unsaved asterisk
+SAVEAS's DXF types and its Options (`docs/next-dxf.md`), drag-and-drop open, unsaved-changes
+prompt, the drawing's name and the file tab's unsaved asterisk
+
+### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF`
+
+**Implemented:** OPEN's picker, AutoCAD's Select File, offers drawings and DXF, DXFIN's DXF alone
+(desktop: its Select File opens on «DXF (*.dxf)»; with FILEDIA 0 both ask `Enter name of drawing
+to open <.>:`, probes dxf/x004–x006, and acad.pgp's `DXFIN, *OPEN` loses to the command, x007); a
+DXF is told by its name or its first group (a binary one by its sentinel) and replaces the drawing
+as one of ours does: a history of its own, the view framed, the autosave written; ASCII and
+binary, R12 to 2018, read in AutoCAD 2027's own files of two reference drawings
+(`cad/serialization/dxf/fixtures/`, f001–f005), the text up to 2004 in `$DWGCODEPAGE`'s code page
+with its `\U+XXXX` escapes; the objects the model has, each with its layer, colour, linetype,
+lineweight, thickness, elevation and normal: LINE, CIRCLE, ARC, ELLIPSE, LWPOLYLINE, the 2D
+POLYLINE with PEDIT's Fit arcs and Spline frame as AutoCAD left them, the 3D POLYLINE, SPLINE by
+its fit points, end tangents and knot spacing (70's 32, 64, 128, f006) or its control points,
+knots and weights (a closed one, which AutoCAD writes on open knots, as that curve), TEXT, MTEXT,
+ATTDEF, INSERT with its attributes taken into the block's coordinates, the linear, aligned,
+angular (three points, two lines), radius and diameter DIMENSION from their definition points,
+text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata); the tables: layers (on,
+off, locked), text and dimension styles (a group left out at the DXF reference's value, not
+ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
+CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
+PLINEWID, FILLMODE, ATTMODE, ORTHOMODE, ELEVATION, THICKNESS, SPLINETYPE, SPLINESEGS, ISOLINES,
+the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
+(`Error in drawing header on line 1.`, `<file> is not valid DXF file`, `Invalid or incomplete DXF
+input -- drawing discarded.`, x010) and one ending inside a section in its two (`DXF read error on
+line 23.`, t-no-eof), the drawing left as it was; es and pt-BR's from their consoles (pt-BR's
+`online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
+
+**Deviations:** what the model has no object for is left out and counted at the command line by
+its DXF type (`7 objects not opened: 1 POINT, 1 SOLID, …`), a layout's apart (`1 object in a
+layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
+words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
+tolerant where AutoCAD's reader is strict: an unknown group code or entity, a missing subclass
+marker, an EOF missing after the last section or a malformed object discard the whole drawing
+there (`Undefined group code 77 for object on line 22.`, t-*), and RECOVER does not take them
+either (r-*), WHY: they are what other programs write, and the rest opens; a frozen layer opens off
+(no FREEZE here); an index colour opens as its RGB (AutoCAD 2027's palette, read from its
+AcCmColor) and ByBlock as ByLayer (the model has neither); a linetype the six do not name but
+whose dashes one of them has opens as that one (WHY: the Spanish AutoCAD's acadiso.lin calls
+DASHED `TRAZOS`), any other by its name, drawn continuous; LWDISPLAY stays on, WHY: as every
+drawing here starts, the screen being the only place a lineweight shows; a MINSERT opens as one
+reference per row and column, WHY: there is no MINSERT; TEXT's Align and Fit open left-justified
+at their first point with their height and rotation, WHY: the model has neither; a radial
+dimension takes its text's middle (11) for the point picked, WHY: AutoCAD keeps that point only in
+the text's place; a hatch's elliptical and spline edges are laid as straight runs, WHY: a loop here
+is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
+model has only those three
+
+**Missing:** saving as DXF (SAVEAS's DXF types, DXFOUT: docs/next-dxf.md); POINT, SOLID, TRACE,
+3DFACE, XLINE, RAY, LEADER, MLEADER, TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
+and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
+in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
+outside the 24, or user-defined, keeps its name and draws no fill), the index colours as such,
+each dimension's style overrides (xdata DSTYLE), a text style's font, width and obliquing (text is
+measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
+lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
+prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured round from −X
+(AutoCAD wrote f006's clockwise island as a polyline loop), and an elliptical edge's angles, read
+as the ellipse's parameters

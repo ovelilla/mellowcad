@@ -88,7 +88,7 @@ A drawing file is JSON in world coordinates, readable by other tools:
 - **The reader is tolerant.** Unknown fields are ignored, and an object it cannot read is skipped
   instead of failing the whole file.
 - SAVE names a file `drawing-<date>.ecad.json` (`suggestedFileName()`), and OPEN accepts `.json`
-  and `.ecad`.
+  and `.ecad`, and DXF files.
 
 ### Saving and opening yourself
 
@@ -118,6 +118,15 @@ line.
 `saveDrawingToFile()` and `openDrawingFromFile()` do the same from a button. `newDrawing()` is
 NEW: an empty drawing, which U brings back from. MASSPROP's analysis goes out the same way, a text
 file named as the drawing with `.mpr`: a `FileTransport` of your own receives it in `save` too.
+
+### DXF
+
+OPEN opens a DXF as well as a drawing of the engine's, and DXFIN a DXF alone: ASCII or binary,
+from AutoCAD R12 to 2018. What the engine has no object for (a POINT, a LEADER, a 3D solid, a
+layout's objects) is left out and counted on the command line. `openDrawingFromFile(["dxf"])` is
+DXFIN from a button. A `FileTransport` of your own gets the kinds a pick offers in `open`'s
+`request` and returns the file's name and bytes; one that returns the text, as before, still
+opens a drawing and an ASCII DXF in UTF-8.
 
 ## The clipboard
 

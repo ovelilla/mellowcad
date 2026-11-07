@@ -144,6 +144,7 @@ export const es: EngineLocale = {
       "SAVEAS": "Guardar el dibujo en un archivo con otro nombre",
       "SAVE": "Guardar el dibujo en un archivo",
       "OPEN": "Abrir un archivo de dibujo",
+      "DXFIN": "Abrir un archivo DXF",
       "PASTECLIP": "Pegar el portapapeles en el dibujo",
       "DIMSTYLE": "Crear y modificar estilos de cota",
       "STYLE": "Crear y modificar estilos de texto",
@@ -1008,6 +1009,9 @@ export const es: EngineLocale = {
       "OPEN": [
         "ABRE",
         "ABREURL"
+      ],
+      "DXFIN": [
+        "CARGADXF"
       ],
       "PASTECLIP": [
         "PEGAPP"
@@ -3332,6 +3336,83 @@ export const es: EngineLocale = {
       "saveUnavailable": "Guardar en un archivo no está disponible aquí.",
       "openUnavailable": "Abrir un archivo no está disponible aquí.",
       "openFailed": "No se ha podido abrir el archivo.",
+      "dxfHeaderError": [
+        "Error en el encabezamiento del dibujo en línea ",
+        [
+          "line"
+        ],
+        "."
+      ],
+      "dxfReadError": [
+        "Error de lectura en DXF en línea ",
+        [
+          "line"
+        ],
+        "."
+      ],
+      "dxfNotValid": [
+        [
+          "name"
+        ],
+        " no es un archivo DXF válido"
+      ],
+      "dxfDiscarded": "Entrada DXF no válida o incompleta -- dibujo descartado.",
+      "dxfLeftOut": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto no abierto"
+            ],
+            "other": [
+              0,
+              " objetos no abiertos"
+            ]
+          }
+        ],
+        ": ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfInLayouts": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto de una presentación no abierto"
+            ],
+            "other": [
+              0,
+              " objetos de presentaciones no abiertos"
+            ]
+          }
+        ],
+        "."
+      ],
+      "dxfUnreadable": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "No se ha podido leer ",
+              0,
+              " objeto."
+            ],
+            "other": [
+              "No se han podido leer ",
+              0,
+              " objetos."
+            ]
+          }
+        ]
+      ],
       "fileError": {
         "invalidJson": "El archivo no es un JSON válido.",
         "unrecognised": "Archivo de dibujo no reconocido.",

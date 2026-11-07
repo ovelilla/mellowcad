@@ -140,10 +140,10 @@
     "autosaveTitle": "Autosaved in your browser",
     "autosaveBody": "Every change is saved on this device as you draw. Close the tab; the drawing is there when you come back.",
     "fileTitle": "A file when you want one",
-    "fileBody": "Ctrl+S saves the drawing as a file in MellowCAD's own versioned format. Ctrl+O opens it again, on any computer.",
+    "fileBody": "Ctrl+S saves the drawing as a file in MellowCAD's own versioned format. Ctrl+O opens it again, on any computer, and opens DXF files too.",
     "privateTitle": "No uploads",
     "privateBody": "Your drawings are never sent anywhere. Analytics count page views without cookies.",
-    "formats": "DWG and DXF: not yet. Drawings are saved in MellowCAD's own versioned format.",
+    "formats": "DXF: opens it, does not save it yet. DWG: not yet. Drawings are saved in MellowCAD's own versioned format.",
     "warning": "Clearing this site's data clears the autosave too. Press Ctrl+S to keep a file.",
     "diagramAlt": "Inside your device, the editor autosaves to the browser and saves to and opens a file; nothing leaves the device.",
     "diagramEditor": "EDITOR",
@@ -165,7 +165,7 @@
     "makersTitle": "Makers",
     "makersBody": "Draw a bracket or a plate to size, or model it as a solid, for free.",
     "practice": "Students and teachers: <link>AutoCAD practice exercises</link>, from a first gasket to 3D solids, each solved step by step and opening in the editor with its drawing.",
-    "notFor": "Not yet for exchanging DWG or DXF files, or for plotting sheets to paper or PDF."
+    "notFor": "Not yet for saving DXF or exchanging DWG files, or for plotting sheets to paper or PDF."
   },
   "Status": {
     "label": "06 · Status",
@@ -176,10 +176,10 @@
     "today2": "{snaps, number} object snaps, OTRACK, polar tracking and Ortho",
     "today3": "Layers, linetypes, {lineweights, number} lineweights and colours",
     "today4": "Dimensions, text, hatches, and blocks with attributes",
-    "today5": "Autosave, save and open, and the clipboard",
+    "today5": "Autosave, save and open, opening DXF files, and the clipboard",
     "today6": "3D solids, still partial: primitives, extrusions and revolutions, booleans, slices and sections, and shaded views",
     "notYetTitle": "Not yet",
-    "notYet1": "DWG and DXF import or export",
+    "notYet1": "DWG files, and saving as DXF",
     "notYet2": "Printing and PDF",
     "notYet3": "Layouts and paper space",
     "notYet4": "Sweeps, lofts, meshes and rendering in 3D",
@@ -201,7 +201,7 @@
     "q4": "Does it really work like AutoCAD?",
     "a4": "That's the spec: commands, aliases, prompt order, option letters and defaults follow current AutoCAD. Some commands are still partial, and the roadmap lists exactly which options are missing.",
     "q5": "Can I open or save DWG or DXF files, or print?",
-    "a5": "Not yet. Drawings are saved in MellowCAD's own versioned file format, and there is no printing or PDF export yet. DXF import and export are on the roadmap but not scheduled yet.",
+    "a5": "MellowCAD opens DXF files, from AutoCAD R12 to 2018, text or binary: lines, arcs, circles, ellipses, polylines, splines, text, dimensions, hatches and blocks, on their layers. What it has no object for yet — points, leaders, tables, layouts, 3D solids — is left out and listed when the file opens. Saving as DXF and DWG files are not there yet, and there is no printing or PDF export yet.",
     "q6": "Where are my drawings stored?",
     "a6": "On your device. MellowCAD autosaves in your browser and never uploads your drawings. Clearing the site's data deletes the autosave, so press Ctrl+S to keep a file.",
     "q7": "Is MellowCAD affiliated with Autodesk?",
@@ -335,7 +335,7 @@
           },
           "online": {
             "question": "Can I practise AutoCAD online for free?",
-            "answer": "Yes. MellowCAD runs in the browser, free and with no account: you type AutoCAD's commands and aliases, in your language's names, and answer their prompts in the same order, with the same option letters. It is not AutoCAD: it does not open DWG or DXF files yet, and its 3D solids are still partial."
+            "answer": "Yes. MellowCAD runs in the browser, free and with no account: you type AutoCAD's commands and aliases, in your language's names, and answer their prompts in the same order, with the same option letters. It is not AutoCAD: it opens DXF files but cannot save them or open DWG yet, and its 3D solids are still partial."
           },
           "solutions": {
             "question": "Do the exercises have solutions?",

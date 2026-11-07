@@ -144,6 +144,7 @@ export const en: EngineCatalog = {
       "SAVEAS": "Save the drawing to a file under a new name",
       "SAVE": "Save the drawing to a file",
       "OPEN": "Open a drawing file",
+      "DXFIN": "Open a DXF file",
       "PASTECLIP": "Paste the clipboard into the drawing",
       "DIMSTYLE": "Create and modify dimension styles",
       "STYLE": "Create and modify text styles",
@@ -1021,6 +1022,9 @@ export const en: EngineCatalog = {
       "OPEN": [
         "OPEN",
         "OPENURL"
+      ],
+      "DXFIN": [
+        "DXFIN"
       ],
       "PASTECLIP": [
         "PASTECLIP"
@@ -2697,6 +2701,82 @@ export const en: EngineCatalog = {
       "saveUnavailable": "Saving to a file is not available here.",
       "openUnavailable": "Opening a file is not available here.",
       "openFailed": "Could not open the file.",
+      "dxfHeaderError": [
+        "Error in drawing header on line ",
+        [
+          "line"
+        ],
+        "."
+      ],
+      "dxfReadError": [
+        "DXF read error on line ",
+        [
+          "line"
+        ],
+        "."
+      ],
+      "dxfNotValid": [
+        [
+          "name"
+        ],
+        " is not valid DXF file"
+      ],
+      "dxfDiscarded": "Invalid or incomplete DXF input -- drawing discarded.",
+      "dxfLeftOut": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object"
+            ],
+            "other": [
+              0,
+              " objects"
+            ]
+          }
+        ],
+        " not opened: ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfInLayouts": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object in a layout"
+            ],
+            "other": [
+              0,
+              " objects in layouts"
+            ]
+          }
+        ],
+        " not opened."
+      ],
+      "dxfUnreadable": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object"
+            ],
+            "other": [
+              0,
+              " objects"
+            ]
+          }
+        ],
+        " could not be read."
+      ],
       "fileError": {
         "invalidJson": "The file is not valid JSON.",
         "unrecognised": "Unrecognised drawing file.",

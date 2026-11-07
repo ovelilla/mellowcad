@@ -43,6 +43,9 @@ Then the parts that are no switch at all:
   the cursor only (`collectShapes`'s `near`), tagged with `curveId` so its own chords never meet.
 - The type's name in `interface.entity` and its rows in `interface.property` (`cad/locales/en.json`,
   then `npm run locales`).
+- Its DXF entity in `dxfEntities` (`cad/serialization/dxf/dxfEntities.ts`), taken out of what a
+  DXF opens without it (the `leftOut` count), tested against a file AutoCAD 2027 wrote
+  (`cad/serialization/dxf/fixtures/`, the probes of `scripts/research/probes/dxf/`).
 
 ## A dimension kind
 

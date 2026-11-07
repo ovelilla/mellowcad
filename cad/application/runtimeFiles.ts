@@ -5,9 +5,14 @@ import { Entity } from "../domain/entities"
 import {
   DrawingSnapshot,
   ParsedDrawing,
+  parseDrawingFile,
   serializeDrawing as serializeDrawingFile,
   toDrawingFile,
 } from "../serialization/drawingFile"
+import { DxfReadError, looksLikeDxf } from "../serialization/dxf/dxfFormat"
+import type { DxfOpenReport } from "../serialization/dxf/readDxf"
+import { EngineText } from "./EngineText"
+import { FileKind, OpenedFile } from "./ports"
 import {
   ClipboardFragment,
   parseClipboard,
@@ -129,6 +134,90 @@ export async function readClipboardFragment(
   // is not an error: fall through to what this session last copied.
   if (fragment) return fragment
   return fallback ? parseClipboard(fallback) : null
+}
+
+/** What OPEN read: a drawing of ours, or a DXF with what it left out. */
+export type OpenedDrawing =
+  | { readonly kind: "drawing"; readonly drawing: ParsedDrawing }
+  | {
+      readonly kind: "dxf"
+      readonly drawing: ParsedDrawing
+      readonly report: DxfOpenReport
+    }
+
+/**
+ * Reads a picked file as the kind it is: a DXF by its name or its first
+ * group (a binary one's sentinel), else a drawing of ours. DXFIN, whose
+ * Select File offers DXF alone, reads whatever it is given as a DXF.
+ * Rejects with `DxfReadError` or `DrawingFileError` for a file it cannot
+ * read. WHY the reader is loaded here: a page that never opens a DXF never
+ * downloads it.
+ */
+export async function readOpenedFile(
+  file: OpenedFile | string,
+  kinds: readonly FileKind[]
+): Promise<OpenedDrawing> {
+  const named = typeof file !== "string"
+  const content = named ? file.bytes : file
+  const dxf =
+    !kinds.includes("drawing") ||
+    (named && /\.dxf$/i.test(file.name)) ||
+    looksLikeDxf(content)
+  if (dxf) {
+    const { parseDxf } = await import("../serialization/dxf/readDxf")
+    const { drawing, report } = parseDxf(content)
+    return { kind: "dxf", drawing, report }
+  }
+  const text = named ? new TextDecoder().decode(file.bytes) : file
+  return { kind: "drawing", drawing: parseDrawingFile(text) }
+}
+
+/**
+ * What opening a DXF left out, one line per kind (`docs/next-dxf.md`):
+ * WHY words of our own, where every other line is AutoCAD's, is that
+ * AutoCAD has an object for everything a DXF holds and says nothing.
+ */
+export function dxfReportLines(
+  report: DxfOpenReport,
+  text: EngineText
+): string[] {
+  const lines: string[] = []
+  let total = 0
+  for (const count of report.leftOut.values()) total += count
+  if (total > 0) {
+    const types = [...report.leftOut]
+      .map(([type, count]) => `${count} ${type}`)
+      .join(", ")
+    lines.push(text.message("dxfLeftOut", { count: total, types }))
+  }
+  if (report.inLayouts > 0) {
+    lines.push(text.message("dxfInLayouts", { count: report.inLayouts }))
+  }
+  if (report.unreadable > 0) {
+    lines.push(text.message("dxfUnreadable", { count: report.unreadable }))
+  }
+  return lines
+}
+
+/**
+ * AutoCAD's lines for a DXF it discards (probes x010, t-no-eof): a file that
+ * is no DXF names itself, one cut short says where it broke.
+ */
+export function dxfErrorLines(
+  error: DxfReadError,
+  name: string | null,
+  text: EngineText
+): string[] {
+  const line = String(error.line)
+  return [
+    error.kind === "header"
+      ? text.message("dxfHeaderError", { line })
+      : text.message("dxfReadError", { line }),
+    ...(error.kind === "header" && name
+      ? [text.message("dxfNotValid", { name })]
+      : []),
+    text.message("dxfDiscarded"),
+  ]
 }
 
 /** Ctrl+A's set: what the object selector's ALL takes (clipboard/p126). */

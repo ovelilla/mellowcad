@@ -1,8 +1,19 @@
-import { FileTransport } from "../application/ports"
+import {
+  FileKind,
+  FileTransport,
+  OpenRequest,
+  OpenedFile,
+} from "../application/ports"
 import {
   DRAWING_FILE_ACCEPT,
   DRAWING_FILE_MIME_TYPE,
 } from "../serialization/drawingFile"
+
+/** What the picker offers for each kind of file the engine opens. */
+const ACCEPT: Readonly<Record<FileKind, string>> = {
+  drawing: DRAWING_FILE_ACCEPT,
+  dxf: ".dxf,image/vnd.dxf,application/dxf",
+}
 
 /**
  * Browser implementation of the {@link FileTransport} port: a download for
@@ -31,21 +42,30 @@ export function createBrowserFileTransport(
       URL.revokeObjectURL(url)
     },
 
-    open(): Promise<string | null> {
+    open(
+      request: OpenRequest = { kinds: ["drawing"] }
+    ): Promise<OpenedFile | null> {
       return new Promise((resolve, reject) => {
         const input = ownerDocument.createElement("input")
         input.type = "file"
-        input.accept = DRAWING_FILE_ACCEPT
+        input.accept = request.kinds.map((kind) => ACCEPT[kind]).join(",")
         input.style.display = "none"
 
-        const finish = (result: Promise<string | null>): void => {
+        const finish = (result: Promise<OpenedFile | null>): void => {
           input.remove()
           result.then(resolve, reject)
         }
 
         input.addEventListener("change", () => {
           const file = input.files?.[0]
-          finish(file ? file.text() : Promise.resolve(null))
+          finish(
+            file
+              ? file.arrayBuffer().then((buffer) => ({
+                  name: file.name,
+                  bytes: new Uint8Array(buffer),
+                }))
+              : Promise.resolve(null)
+          )
         })
         // Dismissing the picker fires `cancel`, not `change`; without it the
         // promise would never settle and the input would linger in the DOM.

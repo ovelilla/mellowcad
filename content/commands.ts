@@ -210,6 +210,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   SAVE: { group: "files" },
   SAVEAS: { group: "files" },
   OPEN: { group: "files" },
+  DXFIN: { group: "files" },
   COPYCLIP: { group: "files" },
   CUTCLIP: { group: "files" },
   COPYBASE: { group: "files" },

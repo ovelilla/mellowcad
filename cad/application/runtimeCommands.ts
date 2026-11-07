@@ -177,6 +177,14 @@ export function registerCommands(
       void runtime.openDrawingFromFile()
     },
   })
+  // AutoCAD 2027's DXFIN is OPEN with Select File's type DXF (desktop) and
+  // OPEN's prompt (probe x004); acad.pgp's `DXFIN, *OPEN` loses to it.
+  register({
+    id: "DXFIN",
+    run: () => {
+      void runtime.openDrawingFromFile(["dxf"])
+    },
+  })
   // The other three clipboard commands are tools (they prompt for objects);
   // this one is not, because reading the clipboard is asynchronous and the
   // tool can only start once there is a fragment to place. Autodesk's

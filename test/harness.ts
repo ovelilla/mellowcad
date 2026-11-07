@@ -3,7 +3,10 @@ import { CadDriver, type CadDriverOptions } from "../cad/application/CadDriver"
 import type {
   Clipboard,
   DrawingStore,
+  FileKind,
   FileTransport,
+  OpenRequest,
+  OpenedFile,
 } from "../cad/application/ports"
 
 export type {
@@ -48,16 +51,19 @@ export class MemoryStore implements DrawingStore {
 
 /**
  * In-memory {@link FileTransport}, for exercising SAVE/OPEN. `open()` hands
- * back {@link nextFile} — `null` stands for a cancelled pick.
+ * back {@link nextFile} — text, as a host that reads text gives it, or a
+ * named file's bytes; `null` stands for a cancelled pick — and keeps the
+ * kinds each pick offered.
  */
 export class MemoryFileTransport implements FileTransport {
   readonly saved: { text: string; fileName: string }[] = []
   openCalls = 0
-  nextFile: string | null = null
+  readonly openedKinds: (readonly FileKind[] | undefined)[] = []
+  nextFile: OpenedFile | string | null = null
   /** Set to make `open()` reject, as an unreadable file would. */
   openError: Error | null = null
 
-  constructor(nextFile: string | null = null) {
+  constructor(nextFile: OpenedFile | string | null = null) {
     this.nextFile = nextFile
   }
 
@@ -65,8 +71,9 @@ export class MemoryFileTransport implements FileTransport {
     this.saved.push({ text, fileName })
   }
 
-  open(): Promise<string | null> {
+  open(request?: OpenRequest): Promise<OpenedFile | string | null> {
     this.openCalls += 1
+    this.openedKinds.push(request?.kinds)
     if (this.openError) return Promise.reject(this.openError)
     return Promise.resolve(this.nextFile)
   }

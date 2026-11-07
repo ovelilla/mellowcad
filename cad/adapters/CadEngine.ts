@@ -19,7 +19,7 @@ import {
   ShortcutMenuAction,
   StylesPanelTab,
 } from "../application/EngineState"
-import { DrawingStore, EngineHost } from "../application/ports"
+import { DrawingStore, EngineHost, FileKind } from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import type { PointFilterName } from "../application/pointFilter"
@@ -835,11 +835,12 @@ export class CadEngine {
 
   /**
    * OPEN: asks the file transport for a file, a file picker in the browser,
-   * and loads it. Never rejects: a cancelled pick does nothing and a bad file is
-   * reported on the command line.
+   * and loads it — a drawing or a DXF; with `["dxf"]`, DXFIN, a DXF alone.
+   * Never rejects: a cancelled pick does nothing and a bad file is reported on
+   * the command line.
    */
-  openDrawingFromFile(): Promise<void> {
-    return this.runtime.openDrawingFromFile()
+  openDrawingFromFile(kinds?: readonly FileKind[]): Promise<void> {
+    return this.runtime.openDrawingFromFile(kinds)
   }
 
   /**

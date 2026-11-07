@@ -357,6 +357,15 @@ corrected SPLINE's `Método=Ajustar Nós=`, the -STYLE listing's `Ângulo de inc
 `Especifique o número de itens ou` and AREA's ADD and SUBTRACT prompts. The report's `several`
 groups keys by English's words, so it lists the ids above with every wording of their English:
 each one's own is fixed by its test.
+- **DXFIN and a DXF opened:** `IMPDXF` is DXFIN's name, table 52635 (DXFOUT's `EXPDXF`, 52636,
+  not built yet), which the catalog had as OPEN's alias from the 2027 `acad.pgp`'s `IMPDXF,
+  *ABRIR`: the command beats the alias, as `EXPDXF` runs DXFOUT (dxf/x007.pt). AutoCAD's lines for a
+  file it discards are 2027's console's (dxf/t-no-eof.pt-BR, t-bad-number.pt-BR, x010.pt-BR) and
+  tables 20539 and 20542, Autodesk's `online` for "on line" kept: `Erro no cabeçalho do desenho
+  online 1.`, `Erro de leitura DXF online 23.`, `… não é um arquivo DXF válido`, `Entrada DXF
+  inválida ou incompleta - desenho descartado.` (one hyphen). The count of what a DXF leaves out is
+  ours, AutoCAD having nothing to say (`objetos não abertos`, `de um layout`, AutoCAD's word, `Não
+  foi possível ler`).
 
 ## Script and font
 

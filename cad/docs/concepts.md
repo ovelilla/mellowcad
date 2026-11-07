@@ -138,7 +138,7 @@ browser:
 | Port            | What it does                         | On a page (`CadEngine`)               | Headless (`CadDriver`) |
 | --------------- | ------------------------------------ | ------------------------------------- | ---------------------- |
 | `DrawingStore`  | Where the drawing is autosaved       | `store` option; none by default       | `store` option         |
-| `FileTransport` | Where SAVE writes and OPEN reads     | A download and a file picker          | `files` option         |
+| `FileTransport` | Where SAVE writes and OPEN reads, DXF too | A download and a file picker | `files` option |
 | `Clipboard`     | What COPYCLIP writes, PASTECLIP reads | The system clipboard              | `clipboard` option     |
 
 Each one is a pair of functions, so a host can put a drawing anywhere: see

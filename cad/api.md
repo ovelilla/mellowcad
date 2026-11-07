@@ -323,10 +323,11 @@ export declare class CadEngine {
     saveDrawingToFile(): void;
     /**
      * OPEN: asks the file transport for a file, a file picker in the browser,
-     * and loads it. Never rejects: a cancelled pick does nothing and a bad file is
-     * reported on the command line.
+     * and loads it — a drawing or a DXF; with `["dxf"]`, DXFIN, a DXF alone.
+     * Never rejects: a cancelled pick does nothing and a bad file is reported on
+     * the command line.
      */
-    openDrawingFromFile(): Promise<void>;
+    openDrawingFromFile(kinds?: readonly FileKind[]): Promise<void>;
     /**
      * PASTECLIP: reads the clipboard and starts placing what was copied there.
      */
@@ -1450,6 +1451,10 @@ export interface DrawingSummary {
     readonly layers: number;
 }
 
+export type { FileKind }
+/** A kind of file the engine opens: its own drawings, or a DXF. */
+export type FileKind = "drawing" | "dxf";
+
 export type { FileTransport }
 /**
  * Explicit file save/open, the counterpart of {@link DrawingStore}'s implicit
@@ -1463,10 +1468,28 @@ export interface FileTransport {
      */
     save(text: string, fileName: string): void;
     /**
-     * Asks the user for a drawing file. Resolves with its text, or with `null`
-     * when the pick was cancelled. Rejects only when the file cannot be read.
+     * Asks the user for a file of the kinds `request` names — AutoCAD's Select
+     * File and its Files of type: OPEN offers drawings and DXF, DXFIN DXF
+     * alone. Resolves with the file's name and bytes, or with `null` when the
+     * pick was cancelled; a host that reads only text may resolve with the
+     * text, which serves a drawing and an ASCII DXF in UTF-8 (a binary DXF,
+     * and one up to 2004 in its code page, need the bytes). Rejects only when
+     * the file cannot be read.
      */
-    open(): Promise<string | null>;
+    open(request?: OpenRequest): Promise<OpenedFile | string | null>;
+}
+
+export type { OpenedFile }
+/** A file the user picked: its name (`plan.dxf`) and its contents. */
+export interface OpenedFile {
+    readonly name: string;
+    readonly bytes: Uint8Array;
+}
+
+export type { OpenRequest }
+/** What a file pick asks for: the kinds to offer, in AutoCAD's order. */
+export interface OpenRequest {
+    readonly kinds: readonly FileKind[];
 }
 
 export { readSavedDrawingSummary }

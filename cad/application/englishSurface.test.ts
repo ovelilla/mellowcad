@@ -296,6 +296,80 @@ describe("the engine's English surface", () => {
     await Promise.resolve()
     walk("open failing", cad, (s) => s.do("after open", () => {}))
 
+    const dxf = (...groups: string[]) =>
+      new TextEncoder().encode(
+        ["  0", "SECTION", "  2", "ENTITIES", ...groups].join("\n")
+      )
+    const dxfCases: [string, string, Uint8Array][] = [
+      [
+        "a DXF with what the model has not",
+        "plan.dxf",
+        dxf(
+          "  0",
+          "POINT",
+          "  8",
+          "0",
+          " 10",
+          "1",
+          " 20",
+          "1",
+          "  0",
+          "LEADER",
+          "  8",
+          "0",
+          " 10",
+          "0",
+          " 20",
+          "0",
+          "  0",
+          "POINT",
+          "  8",
+          "0",
+          " 10",
+          "2",
+          " 20",
+          "2",
+          "  0",
+          "LINE",
+          " 67",
+          "1",
+          "  8",
+          "0",
+          " 10",
+          "0",
+          " 20",
+          "0",
+          " 11",
+          "1",
+          " 21",
+          "1",
+          "  0",
+          "LINE",
+          "  8",
+          "0",
+          " 10",
+          "0",
+          " 20",
+          "0",
+          "  0",
+          "ENDSEC",
+          "  0",
+          "EOF"
+        ),
+      ],
+      ["no DXF", "plan.dxf", new TextEncoder().encode("hello")],
+      ["a DXF cut short", "plan.dxf", dxf("  0", "LINE", "  8", "0")],
+    ]
+    // The reader is a chunk of its own, loaded when a DXF is opened.
+    await import("../serialization/dxf/readDxf")
+    for (const [name, fileName, bytes] of dxfCases) {
+      const files = new MemoryFileTransport({ name: fileName, bytes })
+      const cad = createHarness({ files })
+      cad.command("OPEN")
+      for (let i = 0; i < 3; i++) await new Promise((r) => setTimeout(r, 0))
+      walk(`open ${name}`, cad, (s) => s.do("after open", () => {}))
+    }
+
     const refusing = new MemoryFileTransport()
     refusing.openError = "no" as unknown as Error
     const refused = createHarness({ files: refusing })

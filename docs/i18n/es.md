@@ -349,3 +349,11 @@ origen/Origen` from the 2026 help and the same captures;
   `Precise punto` and the ribbon's `Coordenadas punto` from the 2026 Spanish help; DIST's and ID's
   reports the 2027 console's (inquiry/p104); the palette's `Inicio Z`, `Fin Z`, `Incremento Z` and
   `Elevación` ax26res 9, 12, 52 and 59.
+- **DXFIN and a DXF opened:** `CARGADXF`, table 52635 (DXFOUT is `SALVADXF`, 52636, not built
+  yet), which the 2027 `acad.pgp`'s `CARGADXF, *ABRE` loses to, as `SALVADXF` runs DXFOUT
+  (dxf/x007.es). AutoCAD's lines for a file it discards are 2027's console's (dxf/x010.es,
+  t-no-eof.es, t-bad-number.es) and tables 20539 and 20542: `Error en el encabezamiento del dibujo
+  en línea 1.`, `… no es un archivo DXF válido`, `Error de lectura en DXF en línea 23.`, `Entrada
+  DXF no válida o incompleta -- dibujo descartado.` The count of what a DXF leaves out is ours,
+  AutoCAD having nothing to say (`objetos no abiertos`, `de una presentación`, AutoCAD's word for a
+  layout, `No se ha podido leer`).

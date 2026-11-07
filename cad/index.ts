@@ -107,6 +107,9 @@ export { createMemoryDrawingStore } from "./adapters/memoryDrawingStore"
 export type {
   DrawingStore,
   FileTransport,
+  FileKind,
+  OpenRequest,
+  OpenedFile,
   Clipboard,
 } from "./application/ports"
 export type { SaveState } from "./application/Autosave"

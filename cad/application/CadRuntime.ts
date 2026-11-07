@@ -47,8 +47,10 @@ import {
 } from "../domain/units"
 import {
   DrawingFileError,
+  ParsedDrawing,
   parseDrawingFile,
 } from "../serialization/drawingFile"
+import { DxfReadError } from "../serialization/dxf/dxfFormat"
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene, ScenePrimitive } from "../scene/types"
 import {
@@ -206,7 +208,14 @@ import {
   rightClickResponse,
   SHORTCUT_MENU_COMMANDS,
 } from "./runtimeShortcutMenu"
-import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
+import {
+  Clipboard,
+  DrawingStore,
+  EngineHost,
+  FileKind,
+  FileTransport,
+  OpenedFile,
+} from "./ports"
 import { LayerPatch, nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
@@ -247,7 +256,10 @@ import {
   applyDrawingFile,
   autosaveText,
   copyToClipboard,
+  dxfErrorLines,
+  dxfReportLines,
   readClipboardFragment,
+  readOpenedFile,
   selectAll,
   serializeDrawing,
   suggestedFileName,
@@ -6053,20 +6065,40 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Asks the transport for a drawing file and loads it (AutoCAD's OPEN).
-   * Never rejects: a cancelled pick is a no-op and a bad file is reported at
-   * the command prompt, which is where AutoCAD answers too.
+   * Asks the transport for a file and opens it: AutoCAD's OPEN, a drawing or
+   * a DXF, and DXFIN, a DXF alone (`kinds`). What a DXF holds that the model
+   * has not is said at the command line. Never rejects: a cancelled pick is a
+   * no-op and a bad file is reported at the command prompt, which is where
+   * AutoCAD answers too, the drawing left as it was.
    */
-  async openDrawingFromFile(): Promise<void> {
+  async openDrawingFromFile(
+    kinds: readonly FileKind[] = ["drawing", "dxf"]
+  ): Promise<void> {
     if (!this.files) {
       this.reportFileError(this.text.message("openUnavailable"))
       return
     }
+    let file: OpenedFile | string | null = null
     try {
-      const text = await this.files.open()
-      if (text === null) return
-      this.loadDrawing(text)
+      file = await this.files.open({ kinds })
+      if (file === null) return
+      const opened = await readOpenedFile(file, kinds)
+      this.openParsed(opened.drawing)
+      if (opened.kind === "dxf") {
+        for (const line of dxfReportLines(opened.report, this.text)) {
+          this.commandLine.write("info", line)
+          this.commandLineVisible = true
+        }
+        this.invalidateState()
+      }
     } catch (error) {
+      if (error instanceof DxfReadError) {
+        const name = typeof file === "object" && file ? file.name : null
+        for (const line of dxfErrorLines(error, name, this.text)) {
+          this.reportFileError(line)
+        }
+        return
+      }
       // A file this build cannot read is worded by the catalog; any other
       // failure is the host's own report, passed on as it came.
       this.reportFileError(
@@ -6196,7 +6228,11 @@ export class CadRuntime extends Observable {
    * expected to surface it. On success the view frames the loaded geometry.
    */
   loadDrawing(text: string): void {
-    const parsed = parseDrawingFile(text)
+    this.openParsed(parseDrawingFile(text))
+  }
+
+  /** Replaces the drawing with one read from a file, as OPEN does. */
+  private openParsed(parsed: ParsedDrawing): void {
     this.selection.clear()
     this.resetTracking()
     applyDrawingFile(this.document, parsed)

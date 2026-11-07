@@ -1,0 +1,5 @@
+---
+"@mellowcad/engine": minor
+---
+
+OPEN opens a DXF and DXFIN (es CARGADXF, pt-BR IMPDXF) opens one alone, as AutoCAD 2027 does: ASCII or binary, from R12 to 2018, the text in its code page up to 2004, with lines, circles, arcs, ellipses, polylines (PEDIT's fitted ones as AutoCAD left them), 3D polylines, splines, TEXT, MTEXT, attribute definitions, block references with their attributes, the linear, aligned, angular, radius and diameter dimensions and hatches, on their layers with their colours, linetypes, lineweights and styles. What the engine has no object for is left out and counted on the command line (`7 objects not opened: 1 POINT, …`), and a file that is no DXF, or ends inside a section, is refused with AutoCAD's own lines. `FileTransport.open` takes the kinds a pick offers (`OpenRequest`, `FileKind`) and may return the file's name and bytes (`OpenedFile`), which a binary DXF needs; a transport returning text still works. `CadEngine.openDrawingFromFile` takes the kinds too. New catalog keys: `interface.description.DXFIN`, `commands.names.DXFIN`, the `dxf*` messages; in pt-BR, IMPDXF moves from OPEN's aliases to DXFIN's name.
