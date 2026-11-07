@@ -52,6 +52,9 @@ written and `/draw` alone brings it back. The file is fetched while that store h
 reload keeps the reader's work, and NEW then the page's link starts it over. The language links
 keep the query.
 
+**Where the editor links out is the host's** (`languages`, `help`, `feedback`): the package names
+no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`marketing.md`).
+
 ## Text
 
 - **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are its

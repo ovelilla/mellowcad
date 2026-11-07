@@ -13,6 +13,7 @@ import {
   LibraryBig,
   Loader2,
   Menu as MenuIcon,
+  MessageSquare,
   Paintbrush,
   PencilRuler,
   Redo2,
@@ -75,6 +76,8 @@ export interface TopBarProps extends PieceProps {
   readonly mark?: ReactNode
   /** The application menu's languages; none, no Language submenu. */
   readonly languages?: readonly LanguageLink[]
+  /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
+  readonly feedback?: string
 }
 
 /** A drop-down of the bar: bordered, with no surface of its own. */
@@ -92,6 +95,7 @@ export function TopBar({
   state,
   mark,
   languages = [],
+  feedback,
 }: TopBarProps): ReactElement {
   const t = useEditorText("TopBar")
   const keys = useEditorText("Keys")
@@ -109,7 +113,12 @@ export function TopBar({
           Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
           here. */}
       <Panel className="shrink-0 items-center">
-        <ApplicationMenu engine={engine} mark={mark} links={languages} />
+        <ApplicationMenu
+          engine={engine}
+          mark={mark}
+          links={languages}
+          feedback={feedback}
+        />
         <IconAction
           icon={FilePlus}
           label={t("new")}
@@ -214,16 +223,19 @@ export function TopBar({
 
 /**
  * The application menu (AutoCAD's "A" button): the file commands, Drawing
- * Utilities' Units, and the page's language, which AutoCAD has no menu for.
+ * Utilities' Units, the page's language, which AutoCAD has no menu for, and
+ * Send Feedback, which it has elsewhere.
  */
 function ApplicationMenu({
   engine,
   mark,
   links,
+  feedback,
 }: {
   engine: CadEngine
   mark: ReactNode
   links: readonly LanguageLink[]
+  feedback: string | undefined
 }) {
   const portal = usePortalContainer()
   const t = useEditorText("TopBar")
@@ -312,6 +324,28 @@ function ApplicationMenu({
                     </Menu.Positioner>
                   </Menu.Portal>
                 </Menu.SubmenuRoot>
+              </>
+            )}
+            {/* WHY here: AutoCAD's Send Feedback is a button of the Start
+                tab's Connect panel and an item of the Help menu (acad.cuix
+                ID_SendFeedback), and the editor has neither; it moves to
+                the Start tab when the chrome has one
+                (docs/next-autocad-ui.md). AutoCAD opens its form on
+                Autodesk's site: here the host's page, in a tab of its own,
+                as F1's help, so the drawing stays open. */}
+            {feedback && (
+              <>
+                <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+                <Menu.LinkItem
+                  href={feedback}
+                  target="_blank"
+                  rel="noopener"
+                  closeOnClick
+                  className={MENU_ITEM}
+                >
+                  <MessageSquare />
+                  {t("feedback")}
+                </Menu.LinkItem>
               </>
             )}
           </Menu.Popup>

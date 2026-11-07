@@ -23,6 +23,7 @@ declare const source: {
     "saveAs": string
     "units": string
     "language": string
+    "feedback": string
     "saving": string
     "saved": string
     "savedHint": string

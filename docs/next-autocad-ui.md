@@ -87,7 +87,10 @@ skill `new-command` («the rail») pasa a describir el ribbon.
 ### Fase 2 — menú de la aplicación, acceso rápido y título
 
 El orden completo del menú de la aplicación, Undo y Redo como botones divididos con su lista, y
-el nombre del dibujo en el título y en las pestañas de archivo si la fase 0 las pide.
+el nombre del dibujo en el título y en las pestañas de archivo si la fase 0 las pide. Send
+Feedback, que la sesión 05b dejó al final del menú de la aplicación con su WHY, va a la pestaña
+Inicio (su panel Connect) cuando la haya, o donde la fase 0 lo encuentre fuera de ella (el menú
+Ayuda lo tiene: acad.cuix `ID_SendFeedback`).
 
 ### Fase 3 — las paletas
 

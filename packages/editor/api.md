@@ -57,6 +57,11 @@ export interface CadEditorProps {
     sheet?: SheetTransition;
     /** Where F1 opens help; without it F1 is the browser's. */
     help?: HelpLinks;
+    /**
+     * The page the application menu's Send Feedback opens, in a tab of its own:
+     * where the host's users report a problem. Without it, no Send Feedback.
+     */
+    feedback?: string;
     /** The pieces the host replaces or turns off; the rest are the editor's. */
     components?: CadEditorComponents;
     /**
@@ -200,6 +205,8 @@ export interface TopBarProps extends PieceProps {
     readonly mark?: ReactNode;
     /** The application menu's languages; none, no Language submenu. */
     readonly languages?: readonly LanguageLink[];
+    /** The page the application menu's Send Feedback opens; none, no Send Feedback. */
+    readonly feedback?: string;
 }
 
 export { ViewCube }

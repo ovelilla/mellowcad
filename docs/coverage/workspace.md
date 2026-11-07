@@ -177,8 +177,13 @@ that one); a command named in the command line but not run yet; offline Help
 ### Top bar
 
 **Implemented:** the application menu (New, Open, Save, Save As, then Drawing Units, which the help
-files under Drawing Utilities > Units, and the page's language, which AutoCAD has no menu for) and
-the Quick Access Toolbar in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each
+files under Drawing Utilities > Units, the page's language, which AutoCAD has no menu for, and last
+Send Feedback, which opens the host's page in a new tab — the site's issue forms, filled in — where
+AutoCAD's opens its form on Autodesk's site: WHY in the application menu, AutoCAD 2027 has it as
+the Start tab's Connect panel's button, «Help us improve our products · Send feedback» (desktop,
+2026-11-07), and in the Help menu between Online Resources and Privacy Settings (acad.cuix
+`ID_SendFeedback`, `^C^C^P_ai_send_feedback ^P`), and neither exists here: it moves to the Start
+tab when the chrome has one) and the Quick Access Toolbar in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each
 run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's
 application menu runs it, `^C^C_UNITS`: see UNITS); the Home tab's Layers and Properties
 panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,

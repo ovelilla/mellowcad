@@ -77,9 +77,10 @@ Every prop is optional.
   open or run commands from your own code. See [Saving drawings](docs/drawings.md).
 - **The chrome**: `components`, your own top bar, status bar or other piece, or none; `mark`, your
   product's glyph on the application menu; `languages`, the page in each language you offer, in
-  that menu; `layoutStorage`, the `localStorage` keys under which the palette panel and the status
-  bar are remembered; `help`, where F1 opens help; and `sheet`, an id and a `view-transition-name`
-  for the drawing's cell. See [Customizing](docs/customizing.md).
+  that menu; `feedback`, the page its Send Feedback opens, where your users report a problem;
+  `layoutStorage`, the `localStorage` keys under which the palette panel and the status bar are
+  remembered; `help`, where F1 opens help; and `sheet`, an id and a `view-transition-name` for the
+  drawing's cell. See [Customizing](docs/customizing.md).
 
 `engineLocale`, `store`, `onEngine` and `help` go to the engine, so they are read once, when the
 editor starts. To change one, mount a new editor: give it a new `key`.

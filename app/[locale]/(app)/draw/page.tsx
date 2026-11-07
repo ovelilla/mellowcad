@@ -15,6 +15,7 @@ import {
   commandSlug,
 } from "@/lib/docs/command-pages"
 import { DOCS_PATH } from "@/lib/docs/packages"
+import { buildVersion } from "@/lib/facts"
 import { DRAWINGS_PATH, EDITOR_LAYOUT_STORAGE, EDITOR_PATH } from "@/lib/site"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 
@@ -26,7 +27,8 @@ import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 // (`/docs/commands/offset`), its entry in the docs' reference where it has
 // none (`/docs/commands#line`), or getting started at rest. The drawings it
 // opens by URL are the exercises' (`/draw?drawing=gasket`), each from its file
-// in the page's language.
+// in the page's language. Send Feedback opens the repository's issue forms
+// with the version and the page's language filled in (lib/report.ts).
 export default async function Page() {
   const locale = await getLocale()
   return (
@@ -45,6 +47,7 @@ export default async function Page() {
       dir={DIRECTION[locale]}
       mark={<LogoMark mono className="size-5" />}
       languages={languageLinks(locale, EDITOR_PATH)}
+      report={{ version: buildVersion(), language: locale }}
       layoutStorage={EDITOR_LAYOUT_STORAGE}
       sheet={{ id: EDITOR_SHEET_ID, name: SHEET_TRANSITION }}
       help={{

@@ -39,7 +39,7 @@ Give the body no margin: Tailwind's preflight does, if the app has it.
 The props of a client component cross from the server to the browser, so they must be data React
 can serialize:
 
-- **Data**: the catalogs, `dir`, `languages`, `layoutStorage`, `help`, `sheet`.
+- **Data**: the catalogs, `dir`, `languages`, `feedback`, `layoutStorage`, `help`, `sheet`.
 - **Elements**: `mark`, rendered on the server.
 - **In `components`**, a client component (exported from a `"use client"` module) or `null`,
   never a function of the server page's own:

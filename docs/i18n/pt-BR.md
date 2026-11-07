@@ -114,6 +114,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | Copy Selection, Deselect All, Properties; Osnap Overrides; Dimension Style | Copiar seleção, Desmarcar tudo, Propriedades; Sobreposições de snap; Estilo da cota | X PM_0007, ACAD_2602, ACAD_2000 | yes |
 | Command line | Command line; Command history | Linha de comando; Histórico de comandos | X ACAD_2669, C 06F6A6E9-C355-43F5-8706-49F0E5E552BF | yes |
 | Application | Application menu; Navigation bar | Menu Aplicativo; Barra de navegação | N AcWindows SearchGroupAppMenu, X T:RBN_200_F8969 | yes |
+|  | Send Feedback | Enviar feedback | X XLS_7254 (the Help menu, `ID_SendFeedback`); the Start tab's `FEEDBACK_BUTTON` (`Support/ApplicationHome/index.js`) | yes |
 | Properties | General, Geometry, Misc; Color, Layer, Linetype, Lineweight, Text style, Dim style | Geral, Geometria, Diversos; Cor, Camada, Tipo de linha, Espessura de linha, Estilo de texto, Estilo de cota | P ax26res 19, 25, 112, 196, 203; N AcCustomize PROP_CAT_General | yes |
 |  | ByLayer; \*VARIES\*; No selection; Custom color | PorCamada; \*VARIA\*; Nenhuma seleção; Cor personalizada | P acadres 4221, 63546, acopmRes 177, gridres 81 | yes |
 |  | Start X, End X, Center X, Vertex X, Current Vertex, Closed, Global width | X inicial, X final, Centro X, Vértice X, Vértice atual, Fechado, Largura global | P ax26res 7–18, 1, 251, 318 | yes |

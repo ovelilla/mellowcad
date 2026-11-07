@@ -27,6 +27,7 @@ export const en: EditorCatalog = {
       "saveAs": "Save As",
       "units": "Drawing Units…",
       "language": "Language",
+      "feedback": "Send Feedback",
       "saving": "Saving…",
       "saved": "Saved",
       "savedHint": "Saved on this device",

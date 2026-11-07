@@ -87,6 +87,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | List | سرد (L) |
 |  | Region/Mass Properties | خصائص المنطقة/الكتلة (M) † — الكتلة is mass here and also a block |
 | Edit | Undo, Redo, Erase | تراجع، إعادة، حذف (M) |
+| Application menu | Send Feedback | إرسال ملاحظات (L) † — the phrase Arabic software gives Send feedback; إرسال تعليقات competes |
 | Clipboard | Copy, Cut, Paste, Copy with base point | نسخ، قص، لصق، نسخ بنقطة أساس (M) |
 | Selection | Window, Crossing | نافذة، تقاطع (L) † |
 | Properties | General, Geometry | عام، الهندسة (M) |

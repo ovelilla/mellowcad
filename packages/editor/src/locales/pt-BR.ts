@@ -27,6 +27,7 @@ export const ptBR: EditorLocale = {
       "saveAs": "Salvar como",
       "units": "Unidades do desenho…",
       "language": "Idioma",
+      "feedback": "Enviar feedback",
       "saving": "Salvando…",
       "saved": "Salvo",
       "savedHint": "Salvo neste dispositivo",

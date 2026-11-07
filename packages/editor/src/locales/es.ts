@@ -27,6 +27,7 @@ export const es: EditorLocale = {
       "saveAs": "Guardar como",
       "units": "Unidades de dibujo…",
       "language": "Idioma",
+      "feedback": "Enviar comentarios",
       "saving": "Guardando…",
       "saved": "Guardado",
       "savedHint": "Guardado en este dispositivo",

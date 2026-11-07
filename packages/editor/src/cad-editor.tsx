@@ -133,6 +133,11 @@ export interface CadEditorProps {
   sheet?: SheetTransition
   /** Where F1 opens help; without it F1 is the browser's. */
   help?: HelpLinks
+  /**
+   * The page the application menu's Send Feedback opens, in a tab of its own:
+   * where the host's users report a problem. Without it, no Send Feedback.
+   */
+  feedback?: string
   /** The pieces the host replaces or turns off; the rest are the editor's. */
   components?: CadEditorComponents
   /**
@@ -181,6 +186,7 @@ function Workspace({
   layoutStorage = {},
   sheet,
   help,
+  feedback,
   components = {},
   store = createLocalStorageDrawingStore,
   onEngine,
@@ -262,6 +268,7 @@ function Workspace({
             ready={ready ? { engine, state } : null}
             mark={mark}
             languages={languages}
+            feedback={feedback}
             statusBarKey={layoutStorage.statusBar}
             sheet={sheet}
             canvas={
@@ -334,6 +341,7 @@ export function EditorZones({
   ready,
   mark,
   languages,
+  feedback,
   statusBarKey,
   sheet,
   canvas,
@@ -343,6 +351,7 @@ export function EditorZones({
   ready: PieceProps | null
   mark?: ReactNode
   languages?: readonly LanguageLink[]
+  feedback?: string
   statusBarKey?: string
   sheet?: SheetTransition
   canvas: ReactNode
@@ -369,7 +378,14 @@ export function EditorZones({
     <>
       {Top && (
         <div className="box-content flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
-          {ready && <Top {...ready} mark={mark} languages={languages} />}
+          {ready && (
+            <Top
+              {...ready}
+              mark={mark}
+              languages={languages}
+              feedback={feedback}
+            />
+          )}
         </div>
       )}
 

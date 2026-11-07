@@ -27,6 +27,7 @@ export const ar: EditorLocale = {
       "saveAs": "حفظ باسم",
       "units": "وحدات الرسم…",
       "language": "اللغة",
+      "feedback": "إرسال ملاحظات",
       "saving": "جارٍ الحفظ…",
       "saved": "محفوظ",
       "savedHint": "محفوظ على هذا الجهاز",

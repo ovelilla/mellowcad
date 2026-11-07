@@ -15,6 +15,7 @@ import {
   withDrawing,
   type PublishedDrawings,
 } from "@/lib/opened-drawing"
+import { reportUrl, type ReportFields } from "@/lib/report"
 
 /** Room round what the editor frames as a drawing opens, in the canvas's pixels. */
 const VIEW_PADDING = 24
@@ -27,20 +28,28 @@ const noSubscription = () => () => {}
  * its own: the drawing kept for the editor is neither read nor written, and
  * `/draw` alone brings it back. The file is fetched while that store holds
  * nothing, so a reload or a return finds the reader's work as they left it.
- * The page is static: the query is read in the browser.
+ * The page is static: the query is read in the browser, and so is the
+ * browser that Send Feedback's forms name beside the page's `report`.
  */
 export function DrawEditor({
   drawings,
+  report,
   languages,
   ...props
-}: Omit<CadEditorProps, "store" | "onEngine"> & {
+}: Omit<CadEditorProps, "store" | "onEngine" | "feedback"> & {
   readonly drawings: PublishedDrawings
+  readonly report: ReportFields
 }) {
   const [engine, setEngine] = useState<CadEngine | null>(null)
   const search = useSyncExternalStore(
     noSubscription,
     () => window.location.search,
     () => ""
+  )
+  const browser = useSyncExternalStore(
+    noSubscription,
+    () => navigator.userAgent,
+    () => undefined
   )
   const opened = openedDrawing(search, drawings)
 
@@ -75,6 +84,7 @@ export function DrawEditor({
             }))
           : languages
       }
+      feedback={reportUrl({ ...report, browser })}
       // Called once, as the engine is built in the browser.
       store={() => {
         const drawing = openedDrawing(window.location.search, drawings)
