@@ -4,9 +4,10 @@
 > mecánica y 58 comandos publicada el 6/11 y 39 más hechos el 6/11 y el 7/11, sin publicar (la
 > serie de comandos, completa), la 04 (la landing) publicada el 6/11, la 05
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
-> ejercicios y 3 guías en los cuatro idiomas) hecha el 7/11, sin publicar; por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, y las sesiones 07
-> (DXF) y 08 (francés). Esperan detrás
+> ejercicios y 3 guías en los cuatro idiomas) hecha el 7/11, sin publicar, y la 07 (DXF: su brief,
+> `docs/next-dxf.md`, y abrir un DXF con OPEN y DXFIN) hecha el 7/11, sin publicar; por decisión del
+> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, la sesión
+> 08 (francés), las páginas «abrir DXF online» y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -251,7 +252,7 @@ ejercicios y 3 guías publicados e indexables.
 
 Objetivo: abrir las familias de DXF (§2.3) con la fidelidad de siempre: OPEN de un .dxf, SAVEAS al
 tipo DXF, DXFIN y DXFOUT como en AutoCAD 2027. La sesión investiga, escribe su brief
-(`docs/next-<tema>.md`) y hace la primera entrega; después, las páginas «abrir DXF online» por
+(`docs/next-dxf.md`) y hace la primera entrega; después, las páginas «abrir DXF online» por
 idioma. PDF y PLOT, más tarde (no hay presentaciones). Es la excepción a la pausa de
 funcionalidades: es producto, pero por la búsqueda.
 
@@ -503,7 +504,24 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   entero el saliente grande de la biela (`1bfe25ac`). Lo decidido, los datos y lo que queda (más
   ejercicios, «aprender AutoCAD desde cero», la página de alternativa), en
   `docs/plans/seo/06-practica-plan.md`; las 64 URLs, al final de la cola de §7.
-- 07 DXF: pendiente.
+- 07 DXF: hecha el 7/11/2026 y sin publicar (`827fb5ef` a `4c31ea2c`). Investigado en la consola y el
+  escritorio de AutoCAD 2027 (sondas `scripts/research/probes/dxf/`): OPEN y DXFIN (CARGADXF,
+  IMPDXF) abren un DXF con el _Select File_ de siempre, SAVEAS y DXFOUT lo escriben desde _Save
+  Drawing As_ o con FILEDIA 0 (versiones R12 a 2018, precisión, binario), y el lector de AutoCAD
+  descarta el dibujo entero por cualquier imperfección. Tres competidores probados con nuestro DXF
+  (KulmanLab, dxfviewer.app, CADCraft): ninguno sube el fichero y todos fallan en el texto. El brief,
+  `docs/next-dxf.md`, decide abrir primero (OPEN ya es el selector de ficheros; guardar necesita el
+  cuadro _Save Drawing As_, que no existe) y ordena cinco fases. **Primera entrega, abrir un DXF:**
+  OPEN de un .dxf y DXFIN, ASCII y binario, R12 a 2018, el texto en su página de códigos; las
+  entidades que el modelo tiene, con sus capas, estilos y bloques; lo que no tiene, contado en la
+  línea de comandos (`7 objects not opened: 1 POINT, …`); los mensajes de AutoCAD para lo que no es
+  DXF. Probado con ficheros escritos por AutoCAD 2027 (dos dibujos de referencia en las siete
+  versiones y en binario) y en el editor real (Chrome). Un DXF de 50.000 objetos se lee en 0,2 s; de
+  paso, el autoguardado sin sangrías, la mitad de grande (`f6a4d2c0`). El sitio lo dice en los cuatro
+  idiomas: Estado, la FAQ de DWG/DXF, la sección de archivos, «para quién no es todavía» y la
+  pregunta de la práctica. Queda: las páginas «abrir DXF online» por idioma (ya pueden hacerse, en
+  una sesión de contenido), guardar como DXF (fase 2), y lo que más falta en los DXF reales (fase 4:
+  POINT, SOLID, LEADER y MLEADER, los tipos de línea y patrones del dibujo).
 - 08 Francés: pendiente.
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.

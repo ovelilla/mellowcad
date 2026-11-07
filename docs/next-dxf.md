@@ -1,8 +1,9 @@
 # DXF: abrir y guardar como en AutoCAD — brief
 
-> **Estado:** investigación y brief hechos el 7/11/2026 (sesión 07 del plan de visibilidad); la fase
-> 1 (abrir un DXF con OPEN y DXFIN) en curso; siguiente, la fase 2 (guardar como DXF). Se borra
-> cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos el 7/11/2026,
+> sin publicar (sesión 07 del plan de visibilidad); siguiente, la fase 2 (guardar como DXF), y las
+> páginas «abrir DXF online» (fase 3), que ya pueden hacerse. Se borra cuando la fase 5 esté hecha;
+> hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -124,7 +125,10 @@ los comandos, solicitudes y opciones de AutoCAD 2027 en inglés, español o port
 Cada una se entrega terminada (skill `finish-feature`), con su investigación antes.
 
 1. **Abrir un DXF**: OPEN de un .dxf y DXFIN, el lector, el informe, el puerto y los textos del
-   sitio que dicen que no abre DXF.
+   sitio que dicen que no abre DXF. **Hecha** (7/11/2026, `4c31ea2c`): el lector en
+   `cad/serialization/dxf/`, cargado solo al abrir un DXF; lo que hace y lo que le falta, en la
+   entrada de DXFIN de `docs/coverage/clipboard-and-files.md`; el autoguardado, de paso, sin sangrías
+   (`f6a4d2c0`).
 2. **Guardar como DXF**: el cuadro _Save Drawing As_ (SAVEAS, DXFOUT, Ctrl+Mayús+S) con _File name_,
    los tipos que escribimos y _Options_ (_DXF Options_), y el escritor de 2000 a 2018, ASCII y
    binario, con su precisión y _Select objects_; cada fichero, abierto por AutoCAD en la consola en
