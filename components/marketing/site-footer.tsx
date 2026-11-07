@@ -1,8 +1,9 @@
 import Link from "next/link"
 import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 
-import { productFacts } from "@/lib/facts"
+import { buildVersion, productFacts } from "@/lib/facts"
 import { sitePaths } from "@/i18n/site-paths"
+import { reportUrl } from "@/lib/report"
 import { CONTACT_EMAIL, ENGINE_PACKAGE_URL, REPOSITORY_URL } from "@/lib/site"
 
 import { LanguageLinks } from "@/components/language-links"
@@ -99,13 +100,32 @@ export async function SiteFooter() {
           </div>
           <div className="grid grid-cols-[5.5rem_1fr] gap-3">
             <span className="pt-0.5 label-mono">{t("contact")}</span>
-            <a
-              href={`mailto:${CONTACT_EMAIL}?subject=MellowCAD`}
-              dir="ltr"
-              className="break-all underline-link"
-            >
-              {CONTACT_EMAIL}
-            </a>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
+              <li>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}?subject=MellowCAD`}
+                  dir="ltr"
+                  className="break-all underline-link"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </li>
+              <li>
+                {/* WHY without the browser, which the editor's Send
+                    Feedback adds: only an island could know it here, and
+                    the landing's first load has no room for one
+                    (.claude/rules/i18n.md, Budgets). */}
+                <a
+                  href={reportUrl({
+                    version: buildVersion(),
+                    language: locale,
+                  })}
+                  className="underline-link"
+                >
+                  {t("report")}
+                </a>
+              </li>
+            </ul>
           </div>
           <div className="grid grid-cols-[5.5rem_1fr] gap-3">
             <span className="pt-0.5 label-mono">{t("code")}</span>

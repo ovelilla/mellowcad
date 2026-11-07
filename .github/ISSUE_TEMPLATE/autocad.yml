@@ -49,9 +49,11 @@ body:
     id: browser
     attributes:
       label: Browser
-      description: Filled in the same way; otherwise your browser, its version and your system.
+      description: >-
+        Filled in when you come from the editor's Send Feedback; otherwise your browser, its
+        version and your system.
   - type: input
     id: language
     attributes:
       label: Language
-      description: The page's language, filled in the same way (en, es, pt-BR or ar).
+      description: The page's language (en, es, pt-BR or ar), filled in as the version is.

@@ -32,10 +32,11 @@ Runnable hosts are in [examples/](examples/README.md).
 
 Bugs and requests go to [GitHub issues](https://github.com/ovelilla/mellowcad/issues/new/choose),
 through one of two forms: something that does not work, or a command or an option that is missing
-or not as AutoCAD does it. When something behaves differently from AutoCAD, say which command,
-what you typed, and what AutoCAD 2027 does: matching current AutoCAD is the spec, and a behaviour
-that looks awkward is usually AutoCAD's own. A security vulnerability is reported privately, never
-in an issue: [SECURITY.md](SECURITY.md).
+or not as AutoCAD does it. The editor's Send Feedback and the site's Report a problem open them
+with the version and the language filled in, and the editor's with the browser too. When something
+behaves differently from AutoCAD, say which command, what you typed, and what AutoCAD 2027 does:
+matching current AutoCAD is the spec, and a behaviour that looks awkward is usually AutoCAD's own.
+A security vulnerability is reported privately, never in an issue: [SECURITY.md](SECURITY.md).
 
 To work on the code you need Node 24 and Git:
 
