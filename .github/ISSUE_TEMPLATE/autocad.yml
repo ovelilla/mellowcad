@@ -1,0 +1,57 @@
+name: Missing, or not as AutoCAD does it
+description: A command or an option that is missing, or that behaves differently from AutoCAD 2027.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        MellowCAD follows AutoCAD 2027: its commands and aliases, the prompts in order, the option
+        letters, the defaults and what each option does. Tell us where it does not. What each
+        command already does, and what it still lacks, is on its page of the
+        [command reference](https://mellowcad.com/docs/commands).
+
+        English, Spanish, Portuguese or Arabic: write in whichever is yours. **An issue is
+        public:** leave out personal data, and attach only a drawing anyone may see.
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      description: Its name as you type it in AutoCAD, in English or in your AutoCAD's language.
+      placeholder: OFFSET
+    validations:
+      required: true
+  - type: textarea
+    id: difference
+    attributes:
+      label: What is missing or different
+      description: >-
+        The option, the prompt, the default or the result, and what MellowCAD does instead if it
+        has the command.
+    validations:
+      required: true
+  - type: textarea
+    id: autocad
+    attributes:
+      label: What AutoCAD does
+      description: >-
+        The prompts and options in their order, and the result. Its command line copied, a
+        screenshot or a link to Autodesk's help settles it fastest.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: >-
+        Filled in when you come from the editor's Send Feedback or the site's Report a problem;
+        otherwise the Rev in the site's footer.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Filled in the same way; otherwise your browser, its version and your system.
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: The page's language, filled in the same way (en, es, pt-BR or ar).

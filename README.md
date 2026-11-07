@@ -10,8 +10,9 @@ English, Spanish and Brazilian Portuguese (with their AutoCAD's command names) a
 
 The bar is that someone who uses AutoCAD every day can sit down and work from muscle memory. Some
 commands are still partial, and each one's missing options are listed in
-[docs/coverage/](docs/coverage/README.md). Not there yet: DWG and DXF, printing and PDF, layouts
-and paper space, sweeps, lofts, meshes and rendering in 3D, and phones and tablets.
+[docs/coverage/](docs/coverage/README.md). Not there yet: DWG files and saving as DXF (a DXF
+opens), printing and PDF, layouts and paper space, sweeps, lofts, meshes and rendering in 3D, and
+phones and tablets.
 
 ## Packages
 
@@ -29,10 +30,12 @@ Runnable hosts are in [examples/](examples/README.md).
 
 ## Contributing
 
-Bugs and requests go to [GitHub issues](https://github.com/ovelilla/mellowcad/issues). When
-something behaves differently from AutoCAD, say which command, what you typed, and what AutoCAD
-2027 does: matching current AutoCAD is the spec, and a behaviour that looks awkward is usually
-AutoCAD's own.
+Bugs and requests go to [GitHub issues](https://github.com/ovelilla/mellowcad/issues/new/choose),
+through one of two forms: something that does not work, or a command or an option that is missing
+or not as AutoCAD does it. When something behaves differently from AutoCAD, say which command,
+what you typed, and what AutoCAD 2027 does: matching current AutoCAD is the spec, and a behaviour
+that looks awkward is usually AutoCAD's own. A security vulnerability is reported privately, never
+in an issue: [SECURITY.md](SECURITY.md).
 
 To work on the code you need Node 24 and Git:
 

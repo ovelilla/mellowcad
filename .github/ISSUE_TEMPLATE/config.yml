@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: No GitHub account? Write to hello@mellowcad.com
+    url: mailto:hello@mellowcad.com
+    about: The same as a form asks, by email, in English, Spanish, Portuguese or Arabic.
+  - name: A security vulnerability
+    url: https://github.com/ovelilla/mellowcad/security/policy
+    about: Report it privately, never in an issue.

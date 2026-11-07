@@ -102,6 +102,17 @@ function engineVersion(): string {
   return (JSON.parse(manifest) as { version: string }).version
 }
 
+/**
+ * The version a report names (`lib/report.ts`): the engine's, with the commit
+ * Vercel built as semver build metadata (`0.2.0+1a2b3c4`), since the site
+ * deploys every push and the engine's version moves only with a release.
+ * Outside Vercel, the engine's alone.
+ */
+export function buildVersion(): string {
+  const commit = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7)
+  return commit ? `${engineVersion()}+${commit}` : engineVersion()
+}
+
 // WHY packages/editor and not packages/: the editor's tests were lib's until
 // they moved with it; packages/react's were never counted.
 const TEST_ROOTS = ["cad", "test", "content", "i18n", "lib", "packages/editor"]

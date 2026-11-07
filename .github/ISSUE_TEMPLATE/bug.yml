@@ -1,0 +1,56 @@
+name: Something does not work
+description: An error, a wrong result, or the editor or a page that breaks.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for writing. English, Spanish, Portuguese or Arabic: write in whichever is yours.
+
+        **An issue is public.** Leave out personal data, and attach only a drawing anyone may see.
+        A command or an option that is missing, or that does not do what AutoCAD does, has a form
+        of its own. A security vulnerability never goes in an issue: see
+        [SECURITY.md](https://github.com/ovelilla/mellowcad/security/policy).
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did
+      description: >-
+        The commands you typed and your answers to their prompts, and what you clicked, in order.
+        The command line keeps them: F2 shows its history.
+      placeholder: |
+        OFFSET, 10, picked the line, clicked above it…
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What happened
+      description: >-
+        What you saw: the result, a message on the command line, a screenshot. A drawing that
+        shows it helps most: save it and drop the file here, zipped.
+    validations:
+      required: true
+  - type: textarea
+    id: autocad
+    attributes:
+      label: What AutoCAD does
+      description: >-
+        What AutoCAD does with the same input, if you know it; otherwise, what you expected.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: >-
+        Filled in when you come from the editor's Send Feedback or the site's Report a problem;
+        otherwise the Rev in the site's footer.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Filled in the same way; otherwise your browser, its version and your system.
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: The page's language, filled in the same way (en, es, pt-BR or ar).
