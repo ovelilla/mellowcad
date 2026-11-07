@@ -40,7 +40,8 @@ comparison, a file format the product opens, a changelog) is welcome, decided on
 at hand, since a page that does not exist cannot show demand of its own. A page of the product's
 facts is generated from their source (the engine's catalog, `docs/coverage/`, `lib/facts.ts`) so it
 stays true, and every indexable page is in the sitemap, the hreflang set and the internal links:
-the practice library is linked from "who it's for" (`Audience.practice`) and the footer.
+the practice library is linked from "who it's for" (`Audience.practice`), the FAQ's class question
+(`Faq.a11`) and the footer.
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact

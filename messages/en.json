@@ -213,7 +213,7 @@
     "q10": "Does it do 3D?",
     "a10": "In part. It builds 3D solids — primitives, extrusions and revolutions, unions, subtractions and intersections, slices and sections, filleted and chamfered edges, edited faces — measures their mass properties, and shows them in orbit, from the ViewCube and in shaded visual styles. Sweeps, lofts, meshes and rendering are not there yet.",
     "q11": "Can I use it to practise for my AutoCAD class?",
-    "a11": "Yes, for the commands: their names and aliases, the order of their prompts and their options follow AutoCAD, in English, Spanish or Brazilian Portuguese. It cannot open or save DWG files yet, so work you hand in as DWG or PDF still needs another program."
+    "a11": "Yes, for the commands: their names and aliases, the order of their prompts and their options follow AutoCAD, in English, Spanish or Brazilian Portuguese, and <exercises>the practice exercises</exercises> give you drawings to work on, each solved step by step. It cannot open or save DWG files yet, so work you hand in as DWG or PDF still needs another program."
   },
   "FinalCta": {
     "title": "Your drafting table is one keystroke away."

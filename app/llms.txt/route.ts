@@ -86,6 +86,7 @@ export async function GET() {
         github: link(REPOSITORY_URL),
         npm: link(ENGINE_PACKAGE_URL),
         reference: link(localeUrl(locale, `${DOCS_PATH}/commands`)),
+        exercises: link(localeUrl(locale, `${DOCS_PATH}/exercises`)),
         package: ENGINE_PACKAGE,
         commands: facts.commands,
       })}`

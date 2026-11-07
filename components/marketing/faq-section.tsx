@@ -19,6 +19,11 @@ export async function FaqSection() {
       {chunks}
     </Link>
   )
+  const exercises = (chunks: React.ReactNode) => (
+    <Link href={paths.exercises} prefetch={false} className="underline-link">
+      {chunks}
+    </Link>
+  )
 
   return (
     <section
@@ -41,6 +46,7 @@ export async function FaqSection() {
               {t.rich(`a${n}`, {
                 ...sourceLinks,
                 reference,
+                exercises,
                 commands: facts.commands,
               })}
             </p>
