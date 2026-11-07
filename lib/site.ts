@@ -26,7 +26,7 @@ export const EDITOR_LAYOUT_STORAGE = {
 export const OG_IMAGE_PATH = "/og"
 
 /** The contact address the landing publishes: footer, Status and the privacy notice. */
-export const CONTACT_EMAIL = "o.velillaa@gmail.com"
+export const CONTACT_EMAIL = "hello@mellowcad.com"
 
 /** The public repository, whose code is MIT: the footer, Engine and the FAQ link it. */
 export const REPOSITORY_URL = "https://github.com/ovelilla/mellowcad"

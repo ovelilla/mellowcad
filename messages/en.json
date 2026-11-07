@@ -256,7 +256,7 @@
     "handled1": "MellowCAD is an independent project by {name}, who is responsible for this data and answers at <email>{address}</email>.",
     "handled2": "Serving the site and measuring its use and speed rest on a legitimate interest in running a free service well, kept to anonymous statistics (Article 6(1)(f) GDPR).",
     "handled3": "Vercel Inc. hosts the site and runs both measurements. Like any host, it processes your IP address to deliver the pages. It is based in the United States and certified under the EU–U.S. Data Privacy Framework.",
-    "handled4": "If you write, your message is handled by Google, the email provider, and used only to answer you, for as long as the conversation needs.",
+    "handled4": "If you write, your message reaches Google, the email provider, through Cloudflare, which forwards it without keeping a copy. It is used only to answer you, for as long as the conversation needs. Both companies are based in the United States and certified under the EU–U.S. Data Privacy Framework.",
     "rightsTitle": "Your rights",
     "rights1": "You can ask to access, correct or delete data about you, to restrict or object to its use, or to receive a copy of it: write to the address above.",
     "rights2": "You can also complain to a data protection authority — in the EU, the one where you live or work.",
