@@ -565,7 +565,9 @@ chosen; cuTting edges (`T`, es `CO`; EXTEND's Boundary edges `B`) says the setti
 `Select cutting edges ...` and `Select objects or <select all>:` (es
 `Seleccione objetos o <seleccionar todo>:`), in either mode, which stays: the objects chosen are the
 only edges — whatever mode follows, and an edge's pieces with it —, Quick still deleting what none
-crosses; a polyline is cut at its own vertices only when it is an edge itself, and otherwise trimmed
+crosses; a line tangent to a circle or an arc cuts it where it touches, a tangent drawn from
+`_TAN` to `_TAN` within a double's last bits of the rim too (as a link's bosses are trimmed); a
+polyline is cut at its own vertices only when it is an edge itself, and otherwise trimmed
 along it, past them, back to the nearest crossings (a closed one cut once refused as
 `Curve must intersect cutting edges at least twice.`, p184); Edge (`E`, es `A`, Standard's
 alone — Quick refuses it) asks

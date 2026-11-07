@@ -92,6 +92,33 @@ describe("TRIM", () => {
     ])
   })
 
+  // A link's outline: TRIM cuts each boss at the lines tangent to both,
+  // drawn from `_TAN` to `_TAN`, as AutoCAD does; it erased the larger circle
+  // whole when a tangent landed a double's last bit outside it.
+  it("cuts a circle at a line tangent to it", () => {
+    const cad = createHarness()
+    cad.command("CIRCLE").type("0,0").enter().type("20").enter()
+    cad.command("CIRCLE").type("90,0").enter().type("12").enter()
+    for (const side of [1, -1]) {
+      cad
+        .command("LINE")
+        .type("_TAN")
+        .enter()
+        .click(p(2, 19.9 * side))
+        .type("_TAN")
+        .enter()
+        .click(p(91, 11.95 * side))
+        .enter()
+    }
+    cad.command("TRIM").click(p(20, 0)).click(p(78, 0)).enter()
+
+    const arcs = cad.entities().filter((e): e is ArcEntity => e.type === "arc")
+    expect(arcs.map((arc) => arc.radius).sort((x, y) => x - y)).toEqual([
+      12, 20,
+    ])
+    expect(cad.entities().filter((e) => e.type === "circle")).toEqual([])
+  })
+
   it("Undo takes back the last trim, and only the command's own", () => {
     const cad = createHarness({
       entities: [

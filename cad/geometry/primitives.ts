@@ -797,6 +797,43 @@ export function tangentLinesOfCircles(
   return out
 }
 
+/**
+ * How near a line may pass a circle's rim, either side, and still touch it
+ * once: a share of r², as `r² − h²` is measured (h the centre's distance from
+ * the line). WHY: a tangent the engine computes — LINE from `_TAN` to `_TAN`
+ * — lands within a double's last bits of the circle, outside as often as
+ * inside, and AutoCAD's TRIM, EXTEND and Intersection snap all find the point
+ * it touches; with an exact test TRIM's Quick mode found no edge and erased
+ * the whole circle.
+ */
+const TANGENT_TOLERANCE = 1e-9
+
+/**
+ * Where the infinite line `a` + t(`b` − `a`) meets a circle, by t: none, the
+ * one point it touches, or two. Tangent within {@link TANGENT_TOLERANCE}.
+ */
+function lineCircleParams(
+  a: Vec2,
+  b: Vec2,
+  center: Vec2,
+  radius: number
+): number[] {
+  const d = V.sub(b, a)
+  const f = V.sub(a, center)
+  const A = V.dot(d, d)
+  if (A === 0) return []
+  const B = 2 * V.dot(f, d)
+  const C = V.dot(f, f) - radius * radius
+  // r² − h², what the discriminant measures: B² − 4AC = 4A(r² − h²).
+  const gap = (B * B - 4 * A * C) / (4 * A)
+  const tolerance = TANGENT_TOLERANCE * radius * radius
+  const mid = -B / (2 * A)
+  if (gap < -tolerance) return []
+  if (gap <= tolerance) return [mid]
+  const half = Math.sqrt(gap / A)
+  return [mid - half, mid + half]
+}
+
 /** Intersection points between a line segment and a circle (0, 1 or 2). */
 export function segmentCircleIntersection(
   a: Vec2,
@@ -805,19 +842,9 @@ export function segmentCircleIntersection(
   radius: number
 ): Vec2[] {
   const d = V.sub(b, a)
-  const f = V.sub(a, center)
-  const A = V.dot(d, d)
-  if (A === 0) return []
-  const B = 2 * V.dot(f, d)
-  const C = V.dot(f, f) - radius * radius
-  const disc = B * B - 4 * A * C
-  if (disc < 0) return []
-  const sqrt = Math.sqrt(disc)
-  const points: Vec2[] = []
-  for (const t of [(-B - sqrt) / (2 * A), (-B + sqrt) / (2 * A)]) {
-    if (t >= 0 && t <= 1) points.push(V.add(a, V.scale(d, t)))
-  }
-  return points
+  return lineCircleParams(a, b, center, radius)
+    .filter((t) => t >= 0 && t <= 1)
+    .map((t) => V.add(a, V.scale(d, t)))
 }
 
 /**
@@ -855,17 +882,7 @@ export function lineCircleIntersectionParams(
   center: Vec2,
   radius: number
 ): number[] {
-  const d = V.sub(b, a)
-  const f = V.sub(a, center)
-  const A = V.dot(d, d)
-  if (A === 0) return []
-  const B = 2 * V.dot(f, d)
-  const C = V.dot(f, f) - radius * radius
-  const disc = B * B - 4 * A * C
-  if (disc < 0) return []
-  const sqrt = Math.sqrt(disc)
-  if (disc === 0) return [-B / (2 * A)]
-  return [(-B - sqrt) / (2 * A), (-B + sqrt) / (2 * A)]
+  return lineCircleParams(a, b, center, radius)
 }
 
 /** Intersection of two infinite rays (lines), or `null` when (near) parallel. */

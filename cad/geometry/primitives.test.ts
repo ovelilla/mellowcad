@@ -1272,6 +1272,18 @@ describe("segmentCircleIntersection", () => {
     ).toEqual([])
   })
 
+  // The tangent LINE draws from `_TAN` to `_TAN` between circles of 20 and 12,
+  // 90 apart: 3.6e-15 outside the larger one, as a double computes it.
+  it("finds the one point a computed tangent touches", () => {
+    const a = p(1.777777777777778, 19.920830960902197)
+    const b = p(91.06666666666666, 11.952498576541318)
+    const [touch, ...rest] = segmentCircleIntersection(a, b, ORIGIN, 20)
+    expect(rest).toEqual([])
+    expect(touch).toBeCloseToPoint(a)
+    expect(lineCircleIntersectionParams(a, b, ORIGIN, 20)).toHaveLength(1)
+    expect(segmentCircleIntersection(a, b, p(90, 0), 12)).toHaveLength(1)
+  })
+
   it("returns points on both the circle and the segment", () => {
     fc.assert(
       fc.property(
