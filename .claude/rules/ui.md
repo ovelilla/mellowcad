@@ -38,6 +38,15 @@ script before any bundle) and the status bar's Customization (`status-bar-layout
 after mount), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
+**`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's: the engine records
+it at build time, `/drawings/<name>` per language, `noindex`) through `CadEditor`'s `store`, never
+the editor's code: `DrawEditor` (`components/draw-editor.tsx`) reads the query in the browser, as
+the page is static, and gives that drawing a store of its own, `mellowcad:drawing:<name>:v1`
+(FROZEN, `lib/opened-drawing.ts`), so the autosave of whoever was drawing is neither read nor
+written and `/draw` alone brings it back. The file is fetched while that store holds no object: a
+reload keeps the reader's work, and NEW then the page's link starts it over. The language links
+keep the query.
+
 ## Text
 
 - **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are its

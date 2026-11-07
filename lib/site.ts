@@ -9,6 +9,9 @@ export const SITE_NAME = "MellowCAD"
 
 export const EDITOR_PATH = "/draw"
 
+/** Where the drawings the editor opens by URL are served, one per name: `/drawings/gasket`. */
+export const DRAWINGS_PATH = "/drawings"
+
 /**
  * Where the editor keeps this device's layout (`CadEditor`'s
  * `layoutStorage`). FROZEN, old product name included: a renamed key orphans

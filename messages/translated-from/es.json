@@ -314,5 +314,9 @@
   "Docs.types.gettingStarted": "Getting started",
   "Docs.types.howTo": "How-to",
   "Docs.types.reference": "Reference",
-  "Docs.types.concept": "Concepts"
+  "Docs.types.concept": "Concepts",
+  "Docs.exercise.layers.outline": "Outline",
+  "Docs.exercise.layers.centre": "Centre lines",
+  "Docs.exercise.layers.hidden": "Hidden lines",
+  "Docs.exercise.layers.dimensions": "Dimensions"
 }

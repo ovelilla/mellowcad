@@ -375,6 +375,14 @@
       "howTo": "How-to",
       "reference": "Reference",
       "concept": "Concepts"
+    },
+    "exercise": {
+      "layers": {
+        "outline": "Outline",
+        "centre": "Centre lines",
+        "hidden": "Hidden lines",
+        "dimensions": "Dimensions"
+      }
     }
   }
 }

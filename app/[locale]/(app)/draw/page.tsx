@@ -1,7 +1,9 @@
 import { getLocale } from "next-intl/server"
 
-import { CadEditor } from "@mellowcad/editor"
+import { DrawEditor } from "@/components/draw-editor"
 import { LogoMark } from "@/components/marketing/logo"
+import { EXERCISES } from "@/content/demos/exercises"
+import { startingView } from "@/content/demos/exercises/exercise"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
 import { languageLinks, localePath } from "@/i18n/navigation"
@@ -13,7 +15,7 @@ import {
   commandSlug,
 } from "@/lib/docs/command-pages"
 import { DOCS_PATH } from "@/lib/docs/packages"
-import { EDITOR_LAYOUT_STORAGE, EDITOR_PATH } from "@/lib/site"
+import { DRAWINGS_PATH, EDITOR_LAYOUT_STORAGE, EDITOR_PATH } from "@/lib/site"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 
 // The engine's catalog and the editor's travel in the page, so both start in
@@ -22,11 +24,22 @@ import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 // the sheet the landing grows into, which the layout's head reads too — are
 // filled in here, and so is F1's help: the command's own page
 // (`/docs/commands/offset`), its entry in the docs' reference where it has
-// none (`/docs/commands#line`), or getting started at rest.
+// none (`/docs/commands#line`), or getting started at rest. The drawings it
+// opens by URL are the exercises' (`/draw?drawing=gasket`), each from its file
+// in the page's language.
 export default async function Page() {
   const locale = await getLocale()
   return (
-    <CadEditor
+    <DrawEditor
+      drawings={Object.fromEntries(
+        Object.entries(EXERCISES).map(([name, { exercise }]) => [
+          name,
+          {
+            url: localePath(locale, `${DRAWINGS_PATH}/${name}`),
+            view: startingView(exercise),
+          },
+        ])
+      )}
       engineLocale={await loadEngineLocale(locale)}
       editorLocale={await loadEditorLocale(locale)}
       dir={DIRECTION[locale]}

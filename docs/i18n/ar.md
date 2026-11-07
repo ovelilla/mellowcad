@@ -183,6 +183,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Foot of the perpendicular | قدم العمود (M) |
 |  | Node, Geometric Center, Mid Between 2 Points, temporary track point (snaps not built) | العقدة، المركز الهندسي، المنتصف بين نقطتين، نقطة التتبع المؤقتة (L) — written with the English name beside them |
 |  | Aperture (APERTURE) | فتحة الالتقاط (L) † |
+| Exercises | Their drawings' layers: Outline, Centre lines, Hidden lines, Dimensions | المحيط، خطوط المحاور، الخطوط المخفية، الأبعاد (M) † — the names a drafting template gives its layers, short enough for the Layer control |
 
 ## Register
 

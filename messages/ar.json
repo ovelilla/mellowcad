@@ -375,6 +375,14 @@
       "howTo": "كيف…",
       "reference": "مرجع",
       "concept": "مفاهيم"
+    },
+    "exercise": {
+      "layers": {
+        "outline": "المحيط",
+        "centre": "خطوط المحاور",
+        "hidden": "الخطوط المخفية",
+        "dimensions": "الأبعاد"
+      }
     }
   }
 }
