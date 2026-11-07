@@ -2,10 +2,11 @@
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), la 03 con su
 > mecánica y 58 comandos publicada el 6/11 y 39 más hechos el 6/11 y el 7/11, sin publicar (la
-> serie de comandos, completa), la 04 (la landing) publicada el 6/11 y la 05
-> (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5; por decisión del
-> dueño la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, y la sesión
-> 06 (práctica y guías). Esperan detrás
+> serie de comandos, completa), la 04 (la landing) publicada el 6/11, la 05
+> (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
+> ejercicios y 3 guías en los cuatro idiomas) hecha el 7/11, sin publicar; por decisión del dueño la
+> visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, y las sesiones 07
+> (DXF) y 08 (francés). Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -339,7 +340,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    COPYCLIP), y las 12 de la octava (VIEW, PLAN y UCSICON): 269 en la cola. **7/11:** la tanda
    del día, 11 pedidas (las cuatro portadas, TRIM en árabe, HATCH en los cuatro idiomas y SCALE en
    inglés y español) hasta la cuota, a las 23:09 UTC del 6/11; y las 4 de la novena (-OSNAP),
-   añadidas al final antes de su push: 262 en la cola.
+   añadidas al final antes de su push: 262 en la cola. **7/11:** las 64 de la sesión 06 (el índice
+   de ejercicios, las tres guías y los doce ejercicios, en los cuatro idiomas), añadidas igual: 326.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -480,7 +482,27 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   local: 8 imágenes de galería a 1270×760 (2×), el vídeo de 46 s a 1920×1080 (inglés, español y
   3D), el logotipo de 240 a 1024 px; 50 correos de outreach, uno por artículo y en su idioma, 5
   fichas de directorio en su lugar y 3 competidores descartados. Publicado: nada todavía.
-- 06 Práctica y guías: pendiente.
+- 06 Práctica y guías: hecha el 7/11/2026 y sin publicar (`7c988f39` a `08a26c98`). La biblioteca
+  `/docs/exercises` («AutoCAD practice exercises», «Ejercicios de AutoCAD para practicar», «Exercícios
+  de AutoCAD para praticar», «تمارين أوتوكاد»), con 12 ejercicios por nivel —junta, escuadra en L,
+  escalera y placa de montaje; brida, mesa redonda, parcela, eje, bloque isométrico y polea; biela y
+  soporte de cojinete—, de mecánica, arquitectura y obra civil, en 2D, isométrico y 3D. Cada uno es
+  una página generada de sus notas y del motor: el enunciado, los comandos que practica (enlazados),
+  el dibujo acotado (el perfil y el sólido en los 3D), la solución paso a paso con la figura y el
+  historial de cada paso, la versión imprimible (negro sobre blanco, «Imprimir o guardar como PDF»)
+  y «Abrir en el editor»: `/draw?drawing=<slug>` carga el dibujo acotado a la izquierda del origen,
+  con sus capas en el idioma de la página y en un almacén propio, sin leer ni escribir el
+  autoguardado de quien ya dibuja (verificado en Chrome: abrir, dibujar, recargar, NUEVO y volver,
+  y el árabe). Tres guías, elegidas con los datos de la auditoría: el plano de una casa («planta
+  baixa», «plano de casa»), las coordenadas y del 2D al 3D. Enlazado desde la navegación de la
+  documentación, primeros pasos, la landing («para quién», la pregunta de clase del FAQ y el pie) y
+  las 27 páginas de comando que practica («Practícalo»). Slugs en inglés (`i18n.md`). Traducido por
+  un agente por idioma; el árabe de la capa Contorno es «الخطوط الظاهرة» («المحيط» es también la
+  circunferencia). En el motor, de paso: `recordDemo` deja su dibujo en un almacén (`7c988f39`), el
+  historial de una referencia tecleada (`b6742207`) y TRIM en una tangente calculada, que borraba
+  entero el saliente grande de la biela (`1bfe25ac`). Lo decidido, los datos y lo que queda (más
+  ejercicios, «aprender AutoCAD desde cero», la página de alternativa), en
+  `docs/plans/seo/06-practica-plan.md`; las 64 URLs, al final de la cola de §7.
 - 07 DXF: pendiente.
 - 08 Francés: pendiente.
 - 09 Italiano: pendiente.
