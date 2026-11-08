@@ -145,7 +145,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    DXF 2018 por la consola) y 577 DXF de otros programas (la biblioteca de piezas de LibreCAD, los
    ficheros de prueba de ezdxf, dxf-parser y OpenSCAD, y cinco de Inkscape). Todos abren: de las
    muestras, 45 enteras, y de los otros, 552; la más grande (6,8 MB, 12.944 objetos) se lee en
-   0,15 s. Cada uno, con su comando cuando lo haya:
+   0,15 s. Los ficheros y el script que los mide, en `research/dxf-corpus/` (fuera de git, con su
+   README), para medir otra vez tras cada entrega. Cada uno, con su comando cuando lo haya:
    1. **SOLID**: en 67 de las 154 muestras (2.831 objetos: flechas y rellenos de bloques
       antiguos).
    2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros).
