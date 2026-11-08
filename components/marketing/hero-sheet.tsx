@@ -11,7 +11,6 @@ import {
 } from "@mellowcad/engine"
 import { HERO_FIGURE } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"
-import { autocadCommands } from "@/lib/facts"
 import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"
 
 import { CommandTry } from "./command-try"
@@ -100,7 +99,7 @@ function viewName(state: EngineState) {
  */
 export async function HeroSheet() {
   const t = await getTranslations("Hero")
-  const { editor } = await sitePaths()
+  const { editor, commandList } = await sitePaths()
   const engine = await pageEngineLocale()
   const text = engineText(engine)
   const idle = text.idlePrompt()
@@ -209,13 +208,7 @@ export async function HeroSheet() {
             </div>
             <div className="hidden border-t border-border pt-1 md:block">
               <CommandTry
-                commands={autocadCommands(engine).map(
-                  ({ name, aliases, description }) => ({
-                    name,
-                    aliases,
-                    description,
-                  })
-                )}
+                commandsHref={commandList}
                 editorHref={editor}
                 label={t("tryLabel")}
                 placeholder={t("tryPlaceholder")}

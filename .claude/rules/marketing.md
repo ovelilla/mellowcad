@@ -72,7 +72,9 @@ reports, for the same promise.
   build-time data (OG images, manifests) exports `dynamic = "force-static"`.
 - **Server Components by default.** A client island exists only where there is browser state:
   `ContinueDrawing` (the autosave), `HeroControls` (pause), `TransitionSheet` (the sheet's name for
-  the trip into the editor), `CommandTry` (the hero's command line), `SendToDesktop` (share sheet),
+  the trip into the editor), `CommandTry` (the hero's command line, whose commands it fetches from
+  `COMMAND_LIST_PATH` when first pointed at or focused: as a prop they were 1.5 KiB of the first
+  load), `SendToDesktop` (share sheet),
   `UnknownCommand` (a URL only the browser knows) and `LanguageLinks` (`i18n.md`). It takes its copy
   as props (`i18n.md`).
 - **An island imports nothing heavy.** The engine is safe _only_ because `cad/package.json`

@@ -13,6 +13,13 @@ export const EDITOR_PATH = "/draw"
 export const DRAWINGS_PATH = "/drawings"
 
 /**
+ * The commands the hero's command line suggests, in each language
+ * (`CommandTry`), fetched when that line is first used: in the page they
+ * were 1.5 KiB of a first load at its budget (`i18n.md`).
+ */
+export const COMMAND_LIST_PATH = "/command-list"
+
+/**
  * Where the editor keeps this device's layout (`CadEditor`'s
  * `layoutStorage`). FROZEN, old product name included: a renamed key orphans
  * what every user already saved (`lib/site.test.ts`).

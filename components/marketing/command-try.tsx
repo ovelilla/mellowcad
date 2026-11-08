@@ -1,19 +1,24 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
 
 import { matchCommands, type CommandInfo } from "@mellowcad/engine"
 
 const SUGGESTIONS = 6
 
+type Suggested = Pick<CommandInfo, "name" | "aliases" | "description">
+
 /**
  * The hero's command line, its last line: a `Command:` prompt with the
  * editor's own autocomplete over the real command list, its suggestions
  * opening upwards over the drawing as AutoCAD's do. Enter takes you to the
- * editor — the prompt here is a taste, not a second editor.
+ * editor — the prompt here is a taste, not a second editor. The commands are
+ * fetched when the line is first pointed at or focused (`COMMAND_LIST_PATH`):
+ * most visitors never type here, and in the page they were 1.5 KiB of a
+ * first load at its budget.
  */
 export function CommandTry({
-  commands,
+  commandsHref,
   editorHref,
   label,
   placeholder,
@@ -22,7 +27,8 @@ export function CommandTry({
   lang,
   unknown,
 }: {
-  commands: readonly Pick<CommandInfo, "name" | "aliases" | "description">[]
+  /** Where the commands it suggests are, in the page's language. */
+  commandsHref: string
   editorHref: string
   label: string
   placeholder: string
@@ -35,16 +41,37 @@ export function CommandTry({
 }) {
   const [text, setText] = useState("")
   const [active, setActive] = useState(0)
+  const [commands, setCommands] = useState<readonly Suggested[] | null>(null)
+  const requested = useRef(false)
   const listId = useId()
   const hintId = useId()
-  const matches = matchCommands(commands, text, SUGGESTIONS)
+  const matches = commands ? matchCommands(commands, text, SUGGESTIONS) : []
   const typed = text.trim().toUpperCase()
 
   const open = () => window.location.assign(editorHref)
+  const load = () => {
+    if (requested.current) return
+    requested.current = true
+    fetch(commandsHref)
+      .then((response) =>
+        response.ok
+          ? (response.json() as Promise<Suggested[]>)
+          : Promise.reject(new Error(response.statusText))
+      )
+      .then(setCommands)
+      .catch(() => {
+        // Offline: no suggestions, and the next focus asks again.
+        requested.current = false
+      })
+  }
 
   return (
     // A command line: the command language, left to right in every page.
-    <div dir="ltr" className="relative font-mono text-[0.8125rem]">
+    <div
+      dir="ltr"
+      onPointerEnter={load}
+      className="relative font-mono text-[0.8125rem]"
+    >
       <div className="flex h-8 items-center gap-2 rounded-sm px-1 focus-within:bg-bg focus-within:outline-1 focus-within:outline-fg-subtle">
         <label
           htmlFor={`${listId}-input`}
@@ -72,6 +99,7 @@ export function CommandTry({
           spellCheck={false}
           value={text}
           placeholder={placeholder}
+          onFocus={load}
           onChange={(event) => {
             setText(event.target.value)
             setActive(0)
@@ -97,7 +125,7 @@ export function CommandTry({
           dir="auto"
           className="hidden shrink-0 font-sans text-xs text-fg-subtle lg:inline"
         >
-          {typed !== "" && matches.length === 0
+          {commands && typed !== "" && matches.length === 0
             ? unknown.replace("{command}", typed)
             : hint}
         </span>
