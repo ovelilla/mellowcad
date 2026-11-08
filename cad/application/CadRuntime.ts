@@ -6078,10 +6078,28 @@ export class CadRuntime extends Observable {
       this.reportFileError(this.text.message("openUnavailable"))
       return
     }
-    let file: OpenedFile | string | null = null
+    let file: OpenedFile | string | null
     try {
       file = await this.files.open({ kinds })
-      if (file === null) return
+    } catch (error) {
+      // The host's own report of a file it could not read, passed on.
+      this.reportFileError(
+        error instanceof Error ? error.message : this.text.message("openFailed")
+      )
+      return
+    }
+    if (file !== null) await this.openFile(file, kinds)
+  }
+
+  /**
+   * Opens a file the host already holds, as OPEN opens the one it picks: a
+   * file dropped on a page or handed over by another. Never rejects.
+   */
+  async openFile(
+    file: OpenedFile | string,
+    kinds: readonly FileKind[] = ["drawing", "dxf"]
+  ): Promise<void> {
+    try {
       const opened = await readOpenedFile(file, kinds)
       this.openParsed(opened.drawing)
       if (opened.kind === "dxf") {
@@ -6093,7 +6111,7 @@ export class CadRuntime extends Observable {
       }
     } catch (error) {
       if (error instanceof DxfReadError) {
-        const name = typeof file === "object" && file ? file.name : null
+        const name = typeof file === "string" ? null : file.name
         for (const line of dxfErrorLines(error, name, this.text)) {
           this.reportFileError(line)
         }

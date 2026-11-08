@@ -19,7 +19,12 @@ import {
   ShortcutMenuAction,
   StylesPanelTab,
 } from "../application/EngineState"
-import { DrawingStore, EngineHost, FileKind } from "../application/ports"
+import {
+  DrawingStore,
+  EngineHost,
+  FileKind,
+  OpenedFile,
+} from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import type { PointFilterName } from "../application/pointFilter"
@@ -841,6 +846,20 @@ export class CadEngine {
    */
   openDrawingFromFile(kinds?: readonly FileKind[]): Promise<void> {
     return this.runtime.openDrawingFromFile(kinds)
+  }
+
+  /**
+   * Opens a file the host already holds, as OPEN opens the one it picks: a
+   * file dropped on a page, or handed over by another page. Its name tells a
+   * DXF, or its first group when it has none; what a DXF holds that the
+   * model has not, or a file that is no drawing, is said on the command
+   * line. Never rejects.
+   */
+  openFile(
+    file: OpenedFile | string,
+    kinds?: readonly FileKind[]
+  ): Promise<void> {
+    return this.runtime.openFile(file, kinds)
   }
 
   /**

@@ -230,3 +230,28 @@ describe("in the command languages", () => {
     ])
   })
 })
+
+describe("a file the host already holds (openFile)", () => {
+  it("opens as OPEN's pick does: the drawing replaced, what it left out said", async () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    const from = cad.commandLog().length
+    await cad.runtime.openFile(fixture("fixture-2018"))
+    expect(cad.entityCount).toBe(31)
+    expect(cad.commandLog().slice(from)).toEqual([
+      "7 objects not opened: 1 POINT, 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
+      "1 object in a layout not opened.",
+    ])
+  })
+
+  it("says what is no DXF in AutoCAD's lines, the drawing kept", async () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    // A DWG's first bytes, its version.
+    const dwg = { name: "plan.dwg", bytes: new TextEncoder().encode("AC1032") }
+    await cad.runtime.openFile(dwg, ["dxf"])
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "plan.dwg is not valid DXF file",
+      "Invalid or incomplete DXF input -- drawing discarded.",
+    ])
+    expect(cad.entityCount).toBe(1)
+  })
+})

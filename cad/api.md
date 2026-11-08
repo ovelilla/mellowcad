@@ -329,6 +329,14 @@ export declare class CadEngine {
      */
     openDrawingFromFile(kinds?: readonly FileKind[]): Promise<void>;
     /**
+     * Opens a file the host already holds, as OPEN opens the one it picks: a
+     * file dropped on a page, or handed over by another page. Its name tells a
+     * DXF, or its first group when it has none; what a DXF holds that the
+     * model has not, or a file that is no drawing, is said on the command
+     * line. Never rejects.
+     */
+    openFile(file: OpenedFile | string, kinds?: readonly FileKind[]): Promise<void>;
+    /**
      * PASTECLIP: reads the clipboard and starts placing what was copied there.
      */
     pasteFromClipboard(): Promise<void>;

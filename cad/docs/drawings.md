@@ -126,7 +126,9 @@ from AutoCAD R12 to 2018. What the engine has no object for (a POINT, a LEADER, 
 layout's objects) is left out and counted on the command line. `openDrawingFromFile(["dxf"])` is
 DXFIN from a button. A `FileTransport` of your own gets the kinds a pick offers in `open`'s
 `request` and returns the file's name and bytes; one that returns the text, as before, still
-opens a drawing and an ASCII DXF in UTF-8.
+opens a drawing and an ASCII DXF in UTF-8. A file your page already holds — dropped on it, or
+handed over by another page — opens with `openFile({ name, bytes })`, as OPEN opens the one it
+picks.
 
 ## The clipboard
 
