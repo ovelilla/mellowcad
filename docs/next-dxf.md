@@ -2,7 +2,7 @@
 
 > **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
 > publicados el 7/11/2026 (sesión 07 del plan de visibilidad), y la fase 3 (la página «abrir DXF
-> online», sesión 07b) hecha el 8/11, sin publicar, con la fase 4 ordenada por lo que falta en 731
+> online», sesión 07b) hecha y publicada el 8/11, con la fase 4 ordenada por lo que falta en 731
 > DXF reales; siguiente, la fase 2 (guardar como DXF). Se borra cuando la fase 5 esté hecha;
 > hasta entonces cada fase cerrada se marca aquí.
 

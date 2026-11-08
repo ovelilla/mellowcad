@@ -6,7 +6,7 @@
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
-> online») hecha el 8/11, sin publicar; por decisión del dueño la visibilidad va antes que
+> online») hecha y publicada el 8/11; por decisión del dueño la visibilidad va antes que
 > cualquier funcionalidad; siguiente: lo que queda de §7, la 08 (francés) y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -349,7 +349,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    **7/11, 23:10 UTC (sesión 07b):** la tanda del día, 11 pedidas (SCALE en portugués y árabe,
    FILLET y BLOCK en los cuatro idiomas, TEXT en inglés) hasta la cuota, a las 23:14 UTC: 315 en
    la cola. **8/11:** las 4 de la sesión 07b (`/docs/open-dxf` en los cuatro idiomas), añadidas al
-   final antes de su push: 319.
+   final antes de su push: 319. **8/11:** la 07b publicada a petición del dueño (`c481a0a7`), con
+   IndexNow (499 URLs del sitemap, 200).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -566,7 +567,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   pregunta de la práctica. Las páginas «abrir DXF online», hechas en la 07b; queda guardar como DXF
   (fase 2) y lo que más falta en los DXF reales (fase 4, medida en la 07b: SOLID, LEADER, POINT, los
   tipos de línea del dibujo, las referencias externas y el patrón propio de cada sombreado).
-- 07b Abrir DXF online: hecha el 8/11/2026 (`242d031f` a `bbeefd64`), sin publicar. Antes de
+- 07b Abrir DXF online: hecha y publicada el 8/11/2026 (`242d031f` a `bbeefd64`; el push, verificado
+  en producción, y IndexNow, por la sesión a petición del dueño). Antes de
   escribir, el lector abrió los 154 dibujos de muestra de AutoCAD 2027 (guardados como DXF 2018 por
   la consola) y 577 DXF de otros programas (LibreCAD, ezdxf, dxf-parser, OpenSCAD, Inkscape): abren
   todos, y lo que más falta ordena la fase 4 de `docs/next-dxf.md` (`245efe69`); de paso, dos
