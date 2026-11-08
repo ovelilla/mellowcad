@@ -169,6 +169,13 @@ atalhos do AutoCAD em português: desenho 2D e sólidos 3D, ainda parciais. Sem 
 cadastro.» (155); the H1, the share card's eyebrow and the footer: «CAD online grátis com os
 comandos do AutoCAD». «AutoCAD online grátis» is never written, as it would read as AutoCAD itself.
 
+**The DXF page** (`/pt-br/docs/open-dxf`; Google's and Bing's suggestions in the audit,
+05/11/2026): «abrir arquivo dxf online», «visualizador dxf online», «abrir dxf online grátis»,
+«visualizador dxf online gratis» and «editor dxf online gratis». Title «Abrir arquivo DXF online»;
+search title «Abrir arquivo DXF online: visualizador grátis» (57 with the brand); description
+«Abra um arquivo DXF grátis no navegador, sem enviá-lo: …» (151). «editor» is left out while a
+DXF cannot be saved.
+
 ## Command language
 
 ### `acad.pgp`

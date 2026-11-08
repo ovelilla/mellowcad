@@ -9,6 +9,11 @@ import {
 } from "@mellowcad/engine"
 
 import {
+  handedFileId,
+  takeHandedFile,
+  withoutOpenParam,
+} from "@/lib/handed-file"
+import {
   drawingStorageKey,
   keyedDrawingStore,
   openedDrawing,
@@ -28,6 +33,8 @@ const noSubscription = () => () => {}
  * its own: the drawing kept for the editor is neither read nor written, and
  * `/draw` alone brings it back. The file is fetched while that store holds
  * nothing, so a reload or a return finds the reader's work as they left it.
+ * Where it names a file another page handed over (`?open=<id>`, the DXF
+ * page's), the editor opens that file as OPEN would, into its own drawing.
  * The page is static: the query is read in the browser, and so is the
  * browser that Send Feedback's forms name beside the page's `report`.
  */
@@ -72,6 +79,22 @@ export function DrawEditor({
       })
     return () => controller.abort()
   }, [engine, search, drawings])
+
+  useEffect(() => {
+    const id = handedFileId(search)
+    if (!engine || !id) return
+    // Taken once: a reload, or a language link, must not ask again.
+    window.history.replaceState(
+      window.history.state,
+      "",
+      withoutOpenParam(window.location.href)
+    )
+    takeHandedFile(id)
+      .then((file) => file && engine.openFile(file))
+      .catch(() => {
+        // Storage blocked or emptied: the editor stays on its drawing.
+      })
+  }, [engine, search])
 
   return (
     <CadEditor

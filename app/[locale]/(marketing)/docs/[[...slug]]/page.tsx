@@ -351,7 +351,20 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
           )}
         </header>
         <Body
-          components={docsMdxComponents(locale, { copy: t("copy"), copied: t("copied") })}
+          components={docsMdxComponents(locale, {
+            copy: t("copy"),
+            copied: t("copied"),
+            openDxf: {
+              choose: t("openDxf.choose"),
+              drop: t("openDxf.drop"),
+              local: t("openDxf.local"),
+              replaces: t("openDxf.replaces"),
+              opening: t("openDxf.opening"),
+              dwg: t("openDxf.dwg"),
+              failed: t("openDxf.failed"),
+              editor: t("openDxf.editor"),
+            },
+          })}
         />
       </article>
       <footer className="flex flex-col gap-6 border-t border-border pt-6 text-sm print:hidden">

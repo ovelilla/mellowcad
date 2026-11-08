@@ -52,6 +52,12 @@ written and `/draw` alone brings it back. The file is fetched while that store h
 reload keeps the reader's work, and NEW then the page's link starts it over. The language links
 keep the query.
 
+**`/draw?open=<id>` opens a file another page handed over** (the DXF page's `DxfOpener`): the page
+keeps it in this browser's IndexedDB, one at a time and never on a server (`lib/handed-file.ts`),
+and `DrawEditor` takes it, deletes it, drops the query (a reload or a language link must not ask
+again) and opens it with the engine's `openFile`, as OPEN opens a pick: into the editor's own
+drawing, which it replaces.
+
 **Where the editor links out is the host's** (`languages`, `help`, `feedback`): the package names
 no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`marketing.md`).
 

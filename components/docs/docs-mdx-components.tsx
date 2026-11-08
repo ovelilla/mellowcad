@@ -7,6 +7,7 @@ import { localePath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"
 import { DOCS_PATH } from "@/lib/docs/packages"
 import { isSession } from "@/lib/docs/sessions"
+import { EDITOR_PATH } from "@/lib/site"
 
 import {
   CodeBlock,
@@ -18,6 +19,7 @@ import {
 } from "./code-block"
 import { CodeBlockCopyButton } from "./code-block-copy-button"
 import { DocsSession } from "./docs-session"
+import { DxfOpener, type DxfOpenerLabels } from "./dxf-opener"
 
 type Parent = { children?: ReactNode; className?: string }
 
@@ -84,7 +86,7 @@ function heading(Tag: "h2" | "h3" | "h4", className: string) {
  */
 export function docsMdxComponents(
   locale: AppLocale,
-  labels: { copy: string; copied: string }
+  labels: { copy: string; copied: string; openDxf: DxfOpenerLabels }
 ): MDXComponents {
   return {
     h2: heading("h2", "mt-14 mb-4 text-h3 first:mt-0"),
@@ -165,6 +167,10 @@ export function docsMdxComponents(
         </CodeBlock>
       )
     },
+    // The DXF page's file picker and drop zone, which open a file in the editor.
+    OpenDxf: () => (
+      <DxfOpener editor={localePath(locale, EDITOR_PATH)} labels={labels.openDxf} />
+    ),
     Session: ({ name, caption }: { name: string; caption?: string }) => {
       if (!isSession(name)) throw new Error(`<Session name="${name}" /> names no session`)
       return <DocsSession id={name} locale={locale} caption={caption} />

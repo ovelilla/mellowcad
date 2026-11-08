@@ -22,11 +22,16 @@ export async function LocalFirstSection() {
     locale: await pageEngineLocale(),
   })
   const paths = await sitePaths()
+  const dxf = (chunks: React.ReactNode) => (
+    <Link href={paths.openDxf} prefetch={false} className="underline-link">
+      {chunks}
+    </Link>
+  )
 
   const facts = [
     { icon: Gift, title: t("freeTitle"), body: t("freeBody") },
     { icon: HardDrive, title: t("autosaveTitle"), body: t("autosaveBody") },
-    { icon: Save, title: t("fileTitle"), body: t("fileBody") },
+    { icon: Save, title: t("fileTitle"), body: t.rich("fileBody", { dxf }) },
     { icon: UserX, title: t("privateTitle"), body: t("privateBody") },
   ]
 

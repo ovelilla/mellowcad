@@ -251,6 +251,12 @@ marks a choice between competing terms that a native review should settle first 
   ميكانيكي», «اوتوكاد درج» and «رسومات اوتوكاد صعبه» in Egypt and Saudi Arabia. So the library's
   title is «تمارين أوتوكاد», its search title «تمارين أوتوكاد للمبتدئين، محلولة ومجانية», and each
   exercise's «تمرين أوتوكاد…» with the discipline or «ثلاثي الأبعاد» where it fits.
+- **The DXF page** (Google's suggestions in Egypt and Saudi Arabia, 08/11/2026): «فتح ملف dxf»
+  and «فتح ملف dxf اون لاين», «فتح ملفات dxf أون لاين», «برنامج فتح ملفات dxf» (للكمبيوتر,
+  للاندرويد) and, for a viewer, «عارض ملفات dxf». Title «فتح ملف ⁨DXF⁩ أون لاين»; search title
+  «فتح ملف ⁨DXF⁩ أون لاين: عارض ملفات ⁨DXF⁩ مجاني» (58 with the brand), «أون لاين» spelt as the
+  home's. Its object names without an Arabic AutoCAD word (SOLID, TRACE, XLINE, RAY, MLINE,
+  WIPEOUT) carry their DXF names beside them, as the command line counts them by those names.
 
 ## Font
 

@@ -43,7 +43,8 @@ at hand, since a page that does not exist cannot show demand of its own. A page 
 facts is generated from their source (the engine's catalog, `docs/coverage/`, `lib/facts.ts`) so it
 stays true, and every indexable page is in the sitemap, the hreflang set and the internal links:
 the practice library is linked from "who it's for" (`Audience.practice`), the FAQ's class question
-(`Faq.a11`) and the footer.
+(`Faq.a11`) and the footer; the DXF page (`/docs/open-dxf`) from the files section
+(`LocalFirst.fileBody`) and the FAQ's DWG and DXF answer (`Faq.a5`).
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact

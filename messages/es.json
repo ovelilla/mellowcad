@@ -140,7 +140,7 @@
     "autosaveTitle": "Guardado automático en tu navegador",
     "autosaveBody": "Cada cambio se guarda en este dispositivo mientras dibujas. Cierra la pestaña: el dibujo seguirá ahí cuando vuelvas.",
     "fileTitle": "Un archivo cuando lo quieras",
-    "fileBody": "Ctrl+S guarda el dibujo como archivo, en el formato propio y versionado de MellowCAD. Ctrl+O lo vuelve a abrir, en cualquier equipo, y abre también archivos DXF.",
+    "fileBody": "Ctrl+S guarda el dibujo como archivo, en el formato propio y versionado de MellowCAD. Ctrl+O lo vuelve a abrir, en cualquier equipo, y <dxf>abre también archivos DXF</dxf>.",
     "privateTitle": "Sin subir nada",
     "privateBody": "Tus dibujos no se envían a ninguna parte. La analítica cuenta las visitas sin cookies.",
     "formats": "DXF: lo abre, aún no lo guarda. DWG: todavía no. Los dibujos se guardan en el formato propio y versionado de MellowCAD.",
@@ -201,7 +201,7 @@
     "q4": "¿De verdad funciona como AutoCAD?",
     "a4": "Esa es la especificación: los comandos, los alias, el orden de las solicitudes, las letras de opción y los valores por defecto siguen al AutoCAD actual en español, con los nombres globales disponibles con _ delante (_LINE). Algunos comandos aún están a medias, y la hoja de ruta dice exactamente qué opciones faltan.",
     "q5": "¿Puedo abrir o guardar archivos DWG o DXF, o imprimir?",
-    "a5": "MellowCAD abre archivos DXF, de AutoCAD R12 a 2018, de texto o binarios: líneas, arcos, círculos, elipses, polilíneas, splines, textos, cotas, sombreados y bloques, en sus capas. Lo que aún no tiene —puntos, directrices, tablas, presentaciones, sólidos 3D— se queda fuera y se enumera al abrir el archivo. Guardar como DXF y los archivos DWG aún no están, y todavía no se puede imprimir ni exportar a PDF.",
+    "a5": "MellowCAD <dxf>abre archivos DXF</dxf>, de AutoCAD R12 a 2018, de texto o binarios: líneas, arcos, círculos, elipses, polilíneas, splines, textos, cotas, sombreados y bloques, en sus capas. Lo que aún no tiene —puntos, directrices, tablas, presentaciones, sólidos 3D— se queda fuera y se enumera al abrir el archivo. Guardar como DXF y los archivos DWG aún no están, y todavía no se puede imprimir ni exportar a PDF.",
     "q6": "¿Dónde se guardan mis dibujos?",
     "a6": "En tu dispositivo. MellowCAD guarda automáticamente en tu navegador y nunca sube tus dibujos. Borrar los datos del sitio elimina el autoguardado, así que pulsa Ctrl+S para conservar un archivo.",
     "q7": "¿MellowCAD tiene relación con Autodesk?",
@@ -247,7 +247,7 @@
     "lead": "MellowCAD no tiene cuentas ni servidores que vean tus dibujos. Esto es todo lo que guarda, todo lo que mide y quién lo trata.",
     "storedTitle": "En tu navegador",
     "stored1": "Tu dibujo, guardado automáticamente en el almacenamiento local del navegador mientras trabajas. Nunca sale del dispositivo.",
-    "stored2": "Nada más, y ninguna cookie. El boceto en vivo de la página de inicio guarda su dibujo en la memoria de la página y lo olvida cuando sales.",
+    "stored2": "Lo que dibujas en un ejercicio, guardado aparte de tu dibujo, y cómo colocas los paneles del editor. Un archivo DXF elegido en la página «Abrir un archivo DXF online» espera en el almacenamiento del navegador hasta que el editor lo abre, y entonces se borra. Nada más, y ninguna cookie.",
     "storedNote": "Borrar los datos de este sitio en tu navegador elimina el autoguardado. Pulsa Ctrl+S en el editor para conservar un archivo.",
     "analyticsTitle": "Qué se mide",
     "analytics1": "Vercel Web Analytics cuenta las visitas: la página, la página de la que vienes, tu país y tu ciudad, y tu navegador, tu sistema y tu tipo de dispositivo. No usa cookies; una visita se reconoce por un hash de la petición, que se descarta a las 24 horas, y las estadísticas son anónimas.",
@@ -441,6 +441,16 @@
         "hidden": "Ocultas",
         "dimensions": "Cotas"
       }
+    },
+    "openDxf": {
+      "choose": "Elegir un archivo DXF",
+      "drop": "o suéltalo aquí",
+      "local": "Se abre en el editor, en este navegador: el archivo no se sube a ningún sitio.",
+      "replaces": "Ocupa el lugar del dibujo que tienes en el editor, como hace ABRE: guarda antes el tuyo con Ctrl+S allí.",
+      "opening": "Abriendo…",
+      "dwg": "Los archivos DWG aún no se abren aquí. Guárdalo como DXF en el programa con el que se hizo y abre ese.",
+      "failed": "Este navegador no ha dejado que la página le pase el archivo al editor: ábrelo allí con Ctrl+O.",
+      "editor": "Abrir el editor"
     }
   }
 }

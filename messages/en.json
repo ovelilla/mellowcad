@@ -140,7 +140,7 @@
     "autosaveTitle": "Autosaved in your browser",
     "autosaveBody": "Every change is saved on this device as you draw. Close the tab; the drawing is there when you come back.",
     "fileTitle": "A file when you want one",
-    "fileBody": "Ctrl+S saves the drawing as a file in MellowCAD's own versioned format. Ctrl+O opens it again, on any computer, and opens DXF files too.",
+    "fileBody": "Ctrl+S saves the drawing as a file in MellowCAD's own versioned format. Ctrl+O opens it again, on any computer, and <dxf>opens DXF files</dxf> too.",
     "privateTitle": "No uploads",
     "privateBody": "Your drawings are never sent anywhere. Analytics count page views without cookies.",
     "formats": "DXF: opens it, does not save it yet. DWG: not yet. Drawings are saved in MellowCAD's own versioned format.",
@@ -201,7 +201,7 @@
     "q4": "Does it really work like AutoCAD?",
     "a4": "That's the spec: commands, aliases, prompt order, option letters and defaults follow current AutoCAD. Some commands are still partial, and the roadmap lists exactly which options are missing.",
     "q5": "Can I open or save DWG or DXF files, or print?",
-    "a5": "MellowCAD opens DXF files, from AutoCAD R12 to 2018, text or binary: lines, arcs, circles, ellipses, polylines, splines, text, dimensions, hatches and blocks, on their layers. What it has no object for yet — points, leaders, tables, layouts, 3D solids — is left out and listed when the file opens. Saving as DXF and DWG files are not there yet, and there is no printing or PDF export yet.",
+    "a5": "MellowCAD <dxf>opens DXF files</dxf>, from AutoCAD R12 to 2018, text or binary: lines, arcs, circles, ellipses, polylines, splines, text, dimensions, hatches and blocks, on their layers. What it has no object for yet — points, leaders, tables, layouts, 3D solids — is left out and listed when the file opens. Saving as DXF and DWG files are not there yet, and there is no printing or PDF export yet.",
     "q6": "Where are my drawings stored?",
     "a6": "On your device. MellowCAD autosaves in your browser and never uploads your drawings. Clearing the site's data deletes the autosave, so press Ctrl+S to keep a file.",
     "q7": "Is MellowCAD affiliated with Autodesk?",
@@ -247,7 +247,7 @@
     "lead": "MellowCAD has no accounts and no servers that see your drawings. This is everything it keeps, everything it measures, and who handles it.",
     "storedTitle": "In your browser",
     "stored1": "Your drawing, autosaved in the browser's local storage as you work. It never leaves the device.",
-    "stored2": "Nothing else, and no cookies. The live sketch on the home page keeps its drawing in the page's memory and forgets it when you leave.",
+    "stored2": "What you draw on an exercise, kept apart from your drawing, and how you lay out the editor's panels. A DXF file chosen on the “Open a DXF file online” page waits in the browser's storage until the editor opens it, and is deleted then. Nothing else, and no cookies.",
     "storedNote": "Clearing this site's data in your browser deletes the autosave. Press Ctrl+S in the editor to keep a file.",
     "analyticsTitle": "What is measured",
     "analytics1": "Vercel Web Analytics counts page views: the page, the page you came from, your country and city, and your browser, system and type of device. It sets no cookies; a visit is recognised by a hash of the request, discarded after 24 hours, and the statistics are anonymous.",
@@ -441,6 +441,16 @@
         "hidden": "Hidden lines",
         "dimensions": "Dimensions"
       }
+    },
+    "openDxf": {
+      "choose": "Choose a DXF file",
+      "drop": "or drop it here",
+      "local": "It opens in the editor, in this browser: the file is not uploaded.",
+      "replaces": "It takes the place of the drawing you have in the editor, as OPEN does: keep yours first with Ctrl+S there.",
+      "opening": "Opening…",
+      "dwg": "DWG files do not open here yet. Save it as DXF in the program that made it, and open that.",
+      "failed": "This browser did not let the page hand the file to the editor: open it there with Ctrl+O.",
+      "editor": "Open the editor"
     }
   }
 }

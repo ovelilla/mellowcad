@@ -24,6 +24,11 @@ export async function FaqSection() {
       {chunks}
     </Link>
   )
+  const dxf = (chunks: React.ReactNode) => (
+    <Link href={paths.openDxf} prefetch={false} className="underline-link">
+      {chunks}
+    </Link>
+  )
 
   return (
     <section
@@ -47,6 +52,7 @@ export async function FaqSection() {
                 ...sourceLinks,
                 reference,
                 exercises,
+                dxf,
                 commands: facts.commands,
               })}
             </p>

@@ -164,6 +164,13 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
   3D, aún parciales. Sin descargas ni registro.» (150); the H1, the share card's eyebrow and the
   footer: «CAD online gratis con comandos de AutoCAD». The lead carries the terms the H1 lacks
   (navegador, en español, 2D, 3D).
+- **The DXF page** (`/es/docs/open-dxf`; the audit's autocomplete, 05/11/2026,
+  `keywords-es-pt-universe.csv`): «abrir dxf online gratis» is the most widespread (suggested in
+  the six Spanish-speaking markets and in Brazil), then «visor dxf online gratis», «abrir dxf
+  online», «visor dxf online», «abrir dxf en linea» and «visor dxf sin instalar». Title «Abrir un
+  archivo DXF online»; search title «Abrir DXF online gratis: visor DXF sin instalar» (59 with the
+  brand); description «Abre un archivo DXF gratis en tu navegador, sin subirlo: …» (151). «editor
+  dxf online» is searched too, and left out of both while a DXF cannot be saved.
 
 ## Command language
 

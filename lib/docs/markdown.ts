@@ -30,6 +30,8 @@ async function sessionsAsText(markdown: string, language: Parameters<typeof load
   return markdown.replace(SESSION, () => blocks[index++])
 }
 
+const OPEN_DXF = /<OpenDxf\s*\/>\n*/g
+
 const DOCS_LINK = new RegExp(`\\]\\((${DOCS_PATH}(?:/[^)#\\s]*)?)(#[^)\\s]*)?\\)`, "g")
 
 /** A page's own URL with `.md`: what an agent reads instead of the HTML. */
@@ -45,7 +47,8 @@ export function markdownUrl(page: DocsPage): string {
 export async function pageMarkdown(page: DocsPage): Promise<string> {
   const language = pageLanguage(page)
   const processed = await sessionsAsText(await page.data.getText("processed"), language)
-  const body = processed.replace(
+  // The DXF page's picker works in a browser alone; its text says where else a file opens.
+  const body = processed.replace(OPEN_DXF, "").replace(
     DOCS_LINK,
     (_, path: string, hash = "") => `](${localeUrl(language, path)}.md${hash})`
   )

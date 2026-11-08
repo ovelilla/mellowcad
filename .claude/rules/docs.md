@@ -131,6 +131,11 @@ claims follow `i18n.md`.
   `llms.txt`. A heading never holds a link: the table of contents wraps every heading in one.
 - **The how-to guides** (`GUIDE_PAGES`: coordinates, floor-plan, 2d-to-3d) are written "Use" pages,
   their sessions `content/demos/guides/` (`GUIDE_SESSIONS`), or a command's.
+- **The DXF page** (`open-dxf`, searched as «abrir dxf online» and "dxf viewer online") is a written
+  "Use" page whose `<OpenDxf />` is the docs' island that hands a file to the editor
+  (`DxfOpener`, `ui.md`); its `.md` drops the island, as its text says where else a file opens.
+  What it claims opens is DXFIN's coverage entry: a change there is a change here, in every
+  language.
 - **An exercise prints** on its own, dark on white (`marketing.css`, `@media print`): its drawing as
   AutoCAD's monochrome plot style plots it, the site's chrome `print:hidden`; `PrintButton` is the
   docs' island for it.
