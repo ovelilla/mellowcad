@@ -5,9 +5,9 @@
 > (lanzamiento) preparada el 6/11, que publica el dueño según el calendario de L5, y la 06 (12
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
-> lanzamiento suave del 12/11) hechas y publicadas el 7/11; por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7, la 08 (francés),
-> las páginas «abrir DXF online» y guardar como DXF. Esperan detrás
+> lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
+> online») hecha el 8/11, sin publicar; por decisión del dueño la visibilidad va antes que
+> cualquier funcionalidad; siguiente: lo que queda de §7, la 08 (francés) y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -348,7 +348,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    de ejercicios, las tres guías y los doce ejercicios, en los cuatro idiomas), añadidas igual: 326.
    **7/11, 23:10 UTC (sesión 07b):** la tanda del día, 11 pedidas (SCALE en portugués y árabe,
    FILLET y BLOCK en los cuatro idiomas, TEXT en inglés) hasta la cuota, a las 23:14 UTC: 315 en
-   la cola.
+   la cola. **8/11:** las 4 de la sesión 07b (`/docs/open-dxf` en los cuatro idiomas), añadidas al
+   final antes de su push: 319.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -562,10 +563,36 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   versiones y en binario) y en el editor real (Chrome). Un DXF de 50.000 objetos se lee en 0,2 s; de
   paso, el autoguardado sin sangrías, la mitad de grande (`f6a4d2c0`). El sitio lo dice en los cuatro
   idiomas: Estado, la FAQ de DWG/DXF, la sección de archivos, «para quién no es todavía» y la
-  pregunta de la práctica. Queda: las páginas «abrir DXF online» por idioma (ya pueden hacerse, en
-  una sesión de contenido), guardar como DXF (fase 2), y lo que más falta en los DXF reales (fase 4:
-  POINT, SOLID, LEADER y MLEADER, los tipos de línea y patrones del dibujo).
-- 07b Abrir DXF online: pendiente; su prompt, `docs/plans/seo/07b-dxf-paginas.md`.
+  pregunta de la práctica. Las páginas «abrir DXF online», hechas en la 07b; queda guardar como DXF
+  (fase 2) y lo que más falta en los DXF reales (fase 4, medida en la 07b: SOLID, LEADER, POINT, los
+  tipos de línea del dibujo, las referencias externas y el patrón propio de cada sombreado).
+- 07b Abrir DXF online: hecha el 8/11/2026 (`242d031f` a `bbeefd64`), sin publicar. Antes de
+  escribir, el lector abrió los 154 dibujos de muestra de AutoCAD 2027 (guardados como DXF 2018 por
+  la consola) y 577 DXF de otros programas (LibreCAD, ezdxf, dxf-parser, OpenSCAD, Inkscape): abren
+  todos, y lo que más falta ordena la fase 4 de `docs/next-dxf.md` (`245efe69`); de paso, dos
+  arreglos del lector (`242d031f`): lo que sigue a EOF, que AutoCAD abre, y el código de estilo
+  tras el nombre de un patrón (`ANSI31,_O`). La página, `/docs/open-dxf`, una «Use» de la
+  documentación tras los atajos («Open a DXF file online», «Abrir un archivo DXF online», «Abrir
+  arquivo DXF online», «فتح ملف DXF أون لاين»), con el título de búsqueda de lo que busca cada
+  idioma: «Free DXF viewer online: open DXF in your browser» ("dxf viewer online", 1,6K en Bing en
+  tres meses), «Abrir DXF online gratis: visor DXF sin instalar», «Abrir arquivo DXF online:
+  visualizador grátis» y, del autocompletado de Google en Egipto y Arabia Saudí, «فتح ملف DXF أون
+  لاين: عارض ملفات DXF مجاني»; lo que abre y lo que no, como la entrada de DXFIN, OPEN y DXFIN en
+  el editor y cinco preguntas (`FAQPage`). Arriba, elegir o soltar un DXF lo abre en `/draw` sin
+  subirlo (IndexedDB y el `openFile` del motor, `761a6083`); un DWG se contesta en la página.
+  Enlazada desde la sección de archivos y la respuesta de DWG y DXF de la landing, primeros pasos,
+  la navegación y `llms.txt`; `/privacy` dice qué más guarda el navegador. Sin página de comando
+  para OPEN ni DXFIN: lo que su entrada da es esta página. El H2 y la descripción de la landing,
+  sin DXF: su familia es otra, y la página la cubre. El kit de lanzamiento ya decía lo que la
+  página afirma. Verificado en Chrome sobre un build de producción: una muestra de AutoCAD elegida
+  en `/docs/open-dxf` y la demo de three-dxf soltada en `/es/docs/open-dxf`, cada una con su
+  informe en la línea de comandos. La primera carga de la landing, bajo el presupuesto otra vez
+  (`18161b41`, la lista de comandos del hero llega al usar su línea): de 248,9, 250,2, 250,4 y
+  273,3 KiB a 247,7, 248,9, 249,1 y 272,0 (en, es, pt-BR, ar), los dos enlaces nuevos incluidos.
+  Visto de paso, sin arreglar: la transición de vista al entrar en el editor desde el sitio
+  termina a veces a los 4–5 s, no a los 0,4 (Chrome, sin mover el ratón; también en `HEAD`), y
+  mientras dura el lienzo tapa el historial de la línea de comandos y los clics van a `<html>`; la
+  de la página de DXF se salta por eso.
 - 08 Francés: pendiente.
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.

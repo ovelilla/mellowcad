@@ -1,8 +1,9 @@
 # DXF: abrir y guardar como en AutoCAD — brief
 
 > **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
-> publicados el 7/11/2026 (sesión 07 del plan de visibilidad); siguiente, la fase 2 (guardar como DXF), y las
-> páginas «abrir DXF online» (fase 3), que ya pueden hacerse. Se borra cuando la fase 5 esté hecha;
+> publicados el 7/11/2026 (sesión 07 del plan de visibilidad), y la fase 3 (la página «abrir DXF
+> online», sesión 07b) hecha el 8/11, sin publicar, con la fase 4 ordenada por lo que falta en 731
+> DXF reales; siguiente, la fase 2 (guardar como DXF). Se borra cuando la fase 5 esté hecha;
 > hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -133,8 +134,12 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    los tipos que escribimos y _Options_ (_DXF Options_), y el escritor de 2000 a 2018, ASCII y
    binario, con su precisión y _Select objects_; cada fichero, abierto por AutoCAD en la consola en
    los tests de su desarrollo. R12 convierte lo que R12 no tiene (como hace AutoCAD: una elipse,
-   polilínea): fase propia si pesa.
+   polilínea): fase propia si pesa. Al cerrarla, la página «abrir DXF online», su FAQ y el kit de
+   lanzamiento dicen que guarda.
 3. **Las páginas «abrir DXF online»** por idioma, en una sesión de contenido (`docs/next-seo.md`).
+   **Hecha** (8/11/2026, sesión 07b, `bbeefd64`): `/docs/open-dxf` en los cuatro idiomas, que abre
+   en `/draw` el DXF que se elige o se suelta en ella, sin subirlo (`openFile`, `761a6083`); lo que
+   afirma es la entrada de DXFIN (`.claude/rules/docs.md`).
 4. **Lo que más falta en los DXF reales**, en el orden medido el 8/11/2026 (sesión 07b) abriendo
    con el lector los 154 dibujos de muestra de AutoCAD 2027 (su carpeta `Sample`, guardados como
    DXF 2018 por la consola) y 577 DXF de otros programas (la biblioteca de piezas de LibreCAD, los
