@@ -100,7 +100,7 @@ function indexingQueue() {
     const when = new Date(ready).toISOString().slice(0, 16).replace("T", " ")
     return `- ${left.length} URLs wait to be submitted to Google for indexing until its daily quota resets, after ${when} UTC (docs/next-seo.md §7): not yet.`
   }
-  return `- Indexing requests due: ${left.length} URLs still to submit to Google (docs/next-seo.md §7). Send the next batch at the start, in the background, as it touches nothing in the repo: start the owner's Chrome as ~/seo-data/scripts/README.md says (ask the owner only if a tab asks to sign in), then \`node gsc-request.mjs gsc-request-pending.txt\` there, which stops at the quota; note what is left in §7 with your next commit.`
+  return `- Indexing requests due: ${left.length} URLs still to submit to Google (docs/next-seo.md §7). Send the next batch at the start, in the background, as it touches nothing in the repo: start the owner's Chrome as ~/seo-data/scripts/README.md says (ask the owner only if a tab asks to sign in), then \`node gsc-prioritize.mjs && node gsc-request.mjs gsc-request-pending.txt\` there (the first rebuilds the queue from the live sitemap, by priority; the second stops at the quota); note what is left in §7 with your next commit.`
 }
 
 // Each brief with the first sentence of its status line, so a session tells

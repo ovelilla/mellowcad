@@ -351,6 +351,16 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    la cola. **8/11:** las 4 de la sesión 07b (`/docs/open-dxf` en los cuatro idiomas), añadidas al
    final antes de su push: 319. **8/11:** la 07b publicada a petición del dueño (`c481a0a7`), con
    IndexNow (499 URLs del sitemap, 200).
+   **9/11 (decisión del dueño): la cola se ordena por prioridad y sale del sitemap.** A la cola le
+   faltaban 147 de las 499 URLs publicadas (LINE, CIRCLE, MOVE, COPY y otros 25 comandos de la
+   primera tanda, `/docs`, las guías y la documentación del motor), porque se iba llenando a mano y
+   por orden de publicación. Ahora `node gsc-prioritize.mjs` (en ~/seo-data/scripts) la rehace antes
+   de cada tanda a partir del sitemap publicado, quitando lo ya pedido: primero los índices y las
+   guías (`/docs/floor-plan` delante, «floor plan» es el término más buscado tras «autocad»), luego
+   los comandos por su índice de Google Trends de la auditoría y los ejercicios, cada idioma pesado
+   por su mercado. `/privacy` queda fuera. Ya no se añade nada a mano: 451 en la cola, unos 41 días
+   a 11 al día. El sitemap no hay que tocarlo: `app/sitemap.ts` lo genera en cada despliegue, con
+   `lastmod` del último commit de cada página, y Google lo relee solo.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
