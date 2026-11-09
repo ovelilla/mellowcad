@@ -1,7 +1,8 @@
 # Sesión 09 — El italiano
 
 > Para el dueño: pega todo este fichero en una sesión nueva de Claude Code en `~/projects/mellowcad`,
-> con el razonamiento al máximo, cuando el francés (sesión 08) esté `live`.
+> con razonamiento alto (no el máximo: lo que más pesa es repetir lo que el francés dejó escrito),
+> cuando el francés (sesión 08) esté `live`.
 
 Eres la sesión 09 del plan de visibilidad de MellowCAD. Lee primero `AGENTS.md`,
 `docs/next-seo.md` (el plan maestro), la skill `add-language` y lo que dejó el francés, el idioma
@@ -65,4 +66,6 @@ Los demás idiomas, salvo lo que el sistema pida para todos. Nada de push ni de 
 ## Cómo trabajar
 
 Otras sesiones pueden estar trabajando en el árbol: añade solo tus ficheros. Puedes usar subagentes
-para investigación independiente, con moderación: el dueño lo pidió por el coste.
+para investigación independiente, con moderación: el dueño lo pidió por el coste. Las traducciones
+en bloque (notas de comandos, ejercicios, guías y catálogos), con subagentes del modelo Sonnet; tú
+revisas cada cambio antes del commit.
