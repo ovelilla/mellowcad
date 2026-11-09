@@ -228,6 +228,12 @@ actif>`, `<Ortho actif>`, `<Polaire actif>`, `<Repérage d'accrochage aux objets
 Selection Cycling's says `<Cycle de sélection activé>` and `désactivé` (16646). Table 33112's
 `Accrobj activé` is not the line F3 writes. Held by `frenchPrompts.test.ts`.
 
+Polar along Z writes `Polaire: 27.6186 < +Z` and `Polaire: 25.8968 < -Z` (names/d02, LIGNE from
+0,0,0 in isoSO), `feedback.polarZ`'s words and form. MESURERGEOM, which is not built (d03): Rapide
+shows bare values (`100`, `60`), a click in an area `Aire = 6000.0000, Périmètre = 320.0000`,
+AREA's own message, and Distance `Distance = 116.6190` beside bare values and `31°`. None shows
+the words of the unused `feedback.measure*` readout (`Dist`, `Aire`, `Périm`), ours, as in pt-BR.
+
 ### Deviations
 
 - **EDITSPLINE's Weight is `EPaisseur`**, as the prompt lists it and table 22405 declares it: the
@@ -240,9 +246,10 @@ Selection Cycling's says `<Cycle de sélection activé>` and `désactivé` (1664
 ### Unverified
 
 What no probe showed, worded from the tables or in Autodesk's style: the dynamic input's field
-labels (`Centre`, `Premier point`…: AutoCAD shows none), the measure readout (`Dist`, `Aire`,
-`Périm`), Polar's 3D readout, our own messages (files, clipboard, FROM's, `messages.erased`), the
-keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded.
+labels (`Centre`, `Premier point`…: AutoCAD shows none), the unused `feedback.measure*` readout
+(`Dist`, `Aire`, `Périm`: no French view shows it, "The desktop"), our own messages (files,
+clipboard, FROM's, `messages.erased`), the keys `research/console/fr.md` lists `unseen` or
+`unpaired` that the tables worded.
 
 ## Script and font
 

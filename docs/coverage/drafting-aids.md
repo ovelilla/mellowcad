@@ -238,8 +238,9 @@ over its image on the work plane) and the point on it at the base point's Z, in 
 plan (desktop interaction3d/d01, d04, d07: 8 px off the 0° path at 100,100,50, 101.648,100,50), a
 click with no angle engaged on the work plane (d02); in a 3D view the `+Z` / `-Z` guide along the
 UCS's Z, engaged within the same 12 px measured on the screen, the guide drawn nearer the cursor
-winning against a polar angle, the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording; the plan's `Polar: 75.7945 < 0°` is
-pt-BR's too, desktop names/d02); the
+winning against a polar angle, the Z on a tie (**unverified** rule); readout
+`Polar: 50.00mm < +Z`, the form French AutoCAD writes (`Polaire: 27.6186 < +Z`, `< -Z`, desktop
+names/d02 fr-FR; the plan's `Polar: 75.7945 < 0°` is pt-BR's too, names/d02); the
 path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
 light grey box below and to the right of the cursor (desktop line/d12); POLARANG typed (SETVAR,
 workspace.md) in degrees, put in 0–360 (`-30` is 330, `400` is 40), a step U takes back
