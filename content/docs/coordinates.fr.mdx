@@ -10,7 +10,7 @@ Chaque point que demande une commande peut être désigné sur le dessin ou tap�
 
 ## Coordonnées absolues [#absolute]
 
-Mesurées depuis l'origine, `0,0`. Le premier point que demande une commande se lit ainsi : `20,10` est à 20 sur X et à 10 sur Y. Ensuite, la saisie dynamique lit un point tapé depuis le dernier, si bien qu'un point mesuré depuis l'origine prend `#` devant : `#120,10`.
+Mesurées depuis l'origine, `0,0`. Le premier point que demande une commande se lit ainsi : `20,10` est à 20 sur X et à 10 sur Y. Ensuite, la saisie dynamique lit un point tapé par rapport au dernier, si bien qu'un point mesuré depuis l'origine prend `#` devant : `#120,10`.
 
 <Session name="coordinatesAbsolute" caption="Un triangle, chaque sommet mesuré depuis l'origine." />
 
@@ -28,7 +28,7 @@ Une longueur et un angle, mesurés depuis le dernier point : `100<0` avance de 
 
 ## Une ligne inclinée [#angle]
 
-Pour dessiner une ligne d'une longueur donnée selon un angle donné, tapez son extrémité en coordonnées polaires, `100<30`. Ou fixez d'abord l'angle : tapez `<30` et Entrée, et le point suivant reste sur cette direction, du côté du curseur ; tapez ensuite la longueur, `100`.
+Pour dessiner une ligne d'une longueur donnée selon un angle donné, tapez son extrémité en coordonnées polaires, `100<30`. Ou fixez d'abord l'angle : tapez `<30` et Entrée, et le point suivant reste dans cette direction, du côté du curseur ; tapez ensuite la longueur, `100`.
 
 <Session name="coordinatesAngle" caption="Une ligne fixée à 30°, puis dotée de sa longueur, 100." />
 
@@ -41,4 +41,4 @@ Avec le repérage polaire activé, par `F10` ou par son bouton de la barre d'ét
 ## Ensuite [#next]
 
 - Des [exercices](/docs/exercises) tapés du début à la fin : [une équerre en L](/docs/exercises/l-bracket) en coordonnées relatives, [une parcelle](/docs/exercises/plot-of-land) en coordonnées polaires et [un bloc en isométrique](/docs/exercises/isometric-block) selon les angles isométriques.
-- La page de <Command id="LINE" />, et [Premiers pas](/docs/getting-started) pour les premiers pas sur la ligne de commande.
+- La page de <Command id="LINE" />, et [Premiers pas](/docs/getting-started) pour débuter avec la ligne de commande.

@@ -1,11 +1,11 @@
 ---
 title: "Commande RETABLIR (REDO) dans AutoCAD"
-description: "Comment fonctionne RETABLIR (REDO) d'AutoCAD en français : il rétablit ce que U ou ANNULER vient de défaire ; MRETABLIR et Ctrl+Y, étape par étape. Essayez-le."
+description: "Comment fonctionne RETABLIR (REDO) d'AutoCAD en français : rétablir ce que U ou ANNULER vient de défaire ; MRETABLIR et Ctrl+Y, étape par étape. Essayez-le."
 figure: "Un trou dessiné dans une plaque, défait avec U et rétabli avec RETABLIR."
 sourceHash: "be2e44b98ac0"
 ---
 
-RETABLIR (REDO) inverse la dernière commande <Command id="U" /> ou <Command id="UNDO" /> : ce qu'elle a défait est redessiné, en entier, si bien qu'après un ANNULER de cinq commandes RETABLIR rétablit les cinq. La commande écrit au passage les noms des commandes, puis <Message id="everythingRedone" /> quand il ne reste rien à rétablir. Elle ne demande rien et n'a pas d'options.
+RETABLIR (REDO) inverse la dernière commande <Command id="U" /> ou <Command id="UNDO" /> : ce qu'elle a défait est redessiné, en entier, si bien qu'après un ANNULER de cinq commandes, RETABLIR rétablit les cinq. La commande écrit au passage les noms des commandes, puis <Message id="everythingRedone" /> quand il ne reste rien à rétablir. Elle ne demande rien et n'a pas d'options.
 
 Elle ne fonctionne que juste après l'annulation. À tout autre moment, elle dit <Message id="redoMustFollowUndo" />, et une fois qu'une autre commande s'est exécutée, même une qui ne change rien comme LISTE ou ZOOM, <Message id="nothingToRedo" />. Quand l'annulation est désactivée par l'option Contrôle Aucun d'ANNULER, RETABLIR dit que la commande est désactivée.
 
@@ -19,7 +19,7 @@ Ctrl+Maj+Z rétablit aussi, sans rien dire, bien qu'AutoCAD n'y associe rien. Le
 
 ### Quel est le raccourci pour rétablir dans AutoCAD ?
 
-Ctrl+Y, qui rétablit une étape (MRETABLIR 1). RETABLIR lui-même n'a pas d'alias : tapez `RETABLIR`, ou `_REDO` quelle que soit la langue d'AutoCAD.
+Ctrl+Y, qui rétablit une étape (MRETABLIR 1). RETABLIR elle-même n'a pas d'alias : tapez `RETABLIR`, ou `_REDO` quelle que soit la langue d'AutoCAD.
 
 ### Pourquoi RETABLIR ne fonctionne pas ?
 

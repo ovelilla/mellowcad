@@ -24,4 +24,4 @@ Le reste part de coins déjà dessinés : tapez `_END`, l'accrochage aux objets
 
 ### Cotez-le [#dimensions]
 
-Sur le calque Cotes, <Command id="DIMALIGNED" /> le long des arêtes, chaque cote placée à côté de la sienne : 60 et 40 en bas, 40 en montant à gauche, 20 en montant à droite.
+Sur le calque Cotes, <Command id="DIMALIGNED" /> le long des arêtes, chaque cote placée à côté de son arête : 60 et 40 en bas, 40 en montant à gauche, 20 en montant à droite.

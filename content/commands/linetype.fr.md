@@ -21,7 +21,7 @@ Demande le nom du type de ligne, en proposant le type courant ; tapez le nom d'
 
 ## Missing
 
-Le Gestionnaire des types de ligne, et charger, créer ou décrire des types de ligne : seuls les six ci-dessus existent, et la liste ne décrit que Continuous. Une échelle de type de ligne par objet (CELTSCALE) : seulement celle du dessin, <Command id="LTSCALE" />. DuBloc. PSLTSCALE et MSLTSCALE, car il n'y a pas d'espace papier. Les noms de types de ligne d'AutoCAD en espagnol : ils sont ici en anglais dans toutes les langues. PLINEGEN : une nouvelle polyligne recommence son motif à chaque sommet, sauf si l'option <Keyword command="PEDIT" id="Ltype gen" /> de <Command id="PEDIT" /> l'active.
+Le Gestionnaire des types de ligne, et charger, créer ou décrire des types de ligne : seuls les six ci-dessus existent, et la liste ne décrit que Continuous. Une échelle de type de ligne par objet (CELTSCALE) : seulement celle du dessin, <Command id="LTSCALE" />. DuBloc. PSLTSCALE et MSLTSCALE, car il n'y a pas d'espace papier. Les noms de types de ligne d'AutoCAD en français, comme INTERROMPU ou AXES : ils sont ici en anglais dans toutes les langues. PLINEGEN : une nouvelle polyligne recommence son motif à chaque sommet, sauf si l'option <Keyword command="PEDIT" id="Ltype gen" /> de <Command id="PEDIT" /> l'active.
 
 ## Questions
 

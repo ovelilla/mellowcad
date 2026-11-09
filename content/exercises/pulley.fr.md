@@ -21,4 +21,4 @@ Sur le calque Contour, une seule <Command id="PLINE" /> fermée depuis `10,0`, c
 
 ### Créez le solide de révolution [#revolve]
 
-<Command id="REVOLVE" /> : désignez la coupe et appuyez sur Entrée, puis <Keyword command="REVOLVE" id="Y" /> : l'axe Y est celui de la poulie. Entrée prend l'angle par défaut, un tour complet. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> la cadre, et une échelle de 0.8x laisse de la marge autour.
+<Command id="REVOLVE" /> : désignez la coupe et appuyez sur Entrée, puis <Keyword command="REVOLVE" id="Y" /> : l'axe Y est celui de la poulie. Entrée accepte l'angle par défaut, un tour complet. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> la cadre, et une échelle de 0.8x laisse de la marge autour.

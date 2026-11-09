@@ -50,7 +50,7 @@ export const fr: EditorLocale = {
     },
     "Viewport": {
       "view": [
-        "Commandes de vue : ",
+        "Contrôles de la vue : ",
         [
           "name"
         ]
@@ -159,7 +159,7 @@ export const fr: EditorLocale = {
       "cancel": "Annuler"
     },
     "SnapOverride": {
-      "from": "De",
+      "from": "Depuis",
       "pointFilters": "Filtres de coordonnées",
       "none": "Aucun"
     },
@@ -183,7 +183,7 @@ export const fr: EditorLocale = {
       "copySelection": "Copier la sélection",
       "deselectAll": "Tout désélectionner",
       "properties": "Propriétés",
-      "enter": "Entrée",
+      "enter": "Entrer",
       "cancel": "Annuler",
       "snapOverrides": "Remplacer accrobj",
       "dimensionStyle": "Style de dimension"

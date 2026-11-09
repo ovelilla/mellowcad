@@ -39,4 +39,4 @@ Définissez d'abord les attributs avec <Command id="ATTDEF" />, puis sélectionn
 
 ### Comment exploser (décomposer) un bloc ?
 
-<Command id="EXPLODE" /> retransforme une référence en les objets qu'elle montre, un niveau d'imbrication à la fois, chacun sur son propre calque et dans sa propre couleur. Les attributs redeviennent leurs définitions ; les valeurs sont perdues.
+<Command id="EXPLODE" /> retransforme une référence en ses objets, un niveau d'imbrication à la fois, chacun sur son propre calque et dans sa propre couleur. Les attributs redeviennent leurs définitions ; les valeurs sont perdues.

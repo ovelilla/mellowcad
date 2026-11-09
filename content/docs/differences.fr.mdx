@@ -14,11 +14,11 @@ AutoCAD ouvre un nouveau dessin dans un onglet à part et garde l'ancien ouvert.
 
 ## Enregistrer télécharge un fichier [#saving]
 
-MellowCAD conserve le dessin dans ce navigateur pendant que vous travaillez, sur cet appareil uniquement. <Command id="QSAVE" />, <Command id="SAVEAS" /> et <Command id="SAVE" /> téléchargent tous trois un fichier au format propre et versionné de MellowCAD : un téléchargement du navigateur demande toujours le nom du fichier, si bien que rien ne distingue l'enregistrement sur le fichier courant, sous un autre nom ou en copie.
+MellowCAD conserve le dessin dans ce navigateur pendant que vous travaillez, sur cet appareil uniquement. <Command id="QSAVE" />, <Command id="SAVEAS" /> et <Command id="SAVE" /> téléchargent tous trois un fichier au format versionné propre à MellowCAD : un téléchargement du navigateur demande toujours le nom du fichier, si bien que rien ne distingue l'enregistrement sur le fichier courant, sous un autre nom ou en copie.
 
 ## Les touches que le navigateur garde [#browser-keys]
 
-Une page ne reçoit jamais `Ctrl+W`, qui ferme l'onglet, ni `Ctrl+N`, qui ouvre une fenêtre. Le cycle de sélection, le `Ctrl+W` d'AutoCAD, est ici `F4` ; AutoCAD consacre `F4` à l'accrochage aux objets 3D, que MellowCAD n'a pas encore. Un nouveau dessin, c'est <Command id="NEW" />, tapé.
+Une page ne reçoit jamais `Ctrl+W`, qui ferme l'onglet, ni `Ctrl+N`, qui ouvre une fenêtre. Le cycle de sélection, le `Ctrl+W` d'AutoCAD, est ici `F4` ; AutoCAD consacre `F4` à l'accrochage aux objets 3D, que MellowCAD n'a pas encore. Pour un nouveau dessin, tapez <Command id="NEW" />.
 
 ## La saisie dynamique est toujours active [#dynamic-input]
 
@@ -26,7 +26,7 @@ La saisie dynamique ne peut pas être désactivée, si bien que sa touche, `F12`
 
 ## Espace objet uniquement [#model-space]
 
-Il n'y a ni présentations ni traçage : l'écran est le seul endroit où l'on voit un dessin. C'est pourquoi les épaisseurs de ligne s'affichent dès le départ (`LWDISPLAY` activée, alors qu'AutoCAD démarre avec cette variable désactivée), et `OBJET`, dans la barre d'état, est une étiquette et non un passage à une présentation.
+Il n'y a ni présentations ni traçage : l'écran est le seul endroit où l'on voit un dessin. C'est pourquoi les épaisseurs de ligne s'affichent dès le départ (`LWDISPLAY` activée, alors qu'AutoCAD démarre avec cette variable désactivée), et `OBJET`, dans la barre d'état, est une étiquette et non un bouton qui bascule vers une présentation.
 
 ## Versions en ligne de commande de certaines boîtes de dialogue [#dialogs]
 
@@ -42,4 +42,4 @@ AutoCAD masque les coordonnées du curseur dans sa barre d'état depuis 2015. Me
 
 ## L'arabe utilise les commandes de l'AutoCAD anglais [#arabic]
 
-Il n'existe pas d'AutoCAD en arabe, et qui dessine en arabe travaille dans l'AutoCAD anglais. Ainsi, en arabe, l'interface parle arabe et la ligne de commande parle l'AutoCAD anglais : les mêmes noms, alias, invites et lettres d'option. Un raccourci `Ctrl` fonctionne quelle que soit la disposition du clavier, comme dans un programme de bureau : `Ctrl+Z` annule même quand la disposition arabe tape une lettre.
+Il n'existe pas d'AutoCAD en arabe, et qui dessine en arabe travaille dans l'AutoCAD anglais. Ainsi, en arabe, l'interface parle arabe et la ligne de commande parle l'AutoCAD anglais : les mêmes noms, alias, invites et lettres d'option. Un raccourci `Ctrl` fonctionne quelle que soit la disposition du clavier, comme dans un programme de bureau : `Ctrl+Z` annule même quand la disposition arabe produit une lettre.

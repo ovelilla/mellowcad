@@ -5,7 +5,7 @@ figure: "Deux lignes prolongées jusqu'à la ligne qui barre leur chemin : chac
 sourceHash: "b2c0044f8e87"
 ---
 
-PROLONGER (EXTEND) allonge un objet jusqu'à ce qu'il en rencontre un autre : vous le sélectionnez près de l'extrémité qui doit s'allonger, et cette extrémité avance jusqu'à l'arête la plus proche sur son chemin. Elle prolonge les lignes, arcs, arcs elliptiques, polylignes ouvertes (le long de leur dernier segment, droit ou en suivant son arc), polylignes 3D et splines ouvertes. Elle démarre en mode Rapide, comme celle d'AutoCAD : tout objet sert de limite. Maintenir Maj en sélectionnant ajuste à la place, comme le fait <Command id="TRIM" />. Chaque sélection est une étape qu'Annuler reprend ; Entrée termine la commande.
+PROLONGER (EXTEND) allonge un objet jusqu'à ce qu'il en rencontre un autre : vous le sélectionnez près de l'extrémité qui doit s'allonger, et cette extrémité avance jusqu'à l'arête la plus proche sur son chemin. Elle prolonge les lignes, arcs, arcs elliptiques, polylignes ouvertes (le long de leur dernier segment, droit ou en suivant son arc), polylignes 3D et splines ouvertes. Elle démarre en mode Rapide, comme celle d'AutoCAD : tout objet sert de limite. Maintenir Maj en sélectionnant ajuste à la place, comme le fait <Command id="TRIM" />. Chaque sélection est une étape qu'Annuler défait ; Entrée termine la commande.
 
 ## Options
 

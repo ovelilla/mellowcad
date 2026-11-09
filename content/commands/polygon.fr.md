@@ -5,7 +5,7 @@ figure: "Deux cercles de rayon 30, un hexagone inscrit dans l'un et circonscrit 
 sourceHash: "90e1cc9a53c4"
 ---
 
-POLYGONE (POLYGON) dessine un polygone régulier, tous ses côtés et ses angles égaux, sous forme d'une seule polyligne fermée. Elle demande le nombre de côtés, de 3 à 1024, puis le centre et si le polygone est inscrit dans un cercle ou circonscrit à lui, puis le rayon de ce cercle. Ou il se construit sur l'un de ses côtés, avec <Keyword id="Edge" />. Le nombre de côtés et le choix d'<Keyword id="Inscribed" /> ou de <Keyword id="Circumscribed" /> sont les valeurs par défaut du POLYGONE suivant, dans ce dessin. Un rayon tapé comme un nombre dessine le côté du bas à l'horizontale ; un rayon donné comme un point, cliqué ou tapé, fixe à la fois la taille et l'orientation du polygone. Pendant que vous donnez le rayon, le polygone suit le curseur, avec une ligne ambre en tirets depuis le centre.
+POLYGONE (POLYGON) dessine un polygone régulier, tous ses côtés et ses angles égaux, sous forme d'une seule polyligne fermée. Elle demande le nombre de côtés, de 3 à 1024, puis le centre et si le polygone est inscrit dans un cercle ou circonscrit à celui-ci, puis le rayon de ce cercle. Ou il se construit sur l'un de ses côtés, avec <Keyword id="Edge" />. Le nombre de côtés et le choix d'<Keyword id="Inscribed" /> ou de <Keyword id="Circumscribed" /> sont les valeurs par défaut du POLYGONE suivant, dans ce dessin. Un rayon tapé comme un nombre dessine le côté du bas à l'horizontale ; un rayon donné comme un point, cliqué ou tapé, fixe à la fois la taille et l'orientation du polygone. Pendant que vous donnez le rayon, le polygone suit le curseur, avec une ligne ambre en tirets depuis le centre.
 
 ## Options
 

@@ -5,7 +5,7 @@ figure: "Un cercle déplacé de 50 vers la droite : sélectionné, son centre c
 sourceHash: "753ca38448bf"
 ---
 
-DEPLACER (MOVE) emmène les objets que vous sélectionnez d'un endroit à un autre : sélectionnez-les, donnez un point de base, puis un deuxième point, et ils se déplacent de la distance et dans la direction qui vont du premier au second. Rien d'autre ne change en eux. Comme dans AutoCAD, des objets sélectionnés avant la commande sont ceux qu'elle déplace, un point peut être cliqué, pris avec l'accrochage aux objets ou tapé, et pendant que vous choisissez le deuxième point, le jeu suit le curseur, avec une ligne depuis le point de base. Le déplacement est une seule étape, qu'Annuler reprend.
+DEPLACER (MOVE) déplace les objets que vous sélectionnez d'un endroit à un autre : sélectionnez-les, donnez un point de base, puis un deuxième point, et ils se déplacent de la distance et dans la direction qui vont du premier au second. Rien d'autre ne change en eux. Comme dans AutoCAD, des objets sélectionnés avant la commande sont ceux qu'elle déplace, un point peut être cliqué, pris avec l'accrochage aux objets ou tapé, et pendant que vous choisissez le deuxième point, le jeu suit le curseur, avec une ligne depuis le point de base. Le déplacement est une seule étape, qu'Annuler défait.
 
 ## Options
 
@@ -25,7 +25,7 @@ DEPLACER, avec l'alias `DP`, puis Entrée ou la barre d'espace ; l'alias anglai
 
 ### Comment déplacer un objet d'une distance précise ?
 
-Donnez le point de base, puis tapez le déplacement comme deuxième point : `50,0` déplace de 50 le long de X. Avec la saisie dynamique activée, comme au départ, un point après le premier est relatif à lui, et l'historique l'écrit donc `@50,0`. Ou orientez le curseur dans la direction voulue, avec le mode ortho ou le repérage polaire, et tapez seulement la distance.
+Donnez le point de base, puis tapez le déplacement comme deuxième point : `50,0` déplace de 50 le long de X. Avec la saisie dynamique activée, comme au départ, un point après le premier est relatif à celui-ci, et l'historique l'écrit donc `@50,0`. Ou orientez le curseur dans la direction voulue, avec le mode ortho ou le repérage polaire, et tapez seulement la distance.
 
 ### Comment déplacer des objets vers le haut en 3D ?
 

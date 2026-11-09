@@ -5,7 +5,7 @@ figure: "La zone entre un rectangle et un cercle enfoncée de 8 : une plaque pe
 sourceHash: "b806d59060e1"
 ---
 
-APPTIRER (PRESSPULL) extrude ce que vous cliquez : un objet fermé, une zone que des objets ferment autour du clic, ou une face plane d'un solide 3D. Cliquez, puis tapez la hauteur ou déplacez le curseur et cliquez : une hauteur positive tire, une négative appuie. Un objet fermé ou une zone devient un nouveau solide, celui que créerait <Command id="EXTRUDE" />, et les objets restent ; les îlots d'une zone y font des trous, comme dans la figure. Une face ajoute son prisme à son solide ou l'en retire : le dessus d'une boîte, tiré, la rend plus haute. L'invite revient pour le clic suivant jusqu'à Entrée, et toute l'exécution est une seule étape, qu'Annuler reprend.
+APPTIRER (PRESSPULL) extrude ce que vous cliquez : un objet fermé, une zone que des objets ferment autour du clic, ou une face plane d'un solide 3D. Cliquez, puis tapez la hauteur ou déplacez le curseur et cliquez : une hauteur positive tire, une négative appuie. Un objet fermé ou une zone devient un nouveau solide, celui que créerait <Command id="EXTRUDE" />, et les objets restent ; les îlots d'une zone y font des trous, comme dans la figure. Une face ajoute son prisme à son solide ou l'en retire : le dessus d'une boîte, tiré, la rend plus haute. L'invite revient pour le clic suivant jusqu'à Entrée, et toute l'exécution est une seule étape, qu'Annuler défait.
 
 Maintenez Ctrl enfoncée et la face qu'un clic prendrait s'éclaire ; Ctrl+clic décale plutôt cette face, ses voisines prolongées jusqu'à la rejoindre, si bien qu'un côté incliné garde sa pente. Comme dans AutoCAD, APPTIRER fonctionne par clics : à un nombre ou un point tapé à sa première invite, elle répond <Message id="presspullClick" />, et l'invite est reposée.
 
@@ -17,7 +17,7 @@ Maintenez Ctrl enfoncée et la face qu'un clic prendrait s'éclaire ; Ctrl+clic
 
 ## Missing
 
-Une face courbe, qu'AutoCAD décale aussi : ici, le clic ne trouve aucune face. Un décalage dont les faces voisines sont des cônes, des sphères ou des tores, ou à la fois des plans et des faces courbes, ou qui pousserait une face au travers de la face opposée : le solide reste tel quel. Les zones que GRAVER (IMPRINT) et IMPLIEDFACE créent sur une face, et Ctrl+Maj+E. Un objet ouvert, qu'AutoCAD extrude en surface : il n'y a pas encore de surfaces. Pendant le glisser, l'aperçu montre le prisme de la face ou le nouveau solide, pas le solide tel qu'il sera, et une face ne s'éclaire qu'avec Ctrl. Une zone délimitée hors du plan du SCU n'a pas été testée.
+Une face courbe, qu'AutoCAD décale aussi : ici, le clic ne trouve aucune face. Un décalage dont les faces voisines sont des cônes, des sphères ou des tores, ou à la fois des plans et des faces courbes, ou qui pousserait une face au travers de la face opposée : le solide reste tel quel. Les zones que GRAVER (IMPRINT) et IMPLIEDFACE créent sur une face, et Ctrl+Maj+E. Un objet ouvert, qu'AutoCAD extrude en surface : il n'y a pas encore de surfaces. Pendant le glissement, l'aperçu montre le prisme de la face ou le nouveau solide, pas le solide tel qu'il sera, et une face ne s'éclaire qu'avec Ctrl. Une zone délimitée hors du plan du SCU n'a pas été testée.
 
 ## Questions
 

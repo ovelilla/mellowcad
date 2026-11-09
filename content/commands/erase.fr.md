@@ -5,7 +5,7 @@ figure: "Un rectangle et ses deux diagonales : une diagonale sélectionnée, pu
 sourceHash: "2de33971060a"
 ---
 
-EFFACER (ERASE) retire du dessin les objets que vous sélectionnez. Sélectionnez-les à `Sélectionnez des objets:`, en cliquant dessus ou avec n'importe quel mode de sélection d'AutoCAD, dont la fenêtre et la capture, puis appuyez sur Entrée ou sur la barre d'espace : ils disparaissent, et la commande n'en dit pas plus. Echap la termine sans rien effacer. Comme dans AutoCAD, les objets sélectionnés avant la commande sont effacés aussitôt, et la touche Suppr, avec des objets sélectionnés, lance EFFACER sur eux. Pendant la sélection, l'objet sous le curseur et ceux déjà choisis s'affichent estompés, comme AutoCAD montre d'avance ce qu'il va effacer. L'effacement entier est une seule étape, qu'Annuler reprend.
+EFFACER (ERASE) retire du dessin les objets que vous sélectionnez. Sélectionnez-les à `Sélectionnez des objets:`, en cliquant dessus ou avec n'importe quel mode de sélection d'AutoCAD, dont la fenêtre et la capture, puis appuyez sur Entrée ou sur la barre d'espace : ils disparaissent, et la commande n'en dit pas plus. Echap la termine sans rien effacer. Comme dans AutoCAD, les objets sélectionnés avant la commande sont effacés aussitôt, et la touche Suppr, avec des objets sélectionnés, lance EFFACER sur eux. Pendant la sélection, l'objet sous le curseur et ceux déjà choisis s'affichent estompés, comme AutoCAD montre d'avance ce qu'il va effacer. L'effacement entier est une seule étape, qu'Annuler défait.
 
 ## Missing
 

@@ -22,7 +22,7 @@ Pede o nome do tipo de linha e oferece o atual; digite o nome de um carregado, o
 
 ## Missing
 
-O Gerenciador de tipos de linha, e carregar, criar ou descrever tipos de linha: só existem os seis acima, e a lista só descreve Continuous. Uma escala de tipo de linha por objeto (CELTSCALE): só a do desenho, <Command id="LTSCALE" />. PorBloco. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. Os nomes de tipo de linha do AutoCAD em espanhol: aqui eles são em inglês em todos os idiomas. PLINEGEN: uma nova polilinha recomeça o padrão em cada vértice, a menos que a opção gerar Tipolinha do <Command id="PEDIT" /> o ative.
+O Gerenciador de tipos de linha, e carregar, criar ou descrever tipos de linha: só existem os seis acima, e a lista só descreve Continuous. Uma escala de tipo de linha por objeto (CELTSCALE): só a do desenho, <Command id="LTSCALE" />. PorBloco. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. Os nomes de tipo de linha do AutoCAD em português, como TRACEJADA ou CENTRO: aqui eles são em inglês em todos os idiomas. PLINEGEN: uma nova polilinha recomeça o padrão em cada vértice, a menos que a opção gerar Tipolinha do <Command id="PEDIT" /> o ative.
 
 ## Questions
 

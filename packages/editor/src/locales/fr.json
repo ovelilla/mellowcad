@@ -44,7 +44,7 @@
     "out": "Zoom arrière"
   },
   "Viewport": {
-    "view": "Commandes de vue : {name}"
+    "view": "Contrôles de la vue : {name}"
   },
   "ViewCube": {
     "label": "ViewCube",
@@ -149,7 +149,7 @@
     "cancel": "Annuler"
   },
   "SnapOverride": {
-    "from": "De",
+    "from": "Depuis",
     "pointFilters": "Filtres de coordonnées",
     "none": "Aucun"
   },
@@ -168,7 +168,7 @@
     "copySelection": "Copier la sélection",
     "deselectAll": "Tout désélectionner",
     "properties": "Propriétés",
-    "enter": "Entrée",
+    "enter": "Entrer",
     "cancel": "Annuler",
     "snapOverrides": "Remplacer accrobj",
     "dimensionStyle": "Style de dimension"

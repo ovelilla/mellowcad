@@ -33,7 +33,7 @@ Activé au départ : l'attribut reste là où le bloc le place.
 
 ### Justify
 
-Demande par quel point le texte est positionné, comme TEXTE : <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, ou l'un des neuf points, en haut, au milieu et en bas, à gauche, au centre et à droite. L'invite du point de départ demande ensuite le point qu'il nomme : le milieu centre centre la valeur dans un repère.
+Demande par quel point le texte est positionné, comme TEXTE : <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, ou l'un des neuf points, en haut, au milieu et en bas, à gauche, au centre et à droite. L'invite du point de départ demande ensuite le point qu'il nomme : le milieu centre place la valeur au centre d'un repère.
 
 ### Style
 

@@ -10,11 +10,11 @@ faq:
   - question: "Mon fichier DXF est-il envoyé quelque part ?"
     answer: "Non. Votre navigateur lit le fichier et le transmet à l'éditeur sur cet appareil ; il n'est jamais envoyé à un serveur."
   - question: "Puis-je ouvrir un fichier DWG ?"
-    answer: "Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, SAUVENOM avec un type de fichier DXF) et ouvrez celui-ci."
+    answer: "Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, SAUVENOM avec un type de fichier DXF) et ouvrez ce fichier."
   - question: "Puis-je enregistrer mes modifications en DXF ?"
-    answer: "Pas encore. Ctrl+S enregistre le dessin dans un fichier au format propre et versionné de MellowCAD, qui s'ouvre de nouveau ici."
+    answer: "Pas encore. Ctrl+S enregistre le dessin dans un fichier au format versionné propre à MellowCAD, qui s'ouvre de nouveau ici."
   - question: "Pourquoi certains objets manquent-ils ?"
-    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
+    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
 ---
 
 <OpenDxf />
@@ -56,7 +56,7 @@ Dans l'éditeur, un DXF s'ouvre comme un dessin : <Command id="OPEN" /> (`Ctrl+
 
 ## Modifiez-le et conservez-le [#keep]
 
-Une fois ouvert, un DXF est un dessin comme un autre : mesurez-le avec <Command id="DIST" /> et <Command id="AREA" />, modifiez-le avec <Command id="MOVE" />, <Command id="TRIM" /> ou <Command id="OFFSET" />, et dessinez dessus. Il est conservé dans ce navigateur pendant que vous travaillez, et `Ctrl+S` l'enregistre dans un fichier au format propre et versionné de MellowCAD. L'enregistrement au format DXF n'existe pas encore, pas plus que les fichiers DWG.
+Une fois ouvert, un DXF est un dessin comme un autre : mesurez-le avec <Command id="DIST" /> et <Command id="AREA" />, modifiez-le avec <Command id="MOVE" />, <Command id="TRIM" /> ou <Command id="OFFSET" />, et dessinez dessus. Il est conservé dans ce navigateur pendant que vous travaillez, et `Ctrl+S` l'enregistre dans un fichier au format versionné propre à MellowCAD. L'enregistrement au format DXF n'est pas encore disponible, pas plus que les fichiers DWG.
 
 ## Questions [#questions]
 
@@ -70,12 +70,12 @@ Non. Votre navigateur lit le fichier et le transmet à l'éditeur sur cet appare
 
 ### Puis-je ouvrir un fichier DWG ? [#dwg]
 
-Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, <Command id="SAVEAS" /> avec un type de fichier DXF) et ouvrez celui-ci.
+Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, <Command id="SAVEAS" /> avec un type de fichier DXF) et ouvrez ce fichier.
 
 ### Puis-je enregistrer mes modifications en DXF ? [#save-dxf]
 
-Pas encore. `Ctrl+S` enregistre le dessin dans un fichier au format propre et versionné de MellowCAD, qui s'ouvre de nouveau ici.
+Pas encore. `Ctrl+S` enregistre le dessin dans un fichier au format versionné propre à MellowCAD, qui s'ouvre de nouveau ici.
 
 ### Pourquoi certains objets manquent-ils ? [#missing]
 
-Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.
+Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.

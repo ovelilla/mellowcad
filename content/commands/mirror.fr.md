@@ -5,7 +5,7 @@ figure: "Un contour fermé réfléchi par rapport à une ligne de symétrie vert
 sourceHash: "fd4b7540311a"
 ---
 
-MIROIR (MIRROR) fait la symétrie des objets que vous sélectionnez par rapport à une ligne : sélectionnez-les, donnez le premier puis le second point de la ligne de symétrie, puis dites s'il faut effacer les objets source. Le reflet est une copie et, avec la réponse par défaut, Non, les originaux restent : c'est ainsi qu'on dessine une pièce symétrique par moitiés. Les deux points sont pris dans le plan du SCU, si bien qu'une ligne de symétrie tracée en mode ortho fait une symétrie bien droite, horizontale ou verticale. Comme dans AutoCAD avec MIRRTEXT à 0, sa valeur par défaut, un texte se lit toujours de gauche à droite dans le reflet, et des hachures gardent l'angle de leur motif. L'exécution est une seule étape, qu'Annuler reprend.
+MIROIR (MIRROR) fait la symétrie des objets que vous sélectionnez par rapport à une ligne : sélectionnez-les, donnez le premier puis le second point de la ligne de symétrie, puis dites s'il faut effacer les objets source. Le reflet est une copie et, avec la réponse par défaut, Non, les originaux restent : c'est ainsi qu'on dessine une pièce symétrique par moitiés. Les deux points sont pris dans le plan du SCU, si bien qu'une ligne de symétrie tracée en mode ortho fait une symétrie bien droite, horizontale ou verticale. Comme dans AutoCAD avec MIRRTEXT à 0, sa valeur par défaut, un texte se lit toujours de gauche à droite dans le reflet, et des hachures gardent l'angle de leur motif. L'exécution est une seule étape, qu'Annuler défait.
 
 ## Options
 

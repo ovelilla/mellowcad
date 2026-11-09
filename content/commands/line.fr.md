@@ -33,7 +33,7 @@ Donnez le premier point, puis tapez le suivant en coordonnées polaires, longueu
 
 ### Comment continuer à partir de la dernière ligne dessinée ?
 
-Lancez LIGNE et appuyez sur Entrée au premier point : elle part de l'extrémité de la dernière ligne, polyligne ou du dernier arc. Depuis un arc, la ligne continue tangente à lui et LIGNE ne demande que sa longueur. S'il n'y a rien d'où repartir, elle dit <Message id="noLineOrArcToContinue" />.
+Lancez LIGNE et appuyez sur Entrée au premier point : elle part de l'extrémité de la dernière ligne, polyligne ou du dernier arc. Depuis un arc, la ligne continue tangente à l'arc et LIGNE ne demande que sa longueur. S'il n'y a rien d'où repartir, elle dit <Message id="noLineOrArcToContinue" />.
 
 ### Pourquoi ma ligne est faite de morceaux séparés ?
 

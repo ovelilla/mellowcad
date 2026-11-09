@@ -5,13 +5,13 @@ figure: "PAN glissé vers la droite et vers le bas, puis Entrée : la plaque gl
 sourceHash: "0ca3050831f3"
 ---
 
-PAN fait glisser la vue ; rien ne bouge dans le dessin. Elle commence par <Message id="panExit" /> et ne demande rien d'autre : le curseur devient une main, et un glisser avec le bouton gauche déplace la vue avec lui, autant de fois que vous voulez, jusqu'à ce qu'Entrée ou Echap la termine. Sans PAN, un glisser avec le bouton de la molette fait un panoramique à tout moment, même au milieu d'une commande. Chaque PAN est une étape d'annulation, réunie avec les ZOOM et les PAN qui l'entourent, de sorte que <Command id="U" /> rend la vue. Tapée avec une apostrophe, `'PAN` ou `'P`, elle fonctionne à l'intérieur d'une autre commande, qui reprend ensuite.
+PAN fait glisser la vue ; rien ne bouge dans le dessin. Elle commence par <Message id="panExit" /> et ne demande rien d'autre : le curseur devient une main, et un glissement avec le bouton gauche déplace la vue avec lui, autant de fois que vous voulez, jusqu'à ce qu'Entrée ou Echap la termine. Sans PAN, un glissement avec le bouton de la molette fait un panoramique à tout moment, même au milieu d'une commande. Chaque PAN est une étape d'annulation, réunie avec les ZOOM et les PAN qui l'entourent, de sorte que <Command id="U" /> rend la vue. Tapée avec une apostrophe, `'PAN` ou `'P`, elle fonctionne à l'intérieur d'une autre commande, qui reprend ensuite.
 
 <Command id="-PAN" /> fait le panoramique par deux points : un point de base et un deuxième point, la vue se déplaçant de la distance qui les sépare ; ou un déplacement tapé à la première invite, comme `50,0`, et Entrée à la seconde. Elle est transparente elle aussi, et forme sa propre étape d'annulation.
 
 ## Missing
 
-Le menu contextuel qu'AutoCAD affiche au clic droit pendant un panoramique, avec Quitter, Panoramique, Zoom, Orbite 3D, Fenêtre de zoom, Zoom d'origine et Zoom étendu.
+Le menu contextuel qu'AutoCAD affiche au clic droit pendant un panoramique, avec Quitter, Panoramique, Zoom, Orbite 3D, Fenêtre de zoom, Zoom original et Zoom vers l'étendue.
 
 ## Questions
 

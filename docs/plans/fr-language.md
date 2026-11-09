@@ -67,7 +67,9 @@ for itself.
 ## What is left
 
 Each item is in `docs/i18n/fr.md`: what no probe showed ("Unverified": the dynamic input's
-labels, the measure readout, our own messages) and a native speaker's review. What French words per
-command where English shares one, and the drafting toggles' lines from the French desktop, were done
-the same day, after going live ("Per command", "The desktop"). Skill `language-review` takes the
-rest, and keeps the language current after the next AutoCAD update.
+labels, the measure readout, our own messages). What French words per command where English shares
+one, and the drafting toggles' lines from the French desktop, were done the same day, after going
+live ("Per command", "The desktop"); so was a model's reread of the hand-written French, no native
+speaker being available ("Review"), after which `/fr` first weighed 255,870 bytes (`/`, 253,682),
+its landing's strings 30 bytes shorter: within a build's noise of the commit's. Skill
+`language-review` takes the rest, and keeps the language current after the next AutoCAD update.

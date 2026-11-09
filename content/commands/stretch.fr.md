@@ -1,6 +1,6 @@
 ---
 title: "Commande ETIRER (STRETCH) dans AutoCAD"
-description: "Comment fonctionne ETIRER (STRETCH, alias E) d'AutoCAD en français : fenêtre de capture, point de base, second point, et pourquoi il déplace parfois tout."
+description: "Comment fonctionne ETIRER (STRETCH, alias E) d'AutoCAD en français : fenêtre de capture, point de base, second point, et pourquoi elle déplace parfois tout."
 figure: "Un rectangle et un cercle étirés de 40 vers la droite par une fenêtre de capture sur le côté droit : les coins qu'elle contient se déplacent, et le cercle avec eux."
 sourceHash: "de8671fb4290"
 ---

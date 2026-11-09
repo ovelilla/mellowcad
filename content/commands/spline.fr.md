@@ -5,7 +5,7 @@ figure: "Une spline par ajustement passant par cinq points et, en dessous, une s
 sourceHash: "1056b5067125"
 ---
 
-SPLINE dessine une courbe lisse, de l'une de deux façons : passant par les points que vous indiquez (Ajustement, la méthode par défaut), ou tirée vers les sommets de contrôle que vous placez (SC). Elle commence par dire ses paramètres, `Méthode=Ajustement   Noeuds=Corde`, puis demande le premier point ; Entrée y est refusée, comme dans AutoCAD. Chaque point suivant courbe la spline, dont l'aperçu suit le curseur, et Entrée la termine. Les points peuvent être désignés, accrochés ou tapés, une longueur tapée suit la direction du curseur, et chaque point garde son Z : une spline peut donc monter dans l'espace. Echap abandonne la courbe ; toute la spline est une seule étape, que <Command id="U" /> défait. Les deux boutons de spline du ruban, par ajustement et SC, lancent SPLINE avec la méthode déjà choisie.
+SPLINE dessine une courbe lisse, de deux façons : passant par les points que vous indiquez (Ajustement, la méthode par défaut), ou tirée vers les sommets de contrôle que vous placez (SC). Elle commence par dire ses paramètres, `Méthode=Ajustement   Noeuds=Corde`, puis demande le premier point ; Entrée y est refusée, comme dans AutoCAD. Chaque point suivant courbe la spline, dont l'aperçu suit le curseur, et Entrée la termine. Les points peuvent être désignés, accrochés ou tapés, une longueur tapée suit la direction du curseur, et chaque point garde son Z : une spline peut donc monter dans l'espace. Echap abandonne la courbe ; toute la spline est une seule étape, que <Command id="U" /> défait. Les deux boutons de spline du ruban, par ajustement et SC, lancent SPLINE avec la méthode déjà choisie.
 
 ## Options
 

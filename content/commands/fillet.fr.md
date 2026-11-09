@@ -5,7 +5,7 @@ figure: "Quatre lignes, puis Rayon 15 et Multiple : deux angles arrondis, deux 
 sourceHash: "f97d737f74a9"
 ---
 
-RACCORD (FILLET) arrondit l'angle entre deux objets par un arc du rayon que vous donnez, en ajustant ou en prolongeant chaque objet jusqu'à lui. Sa première ligne indique le mode et le rayon courant ; vous sélectionnez ensuite le premier objet puis le second, chacun du côté à garder, et la commande se termine. Elle accepte les lignes, arcs, cercles, ellipses, splines et les segments d'une polyligne 2D. Deux lignes n'ont pas besoin de se toucher : elles sont prolongées jusqu'à l'arc, comme dans AutoCAD. Avec un rayon 0, ou en maintenant Maj au second objet, elle fait un angle vif à la place.
+RACCORD (FILLET) arrondit l'angle entre deux objets par un arc du rayon que vous donnez, en ajustant ou en prolongeant chaque objet jusqu'à lui. Sa première ligne indique le mode et le rayon courants ; vous sélectionnez ensuite le premier objet puis le second, chacun du côté à garder, et la commande se termine. Elle accepte les lignes, arcs, cercles, ellipses, splines et les segments d'une polyligne 2D. Deux lignes n'ont pas besoin de se toucher : elles sont prolongées jusqu'à l'arc, comme dans AutoCAD. Avec un rayon 0, ou en maintenant Maj au second objet, elle fait un angle vif à la place.
 
 ## Options
 

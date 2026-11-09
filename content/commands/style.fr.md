@@ -11,7 +11,7 @@ La table liste les styles, le style courant marqué. Nouveau crée une copie du 
 
 ## Missing
 
-La boîte de dialogue Style de texte et son aperçu : STYLE ouvre à la place la palette Styles. La police, son style et la grande police, le facteur de largeur, l'angle oblique, et les effets Renversé, Reflété et Verticale : chaque style est dessiné en Arial, droit, avec une largeur de 1. Les styles annotatifs, et le style annotatif qu'un nouveau dessin d'AutoCAD contient à côté de Standard. `-STYLE`, qui demande tout sur la ligne de commande.
+La boîte de dialogue Style de texte et son aperçu : STYLE ouvre à la place la palette Styles. La police, son style et la grande police, le facteur de largeur, l'angle oblique, et les effets Renversé, Reflété et Vertical : chaque style est dessiné en Arial, droit, avec une largeur de 1. Les styles annotatifs, et le style annotatif qu'un nouveau dessin d'AutoCAD contient à côté de Standard. `-STYLE`, qui demande tout sur la ligne de commande.
 
 ## Questions
 

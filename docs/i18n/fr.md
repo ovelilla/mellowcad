@@ -4,8 +4,10 @@
 > `/fr` (a `draft` earlier that day): the site, the editor, the six "Use" pages, the 97 command
 > pages and the 12 exercises, the engine's interface and its command language, complete ("Command
 > language", below), checked against AutoCAD 2027.1 (26.0.116 for `fr-FR/`, `acad.exe` 26.0.118).
-> **Review:** none by a native speaker; what no console probe or resource settled is **no**,
-> **partial** or **unverified** below. The plan and its commits: `docs/plans/fr-language.md`.
+> **Review:** none by a native speaker, by the owner's decision: none is available; a model
+> reread the hand-written French ("Review", below). What no console probe or resource settled is
+> **no**, **partial** or **unverified** below. The plan and its commits:
+> `docs/plans/fr-language.md`.
 
 The words are Autodesk's own French localization of AutoCAD, never a translation of ours, as
 Spanish's and pt-BR's are. One French for every French-speaking reader — France, Belgium,
@@ -285,8 +287,18 @@ No IME handling was added.
 
 ## Review
 
-No native reader yet. The command language and most of the interface are Autodesk's, so a
-reader's time goes first to what Autodesk did not write, in this order:
+`fr` went `live` **without a native speaker's review**, by the owner's decision: none is available
+(9/11/2026). The same day a model, not a native reader, read again what Autodesk did not write,
+against the English, Autodesk's tables and the French menus (three agents, their changes held by
+`docs:check` and the catalogs' tests, and read again before the commit): 10 strings of the site,
+3 of the editor, five "Use" pages, four exercises and 41 command pages changed. Mostly calques of
+the English («DECALER à 10», «Entrée prend l'angle», «qu'Annuler reprend»), a missing verb or
+subject («DXF : l'ouvre»), «au format propre et versionné», which read "clean", and Autodesk's
+words where ours were coined: `Entrer`, `Depuis` and `Contrôles de la vue` in the editor, «Zoom
+original», «Nodal», «Résolution polaire» and «Isométrique orientée S-O» in the pages; RESOL's page
+still quoted F9's line as `<Résolution activée>`. The command language and most of the interface
+are Autodesk's, so a native reader, if one is ever found, starts with what Autodesk did not
+write, in this order:
 
 1. **The landing's copy** (`messages/fr.json`), written from the search texts, not translated: the
    title and description, «Votre planche à dessin est à une touche», the FAQ.
@@ -295,13 +307,17 @@ reader's time goes first to what Autodesk did not write, in this order:
    (`content/docs/*.fr.mdx`), written by four agents from one brief on 9/11/2026, each held by
    `docs:check` to its English's options, questions and elements: their register, and the words
    they coined with no Autodesk source — «info-bulle», «poignée en flèche», «poignée active»,
-   «barre supérieure», «zone de saisie dynamique», «menu des vues» (the viewport control),
-   «palette Calques», «palette Styles», «table des textes», «Paramètres des propriétés»
-   (MATCHPROP's dialog), «Paramètres d'épaisseur de ligne», the palette rows «Echelle du type de
-   ligne», «Unité du bloc», «Facteur d'unité», «Lien hypertexte», «Fenêtre de zoom», «Zoom
-   d'origine», «masque d'arrière-plan», «cadre de texte», «maintien» (an object's handle); LAYDEL
+   «barre supérieure», «zone de saisie dynamique», «palette Calques», «palette Styles», «table
+   des textes», «Paramètres des propriétés» (MATCHPROP's dialog), «Paramètres d'épaisseur de
+   ligne», the palette rows «Echelle du type de ligne», «Unité du bloc», «Facteur d'unité», «Lien
+   hypertexte», «masque d'arrière-plan», «cadre de texte», «maintien» (an object's handle); LAYDEL
    is left in English. A decimal in prose takes a comma («0,6 degré»), a typed one its point.
 3. **Our own words**, marked — in "Interface terms": the tool names worded from the ribbon, the
    palette's own rows, the descriptions, the layer dialogs, the status bar's resolution words.
 4. **What no source settled**: the palette rows whose own word differs from the menus' («Index»
    for Contents), the dynamic input's labels, the `several` of "Command language".
+5. **What the model's reread doubted and left**: the landing's «infobulle» against Autodesk's
+   «info-bulle»; «construire avec» for "build with" (`Docs`); «pour débutants et plus» (the
+   exercises' description); «coupes et sections» (French AutoCAD's SLICE is SECTION, and its
+   SECTION is COUPE); «cercle d'axe» in the hero figure's description; a transitive «cliquer»
+   («cliquez le point»); the notes' «Essayez-le» beside the page's «Essayez-la».

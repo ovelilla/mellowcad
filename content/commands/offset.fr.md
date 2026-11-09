@@ -5,7 +5,7 @@ figure: "Un rectangle décalé de 6 vers l'intérieur et un cercle décalé de 6
 sourceHash: "b495af1e1410"
 ---
 
-DECALER (OFFSET) dessine une copie d'un objet parallèle à lui, à une distance que vous tapez ou par un point que vous cliquez : une ligne donne une ligne parallèle, un cercle ou un arc un cercle ou un arc concentrique, une polyligne un contour à l'intérieur ou à l'extérieur, une ellipse ou une spline une spline qui la suit. Comme dans AutoCAD, elle prend un objet à la fois : vous donnez la distance une fois, puis vous sélectionnez un objet et le côté où placer sa copie, autant de fois que vous voulez. Entrée la termine.
+DECALER (OFFSET) dessine une copie parallèle d'un objet, à une distance que vous tapez ou par un point que vous cliquez : une ligne donne une ligne parallèle, un cercle ou un arc un cercle ou un arc concentrique, une polyligne un contour à l'intérieur ou à l'extérieur, une ellipse ou une spline une spline qui la suit. Comme dans AutoCAD, elle prend un objet à la fois : vous donnez la distance une fois, puis vous sélectionnez un objet et le côté où placer sa copie, autant de fois que vous voulez. Entrée la termine.
 
 ## Options
 

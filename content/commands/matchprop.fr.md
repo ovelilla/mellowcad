@@ -7,7 +7,7 @@ sourceHash: "603d5ab849b1"
 
 CORRESPROP (MATCHPROP) copie les propriétés d'un objet sur d'autres : le pinceau Copier les propriétés d'AutoCAD. Sélectionnez l'objet source, ou sélectionnez-en un avant la commande ; elle en accepte un sur un calque verrouillé aussi. Elle dit ensuite quelles propriétés elle copie, <Message id="matchpropSettings" />, et demande les objets de destination : chaque sélection ou fenêtre les peint aussitôt, jusqu'à ce qu'Entrée la termine. Une destination sur un calque verrouillé reste telle quelle, avec <Message id="matchpropLockedDestination" />. Le curseur porte le pinceau d'AutoCAD, et toute l'exécution est une seule étape que <Command id="U" /> annule. Tapée avec une apostrophe, `'CORRESPROP`, elle s'exécute à l'intérieur d'une autre commande.
 
-Ce qu'elle copie, ce sont les propriétés cochées par défaut dans les paramètres des propriétés : le calque, la couleur et l'épaisseur de ligne ; le type de ligne, sauf vers des hachures, du texte multiligne et des définitions d'attribut ; l'épaisseur ; entre textes, le style, la hauteur et la rotation, et d'un texte sur une ligne à un autre, la justification aussi ; entre cotes, le style de cote ; entre hachures, le motif, l'échelle et l'angle, mais pas l'origine.
+Ce qu'elle copie, ce sont les propriétés cochées par défaut dans les paramètres des propriétés : le calque, la couleur et l'épaisseur de ligne ; le type de ligne, sauf vers des hachures, du texte multiligne et des définitions d'attribut ; la hauteur d'extrusion ; entre textes, le style, la hauteur et la rotation, et d'un texte sur une ligne à un autre, la justification aussi ; entre cotes, le style de cote ; entre hachures, le motif, l'échelle et l'angle, mais pas l'origine.
 
 ## Missing
 

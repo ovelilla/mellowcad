@@ -10,7 +10,7 @@ Un plan, c'est la maison coupée à environ un mètre cinquante de hauteur et vu
 
 ## Créez les calques [#layers]
 
-Chaque type d'objet va sur son propre calque, avec sa couleur, pour que vous puissiez désactiver n'importe lequel d'entre eux : Murs, Portes, Fenêtres et Cotes. Créez-les dans la palette Calques, <Command id="LAYER" />, et rendez le bon calque courant dans la liste déroulante des calques avant chaque étape. Pour que les cotes se lisent à la taille d'une maison, réglez l'échelle globale de leur style dans <Command id="DIMSTYLE" /> : 12 ici, si bien que leur texte fait 30 de haut.
+Chaque type d'objet va sur son propre calque, avec sa couleur, pour que vous puissiez désactiver n'importe lequel d'entre eux : Murs, Portes, Fenêtres et Cotes. Créez-les dans la palette Calques, <Command id="LAYER" />, et rendez le bon calque courant dans la liste déroulante des calques avant chaque étape. Pour que les cotes se lisent à la taille d'une maison, réglez l'échelle générale de leur style dans <Command id="DIMSTYLE" /> : 12 ici, si bien que leur texte fait 30 de haut.
 
 ## Dessinez les murs extérieurs [#walls]
 
@@ -20,7 +20,7 @@ Sur le calque Murs, <Command id="RECTANG" /> de `0,0` à `800,600` : la face ex
 
 ## Dessinez le mur intérieur [#inner-wall]
 
-Une ligne avec <Command id="LINE" /> depuis `500,20`, `0,560` vers le haut jusqu'à la face intérieure des murs extérieurs, puis <Command id="OFFSET" /> à `10` vers sa droite : le mur entre les deux pièces.
+Une ligne avec <Command id="LINE" /> depuis `500,20`, `0,560` vers le haut jusqu'à la face intérieure des murs extérieurs, puis <Command id="OFFSET" /> de `10` vers sa droite : le mur entre les deux pièces.
 
 <Session name="floorPlanInnerWall" caption="Le mur intérieur : une ligne et son décalage, 10 vers sa droite." />
 
@@ -32,7 +32,7 @@ Une ouverture se découpe entre deux lignes qui traversent le mur, ses tableaux.
 
 ## Dessinez les portes [#doors]
 
-Sur le calque Portes, chaque porte est son vantail, dessiné ouvert avec <Command id="LINE" />, et son débattement, un arc avec <Command id="ARC" /> : choisissez son option Centre, puis donnez la charnière comme centre, le début du débattement et sa fin. Les deux extrémités sont des points déjà dessinés, le coin du tableau et le bout du vantail : tapez `_END`, l'accrochage aux objets Extrémité pour un seul point, et désignez chacun d'eux.
+Sur le calque Portes, chaque porte se compose de son vantail, dessiné ouvert avec <Command id="LINE" />, et de son débattement, un arc avec <Command id="ARC" /> : choisissez son option Centre, puis donnez la charnière comme centre, le début du débattement et sa fin. Les deux extrémités sont des points déjà dessinés, le coin du tableau et le bout du vantail : tapez `_END`, l'accrochage aux objets Extrémité pour un seul point, et désignez chacun d'eux.
 
 <Session name="floorPlanDoors" caption="Chaque porte : son vantail ouvert à 90° et l'arc de son débattement." />
 

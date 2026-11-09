@@ -71,7 +71,7 @@ Comme <Keyword id="NONe" /> : les accrochages actifs sont effacés.
 
 ## Missing
 
-La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Noeud et Centre géométrique, comme modes et dans les menus. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que <Command id="LINE" /> et <Command id="CIRCLE" />. Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
+La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Nodal et Centre géométrique, comme modes et dans les menus. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que <Command id="LINE" /> et <Command id="CIRCLE" />. Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
 
 ## Questions
 

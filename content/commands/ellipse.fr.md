@@ -15,7 +15,7 @@ Dessine un arc elliptique : les mêmes invites que pour une ellipse, puis un an
 
 ### Center
 
-Part du centre : puis l'extrémité d'un axe, puis la distance avec l'autre.
+Part du centre : puis l'extrémité d'un axe, puis la distance jusqu'à l'autre.
 
 ### Rotation
 

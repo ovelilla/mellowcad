@@ -13,7 +13,7 @@ La première ligne dit le style, la hauteur et la justification courants. La hau
 
 ### Justify
 
-Demande où le texte s'accroche à son point : <Keyword id="Left" /> (par défaut), <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, ou l'un de neuf points, haut, milieu et bas par gauche, centre et droite, tels que l'invite les liste. L'invite du point de départ demande ensuite le point que nomme la justification : pour milieu centre, le point milieu. Comme dans AutoCAD, les neuf sont aussi acceptés à la première invite sans y être listés, si bien que taper là les lettres de milieu centre demande directement le point milieu. La justification est gardée dans le dessin pour la commande TEXTE suivante.
+Demande où le texte s'accroche à son point : <Keyword id="Left" /> (par défaut), <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, ou l'un des neuf points, en haut, au milieu et en bas, à gauche, au centre et à droite, tels que l'invite les liste. L'invite du point de départ demande ensuite le point que nomme la justification : pour milieu centre, le point milieu. Comme dans AutoCAD, les neuf sont aussi acceptés à la première invite sans y être listés, si bien que taper là les lettres de milieu centre demande directement le point milieu. La justification est gardée dans le dessin pour la commande TEXTE suivante.
 
 ### Style
 

@@ -12,7 +12,7 @@ Dessinez cette parcelle, en mètres, d'après la longueur et la direction de ses
 
 ### Dessinez le contour [#boundary]
 
-Sur le calque Contour, <Command id="PLINE" /> depuis `0,0`, puis chaque côté par sa longueur et son angle : `40<0`, `30<80`, `35<155` et `25<230`, chacun mesuré depuis le dernier point. <Keyword command="PLINE" id="Close" /> dessine le cinquième côté et ferme le contour : un seul objet, que <Command id="AREA" /> peut mesurer.
+Sur le calque Contour, <Command id="PLINE" /> depuis `0,0`, puis chaque côté par sa longueur et son angle : `40<0`, `30<80`, `35<155` et `25<230`, chacun mesuré depuis le dernier point. <Keyword command="PLINE" id="Close" /> dessine le cinquième côté et ferme le contour : un seul objet, qu'<Command id="AREA" /> peut mesurer.
 
 ### Mesurez son aire [#area]
 

@@ -5,7 +5,7 @@ figure: "Un rectangle avec un cercle dedans, hachuré en ANSI31 depuis un point 
 sourceHash: "d3ed16b85a19"
 ---
 
-HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : elle trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler reprend.
+HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : la commande trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez dans autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler défait.
 
 Dans AutoCAD, HACHURES règle son motif dans l'onglet contextuel Création de hachures ou dans une boîte de dialogue, que MellowCAD n'a pas : ici, elle demande sur la ligne de commande ce que demande <Command id="-HATCH" />, le motif sous <Keyword id="Properties" />. Les deux ne diffèrent que par Echap, qui sous <Command id="-HATCH" /> abandonne les zones. Chaque objet de hachures commence avec le motif, l'échelle et l'angle donnés au précédent : ANGLE, à l'échelle 1 et à l'angle 0, dans un nouveau dessin.
 
@@ -37,7 +37,7 @@ HACHURES, avec l'alias `H`, puis Entrée ou la barre d'espace. Sans onglet Créa
 
 ### Pourquoi les hachures ne fonctionnent pas dans AutoCAD ?
 
-Le plus souvent parce que la zone n'est pas fermée : elle dit <Message id="hatchNoBoundary" />, et le moindre espace suffit, car rien ne le franchit. Fermez le contour et cliquez de nouveau. Une zone fermée par une ellipse ou une spline n'est pas encore trouvée, et les objets d'un calque désactivé ne sont pas vus.
+Le plus souvent parce que la zone n'est pas fermée : HACHURES dit <Message id="hatchNoBoundary" />, et le moindre espace suffit, car rien ne le franchit. Fermez le contour et cliquez de nouveau. Une zone fermée par une ellipse ou une spline n'est pas encore trouvée, et les objets d'un calque désactivé ne sont pas vus.
 
 ### Quels motifs de hachures existent, et peut-on en télécharger d'autres ?
 

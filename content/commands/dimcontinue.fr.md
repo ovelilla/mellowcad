@@ -21,7 +21,7 @@ Annule la dernière cote de la chaîne et repart de la précédente, autant de f
 
 ## Missing
 
-Une cote n'est pas associative : une chaîne ne suit pas les objets qu'elle mesure. Une cote angulaire ne peut pas être continuée : AutoCAD continue celle qui a été créée en dernier ou désignée ; ici, créée en dernier, la commande demande une cote, et désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
+Une cote n'est pas associative : une chaîne ne suit pas les objets qu'elle mesure. Une cote angulaire ne peut pas être continuée : AutoCAD continue celle qui a été créée en dernier ou désignée ; ici, si elle est la dernière créée, la commande demande une cote, et si elle est désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
 
 ## Questions
 

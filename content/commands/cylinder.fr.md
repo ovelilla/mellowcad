@@ -5,7 +5,7 @@ figure: "Un cylindre de rayon 20 et de hauteur 40, à partir du centre de sa bas
 sourceHash: "ce397d8dcb5d"
 ---
 
-CYLINDRE (CYLINDER en anglais) dessine un cylindre, un solide 3D : donnez le centre de sa base, puis le rayon, puis la hauteur. La base se trouve dans le plan XY du SCU, à la Z du centre, et la hauteur monte selon son axe Z ; une hauteur négative descend, et un point la donne par sa distance à la base, comme pour <Command id="BOX" />. Le rayon et la hauteur sont proposés comme valeurs par défaut qu'Entrée accepte, partagées avec les autres primitives et <Command id="EXTRUDE" />. Le cylindre est créé sur le calque courant, et Annuler le supprime en une seule étape.
+CYLINDRE (CYLINDER en anglais) dessine un cylindre, un solide 3D : donnez le centre de sa base, puis le rayon, puis la hauteur. La base se trouve dans le plan XY du SCU, au Z du centre, et la hauteur monte selon son axe Z ; une hauteur négative descend, et un point la donne par sa distance à la base, comme pour <Command id="BOX" />. Le rayon et la hauteur sont proposés comme valeurs par défaut qu'Entrée accepte, partagées avec les autres primitives et <Command id="EXTRUDE" />. Le cylindre est créé sur le calque courant, et Annuler le supprime en une seule étape.
 
 Le cylindre garde ses dimensions : <Command id="LIST" /> affiche sa position, sa normale, son rayon et sa hauteur, et la palette Propriétés permet de taper le rayon et la hauteur. Ses poignées le déplacent, règlent sa hauteur et, à chaque quart de la base, son rayon. C'est un solide 3D pour <Command id="UNION" />, <Command id="SUBTRACT" /> et le reste de la 3D de MellowCAD, qui se limite aux solides et reste partielle.
 

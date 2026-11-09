@@ -41,4 +41,4 @@ Sélectionnez-le et lancez <Command id="EXPLODE" /> : le réseau devient les ob
 
 ### Comment modifier un réseau après sa création ?
 
-Sélectionnez-le. Ses poignées le modifient : le carré du point de base le déplace, les flèches règlent les nombres et l'espacement, et un nombre tapé pendant qu'une flèche de nombre est active devient le nombre. La palette Propriétés liste ses colonnes, ses lignes et son espacement, ou ses éléments et ses angles, pour les retaper. ARRAYEDIT n'y est pas encore.
+Sélectionnez-le. Ses poignées le modifient : le carré du point de base le déplace, les flèches règlent les nombres et l'espacement, et un nombre tapé pendant qu'une flèche de nombre est active devient le nombre. La palette Propriétés liste ses colonnes, ses lignes et son espacement, ou ses éléments et ses angles, pour les retaper. MODIFIERRESEAU (ARRAYEDIT) n'y est pas encore.

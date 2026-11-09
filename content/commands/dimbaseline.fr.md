@@ -21,7 +21,7 @@ Annule la dernière cote créée et repart de la précédente, autant de fois qu
 
 ## Missing
 
-Une cote n'est pas associative : les cotes ne suivent pas les objets qu'elles mesurent. Une cote angulaire ne peut pas servir de base : AutoCAD prend celle qui a été créée en dernier ou désignée ; ici, créée en dernier, la commande demande une cote, et désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
+Une cote n'est pas associative : les cotes ne suivent pas les objets qu'elles mesurent. Une cote angulaire ne peut pas servir de base : AutoCAD prend celle qui a été créée en dernier ou désignée ; ici, si elle est la dernière créée, la commande demande une cote, et si elle est désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
 
 ## Questions
 

@@ -652,7 +652,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   ids de prompt, tres etiquetas por prompt, doce respuestas pegadas a los dos puntos y las líneas
   de LIST de una polilínea ajustada, que reproduce ya la consola línea a línea) y los conmutadores,
   vistos en el AutoCAD francés de escritorio (`f11b8428`: `<Ortho actif>`, `<Accrochage actif>`
-  en F9; la tabla y lo supuesto decían `activé`). Queda la revisión de un nativo
-  (`docs/i18n/fr.md`). Del dueño (§7): la ficha de SaaSHub.
+  en F9; la tabla y lo supuesto decían `activé`). Sin revisión de un nativo, por decisión del
+  dueño (no conoce a ninguno): lo escrito a mano lo releyó un modelo el mismo día, contra el
+  inglés, las tablas y los menús de Autodesk (10 textos del sitio, 3 del editor, 5 páginas «Use»,
+  4 ejercicios y 41 páginas de comando; `docs/i18n/fr.md`, «Review»).
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.

@@ -20,7 +20,7 @@ Le nez de la première marche, une <Command id="LINE" /> depuis `28,0`, `0,100` 
 
 ### Disposez les marches en réseau [#array]
 
-<Command id="ARRAYRECT" /> copie cette ligne le long de la volée : désignez-la et appuyez sur Entrée, puis choisissez <Keyword command="ARRAYRECT" id="COUnt" />, `9` colonnes et `1` rangée, et <Keyword command="ARRAYRECT" id="Spacing" />, `28` entre les colonnes et `1` entre les rangées, ce qui ne change rien avec une seule rangée. Avec <Keyword command="ARRAYRECT" id="eXit" />, les marches restent un réseau associatif, que ses poignées modifient ensuite.
+<Command id="ARRAYRECT" /> copie cette ligne le long de la volée : désignez-la et appuyez sur Entrée, puis choisissez <Keyword command="ARRAYRECT" id="COUnt" />, `9` colonnes et `1` rangée, et <Keyword command="ARRAYRECT" id="Spacing" />, `28` entre les colonnes et `1` entre les rangées, ce qui ne change rien avec une seule rangée. Avec <Keyword command="ARRAYRECT" id="eXit" />, les marches restent un réseau associatif, modifiable ensuite par ses poignées.
 
 ### Dessinez la flèche [#arrow]
 

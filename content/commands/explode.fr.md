@@ -5,7 +5,7 @@ figure: "Un rectangle, une seule polyligne, décomposé en quatre lignes, puis l
 sourceHash: "479cf1cd58d9"
 ---
 
-DECOMPOSER (EXPLODE) décompose un objet composé en ses objets constitutifs. Sélectionnez les objets et appuyez sur Entrée : une polyligne devient des lignes et des arcs le long de son axe, une référence de bloc les objets de son bloc, d'un seul niveau, un texte multiligne un texte sur une ligne pour chaque ligne qu'il affiche, et des hachures à motif les lignes de leur motif. Chaque morceau garde le calque et les propriétés de l'objet ; ceux d'un bloc gardent les leurs. Une polyligne avec une largeur la perd, et DECOMPOSER le signale. Les lignes, cercles, arcs, textes sur une ligne et cotes ne peuvent pas être décomposés : ils sont refusés dès leur sélection, et une spline, une ellipse ou des hachures pleines quand la sélection se termine. La décomposition est une seule étape, qu'Annuler reprend.
+DECOMPOSER (EXPLODE) décompose un objet composé en ses objets constitutifs. Sélectionnez les objets et appuyez sur Entrée : une polyligne devient des lignes et des arcs le long de son axe, une référence de bloc les objets de son bloc, d'un seul niveau, un texte multiligne un texte sur une ligne pour chaque ligne qu'il affiche, et des hachures à motif les lignes de leur motif. Chaque morceau garde le calque et les propriétés de l'objet ; ceux d'un bloc gardent les leurs. Une polyligne avec une largeur la perd, et DECOMPOSER le signale. Les lignes, cercles, arcs, textes sur une ligne et cotes ne peuvent pas être décomposés : ils sont refusés dès leur sélection, et une spline, une ellipse ou des hachures pleines quand la sélection se termine. La décomposition est une seule étape, qu'Annuler défait.
 
 ## Missing
 

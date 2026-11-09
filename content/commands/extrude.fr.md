@@ -5,7 +5,7 @@ figure: "Une polyligne fermée en L extrudée de 20 en un solide, puis vue du su
 sourceHash: "53bfe3dd1e9c"
 ---
 
-EXTRUSION (EXTRUDE) transforme des profils 2D fermés en solides 3D, chacun tiré tout droit hors de son plan sur la hauteur que vous donnez. Sélectionnez les profils (cercles, ellipses, polylignes ou splines fermées, régions) et appuyez sur Entrée, puis tapez la hauteur ou montrez-la d'un point ; la dernière hauteur devient la valeur par défaut de la fois suivante. Chaque profil devient un solide à part, sur le calque courant, et il est effacé, comme le veut DELOBJ par défaut. La commande entière est une seule étape, qu'Annuler reprend.
+EXTRUSION (EXTRUDE) transforme des profils 2D fermés en solides 3D, chacun tiré tout droit hors de son plan sur la hauteur que vous donnez. Sélectionnez les profils (cercles, ellipses, polylignes ou splines fermées, régions) et appuyez sur Entrée, puis tapez la hauteur ou montrez-la d'un point ; la dernière hauteur devient la valeur par défaut de la fois suivante. Chaque profil devient un solide à part, sur le calque courant, et il est effacé, comme le veut DELOBJ par défaut. La commande entière est une seule étape, qu'Annuler défait.
 
 La 3D de MellowCAD se limite aux solides, et reste partielle : un profil ouvert, dont AutoCAD fait une surface, reçoit <Message id="sweepRefusedType" /> et sort de la sélection.
 

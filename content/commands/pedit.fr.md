@@ -11,7 +11,7 @@ PEDIT modifie une polyligne. Sélectionnez-en une à `Sélectionnez la polyligne
 
 ### Multiple
 
-Modifie plusieurs polylignes à la fois : sélectionnez-les, dites s'il faut convertir les lignes, arcs et splines qui s'y trouvent, puis chaque option s'applique à toutes. Son option Joindre demande une distance approximative et un <Keyword id="Jointype" /> : <Keyword id="Extend" /> ajuste ou prolonge les segments d'extrémité jusqu'à ce qu'ils se rejoignent, <Keyword id="Add" /> comble l'écart par un nouveau segment, <Keyword id="Both" /> prolonge là où c'est possible et ajoute là où ça ne l'est pas.
+Modifie plusieurs polylignes à la fois : sélectionnez-les, dites s'il faut convertir les lignes, arcs et splines qui s'y trouvent, puis chaque option s'applique à toutes. Son option Joindre demande une distance approximative et un <Keyword id="Jointype" /> : <Keyword id="Extend" /> ajuste ou prolonge les segments d'extrémité jusqu'à ce qu'ils se rejoignent, <Keyword id="Add" /> comble l'écart par un nouveau segment, <Keyword id="Both" /> prolonge là où c'est possible et ajoute là où ce ne l'est pas.
 
 ### Close
 

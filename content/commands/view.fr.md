@@ -1,13 +1,13 @@
 ---
 title: "Commande VUE (VIEW) dans AutoCAD"
 description: "Comment VUE (VIEW, alias VU, -VUE) d'AutoCAD passe aux six vues orthogonales et aux quatre isométriques, et le SCU que fixe chaque vue orthogonale. Essayez-le."
-figure: "Une pièce en gradins dessinée en plan : -VUE et Isométrique SO, et elle est vue du sud-ouest et d'en haut, dans le style visuel Masqué."
+figure: "Une pièce en gradins dessinée en plan : -VUE et Isométrique orientée S-O, et elle est vue du sud-ouest et d'en haut, dans le style visuel Masqué."
 sourceHash: "261c8657f5f7"
 ---
 
 VUE (VIEW) oriente la vue vers l'une des dix vues prédéfinies d'AutoCAD : six vues orthogonales, qui regardent un côté du modèle de face, et quatre vues isométriques, qui regardent vers le bas depuis un coin. Rien ne bouge dans le dessin. VUE lance <Command id="-VIEW" />, la forme en ligne de commande : sa première invite propose <Keyword id="Orthographic" />, qui demande ensuite le côté, et elle accepte aussi directement le nom d'une vue, comme y répondent les menus d'AutoCAD : <Command id="-VIEW" />, puis <Keyword id="SWiso" />. Chaque vue cadre tout le dessin et affiche <Message id="regeneratingModel" />.
 
-Le menu des vues, en haut à gauche du dessin, liste les mêmes dix vues et lance <Command id="-VIEW" />, et les faces et les coins du ViewCube y mènent aussi, en laissant le SCU tel quel. Chaque VUE est une étape d'annulation : <Command id="U" /> défait donc la vue, avec le SCU qu'elle a fixé. Tapée avec une apostrophe à l'intérieur d'une autre commande, elle refuse avec <Message id="requiresRegen" />. La 3D de MellowCAD ne connaît que les solides et reste partielle.
+Les contrôles de la vue, en haut à gauche du dessin, listent les mêmes dix vues et lancent <Command id="-VIEW" />, et les faces et les coins du ViewCube y mènent aussi, en laissant le SCU tel quel. Chaque VUE est une étape d'annulation : <Command id="U" /> défait donc la vue, avec le SCU qu'elle a fixé. Tapée avec une apostrophe à l'intérieur d'une autre commande, elle refuse avec <Message id="requiresRegen" />. La 3D de MellowCAD ne connaît que les solides et reste partielle.
 
 ## Options
 
@@ -41,7 +41,7 @@ Les vues nommées : <Keyword id="Orthographic" /> est la seule option que liste
 
 ### Comment avoir une vue isométrique dans AutoCAD ?
 
-Tapez <Command id="-VIEW" />, puis <Keyword id="SWiso" /> pour l'isométrique sud-ouest ; <Keyword id="SEiso" />, <Keyword id="NEiso" /> et <Keyword id="NWiso" /> donnent les trois autres coins. Ou choisissez Isométrique SO dans le menu des vues en haut à gauche, ou cliquez sur un coin supérieur du ViewCube. <Command id="VSCURRENT" /> avec <Keyword command="VSCURRENT" id="Hidden" /> masque les arêtes situées derrière.
+Tapez <Command id="-VIEW" />, puis <Keyword id="SWiso" /> pour l'isométrique sud-ouest ; <Keyword id="SEiso" />, <Keyword id="NEiso" /> et <Keyword id="NWiso" /> donnent les trois autres coins. Ou choisissez Isométrique orientée S-O dans les contrôles de la vue, en haut à gauche, ou cliquez sur un coin supérieur du ViewCube. <Command id="VSCURRENT" /> avec <Keyword command="VSCURRENT" id="Hidden" /> masque les arêtes situées derrière.
 
 ### Quelle est la commande de la vue de dessus ?
 

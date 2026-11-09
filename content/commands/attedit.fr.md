@@ -7,11 +7,11 @@ sourceHash: "4a8ee28ecc53"
 
 ATTEDIT modifie les valeurs d'attribut d'une référence de bloc. Elle vous demande de sélectionner la référence, puis ouvre une boîte avec un champ pour chacun de ses attributs, libellé par le message d'invite de l'attribut et rempli de sa valeur, comme la boîte de dialogue Editer les attributs d'AutoCAD. Retapez les valeurs, Tab passant d'un champ au suivant, et Entrée, le bouton OK d'AutoCAD, les applique en une seule étape que <Command id="U" /> annule ; Echap, son bouton Annuler, ne change rien.
 
-La sélection prend l'objet situé sous la boîte de sélection. Tout ce qui n'est pas une référence de bloc est refusé, de même qu'une référence dont le bloc n'a pas d'attributs, et la question est posée de nouveau ; un clic dans le vide la repose en silence. La définition du bloc n'est pas modifiée, ni ses autres références : chacune garde ses propres valeurs. <Command id="EATTEDIT" /> modifie les mêmes valeurs dans une boîte libellée par étiquette, et un double-clic sur une référence avec attributs la lance.
+La sélection prend l'objet situé sous la cible de sélection. Tout ce qui n'est pas une référence de bloc est refusé, de même qu'une référence dont le bloc n'a pas d'attributs, et la question est posée de nouveau ; un clic dans le vide la repose en silence. La définition du bloc n'est pas modifiée, ni ses autres références : chacune garde ses propres valeurs. <Command id="EATTEDIT" /> modifie les mêmes valeurs dans une boîte libellée par étiquette, et un double-clic sur une référence avec attributs la lance.
 
 ## Missing
 
-`-ATTEDIT`, la forme ligne de commande qui modifie les attributs un par un ou globalement, et son alias `-ATE`. Les boutons Précédent et Suivant d'Editer les attributs, pour un bloc qui a plus d'attributs qu'une page n'en contient, et sa ligne Nom du bloc. ATTIPEDIT, qui modifie un attribut sur place, et son Ctrl+double-clic. La poignée propre d'un attribut déverrouillé sur une référence, et les lignes d'attributs de la palette Propriétés.
+`-ATTEDIT`, la forme ligne de commande qui modifie les attributs un par un ou globalement, et son alias `-ATE`. Les boutons Précédent et Suivant d'Editer les attributs, pour un bloc qui a plus d'attributs qu'une page n'en contient, et sa ligne Nom du bloc. MODIFATTRINSITU (ATTIPEDIT), qui modifie un attribut sur place, et son Ctrl+double-clic. La poignée propre d'un attribut déverrouillé sur une référence, et les lignes d'attributs de la palette Propriétés.
 
 ## Questions
 
