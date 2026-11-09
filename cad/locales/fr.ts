@@ -2562,7 +2562,7 @@ export const fr: EngineLocale = {
       "selectSecondObjectOrApplyCornerOr": "Sélectionnez le deuxième objet ou utilisez la touche Maj pour appliquer un coin ou",
       "specifyFilletRadius": "Spécifiez le rayon du raccord",
       "select2dPolylineOr": "Choix de la polyligne 2D ou",
-      "selectPolylineToChamferOr": "Choix de la polyligne 2D ou",
+      "selectPolylineToChamferOr": "Choix de la polyligne 2D ou",
       "selectFirstLineOr": "Sélectionnez la première ligne ou",
       "selectSecondLineOrApplyCornerOr": "Sélectionnez la deuxième ligne ou utilisez la touche Maj pour appliquer un coin ou",
       "specifyFirstChamferDistance": "Spécifiez le 1er écart du chanfrein",
@@ -2591,14 +2591,14 @@ export const fr: EngineLocale = {
       "enterNumberOfItemsInArray": "Entrez le nombre d'éléments dans le réseau",
       "specifyAngleBetweenItems": "Spécifiez l'angle entre les éléments",
       "specifyTheAngleToFill": "Spécifiez l'angle à remplir (+=trigo, -=horaire)",
-      "rotateArrayedItems": "Faire pivoter les éléments en réseau ?",
+      "rotateArrayedItems": "Faire pivoter les éléments en réseau ?",
       "createAssociativeArray": "Créer un réseau associatif",
       "selectPathCurve": "Sélectionnez la courbe de la trajectoire",
       "enterPathMethod": "Entrez la méthode de trajectoire",
       "enterNumberOfItemsAlongPath": "Entrez le nombre d'éléments le long de la trajectoire",
       "specifyDistanceBetweenItemsAlongPath": "Spécifiez la distance entre les éléments le long de la trajectoire",
       "specifyNumberOfItemsOr": "Spécifiez le nombre d'éléments ou",
-      "alignArrayedItemsToPath": "Aligner les éléments en réseau à la trajectoire ?",
+      "alignArrayedItemsToPath": "Aligner les éléments en réseau à la trajectoire ?",
       "specifyInternalPointOr": "Spécifiez le point interne ou",
       "enterPatternNameOr": "Entrez un nom de motif ou",
       "specifyStartPointOfText": "Spécifiez le point de départ du texte",
@@ -3264,7 +3264,7 @@ export const fr: EngineLocale = {
         ">"
       ],
       "osnapMode": [
-        " <Accrochage ",
+        " <Accrobj ",
         [
           "state",
           1,
@@ -4589,14 +4589,14 @@ export const fr: EngineLocale = {
         ]
       ],
       "nothingJoined": [
-        "0 objet joint, ",
+        "0 objet joint, ",
         [
           "count",
           2,
           {
             "one": [
               0,
-              " objet supprimé"
+              " objet supprimé"
             ],
             "other": [
               0,
@@ -4610,7 +4610,7 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " lignes jointes dans 1 ligne",
+        " lignes jointes dans 1 ligne",
         [
           "discarded",
           2,
@@ -4619,7 +4619,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4633,7 +4633,7 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " arcs joints dans 1 arc",
+        " arcs joints dans 1 arc",
         [
           "discarded",
           2,
@@ -4642,7 +4642,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4665,7 +4665,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4679,18 +4679,18 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " objets convertis en ",
+        " objets convertis en ",
         [
           "polylines",
           2,
           {
             "one": [
               0,
-              " polyligne"
+              " polyligne"
             ],
             "other": [
               0,
-              " polylignes"
+              " polylignes"
             ]
           }
         ],
@@ -4702,7 +4702,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4719,15 +4719,15 @@ export const fr: EngineLocale = {
           {
             "one": [
               0,
-              " segment joint"
+              " segment joint"
             ],
             "other": [
               0,
-              " segments joints"
+              " segments joints"
             ]
           }
         ],
-        " dans 1 polyligne",
+        " dans 1 polyligne",
         [
           "discarded",
           2,
@@ -4736,7 +4736,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4753,26 +4753,39 @@ export const fr: EngineLocale = {
           {
             "one": [
               0,
-              " segment joint"
+              " segment joint dans ",
+              [
+                "polylines",
+                2,
+                {
+                  "one": [
+                    0,
+                    " polyligne 3D"
+                  ],
+                  "other": [
+                    0,
+                    " polylignes 3D"
+                  ]
+                }
+              ]
             ],
             "other": [
               0,
-              " segments joints"
-            ]
-          }
-        ],
-        " dans ",
-        [
-          "polylines",
-          2,
-          {
-            "one": [
-              0,
-              " polyligne 3D"
-            ],
-            "other": [
-              0,
-              " polylignes 3D"
+              " segments joints dans ",
+              [
+                "polylines",
+                2,
+                {
+                  "one": [
+                    0,
+                    " polyligne 3D"
+                  ],
+                  "other": [
+                    0,
+                    " polylignes 3D"
+                  ]
+                }
+              ]
             ]
           }
         ],
@@ -4784,7 +4797,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4798,7 +4811,7 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " arcs elliptiques joints dans 1 arc",
+        " arcs elliptiques joints dans 1 arc",
         [
           "discarded",
           2,
@@ -4807,7 +4820,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4821,18 +4834,18 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " objets joints dans ",
+        " objets joints dans ",
         [
           "splines",
           2,
           {
             "one": [
               0,
-              " spline"
+              " spline"
             ],
             "other": [
               0,
-              " splines"
+              " splines"
             ]
           }
         ],
@@ -4844,7 +4857,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4858,18 +4871,18 @@ export const fr: EngineLocale = {
         [
           "count"
         ],
-        " objets convertis en ",
+        " objets convertis en ",
         [
           "splines",
           2,
           {
             "one": [
               0,
-              " spline"
+              " spline"
             ],
             "other": [
               0,
-              " splines"
+              " splines"
             ]
           }
         ],
@@ -4881,7 +4894,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4915,7 +4928,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -4949,7 +4962,7 @@ export const fr: EngineLocale = {
             "one": [
               ", ",
               0,
-              " objet supprimé de l'opération"
+              " objet supprimé de l'opération"
             ],
             "other": [
               ", ",
@@ -5492,7 +5505,7 @@ export const fr: EngineLocale = {
         " mm"
       ],
       "listThickness": [
-        "                   Hauteur  =    ",
+        "                   Hauteur  = ",
         [
           "thickness"
         ]
@@ -5563,7 +5576,7 @@ export const fr: EngineLocale = {
         [
           "length"
         ],
-        ",  Angle avec le plan XY =     ",
+        ",  Angle avec le plan XY = ",
         [
           "angle"
         ]
@@ -5597,43 +5610,43 @@ export const fr: EngineLocale = {
         ]
       ],
       "listRadius": [
-        "             rayon    ",
+        "             rayon ",
         [
           "radius"
         ]
       ],
       "listCircumference": [
-        "     circonférence     ",
+        "     circonférence ",
         [
           "length"
         ]
       ],
       "listArea": [
-        "               aire   ",
+        "              aire ",
         [
           "area"
         ]
       ],
       "listStartAngle": [
-        "    angle de départ    ",
+        "            départ angle ",
         [
           "angle"
         ]
       ],
       "listEndAngle": [
-        "        angle final      ",
+        "               fin angle ",
         [
           "angle"
         ]
       ],
       "listLength": [
-        "            longueur   ",
+        "            longueur ",
         [
           "length"
         ]
       ],
       "listTotalAngle": [
-        "             angle total     ",
+        "             angle total ",
         [
           "angle"
         ]
@@ -5780,7 +5793,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listSplineRange": [
-        "                 Plage paramétrique: Début",
+        "                 Fourchette paramétrique: Début",
         [
           "start"
         ],
@@ -5855,13 +5868,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "listLwThickness": [
-        "                   Hauteur  ",
+        "          Epaisseur ",
         [
           "thickness"
         ]
       ],
       "listLwConstantWidth": [
-        "Epaisseur constante    ",
+        "Epaisseur constante ",
         [
           "width"
         ]
@@ -5873,7 +5886,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listLwLength": [
-        "            longueur   ",
+        "           longueur   ",
         [
           "length"
         ]
@@ -5899,19 +5912,19 @@ export const fr: EngineLocale = {
         ]
       ],
       "listStartingWidth": [
-        "  Largeur de départ    ",
+        "épaisseur de départ ",
         [
           "width"
         ]
       ],
       "listEndingWidth": [
-        "    Largeur de fin    ",
+        "   épaisseur de fin ",
         [
           "width"
         ]
       ],
       "listBulge": [
-        "           courbure      ",
+        "           courbure ",
         [
           "bulge"
         ]
@@ -5945,13 +5958,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "listPolylineStartAngle": [
-        "    angle de départ    ",
+        "    angle de départ ",
         [
           "angle"
         ]
       ],
       "listPolylineEndAngle": [
-        "        angle final      ",
+        "        angle final ",
         [
           "angle"
         ]
@@ -5973,7 +5986,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listPolylinePerimeter": [
-        "         périmètre   ",
+        "         périmètre ",
         [
           "length"
         ]
@@ -6007,7 +6020,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listVertexSpace": "            Espace",
-      "listVertexCurveFit": "                   (inséré par le lissage spline)",
+      "listVertexCurveFit": "                   (inséré par le lissage)",
       "listVertexSplineFit": "                   (inséré par le lissage spline)",
       "listVertexControl": "                   (point de contrôle de la spline)",
       "listTextStyle": [
@@ -6063,7 +6076,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listTextHeight": [
-        "           hauteur    ",
+        "           hauteur ",
         [
           "height"
         ]
@@ -6081,13 +6094,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "listTextWidth": [
-        "           largeur facteur d'échelle    ",
+        "           largeur facteur d'échelle ",
         [
           "factor"
         ]
       ],
       "listTextOblique": [
-        "       inclinaison angle      ",
+        "       inclinaison angle ",
         [
           "angle"
         ]
@@ -6176,7 +6189,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listMtextWidth": [
-        "Largeur: ",
+        "Largeur:                 ",
         [
           "width"
         ]
@@ -6196,13 +6209,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "listMtextRotation": [
-        "Rotation:                  ",
+        "Rotation:          ",
         [
           "angle"
         ]
       ],
       "listMtextHeight": [
-        "Hauteur du texte:           ",
+        "Hauteur du texte:        ",
         [
           "height"
         ]
@@ -6416,7 +6429,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listDimensionTextAngle": [
-        "angle du texte:     ",
+        "angle du texte: ",
         [
           "angle"
         ]
@@ -6465,15 +6478,15 @@ export const fr: EngineLocale = {
           "pattern"
         ]
       ],
-      "listHatchAnnotative": "        Annotatif: Non",
+      "listHatchAnnotative": "                 Annotatif: Non",
       "listHatchScale": [
-        "                 Echelle de hachures    ",
+        "                 Echelle de hachures ",
         [
           "scale"
         ]
       ],
       "listHatchAngle": [
-        "                 Angle de hachures     ",
+        "                 Angle de hachures ",
         [
           "angle"
         ]
@@ -6521,25 +6534,25 @@ export const fr: EngineLocale = {
         ]
       ],
       "listInsertScaleX": [
-        "Facteur d'échelle X:    ",
+        "Facteur d'échelle X: ",
         [
           "scale"
         ]
       ],
       "listInsertScaleY": [
-        "Facteur d'échelle Y:    ",
+        "Facteur d'échelle Y: ",
         [
           "scale"
         ]
       ],
       "listInsertScaleZ": [
-        "Facteur d'échelle Z:    ",
+        "Facteur d'échelle Z: ",
         [
           "scale"
         ]
       ],
       "listInsertRotation": [
-        "Angle de rotation:     ",
+        "Angle de rotation: ",
         [
           "angle"
         ]
@@ -6557,7 +6570,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listInsertConversion": [
-        "Conversion d'unités:    ",
+        "Conversion d'unités: ",
         [
           "factor"
         ]
@@ -6605,91 +6618,91 @@ export const fr: EngineLocale = {
         ]
       ],
       "listArrayColumns": [
-        "        Nombre de colonnes:         ",
+        "        Nombre de colonnes: ",
         [
           "count"
         ]
       ],
       "listArrayColumnSpacing": [
-        "   Espacement des colonnes:    ",
+        "   Espacement des colonnes: ",
         [
           "spacing"
         ]
       ],
       "listArrayRows": [
-        "        Nombre de rangées:          ",
+        "        Nombre de rangées:  ",
         [
           "count"
         ]
       ],
       "listArrayRowSpacing": [
-        "   Espacement des rangées:     ",
+        "   Espacement des rangées:  ",
         [
           "spacing"
         ]
       ],
       "listArrayRowElevation": [
-        "  Incrément d'élévation de rangée:     ",
+        "  Incrément d'élévation de rangée:  ",
         [
           "spacing"
         ]
       ],
       "listArrayLevels": [
-        "         Nombre de niveaux:         ",
+        "         Nombre de niveaux: ",
         [
           "count"
         ]
       ],
       "listArrayLevelSpacing": [
-        "   Espacement des niveaux:     ",
+        "   Espacement des niveaux:  ",
         [
           "spacing"
         ]
       ],
       "listArrayAxisAngle": [
-        "        Angle d'axe inclus:        ",
+        "        Angle d'axe inclus: ",
         [
           "angle"
         ]
       ],
       "listArrayRadius": [
-        "                     Rayon:   ",
+        "                     Rayon: ",
         [
           "radius"
         ]
       ],
       "listArrayItems": [
-        "         Nombre d'éléments:         ",
+        "         Nombre d'éléments: ",
         [
           "count"
         ]
       ],
       "listArrayAngleBetween": [
-        "  Angle entre les éléments:         ",
+        "  Angle entre les éléments:  ",
         [
           "angle"
         ]
       ],
       "listArrayFillAngle": [
-        "     Angle de remplissage:        ",
+        "     Angle de remplissage:  ",
         [
           "angle"
         ]
       ],
       "listArrayItemSpacing": [
-        "  Espacement des éléments:     ",
+        "  Espacement des éléments:  ",
         [
           "spacing"
         ]
       ],
       "listArrayStartOffset": [
-        "         Décalage de début:    ",
+        "         Décalage de début: ",
         [
           "spacing"
         ]
       ],
       "listArrayEndOffset": [
-        "           Décalage de fin:    ",
+        "           Décalage de fin: ",
         [
           "spacing"
         ]
@@ -6928,7 +6941,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listBoxNormal": [
-        "           Normale: X = ",
+        "           Normal: X = ",
         [
           "x"
         ],
@@ -6942,7 +6955,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listBoxLength": [
-        "                         Longueur: ",
+        "         Longueur: ",
         [
           "length"
         ]
@@ -6996,7 +7009,7 @@ export const fr: EngineLocale = {
         ]
       ],
       "listRoundRadius": [
-        "                     Rayon:   ",
+        "            Rayon: ",
         [
           "radius"
         ]
@@ -7044,13 +7057,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "listTorusRadius": [
-        "     Rayon du tore: ",
+        "    Rayon de tore: ",
         [
           "radius"
         ]
       ],
       "listTubeRadius": [
-        "    Rayon du tube: ",
+        "    Rayon de tube: ",
         [
           "radius"
         ]
