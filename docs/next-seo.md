@@ -209,7 +209,7 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | --- | --- | --- | --- |
 | lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
 | 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño. **7/11, noche:** la descripción de SaaSHub dice ya que abre DXF (la sesión 05b, con la sesión del dueño). **9/11:** SaaSHub aprueba la ficha (su correo: en «Recently verified»); sus ofertas, no (la ficha destacada de pago, su insignia con enlace y SaaSHub Submit: kit §6); su descripción dice ya el francés (§7, punto 9) | kit §6 | — |
-| 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
+| 9/11 (hecho) | Appvizer y Quelle-Alternative, por la sesión a petición del dueño: en Appvizer, el alta gratuita de editor (su enlace francés da 404; el internacional, con hello@mellowcad.com), que valida la cuenta en 24 h y luego pide la ficha, con texto propio; Quelle-Alternative no tiene formulario, y la propuesta, en francés, salió por correo a contact@digitiz.fr desde la dirección del dueño | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
 | 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún. **7/11, 13:34:** acceso de desarrollador aprobado (los cambios se publican al momento) y la ficha dice ya «Developed by ovelilla». **7/11, noche:** su descripción decía que no lee DXF; la sesión 05b, a petición del dueño, la cambió por la frase del kit §6 («It opens DXF files but does not save them yet, and has no DWG or printing.»), visible con sesión al momento y en la página pública cuando caduque su caché | kit §6 | — |
@@ -374,13 +374,20 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    URLs → «Request indexing» de `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»;
    un Site Scan para que el informe de SEO tenga datos. **6/11:** IndexNow enviado con las 195 URLs
    (202) y «Request indexing» de las 44 URLs de la lista de Google (los índices y diez comandos por
-   idioma; cuota de 100 al día); quedan `/pt-br` y el Site Scan. El 6/11, tras el push de la segunda tanda, IndexNow con
-   las 235 URLs del sitemap (200).
+   idioma; cuota de 100 al día); quedaban `/pt-br`, pedida después con las portadas (§8, la 04), y
+   el Site Scan. **9/11 (por la sesión, a petición del dueño):** el Site Scan del sitemap (650
+   páginas como máximo; Bing avisa por correo al acabar) y «Request indexing» de las 20 primeras
+   URLs francesas de la cola de Google, todas «descubiertas pero no rastreadas» (cuota 100 → 81).
+   El 6/11, tras el push de la segunda tanda, IndexNow con las 235 URLs del sitemap (200).
 4. **GitHub y npm**: la descripción y los temas del repositorio, puestos el 6/11 (el `gh repo edit`
-   de `docs/plans/seo/launch-kit.md` §0); queda a mano la vista previa social (Settings → Social
-   preview, `og-card-en.png`), que GitHub no deja poner por API. La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
-   y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
-   engine» y el editor, tres idiomas.
+   de `docs/plans/seo/launch-kit.md` §0); la vista previa social (Settings → Social preview,
+   `og-card-en.png`), que GitHub no deja poner por API, puesta el 9/11 por la sesión con la sesión
+   de GitHub del dueño: la página del repositorio la sirve. **9/11, npm (a petición del dueño):**
+   `f38e1dfe` sube las versiones y el workflow Release publica el motor 0.3.0, con procedencia y su
+   descripción nueva; react 0.1.1 y el editor 0.2.0 esperan al dueño: sus trusted publishers
+   caducaron sin usarse (`.claude/rules/engine-package.md`), y renovarlos pide su llave, que el
+   Chrome de WSL no alcanza. Renovados, `gh workflow run release.yml` los publica (el motor, ya en
+   npm, se salta) y sube sus etiquetas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
    §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, las fichas de
    AlternativeTo y SaaSHub dicen el francés con el texto del kit (§6, «In English, Spanish,

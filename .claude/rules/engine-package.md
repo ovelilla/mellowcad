@@ -148,5 +148,11 @@ license and the Autodesk trademark note.
   owner the URL, which lapses after five minutes. It goes before the Release workflow, whose
   `changeset publish` would otherwise try the new package and fail halfway; and before the push
   that deploys its docs, which give the install line once `private` is gone.
+- **A trusted publisher can expire unused**: react's and the editor's, set on 31/10 and never used,
+  read `Expired` on 9/11 in each package's Settings on npmjs.com, and the Release run got E404 for
+  react and skipped the editor; the engine's, used by each release, stayed `Valid`. Renewing one
+  is the owner's (Delete, then Add trusted publisher with the engine's values: `ovelilla`,
+  `mellowcad`, `release.yml`, no environment, Allow npm publish), behind a security key the
+  debugging Chrome in WSL cannot reach; the run again then publishes what npm lacks.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.
