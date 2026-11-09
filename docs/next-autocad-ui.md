@@ -101,3 +101,12 @@ dónde se abren, acopladas o flotantes, auto-ocultar, y lo que el navegador perm
 
 La barra de estado, la línea de comandos, las pestañas Model/Layout y lo que quede en la tabla
 de la fase 0.
+
+Pedido por el dueño (10/11/2026): **cambiar el estilo visual desde la interfaz**. Hoy solo se
+puede tecleando VSCURRENT (`VS`, es `EVA`), y un usuario de AutoCAD busca la etiqueta de los
+controles del viewport (`[2D Wireframe]`, arriba a la izquierda) y su lista de estilos; también
+la galería de estilos visuales del ribbon, donde la fase 0 la sitúe (si cae en una pestaña de la
+fase 1, va con ella). La lista ofrece solo los estilos construidos (2D Wireframe, Hidden,
+Conceptual: `docs/coverage/view.md`, VSCURRENT) y ejecuta VSCURRENT, como la de AutoCAD; quita
+`vscurrent` de la lista de comandos sin botón de `packages/editor/src/tool-rail.tsx` (o de la que
+la sustituya) y la fila «the viewport controls' style menu» de su Missing.
