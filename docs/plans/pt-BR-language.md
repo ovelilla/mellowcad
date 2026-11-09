@@ -1,8 +1,8 @@
 # Brazilian Portuguese (`pt-BR`) — summary
 
-The pilot of the language system (`docs/next-languages.md`, phase 5): `pt-BR` from nothing to
-`live` on 31/10/2026 through skill `add-language`, phase by phase. Its words, sources, deviations,
-what stays unverified and its review are `docs/i18n/pt-BR.md`. What did not fit was fixed in the
+The pilot of the language system (phase 5 of its brief, deleted once published): `pt-BR` from
+nothing to `live` on 31/10/2026 through skill `add-language`, phase by phase. Its words, sources,
+deviations, what stays unverified and its review are `docs/i18n/pt-BR.md`. What did not fit was fixed in the
 system (scripts, skills, rules, tests), never in the language; each commit says what.
 
 | Phase | Commits | What |

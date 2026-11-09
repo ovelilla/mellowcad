@@ -6,8 +6,9 @@
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
-> online») hecha y publicada el 8/11; por decisión del dueño la visibilidad va antes que
-> cualquier funcionalidad; siguiente: lo que queda de §7, la 08 (francés) y guardar como DXF. Esperan detrás
+> online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha el 9/11, sin
+> publicar; por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente:
+> lo que queda de §7, la 09 (italiano) y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -260,7 +261,8 @@ funcionalidades: es producto, pero por la búsqueda.
 ### L8. Idiomas nuevos
 
 Con el criterio del dueño (demanda y AutoCAD 2027 en ese idioma), cada uno con la skill
-`add-language`: **francés** (AutoCAD localizado; Francia y el Magreb, que `/ar` no alcanza) y
+`add-language`: **francés** (AutoCAD localizado; Francia y el Magreb, que `/ar` no alcanza; hecho
+el 9/11, sesión 08, `docs/plans/fr-language.md`) y
 **italiano** (localizado; la mayor proporción de búsquedas de AutoCAD de los grandes mercados de la
 UE; KulmanLab es n.º 1 allí para «cad online gratis»). Después, alemán, ruso (Yandex tiene el 72 %
 de sus búsquedas), polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
@@ -361,6 +363,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    por su mercado. `/privacy` queda fuera. Ya no se añade nada a mano: 451 en la cola, unos 41 días
    a 11 al día. El sitemap no hay que tocarlo: `app/sitemap.ts` lo genera en cada despliegue, con
    `lastmod` del último commit de cada página, y Google lo relee solo.
+   **9/11 (sesión 08):** el francés, `live` a la espera de su push. Sus URLs (`/fr`, sus páginas
+   «Use», las 97 de comando y los 12 ejercicios) no se añaden a mano: tras el push están en el
+   sitemap publicado y `gsc-prioritize.mjs`, que ya pesa `/fr` (0,5, entre el 0,6 de pt-BR y el
+   0,35 del árabe), las mete en la cola en la tanda siguiente.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -376,7 +382,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
    engine» y el editor, tres idiomas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
-   §6): ya, la semana del 9/11 (calendario de L5).
+   §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, las fichas ya
+   publicadas de AlternativeTo y SaaSHub dicen cuatro idiomas: el francés, con el texto del kit
+   (§6, «In English, Spanish, Brazilian Portuguese and French…»).
 6. **Show HN, Reddit, Product Hunt y dev.to**, con los textos del kit y en las fechas del
    calendario de L5 (02–04 ya están publicados).
 7. **Outreach** a los autores de los artículos de la lista: los 50 correos de
@@ -605,6 +613,32 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   termina a veces a los 4–5 s, no a los 0,4 (Chrome, sin mover el ratón; también en `HEAD`), y
   mientras dura el lienzo tapa el historial de la línea de comandos y los clics van a `<html>`; la
   de la página de DXF se salta por eso.
-- 08 Francés: pendiente.
+- 08 Francés: hecha el 9/11/2026, sin publicar (`2294f28f` a `9336ef8d`; las fases, lo medido y lo
+  que queda, en `docs/plans/fr-language.md`). El francés, `live` en `/fr` con el sistema entero:
+  el sitio, el editor, las seis páginas «Use», las 97 de comando y los 12 ejercicios, y el lenguaje
+  de comandos de AutoCAD 2027 en francés, sacado de su consola (el paquete de idioma instalado en
+  el AutoCAD del dueño, y la 2027.1 aplicada otra vez): 426 sondas corridas en fr-FR y emparejadas
+  con las inglesas, los nombres por `getcname` (LIGNE, DECALER, AJUSTER; del `acad.pgp`, E es
+  ETIRER y EF borra), la interfaz por id del paquete instalado (`propose-interface.mjs`, nuevo) y
+  `frenchPrompts.test.ts` con lo que imprimió la consola. Los títulos, de lo que se busca en
+  francés (autocompletado, Trends y resultados): «CAO en ligne gratuite avec les commandes AutoCAD
+  — MellowCAD», «logiciel de CAO gratuit» en la descripción (CAO y no DAO ni CAD: Trends da 40 a
+  «logiciel cao» contra 2), «Commandes AutoCAD en français et en anglais» para la lista y
+  «Exercices AutoCAD gratuits, avec corrigés». La tipografía francesa, con el espacio de no
+  separación (U+00A0) ante `:` `;` `!` `?` y dentro de « », nunca el estrecho, que las fuentes de
+  la tarjeta no tienen. La primera carga de la landing, medida en builds de producción antes y
+  después: 247,8, 249,0, 249,3, 272,2 y 249,8 KiB (en, es, pt-BR, ar y fr), con nueve textos
+  franceses acortados antes de pasar a `live` (el francés llegaba a 250,0, a 19 bytes del límite).
+  AZERTY, verificado en Chrome: Ctrl+&, Ctrl+ç y Ctrl+Z, y las teclas muertas en la línea de
+  comandos y la entrada dinámica. Lo que no encajó, corregido en el sistema: los dos puntos de una
+  etiqueta por idioma en el generador (`LABEL_END`), `console-pair.mjs` conservando el U+00A0 de
+  Autodesk, el banner francés de `runacc.sh`, y, para todos los idiomas, la composición de una
+  tecla muerta sobre el dibujo, que la emulación pierde (skill `browser-verify`). Lo que nombraba
+  los idiomas a mano (el README, los paquetes y sus páginas, los formularios de issues, el kit de
+  lanzamiento) dice ya el francés; el brief del sistema de idiomas, publicado, se borra: lo que
+  seguía vigente estaba ya en las reglas, las skills, `docs/i18n/README.md` y esta L8. Quedan, en
+  `docs/i18n/fr.md`: los prompts que el francés redacta por comando y el inglés comparte, las
+  líneas de los conmutadores en el escritorio francés y la revisión de un nativo. Del dueño (§7):
+  el push, IndexNow tras él y las fichas de AlternativeTo y SaaSHub.
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.
