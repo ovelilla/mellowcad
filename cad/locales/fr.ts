@@ -3272,13 +3272,13 @@ export const fr: EngineLocale = {
         ]
       ],
       "snapMode": [
-        " <Résolution ",
+        " <Accrochage ",
         [
           "state",
           1,
           {
-            "on": "activée",
-            "other": "désactivée"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"
@@ -3289,8 +3289,8 @@ export const fr: EngineLocale = {
           "state",
           1,
           {
-            "on": "activé",
-            "other": "désactivé"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"
@@ -3301,8 +3301,8 @@ export const fr: EngineLocale = {
           "state",
           1,
           {
-            "on": "activé",
-            "other": "désactivé"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"
@@ -3313,8 +3313,8 @@ export const fr: EngineLocale = {
           "state",
           1,
           {
-            "on": "activé",
-            "other": "désactivé"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"
@@ -3325,8 +3325,8 @@ export const fr: EngineLocale = {
           "state",
           1,
           {
-            "on": "activé",
-            "other": "désactivé"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"
@@ -3337,8 +3337,8 @@ export const fr: EngineLocale = {
           "state",
           1,
           {
-            "on": "activée",
-            "other": "désactivée"
+            "on": "actif",
+            "other": "inactif"
           }
         ],
         ">"

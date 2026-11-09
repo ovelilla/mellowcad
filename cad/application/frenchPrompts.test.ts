@@ -173,3 +173,36 @@ describe("French AutoCAD's words where English has one", () => {
     )
   })
 })
+
+// What only the desktop shows (names/d01, fr-FR): every drafting toggle but
+// Selection Cycling's says actif or inactif, the grid's in the masculine too,
+// and F9's mode is Accrochage.
+describe("French words of the desktop", () => {
+  it("echoes the drafting toggles as the desktop's history does (names/d01)", () => {
+    const cad = createHarness({ locale: fr })
+    const toggled = (key: string) => {
+      const from = cad.commandLog().length
+      cad.press(key)
+      return cad.commandLog().slice(from)
+    }
+    expect([
+      ...toggled("F9"),
+      ...toggled("F3"),
+      ...toggled("F8"),
+      ...toggled("F10"),
+      ...toggled("F11"),
+      ...toggled("F7"),
+      ...toggled("F7"),
+      ...toggled("F4"),
+    ]).toEqual([
+      " <Accrochage actif>",
+      " <Accrobj actif>",
+      " <Ortho actif>",
+      " <Polaire actif>",
+      " <Repérage d'accrochage aux objets inactif>",
+      " <Grille inactif>",
+      " <Grille actif>",
+      " <Cycle de sélection activé>",
+    ])
+  })
+})

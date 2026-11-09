@@ -217,6 +217,15 @@ with the console's lines by `frenchPrompts.test.ts`, `promptForms.test.ts` or `l
   `listVertexBulge`, `listVertexStartAngle`, `listVertexEndAngle`, `listLwRadius`). LIST
   reproduces inquiry/p430 and p438 line for line, handles aside.
 
+### The desktop
+
+The drafting toggles are composed by AutoCAD and in no table, so the French desktop settled them
+(names/d01, 9/11/2026, `/language fr-FR`): `<Accrochage actif>` (F9; not `Résolution`), `<Accrobj
+actif>`, `<Ortho actif>`, `<Polaire actif>`, `<Repérage d'accrochage aux objets actif>` and
+`<Grille actif>`, the grid's in the masculine as pt-BR's `Grade`, each with `inactif`; only
+Selection Cycling's says `<Cycle de sélection activé>` and `désactivé` (16646). Table 33112's
+`Accrobj activé` is not the line F3 writes. Held by `frenchPrompts.test.ts`.
+
 ### Deviations
 
 - **EDITSPLINE's Weight is `EPaisseur`**, as the prompt lists it and table 22405 declares it: the
@@ -228,11 +237,7 @@ with the console's lines by `frenchPrompts.test.ts`, `promptForms.test.ts` or `l
 
 ### Unverified
 
-What no probe showed, worded from the tables or in Autodesk's style: the drafting toggles' lines
-but Object Snap's (`<Accrobj activé>`, 33112) and Selection Cycling's (16646) — `<Ortho
-activé>`, `<Polaire activé>`, `<Grille activée>`, `<Résolution activée>`, `<Repérage d'accrochage
-aux objets activé>` are composed by AutoCAD and in no table, so the French desktop settles them, as
-pt-BR's did (names/d01) —, the dynamic input's field
+What no probe showed, worded from the tables or in Autodesk's style: the dynamic input's field
 labels (`Centre`, `Premier point`…: AutoCAD shows none), the measure readout (`Dist`, `Aire`,
 `Périm`), Polar's 3D readout, our own messages (files, clipboard, FROM's, `messages.erased`), the
 keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded.
