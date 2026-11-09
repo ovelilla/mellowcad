@@ -384,10 +384,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    `og-card-en.png`), que GitHub no deja poner por API, puesta el 9/11 por la sesión con la sesión
    de GitHub del dueño: la página del repositorio la sirve. **9/11, npm (a petición del dueño):**
    `f38e1dfe` sube las versiones y el workflow Release publica el motor 0.3.0, con procedencia y su
-   descripción nueva; react 0.1.1 y el editor 0.2.0 esperan al dueño: sus trusted publishers
-   caducaron sin usarse (`.claude/rules/engine-package.md`), y renovarlos pide su llave, que el
-   Chrome de WSL no alcanza. Renovados, `gh workflow run release.yml` los publica (el motor, ya en
-   npm, se salta) y sube sus etiquetas.
+   descripción nueva; react 0.1.1 y el editor 0.2.0, después: sus trusted publishers habían caducado
+   sin usarse (`.claude/rules/engine-package.md`), el dueño los rehízo con su llave y un segundo
+   Release los publicó, con procedencia y sus etiquetas. Los tres, la última versión en npm.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
    §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, las fichas de
    AlternativeTo y SaaSHub dicen el francés con el texto del kit (§6, «In English, Spanish,

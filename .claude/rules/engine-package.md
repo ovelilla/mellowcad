@@ -153,6 +153,7 @@ license and the Autodesk trademark note.
   react and skipped the editor; the engine's, used by each release, stayed `Valid`. Renewing one
   is the owner's (Delete, then Add trusted publisher with the engine's values: `ovelilla`,
   `mellowcad`, `release.yml`, no environment, Allow npm publish), behind a security key the
-  debugging Chrome in WSL cannot reach; the run again then publishes what npm lacks.
+  debugging Chrome in WSL cannot reach. A new one reads `Pending validation` until a run publishes
+  through it, and the run again publishes only what npm lacks.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.
