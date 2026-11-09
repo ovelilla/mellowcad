@@ -55,8 +55,10 @@ clipboard once shipped a hang no harness test could see.
 - **Dead keys reach a page two ways**, and a layout that has them is driven both ways through
   CDP: Windows sends a `keydown` of `Dead`, then the composed letter (CDP's Input.dispatchKeyEvent
   with `key: "Dead"`, then one with `text: "é"`); Linux and macOS compose (Input.imeSetComposition,
-  then Input.insertText). Type on the drawing, in the command line's
-  field and in the dynamic input, and read what the drawing kept (pt-BR's ABNT2, 31/10/2026).
+  then Input.insertText). Type on the drawing, in the command line's field and in the dynamic
+  input, and read what the drawing kept (pt-BR's ABNT2, 31/10/2026; French's AZERTY, 9/11). On
+  the drawing the canvas has the focus and no field: the emulated composition has nothing to
+  compose into and drops the letter, in every language, so there only the Windows way tells.
 - Scope dynamic-input typing to `[data-dynamic-input] input`; a bare `querySelector("input")`
   matches the hidden file input.
 - Dispatch events in one `page.evaluate` and read the DOM in another: React commits async.

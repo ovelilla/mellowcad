@@ -50,8 +50,8 @@ export async function CommandsSection() {
   // built, as F1 reads them in the editor.
   const pages = new Set(commandPageIds(/*turbopackIgnore: true*/ process.cwd()))
   // OFFSET as each command language names it: the engine's own words.
-  const [english, spanish, portuguese] = await Promise.all(
-    (["en", "es", "pt-BR"] as const).map(
+  const [english, spanish, portuguese, french] = await Promise.all(
+    (["en", "es", "pt-BR", "fr"] as const).map(
       async (tag) =>
         engineText(await loadEngineLocale(tag)).commandNames(OFFSET)[0]
     )
@@ -165,10 +165,12 @@ export async function CommandsSection() {
             english,
             spanish,
             portuguese,
+            french,
             global: `_${OFFSET}`,
             en: (chunks) => <CommandName lang="en">{chunks}</CommandName>,
             es: (chunks) => <CommandName lang="es">{chunks}</CommandName>,
             pt: (chunks) => <CommandName lang="pt-BR">{chunks}</CommandName>,
+            fr: (chunks) => <CommandName lang="fr">{chunks}</CommandName>,
             all: (chunks) => <CommandName lang="en">{chunks}</CommandName>,
           })}
         </p>

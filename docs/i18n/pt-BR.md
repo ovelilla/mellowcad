@@ -412,7 +412,9 @@ ABNT2 is latin with dead keys (´ ` ~ ^ ¨) and its own `ç`. Command names and 
 live (31/10/2026), both ways a dead key reaches a page — Windows' `keydown` of `Dead` and then the
 composed letter, Linux's and macOS's composition — on the drawing, in the command line's field and
 in the dynamic input: `é`, `ã`, `â` and `ç` arrive whole, and TEXT keeps «Ângulo de ação» and «Élan
-e pé» typed from a dead key first, the box already focused. No IME handling was added.
+e pé» typed from a dead key first, the box already focused. On the drawing, the Windows way only:
+there no field has the focus, and an emulated composition drops the letter (rechecked 9/11/2026,
+`fr.md`, "Input"). No IME handling was added.
 
 ## Review
 

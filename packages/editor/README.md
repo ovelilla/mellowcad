@@ -3,9 +3,9 @@
 The whole MellowCAD drafting editor as one React component, `CadEditor`: the drawing with the
 chrome an AutoCAD user expects around it — the top bar, the tool palette, the palettes, the command
 line, the status bar, the ViewCube — its menus and dialogs, and its words in English, Spanish,
-Arabic and Brazilian Portuguese. It is the editor of [mellowcad.com/draw](https://mellowcad.com/draw),
-built on [`@mellowcad/engine`](../../cad/README.md) and [`@mellowcad/react`](../react/README.md),
-and it ships its own stylesheet.
+Arabic, Brazilian Portuguese and French. It is the editor of
+[mellowcad.com/draw](https://mellowcad.com/draw), built on [`@mellowcad/engine`](../../cad/README.md)
+and [`@mellowcad/react`](../react/README.md), and it ships its own stylesheet.
 
 ```sh
 npm install @mellowcad/editor @mellowcad/react @mellowcad/engine

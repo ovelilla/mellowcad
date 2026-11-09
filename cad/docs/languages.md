@@ -1,7 +1,7 @@
 # Languages
 
-The engine speaks English, Spanish, Arabic and Brazilian Portuguese, and a host can reword any of
-it or add a language of its own. A language is passed to the engine, never registered globally, so
+The engine speaks English, Spanish, Arabic, Brazilian Portuguese and French, and a host can reword
+any of it or add a language of its own. A language is passed to the engine, never registered globally, so
 one page can run two engines in two languages.
 
 ## Two languages in one

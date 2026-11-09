@@ -1,8 +1,11 @@
 # French (`fr`)
 
-> **Command language:** `localized`, French AutoCAD's. **Status:** `draft` since 9/11/2026, at
-> `/fr`: registered, its catalogs still empty (a key it lacks shows English). **Review:** none by a
-> native speaker. The plan and what is left: `docs/plans/fr-language.md`.
+> **Command language:** `localized`, French AutoCAD's. **Status:** `live` since 9/11/2026, at
+> `/fr` (a `draft` earlier that day): the site, the editor, the six "Use" pages, the 97 command
+> pages and the 12 exercises, the engine's interface and its command language, complete ("Command
+> language", below), checked against AutoCAD 2027.1 (26.0.116 for `fr-FR/`, `acad.exe` 26.0.118).
+> **Review:** none by a native speaker; what no console probe or resource settled is **no**,
+> **partial** or **unverified** below. The plan and its commits: `docs/plans/fr-language.md`.
 
 The words are Autodesk's own French localization of AutoCAD, never a translation of ours, as
 Spanish's and pt-BR's are. One French for every French-speaking reader — France, Belgium,
@@ -195,7 +198,13 @@ fin` at 57995), SPLINEDIT's `System default` (`Par défaut` / `Par Défaut`), PE
 intermédiaire`). **An answer against the colon**: French AutoCAD ends the arrays' counts and
 spacings (`Entrez le nombre de colonnes ou [Expression] <4>:`), DIMANGULAR's first prompt and the
 array type without the space English has, so the history writes the answer against the colon
-there; here it keeps English's space until `answerForms` gets their ids.
+there; here it keeps English's space until `answerForms` gets their ids. **LIST's polyline
+lines**: English writes a lightweight polyline's and a fitted one's (PEDIT's Fit or Spline) alike,
+and French does not (`courbure`, `angle de départ`, `Largeur de départ`… for the fitted one; the
+radius the other way round): `listBulge`, `listPolylineStartAngle`, `listPolylineEndAngle`,
+`listStartingWidth`, `listEndingWidth` take the lightweight polyline's wording and `listRadius`
+the circle's, so inquiry/p430's fitted polyline and one line of p438 differ from the console. The
+rest of LIST reproduces the console line for line (1,098 of 1,168 lines, its padding included).
 
 ### Deviations
 
@@ -208,7 +217,11 @@ there; here it keeps English's space until `answerForms` gets their ids.
 
 ### Unverified
 
-What no probe showed, worded from the tables or in Autodesk's style: the dynamic input's field
+What no probe showed, worded from the tables or in Autodesk's style: the drafting toggles' lines
+but Object Snap's (`<Accrobj activé>`, 33112) and Selection Cycling's (16646) — `<Ortho
+activé>`, `<Polaire activé>`, `<Grille activée>`, `<Résolution activée>`, `<Repérage d'accrochage
+aux objets activé>` are composed by AutoCAD and in no table, so the French desktop settles them, as
+pt-BR's did (names/d01) —, the dynamic input's field
 labels (`Centre`, `Premier point`…: AutoCAD shows none), the measure readout (`Dist`, `Aire`,
 `Périm`), Polar's 3D readout, our own messages (files, clipboard, FROM's, `messages.erased`), the
 keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded, and the
@@ -241,8 +254,19 @@ French is typed on AZERTY (France, Belgium, the Maghreb), Swiss French on QWERTZ
 French on its own QWERTY: all latin. AZERTY's digits need Shift, so Ctrl+1, Ctrl+9 and Ctrl+0
 arrive as Ctrl+&, Ctrl+ç and Ctrl+à: `shortcutKey` (`cad/adapters/CadEngine.ts`) reads a Ctrl
 combination whose key is no latin letter or digit by its physical key, as for Arabic, so they
-work. Letters arrive as typed. Dead keys `^` and `¨` compose `ê`, `ï`: to check in the command line
-and the dynamic input before going live.
+work. Letters arrive as typed. Command names and aliases are ASCII, and the letters a keyword
+types hold `É` at most (`GÉnéral`, `MASQUÉ3D`), a key of its own on AZERTY.
+
+Checked in Chrome before going live (9/11/2026, skill `browser-verify`): Ctrl+& opens Properties,
+Ctrl+ç hides and shows the command line, and Ctrl+Z (the key labelled Z, at W's place) undoes.
+The dead keys `^` and `¨` the Windows way (a `keydown` of `Dead`, then the composed letter) reach
+the command line from the drawing, its field and the dynamic input: `ê`, `ï`, `ô`, `û`, `ë` arrive
+whole, `é`, `ç` and `à` straight from their keys, and TEXTE keeps «Être à côté de Noël». The
+Linux and macOS way, a composition, composes in the command line's field and the dynamic input
+(TEXTE keeps «Île â ïna»); on the drawing, where the canvas has the focus and no field, the
+emulated composition has nothing to compose into and drops the letter, in pt-BR alike: what a real
+Linux or macOS browser sends there is unverified, and no French name, alias or keyword needs it.
+No IME handling was added.
 
 ## Review
 

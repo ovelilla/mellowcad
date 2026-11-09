@@ -1,7 +1,7 @@
 # Languages
 
-The editor speaks English, Spanish, Arabic, Brazilian Portuguese and French. Its words come in two catalogs,
-one per package:
+The editor speaks English, Spanish, Arabic, Brazilian Portuguese and French. Its words come in two
+catalogs, one per package:
 
 - **`editorLocale`**, the editor's own words: menus, tooltips, the palettes' labels, the dialogs.
   From `@mellowcad/editor/locales/<tag>`.
