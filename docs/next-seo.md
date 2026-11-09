@@ -6,8 +6,8 @@
 > ejercicios y 3 guías en los cuatro idiomas) y la 07 (DXF: su brief, `docs/next-dxf.md`, y abrir
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
-> online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha el 9/11, sin
-> publicar; por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente:
+> online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
+> 9/11; por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente:
 > lo que queda de §7, la 09 (italiano) y guardar como DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -363,10 +363,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    por su mercado. `/privacy` queda fuera. Ya no se añade nada a mano: 451 en la cola, unos 41 días
    a 11 al día. El sitemap no hay que tocarlo: `app/sitemap.ts` lo genera en cada despliegue, con
    `lastmod` del último commit de cada página, y Google lo relee solo.
-   **9/11 (sesión 08):** el francés, `live` a la espera de su push. Sus URLs (`/fr`, sus páginas
-   «Use», las 97 de comando y los 12 ejercicios) no se añaden a mano: tras el push están en el
-   sitemap publicado y `gsc-prioritize.mjs`, que ya pesa `/fr` (0,5, entre el 0,6 de pt-BR y el
-   0,35 del árabe), las mete en la cola en la tanda siguiente.
+   **9/11 (sesión 08):** el francés, publicado. Sus URLs (`/fr`, sus páginas «Use», las 97 de
+   comando y los 12 ejercicios) no se añaden a mano: `gsc-prioritize.mjs`, que pesa `/fr` (0,5,
+   entre el 0,6 de pt-BR y el 0,35 del árabe), rehízo la cola desde el sitemap publicado tras el
+   push: 571, 120 de ellas francesas (`/fr/docs/commands`, la décima).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -382,9 +382,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
    engine» y el editor, tres idiomas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
-   §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, las fichas ya
-   publicadas de AlternativeTo y SaaSHub dicen cuatro idiomas: el francés, con el texto del kit
-   (§6, «In English, Spanish, Brazilian Portuguese and French…»).
+   §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, la ficha de
+   SaaSHub dice aún cuatro idiomas: su descripción, con el texto del kit (§6, «In English, Spanish,
+   Brazilian Portuguese and French…»); la de AlternativeTo ya lo dice (punto 9).
 6. **Show HN, Reddit, Product Hunt y dev.to**, con los textos del kit y en las fechas del
    calendario de L5 (02–04 ya están publicados).
 7. **Outreach** a los autores de los artículos de la lista: los 50 correos de
@@ -399,6 +399,13 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    seguridad; `config.yml` se queda sin enlaces y quien no tiene cuenta tiene el correo junto a
    Report a problem en el pie. Las fichas de AlternativeTo y SaaSHub dicen ya que abre DXF (la de
    AlternativeTo, en su página pública cuando caduque la caché; calendario de L5).
+9. **Lo de la sesión 08, hecho por la sesión a petición del dueño (9/11):** el push
+   (`c481a0a7..e122261e`, y después los arreglos del francés), verificado en producción (`/fr`,
+   `/fr/draw` con sus nombres, el sitemap con 620 URLs, `hreflang` en las cinco portadas); IndexNow
+   con las 620 URLs (200); la cola de Google rehecha (punto 2); y la ficha de AlternativeTo, con la
+   sesión de Google del dueño en el Chrome de ~/seo-data: el francés en la descripción y en
+   «Supported Languages». Queda del dueño la de SaaSHub, cuya sesión (un enlace por correo a
+   `hello@mellowcad.com`) había caducado.
 
 ## 8. Estado
 
@@ -613,8 +620,10 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   termina a veces a los 4–5 s, no a los 0,4 (Chrome, sin mover el ratón; también en `HEAD`), y
   mientras dura el lienzo tapa el historial de la línea de comandos y los clics van a `<html>`; la
   de la página de DXF se salta por eso.
-- 08 Francés: hecha el 9/11/2026, sin publicar (`2294f28f` a `9336ef8d`; las fases, lo medido y lo
-  que queda, en `docs/plans/fr-language.md`). El francés, `live` en `/fr` con el sistema entero:
+- 08 Francés: hecha y publicada el 9/11/2026 (`2294f28f` a `9336ef8d`, y `10d28c9e` y
+  `f11b8428` el mismo día; las fases, lo medido y lo que queda, en `docs/plans/fr-language.md`;
+  el push, IndexNow y la ficha de AlternativeTo, por la sesión a petición del dueño: §7, punto 9).
+  El francés, `live` en `/fr` con el sistema entero:
   el sitio, el editor, las seis páginas «Use», las 97 de comando y los 12 ejercicios, y el lenguaje
   de comandos de AutoCAD 2027 en francés, sacado de su consola (el paquete de idioma instalado en
   el AutoCAD del dueño, y la 2027.1 aplicada otra vez): 426 sondas corridas en fr-FR y emparejadas
@@ -636,9 +645,12 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   tecla muerta sobre el dibujo, que la emulación pierde (skill `browser-verify`). Lo que nombraba
   los idiomas a mano (el README, los paquetes y sus páginas, los formularios de issues, el kit de
   lanzamiento) dice ya el francés; el brief del sistema de idiomas, publicado, se borra: lo que
-  seguía vigente estaba ya en las reglas, las skills, `docs/i18n/README.md` y esta L8. Quedan, en
-  `docs/i18n/fr.md`: los prompts que el francés redacta por comando y el inglés comparte, las
-  líneas de los conmutadores en el escritorio francés y la revisión de un nativo. Del dueño (§7):
-  el push, IndexNow tras él y las fichas de AlternativeTo y SaaSHub.
+  seguía vigente estaba ya en las reglas, las skills, `docs/i18n/README.md` y esta L8. Después de
+  publicar, el mismo día: lo que el francés redacta por comando y el inglés no (`10d28c9e`: cinco
+  ids de prompt, tres etiquetas por prompt, doce respuestas pegadas a los dos puntos y las líneas
+  de LIST de una polilínea ajustada, que reproduce ya la consola línea a línea) y los conmutadores,
+  vistos en el AutoCAD francés de escritorio (`f11b8428`: `<Ortho actif>`, `<Accrochage actif>`
+  en F9; la tabla y lo supuesto decían `activé`). Queda la revisión de un nativo
+  (`docs/i18n/fr.md`). Del dueño (§7): la ficha de SaaSHub.
 - 09 Italiano: pendiente.
 - 10 Medición: la primera, un mes después del push de 01–02.
