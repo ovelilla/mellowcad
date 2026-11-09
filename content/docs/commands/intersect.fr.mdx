@@ -1,0 +1,53 @@
+---
+title: "Commande INTERSECT dans AutoCAD"
+description: "Comment fonctionne INTERSECT (alias IR) d'AutoCAD en français : des solides 3D, ou des régions d'un plan, réduits à ce qu'ils partagent. Essayez-le en ligne."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande INTERSECT en français ?","answer":"INTERSECT, comme en anglais, avec l'alias IR, puis Entrée ou la barre d'espace ; l'alias anglais IN n'existe pas dans AutoCAD en français. _INTERSECT fonctionne dans toutes les langues d'AutoCAD."},{"question":"Quelle est la différence entre UNION, SOUSTRACTION et INTERSECT ?","answer":"Les trois font un seul objet de solides 3D, ou de régions d'un même plan. UNION garde tout ce que couvre l'un d'eux, SOUSTRACTION garde le premier jeu moins le second, et INTERSECT ne garde que ce que tous partagent. Chacune est une seule étape d'annulation, et chacune efface les objets qu'elle a consommés."},{"question":"Comment faire l'intersection de deux lignes dans AutoCAD ?","answer":"Pas avec INTERSECT, qui travaille sur les solides et les régions et ignore les lignes. Pour trouver où deux lignes se croisent, prenez le point avec l'accrochage aux objets Intersection ; pour les faire se rejoindre, utilisez RACCORD avec un rayon de 0, AJUSTER ou PROLONGER."},{"question":"Pourquoi INTERSECT supprime mes objets ?","answer":"Parce qu'ils n'ont rien en commun : sans partie partagée, elle dit « Solide créé - supprimé nul », ou « Région créée - supprimée nulle » pour des régions, et les efface, comme AutoCAD. U les rend. Un solide et une région, ou deux régions dans des plans différents, ne sont pas intersectés du tout : elle dit « Au moins 2 solides, surfaces ou régions coplanaires doivent être sélectionnés. » et ne change rien."}]
+---
+
+INTERSECT ne garde que ce que deux solides 3D ou plus ont en commun, ou deux régions ou plus dans un même plan, et efface le reste : une boîte et une sphère qui la déborde laissent une boule aux faces planes. Elle demande des objets jusqu'à Entrée, comme [`UNION`](/docs/commands/union), et ignore ce qui n'est ni un solide ni une région. Comme dans AutoCAD 2027, un jeu sélectionné avant elle est abandonné et redemandé. Les solides et les régions sont calculés à part, les régions plan par plan.
+
+L'objet sélectionné en premier devient le résultat, avec son calque et sa couleur, et les autres sont effacés ; avec une fenêtre, une capture ou en sélectionnant tout, c'est le plus récent d'entre eux. Le résultat est un solide composé, qui n'est plus une boîte ni une sphère, sans historique. Quand les objets n'ont rien en commun, elle dit `Solide créé - supprimé nul` ou `Région créée - supprimée nulle` et les efface tous, comme AutoCAD. La commande entière est une seule étape d'annulation. La 3D de MellowCAD est encore partielle : les solides existent, les surfaces et les maillages non.
+
+- **Commande :** `INTERSECT`
+- **Alias :** `IR`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `IR` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="intersect" caption="Une boîte et une sphère qui la déborde, intersectées : ce qu'elles partagent est une boule à six faces planes, vue du sud-est." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les surfaces, qui n'existent pas ici. Les faces courbes qui se coupent selon une courbe dont MellowCAD n'a pas encore de forme exacte : cylindres, cônes, sphères ou tores dont les axes ne sont ni confondus ni parallèles (deux cylindres peuvent aussi se croiser) ; un cône avec autre chose qu'un plan ou un solide sur son axe ; un tore ou un solide de révolution avec un plan ni perpendiculaire à son axe ni passant par lui, ou avec un solide hors de son axe ; un solide extrudé avec autre chose qu'un plan ou une face extrudée dans sa direction. Ces cas sont refusés avec un message disant qu'une opération booléenne a échoué, et les solides restent tels quels ; de même une coupe qui touche une arête de façon tangente, des faces presque mais pas tout à fait sur une même surface, et une lamelle très fine entre une coupe et une arête. Un cylindre couché le long d'une face d'une boîte s'unit avec le bon volume, mais avec une arête et une face de moins que dans AutoCAD. Aucun historique de solide n'est gardé (SOLIDHIST, SHOWHISTORY), et l'objet que gardent Trajet ou Précédent n'est pas vérifié.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#intersect--in--es-intersec--int--pt-br-intersec--int--fr-intersect--ir)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande INTERSECT en français ?
+
+INTERSECT, comme en anglais, avec l'alias `IR`, puis Entrée ou la barre d'espace ; l'alias anglais `IN` n'existe pas dans AutoCAD en français. `_INTERSECT` fonctionne dans toutes les langues d'AutoCAD.
+
+### Quelle est la différence entre UNION, SOUSTRACTION et INTERSECT ?
+
+Les trois font un seul objet de solides 3D, ou de régions d'un même plan. [`UNION`](/docs/commands/union) garde tout ce que couvre l'un d'eux, [`SOUSTRACTION`](/docs/commands/subtract) garde le premier jeu moins le second, et INTERSECT ne garde que ce que tous partagent. Chacune est une seule étape d'annulation, et chacune efface les objets qu'elle a consommés.
+
+### Comment faire l'intersection de deux lignes dans AutoCAD ?
+
+Pas avec INTERSECT, qui travaille sur les solides et les régions et ignore les lignes. Pour trouver où deux lignes se croisent, prenez le point avec l'accrochage aux objets Intersection ; pour les faire se rejoindre, utilisez [`RACCORD`](/docs/commands/fillet) avec un rayon de 0, [`AJUSTER`](/docs/commands/trim) ou [`PROLONGER`](/docs/commands/extend).
+
+### Pourquoi INTERSECT supprime mes objets ?
+
+Parce qu'ils n'ont rien en commun : sans partie partagée, elle dit `Solide créé - supprimé nul`, ou `Région créée - supprimée nulle` pour des régions, et les efface, comme AutoCAD. `U` les rend. Un solide et une région, ou deux régions dans des plans différents, ne sont pas intersectés du tout : elle dit `Au moins 2 solides, surfaces ou régions coplanaires doivent être sélectionnés.` et ne change rien.
+
+## Commandes associées [#related]
+
+- [Commande UNION dans AutoCAD](/docs/commands/union)
+- [Commande SOUSTRACTION (SUBTRACT) dans AutoCAD](/docs/commands/subtract)
+- [Commande SECTION (SLICE) dans AutoCAD](/docs/commands/slice)
+- [Commande REGION dans AutoCAD](/docs/commands/region)

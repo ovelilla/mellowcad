@@ -1,0 +1,84 @@
+---
+title: "Commande ATTDEF dans AutoCAD"
+description: "Attributs de bloc dans AutoCAD en français : ATTDEF (alias AT), ses modes, l'étiquette, le message d'invite et la valeur par défaut. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci d'ATTDEF dans AutoCAD ?","answer":"AT, puis Entrée ou la barre d'espace ; DDATTDEF aussi. -AT est -ATTDEF, la forme ligne de commande, qu'ATTDEF lance ici aussi. Le nom est le même en français qu'en anglais, et _ATTDEF fonctionne dans toutes les langues d'AutoCAD."},{"question":"Comment créer un bloc avec des attributs dans AutoCAD ?","answer":"Dessinez le symbole, puis lancez ATTDEF pour chaque attribut et placez son texte là où la valeur doit apparaître. Lancez BLOC, désignez un point de base et sélectionnez le symbole et les attributs, dans l'ordre où INSERER doit les demander. Chaque INSERER du bloc demande alors une valeur pour chaque attribut, en proposant sa valeur par défaut."},{"question":"Quelle est la différence entre l'étiquette, le message d'invite et la valeur par défaut ?","answer":"L'étiquette nomme l'attribut, comme un identifiant : c'est ce qu'affiche la définition, et le libellé de son champ dans EATTEDIT. Le message d'invite est la question qu'INSERER pose pour obtenir sa valeur. La valeur par défaut est celle qui est proposée, et qu'Entrée accepte."},{"question":"Comment modifier une définition d'attribut ?","answer":"Double-cliquez dessus avant qu'elle n'entre dans un bloc : MODIFTEXTE ouvre son étiquette, son message d'invite et sa valeur par défaut. Une fois dans un bloc, les valeurs de chaque référence se modifient avec ATTEDIT ou EATTEDIT."}]
+---
+
+ATTDEF définit un attribut : une étiquette, un message d'invite et une valeur par défaut, placés dans le dessin comme une ligne de texte. Sélectionnez-le avec les autres objets quand vous créez un bloc avec [`BLOC`](/docs/commands/block), et chaque référence à ce bloc en garde sa propre valeur : le numéro d'une porte, le code d'un composant, le nom d'un local. Jusque-là, la définition affiche son étiquette.
+
+L'ATTDEF d'AutoCAD ouvre la boîte de dialogue Définition d'attributs, que MellowCAD n'a pas : ici, ATTDEF demande à la ligne de commande ce que demande `-ATTDEF`, comme le fait la console d'AutoCAD. Elle indique les modes courants et en demande un à modifier, jusqu'à ce qu'Entrée passe à la suite. Puis l'étiquette : sans espaces, car un espace la termine, et les minuscules passent en majuscules ; Entrée seule affiche `L'étiquette ne peut pas être nulle`. Puis le message d'invite par lequel [`INSERER`](/docs/commands/insert) demandera la valeur, Entrée reprenant l'étiquette, et la valeur par défaut. Enfin, l'emplacement du texte, avec les questions de [`TEXTE`](/docs/commands/text) : un point de départ, la hauteur et la rotation. La hauteur et la justification sont celles de TEXTE, partagées dans les deux sens. Entrée au point de départ place la définition une ligne sous la dernière définie, avec sa hauteur, sa rotation, son style et sa justification, si bien que les attributs d'un bloc s'empilent les uns sous les autres.
+
+- **Commande :** `ATTDEF`
+- **Alias :** `AT`, `DDATTDEF`
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `AT` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="attdef" caption="Un repère de porte : l'attribut NUM centré dans un cercle, son message d'invite l'étiquette elle-même et sa valeur par défaut 1, prêt à entrer dans un bloc." />
+
+## Options [#options]
+
+### `Invisible` (`I`) [#invisible]
+
+La valeur ne s'affiche pas sur les références, jusqu'à ce qu'[`ATTECRAN`](/docs/commands/attdisp) l'affiche. Chaque mode est un interrupteur : le choisir le fait passer de `O` à `N` ou l'inverse, réécrit les modes et pose de nouveau la question. Les modes restent réglés pour la commande ATTDEF suivante.
+
+### `Constant` (`C`) [#constant]
+
+Toutes les références ont la même valeur, qu'ATTDEF demande au lieu d'un message d'invite et d'une valeur par défaut ; INSERER ne la demande jamais.
+
+### `Vérifié` (`V`) [#verify]
+
+INSERER demande la valeur une seconde fois, pour la vérifier, après avoir demandé chaque valeur une fois.
+
+### `Prédéfini` (`P`) [#preset]
+
+INSERER ne demande pas la valeur : chaque référence prend la valeur par défaut.
+
+### `veRrouiller la position` (`R`) [#lock-position]
+
+Activé au départ : l'attribut reste là où le bloc le place.
+
+### `Justifier` (`J`) [#justify]
+
+Demande par quel point le texte est positionné, comme TEXTE : `Gauche`, `Centre`, `Droite`, `Milieu`, ou l'un des neuf points, en haut, au milieu et en bas, à gauche, au centre et à droite. L'invite du point de départ demande ensuite le point qu'il nomme : le milieu centre centre la valeur dans un repère.
+
+### `Style` (`S`) [#style]
+
+Demande le style de texte à utiliser, qui devient le style courant ; `?` liste les styles du dessin.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+La boîte de dialogue Définition d'attributs : ATTDEF demande à la ligne de commande. Les modes Annotatif et Multiligne, qu'AutoCAD 2027 liste après Verrouiller la position, et les lignes d'un attribut multiligne. Les champs, les justifications Aligner et Fixé, et le `?` de Style qui demande quels styles lister.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at)
+
+## Questions [#questions]
+
+### Quel est le raccourci d'ATTDEF dans AutoCAD ?
+
+`AT`, puis Entrée ou la barre d'espace ; `DDATTDEF` aussi. `-AT` est `-ATTDEF`, la forme ligne de commande, qu'ATTDEF lance ici aussi. Le nom est le même en français qu'en anglais, et `_ATTDEF` fonctionne dans toutes les langues d'AutoCAD.
+
+### Comment créer un bloc avec des attributs dans AutoCAD ?
+
+Dessinez le symbole, puis lancez ATTDEF pour chaque attribut et placez son texte là où la valeur doit apparaître. Lancez [`BLOC`](/docs/commands/block), désignez un point de base et sélectionnez le symbole et les attributs, dans l'ordre où INSERER doit les demander. Chaque [`INSERER`](/docs/commands/insert) du bloc demande alors une valeur pour chaque attribut, en proposant sa valeur par défaut.
+
+### Quelle est la différence entre l'étiquette, le message d'invite et la valeur par défaut ?
+
+L'étiquette nomme l'attribut, comme un identifiant : c'est ce qu'affiche la définition, et le libellé de son champ dans [`EATTEDIT`](/docs/commands/eattedit). Le message d'invite est la question qu'INSERER pose pour obtenir sa valeur. La valeur par défaut est celle qui est proposée, et qu'Entrée accepte.
+
+### Comment modifier une définition d'attribut ?
+
+Double-cliquez dessus avant qu'elle n'entre dans un bloc : [`MODIFTEXTE`](/docs/commands/textedit) ouvre son étiquette, son message d'invite et sa valeur par défaut. Une fois dans un bloc, les valeurs de chaque référence se modifient avec [`ATTEDIT`](/docs/commands/attedit) ou [`EATTEDIT`](/docs/commands/eattedit).
+
+## Commandes associées [#related]
+
+- [Commande BLOC (BLOCK) dans AutoCAD](/docs/commands/block)
+- [Commande INSERER (INSERT) dans AutoCAD](/docs/commands/insert)
+- [Commande ATTEDIT dans AutoCAD](/docs/commands/attedit)
+- [Commande ATTECRAN (ATTDISP) dans AutoCAD](/docs/commands/attdisp)
+- [Commande EATTEDIT dans AutoCAD](/docs/commands/eattedit)

@@ -1,0 +1,46 @@
+---
+title: "Commande ID dans AutoCAD"
+description: "Coordonnées d'un point avec ID d'AutoCAD en français : cliquez ou accrochez un point, lisez X, Y et Z dans le SCU courant, même en pleine commande. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"À quoi sert la commande ID dans AutoCAD ?","answer":"Elle indique où se trouve un point : X, Y et Z, dans le SCU courant. Elle ne dessine et ne modifie rien."},{"question":"Comment connaître les coordonnées d'un point dans AutoCAD ?","answer":"Tapez ID, puis cliquez le point avec un accrochage aux objets, Extrémité ou Centre, pour tomber exactement dessus. Les coordonnées s'écrivent sur la ligne de commande."},{"question":"Comment obtenir la coordonnée Z d'un point ?","answer":"Prenez-le avec un accrochage aux objets : ID y écrit le Z de l'objet. Un simple clic donne le Z du plan d'élévation, 0 sauf si ELEVATION ou le SCU le relèvent."},{"question":"Pourquoi ID affiche des coordonnées inattendues ?","answer":"ID lit dans le SCU courant. Si le SCU a été déplacé ou tourné, les nombres sont mesurés depuis son origine, le long de ses axes : SCU, option GÉnéral, pour lire des coordonnées générales."}]
+---
+
+ID écrit les coordonnées d'un point. À `Spécifiez un point:`, cliquez-le, prenez-le avec l'accrochage aux objets ou tapez-le : ID écrit ses X, Y et Z en une ligne sur la ligne de commande, puis se termine. Les valeurs sont dans le SCU courant, à la précision du dessin. Avec un accrochage aux objets, Z est la hauteur de l'objet en ce point ; sinon, celle du plan d'élévation. Entrée la termine sans un mot, et les objets sélectionnés avant ID sont abandonnés à son lancement. Tapée avec une apostrophe, `'ID`, elle s'exécute à l'intérieur d'une autre commande, qui reprend ensuite.
+
+- **Commande :** `ID`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ID` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="id" caption="ID avec l'accrochage Centre sur le trou d'une plaque : les X, Y et Z du centre." />
+
+## Questions [#questions]
+
+### À quoi sert la commande ID dans AutoCAD ?
+
+Elle indique où se trouve un point : X, Y et Z, dans le SCU courant. Elle ne dessine et ne modifie rien.
+
+### Comment connaître les coordonnées d'un point dans AutoCAD ?
+
+Tapez `ID`, puis cliquez le point avec un accrochage aux objets, Extrémité ou Centre, pour tomber exactement dessus. Les coordonnées s'écrivent sur la ligne de commande.
+
+### Comment obtenir la coordonnée Z d'un point ?
+
+Prenez-le avec un accrochage aux objets : ID y écrit le Z de l'objet. Un simple clic donne le Z du plan d'élévation, 0 sauf si ELEVATION ou le SCU le relèvent.
+
+### Pourquoi ID affiche des coordonnées inattendues ?
+
+ID lit dans le SCU courant. Si le SCU a été déplacé ou tourné, les nombres sont mesurés depuis son origine, le long de ses axes : [`SCU`](/docs/commands/ucs), option `GÉnéral`, pour lire des coordonnées générales.
+
+## Commandes associées [#related]
+
+- [Commande DIST dans AutoCAD](/docs/commands/dist)
+- [Commande LISTE (LIST) dans AutoCAD](/docs/commands/list)
+- [Commande SCU (UCS) dans AutoCAD](/docs/commands/ucs)
+- [Commande AIRE (AREA) dans AutoCAD](/docs/commands/area)
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#id--es-id--pt-br-id--fr-id)

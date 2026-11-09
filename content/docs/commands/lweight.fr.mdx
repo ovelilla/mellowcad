@@ -1,0 +1,64 @@
+---
+title: "Commande EPAISSLIGNE (LWEIGHT) dans AutoCAD"
+description: "Épaisseur de ligne avec EPAISSLIGNE (LWEIGHT, alias EPL) d'AutoCAD en français : en millimètres, les 24 valeurs standard, DuCalque, et à l'écran. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande LWEIGHT en français ?","answer":"EPAISSLIGNE, avec les alias EPL et EPLIGNE, puis Entrée ou la barre d'espace ; l'alias anglais LW n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _LWEIGHT."},{"question":"Pourquoi l'épaisseur de ligne ne s'affiche pas dans AutoCAD ?","answer":"Dans AutoCAD, les épaisseurs ne s'affichent à l'écran qu'avec le bouton Afficher/Masquer les épaisseurs des lignes de la barre d'état activé (LWDISPLAY 1), désactivé au départ. Ici, il est activé au départ. Les épaisseurs fines se dessinent toutes comme la ligne la plus fine de l'écran, donc la différence se voit sur les plus épaisses ; et un objet dont l'épaisseur est DuCalque prend celle de son calque."},{"question":"Comment changer l'épaisseur de ligne d'un objet existant ?","answer":"Sélectionnez-le et choisissez l'épaisseur dans la ligne Epaisseur de ligne de la palette Propriétés, ou changez l'épaisseur de son calque dans le Gestionnaire des propriétés des calques si l'objet est DuCalque. EPAISSLIGNE ne règle que l'épaisseur des objets dessinés après."},{"question":"Quelles épaisseurs de ligne existent dans AutoCAD ?","answer":"24 valeurs fixes en millimètres : 0.00, 0.05, 0.09, 0.13, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.53, 0.60, 0.70, 0.80, 0.90, 1.00, 1.06, 1.20, 1.40, 1.58, 2.00 et 2.11. Tapez-en une autre, 0.45 par exemple, et EPAISSLIGNE prend la plus proche, la plus fine en cas d'égalité."}]
+---
+
+EPAISSLIGNE (LWEIGHT) règle l'épaisseur de ligne avec laquelle les nouveaux objets sont dessinés, en millimètres. AutoCAD ouvre la boîte de dialogue Paramètres d'épaisseur de ligne ; MellowCAD n'en a pas encore, donc EPAISSLIGNE lance la forme en ligne de commande qu'AutoCAD a aussi, `-EPAISSLIGNE`. Elle indique l'épaisseur de ligne courante, `DUCALQUE` au départ, et en demande une nouvelle : l'une des 24 valeurs standard d'AutoCAD, de 0.00 à 2.11 mm. Toute autre valeur est ramenée à la valeur standard la plus proche, avec un message, et une valeur négative est refusée avec `Valeur de l'épaisseur de ligne non valable.`. Entrée garde l'épaisseur courante. Chaque changement est une étape que `U` annule.
+
+Ici, les épaisseurs de ligne s'affichent à l'écran dès le départ : AutoCAD ne les montre qu'une fois activé le bouton Afficher/Masquer les épaisseurs des lignes de la barre d'état (LWDISPLAY), mais sans présentations ni traçage dans MellowCAD, l'écran est le seul endroit où elles peuvent apparaître. Le bouton les masque et les affiche. Une polyligne avec une largeur montre sa largeur en plan, pas son épaisseur de ligne.
+
+- **Commande :** `EPAISSLIGNE`
+- **En anglais :** `LWEIGHT`, tapé `_LWEIGHT` dans toutes les langues
+- **Alias :** `EPL`, `EPLIGNE`
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `EPL` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="lweight" caption="Une plaque contournée à 0.70 mm, puis 0.1 tapé pour son trou, arrondi à 0.09 mm : les deux épaisseurs telles que l'écran les montre." />
+
+## Options [#options]
+
+### `?` [#list]
+
+Liste les valeurs acceptées, DuCalque et les 24 épaisseurs standard, puis redemande.
+
+### `DUCalque` (`DUC`) [#bylayer]
+
+Les nouveaux objets prennent l'épaisseur de ligne de leur calque, comme au départ.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+DuBloc et Par défaut (LWDEFAULT), les épaisseurs en pouces, la boîte de dialogue Paramètres d'épaisseur de ligne et l'entrée Paramètres d'épaisseur de ligne… de la liste déroulante.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande LWEIGHT en français ?
+
+EPAISSLIGNE, avec les alias `EPL` et `EPLIGNE`, puis Entrée ou la barre d'espace ; l'alias anglais `LW` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_LWEIGHT`.
+
+### Pourquoi l'épaisseur de ligne ne s'affiche pas dans AutoCAD ?
+
+Dans AutoCAD, les épaisseurs ne s'affichent à l'écran qu'avec le bouton Afficher/Masquer les épaisseurs des lignes de la barre d'état activé (LWDISPLAY 1), désactivé au départ. Ici, il est activé au départ. Les épaisseurs fines se dessinent toutes comme la ligne la plus fine de l'écran, donc la différence se voit sur les plus épaisses ; et un objet dont l'épaisseur est DuCalque prend celle de son calque.
+
+### Comment changer l'épaisseur de ligne d'un objet existant ?
+
+Sélectionnez-le et choisissez l'épaisseur dans la ligne Epaisseur de ligne de la palette Propriétés, ou changez l'épaisseur de son calque dans le Gestionnaire des propriétés des calques si l'objet est DuCalque. EPAISSLIGNE ne règle que l'épaisseur des objets dessinés après.
+
+### Quelles épaisseurs de ligne existent dans AutoCAD ?
+
+24 valeurs fixes en millimètres : 0.00, 0.05, 0.09, 0.13, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.53, 0.60, 0.70, 0.80, 0.90, 1.00, 1.06, 1.20, 1.40, 1.58, 2.00 et 2.11. Tapez-en une autre, 0.45 par exemple, et EPAISSLIGNE prend la plus proche, la plus fine en cas d'égalité.
+
+## Commandes associées [#related]
+
+- [Commande TYPELIGNE (LINETYPE) dans AutoCAD](/docs/commands/linetype)
+- [Commande CALQUE (LAYER) dans AutoCAD](/docs/commands/layer)
+- [Commande PROPRIETES (PROPERTIES) dans AutoCAD](/docs/commands/properties)
+- [Commande POLYLIGNE (PLINE) dans AutoCAD](/docs/commands/pline)

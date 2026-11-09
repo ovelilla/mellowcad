@@ -1,0 +1,54 @@
+---
+title: "Commande RETABLIR (REDO) dans AutoCAD"
+description: "Comment fonctionne RETABLIR (REDO) d'AutoCAD en français : il rétablit ce que U ou ANNULER vient de défaire ; MRETABLIR et Ctrl+Y, étape par étape. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci pour rétablir dans AutoCAD ?","answer":"Ctrl+Y, qui rétablit une étape (MRETABLIR 1). RETABLIR lui-même n'a pas d'alias : tapez RETABLIR, ou _REDO quelle que soit la langue d'AutoCAD."},{"question":"Pourquoi RETABLIR ne fonctionne pas ?","answer":"RETABLIR n'inverse que le U ou l'ANNULER qui la précède immédiatement. Après toute autre commande, il n'y a plus rien à rétablir, même si elle n'a rien changé : annulez, puis rétablissez aussitôt."},{"question":"Quelle est la différence entre RETABLIR et MRETABLIR ?","answer":"RETABLIR rétablit la dernière annulation en entier, et seulement juste après elle. MRETABLIR rétablit un nombre donné des étapes défaites, une à une, ou toutes, et fonctionne encore après un RETABLIR."},{"question":"Comment répéter la dernière commande dans AutoCAD ?","answer":"Appuyez sur Entrée ou sur la barre d'espace à l'invite Commande : la dernière commande redémarre. RETABLIR ne répète aucune commande, mais inverse une annulation."}]
+---
+
+RETABLIR (REDO) inverse la dernière commande `U` ou [`ANNULER`](/docs/commands/undo) : ce qu'elle a défait est redessiné, en entier, si bien qu'après un ANNULER de cinq commandes RETABLIR rétablit les cinq. La commande écrit au passage les noms des commandes, puis `Tout a été rétabli` quand il ne reste rien à rétablir. Elle ne demande rien et n'a pas d'options.
+
+Elle ne fonctionne que juste après l'annulation. À tout autre moment, elle dit `La commande RETABLIR doit être exécutée directement après la commande U ou ANNULER.`, et une fois qu'une autre commande s'est exécutée, même une qui ne change rien comme LISTE ou ZOOM, `Rien à rétablir`. Quand l'annulation est désactivée par l'option Contrôle Aucun d'ANNULER, RETABLIR dit que la commande est désactivée.
+
+`MRETABLIR` rétablit étape par étape : la commande demande un nombre d'actions, ou `Tout` ou `Dernier`, et rétablit autant d'étapes parmi celles que les annulations ont défaites, quels que soient les U, ANNULER et RETABLIR exécutés depuis ; Dernier est toute la dernière annulation, une seule fois (`La dernière opération ANNULER a déjà été relancée.`). Ctrl+Y et l'entrée Rétablir du menu contextuel exécutent MRETABLIR avec 1, en annulant la commande en cours.
+
+- **Commande :** `RETABLIR`
+- **En anglais :** `REDO`, tapé `_REDO` dans toutes les langues
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `RETABLIR` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="redo" caption="Un trou dessiné dans une plaque, défait avec U et rétabli avec RETABLIR." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Ctrl+Maj+Z rétablit aussi, sans rien dire, bien qu'AutoCAD n'y associe rien. Les boutons Annuler et Rétablir de la barre supérieure n'écrivent rien dans l'historique, là où la barre d'outils Accès rapide d'AutoCAD écrit ses propres lignes.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Questions [#questions]
+
+### Quel est le raccourci pour rétablir dans AutoCAD ?
+
+Ctrl+Y, qui rétablit une étape (MRETABLIR 1). RETABLIR lui-même n'a pas d'alias : tapez `RETABLIR`, ou `_REDO` quelle que soit la langue d'AutoCAD.
+
+### Pourquoi RETABLIR ne fonctionne pas ?
+
+RETABLIR n'inverse que le U ou l'ANNULER qui la précède immédiatement. Après toute autre commande, il n'y a plus rien à rétablir, même si elle n'a rien changé : annulez, puis rétablissez aussitôt.
+
+### Quelle est la différence entre RETABLIR et MRETABLIR ?
+
+RETABLIR rétablit la dernière annulation en entier, et seulement juste après elle. `MRETABLIR` rétablit un nombre donné des étapes défaites, une à une, ou toutes, et fonctionne encore après un RETABLIR.
+
+### Comment répéter la dernière commande dans AutoCAD ?
+
+Appuyez sur Entrée ou sur la barre d'espace à l'invite Commande : la dernière commande redémarre. RETABLIR ne répète aucune commande, mais inverse une annulation.
+
+## Commandes associées [#related]
+
+- [Commande ANNULER (UNDO) dans AutoCAD](/docs/commands/undo)
+- [U](/docs/commands#u): Annule la dernière action
+- [MRETABLIR (MREDO)](/docs/commands#mredo): Rétablir multiple

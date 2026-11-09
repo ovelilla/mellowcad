@@ -1,0 +1,58 @@
+---
+title: "Commande UNITES (UNITS) dans AutoCAD"
+description: "Comment fonctionne UNITES (UNITS, alias UI) d'AutoCAD : la boîte Unités de dessin, une précision de 0 à 8 décimales, l'échelle d'insertion en mm, cm ou m."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande UNITS en français ?","answer":"UNITES, avec les alias UI et DDUNITS : tapez-en un, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _UNITS."},{"question":"Comment régler les unités du dessin en millimètres ou en mètres ?","answer":"Ouvrez UNITES et choisissez Millimètres, Centimètres ou Mètres sous Echelle d'insertion. Une unité de dessin reste une unité : dessinez un mur de 5 m comme 5 en mètres ou 5000 en millimètres. Le choix dit lequel, et la barre d'état et la saisie dynamique l'affichent."},{"question":"Comment changer le nombre de décimales ?","answer":"Choisissez la Précision dans UNITES, de 0 à 0.00000000. Elle change la façon dont les longueurs sont écrites, jamais la géométrie : une ligne dessinée de 10.125 de long reste longue de 10.125 quelle que soit la précision."},{"question":"Pourquoi mes cotes ne suivent-elles pas la précision d'UNITES ?","answer":"Une cote écrit sa valeur avec la précision de son propre style de cote, pas celle du dessin. Modifiez-la dans COTSTYLE, sous Unités principales."},{"question":"Peut-on dessiner en pieds et en pouces ?","answer":"Pas encore : les longueurs sont décimales, et l'échelle d'insertion propose millimètres, centimètres et mètres. Les unités d'architecture et d'ingénierie manquent."}]
+---
+
+UNITES (UNITS) ouvre la boîte de dialogue Unités de dessin, qui fixe la façon dont le dessin écrit les longueurs et ce que représente une unité de dessin. Comme dans AutoCAD, la boîte de dialogue est modale : la commande dure jusqu'à ce que OK ou Annuler la ferme, la modification validée par OK est une étape que `U` défait, et Annuler ou Echap ne change rien. Tapée avec une apostrophe, `'UNITES`, elle s'ouvre à l'intérieur d'une commande en cours, qui continue une fois la boîte de dialogue fermée. Les unités de la barre d'état et l'entrée Unités de dessin du menu de l'application l'ouvrent aussi.
+
+Le Type de Longueur est Décimal, et sa Précision, de 0 à 8 décimales, est celle avec laquelle chaque longueur est écrite : coordonnées, distances, aires, valeurs par défaut proposées aux invites. Un nouveau dessin commence ici à deux décimales, là où le gabarit métrique d'AutoCAD commence à quatre. L'Echelle d'insertion dit ce qu'est une unité de dessin, en millimètres, centimètres ou mètres ; la barre d'état et la saisie dynamique l'affichent. Exemple affiche un point à la précision choisie.
+
+- **Commande :** `UNITES`
+- **En anglais :** `UNITS`, tapé `_UNITS` dans toutes les langues
+- **Alias :** `UI`, `DDUNITS`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `UI` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="units" caption="UNITES ouverte sur une plaque de 100 sur 60, puis ID sur son coin opposé : les coordonnées à la précision du dessin, deux décimales." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les autres types de longueur, Architecture, Ingénierie, Fractionnaire et Scientifique, et la notation scientifique pour une longueur énorme. Le groupe Angle : les angles sont en degrés décimaux, dans le sens trigonométrique depuis l'est, à la précision que fixe AUPREC, tapée. Les autres unités d'insertion, dont les pouces et les pieds ; Eclairage ; Direction ; et -UNITES, la forme en ligne de commande.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits--pt-br-unidades--un--unidadesd--fr-unites--ui--ddunits)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande UNITS en français ?
+
+UNITES, avec les alias `UI` et `DDUNITS` : tapez-en un, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_UNITS`.
+
+### Comment régler les unités du dessin en millimètres ou en mètres ?
+
+Ouvrez UNITES et choisissez Millimètres, Centimètres ou Mètres sous Echelle d'insertion. Une unité de dessin reste une unité : dessinez un mur de 5 m comme 5 en mètres ou 5000 en millimètres. Le choix dit lequel, et la barre d'état et la saisie dynamique l'affichent.
+
+### Comment changer le nombre de décimales ?
+
+Choisissez la Précision dans UNITES, de `0` à `0.00000000`. Elle change la façon dont les longueurs sont écrites, jamais la géométrie : une ligne dessinée de 10.125 de long reste longue de 10.125 quelle que soit la précision.
+
+### Pourquoi mes cotes ne suivent-elles pas la précision d'UNITES ?
+
+Une cote écrit sa valeur avec la précision de son propre style de cote, pas celle du dessin. Modifiez-la dans [`COTSTYLE`](/docs/commands/dimstyle), sous Unités principales.
+
+### Peut-on dessiner en pieds et en pouces ?
+
+Pas encore : les longueurs sont décimales, et l'échelle d'insertion propose millimètres, centimètres et mètres. Les unités d'architecture et d'ingénierie manquent.
+
+## Commandes associées [#related]
+
+- [Commande DIST dans AutoCAD](/docs/commands/dist)
+- [Commande AIRE (AREA) dans AutoCAD](/docs/commands/area)
+- [Commande COTSTYLE (DIMSTYLE) dans AutoCAD](/docs/commands/dimstyle)
+- [Commande ECHLTP (LTSCALE) dans AutoCAD](/docs/commands/ltscale)

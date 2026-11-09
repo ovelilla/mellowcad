@@ -1,0 +1,64 @@
+---
+title: "Commande MODIFTEXTE (TEXTEDIT) dans AutoCAD"
+description: "Comment MODIFTEXTE (TEXTEDIT, alias ED) d'AutoCAD modifie textes, textes multilignes et définitions d'attributs, l'un après l'autre, avec Mode. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande TEXTEDIT en français ?","answer":"MODIFTEXTE, avec l'alias ED, puis Entrée ou la barre d'espace ; DDEDIT, l'ancien nom d'AutoCAD, et MO aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _TEXTEDIT."},{"question":"Comment modifier un texte dans AutoCAD ?","answer":"Double-cliquez dessus, ou tapez ED et sélectionnez-le ; retapez-le et appuyez sur Entrée. MODIFTEXTE demande ensuite le texte suivant à modifier, jusqu'à Echap. Sa hauteur et sa rotation sont des lignes de la palette Propriétés, et son style la ligne Style."},{"question":"Comment modifier plusieurs textes l'un après l'autre ?","answer":"Laissez MODIFTEXTE en mode Multiple, son mode par défaut : après chaque texte, la commande demande le suivant. Mode puis Unique la font s'arrêter après un seul, comme le fait un double-clic."},{"question":"Pourquoi le double-clic ne modifie pas mon texte ?","answer":"Le texte est peut-être sur un calque verrouillé : déverrouillez le calque dans le Gestionnaire des propriétés des calques. MODIFTEXTE ne modifie pas encore le texte d'une cote, et les valeurs d'attribut d'un bloc ouvrent EATTEDIT."}]
+---
+
+MODIFTEXTE (TEXTEDIT) modifie les objets d'annotation : elle dit le mode d'édition courant, Multiple au départ, et vous demande d'en sélectionner un. Un texte sur une ligne s'ouvre pour être retapé là où il est, un texte multiligne dans l'éditeur de [`TEXTMULT`](/docs/commands/mtext), une définition d'attribut avec son étiquette, son invite et sa valeur par défaut. En mode Multiple, la commande demande ensuite l'objet suivant, jusqu'à ce qu'Echap ou Entrée la termine, et toute l'exécution est une seule étape, que `U` défait. Un double-clic sur un texte ou sur une définition d'attribut lance MODIFTEXTE, et sur un texte multiligne il ouvre l'éditeur pour ce seul objet.
+
+Echap dans l'éditeur d'un texte sur une ligne abandonne cette modification et demande l'objet suivant ; un second Echap termine la commande. Un objet sur un calque verrouillé affiche `L'objet est sur un calque verrouillé.` et la commande redemande, et un clic sur tout autre objet redemande sans rien dire. Un texte sélectionné avant la commande s'ouvre aussitôt.
+
+- **Commande :** `MODIFTEXTE`
+- **En anglais :** `TEXTEDIT`, tapé `_TEXTEDIT` dans toutes les langues
+- **Alias :** `ED`, `DDEDIT`, `MO`
+- **Groupe :** [Annotation](/docs/commands#annotate)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ED` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="textedit" caption="Le PALTE mal orthographié d'une plaque nominative, sélectionné avec MODIFTEXTE et retapé PLATE, puis Echap pour terminer la commande." />
+
+## Options [#options]
+
+### `Annuler` (`A`) [#undo]
+
+Défait la dernière modification de cette exécution et redemande ; quand il n'en reste plus, la commande dit qu'elle a été annulée complètement.
+
+### `Mode` (`M`) [#mode]
+
+Demande le mode d'édition : `Unique` termine la commande après un objet, `Multiple` en demande un autre. Le mode est gardé pour la commande MODIFTEXTE suivante, dans tous les dessins.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Le texte des cotes : MODIFTEXTE ne modifie pas le texte d'une cote, que l'option Texte de [`COTLIN`](/docs/commands/dimlinear) fixe au moment de la placer. La modification du contenu d'un texte dans la palette Propriétés. EDITEXTMULT (MTEDIT), tapée, et -EDITEXTMULT. Pendant que l'éditeur est ouvert, la ligne de commande affiche `MODIFTEXTE:`, là où AutoCAD modifie sur place et ne demande rien.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit--pt-br-editartexto--tedit--ddedit--ed--fr-modiftexte--ed--ddedit--mo)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande TEXTEDIT en français ?
+
+MODIFTEXTE, avec l'alias `ED`, puis Entrée ou la barre d'espace ; `DDEDIT`, l'ancien nom d'AutoCAD, et `MO` aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_TEXTEDIT`.
+
+### Comment modifier un texte dans AutoCAD ?
+
+Double-cliquez dessus, ou tapez `ED` et sélectionnez-le ; retapez-le et appuyez sur Entrée. MODIFTEXTE demande ensuite le texte suivant à modifier, jusqu'à Echap. Sa hauteur et sa rotation sont des lignes de la palette Propriétés, et son style la ligne Style.
+
+### Comment modifier plusieurs textes l'un après l'autre ?
+
+Laissez MODIFTEXTE en mode `Multiple`, son mode par défaut : après chaque texte, la commande demande le suivant. `Mode` puis `Unique` la font s'arrêter après un seul, comme le fait un double-clic.
+
+### Pourquoi le double-clic ne modifie pas mon texte ?
+
+Le texte est peut-être sur un calque verrouillé : déverrouillez le calque dans le Gestionnaire des propriétés des calques. MODIFTEXTE ne modifie pas encore le texte d'une cote, et les valeurs d'attribut d'un bloc ouvrent [`EATTEDIT`](/docs/commands/eattedit).
+
+## Commandes associées [#related]
+
+- [Commande TEXTE (TEXT) dans AutoCAD](/docs/commands/text)
+- [Commande TEXTMULT (MTEXT) dans AutoCAD](/docs/commands/mtext)
+- [Commande ATTDEF dans AutoCAD](/docs/commands/attdef)
+- [Commande PROPRIETES (PROPERTIES) dans AutoCAD](/docs/commands/properties)

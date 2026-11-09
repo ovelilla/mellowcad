@@ -1,0 +1,67 @@
+---
+title: "Commande COTALI (DIMALIGNED) dans AutoCAD"
+description: "Cotation alignée dans AutoCAD en français : COTALI (DIMALIGNED, alias COTA) cote un côté incliné par deux origines ou un objet, invite par invite. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande DIMALIGNED en français ?","answer":"COTALI, raccourci COTA, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _DIMALIGNED."},{"question":"Quelle est la différence entre COTLIN et COTALI ?","answer":"Sur un côté incliné, COTLIN donne sa largeur ou sa hauteur, selon que sa ligne de cote est horizontale ou verticale ; COTALI donne sa longueur, avec la ligne parallèle au côté. Sur un côté selon X ou Y, les deux donnent le même nombre."},{"question":"Comment coter une ligne inclinée dans AutoCAD ?","answer":"Avec COTALI : appuyez sur Entrée à la première invite, désignez la ligne et placez la cote du côté voulu. Ou désignez ses deux extrémités, avec l'accrochage aux objets Extrémité pour que les origines soient exactes."},{"question":"Comment écrire mon propre texte sur une cote ?","answer":"Choisissez TExte avant de la placer et tapez le texte : <> représente la mesure, si bien que « <> mm » l'écrit suivie de son unité, et Entrée sans rien taper garde la mesure seule. Une fois la cote placée, la ligne Remplacement du texte de la palette Propriétés le modifie."}]
+---
+
+COTALI (DIMALIGNED en anglais) mesure la distance réelle entre deux points : sa ligne de cote est parallèle à la droite qui les relie, quel que soit son angle, là où [`COTLIN`](/docs/commands/dimlinear) ne mesure que selon X ou Y. Ses invites sont celles de [`COTLIN`](/docs/commands/dimlinear) : le premier et le second point d'origine des lignes d'attache, ou Entrée et la désignation d'une ligne, d'un arc ou d'un segment de polyligne pour en prendre les deux extrémités, puis la position de la ligne de cote, d'un côté ou de l'autre. Un cercle désigné donne son diamètre passant par le point où vous l'avez désigné. La ligne de commande indique la mesure, et la commande se termine.
+
+- **Commande :** `COTALI`
+- **En anglais :** `DIMALIGNED`, tapé `_DIMALIGNED` dans toutes les langues
+- **Alias :** `COTA`
+- **Groupe :** [Annotation](/docs/commands#annotate)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `COTA` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="dimaligned" caption="Le côté incliné d'un triangle coté sur sa longueur : ses deux extrémités, puis la position de la ligne de cote." />
+
+## Options [#options]
+
+### `TExte` (`TE`) [#text]
+
+Demande le texte à écrire à la place de la mesure, qu'elle propose par défaut : Entrée garde la mesure. Dans ce que vous tapez, `<>` représente la mesure.
+
+### `Angle` (`A`) [#angle]
+
+Demande l'angle du texte, qui est alors dessiné selon cet angle au lieu de suivre la ligne de cote. 0 le remet le long de la ligne.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+textMult : le texte d'une cote tient sur une ligne, réglé avec `TExte` à la ligne de commande, jamais dans l'éditeur de texte. Avec un angle réglé par `Angle`, AutoCAD centre le texte sur la ligne de cote ; ici, il reste au-dessus, comme sans angle. Une cote n'est pas associative : elle ne suit pas l'objet qu'elle mesure.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande DIMALIGNED en français ?
+
+COTALI, raccourci `COTA`, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_DIMALIGNED`.
+
+### Quelle est la différence entre COTLIN et COTALI ?
+
+Sur un côté incliné, [`COTLIN`](/docs/commands/dimlinear) donne sa largeur ou sa hauteur, selon que sa ligne de cote est horizontale ou verticale ; COTALI donne sa longueur, avec la ligne parallèle au côté. Sur un côté selon X ou Y, les deux donnent le même nombre.
+
+### Comment coter une ligne inclinée dans AutoCAD ?
+
+Avec COTALI : appuyez sur Entrée à la première invite, désignez la ligne et placez la cote du côté voulu. Ou désignez ses deux extrémités, avec l'accrochage aux objets Extrémité pour que les origines soient exactes.
+
+### Comment écrire mon propre texte sur une cote ?
+
+Choisissez `TExte` avant de la placer et tapez le texte : `<>` représente la mesure, si bien que `<> mm` l'écrit suivie de son unité, et Entrée sans rien taper garde la mesure seule. Une fois la cote placée, la ligne Remplacement du texte de la palette Propriétés le modifie.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : une parcelle de terrain](/docs/exercises/plot-of-land)
+- [Exercice AutoCAD isométrique : un bloc étagé](/docs/exercises/isometric-block)
+
+## Commandes associées [#related]
+
+- [Commande COTLIN (DIMLINEAR) dans AutoCAD](/docs/commands/dimlinear)
+- [Commande COTANG (DIMANGULAR) dans AutoCAD](/docs/commands/dimangular)
+- [Commande COTCONT (DIMCONTINUE) dans AutoCAD](/docs/commands/dimcontinue)
+- [Commande COTSTYLE (DIMSTYLE) dans AutoCAD](/docs/commands/dimstyle)

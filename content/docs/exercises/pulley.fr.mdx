@@ -1,0 +1,48 @@
+---
+title: "Exercice AutoCAD 3D : une poulie"
+metaTitle: "Exercice AutoCAD 3D : poulie par révolution"
+description: "Modélisez une poulie dans AutoCAD 3D : demi-coupe en polyligne fermée, tournée autour de l'axe Y en un solide, pas à pas. Pratiquez la 3D gratuitement en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modélisez cette poulie en faisant tourner sa demi-coupe autour de son axe, en millimètres : un alésage de 20, un moyeu de 30 de long et 40 de diamètre, un voile de 10 d'épaisseur et une jante de 24 de large, de 90 à 110 de diamètre, centrée sur le moyeu. La coupe est dessinée en distances à l'axe, qui monte le long de l'axe Y, si bien que chaque diamètre est dessiné par sa moitié.
+
+- **Exercice :** Intermédiaire · Mécanique · Solide 3D
+- **Commandes :** [`POLYLIGNE`](/docs/commands/pline), [`-VUE`](/docs/commands#-view), [`STYLVISCOURANT`](/docs/commands/vscurrent), [`REVOLUTION`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=pulley), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/pulley" caption="La demi-coupe de la poulie à côté de son axe, ses distances à l'axe cotées." />
+
+<Session name="exercises/pulley/model" caption="La poulie en solide, vue du sud-est dans le style visuel Conceptuel." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez la demi-coupe [#profile]
+
+Sur le calque Contour, une seule [`POLYLIGNE`](/docs/commands/pline) fermée depuis `10,0`, chaque point suivant comme un pas depuis le précédent : `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` et `-10,0`, puis `Clore`.
+
+<Session name="exercises/pulley/profile" caption="1. Dessinez la demi-coupe" />
+
+### 2. Faites tourner la vue [#view]
+
+`-VUE` et `isoSE` la montrent depuis le sud-est et d'en haut ; [`STYLVISCOURANT`](/docs/commands/vscurrent) et `Conceptuel` ombrent les faces, ce qui montre le mieux une pièce tournée.
+
+<Session name="exercises/pulley/view" caption="2. Faites tourner la vue" />
+
+### 3. Créez le solide de révolution [#revolve]
+
+[`REVOLUTION`](/docs/commands/revolve) : désignez la coupe et appuyez sur Entrée, puis `Y` : l'axe Y est celui de la poulie. Entrée prend l'angle par défaut, un tour complet. [`ZOOM`](/docs/commands/zoom) `ETendu` la cadre, et une échelle de 0.8x laisse de la marge autour.
+
+<Session name="exercises/pulley/revolve" caption="3. Créez le solide de révolution" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link): Avancé · Mécanique · 2D
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block): Avancé · Mécanique · Solide 3D
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket): Débutant · Mécanique · 2D
+- [Exercices AutoCAD](/docs/exercises)

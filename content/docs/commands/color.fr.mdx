@@ -1,0 +1,93 @@
+---
+title: "Commande COULEUR (COLOR) dans AutoCAD"
+description: "COULEUR (COLOR, alias CL) d'AutoCAD en français règle la couleur des nouveaux objets : DuCalque, couleur d'index par nom ou numéro, ou RVB. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande COLOR en français ?","answer":"COULEUR, raccourci CL, puis Entrée ou la barre d'espace ; COUL et DDCOLOR aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _COLOR."},{"question":"Comment changer la couleur d'un objet dans AutoCAD ?","answer":"Sélectionnez-le et choisissez la couleur dans la liste des couleurs de la barre supérieure ou dans la ligne Couleur de la palette Propriétés : elle change en une seule étape. Ou copiez la couleur d'un autre objet avec CORRESPROP. COULEUR ne règle que la couleur des objets dessinés après elle."},{"question":"Que signifie DuCalque dans AutoCAD ?","answer":"Que l'objet prend la couleur de son calque, si bien que changer la couleur du calque dans le Gestionnaire des propriétés des calques change tous les objets DuCalque qui s'y trouvent. C'est la valeur par défaut, et elle garde les couleurs d'un dessin organisées par calque : CALQUE."},{"question":"Comment utiliser des couleurs RVB (RGB) dans AutoCAD ?","answer":"Choisissez coUleursvraies et tapez les trois valeurs séparées par des virgules, par exemple 0,128,255."}]
+---
+
+COULEUR (COLOR en anglais) définit la couleur avec laquelle les nouveaux objets sont dessinés. AutoCAD ouvre la boîte de dialogue Sélectionner une couleur ; MellowCAD n'en a pas encore, donc COULEUR lance la forme ligne de commande qu'AutoCAD a aussi, `-COULEUR`. Elle demande la couleur par défaut de l'objet, en proposant la couleur courante, `DUCALQUE` dans un nouveau dessin : DuCalque signifie que chaque objet prend la couleur de son calque, et une couleur choisie à la place est celle de l'objet lui-même. Tapez le numéro ou le nom d'une couleur d'index, ou choisissez `coUleursvraies`. Entrée conserve la couleur courante, et le changement est une étape que `U` annule.
+
+Un mot qu'elle ne sait pas lire affiche `Nécessite un numéro ou un nom de couleur standard.`, et 0, un nombre négatif ou un nombre supérieur à 255 `Numéro de couleur incorrect.` ; la question revient. Tapée avec une apostrophe à l'intérieur d'une commande, `'COULEUR`, elle donne la nouvelle couleur à chaque objet dessiné ensuite : chaque segment de [`LIGNE`](/docs/commands/line) prend la couleur courante au moment où il commence. COULEUR ne règle que ce qui suit ; la palette Propriétés ou la liste des couleurs de la barre supérieure modifie les objets déjà dessinés.
+
+- **Commande :** `COULEUR`
+- **En anglais :** `COLOR`, tapé `_COLOR` dans toutes les langues
+- **Alias :** `CL`, `COUL`, `DDCOLOR`
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `CL` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="color" caption="Une plaque dessinée DuCalque, son trou en rouge, son alésage en couleur vraie 0,128,255, puis COULEUR remise à DuCalque." />
+
+## Options [#options]
+
+### `coUleursvraies` (`U`) [#truecolor]
+
+Demande une couleur sous forme de trois valeurs de 0 à 255, rouge, vert et bleu, séparées par des virgules sans espace : `0,128,255` est un bleu moyen. Une couleur qui est aussi une couleur d'index, `255,0,0`, est enregistrée comme cette couleur d'index.
+
+### `DUCalque` (`DUC`) [#bylayer]
+
+Les nouveaux objets prennent la couleur de leur calque, comme au départ.
+
+### `Rouge` (`R`) [#red]
+
+La couleur d'index 1, que l'on tape aussi `1`.
+
+### `Jaune` (`J`) [#yellow]
+
+La couleur d'index 2, que l'on tape aussi `2`.
+
+### `Vert` (`V`) [#green]
+
+La couleur d'index 3, que l'on tape aussi `3`.
+
+### `Cyan` (`C`) [#cyan]
+
+La couleur d'index 4, que l'on tape aussi `4`.
+
+### `Bleu` (`B`) [#blue]
+
+La couleur d'index 5, que l'on tape aussi `5`.
+
+### `Magenta` (`M`) [#magenta]
+
+La couleur d'index 6, que l'on tape aussi `6`.
+
+### `blAnc` (`A`) [#white]
+
+La couleur d'index 7, que l'on tape aussi `7` : blanche sur un fond sombre et noire sur un fond clair.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+La boîte de dialogue Sélectionner une couleur, les carnets de couleurs et la forme TSL. Les couleurs d'index 8 à 255 : seules les couleurs 1 à 7 sont acceptées. DuBloc. Une couleur vraie qui correspond à une couleur d'index est enregistrée comme cette couleur d'index, là où AutoCAD conserve les valeurs RVB. La transparence (CETRANSPARENCY), et les valeurs par défaut propres à chaque type, HPCOLOR, HPLAYER, DIMLAYER et TEXTLAYER.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande COLOR en français ?
+
+COULEUR, raccourci `CL`, puis Entrée ou la barre d'espace ; `COUL` et `DDCOLOR` aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_COLOR`.
+
+### Comment changer la couleur d'un objet dans AutoCAD ?
+
+Sélectionnez-le et choisissez la couleur dans la liste des couleurs de la barre supérieure ou dans la ligne Couleur de la palette Propriétés : elle change en une seule étape. Ou copiez la couleur d'un autre objet avec [`CORRESPROP`](/docs/commands/matchprop). COULEUR ne règle que la couleur des objets dessinés après elle.
+
+### Que signifie DuCalque dans AutoCAD ?
+
+Que l'objet prend la couleur de son calque, si bien que changer la couleur du calque dans le Gestionnaire des propriétés des calques change tous les objets DuCalque qui s'y trouvent. C'est la valeur par défaut, et elle garde les couleurs d'un dessin organisées par calque : [`CALQUE`](/docs/commands/layer).
+
+### Comment utiliser des couleurs RVB (RGB) dans AutoCAD ?
+
+Choisissez `coUleursvraies` et tapez les trois valeurs séparées par des virgules, par exemple `0,128,255`.
+
+## Commandes associées [#related]
+
+- [Commande CALQUE (LAYER) dans AutoCAD](/docs/commands/layer)
+- [Commande PROPRIETES (PROPERTIES) dans AutoCAD](/docs/commands/properties)
+- [Commande CORRESPROP (MATCHPROP) dans AutoCAD](/docs/commands/matchprop)
+- [Commande TYPELIGNE (LINETYPE) dans AutoCAD](/docs/commands/linetype)
+- [Commande EPAISSLIGNE (LWEIGHT) dans AutoCAD](/docs/commands/lweight)

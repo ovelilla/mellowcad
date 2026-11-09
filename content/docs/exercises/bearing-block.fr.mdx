@@ -1,0 +1,66 @@
+---
+title: "Exercice AutoCAD 3D : un palier"
+metaTitle: "Exercice AutoCAD 3D avancé : un palier"
+description: "Modélisez un palier dans AutoCAD 3D : extrusion, union, puis alésage et trous de fixation soustraits en cylindres, pas à pas. Solides 3D gratuits en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modélisez ce palier, en millimètres : une semelle de 100 sur 60 aux coins de rayon 10, épaisse de 12 ; un bossage de 40 de diamètre et 40 de haut au milieu ; un alésage de 20 à travers le bossage et deux trous de fixation de 10 à travers la semelle, distants de 76. La semelle et le bossage sont extrudés à partir de leurs contours et unis en un seul solide ; l'alésage et les trous sont des cylindres qu'on en soustrait.
+
+- **Exercice :** Avancé · Mécanique · Solide 3D
+- **Commandes :** [`RECTANGLE`](/docs/commands/rectang), [`CERCLE`](/docs/commands/circle), [`EXTRUSION`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDRE`](/docs/commands/cylinder), [`COPIER`](/docs/commands/copy), [`SOUSTRACTION`](/docs/commands/subtract), [`-VUE`](/docs/commands#-view), [`STYLVISCOURANT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=bearing-block), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/bearing-block" caption="Le palier en plan, de 100 sur 60, son bossage, son alésage et ses trous cotés." />
+
+<Session name="exercises/bearing-block/model" caption="Le palier en solide, vu du sud-est dans le style visuel Conceptuel." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez le plan [#plan]
+
+Sur le calque Contour, [`RECTANGLE`](/docs/commands/rectang) avec un `Raccord` de `10`, de `0,0` à `100,60`, et un cercle en son centre, `50,30`, d'un `Diamètre` de `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Dessinez le plan" />
+
+### 2. Extrudez la semelle et le bossage [#extrude]
+
+Extrudez avec [`EXTRUSION`](/docs/commands/extrude) le contour sur `12` de haut, puis le cercle sur `40` : deux solides.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Extrudez la semelle et le bossage" />
+
+### 3. Unissez-les [#union]
+
+[`UNION`](/docs/commands/union) : désignez les deux et appuyez sur Entrée. Ils ne forment plus qu'un solide.
+
+<Session name="exercises/bearing-block/union" caption="3. Unissez-les" />
+
+### 4. Dessinez les cylindres [#holes]
+
+L'alésage et un trou de fixation en cylindres, avec [`CYLINDRE`](/docs/commands/cylinder) : l'alésage en `50,30`, `Diamètre` `20` et `40` de haut ; un trou de fixation en `12,30`, diamètre `10` et `12` de haut. Puis copiez le trou avec [`COPIER`](/docs/commands/copy) de `12,30` à `76,0` plus loin.
+
+<Session name="exercises/bearing-block/holes" caption="4. Dessinez les cylindres" />
+
+### 5. Soustrayez-les [#subtract]
+
+[`SOUSTRACTION`](/docs/commands/subtract) : désignez le palier et appuyez sur Entrée, puis les trois cylindres et Entrée. L'alésage et les trous traversent la pièce.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Soustrayez-les" />
+
+### 6. Faites tourner la vue [#view]
+
+`-VUE` et `isoSE`, [`STYLVISCOURANT`](/docs/commands/vscurrent) et `Conceptuel`, puis [`ZOOM`](/docs/commands/zoom) `ETendu` et 0.8x pour le cadrer.
+
+<Session name="exercises/bearing-block/view" caption="6. Faites tourner la vue" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket): Débutant · Mécanique · 2D
+- [Exercice AutoCAD : une équerre en L](/docs/exercises/l-bracket): Débutant · Mécanique · 2D
+- [Exercice AutoCAD : un escalier en plan](/docs/exercises/stairs): Débutant · Architecture · 2D
+- [Exercices AutoCAD](/docs/exercises)

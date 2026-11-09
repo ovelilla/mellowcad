@@ -1,0 +1,52 @@
+---
+title: "Exercice AutoCAD : une table ronde et ses chaises"
+metaTitle: "Exercice AutoCAD : table ronde et six chaises"
+description: "Dessinez une table ronde et six chaises dans AutoCAD : une chaise, un réseau polaire autour du centre de la table et les cotes, pas à pas. Gratuit en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dessinez une table ronde de 120 et six chaises, en centimètres : chaque chaise, une assise de 44 sur 40 aux coins arrondis à 4 et un dossier de 8 de profondeur, son avant à 8 du bord de la table. Dessinez une chaise au-dessus de la table et laissez un réseau polaire placer les six. L'échelle des cotes du dessin est réglée pour des centimètres.
+
+- **Exercice :** Intermédiaire · Architecture · 2D
+- **Commandes :** [`CERCLE`](/docs/commands/circle), [`RECTANGLE`](/docs/commands/rectang), [`RESEAUPOLAIRE`](/docs/commands/arraypolar), [`COTDIA`](/docs/commands/dimdiameter), [`COTLIN`](/docs/commands/dimlinear)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=round-table), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/round-table" caption="Une table ronde de 120 et six chaises, en plan, cotée en centimètres." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez la table [#table]
+
+Sur le calque Contour, [`CERCLE`](/docs/commands/circle) en `0,0`, `Diamètre` `120`.
+
+<Session name="exercises/round-table/table" caption="1. Dessinez la table" />
+
+### 2. Dessinez une chaise [#chair]
+
+L'assise, au-dessus de la table : [`RECTANGLE`](/docs/commands/rectang) avec un `Raccord` de `4`, de `-22,68` à `44,40` plus loin. Puis le dossier, avec le raccord ramené à `0`, de `-22,108` à `44,8` plus loin. [`RECTANGLE`](/docs/commands/rectang) garde son rayon de raccord jusqu'à ce que vous le changiez.
+
+<Session name="exercises/round-table/chair" caption="2. Dessinez une chaise" />
+
+### 3. Disposez les chaises en réseau [#array]
+
+[`RESEAUPOLAIRE`](/docs/commands/arraypolar) : désignez l'assise et le dossier, appuyez sur Entrée, donnez le centre de la table, `0,0`, puis `Eléments`, `6`. Chaque chaise tourne en étant placée, si bien que les six font face à la table.
+
+<Session name="exercises/round-table/array" caption="3. Disposez les chaises en réseau" />
+
+### 4. Cotez-la [#dimensions]
+
+Sur le calque Cotes, [`COTDIA`](/docs/commands/dimdiameter) sur la table, placée à l'intérieur, et [`COTLIN`](/docs/commands/dimlinear) pour la largeur de la chaise du haut, 44, et sa profondeur avec le dossier, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Cotez-la" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : une parcelle de terrain](/docs/exercises/plot-of-land): Intermédiaire · Génie civil · 2D
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft): Intermédiaire · Mécanique · 2D
+- [Exercice AutoCAD isométrique : un bloc étagé](/docs/exercises/isometric-block): Intermédiaire · Mécanique · Isométrique
+- [Exercices AutoCAD](/docs/exercises)

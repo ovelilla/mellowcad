@@ -1,0 +1,85 @@
+---
+title: "Commande EXTRUSION (EXTRUDE) dans AutoCAD"
+description: "Comment EXTRUSION (EXTRUDE, alias ES) d'AutoCAD en français fait d'un profil 2D fermé un solide 3D, invite par invite : hauteur, Direction, angle d'extrusion."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande EXTRUDE en français ?","answer":"EXTRUSION, avec l'alias ES, puis Entrée ou la barre d'espace ; l'alias anglais EXT n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _EXTRUDE."},{"question":"Comment extruder un dessin 2D en 3D ?","answer":"Dessinez le contour comme un seul objet fermé (une polyligne fermée, un cercle ou une région), lancez EXTRUSION, sélectionnez-le, appuyez sur Entrée et tapez la hauteur. Vu de dessus, un solide ressemble à son contour : tournez la vue avec le ViewCube, ou avec -VUE et isoSE, pour le voir en 3D."},{"question":"Pourquoi l'extrusion ne crée pas de solide ?","answer":"Le profil est ouvert, ou se coupe lui-même. Une ligne, un arc ou une polyligne ouverte donne une surface dans AutoCAD, et MellowCAD n'en a pas encore : EXTRUSION dit « Impossible de balayer ou d'extruder un objet de ce type. » et les retire de la sélection ; un profil qui se coupe lui-même reçoit « Impossible de balayer ou d'extruder une courbe auto-sécante. », et sort aussi. Joignez les morceaux avec JOINDRE, faites-en une région avec REGION, ou cliquez à l'intérieur avec APPTIRER."},{"question":"Comment extruder une forme avec un trou ?","answer":"Faites-en une seule région : REGION sur le contour et le trou, puis SOUSTRACTION pour ôter la région du trou de celle du contour. Extrudez cette région, et le trou traverse le solide. Ou lancez APPTIRER et cliquez entre le contour et le trou."},{"question":"Comment extruder le long d'un chemin ?","answer":"Pas encore : Chemin est proposé, mais refusé, et BALAYAGE (SWEEP) n'existe pas. Direction extrude le long de la droite qui joint deux points."}]
+---
+
+EXTRUSION (EXTRUDE) transforme des profils 2D fermés en solides 3D, chacun tiré tout droit hors de son plan sur la hauteur que vous donnez. Sélectionnez les profils (cercles, ellipses, polylignes ou splines fermées, régions) et appuyez sur Entrée, puis tapez la hauteur ou montrez-la d'un point ; la dernière hauteur devient la valeur par défaut de la fois suivante. Chaque profil devient un solide à part, sur le calque courant, et il est effacé, comme le veut DELOBJ par défaut. La commande entière est une seule étape, qu'Annuler reprend.
+
+La 3D de MellowCAD se limite aux solides, et reste partielle : un profil ouvert, dont AutoCAD fait une surface, reçoit `Impossible de balayer ou d'extruder un objet de ce type.` et sort de la sélection.
+
+- **Commande :** `EXTRUSION`
+- **En anglais :** `EXTRUDE`, tapé `_EXTRUDE` dans toutes les langues
+- **Alias :** `ES`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ES` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="extrude" caption="Une polyligne fermée en L extrudée de 20 en un solide, puis vue du sud-est dans le style visuel Masqué." />
+
+## Options [#options]
+
+### `MOde` (`MO`) [#mode]
+
+Demande `SOlide` ou `SUrface`. `SOlide` est l'option par défaut, et la seule qui existe : comme il n'y a pas encore de surfaces, `SUrface` est refusé.
+
+### `Direction` (`D`) [#direction]
+
+Au lieu d'une hauteur, deux points donnent la direction et la longueur : les profils sont extrudés le long de cette ligne, inclinés si elle l'est. Une direction couchée dans le plan du profil reçoit `La direction extrudée est parallèle au plan de la courbe de balayage.`, et la commande se termine.
+
+### `Chemin` (`C`) [#path]
+
+Proposé, comme dans AutoCAD, mais pas encore disponible : le choisir est refusé, et la hauteur est redemandée.
+
+### `angle d'Extrusion` (`E`) [#taper]
+
+Demande un angle entre −90 et 90 degrés, puis de nouveau la hauteur : un angle positif rétrécit le solide à mesure qu'il monte, un angle négatif l'élargit. Un cercle qui se referme avant la hauteur finit en pointe, en cône ; un profil qui ne supporte pas l'angle ne produit rien.
+
+### `exPression` (`P`) [#expression]
+
+La hauteur sous forme d'expression : `2*3` vaut 6. Seulement l'arithmétique, pour l'instant.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+L'option `Chemin`, le balayage le long d'un chemin. Le mode `SUrface` et les profils ouverts, dont AutoCAD fait des surfaces : il n'y a pas encore de surfaces. Les faces des solides et les zones qu'un clic trouve à l'intérieur d'objets, que prend [`APPTIRER`](/docs/commands/presspull). Un angle d'extrusion sur une ellipse, une spline, ou un arc qui rejoint le segment suivant en angle vif. Les paramètres et fonctions de l'option `exPression`. [`DECOMPOSER`](/docs/commands/explode) d'un solide extrudé à côtés courbes, qu'AutoCAD transforme en surfaces et en régions. Ses poignées, et sa hauteur et son angle d'extrusion modifiés dans la palette Propriétés.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande EXTRUDE en français ?
+
+EXTRUSION, avec l'alias `ES`, puis Entrée ou la barre d'espace ; l'alias anglais `EXT` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_EXTRUDE`.
+
+### Comment extruder un dessin 2D en 3D ?
+
+Dessinez le contour comme un seul objet fermé (une polyligne fermée, un cercle ou une région), lancez EXTRUSION, sélectionnez-le, appuyez sur Entrée et tapez la hauteur. Vu de dessus, un solide ressemble à son contour : tournez la vue avec le ViewCube, ou avec `-VUE` et `isoSE`, pour le voir en 3D.
+
+### Pourquoi l'extrusion ne crée pas de solide ?
+
+Le profil est ouvert, ou se coupe lui-même. Une ligne, un arc ou une polyligne ouverte donne une surface dans AutoCAD, et MellowCAD n'en a pas encore : EXTRUSION dit `Impossible de balayer ou d'extruder un objet de ce type.` et les retire de la sélection ; un profil qui se coupe lui-même reçoit `Impossible de balayer ou d'extruder une courbe auto-sécante.`, et sort aussi. Joignez les morceaux avec [`JOINDRE`](/docs/commands/join), faites-en une région avec [`REGION`](/docs/commands/region), ou cliquez à l'intérieur avec [`APPTIRER`](/docs/commands/presspull).
+
+### Comment extruder une forme avec un trou ?
+
+Faites-en une seule région : [`REGION`](/docs/commands/region) sur le contour et le trou, puis [`SOUSTRACTION`](/docs/commands/subtract) pour ôter la région du trou de celle du contour. Extrudez cette région, et le trou traverse le solide. Ou lancez [`APPTIRER`](/docs/commands/presspull) et cliquez entre le contour et le trou.
+
+### Comment extruder le long d'un chemin ?
+
+Pas encore : `Chemin` est proposé, mais refusé, et BALAYAGE (SWEEP) n'existe pas. `Direction` extrude le long de la droite qui joint deux points.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande APPTIRER (PRESSPULL) dans AutoCAD](/docs/commands/presspull)
+- [Commande REVOLUTION (REVOLVE) dans AutoCAD](/docs/commands/revolve)
+- [Commande REGION dans AutoCAD](/docs/commands/region)
+- [Commande SOUSTRACTION (SUBTRACT) dans AutoCAD](/docs/commands/subtract)

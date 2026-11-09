@@ -1,0 +1,87 @@
+---
+title: "Commande AJUSTER (TRIM) dans AutoCAD"
+description: "Comment fonctionne AJUSTER (TRIM, alias AJ) d'AutoCAD en français, invite par invite : modes Rapide et Standard, arêtes de coupe, trajet et capture. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande TRIM en français ?","answer":"AJUSTER, avec l'alias AJ : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _TRIM."},{"question":"Pourquoi AJUSTER supprime toute la ligne ?","answer":"Parce qu'AJUSTER est en mode Rapide, le mode par défaut d'AutoCAD depuis sa version 2021 : désigner un objet qu'aucune arête ne croise le supprime. Choisissez mOde puis Standard pour qu'AJUSTER le laisse et le dise."},{"question":"Comment ajuster plusieurs lignes à la fois ?","answer":"Cliquez dans un endroit vide et désignez un second point : chaque objet que ce trajet croise est ajusté en une seule étape. Ou choisissez Capture et tracez une fenêtre sur les morceaux à enlever."},{"question":"Comment prolonger une ligne avec AJUSTER ?","answer":"Maintenez Maj enfoncée en désignant la ligne près de l'extrémité à prolonger : elle s'allonge jusqu'à l'arête la plus proche, comme avec PROLONGER, et la désignation suivante sans Maj ajuste de nouveau."}]
+---
+
+AJUSTER (TRIM) coupe un objet là où d'autres objets le croisent : vous désignez le morceau à enlever, et il disparaît jusqu'au croisement le plus proche de chaque côté. La commande démarre en mode Rapide, comme celle d'AutoCAD : tous les objets sont des arêtes de coupe, et un objet que rien ne croise est supprimé en entier. Maintenir Maj enfoncée en désignant prolonge plutôt l'objet jusqu'à l'arête la plus proche, comme le fait [`PROLONGER`](/docs/commands/extend). Chaque désignation est une étape qu'Annuler défait ; Entrée termine la commande.
+
+- **Commande :** `AJUSTER`
+- **En anglais :** `TRIM`, tapé `_TRIM` dans toutes les langues
+- **Alias :** `AJ`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `AJ` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="trim" caption="Une ligne ajustée aux deux lignes qui la croisent : chaque extrémité désignée une fois, en mode Rapide." />
+
+## Options [#options]
+
+### `arêtes Sécantes` (`S`) [#cutting]
+
+Choisit les objets qui coupent : sélectionnez-les, ou appuyez sur Entrée pour prendre tous les objets. Dès lors, seuls ceux-là coupent, quel que soit le mode, jusqu'à la fin de la commande.
+
+### `TRajet` (`TR`) [#fence]
+
+Demande les points d'une ligne, autant que vous voulez jusqu'à Entrée : chaque objet qu'elle croise est ajusté là où elle le croise, en une seule étape. Le mode Standard la propose ; le mode Rapide l'accepte aussi, et un clic dans le vide y commence de lui-même un trajet de deux points.
+
+### `Capture` (`C`) [#crossing]
+
+Demande les deux coins d'une fenêtre : tout ce que son contour croise est ajusté, en une seule étape. Un objet entièrement à l'intérieur de la fenêtre n'est pas croisé par elle.
+
+### `mOde` (`O`) [#mode]
+
+Bascule entre `Rapide` et `Standard`. En mode Standard, AJUSTER demande d'abord les arêtes de coupe (Entrée les prend toutes), laisse un objet qu'aucune arête ne croise avec `Ne coupe pas l'arête sécante.`, propose Trajet et Arête, et un clic dans le vide commence une fenêtre de capture. Le mode est commun à AJUSTER et à PROLONGER, et dure toute la session.
+
+### `Arête` (`A`) [#edge]
+
+En mode Standard seulement. Avec `PRolongement`, une arête coupe aussi là où elle croiserait si elle était prolongée : une ligne dans les deux sens, un arc sur tout son cercle ; `PAs de prolongement` est l'option par défaut.
+
+### `Effacer` (`E`) [#erase]
+
+Efface des objets sans quitter la commande : sélectionnez-les, puis Entrée les efface, en une étape d'AJUSTER qu'Annuler peut défaire.
+
+### `annUler` (`U`) [#undo]
+
+Proposée dès que l'invite a reçu une réponse (une désignation, un trajet, une fenêtre) : défait le dernier ajustement, et le dit quand il n'y a plus rien à défaire.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Projection : l'option de projection d'AutoCAD (Aucune, Scu, Vue) n'est pas proposée, et tout est calculé en projection sur le plan XY du SCU, ce qui est l'option par défaut d'AutoCAD, Scu. Un trajet ne peut pas encore être tiré avec le curseur, seulement désigné point par point. Le mode d'ajustement et le choix d'Arête durent la session, là où AutoCAD les garde d'une session à l'autre. Un objet incliné par rapport au SCU, sauf une spline, ne coupe pas et n'est pas ajusté.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande TRIM en français ?
+
+AJUSTER, avec l'alias `AJ` : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_TRIM`.
+
+### Pourquoi AJUSTER supprime toute la ligne ?
+
+Parce qu'AJUSTER est en mode Rapide, le mode par défaut d'AutoCAD depuis sa version 2021 : désigner un objet qu'aucune arête ne croise le supprime. Choisissez `mOde` puis `Standard` pour qu'AJUSTER le laisse et le dise.
+
+### Comment ajuster plusieurs lignes à la fois ?
+
+Cliquez dans un endroit vide et désignez un second point : chaque objet que ce trajet croise est ajusté en une seule étape. Ou choisissez `Capture` et tracez une fenêtre sur les morceaux à enlever.
+
+### Comment prolonger une ligne avec AJUSTER ?
+
+Maintenez Maj enfoncée en désignant la ligne près de l'extrémité à prolonger : elle s'allonge jusqu'à l'arête la plus proche, comme avec [`PROLONGER`](/docs/commands/extend), et la désignation suivante sans Maj ajuste de nouveau.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : une bride](/docs/exercises/flange)
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link)
+
+## Commandes associées [#related]
+
+- [Commande PROLONGER (EXTEND) dans AutoCAD](/docs/commands/extend)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande RACCORD (FILLET) dans AutoCAD](/docs/commands/fillet)
+- [Commande COUPURE (BREAK) dans AutoCAD](/docs/commands/break)

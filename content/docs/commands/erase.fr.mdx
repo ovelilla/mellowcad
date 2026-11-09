@@ -1,0 +1,52 @@
+---
+title: "Commande EFFACER (ERASE) dans AutoCAD"
+description: "Comment fonctionne EFFACER (ERASE, alias EF) d'AutoCAD en français : sélectionner, Entrée, effacé ; la touche Suppr, tout effacer, récupérer. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande ERASE en français ?","answer":"EFFACER, avec les alias EF et DELETE ; dans AutoCAD en français, E lance ETIRER (STRETCH). Ou sélectionnez les objets à Commande: et appuyez sur la touche Suppr. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _ERASE."},{"question":"Comment tout effacer dans un dessin AutoCAD ?","answer":"Lancez EFFACER, tapez TOUT à « Sélectionnez des objets: » (ou _ALL, qui fonctionne dans toutes les langues), puis Entrée. Les objets d'un calque verrouillé restent à l'écart, et la sélection dit combien il y en avait."},{"question":"Comment récupérer un objet effacé dans AutoCAD ?","answer":"Tapez U ou appuyez sur Ctrl+Z tout de suite : l'effacement est une seule étape d'annulation. REPRISE, qui rend le dernier jeu effacé même après d'autres commandes, n'existe pas encore."},{"question":"Quelle est la différence entre EFFACER et AJUSTER ?","answer":"EFFACER supprime des objets entiers. AJUSTER supprime seulement la partie d'un objet qui dépasse les arêtes qu'il rencontre, et garde le reste."}]
+---
+
+EFFACER (ERASE) retire du dessin les objets que vous sélectionnez. Sélectionnez-les à `Sélectionnez des objets:`, en cliquant dessus ou avec n'importe quel mode de sélection d'AutoCAD, dont la fenêtre et la capture, puis appuyez sur Entrée ou sur la barre d'espace : ils disparaissent, et la commande n'en dit pas plus. Echap la termine sans rien effacer. Comme dans AutoCAD, les objets sélectionnés avant la commande sont effacés aussitôt, et la touche Suppr, avec des objets sélectionnés, lance EFFACER sur eux. Pendant la sélection, l'objet sous le curseur et ceux déjà choisis s'affichent estompés, comme AutoCAD montre d'avance ce qu'il va effacer. L'effacement entier est une seule étape, qu'Annuler reprend.
+
+- **Commande :** `EFFACER`
+- **En anglais :** `ERASE`, tapé `_ERASE` dans toutes les langues
+- **Alias :** `EF`, `DELETE`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `EF` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="erase" caption="Un rectangle et ses deux diagonales : une diagonale sélectionnée, puis Entrée, et elle est effacée." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+REPRISE (OOPS), qui dans AutoCAD rend le dernier jeu effacé par EFFACER, même après d'autres commandes. Ici, `U` ou Ctrl+Z annule l'effacement, avec tout ce qui l'a suivi.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#erase--e--delete--es-borra--b--delete--pt-br-apagar--apg--delete--fr-effacer--ef--delete)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande ERASE en français ?
+
+EFFACER, avec les alias `EF` et `DELETE` ; dans AutoCAD en français, `E` lance ETIRER (STRETCH). Ou sélectionnez les objets à `Commande:` et appuyez sur la touche Suppr. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_ERASE`.
+
+### Comment tout effacer dans un dessin AutoCAD ?
+
+Lancez EFFACER, tapez `TOUT` à `Sélectionnez des objets:` (ou `_ALL`, qui fonctionne dans toutes les langues), puis Entrée. Les objets d'un calque verrouillé restent à l'écart, et la sélection dit combien il y en avait.
+
+### Comment récupérer un objet effacé dans AutoCAD ?
+
+Tapez `U` ou appuyez sur Ctrl+Z tout de suite : l'effacement est une seule étape d'annulation. REPRISE, qui rend le dernier jeu effacé même après d'autres commandes, n'existe pas encore.
+
+### Quelle est la différence entre EFFACER et AJUSTER ?
+
+EFFACER supprime des objets entiers. [`AJUSTER`](/docs/commands/trim) supprime seulement la partie d'un objet qui dépasse les arêtes qu'il rencontre, et garde le reste.
+
+## Commandes associées [#related]
+
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)
+- [Commande COUPURE (BREAK) dans AutoCAD](/docs/commands/break)
+- [Commande DECOMPOSER (EXPLODE) dans AutoCAD](/docs/commands/explode)
+- [Commande ANNULER (UNDO) dans AutoCAD](/docs/commands/undo)

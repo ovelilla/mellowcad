@@ -1,0 +1,52 @@
+---
+title: "Commande DECOMPOSER (EXPLODE) dans AutoCAD"
+description: "Comment fonctionne DECOMPOSER (EXPLODE, alias DE) d'AutoCAD en français : polyligne en lignes et arcs, bloc en ses objets, texte en lignes. Essayez-le en ligne."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande EXPLODE en français ?","answer":"DECOMPOSER, avec les alias DE et DECOMPOS, puis Entrée ou la barre d'espace ; l'alias anglais X n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _EXPLODE."},{"question":"Comment annuler une décomposition dans AutoCAD ?","answer":"Tapez U ou appuyez sur Ctrl+Z tout de suite : la décomposition est une seule étape d'annulation. Plus tard, JOINDRE refait une seule polyligne de lignes et d'arcs qui se touchent bout à bout, et BLOC refait un bloc avec des objets."},{"question":"Peut-on décomposer un texte dans AutoCAD ?","answer":"Un texte multiligne, oui : chaque ligne devient un texte sur une ligne. Le texte sur une ligne est déjà le plus petit morceau, et DECOMPOSER le refuse."},{"question":"Comment décomposer un bloc dans AutoCAD ?","answer":"Sélectionnez la référence de bloc et appuyez sur Entrée : elle devient les objets de son bloc, là où la référence les dessinait. Un bloc qu'elle contient reste un bloc : décomposez-le à son tour. Les attributs reviennent sous la forme de leurs définitions, sans les valeurs."}]
+---
+
+DECOMPOSER (EXPLODE) décompose un objet composé en ses objets constitutifs. Sélectionnez les objets et appuyez sur Entrée : une polyligne devient des lignes et des arcs le long de son axe, une référence de bloc les objets de son bloc, d'un seul niveau, un texte multiligne un texte sur une ligne pour chaque ligne qu'il affiche, et des hachures à motif les lignes de leur motif. Chaque morceau garde le calque et les propriétés de l'objet ; ceux d'un bloc gardent les leurs. Une polyligne avec une largeur la perd, et DECOMPOSER le signale. Les lignes, cercles, arcs, textes sur une ligne et cotes ne peuvent pas être décomposés : ils sont refusés dès leur sélection, et une spline, une ellipse ou des hachures pleines quand la sélection se termine. La décomposition est une seule étape, qu'Annuler reprend.
+
+- **Commande :** `DECOMPOSER`
+- **En anglais :** `EXPLODE`, tapé `_EXPLODE` dans toutes les langues
+- **Alias :** `DE`, `DECOMPOS`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `DE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="explode" caption="Un rectangle, une seule polyligne, décomposé en quatre lignes, puis l'une d'elles effacée seule." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les cotes, qu'AutoCAD décompose en lignes, flèches et texte, et que MellowCAD refuse. Des hachures dont le motif n'est pas fourni ici sont refusées comme des hachures pleines, et le texte multiligne décomposé se place là où la police le dessine, un rien à côté de la place que lui donne AutoCAD.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x--fr-decomposer--de--decompos)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande EXPLODE en français ?
+
+DECOMPOSER, avec les alias `DE` et `DECOMPOS`, puis Entrée ou la barre d'espace ; l'alias anglais `X` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_EXPLODE`.
+
+### Comment annuler une décomposition dans AutoCAD ?
+
+Tapez `U` ou appuyez sur Ctrl+Z tout de suite : la décomposition est une seule étape d'annulation. Plus tard, [`JOINDRE`](/docs/commands/join) refait une seule polyligne de lignes et d'arcs qui se touchent bout à bout, et [`BLOC`](/docs/commands/block) refait un bloc avec des objets.
+
+### Peut-on décomposer un texte dans AutoCAD ?
+
+Un texte multiligne, oui : chaque ligne devient un texte sur une ligne. Le texte sur une ligne est déjà le plus petit morceau, et DECOMPOSER le refuse.
+
+### Comment décomposer un bloc dans AutoCAD ?
+
+Sélectionnez la référence de bloc et appuyez sur Entrée : elle devient les objets de son bloc, là où la référence les dessinait. Un bloc qu'elle contient reste un bloc : décomposez-le à son tour. Les attributs reviennent sous la forme de leurs définitions, sans les valeurs.
+
+## Commandes associées [#related]
+
+- [Commande JOINDRE (JOIN) dans AutoCAD](/docs/commands/join)
+- [Commande BLOC (BLOCK) dans AutoCAD](/docs/commands/block)
+- [Commande PEDIT dans AutoCAD](/docs/commands/pedit)
+- [Commande INSERER (INSERT) dans AutoCAD](/docs/commands/insert)

@@ -1,0 +1,42 @@
+---
+title: "Commande COTCONT (DIMCONTINUE) dans AutoCAD"
+description: "Cotation continue dans AutoCAD en français : COTCONT (DIMCONTINUE, alias COTN) enchaîne les cotes bout à bout, invite par invite. Essayez-le gratuitement."
+figure: "Un profil en escalier coté 30, puis continué par 40 et 30 sur la même ligne : deux origines, puis deux fois Entrée."
+sourceHash: "11fa474694fd"
+---
+
+COTCONT (DIMCONTINUE en anglais) dessine une chaîne de cotes bout à bout : chacune commence à la seconde ligne d'attache de la précédente et mesure jusqu'au point suivant que vous donnez, sur la même ligne de cote. Elle continue la dernière cote linéaire ou alignée créée depuis l'ouverture du dessin, si bien qu'elle suit généralement <Command id="DIMLINEAR" /> ou <Command id="DIMALIGNED" /> ; s'il n'y en a aucune, elle demande laquelle continuer. La ligne de commande indique chaque mesure dès qu'elle est faite. Entrée à l'invite de l'origine choisit <Keyword id="Select" />, et Entrée à cette invite termine la commande, comme Echap.
+
+Comme dans AutoCAD, chaque nouvelle cote mesure selon la direction de sa base, et prend le style de cote et le calque de la base, avec la couleur, le type de ligne et l'épaisseur de ligne courants.
+
+## Options
+
+### Select
+
+Demande la cote à partir de laquelle continuer : désignez une cote linéaire ou alignée, près de la ligne d'attache à partir de laquelle poursuivre. Un point tapé à cette invite désigne aussi. Une cote de rayon ou de diamètre est refusée avec <Message id="associativeDimensionRequired" />, et la question revient.
+
+### Undo
+
+Annule la dernière cote de la chaîne et repart de la précédente, autant de fois qu'il y en a. Quand il n'en reste plus, sa réponse est <Message id="commandCompletelyUndone" />, et l'invite reste.
+
+## Missing
+
+Une cote n'est pas associative : une chaîne ne suit pas les objets qu'elle mesure. Une cote angulaire ne peut pas être continuée : AutoCAD continue celle qui a été créée en dernier ou désignée ; ici, créée en dernier, la commande demande une cote, et désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
+
+## Questions
+
+### Comment s'appelle la commande DIMCONTINUE en français ?
+
+COTCONT, raccourci `COTN`, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_DIMCONTINUE`.
+
+### Quelle est la différence entre COTCONT et COTLIGN ?
+
+COTCONT met les cotes bout à bout sur une même ligne, chacune à partir de l'endroit où la précédente s'est arrêtée. <Command id="DIMBASELINE" /> les mesure toutes à partir de la même ligne d'attache, chacune sur une ligne plus éloignée.
+
+### Comment continuer à partir d'une cote qui n'est pas la dernière ?
+
+Appuyez sur Entrée à la première invite, ou choisissez <Keyword id="Select" />, et désignez la cote près de la ligne d'attache à partir de laquelle poursuivre : la chaîne s'allonge à partir de là.
+
+### Pourquoi COTCONT me demande de sélectionner une cote ?
+
+Elle n'a pas de cote à continuer : aucune cote linéaire ou alignée n'a été créée depuis l'ouverture du dessin, comme dans AutoCAD après en avoir ouvert un, ou la dernière créée est angulaire. Désignez celle à partir de laquelle continuer.

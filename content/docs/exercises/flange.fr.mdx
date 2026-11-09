@@ -1,0 +1,58 @@
+---
+title: "Exercice AutoCAD : une bride"
+metaTitle: "Exercice AutoCAD 2D : bride, rainure de clavette"
+description: "Dessinez une bride dans AutoCAD : alésage et rainure de clavette ajustée, huit trous en réseau polaire, axes et diamètres, résolu pas à pas. Gratuit en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dessinez cette bride, en millimètres : 140 de diamètre, un alésage de 60 avec une rainure de clavette de 16 de large dont le côté supérieur est à 36 du centre, huit trous de 14 sur un cercle de perçage de 110, et ses axes. La rainure de clavette est un rectangle ajusté dans l'alésage ; les trous sont un cercle et un réseau polaire.
+
+- **Exercice :** Intermédiaire · Mécanique · 2D
+- **Commandes :** [`CERCLE`](/docs/commands/circle), [`RECTANGLE`](/docs/commands/rectang), [`AJUSTER`](/docs/commands/trim), [`RESEAUPOLAIRE`](/docs/commands/arraypolar), [`LIGNE`](/docs/commands/line), [`COTDIA`](/docs/commands/dimdiameter), [`COTLIN`](/docs/commands/dimlinear)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=flange), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/flange" caption="La bride, de 140 de diamètre, avec sa rainure de clavette, ses huit trous et ses diamètres." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez les cercles [#circles]
+
+Sur le calque Contour, deux cercles en `0,0`, chacun par son `Diamètre` : `140` et `60`.
+
+<Session name="exercises/flange/circles" caption="1. Dessinez les cercles" />
+
+### 2. Découpez la rainure de clavette [#keyway]
+
+[`RECTANGLE`](/docs/commands/rectang) de `-8,20` à `16,16` plus loin : le rectangle traverse l'alésage. [`AJUSTER`](/docs/commands/trim) coupe un objet là où les autres le croisent : désignez l'arc de l'alésage entre les côtés du rectangle, puis le bas du rectangle, à l'intérieur de l'alésage. Ce qui reste est la rainure de clavette, ses deux flancs et son côté supérieur.
+
+<Session name="exercises/flange/keyway" caption="2. Découpez la rainure de clavette" />
+
+### 3. Disposez les trous en réseau [#holes]
+
+Un trou sur le cercle de perçage : un cercle en `55<22.5`, à 55 de l'origine, à 22,5°, d'un `Diamètre` de `14`. [`RESEAUPOLAIRE`](/docs/commands/arraypolar) : désignez-le, appuyez sur Entrée et donnez le centre, `0,0` ; `ASsociatif` et `Non` laissent huit cercles distincts, qu'une cote peut désigner, et `Eléments`, `8`, les répartit sur tout le tour. Puis, sur le calque Axes, le cercle de perçage en `0,0`, de diamètre `110`.
+
+<Session name="exercises/flange/holes" caption="3. Disposez les trous en réseau" />
+
+### 4. Dessinez les axes [#centreLines]
+
+Toujours sur le calque Axes, deux lignes avec [`LIGNE`](/docs/commands/line) passant par le centre, longues de 156 : depuis `-78,0`, `156,0` à l'horizontale ; depuis `0,-78`, `0,156` vers le haut.
+
+<Session name="exercises/flange/centreLines" caption="4. Dessinez les axes" />
+
+### 5. Cotez-la [#dimensions]
+
+Sur le calque Cotes, [`COTDIA`](/docs/commands/dimdiameter) sur l'alésage, un trou, le cercle de perçage et le contour, chacun désigné là où aucune cote ne le croise encore, puis [`COTLIN`](/docs/commands/dimlinear) sur le côté supérieur de la rainure de clavette : 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Cotez-la" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : une table ronde et ses chaises](/docs/exercises/round-table): Intermédiaire · Architecture · 2D
+- [Exercice AutoCAD : une parcelle de terrain](/docs/exercises/plot-of-land): Intermédiaire · Génie civil · 2D
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft): Intermédiaire · Mécanique · 2D
+- [Exercices AutoCAD](/docs/exercises)

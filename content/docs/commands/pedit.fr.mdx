@@ -1,0 +1,101 @@
+---
+title: "Commande PEDIT dans AutoCAD"
+description: "Modifier une polyligne avec PEDIT (alias PE) d'AutoCAD en français : lignes en polyligne, Joindre, Largeur, lissage, Spline, sommets, Multiple. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci de la commande PEDIT dans AutoCAD ?","answer":"PE, puis Entrée ou la barre d'espace. Le nom complet fonctionne aussi, le même dans AutoCAD en français, et _PEDIT dans toutes les langues d'AutoCAD. Un double-clic sur une polyligne la lance aussi."},{"question":"Comment transformer des lignes en polyligne ?","answer":"Lancez PEDIT, sélectionnez l'une des lignes et appuyez sur Entrée pour la transformer en polyligne, puis choisissez Joindre et sélectionnez les autres : celles qui se touchent bout à bout deviennent une seule polyligne. JOINDRE fait la même chose en une étape."},{"question":"Pourquoi PEDIT ne fonctionne pas sur mon objet ?","answer":"PEDIT modifie les polylignes, et propose de convertir les lignes, arcs et splines ; tout le reste, texte, cercle, bloc, est refusé et la question est reposée. Un objet sur un calque verrouillé dit « L'objet est sur un calque verrouillé. ». Joindre n'ajoute que des objets dont les extrémités touchent exactement celles de la polyligne : pour des écarts, utilisez Multiple et une distance approximative."},{"question":"Comment changer la largeur d'une polyligne ?","answer":"Choisissez LArgeur et tapez la largeur : chaque segment la prend. Pour un seul segment, utilisez Modif-sommet, amenez le X au sommet où il commence et choisissez sa LArgeur."},{"question":"Comment courber une polyligne ?","answer":"Ajuster fait passer des arcs par chaque sommet ; sPline fait une courbe plus lisse que ses sommets encadrent. Redresser la redresse."}]
+---
+
+PEDIT modifie une polyligne. Sélectionnez-en une à `Sélectionnez la polyligne ou [Multiple]:`, ou sélectionnez-la avant la commande ; un double-clic sur une polyligne lance aussi PEDIT sur elle. Sélectionnez plutôt une ligne, un arc ou une spline, et elle dit `L'objet sélectionné n'est pas une polyligne` et demande s'il faut le transformer en polyligne, Oui par défaut : la nouvelle polyligne prend sa place et ses propriétés. Elle demande ensuite une option, encore et encore, chacune appliquée aussitôt, jusqu'à ce qu'Entrée la termine. Une polyligne 3D a une liste plus courte, sans largeur, sans lissage et sans génération du type de ligne, et son option spline est `sPline`. Echap garde ce qui a été fait ; toute la modification est une seule étape que `U` annule.
+
+- **Commande :** `PEDIT`
+- **Alias :** `PE`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `PE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="pedit" caption="Trois lignes bout à bout : PEDIT transforme la première en polyligne, y joint les deux autres et lui donne une largeur de 2." />
+
+## Options [#options]
+
+### `Multiple` (`M`) [#multiple]
+
+Modifie plusieurs polylignes à la fois : sélectionnez-les, dites s'il faut convertir les lignes, arcs et splines qui s'y trouvent, puis chaque option s'applique à toutes. Son option Joindre demande une distance approximative et un `Jointure` : `Prolonger` ajuste ou prolonge les segments d'extrémité jusqu'à ce qu'ils se rejoignent, `Ajouter` comble l'écart par un nouveau segment, `Deux` prolonge là où c'est possible et ajoute là où ça ne l'est pas.
+
+### `Clore` (`C`) [#close]
+
+Ferme la polyligne par un segment de son dernier sommet au premier, un arc si le dernier segment est un arc. Sur une polyligne fermée, l'option est `Ouvrir`, qui retire ce segment.
+
+### `Joindre` (`J`) [#join]
+
+Ajoute les lignes, arcs et polylignes ouvertes qui touchent les extrémités de la polyligne, bout à bout, et dit combien de segments elle a ajoutés. On ne peut rien joindre à une polyligne fermée : `Impossible de joindre à une polyligne fermée`.
+
+### `LArgeur` (`LA`) [#width]
+
+Une seule largeur pour tous les segments, tapée ou mesurée par deux points ; 0 retire la largeur.
+
+### `Modif-sommet` (`M`) [#edit-vertex]
+
+Place un X sur le premier sommet et demande quoi faire à cet endroit : `suivaNt` et `Précéd` déplacent le X, `Déplacer` déplace le sommet, `Insér` en ajoute un après lui, `Coupure` et `Linéair` retiennent le sommet, vous amenez le X sur un autre, et `Aller` coupe la polyligne entre les deux ou fait un seul segment droit de ce qui se trouve entre eux, `LArgeur` règle les largeurs de début et de fin du segment suivant, `Tangent` donne au sommet une direction pour un lissage ultérieur, et `Quitter` revient en arrière.
+
+### `Ajuster` (`A`) [#fit]
+
+Dessine une courbe lisse faite d'arcs qui passe par chaque sommet, tangents là où ils se rejoignent, comme le lissage d'AutoCAD les pose. Les sommets restent, et les modifier remodèle la courbe.
+
+### `sPline` (`P`) [#spline]
+
+Ajuste une B-spline à la polyligne, encadrée par ses sommets plutôt que passant par eux : quadratique ou cubique, selon SPLINETYPE, et aussi fine que le veut SPLINESEGS. Celle d'une polyligne 3D est `sPline`. L'option Objet de [`SPLINE`](/docs/commands/spline) transforme une telle polyligne en vraie spline.
+
+### `Redresser` (`R`) [#decurve]
+
+Retire la courbe lissée ou la spline : de nouveau des segments droits entre les sommets.
+
+### `TYpeligne gén` (`TY`) [#ltype-gen]
+
+`ACtif` pose le type de ligne en un seul motif sur toute la polyligne, si bien qu'une polyligne en tirets aux segments courts montre encore ses tirets ; `Inactif`, par défaut, recommence le motif à chaque sommet.
+
+### `Inverser` (`I`) [#reverse]
+
+Retourne la polyligne : ses sommets dans l'autre sens, et les arcs et les largeurs avec eux.
+
+### `annUler` (`U`) [#undo]
+
+Annule la dernière option de cette exécution, et continue à demander.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+PEDITACCEPT : sélectionner une ligne, un arc ou une spline demande toujours avant de le convertir. PLINECONVERTMODE : une spline devient une polyligne de segments droits, bien plus nombreux que ceux d'AutoCAD, jamais d'arcs. Une polyligne lissée apparaît dans la palette Propriétés comme une polyligne ordinaire, sans le titre Polyligne 2D d'AutoCAD ni sa ligne Ajustage/Lissage. L'option Multiple avec seulement des polylignes 3D dans le jeu pose l'invite 3D, là où AutoCAD pose l'invite 2D. Il n'y a pas de maillages à modifier.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe)
+
+## Questions [#questions]
+
+### Quel est le raccourci de la commande PEDIT dans AutoCAD ?
+
+`PE`, puis Entrée ou la barre d'espace. Le nom complet fonctionne aussi, le même dans AutoCAD en français, et `_PEDIT` dans toutes les langues d'AutoCAD. Un double-clic sur une polyligne la lance aussi.
+
+### Comment transformer des lignes en polyligne ?
+
+Lancez PEDIT, sélectionnez l'une des lignes et appuyez sur Entrée pour la transformer en polyligne, puis choisissez `Joindre` et sélectionnez les autres : celles qui se touchent bout à bout deviennent une seule polyligne. [`JOINDRE`](/docs/commands/join) fait la même chose en une étape.
+
+### Pourquoi PEDIT ne fonctionne pas sur mon objet ?
+
+PEDIT modifie les polylignes, et propose de convertir les lignes, arcs et splines ; tout le reste, texte, cercle, bloc, est refusé et la question est reposée. Un objet sur un calque verrouillé dit `L'objet est sur un calque verrouillé.`. Joindre n'ajoute que des objets dont les extrémités touchent exactement celles de la polyligne : pour des écarts, utilisez `Multiple` et une distance approximative.
+
+### Comment changer la largeur d'une polyligne ?
+
+Choisissez `LArgeur` et tapez la largeur : chaque segment la prend. Pour un seul segment, utilisez `Modif-sommet`, amenez le X au sommet où il commence et choisissez sa `LArgeur`.
+
+### Comment courber une polyligne ?
+
+`Ajuster` fait passer des arcs par chaque sommet ; `sPline` fait une courbe plus lisse que ses sommets encadrent. `Redresser` la redresse.
+
+## Commandes associées [#related]
+
+- [Commande POLYLIGNE (PLINE) dans AutoCAD](/docs/commands/pline)
+- [Commande JOINDRE (JOIN) dans AutoCAD](/docs/commands/join)
+- [Commande DECOMPOSER (EXPLODE) dans AutoCAD](/docs/commands/explode)
+- [Commande SPLINE dans AutoCAD](/docs/commands/spline)

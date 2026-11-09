@@ -1,0 +1,72 @@
+---
+title: "Commande LIGNE (LINE) dans AutoCAD"
+description: "Comment fonctionne LIGNE (LINE, alias L) d'AutoCAD en français, invite par invite : points cliqués ou tapés, annuler, clore, Entrée pour continuer. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande LINE en français ?","answer":"LIGNE, avec l'alias L, le même qu'en anglais, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _LINE."},{"question":"Comment dessiner une ligne avec un angle et une longueur ?","answer":"Donnez le premier point, puis tapez le suivant en coordonnées polaires, longueur et angle : @100<30 dessine 100 à 30°. Ou activez le repérage polaire, suivez son guide à cet angle et tapez seulement la longueur."},{"question":"Comment continuer à partir de la dernière ligne dessinée ?","answer":"Lancez LIGNE et appuyez sur Entrée au premier point : elle part de l'extrémité de la dernière ligne, polyligne ou du dernier arc. Depuis un arc, la ligne continue tangente à lui et LIGNE ne demande que sa longueur. S'il n'y a rien d'où repartir, elle dit « Pas de ligne ou d'arc pour continuer. »."},{"question":"Pourquoi ma ligne est faite de morceaux séparés ?","answer":"Chaque segment que dessine LIGNE est une ligne à part, comme dans AutoCAD. Pour un seul objet, dessinez avec POLYLIGNE, ou joignez ensuite les lignes avec JOINDRE."}]
+---
+
+LIGNE (LINE) dessine des segments droits, chacun un objet à part : donnez le premier point, puis chaque point suivant, jusqu'à Entrée. Un point se clique, se prend avec l'accrochage aux objets ou se tape. Comme dans AutoCAD avec la saisie dynamique activée, un point tapé après le premier se mesure depuis le précédent : `80,0` dessine 80 le long de X, et l'historique l'écrit `@80,0` ; un nombre seul est une distance dans la direction du curseur, et `<30` bloque le point suivant à 30°. Entrée ou un clic droit au premier point repart de l'extrémité de la dernière ligne, polyligne ou du dernier arc, tangente à un arc et en ne demandant que la longueur. Quel que soit le nombre de segments dessinés, un seul U annule toute la commande.
+
+- **Commande :** `LIGNE`
+- **En anglais :** `LINE`, tapé `_LINE` dans toutes les langues
+- **Alias :** `L`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `L` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="line" caption="Un triangle : son premier point tapé, les deux suivants depuis le dernier point, puis Clore." />
+
+## Options [#options]
+
+### `annUler` (`U`) [#undo]
+
+Annule le dernier segment et redemande depuis le point précédent. Quand il ne reste aucun segment, elle dit `Tous les segments ont déjà été annulés.` et redemande le premier point.
+
+### `Clore` (`C`) [#close]
+
+Proposée à partir du deuxième segment : dessine le dernier segment jusqu'au premier point et termine la commande, en fermant la figure.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les accrochages Tangente ou Perpendiculaire tapés au premier point attendent le point suivant (un accrochage différé), comme dans AutoCAD, mais seulement sur des lignes, des cercles et des arcs, pas sur un segment de polyligne, une ellipse ou une spline, et deux accrochages Perpendiculaire différés ne sont pas résolus.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande LINE en français ?
+
+LIGNE, avec l'alias `L`, le même qu'en anglais, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_LINE`.
+
+### Comment dessiner une ligne avec un angle et une longueur ?
+
+Donnez le premier point, puis tapez le suivant en coordonnées polaires, longueur et angle : `@100<30` dessine 100 à 30°. Ou activez le repérage polaire, suivez son guide à cet angle et tapez seulement la longueur.
+
+### Comment continuer à partir de la dernière ligne dessinée ?
+
+Lancez LIGNE et appuyez sur Entrée au premier point : elle part de l'extrémité de la dernière ligne, polyligne ou du dernier arc. Depuis un arc, la ligne continue tangente à lui et LIGNE ne demande que sa longueur. S'il n'y a rien d'où repartir, elle dit `Pas de ligne ou d'arc pour continuer.`.
+
+### Pourquoi ma ligne est faite de morceaux séparés ?
+
+Chaque segment que dessine LIGNE est une ligne à part, comme dans AutoCAD. Pour un seul objet, dessinez avec [`POLYLIGNE`](/docs/commands/pline), ou joignez ensuite les lignes avec [`JOINDRE`](/docs/commands/join).
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket)
+- [Exercice AutoCAD : une équerre en L](/docs/exercises/l-bracket)
+- [Exercice AutoCAD : un escalier en plan](/docs/exercises/stairs)
+- [Exercice AutoCAD : une bride](/docs/exercises/flange)
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft)
+- [Exercice AutoCAD isométrique : un bloc étagé](/docs/exercises/isometric-block)
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link)
+
+## Commandes associées [#related]
+
+- [Commande POLYLIGNE (PLINE) dans AutoCAD](/docs/commands/pline)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)
+- [Commande JOINDRE (JOIN) dans AutoCAD](/docs/commands/join)

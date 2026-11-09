@@ -1,0 +1,60 @@
+---
+title: "Exercice AutoCAD 3D : une plaque de fixation"
+metaTitle: "Exercice AutoCAD 3D débutant : une plaque"
+description: "Modélisez une plaque de fixation dans AutoCAD 3D : régions, soustraction des trous et une seule extrusion, pas à pas. Pratiquez la 3D gratuitement en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modélisez une plaque de fixation de 10 d'épaisseur, en millimètres : son contour de 100 sur 60 aux coins de rayon 8, et quatre trous de 10 dont les centres sont à 15 des bords. Elle commence à plat. Le contour et les cercles deviennent des régions, les trous sont soustraits tant que la plaque est encore plate, et une seule extrusion en fait un solide avec ses trous.
+
+- **Exercice :** Débutant · Mécanique · Solide 3D
+- **Commandes :** [`RECTANGLE`](/docs/commands/rectang), [`CERCLE`](/docs/commands/circle), [`COPIER`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SOUSTRACTION`](/docs/commands/subtract), [`-VUE`](/docs/commands#-view), [`STYLVISCOURANT`](/docs/commands/vscurrent), [`EXTRUSION`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=mounting-plate), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/mounting-plate" caption="Le contour de la plaque, de 100 sur 60 avec quatre trous, coté." />
+
+<Session name="exercises/mounting-plate/model" caption="La plaque en solide, de 10 d'épaisseur, vue du sud-est, lignes cachées supprimées." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez le profil [#profile]
+
+Sur le calque Contour, [`RECTANGLE`](/docs/commands/rectang) avec un `Raccord` de `8`, de `0,0` à `100,60`. Puis un cercle en `15,15` d'un `Diamètre` de `10`, et copiez-le avec [`COPIER`](/docs/commands/copy) depuis son centre vers `70,0`, `70,30` et `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Dessinez le profil" />
+
+### 2. Créez des régions [#region]
+
+[`REGION`](/docs/commands/region) transforme des objets fermés en régions : désignez le contour et les quatre cercles, puis Entrée. Cinq boucles, cinq régions.
+
+<Session name="exercises/mounting-plate/region" caption="2. Créez des régions" />
+
+### 3. Soustrayez les trous [#subtract]
+
+[`SOUSTRACTION`](/docs/commands/subtract) : désignez la région de la plaque et appuyez sur Entrée, puis les régions des quatre cercles et Entrée. Il reste une seule région, percée de quatre trous.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Soustrayez les trous" />
+
+### 4. Faites tourner la vue [#view]
+
+`-VUE` et `isoSE` la montrent depuis le sud-est et d'en haut ; [`STYLVISCOURANT`](/docs/commands/vscurrent) et `Masqué` cachent ce que les faces dissimulent. Le ViewCube fait aussi tourner la vue d'un clic.
+
+<Session name="exercises/mounting-plate/view" caption="4. Faites tourner la vue" />
+
+### 5. Extrudez-la [#extrude]
+
+[`EXTRUSION`](/docs/commands/extrude) : désignez la région, appuyez sur Entrée et tapez la hauteur, `10`. La plaque est un solide, trous compris. [`ZOOM`](/docs/commands/zoom) `ETendu` la cadre, et une échelle de 0.8x laisse de la marge autour.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Extrudez-la" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : une bride](/docs/exercises/flange): Intermédiaire · Mécanique · 2D
+- [Exercice AutoCAD : une table ronde et ses chaises](/docs/exercises/round-table): Intermédiaire · Architecture · 2D
+- [Exercice AutoCAD : une parcelle de terrain](/docs/exercises/plot-of-land): Intermédiaire · Génie civil · 2D
+- [Exercices AutoCAD](/docs/exercises)

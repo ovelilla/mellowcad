@@ -1,0 +1,64 @@
+---
+title: "Commande TYPELIGNE (LINETYPE) dans AutoCAD"
+description: "TYPELIGNE (LINETYPE, alias TL) d'AutoCAD en français : le type de ligne des nouveaux objets, DuCalque, et pourquoi des pointillés sortent continus. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande LINETYPE en français ?","answer":"TYPELIGNE, avec les alias TL, TYPEL et DDLTYPE, puis Entrée ou la barre d'espace ; l'alias anglais LT n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _LINETYPE."},{"question":"Pourquoi mes pointillés s'affichent en trait continu ?","answer":"Une ligne plus courte qu'une répétition de son motif est dessinée continue, comme dans AutoCAD : le motif de CENTER fait environ 51 unités à l'échelle par défaut. Augmentez ou diminuez ECHLTP pour adapter le motif au dessin. Vérifiez aussi que le type de ligne de l'objet, ou celui de son calque s'il est DuCalque, n'est pas Continuous."},{"question":"Comment changer le type de ligne d'un objet existant ?","answer":"Sélectionnez-le et choisissez le type de ligne dans la ligne Type de ligne de la palette Propriétés, ou copiez-le d'un autre objet avec CORRESPROP. TYPELIGNE ne règle que le type de ligne des objets dessinés après."},{"question":"Comment changer l'échelle du type de ligne dans AutoCAD ?","answer":"Tapez ECHLTP et le nouveau facteur : 2 rend chaque tiret deux fois plus long, dans tout le dessin."}]
+---
+
+TYPELIGNE (LINETYPE) règle le type de ligne avec lequel les nouveaux objets sont dessinés. AutoCAD ouvre le Gestionnaire des types de ligne ; MellowCAD n'en a pas encore, donc TYPELIGNE lance la forme en ligne de commande qu'AutoCAD a aussi, `-TYPELIGNE`. Elle indique le type de ligne courant, `DuCalque` au départ, et redemande une option après chaque réponse, jusqu'à ce qu'Entrée la termine. DuCalque signifie que chaque objet prend le type de ligne de son calque ; un type de ligne nommé à la place est celui de l'objet lui-même. Toute l'exécution est une seule étape que `U` annule, et, tapée avec une apostrophe dans une commande, elle règle le type de ligne de ce que cette commande dessine ensuite.
+
+Chaque dessin a six types de ligne chargés : Continuous et, du fichier métrique d'AutoCAD acadiso.lin, DASHED, HIDDEN, CENTER, PHANTOM et DASHDOT. Un motif est posé sur chaque ligne comme AutoCAD le pose, centré sur sa longueur, avec des tirets égaux aux deux extrémités.
+
+- **Commande :** `TYPELIGNE`
+- **En anglais :** `LINETYPE`, tapé `_LINETYPE` dans toutes les langues
+- **Alias :** `TL`, `TYPEL`, `DDLTYPE`
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `TL` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="linetype" caption="Une plaque dont le trou est dessiné avec HIDDEN courant et ses deux axes avec CENTER, puis TYPELIGNE remis à DuCalque." />
+
+## Options [#options]
+
+### `?` [#list]
+
+Liste les types de ligne en deux colonnes, nom et description. À l'invite des options, les types de ligne d'acadiso.lin ; à l'invite de l'option `Actuel`, ceux qui sont chargés dans le dessin et dont le nom correspond à ce que vous tapez, tous avec `*`.
+
+### `Actuel` (`A`) [#set]
+
+Demande le nom du type de ligne, en proposant le type courant ; tapez le nom d'un type de ligne chargé, ou `DUCalque`. Un nom qui n'est pas chargé n'est pas trouvé, comme le dit AutoCAD, et l'invite des options revient ; Entrée garde le type courant.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Le Gestionnaire des types de ligne, et charger, créer ou décrire des types de ligne : seuls les six ci-dessus existent, et la liste ne décrit que Continuous. Une échelle de type de ligne par objet (CELTSCALE) : seulement celle du dessin, [`ECHLTP`](/docs/commands/ltscale). DuBloc. PSLTSCALE et MSLTSCALE, car il n'y a pas d'espace papier. Les noms de types de ligne d'AutoCAD en espagnol : ils sont ici en anglais dans toutes les langues. PLINEGEN : une nouvelle polyligne recommence son motif à chaque sommet, sauf si l'option `TYpeligne` de [`PEDIT`](/docs/commands/pedit) l'active.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande LINETYPE en français ?
+
+TYPELIGNE, avec les alias `TL`, `TYPEL` et `DDLTYPE`, puis Entrée ou la barre d'espace ; l'alias anglais `LT` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_LINETYPE`.
+
+### Pourquoi mes pointillés s'affichent en trait continu ?
+
+Une ligne plus courte qu'une répétition de son motif est dessinée continue, comme dans AutoCAD : le motif de CENTER fait environ 51 unités à l'échelle par défaut. Augmentez ou diminuez [`ECHLTP`](/docs/commands/ltscale) pour adapter le motif au dessin. Vérifiez aussi que le type de ligne de l'objet, ou celui de son calque s'il est DuCalque, n'est pas Continuous.
+
+### Comment changer le type de ligne d'un objet existant ?
+
+Sélectionnez-le et choisissez le type de ligne dans la ligne Type de ligne de la palette Propriétés, ou copiez-le d'un autre objet avec [`CORRESPROP`](/docs/commands/matchprop). TYPELIGNE ne règle que le type de ligne des objets dessinés après.
+
+### Comment changer l'échelle du type de ligne dans AutoCAD ?
+
+Tapez [`ECHLTP`](/docs/commands/ltscale) et le nouveau facteur : 2 rend chaque tiret deux fois plus long, dans tout le dessin.
+
+## Commandes associées [#related]
+
+- [Commande ECHLTP (LTSCALE) dans AutoCAD](/docs/commands/ltscale)
+- [Commande CALQUE (LAYER) dans AutoCAD](/docs/commands/layer)
+- [Commande EPAISSLIGNE (LWEIGHT) dans AutoCAD](/docs/commands/lweight)
+- [Commande PROPRIETES (PROPERTIES) dans AutoCAD](/docs/commands/properties)

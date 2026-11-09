@@ -1,0 +1,82 @@
+---
+title: "Commande AIRE (AREA) dans AutoCAD"
+description: "Calculer une surface avec AIRE (AREA, alias AI) d'AutoCAD en français : aire et périmètre de points ou d'un objet, et un total. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quelle commande calcule une surface dans AutoCAD ?","answer":"AIRE (AREA en anglais), raccourci AI, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _AREA."},{"question":"Comment calculer l'aire d'une polyligne ou de hachures ?","answer":"Lancez AIRE, appuyez sur Entrée pour choisir Objet, et désignez la polyligne fermée ou les hachures : leur aire et leur périmètre s'écrivent à l'invite de commande. L'aire de hachures laisse de côté leurs îlots."},{"question":"Comment soustraire une aire dans AutoCAD ?","answer":"Choisissez Ajouter puis Objet, désignez la forme extérieure et appuyez sur Entrée ; choisissez ensuite Soustraire, Objet, et désignez chaque trou. AIRE écrit le total restant après chacun ; Entrée deux fois termine."},{"question":"Comment obtenir l'aire en mètres carrés ?","answer":"AIRE écrit des unités de dessin au carré. Si vous dessinez en millimètres, divisez par 1 000 000 : 6 000 000 font 6 m². En centimètres, par 10 000."},{"question":"Pourquoi AIRE dit que l'objet n'a pas d'aire ?","answer":"Seules les formes et les courbes fermées en ont une : les lignes, les arcs isolés, les textes et les cotes n'en ont pas. Désignez une polyligne fermée, un cercle ou des hachures, ou joignez d'abord les lignes en une polyligne avec JOINDRE ; ou tracez la forme par ses coins."}]
+---
+
+AIRE (AREA en anglais) mesure l'aire et le périmètre d'une forme fermée, soit une forme que vous tracez par ses coins, soit un objet que vous désignez. Donnez le premier coin, puis les suivants : à partir du deuxième, la forme fermée par le curseur se remplit d'un vert translucide, comme AutoCAD l'ombre. Entrée ou `Total` écrit `Aire = …, Périmètre = …` à l'invite de commande et termine ; Entrée avant le troisième coin est refusée. Avec Ajouter une aire et Soustraire une aire, elle tient un total sur plusieurs formes. Les nombres sont écrits à la précision du dessin, et la dernière aire mesurée peut être relue en tapant `'AREA`, sa variable système.
+
+- **Commande :** `AIRE`
+- **En anglais :** `AREA`, tapé `_AREA` dans toutes les langues
+- **Alias :** `AI`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `AI` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="area" caption="Une plaque de 100 sur 60 percée d'un trou de rayon 18 : AIRE ajoute l'aire de la plaque, soustrait celle du trou et écrit le total restant." />
+
+## Options [#options]
+
+### `Objet` (`O`) [#object]
+
+L'option par défaut de la première invite, si bien qu'Entrée la choisit : désignez un cercle, une ellipse, une polyligne ou une spline fermée, des hachures ou une région, et AIRE écrit son aire avec son périmètre, ou la circonférence d'un cercle. Une polyligne, une spline ou un arc elliptique ouverts sont fermés par une droite d'une extrémité à l'autre, et AIRE écrit leur longueur. Une ligne ou un texte n'a pas d'aire : `L'objet sélectionné n'a pas d'aire`, et la question revient.
+
+### `Ajouter une aire` (`A`) [#add]
+
+Commence un total : chaque aire mesurée ensuite, par ses coins ou avec `Objet`, est ajoutée, et AIRE l'écrit avec le total. Entrée termine les objets ou les coins et redemande, jusqu'à ce qu'Entrée à la première invite termine.
+
+### `Soustraire une aire` (`S`) [#subtract]
+
+De même, en retirant chaque aire du total : la plaque, puis ses trous.
+
+### `annUler` (`U`) [#undo]
+
+Annule le dernier coin donné.
+
+### `Total` (`T`) [#total]
+
+Écrit l'aire et le périmètre des coins donnés, et termine.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+MESURERGEOM (MEASUREGEOM), les outils Mesurer du ruban, avec leurs Rayon, Angle, Volume et Rapide : ici, les boutons Distance et Aire du ruban lancent DIST et AIRE. Les options Arc et Longueur au point suivant d'AIRE. Les coins hors du plan du SCU courant sont mesurés en plan, là où AutoCAD les mesure en 3D, et le message `Objet non parallèle au SCU.` d'AutoCAD pour un objet incliné par rapport au SCU n'est pas affiché.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di)
+
+## Questions [#questions]
+
+### Quelle commande calcule une surface dans AutoCAD ?
+
+AIRE (AREA en anglais), raccourci `AI`, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_AREA`.
+
+### Comment calculer l'aire d'une polyligne ou de hachures ?
+
+Lancez AIRE, appuyez sur Entrée pour choisir `Objet`, et désignez la polyligne fermée ou les hachures : leur aire et leur périmètre s'écrivent à l'invite de commande. L'aire de hachures laisse de côté leurs îlots.
+
+### Comment soustraire une aire dans AutoCAD ?
+
+Choisissez `Ajouter` puis `Objet`, désignez la forme extérieure et appuyez sur Entrée ; choisissez ensuite `Soustraire`, `Objet`, et désignez chaque trou. AIRE écrit le total restant après chacun ; Entrée deux fois termine.
+
+### Comment obtenir l'aire en mètres carrés ?
+
+AIRE écrit des unités de dessin au carré. Si vous dessinez en millimètres, divisez par 1 000 000 : 6 000 000 font 6 m². En centimètres, par 10 000.
+
+### Pourquoi AIRE dit que l'objet n'a pas d'aire ?
+
+Seules les formes et les courbes fermées en ont une : les lignes, les arcs isolés, les textes et les cotes n'en ont pas. Désignez une polyligne fermée, un cercle ou des hachures, ou joignez d'abord les lignes en une polyligne avec [`JOINDRE`](/docs/commands/join) ; ou tracez la forme par ses coins.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : une parcelle de terrain](/docs/exercises/plot-of-land)
+
+## Commandes associées [#related]
+
+- [Commande DIST dans AutoCAD](/docs/commands/dist)
+- [Commande LISTE (LIST) dans AutoCAD](/docs/commands/list)
+- [Commande HACHURES (HATCH) dans AutoCAD](/docs/commands/hatch)
+- [Commande UNITES (UNITS) dans AutoCAD](/docs/commands/units)

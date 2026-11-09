@@ -1,0 +1,74 @@
+---
+title: "Commande HACHURES (HATCH) dans AutoCAD"
+description: "Hachures dans AutoCAD en français avec HACHURES (HATCH, alias H), invite par invite : point interne ou objets, motif, échelle, angle, îlots. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande HATCH en français ?","answer":"HACHURES, avec l'alias H, puis Entrée ou la barre d'espace. Sans onglet Création de hachures, elle pose ses questions sur la ligne de commande, comme -H (-HACHURES). Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _HATCH."},{"question":"Pourquoi les hachures ne fonctionnent pas dans AutoCAD ?","answer":"Le plus souvent parce que la zone n'est pas fermée : elle dit « Auncun contour de hachures correct n'a été trouvé. », et le moindre espace suffit, car rien ne le franchit. Fermez le contour et cliquez de nouveau. Une zone fermée par une ellipse ou une spline n'est pas encore trouvée, et les objets d'un calque désactivé ne sont pas vus."},{"question":"Quels motifs de hachures existent, et peut-on en télécharger d'autres ?","answer":"Une sélection d'acadiso.pat, le fichier de motifs métrique d'AutoCAD : SOLID, ANGLE, ANSI31 à ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL et ZIGZAG. ? sous Propriétés les liste. Un fichier de motifs à vous ou téléchargé ne peut pas encore être chargé."},{"question":"Comment changer l'échelle des hachures ?","answer":"Avant de cliquer, sous Propriétés : l'échelle vient après le nom du motif. Une fois les hachures créées, sélectionnez-les et retapez Echelle dans la palette Propriétés, ou donnez-leur le motif, l'échelle et l'angle d'autres hachures avec CORRESPROP. Une échelle si petite que le motif demanderait trop de lignes dit « Les hachures sont trop denses ou la taille des discontinuités est trop petite. » et ne crée pas de hachures."},{"question":"Comment connaître l'aire des hachures ?","answer":"Sélectionnez-les et lisez Aire sous Géométrie dans la palette Propriétés, îlots exclus ; avec plusieurs objets de hachures sélectionnés, Aire cumulée les additionne. Ou lancez AIRE, choisissez Objet et sélectionnez les hachures."}]
+---
+
+HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : elle trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler reprend.
+
+Dans AutoCAD, HACHURES règle son motif dans l'onglet contextuel Création de hachures ou dans une boîte de dialogue, que MellowCAD n'a pas : ici, elle demande sur la ligne de commande ce que demande `-HACHURES`, le motif sous `Propriétés`. Les deux ne diffèrent que par Echap, qui sous `-HACHURES` abandonne les zones. Chaque objet de hachures commence avec le motif, l'échelle et l'angle donnés au précédent : ANGLE, à l'échelle 1 et à l'angle 0, dans un nouveau dessin.
+
+- **Commande :** `HACHURES`
+- **En anglais :** `HATCH`, tapé `_HATCH` dans toutes les langues
+- **Alias :** `H`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `H` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="hatch" caption="Un rectangle avec un cercle dedans, hachuré en ANSI31 depuis un point intérieur : le cercle reste libre, un îlot." />
+
+## Options [#options]
+
+### `Propriétés` (`P`) [#properties]
+
+Demande le nom du motif, en majuscules ou en minuscules, en proposant le motif courant : `Solide` remplit la zone, et `?` liste les motifs avec leur description, puis revient au point. Pour un motif, elle demande ensuite l'échelle (un nombre supérieur à 0, ou deux points mesurés) et l'angle, tapé ou donné par deux points. Les hachures suivantes gardent les trois.
+
+<Session name="hatchPatterns" caption="SOLID et onze motifs d'acadiso.pat, chacun hachuré dans un carré de 30 de côté à l'échelle 1, AR-CONC et AR-SAND à 0.08 et 0.1." />
+
+### `Sélectionner des objets` (`S`) [#select-objects]
+
+Au lieu d'un point interne, sélectionnez les objets qui délimitent la zone ; Entrée revient au point. Un objet qui ne ferme aucune zone est écarté ; quand aucun n'en délimite une, Entrée dit `Impossible de hachurer la zone.` et ne crée rien. Une région donne son contour, et ses trous comme îlots.
+
+### `annUler` (`U`) [#undo]
+
+Absente de la liste de l'invite, mais acceptée : elle annule les zones du dernier point cliqué et redemande, en laissant les objets sélectionnés. Elle dit `Il n'y a pas de contour à annuler.` quand il ne reste aucun point à annuler.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les ellipses et les splines comme contours : une zone qu'elles ferment n'est pas trouvée, et une région avec une telle arête est écartée. La tolérance d'espaces (HPGAPTOL) : une zone doit être exactement fermée. Les hachures associatives, les styles d'îlots Normal et Ignorer, les gradients, les motifs définis par l'utilisateur et le reste des motifs d'acadiso.pat. Les autres options de `-HACHURES` : dessiner un contour, supprimer des contours, options avancées, ordre de tracé, origine, annotatif, couleur, calque et transparence. EDITHACH (HATCHEDIT) et l'onglet contextuel Editeur de hachures, qu'un double-clic ouvre dans AutoCAD. MIRRHATCH 1 : des hachures symétriques gardent toujours l'angle de leur motif. Les menus des poignées des hachures.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande HATCH en français ?
+
+HACHURES, avec l'alias `H`, puis Entrée ou la barre d'espace. Sans onglet Création de hachures, elle pose ses questions sur la ligne de commande, comme `-H` (`-HACHURES`). Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_HATCH`.
+
+### Pourquoi les hachures ne fonctionnent pas dans AutoCAD ?
+
+Le plus souvent parce que la zone n'est pas fermée : elle dit `Auncun contour de hachures correct n'a été trouvé.`, et le moindre espace suffit, car rien ne le franchit. Fermez le contour et cliquez de nouveau. Une zone fermée par une ellipse ou une spline n'est pas encore trouvée, et les objets d'un calque désactivé ne sont pas vus.
+
+### Quels motifs de hachures existent, et peut-on en télécharger d'autres ?
+
+Une sélection d'acadiso.pat, le fichier de motifs métrique d'AutoCAD : SOLID, ANGLE, ANSI31 à ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL et ZIGZAG. `?` sous `Propriétés` les liste. Un fichier de motifs à vous ou téléchargé ne peut pas encore être chargé.
+
+### Comment changer l'échelle des hachures ?
+
+Avant de cliquer, sous `Propriétés` : l'échelle vient après le nom du motif. Une fois les hachures créées, sélectionnez-les et retapez Echelle dans la palette Propriétés, ou donnez-leur le motif, l'échelle et l'angle d'autres hachures avec [`CORRESPROP`](/docs/commands/matchprop). Une échelle si petite que le motif demanderait trop de lignes dit `Les hachures sont trop denses ou la taille des discontinuités est trop petite.` et ne crée pas de hachures.
+
+### Comment connaître l'aire des hachures ?
+
+Sélectionnez-les et lisez Aire sous Géométrie dans la palette Propriétés, îlots exclus ; avec plusieurs objets de hachures sélectionnés, Aire cumulée les additionne. Ou lancez [`AIRE`](/docs/commands/area), choisissez `Objet` et sélectionnez les hachures.
+
+## Commandes associées [#related]
+
+- [Commande AIRE (AREA) dans AutoCAD](/docs/commands/area)
+- [Commande REGION dans AutoCAD](/docs/commands/region)
+- [Commande CORRESPROP (MATCHPROP) dans AutoCAD](/docs/commands/matchprop)
+- [Commande DECOMPOSER (EXPLODE) dans AutoCAD](/docs/commands/explode)

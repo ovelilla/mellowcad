@@ -1,0 +1,87 @@
+---
+title: "Commande COTLIN (DIMLINEAR) dans AutoCAD"
+description: "Cotation dans AutoCAD en français : COTLIN (DIMLINEAR, alias LI), deux origines ou un objet, puis la ligne de cote, horizontale ou verticale. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande DIMLINEAR en français ?","answer":"COTLIN, raccourci LI, puis Entrée ou la barre d'espace ; COTHOR, COTVERTICAL et COTROTATION la lancent aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _DIMLINEAR."},{"question":"Quelles sont les commandes de cotation dans AutoCAD ?","answer":"COTLIN pour les distances horizontales et verticales, COTALI pour une distance le long d'un côté incliné, COTRAYON et COTDIA pour les arcs et les cercles, COTANG pour les angles, COTCONT et COTLIGN pour les chaînes de cotes, ESPACECOTES pour en égaliser l'espacement et COTSTYLE pour leur apparence. COTE (DIM), qui crée tout type de cote depuis une seule invite, et COTRAP (QDIM), qui cote de nombreux objets à la fois, ne sont pas encore dans MellowCAD."},{"question":"Pourquoi la cote ne suit pas l'objet quand je le modifie ?","answer":"Les cotes de MellowCAD ne sont pas encore associatives, comme l'indique « La cote non associative a été créée. » : une cote garde les points qui lui ont été donnés. Étirez-les ensemble : prenez l'extrémité que vous déplacez et l'origine de la cote qui s'y trouve dans une même fenêtre de capture d'ETIRER, et la mesure est recalculée ; ou faites glisser la poignée de l'origine jusqu'à sa nouvelle place."},{"question":"Comment changer la taille du texte et des flèches des cotes ?","answer":"Dans le style de cote, comme dans AutoCAD : COTSTYLE (CST) ouvre les styles de cote, ici dans la palette Styles, là où AutoCAD a le Gestionnaire des styles de cote. La hauteur du texte, la taille des flèches, l'échelle générale et les décimales du style courant s'y règlent, et toutes les cotes de ce style suivent."}]
+---
+
+COTLIN (DIMLINEAR en anglais) mesure la distance entre deux points selon X ou selon Y et la dessine sous forme de cote : deux lignes d'attache, une ligne de cote avec ses flèches, et la mesure au-dessus. Vous donnez le premier et le second point d'origine des lignes d'attache, puis la position de la ligne de cote, et l'endroit où vous la placez choisit la direction, comme dans AutoCAD : au-dessus ou au-dessous des deux points, elle mesure horizontalement ; à côté d'eux, verticalement. Appuyez plutôt sur Entrée à la première invite et désignez une ligne, un arc, un segment de polyligne ou un cercle : ses deux extrémités, ou le diamètre du cercle, sont les origines. La ligne de commande indique alors la mesure, et la commande se termine.
+
+La cote est dessinée dans le style de cote courant, ISO-25 dans un nouveau dessin : une virgule pour les décimales et pas de zéros de fin, comme l'écrivent les dessins métriques d'AutoCAD. `COTEHORIZONTALE`, `COTEVERTICALE` et `COTEPIVOTEE`, disponibles seulement en les tapant, sont COTLIN limitée à une direction.
+
+- **Commande :** `COTLIN`
+- **En anglais :** `DIMLINEAR`, tapé `_DIMLINEAR` dans toutes les langues
+- **Alias :** `LI`, `COTHOR`, `COTROTATION`, `COTVERTICAL`
+- **Groupe :** [Annotation](/docs/commands#annotate)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `LI` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="dimlinear" caption="Un rectangle coté deux fois : son côté supérieur par ses deux coins, son côté droit par Entrée et sa désignation." />
+
+## Options [#options]
+
+### `TExte` (`TE`) [#text]
+
+Demande le texte à écrire à la place de la mesure, qu'elle propose par défaut : Entrée garde la mesure. Dans ce que vous tapez, `<>` représente la mesure, si bien que `<> mm` l'écrit suivie de son unité.
+
+### `Angle` (`A`) [#angle]
+
+Demande l'angle du texte, qui est alors dessiné selon cet angle au lieu de suivre la ligne de cote. 0 le remet le long de la ligne.
+
+### `Horizontale` (`H`) [#horizontal]
+
+Mesure selon X où que vous placiez la ligne de cote, qui reste horizontale ; l'invite ne propose alors que `TExte` et `Angle`.
+
+### `Verticale` (`V`) [#vertical]
+
+Mesure selon Y où que vous placiez la ligne de cote, qui reste verticale.
+
+### `rOtation` (`O`) [#rotated]
+
+Demande l'angle de la ligne de cote, `0` par défaut, et mesure selon cet angle la distance entre les origines. Sur un côté incliné, son propre angle donne sa longueur, comme le fait [`COTALI`](/docs/commands/dimaligned).
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+textMult : le texte d'une cote tient sur une ligne, réglé avec `TExte` à la ligne de commande, jamais dans l'éditeur de texte. Avec un angle réglé par `Angle`, AutoCAD centre le texte sur la ligne de cote ; ici, il reste au-dessus, comme sans angle. Une cote n'est pas associative : elle ne suit pas l'objet qu'elle mesure.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande DIMLINEAR en français ?
+
+COTLIN, raccourci `LI`, puis Entrée ou la barre d'espace ; `COTHOR`, `COTVERTICAL` et `COTROTATION` la lancent aussi. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_DIMLINEAR`.
+
+### Quelles sont les commandes de cotation dans AutoCAD ?
+
+`COTLIN` pour les distances horizontales et verticales, [`COTALI`](/docs/commands/dimaligned) pour une distance le long d'un côté incliné, [`COTRAYON`](/docs/commands/dimradius) et [`COTDIA`](/docs/commands/dimdiameter) pour les arcs et les cercles, [`COTANG`](/docs/commands/dimangular) pour les angles, [`COTCONT`](/docs/commands/dimcontinue) et [`COTLIGN`](/docs/commands/dimbaseline) pour les chaînes de cotes, [`ESPACECOTES`](/docs/commands/dimspace) pour en égaliser l'espacement et [`COTSTYLE`](/docs/commands/dimstyle) pour leur apparence. COTE (DIM), qui crée tout type de cote depuis une seule invite, et COTRAP (QDIM), qui cote de nombreux objets à la fois, ne sont pas encore dans MellowCAD.
+
+### Pourquoi la cote ne suit pas l'objet quand je le modifie ?
+
+Les cotes de MellowCAD ne sont pas encore associatives, comme l'indique `La cote non associative a été créée.` : une cote garde les points qui lui ont été donnés. Étirez-les ensemble : prenez l'extrémité que vous déplacez et l'origine de la cote qui s'y trouve dans une même fenêtre de capture d'[`ETIRER`](/docs/commands/stretch), et la mesure est recalculée ; ou faites glisser la poignée de l'origine jusqu'à sa nouvelle place.
+
+### Comment changer la taille du texte et des flèches des cotes ?
+
+Dans le style de cote, comme dans AutoCAD : [`COTSTYLE`](/docs/commands/dimstyle) (`CST`) ouvre les styles de cote, ici dans la palette Styles, là où AutoCAD a le Gestionnaire des styles de cote. La hauteur du texte, la taille des flèches, l'échelle générale et les décimales du style courant s'y règlent, et toutes les cotes de ce style suivent.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket)
+- [Exercice AutoCAD : une équerre en L](/docs/exercises/l-bracket)
+- [Exercice AutoCAD : un escalier en plan](/docs/exercises/stairs)
+- [Exercice AutoCAD : une bride](/docs/exercises/flange)
+- [Exercice AutoCAD : une table ronde et ses chaises](/docs/exercises/round-table)
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft)
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link)
+
+## Commandes associées [#related]
+
+- [Commande COTALI (DIMALIGNED) dans AutoCAD](/docs/commands/dimaligned)
+- [Commande COTCONT (DIMCONTINUE) dans AutoCAD](/docs/commands/dimcontinue)
+- [Commande COTLIGN (DIMBASELINE) dans AutoCAD](/docs/commands/dimbaseline)
+- [Commande COTRAYON (DIMRADIUS) dans AutoCAD](/docs/commands/dimradius)
+- [Commande COTSTYLE (DIMSTYLE) dans AutoCAD](/docs/commands/dimstyle)

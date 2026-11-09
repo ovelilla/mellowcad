@@ -1,0 +1,72 @@
+---
+title: "Commande BISEAU (WEDGE) dans AutoCAD"
+description: "Comment BISEAU (WEDGE, alias BI) d'AutoCAD dessine un biseau 3D, invite par invite : deux coins et une hauteur, Centre, Cube, Longueur et 2Point. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande WEDGE en français ?","answer":"BISEAU, avec l'alias BI : tapez-le, puis Entrée ou la barre d'espace, et indiquez le premier coin, l'autre coin et la hauteur : 0,0, 60,40 et 25 dessinent le biseau de la figure. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _WEDGE."},{"question":"Dans quel sens le biseau est-il incliné ?","answer":"Il descend depuis le côté du premier coin, le long de l'axe X du SCU. Pour le retourner, indiquez l'autre coin à un X plus petit, ce qui le fait pivoter de 180°, ou faites-le pivoter ensuite avec ROTATION."},{"question":"Comment dessiner un prisme triangulaire ?","answer":"Un biseau en est un : un triangle rectangle à chaque bout, étiré sur la largeur. Pour tout autre triangle, dessinez-le fermé avec POLYLIGNE et extrudez-le avec EXTRUSION."},{"question":"Comment dessiner un biseau à partir de son centre ?","answer":"Choisissez Centre et indiquez le centre, puis un coin, Cube ou Longueur : le biseau est centré sur le point, en hauteur aussi."}]
+---
+
+BISEAU (WEDGE) dessine un biseau, un solide 3D : une boîte dont le dessus descend en pente d'une extrémité à l'autre. La commande demande ce que demande [`BOITE`](/docs/commands/box) : le premier coin, l'autre coin, puis la hauteur. Le côté haut est au premier coin, et la pente descend le long de l'axe X du SCU vers le côté de l'autre coin ; un coin à un X plus petit la retourne. La hauteur monte le long de l'axe Z du SCU, une hauteur négative descend. La longueur, la largeur et la hauteur sont les valeurs par défaut de [`BOITE`](/docs/commands/box), qu'Entrée accepte. Le biseau est créé sur le calque courant, et Annuler le retire en une seule étape.
+
+[`LISTE`](/docs/commands/list) affiche sa position, sa longueur, sa largeur, sa hauteur et sa rotation, et la palette Propriétés permet de les taper. Ses poignées sont celles de [`BOITE`](/docs/commands/box). C'est un solide 3D pour [`UNION`](/docs/commands/union), [`SOUSTRACTION`](/docs/commands/subtract) et le reste de la 3D de MellowCAD, qui ne connaît que les solides et reste partielle ; [`DECOMPOSER`](/docs/commands/explode) le transforme en une région par face.
+
+- **Commande :** `BISEAU`
+- **En anglais :** `WEDGE`, tapé `_WEDGE` dans toutes les langues
+- **Alias :** `BI`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `BI` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="wedge" caption="Un biseau de 60 sur 40 sur 25, donné par deux coins et une hauteur, sa pente descendant depuis le côté du premier coin, vu du sud-est dans le style visuel Masqué." />
+
+## Options [#options]
+
+### `Centre` (`C`) [#center]
+
+À la première invite : demande le centre, puis un coin, `Cube` ou `Longueur`. Le biseau est centré sur le point, en hauteur aussi, son côté haut à l'opposé du coin donné.
+
+### `Cube` (`C`) [#cube]
+
+À l'invite de l'autre coin : demande une longueur et crée un biseau dont tous les côtés ont cette longueur. Contrairement à celui de [`BOITE`](/docs/commands/box), il s'étend le long de l'axe X du SCU, vers l'arrière quand la longueur est négative.
+
+### `Longueur` (`L`) [#length]
+
+À l'invite de l'autre coin : demande la longueur, le long de l'axe X du SCU, puis la largeur, le long de son Y ; une valeur négative va vers l'arrière. Un point ne donne que sa distance, jamais sa direction.
+
+### `2Point` (`2P`) [#2point]
+
+À l'invite de la hauteur : demande deux points, et la hauteur est la distance qui les sépare.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Ce qui manque à [`BOITE`](/docs/commands/box) : Déplacer, Rotation, Echelle et Miroir depuis une poignée sélectionnée, les commandes 3D qui lui sont propres, les cotes en pointillé pendant que vous indiquez le coin, et les styles visuels qui manquent à [`STYLVISCOURANT`](/docs/commands/vscurrent). En vue en plan, l'accrochage Extrémité sous le côté haut trouve le coin du dessus, là où AutoCAD trouve celui de la base.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande WEDGE en français ?
+
+BISEAU, avec l'alias `BI` : tapez-le, puis Entrée ou la barre d'espace, et indiquez le premier coin, l'autre coin et la hauteur : `0,0`, `60,40` et `25` dessinent le biseau de la figure. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_WEDGE`.
+
+### Dans quel sens le biseau est-il incliné ?
+
+Il descend depuis le côté du premier coin, le long de l'axe X du SCU. Pour le retourner, indiquez l'autre coin à un X plus petit, ce qui le fait pivoter de 180°, ou faites-le pivoter ensuite avec [`ROTATION`](/docs/commands/rotate).
+
+### Comment dessiner un prisme triangulaire ?
+
+Un biseau en est un : un triangle rectangle à chaque bout, étiré sur la largeur. Pour tout autre triangle, dessinez-le fermé avec [`POLYLIGNE`](/docs/commands/pline) et extrudez-le avec [`EXTRUSION`](/docs/commands/extrude).
+
+### Comment dessiner un biseau à partir de son centre ?
+
+Choisissez `Centre` et indiquez le centre, puis un coin, `Cube` ou `Longueur` : le biseau est centré sur le point, en hauteur aussi.
+
+## Commandes associées [#related]
+
+- [Commande BOITE (BOX) dans AutoCAD](/docs/commands/box)
+- [Commande PYRAMIDE (PYRAMID) dans AutoCAD](/docs/commands/pyramid)
+- [Commande EXTRUSION (EXTRUDE) dans AutoCAD](/docs/commands/extrude)
+- [Commande UNION dans AutoCAD](/docs/commands/union)

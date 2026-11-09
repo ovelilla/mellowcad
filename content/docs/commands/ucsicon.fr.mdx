@@ -1,0 +1,70 @@
+---
+title: "Commande ICONESCU (UCSICON) dans AutoCAD"
+description: "Comment ICONESCU (UCSICON) d'AutoCAD affiche ou masque l'icône du SCU et la place à l'origine ou dans le coin : ACtif, INactif, Nonorigine, Origine. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment désactiver l'icône du SCU dans AutoCAD ?","answer":"Tapez ICONESCU, appuyez sur Entrée, puis INactif. ACtif la fait revenir."},{"question":"Comment placer l'icône du SCU à l'origine ?","answer":"ICONESCU, puis Origine : l'icône se place à l'origine du SCU. Si elle reste dans le coin, l'origine est hors de l'écran ou trop près de son bord : faites un panoramique ou un zoom arrière. Nonorigine la garde dans le coin."},{"question":"Que signifie le carré sur l'icône du SCU ?","answer":"Que le SCU est le système de coordonnées général. Déplacez ou faites pivoter le SCU avec SCU et le carré disparaît ; SCU puis Entrée ramènent le SCG, et le carré avec lui."},{"question":"Comment changer le style, la taille ou la couleur de l'icône du SCU ?","answer":"Dans AutoCAD, avec l'option Propriétés d'ICONESCU, la boîte de dialogue Icône SCU. MellowCAD ne l'a pas encore : l'icône est dessinée comme AutoCAD 2027 la dessine par défaut, dans le style 3D."}]
+---
+
+ICONESCU (UCSICON) affiche ou masque l'icône du SCU, les bras X et Y qui montrent où se trouve le SCU courant et dans quelle direction il pointe, et dit où elle se place : à l'origine du SCU, ou dans le coin inférieur gauche du dessin. Son unique invite propose l'état courant comme valeur par défaut : Entrée le garde donc. Le réglage est enregistré dans le dessin, et chaque ICONESCU est une étape d'annulation.
+
+L'icône est celle, en 3D, d'AutoCAD 2027 : un bras pour X et un pour Y, une lettre au bout de chacun, et un carré à l'origine tant que le SCU est le SCG. Hors de la vue en plan, un bras Z montre où pointe le Z du SCU, et un bras vu en bout est omis. En Filaire 2D, elle est blanche ; en Masqué et en Conceptuel, son X est rouge, son Y vert et son Z bleu. La variable garde son nom anglais : tapée avec une apostrophe, `'UCSICON` définit la variable UCSICON au lieu de lancer ICONESCU, même à l'intérieur d'une autre commande : de 0 à 3, où 1 affiche l'icône et 2 la place à l'origine.
+
+- **Commande :** `ICONESCU`
+- **En anglais :** `UCSICON`, tapé `_UCSICON` dans toutes les langues
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ICONESCU` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="ucsicon" caption="ICONESCU Nonorigine envoie l'icône dans le coin ; SCU déplace l'origine sur le gradin de la pièce, et Origine y dessine l'icône, son X rouge, son Y vert et son Z bleu." />
+
+## Options [#options]
+
+### `ACtif` (`AC`) [#on]
+
+Affiche l'icône.
+
+### `INactif` (`IN`) [#off]
+
+Masque l'icône. Le SCU est toujours là, et ce que vous dessinez s'y trouve toujours.
+
+### `Nonorigine` (`N`) [#noorigin]
+
+Garde l'icône dans le coin inférieur gauche du dessin, où que soit l'origine.
+
+### `Origine` (`O`) [#origin]
+
+Dessine l'icône à l'origine du SCU, l'option par défaut. Quand l'origine est hors de l'écran, ou si près de son bord que l'icône n'y tiendrait pas, l'icône passe dans le coin inférieur gauche jusqu'à ce que l'origine soit de nouveau visible.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Tout, qui dans AutoCAD applique le réglage à toutes les fenêtres (il n'y en a qu'une ici) ; Sélectionner, les poignées de l'icône ; et Propriétés, la boîte de dialogue Icône SCU, avec le style 2D, la taille, l'épaisseur de ligne et les couleurs.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucsicon--es-simbscp--pt-br-iconeucs--fr-iconescu)
+
+## Questions [#questions]
+
+### Comment désactiver l'icône du SCU dans AutoCAD ?
+
+Tapez `ICONESCU`, appuyez sur Entrée, puis `INactif`. `ACtif` la fait revenir.
+
+### Comment placer l'icône du SCU à l'origine ?
+
+ICONESCU, puis `Origine` : l'icône se place à l'origine du SCU. Si elle reste dans le coin, l'origine est hors de l'écran ou trop près de son bord : faites un panoramique ou un zoom arrière. `Nonorigine` la garde dans le coin.
+
+### Que signifie le carré sur l'icône du SCU ?
+
+Que le SCU est le système de coordonnées général. Déplacez ou faites pivoter le SCU avec [`SCU`](/docs/commands/ucs) et le carré disparaît ; [`SCU`](/docs/commands/ucs) puis Entrée ramènent le SCG, et le carré avec lui.
+
+### Comment changer le style, la taille ou la couleur de l'icône du SCU ?
+
+Dans AutoCAD, avec l'option Propriétés d'ICONESCU, la boîte de dialogue Icône SCU. MellowCAD ne l'a pas encore : l'icône est dessinée comme AutoCAD 2027 la dessine par défaut, dans le style 3D.
+
+## Commandes associées [#related]
+
+- [Commande SCU (UCS) dans AutoCAD](/docs/commands/ucs)
+- [Commande REPERE (PLAN) dans AutoCAD](/docs/commands/plan)
+- [Commande VUE (VIEW) dans AutoCAD](/docs/commands/view)

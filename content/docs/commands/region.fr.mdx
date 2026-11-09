@@ -1,0 +1,58 @@
+---
+title: "Commande REGION dans AutoCAD"
+description: "Comment REGION (alias REG) d'AutoCAD convertit des formes fermées en régions : les boucles qu'elle trouve, pourquoi elle n'en crée aucune. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment utiliser la commande REGION dans AutoCAD ?","answer":"Lancez REGION (ou REG), sélectionnez les formes fermées ou les lignes qui en ferment une extrémité contre extrémité, et appuyez sur Entrée. Dans la figure, une fenêtre autour de quatre lignes et d'un cercle crée deux régions, et la ligne de commande compte deux boucles extraites et deux régions créées."},{"question":"Pourquoi REGION ne crée pas de région ?","answer":"La forme n'est pas fermée extrémité contre extrémité. Des lignes qui se croisent, ou qui s'arrêtent avant de se rejoindre, ne ferment rien : REGION n'enchaîne les objets ouverts que par leurs extrémités, et un écart d'un cheveu suffit à écarter la chaîne. Une boucle qui se croise elle-même, comme un nœud papillon, est rejetée et comptée parmi les auto-intersections. Joignez les extrémités avec RACCORD de rayon 0, ou ajustez avec AJUSTER ce qui dépasse, puis réessayez."},{"question":"Comment faire une région avec un trou ?","answer":"Créez une région du contour et une autre du trou, puis lancez SOUSTRACTION : sélectionnez le contour, Entrée, le trou, Entrée. Le résultat est une seule région, et EXTRUSION la transforme en un solide percé de part en part."},{"question":"Comment connaître l'aire d'une région ?","answer":"Sélectionnez-la et lisez Aire dans la palette Propriétés, ou lancez AIRE, choisissez Objet et sélectionnez-la. PROPMECA ajoute le périmètre, le centre de gravité et les moments d'inertie."}]
+---
+
+REGION convertit des formes fermées en régions : des zones planes sans épaisseur, chacune délimitée par ses boucles. Sélectionnez les objets et appuyez sur Entrée ; chaque boucle qu'ils forment devient une région. Un objet fermé est une boucle à lui seul : un cercle, une ellipse, une polyligne ou une spline fermée. Les objets ouverts (lignes, arcs, arcs elliptiques, polylignes et splines ouvertes) sont enchaînés extrémité contre extrémité, jamais là où ils se croisent, et une chaîne qui ne se ferme pas est écartée. La ligne de commande compte ensuite les boucles trouvées, celles qui ont été rejetées et pourquoi, et les régions créées ; Entrée sans rien de sélectionné affiche `Rien trouvé.`.
+
+Les objets qui ont formé une région sont effacés, les autres conservés, et les régions prennent le calque et les propriétés courants, pas ceux des objets. Une boucle à l'intérieur d'une autre forme sa propre région, pas un trou dans celle-ci : [`SOUSTRACTION`](/docs/commands/subtract) soustrait l'une de l'autre. Une région est dessinée par ses arêtes, où l'accrochage aux objets la trouve ; la palette Propriétés montre son aire et son périmètre, que mesurent aussi [`AIRE`](/docs/commands/area), [`LISTE`](/docs/commands/list) et [`PROPMECA`](/docs/commands/massprop). [`UNION`](/docs/commands/union), [`SOUSTRACTION`](/docs/commands/subtract) et [`INTERSECT`](/docs/commands/intersect) combinent des régions d'un même plan, [`EXTRUSION`](/docs/commands/extrude), [`REVOLUTION`](/docs/commands/revolve) et [`APPTIRER`](/docs/commands/presspull) les transforment en solides 3D, et [`DECOMPOSER`](/docs/commands/explode) rend leurs lignes, arcs et cercles. Toute la commande est une seule étape d'annulation.
+
+- **Commande :** `REGION`
+- **Alias :** `REG`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `REG` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="region" caption="Quatre lignes fermées extrémité contre extrémité et un cercle à l'intérieur : REGION, avec une fenêtre autour des deux, crée deux régions et efface les objets." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+La variable `DELOBJ` d'AutoCAD : ici, les objets qui ont formé une région sont toujours effacés. CONTOUR (BOUNDARY), qui peut créer une région à partir de la zone qui entoure un point, et une région tirée du contour de hachures. La modification d'une région par ses poignées : elles s'affichent, mais en faire glisser une ne change rien. Ses arêtes comme arêtes de coupe ou de limite pour [`AJUSTER`](/docs/commands/trim) et [`PROLONGER`](/docs/commands/extend) en mode Rapide, et [`HACHURES`](/docs/commands/hatch) d'une région dont une arête est elliptique ou une spline. Les régions combinées avec des surfaces, que MellowCAD n'a pas, et la ligne Matériau de la palette Propriétés.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg)
+
+## Questions [#questions]
+
+### Comment utiliser la commande REGION dans AutoCAD ?
+
+Lancez REGION (ou `REG`), sélectionnez les formes fermées ou les lignes qui en ferment une extrémité contre extrémité, et appuyez sur Entrée. Dans la figure, une fenêtre autour de quatre lignes et d'un cercle crée deux régions, et la ligne de commande compte deux boucles extraites et deux régions créées.
+
+### Pourquoi REGION ne crée pas de région ?
+
+La forme n'est pas fermée extrémité contre extrémité. Des lignes qui se croisent, ou qui s'arrêtent avant de se rejoindre, ne ferment rien : REGION n'enchaîne les objets ouverts que par leurs extrémités, et un écart d'un cheveu suffit à écarter la chaîne. Une boucle qui se croise elle-même, comme un nœud papillon, est rejetée et comptée parmi les auto-intersections. Joignez les extrémités avec [`RACCORD`](/docs/commands/fillet) de rayon 0, ou ajustez avec [`AJUSTER`](/docs/commands/trim) ce qui dépasse, puis réessayez.
+
+### Comment faire une région avec un trou ?
+
+Créez une région du contour et une autre du trou, puis lancez [`SOUSTRACTION`](/docs/commands/subtract) : sélectionnez le contour, Entrée, le trou, Entrée. Le résultat est une seule région, et [`EXTRUSION`](/docs/commands/extrude) la transforme en un solide percé de part en part.
+
+### Comment connaître l'aire d'une région ?
+
+Sélectionnez-la et lisez Aire dans la palette Propriétés, ou lancez [`AIRE`](/docs/commands/area), choisissez `Objet` et sélectionnez-la. [`PROPMECA`](/docs/commands/massprop) ajoute le périmètre, le centre de gravité et les moments d'inertie.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+
+## Commandes associées [#related]
+
+- [Commande SOUSTRACTION (SUBTRACT) dans AutoCAD](/docs/commands/subtract)
+- [Commande UNION dans AutoCAD](/docs/commands/union)
+- [Commande EXTRUSION (EXTRUDE) dans AutoCAD](/docs/commands/extrude)
+- [Commande AIRE (AREA) dans AutoCAD](/docs/commands/area)
+- [Commande PROPMECA (MASSPROP) dans AutoCAD](/docs/commands/massprop)

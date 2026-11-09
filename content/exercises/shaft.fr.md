@@ -1,0 +1,35 @@
+---
+title: "Exercice AutoCAD : un arbre étagé"
+metaTitle: "Exercice AutoCAD mécanique : un arbre étagé"
+description: "Dessinez un arbre étagé dans AutoCAD : un demi-contour en polyligne, chanfreiné, mis en miroir sur l'axe, ses longueurs cotées en chaîne. Gratuit, pas à pas."
+figure: "Un arbre étagé en vue de côté, de 150 de long, ses longueurs cotées en chaîne."
+sourceHash: "8c649e73bc55"
+---
+
+Dessinez cet arbre étagé en vue de côté, en millimètres : 150 de long, avec des diamètres de 30, 40 et 30 sur des longueurs de 40, 60 et 50, et les deux extrémités chanfreinées à 2 sur 2. Dessinez la moitié au-dessus de l'axe en une seule polyligne, chanfreinez-la et faites-en le miroir ; puis les arêtes vues en travers de l'arbre, l'axe et les longueurs. Les diamètres sont ceux donnés ici.
+
+## Steps
+
+### Dessinez la moitié supérieure [#half]
+
+Sur le calque Contour, une seule <Command id="PLINE" /> depuis `0,0` : vers le haut `0,15`, vers la droite `40,0`, vers le haut `0,5`, vers la droite `60,0`, vers le bas `0,-5`, vers la droite `50,0` et vers le bas `0,-15`, retour à l'axe. Entrée la termine.
+
+### Chanfreinez les extrémités [#chamfers]
+
+<Command id="CHAMFER" />, puis <Keyword command="CHAMFER" id="Distance" /> : `2`, et Entrée reprend `2` pour la seconde distance aussi. <Keyword command="CHAMFER" id="Multiple" /> chanfreine un coin après l'autre sans relancer la commande : désignez les deux segments au coin de chaque extrémité.
+
+### Faites le miroir [#mirror]
+
+<Command id="MIRROR" /> : désignez la polyligne, appuyez sur Entrée, puis la ligne de symétrie de `0,0` à `150,0`, l'axe, et Entrée pour garder l'original.
+
+### Dessinez les arêtes [#edges]
+
+Avec <Command id="LINE" />, les arêtes vues en travers de l'arbre, chacune `0,30` vers le haut depuis le bas : depuis `2,-15` et `148,-15` aux chanfreins, et depuis `40,-15` et `100,-15` aux épaulements.
+
+### Dessinez l'axe [#axis]
+
+Sur le calque Axes, l'axe : une ligne de `-8,0` à `166,0` plus loin.
+
+### Cotez-le [#dimensions]
+
+Sur le calque Cotes, <Command id="DIMLINEAR" /> pour la première longueur, 40, placée en dessous. <Command id="DIMCONTINUE" /> poursuit depuis sa seconde ligne d'attache : `#100,-20`, puis `#150,-15`, tapés depuis l'origine avec #, et Entrée deux fois pour terminer la commande. Un dernier <Command id="DIMLINEAR" /> donne la longueur totale, 150, plus bas.

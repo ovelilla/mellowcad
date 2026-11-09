@@ -1,0 +1,58 @@
+---
+title: "Commande ETIRER (STRETCH) dans AutoCAD"
+description: "Comment fonctionne ETIRER (STRETCH, alias E) d'AutoCAD en français : fenêtre de capture, point de base, second point, et pourquoi il déplace parfois tout."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande STRETCH en français ?","answer":"ETIRER, avec l'alias E : tapez-le, puis Entrée ou la barre d'espace. Dans AutoCAD en français, E est ETIRER, et non EFFACER, qui est EF. Le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _STRETCH."},{"question":"Pourquoi ETIRER ne fait que déplacer les objets ?","answer":"Parce que l'objet entier se trouve dans la fenêtre, ou que vous l'avez désigné : ETIRER déplace ces objets en entier. Tirez une fenêtre de capture, de droite à gauche, seulement sur les extrémités à déplacer."},{"question":"Comment étirer d'une distance précise ?","answer":"Indiquez le point de base, puis tapez le déplacement : 40,0 étire de 40 le long de X, lu par rapport au point de base avec la saisie dynamique activée. Ou orientez le curseur dans la direction voulue, avec le mode Ortho ou le repérage polaire, et tapez seulement la distance."},{"question":"Peut-on étirer un bloc dans AutoCAD ?","answer":"Une référence de bloc se déplace en entier quand son point d'insertion est dans la fenêtre, et reste en place sinon : son contenu ne s'étire pas. Appliquez-lui d'abord DECOMPOSER pour étirer ses morceaux."}]
+---
+
+ETIRER (STRETCH) déplace la partie du dessin qu'attrape une fenêtre de capture et étire ce qui la relie au reste. Sélectionnez avec une fenêtre de capture, tirée de droite à gauche, ou un polygone de capture, les extrémités et les sommets à déplacer ; indiquez ensuite un point de base et un second point, comme dans [`DEPLACER`](/docs/commands/move). Ce que la fenêtre attrape se déplace de cette distance : les extrémités d'une ligne, les sommets d'une polyligne, les extrémités d'un arc, le contour de hachures, les origines d'une cote. Ce qui s'y trouve entièrement se déplace en entier ; un cercle, un texte ou une référence de bloc se déplace quand son centre ou son point d'insertion est à l'intérieur. Les objets sélectionnés un par un, ou trouvés par Fenêtre, se déplacent aussi en entier. L'étirement est une seule étape, qu'Annuler défait.
+
+- **Commande :** `ETIRER`
+- **En anglais :** `STRETCH`, tapé `_STRETCH` dans toutes les langues
+- **Alias :** `E`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `E` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="stretch" caption="Un rectangle et un cercle étirés de 40 vers la droite par une fenêtre de capture sur le côté droit : les coins qu'elle contient se déplacent, et le cercle avec eux." />
+
+## Options [#options]
+
+### `Déplacement` (`D`) [#displacement]
+
+Choisie à l'invite du point de base, ou par Entrée à cette invite, dont c'est l'option par défaut : demande le déplacement sous forme de vecteur, `40,0` étirant de 40 le long de X. Au second point, Entrée fait de même avec le point de base : ses coordonnées sont le déplacement.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Un arc elliptique dont une extrémité est dans la fenêtre, qu'AutoCAD déforme : ici, il se déplace en entier si son centre est dans la fenêtre, et reste en place sinon. Des hachures non associatives attrapées en partie, qu'AutoCAD laisse en place. Le texte d'une cote à sa place par défaut reste en place quand il est seul attrapé.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#stretch--s--es-estira--ei--pt-br-esticar--e--fr-etirer--e)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande STRETCH en français ?
+
+ETIRER, avec l'alias `E` : tapez-le, puis Entrée ou la barre d'espace. Dans AutoCAD en français, `E` est ETIRER, et non EFFACER, qui est `EF`. Le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_STRETCH`.
+
+### Pourquoi ETIRER ne fait que déplacer les objets ?
+
+Parce que l'objet entier se trouve dans la fenêtre, ou que vous l'avez désigné : ETIRER déplace ces objets en entier. Tirez une fenêtre de capture, de droite à gauche, seulement sur les extrémités à déplacer.
+
+### Comment étirer d'une distance précise ?
+
+Indiquez le point de base, puis tapez le déplacement : `40,0` étire de 40 le long de X, lu par rapport au point de base avec la saisie dynamique activée. Ou orientez le curseur dans la direction voulue, avec le mode Ortho ou le repérage polaire, et tapez seulement la distance.
+
+### Peut-on étirer un bloc dans AutoCAD ?
+
+Une référence de bloc se déplace en entier quand son point d'insertion est dans la fenêtre, et reste en place sinon : son contenu ne s'étire pas. Appliquez-lui d'abord [`DECOMPOSER`](/docs/commands/explode) pour étirer ses morceaux.
+
+## Commandes associées [#related]
+
+- [Commande DEPLACER (MOVE) dans AutoCAD](/docs/commands/move)
+- [Commande ECHELLE (SCALE) dans AutoCAD](/docs/commands/scale)
+- [Commande PROLONGER (EXTEND) dans AutoCAD](/docs/commands/extend)
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)

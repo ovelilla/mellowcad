@@ -1,0 +1,78 @@
+---
+title: "Commande PROLONGER (EXTEND) dans AutoCAD"
+description: "Comment fonctionne PROLONGER (EXTEND, alias PR) d'AutoCAD en français, invite par invite : modes Rapide et Standard, arêtes de limite, trajet, Maj pour ajuster."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande EXTEND en français ?","answer":"PROLONGER, avec les alias PR et PROLONGE, puis Entrée ou la barre d'espace ; l'alias anglais EX ne marche pas, car dans AutoCAD en français il lance EXPORTER. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _EXTEND."},{"question":"Pourquoi la commande prolonger ne fonctionne pas ?","answer":"Le plus souvent parce que rien ne croise le chemin que suivrait l'extrémité sélectionnée. Une ligne dit « Aucun seuil dans cette direction. » quand son autre extrémité atteindrait une arête, et une ligne ou un arc « La trajectoire ne coupe pas l'arête de délimitation. » sinon ; une polyligne ou une spline dit « L'objet ne coupe pas une arête. ». Sélectionnez plus près de l'autre extrémité ou, en mode Standard, choisissez Arête puis PRolongement, pour qu'une limite trop courte compte comme si elle se prolongeait. Un cercle, une polyligne fermée, une ellipse entière, un texte ou des hachures ne peuvent pas être prolongés du tout : « Impossible de PROLONGER cet objet. »"},{"question":"Comment prolonger plusieurs lignes à la fois ?","answer":"Cliquez dans un endroit vide, puis un second point : chaque objet que ce trajet croise s'allonge par son extrémité la plus proche, en une seule étape. Ou choisissez Capture et tracez une fenêtre sur les extrémités à prolonger."},{"question":"Comment ajuster avec PROLONGER ?","answer":"Maintenez Maj en sélectionnant : le morceau est ajusté jusqu'aux intersections les plus proches, comme le ferait AJUSTER, et un objet que rien ne croise est supprimé. La sélection suivante sans Maj prolonge de nouveau."}]
+---
+
+PROLONGER (EXTEND) allonge un objet jusqu'à ce qu'il en rencontre un autre : vous le sélectionnez près de l'extrémité qui doit s'allonger, et cette extrémité avance jusqu'à l'arête la plus proche sur son chemin. Elle prolonge les lignes, arcs, arcs elliptiques, polylignes ouvertes (le long de leur dernier segment, droit ou en suivant son arc), polylignes 3D et splines ouvertes. Elle démarre en mode Rapide, comme celle d'AutoCAD : tout objet sert de limite. Maintenir Maj en sélectionnant ajuste à la place, comme le fait [`AJUSTER`](/docs/commands/trim). Chaque sélection est une étape qu'Annuler reprend ; Entrée termine la commande.
+
+- **Commande :** `PROLONGER`
+- **En anglais :** `EXTEND`, tapé `_EXTEND` dans toutes les langues
+- **Alias :** `PR`, `PROLONGE`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `PR` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="extend" caption="Deux lignes prolongées jusqu'à la ligne qui barre leur chemin : chacune sélectionnée une fois près de l'extrémité qui s'allonge, en mode Rapide." />
+
+## Options [#options]
+
+### `arêtes de Limite` (`L`) [#boundary]
+
+Choisit les objets qui servent de limite : sélectionnez-les, ou appuyez sur Entrée pour les prendre tous. Dès lors, seuls ceux-là servent de limite, quel que soit le mode, jusqu'à la fin de la commande.
+
+### `TRajet` (`TR`) [#fence]
+
+Demande les points d'une ligne, autant que vous voulez jusqu'à Entrée : chaque objet qu'elle croise est prolongé par l'extrémité la plus proche de l'endroit où le trajet le croise, en une seule étape. Le mode Standard la propose ; le mode Rapide l'accepte aussi.
+
+### `Capture` (`C`) [#crossing]
+
+Demande les deux coins d'une fenêtre : chaque objet que son contour croise est prolongé, en une seule étape.
+
+### `mOde` (`O`) [#mode]
+
+Bascule entre `raPide` et `Standard`. En mode Standard, PROLONGER demande d'abord les arêtes de limite (Entrée les prend toutes) et propose Trajet et Arête. Le mode est commun à PROLONGER et à AJUSTER, et dure toute la session.
+
+### `Arête` (`A`) [#edge]
+
+Mode Standard uniquement. Avec `PRolongement`, un objet s'arrête aussi là où une limite se trouverait si elle se prolongeait (une ligne dans les deux sens, un arc sur tout son cercle) : une ligne peut ainsi s'allonger jusqu'à une autre qui n'atteint pas son chemin ; `PAs de prolongement` est l'option par défaut.
+
+### `annUler` (`U`) [#undo]
+
+Proposée dès que l'invite a reçu une réponse (une sélection, un trajet, une fenêtre) : annule le dernier prolongement et, s'il n'y a plus rien à annuler, le dit.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Projection : l'option de projection d'AutoCAD (Aucune, Scu, Vue) n'est pas proposée, et tout est calculé en projection sur le plan XY du SCU, ce qui est l'option par défaut d'AutoCAD, Scu. Un trajet ne peut pas encore être tracé en faisant glisser le curseur, seulement cliqué point par point. Le mode et le choix d'Arête durent la session, là où AutoCAD les garde d'une session à l'autre. Un objet incliné par rapport au SCU, sauf une spline, ne sert pas de limite et n'est pas prolongé, et une polyligne lissée par l'option `Ajuster` de [`PEDIT`](/docs/commands/pedit) est refusée, là où AutoCAD allonge son dernier arc.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande EXTEND en français ?
+
+PROLONGER, avec les alias `PR` et `PROLONGE`, puis Entrée ou la barre d'espace ; l'alias anglais `EX` ne marche pas, car dans AutoCAD en français il lance EXPORTER. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_EXTEND`.
+
+### Pourquoi la commande prolonger ne fonctionne pas ?
+
+Le plus souvent parce que rien ne croise le chemin que suivrait l'extrémité sélectionnée. Une ligne dit `Aucun seuil dans cette direction.` quand son autre extrémité atteindrait une arête, et une ligne ou un arc `La trajectoire ne coupe pas l'arête de délimitation.` sinon ; une polyligne ou une spline dit `L'objet ne coupe pas une arête.`. Sélectionnez plus près de l'autre extrémité ou, en mode Standard, choisissez `Arête` puis `PRolongement`, pour qu'une limite trop courte compte comme si elle se prolongeait. Un cercle, une polyligne fermée, une ellipse entière, un texte ou des hachures ne peuvent pas être prolongés du tout : `Impossible de PROLONGER cet objet.`
+
+### Comment prolonger plusieurs lignes à la fois ?
+
+Cliquez dans un endroit vide, puis un second point : chaque objet que ce trajet croise s'allonge par son extrémité la plus proche, en une seule étape. Ou choisissez `Capture` et tracez une fenêtre sur les extrémités à prolonger.
+
+### Comment ajuster avec PROLONGER ?
+
+Maintenez Maj en sélectionnant : le morceau est ajusté jusqu'aux intersections les plus proches, comme le ferait [`AJUSTER`](/docs/commands/trim), et un objet que rien ne croise est supprimé. La sélection suivante sans Maj prolonge de nouveau.
+
+## Commandes associées [#related]
+
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande RACCORD (FILLET) dans AutoCAD](/docs/commands/fillet)
+- [Commande JOINDRE (JOIN) dans AutoCAD](/docs/commands/join)

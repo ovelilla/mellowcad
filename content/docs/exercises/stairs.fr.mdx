@@ -1,0 +1,58 @@
+---
+title: "Exercice AutoCAD : un escalier en plan"
+metaTitle: "Exercice AutoCAD architecture : escalier en plan"
+description: "Dessinez un escalier droit en plan dans AutoCAD : dix marches avec une ligne et un réseau rectangulaire, la flèche de montée et les cotes. Gratuit, pas à pas."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dessinez un escalier droit en plan, en centimètres : 280 de long et 100 de large, dix marches de 28 et la flèche qui indique le sens de la montée. L'échelle des cotes du dessin est réglée pour un plan en centimètres, si bien que ses cotes se lisent à cette taille. On dessine le nez d'une marche ; un réseau rectangulaire place les autres.
+
+- **Exercice :** Débutant · Architecture · 2D
+- **Commandes :** [`RECTANGLE`](/docs/commands/rectang), [`LIGNE`](/docs/commands/line), [`RESEAURECT`](/docs/commands/arrayrect), [`POLYLIGNE`](/docs/commands/pline), [`COTLIN`](/docs/commands/dimlinear)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=stairs), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/stairs" caption="Un escalier droit en plan, de 280 sur 100 centimètres, sa flèche pointant vers le haut de la volée." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez le contour [#outline]
+
+Sur le calque Contour, [`RECTANGLE`](/docs/commands/rectang) de `0,0` à `280,100` : le contour de la volée.
+
+<Session name="exercises/stairs/outline" caption="1. Dessinez le contour" />
+
+### 2. Dessinez la première marche [#tread]
+
+Le nez de la première marche, une [`LIGNE`](/docs/commands/line) depuis `28,0`, `0,100` vers le haut, et Entrée.
+
+<Session name="exercises/stairs/tread" caption="2. Dessinez la première marche" />
+
+### 3. Disposez les marches en réseau [#array]
+
+[`RESEAURECT`](/docs/commands/arrayrect) copie cette ligne le long de la volée : désignez-la et appuyez sur Entrée, puis choisissez `Nombre`, `9` colonnes et `1` rangée, et `Espacement`, `28` entre les colonnes et `1` entre les rangées, ce qui ne change rien avec une seule rangée. Avec `Quitter`, les marches restent un réseau associatif, que ses poignées modifient ensuite.
+
+<Session name="exercises/stairs/array" caption="3. Disposez les marches en réseau" />
+
+### 4. Dessinez la flèche [#arrow]
+
+[`POLYLIGNE`](/docs/commands/pline) depuis `14,50`, le long de la volée jusqu'à `226,0` plus loin ; puis `LArgeur`, `10` au départ et `0` à la fin, et un dernier segment de `24,0` : la pointe de la flèche. Entrée la termine.
+
+<Session name="exercises/stairs/arrow" caption="4. Dessinez la flèche" />
+
+### 5. Cotez-le [#dimensions]
+
+Sur le calque Cotes, [`COTLIN`](/docs/commands/dimlinear) trois fois : la longueur en dessous, la largeur à droite et une marche, 28, au-dessus.
+
+<Session name="exercises/stairs/dimensions" caption="5. Cotez-le" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate): Débutant · Mécanique · Solide 3D
+- [Exercice AutoCAD : une bride](/docs/exercises/flange): Intermédiaire · Mécanique · 2D
+- [Exercice AutoCAD : une table ronde et ses chaises](/docs/exercises/round-table): Intermédiaire · Architecture · 2D
+- [Exercices AutoCAD](/docs/exercises)

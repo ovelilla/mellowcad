@@ -1,0 +1,78 @@
+---
+title: "Commande DECALER (OFFSET) dans AutoCAD"
+description: "Comment fonctionne DECALER (OFFSET, alias DC) d'AutoCAD en français, invite par invite : distance ou Par, Effacer et Calque, un objet à la fois. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande OFFSET en français ?","answer":"DECALER, avec l'alias DC, puis Entrée ou la barre d'espace ; l'alias anglais O n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _OFFSET."},{"question":"Pourquoi la commande décaler ne fonctionne pas ?","answer":"DECALER décale les lignes, arcs, cercles, polylignes 2D, ellipses et splines. Elle refuse les textes, textes multilignes, références de bloc, cotes et hachures avec « L'objet ne peut pas être décalé. », et fait de même quand la distance réduirait à rien un cercle, un arc ou une polyligne. Un objet sur un calque verrouillé ne peut pas être sélectionné, et une polyligne 3D est ignorée."},{"question":"Comment décaler plusieurs fois la même ligne ?","answer":"Sélectionnez la ligne, puis tapez la lettre de Multiple à l'invite du côté : chaque clic de ce côté fait une copie de plus, chacune une distance plus loin que la précédente. Ou gardez l'option par défaut et sélectionnez chaque fois la copie la plus récente."},{"question":"Comment mettre les copies décalées sur le calque courant ?","answer":"Choisissez Calque à la première invite, puis Courant. Dès lors, chaque copie va sur le calque courant, jusqu'à ce que vous choisissiez de nouveau Source."}]
+---
+
+DECALER (OFFSET) dessine une copie d'un objet parallèle à lui, à une distance que vous tapez ou par un point que vous cliquez : une ligne donne une ligne parallèle, un cercle ou un arc un cercle ou un arc concentrique, une polyligne un contour à l'intérieur ou à l'extérieur, une ellipse ou une spline une spline qui la suit. Comme dans AutoCAD, elle prend un objet à la fois : vous donnez la distance une fois, puis vous sélectionnez un objet et le côté où placer sa copie, autant de fois que vous voulez. Entrée la termine.
+
+- **Commande :** `DECALER`
+- **En anglais :** `OFFSET`, tapé `_OFFSET` dans toutes les langues
+- **Alias :** `DC`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `DC` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="offset" caption="Un rectangle décalé de 6 vers l'intérieur et un cercle décalé de 6 vers l'extérieur, chacun sélectionné, puis son côté." />
+
+## Options [#options]
+
+### `Par` (`P`) [#through]
+
+Au lieu d'une distance, chaque copie passe par un point que vous cliquez ou tapez. C'est l'option par défaut de la première invite : Entrée la choisit tant qu'aucune distance n'a été donnée ; ensuite, Entrée répète la dernière distance, dans ce dessin.
+
+### `Effacer` (`E`) [#erase]
+
+Demande s'il faut effacer chaque objet source une fois décalé, `Oui` ou `Non` (par défaut). Avec `Oui`, la copie remplace l'objet. Le choix est gardé pour le reste de la session, et la prochaine commande DECALER l'indique dans sa première ligne.
+
+### `Calque` (`C`) [#layer]
+
+Demande où vont les copies : sur le calque `Courant`, ou sur celui de l'objet `Source` (par défaut). Ce choix est gardé pour la session, lui aussi.
+
+### `Quitter` (`Q`) [#exit]
+
+Termine la commande, comme Entrée à l'invite de l'objet.
+
+### `Multiple` (`M`) [#multiple]
+
+À l'invite du côté : continue à décaler le même objet sans le sélectionner de nouveau, chaque copie une distance plus loin que la précédente, jusqu'à Entrée ou `Quitter`.
+
+### `annUler` (`U`) [#undo]
+
+Annule la dernière copie, quel que soit l'objet dont elle vient, et redemande un objet. Quand il n'y a plus de copie à annuler, elle le dit.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+OFFSETGAPTYPE 1 et 2 : les coins d'une polyligne décalée sont toujours fermés comme avec 0, les segments prolongés jusqu'à se rejoindre. Le décalage d'une spline ou d'une ellipse reste dans la tolérance d'AutoCAD, mais ses noeuds tombent là où MellowCAD les place, pas là où AutoCAD les place. L'option `Par` sur une spline affiche X et Y dans son info-bulle, pas la distance.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande OFFSET en français ?
+
+DECALER, avec l'alias `DC`, puis Entrée ou la barre d'espace ; l'alias anglais `O` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_OFFSET`.
+
+### Pourquoi la commande décaler ne fonctionne pas ?
+
+DECALER décale les lignes, arcs, cercles, polylignes 2D, ellipses et splines. Elle refuse les textes, textes multilignes, références de bloc, cotes et hachures avec `L'objet ne peut pas être décalé.`, et fait de même quand la distance réduirait à rien un cercle, un arc ou une polyligne. Un objet sur un calque verrouillé ne peut pas être sélectionné, et une polyligne 3D est ignorée.
+
+### Comment décaler plusieurs fois la même ligne ?
+
+Sélectionnez la ligne, puis tapez la lettre de `Multiple` à l'invite du côté : chaque clic de ce côté fait une copie de plus, chacune une distance plus loin que la précédente. Ou gardez l'option par défaut et sélectionnez chaque fois la copie la plus récente.
+
+### Comment mettre les copies décalées sur le calque courant ?
+
+Choisissez `Calque` à la première invite, puis `Courant`. Dès lors, chaque copie va sur le calque courant, jusqu'à ce que vous choisissiez de nouveau `Source`.
+
+## Commandes associées [#related]
+
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)
+- [Commande PROLONGER (EXTEND) dans AutoCAD](/docs/commands/extend)
+- [Commande RACCORD (FILLET) dans AutoCAD](/docs/commands/fillet)
+- [Commande COPIER (COPY) dans AutoCAD](/docs/commands/copy)

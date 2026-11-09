@@ -1,0 +1,80 @@
+---
+title: "Commande CERCLE (CIRCLE) dans AutoCAD"
+description: "Comment fonctionne CERCLE (CIRCLE, alias C) d'AutoCAD en français, invite par invite : centre et rayon ou Diamètre, 2P, 3P et Ttr. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande CIRCLE en français ?","answer":"CERCLE, raccourci C, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _CIRCLE."},{"question":"Comment dessiner un cercle tangent à deux lignes ?","answer":"Choisissez Ttr, désignez la première ligne, puis la deuxième, près de l'endroit où le cercle doit les toucher, et tapez le rayon."},{"question":"Comment dessiner un cercle tangent à trois objets ?","answer":"Choisissez 3P et tapez _TAN avant chacun des trois points, en désignant chaque objet près de l'endroit où le cercle doit le toucher."},{"question":"Comment dessiner un cercle par son diamètre ?","answer":"Donnez le centre, puis choisissez Diamètre et tapez-le. Ou choisissez 2P et donnez les deux extrémités du diamètre."}]
+---
+
+CERCLE (CIRCLE en anglais) dessine un cercle à partir de son centre et de son rayon, tapé ou donné par un point du cercle, ou de l'une des autres manières que propose sa première invite. Entrée au rayon reprend la taille du dernier cercle, conservée pour le dessin. Pendant que vous donnez le rayon, une ligne en pointillés ambre va du centre au curseur, et dépasse le bord quand vous donnez le diamètre, comme AutoCAD la dessine. Le cercle se trouve dans le plan de son premier point, à l'élévation courante si le point n'a pas de Z propre.
+
+- **Commande :** `CERCLE`
+- **En anglais :** `CIRCLE`, tapé `_CIRCLE` dans toutes les langues
+- **Alias :** `C`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `C` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="circle" caption="Trois cercles : centre et rayon, deux extrémités d'un diamètre (2P), centre et Diamètre." />
+
+## Options [#options]
+
+### `3P` [#3p]
+
+Par trois points. Tapée avec des accrochages Tangente, `_TAN` à chacun, c'est le Tan, tan, tan d'AutoCAD : le cercle qui touche trois objets.
+
+### `2P` [#2p]
+
+Par les deux extrémités d'un diamètre.
+
+### `Ttr (tangente tangente rayon)` (`T`) [#ttr]
+
+Tangent à deux objets, avec un rayon : désignez chaque ligne, cercle ou arc près de l'endroit où le cercle doit le toucher, puis donnez le rayon. Parmi les cercles possibles, elle dessine celui qui touche au plus près de vos désignations ; quand aucun ne convient, elle affiche `Le cercle n'existe pas.`.
+
+### `Diamètre` (`D`) [#diameter]
+
+À l'invite du rayon : donnez plutôt le diamètre, tapé ou par un point.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Ttr sur un segment de polyligne, qu'AutoCAD accepte et que MellowCAD refuse ; l'entrée Tan, tan, tan de la palette d'outils (la taper, 3P avec trois accrochages Tangente, fonctionne) ; les Propriétés rapides au double-clic sur un cercle.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c--pt-br-circulo--ci--fr-cercle--c)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande CIRCLE en français ?
+
+CERCLE, raccourci `C`, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_CIRCLE`.
+
+### Comment dessiner un cercle tangent à deux lignes ?
+
+Choisissez `Ttr`, désignez la première ligne, puis la deuxième, près de l'endroit où le cercle doit les toucher, et tapez le rayon.
+
+### Comment dessiner un cercle tangent à trois objets ?
+
+Choisissez `3P` et tapez `_TAN` avant chacun des trois points, en désignant chaque objet près de l'endroit où le cercle doit le toucher.
+
+### Comment dessiner un cercle par son diamètre ?
+
+Donnez le centre, puis choisissez `Diamètre` et tapez-le. Ou choisissez `2P` et donnez les deux extrémités du diamètre.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket)
+- [Exercice AutoCAD : une équerre en L](/docs/exercises/l-bracket)
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD : une bride](/docs/exercises/flange)
+- [Exercice AutoCAD : une table ronde et ses chaises](/docs/exercises/round-table)
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande ARC dans AutoCAD](/docs/commands/arc)
+- [Commande ELLIPSE dans AutoCAD](/docs/commands/ellipse)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande COTRAYON (DIMRADIUS) dans AutoCAD](/docs/commands/dimradius)

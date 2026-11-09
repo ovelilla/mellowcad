@@ -1,0 +1,52 @@
+---
+title: "Exercice AutoCAD isométrique : un bloc étagé"
+metaTitle: "Dessin isométrique AutoCAD : un bloc étagé"
+description: "Dessinez un bloc étagé en isométrique dans AutoCAD avec LIGNE (LINE), en coordonnées polaires sur les axes à 30°, 90° et 150°, et cotez-le. Gratuit, pas à pas."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dessinez ce bloc étagé en isométrique, en millimètres : 60 de long, 40 de profondeur et 40 de haut, avec une marche de 20 de profondeur et 20 de haut le long de sa face avant. Chaque arête suit l'un des axes isométriques : 30° et 210° pour la longueur, 150° et 330° pour la profondeur, 90° et 270° pour la hauteur. MellowCAD n'a pas encore le dessin isométrique d'AutoCAD, sa résolution isométrique et ses isocercles, si bien que les arêtes sont des lignes tapées en coordonnées polaires, une longueur et un angle.
+
+- **Exercice :** Intermédiaire · Mécanique · Isométrique
+- **Commandes :** [`LIGNE`](/docs/commands/line), [`COTALI`](/docs/commands/dimaligned)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=isometric-block), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/isometric-block" caption="Un bloc étagé en isométrique, de 60 de long, 40 de profondeur et 40 de haut, ses dimensions cotées le long de ses arêtes." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez la face avant de la marche [#front]
+
+Sur le calque Contour, [`LIGNE`](/docs/commands/line) depuis `0,0`, le coin avant inférieur : `60<30`, `20<90`, `60<210`, puis `Clore`.
+
+<Session name="exercises/isometric-block/front" caption="1. Dessinez la face avant de la marche" />
+
+### 2. Dessinez le côté [#side]
+
+De nouveau depuis `0,0`, le côté gauche : `40<150`, `40<90`, `20<330`, `20<270` et `20<330`. Entrée termine la ligne sur l'arête avant de la marche.
+
+<Session name="exercises/isometric-block/side" caption="2. Dessinez le côté" />
+
+### 3. Dessinez le dessus [#top]
+
+Le reste part de coins déjà dessinés : tapez `_END`, l'accrochage aux objets Extrémité pour un seul point, et désignez le coin. Depuis le coin supérieur droit de la face avant : `20<150`, `20<90`, `20<150` et `60<210`. Puis deux lignes de `60<210`, depuis le pied de la contremarche et depuis son sommet.
+
+<Session name="exercises/isometric-block/top" caption="3. Dessinez le dessus" />
+
+### 4. Cotez-le [#dimensions]
+
+Sur le calque Cotes, [`COTALI`](/docs/commands/dimaligned) le long des arêtes, chaque cote placée à côté de la sienne : 60 et 40 en bas, 40 en montant à gauche, 20 en montant à droite.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Cotez-le" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD 3D : une poulie](/docs/exercises/pulley): Intermédiaire · Mécanique · Solide 3D
+- [Exercice AutoCAD : une biellette et ses tangentes](/docs/exercises/link): Avancé · Mécanique · 2D
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block): Avancé · Mécanique · Solide 3D
+- [Exercices AutoCAD](/docs/exercises)

@@ -1,0 +1,72 @@
+---
+title: "Commande CHPROP dans AutoCAD"
+description: "Modifier les propriétés à la ligne de commande dans AutoCAD en français : CHPROP, couleur, calque, type de ligne, épaisseur de ligne, hauteur. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Existe-t-il un raccourci pour CHPROP dans AutoCAD ?","answer":"Elle n'a pas de raccourci : tapez CHPROP, le même nom en français qu'en anglais, ou _CHPROP dans toutes les langues d'AutoCAD. Entrée à l'invite Commande la répète."},{"question":"Quelle est la différence entre CHPROP et PROPRIETES ?","answer":"Elles modifient les mêmes propriétés. PROPRIETES les affiche dans une palette, avec aussi la géométrie de chaque objet ; CHPROP les demande à la ligne de commande, ce qui garde vos mains sur le clavier."},{"question":"Comment changer la couleur d'objets à la ligne de commande ?","answer":"Tapez CHPROP, sélectionnez les objets, appuyez sur Entrée, choisissez COuleur et tapez la couleur, par exemple 1 pour le rouge. Appuyez de nouveau sur Entrée pour terminer."},{"question":"Comment déplacer plusieurs objets sur un autre calque ?","answer":"Lancez CHPROP, sélectionnez-les, choisissez CAlque et tapez le nom du calque. Le calque doit exister : créez-le d'abord dans CALQUE."}]
+---
+
+CHPROP modifie les propriétés des objets que vous sélectionnez, à la ligne de commande : les lignes Général de la palette Propriétés, demandées sous forme d'invites. Sélectionnez les objets, ou sélectionnez-les avant la commande, puis choisissez une propriété à modifier ; elle en redemande une après chacune, jusqu'à ce qu'Entrée la termine. L'invite de chaque propriété propose par défaut la valeur du jeu, `varie` là où les objets diffèrent, et Entrée à cette invite laisse à chaque objet la sienne. Ce que vous réglez est appliqué à la fin de la commande, si bien qu'Echap laisse chaque objet tel qu'il était. Les objets d'un calque verrouillé sont comptés et laissés de côté, chacun affichant `L'objet est sur un calque verrouillé.`. Toute l'exécution est une seule étape que `U` annule.
+
+- **Commande :** `CHPROP`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `CHPROP` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="chprop" caption="CHPROP sur une ligne qui traverse le trou d'une plaque : couleur 1 et type de ligne Center, un axe, sur le calque où elle se trouvait." />
+
+## Options [#options]
+
+### `COuleur` (`CO`) [#color]
+
+Un numéro de couleur de 1 à 255, un nom comme `rouge`, `DUCALQUE`, ou `coUleursvraies` et son `Rouge,Vert,Bleu`, tels que [`COULEUR`](/docs/commands/color) les accepte ; ce que COULEUR refuse est refusé ici aussi, et la question revient.
+
+### `CAlque` (`CA`) [#layer]
+
+Le nom d'un calque, quelle que soit la casse. Un nom qui ne peut pas être celui d'un calque affiche `Nom calque incorrect.`, un nom absent du dessin est signalé comme introuvable ; dans les deux cas, la question revient. CHPROP ne crée pas de calques.
+
+### `Tligne` (`T`) [#ltype]
+
+Le nom d'un type de ligne, quelle que soit la casse, ou `DuCalque`. Ici, tous les types de ligne sont chargés ; un autre nom est signalé comme introuvable et ramène à l'invite des propriétés.
+
+### `EPaisseurl` (`EP`) [#lweight]
+
+Une épaisseur de ligne en millimètres, arrondie à l'épaisseur standard la plus proche comme l'arrondit [`EPAISSLIGNE`](/docs/commands/lweight), ou `DuCalque` ; `?` les liste.
+
+### `Hauteur` (`H`) [#thickness]
+
+Une distance, tapée ou mesurée par deux points, négative ou nulle aussi. Elle est appliquée aux lignes, aux cercles, aux arcs et aux polylignes du jeu, selon la normale propre à chacun ; pour chaque autre type, elle indique en terminant qu'elle ne peut pas en changer la hauteur.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+EChltl, TRansparence, Matériau et Annotatif, que les objets n'ont pas ici, si bien que l'invite ne les liste pas. DuBloc pour la couleur, le type de ligne et l'épaisseur de ligne, et Par défaut pour l'épaisseur de ligne. Une couleur vraie égale à une couleur d'index se relit comme celle-ci : `255,0,0` est proposé comme `1 (rouge)`. Les carnets de couleurs. La hauteur (l'épaisseur) d'un texte et d'une définition d'attribut, laissée telle quelle. CHANGER (CHANGE), dont l'option Propriétés pose la même question avec Elév.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop)
+
+## Questions [#questions]
+
+### Existe-t-il un raccourci pour CHPROP dans AutoCAD ?
+
+Elle n'a pas de raccourci : tapez `CHPROP`, le même nom en français qu'en anglais, ou `_CHPROP` dans toutes les langues d'AutoCAD. Entrée à l'invite Commande la répète.
+
+### Quelle est la différence entre CHPROP et PROPRIETES ?
+
+Elles modifient les mêmes propriétés. [`PROPRIETES`](/docs/commands/properties) les affiche dans une palette, avec aussi la géométrie de chaque objet ; CHPROP les demande à la ligne de commande, ce qui garde vos mains sur le clavier.
+
+### Comment changer la couleur d'objets à la ligne de commande ?
+
+Tapez `CHPROP`, sélectionnez les objets, appuyez sur Entrée, choisissez `COuleur` et tapez la couleur, par exemple `1` pour le rouge. Appuyez de nouveau sur Entrée pour terminer.
+
+### Comment déplacer plusieurs objets sur un autre calque ?
+
+Lancez CHPROP, sélectionnez-les, choisissez `CAlque` et tapez le nom du calque. Le calque doit exister : créez-le d'abord dans [`CALQUE`](/docs/commands/layer).
+
+## Commandes associées [#related]
+
+- [Commande PROPRIETES (PROPERTIES) dans AutoCAD](/docs/commands/properties)
+- [Commande CORRESPROP (MATCHPROP) dans AutoCAD](/docs/commands/matchprop)
+- [Commande COULEUR (COLOR) dans AutoCAD](/docs/commands/color)
+- [Commande CALQUE (LAYER) dans AutoCAD](/docs/commands/layer)

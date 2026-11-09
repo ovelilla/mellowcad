@@ -1,0 +1,42 @@
+---
+title: De la 2D à la 3D dans AutoCAD
+metaTitle: "AutoCAD 3D : passer de la 2D à la 3D"
+description: "De la 2D au solide 3D dans AutoCAD : extruder, appuyer/tirer ou faire pivoter un profil fermé, unir, soustraire. Solides 3D gratuits en ligne, encore partiels."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+Dans AutoCAD, un solide commence en général par un dessin 2D : un profil fermé, dessiné comme n'importe quel plan, puis extrudé sur une hauteur ou tourné autour d'un axe, et uni à d'autres solides ou coupé par eux. Les solides 3D de MellowCAD se font de la même façon, avec les mêmes commandes. Ils sont encore partiels : il n'y a pas encore de balayages, de lissages, de maillages ni de rendu. Chaque section montre une session que dessine le moteur, avec son historique tel que vous le taperiez.
+
+## Dessinez un profil fermé [#profile]
+
+Un solide a besoin d'un profil fermé : une polyligne fermée, un rectangle, un cercle ou une région. Des lignes qui se touchent bout à bout restent des objets distincts : <Command id="JOIN" /> en fait une polyligne, ou <Command id="REGION" /> une région. Dessinez le profil en plan, là où taper ses points est le plus simple.
+
+## Extrudez-le [#extrude]
+
+<Command id="EXTRUDE" /> : désignez le profil, appuyez sur Entrée et tapez la hauteur. Vu de dessus, un solide ressemble exactement à son profil : faites tourner la vue avec <Command id="VIEW" /> ou le ViewCube pour le voir, et choisissez comment il est dessiné avec <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="Un profil en L, une seule polyligne fermée, extrudé de 30, vu du sud-est." />
+
+## Appuyez et tirez sur une zone [#presspull]
+
+<Command id="PRESSPULL" /> n'a pas besoin de profil : cliquez à l'intérieur de n'importe quelle zone fermée, même délimitée par des lignes distinctes, et tapez la hauteur. D'un clic sur la face d'un solide, il pousse ou tire cette face.
+
+<Session name="presspull" caption="Une zone fermée, appuyée et tirée de l'intérieur : elle devient un solide." />
+
+## Créez un solide de révolution [#revolve]
+
+<Command id="REVOLVE" /> fait tourner un profil autour d'un axe : désignez le profil, donnez l'axe par deux points, par un objet ou comme l'axe X, Y ou Z, puis l'angle, un tour complet par défaut.
+
+<Session name="revolve" caption="Une demi-coupe tournée autour de l'axe Y." />
+
+## Unissez et soustrayez des solides [#booleans]
+
+<Command id="UNION" /> fait un seul solide de plusieurs, <Command id="SUBTRACT" /> en retire un ou plusieurs d'un autre, et <Command id="INTERSECT" /> garde ce qu'ils ont en commun. Un trou est un cylindre soustrait du solide qu'il traverse.
+
+<Session name="subtract" caption="Un cylindre soustrait d'une boîte : un trou qui la traverse." />
+
+## Ensuite [#next]
+
+- Les [exercices](/docs/exercises) 3D : [une plaque de fixation](/docs/exercises/mounting-plate) faite de régions et d'une seule extrusion, [une poulie](/docs/exercises/pulley) tournée à partir de sa coupe et [un palier](/docs/exercises/bearing-block) uni et percé.
+- <Command id="3DORBIT" /> fait tourner la vue à la souris, et <Command id="VSCURRENT" /> ombre les faces.

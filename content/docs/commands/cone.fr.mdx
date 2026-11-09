@@ -1,0 +1,86 @@
+---
+title: "Commande CONE dans AutoCAD"
+description: "Comment CONE d'AutoCAD en français dessine un cône ou un tronc de cône : base, rayon, hauteur, rayon supérieur, Elliptique. Essayez-le gratuitement en ligne."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment dessiner un cône dans AutoCAD ?","answer":"Lancez CONE, donnez le centre de la base, le rayon et la hauteur : 0,0, 20 et 40 dessinent le cône de la session. Tournez la vue pour le voir, avec un coin du ViewCube ou avec -VUE et isoSE."},{"question":"Comment dessiner un tronc de cône ?","answer":"À la hauteur, choisissez Supérieur, tapez le rayon supérieur, puis la hauteur. Le cône se termine par un cercle de ce rayon."},{"question":"Comment dessiner un cône à l'envers ?","answer":"Tapez une hauteur négative : le cône pointe vers le bas depuis sa base. Ou choisissez Axe et placez le sommet où vous voulez."},{"question":"La base d'un cône peut-elle être une ellipse ?","answer":"Oui : choisissez Elliptique au centre de la base et donnez ses axes. Un rayon supérieur fait du haut la même ellipse, plus petite."}]
+---
+
+CONE dessine un cône, un solide 3D : donnez le centre de sa base, puis le rayon, puis la hauteur, et le cône se rétrécit jusqu'à une pointe. La commande demande ce que demande [`CYLINDRE`](/docs/commands/cylinder), avec `Supérieur` à la hauteur pour un cône tronqué. La base se trouve dans le plan XY du SCU, à la Z du centre, et la hauteur monte selon son axe Z ; une hauteur négative le fait pointer vers le bas, et un point la donne par sa distance à la base. Le rayon et la hauteur sont proposés comme valeurs par défaut qu'Entrée accepte, partagées avec les autres primitives. Le cône est créé sur le calque courant, et Annuler le supprime en une seule étape.
+
+[`LISTE`](/docs/commands/list) affiche sa position, sa normale, le rayon de la base, le rayon supérieur et la hauteur, et la palette Propriétés permet de les taper. Ses poignées le déplacent, règlent sa hauteur, le rayon de sa base à chaque quart de la base, et son rayon supérieur. L'accrochage Extrémité trouve son sommet. C'est un solide 3D pour [`UNION`](/docs/commands/union), [`SOUSTRACTION`](/docs/commands/subtract) et le reste de la 3D de MellowCAD, qui se limite aux solides et reste partielle.
+
+- **Commande :** `CONE`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `CONE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="cone" caption="Un cône de rayon 20 et de hauteur 40, à partir du centre de sa base, vu du sud-est dans le style visuel Masqué." />
+
+## Options [#options]
+
+### `3P` [#3p]
+
+Au centre de la base : demande trois points, et la base est le cercle qui passe par eux, dans leur plan.
+
+### `2P` [#2p]
+
+Au centre de la base : demande les deux extrémités du diamètre de la base.
+
+### `Ttr` (`T`) [#ttr]
+
+Au centre de la base : désignez deux lignes, cercles ou arcs, avec l'accrochage Tangente, et donnez un rayon : la base touche les deux.
+
+### `Elliptique` (`E`) [#elliptical]
+
+Au centre de la base : la base est une ellipse, donnée par les deux extrémités de son premier axe et l'extrémité du second, ou avec `Centre` à partir de son centre. Un rayon supérieur réduit la même ellipse.
+
+### `Diamètre` (`D`) [#diameter]
+
+Au rayon : demande plutôt le diamètre, en proposant le double du dernier rayon.
+
+### `2Point` (`2P`) [#2point]
+
+À la hauteur : demande deux points, et la hauteur est la distance qui les sépare.
+
+### `extrémité Axe` (`A`) [#axis]
+
+À la hauteur : demande le sommet. Le cône va du centre de la base à ce point, dans n'importe quelle direction, sa base perpendiculaire à l'axe.
+
+### `rayon Supérieur` (`S`) [#top]
+
+À la hauteur : demande le rayon supérieur, puis de nouveau la hauteur. Le cône se termine par un cercle au lieu d'une pointe, un tronc de cône ; un haut aussi large que la base donne les flancs d'un cylindre, un haut plus large un cône qui s'évase vers le haut. La commande propose le rayon supérieur du dernier cône, 0 au départ.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+[`DECOMPOSER`](/docs/commands/explode) d'un cône, qu'AutoCAD transforme en sa base et une surface : MellowCAD n'a pas de surfaces, il indique donc qu'il n'a pas pu le décomposer. Transformer un cône rond en cône elliptique en tapant dans la palette Propriétés. Avec `ISOLINES` à 0, le point qu'AutoCAD dessine au sommet. Et ce qui manque à [`CYLINDRE`](/docs/commands/cylinder) : Déplacer, Rotation, Echelle et Miroir depuis une poignée active, les cotes en pointillés pendant que vous donnez le rayon, et les styles visuels qui manquent à [`STYLVISCOURANT`](/docs/commands/vscurrent).
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cone--es-cono--pt-br-cone--fr-cone)
+
+## Questions [#questions]
+
+### Comment dessiner un cône dans AutoCAD ?
+
+Lancez CONE, donnez le centre de la base, le rayon et la hauteur : `0,0`, `20` et `40` dessinent le cône de la session. Tournez la vue pour le voir, avec un coin du ViewCube ou avec `-VUE` et `isoSE`.
+
+### Comment dessiner un tronc de cône ?
+
+À la hauteur, choisissez `Supérieur`, tapez le rayon supérieur, puis la hauteur. Le cône se termine par un cercle de ce rayon.
+
+### Comment dessiner un cône à l'envers ?
+
+Tapez une hauteur négative : le cône pointe vers le bas depuis sa base. Ou choisissez `Axe` et placez le sommet où vous voulez.
+
+### La base d'un cône peut-elle être une ellipse ?
+
+Oui : choisissez `Elliptique` au centre de la base et donnez ses axes. Un rayon supérieur fait du haut la même ellipse, plus petite.
+
+## Commandes associées [#related]
+
+- [Commande CYLINDRE (CYLINDER) dans AutoCAD](/docs/commands/cylinder)
+- [Commande PYRAMIDE (PYRAMID) dans AutoCAD](/docs/commands/pyramid)
+- [Commande REVOLUTION (REVOLVE) dans AutoCAD](/docs/commands/revolve)
+- [Commande SOUSTRACTION (SUBTRACT) dans AutoCAD](/docs/commands/subtract)

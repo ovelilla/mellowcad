@@ -1,0 +1,55 @@
+---
+title: Comment dessiner un plan de maison dans AutoCAD
+metaTitle: "Dessiner un plan de maison 2D dans AutoCAD"
+description: "Dessiner un plan de maison dans AutoCAD : murs avec DECALER (OFFSET), mur intérieur, ouvertures avec AJUSTER (TRIM), portes et débattements, fenêtres et cotes."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Un plan, c'est la maison coupée à environ un mètre cinquante de hauteur et vue de dessus : chaque mur en deux lignes avec son épaisseur entre elles, ses ouvertures, les portes dessinées ouvertes avec leur débattement, les fenêtres et les cotes. Ce guide dessine une maison de deux pièces, de 8 mètres sur 6, en centimètres : une unité vaut un centimètre, si bien que les murs extérieurs ont 20 d'épaisseur et le mur intérieur 10. Chaque étape montre son dessin et l'historique de la ligne de commande tel que vous le taperiez. [Ouvrez l'éditeur](/fr/draw) à côté de cette page et suivez-la.
+
+## Créez les calques [#layers]
+
+Chaque type d'objet va sur son propre calque, avec sa couleur, pour que vous puissiez désactiver n'importe lequel d'entre eux : Murs, Portes, Fenêtres et Cotes. Créez-les dans la palette Calques, <Command id="LAYER" />, et rendez le bon calque courant dans la liste déroulante des calques avant chaque étape. Pour que les cotes se lisent à la taille d'une maison, réglez l'échelle globale de leur style dans <Command id="DIMSTYLE" /> : 12 ici, si bien que leur texte fait 30 de haut.
+
+## Dessinez les murs extérieurs [#walls]
+
+Sur le calque Murs, <Command id="RECTANG" /> de `0,0` à `800,600` : la face extérieure des murs. <Command id="OFFSET" /> donne la face intérieure : tapez l'épaisseur, `20`, désignez le rectangle et cliquez à l'intérieur.
+
+<Session name="floorPlanWalls" caption="Les murs extérieurs : un rectangle et son décalage, 20 vers l'intérieur." />
+
+## Dessinez le mur intérieur [#inner-wall]
+
+Une ligne avec <Command id="LINE" /> depuis `500,20`, `0,560` vers le haut jusqu'à la face intérieure des murs extérieurs, puis <Command id="OFFSET" /> à `10` vers sa droite : le mur entre les deux pièces.
+
+<Session name="floorPlanInnerWall" caption="Le mur intérieur : une ligne et son décalage, 10 vers sa droite." />
+
+## Découpez les ouvertures [#openings]
+
+Une ouverture se découpe entre deux lignes qui traversent le mur, ses tableaux. Dessinez-les avec <Command id="LINE" />, puis coupez avec <Command id="TRIM" /> les lignes du mur entre elles, d'un clic chacune : l'entrée, de 90 de large, depuis `100,0` ; la porte intérieure, de 80, depuis `500,200` ; les fenêtres, de 120, depuis `200,580` dans le mur du haut et `780,250` dans celui de droite.
+
+<Session name="floorPlanOpenings" caption="Quatre ouvertures : deux tableaux chacune, et les lignes du mur coupées entre eux." />
+
+## Dessinez les portes [#doors]
+
+Sur le calque Portes, chaque porte est son vantail, dessiné ouvert avec <Command id="LINE" />, et son débattement, un arc avec <Command id="ARC" /> : choisissez son option Centre, puis donnez la charnière comme centre, le début du débattement et sa fin. Les deux extrémités sont des points déjà dessinés, le coin du tableau et le bout du vantail : tapez `_END`, l'accrochage aux objets Extrémité pour un seul point, et désignez chacun d'eux.
+
+<Session name="floorPlanDoors" caption="Chaque porte : son vantail ouvert à 90° et l'arc de son débattement." />
+
+## Dessinez les fenêtres [#windows]
+
+Sur le calque Fenêtres, un <Command id="RECTANG" /> remplit chaque ouverture depuis son tableau, et une ligne en son milieu figure le vitrage.
+
+<Session name="floorPlanWindows" caption="Les fenêtres : un rectangle dans chaque ouverture et une ligne pour le vitrage." />
+
+## Cotez le plan [#dimensions]
+
+Sur le calque Cotes, cotez avec <Command id="DIMLINEAR" /> les dimensions extérieures, puis les pièces de l'intérieur : la largeur de la première pièce avec <Command id="DIMLINEAR" />, puis le mur intérieur et la seconde pièce avec <Command id="DIMCONTINUE" />, tapés depuis l'origine avec `#`.
+
+<Session name="floorPlanDimensions" caption="Le plan coté : 800 sur 600 à l'extérieur, les pièces à l'intérieur." />
+
+## Ensuite [#next]
+
+- Nommez chaque pièce avec <Command id="TEXT" />, et remplissez les murs avec <Command id="HATCH" />, en désignant un point entre leurs deux lignes.
+- Entraînez-vous avec les [exercices](/docs/exercises) : [l'escalier en plan](/docs/exercises/stairs) et [la table ronde et ses chaises](/docs/exercises/round-table) se dessinent aussi en centimètres.
+- [Coordonnées](/docs/coordinates) : toutes les façons de taper un point.

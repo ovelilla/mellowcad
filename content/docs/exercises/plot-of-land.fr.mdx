@@ -1,0 +1,46 @@
+---
+title: "Exercice AutoCAD : une parcelle de terrain"
+metaTitle: "Exercice AutoCAD génie civil : aire d'un terrain"
+description: "Dessinez une parcelle dans AutoCAD en coordonnées polaires, d'après la longueur et l'angle de ses côtés, puis mesurez son aire et cotez-la. Gratuit, en ligne."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Dessinez cette parcelle, en mètres, d'après la longueur et la direction de ses côtés : 40 à 0°, 30 à 80°, 35 à 155° et 25 à 230°, puis retour au départ. Mesurez son aire et son périmètre, et cotez chaque côté ainsi que l'angle à son deuxième sommet. Les coordonnées polaires, une longueur et un angle, dessinent chaque côté depuis la fin du précédent. L'échelle des cotes du dessin est réglée pour des mètres.
+
+- **Exercice :** Intermédiaire · Génie civil · 2D
+- **Commandes :** [`POLYLIGNE`](/docs/commands/pline), [`AIRE`](/docs/commands/area), [`COTALI`](/docs/commands/dimaligned), [`COTANG`](/docs/commands/dimangular)
+- **Dans l'éditeur :** [Ouvrez-le avec son dessin](/fr/draw?drawing=plot-of-land), coté, à côté de l'endroit où vous dessinez le vôtre
+
+## Le dessin [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Une parcelle de cinq côtés, en mètres, avec la cote de chaque côté et d'un angle." />
+
+## Pas à pas [#steps]
+
+Le moteur dessine chaque étape et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option. Après le premier point d'une commande, un point tapé se mesure depuis le précédent, comme le mesure la saisie dynamique, et l'historique l'écrit avec @ ; \# mesure depuis l'origine.
+
+### 1. Dessinez le contour [#boundary]
+
+Sur le calque Contour, [`POLYLIGNE`](/docs/commands/pline) depuis `0,0`, puis chaque côté par sa longueur et son angle : `40<0`, `30<80`, `35<155` et `25<230`, chacun mesuré depuis le dernier point. `Clore` dessine le cinquième côté et ferme le contour : un seul objet, que [`AIRE`](/docs/commands/area) peut mesurer.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Dessinez le contour" />
+
+### 2. Mesurez son aire [#area]
+
+[`AIRE`](/docs/commands/area), puis `Objet`, et désignez le contour : la ligne de commande donne son aire, en mètres carrés, et son périmètre.
+
+<Session name="exercises/plot-of-land/area" caption="2. Mesurez son aire" />
+
+### 3. Cotez-la [#dimensions]
+
+Sur le calque Cotes, [`COTALI`](/docs/commands/dimaligned) et Entrée à sa première invite : elle demande alors un objet, et un clic sur un côté cote ce côté, parallèlement à lui. Placez chaque cote à l'extérieur de la parcelle. [`COTANG`](/docs/commands/dimangular) sur les deux côtés qui se rejoignent en `40,0` donne l'angle entre eux, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Cotez-la" />
+
+## Plus d'exercices [#more]
+
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft): Intermédiaire · Mécanique · 2D
+- [Exercice AutoCAD isométrique : un bloc étagé](/docs/exercises/isometric-block): Intermédiaire · Mécanique · Isométrique
+- [Exercice AutoCAD 3D : une poulie](/docs/exercises/pulley): Intermédiaire · Mécanique · Solide 3D
+- [Exercices AutoCAD](/docs/exercises)

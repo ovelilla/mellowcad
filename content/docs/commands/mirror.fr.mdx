@@ -1,0 +1,66 @@
+---
+title: "Commande MIROIR (MIRROR) dans AutoCAD"
+description: "Symétrie avec MIROIR (MIRROR, alias MI) d'AutoCAD en français, invite par invite : deux points de la ligne de symétrie, garder ou effacer la source. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande MIRROR en français ?","answer":"MIROIR, avec l'alias MI, le même qu'en anglais, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _MIRROR."},{"question":"Comment faire une symétrie sans que le texte soit inversé ?","answer":"Vous n'avez rien à faire : comme dans AutoCAD avec MIRRTEXT à 0, un texte symétrisé se lit normalement, placé là où tombe le reflet de son cadre."},{"question":"Comment faire une symétrie et supprimer l'original ?","answer":"Répondez Oui quand MIROIR demande s'il faut effacer les objets source."},{"question":"Comment faire une symétrie horizontale ou verticale ?","answer":"Activez le mode ortho (F8) et donnez les deux points de la ligne de symétrie le long de l'axe voulu : une ligne verticale inverse la gauche et la droite, une ligne horizontale le haut et le bas."}]
+---
+
+MIROIR (MIRROR) fait la symétrie des objets que vous sélectionnez par rapport à une ligne : sélectionnez-les, donnez le premier puis le second point de la ligne de symétrie, puis dites s'il faut effacer les objets source. Le reflet est une copie et, avec la réponse par défaut, Non, les originaux restent : c'est ainsi qu'on dessine une pièce symétrique par moitiés. Les deux points sont pris dans le plan du SCU, si bien qu'une ligne de symétrie tracée en mode ortho fait une symétrie bien droite, horizontale ou verticale. Comme dans AutoCAD avec MIRRTEXT à 0, sa valeur par défaut, un texte se lit toujours de gauche à droite dans le reflet, et des hachures gardent l'angle de leur motif. L'exécution est une seule étape, qu'Annuler reprend.
+
+- **Commande :** `MIROIR`
+- **En anglais :** `MIRROR`, tapé `_MIRROR` dans toutes les langues
+- **Alias :** `MI`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `MI` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="mirror" caption="Un contour fermé réfléchi par rapport à une ligne de symétrie verticale, la source conservée." />
+
+## Options [#options]
+
+### `Oui` (`O`) [#yes]
+
+Efface les objets source : seul le reflet reste, un retournement sur place.
+
+### `Non` (`N`) [#no]
+
+La réponse par défaut : garde les objets source à côté de leur reflet.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+MIRRTEXT et MIRRHATCH restent à 0 : un texte n'est jamais réfléchi pour se lire à l'envers, et un motif de hachures n'est jamais réfléchi. Un texte dans une référence de bloc symétrisée se remet à l'endroit comme un texte isolé, là où AutoCAD le réfléchit avec le bloc. Une ellipse symétrisée garde sa normale, si bien que ses angles de départ et de fin se lisent autrement que ceux d'AutoCAD pour la même courbe. Pendant que le reflet suit le curseur, il prend la couleur de chaque objet, pas son type de ligne ni son épaisseur de ligne.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp--fr-miroir--mi)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande MIRROR en français ?
+
+MIROIR, avec l'alias `MI`, le même qu'en anglais, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_MIRROR`.
+
+### Comment faire une symétrie sans que le texte soit inversé ?
+
+Vous n'avez rien à faire : comme dans AutoCAD avec MIRRTEXT à 0, un texte symétrisé se lit normalement, placé là où tombe le reflet de son cadre.
+
+### Comment faire une symétrie et supprimer l'original ?
+
+Répondez `Oui` quand MIROIR demande s'il faut effacer les objets source.
+
+### Comment faire une symétrie horizontale ou verticale ?
+
+Activez le mode ortho (F8) et donnez les deux points de la ligne de symétrie le long de l'axe voulu : une ligne verticale inverse la gauche et la droite, une ligne horizontale le haut et le bas.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : un arbre étagé](/docs/exercises/shaft)
+
+## Commandes associées [#related]
+
+- [Commande COPIER (COPY) dans AutoCAD](/docs/commands/copy)
+- [Commande ROTATION (ROTATE) dans AutoCAD](/docs/commands/rotate)
+- [Commande DEPLACER (MOVE) dans AutoCAD](/docs/commands/move)
+- [Commande RESEAUPOLAIRE (ARRAYPOLAR) dans AutoCAD](/docs/commands/arraypolar)

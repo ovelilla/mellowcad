@@ -1,0 +1,72 @@
+---
+title: "Commande COPIER (COPY) dans AutoCAD"
+description: "Comment fonctionne COPIER (COPY, alias CP) d'AutoCAD en français : un point de base, puis autant de copies que vous en placez. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande COPY en français ?","answer":"COPIER, raccourci CP, puis Entrée ou la barre d'espace ; dans AutoCAD en français, CO n'est pas un raccourci de COPIER. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _COPY."},{"question":"Comment faire plusieurs copies à la fois ?","answer":"Continuez à placer des points : chacun fait une copie de plus à partir du même point de base, jusqu'à Entrée. Pour des copies en lignes, en colonnes ou autour d'un centre, RESEAU les crée en une seule fois."},{"question":"Comment copier un objet à une distance précise ?","answer":"Donnez le point de base, puis tapez le deuxième point sous forme de distance : 30,0 le copie à 30 selon X, car la saisie dynamique lit un point après le premier à partir de celui-ci. Ou orientez le curseur dans la direction voulue, avec le mode ortho ou le repérage polaire, et tapez seulement la distance."},{"question":"Pourquoi COPIER n'a pas d'option Réseau ?","answer":"MellowCAD ne la propose pas encore. Pour une rangée de copies régulièrement espacées, RESEAURECT avec une seule ligne fait la même chose, et les garde dans un seul réseau modifiable."}]
+---
+
+COPIER (COPY en anglais) place des copies des objets que vous sélectionnez : sélectionnez-les, donnez un point de base, puis un deuxième point pour chaque copie. Comme dans AutoCAD, dont le mode de copie est Multiple par défaut, elle continue d'en demander une de plus jusqu'à ce que vous appuyiez sur Entrée ou choisissiez Quitter, chaque copie étant mesurée à partir du même point de base. Les copies gardent le calque, la couleur et toutes les autres propriétés des objets. Les objets sélectionnés avant la commande sont ceux qu'elle copie, et pendant que vous placez une copie, le jeu suit le curseur.
+
+- **Commande :** `COPIER`
+- **En anglais :** `COPY`, tapé `_COPY` dans toutes les langues
+- **Alias :** `CP`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `CP` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="copy" caption="Un cercle copié trois fois selon X à partir d'un même point de base, puis Entrée." />
+
+## Options [#options]
+
+### `Déplacement` (`D`) [#displacement]
+
+Choisi à l'invite du point de base, ou par Entrée à cette invite : demande un seul déplacement sous forme de vecteur, `30,0` plaçant une copie à 30 selon X, et termine. Sa valeur par défaut est le dernier déplacement utilisé par COPIER dans ce dessin.
+
+### `Quitter` (`Q`) [#exit]
+
+Termine la commande, comme Entrée une fois une copie placée.
+
+### `annUler` (`U`) [#undo]
+
+Annule la dernière copie placée. Annuler la première affiche `La commande a été annulée complètement.` et redemande le deuxième point.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Le mode Unique de COPYMODE (copier une fois et terminer) n'est pas proposé : COPIER est toujours Multiple, si bien que l'invite du point de base ne liste que `Déplacement`. L'option Réseau du deuxième point, la rangée de copies régulièrement espacées d'AutoCAD, n'est pas proposée non plus.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande COPY en français ?
+
+COPIER, raccourci `CP`, puis Entrée ou la barre d'espace ; dans AutoCAD en français, `CO` n'est pas un raccourci de COPIER. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_COPY`.
+
+### Comment faire plusieurs copies à la fois ?
+
+Continuez à placer des points : chacun fait une copie de plus à partir du même point de base, jusqu'à Entrée. Pour des copies en lignes, en colonnes ou autour d'un centre, [`RESEAU`](/docs/commands/array) les crée en une seule fois.
+
+### Comment copier un objet à une distance précise ?
+
+Donnez le point de base, puis tapez le deuxième point sous forme de distance : `30,0` le copie à 30 selon X, car la saisie dynamique lit un point après le premier à partir de celui-ci. Ou orientez le curseur dans la direction voulue, avec le mode ortho ou le repérage polaire, et tapez seulement la distance.
+
+### Pourquoi COPIER n'a pas d'option Réseau ?
+
+MellowCAD ne la propose pas encore. Pour une rangée de copies régulièrement espacées, [`RESEAURECT`](/docs/commands/arrayrect) avec une seule ligne fait la même chose, et les garde dans un seul réseau modifiable.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : un joint plat](/docs/exercises/gasket)
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande DEPLACER (MOVE) dans AutoCAD](/docs/commands/move)
+- [Commande RESEAU (ARRAY) dans AutoCAD](/docs/commands/array)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande MIROIR (MIRROR) dans AutoCAD](/docs/commands/mirror)

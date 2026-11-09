@@ -1,0 +1,85 @@
+---
+title: "Commande ANNULER (UNDO) dans AutoCAD"
+description: "Comment fonctionne ANNULER (UNDO) d'AutoCAD en français : un nombre d'étapes, Marque et Retour, Début et Fin, Contrôle, et sa différence avec U et Ctrl+Z."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci pour annuler dans AutoCAD ?","answer":"Ctrl+Z, ou U puis Entrée : une étape en arrière. ANNULER n'a pas d'alias ; tapez-la en entier pour un nombre d'étapes ou pour ses options, ou _UNDO quelle que soit la langue d'AutoCAD."},{"question":"Quelle est la différence entre U et ANNULER ?","answer":"U annule la dernière commande et ne demande rien. ANNULER demande combien en annuler, et offre Marque et Retour pour revenir à un point marqué, Début et Fin pour faire de plusieurs commandes une seule étape, et Contrôle pour limiter l'annulation ou la désactiver."},{"question":"Comment annuler plusieurs commandes à la fois ?","answer":"Tapez ANNULER et le nombre de commandes, par exemple 5. Ou choisissez Marque avant une série que vous voudrez peut-être abandonner, et Retour pour y revenir."},{"question":"Pourquoi la commande annuler ne fonctionne pas ?","answer":"L'annulation a été désactivée avec Contrôle Aucun : U le dit, et ANNULER demande Contrôle. Répondez Tout pour la réactiver. Les étapes faites avant sont perdues."},{"question":"Comment rétablir ce que j'ai annulé ?","answer":"RETABLIR, juste après U ou ANNULER, le rétablit en entier. Ctrl+Y rétablit une étape à la fois."}]
+---
+
+ANNULER (UNDO) annule des commandes. Une étape est une commande entière : tout ce qu'a dessiné une LIGNE disparaît d'un coup, quel que soit son nombre de segments, de même que ce qu'une commande a réglé, comme ECHLTP. ANNULER écrit ses paramètres courants, puis demande le nombre d'opérations à annuler ou une option ; Entrée en annule une. La commande écrit sur une ligne les noms des commandes annulées, `CERCLE LIGNE`, et `Tout a été annulé` quand il n'y en a plus ; ensuite, `Rien à annuler`. Une commande qui n'a rien changé, comme ID ou LISTE, est aussi une étape, de même que ce que ZOOM et PAN ont fait à la vue.
+
+`U` est la forme courte : une étape en arrière, sans question. Ctrl+Z à l'invite Commande lance U ; à l'intérieur d'une commande, c'est l'option annUler de cette commande, comme la tape la macro d'AutoCAD : LIGNE annule son dernier segment et continue. [`RETABLIR`](/docs/commands/redo), juste après, rétablit ce qu'a défait le dernier U ou ANNULER.
+
+- **Commande :** `ANNULER`
+- **En anglais :** `UNDO`, tapé `_UNDO` dans toutes les langues
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ANNULER` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="undoBefore" caption="Une plaque percée de deux trous et une ligne qui la traverse, dessinées par quatre commandes : RECTANGLE, CERCLE deux fois et LIGNE." />
+
+<Session name="undo" caption="ANNULER 2 : les deux dernières commandes sont annulées, la ligne et le second trou, et la plaque garde son premier trou." />
+
+## Options [#options]
+
+### `Auto` (`A`) [#auto]
+
+Demande `Actif` ou `Inactif`, en proposant le réglage courant, que la ligne des paramètres affiche ensuite. Dans AutoCAD, l'option fait une seule étape des commandes qu'exécute un élément de menu ; ici, aucun menu n'en exécute plus d'une, si bien qu'elle ne regroupe rien.
+
+### `Contrôle` (`C`) [#control]
+
+Demande quelle part de l'annulation garder, `Tout` par défaut. `Aucun` abandonne toutes les étapes gardées et désactive l'annulation : U dit alors `Commande U désactivée. Utilisez la commande ANNULER pour l'activer`, et ANNULER demande aussitôt Contrôle. `Un` ne garde que la dernière étape, et ANNULER demande alors 1 ou Contrôle. Tout réactive l'annulation complète. `aSsocier` dit si des ZOOM et des PAN consécutifs forment une seule étape, et `Calque` si c'est le cas de modifications consécutives dans le Gestionnaire des propriétés des calques, Oui par défaut pour les deux. Ces réglages sont ceux du dessin, et ne sont pas enregistrés avec lui : un dessin nouveau ou ouvert commence à Tout, Associer Oui et Calque Oui.
+
+### `Début` (`D`) [#begin]
+
+Ouvre un groupe : les commandes exécutées jusqu'à `Fin` forment une étape, que U annule en entier et nomme `GROUPE` avec elles. Tant qu'un groupe est ouvert, U, un nombre et Retour s'arrêtent à son début. Début avec un groupe ouvert le ferme d'abord.
+
+### `Fin` (`F`) [#end]
+
+Ferme le groupe qu'a ouvert Début.
+
+### `Marque` (`M`) [#mark]
+
+Laisse une marque parmi les étapes. Retour, U et un nombre s'y arrêtent, avec `Marque rencontrée`.
+
+### `Retour` (`R`) [#back]
+
+Annule toutes les étapes jusqu'à la dernière marque, et la marque avec elles. Sans marque, demande s'il faut tout annuler, Oui par défaut.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Auto ne regroupe rien, puisqu'aucun menu n'exécute ici plus d'une commande. Associer et Calque durent le temps de la session du navigateur, là où AutoCAD les garde d'une session à l'autre. Les boutons Annuler et Rétablir de la barre supérieure n'écrivent rien dans l'historique, là où la barre d'outils Accès rapide d'AutoCAD écrit ses propres lignes. Ctrl+Maj+Z rétablit aussi, sans rien dire, bien qu'AutoCAD n'y associe rien.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Questions [#questions]
+
+### Quel est le raccourci pour annuler dans AutoCAD ?
+
+Ctrl+Z, ou `U` puis Entrée : une étape en arrière. ANNULER n'a pas d'alias ; tapez-la en entier pour un nombre d'étapes ou pour ses options, ou `_UNDO` quelle que soit la langue d'AutoCAD.
+
+### Quelle est la différence entre U et ANNULER ?
+
+`U` annule la dernière commande et ne demande rien. ANNULER demande combien en annuler, et offre Marque et Retour pour revenir à un point marqué, Début et Fin pour faire de plusieurs commandes une seule étape, et Contrôle pour limiter l'annulation ou la désactiver.
+
+### Comment annuler plusieurs commandes à la fois ?
+
+Tapez `ANNULER` et le nombre de commandes, par exemple `5`. Ou choisissez `Marque` avant une série que vous voudrez peut-être abandonner, et `Retour` pour y revenir.
+
+### Pourquoi la commande annuler ne fonctionne pas ?
+
+L'annulation a été désactivée avec Contrôle `Aucun` : U le dit, et ANNULER demande Contrôle. Répondez `Tout` pour la réactiver. Les étapes faites avant sont perdues.
+
+### Comment rétablir ce que j'ai annulé ?
+
+[`RETABLIR`](/docs/commands/redo), juste après U ou ANNULER, le rétablit en entier. Ctrl+Y rétablit une étape à la fois.
+
+## Commandes associées [#related]
+
+- [U](/docs/commands#u): Annule la dernière action
+- [Commande RETABLIR (REDO) dans AutoCAD](/docs/commands/redo)
+- [MRETABLIR (MREDO)](/docs/commands#mredo): Rétablir multiple
+- [Commande EFFACER (ERASE) dans AutoCAD](/docs/commands/erase)

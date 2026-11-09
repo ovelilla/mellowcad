@@ -1,0 +1,92 @@
+---
+title: "Commande SECTION (SLICE) dans AutoCAD"
+description: "Comment SECTION (SLICE, alias SE) d'AutoCAD coupe des solides 3D par un plan : deux points, 3points, un objet ou le SCU, puis le côté à garder. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande SLICE en français ?","answer":"SECTION, avec l'alias SE : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _SLICE. Ne la confondez pas avec COUPE, dont le nom anglais est SECTION."},{"question":"Comment utiliser SECTION dans AutoCAD 3D ?","answer":"Sélectionnez le solide et appuyez sur Entrée. Désignez deux points par lesquels passe la coupe : le plan se dresse à la verticale en passant par eux. Désignez ensuite un point du côté à garder, ou appuyez sur Entrée pour garder les deux moitiés et écartez-en une avec DEPLACER. Pour une coupe inclinée, choisissez 3points et indiquez trois points du plan."},{"question":"SECTION peut-elle couper des lignes ou des objets 2D ?","answer":"Non : SECTION coupe des solides 3D et ignore les lignes, les régions et les blocs ; un jeu qui ne contient qu'eux termine la commande. Pour couper des objets 2D, utilisez AJUSTER ou COUPURE. Dans AutoCAD, SECTION coupe aussi les surfaces et les maillages, que MellowCAD n'a pas encore."},{"question":"Pourquoi SECTION dit que la section ne coupe pas le solide ?","answer":"Parce que le plan le manque, ou ne fait que le toucher sur une face, le long d'une arête ou en un sommet : ce solide reste entier. Vérifiez comment le plan a été donné. Avec deux points, il se dresse à la verticale : deux points sur la face supérieure d'un solide le coupent donc verticalement, pas à l'horizontale ; pour une coupe horizontale, choisissez XY et indiquez un point à la hauteur de la coupe."}]
+---
+
+SECTION (SLICE) coupe des solides 3D par un plan et garde la partie située d'un côté, ou les deux parties sous forme de deux solides. Elle demande les solides à couper, jusqu'à Entrée : comme dans AutoCAD 2027, un jeu sélectionné avant la commande est abandonné et redemandé, et ce qui n'est pas un solide est ignoré. Puis le plan : par défaut, vous indiquez deux points, et il se dresse à la verticale en passant par eux, perpendiculaire au plan XY du SCU ; les options le donnent autrement. Enfin, un point du côté à garder, ou Entrée pour garder les deux.
+
+Tous les solides du jeu sont coupés par le même plan. Un solide que le plan manque, ou ne fait que toucher sur une face, le long d'une arête ou en un sommet, reste tel qu'il était, et SECTION le dit. Un solide coupé n'est plus une boîte ni un cylindre, et n'a pas d'historique. Toute la commande est une seule étape d'annulation. La 3D de MellowCAD reste partielle : les solides existent, pas les surfaces ni les maillages.
+
+- **Commande :** `SECTION`
+- **En anglais :** `SLICE`, tapé `_SLICE` dans toutes les langues
+- **Alias :** `SE`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `SE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="slice" caption="Un cylindre coupé par son axe avec deux points, la moitié du côté désigné gardée : vu du sud-est." />
+
+## Options [#options]
+
+### `Objet planaire` (`O`) [#object]
+
+Prend le plan d'un objet que vous sélectionnez : un cercle, une ellipse, un arc, une polyligne 2D ou une spline plane, un cercle incliné aussi. Une ligne, ou le solide lui-même, n'a pas de plan propre : la commande dit `Ne peut pas extraire le plan de l'objet sélectionné.` et redemande. Entrée termine la commande.
+
+### `Surface` (`S`) [#surface]
+
+Demande une surface le long de laquelle couper. MellowCAD n'a pas encore de surfaces : une sélection dit donc `Pas de surface sélectionnée.`, et Entrée termine la commande.
+
+### `axeZ` (`Z`) [#zaxis]
+
+Demande un point sur le plan, puis un point sur son axe Z, la droite qui lui est perpendiculaire. Les deux ne peuvent pas être le même point.
+
+### `Vue` (`V`) [#view]
+
+Le plan parallèle à l'écran, passant par un point que vous indiquez ; Entrée prend 0,0,0.
+
+### `XY` [#xy]
+
+Le plan XY du SCU, passant par un point que vous indiquez : un point situé en hauteur y donne une coupe horizontale. Entrée prend l'origine du SCU.
+
+### `YZ` [#yz]
+
+Le plan YZ du SCU, passant par un point que vous indiquez ; Entrée prend l'origine du SCU.
+
+### `ZX` [#zx]
+
+Le plan ZX du SCU, passant par un point que vous indiquez ; Entrée prend l'origine du SCU.
+
+### `3points` (`3`) [#3points]
+
+Trois points sur le plan, qui peut alors s'incliner dans n'importe quelle direction. C'est l'option par défaut de la première invite : Entrée la choisit donc. Le deuxième point doit différer du premier, et le troisième ne doit pas se trouver sur la droite qui passe par eux.
+
+### `garder les Deux côtés` (`D`) [#both]
+
+À l'invite du côté, dont c'est l'option par défaut, qu'Entrée choisit donc : les deux parties sont gardées. Le solide en garde une, et l'autre devient un nouveau solide avec les mêmes calque, couleur, type de ligne et épaisseur de ligne, pas les courants. Un point garde au contraire le côté où il se trouve et supprime l'autre ; un point sur le plan est refusé.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les surfaces, comme plan de coupe et comme objets à couper, et les maillages. Une polyligne 3D plane comme objet du plan, qu'AutoCAD accepte. Un tore ou un solide de révolution coupé ni perpendiculairement à son axe ni le long de celui-ci, et les autres coupes pour lesquelles MellowCAD n'a pas encore de forme exacte, qui disent qu'une opération booléenne a échoué.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#slice--sl--es-corte--co--pt-br-fatiar--fat--fr-section--se)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande SLICE en français ?
+
+SECTION, avec l'alias `SE` : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_SLICE`. Ne la confondez pas avec [`COUPE`](/docs/commands/section), dont le nom anglais est SECTION.
+
+### Comment utiliser SECTION dans AutoCAD 3D ?
+
+Sélectionnez le solide et appuyez sur Entrée. Désignez deux points par lesquels passe la coupe : le plan se dresse à la verticale en passant par eux. Désignez ensuite un point du côté à garder, ou appuyez sur Entrée pour garder les deux moitiés et écartez-en une avec [`DEPLACER`](/docs/commands/move). Pour une coupe inclinée, choisissez `3points` et indiquez trois points du plan.
+
+### SECTION peut-elle couper des lignes ou des objets 2D ?
+
+Non : SECTION coupe des solides 3D et ignore les lignes, les régions et les blocs ; un jeu qui ne contient qu'eux termine la commande. Pour couper des objets 2D, utilisez [`AJUSTER`](/docs/commands/trim) ou [`COUPURE`](/docs/commands/break). Dans AutoCAD, SECTION coupe aussi les surfaces et les maillages, que MellowCAD n'a pas encore.
+
+### Pourquoi SECTION dit que la section ne coupe pas le solide ?
+
+Parce que le plan le manque, ou ne fait que le toucher sur une face, le long d'une arête ou en un sommet : ce solide reste entier. Vérifiez comment le plan a été donné. Avec deux points, il se dresse à la verticale : deux points sur la face supérieure d'un solide le coupent donc verticalement, pas à l'horizontale ; pour une coupe horizontale, choisissez `XY` et indiquez un point à la hauteur de la coupe.
+
+## Commandes associées [#related]
+
+- [Commande COUPE (SECTION) dans AutoCAD](/docs/commands/section)
+- [Commande SOUSTRACTION (SUBTRACT) dans AutoCAD](/docs/commands/subtract)
+- [Commande UNION dans AutoCAD](/docs/commands/union)
+- [Commande EXTRUSION (EXTRUDE) dans AutoCAD](/docs/commands/extrude)

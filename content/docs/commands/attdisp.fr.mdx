@@ -1,0 +1,59 @@
+---
+title: "Commande ATTECRAN (ATTDISP) dans AutoCAD"
+description: "Afficher ou masquer les attributs dans AutoCAD en français : ATTECRAN (ATTDISP), Normal, Actif ou Inactif, enregistré avec le dessin. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment afficher les attributs invisibles dans AutoCAD ?","answer":"Tapez ATTECRAN et choisissez ACtif : tous les attributs s'affichent, les invisibles aussi. Normal les masque de nouveau."},{"question":"Pourquoi les attributs de mon bloc ne s'affichent pas ?","answer":"ATTECRAN est peut-être sur INactif, qui masque tous les attributs, ou sur Normal avec des attributs définis comme invisibles. Choisissez ACtif pour les voir tous. Une référence dont le bloc n'a pas d'attributs n'en affiche aucun, quel que soit le paramètre."},{"question":"Comment masquer les valeurs d'attribut dans AutoCAD ?","answer":"Définissez-les invisibles : le mode Invisible d'ATTDEF, avant de créer le bloc. ATTECRAN INactif masque tous les attributs à la fois, dans tout le dessin."}]
+---
+
+ATTECRAN (ATTDISP en anglais) définit quels attributs affichent les références de bloc du dessin. Elle demande le paramètre, en proposant le paramètre courant, Normal dans un nouveau dessin ; tout autre mot est signalé comme option incorrecte et la question revient, et Entrée conserve le paramètre. Un changement redessine tout le dessin, `Régénération du modèle.` comme le dit AutoCAD 2027, et est enregistré avec le dessin dans ATTMODE, une étape que `U` annule. Tapée avec une apostrophe à l'intérieur d'une commande, elle s'y exécute aussi.
+
+Elle ne change que ce qui s'affiche : un attribut invisible garde sa valeur, et un attribut masqué peut toujours être modifié avec [`ATTEDIT`](/docs/commands/attedit) ou [`EATTEDIT`](/docs/commands/eattedit).
+
+- **Commande :** `ATTECRAN`
+- **En anglais :** `ATTDISP`, tapé `_ATTDISP` dans toutes les langues
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ATTECRAN` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="attdisp" caption="Deux bureaux dont les numéros de référence sont des attributs invisibles : ATTECRAN Actif les affiche sous chaque bureau, à côté des numéros visibles." />
+
+## Options [#options]
+
+### `Normal` (`N`) [#normal]
+
+Affiche chaque attribut tel qu'il a été défini : les attributs visibles, et non ceux définis avec le mode `Invisible` d'[`ATTDEF`](/docs/commands/attdef).
+
+### `ACtif` (`AC`) [#on]
+
+Affiche tous les attributs, les invisibles aussi.
+
+### `INactif` (`IN`) [#off]
+
+Masque tous les attributs, les visibles aussi.
+
+## Questions [#questions]
+
+### Comment afficher les attributs invisibles dans AutoCAD ?
+
+Tapez `ATTECRAN` et choisissez `ACtif` : tous les attributs s'affichent, les invisibles aussi. `Normal` les masque de nouveau.
+
+### Pourquoi les attributs de mon bloc ne s'affichent pas ?
+
+`ATTECRAN` est peut-être sur `INactif`, qui masque tous les attributs, ou sur `Normal` avec des attributs définis comme invisibles. Choisissez `ACtif` pour les voir tous. Une référence dont le bloc n'a pas d'attributs n'en affiche aucun, quel que soit le paramètre.
+
+### Comment masquer les valeurs d'attribut dans AutoCAD ?
+
+Définissez-les invisibles : le mode `Invisible` d'[`ATTDEF`](/docs/commands/attdef), avant de créer le bloc. ATTECRAN `INactif` masque tous les attributs à la fois, dans tout le dessin.
+
+## Commandes associées [#related]
+
+- [Commande ATTDEF dans AutoCAD](/docs/commands/attdef)
+- [Commande ATTEDIT dans AutoCAD](/docs/commands/attedit)
+- [Commande EATTEDIT dans AutoCAD](/docs/commands/eattedit)
+- [Commande BLOC (BLOCK) dans AutoCAD](/docs/commands/block)
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran)

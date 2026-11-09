@@ -1,0 +1,83 @@
+---
+title: "Commande VUE (VIEW) dans AutoCAD"
+description: "Comment VUE (VIEW, alias VU, -VUE) d'AutoCAD passe aux six vues orthogonales et aux quatre isométriques, et le SCU que fixe chaque vue orthogonale. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment avoir une vue isométrique dans AutoCAD ?","answer":"Tapez -VUE, puis isoSO pour l'isométrique sud-ouest ; isoSE, isoNE et isoNO donnent les trois autres coins. Ou choisissez Isométrique SO dans le menu des vues en haut à gauche, ou cliquez sur un coin supérieur du ViewCube. STYLVISCOURANT avec Masqué masque les arêtes situées derrière."},{"question":"Quelle est la commande de la vue de dessus ?","answer":"-VUE, puis Haut, qui met aussi le SCU sur les axes du SCG. REPERE regarde au contraire le SCU courant à la verticale, et le laisse tel quel."},{"question":"Pourquoi mon SCU a-t-il changé après une vue de face ?","answer":"Une vue orthogonale oriente le SCU face à vous, pour que ce que vous dessinez se trouve dans le plan de l'écran. SCU puis Entrée ramènent au SCG ; U défait la vue et son SCU ensemble."},{"question":"Une vue isométrique est-elle la même chose qu'un dessin isométrique ?","answer":"Non. Une vue isométrique regarde un modèle 3D depuis un coin. Un dessin isométrique est en 2D, dessiné sur les plans isométriques avec le style isométrique de RESOL, que MellowCAD n'a pas encore."},{"question":"Où est le Gestionnaire de vues ?","answer":"VUE lance -VUE sur la ligne de commande : il n'y a pas de Gestionnaire de vues, et les vues nommées (Sauver, Rappel) ne sont pas encore là."}]
+---
+
+VUE (VIEW) oriente la vue vers l'une des dix vues prédéfinies d'AutoCAD : six vues orthogonales, qui regardent un côté du modèle de face, et quatre vues isométriques, qui regardent vers le bas depuis un coin. Rien ne bouge dans le dessin. VUE lance `-VUE`, la forme en ligne de commande : sa première invite propose `orthoGonal`, qui demande ensuite le côté, et elle accepte aussi directement le nom d'une vue, comme y répondent les menus d'AutoCAD : `-VUE`, puis `isoSO`. Chaque vue cadre tout le dessin et affiche `Régénération du modèle.`.
+
+Le menu des vues, en haut à gauche du dessin, liste les mêmes dix vues et lance `-VUE`, et les faces et les coins du ViewCube y mènent aussi, en laissant le SCU tel quel. Chaque VUE est une étape d'annulation : `U` défait donc la vue, avec le SCU qu'elle a fixé. Tapée avec une apostrophe à l'intérieur d'une autre commande, elle refuse avec `** Régénération nécessaire, commande transparente impossible.`. La 3D de MellowCAD ne connaît que les solides et reste partielle.
+
+- **Commande :** `VUE`
+- **En anglais :** `VIEW`, tapé `_VIEW` dans toutes les langues
+- **Alias :** `VU`, `DDVIEW`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `VU` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="view" caption="Une pièce en gradins dessinée en plan : -VUE et Isométrique SO, et elle est vue du sud-ouest et d'en haut, dans le style visuel Masqué." />
+
+## Options [#options]
+
+### `orthoGonal` (`G`) [#orthographic]
+
+Demande le côté à regarder, `Haut` par défaut, si bien qu'Entrée y donne la vue en plan : `Haut`, `Bas`, `AVant`, `ARrière`, `GAuche` ou `Droite`. Chacune est droite : la vue Haut montre X vers la droite et Y vers le haut, la vue Avant X vers la droite et Z vers le haut, et la vue Bas, vue d'en dessous, X vers la gauche. Tapé à la première invite, chaque côté fonctionne sans l'option.
+
+Chacune oriente aussi le SCU face à vous, à partir des axes du SCG quel qu'ait été le SCU, avec son origine en `0,0,0`, comme le fait l'option orthogonale de [`SCU`](/docs/commands/ucs) : après Avant, son plan XY est la face avant, si bien que ce que vous dessinez se trouve à plat sur l'écran, et le SCU s'appelle `*AVANT*`. Après Haut, il a les axes du SCG, et s'appelle `*HAUT*`.
+
+### `isoSO` (`SO`) [#swiso]
+
+Isométrique sud-ouest : regarde vers le bas depuis le coin avant gauche, en voyant l'avant, le côté gauche et le dessus. Le SCU reste tel quel. C'est la vue de la figure.
+
+### `isoSE` (`SE`) [#seiso]
+
+Isométrique sud-est : regarde vers le bas depuis le coin avant droit, en voyant l'avant, le côté droit et le dessus. Le SCU reste tel quel.
+
+### `isoNE` (`NE`) [#neiso]
+
+Isométrique nord-est : regarde vers le bas depuis le coin arrière droit, en voyant l'arrière, le côté droit et le dessus. Le SCU reste tel quel.
+
+### `isoNO` (`NO`) [#nwiso]
+
+Isométrique nord-ouest : regarde vers le bas depuis le coin arrière gauche, en voyant l'arrière, le côté gauche et le dessus. Le SCU reste tel quel.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les vues nommées : `orthoGonal` est la seule option que liste la première invite, là où celle d'AutoCAD liste aussi `?`, Supprimer, Rappel, Sauver, Paramètres et Fenêtre, et un nom tapé là est refusé. Le Gestionnaire de vues, que VUE ouvre dans AutoCAD. Sans rien de dessiné, une vue garde le zoom, là où AutoCAD cadre les limites du dessin. UCSORTHO et UCSBASE comme variables : une vue orthogonale aligne toujours le SCU, à partir des axes du SCG. Le SCU aligné dans la liste `Précédent` de [`SCU`](/docs/commands/ucs).
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview)
+
+## Questions [#questions]
+
+### Comment avoir une vue isométrique dans AutoCAD ?
+
+Tapez `-VUE`, puis `isoSO` pour l'isométrique sud-ouest ; `isoSE`, `isoNE` et `isoNO` donnent les trois autres coins. Ou choisissez Isométrique SO dans le menu des vues en haut à gauche, ou cliquez sur un coin supérieur du ViewCube. [`STYLVISCOURANT`](/docs/commands/vscurrent) avec `Masqué` masque les arêtes situées derrière.
+
+### Quelle est la commande de la vue de dessus ?
+
+`-VUE`, puis `Haut`, qui met aussi le SCU sur les axes du SCG. [`REPERE`](/docs/commands/plan) regarde au contraire le SCU courant à la verticale, et le laisse tel quel.
+
+### Pourquoi mon SCU a-t-il changé après une vue de face ?
+
+Une vue orthogonale oriente le SCU face à vous, pour que ce que vous dessinez se trouve dans le plan de l'écran. [`SCU`](/docs/commands/ucs) puis Entrée ramènent au SCG ; `U` défait la vue et son SCU ensemble.
+
+### Une vue isométrique est-elle la même chose qu'un dessin isométrique ?
+
+Non. Une vue isométrique regarde un modèle 3D depuis un coin. Un dessin isométrique est en 2D, dessiné sur les plans isométriques avec le style isométrique de RESOL, que MellowCAD n'a pas encore.
+
+### Où est le Gestionnaire de vues ?
+
+VUE lance `-VUE` sur la ligne de commande : il n'y a pas de Gestionnaire de vues, et les vues nommées (Sauver, Rappel) ne sont pas encore là.
+
+## Commandes associées [#related]
+
+- [Commande REPERE (PLAN) dans AutoCAD](/docs/commands/plan)
+- [Commande ORBITE3D (3DORBIT) dans AutoCAD](/docs/commands/3dorbit)
+- [Commande SCU (UCS) dans AutoCAD](/docs/commands/ucs)
+- [Commande STYLVISCOURANT (VSCURRENT) dans AutoCAD](/docs/commands/vscurrent)
+- [Commande ZOOM dans AutoCAD](/docs/commands/zoom)

@@ -1,0 +1,32 @@
+---
+title: "Commande ATTEDIT dans AutoCAD"
+description: "Modifier les attributs d'un bloc dans AutoCAD en français : ATTEDIT (alias ATE) change les valeurs d'une référence, un champ par attribut. Essayez-le."
+figure: "Trois repères de porte, références d'un bloc doté de l'attribut NUM : ATTEDIT désigne le dernier, inséré avec 2, et sa boîte en fait 3."
+sourceHash: "4a8ee28ecc53"
+---
+
+ATTEDIT modifie les valeurs d'attribut d'une référence de bloc. Elle vous demande de sélectionner la référence, puis ouvre une boîte avec un champ pour chacun de ses attributs, libellé par le message d'invite de l'attribut et rempli de sa valeur, comme la boîte de dialogue Editer les attributs d'AutoCAD. Retapez les valeurs, Tab passant d'un champ au suivant, et Entrée, le bouton OK d'AutoCAD, les applique en une seule étape que <Command id="U" /> annule ; Echap, son bouton Annuler, ne change rien.
+
+La sélection prend l'objet situé sous la boîte de sélection. Tout ce qui n'est pas une référence de bloc est refusé, de même qu'une référence dont le bloc n'a pas d'attributs, et la question est posée de nouveau ; un clic dans le vide la repose en silence. La définition du bloc n'est pas modifiée, ni ses autres références : chacune garde ses propres valeurs. <Command id="EATTEDIT" /> modifie les mêmes valeurs dans une boîte libellée par étiquette, et un double-clic sur une référence avec attributs la lance.
+
+## Missing
+
+`-ATTEDIT`, la forme ligne de commande qui modifie les attributs un par un ou globalement, et son alias `-ATE`. Les boutons Précédent et Suivant d'Editer les attributs, pour un bloc qui a plus d'attributs qu'une page n'en contient, et sa ligne Nom du bloc. ATTIPEDIT, qui modifie un attribut sur place, et son Ctrl+double-clic. La poignée propre d'un attribut déverrouillé sur une référence, et les lignes d'attributs de la palette Propriétés.
+
+## Questions
+
+### Quel est le raccourci d'ATTEDIT dans AutoCAD ?
+
+`ATE`, puis Entrée ou la barre d'espace ; `DDATTE` aussi. Le nom est le même en français qu'en anglais, et `_ATTEDIT` fonctionne dans toutes les langues d'AutoCAD.
+
+### Comment modifier les attributs d'un bloc dans AutoCAD ?
+
+Tapez `ATE` et désignez la référence, ou double-cliquez dessus, ce qui lance <Command id="EATTEDIT" />. Changez les valeurs dans la boîte et appuyez sur Entrée. Pour modifier les attributs eux-mêmes, leur étiquette, leur message d'invite ou leur position, modifiez les définitions et redéfinissez le bloc avec <Command id="BLOCK" />.
+
+### Pourquoi ATTEDIT dit que le bloc n'a pas d'attributs modifiables ?
+
+Parce que le bloc de la référence désignée ne contient aucun attribut : ATTEDIT modifie les valeurs d'une référence à un bloc qui en a. Une définition qui n'est pas encore entrée dans un bloc se modifie avec <Command id="TEXTEDIT" />, par un double-clic dessus.
+
+### Quelle est la différence entre ATTEDIT et EATTEDIT ?
+
+Toutes deux modifient les valeurs d'une référence. La boîte d'ATTEDIT libelle chaque champ par le message d'invite de l'attribut, comme la boîte de dialogue Editer les attributs d'AutoCAD ; celle d'<Command id="EATTEDIT" />, l'Editeur d'attributs étendu, par son étiquette. Dans AutoCAD, EATTEDIT a aussi des onglets pour les options de texte et les propriétés de chaque attribut.

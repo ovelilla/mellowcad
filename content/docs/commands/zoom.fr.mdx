@@ -1,0 +1,86 @@
+---
+title: "Commande ZOOM dans AutoCAD"
+description: "Comment fonctionne ZOOM (Z) d'AutoCAD en français : Etendu, Fenêtre, Précédent, Echelle avec nX, Objet et Tout, la molette de la souris, le zoom transparent."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci de ZOOM dans AutoCAD ?","answer":"Z, puis Entrée ou la barre d'espace. La commande porte le même nom dans AutoCAD en français, et _ZOOM fonctionne quelle que soit la langue. Z puis ET donne le ZOOM Etendu."},{"question":"Comment faire un zoom sur tout le dessin ?","answer":"ETendu : tapez Z, Entrée, ET, Entrée. Ou double-cliquez sur le bouton de la molette."},{"question":"Que signifie ZOOM XP dans AutoCAD ?","answer":"nXP zoome une fenêtre de présentation à une échelle relative à l'espace papier : 1/50XP montre le modèle à 1:50 sur la feuille. MellowCAD n'a pas de présentations, donc XP est lu comme X."},{"question":"Comment zoomer sur un objet dans AutoCAD ?","answer":"Choisissez Objet et sélectionnez-le, ou sélectionnez-le d'abord, puis lancez ZOOM Objet : la vue le cadre."},{"question":"Comment revenir à la vue précédente ?","answer":"Précédent, encore et encore pour les vues d'avant, jusqu'à 20."}]
+---
+
+ZOOM agrandit ou réduit la vue ; rien ne bouge ni ne change de taille dans le dessin. Sa première invite accepte un coin, qui commence une fenêtre, un facteur d'échelle, ou une option. Tapée avec une apostrophe, `'ZOOM` ou `'Z`, la commande fonctionne à l'intérieur d'une autre commande, qui reprend ensuite. La molette de la souris fait un zoom avant ou arrière autour du curseur, et un double-clic sur le bouton de la molette fait un ZOOM Etendu. Chaque ZOOM est une étape d'annulation, des ZOOM consécutifs une seule, si bien que `U` défait aussi la vue.
+
+- **Commande :** `ZOOM`
+- **Alias :** `Z`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `Z` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="zoom" caption="Une plaque avec un petit trou près de son coin : ZOOM Etendu, puis une fenêtre autour du trou, qui remplit alors la vue." />
+
+## Options [#options]
+
+### `Tout` (`T`) [#all]
+
+Cadre tout ce qui est dessiné, comme `ETendu`.
+
+### `ETendu` (`ET`) [#extents]
+
+Cadre tout ce qui est dessiné, aussi grand que la fenêtre le permet. Sans rien de dessiné, il affiche `Régénération du modèle.`, et tapé à l'intérieur d'une autre commande, il refuse avec `** Régénération nécessaire, commande transparente impossible.`, comme celui d'AutoCAD.
+
+### `Précédent` (`P`) [#previous]
+
+Revient à la vue précédente, jusqu'à 20 vues en arrière. Quand il n'en reste plus : `Pas de vue précédente enregistrée.`.
+
+### `Echelle` (`E`) [#scale]
+
+Un facteur : `2X` zoome deux fois plus près que la vue courante, `0.5X` deux fois moins près, et `2` sans le X au double de l'échelle de la vue de ZOOM Tout. `nXP`, le facteur de l'espace papier, est lu comme `nX` : il n'y a ici que l'espace objet. Un facteur tapé à la première invite fait de même sans choisir l'option.
+
+### `Fenêtre` (`F`) [#window]
+
+Deux coins, désignés ou tirés, cadrent ce rectangle. Un coin désigné à la première invite fait de même.
+
+### `Objet` (`O`) [#object]
+
+Cadre les objets que vous sélectionnez, ou ceux sélectionnés avant ZOOM.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Temps réel : Entrée à la première invite termine ZOOM, là où AutoCAD commence un zoom à la souris ; ici, c'est la molette qui le fait. DYnamique, Centre, et les options cachées Gauche et FMax.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z--fr-zoom--z)
+
+## Questions [#questions]
+
+### Quel est le raccourci de ZOOM dans AutoCAD ?
+
+`Z`, puis Entrée ou la barre d'espace. La commande porte le même nom dans AutoCAD en français, et `_ZOOM` fonctionne quelle que soit la langue. `Z` puis `ET` donne le ZOOM Etendu.
+
+### Comment faire un zoom sur tout le dessin ?
+
+`ETendu` : tapez `Z`, Entrée, `ET`, Entrée. Ou double-cliquez sur le bouton de la molette.
+
+### Que signifie ZOOM XP dans AutoCAD ?
+
+`nXP` zoome une fenêtre de présentation à une échelle relative à l'espace papier : `1/50XP` montre le modèle à 1:50 sur la feuille. MellowCAD n'a pas de présentations, donc `XP` est lu comme `X`.
+
+### Comment zoomer sur un objet dans AutoCAD ?
+
+Choisissez `Objet` et sélectionnez-le, ou sélectionnez-le d'abord, puis lancez ZOOM Objet : la vue le cadre.
+
+### Comment revenir à la vue précédente ?
+
+`Précédent`, encore et encore pour les vues d'avant, jusqu'à 20.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD 3D : une poulie](/docs/exercises/pulley)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande PAN dans AutoCAD](/docs/commands/pan)
+- [Commande VUE (VIEW) dans AutoCAD](/docs/commands/view)
+- [REGEN](/docs/commands#regen): Régénérer

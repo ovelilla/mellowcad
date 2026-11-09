@@ -1,0 +1,61 @@
+---
+title: Premiers pas
+metaTitle: "Premiers pas : votre premier dessin CAO en ligne"
+description: "Votre premier dessin dans MellowCAD : la ligne de commande, les invites et leurs options, les aides au dessin, annuler et enregistrer."
+type: gettingStarted
+sourceHash: "aaf6e36a081f"
+---
+
+MellowCAD fonctionne comme AutoCAD : vous tapez une commande, vous répondez à ses invites, et le dessin suit. Si vous utilisez déjà AutoCAD, [les commandes](/docs/commands) et [les différences](/docs/differences) sont tout ce qu'il vous faut ; cette page est pour les dix premières minutes.
+
+## Ouvrez l'éditeur [#open]
+
+[Ouvrez l'éditeur](/fr/draw) dans un navigateur sur ordinateur. Il n'y a rien à installer ni compte à créer. Le dessin est conservé dans ce navigateur pendant que vous travaillez, et vous le retrouvez la prochaine fois que vous l'ouvrez.
+
+## Tapez une commande [#command]
+
+Tapez sur le dessin, où que soit le curseur : les lettres vont à la ligne de commande, en bas, qui propose les commandes qui commencent par elles. Entrée ou la barre d'espace lancent la commande. <Command id="LINE" /> dessine des lignes, tout comme son alias, plus court ; tous les alias sont sur [la page des commandes](/docs/commands). Les noms sont ceux d'AutoCAD en français ; précédé d'un trait de soulignement, le nom anglais fonctionne aussi, comme dans AutoCAD (`_LINE`).
+
+## Répondez aux invites [#prompts]
+
+Une commande demande une chose à la fois, sur la ligne de commande et à côté du curseur. Un point est un clic sur le dessin, ou deux coordonnées tapées sous la forme `x,y`. Après le premier point, les coordonnées tapées se mesurent depuis le dernier point, comme les mesure la saisie dynamique d'AutoCAD, et l'historique les écrit avec `@` ; `#x,y` se mesure au contraire depuis l'origine. Une distance tapée seule place le point à cette distance, dans la direction du curseur.
+
+<Session name="firstLine" />
+
+## Choisissez une option [#options]
+
+Les options qu'une invite propose sont entre crochets, chacune avec ses majuscules : tapez ces lettres et appuyez sur Entrée. Une valeur entre chevrons est la valeur par défaut, et Entrée l'accepte.
+
+<Session name="circleDiameter" />
+
+## Terminez, répétez, annulez [#end]
+
+Entrée ou la barre d'espace terminent une commande qui continue de demander, comme <Command id="LINE" />, et, sans commande en cours, répètent la dernière. Un clic droit ouvre un menu contextuel avec les mêmes choix. Echap annule. Toutes les touches sont sur [la page des raccourcis](/docs/shortcuts).
+
+## Dessinez avec précision [#precision]
+
+L'accrochage aux objets amène le curseur sur les points exacts de ce qui est dessiné : extrémités, milieux, centres. `F3` l'active et le désactive, `F8` le mode ortho et `F10` le repérage polaire, comme leurs boutons de la barre d'état.
+
+<Session name="endpointSnap" />
+
+## Modifiez ce qui est dessiné [#modify]
+
+Une commande de modification demande les objets sur lesquels travailler, ou d'abord une valeur, comme <Command id="OFFSET" /> : la distance, l'objet, puis le côté où placer la copie.
+
+<Session name="offsetRectangle" />
+
+## Annuler et rétablir [#undo]
+
+<Command id="U" /> ou `Ctrl+Z` annule la dernière commande, en entier, et `Ctrl+Y` la rétablit. Dans une commande qui la propose, sa propre option d'annulation retire une étape, comme un segment de <Command id="LINE" />.
+
+## Enregistrez [#save]
+
+Le dessin est conservé dans ce navigateur pendant que vous travaillez. <Command id="QSAVE" /> ou `Ctrl+S` le télécharge dans un fichier au format propre et versionné de MellowCAD, et <Command id="OPEN" /> ou `Ctrl+O` en ouvre un, ou [un fichier DXF](/docs/open-dxf) ; [l'enregistrement n'est pas tout à fait celui d'AutoCAD](/docs/differences#saving).
+
+## Ensuite [#next]
+
+- [Exercices d'entraînement](/docs/exercises) : des dessins pour vous exercer, chacun résolu pas à pas et ouvert dans l'éditeur avec son dessin.
+- [Coordonnées](/docs/coordinates) : toutes les façons de taper un point, et une ligne inclinée.
+- [Commandes](/docs/commands) : chaque commande, ses alias et la première chose qu'elle demande.
+- [Raccourcis clavier](/docs/shortcuts) : les touches auxquelles l'éditeur répond.
+- [Différences avec AutoCAD](/docs/differences) : là où il fonctionne autrement, et pourquoi.

@@ -1,0 +1,54 @@
+---
+title: "Commande ORBITE3D (3DORBIT) dans AutoCAD"
+description: "Comment fonctionne l'orbite 3D d'AutoCAD en français (ORBITE3D, 3O) : tourner la vue, en sortir, Maj et la molette, revenir en plan. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Quel est le raccourci de l'orbite 3D dans AutoCAD ?","answer":"3O, puis Entrée ou la barre d'espace : c'est l'alias d'ORBITE3D dans AutoCAD en français, et _3DORBIT fonctionne aussi. Sans rien taper, maintenez Maj et le bouton de la molette enfoncés et faites glisser."},{"question":"Comment faire une orbite avec la souris ?","answer":"Maintenez Maj enfoncée, appuyez sur la molette et faites glisser : horizontalement pour faire tourner le modèle, verticalement pour le regarder de plus haut ou de plus bas. Relâchez, et vous retrouvez la commande où vous étiez."},{"question":"Comment sortir de l'orbite 3D ?","answer":"Appuyez sur Entrée ou sur Echap. La vue reste là où vous l'avez laissée."},{"question":"Comment revenir à la vue en plan après une orbite ?","answer":"Lancez REPERE et appuyez sur Entrée, ou -VUE et Haut, ou cliquez sur la face supérieure du ViewCube. ZOOM Précédent revient en arrière d'un glissement à la fois."}]
+---
+
+ORBITE3D (3DORBIT en anglais) fait tourner la vue autour du dessin pendant que vous faites glisser le curseur ; rien ne bouge ni ne change dans le dessin. Un glissement horizontal fait tourner la caméra autour de l'axe Z du SCG, un glissement vers le haut ou vers le bas l'élève ou l'abaisse, autour du milieu du dessin qui se trouve sous le centre de l'écran, en projection parallèle. Elle commence par indiquer comment en sortir : pendant qu'elle s'exécute, vous ne pouvez que faire une orbite, et Entrée ou Echap la termine, que vous ayez fait glisser ou non.
+
+Maintenir Maj et le bouton de la molette enfoncés fait une orbite depuis n'importe où, même à l'intérieur d'une autre commande, et le bouton Orbite 3D de la barre de navigation la lance aussi. Tapée avec une apostrophe devant, `'ORBITE3D`, elle fonctionne à l'intérieur d'une autre commande, qui reprend ensuite. Chaque glissement est une étape pour `Précédent` de [`ZOOM`](/docs/commands/zoom), et toute l'exécution est une seule étape d'annulation, si bien que `U` remet la vue en place. Pour voir les solides comme des solides, et non comme des fils, utilisez [`STYLVISCOURANT`](/docs/commands/vscurrent) ; la 3D de MellowCAD se limite aux solides, et reste partielle.
+
+- **Commande :** `ORBITE3D`
+- **En anglais :** `3DORBIT`, tapé `_3DORBIT` dans toutes les langues
+- **Alias :** `3O`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `3O` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="3dorbit" caption="Une boîte vue d'abord en plan : ORBITE3D, un glissement en travers puis vers le bas, puis Entrée, et la boîte est vue d'au-dessus de son coin avant." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Le menu contextuel, avec ses projections, ses styles visuels et les autres modes de navigation. L'orbite autour des seuls objets sélectionnés. La perspective. L'orbite libre et l'orbite continue (3DFORBIT et 3DCORBIT), et le reste de la navigation 3D d'AutoCAD.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o)
+
+## Questions [#questions]
+
+### Quel est le raccourci de l'orbite 3D dans AutoCAD ?
+
+`3O`, puis Entrée ou la barre d'espace : c'est l'alias d'ORBITE3D dans AutoCAD en français, et `_3DORBIT` fonctionne aussi. Sans rien taper, maintenez Maj et le bouton de la molette enfoncés et faites glisser.
+
+### Comment faire une orbite avec la souris ?
+
+Maintenez Maj enfoncée, appuyez sur la molette et faites glisser : horizontalement pour faire tourner le modèle, verticalement pour le regarder de plus haut ou de plus bas. Relâchez, et vous retrouvez la commande où vous étiez.
+
+### Comment sortir de l'orbite 3D ?
+
+Appuyez sur Entrée ou sur Echap. La vue reste là où vous l'avez laissée.
+
+### Comment revenir à la vue en plan après une orbite ?
+
+Lancez [`REPERE`](/docs/commands/plan) et appuyez sur Entrée, ou `-VUE` et `Haut`, ou cliquez sur la face supérieure du ViewCube. [`ZOOM`](/docs/commands/zoom) `Précédent` revient en arrière d'un glissement à la fois.
+
+## Commandes associées [#related]
+
+- [Commande STYLVISCOURANT (VSCURRENT) dans AutoCAD](/docs/commands/vscurrent)
+- [Commande VUE (VIEW) dans AutoCAD](/docs/commands/view)
+- [Commande REPERE (PLAN) dans AutoCAD](/docs/commands/plan)
+- [Commande ZOOM dans AutoCAD](/docs/commands/zoom)

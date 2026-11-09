@@ -1,0 +1,64 @@
+---
+title: "Commande SOUSTRACTION (SUBTRACT) dans AutoCAD"
+description: "Comment fonctionne SOUSTRACTION (SUBTRACT, alias SU) d'AutoCAD : les solides ou régions à garder, Entrée, puis ceux à soustraire, trous compris. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande SUBTRACT en français ?","answer":"SOUSTRACTION, avec l'alias SU : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _SUBTRACT."},{"question":"Comment soustraire un solide d'un autre ?","answer":"Dessinez le solide à enlever là où il chevauche l'autre : un cylindre qui traverse une boîte, pour un trou. Lancez SOUSTRACTION, sélectionnez la boîte et appuyez sur Entrée, puis sélectionnez le cylindre et appuyez sur Entrée : la boîte garde un trou et le cylindre disparaît. L'ordre compte, car ce que vous sélectionnez d'abord est ce qui reste."},{"question":"Pourquoi la soustraction ne fonctionne pas dans AutoCAD ?","answer":"Souvent à cause de l'ordre : ce qu'il faut garder va dans le premier jeu, ce qu'il faut enlever dans le second. Quand le premier jeu ne contient ni solide ni région, ou que le second n'en contient aucun qui ne soit pas déjà dans le premier, la commande dit « Aucun(e) solide, surface ou région sélectionné(e). » et se termine ; quand rien du second ne peut être soustrait du premier, comme un solide d'une région ou une région d'un autre plan, elle dit « Au moins deux solides, surfaces ou régions coplanaires doivent être sélectionnés. » et ne change rien. Les lignes et les polylignes doivent d'abord devenir des régions. Quand elle dit qu'une opération booléenne a échoué, les solides se rencontrent d'une façon que MellowCAD ne sait pas encore calculer, et restent tels qu'ils étaient."},{"question":"Comment soustraire une aire dans AutoCAD ?","answer":"Pour découper une forme 2D dans une autre, faites des deux des régions avec REGION et soustrayez l'intérieure de l'extérieure avec SOUSTRACTION : un carré dont on soustrait un cercle devient une seule région trouée. Pour mesurer une aire sans modifier le dessin, AIRE retire des surfaces de son total cumulé avec Soustraire."},{"question":"Peut-on soustraire sans supprimer l'objet ?","answer":"SOUSTRACTION efface ce qu'elle soustrait, comme celle d'AutoCAD. Pour le garder, copiez-le d'abord sur place : COPIER, l'objet et Entrée, un point de base de 0,0, puis de nouveau Entrée pour le copier de 0,0, sur lui-même. SOUSTRACTION consomme ensuite l'un des deux."}]
+---
+
+SOUSTRACTION (SUBTRACT) soustrait des solides 3D d'autres solides, ou des régions d'autres régions du même plan : un cylindre soustrait d'une boîte y laisse un trou traversant, un cercle soustrait d'un carré un carré troué. Elle demande deux fois. D'abord, elle dit `Sélectionnez les solides, les surfaces et les régions à soustraire de ..` et demande les objets à garder, jusqu'à Entrée ; puis `Sélectionnez les solides, les surfaces et les régions à soustraire ..`, et demande les objets à soustraire, jusqu'à une nouvelle Entrée. Comme dans AutoCAD 2027, un jeu sélectionné avant la commande est abandonné et redemandé.
+
+Les solides du premier jeu deviennent un seul solide, et chaque solide du second jeu en est soustrait puis effacé, qu'il l'ait chevauché ou non. Les régions vont plan par plan : les régions du premier jeu situées dans un plan sont réunies, celles du second jeu dans ce plan en sont soustraites puis effacées, et une région dans un plan où le premier jeu n'en a aucune reste telle qu'elle était. Un résultat solide est un solide composé, qui n'est plus une boîte ni un cylindre et n'a pas d'historique. Quand il ne reste rien, elle dit `Solide créé - supprimé nul` ou `Région créée - supprimée nulle` et les efface. Toute la commande est une seule étape d'annulation. La 3D de MellowCAD reste partielle : les solides existent, pas les surfaces ni les maillages.
+
+- **Commande :** `SOUSTRACTION`
+- **En anglais :** `SUBTRACT`, tapé `_SUBTRACT` dans toutes les langues
+- **Alias :** `SU`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `SU` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="subtract" caption="Un cylindre soustrait d'une boîte par SOUSTRACTION, ce qui la perce de part en part : la boîte sélectionnée d'abord, puis le cylindre." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les surfaces, qui n'existent pas ici. Les faces courbes qui se coupent selon une courbe dont MellowCAD n'a pas encore de forme exacte : des cylindres, cônes, sphères ou tores dont les axes ne sont ni confondus ni parallèles (deux cylindres peuvent aussi se croiser) ; un cône avec autre chose qu'un plan ou un solide sur son axe ; un tore ou un solide de révolution avec un plan ni perpendiculaire à son axe ni passant par lui, ou avec un solide hors de son axe ; un solide extrudé avec autre chose qu'un plan ou une face extrudée dans sa direction. Ces cas sont refusés, et les solides restent tels qu'ils étaient ; de même pour une coupe qui touche une arête de façon tangente, des faces presque mais pas tout à fait sur une même surface, et une lamelle très fine entre une coupe et une arête. Précédent juste après SOUSTRACTION dit qu'il n'y a pas de jeu de sélection précédent, là où AutoCAD ne trouve aucun des objets effacés. Aucun historique de solide n'est gardé (SOLIDHIST, SHOWHISTORY).
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su--fr-soustraction--su)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande SUBTRACT en français ?
+
+SOUSTRACTION, avec l'alias `SU` : tapez-le, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_SUBTRACT`.
+
+### Comment soustraire un solide d'un autre ?
+
+Dessinez le solide à enlever là où il chevauche l'autre : un cylindre qui traverse une boîte, pour un trou. Lancez SOUSTRACTION, sélectionnez la boîte et appuyez sur Entrée, puis sélectionnez le cylindre et appuyez sur Entrée : la boîte garde un trou et le cylindre disparaît. L'ordre compte, car ce que vous sélectionnez d'abord est ce qui reste.
+
+### Pourquoi la soustraction ne fonctionne pas dans AutoCAD ?
+
+Souvent à cause de l'ordre : ce qu'il faut garder va dans le premier jeu, ce qu'il faut enlever dans le second. Quand le premier jeu ne contient ni solide ni région, ou que le second n'en contient aucun qui ne soit pas déjà dans le premier, la commande dit `Aucun(e) solide, surface ou région sélectionné(e).` et se termine ; quand rien du second ne peut être soustrait du premier, comme un solide d'une région ou une région d'un autre plan, elle dit `Au moins deux solides, surfaces ou régions coplanaires doivent être sélectionnés.` et ne change rien. Les lignes et les polylignes doivent d'abord devenir des régions. Quand elle dit qu'une opération booléenne a échoué, les solides se rencontrent d'une façon que MellowCAD ne sait pas encore calculer, et restent tels qu'ils étaient.
+
+### Comment soustraire une aire dans AutoCAD ?
+
+Pour découper une forme 2D dans une autre, faites des deux des régions avec [`REGION`](/docs/commands/region) et soustrayez l'intérieure de l'extérieure avec SOUSTRACTION : un carré dont on soustrait un cercle devient une seule région trouée. Pour mesurer une aire sans modifier le dessin, [`AIRE`](/docs/commands/area) retire des surfaces de son total cumulé avec `Soustraire`.
+
+### Peut-on soustraire sans supprimer l'objet ?
+
+SOUSTRACTION efface ce qu'elle soustrait, comme celle d'AutoCAD. Pour le garder, copiez-le d'abord sur place : [`COPIER`](/docs/commands/copy), l'objet et Entrée, un point de base de 0,0, puis de nouveau Entrée pour le copier de 0,0, sur lui-même. SOUSTRACTION consomme ensuite l'un des deux.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande UNION dans AutoCAD](/docs/commands/union)
+- [Commande INTERSECT dans AutoCAD](/docs/commands/intersect)
+- [Commande REGION dans AutoCAD](/docs/commands/region)
+- [Commande CYLINDRE (CYLINDER) dans AutoCAD](/docs/commands/cylinder)
+- [Commande SECTION (SLICE) dans AutoCAD](/docs/commands/slice)

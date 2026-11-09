@@ -1,0 +1,74 @@
+---
+title: "Commande STYLVISCOURANT (VSCURRENT) dans AutoCAD"
+description: "STYLVISCOURANT (VSCURRENT, alias SV) d'AutoCAD règle le style visuel : Filaire 2D, Masqué et Conceptuel, ce que chacun dessine et comment revenir au filaire."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment changer le style visuel dans AutoCAD ?","answer":"Lancez STYLVISCOURANT (ou SV) et choisissez le style : Masqué pour masquer les arêtes situées derrière, Conceptuel pour ombrer les faces. Seule la vue change, pas les objets. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _VSCURRENT."},{"question":"Comment revenir en Filaire 2D ?","answer":"Lancez STYLVISCOURANT et choisissez filaire2d, dont la lettre est 2."},{"question":"Quelle est la différence entre Masqué et Conceptuel ?","answer":"Les deux masquent ce que cachent les faces. Masqué ne dessine que les arêtes, sur le fond, comme un dessin au trait ; Conceptuel peint aussi les faces, ombrées par la lumière, avec les mêmes arêtes par-dessus."},{"question":"Pourquoi je vois encore des lignes à travers mon solide ?","answer":"Elles ne font pas partie d'un solide. Les lignes, les cercles et les régions sont dessinés comme en Filaire 2D dans tous les styles : une ligne derrière une boîte reste donc visible. En filaire2d, les arêtes du solide lui-même situées derrière se voient aussi : choisissez Masqué."}]
+---
+
+STYLVISCOURANT (VSCURRENT) règle le style visuel : la façon dont la vue dessine les solides 3D. La commande demande un style, en proposant le style courant par défaut, et Entrée le garde. `filaire2d` dessine toutes les arêtes, celles de derrière aussi ; `Masqué` masque ce que cachent les faces ; `Conceptuel` peint les faces, ombrées. Le style appartient à la vue et est enregistré avec le dessin, et chaque exécution est une seule étape d'annulation. La commande ne peut pas s'utiliser à l'intérieur d'une autre.
+
+Ce qui n'est pas un solide (lignes, cercles, régions, textes) est dessiné comme en Filaire 2D quel que soit le style, dans ses propres couleurs. En Masqué et en Conceptuel, un clic prend le solide dont la face est la plus proche de vous sous le curseur, jamais un solide à travers une face qui le cache, et les accrochages aux objets trouvent toujours toutes les arêtes. Un solide sur un calque verrouillé dessine ses arêtes plus pâles. La 3D de MellowCAD ne connaît que les solides et reste partielle.
+
+- **Commande :** `STYLVISCOURANT`
+- **En anglais :** `VSCURRENT`, tapé `_VSCURRENT` dans toutes les langues
+- **Alias :** `SV`
+- **Groupe :** [Renseignements et vue](/docs/commands#inquiry)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `SV` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="vscurrent" caption="Une pièce percée d'un trou, vue du sud-est : STYLVISCOURANT Conceptuel ombre ses faces et dessine ses arêtes par-dessus." />
+
+## Options [#options]
+
+### `filaire2d` (`2`) [#2dwireframe]
+
+Toutes les arêtes de tous les solides, celles de derrière comprises, avec les lignes qui montrent leurs faces courbes ; le style par défaut d'un nouveau dessin. En y revenant depuis un autre style, STYLVISCOURANT affiche `Régénération du modèle.`.
+
+### `Masqué` (`M`) [#hidden]
+
+Les arêtes de chaque solide, et les contours de ses faces courbes, là où aucune face d'aucun solide ne les cache, dans la couleur de l'objet : un solide situé derrière un autre est caché par lui. Les lignes qui montrent une face courbe en Filaire 2D ne sont pas dessinées.
+
+### `Conceptuel` (`C`) [#conceptual]
+
+Les faces tournées vers vous, peintes dans la couleur de l'objet, qui tire vers un bleu froid du côté opposé à la lumière, laquelle suit votre point de vue, et les arêtes de Masqué dessinées par-dessus en une seule couleur, quelle que soit celle de l'objet. Ici comme en Masqué, un cylindre ou un cône vu en plan ne montre que son cercle, comme dans AutoCAD.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les autres styles d'AutoCAD (Filaire, Réaliste, Ombré, Ombré avec arêtes, Nuances de gris, Esquisse et Rayon X) et le fait de nommer un style ou de les lister par `?` : l'invite ne liste que les trois styles qui existent, et refuse toute autre réponse.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva--fr-stylviscourant--sv)
+
+## Questions [#questions]
+
+### Comment changer le style visuel dans AutoCAD ?
+
+Lancez STYLVISCOURANT (ou `SV`) et choisissez le style : `Masqué` pour masquer les arêtes situées derrière, `Conceptuel` pour ombrer les faces. Seule la vue change, pas les objets. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_VSCURRENT`.
+
+### Comment revenir en Filaire 2D ?
+
+Lancez STYLVISCOURANT et choisissez `filaire2d`, dont la lettre est `2`.
+
+### Quelle est la différence entre Masqué et Conceptuel ?
+
+Les deux masquent ce que cachent les faces. Masqué ne dessine que les arêtes, sur le fond, comme un dessin au trait ; Conceptuel peint aussi les faces, ombrées par la lumière, avec les mêmes arêtes par-dessus.
+
+### Pourquoi je vois encore des lignes à travers mon solide ?
+
+Elles ne font pas partie d'un solide. Les lignes, les cercles et les régions sont dessinés comme en Filaire 2D dans tous les styles : une ligne derrière une boîte reste donc visible. En `filaire2d`, les arêtes du solide lui-même situées derrière se voient aussi : choisissez `Masqué`.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD 3D : une plaque de fixation](/docs/exercises/mounting-plate)
+- [Exercice AutoCAD 3D : une poulie](/docs/exercises/pulley)
+- [Exercice AutoCAD 3D : un palier](/docs/exercises/bearing-block)
+
+## Commandes associées [#related]
+
+- [Commande ORBITE3D (3DORBIT) dans AutoCAD](/docs/commands/3dorbit)
+- [Commande BOITE (BOX) dans AutoCAD](/docs/commands/box)
+- [Commande VUE (VIEW) dans AutoCAD](/docs/commands/view)
+- [Commande SCU (UCS) dans AutoCAD](/docs/commands/ucs)

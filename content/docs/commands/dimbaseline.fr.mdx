@@ -1,0 +1,68 @@
+---
+title: "Commande COTLIGN (DIMBASELINE) dans AutoCAD"
+description: "Cotes de ligne de base dans AutoCAD en français : COTLIGN (DIMBASELINE, alias COTL) les empile depuis une même base, invite par invite. Essayez-le gratuitement."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande DIMBASELINE en français ?","answer":"COTLIGN, raccourci COTL, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : _DIMBASELINE."},{"question":"Comment changer l'espacement des cotes de ligne de base ?","answer":"C'est l'espacement des lignes de base du style de cote : COTSTYLE (CST) ouvre les styles dans la palette Styles, où il se trouve sous Lignes, comme dans AutoCAD. Les cotes déjà dessinées gardent leur place ; ESPACECOTES les espace de nouveau, régulièrement."},{"question":"Comment partir d'une autre cote ?","answer":"Appuyez sur Entrée à la première invite, ou choisissez Sélectionner, et désignez la cote près de la ligne d'attache à partir de laquelle mesurer : chaque nouvelle cote part de là."},{"question":"Quelle est la différence entre COTLIGN et COTCONT ?","answer":"COTLIGN mesure chaque cote à partir de la même ligne d'attache, chacune sur une ligne plus éloignée. COTCONT les met bout à bout sur une même ligne, chacune à partir de l'endroit où la précédente s'est arrêtée."}]
+---
+
+COTLIGN (DIMBASELINE en anglais) dessine des cotes qui mesurent toutes à partir d'une même ligne d'attache, la base : chacune va de la première ligne d'attache de la dernière cote au point suivant que vous donnez, sa ligne de cote un cran plus loin. Elle part de la dernière cote linéaire ou alignée créée depuis l'ouverture du dessin, si bien qu'elle suit généralement [`COTLIN`](/docs/commands/dimlinear) ou [`COTALI`](/docs/commands/dimaligned) ; s'il n'y en a aucune, elle demande de quelle cote partir. La ligne de commande indique chaque mesure dès qu'elle est faite. Entrée à l'invite de l'origine choisit `Sélectionner`, et Entrée à cette invite termine la commande, comme Echap.
+
+Le cran est l'espacement des lignes de base du style de cote courant, 3.75 dans ISO-25, multiplié par l'échelle générale de la base. Comme dans AutoCAD, chaque nouvelle cote mesure selon la direction de sa base, et prend le style de cote et le calque de la base, avec la couleur, le type de ligne et l'épaisseur de ligne courants.
+
+- **Commande :** `COTLIGN`
+- **En anglais :** `DIMBASELINE`, tapé `_DIMBASELINE` dans toutes les langues
+- **Alias :** `COTL`
+- **Groupe :** [Annotation](/docs/commands#annotate)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `COTL` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="dimbaseline" caption="Un profil en escalier coté 30 depuis son bord gauche, puis 70 et 100 depuis le même bord, chaque cote une ligne plus loin." />
+
+## Options [#options]
+
+### `Sélectionner` (`S`) [#select]
+
+Demande la cote de base : désignez une cote linéaire ou alignée, près de la ligne d'attache à partir de laquelle mesurer. Un point tapé à cette invite désigne aussi. Une cote de rayon ou de diamètre est refusée avec `Cote associative linéaire, à cotes superposées ou angulaire requise.`, et la question revient.
+
+### `annUler` (`U`) [#undo]
+
+Annule la dernière cote créée et repart de la précédente, autant de fois qu'il y en a. Quand il n'en reste plus, sa réponse est `La commande a été annulée complètement.`, et l'invite reste.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Une cote n'est pas associative : les cotes ne suivent pas les objets qu'elles mesurent. Une cote angulaire ne peut pas servir de base : AutoCAD prend celle qui a été créée en dernier ou désignée ; ici, créée en dernier, la commande demande une cote, et désignée, elle est refusée comme une cote de rayon. Les cotes de coordonnées n'existent pas encore.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline--pt-br-cotalinbase--clb--dimbase--fr-cotlign--cotl)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande DIMBASELINE en français ?
+
+COTLIGN, raccourci `COTL`, puis Entrée ou la barre d'espace. Comme dans AutoCAD en français, le nom anglais fonctionne aussi précédé d'un trait de soulignement : `_DIMBASELINE`.
+
+### Comment changer l'espacement des cotes de ligne de base ?
+
+C'est l'espacement des lignes de base du style de cote : [`COTSTYLE`](/docs/commands/dimstyle) (`CST`) ouvre les styles dans la palette Styles, où il se trouve sous Lignes, comme dans AutoCAD. Les cotes déjà dessinées gardent leur place ; [`ESPACECOTES`](/docs/commands/dimspace) les espace de nouveau, régulièrement.
+
+### Comment partir d'une autre cote ?
+
+Appuyez sur Entrée à la première invite, ou choisissez `Sélectionner`, et désignez la cote près de la ligne d'attache à partir de laquelle mesurer : chaque nouvelle cote part de là.
+
+### Quelle est la différence entre COTLIGN et COTCONT ?
+
+COTLIGN mesure chaque cote à partir de la même ligne d'attache, chacune sur une ligne plus éloignée. [`COTCONT`](/docs/commands/dimcontinue) les met bout à bout sur une même ligne, chacune à partir de l'endroit où la précédente s'est arrêtée.
+
+## Entraînez-vous [#practice]
+
+- [Exercice AutoCAD : une équerre en L](/docs/exercises/l-bracket)
+
+## Commandes associées [#related]
+
+- [Commande COTCONT (DIMCONTINUE) dans AutoCAD](/docs/commands/dimcontinue)
+- [Commande COTLIN (DIMLINEAR) dans AutoCAD](/docs/commands/dimlinear)
+- [Commande ESPACECOTES (DIMSPACE) dans AutoCAD](/docs/commands/dimspace)
+- [Commande COTSTYLE (DIMSTYLE) dans AutoCAD](/docs/commands/dimstyle)

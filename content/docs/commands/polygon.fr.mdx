@@ -1,0 +1,66 @@
+---
+title: "Commande POLYGONE (POLYGON) dans AutoCAD"
+description: "Comment POLYGONE (POLYGON, alias PG) d'AutoCAD en français dessine un polygone régulier : côtés, centre, Inscrit ou Circonscrit, ou un Côté. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande POLYGON en français ?","answer":"POLYGONE, avec l'alias PG, puis Entrée ou la barre d'espace ; l'alias anglais POL n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : _POLYGON."},{"question":"Comment dessiner un hexagone dans AutoCAD ?","answer":"Lancez POLYGONE, tapez 6 pour le nombre de côtés, donnez le centre, choisissez Inscrit ou Circonscrit, et tapez le rayon. Entre ses côtés parallèles, un hexagone circonscrit mesure deux fois le rayon que vous tapez."},{"question":"Quelle est la différence entre inscrit et circonscrit ?","answer":"Avec Inscrit, les sommets du polygone touchent le cercle : il tient dedans. Avec Circonscrit, ce sont ses côtés qui touchent le cercle : le cercle tient dans le polygone. À rayon égal, le polygone circonscrit est le plus grand."},{"question":"Comment dessiner un polygone avec une longueur de côté donnée ?","answer":"Choisissez Côté et donnez les deux extrémités d'un côté : 0,0, puis la longueur tapée par rapport à ce point, comme 40,0. Les autres côtés suivent, dans le sens trigonométrique."}]
+---
+
+POLYGONE (POLYGON) dessine un polygone régulier, tous ses côtés et ses angles égaux, sous forme d'une seule polyligne fermée. Elle demande le nombre de côtés, de 3 à 1024, puis le centre et si le polygone est inscrit dans un cercle ou circonscrit à lui, puis le rayon de ce cercle. Ou il se construit sur l'un de ses côtés, avec `Côté`. Le nombre de côtés et le choix d'`Inscrit` ou de `Circonscrit` sont les valeurs par défaut du POLYGONE suivant, dans ce dessin. Un rayon tapé comme un nombre dessine le côté du bas à l'horizontale ; un rayon donné comme un point, cliqué ou tapé, fixe à la fois la taille et l'orientation du polygone. Pendant que vous donnez le rayon, le polygone suit le curseur, avec une ligne ambre en tirets depuis le centre.
+
+- **Commande :** `POLYGONE`
+- **En anglais :** `POLYGON`, tapé `_POLYGON` dans toutes les langues
+- **Alias :** `PG`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `PG` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="polygon" caption="Deux cercles de rayon 30, un hexagone inscrit dans l'un et circonscrit à l'autre, et un pentagone par son Côté." />
+
+## Options [#options]
+
+### `Côté` (`C`) [#edge]
+
+Au lieu d'un centre : donnez les deux extrémités d'un côté, et le polygone se construit à partir de lui dans le sens trigonométrique.
+
+### `Inscrit dans un cercle` (`I`) [#inscribed]
+
+Les sommets sont sur le cercle : le rayon va du centre à un sommet. C'est l'option par défaut.
+
+### `Circonscrit autour d'un cercle` (`C`) [#circumscribed]
+
+Les côtés touchent le cercle en leur milieu : le rayon va du centre au milieu d'un côté.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Une résolution tournée : un rayon tapé comme un nombre dessine toujours le côté du bas à l'horizontale du SCU, là où AutoCAD le tourne de l'angle de résolution, SNAPANG.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande POLYGON en français ?
+
+POLYGONE, avec l'alias `PG`, puis Entrée ou la barre d'espace ; l'alias anglais `POL` n'existe pas dans AutoCAD en français. Comme dans AutoCAD en français, le nom anglais fonctionne aussi, précédé d'un trait de soulignement : `_POLYGON`.
+
+### Comment dessiner un hexagone dans AutoCAD ?
+
+Lancez POLYGONE, tapez `6` pour le nombre de côtés, donnez le centre, choisissez `Inscrit` ou `Circonscrit`, et tapez le rayon. Entre ses côtés parallèles, un hexagone circonscrit mesure deux fois le rayon que vous tapez.
+
+### Quelle est la différence entre inscrit et circonscrit ?
+
+Avec `Inscrit`, les sommets du polygone touchent le cercle : il tient dedans. Avec `Circonscrit`, ce sont ses côtés qui touchent le cercle : le cercle tient dans le polygone. À rayon égal, le polygone circonscrit est le plus grand.
+
+### Comment dessiner un polygone avec une longueur de côté donnée ?
+
+Choisissez `Côté` et donnez les deux extrémités d'un côté : `0,0`, puis la longueur tapée par rapport à ce point, comme `40,0`. Les autres côtés suivent, dans le sens trigonométrique.
+
+## Commandes associées [#related]
+
+- [Commande RECTANGLE (RECTANG) dans AutoCAD](/docs/commands/rectang)
+- [Commande CERCLE (CIRCLE) dans AutoCAD](/docs/commands/circle)
+- [Commande POLYLIGNE (PLINE) dans AutoCAD](/docs/commands/pline)
+- [Commande DECOMPOSER (EXPLODE) dans AutoCAD](/docs/commands/explode)

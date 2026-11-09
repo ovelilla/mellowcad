@@ -169,8 +169,8 @@ export async function commandsPage(locale: AppLocale): Promise<string> {
         : `- [${prose(t.Docs.reference.coverage)}](${coverageUrl(command.id)})`
       const facts = [
         command.aliases.length > 0 &&
-          `- **${prose(t.Docs.reference.aliases)}:** ${command.aliases.map(code).join(", ")}`,
-        prompt && `- **${prose(t.Docs.reference.firstPrompt)}:** ${code(prompt)}`,
+          `- ${label(t.Docs.reference.aliases, locale)} ${command.aliases.map(code).join(", ")}`,
+        prompt && `- ${label(t.Docs.reference.firstPrompt, locale)} ${code(prompt)}`,
         more,
       ].filter(Boolean)
       blocks.push(
@@ -310,6 +310,23 @@ export function optionAnchor(id: string): string {
   return id.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "list"
 }
 
+/**
+ * How each language ends a label before its value: French spaces the colon,
+ * with a no-break space (docs/i18n/fr.md, "Register").
+ */
+const LABEL_END: Record<AppLocale, string> = {
+  en: ":",
+  es: ":",
+  "pt-BR": ":",
+  ar: ":",
+  fr: "\u00a0:",
+}
+
+/** A list item's bold label, ended as its language ends one. */
+function label(text: string, locale: AppLocale): string {
+  return `**${prose(text)}${LABEL_END[locale]}**`
+}
+
 /** How each language quotes a phrase in running text. */
 const QUOTES: Record<AppLocale, readonly [string, string]> = {
   en: ["\u201c", "\u201d"],
@@ -384,13 +401,13 @@ export async function commandPage(id: string, locale: AppLocale): Promise<string
   const words = (markdown: string) => engineWords(markdown, id, text, paged)
 
   const access = [
-    `- **${prose(labels.command)}:** ${code(command.name)}`,
+    `- ${label(labels.command, locale)} ${code(command.name)}`,
     command.name !== command.id &&
-      `- **${prose(labels.english)}:** ${fill(labels.englishValue, { name: code(command.id), typed: code(`_${command.id}`) })}`,
+      `- ${label(labels.english, locale)} ${fill(labels.englishValue, { name: code(command.id), typed: code(`_${command.id}`) })}`,
     command.aliases.length > 0 &&
-      `- **${prose(t.Docs.reference.aliases)}:** ${command.aliases.map(code).join(", ")}`,
-    `- **${prose(labels.panel)}:** [${prose(t.Groups[command.group])}](${COMMANDS_PATH}#${command.group})`,
-    `- **${prose(labels.try)}:** ${fill(labels.tryText, { key: code(command.key) }, { editor: (words) => `[${words}](${localePath(locale, EDITOR_PATH)})` })}`,
+      `- ${label(t.Docs.reference.aliases, locale)} ${command.aliases.map(code).join(", ")}`,
+    `- ${label(labels.panel, locale)} [${prose(t.Groups[command.group])}](${COMMANDS_PATH}#${command.group})`,
+    `- ${label(labels.try, locale)} ${fill(labels.tryText, { key: code(command.key) }, { editor: (words) => `[${words}](${localePath(locale, EDITOR_PATH)})` })}`,
   ].filter(Boolean)
 
   const blocks: string[] = [
@@ -515,9 +532,9 @@ export async function exercisePage(slug: string, locale: AppLocale): Promise<str
   const editor = `${localePath(locale, EDITOR_PATH)}?drawing=${slug}`
 
   const facts = [
-    `- **${prose(labels.kind)}:** ${prose(exerciseKind(slug, labels))}`,
-    `- **${prose(labels.commands)}:** ${practisedCommands(slug, text, paged)}`,
-    `- **${prose(labels.editor)}:** ${fill(labels.editorText, {}, { editor: (words) => `[${words}](${editor})` })}`,
+    `- ${label(labels.kind, locale)} ${prose(exerciseKind(slug, labels))}`,
+    `- ${label(labels.commands, locale)} ${practisedCommands(slug, text, paged)}`,
+    `- ${label(labels.editor, locale)} ${fill(labels.editorText, {}, { editor: (words) => `[${words}](${editor})` })}`,
   ]
   const blocks: string[] = [
     words(notes.statement),
@@ -605,8 +622,8 @@ export async function exercisesPage(locale: AppLocale): Promise<string> {
         `<Session name="${exerciseSessionName(slug)}" caption="${notes.data.figure}" />`,
         prose(notes.data.description),
         [
-          `- **${prose(labels.kind)}:** ${prose(exerciseKind(slug, labels))}`,
-          `- **${prose(labels.commands)}:** ${practisedCommands(slug, text, paged)}`,
+          `- ${label(labels.kind, locale)} ${prose(exerciseKind(slug, labels))}`,
+          `- ${label(labels.commands, locale)} ${practisedCommands(slug, text, paged)}`,
           `- [${prose(notes.data.title)}](${exercisePagePath(slug)})`,
         ].join("\n")
       )

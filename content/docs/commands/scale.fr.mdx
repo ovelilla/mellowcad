@@ -1,0 +1,68 @@
+---
+title: "Commande ECHELLE (SCALE) dans AutoCAD"
+description: "Comment ECHELLE (SCALE, alias EH) d'AutoCAD met des objets à l'échelle, invite par invite : point de base, facteur, Copier et Référence. Essayez-le en ligne."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande SCALE en français ?","answer":"ECHELLE, avec l'alias EH : tapez-le, puis Entrée ou la barre d'espace (dans AutoCAD en français, SC est GESTSCU). _SCALE fonctionne quelle que soit la langue d'AutoCAD."},{"question":"Comment mettre à l'échelle avec une référence dans AutoCAD ?","answer":"Choisissez Référence à l'invite du facteur, désignez les deux extrémités d'une arête dont vous connaissez la longueur, puis tapez la longueur qu'elle doit avoir. Tout ce qui est sélectionné est mis à l'échelle du rapport entre la nouvelle longueur et l'ancienne : un dessin à la mauvaise taille se corrige à partir d'une seule cote connue."},{"question":"Comment mettre un objet à l'échelle en gardant l'original ?","answer":"Choisissez Copier à l'invite du facteur : la copie est mise à l'échelle, l'original reste où il était."},{"question":"Comment changer l'échelle des types de ligne ?","answer":"Pas avec ECHELLE, qui redimensionne les objets : ECHLTP fixe la longueur à laquelle sont dessinés les tirets et les espaces de tous les types de ligne."},{"question":"Comment mettre un plan à l'échelle pour l'impression ?","answer":"MellowCAD n'a ni présentations, ni fenêtres, ni traçage : vous dessinez en grandeur réelle dans l'espace objet, et ECHELLE change la taille des objets eux-mêmes, pas la façon dont ils seraient imprimés."}]
+---
+
+ECHELLE (SCALE) agrandit ou réduit les objets sélectionnés par rapport à un point de base, qui reste en place : un facteur de 2 les double, 0.5 les réduit de moitié, de la même façon dans toutes les directions. Sélectionnez les objets, désignez le point de base, puis tapez le facteur, ou déplacez le curseur et cliquez : les objets le suivent. Entrée à cette invite, sans rien taper, applique le dernier facteur utilisé. Chaque exécution est une seule étape, qu'Annuler défait.
+
+La commande met à l'échelle tout ce qu'elle prend, comme AutoCAD : le motif des hachures grandit avec leur contour, une cote mesure sa nouvelle longueur, et un objet situé au-dessus du plan est aussi mis à l'échelle en Z par rapport au point de base.
+
+- **Commande :** `ECHELLE`
+- **En anglais :** `SCALE`, tapé `_SCALE` dans toutes les langues
+- **Alias :** `EH`
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `EH` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="scale" caption="Une plaque et son trou mis à l'échelle sur une copie par Référence, autour de son coin : l'arête de 40 désignée, puis portée à 60." />
+
+## Options [#options]
+
+### `Copier` (`C`) [#copy]
+
+Met à l'échelle une copie et laisse les objets tels quels : la commande dit `Mise à l'échelle d'une copie des objets sélectionnés.` et redemande le facteur, `Copier` toujours proposé.
+
+### `Référence` (`R`) [#reference]
+
+Demande une longueur de référence, tapée ou désignée par deux points, puis la longueur qu'elle doit avoir : le facteur est la nouvelle longueur divisée par la référence. La nouvelle longueur est tapée, ou donnée par un point dont elle est la distance au point de base ; `Points` demande plutôt deux points et mesure entre eux. Les deux longueurs proposent les dernières données, 1 dans un nouveau dessin.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Entrée au premier ou au second point de `Points` termine la commande sans mise à l'échelle, là où AutoCAD applique ce qu'indique alors le curseur. Un facteur minuscule est appliqué sans rien dire, là où AutoCAD dit qu'il l'ignore. Les objets entraînés sont dessinés comme [`DEPLACER`](/docs/commands/move) les entraîne, dans leur seule couleur.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es--fr-echelle--eh)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande SCALE en français ?
+
+ECHELLE, avec l'alias `EH` : tapez-le, puis Entrée ou la barre d'espace (dans AutoCAD en français, `SC` est GESTSCU). `_SCALE` fonctionne quelle que soit la langue d'AutoCAD.
+
+### Comment mettre à l'échelle avec une référence dans AutoCAD ?
+
+Choisissez `Référence` à l'invite du facteur, désignez les deux extrémités d'une arête dont vous connaissez la longueur, puis tapez la longueur qu'elle doit avoir. Tout ce qui est sélectionné est mis à l'échelle du rapport entre la nouvelle longueur et l'ancienne : un dessin à la mauvaise taille se corrige à partir d'une seule cote connue.
+
+### Comment mettre un objet à l'échelle en gardant l'original ?
+
+Choisissez `Copier` à l'invite du facteur : la copie est mise à l'échelle, l'original reste où il était.
+
+### Comment changer l'échelle des types de ligne ?
+
+Pas avec ECHELLE, qui redimensionne les objets : [`ECHLTP`](/docs/commands/ltscale) fixe la longueur à laquelle sont dessinés les tirets et les espaces de tous les types de ligne.
+
+### Comment mettre un plan à l'échelle pour l'impression ?
+
+MellowCAD n'a ni présentations, ni fenêtres, ni traçage : vous dessinez en grandeur réelle dans l'espace objet, et ECHELLE change la taille des objets eux-mêmes, pas la façon dont ils seraient imprimés.
+
+## Commandes associées [#related]
+
+- [Commande ROTATION (ROTATE) dans AutoCAD](/docs/commands/rotate)
+- [Commande DEPLACER (MOVE) dans AutoCAD](/docs/commands/move)
+- [Commande ETIRER (STRETCH) dans AutoCAD](/docs/commands/stretch)
+- [Commande ECHLTP (LTSCALE) dans AutoCAD](/docs/commands/ltscale)

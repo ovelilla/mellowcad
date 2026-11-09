@@ -1,0 +1,67 @@
+---
+title: "Commande ARETERACCORD (FILLETEDGE) dans AutoCAD"
+description: "Comment ARETERACCORD (FILLETEDGE) d'AutoCAD en français arrondit les arêtes d'un solide 3D : Chaîne, Boucle, Rayon et la poignée en flèche. Essayez-le en ligne."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment raccorder une arête d'un solide 3D dans AutoCAD ?","answer":"Lancez ARETERACCORD, choisissez Rayon et tapez-le, sélectionnez les arêtes, puis appuyez deux fois sur Entrée : une fois pour finir la sélection, une fois pour accepter. Le 8 de la figure arrondit deux arêtes d'une boîte."},{"question":"Comment raccorder toutes les arêtes d'une face ?","answer":"Choisissez Boucle et sélectionnez une arête de la face, puis Accepter, ou Suivant si la boucle affichée est celle de l'autre face. Pour des arêtes qui se prolongent déjà l'une dans l'autre, autour du dessus d'une pièce arrondie, Chaîne les prend toutes."},{"question":"Pourquoi RACCORD ne fonctionne pas sur un solide 3D ?","answer":"Le RACCORD d'AutoCAD arrondit aussi l'arête d'un solide, mais pas encore celui de MellowCAD : utilisez ARETERACCORD, et ARETECHANFREIN pour un chanfrein."},{"question":"Comment changer le rayon du raccord ?","answer":"Choisissez Rayon avant de sélectionner ou à l'invite d'acceptation, ou faites glisser la poignée en flèche au milieu du premier raccord. Le dernier rayon est reproposé la fois suivante."}]
+---
+
+ARETERACCORD (FILLETEDGE) arrondit les arêtes d'un solide 3D. Elle indique le rayon courant, puis demande des arêtes, jusqu'à Entrée : un clic prend l'arête sous le curseur, mise en surbrillance à son passage, et un point tapé prend l'arête qui passe par lui. À mesure que les arêtes sont prises, le solide se dessine tel qu'il sera, les raccords en place. Entrée compte les arêtes et vous demande d'appuyer de nouveau sur Entrée pour accepter, ou de changer le rayon ; ce second appui sur Entrée crée les raccords. Les arêtes d'un seul solide : celle d'un autre dit `Ne peut pas raccorder des corps multiples.`, une arête prise deux fois `L'arête a déjà été saisie.`.
+
+Une arête droite entre deux faces planes devient un quart de cylindre, et l'arête ronde d'un trou ou d'un bord un quart de tore ; des raccords qui se rencontrent à un coin sont joints, trois d'entre eux par un morceau de sphère. Le rayon est enregistré dans le dessin et reproposé la fois suivante. Le solide garde son calque et ses propriétés, mais perd ce qui l'a créé : une boîte n'est plus une boîte. La commande entière est une seule étape d'annulation. La 3D de MellowCAD se limite aux solides, et reste partielle.
+
+- **Commande :** `ARETERACCORD`
+- **En anglais :** `FILLETEDGE`, tapé `_FILLETEDGE` dans toutes les langues
+- **Groupe :** [Modification](/docs/commands#modify)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `ARETERACCORD` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="filletedge" caption="Une boîte vue du sud-est : ARETERACCORD avec un rayon de 8 arrondit ses deux arêtes verticales de droite." />
+
+## Options [#options]
+
+### `Chaîne` (`C`) [#chain]
+
+Prend l'arête que vous sélectionnez et chaque arête qui lui est tangente, l'une après l'autre : les huit qui font le tour du dessus d'une pièce dont les arêtes verticales sont déjà arrondies. S'il n'y en a aucune de tangente, elle dit `Aucune arête de tangente adjacente n'a été trouvée dans la chaîne.` et prend celle qui est sélectionnée. `Arête` revient aux arêtes une par une.
+
+### `Boucle` (`B`) [#loop]
+
+Prend toutes les arêtes autour d'une face : sélectionnez une arête, puis choisissez `Accepter` pour la boucle affichée, ou `Suivant` pour celle de l'autre face à laquelle appartient l'arête.
+
+### `Rayon` (`R`) [#radius]
+
+Demande le rayon, tapé ou donné par la distance entre deux points ; 0 ou moins dit `Le rayon est trop petit. *Non valable*`. `Expression` le prend comme une formule. À l'invite d'acceptation, elle change le rayon des raccords affichés. La poignée en flèche au milieu du premier raccord le règle en la faisant glisser : cliquez dessus, déplacez, cliquez ; `Quitter` ou Echap le laisse tel qu'il était.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Des raccords de deux rayons qui se rencontrent, et un raccord qui se termine sur une face courbe. Un raccord plus large qu'une face voisine, qu'AutoCAD fait rouler par-dessus l'arête suivante : ici, il échoue sur une erreur de modélisation. Une arête droite à côté d'une face courbe, une arête ronde hors de l'axe de son cylindre, et toute arête d'une sphère, d'un tore, d'une extrusion ou d'un solide de révolution, qui échouent de la même façon. Certains coins où des raccords se rencontrent sur des arêtes de pentes différentes. La poignée en flèche sur toute arête autre que la première, et la ligne qui va d'elle au curseur. [`RACCORD`](/docs/commands/fillet) sélectionnant l'arête d'un solide, ce qu'AutoCAD permet aussi. Le raccord dessiné en maillage pendant la sélection, et les surfaces.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord--fr-areteraccord)
+
+## Questions [#questions]
+
+### Comment raccorder une arête d'un solide 3D dans AutoCAD ?
+
+Lancez ARETERACCORD, choisissez `Rayon` et tapez-le, sélectionnez les arêtes, puis appuyez deux fois sur Entrée : une fois pour finir la sélection, une fois pour accepter. Le `8` de la figure arrondit deux arêtes d'une boîte.
+
+### Comment raccorder toutes les arêtes d'une face ?
+
+Choisissez `Boucle` et sélectionnez une arête de la face, puis `Accepter`, ou `Suivant` si la boucle affichée est celle de l'autre face. Pour des arêtes qui se prolongent déjà l'une dans l'autre, autour du dessus d'une pièce arrondie, `Chaîne` les prend toutes.
+
+### Pourquoi RACCORD ne fonctionne pas sur un solide 3D ?
+
+Le [`RACCORD`](/docs/commands/fillet) d'AutoCAD arrondit aussi l'arête d'un solide, mais pas encore celui de MellowCAD : utilisez ARETERACCORD, et [`ARETECHANFREIN`](/docs/commands/chamferedge) pour un chanfrein.
+
+### Comment changer le rayon du raccord ?
+
+Choisissez `Rayon` avant de sélectionner ou à l'invite d'acceptation, ou faites glisser la poignée en flèche au milieu du premier raccord. Le dernier rayon est reproposé la fois suivante.
+
+## Commandes associées [#related]
+
+- [Commande ARETECHANFREIN (CHAMFEREDGE) dans AutoCAD](/docs/commands/chamferedge)
+- [Commande RACCORD (FILLET) dans AutoCAD](/docs/commands/fillet)
+- [Commande EDITSOLIDE (SOLIDEDIT) dans AutoCAD](/docs/commands/solidedit)
+- [Commande BOITE (BOX) dans AutoCAD](/docs/commands/box)

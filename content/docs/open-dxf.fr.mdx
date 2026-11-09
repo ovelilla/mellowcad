@@ -1,0 +1,81 @@
+---
+title: Ouvrir un fichier DXF en ligne
+metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
+description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
+type: howTo
+sourceHash: "4f4ae829f9cf"
+faq:
+  - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
+    answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
+  - question: "Mon fichier DXF est-il envoyé quelque part ?"
+    answer: "Non. Votre navigateur lit le fichier et le transmet à l'éditeur sur cet appareil ; il n'est jamais envoyé à un serveur."
+  - question: "Puis-je ouvrir un fichier DWG ?"
+    answer: "Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, SAUVENOM avec un type de fichier DXF) et ouvrez celui-ci."
+  - question: "Puis-je enregistrer mes modifications en DXF ?"
+    answer: "Pas encore. Ctrl+S enregistre le dessin dans un fichier au format propre et versionné de MellowCAD, qui s'ouvre de nouveau ici."
+  - question: "Pourquoi certains objets manquent-ils ?"
+    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
+---
+
+<OpenDxf />
+
+MellowCAD ouvre les fichiers DXF dans votre navigateur et les dessine dans son éditeur, où vous pouvez parcourir un dessin, le mesurer et le modifier avec les commandes d'AutoCAD, tapées en français. Le fichier est lu sur votre ordinateur : rien n'est envoyé, et il n'y a rien à installer ni compte à créer.
+
+## Ce qui s'ouvre [#opens]
+
+- **Le DXF d'AutoCAD R12 à 2018**, le format DXF le plus récent qu'écrit AutoCAD, en texte (ASCII) ou binaire, créé par AutoCAD ou par un autre programme. Son texte garde ses caractères : jusqu'à 2004 dans la page de codes que le fichier indique, à partir de 2007 en UTF-8.
+- **Lignes, arcs, cercles, ellipses et polylignes**, avec leurs largeurs et leurs formes ajustées par courbe ou par spline, polylignes 3D et splines.
+- **Texte sur une ligne et texte multiligne**, blocs avec leurs attributs, cotes linéaires, alignées, angulaires, de rayon et de diamètre, et hachures.
+- **Le calque de chaque objet**, sa couleur, son type de ligne, son épaisseur de ligne, sa hauteur et son élévation, et les calques activés, désactivés ou verrouillés ; un calque gelé s'ouvre désactivé.
+- **Les styles de texte et de cote du dessin**, et ses unités quand ce sont des millimètres, des centimètres ou des mètres.
+
+## Ce qui est laissé de côté [#left-out]
+
+Quand un DXF contient quelque chose pour quoi MellowCAD n'a pas encore d'objet, il ouvre le reste et indique sur la ligne de commande combien d'objets de chaque type il a laissés de côté. Aujourd'hui, ce sont :
+
+- les points, les solides 2D et les traces, les faces 3D et les maillages ;
+- les lignes de construction et les demi-droites, les multilignes ;
+- les lignes de repère, les lignes de repère multiples et les tolérances, les tableaux, les masques et les images ;
+- les références externes ;
+- les solides 3D, les régions et les surfaces ;
+- les remplissages avec gradients, et les cotes superposées et de longueur d'arc.
+
+Ce qui se trouve dans une présentation est compté à part, puisqu'il n'y a pas encore de présentations : un dessin dont tous les objets sont dans ses présentations s'ouvre vide.
+
+Certaines choses s'ouvrent, mais pas tout à fait comme elles étaient :
+
+- Un type de ligne autre que Continuous, Dashed, Hidden, Center, Phantom et DashDot garde son nom et se dessine en continu.
+- Un motif de hachures qui ne fait pas partie [des motifs du fichier `acadiso.pat` que dessine MellowCAD](/docs/commands/hatch) garde son nom et ne dessine que son contour.
+- Une couleur donnée par son numéro d'index s'ouvre comme sa couleur RVB, et DuBloc comme DuCalque.
+- Un dessin en pouces ou en pieds garde ses nombres, lus comme des millimètres.
+- Le texte est dessiné avec les mesures d'Arial, quelle que soit la police que nomme son style, sans son facteur de largeur ni son angle d'inclinaison.
+
+## Ouvrez-le dans l'éditeur [#editor]
+
+Dans l'éditeur, un DXF s'ouvre comme un dessin : <Command id="OPEN" /> (`Ctrl+O`) propose les dessins et les fichiers DXF, comme la boîte de dialogue Sélectionner un fichier d'AutoCAD, et <Command id="DXFIN" /> les fichiers DXF seuls. Un fichier ouvert depuis cette page ou avec <Command id="OPEN" /> prend la place du dessin de l'éditeur : enregistrez donc d'abord le vôtre avec `Ctrl+S`, car il n'y a [qu'un dessin à la fois](/docs/differences#one-drawing).
+
+## Modifiez-le et conservez-le [#keep]
+
+Une fois ouvert, un DXF est un dessin comme un autre : mesurez-le avec <Command id="DIST" /> et <Command id="AREA" />, modifiez-le avec <Command id="MOVE" />, <Command id="TRIM" /> ou <Command id="OFFSET" />, et dessinez dessus. Il est conservé dans ce navigateur pendant que vous travaillez, et `Ctrl+S` l'enregistre dans un fichier au format propre et versionné de MellowCAD. L'enregistrement au format DXF n'existe pas encore, pas plus que les fichiers DWG.
+
+## Questions [#questions]
+
+### Comment ouvrir un fichier DXF sans AutoCAD ? [#without-autocad]
+
+Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, <Command id="OPEN" /> (`Ctrl+O`) et <Command id="DXFIN" /> en ouvrent un aussi.
+
+### Mon fichier DXF est-il envoyé quelque part ? [#uploaded]
+
+Non. Votre navigateur lit le fichier et le transmet à l'éditeur sur cet appareil ; il n'est jamais envoyé à un serveur.
+
+### Puis-je ouvrir un fichier DWG ? [#dwg]
+
+Pas encore. Enregistrez-le au format DXF dans le programme qui l'a créé (dans AutoCAD, <Command id="SAVEAS" /> avec un type de fichier DXF) et ouvrez celui-ci.
+
+### Puis-je enregistrer mes modifications en DXF ? [#save-dxf]
+
+Pas encore. `Ctrl+S` enregistre le dessin dans un fichier au format propre et versionné de MellowCAD, qui s'ouvre de nouveau ici.
+
+### Pourquoi certains objets manquent-ils ? [#missing]
+
+Ce pour quoi MellowCAD n'a pas encore d'objet, comme les points, les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.
