@@ -2103,6 +2103,9 @@ export const fr: EngineLocale = {
       "peditOption": {
         "eXit": "Quitter"
       },
+      "peditMultipleOption": {
+        "eXit": "Quitter"
+      },
       "peditOption3d": {
         "Join": "Joindre",
         "eXit": "Quitter"
@@ -2231,6 +2234,7 @@ export const fr: EngineLocale = {
       "mtextLine": "TextMult",
       "firstExtensionOrigin": "Spécifiez le premier point d'origine de la ligne d'attache ou <sélectionnez un objet>",
       "secondExtensionOrigin": "Indiquez le second point d'origine de la ligne d'attache",
+      "alignedSecondExtensionOrigin": "Indiquez un second point d'origine de la ligne d'attache",
       "dimensionLineLocation": "Indiquez la position de la ligne de cote",
       "dimensionLineAngle": "Indiquez un angle de la ligne de cote",
       "dimensionText": "Entrez le texte de cote",
@@ -2301,7 +2305,7 @@ export const fr: EngineLocale = {
       "ucsAlignObject": "Sélectionnez un objet correspondant au SCU",
       "ucsNewUcs": "Spécifiez l'origine du nouveau SCU ou",
       "ucsNewOrigin": "Spécifiez la nouvelle origine",
-      "ucsMoveOrigin": "Spécifiez le nouveau point d'origine ou",
+      "ucsMoveOrigin": "Spécifiez une nouvelle origine ou",
       "ucsZdepth": "Spécifiez profondeurZ",
       "ucsOrthographic": "Entrez une option",
       "ucs3XAxisPoint": "Spécifiez un point dans la zone positive de l'axe X",
@@ -2442,6 +2446,8 @@ export const fr: EngineLocale = {
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Spécifiez la première extrémité de l'arête",
       "specifySecondEndpointOfEdge": "Spécifiez la seconde extrémité de l'arête",
+      "polygonFirstEndpointOfEdge": "Spécifiez la première extrémité du côté",
+      "polygonSecondEndpointOfEdge": "Spécifiez la deuxième extrémité du côté",
       "specifyAxisEndpointOfEllipseOr": "Spécifiez l'extrémité de l'axe de l'ellipse ou",
       "specifyAxisEndpointOfEllipticalArcOr": "Spécifiez une extrémité de l'axe de l'arc elliptique ou",
       "specifyCenterOfEllipse": "Spécifiez le centre de l'ellipse",
@@ -2465,6 +2471,7 @@ export const fr: EngineLocale = {
       "enterNextPoint": "Indiquez le point suivant",
       "enterNextPointOr": "Indiquez le point suivant ou",
       "enterThirdPointOr": "Indiquez le point suivant ou",
+      "enterThirdCvPointOr": "Indiquez le point suivant ou",
       "specifyStartTangent": "Spécifiez la tangente de départ",
       "specifyEndTangent": "Spécifiez la tangente de fin",
       "specifyDiameterOfCircle": "Spécifiez le diamètre du cercle",
@@ -2580,8 +2587,8 @@ export const fr: EngineLocale = {
       "specifyDistanceBetweenColumnsOfCell": "Spécifiez la distance entre les colonnes ou",
       "unitCellFirstCorner": "Spécifiez le premier coin de la cellule d'unité",
       "unitCellOppositeCorner": "Spécifiez le coin opposé",
-      "specifyDistanceBetweenColumns": "Spécifiez la distance entre les colonnes",
-      "specifyDistanceBetweenRows": "Spécifiez la distance entre les lignes",
+      "specifyDistanceBetweenColumns": "Spécifiez la distance entre colonnes",
+      "specifyDistanceBetweenRows": "Spécifiez la distance entre rangées",
       "specifyDistanceBetweenRowsOfCell": "Spécifiez la distance entre les lignes",
       "specifyIncrementingElevationBetweenRows": "Spécifiez l'incrément d'élévation entre rangées",
       "enterNumberOfLevels": "Entrez le nombre de niveaux",
@@ -2681,6 +2688,7 @@ export const fr: EngineLocale = {
       "convertToPolylines": "Convertir les lignes, les arcs et les splines en polylignes [Oui/Non]?",
       "specifyPrecisionForSplineConversion": "Spécifiez une valeur de précision pour la conversion de spline",
       "peditOption": "Entrez une option",
+      "peditMultipleOption": "Entrez une option",
       "peditOption3d": "Entrez une option",
       "enterFuzzDistanceOr": "Entrez une distance approximative ou",
       "enterJoinType": "Entrez un type de jointure",
@@ -2798,7 +2806,19 @@ export const fr: EngineLocale = {
       "unitCellFirstCorner": "spaced",
       "filletEdgeAccept": "tight",
       "chamferEdgeAccept": "tight",
-      "filletEdgeGripRadiusOr": "tight"
+      "filletEdgeGripRadiusOr": "tight",
+      "alignArrayedItemsToPath": "tight",
+      "enterArrayType": "tight",
+      "enterPathMethod": "tight",
+      "enterNumberOfColumns": "tight",
+      "enterNumberOfRows": "tight",
+      "enterNumberOfLevels": "tight",
+      "specifyDistanceBetweenColumns": "tight",
+      "specifyDistanceBetweenRows": "tight",
+      "specifyDistanceBetweenLevelsOr": "tight",
+      "specifyIncrementingElevationBetweenRows": "tight",
+      "selectArcCircleLineOrVertex": "tight",
+      "enterThirdCvPointOr": "tight"
     },
     "format": {
       "idle": "Commande",
@@ -5615,6 +5635,12 @@ export const fr: EngineLocale = {
           "radius"
         ]
       ],
+      "listLwRadius": [
+        "              rayon ",
+        [
+          "radius"
+        ]
+      ],
       "listCircumference": [
         "     circonférence ",
         [
@@ -5923,8 +5949,32 @@ export const fr: EngineLocale = {
           "width"
         ]
       ],
+      "listPolylineStartingWidth": [
+        "  Largeur de départ ",
+        [
+          "width"
+        ]
+      ],
+      "listPolylineEndingWidth": [
+        "    Largeur de fin ",
+        [
+          "width"
+        ]
+      ],
+      "listVertexEndingWidth": [
+        "    largeur de fin ",
+        [
+          "width"
+        ]
+      ],
       "listBulge": [
         "           courbure ",
+        [
+          "bulge"
+        ]
+      ],
+      "listVertexBulge": [
+        "          courbure ",
         [
           "bulge"
         ]
@@ -5965,6 +6015,18 @@ export const fr: EngineLocale = {
       ],
       "listPolylineEndAngle": [
         "        angle final ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexStartAngle": [
+        "   angle de départ ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexEndAngle": [
+        "       angle final ",
         [
           "angle"
         ]
@@ -7707,6 +7769,15 @@ export const fr: EngineLocale = {
       },
       "splineditOptionClosed": {
         "Reverse": "Inverser"
+      },
+      "enterThirdPointOr": {
+        "end Tangency": "Tangence fin"
+      },
+      "specifyEndTangentOr": {
+        "System default": "Par Défaut"
+      },
+      "peditMultipleOption": {
+        "Ltype gen": "Typeligne gén"
       }
     },
     "listing": {

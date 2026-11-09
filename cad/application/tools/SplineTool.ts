@@ -238,11 +238,15 @@ export class SplineTool implements Tool {
       case "degree":
         return { id: "enterDegreeOfSpline", enter: { count: this.degree } }
       case "next":
-        // WHY three ids for one English text: Spanish words the question
+        // WHY four ids for one English text: Spanish words the question
         // after two points otherwise (`Precise el punto siguiente o`, 57995,
-        // CV 57493), which Undo back to one point keeps (p125, p128).
+        // CV 57493), which Undo back to one point keeps (p125, p128); French
+        // lists Fit's `Tangence fin` there and ends CV's against the colon
+        // (`[annUler]:`, inquiry/p429).
         if (state.points.length <= 2 && twoGiven(state)) {
-          return "enterThirdPointOr"
+          return this.method === "cv"
+            ? "enterThirdCvPointOr"
+            : "enterThirdPointOr"
         }
         return this.commandOptions().length > 0
           ? "enterNextPointOr"

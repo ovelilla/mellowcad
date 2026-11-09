@@ -559,13 +559,23 @@ class Report {
       const degrees = this.ucsAngle(poly, radians)
       return kind === "lw" ? this.a9(degrees) : this.a6(degrees)
     }
-    this.say("listBulge", { bulge: this.n9(bulge) })
-    this.say(kind === "lw" ? "listLwCenter" : "listVertexCenter", {
+    // WHY two sets of ids for English's one: French writes a VERTEX's
+    // labels a column short of an LWPOLYLINE's, and its radius as a
+    // circle's (inquiry/p430, p438).
+    const lw = kind === "lw"
+    this.say(lw ? "listBulge" : "listVertexBulge", { bulge: this.n9(bulge) })
+    this.say(lw ? "listLwCenter" : "listVertexCenter", {
       ...this.xyz(this.at(poly, arc.center)),
     })
-    this.say("listRadius", { radius: this.n9(arc.radius) })
-    this.say("listPolylineStartAngle", { angle: angle(arc.startAngle) })
-    this.say("listPolylineEndAngle", { angle: angle(arc.endAngle) })
+    this.say(lw ? "listLwRadius" : "listRadius", {
+      radius: this.n9(arc.radius),
+    })
+    this.say(lw ? "listPolylineStartAngle" : "listVertexStartAngle", {
+      angle: angle(arc.startAngle),
+    })
+    this.say(lw ? "listPolylineEndAngle" : "listVertexEndAngle", {
+      angle: angle(arc.endAngle),
+    })
   }
 
   /**
@@ -581,10 +591,11 @@ class Report {
     this.say("listPolylineState", {
       state: `${poly.closed ? "closed" : "open"}${spline ? "Spline" : ""}`,
     })
-    // The header's widths are the first segment's (p430).
+    // The header's widths are the first segment's (p430), worded as a
+    // POLYLINE's, not an LWPOLYLINE's: French `Largeur de fin` (p430).
     const [startWidth, endWidth] = polylineWidth(poly, 0)
-    this.say("listStartingWidth", { width: this.n9(startWidth) })
-    this.say("listEndingWidth", { width: this.n9(endWidth) })
+    this.say("listPolylineStartingWidth", { width: this.n9(startWidth) })
+    this.say("listPolylineEndingWidth", { width: this.n9(endWidth) })
     this.sayExtrusion(poly)
     const measured = objectArea(poly)
     this.say("listArea", { area: this.n9(measured?.area ?? 0) })
@@ -612,9 +623,11 @@ class Report {
     ) => {
       this.header("vertex", poly)
       this.say("listVertexPoint", this.xyz(this.at(poly, shape.vertices[i])))
+      // A VERTEX's ending width is French's `largeur de fin`, lower case
+      // where the header's is not (p430).
       const [a, b] = widthsOf(shape, i)
-      this.say("listStartingWidth", { width: this.n9(a) })
-      this.say("listEndingWidth", { width: this.n9(b) })
+      this.say("listPolylineStartingWidth", { width: this.n9(a) })
+      this.say("listVertexEndingWidth", { width: this.n9(b) })
       if (mark) this.say(mark)
       const n = shape.vertices.length
       const bulge = polylineBulge(shape, i)

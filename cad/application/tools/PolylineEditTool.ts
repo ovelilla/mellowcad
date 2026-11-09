@@ -291,7 +291,10 @@ export class PolylineEditTool implements Tool {
           enter: { count: this.conversion.precision },
         }
       case "main":
-        return this.main3d ? "peditOption3d" : "peditOption"
+        // WHY Multiple's own id: French lists its Ltype gen `Typeligne gén`,
+        // a single polyline's `TYpeligne gén` (pedit/p12, p07).
+        if (this.main3d) return "peditOption3d"
+        return this.multiple ? "peditMultipleOption" : "peditOption"
       case "join":
         return this.joiner.question()
       case "fuzz":

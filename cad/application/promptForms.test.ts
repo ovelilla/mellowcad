@@ -4,6 +4,7 @@ import { type CadHarness, createHarness } from "../../test/harness"
 import { circleOf, lineOf, p } from "../../test/builders"
 import type { EngineLocale } from "../locales/types"
 import { es } from "../locales/es"
+import { fr } from "../locales/fr"
 import { ptBR } from "../locales/pt-BR"
 
 // How a prompt writes its default is each language's string, not the
@@ -191,5 +192,80 @@ describe("the history's answer after a prompt, per language", () => {
     expect(rect(undefined, "_S", "_U", "0,0")[2]).toBe(
       "Specify first corner point of unit cell: 0,0"
     )
+  })
+  // French ends the arrays' counts, spacings, type, method and alignment,
+  // COTANG's first prompt and SPLINE's third CV point without the space
+  // English has (answer-space, fr-FR: arrays/p100, p256, p257, p304, p334,
+  // p419; dimensions/p349; inquiry/p429).
+  it("writes the arrays', COTANG's and SPLINE CV's answers against the colon in French", () => {
+    const withCircle = (...answers: string[]) => {
+      const cad = createHarness({
+        locale: fr,
+        entities: [
+          lineOf(p(0, -20), p(100, -20), { id: "P" }),
+          circleOf(p(10, 10), 2, { id: "C" }),
+        ],
+      })
+      cad.select("C")
+      return written(cad, ...answers)
+    }
+    expect(withCircle("_ARRAY", "_R")).toContain(
+      "Entrez le type de réseau [Rectangulaire/Trajectoire/Polaire] <Rectangulaire>:_R"
+    )
+    expect(withCircle("_ARRAYRECT", "_COL", "5", "8")).toEqual(
+      expect.arrayContaining([
+        "Entrez le nombre de colonnes <4>:5",
+        "Spécifiez la distance entre colonnes <6>:8",
+      ])
+    )
+    expect(withCircle("_ARRAYRECT", "_R", "4", "8", "1")).toEqual(
+      expect.arrayContaining([
+        "Entrez le nombre de rangées <3>:4",
+        "Spécifiez la distance entre rangées <6>:8",
+        "Spécifiez l'incrément d'élévation entre rangées <0>:1",
+      ])
+    )
+    expect(withCircle("_ARRAYRECT", "_L", "2", "3")).toEqual(
+      expect.arrayContaining([
+        "Entrez le nombre de niveaux <1>:2",
+        "Spécifiez la distance entre niveaux ou [Total] <1>:3",
+      ])
+    )
+    expect(withCircle("_ARRAYPATH", "50,-20", "_M", "_D", "_A", "_N")).toEqual(
+      expect.arrayContaining([
+        "Entrez la méthode de trajectoire [Diviser/Mesurer] <Mesurer>:_D",
+        "Aligner les éléments en réseau à la trajectoire\u00a0? [Oui/Non] <Oui>:_N",
+      ])
+    )
+
+    const angular = createHarness({
+      locale: fr,
+      entities: [lineOf(p(0, 0), p(10, 0))],
+    })
+    expect(written(angular, "_DIMANGULAR", "5,0")[1]).toBe(
+      "Sélectionnez un arc, un cercle, une ligne ou <spécifiez un sommet>:5,0"
+    )
+    expect(
+      written(
+        createHarness({ locale: fr }),
+        "_SPLINE",
+        "_M",
+        "_CV",
+        "0,0",
+        "10,10",
+        "20,0"
+      ).at(-1)
+    ).toBe("Indiquez le point suivant ou [annUler]:20,0")
+    expect(
+      written(
+        createHarness({}),
+        "_SPLINE",
+        "_M",
+        "_CV",
+        "0,0",
+        "10,10",
+        "20,0"
+      ).at(-1)
+    ).toBe("Enter next point or [Undo]: 20,0")
   })
 })

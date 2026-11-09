@@ -9,6 +9,7 @@ import {
 } from "../../domain/entityFactories"
 import { createSpline } from "../../domain/splines"
 import { es } from "../../locales/es"
+import { fr } from "../../locales/fr"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, layerOf, lineOf, p } from "../../../test/builders"
 
@@ -2159,6 +2160,140 @@ describe("LIST", () => {
       "                                   Weight   3.0000",
       "                                   X = 30.0000  , Y = 10.0000  , Z = 0.0000",
       "                                   Weight   1.0000",
+    ])
+  })
+})
+
+// French AutoCAD writes a POLYLINE's and its VERTEX's labels a column short of
+// an LWPOLYLINE's, with words of their own (`Largeur de départ`, a VERTEX's
+// `largeur de fin`), and an LWPOLYLINE's radius a column past a circle's: the
+// French console's own lines (inquiry/p430, p438, fr-FR), handles left out.
+describe("LIST against AutoCAD 2027's console in French", () => {
+  it("lists a closed curve-fit polyline with widths (p430)", () => {
+    const cad = run(
+      fr,
+      "_PLINE|0,0|_W|1|0.5|10,0|10,10|0,10|_C|_PEDIT|_L|_F||_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  POLYLIGNE  Calque: "0"',
+      "                            Espace: Espace objet",
+      "          Fermé(e)",
+      "  Largeur de départ    1.0000",
+      "    Largeur de fin    0.5000",
+      "              aire  157.0796",
+      "         périmètre   44.4288",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=   0.0000  Y=   0.0000  Z=   0.0000",
+      "  Largeur de départ    1.0000",
+      "    largeur de fin    0.7500",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ    225",
+      "       angle final    270",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=   5.0000  Y=  -2.0711  Z=   0.0000",
+      "  Largeur de départ    0.7500",
+      "    largeur de fin    0.5000",
+      "                   (inséré par le lissage)",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ    270",
+      "       angle final    315",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=  10.0000  Y=   0.0000  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ    315",
+      "       angle final      0",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=  12.0711  Y=   5.0000  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "                   (inséré par le lissage)",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ      0",
+      "       angle final     45",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=  10.0000  Y=  10.0000  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ     45",
+      "       angle final     90",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=   5.0000  Y=  12.0711  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "                   (inséré par le lissage)",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ     90",
+      "       angle final    135",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=   0.0000  Y=  10.0000  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ    135",
+      "       angle final    180",
+      '                  SOMMET    Calque: "0"',
+      "                            Espace: Espace objet",
+      "      au niveau du point, X=  -2.0711  Y=   5.0000  Z=   0.0000",
+      "  Largeur de départ    0.5000",
+      "    largeur de fin    0.5000",
+      "                   (inséré par le lissage)",
+      "          courbure    0.1989",
+      "            centre X=   5.0000  Y=   5.0000  Z=   0.0000",
+      "             rayon    7.0711",
+      "   angle de départ    180",
+      "       angle final    225",
+      '                  SEQUENCE FIN  Calque: "0"',
+      "                            Espace: Espace objet",
+    ])
+  })
+
+  it("lists a lightweight polyline's widths and arc (p438)", () => {
+    const cad = run(
+      fr,
+      "_LUPREC|2|_AUPREC|2|_PLINE|0,0|_W|1|2|10,0|_A|20,10||_LIST|_L|"
+    )
+    expect(listed(cad)).toEqual([
+      '                  LWPOLYLINE  Calque: "0"',
+      "                            Espace: Espace objet",
+      "            Ouverte",
+      "               aire   78.54",
+      "           longueur   25.71",
+      "          au niveau du point  X=     0.00  Y=     0.00  Z=     0.00",
+      "épaisseur de départ      1.00",
+      "   épaisseur de fin      2.00",
+      "          au niveau du point  X=    10.00  Y=     0.00  Z=     0.00",
+      "épaisseur de départ      2.00",
+      "   épaisseur de fin      2.00",
+      "           courbure      0.41",
+      "             centre  X=    10.00  Y=    10.00  Z=     0.00",
+      "              rayon     10.00",
+      "    angle de départ    270.00",
+      "        angle final      0.00",
+      "          au niveau du point  X=    20.00  Y=    10.00  Z=     0.00",
     ])
   })
 })

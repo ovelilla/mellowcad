@@ -2100,6 +2100,9 @@ export const ptBR: EngineLocale = {
       "peditOption": {
         "eXit": "SAir"
       },
+      "peditMultipleOption": {
+        "eXit": "SAir"
+      },
       "peditOption3d": {
         "Join": "Unir",
         "eXit": "SAir"
@@ -2229,6 +2232,7 @@ export const ptBR: EngineLocale = {
       "mtextLine": "TextoM",
       "firstExtensionOrigin": "Especificar origem da primeira linha de extensão ou <selecionar objeto>",
       "secondExtensionOrigin": "Especificar origem da segunda linha de extensão",
+      "alignedSecondExtensionOrigin": "Especificar origem da segunda linha de extensão",
       "dimensionLineLocation": "Especificar localização da linha de cota",
       "dimensionLineAngle": "Especificar ângulo da linha de cota",
       "dimensionText": "Inserir texto da cota",
@@ -2440,6 +2444,8 @@ export const ptBR: EngineLocale = {
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
       "specifySecondEndpointOfEdge": "Especificar segundo ponto final da aresta",
+      "polygonFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
+      "polygonSecondEndpointOfEdge": "Especificar segundo ponto final da aresta",
       "specifyAxisEndpointOfEllipseOr": "Especificar ponto final do eixo da elipse ou",
       "specifyAxisEndpointOfEllipticalArcOr": "Especificar ponto final do eixo do arco elíptico ou",
       "specifyCenterOfEllipse": "Especificar centro da elipse",
@@ -2463,6 +2469,7 @@ export const ptBR: EngineLocale = {
       "enterNextPoint": "Insira o próximo ponto",
       "enterNextPointOr": "Insira o próximo ponto ou",
       "enterThirdPointOr": "Inserir próximo ponto ou",
+      "enterThirdCvPointOr": "Inserir próximo ponto ou",
       "specifyStartTangent": "Especificar tangente inicial",
       "specifyEndTangent": "Especificar tangente final",
       "specifyDiameterOfCircle": "Especificar o diâmetro do círculo",
@@ -2679,6 +2686,7 @@ export const ptBR: EngineLocale = {
       "convertToPolylines": "Converter linhas, arcos e splines em polilinhas [Sim/Não]?",
       "specifyPrecisionForSplineConversion": "Especifique uma precisão para a conversão da spline",
       "peditOption": "Inserir uma opção",
+      "peditMultipleOption": "Inserir uma opção",
       "peditOption3d": "Insira uma opção",
       "enterFuzzDistanceOr": "Inserir distância aproximada ou",
       "enterJoinType": "Inserir tipo de união",
@@ -2796,7 +2804,19 @@ export const ptBR: EngineLocale = {
       "unitCellFirstCorner": "spaced",
       "filletEdgeAccept": "tight",
       "chamferEdgeAccept": "tight",
-      "filletEdgeGripRadiusOr": "tight"
+      "filletEdgeGripRadiusOr": "tight",
+      "alignArrayedItemsToPath": "spaced",
+      "enterArrayType": "spaced",
+      "enterPathMethod": "spaced",
+      "enterNumberOfColumns": "spaced",
+      "enterNumberOfRows": "spaced",
+      "enterNumberOfLevels": "spaced",
+      "specifyDistanceBetweenColumns": "spaced",
+      "specifyDistanceBetweenRows": "spaced",
+      "specifyDistanceBetweenLevelsOr": "spaced",
+      "specifyIncrementingElevationBetweenRows": "spaced",
+      "selectArcCircleLineOrVertex": "spaced",
+      "enterThirdCvPointOr": "spaced"
     },
     "format": {
       "idle": "Comando",
@@ -5598,6 +5618,12 @@ export const ptBR: EngineLocale = {
           "radius"
         ]
       ],
+      "listLwRadius": [
+        "              raio    ",
+        [
+          "radius"
+        ]
+      ],
       "listCircumference": [
         "     circunferência   ",
         [
@@ -5906,7 +5932,31 @@ export const ptBR: EngineLocale = {
           "width"
         ]
       ],
+      "listPolylineStartingWidth": [
+        "   largura inicial    ",
+        [
+          "width"
+        ]
+      ],
+      "listPolylineEndingWidth": [
+        "     largura final    ",
+        [
+          "width"
+        ]
+      ],
+      "listVertexEndingWidth": [
+        "     largura final    ",
+        [
+          "width"
+        ]
+      ],
       "listBulge": [
+        "            volume    ",
+        [
+          "bulge"
+        ]
+      ],
+      "listVertexBulge": [
         "            volume    ",
         [
           "bulge"
@@ -5947,6 +5997,18 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listPolylineEndAngle": [
+        "      ângulo final    ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexStartAngle": [
+        "    ângulo inicial    ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexEndAngle": [
         "      ângulo final    ",
         [
           "angle"
@@ -7710,6 +7772,15 @@ export const ptBR: EngineLocale = {
       },
       "splineditOptionClosed": {
         "Reverse": "Reverter"
+      },
+      "enterThirdPointOr": {
+        "end Tangency": "Tangência final"
+      },
+      "specifyEndTangentOr": {
+        "System default": "Padrão do sistema"
+      },
+      "peditMultipleOption": {
+        "Ltype gen": "gerar Tipolinha"
       }
     },
     "listing": {

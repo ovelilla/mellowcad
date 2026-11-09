@@ -185,26 +185,37 @@ SECTION is COUPE (`COU`). `LAYER` is an alias of CALQUE, as `DELETE` of EFFACER.
   solid-inquiry/p112; the hatch patterns' descriptions from the pack's `acadiso.pat`.
 - **The tables**, `propose-commands.mjs`, where no probe shows a key.
 
-### Per command, still one wording
+### Per command
 
-What English words alike and French words per command keeps one command's wording until it has a
-prompt id of its own (`cad-catalogs.md`), as pt-BR's second session gave its own:
-`secondExtensionOrigin` (COTLIN «Indiquez le second point d'origine…», COTALI «… un second
-point…»), `ucsZAxisOrigin` and `ucsMoveOrigin` («le nouveau point d'origine» / «une nouvelle
-origine»), `specifyFirstEndpointOfEdge` and `specifySecondEndpointOfEdge` (POLYGONE «… du côté»,
-PYRAMIDE «… de l'arête»); the labels SPLINE's `end Tangency` (`fin Tangente` at 55306, `Tangence
-fin` at 57995), SPLINEDIT's `System default` (`Par défaut` / `Par Défaut`), PEDIT's `Ltype gen`
-(`TYpeligne gén` / `Typeligne gén`) and ARRAYPOLAR's `Angle between` (`ANgle entre` / `Angle
-intermédiaire`). **An answer against the colon**: French AutoCAD ends the arrays' counts and
-spacings (`Entrez le nombre de colonnes ou [Expression] <4>:`), DIMANGULAR's first prompt and the
-array type without the space English has, so the history writes the answer against the colon
-there; here it keeps English's space until `answerForms` gets their ids. **LIST's polyline
-lines**: English writes a lightweight polyline's and a fitted one's (PEDIT's Fit or Spline) alike,
-and French does not (`courbure`, `angle de départ`, `Largeur de départ`… for the fitted one; the
-radius the other way round): `listBulge`, `listPolylineStartAngle`, `listPolylineEndAngle`,
-`listStartingWidth`, `listEndingWidth` take the lightweight polyline's wording and `listRadius`
-the circle's, so inquiry/p430's fitted polyline and one line of p438 differ from the console. The
-rest of LIST reproduces the console line for line (1,098 of 1,168 lines, its padding included).
+What English words alike and French words per command or per state has a prompt id, a prompt's
+label or an answer form of its own (`cad-catalogs.md`; 9/11/2026, after going live), each held
+with the console's lines by `frenchPrompts.test.ts`, `promptForms.test.ts` or `list.test.ts`:
+
+- **Prompts**: COTALI's `alignedSecondExtensionOrigin` («Indiquez un second point d'origine de
+  la ligne d'attache», COTLIN's «le second point», dimensions/p143), POLYGONE's
+  `polygonFirstEndpointOfEdge` and `polygonSecondEndpointOfEdge` («… du côté», «deuxième»;
+  PYRAMIDE's «de l'arête», «seconde», polygon/p122, primitives/p321), SPLINE's third CV point
+  (`enterThirdCvPointOr`, below) and PEDIT Multiple's option (`peditMultipleOption`). SCU Move's
+  origin had its id already: «Spécifiez une nouvelle origine ou [profondeurZ]» (ucs/p210).
+  RESEAURECT's COLumns and Rows ask their spacing «entre colonnes» and «entre rangées», Spacing
+  «entre les colonnes» and «entre les lignes» (arrays/p419, p256, p432).
+- **Labels** (`promptKeywordLabels`): SPLINE's `Tangence fin` at the third Fit point, `fin
+  Tangente` from the fourth (corners/p319); EDITSPLINE's `Par Défaut` at the end tangent, `Par
+  défaut` at the start's; PEDIT Multiple's `Typeligne gén`, a single polyline's `TYpeligne gén`
+  (pedit/p12, p07). ARRAYEDIT's `Angle intermédiaire` is ARRAYEDIT's, not built here: ARRAYPOLAR
+  and ARRAY list `ANgle entre`.
+- **An answer against the colon** (`answerForms`): French ends without English's space the arrays'
+  counts (columns, rows, levels) and spacings (COLumns', Rows', Levels', the rows' elevation), the
+  array type, ARRAYPATH's method and alignment, COTANG's first prompt and SPLINE's third CV point
+  (`[annUler]:`), so the history writes `<4>:5` there (arrays/p100, p256, p257, p304, p334,
+  p419; dimensions/p349; inquiry/p429).
+- **LIST's polyline lines**: a fitted polyline (PEDIT's Fit or Spline, a POLYLINE) and its VERTEX
+  entries are written a column short of an LWPOLYLINE's, in words of their own (`Largeur de
+  départ`, the header's `Largeur de fin` and a VERTEX's `largeur de fin`, `courbure`, `angle de
+  départ`, `angle final`), and an LWPOLYLINE's radius a column past a circle's: seven keys of
+  their own (`listPolylineStartingWidth`, `listPolylineEndingWidth`, `listVertexEndingWidth`,
+  `listVertexBulge`, `listVertexStartAngle`, `listVertexEndAngle`, `listLwRadius`). LIST
+  reproduces inquiry/p430 and p438 line for line, handles aside.
 
 ### Deviations
 
@@ -224,8 +235,7 @@ aux objets activé>` are composed by AutoCAD and in no table, so the French desk
 pt-BR's did (names/d01) —, the dynamic input's field
 labels (`Centre`, `Premier point`…: AutoCAD shows none), the measure readout (`Dist`, `Aire`,
 `Périm`), Polar's 3D readout, our own messages (files, clipboard, FROM's, `messages.erased`), the
-keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded, and the
-`several` above.
+keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded.
 
 ## Script and font
 

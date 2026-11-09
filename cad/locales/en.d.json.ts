@@ -1539,6 +1539,9 @@ declare const source: {
       "peditOption": {
         "eXit": string
       }
+      "peditMultipleOption": {
+        "eXit": string
+      }
       "peditOption3d": {
         "Join": string
         "eXit": string
@@ -1651,6 +1654,7 @@ declare const source: {
       "mtextLine": string
       "firstExtensionOrigin": string
       "secondExtensionOrigin": string
+      "alignedSecondExtensionOrigin": string
       "dimensionLineLocation": string
       "dimensionLineAngle": string
       "dimensionText": string
@@ -1839,6 +1843,8 @@ declare const source: {
       "circumscribedShort": string
       "specifyFirstEndpointOfEdge": string
       "specifySecondEndpointOfEdge": string
+      "polygonFirstEndpointOfEdge": string
+      "polygonSecondEndpointOfEdge": string
       "specifyAxisEndpointOfEllipseOr": string
       "specifyAxisEndpointOfEllipticalArcOr": string
       "specifyCenterOfEllipse": string
@@ -1862,6 +1868,7 @@ declare const source: {
       "enterNextPoint": string
       "enterNextPointOr": string
       "enterThirdPointOr": string
+      "enterThirdCvPointOr": string
       "specifyStartTangent": string
       "specifyEndTangent": string
       "specifyDiameterOfCircle": string
@@ -2067,6 +2074,7 @@ declare const source: {
       "convertToPolylines": string
       "specifyPrecisionForSplineConversion": string
       "peditOption": string
+      "peditMultipleOption": string
       "peditOption3d": string
       "enterFuzzDistanceOr": string
       "enterJoinType": string
@@ -2185,6 +2193,18 @@ declare const source: {
       "filletEdgeAccept": string
       "chamferEdgeAccept": string
       "filletEdgeGripRadiusOr": string
+      "alignArrayedItemsToPath": string
+      "enterArrayType": string
+      "enterPathMethod": string
+      "enterNumberOfColumns": string
+      "enterNumberOfRows": string
+      "enterNumberOfLevels": string
+      "specifyDistanceBetweenColumns": string
+      "specifyDistanceBetweenRows": string
+      "specifyDistanceBetweenLevelsOr": string
+      "specifyIncrementingElevationBetweenRows": string
+      "selectArcCircleLineOrVertex": string
+      "enterThirdCvPointOr": string
     }
     "format": {
       "idle": string
@@ -2599,6 +2619,7 @@ declare const source: {
       "listLineDelta": string
       "listCenter": string
       "listRadius": string
+      "listLwRadius": string
       "listCircumference": string
       "listArea": string
       "listStartAngle": string
@@ -2637,11 +2658,17 @@ declare const source: {
       "listLwPoint": string
       "listStartingWidth": string
       "listEndingWidth": string
+      "listPolylineStartingWidth": string
+      "listPolylineEndingWidth": string
+      "listVertexEndingWidth": string
       "listBulge": string
+      "listVertexBulge": string
       "listLwCenter": string
       "listVertexCenter": string
       "listPolylineStartAngle": string
       "listPolylineEndAngle": string
+      "listVertexStartAngle": string
+      "listVertexEndAngle": string
       "listPolylineState": string
       "listPolylinePerimeter": string
       "listVertexPoint": string
@@ -3070,6 +3097,15 @@ declare const source: {
       }
       "splineditOptionClosed": {
         "Reverse": string
+      }
+      "enterThirdPointOr": {
+        "end Tangency": string
+      }
+      "specifyEndTangentOr": {
+        "System default": string
+      }
+      "peditMultipleOption": {
+        "Ltype gen": string
       }
     }
     "listing": {

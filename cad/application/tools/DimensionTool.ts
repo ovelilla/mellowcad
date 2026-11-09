@@ -140,7 +140,7 @@ export class DimensionTool implements Tool {
       case "select":
         return "selectObjectToDimension"
       case "second":
-        return "secondExtensionOrigin"
+        return this.secondOriginPrompt()
       case "line":
         switch (state.prompt) {
           case "text":
@@ -658,15 +658,27 @@ export class DimensionTool implements Tool {
     return true
   }
 
+  /** WHY DIMALIGNED's own id: French asks it for `un second point`, DIMLINEAR `le second point` (dimensions/p143). */
+  private secondOriginPrompt(): PromptId {
+    return this.kind === "aligned"
+      ? "alignedSecondExtensionOrigin"
+      : "secondExtensionOrigin"
+  }
+
   private openSecondInput(ctx: ToolContext): void {
-    this.openCoordinate(ctx, "point", "secondExtensionOrigin", (commitCtx) => {
-      if (this.state.phase !== "second") return false
-      const typed = commitCtx.dynamicInput.getText("point").trim()
-      const point = this.parsePoint(typed, this.state.first, commitCtx)
-      if (!point) return false
-      this.enterLineFromPoints(this.state.first, point, commitCtx)
-      return true
-    })
+    this.openCoordinate(
+      ctx,
+      "point",
+      this.secondOriginPrompt(),
+      (commitCtx) => {
+        if (this.state.phase !== "second") return false
+        const typed = commitCtx.dynamicInput.getText("point").trim()
+        const point = this.parsePoint(typed, this.state.first, commitCtx)
+        if (!point) return false
+        this.enterLineFromPoints(this.state.first, point, commitCtx)
+        return true
+      }
+    )
   }
 
   private openLineInput(ctx: ToolContext): void {

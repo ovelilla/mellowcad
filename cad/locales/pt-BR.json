@@ -1499,6 +1499,7 @@
       "peditOption": {
         "eXit": "SAir"
       },
+      "peditMultipleOption": { "eXit": "SAir" },
       "peditOption3d": {
         "Join": "Unir",
         "eXit": "SAir"
@@ -1611,6 +1612,7 @@
       "mtextLine": "TextoM",
       "firstExtensionOrigin": "Especificar origem da primeira linha de extensão ou '<'selecionar objeto>",
       "secondExtensionOrigin": "Especificar origem da segunda linha de extensão",
+      "alignedSecondExtensionOrigin": "Especificar origem da segunda linha de extensão",
       "dimensionLineLocation": "Especificar localização da linha de cota",
       "dimensionLineAngle": "Especificar ângulo da linha de cota",
       "dimensionText": "Inserir texto da cota",
@@ -1799,6 +1801,8 @@
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
       "specifySecondEndpointOfEdge": "Especificar segundo ponto final da aresta",
+      "polygonFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
+      "polygonSecondEndpointOfEdge": "Especificar segundo ponto final da aresta",
       "specifyAxisEndpointOfEllipseOr": "Especificar ponto final do eixo da elipse ou",
       "specifyAxisEndpointOfEllipticalArcOr": "Especificar ponto final do eixo do arco elíptico ou",
       "specifyCenterOfEllipse": "Especificar centro da elipse",
@@ -1822,6 +1826,7 @@
       "enterNextPoint": "Insira o próximo ponto",
       "enterNextPointOr": "Insira o próximo ponto ou",
       "enterThirdPointOr": "Inserir próximo ponto ou",
+      "enterThirdCvPointOr": "Inserir próximo ponto ou",
       "specifyStartTangent": "Especificar tangente inicial",
       "specifyEndTangent": "Especificar tangente final",
       "specifyDiameterOfCircle": "Especificar o diâmetro do círculo",
@@ -2027,6 +2032,7 @@
       "convertToPolylines": "Converter linhas, arcos e splines em polilinhas [Sim/Não]?",
       "specifyPrecisionForSplineConversion": "Especifique uma precisão para a conversão da spline",
       "peditOption": "Inserir uma opção",
+      "peditMultipleOption": "Inserir uma opção",
       "peditOption3d": "Insira uma opção",
       "enterFuzzDistanceOr": "Inserir distância aproximada ou",
       "enterJoinType": "Inserir tipo de união",
@@ -2144,7 +2150,19 @@
       "unitCellFirstCorner": "spaced",
       "filletEdgeAccept": "tight",
       "chamferEdgeAccept": "tight",
-      "filletEdgeGripRadiusOr": "tight"
+      "filletEdgeGripRadiusOr": "tight",
+      "alignArrayedItemsToPath": "spaced",
+      "enterArrayType": "spaced",
+      "enterPathMethod": "spaced",
+      "enterNumberOfColumns": "spaced",
+      "enterNumberOfRows": "spaced",
+      "enterNumberOfLevels": "spaced",
+      "specifyDistanceBetweenColumns": "spaced",
+      "specifyDistanceBetweenRows": "spaced",
+      "specifyDistanceBetweenLevelsOr": "spaced",
+      "specifyIncrementingElevationBetweenRows": "spaced",
+      "selectArcCircleLineOrVertex": "spaced",
+      "enterThirdCvPointOr": "spaced"
     },
     "format": {
       "idle": "Comando",
@@ -2559,6 +2577,7 @@
       "listLineDelta": "                  Delta X ={x}, Delta Y = {y}, Delta Z ={z}",
       "listCenter": "            centro ponto, X={x}  Y={y}  Z={z}",
       "listRadius": "              raio    {radius}",
+      "listLwRadius": "              raio    {radius}",
       "listCircumference": "     circunferência   {length}",
       "listArea": "              área   {area}",
       "listStartAngle": "    ângulo inicial    {angle}",
@@ -2597,11 +2616,17 @@
       "listLwPoint": "          no ponto  X={x}  Y={y}  Z={z}",
       "listStartingWidth": "   largura inicial    {width}",
       "listEndingWidth": "     largura final    {width}",
+      "listPolylineStartingWidth": "   largura inicial    {width}",
+      "listPolylineEndingWidth": "     largura final    {width}",
+      "listVertexEndingWidth": "     largura final    {width}",
       "listBulge": "            volume    {bulge}",
+      "listVertexBulge": "            volume    {bulge}",
       "listLwCenter": "            centro  X={x}  Y={y}  Z={z}",
       "listVertexCenter": "            centro X={x}  Y={y}  Z={z}",
       "listPolylineStartAngle": "    ângulo inicial    {angle}",
       "listPolylineEndAngle": "      ângulo final    {angle}",
+      "listVertexStartAngle": "    ângulo inicial    {angle}",
+      "listVertexEndAngle": "      ângulo final    {angle}",
       "listPolylineState": "{state, select, open {              Abrir} closed {            Fechado} openSpline {             Abrir spline} closedSpline {            Fechado spline} openSpace {             Abrir espaço} closedSpace {            Fechado espaço} openSplineSpace {             Abrir spline espaço} other {            Fechado spline espaço}}",
       "listPolylinePerimeter": "         perímetro   {length}",
       "listVertexPoint": "                em ponto, X={x}  Y={y}  Z={z}",
@@ -3000,7 +3025,10 @@
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" },
       "filletEdgeLoopOr": { "Edge": "arEsta" },
-      "splineditOptionClosed": { "Reverse": "Reverter" }
+      "splineditOptionClosed": { "Reverse": "Reverter" },
+      "enterThirdPointOr": { "end Tangency": "Tangência final" },
+      "specifyEndTangentOr": { "System default": "Padrão do sistema" },
+      "peditMultipleOption": { "Ltype gen": "gerar Tipolinha" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

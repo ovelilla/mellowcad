@@ -127,10 +127,12 @@ export class PolygonTool implements Tool {
         }
       case "radius":
         return "specifyRadiusOfCircle"
+      // WHY not PYRAMID's ids: French words a polygon's side `côté` and its
+      // second end `deuxième` (polygon/p122), a pyramid's edge `arête`.
       case "edgeStart":
-        return "specifyFirstEndpointOfEdge"
+        return "polygonFirstEndpointOfEdge"
       case "edgeEnd":
-        return "specifySecondEndpointOfEdge"
+        return "polygonSecondEndpointOfEdge"
     }
   }
 

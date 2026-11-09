@@ -1455,6 +1455,9 @@ export const en: EngineCatalog = {
       "peditOption": {
         "eXit": "EXit"
       },
+      "peditMultipleOption": {
+        "eXit": "EXit"
+      },
       "peditOption3d": {
         "Join": "Join",
         "eXit": "EXit"
@@ -1583,6 +1586,7 @@ export const en: EngineCatalog = {
       "mtextLine": "MText",
       "firstExtensionOrigin": "Specify first extension line origin or <select object>",
       "secondExtensionOrigin": "Specify second extension line origin",
+      "alignedSecondExtensionOrigin": "Specify second extension line origin",
       "dimensionLineLocation": "Specify dimension line location",
       "dimensionLineAngle": "Specify angle of dimension line",
       "dimensionText": "Enter dimension text",
@@ -1794,6 +1798,8 @@ export const en: EngineCatalog = {
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",
       "specifySecondEndpointOfEdge": "Specify second endpoint of edge",
+      "polygonFirstEndpointOfEdge": "Specify first endpoint of edge",
+      "polygonSecondEndpointOfEdge": "Specify second endpoint of edge",
       "specifyAxisEndpointOfEllipseOr": "Specify axis endpoint of ellipse or",
       "specifyAxisEndpointOfEllipticalArcOr": "Specify axis endpoint of elliptical arc or",
       "specifyCenterOfEllipse": "Specify center of ellipse",
@@ -1817,6 +1823,7 @@ export const en: EngineCatalog = {
       "enterNextPoint": "Enter next point",
       "enterNextPointOr": "Enter next point or",
       "enterThirdPointOr": "Enter next point or",
+      "enterThirdCvPointOr": "Enter next point or",
       "specifyStartTangent": "Specify start tangent",
       "specifyEndTangent": "Specify end tangent",
       "specifyDiameterOfCircle": "Specify diameter of circle",
@@ -2033,6 +2040,7 @@ export const en: EngineCatalog = {
       "convertToPolylines": "Convert Lines, Arcs and Splines to polylines [Yes/No]?",
       "specifyPrecisionForSplineConversion": "Specify a precision for spline conversion",
       "peditOption": "Enter an option",
+      "peditMultipleOption": "Enter an option",
       "peditOption3d": "Enter an option",
       "enterFuzzDistanceOr": "Enter fuzz distance or",
       "enterJoinType": "Enter join type",
@@ -2150,7 +2158,19 @@ export const en: EngineCatalog = {
       "unitCellFirstCorner": "spaced",
       "filletEdgeAccept": "tight",
       "chamferEdgeAccept": "tight",
-      "filletEdgeGripRadiusOr": "tight"
+      "filletEdgeGripRadiusOr": "tight",
+      "alignArrayedItemsToPath": "spaced",
+      "enterArrayType": "spaced",
+      "enterPathMethod": "spaced",
+      "enterNumberOfColumns": "spaced",
+      "enterNumberOfRows": "spaced",
+      "enterNumberOfLevels": "spaced",
+      "specifyDistanceBetweenColumns": "spaced",
+      "specifyDistanceBetweenRows": "spaced",
+      "specifyDistanceBetweenLevelsOr": "spaced",
+      "specifyIncrementingElevationBetweenRows": "spaced",
+      "selectArcCircleLineOrVertex": "spaced",
+      "enterThirdCvPointOr": "spaced"
     },
     "format": {
       "idle": "Command",
@@ -4948,6 +4968,12 @@ export const en: EngineCatalog = {
           "radius"
         ]
       ],
+      "listLwRadius": [
+        "            radius ",
+        [
+          "radius"
+        ]
+      ],
       "listCircumference": [
         "     circumference ",
         [
@@ -5256,7 +5282,31 @@ export const en: EngineCatalog = {
           "width"
         ]
       ],
+      "listPolylineStartingWidth": [
+        "    starting width ",
+        [
+          "width"
+        ]
+      ],
+      "listPolylineEndingWidth": [
+        "      ending width ",
+        [
+          "width"
+        ]
+      ],
+      "listVertexEndingWidth": [
+        "      ending width ",
+        [
+          "width"
+        ]
+      ],
       "listBulge": [
+        "             bulge ",
+        [
+          "bulge"
+        ]
+      ],
+      "listVertexBulge": [
         "             bulge ",
         [
           "bulge"
@@ -5297,6 +5347,18 @@ export const en: EngineCatalog = {
         ]
       ],
       "listPolylineEndAngle": [
+        "         end angle ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexStartAngle": [
+        "       start angle ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexEndAngle": [
         "         end angle ",
         [
           "angle"
@@ -7038,6 +7100,15 @@ export const en: EngineCatalog = {
       },
       "splineditOptionClosed": {
         "Reverse": "Reverse"
+      },
+      "enterThirdPointOr": {
+        "end Tangency": "end Tangency"
+      },
+      "specifyEndTangentOr": {
+        "System default": "System default"
+      },
+      "peditMultipleOption": {
+        "Ltype gen": "Ltype gen"
       }
     },
     "listing": {

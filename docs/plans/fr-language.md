@@ -66,8 +66,8 @@ for itself.
 
 ## What is left
 
-Each item is in `docs/i18n/fr.md`: the prompts French words per command where English shares one
-("Per command still one wording", "An answer against the colon", "LIST's polyline lines"), what no
-probe showed ("Unverified": the drafting toggles' lines, to settle on the French desktop as pt-BR's
-were, the dynamic input's labels, our own messages), and a native speaker's review. Skill
-`language-review` takes them, and keeps the language current after the next AutoCAD update.
+Each item is in `docs/i18n/fr.md`: what no probe showed ("Unverified": the drafting toggles'
+lines, to settle on the French desktop as pt-BR's were, the dynamic input's labels, our own
+messages) and a native speaker's review. What French words per command where English shares one
+was done the same day, after going live ("Per command"). Skill `language-review` takes the rest,
+and keeps the language current after the next AutoCAD update.

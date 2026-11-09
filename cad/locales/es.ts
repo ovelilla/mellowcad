@@ -2091,6 +2091,9 @@ export const es: EngineLocale = {
       "peditOption": {
         "eXit": "SAlir"
       },
+      "peditMultipleOption": {
+        "eXit": "SAlir"
+      },
       "peditOption3d": {
         "Join": "Unir",
         "eXit": "SAlir"
@@ -2219,6 +2222,7 @@ export const es: EngineLocale = {
       "mtextLine": "textoM",
       "firstExtensionOrigin": "Especifique el origen de la primera línea de referencia o <designar objeto>",
       "secondExtensionOrigin": "Especifique el origen de la segunda línea de referencia",
+      "alignedSecondExtensionOrigin": "Especifique el origen de la segunda línea de referencia",
       "dimensionLineLocation": "Designe ubicación de línea de cota",
       "dimensionLineAngle": "Designe ángulo de línea de cota",
       "dimensionText": "Indique texto de cota",
@@ -2430,6 +2434,8 @@ export const es: EngineLocale = {
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",
       "specifySecondEndpointOfEdge": "Precise segundo punto final de lado",
+      "polygonFirstEndpointOfEdge": "Precise primer punto final de lado",
+      "polygonSecondEndpointOfEdge": "Precise segundo punto final de lado",
       "specifyAxisEndpointOfEllipseOr": "Precise punto final de eje de elipse o",
       "specifyAxisEndpointOfEllipticalArcOr": "Precise punto final de eje de arco elíptico o",
       "specifyCenterOfEllipse": "Precise centro de elipse",
@@ -2453,6 +2459,7 @@ export const es: EngineLocale = {
       "enterNextPoint": "Especifique punto siguiente",
       "enterNextPointOr": "Especifique punto siguiente o",
       "enterThirdPointOr": "Precise el punto siguiente o",
+      "enterThirdCvPointOr": "Precise el punto siguiente o",
       "specifyStartTangent": "Precise tangente inicial",
       "specifyEndTangent": "Precise tangente final",
       "specifyDiameterOfCircle": "Precise diámetro de círculo",
@@ -2669,6 +2676,7 @@ export const es: EngineLocale = {
       "convertToPolylines": "¿Convertir líneas, arcos y splines en polilíneas? [Sí/No]?",
       "specifyPrecisionForSplineConversion": "Especifique una precisión para la conversión de spline",
       "peditOption": "Indique una opción",
+      "peditMultipleOption": "Indique una opción",
       "peditOption3d": "Indique una opción",
       "enterFuzzDistanceOr": "Indique la distancia de aproximación o",
       "enterJoinType": "Indique el tipo de junta",
@@ -2786,7 +2794,19 @@ export const es: EngineLocale = {
       "unitCellFirstCorner": "tight",
       "filletEdgeAccept": "tight",
       "chamferEdgeAccept": "tight",
-      "filletEdgeGripRadiusOr": "tight"
+      "filletEdgeGripRadiusOr": "tight",
+      "alignArrayedItemsToPath": "spaced",
+      "enterArrayType": "spaced",
+      "enterPathMethod": "spaced",
+      "enterNumberOfColumns": "spaced",
+      "enterNumberOfRows": "spaced",
+      "enterNumberOfLevels": "spaced",
+      "specifyDistanceBetweenColumns": "spaced",
+      "specifyDistanceBetweenRows": "spaced",
+      "specifyDistanceBetweenLevelsOr": "spaced",
+      "specifyIncrementingElevationBetweenRows": "spaced",
+      "selectArcCircleLineOrVertex": "spaced",
+      "enterThirdCvPointOr": "spaced"
     },
     "format": {
       "idle": "Comando",
@@ -5592,6 +5612,12 @@ export const es: EngineLocale = {
           "radius"
         ]
       ],
+      "listLwRadius": [
+        "             radio ",
+        [
+          "radius"
+        ]
+      ],
       "listCircumference": [
         "     circunferencia ",
         [
@@ -5900,7 +5926,31 @@ export const es: EngineLocale = {
           "width"
         ]
       ],
+      "listPolylineStartingWidth": [
+        "   anchura inicial ",
+        [
+          "width"
+        ]
+      ],
+      "listPolylineEndingWidth": [
+        "     anchura final ",
+        [
+          "width"
+        ]
+      ],
+      "listVertexEndingWidth": [
+        "     anchura final ",
+        [
+          "width"
+        ]
+      ],
       "listBulge": [
+        "         curvatura ",
+        [
+          "bulge"
+        ]
+      ],
+      "listVertexBulge": [
         "         curvatura ",
         [
           "bulge"
@@ -5941,6 +5991,18 @@ export const es: EngineLocale = {
         ]
       ],
       "listPolylineEndAngle": [
+        "      ángulo final ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexStartAngle": [
+        "    ángulo inicial ",
+        [
+          "angle"
+        ]
+      ],
+      "listVertexEndAngle": [
         "      ángulo final ",
         [
           "angle"
@@ -7694,6 +7756,15 @@ export const es: EngineLocale = {
       },
       "splineditOptionClosed": {
         "Reverse": "Invertir"
+      },
+      "enterThirdPointOr": {
+        "end Tangency": "finalizar Tangencia"
+      },
+      "specifyEndTangentOr": {
+        "System default": "Defecto sistema"
+      },
+      "peditMultipleOption": {
+        "Ltype gen": "generarTlínea"
       }
     },
     "listing": {
