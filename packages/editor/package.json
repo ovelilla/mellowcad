@@ -1,6 +1,6 @@
 {
   "name": "@mellowcad/editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The MellowCAD drafting editor as one React component: the canvas with AutoCAD-style chrome, menus and dialogs, its stylesheet and its words in five languages.",
   "keywords": [
     "cad",
@@ -65,8 +65,8 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
-    "@mellowcad/engine": "^0.2.0",
-    "@mellowcad/react": "^0.1.0",
+    "@mellowcad/engine": "^0.3.0",
+    "@mellowcad/react": "^0.1.1",
     "react": "^19.0.0"
   },
   "dependencies": {

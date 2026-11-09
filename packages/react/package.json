@@ -1,6 +1,6 @@
 {
   "name": "@mellowcad/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React bindings for @mellowcad/engine: the drawing canvas with its engine, the engine state as React state, and the wiring of the fields AutoCAD users type into.",
   "keywords": [
     "cad",
@@ -42,7 +42,7 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
-    "@mellowcad/engine": "^0.2.0",
+    "@mellowcad/engine": "^0.3.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
