@@ -127,6 +127,11 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    the traced transcripts' `"Message"` for a `:"` end, in both languages (pt-BR's PEDIT,
    MREDO, ARRAYPATH; a table `%s` string can lose the space the console has). MATCHPROP's words come
    from its console once `acmatch.crx` is loaded.
+   **What AutoCAD composes is in no table and no transcript**: the drafting toggles' lines (F3,
+   F7, F8, F9, F10, F11 and Ctrl+W, each twice at the Command prompt) and the readouts drawn by
+   the cursor (Polar's, along Z too). The language's desktop settles them in the same session
+   (skill `autocad-research`, its gui.md): French's, written in Autodesk's style, were six of
+   seven wrong (`docs/i18n/fr.md`, "The desktop").
 4. Each command's coverage entry names it after `· <tag>`; the `/docs` pages that read the catalog
    regenerate (`npm run docs:check`).
 
@@ -140,7 +145,9 @@ every left-to-right island (`ui.md`). Plurals and IME as the plan found.
 ## 6. Verify, then live
 
 - `npm run typecheck`, `npm run lint`, `npm test`; a production build shows the new pages as `●`,
-  never `ƒ`, and the budgets of `i18n.md` hold (skill `language-review` measures them).
+  never `ƒ`, and the budgets of `i18n.md` hold (skill `language-review` measures them). A live
+  language's name joins every landing: measure every language's first load before and after;
+  the latin ones sit within a few hundred bytes of 250 KiB (`docs/plans/fr-language.md`).
 - Screenshots of the landing at 360 px and of the editor at 1280×720 for text that no longer fits
   (skill `browser-verify`): the palettes and every drop-down, the top bar's palette toggles and
   the panel's tabs at its narrowest, the figures' tooltips and diagrams, the lists of command
@@ -150,7 +157,11 @@ every left-to-right island (`ui.md`). Plurals and IME as the plan found.
   (both catalogs, `commands` as declared, `docs/i18n/<tag>.md`), and the language joins the
   selector, `hreflang` and the sitemap. A `localized` one never goes live without its command
   language. A `global` one is read by a native speaker first when one can be found (Arabic went
-  without; its page says so). The announcement takes it off the Status section's «Next up» in
-  every language in the same commit, where it is listed (pt-BR never was); `docs/i18n/README.md`'s
-  table gets its row.
+  without; its page says so). With no native reader at hand, what Autodesk did not write — the
+  site's and the editor's catalogs, the "Use" pages and exercises, the command notes — gets a
+  model's reread instead, a few agents held to the keys, ICU, components, typography and the
+  landing's bytes, and every change read again before its commit; the page says which it had
+  (French, 9/11/2026: `docs/i18n/fr.md`, "Review"). The announcement takes it off the Status
+  section's «Next up» in every language in the same commit, where it is listed (pt-BR never was);
+  `docs/i18n/README.md`'s table gets its row.
 - The plan shrinks to a summary and its commits (skill `finish-feature`).

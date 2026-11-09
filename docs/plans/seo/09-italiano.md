@@ -4,8 +4,8 @@
 > con el razonamiento al máximo, cuando el francés (sesión 08) esté `live`.
 
 Eres la sesión 09 del plan de visibilidad de MellowCAD. Lee primero `AGENTS.md`,
-`docs/next-seo.md` (el plan maestro), la skill `add-language` y el plan del francés, el idioma
-anterior (`docs/plans/<tag>-language.md`), con lo que aprendió.
+`docs/next-seo.md` (el plan maestro), la skill `add-language` y lo que dejó el francés, el idioma
+anterior: su plan (`docs/plans/fr-language.md`) y su página (`docs/i18n/fr.md`).
 Responde en español; el código, los comentarios y el conocimiento del repo, en inglés. Decide sin
 preguntar.
 
@@ -18,6 +18,30 @@ La auditoría de idiomas del 5/11/2026 (`~/seo-data/audit-2026-11-05/languages.m
   «comandi autocad» y las listas bilingües («comandi autocad inglese italiano»).
 - **La competencia**: media-alta; KulmanLab es n.º 1 para «cad online gratis» en Italia (la consulta
   se escribe igual que en español).
+
+## Lo que dejó el francés (sesión 08, 9/11/2026)
+
+- **El presupuesto de la landing, al límite**: `/fr` pesa 255.870 bytes, 130 por debajo de
+  250 KiB, y `/es` y `/pt-br`, unos 249. Nombrar el italiano en cada portada cuesta bytes en
+  todas: mide la primera carga de cada idioma antes y después (build de producción en un
+  worktree, Brotli q11) y recorta antes de pasar a `live` si alguna se pasa.
+- **El paquete de idioma italiano** se instala en el AutoCAD del dueño (pídelo antes; él acepta
+  el UAC) y después otra vez la actualización 2027.1 (skill `autocad-research`).
+- **El escritorio, en la misma sesión**: las líneas de los conmutadores (F3, F7, F8, F9, F10,
+  F11, Ctrl+W) y las lecturas junto al cursor no están en ninguna tabla; en francés, seis de
+  siete supuestas estaban mal. Pide al dueño unos minutos de su ratón.
+- **Lo que el idioma redacta por comando** y el inglés comparte (`console-pair.mjs`, sus
+  `several`): ids de prompt, etiquetas y respuestas propias, como hizo el francés.
+- **Sin revisión de un nativo**: el dueño no conoce a ninguno. Al final, la relectura de un
+  modelo de lo que Autodesk no escribió (skill `add-language`), con cada cambio leído antes del
+  commit.
+- **Lo que nombra o cuenta los idiomas a mano**: el README, los paquetes y sus guías (la
+  descripción del editor dice «five languages»), los formularios de issues, `docs/i18n/README.md`,
+  el kit de lanzamiento, la sección de comandos de la landing. Los catálogos nuevos son un
+  changeset `minor` de cada paquete.
+- **Después de publicar**: `gsc-prioritize.mjs` (en ~/seo-data/scripts) necesita el peso de
+  `/it`; IndexNow, la indexación en Bing y las fichas de AlternativeTo y SaaSHub con el
+  italiano (kit §6) son del dueño o de la sesión, si él lo pide.
 
 ## Objetivo
 
