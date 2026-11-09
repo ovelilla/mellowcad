@@ -26,6 +26,40 @@ Switzerland, Canada, the Maghreb, West Africa — as AutoCAD has one (`fr-FR`).
 - **Console:** `runacc.sh … fr-FR` and `probe.sh --lang fr` (the banner's last line, «Utilitaires
   de menu AutoCAD chargés.», is in no table). **Desktop:** `acad.exe /language fr-FR`.
 
+## Interface terms
+
+From the installed pack by id against `en-US/` (`propose-interface.mjs --lang fr --like pt-BR`,
+9/11/2026): `P <dll> <id>` a string table, `D <dll> <dialog>:<control>` a dialog's label, `N
+<assembly> <key>` a .NET resource, `X <uid>` an element of `UserDataCache/fr-fr/Support/acad.CUIX`.
+The engine's `interface`: 232 of 468 settled by one wording or as pt-BR's ids, 152 by the row's
+place (a palette row takes `ax26res`'s word, a tool the ribbon's), the rest ours, below. The
+editor's catalog: 94 of 267 by id, 77 by place, 96 ours.
+
+| Area | English | French | Source | Verified |
+| --- | --- | --- | --- | --- |
+| Object snaps | Endpoint, Midpoint, Center, Quadrant, Intersection, Apparent intersection, Nearest | Extrémité, Milieu, Centre, Quadrant, Intersection, Intersection projetée, Le plus proche | P acadres 70–79, 32997 | yes |
+| Status bar | Object snap, Polar tracking, Object snap tracking, Selection cycling, Clean screen, Dynamic input | Accrochage aux objets, Repérage polaire, Repérage d'accrochage aux objets, Cycle de sélection, Nettoyer écran, Saisie dynamique | P dwgaidsRes 5, 2; P acadres 25573, 20051; X XLS_6102 | yes |
+|  | MODEL, Model space, Grid, Grid Snap, Snap X spacing | OBJET, Espace objet, Grille, Accrochage à la grille, Espacement X de l'accrochage | P acadres 4122, 20008; D dwgaidsRes | yes |
+|  | Snap mode, Snap settings, Polar snap, Snap X (our status bar's own) | Mode Résolution, Paramètres de résolution, Résolution polaire, Résolution X | ours, from SNAP's name RESOL and the toggles' «Mode ortho» | — |
+| Ribbon | Home; Draw, Modify, Annotation, Block, Utilities | Début; Dessin, Modification, Annotation, Bloc, Utilitaires | X ID_TabHome, ID_PanelDraw, ID_PanelModify, ID_PanelBasicAnnotation, ID_PanelHome_Blocks, ID_PanelStandard_Clipboard | yes |
+| Draw | Line, Polyline, Circle, Arc, Ellipse, Elliptical arc, Rectangle, Polygon, Hatch, Spline | Ligne, Polyligne, Cercle, Arc, Ellipse, Arc elliptique, Rectangle, Polygone, Hachures, Spline | P ax26res 298…; X ID_RBN_0138 | yes |
+|  | Center, Diameter · 2-Point · 3-Point · Start, Center, End · Center, Start, End | Centre, diamètre · 2 points · 3 points · Départ, centre, fin · Centre, départ, fin | X ID_RBN_0128, 0130, 0094, 0113, 0122 | yes |
+|  | Diameter circle, 2-Point circle, Start, Center, End arc, Center ellipse (tool names) | Cercle par diamètre, Cercle par 2 points, Arc départ, centre, fin, Ellipse par centre | ours, worded from the ribbon's options | — |
+| Modify | Move, Copy, Stretch, Rotate, Mirror, Scale, Offset, Trim, Extend, Fillet, Chamfer | Déplacer, Copier, Etirer, Rotation, Miroir, Echelle, Décaler, Ajuster, Prolonger, Raccord, Chanfrein | X the ribbon's buttons (ID_RBN_CMDBTN_OFFSET…), P acadres | yes |
+|  | Match properties; Rectangular, Polar, Path array; Break at point | Copier les propriétés; Réseau rectangulaire, polaire, le long d'une trajectoire; Couper au niveau du point | X ACAD_335, XLS_00021866, 00021843, 00021840, ACAD_2419 | yes |
+| 3D | Box, Wedge, Cylinder, Sphere, Torus; Extrude, Revolve, Presspull, Slice, Section; Fillet Edge, Solid Editing | Boîte, Biseau, Cylindre, Sphère, Tore; Extrusion, Révolution, Appuyer/tirer, Section, Coupe; Arête de raccord, Edition de solides | P acadres 22278…, X XLS_6387, ID_RBN_0173, ACAD_1946 | yes |
+| Annotate | Text, Multiline text; Linear, Aligned, Rotated, Continue, Adjust space | Texte, Texte multiligne; Linéaire, Alignée, Pivotée, Continuer, Ajuster l'espacement | X ACAD_284, ID_RBN_CMDBTN_DIMSPACE; P ax26res 1169; Pivotée from XLS_0033 «Cote pivotée» | yes |
+| View | SW Isometric…, Custom View; ViewCube faces; Home; WCS; Zoom Extents | Isométrique orientée S-O…, Vue personnalisée; HAUT, BAS, AVANT…; Début; SCG; Zoom vers l'étendue | P AcVMToolsRes 4236, 631, 47021, 47009, 4214; acadres 40867 | yes |
+| Properties | ByLayer, *VARIES*, No selection, Object type, Rotated Dimension | DuCalque, \*VARIE\*, Aucune sélection, Type d'objet, Cote pivotée | P acadres 4221, 9214; X XLS_0033 | yes |
+|  | Contents, Measurement, Fit tolerance, Ext line ext (the palette's rows) | Index, Dimensions, Tolérance, Extrémité de la ligne d'attache | P ax26res 57, 154, 99, 217: the palette's own words, unlike its menus' (Contenu…); the desktop not seen | partial |
+|  | Normal X, Major axis vector X, Text alignment X, First X, Definition points (our own rows) | Normale X, Vecteur X du grand axe, Alignement du texte X, Premier X, Points de définition | ours, worded from the palette's | — |
+| Shortcut menu | Osnap Overrides, Point Filters, Dimension Style, Copy with Base Point | Remplacer accrobj, Filtres de coordonnées, Style de dimension, Copier avec point de base | X ACAD_2602, ACAD_1863, ACAD_2000, ACAD_1974 | yes |
+| Layers | Layers, New layer, Locked, Unlocked; Invalid characters in layer name | Calques, Nouveau calque, Verrouillé, Déverrouillé; Caractères incorrects dans le nom de calque | P acadres 9221; N AcLayer | yes |
+|  | The layer dialogs (Not Deleted, Current Layer Off, Name Already Exists, Rename) | Calque - Non supprimé, Calque - Calque courant désactivé… | ours, in Autodesk's style: AcTaskDialogs is BAML, not read | no |
+| Dimension styles | Draw dim line between ext lines, Offset from dim line, Use overall scale of | Tracer ligne de cote entre lignes d'attache, Décalage de la ligne de cote, Utiliser l'échelle générale de | D AcDimRes 305:2687… | yes |
+| Application | Send Feedback; Drawing Units | Envoyer vos commentaires; Unités de dessin | X XLS_7254; N AcScaleList | yes |
+| Descriptions | The tools' descriptions | «Rétablit la dernière action annulée»… | ours, in the style of acadres 16161 «Annule la dernière action» | — |
+
 ## Register
 
 - **Landing:** «vous», short sentences, the imperative («Tapez L. Appuyez sur Entrée.
@@ -121,6 +155,65 @@ SECTION is COUPE (`COU`). `LAYER` is an alias of CALQUE, as `DELETE` of EFFACER.
   `plural`, 8 `select`, 476 `no-source`; `names` 126. The catalog has 2,392 command keys, against
   991 proposals when pt-BR was written.
 
+### How `commands` was written (9/11/2026)
+
+`cad/locales/fr.json`, every key, in this order of authority:
+
+- **The console.** The 439 probes `console-pair.mjs --lang fr --select` picked, run in fr-FR by
+  `probe.sh --lang fr --lang-only` (420 transcripts: 19 probes are English-only), paired with their
+  en-US transcripts: 503 keys match the tables' proposal, 328 differ (the console wins), 140 are
+  worded more than one way, 57 unpaired, 284 unseen. **What `console-pair.mjs` prints is the
+  console's line, values filled in and a plural as `{#}`**: a message with arguments was rebuilt
+  as ICU by hand from it, English's arguments kept, the tables' proposal where it had them.
+- **Names.** `(getcname "_LINE")` for every command of the catalog (123 of 148); the FRA help's
+  titles for those the console does not load (`TEXTMULT`, `PURGER`, `PROPRIETES`, `UNITES`, `VUE`,
+  `CORRESPROP`, `DEPUIS`, `PALETTEBLOCS`, `FERMERCALQUE`, `FERMERPROPRIETES`, `RESEAURECT`,
+  `RESEAUPOLAIRE`, `TRAJECTOIRERESEAU`, `COUPUREAUPOINT`, `EATTEDIT`). RECTANG is `RECTANGLE` in
+  2027, `RECTANG` an alias: `acad.pgp`'s «Commands changed in 2025 release», and `(getcname
+  "_RECTANG")` answers `RECTANGLE` once loaded (as `DECOMPOSER`, `POLYLIGNE`). Our own commands take
+  the base name and the initials of the ribbon's words, as Spanish and pt-BR: `CERCLED`,
+  `CERCLE2P`, `CERCLE3P`, `ARCDCF` (Départ, centre, fin), `ARCCDF`, `ELLIPSEC`, `ELLIPSEARC`.
+  Aliases from `acad.pgp`; one that is another command's name is dropped (the name wins).
+- **Probes of our own** (`scripts/research/probes/names/`, `.fr.txt`): -ACCROBJ's words and listing
+  (p07, p09, p10: `EXT` and `EXTR` are Endpoint, `EXTE` Extension, `PRO` Nearest, `PROJ`
+  Apparent, `AUC` None, `M` and `C` alone refused with `Point incorrect.`), DEPUIS (p03: `Point de
+  base:`, `<Décalage>:`), a typed snap's echo (p31: `de` after EXT, `à` after PER and TAN), and
+  -DIMSTYLE's status and -STYLE's listing (p06, p32). MASSPROP's report from solid/m09 and
+  solid-inquiry/p112; the hatch patterns' descriptions from the pack's `acadiso.pat`.
+- **The tables**, `propose-commands.mjs`, where no probe shows a key.
+
+### Per command, still one wording
+
+What English words alike and French words per command keeps one command's wording until it has a
+prompt id of its own (`cad-catalogs.md`), as pt-BR's second session gave its own:
+`secondExtensionOrigin` (COTLIN «Indiquez le second point d'origine…», COTALI «… un second
+point…»), `ucsZAxisOrigin` and `ucsMoveOrigin` («le nouveau point d'origine» / «une nouvelle
+origine»), `specifyFirstEndpointOfEdge` and `specifySecondEndpointOfEdge` (POLYGONE «… du côté»,
+PYRAMIDE «… de l'arête»); the labels SPLINE's `end Tangency` (`fin Tangente` at 55306, `Tangence
+fin` at 57995), SPLINEDIT's `System default` (`Par défaut` / `Par Défaut`), PEDIT's `Ltype gen`
+(`TYpeligne gén` / `Typeligne gén`) and ARRAYPOLAR's `Angle between` (`ANgle entre` / `Angle
+intermédiaire`). **An answer against the colon**: French AutoCAD ends the arrays' counts and
+spacings (`Entrez le nombre de colonnes ou [Expression] <4>:`), DIMANGULAR's first prompt and the
+array type without the space English has, so the history writes the answer against the colon
+there; here it keeps English's space until `answerForms` gets their ids.
+
+### Deviations
+
+- **EDITSPLINE's Weight is `EPaisseur`**, as the prompt lists it and table 22405 declares it: the
+  console's `initget` declares `Elever` and `Epaisseur`, one abbreviation for two keywords, which
+  `locales.test.ts` refuses (pt-BR's SNAP `ASpecto` was the same case).
+- **-ACCROBJ's Endpoint is `EXTrémité` and Extension `EXTEnsion`**: the console reads `EXT` and
+  `EXTR` as Endpoint and `EXTE` as Extension, its `initget` declaring `Extrémité` (E) before
+  `EXTension`; the three capitals keep each word's letters apart at a point prompt.
+
+### Unverified
+
+What no probe showed, worded from the tables or in Autodesk's style: the dynamic input's field
+labels (`Centre`, `Premier point`…: AutoCAD shows none), the measure readout (`Dist`, `Aire`,
+`Périm`), Polar's 3D readout, our own messages (files, clipboard, FROM's, `messages.erased`), the
+keys `research/console/fr.md` lists `unseen` or `unpaired` that the tables worded, and the
+`several` above.
+
 ## Script and font
 
 `latin`. Inter and Geist Mono have every French letter the copy needs (é è ê ë à â î ï ô û ù ü ÿ ç
@@ -153,4 +246,23 @@ and the dynamic input before going live.
 
 ## Review
 
-No native reader yet; nothing written yet beyond this page.
+No native reader yet. The command language and most of the interface are Autodesk's, so a
+reader's time goes first to what Autodesk did not write, in this order:
+
+1. **The landing's copy** (`messages/fr.json`), written from the search texts, not translated: the
+   title and description, «Votre planche à dessin est à une touche», the FAQ.
+2. **The 97 command pages' notes and the 12 exercises** (`content/commands/*.fr.md`,
+   `content/exercises/*.fr.md`) and the six "Use" pages written by hand
+   (`content/docs/*.fr.mdx`), written by four agents from one brief on 9/11/2026, each held by
+   `docs:check` to its English's options, questions and elements: their register, and the words
+   they coined with no Autodesk source — «info-bulle», «poignée en flèche», «poignée active»,
+   «barre supérieure», «zone de saisie dynamique», «menu des vues» (the viewport control),
+   «palette Calques», «palette Styles», «table des textes», «Paramètres des propriétés»
+   (MATCHPROP's dialog), «Paramètres d'épaisseur de ligne», the palette rows «Echelle du type de
+   ligne», «Unité du bloc», «Facteur d'unité», «Lien hypertexte», «Fenêtre de zoom», «Zoom
+   d'origine», «masque d'arrière-plan», «cadre de texte», «maintien» (an object's handle); LAYDEL
+   is left in English. A decimal in prose takes a comma («0,6 degré»), a typed one its point.
+3. **Our own words**, marked — in "Interface terms": the tool names worded from the ribbon, the
+   palette's own rows, the descriptions, the layer dialogs, the status bar's resolution words.
+4. **What no source settled**: the palette rows whose own word differs from the menus' («Index»
+   for Contents), the dynamic input's labels, the `several` of "Command language".

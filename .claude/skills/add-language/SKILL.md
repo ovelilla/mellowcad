@@ -66,13 +66,25 @@ English); no test lists it: `TRANSLATED` (`i18n/messages.test.ts`) is every `liv
 `i18n/freshness.test.ts` every translation. Register and search texts researched, not translated;
 each term, with its source and mark, in `docs/i18n/<tag>.md`. A `localized` language's labels are
 its pack's (palettes, dialogs, menus, ribbon: skill `autocad-research`), its help's only where the
-pack has none; the help leaves some labels in English. The "Use" pages: the two written ones by
-hand with their `sourceHash`, the generated ones by `npx vitest run lib/docs/generate.test.ts -u`
-(they name commands in English until phase 4).
+pack has none; the help leaves some labels in English: `propose-interface.mjs --lang <tag>
+--catalog editor --like <a language already in>` proposes each by id (fr's run: 94 of 267 settled,
+the rest by the row's place; a toolbar's truncated label, `Rotatio`, is corrected by hand). Then
+everything `docs:check` wants of a `live` language, each with the English file's `sourceHash` (a
+translation already in has it): the six "Use" pages written by hand (`content/docs/<page>.<tag>.mdx`,
+`USE_PAGES`), the notes of every command page (`content/commands/<slug>.<tag>.md`, skill
+`command-page`) and of every exercise (`content/exercises/`), their titles from the language's
+searches; then the generated pages, `npx vitest run lib/docs/generate.test.ts -u`. French's were
+some 65,000 words: a few agents with one brief (register, typography, glossary, the names), each
+file checked by `docs:check`. **The notes name commands in the command language** (`Commande
+DECALER (OFFSET)`), so a `localized` language does phase 4's names before them.
 
 ## 3. The engine's interface
 
-`cad/locales/<tag>.json`, its `interface` whole (`cad-catalogs.md`). `npm run locales` compiles it
+`cad/locales/<tag>.json`, its `interface` whole (`cad-catalogs.md`); once the file exists its
+`commands` is whole or absent too, so a `localized` language commits phases 3 and 4 together.
+`propose-interface.mjs --lang <tag> --catalog engine --like <a language already in>` reads the
+installed resources by id (string tables, dialogs, .NET resources, `acad.cuix`): a palette row
+takes `ax26res`'s word, a tool the ribbon's; what none gives is ours, marked. `npm run locales` compiles it
 to `cad/locales/<tag>.ts`; make it an entry point of the package (`.claude/rules/engine-package.md`:
 `exports`, tsdown, the build's tsconfig), add it to the entry table in `cad/README.md` and the table
 in `cad/docs/languages.md`, `cad/api.md` (`npx vitest run cad/api.test.ts -u`) and a changeset, and
@@ -92,7 +104,14 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    the console words most of it at once: `console-pair.mjs --lang <tag> --select` lists the fewest
    of the reviews' probes that show every key, `probe.sh --lang <tag> --lang-only` runs them
    (English's transcripts are kept), and `console-pair.mjs --lang <tag>` rewords each key from them
-   (`research/console/<tag>.md`; skill `autocad-research`). Its `several` are prompts English shares
+   (`research/console/<tag>.md`; skill `autocad-research`). **It prints the console's line, values
+   filled in and a plural as `{#}`**: a message with arguments is rebuilt as ICU, English's
+   arguments kept (the proposal first), and a key whose line is another's (`1 trouvé(s)` for
+   `{prompt}`) is caught by `locales.test.ts`'s arguments. `--select` leaves out names/p01
+   (`getcname` of every command): run it, and the help's titles for what the console loads on
+   demand (`nil`); a renamed command beats the help (fr `RECTANGLE`, acad.pgp's «Commands changed
+   in 2025 release»). -OSNAP's words, FROM and a typed snap's echo need probes in the language
+   (`names/<id>.<lang>.txt`). Its `several` are prompts English shares
    between commands and the language words per command: each needs a prompt id of its own
    (`cad-catalogs.md`), or one command's wording until then. Check the rest with
    `catalog-sweep.mjs --lang <tag>`; what no probe settles is **unverified** in

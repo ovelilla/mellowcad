@@ -19,6 +19,7 @@ As in AutoCAD's language packs, a language has two parts:
 | Spanish              | `es`             | Spanish AutoCAD's: `LINEA`, `DESFASE`, `[Cerrar/desHacer]`                                |
 | Arabic               | `ar`             | The global one, as there is no Arabic AutoCAD                                             |
 | Brazilian Portuguese | `pt-BR` (`ptBR`) | Brazilian Portuguese AutoCAD's: `LINHA`, `DESLOCAMENTO`, `[Fechar/Desfazer]`              |
+| French               | `fr`             | French AutoCAD's: `LIGNE`, `DECALER`, `[Clore/annUler]`                                   |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as

@@ -1,0 +1,22 @@
+_CIRCLE
+0,0
+5
+_LINE
+20,0
+PER
+3,4
+TAN
+-3,4.2
+
+_LINE
+_END
+20,0
+_PER
+3,-4
+
+_-OSNAP
+INACTIF
+(getvar "OSMODE")
+_-OSNAP
+INA
+(getvar "OSMODE")

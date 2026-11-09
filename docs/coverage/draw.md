@@ -1,6 +1,6 @@
 # Draw
 
-### `LINE` / `L` · es `LINEA` / `L` · pt-BR `LINHA` / `L`
+### `LINE` / `L` · es `LINEA` / `L` · pt-BR `LINHA` / `L` · fr `LIGNE` / `L`
 
 **Implemented:** `LINE Specify first point:` (es `LINEA Precise primer punto:`), then
 `Specify next point or [Undo]:` from it on — its Undo takes that point back — and `[Close/Undo]`
@@ -42,7 +42,7 @@ at the first point)
 Perpendiculars; a pick whose object snap lands on the point before is skipped as a double click is
 (**unverified**: the console draws a zero-length line for an APP or PER typed there, line/p32)
 
-### `PLINE` / `PL` · es `POL` / `PL` · pt-BR `PLINHA` / `PL`
+### `PLINE` / `PL` · es `POL` / `PL` · pt-BR `PLINHA` / `PL` · fr `POLYLIGNE` / `PO` / `POLYLIGN`
 
 **Implemented:** `Specify start point:`, `Current line-width is 0.0000` (at the drawing's
 precision), `Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:` (Close once a segment
@@ -142,7 +142,7 @@ it on one, modify.md), and a linetype's dashes along a wide band (drawn solid); 
 arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose
 lineweight the plot draws (p231) and the screen here does not
 
-### `RECTANG` / `REC` / `RECTANGLE` · es `RECTANG` / `REC` / `RECTANGLE` · pt-BR `RETANGULO` / `RET`
+### `RECTANG` / `REC` / `RECTANGLE` · es `RECTANG` / `REC` / `RECTANGLE` · pt-BR `RETANGULO` / `RET` · fr `RECTANGLE` / `REC` / `RECTANG`
 
 **Implemented:** `Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:` (es
 `Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]`) and
@@ -209,7 +209,7 @@ vertices but the first are NaN, p114); after a refusal at Rotation's prompt the 
 prompt again (the getangle's message is empty; p116, p135), asked again in full here
 (**unverified** on the desktop; RECTANG-D63)
 
-### `POLYGON` / `POL` · es `POLIGONO` / `PG` · pt-BR `POLIGONO` / `POL`
+### `POLYGON` / `POL` · es `POLIGONO` / `PG` · pt-BR `POLIGONO` / `POL` · fr `POLYGONE` / `PG`
 
 **Implemented:** `Enter number of sides <4>:` (es `Indique número de lados <4>:`), a count outside
 3–1024 or not written as an integer (`3.5`, `3.0`, `1e1`; `+5` taken) refused with
@@ -254,7 +254,7 @@ Spanish (p108)
 where AutoCAD turns it by SNAPANG, p105); `<angle` then a distance at
 Edge's end is unprobed on the desktop (RECTANG-D65)
 
-### `CIRCLE` / `C` · es `CIRCULO` / `C` · pt-BR `CIRCULO` / `CI`
+### `CIRCLE` / `C` · es `CIRCULO` / `C` · pt-BR `CIRCULO` / `CI` · fr `CERCLE` / `C`
 
 **Implemented:** `Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:`,
 `Specify radius of circle or [Diameter] <10.0000>:` and `Specify diameter of circle <20.0000>:` with
@@ -343,7 +343,7 @@ at its end; here the point nearest the cursor), the marker at 2P's Perpendicular
 from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
 (`_circle _3p _tan \_tan \_tan \`; typed it works)
 
-### `ARC` / `A` · es `ARCO` / `A` · pt-BR `ARCO` / `A`
+### `ARC` / `A` · es `ARCO` / `A` · pt-BR `ARCO` / `A` · fr `ARC` / `A`
 
 **Implemented:** `Specify start point of arc or [Center]:` — Center asks
 `Specify center point of arc:` then `Specify start point of arc:` — then
@@ -397,7 +397,7 @@ polyline or an arc drawn ends ARC (AutoCAD asks the end of an arc tangent from i
 the included-angle box dynamic input shows at a centre mode's end, and its Down list's Angle and
 chord Length (desktop d05); Polar at ARC's prompts (**unverified**: assumed to follow Ortho's base)
 
-### `ELLIPSE` / `EL` · es `ELIPSE` / `EL` · pt-BR `ELIPSE` / `EL`
+### `ELLIPSE` / `EL` · es `ELIPSE` / `EL` · pt-BR `ELIPSE` / `EL` · fr `ELLIPSE` / `EL`
 
 **Implemented:** `Specify axis endpoint of ellipse or [Arc/Center]:` (es
 `Precise punto final de eje de elipse o [Arco/Centro]:`), `Specify other endpoint of axis:`,
@@ -486,7 +486,7 @@ mirrored ellipse's normal (modify.md, MIRROR); a point with a Z at the distance,
 angle (**unverified**: unprobed, so the angle override every prompt with a base point has); Spanish
 from the 2027 Spanish language pack's string table, paired with the English by id
 
-### `SPLINE` / `SPL` · es `SPLINE` / `SPL` · pt-BR `SPLINE` / `SPL`
+### `SPLINE` / `SPL` · es `SPLINE` / `SPL` · pt-BR `SPLINE` / `SPL` · fr `SPLINE` / `SPL`
 
 **Implemented:** `Current settings: Method=Fit   Knots=Chord` (es
 `Parámetros actuales: Método=Ajustar Nudos=Cuerda`; CV `Method=CV   Degree=3`, es
@@ -631,7 +631,7 @@ HATCH / DIM on a spline or against one (OFFSET, FILLET, JOIN: modify.md); Geomet
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 
-### `3DPOLY` / `3P` · es `3DPOL` / `3P` · pt-BR `POLI3D` / `P3`
+### `3DPOLY` / `3P` · es `3DPOL` / `3P` · pt-BR `POLI3D` / `P3` · fr `POLY3D` / `3P`
 
 **Implemented:** a 3D polyline — straight segments through points each at its own Z, a model type
 of its own (DXF POLYLINE, flag 8: its vertices are world points, with no plane, elevation or
@@ -677,7 +677,7 @@ menus (desktop d07: the start's `Stretch`, `Add Vertex`, `Remove Vertex`, `New S
 `Lengthen`; es `Estirar`, `Insertar vértice`, `Eliminar vértice`, `Nuevo punto inicial`, `Nuevo
 punto final`, `Longitud`; the English **unverified**)
 
-### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO`
+### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console
 asks it (text/p101, p103, p106): `Current text style:  "Standard"  Text height:  2.5000
@@ -740,7 +740,7 @@ Obliquing, Upside down and Backward rows (desktop d04-1; not modelled), picking 
 (AutoCAD's click inside the box but off the glyphs selects nothing, desktop d06-3; here the box is
 the hit area: Arial's outlines cannot ship and the bundled faces' differ)
 
-### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM` · pt-BR `TEXTOM` / `T` / `TXM` / `-TEXTOM` / `-T`
+### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM` · pt-BR `TEXTOM` / `T` / `TXM` / `-TEXTOM` / `-T` · fr `TEXTMULT` / `TT` / `TX` / `-TEXTMULT` / `-TX`
 
 **Implemented:** two corners or Width; as AutoCAD 2027's console asks it (text/p202, p213):
 `Current text style:  "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`
@@ -819,7 +819,7 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 `Enter style name(s) to list <*>:` and its own listing (p225; here TEXT's: MTEXT's table words it
 `Style name: … Font files: …`), a preselection at MTEXT (the console hangs, p145)
 
-### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA` · pt-BR `HACHURA` / `HC`, `-HACHURA` / `-H`
+### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA` · pt-BR `HACHURA` / `HC`, `-HACHURA` / `-H` · fr `HACHURES` / `H`, `-HACHURES` / `-H`
 
 **Implemented:** both names run one tool asking -HATCH's command line, headed and echoed by the
 name typed (`-SMB` is SOMBREA, acad.pgp; p200–p202, p255; WHY HATCH asks -HATCH's prompts: the
@@ -935,7 +935,7 @@ the palette's Spacing, ISO pen width, Double and Background color rows (greyed f
 pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
 (d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
 
-### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG`
+### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG` · fr `REGION` / `REG`
 
 **Implemented:** `Select objects:` (whole objects; a set selected before the command is dropped
 and asked again, while MOVE takes it in the same run, regions/p129; a typed pick there sets
@@ -1012,7 +1012,7 @@ the same objects in another order); two spline edges running along each other in
 they are one curve; a tangent touch between an ellipse or spline edge and another, which is not
 cut there.
 
-### `BOX` · es `PRISMARECT` · pt-BR `CAIXA`
+### `BOX` · es `PRISMARECT` · pt-BR `CAIXA` · fr `BOITE`
 
 **Implemented:** BOX as AutoCAD 2027's console asks it (scripts/research/probes/solid, en, es and
 pt-BR): `Specify first corner or [Center]:`, `Specify other corner or [Cube/Length]:` and `Specify
@@ -1154,7 +1154,7 @@ OBject's X on that edge would read. **Unverified**: a Cube by a point from the c
 as Length's (p500); Polar at the other corner, which bends it here as at any point; the corner
 from the centre, whose box stays a point's here; Cube's ghost, none here.
 
-### `WEDGE` / `WE` · es `CUÑA` / `CU` · pt-BR `CUNHA` / `CN`
+### `WEDGE` / `WE` · es `CUÑA` / `CU` · pt-BR `CUNHA` / `CN` · fr `BISEAU` / `BI`
 
 **Implemented:** WEDGE asks what BOX asks, in the same words (solid/w01–w09, v04; es `CUÑA` / `CU`, primitives/p100,
 pt-BR `CUNHA` / `CN`, `getcname`, n02): `Specify first corner or [Center]:`, `Specify other corner or
@@ -1194,7 +1194,7 @@ under the tall end: AutoCAD's `_END` at 90.05,0.05 finds the base's 90,0,0, here
 (primitives/p402), as CYLINDER's Nearest and Quadrant. **Unverified**: the ghost at Length and the
 width, none here (d11 shot BOX's alone).
 
-### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
+### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL` · fr `CYLINDRE` / `CYL`
 
 **Implemented:** CYLINDER as 2027's console asks it (solid/c01–c15, v05), in en, es and pt-BR:
 `Specify center point of base or [3P/2P/Ttr/Elliptical]:`, `Specify base radius or [Diameter]:`,
@@ -1285,7 +1285,7 @@ radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso1
 and the base's here, as BOX's, and an elliptical one's Quadrant so too (primitives/p402: `_QUA` at
 5.1,3.1 gives 5,3,8, here 5,3,0); WEDGE's Endpoint likewise.
 
-### `CONE` · es `CONO` · pt-BR `CONE`
+### `CONE` · es `CONO` · pt-BR `CONE` · fr `CONE`
 
 **Implemented:** CONE asks CYLINDER's prompts (solid/k01–k07), its height `Specify height or
 [2Point/Axis endpoint/Top radius]:` (es `Indique altura o [2Puntos/punto final Eje/Radio superior]`,
@@ -1328,7 +1328,7 @@ height with no default (k04, primitives/p215, p239: an empty keyword status); re
 English, Spanish and pt-BR's CYLINDER, a defect of one translation not copied (`docs/i18n/pt-BR.md`;
 the desktop unchecked).
 
-### `SPHERE` · es `ESFERA` · pt-BR `ESFERA`
+### `SPHERE` · es `ESFERA` · pt-BR `ESFERA` · fr `SPHERE`
 
 **Implemented:** SPHERE as 2027's console asks it (solid/h01–h05, x01–x05), in en, es and pt-BR:
 `Specify center point or [3P/2P/Ttr]:` and `Specify radius or [Diameter]:` (es `Precise centro o
@@ -1369,7 +1369,7 @@ STRETCH moves it whole once the window takes its centre, never by its rim alone 
 **Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE (h04): refused as CYLINDER's is; BOX's
 (the hot grip's other modes, the 3D commands, the visual styles VSCURRENT lacks); DISPSILH's silhouette.
 
-### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO`
+### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO` · fr `TORE` / `TOR`
 
 **Implemented:** TORUS as 2027's console asks it (solid/r01–r09, x01–x05, n03), in en, es and
 pt-BR: SPHERE's `Specify center point or [3P/2P/Ttr]:` and `Specify radius or [Diameter]:`, then
@@ -1432,7 +1432,7 @@ each along the line of sight; a drag that would turn the ring across the axis le
 apple (primitives/p414; a lemon unprobed): refused as CYLINDER's is; SPHERE's (the hot grip's
 other modes, DISPSILH).
 
-### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
+### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR` · fr `PYRAMIDE` / `PYR`
 
 **Implemented:** PYRAMID as 2027's console asks it (solid/y01–y10, v04), in en, es and pt-BR: first
 ` 4 sides  Circumscribed` (es and pt-BR ` 4 lados circunscritos`, ` 6 lados inscritos`), then
@@ -1511,7 +1511,7 @@ desktop's (PDT); a radius given by a point there is exact. The dotted dimensions
 the radius and Edge's second point, with their angle box (d11); the frustum's ghost at Top radius,
 unprobed (none here).
 
-### `EXTRUDE` / `EXT` · es `EXTRUSION` / `EXT` · pt-BR `EXTRUSAO` / `EX`
+### `EXTRUDE` / `EXT` · es `EXTRUSION` / `EXT` · pt-BR `EXTRUSAO` / `EX` · fr `EXTRUSION` / `ES`
 
 **Implemented:** EXTRUDE as 2027's console asks it (extrude/x01–x12), in en, es and pt-BR: first
 `Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid` (es `Densidad de
@@ -1602,7 +1602,7 @@ none here; the palette's `Direction X/Y/Z` (the height's vector, read-only there
 and its Height and Taper angle edited; the tilted UCS's console run (x08) only checked by
 MASSPROP.
 
-### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV`
+### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV` · fr `REVOLUTION` / `REV`
 
 **Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09, sweeps/p200–p267), in en, es and
 pt-BR: EXTRUDE's first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos
@@ -1675,7 +1675,7 @@ profile and a triangle (sweeps/d04), none here; the palette's `Axis position X/Y
 base: p305's 0, 2.5, 0; not stored here) and its Angle of revolution edited; a half disc turned
 180°, whose isolines AutoCAD draws round the profile plane's normal, a hemisphere's (d02 s180).
 
-### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
+### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR` · fr `APPTIRER`
 
 **Implemented:** PRESSPULL on a closed object, an area its objects bound, or a planar face of a
 solid (`PRESSPULL (Command)`, `To Work With Pressing or Pulling Bounded Areas or Objects`, `To Work
@@ -1729,7 +1729,7 @@ point from the cursor (d07); Enter at the height after a refusal, which made an 
 counted) and Multiple at the height once a pick is taken, **unverified**; and what an area bounded
 off the UCS's plane does (no desktop pass of objects).
 
-### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
+### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO` · fr `COUPE` / `COU`
 
 **Implemented:** As 2027's console asks it in en, es and pt-BR (section/c01–c09, solid-edits/p104–p179):
 a preselection is dropped and the set asked (solid-edits/p131; a click's too, desktop d05-a);
@@ -1759,7 +1759,7 @@ SECTIONPLANE in its place.
 with no closed form, as SLICE's (`1 boolean operation(s) failed.` here); SECTIONPLANE and live
 sectioning.
 
-### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
+### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB` · fr `BLOC` / `B` / `ACADBLOCKDIALOG` / `_BMAKE` / `BMOD`, `-BLOC` / `-B`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027
 `acad.pgp`): `Current settings: Object conversion=Convert` (es `Parámetros actuales: conversión de
@@ -1796,7 +1796,7 @@ desktop d09); here they stay where they were, a deviation (BLOCKS-D14): copying 
 the user's geometry is no muscle memory. ByBlock: an object drawn ByBlock inside a block takes the
 reference's colour, linetype or lineweight in AutoCAD; it is not modelled here (`cad-engine.md`)
 
-### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN` · pt-BR `INSERIR` / `I` / `INSERIRURL` / `INSERIRD`, `-INSERIR` / `-I`
+### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN` · pt-BR `INSERIR` / `I` / `INSERIRURL` / `INSERIRD`, `-INSERIR` / `-I` · fr `INSERER` / `I` / `INSERURL`, `-INSERER` / `-I`
 
 **Implemented:** INSERT opens the Blocks palette, as 2027's does, and writes nothing more (the
 console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the rail's
@@ -1862,7 +1862,7 @@ drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in sea
 and REpeat at the point; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes
 dialog at insertion); ATTREQ 0
 
-### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT` · pt-BR `DEFATRIB` / `DA` / `DEFATR` / `DEFATRIBD` / `-DEFATRIB` / `-DA` / `-DEFATR`
+### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT` · pt-BR `DEFATRIB` / `DA` / `DEFATR` / `DEFATRIBD` / `-DEFATRIB` / `-DA` / `-DEFATR` · fr `ATTDEF` / `AT` / `DDATTDEF` / `-ATTDEF` / `-AT`
 
 **Implemented:** -ATTDEF's command-line sequence for every name (ATTDEF's dialog is not built, as
 BLOCK's is not; aliases from the 2027 `acad.pgp`, p300, p301): the modes line on two lines, as
@@ -1904,7 +1904,7 @@ nor Multiple lines' `Next line or <done>:` and `Specify location of multiline at
 fields, Align/Fit (as TEXT), `?`'s `Enter text style(s) to list <*>:` and its pages (as TEXT,
 p325), the Attribute Definition dialog
 
-### `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT` · es `ATREDIT` / `ATR` / `DDATTE` / `EDITATR` · pt-BR `EDITARATRIB` / `EAT` / `EATRIBD` / `EDITARATRIBA`
+### `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT` · es `ATREDIT` / `ATR` / `DDATTE` / `EDITATR` · pt-BR `EDITARATRIB` / `EAT` / `EATRIBD` / `EDITARATRIBA` · fr `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT`
 
 **Implemented:** ATTEDIT asks `Select block reference:` (es `Designe referencia a bloque:`) and
 EATTEDIT `Select a block:` (es `Designe un bloque:`), words of atteditRes.dll (1) and
@@ -1927,7 +1927,7 @@ and Ctrl+double-click; the dialogs' other parts: Edit Attributes' Previous, Next
 EATTEDIT's Text Options and Properties tabs and Select Block button; an unlocked attribute's own
 grip on a reference (desktop d02-1); attribute rows editable in the Properties palette
 
-### `ATTDISP` · es `ATRVIS` · pt-BR `VISATRIB`
+### `ATTDISP` · es `ATRVIS` · pt-BR `VISATRIB` · fr `ATTECRAN`
 
 **Implemented:** `Enter attribute visibility setting [Normal/ON/OFF] <Normal>:` (the current one; es
 `Indique parámetro de visibilidad de atributo [Normal/ACT/DES]`), `Invalid option keyword.` for

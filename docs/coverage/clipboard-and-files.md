@@ -1,6 +1,6 @@
 # Clipboard and files
 
-### `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP` · pt-BR `COPIACORTE` / `RECORTAT` / `COPIABASE` / `COLARAT`
+### `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP` · pt-BR `COPIACORTE` / `RECORTAT` / `COPIABASE` / `COLARAT` · fr `COPIERPRESS` / `COUPERPRESS` / `COPIERBASE` / `COLLERPRESS`
 
 **Implemented:** all four plus select-all; COPYBASE's `Specify base point:` refuses Enter and what
 is no point with `Invalid point.` and asks again (clipboard/p106, p107); COPYCLIP and COPYBASE keep
@@ -43,7 +43,7 @@ text pasted as MTEXT, listening to the native `paste` event; PASTECLIP's hidden 
 its point (Scale, PScale, Rotate, PRotate, Basepoint, Explode, REpeat: desktop d02's trace), so no
 scaled, turned or exploded paste
 
-### `NEW` / `QNEW` · es `NUEVO` / `RNUEVO` · pt-BR `NOVO` / `NOVOR`
+### `NEW` / `QNEW` · es `NUEVO` / `RNUEVO` · pt-BR `NOVO` / `NOVOR` · fr `NOUVEAU` / `RAPNOUV`
 
 **Implemented:** the application menu's New runs NEW and the Quick Access Toolbar's QNEW, as
 acad.cuix's `^C^C` macros: the running command cancelled, `_NEW` and `_qnew` echoed, a group U
@@ -61,7 +61,7 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL`
+### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEDXF` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
@@ -91,7 +91,7 @@ asks and writes a copy, p215), the `Save drawing as` and SAVEAS's format prompts
 SAVEAS's DXF types and its Options (`docs/next-dxf.md`), drag-and-drop open, unsaved-changes
 prompt, the drawing's name and the file tab's unsaved asterisk
 
-### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF`
+### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF` · fr `CHARGDXF`
 
 **Implemented:** OPEN's picker, AutoCAD's Select File, offers drawings and DXF, DXFIN's DXF alone
 (desktop: its Select File opens on «DXF (*.dxf)»; with FILEDIA 0 both ask `Enter name of drawing

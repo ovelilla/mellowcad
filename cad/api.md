@@ -2937,6 +2937,13 @@ export { ptBR }
 export declare const ptBR: EngineLocale;
 ```
 
+## ./locales/fr
+
+```ts
+export { fr }
+export declare const fr: EngineLocale;
+```
+
 ## Reached, not exported
 
 What the exports' types name. A host cannot import these names, but their shape is API.

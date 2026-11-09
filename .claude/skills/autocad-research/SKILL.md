@@ -5,8 +5,8 @@ description: Establish how AutoCAD behaves and words something before building o
 
 # Researching AutoCAD
 
-The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English and Brazilian Portuguese
-language packs too; every
+The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English, Brazilian Portuguese
+and French language packs too; every
 tool runs from WSL through interop. Pick the source by the question:
 
 | Question                                                                        | Source                      | Read       |
@@ -51,8 +51,11 @@ says where each lives inside). **An update rewords prompts**: 2027.1 turned DIMA
 (`extremidade` into `ponto final`), so a table from the release's language pack alone is not the
 current product; the update's Spanish is the installed one byte for byte. After an AutoCAD update,
 move the tables to `previous/` and extract them again (the script will not overwrite a table that
-changed; skill `language-review`). The installed language packs are English, Spanish and Brazilian
-Portuguese; installing another on the owner's AutoCAD is asked first. It installs from WSL: the
+changed; skill `language-review`). The installed language packs are English, Spanish, Brazilian
+Portuguese and French (9/11/2026); installing another on the owner's AutoCAD is asked first. The
+forum thread refuses automated reads; ceethreedee.com's "Civil 3D 2027 Download all the extensions"
+lists the same `up1.autodesk.com` links (Italian's among them), and each `.exe` is checked with
+PowerShell's `Get-AuthenticodeSignature` before it runs elevated. It installs from WSL: the
 pack's `.exe` with `-q`, run elevated (`Start-Process -Verb RunAs`, the owner accepts UAC), then the
 current update's `.exe` with `-q` again, since a pack installed after an update is the release
 build (Autodesk: pack, then update); `pt-BR/acadres.dll`'s FileVersion says which. AutoCAD has none
@@ -71,7 +74,10 @@ is BAML, one `TaskDialog_<n>` block per dialog); `acad.cuix` names each item by 
 languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `Text`). For an
 installed pack the same DLLs sit in the install's `<culture>/` beside `en-US/`, and `acad.cuix` in
 `UserDataCache/<culture>/Support/`.
-`docs/i18n/pt-BR.md` cites them so.
+`docs/i18n/pt-BR.md` cites them so. `node scripts/research/propose-interface.mjs --lang <tag>
+--catalog engine|editor [--like <tag>]` does that pairing for a whole catalog, by id, into
+`research/proposals/<tag>-<catalog>.md`: each English label's wordings with their sources, one
+word in several cases counted once, and `--like` settling a label as a language already in did.
 
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill
 `command-review`); `node scripts/research/console-pair.mjs --lang <tag>` against the console: it

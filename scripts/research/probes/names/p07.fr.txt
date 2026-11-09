@@ -1,0 +1,24 @@
+_-OSNAP
+EXT
+(getvar "OSMODE")
+_-OSNAP
+EXTR
+(getvar "OSMODE")
+_-OSNAP
+MIL
+(getvar "OSMODE")
+_-OSNAP
+CEN,QUA,INT,EXTE
+(getvar "OSMODE")
+_-OSNAP
+INS,PER,TAN,PRO
+(getvar "OSMODE")
+_-OSNAP
+PROJ,PAR
+(getvar "OSMODE")
+_-OSNAP
+AUC
+(getvar "OSMODE")
+_-OSNAP
+NOD
+(getvar "OSMODE")
