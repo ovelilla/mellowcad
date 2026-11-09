@@ -316,6 +316,8 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   es: ["\u00ab", "\u00bb"],
   "pt-BR": ["\u201c", "\u201d"],
   ar: ["\u00ab", "\u00bb"],
+  // French typography spaces its guillemets, with a no-break space (docs/i18n/fr.md).
+  fr: ["\u00ab\u00a0", "\u00a0\u00bb"],
 }
 
 /**

@@ -272,6 +272,13 @@ export { ptBR }
 export declare const ptBR: EditorLocale;
 ```
 
+## ./locales/fr
+
+```ts
+export { fr }
+export declare const fr: EditorLocale;
+```
+
 ## ./styles.css
 
 Scoped to `[data-mellowcad-editor]`: its rules match the editor's root and what is inside it, or an element by one of its classes.

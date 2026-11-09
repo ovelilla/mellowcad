@@ -2,6 +2,7 @@ import type { AppLocale } from "@/i18n/routing"
 import ar from "@/messages/ar.json"
 import en from "@/messages/en.json"
 import es from "@/messages/es.json"
+import fr from "@/messages/fr.json"
 import ptBR from "@/messages/pt-BR.json"
 
 import { DIAGRAMS, type FigureSpec } from "./figures"
@@ -14,6 +15,7 @@ const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
   es,
   ar,
   "pt-BR": ptBR,
+  fr,
 }
 
 /** The diagrams as a language's messages word them, keyed `name.locale`. */
