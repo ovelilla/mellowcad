@@ -63,7 +63,9 @@ function parse(text) {
       events.push({
         t: "prompt",
         command: running.at(-1) ?? null,
-        message: json.Message.replace(/\s+/g, " ").trim(),
+        // U+00A0 kept, which `\s` would take: Autodesk's French writes it before `:`, `?` and
+        // inside « », and a key reworded from the console must carry it as its tables do.
+        message: json.Message.replace(/[^\S ]+/g, " ").trim(),
         keywords: (json.Keywords?.items ?? [])
           .filter((k) => k.g !== "dummy")
           .map((k) => ({ local: k.g, global: k.l })),
