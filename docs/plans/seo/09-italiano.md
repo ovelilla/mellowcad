@@ -42,7 +42,7 @@ La auditoría de idiomas del 5/11/2026 (`~/seo-data/audit-2026-11-05/languages.m
   changeset `minor` de cada paquete.
 - **Después de publicar**: `gsc-prioritize.mjs` (en ~/seo-data/scripts) necesita el peso de
   `/it`; IndexNow, la indexación en Bing y las fichas de AlternativeTo y SaaSHub con el
-  italiano (kit §6) son del dueño o de la sesión, si él lo pide.
+  italiano (kit §6) van con la publicación («Qué hacer»).
 
 ## Objetivo
 
@@ -53,15 +53,19 @@ El italiano `live` en `/it` con el sistema entero, como el francés.
 La skill `add-language`, fase a fase, con su plan en `docs/plans/<tag>-language.md`; los títulos y
 descripciones con los términos que se buscan en italiano.
 
+Al final, con todo verificado, publica tú: push, comprobación en producción, IndexNow, la cola de
+Google y las fichas; pídeme lo que necesite mi llave o mi ratón.
+
 ## Qué no tocar
 
-Los demás idiomas, salvo lo que el sistema pida para todos. Nada de push ni de publicaciones.
+Los demás idiomas, salvo lo que el sistema pida para todos.
 
 ## Terminado cuando
 
 - El italiano `live` (o la fase alcanzada, escrita en su plan) con el gate verde, un commit por
-  fase (skill `finish-feature`), y la línea de la sesión 09 en `docs/next-seo.md` §8 actualizada,
-  con el siguiente idioma propuesto según §4 L7 y los datos de Search Console de entonces.
+  fase (skill `finish-feature`), publicado y comprobado en producción, y la línea de la sesión 09
+  en `docs/next-seo.md` §8 actualizada, con el siguiente idioma propuesto según §4 L7 y los datos
+  de Search Console de entonces.
 
 ## Cómo trabajar
 
