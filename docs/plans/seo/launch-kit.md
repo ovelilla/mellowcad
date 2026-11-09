@@ -307,7 +307,11 @@ owner declined the 15 $ priority review on 2026-11-06), approved the same day fr
 (`alternativeto.net/software/mellowcad/`, the six alternatives connected). Refused: G2's automatic check calls the URL a B2C product
 and stops the form (its support is the only way on); OpenAlternative needs 250 stars on a
 repository under six months old; TheCADHub is now free only with its badge linking back from our
-site (a link exchange, declined) or 49 $.
+site (a link exchange, declined) or 49 $. **2026-11-09:** SaaSHub approved the listing (its
+email: listed under "Recently verified"), and offered a featured listing (paid, a month free if
+bought within three days), its badge and SaaSHub Submit, all declined: the slot is not needed
+(below), the badge links back from our site as TheCADHub's would, and each directory is entered
+by hand with its own text. Both descriptions name French the same day (below).
 
 - **AlternativeTo** (#1–2 on Bing for "free autocad alternative"; its AutoCAD page filtered to
   free + online lists 21 tools): "Suggest new application" from the user menu, with a verified

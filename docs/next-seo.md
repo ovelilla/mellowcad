@@ -208,12 +208,12 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
 | lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
-| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño. **7/11, noche:** la descripción de SaaSHub dice ya que abre DXF (la sesión 05b, con la sesión del dueño) | kit §6 | — |
+| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño. **7/11, noche:** la descripción de SaaSHub dice ya que abre DXF (la sesión 05b, con la sesión del dueño). **9/11:** SaaSHub aprueba la ficha (su correo: en «Recently verified»); sus ofertas, no (la ficha destacada de pago, su insignia con enlace y SaaSHub Submit: kit §6); su descripción dice ya el francés (§7, punto 9) | kit §6 | — |
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
 | 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún. **7/11, 13:34:** acceso de desarrollador aprobado (los cambios se publican al momento) y la ficha dice ya «Developed by ovelilla». **7/11, noche:** su descripción decía que no lee DXF; la sesión 05b, a petición del dueño, la cambió por la frase del kit §6 («It opens DXF files but does not save them yet, and has no DWG or printing.»), visible con sesión al momento y en la página pública cuando caduque su caché | kit §6 | — |
-| lun 16/11 y cada lunes | Seguimiento: ¿aprobado SaaSHub?, ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
+| lun 16/11 y cada lunes | Seguimiento: ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
 | mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
 | jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
@@ -382,9 +382,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
    engine» y el editor, tres idiomas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, G2, TheCADHub y los demás del kit,
-   §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, la ficha de
-   SaaSHub dice aún cuatro idiomas: su descripción, con el texto del kit (§6, «In English, Spanish,
-   Brazilian Portuguese and French…»); la de AlternativeTo ya lo dice (punto 9).
+   §6): ya, la semana del 9/11 (calendario de L5). Tras el push de la sesión 08, las fichas de
+   AlternativeTo y SaaSHub dicen el francés con el texto del kit (§6, «In English, Spanish,
+   Brazilian Portuguese and French…»): punto 9.
 6. **Show HN, Reddit, Product Hunt y dev.to**, con los textos del kit y en las fechas del
    calendario de L5 (02–04 ya están publicados).
 7. **Outreach** a los autores de los artículos de la lista: los 50 correos de
@@ -404,8 +404,9 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    `/fr/draw` con sus nombres, el sitemap con 620 URLs, `hreflang` en las cinco portadas); IndexNow
    con las 620 URLs (200); la cola de Google rehecha (punto 2); y la ficha de AlternativeTo, con la
    sesión de Google del dueño en el Chrome de ~/seo-data: el francés en la descripción y en
-   «Supported Languages». Queda del dueño la de SaaSHub, cuya sesión (un enlace por correo a
-   `hello@mellowcad.com`) había caducado.
+   «Supported Languages»; y la de SaaSHub, en su descripción, cuando el dueño volvió a entrar
+   (su sesión, un enlace por correo a `hello@mellowcad.com`, había caducado), el día en que
+   SaaSHub la aprobó.
 
 ## 8. Estado
 
@@ -622,7 +623,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   de la página de DXF se salta por eso.
 - 08 Francés: hecha y publicada el 9/11/2026 (`2294f28f` a `9336ef8d`, y `10d28c9e` y
   `f11b8428` el mismo día; las fases, lo medido y lo que queda, en `docs/plans/fr-language.md`;
-  el push, IndexNow y la ficha de AlternativeTo, por la sesión a petición del dueño: §7, punto 9).
+  el push, IndexNow y las fichas de AlternativeTo y SaaSHub, por la sesión a petición del dueño:
+  §7, punto 9).
   El francés, `live` en `/fr` con el sistema entero:
   el sitio, el editor, las seis páginas «Use», las 97 de comando y los 12 ejercicios, y el lenguaje
   de comandos de AutoCAD 2027 en francés, sacado de su consola (el paquete de idioma instalado en
