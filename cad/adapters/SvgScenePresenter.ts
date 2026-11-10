@@ -262,6 +262,7 @@ export class SvgScenePresenter {
             )})${rotation}`,
             "font-family": p.font ?? this.fontFamily,
             "font-size": this.n(fontSize),
+
             "text-anchor":
               p.align === "left"
                 ? "start"
@@ -270,6 +271,12 @@ export class SvgScenePresenter {
                   : "end",
             fill: this.color(p.color),
             ...extra,
+            // As the canvas draws it: the engine measured the box without
+            // kerning (textFontMetrics.ts), so the browser's own would not
+            // fit. Joined to a caller's style (the hero's timing).
+            style: ["font-kerning:none", extra?.style]
+              .filter(Boolean)
+              .join(";"),
           },
           p.text
         )

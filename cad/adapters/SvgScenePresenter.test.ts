@@ -450,6 +450,28 @@ describe("dashes and plotting", () => {
     ])
   })
 
+  it("keeps text unkerned under a caller's style, as the canvas draws it", () => {
+    const text = {
+      kind: "text",
+      at: p(0, 0),
+      text: "AV",
+      height: 7,
+      rotation: 0,
+      align: "left",
+      color: "#fff",
+    } as const
+    const presenter = new SvgScenePresenter()
+    expect(attribute(presenter.elements([text]), "style")).toBe(
+      "font-kerning:none"
+    )
+    expect(
+      attribute(
+        presenter.elements([text], () => ({ style: "--t:1ms" })),
+        "style"
+      )
+    ).toBe("font-kerning:none;--t:1ms")
+  })
+
   it("measures how far each outline runs", () => {
     expect(
       primitiveLength({ kind: "segment", a: p(0, 0), b: p(3, 4), stroke })
