@@ -1,8 +1,9 @@
 # Medir el knowledge — brief
 
-> **Estado:** propuesto el 10/11/2026 tras el triaje de la auditoría del knowledge
-> (`docs/plans/knowledge-audit.md` §8), sin acordar ni empezar. Recoge sus puntos 4, 5 y 8 de §5,
-> que dependen de medir; lo que no dependía de medir ya está hecho.
+> **Estado:** acordado el 10/11/2026 por el dueño, en el orden de §3: el registro de cargas corre
+> desde ese día y se lee a partir del 24/11; después, el piloto de 16 ejecuciones, y el banco
+> completo solo si el piloto da una señal clara. Recoge los puntos 4, 5 y 8 de §5 de la auditoría
+> (`docs/plans/knowledge-audit.md`, triaje en §8), que dependen de medir.
 
 ## 1. Qué se quiere saber
 
@@ -36,9 +37,9 @@ ruido) son 60 ejecuciones: del orden de 30 horas de agente y, con el consumo de 
 review, decenas de millones de tokens. Montarlo es una o dos sesiones (extraer tareas, el
 ejecutor, el juez).
 
-### Lo que recomiendo
+### Lo acordado
 
-**No montar el banco completo todavía.** Primero:
+**No montar el banco completo todavía** (el dueño, 10/11/2026). Primero:
 
 1. Dejar correr el registro de cargas dos semanas y decidir con él lo barato: una regla que no
    carga nunca se revisa a mano; una que carga en todas se adelgaza primero.
