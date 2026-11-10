@@ -28,8 +28,7 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, which every command
   taking a set asks: picks, the window a pick on nothing starts, the lasso a drag draws, every
   mode typed there, each counted as AutoCAD does. A tool holds one and, in its select
-  phase, hands it `question`, `takes`, `commandOptions`, `invokeOption`, `answerTyped`, the pointer
-  handlers, `onEnter`, `cycleLasso`, `wantsSnap` and `buildOverlay`. It passes `done`, `takes` when
+  phase, hands it each `Tool` method the selector has. It passes `done`, `takes` when
   the set takes no sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which
   modes it offers), and where needed `question`, `accept` (a silent filter), `refuse` and
   `noneFound` (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through
@@ -68,18 +67,18 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   arc pass the bisector of the radii.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts a polyline's arc options open, for any
   command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists `ARC_SEGMENT_OPTIONS` among
-  its keywords in AutoCAD's order, calls `begin`, and while `active` hands it the question, input,
-  options, pointer, `onEnter`, `wantsSnap` and `anchor`, drawing its `preview`. The arc geometry
+  its keywords in AutoCAD's order, calls `begin`, and while `active`
+  hands it each method it has, drawing its `preview`. The arc geometry
   is `geometry/bulgeArcs.ts`; never solve a bulge in a tool.
 - `dimensionTextOptions.ts` — the Text and Angle keywords every dimension command shares. When two
   commands offer the same AutoCAD keyword, the prompt belongs in a shared helper: identical wording
   is fidelity. `measurementOf` (`DimensionTool.ts`) is the measurement at Text's `<default>` and in
-  `Dimension text =`. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
+  `Dimension text =`.
 - **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the one way an entity
   draws, so a new type renders everywhere for free. It returns a **list**: spread it, and never add
   a nesting "group" primitive (`cad-scene.md`). Pass `{ blocks: ctx.blocks }` wherever the entity
   can be one the user selected, or a block reference ghosts as nothing. A preview that needs an
-  entity reuses a fixed id (`"circle-preview"`), never one minted per frame (it burns entity ids).
+  entity reuses a fixed id (`"circle-preview"`), never one minted per frame (`previewIds.test.ts`).
 - A tool editing an object **in place** lists it in `hiddenEntityIds()`, or the new state is
   painted over the old one.
 
@@ -164,8 +163,7 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer, the
   second object's lineweight and thickness (`cornerPiece`); beside a curve, CELWEIGHT (p481).
 
-The jigs of LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE and SPLINE wear `currentColor`
-(line/d04, rectang/d02, ellipse/d01–d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current
+The drawing commands' jigs wear `currentColor` (line/d04, rectang/d02, ellipse/d01–d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current
 layer.
 
 ## Ordering and undo
@@ -180,15 +178,15 @@ layer.
   `UpdateEntitiesCommand`. A split keeps the object as the piece from its start (AutoCAD's handle
   stays on it): give that piece the object's id, and only a piece that is no part of it a new id.
 - **A whole run of a command is one undo step, even one that does nothing (move/p07), and the
-  runtime makes it**: `setActiveTool` opens a group and closes it after `onDeactivate`. A tool
+  runtime makes it** (`cad-runtime.md`, Commands and history). A tool
   never batches across its own loop; inside the run each commit stays its own entry, which is what
   lets its Undo keyword take back one. The step is named as the command was echoed
   (`history.nameCommand`), which U and REDO write.
 - `ctx.execute` takes the result back to the WCS with `Command.mapEntities`: a new `Command`
   implements it (one carrying no entities returns itself), and returns an untouched object as the
   very original so undo is exact.
-- UNDO's marks, groups and settings (UNDOCTL) are `CommandHistory`'s, reached only by `UndoTool`
-  and `MredoTool` through `ctx.undoHistory`; what each does is in their JSDoc and in
+- UNDO's marks, groups and settings (UNDOCTL) are `CommandHistory`'s, reached through
+  `ctx.undoHistory` (`UndoTool`, `MredoTool`, PLINE's Undo); what each does is in their JSDoc and in
   `commands/Command.ts`. Any command but U, UNDO, REDO and MREDO drops the redo stack, even one
   that changes nothing.
 - **The view is undone with the command that changed it.** A tool that changes the view says
@@ -287,7 +285,8 @@ returns `true`; `false` ends the command.
   Filter at the pick. FILLET, CHAMFER and BREAK cut a polyline in its OCS instead.
 - **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs` and `elevation`; `*`
   reads WCS numbers, and without a Z lies at the WCS's Z 0, ELEVATION left out. A typed number is
-  `parseNumber` / `parseDecimalNumber`, an angle `parseAngleDegrees`, never `Number()`. An
+  `parseNumber` / `parseDecimalNumber`, an angle `parseAngleDegrees`, never `Number()` (it takes
+  `0x10`); an integer prompt may use it after a `^[-+]?\d+$` test (`ColorTool.ts`). An
   **absolute** angle goes through `headingInUcs` / `directionFromUcsHeading`
   (`tools/ucsHeading.ts`); a **relative** one (rotation, included angle, sweep) is left alone.
 - **LASTPOINT is the runtime's, never a tool's.** A typed first point passes `lastPoint:

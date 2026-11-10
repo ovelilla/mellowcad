@@ -20,8 +20,8 @@ behaviour, previews) are in `cad-tools.md`.
 ## The `CadRuntime` class
 
 `CadEngine` delegates to `CadRuntime` one method at a time, so **the class's public names and
-signatures are a hard contract**. The class is kept small by hollowing methods out, never by
-renaming them: the method stays as a one-line delegation to a free function in a `runtime*.ts`
+signatures are a hard contract**. Code leaves the class by hollowing a method out, never by
+renaming it: the method stays as a one-line delegation to a free function in a `runtime*.ts`
 sibling. **A sibling takes the collaborators it needs (`document`, `selection`, `history`, …),
 never the runtime**; wanting many private fields means the code belongs in the class.
 `registerCommands` is the one exception (a command _is_ a call into the public API): it receives the
@@ -134,9 +134,8 @@ command line steals them from typing, and no key runs a keyword on its own (type
 confirmed). The right button is answered on its release and never reaches a tool.
 
 **Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`): Undo where offered,
-else the prompt's refusal; the command goes on; at `Command:` U. Ctrl+S, O, 0, 1, 9, Y, C, X, V,
-Shift+C, A, the top bar's Undo and file buttons, the Default menu's are `^C^C` (`runAccelerator`):
-the command cancelled, theirs echoed.
+else the prompt's refusal; the command goes on; at `Command:` U. The other accelerators and buttons
+whose acad.cuix macro starts `^C^C` go through `runAccelerator`: the command cancelled, theirs echoed.
 
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
@@ -230,12 +229,13 @@ runtime picks for the tool" feature.
   reaches them through `pickAnswer` and `placePoint`, the last typed first, as must a new way.
 - Providers read `SnapContext.entities`, never `document.getEntities()`: blocks expanded (AutoCAD
   snaps in them), a region as its edges (Quadrants at their own axes in any UCS, regions/p222),
-  built once per resolve; `insertionProvider` offers a reference's.
+  built once per resolve. The exception is `insertionProvider`, which needs the references
+  unexpanded to offer each one's insertion point.
 
 ## Commands and history
 
-**Every entity mutation goes through a `Command`** (`history.execute`). **A command is one undo
-step**, as AutoCAD's U undoes "the effects of the last command": `setActiveTool` opens a group
+**A command is one undo
+step**, as AutoCAD's U undoes "the effects of the last command": `switchTool` opens a group
 (`history.beginGroup`) for every tool but Select and closes it after the old tool's `onDeactivate`,
 which may still commit. **A chrome start is a menu group** (`menuGroup`): a rail start echoes its
 macro (`_line`) and is Enter's repeat (circle/p192); U names it `LINE GROUP`, or `GROUP
@@ -323,7 +323,7 @@ scoped to `"document"`, a capture `pointerdown` and a `focusin`.
 
 - `keydown`, so Escape and shortcuts work wherever focus is. It ignores events from
   `input/textarea/select/[contenteditable]` — **except function keys and the global Ctrl
-  shortcuts** (`isGlobalShortcut`: Ctrl+S, O, 9, 0, 1, L), swallowed so the browser's own action
+  shortcuts** (`isGlobalShortcut`), swallowed so the browser's own action
   never runs (Chrome hands Ctrl+<digit> and Ctrl+L to the page first; Ctrl+N, Ctrl+T and Ctrl+W it
   keeps). Other Ctrl combos stay unforwarded: a global undo from a focused field desyncs the
   running tool, and Ctrl+C/X/V/A in a box or a layer name belong to that **text** — never widen
@@ -337,7 +337,7 @@ scoped to `"document"`, a capture `pointerdown` and a `focusin`.
 
 **A shortcut belongs in `CadRuntime.keyDown`, never in a React `useEffect`**: a second
 document-level listener bypasses the routing order and cannot `preventDefault` in step with it
-(ESLint fails on a `keydown`/`keyup` listener in `components/`, `app/` or `packages/`).
+(ESLint fails on a `keydown`/`keyup` listener in `packages/editor/` and `packages/react/`; the site has no runtime, so the docs' Ctrl+K stays its own).
 
 ### Embedding (`CadEngineOptions`)
 

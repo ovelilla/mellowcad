@@ -58,11 +58,12 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
 ## Conventions
 
 - `geometry/` and `domain/` are pure: no I/O, no mutation of inputs, no hidden state — **except
-  the id counters** (`nextEntityId`, `nextLayerId`) and the memos of `hatchGeometry`,
-  `polylineCurve`, `solidViewEntities` and `brepMesh`. Entity helpers
+  the id counters** (`nextEntityId`, `nextLayerId`) and memos (a `WeakMap` keyed by an
+  immutable input). Entity helpers
   return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
-  Normalise with `normalizeAngle` / `normalizeDegrees`, never `deg + 360` (ESLint).
+  Normalise with `normalizeAngle` / `normalizeDegrees`, never `deg < 0 ? deg + 360 : deg`, which
+  lands a tiny negative angle on 360 (ESLint).
 - `ArcEntity` is **always CCW from `startAngle` to `endAngle`**: a transform that reverses
   orientation (mirror) reflects _and swaps_ the angles.
 - Polyline `bulges[i]` is AutoCAD's `tan(θ/4)` for segment `i`; mirroring negates them.
@@ -144,7 +145,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
   (`faceFlux`, curved by Green), not as a mesh.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
-  it, nothing else parses or builds it.
+  it, nothing else parses or builds it but MTEXT's editor, which joins its lines with
+  `\P`.
 - **Text is measured by the engine, not a font**: Arial's widths, descent and TEXT's line (not
   MTEXT's 5/3) and the ink in `domain/textFontMetrics.ts`, read from Arimo (SIL OFL, Arial's
   metrics) by `scripts/fonts/metrics.ts`, with AutoCAD's scale (H = 1466 units, text/p301);

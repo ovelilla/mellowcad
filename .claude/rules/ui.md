@@ -4,6 +4,7 @@ paths:
   - "packages/editor/**"
   - "app/*/*app*/**"
   - "packages/react/**"
+  - "components/draw-editor.tsx"
 ---
 
 # UI layer (the editor, `@mellowcad/editor`, at `/draw`)
@@ -267,7 +268,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **After acting in a palette or bar, focus returns to the drawing** (`engine.focusSurface()`) — a
   tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a command. Arrow keys
   on tabs keep focus there (`event.detail > 0` tells a click).
-- **Buttons run commands by global name** (`engine.runCommand("_QSAVE")`), as AutoCAD's macros
+- **Buttons run commands by global name** (`engine.runCommand("_UCS")`), as AutoCAD's macros
   do, so they echo at the prompt; a `'` macro through an engine method that runs it so
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
   repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
@@ -292,7 +293,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 
 ## Palettes that show drawing content
 
-A palette is a **tab of the palette panel**, never a popover: AutoCAD's palettes are modeless, and
+A palette is a **tab of the palette panel** (until `docs/next-autocad-ui.md` revokes it), never a popover: AutoCAD's palettes are modeless, and
 a popover closes on the first click on the drawing. Which tab shows, and the Styles table
 (`state.stylesTable`), are `EngineState`, never `useState` — or typing `DIMSTYLE` cannot open it. A
 new palette is a `PaletteTab` (`PALETTE_TABS`), a command that calls `showPalette`, a branch in

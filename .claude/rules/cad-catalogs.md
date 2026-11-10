@@ -81,7 +81,8 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
   source confirms is not invented: return `null` and keep `NAME [keywords]:`.
 - A report the answer produces is written after the answered prompt by itself. A table string that
   starts with a space (` Specify second point:`) keeps it in `commands.prompts`.
-- Every `Select objects:` is an `ObjectSelector`; a set selected before the command is counted by
+- Every `Select objects:` is an `ObjectSelector` but AREA's, whose object is one
+  pick (`MeasureTool.ts`); a set selected before the command is counted by
   its `preselect`, which also keeps it as the Previous set.
 
 ## Keywords
@@ -89,7 +90,7 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
 **Options are named by their global keyword, never by a letter.** `commandOptions()` returns
 `{ id: "Close" }`, plus `value` when the chip shows a state (`{ id: "Rotate items", value: "Yes" }`,
 the value a keyword of the same command). `invokeOption(id)` switches on ids and returns
-`"continue"` or `"end"`. The abbreviation (the capitals; digits count, so `3P` is typed whole; `?`
+`"continue"`, `"end"` or `"unhandled"`. The abbreviation (the capitals; digits count, so `3P` is typed whole; `?`
 is its own) is resolved by the runtime from `commands.keywords.<NAME>`: comparing a key with a
 letter breaks when the language changes. Every keyword a tool offers is in its command's table.
 

@@ -15,8 +15,8 @@ by design. Fix the layering, never the environment.
 
 ## The harness is the default way to verify a tool
 
-`createHarness` (`test/harness.ts`) builds a headless `CadRuntime` with in-memory store, files and
-clipboard, disposed by `onTestFinished`. It is a thin subclass of `CadDriver`
+`createHarness` (`test/harness.ts`) builds a headless `CadRuntime` with an in-memory clipboard (a store
+and files only when passed), disposed by `onTestFinished`. It is a thin subclass of `CadDriver`
 (`cad/application/CadDriver.ts`), the engine's one DOM-free way of being driven, which the landing's
 demo scripts replay through too (`DemoScript.ts`): its inputs and readers are the API. **A new
 chainable input belongs on `CadDriver`**, never on the harness, so the engine is never driven two
@@ -88,7 +88,7 @@ child's environment, or its `git init` and commits land in the real repository
 ## Helpers
 
 - `test/matchers.ts` — `toBeCloseToPoint`, `toBeCloseToPoints`, `toBeCloseToAngle`. **Never
-  `toEqual` on a `Vec2`**: `-0 !== 0` under `Object.is`.
+  `toEqual` on a computed `Vec2`**: `-0 !== 0` under `Object.is`, and the last bit differs.
 - `test/builders.ts` — `p`, `deg`, entity builders, `documentWith`, `snapshotOf`. Pass explicit
   ids whenever identity matters (update in place against replace).
 - `test/arbitraries.ts` — fast-check generators (`coordinate` is well-conditioned on purpose,

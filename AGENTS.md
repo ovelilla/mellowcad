@@ -65,7 +65,7 @@ and `cad/locales/`.
 - **One user gesture = one undo step.** A gesture's edit is one command (`UpdateEntitiesCommand` /
   `AddEntitiesCommand` / `ReplaceEntitiesCommand`); the runtime groups a command's whole run.
 - **`geometry/` and `domain/` are pure**: no I/O, no mutation of inputs, no hidden state but the id
-  counters.
+  counters and memos (`cad-engine.md`).
 - **The engine's words live only in `cad/locales/en.json`** (run `npm run locales` after editing it):
   tools name prompts and keywords by id, `domain/` exposes ids, never display names.
 

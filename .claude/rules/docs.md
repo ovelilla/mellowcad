@@ -56,7 +56,7 @@ claims follow `i18n.md`.
 
 ## "Use MellowCAD"
 
-- Pages at the docs' root, each in every live language (`commands.mdx`, `commands.es.mdx`…),
+- Pages at the docs' root, each in every live language (`coordinates.mdx`, `coordinates.es.mdx`…),
   listed in `USE_PAGES` (`lib/docs/use.ts`); the navigation's "Use" is the root pages and "Build"
   the folders (`navSections`). A page in every live language has its own canonical, hreflang and
   sitemap alternates (`isTranslated`). A draft's missing page is the English one under its prefix,

@@ -81,7 +81,8 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
   baseline, which the domain places (`textBaselinePoint`), never a font's em box. The presenters
   keep `DRAWING_FONT` (Arial or a
   face with its widths), **Arial's cap ratio rather than a measured one** (Liberation Sans has
-  Arial's widths but shorter capitals) and **no kerning**. Change any of the three alone and the
+  Arial's widths but shorter capitals) and **no kerning** (the canvas's `fontKerning`, SVG's
+  `font-kerning`). Change any of the three alone and the
   box stops fitting the text. A glyph outside the table (CJK, Arabic) is drawn by a fallback face
   and measured as an average one.
 - A CAD text height is the **capitals'** height, so the font size is divided by the cap-height
