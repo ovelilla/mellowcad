@@ -10,7 +10,9 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
 `.claude/rules/cad-catalogs.md`. **Enforced** marks a step a test fails without.
 
 1. **The tool.** `cad/application/tools/<Name>Tool.ts` implementing `Tool` or extending a base
-   (`cad-tools.md`, "Reuse before writing"). A system variable is no tool: an entry of
+   (`cad-tools.md`, "Reuse before writing"). A command that runs without a prompt of its own (QSAVE,
+   LAYERCLOSE, CLEANSCREENON: about twenty) is an entry of `registerCommands`
+   (`runtimeCommands.ts`) instead, and skips steps 3, 4 and 9. A system variable is no tool: an entry of
    `SYSTEM_VARIABLES` (`cad-tools.md`, "System variables"). A dash command that only takes its
    input differently (`-MTEXT`) is no tool: `runtimeCommands.ts` starts the plain one and switches
    it; one that asks otherwise (-PAN) is a tool of its own.
@@ -61,15 +63,21 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    enforced: an unlisted tool falls into a trailing group. (Every command commit.)
 10. **What it creates.** A command that creates objects gives each the properties AutoCAD gives
     (`cad-tools.md`, "What a new object wears") and gets a row in `FROM_SCRATCH` or `DERIVED` of
-    `cad/application/tools/currentProperties.test.ts`. A new drawing setting it saves follows skill
+    `cad/application/tools/currentProperties.test.ts`, or one of its lists (variant, pinned elsewhere,
+    unpinned, makes nothing). **Enforced** there: every registered command is classified. A new drawing setting it saves follows skill
     `extend-model` (AUPREC's `drawingFile.ts` and its tolerance test, 88090fd).
 11. **The landing.** `COMMAND_FILING` in `content/commands.ts`. **Enforced** by
     `content/commands.test.ts`: it fails until every registered command is filed. A 3D command
     goes in `SOLID_COMMANDS` too, the 3D section's "Works today" (not enforced).
 12. **The coverage entry** in `docs/coverage/`: what the command does and what it still
     lacks; edit the entry, never append a narrative (6d870a7, 85565ad, 88090fd).
-13. **Close** with skill `finish-feature`: `npm run typecheck`, `npm run lint`,
-    `npm run test:coverage`, and any rule the work proved missing or wrong.
+13. **What the command touched beyond the engine**, as the recent ones did: its page under
+    `content/docs/commands/` once it has notes (skill `command-page`; generated pages are
+    snapshots, `docs.md`); `cad/api.md` and a changeset in `.changeset/` when the public API moves
+    (`engine-package.md`); `cad/size.test.ts`'s ceiling when the engine outgrows it, raised on
+    purpose.
+14. **Close** with skill `finish-feature`: its gate (step 1) and any rule the work proved missing
+    or wrong.
 
 A tool class needs no export from `cad/index.ts`: nothing outside `cad/` imports one, and UNDO,
 MREDO and the attribute commands are not exported.

@@ -27,6 +27,6 @@ cross-cutting area, is "Command reviews" in `docs/coverage/roadmap.md`.
    execution, one subagent implements each block and the reviewer commits it (template §8).
 5. Findings use the format of template §5.1 with a block prefix no other review has used; once
    executed, the plan shrinks to a summary and an index of IDs and commits.
-6. Every review ends with proposed improvements to the template (template §9), applied only after
-   the owner confirms them.
+6. Every review ends with improvements to the template (template §9), applied at its close: the
+   owner waived the wait for approval on 2026-10-21.
 7. Every session ends with the prompt for the next one (template §8).

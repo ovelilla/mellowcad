@@ -114,7 +114,8 @@ finished package is not abandoned.
 ## 5. Clean install, once per batch, in the worktree
 
 ```bash
-rm -rf node_modules .next
+# Only in the review's worktree: the main tree's node_modules serves every session.
+[ "$(git branch --show-current)" = deps-review ] && rm -rf node_modules .next
 npm ci 2>&1 | tee "$(mktemp -d)/npm-ci.txt"
 npm audit signatures --min-release-age=0
 ```

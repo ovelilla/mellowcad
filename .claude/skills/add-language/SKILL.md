@@ -144,7 +144,8 @@ every left-to-right island (`ui.md`). Plurals and IME as the plan found.
 
 ## 6. Verify, then live
 
-- `npm run typecheck`, `npm run lint`, `npm test`; a production build shows the new pages as `●`,
+- The gate (skill `finish-feature`, step 1: `npm test` alone lets coverage drops through); a
+  production build shows the new pages as `●`,
   never `ƒ`, and the budgets of `i18n.md` hold (skill `language-review` measures them). A live
   language's name joins every landing: measure every language's first load before and after;
   the latin ones sit within a few hundred bytes of 250 KiB (`docs/plans/fr-language.md`).

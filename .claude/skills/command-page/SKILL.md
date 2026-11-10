@@ -13,7 +13,8 @@ languages, the pages generated from them and `content/demos/commands/offset.ts`.
 
 1. Its entry in `docs/coverage/` (the `###` heading naming it in a code span): **the source of
    truth** for what MellowCAD does. Its Implemented and Missing paragraphs, whole.
-2. Its words in the engine: `cad/locales/en.json`, `es.json`, `pt-BR.json` → `commands.names`,
+2. Its words in the engine: `cad/locales/en.json` and each `localized` command language's
+   (`COMMAND_LANGUAGE`, `i18n/routing.ts`: `es`, `pt-BR`, `fr`) → `commands.names`,
    `commands.keywords` (the keys are the ids the notes use, the values each language's spelling),
    `commands.keywordLabels`, `commands.messages`.
 3. What its searchers type, in each language: the visibility audit's autocomplete and results files
