@@ -120,7 +120,9 @@ function briefs() {
           .filter((line) => line.startsWith(">"))
           .map((line) => line.replace(/^>\s*/, ""))
           .join(" ")
-        const status = quote.match(/\*\*[^*]+:\*\*\s*([^.]+\.)/)?.[1]
+        // The first sentence ends at a period before a space or the end,
+        // not at one inside a file name (`docs/next-seo.md`).
+        const status = quote.match(/\*\*[^*]+:\*\*\s*(.+?\.)(?=\s|$)/)?.[1]
         return status ? `${name} (${status})` : name
       })
   } catch {
@@ -163,6 +165,13 @@ if (status === "") {
   if (entries.length > MAX_STATUS_LINES) {
     lines.push(`  … and ${entries.length - MAX_STATUS_LINES} more.`)
   }
+}
+
+// Compacting keeps a skill's SKILL.md but drops the files it had you read.
+if (session === "compact") {
+  lines.push(
+    "- Compacted: if a skill's annexes or plan were open (command-review's template.md and annexes, a docs/plans/ file), read them again before going on."
+  )
 }
 
 const review = depsReview()

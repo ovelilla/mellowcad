@@ -45,14 +45,16 @@ READMEs, the rules, the skills and `docs/`:
   A citation that is absent on purpose goes in `ABSENT_CITATIONS` with its reason; an entry no
   longer cited fails.
 - **Every rule has a one-line `description:`** (up to 200 characters): the index
-  `grep -H '^description:' .claude/rules/*.md` that `AGENTS.md` points to, and what Copilot loads a
-  rule by.
+  `grep -H '^description:' .claude/rules/*.md` that `AGENTS.md` points to. Claude Code reads only
+  `paths:` and ignores the rest of the frontmatter.
 - **Every rule has `paths:` and each glob matches a file.** Write `app/*/*app*/**`, never
   `app/[locale]/(app)/**`: Claude Code reads `[locale]` as a character class and `(app)` as a group,
   so that glob never loads the rule.
 - **A skill's `name` is its folder** (kebab-case) and it has a `description` of up to 1,024
   characters (Copilot's limit), which is what an agent sees before loading it: say when to use it.
   Its `SKILL.md` stays under 16 KB, about what Claude Code re-attaches after compacting.
+- **No `CLAUDE.md` or `CLAUDE.local.md`** at the root or in `.claude/`: Claude Code would stop
+  reading `AGENTS.md`.
 - **Each brief, `docs/next-*.md`, opens with a status line** (`> **Estado:** …`): the session hook
   shows its first sentence.
 - **Budgets**, ratchets that only go down: `AGENTS.md`, each rule and skill file, and the p90 of

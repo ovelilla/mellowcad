@@ -348,10 +348,17 @@ describe("the agents' knowledge", () => {
     expect(broken).toEqual([])
   })
 
+  it("keeps AGENTS.md read: no CLAUDE.md beside it", () => {
+    // Claude Code reads AGENTS.md only where no CLAUDE.md, .claude/CLAUDE.md
+    // or CLAUDE.local.md stands in the tree or above it, untracked included.
+    const shadowing = ["CLAUDE.md", ".claude/CLAUDE.md", "CLAUDE.local.md"]
+    expect(shadowing.filter((file) => existsSync(file))).toEqual([])
+  })
+
   it("gives each brief the status line the session hook shows", () => {
     const broken = sources
       .filter((file) => /^docs\/next-.+\.md$/.test(file))
-      .filter((file) => !/^> \*\*[^*]+:\*\* [^.]+\./m.test(read(file)))
+      .filter((file) => !/^> \*\*[^*]+:\*\* [^]+?\.(?=\s|$)/m.test(read(file)))
       .map((file) => `${file}: no "> **Estado:** …." line`)
     expect(broken).toEqual([])
   })
