@@ -350,7 +350,8 @@ by hand with its own text. Both descriptions name French the same day (below).
   `appvizer.com/vendors/register-software-directory`, took MellowCAD and hello@mellowcad.com),
   whose account is validated within 24 hours before the product sheet is written, in text of its
   own; Quelle-Alternative has no form, and the suggestion went by email, in French, to
-  contact@digitiz.fr. **TheCADHub**: its submission form (login required; listings free through
+  contact@digitiz.fr; on 2026-11-10 Digitiz answered that every listing is paid (200 €, first
+  place for life), declined by the owner. **TheCADHub**: its submission form (login required; listings free through
   2026).
 - **OpenAlternative**: the free submission waits in a "regular queue" with no date (paid tiers
   97–197 $); approved tools also enter its awesome list; its links are `nofollow`.
