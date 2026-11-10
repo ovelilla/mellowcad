@@ -53,8 +53,10 @@ El italiano `live` en `/it` con el sistema entero, como el francés.
 La skill `add-language`, fase a fase, con su plan en `docs/plans/<tag>-language.md`; los títulos y
 descripciones con los términos que se buscan en italiano.
 
-Al final, con todo verificado, publica tú: push, comprobación en producción, IndexNow, la cola de
-Google y las fichas; pídeme lo que necesite mi llave o mi ratón.
+Al final, con todo verificado, publica tú: aterriza en `main` (skill `finish-feature`), push desde
+el árbol principal (el hook te pedirá mi confirmación: dala por pedida con este encargo, y yo la
+aceptaré), comprobación en producción, IndexNow, la cola de Google y las fichas; pídeme lo que
+necesite mi llave o mi ratón.
 
 ## Qué no tocar
 
@@ -69,7 +71,9 @@ Los demás idiomas, salvo lo que el sistema pida para todos.
 
 ## Cómo trabajar
 
-Otras sesiones pueden estar trabajando en el árbol: añade solo tus ficheros. Puedes usar subagentes
+Trabaja en tu propio worktree desde el principio (`EnterWorktree`, `AGENTS.md`), con tu servidor de
+desarrollo en otro puerto; aterriza en `main` al cerrar cada fase, como dice `finish-feature`, para
+que una sesión que siga encuentre tu trabajo. Puedes usar subagentes
 para investigación independiente, con moderación: el dueño lo pidió por el coste. Las traducciones
 en bloque (notas de comandos, ejercicios, guías y catálogos), con subagentes del modelo Sonnet; tú
 revisas cada cambio antes del commit.
