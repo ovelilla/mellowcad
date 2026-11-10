@@ -107,6 +107,10 @@ const SPLKNOTS: readonly KnotParameterization[] = [
   "uniform",
 ]
 
+// A fixed id for the curve the cursor shapes: one minted per frame burns
+// entity ids (cad-tools.md, previewIds.test.ts).
+const PREVIEW_ID = "spline-preview"
+
 /** The 16-bit range AutoCAD's integer input names at the Degree prompt (spline/p111). */
 const INTEGER_RANGE = { min: -32768, max: 32767 }
 
@@ -616,12 +620,14 @@ export class SplineTool implements Tool {
             ...state,
             points: [...state.points, target],
           },
-          ctx
+          ctx,
+          PREVIEW_ID
         )
       case "startTangent":
         return this.splineOf(
           { ...state, startTangent: sub3(target, state.points[0]) },
-          ctx
+          ctx,
+          PREVIEW_ID
         )
       case "endTangent":
         return this.splineOf(
@@ -634,7 +640,8 @@ export class SplineTool implements Tool {
               ctx
             ),
           },
-          ctx
+          ctx,
+          PREVIEW_ID
         )
     }
   }
@@ -672,9 +679,10 @@ export class SplineTool implements Tool {
   }
 
   /** Kept in the plane its points lie in, if any, as AutoCAD keeps one (spline/p223). */
-  private splineOf(drawn: Drawn, ctx: ToolContext): SplineEntity {
+  private splineOf(drawn: Drawn, ctx: ToolContext, id?: string): SplineEntity {
     return splineOnItsPlane(
       createSpline(this.method, drawn.points, {
+        id,
         degree: this.degree,
         knots: this.knots,
         closed: drawn.closed,
