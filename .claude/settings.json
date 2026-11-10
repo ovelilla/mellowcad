@@ -35,6 +35,17 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/bash-guard.mjs\""
+          }
+        ]
+      }
+    ],
     "WorktreeCreate": [
       {
         "hooks": [

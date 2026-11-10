@@ -28,7 +28,7 @@ engine; Next.js/React is only a presentation shell around it.
 `typecheck` + the packages' build and check + `lint` + `format:check` + `docs:check` +
 `test:coverage` must pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
 (`.github/workflows/ci.yml`) reruns it after a push, too late to stop one: the hook is the gate,
-never `--no-verify` unless the same checks just passed in a clean worktree. Next's
+never skipped (a hook refuses `--no-verify`). Next's
 `npm run build` is outside the gate (it fights the dev server over `.next`): whether a route
 compiles, ask the running dev server through the MCP `next-devtools`.
 
