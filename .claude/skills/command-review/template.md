@@ -19,8 +19,8 @@
 | 4. Plan        | `docs/plans/<command>-review.md` (§6), committed alone            | the plan and the probe inputs                       | no            |
 | 5. Execution   | fixes with their tests, docs, one commit per block (§8)           | code, tests, catalogs, coverage, rules              | push: **yes** |
 
-The plan is committed as soon as it is written (`docs: <COMMAND> review plan`): other sessions
-share the tree and the hook checks it whole, so nothing waits uncommitted. The execution does not
+The plan is committed as soon as it is written (`docs: <COMMAND> review plan`) and landed on
+`main` (skill `finish-feature`), where the next session's worktree starts from. The execution does not
 wait for the owner's approval (the owner, 2026-10-21): it follows in the same session unless
 a fresh one would do it better — the context is nearly spent, or the blocks need the owner's mouse
 at another time. The owner corrects the plan, or what was executed, with a new commit.

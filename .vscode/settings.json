@@ -1,0 +1,8 @@
+{
+  // WHY: .claude/worktrees/ holds other sessions' checkouts (AGENTS.md), each a
+  // full copy of the tree with node_modules hard-linked: search would list
+  // every file once per worktree. Creating one still logs a burst on the
+  // watcher (VS Code throttles it and goes on, 2026-11-10).
+  "files.watcherExclude": { "**/.claude/worktrees/**": true },
+  "search.exclude": { "**/.claude/worktrees/**": true }
+}

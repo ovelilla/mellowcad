@@ -15,15 +15,15 @@ engine; Next.js/React is only a presentation shell around it.
 
 ## Commands
 
-| Task       | Command                                                        |
-| ---------- | -------------------------------------------------------------- |
-| Dev server | `npm run dev` (often running already, on 3000 or 3001)         |
-| Types      | `npm run typecheck`                                            |
-| Lint       | `npm run lint`                                                 |
-| Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`    |
-| Catalogs   | `npm run locales` after editing a `locales/<tag>.json`         |
-| Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
-| Deps       | `npm run deps:check`: weekly, before the task (`deps-review`)  |
+| Task       | Command                                                |
+| ---------- | ------------------------------------------------------ |
+| Dev server | `npm run dev` (often running, on 3000 or 3001)         |
+| Types      | `npm run typecheck`                                    |
+| Lint       | `npm run lint`                                         |
+| Tests      | `npm test` / `npm run test:coverage`                   |
+| Catalogs   | `npm run locales` after editing a `locales/<tag>.json` |
+| Knowledge  | `npm run knowledge` (rules per file; in `npm test`)    |
+| Deps       | `npm run deps:check`: weekly (`deps-review`)           |
 
 `typecheck` + the packages' build and check + `lint` + `format:check` + `docs:check` +
 `test:coverage` must pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
@@ -49,10 +49,9 @@ cad/adapters/      the only browser-aware layer: CadEngine (composition root), p
 `cad/` is the workspace package `@mellowcad/engine`; `packages/react` and `packages/editor` are
 `@mellowcad/react` and `@mellowcad/editor`. Each is imported by its name and `exports` only — never
 a deep path or `@/` (`test/packages.test.ts`).
-Two root layouts under the `[locale]` root param: the editor is `/draw` (`app/[locale]/(app)/`),
-the landing is `/` (`app/[locale]/(marketing)/`, `components/marketing/`). Other languages are
-prefixed (`/es/draw`). Texts live in `messages/` (the site, next-intl), `packages/editor/src/locales/`
-(the editor) and `cad/locales/` (the engine).
+The editor is `/draw` (`app/[locale]/(app)/`), the landing `/` (`app/[locale]/(marketing)/`),
+other languages prefixed (`/es/draw`). Texts: `messages/` (the site), `packages/editor/src/locales/`
+and `cad/locales/`.
 
 ## Non-negotiable invariants
 
@@ -119,9 +118,11 @@ and what each option does must be the ones they already know.
   AutoCAD command at a time, each fully finished: skill `finish-feature`.
 - **The check that clears a destructive step** (a reset, a delete, a discarded change) is run and
   read by you, never taken from a subagent's summary or a test's name.
-- **Several sessions may work in this tree at once.** Stage only your own files or hunks. The hook
-  checks the whole tree: when someone else's change turns it red, verify yours in a clean worktree
-  and commit once the tree is green.
+- **A session that edits works in its own worktree**, as several run at once: `EnterWorktree`
+  (or `claude -w <name>`) before the first edit; `.claude/hooks/worktree-create.mjs` links
+  `node_modules` and `research/`, and a dev server there takes another port. Its gate tests exactly
+  what you commit; landing on `main`: skill `finish-feature`. The main tree is the owner's. Never
+  `git stash`: one stack for every worktree.
 - **Everything runs in WSL2 (Ubuntu) with Bash**, in `~/projects/mellowcad` on the Linux disk,
   VS Code through Remote-WSL: no Windows, PowerShell or `/mnt/c` working copy (slow; watchers miss
   changes). The only Windows program is AutoCAD 2027 (console and desktop), via `scripts/research/`.

@@ -72,7 +72,10 @@ function depsReview() {
 // (gsc-request-log.json). Once a day has passed since the quota stopped the
 // last batch, the next session sends the next one. No folder, no queue.
 function indexingQueue() {
-  const dir = join(process.env.SEO_DATA ?? join(homedir(), "seo-data"), "scripts")
+  const dir = join(
+    process.env.SEO_DATA ?? join(homedir(), "seo-data"),
+    "scripts"
+  )
   let pending, log
   try {
     pending = readFileSync(join(dir, "gsc-request-pending.txt"), "utf8")
@@ -92,7 +95,9 @@ function indexingQueue() {
     ...Object.values(log)
       .map(String)
       .filter((answer) => answer.startsWith("quota"))
-      .map((answer) => Date.parse(answer.match(/\d{4}-\d{2}-\d{2}T[\d:.]+Z/)?.[0] ?? ""))
+      .map((answer) =>
+        Date.parse(answer.match(/\d{4}-\d{2}-\d{2}T[\d:.]+Z/)?.[0] ?? "")
+      )
       .filter(Number.isFinite)
   )
   const ready = stopped + DAY_MS
@@ -133,6 +138,17 @@ lines.push(
   `- Branch ${branch ?? "?"}; last commit ${lastCommit ?? "?"}; ${unpushed ?? "?"} commits not pushed.`
 )
 
+// A linked worktree's git dir is not the common one.
+const inMainTree =
+  git("rev-parse", "--git-dir") !== null &&
+  git("rev-parse", "--path-format=absolute", "--git-dir") ===
+    git("rev-parse", "--path-format=absolute", "--git-common-dir")
+if (inMainTree) {
+  lines.push(
+    "- This is the main tree, the owner's: a task that edits moves to its own worktree before the first edit (EnterWorktree; AGENTS.md), and lands on main as skill finish-feature says."
+  )
+}
+
 const status = git("status", "--short")
 if (status === "") {
   lines.push(
@@ -141,7 +157,7 @@ if (status === "") {
 } else if (status !== null) {
   const entries = status.split("\n")
   lines.push(
-    `- ${entries.length} uncommitted changes. Another session may own them, or a checkpoint reverted files: read \`git diff\` and run \`npm run typecheck\` before answering, and stage only your own work.`,
+    `- ${entries.length} uncommitted changes. ${inMainTree ? "In the main tree they are the owner's or a session's still working here: leave them" : "A checkpoint may have reverted files: read \`git diff\` and run \`npm run typecheck\` before going on"}.`,
     ...entries.slice(0, MAX_STATUS_LINES).map((entry) => `  ${entry}`)
   )
   if (entries.length > MAX_STATUS_LINES) {

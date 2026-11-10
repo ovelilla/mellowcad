@@ -46,9 +46,14 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    A fix or an internal change usually touches none of them: decide, say so in the report.
 
 5. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
-6. **Commit** with only your files (`git add <paths>`, `git status --short` before and after: other
-   sessions may be working in the tree, and one path that matches nothing aborts the whole add), message `feat(engine): …` / `fix(engine): …` / `docs: …` in
-   English, multi-line through `git commit -F - <<'EOF'`. If someone else's change turns the hook
-   red, verify yours in a clean worktree (`git worktree add`, apply your diff, run the gate) and
-   commit once it is green.
+6. **Commit** in your worktree (`AGENTS.md`), message `feat(engine): …` / `fix(engine): …` /
+   `docs: …` in English, multi-line through `git commit -F - <<'EOF'`; a red gate is yours to fix,
+   as the worktree holds only your work. Then **land it**:
+   - `git rebase main` in the worktree if `main` moved, and the gate again
+     (`sh .githooks/pre-commit`; `npm ci` first if the lockfile moved: never `npm install` over
+     the hard-linked `node_modules`, whose files main shares);
+   - ExitWorktree with `keep`: Claude Code refuses git aimed at the main tree from inside one;
+   - in the main tree, `git merge --ff-only worktree-<name>`, then
+     `git worktree remove .claude/worktrees/<name>` and `git branch -d worktree-<name>`. A merge
+     that refuses (the owner's uncommitted edit on a file you changed) waits: say so.
 7. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
