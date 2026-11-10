@@ -27,6 +27,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "knowledge": "KNOWLEDGE_STATS=1 vitest run test/knowledge.test.ts --reporter=verbose",
+    "knowledge:loads": "node scripts/knowledge/loads.mjs",
     "docs:check": "node scripts/docs/check.ts",
     "locales": "node scripts/locales/compile.ts && node scripts/locales/editor.ts && node scripts/locales/sources.ts",
     "version-packages": "changeset version && node scripts/packages/examples.ts",
