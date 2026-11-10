@@ -1,7 +1,8 @@
 # Auditoría del knowledge que el repo da a sus agentes
 
-> **Estado:** informe del 10/11/2026, hecho con Fable 5.2 a petición del dueño. Nada ejecutado: no
-> se ha tocado ni `AGENTS.md`, ni `.claude/`, ni los hooks, ni el test. Lo que propone está en §5.
+> **Estado:** informe del 10/11/2026, hecho con Fable 5.2 a petición del dueño, y triado el mismo
+> día (§8): lo aceptado que no depende de medir está aplicado, y lo que depende de medir es el
+> brief `docs/next-knowledge-eval.md`. El texto de §1 a §7 es el original, sin tocar.
 
 Objeto: `AGENTS.md`, `.claude/` (14 reglas, 10 skills, 2 hooks, settings), `.githooks/` y
 `test/knowledge.test.ts`. Escrito en español porque es un documento para el dueño, como los
@@ -495,3 +496,172 @@ Abiertas el 10/11/2026. Las de documentación no llevan fecha.
 - **No cubre**: no ejecuté AutoCAD ni un navegador, así que no juzgo si las sondas o los
   procedimientos de `autocad-research` y `browser-verify` funcionan; no medí ningún efecto de las
   reglas sobre el comportamiento de un agente, que es justo lo que falta (§2.1).
+
+## 8. Triaje (10/11/2026)
+
+Cada hallazgo contrastado con el código, el historial y la documentación de Claude Code (leída
+para esto: hooks, worktrees, permisos, memoria, tareas programadas). **Aceptado** se aplica tal
+cual, **adaptado** se aplica con otra forma, **rechazado** lleva la prueba de que lo actual sigue
+justificado y **al brief** depende de medir (`docs/next-knowledge-eval.md`). Los commits van uno
+por tema, a continuación del original.
+
+### 8.1 El knowledge solo crece (§2.1)
+
+| Hallazgo                              | Veredicto | Por qué                                                                                                                                                                                                                                                                      |
+| ------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Topes saturados, total que crece      | Aceptado  | Medido de nuevo: este mismo triaje rozó los topes de `cad-runtime.md`, `cad-tools.md` y la p90 al corregir, y tuvo que quitar enumeraciones para caber. El diagnóstico es correcto.                                                                                          |
+| Registro de reglas cargadas           | Aceptado  | `.claude/hooks/instructions-log.mjs` (`InstructionsLoaded`) escribe una línea por regla cargada en un registro del árbol principal, fuera de git; `npm run knowledge:loads` lo resume. Probado en vivo: registró `marketing.md` al leer `lib/site.ts`. No cubre `AGENTS.md`: Claude Code no dispara el evento para él. |
+| Banco de evaluación, nuevas métricas  | Al brief  | Dependen de medir. El brief recomienda empezar por el registro y un piloto de 16 ejecuciones antes que el banco completo.                                                                                                                                                    |
+| `/doctor prompt-audit`                | Al brief  | Es un comando de la interfaz que una sesión no puede lanzar; lo lanza el dueño.                                                                                                                                                                                              |
+
+### 8.2 Un solo árbol (§2.2)
+
+**Aceptado y adaptado.** Probado antes de implantarlo, en esta sesión y desde la extensión de VS Code:
+
+- **La extensión no tiene `--worktree`**, pero la herramienta `EnterWorktree` funciona a mitad de
+  sesión, y con ella los hooks `WorktreeCreate` y `WorktreeRemove`, que se recargan sin reiniciar.
+  `claude -w <nombre>` sirve en la terminal.
+- **`node_modules` no puede ser un enlace simbólico**: los enlaces de los workspaces de npm son
+  relativos (`node_modules/@mellowcad/engine -> ../../cad`) y resolverían el motor del árbol
+  principal. Una copia con enlaces duros (`cp -al`) tarda 2 s, no ocupa disco y resuelve cada
+  paquete al código del worktree. Lo que se reescribe en el mismo inodo, y escribiría en el de
+  `main`, se borra de la copia: las cachés y el `.package-lock.json` oculto de npm.
+- **La base es `main` local, no `origin`**: Claude Code parte por defecto de `origin/main`, que va
+  por detrás de los commits sin publicar que `main` casi siempre tiene. Por eso el hook
+  `WorktreeCreate` propio (`.claude/hooks/worktree-create.mjs`), que además enlaza `research/`.
+- **`.env.local` no se copia**: el sitio solo lee de él los tokens de verificación de Google y
+  Bing, que el servidor de desarrollo no necesita.
+- **El gate dentro del worktree pasa** (2 min 36 s) salvo dos citas que fallaban por el propio
+  diseño, ya resueltas: `/research/` con barra no ignoraba el enlace y `.claude/worktrees/` no
+  existía en un checkout nuevo (ahora lleva un `.gitkeep`).
+- **El servidor de desarrollo y next-devtools**: `next dev -p 3005` en el worktree y otro en el
+  árbol principal a la vez, cada uno con su recarga en caliente aislada; `nextjs_index` descubre el
+  del worktree y `get_project_metadata` da su ruta. `/draw`, `/es/draw` y `/` responden 200.
+- **El aterrizaje no puede hacerse desde el worktree**: Claude Code rechaza un `git -C` dirigido
+  al árbol principal desde una sesión aislada. Se sale con ExitWorktree (`keep`) y se hace
+  `git merge --ff-only` en el árbol principal; `git worktree remove` sin `--force` acepta el
+  worktree con sus enlaces. Está en `finish-feature`, paso 7.
+- **El hook de formato fallaba en un worktree**: usaba `$CLAUDE_PROJECT_DIR`, que sigue siendo el
+  árbol principal, cuyo `.prettierignore` salta `.claude/worktrees/`. Ahora usa el checkout del
+  archivo. Probado.
+- **VS Code**: crear un worktree satura el vigilante de archivos (unos 14.000 eventos de
+  `node_modules`); VS Code lo registra como aviso, deja de procesar esa ráfaga y sigue.
+  `.vscode/settings.json` excluye `.claude/worktrees/` de la búsqueda y del vigilante; que la
+  exclusión evite la ráfaga no está comprobado (haría falta recargar la ventana). VS Code se
+  reinició durante las pruebas: fue una actualización automática de WSL (la carpeta de WSL en
+  Windows cambió a las 11:54:34 y el kernel pasó de 6.18.54.1 a 6.18.58.1), no el worktree.
+- **`git stash`**: `AGENTS.md` lo prohíbe ahora; Claude Code ya avisa de que la pila es común.
+- **La prosa del árbol compartido**: reescrita en `AGENTS.md`, `finish-feature`, el hook de
+  sesión y la plantilla de reviews. Se queda la trampa de `GIT_DIR` de `testing.md`, que no
+  depende del árbol compartido, y el aviso de `deps-review`, cuya instalación limpia sigue
+  borrando `node_modules` si se hace en el árbol principal.
+
+### 8.3 Lo que no admite excepción (§2.3)
+
+| Regla                               | Veredicto  | Por qué                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `toEqual` en un `Vec2`              | Adaptado   | La trampa es real (`toEqual` compara primitivos con `Object.is`, y `-0` no es `0`), pero los 117 usos comparan puntos que el código copia sin calcular, y ninguno ha fallado. La regla se acota a los puntos calculados; un lint no distingue los dos casos.                                                                                                       |
+| `Number()` en lo tecleado           | Adaptado   | Los cuatro usos van detrás de una expresión regular que ya filtra: un entero en COLOR y SETVAR, un decimal en el factor de ZOOM y el punto 2D de SETVAR. El riesgo que la regla evita (`0x10`, que AutoCAD rechaza, `parseDecimalNumber`) no se da. Se escribe la excepción del entero; un lint marcaría también los `Number()` legítimos sobre texto interno. |
+| Listeners de teclado y ESLint       | Adaptado   | El lint acierta y la prosa exageraba: el comentario de `eslint.config.mjs` explica que el sitio no tiene runtime por el que enrutar, así que el Ctrl+K de la documentación es suyo. Se corrige la prosa.                                                                                                                                                       |
+| Filas de `FROM_SCRATCH` / `DERIVED` | Aceptado   | Ahora es un test: cada comando registrado es fila, variante, probado en otro sitio, sin fijar (FILLET, CHAMFER, SCALE, las tres booleanas, FILLETEDGE, CHAMFEREDGE: una lista que solo baja) o no crea nada.                                                                                                       |
+| Id fijo en un preview               | Aceptado   | Confirmado solo a medias: un test nuevo recorre los 148 comandos con uno y dos puntos dados y el cursor moviéndose, y solo SPLINE con dos puntos acuñaba un id por movimiento (con uno, no). Arreglado con un id fijo; el test queda.                                                                                                                         |
+| `normalizeAngle` y ESLint           | Rechazado  | Las «unas diez normalizaciones a mano» son el doble módulo (`((a % 360) + 360) % 360`), que no tiene la trampa: un ángulo negativo diminuto acaba en 360 y el segundo módulo lo devuelve a 0. `normalizeSigned` de ROTATE es otro rango. El lint caza justo el patrón peligroso; la prosa se precisa.                                                         |
+| `i18n/routing.ts`, única lista      | Rechazado  | `commands-section.tsx:54` no lista los idiomas del sitio sino los idiomas de comandos de AutoCAD (el árabe es idioma del sitio y AutoCAD no tiene comandos en árabe), uno por cada marcador de la frase de `messages/*.json` que los nombra. La prosa se precisa: la lista de idiomas del sitio.                                                                |
+| `--no-verify`                       | Aceptado   | Con worktree por sesión no queda excepción. Ninguna regla de permisos ve `-n` dentro de `git commit -anm` ni `git -c core.hooksPath=…`, así que es un hook `PreToolUse` (`.claude/hooks/bash-guard.mjs`, con su test), probado en vivo.                                                                                                                       |
+| `git push` y `git -C . push`        | Aceptado   | La documentación de permisos lo confirma: `Bash(git push *)` no para `git -C . push`. El mismo hook pide confirmación ante cualquier forma de push.                                                                                                                                                                                                             |
+
+### 8.4 Lo falso (§2.4)
+
+Todo lo que el informe da por verificado se confirmó en el código y se corrigió: la clase que «se
+mantiene pequeña» (8.042 líneas; la regla dice ahora cómo sale el código, no que sea pequeña),
+`switchTool`, los memos (ahora «un `WeakMap` sobre una entrada inmutable», sin lista), el kerning
+del SVG (aquí el error era del código: el presentador SVG no lo desactivaba; arreglado, sin cambio
+en ninguna snapshot), `ctx.undoHistory` en PLINE, el DXF (abrir existe; guardar no), las filas de
+`ui.md` que revoca el brief de la interfaz. De lo que el informe marca como no releído, también
+confirmado y corregido: `_QSAVE` (ahora `_UCS`, que un botón sí llama), `commands.mdx`,
+`unhandled`, el almacén y los archivos del harness. De los absolutos: el editor de MTEXT construye
+el contenido con `\P`, `insertionProvider` lee `document.getEntities()` y el `Select objects:` de
+AREA es una designación propia: tres excepciones escritas. «Se mueve solo por `transformEntity`»
+(sólidos) no lo he podido refutar: queda igual.
+
+**Un dueño por hecho**: aplicado donde sobraba al corregir (el grupo de undo vive en
+`cad-runtime.md`; `cad-tools.md` apunta). El resto, al brief: es poda.
+
+**Los `paths:`**: aceptado en parte. `marketing.md` ya no carga con `content/docs/**`,
+`content/commands/**` ni `content/exercises/**`, territorio de `docs.md`; `ui.md` carga con
+`components/draw-editor.tsx`, que describe. **Rechazado** cargar `i18n.md` en
+`components/marketing/`: el texto vive en `messages/`, que sí la carga, y `marketing.md` abre
+apuntando a `i18n.md` para la copia. El test de citas cargadas, al brief.
+
+### 8.5 El hook de sesión (§2.5)
+
+- **Pasar las tareas periódicas a una rutina programada: rechazado.** La tanda de indexación usa el
+  Chrome del dueño con su perfil (cookies de Google): las rutinas en la nube corren en un clon nuevo
+  sin acceso local, y las tareas locales de la app de escritorio no constan para WSL ni para un
+  perfil de Chrome. La revisión de dependencias toca lo que solo existe en esta máquina (el Node de
+  nvm compartido con nubigest, recargar VS Code por los MCP) y una rutina tendría que publicar una
+  rama. Las dos siguen en las sesiones, por encargo del dueño.
+- **Adaptado: un reclamo para la tanda**, el punto débil real. El comando que propone el hook toma un
+  cerrojo (`flock` sobre `.batch.lock`, en la carpeta de la cola), y el hook, mientras otra sesión
+  lo tiene, solo dice que la tanda está en marcha. La revisión de dependencias ya tenía el suyo (la rama).
+- **La contradicción de `docs/next-seo.md` §7**: aceptado. La frase dice ahora que nada sale del
+  repo sin encargo del dueño, y nombra el de la cola.
+- **El estado cortado en un punto**: aceptado, en el hook y en el test (la frase acaba en un punto
+  seguido de espacio o del final).
+- **`fork` y `MultiEdit`**: aceptado; la documentación confirma los dos.
+
+### 8.6 Compactar (§2.6)
+
+Aceptado. Tras compactar, el hook recuerda releer los anexos y el plan abiertos. Un test falla si
+aparece un `CLAUDE.md` (en la raíz o en `.claude/`) o un `CLAUDE.local.md` (la documentación confirma que
+cualquiera de ellos deja `AGENTS.md` sin leer).
+
+### 8.7 Skills (§2.7)
+
+- **Contradicción de `command-review`, francés de `command-page`, las tres versiones del gate,
+  el `rm -rf` sin ruta**: aceptado y corregido (el `rm -rf` solo corre en la rama `deps-review`).
+- **Huecos de `new-command`**: aceptado tras contrastar los `feat` recientes, que tocan
+  `cad/api.md`, `.changeset/`, `cad/size.test.ts` y las páginas de `content/docs/commands/`. El
+  paso nuevo los nombra, y el primero dice qué se salta un comando sin herramienta (unos veinte,
+  no cuarenta: `registerCommands` registra 35 entradas, 14 con herramienta).
+- **El disparador enterrado: rechazado.** Claude Code muestra la descripción entera de cada skill
+  antes de cargarla (la de `command-review`, 558 caracteres, aparece completa en la lista que
+  recibe esta sesión), así que la posición del «Use when» no la esconde.
+- **Partir `autocad-research`, el diario de `annex-probes.md`, las dos skills nuevas**: al brief,
+  con la poda.
+
+### 8.8 Subagentes y revisión (§2.8)
+
+Aceptado: `finish-feature` tiene un paso 6, una segunda lectura de cada `feat` o `fix` de código
+por un contexto que no vio el razonamiento (la skill `code-review` o un subagente con el diff), con
+el aviso de que un revisor siempre encuentra algo. Se exceptúan los bloques de una review de
+comando, cuyo diff ya lee alguien que no lo escribió. Medir si delegar cada bloque compensa, al
+brief.
+
+### 8.9 Menores (§2.9)
+
+| Hallazgo                        | Veredicto | Por qué                                                                                                                                                           |
+| ------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `description:` y Copilot        | Aceptado  | La documentación de Claude Code lo confirma: solo lee `paths:`. `knowledge.md` deja de afirmar lo de Copilot.                                                      |
+| El bloque de Next.js al final   | Aceptado  | `upsertAgentRulesBlock` lo reemplaza donde estén sus marcadores.                                                                                                  |
+| El idioma de los briefs         | Aceptado  | `AGENTS.md` lo dice ahora, en la misma línea del inglés.                                                                                                          |
+| `docs/next-seo.md` pesa 62 KB   | Rechazado | Es el brief vivo del plan de visibilidad, que otras sesiones escriben a diario; reordenarlo desde aquí chocaría con ellas. Lo decide la sesión que lo cierre.         |
+| `engine-package.md`, crónica    | Al brief  | Es poda.                                                                                                                                                          |
+| Puntos ciegos del test de citas | Al brief  | Ninguno da un fallo hoy.                                                                                                                                          |
+| Las sondas no viajan            | Rechazado | `research/` guarda el texto de Autodesk y por eso no entra en git (`.gitignore`); un worktree lo enlaza. Una sesión en la nube no puede sondar AutoCAD de todos modos. |
+| Ramas viejas                    | Sin cambio | Borrarlas es del dueño: las cuatro de i18n, fusionadas, y `worktree-agent-a498997d3f29c107f`, con un commit fuera de `main`.                                        |
+| `Read(./.env.local)` en `deny`  | Sin cambio | Correcto como freno de las herramientas de archivo; no se activa el sandbox por esto.                                                                             |
+
+### 8.10 Segunda lectura
+
+Antes de los commits, un subagente sin este razonamiento leyó el código nuevo (el paso 6 que este
+triaje añade a `finish-feature`). Encontró, y se corrigió: el reclamo de la tanda buscaba con
+`pgrep` en toda la máquina, de modo que una tanda real ponía en rojo los tests del hook (ahora es
+el propio cerrojo, en la carpeta de la cola); el `style` del hero pisaba el `font-kerning` del SVG
+(ahora se suman, con test); un apóstrofo dentro de un here-document dejaba pasar un `git push`
+detrás, y había otras formas de saltar el guard (`--config-env`, `GIT_CONFIG_KEY_0`,
+`git config core.hooksPath`, `sh -c`, `sudo`, `/usr/bin/git`, `` `…` ``) y falsos positivos
+(`-mdone`, `-uno`, líneas de un mensaje de commit): todo con test; el hook de worktree no se
+recuperaba de una copia cortada a medias y compartía el `.package-lock.json` de npm con `main`;
+las listas del test de clasificación podían nombrar comandos que ya no existen. El guard sigue
+siendo contra despistes, no contra quien quiera saltarlo: `eval` o un script lo esquivan.
