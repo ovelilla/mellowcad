@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process"
+import { spawn, spawnSync } from "node:child_process"
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import path from "node:path"
@@ -20,11 +20,13 @@ const isolated = Object.fromEntries(
   Object.entries(process.env).filter(([name]) => !name.startsWith("GIT_"))
 ) as NodeJS.ProcessEnv
 
-function run(queue?: { pending: string[]; log: Record<string, string> }) {
+function run(
+  queue?: { pending: string[]; log: Record<string, string> },
+  data = mkdtempSync(path.join(tmpdir(), "queue-data-"))
+) {
   const repo = mkdtempSync(path.join(tmpdir(), "queue-repo-"))
-  const data = mkdtempSync(path.join(tmpdir(), "queue-data-"))
   if (queue) {
-    mkdirSync(path.join(data, "scripts"))
+    mkdirSync(path.join(data, "scripts"), { recursive: true })
     writeFileSync(
       path.join(data, "scripts/gsc-request-pending.txt"),
       `${queue.pending.join("\n")}\n`
@@ -43,6 +45,10 @@ function run(queue?: { pending: string[]; log: Record<string, string> }) {
 
 const at = (ago: number) => new Date(Date.now() - ago).toISOString()
 const pending = ["https://a.test/1", "https://a.test/2", "https://a.test/3"]
+const due = () => ({
+  [pending[0]]: `requested (not on Google) ${at(2 * DAY)}`,
+  [pending[1]]: `quota (not on Google) ${at(DAY + 60_000)}`,
+})
 
 describe("the session hook's indexing queue", () => {
   it("says nothing without a queue, or once every URL is requested", () => {
@@ -71,5 +77,27 @@ describe("the session hook's indexing queue", () => {
     expect(run({ pending, log })).toMatch(
       /Indexing requests due: 2 URLs still to submit to Google/
     )
+  })
+
+  it("leaves a batch being sent to the session holding its lock", async () => {
+    const data = mkdtempSync(path.join(tmpdir(), "queue-data-"))
+    mkdirSync(path.join(data, "scripts"))
+    const lock = path.join(data, "scripts/.batch.lock")
+    const batch = spawn("flock", ["-o", lock, "sleep", "10"], {
+      stdio: "ignore",
+    })
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 200))
+      expect(run({ pending, log: due() }, data)).toMatch(
+        /Another session is sending today's batch/
+      )
+      batch.kill()
+      await new Promise((resolve) => batch.on("exit", resolve))
+      expect(run({ pending, log: due() }, data)).toMatch(
+        /Indexing requests due/
+      )
+    } finally {
+      batch.kill()
+    }
   })
 })

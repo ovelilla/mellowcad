@@ -1,6 +1,9 @@
-// SessionStart hook: injects the repo state, so a session notices other
-// sessions' work in the tree and files a chat checkpoint reverted in silence,
-// and picks up an agreed brief. Plain-text stdout becomes context.
+// SessionStart hook: injects the repo state, so a session in the main tree
+// moves to its own worktree before editing (AGENTS.md), notices files a chat
+// checkpoint reverted in silence, and picks up an agreed brief. It informs;
+// the two periodic chores it names are the owner's standing orders, each
+// claimed so that two sessions never take one. Plain-text stdout becomes
+// context.
 import { execFileSync } from "node:child_process"
 import { readdirSync, readFileSync } from "node:fs"
 import { homedir } from "node:os"
@@ -90,6 +93,15 @@ function indexingQueue() {
     (url) => !String(log[url] ?? "").startsWith("requested")
   )
   if (left.length === 0) return null
+  // The claim: the lock the proposed command takes, held while it runs.
+  // Looked up in the queue's own folder, never machine-wide.
+  try {
+    execFileSync("flock", ["-n", join(dir, ".batch.lock"), "true"], {
+      stdio: "ignore",
+    })
+  } catch {
+    return "- Another session is sending today's batch of Google indexing requests (it holds ~/seo-data/scripts/.batch.lock): leave it."
+  }
   const stopped = Math.max(
     0,
     ...Object.values(log)
@@ -105,7 +117,7 @@ function indexingQueue() {
     const when = new Date(ready).toISOString().slice(0, 16).replace("T", " ")
     return `- ${left.length} URLs wait to be submitted to Google for indexing until its daily quota resets, after ${when} UTC (docs/next-seo.md §7): not yet.`
   }
-  return `- Indexing requests due: ${left.length} URLs still to submit to Google (docs/next-seo.md §7). Send the next batch at the start, in the background, as it touches nothing in the repo: start the owner's Chrome as ~/seo-data/scripts/README.md says (ask the owner only if a tab asks to sign in), then \`node gsc-prioritize.mjs && node gsc-request.mjs gsc-request-pending.txt\` there (the first rebuilds the queue from the live sitemap, by priority; the second stops at the quota); note what is left in §7 with your next commit.`
+  return `- Indexing requests due: ${left.length} URLs still to submit to Google (docs/next-seo.md §7). Send the next batch at the start, in the background, as it touches nothing in the repo: start the owner's Chrome as ~/seo-data/scripts/README.md says (ask the owner only if a tab asks to sign in), then \`flock -n .batch.lock sh -c 'node gsc-prioritize.mjs && node gsc-request.mjs gsc-request-pending.txt'\` there (the lock is the claim; the first rebuilds the queue from the live sitemap, by priority; the second stops at the quota); note what is left in §7 with your next commit.`
 }
 
 // Each brief with the first sentence of its status line, so a session tells

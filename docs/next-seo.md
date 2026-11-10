@@ -315,7 +315,9 @@ Si a las 6 semanas las páginas están indexadas pero sin impresiones, el proble
 
 ## 7. Lo que hace el dueño a mano
 
-Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueño.
+Ninguna sesión publica, envía ni cambia nada fuera del repo sin un encargo del dueño: esto es
+suyo. Los encargos permanentes están anotados en su punto (la cola de indexación del punto 2, que
+el dueño dio a las sesiones el 6/11).
 
 1. **El push** de los commits de cada sesión (despliega en Vercel). Cuanto antes se publiquen 01 y
    02, antes empieza a contar el tiempo de Google.
@@ -367,6 +369,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    comando y los 12 ejercicios) no se añaden a mano: `gsc-prioritize.mjs`, que pesa `/fr` (0,5,
    entre el 0,6 de pt-BR y el 0,35 del árabe), rehízo la cola desde el sitemap publicado tras el
    push: 571, 120 de ellas francesas (`/fr/docs/commands`, la décima).
+   **10/11:** la tanda del día, 11 pedidas (las guías del plano y de abrir un DXF en tres idiomas,
+   `/docs` y `/es/docs`, `/fr`, `/docs/exercises` y `/fr/docs/commands`) hasta la cuota, a las
+   10:48 UTC: 560 en la cola. Desde hoy la tanda se reclama con un cerrojo (`flock` sobre
+   `.batch.lock` en ~/seo-data/scripts), y el hook calla mientras otra sesión la envía.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
