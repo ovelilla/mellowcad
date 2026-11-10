@@ -46,7 +46,13 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    A fix or an internal change usually touches none of them: decide, say so in the report.
 
 5. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
-6. **Commit** in your worktree (`AGENTS.md`), message `feat(engine): …` / `fix(engine): …` /
+6. **A second reading** of a `feat` or `fix` that changes code in `cad/` or `packages/`, by a
+   context that did not see your reasoning: skill `code-review` at `medium` on the diff, or a
+   subagent given the task and the diff, never your conclusions. Fix what holds up against the
+   code; a reviewer asked for problems always finds some, so judge each one. Docs-only changes
+   and a command review's blocks, whose diff the reviewer reads after the subagent that
+   wrote it (template §8), skip it.
+7. **Commit** in your worktree (`AGENTS.md`), message `feat(engine): …` / `fix(engine): …` /
    `docs: …` in English, multi-line through `git commit -F - <<'EOF'`; a red gate is yours to fix,
    as the worktree holds only your work. Then **land it**:
    - `git rebase main` in the worktree if `main` moved, and the gate again
@@ -56,4 +62,4 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    - in the main tree, `git merge --ff-only worktree-<name>`, then
      `git worktree remove .claude/worktrees/<name>` and `git branch -d worktree-<name>`. A merge
      that refuses (the owner's uncommitted edit on a file you changed) waits: say so.
-7. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
+8. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
