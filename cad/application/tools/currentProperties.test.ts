@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { createHarness, type CadHarness } from "../../../test/harness"
+import { commandCatalog } from "../commandCatalog"
 import { circleOf, lineOf, p, rectOf } from "../../../test/builders"
 import {
   assignEntityColor,
@@ -932,5 +933,83 @@ describe("what a new PLINE wears", () => {
     expect(whole.latest()?.color).toBe(
       whole.runtime.document.getSettings().currentColor
     )
+  })
+})
+
+// What makes `FROM_SCRATCH` and `DERIVED` the list of every creating command
+// (cad-tools.md, "What a new object wears"): each registered command is a row
+// above, a variant of one, pinned in a test named here, unpinned, or makes no
+// object. UNPINNED only shrinks.
+const VARIANT_OF: Readonly<Record<string, string>> = {
+  CIRCLED: "CIRCLE",
+  CIRCLE2P: "CIRCLE",
+  CIRCLE3P: "CIRCLE",
+  ARCSCE: "ARC",
+  ARCCSE: "ARC",
+  ELLIPSEC: "ELLIPSE",
+  ELLIPSEARC: "ELLIPSE",
+  "-HATCH": "HATCH",
+  "-TEXT": "TEXT",
+  "-MTEXT": "MTEXT",
+  "-INSERT": "INSERT",
+  "-ATTDEF": "ATTDEF",
+  "-BLOCK": "BLOCK",
+  BREAKATPOINT: "BREAK",
+  ARRAY: "ARRAYRECT",
+}
+const PINNED_ELSEWHERE: Readonly<Record<string, string>> = {
+  BLOCK: 'this file, "converts BLOCK\'s objects…"',
+}
+// Creates or rebuilds objects; what they wear is not pinned yet.
+const UNPINNED = [
+  "FILLET",
+  "CHAMFER",
+  "SCALE",
+  "UNION",
+  "SUBTRACT",
+  "INTERSECT",
+  "FILLETEDGE",
+  "CHAMFEREDGE",
+]
+const MAKES_NOTHING = [
+  ...["MOVE", "STRETCH", "EXTEND", "ERASE", "MATCHPROP", "CHPROP"],
+  ...["TEXTEDIT", "DIMSPACE", "DIMSTYLE", "-DIMSTYLE", "STYLE"],
+  ...["ATTEDIT", "EATTEDIT", "ATTDISP", "BLOCKSPALETTE", "LAYER"],
+  ...["LAYERCLOSE", "PROPERTIES", "PROPERTIESCLOSE", "PURGE", "-PURGE"],
+  ...["LTSCALE", "AUPREC", "SETVAR", "COLOR", "-COLOR", "LINETYPE"],
+  ...["-LINETYPE", "LWEIGHT", "-LWEIGHT", "DIST", "AREA", "ID", "LIST"],
+  ...["MASSPROP", "ZOOM", "PAN", "-PAN", "U", "UNDO", "REDO", "MREDO"],
+  ...["SNAP", "-OSNAP", "FROM", "UCS", "UCSICON", "PLAN", "ELEV"],
+  ...["VPOINT", "-VPOINT", "VIEW", "-VIEW", "3DORBIT", "NAVVCUBE"],
+  ...["VSCURRENT", "REGEN", "REGENALL", "FILL", "UNITS", "CLEANSCREENON"],
+  ...["CLEANSCREENOFF", "NEW", "QNEW", "QSAVE", "SAVE", "SAVEAS", "OPEN"],
+  ...["DXFIN", "COPYCLIP", "CUTCLIP", "COPYBASE"],
+]
+
+describe("the creating commands", () => {
+  it("are every registered command that makes an object", () => {
+    const rows = new Set(
+      [...FROM_SCRATCH, ...DERIVED].map(([name]) => name.split(" ")[0])
+    )
+    const known = new Set([
+      ...rows,
+      ...Object.keys(PINNED_ELSEWHERE),
+      ...UNPINNED,
+      ...MAKES_NOTHING,
+    ])
+    const unclassified = commandCatalog()
+      .map((command) => command.name)
+      .filter((name) => !known.has(name) && !known.has(VARIANT_OF[name]))
+    expect(unclassified).toEqual([])
+    expect(UNPINNED.filter((name) => rows.has(name))).toEqual([])
+    // A list naming a command that is no more would let it grow unseen.
+    const registered = new Set(commandCatalog().map((command) => command.name))
+    const listed = [
+      ...Object.entries(VARIANT_OF).flat(),
+      ...Object.keys(PINNED_ELSEWHERE),
+      ...UNPINNED,
+      ...MAKES_NOTHING,
+    ]
+    expect(listed.filter((name) => !registered.has(name))).toEqual([])
   })
 })
