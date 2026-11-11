@@ -5,7 +5,7 @@ figure: "Un parallelepipedo 60 per 40 per 25, da due angoli e un'altezza, visto 
 sourceHash: "68b09d9eff63"
 ---
 
-PARALLELEPIPEDO disegna un parallelepipedo solido 3D con i lati lungo gli assi dell'UCS: indica il primo angolo, l'altro angolo, poi l'altezza. L'altezza sale lungo Z dell'UCS, una negativa scende, e un punto la dà con la sua distanza dall'angolo; un angolo dato a una Z diversa dal primo imposta l'altezza senza chiederla. L'ultima altezza, e l'ultima lunghezza e larghezza di un cubo o di Lunghezza, sono offerte come predefiniti che Invio prende, condivisi con le altre primitive e con <Command id="EXTRUDE" />. Il parallelepipedo sta sul layer corrente, e Annulla lo annulla in un solo passo.
+PARALLELEPIPEDO disegna un parallelepipedo solido 3D con i lati lungo gli assi dell'UCS: indica il primo angolo, l'altro angolo, poi l'altezza. L'altezza sale lungo Z dell'UCS, una negativa scende, e un punto la dà con la sua distanza dall'angolo; un angolo dato a una Z diversa dal primo imposta l'altezza senza chiederla. L'ultima altezza, e l'ultima lunghezza e larghezza di un cubo o di Lunghezza, sono proposte come predefiniti che Invio accetta, condivisi con le altre primitive e con <Command id="EXTRUDE" />. Il parallelepipedo sta sul layer corrente, e Annulla lo annulla in un solo passo.
 
 Il parallelepipedo conserva le sue dimensioni: <Command id="LIST" /> mostra la sua posizione, lunghezza, larghezza, altezza e rotazione, e la tavolozza Proprietà permette di digitare le prime quattro. I suoi grip lo spostano, lo stirano e, fuori dalla pianta, ne impostano l'altezza. È un solido 3D per <Command id="UNION" />, <Command id="SUBTRACT" /> e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
 
@@ -39,7 +39,7 @@ Esegui PARALLELEPIPEDO, indica un angolo, poi l'angolo opposto, poi l'altezza: `
 
 ### Perché il mio parallelepipedo sembra un rettangolo?
 
-Lo guardi dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, <Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" />, oppure <Command id="3DORBIT" />. <Command id="VSCURRENT" /> con <Keyword command="VSCURRENT" id="Hidden" /> nasconde gli spigoli dietro di esso.
+Lo stai guardando dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, <Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" />, oppure <Command id="3DORBIT" />. <Command id="VSCURRENT" /> con <Keyword command="VSCURRENT" id="Hidden" /> nasconde gli spigoli dietro di esso.
 
 ### Come si disegna un cubo?
 

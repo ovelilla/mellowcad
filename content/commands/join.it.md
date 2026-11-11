@@ -5,7 +5,7 @@ figure: "Tre linee unite in una sola polilinea, che un solo clic di OFFSET segue
 sourceHash: "c4f26ede4174"
 ---
 
-UNISCI (JOIN in inglese) fa un solo oggetto di più oggetti. Selezionali, quanti ne vuoi, e premi Invio: linee e archi che si toccano di testa diventano una sola polilinea, unita a una polilinea tra essi se c'è; linee su una stessa retta diventano una sola linea, anche con una fessura; archi di uno stesso cerchio diventano un solo arco, e quando si chiudono, UNISCI chiede se farne un cerchio, <Keyword id="Yes" /> per impostazione predefinita, oppure mantenerlo come arco con <Keyword id="No" />. Archi ellittici di una stessa ellisse diventano un solo arco, e una spline o un arco ellittico tra curve che si toccano crea una spline. Poi dice che cosa ha creato, e quanti oggetti ha lasciato fuori. Una polilinea si unisce solo per le sue estremità, e una chiusa non si unisce a nulla. L'unione è un solo passo che Annulla ripristina.
+UNISCI (JOIN in inglese) fa un solo oggetto di più oggetti. Selezionali, quanti ne vuoi, e premi Invio: linee e archi che si toccano di testa diventano una sola polilinea, unita a una polilinea tra essi se c'è; linee su una stessa retta diventano una sola linea, anche con una fessura; archi di uno stesso cerchio diventano un solo arco, e quando si chiudono, UNISCI chiede se farne un cerchio, <Keyword id="Yes" /> per impostazione predefinita, oppure mantenerlo come arco con <Keyword id="No" />. Archi ellittici di una stessa ellisse diventano un solo arco, e una spline o un arco ellittico tra curve che si toccano crea una spline. Poi indica che cosa ha creato, e quanti oggetti ha lasciato fuori. Una polilinea si unisce solo per le sue estremità, e una chiusa non si unisce a nulla. L'unione è un solo passo che Annulla ripristina.
 
 ## Options
 
@@ -29,7 +29,7 @@ Avvia UNISCI, seleziona le linee, anche con una finestra, e premi Invio: quelle 
 
 ### Perché UNISCI non funziona?
 
-Gli oggetti devono toccarsi esattamente, di testa e in un solo piano: una fessura o un incrocio li lascia fuori, e UNISCI dice quanti ne ha scartati. Solo linee collineari, archi di uno stesso cerchio e archi di una stessa ellisse vengono uniti anche con una fessura. Una polilinea chiusa non si unisce a nulla.
+Gli oggetti devono toccarsi esattamente, di testa e in un solo piano: una fessura o un incrocio li lascia fuori, e UNISCI indica quanti ne ha scartati. Solo linee collineari, archi di uno stesso cerchio e archi di una stessa ellisse vengono uniti anche con una fessura. Una polilinea chiusa non si unisce a nulla.
 
 ### Come si uniscono archi in un cerchio?
 

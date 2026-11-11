@@ -5,15 +5,15 @@ figure: "L'area tra un rettangolo e un cerchio premuta di 8 verso il basso: una 
 sourceHash: "b806d59060e1"
 ---
 
-PREMTRASC (PRESSPULL) estrude ciò che clicchi: un oggetto chiuso, un'area che gli oggetti chiudono attorno al clic o una faccia piana di un solido 3D. Clicca, poi digita l'altezza oppure muovi il cursore e clicca: un'altezza positiva tira, una negativa preme. Un oggetto chiuso o un'area diventa un nuovo solido, lo stesso che farebbe <Command id="EXTRUDE" />, e gli oggetti restano; le isole di un'area sono fori al suo interno, come nella sessione. Una faccia aggiunge il suo prisma al solido o lo toglie: la faccia superiore di un parallelepipedo, tirata, lo rende più alto. Il prompt si ripresenta per il clic successivo fino a Invio, e l'intera serie è un solo passo che Annulla ripristina.
+PREMTRASC (PRESSPULL) estrude ciò che clicchi: un oggetto chiuso, un'area racchiusa da oggetti attorno al clic o una faccia piana di un solido 3D. Clicca, poi digita l'altezza oppure muovi il cursore e clicca: un'altezza positiva trascina, una negativa preme. Un oggetto chiuso o un'area diventa un nuovo solido, lo stesso che farebbe <Command id="EXTRUDE" />, e gli oggetti restano; le isole di un'area sono fori al suo interno, come nella sessione. Una faccia aggiunge il suo prisma al solido o lo toglie: la faccia superiore di un parallelepipedo, trascinata, lo rende più alto. La richiesta si ripresenta per il clic successivo fino a Invio, e l'intera serie è un solo passaggio di annullamento.
 
-Tieni premuto Ctrl e si illumina la faccia che un clic selezionerebbe; Ctrl+clic esegue invece l'offset di quella faccia, con le facce adiacenti prolungate fino a raggiungerla, così un lato inclinato mantiene la sua inclinazione. Come in AutoCAD, PREMTRASC funziona a clic: un numero o un punto digitato al primo prompt riceve come risposta <Message id="presspullClick" />, e il prompt viene riproposto.
+Tieni premuto Ctrl e si illumina la faccia che un clic selezionerebbe; Ctrl+clic esegue invece l'offset di quella faccia, con le facce adiacenti prolungate fino a raggiungerla, così un lato inclinato mantiene la sua inclinazione. Come in AutoCAD, PREMTRASC funziona a clic: un numero o un punto digitato alla prima richiesta riceve come risposta <Message id="presspullClick" />, e la richiesta viene riproposta.
 
 ## Options
 
 ### Multiple
 
-Al prompt dell'altezza, o della distanza di offset: continua a cliccare per aggiungere altri elementi, oggetti chiusi e aree oppure facce di uno stesso solido, poi premi Invio, e un'unica altezza vale per tutti. Una faccia cliccata dopo un oggetto o un'area viene scartata.
+Alla richiesta dell'altezza, o della distanza di offset: continua a cliccare per aggiungere altri elementi, oggetti chiusi e aree oppure facce di uno stesso solido, poi premi Invio, e un'unica altezza vale per tutti. Una faccia cliccata dopo un oggetto o un'area viene scartata.
 
 ## Missing
 
@@ -21,18 +21,18 @@ Una faccia curva, di cui AutoCAD esegue l'offset: qui il clic non trova alcuna f
 
 ## Questions
 
-### Qual è la differenza tra PREMTRASC e ESTRUDI?
+### Qual è la differenza tra PREMTRASC ed ESTRUDI?
 
-<Command id="EXTRUDE" /> prende gli oggetti chiusi che selezioni, li cancella come stabilisce DELOBJ e offre una direzione, un angolo di rastremazione e un'espressione. PREMTRASC prende dei clic, un oggetto chiuso, l'area dentro più oggetti o una faccia di un solido, che aggiunge a quel solido o da cui taglia, e conserva gli oggetti. Partendo da un oggetto, i due comandi creano lo stesso solido.
+<Command id="EXTRUDE" /> prende gli oggetti chiusi che selezioni, li cancella come stabilisce DELOBJ e offre una direzione, un angolo di rastremazione e un'espressione. PREMTRASC prende dei clic, un oggetto chiuso, l'area dentro più oggetti o una faccia di un solido, che aggiunge a quel solido o da cui sottrae, e conserva gli oggetti. Partendo da un oggetto, i due comandi creano lo stesso solido.
 
 ### Come si estrude la faccia di un solido?
 
-Esegui PREMTRASC, clicca la faccia e indica la distanza: una positiva la tira fuori e il solido cresce, una negativa la preme verso l'interno. Tieni premuto Ctrl mentre clicchi per eseguire invece l'offset della faccia. Per ora solo facce piane.
+Avvia PREMTRASC, clicca la faccia e indica la distanza: una positiva la trascina verso l'esterno e il solido cresce, una negativa la preme verso l'interno. Tieni premuto Ctrl mentre clicchi per eseguire invece l'offset della faccia. Per ora solo facce piane.
 
 ### Perché PREMTRASC non funziona?
 
-Vuole un clic su qualcosa di chiuso. PREMTRASC risponde con <Message id="presspullClick" /> a un numero o a un punto digitato al primo prompt, a un clic su un oggetto aperto o su una faccia curva, e chiede di nuovo. Clicca su un oggetto chiuso, dentro un'area che gli oggetti chiudono in pianta o su una faccia piana di un solido.
+Vuole un clic su qualcosa di chiuso. PREMTRASC risponde con <Message id="presspullClick" /> a un numero o a un punto digitato alla prima richiesta, a un clic su un oggetto aperto o su una faccia curva, e chiede di nuovo. Clicca su un oggetto chiuso, dentro un'area che gli oggetti chiudono in pianta o su una faccia piana di un solido.
 
 ### Esiste un alias per PREMTRASC?
 
-Non ha alias: digita PREMTRASC, oppure `_PRESSPULL` in qualsiasi lingua di AutoCAD. Ctrl+Maiusc+E, il tasto di AutoCAD per questo comando, non è ancora realizzato.
+Non ha alias: digita PREMTRASC, oppure `_PRESSPULL` in qualsiasi lingua di AutoCAD. Ctrl+Maiusc+E, la combinazione di tasti di AutoCAD per questo comando, non è ancora disponibile.

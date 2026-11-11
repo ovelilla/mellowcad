@@ -35,7 +35,7 @@ Scrive il totale della serie e termina; Invio fa lo stesso.
 
 ## Missing
 
-MEASUREGEOM, gli strumenti Misura della barra multifunzione, che pongono le richieste di DIST dentro un ciclo con Radius, Angle, Area, Volume e Quick: qui il pulsante Distanza della barra multifunzione esegue DIST. All'opzione <Keyword id="Center" /> di Arc, l'angolo incluso si legge in gradi, mentre AutoCAD 2027 vi legge un numero come distanza lungo il cursore.
+MEASUREGEOM, gli strumenti Misura della barra multifunzione, che racchiudono le richieste di DIST in un ciclo con Radius, Angle, Area, Volume e Quick: qui il pulsante Distanza della barra multifunzione esegue DIST. All'opzione <Keyword id="Center" /> di Arc, l'angolo incluso si legge in gradi, mentre AutoCAD 2027 vi legge un numero come distanza lungo il cursore.
 
 ## Questions
 

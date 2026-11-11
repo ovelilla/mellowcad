@@ -40,7 +40,7 @@
     "continue": "{count, plural, one {Continua il disegno · # oggetto} other {Continua il disegno · # oggetti}}",
     "mobileNote": "Meglio su computer, con tastiera e mouse.",
     "drawingTitle": "Una flangia disegnata in MellowCAD, poi modellata come solido 3D",
-    "drawingDescription": "Vista frontale di una flangia con un foro centrale e sei fori per bulloni su una circonferenza d'asse, e accanto la sezione A–A tratteggiata con ANSI31, quotata in diametro e in spessore. Poi la vista passa a Isometrica SO: il disegno resta piatto e la flangia si alza davanti a lui come solido 3D, senza linee nascoste.",
+    "drawingDescription": "Vista frontale di una flangia con un foro centrale e sei fori per bulloni su una circonferenza d'asse, e accanto la sezione A–A tratteggiata con ANSI31, quotata in diametro e in spessore. Poi la vista passa a Isometrica SO: il disegno resta piatto e la flangia si alza davanti come solido 3D, senza linee nascoste.",
     "caption": "Ogni disegno di questa pagina è stato fatto in MellowCAD.",
     "transcriptSummary": "Mostra la cronologia dei comandi",
     "transcriptLabel": "I comandi che hanno disegnato la flangia e modellato il suo solido",
@@ -91,22 +91,22 @@
   "Precision": {
     "label": "02 · Disegno 2D",
     "title": "Disegno 2D preciso: snap ad oggetto, puntamento e polare.",
-    "lead": "Snap ad oggetto, puntamento e angoli polari rispondono come si aspettano le tue mani, e le coordinate si digitano come in AutoCAD, sul cursore: @100<30 per il polare relativo, #120,80 per l'assoluto.",
+    "lead": "Snap ad oggetto, puntamento e angoli polari rispondono come ti aspetti, e le coordinate si digitano come in AutoCAD, sul cursore: @100<30 per le polari relative, #120,80 per le assolute.",
     "osnapTitle": "Snap ad oggetto",
     "osnapBody": "{count, number} snap ad oggetto, con i marcatori e i suggerimenti di AutoCAD. Maiusc+clic destro ne impone uno per il prossimo punto — qui, Tangente.",
     "otrackTitle": "Puntamento snap ad oggetto",
     "otrackBody": "Fermati su due punti per acquisirli, poi segui i loro percorsi di allineamento fino all'incrocio.",
     "polarTitle": "Puntamento polare e Orto",
-    "polarBody": "Il polare tiene l'elastico sul tuo incremento e mostra distanza e angolo. Orto lo blocca ad angolo retto.",
+    "polarBody": "Il polare vincola l'elastico all'incremento e mostra distanza e angolo. Orto lo blocca ad angolo retto.",
     "selectionTitle": "Finestra e intersezione",
-    "selectionBody": "Trascina verso destra per una finestra, che prende ciò che racchiude; verso sinistra per un'intersezione, che prende tutto ciò che tocca.",
+    "selectionBody": "Trascina verso destra per una finestra, che seleziona ciò che racchiude; verso sinistra per un'intersezione, che seleziona ciò che tocca.",
     "windowLabel": "Finestra",
     "crossingLabel": "Intersezione",
     "osnapAlt": "Una linea tracciata verso un cerchio, agganciata al punto di tangenza, con il marcatore e il suggerimento Tangente.",
     "otrackAlt": "Due punti finali acquisiti e i loro percorsi di allineamento tratteggiati che si incrociano sul cursore.",
     "polarAlt": "Una linea bloccata sul raggio polare di 30 gradi, con il suggerimento di distanza e angolo.",
-    "windowAlt": "Un lazo di finestra blu trascinato da sinistra a destra intorno a un cerchio, attraverso una linea, con il cerchio preso evidenziato.",
-    "crossingAlt": "Un lazo di intersezione verde, tratteggiato, trascinato da destra a sinistra intorno a un cerchio, attraverso una linea, con entrambi evidenziati."
+    "windowAlt": "Una finestra blu trascinata da sinistra a destra intorno a un cerchio, attraverso una linea, con il cerchio evidenziato.",
+    "crossingAlt": "Un'intersezione verde, tratteggiata, trascinata da destra a sinistra intorno a un cerchio, attraverso una linea, con entrambi evidenziati."
   },
   "Toolset": {
     "drawBody": "Linee, polilinee, cerchi, archi, ellissi, spline, rettangoli, poligoni e tratteggi.",
@@ -254,7 +254,7 @@
     "analytics2": "Vercel Speed Insights misura la velocità di caricamento e di risposta delle pagine, con la pagina, il tuo browser, sistema, tipo di dispositivo, velocità di rete e paese — anch'esso in forma anonima.",
     "analytics3": "Nessuno dei due vede i tuoi disegni, e nessuno dei due serve per pubblicità, profilazione o decisioni automatizzate.",
     "handledTitle": "Chi se ne occupa, e perché",
-    "handled1": "MellowCAD è un progetto indipendente di {name}, responsabile di questi dati, che risponde a <email>{address}</email>.",
+    "handled1": "MellowCAD è un progetto indipendente di {name}, responsabile di questi dati, raggiungibile a <email>{address}</email>.",
     "handled2": "Servire il sito e misurarne uso e velocità si fondano su un legittimo interesse a gestire bene un servizio gratuito, limitato a statistiche anonime (articolo 6, paragrafo 1, lettera f, del GDPR).",
     "handled3": "Vercel Inc. ospita il sito e svolge entrambe le misurazioni. Come ogni host, tratta il tuo indirizzo IP per consegnare le pagine. Ha sede negli Stati Uniti ed è certificata dal Data Privacy Framework UE–USA.",
     "handled4": "Se scrivi, il tuo messaggio arriva a Google, il fornitore di posta, tramite Cloudflare, che lo inoltra senza conservarne copia. Serve solo a risponderti, per tutto il tempo che la conversazione richiede. Entrambe le società hanno sede negli Stati Uniti e sono certificate dal Data Privacy Framework UE–USA.",
@@ -302,7 +302,7 @@
     "copy": "Copia",
     "copied": "Copiato",
     "markdown": "Markdown",
-    "source": "Sorgente su GitHub",
+    "source": "Codice sorgente su GitHub",
     "previous": "Precedente",
     "next": "Successivo",
     "useTitle": "Usare MellowCAD",
@@ -318,25 +318,25 @@
         "title": "Scorciatoie da tastiera di AutoCAD",
         "metaTitle": "Scorciatoie AutoCAD: tasti F e tasti Ctrl",
         "description": "I tasti a cui MellowCAD risponde: gli ausili di disegno, la modifica e i file, la finestra e la riga di comando.",
-        "lead": "I tasti a cui MellowCAD risponde, quelli che chi usa AutoCAD ha già nelle dita. Un comando è nominato come lo digiteresti; i suoi alias sono nella pagina dei comandi."
+        "lead": "I tasti a cui MellowCAD risponde, quelli che chi usa AutoCAD ha già nelle dita. Un comando è indicato col nome che digiteresti; i suoi alias sono nella pagina dei comandi."
       },
       "exercises": {
         "title": "Esercizi AutoCAD per esercitarsi",
         "metaTitle": "Esercizi AutoCAD gratis, con soluzioni",
         "description": "Esercizi AutoCAD per principianti e oltre, in 2D, isometrici e 3D, ciascuno risolto passo passo e aperto con il suo disegno in un editor online gratuito.",
-        "lead": "Disegni su cui esercitarsi con AutoCAD, dalla prima guarnizione ai solidi 3D, ciascuno con le sue quote, i comandi che fa praticare e la soluzione passo passo. Il motore disegna ogni passo e scrive la cronologia della riga di comando come la digiterai: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Aprine uno nell'editor e il suo disegno è lì, accanto allo spazio in cui disegni il tuo, nel browser, senza nulla da installare e senza account da creare.",
+        "lead": "Disegni su cui esercitarsi con AutoCAD, dalla prima guarnizione ai solidi 3D, ciascuno con le sue quote, i comandi che esercita e la soluzione passo passo. Il motore disegna ogni passo e scrive la cronologia della riga di comando come la digiterai: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Aprine uno nell'editor e il suo disegno è lì, accanto allo spazio in cui disegni il tuo, nel browser, senza nulla da installare e senza account da creare.",
         "guidesTitle": "Guide passo passo",
         "guides": "Le competenze degli esercizi una alla volta: digitare i punti, la pianta di una casa, un disegno 2D trasformato in solido. Ogni guida mostra il disegno di ogni passo e la sua cronologia.",
         "howTitle": "Come funzionano gli esercizi",
-        "how": "Un esercizio si apre nell'editor con il suo disegno, quotato, a sinistra dell'origine: disegna il tuo a partire da 0,0, come fa la sua soluzione. Ciò che disegni resta in questo browser per quel solo esercizio. Il disegno su cui lavoravi resta com'era, e l'editor aperto da solo lo riporta. Per ricominciare un esercizio, esegui NUOVO, poi aprilo dalla sua pagina. Ogni pagina si stampa da sola, prima il disegno e poi i passi, e la finestra di stampa del browser la salva come PDF.",
+        "how": "Un esercizio si apre nell'editor con il suo disegno, quotato, a sinistra dell'origine: disegna il tuo a partire da 0,0, come fa la sua soluzione. Ciò che disegni resta in questo browser per quel solo esercizio. Il disegno su cui lavoravi resta com'era, e aprendo l'editor da solo lo ritrovi. Per ricominciare un esercizio, esegui NUOVO, poi aprilo dalla sua pagina. Ogni pagina si stampa da sola, prima il disegno e poi i passi, e la finestra di stampa del browser la salva come PDF.",
         "questions": {
           "where": {
             "question": "Dove trovo esercizi AutoCAD per esercitarmi?",
-            "answer": "Qui: ogni esercizio ha il suo disegno quotato, i comandi che fa praticare e la soluzione passo passo, e si apre in un editor gratuito che funziona come AutoCAD, nel browser. Comincia da quelli per principianti; ogni comando che usano rimanda a ciò che fa e alle opzioni che chiede."
+            "answer": "Qui: ogni esercizio ha il suo disegno quotato, i comandi che esercita e la soluzione passo passo, e si apre in un editor gratuito che funziona come AutoCAD, nel browser. Comincia da quelli per principianti; ogni comando che usano rimanda a ciò che fa e alle opzioni che chiede."
           },
           "online": {
             "question": "Posso esercitarmi con AutoCAD online gratis?",
-            "answer": "Sì. MellowCAD gira nel browser, gratis e senza account: digiti i comandi e gli alias di AutoCAD, coi nomi della tua lingua, e rispondi alle loro richieste nello stesso ordine, con le stesse lettere d'opzione. Non è AutoCAD: apre i file DXF ma non può ancora salvarli né aprire DWG, e i suoi solidi 3D sono ancora parziali."
+            "answer": "Sì. MellowCAD gira nel browser, gratis e senza account: digiti i comandi e gli alias di AutoCAD, con i nomi della tua lingua, e rispondi alle loro richieste nello stesso ordine, con le stesse lettere d'opzione. Non è AutoCAD: apre i file DXF ma non può ancora salvarli né aprire DWG, e i suoi solidi 3D sono ancora parziali."
           },
           "solutions": {
             "question": "Gli esercizi hanno le soluzioni?",
@@ -381,11 +381,11 @@
       },
       "help": "Apre la guida del comando in corso in una nuova scheda, o queste guide se non ce n'è nessuno.",
       "selectAll": "Seleziona tutti gli oggetti",
-      "enter": "Esegue ciò che è digitato. Senza nulla di digitato prende il valore predefinito della richiesta o termina il comando, e senza comandi in corso ripete l'ultimo.",
-      "escape": "Annulla il comando in corso; un primo Esc cancella ciò che è digitato a metà.",
+      "enter": "Esegue quanto digitato. Se non c'è nulla, accetta il valore predefinito della richiesta o termina il comando; senza comandi in corso, ripete l'ultimo.",
+      "escape": "Annulla il comando in corso; un primo Esc cancella il testo digitato a metà.",
       "recall": "Senza comandi in corso, richiama i comandi digitati prima.",
       "complete": "Completa il nome del comando che stai digitando; a una richiesta di punto, passa da uno snap ad oggetto all'altro sotto il cursore.",
-      "cycle": "Passa da un oggetto sovrapposto all'altro sotto il cursore mentre il ciclo di selezione mostra il suo badge."
+      "cycle": "Passa da un oggetto sovrapposto all'altro sotto il cursore mentre la selezione ciclica mostra il suo indicatore."
     },
     "keys": {
       "shift": "Maiusc",
@@ -399,7 +399,7 @@
     "sessions": {
       "firstLine": "Un rettangolo di quattro segmenti, digitato punto per punto; l'ultimo lo chiude.",
       "circleDiameter": "Un cerchio da centro e diametro, digitato dopo aver scelto l'opzione.",
-      "endpointSnap": "Vicino a un angolo, lo snap ad oggetto mostra il suo marcatore e nomina il punto che prenderà.",
+      "endpointSnap": "Vicino a un angolo, lo snap ad oggetto mostra il suo marcatore e indica il punto a cui si aggancia.",
       "offsetRectangle": "Un rettangolo e la sua copia in offset, indicata all'interno."
     },
     "types": {
@@ -448,8 +448,8 @@
       "local": "Si apre nell'editor, in questo browser: il file non viene inviato.",
       "replaces": "Prende il posto del disegno aperto nell'editor, come APRI: tieni prima il tuo con Ctrl+S nell'editor.",
       "opening": "Apertura…",
-      "dwg": "I file DWG non si aprono ancora qui. Salvalo come DXF nel programma che l'ha creato, e apri quel file.",
-      "failed": "Questo browser non ha lasciato che la pagina passasse il file all'editor: aprilo lì con Ctrl+O.",
+      "dwg": "I file DWG non si aprono ancora qui. Salva il file come DXF nel programma che l'ha creato, e apri quel file.",
+      "failed": "Il browser non ha permesso alla pagina di passare il file all'editor: aprilo lì con Ctrl+O.",
       "editor": "Apri l'editor"
     }
   }

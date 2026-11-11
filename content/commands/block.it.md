@@ -7,7 +7,7 @@ sourceHash: "ca24f209008c"
 
 BLOCCO memorizza un insieme di oggetti nel disegno con un nome, così che <Command id="INSERT" /> possa posizionarlo di nuovo quante volte vuoi, ogni copia un riferimento a quell'unica definizione. Chiede un nome, poi il punto base di inserimento, il punto con cui si posiziona ogni riferimento, poi gli oggetti. Invio termina la selezione e definisce il blocco, e gli oggetti selezionati diventano un riferimento ad esso, dove erano. L'intero comando è un solo passo che Annulla annulla.
 
-BLOCCO di AutoCAD apre la finestra Definizione blocco, che MellowCAD non ha: qui BLOCCO chiede alla riga di comando ciò che chiede <Command id="-BLOCK" />, come fa la console di AutoCAD. Un nome può contenere spazi e fino a 255 caratteri, ma nessuno tra `< > / \ " : ; ? * | , =` né un apice inverso: Invio da solo o un nome simile dice <Message id="invalidNewBlockName" /> e chiede di nuovo. Un nome che il disegno ha già, in qualsiasi maiuscolo o minuscolo, chiede se ridefinire quel blocco, <Keyword id="Yes" /> o <Keyword id="No" /> (il predefinito, che termina il comando).
+BLOCCO di AutoCAD apre la finestra Definizione blocco, che MellowCAD non ha: qui BLOCCO chiede alla riga di comando ciò che chiede <Command id="-BLOCK" />, come fa la console di AutoCAD. Un nome può contenere spazi e fino a 255 caratteri, ma nessuno tra `< > / \ " : ; ? * | , =` né un apice inverso: Invio da solo o un nome simile mostra <Message id="invalidNewBlockName" /> e chiede di nuovo. Un nome che il disegno ha già, senza distinzione tra maiuscole e minuscole, chiede se ridefinire quel blocco, <Keyword id="Yes" /> o <Keyword id="No" /> (il predefinito, che termina il comando).
 
 ## Options
 

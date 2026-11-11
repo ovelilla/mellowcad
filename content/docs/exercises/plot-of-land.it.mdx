@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Disegna questo lotto di terreno, in metri, dalla lunghezza e dalla direzione dei suoi lati: 40 a 0°, 30 a 80°, 35 a 155° e 25 a 230°, poi ritorno all'inizio. Misura la sua area e il suo perimetro, e quota ogni lato e l'angolo al secondo vertice. Le coordinate polari, una lunghezza e un angolo, disegnano ogni lato dalla fine del precedente. La scala delle quote del disegno è impostata per i metri.
+Disegna questo lotto di terreno, in metri, dalla lunghezza e dalla direzione dei suoi lati: 40 a 0°, 30 a 80°, 35 a 155° e 25 a 230°, poi di nuovo all'inizio. Misura la sua area e il suo perimetro, e quota ogni lato e l'angolo al secondo vertice. Le coordinate polari, una lunghezza e un angolo, disegnano ogni lato dalla fine del precedente. La scala delle quote del disegno è impostata per i metri.
 
 - **Esercizio:** Intermedio · Ingegneria civile · 2D
 - **Comandi:** [`PLINEA`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALLINEATA`](/docs/commands/dimaligned), [`DIMANGOLO`](/docs/commands/dimangular)
@@ -34,7 +34,7 @@ Sul layer Contorno, [`PLINEA`](/docs/commands/pline) da `0,0`, poi ogni lato com
 
 ### 3. Quotalo [#dimensions]
 
-Sul layer Quote, [`DIMALLINEATA`](/docs/commands/dimaligned) e Invio al primo prompt: chiede allora un oggetto, e un clic su un lato quota quel lato, parallelamente. Posiziona ogni quota fuori dal lotto. [`DIMANGOLO`](/docs/commands/dimangular) sui due lati che si incontrano in `40,0` dà l'angolo tra loro, 100°.
+Sul layer Quote, [`DIMALLINEATA`](/docs/commands/dimaligned) e Invio alla prima richiesta: a quel punto chiede un oggetto, e un clic su un lato quota quel lato, in parallelo. Posiziona ogni quota fuori dal lotto. [`DIMANGOLO`](/docs/commands/dimangular) sui due lati che si incontrano in `40,0` dà l'angolo tra loro, 100°.
 
 <Session name="exercises/plot-of-land/dimensions" caption="3. Quotalo" />
 

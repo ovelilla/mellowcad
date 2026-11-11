@@ -5,7 +5,7 @@ figure: "Un profilo a gradini quotato 30, poi proseguito 40 e 30 lungo la stessa
 sourceHash: "11fa474694fd"
 ---
 
-DIMCONTINUA disegna una catena di quote una dopo l'altra: ognuna parte dalla seconda linea di estensione della precedente e misura fino al punto successivo che dai, sulla stessa linea di quota. Continua l'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue <Command id="DIMLINEAR" /> o <Command id="DIMALIGNED" />; se non ce n'è, chiede quale continuare. La riga di comando dice ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie <Keyword id="Select" />, e Invio lì termina il comando, come fa Esc.
+DIMCONTINUA disegna una catena di quote una dopo l'altra: ognuna parte dalla seconda linea di estensione della precedente e misura fino al punto successivo che dai, sulla stessa linea di quota. Continua l'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue <Command id="DIMLINEAR" /> o <Command id="DIMALIGNED" />; se non ce n'è, chiede quale continuare. La riga di comando indica ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie <Keyword id="Select" />, e Invio lì termina il comando, come fa Esc.
 
 Come in AutoCAD, ogni nuova quota misura lungo la direzione della sua base, e prende lo stile di quota e il layer della base, con il colore, il tipo di linea e lo spessore di linea correnti.
 
@@ -31,7 +31,7 @@ Una quota non è associativa: una catena non segue gli oggetti che misura. Una q
 
 ### Qual è la differenza tra DIMCONTINUA e DIMLBASE?
 
-DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. <Command id="DIMBASELINE" /> le misura tutte dalla stessa linea di estensione, ciascuna su una linea più in fuori.
+DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. <Command id="DIMBASELINE" /> le misura tutte dalla stessa linea di estensione, ciascuna su una linea più all'esterno.
 
 ### Come si continua da una quota che non è l'ultima?
 

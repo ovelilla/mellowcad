@@ -32,7 +32,7 @@ Un'apertura si taglia tra due linee che attraversano il muro, i suoi stipiti. Di
 
 ## Disegna le porte [#doors]
 
-Sul layer Porte, ogni porta è la sua anta, disegnata aperta con <Command id="LINE" />, e il suo arco di apertura, un arco con <Command id="ARC" />: scegli la sua opzione Centro, poi indica la cerniera come centro, l'inizio dell'arco e la sua fine. Entrambi gli estremi sono punti già disegnati, l'angolo dello stipite e la fine dell'anta: digita `_END`, lo snap ad oggetto Fine per un solo punto, e seleziona ciascuno.
+Sul layer Porte, ogni porta è la sua anta, disegnata aperta con <Command id="LINE" />, e il suo arco di apertura, un arco con <Command id="ARC" />: scegli la sua opzione Centro, poi indica la cerniera come centro, l'inizio dell'arco e la sua fine. Entrambi i capi sono punti già disegnati, l'angolo dello stipite e la fine dell'anta: digita `_END`, lo snap ad oggetto Punto finale per un solo punto, e indicali uno per uno.
 
 <Session name="floorPlanDoors" caption="Ogni porta: la sua anta aperta a 90° e l'arco della sua apertura." />
 
@@ -44,12 +44,12 @@ Sul layer Finestre, un <Command id="RECTANG" /> riempie ogni apertura a partire 
 
 ## Quota la pianta [#dimensions]
 
-Sul layer Quote, usa <Command id="DIMLINEAR" /> per le misure esterne, poi per le stanze dall'interno: la larghezza della prima stanza con <Command id="DIMLINEAR" />, poi il muro interno e la seconda stanza con <Command id="DIMCONTINUE" />, digitati dall'origine con `#`.
+Sul layer Quote, <Command id="DIMLINEAR" /> per le misure esterne, poi le stanze dall'interno: la larghezza della prima stanza con <Command id="DIMLINEAR" />, poi il muro interno e la seconda stanza con <Command id="DIMCONTINUE" />, digitati dall'origine con `#`.
 
 <Session name="floorPlanDimensions" caption="La pianta quotata: 800 per 600 all'esterno, le stanze all'interno." />
 
-## Poi [#next]
+## Per continuare [#next]
 
-- Dai un nome a ogni stanza con <Command id="TEXT" />, e riempi i muri con <Command id="HATCH" />, selezionando un punto tra le loro due linee.
+- Dai un nome a ogni stanza con <Command id="TEXT" />, e riempi i muri con <Command id="HATCH" />, indicando un punto tra le loro due linee.
 - Esercitati con gli [esercizi](/docs/exercises): [la scala in pianta](/docs/exercises/stairs) e [un tavolo rotondo con le sedie](/docs/exercises/round-table) si disegnano anch'essi in centimetri.
 - [Coordinate](/docs/coordinates): tutti i modi di digitare un punto.

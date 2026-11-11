@@ -5,9 +5,9 @@ figure: "PAN trascinato a destra e in basso, poi Invio: la piastra scorre nella 
 sourceHash: "0ca3050831f3"
 ---
 
-PAN fa scorrere la vista; nulla nel disegno si sposta. Parte con <Message id="panExit" /> e non chiede altro: il cursore diventa una mano, e trascinando con il pulsante sinistro la vista si muove con esso, quante volte vuoi, finché Invio o Esc lo termina. Senza PAN, trascinare con il pulsante della rotellina fa il pan in qualunque momento, anche nel mezzo di un comando. Ogni PAN è un passo di annullamento, unito agli ZOOM e ai PAN intorno, quindi <Command id="U" /> riporta indietro la vista. Digitato con un apostrofo, `'PAN` o `'P`, funziona dentro un altro comando, che prosegue dopo di esso.
+PAN fa scorrere la vista; nulla nel disegno si muove. Parte con <Message id="panExit" /> e non chiede altro: il cursore diventa una mano, e trascinando con il pulsante sinistro la vista si muove con esso, quante volte vuoi, finché Invio o Esc lo termina. Senza PAN, trascinare con il pulsante della rotellina fa il pan in qualunque momento, anche nel mezzo di un comando. Ogni PAN è un passaggio di annullamento, raggruppato con gli ZOOM e i PAN vicini, quindi <Command id="U" /> riporta indietro la vista. Digitato con un apostrofo, `'PAN` o `'P`, funziona dentro un altro comando, che prosegue dopo il pan.
 
-<Command id="-PAN" /> fa invece il pan con due punti: un punto base e un secondo punto, con la vista che si muove della distanza tra essi; oppure uno spostamento digitato alla prima richiesta, come `50,0`, e Invio alla seconda. È trasparente anch'esso, e un passo di annullamento a sé.
+<Command id="-PAN" /> fa invece il pan con due punti: un punto base e un secondo punto, con la vista che si muove della distanza tra essi; oppure uno spostamento digitato alla prima richiesta, come `50,0`, e Invio alla seconda. È trasparente anch'esso, e un passaggio di annullamento a sé.
 
 ## Missing
 
@@ -21,11 +21,11 @@ PAN, come in inglese, alias `P`, poi Invio o barra spaziatrice. Oppure nessun co
 
 ### Come si fa il pan con il mouse in AutoCAD?
 
-Tieni premuto il pulsante della rotellina e trascina: la vista segue il cursore. Gira la rotellina per ingrandire e ridurre attorno al cursore. Su un trackpad, avvia PAN e trascina con il pulsante sinistro.
+Tieni premuto il pulsante della rotellina e trascina: la vista segue il cursore. Ruota la rotellina per ingrandire e ridurre intorno al cursore. Su un trackpad, avvia PAN e trascina con il pulsante sinistro.
 
 ### Come si fa il pan mentre si disegna?
 
-Trascina con il pulsante della rotellina, oppure digita `'P` alla richiesta del comando: il comando aspetta mentre fai il pan, poi chiede di nuovo da dove era rimasto.
+Trascina con il pulsante della rotellina, oppure digita `'P` alla richiesta del comando: il comando aspetta mentre fai il pan, poi chiede di nuovo il dato che stava aspettando.
 
 ### Come si fa il pan di una distanza esatta?
 

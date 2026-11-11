@@ -3,10 +3,10 @@ title: "Comando ZOOM in AutoCAD"
 description: "Come funziona ZOOM (Z) di AutoCAD in italiano: Estensioni, Finestra, Precedente, Scala con nX, Oggetto e Tutto, la rotellina del mouse, lo zoom trasparente."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di ZOOM in AutoCAD?","answer":"Z, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _ZOOM in qualsiasi lingua di AutoCAD. Z poi E è ZOOM Estensioni."},{"question":"Come si zooma per adattare l'intero disegno?","answer":"Estensioni: digita Z, Invio, E, Invio. Oppure fai doppio clic sul pulsante della rotellina del mouse."},{"question":"Che cosa significa ZOOM XP in AutoCAD?","answer":"nXP ingrandisce una vista di un layout a una scala relativa allo spazio carta: 1/50XP mostra il modello in scala 1:50 sul foglio. MellowCAD non ha layout, quindi XP viene letto come X."},{"question":"Come si zooma su un oggetto in AutoCAD?","answer":"Scegli Oggetto e selezionalo, oppure selezionalo prima ed esegui poi ZOOM Oggetto: la vista lo inquadra."},{"question":"Come si torna alla vista precedente?","answer":"Precedente, ancora e ancora per le viste precedenti, fino a 20."}]
+faq: [{"question":"Qual è l'alias di ZOOM in AutoCAD?","answer":"Z, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _ZOOM in qualsiasi lingua di AutoCAD. Z poi E è ZOOM Estensioni."},{"question":"Come si zooma per adattare l'intero disegno?","answer":"Estensioni: digita Z, Invio, E, Invio. Oppure fai doppio clic sul pulsante della rotellina del mouse."},{"question":"Che cosa significa ZOOM XP in AutoCAD?","answer":"nXP imposta una vista di un layout a una scala relativa allo spazio carta: 1/50XP mostra il modello in scala 1:50 sul foglio. MellowCAD non ha layout, quindi XP viene letto come X."},{"question":"Come si zooma su un oggetto in AutoCAD?","answer":"Scegli Oggetto e selezionalo, oppure selezionalo prima ed esegui poi ZOOM Oggetto: la vista lo inquadra."},{"question":"Come si torna alla vista precedente?","answer":"Precedente, ancora e ancora per le viste precedenti, fino a 20."}]
 ---
 
-ZOOM rende la vista più grande o più piccola; nulla nel disegno si muove né cambia dimensione. Il suo primo prompt prende un angolo, che avvia una finestra, un fattore di scala o un'opzione. Digitato con un apostrofo, `'ZOOM` o `'Z`, funziona all'interno di un altro comando, che prosegue dopo di esso. La rotellina del mouse esegue lo zoom avanti e indietro attorno al cursore, e un doppio clic sul pulsante della rotellina è ZOOM Estensioni. Ogni ZOOM è un passo di annullamento, quelli consecutivi un solo passo, quindi `A` ripristina anche la vista.
+ZOOM rende la vista più grande o più piccola; nulla nel disegno si muove né cambia dimensione. La sua prima richiesta accetta un angolo, che avvia una finestra, un fattore di scala o un'opzione. Digitato con un apostrofo, `'ZOOM` o `'Z`, funziona all'interno di un altro comando, che prosegue dopo lo zoom. La rotellina del mouse ingrandisce e riduce attorno al cursore, e un doppio clic sul pulsante della rotellina è ZOOM Estensioni. Ogni ZOOM è un passo di annullamento, quelli consecutivi un solo passo, quindi `A` ripristina anche la vista.
 
 - **Comando:** `ZOOM`
 - **Alias:** `Z`
@@ -27,7 +27,7 @@ Inquadra tutto ciò che è disegnato, come fa `Estensioni`.
 
 ### `Estensioni` (`E`) [#extents]
 
-Inquadra tutto ciò che è disegnato, grande quanto la finestra permette. Senza nulla disegnato dice `Rigenerazione modello in corso.`, e digitato all'interno di un altro comando rifiuta con `** È richiesta una rigenerazione: non può essere trasparente.`, come fa quello di AutoCAD.
+Inquadra tutto ciò che è disegnato, grande quanto la finestra permette. Senza nulla disegnato segnala `Rigenerazione modello in corso.`, e digitato all'interno di un altro comando rifiuta con `** È richiesta una rigenerazione: non può essere trasparente.`, come fa quello di AutoCAD.
 
 ### `Precedente` (`P`) [#previous]
 
@@ -35,11 +35,11 @@ Torna alla vista precedente, fino a 20 viste indietro. Se non ne resta nessuna: 
 
 ### `scAla` (`A`) [#scale]
 
-Un fattore: `2X` ingrandisce due volte più vicino della vista corrente, `0.5X` la metà, e `2` senza la X il doppio della scala della vista di ZOOM Tutto. `nXP`, il fattore dello spazio carta, viene letto come `nX`: qui c'è solo lo spazio modello. Un fattore digitato al primo prompt fa lo stesso senza scegliere l'opzione.
+Un fattore: `2X` avvicina di due volte rispetto alla vista corrente, `0.5X` la allontana della metà, e `2` senza la X il doppio della scala della vista di ZOOM Tutto. `nXP`, il fattore dello spazio carta, viene letto come `nX`: qui c'è solo lo spazio modello. Un fattore digitato alla prima richiesta fa lo stesso senza scegliere l'opzione.
 
 ### `Finestra` (`F`) [#window]
 
-Due angoli, indicati o trascinati, inquadrano quel rettangolo. Un angolo indicato al primo prompt fa lo stesso.
+Due angoli, indicati o trascinati, inquadrano quel rettangolo. Un angolo indicato alla prima richiesta fa lo stesso.
 
 ### `Oggetto` (`O`) [#object]
 
@@ -47,7 +47,7 @@ Inquadra gli oggetti che selezioni, o quelli selezionati prima di ZOOM.
 
 ## Cosa non fa ancora [#missing]
 
-Tempo reale: Invio al primo prompt termina ZOOM, dove AutoCAD inizia lo zoom con il mouse; qui lo fa la rotellina. Dinamico, Centro e le opzioni nascoste Sinistra e Vmax.
+Tempo reale: Invio alla prima richiesta termina ZOOM, dove AutoCAD inizia lo zoom con il mouse; qui lo fa la rotellina. Dinamico, Centro e le opzioni nascoste Sinistra e Vmax.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z--fr-zoom--z--it-zoom--z)
 
@@ -63,7 +63,7 @@ Tempo reale: Invio al primo prompt termina ZOOM, dove AutoCAD inizia lo zoom con
 
 ### Che cosa significa ZOOM XP in AutoCAD?
 
-`nXP` ingrandisce una vista di un layout a una scala relativa allo spazio carta: `1/50XP` mostra il modello in scala 1:50 sul foglio. MellowCAD non ha layout, quindi `XP` viene letto come `X`.
+`nXP` imposta una vista di un layout a una scala relativa allo spazio carta: `1/50XP` mostra il modello in scala 1:50 sul foglio. MellowCAD non ha layout, quindi `XP` viene letto come `X`.
 
 ### Come si zooma su un oggetto in AutoCAD?
 

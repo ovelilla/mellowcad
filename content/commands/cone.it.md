@@ -5,7 +5,7 @@ figure: "Un cono di raggio 20 e altezza 40, dal centro della sua base, visto da 
 sourceHash: "1c40f02e6b3c"
 ---
 
-CONO disegna un cono solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza, e si restringe fino a un punto. Chiede ciò che chiede <Command id="CYLINDER" />, con <Keyword id="Top" /> all'altezza per un cono tagliato. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa lo punta verso il basso, e un punto la dà con la sua distanza dalla base. Il raggio e l'altezza sono offerti come predefiniti che Invio prende, condivisi con le altre primitive. Il cono sta sul layer corrente, e Annulla lo annulla in un solo passo.
+CONO disegna un cono solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza, e si restringe fino a un punto. Chiede ciò che chiede <Command id="CYLINDER" />, con <Keyword id="Top" /> all'altezza per un cono tagliato. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa lo punta verso il basso, e un punto la dà con la sua distanza dalla base. Il raggio e l'altezza sono proposti come predefiniti che Invio accetta, condivisi con le altre primitive. Il cono sta sul layer corrente, e Annulla lo annulla in un solo passo.
 
 <Command id="LIST" /> mostra la sua posizione, normale, raggio di base, raggio superiore e altezza, e la tavolozza Proprietà permette di digitarli. I suoi grip lo spostano, ne impostano l'altezza, il raggio di base a ogni quarto della base, e il raggio superiore. Il vertice si aggancia come punto finale. È un solido 3D per <Command id="UNION" />, <Command id="SUBTRACT" /> e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
 
@@ -29,7 +29,7 @@ Al centro della base: la base è un'ellisse, data dai due estremi del suo primo 
 
 ### Diameter
 
-Al raggio: chiede invece il diametro, offrendo il doppio dell'ultimo raggio.
+Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ### 2Point
 
@@ -41,7 +41,7 @@ All'altezza: chiede il vertice. Il cono va dal centro della base a quel punto in
 
 ### Top
 
-All'altezza: chiede il raggio superiore, poi di nuovo l'altezza. Il cono termina in un cerchio invece che in un punto, un tronco di cono; una sommità larga come la base crea i lati di un cilindro, una più larga un cono che si allarga verso l'alto. Offre il raggio superiore dell'ultimo cono, 0 all'inizio.
+All'altezza: chiede il raggio superiore, poi di nuovo l'altezza. Il cono termina in un cerchio invece che in un punto, un tronco di cono; una sommità larga come la base crea i lati di un cilindro, una più larga un cono che si allarga verso l'alto. Propone il raggio superiore dell'ultimo cono, 0 all'inizio.
 
 ## Missing
 

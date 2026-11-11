@@ -5,7 +5,7 @@ figure: "Un rettangolo quotato due volte: il lato superiore dai suoi due angoli,
 sourceHash: "e48a0a6f18c9"
 ---
 
-DIMLINEARE misura la distanza tra due punti lungo X o lungo Y e la disegna come quota: due linee di estensione, una linea di quota con le sue punte di freccia, e la misura sopra di essa. Indichi le origini della prima e della seconda linea di estensione, poi la posizione della linea di quota, e dove la posizioni sceglie la direzione, come in AutoCAD: sopra o sotto i due punti misura in orizzontale, di lato in verticale. Premi invece Invio alla prima richiesta e seleziona una linea, un arco, un segmento di polilinea o un cerchio: i suoi due estremi, o il diametro del cerchio, sono le origini. La riga di comando dice poi la misura, e il comando termina.
+DIMLINEARE misura la distanza tra due punti lungo X o lungo Y e la disegna come quota: due linee di estensione, una linea di quota con le sue punte di freccia, e la misura sopra di essa. Indica le origini della prima e della seconda linea di estensione, poi la posizione della linea di quota: dove la posizioni sceglie la direzione, come in AutoCAD: sopra o sotto i due punti misura in orizzontale, di lato in verticale. Premi invece Invio alla prima richiesta e seleziona una linea, un arco, un segmento di polilinea o un cerchio: i suoi due estremi, o il diametro del cerchio, sono le origini. La riga di comando dice poi la misura, e il comando termina.
 
 La quota è disegnata nello stile di quota corrente, ISO-25 in un nuovo disegno: una virgola per i decimali e nessuno zero finale, come scrivono i disegni metrici di AutoCAD. <Command id="DIMHORIZONTAL" />, <Command id="DIMVERTICAL" /> e <Command id="DIMROTATED" />, digitati da soli, sono DIMLINEARE vincolato a una direzione.
 
@@ -13,7 +13,7 @@ La quota è disegnata nello stile di quota corrente, ISO-25 in un nuovo disegno:
 
 ### Text
 
-Chiede il testo da scrivere al posto della misura, che offre come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura, quindi `<> mm` la scrive seguita dalla sua unità.
+Chiede il testo da scrivere al posto della misura, che propone come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura, quindi `<> mm` la scrive seguita dalla sua unità.
 
 ### Angle
 
@@ -21,7 +21,7 @@ Chiede l'angolo del testo, che è poi disegnato a quell'angolo invece che lungo 
 
 ### Horizontal
 
-Misura lungo X ovunque posizioni la linea di quota, che resta orizzontale; la richiesta offre poi solo <Keyword id="Text" /> e <Keyword id="Angle" />.
+Misura lungo X ovunque posizioni la linea di quota, che resta orizzontale; la richiesta propone poi solo <Keyword id="Text" /> e <Keyword id="Angle" />.
 
 ### Vertical
 
@@ -47,7 +47,7 @@ Testo multilinea: il testo di una quota è una sola riga, impostata con <Keyword
 
 ### Perché la quota non segue l'oggetto quando lo modifico?
 
-Le quote di MellowCAD non sono ancora associative, come dice <Message id="nonAssociativeDimension" />: una quota conserva i punti che le sono stati dati. Stirale insieme: cattura l'estremo che sposti e l'origine della quota lì in una sola finestra di selezione di <Command id="STRETCH" />, e la misura è ricalcolata; oppure trascina il grip dell'origine nella sua nuova posizione.
+Le quote di MellowCAD non sono ancora associative, come mostra <Message id="nonAssociativeDimension" />: una quota conserva i punti che le sono stati dati. Stirale insieme: includi l'estremo che sposti e l'origine della quota in una sola finestra di selezione di <Command id="STRETCH" />, e la misura è ricalcolata; oppure trascina il grip dell'origine nella sua nuova posizione.
 
 ### Come si cambia la dimensione del testo e delle frecce di una quota?
 

@@ -6,7 +6,7 @@ figure: "SPAZIOQUOTE dalla prima quota, le altre due selezionate e la spaziatura
 sourceHash: "7ec7c0eb9883"
 ---
 
-SPAZIOQUOTE (DIMSPACE in inglese) regola lo spazio tra quote lineari e allineate parallele. Selezioni la quota di base, che resta dov'è, poi le quote da distanziare; Invio termina la selezione e chiede la spaziatura. La linea di ogni quota viene allora spostata, allontanandosi dalla base nell'ordine in cui le quote si trovano, a quella distanza dalla precedente. Una spaziatura di 0 le allinea tutte sulla linea della base: una catena sfalsata come è stata disegnata si legge come una sola. Cambia soltanto la posizione delle linee di quota, in un solo passo che <Command id="U" /> annulla.
+SPAZIOQUOTE (DIMSPACE in inglese) regola lo spazio tra quote lineari e allineate parallele. Seleziona la quota di base, che resta dov'è, poi le quote da distanziare; Invio termina la selezione e chiede la spaziatura. La linea di ogni quota viene allora spostata, allontanandosi dalla base nell'ordine in cui le quote si trovano, a quella distanza dalla precedente. Una spaziatura di 0 le allinea tutte sulla linea della base: una catena sfalsata come è stata disegnata si legge come una sola. Cambia soltanto la posizione delle linee di quota, in un solo passo che <Command id="U" /> annulla.
 
 La base si seleziona, si digita come punto o si prende con `Ultimo`; un oggetto che non è una quota mostra <Message id="selectedObjectNotDimension" /> e la richiesta si ripete. Un insieme selezionato prima del comando è l'insieme da distanziare. Una quota inclinata rispetto alla base viene contata e lasciata dov'è, e una spaziatura negativa viene rifiutata con <Message id="negativeSpacing" />.
 

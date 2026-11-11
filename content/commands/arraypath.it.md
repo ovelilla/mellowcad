@@ -5,7 +5,7 @@ figure: "Un piccolo quadrato all'inizio di un arco, in serie lungo di esso: Divi
 sourceHash: "d0d77418d682"
 ---
 
-SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un cerchio o una polilinea, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede la curva della traiettoria e mostra subito la serie: gli elementi distanziati di una volta e mezza la dimensione della selezione, quanti ne entrano lungo la traiettoria, ciascuno ruotato come ruota la traiettoria. Una traiettoria aperta parte dall'estremo più vicino al punto indicato, un cerchio in senso antiorario dal suo angolo 0. Poi una richiesta modifica la serie in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati restano dove sono, come primo elemento.
+SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un cerchio o una polilinea, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, chiede la curva della traiettoria e mostra subito la serie: gli elementi distanziati di una volta e mezza la dimensione della selezione, quanti ne entrano lungo la traiettoria, ciascuno ruotato come ruota la traiettoria. Una traiettoria aperta parte dall'estremo più vicino al punto indicato, un cerchio in senso antiorario dal suo angolo 0. Poi una richiesta modifica la serie in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati restano dove sono, come primo elemento.
 
 ## Options
 
@@ -15,11 +15,11 @@ SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un c
 
 ### Method
 
-<Keyword id="Measure" />, il predefinito, pone gli elementi a una distanza data, quanti ne entrano; <Keyword id="Divide" /> distribuisce un numero di elementi in modo uniforme su tutta la traiettoria, uno a ciascun estremo di una traiettoria aperta.
+<Keyword id="Measure" />, il predefinito, colloca gli elementi a una distanza data, tanti quanti ne entrano; <Keyword id="Divide" /> distribuisce un numero di elementi in modo uniforme su tutta la traiettoria, uno a ciascun estremo di una traiettoria aperta.
 
 ### Items
 
-Con Dividi, il numero di elementi. Con Misura, la distanza tra essi, poi quanti, fino al massimo che ne entra, che dice; <Keyword id="Fill entire path" /> li prende tutti.
+Con Dividi, il numero di elementi. Con Misura, la distanza tra essi, poi quanti, fino al massimo che ne entra, indicato dal comando; <Keyword id="Fill entire path" /> li prende tutti.
 
 ### Align items
 
@@ -31,7 +31,7 @@ Crea la serie e termina il comando, come fa Invio.
 
 ## Missing
 
-La serie non segue la sua traiettoria: se modifichi la traiettoria dopo, la serie conserva quella su cui è stata creata. Spline, ellissi e polilinee 3D non possono ancora essere traiettorie, né una traiettoria fuori dal piano dell'UCS. Punto base, Direzione tangente, Righe, Livelli, Direzione Z ed Espressione non sono offerti, né un gruppo alla richiesta della traiettoria, e i grip della serie non hanno menu.
+La serie non segue la sua traiettoria: se modifichi la traiettoria dopo, la serie conserva quella su cui è stata creata. Spline, ellissi e polilinee 3D non possono ancora essere traiettorie, né una traiettoria fuori dal piano dell'UCS. Punto base, Direzione tangente, Righe, Livelli, Direzione Z ed Espressione non sono disponibili, né un gruppo alla richiesta della traiettoria, e i grip della serie non hanno menu.
 
 ## Questions
 

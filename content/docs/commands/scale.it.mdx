@@ -1,14 +1,14 @@
 ---
 title: "Comando SCALA (SCALE) in AutoCAD"
-description: "Come funziona SCALA (SCALE, alias SS) di AutoCAD, prompt per prompt: un fattore, Copia e Riferimento per una lunghezza nota. Provalo online nel browser."
+description: "Come funziona SCALA (SCALE, alias SS) di AutoCAD, richiesta per richiesta: un fattore, Copia e Riferimento per una lunghezza nota. Provalo online nel browser."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di SCALA in AutoCAD?","answer":"SS, poi Invio o barra spaziatrice. _SCALE funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si scala con un riferimento in AutoCAD?","answer":"Scegli Riferimento al fattore, indica i due estremi di uno spigolo di cui conosci la lunghezza, poi digita la lunghezza che deve avere. Tutto ciò che è selezionato viene scalato per la nuova lunghezza sulla vecchia, quindi un disegno nella dimensione sbagliata torna giusto partendo da una quota nota."},{"question":"Come si scala un oggetto conservando l'originale?","answer":"Scegli Copia al fattore: la copia viene scalata, l'originale resta dov'era."},{"question":"Come si cambia la scala del tipo di linea?","answer":"Non con SCALA, che ridimensiona gli oggetti: SCALATL stabilisce quanto lunghi vengono disegnati i tratti e gli spazi di ogni tipo di linea."},{"question":"Come si imposta una scala di stampa o di layout?","answer":"MellowCAD non ha layout, viewport né stampa: disegni in scala 1:1 nello spazio modello, e SCALA cambia la dimensione degli oggetti stessi, non come verrebbero stampati."}]
+faq: [{"question":"Qual è l'alias di SCALA in AutoCAD?","answer":"SS, poi Invio o barra spaziatrice. _SCALE funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si scala con un riferimento in AutoCAD?","answer":"Scegli Riferimento al fattore, indica i due estremi di uno spigolo di cui conosci la lunghezza, poi digita la lunghezza che deve avere. Tutto ciò che è selezionato viene scalato in base al rapporto tra la nuova lunghezza e la vecchia, quindi un disegno di dimensione errata si corregge partendo da una sola quota nota."},{"question":"Come si scala un oggetto conservando l'originale?","answer":"Scegli Copia al fattore: la copia viene scalata, l'originale resta dov'era."},{"question":"Come si cambia la scala del tipo di linea?","answer":"Non con SCALA, che ridimensiona gli oggetti: SCALATL stabilisce quanto sono lunghi i tratti e gli spazi di ogni tipo di linea."},{"question":"Come si imposta una scala di stampa o di layout?","answer":"MellowCAD non ha layout, viewport né stampa: disegni in scala 1:1 nello spazio modello, e SCALA cambia la dimensione degli oggetti stessi, non come verrebbero stampati."}]
 ---
 
-SCALA (SCALE) ingrandisce o riduce gli oggetti che selezioni attorno a un punto base, che resta dov'è: un fattore di 2 li raddoppia, 0,5 li dimezza, allo stesso modo in ogni direzione. Seleziona gli oggetti, indica il punto base, poi digita il fattore, oppure muovi il cursore e indica un punto: gli oggetti lo seguono. Invio a quel punto, senza digitare nulla, scala con l'ultimo fattore usato. Ogni esecuzione è un solo passo che Annulla ripristina.
+SCALA (SCALE) ingrandisce o riduce gli oggetti che selezioni attorno a un punto base, che resta dov'è: un fattore di 2 li raddoppia, 0,5 li dimezza, allo stesso modo in ogni direzione. Seleziona gli oggetti, indica il punto base, poi digita il fattore, oppure muovi il cursore e indica un punto: gli oggetti lo seguono. Invio a quel punto, senza digitare nulla, scala con l'ultimo fattore usato. Ogni esecuzione è un solo passaggio di annullamento.
 
-Scala tutto ciò che prende come fa AutoCAD: il motivo di un tratteggio cresce con il suo contorno, una quota misura la sua nuova lunghezza, un oggetto sopra il piano scala anche in Z attorno al punto base.
+Scala tutto ciò che seleziona, come fa AutoCAD: il modello di un tratteggio cresce con il suo contorno, una quota misura la sua nuova lunghezza, un oggetto sopra il piano scala anche in Z attorno al punto base.
 
 - **Comando:** `SCALA`
 - **In inglese:** `SCALE`, digitato `_SCALE` in ogni lingua
@@ -26,15 +26,15 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Copia` (`C`) [#copy]
 
-Scala una copia e lascia gli oggetti com'erano: dice `Messa in scala di una copia degli oggetti selezionati.` e chiede di nuovo il fattore, con `Copia` ancora in elenco.
+Scala una copia e lascia gli oggetti com'erano: segnala `Messa in scala di una copia degli oggetti selezionati.` e chiede di nuovo il fattore, con `Copia` ancora in elenco.
 
 ### `Riferimento` (`R`) [#reference]
 
-Chiede una lunghezza di riferimento, digitata o indicata con due punti, poi la lunghezza che deve avere: il fattore è la nuova lunghezza sul riferimento. La nuova lunghezza si digita, oppure è un punto la cui distanza dal punto base la stabilisce; `Punti` chiede invece due punti e misura tra loro. Entrambe le lunghezze propongono le ultime indicate, 1 in un nuovo disegno.
+Chiede una lunghezza di riferimento, digitata o indicata con due punti, poi la lunghezza che deve avere: il fattore è il rapporto tra la nuova lunghezza e il riferimento. La nuova lunghezza si digita, oppure è un punto la cui distanza dal punto base la stabilisce; `Punti` chiede invece due punti e misura tra loro. Entrambe le lunghezze propongono le ultime indicate, 1 in un nuovo disegno.
 
 ## Cosa non fa ancora [#missing]
 
-Invio al primo o al secondo punto di `Punti` termina il comando senza scalare, dove AutoCAD scala con la lettura del cursore in quel punto. Un fattore minuscolo viene applicato in silenzio, dove AutoCAD dice che lo ignora. Gli oggetti trascinati sono disegnati come li trascina [`SPOSTA`](/docs/commands/move), solo nel loro colore.
+Invio al primo o al secondo punto di `Punti` termina il comando senza scalare, dove AutoCAD scala con la lettura del cursore in quel punto. Un fattore minuscolo viene applicato in silenzio, dove AutoCAD segnala che lo ignora. Gli oggetti trascinati sono disegnati come li trascina [`SPOSTA`](/docs/commands/move), solo nel loro colore.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es--fr-echelle--eh--it-scala--ss)
 
@@ -46,7 +46,7 @@ Invio al primo o al secondo punto di `Punti` termina il comando senza scalare, d
 
 ### Come si scala con un riferimento in AutoCAD?
 
-Scegli `Riferimento` al fattore, indica i due estremi di uno spigolo di cui conosci la lunghezza, poi digita la lunghezza che deve avere. Tutto ciò che è selezionato viene scalato per la nuova lunghezza sulla vecchia, quindi un disegno nella dimensione sbagliata torna giusto partendo da una quota nota.
+Scegli `Riferimento` al fattore, indica i due estremi di uno spigolo di cui conosci la lunghezza, poi digita la lunghezza che deve avere. Tutto ciò che è selezionato viene scalato in base al rapporto tra la nuova lunghezza e la vecchia, quindi un disegno di dimensione errata si corregge partendo da una sola quota nota.
 
 ### Come si scala un oggetto conservando l'originale?
 
@@ -54,7 +54,7 @@ Scegli `Copia` al fattore: la copia viene scalata, l'originale resta dov'era.
 
 ### Come si cambia la scala del tipo di linea?
 
-Non con SCALA, che ridimensiona gli oggetti: [`SCALATL`](/docs/commands/ltscale) stabilisce quanto lunghi vengono disegnati i tratti e gli spazi di ogni tipo di linea.
+Non con SCALA, che ridimensiona gli oggetti: [`SCALATL`](/docs/commands/ltscale) stabilisce quanto sono lunghi i tratti e gli spazi di ogni tipo di linea.
 
 ### Come si imposta una scala di stampa o di layout?
 

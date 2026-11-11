@@ -14,7 +14,7 @@ faq:
   - question: "Posso salvare le mie modifiche come file DXF?"
     answer: "Non ancora. Ctrl+S salva il disegno come file nel formato versionato di MellowCAD, che qui si riapre."
   - question: "Perché mancano alcuni oggetti?"
-    answer: "Ciò per cui MellowCAD non ha ancora un oggetto, come punti, direttrici, tabelle o solidi 3D, viene lasciato fuori, e la riga di comando dice quanti ce ne sono per ogni tipo all'apertura del file. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout."
+    answer: "Ciò per cui MellowCAD non ha ancora un oggetto, come punti, direttrici, tabelle o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout."
 ---
 
 <OpenDxf />
@@ -23,10 +23,10 @@ MellowCAD apre i file DXF nel tuo browser e li disegna nel suo editor, dove puoi
 
 ## Che cosa si apre [#opens]
 
-- **DXF da AutoCAD R12 al 2018**, il formato DXF più recente che AutoCAD scrive, in testo (ASCII) o binario, creato da AutoCAD o da un altro programma. Il suo testo conserva i caratteri: fino al 2004 nella tabella codici indicata dal file, dal 2007 in UTF-8.
-- **Linee, archi, cerchi, ellissi e polilinee**, con i loro spessori e le loro forme adattate a curva o a spline, polilinee 3D e spline.
+- **DXF da AutoCAD R12 al 2018**, il formato DXF più recente che AutoCAD scrive, in testo (ASCII) o binario, creato da AutoCAD o da un altro programma. Il testo conserva i suoi caratteri: fino al 2004 nella tabella codici indicata dal file, dal 2007 in UTF-8.
+- **Linee, archi, cerchi, ellissi e polilinee**, con le loro larghezze e le loro forme adattate a curva o a spline, polilinee 3D e spline.
 - **Testo su una riga e testo multilinea**, blocchi con i loro attributi, quote lineari, allineate, angolari, di raggio e di diametro, e tratteggi.
-- **Il layer di ogni oggetto**, il suo colore, tipo di linea, spessore di linea, altezza ed elevazione, e i layer attivi, disattivati o bloccati; un layer congelato si apre disattivato.
+- **Il layer di ogni oggetto**, il colore, il tipo di linea, lo spessore di linea, l'altezza e l'elevazione, e i layer attivi, disattivati o bloccati; un layer congelato si apre disattivato.
 - **Gli stili di testo e di quota del disegno**, e le sue unità quando sono millimetri, centimetri o metri.
 
 ## Che cosa viene lasciato fuori [#left-out]
@@ -52,7 +52,7 @@ Alcune cose si aprono, ma non del tutto com'erano:
 
 ## Aprilo nell'editor [#editor]
 
-Nell'editor, un DXF si apre come un disegno: <Command id="OPEN" /> (`Ctrl+O`) offre disegni e file DXF, come fa Seleziona file di AutoCAD, e <Command id="DXFIN" /> solo file DXF. Un file aperto da questa pagina o con <Command id="OPEN" /> prende il posto del disegno nell'editor, quindi salva prima il tuo con `Ctrl+S`: c'è [un solo disegno alla volta](/docs/differences#one-drawing).
+Nell'editor, un DXF si apre come un disegno: <Command id="OPEN" /> (`Ctrl+O`) offre disegni e file DXF, come fa Seleziona file di AutoCAD, e <Command id="DXFIN" /> solo i file DXF. Un file aperto da questa pagina o con <Command id="OPEN" /> prende il posto del disegno nell'editor, quindi salva prima il tuo con `Ctrl+S`: c'è [un solo disegno alla volta](/docs/differences#one-drawing).
 
 ## Modificalo e conservalo [#keep]
 
@@ -78,4 +78,4 @@ Non ancora. `Ctrl+S` salva il disegno come file nel formato versionato di Mellow
 
 ### Perché mancano alcuni oggetti? [#missing]
 
-Ciò per cui MellowCAD non ha ancora un oggetto, come punti, direttrici, tabelle o solidi 3D, viene lasciato fuori, e la riga di comando dice quanti ce ne sono per ogni tipo all'apertura del file. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout.
+Ciò per cui MellowCAD non ha ancora un oggetto, come punti, direttrici, tabelle o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout.

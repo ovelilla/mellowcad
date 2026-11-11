@@ -5,7 +5,7 @@ figure: "Un foro su una flangia in serie attorno al centro della flangia: 8 elem
 sourceHash: "efed541dea7f"
 ---
 
-SERIEPOLARE copia una selezione attorno a un punto centrale, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede il punto centrale e mostra subito la serie: 6 elementi su un giro completo, ciascuno ruotato mentre gira. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati diventano il suo primo elemento.
+SERIEPOLARE copia una selezione attorno a un punto centrale, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, chiede il punto centrale e mostra subito la serie: 6 elementi su un giro completo, ciascuno ruotato mentre gira. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati diventano il suo primo elemento.
 
 ## Options
 
@@ -23,7 +23,7 @@ L'angolo da un elemento al successivo. L'angolo riempito diventa quel numero di 
 
 ### Fill angle
 
-L'angolo che gli elementi riempiono, positivo in senso antiorario e negativo in senso orario; il numero di elementi è conservato. Su un giro completo gli elementi distano un giro diviso il loro numero; su meno, l'ultimo cade alla fine dell'angolo.
+L'angolo che gli elementi riempiono, positivo in senso antiorario e negativo in senso orario; il numero di elementi è conservato. Su un giro completo gli elementi distano tra loro un giro diviso per il loro numero; su meno, l'ultimo cade alla fine dell'angolo.
 
 ### ROTate items
 

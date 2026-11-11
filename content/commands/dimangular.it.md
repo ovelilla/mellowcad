@@ -5,13 +5,13 @@ figure: "Due linee che si incontrano a 30 gradi: ogni linea selezionata, poi l'a
 sourceHash: "30943abd60f6"
 ---
 
-DIMANGOLO quota un angolo con un arco come linea di quota. Ciò che selezioni per primo decide il resto, come in AutoCAD: una linea chiede una seconda linea, anche due segmenti di una stessa polilinea; un arco è misurato da un estremo all'altro attorno al suo centro; un cerchio, dal punto in cui lo hai selezionato a un secondo punto che dai; e Invio chiede invece il vertice dell'angolo, poi i suoi due estremi. Poi posiziona l'arco: dove lo metti sceglie l'angolo misurato. Tra due linee è quello dei loro quattro settori che lo contiene; altrimenti l'angolo o, attraverso i suoi lati, l'angolo concavo oltre 180°. La riga di comando dice la misura in gradi, e il comando termina.
+DIMANGOLO quota un angolo con un arco come linea di quota. Ciò che selezioni per primo decide il resto, come in AutoCAD: una linea chiede una seconda linea, anche due segmenti di una stessa polilinea; un arco è misurato da un estremo all'altro attorno al suo centro; un cerchio, dal punto in cui lo hai selezionato a un secondo punto che dai; e Invio chiede invece il vertice dell'angolo, poi i suoi due estremi. Poi posiziona l'arco: dove lo metti sceglie l'angolo misurato. Tra due linee è quello dei loro quattro settori che lo contiene; altrimenti l'angolo o, attraverso i suoi lati, l'angolo concavo oltre 180°. La riga di comando indica la misura in gradi, e il comando termina.
 
 ## Options
 
 ### Text
 
-Chiede il testo da scrivere al posto della misura, che offre come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura.
+Chiede il testo da scrivere al posto della misura, che propone come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura.
 
 ### Angle
 
@@ -19,7 +19,7 @@ Chiede l'angolo del testo, che è poi disegnato a quell'angolo invece che lungo 
 
 ## Missing
 
-Testo multilinea: il testo di una quota è una sola riga, impostata con <Keyword id="Text" /> alla riga di comando. Quadrante, che blocca la quota a un settore così che il suo testo possa andare fuori di esso. Unità angolari diverse dai gradi decimali (DIMAUNIT). Una quota angolare non si può concatenare né spaziare: <Command id="DIMCONTINUE" />, <Command id="DIMBASELINE" /> e <Command id="DIMSPACE" /> prendono solo quelle lineari e allineate. Una linea o un arco dentro un riferimento a blocco non si può selezionare. Tra due linee, la quota conserva i punti in cui il suo arco le incontrava, non le linee: spostata poi, il suo arco conserva da lì le sue linee di estensione, mentre AutoCAD misura di nuovo rispetto alle linee. Una quota non è associativa: non segue gli oggetti che misura.
+Testo multilinea: il testo di una quota è una sola riga, impostata con <Keyword id="Text" /> alla riga di comando. Quadrante, che blocca la quota a un settore così che il suo testo possa andare fuori di esso. Unità angolari diverse dai gradi decimali (DIMAUNIT). Una quota angolare non si può concatenare né spaziare: <Command id="DIMCONTINUE" />, <Command id="DIMBASELINE" /> e <Command id="DIMSPACE" /> prendono solo quelle lineari e allineate. Una linea o un arco dentro un riferimento di blocco non si può selezionare. Tra due linee, la quota conserva i punti in cui il suo arco le incontrava, non le linee: spostata poi, il suo arco conserva da lì le sue linee di estensione, mentre AutoCAD misura di nuovo rispetto alle linee. Una quota non è associativa: non segue gli oggetti che misura.
 
 ## Questions
 

@@ -1,12 +1,12 @@
 ---
 title: Per iniziare
 metaTitle: "Per iniziare: il tuo primo disegno CAD online"
-description: "Il tuo primo disegno in MellowCAD: la riga di comando, i prompt e le opzioni, gli ausili al disegno, annulla e salva."
+description: "Il tuo primo disegno in MellowCAD: la riga di comando, le richieste e le opzioni, gli ausili al disegno, annulla e salva."
 type: gettingStarted
 sourceHash: "aaf6e36a081f"
 ---
 
-MellowCAD funziona come AutoCAD: digiti un comando, rispondi ai suoi prompt e il disegno segue. Se usi già AutoCAD, [i comandi](/docs/commands) e [le differenze](/docs/differences) sono tutto ciò che ti serve; questa pagina è per i primi dieci minuti.
+MellowCAD funziona come AutoCAD: digiti un comando, rispondi alle sue richieste e il disegno segue. Se usi già AutoCAD, [i comandi](/docs/commands) e [le differenze](/docs/differences) sono tutto ciò che ti serve; questa pagina è per i primi dieci minuti.
 
 ## Apri l'editor [#open]
 
@@ -14,9 +14,9 @@ MellowCAD funziona come AutoCAD: digiti un comando, rispondi ai suoi prompt e il
 
 ## Digita un comando [#command]
 
-Digita sul disegno, ovunque sia il cursore: le lettere vanno nella riga di comando, in basso, che suggerisce i comandi che iniziano con quelle lettere. Invio o la barra spaziatrice eseguono il comando. <Command id="LINE" /> disegna linee, e lo stesso fa il suo alias, più breve; tutti gli alias sono nella [pagina dei comandi](/docs/commands). I nomi sono quelli di AutoCAD in italiano; preceduto da un trattino basso, funziona anche il nome inglese, come in AutoCAD (`_LINE`).
+Digita sul disegno, ovunque sia il cursore: le lettere vanno nella riga di comando, in basso, che suggerisce i comandi che iniziano con quelle lettere. Invio o la barra spaziatrice eseguono il comando. <Command id="LINE" /> disegna linee, e lo stesso fa il suo alias, più breve; tutti gli alias sono nella [pagina dei comandi](/docs/commands). I nomi sono quelli di AutoCAD in italiano; funziona anche il nome inglese, preceduto da un trattino basso, come in AutoCAD (`_LINE`).
 
-## Rispondi ai prompt [#prompts]
+## Rispondi alle richieste [#prompts]
 
 Un comando chiede una cosa alla volta, nella riga di comando e accanto al cursore. Un punto è un clic sul disegno, o due coordinate digitate come `x,y`. Dopo il primo punto, le coordinate digitate si misurano dall'ultimo punto, come le misura l'input dinamico di AutoCAD, e la cronologia le scrive con `@`; `#x,y` si misura invece dall'origine. Una distanza digitata da sola va a quella distanza nella direzione del cursore.
 
@@ -24,7 +24,7 @@ Un comando chiede una cosa alla volta, nella riga di comando e accanto al cursor
 
 ## Scegli un'opzione [#options]
 
-Le opzioni che un prompt offre sono tra parentesi quadre, ciascuna con le sue lettere maiuscole: digita quelle lettere e premi Invio. Un valore tra parentesi angolari è quello predefinito, e Invio lo accetta.
+Le opzioni offerte da una richiesta sono tra parentesi quadre, ciascuna con le sue lettere maiuscole: digita quelle lettere e premi Invio. Un valore tra parentesi angolari è quello predefinito, e Invio lo accetta.
 
 <Session name="circleDiameter" />
 
@@ -46,13 +46,13 @@ Un comando di modifica chiede gli oggetti su cui lavorare, o prima un valore, co
 
 ## Annulla e ripristina [#undo]
 
-<Command id="U" /> o `Ctrl+Z` annulla l'ultimo comando, per intero, e `Ctrl+Y` lo ripristina. All'interno di un comando che la offre, la sua opzione di annullamento toglie un passo, come un segmento di <Command id="LINE" />.
+<Command id="U" /> o `Ctrl+Z` annulla l'ultimo comando, per intero, e `Ctrl+Y` lo ripristina. In un comando che ha una propria opzione Annulla, questa annulla un solo passo, come un segmento di <Command id="LINE" />.
 
 ## Salva [#save]
 
 Il disegno viene conservato in questo browser mentre lavori. <Command id="QSAVE" /> o `Ctrl+S` lo scarica come file nel formato versionato di MellowCAD, e <Command id="OPEN" /> o `Ctrl+O` ne apre uno, oppure [un file DXF](/docs/open-dxf); [il salvataggio non è proprio quello di AutoCAD](/docs/differences#saving).
 
-## Poi [#next]
+## Per continuare [#next]
 
 - [Esercizi](/docs/exercises): disegni su cui esercitarti, ciascuno risolto passo per passo e aperto nell'editor con il suo disegno.
 - [Coordinate](/docs/coordinates): tutti i modi di digitare un punto, e una linea inclinata.

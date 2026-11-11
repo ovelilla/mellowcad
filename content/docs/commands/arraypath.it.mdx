@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Come si dispongono gli oggetti in serie lungo una curva?","answer":"Digita ARRAYPATH, seleziona gli oggetti, premi Invio e indica la traiettoria vicino all'estremo da cui partire; oppure digita SR per SERIE e scegli TRaiettoria dopo gli oggetti. Poi imposta la spaziatura o il numero di elementi, e premi Invio per crearla."},{"question":"Perché la mia serie lungo traiettoria non segue la traiettoria?","answer":"Qui una serie conserva la traiettoria com'era quando è stata creata: sposta o stira la traiettoria dopo e la serie resta com'è, mentre la serie associativa lungo traiettoria di AutoCAD la seguirebbe. Anche cancellare la traiettoria lascia la serie. Se gli elementi non ruotano con la traiettoria, scegli ALlinea e rispondi Sì."},{"question":"Come si cambia la direzione di una serie lungo traiettoria?","answer":"Indica la traiettoria vicino all'altro estremo: una traiettoria aperta parte dall'estremo più vicino al punto indicato. Un cerchio va sempre in senso antiorario dal suo angolo 0."},{"question":"Come si distanziano gli elementi in modo uniforme su tutta la traiettoria?","answer":"Scegli Metodo, poi Dividi, poi ELementi e digita quanti: sono distribuiti in modo uniforme, il primo e l'ultimo agli estremi di una traiettoria aperta."}]
 ---
 
-SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un cerchio o una polilinea, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede la curva della traiettoria e mostra subito la serie: gli elementi distanziati di una volta e mezza la dimensione della selezione, quanti ne entrano lungo la traiettoria, ciascuno ruotato come ruota la traiettoria. Una traiettoria aperta parte dall'estremo più vicino al punto indicato, un cerchio in senso antiorario dal suo angolo 0. Poi una richiesta modifica la serie in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati restano dove sono, come primo elemento.
+SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un cerchio o una polilinea, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, chiede la curva della traiettoria e mostra subito la serie: gli elementi distanziati di una volta e mezza la dimensione della selezione, quanti ne entrano lungo la traiettoria, ciascuno ruotato come ruota la traiettoria. Una traiettoria aperta parte dall'estremo più vicino al punto indicato, un cerchio in senso antiorario dal suo angolo 0. Poi una richiesta modifica la serie in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati restano dove sono, come primo elemento.
 
 - **Comando:** `SERIETRAIETT`
 - **In inglese:** `ARRAYPATH`, digitato `_ARRAYPATH` in ogni lingua
@@ -27,11 +27,11 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Metodo` (`M`) [#method]
 
-`Misura`, il predefinito, pone gli elementi a una distanza data, quanti ne entrano; `Dividi` distribuisce un numero di elementi in modo uniforme su tutta la traiettoria, uno a ciascun estremo di una traiettoria aperta.
+`Misura`, il predefinito, colloca gli elementi a una distanza data, tanti quanti ne entrano; `Dividi` distribuisce un numero di elementi in modo uniforme su tutta la traiettoria, uno a ciascun estremo di una traiettoria aperta.
 
 ### `ELementi` (`EL`) [#items]
 
-Con Dividi, il numero di elementi. Con Misura, la distanza tra essi, poi quanti, fino al massimo che ne entra, che dice; `RIEmpimento` li prende tutti.
+Con Dividi, il numero di elementi. Con Misura, la distanza tra essi, poi quanti, fino al massimo che ne entra, indicato dal comando; `RIEmpimento` li prende tutti.
 
 ### `ALlinea elementi` (`AL`) [#align-items]
 
@@ -43,7 +43,7 @@ Crea la serie e termina il comando, come fa Invio.
 
 ## Cosa non fa ancora [#missing]
 
-La serie non segue la sua traiettoria: se modifichi la traiettoria dopo, la serie conserva quella su cui è stata creata. Spline, ellissi e polilinee 3D non possono ancora essere traiettorie, né una traiettoria fuori dal piano dell'UCS. Punto base, Direzione tangente, Righe, Livelli, Direzione Z ed Espressione non sono offerti, né un gruppo alla richiesta della traiettoria, e i grip della serie non hanno menu.
+La serie non segue la sua traiettoria: se modifichi la traiettoria dopo, la serie conserva quella su cui è stata creata. Spline, ellissi e polilinee 3D non possono ancora essere traiettorie, né una traiettoria fuori dal piano dell'UCS. Punto base, Direzione tangente, Righe, Livelli, Direzione Z ed Espressione non sono disponibili, né un gruppo alla richiesta della traiettoria, e i grip della serie non hanno menu.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett)
 

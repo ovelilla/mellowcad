@@ -20,7 +20,7 @@ Ancora da `0,0`, il lato sinistro: `40<150`, `40<90`, `20<330`, `20<270` e `20<3
 
 ### Disegna la faccia superiore [#top]
 
-Il resto parte da angoli già disegnati: digita `_END`, lo snap a oggetto Punto finale per un punto, e seleziona l'angolo. Dall'angolo in alto a destra del fronte: `20<150`, `20<90`, `20<150` e `60<210`. Poi due linee di `60<210`, dalla base dell'alzata e dalla sua sommità.
+Il resto parte da angoli già disegnati: digita `_END`, lo snap ad oggetto Punto finale per un punto, e seleziona l'angolo. Dall'angolo in alto a destra del fronte: `20<150`, `20<90`, `20<150` e `60<210`. Poi due linee di `60<210`, dalla base dell'alzata e dalla sua sommità.
 
 ### Quotalo [#dimensions]
 

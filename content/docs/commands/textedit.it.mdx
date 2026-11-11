@@ -3,12 +3,12 @@ title: "Comando MODTESTO (TEXTEDIT) in AutoCAD"
 description: "Come MODTESTO (TEXTEDIT, alias MOD, DDEDIT) di AutoCAD modifica testo, testo multilinea e definizioni di attributo, uno dopo l'altro. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di MODTESTO in AutoCAD?","answer":"MOD, poi Invio o barra spaziatrice; anche DDEDIT e MT. _TEXTEDIT funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si modifica il testo in AutoCAD?","answer":"Fai doppio clic su di esso, oppure digita MOD e indicalo; riscrivilo e premi Invio. MODTESTO chiede poi il testo successivo da modificare, finché non premi Esc. La sua altezza e rotazione sono righe della tavolozza Proprietà, e il suo stile la riga Stile."},{"question":"Come si modificano più testi uno dopo l'altro?","answer":"Lascia MODTESTO in modalità Multipla, il suo valore predefinito: dopo ogni testo chiede il successivo. Modalità e Singola lo fanno terminare dopo uno, come fa un doppio clic."},{"question":"Perché il doppio clic non modifica il mio testo?","answer":"Il testo potrebbe essere su un layer bloccato: sblocca il layer in Gestore proprietà layer. Il testo di una quota non viene ancora modificato da MODTESTO, e i valori degli attributi di un blocco aprono EATTEDIT."}]
+faq: [{"question":"Qual è l'alias di MODTESTO in AutoCAD?","answer":"MOD, poi Invio o barra spaziatrice; anche DDEDIT e MT. _TEXTEDIT funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si modifica il testo in AutoCAD?","answer":"Fai doppio clic su di esso, oppure digita MOD e indicalo; riscrivilo e premi Invio. MODTESTO chiede poi il testo successivo da modificare, finché non premi Esc. L'altezza e la rotazione sono righe della tavolozza Proprietà, e lo stile è nella riga Stile."},{"question":"Come si modificano più testi uno dopo l'altro?","answer":"Lascia MODTESTO in modalità Multipla, il suo valore predefinito: dopo ogni testo chiede il successivo. Modalità e Singola lo fanno terminare dopo uno, come fa un doppio clic."},{"question":"Perché il doppio clic non modifica il mio testo?","answer":"Il testo potrebbe essere su un layer bloccato: sblocca il layer in Gestore proprietà layer. Il testo di una quota non viene ancora modificato da MODTESTO, e i valori degli attributi di un blocco aprono EATTEDIT."}]
 ---
 
-MODTESTO (TEXTEDIT) modifica gli oggetti di annotazione: dice la modalità di modifica corrente, Multiplo all'inizio, e ti chiede di selezionarne uno. Un testo su riga singola si apre per essere riscritto dov'è, un testo multilinea nell'editor di [`TESTOM`](/docs/commands/mtext), una definizione di attributo come la sua etichetta, il suo prompt e il suo valore predefinito. In modalità Multiplo chiede poi l'oggetto successivo, finché Esc o Invio non termina il comando, e l'intera esecuzione è un solo passo che `A` annulla. Un doppio clic su un testo o su una definizione di attributo esegue MODTESTO, e su un testo multilinea apre l'editor per quel solo oggetto.
+MODTESTO (TEXTEDIT) modifica gli oggetti di annotazione: indica la modalità di modifica corrente, Multiplo all'inizio, e ti chiede di selezionarne uno. Un testo su riga singola si apre per essere riscritto dov'è, un testo multilinea nell'editor di [`TESTOM`](/docs/commands/mtext), una definizione di attributo come la sua etichetta, la sua richiesta e il suo valore predefinito. In modalità Multiplo chiede poi l'oggetto successivo, finché Esc o Invio non termina il comando, e l'intera esecuzione è un solo passaggio che `A` annulla. Un doppio clic su un testo o su una definizione di attributo esegue MODTESTO, e su un testo multilinea apre l'editor per quel solo oggetto.
 
-Esc nell'editor di un testo su riga singola scarta quella modifica e chiede l'oggetto successivo; un secondo Esc termina il comando. Un oggetto su un layer bloccato dice `L'oggetto è su un layer bloccato.` e chiede di nuovo, e una selezione su qualsiasi altra cosa chiede di nuovo in silenzio. Un testo selezionato prima del comando si apre subito.
+Esc nell'editor di un testo su riga singola scarta quella modifica e chiede l'oggetto successivo; un secondo Esc termina il comando. Un oggetto su un layer bloccato segnala `L'oggetto è su un layer bloccato.` e chiede di nuovo, e una selezione su qualsiasi altra cosa chiede di nuovo in silenzio. Un testo selezionato prima del comando si apre subito.
 
 - **Comando:** `MODTESTO`
 - **In inglese:** `TEXTEDIT`, digitato `_TEXTEDIT` in ogni lingua
@@ -26,7 +26,7 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Annulla` (`A`) [#undo]
 
-Annulla l'ultima modifica di questa esecuzione e chiede di nuovo; se non ne resta nessuna, dice che il comando è stato completamente annullato.
+Annulla l'ultima modifica di questa esecuzione e chiede di nuovo; se non ne resta nessuna, segnala che il comando è stato completamente annullato.
 
 ### `Modalità` (`M`) [#mode]
 
@@ -34,7 +34,7 @@ Chiede la modalità di modifica: `Singola` termina il comando dopo un oggetto, `
 
 ## Cosa non fa ancora [#missing]
 
-Testo di quota: MODTESTO non modifica il testo di una quota, che l'opzione Testo di [`DIMLINEARE`](/docs/commands/dimlinear) imposta mentre la quota viene posizionata. La modifica del contenuto di un testo nella tavolozza Proprietà. MTEDIT, digitato, e -MTEDIT. Mentre l'editor è aperto la riga di comando legge `TEXTEDIT:`, poiché AutoCAD modifica sul posto e non chiede nulla.
+Testo di quota: MODTESTO non modifica il testo di una quota, che l'opzione Testo di [`DIMLINEARE`](/docs/commands/dimlinear) imposta mentre la quota viene posizionata. La modifica del contenuto di un testo nella tavolozza Proprietà. MTEDIT, digitato, e -MTEDIT. Mentre l'editor è aperto la riga di comando mostra `TEXTEDIT:`, poiché AutoCAD modifica sul posto e non chiede nulla.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit--pt-br-editartexto--tedit--ddedit--ed--fr-modiftexte--ed--ddedit--mo--it-modtesto--mod--ddedit--mt)
 
@@ -46,7 +46,7 @@ Testo di quota: MODTESTO non modifica il testo di una quota, che l'opzione Testo
 
 ### Come si modifica il testo in AutoCAD?
 
-Fai doppio clic su di esso, oppure digita `MOD` e indicalo; riscrivilo e premi Invio. MODTESTO chiede poi il testo successivo da modificare, finché non premi Esc. La sua altezza e rotazione sono righe della tavolozza Proprietà, e il suo stile la riga Stile.
+Fai doppio clic su di esso, oppure digita `MOD` e indicalo; riscrivilo e premi Invio. MODTESTO chiede poi il testo successivo da modificare, finché non premi Esc. L'altezza e la rotazione sono righe della tavolozza Proprietà, e lo stile è nella riga Stile.
 
 ### Come si modificano più testi uno dopo l'altro?
 

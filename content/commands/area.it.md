@@ -5,13 +5,13 @@ figure: "Una piastra 100 per 60 con un foro di raggio 18: AREA aggiunge l'area d
 sourceHash: "a8ad70c08b3a"
 ---
 
-AREA misura l'area e il perimetro di una forma chiusa, sia una che delinei con i suoi angoli sia un oggetto che selezioni. Indica il primo angolo, poi i successivi: dal secondo, la forma chiusa attraverso il cursore si riempie di verde traslucido, come la ombreggia AutoCAD. Invio o <Keyword id="Total" /> scrive `Area = …, Perimetro = …` alla riga di comando e termina; Invio prima del terzo angolo è rifiutato. Con Aggiungi area e Sottrai area tiene un totale corrente su più forme. I numeri sono scritti alla precisione del disegno, e l'ultima area misurata si può rileggere digitando `'AREA`.
+AREA misura l'area e il perimetro di una forma chiusa, che tu la delinei con i suoi angoli o la selezioni come oggetto. Indica il primo angolo, poi i successivi: dal secondo, la forma chiusa fino al cursore si riempie di verde traslucido, come in AutoCAD. Invio o <Keyword id="Total" /> scrive `Area = …, Perimetro = …` alla riga di comando e termina; Invio prima del terzo angolo è rifiutato. Con Aggiungi area e Sottrai area tiene un totale corrente su più forme. I numeri sono scritti alla precisione del disegno, e l'ultima area misurata si può rileggere digitando `'AREA`.
 
 ## Options
 
 ### Object
 
-Il predefinito della prima richiesta, quindi Invio lo sceglie: seleziona un cerchio, un'ellisse, una polilinea o spline chiusa, un tratteggio o una regione, e AREA ne scrive l'area con il perimetro, o la circonferenza di un cerchio. Una polilinea, spline o arco ellittico aperti sono chiusi da una linea retta da un estremo all'altro, e AREA ne scrive la lunghezza. Una linea o un testo non hanno area: <Message id="objectHasNoArea" />, e lo richiede.
+Il predefinito della prima richiesta, quindi Invio lo sceglie: seleziona un cerchio, un'ellisse, una polilinea o spline chiusa, un tratteggio o una regione, e AREA ne scrive l'area con il perimetro, o la circonferenza di un cerchio. Una polilinea, spline o arco ellittico aperti sono chiusi da una linea retta da un estremo all'altro, e AREA ne scrive la lunghezza. Una linea o un testo non hanno area: <Message id="objectHasNoArea" />, e chiede di nuovo l'oggetto.
 
 ### Add
 
@@ -49,7 +49,7 @@ Scegli <Keyword id="Add" /> e poi <Keyword id="Object" />, seleziona la forma es
 
 ### Come si ottiene l'area in metri quadrati?
 
-AREA scrive unità di disegno al quadrato. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000.
+AREA scrive in unità di disegno quadrate. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000.
 
 ### Perché AREA dice che l'oggetto non ha area?
 

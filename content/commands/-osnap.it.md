@@ -5,7 +5,7 @@ figure: "-OSNAP imposta Medio e Centro come snap correnti; LINEA va poi dal punt
 sourceHash: "acf7c6b99589"
 ---
 
-Gli snap ad oggetto posano un punto indicato esattamente su un punto di un oggetto: un estremo, un punto medio, un centro. Con lo snap ad oggetto attivo, il cursore vicino a uno di questi punti mostra il suo marcatore, in verde, e il suo nome in un suggerimento; un clic cade allora su quel punto, non dove si trova il cursore. Gli snap correnti sono le modalità attive a ogni richiesta di punto: all'inizio Punto finale, Centro, Intersezione ed Estensione, come in AutoCAD. F3 attiva e disattiva lo snap ad oggetto, scrivendo `<Osnap on>` o `<Osnap off>`, e così fa il pulsante Snap ad oggetto della barra di stato, il cui menu ha una casella per ogni modalità. Con più snap sotto il cursore vince il più vicino, e Tab scorre gli altri. Ortho, Polare e lo snap non piegano mai un punto agganciato.
+Gli snap ad oggetto agganciano un punto indicato esattamente a un punto di un oggetto: un estremo, un punto medio, un centro. Con lo snap ad oggetto attivo, il cursore vicino a uno di questi punti mostra il suo marcatore, in verde, e il suo nome in un suggerimento; un clic cade allora su quel punto, non dove si trova il cursore. Gli snap correnti sono le modalità attive a ogni richiesta di punto: all'inizio Punto finale, Centro, Intersezione ed Estensione, come in AutoCAD. F3 attiva e disattiva lo snap ad oggetto, scrivendo `<Osnap on>` o `<Osnap off>`, e così fa il pulsante Snap ad oggetto della barra di stato, il cui menu ha una casella per ogni modalità. Con più snap sotto il cursore vince il più vicino, e Tab scorre gli altri. Orto, Polare e lo snap non spostano mai un punto agganciato.
 
 -OSNAP imposta gli snap correnti dalla riga di comando. Elenca le modalità attive, poi chiede un elenco di modalità: ciascuna con le sue maiuscole, separate da virgole, come `FIN,MED,CEN`, o `_END,_MID` in tutte le lingue di AutoCAD. L'elenco sostituisce gli snap correnti e attiva lo snap ad oggetto; <Keyword id="NONe" />, <Keyword id="OFF" /> o Invio da solo li cancella. Una modalità che non conosce mostra <Message id="invalidOsnapModes" />, e la domanda si ripete. Digitato con un apostrofo, `'-OSNAP`, funziona dentro un altro comando. Gli snap correnti durano fino al ricaricamento della pagina, poi tornano i quattro di AutoCAD: come AutoCAD, il disegno non li conserva.
 
@@ -39,7 +39,7 @@ Oltre l'estremo di una linea, di un arco o di un segmento rettilineo di poliline
 
 ### INSertion
 
-Il punto da cui è appeso un testo, una definizione di attributo o un riferimento di blocco.
+Il punto di inserimento di un testo, di una definizione di attributo o di un riferimento di blocco.
 
 ### PERpendicular
 
@@ -59,7 +59,7 @@ Intersezione apparente: dove due oggetti si incrociano nella vista, anche se son
 
 ### PARallel
 
-Tieni il cursore su una linea per un momento, poi spostati lungo la sua direzione a partire dall'ultimo punto: un percorso parallelo alla linea trattiene il punto successivo.
+Tieni il cursore su una linea per un momento, poi spostati lungo la sua direzione a partire dall'ultimo punto: un percorso parallelo alla linea vincola il punto successivo.
 
 ### NONe
 
@@ -71,13 +71,13 @@ Come <Keyword id="NONe" />: l'insieme degli snap correnti è cancellato.
 
 ## Missing
 
-La finestra di dialogo Impostazioni di disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Nodo e Centro geometrico, come modalità e nei menu. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da <Command id="LINE" /> e <Command id="CIRCLE" />. Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
+La finestra di dialogo Impostazioni disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Nodo e Centro geometrico, come modalità e nei menu. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da <Command id="LINE" /> e <Command id="CIRCLE" />. Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
 
 ## Questions
 
 ### Che cos'è il comando OSNAP in AutoCAD?
 
-In AutoCAD, OSNAP (`OS`) apre la finestra Impostazioni di disegno nella scheda Snap ad oggetto, per scegliere gli snap correnti. MellowCAD non ha questa finestra: digita `-OSNAP` o `-OS` e un elenco di modalità, oppure spuntale nel menu del pulsante Snap ad oggetto della barra di stato.
+In AutoCAD, OSNAP (`OS`) apre la finestra Impostazioni disegno nella scheda Snap ad oggetto, per scegliere gli snap correnti. MellowCAD non ha questa finestra: digita `-OSNAP` o `-OS` e un elenco di modalità, oppure spuntale nel menu del pulsante Snap ad oggetto della barra di stato.
 
 ### Qual è il tasto di scelta rapida dello snap ad oggetto?
 

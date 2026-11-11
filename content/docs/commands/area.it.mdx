@@ -3,10 +3,10 @@ title: "Comando AREA in AutoCAD"
 description: "Come funziona AREA (alias AA) di AutoCAD in italiano: area e perimetro di punti indicati o di un oggetto, e un totale con Aggiungi e Sottrai. Provalo gratis."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è la scorciatoia di AREA in AutoCAD?","answer":"AA, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _AREA in tutte le lingue di AutoCAD."},{"question":"Come si trova l'area di una polilinea o di un tratteggio?","answer":"Esegui AREA, premi Invio per scegliere Oggetto, e seleziona la polilinea chiusa o il tratteggio: la sua area e il suo perimetro sono scritti alla riga di comando. L'area di un tratteggio esclude le sue isole."},{"question":"Come si sottrae un'area in AutoCAD?","answer":"Scegli Aggiungi e poi Oggetto, seleziona la forma esterna e premi Invio; poi scegli soTtrai, Oggetto, e seleziona ogni foro. AREA scrive il totale rimasto dopo ciascuno; due Invio terminano."},{"question":"Come si ottiene l'area in metri quadrati?","answer":"AREA scrive unità di disegno al quadrato. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000."},{"question":"Perché AREA dice che l'oggetto non ha area?","answer":"Solo le forme e le curve chiuse ne hanno una: linee, archi da soli, testi e quote no. Seleziona una polilinea chiusa, un cerchio o un tratteggio, oppure unisci prima le linee in una polilinea con UNISCI; o delinea la forma con i suoi angoli."}]
+faq: [{"question":"Qual è la scorciatoia di AREA in AutoCAD?","answer":"AA, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _AREA in tutte le lingue di AutoCAD."},{"question":"Come si trova l'area di una polilinea o di un tratteggio?","answer":"Esegui AREA, premi Invio per scegliere Oggetto, e seleziona la polilinea chiusa o il tratteggio: la sua area e il suo perimetro sono scritti alla riga di comando. L'area di un tratteggio esclude le sue isole."},{"question":"Come si sottrae un'area in AutoCAD?","answer":"Scegli Aggiungi e poi Oggetto, seleziona la forma esterna e premi Invio; poi scegli soTtrai, Oggetto, e seleziona ogni foro. AREA scrive il totale rimasto dopo ciascuno; due Invio terminano."},{"question":"Come si ottiene l'area in metri quadrati?","answer":"AREA scrive in unità di disegno quadrate. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000."},{"question":"Perché AREA dice che l'oggetto non ha area?","answer":"Solo le forme e le curve chiuse ne hanno una: linee, archi da soli, testi e quote no. Seleziona una polilinea chiusa, un cerchio o un tratteggio, oppure unisci prima le linee in una polilinea con UNISCI; o delinea la forma con i suoi angoli."}]
 ---
 
-AREA misura l'area e il perimetro di una forma chiusa, sia una che delinei con i suoi angoli sia un oggetto che selezioni. Indica il primo angolo, poi i successivi: dal secondo, la forma chiusa attraverso il cursore si riempie di verde traslucido, come la ombreggia AutoCAD. Invio o `Totale` scrive `Area = …, Perimetro = …` alla riga di comando e termina; Invio prima del terzo angolo è rifiutato. Con Aggiungi area e Sottrai area tiene un totale corrente su più forme. I numeri sono scritti alla precisione del disegno, e l'ultima area misurata si può rileggere digitando `'AREA`.
+AREA misura l'area e il perimetro di una forma chiusa, che tu la delinei con i suoi angoli o la selezioni come oggetto. Indica il primo angolo, poi i successivi: dal secondo, la forma chiusa fino al cursore si riempie di verde traslucido, come in AutoCAD. Invio o `Totale` scrive `Area = …, Perimetro = …` alla riga di comando e termina; Invio prima del terzo angolo è rifiutato. Con Aggiungi area e Sottrai area tiene un totale corrente su più forme. I numeri sono scritti alla precisione del disegno, e l'ultima area misurata si può rileggere digitando `'AREA`.
 
 - **Comando:** `AREA`
 - **Alias:** `AA`
@@ -23,7 +23,7 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Oggetto` (`O`) [#object]
 
-Il predefinito della prima richiesta, quindi Invio lo sceglie: seleziona un cerchio, un'ellisse, una polilinea o spline chiusa, un tratteggio o una regione, e AREA ne scrive l'area con il perimetro, o la circonferenza di un cerchio. Una polilinea, spline o arco ellittico aperti sono chiusi da una linea retta da un estremo all'altro, e AREA ne scrive la lunghezza. Una linea o un testo non hanno area: `L'oggetto selezionato non possiede un'area`, e lo richiede.
+Il predefinito della prima richiesta, quindi Invio lo sceglie: seleziona un cerchio, un'ellisse, una polilinea o spline chiusa, un tratteggio o una regione, e AREA ne scrive l'area con il perimetro, o la circonferenza di un cerchio. Una polilinea, spline o arco ellittico aperti sono chiusi da una linea retta da un estremo all'altro, e AREA ne scrive la lunghezza. Una linea o un testo non hanno area: `L'oggetto selezionato non possiede un'area`, e chiede di nuovo l'oggetto.
 
 ### `Aggiungi area` (`A`) [#add]
 
@@ -63,7 +63,7 @@ Scegli `Aggiungi` e poi `Oggetto`, seleziona la forma esterna e premi Invio; poi
 
 ### Come si ottiene l'area in metri quadrati?
 
-AREA scrive unità di disegno al quadrato. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000.
+AREA scrive in unità di disegno quadrate. Se disegni in millimetri, dividi per 1.000.000: 6.000.000 sono 6 m². In centimetri, per 10.000.
 
 ### Perché AREA dice che l'oggetto non ha area?
 

@@ -7,7 +7,7 @@ sourceHash: "c8ea61c0525d"
 
 INTERSEZIONE (INTERSECT in inglese) mantiene solo ciò che due o più solidi 3D hanno in comune, o due o più regioni in un piano, ed elimina il resto: un parallelepipedo e una sfera che lo sovrappone lasciano una palla con facce piane. Chiede oggetti fino a Invio, come fa <Command id="UNION" />, e salta ciò che non è né un solido né una regione. Come in AutoCAD 2027, un insieme selezionato prima viene scartato e richiesto di nuovo. Solidi e regioni sono calcolati separatamente, le regioni piano per piano.
 
-L'oggetto selezionato per primo diventa il risultato, con il suo layer e il suo colore, e gli altri vengono cancellati; con una finestra, un'intercetta o Tutti è il più recente tra essi. Il risultato è un solido composto, non più un parallelepipedo o una sfera, senza cronologia. Quando gli oggetti non hanno nulla in comune dice <Message id="nullSolid" /> o <Message id="nullRegion" /> e li cancella tutti, come fa AutoCAD. L'intero comando è un solo passo di annullamento. Il 3D di MellowCAD è ancora parziale: esistono i solidi, non le superfici e le mesh.
+L'oggetto selezionato per primo diventa il risultato, con il suo layer e il suo colore, e gli altri vengono cancellati; con una finestra, un'intercetta o Tutti è il più recente tra essi. Il risultato è un solido composto, non più un parallelepipedo o una sfera, senza cronologia. Quando gli oggetti non hanno nulla in comune mostra <Message id="nullSolid" /> o <Message id="nullRegion" /> e li cancella tutti, come fa AutoCAD. L'intero comando è un solo passo di annullamento. Il 3D di MellowCAD è ancora parziale: esistono i solidi, non le superfici e le mesh.
 
 ## Missing
 
@@ -29,4 +29,4 @@ Non con INTERSEZIONE, che lavora su solidi e regioni e salta le linee. Per trova
 
 ### Perché INTERSEZIONE cancella i miei oggetti?
 
-Perché non hanno nulla in comune: senza una parte condivisa dice <Message id="nullSolid" />, o <Message id="nullRegion" /> per le regioni, e li cancella, come fa AutoCAD. <Command id="U" /> li riporta indietro. Un solido e una regione, o due regioni in piani diversi, non vengono intersecati affatto: dice <Message id="booleanNeedsTwo" /> e non cambia nulla.
+Perché non hanno nulla in comune: senza una parte condivisa mostra <Message id="nullSolid" />, o <Message id="nullRegion" /> per le regioni, e li cancella, come fa AutoCAD. <Command id="U" /> li riporta indietro. Un solido e una regione, o due regioni in piani diversi, non vengono intersecati affatto: mostra <Message id="booleanNeedsTwo" /> e non cambia nulla.

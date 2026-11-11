@@ -3,10 +3,10 @@ title: "Comando CILINDRO (CYLINDER) in AutoCAD"
 description: "Come CILINDRO (CYLINDER, alias CIL) di AutoCAD disegna un cilindro solido 3D: base, raggio, altezza, 3P, 2P, Ttr, Ellittico e Asse. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è la scorciatoia di CILINDRO in AutoCAD?","answer":"CIL. Digitala e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza: 0,0, 20 e 40 disegnano il cilindro della sessione."},{"question":"Come si disegna un cilindro orizzontale?","answer":"Scegli Asse all'altezza e dai l'altro estremo dell'asse: da una base in 0,0,0, il punto 60,0,0 pone il cilindro lungo X."},{"question":"Come si fa un cilindro cavo o un tubo?","answer":"Disegna due cilindri dallo stesso centro, quello interno più stretto, poi esegui SOTTRAI: seleziona quello esterno, Invio, quello interno, Invio."},{"question":"Perché il mio cilindro sembra un cerchio?","answer":"Lo guardi dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, -VISTA e SEAsso, oppure 3DORBITA."}]
+faq: [{"question":"Qual è la scorciatoia di CILINDRO in AutoCAD?","answer":"CIL. Digitala e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza: 0,0, 20 e 40 disegnano il cilindro della sessione."},{"question":"Come si disegna un cilindro orizzontale?","answer":"Scegli Asse all'altezza e dai l'altro estremo dell'asse: da una base in 0,0,0, il punto 60,0,0 dispone il cilindro lungo X."},{"question":"Come si fa un cilindro cavo o un tubo?","answer":"Disegna due cilindri dallo stesso centro, quello interno più stretto, poi esegui SOTTRAI: seleziona quello esterno, Invio, quello interno, Invio."},{"question":"Perché il mio cilindro sembra un cerchio?","answer":"Lo stai guardando dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, -VISTA e SEAsso, oppure 3DORBITA."}]
 ---
 
-CILINDRO disegna un cilindro solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa scende, e un punto la dà con la sua distanza dalla base, come in [`PARALLELEPIPEDO`](/docs/commands/box). Il raggio e l'altezza sono offerti come predefiniti che Invio prende, condivisi con le altre primitive e con [`ESTRUDI`](/docs/commands/extrude). Il cilindro sta sul layer corrente, e Annulla lo annulla in un solo passo.
+CILINDRO disegna un cilindro solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa scende, e un punto la dà con la sua distanza dalla base, come in [`PARALLELEPIPEDO`](/docs/commands/box). Il raggio e l'altezza sono proposti come predefiniti che Invio accetta, condivisi con le altre primitive e con [`ESTRUDI`](/docs/commands/extrude). Il cilindro sta sul layer corrente, e Annulla lo annulla in un solo passo.
 
 Il cilindro conserva le sue dimensioni: [`LISTA`](/docs/commands/list) mostra la sua posizione, normale, raggio e altezza, e la tavolozza Proprietà permette di digitare il raggio e l'altezza. I suoi grip lo spostano, ne impostano l'altezza e, a ogni quarto della base, il raggio. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
 
@@ -42,7 +42,7 @@ Al centro della base: la base è un'ellisse. Dai i due estremi del suo primo ass
 
 ### `Diametro` (`D`) [#diameter]
 
-Al raggio: chiede invece il diametro, offrendo il doppio dell'ultimo raggio.
+Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ### `2Punti` (`2P`) [#2point]
 
@@ -66,7 +66,7 @@ All'altezza: chiede l'altro estremo dell'asse. Il cilindro va dal centro della b
 
 ### Come si disegna un cilindro orizzontale?
 
-Scegli `Asse` all'altezza e dai l'altro estremo dell'asse: da una base in `0,0,0`, il punto `60,0,0` pone il cilindro lungo X.
+Scegli `Asse` all'altezza e dai l'altro estremo dell'asse: da una base in `0,0,0`, il punto `60,0,0` dispone il cilindro lungo X.
 
 ### Come si fa un cilindro cavo o un tubo?
 
@@ -74,7 +74,7 @@ Disegna due cilindri dallo stesso centro, quello interno più stretto, poi esegu
 
 ### Perché il mio cilindro sembra un cerchio?
 
-Lo guardi dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, `-VISTA` e `SEAsso`, oppure [`3DORBITA`](/docs/commands/3dorbit).
+Lo stai guardando dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, `-VISTA` e `SEAsso`, oppure [`3DORBITA`](/docs/commands/3dorbit).
 
 ## Esercitati [#practice]
 

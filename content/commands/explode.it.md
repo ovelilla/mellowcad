@@ -27,4 +27,4 @@ Un testo multilinea sì: ogni riga diventa un testo di una riga. Un testo di una
 
 ### Come si esplode un blocco in AutoCAD?
 
-Seleziona il riferimento di blocco e premi Invio: diventa gli oggetti del suo blocco, dove il riferimento li disegnava. Un blocco al suo interno resta un blocco: esplodilo di nuovo. Gli attributi tornano come le loro definizioni, senza i valori.
+Seleziona il riferimento di blocco e premi Invio: diventa gli oggetti del suo blocco, dove il riferimento li disegnava. Un blocco annidato resta un blocco: esplodilo di nuovo. Gli attributi tornano come le loro definizioni, senza i valori.

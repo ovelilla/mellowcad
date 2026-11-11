@@ -27,7 +27,7 @@ In un arco, al posto dell'angolo iniziale o finale: l'angolo sul cerchio da cui 
 
 ### Included angle
 
-In un arco, al posto dell'angolo finale: quanto si estende dall'inizio. Invio prende 180, metà ellisse.
+In un arco, al posto dell'angolo finale: quanto si estende dall'inizio. Invio accetta 180, metà ellisse.
 
 ## Missing
 

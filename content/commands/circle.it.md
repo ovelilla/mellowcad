@@ -5,7 +5,7 @@ figure: "Tre cerchi: centro e raggio, i due estremi di un diametro (2P), centro 
 sourceHash: "62e25bc029f9"
 ---
 
-CERCHIO disegna un cerchio dal suo centro e dal suo raggio, digitato o dato con un punto sul cerchio, oppure in uno degli altri modi che la sua prima richiesta offre. Invio al raggio ripete la dimensione dell'ultimo cerchio, conservata per il disegno. Mentre dai il raggio, una linea tratteggiata ambra va dal centro al cursore, oltre il bordo quando dai il diametro, come la disegna AutoCAD. Il cerchio giace nel piano del suo primo punto, alla quota corrente se il punto non ha una Z propria.
+CERCHIO disegna un cerchio dal suo centro e dal suo raggio, digitato o dato con un punto sul cerchio, oppure in uno degli altri modi che la sua prima richiesta propone. Invio al raggio ripete la dimensione dell'ultimo cerchio, conservata per il disegno. Mentre dai il raggio, una linea tratteggiata ambra va dal centro al cursore, oltre il bordo quando dai il diametro, come la disegna AutoCAD. Il cerchio giace nel piano del suo primo punto, alla quota corrente se il punto non ha una Z propria.
 
 ## Options
 
@@ -19,7 +19,7 @@ Dai due estremi di un diametro.
 
 ### Ttr
 
-Tangente a due oggetti, con un raggio: indica ogni linea, cerchio o arco vicino a dove il cerchio deve toccarlo, poi dai il raggio. Tra i cerchi possibili, disegna quello che tocca più vicino alle tue selezioni; quando nessuno lo fa, dice <Message id="circleDoesNotExist" />.
+Tangente a due oggetti, con un raggio: indica ogni linea, cerchio o arco vicino a dove il cerchio deve toccarlo, poi dai il raggio. Tra i cerchi possibili, disegna quello che tocca più vicino alle tue selezioni; quando nessuno lo fa, mostra <Message id="circleDoesNotExist" />.
 
 ### Diameter
 

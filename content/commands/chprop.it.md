@@ -5,21 +5,21 @@ figure: "CAPROP su una linea attraverso il foro di una piastra: colore 1 e tipo 
 sourceHash: "da2b2e65e05e"
 ---
 
-CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: le righe Generale della tavolozza Proprietà, chieste come richieste. Seleziona gli oggetti, o selezionali prima del comando, poi scegli una proprietà da cambiare; ne chiede una di nuovo dopo ciascuna, finché Invio termina. La richiesta di ogni proprietà offre il valore dell'insieme come predefinito, <Message id="varies" /> dove gli oggetti differiscono, e Invio lì lascia a ogni oggetto il suo. Ciò che imposti è applicato al termine del comando, quindi Esc lascia ogni oggetto com'era. Gli oggetti su un layer bloccato sono contati e lasciati fuori, ciascuno dicendo <Message id="objectOnLockedLayer" />. L'intera esecuzione è un solo passo che <Command id="U" /> annulla.
+CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: le righe Generale della tavolozza Proprietà, chieste come richieste. Seleziona gli oggetti, o selezionali prima del comando, poi scegli una proprietà da cambiare; ne chiede una di nuovo dopo ciascuna, finché Invio termina. La richiesta di ogni proprietà propone il valore dell'insieme come predefinito, <Message id="varies" /> dove gli oggetti differiscono, e Invio lì lascia a ogni oggetto il suo. Ciò che imposti è applicato al termine del comando, quindi Esc lascia ogni oggetto com'era. Gli oggetti su un layer bloccato sono contati e lasciati fuori, ciascuno mostrando <Message id="objectOnLockedLayer" />. L'intera esecuzione è un solo passo che <Command id="U" /> annulla.
 
 ## Options
 
 ### Color
 
-Un numero di colore da 1 a 255, un nome come `red`, `BYLAYER`, o <Keyword id="Truecolor" /> e il suo `Red,Green,Blue`, come li prende <Command id="COLOR" />; ciò che COLORE rifiuta è rifiutato anche qui e richiesto di nuovo.
+Un numero di colore da 1 a 255, un nome come `red`, `BYLAYER`, o <Keyword id="Truecolor" /> e il suo `Red,Green,Blue`, come li accetta <Command id="COLOR" />; ciò che COLORE rifiuta è rifiutato anche qui e richiesto di nuovo.
 
 ### LAyer
 
-Il nome di un layer, in qualsiasi maiuscolo o minuscolo. Un nome che non può essere quello di un layer dice <Message id="invalidLayerName" />, uno che non è nel disegno dice che non si trova; entrambi chiedono di nuovo. CAPROP non crea layer.
+Il nome di un layer, senza distinzione tra maiuscole e minuscole. Un nome che non può essere quello di un layer mostra <Message id="invalidLayerName" />, uno che non è nel disegno dice che non si trova; entrambi chiedono di nuovo. CAPROP non crea layer.
 
 ### LType
 
-Il nome di un tipo di linea, in qualsiasi maiuscolo o minuscolo, oppure `ByLayer`. Ogni tipo di linea qui è caricato; un altro nome dice che non si trova e torna alla richiesta della proprietà.
+Il nome di un tipo di linea, senza distinzione tra maiuscole e minuscole, oppure `ByLayer`. Ogni tipo di linea qui è caricato; un altro nome dice che non si trova e torna alla richiesta della proprietà.
 
 ### LWeight
 

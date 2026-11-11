@@ -13,17 +13,17 @@ Il TRATTEGGIO di AutoCAD imposta il suo modello nella scheda Creazione tratteggi
 
 ### Properties
 
-Chiede il nome del modello, in maiuscolo o minuscolo, proponendo quello corrente: <Keyword id="Solid" /> riempie l'area, e <Keyword id="?" /> elenca i modelli con le loro descrizioni, poi torna al punto. Per un modello chiede poi la scala, un numero maggiore di 0 o due punti misurati, e l'angolo, digitato o con due punti. Il tratteggio successivo mantiene tutti e tre.
+Chiede il nome del modello, in maiuscole o minuscole, proponendo quello corrente: <Keyword id="Solid" /> riempie l'area, e <Keyword id="?" /> elenca i modelli con le loro descrizioni, poi torna al punto. Per un modello chiede poi la scala, un numero maggiore di 0 o due punti misurati, e l'angolo, digitato o con due punti. Il tratteggio successivo mantiene tutti e tre.
 
 <Session name="hatchPatterns" caption="SOLID e undici modelli di acadiso.pat, ciascuno tratteggiato in un quadrato di 30 di lato a scala 1, AR-CONC e AR-SAND a 0,08 e 0,1." />
 
 ### Select objects
 
-Al posto di un punto interno, seleziona gli oggetti che delimitano l'area; Invio torna al punto. Un oggetto che non chiude nessuna area viene lasciato fuori; quando nessuno ne delimita una, Invio dice <Message id="unableToHatchBoundary" /> e non crea nulla. Una regione dà il suo contorno, e i suoi fori come isole.
+Al posto di un punto interno, seleziona gli oggetti che delimitano l'area; Invio torna al punto. Un oggetto che non chiude nessuna area viene lasciato fuori; quando nessuno ne delimita una, Invio mostra <Message id="unableToHatchBoundary" /> e non crea nulla. Una regione dà il suo contorno, e i suoi fori come isole.
 
 ### Undo
 
-Non elencata alla richiesta, ma accettata lì: annulla le aree dell'ultimo punto selezionato e chiede di nuovo, lasciando selezionati gli oggetti. Dice <Message id="noBoundaryToUndo" /> quando non resta nessun punto da annullare.
+Non elencata alla richiesta, ma accettata lì: annulla le aree dell'ultimo punto selezionato e chiede di nuovo, lasciando selezionati gli oggetti. Mostra <Message id="noBoundaryToUndo" /> quando non resta nessun punto da annullare.
 
 ## Missing
 
@@ -37,7 +37,7 @@ TRATTEGGIO, alias `PTR`, `RE` o `RETINO`, poi Invio o barra spaziatrice; l'alias
 
 ### Perché il tratteggio non funziona in AutoCAD?
 
-Per lo più perché l'area non è chiusa: dice <Message id="hatchNoBoundary" />, e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono.
+Per lo più perché l'area non è chiusa: mostra <Message id="hatchNoBoundary" />, e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono.
 
 ### Quali modelli di tratteggio esistono, e se ne possono scaricare altri?
 
@@ -45,7 +45,7 @@ Una selezione di acadiso.pat, il file dei modelli metrici di AutoCAD: SOLID, ANG
 
 ### Come si cambia la scala di un tratteggio?
 
-Prima di selezionare, sotto <Keyword id="Properties" />: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con <Command id="MATCHPROP" />. Una scala così piccola che il modello richiederebbe troppe linee dice <Message id="hatchTooDense" /> e non crea nessun tratteggio.
+Prima di selezionare, sotto <Keyword id="Properties" />: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con <Command id="MATCHPROP" />. Una scala così piccola che il modello richiederebbe troppe linee mostra <Message id="hatchTooDense" /> e non crea nessun tratteggio.
 
 ### Come si trova l'area di un tratteggio?
 

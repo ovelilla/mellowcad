@@ -5,7 +5,7 @@ figure: "Due rettangoli da due angoli, il secondo digitato relativo al primo: un
 sourceHash: "a5d4e90c06aa"
 ---
 
-RETTANGOLO (RECTANG) disegna un rettangolo da due angoli opposti, indicati o digitati: `0,0` poi `100,50`, relativo al primo con l'input dinamico, ne crea uno di 100 per 50. È una sola polilinea chiusa di quattro vertici, creata sul layer corrente. Le opzioni del primo prompt stabiliscono come vengono disegnati i rettangoli successivi e ciascuna conserva il suo valore per il resto della sessione: il RETTANGOLO successivo dice quelle in vigore nella sua prima riga. L'opzione dello spessore dà a ogni lato uno spessore di polilinea. Mentre posizioni l'altro angolo, il rettangolo segue il cursore; con l'input dinamico attivo puoi digitarne la lunghezza, Tab, e la larghezza.
+RETTANGOLO (RECTANG) disegna un rettangolo da due angoli opposti, indicati o digitati: `0,0` poi `100,50`, relativo al primo con l'input dinamico, ne crea uno di 100 per 50. È una sola polilinea chiusa di quattro vertici, creata sul layer corrente. Le opzioni della prima richiesta stabiliscono come vengono disegnati i rettangoli successivi e ciascuna conserva il suo valore per il resto della sessione: il RETTANGOLO successivo indica quelle in vigore nella sua prima riga. L'opzione Larghezza dà a ogni lato una larghezza di polilinea. Mentre posizioni l'altro angolo, il rettangolo segue il cursore; con l'input dinamico attivo puoi digitarne la lunghezza, Tab, e la larghezza.
 
 ## Options
 
@@ -15,7 +15,7 @@ Chiede una prima e una seconda distanza di smusso e taglia ogni angolo di quelle
 
 ### Elevation
 
-Chiede l'altezza a cui è disegnato il rettangolo, il suo Z.
+Chiede l'altezza a cui è disegnato il rettangolo, la sua Z.
 
 ### Fillet
 
@@ -39,7 +39,7 @@ All'altro angolo: chiede l'angolo di rotazione del rettangolo, digitato o come p
 
 ## Missing
 
-Una lunghezza o larghezza di 0 con <Keyword id="Area" />, che qui non disegna nulla e in AutoCAD disegna una polilinea spezzata. Dopo una risposta rifiutata al prompt di Rotazione, MellowCAD chiede di nuovo il prompt per intero, dove AutoCAD non scrive altro.
+Una lunghezza o larghezza di 0 con <Keyword id="Area" />, che qui non disegna nulla e in AutoCAD disegna una polilinea spezzata. Dopo una risposta rifiutata alla richiesta di Rotazione, MellowCAD ripropone la richiesta per intero, dove AutoCAD non scrive altro.
 
 ## Questions
 
@@ -49,15 +49,15 @@ Una lunghezza o larghezza di 0 con <Keyword id="Area" />, che qui non disegna nu
 
 ### Come si disegna un rettangolo con dimensioni esatte?
 
-Indica il primo angolo, poi digita l'altro relativo a esso: `100,50` con l'input dinamico attivo, come all'avvio, o `@100,50` senza, lo rende lungo 100 e largo 50. Oppure scegli <Keyword id="Dimensions" /> e digita i due lati.
+Indica il primo angolo, poi digita l'altro relativo al primo: `100,50` con l'input dinamico attivo, come all'avvio, o `@100,50` senza, lo rende lungo 100 e largo 50. Oppure scegli <Keyword id="Dimensions" /> e digita i due lati.
 
 ### Come si disegna un rettangolo con gli angoli arrotondati?
 
-Scegli <Keyword id="Fillet" /> al primo prompt e digita il raggio, poi indica i due angoli.
+Scegli <Keyword id="Fillet" /> alla prima richiesta e digita il raggio, poi indica i due angoli.
 
 ### Perché il mio rettangolo ha gli angoli arrotondati o smussati?
 
-RETTANGOLO conserva Raccordo e Smusso per la sessione, quindi anche un rettangolo disegnato dopo uno di essi li porta: la sua prima riga lo dice. Scegli <Keyword id="Fillet" /> e digita `0` per disegnare di nuovo angoli netti.
+RETTANGOLO conserva Raccordo e Smusso per la sessione, quindi anche un rettangolo disegnato dopo uno di essi li porta: la sua prima riga lo indica. Scegli <Keyword id="Fillet" /> e digita `0` per disegnare di nuovo angoli netti.
 
 ### Un rettangolo è una polilinea in AutoCAD?
 

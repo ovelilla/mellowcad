@@ -7,7 +7,7 @@ sourceHash: "f0fc3d8763e7"
 
 DEFATT definisce un attributo: un'etichetta, una richiesta e un valore predefinito, posti nel disegno come una riga di testo. Selezionalo con gli altri oggetti quando crei un blocco con <Command id="BLOCK" />, e ogni riferimento a quel blocco contiene un valore proprio per esso: il numero di una porta, il codice di un pezzo, il nome di un locale. Fino ad allora la definizione mostra la sua etichetta.
 
-DEFATT di AutoCAD apre la finestra Definizione attributo, che MellowCAD non ha: qui DEFATT chiede alla riga di comando ciò che chiede <Command id="-ATTDEF" />, come fa la console di AutoCAD. Dice le modalità correnti e chiede quale cambiare, finché Invio prosegue. Poi l'etichetta: senza spazi, perché uno spazio la termina, e le minuscole diventano maiuscole; Invio da solo dice <Message id="tagCannotBeNull" />. Poi la richiesta con cui <Command id="INSERT" /> chiederà il valore, con Invio che prende l'etichetta, e il valore predefinito. Infine, dove va il testo, con le domande di <Command id="TEXT" />: un punto iniziale, l'altezza e la rotazione. L'altezza e la giustificazione sono quelle di TESTO, condivise nei due sensi. Invio al punto iniziale pone la definizione una riga sotto l'ultima definita, con la sua altezza, rotazione, stile e giustificazione, così gli attributi di un blocco si impilano uno sotto l'altro.
+DEFATT di AutoCAD apre la finestra Definizione attributo, che MellowCAD non ha: qui DEFATT chiede alla riga di comando ciò che chiede <Command id="-ATTDEF" />, come fa la console di AutoCAD. Mostra le modalità correnti e chiede quale cambiare, finché Invio prosegue. Poi l'etichetta: senza spazi, perché uno spazio la termina, e le minuscole diventano maiuscole; Invio da solo mostra <Message id="tagCannotBeNull" />. Poi la richiesta con cui <Command id="INSERT" /> chiederà il valore, con Invio che usa l'etichetta, e il valore predefinito. Infine, dove va il testo, con le domande di <Command id="TEXT" />: un punto iniziale, l'altezza e la rotazione. L'altezza e la giustificazione sono quelle di TESTO, condivise nei due sensi. Invio al punto iniziale colloca la definizione una riga sotto l'ultima definita, con la sua altezza, rotazione, stile e giustificazione, così gli attributi di un blocco si impilano uno sotto l'altro.
 
 ## Options
 
@@ -25,15 +25,15 @@ INSER chiede il valore una seconda volta, per verificarlo, dopo aver chiesto ogn
 
 ### Preset
 
-INSER non chiede il valore: ogni riferimento prende il predefinito.
+INSER non chiede il valore: ogni riferimento usa il predefinito.
 
 ### Lock position
 
-Attiva all'inizio: l'attributo resta dove lo pone il blocco.
+Attiva all'inizio: l'attributo resta dove lo colloca il blocco.
 
 ### Justify
 
-Chiede da dove pende il testo rispetto al suo punto, come fa TESTO: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, o uno dei nove punti per alto, medio e basso, sinistra, centro e destra. La richiesta del punto iniziale chiede poi il punto che nomina: centro medio centra il valore in un'etichetta.
+Chiede come è giustificato il testo rispetto al suo punto, come fa TESTO: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" />, o uno dei nove punti per alto, medio e basso, sinistra, centro e destra. La richiesta del punto iniziale chiede poi il punto che nomina: centro medio centra il valore in un'etichetta.
 
 ### Style
 
@@ -51,11 +51,11 @@ La finestra Definizione attributo: DEFATT chiede alla riga di comando. Le modali
 
 ### Come si crea un blocco con attributi in AutoCAD?
 
-Disegna il simbolo, poi esegui DEFATT per ogni attributo e posiziona il suo testo dove deve comparire il valore. Esegui <Command id="BLOCK" />, indica un punto base e seleziona il simbolo e gli attributi, nell'ordine in cui INSER deve chiederli. Ogni <Command id="INSERT" /> del blocco chiede poi un valore per ogni attributo, offrendo il suo predefinito.
+Disegna il simbolo, poi esegui DEFATT per ogni attributo e posiziona il suo testo dove deve comparire il valore. Esegui <Command id="BLOCK" />, indica un punto base e seleziona il simbolo e gli attributi, nell'ordine in cui INSER deve chiederli. Ogni <Command id="INSERT" /> del blocco chiede poi un valore per ogni attributo, proponendo il suo predefinito.
 
 ### Qual è la differenza tra etichetta, richiesta e valore predefinito?
 
-L'etichetta dà il nome all'attributo, come identificatore: è ciò che la definizione mostra, e il campo che <Command id="EATTEDIT" /> etichetta. La richiesta è la domanda con cui INSER chiede il suo valore. Il predefinito è il valore proposto, che Invio accetta.
+L'etichetta dà il nome all'attributo, come identificatore: è ciò che la definizione mostra, e l'etichetta del campo in <Command id="EATTEDIT" />. La richiesta è la domanda con cui INSER chiede il suo valore. Il predefinito è il valore proposto, che Invio accetta.
 
 ### Come si modifica una definizione di attributo?
 

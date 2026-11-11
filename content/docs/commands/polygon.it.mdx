@@ -3,10 +3,10 @@ title: "Comando POLIGONO (POLYGON) in AutoCAD"
 description: "Come POLIGONO (POLYGON, alias PG) di AutoCAD in italiano disegna un poligono regolare: i lati, il centro, Inscritto o Circoscritto, o uno Spigolo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Come si chiama il comando POLYGON in italiano?","answer":"POLIGONO, alias PG, poi Invio o barra spaziatrice; l'alias inglese POL in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _POLYGON."},{"question":"Come si disegna un esagono in AutoCAD?","answer":"Avvia POLIGONO, digita 6 per i lati, indica il centro, scegli Inscritto o Circoscritto, e digita il raggio. Tra i lati piani, un esagono circoscritto è il doppio del raggio che digiti."},{"question":"Qual è la differenza tra inscritto e circoscritto?","answer":"Con Inscritto, gli angoli del poligono toccano il cerchio, quindi sta al suo interno. Con Circoscritto, i suoi lati toccano il cerchio, quindi il cerchio sta al suo interno. Con lo stesso raggio, il poligono circoscritto è il più grande."},{"question":"Come si disegna un poligono con una lunghezza del lato data?","answer":"Scegli Spigolo e indica le due estremità di un lato: 0,0, poi la lunghezza digitata relativa ad esso, come 40,0. Gli altri lati seguono, in senso antiorario."}]
+faq: [{"question":"Come si chiama il comando POLYGON in italiano?","answer":"POLIGONO, alias PG, poi Invio o barra spaziatrice; l'alias inglese POL in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _POLYGON."},{"question":"Come si disegna un esagono in AutoCAD?","answer":"Avvia POLIGONO, digita 6 per i lati, indica il centro, scegli Inscritto o Circoscritto, e digita il raggio. Misurato tra i lati piani, un esagono circoscritto è largo il doppio del raggio che digiti."},{"question":"Qual è la differenza tra inscritto e circoscritto?","answer":"Con Inscritto, i vertici del poligono toccano il cerchio, quindi sta al suo interno. Con Circoscritto, i suoi lati toccano il cerchio, quindi il cerchio sta al suo interno. Con lo stesso raggio, il poligono circoscritto è il più grande."},{"question":"Come si disegna un poligono con una lunghezza del lato data?","answer":"Scegli Spigolo e indica le due estremità di un lato: 0,0, poi la lunghezza digitata relativa al primo punto, come 40,0. Gli altri lati seguono, in senso antiorario."}]
 ---
 
-POLIGONO (POLYGON in inglese) disegna un poligono regolare, con ogni lato e ogni angolo uguali, come una sola polilinea chiusa. Chiede il numero di lati, da 3 a 1024, poi il centro e se il poligono è inscritto in un cerchio o circoscritto ad esso, poi il raggio di quel cerchio. Oppure viene costruito su uno dei suoi lati con Edge. Il numero di lati e la scelta tra Inscribed e Circumscribed sono i valori predefiniti del POLIGONO successivo, in quel disegno. Un raggio digitato come numero disegna il lato inferiore orizzontale; uno indicato come punto, selezionato o digitato, imposta sia la dimensione sia la rotazione del poligono. Mentre indichi il raggio, il poligono segue il cursore, con una linea ambra tratteggiata dal centro.
+POLIGONO (POLYGON in inglese) disegna un poligono regolare, con ogni lato e ogni angolo uguali, come una sola polilinea chiusa. Chiede il numero di lati, da 3 a 1024, poi il centro e se il poligono è inscritto in un cerchio o circoscritto ad esso, poi il raggio di quel cerchio. Oppure viene costruito su uno dei suoi lati con `Spigolo`. Il numero di lati e la scelta tra `Inscritto` e `Circoscritto` sono i valori predefiniti del POLIGONO successivo, in quel disegno. Un raggio digitato come numero disegna il lato inferiore orizzontale; uno indicato come punto, con un clic o digitato, imposta sia la dimensione sia la rotazione del poligono. Mentre indichi il raggio, il poligono segue il cursore, con una linea ambra tratteggiata dal centro.
 
 - **Comando:** `POLIGONO`
 - **In inglese:** `POLYGON`, digitato `_POLYGON` in ogni lingua
@@ -24,7 +24,7 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Spigolo` (`S`) [#edge]
 
-Al posto di un centro: indica le due estremità di un lato, e il poligono viene costruito in senso antiorario a partire da esso.
+Al posto di un centro: indica le due estremità di un lato, e il poligono viene costruito in senso antiorario a partire da quel lato.
 
 ### `Inscritto nel cerchio` (`I`) [#inscribed]
 
@@ -48,15 +48,15 @@ POLIGONO, alias `PG`, poi Invio o barra spaziatrice; l'alias inglese `POL` in Au
 
 ### Come si disegna un esagono in AutoCAD?
 
-Avvia POLIGONO, digita `6` per i lati, indica il centro, scegli `Inscritto` o `Circoscritto`, e digita il raggio. Tra i lati piani, un esagono circoscritto è il doppio del raggio che digiti.
+Avvia POLIGONO, digita `6` per i lati, indica il centro, scegli `Inscritto` o `Circoscritto`, e digita il raggio. Misurato tra i lati piani, un esagono circoscritto è largo il doppio del raggio che digiti.
 
 ### Qual è la differenza tra inscritto e circoscritto?
 
-Con `Inscritto`, gli angoli del poligono toccano il cerchio, quindi sta al suo interno. Con `Circoscritto`, i suoi lati toccano il cerchio, quindi il cerchio sta al suo interno. Con lo stesso raggio, il poligono circoscritto è il più grande.
+Con `Inscritto`, i vertici del poligono toccano il cerchio, quindi sta al suo interno. Con `Circoscritto`, i suoi lati toccano il cerchio, quindi il cerchio sta al suo interno. Con lo stesso raggio, il poligono circoscritto è il più grande.
 
 ### Come si disegna un poligono con una lunghezza del lato data?
 
-Scegli `Spigolo` e indica le due estremità di un lato: `0,0`, poi la lunghezza digitata relativa ad esso, come `40,0`. Gli altri lati seguono, in senso antiorario.
+Scegli `Spigolo` e indica le due estremità di un lato: `0,0`, poi la lunghezza digitata relativa al primo punto, come `40,0`. Gli altri lati seguono, in senso antiorario.
 
 ## Comandi correlati [#related]
 

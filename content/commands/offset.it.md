@@ -5,7 +5,7 @@ figure: "Un rettangolo con offset di 6 all'interno e un cerchio con offset di 6 
 sourceHash: "b495af1e1410"
 ---
 
-OFFSET disegna una copia di un oggetto parallela ad esso, a una distanza che digiti o attraverso un punto che selezioni: una linea dà una linea parallela, un cerchio o un arco uno concentrico, una polilinea un contorno all'interno o all'esterno di essa, un'ellisse o una spline una spline che la segue. Come in AutoCAD, prende un oggetto alla volta: indichi la distanza una volta, poi selezioni un oggetto e il lato su cui mettere la sua copia, quante volte vuoi. Invio lo termina.
+OFFSET disegna una copia di un oggetto parallela ad esso, a una distanza che digiti o attraverso un punto che selezioni: una linea dà una linea parallela, un cerchio o un arco uno concentrico, una polilinea un contorno all'interno o all'esterno di essa, un'ellisse o una spline una spline che la segue. Come in AutoCAD, agisce su un oggetto alla volta: indichi la distanza una volta, poi selezioni un oggetto e il lato su cui mettere la sua copia, quante volte vuoi. Invio lo termina.
 
 ## Options
 
@@ -15,7 +15,7 @@ Al posto di una distanza, ogni copia passa per un punto che selezioni o digiti. 
 
 ### Erase
 
-Chiede se cancellare ogni oggetto di origine una volta che ne è stato fatto l'offset, <Keyword id="Yes" /> o <Keyword id="No" /> (il valore predefinito). Con <Keyword id="Yes" />, la copia sostituisce l'oggetto. La scelta viene mantenuta per il resto della sessione, e l'OFFSET successivo la dice nella sua prima riga.
+Chiede se cancellare ogni oggetto di origine una volta che ne è stato fatto l'offset, <Keyword id="Yes" /> o <Keyword id="No" /> (il valore predefinito). Con <Keyword id="Yes" />, la copia sostituisce l'oggetto. La scelta viene mantenuta per il resto della sessione, e l'OFFSET successivo la riporta nella sua prima riga.
 
 ### Layer
 
@@ -27,15 +27,15 @@ Termina il comando, come fa Invio alla richiesta dell'oggetto.
 
 ### Multiple
 
-Alla richiesta del lato: continua a fare offset dello stesso oggetto senza selezionarlo di nuovo, ogni copia una distanza più lontana dalla precedente, fino a Invio o <Keyword id="Exit" />.
+Alla richiesta del lato: continua a fare offset dello stesso oggetto senza selezionarlo di nuovo, ogni copia a una distanza in più dalla precedente, fino a Invio o <Keyword id="Exit" />.
 
 ### Undo
 
-Annulla l'ultima copia, da qualunque oggetto provenga, e chiede di nuovo un oggetto. Quando non resta nessuna copia da annullare, lo dice.
+Annulla l'ultima copia, da qualunque oggetto provenga, e chiede di nuovo un oggetto. Quando non resta nessuna copia da annullare, lo segnala.
 
 ## Missing
 
-OFFSETGAPTYPE 1 e 2: gli spigoli di una polilinea con offset sono sempre chiusi come con 0, con i segmenti estesi fino a incontrarsi. L'offset di una spline o di un'ellisse rientra nella tolleranza di AutoCAD, ma i suoi nodi cadono dove li mette MellowCAD, non dove li mette AutoCAD. L'opzione Through su una spline mostra X e Y nella sua descrizione comandi, non la distanza.
+OFFSETGAPTYPE 1 e 2: gli angoli di una polilinea con offset sono sempre chiusi come con 0, con i segmenti estesi fino a incontrarsi. L'offset di una spline o di un'ellisse rientra nella tolleranza di AutoCAD, ma i suoi nodi cadono dove li mette MellowCAD, non dove li mette AutoCAD. L'opzione Through su una spline mostra X e Y nella sua descrizione comandi, non la distanza.
 
 ## Questions
 

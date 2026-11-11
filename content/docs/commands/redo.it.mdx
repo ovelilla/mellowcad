@@ -3,12 +3,12 @@ title: "Comando RIPETI (REDO) in AutoCAD"
 description: "Come funziona RIPETI (REDO) di AutoCAD in italiano: ripristina ciò che l'ultimo U o ANNULLA ha annullato; MREDO e Ctrl+Y vanno passo per passo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di RIPETI in AutoCAD?","answer":"Ctrl+Y, che ripristina un passo (MREDO 1). RIPETI non ha alias: digita RIPETI, oppure _REDO in qualsiasi lingua di AutoCAD."},{"question":"Perché RIPETI non funziona?","answer":"RIPETI inverte solo l'U o l'ANNULLA che lo precede subito. Dopo qualsiasi altro comando non c'è nulla da ripristinare, anche se non ha cambiato nulla: annulla, poi ripristina subito."},{"question":"Qual è la differenza tra RIPETI e MREDO?","answer":"RIPETI ripristina l'intero ultimo annullamento, e solo subito dopo. MRIPETI ripristina un numero dei passi annullati, uno alla volta, o tutti, e funziona ancora dopo un RIPETI."},{"question":"Come si ripete l'ultimo comando in AutoCAD?","answer":"Premi Invio o la barra spaziatrice al prompt Comando: l'ultimo comando riparte. RIPETI non ripete un comando; inverte un annullamento."}]
+faq: [{"question":"Qual è l'alias di RIPETI in AutoCAD?","answer":"Ctrl+Y, che ripristina un passo (MREDO 1). RIPETI non ha alias: digita RIPETI, oppure _REDO in qualsiasi lingua di AutoCAD."},{"question":"Perché RIPETI non funziona?","answer":"RIPETI inverte solo l'U o l'ANNULLA che lo precede immediatamente. Dopo qualsiasi altro comando non c'è nulla da ripristinare, anche se non ha cambiato nulla: annulla, poi ripristina subito."},{"question":"Qual è la differenza tra RIPETI e MREDO?","answer":"RIPETI ripristina l'intero ultimo annullamento, e solo subito dopo. MRIPETI ripristina un numero dei passi annullati, uno alla volta, o tutti, e funziona ancora dopo un RIPETI."},{"question":"Come si ripete l'ultimo comando in AutoCAD?","answer":"Premi Invio o la barra spaziatrice alla richiesta Comando: l'ultimo comando riparte. RIPETI non ripete un comando; inverte un annullamento."}]
 ---
 
 RIPETI (REDO) inverte l'ultimo `A` o [`ANNULLA`](/docs/commands/undo): ciò che aveva annullato viene disegnato di nuovo, per intero, così dopo un ANNULLA di cinque comandi RIPETI ripristina tutti e cinque. Scrive i nomi dei comandi mentre lo fa, poi `Tutte le operazioni sono state ripetute.` quando non resta più nulla da ripristinare. Non chiede nulla e non ha opzioni.
 
-Funziona solo subito dopo l'annullamento. In qualsiasi altro momento dice `RIPETI deve essere eseguito immediatamente dopo un comando A o ANNULLA.` e, dopo che è stato eseguito un altro comando, anche uno che non cambia nulla come LIST o ZOOM, `Niente da ripetere.`. Con l'annullamento disattivato dall'opzione Controllo Nessuno di ANNULLA, RIPETI dice che è disabilitato.
+Funziona solo subito dopo l'annullamento. In qualsiasi altro momento segnala `RIPETI deve essere eseguito immediatamente dopo un comando A o ANNULLA.` e, dopo che un altro comando è stato eseguito, anche uno che non cambia nulla come LIST o ZOOM, `Niente da ripetere.`. Con l'annullamento disattivato dall'opzione Controllo Nessuno di ANNULLA, RIPETI segnala che è disabilitato.
 
 `MRIPETI` ripristina passo per passo: chiede un numero di azioni, oppure `Tutti` o `Ultimo`, e ripristina altrettanti dei passi che gli annullamenti hanno annullato, qualunque cosa abbiano eseguito nel frattempo U, ANNULLA e RIPETI; Last è l'intero ultimo annullamento, una sola volta (`L'ultima operazione ANNULLA è già stata eseguita.`). Ctrl+Y e Ripeti nel menu contestuale eseguono MREDO con 1, annullando il comando in corso.
 
@@ -37,7 +37,7 @@ Ctrl+Y, che ripristina un passo (MREDO 1). RIPETI non ha alias: digita `RIPETI`,
 
 ### Perché RIPETI non funziona?
 
-RIPETI inverte solo l'U o l'ANNULLA che lo precede subito. Dopo qualsiasi altro comando non c'è nulla da ripristinare, anche se non ha cambiato nulla: annulla, poi ripristina subito.
+RIPETI inverte solo l'U o l'ANNULLA che lo precede immediatamente. Dopo qualsiasi altro comando non c'è nulla da ripristinare, anche se non ha cambiato nulla: annulla, poi ripristina subito.
 
 ### Qual è la differenza tra RIPETI e MREDO?
 
@@ -45,7 +45,7 @@ RIPETI ripristina l'intero ultimo annullamento, e solo subito dopo. `MRIPETI` ri
 
 ### Come si ripete l'ultimo comando in AutoCAD?
 
-Premi Invio o la barra spaziatrice al prompt Comando: l'ultimo comando riparte. RIPETI non ripete un comando; inverte un annullamento.
+Premi Invio o la barra spaziatrice alla richiesta Comando: l'ultimo comando riparte. RIPETI non ripete un comando; inverte un annullamento.
 
 ## Comandi correlati [#related]
 

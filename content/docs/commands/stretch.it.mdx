@@ -3,10 +3,10 @@ title: "Comando STIRA (STRETCH) in AutoCAD"
 description: "Come funziona STIRA (STRETCH, alias STI) di AutoCAD: una finestra di intersezione sugli estremi da spostare, un punto base, un secondo punto. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di STIRA in AutoCAD?","answer":"STI, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _STRETCH in qualsiasi lingua di AutoCAD. Attenzione: S, in italiano, è SPOSTA (MOVE)."},{"question":"Perché STIRA sposta e basta gli oggetti?","answer":"Perché l'intero oggetto è dentro la finestra, o l'hai indicato: STIRA sposta questi interi. Trascina una finestra di intersezione, da destra a sinistra, solo sugli estremi che vuoi spostare."},{"question":"Come si stira di una distanza esatta?","answer":"Indica il punto base, poi digita lo spostamento: 40,0 stira di 40 lungo X, letto relativo al punto base con l'input dinamico attivo. Oppure punta il cursore nella direzione voluta, con Orto o il tracciamento polare, e digita solo la distanza."},{"question":"Si può stirare un blocco in AutoCAD?","answer":"Un riferimento di blocco si sposta intero quando il suo punto di inserimento è dentro la finestra, e resta quando non lo è: il suo interno non si stira. Prima ESPLODI per stirare i suoi pezzi."}]
+faq: [{"question":"Qual è l'alias di STIRA in AutoCAD?","answer":"STI, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _STRETCH in qualsiasi lingua di AutoCAD. Attenzione: S, in italiano, è SPOSTA (MOVE)."},{"question":"Perché STIRA sposta soltanto gli oggetti?","answer":"Perché l'intero oggetto è dentro la finestra, o l'hai indicato: STIRA sposta questi interi. Trascina una finestra di intersezione, da destra a sinistra, solo sugli estremi che vuoi spostare."},{"question":"Come si stira di una distanza esatta?","answer":"Indica il punto base, poi digita lo spostamento: 40,0 stira di 40 lungo X, interpretato in modo relativo al punto base con l'input dinamico attivo. Oppure punta il cursore nella direzione voluta, con Orto o il tracciamento polare, e digita solo la distanza."},{"question":"Si può stirare un blocco in AutoCAD?","answer":"Un riferimento di blocco si sposta intero quando il suo punto di inserimento è dentro la finestra, e resta quando non lo è: il suo interno non si stira. Prima ESPLODI per stirare i suoi pezzi."}]
 ---
 
-STIRA (STRETCH) sposta la parte di un disegno che una finestra di intersezione include e stira ciò che la collega al resto. Seleziona con una finestra di intersezione, trascinata da destra a sinistra, o con un poligono di intersezione, sugli estremi e sui vertici da spostare; poi indica un punto base e un secondo punto, come in [`SPOSTA`](/docs/commands/move). Ciò che la finestra include si sposta di quella distanza: gli estremi di una linea, i vertici di una polilinea, gli estremi di un arco, il contorno di un tratteggio, le origini di una quota. Ciò che sta interamente al suo interno si sposta intero; un cerchio, un testo o un riferimento di blocco si sposta quando il suo centro o il suo punto di inserimento è all'interno. Anche gli oggetti indicati uno a uno, o trovati con Finestra, si spostano interi. La stiratura è un solo passo che Annulla ripristina.
+STIRA (STRETCH) sposta la parte di un disegno che una finestra di intersezione include e stira ciò che la collega al resto. Seleziona con una finestra di intersezione, trascinata da destra a sinistra, o con un poligono di intersezione, sugli estremi e sui vertici da spostare; poi indica un punto base e un secondo punto, come in [`SPOSTA`](/docs/commands/move). Ciò che la finestra include si sposta di quella distanza: gli estremi di una linea, i vertici di una polilinea, gli estremi di un arco, il contorno di un tratteggio, le origini di una quota. Ciò che sta interamente al suo interno si sposta intero; un cerchio, un testo o un riferimento di blocco si sposta quando il suo centro o il suo punto di inserimento è all'interno. Anche gli oggetti indicati uno a uno, o trovati con Finestra, si spostano interi. L'operazione è un solo passaggio di annullamento.
 
 - **Comando:** `STIRA`
 - **In inglese:** `STRETCH`, digitato `_STRETCH` in ogni lingua
@@ -24,11 +24,11 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Spostamento` (`S`) [#displacement]
 
-Scelto al prompt del punto base, o con Invio lì, il suo valore predefinito: chiede lo spostamento come vettore, `40,0` stira di 40 lungo X. Al secondo punto, Invio fa lo stesso con il punto base: le sue coordinate sono lo spostamento.
+Scelto alla richiesta del punto base, o con Invio lì, il suo valore predefinito: chiede lo spostamento come vettore, `40,0` stira di 40 lungo X. Al secondo punto, Invio fa lo stesso con il punto base: le sue coordinate sono lo spostamento.
 
 ## Cosa non fa ancora [#missing]
 
-Un arco ellittico con un estremo nella finestra, che AutoCAD rimodella: qui si sposta intero con il suo centro nella finestra, altrimenti resta. Un tratteggio non associativo incluso in parte, che AutoCAD lascia dov'è. Il testo di una quota nel suo posto predefinito resta quando è incluso solo quello.
+Un arco ellittico con un estremo nella finestra, che AutoCAD rimodella: qui si sposta intero con il suo centro nella finestra, altrimenti resta. Un tratteggio non associativo incluso in parte, che AutoCAD lascia dov'è. Il testo di una quota nella posizione predefinita resta fermo quando è incluso solo quello.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#stretch--s--es-estira--ei--pt-br-esticar--e--fr-etirer--e--it-stira--sti)
 
@@ -38,13 +38,13 @@ Un arco ellittico con un estremo nella finestra, che AutoCAD rimodella: qui si s
 
 `STI`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_STRETCH` in qualsiasi lingua di AutoCAD. Attenzione: `S`, in italiano, è SPOSTA (MOVE).
 
-### Perché STIRA sposta e basta gli oggetti?
+### Perché STIRA sposta soltanto gli oggetti?
 
 Perché l'intero oggetto è dentro la finestra, o l'hai indicato: STIRA sposta questi interi. Trascina una finestra di intersezione, da destra a sinistra, solo sugli estremi che vuoi spostare.
 
 ### Come si stira di una distanza esatta?
 
-Indica il punto base, poi digita lo spostamento: `40,0` stira di 40 lungo X, letto relativo al punto base con l'input dinamico attivo. Oppure punta il cursore nella direzione voluta, con Orto o il tracciamento polare, e digita solo la distanza.
+Indica il punto base, poi digita lo spostamento: `40,0` stira di 40 lungo X, interpretato in modo relativo al punto base con l'input dinamico attivo. Oppure punta il cursore nella direzione voluta, con Orto o il tracciamento polare, e digita solo la distanza.
 
 ### Si può stirare un blocco in AutoCAD?
 

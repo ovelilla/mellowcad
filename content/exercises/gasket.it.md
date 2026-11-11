@@ -6,7 +6,7 @@ figure: "La guarnizione, di 120 per 80, quotata."
 sourceHash: "dc5c0e2b45b8"
 ---
 
-Disegna questa guarnizione, in millimetri: una piastra di 120 per 80 con gli angoli raccordati con raggio 10, un foro centrale di 40 e quattro fori di 10, con i centri a 12 dai bordi, con gli assi del foro centrale e le quote. Tutto si digita: il primo punto di un comando è dove lo digiti, e ogni punto successivo si misura dall'ultimo. Il contorno, gli assi e le quote vanno ciascuno sul proprio layer.
+Disegna questa guarnizione, in millimetri: una piastra di 120 per 80 con gli angoli raccordati a raggio 10, un foro centrale di 40 e quattro fori di 10, con i centri a 12 dai bordi, più gli assi del foro centrale e le quote. Tutto si digita: il primo punto di un comando è dove lo digiti, e ogni punto successivo si misura dall'ultimo. Il contorno, gli assi e le quote vanno ciascuno sul proprio layer.
 
 ## Steps
 
@@ -28,4 +28,4 @@ Imposta Assi come layer corrente. Due linee con <Command id="LINE" /> si incroci
 
 ### Quotala [#dimensions]
 
-Imposta Quote come layer corrente. <Command id="DIMLINEAR" /> prende due punti e poi dove va la linea di quota: la lunghezza da `0,10` a `120,0` più in là, posizionata sotto; l'altezza a destra; l'interasse dei fori, 96 e 56. Un punto digitato ai suoi prompt non tocca nessun oggetto, quindi ognuna di queste quote viene creata non associativa, e la riga di comando lo dice. <Command id="DIMDIAMETER" /> seleziona un cerchio e ne posiziona il diametro: quello del foro centrale, poi quello di un foro.
+Imposta Quote come layer corrente. <Command id="DIMLINEAR" /> prende due punti e poi dove va la linea di quota: la lunghezza da `0,10` a `120,0` più in là, posizionata sotto; l'altezza a destra; l'interasse dei fori, 96 e 56. Un punto digitato alle sue richieste non tocca nessun oggetto, quindi ognuna di queste quote viene creata non associativa, e la riga di comando lo dice. <Command id="DIMDIAMETER" /> seleziona un cerchio e ne posiziona il diametro: quello del foro centrale, poi quello di un foro.

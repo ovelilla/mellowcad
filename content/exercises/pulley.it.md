@@ -17,7 +17,7 @@ Sul layer Contorno, una <Command id="PLINE" /> chiusa da `10,0`, ogni punto succ
 
 ### Ruota la vista [#view]
 
-<Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" /> la guardano da sud-est e dall'alto; <Command id="VSCURRENT" /> e <Keyword command="VSCURRENT" id="Conceptual" /> ombreggiano le facce, il che mostra al meglio un pezzo tornito.
+<Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" /> portano la vista a sud-est e dall'alto; <Command id="VSCURRENT" /> e <Keyword command="VSCURRENT" id="Conceptual" /> ombreggiano le facce, e così un pezzo tornito si vede meglio.
 
 ### Ruotala [#revolve]
 

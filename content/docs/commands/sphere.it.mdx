@@ -3,12 +3,12 @@ title: "Comando SFERA (SPHERE) in AutoCAD"
 description: "Come SFERA (SPHERE) di AutoCAD disegna una sfera solida 3D: centro e raggio, Diametro, 3P, 2P e Ttr, e perché appare come linee. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Come si crea una sfera in AutoCAD?","answer":"Esegui SFERA, indica il centro, poi il raggio: 0,0,0 e 25 disegnano la sfera della sessione. Ruota la vista per vederla tonda, con un angolo del ViewCube o con -VISTA e SEAsso."},{"question":"Perché la mia sfera sembra un cerchio con delle linee?","answer":"Wireframe 2D e Nascosto disegnano una sfera come i suoi meridiani e paralleli; in pianta sono un cerchio e linee che lo attraversano. STILEVISCORRENTE con Concettuale la ombreggia, e ISOLINES stabilisce quante linee mostra."},{"question":"Come si crea un'emisfera?","answer":"Disegna la sfera, poi tagliala per il suo centro con TRANCIA: tre punti sul piano, oppure XY e il centro, e il lato da conservare."},{"question":"Come si disegna una sfera dal suo diametro?","answer":"Al raggio, scegli Diametro e digita il diametro. Con 2P, anche i due estremi di un diametro la posizionano."}]
+faq: [{"question":"Come si crea una sfera in AutoCAD?","answer":"Avvia SFERA, indica il centro, poi il raggio: 0,0,0 e 25 disegnano la sfera della sessione. Ruota la vista per vederla tonda, con un angolo del ViewCube o con -VISTA e SEAsso."},{"question":"Perché la mia sfera sembra un cerchio con delle linee?","answer":"Wireframe 2D e Nascosto disegnano una sfera come i suoi meridiani e paralleli; in pianta sono un cerchio e linee che lo attraversano. STILEVISCORRENTE con Concettuale la ombreggia, e ISOLINES stabilisce quante linee mostra."},{"question":"Come si crea un'emisfera?","answer":"Disegna la sfera, poi tagliala per il suo centro con TRANCIA: tre punti sul piano, oppure XY e il centro, e il lato da conservare."},{"question":"Come si disegna una sfera dal suo diametro?","answer":"Al raggio, scegli Diametro e digita il diametro. Con 2P, anche i due estremi di un diametro la posizionano."}]
 ---
 
-SFERA (SPHERE) disegna una sfera solida 3D: indica il centro, poi il raggio. Un raggio indicato con il mouse viene letto sul piano passante per il centro, e l'ultimo raggio viene proposto come valore predefinito che Invio prende, condiviso con [`CILINDRO`](/docs/commands/cylinder), [`CONO`](/docs/commands/cone) e le altre primitive. La sfera sta sul layer corrente e Annulla la ripristina in un solo passo.
+SFERA (SPHERE) disegna una sfera solida 3D: indica il centro, poi il raggio. Un raggio indicato con il mouse viene letto sul piano passante per il centro, e l'ultimo raggio viene proposto come valore predefinito che Invio accetta, condiviso con [`CILINDRO`](/docs/commands/cylinder), [`CONO`](/docs/commands/cone) e le altre primitive. La sfera sta sul layer corrente e si annulla in un solo passaggio.
 
-In Wireframe 2D e Nascosto viene disegnata come linee: meridiani e paralleli, quanti ne dice `ISOLINES`, e nient'altro vi si aggancia oltre al suo centro. [`LISTA`](/docs/commands/list) ne mostra la posizione e il raggio, e la tavolozza Proprietà permette di digitare il raggio o il diametro. I suoi grip la spostano e, a ogni quarto del suo equatore, ne impostano il raggio. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
+In Wireframe 2D e Nascosto viene disegnata come linee: meridiani e paralleli, quanti ne stabilisce `ISOLINES`, e nient'altro vi si aggancia oltre al suo centro. [`LISTA`](/docs/commands/list) ne mostra la posizione e il raggio, e la tavolozza Proprietà permette di digitare il raggio o il diametro. I suoi grip la spostano e, a ogni quarto del suo equatore, ne impostano il raggio. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è fatto solo di solidi ed è ancora parziale.
 
 - **Comando:** `SFERA`
 - **In inglese:** `SPHERE`, digitato `_SPHERE` in ogni lingua
@@ -41,7 +41,7 @@ Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ## Cosa non fa ancora [#missing]
 
-[`ESPLODI`](/docs/commands/explode) di una sfera, che AutoCAD trasforma in una superficie: MellowCAD non ha superfici, quindi dice che non ha potuto esploderla. Sposta, Ruota, Scala e Specchio da un grip attivo, e i comandi 3D propri (3DMOVE, 3DROTATE, 3DSCALE). La silhouette che disegna `DISPSILH` di AutoCAD. Gli stili visivi che mancano a [`STILEVISCORRENTE`](/docs/commands/vscurrent) oltre a Wireframe 2D, Nascosto e Concettuale.
+[`ESPLODI`](/docs/commands/explode) di una sfera, che AutoCAD trasforma in una superficie: MellowCAD non ha superfici, quindi segnala che non ha potuto esploderla. Sposta, Ruota, Scala e Specchio da un grip attivo, e i comandi 3D propri (3DMOVE, 3DROTATE, 3DSCALE). La silhouette che disegna `DISPSILH` di AutoCAD. Gli stili visivi che [`STILEVISCORRENTE`](/docs/commands/vscurrent) non offre oltre a Wireframe 2D, Nascosto e Concettuale.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera)
 
@@ -49,7 +49,7 @@ Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ### Come si crea una sfera in AutoCAD?
 
-Esegui SFERA, indica il centro, poi il raggio: `0,0,0` e `25` disegnano la sfera della sessione. Ruota la vista per vederla tonda, con un angolo del ViewCube o con `-VISTA` e `SEAsso`.
+Avvia SFERA, indica il centro, poi il raggio: `0,0,0` e `25` disegnano la sfera della sessione. Ruota la vista per vederla tonda, con un angolo del ViewCube o con `-VISTA` e `SEAsso`.
 
 ### Perché la mia sfera sembra un cerchio con delle linee?
 

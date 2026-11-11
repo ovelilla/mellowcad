@@ -5,9 +5,9 @@ figure: "ICONAUCS Noorigin manda l'icona nell'angolo; UCS sposta l'origine sul g
 sourceHash: "c431e70eda01"
 ---
 
-ICONAUCS (UCSICON) mostra o nasconde l'icona UCS, i bracci X e Y che indicano dove si trova l'UCS corrente e in che direzione punta, e dice dove sta: sull'origine dell'UCS, o nell'angolo in basso a sinistra del disegno. Il suo unico prompt propone lo stato corrente come valore predefinito, quindi Invio lo mantiene. L'impostazione viene salvata nel disegno, e ogni ICONAUCS è un passo di annullamento.
+ICONAUCS (UCSICON) mostra o nasconde l'icona UCS, i bracci X e Y che indicano dove si trova l'UCS corrente e in che direzione punta, e ne indica la posizione: sull'origine dell'UCS, o nell'angolo in basso a sinistra del disegno. La sua unica richiesta propone lo stato corrente come valore predefinito, quindi Invio lo mantiene. L'impostazione viene salvata nel disegno, e ogni ICONAUCS è un passo di annullamento.
 
-L'icona è quella 3D di AutoCAD 2027: un braccio per X e uno per Y, una lettera a ciascun capo, e un quadrato sull'origine finché l'UCS è quello globale. Fuori dalla pianta un braccio Z mostra dove punta lo Z dell'UCS, e un braccio visto di punta viene omesso. In Wireframe 2D è bianca; in Nascosto e Concettuale la sua X è rossa, Y verde e Z blu. Digitato con un apostrofo, `'UCSICON` imposta invece la variabile UCSICON, anche all'interno di un altro comando: da 0 a 3, dove 1 mostra l'icona e 2 la mette sull'origine.
+L'icona è quella 3D di AutoCAD 2027: un braccio per X e uno per Y, una lettera a ciascun capo, e un quadrato sull'origine finché l'UCS è quello globale. Fuori dalla pianta un braccio Z mostra dove punta la Z dell'UCS, e un braccio visto di punta viene omesso. In Wireframe 2D è bianca; in Nascosto e Concettuale la sua X è rossa, Y verde e Z blu. Digitato con un apostrofo, `'UCSICON` imposta invece la variabile UCSICON, anche all'interno di un altro comando: da 0 a 3, dove 1 mostra l'icona e 2 la mette sull'origine.
 
 ## Options
 

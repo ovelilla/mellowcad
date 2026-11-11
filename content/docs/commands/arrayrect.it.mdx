@@ -3,10 +3,10 @@ title: "Comando SERIERETTANG (ARRAYRECT) in AutoCAD"
 description: "Come funziona SERIERETTANG (ARRAYRECT) di AutoCAD in italiano: colonne, righe e livelli, la spaziatura, associativa o no. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Come si avvia una serie rettangolare?","answer":"Digita ARRAYRECT, che non ha alias, oppure SR per SERIE e Invio alla sua domanda, poiché la rettangolare è il suo predefinito. Seleziona gli oggetti e premi Invio: la serie è disegnata subito, pronta da modificare."},{"question":"Come si imposta la distanza tra righe e colonne?","answer":"Scegli Spaziatura e digita la distanza tra le colonne, poi tra le righe; una negativa va a sinistra o in basso. Con Unità, due angoli danno entrambe in una volta. Oppure trascina le frecce alla seconda colonna e alla seconda riga."},{"question":"Come si rendono le copie oggetti separati?","answer":"Scegli ASsociativo e rispondi No prima di premere Invio: ogni copia è un oggetto a sé. Una serie associativa si può scomporre poi nei suoi elementi con ESPLODI."},{"question":"Come si fa una serie 3D?","answer":"Scegli Livelli: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. Righe chiede anche una quota, che solleva ogni riga rispetto alla precedente."}]
+faq: [{"question":"Come si avvia una serie rettangolare?","answer":"Digita ARRAYRECT, che non ha alias, oppure SR per SERIE e Invio alla sua domanda, poiché la rettangolare è il suo predefinito. Seleziona gli oggetti e premi Invio: la serie è disegnata subito, pronta da modificare."},{"question":"Come si imposta la distanza tra righe e colonne?","answer":"Scegli Spaziatura e digita la distanza tra le colonne, poi tra le righe; una negativa va a sinistra o in basso. Con Unità, due angoli danno entrambe in una volta. Oppure trascina le frecce alla seconda colonna e alla seconda riga."},{"question":"Come si rendono le copie oggetti separati?","answer":"Scegli ASsociativo e rispondi No prima di premere Invio: ogni copia è un oggetto a sé. Una serie associativa si può scomporre poi nei suoi elementi con ESPLODI."},{"question":"Come si fa una serie 3D?","answer":"Scegli Livelli: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. Righe chiede anche un incremento di quota, che solleva ogni riga rispetto alla precedente."}]
 ---
 
-SERIERETTANG copia una selezione in colonne e righe, e in livelli se vuoi, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, e la mostra subito: 4 colonne lungo X dell'UCS e 3 righe lungo la sua Y, distanziate di una volta e mezza la dimensione della selezione. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD: fai clic su una delle sue frecce, poi fai clic dove deve andare o digita un numero, per impostare un numero o una spaziatura. Anche Esc lì crea la serie. Gli oggetti selezionati diventano il suo primo elemento.
+SERIERETTANG copia una selezione in colonne e righe, e in livelli se vuoi, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, e la mostra subito: 4 colonne lungo X dell'UCS e 3 righe lungo la sua Y, distanziate di una volta e mezza la dimensione della selezione. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD: fai clic su una delle sue frecce, poi fai clic dove deve andare o digita un numero, per impostare un numero o una spaziatura. Anche Esc lì crea la serie. Gli oggetti selezionati diventano il suo primo elemento.
 
 - **Comando:** `SERIERETTANG`
 - **In inglese:** `ARRAYRECT`, digitato `_ARRAYRECT` in ogni lingua
@@ -39,7 +39,7 @@ Il numero di colonne e la distanza tra esse.
 
 ### `Righe` (`R`) [#rows]
 
-Il numero di righe, la distanza tra esse e una quota di cui ogni riga sale rispetto alla precedente.
+Il numero di righe, la distanza tra esse e un incremento di quota per cui ogni riga sale rispetto alla precedente.
 
 ### `Livelli` (`L`) [#levels]
 
@@ -71,7 +71,7 @@ Scegli `ASsociativo` e rispondi `No` prima di premere Invio: ogni copia è un og
 
 ### Come si fa una serie 3D?
 
-Scegli `Livelli`: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. `Righe` chiede anche una quota, che solleva ogni riga rispetto alla precedente.
+Scegli `Livelli`: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. `Righe` chiede anche un incremento di quota, che solleva ogni riga rispetto alla precedente.
 
 ## Esercitati [#practice]
 

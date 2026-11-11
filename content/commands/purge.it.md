@@ -5,9 +5,9 @@ figure: "Due blocchi, TAG inserito su una parete e BOX il cui unico riferimento 
 sourceHash: "635e8ae855cb"
 ---
 
-ELIMINA (PURGE) rimuove ciò che un disegno definisce ma non usa; qui sono i blocchi. ELIMINA di AutoCAD apre la finestra Elimina; MellowCAD non ne ha una, quindi ELIMINA chiede alla riga di comando ciò che chiede <Command id="-PURGE" />, come la console di AutoCAD. Indica le impostazioni Elementi annidati e Dati orfani, entrambe disattivate, e chiede quale tipo di oggetti inutilizzati eliminare, proponendo solo <Keyword id="Blocks" />; Invio a quel punto termina.
+ELIMINA (PURGE) rimuove ciò che un disegno definisce ma non usa; qui sono i blocchi. ELIMINA di AutoCAD apre la finestra Elimina; MellowCAD non ne ha una, quindi ELIMINA chiede alla riga di comando ciò che chiede <Command id="-PURGE" />, come la console di AutoCAD. Indica le impostazioni Elementi annidati e Dati orfani, entrambe disattivate, e chiede quale tipo di oggetti inutilizzati eliminare, proponendo solo <Keyword id="Blocks" />; Invio a questa richiesta termina il comando.
 
-Un blocco è in uso finché un riferimento nel disegno lo inserisce, o la definizione di un blocco in uso lo contiene, a qualsiasi profondità. Cancellare l'ultimo riferimento di un blocco ne lascia la definizione nel disegno, dove <Command id="INSERT" /> può inserirlo di nuovo: ELIMINA è ciò che la cancella. Un blocco contenuto in un blocco conservato non viene mai preso, e una catena di blocchi che si contengono solo a vicenda sparisce in una sola esecuzione. Se non ce n'è nessuno da eliminare, dice <Message id="noUnreferencedBlocks" />. Ogni esecuzione è un solo passo che <Command id="U" /> annulla.
+Un blocco è in uso finché un riferimento nel disegno lo inserisce, o la definizione di un blocco in uso lo contiene, a qualsiasi profondità. Cancellare l'ultimo riferimento di un blocco ne lascia la definizione nel disegno, dove <Command id="INSERT" /> può inserirlo di nuovo: è ELIMINA a cancellarla. Un blocco contenuto in un blocco conservato non viene mai eliminato, e una catena di blocchi che si contengono solo a vicenda sparisce in una sola esecuzione. Se non ce n'è nessuno da eliminare, segnala <Message id="noUnreferencedBlocks" />. Ogni esecuzione è un solo passaggio che <Command id="U" /> annulla.
 
 ## Options
 
@@ -31,7 +31,7 @@ Digita `EN`, scegli <Keyword id="Blocks" />, premi Invio per ogni nome e rispond
 
 ### Perché non riesco a eliminare un blocco?
 
-Perché è in uso: un riferimento nel disegno lo inserisce, o lo contiene un blocco in uso, magari annidato a più livelli. Cancella i suoi riferimenti, o esplodi i blocchi che lo contengono, e ELIMINA potrà prenderlo.
+Perché è in uso: un riferimento nel disegno lo inserisce, o lo contiene un blocco in uso, magari annidato a più livelli. Cancella i suoi riferimenti, o esplodi i blocchi che lo contengono, e ELIMINA potrà eliminarlo.
 
 ### Come si eliminano i layer?
 

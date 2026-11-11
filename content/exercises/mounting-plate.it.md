@@ -17,7 +17,7 @@ Sul layer Contorno, <Command id="RECTANG" /> con un <Keyword command="RECTANG" i
 
 ### Crea le regioni [#region]
 
-<Command id="REGION" /> trasforma gli oggetti chiusi in regioni: seleziona il contorno e i quattro cerchi, poi Invio. Cinque anelli, cinque regioni.
+<Command id="REGION" /> trasforma gli oggetti chiusi in regioni: seleziona il contorno e i quattro cerchi, poi Invio. Cinque contorni chiusi, cinque regioni.
 
 ### Sottrai i fori [#subtract]
 
@@ -25,7 +25,7 @@ Sul layer Contorno, <Command id="RECTANG" /> con un <Keyword command="RECTANG" i
 
 ### Ruota la vista [#view]
 
-<Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" /> la guardano da sud-est e dall'alto; <Command id="VSCURRENT" /> e <Keyword command="VSCURRENT" id="Hidden" /> nascondono ciò che le facce nascondono. Anche il ViewCube ruota la vista con un clic.
+<Command id="-VIEW" /> e <Keyword command="VIEW" id="SEiso" /> portano la vista a sud-est e dall'alto; <Command id="VSCURRENT" /> e <Keyword command="VSCURRENT" id="Hidden" /> nascondono ciò che le facce coprono. Anche il ViewCube ruota la vista con un clic.
 
 ### Estrudila [#extrude]
 

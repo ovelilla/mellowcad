@@ -3,7 +3,7 @@ title: "Comando TRATTEGGIO (HATCH) in AutoCAD"
 description: "Il tratteggio in AutoCAD in italiano con TRATTEGGIO (HATCH, alias PTR, RE), richiesta per richiesta: punto interno o oggetti, modello, scala, angolo, isole."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Come si chiama il comando HATCH in italiano?","answer":"TRATTEGGIO, alias PTR, RE o RETINO, poi Invio o barra spaziatrice; l'alias inglese H in AutoCAD in italiano non esiste. Senza scheda Creazione tratteggio, pone le sue domande nella riga di comando, come -RE (-TRATTEGGIO). Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _HATCH."},{"question":"Perché il tratteggio non funziona in AutoCAD?","answer":"Per lo più perché l'area non è chiusa: dice «Non è stato trovato un contorno del tratteggio valido.», e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono."},{"question":"Quali modelli di tratteggio esistono, e se ne possono scaricare altri?","answer":"Una selezione di acadiso.pat, il file dei modelli metrici di AutoCAD: SOLID, ANGLE, da ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL e ZIGZAG. ? sotto Proprietà li elenca. Un file di modelli tuo o scaricato non si può ancora caricare."},{"question":"Come si cambia la scala di un tratteggio?","answer":"Prima di selezionare, sotto Proprietà: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con CORRISPROP. Una scala così piccola che il modello richiederebbe troppe linee dice «La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.» e non crea nessun tratteggio."},{"question":"Come si trova l'area di un tratteggio?","answer":"Selezionalo e leggi Area sotto Geometria nella tavolozza Proprietà, con le sue isole escluse; con più tratteggi selezionati, Area cumulativa li somma. Oppure avvia AREA, scegli Oggetto e seleziona il tratteggio."}]
+faq: [{"question":"Come si chiama il comando HATCH in italiano?","answer":"TRATTEGGIO, alias PTR, RE o RETINO, poi Invio o barra spaziatrice; l'alias inglese H in AutoCAD in italiano non esiste. Senza scheda Creazione tratteggio, pone le sue domande nella riga di comando, come -RE (-TRATTEGGIO). Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _HATCH."},{"question":"Perché il tratteggio non funziona in AutoCAD?","answer":"Per lo più perché l'area non è chiusa: mostra «Non è stato trovato un contorno del tratteggio valido.», e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono."},{"question":"Quali modelli di tratteggio esistono, e se ne possono scaricare altri?","answer":"Una selezione di acadiso.pat, il file dei modelli metrici di AutoCAD: SOLID, ANGLE, da ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL e ZIGZAG. ? sotto Proprietà li elenca. Un file di modelli tuo o scaricato non si può ancora caricare."},{"question":"Come si cambia la scala di un tratteggio?","answer":"Prima di selezionare, sotto Proprietà: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con CORRISPROP. Una scala così piccola che il modello richiederebbe troppe linee mostra «La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.» e non crea nessun tratteggio."},{"question":"Come si trova l'area di un tratteggio?","answer":"Selezionalo e leggi Area sotto Geometria nella tavolozza Proprietà, con le sue isole escluse; con più tratteggi selezionati, Area cumulativa li somma. Oppure avvia AREA, scegli Oggetto e seleziona il tratteggio."}]
 ---
 
 TRATTEGGIO (HATCH in inglese) riempie un'area chiusa con un modello di linee, oppure pieno. Seleziona un punto all'interno dell'area e trova il contorno negli oggetti attorno, lasciando libero ciò che sta all'interno come un'isola, un cerchio in un rettangolo, un testo; oppure seleziona gli oggetti che la delimitano. Seleziona quante aree vuoi: Invio, o Esc, ne fa un solo tratteggio, sul layer corrente, dietro il suo contorno. L'intero comando è un solo passo che Annulla ripristina.
@@ -26,17 +26,17 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Proprietà` (`P`) [#properties]
 
-Chiede il nome del modello, in maiuscolo o minuscolo, proponendo quello corrente: `Solido` riempie l'area, e `?` elenca i modelli con le loro descrizioni, poi torna al punto. Per un modello chiede poi la scala, un numero maggiore di 0 o due punti misurati, e l'angolo, digitato o con due punti. Il tratteggio successivo mantiene tutti e tre.
+Chiede il nome del modello, in maiuscole o minuscole, proponendo quello corrente: `Solido` riempie l'area, e `?` elenca i modelli con le loro descrizioni, poi torna al punto. Per un modello chiede poi la scala, un numero maggiore di 0 o due punti misurati, e l'angolo, digitato o con due punti. Il tratteggio successivo mantiene tutti e tre.
 
 <Session name="hatchPatterns" caption="SOLID e undici modelli di acadiso.pat, ciascuno tratteggiato in un quadrato di 30 di lato a scala 1, AR-CONC e AR-SAND a 0,08 e 0,1." />
 
 ### `Seleziona oggetti` (`S`) [#select-objects]
 
-Al posto di un punto interno, seleziona gli oggetti che delimitano l'area; Invio torna al punto. Un oggetto che non chiude nessuna area viene lasciato fuori; quando nessuno ne delimita una, Invio dice `Impossibile tratteggiare il contorno.` e non crea nulla. Una regione dà il suo contorno, e i suoi fori come isole.
+Al posto di un punto interno, seleziona gli oggetti che delimitano l'area; Invio torna al punto. Un oggetto che non chiude nessuna area viene lasciato fuori; quando nessuno ne delimita una, Invio mostra `Impossibile tratteggiare il contorno.` e non crea nulla. Una regione dà il suo contorno, e i suoi fori come isole.
 
 ### `ANnulla` (`AN`) [#undo]
 
-Non elencata alla richiesta, ma accettata lì: annulla le aree dell'ultimo punto selezionato e chiede di nuovo, lasciando selezionati gli oggetti. Dice `Nessun contorno da annullare.` quando non resta nessun punto da annullare.
+Non elencata alla richiesta, ma accettata lì: annulla le aree dell'ultimo punto selezionato e chiede di nuovo, lasciando selezionati gli oggetti. Mostra `Nessun contorno da annullare.` quando non resta nessun punto da annullare.
 
 ## Cosa non fa ancora [#missing]
 
@@ -52,7 +52,7 @@ TRATTEGGIO, alias `PTR`, `RE` o `RETINO`, poi Invio o barra spaziatrice; l'alias
 
 ### Perché il tratteggio non funziona in AutoCAD?
 
-Per lo più perché l'area non è chiusa: dice `Non è stato trovato un contorno del tratteggio valido.`, e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono.
+Per lo più perché l'area non è chiusa: mostra `Non è stato trovato un contorno del tratteggio valido.`, e basta la più piccola fessura, perché nulla ne colma una. Chiudi il contorno e seleziona di nuovo. Un'area chiusa da un'ellisse o da una spline non viene ancora trovata, e gli oggetti su un layer disattivato non si vedono.
 
 ### Quali modelli di tratteggio esistono, e se ne possono scaricare altri?
 
@@ -60,7 +60,7 @@ Una selezione di acadiso.pat, il file dei modelli metrici di AutoCAD: SOLID, ANG
 
 ### Come si cambia la scala di un tratteggio?
 
-Prima di selezionare, sotto `Proprietà`: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con [`CORRISPROP`](/docs/commands/matchprop). Una scala così piccola che il modello richiederebbe troppe linee dice `La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.` e non crea nessun tratteggio.
+Prima di selezionare, sotto `Proprietà`: la scala viene dopo il nome del modello. Una volta creato, seleziona il tratteggio e riscrivi Scala nella tavolozza Proprietà, oppure dagli il modello, la scala e l'angolo di un altro tratteggio con [`CORRISPROP`](/docs/commands/matchprop). Una scala così piccola che il modello richiederebbe troppe linee mostra `La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.` e non crea nessun tratteggio.
 
 ### Come si trova l'area di un tratteggio?
 

@@ -7,13 +7,13 @@ sourceHash: "ddb8f2338e68"
 
 STILEVISCORRENTE (VSCURRENT) imposta lo stile visivo: come la vista disegna i solidi 3D. Chiede uno stile, proponendo quello corrente come valore predefinito, e Invio lo mantiene. <Keyword id="2dwireframe" /> disegna ogni spigolo, anche quelli dietro; <Keyword id="Hidden" /> nasconde ciò che le facce nascondono; <Keyword id="Conceptual" /> dipinge le facce, ombreggiate. Lo stile appartiene alla vista e viene salvato con il disegno, e ogni esecuzione è un solo passo di annullamento. Non si può usare all'interno di un altro comando.
 
-Ciò che non è un solido, linee, cerchi, regioni, testo, viene disegnato come in Wireframe 2D qualunque sia lo stile, nei propri colori. In Nascosto e Concettuale un clic prende il solido la cui faccia è più vicina a te sotto il cursore, mai uno attraverso una faccia che lo nasconde, e gli snap a oggetto trovano ancora ogni spigolo. Un solido su un layer bloccato disegna i suoi spigoli più tenui. Il 3D di MellowCAD è solo solidi, e ancora parziale.
+Ciò che non è un solido, linee, cerchi, regioni, testo, viene disegnato come in Wireframe 2D qualunque sia lo stile, nei propri colori. In Nascosto e Concettuale un clic prende il solido la cui faccia è più vicina al punto di vista sotto il cursore, mai uno attraverso una faccia che lo nasconde, e gli snap a oggetto trovano ancora ogni spigolo. Un solido su un layer bloccato disegna i suoi spigoli più tenui. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
 
 ## Options
 
 ### 2dwireframe
 
-Ogni spigolo di ogni solido, anche quelli dietro, con le linee che mostrano le sue facce curve; il valore predefinito in un nuovo disegno. Tornando a esso da un altro stile, STILEVISCORRENTE dice <Message id="regeneratingModel" />.
+Ogni spigolo di ogni solido, anche quelli dietro, con le linee che mostrano le sue facce curve; il valore predefinito in un nuovo disegno. Tornandovi da un altro stile, STILEVISCORRENTE segnala <Message id="regeneratingModel" />.
 
 ### Hidden
 
@@ -25,17 +25,17 @@ Le facce verso di te dipinte nel colore dell'oggetto, che diventa blu freddo sul
 
 ## Missing
 
-Gli altri stili di AutoCAD, Wireframe, Realistico, Ombreggiato, Ombreggiato con spigoli, Scala di grigi, A mano libera e Raggi X, e dare il nome a uno stile o elencarli con `?`: il prompt elenca solo i tre stili realizzati, e rifiuta qualsiasi altra risposta.
+Gli altri stili di AutoCAD, Wireframe, Realistico, Ombreggiato, Ombreggiato con spigoli, Scala di grigi, A mano libera e Raggi X, e dare il nome a uno stile o elencarli con `?`: la richiesta elenca solo i tre stili disponibili, e rifiuta qualsiasi altra risposta.
 
 ## Questions
 
 ### Come si cambia lo stile visivo in AutoCAD?
 
-Esegui STILEVISCORRENTE (o `SVC`) e scegli lo stile: <Keyword id="Hidden" /> per nascondere gli spigoli dietro, <Keyword id="Conceptual" /> per ombreggiare le facce. Cambia solo la vista, non gli oggetti.
+Avvia STILEVISCORRENTE (o `SVC`) e scegli lo stile: <Keyword id="Hidden" /> per nascondere gli spigoli dietro, <Keyword id="Conceptual" /> per ombreggiare le facce. Cambia solo la vista, non gli oggetti.
 
 ### Come si torna a Wireframe 2D?
 
-Esegui STILEVISCORRENTE e scegli <Keyword id="2dwireframe" />, la sua lettera `2`.
+Avvia STILEVISCORRENTE e scegli <Keyword id="2dwireframe" />, la sua lettera `2`.
 
 ### Qual è la differenza tra Nascosto e Concettuale?
 

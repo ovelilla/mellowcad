@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"C'è una scorciatoia per CAPROP in AutoCAD?","answer":"Non ha alias: digita CAPROP, oppure _CHPROP in qualsiasi lingua di AutoCAD. Invio alla richiesta Comando lo ripete."},{"question":"Qual è la differenza tra CAPROP e PROPRIETA?","answer":"Cambiano le stesse proprietà. PROPRIETA le mostra in una tavolozza, con anche la geometria di ogni oggetto; CAPROP le chiede alla riga di comando, il che tiene le mani sulla tastiera."},{"question":"Come si cambia il colore degli oggetti dalla riga di comando?","answer":"Digita CAPROP, seleziona gli oggetti, premi Invio, scegli Colore e digita il colore, come 1 per il rosso. Premi di nuovo Invio per finire."},{"question":"Come si spostano più oggetti su un altro layer?","answer":"Esegui CAPROP, selezionali, scegli Layer e digita il nome del layer. Il layer deve esistere: crealo prima in LAYER."}]
 ---
 
-CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: le righe Generale della tavolozza Proprietà, chieste come richieste. Seleziona gli oggetti, o selezionali prima del comando, poi scegli una proprietà da cambiare; ne chiede una di nuovo dopo ciascuna, finché Invio termina. La richiesta di ogni proprietà offre il valore dell'insieme come predefinito, `vari` dove gli oggetti differiscono, e Invio lì lascia a ogni oggetto il suo. Ciò che imposti è applicato al termine del comando, quindi Esc lascia ogni oggetto com'era. Gli oggetti su un layer bloccato sono contati e lasciati fuori, ciascuno dicendo `L'oggetto è su un layer bloccato.`. L'intera esecuzione è un solo passo che `A` annulla.
+CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: le righe Generale della tavolozza Proprietà, chieste come richieste. Seleziona gli oggetti, o selezionali prima del comando, poi scegli una proprietà da cambiare; ne chiede una di nuovo dopo ciascuna, finché Invio termina. La richiesta di ogni proprietà propone il valore dell'insieme come predefinito, `vari` dove gli oggetti differiscono, e Invio lì lascia a ogni oggetto il suo. Ciò che imposti è applicato al termine del comando, quindi Esc lascia ogni oggetto com'era. Gli oggetti su un layer bloccato sono contati e lasciati fuori, ciascuno mostrando `L'oggetto è su un layer bloccato.`. L'intera esecuzione è un solo passo che `A` annulla.
 
 - **Comando:** `CAPROP`
 - **In inglese:** `CHPROP`, digitato `_CHPROP` in ogni lingua
@@ -23,15 +23,15 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Colore` (`C`) [#color]
 
-Un numero di colore da 1 a 255, un nome come `red`, `BYLAYER`, o `Truecolor` e il suo `Red,Green,Blue`, come li prende [`COLORE`](/docs/commands/color); ciò che COLORE rifiuta è rifiutato anche qui e richiesto di nuovo.
+Un numero di colore da 1 a 255, un nome come `red`, `BYLAYER`, o `Truecolor` e il suo `Red,Green,Blue`, come li accetta [`COLORE`](/docs/commands/color); ciò che COLORE rifiuta è rifiutato anche qui e richiesto di nuovo.
 
 ### `Layer` (`L`) [#layer]
 
-Il nome di un layer, in qualsiasi maiuscolo o minuscolo. Un nome che non può essere quello di un layer dice `Il nome layer non è valido.`, uno che non è nel disegno dice che non si trova; entrambi chiedono di nuovo. CAPROP non crea layer.
+Il nome di un layer, senza distinzione tra maiuscole e minuscole. Un nome che non può essere quello di un layer mostra `Il nome layer non è valido.`, uno che non è nel disegno dice che non si trova; entrambi chiedono di nuovo. CAPROP non crea layer.
 
 ### `Tipolinea` (`T`) [#ltype]
 
-Il nome di un tipo di linea, in qualsiasi maiuscolo o minuscolo, oppure `ByLayer`. Ogni tipo di linea qui è caricato; un altro nome dice che non si trova e torna alla richiesta della proprietà.
+Il nome di un tipo di linea, senza distinzione tra maiuscole e minuscole, oppure `ByLayer`. Ogni tipo di linea qui è caricato; un altro nome dice che non si trova e torna alla richiesta della proprietà.
 
 ### `SPesslin` (`SP`) [#lweight]
 

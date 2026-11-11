@@ -3,10 +3,10 @@ title: "Comando DIMCONTINUA (DIMCONTINUE) in AutoCAD"
 description: "Come DIMCONTINUA (DIMCONTINUE, alias DCO) di AutoCAD concatena le quote una dopo l'altra dall'ultima: origini, Seleziona, Annulla. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è la scorciatoia di DIMCONTINUA in AutoCAD?","answer":"DCO, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _DIMCONTINUE in tutte le lingue di AutoCAD."},{"question":"Qual è la differenza tra DIMCONTINUA e DIMLBASE?","answer":"DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. DIMLBASE le misura tutte dalla stessa linea di estensione, ciascuna su una linea più in fuori."},{"question":"Come si continua da una quota che non è l'ultima?","answer":"Premi Invio alla prima richiesta, oppure scegli Selezionare, e seleziona la quota vicino alla linea di estensione da cui proseguire: la catena cresce da lì."},{"question":"Perché DIMCONTINUA mi chiede di selezionare una quota?","answer":"Non ha una quota da continuare: nessuna lineare o allineata è stata creata da quando il disegno è stato aperto, come in AutoCAD dopo averne aperto uno, oppure l'ultima creata è angolare. Seleziona quella da cui continuare."}]
+faq: [{"question":"Qual è la scorciatoia di DIMCONTINUA in AutoCAD?","answer":"DCO, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _DIMCONTINUE in tutte le lingue di AutoCAD."},{"question":"Qual è la differenza tra DIMCONTINUA e DIMLBASE?","answer":"DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. DIMLBASE le misura tutte dalla stessa linea di estensione, ciascuna su una linea più all'esterno."},{"question":"Come si continua da una quota che non è l'ultima?","answer":"Premi Invio alla prima richiesta, oppure scegli Selezionare, e seleziona la quota vicino alla linea di estensione da cui proseguire: la catena cresce da lì."},{"question":"Perché DIMCONTINUA mi chiede di selezionare una quota?","answer":"Non ha una quota da continuare: nessuna lineare o allineata è stata creata da quando il disegno è stato aperto, come in AutoCAD dopo averne aperto uno, oppure l'ultima creata è angolare. Seleziona quella da cui continuare."}]
 ---
 
-DIMCONTINUA disegna una catena di quote una dopo l'altra: ognuna parte dalla seconda linea di estensione della precedente e misura fino al punto successivo che dai, sulla stessa linea di quota. Continua l'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue [`DIMLINEARE`](/docs/commands/dimlinear) o [`DIMALLINEATA`](/docs/commands/dimaligned); se non ce n'è, chiede quale continuare. La riga di comando dice ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie `Selezionare`, e Invio lì termina il comando, come fa Esc.
+DIMCONTINUA disegna una catena di quote una dopo l'altra: ognuna parte dalla seconda linea di estensione della precedente e misura fino al punto successivo che dai, sulla stessa linea di quota. Continua l'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue [`DIMLINEARE`](/docs/commands/dimlinear) o [`DIMALLINEATA`](/docs/commands/dimaligned); se non ce n'è, chiede quale continuare. La riga di comando indica ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie `Selezionare`, e Invio lì termina il comando, come fa Esc.
 
 Come in AutoCAD, ogni nuova quota misura lungo la direzione della sua base, e prende lo stile di quota e il layer della base, con il colore, il tipo di linea e lo spessore di linea correnti.
 
@@ -46,7 +46,7 @@ Una quota non è associativa: una catena non segue gli oggetti che misura. Una q
 
 ### Qual è la differenza tra DIMCONTINUA e DIMLBASE?
 
-DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. [`DIMLBASE`](/docs/commands/dimbaseline) le misura tutte dalla stessa linea di estensione, ciascuna su una linea più in fuori.
+DIMCONTINUA mette le quote una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima. [`DIMLBASE`](/docs/commands/dimbaseline) le misura tutte dalla stessa linea di estensione, ciascuna su una linea più all'esterno.
 
 ### Come si continua da una quota che non è l'ultima?
 

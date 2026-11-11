@@ -11,7 +11,7 @@ ESTENDI (EXTEND in inglese) allunga un oggetto finché incontra un altro: lo sel
 
 ### Boundary
 
-Sceglie quali oggetti fanno da contorno: selezionali, oppure premi Invio per prenderli tutti. Da quel momento fanno da contorno solo quelli, qualunque sia la modalità, fino alla fine del comando.
+Sceglie quali oggetti fanno da contorno: selezionali, oppure premi Invio per sceglierli tutti. Da quel momento fanno da contorno solo quelli, qualunque sia la modalità, fino alla fine del comando.
 
 ### Fence
 
@@ -23,7 +23,7 @@ Chiede i due angoli di una finestra: ogni oggetto che il suo contorno attraversa
 
 ### mOde
 
-Passa da <Keyword id="Quick" /> a <Keyword id="Standard" />. In modalità Standard ESTENDI chiede prima i bordi di contorno (Invio li prende tutti) ed elenca Fence ed Edge. La modalità è sia di ESTENDI sia di TAGLIA e dura per la sessione.
+Passa da <Keyword id="Quick" /> a <Keyword id="Standard" />. In modalità Standard ESTENDI chiede prima i bordi di contorno (Invio li sceglie tutti) ed elenca Fence ed Edge. La modalità è sia di ESTENDI sia di TAGLIA e dura per la sessione.
 
 ### Edge
 
@@ -35,7 +35,7 @@ Elencata una volta che la richiesta ha avuto una risposta, una selezione, una li
 
 ## Missing
 
-Project: l'opzione di proiezione di AutoCAD (None, Ucs, View) non è offerta e tutto è calcolato proiettato sul piano XY dell'UCS, che è il valore predefinito di AutoCAD, Ucs. Una linea di selezione non si può ancora trascinare con il cursore, solo indicare punto per punto. La modalità e la scelta di Edge durano per la sessione, mentre AutoCAD le conserva da una sessione all'altra. Un oggetto inclinato rispetto all'UCS, a parte una spline, non fa da contorno e non viene esteso, e una polilinea levigata da <Keyword command="PEDIT" id="Fit" /> di <Command id="PEDIT" /> viene rifiutata, dove AutoCAD fa crescere il suo ultimo arco.
+Project: l'opzione di proiezione di AutoCAD (None, Ucs, View) non è disponibile e tutto è calcolato proiettato sul piano XY dell'UCS, che è il valore predefinito di AutoCAD, Ucs. Una linea di selezione non si può ancora trascinare con il cursore, solo indicare punto per punto. La modalità e la scelta di Edge durano per la sessione, mentre AutoCAD le conserva da una sessione all'altra. Un oggetto inclinato rispetto all'UCS, a parte una spline, non fa da contorno e non viene esteso, e una polilinea levigata da <Keyword command="PEDIT" id="Fit" /> di <Command id="PEDIT" /> viene rifiutata, dove AutoCAD fa crescere il suo ultimo arco.
 
 ## Questions
 
@@ -45,7 +45,7 @@ ESTENDI, alias `ES`, poi Invio o barra spaziatrice; l'alias inglese `EX` in Auto
 
 ### Perché ESTENDI dice che non c'è nessun bordo?
 
-Perché nulla si trova lungo il cammino che quell'estremità seguirebbe. Una linea dice <Message id="noEdgeInThatDirection" /> quando la sua altra estremità raggiungerebbe un bordo, e una linea o un arco <Message id="pathDoesNotIntersectBoundingEdge" /> altrimenti; una polilinea o una spline dice <Message id="objectDoesNotIntersectEdge" />. Seleziona più vicino all'altra estremità, oppure in modalità Standard scegli <Keyword id="Edge" /> ed <Keyword id="Extend" /> perché un contorno che non arriva conti come se proseguisse. Un cerchio, una polilinea chiusa, un'ellisse intera, un testo o un tratteggio non si possono estendere affatto: <Message id="cannotExtendObject" />
+Perché nulla si trova lungo il cammino che quell'estremità seguirebbe. Una linea mostra <Message id="noEdgeInThatDirection" /> quando la sua altra estremità raggiungerebbe un bordo, e una linea o un arco <Message id="pathDoesNotIntersectBoundingEdge" /> altrimenti; una polilinea o una spline mostra <Message id="objectDoesNotIntersectEdge" />. Seleziona più vicino all'altra estremità, oppure in modalità Standard scegli <Keyword id="Edge" /> ed <Keyword id="Extend" /> perché un contorno che non arriva conti come se proseguisse. Un cerchio, una polilinea chiusa, un'ellisse intera, un testo o un tratteggio non si possono estendere affatto: <Message id="cannotExtendObject" />
 
 ### Come si estendono più linee insieme?
 

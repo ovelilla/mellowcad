@@ -3,12 +3,12 @@ title: "Comando TRANCIA (SLICE) in AutoCAD"
 description: "Come funziona TRANCIA (SLICE, alias TC) di AutoCAD: i solidi, un piano da due punti, 3punti, un oggetto o l'UCS, poi il lato da conservare. Provalo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di TRANCIA in AutoCAD?","answer":"TC, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _SLICE in qualsiasi lingua di AutoCAD."},{"question":"Come si usa TRANCIA nel 3D di AutoCAD?","answer":"Seleziona il solido e premi Invio. Indica due punti per cui passa il taglio: il piano sta in verticale per essi. Poi indica un punto dal lato da conservare, oppure premi Invio per conservare entrambe le metà e spostarne una con SPOSTA. Per un taglio inclinato, scegli 3punti e indica tre punti su di esso."},{"question":"TRANCIA può tagliare linee o oggetti 2D?","answer":"No: TRANCIA taglia solidi 3D e ignora linee, regioni e blocchi; un insieme composto solo da essi termina il comando. Per tagliare oggetti 2D usa TAGLIA o SPEZZA. In AutoCAD TRANCIA taglia anche superfici e mesh, che MellowCAD non ha ancora."},{"question":"Perché TRANCIA dice che il piano di taglio non interseca il solido?","answer":"Perché il piano lo manca, o lo tocca solo in una faccia, lungo uno spigolo o in un vertice: quel solido resta intero. Controlla come è stato indicato il piano. Con due punti sta in verticale, quindi due punti sulla faccia superiore di un solido lo tagliano in verticale, non in orizzontale; per un taglio orizzontale scegli XY e indica un punto all'altezza del taglio."}]
+faq: [{"question":"Qual è l'alias di TRANCIA in AutoCAD?","answer":"TC, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _SLICE in qualsiasi lingua di AutoCAD."},{"question":"Come si usa TRANCIA nel 3D di AutoCAD?","answer":"Seleziona il solido e premi Invio. Indica due punti per cui passa il taglio: il piano è verticale e passa per essi. Poi indica un punto dal lato da conservare, oppure premi Invio per conservare entrambe le metà e spostarne una con SPOSTA. Per un taglio inclinato, scegli 3punti e indica tre punti su di esso."},{"question":"TRANCIA può tagliare linee o oggetti 2D?","answer":"No: TRANCIA taglia solidi 3D e ignora linee, regioni e blocchi; un insieme composto solo da essi termina il comando. Per tagliare oggetti 2D usa TAGLIA o SPEZZA. In AutoCAD TRANCIA taglia anche superfici e mesh, che MellowCAD non ha ancora."},{"question":"Perché TRANCIA segnala che il piano di taglio non interseca il solido?","answer":"Perché il piano lo manca, o lo tocca solo in una faccia, lungo uno spigolo o in un vertice: quel solido resta intero. Controlla come è stato indicato il piano. Con due punti sta in verticale, quindi due punti sulla faccia superiore di un solido lo tagliano in verticale, non in orizzontale; per un taglio orizzontale scegli XY e indica un punto all'altezza del taglio."}]
 ---
 
-TRANCIA (SLICE) taglia solidi 3D con un piano e conserva la parte da un lato, o entrambe le parti come due solidi. Chiede i solidi da tagliare, fino a Invio: come in AutoCAD 2027, un insieme selezionato prima viene scartato e chiesto di nuovo, e ciò che non è un solido viene ignorato. Poi il piano: per impostazione predefinita indichi due punti, e il piano sta in verticale per essi, perpendicolare al piano XY dell'UCS; le opzioni lo indicano in un altro modo. Infine un punto dal lato da conservare, oppure Invio per conservarli entrambi.
+TRANCIA (SLICE) taglia solidi 3D con un piano e conserva la parte da un lato, o entrambe le parti come due solidi. Chiede i solidi da tagliare, fino a Invio: come in AutoCAD 2027, un insieme selezionato prima viene scartato e chiesto di nuovo, e ciò che non è un solido viene ignorato. Poi il piano: per impostazione predefinita indichi due punti, e il piano è verticale e passa per essi, perpendicolare al piano XY dell'UCS; le opzioni lo definiscono in un altro modo. Infine un punto dal lato da conservare, oppure Invio per conservarli entrambi.
 
-Ogni solido dell'insieme viene tagliato dallo stesso piano. Uno che il piano non incontra, o tocca solo in una faccia, lungo uno spigolo o in un vertice, resta com'era, e TRANCIA lo dice. Un solido tagliato non è più un parallelepipedo o un cilindro e non ha cronologia. L'intero comando è un solo passo di annullamento. Il 3D di MellowCAD è ancora parziale: i solidi ci sono, le superfici e le mesh no.
+Ogni solido dell'insieme viene tagliato dallo stesso piano. Uno che il piano non incontra, o tocca solo in una faccia, lungo uno spigolo o in un vertice, resta com'era, e TRANCIA lo segnala. Un solido tagliato non è più un parallelepipedo o un cilindro e non ha cronologia. L'intero comando è un solo passaggio di annullamento. Il 3D di MellowCAD è ancora parziale: i solidi ci sono, le superfici e le mesh no.
 
 - **Comando:** `TRANCIA`
 - **In inglese:** `SLICE`, digitato `_SLICE` in ogni lingua
@@ -26,11 +26,11 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `Oggetto piano` (`O`) [#object]
 
-Prende il piano di un oggetto che indichi: un cerchio, un'ellisse, un arco, una polilinea 2D o una spline piana, anche un cerchio inclinato. Una linea, o il solido stesso, non ha un piano proprio: dice `Impossibile estrarre il piano dell'oggetto selezionato.` e chiede di nuovo. Invio termina il comando.
+Prende il piano di un oggetto che indichi: un cerchio, un'ellisse, un arco, una polilinea 2D o una spline piana, anche un cerchio inclinato. Una linea, o il solido stesso, non ha un piano proprio: segnala `Impossibile estrarre il piano dell'oggetto selezionato.` e chiede di nuovo. Invio termina il comando.
 
 ### `Superficie` (`S`) [#surface]
 
-Chiede una superficie lungo cui tagliare. MellowCAD non ha ancora superfici, quindi una selezione dice `Nessuna superficie selezionata.`, e Invio termina il comando.
+Chiede una superficie lungo cui tagliare. MellowCAD non ha ancora superfici, quindi una selezione segnala `Nessuna superficie selezionata.`, e Invio termina il comando.
 
 ### `asseZ` (`Z`) [#zaxis]
 
@@ -54,15 +54,15 @@ Il piano ZX dell'UCS, passante per un punto che indichi; Invio prende l'origine 
 
 ### `3punti` (`3`) [#3points]
 
-Tre punti sul piano, che può allora inclinarsi in qualsiasi modo. È il valore predefinito del primo prompt, quindi Invio lo sceglie. Il secondo punto deve essere diverso dal primo, e il terzo non deve stare sulla linea che li unisce.
+Tre punti sul piano, che può quindi avere qualsiasi inclinazione. È il valore predefinito della prima richiesta, quindi Invio lo sceglie. Il secondo punto deve essere diverso dal primo, e il terzo non deve stare sulla linea che li unisce.
 
 ### `mantieni Entrambi i lati` (`E`) [#both]
 
-Al prompt del lato, e il suo valore predefinito, quindi Invio lo sceglie: entrambe le parti vengono conservate. Il solido ne conserva una e l'altra diventa un nuovo solido con lo stesso layer, colore, tipo di linea e spessore di linea, non quelli correnti. Un punto invece conserva il lato su cui si trova e scarta l'altro; un punto sul piano viene rifiutato.
+Alla richiesta del lato, di cui è il valore predefinito, quindi Invio lo sceglie: entrambe le parti vengono conservate. Il solido ne conserva una e l'altra diventa un nuovo solido con lo stesso layer, colore, tipo di linea e spessore di linea, non quelli correnti. Un punto invece conserva il lato su cui si trova e scarta l'altro; un punto sul piano viene rifiutato.
 
 ## Cosa non fa ancora [#missing]
 
-Superfici, come piano di taglio e come oggetti da tagliare, e mesh. Una polilinea 3D piana come oggetto del piano, che AutoCAD accetta. Un toro o un solido di rivoluzione tagliato né perpendicolarmente al suo asse né lungo di esso, e gli altri tagli per i quali MellowCAD non ha ancora una forma esatta, che dicono che un'operazione booleana è fallita.
+Superfici, come piano di taglio e come oggetti da tagliare, e mesh. Una polilinea 3D piana come oggetto del piano, che AutoCAD accetta. Un toro o un solido di rivoluzione tagliato né perpendicolarmente al suo asse né lungo di esso, e gli altri tagli per i quali MellowCAD non ha ancora una forma esatta, che segnalano il fallimento di un'operazione booleana.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#slice--sl--es-corte--co--pt-br-fatiar--fat--fr-section--se--it-trancia--tc)
 
@@ -74,13 +74,13 @@ Superfici, come piano di taglio e come oggetti da tagliare, e mesh. Una poliline
 
 ### Come si usa TRANCIA nel 3D di AutoCAD?
 
-Seleziona il solido e premi Invio. Indica due punti per cui passa il taglio: il piano sta in verticale per essi. Poi indica un punto dal lato da conservare, oppure premi Invio per conservare entrambe le metà e spostarne una con [`SPOSTA`](/docs/commands/move). Per un taglio inclinato, scegli `3punti` e indica tre punti su di esso.
+Seleziona il solido e premi Invio. Indica due punti per cui passa il taglio: il piano è verticale e passa per essi. Poi indica un punto dal lato da conservare, oppure premi Invio per conservare entrambe le metà e spostarne una con [`SPOSTA`](/docs/commands/move). Per un taglio inclinato, scegli `3punti` e indica tre punti su di esso.
 
 ### TRANCIA può tagliare linee o oggetti 2D?
 
 No: TRANCIA taglia solidi 3D e ignora linee, regioni e blocchi; un insieme composto solo da essi termina il comando. Per tagliare oggetti 2D usa [`TAGLIA`](/docs/commands/trim) o [`SPEZZA`](/docs/commands/break). In AutoCAD TRANCIA taglia anche superfici e mesh, che MellowCAD non ha ancora.
 
-### Perché TRANCIA dice che il piano di taglio non interseca il solido?
+### Perché TRANCIA segnala che il piano di taglio non interseca il solido?
 
 Perché il piano lo manca, o lo tocca solo in una faccia, lungo uno spigolo o in un vertice: quel solido resta intero. Controlla come è stato indicato il piano. Con due punti sta in verticale, quindi due punti sulla faccia superiore di un solido lo tagliano in verticale, non in orizzontale; per un taglio orizzontale scegli `XY` e indica un punto all'altezza del taglio.
 

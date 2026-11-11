@@ -6,13 +6,13 @@ figure: "La stessa piastra dopo SCALATL 20: i tratti del foro e degli assi diseg
 sourceHash: "f951ec391451"
 ---
 
-SCALATL (LTSCALE in inglese) imposta il fattore di scala globale dei tipi di linea: quanto sono lunghi i tratti e gli spazi di ogni tipo di linea tratteggiato nel disegno. Chiede il nuovo fattore, proponendo quello corrente, 1,0000 in un nuovo disegno: 2 rende ogni tratto lungo il doppio, 0,5 la metà. Il fattore deve essere maggiore di 0, altrimenti dice <Message id="positiveNonzero" /> e chiede di nuovo, e `1/2` e `1e3` vengono letti come numeri. Una modifica rigenera tutto il disegno, `Rigenerazione modello in corso.` come lo dice AutoCAD 2027, e viene salvata con il disegno; è un passo che <Command id="U" /> annulla. Digitato con un apostrofo dentro un comando, `'SCALATL`, il disegno viene rigenerato quando quel comando termina.
+SCALATL (LTSCALE in inglese) imposta il fattore di scala globale dei tipi di linea: quanto sono lunghi i tratti e gli spazi di ogni tipo di linea tratteggiato nel disegno. Chiede il nuovo fattore, proponendo quello corrente, 1,0000 in un nuovo disegno: 2 rende ogni tratto lungo il doppio, 0,5 la metà. Il fattore deve essere maggiore di 0, altrimenti segnala <Message id="positiveNonzero" /> e chiede di nuovo, e `1/2` e `1e3` vengono letti come numeri. Una modifica rigenera tutto il disegno, `Rigenerazione modello in corso.` come la scrive AutoCAD 2027, e viene salvata con il disegno; è un passaggio che <Command id="U" /> annulla. Digitato con un apostrofo dentro un comando, `'SCALATL`, il disegno viene rigenerato quando quel comando termina.
 
 I tipi di linea sono modelli pensati per un disegno della dimensione del foglio: in un disegno largo 4 metri, in millimetri, il modello di CENTER, lungo circa 51 unità, si ripete un'ottantina di volte, troppo fitto per vedersi, e una linea più corta di un modello viene disegnata continua. La scala da usare è di solito quella del disegno stesso: 20 per un disegno da leggere in 1:20, 50 in 1:50.
 
 ## Missing
 
-Una scala del tipo di linea per ogni oggetto (CELTSCALE, Scala tipo di linea della tavolozza Proprietà): solo quella del disegno. Il Gestione tipo di linea, il cui Fattore di scala globale è SCALATL. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. Tipi di linea diversi da Continuous, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT.
+Una scala del tipo di linea per ogni oggetto (CELTSCALE, Scala tipo di linea della tavolozza Proprietà): solo quella del disegno. La finestra Gestione tipo di linea, il cui Fattore di scala globale è SCALATL. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. Tipi di linea diversi da Continuous, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT.
 
 ## Questions
 
@@ -30,4 +30,4 @@ La scala del disegno: in un disegno in millimetri da leggere in 1:50, `50`. Per 
 
 ### Qual è la differenza tra SCALATL e il tipo di linea stesso?
 
-Il tipo di linea, impostato con <Command id="LINETYPE" /> o con il layer, è il modello: tratti, punti e spazi. SCALATL è quanto è lungo quel modello disegnato, lo stesso fattore per ogni oggetto del disegno.
+Il tipo di linea, impostato con <Command id="LINETYPE" /> o con il layer, è il modello: tratti, punti e spazi. SCALATL è quanto viene disegnato lungo quel modello, lo stesso fattore per ogni oggetto del disegno.

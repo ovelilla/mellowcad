@@ -5,7 +5,7 @@ figure: "Due scrivanie i cui codici pezzo sono attributi invisibili: VISATT ON l
 sourceHash: "8821fdeb2077"
 ---
 
-VISATT imposta quali attributi mostrano i riferimenti a blocco nel disegno. Chiede l'impostazione, offrendo quella corrente, Normale in un nuovo disegno; ogni altra parola dice che la parola chiave non è valida e chiede di nuovo, e Invio la conserva. Una modifica rigenera tutto il disegno, `Regenerating model.` come lo dice AutoCAD 2027, ed è salvata nel disegno come ATTMODE, un passo che <Command id="U" /> annulla. Digitato con un apostrofo dentro un comando, funziona anche lì.
+VISATT imposta quali attributi mostrano i riferimenti di blocco nel disegno. Chiede l'impostazione, proponendo quella corrente, Normale in un nuovo disegno; ogni altra parola segnala che la parola chiave non è valida e chiede di nuovo, e Invio la conserva. Una modifica rigenera tutto il disegno, `Rigenerazione modello in corso.` come la scrive AutoCAD 2027, ed è salvata nel disegno come ATTMODE, un passo che <Command id="U" /> annulla. Digitato con un apostrofo dentro un comando, funziona anche lì.
 
 Cambia solo ciò che si vede: un attributo invisibile conserva il suo valore, e uno nascosto si può ancora modificare con <Command id="ATTEDIT" /> o <Command id="EATTEDIT" />.
 

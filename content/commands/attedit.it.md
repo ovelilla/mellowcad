@@ -1,13 +1,13 @@
 ---
 title: "Comando EDITATT (ATTEDIT) in AutoCAD"
-description: "Come funziona EDITATT (ATTEDIT, alias EA) di AutoCAD in italiano: cambiare i valori degli attributi di un riferimento a blocco, un campo per riga. Provalo."
+description: "Come funziona EDITATT (ATTEDIT, alias EA) di AutoCAD in italiano: cambiare i valori degli attributi di un riferimento di blocco, un campo per riga. Provalo."
 figure: "Tre cartellini di porta, riferimenti a un blocco con l'attributo NUM: EDITATT sceglie l'ultimo, inserito come 2, e la sua finestra lo porta a 3."
 sourceHash: "4a8ee28ecc53"
 ---
 
-EDITATT cambia i valori degli attributi di un riferimento a blocco. Chiede di selezionare il riferimento, poi apre una finestra con un campo per ciascuno dei suoi attributi, etichettato con la richiesta dell'attributo e riempito con il suo valore, come la finestra Modifica attributi di AutoCAD. Riscrivi i valori, con Tab che passa da un campo al successivo, e Invio, l'OK di AutoCAD, li applica in un solo passo che <Command id="U" /> annulla; Esc, il suo Annulla, non cambia nulla.
+EDITATT cambia i valori degli attributi di un riferimento di blocco. Chiede di selezionare il riferimento, poi apre una finestra con un campo per ciascuno dei suoi attributi, etichettato con la richiesta dell'attributo e riempito con il suo valore, come la finestra Modifica attributi di AutoCAD. Riscrivi i valori, con Tab che passa da un campo al successivo, e Invio, l'OK di AutoCAD, li applica in un solo passo che <Command id="U" /> annulla; Esc, il suo Annulla, non cambia nulla.
 
-La selezione prende l'oggetto sotto il riquadro. Tutto ciò che non è un riferimento a blocco è rifiutato, e lo è anche un riferimento il cui blocco non ha attributi, e la domanda si ripete; una selezione sul vuoto chiede di nuovo in silenzio. La definizione del blocco non cambia, né i suoi altri riferimenti: ciascuno contiene valori propri. <Command id="EATTEDIT" /> modifica gli stessi valori in una finestra etichettata con l'etichetta, e un doppio clic su un riferimento con attributi lo esegue.
+La selezione prende l'oggetto sotto il riquadro. Tutto ciò che non è un riferimento di blocco è rifiutato, e lo è anche un riferimento il cui blocco non ha attributi, e la domanda si ripete; una selezione sul vuoto chiede di nuovo in silenzio. La definizione del blocco non cambia, né i suoi altri riferimenti: ciascuno contiene valori propri. <Command id="EATTEDIT" /> modifica gli stessi valori in una finestra etichettata con l'etichetta, e un doppio clic su un riferimento con attributi lo esegue.
 
 ## Missing
 

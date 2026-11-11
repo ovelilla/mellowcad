@@ -11,11 +11,11 @@ LINEA (LINE in inglese) disegna segmenti rettilinei, ciascuno un oggetto a sé: 
 
 ### Undo
 
-Annulla l'ultimo segmento e chiede di nuovo dal punto precedente. Senza più segmenti, dice <Message id="allLineSegmentsUndone" /> e chiede di nuovo il primo punto.
+Annulla l'ultimo segmento e chiede di nuovo dal punto precedente. Senza più segmenti, mostra <Message id="allLineSegmentsUndone" /> e chiede di nuovo il primo punto.
 
 ### Close
 
-Offerta dal secondo segmento in poi: disegna l'ultimo segmento fino al primo punto e termina il comando, chiudendo la forma.
+Disponibile dal secondo segmento in poi: disegna l'ultimo segmento fino al primo punto e termina il comando, chiudendo la forma.
 
 ## Missing
 
@@ -33,7 +33,7 @@ Indica il primo punto, poi digita il successivo come lunghezza e angolo: `@100<3
 
 ### Come si prosegue dall'ultima linea disegnata?
 
-Avvia LINEA e premi Invio al primo punto: parte dalla fine dell'ultima linea, polilinea o arco. Da un arco, la linea prosegue tangente ad esso e LINEA chiede solo la sua lunghezza. Senza nulla da cui proseguire, dice <Message id="noLineOrArcToContinue" />.
+Avvia LINEA e premi Invio al primo punto: parte dalla fine dell'ultima linea, polilinea o arco. Da un arco, la linea prosegue tangente ad esso e LINEA chiede solo la sua lunghezza. Senza nulla da cui proseguire, mostra <Message id="noLineOrArcToContinue" />.
 
 ### Perché la mia linea è fatta di pezzi separati?
 

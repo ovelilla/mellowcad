@@ -5,17 +5,17 @@ figure: "Un cerchio spostato di 50 a destra: selezionato, il suo centro come pun
 sourceHash: "753ca38448bf"
 ---
 
-SPOSTA (MOVE in inglese) porta gli oggetti che selezioni da un posto a un altro: selezionali, indica un punto base, poi un secondo punto, e si spostano della distanza e nella direzione dal primo al secondo. Nient'altro cambia in essi. Come in AutoCAD, gli oggetti selezionati prima del comando sono quelli che sposta, un punto si può selezionare, agganciare o digitare, e mentre scegli il secondo punto l'insieme segue il cursore, con una linea dal punto base. Lo spostamento è un solo passo che Annulla ripristina.
+SPOSTA (MOVE in inglese) trasferisce gli oggetti che selezioni da un punto a un altro: selezionali, indica un punto base, poi un secondo punto, e si spostano della distanza e nella direzione dal primo al secondo. Non cambia nient'altro. Come in AutoCAD, gli oggetti selezionati prima del comando sono quelli che sposta, un punto si può indicare, agganciare o digitare, e mentre scegli il secondo punto l'insieme segue il cursore, con una linea dal punto base. Lo spostamento è un solo passaggio di annullamento.
 
 ## Options
 
 ### Displacement
 
-Scelto alla richiesta del punto base, o con Invio lì, il suo valore predefinito: chiede lo spostamento come vettore, `10,5` sposta di 10 lungo X e di 5 lungo Y, e il suo valore predefinito è l'ultimo usato da SPOSTA in quel disegno. Al secondo punto, Invio fa lo stesso con il punto base: le sue coordinate sono lo spostamento.
+Scelto alla richiesta del punto base, o premendo Invio lì, il suo valore predefinito: chiede lo spostamento come vettore, `10,5` sposta di 10 lungo X e di 5 lungo Y, e il suo valore predefinito è l'ultimo usato da SPOSTA in quel disegno. Al secondo punto, Invio fa lo stesso con il punto base: le sue coordinate sono lo spostamento.
 
 ## Missing
 
-Due modalità di selezione di AutoCAD alla richiesta degli oggetti, Gruppo e Multiplo, e la selezione di facce, spigoli o vertici di un solido con Ctrl per rimodellarlo. Mentre l'insieme segue il cursore ha il colore di ciascun oggetto, ma non il tipo di linea né lo spessore di linea, e gli oggetti di un riferimento di blocco hanno tutti il colore del riferimento.
+Due modalità di selezione di AutoCAD alla richiesta degli oggetti, Gruppo e Multiplo, e la selezione di facce, spigoli o vertici di un solido con Ctrl per rimodellarlo. Mentre l'insieme segue il cursore mostra il colore di ciascun oggetto, ma non il tipo di linea né lo spessore di linea, e gli oggetti di un riferimento di blocco hanno tutti il colore del riferimento.
 
 ## Questions
 
@@ -25,7 +25,7 @@ SPOSTA, alias `S`, poi Invio o barra spaziatrice; in AutoCAD in italiano `S` è 
 
 ### Come si sposta un oggetto di una distanza stabilita?
 
-Indica il punto base, poi digita lo spostamento come secondo punto: `50,0` sposta di 50 lungo X. Con l'input dinamico attivo, com'è all'avvio, un punto dopo il primo è relativo ad esso, quindi la cronologia lo scrive `@50,0`. Oppure punta il cursore nella direzione da seguire, con Orto o il puntamento polare, e digita solo la distanza.
+Indica il punto base, poi digita lo spostamento come secondo punto: `50,0` sposta di 50 lungo X. Con l'input dinamico attivo, com'è all'avvio, un punto dopo il primo è relativo al primo, quindi la cronologia lo scrive `@50,0`. Oppure punta il cursore nella direzione da seguire, con Orto o il puntamento polare, e digita solo la distanza.
 
 ### Come si spostano oggetti verso l'alto in 3D?
 

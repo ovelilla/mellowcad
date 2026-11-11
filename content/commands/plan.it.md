@@ -5,9 +5,9 @@ figure: "Il blocco a gradini visto da sud-ovest con il suo UCS ruotato di 30 gra
 sourceHash: "50d157803309"
 ---
 
-PIANA (PLAN in inglese) guarda dall'alto il piano XY di un UCS, con il suo asse X rivolto a destra: la vista in pianta, come l'hai disegnata. Chiede quale UCS, quello corrente, uno salvato o quello globale, e Invio prende quello corrente. Poi inquadra tutto il disegno e dice <Message id="regeneratingModel" />.
+PIANA (PLAN in inglese) guarda dall'alto il piano XY di un UCS, con il suo asse X rivolto a destra: la vista in pianta, come l'hai disegnata. Chiede quale UCS, quello corrente, uno salvato o quello globale, e Invio accetta quello corrente. Poi inquadra tutto il disegno e mostra <Message id="regeneratingModel" />.
 
-Nulla nel disegno si sposta, e l'UCS resta com'era: PIANA ruota solo la vista. È un solo passo di annullamento, quindi <Command id="U" /> riporta indietro la vista, e <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" /> torna alla vista prima. È la via per tornare alla pianta dopo <Command id="3DORBIT" /> o una <Command id="VIEW" /> assonometrica. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
+Nulla nel disegno si muove, e l'UCS resta com'era: PIANA ruota solo la vista. È un solo passaggio di annullamento, quindi <Command id="U" /> riporta indietro la vista, e <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" /> torna alla vista precedente. È il modo per tornare alla pianta dopo <Command id="3DORBIT" /> o una <Command id="VIEW" /> assonometrica. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
 
 ## Options
 
@@ -17,7 +17,7 @@ La pianta dell'UCS corrente, il valore predefinito. Dopo che <Command id="UCS" /
 
 ### Ucs
 
-La pianta di un UCS salvato con <Keyword command="UCS" id="NAmed" /> di <Command id="UCS" />, che digiti per nome. Per un nome che non è salvato dice che non riesce a trovare quell'UCS e chiede di nuovo; <Keyword id="?" /> elenca quelli salvati, come fa UCS, e chiede di nuovo anch'esso. L'UCS corrente non cambia.
+La pianta di un UCS salvato con <Keyword command="UCS" id="NAmed" /> di <Command id="UCS" />, che digiti per nome. Per un nome che non è salvato segnala che non trova quell'UCS e chiede di nuovo; <Keyword id="?" /> elenca quelli salvati, come fa UCS, e chiede di nuovo anch'esso. L'UCS corrente non cambia.
 
 ### World
 

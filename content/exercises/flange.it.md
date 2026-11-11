@@ -28,4 +28,4 @@ Sempre su Assi, due linee con <Command id="LINE" /> attraverso il centro, lunghe
 
 ### Quotala [#dimensions]
 
-Sul layer Quote, <Command id="DIMDIAMETER" /> sul foro, su un foro di fissaggio, sulla circonferenza di foratura e sul contorno, ciascuno selezionato dove nessuna quota lo attraversa ancora, poi <Command id="DIMLINEAR" /> sul lato superiore della cava: 16.
+Sul layer Quote, <Command id="DIMDIAMETER" /> sul foro, su un foro, sulla circonferenza di foratura e sul contorno, ciascuno selezionato dove nessuna quota lo attraversa ancora, poi <Command id="DIMLINEAR" /> sul lato superiore della cava: 16.

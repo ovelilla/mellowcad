@@ -5,13 +5,13 @@ figure: "Il lato inclinato di un triangolo quotato lungo la sua lunghezza: i suo
 sourceHash: "243f7657ed7d"
 ---
 
-DIMALLINEATA misura la distanza reale tra due punti: la sua linea di quota corre parallela alla linea che li unisce, con qualsiasi angolo, mentre <Command id="DIMLINEAR" /> misura solo lungo X o Y. Le sue richieste sono quelle di <Command id="DIMLINEAR" />: le origini della prima e della seconda linea di estensione, oppure Invio e una selezione su una linea, un arco o un segmento di polilinea per i suoi due estremi, poi la posizione della linea di quota, da una parte o dall'altra. Un cerchio selezionato dà il suo diametro attraverso il punto in cui lo hai selezionato. La riga di comando dice la misura, e il comando termina.
+DIMALLINEATA misura la distanza reale tra due punti: la sua linea di quota corre parallela alla linea che li unisce, con qualsiasi angolo, mentre <Command id="DIMLINEAR" /> misura solo lungo X o Y. Le sue richieste sono quelle di <Command id="DIMLINEAR" />: le origini della prima e della seconda linea di estensione, oppure Invio e una selezione su una linea, un arco o un segmento di polilinea per i suoi due estremi, poi la posizione della linea di quota, da una parte o dall'altra. Un cerchio selezionato dà il suo diametro passante per il punto in cui lo hai selezionato. La riga di comando dice la misura, e il comando termina.
 
 ## Options
 
 ### Text
 
-Chiede il testo da scrivere al posto della misura, che offre come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura.
+Chiede il testo da scrivere al posto della misura, che propone come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura.
 
 ### Angle
 

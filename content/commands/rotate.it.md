@@ -5,17 +5,17 @@ figure: "Un rettangolo ruotato di 30° attorno al suo angolo con Copia, l'origin
 sourceHash: "0e5ae021e108"
 ---
 
-RUOTA (ROTATE) ruota gli oggetti che selezioni attorno a un punto base: selezionali, indica il punto base, poi l'angolo, digitato o indicato come un punto la cui direzione dal punto base è l'angolo. La sua prima riga dice quale verso è positivo, antiorario per impostazione predefinita (ANGDIR), e dove si trova lo 0 (ANGBASE). Invio all'angolo ripete l'ultima rotazione, 0 in un nuovo disegno. Gli oggetti ruotano attorno a un asse parallelo allo Z dell'UCS passante per il punto base, quindi in 3D mantengono la loro altezza. La rotazione è un solo passo che Annulla ripristina.
+RUOTA (ROTATE) ruota gli oggetti che selezioni attorno a un punto base: selezionali, indica il punto base, poi l'angolo, digitato o indicato come un punto la cui direzione dal punto base è l'angolo. La sua prima riga indica quale verso è positivo, antiorario per impostazione predefinita (ANGDIR), e dove si trova lo 0 (ANGBASE). Invio all'angolo ripete l'ultima rotazione, 0 in un nuovo disegno. Gli oggetti ruotano attorno a un asse parallelo alla Z dell'UCS passante per il punto base, quindi in 3D mantengono la loro altezza. La rotazione è un solo passaggio di annullamento.
 
 ## Options
 
 ### Copy
 
-Ruota una copia e lascia gli oggetti dove erano, dicendo <Message id="rotatingCopy" />. Il prompt chiede poi di nuovo l'angolo.
+Ruota una copia e lascia gli oggetti dove erano, segnalando <Message id="rotatingCopy" />. Poi chiede di nuovo l'angolo.
 
 ### Reference
 
-Ruota da un angolo che hai a quello che vuoi: chiede l'angolo di riferimento (digitato, o due punti che lo misurano), poi il nuovo angolo, e ruota della differenza. Per mettere in piano uno spigolo inclinato, indica i suoi due estremi come riferimento e digita 0.
+Ruota da un angolo che hai a quello che vuoi: chiede l'angolo di riferimento (digitato, o due punti che lo misurano), poi il nuovo angolo, e ruota della differenza. Per rendere orizzontale uno spigolo inclinato, indica i suoi due estremi come riferimento e digita 0.
 
 ### Points
 
@@ -39,6 +39,6 @@ Scegli <Keyword id="Reference" />, indica due punti lungo lo spigolo dell'oggett
 
 Scegli <Keyword id="Copy" /> prima di indicare l'angolo: la copia ruota e l'originale resta.
 
-### Perché RUOTA gira dalla parte sbagliata?
+### Perché RUOTA ruota nel verso sbagliato?
 
-Un angolo positivo ruota in senso antiorario, come dice ANGDIR nella prima riga. Digita un angolo negativo, `-30`, per ruotare in senso orario.
+Un angolo positivo ruota in senso antiorario, come indica ANGDIR nella prima riga. Digita un angolo negativo, `-30`, per ruotare in senso orario.

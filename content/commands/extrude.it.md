@@ -5,7 +5,7 @@ figure: "Una polilinea chiusa a L estrusa di 20 in un solido, poi vista da sud-e
 sourceHash: "53bfe3dd1e9c"
 ---
 
-ESTRUDI (EXTRUDE in inglese) trasforma profili 2D chiusi in solidi 3D, ciascuno tirato dritto fuori dal suo piano dell'altezza che indichi. Seleziona i profili, cerchi, ellissi, polilinee o spline chiuse, regioni, e premi Invio, poi digita l'altezza o mostrala con un punto; l'ultima altezza è il valore predefinito della volta successiva. Ogni profilo diventa un solido a sé, sul layer corrente, e viene cancellato, come dice DELOBJ per impostazione predefinita. L'intero comando è un solo passo che Annulla ripristina.
+ESTRUDI (EXTRUDE in inglese) trasforma profili 2D chiusi in solidi 3D, ciascuno tirato dritto fuori dal suo piano per l'altezza che indichi. Seleziona i profili, cerchi, ellissi, polilinee o spline chiuse, regioni, e premi Invio, poi digita l'altezza o indicala con un punto; l'ultima altezza è il valore predefinito della volta successiva. Ogni profilo diventa un solido a sé, sul layer corrente, e viene cancellato, come stabilisce DELOBJ per impostazione predefinita. L'intero comando è un solo passo che Annulla ripristina.
 
 Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale: un profilo aperto, che AutoCAD trasforma in una superficie, riceve <Message id="sweepRefusedType" /> e viene tolto dalla selezione.
 
@@ -13,7 +13,7 @@ Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale: un profilo ap
 
 ### MOde
 
-Chiede <Keyword id="SOlid" /> o <Keyword id="SUrface" />. <Keyword id="SOlid" /> è il valore predefinito e l'unico che esiste: senza ancora oggetti superficie, <Keyword id="SUrface" /> viene rifiutato.
+Chiede <Keyword id="SOlid" /> o <Keyword id="SUrface" />. <Keyword id="SOlid" /> è il valore predefinito e l'unico che esiste: non esistendo ancora oggetti superficie, <Keyword id="SUrface" /> viene rifiutato.
 
 ### Direction
 
@@ -21,7 +21,7 @@ Al posto di un'altezza, due punti danno la direzione e la lunghezza: i profili v
 
 ### Path
 
-Elencata, come in AutoCAD, ma non realizzata: sceglierla viene rifiutato e l'altezza viene chiesta di nuovo.
+Elencata, come in AutoCAD, ma non realizzata: se la scegli, viene rifiutata e l'altezza viene chiesta di nuovo.
 
 ### Taper
 
@@ -33,7 +33,7 @@ L'altezza come espressione: `2*3` fa 6. Per ora solo aritmetica.
 
 ## Missing
 
-Path, lo sweep lungo una traiettoria. La modalità SUrface e i profili aperti, di cui AutoCAD fa superfici: non esistono ancora oggetti superficie. Le facce dei solidi e le aree che un clic trova dentro gli oggetti, che prende <Command id="PRESSPULL" />. Una rastremazione su un'ellisse, una spline o un arco che incontra il segmento successivo in uno spigolo. I parametri e le funzioni di Expression. <Command id="EXPLODE" /> di un solido estruso con lati curvi, che AutoCAD trasforma in superfici e regioni. I suoi grip, e la sua altezza e il suo angolo di rastremazione modificati nella tavolozza Proprietà.
+Path, lo sweep lungo una traiettoria. La modalità SUrface e i profili aperti, di cui AutoCAD fa superfici: non esistono ancora oggetti superficie. Le facce dei solidi e le aree che un clic trova dentro gli oggetti, di cui si occupa <Command id="PRESSPULL" />. Una rastremazione su un'ellisse, una spline o un arco che incontra il segmento successivo in uno spigolo. I parametri e le funzioni di Expression. <Command id="EXPLODE" /> di un solido estruso con lati curvi, che AutoCAD trasforma in superfici e regioni. I suoi grip, e la sua altezza e il suo angolo di rastremazione modificati nella tavolozza Proprietà.
 
 ## Questions
 
@@ -47,7 +47,7 @@ Disegna il contorno come un solo oggetto chiuso, una polilinea chiusa, un cerchi
 
 ### Perché ESTRUDI non crea un solido?
 
-Il profilo è aperto, o si interseca. Una linea, un arco o una polilinea aperta in AutoCAD crea una superficie, e MellowCAD non ne ha ancora: ESTRUDI dice <Message id="sweepRefusedType" /> e li toglie dalla selezione; un profilo che si interseca riceve <Message id="sweepSelfIntersecting" /> e viene tolto anch'esso. Unisci i pezzi con <Command id="JOIN" />, ricavane una regione con <Command id="REGION" />, oppure fai clic al loro interno con <Command id="PRESSPULL" />.
+Il profilo è aperto, o si interseca. Una linea, un arco o una polilinea aperta in AutoCAD crea una superficie, e MellowCAD non ne ha ancora: ESTRUDI mostra <Message id="sweepRefusedType" /> e li toglie dalla selezione; un profilo che si interseca riceve <Message id="sweepSelfIntersecting" /> e viene tolto anch'esso. Unisci i pezzi con <Command id="JOIN" />, ricavane una regione con <Command id="REGION" />, oppure fai clic al loro interno con <Command id="PRESSPULL" />.
 
 ### Come si estrude una forma con un foro?
 

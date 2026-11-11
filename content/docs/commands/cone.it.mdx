@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Come si disegna un cono in AutoCAD?","answer":"Esegui CONO, indica il centro della base, il raggio e l'altezza: 0,0, 20 e 40 disegnano il cono della sessione. Ruota la vista per vederlo, con uno spigolo del ViewCube o -VISTA e SEAsso."},{"question":"Come si disegna un tronco di cono?","answer":"All'altezza, scegli Raggio, digita il raggio superiore, poi l'altezza. Il cono termina in un cerchio di quel raggio."},{"question":"Come si disegna un cono capovolto?","answer":"Digita un'altezza negativa: il cono punta verso il basso dalla sua base. Oppure scegli Asse e dai il vertice dove vuoi."},{"question":"La base di un cono può essere un'ellisse?","answer":"Sì: scegli Ellittico al centro della base e dai i suoi assi. Un raggio superiore rende la sommità la stessa ellisse, più piccola."}]
 ---
 
-CONO disegna un cono solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza, e si restringe fino a un punto. Chiede ciò che chiede [`CILINDRO`](/docs/commands/cylinder), con `Raggio` all'altezza per un cono tagliato. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa lo punta verso il basso, e un punto la dà con la sua distanza dalla base. Il raggio e l'altezza sono offerti come predefiniti che Invio prende, condivisi con le altre primitive. Il cono sta sul layer corrente, e Annulla lo annulla in un solo passo.
+CONO disegna un cono solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza, e si restringe fino a un punto. Chiede ciò che chiede [`CILINDRO`](/docs/commands/cylinder), con `Raggio` all'altezza per un cono tagliato. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa lo punta verso il basso, e un punto la dà con la sua distanza dalla base. Il raggio e l'altezza sono proposti come predefiniti che Invio accetta, condivisi con le altre primitive. Il cono sta sul layer corrente, e Annulla lo annulla in un solo passo.
 
 [`LISTA`](/docs/commands/list) mostra la sua posizione, normale, raggio di base, raggio superiore e altezza, e la tavolozza Proprietà permette di digitarli. I suoi grip lo spostano, ne impostano l'altezza, il raggio di base a ogni quarto della base, e il raggio superiore. Il vertice si aggancia come punto finale. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
 
@@ -41,7 +41,7 @@ Al centro della base: la base è un'ellisse, data dai due estremi del suo primo 
 
 ### `Diametro` (`D`) [#diameter]
 
-Al raggio: chiede invece il diametro, offrendo il doppio dell'ultimo raggio.
+Al raggio: chiede invece il diametro, proponendo il doppio dell'ultimo raggio.
 
 ### `2Punti` (`2P`) [#2point]
 
@@ -53,7 +53,7 @@ All'altezza: chiede il vertice. Il cono va dal centro della base a quel punto in
 
 ### `Raggio superiore` (`R`) [#top]
 
-All'altezza: chiede il raggio superiore, poi di nuovo l'altezza. Il cono termina in un cerchio invece che in un punto, un tronco di cono; una sommità larga come la base crea i lati di un cilindro, una più larga un cono che si allarga verso l'alto. Offre il raggio superiore dell'ultimo cono, 0 all'inizio.
+All'altezza: chiede il raggio superiore, poi di nuovo l'altezza. Il cono termina in un cerchio invece che in un punto, un tronco di cono; una sommità larga come la base crea i lati di un cilindro, una più larga un cono che si allarga verso l'alto. Propone il raggio superiore dell'ultimo cono, 0 all'inizio.
 
 ## Cosa non fa ancora [#missing]
 

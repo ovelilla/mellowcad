@@ -5,7 +5,7 @@ figure: "Un quadrato e il suo cerchio in 5 colonne e 3 righe, a 16 e 14 di dista
 sourceHash: "c8c8d747d0c9"
 ---
 
-SERIERETTANG copia una selezione in colonne e righe, e in livelli se vuoi, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, e la mostra subito: 4 colonne lungo X dell'UCS e 3 righe lungo la sua Y, distanziate di una volta e mezza la dimensione della selezione. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD: fai clic su una delle sue frecce, poi fai clic dove deve andare o digita un numero, per impostare un numero o una spaziatura. Anche Esc lì crea la serie. Gli oggetti selezionati diventano il suo primo elemento.
+SERIERETTANG copia una selezione in colonne e righe, e in livelli se vuoi, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, e la mostra subito: 4 colonne lungo X dell'UCS e 3 righe lungo la sua Y, distanziate di una volta e mezza la dimensione della selezione. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD: fai clic su una delle sue frecce, poi fai clic dove deve andare o digita un numero, per impostare un numero o una spaziatura. Anche Esc lì crea la serie. Gli oggetti selezionati diventano il suo primo elemento.
 
 ## Options
 
@@ -27,7 +27,7 @@ Il numero di colonne e la distanza tra esse.
 
 ### Rows
 
-Il numero di righe, la distanza tra esse e una quota di cui ogni riga sale rispetto alla precedente.
+Il numero di righe, la distanza tra esse e un incremento di quota per cui ogni riga sale rispetto alla precedente.
 
 ### Levels
 
@@ -57,4 +57,4 @@ Scegli <Keyword id="ASsociative" /> e rispondi <Keyword id="No" /> prima di prem
 
 ### Come si fa una serie 3D?
 
-Scegli <Keyword id="Levels" />: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. <Keyword id="Rows" /> chiede anche una quota, che solleva ogni riga rispetto alla precedente.
+Scegli <Keyword id="Levels" />: le righe e le colonne sono copiate in alto lungo Z dell'UCS, tanti livelli quanti dici, alla distanza che dai. <Keyword id="Rows" /> chiede anche un incremento di quota, che solleva ogni riga rispetto alla precedente.

@@ -5,15 +5,15 @@ figure: "Un cuneo di 60 per 40 per 25, da due angoli e un'altezza, con la penden
 sourceHash: "06fba2eeb7be"
 ---
 
-CUNEO (WEDGE) disegna un solido 3D a forma di cuneo: un parallelepipedo la cui sommità scende in pendenza da un estremo all'altro. Chiede ciò che chiede <Command id="BOX" />: il primo angolo, l'altro angolo, poi l'altezza. L'estremo alto sta al primo angolo, e la pendenza scende lungo la X dell'UCS verso il lato dell'altro angolo; un angolo con una X minore lo rovescia. L'altezza sale lungo lo Z dell'UCS, una negativa scende. La lunghezza, la larghezza e l'altezza sono i valori predefiniti di <Command id="BOX" />, che Invio prende. Il cuneo sta sul layer corrente e Annulla lo ripristina in un solo passo.
+CUNEO (WEDGE) disegna un solido 3D a forma di cuneo: un parallelepipedo la cui sommità scende in pendenza da un estremo all'altro. Chiede ciò che chiede <Command id="BOX" />: il primo angolo, l'altro angolo, poi l'altezza. L'estremo alto sta al primo angolo, e la pendenza scende lungo la X dell'UCS verso il lato dell'altro angolo; un angolo con una X minore lo rovescia. L'altezza sale lungo la Z dell'UCS, una negativa scende. La lunghezza, la larghezza e l'altezza sono i valori predefiniti di <Command id="BOX" />, che Invio accetta. Il cuneo sta sul layer corrente e si annulla in un solo passaggio.
 
-<Command id="LIST" /> ne mostra la posizione, la lunghezza, la larghezza, l'altezza e la rotazione, e la tavolozza Proprietà permette di digitarle. I suoi grip sono quelli di <Command id="BOX" />. È un solido 3D per <Command id="UNION" />, <Command id="SUBTRACT" /> e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale; <Command id="EXPLODE" /> lo trasforma in una regione per faccia.
+<Command id="LIST" /> ne mostra la posizione, la lunghezza, la larghezza, l'altezza e la rotazione, e la tavolozza Proprietà permette di digitarle. I suoi grip sono quelli di <Command id="BOX" />. È un solido 3D per <Command id="UNION" />, <Command id="SUBTRACT" /> e il resto del 3D di MellowCAD, che è fatto solo di solidi ed è ancora parziale; <Command id="EXPLODE" /> lo trasforma in una regione per faccia.
 
 ## Options
 
 ### Center
 
-Al primo prompt: chiede il centro, poi un angolo, <Keyword id="Cube" /> o <Keyword id="Length" />. Il cuneo è centrato sul punto, anche in altezza, con il suo estremo alto opposto all'angolo indicato.
+Alla prima richiesta: chiede il centro, poi un angolo, <Keyword id="Cube" /> o <Keyword id="Length" />. Il cuneo è centrato sul punto, anche in altezza, con il suo estremo alto opposto all'angolo indicato.
 
 ### Cube
 
@@ -29,7 +29,7 @@ All'altezza: chiede due punti, e l'altezza è la distanza tra loro.
 
 ## Missing
 
-Quelli di <Command id="BOX" />: Sposta, Ruota, Scala e Specchio da un grip attivo, i comandi 3D propri, le quote tratteggiate mentre indichi l'angolo, e gli stili visivi che mancano a <Command id="VSCURRENT" />. In pianta, lo snap Fine sotto l'estremo alto trova l'angolo della sommità, dove AutoCAD trova quello della base.
+Quelli di <Command id="BOX" />: Sposta, Ruota, Scala e Specchio da un grip attivo, i comandi 3D propri, le quote tratteggiate mentre indichi l'angolo, e gli stili visivi che <Command id="VSCURRENT" /> non offre. In pianta, lo snap Fine sotto l'estremo alto trova l'angolo della sommità, dove AutoCAD trova quello della base.
 
 ## Questions
 
@@ -39,11 +39,11 @@ Quelli di <Command id="BOX" />: Sposta, Ruota, Scala e Specchio da un grip attiv
 
 ### Da che parte scende il cuneo?
 
-Giù dall'estremo del primo angolo, lungo la X dell'UCS. Per girarlo, indica l'altro angolo con una X minore, il che lo ruota di 180°, oppure ruotalo dopo con <Command id="ROTATE" />.
+Verso il basso a partire dall'estremo del primo angolo, lungo la X dell'UCS. Per orientarlo al contrario, indica l'altro angolo con una X minore, il che lo ruota di 180°, oppure ruotalo dopo con <Command id="ROTATE" />.
 
 ### Come si disegna un prisma triangolare?
 
-Un cuneo lo è: un triangolo rettangolo a ciascuna estremità, esteso lungo la larghezza. Per qualsiasi altro triangolo, disegnalo chiuso con <Command id="PLINE" /> ed <Command id="EXTRUDE" /> lo.
+Un cuneo lo è: un triangolo rettangolo a ciascuna estremità, esteso lungo la larghezza. Per qualsiasi altro triangolo, disegnalo chiuso con <Command id="PLINE" /> e poi estrudilo con <Command id="EXTRUDE" />.
 
 ### Come si disegna un cuneo dal suo centro?
 

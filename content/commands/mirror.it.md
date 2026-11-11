@@ -5,7 +5,7 @@ figure: "Un contorno chiuso riflesso rispetto a un asse di simmetria verticale, 
 sourceHash: "fd4b7540311a"
 ---
 
-SPECCHIO (MIRROR in inglese) riflette gli oggetti che selezioni rispetto a una linea: selezionali, indica il primo e il secondo punto dell'asse di simmetria, poi di' se cancellare gli oggetti di origine. Il riflesso è una copia, e con il valore predefinito, No, gli originali restano, che è il modo in cui si disegna a metà un pezzo simmetrico. I due punti sono presi nella pianta dell'UCS, quindi un asse disegnato con Orto attivo riflette in linea retta, in orizzontale o in verticale. Come in AutoCAD con MIRRTEXT a 0, il suo valore predefinito, un testo continua a leggersi da sinistra a destra nel riflesso, e un tratteggio mantiene l'angolo del suo modello. L'esecuzione è un solo passo che Annulla ripristina.
+SPECCHIO (MIRROR in inglese) riflette gli oggetti che selezioni rispetto a una linea: selezionali, indica il primo e il secondo punto dell'asse di simmetria, poi indica se cancellare gli oggetti di origine. Il riflesso è una copia, e con il valore predefinito, No, gli originali restano, ed è così che si disegna a metà un pezzo simmetrico. I due punti sono presi nella pianta dell'UCS, quindi un asse disegnato con Orto attivo riflette esattamente in orizzontale o in verticale. Come in AutoCAD con MIRRTEXT a 0, il suo valore predefinito, un testo continua a leggersi da sinistra a destra nel riflesso, e un tratteggio mantiene l'angolo del suo modello. L'operazione è un solo passaggio di annullamento.
 
 ## Options
 
@@ -19,7 +19,7 @@ Il valore predefinito: mantiene gli oggetti di origine accanto al loro riflesso.
 
 ## Missing
 
-MIRRTEXT e MIRRHATCH restano a 0: un testo non viene mai specchiato in modo da leggersi al contrario, e il modello di un tratteggio non viene mai riflesso. Un testo dentro un riferimento di blocco specchiato torna a leggersi come fa uno sciolto, dove AutoCAD lo specchia con il blocco. Un'ellisse specchiata mantiene la sua normale, quindi i suoi Angolo iniziale e Angolo finale si leggono diversamente da quelli di AutoCAD per la stessa curva. Mentre il riflesso segue il cursore, ha il colore di ciascun oggetto, non il suo tipo di linea né il suo spessore di linea.
+MIRRTEXT e MIRRHATCH restano a 0: un testo non viene mai specchiato in modo da leggersi al contrario, e il modello di un tratteggio non viene mai riflesso. Un testo dentro un riferimento di blocco specchiato torna a leggersi come un testo sciolto, dove AutoCAD lo specchia con il blocco. Un'ellisse specchiata mantiene la sua normale, quindi Angolo iniziale e Angolo finale risultano diversi da quelli di AutoCAD per la stessa curva. Mentre il riflesso segue il cursore, mostra il colore di ciascun oggetto, ma non il suo tipo di linea né il suo spessore di linea.
 
 ## Questions
 
@@ -37,4 +37,4 @@ Rispondi <Keyword id="Yes" /> quando SPECCHIO chiede se cancellare gli oggetti d
 
 ### Come si specchia in orizzontale o in verticale?
 
-Attiva Orto (F8) e indica i due punti dell'asse di simmetria lungo l'asse rispetto al quale riflettere: una linea verticale ribalta destra e sinistra, una orizzontale alto e basso.
+Attiva Orto (F8) e indica i due punti dell'asse di simmetria lungo l'asse rispetto al quale riflettere: una linea verticale scambia destra e sinistra, una orizzontale alto e basso.

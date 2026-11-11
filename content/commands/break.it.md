@@ -33,7 +33,7 @@ Seleziona la linea, scegli <Keyword id="First point" />, poi indica il primo e i
 
 ### Perché non posso spezzare un blocco o un testo?
 
-SPEZZA spezza linee, archi, cerchi, polilinee, ellissi e spline. Un riferimento a blocco dice <Message id="cannotBreakBlock" />, e un testo, una quota o un tratteggio <Message id="objectCannotBeBroken" />; usa prima <Command id="EXPLODE" /> su un blocco per spezzarne i pezzi.
+SPEZZA spezza linee, archi, cerchi, polilinee, ellissi e spline. Un riferimento di blocco mostra <Message id="cannotBreakBlock" />, e un testo, una quota o un tratteggio <Message id="objectCannotBeBroken" />; usa prima <Command id="EXPLODE" /> su un blocco per spezzarne i pezzi.
 
 ### In che verso SPEZZA taglia un cerchio?
 

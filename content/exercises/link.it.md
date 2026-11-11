@@ -6,7 +6,7 @@ figure: "Una biella di due mozzi a distanza di 90, uniti da linee tangenti, quot
 sourceHash: "383984af61b7"
 ---
 
-Disegna questa biella, in millimetri: due mozzi a distanza di 90, di raggio 20 e 12, forati con raggio 10 e 6, uniti da linee tangenti a entrambi, con gli archi tra le linee tagliati. Le linee tangenti usano lo snap a oggetto Tangente a entrambe le estremità; <Command id="TRIM" /> trasforma poi il cerchio di ogni mozzo in un arco.
+Disegna questa biella, in millimetri: due mozzi a distanza di 90, di raggio 20 e 12, forati con raggio 10 e 6, uniti da linee tangenti a entrambi, con gli archi tra le linee tagliati. Le linee tangenti usano lo snap ad oggetto Tangente a entrambe le estremità; <Command id="TRIM" /> trasforma poi il cerchio di ogni mozzo in un arco.
 
 ## Steps
 
@@ -16,7 +16,7 @@ Sul layer Contorno, quattro cerchi con <Command id="CIRCLE" />, ciascuno col suo
 
 ### Disegna le linee tangenti [#tangents]
 
-<Command id="LINE" />, poi digita `_TAN`, lo snap a oggetto Tangente per un punto, e seleziona il cerchio grande vicino alla sua parte alta; `_TAN` di nuovo e seleziona quello piccolo vicino alla sua parte alta. La linea tocca entrambi. Lo stesso lungo la parte bassa.
+<Command id="LINE" />, poi digita `_TAN`, lo snap ad oggetto Tangente per un punto, e seleziona il cerchio grande vicino alla sommità; `_TAN` di nuovo e seleziona quello piccolo vicino alla sommità. La linea tocca entrambi. Lo stesso lungo il lato inferiore.
 
 ### Taglia gli archi [#trim]
 

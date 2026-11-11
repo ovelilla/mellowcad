@@ -5,9 +5,9 @@ figure: "Una piastra con il contorno a 0,70 mm, poi 0.1 digitato per il suo foro
 sourceHash: "154784b2b402"
 ---
 
-SPESSLIN (LWEIGHT in inglese) imposta lo spessore di linea con cui vengono disegnati i nuovi oggetti, in millimetri. AutoCAD apre la finestra Impostazioni spessore linea; MellowCAD non ne ha ancora una, quindi SPESSLIN esegue la forma da riga di comando che ha anche AutoCAD, <Command id="-LWEIGHT" />. Dice lo spessore di linea corrente, `DALAYER` all'inizio, e ne chiede uno nuovo: uno dei 24 valori standard di AutoCAD, da 0,00 a 2,11 mm. Qualunque altro valore viene portato al più vicino standard, dicendolo, e uno negativo viene rifiutato con <Message id="invalidLineweightNumber" />. Invio mantiene lo spessore di linea corrente. Ogni modifica è un passo che <Command id="U" /> annulla.
+SPESSLIN (LWEIGHT in inglese) imposta lo spessore di linea con cui vengono disegnati i nuovi oggetti, in millimetri. AutoCAD apre la finestra Impostazioni spessore linea; MellowCAD non ne ha ancora una, quindi SPESSLIN esegue la forma da riga di comando che ha anche AutoCAD, <Command id="-LWEIGHT" />. Indica lo spessore di linea corrente, `DALAYER` all'inizio, e ne chiede uno nuovo: uno dei 24 valori standard di AutoCAD, da 0,00 a 2,11 mm. Qualunque altro valore viene portato al più vicino standard, segnalandolo, e uno negativo viene rifiutato con <Message id="invalidLineweightNumber" />. Invio mantiene lo spessore di linea corrente. Ogni modifica è un passaggio che <Command id="U" /> annulla.
 
-Gli spessori di linea qui si vedono sullo schermo fin dall'inizio: AutoCAD li mostra solo quando il pulsante Spessore di linea della barra di stato (LWDISPLAY) è attivo, ma senza layout né stampa in MellowCAD, lo schermo è l'unico posto dove potrebbero vedersi. Il pulsante li disattiva e li attiva. Una polilinea larga mostra la sua larghezza in pianta, non il suo spessore di linea.
+Qui gli spessori di linea si vedono sullo schermo fin dall'inizio: AutoCAD li mostra solo quando il pulsante Spessore di linea della barra di stato (LWDISPLAY) è attivo, ma senza layout né stampa in MellowCAD, lo schermo è l'unico posto dove potrebbero vedersi. Il pulsante li disattiva e li attiva. Una polilinea larga mostra la sua larghezza in pianta, non il suo spessore di linea.
 
 ## Options
 

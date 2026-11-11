@@ -7,7 +7,7 @@ model: "Il supporto come solido, visto da sud-est nello stile visivo Concettuale
 sourceHash: "5579d6bd5a86"
 ---
 
-Modella questo supporto per cuscinetto, in millimetri: una base di 100 per 60 con gli angoli di raggio 10, spessa 12; un mozzo di 40 di diametro e alto 40 al centro; un foro di 20 attraverso il mozzo e due fori di fissaggio di 10 attraverso la base, a distanza di 76. La base e il mozzo si estrudono dai loro contorni e si uniscono in un solo solido; il foro e i fori di fissaggio sono cilindri che si sottraggono dal solido.
+Modella questo supporto per cuscinetto, in millimetri: una base di 100 per 60 con gli angoli di raggio 10, spessa 12; un mozzo di 40 di diametro e alto 40 al centro; un foro di 20 attraverso il mozzo e due fori di fissaggio di 10 attraverso la base, con interasse 76. La base e il mozzo si estrudono dai loro contorni e si uniscono in un solo solido; il foro e i fori di fissaggio sono cilindri che si sottraggono dal solido.
 
 ## Steps
 

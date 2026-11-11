@@ -5,7 +5,7 @@ figure: "Quattro linee, poi Distanza 10 per entrambe e Multiplo: due angoli smus
 sourceHash: "e43c5b72ffc8"
 ---
 
-CIMA smussa l'angolo tra due linee con uno smusso rettilineo. Seleziona la prima linea, poi la seconda: ognuna è tagliata o estesa fino allo smusso, la prima della prima distanza e la seconda della seconda, e lo smusso le unisce. Funziona su due linee, su due segmenti retti di una polilinea, o su una linea e una polilinea, che unisce in una sola polilinea. Come in AutoCAD, la sua prima richiesta dice le distanze correnti, che sono conservate nel disegno; entrambe 0, il predefinito, crea un angolo vivo, con le linee che si incontrano. Mentre selezioni la seconda linea, l'angolo che creerebbe è mostrato sopra le linee.
+CIMA smussa l'angolo tra due linee con uno smusso rettilineo. Seleziona la prima linea, poi la seconda: ognuna è tagliata o estesa fino allo smusso, la prima della prima distanza e la seconda della seconda, e lo smusso le unisce. Funziona su due linee, su due segmenti retti di una polilinea, o su una linea e una polilinea, che unisce in una sola polilinea. Come in AutoCAD, la sua prima richiesta mostra le distanze correnti, che sono conservate nel disegno; entrambe 0, il predefinito, crea un angolo vivo, con le linee che si incontrano. Mentre selezioni la seconda linea, l'angolo che creerebbe è mostrato sopra le linee.
 
 ## Options
 
@@ -15,7 +15,7 @@ Annulla l'ultimo smusso di questa esecuzione, e con esso un cambio delle distanz
 
 ### Polyline
 
-Chiede una polilinea 2D e smussa ogni suo angolo, poi dice quante linee sono state smussate e perché alcune no.
+Chiede una polilinea 2D e smussa ogni suo angolo, poi indica quante linee sono state smussate e perché alcune no.
 
 ### Distance
 
@@ -23,7 +23,7 @@ Chiede la prima e la seconda distanza di smusso. La seconda propone la prima, qu
 
 ### Multiple
 
-Continua a chiedere una prima linea dopo ogni smusso, finché Invio o Esc.
+Continua a chiedere una prima linea dopo ogni smusso, fino a Invio o Esc.
 
 ## Missing
 
@@ -45,7 +45,7 @@ CIMA unisce due linee con uno smusso rettilineo; <Command id="FILLET" /> con un 
 
 ### Perché CIMA non funziona?
 
-Dice perché: <Message id="chamferDistanceTooLarge" /> quando una distanza supera l'estremo della sua linea, <Message id="linesParallel" /> per linee parallele, e <Message id="chamferRequiresLines" /> per un arco o un cerchio. Con entrambe le distanze 0 crea un angolo, non uno smusso.
+Spiega il motivo: <Message id="chamferDistanceTooLarge" /> quando una distanza supera l'estremo della sua linea, <Message id="linesParallel" /> per linee parallele, e <Message id="chamferRequiresLines" /> per un arco o un cerchio. Con entrambe le distanze 0 crea un angolo, non uno smusso.
 
 ### Come si smussano tutti gli angoli di un rettangolo?
 

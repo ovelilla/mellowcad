@@ -19,11 +19,11 @@ Termina il comando, come fa Invio una volta posizionata una copia.
 
 ### Undo
 
-Annulla l'ultima copia posizionata. Annullare la prima dice <Message id="commandCompletelyUndone" /> e chiede di nuovo il secondo punto.
+Annulla l'ultima copia posizionata. Annullare la prima mostra <Message id="commandCompletelyUndone" /> e chiede di nuovo il secondo punto.
 
 ## Missing
 
-Singola di COPYMODE (copiare una volta e terminare) non è offerta: COPIA è sempre Multipla, quindi la richiesta del punto base elenca solo <Keyword id="Displacement" />. Nemmeno Serie del secondo punto, la fila di copie equidistanti di AutoCAD, è offerta.
+Singola di COPYMODE (copiare una volta e terminare) non è disponibile: COPIA è sempre Multipla, quindi la richiesta del punto base elenca solo <Keyword id="Displacement" />. Nemmeno Serie del secondo punto, la fila di copie equidistanti di AutoCAD, è disponibile.
 
 ## Questions
 
@@ -37,8 +37,8 @@ Continua a posizionare: ogni punto che dai è una copia in più dallo stesso pun
 
 ### Come si copia un oggetto a una distanza data?
 
-Indica il punto base, poi digita il secondo punto come distanza: `30,0` lo copia a 30 lungo X, come l'input dinamico legge un punto dopo il primo. Oppure punta il cursore nella direzione, con Ortho o il tracciamento polare, e digita solo la distanza.
+Indica il punto base, poi digita il secondo punto come distanza: `30,0` lo copia a 30 lungo X, come l'input dinamico legge un punto dopo il primo. Oppure punta il cursore nella direzione, con Orto o il tracciamento polare, e digita solo la distanza.
 
 ### Perché in COPIA non c'è l'opzione Serie?
 
-MellowCAD non la offre ancora. Per una fila di copie equidistanti, <Command id="ARRAYRECT" /> con una riga fa lo stesso, e le conserva come un'unica serie modificabile.
+MellowCAD non la prevede ancora. Per una fila di copie equidistanti, <Command id="ARRAYRECT" /> con una riga fa lo stesso, e le conserva come un'unica serie modificabile.

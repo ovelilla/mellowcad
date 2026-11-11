@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Come si fa una serie polare?","answer":"Digita ARRAYPOLAR, seleziona gli oggetti, premi Invio e indica il punto centrale; oppure digita SR per SERIE e scegli POlare dopo gli oggetti. Poi scegli ELementi per impostare quanti, e premi Invio per crearla."},{"question":"Come si dispongono gli oggetti in serie attorno a una parte di cerchio?","answer":"Scegli RIEmpimento e digita l'angolo: 180 dispone gli elementi su mezzo cerchio in senso antiorario, -180 in senso orario. Il numero di elementi è conservato, il primo e l'ultimo a ciascun estremo dell'angolo."},{"question":"Come si impedisce agli elementi di ruotare?","answer":"Scegli RUota e rispondi No: ogni elemento è spostato attorno al centro senza ruotare."},{"question":"Come si cambia il raggio di una serie polare?","answer":"Seleziona la serie e trascina il suo grip quadrato nel punto base verso il centro o lontano da esso: la distanza dal centro è il nuovo raggio. Oppure riscrivi Raggio nella tavolozza Proprietà."}]
 ---
 
-SERIEPOLARE copia una selezione attorno a un punto centrale, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede il punto centrale e mostra subito la serie: 6 elementi su un giro completo, ciascuno ruotato mentre gira. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati diventano il suo primo elemento.
+SERIEPOLARE copia una selezione attorno a un punto centrale, come un solo oggetto serie. Chiede gli oggetti, indica il tipo e se la serie è associativa, chiede il punto centrale e mostra subito la serie: 6 elementi su un giro completo, ciascuno ruotato mentre gira. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati diventano il suo primo elemento.
 
 - **Comando:** `SERIEPOLARE`
 - **In inglese:** `ARRAYPOLAR`, digitato `_ARRAYPOLAR` in ogni lingua
@@ -35,7 +35,7 @@ L'angolo da un elemento al successivo. L'angolo riempito diventa quel numero di 
 
 ### `angolo di RIEmpimento` (`RIE`) [#fill-angle]
 
-L'angolo che gli elementi riempiono, positivo in senso antiorario e negativo in senso orario; il numero di elementi è conservato. Su un giro completo gli elementi distano un giro diviso il loro numero; su meno, l'ultimo cade alla fine dell'angolo.
+L'angolo che gli elementi riempiono, positivo in senso antiorario e negativo in senso orario; il numero di elementi è conservato. Su un giro completo gli elementi distano tra loro un giro diviso per il loro numero; su meno, l'ultimo cade alla fine dell'angolo.
 
 ### `RUOta elementi` (`RU`) [#rotate-items]
 

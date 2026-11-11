@@ -6,9 +6,9 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Come si torna alla vista in pianta in AutoCAD?","answer":"Digita PIANA e premi Invio due volte: il secondo Invio prende Corrente. Se l'UCS è ruotato e vuoi la pianta del sistema globale, scegli invece Globale."},{"question":"Che cos'è il comando PIANA UCS?","answer":"PIANA con Corrente: guarda dall'alto l'UCS corrente, con il suo asse X a destra. Ruota prima l'UCS con UCS, poi avvia PIANA e premi Invio due volte, e disegni sulla pianta ruotata come se fosse dritta."},{"question":"Perché il mio disegno è ruotato nella vista in pianta?","answer":"La vista è la pianta di un UCS ruotato. Avvia PIANA e scegli Globale per vedere il disegno con la X globale di nuovo a destra; anche UCS e Invio riportano l'UCS a Globale."},{"question":"PIANA cambia l'UCS?","answer":"No. Ruota solo la vista; l'UCS resta com'era. Sono le viste ortogonali di VISTA quelle che ruotano anche l'UCS."}]
 ---
 
-PIANA (PLAN in inglese) guarda dall'alto il piano XY di un UCS, con il suo asse X rivolto a destra: la vista in pianta, come l'hai disegnata. Chiede quale UCS, quello corrente, uno salvato o quello globale, e Invio prende quello corrente. Poi inquadra tutto il disegno e dice `Rigenerazione modello in corso.`.
+PIANA (PLAN in inglese) guarda dall'alto il piano XY di un UCS, con il suo asse X rivolto a destra: la vista in pianta, come l'hai disegnata. Chiede quale UCS, quello corrente, uno salvato o quello globale, e Invio accetta quello corrente. Poi inquadra tutto il disegno e mostra `Rigenerazione modello in corso.`.
 
-Nulla nel disegno si sposta, e l'UCS resta com'era: PIANA ruota solo la vista. È un solo passo di annullamento, quindi `A` riporta indietro la vista, e [`ZOOM`](/docs/commands/zoom) `Precedente` torna alla vista prima. È la via per tornare alla pianta dopo [`3DORBITA`](/docs/commands/3dorbit) o una [`VISTA`](/docs/commands/view) assonometrica. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
+Nulla nel disegno si muove, e l'UCS resta com'era: PIANA ruota solo la vista. È un solo passaggio di annullamento, quindi `A` riporta indietro la vista, e [`ZOOM`](/docs/commands/zoom) `Precedente` torna alla vista precedente. È il modo per tornare alla pianta dopo [`3DORBITA`](/docs/commands/3dorbit) o una [`VISTA`](/docs/commands/view) assonometrica. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
 
 - **Comando:** `PIANA`
 - **In inglese:** `PLAN`, digitato `_PLAN` in ogni lingua
@@ -29,7 +29,7 @@ La pianta dell'UCS corrente, il valore predefinito. Dopo che [`UCS`](/docs/comma
 
 ### `Ucs` (`U`) [#ucs]
 
-La pianta di un UCS salvato con `NOme` di [`UCS`](/docs/commands/ucs), che digiti per nome. Per un nome che non è salvato dice che non riesce a trovare quell'UCS e chiede di nuovo; `?` elenca quelli salvati, come fa UCS, e chiede di nuovo anch'esso. L'UCS corrente non cambia.
+La pianta di un UCS salvato con `NOme` di [`UCS`](/docs/commands/ucs), che digiti per nome. Per un nome che non è salvato segnala che non trova quell'UCS e chiede di nuovo; `?` elenca quelli salvati, come fa UCS, e chiede di nuovo anch'esso. L'UCS corrente non cambia.
 
 ### `Globale` (`G`) [#world]
 

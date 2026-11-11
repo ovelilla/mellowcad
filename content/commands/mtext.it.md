@@ -5,9 +5,9 @@ figure: "Una nota in un riquadro: l'altezza impostata per prima, poi l'angolo op
 sourceHash: "a53001f9674d"
 ---
 
-TESTOM (MTEXT in inglese) scrive testo multilinea: un oggetto che contiene paragrafi che vanno a capo a una larghezza. Selezioni un primo angolo e quello opposto, e il riquadro tra essi imposta la larghezza; poi digiti in un editor disegnato sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Esc con qualcosa digitato chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che sono ciascuna un oggetto a sé, usa <Command id="TEXT" />.
+TESTOM (MTEXT in inglese) scrive testo multilinea: un solo oggetto con paragrafi che vanno a capo a una larghezza. Indichi un primo angolo e quello opposto, e il riquadro tra i due imposta la larghezza; poi digiti in un editor sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Esc dopo aver digitato qualcosa chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che siano oggetti indipendenti, usa <Command id="TEXT" />.
 
-La prima riga dice lo stile corrente e l'altezza. Ogni opzione viene chiesta alla richiesta dell'angolo opposto e vi ritorna, quindi un'esecuzione imposta l'altezza, la giustificazione e il resto prima che il riquadro sia chiuso. Le parole vanno a capo dove una riga supererebbe la larghezza, e una parola più lunga della larghezza la oltrepassa. L'altezza è condivisa con <Command id="TEXT" /> e conservata nel disegno; la giustificazione, la rotazione e l'interlinea partono dai loro valori predefiniti a ogni esecuzione. <Command id="-MTEXT" /> chiede lo stesso, poi prende il testo nella riga di comando, una riga alla volta.
+La prima riga indica lo stile e l'altezza correnti. Ogni opzione si sceglie alla richiesta dell'angolo opposto, che poi si ripresenta, quindi ogni esecuzione può impostare l'altezza, la giustificazione e il resto prima che il riquadro sia chiuso. Le parole vanno a capo dove una riga supererebbe la larghezza, e una parola più lunga della larghezza la oltrepassa. L'altezza è condivisa con <Command id="TEXT" /> e conservata nel disegno; la giustificazione, la rotazione e l'interlinea partono dai loro valori predefiniti a ogni esecuzione. <Command id="-MTEXT" /> chiede lo stesso, poi prende il testo nella riga di comando, una riga alla volta.
 
 ## Options
 
@@ -17,7 +17,7 @@ Imposta l'altezza del testo, digitata o come distanza dal primo angolo a un punt
 
 ### Justify
 
-Imposta da quale dei nove punti del riquadro pende il testo: in alto a sinistra per impostazione predefinita, oppure in alto, al centro e in basso per sinistra, centro e destra, come li elenca la richiesta. Il testo pende da quel punto del riquadro, in qualunque direzione sia stato trascinato.
+Imposta a quale dei nove punti del riquadro è ancorato il testo: in alto a sinistra per impostazione predefinita, oppure in alto, al centro e in basso per sinistra, centro e destra, come li elenca la richiesta. Il testo resta ancorato a quel punto del riquadro, in qualunque direzione sia stato trascinato.
 
 ### Line spacing
 
@@ -29,15 +29,15 @@ Ruota il riquadro e il suo testo, di un angolo digitato o indicato dal primo ang
 
 ### Style
 
-Rende corrente uno stile di testo, per nome; <Keyword id="?" /> elenca gli stili del disegno, e un nome che non ha viene rifiutato. Gli stili si creano nella tavolozza che apre <Command id="STYLE" />.
+Rende corrente uno stile di testo, per nome; <Keyword id="?" /> elenca gli stili del disegno, e un nome che non esiste viene rifiutato. Gli stili si creano nella tavolozza che apre <Command id="STYLE" />.
 
 ### Width
 
-Chiede la larghezza al posto dell'angolo opposto, digitata o come distanza da un punto, poi apre l'editor. Una larghezza di 0, o Invio, lascia le righe senza andare a capo, ciascuna lunga quanto digitata.
+Chiede la larghezza al posto dell'angolo opposto, digitata o come distanza da un punto, poi apre l'editor. Una larghezza di 0, o Invio, lascia le righe senza andare a capo, ciascuna lunga quanto è stata digitata.
 
 ## Missing
 
-Le colonne, che AutoCAD 2027 elenca alla richiesta dell'angolo opposto, non sono offerte. La formattazione dentro il testo, come l'altezza, il font o il colore di una parola, le frazioni impilate o la sottolineatura, non viene disegnata né applicata, e l'editor non ha righello, tabulazioni, rientri, elenchi né la scheda Editor di testo della barra multifunzione, né un cursore di testo sul disegno. Non ci sono maschera di sfondo o cornice del testo, altezza definita, scala annotativa né snap Nodo sui suoi angoli, e un clic dentro il suo riquadro lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
+Le colonne, che AutoCAD 2027 elenca alla richiesta dell'angolo opposto, non sono offerte. La formattazione dentro il testo, come l'altezza, il font o il colore di una parola, le frazioni impilate o la sottolineatura, non viene disegnata né applicata, e l'editor non ha righello, tabulazioni, rientri, elenchi né la scheda Editor di testo della barra multifunzione, né un cursore di testo sul disegno. Mancano la maschera di sfondo, la cornice del testo, l'altezza definita, la scala annotativa e lo snap Nodo sui suoi angoli, e un clic dentro il suo riquadro lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
 
 ## Questions
 
@@ -51,7 +51,7 @@ Premi Invio: inizia un nuovo paragrafo. All'interno di un paragrafo le righe van
 
 ### Come si cambia la larghezza del testo multilinea?
 
-Selezionalo e trascina il grip sul suo lato: il testo va a capo di nuovo al variare della larghezza, attorno al suo punto di giustificazione. La riga Larghezza definita della tavolozza Proprietà lo fa con un numero, e le sue righe dell'interlinea cambiano la spaziatura.
+Selezionalo e trascina il grip sul suo lato: il testo viene riformattato al variare della larghezza, attorno al suo punto di giustificazione. La riga Larghezza definita della tavolozza Proprietà lo fa con un numero, e le righe di interlinea ne cambiano la spaziatura.
 
 ### Come si converte TESTOM in testo di una riga?
 

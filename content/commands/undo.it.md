@@ -6,31 +6,31 @@ figure: "ANNULLA 2: gli ultimi due comandi vengono annullati, la linea e il seco
 sourceHash: "b4fed2178b6a"
 ---
 
-ANNULLA (UNDO) annulla comandi. Un passo è un intero comando: tutto ciò che ha disegnato una LINEA se ne va insieme, quanti che fossero i segmenti, e così ciò che un comando ha impostato, come LTSCALE. ANNULLA scrive le sue impostazioni correnti, poi chiede il numero di operazioni da annullare o un'opzione; Invio ne annulla una. Scrive i nomi dei comandi annullati su una riga, `CIRCLE LINE`, e <Message id="everythingUndone" /> quando finiscono; dopo, <Message id="nothingToUndo" />. Anche un comando che non ha cambiato nulla, come ID o LIST, è un passo, e lo è ciò che ZOOM e PAN hanno fatto alla vista.
+ANNULLA (UNDO) annulla comandi. Un passo è un intero comando: tutto ciò che ha disegnato una LINEA se ne va insieme, qualunque fosse il numero dei suoi segmenti, e così ciò che un comando ha impostato, come LTSCALE. ANNULLA scrive le sue impostazioni correnti, poi chiede il numero di operazioni da annullare o un'opzione; Invio ne annulla una. Scrive i nomi dei comandi annullati su una riga, `CERCHIO LINEA`, e <Message id="everythingUndone" /> quando finiscono; dopo, <Message id="nothingToUndo" />. Anche un comando che non ha cambiato nulla, come ID o LIST, è un passo, e lo è ciò che ZOOM e PAN hanno fatto alla vista.
 
-<Command id="U" /> è la forma breve: un passo indietro, nessuna domanda. Ctrl+Z al prompt Comando esegue U; all'interno di un comando è l'Annulla proprio di quel comando, come lo digita la macro di AutoCAD: LINEA annulla il suo ultimo segmento e prosegue. <Command id="REDO" />, subito dopo, ripristina ciò che l'ultimo U o ANNULLA aveva annullato.
+<Command id="U" /> è la forma breve: un passo indietro, nessuna domanda. Ctrl+Z alla richiesta Comando: esegue U; all'interno di un comando è l'Annulla proprio di quel comando, come lo digita la macro di AutoCAD: LINEA annulla il suo ultimo segmento e prosegue. <Command id="REDO" />, subito dopo, ripristina ciò che l'ultimo U o ANNULLA aveva annullato.
 
 ## Options
 
 ### Auto
 
-Chiede <Keyword id="ON" /> o <Keyword id="OFF" />, proponendo l'impostazione corrente, che la riga delle impostazioni mostra poi. In AutoCAD ne fa un solo passo dei comandi che una voce di menu esegue; qui nessun menu ne esegue più di uno, quindi non unisce nulla.
+Chiede <Keyword id="ON" /> o <Keyword id="OFF" />, proponendo l'impostazione corrente, che la riga delle impostazioni mostra poi. In AutoCAD unisce in un solo passo i comandi che una voce di menu esegue; qui nessun menu ne esegue più di uno, quindi non unisce nulla.
 
 ### Control
 
-Chiede quanto annullamento conservare, <Keyword id="All" /> per impostazione predefinita. <Keyword id="None" /> elimina ogni passo conservato e disattiva l'annullamento: U dice allora <Message id="uDisabled" />, e ANNULLA chiede subito Controllo. <Keyword id="One" /> conserva solo l'ultimo passo, e ANNULLA chiede poi 1 o Controllo. All riattiva l'annullamento completo. <Keyword id="Combine" /> dice se ZOOM e PAN consecutivi sono un solo passo, e <Keyword id="Layer" /> se lo sono le modifiche consecutive in Gestore proprietà layer, Sì per impostazione predefinita per entrambi. Le impostazioni sono del disegno, e non vengono salvate con esso: un disegno nuovo o aperto parte da All, Combine Sì e Layer Sì.
+Chiede quanto annullamento conservare, <Keyword id="All" /> per impostazione predefinita. <Keyword id="None" /> elimina ogni passo conservato e disattiva l'annullamento: U segnala allora <Message id="uDisabled" />, e ANNULLA chiede subito Controllo. <Keyword id="One" /> conserva solo l'ultimo passo, e ANNULLA chiede poi 1 o Controllo. Tutto riattiva l'annullamento completo. <Keyword id="Combine" /> indica se ZOOM e PAN consecutivi sono un solo passo, e <Keyword id="Layer" /> se lo sono le modifiche consecutive in Gestore proprietà layer, Sì per impostazione predefinita per entrambi. Le impostazioni sono del disegno, e non vengono salvate con esso: un disegno nuovo o aperto parte da Tutto, Combina Sì e Layer Sì.
 
 ### BEgin
 
-Avvia un gruppo: i comandi eseguiti fino a <Keyword id="End" /> formano un solo passo, che U annulla per intero e chiama `GROUP` insieme a essi. Mentre un gruppo è aperto, U, un numero e Back si fermano al suo inizio. BEgin con un gruppo aperto lo chiude prima.
+Avvia un gruppo: i comandi eseguiti fino a <Keyword id="End" /> formano un solo passo, che U annulla per intero e chiama `GROUP` insieme a essi. Mentre un gruppo è aperto, U, un numero e Indietro si fermano al suo inizio. Inizio con un gruppo aperto lo chiude prima.
 
 ### End
 
-Chiude il gruppo che BEgin ha aperto.
+Chiude il gruppo che Inizio ha aperto.
 
 ### Mark
 
-Lascia un segno nei passi. Back, U e un numero si fermano a esso, con <Message id="markEncountered" />.
+Lascia un segno nei passi. Indietro, U e un numero si fermano a quel segno, con <Message id="markEncountered" />.
 
 ### Back
 
@@ -38,7 +38,7 @@ Annulla ogni passo fino all'ultimo segno, e il segno con essi. Senza segno, chie
 
 ## Missing
 
-Auto non unisce nulla, dato che nessun menu qui esegue più di un comando. Combine e Layer durano per la sessione del browser, dove AutoCAD le conserva da una sessione all'altra. I pulsanti Annulla e Ripeti della barra superiore non scrivono nulla nella cronologia, dove la barra di accesso rapido di AutoCAD scrive la propria. Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla.
+Auto non unisce nulla, dato che nessun menu qui esegue più di un comando. Combina e Layer durano per la sessione del browser, dove AutoCAD le conserva da una sessione all'altra. I pulsanti Annulla e Ripeti della barra superiore non scrivono nulla nella cronologia, dove la barra di accesso rapido di AutoCAD scrive la propria. Anche Ctrl+Maiusc+Z ripristina, in silenzio, anche se AutoCAD non vi associa nulla.
 
 ## Questions
 
@@ -56,7 +56,7 @@ Digita `ANNULLA` e il numero di comandi, come `5`. Oppure scegli <Keyword id="Ma
 
 ### Perché il comando ANNULLA non funziona?
 
-L'annullamento è stato disattivato con Controllo <Keyword id="None" />: U lo dice, e ANNULLA chiede Controllo. Rispondi <Keyword id="All" /> per riattivarlo. I passi precedenti sono persi.
+L'annullamento è stato disattivato con Controllo <Keyword id="None" />: U lo segnala, e ANNULLA chiede Controllo. Rispondi <Keyword id="All" /> per riattivarlo. I passi precedenti sono persi.
 
 ### Come si ripristina ciò che si è annullato?
 
