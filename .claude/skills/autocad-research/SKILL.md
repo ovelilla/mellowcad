@@ -5,8 +5,8 @@ description: Establish how AutoCAD behaves and words something before building o
 
 # Researching AutoCAD
 
-The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English, Brazilian Portuguese
-and French language packs too; every
+The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English, Brazilian Portuguese,
+French and Italian language packs too; every
 tool runs from WSL through interop. Pick the source by the question:
 
 | Question                                                                        | Source                      | Read       |
@@ -52,9 +52,9 @@ says where each lives inside). **An update rewords prompts**: 2027.1 turned DIMA
 current product; the update's Spanish is the installed one byte for byte. After an AutoCAD update,
 move the tables to `previous/` and extract them again (the script will not overwrite a table that
 changed; skill `language-review`). The installed language packs are English, Spanish, Brazilian
-Portuguese and French (9/11/2026); installing another on the owner's AutoCAD is asked first. The
-forum thread refuses automated reads; ceethreedee.com's "Civil 3D 2027 Download all the extensions"
-lists the same `up1.autodesk.com` links (Italian's among them), and each `.exe` is checked with
+Portuguese, French (9/11/2026) and Italian (11/11/2026); installing another on the owner's
+AutoCAD is asked first. The forum thread refuses automated reads; ceethreedee.com's "Civil 3D 2027
+Download all the extensions" (under `/cad-news/` since November) lists the same `up1.autodesk.com` links (Italian's among them), and each `.exe` is checked with
 PowerShell's `Get-AuthenticodeSignature` before it runs elevated. It installs from WSL: the
 pack's `.exe` with `-q`, run elevated (`Start-Process -Verb RunAs`, the owner accepts UAC), then the
 current update's `.exe` with `-q` again, since a pack installed after an update is the release

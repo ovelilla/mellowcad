@@ -62,7 +62,7 @@ args=(/utf8 /noCER /l "$L")
   tr -d '\r' |
   # The banner's last line, in each installed culture: it is in no string table.
   awk -v t="$trace" '
-    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu/ { f = 1; if (!t) print; next }
+    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD/ { f = 1; if (!t) print; next }
     t && /SECURELOAD|NETLOAD|MellowProbe|MPTRACE|«MP (loaded|clm skipped|trace db)/ { next }
     f { print }' |
   grep -v "^$"

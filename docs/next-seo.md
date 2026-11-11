@@ -373,6 +373,9 @@ el dueño dio a las sesiones el 6/11).
    `/docs` y `/es/docs`, `/fr`, `/docs/exercises` y `/fr/docs/commands`) hasta la cuota, a las
    10:48 UTC: 560 en la cola. Desde hoy la tanda se reclama con un cerrojo (`flock` sobre
    `.batch.lock` en ~/seo-data/scripts), y el hook calla mientras otra sesión la envía.
+   **11/11:** la tanda del día, 11 pedidas (las portadas de `/docs` en francés, los ejercicios en
+   pt-BR y francés, la guía de abrir un DXF en árabe…) y un error (`/ar/docs/floor-plan`), hasta la
+   cuota a las 21:12 UTC: 549 en la cola, de 620 en el sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
