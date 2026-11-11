@@ -124,7 +124,7 @@ leaves the Layer Properties Manager's On and Off in English (`N AcLayer On`), an
 | Descriptions | The tools' descriptions | «Ripristina l'ultima operazione annullata»… | ours, in the style of the cuix tooltips (ACAD_1559, 1561, 1604) | — |
 | Palette | Normal X, Major axis vector X, Text alignment X, First X, Definition points (our own rows) | Normale X, Vettore asse maggiore X, Allineamento testo X, Primo X, Punti di definizione | ours, worded from the palette's | — |
 | Objects | Plural entity names | Linea/Linee, Ellisse/Ellissi, Riferimento di blocco/Riferimenti di blocco… | the tables' singulars, plurals ours | — |
-| ViewCube | The cube's faces | ALTO, BASSO, FRONTE, INDIETRO, SINISTRA, DESTRA | P AcVMToolsRes 629–634 (the cube's own table, in capitals) | no: the desktop draws them |
+| ViewCube | The cube's faces | ALTO, BASSO, FRONTE, RETRO, SINISTRA, DESTRA | the desktop (names/d01); not AcVMToolsRes 632's `Indietro` | yes |
 | Editor | The layer dialogs, the ViewCube's rotate arrows, the status bar's snap and polar settings, the command line's placeholder | «Layer - Non eliminato», «Ruota in senso orario», «Snap polare», «Digitare un comando (LINEA, TA, CP…)» | ours, in Autodesk's impersonal style (AcTaskDialogs is BAML, not read) | — |
 
 ## The command language, how it was set
@@ -173,13 +173,25 @@ What English words alike and Italian words per command or per state needs a prom
   («non non valido»), `specifyIncrementingElevationBetweenRows` («trarighe»), and the untranslated
   «Error Code Number is» of `modelingErrorCode`.
 
+### The desktop
+
+The drafting toggles are composed by AutoCAD and in no table, so the Italian desktop settled them
+(names/d01, 12/11/2026, `/language it-IT`): `<Snap on>` (F9), `<Osnap on>` (F3), `<Orto on>`,
+`<Polare on>`, `<Puntamento snap ad oggetto on>` (F11) and `<Griglia on>`, each with `off`, as
+English; only Selection Cycling's says `<Selezione ciclica attivata>` and `disattivata`. Five of the
+seven, worded from the tables before, were wrong (`attivato`, `disattivato`). Held by
+`italianPrompts.test.ts`. Polar along Z writes `Polare: 17.8609 < +Z` and `Polare: 18.5899 < -Z`
+(LINEA from 0,0,0 in SO assonometrico), `feedback.polarZ`'s form. The ViewCube's faces, each seen
+in the WCS (`-VPOINT 0,0,-1` for the bottom: an orthographic `-VIEW` turns the UCS, and the cube with
+it): ALTO, BASSO, FRONTE, RETRO, SINISTRA, DESTRA, the compass N, E, S, O, the UCS menu `WCS` and
+`Anonimo`. RETRO, not the table's `Indietro` (AcVMToolsRes 632, a navigation word).
+
 ### Unverified
 
 No probe shows these; each is worded from its neighbours and stays so until one does:
 
-- **The desktop's** (phase 6, the owner's mouse): the drafting toggles' lines (`snapMode`,
-  `orthoMode`, `polarMode`, `otrackMode`, `gridMode`), the cursor's readouts (`feedback.measure*`),
-  the ViewCube's faces.
+- **The unused readout** `feedback.measure*` (`Dist`, `Area`…), as in French and pt-BR: no view
+  of AutoCAD's shows its words.
 - **Ours in every language**: the file, DXF and clipboard messages, the history's steps for what
   the chrome does (`menuStep`, `viewCubeStep`…), DA's own messages (`fromNeedsPoint`), our own
   commands' names and their Center keyword (`ARCSCE`).

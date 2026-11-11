@@ -54,7 +54,7 @@ describe("Italian AutoCAD's command language", () => {
     const cad = answer(inItalian(), "LINEA", "MED", "5,0.1", "20,20", "")
     expect(cad.commandLog().join("\n")).not.toContain("Punto non valido.")
     const drawn = cad.latest()
-    expect(drawn.type === "line" && drawn.start).toEqual({ x: 5, y: 0 })
+    expect(drawn.type === "line" && drawn.start).toBeCloseToPoint(p(5, 0))
     const refused = answer(inItalian(), "LINEA", "M")
     expect(refused.commandLog().join("\n")).toContain("Punto non valido.")
   })
@@ -63,5 +63,38 @@ describe("Italian AutoCAD's command language", () => {
     const cad = answer(inItalian(), "LINEA", "DA")
     expect(asked(cad)).toBe("LINEA Punto base:")
     expect(asked(answer(cad, "0,0"))).toBe("LINEA <Offset>:")
+  })
+})
+
+// What only the desktop shows (names/d01, it-IT, 12/11/2026): every drafting
+// toggle says on or off, as English does, but Selection Cycling's, which says
+// attivata or disattivata; F11's is Puntamento snap ad oggetto.
+describe("Italian words of the desktop", () => {
+  it("echoes the drafting toggles as the desktop's history does (names/d01)", () => {
+    const cad = createHarness({ locale: italian })
+    const toggled = (key: string) => {
+      const from = cad.commandLog().length
+      cad.press(key)
+      return cad.commandLog().slice(from)
+    }
+    expect([
+      ...toggled("F9"),
+      ...toggled("F3"),
+      ...toggled("F8"),
+      ...toggled("F10"),
+      ...toggled("F11"),
+      ...toggled("F7"),
+      ...toggled("F7"),
+      ...toggled("F4"),
+    ]).toEqual([
+      " <Snap on>",
+      " <Osnap on>",
+      " <Orto on>",
+      " <Polare on>",
+      " <Puntamento snap ad oggetto off>",
+      " <Griglia off>",
+      " <Griglia on>",
+      " <Selezione ciclica attivata>",
+    ])
   })
 })

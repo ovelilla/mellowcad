@@ -201,7 +201,7 @@ export const it: EngineLocale = {
         "top": "ALTO",
         "bottom": "BASSO",
         "front": "FRONTE",
-        "back": "INDIETRO",
+        "back": "RETRO",
         "left": "SINISTRA",
         "right": "DESTRA"
       },
@@ -3276,8 +3276,8 @@ export const it: EngineLocale = {
           "state",
           1,
           {
-            "on": "attivato",
-            "other": "disattivato"
+            "on": "on",
+            "other": "off"
           }
         ],
         ">"
@@ -3300,8 +3300,8 @@ export const it: EngineLocale = {
           "state",
           1,
           {
-            "on": "attivato",
-            "other": "disattivato"
+            "on": "on",
+            "other": "off"
           }
         ],
         ">"
@@ -3312,8 +3312,8 @@ export const it: EngineLocale = {
           "state",
           1,
           {
-            "on": "attivato",
-            "other": "disattivato"
+            "on": "on",
+            "other": "off"
           }
         ],
         ">"
@@ -3324,8 +3324,8 @@ export const it: EngineLocale = {
           "state",
           1,
           {
-            "on": "attivato",
-            "other": "disattivato"
+            "on": "on",
+            "other": "off"
           }
         ],
         ">"
@@ -3336,8 +3336,8 @@ export const it: EngineLocale = {
           "state",
           1,
           {
-            "on": "attivata",
-            "other": "disattivata"
+            "on": "on",
+            "other": "off"
           }
         ],
         ">"
