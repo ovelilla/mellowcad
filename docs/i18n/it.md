@@ -1,7 +1,8 @@
 # Italian (`it`)
 
 > **Command language:** `localized`, Italian AutoCAD's. **Status:** `draft` since 11/11/2026, at
-> `/it`: registered, its catalogs still empty (a key it lacks shows English). **Review:** none by a
+> `/it`: registered; the engine's catalog whole (its interface and the command language), the site's
+> and the editor's still empty (a key they lack shows English). **Review:** none by a
 > native speaker. The plan and what is left: `docs/plans/it-language.md`.
 
 The words are Autodesk's own Italian localization of AutoCAD, never a translation of ours, as
@@ -104,6 +105,92 @@ SEZIONE (`SEZ`). `LAYER` and `PROPRIETA` keep `LA` and `PR`, as English.
   45049 and `A` in 52855: the console settles which.
 - `propose-commands.mjs --lang it` (11/11/2026): 1,393 proposed, 213 `several`, 139 `partial`, 39
   `plural`, 8 `select`, 497 `no-source`; `names` 126 (French's: 1,383, 217, 138, 39, 8, 476).
+
+## Interface terms
+
+From the installed pack by id against `en-US/` (`propose-interface.mjs --lang it --like fr`,
+11/11/2026): `P <dll> <id>` a string table, `D <dll> <dialog>:<control>` a dialog's label, `N
+<assembly> <key>` a .NET resource, `X <uid>` an element of `UserDataCache/it-it/Support/acad.CUIX`.
+The engine's `interface` (456 words, `linetype` and `hatchPattern` being drawing data): 230 settled
+by one wording or as French's ids, 136 by the row's place (a palette row takes `ax26res`'s word, a
+tool the ribbon's: `Interrompi` and `Raccorda` on the rail, as the ribbon says them), the rest ours,
+below. The editor's catalog (phase 2): 100 of 267 by id, 68 by place, 96 ours. Italian AutoCAD
+leaves the Layer Properties Manager's On and Off in English (`N AcLayer On`), and so does this.
+
+| Area | English | Italian | Source | Verified |
+| --- | --- | --- | --- | --- |
+| Tools | Diameter circle, 2-Point circle, 3-Point circle; Start, Center, End arc; Center ellipse | Cerchio centro, diametro; Cerchio 2 punti; Cerchio 3 punti; Arco inizio, centro, fine; Ellisse centro | ours, worded from the ribbon's options (`ID_RBN_0128`, `0130`, `0094`, `0113`, `ELLIPSECE`) | — |
+|  | Attribute display, Change properties, Pan by points, Multiple redo | Visibilità attributi, Modifica proprietà, Pan per punti, Ripeti multiplo | ours, from the neighbouring tables' words | — |
+| Descriptions | The tools' descriptions | «Ripristina l'ultima operazione annullata»… | ours, in the style of the cuix tooltips (ACAD_1559, 1561, 1604) | — |
+| Palette | Normal X, Major axis vector X, Text alignment X, First X, Definition points (our own rows) | Normale X, Vettore asse maggiore X, Allineamento testo X, Primo X, Punti di definizione | ours, worded from the palette's | — |
+| Objects | Plural entity names | Linea/Linee, Ellisse/Ellissi, Riferimento di blocco/Riferimenti di blocco… | the tables' singulars, plurals ours | — |
+| ViewCube | The cube's faces | ALTO, BASSO, FRONTE, INDIETRO, SINISTRA, DESTRA | P AcVMToolsRes 629–634 (the cube's own table, in capitals) | no: the desktop draws them |
+| Editor | The layer dialogs, the ViewCube's rotate arrows, the status bar's snap and polar settings, the command line's placeholder | «Layer - Non eliminato», «Ruota in senso orario», «Snap polare», «Digitare un comando (LINEA, TA, CP…)» | ours, in Autodesk's impersonal style (AcTaskDialogs is BAML, not read) | — |
+
+## The command language, how it was set
+
+- **The console**, 420 of the 440 probes `console-pair.mjs --lang it --select` picked (the other
+  20 are English-only probes), run in it-IT on 11/11/2026: 518 keys match the tables, 289 differ
+  and take the console's wording, 175 are worded more than one way (below), 58 unpaired, 284
+  unseen. What the console prints is a line with its values filled in: the messages were rebuilt
+  as ICU with English's arguments.
+- **Names** by `getcname` (names/p01: `U` is `A`, `RECTANG` nil, `MATCHPROP` nil), the tables
+  (`PIANA`, 52752), `acad.pgp`'s targets (`CORRISPROP`, `PROPRIETA`, `UNITA`) and the ITA help's
+  titles (`TAVOLOZZABLOCCHI`). An alias that is another command's name is dropped:
+  `DIMORIZZONTALE`, `DIMRUOTATO` and `DIMVERTICALE` are `acad.pgp` aliases of DIMLINEARE and the
+  names of their own commands; `DXFIN` one of APRI. Our own commands take the base name and the
+  ribbon's initials, as French's: `CERCHIOD`, `CERCHIO2P`, `CERCHIO3P`, `ARCICF` (Inizio, centro,
+  fine), `ARCCIF`, `ELLISSEC`, `ELLISSEARCO`.
+- **Probes of our own** (`scripts/research/probes/names/`, `.it.txt`): -OSNAP's words (p07, p33:
+  `FIN` Endpoint and not `FINE`, `MED`, `CEN`, `QUA`, `INT`, `INS`, `PER`, `TAN`, `VIC` Nearest,
+  `APP` Apparent, `EST` Extension, `PAR`, `NOD`, `NES` and `OFF` none; listed as `Fine,Cen,…`; `?`
+  refused), single letters refused at a point prompt with `Punto non valido.` (p09), DA (p03:
+  `Punto base:`, `<Offset>:`), a typed snap's echo (p31: `di` after FIN and MED, `a` after PER and
+  TAN; not found: «Nessun(o/a) Finale trovato(a) per punto specificato.»), -DIMSTYLE's status and
+  -STYLE's listing (p06, p32).
+- **The -OSNAP words** follow Spanish's form (`FINal`, `MEDio`): `FINe`, `MEDio`, `CENtro`,
+  `QUAdrante`, `INTersezione`, `ESTensione`, `INSerimento`, `PERpendicolare`, `TANgente`,
+  `VICino`, `APParente`, `PARallelo`, `NESsuno`, `OFF`: the console lists the modes by their short
+  forms only.
+- **The tables**, `propose-commands.mjs`, where no probe shows a key.
+
+### Per command
+
+What English words alike and Italian words per command or per state needs a prompt id of its own
+(`cad-catalogs.md`); until then one command's wording stands:
+
+- **SPLINEDIT** declares its keywords per prompt and state: Exit is `eSci` at the main prompt and
+  `ESci` at the fit data and vertex prompts, Delete `CAncella` beside Close and `Cancella` beside
+  Open. The fit data prompt words its own (`promptKeywords.enterFitDataOption`: `AGgiungi`,
+  `APri`, `CAncella`, `TAngenti`, a pair that never shares a letter in either state); Exit is
+  `ESci` everywhere, its hidden `X` still `S`, as the vertex prompt is PEDIT's too
+  (`enterVertexEditingOption`, whose `X` is `E`).
+- **ARRAYRECT and ARRAYPOLAR** share `selectGripToEditArrayOr`, which Italian ends `Esci]<Esci>:`
+  for one and `ESci] <ESci>:` for the other: ARRAYRECT's stands.
+- `enterAnOption` is `Immettere un'opzione` at UCS and `Digitare un'opzione` at -LINETYPE, PLAN
+  and UNDO: `Digitare` stands.
+- **Copied as Italian prints them**: `noUnusedBlocks` («nessun blocchi»), `regionObjectsRejected`
+  («non non valido»), `specifyIncrementingElevationBetweenRows` («trarighe»), and the untranslated
+  «Error Code Number is» of `modelingErrorCode`.
+
+### Unverified
+
+No probe shows these; each is worded from its neighbours and stays so until one does:
+
+- **The desktop's** (phase 6, the owner's mouse): the drafting toggles' lines (`snapMode`,
+  `orthoMode`, `polarMode`, `otrackMode`, `gridMode`), the cursor's readouts (`feedback.measure*`),
+  the ViewCube's faces.
+- **Ours in every language**: the file, DXF and clipboard messages, the history's steps for what
+  the chrome does (`menuStep`, `viewCubeStep`…), DA's own messages (`fromNeedsPoint`), our own
+  commands' names and their Center keyword (`ARCSCE`).
+- **Not probed**: `format.cartesian`, `format.polar`, `format.optionValue`; the prompts
+  `definitionTag`, `definitionPrompt`, `styleName`, `firstDistance`, `secondDistance`,
+  `selectBlockReference`, `selectABlock`; six answer forms; PURGE's `Blocchi`, FILLETEDGE's
+  `eSci`, HATCH's `Solido`, MTEXT's `Almeno`; LIST's lines for cones, rotated dimensions and
+  arrays.
+
+The list by key is the session's, outside git (research/proposals), and
+`italianPrompts.test.ts` holds what the console printed.
 
 ## Script and font
 

@@ -2114,7 +2114,9 @@ export const ptBR: EngineLocale = {
         "Add": "ADicionar",
         "Open": "ABrir",
         "Move": "Mover",
-        "X": "X"
+        "X": "X",
+        "Delete": "EXcluir",
+        "Tangents": "Tangentes"
       },
       "enterVertexEditingOption": {
         "X": "X"

@@ -132,8 +132,11 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    the cursor (Polar's, along Z too). The language's desktop settles them in the same session
    (skill `autocad-research`, its gui.md): French's, written in Autodesk's style, were six of
    seven wrong (`docs/i18n/fr.md`, "The desktop").
-4. Each command's coverage entry names it after `· <tag>`; the `/docs` pages that read the catalog
-   regenerate (`npm run docs:check`).
+4. Each command's coverage entry names it after `· <tag>` (`coverage-names.mjs <tag>`, from the
+   catalog's names); the `/docs` pages that read the catalog regenerate (`npm run docs:check`).
+   What English words alike and the language per prompt and state (SPLINEDIT's capitals in it)
+   needs a `promptKeywords` slot in English's catalog, filled in every language with the words it
+   already used; a prompt two commands share (`enterVertexEditingOption`, PEDIT's too) takes none.
 
 ## 5. Script and direction
 

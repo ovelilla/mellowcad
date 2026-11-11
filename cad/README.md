@@ -78,7 +78,7 @@ what each control does. You can build that chrome yourself, or take it ready-mad
 | [Building a host](docs/host.md)          | The canvas, focus and keys, the command line, dynamic input and the chrome |
 | [Drawings and files](docs/drawings.md)   | Autosave, the drawing file, open and save, the clipboard, previews, SVG    |
 | [Without a browser](docs/headless.md)    | `CadDriver`: scripts, tests and rendering on a server                      |
-| [Languages](docs/languages.md)           | Its five languages, rewording a few words, a language of your own          |
+| [Languages](docs/languages.md)           | Its six languages, rewording a few words, a language of your own           |
 | [API reference](api.md)                  | Every export, with its signature and its documentation                     |
 
 What each command does, with its prompts and options, is in the user's
@@ -86,10 +86,10 @@ What each command does, with its prompts and options, is in the user's
 
 ## Entry points
 
-| Import                            | What                                                                    |
-| --------------------------------- | ----------------------------------------------------------------------- |
-| `@mellowcad/engine`               | The engine; English is built in                                         |
-| `@mellowcad/engine/locales/<tag>` | One language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr` |
+| Import                            | What                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| `@mellowcad/engine`               | The engine; English is built in                                               |
+| `@mellowcad/engine/locales/<tag>` | One language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it` |
 
 No other path is public. The package has no import-time side effects and ships one module per
 source file, so a bundler keeps only what a page uses, and a language costs nothing until it is

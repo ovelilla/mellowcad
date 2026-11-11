@@ -1,6 +1,6 @@
 # View
 
-### `ZOOM` / `Z` · es `ZOOM` / `Z` · pt-BR `ZOOM` / `Z` · fr `ZOOM` / `Z`
+### `ZOOM` / `Z` · es `ZOOM` / `Z` · pt-BR `ZOOM` / `Z` · fr `ZOOM` / `Z` · it `ZOOM` / `Z`
 
 **Implemented:**
 `Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:`
@@ -58,7 +58,7 @@ breaks it before its keywords); UNDO n stopping inside a joined pair (after
 `[ZOOM E + 2X][CIRCLE][ZOOM 2X]`, UNDO 2 writes `ZOOM CIRCLE ZOOM` and leaves the view at Extents',
 p346, where U takes the pair whole; here UNDO 2 takes `ZOOM CIRCLE` and stops before the pair)
 
-### `PAN` / `P` / `-PAN` / `-P` · es `ENCUADRE` / `E` / `-ENCUADRE` / `-E` · pt-BR `PAN` / `P` / `-PAN` / `-P` · fr `PAN` / `P` / `-PAN` / `-P`
+### `PAN` / `P` / `-PAN` / `-P` · es `ENCUADRE` / `E` / `-ENCUADRE` / `-E` · pt-BR `PAN` / `P` / `-PAN` / `-P` · fr `PAN` / `P` / `-PAN` / `-P` · it `PAN` / `P` / `-PAN` / `-P`
 
 **Implemented:** `Press ESC or ENTER to exit, or right-click to display shortcut menu.` when it
 starts (p200, p202; es
@@ -86,7 +86,7 @@ displacement (desktop d09-2)
 **Missing:** the real-time shortcut menu (desktop d03-2: Exit · Pan, checked, Zoom, 3D Orbit · Zoom
 Window, Zoom Original, Zoom Extents; Escape with it open closes it and ends PAN)
 
-### `PLAN` · es `PLANTA` · pt-BR `PLANTA` · fr `REPERE`
+### `PLAN` · es `PLANTA` · pt-BR `PLANTA` · fr `REPERE` · it `PIANA`
 
 **Implemented:** `Enter an option [Current ucs/Ucs/World] <Current>:` (es
 `Indique una opción [scp Actual/SCP/Universal] <Actual>`; `Invalid option keyword.`): Current ucs
@@ -102,7 +102,7 @@ nor here after a view only untwisted (unprobed)
 **Missing:** with nothing drawn the zoom stays where it was, where AutoCAD frames LIMITS (p238: no
 LIMITS here)
 
-### `-VPOINT` / `VPOINT` / `-VP` / `VP` / `DDVPOINT` · es `-PTOVISTA` / `-PV` / `PTOVISTA` / `PV` / `DDVPOINT` · pt-BR `-PONTOV` / `-VP` / `PONTOV` / `VP` · fr `-POINTVUE` / `-PV` / `POINTVUE` / `DDVPOINT` / `PV`
+### `-VPOINT` / `VPOINT` / `-VP` / `VP` / `DDVPOINT` · es `-PTOVISTA` / `-PV` / `PTOVISTA` / `PV` / `DDVPOINT` · pt-BR `-PONTOV` / `-VP` / `PONTOV` / `VP` · fr `-POINTVUE` / `-PV` / `POINTVUE` / `DDVPOINT` / `PV` · it `-PVISTA` / `-PV` / `PVISTA` / `DDVPOINT` / `PV`
 
 **Implemented:** `Current view direction:  VIEWDIR=…` (es `Dirección de vista actual:`), then
 `Specify a view point or [Rotate]:` (es `Precise un punto de vista o [Rotación]`), a view point
@@ -130,7 +130,7 @@ VIEWDIR as typed (AutoCAD keeps `1.0000,-1.0000,1.0000`; here the unit direction
 WORLDVIEW 0; with
 nothing drawn the zoom stays where it was, where AutoCAD frames LIMITS (p249: no LIMITS here)
 
-### `-VIEW` / `VIEW` / `-V` / `V` · es `-VISTA` / `VISTA` / `-VI` / `VI` · pt-BR `-VISTA` / `-V` / `VISTA` / `V` / `VISTADD` · fr `-VUE` / `-VU` / `VUE` / `VU` / `DDVIEW`
+### `-VIEW` / `VIEW` / `-V` / `V` · es `-VISTA` / `VISTA` / `-VI` / `VI` · pt-BR `-VISTA` / `-V` / `VISTA` / `V` / `VISTADD` · fr `-VUE` / `-VU` / `VUE` / `VU` / `DDVIEW` · it `-VISTA` / `-V` / `VISTA` / `V` / `DDVIEW`
 
 **Implemented:** `Enter an option [Orthographic]:` (es `Indique una opción [Ortogonal]`), then
 `Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:` (es
@@ -179,7 +179,7 @@ leaves the zoom where AutoCAD frames LIMITS (p333: no LIMITS here); the View Man
 Previous's list; the UCS named `*TOP*` after U of an orthographic preset from the WCS (AutoCAD
 keeps the WCS's axes under that name, p351, and 2027 still does, ucs/p260; here `*WORLD*`)
 
-### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT` · pt-BR `ORBITA3D` / `O3D` · fr `ORBITE3D` / `3O`
+### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT` · pt-BR `ORBITA3D` / `O3D` · fr `ORBITE3D` / `3O` · it `3DORBITA` / `3DO` / `ORBIT`
 
 **Implemented:** `Press ESC or ENTER to exit, or right-click to display shortcut-menu.` when it
 starts, hyphen and all (es
@@ -198,7 +198,7 @@ report, not a prompt), `Regenerating model.` and `Resuming LINE command.`, U aft
 it open closes it and ends 3DORBIT, d04), orbiting about the selection only, perspective, 3DFORBIT,
 3DCORBIT and the rest of 3D navigation
 
-### `NAVVCUBE` / `CUBE` · es `NAVVCUBE` / `CUBE` · pt-BR `CUBONAV` / `CUBE` · fr `NAVVCUBE` / `CUBE`
+### `NAVVCUBE` / `CUBE` · es `NAVVCUBE` / `CUBE` · pt-BR `CUBONAV` / `CUBE` · fr `NAVVCUBE` / `CUBE` · it `NAVCUBO` / `CUBO`
 
 **Implemented:** `Enter an option [ON/OFF] <ON>:` (the current value; es
 `Indique una opción [ACT/DES] <ACT>`; `CUBE` in both languages, p265, p266),
@@ -212,7 +212,7 @@ where AutoCAD's lists `[ON/OFF/Settings]`, es `[ACT/DES/Parámetros]`, p262, p26
 per visual style (none here); U and REDO putting NAVVCUBEDISPLAY back and forth,
 as AutoCAD 2027's console does (move/p238)
 
-### `VSCURRENT` / `VS` · es `ESTVISACTUAL` / `EVA` · pt-BR `EVATUAL` / `EVA` · fr `STYLVISCOURANT` / `SV`
+### `VSCURRENT` / `VS` · es `ESTVISACTUAL` / `EVA` · pt-BR `EVATUAL` / `EVA` · fr `STYLVISCOURANT` / `SV` · it `STILEVISCORRENTE` / `SVC`
 
 **Implemented:** `Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>:` (es
 `Indique una opción [estructuraalámbrica2d/ocUlto/Conceptual]`, pt-BR `Insira uma opção
@@ -281,7 +281,7 @@ lineweights narrower than 2D Wireframe's (0.80 mm: 6 px against 9–10, d06; the
 solids faceted (p04), and in Wireframe switches to Hidden ("HIDE command after save causes items
 to vanish")
 
-### `REGEN` / `RE` / `REGENALL` / `REA` · es `REGEN` / `RG` / `REGENT` / `RGT` · pt-BR `REGEN` / `RG` / `REGENTUDO` / `RGT` · fr `REGEN` / `RG` / `REGNTOUT` / `RGT`
+### `REGEN` / `RE` / `REGENALL` / `REA` · es `REGEN` / `RG` / `REGENT` / `RGT` · pt-BR `REGEN` / `RG` / `REGENTUDO` / `RGT` · fr `REGEN` / `RG` / `REGNTOUT` / `RGT` · it `RIGEN` / `RG` / `RIGENT` / `RGT`
 
 **Implemented:** both redraw and say `Regenerating model.` (es and pt-BR `Regenerando modelo.`),
 asking nothing; a step U names (`REGEN`, `REGENALL`; es `REGENT`, pt-BR `REGENTUDO`) and takes

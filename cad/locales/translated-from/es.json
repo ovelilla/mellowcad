@@ -1264,6 +1264,8 @@
   "commands.promptKeywords.enterFitDataOption.Open": "Open",
   "commands.promptKeywords.enterFitDataOption.Move": "Move",
   "commands.promptKeywords.enterFitDataOption.X": "X",
+  "commands.promptKeywords.enterFitDataOption.Delete": "Delete",
+  "commands.promptKeywords.enterFitDataOption.Tangents": "Tangents",
   "commands.promptKeywords.enterVertexEditingOption.X": "X",
   "commands.promptKeywords.specifyNewLocationOr.eXit": "EXit",
   "commands.promptKeywords.specifyNewLocationOr.X": "X",

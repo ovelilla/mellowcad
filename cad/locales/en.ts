@@ -1469,7 +1469,9 @@ export const en: EngineCatalog = {
         "Add": "Add",
         "Open": "Open",
         "Move": "Move",
-        "X": "X"
+        "X": "X",
+        "Delete": "Delete",
+        "Tangents": "Tangents"
       },
       "enterVertexEditingOption": {
         "X": "X"

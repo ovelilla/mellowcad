@@ -81,4 +81,10 @@ const research = join(path, "research")
 if (existsSync(join(main, "research")) && !existsSync(research)) {
   symlinkSync(join(main, "research"), research)
 }
+// The console's tracer, built outside git (mellowprobe/build.sh): without it every traced probe
+// (runacc.sh -t, probe.sh) hangs at its first prompt in a new worktree.
+const tracer = "scripts/research/mellowprobe/bin"
+if (existsSync(join(main, tracer)) && !existsSync(join(path, tracer))) {
+  symlinkSync(join(main, tracer), join(path, tracer))
+}
 console.log(path)

@@ -1554,6 +1554,8 @@ declare const source: {
         "Open": string
         "Move": string
         "X": string
+        "Delete": string
+        "Tangents": string
       }
       "enterVertexEditingOption": {
         "X": string

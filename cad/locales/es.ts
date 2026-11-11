@@ -2105,7 +2105,9 @@ export const es: EngineLocale = {
         "Add": "añaDIr",
         "Open": "Abrir",
         "Move": "dEsplazar",
-        "X": "S"
+        "X": "S",
+        "Delete": "sUprimir",
+        "Tangents": "Tangentes"
       },
       "enterVertexEditingOption": {
         "X": "S"
