@@ -1,0 +1,58 @@
+---
+title: "Esercizio AutoCAD: una biella con linee tangenti"
+metaTitle: "Esercizio AutoCAD avanzato: una biella, tangenti"
+description: "Disegna una biella in AutoCAD: due mozzi uniti da linee tangenti con lo snap Tangente, gli archi tra di esse tagliati, e le quote. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questa biella, in millimetri: due mozzi a distanza di 90, di raggio 20 e 12, forati con raggio 10 e 6, uniti da linee tangenti a entrambi, con gli archi tra le linee tagliati. Le linee tangenti usano lo snap a oggetto Tangente a entrambe le estremità; [`TAGLIA`](/docs/commands/trim) trasforma poi il cerchio di ogni mozzo in un arco.
+
+- **Esercizio:** Avanzato · Meccanica · 2D
+- **Comandi:** [`CERCHIO`](/docs/commands/circle), [`LINEA`](/docs/commands/line), [`TAGLIA`](/docs/commands/trim), [`DIMLINEARE`](/docs/commands/dimlinear), [`DIMRAGGIO`](/docs/commands/dimradius), [`DIMDIAMETRO`](/docs/commands/dimdiameter)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=link), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/link" caption="Una biella di due mozzi a distanza di 90, uniti da linee tangenti, quotata." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna i mozzi [#bosses]
+
+Sul layer Contorno, quattro cerchi con [`CERCHIO`](/docs/commands/circle), ciascuno col suo raggio: `20` e `10` in `0,0`, `12` e `6` in `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Disegna i mozzi" />
+
+### 2. Disegna le linee tangenti [#tangents]
+
+[`LINEA`](/docs/commands/line), poi digita `_TAN`, lo snap a oggetto Tangente per un punto, e seleziona il cerchio grande vicino alla sua parte alta; `_TAN` di nuovo e seleziona quello piccolo vicino alla sua parte alta. La linea tocca entrambi. Lo stesso lungo la parte bassa.
+
+<Session name="exercises/link/tangents" caption="2. Disegna le linee tangenti" />
+
+### 3. Taglia gli archi [#trim]
+
+[`TAGLIA`](/docs/commands/trim): seleziona ogni mozzo tra le due linee, sul lato rivolto verso l'altro. Gli archi interni spariscono e ogni cerchio diventa un arco.
+
+<Session name="exercises/link/trim" caption="3. Taglia gli archi" />
+
+### 4. Disegna gli assi [#centreLines]
+
+Sul layer Assi, l'asse che passa per i due centri e una linea attraverso ogni mozzo.
+
+<Session name="exercises/link/centreLines" caption="4. Disegna gli assi" />
+
+### 5. Quotala [#dimensions]
+
+Sul layer Quote, la distanza tra i centri con [`DIMLINEARE`](/docs/commands/dimlinear), i raggi dei mozzi con [`DIMRAGGIO`](/docs/commands/dimradius) e i loro fori con [`DIMDIAMETRO`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Quotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block): Avanzato · Meccanica · Solido 3D
+- [Esercizio AutoCAD: una guarnizione](/docs/exercises/gasket): Principiante · Meccanica · 2D
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket): Principiante · Meccanica · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

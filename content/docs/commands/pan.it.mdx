@@ -1,0 +1,52 @@
+---
+title: "Comando PAN in AutoCAD"
+description: "Come funziona PAN (alias P) di AutoCAD in italiano: trascina la vista con il cursore a mano o con la rotellina, -PAN con due punti, e PAN dentro un comando."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando PAN in italiano?","answer":"PAN, come in inglese, alias P, poi Invio o barra spaziatrice. Oppure nessun comando: tieni premuta la rotellina del mouse e trascina. Il nome completo funziona anch'esso, e _PAN in tutte le lingue di AutoCAD."},{"question":"Come si fa il pan con il mouse in AutoCAD?","answer":"Tieni premuto il pulsante della rotellina e trascina: la vista segue il cursore. Gira la rotellina per ingrandire e ridurre attorno al cursore. Su un trackpad, avvia PAN e trascina con il pulsante sinistro."},{"question":"Come si fa il pan mentre si disegna?","answer":"Trascina con il pulsante della rotellina, oppure digita 'P alla richiesta del comando: il comando aspetta mentre fai il pan, poi chiede di nuovo da dove era rimasto."},{"question":"Come si fa il pan di una distanza esatta?","answer":"Usa -PAN: digita lo spostamento, come 100,0, e premi Invio al secondo punto. La vista si muove di 100 unità lungo X."}]
+---
+
+PAN fa scorrere la vista; nulla nel disegno si sposta. Parte con `Premere ESC o INVIO per uscire o fare clic con il pulsante destro del mouse per visualizzare il menu di scelta rapida.` e non chiede altro: il cursore diventa una mano, e trascinando con il pulsante sinistro la vista si muove con esso, quante volte vuoi, finché Invio o Esc lo termina. Senza PAN, trascinare con il pulsante della rotellina fa il pan in qualunque momento, anche nel mezzo di un comando. Ogni PAN è un passo di annullamento, unito agli ZOOM e ai PAN intorno, quindi `A` riporta indietro la vista. Digitato con un apostrofo, `'PAN` o `'P`, funziona dentro un altro comando, che prosegue dopo di esso.
+
+`-PAN` fa invece il pan con due punti: un punto base e un secondo punto, con la vista che si muove della distanza tra essi; oppure uno spostamento digitato alla prima richiesta, come `50,0`, e Invio alla seconda. È trasparente anch'esso, e un passo di annullamento a sé.
+
+- **Comando:** `PAN`
+- **Alias:** `P`
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `P` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="pan" caption="PAN trascinato a destra e in basso, poi Invio: la piastra scorre nella vista, con le coordinate invariate." />
+
+## Cosa non fa ancora [#missing]
+
+Il menu di scelta rapida che AutoCAD mostra con un clic destro durante il pan, con Esci, Pan, Zoom, Orbita 3D, Zoom finestra, Zoom originale e Zoom estensioni.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e--pt-br-pan--p---pan---p--fr-pan--p---pan---p--it-pan--p---pan---p)
+
+## Domande [#questions]
+
+### Come si chiama il comando PAN in italiano?
+
+PAN, come in inglese, alias `P`, poi Invio o barra spaziatrice. Oppure nessun comando: tieni premuta la rotellina del mouse e trascina. Il nome completo funziona anch'esso, e `_PAN` in tutte le lingue di AutoCAD.
+
+### Come si fa il pan con il mouse in AutoCAD?
+
+Tieni premuto il pulsante della rotellina e trascina: la vista segue il cursore. Gira la rotellina per ingrandire e ridurre attorno al cursore. Su un trackpad, avvia PAN e trascina con il pulsante sinistro.
+
+### Come si fa il pan mentre si disegna?
+
+Trascina con il pulsante della rotellina, oppure digita `'P` alla richiesta del comando: il comando aspetta mentre fai il pan, poi chiede di nuovo da dove era rimasto.
+
+### Come si fa il pan di una distanza esatta?
+
+Usa `-PAN`: digita lo spostamento, come `100,0`, e premi Invio al secondo punto. La vista si muove di 100 unità lungo X.
+
+## Comandi correlati [#related]
+
+- [Comando ZOOM in AutoCAD](/docs/commands/zoom)
+- [Comando VISTA (VIEW) in AutoCAD](/docs/commands/view)
+- [Comando 3DORBITA (3DORBIT) in AutoCAD](/docs/commands/3dorbit)

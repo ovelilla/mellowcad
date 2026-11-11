@@ -1,0 +1,55 @@
+---
+title: Come disegnare la pianta di una casa in AutoCAD
+metaTitle: "Disegnare la pianta di una casa online"
+description: "Come disegnare la pianta di una casa in AutoCAD: muri con OFFSET, muro interno, aperture con TAGLIA (TRIM), porte, finestre e quote."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Una pianta è la casa tagliata a circa un metro e mezzo di altezza e vista dall'alto: ogni muro come due linee con il suo spessore in mezzo, le aperture, le porte disegnate aperte con il loro arco di apertura, le finestre e le quote. Questa guida disegna una casa di due stanze, di 8 metri per 6, in centimetri: un'unità è un centimetro, quindi i muri esterni sono spessi 20 e quello interno 10. Ogni passo mostra il suo disegno e la cronologia della riga di comando come la digiteresti. [Apri l'editor](/it/draw) accanto a questa pagina e seguila.
+
+## Crea i layer [#layers]
+
+Ogni tipo di oggetto va su un layer a sé, con il suo colore, così puoi disattivarne uno qualsiasi: Muri, Porte, Finestre e Quote. Creali nella palette dei layer, <Command id="LAYER" />, e rendi corrente il layer giusto nel controllo Layer prima di ogni passo. Perché le quote si leggano alla scala di una casa, imposta la scala globale del loro stile in <Command id="DIMSTYLE" />: 12 qui, così il loro testo è alto 30.
+
+## Disegna i muri esterni [#walls]
+
+Sul layer Muri, <Command id="RECTANG" /> da `0,0` a `800,600`: la faccia esterna dei muri. <Command id="OFFSET" /> dà quella interna: digita lo spessore, `20`, seleziona il rettangolo e fai clic al suo interno.
+
+<Session name="floorPlanWalls" caption="I muri esterni: un rettangolo e il suo offset, 20 verso l'interno." />
+
+## Disegna il muro interno [#inner-wall]
+
+Una linea con <Command id="LINE" /> da `500,20`, `0,560` verso l'alto fino alla faccia interna dei muri esterni, e un <Command id="OFFSET" /> di `10` alla sua destra: il muro tra le due stanze.
+
+<Session name="floorPlanInnerWall" caption="Il muro interno: una linea e il suo offset, 10 alla sua destra." />
+
+## Taglia le aperture [#openings]
+
+Un'apertura si taglia tra due linee che attraversano il muro, i suoi stipiti. Disegnali con <Command id="LINE" />, poi usa <Command id="TRIM" /> sulle linee del muro tra di essi, un clic ciascuna: l'ingresso, largo 90, da `100,0`; la porta interna, larga 80, da `500,200`; le finestre, larghe 120, da `200,580` nel muro in alto e `780,250` in quello a destra.
+
+<Session name="floorPlanOpenings" caption="Quattro aperture: due stipiti ciascuna, e le linee del muro tagliate tra di essi." />
+
+## Disegna le porte [#doors]
+
+Sul layer Porte, ogni porta è la sua anta, disegnata aperta con <Command id="LINE" />, e il suo arco di apertura, un arco con <Command id="ARC" />: scegli la sua opzione Centro, poi indica la cerniera come centro, l'inizio dell'arco e la sua fine. Entrambi gli estremi sono punti già disegnati, l'angolo dello stipite e la fine dell'anta: digita `_END`, lo snap ad oggetto Fine per un solo punto, e seleziona ciascuno.
+
+<Session name="floorPlanDoors" caption="Ogni porta: la sua anta aperta a 90° e l'arco della sua apertura." />
+
+## Disegna le finestre [#windows]
+
+Sul layer Finestre, un <Command id="RECTANG" /> riempie ogni apertura a partire dal suo stipite, e una linea nel suo centro rappresenta il vetro.
+
+<Session name="floorPlanWindows" caption="Le finestre: un rettangolo in ogni apertura e una linea per il vetro." />
+
+## Quota la pianta [#dimensions]
+
+Sul layer Quote, usa <Command id="DIMLINEAR" /> per le misure esterne, poi per le stanze dall'interno: la larghezza della prima stanza con <Command id="DIMLINEAR" />, poi il muro interno e la seconda stanza con <Command id="DIMCONTINUE" />, digitati dall'origine con `#`.
+
+<Session name="floorPlanDimensions" caption="La pianta quotata: 800 per 600 all'esterno, le stanze all'interno." />
+
+## Poi [#next]
+
+- Dai un nome a ogni stanza con <Command id="TEXT" />, e riempi i muri con <Command id="HATCH" />, selezionando un punto tra le loro due linee.
+- Esercitati con gli [esercizi](/docs/exercises): [la scala in pianta](/docs/exercises/stairs) e [un tavolo rotondo con le sedie](/docs/exercises/round-table) si disegnano anch'essi in centimetri.
+- [Coordinate](/docs/coordinates): tutti i modi di digitare un punto.

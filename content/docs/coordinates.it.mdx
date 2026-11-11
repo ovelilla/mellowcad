@@ -1,0 +1,44 @@
+---
+title: Coordinate in AutoCAD
+metaTitle: "Coordinate polari in AutoCAD: guida"
+description: "Come digitare i punti in AutoCAD: coordinate assolute, relative e polari, una linea inclinata e il puntamento polare. Esercitati gratis online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Ogni punto che un comando chiede può essere indicato sul disegno o digitato. Digitato, un punto è formato da due numeri, X e Y, separati da una virgola, e il punto da cui si misurano dipende da come li scrivi: dall'origine, dall'ultimo punto, o come una lunghezza e un angolo a partire da esso. MellowCAD li legge come AutoCAD con l'input dinamico attivo, la sua impostazione predefinita. Ogni sezione disegna una figura e ne mostra la cronologia.
+
+## Coordinate assolute [#absolute]
+
+Misurate dall'origine, `0,0`. Il primo punto che un comando chiede si legge così: `20,10` è a 20 su X e a 10 su Y. Dopo, l'input dinamico legge un punto digitato a partire dall'ultimo, quindi un punto misurato dall'origine vuole `#` davanti: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Un triangolo, ogni vertice misurato dall'origine." />
+
+## Coordinate relative [#relative]
+
+Misurate dall'ultimo punto: di quanto spostarsi su X, poi su Y. Dopo il primo punto di un comando, è questo che significa un punto digitato, e la cronologia lo scrive con `@` davanti, come lo legge la riga di comando: `100,0` è 100 a destra dell'ultimo punto, `-50,70` 50 indietro e 70 in su. Digitato da te con `@`, un punto è relativo ovunque lo digiti.
+
+<Session name="coordinatesRelative" caption="Lo stesso triangolo, ogni vertice misurato da quello precedente." />
+
+## Coordinate polari [#polar]
+
+Una lunghezza e un angolo, misurati dall'ultimo punto: `100<0` va di 100 su X, `60<120` va di 60 a 120°. Gli angoli si misurano dall'asse X, in senso antiorario: 90° è in alto, 180° a sinistra e 270°, o -90°, in basso. Anche la cronologia le scrive con `@`.
+
+<Session name="coordinatesPolar" caption="Tre lati, ciascuno una lunghezza e un angolo a partire dalla fine del precedente." />
+
+## Una linea inclinata [#angle]
+
+Per disegnare una linea di una data lunghezza con un dato angolo, digita l'estremità come coordinate polari, `100<30`. Oppure fissa prima l'angolo: digita `<30` e Invio, e il punto successivo resta su quella direzione, dal lato del cursore; poi digita la lunghezza, `100`.
+
+<Session name="coordinatesAngle" caption="Una linea vincolata a 30°, poi con la sua lunghezza, 100." />
+
+## Puntamento polare [#tracking]
+
+Con il puntamento polare attivo, `F10` o il suo pulsante nella barra di stato, il cursore mostra una guida a ogni multiplo del suo angolo, impostato dal menu di quel pulsante, e una lunghezza digitata segue la guida. Il tooltip indica a che distanza e con che angolo si trova il cursore.
+
+<Session name="coordinatesTracking" caption="Puntamento polare a 30°: la sua guida, e la distanza e l'angolo al cursore." />
+
+## Poi [#next]
+
+- [Esercizi](/docs/exercises) digitati dall'inizio alla fine: [una staffa a L](/docs/exercises/l-bracket) con coordinate relative, [un terreno](/docs/exercises/plot-of-land) con coordinate polari e [un blocco in isometrico](/docs/exercises/isometric-block) lungo gli angoli isometrici.
+- La pagina di <Command id="LINE" />, e [Per iniziare](/docs/getting-started) per i primi passi con la riga di comando.

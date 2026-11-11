@@ -1,0 +1,81 @@
+---
+title: "Comando DIST in AutoCAD"
+description: "Misurare una distanza con DIST (DI) di AutoCAD in italiano: due punti, angoli e delta X, Y, Z, oppure una serie di punti. Provalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è il comando per misurare una distanza in AutoCAD?","answer":"DIST, alias DI, poi Invio o barra spaziatrice. Ha lo stesso nome in AutoCAD in italiano e in inglese, e _DIST funziona in tutte le lingue di AutoCAD."},{"question":"Come si misura una distanza in AutoCAD?","answer":"Digita DI, poi seleziona i due punti, con gli snap ad oggetto per cadere sui punti finali o sui centri degli oggetti. La distanza viene scritta nella riga di comando con l'angolo e i delta."},{"question":"Come si misura la lunghezza totale di più segmenti?","answer":"Al secondo punto scegli Più punti e continua a selezionare: la distanza finora viene mostrata a ogni punto e Invio scrive il totale."},{"question":"Come si misura una distanza in 3D?","answer":"Indica i punti con la loro Z, oppure aggancia oggetti alla loro altezza: DIST misura la vera distanza nello spazio e scrive l'angolo dal piano XY e il delta in Z."},{"question":"Perché DIST mostra meno decimali di quelli che servono?","answer":"Scrive le lunghezze alla precisione del disegno, qui due cifre decimali in un nuovo disegno. Impostane di più in UNITA, fino a otto."}]
+---
+
+DIST misura la distanza tra due punti. Seleziona, aggancia o digita il primo punto e il secondo, e scrive nella riga di comando la distanza, l'angolo nel piano XY e l'angolo da esso, e i delta in X, Y e Z, poi termina. Ogni punto è misurato dov'è, con la sua Z, quindi la distanza è quella vera nello spazio. Invio al primo punto parte dall'ultimo punto indicato, e al secondo misura di nuovo fino al primo. I numeri seguono la precisione del disegno, e gli angoli AUPREC.
+
+- **Comando:** `DIST`
+- **Alias:** `DI`
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DI` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="dist" caption="DIST lungo la diagonale di una piastra di 100 per 60: la distanza, l'angolo nel piano XY e i delta." />
+
+## Opzioni [#options]
+
+### `Più punti` (`P`) [#multiple]
+
+`Più` punti, al secondo punto: una serie di punti invece di una sola misura, con la distanza finora scritta prima di ogni punto successivo e mostrata sopra il cursore, fino a Invio o `Totale`.
+
+### `Arco` (`A`) [#arc]
+
+Misura invece lungo archi, con le opzioni ad arco di PLINEA: `Angolo`, `CEntro`, `Chiudi`, `Direzione`, `Linea`, `Raggio`, `Secondo`, `ANnulla`. La lunghezza di ogni arco si somma alla serie.
+
+### `Chiudi` (`C`) [#close]
+
+Torna al primo punto, aggiunge quell'ultimo tratto, scrive il totale e termina.
+
+### `Lunghezza` (`L`) [#length]
+
+Aggiunge un tratto della lunghezza che digiti lungo l'ultimo.
+
+### `ANnulla` (`AN`) [#undo]
+
+Annulla l'ultimo punto della serie.
+
+### `Totale` (`T`) [#total]
+
+Scrive il totale della serie e termina; Invio fa lo stesso.
+
+## Cosa non fa ancora [#missing]
+
+MEASUREGEOM, gli strumenti Misura della barra multifunzione, che pongono le richieste di DIST dentro un ciclo con Radius, Angle, Area, Volume e Quick: qui il pulsante Distanza della barra multifunzione esegue DIST. All'opzione `CEntro` di Arc, l'angolo incluso si legge in gradi, mentre AutoCAD 2027 vi legge un numero come distanza lungo il cursore.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di)
+
+## Domande [#questions]
+
+### Qual è il comando per misurare una distanza in AutoCAD?
+
+DIST, alias `DI`, poi Invio o barra spaziatrice. Ha lo stesso nome in AutoCAD in italiano e in inglese, e `_DIST` funziona in tutte le lingue di AutoCAD.
+
+### Come si misura una distanza in AutoCAD?
+
+Digita `DI`, poi seleziona i due punti, con gli snap ad oggetto per cadere sui punti finali o sui centri degli oggetti. La distanza viene scritta nella riga di comando con l'angolo e i delta.
+
+### Come si misura la lunghezza totale di più segmenti?
+
+Al secondo punto scegli `Più` punti e continua a selezionare: la distanza finora viene mostrata a ogni punto e Invio scrive il totale.
+
+### Come si misura una distanza in 3D?
+
+Indica i punti con la loro Z, oppure aggancia oggetti alla loro altezza: DIST misura la vera distanza nello spazio e scrive l'angolo dal piano XY e il delta in Z.
+
+### Perché DIST mostra meno decimali di quelli che servono?
+
+Scrive le lunghezze alla precisione del disegno, qui due cifre decimali in un nuovo disegno. Impostane di più in [`UNITA`](/docs/commands/units), fino a otto.
+
+## Comandi correlati [#related]
+
+- [Comando AREA in AutoCAD](/docs/commands/area)
+- [Comando ID in AutoCAD](/docs/commands/id)
+- [Comando LISTA (LIST) in AutoCAD](/docs/commands/list)
+- [Comando UNITA (UNITS) in AutoCAD](/docs/commands/units)

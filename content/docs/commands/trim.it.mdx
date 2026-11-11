@@ -1,0 +1,87 @@
+---
+title: "Comando TAGLIA (TRIM) in AutoCAD"
+description: "Come funziona TAGLIA (TRIM, alias TA) di AutoCAD in italiano: modalità Rapido e Standard, spigoli di taglio, recinto e intersezione. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando TRIM in italiano?","answer":"TAGLIA, con l'alias TA: digitalo, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, funziona anche il nome inglese, preceduto da un trattino basso: _TRIM."},{"question":"Perché TAGLIA cancella tutta la linea?","answer":"Perché TAGLIA è in modalità Rapido, il valore predefinito di AutoCAD dalla versione 2021: indicare un oggetto che nessuno spigolo incrocia lo cancella. Scegli mOdalità e poi Standard perché TAGLIA lo lasci e lo dica invece."},{"question":"Come si tagliano più linee insieme?","answer":"Clicca in un punto vuoto e indica un secondo punto: ogni oggetto che quel recinto incrocia viene tagliato in un solo passo. Oppure scegli Interseca e traccia una finestra sui pezzi da togliere."},{"question":"Come si prolunga una linea con TAGLIA?","answer":"Tieni premuto Maiusc mentre indichi la linea vicino all'estremo da prolungare: si allunga fino allo spigolo più vicino, come con ESTENDI, e la selezione successiva senza Maiusc taglia di nuovo."}]
+---
+
+TAGLIA (TRIM) taglia un oggetto fino al punto in cui altri oggetti lo incrociano: indichi il pezzo da togliere, ed esso scompare fino all'incrocio più vicino da ciascun lato. Parte in modalità Rapido, come quello di AutoCAD: ogni oggetto è uno spigolo di taglio, e un oggetto che nulla incrocia viene cancellato per intero. Tenere premuto Maiusc mentre indichi prolunga invece l'oggetto fino allo spigolo più vicino, come fa [`ESTENDI`](/docs/commands/extend). Ogni selezione è un passo che Annulla ripristina; Invio termina il comando.
+
+- **Comando:** `TAGLIA`
+- **In inglese:** `TRIM`, digitato `_TRIM` in ogni lingua
+- **Alias:** `TA`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `TA` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="trim" caption="Una linea tagliata fino alle due linee che la incrociano: ogni estremo indicato una volta, in modalità Rapido." />
+
+## Opzioni [#options]
+
+### `limiti Taglio` (`T`) [#cutting]
+
+Sceglie quali oggetti tagliano: selezionali, oppure premi Invio per prenderli tutti. Da allora tagliano solo quelli, qualunque sia la modalità, finché il comando non termina.
+
+### `iNTercetta` (`NT`) [#fence]
+
+Chiede i punti di una linea, quanti ne vuoi fino a Invio: ogni oggetto che incrocia viene tagliato dove lo incrocia, in un solo passo. La modalità Standard la elenca; la modalità Rapido la accetta anch'essa, e un clic sul vuoto vi avvia da solo un recinto a due punti.
+
+### `Interseca` (`I`) [#crossing]
+
+Chiede i due angoli di una finestra: tutto ciò che il suo contorno incrocia viene tagliato, in un solo passo. Un oggetto interamente dentro la finestra non è uno che essa incrocia.
+
+### `mOdalità` (`O`) [#mode]
+
+Passa da `Rapida` a `Standard`. In modalità Standard TAGLIA chiede prima gli spigoli di taglio (Invio li prende tutti), lascia un oggetto che nessuno spigolo incrocia con `Non interseca il limite di taglio.`, elenca Recinto e Spigolo, e un clic sul vuoto avvia una finestra di intersezione. La modalità è di TAGLIA ed ESTENDI insieme, e dura per la sessione.
+
+### `Spigolo` (`S`) [#edge]
+
+Solo modalità Standard. Con `Estensione`, uno spigolo taglia anche dove incrocerebbe se fosse prolungato: una linea in entrambe le direzioni, un arco lungo tutto il suo cerchio; `Nessuna` è il valore predefinito.
+
+### `Cancella` (`C`) [#erase]
+
+Cancella oggetti senza lasciare il comando: selezionali, poi Invio li cancella, come un passo di TAGLIA che Annulla può ripristinare.
+
+### `Annulla` (`A`) [#undo]
+
+Elencata una volta che il prompt ha ricevuto una risposta, una selezione, un recinto, una finestra: annulla l'ultimo taglio, e quando non resta nulla da annullare lo dice.
+
+## Cosa non fa ancora [#missing]
+
+Proiezione: l'opzione di proiezione di AutoCAD (Nessuna, Ucs, Vista) non è offerta, e tutto viene calcolato proiettato sul piano XY dell'UCS, che è il valore predefinito di AutoCAD, Ucs. Un recinto non può ancora essere trascinato con il cursore, solo indicato punto per punto. La modalità di taglio e la scelta di Spigolo durano per la sessione, dove AutoCAD le conserva da una sessione all'altra. Un oggetto inclinato rispetto all'UCS, a parte una spline, né taglia né viene tagliato.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es)
+
+## Domande [#questions]
+
+### Come si chiama il comando TRIM in italiano?
+
+TAGLIA, con l'alias `TA`: digitalo, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, funziona anche il nome inglese, preceduto da un trattino basso: `_TRIM`.
+
+### Perché TAGLIA cancella tutta la linea?
+
+Perché TAGLIA è in modalità Rapido, il valore predefinito di AutoCAD dalla versione 2021: indicare un oggetto che nessuno spigolo incrocia lo cancella. Scegli `mOdalità` e poi `Standard` perché TAGLIA lo lasci e lo dica invece.
+
+### Come si tagliano più linee insieme?
+
+Clicca in un punto vuoto e indica un secondo punto: ogni oggetto che quel recinto incrocia viene tagliato in un solo passo. Oppure scegli `Interseca` e traccia una finestra sui pezzi da togliere.
+
+### Come si prolunga una linea con TAGLIA?
+
+Tieni premuto Maiusc mentre indichi la linea vicino all'estremo da prolungare: si allunga fino allo spigolo più vicino, come con [`ESTENDI`](/docs/commands/extend), e la selezione successiva senza Maiusc taglia di nuovo.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una flangia](/docs/exercises/flange)
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link)
+
+## Comandi correlati [#related]
+
+- [Comando ESTENDI (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Comando OFFSET in AutoCAD](/docs/commands/offset)
+- [Comando RACCORDO (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Comando SPEZZA (BREAK) in AutoCAD](/docs/commands/break)

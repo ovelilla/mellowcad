@@ -1,0 +1,82 @@
+---
+title: "Comando SERIEPOLARE (ARRAYPOLAR) in AutoCAD"
+description: "Come funziona SERIEPOLARE (ARRAYPOLAR) di AutoCAD in italiano, richiesta per richiesta: il centro, gli elementi, l'angolo tra o riempito. Provalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si fa una serie polare?","answer":"Digita ARRAYPOLAR, seleziona gli oggetti, premi Invio e indica il punto centrale; oppure digita SR per SERIE e scegli POlare dopo gli oggetti. Poi scegli ELementi per impostare quanti, e premi Invio per crearla."},{"question":"Come si dispongono gli oggetti in serie attorno a una parte di cerchio?","answer":"Scegli RIEmpimento e digita l'angolo: 180 dispone gli elementi su mezzo cerchio in senso antiorario, -180 in senso orario. Il numero di elementi è conservato, il primo e l'ultimo a ciascun estremo dell'angolo."},{"question":"Come si impedisce agli elementi di ruotare?","answer":"Scegli RUota e rispondi No: ogni elemento è spostato attorno al centro senza ruotare."},{"question":"Come si cambia il raggio di una serie polare?","answer":"Seleziona la serie e trascina il suo grip quadrato nel punto base verso il centro o lontano da esso: la distanza dal centro è il nuovo raggio. Oppure riscrivi Raggio nella tavolozza Proprietà."}]
+---
+
+SERIEPOLARE copia una selezione attorno a un punto centrale, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede il punto centrale e mostra subito la serie: 6 elementi su un giro completo, ciascuno ruotato mentre gira. Poi una richiesta la modifica in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati diventano il suo primo elemento.
+
+- **Comando:** `SERIEPOLARE`
+- **In inglese:** `ARRAYPOLAR`, digitato `_ARRAYPOLAR` in ogni lingua
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SERIEPOLARE` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="arraypolar" caption="Un foro su una flangia in serie attorno al centro della flangia: 8 elementi su un giro completo." />
+
+## Opzioni [#options]
+
+### `ASsociativo` (`AS`) [#associative]
+
+`Sì`, il predefinito, crea un solo oggetto serie, che i suoi grip e la tavolozza Proprietà modificano poi; `No` crea copie separate accanto agli oggetti selezionati. La risposta è conservata per la sessione, anche da ARRAYRECT e ARRAYPATH.
+
+### `ELementi` (`EL`) [#items]
+
+Il numero di elementi, da 1 a 32767; l'angolo che riempiono è conservato.
+
+### `ANgolo intermedio` (`AN`) [#angle-between]
+
+L'angolo da un elemento al successivo. L'angolo riempito diventa quel numero di passi, con la direzione conservata, e un giro completo quando raggiungono 360°.
+
+### `angolo di RIEmpimento` (`RIE`) [#fill-angle]
+
+L'angolo che gli elementi riempiono, positivo in senso antiorario e negativo in senso orario; il numero di elementi è conservato. Su un giro completo gli elementi distano un giro diviso il loro numero; su meno, l'ultimo cade alla fine dell'angolo.
+
+### `RUOta elementi` (`RU`) [#rotate-items]
+
+`Sì`, il predefinito, ruota ogni elemento mentre gira attorno al centro; `No` lo sposta soltanto, così ogni elemento sta come il primo.
+
+### `ESci` (`ES`) [#exit]
+
+Crea la serie e termina il comando, come fa Invio.
+
+## Cosa non fa ancora [#missing]
+
+Punto base; Asse di rotazione, per una serie attorno a un asse nello spazio; RIGhe e Livelli, per anelli di elementi e copie impilate in Z; Espressione, che lega un valore ai parametri del disegno. I menu dei grip della serie (Raggio di stiramento, Numero elementi, Angolo di riempimento…) e Ctrl per scorrerli.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare)
+
+## Domande [#questions]
+
+### Come si fa una serie polare?
+
+Digita `ARRAYPOLAR`, seleziona gli oggetti, premi Invio e indica il punto centrale; oppure digita `SR` per [`SERIE`](/docs/commands/array) e scegli `POlare` dopo gli oggetti. Poi scegli `ELementi` per impostare quanti, e premi Invio per crearla.
+
+### Come si dispongono gli oggetti in serie attorno a una parte di cerchio?
+
+Scegli `RIEmpimento` e digita l'angolo: 180 dispone gli elementi su mezzo cerchio in senso antiorario, -180 in senso orario. Il numero di elementi è conservato, il primo e l'ultimo a ciascun estremo dell'angolo.
+
+### Come si impedisce agli elementi di ruotare?
+
+Scegli `RUota` e rispondi `No`: ogni elemento è spostato attorno al centro senza ruotare.
+
+### Come si cambia il raggio di una serie polare?
+
+Seleziona la serie e trascina il suo grip quadrato nel punto base verso il centro o lontano da esso: la distanza dal centro è il nuovo raggio. Oppure riscrivi Raggio nella tavolozza Proprietà.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una flangia](/docs/exercises/flange)
+- [Esercizio AutoCAD: un tavolo rotondo e le sedie](/docs/exercises/round-table)
+
+## Comandi correlati [#related]
+
+- [Comando SERIE (ARRAY) in AutoCAD](/docs/commands/array)
+- [Comando SERIERETTANG (ARRAYRECT) in AutoCAD](/docs/commands/arrayrect)
+- [Comando SERIETRAIETT (ARRAYPATH) in AutoCAD](/docs/commands/arraypath)
+- [Comando RUOTA (ROTATE) in AutoCAD](/docs/commands/rotate)

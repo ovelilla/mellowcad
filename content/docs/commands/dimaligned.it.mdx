@@ -1,0 +1,67 @@
+---
+title: "Comando DIMALLINEATA (DIMALIGNED) in AutoCAD"
+description: "Come DIMALLINEATA (DIMALIGNED, alias DAL) di AutoCAD quota uno spigolo inclinato: due origini o un oggetto, poi una linea parallela. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di DIMALLINEATA in AutoCAD?","answer":"DAL, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _DIMALIGNED in tutte le lingue di AutoCAD."},{"question":"Qual è la differenza tra DIMLINEARE e DIMALLINEATA?","answer":"Su uno spigolo inclinato, DIMLINEARE dà la sua larghezza o la sua altezza, a seconda che la sua linea di quota sia orizzontale o verticale; DIMALLINEATA dà la sua lunghezza, con la linea parallela allo spigolo. Su uno spigolo lungo X o Y entrambe danno lo stesso numero."},{"question":"Come si quota una linea inclinata in AutoCAD?","answer":"Con DIMALLINEATA: premi Invio alla prima richiesta, seleziona la linea e posiziona la quota dal lato che vuoi. Oppure indica i suoi due estremi, con lo snap Punto finale perché le origini siano esatte."},{"question":"Come si scrive un testo proprio su una quota?","answer":"Scegli Testo prima di posizionarla e digita il testo: <> sta per la misura, quindi «<> mm» la scrive seguita dalla sua unità, e Invio senza digitare nulla conserva la misura da sola. Una volta posizionata, Sostituzione testo della tavolozza Proprietà la cambia."}]
+---
+
+DIMALLINEATA misura la distanza reale tra due punti: la sua linea di quota corre parallela alla linea che li unisce, con qualsiasi angolo, mentre [`DIMLINEARE`](/docs/commands/dimlinear) misura solo lungo X o Y. Le sue richieste sono quelle di [`DIMLINEARE`](/docs/commands/dimlinear): le origini della prima e della seconda linea di estensione, oppure Invio e una selezione su una linea, un arco o un segmento di polilinea per i suoi due estremi, poi la posizione della linea di quota, da una parte o dall'altra. Un cerchio selezionato dà il suo diametro attraverso il punto in cui lo hai selezionato. La riga di comando dice la misura, e il comando termina.
+
+- **Comando:** `DIMALLINEATA`
+- **In inglese:** `DIMALIGNED`, digitato `_DIMALIGNED` in ogni lingua
+- **Alias:** `DAL`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DAL` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="dimaligned" caption="Il lato inclinato di un triangolo quotato lungo la sua lunghezza: i suoi due estremi, poi dove va la linea." />
+
+## Opzioni [#options]
+
+### `Testo` (`T`) [#text]
+
+Chiede il testo da scrivere al posto della misura, che offre come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura.
+
+### `Angolo` (`A`) [#angle]
+
+Chiede l'angolo del testo, che è poi disegnato a quell'angolo invece che lungo la linea di quota. 0 lo riporta lungo la linea.
+
+## Cosa non fa ancora [#missing]
+
+Testo multilinea: il testo di una quota è una sola riga, impostata con `Testo` alla riga di comando, mai nell'editor di testo. Con un angolo impostato da `Angolo`, AutoCAD centra il testo sulla linea di quota; qui resta sopra di essa, come senza angolo. Una quota non è associativa: non segue l'oggetto che misura.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota--it-dimallineata--dal)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di DIMALLINEATA in AutoCAD?
+
+`DAL`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_DIMALIGNED` in tutte le lingue di AutoCAD.
+
+### Qual è la differenza tra DIMLINEARE e DIMALLINEATA?
+
+Su uno spigolo inclinato, [`DIMLINEARE`](/docs/commands/dimlinear) dà la sua larghezza o la sua altezza, a seconda che la sua linea di quota sia orizzontale o verticale; DIMALLINEATA dà la sua lunghezza, con la linea parallela allo spigolo. Su uno spigolo lungo X o Y entrambe danno lo stesso numero.
+
+### Come si quota una linea inclinata in AutoCAD?
+
+Con DIMALLINEATA: premi Invio alla prima richiesta, seleziona la linea e posiziona la quota dal lato che vuoi. Oppure indica i suoi due estremi, con lo snap Punto finale perché le origini siano esatte.
+
+### Come si scrive un testo proprio su una quota?
+
+Scegli `Testo` prima di posizionarla e digita il testo: `<>` sta per la misura, quindi `<> mm` la scrive seguita dalla sua unità, e Invio senza digitare nulla conserva la misura da sola. Una volta posizionata, Sostituzione testo della tavolozza Proprietà la cambia.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: un lotto di terreno](/docs/exercises/plot-of-land)
+- [Esercizio AutoCAD isometrico: un blocco a gradino](/docs/exercises/isometric-block)
+
+## Comandi correlati [#related]
+
+- [Comando DIMLINEARE (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Comando DIMANGOLO (DIMANGULAR) in AutoCAD](/docs/commands/dimangular)
+- [Comando DIMCONTINUA (DIMCONTINUE) in AutoCAD](/docs/commands/dimcontinue)
+- [Comando DIMSTILE (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

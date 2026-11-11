@@ -1,0 +1,45 @@
+---
+title: Differenze rispetto ad AutoCAD
+metaTitle: "Differenze rispetto ad AutoCAD, e perché"
+description: "Dove MellowCAD funziona diversamente da AutoCAD, e perché: ciò che il browser tiene per sé e ciò che qui non esiste."
+type: concept
+sourceHash: "6f396a17e390"
+---
+
+MellowCAD segue AutoCAD 2027: gli stessi comandi e gli stessi alias, lo stesso ordine dei prompt, le stesse lettere delle opzioni e gli stessi valori predefiniti. Se ne discosta solo dove il browser lo costringe o dove la funzione che lo circonda qui non esiste. Ogni differenza qui sotto dice che cosa fa AutoCAD, che cosa fa invece MellowCAD, e perché. Ciò che manca ancora a un singolo comando è collegato dalla sua voce nella [pagina dei comandi](/docs/commands).
+
+## Un solo disegno alla volta [#one-drawing]
+
+AutoCAD apre un nuovo disegno in una scheda a parte e tiene aperto quello vecchio. MellowCAD ha un solo disegno: <Command id="NEW" /> e <Command id="OPEN" /> lo sostituiscono, e dopo <Command id="NEW" /> un solo <Command id="U" /> riporta indietro il precedente.
+
+## Salvare scarica un file [#saving]
+
+MellowCAD conserva il disegno in questo browser mentre lavori, solo su questo dispositivo. <Command id="QSAVE" />, <Command id="SAVEAS" /> e <Command id="SAVE" /> scaricano tutti un file nel formato versionato di MellowCAD: un download del browser chiede sempre il nome del file, quindi salvare sopra il file corrente, con un altro nome o come copia non si distingue.
+
+## I tasti che il browser tiene per sé [#browser-keys]
+
+Una pagina non riceve mai `Ctrl+W`, che chiude la scheda, né `Ctrl+N`, che apre una finestra. La selezione ciclica, il `Ctrl+W` di AutoCAD, qui è `F4`; AutoCAD usa `F4` per gli snap ad oggetto 3D, che MellowCAD non ha ancora. Un nuovo disegno si ottiene con <Command id="NEW" />, digitato.
+
+## L'input dinamico è sempre attivo [#dynamic-input]
+
+L'input dinamico non può essere disattivato, quindi il suo tasto, `F12`, è lasciato al browser.
+
+## Solo spazio modello [#model-space]
+
+Non ci sono layout né stampa: lo schermo è l'unico posto in cui si vede un disegno. Per questo gli spessori di linea si vedono fin dall'inizio (`LWDISPLAY` attiva, mentre AutoCAD parte con la variabile disattivata), e `MODELLO`, nella barra di stato, è un'etichetta e non un interruttore verso un layout.
+
+## Versioni da riga di comando di alcune finestre di dialogo [#dialogs]
+
+Dove AutoCAD apre una finestra di dialogo che qui non esiste, il comando pone le sue domande nella riga di comando, come fa la sua versione con il trattino: <Command id="COLOR" /> esegue <Command id="-COLOR" />, <Command id="LWEIGHT" /> esegue <Command id="-LWEIGHT" /> e <Command id="LINETYPE" /> esegue <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> e <Command id="STYLE" /> aprono la palette Stili, con gli stili di quota o di testo.
+
+## Tutti i tipi di linea sono caricati [#linetypes]
+
+Un nuovo disegno di AutoCAD contiene un solo tipo di linea, continuo, e gli altri si caricano da un file. Senza la finestra Gestione tipo di linea per caricarne uno, ogni disegno qui li contiene tutti, già caricati.
+
+## Le coordinate nella barra di stato [#coordinates]
+
+Dal 2015 AutoCAD nasconde le coordinate del cursore dalla sua barra di stato. MellowCAD le mostra, perché non ha nessun'altra indicazione del cursore; la Personalizzazione della barra di stato le nasconde.
+
+## L'arabo usa i comandi dell'AutoCAD inglese [#arabic]
+
+Non esiste un AutoCAD in arabo, e chi disegna in arabo lavora in quello inglese. Così, in arabo, l'interfaccia parla arabo e la riga di comando parla l'AutoCAD inglese: gli stessi nomi, alias, prompt e lettere delle opzioni. Una scorciatoia `Ctrl` funziona qualunque sia il layout della tastiera, come in un programma desktop: `Ctrl+Z` annulla anche quando il layout arabo digita una lettera.

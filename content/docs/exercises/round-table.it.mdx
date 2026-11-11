@@ -1,0 +1,52 @@
+---
+title: "Esercizio AutoCAD: un tavolo rotondo e le sedie"
+metaTitle: "Esercizio AutoCAD: tavolo rotondo e sei sedie"
+description: "Disegna un tavolo rotondo con sei sedie in AutoCAD: una sedia, poi una serie polare attorno al centro del tavolo, e le quote, passo passo. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna un tavolo rotondo di 120 con sei sedie, in centimetri: ogni sedia un sedile di 44 per 40 con gli angoli arrotondati a 4 e uno schienale profondo 8, con il fronte a 8 dal bordo del tavolo. Disegna una sedia sopra il tavolo e lascia che una serie polare le posizioni tutte e sei. La scala delle quote del disegno è impostata per i centimetri.
+
+- **Esercizio:** Intermedio · Architettura · 2D
+- **Comandi:** [`CERCHIO`](/docs/commands/circle), [`RETTANGOLO`](/docs/commands/rectang), [`SERIEPOLARE`](/docs/commands/arraypolar), [`DIMDIAMETRO`](/docs/commands/dimdiameter), [`DIMLINEARE`](/docs/commands/dimlinear)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=round-table), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/round-table" caption="Un tavolo rotondo di 120 con sei sedie, in pianta, quotato in centimetri." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il tavolo [#table]
+
+Sul layer Contorno, [`CERCHIO`](/docs/commands/circle) in `0,0`, `Diametro` `120`.
+
+<Session name="exercises/round-table/table" caption="1. Disegna il tavolo" />
+
+### 2. Disegna una sedia [#chair]
+
+Il sedile, sopra il tavolo: [`RETTANGOLO`](/docs/commands/rectang) con un `Raccordo` di `4`, da `-22,68` a `44,40` più in là. Poi lo schienale, con il raccordo riportato a `0`, da `-22,108` a `44,8` più in là. [`RETTANGOLO`](/docs/commands/rectang) mantiene il suo raggio di raccordo finché non lo cambi.
+
+<Session name="exercises/round-table/chair" caption="2. Disegna una sedia" />
+
+### 3. Disponi le sedie in serie [#array]
+
+[`SERIEPOLARE`](/docs/commands/arraypolar): seleziona il sedile e lo schienale, premi Invio, indica il centro del tavolo, `0,0`, poi `ELementi`, `6`. Ogni sedia ruota mentre viene posizionata, quindi tutte e sei sono rivolte verso il tavolo.
+
+<Session name="exercises/round-table/array" caption="3. Disponi le sedie in serie" />
+
+### 4. Quotala [#dimensions]
+
+Sul layer Quote, [`DIMDIAMETRO`](/docs/commands/dimdiameter) sul tavolo, posizionata all'interno, e [`DIMLINEARE`](/docs/commands/dimlinear) per la larghezza della sedia in alto, 44, e la sua profondità con lo schienale, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Quotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: un lotto di terreno](/docs/exercises/plot-of-land): Intermedio · Ingegneria civile · 2D
+- [Esercizio AutoCAD: un albero a gradini](/docs/exercises/shaft): Intermedio · Meccanica · 2D
+- [Esercizio AutoCAD isometrico: un blocco a gradino](/docs/exercises/isometric-block): Intermedio · Meccanica · Isometrico
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

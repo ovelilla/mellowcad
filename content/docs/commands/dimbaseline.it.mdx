@@ -1,0 +1,68 @@
+---
+title: "Comando DIMLBASE (DIMBASELINE) in AutoCAD"
+description: "Come DIMLBASE (DIMBASELINE, alias DBA) di AutoCAD impila le quote da una linea base: origini, spaziatura, Seleziona e Annulla. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di DIMLBASE in AutoCAD?","answer":"DBA, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _DIMBASELINE in tutte le lingue di AutoCAD."},{"question":"Come si cambia la spaziatura delle quote da linea base?","answer":"È la spaziatura base dello stile di quota: DIMSTILE (D) apre gli stili nella tavolozza Stili, dove si trova sotto Linee, come in AutoCAD. Le quote già disegnate conservano il loro posto; SPAZIOQUOTE le spazia di nuovo, in modo uniforme."},{"question":"Come si parte da un'altra quota?","answer":"Premi Invio alla prima richiesta, oppure scegli Selezionare, e seleziona la quota vicino alla linea di estensione da cui misurare: ogni nuova quota parte da lì."},{"question":"Qual è la differenza tra DIMLBASE e DIMCONTINUA?","answer":"DIMLBASE misura ogni quota dalla stessa linea di estensione, ciascuna su una linea più in fuori. DIMCONTINUA le mette una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima."}]
+---
+
+DIMLBASE disegna quote che misurano tutte da una stessa linea di estensione, la base: ognuna va dalla prima linea di estensione dell'ultima quota al punto successivo che dai, con la sua linea di quota un passo più in fuori. Parte dall'ultima quota lineare o allineata creata da quando il disegno è stato aperto, quindi di solito segue [`DIMLINEARE`](/docs/commands/dimlinear) o [`DIMALLINEATA`](/docs/commands/dimaligned); se non ce n'è, chiede da quale partire. La riga di comando dice ogni misura man mano che è creata. Invio alla richiesta dell'origine sceglie `Selezionare`, e Invio lì termina il comando, come fa Esc.
+
+Il passo è la spaziatura base dello stile di quota corrente, 3,75 in ISO-25, per la scala globale della base. Come in AutoCAD, ogni nuova quota misura lungo la direzione della sua base, e prende lo stile di quota e il layer della base, con il colore, il tipo di linea e lo spessore di linea correnti.
+
+- **Comando:** `DIMLBASE`
+- **In inglese:** `DIMBASELINE`, digitato `_DIMBASELINE` in ogni lingua
+- **Alias:** `DBA`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DBA` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="dimbaseline" caption="Un profilo a gradini quotato 30 dal suo bordo sinistro, poi 70 e 100 dallo stesso bordo, ciascuna una linea più in fuori." />
+
+## Opzioni [#options]
+
+### `Selezionare` (`S`) [#select]
+
+Chiede la quota base: seleziona una quota lineare o allineata, vicino alla linea di estensione da cui misurare. Anche un punto digitato lì seleziona. Una quota di raggio o di diametro è rifiutata con `È richiesta una quota associativa angolare, coordinata o lineare.`, e la domanda si ripete.
+
+### `Annulla` (`A`) [#undo]
+
+Annulla l'ultima quota creata e prosegue da quella precedente, tante volte quante ce ne sono. Quando non ne resta nessuna, la sua risposta è `Il comando è stato completamente annullato.` e la richiesta resta.
+
+## Cosa non fa ancora [#missing]
+
+Una quota non è associativa: le quote non seguono gli oggetti che misurano. Una quota angolare non può essere una base: AutoCAD ne prende una creata per ultima o selezionata; qui, creata per ultima, il comando chiede una quota, e selezionata è rifiutata come lo è una radiale. Le quote ordinate non esistono ancora.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline--pt-br-cotalinbase--clb--dimbase--fr-cotlign--cotl--it-dimlbase--dba)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di DIMLBASE in AutoCAD?
+
+`DBA`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_DIMBASELINE` in tutte le lingue di AutoCAD.
+
+### Come si cambia la spaziatura delle quote da linea base?
+
+È la spaziatura base dello stile di quota: [`DIMSTILE`](/docs/commands/dimstyle) (`D`) apre gli stili nella tavolozza Stili, dove si trova sotto Linee, come in AutoCAD. Le quote già disegnate conservano il loro posto; [`SPAZIOQUOTE`](/docs/commands/dimspace) le spazia di nuovo, in modo uniforme.
+
+### Come si parte da un'altra quota?
+
+Premi Invio alla prima richiesta, oppure scegli `Selezionare`, e seleziona la quota vicino alla linea di estensione da cui misurare: ogni nuova quota parte da lì.
+
+### Qual è la differenza tra DIMLBASE e DIMCONTINUA?
+
+DIMLBASE misura ogni quota dalla stessa linea di estensione, ciascuna su una linea più in fuori. [`DIMCONTINUA`](/docs/commands/dimcontinue) le mette una dopo l'altra su una sola linea, ciascuna da dove è finita l'ultima.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket)
+
+## Comandi correlati [#related]
+
+- [Comando DIMCONTINUA (DIMCONTINUE) in AutoCAD](/docs/commands/dimcontinue)
+- [Comando DIMLINEARE (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Comando SPAZIOQUOTE (DIMSPACE) in AutoCAD](/docs/commands/dimspace)
+- [Comando DIMSTILE (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

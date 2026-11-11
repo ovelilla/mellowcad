@@ -1,0 +1,77 @@
+---
+title: "Comando OFFSET in AutoCAD"
+description: "Come funziona OFFSET (alias OF) di AutoCAD in italiano: una distanza o Punto, Cancella e Layer, un oggetto alla volta. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando OFFSET in italiano?","answer":"OFFSET, come in inglese, alias OF, poi Invio o barra spaziatrice; l'alias inglese O in AutoCAD in italiano non esiste. Il nome inglese funziona anche con il trattino basso davanti: _OFFSET."},{"question":"Perché non riesco a fare l'offset di un oggetto?","answer":"OFFSET fa l'offset di linee, archi, cerchi, polilinee 2D, ellissi e spline. Rifiuta testi, testi multilinea, riferimenti di blocco, quote e tratteggi con «Impossibile eseguire l'offset di questo oggetto.», e lo fa anche quando la distanza ridurrebbe a nulla un cerchio, un arco o una polilinea. Un oggetto su un layer bloccato non si può selezionare, e una polilinea 3D viene saltata."},{"question":"Come si fa l'offset della stessa linea più volte?","answer":"Seleziona la linea, poi digita la lettera di MUltiplo alla richiesta del lato: ogni selezione su quel lato crea una copia in più, ciascuna una distanza oltre la precedente. Oppure mantieni il valore predefinito e seleziona ogni volta la copia più recente."},{"question":"Come si mettono le copie dell'offset sul layer corrente?","answer":"Scegli Layer alla prima richiesta, poi Corrente. Da quel momento ogni copia va sul layer corrente, finché non scegli di nuovo Origine."}]
+---
+
+OFFSET disegna una copia di un oggetto parallela ad esso, a una distanza che digiti o attraverso un punto che selezioni: una linea dà una linea parallela, un cerchio o un arco uno concentrico, una polilinea un contorno all'interno o all'esterno di essa, un'ellisse o una spline una spline che la segue. Come in AutoCAD, prende un oggetto alla volta: indichi la distanza una volta, poi selezioni un oggetto e il lato su cui mettere la sua copia, quante volte vuoi. Invio lo termina.
+
+- **Comando:** `OFFSET`
+- **Alias:** `OF`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `OF` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="offset" caption="Un rettangolo con offset di 6 all'interno e un cerchio con offset di 6 all'esterno, ciascuno selezionato, poi il suo lato." />
+
+## Opzioni [#options]
+
+### `Punto` (`P`) [#through]
+
+Al posto di una distanza, ogni copia passa per un punto che selezioni o digiti. È il valore predefinito della prima richiesta, quindi Invio lì lo sceglie finché non è stata data una distanza; da quel momento Invio ripete l'ultima distanza, in quel disegno.
+
+### `Cancella` (`C`) [#erase]
+
+Chiede se cancellare ogni oggetto di origine una volta che ne è stato fatto l'offset, `Sì` o `No` (il valore predefinito). Con `Sì`, la copia sostituisce l'oggetto. La scelta viene mantenuta per il resto della sessione, e l'OFFSET successivo la dice nella sua prima riga.
+
+### `Layer` (`L`) [#layer]
+
+Chiede dove vanno le copie: sul layer `Corrente`, oppure su quello dell'oggetto `Origine` (il valore predefinito). Mantenuto anch'esso per la sessione.
+
+### `Esci` (`E`) [#exit]
+
+Termina il comando, come fa Invio alla richiesta dell'oggetto.
+
+### `MUltiplo` (`MU`) [#multiple]
+
+Alla richiesta del lato: continua a fare offset dello stesso oggetto senza selezionarlo di nuovo, ogni copia una distanza più lontana dalla precedente, fino a Invio o `Esci`.
+
+### `ANnulla` (`AN`) [#undo]
+
+Annulla l'ultima copia, da qualunque oggetto provenga, e chiede di nuovo un oggetto. Quando non resta nessuna copia da annullare, lo dice.
+
+## Cosa non fa ancora [#missing]
+
+OFFSETGAPTYPE 1 e 2: gli spigoli di una polilinea con offset sono sempre chiusi come con 0, con i segmenti estesi fino a incontrarsi. L'offset di una spline o di un'ellisse rientra nella tolleranza di AutoCAD, ma i suoi nodi cadono dove li mette MellowCAD, non dove li mette AutoCAD. L'opzione Through su una spline mostra X e Y nella sua descrizione comandi, non la distanza.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of)
+
+## Domande [#questions]
+
+### Come si chiama il comando OFFSET in italiano?
+
+OFFSET, come in inglese, alias `OF`, poi Invio o barra spaziatrice; l'alias inglese `O` in AutoCAD in italiano non esiste. Il nome inglese funziona anche con il trattino basso davanti: `_OFFSET`.
+
+### Perché non riesco a fare l'offset di un oggetto?
+
+OFFSET fa l'offset di linee, archi, cerchi, polilinee 2D, ellissi e spline. Rifiuta testi, testi multilinea, riferimenti di blocco, quote e tratteggi con `Impossibile eseguire l'offset di questo oggetto.`, e lo fa anche quando la distanza ridurrebbe a nulla un cerchio, un arco o una polilinea. Un oggetto su un layer bloccato non si può selezionare, e una polilinea 3D viene saltata.
+
+### Come si fa l'offset della stessa linea più volte?
+
+Seleziona la linea, poi digita la lettera di `MUltiplo` alla richiesta del lato: ogni selezione su quel lato crea una copia in più, ciascuna una distanza oltre la precedente. Oppure mantieni il valore predefinito e seleziona ogni volta la copia più recente.
+
+### Come si mettono le copie dell'offset sul layer corrente?
+
+Scegli `Layer` alla prima richiesta, poi `Corrente`. Da quel momento ogni copia va sul layer corrente, finché non scegli di nuovo `Origine`.
+
+## Comandi correlati [#related]
+
+- [Comando TAGLIA (TRIM) in AutoCAD](/docs/commands/trim)
+- [Comando ESTENDI (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Comando RACCORDO (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Comando COPIA (COPY) in AutoCAD](/docs/commands/copy)

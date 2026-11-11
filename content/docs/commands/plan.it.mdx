@@ -1,0 +1,68 @@
+---
+title: "Comando PIANA (PLAN) in AutoCAD"
+description: "Come PIANA (PLAN) di AutoCAD in italiano guarda dall'alto l'UCS corrente, uno salvato o quello globale, e come tornare alla vista in pianta."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si torna alla vista in pianta in AutoCAD?","answer":"Digita PIANA e premi Invio due volte: il secondo Invio prende Corrente. Se l'UCS è ruotato e vuoi la pianta del sistema globale, scegli invece Globale."},{"question":"Che cos'è il comando PIANA UCS?","answer":"PIANA con Corrente: guarda dall'alto l'UCS corrente, con il suo asse X a destra. Ruota prima l'UCS con UCS, poi avvia PIANA e premi Invio due volte, e disegni sulla pianta ruotata come se fosse dritta."},{"question":"Perché il mio disegno è ruotato nella vista in pianta?","answer":"La vista è la pianta di un UCS ruotato. Avvia PIANA e scegli Globale per vedere il disegno con la X globale di nuovo a destra; anche UCS e Invio riportano l'UCS a Globale."},{"question":"PIANA cambia l'UCS?","answer":"No. Ruota solo la vista; l'UCS resta com'era. Sono le viste ortogonali di VISTA quelle che ruotano anche l'UCS."}]
+---
+
+PIANA (PLAN in inglese) guarda dall'alto il piano XY di un UCS, con il suo asse X rivolto a destra: la vista in pianta, come l'hai disegnata. Chiede quale UCS, quello corrente, uno salvato o quello globale, e Invio prende quello corrente. Poi inquadra tutto il disegno e dice `Rigenerazione modello in corso.`.
+
+Nulla nel disegno si sposta, e l'UCS resta com'era: PIANA ruota solo la vista. È un solo passo di annullamento, quindi `A` riporta indietro la vista, e [`ZOOM`](/docs/commands/zoom) `Precedente` torna alla vista prima. È la via per tornare alla pianta dopo [`3DORBITA`](/docs/commands/3dorbit) o una [`VISTA`](/docs/commands/view) assonometrica. Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale.
+
+- **Comando:** `PIANA`
+- **In inglese:** `PLAN`, digitato `_PLAN` in ogni lingua
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `PIANA` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="plan" caption="Il blocco a gradini visto da sud-ovest con il suo UCS ruotato di 30 gradi attorno a Z: PIANA e Invio guardano dall'alto quell'UCS, con il suo asse X a destra, quindi il blocco appare ruotato." />
+
+## Opzioni [#options]
+
+### `ucs Corrente` (`C`) [#current-ucs]
+
+La pianta dell'UCS corrente, il valore predefinito. Dopo che [`UCS`](/docs/commands/ucs) ha ruotato l'UCS di 30 gradi attorno a Z, il disegno appare ruotato di 30 gradi in senso orario, così che l'asse X dell'UCS punti a destra; dopo un UCS su una faccia inclinata, guarda quella faccia perpendicolarmente.
+
+### `Ucs` (`U`) [#ucs]
+
+La pianta di un UCS salvato con `NOme` di [`UCS`](/docs/commands/ucs), che digiti per nome. Per un nome che non è salvato dice che non riesce a trovare quell'UCS e chiede di nuovo; `?` elenca quelli salvati, come fa UCS, e chiede di nuovo anch'esso. L'UCS corrente non cambia.
+
+### `Globale` (`G`) [#world]
+
+La pianta del sistema di coordinate globale: il disegno com'era all'inizio, X a destra e Y in alto, qualunque sia l'UCS corrente, che resta com'era.
+
+## Cosa non fa ancora [#missing]
+
+Senza nulla disegnato, PIANA mantiene lo zoom dov'era, dove AutoCAD inquadra i limiti del disegno.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta--fr-repere--it-piana)
+
+## Domande [#questions]
+
+### Come si torna alla vista in pianta in AutoCAD?
+
+Digita `PIANA` e premi Invio due volte: il secondo Invio prende `Corrente`. Se l'UCS è ruotato e vuoi la pianta del sistema globale, scegli invece `Globale`.
+
+### Che cos'è il comando PIANA UCS?
+
+PIANA con `Corrente`: guarda dall'alto l'UCS corrente, con il suo asse X a destra. Ruota prima l'UCS con [`UCS`](/docs/commands/ucs), poi avvia PIANA e premi Invio due volte, e disegni sulla pianta ruotata come se fosse dritta.
+
+### Perché il mio disegno è ruotato nella vista in pianta?
+
+La vista è la pianta di un UCS ruotato. Avvia PIANA e scegli `Globale` per vedere il disegno con la X globale di nuovo a destra; anche [`UCS`](/docs/commands/ucs) e Invio riportano l'UCS a Globale.
+
+### PIANA cambia l'UCS?
+
+No. Ruota solo la vista; l'UCS resta com'era. Sono le viste ortogonali di [`VISTA`](/docs/commands/view) quelle che ruotano anche l'UCS.
+
+## Comandi correlati [#related]
+
+- [Comando UCS in AutoCAD](/docs/commands/ucs)
+- [Comando VISTA (VIEW) in AutoCAD](/docs/commands/view)
+- [Comando 3DORBITA (3DORBIT) in AutoCAD](/docs/commands/3dorbit)
+- [Comando ZOOM in AutoCAD](/docs/commands/zoom)
+- [Comando ICONAUCS (UCSICON) in AutoCAD](/docs/commands/ucsicon)

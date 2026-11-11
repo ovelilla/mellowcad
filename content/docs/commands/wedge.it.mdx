@@ -1,0 +1,72 @@
+---
+title: "Comando CUNEO (WEDGE) in AutoCAD"
+description: "Come CUNEO (WEDGE, alias CN) di AutoCAD disegna un cuneo solido 3D: due angoli e un'altezza, Centro, Cubo, Lunghezza e 2Punti. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di CUNEO in AutoCAD?","answer":"CN. Digitalo e premi Invio o barra spaziatrice, poi indica il primo angolo, l'altro angolo e l'altezza: 0,0, 60,40 e 25 disegnano il cuneo della sessione."},{"question":"Da che parte scende il cuneo?","answer":"Giù dall'estremo del primo angolo, lungo la X dell'UCS. Per girarlo, indica l'altro angolo con una X minore, il che lo ruota di 180°, oppure ruotalo dopo con RUOTA."},{"question":"Come si disegna un prisma triangolare?","answer":"Un cuneo lo è: un triangolo rettangolo a ciascuna estremità, esteso lungo la larghezza. Per qualsiasi altro triangolo, disegnalo chiuso con PLINEA ed ESTRUDI lo."},{"question":"Come si disegna un cuneo dal suo centro?","answer":"Scegli CEntro e indica il punto centrale, poi un angolo, Cubo o Lunghezza: il cuneo è centrato sul punto, anche in altezza."}]
+---
+
+CUNEO (WEDGE) disegna un solido 3D a forma di cuneo: un parallelepipedo la cui sommità scende in pendenza da un estremo all'altro. Chiede ciò che chiede [`PARALLELEPIPEDO`](/docs/commands/box): il primo angolo, l'altro angolo, poi l'altezza. L'estremo alto sta al primo angolo, e la pendenza scende lungo la X dell'UCS verso il lato dell'altro angolo; un angolo con una X minore lo rovescia. L'altezza sale lungo lo Z dell'UCS, una negativa scende. La lunghezza, la larghezza e l'altezza sono i valori predefiniti di [`PARALLELEPIPEDO`](/docs/commands/box), che Invio prende. Il cuneo sta sul layer corrente e Annulla lo ripristina in un solo passo.
+
+[`LISTA`](/docs/commands/list) ne mostra la posizione, la lunghezza, la larghezza, l'altezza e la rotazione, e la tavolozza Proprietà permette di digitarle. I suoi grip sono quelli di [`PARALLELEPIPEDO`](/docs/commands/box). È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale; [`ESPLODI`](/docs/commands/explode) lo trasforma in una regione per faccia.
+
+- **Comando:** `CUNEO`
+- **In inglese:** `WEDGE`, digitato `_WEDGE` in ogni lingua
+- **Alias:** `CN`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `CN` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="wedge" caption="Un cuneo di 60 per 40 per 25, da due angoli e un'altezza, con la pendenza che scende dall'estremo del primo angolo, visto da sud-est nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `CEntro` (`CE`) [#center]
+
+Al primo prompt: chiede il centro, poi un angolo, `Cubo` o `Lunghezza`. Il cuneo è centrato sul punto, anche in altezza, con il suo estremo alto opposto all'angolo indicato.
+
+### `Cubo` (`C`) [#cube]
+
+All'altro angolo: chiede una lunghezza e crea un cuneo con ogni lato di quella lunghezza. A differenza di quello di [`PARALLELEPIPEDO`](/docs/commands/box), corre lungo la X dell'UCS, all'indietro quando è negativa.
+
+### `Lunghezza` (`L`) [#length]
+
+All'altro angolo: chiede la lunghezza, lungo la X dell'UCS, poi la larghezza, lungo la sua Y; una negativa corre all'indietro. Un punto ne dà solo la distanza, mai la direzione.
+
+### `2Punti` (`2P`) [#2point]
+
+All'altezza: chiede due punti, e l'altezza è la distanza tra loro.
+
+## Cosa non fa ancora [#missing]
+
+Quelli di [`PARALLELEPIPEDO`](/docs/commands/box): Sposta, Ruota, Scala e Specchio da un grip attivo, i comandi 3D propri, le quote tratteggiate mentre indichi l'angolo, e gli stili visivi che mancano a [`STILEVISCORRENTE`](/docs/commands/vscurrent). In pianta, lo snap Fine sotto l'estremo alto trova l'angolo della sommità, dove AutoCAD trova quello della base.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn)
+
+## Domande [#questions]
+
+### Qual è l'alias di CUNEO in AutoCAD?
+
+`CN`. Digitalo e premi Invio o barra spaziatrice, poi indica il primo angolo, l'altro angolo e l'altezza: `0,0`, `60,40` e `25` disegnano il cuneo della sessione.
+
+### Da che parte scende il cuneo?
+
+Giù dall'estremo del primo angolo, lungo la X dell'UCS. Per girarlo, indica l'altro angolo con una X minore, il che lo ruota di 180°, oppure ruotalo dopo con [`RUOTA`](/docs/commands/rotate).
+
+### Come si disegna un prisma triangolare?
+
+Un cuneo lo è: un triangolo rettangolo a ciascuna estremità, esteso lungo la larghezza. Per qualsiasi altro triangolo, disegnalo chiuso con [`PLINEA`](/docs/commands/pline) ed [`ESTRUDI`](/docs/commands/extrude) lo.
+
+### Come si disegna un cuneo dal suo centro?
+
+Scegli `CEntro` e indica il punto centrale, poi un angolo, `Cubo` o `Lunghezza`: il cuneo è centrato sul punto, anche in altezza.
+
+## Comandi correlati [#related]
+
+- [Comando PARALLELEPIPEDO (BOX) in AutoCAD](/docs/commands/box)
+- [Comando PIRAMIDE (PYRAMID) in AutoCAD](/docs/commands/pyramid)
+- [Comando ESTRUDI (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Comando UNIONE (UNION) in AutoCAD](/docs/commands/union)

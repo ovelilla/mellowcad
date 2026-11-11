@@ -1,0 +1,64 @@
+---
+title: "Comando TESTO (TEXT) in AutoCAD"
+description: "Come funziona TESTO (TEXT, alias TD) di AutoCAD: punto iniziale, altezza e rotazione, Giustifica e Stile, un oggetto per riga. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di TESTO in AutoCAD?","answer":"TD, poi Invio o barra spaziatrice; funzionano anche T e TESTODIN, e _TEXT in qualsiasi lingua di AutoCAD. Il testo multilinea è un altro comando: TESTOM ha TSM."},{"question":"Come si allinea il testo in AutoCAD?","answer":"Scegli Giustificato al primo prompt, o digita lì le lettere della giustificazione, poi indica il punto che nomina: il centro medio mette il centro di ogni riga sul suo punto, come un'etichetta va al centro di un riquadro. Per far correre il testo lungo una linea inclinata, digita quell'angolo al prompt della rotazione."},{"question":"Qual è la differenza tra TESTO e TESTOM?","answer":"TESTO crea un oggetto per riga, ciascuno spostato, modificato e giustificato a sé, e non va mai a capo. TESTOM crea un oggetto di paragrafi che vanno a capo alla larghezza di un riquadro, giustificati nel loro insieme. Entrambi condividono l'altezza del testo e gli stili di testo."},{"question":"Come si modifica il testo in AutoCAD?","answer":"Fai doppio clic: MODTESTO lo apre per riscriverlo, poi chiede il testo successivo da modificare finché non premi Esc. La sua altezza e rotazione sono righe della tavolozza Proprietà, e i suoi grip lo spostano."}]
+---
+
+TESTO (TEXT) scrive testo su riga singola. Indichi un punto iniziale, un'altezza e un angolo di rotazione, poi digiti una riga e premi Invio: la riga diventa un oggetto a sé, e la successiva inizia una riga sotto. Una riga vuota termina il comando. Un clic altrove prima di allora fa iniziare le righe successive in quel punto, ed Esc conserva le righe già inserite e scarta quella che stai digitando. Per un paragrafo che va a capo a una larghezza, come un solo oggetto, usa [`TESTOM`](/docs/commands/mtext).
+
+La prima riga dice lo stile, l'altezza e la giustificazione correnti. L'altezza è quella che condivide con [`TESTOM`](/docs/commands/mtext) e [`DEFATT`](/docs/commands/attdef), conservata nel disegno, e il TESTO successivo la propone come valore predefinito; uno stile con un'altezza propria salta il prompt dell'altezza. Invio al punto iniziale prosegue sotto l'ultima riga che TESTO ha scritto, senza chiedere di nuovo l'altezza o l'angolo. U annulla l'intera esecuzione.
+
+- **Comando:** `TESTO`
+- **In inglese:** `TEXT`, digitato `_TEXT` in ogni lingua
+- **Alias:** `T`, `TD`, `TESTODIN`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `T` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="text" caption="Due righe di testo su riga singola centrate in un riquadro, giustificate al centro: ogni riga è un oggetto a sé." />
+
+## Opzioni [#options]
+
+### `Giustificato` (`G`) [#justify]
+
+Chiede da dove pende il testo rispetto al suo punto: `Sinistra` (il valore predefinito), `Centro`, `Destra`, `Mezzo`, o uno dei nove punti, alto, medio e basso per sinistra, centro e destra, come li elenca il prompt. Il prompt del punto iniziale chiede poi il punto che la giustificazione nomina: per il centro medio, il punto medio. Come in AutoCAD, i nove vengono accettati anche senza essere elencati al primo prompt, quindi digitare lì le lettere del centro medio chiede subito il punto medio. La giustificazione si conserva nel disegno per il TESTO successivo.
+
+### `STile` (`ST`) [#style]
+
+Chiede il nome dello stile di testo da rendere corrente, con Invio che mantiene quello che c'è. `?` elenca gli stili del disegno; un nome che il disegno non ha viene rifiutato e chiesto di nuovo. Gli stili si creano nella tavolozza che apre [`STILE`](/docs/commands/style).
+
+## Cosa non fa ancora [#missing]
+
+Le giustificazioni Allinea e Adatta. Il `?` di Stile elenca tutti gli stili insieme, senza chiedere quali né fare pause pagina per pagina. Il testo si digita nella casella dell'input dinamico, non con un cursore sul disegno, e il suo contenuto non si può riscrivere nella tavolozza Proprietà, che manca anche delle righe Annotativo, Fattore di larghezza, Obliquità, Capovolto e All'indietro. Un clic dentro il riquadro di un testo lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto--fr-texte--t--textdyn---texte--it-testo--t--td--testodin---testo)
+
+## Domande [#questions]
+
+### Qual è l'alias di TESTO in AutoCAD?
+
+`TD`, poi Invio o barra spaziatrice; funzionano anche `T` e `TESTODIN`, e `_TEXT` in qualsiasi lingua di AutoCAD. Il testo multilinea è un altro comando: [`TESTOM`](/docs/commands/mtext) ha `TSM`.
+
+### Come si allinea il testo in AutoCAD?
+
+Scegli `Giustificato` al primo prompt, o digita lì le lettere della giustificazione, poi indica il punto che nomina: il centro medio mette il centro di ogni riga sul suo punto, come un'etichetta va al centro di un riquadro. Per far correre il testo lungo una linea inclinata, digita quell'angolo al prompt della rotazione.
+
+### Qual è la differenza tra TESTO e TESTOM?
+
+TESTO crea un oggetto per riga, ciascuno spostato, modificato e giustificato a sé, e non va mai a capo. [`TESTOM`](/docs/commands/mtext) crea un oggetto di paragrafi che vanno a capo alla larghezza di un riquadro, giustificati nel loro insieme. Entrambi condividono l'altezza del testo e gli stili di testo.
+
+### Come si modifica il testo in AutoCAD?
+
+Fai doppio clic: [`MODTESTO`](/docs/commands/textedit) lo apre per riscriverlo, poi chiede il testo successivo da modificare finché non premi Esc. La sua altezza e rotazione sono righe della tavolozza Proprietà, e i suoi grip lo spostano.
+
+## Comandi correlati [#related]
+
+- [Comando TESTOM (MTEXT) in AutoCAD](/docs/commands/mtext)
+- [Comando MODTESTO (TEXTEDIT) in AutoCAD](/docs/commands/textedit)
+- [Comando STILE (STYLE) in AutoCAD: stili di testo](/docs/commands/style)
+- [Comando CORRISPROP (MATCHPROP) in AutoCAD](/docs/commands/matchprop)

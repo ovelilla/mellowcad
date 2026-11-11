@@ -1,0 +1,66 @@
+---
+title: "Esercizio AutoCAD 3D: un supporto per cuscinetto"
+metaTitle: "Esercizio AutoCAD 3D avanzato: un supporto"
+description: "Modella un supporto per cuscinetto in AutoCAD 3D: estrusione, unione, poi foro e fori di fissaggio sottratti come cilindri, passo passo. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modella questo supporto per cuscinetto, in millimetri: una base di 100 per 60 con gli angoli di raggio 10, spessa 12; un mozzo di 40 di diametro e alto 40 al centro; un foro di 20 attraverso il mozzo e due fori di fissaggio di 10 attraverso la base, a distanza di 76. La base e il mozzo si estrudono dai loro contorni e si uniscono in un solo solido; il foro e i fori di fissaggio sono cilindri che si sottraggono dal solido.
+
+- **Esercizio:** Avanzato · Meccanica · Solido 3D
+- **Comandi:** [`RETTANGOLO`](/docs/commands/rectang), [`CERCHIO`](/docs/commands/circle), [`ESTRUDI`](/docs/commands/extrude), [`UNIONE`](/docs/commands/union), [`CILINDRO`](/docs/commands/cylinder), [`COPIA`](/docs/commands/copy), [`SOTTRAI`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`STILEVISCORRENTE`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=bearing-block), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/bearing-block" caption="Il supporto in pianta, di 100 per 60, con mozzo, foro e fori quotati." />
+
+<Session name="exercises/bearing-block/model" caption="Il supporto come solido, visto da sud-est nello stile visivo Concettuale." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna la pianta [#plan]
+
+Sul layer Contorno, [`RETTANGOLO`](/docs/commands/rectang) con un `Raccordo` di `10`, da `0,0` a `100,60`, e un cerchio al suo centro, `50,30`, con un `Diametro` di `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Disegna la pianta" />
+
+### 2. Estrudi la base e il mozzo [#extrude]
+
+[`ESTRUDI`](/docs/commands/extrude) il contorno per `12` di altezza, poi il cerchio per `40`: due solidi.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Estrudi la base e il mozzo" />
+
+### 3. Uniscili [#union]
+
+[`UNIONE`](/docs/commands/union): seleziona entrambi e premi Invio. Ora sono un solo solido.
+
+<Session name="exercises/bearing-block/union" caption="3. Uniscili" />
+
+### 4. Disegna i cilindri [#holes]
+
+Il foro e un foro di fissaggio come cilindri, con [`CILINDRO`](/docs/commands/cylinder): il foro in `50,30`, `Diametro` `20` e alto `40`; un foro di fissaggio in `12,30`, diametro `10` e alto `12`. Poi [`COPIA`](/docs/commands/copy) il foro da `12,30` a `76,0` più in là.
+
+<Session name="exercises/bearing-block/holes" caption="4. Disegna i cilindri" />
+
+### 5. Sottraili [#subtract]
+
+[`SOTTRAI`](/docs/commands/subtract): seleziona il supporto e premi Invio, poi i tre cilindri e Invio. Il foro e i fori attraversano il pezzo.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Sottraili" />
+
+### 6. Ruota la vista [#view]
+
+`-VISTA` e `SEAsso`, [`STILEVISCORRENTE`](/docs/commands/vscurrent) e `Concettuale`, poi [`ZOOM`](/docs/commands/zoom) `Estensioni` e 0.8x per inquadrarlo.
+
+<Session name="exercises/bearing-block/view" caption="6. Ruota la vista" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: una guarnizione](/docs/exercises/gasket): Principiante · Meccanica · 2D
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket): Principiante · Meccanica · 2D
+- [Esercizio AutoCAD: una scala in pianta](/docs/exercises/stairs): Principiante · Architettura · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

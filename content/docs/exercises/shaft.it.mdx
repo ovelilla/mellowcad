@@ -1,0 +1,64 @@
+---
+title: "Esercizio AutoCAD: un albero a gradini"
+metaTitle: "Esercizio AutoCAD meccanica: un albero a gradini"
+description: "Disegna un albero a gradini in AutoCAD: metà contorno come polilinea, smussato, specchiato sull'asse, con le lunghezze quotate in serie. Gratis, passo passo."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questo albero a gradini in vista laterale, in millimetri: lungo 150, con diametri di 30, 40 e 30 su lunghezze di 40, 60 e 50, ed entrambe le estremità smussate 2 per 2. Disegna la metà sopra l'asse come una sola polilinea, smussala e specchiala; poi gli spigoli visti attraverso l'albero, l'asse e le lunghezze. I diametri sono quelli indicati qui.
+
+- **Esercizio:** Intermedio · Meccanica · 2D
+- **Comandi:** [`PLINEA`](/docs/commands/pline), [`CIMA`](/docs/commands/chamfer), [`SPECCHIO`](/docs/commands/mirror), [`LINEA`](/docs/commands/line), [`DIMLINEARE`](/docs/commands/dimlinear), [`DIMCONTINUA`](/docs/commands/dimcontinue)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=shaft), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/shaft" caption="Un albero a gradini in vista laterale, lungo 150, con le lunghezze quotate in serie." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna la metà superiore [#half]
+
+Sul layer Contorno, una [`PLINEA`](/docs/commands/pline) da `0,0`: su `0,15`, avanti `40,0`, su `0,5`, avanti `60,0`, giù `0,-5`, avanti `50,0` e giù `0,-15`, fino all'asse. Invio la termina.
+
+<Session name="exercises/shaft/half" caption="1. Disegna la metà superiore" />
+
+### 2. Smussa le estremità [#chamfers]
+
+[`CIMA`](/docs/commands/chamfer), poi `Distanze`: `2`, e Invio prende `2` anche per la seconda distanza. `Multiplo` smussa un angolo dopo l'altro senza ricominciare: seleziona i due segmenti all'angolo di ogni estremità.
+
+<Session name="exercises/shaft/chamfers" caption="2. Smussa le estremità" />
+
+### 3. Specchialo [#mirror]
+
+[`SPECCHIO`](/docs/commands/mirror): seleziona la polilinea, premi Invio, poi la linea di simmetria da `0,0` a `150,0`, l'asse, e Invio per mantenere l'originale.
+
+<Session name="exercises/shaft/mirror" caption="3. Specchialo" />
+
+### 4. Disegna gli spigoli [#edges]
+
+Con [`LINEA`](/docs/commands/line), gli spigoli visti attraverso l'albero, ciascuno `0,30` in alto dal basso: da `2,-15` e `148,-15` agli smussi, e da `40,-15` e `100,-15` agli spallamenti.
+
+<Session name="exercises/shaft/edges" caption="4. Disegna gli spigoli" />
+
+### 5. Disegna l'asse [#axis]
+
+Sul layer Assi, l'asse: una linea da `-8,0` a `166,0` più in là.
+
+<Session name="exercises/shaft/axis" caption="5. Disegna l'asse" />
+
+### 6. Quotalo [#dimensions]
+
+Sul layer Quote, [`DIMLINEARE`](/docs/commands/dimlinear) per la prima lunghezza, 40, posizionata sotto. [`DIMCONTINUA`](/docs/commands/dimcontinue) prosegue dalla sua seconda linea di estensione: `#100,-20`, poi `#150,-15`, digitati dall'origine con #, e Invio due volte per terminare. Una [`DIMLINEARE`](/docs/commands/dimlinear) finale dà la lunghezza totale, 150, più in basso.
+
+<Session name="exercises/shaft/dimensions" caption="6. Quotalo" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD isometrico: un blocco a gradino](/docs/exercises/isometric-block): Intermedio · Meccanica · Isometrico
+- [Esercizio AutoCAD 3D: una puleggia](/docs/exercises/pulley): Intermedio · Meccanica · Solido 3D
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link): Avanzato · Meccanica · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

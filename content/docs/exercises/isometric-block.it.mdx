@@ -1,0 +1,52 @@
+---
+title: "Esercizio AutoCAD isometrico: un blocco a gradino"
+metaTitle: "Disegno isometrico AutoCAD: un blocco a gradino"
+description: "Disegna un blocco a gradino in isometrico in AutoCAD con LINEA (LINE) e coordinate polari sugli assi a 30°, 90° e 150°, e quotalo. Gratis, passo passo."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questo blocco a gradino in isometrico, in millimetri: lungo 60, profondo 40 e alto 40, con un gradino profondo 20 e alto 20 lungo il suo fronte. Ogni spigolo segue uno degli assi isometrici: 30° e 210° per la lunghezza, 150° e 330° per la profondità, 90° e 270° per l'altezza. MellowCAD non ha ancora il disegno isometrico di AutoCAD, il suo snap isometrico e i cerchi isometrici, quindi gli spigoli sono linee digitate in coordinate polari, una lunghezza e un angolo.
+
+- **Esercizio:** Intermedio · Meccanica · Isometrico
+- **Comandi:** [`LINEA`](/docs/commands/line), [`DIMALLINEATA`](/docs/commands/dimaligned)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=isometric-block), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/isometric-block" caption="Un blocco a gradino in isometrico, lungo 60, profondo 40 e alto 40, con le misure quotate lungo gli spigoli." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il fronte del gradino [#front]
+
+Sul layer Contorno, [`LINEA`](/docs/commands/line) da `0,0`, l'angolo anteriore in basso: `60<30`, `20<90`, `60<210`, poi `Chiudi`.
+
+<Session name="exercises/isometric-block/front" caption="1. Disegna il fronte del gradino" />
+
+### 2. Disegna il lato [#side]
+
+Ancora da `0,0`, il lato sinistro: `40<150`, `40<90`, `20<330`, `20<270` e `20<330`. Invio termina la linea sullo spigolo anteriore del gradino.
+
+<Session name="exercises/isometric-block/side" caption="2. Disegna il lato" />
+
+### 3. Disegna la faccia superiore [#top]
+
+Il resto parte da angoli già disegnati: digita `_END`, lo snap a oggetto Punto finale per un punto, e seleziona l'angolo. Dall'angolo in alto a destra del fronte: `20<150`, `20<90`, `20<150` e `60<210`. Poi due linee di `60<210`, dalla base dell'alzata e dalla sua sommità.
+
+<Session name="exercises/isometric-block/top" caption="3. Disegna la faccia superiore" />
+
+### 4. Quotalo [#dimensions]
+
+Sul layer Quote, [`DIMALLINEATA`](/docs/commands/dimaligned) lungo gli spigoli, ciascuna posizionata accanto al proprio: 60 e 40 in basso, 40 in alto a sinistra, 20 in alto a destra.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Quotalo" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD 3D: una puleggia](/docs/exercises/pulley): Intermedio · Meccanica · Solido 3D
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link): Avanzato · Meccanica · 2D
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block): Avanzato · Meccanica · Solido 3D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

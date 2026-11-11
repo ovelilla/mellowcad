@@ -1,1 +1,456 @@
-{}
+{
+  "Metadata": {
+    "title": "CAD online gratis con i comandi di AutoCAD — MellowCAD",
+    "titleTemplate": "%s · MellowCAD",
+    "description": "Programma CAD gratis, senza installazione: disegno tecnico online con i comandi di AutoCAD in italiano. 2D e solidi 3D, ancora parziali. Senza registrazione.",
+    "drawTitle": "Disegna",
+    "drawDescription": "CAD gratis in una scheda del browser: disegno tecnico 2D e solidi 3D, ancora parziali, con i comandi, gli snap ad oggetto e la tastiera di AutoCAD.",
+    "ogAlt": "Una flangia disegnata in MellowCAD e il suo solido 3D, con le parole: CAD online gratis con i comandi di AutoCAD. Digita L. Premi Invio. Disegna.",
+    "appDescription": "CAD gratis nel browser con i comandi, gli alias e gli snap ad oggetto di AutoCAD: disegno tecnico 2D e solidi 3D, ancora parziali.",
+    "browserRequirements": "Richiede JavaScript e un browser recente su computer."
+  },
+  "Common": {
+    "brand": "MellowCAD",
+    "startDrawing": "Inizia a disegnare",
+    "skipToContent": "Vai al contenuto",
+    "home": "Home di MellowCAD",
+    "labelSeparator": ": "
+  },
+  "Header": {
+    "features": "Disegno 2D",
+    "solids": "Solidi 3D",
+    "commands": "Comandi",
+    "roadmap": "Roadmap",
+    "faq": "FAQ",
+    "docs": "Documentazione",
+    "menu": "Menu",
+    "closeMenu": "Chiudi il menu",
+    "navLabel": "Principale",
+    "language": "Lingua",
+    "cta": "Disegna"
+  },
+  "Hero": {
+    "pill": "Gratis · Senza registrazione · Nulla da installare",
+    "title": "CAD online gratis con i comandi di AutoCAD",
+    "lead": "<brand>MellowCAD</brand> gira nel browser, per il disegno tecnico 2D e i solidi 3D, ancora parziali, con i comandi di AutoCAD in italiano. Digita {examples}: le richieste seguono l'ordine di AutoCAD, con le stesse lettere d'opzione.",
+    "alias": "{alias} per {command}",
+    "secondaryCta": "Tutti i {commands, number} comandi",
+    "solids": "Novità: solidi 3D, ancora parziali",
+    "tagline": "Digita L. Premi Invio. Disegna.",
+    "continue": "{count, plural, one {Continua il disegno · # oggetto} other {Continua il disegno · # oggetti}}",
+    "mobileNote": "Meglio su computer, con tastiera e mouse.",
+    "drawingTitle": "Una flangia disegnata in MellowCAD, poi modellata come solido 3D",
+    "drawingDescription": "Vista frontale di una flangia con un foro centrale e sei fori per bulloni su una circonferenza d'asse, e accanto la sezione A–A tratteggiata con ANSI31, quotata in diametro e in spessore. Poi la vista passa a Isometrica SO: il disegno resta piatto e la flangia si alza davanti a lui come solido 3D, senza linee nascoste.",
+    "caption": "Ogni disegno di questa pagina è stato fatto in MellowCAD.",
+    "transcriptSummary": "Mostra la cronologia dei comandi",
+    "transcriptLabel": "I comandi che hanno disegnato la flangia e modellato il suo solido",
+    "pause": "Metti in pausa il disegno",
+    "play": "Riprendi il disegno",
+    "replay": "Riproduci di nuovo il disegno",
+    "cursor": "Posizione del cursore",
+    "tryLabel": "Prova un comando",
+    "tryPlaceholder": "Digita un comando, ad es. L",
+    "tryHint": "Invio apre l'editor."
+  },
+  "SendToDesktop": {
+    "action": "Invia al mio computer",
+    "copied": "Link copiato",
+    "shareTitle": "MellowCAD — CAD online gratis con i comandi di AutoCAD",
+    "shareText": "Aprilo su un computer per iniziare a disegnare."
+  },
+  "Proof": {
+    "label": "MellowCAD in numeri",
+    "commands": "{count, number} comandi AutoCAD",
+    "aliases": "{count, number} alias",
+    "snaps": "{count, number} snap ad oggetto",
+    "languages": "{count, number} lingue",
+    "tests": "{count, number}+ test automatici",
+    "source": "Codice open source, licenza MIT"
+  },
+  "Commands": {
+    "label": "01 · Comandi AutoCAD",
+    "title": "I comandi di AutoCAD in italiano e in inglese, con i loro alias.",
+    "lead": "Ogni comando risponde al suo nome e ai suoi alias di AutoCAD — in italiano, quelli di AutoCAD in italiano — e chiede nello stesso ordine, con le stesse lettere d'opzione.",
+    "count": "{commands, number} comandi AutoCAD, {aliases, number} alias",
+    "reference": "Tutti i comandi, con alias e richieste",
+    "boardLabel": "I comandi e i loro alias, raggruppati come sulla barra multifunzione",
+    "also": "Anche: {aliases}",
+    "linked": "Un comando sottolineato ha una pagina propria, con richieste e opzioni.",
+    "languages": "<en>{english}</en> è <es>{spanish}</es> in AutoCAD spagnolo, <pt>{portuguese}</pt> in portoghese brasiliano e <fr>{french}</fr> in francese, e il nome globale <all>{global}</all> vale in ogni lingua.",
+    "transcriptTitle": "Un OFFSET, dall'inizio alla fine",
+    "transcriptCaption": "Riprodotto dal motore alla creazione di questa pagina. Stesso ordine e stesse lettere d'opzione di AutoCAD."
+  },
+  "Groups": {
+    "draw": "Disegna",
+    "modify": "Modifica",
+    "annotate": "Annota",
+    "organize": "Organizza",
+    "inquiry": "Interroga e vista",
+    "files": "File e Appunti"
+  },
+  "Precision": {
+    "label": "02 · Disegno 2D",
+    "title": "Disegno 2D preciso: snap ad oggetto, puntamento e polare.",
+    "lead": "Snap ad oggetto, puntamento e angoli polari rispondono come si aspettano le tue mani, e le coordinate si digitano come in AutoCAD, sul cursore: @100<30 per il polare relativo, #120,80 per l'assoluto.",
+    "osnapTitle": "Snap ad oggetto",
+    "osnapBody": "{count, number} snap ad oggetto, con i marcatori e i suggerimenti di AutoCAD. Maiusc+clic destro ne impone uno per il prossimo punto — qui, Tangente.",
+    "otrackTitle": "Puntamento snap ad oggetto",
+    "otrackBody": "Fermati su due punti per acquisirli, poi segui i loro percorsi di allineamento fino all'incrocio.",
+    "polarTitle": "Puntamento polare e Orto",
+    "polarBody": "Il polare tiene l'elastico sul tuo incremento e mostra distanza e angolo. Orto lo blocca ad angolo retto.",
+    "selectionTitle": "Finestra e intersezione",
+    "selectionBody": "Trascina verso destra per una finestra, che prende ciò che racchiude; verso sinistra per un'intersezione, che prende tutto ciò che tocca.",
+    "windowLabel": "Finestra",
+    "crossingLabel": "Intersezione",
+    "osnapAlt": "Una linea tracciata verso un cerchio, agganciata al punto di tangenza, con il marcatore e il suggerimento Tangente.",
+    "otrackAlt": "Due punti finali acquisiti e i loro percorsi di allineamento tratteggiati che si incrociano sul cursore.",
+    "polarAlt": "Una linea bloccata sul raggio polare di 30 gradi, con il suggerimento di distanza e angolo.",
+    "windowAlt": "Un lazo di finestra blu trascinato da sinistra a destra intorno a un cerchio, attraverso una linea, con il cerchio preso evidenziato.",
+    "crossingAlt": "Un lazo di intersezione verde, tratteggiato, trascinato da destra a sinistra intorno a un cerchio, attraverso una linea, con entrambi evidenziati."
+  },
+  "Toolset": {
+    "drawBody": "Linee, polilinee, cerchi, archi, ellissi, spline, rettangoli, poligoni e tratteggi.",
+    "modifyBody": "Sposta, copia, ruota, scala, specchia e stira; offset, taglia, estendi, raccorda, cima e serie.",
+    "annotateBody": "Testo e testo multilinea, e sette tipi di quota, con i loro stili.",
+    "organizeBody": "Layer, {linetypes, number} tipi di linea, {lineweights, number} spessori di linea e colori, DaLayer; blocchi con attributi.",
+    "drawAlt": "Una piastra con asola: una polilinea con due estremità ad arco e due fori.",
+    "modifyAlt": "Quattro contorni concentrici, ciascuno in offset dal precedente.",
+    "annotateAlt": "Un profilo a gradini quotato con una quota lineare continuata due volte.",
+    "organizeAlt": "Un rettangolo con un'asola a linee nascoste e un asse, ciascuno sul proprio layer."
+  },
+  "Solids": {
+    "label": "03 · Solidi 3D",
+    "title": "Solidi 3D nel browser — novità, e ancora parziali.",
+    "lead": "Solidi creati e modificati direttamente, senza cronologia delle funzioni: primitive, estrusioni e rivoluzioni, booleane, trance e spigoli raccordati, visti dal ViewCube o in orbita.",
+    "extrudeTitle": "Disegna un profilo, poi estrudilo o ruotalo",
+    "booleansTitle": "Unisci, sottrai e interseca solidi",
+    "stylesTitle": "Un solido, tre stili di visualizzazione",
+    "wireframeAlt": "Un solido a L in Wireframe 2D: tutti gli spigoli disegnati, anche i nascosti.",
+    "hiddenAlt": "Lo stesso solido in Nascosto: solo gli spigoli in vista.",
+    "conceptualAlt": "Lo stesso solido in Concettuale: le facce sfumate in toni caldi verso la luce e freddi dalla parte opposta, con gli spigoli disegnati sopra.",
+    "todayTitle": "Funziona oggi",
+    "notYetTitle": "Non ancora",
+    "notYet": "Sweep e loft, mesh e rendering, e spostare o ruotare i solidi in 3D."
+  },
+  "LocalFirst": {
+    "label": "04 · Gratis e privato",
+    "title": "Gratis, senza registrazione e senza nulla da installare.",
+    "freeTitle": "Gratis, senza account",
+    "freeBody": "Non c'è nulla a cui iscriversi né da pagare: apri la pagina e disegna.",
+    "autosaveTitle": "Salvato in automatico nel browser",
+    "autosaveBody": "Ogni modifica viene salvata su questo dispositivo mentre disegni. Chiudi la scheda: il disegno è lì quando torni.",
+    "fileTitle": "Un file quando lo vuoi",
+    "fileBody": "Ctrl+S salva il disegno in un file nel formato versionato di MellowCAD. Ctrl+O lo riapre, su qualsiasi computer, e <dxf>apre anche i file DXF</dxf>.",
+    "privateTitle": "Nessun invio",
+    "privateBody": "I tuoi disegni non vengono mai inviati da nessuna parte. Le statistiche contano le pagine viste, senza cookie.",
+    "formats": "DXF: si apre, non si salva ancora. DWG: non ancora. I disegni si salvano nel formato versionato di MellowCAD.",
+    "warning": "Cancellare i dati di questo sito cancella anche il salvataggio automatico. Premi Ctrl+S per tenere un file.",
+    "diagramAlt": "Dentro il tuo dispositivo, l'editor salva in automatico nel browser, e salva e apre un file; nulla esce dal dispositivo.",
+    "diagramEditor": "EDITOR",
+    "diagramBrowser": "BROWSER",
+    "diagramFile": "FILE",
+    "diagramDevice": "IL TUO DISPOSITIVO",
+    "diagramAutosave": "salv. auto",
+    "privacyLink": "Cosa viene conservato, esattamente"
+  },
+  "Audience": {
+    "label": "05 · Per chi è",
+    "title": "Per esercitarsi con i comandi di AutoCAD, abbozzare e insegnare.",
+    "studentsTitle": "Studenti",
+    "studentsBody": "Esercitati con i comandi di AutoCAD del tuo corso, nella tua lingua, su qualsiasi computer, senza installare nulla e senza licenze da chiedere.",
+    "draftersTitle": "Disegnatori",
+    "draftersBody": "Verifica come si comporta un comando, o abbozza un pezzo lontano dalla tua postazione, con gli alias che hai già nelle dita.",
+    "teachersTitle": "Docenti",
+    "teachersBody": "Ogni studente ha gli stessi comandi nello stesso ordine, in aula o a casa, e non c'è nulla da installare.",
+    "makersTitle": "Appassionati",
+    "makersBody": "Disegna una staffa o una piastra in scala, o modellala come solido, gratis.",
+    "practice": "Studenti e docenti: <link>esercizi AutoCAD</link>, dalla prima guarnizione ai solidi 3D, ciascuno risolto passo passo e aperto nell'editor con il suo disegno.",
+    "notFor": "Non ancora per salvare in DXF o scambiare file DWG, né per stampare tavole su carta o PDF."
+  },
+  "Status": {
+    "label": "06 · Stato",
+    "title": "Onesti su ciò che c'è — e su ciò che non c'è ancora.",
+    "lead": "MellowCAD è un progetto indipendente e open source, in sviluppo attivo. Ecco a che punto è.",
+    "todayTitle": "Funziona oggi",
+    "today1": "{commands, number} comandi AutoCAD e {aliases, number} alias",
+    "today2": "{snaps, number} snap ad oggetto, puntamento snap ad oggetto, puntamento polare e Orto",
+    "today3": "Layer, tipi di linea, {lineweights, number} spessori di linea e colori",
+    "today4": "Quote, testo, tratteggi e blocchi con attributi",
+    "today5": "Salvataggio automatico, salva e apri, apertura di file DXF e Appunti",
+    "today6": "Solidi 3D, ancora parziali: primitive, estrusioni e rivoluzioni, booleane, trance e sezioni, e viste ombreggiate",
+    "notYetTitle": "Non ancora",
+    "notYet1": "File DWG, e salvataggio in DXF",
+    "notYet2": "Stampa e PDF",
+    "notYet3": "Layout e spazio carta",
+    "notYet4": "Sweep, loft, mesh e rendering in 3D",
+    "notYet5": "Telefoni e tablet",
+    "nextTitle": "Prossimamente",
+    "next1": "Solidi 3D: spostati e ruotati in 3D, e l'UCS impostato su una faccia",
+    "updated": "Aggiornato il {date}",
+    "contact": "Ti manca qualcosa? Scrivimi."
+  },
+  "Faq": {
+    "label": "07 · FAQ",
+    "title": "Domande e risposte.",
+    "q1": "MellowCAD è gratis?",
+    "a1": "Sì — gratis, senza account e senza prova a tempo. È un progetto indipendente in sviluppo attivo.",
+    "q2": "MellowCAD è open source?",
+    "a2": "Sì. Il codice è su <github>GitHub</github> con licenza MIT, e il motore è pubblicato su npm come <npm>{package}</npm>. La licenza copre il codice, non il nome né il logo di MellowCAD.",
+    "q3": "Devo installare qualcosa?",
+    "a3": "No. Funziona in un browser recente su computer — Chrome, Edge, Firefox o Safari. Apri mellowcad.com/it/draw e digita un comando.",
+    "q4": "Funziona davvero come AutoCAD?",
+    "a4": "È la specifica: comandi, alias, ordine delle richieste, lettere d'opzione e valori predefiniti seguono l'AutoCAD attuale. Alcuni comandi sono ancora parziali, e la roadmap elenca esattamente quali opzioni mancano.",
+    "q5": "Posso aprire o salvare file DWG o DXF, o stampare?",
+    "a5": "MellowCAD <dxf>apre i file DXF</dxf>, da AutoCAD R12 al 2018, testo o binari: linee, archi, cerchi, ellissi, polilinee, spline, testi, quote, tratteggi e blocchi, sui loro layer. Ciò per cui non ha ancora un oggetto — punti, direttrici, tabelle, layout, solidi 3D — viene lasciato fuori ed elencato all'apertura del file. Il salvataggio in DXF e i file DWG non ci sono ancora, e non ci sono ancora stampa né esportazione in PDF.",
+    "q6": "Dove vengono conservati i miei disegni?",
+    "a6": "Sul tuo dispositivo. MellowCAD salva in automatico nel browser e non invia mai i tuoi disegni. Cancellare i dati del sito elimina il salvataggio automatico, quindi premi Ctrl+S per tenere un file.",
+    "q7": "MellowCAD è affiliato ad Autodesk?",
+    "a7": "No. È un progetto indipendente. AutoCAD è un marchio registrato di Autodesk, Inc.",
+    "q8": "Funziona su tablet o telefoni?",
+    "a8": "Si apre, ma è fatto per tastiera e mouse, come AutoCAD. Usa un computer.",
+    "q9": "Quali comandi sono supportati?",
+    "a9": "{commands, number} comandi, tra cui LINEA, PLINEA, CERCHIO, ARCO, ELLISSE, TRATTEGGIO, OFFSET, TAGLIA, RACCORDO, SERIE, le quote, i blocchi e i layer. La <reference>lista dei comandi</reference> li riporta tutti, con alias e prima richiesta.",
+    "q10": "Fa anche il 3D?",
+    "a10": "In parte. Crea solidi 3D — primitive, estrusioni e rivoluzioni, unioni, sottrazioni e intersezioni, trance e sezioni, spigoli raccordati e smussati, facce modificate —, ne calcola le proprietà di massa e li mostra in orbita, dal ViewCube e in stili di visualizzazione ombreggiati. Sweep, loft, mesh e rendering non ci sono ancora.",
+    "q11": "Posso usarlo per esercitarmi per il corso di AutoCAD?",
+    "a11": "Sì, per i comandi: nomi e alias, ordine delle richieste e opzioni seguono AutoCAD, in inglese, spagnolo, portoghese brasiliano, francese o italiano, e <exercises>gli esercizi</exercises> ti danno disegni da fare, ciascuno risolto passo passo. Non apre né salva ancora file DWG: un lavoro da consegnare in DWG o PDF richiede ancora un altro programma."
+  },
+  "FinalCta": {
+    "title": "Il tuo tavolo da disegno è a un tasto."
+  },
+  "Footer": {
+    "tagline": "CAD online gratis con i comandi di AutoCAD",
+    "product": "Prodotto",
+    "contact": "Contatti",
+    "report": "Segnala un problema",
+    "code": "Codice",
+    "docs": "Documentazione",
+    "commands": "Elenco dei comandi",
+    "exercises": "Esercizi",
+    "repository": "GitHub",
+    "npm": "npm",
+    "licence": "Licenza MIT",
+    "privacy": "Privacy",
+    "language": "Lingua",
+    "drawingNumber": "N. dis.",
+    "revision": "Rev",
+    "scale": "Scala",
+    "sheet": "Foglio",
+    "sheetValue": "1 di 1",
+    "trademark": "Autodesk e AutoCAD sono marchi del gruppo di società Autodesk. MellowCAD è un progetto indipendente, non affiliato né approvato da Autodesk."
+  },
+  "Privacy": {
+    "metaTitle": "Privacy",
+    "metaDescription": "Cosa conserva MellowCAD nel tuo browser, cosa misura, chi tratta questi dati e su quale base, e i tuoi diritti.",
+    "label": "Privacy",
+    "title": "Cosa resta dove.",
+    "lead": "MellowCAD non ha account né server che vedano i tuoi disegni. Ecco tutto ciò che conserva, tutto ciò che misura, e chi se ne occupa.",
+    "storedTitle": "Nel tuo browser",
+    "stored1": "Il tuo disegno, salvato in automatico nell'archiviazione locale del browser mentre lavori. Non lascia mai il dispositivo.",
+    "stored2": "Ciò che disegni su un esercizio, tenuto separato dal tuo disegno, e la disposizione dei pannelli dell'editor. Un file DXF scelto nella pagina «Aprire un file DXF online» aspetta nell'archiviazione del browser che l'editor lo apra, e viene poi eliminato. Nient'altro, e nessun cookie.",
+    "storedNote": "Cancellare i dati di questo sito nel browser elimina il salvataggio automatico. Premi Ctrl+S nell'editor per tenere un file.",
+    "analyticsTitle": "Cosa viene misurato",
+    "analytics1": "Vercel Web Analytics conta le pagine viste: la pagina, quella da cui arrivi, il tuo paese e la tua città, e il tuo browser, sistema e tipo di dispositivo. Non imposta cookie; una visita è riconosciuta da un hash della richiesta, scartato dopo 24 ore, e le statistiche sono anonime.",
+    "analytics2": "Vercel Speed Insights misura la velocità di caricamento e di risposta delle pagine, con la pagina, il tuo browser, sistema, tipo di dispositivo, velocità di rete e paese — anch'esso in forma anonima.",
+    "analytics3": "Nessuno dei due vede i tuoi disegni, e nessuno dei due serve per pubblicità, profilazione o decisioni automatizzate.",
+    "handledTitle": "Chi se ne occupa, e perché",
+    "handled1": "MellowCAD è un progetto indipendente di {name}, responsabile di questi dati, che risponde a <email>{address}</email>.",
+    "handled2": "Servire il sito e misurarne uso e velocità si fondano su un legittimo interesse a gestire bene un servizio gratuito, limitato a statistiche anonime (articolo 6, paragrafo 1, lettera f, del GDPR).",
+    "handled3": "Vercel Inc. ospita il sito e svolge entrambe le misurazioni. Come ogni host, tratta il tuo indirizzo IP per consegnare le pagine. Ha sede negli Stati Uniti ed è certificata dal Data Privacy Framework UE–USA.",
+    "handled4": "Se scrivi, il tuo messaggio arriva a Google, il fornitore di posta, tramite Cloudflare, che lo inoltra senza conservarne copia. Serve solo a risponderti, per tutto il tempo che la conversazione richiede. Entrambe le società hanno sede negli Stati Uniti e sono certificate dal Data Privacy Framework UE–USA.",
+    "rightsTitle": "I tuoi diritti",
+    "rights1": "Puoi chiedere di accedere ai dati che ti riguardano, correggerli o cancellarli, limitarne o contestarne l'uso, o riceverne una copia: scrivi all'indirizzo qui sopra.",
+    "rights2": "Puoi anche presentare un reclamo a un'autorità di protezione dei dati — nell'UE, quella del paese in cui vivi o lavori.",
+    "updated": "Ultimo aggiornamento il {date}"
+  },
+  "NotFound": {
+    "metaTitle": "Pagina non trovata",
+    "fallbackCommand": "PAGINA",
+    "home": "Torna al foglio da disegno",
+    "cta": "Inizia a disegnare"
+  },
+  "Og": {
+    "tagline": "CAD online gratis con i comandi di AutoCAD",
+    "drawTitle": "Inizia a disegnare"
+  },
+  "Docs": {
+    "navLabel": "Guide",
+    "breadcrumb": "Percorso",
+    "metaTitle": "Guide",
+    "metaDescription": "Come disegnare con MellowCAD e come costruire con esso: ogni comando e scorciatoia, le differenze da AutoCAD, e il motore, i suoi binding React e l'editor.",
+    "label": "Documentazione",
+    "title": "Guide",
+    "lead": "Come disegnare con MellowCAD, e come costruire con i suoi pacchetti.",
+    "buildTitle": "Costruire con MellowCAD",
+    "buildLead": "Il motore, i suoi binding React e l'editor completo, per chi li integra in un'app propria. In inglese.",
+    "guide": "Guida",
+    "api": "Riferimento API",
+    "published": "Su npm",
+    "notPublished": "Non ancora pubblicato",
+    "englishOnly": "Questa sezione è scritta solo in inglese.",
+    "inEnglish": "In inglese",
+    "onThisPage": "In questa pagina",
+    "menu": "Menu delle guide",
+    "closeMenu": "Chiudi il menu delle guide",
+    "search": "Cerca",
+    "searchTitle": "Cerca nelle guide",
+    "searchPlaceholder": "Cerca nelle guide",
+    "searchEmpty": "Nessun risultato per «{query}».",
+    "searchFailed": "La ricerca non ha risposto. Riprova tra un momento.",
+    "searching": "Ricerca…",
+    "close": "Chiudi",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "markdown": "Markdown",
+    "source": "Sorgente su GitHub",
+    "previous": "Precedente",
+    "next": "Successivo",
+    "useTitle": "Usare MellowCAD",
+    "useLead": "Per chi disegna: i primi passi, ogni comando e scorciatoia, e dove MellowCAD si differenzia da AutoCAD.",
+    "pages": {
+      "commands": {
+        "title": "Comandi AutoCAD in italiano e inglese",
+        "metaTitle": "Comandi AutoCAD in italiano e inglese",
+        "description": "I comandi AutoCAD in italiano e in inglese, per gruppo della barra multifunzione: nome, alias, prima richiesta e, per i principali, una pagina con ogni opzione.",
+        "lead": "Ogni comando come lo digiti sulla riga di comando, sotto il gruppo della barra multifunzione in cui lo cercheresti. La prima richiesta è quella del motore: lo stesso ordine e le stesse lettere d'opzione che vedrai eseguendolo. Un comando con una pagina propria rimanda a essa: le sue opzioni, una sessione disegnata dal motore e ciò che non fa ancora."
+      },
+      "shortcuts": {
+        "title": "Scorciatoie da tastiera di AutoCAD",
+        "metaTitle": "Scorciatoie AutoCAD: tasti F e tasti Ctrl",
+        "description": "I tasti a cui MellowCAD risponde: gli ausili di disegno, la modifica e i file, la finestra e la riga di comando.",
+        "lead": "I tasti a cui MellowCAD risponde, quelli che chi usa AutoCAD ha già nelle dita. Un comando è nominato come lo digiteresti; i suoi alias sono nella pagina dei comandi."
+      },
+      "exercises": {
+        "title": "Esercizi AutoCAD per esercitarsi",
+        "metaTitle": "Esercizi AutoCAD gratis, con soluzioni",
+        "description": "Esercizi AutoCAD per principianti e oltre, in 2D, isometrici e 3D, ciascuno risolto passo passo e aperto con il suo disegno in un editor online gratuito.",
+        "lead": "Disegni su cui esercitarsi con AutoCAD, dalla prima guarnizione ai solidi 3D, ciascuno con le sue quote, i comandi che fa praticare e la soluzione passo passo. Il motore disegna ogni passo e scrive la cronologia della riga di comando come la digiterai: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Aprine uno nell'editor e il suo disegno è lì, accanto allo spazio in cui disegni il tuo, nel browser, senza nulla da installare e senza account da creare.",
+        "guidesTitle": "Guide passo passo",
+        "guides": "Le competenze degli esercizi una alla volta: digitare i punti, la pianta di una casa, un disegno 2D trasformato in solido. Ogni guida mostra il disegno di ogni passo e la sua cronologia.",
+        "howTitle": "Come funzionano gli esercizi",
+        "how": "Un esercizio si apre nell'editor con il suo disegno, quotato, a sinistra dell'origine: disegna il tuo a partire da 0,0, come fa la sua soluzione. Ciò che disegni resta in questo browser per quel solo esercizio. Il disegno su cui lavoravi resta com'era, e l'editor aperto da solo lo riporta. Per ricominciare un esercizio, esegui NUOVO, poi aprilo dalla sua pagina. Ogni pagina si stampa da sola, prima il disegno e poi i passi, e la finestra di stampa del browser la salva come PDF.",
+        "questions": {
+          "where": {
+            "question": "Dove trovo esercizi AutoCAD per esercitarmi?",
+            "answer": "Qui: ogni esercizio ha il suo disegno quotato, i comandi che fa praticare e la soluzione passo passo, e si apre in un editor gratuito che funziona come AutoCAD, nel browser. Comincia da quelli per principianti; ogni comando che usano rimanda a ciò che fa e alle opzioni che chiede."
+          },
+          "online": {
+            "question": "Posso esercitarmi con AutoCAD online gratis?",
+            "answer": "Sì. MellowCAD gira nel browser, gratis e senza account: digiti i comandi e gli alias di AutoCAD, coi nomi della tua lingua, e rispondi alle loro richieste nello stesso ordine, con le stesse lettere d'opzione. Non è AutoCAD: apre i file DXF ma non può ancora salvarli né aprire DWG, e i suoi solidi 3D sono ancora parziali."
+          },
+          "solutions": {
+            "question": "Gli esercizi hanno le soluzioni?",
+            "answer": "Ogni esercizio è risolto passo passo sotto il suo disegno. Il motore disegna ogni passo e scrive la cronologia della riga di comando, così puoi confrontare il tuo lavoro riga per riga."
+          },
+          "pdf": {
+            "question": "Posso stampare gli esercizi o salvarli in PDF?",
+            "answer": "Sì. La pagina di un esercizio si stampa da sola, linee scure su bianco, prima il disegno e poi i passi, e la finestra di stampa del browser la salva come PDF."
+          }
+        }
+      }
+    },
+    "reference": {
+      "aliases": "Alias",
+      "firstPrompt": "Prima richiesta",
+      "coverage": "Cosa fa e cosa ancora manca, in dettaglio (in inglese)"
+    },
+    "command": {
+      "command": "Comando",
+      "english": "In inglese",
+      "englishValue": "{name}, digitato {typed} in ogni lingua",
+      "panel": "Gruppo",
+      "try": "Provalo",
+      "tryText": "<editor>Apri l'editor</editor>, digita {key} e premi Invio.",
+      "session": "Sulla riga di comando",
+      "sessionLead": "Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.",
+      "options": "Opzioni",
+      "missing": "Cosa non fa ancora",
+      "questions": "Domande",
+      "practice": "Esercitati",
+      "related": "Comandi correlati"
+    },
+    "shortcuts": {
+      "key": "Tasto",
+      "action": "Cosa fa",
+      "command": "Comando",
+      "sections": {
+        "aids": "Ausili di disegno",
+        "editing": "Modifica e file",
+        "window": "Finestra",
+        "commandLine": "Riga di comando"
+      },
+      "help": "Apre la guida del comando in corso in una nuova scheda, o queste guide se non ce n'è nessuno.",
+      "selectAll": "Seleziona tutti gli oggetti",
+      "enter": "Esegue ciò che è digitato. Senza nulla di digitato prende il valore predefinito della richiesta o termina il comando, e senza comandi in corso ripete l'ultimo.",
+      "escape": "Annulla il comando in corso; un primo Esc cancella ciò che è digitato a metà.",
+      "recall": "Senza comandi in corso, richiama i comandi digitati prima.",
+      "complete": "Completa il nome del comando che stai digitando; a una richiesta di punto, passa da uno snap ad oggetto all'altro sotto il cursore.",
+      "cycle": "Passa da un oggetto sovrapposto all'altro sotto il cursore mentre il ciclo di selezione mostra il suo badge."
+    },
+    "keys": {
+      "shift": "Maiusc",
+      "space": "Spazio",
+      "enter": "Invio",
+      "escape": "Esc",
+      "tab": "Tab",
+      "up": "↑",
+      "down": "↓"
+    },
+    "sessions": {
+      "firstLine": "Un rettangolo di quattro segmenti, digitato punto per punto; l'ultimo lo chiude.",
+      "circleDiameter": "Un cerchio da centro e diametro, digitato dopo aver scelto l'opzione.",
+      "endpointSnap": "Vicino a un angolo, lo snap ad oggetto mostra il suo marcatore e nomina il punto che prenderà.",
+      "offsetRectangle": "Un rettangolo e la sua copia in offset, indicata all'interno."
+    },
+    "types": {
+      "gettingStarted": "Primi passi",
+      "howTo": "Guide pratiche",
+      "reference": "Riferimento",
+      "concept": "Concetti",
+      "practice": "Pratica"
+    },
+    "exercise": {
+      "kind": "Esercizio",
+      "commands": "Comandi",
+      "editor": "Nell'editor",
+      "editorText": "<editor>Aprilo con il suo disegno</editor>, quotato, accanto a dove disegni il tuo",
+      "drawing": "Il disegno",
+      "steps": "Passo passo",
+      "stepsLead": "Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; # misura dall'origine.",
+      "more": "Altri esercizi",
+      "open": "Apri nell'editor",
+      "print": "Stampa o salva come PDF",
+      "levels": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+      },
+      "disciplines": {
+        "mechanical": "Meccanica",
+        "architecture": "Architettura",
+        "civil": "Ingegneria civile"
+      },
+      "spaces": {
+        "2d": "2D",
+        "isometric": "Isometrico",
+        "3d": "Solido 3D"
+      },
+      "layers": {
+        "outline": "Contorno",
+        "centre": "Assi",
+        "hidden": "Linee nascoste",
+        "dimensions": "Quote"
+      }
+    },
+    "openDxf": {
+      "choose": "Scegli un file DXF",
+      "drop": "o trascinalo qui",
+      "local": "Si apre nell'editor, in questo browser: il file non viene inviato.",
+      "replaces": "Prende il posto del disegno aperto nell'editor, come APRI: tieni prima il tuo con Ctrl+S nell'editor.",
+      "opening": "Apertura…",
+      "dwg": "I file DWG non si aprono ancora qui. Salvalo come DXF nel programma che l'ha creato, e apri quel file.",
+      "failed": "Questo browser non ha lasciato che la pagina passasse il file all'editor: aprilo lì con Ctrl+O.",
+      "editor": "Apri l'editor"
+    }
+  }
+}

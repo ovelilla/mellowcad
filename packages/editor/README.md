@@ -91,7 +91,7 @@ editor starts. To change one, mount a new editor: give it a new `key`.
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | [Customizing](docs/customizing.md)  | Replacing or removing the top bar, the status bar and the other pieces   |
 | [Saving drawings](docs/drawings.md) | Your own store, and saving and opening drawings from your code           |
-| [Languages](docs/languages.md)      | Its five languages, right to left, the language menu, your own words     |
+| [Languages](docs/languages.md)      | Its six languages, right to left, the language menu, your own words      |
 | [Next.js](docs/nextjs.md)           | Server pages, catalogs loaded on the server, fonts and the layout script |
 | [API reference](api.md)             | Every export, with its signature and its documentation                   |
 
@@ -100,11 +100,11 @@ What each command does, with its prompts and options, is in the user's
 
 ## Entry points
 
-| Import                            | What                                                                                                              |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                                                                           |
-| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it` (in progress) |
-| `@mellowcad/editor/styles.css`    | The stylesheet                                                                                                    |
+| Import                            | What                                                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                                                             |
+| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it` |
+| `@mellowcad/editor/styles.css`    | The stylesheet                                                                                      |
 
 ## Versioning
 

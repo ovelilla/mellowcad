@@ -1,0 +1,58 @@
+---
+title: "Comando LAYER in AutoCAD"
+description: "Come funziona LAYER (LA) di AutoCAD in italiano: le colonne del Gestore proprietà layer, Nuovo, Elimina e Imposta corrente, e come agiscono On e Bloccato."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando LAYER in italiano?","answer":"LAYER, come in inglese, alias LA, poi Invio o barra spaziatrice; anche DDLMODES, e _LAYER funziona in tutte le lingue di AutoCAD. Apre il Gestore proprietà layer, e CHIUDILAYER lo chiude."},{"question":"Come si cambia il layer di un oggetto?","answer":"Seleziona l'oggetto, poi scegli il layer nell'elenco a discesa Layer della barra superiore: l'oggetto si sposta lì in un solo passo di annullamento, e il layer corrente resta com'era. La riga Layer della tavolozza Proprietà fa lo stesso. Senza nulla di selezionato, l'elenco a discesa rende corrente il layer scelto."},{"question":"Come si elimina un layer in AutoCAD?","answer":"Selezionalo nel Gestore proprietà layer e premi Canc. Il layer 0, il layer corrente e un layer che contiene oggetti, anche in una definizione di blocco, non si possono eliminare: cancella o sposta prima i suoi oggetti e rendi corrente un altro layer."},{"question":"Qual è la differenza tra disattivare un layer e bloccarlo?","answer":"Un layer disattivato nasconde i suoi oggetti: non si possono selezionare né agganciare, e lasciano la selezione. Gli oggetti di un layer bloccato restano in vista, sbiaditi, e si possono agganciare e selezionare, ma nessun comando li modifica: uno che li riceve li conta e li lascia fuori. Disattivare il layer corrente chiede prima conferma, come in AutoCAD."},{"question":"Come si crea un nuovo layer?","answer":"Premi Nuovo nel Gestore proprietà layer e digita il suo nome: il layer prende il colore, il tipo di linea e lo spessore di linea di quello selezionato, che poi cambi nella sua riga. Impostalo corrente per disegnarvi."}]
+---
+
+LAYER apre il Gestore proprietà layer, dove i layer di un disegno vengono creati, nominati e impostati. Come in AutoCAD è una tavolozza, non una finestra di dialogo: resta aperta mentre disegni, qui come scheda del pannello delle tavolozze, finché `CHIUDILAYER` la chiude, e digitato con un apostrofo davanti dentro un altro comando, si apre senza terminare quel comando. Ogni oggetto sta su un layer, e il suo colore, il tipo di linea e lo spessore di linea, quando sono DaLayer, sono quelli del layer. I nuovi oggetti vanno sul layer corrente.
+
+Ogni layer è una riga, nell'ordine delle colonne di AutoCAD: Stato, con un segno di spunta sul layer corrente, poi Nome, On, Bloccato, Colore, Tipo di linea e Spessore di linea, e quanti oggetti contiene; le righe sono ordinate per nome. Nuovo aggiunge un layer con il colore, il tipo di linea e lo spessore di linea del layer selezionato, con il nome aperto alla digitazione, e lascia il layer corrente com'è. Imposta corrente, o un doppio clic su una riga, rende corrente un layer. Un clic sul nome del layer selezionato, o F2, lo rinomina, e un nome in uso o con caratteri che AutoCAD vieta viene rifiutato, come il layer 0. Elimina rimuove un layer, ma mai il layer 0, il layer corrente o uno che contiene oggetti: la finestra Layer - Non eliminato di AutoCAD dice quale. Ogni modifica nel gestore è un passo che U annulla, quelle consecutive insieme.
+
+- **Comando:** `LAYER`
+- **Alias:** `LA`, `DDLMODES`
+- **Gruppo:** [Organizza](/docs/commands#organize)
+- **Provalo:** [Apri l'editor](/it/draw), digita `LA` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="layer" caption="Tre layer, ciascuno reso corrente prima di disegnarvi: muri in bianco, una porta in giallo, un asse in rosso con il tipo di linea Center." />
+
+## Cosa non fa ancora [#missing]
+
+-LAYER, LAYDEL e gli altri strumenti del gruppo Layer: Rendi corrente il layer dell'oggetto, Corrispondenza layer, Layer precedente e il resto, e le icone On, Congela e Bloccato nel suo elenco a discesa. I layer non si possono congelare, e il gestore non ha le colonne Congela, Stampa, Trasparenza, Stile di stampa, Nuovo congelamento in VP o Descrizione, né il riordino delle colonne, né filtri o albero dei layer, né finestra delle impostazioni. L'esecuzione di LAYER non è un passo di annullamento a sé. Un nuovo layer viene ordinato subito, dove AutoCAD lo mostra sotto quello selezionato finché non viene rinominato, e lo spessore di linea del layer 0 è 0,25 mm, non Default. LAYLOCKFADECTL non si può digitare: gli oggetti di un layer bloccato sono sempre sbiaditi a metà.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose--es-capa--ca--layer--ddlmodes--cerrarcapa--pt-br-camada--ca--layer--ddlmodes--fecharcamada--fr-calque--layer--pl--ddlmodes--fermercalque--it-layer--la--ddlmodes--chiudilayer)
+
+## Domande [#questions]
+
+### Come si chiama il comando LAYER in italiano?
+
+LAYER, come in inglese, alias `LA`, poi Invio o barra spaziatrice; anche `DDLMODES`, e `_LAYER` funziona in tutte le lingue di AutoCAD. Apre il Gestore proprietà layer, e `CHIUDILAYER` lo chiude.
+
+### Come si cambia il layer di un oggetto?
+
+Seleziona l'oggetto, poi scegli il layer nell'elenco a discesa Layer della barra superiore: l'oggetto si sposta lì in un solo passo di annullamento, e il layer corrente resta com'era. La riga Layer della tavolozza Proprietà fa lo stesso. Senza nulla di selezionato, l'elenco a discesa rende corrente il layer scelto.
+
+### Come si elimina un layer in AutoCAD?
+
+Selezionalo nel Gestore proprietà layer e premi Canc. Il layer 0, il layer corrente e un layer che contiene oggetti, anche in una definizione di blocco, non si possono eliminare: cancella o sposta prima i suoi oggetti e rendi corrente un altro layer.
+
+### Qual è la differenza tra disattivare un layer e bloccarlo?
+
+Un layer disattivato nasconde i suoi oggetti: non si possono selezionare né agganciare, e lasciano la selezione. Gli oggetti di un layer bloccato restano in vista, sbiaditi, e si possono agganciare e selezionare, ma nessun comando li modifica: uno che li riceve li conta e li lascia fuori. Disattivare il layer corrente chiede prima conferma, come in AutoCAD.
+
+### Come si crea un nuovo layer?
+
+Premi Nuovo nel Gestore proprietà layer e digita il suo nome: il layer prende il colore, il tipo di linea e lo spessore di linea di quello selezionato, che poi cambi nella sua riga. Impostalo corrente per disegnarvi.
+
+## Comandi correlati [#related]
+
+- [Comando PROPRIETA (PROPERTIES) in AutoCAD](/docs/commands/properties)
+- [Comando CORRISPROP (MATCHPROP) in AutoCAD](/docs/commands/matchprop)
+- [Comando COLORE (COLOR) in AutoCAD](/docs/commands/color)
+- [Comando TLINEA (LINETYPE) in AutoCAD](/docs/commands/linetype)
+- [Comando SPESSLIN (LWEIGHT) in AutoCAD](/docs/commands/lweight)

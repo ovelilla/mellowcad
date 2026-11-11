@@ -1,0 +1,54 @@
+---
+title: "Comando 3DORBITA (3DORBIT) in AutoCAD"
+description: "Come funziona l'orbita 3D di AutoCAD in italiano (3DORBITA, 3DO, ORBIT): ruotare la vista, uscire, Maiusc e rotellina, tornare alla vista piana. Provala gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia dell'orbita 3D in AutoCAD?","answer":"3DO oppure ORBIT, poi Invio o barra spaziatrice. Senza digitare nulla, tieni premuti Maiusc e la rotellina e trascina."},{"question":"Come si orbita con il mouse?","answer":"Tieni premuto Maiusc, premi la rotellina e trascina: in orizzontale per ruotare il modello, in alto e in basso per guardarlo da più in alto o più in basso. Rilascia e torni nel comando in cui eri."},{"question":"Come si esce dall'orbita 3D?","answer":"Premi Invio o Esc. La vista resta dove l'hai lasciata."},{"question":"Come si torna alla vista piana dopo aver orbitato?","answer":"Esegui PIANA e premi Invio, oppure -VISTA e ALto, oppure fai clic sulla faccia superiore del ViewCube. ZOOM Precedente torna indietro un trascinamento alla volta."}]
+---
+
+3DORBITA ruota la vista attorno al disegno mentre trascini; nulla nel disegno si muove né cambia. Trascinare in orizzontale ruota la camera attorno all'asse Z del mondo, trascinare in alto e in basso la alza o la abbassa, attorno al centro del disegno sotto il centro dello schermo, in proiezione parallela. Parte dicendo come uscirne: finché è attivo puoi solo orbitare, e Invio o Esc lo termina, dopo il trascinamento o no.
+
+Tenendo premuti Maiusc e la rotellina si orbita da qualsiasi punto, anche dentro un altro comando, e anche il pulsante Orbita della barra di navigazione lo avvia. Digitato con un apostrofo, `'3DORBIT`, funziona dentro un altro comando, che prosegue dopo. Ogni trascinamento è un passo per `Precedente` di [`ZOOM`](/docs/commands/zoom), e l'intera esecuzione è un solo passo di annullamento, quindi `A` rimette a posto la vista. Per vedere i solidi come solidi, non come fili, usa [`STILEVISCORRENTE`](/docs/commands/vscurrent); il 3D di MellowCAD è solo solidi, e ancora parziale.
+
+- **Comando:** `3DORBITA`
+- **In inglese:** `3DORBIT`, digitato `_3DORBIT` in ogni lingua
+- **Alias:** `3DO`, `ORBIT`
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `3DO` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="3dorbit" caption="Una scatola vista prima in pianta: 3DORBITA, un trascinamento in orizzontale e poi in basso, quindi Invio, e la scatola è vista dall'alto del suo spigolo anteriore." />
+
+## Cosa non fa ancora [#missing]
+
+Il menu del clic destro, con le sue proiezioni, i suoi stili di visualizzazione e le altre modalità di navigazione. L'orbita attorno ai soli oggetti selezionati. La prospettiva. 3DFORBIT, 3DCORBIT e il resto della navigazione 3D di AutoCAD.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia dell'orbita 3D in AutoCAD?
+
+`3DO` oppure `ORBIT`, poi Invio o barra spaziatrice. Senza digitare nulla, tieni premuti Maiusc e la rotellina e trascina.
+
+### Come si orbita con il mouse?
+
+Tieni premuto Maiusc, premi la rotellina e trascina: in orizzontale per ruotare il modello, in alto e in basso per guardarlo da più in alto o più in basso. Rilascia e torni nel comando in cui eri.
+
+### Come si esce dall'orbita 3D?
+
+Premi Invio o Esc. La vista resta dove l'hai lasciata.
+
+### Come si torna alla vista piana dopo aver orbitato?
+
+Esegui [`PIANA`](/docs/commands/plan) e premi Invio, oppure `-VISTA` e `ALto`, oppure fai clic sulla faccia superiore del ViewCube. [`ZOOM`](/docs/commands/zoom) `Precedente` torna indietro un trascinamento alla volta.
+
+## Comandi correlati [#related]
+
+- [Comando STILEVISCORRENTE (VSCURRENT) in AutoCAD](/docs/commands/vscurrent)
+- [Comando VISTA (VIEW) in AutoCAD](/docs/commands/view)
+- [Comando PIANA (PLAN) in AutoCAD](/docs/commands/plan)
+- [Comando ZOOM in AutoCAD](/docs/commands/zoom)

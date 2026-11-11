@@ -3,5 +3,429 @@ import type { EditorLocale } from "./types"
 
 export const it: EditorLocale = {
   "tag": "it",
-  "messages": {}
+  "messages": {
+    "Workspace": {
+      "canvas": "Area di disegno CAD"
+    },
+    "Keys": {
+      "save": "Ctrl+S",
+      "open": "Ctrl+O",
+      "undo": "Ctrl+Z",
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Maiusc+C",
+      "paste": "Ctrl+V"
+    },
+    "TopBar": {
+      "menu": "Menu applicazione",
+      "new": "Nuovo",
+      "open": "Apri",
+      "save": "Salva",
+      "saveAs": "Salva con nome",
+      "units": "Unità disegno…",
+      "language": "Lingua",
+      "feedback": "Invia commenti",
+      "saving": "Salvataggio in corso…",
+      "saved": "Salvato",
+      "savedHint": "Salvato su questo dispositivo",
+      "undo": "Annulla",
+      "redo": "Ripeti",
+      "commandLine": "Riga di comando",
+      "layer": "Layer",
+      "color": "Colore oggetto",
+      "lineweight": "Spessore linea",
+      "linetype": "Tipo di linea"
+    },
+    "NavigationBar": {
+      "label": "Barra di navigazione",
+      "zoom": "Zoom",
+      "extents": "Zoom estensioni",
+      "window": "Zoom finestra",
+      "previous": "Zoom precedente",
+      "in": "Zoom in",
+      "out": "Zoom out"
+    },
+    "Viewport": {
+      "view": [
+        "Controlli vista: ",
+        [
+          "name"
+        ]
+      ]
+    },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Inizio",
+      "parallel": "Parallelo",
+      "setHome": "Imposta vista corrente come Inizio",
+      "rollClockwise": "Ruota in senso orario",
+      "rollCounterclockwise": "Ruota in senso antiorario",
+      "wcs": "WCS",
+      "unnamed": "Anonimo",
+      "newUcs": "Nuovo UCS",
+      "adjacent": {
+        "up": "Visualizza la faccia superiore",
+        "down": "Visualizza la faccia inferiore",
+        "left": "Visualizza la faccia a sinistra",
+        "right": "Visualizza la faccia a destra"
+      }
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "Cerchio",
+        "arc": "Arco",
+        "ellipse": "Ellisse",
+        "spline": "Spline",
+        "rectangle": "Rettangolo",
+        "trim": "Taglia",
+        "fillet": "Raccorda",
+        "filletedge": "Raccorda spigolo",
+        "solideditextrude": "Estrudi facce",
+        "break": "Interrompi",
+        "pedit": "Edita polilinea",
+        "array": "Serie",
+        "text": "Testo",
+        "dimension": "Quota",
+        "dimchain": "Continua",
+        "attributes": "Attributi",
+        "measure": "Misura",
+        "union": "Modifica solidi",
+        "box": "Modellazione",
+        "extrude": "Estrudi"
+      },
+      "sections": {
+        "draw": "Disegna",
+        "modify": "Edita",
+        "annotation": "Annotazione",
+        "block": "Blocco",
+        "utilities": "Utilità"
+      }
+    },
+    "CommandLine": {
+      "label": "Riga di comando",
+      "placeholder": "Digitare un comando (LINEA, TA, CP…)",
+      "history": "Cronologia dei comandi"
+    },
+    "DynamicInput": {
+      "locked": "bloccato"
+    },
+    "StatusBar": {
+      "coordinates": "Coordinate",
+      "model": "MODELLO",
+      "modelSpace": "Spazio modello",
+      "grid": "Griglia",
+      "objectSnap": "Snap ad oggetto",
+      "objectSnapSettings": "Impostazioni snap ad oggetto",
+      "snapMode": "Modalità snap",
+      "snapSettings": "Impostazioni snap",
+      "snap": "Snap",
+      "gridSnap": "Snap griglia",
+      "polarSnap": "Snap polare",
+      "snapX": "Snap X",
+      "snapXSpacing": "Intervallo X di snap",
+      "snapY": "Snap Y",
+      "snapYSpacing": "Intervallo Y di snap",
+      "polarDistance": "Distanza polare",
+      "polarSnapDistance": "Distanza snap polare",
+      "ortho": "Modalità orto",
+      "polarTracking": "Puntamento polare",
+      "polarTrackingAngle": "Angolo di puntamento polare",
+      "polarAngle": "Angolo polare",
+      "objectSnapTracking": "Puntamento snap ad oggetto",
+      "selectionCycling": "Selezione ciclica",
+      "selectionCyclingSettings": "Impostazioni selezione ciclica",
+      "selectionList": "Visualizza elenco di selezione",
+      "showLineweight": "Mostra spessore di linea",
+      "units": "Unità",
+      "cleanScreen": "Schermo intero",
+      "customization": "Personalizzazione"
+    },
+    "Units": {
+      "title": "Unità disegno",
+      "length": "Lunghezza",
+      "type": "Tipo",
+      "precision": "Precisione",
+      "decimal": "Decimali",
+      "insertionScale": "Scala di inserimento",
+      "insertedContent": "Unità per l'adattamento in scala del contenuto inserito:",
+      "millimeters": "Millimetri",
+      "centimeters": "Centimetri",
+      "meters": "Metri",
+      "sampleOutput": "Esempio di output",
+      "ok": "OK",
+      "cancel": "Annulla"
+    },
+    "SnapOverride": {
+      "from": "Da",
+      "pointFilters": "Filtri coordinate",
+      "none": "Nessuno"
+    },
+    "SelectionCycling": {
+      "title": "Selezione",
+      "none": "Nessuno"
+    },
+    "ShortcutMenu": {
+      "label": "Menu di scelta rapida",
+      "repeat": [
+        "Ripeti ",
+        [
+          "command"
+        ]
+      ],
+      "clipboard": "Appunti",
+      "copyBase": "Copia con punto base",
+      "paste": "Incolla",
+      "undo": "Annulla",
+      "redo": "Ripeti",
+      "copySelection": "Copia selezione",
+      "deselectAll": "Deseleziona tutto",
+      "properties": "Proprietà",
+      "enter": "Invio",
+      "cancel": "Annulla",
+      "snapOverrides": "Modifiche locali osnap",
+      "dimensionStyle": "Stile quota"
+    },
+    "Layers": {
+      "title": "Layer",
+      "new": "Nuovo layer",
+      "setCurrentLabel": [
+        "Imposta ",
+        [
+          "name"
+        ],
+        " come layer corrente"
+      ],
+      "current": "Layer corrente",
+      "setCurrent": "Imposta corrente",
+      "colorLabel": [
+        "Colore di ",
+        [
+          "name"
+        ]
+      ],
+      "color": "Colore del layer",
+      "linetypeLabel": [
+        "Tipo di linea di ",
+        [
+          "name"
+        ]
+      ],
+      "lineweightLabel": [
+        "Spessore linea di ",
+        [
+          "name"
+        ]
+      ],
+      "on": "On",
+      "off": "Off",
+      "unlocked": "Sbloccato",
+      "locked": "Bloccato",
+      "deleteLabel": [
+        "Elimina layer ",
+        [
+          "name"
+        ]
+      ],
+      "delete": "Elimina layer",
+      "rename": "Fare di nuovo clic sul nome del layer selezionato per rinominarlo",
+      "renameLabel": [
+        "Rinomina layer ",
+        [
+          "name"
+        ]
+      ],
+      "list": "Elenco layer",
+      "nextColumns": "Colonne successive",
+      "previousColumns": "Colonne precedenti",
+      "dialog": {
+        "close": "Chiudi",
+        "notDeleted": {
+          "title": "Layer - Non eliminato",
+          "instruction": "Il layer selezionato non è stato eliminato.",
+          "content": "Impossibile eliminare i layer seguenti:",
+          "base": "Layer 0 e Defpoints",
+          "current": "Il layer corrente",
+          "inUse": "I layer contenenti oggetti",
+          "xref": "I layer dipendenti da xrif"
+        },
+        "currentOff": {
+          "title": "Layer - Layer corrente disattivato",
+          "instruction": "Il layer corrente sta per essere disattivato. Cosa si desidera fare?",
+          "turnOff": "Disattiva il layer corrente",
+          "turnOffNote": "Gli oggetti creati da questo momento non verranno visualizzati nel disegno finché il layer non verrà riattivato.",
+          "keepOn": "Mantieni attivo il layer corrente"
+        },
+        "nameInUse": {
+          "title": "Layer - Nome già esistente",
+          "instruction": [
+            "Il nome ",
+            [
+              "name"
+            ],
+            " è già in uso."
+          ],
+          "content": "È necessario immettere un nome diverso."
+        },
+        "invalidName": {
+          "title": "Layer",
+          "instruction": "Caratteri non validi nel nome del layer.",
+          "content": "I caratteri seguenti non sono validi nei nomi dei layer:"
+        },
+        "cannotRename": {
+          "title": "Layer - Rinomina",
+          "instruction": "Impossibile rinominare il layer selezionato.",
+          "content": "Impossibile rinominare i layer seguenti:",
+          "base": "Layer 0",
+          "xref": "I layer dipendenti da xrif"
+        }
+      },
+      "columns": {
+        "status": "Stato",
+        "name": "Nome",
+        "on": "On",
+        "lock": "Bloccato",
+        "color": "Colore",
+        "linetype": "Tipo di linea",
+        "lineweight": "Spessore linea",
+        "objects": "Oggetti"
+      }
+    },
+    "Styles": {
+      "title": "Stili",
+      "dimension": "Quota",
+      "text": "Testo",
+      "current": [
+        "Corrente: ",
+        [
+          "value",
+          [
+            "name"
+          ]
+        ]
+      ],
+      "new": "Nuovo",
+      "setCurrent": [
+        "Imposta ",
+        [
+          "name"
+        ],
+        " come corrente"
+      ],
+      "rename": [
+        "Rinomina ",
+        [
+          "name"
+        ]
+      ],
+      "delete": [
+        "Elimina ",
+        [
+          "name"
+        ]
+      ],
+      "lines": "Linee",
+      "baselineSpacing": "Spaziatura linea base",
+      "extendBeyond": "Estendi oltre linee di quota",
+      "offsetFromOrigin": "Offset dall'origine",
+      "symbolsAndArrows": "Simboli e frecce",
+      "arrowSize": "Dimensione freccia",
+      "centerMark": "Dimensione centro",
+      "textGroup": "Testo",
+      "textHeight": "Altezza testo",
+      "offsetFromDimLine": "Offset dalla linea di quota",
+      "fit": "Adatta",
+      "overallScale": "Utilizza scala generale di",
+      "drawDimLineBetween": "Disegna linee di quota tra linee di estensione",
+      "primaryUnits": "Unità primarie",
+      "precision": "Precisione",
+      "angularPrecision": "Precisione angolare",
+      "decimalSeparator": "Separatore decimale",
+      "comma": "',' (Virgola)",
+      "period": "'.' (Punto)",
+      "space": "' ' (Spazio)",
+      "suppressTrailingZeros": "Sopprimi zeri finali",
+      "yes": "Sì",
+      "no": "No",
+      "size": "Dimensione",
+      "height": "Altezza",
+      "heightHint": "Con altezza 0 l'altezza resta libera e TESTO la richiede ogni volta."
+    },
+    "Blocks": {
+      "title": "Blocchi",
+      "filter": "Filtro (? e * consentiti)",
+      "filterLabel": "Filtra blocchi",
+      "empty": "Nessun blocco definito. Disegnare qualcosa ed eseguire BLOCCO.",
+      "noMatch": "Nessun blocco corrisponde al filtro.",
+      "references": [
+        [
+          "name"
+        ],
+        " — ",
+        [
+          "count",
+          2,
+          {
+            "other": [
+              0,
+              " nel disegno"
+            ]
+          }
+        ]
+      ]
+    },
+    "Properties": {
+      "noSelection": "Nessuna selezione",
+      "general": "Generale",
+      "color": "Colore",
+      "colorLabel": "Colore degli oggetti selezionati",
+      "layer": "Layer",
+      "layerLabel": "Layer degli oggetti selezionati",
+      "linetype": "Tipo di linea",
+      "linetypeLabel": "Tipo di linea degli oggetti selezionati",
+      "lineweight": "Spessore di linea",
+      "lineweightLabel": "Spessore di linea degli oggetti selezionati",
+      "textStyle": "Stile di testo",
+      "textStyleLabel": "Stile di testo degli oggetti selezionati",
+      "dimStyle": "Stile quota",
+      "dimStyleLabel": "Stile quota degli oggetti selezionati",
+      "varies": "*VARIE*",
+      "customColor": "Colore personalizzato",
+      "title": "Proprietà",
+      "objectType": "Tipo di oggetto",
+      "currentLayerLabel": "Layer corrente",
+      "currentColorLabel": "Colore corrente",
+      "currentLinetypeLabel": "Tipo di linea corrente",
+      "currentLineweightLabel": "Spessore di linea corrente",
+      "lockedObjects": {
+        "title": "Proprietà - Oggetti bloccati",
+        "instruction": "Uno o più oggetti selezionati sono bloccati e non possono essere aggiornati.",
+        "content": [
+          "Numero di oggetti rimossi dal gruppo di selezione: ",
+          [
+            "count",
+            4
+          ]
+        ],
+        "close": "Chiudi"
+      }
+    },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Testo multilinea - Modifiche non salvate",
+        "instruction": "Salvare le modifiche apportate al testo?",
+        "yes": "Sì",
+        "no": "No",
+        "cancel": "Annulla"
+      }
+    },
+    "Palette": {
+      "label": "Tavolozze",
+      "fold": "Comprimi le tavolozze",
+      "unfold": "Mostra le tavolozze",
+      "resize": "Larghezza delle tavolozze"
+    }
+  }
 }

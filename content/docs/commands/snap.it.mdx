@@ -1,0 +1,72 @@
+---
+title: "Comando SNAP in AutoCAD"
+description: "Come funziona SNAP (SN, F9) di AutoCAD: il cursore vincolato a un reticolo con il passo che imposti, Aspetto per X e Y distinti, e lo snap polare. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di SNAP in AutoCAD?","answer":"F9 attiva e disattiva la modalità Snap. Il comando è SN, poi Invio o barra spaziatrice, per impostare il passo; funziona anche il nome completo, e _SNAP in qualsiasi lingua di AutoCAD."},{"question":"Qual è la differenza tra SNAP e OSNAP?","answer":"La modalità Snap arrotonda il cursore a un reticolo di punti nello spazio. Gli snap a oggetto (F3) lo bloccano su punti degli oggetti, punti finali, punti medi, centri. Lavorano insieme, e uno snap a oggetto ha la precedenza dove entrambi trovano un punto."},{"question":"Perché il mio cursore salta a scatti?","answer":"La modalità Snap è attiva: premi F9, o il pulsante snap della barra di stato, per disattivarla. Imposta un passo più piccolo con SNAP se vuoi gli scatti più fini."},{"question":"Come si impostano passi snap X e Y diversi?","answer":"Esegui SNAP, scegli rApporto e indica il passo orizzontale, poi quello verticale."},{"question":"Esiste uno snap isometrico?","answer":"Non ancora: l'opzione Stile di SNAP, che ruota il reticolo per il disegno isometrico, non è offerta."}]
+---
+
+La modalità Snap vincola il cursore a un reticolo: ogni punto indicato cade sul più vicino dei suoi punti, quindi con un passo di 10 un clic in 13,7 diventa 10,10. Il reticolo è quello dell'UCS corrente, dalla sua origine lungo i suoi assi. F9 attiva e disattiva la modalità Snap, scrivendo `<Snap on>` o `<Snap off>`, e lo stesso fa il suo pulsante nella barra di stato. Vengono arrotondati solo i punti indicati: una coordinata digitata viene presa come digitata, e uno snap a oggetto ha la precedenza sul reticolo. La griglia (F7) disegna un reticolo proprio, e lo mostra con lo snap attivo o no.
+
+Il comando SNAP imposta il passo: digitalo, oppure indica due punti a quella distanza, e la modalità Snap si attiva con quel passo in X e Y. Invio la attiva così com'è. Un passo di 0 o inferiore viene rifiutato con `Il valore deve essere positivo e diverso da zero.`. Digitato con un apostrofo, `'SNAP`, funziona all'interno di un altro comando. La modalità Snap e il suo passo vengono salvati con il disegno, e U annulla uno SNAP.
+
+Il menu Snap della barra di stato sceglie invece lo Snap polare: lungo un percorso di tracciamento polare il cursore avanza di POLARDIST o, finché POLARDIST è 0, del passo X dello snap.
+
+- **Comando:** `SNAP`
+- **Alias:** `SN`
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SN` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="snap" caption="SNAP 10 con la griglia attiva, poi LINEA indicata fuori dal reticolo: ogni punto cade su di esso, e così il cursore." />
+
+## Opzioni [#options]
+
+### `ON` [#on]
+
+Attiva la modalità Snap con il passo corrente, come fa Invio.
+
+### `OFF` (`OF`) [#off]
+
+Disattiva la modalità Snap; il passo viene conservato.
+
+### `rApporto` (`A`) [#aspect]
+
+Chiede un passo orizzontale, poi uno verticale, e attiva la modalità Snap: un reticolo più alto o più largo che quadrato. Il valore predefinito del prompt è allora Aspetto, quindi Invio li chiede di nuovo.
+
+## Cosa non fa ancora [#missing]
+
+Stile, snap isometrico, e Tipo, griglia o polare, al prompt: il menu della barra di stato sceglie il tipo. Legacy, l'opzione nascosta Ruota (SNAPANG) e SNAPBASE. Un POLARDIST negativo, che lo snap polare di AutoCAD prende come sua dimensione: −10 avanza di 10.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--pt-br-snap--sn--snap-mode-f9--fr-resol--rl--snap-mode-f9--it-snap--sn--snap-mode-f9)
+
+## Domande [#questions]
+
+### Qual è l'alias di SNAP in AutoCAD?
+
+F9 attiva e disattiva la modalità Snap. Il comando è `SN`, poi Invio o barra spaziatrice, per impostare il passo; funziona anche il nome completo, e `_SNAP` in qualsiasi lingua di AutoCAD.
+
+### Qual è la differenza tra SNAP e OSNAP?
+
+La modalità Snap arrotonda il cursore a un reticolo di punti nello spazio. Gli snap a oggetto (F3) lo bloccano su punti degli oggetti, punti finali, punti medi, centri. Lavorano insieme, e uno snap a oggetto ha la precedenza dove entrambi trovano un punto.
+
+### Perché il mio cursore salta a scatti?
+
+La modalità Snap è attiva: premi F9, o il pulsante snap della barra di stato, per disattivarla. Imposta un passo più piccolo con SNAP se vuoi gli scatti più fini.
+
+### Come si impostano passi snap X e Y diversi?
+
+Esegui SNAP, scegli `rApporto` e indica il passo orizzontale, poi quello verticale.
+
+### Esiste uno snap isometrico?
+
+Non ancora: l'opzione Stile di SNAP, che ruota il reticolo per il disegno isometrico, non è offerta.
+
+## Comandi correlati [#related]
+
+- [Comando UCS in AutoCAD](/docs/commands/ucs)
+- [Comando LINEA (LINE) in AutoCAD](/docs/commands/line)
+- [DA (FROM)](/docs/commands#from): Specifica un punto con offset rispetto a un punto base

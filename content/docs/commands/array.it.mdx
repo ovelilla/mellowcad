@@ -1,0 +1,67 @@
+---
+title: "Comando SERIE (ARRAY) in AutoCAD"
+description: "Come funziona SERIE (ARRAY, alias SR) di AutoCAD in italiano: serie rettangolari, polari e lungo traiettoria. Provala gratis nel browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di SERIE in AutoCAD?","answer":"SR, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _ARRAY in tutte le lingue di AutoCAD. SERIERETTANG, SERIEPOLARE e SERIETRAIETT non hanno alias, e digitati per intero saltano la domanda sul tipo."},{"question":"Come si fa una serie circolare?","answer":"Scegli POlare, oppure esegui SERIEPOLARE, e indica il punto centrale: la selezione è copiata attorno ad esso, 6 elementi all'inizio. Cambia il numero con ELementi, e imposta l'angolo che riempiono con RIEmpimento."},{"question":"Come si esplode una serie?","answer":"Selezionala ed esegui ESPLODI: la serie diventa gli oggetti dei suoi elementi, ciascuno sul proprio layer. Per ottenere copie sciolte fin dall'inizio, rispondi No a ASsociativo prima di premere Invio."},{"question":"Come si modifica una serie dopo averla creata?","answer":"Selezionala. I suoi grip la modificano: il quadrato nel punto base la sposta, le frecce impostano i numeri e la spaziatura, e un numero digitato mentre una freccia di conteggio è attiva è il conteggio. La tavolozza Proprietà elenca le sue colonne, righe e spaziature, o i suoi elementi e angoli, da riscrivere. ARRAYEDIT non c'è ancora."}]
+---
+
+SERIE copia una selezione secondo uno schema: in colonne e righe, attorno a un centro, o lungo una traiettoria. Chiede gli oggetti, poi il tipo di serie, con Invio che sceglie quella rettangolare, e passa la selezione a [`SERIERETTANG`](/docs/commands/arrayrect), [`SERIEPOLARE`](/docs/commands/arraypolar) o [`SERIETRAIETT`](/docs/commands/arraypath), che proseguono senza richiedere di nuovo gli oggetti. Ognuna mostra subito la serie e la modifica in tempo reale, con le sue opzioni e i suoi grip, finché Invio la crea: un solo oggetto serie, oppure copie sciolte se hai detto che non deve essere associativa. L'intera esecuzione è un solo passo di annullamento, e Invio alla riga di comando ripete SERIE.
+
+- **Comando:** `SERIE`
+- **In inglese:** `ARRAY`, digitato `_ARRAY` in ogni lingua
+- **Alias:** `SR`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SR` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="array" caption="Un quadrato e il suo cerchio in serie con i valori predefiniti: Invio per una serie rettangolare, 4 colonne e 3 righe." />
+
+## Opzioni [#options]
+
+### `Rettangolare` (`R`) [#rectangular]
+
+Colonne e righe, e livelli impilati lungo Z se vuoi: [`SERIERETTANG`](/docs/commands/arrayrect). Parte con 4 colonne e 3 righe, distanziate di una volta e mezza la dimensione della selezione.
+
+### `TRaiettoria` (`TR`) [#path]
+
+Lungo una linea, un arco, un cerchio o una polilinea: [`SERIETRAIETT`](/docs/commands/arraypath). Chiede la curva della traiettoria, poi dispone gli elementi lungo di essa, ciascuno ruotato come ruota la traiettoria.
+
+### `POlare` (`PO`) [#polar]
+
+Attorno a un punto centrale: [`SERIEPOLARE`](/docs/commands/arraypolar). Chiede il centro e parte con 6 elementi su un giro completo.
+
+## Cosa non fa ancora [#missing]
+
+Il tipo proposto è sempre Rettangolare: ARRAYTYPE, la variabile che imposta il predefinito di AutoCAD, non è letta.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma--fr-reseau--re--it-serie--sr)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di SERIE in AutoCAD?
+
+`SR`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_ARRAY` in tutte le lingue di AutoCAD. [`SERIERETTANG`](/docs/commands/arrayrect), [`SERIEPOLARE`](/docs/commands/arraypolar) e [`SERIETRAIETT`](/docs/commands/arraypath) non hanno alias, e digitati per intero saltano la domanda sul tipo.
+
+### Come si fa una serie circolare?
+
+Scegli `POlare`, oppure esegui [`SERIEPOLARE`](/docs/commands/arraypolar), e indica il punto centrale: la selezione è copiata attorno ad esso, 6 elementi all'inizio. Cambia il numero con `ELementi`, e imposta l'angolo che riempiono con `RIEmpimento`.
+
+### Come si esplode una serie?
+
+Selezionala ed esegui [`ESPLODI`](/docs/commands/explode): la serie diventa gli oggetti dei suoi elementi, ciascuno sul proprio layer. Per ottenere copie sciolte fin dall'inizio, rispondi `No` a `ASsociativo` prima di premere Invio.
+
+### Come si modifica una serie dopo averla creata?
+
+Selezionala. I suoi grip la modificano: il quadrato nel punto base la sposta, le frecce impostano i numeri e la spaziatura, e un numero digitato mentre una freccia di conteggio è attiva è il conteggio. La tavolozza Proprietà elenca le sue colonne, righe e spaziature, o i suoi elementi e angoli, da riscrivere. ARRAYEDIT non c'è ancora.
+
+## Comandi correlati [#related]
+
+- [Comando SERIERETTANG (ARRAYRECT) in AutoCAD](/docs/commands/arrayrect)
+- [Comando SERIEPOLARE (ARRAYPOLAR) in AutoCAD](/docs/commands/arraypolar)
+- [Comando SERIETRAIETT (ARRAYPATH) in AutoCAD](/docs/commands/arraypath)
+- [Comando COPIA (COPY) in AutoCAD](/docs/commands/copy)
+- [Comando ESPLODI (EXPLODE) in AutoCAD](/docs/commands/explode)

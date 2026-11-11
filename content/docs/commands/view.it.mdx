@@ -1,0 +1,83 @@
+---
+title: "Comando VISTA (VIEW) in AutoCAD"
+description: "Come VISTA (VIEW, V, -VIEW) di AutoCAD passa alle sei viste ortogonali e alle quattro assonometriche, e quale UCS imposta ogni vista ortogonale. Provalo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si ottiene una vista assonometrica in AutoCAD?","answer":"Digita -VISTA, poi SOAsso per l'assonometrica sud-ovest; SEAsso, NEAsso e NOAsso danno gli altri tre spigoli. Oppure scegli SO assonometrica nel controllo vista in alto a sinistra, o clicca un angolo superiore del ViewCube. STILEVISCORRENTE con Nascosto nasconde gli spigoli dietro."},{"question":"Qual è il comando per la vista dall'alto?","answer":"-VISTA, poi ALto, che imposta anche l'UCS sugli assi globali. PIANA guarda invece dall'alto l'UCS corrente, e lo lascia com'è."},{"question":"Perché il mio UCS è cambiato dopo una vista frontale?","answer":"Una vista ortogonale ruota l'UCS perché ti guardi in faccia, così ciò che disegni giace sullo schermo. UCS e Invio tornano a Globale; A annulla la vista e il suo UCS insieme."},{"question":"Una vista assonometrica è lo stesso di un disegno assonometrico?","answer":"No. Una vista assonometrica guarda un modello 3D da uno spigolo. Un disegno assonometrico è 2D, disegnato sui piani isometrici con lo stile isometrico di SNAP, che MellowCAD non ha ancora."},{"question":"Dov'è Gestione viste?","answer":"VISTA esegue -VISTA alla riga di comando: non c'è Gestione viste, e le viste con nome (Salva, Ripristina) non ci sono ancora."}]
+---
+
+VISTA (VIEW) porta la vista su una delle dieci viste predefinite di AutoCAD: sei ortogonali, che guardano dritto un lato del modello, e quattro assonometriche, che guardano dall'alto da uno spigolo. Nulla nel disegno si muove. VISTA esegue `-VISTA`, la forma da riga di comando: il suo primo prompt elenca `Ortogonale`, che poi chiede il lato, e prende anche subito il nome di una vista, come lo risponde il menu di AutoCAD: `-VISTA`, poi `SOAsso`. Ogni vista inquadra l'intero disegno e dice `Rigenerazione modello in corso.`.
+
+Il controllo vista in alto a sinistra del disegno elenca le stesse dieci viste ed esegue `-VISTA`, e anche le facce e gli angoli del ViewCube passano a esse, lasciando l'UCS com'è. Ogni VISTA è un passo di annullamento, quindi `A` ripristina la vista, con l'UCS che aveva impostato. Digitato con un apostrofo all'interno di un altro comando, rifiuta con `** È richiesta una rigenerazione: non può essere trasparente.`. Il 3D di MellowCAD è solo solidi, e ancora parziale.
+
+- **Comando:** `VISTA`
+- **In inglese:** `VIEW`, digitato `_VIEW` in ogni lingua
+- **Alias:** `V`, `DDVIEW`
+- **Gruppo:** [Interroga e vista](/docs/commands#inquiry)
+- **Provalo:** [Apri l'editor](/it/draw), digita `V` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="view" caption="Un blocco a gradini disegnato in pianta: -VIEW e SW assonometrica, e lo si vede da sud-ovest e dall'alto, nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `Ortogonale` (`O`) [#orthographic]
+
+Chiede il lato da guardare, `ALto` per impostazione predefinita, quindi Invio lì dà la pianta: `ALto`, `Basso`, `FRonte`, `REtro`, `SInistra` o `Destra`. Ognuna è dritta: Alto mostra X a destra e Y in alto, Fronte X a destra e Z in alto, e Basso, visto da sotto, X a sinistra. Digitato al primo prompt, ogni lato funziona senza l'opzione.
+
+Ognuna ruota anche l'UCS perché ti guardi in faccia, dagli assi globali qualunque fosse l'UCS, con la sua origine in `0,0,0`, come fa l'opzione ortogonale di [`UCS`](/docs/commands/ucs): dopo Fronte il suo piano XY è il fronte, quindi ciò che disegni giace piatto sullo schermo, e l'UCS si chiama `*FRONT*`. Dopo Alto ha gli assi globali, e si chiama `*TOP*`.
+
+### `SOAsso` (`SOA`) [#swiso]
+
+Assonometrica sud-ovest: guarda dall'alto dallo spigolo davanti e a sinistra, vedendo il fronte, il lato sinistro e la sommità. L'UCS resta com'è. È la vista della sessione.
+
+### `SEAsso` (`SEA`) [#seiso]
+
+Assonometrica sud-est: guarda dall'alto dallo spigolo davanti e a destra, vedendo il fronte, il lato destro e la sommità. L'UCS resta com'è.
+
+### `NEAsso` (`NEA`) [#neiso]
+
+Assonometrica nord-est: guarda dall'alto dallo spigolo dietro e a destra, vedendo il retro, il lato destro e la sommità. L'UCS resta com'è.
+
+### `NOAsso` (`NOA`) [#nwiso]
+
+Assonometrica nord-ovest: guarda dall'alto dallo spigolo dietro e a sinistra, vedendo il retro, il lato sinistro e la sommità. L'UCS resta com'è.
+
+## Cosa non fa ancora [#missing]
+
+Viste con nome: `Ortogonale` è l'unica opzione che il primo prompt elenca, dove quello di AutoCAD elenca anche `?`, Elimina, Ripristina, Salva, Impostazioni e Finestra, e un nome digitato lì viene rifiutato. Gestione viste, che VISTA apre in AutoCAD. Senza nulla disegnato, una vista mantiene lo zoom dove AutoCAD inquadra i limiti del disegno. UCSORTHO e UCSBASE come variabili: una vista ortogonale allinea sempre l'UCS, dagli assi globali. L'UCS allineato nell'elenco `Precedente` di [`UCS`](/docs/commands/ucs).
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview--it--vista---v--vista--v--ddview)
+
+## Domande [#questions]
+
+### Come si ottiene una vista assonometrica in AutoCAD?
+
+Digita `-VISTA`, poi `SOAsso` per l'assonometrica sud-ovest; `SEAsso`, `NEAsso` e `NOAsso` danno gli altri tre spigoli. Oppure scegli SO assonometrica nel controllo vista in alto a sinistra, o clicca un angolo superiore del ViewCube. [`STILEVISCORRENTE`](/docs/commands/vscurrent) con `Nascosto` nasconde gli spigoli dietro.
+
+### Qual è il comando per la vista dall'alto?
+
+`-VISTA`, poi `ALto`, che imposta anche l'UCS sugli assi globali. [`PIANA`](/docs/commands/plan) guarda invece dall'alto l'UCS corrente, e lo lascia com'è.
+
+### Perché il mio UCS è cambiato dopo una vista frontale?
+
+Una vista ortogonale ruota l'UCS perché ti guardi in faccia, così ciò che disegni giace sullo schermo. [`UCS`](/docs/commands/ucs) e Invio tornano a Globale; `A` annulla la vista e il suo UCS insieme.
+
+### Una vista assonometrica è lo stesso di un disegno assonometrico?
+
+No. Una vista assonometrica guarda un modello 3D da uno spigolo. Un disegno assonometrico è 2D, disegnato sui piani isometrici con lo stile isometrico di SNAP, che MellowCAD non ha ancora.
+
+### Dov'è Gestione viste?
+
+VISTA esegue `-VISTA` alla riga di comando: non c'è Gestione viste, e le viste con nome (Salva, Ripristina) non ci sono ancora.
+
+## Comandi correlati [#related]
+
+- [Comando PIANA (PLAN) in AutoCAD](/docs/commands/plan)
+- [Comando 3DORBITA (3DORBIT) in AutoCAD](/docs/commands/3dorbit)
+- [Comando UCS in AutoCAD](/docs/commands/ucs)
+- [Comando STILEVISCORRENTE (VSCURRENT) in AutoCAD](/docs/commands/vscurrent)
+- [Comando ZOOM in AutoCAD](/docs/commands/zoom)

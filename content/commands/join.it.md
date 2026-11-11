@@ -1,0 +1,36 @@
+---
+title: "Comando UNISCI (JOIN) in AutoCAD"
+description: "Come funziona UNISCI (JOIN, alias U) di AutoCAD in italiano: linee e archi che si toccano in una polilinea, linee collineari in una, archi in un cerchio."
+figure: "Tre linee unite in una sola polilinea, che un solo clic di OFFSET segue per intero."
+sourceHash: "c4f26ede4174"
+---
+
+UNISCI (JOIN in inglese) fa un solo oggetto di più oggetti. Selezionali, quanti ne vuoi, e premi Invio: linee e archi che si toccano di testa diventano una sola polilinea, unita a una polilinea tra essi se c'è; linee su una stessa retta diventano una sola linea, anche con una fessura; archi di uno stesso cerchio diventano un solo arco, e quando si chiudono, UNISCI chiede se farne un cerchio, <Keyword id="Yes" /> per impostazione predefinita, oppure mantenerlo come arco con <Keyword id="No" />. Archi ellittici di una stessa ellisse diventano un solo arco, e una spline o un arco ellittico tra curve che si toccano crea una spline. Poi dice che cosa ha creato, e quanti oggetti ha lasciato fuori. Una polilinea si unisce solo per le sue estremità, e una chiusa non si unisce a nulla. L'unione è un solo passo che Annulla ripristina.
+
+## Options
+
+### cLose
+
+Quando la sorgente è un arco ellittico, selezionato da solo: rende intera la sua ellisse.
+
+## Missing
+
+Il passo proprio di AutoCAD quando la sorgente è una singola linea, un arco o una polilinea, selezionata da sola (`Selezionare le linee da unire alla sorgente:`): qui non unisce nulla. Un oggetto chiuso selezionato da solo, che AutoCAD richiede di nuovo. Eliche, oggetti in un piano inclinato o capovolti, e linee che non giacciono in un solo piano, che AutoCAD unisce in una polilinea 3D o appiattisce in una polilinea.
+
+## Questions
+
+### Come si chiama il comando JOIN in italiano?
+
+UNISCI, alias `U`, poi Invio o barra spaziatrice; in AutoCAD in italiano `U` non è l'annullamento, che si annulla con `A`, e l'alias inglese `J` non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_JOIN`.
+
+### Come si uniscono delle linee in una polilinea in AutoCAD?
+
+Avvia UNISCI, seleziona le linee, anche con una finestra, e premi Invio: quelle che si toccano di testa diventano una sola polilinea.
+
+### Perché UNISCI non funziona?
+
+Gli oggetti devono toccarsi esattamente, di testa e in un solo piano: una fessura o un incrocio li lascia fuori, e UNISCI dice quanti ne ha scartati. Solo linee collineari, archi di uno stesso cerchio e archi di una stessa ellisse vengono uniti anche con una fessura. Una polilinea chiusa non si unisce a nulla.
+
+### Come si uniscono archi in un cerchio?
+
+Seleziona archi di uno stesso cerchio che lo coprono tutto e premi Invio: UNISCI chiede se convertirli in un cerchio, e <Keyword id="Yes" />, il valore predefinito, lo fa.

@@ -1,0 +1,58 @@
+---
+title: "Esercizio AutoCAD: una flangia"
+metaTitle: "Esercizio AutoCAD 2D meccanica: una flangia"
+description: "Disegna una flangia in AutoCAD: foro con cava per chiavetta tagliata, otto fori in serie polare, assi e diametri, risolto passo passo. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questa flangia, in millimetri: 140 di diametro, un foro di 60 con una cava per chiavetta larga 16 il cui lato superiore è a 36 dal centro, otto fori di 14 su una circonferenza di foratura di 110, e i suoi assi. La cava è un rettangolo tagliato nel foro; i fori sono un cerchio e una serie polare.
+
+- **Esercizio:** Intermedio · Meccanica · 2D
+- **Comandi:** [`CERCHIO`](/docs/commands/circle), [`RETTANGOLO`](/docs/commands/rectang), [`TAGLIA`](/docs/commands/trim), [`SERIEPOLARE`](/docs/commands/arraypolar), [`LINEA`](/docs/commands/line), [`DIMDIAMETRO`](/docs/commands/dimdiameter), [`DIMLINEARE`](/docs/commands/dimlinear)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=flange), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/flange" caption="La flangia, di 140 di diametro, con la cava per chiavetta, otto fori e i diametri." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna i cerchi [#circles]
+
+Sul layer Contorno, due cerchi in `0,0`, ciascuno col suo `Diametro`: `140` e `60`.
+
+<Session name="exercises/flange/circles" caption="1. Disegna i cerchi" />
+
+### 2. Taglia la cava [#keyway]
+
+[`RETTANGOLO`](/docs/commands/rectang) da `-8,20` a `16,16` più in là: attraversa il foro. [`TAGLIA`](/docs/commands/trim) taglia un oggetto dove gli altri lo incrociano: seleziona l'arco del foro tra i lati del rettangolo, poi il lato inferiore del rettangolo, dentro il foro. Resta la cava, con i suoi due lati e il lato superiore.
+
+<Session name="exercises/flange/keyway" caption="2. Taglia la cava" />
+
+### 3. Disponi i fori in serie [#holes]
+
+Un foro sulla circonferenza di foratura: un cerchio in `55<22.5`, a 55 dall'origine a 22,5°, con un `Diametro` di `14`. [`SERIEPOLARE`](/docs/commands/arraypolar): selezionalo, premi Invio e indica il centro, `0,0`; `ASsociativo` e `No` lasciano otto cerchi separati, che una quota può selezionare, e `ELementi`, `8`, li distribuisce su tutta la circonferenza. Poi, sul layer Assi, la circonferenza di foratura in `0,0`, di diametro `110`.
+
+<Session name="exercises/flange/holes" caption="3. Disponi i fori in serie" />
+
+### 4. Disegna gli assi [#centreLines]
+
+Sempre su Assi, due linee con [`LINEA`](/docs/commands/line) attraverso il centro, lunghe 156: da `-78,0`, `156,0` in orizzontale; da `0,-78`, `0,156` in verticale.
+
+<Session name="exercises/flange/centreLines" caption="4. Disegna gli assi" />
+
+### 5. Quotala [#dimensions]
+
+Sul layer Quote, [`DIMDIAMETRO`](/docs/commands/dimdiameter) sul foro, su un foro di fissaggio, sulla circonferenza di foratura e sul contorno, ciascuno selezionato dove nessuna quota lo attraversa ancora, poi [`DIMLINEARE`](/docs/commands/dimlinear) sul lato superiore della cava: 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Quotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: un tavolo rotondo e le sedie](/docs/exercises/round-table): Intermedio · Architettura · 2D
+- [Esercizio AutoCAD: un lotto di terreno](/docs/exercises/plot-of-land): Intermedio · Ingegneria civile · 2D
+- [Esercizio AutoCAD: un albero a gradini](/docs/exercises/shaft): Intermedio · Meccanica · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

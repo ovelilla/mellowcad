@@ -1,0 +1,59 @@
+---
+title: "Comando REGIONE (REGION) in AutoCAD"
+description: "Come REGIONE (REGION, alias REG) di AutoCAD trasforma le forme chiuse in regioni: quali contorni trova, perché non ne crea e a cosa serve. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si usa il comando REGIONE in AutoCAD?","answer":"Esegui REGIONE (o REG), seleziona le forme chiuse o le linee che ne chiudono una da un capo all'altro e premi Invio. La finestra della sessione attorno a quattro linee e un cerchio crea due regioni, e la riga di comando conta due contorni estratti e due regioni create."},{"question":"Perché REGIONE non crea una regione?","answer":"La forma non è chiusa da un capo all'altro. Linee che si incrociano, o che si fermano prima di toccarsi, non chiudono nulla: REGIONE concatena gli oggetti aperti solo per i loro estremi, e un'interruzione sottile come un capello basta a scartare la catena. Un contorno che si incrocia, come un papillon, viene rifiutato e contato tra le autointersezioni. Unisci gli estremi con RACCORDO a raggio 0, o TAGLIA ciò che sporge, e riprova."},{"question":"Come si crea una regione con un foro?","answer":"Crea una regione dal contorno e una dal foro, poi esegui SOTTRAI: scegli il contorno, Invio, il foro, Invio. Il risultato è una sola regione, e ESTRUDI la trasforma in un solido con il foro passante."},{"question":"Come si trova l'area di una regione?","answer":"Selezionala e leggi Area nella tavolozza Proprietà, oppure esegui AREA, scegli Oggetto e indicala. PROPMASS aggiunge il perimetro, il baricentro e i momenti d'inerzia."}]
+---
+
+REGIONE (REGION) trasforma le forme chiuse in regioni: aree piane senza spessore, ciascuna delimitata dai suoi contorni. Seleziona gli oggetti e premi Invio; ogni contorno che formano diventa una regione. Un oggetto chiuso è un contorno a sé: un cerchio, un'ellisse, una polilinea o una spline chiusa. Quelli aperti, linee, archi, archi ellittici, polilinee e spline aperte, vengono concatenati da un capo all'altro, mai dove si incrociano, e una catena che non si chiude viene scartata. La riga di comando conta poi i contorni trovati, quelli rifiutati e perché, e le regioni create; Invio senza nulla dice `Ricerca senza risultato.`.
+
+Gli oggetti entrati in una regione vengono cancellati, gli altri conservati, e le regioni prendono il layer e le proprietà correnti, non quelli degli oggetti. Un contorno dentro un altro crea una regione a sé, non un foro nell'altra: [`SOTTRAI`](/docs/commands/subtract) ne toglie una dall'altra. Una regione si disegna come i suoi spigoli e vi si aggancia; la tavolozza Proprietà ne mostra l'area e il perimetro, che misurano anche [`AREA`](/docs/commands/area), [`LISTA`](/docs/commands/list) e [`PROPMASS`](/docs/commands/massprop). [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e [`INTERSEZIONE`](/docs/commands/intersect) combinano regioni in un piano, [`ESTRUDI`](/docs/commands/extrude), [`RIVOLUZIONE`](/docs/commands/revolve) e [`PREMTRASC`](/docs/commands/presspull) le trasformano in solidi 3D e [`ESPLODI`](/docs/commands/explode) restituisce le loro linee, archi e cerchi. L'intero comando è un solo passo di annullamento.
+
+- **Comando:** `REGIONE`
+- **In inglese:** `REGION`, digitato `_REGION` in ogni lingua
+- **Alias:** `REG`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `REG` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="region" caption="Quattro linee chiuse da un capo all'altro e un cerchio al loro interno: REGIONE, con una finestra attorno a entrambi, crea due regioni e cancella gli oggetti." />
+
+## Cosa non fa ancora [#missing]
+
+`DELOBJ` di AutoCAD: qui gli oggetti entrati in una regione vengono sempre cancellati. BOUNDARY, che può creare una regione dall'area attorno a un punto, e una regione dal contorno di un tratteggio. La modifica di una regione con i suoi grip: si vedono, ma trascinarne uno non cambia nulla. I suoi spigoli come spigolo di taglio o limite per [`TAGLIA`](/docs/commands/trim) ed [`ESTENDI`](/docs/commands/extend) in modalità Rapido, e [`TRATTEGGIO`](/docs/commands/hatch) di una regione con uno spigolo ellittico o spline. Regioni combinate con superfici, che MellowCAD non ha, e la riga Materiale nella tavolozza Proprietà.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg--it-regione--reg)
+
+## Domande [#questions]
+
+### Come si usa il comando REGIONE in AutoCAD?
+
+Esegui REGIONE (o `REG`), seleziona le forme chiuse o le linee che ne chiudono una da un capo all'altro e premi Invio. La finestra della sessione attorno a quattro linee e un cerchio crea due regioni, e la riga di comando conta due contorni estratti e due regioni create.
+
+### Perché REGIONE non crea una regione?
+
+La forma non è chiusa da un capo all'altro. Linee che si incrociano, o che si fermano prima di toccarsi, non chiudono nulla: REGIONE concatena gli oggetti aperti solo per i loro estremi, e un'interruzione sottile come un capello basta a scartare la catena. Un contorno che si incrocia, come un papillon, viene rifiutato e contato tra le autointersezioni. Unisci gli estremi con [`RACCORDO`](/docs/commands/fillet) a raggio 0, o [`TAGLIA`](/docs/commands/trim) ciò che sporge, e riprova.
+
+### Come si crea una regione con un foro?
+
+Crea una regione dal contorno e una dal foro, poi esegui [`SOTTRAI`](/docs/commands/subtract): scegli il contorno, Invio, il foro, Invio. Il risultato è una sola regione, e [`ESTRUDI`](/docs/commands/extrude) la trasforma in un solido con il foro passante.
+
+### Come si trova l'area di una regione?
+
+Selezionala e leggi Area nella tavolozza Proprietà, oppure esegui [`AREA`](/docs/commands/area), scegli `Oggetto` e indicala. [`PROPMASS`](/docs/commands/massprop) aggiunge il perimetro, il baricentro e i momenti d'inerzia.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD 3D: una piastra di fissaggio](/docs/exercises/mounting-plate)
+
+## Comandi correlati [#related]
+
+- [Comando SOTTRAI (SUBTRACT) in AutoCAD](/docs/commands/subtract)
+- [Comando UNIONE (UNION) in AutoCAD](/docs/commands/union)
+- [Comando ESTRUDI (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Comando AREA in AutoCAD](/docs/commands/area)
+- [Comando PROPMASS (MASSPROP) in AutoCAD](/docs/commands/massprop)

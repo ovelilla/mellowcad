@@ -1,0 +1,59 @@
+---
+title: "Comando VISATT (ATTDISP) in AutoCAD"
+description: "Come funziona VISATT (ATTDISP) di AutoCAD in italiano: Normale, ON per mostrare anche gli attributi invisibili, OFF per nasconderli. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si mostrano gli attributi invisibili in AutoCAD?","answer":"Digita VISATT e scegli ON: ogni attributo si vede, anche quelli invisibili. Normale li nasconde di nuovo."},{"question":"Perché gli attributi dei miei blocchi non si vedono?","answer":"VISATT può essere OFf, che nasconde ogni attributo, oppure Normale con gli attributi definiti come invisibili. Scegli ON per vederli tutti. Un riferimento il cui blocco non ha attributi non ne mostra, qualunque sia l'impostazione."},{"question":"Come si nascondono i valori degli attributi in AutoCAD?","answer":"Definiscili invisibili: la modalità Invisibile di DEFATT, prima di creare il blocco. VISATT OFf nasconde ogni attributo in una volta, in tutto il disegno."}]
+---
+
+VISATT imposta quali attributi mostrano i riferimenti a blocco nel disegno. Chiede l'impostazione, offrendo quella corrente, Normale in un nuovo disegno; ogni altra parola dice che la parola chiave non è valida e chiede di nuovo, e Invio la conserva. Una modifica rigenera tutto il disegno, `Regenerating model.` come lo dice AutoCAD 2027, ed è salvata nel disegno come ATTMODE, un passo che `A` annulla. Digitato con un apostrofo dentro un comando, funziona anche lì.
+
+Cambia solo ciò che si vede: un attributo invisibile conserva il suo valore, e uno nascosto si può ancora modificare con [`EDITATT`](/docs/commands/attedit) o [`EATTEDIT`](/docs/commands/eattedit).
+
+- **Comando:** `VISATT`
+- **In inglese:** `ATTDISP`, digitato `_ATTDISP` in ogni lingua
+- **Gruppo:** [Organizza](/docs/commands#organize)
+- **Provalo:** [Apri l'editor](/it/draw), digita `VISATT` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="attdisp" caption="Due scrivanie i cui codici pezzo sono attributi invisibili: VISATT ON li mostra sotto ogni scrivania, accanto ai numeri visibili." />
+
+## Opzioni [#options]
+
+### `Normale` (`N`) [#normal]
+
+Mostra ogni attributo come è stato definito: quelli visibili, non quelli definiti con `Invisibile` di [`DEFATT`](/docs/commands/attdef).
+
+### `ON` [#on]
+
+Mostra ogni attributo, anche quelli invisibili.
+
+### `OFF` (`OF`) [#off]
+
+Nasconde ogni attributo, anche quelli visibili.
+
+## Domande [#questions]
+
+### Come si mostrano gli attributi invisibili in AutoCAD?
+
+Digita `VISATT` e scegli `ON`: ogni attributo si vede, anche quelli invisibili. `Normale` li nasconde di nuovo.
+
+### Perché gli attributi dei miei blocchi non si vedono?
+
+`VISATT` può essere `OFf`, che nasconde ogni attributo, oppure `Normale` con gli attributi definiti come invisibili. Scegli `ON` per vederli tutti. Un riferimento il cui blocco non ha attributi non ne mostra, qualunque sia l'impostazione.
+
+### Come si nascondono i valori degli attributi in AutoCAD?
+
+Definiscili invisibili: la modalità `Invisibile` di [`DEFATT`](/docs/commands/attdef), prima di creare il blocco. VISATT `OFf` nasconde ogni attributo in una volta, in tutto il disegno.
+
+## Comandi correlati [#related]
+
+- [Comando DEFATT (ATTDEF) in AutoCAD](/docs/commands/attdef)
+- [Comando EDITATT (ATTEDIT) in AutoCAD](/docs/commands/attedit)
+- [Comando EATTEDIT in AutoCAD](/docs/commands/eattedit)
+- [Comando BLOCCO (BLOCK) in AutoCAD](/docs/commands/block)
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt)

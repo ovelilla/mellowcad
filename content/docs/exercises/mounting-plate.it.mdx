@@ -1,0 +1,60 @@
+---
+title: "Esercizio AutoCAD 3D: una piastra di fissaggio"
+metaTitle: "Esercizio AutoCAD 3D per principianti: piastra"
+description: "Modella una piastra di fissaggio in AutoCAD 3D: regioni, una sottrazione per i fori e una sola estrusione, passo passo. Esercitati con il 3D gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modella una piastra di fissaggio spessa 10, in millimetri: il suo contorno di 100 per 60 con gli angoli di raggio 8, e quattro fori di 10 con i centri a 15 dai bordi. Si parte in piano. Il contorno e i cerchi diventano regioni, i fori si sottraggono quando la piastra è ancora piana, e una sola estrusione la trasforma in un solido con i suoi fori.
+
+- **Esercizio:** Principiante · Meccanica · Solido 3D
+- **Comandi:** [`RETTANGOLO`](/docs/commands/rectang), [`CERCHIO`](/docs/commands/circle), [`COPIA`](/docs/commands/copy), [`REGIONE`](/docs/commands/region), [`SOTTRAI`](/docs/commands/subtract), [`-VISTA`](/docs/commands#-view), [`STILEVISCORRENTE`](/docs/commands/vscurrent), [`ESTRUDI`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=mounting-plate), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/mounting-plate" caption="Il contorno della piastra, di 100 per 60 con quattro fori, quotato." />
+
+<Session name="exercises/mounting-plate/model" caption="La piastra come solido, spessa 10, vista da sud-est con le linee nascoste rimosse." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il profilo [#profile]
+
+Sul layer Contorno, [`RETTANGOLO`](/docs/commands/rectang) con un `Raccordo` di `8`, da `0,0` a `100,60`. Poi un cerchio in `15,15` con un `Diametro` di `10`, e [`COPIA`](/docs/commands/copy) dal suo centro a `70,0`, `70,30` e `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Disegna il profilo" />
+
+### 2. Crea le regioni [#region]
+
+[`REGIONE`](/docs/commands/region) trasforma gli oggetti chiusi in regioni: seleziona il contorno e i quattro cerchi, poi Invio. Cinque anelli, cinque regioni.
+
+<Session name="exercises/mounting-plate/region" caption="2. Crea le regioni" />
+
+### 3. Sottrai i fori [#subtract]
+
+[`SOTTRAI`](/docs/commands/subtract): seleziona la regione della piastra e premi Invio, poi le regioni dei quattro cerchi e Invio. Resta una regione, con quattro fori.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Sottrai i fori" />
+
+### 4. Ruota la vista [#view]
+
+`-VISTA` e `SEAsso` la guardano da sud-est e dall'alto; [`STILEVISCORRENTE`](/docs/commands/vscurrent) e `Nascosto` nascondono ciò che le facce nascondono. Anche il ViewCube ruota la vista con un clic.
+
+<Session name="exercises/mounting-plate/view" caption="4. Ruota la vista" />
+
+### 5. Estrudila [#extrude]
+
+[`ESTRUDI`](/docs/commands/extrude): seleziona la regione, premi Invio e digita l'altezza, `10`. La piastra è un solido, con i suoi fori. [`ZOOM`](/docs/commands/zoom) `Estensioni` la inquadra, e una scala di 0.8x lascia spazio intorno.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Estrudila" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: una flangia](/docs/exercises/flange): Intermedio · Meccanica · 2D
+- [Esercizio AutoCAD: un tavolo rotondo e le sedie](/docs/exercises/round-table): Intermedio · Architettura · 2D
+- [Esercizio AutoCAD: un lotto di terreno](/docs/exercises/plot-of-land): Intermedio · Ingegneria civile · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

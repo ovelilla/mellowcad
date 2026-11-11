@@ -1,0 +1,67 @@
+---
+title: "Comando DIMRAGGIO (DIMRADIUS) in AutoCAD"
+description: "Come funziona DIMRAGGIO (DIMRADIUS, alias DRA) di AutoCAD in italiano: quota il raggio di un cerchio, un arco o un raccordo. Provalo gratis nel browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando DIMRADIUS in italiano?","answer":"DIMRAGGIO, alias DRA, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _DIMRADIUS."},{"question":"Come si quota un raccordo o uno spigolo arrotondato?","answer":"Seleziona l'arrotondamento: un raccordo è un arco, o il segmento ad arco di una polilinea, come gli spigoli che RETTANGOLO arrotonda con la sua opzione Raccordo, e DIMRAGGIO accetta l'uno e l'altro."},{"question":"Perché non riesco a selezionare l'oggetto da quotare?","answer":"DIMRAGGIO accetta un cerchio, un arco o il segmento ad arco di una polilinea, anche su un layer bloccato. Qualunque altro oggetto, un'ellisse compresa, mostra «L'oggetto selezionato non è un arco o un cerchio.» e la richiesta si ripete; una curva dentro un riferimento di blocco non si può ancora selezionare."},{"question":"Come aggiungo del testo a una quota di raggio?","answer":"Scegli Testo prima di posizionarla e digita «<> TYP»: <> è la misura con la sua R, quindi la quota mostra «R10 TYP». Una volta posizionata, la riga Modifica locale al testo della tavolozza Proprietà la cambia."}]
+---
+
+DIMRAGGIO (DIMRADIUS in inglese) quota il raggio di un cerchio, di un arco o del segmento ad arco di una polilinea. Seleziona la curva e la riga di comando scrive subito la misura; poi posiziona la quota e il comando termina. Come in AutoCAD, il suo testo è il raggio preceduto da una R, su una linea che segue un raggio e finisce con una freccia sulla curva, all'interno o all'esterno della curva a seconda di dove la posizioni. All'esterno la linea prosegue attraverso la curva fino al centro, come la disegna ISO-25.
+
+- **Comando:** `DIMRAGGIO`
+- **In inglese:** `DIMRADIUS`, digitato `_DIMRADIUS` in ogni lingua
+- **Alias:** `DRA`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DRA` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="dimradius" caption="Lo spigolo arrotondato di una piastra quotato all'esterno e il suo foro all'interno: ogni curva selezionata, poi il testo posizionato." />
+
+## Opzioni [#options]
+
+### `Testo` (`T`) [#text]
+
+Chiede il testo da scrivere al posto della misura, che propone come predefinita: Invio mantiene la misura. In quello che digiti, `<>` sta per la misura con la sua R, quindi `<> TYP` scrive `R10 TYP` per un raggio di 10.
+
+### `Angolo` (`A`) [#angle]
+
+Chiede l'angolo del testo, che viene disegnato con quell'angolo, con il centro sulla linea, e la linea si ferma al testo. 0 lo rimette lungo la linea.
+
+## Cosa non fa ancora [#missing]
+
+TESTOM: il testo di una quota è su una sola riga, impostato con `Testo` nella riga di comando, mai nell'editor di testo. Su un arco la freccia resta tra le sue estremità, dove AutoCAD disegna una linea di estensione ad arco per una quota posizionata oltre. Una curva dentro un riferimento di blocco non si può selezionare. Gli assi del centro dello stile (una dimensione del centro negativa) non vengono disegnati e le sue impostazioni per il testo fuori dalla curva non sono offerte: il testo segue sempre la linea, senza tratto di raccordo, come lo disegna ISO-25. Una quota non è associativa: non segue la curva che misura.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad--fr-cotrayon--coty--it-dimraggio--dra)
+
+## Domande [#questions]
+
+### Come si chiama il comando DIMRADIUS in italiano?
+
+DIMRAGGIO, alias `DRA`, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_DIMRADIUS`.
+
+### Come si quota un raccordo o uno spigolo arrotondato?
+
+Seleziona l'arrotondamento: un raccordo è un arco, o il segmento ad arco di una polilinea, come gli spigoli che [`RETTANGOLO`](/docs/commands/rectang) arrotonda con la sua opzione `Raccordo`, e DIMRAGGIO accetta l'uno e l'altro.
+
+### Perché non riesco a selezionare l'oggetto da quotare?
+
+DIMRAGGIO accetta un cerchio, un arco o il segmento ad arco di una polilinea, anche su un layer bloccato. Qualunque altro oggetto, un'ellisse compresa, mostra `L'oggetto selezionato non è un arco o un cerchio.` e la richiesta si ripete; una curva dentro un riferimento di blocco non si può ancora selezionare.
+
+### Come aggiungo del testo a una quota di raggio?
+
+Scegli `Testo` prima di posizionarla e digita `<> TYP`: `<>` è la misura con la sua R, quindi la quota mostra `R10 TYP`. Una volta posizionata, la riga Modifica locale al testo della tavolozza Proprietà la cambia.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket)
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link)
+
+## Comandi correlati [#related]
+
+- [Comando DIMDIAMETRO (DIMDIAMETER) in AutoCAD](/docs/commands/dimdiameter)
+- [Comando DIMANGOLO (DIMANGULAR) in AutoCAD](/docs/commands/dimangular)
+- [Comando DIMLINEARE (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Comando DIMSTILE (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

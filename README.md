@@ -23,7 +23,7 @@ on. The site at mellowcad.com is a Next.js shell around the third package.
 | ------------------------------------------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [`@mellowcad/engine`](cad/README.md)             | The drafting engine: model, commands, snapping, rendering. No framework, no DOM. | [on npm](https://www.npmjs.com/package/@mellowcad/engine), 0.x |
 | [`@mellowcad/react`](packages/react/README.md)   | React bindings: the canvas, the engine's state as React state, the input wiring. | [on npm](https://www.npmjs.com/package/@mellowcad/react), 0.x  |
-| [`@mellowcad/editor`](packages/editor/README.md) | The whole editor as one component, its chrome and its words in five languages.   | [on npm](https://www.npmjs.com/package/@mellowcad/editor), 0.x |
+| [`@mellowcad/editor`](packages/editor/README.md) | The whole editor as one component, its chrome and its words in six languages.    | [on npm](https://www.npmjs.com/package/@mellowcad/editor), 0.x |
 
 Each README has the package's entry points and examples; its `api.md` lists every export.
 Runnable hosts are in [examples/](examples/README.md).

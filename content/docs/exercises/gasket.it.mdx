@@ -1,0 +1,58 @@
+---
+title: "Esercizio AutoCAD: una guarnizione"
+metaTitle: "Esercizio AutoCAD per principianti: guarnizione"
+description: "Disegna una guarnizione in AutoCAD: piastra raccordata, foro centrale, quattro fori copiati da uno, assi e quote, risolto passo passo. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questa guarnizione, in millimetri: una piastra di 120 per 80 con gli angoli raccordati con raggio 10, un foro centrale di 40 e quattro fori di 10, con i centri a 12 dai bordi, con gli assi del foro centrale e le quote. Tutto si digita: il primo punto di un comando è dove lo digiti, e ogni punto successivo si misura dall'ultimo. Il contorno, gli assi e le quote vanno ciascuno sul proprio layer.
+
+- **Esercizio:** Principiante · Meccanica · 2D
+- **Comandi:** [`RETTANGOLO`](/docs/commands/rectang), [`CERCHIO`](/docs/commands/circle), [`COPIA`](/docs/commands/copy), [`LINEA`](/docs/commands/line), [`DIMLINEARE`](/docs/commands/dimlinear), [`DIMDIAMETRO`](/docs/commands/dimdiameter)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=gasket), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/gasket" caption="La guarnizione, di 120 per 80, quotata." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il contorno [#outline]
+
+Imposta Contorno come layer corrente nel controllo dei layer. [`RETTANGOLO`](/docs/commands/rectang) disegna la piastra in un colpo solo: scegli `Raccordo` e digita il raggio, `10`, poi il primo angolo, `0,0`, e l'altro angolo, `120,80`, misurato dal primo.
+
+<Session name="exercises/gasket/outline" caption="1. Disegna il contorno" />
+
+### 2. Disegna il foro [#bore]
+
+[`CERCHIO`](/docs/commands/circle) al centro della piastra, `60,40`: scegli `Diametro` e digita `40`.
+
+<Session name="exercises/gasket/bore" caption="2. Disegna il foro" />
+
+### 3. Copia i fori [#holes]
+
+Disegna un foro, un cerchio in `12,12` con un `Diametro` di `10`, poi copialo con [`COPIA`](/docs/commands/copy): seleziona il cerchio, premi Invio, prendi il suo centro, `12,12`, come punto base e digita dove va ogni copia a partire da lì: `96,0`, poi `96,56`, poi `0,56`. Invio termina le copie.
+
+<Session name="exercises/gasket/holes" caption="3. Copia i fori" />
+
+### 4. Disegna gli assi [#centreLines]
+
+Imposta Assi come layer corrente. Due linee con [`LINEA`](/docs/commands/line) si incrociano al centro del foro e superano di 6 il suo bordo: da `60,14`, `0,52` in verticale; da `34,40`, `52,0` in orizzontale. Invio termina ciascuna.
+
+<Session name="exercises/gasket/centreLines" caption="4. Disegna gli assi" />
+
+### 5. Quotala [#dimensions]
+
+Imposta Quote come layer corrente. [`DIMLINEARE`](/docs/commands/dimlinear) prende due punti e poi dove va la linea di quota: la lunghezza da `0,10` a `120,0` più in là, posizionata sotto; l'altezza a destra; l'interasse dei fori, 96 e 56. Un punto digitato ai suoi prompt non tocca nessun oggetto, quindi ognuna di queste quote viene creata non associativa, e la riga di comando lo dice. [`DIMDIAMETRO`](/docs/commands/dimdiameter) seleziona un cerchio e ne posiziona il diametro: quello del foro centrale, poi quello di un foro.
+
+<Session name="exercises/gasket/dimensions" caption="5. Quotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket): Principiante · Meccanica · 2D
+- [Esercizio AutoCAD: una scala in pianta](/docs/exercises/stairs): Principiante · Architettura · 2D
+- [Esercizio AutoCAD 3D: una piastra di fissaggio](/docs/exercises/mounting-plate): Principiante · Meccanica · Solido 3D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

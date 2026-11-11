@@ -18,7 +18,9 @@ starts from `main` and from the table below; its work in progress is on the bran
 | 0 | Done 11/11/2026: this plan; `runacc.sh`'s Italian banner |
 | 1 | Done 11/11/2026: registered as a `draft`; `docs/i18n/it.md` |
 | 3–4 | Done 11/11/2026: the engine's catalog whole, from the pack and the console (`docs/i18n/it.md`) |
-| 2 | Next: the editor's catalog is drafted (research/proposals/it-editor-draft.json, outside git) |
+| 2 | Done 11/11/2026: the site's and the editor's catalogs, the "Use" pages, the command notes and the exercises, the generated pages |
+| 5 | Nothing: latin, left to right |
+| 6 | Next |
 
 ## 0. Research (11/11/2026)
 

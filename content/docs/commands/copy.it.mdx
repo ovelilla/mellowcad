@@ -1,0 +1,72 @@
+---
+title: "Comando COPIA (COPY) in AutoCAD"
+description: "Come funziona COPIA (COPY, alias CP) di AutoCAD in italiano: un punto base, poi tutte le copie che posizioni, con Annulla ed Esci. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di COPIA in AutoCAD?","answer":"CP, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _COPY in tutte le lingue di AutoCAD. Attenzione: in AutoCAD italiano CO è COLORE, non COPIA."},{"question":"Come si fanno più copie in una volta?","answer":"Continua a posizionare: ogni punto che dai è una copia in più dallo stesso punto base, fino a Invio. Per copie in righe, colonne o attorno a un centro, SERIE le fa in un colpo solo."},{"question":"Come si copia un oggetto a una distanza data?","answer":"Indica il punto base, poi digita il secondo punto come distanza: 30,0 lo copia a 30 lungo X, come l'input dinamico legge un punto dopo il primo. Oppure punta il cursore nella direzione, con Ortho o il tracciamento polare, e digita solo la distanza."},{"question":"Perché in COPIA non c'è l'opzione Serie?","answer":"MellowCAD non la offre ancora. Per una fila di copie equidistanti, SERIERETTANG con una riga fa lo stesso, e le conserva come un'unica serie modificabile."}]
+---
+
+COPIA posiziona copie degli oggetti che selezioni: selezionali, indica un punto base, poi un secondo punto per ogni copia. Come in AutoCAD, la cui modalità di copia è Multipla per impostazione predefinita, continua a chiederne una in più finché non premi Invio o scegli Esci, ogni copia misurata dallo stesso punto base. Le copie conservano il layer, il colore e ogni altra proprietà degli oggetti. Gli oggetti selezionati prima del comando sono quelli che copia, e mentre posizioni una copia l'insieme segue il cursore.
+
+- **Comando:** `COPIA`
+- **In inglese:** `COPY`, digitato `_COPY` in ogni lingua
+- **Alias:** `CP`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `CP` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="copy" caption="Un cerchio copiato tre volte lungo X da un punto base, poi Invio." />
+
+## Opzioni [#options]
+
+### `Spostamento` (`S`) [#displacement]
+
+Scelto alla richiesta del punto base, o con Invio lì: chiede uno spostamento come vettore, `30,0` posiziona una copia a 30 lungo X, e termina. Il suo predefinito è l'ultimo usato da COPIA in quel disegno.
+
+### `Esci` (`E`) [#exit]
+
+Termina il comando, come fa Invio una volta posizionata una copia.
+
+### `Annulla` (`A`) [#undo]
+
+Annulla l'ultima copia posizionata. Annullare la prima dice `Il comando è stato completamente annullato.` e chiede di nuovo il secondo punto.
+
+## Cosa non fa ancora [#missing]
+
+Singola di COPYMODE (copiare una volta e terminare) non è offerta: COPIA è sempre Multipla, quindi la richiesta del punto base elenca solo `Spostamento`. Nemmeno Serie del secondo punto, la fila di copie equidistanti di AutoCAD, è offerta.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di COPIA in AutoCAD?
+
+`CP`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_COPY` in tutte le lingue di AutoCAD. Attenzione: in AutoCAD italiano `CO` è COLORE, non COPIA.
+
+### Come si fanno più copie in una volta?
+
+Continua a posizionare: ogni punto che dai è una copia in più dallo stesso punto base, fino a Invio. Per copie in righe, colonne o attorno a un centro, [`SERIE`](/docs/commands/array) le fa in un colpo solo.
+
+### Come si copia un oggetto a una distanza data?
+
+Indica il punto base, poi digita il secondo punto come distanza: `30,0` lo copia a 30 lungo X, come l'input dinamico legge un punto dopo il primo. Oppure punta il cursore nella direzione, con Ortho o il tracciamento polare, e digita solo la distanza.
+
+### Perché in COPIA non c'è l'opzione Serie?
+
+MellowCAD non la offre ancora. Per una fila di copie equidistanti, [`SERIERETTANG`](/docs/commands/arrayrect) con una riga fa lo stesso, e le conserva come un'unica serie modificabile.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una guarnizione](/docs/exercises/gasket)
+- [Esercizio AutoCAD 3D: una piastra di fissaggio](/docs/exercises/mounting-plate)
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block)
+
+## Comandi correlati [#related]
+
+- [Comando SPOSTA (MOVE) in AutoCAD](/docs/commands/move)
+- [Comando SERIE (ARRAY) in AutoCAD](/docs/commands/array)
+- [Comando OFFSET in AutoCAD](/docs/commands/offset)
+- [Comando SPECCHIO (MIRROR) in AutoCAD](/docs/commands/mirror)

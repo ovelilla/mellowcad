@@ -1,0 +1,46 @@
+---
+title: "Esercizio AutoCAD: un lotto di terreno"
+metaTitle: "Esercizio AutoCAD topografia: area di un terreno"
+description: "Disegna un lotto di terreno in AutoCAD dalla lunghezza e dall'angolo dei lati con coordinate polari, poi misura la sua area e quotalo. Gratis, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questo lotto di terreno, in metri, dalla lunghezza e dalla direzione dei suoi lati: 40 a 0°, 30 a 80°, 35 a 155° e 25 a 230°, poi ritorno all'inizio. Misura la sua area e il suo perimetro, e quota ogni lato e l'angolo al secondo vertice. Le coordinate polari, una lunghezza e un angolo, disegnano ogni lato dalla fine del precedente. La scala delle quote del disegno è impostata per i metri.
+
+- **Esercizio:** Intermedio · Ingegneria civile · 2D
+- **Comandi:** [`PLINEA`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALLINEATA`](/docs/commands/dimaligned), [`DIMANGOLO`](/docs/commands/dimangular)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=plot-of-land), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Un lotto di cinque lati, in metri, con la quota di ogni lato e di un angolo." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il confine [#boundary]
+
+Sul layer Contorno, [`PLINEA`](/docs/commands/pline) da `0,0`, poi ogni lato come la sua lunghezza e il suo angolo: `40<0`, `30<80`, `35<155` e `25<230`, ciascuno misurato dall'ultimo punto. `CHiudi` disegna il quinto lato e chiude il confine: un solo oggetto, che [`AREA`](/docs/commands/area) può misurare.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Disegna il confine" />
+
+### 2. Misura la sua area [#area]
+
+[`AREA`](/docs/commands/area), poi `Oggetto`, e seleziona il confine: la riga di comando ne dà l'area, in metri quadrati, e il perimetro.
+
+<Session name="exercises/plot-of-land/area" caption="2. Misura la sua area" />
+
+### 3. Quotalo [#dimensions]
+
+Sul layer Quote, [`DIMALLINEATA`](/docs/commands/dimaligned) e Invio al primo prompt: chiede allora un oggetto, e un clic su un lato quota quel lato, parallelamente. Posiziona ogni quota fuori dal lotto. [`DIMANGOLO`](/docs/commands/dimangular) sui due lati che si incontrano in `40,0` dà l'angolo tra loro, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Quotalo" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: un albero a gradini](/docs/exercises/shaft): Intermedio · Meccanica · 2D
+- [Esercizio AutoCAD isometrico: un blocco a gradino](/docs/exercises/isometric-block): Intermedio · Meccanica · Isometrico
+- [Esercizio AutoCAD 3D: una puleggia](/docs/exercises/pulley): Intermedio · Meccanica · Solido 3D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

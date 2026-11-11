@@ -1,0 +1,85 @@
+---
+title: "Comando DEFATT (ATTDEF) in AutoCAD"
+description: "Come funziona DEFATT (ATTDEF, alias DE) di AutoCAD in italiano: definire un attributo di blocco, le sue modalità, etichetta, richiesta e valore. Provalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di DEFATT in AutoCAD?","answer":"DE, poi Invio o barra spaziatrice; anche DDATTDEF. -DE è -DEFATT, la forma da riga di comando, che qui esegue anche DEFATT. _ATTDEF funziona in tutte le lingue di AutoCAD."},{"question":"Come si crea un blocco con attributi in AutoCAD?","answer":"Disegna il simbolo, poi esegui DEFATT per ogni attributo e posiziona il suo testo dove deve comparire il valore. Esegui BLOCCO, indica un punto base e seleziona il simbolo e gli attributi, nell'ordine in cui INSER deve chiederli. Ogni INSER del blocco chiede poi un valore per ogni attributo, offrendo il suo predefinito."},{"question":"Qual è la differenza tra etichetta, richiesta e valore predefinito?","answer":"L'etichetta dà il nome all'attributo, come identificatore: è ciò che la definizione mostra, e il campo che EATTEDIT etichetta. La richiesta è la domanda con cui INSER chiede il suo valore. Il predefinito è il valore proposto, che Invio accetta."},{"question":"Come si modifica una definizione di attributo?","answer":"Fai doppio clic su di essa prima che entri in un blocco: MODTESTO ne apre l'etichetta, la richiesta e il valore predefinito. Una volta in un blocco, i valori di ogni riferimento si modificano con EDITATT o EATTEDIT."}]
+---
+
+DEFATT definisce un attributo: un'etichetta, una richiesta e un valore predefinito, posti nel disegno come una riga di testo. Selezionalo con gli altri oggetti quando crei un blocco con [`BLOCCO`](/docs/commands/block), e ogni riferimento a quel blocco contiene un valore proprio per esso: il numero di una porta, il codice di un pezzo, il nome di un locale. Fino ad allora la definizione mostra la sua etichetta.
+
+DEFATT di AutoCAD apre la finestra Definizione attributo, che MellowCAD non ha: qui DEFATT chiede alla riga di comando ciò che chiede `-DEFATT`, come fa la console di AutoCAD. Dice le modalità correnti e chiede quale cambiare, finché Invio prosegue. Poi l'etichetta: senza spazi, perché uno spazio la termina, e le minuscole diventano maiuscole; Invio da solo dice `L'etichetta non può essere nulla`. Poi la richiesta con cui [`INSER`](/docs/commands/insert) chiederà il valore, con Invio che prende l'etichetta, e il valore predefinito. Infine, dove va il testo, con le domande di [`TESTO`](/docs/commands/text): un punto iniziale, l'altezza e la rotazione. L'altezza e la giustificazione sono quelle di TESTO, condivise nei due sensi. Invio al punto iniziale pone la definizione una riga sotto l'ultima definita, con la sua altezza, rotazione, stile e giustificazione, così gli attributi di un blocco si impilano uno sotto l'altro.
+
+- **Comando:** `DEFATT`
+- **In inglese:** `ATTDEF`, digitato `_ATTDEF` in ogni lingua
+- **Alias:** `DE`, `DDATTDEF`
+- **Gruppo:** [Organizza](/docs/commands#organize)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DE` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="attdef" caption="Un cartellino di porta: l'attributo NUM centrato in un cerchio, la sua richiesta l'etichetta stessa e il suo valore predefinito 1, pronto per entrare in un blocco." />
+
+## Opzioni [#options]
+
+### `Invisibile` (`I`) [#invisible]
+
+Il valore non si vede sui riferimenti, finché [`VISATT`](/docs/commands/attdisp) non lo attiva. Ogni modalità è un interruttore: sceglierla la commuta tra `Y` e `N`, scrive di nuovo le modalità e chiede ancora una volta. Le modalità restano impostate per il prossimo DEFATT.
+
+### `Costante` (`C`) [#constant]
+
+Ogni riferimento contiene lo stesso valore, che DEFATT chiede al posto di una richiesta e di un predefinito; INSER non lo chiede mai.
+
+### `Verifica` (`V`) [#verify]
+
+INSER chiede il valore una seconda volta, per verificarlo, dopo aver chiesto ogni valore una volta.
+
+### `Preassegna` (`P`) [#preset]
+
+INSER non chiede il valore: ogni riferimento prende il predefinito.
+
+### `Blocca posizione` (`B`) [#lock-position]
+
+Attiva all'inizio: l'attributo resta dove lo pone il blocco.
+
+### `Giustificato` (`G`) [#justify]
+
+Chiede da dove pende il testo rispetto al suo punto, come fa TESTO: `Sinistra`, `Centro`, `Destra`, `Mezzo`, o uno dei nove punti per alto, medio e basso, sinistra, centro e destra. La richiesta del punto iniziale chiede poi il punto che nomina: centro medio centra il valore in un'etichetta.
+
+### `STile` (`ST`) [#style]
+
+Chiede lo stile di testo da usare, che diventa quello corrente; `?` elenca gli stili del disegno.
+
+## Cosa non fa ancora [#missing]
+
+La finestra Definizione attributo: DEFATT chiede alla riga di comando. Le modalità Annotativo e Righe multiple, che AutoCAD 2027 elenca dopo Blocca posizione, e le righe di un attributo multilinea. I campi, le giustificazioni Allinea e Adatta, e la `?` di Stile che chiede quali stili elencare.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di DEFATT in AutoCAD?
+
+`DE`, poi Invio o barra spaziatrice; anche `DDATTDEF`. `-DE` è `-DEFATT`, la forma da riga di comando, che qui esegue anche DEFATT. `_ATTDEF` funziona in tutte le lingue di AutoCAD.
+
+### Come si crea un blocco con attributi in AutoCAD?
+
+Disegna il simbolo, poi esegui DEFATT per ogni attributo e posiziona il suo testo dove deve comparire il valore. Esegui [`BLOCCO`](/docs/commands/block), indica un punto base e seleziona il simbolo e gli attributi, nell'ordine in cui INSER deve chiederli. Ogni [`INSER`](/docs/commands/insert) del blocco chiede poi un valore per ogni attributo, offrendo il suo predefinito.
+
+### Qual è la differenza tra etichetta, richiesta e valore predefinito?
+
+L'etichetta dà il nome all'attributo, come identificatore: è ciò che la definizione mostra, e il campo che [`EATTEDIT`](/docs/commands/eattedit) etichetta. La richiesta è la domanda con cui INSER chiede il suo valore. Il predefinito è il valore proposto, che Invio accetta.
+
+### Come si modifica una definizione di attributo?
+
+Fai doppio clic su di essa prima che entri in un blocco: [`MODTESTO`](/docs/commands/textedit) ne apre l'etichetta, la richiesta e il valore predefinito. Una volta in un blocco, i valori di ogni riferimento si modificano con [`EDITATT`](/docs/commands/attedit) o [`EATTEDIT`](/docs/commands/eattedit).
+
+## Comandi correlati [#related]
+
+- [Comando BLOCCO (BLOCK) in AutoCAD](/docs/commands/block)
+- [Comando INSER (INSERT) in AutoCAD](/docs/commands/insert)
+- [Comando EDITATT (ATTEDIT) in AutoCAD](/docs/commands/attedit)
+- [Comando VISATT (ATTDISP) in AutoCAD](/docs/commands/attdisp)
+- [Comando EATTEDIT in AutoCAD](/docs/commands/eattedit)

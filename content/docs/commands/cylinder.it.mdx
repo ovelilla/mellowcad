@@ -1,0 +1,88 @@
+---
+title: "Comando CILINDRO (CYLINDER) in AutoCAD"
+description: "Come CILINDRO (CYLINDER, alias CIL) di AutoCAD disegna un cilindro solido 3D: base, raggio, altezza, 3P, 2P, Ttr, Ellittico e Asse. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di CILINDRO in AutoCAD?","answer":"CIL. Digitala e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza: 0,0, 20 e 40 disegnano il cilindro della sessione."},{"question":"Come si disegna un cilindro orizzontale?","answer":"Scegli Asse all'altezza e dai l'altro estremo dell'asse: da una base in 0,0,0, il punto 60,0,0 pone il cilindro lungo X."},{"question":"Come si fa un cilindro cavo o un tubo?","answer":"Disegna due cilindri dallo stesso centro, quello interno più stretto, poi esegui SOTTRAI: seleziona quello esterno, Invio, quello interno, Invio."},{"question":"Perché il mio cilindro sembra un cerchio?","answer":"Lo guardi dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, -VISTA e SEAsso, oppure 3DORBITA."}]
+---
+
+CILINDRO disegna un cilindro solido 3D: indica il centro della sua base, poi il raggio, poi l'altezza. La base giace sul piano XY dell'UCS, alla Z del centro, e l'altezza sale lungo la sua Z; una negativa scende, e un punto la dà con la sua distanza dalla base, come in [`PARALLELEPIPEDO`](/docs/commands/box). Il raggio e l'altezza sono offerti come predefiniti che Invio prende, condivisi con le altre primitive e con [`ESTRUDI`](/docs/commands/extrude). Il cilindro sta sul layer corrente, e Annulla lo annulla in un solo passo.
+
+Il cilindro conserva le sue dimensioni: [`LISTA`](/docs/commands/list) mostra la sua posizione, normale, raggio e altezza, e la tavolozza Proprietà permette di digitare il raggio e l'altezza. I suoi grip lo spostano, ne impostano l'altezza e, a ogni quarto della base, il raggio. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
+
+- **Comando:** `CILINDRO`
+- **In inglese:** `CYLINDER`, digitato `_CYLINDER` in ogni lingua
+- **Alias:** `CIL`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `CIL` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="cylinder" caption="Un cilindro di raggio 20 e altezza 40, dal centro della sua base, visto da sud-est nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `3P` [#3p]
+
+Al centro della base: chiede tre punti, e la base è il cerchio che passa per essi, nel loro piano. Tre punti sul piano XY dell'UCS fanno comunque salire il cilindro lungo Z.
+
+### `2P` [#2p]
+
+Al centro della base: chiede i due estremi del diametro della base; il secondo è letto nel piano del primo.
+
+### `Ttr` (`T`) [#ttr]
+
+Al centro della base: indica due linee, cerchi o archi, con lo snap Tangente, e dai un raggio: la base li tocca entrambi, il più vicino possibile ai punti indicati, alla loro altezza.
+
+### `Ellittico` (`E`) [#elliptical]
+
+Al centro della base: la base è un'ellisse. Dai i due estremi del suo primo asse, poi l'estremo del secondo; oppure scegli `CEntro` e dai il suo centro, la mezza lunghezza del primo asse, poi l'estremo del secondo asse.
+
+### `Diametro` (`D`) [#diameter]
+
+Al raggio: chiede invece il diametro, offrendo il doppio dell'ultimo raggio.
+
+### `2Punti` (`2P`) [#2point]
+
+All'altezza: chiede due punti, e l'altezza è la distanza tra essi.
+
+### `punto finale Asse` (`A`) [#axis]
+
+All'altezza: chiede l'altro estremo dell'asse. Il cilindro va dal centro della base a quel punto in qualsiasi direzione, con la base perpendicolare all'asse.
+
+## Cosa non fa ancora [#missing]
+
+[`ESPLODI`](/docs/commands/explode) di un cilindro, che AutoCAD trasforma nelle sue due estremità e in una superficie: MellowCAD non ha superfici, quindi dice che non ha potuto esploderlo. Sposta, Ruota, Scala e Specchio da un grip attivo, e un'altezza trascinata oltre la base. Le quote tratteggiate che AutoCAD disegna mentre dai il raggio, i punti dell'ellisse e l'asse. Trasformare un cilindro circolare in uno ellittico digitando nella tavolozza Proprietà. Le silhouette che disegna `DISPSILH` di AutoCAD. In pianta, dove il cerchio superiore nasconde quello della base, lo snap Vicino trova il cerchio della base, dove AutoCAD trova quello superiore. Gli stili visivi che [`STILEVISCORRENTE`](/docs/commands/vscurrent) non ha oltre a Wireframe 2D, Nascosto e Concettuale.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di CILINDRO in AutoCAD?
+
+`CIL`. Digitala e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza: `0,0`, `20` e `40` disegnano il cilindro della sessione.
+
+### Come si disegna un cilindro orizzontale?
+
+Scegli `Asse` all'altezza e dai l'altro estremo dell'asse: da una base in `0,0,0`, il punto `60,0,0` pone il cilindro lungo X.
+
+### Come si fa un cilindro cavo o un tubo?
+
+Disegna due cilindri dallo stesso centro, quello interno più stretto, poi esegui [`SOTTRAI`](/docs/commands/subtract): seleziona quello esterno, Invio, quello interno, Invio.
+
+### Perché il mio cilindro sembra un cerchio?
+
+Lo guardi dall'alto, in pianta. Ruota la vista: uno spigolo del ViewCube, `-VISTA` e `SEAsso`, oppure [`3DORBITA`](/docs/commands/3dorbit).
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block)
+
+## Comandi correlati [#related]
+
+- [Comando CONO (CONE) in AutoCAD](/docs/commands/cone)
+- [Comando PARALLELEPIPEDO (BOX) in AutoCAD](/docs/commands/box)
+- [Comando SOTTRAI (SUBTRACT) in AutoCAD](/docs/commands/subtract)
+- [Comando ESTRUDI (EXTRUDE) in AutoCAD](/docs/commands/extrude)

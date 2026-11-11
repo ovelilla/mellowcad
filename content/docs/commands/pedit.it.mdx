@@ -1,0 +1,102 @@
+---
+title: "Comando EDITPL (PEDIT) in AutoCAD"
+description: "Come funziona EDITPL (PEDIT, alias EP) di AutoCAD in italiano: linee in una polilinea, Unisci, Larghezza, Adatta e Spline, Edita vertice, Multiplo. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando PEDIT in italiano?","answer":"EDITPL, alias EP, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _PEDIT. Lo esegue anche il doppio clic su una polilinea."},{"question":"Come si uniscono delle linee in una polilinea?","answer":"Avvia EDITPL, seleziona una delle linee e premi Invio per trasformarla in una polilinea, poi scegli Unisci e seleziona le altre: quelle che si toccano di testa diventano una sola polilinea. UNISCI fa lo stesso in un solo passo."},{"question":"Perché EDITPL non funziona sul mio oggetto?","answer":"EDITPL modifica polilinee, e offre di convertire linee, archi e spline; qualunque altra cosa, testo, un cerchio, un blocco, viene rifiutata e richiesta di nuovo. Un oggetto su un layer bloccato dice «L'oggetto è su un layer bloccato.». Join aggiunge solo oggetti le cui estremità incontrano esattamente quelle della polilinea: per le fessure, usa Multiplo e una distanza di tolleranza."},{"question":"Come si cambia la larghezza di una polilinea?","answer":"Scegli Larghezza e digita la larghezza: ogni segmento la prende. Per un solo segmento, usa Edita, sposta la X sul vertice da cui parte e scegli il suo Larghezza."},{"question":"Come si rende curva una polilinea?","answer":"ADatta fa passare archi per ogni vertice; Spline crea una curva più morbida che i suoi vertici inquadrano. Rettifica la raddrizza di nuovo."}]
+---
+
+EDITPL (PEDIT in inglese) modifica una polilinea. Selezionane una a `Selezionare polilinea o [Multiplo]:`, oppure selezionala prima del comando; anche un doppio clic su una polilinea esegue EDITPL su di essa. Seleziona invece una linea, un arco o una spline e dice `L'oggetto selezionato non è una polilinea` e chiede se trasformarlo in una, Sì per impostazione predefinita: la nuova polilinea prende il suo posto e le sue proprietà. Poi chiede un'opzione ancora e ancora, ciascuna applicata subito, finché Invio termina. Una polilinea 3D ha un elenco più corto, senza larghezza, adattamento a curva né generazione del tipo di linea, e la sua opzione spline è `Spline`. Esc mantiene ciò che è stato fatto; l'intera modifica è un solo passo che `A` annulla.
+
+- **Comando:** `EDITPL`
+- **In inglese:** `PEDIT`, digitato `_PEDIT` in ogni lingua
+- **Alias:** `EP`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `EP` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="pedit" caption="Tre linee che si toccano di testa: EDITPL trasforma la prima in una polilinea, le unisce le altre due e le dà una larghezza di 2." />
+
+## Opzioni [#options]
+
+### `Multiplo` (`M`) [#multiple]
+
+Modifica più polilinee insieme: selezionale, di' se convertire le linee, gli archi e le spline tra esse, poi ogni opzione viene applicata a tutte. Il suo Join chiede una distanza di tolleranza e un `Tipounione`: `Estendi` taglia o estende i segmenti finali fino a incontrarsi, `Aggiungi` colma la fessura con un nuovo segmento, `ENtrambi` estende dove può e aggiunge dove non può.
+
+### `CHiudi` (`CH`) [#close]
+
+Chiude la polilinea con un segmento dal suo ultimo vertice al primo, un arco dove l'ultimo segmento è un arco. Su una polilinea chiusa l'opzione è `Apri`, che toglie quel segmento.
+
+### `Unisci` (`U`) [#join]
+
+Aggiunge linee, archi e polilinee aperte che incontrano le estremità della polilinea, di testa, e dice quanti segmenti ha aggiunto. A una polilinea chiusa non si può unire nulla: `Impossibile unire ad una polilinea chiusa`.
+
+### `Larghezza` (`L`) [#width]
+
+Una larghezza per ogni segmento, digitata o misurata con due punti; 0 toglie la larghezza.
+
+### `Edita vertici` (`E`) [#edit-vertex]
+
+Mette una X sul primo vertice e chiede che cosa fare lì: `SEguente` e `Precedente` spostano la X, `SPosta` sposta il vertice, `Inserisci` ne aggiunge uno dopo di esso, `TRonca` e `RAddrizza` ricordano il vertice, tu sposti la X su un altro, e `Esegui` interrompe la polilinea tra i due oppure fa un solo segmento rettilineo di ciò che sta in mezzo, `Larghezza` imposta le larghezze iniziale e finale del segmento successivo, `TAngente` dà al vertice una direzione per un successivo Fit, e `esCi` torna indietro.
+
+### `ADatta` (`AD`) [#fit]
+
+Disegna una curva morbida di archi attraverso ogni vertice, tangenti dove si incontrano, come li dispone l'adattamento a curva di AutoCAD. I vertici restano, e modificarli rimodella la curva.
+
+### `Spline` (`S`) [#spline]
+
+Adatta una B-spline alla polilinea, inquadrata dai suoi vertici invece di passare per essi: quadratica o cubica, con SPLINETYPE, e fine quanto SPLINESEGS. Quella di una polilinea 3D è `Spline`. L'opzione Object di SPLINE trasforma una polilinea simile in una vera spline.
+
+### `Rettifica` (`R`) [#decurve]
+
+Toglie la curva Fit o Spline: di nuovo segmenti rettilinei tra i vertici.
+
+### `Tipolinea gen.` (`T`) [#ltype-gen]
+
+`ON` dispone il tipo di linea in un solo modello lungo tutta la polilinea, così una polilinea tratteggiata con segmenti corti mostra comunque i tratti; `OFf`, il valore predefinito, ricomincia il modello a ogni vertice.
+
+### `Inverti` (`I`) [#reverse]
+
+Gira la polilinea: i suoi vertici nell'altro verso, con gli archi e le larghezze.
+
+### `ANnulla` (`AN`) [#undo]
+
+Annulla l'ultima opzione di questa esecuzione, e continua a chiedere.
+
+## Cosa non fa ancora [#missing]
+
+PEDITACCEPT: selezionare una linea, un arco o una spline chiede sempre prima di convertirla. PLINECONVERTMODE: una spline diventa una polilinea di segmenti rettilinei, molti di più di quelli che ne fa AutoCAD, mai archi. Una polilinea adattata compare nella tavolozza Proprietà come una semplice polilinea, senza il titolo Polilinea 2D di AutoCAD e la sua riga Adatta/Leviga. Multiple con solo polilinee 3D nell'insieme pone la richiesta 3D, dove AutoCAD pone quella 2D. Non ci sono mesh da modificare.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep)
+
+## Domande [#questions]
+
+### Come si chiama il comando PEDIT in italiano?
+
+EDITPL, alias `EP`, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_PEDIT`. Lo esegue anche il doppio clic su una polilinea.
+
+### Come si uniscono delle linee in una polilinea?
+
+Avvia EDITPL, seleziona una delle linee e premi Invio per trasformarla in una polilinea, poi scegli `Unisci` e seleziona le altre: quelle che si toccano di testa diventano una sola polilinea. [`UNISCI`](/docs/commands/join) fa lo stesso in un solo passo.
+
+### Perché EDITPL non funziona sul mio oggetto?
+
+EDITPL modifica polilinee, e offre di convertire linee, archi e spline; qualunque altra cosa, testo, un cerchio, un blocco, viene rifiutata e richiesta di nuovo. Un oggetto su un layer bloccato dice `L'oggetto è su un layer bloccato.`. Join aggiunge solo oggetti le cui estremità incontrano esattamente quelle della polilinea: per le fessure, usa `Multiplo` e una distanza di tolleranza.
+
+### Come si cambia la larghezza di una polilinea?
+
+Scegli `Larghezza` e digita la larghezza: ogni segmento la prende. Per un solo segmento, usa `Edita`, sposta la X sul vertice da cui parte e scegli il suo `Larghezza`.
+
+### Come si rende curva una polilinea?
+
+`ADatta` fa passare archi per ogni vertice; `Spline` crea una curva più morbida che i suoi vertici inquadrano. `Rettifica` la raddrizza di nuovo.
+
+## Comandi correlati [#related]
+
+- [Comando PLINEA (PLINE) in AutoCAD](/docs/commands/pline)
+- [Comando UNISCI (JOIN) in AutoCAD](/docs/commands/join)
+- [Comando ESPLODI (EXPLODE) in AutoCAD](/docs/commands/explode)
+- [Comando SPLINE in AutoCAD](/docs/commands/spline)

@@ -1,0 +1,80 @@
+---
+title: "Comando TESTOM (MTEXT) in AutoCAD"
+description: "Come funziona TESTOM (MTEXT, alias TSM) di AutoCAD in italiano: due angoli o Larghezza, Altezza, Giustifica, Interlinea, testo multilinea."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando MTEXT in italiano?","answer":"TESTOM, alias TSM o TSTM, poi Invio o barra spaziatrice; anche MTEXT. In AutoCAD in italiano T è TESTO, e MT è MODTESTO. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _MTEXT. -TESTOM chiede lo stesso e prende il testo nella riga di comando."},{"question":"Come si inizia una nuova riga nel testo multilinea?","answer":"Premi Invio: inizia un nuovo paragrafo. All'interno di un paragrafo le righe vanno a capo da sole alla larghezza del riquadro. Ctrl+Invio, o un clic fuori dal riquadro, chiude l'editor e mantiene il testo."},{"question":"Come si cambia la larghezza del testo multilinea?","answer":"Selezionalo e trascina il grip sul suo lato: il testo va a capo di nuovo al variare della larghezza, attorno al suo punto di giustificazione. La riga Larghezza definita della tavolozza Proprietà lo fa con un numero, e le sue righe dell'interlinea cambiano la spaziatura."},{"question":"Come si converte TESTOM in testo di una riga?","answer":"Con ESPLODI: ciascuna delle sue righe diventa un TESTO, giustificato a sinistra dove si trovava la riga, come fa AutoCAD. Oppure fai doppio clic su di esso per riscriverlo nel suo editor."}]
+---
+
+TESTOM (MTEXT in inglese) scrive testo multilinea: un oggetto che contiene paragrafi che vanno a capo a una larghezza. Selezioni un primo angolo e quello opposto, e il riquadro tra essi imposta la larghezza; poi digiti in un editor disegnato sul posto, dove Invio inizia un nuovo paragrafo e Ctrl+Invio, o un clic fuori dal riquadro, mantiene il testo. Esc con qualcosa digitato chiede se salvarlo, come la finestra Modifiche non salvate di AutoCAD. Per righe che sono ciascuna un oggetto a sé, usa [`TESTO`](/docs/commands/text).
+
+La prima riga dice lo stile corrente e l'altezza. Ogni opzione viene chiesta alla richiesta dell'angolo opposto e vi ritorna, quindi un'esecuzione imposta l'altezza, la giustificazione e il resto prima che il riquadro sia chiuso. Le parole vanno a capo dove una riga supererebbe la larghezza, e una parola più lunga della larghezza la oltrepassa. L'altezza è condivisa con [`TESTO`](/docs/commands/text) e conservata nel disegno; la giustificazione, la rotazione e l'interlinea partono dai loro valori predefiniti a ogni esecuzione. `-TESTOM` chiede lo stesso, poi prende il testo nella riga di comando, una riga alla volta.
+
+- **Comando:** `TESTOM`
+- **In inglese:** `MTEXT`, digitato `_MTEXT` in ogni lingua
+- **Alias:** `TSM`, `TSTM`, `MTEXT`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `TSM` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="mtext" caption="Una nota in un riquadro: l'altezza impostata per prima, poi l'angolo opposto, e un paragrafo a capo alla larghezza tra i due." />
+
+## Opzioni [#options]
+
+### `Altezza` (`A`) [#height]
+
+Imposta l'altezza del testo, digitata o come distanza dal primo angolo a un punto; deve essere maggiore di zero. Resta per l'esecuzione successiva, e per [`TESTO`](/docs/commands/text).
+
+### `Giustificato` (`G`) [#justify]
+
+Imposta da quale dei nove punti del riquadro pende il testo: in alto a sinistra per impostazione predefinita, oppure in alto, al centro e in basso per sinistra, centro e destra, come li elenca la richiesta. Il testo pende da quel punto del riquadro, in qualunque direzione sia stato trascinato.
+
+### `SPaziatura linea` (`SP`) [#line-spacing]
+
+Chiede il tipo, minima (il valore predefinito), che lascia spazio a una riga con lettere più alte, oppure esatta, poi un fattore scritto con una x, come `2x`, o una distanza. L'interlinea singola è 1x, e il fattore va da 0,25x a 4x.
+
+### `Rotazione` (`R`) [#rotation]
+
+Ruota il riquadro e il suo testo, di un angolo digitato o indicato dal primo angolo.
+
+### `Stile` (`S`) [#style]
+
+Rende corrente uno stile di testo, per nome; `?` elenca gli stili del disegno, e un nome che non ha viene rifiutato. Gli stili si creano nella tavolozza che apre [`STILE`](/docs/commands/style).
+
+### `Larghezza` (`L`) [#width]
+
+Chiede la larghezza al posto dell'angolo opposto, digitata o come distanza da un punto, poi apre l'editor. Una larghezza di 0, o Invio, lascia le righe senza andare a capo, ciascuna lunga quanto digitata.
+
+## Cosa non fa ancora [#missing]
+
+Le colonne, che AutoCAD 2027 elenca alla richiesta dell'angolo opposto, non sono offerte. La formattazione dentro il testo, come l'altezza, il font o il colore di una parola, le frazioni impilate o la sottolineatura, non viene disegnata né applicata, e l'editor non ha righello, tabulazioni, rientri, elenchi né la scheda Editor di testo della barra multifunzione, né un cursore di testo sul disegno. Non ci sono maschera di sfondo o cornice del testo, altezza definita, scala annotativa né snap Nodo sui suoi angoli, e un clic dentro il suo riquadro lo seleziona anche fuori dalle sue lettere, dove AutoCAD non seleziona nulla.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t--fr-textmult--tt--tx---textmult---tx--it-testom--tsm--tstm--mtext---testom)
+
+## Domande [#questions]
+
+### Come si chiama il comando MTEXT in italiano?
+
+TESTOM, alias `TSM` o `TSTM`, poi Invio o barra spaziatrice; anche `MTEXT`. In AutoCAD in italiano `T` è TESTO, e `MT` è MODTESTO. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_MTEXT`. `-TESTOM` chiede lo stesso e prende il testo nella riga di comando.
+
+### Come si inizia una nuova riga nel testo multilinea?
+
+Premi Invio: inizia un nuovo paragrafo. All'interno di un paragrafo le righe vanno a capo da sole alla larghezza del riquadro. Ctrl+Invio, o un clic fuori dal riquadro, chiude l'editor e mantiene il testo.
+
+### Come si cambia la larghezza del testo multilinea?
+
+Selezionalo e trascina il grip sul suo lato: il testo va a capo di nuovo al variare della larghezza, attorno al suo punto di giustificazione. La riga Larghezza definita della tavolozza Proprietà lo fa con un numero, e le sue righe dell'interlinea cambiano la spaziatura.
+
+### Come si converte TESTOM in testo di una riga?
+
+Con [`ESPLODI`](/docs/commands/explode): ciascuna delle sue righe diventa un [`TESTO`](/docs/commands/text), giustificato a sinistra dove si trovava la riga, come fa AutoCAD. Oppure fai doppio clic su di esso per riscriverlo nel suo editor.
+
+## Comandi correlati [#related]
+
+- [Comando TESTO (TEXT) in AutoCAD](/docs/commands/text)
+- [Comando MODTESTO (TEXTEDIT) in AutoCAD](/docs/commands/textedit)
+- [Comando STILE (STYLE) in AutoCAD: stili di testo](/docs/commands/style)
+- [Comando ESPLODI (EXPLODE) in AutoCAD](/docs/commands/explode)

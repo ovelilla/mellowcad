@@ -1,0 +1,59 @@
+---
+title: "Comando PREMTRASC (PRESSPULL) in AutoCAD"
+description: "Come funziona PREMTRASC (PRESSPULL) di AutoCAD in italiano: un oggetto chiuso, un'area delimitata o la faccia di un solido, prompt per prompt. Provalo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la differenza tra PREMTRASC e ESTRUDI?","answer":"ESTRUDI prende gli oggetti chiusi che selezioni, li cancella come stabilisce DELOBJ e offre una direzione, un angolo di rastremazione e un'espressione. PREMTRASC prende dei clic, un oggetto chiuso, l'area dentro più oggetti o una faccia di un solido, che aggiunge a quel solido o da cui taglia, e conserva gli oggetti. Partendo da un oggetto, i due comandi creano lo stesso solido."},{"question":"Come si estrude la faccia di un solido?","answer":"Esegui PREMTRASC, clicca la faccia e indica la distanza: una positiva la tira fuori e il solido cresce, una negativa la preme verso l'interno. Tieni premuto Ctrl mentre clicchi per eseguire invece l'offset della faccia. Per ora solo facce piane."},{"question":"Perché PREMTRASC non funziona?","answer":"Vuole un clic su qualcosa di chiuso. PREMTRASC risponde con «Fare clic su uno spigolo, una curva o all'interno di un'area delimitata» a un numero o a un punto digitato al primo prompt, a un clic su un oggetto aperto o su una faccia curva, e chiede di nuovo. Clicca su un oggetto chiuso, dentro un'area che gli oggetti chiudono in pianta o su una faccia piana di un solido."},{"question":"Esiste un alias per PREMTRASC?","answer":"Non ha alias: digita PREMTRASC, oppure _PRESSPULL in qualsiasi lingua di AutoCAD. Ctrl+Maiusc+E, il tasto di AutoCAD per questo comando, non è ancora realizzato."}]
+---
+
+PREMTRASC (PRESSPULL) estrude ciò che clicchi: un oggetto chiuso, un'area che gli oggetti chiudono attorno al clic o una faccia piana di un solido 3D. Clicca, poi digita l'altezza oppure muovi il cursore e clicca: un'altezza positiva tira, una negativa preme. Un oggetto chiuso o un'area diventa un nuovo solido, lo stesso che farebbe [`ESTRUDI`](/docs/commands/extrude), e gli oggetti restano; le isole di un'area sono fori al suo interno, come nella sessione. Una faccia aggiunge il suo prisma al solido o lo toglie: la faccia superiore di un parallelepipedo, tirata, lo rende più alto. Il prompt si ripresenta per il clic successivo fino a Invio, e l'intera serie è un solo passo che Annulla ripristina.
+
+Tieni premuto Ctrl e si illumina la faccia che un clic selezionerebbe; Ctrl+clic esegue invece l'offset di quella faccia, con le facce adiacenti prolungate fino a raggiungerla, così un lato inclinato mantiene la sua inclinazione. Come in AutoCAD, PREMTRASC funziona a clic: un numero o un punto digitato al primo prompt riceve come risposta `Fare clic su uno spigolo, una curva o all'interno di un'area delimitata`, e il prompt viene riproposto.
+
+- **Comando:** `PREMTRASC`
+- **In inglese:** `PRESSPULL`, digitato `_PRESSPULL` in ogni lingua
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `PREMTRASC` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="presspull" caption="L'area tra un rettangolo e un cerchio premuta di 8 verso il basso: una piastra con un foro, vista da sud-est nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `Multiplo` (`M`) [#multiple]
+
+Al prompt dell'altezza, o della distanza di offset: continua a cliccare per aggiungere altri elementi, oggetti chiusi e aree oppure facce di uno stesso solido, poi premi Invio, e un'unica altezza vale per tutti. Una faccia cliccata dopo un oggetto o un'area viene scartata.
+
+## Cosa non fa ancora [#missing]
+
+Una faccia curva, di cui AutoCAD esegue l'offset: qui il clic non trova alcuna faccia. Un offset le cui facce adiacenti sono coni, sfere o tori, oppure piani e facce curve insieme, o che spingerebbe una faccia attraverso quella opposta: il solido resta com'era. Le aree che IMPRINT e IMPLIEDFACE creano su una faccia, e Ctrl+Maiusc+E. Un oggetto aperto, che AutoCAD estrude in una superficie: le superfici non ci sono ancora. Durante il trascinamento l'anteprima mostra il prisma della faccia o il nuovo solido, non il solido come sarà, e una faccia si illumina solo con Ctrl. Un'area delimitata fuori dal piano dell'UCS non è stata verificata.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#presspull--es-presionartirar--pulsartirar--pt-br-pressionarpuxar--fr-apptirer--it-premtrasc)
+
+## Domande [#questions]
+
+### Qual è la differenza tra PREMTRASC e ESTRUDI?
+
+[`ESTRUDI`](/docs/commands/extrude) prende gli oggetti chiusi che selezioni, li cancella come stabilisce DELOBJ e offre una direzione, un angolo di rastremazione e un'espressione. PREMTRASC prende dei clic, un oggetto chiuso, l'area dentro più oggetti o una faccia di un solido, che aggiunge a quel solido o da cui taglia, e conserva gli oggetti. Partendo da un oggetto, i due comandi creano lo stesso solido.
+
+### Come si estrude la faccia di un solido?
+
+Esegui PREMTRASC, clicca la faccia e indica la distanza: una positiva la tira fuori e il solido cresce, una negativa la preme verso l'interno. Tieni premuto Ctrl mentre clicchi per eseguire invece l'offset della faccia. Per ora solo facce piane.
+
+### Perché PREMTRASC non funziona?
+
+Vuole un clic su qualcosa di chiuso. PREMTRASC risponde con `Fare clic su uno spigolo, una curva o all'interno di un'area delimitata` a un numero o a un punto digitato al primo prompt, a un clic su un oggetto aperto o su una faccia curva, e chiede di nuovo. Clicca su un oggetto chiuso, dentro un'area che gli oggetti chiudono in pianta o su una faccia piana di un solido.
+
+### Esiste un alias per PREMTRASC?
+
+Non ha alias: digita PREMTRASC, oppure `_PRESSPULL` in qualsiasi lingua di AutoCAD. Ctrl+Maiusc+E, il tasto di AutoCAD per questo comando, non è ancora realizzato.
+
+## Comandi correlati [#related]
+
+- [Comando ESTRUDI (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Comando MODIFSOLIDI (SOLIDEDIT) in AutoCAD](/docs/commands/solidedit)
+- [Comando REGIONE (REGION) in AutoCAD](/docs/commands/region)
+- [Comando PARALLELEPIPEDO (BOX) in AutoCAD](/docs/commands/box)

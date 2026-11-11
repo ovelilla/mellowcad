@@ -1,0 +1,89 @@
+---
+title: "Comando SPLINE in AutoCAD"
+description: "Come funziona SPLINE (SPL) di AutoCAD: una curva per punti di adattamento o tirata da vertici di controllo, Nodi, Grado, tangenti e Chiudi. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di SPLINE in AutoCAD?","answer":"SPL, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _SPLINE in qualsiasi lingua di AutoCAD."},{"question":"Qual è la differenza tra Fit e CV?","answer":"Una spline di adattamento passa per i punti che clicchi, il che va bene per una curva che deve toccarli. Una spline CV è modellata dai suoi vertici di controllo, a cui si avvicina soltanto, il che va bene per una forma morbida e regolare. Scegli con Metodo al primo prompt."},{"question":"Come si converte una spline in una polilinea?","answer":"Esegui EDITPL e indica la spline: dice «L'oggetto selezionato non è una polilinea» e propone di trasformarla in una, poi chiede una precisione da 0 a 99, 10 per impostazione predefinita. La polilinea segue la spline con brevi segmenti dritti, più di quanti ne crei AutoCAD."},{"question":"Come si converte una polilinea in una spline?","answer":"Adatta la polilinea con l'opzione Spline di EDITPL, poi esegui SPLINE e scegli Oggetto: la polilinea diventa una spline della stessa curva."},{"question":"Si può esplodere una spline in AutoCAD?","answer":"No: ESPLODI rifiuta una spline, come fa AutoCAD. Per spezzarla in parti, convertila prima in una polilinea con EDITPL, poi esplodi questa in linee."}]
+---
+
+SPLINE disegna una curva morbida, in due modi: attraverso punti che indichi (Fit, il valore predefinito), oppure tirata verso vertici di controllo che posizioni (CV). Si apre indicando le sue impostazioni, `Method=Fit   Knots=Chord`, poi chiede il primo punto; Invio lì viene rifiutato, come in AutoCAD. Ogni punto successivo piega la curva, con l'ombra che segue il cursore, e Invio la termina. I punti si possono indicare, agganciare o digitare, una lunghezza digitata corre lungo il cursore, e un punto conserva il suo Z, quindi una spline può salire nello spazio. Esc scarta la curva; l'intera spline è un solo passo che `A` annulla. I pulsanti Spline Fit e Spline CV della barra multifunzione eseguono SPLINE con il metodo già indicato.
+
+- **Comando:** `SPLINE`
+- **Alias:** `SPL`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SPL` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="spline" caption="Una spline di adattamento per cinque punti, e sotto una spline CV su cinque vertici posizionati allo stesso modo: la prima li attraversa, la seconda è tirata verso di essi." />
+
+## Opzioni [#options]
+
+### `Metodo` (`M`) [#method]
+
+`Adatta` o `VC`. Una spline di adattamento passa per ogni punto che indichi; una spline CV passa solo per il suo primo e ultimo vertice, e gli altri la tirano verso di sé, quindi risulta più morbida e più lontana da essi. Il metodo, come i nodi e il grado, si conserva per il resto della sessione.
+
+### `Nodi` (`N`) [#knots]
+
+Come una spline di adattamento distanzia i suoi punti lungo la curva: `Corda` (il valore predefinito, in base alla distanza tra loro), `Quadrata` di quella distanza, oppure `Uniforme`, tutti uguali. Attraverso gli stessi punti ciascuno crea una curva leggermente diversa.
+
+### `graDo` (`D`) [#degree]
+
+Il grado di una spline CV, da 1 (linee rette tra i vertici) a 10; 3, il valore predefinito, è una cubica. Con meno vertici di quelli che il grado richiede, la curva prende il più alto possibile.
+
+### `Oggetto` (`O`) [#object]
+
+Trasforma una polilinea adattata dall'opzione Spline di PEDIT, 2D o 3D, in una spline CV della stessa curva, e cancella la polilinea, in un solo passo. Qualsiasi altra cosa viene rifiutata con `Solo le polilinee adattate a spline possono essere convertite in spline.`.
+
+### `Inizio tangenza` (`T`) [#start-tangency]
+
+Offerta dopo il primo punto: la direzione in cui la curva lo lascia, indicata o digitata da quel punto.
+
+### `fine Tangenza` (`T`) [#end-tangency]
+
+La direzione in cui la curva arriva al suo ultimo punto, poi la spline termina.
+
+### `Annulla` (`A`) [#undo]
+
+Annulla l'ultimo punto, fino al primo.
+
+### `Chiudi` (`C`) [#close]
+
+Dal terzo punto: riunisce la fine all'inizio in un unico anello morbido, senza spigolo, e termina il comando.
+
+## Cosa non fa ancora [#missing]
+
+Tolleranza di adattamento: una spline di adattamento passa sempre esattamente per i suoi punti, e l'opzione toLerance non è offerta. Mentre viene disegnata, la spline non è ancora un oggetto a cui agganciarsi o su cui tracciare, come lo è quella di AutoCAD. Object cancella sempre la polilinea (DELOBJ). Su una spline finita non ci sono CVSHOW né CVHIDE né menu dei grip per aggiungere o togliere un punto, la tavolozza Proprietà ne modifica i punti ma non il metodo, il grado, i nodi, i pesi o la chiusura, e Centro geometrico, Perpendicolare e Tangente non vi si agganciano. HATCH non trova una spline come contorno, e BLEND non esiste ancora.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl)
+
+## Domande [#questions]
+
+### Qual è l'alias di SPLINE in AutoCAD?
+
+`SPL`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_SPLINE` in qualsiasi lingua di AutoCAD.
+
+### Qual è la differenza tra Fit e CV?
+
+Una spline di adattamento passa per i punti che clicchi, il che va bene per una curva che deve toccarli. Una spline CV è modellata dai suoi vertici di controllo, a cui si avvicina soltanto, il che va bene per una forma morbida e regolare. Scegli con `Metodo` al primo prompt.
+
+### Come si converte una spline in una polilinea?
+
+Esegui [`EDITPL`](/docs/commands/pedit) e indica la spline: dice `L'oggetto selezionato non è una polilinea` e propone di trasformarla in una, poi chiede una precisione da 0 a 99, 10 per impostazione predefinita. La polilinea segue la spline con brevi segmenti dritti, più di quanti ne crei AutoCAD.
+
+### Come si converte una polilinea in una spline?
+
+Adatta la polilinea con l'opzione Spline di [`EDITPL`](/docs/commands/pedit), poi esegui SPLINE e scegli `Oggetto`: la polilinea diventa una spline della stessa curva.
+
+### Si può esplodere una spline in AutoCAD?
+
+No: [`ESPLODI`](/docs/commands/explode) rifiuta una spline, come fa AutoCAD. Per spezzarla in parti, convertila prima in una polilinea con [`EDITPL`](/docs/commands/pedit), poi esplodi questa in linee.
+
+## Comandi correlati [#related]
+
+- [Comando PLINEA (PLINE) in AutoCAD](/docs/commands/pline)
+- [Comando EDITPL (PEDIT) in AutoCAD](/docs/commands/pedit)
+- [Comando EDITSPLINE (SPLINEDIT) in AutoCAD](/docs/commands/splinedit)
+- [Comando ELLISSE (ELLIPSE) in AutoCAD](/docs/commands/ellipse)

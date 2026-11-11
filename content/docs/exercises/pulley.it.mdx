@@ -1,0 +1,48 @@
+---
+title: "Esercizio AutoCAD 3D: una puleggia"
+metaTitle: "Esercizio AutoCAD 3D: puleggia per rivoluzione"
+description: "Modella una puleggia in AutoCAD 3D: la sua mezza sezione come polilinea chiusa, ruotata attorno all'asse Y in un solido, passo passo. 3D gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modella questa puleggia ruotando la sua mezza sezione attorno al suo asse, in millimetri: un foro di 20, un mozzo lungo 30 e di 40 di diametro, un'anima spessa 10 e una corona larga 24 da 90 a 110 di diametro, centrata sul mozzo. La sezione si disegna come distanze dall'asse, che corre lungo l'asse Y, quindi ogni diametro si disegna come la sua metà.
+
+- **Esercizio:** Intermedio · Meccanica · Solido 3D
+- **Comandi:** [`PLINEA`](/docs/commands/pline), [`-VISTA`](/docs/commands#-view), [`STILEVISCORRENTE`](/docs/commands/vscurrent), [`RIVOLUZIONE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=pulley), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/pulley" caption="La mezza sezione della puleggia accanto al suo asse, con le distanze dall'asse quotate." />
+
+<Session name="exercises/pulley/model" caption="La puleggia come solido, vista da sud-est nello stile visivo Concettuale." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna la mezza sezione [#profile]
+
+Sul layer Contorno, una [`PLINEA`](/docs/commands/pline) chiusa da `10,0`, ogni punto successivo uno spostamento dall'ultimo: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` e `-10,0`, poi `CHiudi`.
+
+<Session name="exercises/pulley/profile" caption="1. Disegna la mezza sezione" />
+
+### 2. Ruota la vista [#view]
+
+`-VISTA` e `SEAsso` la guardano da sud-est e dall'alto; [`STILEVISCORRENTE`](/docs/commands/vscurrent) e `Concettuale` ombreggiano le facce, il che mostra al meglio un pezzo tornito.
+
+<Session name="exercises/pulley/view" caption="2. Ruota la vista" />
+
+### 3. Ruotala [#revolve]
+
+[`RIVOLUZIONE`](/docs/commands/revolve): seleziona la sezione e premi Invio, poi `Y`: l'asse Y è quello della puleggia. Invio accetta l'angolo predefinito, un giro intero. [`ZOOM`](/docs/commands/zoom) `Estensioni` la inquadra, e una scala di 0.8x lascia spazio intorno.
+
+<Session name="exercises/pulley/revolve" caption="3. Ruotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link): Avanzato · Meccanica · 2D
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block): Avanzato · Meccanica · Solido 3D
+- [Esercizio AutoCAD: una guarnizione](/docs/exercises/gasket): Principiante · Meccanica · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

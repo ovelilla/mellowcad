@@ -1,8 +1,8 @@
 # Italian (`it`)
 
 > **Command language:** `localized`, Italian AutoCAD's. **Status:** `draft` since 11/11/2026, at
-> `/it`: registered; the engine's catalog whole (its interface and the command language), the site's
-> and the editor's still empty (a key they lack shows English). **Review:** none by a
+> `/it`: every catalog whole, the "Use" pages, the command notes and the exercises written; not yet
+> `live` (phase 6). **Review:** none by a
 > native speaker. The plan and what is left: `docs/plans/it-language.md`.
 
 The words are Autodesk's own Italian localization of AutoCAD, never a translation of ours, as
@@ -77,7 +77,7 @@ among the ones an English hand types without thinking:
 | `E`   | ERASE      | ESPLODI (EXPLODE); CANCELLA is `CA`, and `DELETE` stays       |
 | `S`   | STRETCH    | SPOSTA (MOVE); STIRA is `STI`                                 |
 | `CO`  | COPY       | COLORE (COLOR); COPIA is `CP`                                 |
-| `SC`  | SCALE      | SPAZIOC (UCS); SCALA is `SS`                                  |
+| `SC`  | SCALE      | SPAZIOC (PSPACE); SCALA is `SS`                               |
 | `RE`  | REGEN      | TRATTEGGIO (HATCH); RIGEN is `RG`                             |
 | `AR`  | ARRAY      | ARCO (ARC); SERIE is `SR`                                     |
 | `MT`  | MTEXT      | MODTESTO (TEXTEDIT); TESTOM is `TSM`, `TSTM`, `MTEXT`         |
@@ -191,6 +191,24 @@ No probe shows these; each is worded from its neighbours and stays so until one 
 
 The list by key is the session's, outside git (research/proposals), and
 `italianPrompts.test.ts` holds what the console printed.
+
+## The site's words
+
+`messages/it.json`, the "Use" pages, the 97 command notes and the 12 exercises (11/11/2026, six
+agents on one brief, each file then read by `docs:check` against its English's options, questions
+and elements): the landing's title is «CAD online gratis con i comandi di AutoCAD», its
+description carries «programma CAD gratis», «senza installazione», «disegno tecnico online» and «i
+comandi di AutoCAD in italiano»; the command list is «Comandi AutoCAD in italiano e inglese», a
+command's page «Comando TAGLIA (TRIM) in AutoCAD», an exercise's «Esercizio AutoCAD …». The site
+calls its docs «Documentazione», as Spanish and French do (`Guide` would be the how-to guides').
+The landing's strings run shorter than French's (14,327 characters against 15,161).
+
+Dialog titles from the pack's dialog resources (`dialogs.mjs`, `:title`): «Gestione stili di
+quota» (AcDimRes 701), «Gestione tipo di linea» (acadres 244), «Impostazioni spessore linea»
+(acadres 2500), «Stile di testo» (acadres 515), «Unità disegno» (unitsRes 500), «Editor attributi
+avanzato» (AcEAtteditRes 101); «Gestore proprietà layer» and «Definizione blocco» from
+`acad.CUIX`. Mechanical terms in the exercises are ours: «mozzo» (boss), «cava per chiavetta»,
+«circonferenza di foratura», «biella», «pedata».
 
 ## Script and font
 

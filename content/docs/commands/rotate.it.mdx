@@ -1,0 +1,66 @@
+---
+title: "Comando RUOTA (ROTATE) in AutoCAD"
+description: "Come funziona RUOTA (ROTATE, alias RU) di AutoCAD: punto base e angolo, Copia per tenere l'originale, Riferimento per ruotare a un angolo. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di RUOTA in AutoCAD?","answer":"RU, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _ROTATE in qualsiasi lingua di AutoCAD."},{"question":"Come si ruota un oggetto per allinearlo a un altro?","answer":"Scegli Riferimento, indica due punti lungo lo spigolo dell'oggetto, poi scegli Punti e indica due punti lungo la linea che deve seguire."},{"question":"Come si ruota un oggetto conservando l'originale?","answer":"Scegli Copia prima di indicare l'angolo: la copia ruota e l'originale resta."},{"question":"Perché RUOTA gira dalla parte sbagliata?","answer":"Un angolo positivo ruota in senso antiorario, come dice ANGDIR nella prima riga. Digita un angolo negativo, -30, per ruotare in senso orario."}]
+---
+
+RUOTA (ROTATE) ruota gli oggetti che selezioni attorno a un punto base: selezionali, indica il punto base, poi l'angolo, digitato o indicato come un punto la cui direzione dal punto base è l'angolo. La sua prima riga dice quale verso è positivo, antiorario per impostazione predefinita (ANGDIR), e dove si trova lo 0 (ANGBASE). Invio all'angolo ripete l'ultima rotazione, 0 in un nuovo disegno. Gli oggetti ruotano attorno a un asse parallelo allo Z dell'UCS passante per il punto base, quindi in 3D mantengono la loro altezza. La rotazione è un solo passo che Annulla ripristina.
+
+- **Comando:** `RUOTA`
+- **In inglese:** `ROTATE`, digitato `_ROTATE` in ogni lingua
+- **Alias:** `RU`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `RU` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="rotate" caption="Un rettangolo ruotato di 30° attorno al suo angolo con Copia, l'originale conservato." />
+
+## Opzioni [#options]
+
+### `Copia` (`C`) [#copy]
+
+Ruota una copia e lascia gli oggetti dove erano, dicendo `Rotazione di una copia degli oggetti selezionati.`. Il prompt chiede poi di nuovo l'angolo.
+
+### `Riferimento` (`R`) [#reference]
+
+Ruota da un angolo che hai a quello che vuoi: chiede l'angolo di riferimento (digitato, o due punti che lo misurano), poi il nuovo angolo, e ruota della differenza. Per mettere in piano uno spigolo inclinato, indica i suoi due estremi come riferimento e digita 0.
+
+### `Punti` (`P`) [#points]
+
+Al nuovo angolo di Riferimento: il nuovo angolo è quello di una linea tra due punti che indichi, così gli oggetti si allineano a uno spigolo già disegnato.
+
+## Cosa non fa ancora [#missing]
+
+Mentre indichi l'angolo, l'insieme ruotato segue il cursore nel colore di ciascun oggetto, ma non nel suo tipo di linea o spessore di linea.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru)
+
+## Domande [#questions]
+
+### Qual è l'alias di RUOTA in AutoCAD?
+
+`RU`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_ROTATE` in qualsiasi lingua di AutoCAD.
+
+### Come si ruota un oggetto per allinearlo a un altro?
+
+Scegli `Riferimento`, indica due punti lungo lo spigolo dell'oggetto, poi scegli `Punti` e indica due punti lungo la linea che deve seguire.
+
+### Come si ruota un oggetto conservando l'originale?
+
+Scegli `Copia` prima di indicare l'angolo: la copia ruota e l'originale resta.
+
+### Perché RUOTA gira dalla parte sbagliata?
+
+Un angolo positivo ruota in senso antiorario, come dice ANGDIR nella prima riga. Digita un angolo negativo, `-30`, per ruotare in senso orario.
+
+## Comandi correlati [#related]
+
+- [Comando SPOSTA (MOVE) in AutoCAD](/docs/commands/move)
+- [Comando COPIA (COPY) in AutoCAD](/docs/commands/copy)
+- [Comando SPECCHIO (MIRROR) in AutoCAD](/docs/commands/mirror)
+- [Comando SCALA (SCALE) in AutoCAD](/docs/commands/scale)

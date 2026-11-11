@@ -1,0 +1,92 @@
+---
+title: "Comando RIVOLUZIONE (REVOLVE) in AutoCAD"
+description: "Come RIVOLUZIONE (REVOLVE, alias RIV) di AutoCAD ruota un profilo 2D attorno a un asse in un solido 3D: l'asse, Oggetto, X, Y, Z. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di RIVOLUZIONE in AutoCAD?","answer":"RIV, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _REVOLVE in qualsiasi lingua di AutoCAD."},{"question":"Come si ruota un profilo attorno a un asse?","answer":"Disegna metà della sezione come un unico oggetto chiuso accanto alla linea dell'asse, una polilinea chiusa o una regione. Esegui RIVOLUZIONE, seleziona il profilo e premi Invio; premi di nuovo Invio per Oggetto e indica la linea dell'asse, oppure indica i suoi due estremi; poi Invio per un giro intero."},{"question":"Perché RIVOLUZIONE non funziona?","answer":"Il più delle volte l'asse attraversa il profilo: RIVOLUZIONE dice «L'oggetto dovrebbe trovarsi su un lato dell'asse.» e termina. Sposta l'asse sullo spigolo del profilo o oltre; uno spigolo sull'asse è ammesso. Un asse perpendicolare al piano del profilo riceve «L'asse di rivoluzione è perpendicolare al piano della curva di rivoluzione.», e un profilo aperto viene rifiutato, perché MellowCAD non ha ancora superfici."},{"question":"Come si ruota solo una parte di giro?","answer":"Digita l'angolo, 90 o 270, al prompt dell'angolo. INiziale fa iniziare la rotazione più avanti, e Inverti la fa girare nell'altro senso."}]
+---
+
+RIVOLUZIONE (REVOLVE) ruota profili 2D chiusi attorno a un asse in solidi 3D: un rettangolo con un lato sull'asse crea un cilindro, un cerchio accanto all'asse un anello. Seleziona i profili, cerchi, ellissi, polilinee o spline chiuse, regioni, e premi Invio; indica l'asse con due punti o con una delle sue opzioni, poi l'angolo, con Invio per un giro intero. Ogni profilo diventa un solido sul layer corrente e viene cancellato, come DELOBJ stabilisce per impostazione predefinita. L'intero comando è un solo passo che Annulla ripristina.
+
+L'asse giace nel piano del profilo, con tutto il profilo da un lato, oppure il comando termina con `L'oggetto dovrebbe trovarsi su un lato dell'asse.` prima che venga chiesto un angolo. L'angolo ruota secondo la regola della mano destra attorno all'asse, dal suo primo punto al secondo; uno negativo ruota nell'altro senso. Il 3D di MellowCAD è solo solidi, e ancora parziale: i profili aperti, che AutoCAD trasforma in superfici, vengono rifiutati.
+
+- **Comando:** `RIVOLUZIONE`
+- **In inglese:** `REVOLVE`, digitato `_REVOLVE` in ogni lingua
+- **Alias:** `RIV`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `RIV` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="revolve" caption="Un profilo con flangia ruotato di un giro intero attorno all'asse Y: un rocchetto, visto da sud-est nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `MOdalità` (`MO`) [#mode]
+
+Chiede `SOlido` o `SUperficie`, come fa [`ESTRUDI`](/docs/commands/extrude): non essendoci ancora oggetti superficie, viene accettato solo `SOlido`, il valore predefinito.
+
+### `Oggetto` (`O`) [#object]
+
+Il valore predefinito del prompt dell'asse, quindi Invio lo sceglie: indica una linea, una polilinea, un arco o una spline, e l'asse corre dritto tra i suoi due estremi, dall'estremo più vicino al tuo punto. Un oggetto chiuso non ha estremi: `Impossibile ottenere la direzione dell'asse da una curva chiusa o da uno spigolo.`, e il comando termina.
+
+### `X` [#x]
+
+L'asse X dell'UCS, passante per la sua origine.
+
+### `Y` [#y]
+
+L'asse Y dell'UCS, passante per la sua origine: un profilo disegnato alla sua destra, come nella sessione, diventa un pezzo disteso lungo Y.
+
+### `Z` [#z]
+
+L'asse Z dell'UCS, passante per la sua origine. Un profilo sul piano XY dell'UCS è perpendicolare a esso, quindi RIVOLUZIONE risponde `L'asse di rivoluzione è perpendicolare al piano della curva di rivoluzione.` e termina: Z serve per un profilo in piedi.
+
+### `angolo INiziale` (`IN`) [#start]
+
+Al prompt dell'angolo: l'angolo da cui partire, il cui valore predefinito è sempre 0. Il profilo viene prima ruotato fin lì, poi l'angolo viene chiesto di nuovo.
+
+### `Inverti` (`I`) [#reverse]
+
+Gira l'asse, così l'angolo corre nell'altro senso, e chiede di nuovo l'angolo.
+
+### `ESpressione` (`ES`) [#expression]
+
+L'angolo come espressione aritmetica, come in [`ESTRUDI`](/docs/commands/extrude).
+
+## Cosa non fa ancora [#missing]
+
+Un asse fuori dal piano del profilo, attorno al quale AutoCAD ruota il profilo in superfici: qui RIVOLUZIONE dice `Impossibile eseguire la rivoluzione dell'oggetto selezionato.` e termina. Un arco ellittico o uno spigolo di un solido come asse Oggetto. La modalità SUperficie e i profili aperti, non essendoci ancora oggetti superficie. L'anteprima che ruota con il cursore: mentre indichi l'angolo viene mostrato l'intero giro. [`ESPLODI`](/docs/commands/explode) di un solido di rivoluzione, che AutoCAD trasforma in superfici e regioni. I suoi grip, e il suo angolo modificato nella tavolozza Proprietà.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#revolve--rev--es-revolucion--rv--pt-br-revolucao--rev--fr-revolution--rev--it-rivoluzione--riv)
+
+## Domande [#questions]
+
+### Qual è l'alias di RIVOLUZIONE in AutoCAD?
+
+`RIV`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_REVOLVE` in qualsiasi lingua di AutoCAD.
+
+### Come si ruota un profilo attorno a un asse?
+
+Disegna metà della sezione come un unico oggetto chiuso accanto alla linea dell'asse, una polilinea chiusa o una regione. Esegui RIVOLUZIONE, seleziona il profilo e premi Invio; premi di nuovo Invio per `Oggetto` e indica la linea dell'asse, oppure indica i suoi due estremi; poi Invio per un giro intero.
+
+### Perché RIVOLUZIONE non funziona?
+
+Il più delle volte l'asse attraversa il profilo: RIVOLUZIONE dice `L'oggetto dovrebbe trovarsi su un lato dell'asse.` e termina. Sposta l'asse sullo spigolo del profilo o oltre; uno spigolo sull'asse è ammesso. Un asse perpendicolare al piano del profilo riceve `L'asse di rivoluzione è perpendicolare al piano della curva di rivoluzione.`, e un profilo aperto viene rifiutato, perché MellowCAD non ha ancora superfici.
+
+### Come si ruota solo una parte di giro?
+
+Digita l'angolo, 90 o 270, al prompt dell'angolo. `INiziale` fa iniziare la rotazione più avanti, e `Inverti` la fa girare nell'altro senso.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD 3D: una puleggia](/docs/exercises/pulley)
+
+## Comandi correlati [#related]
+
+- [Comando ESTRUDI (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Comando PREMTRASC (PRESSPULL) in AutoCAD](/docs/commands/presspull)
+- [Comando REGIONE (REGION) in AutoCAD](/docs/commands/region)
+- [Comando UNIONE (UNION) in AutoCAD](/docs/commands/union)

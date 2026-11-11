@@ -1,0 +1,76 @@
+---
+title: "Comando TORO (TORUS) in AutoCAD"
+description: "Come TORO (TORUS, alias TOR) di AutoCAD disegna un anello solido 3D: centro, raggio dell'anello, raggio del tubo, Diametro, 3P, 2P e Ttr. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di TORO in AutoCAD?","answer":"TOR. Digitalo e premi Invio o barra spaziatrice, poi indica il centro, il raggio dell'anello e quello del tubo: 0,0,0, 30 e 8 disegnano il toro della sessione."},{"question":"Qual è la differenza tra il raggio e il raggio del tubo?","answer":"Il raggio va dal centro del toro alla metà del tubo; il raggio del tubo è quello del tubo stesso. Un toro largo 76 all'esterno con un tubo spesso 16 ha un raggio di 30 e un raggio del tubo di 8."},{"question":"Come si disegna un toro a forma di pallone da rugby?","answer":"Indica un raggio negativo, poi un raggio del tubo maggiore del suo valore: -5 e 8 creano una forma chiusa a punta alle due estremità. Un raggio del tubo non maggiore di quello viene rifiutato e chiesto di nuovo."},{"question":"Perché il mio toro sembra due cerchi?","answer":"Lo stai guardando dall'alto, in pianta. Ruota la vista: un angolo del ViewCube, -VISTA e SEAsso, oppure 3DORBITA. STILEVISCORRENTE con Concettuale lo ombreggia."}]
+---
+
+TORO (TORUS) disegna un anello solido 3D, una ciambella: indica il centro, poi il raggio dell'anello, dal centro alla metà del tubo, poi il raggio del tubo. L'anello giace sul piano XY dell'UCS, allo Z del centro. Un punto al prompt del tubo viene misurato dal punto dell'anello, quello a cui è stato indicato il raggio. Il raggio dell'anello è il valore predefinito condiviso delle primitive, e il raggio del tubo un valore predefinito proprio, che Invio prende. Il toro sta sul layer corrente e Annulla lo ripristina in un solo passo.
+
+Un raggio dell'anello negativo con un tubo più largo crea una palla come un pallone da rugby, con le estremità a punta; un anello più stretto del suo tubo, una mela. In Wireframe 2D e Nascosto viene disegnato come linee attorno al tubo e attorno all'anello, quante ne dice `ISOLINES`. [`LISTA`](/docs/commands/list) ne mostra la posizione, la normale, il raggio del toro e il raggio del tubo, e la tavolozza Proprietà permette di digitarli entrambi. I suoi grip lo spostano, impostano il raggio dell'anello e impostano quello del tubo. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale.
+
+- **Comando:** `TORO`
+- **In inglese:** `TORUS`, digitato `_TORUS` in ogni lingua
+- **Alias:** `TOR`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `TOR` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="torus" caption="Un toro di raggio 30 attorno a un tubo di raggio 8, visto da sud-est nello stile visivo Concettuale." />
+
+## Opzioni [#options]
+
+### `3P` [#3p]
+
+Al centro: chiede tre punti, e l'anello è il cerchio che passa per essi, nel loro piano.
+
+### `2P` [#2p]
+
+Al centro: chiede i due estremi del diametro dell'anello.
+
+### `Ttr` (`T`) [#ttr]
+
+Al centro: indica due linee, cerchi o archi, con lo snap Tangente, e indica un raggio: l'anello li tocca entrambi, alla loro altezza.
+
+### `Diametro` (`D`) [#diameter]
+
+Al raggio dell'anello: chiede invece il diametro del toro. A quello del tubo: chiede il diametro del tubo. Ciascuno propone il doppio del suo valore predefinito.
+
+### `2Punti` (`2P`) [#2point]
+
+Al raggio del tubo: chiede due punti, e il raggio del tubo è la distanza tra loro.
+
+## Cosa non fa ancora [#missing]
+
+[`ESPLODI`](/docs/commands/explode) di un toro, che AutoCAD trasforma in una superficie: MellowCAD non ha superfici, quindi dice che non ha potuto esploderlo. Sposta, Ruota, Scala e Specchio da un grip attivo, e la silhouette che disegna `DISPSILH` di AutoCAD.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro--fr-tore--tor--it-toro--tor)
+
+## Domande [#questions]
+
+### Qual è l'alias di TORO in AutoCAD?
+
+`TOR`. Digitalo e premi Invio o barra spaziatrice, poi indica il centro, il raggio dell'anello e quello del tubo: `0,0,0`, `30` e `8` disegnano il toro della sessione.
+
+### Qual è la differenza tra il raggio e il raggio del tubo?
+
+Il raggio va dal centro del toro alla metà del tubo; il raggio del tubo è quello del tubo stesso. Un toro largo 76 all'esterno con un tubo spesso 16 ha un raggio di 30 e un raggio del tubo di 8.
+
+### Come si disegna un toro a forma di pallone da rugby?
+
+Indica un raggio negativo, poi un raggio del tubo maggiore del suo valore: `-5` e `8` creano una forma chiusa a punta alle due estremità. Un raggio del tubo non maggiore di quello viene rifiutato e chiesto di nuovo.
+
+### Perché il mio toro sembra due cerchi?
+
+Lo stai guardando dall'alto, in pianta. Ruota la vista: un angolo del ViewCube, `-VISTA` e `SEAsso`, oppure [`3DORBITA`](/docs/commands/3dorbit). [`STILEVISCORRENTE`](/docs/commands/vscurrent) con `Concettuale` lo ombreggia.
+
+## Comandi correlati [#related]
+
+- [Comando SFERA (SPHERE) in AutoCAD](/docs/commands/sphere)
+- [Comando CILINDRO (CYLINDER) in AutoCAD](/docs/commands/cylinder)
+- [Comando RIVOLUZIONE (REVOLVE) in AutoCAD](/docs/commands/revolve)
+- [Comando SOTTRAI (SUBTRACT) in AutoCAD](/docs/commands/subtract)

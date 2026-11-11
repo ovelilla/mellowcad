@@ -1,0 +1,85 @@
+---
+title: "Comando ESTRUDI (EXTRUDE) in AutoCAD"
+description: "Come funziona ESTRUDI (EXTRUDE, alias EU) di AutoCAD in italiano: da un profilo 2D chiuso a un solido 3D, con altezza, Direzione e Rastremazione. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando EXTRUDE in italiano?","answer":"ESTRUDI, alias EU, poi Invio o barra spaziatrice; l'alias inglese EXT in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _EXTRUDE."},{"question":"Come si estrude un disegno 2D in 3D?","answer":"Disegna il contorno come un solo oggetto chiuso, una polilinea chiusa, un cerchio o una regione, avvia ESTRUDI, selezionalo, premi Invio e digita l'altezza. Dall'alto un solido assomiglia al suo contorno: ruota la vista con il ViewCube, oppure con -VISTA e SEAsso, per vederlo in 3D."},{"question":"Perché ESTRUDI non crea un solido?","answer":"Il profilo è aperto, o si interseca. Una linea, un arco o una polilinea aperta in AutoCAD crea una superficie, e MellowCAD non ne ha ancora: ESTRUDI dice «Impossibile eseguire lo sweep o l'estrusione di un oggetto di questo tipo.» e li toglie dalla selezione; un profilo che si interseca riceve «Impossibile eseguire lo sweep o l'estrusione di una curva autointersecante.» e viene tolto anch'esso. Unisci i pezzi con UNISCI, ricavane una regione con REGIONE, oppure fai clic al loro interno con PREMTRASC."},{"question":"Come si estrude una forma con un foro?","answer":"Ricavane una sola regione: REGIONE sul contorno e sul foro, poi SOTTRAI la regione del foro da quella del contorno. Estrudi quella regione e il foro attraversa il solido. Oppure avvia PREMTRASC e fai clic tra il contorno e il foro."},{"question":"Come si estrude lungo una traiettoria?","answer":"Non ancora: Traiettoria è elencata ma rifiutata, e SWEEP non esiste. Direzione estrude lungo la retta tra due punti."}]
+---
+
+ESTRUDI (EXTRUDE in inglese) trasforma profili 2D chiusi in solidi 3D, ciascuno tirato dritto fuori dal suo piano dell'altezza che indichi. Seleziona i profili, cerchi, ellissi, polilinee o spline chiuse, regioni, e premi Invio, poi digita l'altezza o mostrala con un punto; l'ultima altezza è il valore predefinito della volta successiva. Ogni profilo diventa un solido a sé, sul layer corrente, e viene cancellato, come dice DELOBJ per impostazione predefinita. L'intero comando è un solo passo che Annulla ripristina.
+
+Il 3D di MellowCAD è fatto solo di solidi, ed è ancora parziale: un profilo aperto, che AutoCAD trasforma in una superficie, riceve `Impossibile eseguire lo sweep o l'estrusione di un oggetto di questo tipo.` e viene tolto dalla selezione.
+
+- **Comando:** `ESTRUDI`
+- **In inglese:** `EXTRUDE`, digitato `_EXTRUDE` in ogni lingua
+- **Alias:** `EU`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `EU` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="extrude" caption="Una polilinea chiusa a L estrusa di 20 in un solido, poi vista da sud-est nello stile di visualizzazione Nascosto." />
+
+## Opzioni [#options]
+
+### `MOdalità` (`MO`) [#mode]
+
+Chiede `SOlido` o `SUperficie`. `SOlido` è il valore predefinito e l'unico che esiste: senza ancora oggetti superficie, `SUperficie` viene rifiutato.
+
+### `Direzione` (`D`) [#direction]
+
+Al posto di un'altezza, due punti danno la direzione e la lunghezza: i profili vengono estrusi lungo quella linea, inclinati se lo è. Una direzione che giace nel piano del profilo riceve `Direzione di estrusione parallela al piano della curva di sweep.` e il comando termina.
+
+### `Traiettoria` (`T`) [#path]
+
+Elencata, come in AutoCAD, ma non realizzata: sceglierla viene rifiutato e l'altezza viene chiesta di nuovo.
+
+### `Angolo di rastremazione` (`A`) [#taper]
+
+Chiede un angolo tra −90 e 90 gradi, poi di nuovo l'altezza: un angolo positivo restringe il solido man mano che sale, uno negativo lo allarga. Un cerchio che si chiude prima dell'altezza finisce in un punto, un cono; un profilo che la rastremazione non può gestire non crea nulla.
+
+### `Espressione` (`E`) [#expression]
+
+L'altezza come espressione: `2*3` fa 6. Per ora solo aritmetica.
+
+## Cosa non fa ancora [#missing]
+
+Path, lo sweep lungo una traiettoria. La modalità SUrface e i profili aperti, di cui AutoCAD fa superfici: non esistono ancora oggetti superficie. Le facce dei solidi e le aree che un clic trova dentro gli oggetti, che prende [`PREMTRASC`](/docs/commands/presspull). Una rastremazione su un'ellisse, una spline o un arco che incontra il segmento successivo in uno spigolo. I parametri e le funzioni di Expression. [`ESPLODI`](/docs/commands/explode) di un solido estruso con lati curvi, che AutoCAD trasforma in superfici e regioni. I suoi grip, e la sua altezza e il suo angolo di rastremazione modificati nella tavolozza Proprietà.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu)
+
+## Domande [#questions]
+
+### Come si chiama il comando EXTRUDE in italiano?
+
+ESTRUDI, alias `EU`, poi Invio o barra spaziatrice; l'alias inglese `EXT` in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_EXTRUDE`.
+
+### Come si estrude un disegno 2D in 3D?
+
+Disegna il contorno come un solo oggetto chiuso, una polilinea chiusa, un cerchio o una regione, avvia ESTRUDI, selezionalo, premi Invio e digita l'altezza. Dall'alto un solido assomiglia al suo contorno: ruota la vista con il ViewCube, oppure con `-VISTA` e `SEAsso`, per vederlo in 3D.
+
+### Perché ESTRUDI non crea un solido?
+
+Il profilo è aperto, o si interseca. Una linea, un arco o una polilinea aperta in AutoCAD crea una superficie, e MellowCAD non ne ha ancora: ESTRUDI dice `Impossibile eseguire lo sweep o l'estrusione di un oggetto di questo tipo.` e li toglie dalla selezione; un profilo che si interseca riceve `Impossibile eseguire lo sweep o l'estrusione di una curva autointersecante.` e viene tolto anch'esso. Unisci i pezzi con [`UNISCI`](/docs/commands/join), ricavane una regione con [`REGIONE`](/docs/commands/region), oppure fai clic al loro interno con [`PREMTRASC`](/docs/commands/presspull).
+
+### Come si estrude una forma con un foro?
+
+Ricavane una sola regione: [`REGIONE`](/docs/commands/region) sul contorno e sul foro, poi [`SOTTRAI`](/docs/commands/subtract) la regione del foro da quella del contorno. Estrudi quella regione e il foro attraversa il solido. Oppure avvia [`PREMTRASC`](/docs/commands/presspull) e fai clic tra il contorno e il foro.
+
+### Come si estrude lungo una traiettoria?
+
+Non ancora: `Traiettoria` è elencata ma rifiutata, e SWEEP non esiste. `Direzione` estrude lungo la retta tra due punti.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD 3D: una piastra di fissaggio](/docs/exercises/mounting-plate)
+- [Esercizio AutoCAD 3D: un supporto per cuscinetto](/docs/exercises/bearing-block)
+
+## Comandi correlati [#related]
+
+- [Comando PREMTRASC (PRESSPULL) in AutoCAD](/docs/commands/presspull)
+- [Comando RIVOLUZIONE (REVOLVE) in AutoCAD](/docs/commands/revolve)
+- [Comando REGIONE (REGION) in AutoCAD](/docs/commands/region)
+- [Comando SOTTRAI (SUBTRACT) in AutoCAD](/docs/commands/subtract)

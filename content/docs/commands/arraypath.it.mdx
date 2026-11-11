@@ -1,0 +1,73 @@
+---
+title: "Comando SERIETRAIETT (ARRAYPATH) in AutoCAD"
+description: "Come funziona SERIETRAIETT (ARRAYPATH) di AutoCAD in italiano: la curva, Misura o Dividi, gli elementi e l'allineamento. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si dispongono gli oggetti in serie lungo una curva?","answer":"Digita ARRAYPATH, seleziona gli oggetti, premi Invio e indica la traiettoria vicino all'estremo da cui partire; oppure digita SR per SERIE e scegli TRaiettoria dopo gli oggetti. Poi imposta la spaziatura o il numero di elementi, e premi Invio per crearla."},{"question":"Perché la mia serie lungo traiettoria non segue la traiettoria?","answer":"Qui una serie conserva la traiettoria com'era quando è stata creata: sposta o stira la traiettoria dopo e la serie resta com'è, mentre la serie associativa lungo traiettoria di AutoCAD la seguirebbe. Anche cancellare la traiettoria lascia la serie. Se gli elementi non ruotano con la traiettoria, scegli ALlinea e rispondi Sì."},{"question":"Come si cambia la direzione di una serie lungo traiettoria?","answer":"Indica la traiettoria vicino all'altro estremo: una traiettoria aperta parte dall'estremo più vicino al punto indicato. Un cerchio va sempre in senso antiorario dal suo angolo 0."},{"question":"Come si distanziano gli elementi in modo uniforme su tutta la traiettoria?","answer":"Scegli Metodo, poi Dividi, poi ELementi e digita quanti: sono distribuiti in modo uniforme, il primo e l'ultimo agli estremi di una traiettoria aperta."}]
+---
+
+SERIETRAIETT copia una selezione lungo una traiettoria, una linea, un arco, un cerchio o una polilinea, come un solo oggetto serie. Chiede gli oggetti, dice il tipo e se la serie è associativa, chiede la curva della traiettoria e mostra subito la serie: gli elementi distanziati di una volta e mezza la dimensione della selezione, quanti ne entrano lungo la traiettoria, ciascuno ruotato come ruota la traiettoria. Una traiettoria aperta parte dall'estremo più vicino al punto indicato, un cerchio in senso antiorario dal suo angolo 0. Poi una richiesta modifica la serie in tempo reale finché Invio la crea, con le sue opzioni o con i grip dell'anteprima, come in AutoCAD. Gli oggetti selezionati restano dove sono, come primo elemento.
+
+- **Comando:** `SERIETRAIETT`
+- **In inglese:** `ARRAYPATH`, digitato `_ARRAYPATH` in ogni lingua
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SERIETRAIETT` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="arraypath" caption="Un piccolo quadrato all'inizio di un arco, in serie lungo di esso: Dividi, 7 elementi, ciascuno ruotato con l'arco." />
+
+## Opzioni [#options]
+
+### `ASsociativo` (`AS`) [#associative]
+
+`Sì`, il predefinito, crea un solo oggetto serie, che i suoi grip e la tavolozza Proprietà modificano poi; `No` crea copie separate accanto agli oggetti selezionati. La risposta è conservata per la sessione, anche da ARRAYRECT e ARRAYPOLAR.
+
+### `Metodo` (`M`) [#method]
+
+`Misura`, il predefinito, pone gli elementi a una distanza data, quanti ne entrano; `Dividi` distribuisce un numero di elementi in modo uniforme su tutta la traiettoria, uno a ciascun estremo di una traiettoria aperta.
+
+### `ELementi` (`EL`) [#items]
+
+Con Dividi, il numero di elementi. Con Misura, la distanza tra essi, poi quanti, fino al massimo che ne entra, che dice; `RIEmpimento` li prende tutti.
+
+### `ALlinea elementi` (`AL`) [#align-items]
+
+`Sì`, il predefinito, ruota ogni elemento come ruota la traiettoria dal suo inizio; `No` lo sposta soltanto lungo di essa.
+
+### `ESci` (`ES`) [#exit]
+
+Crea la serie e termina il comando, come fa Invio.
+
+## Cosa non fa ancora [#missing]
+
+La serie non segue la sua traiettoria: se modifichi la traiettoria dopo, la serie conserva quella su cui è stata creata. Spline, ellissi e polilinee 3D non possono ancora essere traiettorie, né una traiettoria fuori dal piano dell'UCS. Punto base, Direzione tangente, Righe, Livelli, Direzione Z ed Espressione non sono offerti, né un gruppo alla richiesta della traiettoria, e i grip della serie non hanno menu.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett)
+
+## Domande [#questions]
+
+### Come si dispongono gli oggetti in serie lungo una curva?
+
+Digita `ARRAYPATH`, seleziona gli oggetti, premi Invio e indica la traiettoria vicino all'estremo da cui partire; oppure digita `SR` per [`SERIE`](/docs/commands/array) e scegli `TRaiettoria` dopo gli oggetti. Poi imposta la spaziatura o il numero di elementi, e premi Invio per crearla.
+
+### Perché la mia serie lungo traiettoria non segue la traiettoria?
+
+Qui una serie conserva la traiettoria com'era quando è stata creata: sposta o stira la traiettoria dopo e la serie resta com'è, mentre la serie associativa lungo traiettoria di AutoCAD la seguirebbe. Anche cancellare la traiettoria lascia la serie. Se gli elementi non ruotano con la traiettoria, scegli `ALlinea` e rispondi `Sì`.
+
+### Come si cambia la direzione di una serie lungo traiettoria?
+
+Indica la traiettoria vicino all'altro estremo: una traiettoria aperta parte dall'estremo più vicino al punto indicato. Un cerchio va sempre in senso antiorario dal suo angolo 0.
+
+### Come si distanziano gli elementi in modo uniforme su tutta la traiettoria?
+
+Scegli `Metodo`, poi `Dividi`, poi `ELementi` e digita quanti: sono distribuiti in modo uniforme, il primo e l'ultimo agli estremi di una traiettoria aperta.
+
+## Comandi correlati [#related]
+
+- [Comando SERIE (ARRAY) in AutoCAD](/docs/commands/array)
+- [Comando SERIERETTANG (ARRAYRECT) in AutoCAD](/docs/commands/arrayrect)
+- [Comando SERIEPOLARE (ARRAYPOLAR) in AutoCAD](/docs/commands/arraypolar)
+- [Comando PLINEA (PLINE) in AutoCAD](/docs/commands/pline)

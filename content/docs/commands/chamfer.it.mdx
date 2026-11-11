@@ -1,0 +1,78 @@
+---
+title: "Comando CIMA (CHAMFER) in AutoCAD"
+description: "Come funziona CIMA (CHAMFER, alias CM) di AutoCAD in italiano: due distanze, due linee o gli angoli di una polilinea, Multiplo. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di CIMA in AutoCAD?","answer":"CM, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _CHAMFER in tutte le lingue di AutoCAD."},{"question":"Come si fa uno smusso a 45 gradi in AutoCAD?","answer":"Scegli Distanze, digita la distanza e premi Invio alla seconda: su un angolo retto, due distanze uguali creano uno smusso a 45 gradi."},{"question":"Qual è la differenza tra CIMA e RACCORDO?","answer":"CIMA unisce due linee con uno smusso rettilineo; RACCORDO con un arco tangente a entrambe. Entrambi tagliano o estendono le linee fino ad esso, ed entrambi creano un angolo vivo con 0 o con Maiusc premuto sulla seconda linea."},{"question":"Perché CIMA non funziona?","answer":"Dice perché: «Distanza di cimatura è troppo grande» quando una distanza supera l'estremo della sua linea, «Le linee sono parallele» per linee parallele, e «Cima richiede due linee (non sono segmenti d'arco)» per un arco o un cerchio. Con entrambe le distanze 0 crea un angolo, non uno smusso."},{"question":"Come si smussano tutti gli angoli di un rettangolo?","answer":"Un rettangolo è una polilinea: scegli Polilinea e selezionalo, e ogni angolo è smussato alle distanze correnti."}]
+---
+
+CIMA smussa l'angolo tra due linee con uno smusso rettilineo. Seleziona la prima linea, poi la seconda: ognuna è tagliata o estesa fino allo smusso, la prima della prima distanza e la seconda della seconda, e lo smusso le unisce. Funziona su due linee, su due segmenti retti di una polilinea, o su una linea e una polilinea, che unisce in una sola polilinea. Come in AutoCAD, la sua prima richiesta dice le distanze correnti, che sono conservate nel disegno; entrambe 0, il predefinito, crea un angolo vivo, con le linee che si incontrano. Mentre selezioni la seconda linea, l'angolo che creerebbe è mostrato sopra le linee.
+
+- **Comando:** `CIMA`
+- **In inglese:** `CHAMFER`, digitato `_CHAMFER` in ogni lingua
+- **Alias:** `CM`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `CM` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="chamfer" caption="Quattro linee, poi Distanza 10 per entrambe e Multiplo: due angoli smussati, due lasciati vivi." />
+
+## Opzioni [#options]
+
+### `aNnulla` (`N`) [#undo]
+
+Annulla l'ultimo smusso di questa esecuzione, e con esso un cambio delle distanze.
+
+### `Polilinea` (`P`) [#polyline]
+
+Chiede una polilinea 2D e smussa ogni suo angolo, poi dice quante linee sono state smussate e perché alcune no.
+
+### `Distanze` (`D`) [#distance]
+
+Chiede la prima e la seconda distanza di smusso. La seconda propone la prima, quindi Invio lì rende lo smusso uniforme, a 45 gradi su un angolo retto.
+
+### `Multiplo` (`M`) [#multiple]
+
+Continua a chiedere una prima linea dopo ogni smusso, finché Invio o Esc.
+
+## Cosa non fa ancora [#missing]
+
+Angolo, che imposta lo smusso con una distanza e un angolo, Metodo e Taglia: CIMA lavora sempre con due distanze e taglia sempre le linee. In AutoCAD lo smusso prende la scala del tipo di linea della seconda linea, qui no.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di CIMA in AutoCAD?
+
+`CM`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_CHAMFER` in tutte le lingue di AutoCAD.
+
+### Come si fa uno smusso a 45 gradi in AutoCAD?
+
+Scegli `Distanze`, digita la distanza e premi Invio alla seconda: su un angolo retto, due distanze uguali creano uno smusso a 45 gradi.
+
+### Qual è la differenza tra CIMA e RACCORDO?
+
+CIMA unisce due linee con uno smusso rettilineo; [`RACCORDO`](/docs/commands/fillet) con un arco tangente a entrambe. Entrambi tagliano o estendono le linee fino ad esso, ed entrambi creano un angolo vivo con 0 o con Maiusc premuto sulla seconda linea.
+
+### Perché CIMA non funziona?
+
+Dice perché: `Distanza di cimatura è troppo grande` quando una distanza supera l'estremo della sua linea, `Le linee sono parallele` per linee parallele, e `Cima richiede due linee (non sono segmenti d'arco)` per un arco o un cerchio. Con entrambe le distanze 0 crea un angolo, non uno smusso.
+
+### Come si smussano tutti gli angoli di un rettangolo?
+
+Un rettangolo è una polilinea: scegli `Polilinea` e selezionalo, e ogni angolo è smussato alle distanze correnti.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: un albero a gradini](/docs/exercises/shaft)
+
+## Comandi correlati [#related]
+
+- [Comando RACCORDO (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Comando TAGLIA (TRIM) in AutoCAD](/docs/commands/trim)
+- [Comando ESTENDI (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Comando CIMASPIGOLO (CHAMFEREDGE) in AutoCAD](/docs/commands/chamferedge)

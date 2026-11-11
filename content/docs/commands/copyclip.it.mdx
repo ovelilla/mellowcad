@@ -1,0 +1,54 @@
+---
+title: "Comando COPIACLIP (COPYCLIP) in AutoCAD"
+description: "Come funziona COPIACLIP (COPYCLIP, Ctrl+C) di AutoCAD con CUTCLIP, COPIAPUNTOB e INCOLLACLIP: copiare oggetti negli Appunti e incollarli in un punto. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la differenza tra COPIA e COPIACLIP?","answer":"COPIA posiziona copie nello stesso disegno, da un punto base a un secondo punto. COPIACLIP mette gli oggetti negli Appunti, da incollare con INCOLLACLIP in questo disegno o in un altro."},{"question":"Come si copia con un punto base?","answer":"Premi Ctrl+Maiusc+C, oppure digita COPIAPUNTOB, indica il punto base e seleziona gli oggetti. Ctrl+V li posiziona poi da quel punto."},{"question":"Come si copiano oggetti da un disegno a un altro?","answer":"Selezionali e premi Ctrl+C, apri l'altro disegno e premi Ctrl+V, poi indica il punto di inserimento. I loro layer, stili e blocchi vengono con essi."},{"question":"Perché incolla non funziona?","answer":"Il browser può chiedere se la pagina può leggere gli Appunti: consentilo. Se rifiuta, INCOLLACLIP incolla ciò che è stato copiato per ultimo nella stessa pagina. Senza nulla di copiato, non incolla nulla."}]
+---
+
+COPIACLIP copia gli oggetti che selezioni negli Appunti, con i layer, gli stili e i blocchi che usano; il disegno non cambia, e gli oggetti selezionati prima restano selezionati. Ctrl+C lo esegue, annullando un comando in corso. `INCOLLACLIP`, Ctrl+V, chiede poi un punto di inserimento: gli oggetti seguono il cursore e arrivano con l'angolo inferiore sinistro della loro estensione nel punto, nell'UCS corrente, tutto in un solo passo che `A` annulla. Incolla nello stesso disegno o in un altro: gli Appunti sono quelli del sistema, quindi un disegno in un'altra scheda può leggerli, se il browser lascia leggere gli Appunti alla pagina. Dove un layer, stile o blocco incollato ha il nome di uno che il disegno ha già, si usa quello del disegno.
+
+`TAGLIACLIP`, Ctrl+X, copia gli oggetti e li cancella, come fa CANCELLA. `COPIAPUNTOB`, Ctrl+Maiusc+C, chiede prima un punto base, e INCOLLACLIP poi posiziona gli oggetti da quel punto invece che dal loro angolo, così arrivano esattamente dove vuoi. Ctrl+A seleziona ogni oggetto del disegno.
+
+- **Comando:** `COPIACLIP`
+- **In inglese:** `COPYCLIP`, digitato `_COPYCLIP` in ogni lingua
+- **Gruppo:** [File e Appunti](/docs/commands#files)
+- **Provalo:** [Apri l'editor](/it/draw), digita `COPIACLIP` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="copyclip" caption="COPIACLIP del foro di una piastra, poi INCOLLACLIP in 65,20: la copia posata lì dal suo angolo inferiore sinistro, un secondo foro." />
+
+## Cosa non fa ancora [#missing]
+
+PASTEBLOCK e CUTBASE, e quindi Ctrl+Maiusc+V e Ctrl+Maiusc+X, che sono lasciati al browser, come Ctrl+Maiusc+A. PASTEORIG, PASTESPEC, il trascinamento di oggetti tra finestre, e il testo di un altro programma incollato come testo multilinea. Le opzioni nascoste di INSER di INCOLLACLIP al suo punto, quindi un incolla non si può scalare, ruotare o esplodere mentre arriva.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp--pt-br-copiacorte--recortat--copiabase--colarat--fr-copierpress--couperpress--copierbase--collerpress--it-copiaclip--tagliaclip--copiapuntob--incollaclip)
+
+## Domande [#questions]
+
+### Qual è la differenza tra COPIA e COPIACLIP?
+
+[`COPIA`](/docs/commands/copy) posiziona copie nello stesso disegno, da un punto base a un secondo punto. COPIACLIP mette gli oggetti negli Appunti, da incollare con INCOLLACLIP in questo disegno o in un altro.
+
+### Come si copia con un punto base?
+
+Premi Ctrl+Maiusc+C, oppure digita `COPIAPUNTOB`, indica il punto base e seleziona gli oggetti. Ctrl+V li posiziona poi da quel punto.
+
+### Come si copiano oggetti da un disegno a un altro?
+
+Selezionali e premi Ctrl+C, apri l'altro disegno e premi Ctrl+V, poi indica il punto di inserimento. I loro layer, stili e blocchi vengono con essi.
+
+### Perché incolla non funziona?
+
+Il browser può chiedere se la pagina può leggere gli Appunti: consentilo. Se rifiuta, INCOLLACLIP incolla ciò che è stato copiato per ultimo nella stessa pagina. Senza nulla di copiato, non incolla nulla.
+
+## Comandi correlati [#related]
+
+- [Comando COPIA (COPY) in AutoCAD](/docs/commands/copy)
+- [INCOLLACLIP (PASTECLIP)](/docs/commands#pasteclip): Incolla il contenuto degli Appunti nel disegno
+- [COPIAPUNTOB (COPYBASE)](/docs/commands#copybase): Copia con punto base
+- [TAGLIACLIP (CUTCLIP)](/docs/commands#cutclip): Taglia
+- [Comando INSER (INSERT) in AutoCAD](/docs/commands/insert)

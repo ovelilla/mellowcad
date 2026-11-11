@@ -1,0 +1,52 @@
+---
+title: "Esercizio AutoCAD: una squadretta a L"
+metaTitle: "Esercizio AutoCAD per principianti: squadretta"
+description: "Disegna una squadretta a L in AutoCAD con coordinate relative: contorno, raccordo, due fori e quote da linea di base, passo passo. Gratis online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Disegna questa squadretta, in millimetri: lunga 100, con una base alta 20 e un montante largo 30 e alto 80, l'angolo interno raccordato con raggio 10, un foro di 8 nella base e uno di 10 nel montante, ciascuno centrato nel suo braccio. Il contorno si disegna in un solo tratto con [`LINEA`](/docs/commands/line), ogni punto digitato come lo spostamento dall'ultimo, e le sue quote partono tutte dall'angolo in basso a sinistra.
+
+- **Esercizio:** Principiante · Meccanica · 2D
+- **Comandi:** [`LINEA`](/docs/commands/line), [`RACCORDO`](/docs/commands/fillet), [`CERCHIO`](/docs/commands/circle), [`DIMLINEARE`](/docs/commands/dimlinear), [`DIMLBASE`](/docs/commands/dimbaseline), [`DIMRAGGIO`](/docs/commands/dimradius), [`DIMDIAMETRO`](/docs/commands/dimdiameter)
+- **Nell'editor:** [Aprilo con il suo disegno](/it/draw?drawing=l-bracket), quotato, accanto a dove disegni il tuo
+
+## Il disegno [#drawing]
+
+<Session name="exercises/l-bracket" caption="La squadretta a L, di 100 per 80, quotata dal suo angolo in basso a sinistra." />
+
+## Passo passo [#steps]
+
+Il motore disegna ogni passo e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione. Dopo il primo punto di un comando, un punto digitato è misurato dall'ultimo, come lo misura l'input dinamico, e la cronologia lo scrive con @; \# misura dall'origine.
+
+### 1. Disegna il contorno [#outline]
+
+Sul layer Contorno, [`LINEA`](/docs/commands/line) da `0,0`, poi ogni punto come uno spostamento dall'ultimo: `100,0`, `0,20`, `-70,0`, `0,60` e `-30,0`. `Chiudi` disegna l'ultimo lato fino all'inizio e termina il comando.
+
+<Session name="exercises/l-bracket/outline" caption="1. Disegna il contorno" />
+
+### 2. Raccorda l'angolo interno [#fillet]
+
+[`RACCORDO`](/docs/commands/fillet): scegli `RAggio`, digita `10`, poi seleziona le due linee che si incontrano nell'angolo interno, il lato superiore della base e il lato del montante.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Raccorda l'angolo interno" />
+
+### 3. Disegna i fori [#holes]
+
+Due cerchi con [`CERCHIO`](/docs/commands/circle), ciascuno col suo `Diametro`: `8` in `80,10`, nella base, e `10` in `15,65`, nel montante.
+
+<Session name="exercises/l-bracket/holes" caption="3. Disegna i fori" />
+
+### 4. Quotala [#dimensions]
+
+Sul layer Quote, [`DIMLINEARE`](/docs/commands/dimlinear) da `0,0` al foro della base, `80,10`, posizionata sotto: 80. [`DIMLBASE`](/docs/commands/dimbaseline) prosegue dalla stessa prima linea di estensione: digita l'estremo destro, `#100,0`, dove # misura dall'origine, poi Invio due volte per terminare. Lo stesso lungo il lato sinistro, fino al foro superiore e poi alla sommità, `#0,80`. [`DIMRAGGIO`](/docs/commands/dimradius) sul raccordo e [`DIMDIAMETRO`](/docs/commands/dimdiameter) su ogni foro completano il disegno.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Quotala" />
+
+## Altri esercizi [#more]
+
+- [Esercizio AutoCAD: una scala in pianta](/docs/exercises/stairs): Principiante · Architettura · 2D
+- [Esercizio AutoCAD 3D: una piastra di fissaggio](/docs/exercises/mounting-plate): Principiante · Meccanica · Solido 3D
+- [Esercizio AutoCAD: una flangia](/docs/exercises/flange): Intermedio · Meccanica · 2D
+- [Esercizi AutoCAD per esercitarsi](/docs/exercises)

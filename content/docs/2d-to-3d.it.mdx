@@ -1,0 +1,42 @@
+---
+title: Dal 2D al 3D in AutoCAD
+metaTitle: "AutoCAD 3D: da un disegno 2D a un solido"
+description: "Da un disegno 2D a un solido 3D in AutoCAD: estrudi, premi/tira e ruota un profilo chiuso, unisci e sottrai. Solidi 3D gratis online, ancora parziali."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+In AutoCAD un solido di solito parte da un disegno 2D: un profilo chiuso, disegnato come qualsiasi pianta, poi estruso a un'altezza o ruotato attorno a un asse, e unito ad altri solidi o tagliato da essi. I solidi 3D di MellowCAD si fanno allo stesso modo, con gli stessi comandi. Sono ancora parziali: non ci sono ancora sweep, loft, mesh né rendering. Ogni sezione mostra una sessione che il motore disegna, con la sua cronologia come la digiteresti.
+
+## Disegna un profilo chiuso [#profile]
+
+Un solido ha bisogno di un profilo chiuso: una polilinea chiusa, un rettangolo, un cerchio o una regione. Linee che si toccano da un capo all'altro restano oggetti separati: <Command id="JOIN" /> ne fa una polilinea, oppure <Command id="REGION" /> una regione. Disegna il profilo in pianta, dove digitare i suoi punti è più semplice.
+
+## Estrudilo [#extrude]
+
+<Command id="EXTRUDE" />: seleziona il profilo, premi Invio e digita l'altezza. Visto dall'alto, un solido è identico al suo profilo: ruota la vista con <Command id="VIEW" /> o con il ViewCube per vederlo, e scegli come viene disegnato con <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="Un profilo a L, una sola polilinea chiusa, estruso di 30, visto da sud-est." />
+
+## Premi e tira un'area [#presspull]
+
+<Command id="PRESSPULL" /> non ha bisogno di un profilo: fai clic all'interno di qualsiasi area chiusa, anche delimitata da linee separate, e digita l'altezza. Con un clic sulla faccia di un solido, spinge o tira quella faccia.
+
+<Session name="presspull" caption="Un'area chiusa, premuta e tirata dall'interno: diventa un solido." />
+
+## Ruotalo [#revolve]
+
+<Command id="REVOLVE" /> ruota un profilo attorno a un asse: seleziona il profilo, indica l'asse con due punti, un oggetto o l'asse X, Y o Z, poi l'angolo, un giro completo per impostazione predefinita.
+
+<Session name="revolve" caption="Una mezza sezione ruotata attorno all'asse Y." />
+
+## Unisci e sottrai solidi [#booleans]
+
+<Command id="UNION" /> fa un solo solido di più solidi, <Command id="SUBTRACT" /> ne toglie uno o più da un altro, e <Command id="INTERSECT" /> tiene ciò che hanno in comune. Un foro è un cilindro sottratto dal solido che attraversa.
+
+<Session name="subtract" caption="Un cilindro sottratto da un parallelepipedo: un foro che lo attraversa." />
+
+## Poi [#next]
+
+- Gli [esercizi](/docs/exercises) 3D: [una piastra di fissaggio](/docs/exercises/mounting-plate) fatta di regioni e di una sola estrusione, [una puleggia](/docs/exercises/pulley) ruotata dalla sua sezione e [un supporto per cuscinetto](/docs/exercises/bearing-block) unito e forato.
+- <Command id="3DORBIT" /> ruota la vista con il mouse, e <Command id="VSCURRENT" /> ombreggia le facce.

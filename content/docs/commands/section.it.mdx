@@ -1,0 +1,84 @@
+---
+title: "Comando SEZIONE (SECTION) in AutoCAD"
+description: "Come SEZIONE (SECTION, alias SEZ) di AutoCAD crea una regione dove un piano taglia solidi 3D: 3punti, Oggetto, Zasse, Vista, XY, YZ, ZX. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si crea una sezione di un solido 3D in AutoCAD?","answer":"Esegui SEZIONE, seleziona il solido e premi Invio, poi indica il piano: ZX e un punto nel mezzo lo tagliano da davanti a dietro, XY e un punto a una certa altezza lo tagliano in orizzontale. La regione giace dentro il solido: portala fuori con SPOSTA per vederla."},{"question":"Qual è la differenza tra SEZIONE e TRANCIA?","answer":"TRANCIA taglia il solido in due e conserva una parte o entrambe. SEZIONE lascia il solido intero e disegna una regione dove il piano lo taglia."},{"question":"Qual è l'alias di SEZIONE in AutoCAD?","answer":"SEZ, poi Invio o barra spaziatrice."},{"question":"Perché SEZIONE dice che il piano non interseca il solido?","answer":"Il piano lo manca: controlla come l'hai indicato. XY, YZ e ZX sono i piani dell'UCS, quindi un punto all'altezza o dal lato sbagliato mette il piano fuori dal solido."}]
+---
+
+SEZIONE (SECTION) crea una sezione di solidi 3D: una regione dove un piano taglia ciascuno, mentre i solidi restano com'erano. Chiede i solidi, fino a Invio: come in AutoCAD 2027, un insieme selezionato prima viene scartato e chiesto di nuovo, ciò che non è un solido viene ignorato, e un insieme senza solidi dice `Nessun solido, superficie o mesh selezionati.`. Poi il piano: per impostazione predefinita indichi tre punti su di esso, e le opzioni lo indicano in un altro modo, come in [`TRANCIA`](/docs/commands/slice).
+
+Ogni solido tagliato dal piano ottiene la sua regione, che giace nel piano: un blocco con un foro passante dà il contorno con lo spazio del foro, un cilindro tagliato lungo il suo asse un rettangolo. Un piano su una faccia di un solido dà quella faccia. Un solido che il piano non incontra dice `Il piano di sezione non si interseca con il solido selezionato.`. Le regioni prendono il layer e le proprietà correnti, non quelli del solido; [`SPOSTA`](/docs/commands/move) ne porta una fuori per vederla, [`AREA`](/docs/commands/area) e [`PROPMASS`](/docs/commands/massprop) la misurano, e [`ESTRUDI`](/docs/commands/extrude) la trasforma in un solido. L'intero comando è un solo passo di annullamento. Il 3D di MellowCAD è solo solidi, e ancora parziale.
+
+- **Comando:** `SEZIONE`
+- **In inglese:** `SECTION`, digitato `_SECTION` in ogni lingua
+- **Alias:** `SEZ`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `SEZ` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="section" caption="Un blocco con un foro passante, tagliato dal piano ZX per il centro del foro: SEZIONE crea il profilo, spostato davanti, due rettangoli con lo spazio del foro in mezzo." />
+
+## Opzioni [#options]
+
+### `Oggetto` (`O`) [#object]
+
+Prende il piano di un oggetto che indichi: un cerchio, un'ellisse, un arco, una spline 2D o una polilinea 2D.
+
+### `asseZ` (`Z`) [#zaxis]
+
+Chiede un punto sul piano, poi un punto sul suo asse Z, la linea perpendicolare a esso.
+
+### `Vista` (`V`) [#view]
+
+Il piano parallelo allo schermo, passante per un punto che indichi.
+
+### `XY` [#xy]
+
+Il piano XY dell'UCS, passante per un punto che indichi: un punto a una certa altezza crea lì una sezione orizzontale. Invio prende l'origine dell'UCS.
+
+### `YZ` [#yz]
+
+Il piano YZ dell'UCS, passante per un punto che indichi; Invio prende l'origine dell'UCS.
+
+### `ZX` [#zx]
+
+Il piano ZX dell'UCS, passante per un punto che indichi; Invio prende l'origine dell'UCS. La sezione della sessione è questo piano per il centro del foro.
+
+### `3punti` (`3`) [#3points]
+
+Tre punti sul piano, che può allora inclinarsi in qualsiasi modo. È il valore predefinito del primo prompt, quindi un punto lì è il primo dei tre.
+
+## Cosa non fa ancora [#missing]
+
+Superfici e mesh, che MellowCAD non ha. Una polilinea 3D piana come oggetto del piano, che AutoCAD accetta. I tagli per i quali MellowCAD non ha ancora una forma esatta, come in [`TRANCIA`](/docs/commands/slice), che dicono che un'operazione booleana è fallita. SECTIONPLANE e la sezione dinamica, che la barra multifunzione di AutoCAD offre al posto di SEZIONE: qui SEZIONE si digita.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao--fr-coupe--cou--it-sezione--sez)
+
+## Domande [#questions]
+
+### Come si crea una sezione di un solido 3D in AutoCAD?
+
+Esegui SEZIONE, seleziona il solido e premi Invio, poi indica il piano: `ZX` e un punto nel mezzo lo tagliano da davanti a dietro, `XY` e un punto a una certa altezza lo tagliano in orizzontale. La regione giace dentro il solido: portala fuori con [`SPOSTA`](/docs/commands/move) per vederla.
+
+### Qual è la differenza tra SEZIONE e TRANCIA?
+
+[`TRANCIA`](/docs/commands/slice) taglia il solido in due e conserva una parte o entrambe. SEZIONE lascia il solido intero e disegna una regione dove il piano lo taglia.
+
+### Qual è l'alias di SEZIONE in AutoCAD?
+
+`SEZ`, poi Invio o barra spaziatrice.
+
+### Perché SEZIONE dice che il piano non interseca il solido?
+
+Il piano lo manca: controlla come l'hai indicato. `XY`, `YZ` e `ZX` sono i piani dell'UCS, quindi un punto all'altezza o dal lato sbagliato mette il piano fuori dal solido.
+
+## Comandi correlati [#related]
+
+- [Comando TRANCIA (SLICE) in AutoCAD](/docs/commands/slice)
+- [Comando REGIONE (REGION) in AutoCAD](/docs/commands/region)
+- [Comando SOTTRAI (SUBTRACT) in AutoCAD](/docs/commands/subtract)
+- [Comando PROPMASS (MASSPROP) in AutoCAD](/docs/commands/massprop)

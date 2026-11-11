@@ -1,0 +1,84 @@
+---
+title: "Comando PIRAMIDE (PYRAMID) in AutoCAD"
+description: "Come PIRAMIDE (PYRAMID, alias PIR) di AutoCAD disegna una piramide 3D: lati, base, altezza, Spigolo, Inscritto e raggio superiore. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è l'alias di PIRAMIDE in AutoCAD?","answer":"PIR. Digitalo e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza."},{"question":"Come si disegna una piramide esagonale?","answer":"Scegli Lati prima del centro della base e digita 6, poi indica il centro, il raggio e l'altezza: 0,0, 25 e 40 disegnano la piramide della sessione. La PIRAMIDE successiva mantiene sei lati."},{"question":"Come si disegna una piramide con un lato di base dato?","answer":"Scegli Spigolo e indica i due estremi di un lato: un lato da 0,0 a 50,0 crea una base quadrata di 50, con i 4 lati predefiniti."},{"question":"Come si disegna una piramide tronca?","answer":"All'altezza, scegli Raggio, digita il raggio superiore, poi l'altezza. La piramide termina in un poligono più piccolo, con tanti lati quanti ne ha la base."}]
+---
+
+PIRAMIDE (PYRAMID) disegna un solido 3D a forma di piramide: la prima riga dice quanti lati ha la base e come si legge il raggio, poi chiede il centro della base, il raggio e l'altezza. La base è un poligono regolare, come lo disegna [`POLIGONO`](/docs/commands/polygon), di 4 lati all'inizio: un raggio digitato lo orienta verso il cursore, un punto verso se stesso. L'altezza sale lungo lo Z dell'UCS, una negativa scende, e un punto la indica con la sua distanza dalla base. I lati e il modo in cui si legge il raggio si conservano per la PIRAMIDE successiva; il raggio e l'altezza sono i valori predefiniti condivisi delle primitive. La piramide sta sul layer corrente e Annulla la ripristina in un solo passo.
+
+[`LISTA`](/docs/commands/list) ne mostra la posizione, i due raggi della base e della sommità, l'altezza, la rotazione e il numero di lati, e la tavolozza Proprietà permette di digitare i raggi, i lati e l'altezza. I suoi grip la spostano, ne impostano l'altezza e ne ridimensionano la base da uno spigolo o dal centro di un lato. È un solido 3D per [`UNIONE`](/docs/commands/union), [`SOTTRAI`](/docs/commands/subtract) e il resto del 3D di MellowCAD, che è solo solidi e ancora parziale; [`ESPLODI`](/docs/commands/explode) la trasforma in una regione per faccia.
+
+- **Comando:** `PIRAMIDE`
+- **In inglese:** `PYRAMID`, digitato `_PYRAMID` in ogni lingua
+- **Alias:** `PIR`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `PIR` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="pyramid" caption="Una piramide di sei lati, con base di 25 fino al centro di ogni lato e alta 40, vista da sud-est nello stile visivo Nascosto." />
+
+## Opzioni [#options]
+
+### `Spigolo` (`S`) [#edge]
+
+Al centro della base: chiede i due estremi di un lato della base, che viene disegnata alla sinistra di quel lato.
+
+### `Lati` (`L`) [#sides]
+
+Al centro della base: chiede il numero di lati, da 3 a 32, poi di nuovo il centro.
+
+### `Inscritto` (`I`) [#inscribed]
+
+Al raggio: legge il raggio fino a uno spigolo della base, con il poligono inscritto in quel cerchio, e lo chiede di nuovo.
+
+### `Circoscritto` (`C`) [#circumscribed]
+
+Al raggio, dopo aver scelto `Inscritto`: legge il raggio fino al centro di un lato, con il poligono circoscritto a quel cerchio, come all'inizio, e lo chiede di nuovo.
+
+### `2Punti` (`2P`) [#2point]
+
+All'altezza: chiede due punti e l'altezza è la distanza tra loro.
+
+### `punto finale Asse` (`A`) [#axis]
+
+All'altezza: chiede il vertice. La piramide va dal centro della base a quel punto in qualsiasi direzione, con la base perpendicolare all'asse.
+
+### `Raggio superiore` (`R`) [#top]
+
+All'altezza: chiede il raggio superiore, letto come quello della base, poi di nuovo l'altezza. La piramide termina in un poligono più piccolo invece che in un punto, un tronco; una sommità grande quanto la base crea un prisma.
+
+## Cosa non fa ancora [#missing]
+
+Quelli di [`PARALLELEPIPEDO`](/docs/commands/box): Sposta, Ruota, Scala e Specchio da un grip attivo, i comandi 3D propri, e gli stili visivi che mancano a [`STILEVISCORRENTE`](/docs/commands/vscurrent). Il suo tipo, inscritto o circoscritto, digitato nella tavolozza Proprietà. Le quote tratteggiate che AutoCAD disegna mentre indichi il raggio e uno spigolo.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pyramid--pyr--es-piramide--pir--pt-br-piramide--pir--fr-pyramide--pyr--it-piramide--pir)
+
+## Domande [#questions]
+
+### Qual è l'alias di PIRAMIDE in AutoCAD?
+
+`PIR`. Digitalo e premi Invio o barra spaziatrice, poi indica il centro della base, il raggio e l'altezza.
+
+### Come si disegna una piramide esagonale?
+
+Scegli `Lati` prima del centro della base e digita `6`, poi indica il centro, il raggio e l'altezza: `0,0`, `25` e `40` disegnano la piramide della sessione. La PIRAMIDE successiva mantiene sei lati.
+
+### Come si disegna una piramide con un lato di base dato?
+
+Scegli `Spigolo` e indica i due estremi di un lato: un lato da `0,0` a `50,0` crea una base quadrata di 50, con i 4 lati predefiniti.
+
+### Come si disegna una piramide tronca?
+
+All'altezza, scegli `Raggio`, digita il raggio superiore, poi l'altezza. La piramide termina in un poligono più piccolo, con tanti lati quanti ne ha la base.
+
+## Comandi correlati [#related]
+
+- [Comando CONO (CONE) in AutoCAD](/docs/commands/cone)
+- [Comando POLIGONO (POLYGON) in AutoCAD](/docs/commands/polygon)
+- [Comando PARALLELEPIPEDO (BOX) in AutoCAD](/docs/commands/box)
+- [Comando CUNEO (WEDGE) in AutoCAD](/docs/commands/wedge)

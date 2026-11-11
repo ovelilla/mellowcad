@@ -1,0 +1,52 @@
+---
+title: "Comando ESPLODI (EXPLODE) in AutoCAD"
+description: "Come funziona ESPLODI (EXPLODE, alias E) di AutoCAD in italiano: polilinea in linee e archi, blocco nei suoi oggetti, testo in righe. Provalo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando EXPLODE in italiano?","answer":"ESPLODI, alias E, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _EXPLODE."},{"question":"Come si annulla un'esplosione in AutoCAD?","answer":"Digita A o premi subito Ctrl+Z: l'esplosione è un solo passo di annullamento. Più tardi, UNISCI riunisce in una sola polilinea le linee e gli archi che si toccano di testa, e BLOCCO fa di nuovo un solo blocco degli oggetti."},{"question":"Si può esplodere un testo in AutoCAD?","answer":"Un testo multilinea sì: ogni riga diventa un testo di una riga. Un testo di una riga è già il pezzo più piccolo, e ESPLODI lo rifiuta."},{"question":"Come si esplode un blocco in AutoCAD?","answer":"Seleziona il riferimento di blocco e premi Invio: diventa gli oggetti del suo blocco, dove il riferimento li disegnava. Un blocco al suo interno resta un blocco: esplodilo di nuovo. Gli attributi tornano come le loro definizioni, senza i valori."}]
+---
+
+ESPLODI (EXPLODE in inglese) scompone un oggetto composto negli oggetti di cui è fatto. Seleziona gli oggetti e premi Invio: una polilinea diventa linee e archi lungo il suo asse, un riferimento di blocco gli oggetti del suo blocco, di un livello, un testo multilinea un testo di una riga per ogni riga che mostra, e un tratteggio a modello le linee del suo modello. Ogni pezzo mantiene il layer e le proprietà dell'oggetto; i pezzi di un blocco mantengono i propri. Una polilinea larga perde la sua larghezza, e ESPLODI lo dice. Linee, cerchi, archi, testi di una riga e quote non si possono esplodere: vengono rifiutati mentre li selezioni, e una spline, un'ellisse o un tratteggio pieno quando la selezione si chiude. L'esplosione è un solo passo che Annulla ripristina.
+
+- **Comando:** `ESPLODI`
+- **In inglese:** `EXPLODE`, digitato `_EXPLODE` in ogni lingua
+- **Alias:** `E`
+- **Gruppo:** [Modifica](/docs/commands#modify)
+- **Provalo:** [Apri l'editor](/it/draw), digita `E` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="explode" caption="Un rettangolo, una sola polilinea, esploso in quattro linee, poi una di esse cancellata da sola." />
+
+## Cosa non fa ancora [#missing]
+
+Le quote, che AutoCAD esplode in linee, frecce e testo e che MellowCAD rifiuta. Un tratteggio il cui modello non è fornito qui viene rifiutato come se fosse pieno, e un testo multilinea esploso si trova dove lo disegna il font, un soffio fuori dalla posizione di AutoCAD.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x--fr-decomposer--de--decompos--it-esplodi--e)
+
+## Domande [#questions]
+
+### Come si chiama il comando EXPLODE in italiano?
+
+ESPLODI, alias `E`, poi Invio o barra spaziatrice. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: `_EXPLODE`.
+
+### Come si annulla un'esplosione in AutoCAD?
+
+Digita `A` o premi subito Ctrl+Z: l'esplosione è un solo passo di annullamento. Più tardi, [`UNISCI`](/docs/commands/join) riunisce in una sola polilinea le linee e gli archi che si toccano di testa, e [`BLOCCO`](/docs/commands/block) fa di nuovo un solo blocco degli oggetti.
+
+### Si può esplodere un testo in AutoCAD?
+
+Un testo multilinea sì: ogni riga diventa un testo di una riga. Un testo di una riga è già il pezzo più piccolo, e ESPLODI lo rifiuta.
+
+### Come si esplode un blocco in AutoCAD?
+
+Seleziona il riferimento di blocco e premi Invio: diventa gli oggetti del suo blocco, dove il riferimento li disegnava. Un blocco al suo interno resta un blocco: esplodilo di nuovo. Gli attributi tornano come le loro definizioni, senza i valori.
+
+## Comandi correlati [#related]
+
+- [Comando UNISCI (JOIN) in AutoCAD](/docs/commands/join)
+- [Comando BLOCCO (BLOCK) in AutoCAD](/docs/commands/block)
+- [Comando EDITPL (PEDIT) in AutoCAD](/docs/commands/pedit)
+- [Comando INSER (INSERT) in AutoCAD](/docs/commands/insert)

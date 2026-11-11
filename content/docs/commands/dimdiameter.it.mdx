@@ -1,0 +1,70 @@
+---
+title: "Comando DIMDIAMETRO (DIMDIAMETER) in AutoCAD"
+description: "Come DIMDIAMETRO (DIMDIAMETER, alias DDI) di AutoCAD quota un cerchio o un arco: selezionalo, poi posiziona il diametro dentro o fuori. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di DIMDIAMETRO in AutoCAD?","answer":"DDI, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _DIMDIAMETER in tutte le lingue di AutoCAD."},{"question":"Come si quota un foro piccolo?","answer":"Posiziona il testo fuori dal cerchio: la linea di quota attraversa allora il foro con una punta di freccia per lato, e il testo sta lontano da essa. All'interno, il testo ha bisogno di spazio dentro il cerchio."},{"question":"DIMDIAMETRO può quotare un arco?","answer":"Sì: un arco o il segmento ad arco di una polilinea, come un cerchio, e riporta il diametro del cerchio dell'arco. Qualsiasi altra cosa dice «L'oggetto selezionato non è un arco o un cerchio.» e chiede di nuovo."},{"question":"Come si aggiunge THRU o una nota a una quota di diametro?","answer":"Scegli Testo prima di posizionarla e digita «<> THRU»: <> è la misura con il suo segno. Una volta posizionata, Sostituzione testo della tavolozza Proprietà la cambia."}]
+---
+
+DIMDIAMETRO quota il diametro di un cerchio, di un arco o del segmento ad arco di una polilinea, con le richieste di [`DIMRAGGIO`](/docs/commands/dimradius): seleziona la curva, e la riga di comando dice subito la misura; poi posiziona la quota, e il comando termina. Il suo testo è il diametro preceduto dal segno di diametro. Posizionata dentro il cerchio, una linea va dal testo a una punta di freccia sul bordo; posizionata fuori, la linea attraversa il cerchio da bordo a bordo, con la punta di freccia lontana che punta all'interno da un breve tratto, come la disegna ISO-25.
+
+- **Comando:** `DIMDIAMETRO`
+- **In inglese:** `DIMDIAMETER`, digitato `_DIMDIAMETER` in ogni lingua
+- **Alias:** `DDI`
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DDI` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="dimdiameter" caption="Un cerchio grande quotato all'interno e uno piccolo all'esterno: ogni cerchio selezionato, poi il testo posizionato." />
+
+## Opzioni [#options]
+
+### `Testo` (`T`) [#text]
+
+Chiede il testo da scrivere al posto della misura, che offre come predefinito: Invio conserva la misura. In ciò che digiti, `<>` sta per la misura con il suo segno, quindi `<> THRU` scrive il diametro seguito da THRU.
+
+### `Angolo` (`A`) [#angle]
+
+Chiede l'angolo del testo, che è poi disegnato a quell'angolo, con il suo centro sulla linea, e la linea si ferma ad esso. 0 lo riporta lungo la linea.
+
+## Cosa non fa ancora [#missing]
+
+Testo multilinea: il testo di una quota è una sola riga, impostata con `Testo` alla riga di comando, mai nell'editor di testo. Il segno è disegnato Ø, dove AutoCAD scrive ∅: il carattere del disegno non ha ∅. Su un arco, le punte di freccia restano tra i suoi estremi, dove AutoCAD disegna una linea di estensione dell'arco. Come con [`DIMRAGGIO`](/docs/commands/dimradius), una curva dentro un riferimento a blocco non si può selezionare, le linee d'asse dello stile non sono disegnate e le sue impostazioni per il testo fuori dalla curva non sono offerte. Una quota non è associativa: non segue la curva che misura.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia--pt-br-cotadiametro--cdi--dimdia--fr-cotdia--cm--it-dimdiametro--ddi)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di DIMDIAMETRO in AutoCAD?
+
+`DDI`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_DIMDIAMETER` in tutte le lingue di AutoCAD.
+
+### Come si quota un foro piccolo?
+
+Posiziona il testo fuori dal cerchio: la linea di quota attraversa allora il foro con una punta di freccia per lato, e il testo sta lontano da essa. All'interno, il testo ha bisogno di spazio dentro il cerchio.
+
+### DIMDIAMETRO può quotare un arco?
+
+Sì: un arco o il segmento ad arco di una polilinea, come un cerchio, e riporta il diametro del cerchio dell'arco. Qualsiasi altra cosa dice `L'oggetto selezionato non è un arco o un cerchio.` e chiede di nuovo.
+
+### Come si aggiunge THRU o una nota a una quota di diametro?
+
+Scegli `Testo` prima di posizionarla e digita `<> THRU`: `<>` è la misura con il suo segno. Una volta posizionata, Sostituzione testo della tavolozza Proprietà la cambia.
+
+## Esercitati [#practice]
+
+- [Esercizio AutoCAD: una guarnizione](/docs/exercises/gasket)
+- [Esercizio AutoCAD: una squadretta a L](/docs/exercises/l-bracket)
+- [Esercizio AutoCAD: una flangia](/docs/exercises/flange)
+- [Esercizio AutoCAD: un tavolo rotondo e le sedie](/docs/exercises/round-table)
+- [Esercizio AutoCAD: una biella con linee tangenti](/docs/exercises/link)
+
+## Comandi correlati [#related]
+
+- [Comando DIMRAGGIO (DIMRADIUS) in AutoCAD](/docs/commands/dimradius)
+- [Comando DIMLINEARE (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Comando DIMANGOLO (DIMANGULAR) in AutoCAD](/docs/commands/dimangular)
+- [Comando DIMSTILE (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

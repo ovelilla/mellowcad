@@ -1,0 +1,64 @@
+---
+title: "Comando 3DPOLI (3DPOLY) in AutoCAD"
+description: "Come funziona 3DPOLI (3DPOLY, alias 3P) di AutoCAD in italiano: una polilinea 3D di segmenti retti, ognuno con la sua Z, e la differenza con POLILINEA. Provala."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual è la scorciatoia di 3DPOLY in AutoCAD?","answer":"3P, poi Invio o barra spaziatrice. Funziona anche il nome completo, e _3DPOLY in tutte le lingue di AutoCAD."},{"question":"Qual è la differenza tra POLILINEA e 3DPOLI?","answer":"Una PLINEA sta in un solo piano e può avere archi e larghezze. Una polilinea 3D ha solo segmenti retti, ma ogni vertice può stare a un'altezza diversa: una condotta, l'asse di una strada, un cavo."},{"question":"Come si disegna una polilinea 3D ad altezze diverse?","answer":"Digita ogni punto con la sua Z, x,y,z, oppure aggancia gli oggetti alle altezze che vuoi. Con l'input dinamico un punto dopo il primo è relativo: 60,0,15 va di 60 lungo X e di 15 in alto rispetto all'ultimo."},{"question":"Come si rende liscia una polilinea 3D?","answer":"Usa EDITPL e scegli la sua opzione Spline: una curva liscia inquadrata dai vertici. Decurva la raddrizza di nuovo."}]
+---
+
+3DPOLI disegna una polilinea 3D: segmenti retti attraverso punti che hanno ciascuno una Z propria, come un solo oggetto. Indica il punto iniziale, poi un punto finale per ogni segmento, finché Invio non termina; anche un solo punto iniziale viene conservato, come polilinea di un vertice. Invio al punto iniziale è rifiutato con `Punto non valido.`: non c'è l'opzione Continua, che invece ha LINEA. Un punto digitato con una Z la conserva, `30,0,15`; uno digitato senza, o cliccato, sta alla quota del piano di lavoro, e un punto agganciato a un oggetto prende la Z dell'oggetto in quel punto. I punti sono letti nell'UCS corrente.
+
+A differenza di una [`PLINEA`](/docs/commands/pline) non ha piano, archi, larghezze né spessore, ed è disegnata continua qualunque sia il suo tipo di linea, che conserva. L'intera polilinea è un solo passo che `A` annulla; Esc conserva quanto disegnato. PEDIT la modifica con un elenco di opzioni più corto, e la sua opzione Spline adatta una curva liscia ad essa.
+
+- **Comando:** `3DPOLI`
+- **In inglese:** `3DPOLY`, digitato `_3DPOLY` in ogni lingua
+- **Alias:** `3P`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `3P` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="3dpoly" caption="Una polilinea 3D che sale di 15 a ogni angolo di un rettangolo 60 per 40 a terra, vista da sud-est." />
+
+## Opzioni [#options]
+
+### `Chiudi` (`C`) [#close]
+
+Dal secondo segmento in poi: disegna un segmento fino al punto iniziale e termina.
+
+### `Annulla` (`A`) [#undo]
+
+Annulla l'ultimo vertice e prosegue da quello precedente. Se non resta alcun segmento: `Tutti i segmenti sono già stati cancellati.`.
+
+## Cosa non fa ancora [#missing]
+
+Una polilinea 3D adattata a una curva mostra Nessuno in Adatta/Leviga della tavolozza Proprietà, che AutoCAD chiama Quadratica o Cubica, e non si può cambiare lì. Non può essere il contorno di un tratteggio né la traiettoria di ARRAYPATH, e la tavolozza non ha la riga Materiale. L'input dinamico chiede il punto iniziale in una sola casella, con la Z digitata dopo una seconda virgola, dove AutoCAD mostra i campi X, Y e Z. I menu al passaggio dei grip, Stira, Aggiungi vertice, Rimuovi vertice e il resto.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3--fr-poly3d--3p--it-3dpoli--3p)
+
+## Domande [#questions]
+
+### Qual è la scorciatoia di 3DPOLY in AutoCAD?
+
+`3P`, poi Invio o barra spaziatrice. Funziona anche il nome completo, e `_3DPOLY` in tutte le lingue di AutoCAD.
+
+### Qual è la differenza tra POLILINEA e 3DPOLI?
+
+Una [`PLINEA`](/docs/commands/pline) sta in un solo piano e può avere archi e larghezze. Una polilinea 3D ha solo segmenti retti, ma ogni vertice può stare a un'altezza diversa: una condotta, l'asse di una strada, un cavo.
+
+### Come si disegna una polilinea 3D ad altezze diverse?
+
+Digita ogni punto con la sua Z, `x,y,z`, oppure aggancia gli oggetti alle altezze che vuoi. Con l'input dinamico un punto dopo il primo è relativo: `60,0,15` va di 60 lungo X e di 15 in alto rispetto all'ultimo.
+
+### Come si rende liscia una polilinea 3D?
+
+Usa [`EDITPL`](/docs/commands/pedit) e scegli la sua opzione Spline: una curva liscia inquadrata dai vertici. Decurva la raddrizza di nuovo.
+
+## Comandi correlati [#related]
+
+- [Comando PLINEA (PLINE) in AutoCAD](/docs/commands/pline)
+- [Comando EDITPL (PEDIT) in AutoCAD](/docs/commands/pedit)
+- [Comando SPLINE in AutoCAD](/docs/commands/spline)
+- [Comando UCS in AutoCAD](/docs/commands/ucs)
