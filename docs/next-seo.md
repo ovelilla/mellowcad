@@ -378,6 +378,10 @@ el dueño dio a las sesiones el 6/11).
    **11/11:** la tanda del día, 11 pedidas (las portadas de `/docs` en francés, los ejercicios en
    pt-BR y francés, la guía de abrir un DXF en árabe…) y un error (`/ar/docs/floor-plan`), hasta la
    cuota a las 21:12 UTC: 549 en la cola, de 620 en el sitemap.
+   **12/11 (sesión 09):** el italiano, publicado. Sus 121 URLs entran por `gsc-prioritize.mjs`, que
+   pesa `/it` a 0,4 (Italia, 113 en el índice de la auditoría, sola), entre el francés y el árabe:
+   669 en la cola, `/it` y sus centros delante. IndexNow, las 741 del sitemap (200); Bing,
+   «Request indexing» de `/it` y sus nueve páginas «Use» y centros (cuota 90 restante).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
