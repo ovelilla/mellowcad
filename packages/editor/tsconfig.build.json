@@ -23,6 +23,7 @@
     "src/locales/es.ts",
     "src/locales/ar.ts",
     "src/locales/pt-BR.ts",
-    "src/locales/fr.ts"
+    "src/locales/fr.ts",
+    "src/locales/it.ts"
   ]
 }
