@@ -213,7 +213,7 @@
     "q10": "¿Sirve para 3D?",
     "a10": "En parte. Construye sólidos 3D —primitivas, extrusiones y revoluciones, uniones, diferencias e intersecciones, cortes y secciones, aristas empalmadas y achaflanadas, caras editadas—, calcula sus propiedades físicas y los muestra en órbita, desde el ViewCube y con estilos visuales sombreados. Todavía no hay barridos, solevaciones, mallas ni renderizado.",
     "q11": "¿Puedo usarlo para practicar para mi clase de AutoCAD?",
-    "a11": "Sí, para los comandos: sus nombres y alias, el orden de sus solicitudes y sus opciones siguen a AutoCAD, en inglés, español, portugués de Brasil o francés, y los <exercises>ejercicios para practicar</exercises> te dan planos con los que trabajar, cada uno resuelto paso a paso. Aún no abre ni guarda archivos DWG, así que lo que entregues en DWG o PDF todavía necesita otro programa."
+    "a11": "Sí, para los comandos: sus nombres y alias, el orden de sus solicitudes y sus opciones siguen a AutoCAD, en inglés, español, portugués de Brasil, francés o italiano, y los <exercises>ejercicios para practicar</exercises> te dan planos con los que trabajar, cada uno resuelto paso a paso. Aún no abre ni guarda archivos DWG, así que lo que entregues en DWG o PDF todavía necesita otro programa."
   },
   "FinalCta": {
     "title": "Tu mesa de dibujo está a una tecla."

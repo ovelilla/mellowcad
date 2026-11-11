@@ -2,7 +2,7 @@
   "Metadata": {
     "title": "CAD online gratis con i comandi di AutoCAD — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
-    "description": "Programma CAD gratis, senza installazione: disegno tecnico online con i comandi di AutoCAD in italiano. 2D e solidi 3D, ancora parziali. Senza registrazione.",
+    "description": "Programma CAD gratis, senza installazione: disegno tecnico online con i comandi di AutoCAD in italiano. 2D e solidi 3D, ancora parziali. Senza iscrizione.",
     "drawTitle": "Disegna",
     "drawDescription": "CAD gratis in una scheda del browser: disegno tecnico 2D e solidi 3D, ancora parziali, con i comandi, gli snap ad oggetto e la tastiera di AutoCAD.",
     "ogAlt": "Una flangia disegnata in MellowCAD e il suo solido 3D, con le parole: CAD online gratis con i comandi di AutoCAD. Digita L. Premi Invio. Disegna.",
@@ -30,7 +30,7 @@
     "cta": "Disegna"
   },
   "Hero": {
-    "pill": "Gratis · Senza registrazione · Nulla da installare",
+    "pill": "Gratis · Senza iscrizione · Nulla da installare",
     "title": "CAD online gratis con i comandi di AutoCAD",
     "lead": "<brand>MellowCAD</brand> gira nel browser, per il disegno tecnico 2D e i solidi 3D, ancora parziali, con i comandi di AutoCAD in italiano. Digita {examples}: le richieste seguono l'ordine di AutoCAD, con le stesse lettere d'opzione.",
     "alias": "{alias} per {command}",

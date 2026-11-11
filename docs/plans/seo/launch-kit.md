@@ -15,7 +15,7 @@ opens (since 7/11, session 07), but no DWG, saving as DXF, printing, PDF, collab
 claims; "the code is MIT", never "MellowCAD is MIT"; "same order, same option letters", never
 "same prompts"; AutoCAD only nominatively; no hype, no emojis.
 **Figures are the landing's on the day** (`lib/facts.ts`); on 2026-11-06: 140 AutoCAD commands,
-131 aliases, 12 object snaps, 4 languages (5 since 9/11: French), 6,000+ automated tests, 38
+131 aliases, 12 object snaps, 4 languages (5 since 9/11: French; 6 since 12/11: Italian), 6,000+ automated tests, 38
 commands with a page of their own. Read them off https://mellowcad.com before posting.
 
 **Write by hand where the site says so.** Hacker News now forbids generated or AI-edited text in
@@ -89,8 +89,8 @@ and the facts, not text to paste.
   2. Why you started it, in your words.
   3. The rule: current AutoCAD (2027) is the spec, checked against AutoCAD itself; a partial command
      is allowed, a reinvented one is not (OFFSET really takes one object at a time). Spanish,
-     Brazilian Portuguese and French take AutoCAD's localized command names (LINEA, DESFASE;
-     LINHA, APARAR; LIGNE, DECALER); the interface is also in Arabic.
+     Brazilian Portuguese, French and Italian take AutoCAD's localized command names (LINEA,
+     DESFASE; LINHA, APARAR; LIGNE, DECALER; LINEA, TAGLIA); the interface is also in Arabic.
   4. Technical notes: a TypeScript engine with no framework and no DOM, in layers whose imports only
      point down, on npm as @mellowcad/engine; every figure on the landing drawn by the engine at
      build time; tools tested by driving a headless engine with moves, clicks and keys (6,000+
@@ -247,7 +247,7 @@ ban); votes from new accounts count far less; featuring is an editorial choice.
 >
 > Today: 2D drafting with object snaps, OTRACK, polar and dynamic input; layers, linetypes,
 > lineweights and colours; dimensions, text, hatches and blocks with attributes; 3D solids, still
-> partial. In Spanish, Brazilian Portuguese and French it takes AutoCAD's localized command names,
+> partial. In Spanish, Brazilian Portuguese, French and Italian it takes AutoCAD's localized command names,
 > and the interface is also in Arabic. Each command has a page with its prompts.
 > Not yet: DWG, saving as DXF (a DXF opens), printing and PDF, paper space, sweeps, lofts, meshes
 > and rendering in 3D, phones and tablets.
@@ -292,7 +292,8 @@ a time, never in bulk or BCC; one follow-up after 7–10 days at most. The base 
 The Spanish, Portuguese, French, German and Arabic versions say the same; the German one adds that
 the commands take their English names there (as `_LINE` does in a localized AutoCAD) and that the
 interface is not yet in German. The French ones say, since 9/11, that it speaks French with French
-AutoCAD's command names (LIGNE, DECALER, AJUSTER).
+AutoCAD's command names (LIGNE, DECALER, AJUSTER). There is no Italian version yet; one would say
+so with Italian AutoCAD's names (LINEA, TAGLIA, RACCORDO), live since 12/11.
 
 ## 6. Directories and listings
 
@@ -329,7 +330,7 @@ by hand with its own text. Both descriptions name French the same day (below).
   > input. It covers 2D drafting — layers, linetypes, lineweights, dimensions, text, hatches, blocks
   > with attributes, arrays and the Properties palette — and 3D solids, still partial (no sweeps,
   > lofts, meshes or rendering). Nothing to install and no account; drawings autosave in the browser
-  > and save to a file. In English, Spanish, Brazilian Portuguese and French (with AutoCAD's
+  > and save to a file. In English, Spanish, Brazilian Portuguese, French and Italian (with AutoCAD's
   > localized command names) and Arabic. It opens DXF files but does not save them yet, and has no
   > DWG or printing. The code is open source under the MIT licence. Not affiliated with Autodesk.
 

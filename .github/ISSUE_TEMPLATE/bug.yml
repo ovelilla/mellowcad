@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for writing. English, Spanish, Portuguese, French or Arabic: write in whichever is yours.
+        Thank you for writing. English, Spanish, Portuguese, French, Italian or Arabic: write in whichever is yours.
 
         **An issue is public.** Leave out personal data, and attach only a drawing anyone may see.
         A command or an option that is missing, or that does not do what AutoCAD does, has a form

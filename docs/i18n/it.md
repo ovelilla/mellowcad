@@ -1,9 +1,8 @@
 # Italian (`it`)
 
-> **Command language:** `localized`, Italian AutoCAD's. **Status:** `draft` since 11/11/2026, at
-> `/it`: every catalog whole, the "Use" pages, the command notes and the exercises written; not yet
-> `live` (phase 6). **Review:** none by a
-> native speaker. The plan and what is left: `docs/plans/it-language.md`.
+> **Command language:** `localized`, Italian AutoCAD's. **Status:** `live` since 12/11/2026, at
+> `/it`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
+> Autodesk did not write ("Review"). The plan and its commits: `docs/plans/it-language.md`.
 
 The words are Autodesk's own Italian localization of AutoCAD, never a translation of ours, as
 Spanish's, pt-BR's and French's are. One Italian for every Italian reader — Italy, Switzerland,
@@ -245,6 +244,37 @@ Italian QWERTY (Italy; Swiss Italian on QWERTZ): letters and digits in place, so
 shortcuts need nothing; à è é ì ò ù are keys of their own, with no dead keys. To check in the
 command line and the dynamic input before going live.
 
+## Going live
+
+On 12/11/2026, from a production build (1,582 pages, all `○` or `●` but `/api/search`):
+
+- **The landing's first load**, Brotli q11, in bytes, before (Italian a draft) and live: `/`
+  253,810 → 253,820, `/es` 255,010 → 255,147, `/pt-br` 255,203 → 255,315, `/ar` 278,555 → 278,660,
+  `/fr` 255,933 → 255,927 (73 under 250 KiB), `/it` 255,134 → 255,150. Naming Italian costs each
+  landing up to 140 bytes; Italian's strings run shorter than French's.
+- **The engine's Italian catalog** reaches `/it/draw` only (no static chunk and no other
+  language's `draw.html` holds its words); `cad/size.test.ts` holds its weight against English's.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): the hero's pill wrapped,
+  «Senza registrazione»: «Senza iscrizione», as the description says. Nothing in the editor.
+- The landing's commands section does not name Italian beside DESFASE, DESLOCAMENTO and DECALER:
+  Italian AutoCAD's OFFSET is the English word, so the sentence would show nothing new for bytes
+  the landing does not have.
+
 ## Review
 
-No native reader; nothing written yet beyond this page.
+No native reader: the owner knows none (session 09's brief). What Autodesk did not write was read
+again by a model on 12/11/2026, four agents against the English, Autodesk's tables, the Italian
+`acad.CUIX` and the console, each change read again before its commit:
+
+- **The site**, 17 strings, none longer: calques of «take» («che prende» → «che seleziona»),
+  «Il polare vincola l'elastico all'incremento», the shortcuts' Enter and Escape, «Codice
+  sorgente su GitHub», DXF's «Salva il file come DXF».
+- **The "Use" pages and exercises**: «prompt» → «richiesta», as the command pages and Autodesk
+  say; the coordinates' calques; «snap ad oggetto»; «con interasse 76».
+- **The command pages**: «dice» (says) → «mostra», «indica», «segnala»; «Invio prende» → «Invio
+  accetta»; «riferimento di blocco», Autodesk's; SPLINEDIT's Deviazione, Tolleranza and Edita
+  vertice, SPLINE's Adatta and VC, SNAP's «intervallo», the fence and crossing as Intercetta and
+  Interseca; «Impostazioni disegno», the dialog's own title (dwgaidsRes 129), and «Rigenerazione
+  modello in corso.» (25668).
+- **Left, for a native reader if one is found**: «dai il raggio» and «più in là» (calques, but
+  clear), «A mano libera» for the Sketchy style, «Ruota» for REVOLVE in prose.

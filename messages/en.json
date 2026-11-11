@@ -70,7 +70,7 @@
   "Commands": {
     "label": "01 · AutoCAD commands",
     "title": "The AutoCAD commands you know, down to the aliases.",
-    "lead": "Each command answers to its AutoCAD name and aliases — in Spanish, Brazilian Portuguese and French, the names those versions of AutoCAD use — and asks in the same order, with the same option letters.",
+    "lead": "Each command answers to its AutoCAD name and aliases — in Spanish, Brazilian Portuguese, French and Italian, the names those versions of AutoCAD use — and asks in the same order, with the same option letters.",
     "count": "{commands, number} AutoCAD commands, {aliases, number} aliases",
     "reference": "Every command, with its aliases and prompts",
     "boardLabel": "Commands and their aliases, grouped as on the ribbon",
@@ -213,7 +213,7 @@
     "q10": "Does it do 3D?",
     "a10": "In part. It builds 3D solids — primitives, extrusions and revolutions, unions, subtractions and intersections, slices and sections, filleted and chamfered edges, edited faces — measures their mass properties, and shows them in orbit, from the ViewCube and in shaded visual styles. Sweeps, lofts, meshes and rendering are not there yet.",
     "q11": "Can I use it to practise for my AutoCAD class?",
-    "a11": "Yes, for the commands: their names and aliases, the order of their prompts and their options follow AutoCAD, in English, Spanish, Brazilian Portuguese or French, and <exercises>the practice exercises</exercises> give you drawings to work on, each solved step by step. It cannot open or save DWG files yet, so work you hand in as DWG or PDF still needs another program."
+    "a11": "Yes, for the commands: their names and aliases, the order of their prompts and their options follow AutoCAD, in English, Spanish, Brazilian Portuguese, French or Italian, and <exercises>the practice exercises</exercises> give you drawings to work on, each solved step by step. It cannot open or save DWG files yet, so work you hand in as DWG or PDF still needs another program."
   },
   "FinalCta": {
     "title": "Your drafting table is one keystroke away."

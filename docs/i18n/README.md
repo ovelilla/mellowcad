@@ -13,9 +13,9 @@ how it is written, and how far it has been reviewed. A `live` language without o
 | `ar.md`    | Arabic               | `global`         | `live` |
 | `pt-BR.md` | Brazilian Portuguese | `localized`      | `live` |
 | `fr.md`    | French               | `localized`      | `live` |
+| `it.md`    | Italian              | `localized`      | `live` |
 
-**Next** (`docs/next-seo.md`, L8): Italian, then German, each `localized`, through skill
-`add-language`; a language Autodesk does not ship (Turkish, Persian…) when the analytics ask for
+**Next** (`docs/next-seo.md`, L8): German, `localized`, through skill `add-language`; a language Autodesk does not ship (Turkish, Persian…) when the analytics ask for
 it.
 
 A file covers both of its languages (`COMMAND_LANGUAGE`): the **interface language** — palettes,

@@ -7,8 +7,9 @@
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
 > online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
-> 9/11; por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente:
-> lo que queda de §7, la 09 (italiano) y guardar como DXF. Esperan detrás
+> 9/11, y la 09 (el italiano, `live` en `/it`) hecha y publicada el 12/11; por decisión del dueño
+> la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7 y guardar como
+> DXF. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -264,7 +265,8 @@ Con el criterio del dueño (demanda y AutoCAD 2027 en ese idioma), cada uno con 
 `add-language`: **francés** (AutoCAD localizado; Francia y el Magreb, que `/ar` no alcanza; hecho
 el 9/11, sesión 08, `docs/plans/fr-language.md`) y
 **italiano** (localizado; la mayor proporción de búsquedas de AutoCAD de los grandes mercados de la
-UE; KulmanLab es n.º 1 allí para «cad online gratis»). Después, alemán, ruso (Yandex tiene el 72 %
+UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesión 09,
+`docs/plans/it-language.md`). Después, alemán, ruso (Yandex tiene el 72 %
 de sus búsquedas), polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
@@ -671,5 +673,16 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   dueño (no conoce a ninguno): lo escrito a mano lo releyó un modelo el mismo día, contra el
   inglés, las tablas y los menús de Autodesk (10 textos del sitio, 3 del editor, 5 páginas «Use»,
   4 ejercicios y 41 páginas de comando; `docs/i18n/fr.md`, «Review»).
-- 09 Italiano: pendiente.
+- 09 Italiano: hecha y publicada el 12/11/2026 (`docs/plans/it-language.md`, `docs/i18n/it.md`):
+  el paquete de idioma instalado en el AutoCAD del dueño y la 2027.1 otra vez, el lenguaje de
+  comandos de la consola italiana (420 sondas), el sitio con lo que se busca en italiano («CAD
+  online gratis», «comandi autocad inglese italiano», «file dxf»), los conmutadores y el ViewCube
+  vistos en el escritorio (cinco de siete líneas supuestas estaban mal), y sin nativo, la relectura
+  de un modelo. La primera carga de cada portada sigue bajo 250 KiB (`/fr`, la más justa, 73 bytes
+  por debajo). **Siguiente idioma propuesto: el alemán**, el siguiente de L8 con el criterio del
+  dueño (AutoCAD localizado), aunque la auditoría lo ve flojo («autocad befehle» casi 0, SERP
+  llena). Search Console (28 días al 12/11) da los clics a España y a los países árabes (Egipto,
+  Yemen, Siria, Arabia Saudí, Irak, Palestina, posiciones 1–5): un idioma `global` también rinde,
+  así que si el dueño amplía el criterio, el vietnamita y el indonesio (auditoría, 3.º y 5.º) van
+  antes que el alemán.
 - 10 Medición: la primera, un mes después del push de 01–02.

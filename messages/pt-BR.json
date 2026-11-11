@@ -213,7 +213,7 @@
     "q10": "Faz 3D?",
     "a10": "Em parte. Ele constrói sólidos 3D — primitivas, extrusões e revoluções, uniões, subtrações e intersecções, fatias e cortes, arestas com concordância e chanfro, faces editadas —, calcula suas propriedades de massa e os mostra em órbita, pelo ViewCube e em estilos visuais sombreados. Ainda não há varreduras, lofts, malhas nem renderização.",
     "q11": "Posso usá-lo para praticar para a minha aula de AutoCAD?",
-    "a11": "Sim, para os comandos: os nomes e aliases, a ordem dos prompts e as opções seguem o AutoCAD, em inglês, espanhol, português do Brasil ou francês, e os <exercises>exercícios para praticar</exercises> dão desenhos para trabalhar, cada um resolvido passo a passo. Ainda não abre nem salva arquivos DWG, então o que você entregar em DWG ou PDF ainda precisa de outro programa."
+    "a11": "Sim, para os comandos: os nomes e aliases, a ordem dos prompts e as opções seguem o AutoCAD, em inglês, espanhol, português do Brasil, francês ou italiano, e os <exercises>exercícios para praticar</exercises> dão desenhos para trabalhar, cada um resolvido passo a passo. Ainda não abre nem salva arquivos DWG, então o que você entregar em DWG ou PDF ainda precisa de outro programa."
   },
   "FinalCta": {
     "title": "Sua prancheta está a uma tecla de distância."
