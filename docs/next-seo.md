@@ -737,8 +737,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   probado con teclas del sistema (XTEST, y SendKeys desde Windows por el RDP de WSLg) en Chrome
   sobre X11, la plataforma del Chrome del dueño: abre el selector de archivos y escribe `_open`;
   no es un fallo nuestro (`07c-dxf-editar.md` §4).
-- DXF fase 4, POINT: hecha el 12/11/2026 (L7, la excepción: el tercer objeto que más falta en los
-  DXF reales y la base de dos comandos de la tabla de L3). La entidad POINT, PDMODE y PDSIZE,
+- DXF fase 4, POINT: hecha y publicada el 12/11/2026 (`3fc5500f`; L7, la excepción: el tercer
+  objeto que más falta en los DXF reales y la base de dos comandos de la tabla de L3). En
+  producción, las 30 páginas (las tres nuevas y abrir y editar un DXF, en los seis idiomas) con su
+  título, las 18 nuevas en el sitemap, el FAQ y el tablero de la portada, y DIVIDE, PDMODE y el
+  cuadro de PTYPE en `/draw`; IndexNow recibió las 765 URLs y la cola de §7 pasó de 675 a 693. La entidad POINT, PDMODE y PDSIZE,
   POINT, PTYPE y su cuadro Estilo de punto, DIVIDE, MEASURE y la referencia Nodo, en los seis
   idiomas; el DXF en los dos sentidos (`docs/next-dxf.md`, fase 4). DIVIDE y MEASURE salen de la
   tabla de L3. **Páginas de comando nuevas**, con lo que se busca en cada idioma: `divide`
