@@ -6,7 +6,9 @@
 > fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
 > publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
 > PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día; siguiente en ella,
-> SOLID. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> SOLID y después LEADER, que llevan las muestras enteras de 64 a 107 y a 121 de 154 (corpus del
+> 12/11); tras ellas, por orden del dueño, el alemán (`docs/next-seo.md`, L8), y lo que quede de
+> esta fase alterna con idiomas, una sesión cada vez. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 

@@ -10,7 +10,10 @@
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
 > y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
 > MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando); por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7. Esperan detrás
+> visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026),
+> una sesión cada vez, nunca en paralelo: SOLID y después LEADER (la fase 4 de
+> `docs/next-dxf.md`), el alemán (L8) y luego idiomas alternando con lo que quede del DXF, además
+> de lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
