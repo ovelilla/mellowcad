@@ -183,7 +183,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Running snaps; one-point override; check box | أوضاع الالتقاط الجارية (L, as the engine's -OSNAP description)؛ تجاوز (L, as تجاوزات الالتقاط)؛ خانة اختيار (M) — the Drafting Settings dialog and its Object Snap tab keep their English names |
 |  | Snap markers: square, triangle, circle, diamond, cross, plus, right angle, circle with a bar, hourglass; dashed path | مربع، مثلث، دائرة، معيّن، علامة ✕، علامة +، زاوية قائمة، دائرة بخط، ساعة رملية (M)؛ مسار متقطع (L) |
 |  | Foot of the perpendicular | قدم العمود (M) |
-|  | Node, Geometric Center, Mid Between 2 Points, temporary track point (snaps not built) | العقدة، المركز الهندسي، المنتصف بين نقطتين، نقطة التتبع المؤقتة (L) — written with the English name beside them |
+|  | Geometric Center, Mid Between 2 Points, temporary track point (snaps not built; Node is built, below) | المركز الهندسي، المنتصف بين نقطتين، نقطة التتبع المؤقتة (L) — written with the English name beside them |
 |  | Aperture (APERTURE) | فتحة الالتقاط (L) † |
 | Exercises | Their drawings' layers: Outline, Centre lines, Hidden lines, Dimensions | الخطوط الظاهرة، خطوط المحاور، الخطوط المخفية، الأبعاد (M) † — the names a drafting template gives its layers, short enough for the Layer control; الخطوط الظاهرة (visible lines) pairs with the hidden ones, where المحيط is also the circumference |
 |  | Exercise; Practice (a page's type); step by step; solved | تمرين؛ تدريب؛ خطوة بخطوة؛ محلول (M) — «تمارين محلولة» is how exercise books and searchers say «with solutions» |
@@ -201,6 +201,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | The Layer control | قائمة الطبقات المنسدلة (L) — as LAYER's notes, not عنصر التحكم في الطبقات |
 |  | Conceptual (a caption's visual style); hidden lines removed | النمط المفاهيمي (L, as the landing's figures)؛ مع إزالة الخطوط المخفية (M) |
 |  | Leaders, layouts (the FAQ's DXF answer); a binary file; Open a DXF file (DXFIN) | خطوط الإشارة، التخطيطات (L) †؛ ثنائية (M)؛ فتح ملف ⁨DXF⁩ (L) |
+|  | Point (an object), points; Multiple Points, Divide, Measure (the tool palette); Point Style (PTYPE's dialog and its labels); Node (the object snap) | نقطة، نقاط (M)؛ نقاط متعددة، تقسيم، قياس (L)؛ نمط النقطة، حجم النقطة، تعيين الحجم نسبةً إلى الشاشة، بالوحدات المطلقة (L)؛ عقدة (C, the snap's usual name) |
 | Guides | How-to guide; floor plan (a house's) | دليل، أدلة (M)؛ مخطط منزل، المسقط الأفقي (C) — «رسم مخطط منزل» is the searched phrase, المسقط الأفقي the drawing's name |
 |  | A plan's layers: Walls, Doors, Windows, Dimensions (the reader's own) | الجدران، الأبواب، النوافذ، الأبعاد (M) |
 |  | Outer and inner face (a wall's); inner wall; opening; entrance | الوجه الخارجي والداخلي؛ الجدار الداخلي؛ فتحة؛ المدخل (M) |

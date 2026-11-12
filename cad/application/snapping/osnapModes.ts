@@ -5,12 +5,13 @@ import { SnapType } from "./types"
  * time, at any point prompt (END, MID…) — by keyword id, in the order AutoCAD's
  * OSNAP lists them. The capitals are what is typed ("Specify one or more
  * object snap modes by entering the uppercase characters of the name").
- * Geometric Center and Node are not here: neither snap exists yet.
+ * Geometric Center is not here: that snap does not exist yet.
  */
 export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
   ENDpoint: SnapType.Endpoint,
   MIDpoint: SnapType.Midpoint,
   CENter: SnapType.Center,
+  NODe: SnapType.Node,
   QUAdrant: SnapType.Quadrant,
   INTersection: SnapType.Intersection,
   EXTension: SnapType.Extension,
@@ -24,13 +25,14 @@ export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
 }
 
 /**
- * OSMODE's bit for each running snap; Node's 8 and Geometric Center's 1024
- * have none here, and 16384 is the running snaps suspended (F3).
+ * OSMODE's bit for each running snap; Geometric Center's 1024 has none
+ * here, and 16384 is the running snaps suspended (F3).
  */
 export const OSMODE_BITS: Readonly<Record<SnapType, number>> = {
   [SnapType.Endpoint]: 1,
   [SnapType.Midpoint]: 2,
   [SnapType.Center]: 4,
+  [SnapType.Node]: 8,
   [SnapType.Quadrant]: 16,
   [SnapType.Intersection]: 32,
   [SnapType.Insertion]: 64,
@@ -61,6 +63,7 @@ export const OSNAP_MENU_ANSWERS: Readonly<
   [SnapType.Endpoint]: { macro: "_endp", to: false },
   [SnapType.Midpoint]: { macro: "_mid", to: false },
   [SnapType.Center]: { macro: "_cen", to: false },
+  [SnapType.Node]: { macro: "_nod", to: false },
   [SnapType.Quadrant]: { macro: "_qua", to: false },
   [SnapType.Intersection]: { macro: "_int", to: false },
   [SnapType.Extension]: { macro: "_ext", to: false },

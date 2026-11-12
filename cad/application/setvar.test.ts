@@ -201,6 +201,8 @@ describe("SETVAR's ? pages every 20 variables", () => {
     expect(second[0]).toBe("Press ENTER to continue:")
     expect(second[1].split("\n")).toHaveLength(20)
     expect(second[1].split("\n")[0]).toMatch(/^HPSCALE /)
+    // The third page full too, since PDMODE and PDSIZE: the fourth ends it.
+    expect(written(cad, "")[1].split("\n")).toHaveLength(20)
     written(cad, "")
     expect(cad.activeToolId()).toBe("select")
     expect(cad.state().commandLine.prompt).toBe("Command:")
@@ -830,7 +832,7 @@ describe("the variables kept outside the drawing", () => {
   })
 
   // probes workspace/p214, p223 (OSMODE 8 and 16384 taken), WORKSPACE-D40
-  it("OSMODE sets the running snaps, keeps NOD and GCEN, suspends at 16384", () => {
+  it("OSMODE sets the running snaps, NOD among them, keeps GCEN, suspends at 16384", () => {
     const cad = createHarness({ snap: true })
     answer(cad, "OSMODE", "3")
     expect(cad.runtime.snapping.enabledTypes()).toEqual([
@@ -838,7 +840,7 @@ describe("the variables kept outside the drawing", () => {
       "midpoint",
     ])
     answer(cad, "OSMODE", "1033")
-    expect(cad.runtime.snapping.enabledTypes()).toEqual(["endpoint"])
+    expect(cad.runtime.snapping.enabledTypes()).toEqual(["endpoint", "node"])
     expect(prompt(answer(cad, "OSMODE"))).toBe(
       "OSMODE Enter new value for OSMODE <1033>:"
     )

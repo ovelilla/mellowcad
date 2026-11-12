@@ -1,0 +1,35 @@
+---
+title: "Estilo de punto en AutoCAD: comando TIPOPUNTO (PTYPE)"
+metaTitle: "Estilo de punto en AutoCAD: TIPOPUNTO (PTYPE)"
+description: "Cómo funciona TIPOPUNTO (PTYPE, alias DDPTYPE) de AutoCAD en español: el cuadro Estilo de punto, sus veinte figuras, el tamaño, PDMODE y PDSIZE. Pruébalo."
+figure: "TIPOPUNTO abre el cuadro Estilo de punto; su Aceptar escribe PDMODE y PDSIZE, aquí escritos como 35 y 8, y después tres puntos dibujados dentro de una placa."
+sourceHash: "02cea384a2a9"
+---
+
+TIPOPUNTO (PTYPE en inglés) abre el cuadro Estilo de punto, que fija cómo se dibuja cada objeto de punto del dibujo: los que dibuja <Command id="POINT" /> y los que dejan <Command id="DIVIDE" /> y <Command id="MEASURE" />. `DDPTYPE` es su alias, como en AutoCAD. El estilo es del dibujo, no de un punto: cámbialo y cambian todos a la vez, y se guarda con el dibujo. Su botón, Tipo de punto, está junto a Coordenadas punto entre las herramientas de Utilidades; escrito con un apóstrofo delante, `'TIPOPUNTO`, se abre dentro de un comando en curso.
+
+El cuadro muestra veinte figuras en cuatro filas de cinco, con la actual elegida: un punto diminuto, nada, un signo más, una cruz y una raya corta, y después cada una dentro de un círculo, dentro de un cuadrado y dentro de ambos. Debajo, Tamaño de punto y cómo se lee: Establecer tamaño relativo a pantalla, un porcentaje de la altura de la vista, o Establecer tamaño en unid. absolutas, unidades de dibujo. Por defecto es un 5 % relativo a la pantalla. Aceptar escribe la elección como un paso que <Command id="U" /> deshace; Cancelar o Esc no cambian nada. Un tamaño que no es un número, o menor que 0, se rechaza (Entrada no válida.) y el cuadro sigue abierto.
+
+Lo que escribe el cuadro son dos variables, que también se pueden escribir en la línea de comando: PDMODE, la figura (de 0 a 4, más 32 para el círculo, 64 para el cuadrado y 96 para ambos: 35 es una cruz en un círculo), y PDSIZE, el tamaño (un número positivo son unidades de dibujo, uno negativo un porcentaje de la pantalla, y 0 es un 5 %).
+
+## Missing
+
+El botón Ayuda del cuadro. Un punto con tamaño relativo a la pantalla conserva ese tamaño en la pantalla al hacer zoom, donde AutoCAD lo conserva solo hasta la siguiente regeneración del dibujo.
+
+## Questions
+
+### ¿Qué es DDPTYPE en AutoCAD?
+
+El alias de TIPOPUNTO: los dos abren el cuadro Estilo de punto, en cualquier idioma de AutoCAD.
+
+### ¿Por qué no se ven los puntos en AutoCAD?
+
+El estilo de punto por defecto es un punto de un píxel, que una línea dibujada encima esconde, y PDMODE 1 no dibuja nada. Abre TIPOPUNTO y elige una cruz o una figura con círculo, o escribe PDMODE y `3`. Con un tamaño relativo a la pantalla se ven a cualquier zoom.
+
+### ¿Cómo cambio el tamaño de los puntos?
+
+En TIPOPUNTO, escribe el Tamaño de punto: un porcentaje de la pantalla con Establecer tamaño relativo a pantalla, para que el punto conserve su tamaño al hacer zoom, o unidades de dibujo con Establecer tamaño en unid. absolutas, para que crezca y mengüe con el dibujo. O escribe PDSIZE: un valor negativo es el porcentaje.
+
+### ¿Puedo dar a un punto su propio estilo?
+
+No: en AutoCAD y aquí, el estilo de punto es del dibujo, y todos los objetos de punto lo siguen. Para marcar sitios de otra manera, inserta un bloque en ellos; <Command id="DIVIDE" /> y <Command id="MEASURE" /> pueden poner un bloque en lugar de puntos.

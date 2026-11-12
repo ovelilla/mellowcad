@@ -626,6 +626,7 @@ export class DimensionTool implements Tool {
       case "ellipse":
       case "spline":
       case "dimension":
+      case "point":
         return { entity, origins: null }
       // WHY no refusal for a hatch: unprobed, so it says nothing was found,
       // as a text does (p118).

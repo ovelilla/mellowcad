@@ -472,7 +472,7 @@ export interface ToolContext {
  * (CIRCLERAD) or by the runtime (OSMODE), each as SETVAR reads and writes it.
  */
 export interface HeldValues {
-  /** As typed: NOD's 8 and GCEN's 1024 kept, 16384 the running snaps suspended. */
+  /** As typed: GCEN's 1024 kept, 16384 the running snaps suspended. */
   readonly OSMODE: number
   /** 1 puts a snap's Z in the UCS at ELEVATION. */
   readonly OSNAPZ: number
@@ -619,6 +619,12 @@ export interface Tool {
    * rail runs it inside a running command, as if typed so, never ending it.
    */
   readonly transparentMacro?: boolean
+  /**
+   * Its button's macro starts with an asterisk (acad.cuix's `*^C^C_point `,
+   * the ribbon's Multiple Points): started from it, the command starts again
+   * each time it ends, echoed anew, until Escape or another command.
+   */
+  readonly repeatsFromButton?: true
   /**
    * The command its button runs where that is another command of the tool's
    * (the ribbon's Edit Attributes ▸ Single, `^C^C_eattedit`): run as that

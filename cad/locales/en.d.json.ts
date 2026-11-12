@@ -128,6 +128,10 @@ declare const source: {
       "solidedittaper": string
       "solideditdelete": string
       "solideditcopy": string
+      "point": string
+      "divide": string
+      "measuresegments": string
+      "ptype": string
     }
     "description": {
       "U": string
@@ -161,6 +165,7 @@ declare const source: {
       "endpoint": string
       "midpoint": string
       "center": string
+      "node": string
       "intersection": string
       "apparentIntersection": string
       "perpendicular": string
@@ -260,6 +265,7 @@ declare const source: {
       "insert": string
       "solid3d": string
       "region": string
+      "point": string
     }
     "array": {
       "rectangular": string
@@ -678,12 +684,17 @@ declare const source: {
       "FILLETEDGE": string[]
       "CHAMFEREDGE": string[]
       "SOLIDEDIT": string[]
+      "POINT": string[]
+      "DIVIDE": string[]
+      "MEASURE": string[]
+      "PTYPE": string[]
     }
     "keywords": {
       "-OSNAP": {
         "ENDpoint": string
         "MIDpoint": string
         "CENter": string
+        "NODe": string
         "QUAdrant": string
         "INTersection": string
         "EXTension": string
@@ -1475,6 +1486,16 @@ declare const source: {
         "2points": string
         "Reference": string
       }
+      "DIVIDE": {
+        "Block": string
+        "Yes": string
+        "No": string
+      }
+      "MEASURE": {
+        "Block": string
+        "Yes": string
+        "No": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2167,6 +2188,15 @@ declare const source: {
       "solideditTaperBase": string
       "solideditTaperAxis": string
       "solideditTaperAngle": string
+      "specifyAPoint": string
+      "selectObjectToDivide": string
+      "selectObjectToMeasure": string
+      "divideCountOr": string
+      "divideCount": string
+      "measureLengthOr": string
+      "measureLength": string
+      "blockToInsert": string
+      "alignBlockWithObject": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2893,12 +2923,20 @@ declare const source: {
       "zeroDisplacement": string
       "zeroRotation": string
       "offsetDistanceBound": string
+      "currentPointModes": string
+      "cannotDivideObject": string
+      "cannotMeasureObject": string
+      "objectNotThatLong": string
+      "objectTooLong": string
+      "cannotFindBlock": string
+      "blockNameNotValid": string
     }
     "feedback": {
       "snap": {
         "endpoint": string
         "midpoint": string
         "center": string
+        "node": string
         "intersection": string
         "apparentIntersection": string
         "perpendicular": string

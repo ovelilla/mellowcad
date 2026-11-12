@@ -430,21 +430,23 @@ describe("a keyword declared otherwise than listed", () => {
 })
 
 // On 2027 Spanish `PUN` and `PUNTO` at OFFSET's distance are the Node object
-// snap, which asks `de` (probes offset/p109, p110). Node is not built
-// (drafting-aids.md), so here PUNTO is refused and PUN is still the hidden
-// `Pun` AutoCAD 2023 declared for Thru.
-describe("OFFSET's Spanish PUN and PUNTO, with no Node snap", () => {
-  it("refuses PUNTO and takes PUN as Thru", () => {
-    const offset = createHarness({ locale: es })
-    offset.command("DESFASE")
-    answerLine(offset, "PUNTO")
-    expect(offset.commandLog().slice(-2)).toEqual([
-      "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: PUNTO",
-      "Requiere una distancia numérica, dos puntos o una opción.",
-    ])
-    answerLine(offset, "PUN")
-    expect(offset.state().commandLine.prompt).toBe(
-      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
-    )
+// snap, which asks `de`; Enter or ATRAV there is Through (probes offset/p109,
+// p110), not the hidden `Pun` AutoCAD 2023 declared for it.
+describe("OFFSET's Spanish PUN and PUNTO, the Node snap", () => {
+  it("asks `de` and takes Enter or ATRAV there as Through", () => {
+    for (const [typed, then] of [
+      ["PUNTO", "ATRAV"],
+      ["PUN", ""],
+    ]) {
+      const offset = createHarness({ locale: es })
+      offset.command("DESFASE")
+      answerLine(offset, typed, then)
+      expect(offset.commandLog().at(-1)).toBe(
+        `Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: ${typed} de${then ? ` ${then}` : ""}`
+      )
+      expect(offset.state().commandLine.prompt).toBe(
+        "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
+      )
+    }
   })
 })

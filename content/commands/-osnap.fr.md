@@ -2,7 +2,7 @@
 title: "Commande -ACCROBJ (-OSNAP) dans AutoCAD"
 description: "L'accrochage aux objets d'AutoCAD en français : -ACCROBJ (-OSNAP) fixe les modes, F3 l'active, MIL ou Maj + clic droit en force un. Essayez-le gratuitement."
 figure: "-ACCROBJ définit Milieu et Centre comme accrochages actifs ; LIGNE va ensuite du milieu d'un côté au centre du cercle, et le côté du haut montre son marqueur Milieu."
-sourceHash: "acf7c6b99589"
+sourceHash: "627cd26c12df"
 ---
 
 Les accrochages aux objets placent un point désigné exactement sur un point d'un objet : une extrémité, un milieu, un centre. Avec l'accrochage aux objets activé, le curseur près d'un tel point affiche son marqueur, en vert, et son nom dans une info-bulle ; un clic tombe alors sur ce point, et non là où se trouve le curseur. Les accrochages aux objets actifs sont les modes à l'œuvre à chaque invite de point : au départ Extrémité, Centre, Intersection et Extension, comme dans AutoCAD. F3 active et désactive l'accrochage aux objets en écrivant `<Accrobj actif>` ou `<Accrobj inactif>`, tout comme le bouton Accrochage aux objets de la barre d'état, dont le menu a une case à cocher pour chaque mode. Avec plusieurs accrochages sous le curseur, le plus proche l'emporte, et Tab parcourt les autres. Le mode ortho, le repérage polaire et le mode Résolution ne dévient jamais un point accroché.
@@ -24,6 +24,10 @@ Le milieu d'une ligne, d'un arc, d'un segment de polyligne, d'un arc elliptique 
 ### CENter
 
 Le centre d'un cercle, d'un arc ou d'un arc de polyligne. Passez le curseur sur la courbe elle-même : au centre, il n'y a rien à accrocher. Un cercle.
+
+### NODe
+
+Un objet point, ceux que créent <Command id="POINT" />, <Command id="DIVIDE" /> et <Command id="MEASURE" />, quelle que soit la figure que leur donne <Command id="PTYPE" />. Il ne fait pas partie des accrochages actifs au départ. Un cercle avec une croix.
 
 ### QUAdrant
 
@@ -71,7 +75,7 @@ Comme <Keyword id="NONe" /> : les accrochages actifs sont effacés.
 
 ## Missing
 
-La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Nodal et Centre géométrique, comme modes et dans les menus. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que <Command id="LINE" /> et <Command id="CIRCLE" />. Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
+La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Centre géométrique, comme mode et dans les menus. Nodal sur les points de définition d'une cote et l'origine de son texte : ici, il ne trouve que les objets point. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que <Command id="LINE" /> et <Command id="CIRCLE" />. Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
 
 ## Questions
 

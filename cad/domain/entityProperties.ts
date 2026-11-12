@@ -162,7 +162,7 @@ const PLANE_ROWS: Readonly<
   Record<"centerZ" | "positionZ" | "elevation", readonly Entity["type"][]>
 > = {
   centerZ: ["circle", "arc", "ellipse"],
-  positionZ: ["text", "mtext", "attdef", "insert"],
+  positionZ: ["text", "mtext", "attdef", "insert", "point"],
   elevation: ["polyline", "hatch"],
 }
 
@@ -247,6 +247,12 @@ export function applyEntityProperty(
     }
     case "insert":
       return applyInsertProperty(entity, property, value)
+    case "point":
+      if (property === "positionX")
+        return { ...entity, position: { x: value, y: entity.position.y } }
+      if (property === "positionY")
+        return { ...entity, position: { x: entity.position.x, y: value } }
+      return null
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null

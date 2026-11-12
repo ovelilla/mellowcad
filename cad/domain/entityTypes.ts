@@ -36,6 +36,7 @@ export type EntityType =
   | "insert"
   | "region"
   | "solid3d"
+  | "point"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -75,8 +76,8 @@ interface BaseEntity {
 
 /**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
- * polylines" among the ones modelled here. Absent means 0; negative extrudes
- * down.
+ * polylines" and points (point/p04) among the ones modelled here. Absent
+ * means 0; negative extrudes down.
  */
 interface Thick {
   readonly thickness?: number
@@ -89,6 +90,22 @@ export interface LineEntity extends BaseEntity, Thick {
   readonly end: Vec2
   /** End Z minus start Z, kept as a difference so it transforms like a vector. */
   readonly deltaZ?: number
+}
+
+/**
+ * A point object (DXF POINT). `position` is in the OCS of its normal, at its
+ * elevation, as a circle's centre is: DXF writes the WCS and the reader turns
+ * it. What it shows is the drawing's PDMODE and PDSIZE, not the object's.
+ */
+export interface PointEntity extends BaseEntity, Thick {
+  readonly type: "point"
+  readonly position: Vec2
+  /**
+   * DXF 50: the X axis of the UCS the point was drawn in, as AutoCAD stores
+   * it, so the figure turns by its negative (drawn in UCS Z 30, 50 is 330°
+   * and the cross shows turned 30°: point/p04, desktop). Absent is 0.
+   */
+  readonly xAxisAngle?: number
 }
 
 export interface CircleEntity extends BaseEntity, Thick {
@@ -887,6 +904,7 @@ export type Entity =
   | InsertEntity
   | RegionEntity
   | Solid3dEntity
+  | PointEntity
 
 export interface Bounds {
   readonly min: Vec2

@@ -95,6 +95,8 @@ export function previewScene(
     lwDisplay,
     attributeDisplay: document.getSettings().attributeDisplay,
     fillMode: document.getSettings().fillMode,
+    pointMode: document.getSettings().pointMode,
+    pointSize: document.getSettings().pointSize,
     snap: null,
     snapLabel: "",
     acquiredTrackingPoints: [],

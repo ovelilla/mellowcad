@@ -41,6 +41,7 @@ import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
 import { sessions as dimspaceSessions } from "./demos/commands/dimspace"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
 import { sessions as distSessions } from "./demos/commands/dist"
+import { sessions as divideSessions } from "./demos/commands/divide"
 import { sessions as eatteditSessions } from "./demos/commands/eattedit"
 import { sessions as ellipseSessions } from "./demos/commands/ellipse"
 import { sessions as eraseSessions } from "./demos/commands/erase"
@@ -62,6 +63,7 @@ import { sessions as ltscaleSessions } from "./demos/commands/ltscale"
 import { sessions as lweightSessions } from "./demos/commands/lweight"
 import { sessions as masspropSessions } from "./demos/commands/massprop"
 import { sessions as matchpropSessions } from "./demos/commands/matchprop"
+import { sessions as measureSessions } from "./demos/commands/measure"
 import { sessions as mirrorSessions } from "./demos/commands/mirror"
 import { sessions as moveSessions } from "./demos/commands/move"
 import { sessions as mtextSessions } from "./demos/commands/mtext"
@@ -73,6 +75,7 @@ import { sessions as plineSessions } from "./demos/commands/pline"
 import { sessions as polygonSessions } from "./demos/commands/polygon"
 import { sessions as presspullSessions } from "./demos/commands/presspull"
 import { sessions as propertiesSessions } from "./demos/commands/properties"
+import { sessions as ptypeSessions } from "./demos/commands/ptype"
 import { sessions as purgeSessions } from "./demos/commands/purge"
 import { sessions as pyramidSessions } from "./demos/commands/pyramid"
 import { sessions as rectangSessions } from "./demos/commands/rectang"
@@ -236,6 +239,7 @@ export const COMMAND_SESSIONS = {
   ...dimspaceSessions,
   ...dimstyleSessions,
   ...distSessions,
+  ...divideSessions,
   ...eatteditSessions,
   ...ellipseSessions,
   ...eraseSessions,
@@ -257,6 +261,7 @@ export const COMMAND_SESSIONS = {
   ...lweightSessions,
   ...masspropSessions,
   ...matchpropSessions,
+  ...measureSessions,
   ...mirrorSessions,
   ...moveSessions,
   ...mtextSessions,
@@ -268,6 +273,7 @@ export const COMMAND_SESSIONS = {
   ...polygonSessions,
   ...presspullSessions,
   ...propertiesSessions,
+  ...ptypeSessions,
   ...purgeSessions,
   ...pyramidSessions,
   ...rectangSessions,

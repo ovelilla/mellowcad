@@ -1,0 +1,12 @@
+'_PDMODE
+_LINE
+0,0
+'_PDMODE
+3
+'_DDPTYPE
+5,5
+
+_POINT
+'_PDMODE
+2
+3,3

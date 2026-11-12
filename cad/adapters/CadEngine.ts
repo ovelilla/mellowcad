@@ -758,6 +758,16 @@ export class CadEngine {
     this.runtime.setUnitsDialog(open)
   }
 
+  /** Shows or hides the Point Style dialog; closing it ends PTYPE. */
+  setPointStyleDialog(open: boolean): void {
+    this.runtime.setPointStyleDialog(open)
+  }
+
+  /** The Point Style dialog's OK: PDMODE and PDSIZE, one step. */
+  applyPointStyle(mode: number, size: number): void {
+    this.runtime.applyPointStyle(mode, size)
+  }
+
   /** The Save Drawing As dialog's Cancel: SAVEAS, SAVE or DXFOUT ends, writing nothing. */
   setSaveAsDialog(open: boolean): void {
     this.runtime.setSaveAsDialog(open)

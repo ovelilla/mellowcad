@@ -322,6 +322,15 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         }
         break
+      case "point":
+        // One grip, at the point: dragged, it moves it (unverified on the
+        // desktop).
+        grips.push({
+          entityId: id,
+          role: { kind: "move" },
+          world: entity.position,
+        })
+        break
       case "region":
         for (const point of regionGripPoints(entity)) {
           grips.push({ entityId: id, role: { kind: "fixed" }, world: point })

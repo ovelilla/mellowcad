@@ -8,7 +8,7 @@ import {
   LengthUnit,
 } from "../../domain/units"
 import { WORLD_UCS, ucsFromAxes } from "../../domain/ucs"
-import { AttributeDisplay } from "../../domain/entities"
+import { AttributeDisplay, isPointMode } from "../../domain/entities"
 import { dxfColor, dxfLineweight } from "./dxfEntities"
 import { DxfRecord } from "./dxfSections"
 import { int, num, point, str } from "./dxfValues"
@@ -50,6 +50,8 @@ export function dxfSettings(
     value !== undefined && value >= 0 ? value : fallback
   const flag = (value: number | undefined, fallback: boolean) =>
     value === undefined ? fallback : value !== 0
+  const pointMode = (value: number | undefined, fallback: number) =>
+    value !== undefined && isPointMode(value) ? value : fallback
   const color = variable("$CECOLOR")
   const celtype = variable("$CELTYPE")
   const celweight = integer("$CELWEIGHT", 370)
@@ -89,6 +91,8 @@ export function dxfSettings(
         ? splineSegments
         : d.splineSegments,
     isolines: notNegative(integer("$ISOLINES", 70), d.isolines),
+    pointMode: pointMode(integer("$PDMODE", 70), d.pointMode),
+    pointSize: real("$PDSIZE", 40) ?? d.pointSize,
     chamferDistance1: notNegative(real("$CHAMFERA", 40), d.chamferDistance1),
     chamferDistance2: notNegative(real("$CHAMFERB", 40), d.chamferDistance2),
     textSize: positive(real("$TEXTSIZE", 40), d.textSize),

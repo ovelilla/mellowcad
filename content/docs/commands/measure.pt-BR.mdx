@@ -1,0 +1,64 @@
+---
+title: "Comando MEDIDA (MEASURE) no AutoCAD"
+description: "Como funciona o MEASURE do AutoCAD em português, MEDIDA (alias ME): pontos ou blocos a cada comprimento ao longo de um objeto, a partir da ponta escolhida."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando de medida no AutoCAD em português?","answer":"MEDIDA, com o alias ME, o mesmo do inglês. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _MEASURE."},{"question":"O MEDIDA serve para medir distâncias?","answer":"Não: ele põe pontos a um comprimento que você dá. Para medir a distância entre dois pontos, use o DIST; para o comprimento de um objeto, o LISTA ou o AREA."},{"question":"De qual ponta o MEDIDA começa?","answer":"Da ponta mais próxima do ponto onde você selecionou o objeto. Selecione-o perto da ponta a partir da qual quer medir o primeiro comprimento."},{"question":"Por que não vejo os pontos que o MEDIDA criou?","answer":"Eles são desenhados como pontos minúsculos, o estilo de ponto padrão. Abra o TIPOP e escolha uma cruz ou um círculo, ou defina PDMODE como 3: todos os pontos mudam de uma vez."},{"question":"Qual é a diferença entre MEDIDA e DIVIDIR?","answer":"O DIVIDIR divide um objeto num número de partes iguais; o MEDIDA avança por ele num comprimento dado e deixa o que sobra na outra ponta."}]
+---
+
+O MEASURE, MEDIDA no AutoCAD em português, marca um objeto a cada certo comprimento. Selecione uma linha, um arco, um círculo, uma elipse, um arco elíptico, uma polilinha, uma polilinha 3D ou uma spline, e informe o comprimento, digitado ou com dois pontos: o MEDIDA põe um objeto de ponto a cada esse comprimento ao longo do objeto, até onde couber um, e encerra. Ele não mede uma distância para você nem corta o objeto. Começa pela ponta mais próxima de onde você selecionou, então selecione perto da ponta a partir da qual quer medir; o que sobra fica na outra ponta, e quando o comprimento cabe um número inteiro de vezes, a outra ponta também recebe um ponto. Um círculo começa no seu ponto de 0° e segue no sentido anti-horário, onde quer que seja selecionado; uma polilinha fechada começa no seu primeiro vértice.
+
+Os pontos são desenhados como diz o estilo de ponto do desenho, um ponto minúsculo por padrão: escolha antes uma figura visível com o [`TIPOP`](/docs/commands/ptype) ou com o PDMODE. Os pontos ficam sobre o objeto, na camada atual com a cor, o tipo de linha e a espessura de linha atuais; tudo é um passo que o `D` desfaz, e os pontos são o conjunto de seleção Anterior. Um comprimento maior que o objeto recebe `O objeto não é tão longo.`, e um tão curto que faria mais de 32767 pontos, `O objeto é longo demais.`; nenhum dos dois cria nada. Qualquer outro objeto recebe `Não é possível medir esse objeto.`. O menu suspenso Pontos das ferramentas de Desenhar também inicia o MEDIDA.
+
+- **Comando:** `MEDIDA`
+- **Em inglês:** `MEASURE`, que se digita `_MEASURE` em qualquer idioma
+- **Aliases:** `ME`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ME` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="measure" caption="Uma polilinha de 190 medida a cada 15 a partir da ponta selecionada: doze pontos, o último a 10 da outra ponta." />
+
+## Opções [#options]
+
+### `Bloco` (`B`) [#block]
+
+Em vez de pontos, referências de um bloco que já esteja no desenho: informe o nome, depois se cada uma se alinha com o objeto, `Sim` (o padrão) ou `Não`, e depois o comprimento. Alinhada, cada referência gira com o objeto no seu lugar, ao longo da linha ou tangente a um arco, seja qual for a ponta de onde a medida começa; sem alinhar, todas mantêm o X do UCS. Um nome sem bloco por trás é recusado e pedido de novo.
+
+## O que ainda não faz [#missing]
+
+Para que lado corre uma polilinha fechada selecionada depois da sua metade: aqui ela é medida para trás a partir do primeiro vértice, como o AutoCAD mede uma elipse ou uma spline fechadas, mas o que o AutoCAD faz com uma polilinha não foi verificado. Os pontos de um círculo começam sempre ao longo do X do UCS, onde o AutoCAD os começa no ângulo do snap, SNAPANG, que o MellowCAD não tem.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#measure--me--es-gradua--gd--pt-br-medida--me--fr-mesurer--me--it-misura--mis)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando de medida no AutoCAD em português?
+
+MEDIDA, com o alias `ME`, o mesmo do inglês. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_MEASURE`.
+
+### O MEDIDA serve para medir distâncias?
+
+Não: ele põe pontos a um comprimento que você dá. Para medir a distância entre dois pontos, use o [`DIST`](/docs/commands/dist); para o comprimento de um objeto, o [`LISTA`](/docs/commands/list) ou o [`AREA`](/docs/commands/area).
+
+### De qual ponta o MEDIDA começa?
+
+Da ponta mais próxima do ponto onde você selecionou o objeto. Selecione-o perto da ponta a partir da qual quer medir o primeiro comprimento.
+
+### Por que não vejo os pontos que o MEDIDA criou?
+
+Eles são desenhados como pontos minúsculos, o estilo de ponto padrão. Abra o [`TIPOP`](/docs/commands/ptype) e escolha uma cruz ou um círculo, ou defina PDMODE como `3`: todos os pontos mudam de uma vez.
+
+### Qual é a diferença entre MEDIDA e DIVIDIR?
+
+O [`DIVIDIR`](/docs/commands/divide) divide um objeto num número de partes iguais; o MEDIDA avança por ele num comprimento dado e deixa o que sobra na outra ponta.
+
+## Comandos relacionados [#related]
+
+- [Dividir em partes iguais no AutoCAD: comando DIVIDIR (DIVIDE)](/docs/commands/divide)
+- [Estilo de ponto no AutoCAD: comando TIPOP (PTYPE)](/docs/commands/ptype)
+- [PONTO (POINT)](/docs/commands#point): Múltiplos pontos
+- [Medir distância no AutoCAD: comando DIST](/docs/commands/dist)

@@ -3,7 +3,7 @@ title: Editar arquivo DXF online
 metaTitle: "Editor DXF online grátis: editar e salvar DXF"
 description: "Edite um arquivo DXF grátis no navegador com os comandos do AutoCAD e salve-o de novo como DXF, do AutoCAD 2000 ao 2018. Sem instalar nem enviar nada."
 type: howTo
-sourceHash: "220c329af401"
+sourceHash: "e2bef1350979"
 faq:
   - question: "Como editar um arquivo DXF online?"
     answer: "Escolha-o ou solte-o no alto desta página: ele abre no editor do MellowCAD, no seu navegador. Altere-o com os comandos do AutoCAD e depois SALVARCOMO (Ctrl+Shift+S) ou EXPDXF o salva de novo como arquivo DXF."
@@ -14,7 +14,7 @@ faq:
   - question: "O AutoCAD abre o DXF que eu salvar?"
     answer: "Sim. Cada tipo de objeto que o MellowCAD escreve, em cada versão, de texto e binário, foi aberto pelo AutoCAD 2027 sem que o AUDIT dele encontrasse um erro."
   - question: "Algo se perde ao salvar?"
-    answer: "O que não abriu não está no arquivo que você salva: pontos, linhas de chamada, tabelas e os demais objetos que a linha de comando contou ao abrir o arquivo. Os sólidos 3D e as regiões também não são escritos, e a linha de comando os lista. Guarde o arquivo original."
+    answer: "O que não abriu não está no arquivo que você salva: linhas de chamada, tabelas e os demais objetos que a linha de comando contou ao abrir o arquivo. Os sólidos 3D e as regiões também não são escritos, e a linha de comando os lista. Guarde o arquivo original."
   - question: "Posso criar um arquivo DXF do zero?"
     answer: "Sim. Abra o editor, desenhe e salve com SALVARCOMO, escolhendo um tipo de arquivo DXF."
 ---
@@ -45,11 +45,11 @@ O arquivo é baixado, como tudo que se salva aqui ([salvar não é bem como no A
 
 ## O que o DXF guarda [#holds]
 
-Cada objeto que o MellowCAD tem, escrito como o AutoCAD o escreve: linhas, arcos, círculos, elipses, polilinhas com as larguras e os ajustes de curva, polilinhas 3D, splines, textos de uma linha e de várias linhas, blocos com os atributos, cotas, hachuras com o padrão, e matrizes como um bloco dos seus itens. Com eles, as camadas (ativadas, desativadas, bloqueadas) com cor, tipo de linha e espessura de linha, os estilos de texto e de cota, os blocos, e as unidades e configurações do desenho. O texto mantém os caracteres: até 2004 na página de código do Windows que o AutoCAD usa, com um código de escape para o resto, e a partir de 2007 em UTF-8.
+Cada objeto que o MellowCAD tem, escrito como o AutoCAD o escreve: linhas, arcos, círculos, elipses, polilinhas com as larguras e os ajustes de curva, polilinhas 3D, splines, textos de uma linha e de várias linhas, blocos com os atributos, cotas, hachuras com o padrão, pontos, e matrizes como um bloco dos seus itens. Com eles, as camadas (ativadas, desativadas, bloqueadas) com cor, tipo de linha e espessura de linha, os estilos de texto e de cota, os blocos, e as unidades e configurações do desenho. O texto mantém os caracteres: até 2004 na página de código do Windows que o AutoCAD usa, com um código de escape para o resto, e a partir de 2007 em UTF-8.
 
 ## O que não volta [#lost]
 
-- **O que não abriu não é salvo.** O que o MellowCAD ainda não tem — pontos, linhas de chamada, tabelas, referências externas e [o resto dessa lista](/docs/open-dxf#left-out) — é contado na linha de comando ao abrir o arquivo, e não está no arquivo que você salva. Guarde o original.
+- **O que não abriu não é salvo.** O que o MellowCAD ainda não tem — linhas de chamada, tabelas, referências externas e [o resto dessa lista](/docs/open-dxf#left-out) — é contado na linha de comando ao abrir o arquivo, e não está no arquivo que você salva. Guarde o original.
 - **Os sólidos 3D e as regiões não são escritos**: a linha de comando diz quantos ficaram de fora.
 - As substituições de estilo de uma cota e os parâmetros de uma matriz não são escritos: o AutoCAD abre a cota com as configurações do seu estilo, e a matriz como um bloco dos seus itens.
 - Não há imagem de visualização prévia, nem ainda o tipo AutoCAD R12/LT2 DXF, nem DWG.
@@ -78,7 +78,7 @@ Sim. Cada tipo de objeto que o MellowCAD escreve, em cada versão, de texto e bi
 
 ### Algo se perde ao salvar? [#lost-on-save]
 
-O que não abriu não está no arquivo que você salva: pontos, linhas de chamada, tabelas e os demais objetos que a linha de comando contou ao abrir o arquivo. Os sólidos 3D e as regiões também não são escritos, e a linha de comando os lista. Guarde o arquivo original.
+O que não abriu não está no arquivo que você salva: linhas de chamada, tabelas e os demais objetos que a linha de comando contou ao abrir o arquivo. Os sólidos 3D e as regiões também não são escritos, e a linha de comando os lista. Guarde o arquivo original.
 
 ### Posso criar um arquivo DXF do zero? [#from-scratch]
 

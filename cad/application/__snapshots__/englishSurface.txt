@@ -2,6 +2,10 @@
 LINE ["L"] "Line"
 PLINE ["PL"] "Polyline"
 3DPOLY ["3P"] "3D Polyline"
+POINT ["PO"] "Multiple Points"
+DIVIDE ["DIV"] "Divide"
+MEASURE ["ME"] "Measure"
+PTYPE ["DDPTYPE"] "Point Style"
 CIRCLE ["C"] "Circle"
 CIRCLED [] "Diameter circle"
 CIRCLE2P [] "2-Point circle"
@@ -166,6 +170,9 @@ spline "Spline" SPL
 splinefit "Spline Fit" -
 splinecv "Spline CV" -
 polyline3d "3D Polyline" 3P
+point "Multiple Points" PO
+divide "Divide" DIV
+measuresegments "Measure" ME
 rectangle "Rectangle" REC
 polygon "Polygon" POL
 hatch "Hatch" H
@@ -274,6 +281,7 @@ snap "Snap mode" SN
 color "Color" COL
 linetype "Linetype" LT
 lweight "Lineweight" LW
+ptype "Point Style" PTYPE
 
 ## neutral prompt
 > start
@@ -575,7 +583,7 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
   command| OPEN
-  info| 3 objects not opened: 2 POINT, 1 LEADER.
+  info| 1 object not opened: 1 LEADER.
   info| 1 object in a layout not opened.
   info| 1 object could not be read.
 > after open
@@ -7953,6 +7961,111 @@ Specify next point or
   dyn: -
   options: -
   prompt| Enter default lineweight for new objects or [?]:
+
+## POINT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> POINT
+  prompt: POINT Specify a point:
+  asks: "Specify a point"
+  tip: Specify a point:
+  dyn: "X,Y"=""||*
+  command| PO POINT
+  info| Current point modes:  PDMODE=0  PDSIZE=0.00
+> enter
+  prompt| Specify a point:
+  error| Invalid point.
+> point
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify a point: 10,20
+> PDMODE
+  command| PDMODE
+  prompt| Enter new value for PDMODE <0>: 5
+  error| Cannot set PDMODE to that value.
+  error| *Invalid*
+> PDSIZE
+  command| PDSIZE
+  prompt| Enter new value for PDSIZE <0.00>: -5
+  info| Regenerating model.
+
+## DIVIDE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIVIDE
+  prompt: DIVIDE Select object to divide:
+  asks: 
+  tip: Select object to divide:
+  dyn: 
+  command| DIV DIVIDE
+> pick
+  prompt: DIVIDE Enter the number of segments or [Block]:
+  asks: "Enter the number of segments or"
+  tip: Enter the number of segments or
+  dyn: "Enter the number of segments or"=""||*
+  options: [B] Block
+  prompt| Select object to divide:
+> count refused
+  prompt| Enter the number of segments or [Block]: 1
+  error| Requires an integer between 2 and 32767, or option keyword.
+> Block
+  prompt: DIVIDE Enter name of block to insert:
+  asks: "Enter name of block to insert"
+  tip: Enter name of block to insert:
+  dyn: "Enter name of block to insert"=""||*
+  options: -
+  prompt| Enter the number of segments or [Block]: B
+> no name
+  prompt| Enter name of block to insert:
+  error| Invalid block name.
+> unknown
+  prompt| Enter name of block to insert: NOPE
+  error| Cannot find block "NOPE".
+> MEASURE
+  prompt: MEASURE Select object to measure:
+  asks: 
+  tip: Select object to measure:
+  dyn: 
+  prompt| Enter name of block to insert: *Cancel*
+  command| ME MEASURE
+> pick
+  prompt: MEASURE Specify length of segment or [Block]:
+  asks: "Specify length of segment or"
+  tip: Specify length of segment or
+  dyn: "Specify length of segment or"=""||mm*
+  options: [B] Block
+  prompt| Select object to measure:
+> zero
+  prompt| Specify length of segment or [Block]: 0
+  error| Value must be positive and nonzero.
+> too long
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify length of segment or [Block]: 200
+  error| Object isn't that long.
+> on nothing
+  command| ME MEASURE
+  prompt| Select object to measure:
+  error| *Invalid*
 
 ## ID
 > start

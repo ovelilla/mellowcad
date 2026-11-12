@@ -14,6 +14,8 @@ export enum SnapType {
   Endpoint = "endpoint",
   Midpoint = "midpoint",
   Center = "center",
+  /** A point object — AutoCAD's "Node". */
+  Node = "node",
   Intersection = "intersection",
   /**
    * The point where two entities *would* meet if one or both were extended —

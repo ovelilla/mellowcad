@@ -66,6 +66,14 @@ describe("the Save Drawing As dialog", () => {
     expect(files.saved).toHaveLength(0)
   })
 
+  it("names the drawing as the DXF written whole, as SAVEAS and DXFOUT do (x002)", async () => {
+    const { cad } = drawing()
+    typed(cad, "DXFOUT")
+    await cad.runtime.saveAs(dxf())
+    typed(cad, "SAVEAS")
+    expect(cad.state().saveAsDialog?.fileName).toBe("plan.ecad.json")
+  })
+
   it("DXFOUT opens it on AutoCAD 2018 DXF, named .dxf", () => {
     const { cad } = drawing()
     typed(cad, "DXFOUT")

@@ -37,6 +37,10 @@ A metà di una linea, un arco, un segmento di polilinea, un arco ellittico o una
 
 Il centro di un cerchio, di un arco o dell'arco di una polilinea. Passa il cursore sulla curva stessa: al centro non c'è nulla da agganciare. Un cerchio.
 
+### `NODo` (`NOD`) [#node]
+
+Un oggetto punto, quelli creati da `PUNTO`, [`DIVIDI`](/docs/commands/divide) e [`MISURA`](/docs/commands/measure), qualunque figura dia loro [`TIPOP`](/docs/commands/ptype). All'inizio non è tra gli snap correnti. Un cerchio con una croce.
+
 ### `QUAdrante` (`QUA`) [#quadrant]
 
 I punti di un cerchio o di un arco a 0°, 90°, 180° e 270°, lungo X e Y dell'UCS, e gli estremi degli assi di un'ellisse. Un rombo.
@@ -83,7 +87,7 @@ Come `NESsuno`: l'insieme degli snap correnti è cancellato.
 
 ## Cosa non fa ancora [#missing]
 
-La finestra di dialogo Impostazioni disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Nodo e Centro geometrico, come modalità e nei menu. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da [`LINEA`](/docs/commands/line) e [`CERCHIO`](/docs/commands/circle). Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
+La finestra di dialogo Impostazioni disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Centro geometrico, come modalità e nei menu. Nodo sui punti di definizione di una quota e sull'origine del suo testo: qui trova solo oggetti punto. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da [`LINEA`](/docs/commands/line) e [`CERCHIO`](/docs/commands/circle). Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os)
 

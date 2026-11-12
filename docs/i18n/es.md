@@ -370,3 +370,13 @@ origen/Origen` from the 2026 help and the same captures;
   DXF no válida o incompleta -- dibujo descartado.` The count of what a DXF leaves out is ours,
   AutoCAD having nothing to say (`objetos no abiertos`, `de una presentación`, AutoCAD's word for a
   layout, `No se ha podido leer`).
+- **POINT, PTYPE, DIVIDE, MEASURE and Node:** the names by `getcname` in the 2027 console
+  (`PUNTO`, `DIVIDE`, `GRADUA`; PTYPE is no console command, `TIPOPUNTO` from its dialog's string
+  table and the `acad.pgp`'s `DDPTYPE, *TIPOPUNTO`), the aliases from the `acad.pgp` (`PU`, `DIV`,
+  `GD`); the prompts and messages the console's (point/p01–p12, divide/p01–p15) and tables 20430–20443
+  and 32824 (`Modos de punto actuales`), DIVIDE's block-name refusal `Nombre bloque no válido.`
+  apart from -INSERT's `Nombre de bloque no válido.`; the Point Style dialog's labels
+  `acddptyperes.dll`'s dialog 101 (`Estilo de punto`, `Tamaño de punto:`…), and the ribbon's
+  `Varios puntos`, `Dividir`, `Medir` acad.cuix's (es-es); Node's -OSNAP word `PUNto` and its name
+  `Nodo` tables 27408, 33203 and 73. The tool palette's Points drop-down (`Puntos`) and the
+  dialog's accessible name of its images are ours †.

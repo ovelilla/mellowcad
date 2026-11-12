@@ -203,6 +203,13 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
         withZ(entity.position, entityZAt(entity, entity.position)),
         polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
       )
+    case "point":
+      // Its origin at the point, X along its plane's (point/p10; one with
+      // a DXF 50 unverified).
+      return createUcs(
+        withZ(entity.position, entityZAt(entity, entity.position)),
+        { x: 1, y: 0 }
+      )
     case "line":
     case "polyline3d":
     case "dimension":
@@ -258,6 +265,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "insert":
     case "region":
     case "solid3d":
+    case "point":
       return false
     default: {
       const unhandled: never = entity
@@ -377,6 +385,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "insert":
     case "region":
     case "solid3d":
+    case "point":
       return null
     default: {
       const unhandled: never = entity
@@ -460,6 +469,7 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     // WHY: unverified, read as a pick at the WCS's origin, the edge nearest it.
     case "region":
     case "solid3d":
+    case "point":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

@@ -1,0 +1,10 @@
+_LINE
+0,0
+10,0
+
+_POINT
+5,5
+_ZOOM
+_E
+_MEASURE
+5,5

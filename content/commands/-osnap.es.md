@@ -3,7 +3,7 @@ title: "Referencia a objetos en AutoCAD: comando -REFENT (-OSNAP)"
 metaTitle: "Referencia a objetos en AutoCAD: OSNAP y -REFENT"
 description: "La referencia a objetos (OSNAP) de AutoCAD en español: -REFENT fija los modos, F3 la activa y FIN, MED o Mayús + clic derecho fuerzan uno. Pruébalo gratis."
 figure: "-REFENT fija Punto medio y Centro como referencias implícitas; después LINEA va del punto medio de un lado al centro del círculo, y el lado superior muestra su marcador de Punto medio."
-sourceHash: "acf7c6b99589"
+sourceHash: "627cd26c12df"
 ---
 
 La referencia a objetos lleva un punto señalado exactamente a un punto de un objeto: un extremo, un punto medio, un centro. Con la referencia a objetos activada, el cursor cerca de uno de esos puntos muestra su marcador, en verde, y su nombre en la información de herramientas; un clic cae entonces en ese punto, no donde está el cursor. Las referencias a objetos implícitas son los modos que actúan en cada solicitud de punto: al principio Punto final, Centro, Intersección y Extensión, como en AutoCAD. F3 activa y desactiva la referencia a objetos, escribiendo `<Refent activado>` o `<Refent desactivado>`, y también el botón Referencia a objetos de la barra de estado, cuyo menú tiene una casilla para cada modo. Con varias referencias bajo el cursor gana la más cercana, y Tab recorre las demás. Orto, el rastreo polar y el modo Forzcursor nunca desvían un punto hallado por una referencia.
@@ -25,6 +25,10 @@ El punto medio de una línea, un arco, un segmento de polilínea, un arco elípt
 ### CENter
 
 El centro de un círculo, un arco o un arco de polilínea. Pasa el cursor por la propia curva: en el centro no hay nada que atrapar. Un círculo.
+
+### NODe
+
+Nodo: un objeto de punto, los que hacen <Command id="POINT" />, <Command id="DIVIDE" /> y <Command id="MEASURE" />, sea cual sea la figura que les dé <Command id="PTYPE" />. Al principio no está entre las referencias implícitas. Un círculo con una cruz.
 
 ### QUAdrant
 
@@ -72,7 +76,7 @@ Lo mismo que <Keyword id="NONe" />: se quitan todas las referencias implícitas.
 
 ## Missing
 
-El cuadro de diálogo Parámetros de dibujo que abren REFENT y REF en AutoCAD (OSNAP y OS en inglés): aquí son comandos desconocidos, y el menú de la barra de estado fija los modos. Nodo y Centro geométrico, como modos y en los menús. Punto medio entre 2 puntos, el Punto de rastreo temporal y las teclas que se mantienen pulsadas para una referencia de un solo punto (Mayús + A, Mayús + Q…). Intersección, Perpendicular y Tangente en elipses, Perpendicular y Tangente en splines, y Extensión desde el extremo de un arco de polilínea, o con su distancia y su ángulo en la información de herramientas. Una Perpendicular o una Tangente que espere al otro punto al principio de un comando que no sea <Command id="LINE" /> ni <Command id="CIRCLE" />. Los parámetros de la mira y del marcador, APERTURE y AUTOSNAP.
+El cuadro de diálogo Parámetros de dibujo que abren REFENT y REF en AutoCAD (OSNAP y OS en inglés): aquí son comandos desconocidos, y el menú de la barra de estado fija los modos. Centro geométrico, como modo y en los menús. Nodo en los puntos de definición de una cota y en el origen de su texto: aquí solo encuentra objetos de punto. Punto medio entre 2 puntos, el Punto de rastreo temporal y las teclas que se mantienen pulsadas para una referencia de un solo punto (Mayús + A, Mayús + Q…). Intersección, Perpendicular y Tangente en elipses, Perpendicular y Tangente en splines, y Extensión desde el extremo de un arco de polilínea, o con su distancia y su ángulo en la información de herramientas. Una Perpendicular o una Tangente que espere al otro punto al principio de un comando que no sea <Command id="LINE" /> ni <Command id="CIRCLE" />. Los parámetros de la mira y del marcador, APERTURE y AUTOSNAP.
 
 ## Questions
 

@@ -4,7 +4,7 @@ metaTitle: "OSNAP in AutoCAD: object snap modes, F3, -OSNAP"
 description: "How AutoCAD's object snaps work: -OSNAP (-OS) sets the running modes, F3 turns them on and off, and END, MID or Shift + right-click force one. Try it free."
 figure: "-OSNAP sets Midpoint and Center as the running snaps; LINE then goes from an edge's midpoint to the circle's centre, and the top edge shows its Midpoint marker."
 related: ["SNAP", "FROM", "LINE", "ID"]
-coverage: "2770e4ed637e"
+coverage: "e1d35963d839"
 ---
 
 Object snaps put a pick exactly on a point of an object: an end, a midpoint, a centre. With object snapping on, the cursor near such a point shows its marker, in green, and its name in a tooltip; a click then lands on that point, not where the cursor is. The running snaps are the modes at work at every point prompt: at first Endpoint, Center, Intersection and Extension, as in AutoCAD. F3 turns object snapping on and off, writing `<Osnap on>` or `<Osnap off>`, and so does the Object snap button on the status bar, whose menu has a check box for each mode. With several snaps under the cursor, the nearest wins, and Tab cycles through the others. Ortho, Polar and snap mode never bend a snapped point.
@@ -26,6 +26,10 @@ Halfway along a line, an arc, a polyline segment, an elliptical arc or a spline.
 ### CENter
 
 The centre of a circle, an arc or a polyline's arc. Pass the cursor over the curve itself: at the centre there is nothing to catch. A circle.
+
+### NODe
+
+A point object, the ones <Command id="POINT" />, <Command id="DIVIDE" /> and <Command id="MEASURE" /> make, whatever figure <Command id="PTYPE" /> gives them. Not among the running snaps at first. A circle with a cross.
 
 ### QUAdrant
 
@@ -73,7 +77,7 @@ The same as <Keyword id="NONe" />: the running set is cleared.
 
 ## Missing
 
-The Drafting Settings dialog that OSNAP and OS open in AutoCAD: here they are unknown commands, and the status bar's menu sets the modes. Node and Geometric Center, as modes and in the menus. Mid Between 2 Points, the temporary track point and the keys held down for a one-point snap (Shift + A, Shift + Q…). Intersection, Perpendicular and Tangent on ellipses, Perpendicular and Tangent on splines, and Extension from a polyline's arc end, or with its distance and angle in the tooltip. A Perpendicular or a Tangent that waits for the other point at the start of a command other than <Command id="LINE" /> and <Command id="CIRCLE" />. The aperture and marker settings, APERTURE and AUTOSNAP.
+The Drafting Settings dialog that OSNAP and OS open in AutoCAD: here they are unknown commands, and the status bar's menu sets the modes. Geometric Center, as a mode and in the menus. Node on a dimension's definition points and the origin of its text: here it finds point objects only. Mid Between 2 Points, the temporary track point and the keys held down for a one-point snap (Shift + A, Shift + Q…). Intersection, Perpendicular and Tangent on ellipses, Perpendicular and Tangent on splines, and Extension from a polyline's arc end, or with its distance and angle in the tooltip. A Perpendicular or a Tangent that waits for the other point at the start of a command other than <Command id="LINE" /> and <Command id="CIRCLE" />. The aperture and marker settings, APERTURE and AUTOSNAP.
 
 ## Questions
 

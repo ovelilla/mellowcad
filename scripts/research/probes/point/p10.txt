@@ -1,0 +1,21 @@
+_LINE
+0,0
+10,0
+
+_POINT
+5,5
+_ZOOM
+_E
+_UCS
+_Z
+30
+_UCS
+_OB
+5,5
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))
+_UCS
+_W
+_UCS
+_OB
+5,5
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))

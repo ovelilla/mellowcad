@@ -33,6 +33,7 @@ import { PlanarSimilarity } from "../geometry/planarCurves"
 import {
   createLine,
   createCircle,
+  createPoint,
   createArc,
   createPolyline,
   createPolyline3d,
@@ -68,6 +69,7 @@ import {
 import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
 import { mappedFit, polylineRefitted } from "./polylineFits"
+import { withXAxisAngle } from "./points"
 import {
   entityAxes,
   entityElevation,
@@ -342,6 +344,7 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
         origin: V.add(entity.origin, delta),
       }
     case "insert":
+    case "point":
       return { ...entity, position: V.add(entity.position, delta) }
   }
 }
@@ -430,6 +433,7 @@ export function stretchEntity(
     case "mtext":
     case "attdef":
     case "insert":
+    case "point":
       return shiftEntityZ(planar, dz)
     case "arc":
     case "polyline":
@@ -495,6 +499,7 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     case "mtext":
     case "attdef":
     case "insert":
+    case "point":
       return []
     default: {
       const unhandled: never = entity
@@ -516,6 +521,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "mtext":
     case "attdef":
     case "insert":
+    case "point":
       return [entity.position]
     case "line":
     case "arc":
@@ -634,6 +640,7 @@ function stretchPlanar(
       // modelled (MOVE-D11). Its loops' bulges are kept (unprobed).
       return { ...entity, loops: mapHatchLoops(entity, shift) }
     case "insert":
+    case "point":
       // A reference has no free vertices to bend: it rides along whole when the
       // frame catches its insertion point, as a circle does with its centre.
       return inFrame(entity.position)
@@ -763,6 +770,12 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
         )
       case "insert":
         return insertLike(entity, V.add(entity.position, delta))
+      case "point":
+        return createPoint(
+          V.add(entity.position, delta),
+          entity.layerId,
+          entity.xAxisAngle
+        )
       case "region":
         return regionLike(entity, shiftBy(delta))
     }
@@ -893,6 +906,12 @@ function rotateFlat(
         position: rotatePoint(entity.position, pivot, radians),
         rotation: entity.rotation + radians,
       }
+    case "point":
+      // DXF 50 turns by the angle (point/p06).
+      return withXAxisAngle(
+        { ...entity, position: rotatePoint(entity.position, pivot, radians) },
+        (entity.xAxisAngle ?? 0) + radians
+      )
   }
 }
 
@@ -1009,6 +1028,8 @@ export function rotateEntityCopy(
             rotation: entity.rotation + radians,
           }
         )
+      case "point":
+        return freshCopy(rotateFlat(entity, pivot, radians))
     }
   })()
   return carryOverrides(entity, copy)
@@ -1145,6 +1166,9 @@ function scalePlanar(
         scaleX: entity.scaleX * factor,
         scaleY: entity.scaleY * factor,
       }
+    case "point":
+      // Its figure is PDSIZE's, not its own: only the place moves (point/p06).
+      return { ...entity, position: scalePoint(entity.position, base, factor) }
   }
 }
 
@@ -1250,6 +1274,8 @@ export function scaleEntityCopy(
           scaleX: entity.scaleX * factor,
           scaleY: entity.scaleY * factor,
         })
+      case "point":
+        return freshCopy(scalePlanar(entity, base, factor))
     }
   })()
   return scaleEntityZ(carryOverrides(entity, copy), zOf(base), factor)
@@ -1392,6 +1418,13 @@ function mirrorFlat(
       }
     case "insert":
       return { ...entity, ...mirroredInsert(entity, a, b) }
+    case "point":
+      // DXF 50 reflects as a direction: 30° about the Y axis reads 150°
+      // (point/p06).
+      return withXAxisAngle(
+        { ...entity, position: mirrorPoint(entity.position, a, b) },
+        mirroredHeading(a, b)(entity.xAxisAngle ?? 0)
+      )
   }
 }
 
@@ -1635,6 +1668,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
           scaleX: reflected.scaleX,
         })
       }
+      case "point":
+        return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }
   })()
   return carryOverrides(entity, copy)

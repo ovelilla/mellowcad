@@ -55,10 +55,11 @@ us to walk again, whereas a command costs the same before or after it.
 5. **DXF** — under way, ahead of the rest by the owner's decision of 2026-11-05 (the visibility
    plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
    types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
-   (POINT, SOLID, LEADER and MLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch
-   patterns, index colours). The brief is `docs/next-dxf.md`.
+   (POINT done, with PDMODE, PDSIZE, PTYPE, DIVIDE, MEASURE and the Node snap; then SOLID, LEADER
+   and MLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
+   The brief is `docs/next-dxf.md`.
 
-Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
+TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
 its first vertex, and joined in space into a 3D polyline, or a spline where an arc joins it
 (3dpoly/p30–p78, modify.md's TRIM and JOIN). ARRAYRECT's Levels are done, stacked along the UCS's Z with
@@ -90,14 +91,13 @@ palette's Fit/Smooth words and the meshes. LIST is done, every type of the model
 2027's console lists it (inquiry/p400–p446, inquiry.md's LIST).
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
-modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object
-ltscale, isometric drafting mode. DXF's fourth phase may bring POINT and XLINE/RAY forward, for the
-files that carry them.
+modern `DIM` command, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object ltscale, isometric drafting
+mode. DXF's fourth phase may bring XLINE/RAY forward, for the files that carry them.
 
 Blocks family, not on the near-term path: ByBlock resolution, inserting external drawing files +
 INSUNITS,
 `-BLOCK` Mode keywords, `-INSERT` Basepoint/Corner/XYZ/Explode/Repeat, BASE, WBLOCK, BEDIT, MINSERT,
-XREF, BREPLACE, dynamic blocks, DIVIDE/MEASURE with a block, a block table manager, ATTSYNC,
+XREF, BREPLACE, dynamic blocks, a block table manager, ATTSYNC,
 BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
 
 Plot-to-PDF remains end-of-roadmap and unscheduled (there are no layouts).

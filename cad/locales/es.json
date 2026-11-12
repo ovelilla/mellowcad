@@ -126,7 +126,11 @@
       "solideditoffset": "Desfasar caras",
       "solidedittaper": "Inclinar caras",
       "solideditdelete": "Suprimir caras",
-      "solideditcopy": "Copiar caras"
+      "solideditcopy": "Copiar caras",
+      "point": "Varios puntos",
+      "divide": "Dividir",
+      "measuresegments": "Medir",
+      "ptype": "Tipo de punto"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -160,6 +164,7 @@
       "endpoint": "Punto final",
       "midpoint": "Punto medio",
       "center": "Centro",
+      "node": "Nodo",
       "intersection": "Intersección",
       "apparentIntersection": "Intersección ficticia",
       "perpendicular": "Perpendicular",
@@ -219,7 +224,8 @@
       "hatch": "{count, plural, one {Sombreado} other {Sombreados}}",
       "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}",
       "solid3d": "{count, plural, one {Sólido 3D} other {Sólidos 3D}}",
-      "region": "{count, plural, one {Región} other {Regiones}}"
+      "region": "{count, plural, one {Región} other {Regiones}}",
+      "point": "{count, plural, one {Punto} other {Puntos}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -637,13 +643,18 @@
       "SECTION": ["SECCION", "SC"],
       "FILLETEDGE": ["ARISTAEMPALME"],
       "CHAMFEREDGE": ["ACHAFLANAARISTA"],
-      "SOLIDEDIT": ["EDITSOLIDO"]
+      "SOLIDEDIT": ["EDITSOLIDO"],
+      "POINT": ["PUNTO", "PU"],
+      "DIVIDE": ["DIVIDE", "DIV"],
+      "MEASURE": ["GRADUA", "GD"],
+      "PTYPE": ["TIPOPUNTO", "DDPTYPE"]
     },
     "keywords": {
       "-OSNAP": {
         "ENDpoint": "FINal",
         "MIDpoint": "MEDio",
         "CENter": "CENtro",
+        "NODe": "PUNto",
         "QUAdrant": "CUAdrante",
         "INTersection": "INTersección",
         "EXTension": "EXTensión",
@@ -691,7 +702,7 @@
         "Diameter": "Diámetro"
       },
       "CIRCLED": { "3P": "3P", "2P": "2P", "Ttr": "Ttr" },
-      "FILL": { "ON": "ACT", "OFF": "DES", "1": "1", "0": "0" },
+      "FILL": { "0": "0", "1": "1", "ON": "ACT", "OFF": "DES" },
       "ELLIPSE": {
         "Arc": "Arco",
         "Center": "Centro",
@@ -1389,6 +1400,16 @@
         "Zaxis": "ejeZ",
         "2points": "2puntos",
         "Reference": "Referencia"
+      },
+      "DIVIDE": {
+        "Block": "Bloque",
+        "Yes": "Sí",
+        "No": "No"
+      },
+      "MEASURE": {
+        "Block": "Bloque",
+        "Yes": "Sí",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -2043,7 +2064,16 @@
       "solideditOffset": "Precise la distancia de desfase",
       "solideditTaperBase": "Precise el punto base",
       "solideditTaperAxis": "Precise otro punto en el eje de inclinación",
-      "solideditTaperAngle": "Precise ángulo de inclinación"
+      "solideditTaperAngle": "Precise ángulo de inclinación",
+      "specifyAPoint": "Precise un punto",
+      "selectObjectToDivide": "Designe objeto que se va a dividir",
+      "selectObjectToMeasure": "Designe objeto que se va a medir",
+      "divideCountOr": "Indique el número de segmento o",
+      "divideCount": "Indique el número de segmentos",
+      "measureLengthOr": "Precise longitud de segmento o",
+      "measureLength": "Precise longitud de segmento",
+      "blockToInsert": "Indique nombre de bloque que se va a insertar",
+      "alignBlockWithObject": "¿Alinear bloque con objeto?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2390,7 +2420,7 @@
       "regenQueued": "La regeneración está en espera.",
       "requiresRegen": "** Regeneración necesaria, no puede ser transparente.",
       "currentOsnapModes": "Modos refent actuales: {modes}",
-      "osnapModeName": "{mode, select, endpoint {Fin} midpoint {Med} center {Cen} quadrant {Cua} intersection {Int} insertion {Ins} perpendicular {Per} tangent {Tan} nearest {Cer} apparentIntersection {Fic Int} extension {Ext} other {Par}}",
+      "osnapModeName": "{mode, select, endpoint {Fin} midpoint {Med} center {Cen} node {Pun} quadrant {Cua} intersection {Int} insertion {Ins} perpendicular {Per} tangent {Tan} nearest {Cer} apparentIntersection {Fic Int} extension {Ext} other {Par}}",
       "currentLineweight": "Grosor de línea actual: {value}",
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe.",
@@ -2769,13 +2799,21 @@
       "taperAngleNonzero": "El ángulo de inclinación debe ser distinto de cero y estar entre -90 y 90.",
       "zeroDisplacement": "Ningún cambio debido a vector de desplazamiento cero.",
       "zeroRotation": "Ningún cambio debido a ángulo de rotación cero.",
-      "offsetDistanceBound": "La distancia de desfase debe ser mayor que {distance}."
+      "offsetDistanceBound": "La distancia de desfase debe ser mayor que {distance}.",
+      "currentPointModes": "Modos de punto actuales:  PDMODE={mode}  PDSIZE={size}",
+      "cannotDivideObject": "Imposible dividir este objeto.",
+      "cannotMeasureObject": "Imposible medir este objeto.",
+      "objectNotThatLong": "Objeto demasiado corto.",
+      "objectTooLong": "Objeto demasiado largo.",
+      "cannotFindBlock": "No se puede encontrar bloque \"{name}\".",
+      "blockNameNotValid": "Nombre bloque no válido."
     },
     "feedback": {
       "snap": {
         "endpoint": "Punto final",
         "midpoint": "Punto medio",
         "center": "Centro",
+        "node": "Nodo",
         "intersection": "Intersección",
         "apparentIntersection": "Intersección ficticia",
         "perpendicular": "Perpendicular",

@@ -201,7 +201,7 @@
     "q4": "Fonctionne-t-il vraiment comme AutoCAD ?",
     "a4": "C'est le cahier des charges : les commandes, les alias, l'ordre des invites, les lettres d'option et les valeurs par défaut suivent l'AutoCAD actuel. Certaines commandes sont encore partielles, et la feuille de route liste exactement les options qui manquent.",
     "q5": "Puis-je ouvrir ou enregistrer des fichiers DWG ou DXF, ou imprimer ?",
-    "a5": "MellowCAD <dxf>ouvre les fichiers DXF</dxf> d'AutoCAD R12 à 2018, texte ou binaires : lignes, arcs, cercles, ellipses, polylignes, splines, textes, cotes, hachures et blocs, sur leurs calques. Ce qu'il ne gère pas encore (points, lignes de repère, tableaux, présentations, solides 3D) est laissé de côté et listé à l'ouverture. Il <edit>les enregistre aussi</edit> (2000 à 2018). Pas encore de DWG, ni d'impression ou d'export PDF.",
+    "a5": "MellowCAD <dxf>ouvre les fichiers DXF</dxf> d'AutoCAD R12 à 2018, texte ou binaires : lignes, arcs, cercles, ellipses, polylignes, splines, textes, cotes, hachures, points et blocs, sur leurs calques. Ce qu'il ne gère pas encore (lignes de repère, tableaux, présentations, solides 3D) est laissé de côté et listé à l'ouverture. Il <edit>les enregistre aussi</edit> (2000 à 2018). Pas encore de DWG, ni d'impression ou d'export PDF.",
     "q6": "Où sont stockés mes dessins ?",
     "a6": "Sur votre appareil. MellowCAD enregistre automatiquement dans votre navigateur et n'envoie jamais vos dessins. Effacer les données du site efface cet enregistrement : appuyez sur Ctrl+S pour garder un fichier.",
     "q7": "MellowCAD est-il lié à Autodesk ?",

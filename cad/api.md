@@ -282,6 +282,10 @@ export declare class CadEngine {
     togglePalette(tab: PaletteTab): void;
     setPaletteOpen(open: boolean): void;
     setUnitsDialog(open: boolean): void;
+    /** Shows or hides the Point Style dialog; closing it ends PTYPE. */
+    setPointStyleDialog(open: boolean): void;
+    /** The Point Style dialog's OK: PDMODE and PDSIZE, one step. */
+    applyPointStyle(mode: number, size: number): void;
     /** The Save Drawing As dialog's Cancel: SAVEAS, SAVE or DXFOUT ends, writing nothing. */
     setSaveAsDialog(open: boolean): void;
     /**
@@ -881,6 +885,10 @@ export interface EngineState {
     readonly documentPrecision: number;
     /** AUPREC: the decimal places angles are written with. */
     readonly documentAnglePrecision: number;
+    /** PDMODE: the figure points show. */
+    readonly pointMode: number;
+    /** PDSIZE: their size, absolute above 0, else a percentage of the view. */
+    readonly pointSize: number;
     /** Global linetype scale (AutoCAD's LTSCALE). */
     readonly ltScale: number;
     /** The current dimension style's overall scale (AutoCAD's DIMSCALE). */
@@ -943,6 +951,8 @@ export interface EngineState {
     readonly palette: PaletteUi;
     /** Whether the Drawing Units dialog (UNITS) is showing. */
     readonly unitsDialog: boolean;
+    /** Whether the Point Style dialog (PTYPE) is showing. */
+    readonly pointStyleDialog: boolean;
     /**
      * The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, with what it
      * opens on, or null while it is not showing. The host draws it and answers
@@ -1327,6 +1337,8 @@ export declare enum SnapType {
     Endpoint = "endpoint",
     Midpoint = "midpoint",
     Center = "center",
+    /** A point object — AutoCAD's "Node". */
+    Node = "node",
     Intersection = "intersection",
     /**
      * The point where two entities *would* meet if one or both were extended —
@@ -2178,7 +2190,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity;
 
 export type { EntityColor }
 /**
@@ -2251,7 +2263,7 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3392,6 +3404,23 @@ export interface MTextEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A point object (DXF POINT). `position` is in the OCS of its normal, at its
+ * elevation, as a circle's centre is: DXF writes the WCS and the reader turns
+ * it. What it shows is the drawing's PDMODE and PDSIZE, not the object's.
+ */
+export interface PointEntity extends BaseEntity, Thick {
+    readonly type: "point";
+    readonly position: Vec2;
+    /**
+     * DXF 50: the X axis of the UCS the point was drawn in, as AutoCAD stores
+     * it, so the figure turns by its negative (drawn in UCS Z 30, 50 is 330°
+     * and the cross shows turned 30°: point/p04, desktop). Absent is 0.
+     */
+    readonly xAxisAngle?: number;
+}
+
+// domain/entityTypes.ts
+/**
  * A polyline: a single connected chain of segments through an ordered list of
  * `vertices` (at least two). When `closed`, an extra segment joins the last
  * vertex back to the first, so the outline forms a loop.
@@ -3701,8 +3730,8 @@ export interface RegionEntity extends BaseEntity {
 // domain/entityTypes.ts
 /**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
- * polylines" among the ones modelled here. Absent means 0; negative extrudes
- * down.
+ * polylines" and points (point/p04) among the ones modelled here. Absent
+ * means 0; negative extrudes down.
  */
 interface Thick {
     readonly thickness?: number;
@@ -4059,6 +4088,10 @@ export interface DocumentSettings {
     readonly isolines: number;
     /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
     readonly visualStyle: VisualStyle;
+    /** PDMODE: the figure every point object shows (0 a dot, 2 a plus, 3 a cross, 4 a tick; +32 a circle, +64 a square). */
+    readonly pointMode: number;
+    /** PDSIZE: its size, absolute when positive, else a percentage of the view's height (0 is 5). */
+    readonly pointSize: number;
     /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
     readonly filletRadius3d: number;
     /** CHAMFERA: CHAMFER's first distance. */

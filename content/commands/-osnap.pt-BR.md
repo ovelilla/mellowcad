@@ -3,7 +3,7 @@ title: "Comando -OSNAP no AutoCAD: snap ao objeto"
 metaTitle: "OSNAP no AutoCAD: snap ao objeto, F3 e -OSNAP"
 description: "Como funcionam os snaps ao objeto do AutoCAD em português: o -OSNAP (-OS) define os modos, F3 os ativa, e MEI ou Shift + clique direito força um. Experimente."
 figure: "O -OSNAP define Meio e Centro como snaps em execução; a LINHA vai então do meio de uma aresta ao centro do círculo, e a aresta de cima mostra o seu marcador de Meio."
-sourceHash: "acf7c6b99589"
+sourceHash: "627cd26c12df"
 ---
 
 Os snaps ao objeto põem um ponto indicado exatamente num ponto de um objeto: uma extremidade, um meio, um centro. Com o snap ao objeto ativado, o cursor perto de um desses pontos mostra o seu marcador, em verde, e o seu nome numa dica de ferramenta; um clique cai então nesse ponto, não onde está o cursor. Os snaps em execução são os modos que atuam em cada prompt de ponto: no início Ponto final, Centro, Intersecção e Extensão, como no AutoCAD. F3 ativa e desativa o snap ao objeto, escrevendo `<Osnap ativado>` ou `<Osnap desativado>`, e o botão Snap ao objeto na barra de status também, cujo menu tem uma caixa de seleção para cada modo. Com vários snaps sob o cursor, vence o mais próximo, e Tab percorre os outros. O modo Orto, o Polar e o modo snap nunca desviam um ponto de snap.
@@ -25,6 +25,10 @@ O ponto na metade de uma linha, um arco, um segmento de polilinha, um arco elíp
 ### CENter
 
 O centro de um círculo, um arco ou um arco de polilinha. Passe o cursor sobre a própria curva: no centro não há nada para pegar. Um círculo.
+
+### NODe
+
+Um objeto de ponto, os que o <Command id="POINT" />, o <Command id="DIVIDE" /> e o <Command id="MEASURE" /> criam, seja qual for a figura que o <Command id="PTYPE" /> lhes dá. No início não está entre os snaps em execução. Um círculo com uma cruz.
 
 ### QUAdrant
 
@@ -72,7 +76,7 @@ O mesmo que <Keyword id="NONe" />: o conjunto em execução é limpo.
 
 ## Missing
 
-A caixa de diálogo Configurações do desenho que o OSNAP e o OS abrem no AutoCAD: aqui eles são comandos desconhecidos, e o menu da barra de status define os modos. Nó e Centro geométrico, como modos e nos menus. Meio entre 2 pontos, o ponto de rastreamento temporário e as teclas mantidas pressionadas para um snap de um ponto só (Shift + A, Shift + Q…). Intersecção, Perpendicular e Tangente em elipses, Perpendicular e Tangente em splines, e Extensão a partir da extremidade de um arco de polilinha, ou com a sua distância e o seu ângulo na dica de ferramenta. Uma Perpendicular ou uma Tangente que espera o outro ponto no início de um comando que não seja a <Command id="LINE" /> ou o <Command id="CIRCLE" />. As configurações da abertura e do marcador, APERTURE e AUTOSNAP.
+A caixa de diálogo Configurações do desenho que o OSNAP e o OS abrem no AutoCAD: aqui eles são comandos desconhecidos, e o menu da barra de status define os modos. Centro geométrico, como modo e nos menus. O snap Ponto nos pontos de definição de uma cota e na origem do seu texto: aqui ele só encontra objetos de ponto. Meio entre 2 pontos, o ponto de rastreamento temporário e as teclas mantidas pressionadas para um snap de um ponto só (Shift + A, Shift + Q…). Intersecção, Perpendicular e Tangente em elipses, Perpendicular e Tangente em splines, e Extensão a partir da extremidade de um arco de polilinha, ou com a sua distância e o seu ângulo na dica de ferramenta. Uma Perpendicular ou uma Tangente que espera o outro ponto no início de um comando que não seja a <Command id="LINE" /> ou o <Command id="CIRCLE" />. As configurações da abertura e do marcador, APERTURE e AUTOSNAP.
 
 ## Questions
 

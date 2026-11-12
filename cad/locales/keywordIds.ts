@@ -4,6 +4,7 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "ENDpoint",
     "MIDpoint",
     "CENter",
+    "NODe",
     "QUAdrant",
     "INTersection",
     "EXTension",
@@ -794,5 +795,15 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Zaxis",
     "2points",
     "Reference"
+  ],
+  "DIVIDE": [
+    "Block",
+    "Yes",
+    "No"
+  ],
+  "MEASURE": [
+    "Block",
+    "Yes",
+    "No"
   ]
 }

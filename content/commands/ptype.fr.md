@@ -1,0 +1,34 @@
+---
+title: "Commande TYPEPT (PTYPE) dans AutoCAD"
+description: "Comment fonctionne TYPEPT (PTYPE, alias DDPTYPE) d'AutoCAD en français : la boîte Style des points, ses vingt figures, la taille, PDMODE et PDSIZE. Essayez-le."
+figure: "TYPEPT ouvre la boîte Style des points ; son OK écrit PDMODE et PDSIZE, tapés ici à 35 et 8, puis trois points dessinés dans une plaque."
+sourceHash: "02cea384a2a9"
+---
+
+TYPEPT (PTYPE) ouvre la boîte de dialogue Style des points, qui définit comment chaque objet point du dessin est dessiné : ceux que dessine <Command id="POINT" />, et ceux que laissent <Command id="DIVIDE" /> et <Command id="MEASURE" />. `DDPTYPE` est son alias, comme dans AutoCAD. Le style appartient au dessin, pas à un point : changez-le et tous changent d'un coup, et il est enregistré avec le dessin. Son bouton, Style de points, est à côté de Localiser un point parmi les outils Utilitaires ; tapée avec une apostrophe devant, `'TYPEPT`, elle s'ouvre à l'intérieur d'une commande en cours.
+
+La boîte montre vingt figures sur quatre rangées de cinq, l'actuelle choisie : un point minuscule, rien, un signe plus, une croix et un petit trait, puis chacune dans un cercle, dans un carré, et dans les deux. En dessous, Taille des points et la façon de la lire : Définir la taille par rapport à l'écran, un pourcentage de la hauteur de la vue, ou Définir la taille en unités absolues, des unités de dessin. Par défaut, c'est 5 % par rapport à l'écran. OK écrit le choix en une étape que <Command id="U" /> annule ; Annuler ou Échap ne changent rien. Une taille qui n'est pas un nombre, ou inférieure à 0, est refusée (Entrée incorrecte.) et la boîte reste ouverte.
+
+Ce que la boîte écrit, ce sont deux variables, qu'on peut aussi taper à la ligne de commande : PDMODE, la figure (de 0 à 4, plus 32 pour le cercle, 64 pour le carré, 96 pour les deux : 35 est une croix dans un cercle), et PDSIZE, la taille (un nombre positif est en unités de dessin, un négatif un pourcentage de l'écran, et 0 vaut 5 %).
+
+## Missing
+
+Le bouton Aide de la boîte. Un point dimensionné par rapport à l'écran garde cette taille à l'écran quand on zoome, là où AutoCAD ne la garde que jusqu'à la prochaine régénération du dessin.
+
+## Questions
+
+### Qu'est-ce que DDPTYPE dans AutoCAD ?
+
+L'alias de TYPEPT (PTYPE en anglais) : les deux ouvrent la boîte Style des points, dans toutes les langues d'AutoCAD.
+
+### Pourquoi mes points ne sont pas visibles ?
+
+Le style de point par défaut est un point d'un pixel, qu'une ligne dessinée par-dessus cache, et PDMODE 1 ne dessine rien du tout. Ouvrez TYPEPT et choisissez une croix ou une figure cerclée, ou tapez PDMODE et `3`. Avec une taille par rapport à l'écran, ils restent visibles à tout zoom.
+
+### Comment changer la taille des points ?
+
+Dans TYPEPT, tapez la Taille des points : un pourcentage de l'écran avec Définir la taille par rapport à l'écran, pour que le point garde sa taille quand on zoome, ou des unités de dessin avec Définir la taille en unités absolues, pour qu'il grandisse et rétrécisse avec le dessin. Ou tapez PDSIZE : une valeur négative est le pourcentage.
+
+### Peut-on donner à un point son propre style ?
+
+Non : dans AutoCAD comme ici, le style de point est celui du dessin, et tous les objets point le suivent. Pour marquer des endroits autrement, insérez-y un bloc ; <Command id="DIVIDE" /> et <Command id="MEASURE" /> peuvent placer un bloc au lieu de points.

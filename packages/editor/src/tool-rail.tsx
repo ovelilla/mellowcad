@@ -11,6 +11,10 @@ import {
   Eye,
   Grid3x3,
   CircleDotDashed,
+  CircleDot,
+  Ellipsis,
+  Grip,
+  RulerDimensionLine,
   Cone,
   Donut,
   Globe,
@@ -182,6 +186,10 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   measure: Ruler,
   measurearea: Scan,
   id: LocateFixed,
+  point: Grip,
+  divide: Ellipsis,
+  measuresegments: RulerDimensionLine,
+  ptype: CircleDot,
 }
 
 /**
@@ -218,6 +226,7 @@ type FlyoutId =
   | "union"
   | "box"
   | "extrude"
+  | "point"
 
 type SectionId = "draw" | "modify" | "annotation" | "block" | "utilities"
 
@@ -266,6 +275,10 @@ const PALETTE: readonly PaletteSection[] = [
       // in its Boundary drop-down.
       "polyline3d",
       "region",
+      // The expanded Draw panel's Multiple Points, Divide and Measure
+      // (acad.cuix ID_PanelDraw): three buttons there, one drop-down here, as
+      // all three make point objects.
+      flyout("point", ["point", "divide", "measuresegments"]),
       // The 3D Modeling workspace's Modeling panel (acad.cuix
       // ID_Panel3D_Modeling), whose primitives' drop-down BOX opens, in
       // its order.
@@ -367,7 +380,8 @@ const PALETTE: readonly PaletteSection[] = [
     // (`^C^C_MEASUREGEOM _distance`, `_area`): their prompts are MEASUREGEOM's
     // Distance and Area word for word, and MEASUREGEOM, whose loop asks again
     // after each measure, is not built (docs/coverage/inquiry.md).
-    items: [flyout("measure", ["measure", "measurearea"]), "id"],
+    // Point Style beside ID Point, as in its expanded part.
+    items: [flyout("measure", ["measure", "measurearea"]), "id", "ptype"],
   },
 ]
 

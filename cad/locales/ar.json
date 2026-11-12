@@ -126,7 +126,11 @@
       "solideditoffset": "إزاحة متوازية للأوجه",
       "solidedittaper": "تسليب الأوجه",
       "solideditdelete": "حذف الأوجه",
-      "solideditcopy": "نسخ الأوجه"
+      "solideditcopy": "نسخ الأوجه",
+      "point": "نقاط متعددة",
+      "divide": "تقسيم",
+      "measuresegments": "قياس",
+      "ptype": "نمط النقطة"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -160,6 +164,7 @@
       "endpoint": "نقطة النهاية",
       "midpoint": "نقطة المنتصف",
       "center": "المركز",
+      "node": "عقدة",
       "intersection": "التقاطع",
       "apparentIntersection": "تقاطع ظاهري",
       "perpendicular": "عمودي",
@@ -224,7 +229,8 @@
       "hatch": "{count, plural, one {تهشير} two {تهشيران} other {تهشيرات}}",
       "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}",
       "solid3d": "{count, plural, one {مجسم ثلاثي الأبعاد} two {مجسمان ثلاثيا الأبعاد} other {مجسمات ثلاثية الأبعاد}}",
-      "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}"
+      "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}",
+      "point": "{count, plural, one {نقطة} two {نقطتان} other {نقاط}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",

@@ -130,7 +130,11 @@ export const ar: EngineLocale = {
       "solideditoffset": "إزاحة متوازية للأوجه",
       "solidedittaper": "تسليب الأوجه",
       "solideditdelete": "حذف الأوجه",
-      "solideditcopy": "نسخ الأوجه"
+      "solideditcopy": "نسخ الأوجه",
+      "point": "نقاط متعددة",
+      "divide": "تقسيم",
+      "measuresegments": "قياس",
+      "ptype": "نمط النقطة"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -164,6 +168,7 @@ export const ar: EngineLocale = {
       "endpoint": "نقطة النهاية",
       "midpoint": "نقطة المنتصف",
       "center": "المركز",
+      "node": "عقدة",
       "intersection": "التقاطع",
       "apparentIntersection": "تقاطع ظاهري",
       "perpendicular": "عمودي",
@@ -376,6 +381,17 @@ export const ar: EngineLocale = {
             "one": "منطقة",
             "two": "منطقتان",
             "other": "مناطق"
+          }
+        ]
+      ],
+      "point": [
+        [
+          "count",
+          2,
+          {
+            "one": "نقطة",
+            "two": "نقطتان",
+            "other": "نقاط"
           }
         ]
       ]

@@ -1,0 +1,64 @@
+---
+title: "MEASURE in AutoCAD"
+metaTitle: "MEASURE in AutoCAD: points at a set distance"
+description: "How AutoCAD's MEASURE (ME) works: points or blocks at a set length along a line, arc, circle or polyline, from the end you pick near. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for MEASURE in AutoCAD?","answer":"ME, then Enter or Space. The full name works too, and _MEASURE in any language of AutoCAD."},{"question":"Does MEASURE measure distances?","answer":"No: it places points at a length you give. To read the distance between two points, use DIST; for an object's length, LIST or AREA."},{"question":"Which end does MEASURE start from?","answer":"The end nearer the point where you selected the object. Pick it close to the end you want the first length measured from."},{"question":"Why can't I see the points MEASURE made?","answer":"They are drawn as dots, the default point style. Open PTYPE and choose a cross or a circle, or set PDMODE to 3: every point changes at once."},{"question":"What is the difference between MEASURE and DIVIDE?","answer":"DIVIDE splits an object into a number of equal parts; MEASURE steps along it by a length, leaving any remainder at the far end."}]
+---
+
+MEASURE marks an object at a set length. Select one line, arc, circle, ellipse, elliptical arc, polyline, 3D polyline or spline, then give the length, typed or as two points: MEASURE puts a point object every that length along the object, as far as one fits, and ends. It does not measure a distance for you, nor cut the object. It starts from the end nearer where you picked, so pick near the end to measure from; what is left over is at the other end, and when the length goes into the object a whole number of times, the far end gets a point too. A circle starts at its 0° point and runs counter-clockwise wherever it is picked; a closed polyline starts at its first vertex.
+
+The points are drawn as the drawing's point style says, a dot by default: set a visible figure with [`PTYPE`](/docs/commands/ptype), or PDMODE, first. The points lie on the object, on the current layer with the current colour, linetype and lineweight; the whole run is one step that `U` takes back, and the points are the Previous selection set. A length longer than the object gets `Object isn't that long.`, and one so short it would make more than 32767 points `Object is too long.`, both making nothing. Any other object gets `Cannot measure that object.`. The Draw tools' Points drop-down starts MEASURE too.
+
+- **Command:** `MEASURE`
+- **Aliases:** `ME`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `ME` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="measure" caption="A polyline 190 long measured every 15 from the end picked near: twelve points, the last 10 short of the far end." />
+
+## Options [#options]
+
+### `Block` (`B`) [#block]
+
+Instead of points, references of a block already in the drawing: give its name, then whether to align each one with the object, `Yes` (the default) or `No`, then the length. Aligned, each reference turns with the object at its place, along a line or tangent to an arc, whichever end the measuring starts from; not aligned, every one keeps the UCS's X. A name with no block behind it is refused, and the name asked again.
+
+## What it does not do yet [#missing]
+
+Which way a closed polyline picked past its middle runs: here it is measured backwards from its first vertex, as AutoCAD measures a closed ellipse or spline, but AutoCAD's own polyline has not been checked. A circle's points always start along the UCS's X, where AutoCAD starts them at the snap angle, SNAPANG, which MellowCAD does not have.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#measure--me--es-gradua--gd--pt-br-medida--me--fr-mesurer--me--it-misura--mis)
+
+## Questions [#questions]
+
+### What is the shortcut for MEASURE in AutoCAD?
+
+`ME`, then Enter or Space. The full name works too, and `_MEASURE` in any language of AutoCAD.
+
+### Does MEASURE measure distances?
+
+No: it places points at a length you give. To read the distance between two points, use [`DIST`](/docs/commands/dist); for an object's length, [`LIST`](/docs/commands/list) or [`AREA`](/docs/commands/area).
+
+### Which end does MEASURE start from?
+
+The end nearer the point where you selected the object. Pick it close to the end you want the first length measured from.
+
+### Why can't I see the points MEASURE made?
+
+They are drawn as dots, the default point style. Open [`PTYPE`](/docs/commands/ptype) and choose a cross or a circle, or set PDMODE to `3`: every point changes at once.
+
+### What is the difference between MEASURE and DIVIDE?
+
+[`DIVIDE`](/docs/commands/divide) splits an object into a number of equal parts; MEASURE steps along it by a length, leaving any remainder at the far end.
+
+## Related commands [#related]
+
+- [DIVIDE in AutoCAD](/docs/commands/divide)
+- [PTYPE in AutoCAD](/docs/commands/ptype)
+- [POINT](/docs/commands#point): Multiple Points
+- [DIST in AutoCAD](/docs/commands/dist)

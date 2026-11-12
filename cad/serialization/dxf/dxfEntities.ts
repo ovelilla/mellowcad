@@ -27,6 +27,9 @@ import {
   createArc,
   createAttributeDefinition,
   createCircle,
+  createPoint,
+  PointEntity,
+  withXAxisAngle,
   createDimension,
   createEllipse,
   createHatch,
@@ -108,6 +111,8 @@ export function dxfEntities(
       return made(line(record, ctx))
     case "CIRCLE":
       return made(circle(record, ctx))
+    case "POINT":
+      return made(pointObject(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -246,6 +251,23 @@ function circle(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
     r,
     ctx
   )
+}
+
+/** DXF writes a point in the WCS (point/p04), the model in the OCS of its 210. */
+function pointObject(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const at = point(r, 10)
+  if (!at) return null
+  const n = normal(r)
+  const toOcs = ocsOf(n)
+  const p = toOcs ? toOcs(at) : at
+  let entity: PointEntity = withXAxisAngle(
+    createPoint(p, undefined),
+    (num(r, 50) ?? 0) * DEG
+  )
+  entity = withElevation(entity, p.z)
+  const thickness = num(r, 39)
+  if (thickness) entity = withThickness(entity, thickness)
+  return common(n ? withNormal(entity, n) : entity, r, ctx)
 }
 
 function arc(r: DxfRecord, ctx: DxfEntityContext): Entity | null {

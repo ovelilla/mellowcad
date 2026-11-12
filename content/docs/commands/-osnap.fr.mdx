@@ -38,6 +38,10 @@ Le milieu d'une ligne, d'un arc, d'un segment de polyligne, d'un arc elliptique 
 
 Le centre d'un cercle, d'un arc ou d'un arc de polyligne. Passez le curseur sur la courbe elle-même : au centre, il n'y a rien à accrocher. Un cercle.
 
+### `NODal` (`NOD`) [#node]
+
+Un objet point, ceux que créent `POINT`, [`DIVISER`](/docs/commands/divide) et [`MESURER`](/docs/commands/measure), quelle que soit la figure que leur donne [`TYPEPT`](/docs/commands/ptype). Il ne fait pas partie des accrochages actifs au départ. Un cercle avec une croix.
+
 ### `QUAdrant` (`QUA`) [#quadrant]
 
 Les points d'un cercle ou d'un arc à 0°, 90°, 180° et 270°, selon les axes X et Y du SCU, et les extrémités des axes d'une ellipse. Un losange.
@@ -84,7 +88,7 @@ Comme `AUCun` : les accrochages actifs sont effacés.
 
 ## Ce qu'elle ne fait pas encore [#missing]
 
-La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Nodal et Centre géométrique, comme modes et dans les menus. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que [`LIGNE`](/docs/commands/line) et [`CERCLE`](/docs/commands/circle). Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
+La boîte de dialogue Paramètres de dessin qu'ouvrent ACCROBJ et AC dans AutoCAD (OSNAP et OS en anglais) : ici, ce sont des commandes inconnues, et le menu de la barre d'état définit les modes. Centre géométrique, comme mode et dans les menus. Nodal sur les points de définition d'une cote et l'origine de son texte : ici, il ne trouve que les objets point. Milieu entre 2 points, le point de repérage temporaire et les touches maintenues enfoncées pour un accrochage d'un seul point (Maj + A, Maj + Q…). Intersection, Perpendiculaire et Tangente sur les ellipses, Perpendiculaire et Tangente sur les splines, et Extension depuis l'extrémité d'un arc de polyligne, ou avec sa distance et son angle dans l'info-bulle. Une Perpendiculaire ou une Tangente qui attend l'autre point au début d'une autre commande que [`LIGNE`](/docs/commands/line) et [`CERCLE`](/docs/commands/circle). Les réglages de la zone de visée et du marqueur, APERTURE et AUTOSNAP.
 
 [Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os)
 

@@ -2,7 +2,7 @@
 title: "Comando -OSNAP (snap ad oggetto) in AutoCAD"
 description: "Lo snap ad oggetto di AutoCAD in italiano: -OSNAP (-OS) imposta le modalità, F3 le attiva, FIN, MED o Maiusc + clic destro ne forzano una. Provalo gratis."
 figure: "-OSNAP imposta Medio e Centro come snap correnti; LINEA va poi dal punto medio di un lato al centro del cerchio, e il lato in alto mostra il suo marcatore Medio."
-sourceHash: "acf7c6b99589"
+sourceHash: "627cd26c12df"
 ---
 
 Gli snap ad oggetto agganciano un punto indicato esattamente a un punto di un oggetto: un estremo, un punto medio, un centro. Con lo snap ad oggetto attivo, il cursore vicino a uno di questi punti mostra il suo marcatore, in verde, e il suo nome in un suggerimento; un clic cade allora su quel punto, non dove si trova il cursore. Gli snap correnti sono le modalità attive a ogni richiesta di punto: all'inizio Punto finale, Centro, Intersezione ed Estensione, come in AutoCAD. F3 attiva e disattiva lo snap ad oggetto, scrivendo `<Osnap on>` o `<Osnap off>`, e così fa il pulsante Snap ad oggetto della barra di stato, il cui menu ha una casella per ogni modalità. Con più snap sotto il cursore vince il più vicino, e Tab scorre gli altri. Orto, Polare e lo snap non spostano mai un punto agganciato.
@@ -24,6 +24,10 @@ A metà di una linea, un arco, un segmento di polilinea, un arco ellittico o una
 ### CENter
 
 Il centro di un cerchio, di un arco o dell'arco di una polilinea. Passa il cursore sulla curva stessa: al centro non c'è nulla da agganciare. Un cerchio.
+
+### NODe
+
+Un oggetto punto, quelli creati da <Command id="POINT" />, <Command id="DIVIDE" /> e <Command id="MEASURE" />, qualunque figura dia loro <Command id="PTYPE" />. All'inizio non è tra gli snap correnti. Un cerchio con una croce.
 
 ### QUAdrant
 
@@ -71,7 +75,7 @@ Come <Keyword id="NONe" />: l'insieme degli snap correnti è cancellato.
 
 ## Missing
 
-La finestra di dialogo Impostazioni disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Nodo e Centro geometrico, come modalità e nei menu. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da <Command id="LINE" /> e <Command id="CIRCLE" />. Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
+La finestra di dialogo Impostazioni disegno che OSNAP e OS aprono in AutoCAD: qui sono comandi sconosciuti, e il menu della barra di stato imposta le modalità. Centro geometrico, come modalità e nei menu. Nodo sui punti di definizione di una quota e sull'origine del suo testo: qui trova solo oggetti punto. Punto medio tra 2 punti, il punto di tracciamento temporaneo e i tasti tenuti premuti per uno snap su un punto (Maiusc + A, Maiusc + Q…). Intersezione, Perpendicolare e Tangente sulle ellissi, Perpendicolare e Tangente sulle spline, ed Estensione dall'estremo ad arco di una polilinea, o con la distanza e l'angolo nel suggerimento. Una Perpendicolare o una Tangente che attende l'altro punto all'inizio di un comando diverso da <Command id="LINE" /> e <Command id="CIRCLE" />. Le impostazioni di apertura e di marcatore, APERTURE e AUTOSNAP.
 
 ## Questions
 

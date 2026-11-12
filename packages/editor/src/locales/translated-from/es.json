@@ -69,6 +69,7 @@
   "ToolRail.flyouts.union": "Solid Editing",
   "ToolRail.flyouts.box": "Modeling",
   "ToolRail.flyouts.extrude": "Extrude",
+  "ToolRail.flyouts.point": "Points",
   "ToolRail.sections.draw": "Draw",
   "ToolRail.sections.modify": "Modify",
   "ToolRail.sections.annotation": "Annotation",
@@ -288,5 +289,15 @@
   "Palette.label": "Palettes",
   "Palette.fold": "Fold the palettes",
   "Palette.unfold": "Show the palettes",
-  "Palette.resize": "Palette width"
+  "Palette.resize": "Palette width",
+  "PointStyle.title": "Point Style",
+  "PointStyle.figures": "Point display images",
+  "PointStyle.pointSize": "Point Size:",
+  "PointStyle.relative": "Set Size Relative to Screen",
+  "PointStyle.absolute": "Set Size in Absolute Units",
+  "PointStyle.percent": "%",
+  "PointStyle.units": "Units",
+  "PointStyle.invalid": "Invalid input.",
+  "PointStyle.ok": "OK",
+  "PointStyle.cancel": "Cancel"
 }

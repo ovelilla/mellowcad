@@ -4,6 +4,7 @@ import { normalizeAngle, normalizeDegrees } from "../geometry/primitives"
 import { COLOR_BYLAYER, STANDARD_COLORS } from "../domain/colors"
 import { DEFAULT_HATCH_PATTERN_ID } from "../domain/hatchPatterns"
 import { LINETYPE_BYLAYER, LINETYPES } from "../domain/linetypes"
+import { isPointMode } from "../domain/entities"
 import { LINEWEIGHT_BYLAYER, LINEWEIGHTS } from "../domain/lineweights"
 import {
   type DocumentSettings,
@@ -156,7 +157,8 @@ function distance(
     | "filletRadius3d"
     | "chamferDistance1"
     | "chamferDistance2"
-    | "hatchPatternScale",
+    | "hatchPatternScale"
+    | "pointSize",
   valid: (value: number) => boolean
 ): RealVariable {
   return {
@@ -423,10 +425,24 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
   // Less than 0 is Through (p211).
   heldDistance("OFFSETDIST", anyValue),
   toggle("ORTHOMODE", "orthoMode"),
-  // NOD's 8 and GCEN's 1024 are kept without a snap; 16384 suspends the
+  // GCEN's 1024 is kept without a snap; 16384 suspends the
   // running snaps as F3 does (p214; WORKSPACE-D40).
   heldInteger("OSMODE", 0, 32767),
   heldInteger("OSNAPZ", 0, 1),
+  // A figure SETVAR refuses (5, 7…) is `Cannot set`; out of 0–100, getint's
+  // range (point/p03). Both regenerate, as POINT's figures change at once.
+  {
+    ...integer(
+      "PDMODE",
+      0,
+      100,
+      (settings) => settings.pointMode,
+      (value) => (isPointMode(value) ? patch({ pointMode: value }) : null)
+    ),
+    regenerates: true,
+  },
+  // Any sign: below 0 a percentage of the view (point/p03).
+  { ...distance("PDSIZE", "pointSize", anyValue), regenerates: true },
   {
     type: "real",
     name: "PERIMETER",

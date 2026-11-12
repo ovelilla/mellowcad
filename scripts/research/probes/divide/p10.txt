@@ -1,0 +1,10 @@
+_CIRCLE
+0,0
+10
+_ZOOM
+_E
+_DIVIDE
+0,10
+1.5
+3
+(list (getvar "PDMODE") (sslength (ssget "_P")))

@@ -599,6 +599,10 @@ export interface EngineState {
   readonly documentPrecision: number
   /** AUPREC: the decimal places angles are written with. */
   readonly documentAnglePrecision: number
+  /** PDMODE: the figure points show. */
+  readonly pointMode: number
+  /** PDSIZE: their size, absolute above 0, else a percentage of the view. */
+  readonly pointSize: number
   /** Global linetype scale (AutoCAD's LTSCALE). */
   readonly ltScale: number
   /** The current dimension style's overall scale (AutoCAD's DIMSCALE). */
@@ -661,6 +665,8 @@ export interface EngineState {
   readonly palette: PaletteUi
   /** Whether the Drawing Units dialog (UNITS) is showing. */
   readonly unitsDialog: boolean
+  /** Whether the Point Style dialog (PTYPE) is showing. */
+  readonly pointStyleDialog: boolean
   /**
    * The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, with what it
    * opens on, or null while it is not showing. The host draws it and answers
@@ -1797,6 +1803,22 @@ function singleEntityInfo(
             row("area", area(surface)),
             // One hatch: its own area (AutoCAD's sums a selection's).
             row("cumulativeArea", area(surface)),
+          ]),
+        ],
+      }
+    }
+    case "point": {
+      // Geometry is its Position, Thickness under General (unverified on the
+      // desktop: the palette as a circle's, circle/d10).
+      const position = at(entity.position)
+      return {
+        title: title("point"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            coordRow("positionX", "positionX", position.x),
+            coordRow("positionY", "positionY", position.y),
+            coordRow("positionZ", "positionZ", position.z),
           ]),
         ],
       }

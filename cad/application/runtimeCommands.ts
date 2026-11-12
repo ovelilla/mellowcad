@@ -58,6 +58,9 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "3DORBIT",
   "SNAP",
   "UNITS",
+  // The console has no PTYPE; its button's macro types `'_ptype ` (acad.cuix),
+  // the command typed transparently at whatever prompt is open.
+  "PTYPE",
   "DIMSTYLE",
   "STYLE",
   "MATCHPROP",

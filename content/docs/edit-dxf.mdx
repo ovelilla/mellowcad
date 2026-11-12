@@ -13,7 +13,7 @@ faq:
   - question: "Will AutoCAD open the DXF I save?"
     answer: "Yes. Every kind of object MellowCAD writes, in every version and in text and binary, was opened by AutoCAD 2027 with no error found by its AUDIT."
   - question: "Is anything lost when I save?"
-    answer: "What did not open is not in the file you save: points, leaders, tables and the other objects the command line counted as the file opened. 3D solids and regions are not written either, and the command line lists them. Keep your original file."
+    answer: "What did not open is not in the file you save: leaders, tables and the other objects the command line counted as the file opened. 3D solids and regions are not written either, and the command line lists them. Keep your original file."
   - question: "Can I create a new DXF file from scratch?"
     answer: "Yes. Open the editor, draw, and save with SAVEAS, choosing a DXF file type."
 ---
@@ -44,11 +44,11 @@ The file is downloaded, as everything saved here is ([saving is not quite AutoCA
 
 ## What the DXF holds [#holds]
 
-Every object MellowCAD has, written as AutoCAD writes it: lines, arcs, circles, ellipses, polylines with their widths and curve fits, 3D polylines, splines, single-line and multiline text, blocks with their attributes, dimensions, hatches with their pattern, and arrays as a block of their items. With them, the layers (on, off, locked) with their colour, linetype and lineweight, the text and dimension styles, the blocks, and the drawing's units and settings. Text keeps its characters: up to 2004 in the Windows code page AutoCAD uses, with an escape for the rest, and from 2007 in UTF-8.
+Every object MellowCAD has, written as AutoCAD writes it: lines, arcs, circles, ellipses, polylines with their widths and curve fits, 3D polylines, splines, single-line and multiline text, blocks with their attributes, dimensions, hatches with their pattern, points, and arrays as a block of their items. With them, the layers (on, off, locked) with their colour, linetype and lineweight, the text and dimension styles, the blocks, and the drawing's units and settings. Text keeps its characters: up to 2004 in the Windows code page AutoCAD uses, with an escape for the rest, and from 2007 in UTF-8.
 
 ## What does not come back [#lost]
 
-- **What did not open is not saved.** What MellowCAD has no object for yet — points, leaders, tables, external references and [the rest of that list](/docs/open-dxf#left-out) — is counted on the command line when the file opens, and is not in the file you save. Keep the original.
+- **What did not open is not saved.** What MellowCAD has no object for yet — leaders, tables, external references and [the rest of that list](/docs/open-dxf#left-out) — is counted on the command line when the file opens, and is not in the file you save. Keep the original.
 - **3D solids and regions are not written**: the command line lists how many were left out.
 - A dimension's own style overrides and an array's parameters are not written: AutoCAD opens the dimension with its style's settings, and the array as a block of its items.
 - There is no thumbnail preview, no AutoCAD R12/LT2 DXF type yet, and no DWG.
@@ -77,7 +77,7 @@ Yes. Every kind of object MellowCAD writes, in every version and in text and bin
 
 ### Is anything lost when I save? [#lost-on-save]
 
-What did not open is not in the file you save: points, leaders, tables and the other objects the command line counted as the file opened. 3D solids and regions are not written either, and the command line lists them. Keep your original file.
+What did not open is not in the file you save: leaders, tables and the other objects the command line counted as the file opened. 3D solids and regions are not written either, and the command line lists them. Keep your original file.
 
 ### Can I create a new DXF file from scratch? [#from-scratch]
 

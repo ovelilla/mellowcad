@@ -48,6 +48,29 @@ async function opened(
 // The reader is a chunk of its own, loaded once here so each OPEN finds it.
 await import("../serialization/dxf/readDxf")
 
+// Desktop point/d01: after opening plano-prueba.dxf AutoCAD's Save Drawing
+// As offers `plano-prueba.dwg`, DXFOUT `plano-prueba.dxf`; NEW is a drawing
+// of no name again.
+describe("the drawing's name", () => {
+  it("is the file opened, which Save Drawing As offers", async () => {
+    const files = new MemoryFileTransport(fixture("fixture-2018"))
+    const cad = createHarness({ files })
+    cad.command("OPEN")
+    await opened(cad, files)
+    typed(cad, "SAVEAS")
+    expect(cad.state().saveAsDialog?.fileName).toBe("fixture-2018.ecad.json")
+    cad.runtime.setSaveAsDialog(false)
+    typed(cad, "DXFOUT")
+    expect(cad.state().saveAsDialog?.fileName).toBe("fixture-2018.dxf")
+    cad.runtime.setSaveAsDialog(false)
+    typed(cad, "NEW")
+    typed(cad, "SAVEAS")
+    expect(cad.state().saveAsDialog?.fileName).toMatch(
+      /^drawing-.*\.ecad\.json$/
+    )
+  })
+})
+
 describe("OPEN of a DXF", () => {
   it("replaces the drawing with the file's and says what it left out", async () => {
     const files = new MemoryFileTransport(fixture("fixture-2018"))
@@ -56,13 +79,13 @@ describe("OPEN of a DXF", () => {
     cad.command("OPEN")
     await opened(cad, files)
 
-    expect(cad.entityCount).toBe(31)
+    expect(cad.entityCount).toBe(32)
     expect(cad.runtime.document.getLayers().map((l) => l.name)).toContain(
       "Señales"
     )
     expect(cad.commandLog().slice(from)).toEqual([
       "OPEN",
-      "7 objects not opened: 1 POINT, 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
+      "6 objects not opened: 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
       "1 object in a layout not opened.",
     ])
   })
@@ -85,7 +108,7 @@ describe("OPEN of a DXF", () => {
       const cad = createHarness({ files })
       cad.command("OPEN")
       await opened(cad, files)
-      expect(cad.entityCount).toBe(31)
+      expect(cad.entityCount).toBe(32)
     }
   })
 
@@ -100,7 +123,7 @@ describe("OPEN of a DXF", () => {
       await opened(cad, files)
       expect(store.writes.at(-1)).toContain("Señales")
       typed(cad, "_U")
-      expect(cad.entityCount).toBe(31)
+      expect(cad.entityCount).toBe(32)
     } finally {
       vi.useRealTimers()
     }
@@ -201,7 +224,7 @@ describe("in the command languages", () => {
     expect(files.openedKinds).toEqual([["dxf"]])
     expect(cad.commandLog().slice(from)).toEqual([
       "CARGADXF",
-      "7 objetos no abiertos: 1 POINT, 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
+      "6 objetos no abiertos: 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
       "1 objeto de una presentación no abierto.",
     ])
     const garbage = new MemoryFileTransport({
@@ -225,7 +248,7 @@ describe("in the command languages", () => {
     await opened(cad, files)
     expect(files.openedKinds).toEqual([["dxf"]])
     expect(cad.commandLog().slice(-2)).toEqual([
-      "7 objetos não abertos: 1 POINT, 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
+      "6 objetos não abertos: 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
       "1 objeto de um layout não aberto.",
     ])
   })
@@ -236,9 +259,9 @@ describe("a file the host already holds (openFile)", () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
     const from = cad.commandLog().length
     await cad.runtime.openFile(fixture("fixture-2018"))
-    expect(cad.entityCount).toBe(31)
+    expect(cad.entityCount).toBe(32)
     expect(cad.commandLog().slice(from)).toEqual([
-      "7 objects not opened: 1 POINT, 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
+      "6 objects not opened: 1 SOLID, 1 XLINE, 1 RAY, 1 LEADER, 1 3DSOLID, 1 REGION.",
       "1 object in a layout not opened.",
     ])
   })

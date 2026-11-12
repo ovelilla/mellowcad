@@ -94,7 +94,8 @@ export const ptBR: EditorLocale = {
         "measure": "Medir",
         "union": "Editar sólidos",
         "box": "Modelagem",
-        "extrude": "Extrusão"
+        "extrude": "Extrusão",
+        "point": "Pontos"
       },
       "sections": {
         "draw": "Desenhar",
@@ -451,6 +452,18 @@ export const ptBR: EditorLocale = {
       "fold": "Recolher as paletas",
       "unfold": "Mostrar as paletas",
       "resize": "Largura das paletas"
+    },
+    "PointStyle": {
+      "title": "Estilo de ponto",
+      "figures": "Imagens de exibição de ponto",
+      "pointSize": "Tamanho do ponto:",
+      "relative": "Definir o tamanho relativo à tela",
+      "absolute": "Definir o tamanho em unidades absolutas",
+      "percent": "%",
+      "units": "Unidades",
+      "invalid": "Entrada não válida.",
+      "ok": "OK",
+      "cancel": "Cancelar"
     }
   }
 }

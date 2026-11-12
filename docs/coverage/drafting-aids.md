@@ -2,7 +2,7 @@
 
 ### Object snaps
 
-**Implemented:** Endpoint, Midpoint, Center, Quadrant, Intersection, Extension, Insertion,
+**Implemented:** Endpoint, Midpoint, Center, Node, Quadrant, Intersection, Extension, Insertion,
 Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel, on the objects drawn and on the
 polyline PLINE is drawing (draw.md's PLINE, pline/p259); AutoCAD's running set (OSMODE
 4133: Endpoint, Center, Intersection, Extension); the snap nearest the cursor wins ("a point closest
@@ -52,7 +52,7 @@ inside a command it is that command's step; with nothing to undo it is none; RED
 (desktop workspace/d01, d01-2, d01-3; F3's, F10's and F11's by analogy with F7's and F8's); OSMODE and AUTOSNAP, as POLARMODE, POLARANG,
 DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
 p321): here they last the session (RECTANG-D46); OSMODE typed (SETVAR, workspace.md) sets the
-running snaps as a step U takes back, NOD's 8 and GCEN's 1024 kept without a snap and 16384
+running snaps as a step U takes back, NOD's 8 Node, GCEN's 1024 kept without a snap and 16384
 suspending them as F3 does, which it reads back (workspace/p214, p218, p223). A 3D polyline snaps as its segments, lines between its vertices at their Z: Endpoint at each vertex, Midpoint of each segment, Nearest, Perpendicular and Intersection on them (3dpoly/p21). Off the plan
 every snap is found where its object is drawn (a point typed under an override as a pick there):
 a vertical line, a point in plan, gives its top end, its middle and the point under the cursor, a
@@ -76,9 +76,9 @@ LASTPOINT and the point filters take that Z (`.Z` of `_END` is ELEVATION's, o08,
 with it (**unverified**: desktop pass `scripts/research/probes/osnapz/dsk.sh`, not run), and the
 marker off the plan is drawn on the object (**unverified**, the same pass); snaps of an object seen
 edge-on in plan but a circle's Center (o07), and the `Oblique, non-uniformly scaled objects were
-ignored.` AutoCAD says before refusing a Quadrant there (o07); Node and Geometric Center (no POINT object; a dimension's definition points snap as
-Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
-and PUN is Thru, offset/p109, p110), deferred Perpendicular and Tangent at the first point of a
+ignored.` AutoCAD says before refusing a Quadrant there (o07); Geometric Center; Node's
+dimension definition points and text origins (point objects only here; a dimension's definition
+points snap as Endpoint), deferred Perpendicular and Tangent at the first point of a
 command other than LINE and CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
 Intersection on ellipses, Perpendicular and Tangent on ellipses (ellipse/p308–p314) and splines
 (spline/p313, p315, p316), a closed spline's Geometric Center (spline/p311), a polyline arc segment's Quadrant in a rotated
@@ -97,7 +97,7 @@ Extension and Parallel along a vertical line (unprobed; none here); Extension fr
 **Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM, the point filters
 and the object snaps in AutoCAD's order and groups for what exists (desktop line/d06): From, Point Filters ▸ ·
 Endpoint, Midpoint, Intersection, Apparent Intersection, Extension · Center, Quadrant, Tangent ·
-Perpendicular, Parallel, Insertion, Nearest, None — the same entries as the Command menu's Snap
+Perpendicular, Parallel, Node, Insertion, Nearest, None — the same entries as the Command menu's Snap
 Overrides; typed at any point
 prompt, in the box or at the command line, and at TRIM's and EXTEND's object prompt, FILLET's
 and CHAMFER's and BREAK's `Select object:`, whose pick is the point found (trim/p259–p264,
@@ -139,7 +139,7 @@ line/p34, p154, p164, p211). At `Command:` FROM is an unknown command (p211). Es
 cancels the command, `Base point: *Cancel*` (desktop filters/d05).
 
 **Missing:** in the menu, Temporary track point, Mid Between 2 Points, 3D Osnap ▸,
-Geometric Center, Node and Osnap Settings… (none built), and its icons; M2P / MTP, TT (the temporary
+Geometric Center and Osnap Settings… (neither built), and its icons; M2P / MTP, TT (the temporary
 tracking point), the temporary override keys (Shift+A,
 Shift+Q, Shift+E…: TEMPOVERRIDES), INT and APPINT on one object asking ` and ` for the second
 (p156, p211; here that pick finds nothing and is refused)
@@ -190,7 +190,7 @@ short name in OSMODE's order (`Quad,Int,Ins,Perp,Near,App Int,Ext,Par`; es `Fin,
 pt-BR `Extremidade,Meio,…,Mais próximo,Aparente,Ext,Paralela`; 33200–33213, probe names/p10), then
 `Enter list of object snap modes:` — modes by their capitals, separated with commas (es Spanish's,
 from 2026's -REFENT page, CF5780AD; pt-BR's three letters, `MEI`, `CEN`, `MAI`, `APA`, `NEN`,
-names/p07, p09), `_APPINT` too, replacing the running set and turning object
+names/p07, p09), `_APPINT` too, NODe (es `PUNto`, pt-BR `PONto`, fr `NODal`, it `NODo`: 27408; `_NOD` asks `of`, point/p11), replacing the running set and turning object
 snapping on; NONe, OFF (es NINguno, DES; pt-BR NENhum, Desativado: `D`, `DE`, `DES`, names/p08, p30) or Enter clears it, OSMODE 0 (probes
 line/p37, p155, p163); an unknown mode says `Invalid object snap modes.` and asks again (es
 `Modos refent actuales: …`, `Indique lista de modo de referencia a objetos`,
@@ -199,7 +199,7 @@ letters, so a keyword's single letter stays the keyword (pt-BR `A` at PLINE is A
 at LINE are `Ponto inválido.`, names/p09).
 
 **Missing:** OSNAP / OS (the Drafting Settings dialog; the status bar's Object snap menu stands in),
-GCEnter and NODe in the list
+GCEnter in the list
 
 ### `OSNAP` tracking (OTRACK)
 

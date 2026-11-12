@@ -20,6 +20,7 @@ import { hatchLoopRing } from "./hatch"
 import { mappedFit } from "./polylineFits"
 import { curveAffine } from "../geometry/planarCurves"
 import { loopReversed } from "../geometry/planarRegions"
+import { withXAxisAngle } from "./points"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -116,6 +117,11 @@ export function linearEntity(
       }
     case "insert":
       return nestedInsert(entity, map)
+    case "point":
+      return withXAxisAngle(
+        { ...entity, position: at(entity.position) },
+        mappedAngle(map, entity.xAxisAngle ?? 0)
+      )
     case "region": {
       const [xx, yx, xy, yy] = map
       const affine = { linear: { xx, xy, yx, yy }, translation: { x: 0, y: 0 } }

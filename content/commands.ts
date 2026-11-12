@@ -80,6 +80,9 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   POLYGON: { group: "draw" },
   HATCH: { group: "draw" },
   "-HATCH": { group: "draw" },
+  POINT: { group: "draw" },
+  DIVIDE: { group: "draw" },
+  MEASURE: { group: "draw" },
 
   MOVE: { group: "modify" },
   COPY: { group: "modify" },
@@ -174,6 +177,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   DIST: { group: "inquiry" },
   AREA: { group: "inquiry" },
   ID: { group: "inquiry" },
+  PTYPE: { group: "inquiry" },
   LIST: { group: "inquiry" },
   MASSPROP: { group: "inquiry" },
   ZOOM: { group: "inquiry" },

@@ -94,7 +94,8 @@ export const ar: EditorLocale = {
         "measure": "قياس",
         "union": "تحرير المجسمات",
         "box": "النمذجة",
-        "extrude": "بثق"
+        "extrude": "بثق",
+        "point": "نقاط"
       },
       "sections": {
         "draw": "رسم",
@@ -471,6 +472,18 @@ export const ar: EditorLocale = {
       "fold": "طيّ اللوحات",
       "unfold": "إظهار اللوحات",
       "resize": "عرض اللوحات"
+    },
+    "PointStyle": {
+      "title": "نمط النقطة",
+      "figures": "صور عرض النقطة",
+      "pointSize": "حجم النقطة:",
+      "relative": "تعيين الحجم نسبةً إلى الشاشة",
+      "absolute": "تعيين الحجم بالوحدات المطلقة",
+      "percent": "%",
+      "units": "وحدات",
+      "invalid": "إدخال غير صالح.",
+      "ok": "موافق",
+      "cancel": "إلغاء"
     }
   }
 }

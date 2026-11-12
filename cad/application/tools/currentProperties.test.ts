@@ -80,6 +80,18 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) => c.command("3DPOLY").click(p(0, 0)).click(p(50, 50)).enter(),
   ],
   ["CIRCLE", (c) => c.command("CIRCLE").click(p(0, 50)).type("10").enter()],
+  // divide/p14: CECOLOR on the points, THICKNESS not.
+  ["POINT", (c) => c.command("POINT").click(p(0, 50))],
+  [
+    "DIVIDE",
+    (c) => c.command("DIVIDE").click(p(50, 0)).type("2").enter(),
+    [lineOf(p(0, 0), p(100, 0), { id: "D1" })],
+  ],
+  [
+    "MEASURE",
+    (c) => c.command("MEASURE").click(p(10, 0)).type("40").enter(),
+    [lineOf(p(0, 0), p(100, 0), { id: "M1" })],
+  ],
   // probes arc/p150 (3P), p151 (SCE): the current layer and properties.
   [
     "ARC",
@@ -984,6 +996,7 @@ const MAKES_NOTHING = [
   ...["VSCURRENT", "REGEN", "REGENALL", "FILL", "UNITS", "CLEANSCREENON"],
   ...["CLEANSCREENOFF", "NEW", "QNEW", "QSAVE", "SAVE", "SAVEAS", "OPEN"],
   ...["DXFIN", "DXFOUT", "COPYCLIP", "CUTCLIP", "COPYBASE"],
+  ...["PTYPE"],
 ]
 
 describe("the creating commands", () => {

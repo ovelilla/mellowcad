@@ -71,6 +71,10 @@ export interface DocumentSettings {
   readonly isolines: number
   /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
   readonly visualStyle: VisualStyle
+  /** PDMODE: the figure every point object shows (0 a dot, 2 a plus, 3 a cross, 4 a tick; +32 a circle, +64 a square). */
+  readonly pointMode: number
+  /** PDSIZE: its size, absolute when positive, else a percentage of the view's height (0 is 5). */
+  readonly pointSize: number
   /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
   readonly filletRadius3d: number
   /** CHAMFERA: CHAMFER's first distance. */
@@ -182,6 +186,9 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // Saved in the drawing (solid/v02, v03).
   isolines: 4,
   visualStyle: "2dWireframe",
+  // Saved in the drawing, 0 and 0 in acadiso.dwt (point/p01).
+  pointMode: 0,
+  pointSize: 0,
   // Saved in the drawing (filletedge/f01: 1 at first; an OPEN keeps it).
   filletRadius3d: 1,
   chamferDistance1: 0,

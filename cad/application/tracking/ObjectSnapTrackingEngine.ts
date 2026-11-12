@@ -37,6 +37,7 @@ const TRACKABLE: ReadonlySet<SnapType> = new Set([
   SnapType.Endpoint,
   SnapType.Midpoint,
   SnapType.Center,
+  SnapType.Node,
   SnapType.Quadrant,
   SnapType.Insertion,
   SnapType.Intersection,

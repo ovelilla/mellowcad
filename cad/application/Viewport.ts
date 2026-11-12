@@ -438,6 +438,15 @@ export class Viewport extends Observable {
 
   /** The scale {@link zoomToViewBounds} frames that rectangle at, the view left. */
   fitScale(min: Vec2, max: Vec2, padding = 0): number {
+    // Nothing but a place (a lone point): a view one unit high, as ZOOM
+    // Extents leaves AutoCAD's (point/p13).
+    if (max.x - min.x <= 1e-9 && max.y - min.y <= 1e-9) {
+      return clamp(
+        this.core.height - padding * 2,
+        Viewport.MIN_SCALE,
+        Viewport.MAX_SCALE
+      )
+    }
     const worldWidth = Math.max(max.x - min.x, 1e-6)
     const worldHeight = Math.max(max.y - min.y, 1e-6)
     const scale = Math.min(

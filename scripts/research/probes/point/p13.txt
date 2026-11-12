@@ -1,0 +1,19 @@
+_POINT
+10,10
+_ZOOM
+_E
+(list (getvar "VIEWSIZE") (getvar "VIEWCTR"))
+_LINE
+0,0
+0,5
+
+_ERASE
+_ALL
+
+_LINE
+0,0
+0,5
+
+_ZOOM
+_E
+(list (getvar "VIEWSIZE") (getvar "VIEWCTR"))

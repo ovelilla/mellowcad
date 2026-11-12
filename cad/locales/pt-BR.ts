@@ -130,7 +130,11 @@ export const ptBR: EngineLocale = {
       "solideditoffset": "Deslocar faces",
       "solidedittaper": "Afilar faces",
       "solideditdelete": "Excluir faces",
-      "solideditcopy": "Copiar faces"
+      "solideditcopy": "Copiar faces",
+      "point": "Múltiplos pontos",
+      "divide": "Dividir",
+      "measuresegments": "Medir",
+      "ptype": "Estilo de ponto"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -164,6 +168,7 @@ export const ptBR: EngineLocale = {
       "endpoint": "Ponto final",
       "midpoint": "Meio",
       "center": "Centro",
+      "node": "Ponto",
       "intersection": "Intersecção",
       "apparentIntersection": "Intersecção aparente",
       "perpendicular": "Perpendicular",
@@ -361,6 +366,16 @@ export const ptBR: EngineLocale = {
           {
             "one": "Região",
             "other": "Regiões"
+          }
+        ]
+      ],
+      "point": [
+        [
+          "count",
+          2,
+          {
+            "one": "Ponto",
+            "other": "Pontos"
           }
         ]
       ]
@@ -1240,6 +1255,24 @@ export const ptBR: EngineLocale = {
       ],
       "SOLIDEDIT": [
         "EDITARSOLIDO"
+      ],
+      "POINT": [
+        "PONTO",
+        "PO"
+      ],
+      "DIVIDE": [
+        "DIVIDIR",
+        "DIV"
+      ],
+      "MEASURE": [
+        "MEDIDA",
+        "ME"
+      ],
+      "PTYPE": [
+        "TIPOP",
+        "TIP",
+        "DDPTYPE",
+        "TIPOPD"
       ]
     },
     "keywords": {
@@ -1247,6 +1280,7 @@ export const ptBR: EngineLocale = {
         "ENDpoint": "pONto",
         "MIDpoint": "MEIo",
         "CENter": "CENtro",
+        "NODe": "PONto",
         "QUAdrant": "QUAdrante",
         "INTersection": "INTersecção",
         "EXTension": "EXTensão",
@@ -2037,6 +2071,16 @@ export const ptBR: EngineLocale = {
         "Zaxis": "eixoZ",
         "2points": "2pontos",
         "Reference": "Referência"
+      },
+      "DIVIDE": {
+        "Block": "Bloco",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "MEASURE": {
+        "Block": "Bloco",
+        "Yes": "Sim",
+        "No": "Não"
       }
     },
     "promptKeywords": {
@@ -2780,7 +2824,16 @@ export const ptBR: EngineLocale = {
       "solideditOffset": "Especificar a distância de deslocamento",
       "solideditTaperBase": "Especificar o ponto base",
       "solideditTaperAxis": "Especificar outro ponto ao longo do eixo de conicidade",
-      "solideditTaperAngle": "Especificar o ângulo de conicidade"
+      "solideditTaperAngle": "Especificar o ângulo de conicidade",
+      "specifyAPoint": "Especificar um ponto",
+      "selectObjectToDivide": "Selecionar objeto a ser dividido",
+      "selectObjectToMeasure": "Selecionar objeto a ser medido",
+      "divideCountOr": "Inserir o número de segmentos ou",
+      "divideCount": "Inserir o número de segmentos",
+      "measureLengthOr": "Especificar o comprimento do segmento ou",
+      "measureLength": "Especificar o comprimento do segmento",
+      "blockToInsert": "Digitar o nome do bloco a ser inserido",
+      "alignBlockWithObject": "Alinhar bloco com objeto?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5044,6 +5097,7 @@ export const ptBR: EngineLocale = {
             "endpoint": "Extremidade",
             "midpoint": "Meio",
             "center": "Centro",
+            "node": "Ponto",
             "quadrant": "Quadrante",
             "intersection": "Intersecção",
             "insertion": "Inserção",
@@ -7515,13 +7569,36 @@ export const ptBR: EngineLocale = {
           "distance"
         ],
         "."
-      ]
+      ],
+      "currentPointModes": [
+        "Modos de ponto atuais:  PDMODE=",
+        [
+          "mode"
+        ],
+        "  PDSIZE=",
+        [
+          "size"
+        ]
+      ],
+      "cannotDivideObject": "Não é possível dividir esse objeto.",
+      "cannotMeasureObject": "Não é possível medir esse objeto.",
+      "objectNotThatLong": "O objeto não é tão longo.",
+      "objectTooLong": "O objeto é longo demais.",
+      "cannotFindBlock": [
+        "Não é possível localizar bloco \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "blockNameNotValid": "Nome bloco inválido."
     },
     "feedback": {
       "snap": {
         "endpoint": "Ponto final",
         "midpoint": "Meio",
         "center": "Centro",
+        "node": "Ponto",
         "intersection": "Intersecção",
         "apparentIntersection": "Intersecção aparente",
         "perpendicular": "Perpendicular",

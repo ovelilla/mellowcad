@@ -32,8 +32,8 @@ export const MENU_AT_CURSOR =
 /**
  * The object snaps as AutoCAD's Shift+right-click menu groups them (desktop
  * d06), for the ones that exist here: Temporary track point, Mid Between 2
- * Points, 3D Osnap, Geometric Center, Node and Osnap Settings are left out
- * until they are built.
+ * Points, 3D Osnap, Geometric Center and Osnap Settings are left out until
+ * they are built.
  */
 const GROUPS: readonly (readonly Choice[])[] = [
   [
@@ -47,6 +47,7 @@ const GROUPS: readonly (readonly Choice[])[] = [
   [
     SnapType.Perpendicular,
     SnapType.Parallel,
+    SnapType.Node,
     SnapType.Insertion,
     SnapType.Nearest,
     "none",

@@ -677,6 +677,122 @@ menus (desktop d07: the start's `Stretch`, `Add Vertex`, `Remove Vertex`, `New S
 `Lengthen`; es `Estirar`, `Insertar vértice`, `Eliminar vértice`, `Nuevo punto inicial`, `Nuevo
 punto final`, `Longitud`; the English **unverified**)
 
+### `POINT` / `PO` · es `PUNTO` / `PU` · pt-BR `PONTO` / `PO` · fr `POINT` / `PT` · it `PUNTO` / `PO`
+
+**Implemented:** a point object — a model type of its own (DXF POINT: one location, a thickness, a
+plane, DXF 50) — as AutoCAD 2027's console asks it (probes point/p01–p11): `Current point modes:
+PDMODE=0  PDSIZE=0.0000` (two spaces between, PDSIZE at LUPREC; es `Modos de punto actuales`,
+pt-BR `Modos de ponto atuais`, fr `Modes point courants`, it `Modalità del punto corrente`: table
+32824), then `Specify a point:` (es `Precise un punto`, 20586), which refuses Enter (`Invalid
+point.`) and `FOO` alike and asks again (p02); one point ends the command. Typed, a Z is kept, else
+ELEVATION; it wears the current properties and THICKNESS (p04), and lies in the UCS's plane, its
+DXF 50 the angle from the UCS's X to its plane's (330° drawn in UCS Z 30, p04), which turns its
+figure: drawn in UCS Z 30 a PDMODE 4 tick leans 30° left (p07, plotted). The ribbon's Multiple
+Points (Home ▸ Draw, expanded: acad.cuix `*^C^C_point `) starts it again each time it ends, echoed
+anew, until Escape; here the tool palette's Points drop-down. It shows the drawing's PDMODE and
+PDSIZE (PTYPE's entry); MOVE, COPY, SCALE and STRETCH move it whole, ROTATE adds its angle to DXF
+50 and MIRROR reflects it (30° about the Y axis reads 150°: p06, so a point rotated +30 leans the
+other way, as AutoCAD's does: p07); BREAK says `Object can't be broken`, OFFSET `Cannot offset
+that object.`, TRIM and EXTEND `Cannot TRIM this object.` / `Cannot EXTEND this object.` (es the
+`Objeto no procesado por RECORTA.` of a text), FILLET `Fillet requires 2 lines, arcs, or
+circles.`, DIMLINEAR's object `Object selected is not a line, arc or circle.`, DIMRADIUS `Object
+selected is not a circle or arc.` (p08, p09), DIVIDE and MEASURE `Cannot divide that object.`;
+UCS OBject puts the origin at it, X along its plane's (p10); ZOOM Extents frames a lone point one
+unit high (p13). One grip, which moves it; the
+Properties palette's Position X, Y and Z under Geometry and Thickness under General; NODe snaps to
+it (drafting-aids.md). Not transparent, nor DIVIDE and MEASURE (p12). Saved from drawing file version 50; a
+DXF opens and saves it (clipboard-and-files.md).
+
+**Deviations:** it is picked and window-selected by its location alone, whatever figure PDMODE
+draws (**unverified** on the desktop); the Properties palette's rows as a circle's (**unverified**,
+circle/d10's order)
+
+**Missing:** a point on the Defpoints layer drawn as a dot whatever PDMODE (an Autodesk support
+article); the grip's hover menu; the 3D Visualization group's Material row
+
+### `PTYPE` / `DDPTYPE`, `PDMODE`, `PDSIZE` · es `TIPOPUNTO` / `DDPTYPE` · pt-BR `TIPOP` / `TIP` / `DDPTYPE` / `TIPOPD` · fr `TYPEPT` / `DDPTYPE` · it `TIPOP` / `DDPTYPE`
+
+**Implemented:** PTYPE's Point Style dialog as AutoCAD 2027's desktop shows it (desktop point/d01,
+`acddptyperes.dll`'s dialog 101 in the five languages): the twenty point display images in four
+rows of five (a dot, nothing, +, ×, a tick up; then each inside a circle, a square, both), the one
+for PDMODE chosen, `Point Size:` with `%` after it (es `Tamaño de punto:`…), `Set Size Relative to
+Screen` and `Set Size in Absolute Units` (`Units` after the size then), OK and Cancel; it opens on
+PDSIZE (0 reads 5.0000 %, −7 reads 7 %), and OK writes PDMODE and PDSIZE (negative when relative)
+as one step U names PTYPE, `Regenerating model.` written twice, as AutoCAD writes it (an OK that
+changes nothing writes nothing, **unverified**); a size that
+is no number or below 0 is `Invalid input.` (the dialog's string 13) and the dialog stays. The
+button's macro is `'_ptype ` (acad.cuix: Home ▸ Utilities, expanded, beside ID Point; here beside
+ID Point too), so it runs inside a command. PDMODE (0 to 4, +32, +64, +96; another value `Cannot set
+PDMODE to that value.` and `*Invalid*`, out of 0–100 `Requires an integer between 0 and 100.`) and
+PDSIZE (any number, `Requires numeric distance or two points.`) are variables saved in the drawing,
+each `Regenerating model.` as it is set (p03). The figures as AutoCAD 2027 draws them, measured on
+its screen (desktop point/d01): the plus's and the cross's arms PDSIZE long, the tick half of it,
+the circle's radius and the square's half side half of it; PDSIZE 0 is −5, a negative one that
+percentage of the view's height halved, so PDSIZE 0 draws a plus 5 % of the view tall; PDMODE 0 a
+dot of one pixel, 1 nothing. In every language of the editor (`PointStyle` in its catalog), the
+names from the 2027 `acad.pgp` (DDPTYPE is an alias of PTYPE in each).
+
+**Deviations:** a point sized relative to the view keeps that size on the screen as the view zooms,
+WHY: AutoCAD sizes it at a regeneration and keeps it through a zoom until the next (desktop
+point/d01), but here no display list holds it, every frame draws it as after a REGEN (as ISOLINES,
+PRIM-D62); the dialog has no Help button, WHY: no host page answers it yet
+
+**Missing:** the console's `PTYPE` and `DDPTYPE` are unknown commands (p05); here they open the
+dialog. **Unverified:** how the desktop's dialog says `Invalid input.` (the string is its own;
+WM_SETTEXT did not reach its field, d01)
+
+### `DIVIDE` / `DIV` · es `DIVIDE` / `DIV` · pt-BR `DIVIDIR` / `DIV` · fr `DIVISER` / `DIV` · it `DIVIDI` / `DD`
+
+**Implemented:** as AutoCAD 2027's console asks it (probes divide/p01–p15): `Select object to
+divide:` takes one line, arc, circle, ellipse or elliptical arc, polyline (its curve if fitted), 3D
+polyline or spline, picked or typed as a point; any other object is `Cannot divide that object.`
+and `*Invalid*` (p07, a point), a pick on nothing `*Invalid*` (p07), `FOO` `*Invalid selection*`,
+`Expects a single object.`, the command ending but for `FOO` (p06). Then `Enter the number of
+segments or [Block]:`, 2 to 32767 (`Requires an integer between 2 and 32767, or option keyword.`
+for 1, 32768, 1.5, a word and Enter: p06, p10). It adds `count − 1` point objects at equal lengths
+along an open curve from its start, `count` round a closed one, its start among them: a circle from
+its angle 0, counter-clockwise (p01, p04), a closed polyline from its first vertex (p03, p11), an
+ellipse from its start (p04); in space, a rising line's and a 3D polyline's (p08); each at its Z,
+wearing the current colour, linetype and lineweight on the current layer, no THICKNESS (p14), DXF
+50 as POINT's (−30° in UCS Z 30, p14); one step, and the points are the Previous set (`ERASE P`,
+p01). Block: `Enter name of block to insert:` (`Invalid block name.` for none, es `Nombre bloque no
+válido.`, apart from -INSERT's; `Cannot find block "NOPE".`), `Align block with object? [Yes/No]
+<Y>:`, `Enter the number of segments:` — references of the block at those places, aligned with the
+curve's own way there (an arc's tangent: 120° and 150° on a quarter arc, p05) or along the UCS's X
+(p05, p09), their variable attributes left out (help). es `Designe objeto que se va a dividir`,
+`Indique el número de segmento o [Bloque]`, `Imposible dividir este objeto.` (20430–20441, 20432
+with 20433), and the console's in pt-BR, fr and it (p01–p15 in each). The ribbon's Divide (Home ▸
+Draw, expanded); here the Points drop-down.
+
+**Deviations:** a circle starts at the UCS's X, WHY: AutoCAD starts it at SNAPANG's angle (p04),
+which is not modelled
+
+**Missing:** a block's references on a tilted object lie in the UCS's plane (**unverified**: "on the
+plane in which the selected object was originally created", help); a helix (none here)
+
+### `MEASURE` / `ME` · es `GRADUA` / `GD` · pt-BR `MEDIDA` / `ME` · fr `MESURER` / `ME` · it `MISURA` / `MIS`
+
+**Implemented:** DIVIDE's prompts and objects with a length (probes divide/p02, p03, p06, p11–p15):
+`Select object to measure:` (`Cannot measure that object.`, p15), `Specify length of segment or
+[Block]:` — a number or two points; 0 or less `Value must be positive and nonzero.`, Enter and a
+word `Requires numeric distance, two points, or option keyword.`, each asked again (p13). Points
+`length` apart from where it starts, as far as one fits, the far end too when the length is a whole
+number of lengths (p03, p08): an open curve from the end nearer the pick (p02, p03, p12), a circle
+from its angle 0 counter-clockwise wherever picked (p02), a closed curve from its start, backwards
+when the pick lies past its middle (an ellipse picked half round, a closed spline: p11; a closed
+polyline from its first vertex, p03). Longer than the object, `Object isn't that long.`; more than
+32767 points, `Object is too long.`, each ending the command with nothing made (p06, p13). Block:
+the same prompts, `Specify length of segment:` last, the references aligned with the curve's own way
+whichever end it runs from (45° on a line measured from its end, the tangent on an arc: p12). es
+`Precise longitud de segmento o [Bloque]`, `Objeto demasiado corto.`, `Objeto demasiado largo.`
+(20437, 20442, 20443). The ribbon's Measure (Home ▸ Draw, expanded); here the Points drop-down.
+
+**Deviations:** a circle starts at the UCS's X, WHY: SNAPANG is not modelled (p04)
+
+**Missing:** whether a closed polyline picked past its middle runs backwards (**unverified**: as the
+ellipse and the closed spline, p11); the limit of 32767 points is DIVIDE's count's (**unverified**
+for MEASURE: 10000 made, 100000 refused, p06)
+
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE` · it `TESTO` / `T` / `TD` / `TESTODIN` / `-TESTO`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console

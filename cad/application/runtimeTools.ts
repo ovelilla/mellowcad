@@ -67,6 +67,8 @@ import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
+import { PointTool } from "./tools/PointTool"
+import { DivideTool } from "./tools/DivideTool"
 import { ListTool } from "./tools/ListTool"
 import { MassPropTool } from "./tools/MassPropTool"
 import { ZoomTool } from "./tools/ZoomTool"
@@ -138,6 +140,9 @@ export function defaultTools(
     new SplineTool("splinefit", "fit", splineSettings),
     new SplineTool("splinecv", "cv", splineSettings),
     new Polyline3dTool(),
+    new PointTool(),
+    new DivideTool("divide", "divide"),
+    new DivideTool("measure", "measuresegments"),
     new RectangleTool(),
     new PolygonTool(),
     new HatchTool(),

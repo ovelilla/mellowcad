@@ -251,11 +251,64 @@ describe("round trip", () => {
       splineSegments: -4,
       isolines: 16,
       visualStyle: "hidden" as const,
+      pointMode: 35,
+      pointSize: -7,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("saves PDMODE and PDSIZE, left out at 0 and a mode SETVAR refuses read as 0 (point/p03)", () => {
+    const plain = JSON.parse(serializeDrawing(snapshotOf([])))
+    expect(plain.settings.pointMode).toBeUndefined()
+    expect(plain.settings.pointSize).toBeUndefined()
+    for (const [pointMode, pointSize] of [
+      [5, "big"],
+      [101, null],
+      [3.5, Infinity],
+    ]) {
+      const file = {
+        ...plain,
+        settings: { ...plain.settings, pointMode, pointSize },
+      }
+      const read = parseDrawingFile(JSON.stringify(file)).settings
+      expect([read.pointMode, read.pointSize]).toEqual([0, 0])
+    }
+  })
+
+  it("reads a point, its DXF 50 kept and a malformed one dropped (since 50)", () => {
+    const plain = JSON.parse(serializeDrawing(snapshotOf([])))
+    const file = {
+      ...plain,
+      entities: [
+        {
+          id: "p1",
+          type: "point",
+          layerId: "0",
+          position: { x: 1, y: 2 },
+          xAxisAngle: 1.5,
+        },
+        {
+          id: "p2",
+          type: "point",
+          layerId: "0",
+          position: { x: 3, y: 4 },
+          xAxisAngle: "x",
+        },
+        { id: "p3", type: "point", layerId: "0", position: "nowhere" },
+      ],
+    }
+    const read = parseDrawingFile(JSON.stringify(file)).entities
+    expect(read).toEqual([
+      expect.objectContaining({
+        id: "p1",
+        position: { x: 1, y: 2 },
+        xAxisAngle: 1.5,
+      }),
+      expect.not.objectContaining({ xAxisAngle: expect.anything() }),
+    ])
   })
 
   it("saves the visual style, 2D Wireframe left out and anything else read as it (visualstyle/v03)", () => {
@@ -554,6 +607,7 @@ describe("round trip", () => {
       insert: true,
       region: true,
       solid3d: true,
+      point: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

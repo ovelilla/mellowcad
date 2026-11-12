@@ -1,0 +1,37 @@
+(progn (defun p3 (p) (mapcar (quote (lambda (v) (rtos v 2 6))) p)) (defun dump (/ e d) (setq e (entnext)) (while e (setq d (entget e)) (cond ((= (cdr (assoc 0 d)) "POINT") (print (list "PT" (p3 (cdr (assoc 10 d))) (rtos (cdr (assoc 50 d)) 2 6) (cdr (assoc 39 d)) (cdr (assoc 210 d)) (cdr (assoc 8 d))))) ((= (cdr (assoc 0 d)) "INSERT") (print (list "INS" (cdr (assoc 2 d)) (p3 (cdr (assoc 10 d))) (rtos (cdr (assoc 50 d)) 2 6) (cdr (assoc 41 d)))))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+_UCS
+_Z
+30
+_LINE
+0,0
+10,0
+
+_ZOOM
+_E
+_DIVIDE
+0,0
+2
+(dump)
+_UCS
+_W
+(setvar "THICKNESS" 3)
+(setvar "CECOLOR" "1")
+_LINE
+20,0
+30,0
+
+_ZOOM
+_E
+_DIVIDE
+20,0
+2
+(progn (setq e (entget (entlast))) (list (cdr (assoc 39 e)) (cdr (assoc 62 e))))
+_CIRCLE
+0,0,5
+3
+_ZOOM
+_E
+_DIVIDE
+0,3
+2
+(dump)

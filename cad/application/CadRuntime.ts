@@ -11,6 +11,7 @@ import {
   EntityProperty,
   closestOnEntity,
   entityPointToWorld,
+  isPointMode,
   splineDataPoints,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
@@ -144,6 +145,7 @@ import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { SystemVariableTool } from "./tools/SystemVariableTool"
 import { UnitsTool } from "./tools/UnitsTool"
+import { PointStyleTool } from "./tools/PointStyleTool"
 import { SaveAsTool } from "./tools/SaveAsTool"
 import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
@@ -529,6 +531,15 @@ export class CadRuntime extends Observable {
   private openLineForm: AnswerForm = "spaced"
   /** Whether {@link openLine} is a ribbon macro's answer, which the next prompt continues. */
   private macroOpen = false
+  /** The tool a `*` macro started, started again as it ends ({@link Tool.repeatsFromButton}). */
+  private repeating: string | null = null
+  /**
+   * AutoCAD's DWGNAME: the file opened, or the one SAVEAS or DXFOUT last
+   * wrote the whole drawing to; null for a new one. Save Drawing As offers
+   * it (desktop point/d01: `plano-prueba.dwg` after opening
+   * plano-prueba.dxf, DXFOUT `plano-prueba.dxf`).
+   */
+  private drawingName: string | null = null
   /**
    * The answers a ribbon macro has still to type ({@link RibbonMacro}), and
    * the question a pause waits at until the user's answer moves it on.
@@ -608,6 +619,7 @@ export class CadRuntime extends Observable {
   private paletteVertex = 0
   // Whether the Drawing Units dialog (UNITS) is showing.
   private unitsDialog = false
+  private pointStyleDialog = false
   // The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, null while closed.
   private saveAsDialog: SaveAsDialog | null = null
   // DXF Options, kept for the session as AutoCAD keeps them (x015, x020).
@@ -952,7 +964,10 @@ export class CadRuntime extends Observable {
       },
       endCommand: () => {
         this.resetTracking()
+        const again =
+          this.repeating === this.activeTool.id ? this.repeating : null
         this.returnToNeutralTool()
+        if (again !== null) this.setActiveTool(again)
       },
     }
     this.frameContext = {
@@ -1034,6 +1049,10 @@ export class CadRuntime extends Observable {
     )) {
       this.registerTool(tool)
     }
+    // PTYPE runs while the Point Style dialog, which the host draws, shows.
+    this.registerTool(
+      new PointStyleTool((open) => this.setPointStyleDialog(open))
+    )
     const held: Partial<HeldVariables> = this.runtimeVariables()
     for (const tool of this.tools.values()) {
       Object.assign(held, tool.heldVariables?.())
@@ -1049,6 +1068,7 @@ export class CadRuntime extends Observable {
     // Intersection + Extension. Everything else is turned on deliberately.
     for (const type of [
       SnapType.Midpoint,
+      SnapType.Node,
       SnapType.Quadrant,
       SnapType.Insertion,
       SnapType.Perpendicular,
@@ -1238,6 +1258,7 @@ export class CadRuntime extends Observable {
       )
       return
     }
+    this.repeating = next.repeatsFromButton ? id : null
     this.startEchoed(
       id,
       next.buttonEcho ?? `_${(command ?? id).toLowerCase()}`,
@@ -1645,6 +1666,9 @@ export class CadRuntime extends Observable {
    * box drag or grip edit keeps you in Select).
    */
   private returnToNeutralTool(): void {
+    // A transparent command ending resumes the one it interrupted, which keeps
+    // its repeat (Multiple Points through 'ZOOM).
+    if (this.suspended === null) this.repeating = null
     this.switchTool("select")
   }
 
@@ -3167,6 +3191,7 @@ export class CadRuntime extends Observable {
     this.selection.clear()
     this.resetTracking()
     this.history.execute(new NewDrawingCommand())
+    this.drawingName = null
     // WHY outside the command: AutoCAD's NEW opens another document, so
     // nothing takes the old one's unsaved values back, and undoing NEW here
     // brings the drawing back without them (RECTANG-D42).
@@ -5969,6 +5994,43 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * Shows or hides the Point Style dialog (PTYPE). Closed, it ends the PTYPE
+   * run it belongs to, resuming a command `'PTYPE` interrupted.
+   */
+  setPointStyleDialog(open: boolean): void {
+    if (this.pointStyleDialog === open) return
+    this.pointStyleDialog = open
+    if (!open && this.activeTool instanceof PointStyleTool) {
+      this.returnToNeutralTool()
+    }
+    this.invalidateState()
+  }
+
+  /**
+   * The Point Style dialog's OK: PDMODE and PDSIZE, in PTYPE's step,
+   * `Regenerating model.` written twice (desktop point/d01). A figure PDMODE
+   * has none for changes nothing.
+   */
+  applyPointStyle(mode: number, size: number): void {
+    if (!isPointMode(mode) || !Number.isFinite(size)) return
+    const settings = this.document.getSettings()
+    const patch: { pointMode?: number; pointSize?: number } = {}
+    if (mode !== settings.pointMode) patch.pointMode = mode
+    if (size !== settings.pointSize) patch.pointSize = size
+    if (Object.keys(patch).length > 0) {
+      this.executeOutside(
+        new UpdateSettingsCommand(patch),
+        this.text.commandNames("PTYPE")[0]
+      )
+      this.history.markRegenerated()
+      // Once for each variable OK sets (desktop point/d01, PDSIZE changed);
+      // an OK that changed nothing says nothing (unverified).
+      this.sayRegenerating()
+      this.sayRegenerating()
+    }
+  }
+
+  /**
    * The status bar's Units: acad.cuix's `'_units` (ID_Units), transparent
    * inside a running command (WORKSPACE-D68). WHY not the application menu's
    * `^C^C_UNITS`: AutoCAD's status-bar Units is a menu of formats, no dialog,
@@ -6060,9 +6122,14 @@ export class CadRuntime extends Observable {
     return serializeDrawing(this.document)
   }
 
-  /** A sensible default download name, e.g. `drawing-2026-07-10.ecad.json`. */
+  /**
+   * The drawing's name with this engine's extension (`plan.ecad.json` for a
+   * plan.dxf opened), else a dated one, e.g. `drawing-2026-07-10.ecad.json`.
+   */
   suggestedFileName(): string {
-    return suggestedFileName((date) => this.text.fileName(date))
+    return this.drawingName === null
+      ? suggestedFileName((date) => this.text.fileName(date))
+      : saveFileName(this.drawingName, "drawing")
   }
 
   /**
@@ -6165,6 +6232,7 @@ export class CadRuntime extends Observable {
     const tool = this.activeTool as SaveAsTool
     if (choice.fileType === "drawing") {
       this.files?.save(this.serializeDrawing(), settled.fileName)
+      this.drawingName = settled.fileName
       this.history.markRegenerated()
       this.returnToNeutralTool()
       return
@@ -6200,6 +6268,9 @@ export class CadRuntime extends Observable {
       { ...options.write, ...(objects ? { objects } : {}) }
     )
     this.files.save(bytes, pending.choice.fileName)
+    // Written whole, the drawing takes the DXF's name; Select objects' set
+    // leaves it as it was (desktop dxf/d01).
+    if (!objects) this.drawingName = pending.choice.fileName
     for (const line of dxfSaveLines(options.settings, report, this.text)) {
       this.commandLine.write("info", line)
     }
@@ -6254,6 +6325,7 @@ export class CadRuntime extends Observable {
     try {
       const opened = await readOpenedFile(file, kinds)
       this.openParsed(opened.drawing)
+      this.drawingName = typeof file === "string" ? null : file.name
       if (opened.kind === "dxf") {
         for (const line of dxfReportLines(opened.report, this.text)) {
           this.commandLine.write("info", line)
@@ -6477,6 +6549,8 @@ export class CadRuntime extends Observable {
       lwDisplay: settings.lwDisplay,
       fillMode: settings.fillMode,
       isolines: settings.isolines,
+      pointMode: settings.pointMode,
+      pointSize: settings.pointSize,
       visualStyle: settings.visualStyle,
       viewDirection: this.viewport.direction,
       viewUp: this.viewport.up,
@@ -7997,6 +8071,8 @@ export class CadRuntime extends Observable {
       documentUnit: settings.unit,
       documentPrecision: settings.precision,
       documentAnglePrecision: settings.anglePrecision,
+      pointMode: settings.pointMode,
+      pointSize: settings.pointSize,
       ltScale: settings.ltScale,
       dimScale:
         this.document.getDimStyle(this.document.getCurrentDimStyleId())
@@ -8044,6 +8120,7 @@ export class CadRuntime extends Observable {
       ),
       palette: { open: this.paletteOpen, tab: this.paletteTab },
       unitsDialog: this.unitsDialog,
+      pointStyleDialog: this.pointStyleDialog,
       saveAsDialog: this.saveAsDialog,
       lockedObjectsDialog: this.lockedObjectsDialog,
       unsavedTextDialog: this.unsavedTextDialog,

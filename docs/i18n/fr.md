@@ -254,6 +254,14 @@ labels (`Centre`, `Premier point`…: AutoCAD shows none), the unused `feedback.
 (`Dist`, `Aire`, `Périm`: no French view shows it, "The desktop"), our own messages (files,
 clipboard, FROM's, `messages.erased`), the keys `research/console/fr.md` lists `unseen` or
 `unpaired` that the tables worded.
+- **POINT, PTYPE, DIVIDE, MEASURE and Node:** the names by `getcname` in the 2027 console
+  (`POINT`, `DIVISER`, `MESURER`; PTYPE `TYPEPT` from its dialog's string table and the `acad.pgp`),
+  the aliases from the `acad.pgp` (`PT`, `DIV`, `ME`); the prompts and messages the console's
+  (point/p01–p12, divide/p01–p15) and tables 20430–20443 and 32824, `L'objet ne peut pas être
+  mesuré.` the console's (p15); the Point Style dialog `acddptyperes.dll`'s dialog 101 (`Style des
+  points`), the ribbon's `Plusieurs points`, `Diviser`, `Mesurer` acad.cuix's (fr-fr); Node's
+  -OSNAP word `NODal` and its name `Noeud` tables 27408 and 73, its short name `Nod` 33203. The
+  Points drop-down (`Points`) and the dialog's accessible name of its images are ours †.
 
 ## Script and font
 

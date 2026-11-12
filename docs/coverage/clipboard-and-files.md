@@ -115,12 +115,13 @@ knots and weights (a closed one, which AutoCAD writes on open knots, as that cur
 ATTDEF, INSERT with its attributes taken into the block's coordinates, the linear, aligned,
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
 text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
-without the style code AutoCAD may write after it (`ANSI31,_O`); the tables: layers (on,
+without the style code AutoCAD may write after it (`ANSI31,_O`), POINT with its thickness, plane and
+DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files); the tables: layers (on,
 off, locked), text and dimension styles (a group left out at the DXF reference's value, not
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
 CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
 PLINEWID, FILLMODE, ATTMODE, ORTHOMODE, ELEVATION, THICKNESS, SPLINETYPE, SPLINESEGS, ISOLINES,
-the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
+PDMODE, PDSIZE, the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
 (`Error in drawing header on line 1.`, `<file> is not valid DXF file`, `Invalid or incomplete DXF
 input -- drawing discarded.`, x010) and one ending inside a section in its two (`DXF read error on
 line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as AutoCAD opens ezdxf's
@@ -128,7 +129,7 @@ line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as Au
 `online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
 
 **Deviations:** what the model has no object for is left out and counted at the command line by
-its DXF type (`7 objects not opened: 1 POINT, 1 SOLID, …`), a layout's apart (`1 object in a
+its DXF type (`6 objects not opened: 1 SOLID, 1 XLINE, …`), a layout's apart (`1 object in a
 layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
 tolerant where AutoCAD's reader is strict: an unknown group code or entity, a missing subclass
@@ -147,7 +148,7 @@ the text's place; a hatch's elliptical and spline edges are laid as straight run
 is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
 model has only those three
 
-**Missing:** POINT, SOLID, TRACE,
+**Missing:** SOLID, TRACE,
 3DFACE, XLINE, RAY, LEADER, MLEADER, TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
@@ -178,20 +179,27 @@ the header's settings the reader takes back, the active viewport framing the dra
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
-reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN; each
-file of the two reference drawings and of one of every other kind, in every version, ASCII and
-binary, opened by AutoCAD 2027's console with no AUDIT error and plotted as AutoCAD's own
+reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN, a
+point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04); each
+file of the two reference drawings, of one of every other kind and of points flat, thick, turned
+and tilted (the console reading back each one's place, DXF 50, thickness, plane and the drawing's
+PDMODE 35 and PDSIZE −7), in every version, ASCII and binary, opened by AutoCAD 2027's console with
+no AUDIT error and plotted as AutoCAD's own
 (scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
 regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,
-27480) and dialogs (acui26res.dll's 131, acadres.dll's 2489 and 5103)
+27480) and dialogs (acui26res.dll's 131, acadres.dll's 2489 and 5103); the file name it offers is the
+drawing's, the file opened or the one SAVEAS or DXFOUT last wrote whole (Select objects' set leaves
+it), as AutoCAD 2027 offers `plano-prueba.dwg` after opening plano-prueba.dxf and DXFOUT
+`plano-prueba.dxf` (desktop point/d01, dxf/d01): here `plano-prueba.ecad.json` for the drawing
+type; NEW's is dated again
 
-**Deviations:** what a DXF of ours cannot hold is left out and counted at the command line by its
+**Deviations:** a page reloaded offers a dated name again, WHY: the autosave keeps the drawing, not
+the file it came from; what a DXF of ours cannot hold is left out and counted at the command line by its
 DXF type (`1 object not saved: 1 3DSOLID.`), WHY words of our own: AutoCAD writes everything it
 has, and the ACIS objects (3DSOLID, REGION) need their SAT, not written here; a dimension's style
 overrides and an array's parameters are not written, so AutoCAD opens the array as a block of its
 items and a dimension at its style; Save thumbnail preview image shows greyed and off, WHY: no
-preview is written yet (AutoCAD greyed it too in the owner's profile, d01); the drawing keeps its
-name after a DXF is written, WHY: nothing here names it
+preview is written yet (AutoCAD greyed it too in the owner's profile, d01)
 
 **Missing:** «AutoCAD R12/LT2 DXF (*.dxf)» and the Version prompt's R12, which converts what R12
 lacks (`docs/next-dxf.md`); the thumbnail preview; named UCSs and views (`$UCSNAME` left out

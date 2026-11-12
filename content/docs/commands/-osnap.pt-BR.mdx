@@ -38,6 +38,10 @@ O ponto na metade de uma linha, um arco, um segmento de polilinha, um arco elíp
 
 O centro de um círculo, um arco ou um arco de polilinha. Passe o cursor sobre a própria curva: no centro não há nada para pegar. Um círculo.
 
+### `PONto` (`PON`) [#node]
+
+Um objeto de ponto, os que o `PONTO`, o [`DIVIDIR`](/docs/commands/divide) e o [`MEDIDA`](/docs/commands/measure) criam, seja qual for a figura que o [`TIPOP`](/docs/commands/ptype) lhes dá. No início não está entre os snaps em execução. Um círculo com uma cruz.
+
 ### `QUAdrante` (`QUA`) [#quadrant]
 
 Os pontos de um círculo ou um arco a 0°, 90°, 180° e 270°, ao longo do X e do Y do UCS, e as extremidades dos eixos de uma elipse. Um losango.
@@ -84,7 +88,7 @@ O mesmo que `NENhum`: o conjunto em execução é limpo.
 
 ## O que ainda não faz [#missing]
 
-A caixa de diálogo Configurações do desenho que o OSNAP e o OS abrem no AutoCAD: aqui eles são comandos desconhecidos, e o menu da barra de status define os modos. Nó e Centro geométrico, como modos e nos menus. Meio entre 2 pontos, o ponto de rastreamento temporário e as teclas mantidas pressionadas para um snap de um ponto só (Shift + A, Shift + Q…). Intersecção, Perpendicular e Tangente em elipses, Perpendicular e Tangente em splines, e Extensão a partir da extremidade de um arco de polilinha, ou com a sua distância e o seu ângulo na dica de ferramenta. Uma Perpendicular ou uma Tangente que espera o outro ponto no início de um comando que não seja a [`LINHA`](/docs/commands/line) ou o [`CIRCULO`](/docs/commands/circle). As configurações da abertura e do marcador, APERTURE e AUTOSNAP.
+A caixa de diálogo Configurações do desenho que o OSNAP e o OS abrem no AutoCAD: aqui eles são comandos desconhecidos, e o menu da barra de status define os modos. Centro geométrico, como modo e nos menus. O snap Ponto nos pontos de definição de uma cota e na origem do seu texto: aqui ele só encontra objetos de ponto. Meio entre 2 pontos, o ponto de rastreamento temporário e as teclas mantidas pressionadas para um snap de um ponto só (Shift + A, Shift + Q…). Intersecção, Perpendicular e Tangente em elipses, Perpendicular e Tangente em splines, e Extensão a partir da extremidade de um arco de polilinha, ou com a sua distância e o seu ângulo na dica de ferramenta. Uma Perpendicular ou uma Tangente que espera o outro ponto no início de um comando que não seja a [`LINHA`](/docs/commands/line) ou o [`CIRCULO`](/docs/commands/circle). As configurações da abertura e do marcador, APERTURE e AUTOSNAP.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os)
 

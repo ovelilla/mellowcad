@@ -3,7 +3,12 @@ import { join } from "node:path"
 import { gunzipSync } from "node:zlib"
 import { describe, expect, it } from "vitest"
 import { circleOf, lineOf, p, snapshotOf } from "../../../test/builders"
-import { createText } from "../../domain/entities"
+import {
+  createPoint,
+  createText,
+  withNormal,
+  withThickness,
+} from "../../domain/entities"
 import { parseDxf } from "./readDxf"
 import { dxfReal } from "./dxfOut"
 import { DxfVersion, writeDxf } from "./writeDxf"
@@ -46,6 +51,22 @@ function shape(value: unknown): unknown {
   return value
 }
 
+/** Points flat, thick, turned (DXF 50) and tilted, PDMODE 35 and PDSIZE -7. */
+function pointsDrawing() {
+  const flat = withThickness(createPoint({ x: 1, y: 2, z: 3 }), 2.5)
+  const turned = createPoint({ x: 5, y: 0 }, undefined, (330 * Math.PI) / 180)
+  const tilted = withNormal(createPoint({ x: 2, y: 3, z: 4 }), {
+    x: 0.5,
+    y: -Math.sqrt(3) / 2,
+    z: 0,
+  })
+  const drawing = snapshotOf([flat, turned, tilted])
+  return {
+    ...drawing,
+    settings: { ...drawing.settings, pointMode: 35, pointSize: -7 },
+  }
+}
+
 describe("writeDxf", () => {
   for (const name of ["fixture-2018", "fixture2-2018"]) {
     const drawing = parseDxf(fixture(name)).drawing
@@ -70,6 +91,21 @@ describe("writeDxf", () => {
       }
     }
   }
+
+  // point/p04: a point keeps its Z, thickness, plane and DXF 50, and the
+  // drawing its PDMODE and PDSIZE.
+  it("writes points and $PDMODE, $PDSIZE, read back the same", () => {
+    const drawing = pointsDrawing()
+    for (const version of ["2000", "2018"] as const) {
+      for (const binary of [false, true]) {
+        const back = parseDxf(
+          writeDxf(drawing, { version, binary, precision: 16 }).bytes
+        ).drawing
+        expect(shape(back.entities)).toEqual(shape(drawing.entities))
+        expect(back.settings).toMatchObject({ pointMode: 35, pointSize: -7 })
+      }
+    }
+  })
 
   // x015: a line to 123.456789012345,0.001234567890123 at 0, 3, 8 and 16
   it("writes a real as AutoCAD does at each precision", () => {
@@ -157,8 +193,11 @@ describe("writeDxf", () => {
   it.skipIf(!process.env.DXF_OUT)("writes the files AutoCAD checks", () => {
     const dir = process.env.DXF_OUT!
     mkdirSync(dir, { recursive: true })
-    for (const name of ["fixture-2018", "fixture2-2018"]) {
-      const drawing = parseDxf(fixture(name)).drawing
+    for (const name of ["fixture-2018", "fixture2-2018", "points-2018"]) {
+      const drawing =
+        name === "points-2018"
+          ? pointsDrawing()
+          : parseDxf(fixture(name)).drawing
       for (const version of VERSIONS) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {

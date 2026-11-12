@@ -324,6 +324,14 @@ export function closestOnEntity(
       }
       return best
     }
+    case "point":
+      // WHY by its place alone: what the figure shows is a display of
+      // PDMODE, not the object (unverified on the desktop).
+      return {
+        point: entity.position,
+        distance: V.distance(entity.position, point),
+        t: 0,
+      }
     case "region": {
       // Picked by its edges: in 2D Wireframe nothing fills it.
       let best: ClosestResult = { point, distance: Infinity, t: 0 }
@@ -515,6 +523,8 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
         }
       )
     }
+    case "point":
+      return { min: entity.position, max: entity.position }
     case "region":
       return (
         entitiesBounds(regionLevelEdgeEntities(entity)) ?? {
@@ -813,6 +823,8 @@ export function entityCrossesRect(
       }
       return false
     }
+    case "point":
+      return pointInRect(entity.position, min, max)
     case "region":
       return regionLevelEdgeEntities(entity).some((edge) =>
         entityCrossesRect(edge, min, max)

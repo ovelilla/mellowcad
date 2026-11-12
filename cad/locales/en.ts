@@ -130,7 +130,11 @@ export const en: EngineCatalog = {
       "solideditoffset": "Offset faces",
       "solidedittaper": "Taper faces",
       "solideditdelete": "Delete faces",
-      "solideditcopy": "Copy faces"
+      "solideditcopy": "Copy faces",
+      "point": "Multiple Points",
+      "divide": "Divide",
+      "measuresegments": "Measure",
+      "ptype": "Point Style"
     },
     "description": {
       "U": "Undo the last action",
@@ -164,6 +168,7 @@ export const en: EngineCatalog = {
       "endpoint": "Endpoint",
       "midpoint": "Midpoint",
       "center": "Center",
+      "node": "Node",
       "intersection": "Intersection",
       "apparentIntersection": "Apparent Intersection",
       "perpendicular": "Perpendicular",
@@ -367,6 +372,16 @@ export const en: EngineCatalog = {
           {
             "one": "Region",
             "other": "Regions"
+          }
+        ]
+      ],
+      "point": [
+        [
+          "count",
+          2,
+          {
+            "one": "Point",
+            "other": "Points"
           }
         ]
       ]
@@ -1246,6 +1261,22 @@ export const en: EngineCatalog = {
       ],
       "SOLIDEDIT": [
         "SOLIDEDIT"
+      ],
+      "POINT": [
+        "POINT",
+        "PO"
+      ],
+      "DIVIDE": [
+        "DIVIDE",
+        "DIV"
+      ],
+      "MEASURE": [
+        "MEASURE",
+        "ME"
+      ],
+      "PTYPE": [
+        "PTYPE",
+        "DDPTYPE"
       ]
     },
     "keywords": {
@@ -2134,7 +2165,16 @@ export const en: EngineCatalog = {
       "solideditOffset": "Specify the offset distance",
       "solideditTaperBase": "Specify the base point",
       "solideditTaperAxis": "Specify another point along the axis of tapering",
-      "solideditTaperAngle": "Specify the taper angle"
+      "solideditTaperAngle": "Specify the taper angle",
+      "specifyAPoint": "Specify a point",
+      "selectObjectToDivide": "Select object to divide",
+      "selectObjectToMeasure": "Select object to measure",
+      "divideCountOr": "Enter the number of segments or",
+      "divideCount": "Enter the number of segments",
+      "measureLengthOr": "Specify length of segment or",
+      "measureLength": "Specify length of segment",
+      "blockToInsert": "Enter name of block to insert",
+      "alignBlockWithObject": "Align block with object?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -4394,6 +4434,7 @@ export const en: EngineCatalog = {
             "endpoint": "End",
             "midpoint": "Mid",
             "center": "Cen",
+            "node": "Node",
             "quadrant": "Quad",
             "intersection": "Int",
             "insertion": "Ins",
@@ -6843,13 +6884,36 @@ export const en: EngineCatalog = {
           "distance"
         ],
         "."
-      ]
+      ],
+      "currentPointModes": [
+        "Current point modes:  PDMODE=",
+        [
+          "mode"
+        ],
+        "  PDSIZE=",
+        [
+          "size"
+        ]
+      ],
+      "cannotDivideObject": "Cannot divide that object.",
+      "cannotMeasureObject": "Cannot measure that object.",
+      "objectNotThatLong": "Object isn't that long.",
+      "objectTooLong": "Object is too long.",
+      "cannotFindBlock": [
+        "Cannot find block \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "blockNameNotValid": "Invalid block name."
     },
     "feedback": {
       "snap": {
         "endpoint": "Endpoint",
         "midpoint": "Midpoint",
         "center": "Center",
+        "node": "Node",
         "intersection": "Intersection",
         "apparentIntersection": "Apparent Intersection",
         "perpendicular": "Perpendicular",

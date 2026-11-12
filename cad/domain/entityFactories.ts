@@ -1,5 +1,6 @@
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3, zOf } from "../geometry/Vec3"
+import { normalizeAngle } from "../geometry/primitives"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -13,6 +14,7 @@ import {
   LineEntity,
   CircleEntity,
   ArcEntity,
+  PointEntity,
   PolylineEntity,
   PolylineWidth,
   Polyline3dEntity,
@@ -46,6 +48,25 @@ export function createLine(
     end: { x: end.x, y: end.y },
   }
   return withDeltaZ(withElevation(line, zOf(start)), zOf(end) - zOf(start))
+}
+
+/** A point object in the WCS's plane, its Z (if any) its elevation. */
+export function createPoint(
+  position: Vec2 | Vec3,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  xAxisAngle = 0,
+  id: EntityId = nextEntityId()
+): PointEntity {
+  const point: PointEntity = {
+    id,
+    type: "point",
+    layerId,
+    position: { x: position.x, y: position.y },
+    ...(normalizeAngle(xAxisAngle) !== 0
+      ? { xAxisAngle: normalizeAngle(xAxisAngle) }
+      : {}),
+  }
+  return withElevation(point, zOf(position))
 }
 
 export function createCircle(

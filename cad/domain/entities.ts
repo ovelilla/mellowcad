@@ -57,16 +57,28 @@ export type {
   SolidPrimitive,
   SolidSweep,
   Solid3dEntity,
+  PointEntity,
   Entity,
   Bounds,
 } from "./entityTypes"
 export { TEXT_JUSTIFICATIONS, MTEXT_ATTACHMENTS } from "./entityTypes"
 
 export type { HatchOptions, InsertOptions } from "./entityFactories"
+
+export { isPointMode, pointFigure, pointSize, withXAxisAngle } from "./points"
+export type { PointFigure } from "./points"
+export {
+  MAX_DIVISIONS,
+  curveWalk,
+  divideDistances,
+  measureDistances,
+} from "./curveWalks"
+export type { CurveStation, CurveWalk } from "./curveWalks"
 export {
   nextEntityId,
   createLine,
   createCircle,
+  createPoint,
   createArc,
   createPolyline,
   createPolyline3d,

@@ -378,6 +378,15 @@ each one's own is fixed by its test.
   inválida ou incompleta - desenho descartado.` (one hyphen). The count of what a DXF leaves out is
   ours, AutoCAD having nothing to say (`objetos não abertos`, `de um layout`, AutoCAD's word, `Não
   foi possível ler`).
+- **POINT, PTYPE, DIVIDE, MEASURE and Node:** the names by `getcname` in the 2027 console
+  (`PONTO`, `DIVIDIR`, `MEDIDA`; PTYPE `TIPOP` from its dialog's string table and the `acad.pgp`,
+  `TIP`, `DDPTYPE` and `TIPOPD` its aliases), the aliases from the `acad.pgp` (`PO`, `DIV`, `ME`);
+  the prompts and messages the console's (point/p01–p12, divide/p01–p15) and tables 20430–20443 and
+  32824, DIVIDE's block-name refusal `Nome bloco inválido.` apart from -INSERT's; the Point Style
+  dialog `acddptyperes.dll`'s dialog 101, the ribbon's `Múltiplos pontos`, `Dividir`, `Medir`
+  acad.cuix's (pt-br); Node's -OSNAP word `PONto` (the console takes `PON` and `PONTO` as Node,
+  names/p07) and its name `Ponto` tables 27408, 33203 and 73. The Points drop-down (`Pontos`) and
+  the dialog's accessible name of its images are ours †.
 
 ## Script and font
 

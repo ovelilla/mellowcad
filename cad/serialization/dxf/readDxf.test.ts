@@ -11,6 +11,7 @@ import type {
   InsertEntity,
   LineEntity,
   MTextEntity,
+  PointEntity,
   Polyline3dEntity,
   PolylineEntity,
   SplineEntity,
@@ -141,7 +142,6 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
 
   it("lists what the model has no object for, by type, and paper space apart", () => {
     expect([...drawing.report.leftOut]).toEqual([
-      ["POINT", 1],
       ["SOLID", 1],
       ["XLINE", 1],
       ["RAY", 1],
@@ -233,6 +233,16 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     const [arc] = ofType<ArcEntity>(drawing, "arc")
     expect(arc.startAngle).toBeCloseTo((278.8733853924698 * Math.PI) / 180, 12)
     expect(arc.endAngle).toBeCloseTo((314.366926962348 * Math.PI) / 180, 12)
+  })
+
+  it("reads a point, which a new drawing shows as a dot (PDMODE 0)", () => {
+    expect(ofType<PointEntity>(drawing, "point")).toEqual([
+      expect.objectContaining({ position: { x: 200, y: 0 } }),
+    ])
+    expect(drawing.drawing.settings).toMatchObject({
+      pointMode: 0,
+      pointSize: 0,
+    })
   })
 
   it("reads an ellipse and an elliptical arc", () => {

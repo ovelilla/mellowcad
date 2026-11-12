@@ -86,6 +86,7 @@ declare const source: {
       "union": string
       "box": string
       "extrude": string
+      "point": string
     }
     "sections": {
       "draw": string
@@ -355,6 +356,18 @@ declare const source: {
     "fold": string
     "unfold": string
     "resize": string
+  }
+  "PointStyle": {
+    "title": string
+    "figures": string
+    "pointSize": string
+    "relative": string
+    "absolute": string
+    "percent": string
+    "units": string
+    "invalid": string
+    "ok": string
+    "cancel": string
   }
 }
 export default source

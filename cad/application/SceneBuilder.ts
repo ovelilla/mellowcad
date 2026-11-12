@@ -19,9 +19,12 @@ import {
   EntityId,
   HatchEntity,
   LineEntity,
+  PointEntity,
   PolylineEntity,
   Polyline3dEntity,
   Solid3dEntity,
+  pointFigure,
+  pointSize,
   polyline3dSegments,
   ThickEntity,
   arcSweepAngle,
@@ -189,6 +192,10 @@ export interface SceneInput {
   readonly fillMode?: boolean
   /** ISOLINES: a solid's curved faces' isolines; a new drawing's 4 when absent. */
   readonly isolines?: number
+  /** PDMODE: the figure points show; a dot when absent. */
+  readonly pointMode?: number
+  /** PDSIZE, as the drawing holds it; 0 when absent. */
+  readonly pointSize?: number
   /** VSCURRENT: how solids are drawn; 2D Wireframe when absent. */
   readonly visualStyle?: VisualStyle
   /** VIEWDIR: the unit vector from the drawing towards the viewer, which Hidden hides along; +Z when absent. */
@@ -267,6 +274,14 @@ export function buildScene(input: SceneInput): Scene {
     input.attributeDisplay ?? "normal",
     input.fillMode ?? true,
     input.isolines,
+    {
+      mode: input.pointMode ?? 0,
+      // WHY from the view drawn now: AutoCAD sizes a relative point at a
+      // regeneration and keeps it through a zoom until the next (desktop,
+      // point/d01), but here no display list holds it: every frame draws it
+      // from the view, as after a REGEN.
+      size: pointSize(input.pointSize ?? 0, camera.height / camera.scale),
+    },
     input.visualStyle ?? "2dWireframe",
     input.viewDirection ?? { x: 0, y: 0, z: 1 },
     input.viewUp ?? { x: 0, y: 1, z: 0 }
@@ -718,6 +733,12 @@ export function ellipseScenePrimitive(
  * the block table a reference is expanded through. Grouped so a call site that
  * only has one of them does not have to name the other.
  */
+/** How the drawing shows its points: PDMODE, and the figure's size in drawing units. */
+export interface PointDisplay {
+  readonly mode: number
+  readonly size: number
+}
+
 export interface EntityDrawOptions {
   readonly dimStyle?: DimStyle
   readonly blocks?: BlockLookup
@@ -725,6 +746,8 @@ export interface EntityDrawOptions {
   readonly fill?: boolean
   /** ISOLINES, for a solid's curved faces; a new drawing's 4 when absent. */
   readonly isolines?: number
+  /** PDMODE and the size PDSIZE gives at this view (`pointSize`); a dot when absent. */
+  readonly points?: PointDisplay
   /**
    * What a solid shows in a style that hides lines, in place of its edges
    * and isolines: its stretches no face hides ({@link solidViewEntities}).
@@ -913,7 +936,9 @@ export function extrusionEdges(
         ]
       : entity.type === "polyline"
         ? [...entity.vertices]
-        : []
+        : entity.type === "point"
+          ? [entity.position]
+          : []
   const axes = entityAxes(entity)
   const at = (point: Vec2, z: number) =>
     camera.worldToScreen(axesToWorld(axes, { x: point.x, y: point.y, z }))
@@ -1052,7 +1077,53 @@ function planarPrimitives(
       )
     case "solid3d":
       return solidPrimitives(camera, entity, stroke, options)
+    case "point":
+      return pointPrimitives(camera, entity, stroke, options.points)
   }
+}
+
+/**
+ * A point as PDMODE draws it (`pointFigure`): a dot of one pixel, or its
+ * lines and circle in its plane at the size PDSIZE gives.
+ */
+function pointPrimitives(
+  camera: CameraTransform,
+  point: PointEntity,
+  stroke: StrokeStyle,
+  display: PointDisplay = { mode: 0, size: 0 }
+): ScenePrimitive[] {
+  const figure = pointFigure(point, display.mode, display.size)
+  const out: ScenePrimitive[] = figure.lines.map(([a, b]) => ({
+    kind: "segment",
+    a: camera.worldToScreen(a),
+    b: camera.worldToScreen(b),
+    stroke,
+  }))
+  if (figure.circle !== null) {
+    out.push(
+      circleCurve(
+        camera,
+        {
+          ...point,
+          type: "circle",
+          center: point.position,
+          radius: figure.circle,
+        },
+        stroke
+      )
+    )
+  }
+  if (figure.dot) {
+    // A dot is a run as long as the stroke is wide, as a hatch's dot is.
+    const at = camera.worldToScreen(point.position)
+    out.push({
+      kind: "segment",
+      a: at,
+      b: { x: at.x + Math.max(stroke.width, 1), y: at.y },
+      stroke,
+    })
+  }
+  return out
 }
 
 /**
@@ -1794,6 +1865,7 @@ function pushEntities(
   attributeDisplay: AttributeDisplay,
   fillMode: boolean,
   isolines: number | undefined,
+  points: PointDisplay,
   visualStyle: VisualStyle,
   viewDirection: Vec3,
   viewUp: Vec3
@@ -1908,6 +1980,7 @@ function pushEntities(
     const options = {
       fill: fillMode,
       isolines,
+      points,
       solidLines,
       linetype: true,
       dimStyle:
@@ -2511,6 +2584,11 @@ function pushSnapMarker(
       break
     case "intersection":
       pushCross(out, c, s, stroke)
+      break
+    case "node":
+      // AutoCAD's Node marker: a circle with a cross inside it.
+      out.push({ kind: "circle", center: c, radius: s, stroke })
+      pushCross(out, c, s * Math.SQRT1_2, stroke)
       break
     case "apparentIntersection":
       // AutoCAD marks an apparent (extended) intersection with the same cross

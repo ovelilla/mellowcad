@@ -952,6 +952,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return null
@@ -981,6 +982,7 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return "refused"
@@ -1074,6 +1076,7 @@ function computeOffset(
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return CANNOT_OFFSET
@@ -1170,6 +1173,7 @@ function computeThrough(picked: Entity, point: Vec2): OffsetResult {
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return CANNOT_OFFSET

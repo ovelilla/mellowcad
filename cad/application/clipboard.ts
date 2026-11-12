@@ -84,6 +84,7 @@ export function clipboardSnapshot(
         case "hatch":
         case "region":
         case "solid3d":
+        case "point":
           break
         default: {
           const unhandled: never = entity

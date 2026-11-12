@@ -94,7 +94,8 @@ export const en: EditorCatalog = {
         "measure": "Measure",
         "union": "Solid Editing",
         "box": "Modeling",
-        "extrude": "Extrude"
+        "extrude": "Extrude",
+        "point": "Points"
       },
       "sections": {
         "draw": "Draw",
@@ -451,6 +452,18 @@ export const en: EditorCatalog = {
       "fold": "Fold the palettes",
       "unfold": "Show the palettes",
       "resize": "Palette width"
+    },
+    "PointStyle": {
+      "title": "Point Style",
+      "figures": "Point display images",
+      "pointSize": "Point Size:",
+      "relative": "Set Size Relative to Screen",
+      "absolute": "Set Size in Absolute Units",
+      "percent": "%",
+      "units": "Units",
+      "invalid": "Invalid input.",
+      "ok": "OK",
+      "cancel": "Cancel"
     }
   }
 }

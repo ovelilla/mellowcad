@@ -126,7 +126,11 @@
       "solideditoffset": "Décaler des faces",
       "solidedittaper": "Effiler des faces",
       "solideditdelete": "Supprimer des faces",
-      "solideditcopy": "Copier des faces"
+      "solideditcopy": "Copier des faces",
+      "point": "Plusieurs points",
+      "divide": "Diviser",
+      "measuresegments": "Mesurer",
+      "ptype": "Style de points"
     },
     "description": {
       "U": "Annule la dernière action",
@@ -160,6 +164,7 @@
       "endpoint": "Extrémité",
       "midpoint": "Milieu",
       "center": "Centre",
+      "node": "Noeud",
       "intersection": "Intersection",
       "apparentIntersection": "Intersection projetée",
       "perpendicular": "Perpendiculaire",
@@ -224,7 +229,8 @@
       "hatch": "{count, plural, one {Hachures} other {Hachures}}",
       "insert": "{count, plural, one {Référence de bloc} other {Références de bloc}}",
       "solid3d": "{count, plural, one {Solide 3D} other {Solides 3D}}",
-      "region": "{count, plural, one {Région} other {Régions}}"
+      "region": "{count, plural, one {Région} other {Régions}}",
+      "point": "{count, plural, one {Point} other {Points}}"
     },
     "array": {
       "rectangular": "Réseau (Rectangulaire)",
@@ -642,13 +648,18 @@
       "SECTION": ["COUPE", "COU"],
       "FILLETEDGE": ["ARETERACCORD"],
       "CHAMFEREDGE": ["ARETECHANFREIN"],
-      "SOLIDEDIT": ["EDITSOLIDE"]
+      "SOLIDEDIT": ["EDITSOLIDE"],
+      "POINT": ["POINT", "PT"],
+      "DIVIDE": ["DIVISER", "DIV"],
+      "MEASURE": ["MESURER", "ME"],
+      "PTYPE": ["TYPEPT", "DDPTYPE"]
     },
     "keywords": {
       "-OSNAP": {
         "ENDpoint": "EXTrémité",
         "MIDpoint": "MILieu",
         "CENter": "CENtre",
+        "NODe": "NODal",
         "QUAdrant": "QUAdrant",
         "INTersection": "INTersection",
         "EXTension": "EXTEnsion",
@@ -1439,6 +1450,16 @@
         "Zaxis": "axeZ",
         "2points": "2points",
         "Reference": "Référence"
+      },
+      "DIVIDE": {
+        "Block": "Bloc",
+        "Yes": "Oui",
+        "No": "Non"
+      },
+      "MEASURE": {
+        "Block": "Bloc",
+        "Yes": "Oui",
+        "No": "Non"
       }
     },
     "promptKeywords": {
@@ -2129,7 +2150,16 @@
       "solideditOffset": "Spécifiez la distance de décalage",
       "solideditTaperBase": "Spécifiez le point de base",
       "solideditTaperAxis": "Spécifiez un autre point le long de l'axe d'effilage",
-      "solideditTaperAngle": "Spécifier l'angle d'extrusion"
+      "solideditTaperAngle": "Spécifier l'angle d'extrusion",
+      "specifyAPoint": "Spécifiez un point",
+      "selectObjectToDivide": "Sélectionnez l'objet à diviser",
+      "selectObjectToMeasure": "Sélectionnez l'objet à mesurer",
+      "divideCountOr": "Entrez le nombre de segments ou",
+      "divideCount": "Entrez le nombre de segments",
+      "measureLengthOr": "Spécifiez la longueur du segment ou",
+      "measureLength": "Spécifiez la longueur du segment",
+      "blockToInsert": "Entrez le nom du bloc à insérer",
+      "alignBlockWithObject": "Aligner le bloc avec l'objet ?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2476,7 +2506,7 @@
       "orbitExit": "Appuyez sur Entrée ou Echap pour sortir ou cliquez avec le bouton droit de la souris pour afficher le menu contextuel.",
       "requiresTwoPointsOrDisplacement": "Nécessite deux points ou un déplacement suivi de ENTREE.",
       "currentOsnapModes": "Modes accrobj courants: {modes}",
-      "osnapModeName": "{mode, select, endpoint {Extr} midpoint {Mil} center {Cen} quadrant {Qua} intersection {Int} insertion {Ins} perpendicular {Per} tangent {Tan} nearest {Pro} apparentIntersection {Proj} extension {Exte} other {Par}}",
+      "osnapModeName": "{mode, select, endpoint {Extr} midpoint {Mil} center {Cen} node {Nod} quadrant {Qua} intersection {Int} insertion {Ins} perpendicular {Per} tangent {Tan} nearest {Pro} apparentIntersection {Proj} extension {Exte} other {Par}}",
       "currentLineweight": "Epaisseur de lignes courante: {value}",
       "pointingEdgeOn": "Il est interdit de pointer dans un SCU vu par la tranche.",
       "circleDoesNotExist": "Le cercle n'existe pas.",
@@ -2855,13 +2885,21 @@
       "taperAngleNonzero": "L'angle d'extrusion doit être différent de zéro ou être compris entre -90 et 90.",
       "zeroDisplacement": "Aucune modification suite à un vecteur de déplacement égal à 0.",
       "zeroRotation": "Aucune modification suite à un angle de rotation égal à 0.",
-      "offsetDistanceBound": "La distance de décalage doit être supérieure à {distance}."
+      "offsetDistanceBound": "La distance de décalage doit être supérieure à {distance}.",
+      "currentPointModes": "Modes point courants:  PDMODE={mode}  PDSIZE={size}",
+      "cannotDivideObject": "L'objet ne peut pas être divisé.",
+      "cannotMeasureObject": "L'objet ne peut pas être mesuré.",
+      "objectNotThatLong": "L'objet n'est pas assez long.",
+      "objectTooLong": "L'objet est trop long.",
+      "cannotFindBlock": "Impossible de trouver le bloc \"{name}\".",
+      "blockNameNotValid": "Nom bloc incorrect."
     },
     "feedback": {
       "snap": {
         "endpoint": "Extrémité",
         "midpoint": "Milieu",
         "center": "Centre",
+        "node": "Noeud",
         "intersection": "Intersection",
         "apparentIntersection": "Intersection projetée",
         "perpendicular": "Perpendiculaire",

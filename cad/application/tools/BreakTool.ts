@@ -545,6 +545,9 @@ function cannotBreak(entity: Entity): MessageId | null {
   switch (entity.type) {
     case "insert":
       return "cannotBreakBlock"
+    case "point":
+      // Asked again (point/p08).
+      return "objectCannotBeBroken"
     case "text":
     case "mtext":
     case "attdef":
@@ -686,6 +689,7 @@ function computeBreak(
     case "insert":
     case "region":
     case "solid3d":
+    case "point":
       return null
   }
 }

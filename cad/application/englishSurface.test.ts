@@ -2328,6 +2328,28 @@ describe("the engine's English surface", () => {
         .do("LW", (c) => c.command("LW"))
         .do("enter", (c) => c.enter())
     )
+    walk("POINT", createHarness(), (s) =>
+      s
+        .do("POINT", (c) => c.command("PO"))
+        .do("enter", (c) => c.enter())
+        .do("point", (c) => c.type("10,20").enter())
+        .do("PDMODE", (c) => c.command("PDMODE").type("5").enter())
+        .do("PDSIZE", (c) => c.command("PDSIZE").type("-5").enter())
+    )
+    walk("DIVIDE", createHarness({ entities: [line()] }), (s) =>
+      s
+        .do("DIVIDE", (c) => c.command("DIV"))
+        .do("pick", (c) => c.click(at(50, 0)))
+        .do("count refused", (c) => c.type("1").enter())
+        .do("Block", (c) => c.option("Block"))
+        .do("no name", (c) => c.enter())
+        .do("unknown", (c) => c.type("NOPE").enter())
+        .do("MEASURE", (c) => c.escape().command("ME"))
+        .do("pick", (c) => c.click(at(90, 0)))
+        .do("zero", (c) => c.type("0").enter())
+        .do("too long", (c) => c.type("200").enter())
+        .do("on nothing", (c) => c.command("ME").click(at(300, 300)))
+    )
     walk("ID", createHarness(), (s) =>
       s
         .do("ID", (c) => c.command("ID"))

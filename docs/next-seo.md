@@ -8,8 +8,9 @@
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
 > online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
-> y la 07c (la página «editar DXF online») hechas y publicadas el 12/11; por decisión del dueño la visibilidad va antes que cualquier
-> funcionalidad; siguiente: lo que queda de §7. Esperan detrás
+> y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
+> MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando); por decisión del dueño la
+> visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -162,10 +163,8 @@ portugués, de `keywords-en-autocomplete.csv` y `keywords-es-pt-universe.csv`):
 | Comando | en | es | pt | Nota |
 | --- | --: | --: | --: | --- |
 | LAYOUT (presentaciones) | 56 | 15 | 29 | con PLOT, la base de imprimir; hoy sin presentaciones |
-| MEASURE | 52 | 53 | 52 | inflado: «measure/medir» también es medir distancias (DIST ya existe) |
 | PLOT | 39 | 9 | 27 | «trazar», «plotar»; nada de PDF ni impresión hoy (`i18n.md`) |
 | ALIGN | 34 | 16 | 9 | «alinear», «alinhar» |
-| DIVIDE | 32 | 6 | 5 | con MEASURE y POINT/DDPTYPE |
 | TABLE | 32 | 3 | 5 | |
 | BOUNDARY | 31 | 2 | 1 | |
 | GROUP | 28 | 4 | 4 | |
@@ -738,4 +737,19 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   probado con teclas del sistema (XTEST, y SendKeys desde Windows por el RDP de WSLg) en Chrome
   sobre X11, la plataforma del Chrome del dueño: abre el selector de archivos y escribe `_open`;
   no es un fallo nuestro (`07c-dxf-editar.md` §4).
+- DXF fase 4, POINT: hecha el 12/11/2026 (L7, la excepción: el tercer objeto que más falta en los
+  DXF reales y la base de dos comandos de la tabla de L3). La entidad POINT, PDMODE y PDSIZE,
+  POINT, PTYPE y su cuadro Estilo de punto, DIVIDE, MEASURE y la referencia Nodo, en los seis
+  idiomas; el DXF en los dos sentidos (`docs/next-dxf.md`, fase 4). DIVIDE y MEASURE salen de la
+  tabla de L3. **Páginas de comando nuevas**, con lo que se busca en cada idioma: `divide`
+  («Dividir en partes iguales en AutoCAD: comando DIVIDE», «Dividir em partes iguais no AutoCAD»,
+  DIVISER, DIVIDI), `measure` («Graduar en AutoCAD: comando GRADUA», MEDIDA, MESURER, MISURA) y
+  `ptype` (su entrada llena una: las veinte figuras, el tamaño relativo y absoluto); `-osnap`
+  nombra Nodo. Abrir y editar un DXF dicen que los puntos abren y se guardan, y el FAQ de la
+  portada los quita de lo que se queda fuera. `gsc-prioritize.mjs`: la auditoría no tiene cifra
+  de Trends para DIVIDE ni MEASURE, así que no entran en `COMMANDS` y cuentan con la de por
+  defecto. **La primera carga de cada portada**, Brotli q11, del build de `main` a este: `/`
+  252.638 → 252.922, `/es` 253.921 → 254.174, `/pt-br` 254.175 → 254.388, `/ar` 277.519 →
+  277.735, `/fr` 254.890 → 255.116 (884 bytes bajo 250 KiB), `/it` 254.050 → 254.325: las cuatro
+  teclas nuevas del tablero de comandos y la respuesta del FAQ.
 - 10 Medición: la primera, un mes después del push de 01–02.

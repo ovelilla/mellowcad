@@ -106,6 +106,15 @@ SEZIONE (`SEZ`). `LAYER` and `PROPRIETA` keep `LA` and `PR`, as English.
   45049 and `A` in 52855: the console settles which.
 - `propose-commands.mjs --lang it` (11/11/2026): 1,393 proposed, 213 `several`, 139 `partial`, 39
   `plural`, 8 `select`, 497 `no-source`; `names` 126 (French's: 1,383, 217, 138, 39, 8, 476).
+- **POINT, PTYPE, DIVIDE, MEASURE and Node:** the names by `getcname` in the 2027 console
+  (`PUNTO`, `DIVIDI`, `MISURA`; PTYPE `TIPOP` from its dialog's string table and the `acad.pgp`),
+  the aliases from the `acad.pgp` (`PO`, `DD`, `MIS`); the prompts and messages the console's
+  (point/p01–p12, divide/p01–p15) and tables 20430–20443 and 32824 (`Modalità del punto corrente`),
+  `Impossibile dividere questo oggetto.` the console's (20432 with 20433, not 20470); the Point
+  Style dialog `acddptyperes.dll`'s dialog 101 (`Stile punto`), the ribbon's `Più punti`,
+  `Dividi`, `Misura` acad.cuix's (it-it); Node's -OSNAP word `NODo` and its name `Nodo` tables
+  27408, 33203 and 73. The Points drop-down (`Punti`) and the dialog's accessible name of its
+  images are ours †.
 
 ## Interface terms
 

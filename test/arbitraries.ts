@@ -18,6 +18,7 @@ import {
   type AttributeModes,
   type BlockAttribute,
   type CircleEntity,
+  type PointEntity,
   type DimensionEntity,
   type EllipseEntity,
   type Entity,
@@ -181,6 +182,21 @@ export const circleEntity: fc.Arbitrary<CircleEntity> = fc
     withId<CircleEntity>(
       { type: "circle", layerId: DEFAULT_LAYER_ID, center, radius },
       "circle"
+    )
+  )
+
+/** A point object, its DXF 50 at 0 half the time. */
+export const pointEntity: fc.Arbitrary<PointEntity> = fc
+  .tuple(point, fc.oneof(fc.constant(0), angle))
+  .map(([position, xAxisAngle]) =>
+    withId<PointEntity>(
+      {
+        type: "point",
+        layerId: DEFAULT_LAYER_ID,
+        position,
+        ...(xAxisAngle !== 0 ? { xAxisAngle } : {}),
+      },
+      "point"
     )
   )
 
@@ -1079,7 +1095,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       insertEntity,
       regionEntity,
       solidEntity,
-      sweptSolidEntity
+      sweptSolidEntity,
+      pointEntity
     ),
     zValue,
     zValue,

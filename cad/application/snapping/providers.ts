@@ -315,6 +315,23 @@ export const centerProvider: SnapProvider = {
 }
 
 /**
+ * Snaps to a point object — AutoCAD's Node, "a point object, dimension
+ * definition point, or dimension text origin": the dimensions' are not
+ * offered yet (their coverage entry). Inside a block too.
+ */
+export const nodeProvider: SnapProvider = {
+  type: SnapType.Node,
+  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
+    const candidates: SnapCandidate[] = []
+    for (const entity of entities) {
+      if (entity.type !== "point" || !document.isEntityVisible(entity)) continue
+      candidates.push(notable(SnapType.Node, entity, entity.position, touch))
+    }
+    return candidates
+  },
+}
+
+/**
  * Snaps to the point a text object, an attribute definition or a block
  * reference hangs off — AutoCAD's Insertion osnap. A reference offers its own
  * insertion point and those of the attributes it shows; the rest of what it
@@ -1534,6 +1551,7 @@ export const defaultSnapProviders: SnapProvider[] = [
   intersectionProvider,
   midpointProvider,
   centerProvider,
+  nodeProvider,
   insertionProvider,
   quadrantProvider,
   perpendicularProvider,

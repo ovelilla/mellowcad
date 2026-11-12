@@ -1,0 +1,20 @@
+_PDMODE
+35
+_PDMODE
+5
+_PDMODE
+-1
+_PDMODE
+101
+(getvar "PDMODE")
+_PDSIZE
+-5
+_PDSIZE
+FOO
+2
+(list (getvar "PDMODE") (getvar "PDSIZE"))
+_POINT
+0,0
+_PDSIZE
+-1e-9
+(getvar "PDSIZE")

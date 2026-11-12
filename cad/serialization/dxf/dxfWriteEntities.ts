@@ -12,6 +12,7 @@ import {
   BlockAttribute,
   BlockDefinition,
   CircleEntity,
+  PointEntity,
   DimensionEntity,
   EllipseEntity,
   Entity,
@@ -128,6 +129,8 @@ export function writeEntity(
       return line(ctx, entity, owner)
     case "circle":
       return circle(ctx, entity, owner)
+    case "point":
+      return pointObject(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -179,6 +182,24 @@ function circle(ctx: DxfWriteContext, e: CircleEntity, owner: string): void {
   out.point(10, e.center.x, e.center.y, e.elevation ?? 0)
   out.exact(40, e.radius)
   writeNormal(ctx, e)
+}
+
+/** A point is the WCS's in a DXF, as AutoCAD writes it (point/p04). */
+function pointObject(
+  ctx: DxfWriteContext,
+  e: PointEntity,
+  owner: string
+): void {
+  const { out } = ctx
+  const a = axes(e)
+  const ocs = { ...e.position, z: e.elevation ?? 0 }
+  const at = a ? axesToWorld(a, ocs) : ocs
+  head(ctx, "POINT", e, owner)
+  out.str(100, "AcDbPoint")
+  out.point(10, at.x, at.y, at.z, a !== null)
+  thickness(ctx, e)
+  writeNormal(ctx, e)
+  if (e.xAxisAngle) out.real(50, e.xAxisAngle * DEG)
 }
 
 function arc(ctx: DxfWriteContext, e: ArcEntity, owner: string): void {

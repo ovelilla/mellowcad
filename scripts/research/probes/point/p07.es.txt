@@ -1,0 +1,39 @@
+(setvar "PDMODE" 4)
+(setvar "PDSIZE" 4)
+_UCS
+_Z
+30
+_POINT
+0,0
+_UCS
+_W
+_POINT
+10,0
+_ROTATE
+_L
+
+10,0
+30
+_POINT
+20,0
+_LINE
+-5,-5
+25,5
+
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 píxeles)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mcad-point-p07.png
+_N
+_Y

@@ -1,0 +1,7 @@
+_POINT
+FOO
+1,2
+_POINT
+
+_POINT
+@

@@ -1,0 +1,64 @@
+---
+title: "Comando DIVIDI (DIVIDE) in AutoCAD"
+description: "Dividere una linea in parti uguali con DIVIDI (DIVIDE, alias DD) di AutoCAD in italiano: punti o blocchi su linee, cerchi, archi e polilinee. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando DIVIDE in italiano?","answer":"DIVIDI, alias DD, poi Invio o barra spaziatrice; l'alias inglese DIV in AutoCAD in italiano non esiste. Il nome inglese funziona anche con il trattino basso davanti: _DIVIDE."},{"question":"Perché il comando DIVIDI non funziona?","answer":"Molto probabilmente funziona: i punti ci sono, disegnati come punti minuscoli sulla linea. Apri TIPOP (DDPTYPE) e scegli una croce o un cerchio, oppure digita PDMODE e 3: tutti i punti del disegno cambiano insieme. Per agganciarli, usa lo snap ad oggetto Nodo, NOD."},{"question":"Come si divide una linea in parti uguali?","answer":"Avvia DIVIDI, seleziona la linea e digita il numero di parti, 5 per cinque. I quattro punti tra le parti sono quelli a cui agganciarsi: lo snap Nodo li trova."},{"question":"Come si divide un cerchio in parti uguali?","answer":"Allo stesso modo: seleziona il cerchio e digita il numero di parti. Un oggetto chiuso riceve tanti punti quante sono le parti, quindi 6 dà sei punti, il primo nel punto a 0° del cerchio, poi in senso antiorario."},{"question":"Come si spezza una linea in più pezzi?","answer":"DIVIDI segna soltanto i punti. Per tagliare la linea lì, usa SPEZZA, oppure SPEZZAALPUNTO in ogni punto, agganciandoti con Nodo."}]
+---
+
+DIVIDI (DIVIDE) segna un oggetto in parti uguali. Seleziona una linea, un arco, un cerchio, un'ellisse, un arco ellittico, una polilinea, una polilinea 3D o una spline, facendo clic su di essa o digitando un punto che vi si trova, poi indica il numero di segmenti, da 2 a 32767: DIVIDI mette un oggetto punto a ogni divisione e termina. Non taglia l'oggetto, che resta intero. Un oggetto aperto diviso in 5 riceve 4 punti, a partire dal suo inizio; uno chiuso ne riceve 5, compreso l'inizio: un cerchio dal suo punto a 0°, in senso antiorario, una polilinea chiusa dal suo primo vertice. I punti stanno sull'oggetto, alla sua quota, sul layer corrente con il colore, il tipo di linea e lo spessore di linea correnti.
+
+I punti si disegnano come dice lo stile del punto del disegno, e quello predefinito è un punto minuscolo che si nasconde sotto la linea: scegli prima una figura visibile con [`TIPOP`](/docs/commands/ptype) o con PDMODE. Tutta la divisione è un passo che `A` annulla, e i suoi punti sono il gruppo di selezione Precedente, pronti da cancellare o spostare. Qualsiasi altro oggetto, un testo o un riferimento di blocco, riceve `Impossibile dividere questo oggetto.`, e il comando termina. Anche il menu a discesa Punti degli strumenti di Disegna avvia DIVIDI.
+
+- **Comando:** `DIVIDI`
+- **In inglese:** `DIVIDE`, digitato `_DIVIDE` in ogni lingua
+- **Alias:** `DD`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DD` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="divide" caption="PDMODE 3 perché i punti si vedano come croci; poi una linea divisa in 5 e un cerchio in 6, che parte dal suo punto a 0°." />
+
+## Opzioni [#options]
+
+### `Blocco` (`B`) [#block]
+
+Al posto dei punti, riferimenti di un blocco già presente nel disegno: indica il suo nome, poi se allineare ciascuno con l'oggetto, `Sì` (il valore predefinito) o `No`, poi il numero di segmenti. Allineato, ogni riferimento ruota con l'oggetto nel suo punto, lungo una linea o tangente a un arco; non allineato, ciascuno mantiene l'asse X dell'UCS. Un nome senza un blocco dietro viene rifiutato e richiesto di nuovo. Gli attributi variabili del blocco vengono tralasciati, come in AutoCAD.
+
+## Cosa non fa ancora [#missing]
+
+Un'elica, che MellowCAD non sa ancora disegnare. I blocchi lungo un oggetto che non giace nel piano dell'UCS vengono posati nel piano dell'UCS, dove la guida di AutoCAD li mette in quello dell'oggetto. I punti di un cerchio partono sempre lungo l'asse X dell'UCS, dove AutoCAD li fa partire dall'angolo di snap, SNAPANG, che MellowCAD non ha.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#divide--div--es-divide--div--pt-br-dividir--div--fr-diviser--div--it-dividi--dd)
+
+## Domande [#questions]
+
+### Come si chiama il comando DIVIDE in italiano?
+
+DIVIDI, alias `DD`, poi Invio o barra spaziatrice; l'alias inglese `DIV` in AutoCAD in italiano non esiste. Il nome inglese funziona anche con il trattino basso davanti: `_DIVIDE`.
+
+### Perché il comando DIVIDI non funziona?
+
+Molto probabilmente funziona: i punti ci sono, disegnati come punti minuscoli sulla linea. Apri [`TIPOP`](/docs/commands/ptype) (`DDPTYPE`) e scegli una croce o un cerchio, oppure digita PDMODE e `3`: tutti i punti del disegno cambiano insieme. Per agganciarli, usa lo snap ad oggetto Nodo, `NOD`.
+
+### Come si divide una linea in parti uguali?
+
+Avvia DIVIDI, seleziona la linea e digita il numero di parti, `5` per cinque. I quattro punti tra le parti sono quelli a cui agganciarsi: lo snap Nodo li trova.
+
+### Come si divide un cerchio in parti uguali?
+
+Allo stesso modo: seleziona il cerchio e digita il numero di parti. Un oggetto chiuso riceve tanti punti quante sono le parti, quindi 6 dà sei punti, il primo nel punto a 0° del cerchio, poi in senso antiorario.
+
+### Come si spezza una linea in più pezzi?
+
+DIVIDI segna soltanto i punti. Per tagliare la linea lì, usa [`SPEZZA`](/docs/commands/break), oppure `SPEZZAALPUNTO` in ogni punto, agganciandoti con Nodo.
+
+## Comandi correlati [#related]
+
+- [Comando MISURA (MEASURE) in AutoCAD](/docs/commands/measure)
+- [Comando TIPOP (PTYPE) in AutoCAD](/docs/commands/ptype)
+- [PUNTO (POINT)](/docs/commands#point): Più punti
+- [Comando SPEZZA (BREAK) in AutoCAD](/docs/commands/break)

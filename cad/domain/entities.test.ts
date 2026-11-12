@@ -833,6 +833,7 @@ function characteristicPoints(entity: Entity): Vec2[] {
     case "hatch":
       return entity.loops.flatMap((loop) => [...loop.vertices])
     case "insert":
+    case "point":
       return [entity.position]
     case "region":
       return regionGripPoints(entity)

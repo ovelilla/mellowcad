@@ -451,6 +451,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
       return null
     default: {
       const unhandled: never = entity

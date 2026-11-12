@@ -1670,8 +1670,10 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     case "insert":
     case "region":
     case "solid3d":
-    case "solid3d":
       return [edge]
+    case "point":
+      // No edge: TRIM and EXTEND find nothing to cut it with.
+      return []
     default: {
       const unhandled: never = edge
       return unhandled
@@ -1905,6 +1907,7 @@ function trimRefusal(target: Entity): MessageId | null {
     case "text":
     case "attdef":
     case "insert":
+    case "point":
       return "cannotTrimObject"
     case "mtext":
     case "hatch":
@@ -1990,6 +1993,7 @@ function planTrim(
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return null
@@ -2036,6 +2040,7 @@ function extendRefusal(target: Entity): MessageId | null {
     case "text":
     case "attdef":
     case "insert":
+    case "point":
       return "cannotExtendObject"
     case "mtext":
     case "hatch":
@@ -2084,6 +2089,7 @@ function planExtend(
     case "dimension":
     case "hatch":
     case "insert":
+    case "point":
     case "region":
     case "solid3d":
       return null
@@ -2354,6 +2360,7 @@ function circleEdgeCrossPoints(
     // its edges (regions/p216, p217), a gap in REGION's coverage entry.
     case "region":
     case "solid3d":
+    case "point":
       return []
   }
 }

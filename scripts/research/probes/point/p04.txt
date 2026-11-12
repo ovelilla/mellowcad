@@ -1,0 +1,21 @@
+(progn (defun p3 (p) (mapcar (quote (lambda (v) (rtos v 2 6))) p)) (defun dump (/ e d) (setq e (entnext)) (while e (setq d (entget e)) (cond ((= (cdr (assoc 0 d)) "POINT") (print (list "PT" (p3 (cdr (assoc 10 d))) (rtos (cdr (assoc 50 d)) 2 6) (cdr (assoc 39 d)) (cdr (assoc 210 d)) (cdr (assoc 8 d))))) ((= (cdr (assoc 0 d)) "INSERT") (print (list "INS" (cdr (assoc 2 d)) (p3 (cdr (assoc 10 d))) (rtos (cdr (assoc 50 d)) 2 6) (cdr (assoc 41 d)))))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+(setvar "THICKNESS" 2.5)
+_POINT
+1,1
+(setvar "THICKNESS" 0)
+_UCS
+_Z
+30
+_POINT
+2,0
+_UCS
+_X
+90
+_POINT
+3,0
+_UCS
+_W
+(setvar "ELEVATION" 4)
+_POINT
+7,7
+(dump)

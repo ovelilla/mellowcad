@@ -15,6 +15,7 @@ import {
   CircleEntity,
   Entity,
   LineEntity,
+  PointEntity,
   PolylineEntity,
   SplineEntity,
 } from "./entityTypes"
@@ -22,7 +23,8 @@ import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
 import { isLevelSpline, splineZAt } from "./splines"
 import { brepAnchor, brepMapped, unsigned0 } from "../geometry/solids"
 
-export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
+export type ThickEntity =
+  LineEntity | CircleEntity | ArcEntity | PolylineEntity | PointEntity
 
 type ZField = "elevation" | "deltaZ" | "thickness"
 
@@ -143,7 +145,8 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
     entity.type === "line" ||
     entity.type === "circle" ||
     entity.type === "arc" ||
-    entity.type === "polyline"
+    entity.type === "polyline" ||
+    entity.type === "point"
   )
 }
 

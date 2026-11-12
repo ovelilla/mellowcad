@@ -1,0 +1,13 @@
+_POINT
+5,5
+_ZOOM
+_E
+_-OSNAP
+_NOD
+(getvar "OSMODE")
+_LINE
+0,0
+_NOD
+5.01,5.01
+
+(getvar "LASTPOINT")

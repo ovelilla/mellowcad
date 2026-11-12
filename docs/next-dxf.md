@@ -4,7 +4,9 @@
 > publicados el 7/11/2026 (sesión 07 del plan de visibilidad), la fase 3 (la página «abrir DXF
 > online», sesión 07b) el 8/11, con la fase 4 ordenada por lo que falta en 731 DXF reales, y la
 > fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
-> publicadas el 12/11; queda de ella el DXF R12. Siguiente, la fase 4. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
+> PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día; siguiente en ella,
+> SOLID. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -105,7 +107,7 @@ los comandos, solicitudes y opciones de AutoCAD 2027 en inglés, español o port
 - **Las entidades del modelo** (LINE, CIRCLE, ARC, ELLIPSE, LWPOLYLINE, POLYLINE 2D con su ajuste y
   3D, SPLINE, TEXT, MTEXT, ATTDEF, INSERT con sus ATTRIB, DIMENSION lineal, alineada, angular, radio
   y diámetro, HATCH), con su capa, color, tipo y grosor de línea, plano y altura de objeto. Lo
-  demás se queda fuera y se cuenta por tipo en la línea de comandos: POINT, SOLID, XLINE, RAY,
+  demás se queda fuera y se cuenta por tipo en la línea de comandos: SOLID, XLINE, RAY,
   LEADER, MLEADER, TABLE, las cotas que no hay, las mallas, imágenes, y los ACIS (3DSOLID, REGION,
   BODY, SURFACE: su SAT, fuera hasta `docs/next-solids.md` §6). Tampoco hay presentaciones: lo que
   está en el espacio papel se cuenta aparte.
@@ -165,7 +167,15 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       antiguos).
    2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros).
    3. **POINT** y PDMODE: 20 muestras y 18 ficheros de otros (16 piezas de LibreCAD, el
-      levantamiento de un medidor láser Leica DISTO).
+      levantamiento de un medidor láser Leica DISTO). **Hecho** (12/11/2026): la entidad POINT,
+      PDMODE y PDSIZE (sus figuras medidas en el escritorio de AutoCAD 2027), POINT, PTYPE y su
+      cuadro Estilo de punto, DIVIDE, MEASURE y la referencia Nodo, en los seis idiomas; el DXF en
+      los dos sentidos, con `$PDMODE` y `$PDSIZE`, que la consola de AutoCAD abre sin un error de
+      AUDIT en las seis versiones, ASCII y binario. El corpus, medido otra vez: los 101 puntos de 20
+      muestras y los 49 de 18 ficheros de otros abren; muestras que abren enteras, de 54 a 64, y
+      ficheros de otros, de 554 a 570. De paso, Guardar dibujo como propone el nombre del fichero
+      abierto o del último DXF guardado, como AutoCAD (escritorio point/d01). Lo que hace y le falta,
+      en `docs/coverage/draw.md` y `drafting-aids.md`.
    4. **Los tipos de línea del dibujo**, su tabla LTYPE: ACAD_ISO02W100 a ISO09W100 (de 6 a 12
       muestras cada uno), los escalados (HIDDEN2, CENTER2, DASHED2…), DOT, los nombres del
       `acadiso.lin` español y brasileño (OCULTO, PONTOS, HÍFEN) y los complejos (BATTING, GAS,

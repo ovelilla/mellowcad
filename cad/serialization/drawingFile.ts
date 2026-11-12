@@ -41,6 +41,7 @@ import {
   DEFAULT_ATTRIBUTE_MODES,
   Entity,
   isAnonymousBlock,
+  isPointMode,
   nextEntityId,
   DimensionKind,
   HatchLoop,
@@ -136,7 +137,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 49
+export const DRAWING_FILE_VERSION = 50
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -215,6 +216,8 @@ type SavedCommandSetting =
   | "splineSegments"
   | "isolines"
   | "visualStyle"
+  | "pointMode"
+  | "pointSize"
   | "filletRadius3d"
   | "chamferDistance1"
   | "chamferDistance2"
@@ -618,6 +621,15 @@ function cloneEntityShape(entity: Entity): Entity {
         ...(entity.primitive ? { primitive: { ...entity.primitive } } : {}),
         ...(entity.sweep ? { sweep: storedSweep(entity.sweep) } : {}),
       }
+    case "point":
+      return {
+        id: entity.id,
+        type: "point",
+        layerId: entity.layerId,
+        ...overrides,
+        position: { x: entity.position.x, y: entity.position.y },
+        ...(entity.xAxisAngle ? { xAxisAngle: entity.xAxisAngle } : {}),
+      }
   }
 }
 
@@ -962,6 +974,8 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     splineSegments,
     isolines,
     visualStyle,
+    pointMode,
+    pointSize,
     filletRadius3d,
     chamferDistance1,
     chamferDistance2,
@@ -1016,6 +1030,8 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(splineSegments !== 8 ? { splineSegments } : {}),
     ...(isolines !== 4 ? { isolines } : {}),
     ...(visualStyle !== "2dWireframe" ? { visualStyle } : {}),
+    ...(pointMode ? { pointMode } : {}),
+    ...(pointSize ? { pointSize } : {}),
     ...(filletRadius3d !== 1 ? { filletRadius3d } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
@@ -1149,6 +1165,12 @@ function parseSettings(value: unknown): DocumentSettings {
     visualStyle:
       VISUAL_STYLES.find((style) => style === value.visualStyle) ??
       "2dWireframe",
+    // A drawing from before 50 has no points: acadiso's.
+    pointMode:
+      typeof value.pointMode === "number" && isPointMode(value.pointMode)
+        ? value.pointMode
+        : 0,
+    pointSize: isFiniteNumber(value.pointSize) ? value.pointSize : 0,
     // A drawing from before 49 has acadiso's.
     filletRadius3d:
       isFiniteNumber(value.filletRadius3d) && value.filletRadius3d > 0
@@ -1635,6 +1657,21 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         brep,
         ...(primitive ? { primitive } : {}),
         ...(sweep ? { sweep } : {}),
+      }
+    }
+    case "point": {
+      // Since 50.
+      const position = parseVec2(raw.position)
+      if (!position) return null
+      return {
+        id,
+        type: "point",
+        layerId,
+        ...overrides,
+        position,
+        ...(isFiniteNumber(raw.xAxisAngle) && raw.xAxisAngle !== 0
+          ? { xAxisAngle: raw.xAxisAngle }
+          : {}),
       }
     }
     default:

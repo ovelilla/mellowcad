@@ -38,6 +38,10 @@ Halfway along a line, an arc, a polyline segment, an elliptical arc or a spline.
 
 The centre of a circle, an arc or a polyline's arc. Pass the cursor over the curve itself: at the centre there is nothing to catch. A circle.
 
+### `NODe` (`NOD`) [#node]
+
+A point object, the ones `POINT`, [`DIVIDE`](/docs/commands/divide) and [`MEASURE`](/docs/commands/measure) make, whatever figure [`PTYPE`](/docs/commands/ptype) gives them. Not among the running snaps at first. A circle with a cross.
+
 ### `QUAdrant` (`QUA`) [#quadrant]
 
 The points of a circle or an arc at 0°, 90°, 180° and 270°, along the UCS's X and Y, and an ellipse's axis ends. A diamond.
@@ -84,7 +88,7 @@ The same as `NONe`: the running set is cleared.
 
 ## What it does not do yet [#missing]
 
-The Drafting Settings dialog that OSNAP and OS open in AutoCAD: here they are unknown commands, and the status bar's menu sets the modes. Node and Geometric Center, as modes and in the menus. Mid Between 2 Points, the temporary track point and the keys held down for a one-point snap (Shift + A, Shift + Q…). Intersection, Perpendicular and Tangent on ellipses, Perpendicular and Tangent on splines, and Extension from a polyline's arc end, or with its distance and angle in the tooltip. A Perpendicular or a Tangent that waits for the other point at the start of a command other than [`LINE`](/docs/commands/line) and [`CIRCLE`](/docs/commands/circle). The aperture and marker settings, APERTURE and AUTOSNAP.
+The Drafting Settings dialog that OSNAP and OS open in AutoCAD: here they are unknown commands, and the status bar's menu sets the modes. Geometric Center, as a mode and in the menus. Node on a dimension's definition points and the origin of its text: here it finds point objects only. Mid Between 2 Points, the temporary track point and the keys held down for a one-point snap (Shift + A, Shift + Q…). Intersection, Perpendicular and Tangent on ellipses, Perpendicular and Tangent on splines, and Extension from a polyline's arc end, or with its distance and angle in the tooltip. A Perpendicular or a Tangent that waits for the other point at the start of a command other than [`LINE`](/docs/commands/line) and [`CIRCLE`](/docs/commands/circle). The aperture and marker settings, APERTURE and AUTOSNAP.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os)
 
