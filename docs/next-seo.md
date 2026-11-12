@@ -753,4 +753,21 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   252.638 → 252.922, `/es` 253.921 → 254.174, `/pt-br` 254.175 → 254.388, `/ar` 277.519 →
   277.735, `/fr` 254.890 → 255.116 (884 bytes bajo 250 KiB), `/it` 254.050 → 254.325: las cuatro
   teclas nuevas del tablero de comandos y la respuesta del FAQ.
+- DXF fase 4, SOLID: hecha y publicada el 12/11/2026 (`612220bc`; L7, la excepción, por orden del
+  dueño: el objeto que más falta en los DXF reales). El push salió con los dos commits que
+  esperaban en `main` (el cuadro de confirmación del push, `ae0ccbdc`, y el orden del roadmap,
+  `d7333f4e`). En producción: abrir y editar un DXF dicen en los seis idiomas que los sólidos 2D
+  abren y se guardan, el índice de comandos lista SOLID (SOLIDO, SÓLIDO, SOLIDE, POLIG) y `/draw`
+  trae sus solicitudes en cada idioma; IndexNow recibió las 765 URLs del sitemap (200), sin páginas
+  nuevas que poner en la cola de §7. El sólido 2D y SOLID (`docs/next-dxf.md`, fase 4, y
+  `docs/coverage/draw.md`); con él abren enteras 107 de las 154 muestras (antes, 64). **Sin página
+  de comando**: «autocad solid fill», «fillmode autocad», «autocad 2d solid» y sus equivalentes en
+  España, México, Brasil, Francia e Italia valen 0 en Google Trends frente a «autocad hatch» 71–79
+  (y «autocad offset» 12–17); el autocompletado da «solid fill», «relleno sólido» o «rellenar»,
+  que son el sombreado SOLID de HATCH, y nada para «sólido 2d autocad» ni «comando solido
+  autocad» (`~/seo-data/raw-2026-11-12/solid/`). **La primera carga de cada portada**, Brotli q11,
+  del build de `main` a este: `/` 253.042 → 253.253, `/es` 254.460 → 254.520, `/pt-br` 254.586 →
+  254.753, `/ar` 278.020 → 278.039, `/fr` 255.258 → 255.405 (595 bytes bajo 250 KiB), `/it`
+  254.489 → 254.625. De paso: §7 sin los párrafos repetidos de la 07c, y la tanda del día a Google
+  (11, hasta la cuota de las 21:51 UTC; 682 en la cola).
 - 10 Medición: la primera, un mes después del push de 01–02.

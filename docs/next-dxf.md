@@ -6,7 +6,7 @@
 > fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
 > publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
 > PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día, y siguió con SOLID,
-> hecho el 12/11, que llevó las muestras enteras de 64 a 107 de 154; siguiente en ella, LEADER
+> hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154; siguiente en ella, LEADER
 > (de 107 a 121, corpus del 12/11); tras él, por orden del dueño, el alemán (`docs/next-seo.md`,
 > L8), y lo que quede de esta fase alterna con idiomas, una sesión cada vez. Se borra cuando la
 > fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
@@ -167,7 +167,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    0,15 s. Los ficheros y el script que los mide, en `research/dxf-corpus/` (fuera de git, con su
    README), para medir otra vez tras cada entrega. Cada uno, con su comando cuando lo haya:
    1. **SOLID**: en 67 de las 154 muestras (2.831 objetos: flechas y rellenos de bloques
-      antiguos). **Hecho** (12/11/2026): el sólido 2D (relleno según FILLMODE solo visto en
+      antiguos). **Hecho y publicado** (12/11/2026, `612220bc`): el sólido 2D (relleno según FILLMODE solo visto en
       planta, designado como área o, con FILLMODE desactivado, por sus aristas; un pinzamiento por
       esquina; Propiedades con Vértice actual, Elevación y Altura de objeto; las transformaciones,
       STRETCH, LIST y REGION) y SOLID con sus solicitudes, su lazo y su triángulo con Intro, en los
