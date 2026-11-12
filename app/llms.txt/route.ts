@@ -88,6 +88,7 @@ export async function GET() {
         reference: link(localeUrl(locale, `${DOCS_PATH}/commands`)),
         exercises: link(localeUrl(locale, `${DOCS_PATH}/exercises`)),
         dxf: link(localeUrl(locale, `${DOCS_PATH}/open-dxf`)),
+        edit: link(localeUrl(locale, `${DOCS_PATH}/edit-dxf`)),
         package: ENGINE_PACKAGE,
         commands: facts.commands,
       })}`

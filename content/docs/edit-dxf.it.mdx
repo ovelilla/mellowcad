@@ -1,0 +1,85 @@
+---
+title: Modificare un file DXF online
+metaTitle: "Editor DXF online gratis: modificare file DXF"
+description: "Modifica gratis un file DXF nel browser con i comandi di AutoCAD e salvalo di nuovo come DXF, AutoCAD dal 2000 al 2018. Niente da installare o caricare."
+type: howTo
+sourceHash: "220c329af401"
+faq:
+  - question: "Come modificare un file DXF online?"
+    answer: "Sceglilo o trascinalo in cima a questa pagina: si apre nell'editor di MellowCAD, nel tuo browser. Modificalo con i comandi di AutoCAD, poi SALVACOME (Ctrl+Maiusc+S) o DXFOUT lo salva di nuovo come file DXF."
+  - question: "È gratis? Serve un account?"
+    answer: "È gratis, senza account e senza niente da installare. Il file viene letto sul tuo computer e non viene mai caricato."
+  - question: "In quali versioni di DXF posso salvare?"
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000, in testo (ASCII) o binario. Non ancora R12, né DWG."
+  - question: "AutoCAD aprirà il DXF che salvo?"
+    answer: "Sì. Ogni tipo di oggetto che MellowCAD scrive, in ogni versione, in testo e in binario, è stato aperto da AutoCAD 2027 senza che il suo AUDIT trovasse un errore."
+  - question: "Si perde qualcosa salvando?"
+    answer: "Ciò che non si è aperto non è nel file che salvi: punti, direttrici, tabelle e gli altri oggetti che la riga di comando ha contato all'apertura. Anche i solidi 3D e le regioni non vengono scritti, e la riga di comando li elenca. Conserva il file originale."
+  - question: "Posso creare un file DXF da zero?"
+    answer: "Sì. Apri l'editor, disegna e salva con SALVACOME, scegliendo un tipo di file DXF."
+---
+
+<OpenDxf />
+
+MellowCAD modifica i file DXF nel tuo browser, con i comandi, i prompt e le opzioni di AutoCAD, digitati nella tua lingua, e li salva di nuovo come DXF per AutoCAD e per qualsiasi programma che li legga. Il file viene letto sul tuo computer: non si carica niente, e non c'è niente da installare né un account da creare.
+
+## Modificalo [#edit]
+
+Scegli o trascina un DXF qui sopra e si apre nell'editor, oppure aprilo lì con <Command id="OPEN" /> (`Ctrl+O`) o <Command id="DXFIN" />. Da lì è un disegno come un altro:
+
+- **Modificalo** con <Command id="MOVE" />, <Command id="COPY" />, <Command id="ROTATE" />, <Command id="SCALE" />, <Command id="STRETCH" />, <Command id="TRIM" />, <Command id="EXTEND" />, <Command id="OFFSET" /> o <Command id="ERASE" />, e disegnaci sopra.
+- **Correggi i testi e i layer** con <Command id="TEXTEDIT" />, <Command id="LAYER" />, <Command id="PROPERTIES" /> e <Command id="MATCHPROP" />.
+- **Misuralo** con <Command id="DIST" /> e <Command id="AREA" />.
+
+[Cosa si apre e cosa resta fuori](/docs/open-dxf#opens) è nella pagina sull'apertura di un DXF. Mentre lavori, il disegno viene conservato in questo browser.
+
+## Salvalo come DXF [#save]
+
+<Command id="SAVEAS" /> (`Ctrl+Maiusc+S`), <Command id="SAVE" /> e <Command id="DXFOUT" /> aprono Salva con nome, come in AutoCAD: un nome di file e un tipo tra i DXF di AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000 (<Command id="DXFOUT" /> si apre su DXF di AutoCAD 2018). Strumenti ▸ Opzioni… apre le Opzioni DXF di Opzioni salva con nome:
+
+- **Formato**: ASCII, il testo che leggono quasi tutti i programmi, o BINARIO.
+- **Seleziona oggetti**: chiusa la finestra, il comando ti chiede di selezionare gli oggetti, e il file contiene solo quelli.
+- **Posizioni decimali di precisione (da 0 a 16)**: sotto 16, la riga di comando avvisa, come AutoCAD, e le coordinate, gli angoli e le altezze del testo vengono arrotondati a quelle posizioni.
+
+Il file viene scaricato, come tutto ciò che si salva qui ([il salvataggio non è proprio quello di AutoCAD](/docs/differences#saving)). `Ctrl+S` invece salva il disegno nel formato versionato di MellowCAD: per tenere un DXF, usa <Command id="SAVEAS" />.
+
+## Cosa contiene il DXF [#holds]
+
+Ogni oggetto che MellowCAD ha, scritto come lo scrive AutoCAD: linee, archi, cerchi, ellissi, polilinee con le loro larghezze e le curve adattate, polilinee 3D, spline, testi su una riga e multilinea, blocchi con i loro attributi, quote, tratteggi con il loro modello, e serie come un blocco dei loro elementi. Con loro, i layer (attivati, disattivati, bloccati) con colore, tipo di linea e spessore di linea, gli stili di testo e di quota, i blocchi, e le unità e le impostazioni del disegno. Il testo conserva i suoi caratteri: fino al 2004 nella code page di Windows che usa AutoCAD, con un codice di escape per il resto, e dal 2007 in UTF-8.
+
+## Cosa non torna [#lost]
+
+- **Ciò che non si è aperto non viene salvato.** Ciò per cui MellowCAD non ha ancora un oggetto — punti, direttrici, tabelle, riferimenti esterni e [il resto di quell'elenco](/docs/open-dxf#left-out) — viene contato nella riga di comando all'apertura del file, e non è nel file che salvi. Conserva l'originale.
+- **I solidi 3D e le regioni non vengono scritti**: la riga di comando dice quanti ne sono rimasti fuori.
+- Le modifiche di stile proprie di una quota e i parametri di una serie non vengono scritti: AutoCAD apre la quota con le impostazioni del suo stile, e la serie come un blocco dei suoi elementi.
+- Non c'è l'immagine di anteprima, né ancora il tipo DXF di AutoCAD R12/LT2, né il DWG.
+
+## Crea un DXF da zero [#new]
+
+Per fare un DXF senza partire da uno esistente, [apri l'editor](/draw), disegnalo e salvalo con <Command id="SAVEAS" /> in un tipo di file DXF. [Per iniziare](/docs/getting-started) è il punto di partenza.
+
+## Domande [#questions]
+
+### Come modificare un file DXF online? [#how]
+
+Sceglilo o trascinalo in cima a questa pagina: si apre nell'editor di MellowCAD, nel tuo browser. Modificalo con i comandi di AutoCAD, poi <Command id="SAVEAS" /> (`Ctrl+Maiusc+S`) o <Command id="DXFOUT" /> lo salva di nuovo come file DXF.
+
+### È gratis? Serve un account? [#free]
+
+È gratis, senza account e senza niente da installare. Il file viene letto sul tuo computer e non viene mai caricato.
+
+### In quali versioni di DXF posso salvare? [#versions]
+
+AutoCAD 2018, 2013, 2010, 2007, 2004 e 2000, in testo (ASCII) o binario. Non ancora R12, né DWG.
+
+### AutoCAD aprirà il DXF che salvo? [#autocad]
+
+Sì. Ogni tipo di oggetto che MellowCAD scrive, in ogni versione, in testo e in binario, è stato aperto da AutoCAD 2027 senza che il suo AUDIT trovasse un errore.
+
+### Si perde qualcosa salvando? [#lost-on-save]
+
+Ciò che non si è aperto non è nel file che salvi: punti, direttrici, tabelle e gli altri oggetti che la riga di comando ha contato all'apertura. Anche i solidi 3D e le regioni non vengono scritti, e la riga di comando li elenca. Conserva il file originale.
+
+### Posso creare un file DXF da zero? [#from-scratch]
+
+Sì. [Apri l'editor](/draw), disegna e salva con <Command id="SAVEAS" />, scegliendo un tipo di file DXF.

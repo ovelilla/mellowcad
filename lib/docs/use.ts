@@ -10,6 +10,7 @@ export const USE_PAGES = [
   "commands",
   "shortcuts",
   "open-dxf",
+  "edit-dxf",
   "exercises",
   "coordinates",
   "floor-plan",

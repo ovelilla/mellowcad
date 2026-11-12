@@ -29,6 +29,11 @@ export async function FaqSection() {
       {chunks}
     </Link>
   )
+  const edit = (chunks: React.ReactNode) => (
+    <Link href={paths.editDxf} prefetch={false} className="underline-link">
+      {chunks}
+    </Link>
+  )
 
   return (
     <section
@@ -53,6 +58,7 @@ export async function FaqSection() {
                 reference,
                 exercises,
                 dxf,
+                edit,
                 commands: facts.commands,
               })}
             </p>

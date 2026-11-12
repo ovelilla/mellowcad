@@ -17,6 +17,8 @@ export async function sitePaths(): Promise<{
   readonly exercises: string
   /** The page that opens a DXF, the docs' page a searcher for a DXF viewer wants. */
   readonly openDxf: string
+  /** The page that edits and saves a DXF, the one a searcher for a DXF editor wants. */
+  readonly editDxf: string
   /** The commands the hero's command line suggests, not a page. */
   readonly commandList: string
 }> {
@@ -29,6 +31,7 @@ export async function sitePaths(): Promise<{
     commands: localePath(locale, `${DOCS_PATH}/commands`),
     exercises: localePath(locale, `${DOCS_PATH}/exercises`),
     openDxf: localePath(locale, `${DOCS_PATH}/open-dxf`),
+    editDxf: localePath(locale, `${DOCS_PATH}/edit-dxf`),
     commandList: localePath(locale, COMMAND_LIST_PATH),
   }
 }

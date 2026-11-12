@@ -131,11 +131,14 @@ claims follow `i18n.md`.
   `llms.txt`. A heading never holds a link: the table of contents wraps every heading in one.
 - **The how-to guides** (`GUIDE_PAGES`: coordinates, floor-plan, 2d-to-3d) are written "Use" pages,
   their sessions `content/demos/guides/` (`GUIDE_SESSIONS`), or a command's.
-- **The DXF page** (`open-dxf`, searched as «abrir dxf online» and "dxf viewer online") is a written
-  "Use" page whose `<OpenDxf />` is the docs' island that hands a file to the editor
-  (`DxfOpener`, `ui.md`); its `.md` drops the island, as its text says where else a file opens.
-  What it claims opens is DXFIN's coverage entry, and what saves DXFOUT's: a change there is a
-  change here, in every language.
+- **The DXF pages** are written "Use" pages for two searches Google answers apart (different top
+  tens): `open-dxf`, the viewer («abrir dxf online», "dxf viewer online"), and `edit-dxf`, the
+  editor («editor dxf online», "edit dxf online", "create dxf online"), each linking the other
+  and never taking the other's words into its title (`docs/plans/seo/07c-dxf-editar.md`). Both
+  open with `<OpenDxf />`, the docs' island that hands a file to the editor (`DxfOpener`,
+  `ui.md`); their `.md` drops it, as their text says where else a file opens. What they claim
+  opens is DXFIN's coverage entry, and what saves DXFOUT's: a change there is a change here, in
+  every language.
 - **An exercise prints** on its own, dark on white (`marketing.css`, `@media print`): its drawing as
   AutoCAD's monochrome plot style plots it, the site's chrome `print:hidden`; `PrintButton` is the
   docs' island for it.

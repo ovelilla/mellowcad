@@ -170,7 +170,12 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
   online», «visor dxf online», «abrir dxf en linea» and «visor dxf sin instalar». Title «Abrir un
   archivo DXF online»; search title «Abrir DXF online gratis: visor DXF sin instalar» (59 with the
   brand); description «Abre un archivo DXF gratis en tu navegador, sin subirlo: …» (151). «editor
-  dxf online» is searched too, and left out of both while a DXF cannot be saved.
+  dxf online» belongs to the edit page.
+- **The DXF edit page** (`/es/docs/edit-dxf`; Google's autocomplete in Spain, Mexico, Argentina
+  and Colombia, 12/11/2026): «editor dxf online gratis» in all four, «editar dxf online (gratis)»,
+  «editar archivo dxf online», «editar dxf en linea» (Mexico, Colombia), «crear archivo dxf».
+  Title «Editar un archivo DXF online»; search title «Editor DXF online gratis: editar y guardar
+  DXF» (58 with the brand).
 
 ## Command language
 

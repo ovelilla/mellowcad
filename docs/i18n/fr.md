@@ -107,7 +107,11 @@ worldwide, 9/11); Google Trends (France, 12 months, 9/11). The data is in
   «exercice autocad plan maison».
 - **DXF:** «fichier dxf» is large in Trends (25 against «autocad en ligne» 6); «ouvrir fichier dxf
   en ligne», «visionneuse dxf en ligne», «lire fichier dxf en ligne», «ouvrir dxf en ligne
-  gratuit». Who ranks: elysiatools, innerscene, dxfviewer.app.
+  gratuit». Who ranks: elysiatools, innerscene, dxfviewer.app. To edit one (autocomplete in France,
+  Belgium and Morocco, 12/11/2026): «éditeur dxf en ligne», «éditeur dxf gratuit», «modifier
+  (fichier) dxf en ligne», «créer un fichier dxf en ligne»; Aspose's «Éditeur en ligne gratuit
+  pour les fichiers DXF» is first. The edit page's search title: «Éditeur DXF en ligne gratuit :
+  modifier un DXF».
 - **The guides:** «dessiner plan maison en ligne gratuit», «plan de maison 2d»; «autocad
   coordonnées relatives / polaires / absolues»; «autocad 3d en 2d».
 

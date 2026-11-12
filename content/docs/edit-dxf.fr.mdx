@@ -1,0 +1,85 @@
+---
+title: Modifier un fichier DXF en ligne
+metaTitle: "Éditeur DXF en ligne gratuit : modifier un DXF"
+description: "Modifiez gratuitement un fichier DXF dans votre navigateur avec les commandes AutoCAD, puis réenregistrez-le en DXF, d'AutoCAD 2000 à 2018, sans rien installer."
+type: howTo
+sourceHash: "220c329af401"
+faq:
+  - question: "Comment modifier un fichier DXF en ligne ?"
+    answer: "Choisissez-le ou déposez-le en haut de cette page : il s'ouvre dans l'éditeur de MellowCAD, dans votre navigateur. Modifiez-le avec les commandes d'AutoCAD, puis SAUVENOM (Ctrl+Maj+S) ou SAUVEDXF le réenregistre en fichier DXF."
+  - question: "Est-ce gratuit ? Faut-il un compte ?"
+    answer: "C'est gratuit, sans compte et sans rien à installer. Le fichier est lu sur votre ordinateur et n'est jamais envoyé."
+  - question: "Dans quelles versions de DXF puis-je enregistrer ?"
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000, en texte (ASCII) ou en binaire. Pas encore R12, ni DWG."
+  - question: "AutoCAD ouvrira-t-il le DXF que j'enregistre ?"
+    answer: "Oui. Chaque type d'objet que MellowCAD écrit, dans chaque version, en texte et en binaire, a été ouvert par AutoCAD 2027 sans que son AUDIT y trouve d'erreur."
+  - question: "Perd-on quelque chose en enregistrant ?"
+    answer: "Ce qui ne s'est pas ouvert n'est pas dans le fichier enregistré : les points, les lignes de repère, les tableaux et les autres objets que la ligne de commande a comptés à l'ouverture. Les solides 3D et les régions ne sont pas écrits non plus, et la ligne de commande les liste. Gardez le fichier d'origine."
+  - question: "Puis-je créer un fichier DXF à partir de zéro ?"
+    answer: "Oui. Ouvrez l'éditeur, dessinez, et enregistrez avec SAUVENOM en choisissant un type de fichier DXF."
+---
+
+<OpenDxf />
+
+MellowCAD modifie les fichiers DXF dans votre navigateur, avec les commandes, les invites et les options d'AutoCAD, tapées dans votre langue, et les réenregistre en DXF pour AutoCAD et pour tout programme qui les lit. Le fichier est lu sur votre ordinateur : rien n'est envoyé, et il n'y a rien à installer ni de compte à créer.
+
+## Modifiez-le [#edit]
+
+Choisissez ou déposez un DXF ci-dessus et il s'ouvre dans l'éditeur, ou ouvrez-le là avec <Command id="OPEN" /> (`Ctrl+O`) ou <Command id="DXFIN" />. C'est alors un dessin comme un autre :
+
+- **Modifiez-le** avec <Command id="MOVE" />, <Command id="COPY" />, <Command id="ROTATE" />, <Command id="SCALE" />, <Command id="STRETCH" />, <Command id="TRIM" />, <Command id="EXTEND" />, <Command id="OFFSET" /> ou <Command id="ERASE" />, et dessinez dessus.
+- **Corrigez ses textes et ses calques** avec <Command id="TEXTEDIT" />, <Command id="LAYER" />, <Command id="PROPERTIES" /> et <Command id="MATCHPROP" />.
+- **Mesurez-le** avec <Command id="DIST" /> et <Command id="AREA" />.
+
+[Ce qui s'ouvre et ce qui est laissé de côté](/docs/open-dxf#opens) se trouve sur la page consacrée à l'ouverture d'un DXF. Pendant que vous travaillez, le dessin est conservé dans ce navigateur.
+
+## Enregistrez-le en DXF [#save]
+
+<Command id="SAVEAS" /> (`Ctrl+Maj+S`), <Command id="SAVE" /> et <Command id="DXFOUT" /> ouvrent Enregistrer le dessin sous, comme dans AutoCAD : un nom de fichier, et un type parmi les DXF d'AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000 (<Command id="DXFOUT" /> s'ouvre sur le DXF d'AutoCAD 2018). Outils ▸ Options… ouvre les Options DXF d'Enregistrer sous - Options :
+
+- **Format** : ASCII, le texte que lisent presque tous les programmes, ou BINAIRE.
+- **Sélectionner les objets** : une fois la boîte de dialogue fermée, la commande vous demande de sélectionner des objets, et le fichier ne contient que ceux-là.
+- **Nombre de décimales (0 à 16)** : en dessous de 16, la ligne de commande avertit, comme AutoCAD, et les coordonnées, les angles et les hauteurs de texte sont arrondis à ce nombre de décimales.
+
+Le fichier est téléchargé, comme tout ce qui s'enregistre ici ([l'enregistrement n'est pas tout à fait celui d'AutoCAD](/docs/differences#saving)). `Ctrl+S`, lui, enregistre le dessin au format versionné propre à MellowCAD : pour garder un DXF, utilisez <Command id="SAVEAS" />.
+
+## Ce que contient le DXF [#holds]
+
+Chaque objet que possède MellowCAD, écrit comme AutoCAD l'écrit : lignes, arcs, cercles, ellipses, polylignes avec leurs largeurs et leurs lissages, polylignes 3D, splines, textes sur une ligne et multilignes, blocs avec leurs attributs, cotes, hachures avec leur motif, et réseaux sous forme de bloc de leurs éléments. Avec eux, les calques (activés, désactivés, verrouillés) avec leur couleur, leur type de ligne et leur épaisseur de ligne, les styles de texte et de cote, les blocs, et les unités et réglages du dessin. Le texte garde ses caractères : jusqu'à 2004 dans la page de codes Windows qu'utilise AutoCAD, avec un code d'échappement pour le reste, et à partir de 2007 en UTF-8.
+
+## Ce qui ne revient pas [#lost]
+
+- **Ce qui ne s'est pas ouvert n'est pas enregistré.** Ce pour quoi MellowCAD n'a pas encore d'objet — les points, les lignes de repère, les tableaux, les références externes et [le reste de cette liste](/docs/open-dxf#left-out) — est compté sur la ligne de commande à l'ouverture du fichier, et n'est pas dans le fichier que vous enregistrez. Gardez l'original.
+- **Les solides 3D et les régions ne sont pas écrits** : la ligne de commande indique combien ont été laissés de côté.
+- Les remplacements de style propres à une cote et les paramètres d'un réseau ne sont pas écrits : AutoCAD ouvre la cote avec les réglages de son style, et le réseau comme un bloc de ses éléments.
+- Il n'y a pas d'aperçu miniature, pas encore de type DXF d'AutoCAD R12/LT2, et pas de DWG.
+
+## Créez un DXF à partir de zéro [#new]
+
+Pour faire un DXF sans partir d'un autre, [ouvrez l'éditeur](/draw), dessinez, et enregistrez avec <Command id="SAVEAS" /> dans un type de fichier DXF. [Premiers pas](/docs/getting-started) est la porte d'entrée.
+
+## Questions [#questions]
+
+### Comment modifier un fichier DXF en ligne ? [#how]
+
+Choisissez-le ou déposez-le en haut de cette page : il s'ouvre dans l'éditeur de MellowCAD, dans votre navigateur. Modifiez-le avec les commandes d'AutoCAD, puis <Command id="SAVEAS" /> (`Ctrl+Maj+S`) ou <Command id="DXFOUT" /> le réenregistre en fichier DXF.
+
+### Est-ce gratuit ? Faut-il un compte ? [#free]
+
+C'est gratuit, sans compte et sans rien à installer. Le fichier est lu sur votre ordinateur et n'est jamais envoyé.
+
+### Dans quelles versions de DXF puis-je enregistrer ? [#versions]
+
+AutoCAD 2018, 2013, 2010, 2007, 2004 et 2000, en texte (ASCII) ou en binaire. Pas encore R12, ni DWG.
+
+### AutoCAD ouvrira-t-il le DXF que j'enregistre ? [#autocad]
+
+Oui. Chaque type d'objet que MellowCAD écrit, dans chaque version, en texte et en binaire, a été ouvert par AutoCAD 2027 sans que son AUDIT y trouve d'erreur.
+
+### Perd-on quelque chose en enregistrant ? [#lost-on-save]
+
+Ce qui ne s'est pas ouvert n'est pas dans le fichier enregistré : les points, les lignes de repère, les tableaux et les autres objets que la ligne de commande a comptés à l'ouverture. Les solides 3D et les régions ne sont pas écrits non plus, et la ligne de commande les liste. Gardez le fichier d'origine.
+
+### Puis-je créer un fichier DXF à partir de zéro ? [#from-scratch]
+
+Oui. [Ouvrez l'éditeur](/draw), dessinez, et enregistrez avec <Command id="SAVEAS" /> en choisissant un type de fichier DXF.

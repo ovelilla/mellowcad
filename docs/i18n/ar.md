@@ -258,6 +258,10 @@ marks a choice between competing terms that a native review should settle first 
   «فتح ملف ⁨DXF⁩ أون لاين: عارض ملفات ⁨DXF⁩ مجاني» (58 with the brand), «أون لاين» spelt as the
   home's. Its object names without an Arabic AutoCAD word (SOLID, TRACE, XLINE, RAY, MLINE,
   WIPEOUT) carry their DXF names beside them, as the command line counts them by those names.
+- **The DXF edit page**: Google suggests nothing in Arabic for editing a DXF in Egypt or Saudi
+  Arabia (12/11/2026; «dxf online editor» comes in English), so its search title follows the
+  Arabic H1s that rank for «تعديل ملف dxf اون لاين» (Aspose, KulmanLab: «محرر … DXF … مجاني»):
+  «محرر ⁨DXF⁩ أون لاين مجاني: عدّل ملف ⁨DXF⁩ واحفظه».
 
 ## Font
 

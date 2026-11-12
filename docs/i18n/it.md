@@ -60,7 +60,9 @@ months, 11/11). The data is in `~/seo-data/raw-2026-11-11/it-keywords/`, outside
   meccanici» (Trends 0 against «comandi autocad» 24).
 - **DXF:** «file dxf» is the largest in Trends (53 against «autocad online» 48); «aprire file dxf
   (online, gratis, senza autocad)», «visualizzatore dxf online gratis», «file dxf catasto» (the
-  land registry's DXF files).
+  land registry's DXF files). To edit one (autocomplete, 12/11/2026): «editor dxf online gratis»,
+  «modificare (file) dxf online», «creare file dxf online»; the edit page's search title «Editor
+  DXF online gratis: modificare file DXF».
 - **The guides:** «disegnare pianta casa online»; «coordinate polari autocad».
 
 ## Command language

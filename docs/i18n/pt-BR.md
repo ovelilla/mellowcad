@@ -173,8 +173,12 @@ comandos do AutoCAD». «AutoCAD online grátis» is never written, as it would 
 05/11/2026): «abrir arquivo dxf online», «visualizador dxf online», «abrir dxf online grátis»,
 «visualizador dxf online gratis» and «editor dxf online gratis». Title «Abrir arquivo DXF online»;
 search title «Abrir arquivo DXF online: visualizador grátis» (57 with the brand); description
-«Abra um arquivo DXF grátis no navegador, sem enviá-lo: …» (151). «editor» is left out while a
-DXF cannot be saved.
+«Abra um arquivo DXF grátis no navegador, sem enviá-lo: …» (151). «editor» belongs to the edit page.
+
+**The DXF edit page** (`/pt-br/docs/edit-dxf`; Google's autocomplete in Brazil, 12/11/2026):
+«editor dxf online gratis», «editar dxf online gratis», «editar arquivo dxf online», «criar
+arquivo dxf online»; Trends gives «editor dxf» 2 against «abrir dxf» 7. Title «Editar arquivo DXF
+online»; search title «Editor DXF online grátis: editar e salvar DXF» (57 with the brand).
 
 ## Command language
 
