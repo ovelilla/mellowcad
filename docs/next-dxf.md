@@ -3,8 +3,8 @@
 > **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
 > publicados el 7/11/2026 (sesión 07 del plan de visibilidad), la fase 3 (la página «abrir DXF
 > online», sesión 07b) el 8/11, con la fase 4 ordenada por lo que falta en 731 DXF reales, y la
-> fase 2 (guardar como DXF, de 2000 a 2018) publicada el 12/11; queda de ella el DXF R12. Siguiente, la
-> fase 4. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
+> publicadas el 12/11; queda de ella el DXF R12. Siguiente, la fase 4. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -149,7 +149,11 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
 3. **Las páginas «abrir DXF online»** por idioma, en una sesión de contenido (`docs/next-seo.md`).
    **Hecha** (8/11/2026, sesión 07b, `bbeefd64`): `/docs/open-dxf` en los cuatro idiomas, que abre
    en `/draw` el DXF que se elige o se suelta en ella, sin subirlo (`openFile`, `761a6083`); lo que
-   afirma es la entrada de DXFIN (`.claude/rules/docs.md`).
+   afirma es la entrada de DXFIN (`.claude/rules/docs.md`). Con la fase 2, su pareja: `/docs/edit-dxf`
+   en los seis idiomas (12/11/2026, sesión 07c, `d10f5dd3`), para «editor dxf online», que Google
+   responde con otros resultados; lo que afirma de guardar es la entrada de DXFOUT
+   (`docs/plans/seo/07c-dxf-editar.md`). Ctrl+O abre el selector en `/draw` con un teclado de
+   verdad (su §4).
 4. **Lo que más falta en los DXF reales**, en el orden medido el 8/11/2026 (sesión 07b) abriendo
    con el lector los 154 dibujos de muestra de AutoCAD 2027 (su carpeta `Sample`, guardados como
    DXF 2018 por la consola) y 577 DXF de otros programas (la biblioteca de piezas de LibreCAD, los

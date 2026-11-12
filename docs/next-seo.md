@@ -7,8 +7,8 @@
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
 > online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
-> 9/11, y la 09 (el italiano, `live` en `/it`) y guardar como DXF (la fase 2 de `docs/next-dxf.md`)
-> hechas y publicadas el 12/11; por decisión del dueño la visibilidad va antes que cualquier
+> 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
+> y la 07c (la página «editar DXF online») hechas y publicadas el 12/11; por decisión del dueño la visibilidad va antes que cualquier
 > funcionalidad; siguiente: lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -382,6 +382,14 @@ el dueño dio a las sesiones el 6/11).
    pesa `/it` a 0,4 (Italia, 113 en el índice de la auditoría, sola), entre el francés y el árabe:
    669 en la cola, `/it` y sus centros delante. IndexNow, las 741 del sitemap (200); Bing,
    «Request indexing» de `/it` y sus nueve páginas «Use» y centros (cuota 90 restante).
+   **12/11 (sesión 07c):** `/docs/edit-dxf` en los seis idiomas, publicada; `gsc-prioritize.mjs`
+   la pesa ya como centro (25, bajo `/docs/open-dxf`, 70: Trends da «dxf editor» 12 contra «dxf
+   viewer» 80), y no como documentación (0,03), que la dejaba en los puestos 440 a 666: 675 en la
+   cola, las seis entre los puestos 6 y 29. IndexNow, las 747 del sitemap (200).
+   **12/11 (sesión 07c):** `/docs/edit-dxf` en los seis idiomas, publicada; `gsc-prioritize.mjs`
+   la pesa ya como centro (25, bajo `/docs/open-dxf`, 70: Trends da «dxf editor» 12 contra «dxf
+   viewer» 80), y no como documentación (0,03), que la dejaba en los puestos 440 a 666: 675 en la
+   cola, las seis entre los puestos 6 y 29. IndexNow, las 747 del sitemap (200).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -419,7 +427,15 @@ el dueño dio a las sesiones el 6/11).
    (también el de Mbed TLS) y, con el reporte privado activo, pone él mismo el de la política de
    seguridad; `config.yml` se queda sin enlaces y quien no tiene cuenta tiene el correo junto a
    Report a problem en el pie. Las fichas de AlternativeTo y SaaSHub dicen ya que abre DXF (la de
-   AlternativeTo, en su página pública cuando caduque la caché; calendario de L5).
+   AlternativeTo, en su página pública cuando caduque la caché; calendario de L5). **12/11 (sesión
+   07c):** las dos dicen ya que lo abre y lo guarda («It opens and saves DXF files, but has no DWG
+   or printing yet.», el texto del kit) y el italiano; en AlternativeTo, también en «Supported
+   Languages». SaaSHub, con lo que el Chrome de ~/seo-data guardaba de la cuenta del dueño, por su
+   «Manage», sin revisión: la página pública lo sirve ya. **12/11 (sesión
+   07c):** las dos dicen ya que lo abre y lo guarda («It opens and saves DXF files, but has no DWG
+   or printing yet.», el texto del kit) y el italiano; en AlternativeTo, también en «Supported
+   Languages». SaaSHub, con lo que el Chrome de ~/seo-data guardaba de la cuenta del dueño, por su
+   «Manage», sin revisión: la página pública lo sirve ya.
 9. **Lo de la sesión 08, hecho por la sesión a petición del dueño (9/11):** el push
    (`c481a0a7..e122261e`, y después los arreglos del francés), verificado en producción (`/fr`,
    `/fr/draw` con sus nombres, el sitemap con 620 URLs, `hreflang` en las cinco portadas); IndexNow
@@ -703,4 +719,23 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   dejaba `/fr` 58 bytes por encima de los 250 KiB; quitar del tablero la segunda copia, oculta, de
   cada descripción (el lector de pantalla lee ahora la burbuja) bajó todas las portadas por debajo
   de `main`. Las páginas cambiadas, ya rastreables, no entran en la cola de §7: no son nuevas.
+- 07c Editar DXF online: hecha y publicada el 12/11/2026 (`d10f5dd3`; el push, la comprobación en
+  producción, IndexNow, la cola de §7 y las fichas de AlternativeTo y SaaSHub, por la sesión a
+  petición del dueño: §7, puntos 2 y 8). La demanda, medida (autocompletado en once países, Trends,
+  Bing Keyword Research y los top 10): editar es de 1/6 a 1/7 de ver («dxf editor» 12 contra «dxf
+  viewer» 80 en Trends; «dxf editor online» unas 20 contra «dxf viewer online» 1,7K en Bing), pero
+  Google las responde con top 10 casi disjuntos, editores contra visores, y quien manda en las dos
+  (Aspose, GroupDocs) tiene una URL por intención. Así que las dos cosas: **`/docs/edit-dxf`**,
+  nueva, con el título de lo que busca cada idioma («Free online DXF editor: edit and save DXF
+  files», «Editor DXF online gratis: editar y guardar DXF»…), la isla que abre el fichero, editarlo,
+  Guardar dibujo como y sus Opciones DXF, lo que guarda y lo que no vuelve, empezar uno de cero y
+  seis preguntas; y `/docs/open-dxf` conserva su título de visor (la familia grande) y enlaza la
+  nueva. Enlazada desde primeros pasos, la respuesta de DWG y DXF de la portada (las palabras que
+  ya decían que guarda) y `llms.txt`. Los datos y la decisión, en `docs/plans/seo/07c-dxf-editar.md`.
+  **La primera carga de cada portada**, Brotli q11, del build de `main` a este: `/` 252.909 →
+  252.895, `/es` 254.173 → 254.178, `/pt-br` 254.400 → 254.432, `/ar` 277.762 → 277.816, `/fr`
+  255.108 → 255.084 (916 bytes bajo 250 KiB), `/it` 254.293 → 254.264. **Ctrl+O en `/draw`**,
+  probado con teclas del sistema (XTEST, y SendKeys desde Windows por el RDP de WSLg) en Chrome
+  sobre X11, la plataforma del Chrome del dueño: abre el selector de archivos y escribe `_open`;
+  no es un fallo nuestro (`07c-dxf-editar.md` §4).
 - 10 Medición: la primera, un mes después del push de 01–02.
