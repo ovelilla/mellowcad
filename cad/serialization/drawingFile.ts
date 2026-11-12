@@ -137,7 +137,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 50
+export const DRAWING_FILE_VERSION = 51
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -630,6 +630,17 @@ function cloneEntityShape(entity: Entity): Entity {
         position: { x: entity.position.x, y: entity.position.y },
         ...(entity.xAxisAngle ? { xAxisAngle: entity.xAxisAngle } : {}),
       }
+    case "solid2d": {
+      const [a, b, c, d] = entity.corners
+      const at = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
+      return {
+        id: entity.id,
+        type: "solid2d",
+        layerId: entity.layerId,
+        ...overrides,
+        corners: [at(a), at(b), at(c), at(d)],
+      }
+    }
   }
 }
 
@@ -1672,6 +1683,19 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...(isFiniteNumber(raw.xAxisAngle) && raw.xAxisAngle !== 0
           ? { xAxisAngle: raw.xAxisAngle }
           : {}),
+      }
+    }
+    case "solid2d": {
+      // Since 51.
+      if (!Array.isArray(raw.corners) || raw.corners.length !== 4) return null
+      const [a, b, c, d] = raw.corners.map(parseVec2)
+      if (!a || !b || !c || !d) return null
+      return {
+        id,
+        type: "solid2d",
+        layerId,
+        ...overrides,
+        corners: [a, b, c, d],
       }
     }
     default:

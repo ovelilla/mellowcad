@@ -19,6 +19,7 @@ import {
   type BlockAttribute,
   type CircleEntity,
   type PointEntity,
+  type Solid2dEntity,
   type DimensionEntity,
   type EllipseEntity,
   type Entity,
@@ -182,6 +183,20 @@ export const circleEntity: fc.Arbitrary<CircleEntity> = fc
     withId<CircleEntity>(
       { type: "circle", layerId: DEFAULT_LAYER_ID, center, radius },
       "circle"
+    )
+  )
+
+/** A 2D solid: four corners, a triangle's last two one point a third of the time. */
+export const solid2dEntity: fc.Arbitrary<Solid2dEntity> = fc
+  .tuple(point, point, point, point, fc.boolean(), fc.boolean())
+  .map(([a, b, c, d, triangle, other]) =>
+    withId<Solid2dEntity>(
+      {
+        type: "solid2d",
+        layerId: DEFAULT_LAYER_ID,
+        corners: [a, b, c, triangle && other ? { x: c.x, y: c.y } : d],
+      },
+      "solid2d"
     )
   )
 
@@ -1096,7 +1111,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       regionEntity,
       solidEntity,
       sweptSolidEntity,
-      pointEntity
+      pointEntity,
+      solid2dEntity
     ),
     zValue,
     zValue,

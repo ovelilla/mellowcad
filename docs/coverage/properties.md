@@ -186,7 +186,7 @@ inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings�
 
 **Implemented:** `Enter mode [ON/OFF] <ON>:` (es `Indique modo [ACT/DES]`, the table's; RELLENAR
 runs it in Spanish, p176), offering the current FILLMODE, which the drawing keeps: wide polylines
-filled or outlined, each segment's band closed; `1` and `0` (declared, unlisted) are ON and OFF
+filled or outlined, each segment's band closed, and 2D solids (draw.md's SOLID; solid2d/d02); `1` and `0` (declared, unlisted) are ON and OFF
 (p168, p169), `O` asks `ON or OFf?` (p170), FOO `Invalid option keyword.` (es `Opción no válida.`,
 p171), transparent (`'FILL`, p178), and U takes it back naming `FILL` (es `RELLENAR`), even when
 Enter kept it (p174, p175), as AutoCAD 2027's console does; a wide polyline off the

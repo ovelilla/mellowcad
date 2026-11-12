@@ -70,6 +70,7 @@ import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
 import { mappedFit, polylineRefitted } from "./polylineFits"
 import { withXAxisAngle } from "./points"
+import { mapSolid2dCorners } from "./solids2d"
 import {
   entityAxes,
   entityElevation,
@@ -346,6 +347,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
     case "insert":
     case "point":
       return { ...entity, position: V.add(entity.position, delta) }
+    case "solid2d":
+      return mapSolid2dCorners(entity, (p) => V.add(p, delta))
   }
 }
 
@@ -441,6 +444,7 @@ export function stretchEntity(
     case "dimension":
     case "hatch":
     case "region":
+    case "solid2d":
       return planar
   }
 }
@@ -493,6 +497,9 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
       return entity.loops.flatMap((loop) => loop.vertices)
     case "region":
       return regionGripPoints(entity)
+    case "solid2d":
+      // Each corner caught moves alone (solid2d/p07).
+      return entity.corners
     case "circle":
     case "ellipse":
     case "text":
@@ -531,6 +538,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "dimension":
     case "hatch":
     case "region":
+    case "solid2d":
       return stretchVertices(entity)
     default: {
       const unhandled: never = entity
@@ -646,6 +654,8 @@ function stretchPlanar(
       return inFrame(entity.position)
         ? { ...entity, position: V.add(entity.position, delta) }
         : entity
+    case "solid2d":
+      return mapSolid2dCorners(entity, shift)
   }
 }
 
@@ -776,6 +786,8 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
           entity.layerId,
           entity.xAxisAngle
         )
+      case "solid2d":
+        return freshCopy(translatePlanar(entity, delta))
       case "region":
         return regionLike(entity, shiftBy(delta))
     }
@@ -912,6 +924,8 @@ function rotateFlat(
         { ...entity, position: rotatePoint(entity.position, pivot, radians) },
         (entity.xAxisAngle ?? 0) + radians
       )
+    case "solid2d":
+      return mapSolid2dCorners(entity, (p) => rotatePoint(p, pivot, radians))
   }
 }
 
@@ -1029,6 +1043,7 @@ export function rotateEntityCopy(
           }
         )
       case "point":
+      case "solid2d":
         return freshCopy(rotateFlat(entity, pivot, radians))
     }
   })()
@@ -1169,6 +1184,8 @@ function scalePlanar(
     case "point":
       // Its figure is PDSIZE's, not its own: only the place moves (point/p06).
       return { ...entity, position: scalePoint(entity.position, base, factor) }
+    case "solid2d":
+      return mapSolid2dCorners(entity, (p) => scalePoint(p, base, factor))
   }
 }
 
@@ -1275,6 +1292,7 @@ export function scaleEntityCopy(
           scaleY: entity.scaleY * factor,
         })
       case "point":
+      case "solid2d":
         return freshCopy(scalePlanar(entity, base, factor))
     }
   })()
@@ -1425,6 +1443,8 @@ function mirrorFlat(
         { ...entity, position: mirrorPoint(entity.position, a, b) },
         mirroredHeading(a, b)(entity.xAxisAngle ?? 0)
       )
+    case "solid2d":
+      return mapSolid2dCorners(entity, (p) => mirrorPoint(p, a, b))
   }
 }
 
@@ -1669,6 +1689,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         })
       }
       case "point":
+      case "solid2d":
         return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }
   })()

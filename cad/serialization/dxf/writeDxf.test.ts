@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest"
 import { circleOf, lineOf, p, snapshotOf } from "../../../test/builders"
 import {
   createPoint,
+  createSolid2d,
   createText,
   withNormal,
   withThickness,
@@ -67,6 +68,20 @@ function pointsDrawing() {
   }
 }
 
+/** 2D solids: a quadrilateral, a thick raised triangle, a tilted bow tie. */
+function solidsDrawing() {
+  const quad = createSolid2d([p(0, 0), p(10, 0), p(0, 6), p(10, 6)])
+  const triangle = withThickness(
+    createSolid2d([{ x: 20, y: 0, z: 4 }, p(30, 0), p(25, 8), p(25, 8)]),
+    2
+  )
+  const bowTie = withNormal(
+    createSolid2d([p(0, 0), p(5, 0), p(5, 5), p(0, 5)]),
+    { x: 0, y: -1, z: 0 }
+  )
+  return snapshotOf([quad, triangle, bowTie])
+}
+
 describe("writeDxf", () => {
   for (const name of ["fixture-2018", "fixture2-2018"]) {
     const drawing = parseDxf(fixture(name)).drawing
@@ -103,6 +118,19 @@ describe("writeDxf", () => {
         ).drawing
         expect(shape(back.entities)).toEqual(shape(drawing.entities))
         expect(back.settings).toMatchObject({ pointMode: 35, pointSize: -7 })
+      }
+    }
+  })
+
+  // solid2d/p01, p08: a 2D solid keeps its corners, elevation, thickness and plane.
+  it("writes 2D solids, read back the same", () => {
+    const drawing = solidsDrawing()
+    for (const version of ["2000", "2018"] as const) {
+      for (const binary of [false, true]) {
+        const back = parseDxf(
+          writeDxf(drawing, { version, binary, precision: 16 }).bytes
+        ).drawing
+        expect(shape(back.entities)).toEqual(shape(drawing.entities))
       }
     }
   })
@@ -193,11 +221,18 @@ describe("writeDxf", () => {
   it.skipIf(!process.env.DXF_OUT)("writes the files AutoCAD checks", () => {
     const dir = process.env.DXF_OUT!
     mkdirSync(dir, { recursive: true })
-    for (const name of ["fixture-2018", "fixture2-2018", "points-2018"]) {
+    for (const name of [
+      "fixture-2018",
+      "fixture2-2018",
+      "points-2018",
+      "solids-2018",
+    ]) {
       const drawing =
         name === "points-2018"
           ? pointsDrawing()
-          : parseDxf(fixture(name)).drawing
+          : name === "solids-2018"
+            ? solidsDrawing()
+            : parseDxf(fixture(name)).drawing
       for (const version of VERSIONS) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {

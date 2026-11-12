@@ -9,11 +9,11 @@
 > online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
 > y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
-> MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando); por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026),
-> una sesión cada vez, nunca en paralelo: SOLID y después LEADER (la fase 4 de
-> `docs/next-dxf.md`), el alemán (L8) y luego idiomas alternando con lo que quede del DXF, además
-> de lo que queda de §7. Esperan detrás
+> MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando) y SOLID; por decisión del
+> dueño la visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño
+> (12/11/2026), una sesión cada vez, nunca en paralelo: LEADER (la fase 4 de `docs/next-dxf.md`),
+> el alemán (L8) y luego idiomas alternando con lo que quede del DXF, además de lo que queda de §7.
+> Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -388,10 +388,9 @@ el dueño dio a las sesiones el 6/11).
    la pesa ya como centro (25, bajo `/docs/open-dxf`, 70: Trends da «dxf editor» 12 contra «dxf
    viewer» 80), y no como documentación (0,03), que la dejaba en los puestos 440 a 666: 675 en la
    cola, las seis entre los puestos 6 y 29. IndexNow, las 747 del sitemap (200).
-   **12/11 (sesión 07c):** `/docs/edit-dxf` en los seis idiomas, publicada; `gsc-prioritize.mjs`
-   la pesa ya como centro (25, bajo `/docs/open-dxf`, 70: Trends da «dxf editor» 12 contra «dxf
-   viewer» 80), y no como documentación (0,03), que la dejaba en los puestos 440 a 666: 675 en la
-   cola, las seis entre los puestos 6 y 29. IndexNow, las 747 del sitemap (200).
+   **12/11, 21:51 UTC (sesión de SOLID):** la tanda del día, 11 pedidas (`/it`, sus comandos, su
+   guía del plano y su página de abrir un DXF, `/ar/docs/floor-plan`, `/docs/edit-dxf`…) hasta la
+   cuota: 682 en la cola, de 765 en el sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -430,10 +429,6 @@ el dueño dio a las sesiones el 6/11).
    seguridad; `config.yml` se queda sin enlaces y quien no tiene cuenta tiene el correo junto a
    Report a problem en el pie. Las fichas de AlternativeTo y SaaSHub dicen ya que abre DXF (la de
    AlternativeTo, en su página pública cuando caduque la caché; calendario de L5). **12/11 (sesión
-   07c):** las dos dicen ya que lo abre y lo guarda («It opens and saves DXF files, but has no DWG
-   or printing yet.», el texto del kit) y el italiano; en AlternativeTo, también en «Supported
-   Languages». SaaSHub, con lo que el Chrome de ~/seo-data guardaba de la cuenta del dueño, por su
-   «Manage», sin revisión: la página pública lo sirve ya. **12/11 (sesión
    07c):** las dos dicen ya que lo abre y lo guarda («It opens and saves DXF files, but has no DWG
    or printing yet.», el texto del kit) y el italiano; en AlternativeTo, también en «Supported
    Languages». SaaSHub, con lo que el Chrome de ~/seo-data guardaba de la cuenta del dueño, por su

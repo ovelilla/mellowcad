@@ -340,7 +340,8 @@ in the three languages by `cad/application/promptForms.test.ts`.
   at the English `DIMSTYLE`, which pt-BR reads as the system variable (names/p04). `TOR` points at
   `TORO`, which the console runs as TORUS while it refuses `TOR` (solid/n03): `TORO` is an alias
   of TOROIDE here, `TOR` unknown. `SEC` points at `SECAO`, itself an alias of CORTE (SECTION):
-  the console runs `SECAO` and refuses `SEC` (section/c10), as here.
+  the console runs `SECAO` and refuses `SEC` (section/c10), as here `SO` points at `SOLIDO`, which the console
+  refuses as it refuses `SO` (it runs `SÓLIDO`, solid2d/p09): no alias here.
 - **SNAP's Aspect is `ASpecto`**, as the prompt lists it and table 25920 declares it: the console's
   `initget` declares `Ativado` and `Aspecto`, one abbreviation for two keywords, which
   `locales.test.ts` refuses.
@@ -387,6 +388,13 @@ each one's own is fixed by its test.
   acad.cuix's (pt-br); Node's -OSNAP word `PONto` (the console takes `PON` and `PONTO` as Node,
   names/p07) and its name `Ponto` tables 27408, 33203 and 73. The Points drop-down (`Pontos`) and
   the dialog's accessible name of its images are ours †.
+- **SOLID:** the name by the console, `SÓLIDO` (solid2d/p09; the help's `SOLIDO` and the
+  `acad.pgp`'s `SO, *SOLIDO` are refused there, so no alias: Deviations); the prompts tables
+  20607–20610's, the console's (`Especificar primeiro ponto` … `Especificar quarto ponto ou
+  <sair>`, `Ponto 2D inválido.`); the object `Sólido`, the Properties palette's (desktop
+  solid2d/d03), the tool `Sólido 2D`, acad.cuix's ID_Solid; LIST's lines the console's (`SÓLIDO`,
+  `de ponto`, `e ponto`, `para ponto`, p21). LIST's `Espessura =` was written three spaces wide of
+  the console's (inquiry/p401, p402), now as it.
 
 ## Script and font
 

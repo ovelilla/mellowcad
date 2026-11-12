@@ -47,6 +47,7 @@ import {
   mtextLayout,
   mtextToWorld,
   isWidePolyline,
+  solid2dOutline,
   polylineOutline,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
@@ -938,7 +939,12 @@ export function extrusionEdges(
         ? [...entity.vertices]
         : entity.type === "point"
           ? [entity.position]
-          : []
+          : entity.type === "solid2d"
+            ? entity.corners.filter(
+                (c, i) =>
+                  !entity.corners.slice(0, i).some((d) => V.equals(c, d))
+              )
+            : []
   const axes = entityAxes(entity)
   const at = (point: Vec2, z: number) =>
     camera.worldToScreen(axesToWorld(axes, { x: point.x, y: point.y, z }))
@@ -985,6 +991,23 @@ function planarPrimitives(
       )
     case "polyline3d":
       return polyline3dPrimitives(camera, entity, stroke, options)
+    case "solid2d": {
+      // Filled only with FILLMODE on and seen square on; else its outline,
+      // corners 1, 2, 4, 3 (solid2d/d02).
+      const points = solid2dOutline(entity).map((p) => camera.worldToScreen(p))
+      return camera.isPlan && (options.fill ?? true)
+        ? [
+            {
+              kind: "path",
+              points,
+              closed: true,
+              fill: stroke.color,
+              // The hairline keeps a sliver thinner than a pixel in sight.
+              stroke: { color: stroke.color, width: stroke.width },
+            },
+          ]
+        : [{ kind: "path", points, closed: true, stroke }]
+    }
     case "polyline":
       if (isWidePolyline(entity)) {
         // Filled only seen square on, as AutoCAD fills one only "parallel

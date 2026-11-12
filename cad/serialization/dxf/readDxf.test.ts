@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs"
 import { gunzipSync } from "node:zlib"
 import { describe, expect, it } from "vitest"
+import { p } from "../../../test/builders"
 import type {
   ArcEntity,
   CircleEntity,
@@ -12,6 +13,7 @@ import type {
   LineEntity,
   MTextEntity,
   PointEntity,
+  Solid2dEntity,
   Polyline3dEntity,
   PolylineEntity,
   SplineEntity,
@@ -142,7 +144,6 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
 
   it("lists what the model has no object for, by type, and paper space apart", () => {
     expect([...drawing.report.leftOut]).toEqual([
-      ["SOLID", 1],
       ["XLINE", 1],
       ["RAY", 1],
       ["LEADER", 1],
@@ -233,6 +234,13 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     const [arc] = ofType<ArcEntity>(drawing, "arc")
     expect(arc.startAngle).toBeCloseTo((278.8733853924698 * Math.PI) / 180, 12)
     expect(arc.endAngle).toBeCloseTo((314.366926962348 * Math.PI) / 180, 12)
+  })
+
+  it("reads a 2D solid, its corners in the order written (solid2d/p01)", () => {
+    const solids = ofType<Solid2dEntity>(drawing, "solid2d")
+    expect(solids.map((s) => s.corners)).toEqual([
+      [p(200, 10), p(210, 10), p(200, 20), p(210, 20)],
+    ])
   })
 
   it("reads a point, which a new drawing shows as a dot (PDMODE 0)", () => {

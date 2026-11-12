@@ -134,7 +134,8 @@ export const ptBR: EngineLocale = {
       "point": "Múltiplos pontos",
       "divide": "Dividir",
       "measuresegments": "Medir",
-      "ptype": "Estilo de ponto"
+      "ptype": "Estilo de ponto",
+      "solid": "Sólido 2D"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -376,6 +377,16 @@ export const ptBR: EngineLocale = {
           {
             "one": "Ponto",
             "other": "Pontos"
+          }
+        ]
+      ],
+      "solid2d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Sólido",
+            "other": "Sólidos"
           }
         ]
       ]
@@ -1273,6 +1284,9 @@ export const ptBR: EngineLocale = {
         "TIP",
         "DDPTYPE",
         "TIPOPD"
+      ],
+      "SOLID": [
+        "SÓLIDO"
       ]
     },
     "keywords": {
@@ -2833,7 +2847,12 @@ export const ptBR: EngineLocale = {
       "measureLengthOr": "Especificar o comprimento do segmento ou",
       "measureLength": "Especificar o comprimento do segmento",
       "blockToInsert": "Digitar o nome do bloco a ser inserido",
-      "alignBlockWithObject": "Alinhar bloco com objeto?"
+      "alignBlockWithObject": "Alinhar bloco com objeto?",
+      "solidFirstPoint": "Especificar primeiro ponto",
+      "solidSecondPoint": "Especificar segundo ponto",
+      "solidThirdPoint": "Especificar terceiro ponto",
+      "solidFourthPointOr": "Especificar quarto ponto ou",
+      "exitSolid": "sair"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5556,6 +5575,7 @@ export const ptBR: EngineLocale = {
             "insert": "REFERÊNCIA DE BLOCO",
             "region": "REGION",
             "solid3d": "3DSOLID",
+            "solid2d": "SÓLIDO",
             "other": "MATRIZ"
           }
         ]
@@ -5591,7 +5611,7 @@ export const ptBR: EngineLocale = {
         " mm"
       ],
       "listThickness": [
-        "                            Espessura =    ",
+        "                            Espessura = ",
         [
           "thickness"
         ]
@@ -5626,6 +5646,48 @@ export const ptBR: EngineLocale = {
       ],
       "listLineTo": [
         "            para o ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidFrom": [
+        "                de ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidAnd": [
+        "                 e ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidTo": [
+        "              para ponto, X=",
         [
           "x"
         ],

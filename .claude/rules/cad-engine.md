@@ -108,8 +108,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
 ## Modelling
 
 - **Locked: drawn, snapped, selected, never edited** (`isEntityEditable`).
-- An **area** (a text's box, a SOLID hatch) hit-tests as filled, by the even-odd rule that fills
-  it (a nested loop is a hole); a pattern hatch by its lines (`hatchGeometry`).
+- An **area** (a text's box, a SOLID hatch, a 2D solid) hit-tests as filled, by the even-odd rule
+  that fills it (a nested loop is a hole); a pattern hatch by its lines (`hatchGeometry`).
 - **Store a direction-and-size as one vector** (an ellipse's vector to the major-axis endpoint):
   it transforms exactly like a point.
 - **A pair of optional fields is a trap TypeScript cannot see.** An elliptical arc's `startParam`

@@ -1,0 +1,20 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_ZOOM
+_E
+_ZOOM
+0.5x
+_REGION
+_L
+
+_UCS
+_OB
+5,0
+(princ (getvar "UCSXDIR"))
+_PEDIT
+5,0

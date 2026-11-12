@@ -347,11 +347,14 @@ function applyInUcs(
     )
   }
   if (
-    entity.type === "polyline" &&
+    (entity.type === "polyline" || entity.type === "solid2d") &&
     (property === "vertexX" || property === "vertexY")
   ) {
     // The vertex moves along that UCS axis, and stays in the object's plane.
-    const at = entity.vertices[vertex]
+    const at =
+      entity.type === "polyline"
+        ? entity.vertices[vertex]
+        : entity.corners[vertex]
     if (!at) return null
     const target = ucsPointToWorld(ucs, {
       ...worldPointToUcs(ucs, entityPointToWorld(entity, at)),

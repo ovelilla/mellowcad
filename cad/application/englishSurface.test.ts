@@ -2336,6 +2336,19 @@ describe("the engine's English surface", () => {
         .do("PDMODE", (c) => c.command("PDMODE").type("5").enter())
         .do("PDSIZE", (c) => c.command("PDSIZE").type("-5").enter())
     )
+    walk("SOLID", createHarness(), (s) =>
+      s
+        .do("SOLID", (c) => c.command("SO"))
+        .do("first", (c) => c.type("0,0").enter())
+        .do("Enter refused", (c) => c.enter())
+        .do("second", (c) => c.type("10,0").enter())
+        .do("third", (c) => c.type("0,5").enter())
+        .do("fourth", (c) => c.type("10,5").enter())
+        .do("third again", (c) => c.type("20,0").enter())
+        .do("triangle", (c) => c.enter())
+        .do("exit", (c) => c.enter())
+        .do("pick", (c) => c.click(at(5, 2)))
+    )
     walk("DIVIDE", createHarness({ entities: [line()] }), (s) =>
       s
         .do("DIVIDE", (c) => c.command("DIV"))

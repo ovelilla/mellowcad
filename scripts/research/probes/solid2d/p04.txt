@@ -1,0 +1,16 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+_TRACE
+2
+0,0
+10,0
+10,10
+
+(dump)
+_FILLMODE
+0
+_SOLID
+0,0
+
+_FILL
+_OFF
+(getvar "FILLMODE")

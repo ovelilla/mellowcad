@@ -1807,6 +1807,27 @@ function singleEntityInfo(
         ],
       }
     }
+    case "solid2d": {
+      // AutoCAD's rows (desktop solid2d/d01): the current vertex, 1 to 4 in
+      // the order picked, its X and Y, and Elevation; Thickness under General.
+      const current = Math.min(vertex, entity.corners.length - 1)
+      return {
+        title: title("solid2d"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", at(entity.corners[current]).x),
+            coordRow("vertexY", "vertexY", at(entity.corners[current]).y),
+            planeRow("elevation", "elevation"),
+          ]),
+        ],
+      }
+    }
     case "point": {
       // Geometry is its Position, Thickness under General (unverified on the
       // desktop: the palette as a circle's, circle/d10).

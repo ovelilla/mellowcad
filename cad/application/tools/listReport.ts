@@ -22,6 +22,7 @@ import type {
   SolidSweep,
   InsertEntity,
   LineEntity,
+  Solid2dEntity,
   MTextEntity,
   Polyline3dEntity,
   PolylineEntity,
@@ -113,6 +114,7 @@ type ObjectName =
   | "array"
   | "region"
   | "solid3d"
+  | "solid2d"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -199,6 +201,9 @@ class Report {
         break
       case "solid3d":
         this.solid(entity)
+        break
+      case "solid2d":
+        this.solid2d(entity)
         break
     }
     return this.lines
@@ -330,6 +335,17 @@ class Report {
     if (wearing.thickness) {
       this.say("listThickness", { thickness: this.n9(wearing.thickness) })
     }
+  }
+
+  /** Its corners in the order picked, the console's words (solid2d/p07, p21). */
+  private solid2d(solid: Solid2dEntity): void {
+    this.header("solid2d", solid)
+    const [a, b, c, d] = solid.corners.map((p) => this.at(solid, p))
+    this.say("listSolidFrom", this.xyz(a))
+    this.say("listSolidAnd", this.xyz(b))
+    this.say("listSolidTo", this.xyz(c))
+    this.say("listSolidAnd", this.xyz(d))
+    this.sayExtrusion(solid)
   }
 
   private line(line: LineEntity): void {

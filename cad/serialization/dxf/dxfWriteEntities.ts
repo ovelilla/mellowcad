@@ -13,6 +13,7 @@ import {
   BlockDefinition,
   CircleEntity,
   PointEntity,
+  Solid2dEntity,
   DimensionEntity,
   EllipseEntity,
   Entity,
@@ -131,6 +132,8 @@ export function writeEntity(
       return circle(ctx, entity, owner)
     case "point":
       return pointObject(ctx, entity, owner)
+    case "solid2d":
+      return solid(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -181,6 +184,20 @@ function circle(ctx: DxfWriteContext, e: CircleEntity, owner: string): void {
   thickness(ctx, e)
   out.point(10, e.center.x, e.center.y, e.elevation ?? 0)
   out.exact(40, e.radius)
+  writeNormal(ctx, e)
+}
+
+/**
+ * A 2D solid's corners in its OCS at its elevation, thickness after them, as
+ * AutoCAD writes them (solid2d/p08's entget, the fixtures' arrowheads).
+ */
+function solid(ctx: DxfWriteContext, e: Solid2dEntity, owner: string): void {
+  const { out } = ctx
+  const z = e.elevation ?? 0
+  head(ctx, "SOLID", e, owner)
+  out.str(100, "AcDbTrace")
+  e.corners.forEach((corner, i) => out.point(10 + i, corner.x, corner.y, z))
+  thickness(ctx, e)
   writeNormal(ctx, e)
 }
 

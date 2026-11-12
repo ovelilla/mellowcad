@@ -203,6 +203,9 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
         withZ(entity.position, entityZAt(entity, entity.position)),
         polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
       )
+    case "solid2d":
+      // Its origin at the first corner, X towards the second (solid2d/p18).
+      return toward(entity, entity.corners[0], entity.corners[1])
     case "point":
       // Its origin at the point, X along its plane's (point/p10; one with
       // a DXF 50 unverified).
@@ -266,6 +269,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "region":
     case "solid3d":
     case "point":
+    case "solid2d":
       return false
     default: {
       const unhandled: never = entity
@@ -386,6 +390,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "region":
     case "solid3d":
     case "point":
+    case "solid2d":
       return null
     default: {
       const unhandled: never = entity
@@ -470,6 +475,7 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "region":
     case "solid3d":
     case "point":
+    case "solid2d":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

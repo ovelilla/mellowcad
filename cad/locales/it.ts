@@ -134,7 +134,8 @@ export const it: EngineLocale = {
       "point": "Più punti",
       "divide": "Dividi",
       "measuresegments": "Misura",
-      "ptype": "Stile punto"
+      "ptype": "Stile punto",
+      "solid": "Solido 2D"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -376,6 +377,16 @@ export const it: EngineLocale = {
           {
             "one": "Punto",
             "other": "Punti"
+          }
+        ]
+      ],
+      "solid2d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Solido",
+            "other": "Solidi"
           }
         ]
       ]
@@ -1271,6 +1282,10 @@ export const it: EngineLocale = {
       "PTYPE": [
         "TIPOP",
         "DDPTYPE"
+      ],
+      "SOLID": [
+        "POLIG",
+        "PLG"
       ]
     },
     "keywords": {
@@ -2830,7 +2845,12 @@ export const it: EngineLocale = {
       "measureLengthOr": "Specificare lunghezza del segmento o",
       "measureLength": "Specificare lunghezza del segmento",
       "blockToInsert": "Digitare nome del blocco da inserire",
-      "alignBlockWithObject": "Allineare blocco con oggetto?"
+      "alignBlockWithObject": "Allineare blocco con oggetto?",
+      "solidFirstPoint": "Specificare primo punto",
+      "solidSecondPoint": "Specificare secondo punto",
+      "solidThirdPoint": "Specificare terzo punto",
+      "solidFourthPointOr": "Specificare quarto punto o",
+      "exitSolid": "Esci"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5556,6 +5576,7 @@ export const it: EngineLocale = {
             "insert": "RIFERIMENTO DI BLOCCO",
             "region": "REGION",
             "solid3d": "3DSOLID",
+            "solid2d": "SOLIDO",
             "other": "SERIE"
           }
         ]
@@ -5625,6 +5646,48 @@ export const it: EngineLocale = {
         ]
       ],
       "listLineTo": [
+        "                 a punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidFrom": [
+        "                da punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidAnd": [
+        "                 e punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidTo": [
         "                 a punto, X=",
         [
           "x"

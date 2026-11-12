@@ -41,6 +41,7 @@ import {
   setPolylineBulge,
   rotatePoint,
   replacePolyline3dVertex,
+  mapSolid2dCorners,
 } from "../../domain/entities"
 import type {
   BlockLookup,
@@ -82,6 +83,15 @@ export function withVertexAt(
   }
   if (entity.type === "polyline") {
     return stretchPolylineVertices(entity, new Map([[index, point]]))
+  }
+  if (entity.type === "solid2d") {
+    // A corner goes to the point in its plane, as a polyline's vertex does,
+    // and every corner on the same point with it (a triangle's tip).
+    const at = entity.corners[index]
+    if (!at) return null
+    return mapSolid2dCorners(entity, (corner) =>
+      V.equals(corner, at) ? { x: point.x, y: point.y } : corner
+    )
   }
   if (entity.type === "hatch") {
     return withLoopEdited(entity, index, (loop, at) =>

@@ -57,9 +57,9 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
   which facets on zooming in. The math is `geometry/nurbs.ts`; queries with no closed form read
   `splinePolyline` at its default tolerance. A future curve of that kind (a helix, an offset
   spline) follows the same split.
-- **A wide polyline is filled only seen in plan**, and only with FILLMODE on
+- **A wide polyline or a 2D solid is filled only seen in plan**, and only with FILLMODE on
   (`SceneInput.fillMode`, `EntityDrawOptions.fill`, on when absent so a ghost fills too); off the
-  plan, or with FILL off, its bands are outlined. In plan its lineweight is not drawn ("wide
+  plan, or with FILL off, outlined. In plan its lineweight is not drawn ("wide
   polylines display lineweights only when displayed outside of plan view"), so `pushEntities` gives
   it the hairline. With FILL off a hatch draws nothing, SOLID or pattern (hatch/p341).
 

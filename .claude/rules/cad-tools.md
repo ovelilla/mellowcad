@@ -310,9 +310,9 @@ first)`, later points projected (`withZOf(point, first)`). SPLINE and 3DPOLY kee
   spline's point write that Z into the object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
   `linesNonCoplanar`). JOIN discards instead (pieces/p346), HATCH's Select objects too.
-- **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only** (`withCurrentThickness`);
-  RECTANG has its own, TEXT none, a rebuilt object carries the source's (not OFFSET's of a circle
-  or arc).
+- **THICKNESS is given by LINE, CIRCLE, ARC, PLINE, POLYGON, POINT and SOLID only**
+  (`withCurrentThickness`); RECTANG has its own, TEXT none, a rebuilt object carries the source's
+  (not OFFSET's of a circle or arc).
 - **A default AutoCAD aligns with the UCS is kept relative to it** (TEXT, MTEXT, ATTDEF, INSERT
   rotation via `ucsAngleToWorld`; HATCH's angle and origin; DIMLINEAR's axes; RECTANG's sides;
   ARRAYRECT's rows). A new orientation default starts at the UCS X axis.

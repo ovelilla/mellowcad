@@ -27,6 +27,7 @@ import {
   planeAxes,
   polyline3dSegments,
   entityShape,
+  solid2dEdges,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
@@ -134,6 +135,18 @@ function snapEntities(
               })
             }
           }
+        }
+        continue
+      }
+      if (piece.type === "solid2d") {
+        // Its edges, lines of its id: ends at the corners, middles, nearest
+        // and perpendicular points and crossings; no centre (solid2d/p05,
+        // p06). A triangle's edge of no length is left out.
+        for (const [a, b] of solid2dEdges(piece)) {
+          if (V.equals(a, b)) continue
+          entities.push(
+            carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+          )
         }
         continue
       }

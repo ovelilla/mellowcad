@@ -1,0 +1,52 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_ZOOM
+_E
+(princ (list "END" (osnap '(0.05 0.05) "_end") "NEA" (osnap '(5 0.05) "_nea") (osnap '(0.05 3) "_nea") "PER" (osnap '(5 0.05) "_per") "GCEN" (osnap '(5.05 0.05) "_gcen") "CEN" (osnap '(5.05 0.05) "_cen") "APP" (osnap '(5 0.05) "_app") "EXT" (osnap '(5 0.05) "_ext")))
+_EXPLODE
+_L
+
+(princ (list "after explode" (cdr (assoc 0 (entget (entlast))))))
+_OFFSET
+1
+5,0
+
+_THICKNESS
+2
+_SOLID
+20,0,4
+30,0
+20,5
+
+(setvar "THICKNESS" 0)
+_LIST
+_L
+
+_LINE
+0,-5
+10,10
+
+_TRIM
+_O
+_Q
+5,0
+
+(princ (list "after trim" (cdr (assoc 0 (entget (entlast))))))
+_STRETCH
+_C
+11,7
+9,5
+
+0,0
+5,5
+(princ (list "after stretch" (entget (car (list (ssname (ssget "_X" '((0 . "SOLID"))) 0))))))
+_JOIN
+_L
+
+_PEDIT
+_L

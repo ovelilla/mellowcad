@@ -62,6 +62,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
       return { ...entity, layerId }
     case "point":
       return { ...entity, layerId }
+    case "solid2d":
+      return { ...entity, layerId }
   }
 }
 
@@ -107,6 +109,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "point":
       return { ...entity, color }
+    case "solid2d":
+      return { ...entity, color }
   }
 }
 
@@ -151,6 +155,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "point":
       return { ...entity, linetype }
+    case "solid2d":
+      return { ...entity, linetype }
   }
 }
 
@@ -194,6 +200,8 @@ export function assignEntityLineweight(
     case "solid3d":
       return { ...entity, lineweight }
     case "point":
+      return { ...entity, lineweight }
+    case "solid2d":
       return { ...entity, lineweight }
   }
 }

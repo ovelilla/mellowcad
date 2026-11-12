@@ -331,6 +331,20 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           world: entity.position,
         })
         break
+      case "solid2d":
+        // One at each corner (solid2d/p08, desktop d01), corners on one
+        // point (a triangle's last two) under one grip, which moves them
+        // together as AutoCAD moves coincident grips.
+        entity.corners.forEach((corner, index) => {
+          if (entity.corners.slice(0, index).some((c) => V.equals(c, corner)))
+            return
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: corner,
+          })
+        })
+        break
       case "region":
         for (const point of regionGripPoints(entity)) {
           grips.push({ entityId: id, role: { kind: "fixed" }, world: point })

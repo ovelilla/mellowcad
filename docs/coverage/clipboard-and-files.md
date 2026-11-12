@@ -116,7 +116,10 @@ ATTDEF, INSERT with its attributes taken into the block's coordinates, the linea
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
 text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
 without the style code AutoCAD may write after it (`ANSI31,_O`), POINT with its thickness, plane and
-DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files); the tables: layers (on,
+DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files), SOLID
+with its four corners in their order, thickness and plane, a fourth left out the third (f001's, and
+the 2,831 of 67 of AutoCAD's samples, mostly the arrowheads and fills of old blocks, and 8 of 2 other
+programs' files: solid2d/p01, p08); the tables: layers (on,
 off, locked), text and dimension styles (a group left out at the DXF reference's value, not
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
 CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
@@ -129,7 +132,7 @@ line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as Au
 `online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
 
 **Deviations:** what the model has no object for is left out and counted at the command line by
-its DXF type (`6 objects not opened: 1 SOLID, 1 XLINE, …`), a layout's apart (`1 object in a
+its DXF type (`5 objects not opened: 1 XLINE, 1 RAY, …`), a layout's apart (`1 object in a
 layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
 tolerant where AutoCAD's reader is strict: an unknown group code or entity, a missing subclass
@@ -148,7 +151,7 @@ the text's place; a hatch's elliptical and spline edges are laid as straight run
 is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
 model has only those three
 
-**Missing:** SOLID, TRACE,
+**Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
 3DFACE, XLINE, RAY, LEADER, MLEADER, TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
@@ -180,10 +183,12 @@ object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
 reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN, a
-point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04); each
-file of the two reference drawings, of one of every other kind and of points flat, thick, turned
+point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
+2D solid's corners in its OCS with its thickness and plane (solid2d/p08); each
+file of the two reference drawings, of one of every other kind, of points flat, thick, turned
 and tilted (the console reading back each one's place, DXF 50, thickness, plane and the drawing's
-PDMODE 35 and PDSIZE −7), in every version, ASCII and binary, opened by AutoCAD 2027's console with
+PDMODE 35 and PDSIZE −7) and of 2D solids flat, thick and raised, and tilted (solid2d/p19 the
+same drawn by AutoCAD, plotted alike), in every version, ASCII and binary, opened by AutoCAD 2027's console with
 no AUDIT error and plotted as AutoCAD's own
 (scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
 regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,

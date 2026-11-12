@@ -380,3 +380,9 @@ origen/Origen` from the 2026 help and the same captures;
   `Varios puntos`, `Dividir`, `Medir` acad.cuix's (es-es); Node's -OSNAP word `PUNto` and its name
   `Nodo` tables 27408, 33203 and 73. The tool palette's Points drop-down (`Puntos`) and the
   dialog's accessible name of its images are ours †.
+- **SOLID:** the name by the console (`SOLIDO`, solid2d/p09) and the alias from the `acad.pgp`
+  (`SO`); the prompts tables 20607–20610's, the console's (`Precise primer punto`, `Precise segundo
+  punto`, `Precise tercer punto`, `Precise cuarto punto o <salir>`, `Punto 2D no válido.`); the
+  object `Sólido`, as the Properties palette names it (desktop solid2d/d03), and the tool `Sólido 2D`,
+  acad.cuix's ID_Solid; LIST's lines the console's (`SOLIDO`, `de punto`, `y punto`, `hasta punto`,
+  p21).

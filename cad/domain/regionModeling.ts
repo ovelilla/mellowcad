@@ -282,7 +282,8 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     }
     case "circle":
     case "ellipse":
-    case "polyline": {
+    case "polyline":
+    case "solid2d": {
       const curves = regionCurvesOf(drawn)
       if (!curves || curves.length === 0) return null
       if (curves.every((c) => curveLength(c) <= MODEL_TOLERANCE)) return null

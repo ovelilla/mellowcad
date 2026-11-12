@@ -130,7 +130,8 @@
       "point": "Più punti",
       "divide": "Dividi",
       "measuresegments": "Misura",
-      "ptype": "Stile punto"
+      "ptype": "Stile punto",
+      "solid": "Solido 2D"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -230,7 +231,8 @@
       "insert": "{count, plural, one {Riferimento di blocco} other {Riferimenti di blocco}}",
       "solid3d": "{count, plural, one {Solido 3D} other {Solidi 3D}}",
       "region": "{count, plural, one {Regione} other {Regioni}}",
-      "point": "{count, plural, one {Punto} other {Punti}}"
+      "point": "{count, plural, one {Punto} other {Punti}}",
+      "solid2d": "{count, plural, one {Solido} other {Solidi}}"
     },
     "array": {
       "rectangular": "Serie (rettangolare)",
@@ -660,7 +662,8 @@
       "POINT": ["PUNTO", "PO"],
       "DIVIDE": ["DIVIDI", "DD"],
       "MEASURE": ["MISURA", "MIS"],
-      "PTYPE": ["TIPOP", "DDPTYPE"]
+      "PTYPE": ["TIPOP", "DDPTYPE"],
+      "SOLID": ["POLIG", "PLG"]
     },
     "keywords": {
       "-OSNAP": {
@@ -2169,7 +2172,12 @@
       "measureLengthOr": "Specificare lunghezza del segmento o",
       "measureLength": "Specificare lunghezza del segmento",
       "blockToInsert": "Digitare nome del blocco da inserire",
-      "alignBlockWithObject": "Allineare blocco con oggetto?"
+      "alignBlockWithObject": "Allineare blocco con oggetto?",
+      "solidFirstPoint": "Specificare primo punto",
+      "solidSecondPoint": "Specificare secondo punto",
+      "solidThirdPoint": "Specificare terzo punto",
+      "solidFourthPointOr": "Specificare quarto punto o",
+      "exitSolid": "Esci"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2615,7 +2623,7 @@
       "notAFitPoint": "Non è un punto di adattamento.",
       "notAControlVertex": "Non è un vertice di controllo.",
       "allAdditionsUndone": "Tutte le aggiunte sono state annullate.",
-      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} other {SERIE}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} other {SERIE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Spazio: Spazio modello",
       "listColor": "                   Colore: {color}    Tipo di linea: \"{linetype}\"",
@@ -2624,6 +2632,9 @@
       "listExtrusion": "Direzione di estrusione relativa al sistema UCS:\n                   X={x}  Y={y}  Z={z}",
       "listLineFrom": "                da punto, X={x}  Y={y}  Z={z}",
       "listLineTo": "                 a punto, X={x}  Y={y}  Z={z}",
+      "listSolidFrom": "                da punto, X={x}  Y={y}  Z={z}",
+      "listSolidAnd": "                 e punto, X={x}  Y={y}  Z={z}",
+      "listSolidTo": "                 a punto, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {Nell'UCS corrente, } other {}}Lunghezza ={length}, Angolo nel piano XY = {angle}",
       "listLine3d": "Lunghezza 3D                    ={length}, Angolo dal piano XY = {angle}",
       "listLineDelta": "                  Delta X ={x}, Delta Y = {y}, Delta Z ={z}",

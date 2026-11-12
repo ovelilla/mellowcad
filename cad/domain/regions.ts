@@ -1,3 +1,4 @@
+import { solid2dEdges } from "./solids2d"
 import { V, Vec2 } from "../geometry/Vec2"
 import { normalizeAngle } from "../geometry/primitives"
 import { splineFitCurve } from "../geometry/splineFit"
@@ -326,6 +327,14 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
         { kind: "spline", curve: flat, from: domain.start, to: domain.end },
       ]
     }
+    case "solid2d":
+      // Its outline, 1, 2, 4, 3: REGION makes a region of a 2D solid and
+      // rejects a bow tie's crossing loop (solid2d/p18).
+      return solid2dEdges(entity).map(([start, end]): PlanarCurve => ({
+        kind: "line",
+        start,
+        end,
+      }))
     case "polyline3d":
     case "text":
     case "mtext":

@@ -627,6 +627,7 @@ export class DimensionTool implements Tool {
       case "spline":
       case "dimension":
       case "point":
+      case "solid2d":
         return { entity, origins: null }
       // WHY no refusal for a hatch: unprobed, so it says nothing was found,
       // as a text does (p118).

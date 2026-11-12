@@ -134,7 +134,8 @@ export const ar: EngineLocale = {
       "point": "نقاط متعددة",
       "divide": "تقسيم",
       "measuresegments": "قياس",
-      "ptype": "نمط النقطة"
+      "ptype": "نمط النقطة",
+      "solid": "مجسم ثنائي الأبعاد"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -392,6 +393,17 @@ export const ar: EngineLocale = {
             "one": "نقطة",
             "two": "نقطتان",
             "other": "نقاط"
+          }
+        ]
+      ],
+      "solid2d": [
+        [
+          "count",
+          2,
+          {
+            "one": "مجسم ثنائي الأبعاد",
+            "two": "مجسمان ثنائيا الأبعاد",
+            "other": "مجسمات ثنائية الأبعاد"
           }
         ]
       ]

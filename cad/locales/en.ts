@@ -134,7 +134,8 @@ export const en: EngineCatalog = {
       "point": "Multiple Points",
       "divide": "Divide",
       "measuresegments": "Measure",
-      "ptype": "Point Style"
+      "ptype": "Point Style",
+      "solid": "2D Solid"
     },
     "description": {
       "U": "Undo the last action",
@@ -382,6 +383,16 @@ export const en: EngineCatalog = {
           {
             "one": "Point",
             "other": "Points"
+          }
+        ]
+      ],
+      "solid2d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Solid",
+            "other": "Solids"
           }
         ]
       ]
@@ -1277,6 +1288,10 @@ export const en: EngineCatalog = {
       "PTYPE": [
         "PTYPE",
         "DDPTYPE"
+      ],
+      "SOLID": [
+        "SOLID",
+        "SO"
       ]
     },
     "keywords": {
@@ -2174,7 +2189,12 @@ export const en: EngineCatalog = {
       "measureLengthOr": "Specify length of segment or",
       "measureLength": "Specify length of segment",
       "blockToInsert": "Enter name of block to insert",
-      "alignBlockWithObject": "Align block with object?"
+      "alignBlockWithObject": "Align block with object?",
+      "solidFirstPoint": "Specify first point",
+      "solidSecondPoint": "Specify second point",
+      "solidThirdPoint": "Specify third point",
+      "solidFourthPointOr": "Specify fourth point or",
+      "exitSolid": "exit"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -4893,6 +4913,7 @@ export const en: EngineCatalog = {
             "insert": "BLOCK REFERENCE",
             "region": "REGION",
             "solid3d": "3DSOLID",
+            "solid2d": "SOLID",
             "other": "ARRAY"
           }
         ]
@@ -4962,6 +4983,48 @@ export const en: EngineCatalog = {
         ]
       ],
       "listLineTo": [
+        "                to point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidFrom": [
+        "              from point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidAnd": [
+        "               and point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listSolidTo": [
         "                to point, X=",
         [
           "x"

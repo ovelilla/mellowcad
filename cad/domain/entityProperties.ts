@@ -1,3 +1,4 @@
+import { withSolid2dCorner } from "./solids2d"
 import { SolidProperty, primitiveRetyped } from "./solidGrips"
 import { solidRemade } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
@@ -163,7 +164,7 @@ const PLANE_ROWS: Readonly<
 > = {
   centerZ: ["circle", "arc", "ellipse"],
   positionZ: ["text", "mtext", "attdef", "insert", "point"],
-  elevation: ["polyline", "hatch"],
+  elevation: ["polyline", "hatch", "solid2d"],
 }
 
 /**
@@ -253,6 +254,18 @@ export function applyEntityProperty(
       if (property === "positionY")
         return { ...entity, position: { x: entity.position.x, y: value } }
       return null
+    case "solid2d": {
+      // The palette's Current Vertex, 1 to 4 in the order picked, its X and
+      // Y (solid2d/d01).
+      if (property !== "vertexX" && property !== "vertexY") return null
+      if (vertex < 0 || vertex > 3) return null
+      const at = entity.corners[vertex]
+      return withSolid2dCorner(
+        entity,
+        vertex,
+        property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
+      )
+    }
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null

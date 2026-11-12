@@ -55,8 +55,8 @@ us to walk again, whereas a command costs the same before or after it.
 5. **DXF** — under way, ahead of the rest by the owner's decision of 2026-11-05 (the visibility
    plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
    types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
-   (POINT done, with PDMODE, PDSIZE, PTYPE, DIVIDE, MEASURE and the Node snap; then SOLID, LEADER
-   and MLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
+   (POINT done, with PDMODE, PDSIZE, PTYPE, DIVIDE, MEASURE and the Node snap; SOLID done; then
+   LEADER and MLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
    The brief is `docs/next-dxf.md`.
 
 TRIM, EXTEND and JOIN of 3D

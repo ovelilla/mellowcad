@@ -1,0 +1,14 @@
+(setvar "QAFLAGS" 2)
+_THICKNESS
+2
+_SOLID
+0,0,4
+10,0
+0,6
+10,6
+
+_THICKNESS
+0
+_LIST
+_L
+

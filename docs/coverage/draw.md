@@ -793,6 +793,50 @@ whichever end it runs from (45° on a line measured from its end, the tangent on
 ellipse and the closed spline, p11); the limit of 32767 points is DIVIDE's count's (**unverified**
 for MEASURE: 10000 made, 100000 refused, p06)
 
+### `SOLID` / `SO` · es `SOLIDO` / `SO` · pt-BR `SÓLIDO` · fr `SOLIDE` / `SO` · it `POLIG` / `PLG`
+
+**Implemented:** the 2D solid — a model type of its own (DXF SOLID: four corners in the order
+picked, a thickness, a plane) — and SOLID as AutoCAD 2027's console asks it (probes
+solid2d/p01–p03, p09; tables 20607–20610): `Specify first point:`, `Specify second point:`,
+`Specify third point:`, `Specify fourth point or <exit>:` (es `Precise primer punto`… `Precise
+cuarto punto o <salir>`, pt-BR `Especificar … quarto ponto ou <sair>`, fr `Spécifiez un premier
+point` … `un quatrième point ou <Quitter>`, it `Specificare … quarto punto o <Esci>`). The fourth
+point makes a quadrilateral; Enter there a triangle, its fourth corner its third. Either way the
+command goes on at `Specify third point:`, the next solid starting from the last one's third and
+fourth corners, each a solid of its own (p01, p03); Enter at the first or the third point ends it,
+the second refuses Enter as a word (`Invalid 2D point.`, p02). Corners given round the outline
+cross into a bow tie, as AutoCAD draws it: the outline runs 1, 2, 4, 3 (desktop d02). The first
+point's Z, else ELEVATION, puts the solids in its plane; the others are 2D points (`Invalid 2D
+point.` for a Z, p03). Each wears the current properties and THICKNESS (p07); not transparent
+(p20). No rubber band: none of the prompts has a base point (p01's trace). FILLMODE fills it seen in
+plan, else its outline, off the plan with its thickness its prism's edges (d02); picked anywhere it
+fills, by its edges alone with FILLMODE off, and by a crossing window drawn inside it either way
+(p10). MOVE, COPY, ROTATE, SCALE and MIRROR move its corners, STRETCH those its window catches (p07);
+EXPLODE `1 was not able to be exploded.`, OFFSET `Cannot offset that object.`, TRIM and EXTEND
+`Cannot TRIM this object.` / `Cannot EXTEND this object.` and no edge of theirs (p06, p07, p11),
+BREAK `Object can't be broken` (p11), FILLET `Fillet requires 2 lines, arcs, or circles.`, CHAMFER
+`Chamfer requires 2 lines.`, LENGTHEN `This object has no length definition.`, DIVIDE `Cannot divide
+that object.`, PEDIT `Object selected is not a polyline`, DIMRADIUS `Object selected is not a circle
+or arc.` (p12–p16); REGION makes a region of it and erases it, and rejects a bow tie (`1 loop
+rejected.` / `Self intersections`, p18); UCS OBject puts the origin at its first corner, X towards
+the second (p18). Endpoint at its corners, Midpoint, Nearest, Perpendicular and Intersection on its
+edges; no Center or Geometric Center (p05, p06). A grip at each corner, which moves it (p08); the
+Properties palette's Current Vertex (1 to 4), Vertex X and Y and Elevation under Geometry,
+Thickness under General, its type `Solid` (es and pt-BR `Sólido`, fr `Solide`, it `Solido`,
+desktop d01, d03). LIST writes its corners as each console does (`from point`, `and point`, `to
+point`, `and point`; es `de punto`, `y punto`, `hasta punto`; pt-BR `de ponto`, `e ponto`, `para
+ponto`; fr `de point`, `et point`, `à point`; it `da punto`, `e punto`, `a punto`: p07, p21). Typed only: AutoCAD 2027's ribbon, toolbars
+and menus have no 2D Solid (acad.cuix's ID_Solid is on none). Saved from drawing file version 51; a
+DXF opens and saves it (clipboard-and-files.md).
+
+**Deviations:** a grip dragged shows the solid filled in the preview's colour (**unverified** on the
+desktop); Extension runs along its edges as along a line's (**unverified**: the console's `osnap`
+cannot acquire a point, p06); the fill shows at once on FILL, not at the next regeneration (FILL's
+entry)
+
+**Missing:** the thickness' top corners as grips and snaps (**unverified**: MPGRIPS lists them,
+p08). HATCH and BOUNDARY do not see it as a boundary, as AutoCAD's do not (p17)
+
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE` · it `TESTO` / `T` / `TD` / `TESTODIN` / `-TESTO`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console

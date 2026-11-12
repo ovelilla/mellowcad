@@ -130,7 +130,8 @@
       "point": "Varios puntos",
       "divide": "Dividir",
       "measuresegments": "Medir",
-      "ptype": "Tipo de punto"
+      "ptype": "Tipo de punto",
+      "solid": "Sólido 2D"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -225,7 +226,8 @@
       "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}",
       "solid3d": "{count, plural, one {Sólido 3D} other {Sólidos 3D}}",
       "region": "{count, plural, one {Región} other {Regiones}}",
-      "point": "{count, plural, one {Punto} other {Puntos}}"
+      "point": "{count, plural, one {Punto} other {Puntos}}",
+      "solid2d": "{count, plural, one {Sólido} other {Sólidos}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -647,7 +649,8 @@
       "POINT": ["PUNTO", "PU"],
       "DIVIDE": ["DIVIDE", "DIV"],
       "MEASURE": ["GRADUA", "GD"],
-      "PTYPE": ["TIPOPUNTO", "DDPTYPE"]
+      "PTYPE": ["TIPOPUNTO", "DDPTYPE"],
+      "SOLID": ["SOLIDO", "SO"]
     },
     "keywords": {
       "-OSNAP": {
@@ -2073,7 +2076,12 @@
       "measureLengthOr": "Precise longitud de segmento o",
       "measureLength": "Precise longitud de segmento",
       "blockToInsert": "Indique nombre de bloque que se va a insertar",
-      "alignBlockWithObject": "¿Alinear bloque con objeto?"
+      "alignBlockWithObject": "¿Alinear bloque con objeto?",
+      "solidFirstPoint": "Precise primer punto",
+      "solidSecondPoint": "Precise segundo punto",
+      "solidThirdPoint": "Precise tercer punto",
+      "solidFourthPointOr": "Precise cuarto punto o",
+      "exitSolid": "salir"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2519,7 +2527,7 @@
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
       "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
-      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
       "listColor": "                   Color: {color}    Tipo de línea: \"{linetype}\"",
@@ -2528,6 +2536,9 @@
       "listExtrusion": "Dirección de extrusión relativa al SCP:\n                   X={x}  Y={y}  Z={z}",
       "listLineFrom": "                de punto, X={x}  Y={y}  Z={z}",
       "listLineTo": "             hasta punto, X={x}  Y={y}  Z={z}",
+      "listSolidFrom": "                de punto, X={x}  Y={y}  Z={z}",
+      "listSolidAnd": "                 y punto, X={x}  Y={y}  Z={z}",
+      "listSolidTo": "             hasta punto, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {En SCP actual, } other {}}Longitud = {length}, Ángulo en el plano XY = {angle}",
       "listLine3d": "                  3D Longitud = {length}, Ángulo del plano XY = {angle}",
       "listLineDelta": "                  Incremento X ={x},  Incremento Y = {y},  Incremento Z = {z}",

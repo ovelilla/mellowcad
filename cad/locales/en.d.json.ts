@@ -132,6 +132,7 @@ declare const source: {
       "divide": string
       "measuresegments": string
       "ptype": string
+      "solid": string
     }
     "description": {
       "U": string
@@ -266,6 +267,7 @@ declare const source: {
       "solid3d": string
       "region": string
       "point": string
+      "solid2d": string
     }
     "array": {
       "rectangular": string
@@ -688,6 +690,7 @@ declare const source: {
       "DIVIDE": string[]
       "MEASURE": string[]
       "PTYPE": string[]
+      "SOLID": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -2197,6 +2200,11 @@ declare const source: {
       "measureLength": string
       "blockToInsert": string
       "alignBlockWithObject": string
+      "solidFirstPoint": string
+      "solidSecondPoint": string
+      "solidThirdPoint": string
+      "solidFourthPointOr": string
+      "exitSolid": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2651,6 +2659,9 @@ declare const source: {
       "listExtrusion": string
       "listLineFrom": string
       "listLineTo": string
+      "listSolidFrom": string
+      "listSolidAnd": string
+      "listSolidTo": string
       "listLineLength": string
       "listLine3d": string
       "listLineDelta": string

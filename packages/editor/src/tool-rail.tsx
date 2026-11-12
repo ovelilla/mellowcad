@@ -406,6 +406,9 @@ const RAIL_EXCLUDED = new Set([
   "massprop",
   // CHPROP is typed: no ribbon panel offers it.
   "chprop",
+  // SOLID is typed: acad.cuix's ID_Solid is on no ribbon panel, toolbar or
+  // menu of AutoCAD 2027.
+  "solid",
   // SECTION is typed: the ribbon offers SECTIONPLANE in its place.
   "section",
   // SOLIDEDIT is typed: the ribbon offers its options, as the face buttons.

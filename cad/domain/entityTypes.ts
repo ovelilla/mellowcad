@@ -37,6 +37,7 @@ export type EntityType =
   | "region"
   | "solid3d"
   | "point"
+  | "solid2d"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -76,7 +77,8 @@ interface BaseEntity {
 
 /**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
- * polylines" and points (point/p04) among the ones modelled here. Absent
+ * polylines", points (point/p04) and 2D solids (solid2d/p07) among the ones
+ * modelled here. Absent
  * means 0; negative extrudes down.
  */
 interface Thick {
@@ -106,6 +108,19 @@ export interface PointEntity extends BaseEntity, Thick {
    * and the cross shows turned 30°: point/p04, desktop). Absent is 0.
    */
   readonly xAxisAngle?: number
+}
+
+/**
+ * A 2D solid (DXF SOLID): SOLID's triangle or quadrilateral, its corners in
+ * the order picked (DXF 10–13), in the OCS of its normal at its elevation.
+ * Its outline runs 1, 2, 4, 3: the third corner is the one across from the
+ * second, so corners given round the outline cross into a bow tie, as
+ * AutoCAD draws it (solid2d/d02). A triangle's fourth corner is its third
+ * (Enter at the fourth point, solid2d/p01). What it fills follows FILLMODE.
+ */
+export interface Solid2dEntity extends BaseEntity, Thick {
+  readonly type: "solid2d"
+  readonly corners: readonly [Vec2, Vec2, Vec2, Vec2]
 }
 
 export interface CircleEntity extends BaseEntity, Thick {
@@ -905,6 +920,7 @@ export type Entity =
   | RegionEntity
   | Solid3dEntity
   | PointEntity
+  | Solid2dEntity
 
 export interface Bounds {
   readonly min: Vec2

@@ -1183,7 +1183,8 @@ export class SelectTool implements Tool {
       poly?.type !== "polyline" &&
       poly?.type !== "polyline3d" &&
       poly?.type !== "spline" &&
-      poly?.type !== "hatch"
+      poly?.type !== "hatch" &&
+      poly?.type !== "solid2d"
     ) {
       return
     }

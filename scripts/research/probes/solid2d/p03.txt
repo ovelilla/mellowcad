@@ -1,0 +1,24 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+(princ (list (getvar "FILLMODE") (getvar "ELEVATION") (getvar "THICKNESS")))
+_SOLID
+0,0
+10,0
+20,20
+
+30,0
+40,0
+
+(dump)
+_ELEVATION
+3
+_THICKNESS
+2
+_SOLID
+0,0,7
+10,0,9
+0,5
+10,5
+
+(dump)
+_ID
+@

@@ -1,0 +1,23 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_SOLID
+20,0
+30,0
+30,6
+20,6
+
+_ZOOM
+_E
+(princ (list "inside" (ssget '(5 3)) "edge" (ssget '(5 0)) "bowtie-centre" (ssget '(25 3)) "bowtie-gap" (ssget '(21 3))))
+(setvar "FILLMODE" 0)
+_REGEN
+(princ (list "fill0 inside" (ssget '(5 3)) "edge" (ssget '(5 0))))
+(setvar "FILLMODE" 1)
+_REGEN
+(princ (list "window" (if (ssget "_W" '(-1 -1) '(11 7)) (sslength (ssget "_W" '(-1 -1) '(11 7)))) "crossing-inside" (if (ssget "_C" '(4 2) '(6 4)) (sslength (ssget "_C" '(4 2) '(6 4))))))
+(princ (list (getcname "_SOLID") (getcname "SOLID")))

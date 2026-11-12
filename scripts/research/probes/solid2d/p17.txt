@@ -1,0 +1,21 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_ZOOM
+_E
+_ZOOM
+0.5x
+_-BOUNDARY
+5,3
+
+(princ (cdr (assoc 0 (entget (entlast)))))
+_-HATCH
+_P
+_S
+7,3
+
+(princ (cdr (assoc 0 (entget (entlast)))))

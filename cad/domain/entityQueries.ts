@@ -1,3 +1,4 @@
+import { pointInsideSolid2d, solid2dEdges } from "./solids2d"
 import { regionLevelEdgeEntities } from "./regions"
 import { solidEdgeEntities } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
@@ -324,6 +325,19 @@ export function closestOnEntity(
       }
       return best
     }
+    case "solid2d": {
+      // An area, picked anywhere it fills (solid2d/p10).
+      let best: ClosestResult = {
+        point: entity.corners[0],
+        distance: Infinity,
+        t: 0,
+      }
+      for (const [a, b] of solid2dEdges(entity)) {
+        const candidate = closestPointOnSegment(a, b, point)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return pointInsideSolid2d(entity, point) ? { ...best, distance: 0 } : best
+    }
     case "point":
       // WHY by its place alone: what the figure shows is a display of
       // PDMODE, not the object (unverified on the desktop).
@@ -525,6 +539,14 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
     }
     case "point":
       return { min: entity.position, max: entity.position }
+    case "solid2d": {
+      const xs = entity.corners.map((p) => p.x)
+      const ys = entity.corners.map((p) => p.y)
+      return {
+        min: { x: Math.min(...xs), y: Math.min(...ys) },
+        max: { x: Math.max(...xs), y: Math.max(...ys) },
+      }
+    }
     case "region":
       return (
         entitiesBounds(regionLevelEdgeEntities(entity)) ?? {
@@ -825,6 +847,16 @@ export function entityCrossesRect(
     }
     case "point":
       return pointInRect(entity.position, min, max)
+    case "solid2d": {
+      if (entity.corners.some((v) => pointInRect(v, min, max))) return true
+      for (const [a, b] of solid2dEdges(entity)) {
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(a, b, e1, e2)) return true
+        }
+      }
+      // A box drawn wholly inside what it fills (solid2d/p10).
+      return pointInsideSolid2d(entity, V.midpoint(min, max))
+    }
     case "region":
       return regionLevelEdgeEntities(entity).some((edge) =>
         entityCrossesRect(edge, min, max)

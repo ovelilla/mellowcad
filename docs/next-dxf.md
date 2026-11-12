@@ -5,10 +5,11 @@
 > online», sesión 07b) el 8/11, con la fase 4 ordenada por lo que falta en 731 DXF reales, y la
 > fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
 > publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
-> PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día; siguiente en ella,
-> SOLID y después LEADER, que llevan las muestras enteras de 64 a 107 y a 121 de 154 (corpus del
-> 12/11); tras ellas, por orden del dueño, el alemán (`docs/next-seo.md`, L8), y lo que quede de
-> esta fase alterna con idiomas, una sesión cada vez. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día, y siguió con SOLID,
+> hecho el 12/11, que llevó las muestras enteras de 64 a 107 de 154; siguiente en ella, LEADER
+> (de 107 a 121, corpus del 12/11); tras él, por orden del dueño, el alemán (`docs/next-seo.md`,
+> L8), y lo que quede de esta fase alterna con idiomas, una sesión cada vez. Se borra cuando la
+> fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -109,7 +110,7 @@ los comandos, solicitudes y opciones de AutoCAD 2027 en inglés, español o port
 - **Las entidades del modelo** (LINE, CIRCLE, ARC, ELLIPSE, LWPOLYLINE, POLYLINE 2D con su ajuste y
   3D, SPLINE, TEXT, MTEXT, ATTDEF, INSERT con sus ATTRIB, DIMENSION lineal, alineada, angular, radio
   y diámetro, HATCH), con su capa, color, tipo y grosor de línea, plano y altura de objeto. Lo
-  demás se queda fuera y se cuenta por tipo en la línea de comandos: SOLID, XLINE, RAY,
+  demás se queda fuera y se cuenta por tipo en la línea de comandos: XLINE, RAY,
   LEADER, MLEADER, TABLE, las cotas que no hay, las mallas, imágenes, y los ACIS (3DSOLID, REGION,
   BODY, SURFACE: su SAT, fuera hasta `docs/next-solids.md` §6). Tampoco hay presentaciones: lo que
   está en el espacio papel se cuenta aparte.
@@ -166,7 +167,20 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    0,15 s. Los ficheros y el script que los mide, en `research/dxf-corpus/` (fuera de git, con su
    README), para medir otra vez tras cada entrega. Cada uno, con su comando cuando lo haya:
    1. **SOLID**: en 67 de las 154 muestras (2.831 objetos: flechas y rellenos de bloques
-      antiguos).
+      antiguos). **Hecho** (12/11/2026): el sólido 2D (relleno según FILLMODE solo visto en
+      planta, designado como área o, con FILLMODE desactivado, por sus aristas; un pinzamiento por
+      esquina; Propiedades con Vértice actual, Elevación y Altura de objeto; las transformaciones,
+      STRETCH, LIST y REGION) y SOLID con sus solicitudes, su lazo y su triángulo con Intro, en los
+      seis idiomas (consola, tablas 20607–20610, escritorio; sondas `solid2d/`); el DXF en los dos
+      sentidos, que la consola de AutoCAD abre sin un error de AUDIT en las seis versiones, ASCII y
+      binario, y traza como el suyo. TRACE solo se anota: en AutoCAD 2027 TRACE es la función de
+      marcas y ninguno de los 731 ficheros tiene uno. El corpus, medido otra vez: abren los 2.831
+      SOLID de las muestras y los 8 de 2 ficheros de otros; muestras que abren enteras, de 64 a
+      107, y ficheros de otros, de 570 a 572; los rellenos de los bloques antiguos se ven como en
+      el trazado de AutoCAD (DesignCenter_Plant_Process). Sin página de comando: «solid», «2d
+      solid», «relleno sólido» y «fillmode» valen 0 en Trends en los siete mercados frente a
+      «autocad hatch» 71–79, y «solid fill» es el sombreado SOLID de HATCH (datos en
+      `~/seo-data/raw-2026-11-12/solid/`). Lo que hace y le falta, en `docs/coverage/draw.md`.
    2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros).
    3. **POINT** y PDMODE: 20 muestras y 18 ficheros de otros (16 piezas de LibreCAD, el
       levantamiento de un medidor láser Leica DISTO). **Hecho** (12/11/2026): la entidad POINT,

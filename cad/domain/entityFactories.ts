@@ -15,6 +15,7 @@ import {
   CircleEntity,
   ArcEntity,
   PointEntity,
+  Solid2dEntity,
   PolylineEntity,
   PolylineWidth,
   Polyline3dEntity,
@@ -67,6 +68,31 @@ export function createPoint(
       : {}),
   }
   return withElevation(point, zOf(position))
+}
+
+/**
+ * A 2D solid through four corners in the order SOLID takes them (a triangle's
+ * fourth is its third), lying in the plane of the first one's Z: the later
+ * prompts take 2D points (`Invalid 2D point.`, solid2d/p03).
+ */
+export function createSolid2d(
+  corners: readonly [Vec2 | Vec3, Vec2 | Vec3, Vec2 | Vec3, Vec2 | Vec3],
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): Solid2dEntity {
+  const flat = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
+  const solid: Solid2dEntity = {
+    id,
+    type: "solid2d",
+    layerId,
+    corners: [
+      flat(corners[0]),
+      flat(corners[1]),
+      flat(corners[2]),
+      flat(corners[3]),
+    ],
+  }
+  return withElevation(solid, zOf(corners[0]))
 }
 
 export function createCircle(

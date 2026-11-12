@@ -1,0 +1,44 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_THICKNESS
+2
+_SOLID
+0,0,4
+10,0
+0,6
+10,6
+
+_THICKNESS
+0
+_LIST
+_L
+
+_ZOOM
+_E
+_STRETCH
+_C
+11,7
+9,5
+
+0,0
+5,5
+(princ (list "after stretch" (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))) (cdr (assoc 12 (entget (entlast)))) (cdr (assoc 13 (entget (entlast))))))
+_LINE
+-5,3
+25,3
+
+_TRIM
+_O
+_S
+_T
+(ssname (ssget "_X" '((0 . "SOLID"))) 0)
+
+-4,3
+
+(princ (list "after trim" (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast))))))
+_MIRROR
+(ssname (ssget "_X" '((0 . "SOLID"))) 0)
+
+0,0
+0,10
+_N
+(princ (list "after mirror" (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))) (cdr (assoc 12 (entget (entlast)))) (cdr (assoc 13 (entget (entlast)))) (cdr (assoc 210 (entget (entlast))))))

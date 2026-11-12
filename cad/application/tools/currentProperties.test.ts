@@ -83,6 +83,17 @@ const FROM_SCRATCH: ReadonlyArray<
   // divide/p14: CECOLOR on the points, THICKNESS not.
   ["POINT", (c) => c.command("POINT").click(p(0, 50))],
   [
+    "SOLID",
+    (c) =>
+      c
+        .command("SOLID")
+        .click(p(0, 50))
+        .click(p(40, 50))
+        .click(p(0, 90))
+        .click(p(40, 90))
+        .enter(),
+  ],
+  [
     "DIVIDE",
     (c) => c.command("DIVIDE").click(p(50, 0)).type("2").enter(),
     [lineOf(p(0, 0), p(100, 0), { id: "D1" })],

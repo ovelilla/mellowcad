@@ -2190,7 +2190,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity;
 
 export type { EntityColor }
 /**
@@ -2263,7 +2263,7 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3164,6 +3164,25 @@ export type ZProperty = "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ
 
 // domain/entityTypes.ts
 /**
+ * A 2D solid (DXF SOLID): SOLID's triangle or quadrilateral, its corners in
+ * the order picked (DXF 10–13), in the OCS of its normal at its elevation.
+ * Its outline runs 1, 2, 4, 3: the third corner is the one across from the
+ * second, so corners given round the outline cross into a bow tie, as
+ * AutoCAD draws it (solid2d/d02). A triangle's fourth corner is its third
+ * (Enter at the fourth point, solid2d/p01). What it fills follows FILLMODE.
+ */
+export interface Solid2dEntity extends BaseEntity, Thick {
+    readonly type: "solid2d";
+    readonly corners: readonly [
+        Vec2,
+        Vec2,
+        Vec2,
+        Vec2
+    ];
+}
+
+// domain/entityTypes.ts
+/**
  * A 3D polyline (3DPOLY; DXF POLYLINE flag 8): straight segments through
  * `vertices`, world points each at its own Z, so it need not lie in a plane.
  * The one object whose stored points carry their Z: it has no plane, so no
@@ -3730,7 +3749,8 @@ export interface RegionEntity extends BaseEntity {
 // domain/entityTypes.ts
 /**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
- * polylines" and points (point/p04) among the ones modelled here. Absent
+ * polylines", points (point/p04) and 2D solids (solid2d/p07) among the ones
+ * modelled here. Absent
  * means 0; negative extrudes down.
  */
 interface Thick {

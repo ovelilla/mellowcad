@@ -1,0 +1,32 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+2,1
+2,5
+6,1
+
+
+_SOLID
+20,0
+30,0
+30,6
+20,6
+
+_SOLID
+40,0
+40,0
+40,0
+40,0
+
+_ZOOM
+_E
+_REGION
+_ALL
+
+(princ (list (getvar "DELOBJ") (sslength (ssget "_X" (quote ((0 . "SOLID"))))) (sslength (ssget "_X" (quote ((0 . "REGION")))))))
+_LIST
+_L
+
+_UCS
+_OB
+2,3
+(princ (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR")))

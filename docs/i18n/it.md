@@ -115,6 +115,11 @@ SEZIONE (`SEZ`). `LAYER` and `PROPRIETA` keep `LA` and `PR`, as English.
   `Dividi`, `Misura` acad.cuix's (it-it); Node's -OSNAP word `NODo` and its name `Nodo` tables
   27408, 33203 and 73. The Points drop-down (`Punti`) and the dialog's accessible name of its
   images are ours †.
+- **SOLID:** the name by the console (`POLIG`, solid2d/p09) and the alias from the `acad.pgp`
+  (`PLG`); the prompts tables 20607–20610's, the console's (`Specificare primo punto` …
+  `Specificare quarto punto o <Esci>`, `Punto 2D errato.`); the object `Solido`, the Properties
+  palette's (desktop solid2d/d03), the tool `Solido 2D`, acad.cuix's ID_Solid; LIST's lines the
+  console's (`SOLIDO`, `da punto`, `e punto`, `a punto`, p21).
 
 ## Interface terms
 

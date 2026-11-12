@@ -1,0 +1,55 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_ZOOM
+_E
+_ZOOM
+0.5x
+_BREAK
+5,0
+6,0
+_FILLET
+5,0
+_CHAMFER
+5,0
+_LENGTHEN
+5,0
+_DIVIDE
+5,0
+_REGION
+_L
+
+_DIMRADIUS
+5,0
+_UCS
+_OB
+5,0
+_UCS
+_W
+_PEDIT
+5,0
+_LINE
+20,3
+30,3
+
+_EXTEND
+_O
+_S
+_B
+(ssname (ssget "_X" '((0 . "SOLID"))) 0)
+
+25,3
+
+(setvar "FILLMODE" 0)
+_REGEN
+(princ (list "crossing-inside fill0" (ssget "_C" '(4 2) '(6 4))))
+_-BOUNDARY
+5,3
+
+_LIST
+_L
+

@@ -262,6 +262,12 @@ clipboard, FROM's, `messages.erased`), the keys `research/console/fr.md` lists `
   points`), the ribbon's `Plusieurs points`, `Diviser`, `Mesurer` acad.cuix's (fr-fr); Node's
   -OSNAP word `NODal` and its name `Noeud` tables 27408 and 73, its short name `Nod` 33203. The
   Points drop-down (`Points`) and the dialog's accessible name of its images are ours †.
+- **SOLID:** the name by the console (`SOLIDE`, solid2d/p09) and the alias from the `acad.pgp`
+  (`SO`); the prompts tables 20607–20610's, the console's: `Spécifiez un premier point` (not
+  LINE's `le premier point`), `Spécifiez le second point`, `Spécifiez un troisième point`,
+  `Spécifiez un quatrième point ou <Quitter>`, `Point 2D incorrect.`; the object `Solide`, the
+  Properties palette's (desktop solid2d/d03), the tool `Solide 2D`, acad.cuix's ID_Solid; LIST's
+  lines the console's (`SOLIDE`, `de point`, `et point`, `à point`, p21).
 
 ## Script and font
 

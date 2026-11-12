@@ -58,6 +58,7 @@ export type {
   SolidSweep,
   Solid3dEntity,
   PointEntity,
+  Solid2dEntity,
   Entity,
   Bounds,
 } from "./entityTypes"
@@ -66,6 +67,14 @@ export { TEXT_JUSTIFICATIONS, MTEXT_ATTACHMENTS } from "./entityTypes"
 export type { HatchOptions, InsertOptions } from "./entityFactories"
 
 export { isPointMode, pointFigure, pointSize, withXAxisAngle } from "./points"
+export {
+  mapSolid2dCorners,
+  pointInsideSolid2d,
+  solid2dEdges,
+  solid2dOutline,
+  solid2dOutlinePolyline,
+  withSolid2dCorner,
+} from "./solids2d"
 export type { PointFigure } from "./points"
 export {
   MAX_DIVISIONS,
@@ -79,6 +88,7 @@ export {
   createLine,
   createCircle,
   createPoint,
+  createSolid2d,
   createArc,
   createPolyline,
   createPolyline3d,

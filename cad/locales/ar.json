@@ -130,7 +130,8 @@
       "point": "نقاط متعددة",
       "divide": "تقسيم",
       "measuresegments": "قياس",
-      "ptype": "نمط النقطة"
+      "ptype": "نمط النقطة",
+      "solid": "مجسم ثنائي الأبعاد"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -230,7 +231,8 @@
       "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}",
       "solid3d": "{count, plural, one {مجسم ثلاثي الأبعاد} two {مجسمان ثلاثيا الأبعاد} other {مجسمات ثلاثية الأبعاد}}",
       "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}",
-      "point": "{count, plural, one {نقطة} two {نقطتان} other {نقاط}}"
+      "point": "{count, plural, one {نقطة} two {نقطتان} other {نقاط}}",
+      "solid2d": "{count, plural, one {مجسم ثنائي الأبعاد} two {مجسمان ثنائيا الأبعاد} other {مجسمات ثنائية الأبعاد}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",

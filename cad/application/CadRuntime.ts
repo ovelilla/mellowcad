@@ -13,6 +13,7 @@ import {
   entityPointToWorld,
   isPointMode,
   splineDataPoints,
+  solid2dOutlinePolyline,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import { Solid3dEntity } from "../domain/entityTypes"
@@ -4780,7 +4781,7 @@ export class CadRuntime extends Observable {
   ): Entity[] {
     const { document, viewport } = this.frame
     const blocks = document.blockLookup()
-    const { isolines } = document.getSettings()
+    const { isolines, fillMode } = document.getSettings()
     const screen = viewport.worldToScreen(
       "z" in world ? world : withZ(world, this.workPlaneZ())
     )
@@ -4788,6 +4789,13 @@ export class CadRuntime extends Observable {
       screen,
       viewport.worldToScreenDistance(worldTolerance)
     )
+    // A 2D solid is found by its edges alone where it is drawn as its
+    // outline: with FILLMODE off (solid2d/p10), off the plan, or tilted.
+    const seen = (entity: Entity): Entity =>
+      entity.type === "solid2d" &&
+      (!fillMode || !viewport.isPlan || entity.normal)
+        ? solid2dOutlinePolyline(entity)
+        : entity
     if (viewport.isPlan) {
       const perUnit = viewport.worldToScreenDistance(1)
       return document.pickAllBy(
@@ -4795,7 +4803,13 @@ export class CadRuntime extends Observable {
           const pixels = shaded?.(entity)
           return pixels !== undefined
             ? pixels / perUnit
-            : planDistanceToEntity(viewport, entity, world, blocks, isolines)
+            : planDistanceToEntity(
+                viewport,
+                seen(entity),
+                world,
+                blocks,
+                isolines
+              )
         },
         worldTolerance,
         locked
@@ -4804,7 +4818,13 @@ export class CadRuntime extends Observable {
     return document.pickAllBy(
       (entity) =>
         shaded?.(entity) ??
-        screenDistanceToEntity(viewport, entity, screen, blocks, isolines),
+        screenDistanceToEntity(
+          viewport,
+          seen(entity),
+          screen,
+          blocks,
+          isolines
+        ),
       viewport.worldToScreenDistance(worldTolerance),
       locked
     )
@@ -5277,7 +5297,9 @@ export class CadRuntime extends Observable {
         ? entity.vertices.length
         : entity?.type === "spline"
           ? splineDataPoints(entity).length
-          : 0
+          : entity?.type === "solid2d"
+            ? entity.corners.length
+            : 0
     if (value === null) return false
     const index = Math.round(value) - 1
     if (index < 0 || index >= count) return false

@@ -1,0 +1,33 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_SOLID
+0,0
+10,0
+0,6
+10,6
+
+_ZOOM
+_E
+(setq s (entlast))
+(princ (list "END" (osnap '(0.3 0.2) "_end") (osnap '(9.8 5.9) "_end")))
+(princ (list "MID" (osnap '(5 0.1) "_mid") (osnap '(0.1 3) "_mid") (osnap '(5 3) "_mid")))
+(princ (list "INT" (osnap '(0.1 0.1) "_int") (osnap '(5 3) "_int")))
+(princ (list "NEA" (osnap '(5 0.3) "_nea") (osnap '(5 3) "_nea")))
+(princ (list "PER" (osnap '(5 0.3) "_per")))
+(princ (list "CEN" (osnap '(5 0.3) "_cen") "GCEN" (osnap '(5 0.3) "_gcen")))
+(princ (list "NOD" (osnap '(0.1 0.1) "_nod") "QUA" (osnap '(0.1 0.1) "_qua")))
+_LIST
+_L
+
+_AREA
+_O
+_L
+(princ (list (getvar "AREA") (getvar "PERIMETER")))
+_EXPLODE
+_L
+
+(princ (list "after explode" (cdr (assoc 0 (entget (entlast))))))
+_OFFSET
+1
+_L
+20,20
+

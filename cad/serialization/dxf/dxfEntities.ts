@@ -28,6 +28,7 @@ import {
   createAttributeDefinition,
   createCircle,
   createPoint,
+  createSolid2d,
   PointEntity,
   withXAxisAngle,
   createDimension,
@@ -113,6 +114,8 @@ export function dxfEntities(
       return made(circle(record, ctx))
     case "POINT":
       return made(pointObject(record, ctx))
+    case "SOLID":
+      return made(solid(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -215,7 +218,10 @@ function onPlane<T extends Entity>(
 }
 
 function thick<
-  T extends Extract<Entity, { type: "line" | "circle" | "arc" | "polyline" }>,
+  T extends Extract<
+    Entity,
+    { type: "line" | "circle" | "arc" | "polyline" | "solid2d" }
+  >,
 >(entity: T, record: DxfRecord): T {
   const thickness = num(record, 39)
   return thickness ? withThickness(entity, thickness) : entity
@@ -248,6 +254,26 @@ function circle(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   if (!center || !(radius !== undefined && radius > 0)) return null
   return common(
     onPlane(thick(createCircle(center, radius), r), r, center.z),
+    r,
+    ctx
+  )
+}
+
+/**
+ * A 2D solid's corners are in the OCS of its 210, at the elevation of the
+ * first one's Z, as AutoCAD writes them (solid2d/p01, p08; the fixtures'
+ * arrowheads). A fourth left out is the third, a triangle's. A TRACE, its
+ * twin of the same groups, is left out and counted: AutoCAD 2027's TRACE is
+ * the markup feature, and none of the corpus' files has one (solid2d/p04).
+ */
+function solid(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const a = point(r, 10)
+  const b = point(r, 11)
+  const c = point(r, 12)
+  if (!a || !b || !c) return null
+  const d = point(r, 13) ?? c
+  return common(
+    onPlane(thick(createSolid2d([planar(a), b, c, d]), r), r, a.z),
     r,
     ctx
   )

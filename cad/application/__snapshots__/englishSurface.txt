@@ -3,6 +3,7 @@ LINE ["L"] "Line"
 PLINE ["PL"] "Polyline"
 3DPOLY ["3P"] "3D Polyline"
 POINT ["PO"] "Multiple Points"
+SOLID ["SO"] "2D Solid"
 DIVIDE ["DIV"] "Divide"
 MEASURE ["ME"] "Measure"
 PTYPE ["DDPTYPE"] "Point Style"
@@ -171,6 +172,7 @@ splinefit "Spline Fit" -
 splinecv "Spline CV" -
 polyline3d "3D Polyline" 3P
 point "Multiple Points" PO
+solid "2D Solid" SO
 divide "Divide" DIV
 measuresegments "Measure" ME
 rectangle "Rectangle" REC
@@ -7997,6 +7999,64 @@ Specify next point or
   command| PDSIZE
   prompt| Enter new value for PDSIZE <0.00>: -5
   info| Regenerating model.
+
+## SOLID
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SOLID
+  prompt: SOLID Specify first point:
+  asks: "Specify first point"
+  tip: Specify first point:
+  dyn: "X,Y"=""||*
+  command| SO SOLID
+> first
+  prompt: SOLID Specify second point:
+  asks: "Specify second point"
+  tip: Specify second point:
+  prompt| Specify first point: 0,0
+> Enter refused
+  prompt| Specify second point:
+  error| Invalid 2D point.
+> second
+  prompt: SOLID Specify third point:
+  asks: "Specify third point"
+  tip: Specify third point:
+  prompt| Specify second point: 10,0
+> third
+  prompt: SOLID Specify fourth point or <exit>:
+  asks: "Specify fourth point or"
+  tip: Specify fourth point or
+  prompt| Specify third point: 0,5
+> fourth
+  prompt: SOLID Specify third point:
+  asks: "Specify third point"
+  tip: Specify third point:
+  prompt| Specify fourth point or <exit>: 10,5
+> third again
+  prompt: SOLID Specify fourth point or <exit>:
+  asks: "Specify fourth point or"
+  tip: Specify fourth point or
+  prompt| Specify third point: 20,0
+> triangle
+  prompt: SOLID Specify third point:
+  asks: "Specify third point"
+  tip: Specify third point:
+  prompt| Specify fourth point or <exit>:
+> exit
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify third point:
+> pick
+  properties: Solid (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
 
 ## DIVIDE
 > start

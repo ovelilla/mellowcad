@@ -3,7 +3,7 @@ title: Aprire un file DXF online
 metaTitle: "Aprire file DXF online: visualizzatore gratis"
 description: "Apri gratis un file DXF nel browser, senza caricarlo: AutoCAD da R12 al 2018, testo o binario, con layer, testi, quote, tratteggi e blocchi."
 type: howTo
-sourceHash: "747ac1216813"
+sourceHash: "9e0d6e766f41"
 faq:
   - question: "Come aprire un file DXF senza AutoCAD?"
     answer: "Sceglilo o trascinalo in cima a questa pagina: MellowCAD lo apre nel suo editor, nel tuo browser, senza installare nulla e senza account. Nell'editor, APRI (Ctrl+O) e DXFIN ne aprono uno."
@@ -24,7 +24,7 @@ MellowCAD apre i file DXF nel tuo browser e li disegna nel suo editor, dove puoi
 ## Che cosa si apre [#opens]
 
 - **DXF da AutoCAD R12 al 2018**, il formato DXF più recente che AutoCAD scrive, in testo (ASCII) o binario, creato da AutoCAD o da un altro programma. Il testo conserva i suoi caratteri: fino al 2004 nella tabella codici indicata dal file, dal 2007 in UTF-8.
-- **Linee, archi, cerchi, ellissi e polilinee**, con le loro larghezze e le loro forme adattate a curva o a spline, polilinee 3D e spline, e i punti, disegnati con lo [stile punto](/docs/commands/ptype) del disegno.
+- **Linee, archi, cerchi, ellissi e polilinee**, con le loro larghezze e le loro forme adattate a curva o a spline, polilinee 3D e spline, e i punti, disegnati con lo [stile punto](/docs/commands/ptype) del disegno, e i solidi 2D, riempiti come dice FILLMODE.
 - **Testo su una riga e testo multilinea**, blocchi con i loro attributi, quote lineari, allineate, angolari, di raggio e di diametro, e tratteggi.
 - **Il layer di ogni oggetto**, il colore, il tipo di linea, lo spessore di linea, l'altezza e l'elevazione, e i layer attivi, disattivati o bloccati; un layer congelato si apre disattivato.
 - **Gli stili di testo e di quota del disegno**, e le sue unità quando sono millimetri, centimetri o metri.
@@ -33,7 +33,7 @@ MellowCAD apre i file DXF nel tuo browser e li disegna nel suo editor, dove puoi
 
 Quando un DXF contiene qualcosa per cui MellowCAD non ha ancora un oggetto, apre il resto e dice nella riga di comando quanti oggetti di ogni tipo ha lasciato fuori. Oggi sono:
 
-- solidi 2D e tracce, facce 3D e mesh;
+- tracce, facce 3D e mesh;
 - linee di costruzione e semirette, multilinee;
 - direttrici, direttrici multiple e tolleranze, tabelle, wipeout e immagini;
 - riferimenti esterni;

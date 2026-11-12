@@ -101,6 +101,7 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "dimension":
     case "insert":
     case "point":
+    case "solid2d":
       return null
     default: {
       const unhandled: never = entity
