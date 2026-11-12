@@ -4,7 +4,8 @@ import { describe, expect, it } from "vitest"
 import { verdict } from "../.claude/hooks/bash-guard.mjs"
 
 // The PreToolUse hook on Bash (.claude/hooks/bash-guard.mjs): the commit gate
-// is never skipped, and every form of push asks first.
+// is never skipped, and a push goes through without a dialog (owner,
+// 12/11/2026: AGENTS.md holds the push to the owner's word).
 const HOOK = path.resolve(
   import.meta.dirname,
   "../.claude/hooks/bash-guard.mjs"
@@ -41,15 +42,8 @@ describe("the Bash guard", () => {
     "git push origin main",
     "git -C . push origin main",
     "npm test && git push",
-    "git -c push.default=current push",
+    "bash -c 'git push'",
     "git commit -F - <<'EOF'\nfix: don't\nEOF\ngit push",
-    "echo `git push`",
-    "echo $(git push)",
-  ])("asks before %s", (command) => {
-    expect(decision(command)).toBe("ask")
-  })
-
-  it.each([
     "git commit -m 'no -n here'",
     "git commit -q -F - <<'EOF'\nfix: the -n flag of LIST\nEOF",
     "git commit --no-edit --amend",

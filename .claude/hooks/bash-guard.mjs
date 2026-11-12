@@ -1,8 +1,9 @@
 // PreToolUse hook on Bash: what AGENTS.md says no command may do, held where
-// a permission rule cannot. `Bash(git push *)` misses `git -C . push`, and no
-// rule sees `-n` inside `git commit -anm`. Refuses skipping the commit gate
-// (each session commits from its own worktree, where the gate tests exactly
-// what is committed) and asks before any push (a push to main deploys).
+// a permission rule cannot (no rule sees `-n` inside `git commit -anm`).
+// Refuses skipping the commit gate: each session commits from its own
+// worktree, where the gate tests exactly what is committed. A push is not
+// asked here (owner, 12/11/2026): AGENTS.md holds it to the owner's word, and
+// a dialog on every push only slowed the tasks that already carry that word.
 // A guard against slips, not against a determined author: `eval` or a
 // script file still get past it.
 import { readFileSync } from "node:fs"
@@ -145,20 +146,12 @@ const DENY = {
   reason:
     "The commit gate is never skipped (AGENTS.md): run it in your own worktree, where it tests exactly what you commit, and fix what it reports.",
 }
-const ASK = {
-  decision: "ask",
-  reason:
-    "A push to main deploys to production: it waits for the owner's word (AGENTS.md).",
-}
-
 export function verdict(line) {
-  let ask = null
   for (const words of simpleCommands(line)) {
     // A shell given a script runs it: read the script too.
     if (/(^|\/)(ba|z|da)?sh$/.test(words[0]) && words[1] === "-c") {
       const inner = verdict(words[2] ?? "")
-      if (inner?.decision === "deny") return inner
-      ask ??= inner
+      if (inner) return inner
       continue
     }
     const git = gitCall(words)
@@ -177,9 +170,8 @@ export function verdict(line) {
       if (skipsHooks(git.args)) return DENY
       if (git.options.some(hooksPath) || git.env.some(hooksPath)) return DENY
     }
-    if (git.subcommand === "push") ask = ASK
   }
-  return ask
+  return null
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

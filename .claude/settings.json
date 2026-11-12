@@ -3,7 +3,6 @@
   "autoMemoryEnabled": false,
   "attribution": { "commit": "", "pr": "", "sessionUrl": false },
   "permissions": {
-    "ask": ["Bash(git push *)", "Bash(git push)"],
     "deny": ["Read(./.env.local)"]
   },
   "enabledMcpjsonServers": ["autodesk-help", "next-devtools"],
