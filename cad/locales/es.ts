@@ -145,6 +145,7 @@ export const es: EngineLocale = {
       "SAVE": "Guardar el dibujo en un archivo",
       "OPEN": "Abrir un archivo de dibujo",
       "DXFIN": "Abrir un archivo DXF",
+      "DXFOUT": "Guardar el dibujo como archivo DXF",
       "PASTECLIP": "Pegar el portapapeles en el dibujo",
       "DIMSTYLE": "Crear y modificar estilos de cota",
       "STYLE": "Crear y modificar estilos de texto",
@@ -1012,6 +1013,9 @@ export const es: EngineLocale = {
       ],
       "DXFIN": [
         "CARGADXF"
+      ],
+      "DXFOUT": [
+        "SALVADXF"
       ],
       "PASTECLIP": [
         "PEGAPP"
@@ -3358,6 +3362,7 @@ export const es: EngineLocale = {
       "saveUnavailable": "Guardar en un archivo no está disponible aquí.",
       "openUnavailable": "Abrir un archivo no está disponible aquí.",
       "openFailed": "No se ha podido abrir el archivo.",
+      "saveFailed": "No se ha podido guardar el archivo.",
       "dxfHeaderError": [
         "Error en el encabezamiento del dibujo en línea ",
         [
@@ -3391,6 +3396,28 @@ export const es: EngineLocale = {
             "other": [
               0,
               " objetos no abiertos"
+            ]
+          }
+        ],
+        ": ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfLowPrecision": "Advertencia:  Ha especificado una precisión inferior para el archivo DXF, que puede dar como resultado la pérdida de precisión en el dibujo.",
+      "dxfNotSaved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto no guardado"
+            ],
+            "other": [
+              0,
+              " objetos no guardados"
             ]
           }
         ],

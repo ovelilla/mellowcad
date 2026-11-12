@@ -9,6 +9,9 @@ import {
   DRAWING_FILE_MIME_TYPE,
 } from "../serialization/drawingFile"
 
+/** A DXF's registered media type (IANA's `image/vnd.dxf`). */
+const DXF_MIME_TYPE = "image/vnd.dxf"
+
 /** What the picker offers for each kind of file the engine opens. */
 const ACCEPT: Readonly<Record<FileKind, string>> = {
   drawing: DRAWING_FILE_ACCEPT,
@@ -28,12 +31,15 @@ export function createBrowserFileTransport(
   if (!ownerDocument) return null
 
   return {
-    save(text: string, fileName: string): void {
-      // A drawing is JSON; anything else written (MASSPROP's .mpr) is text.
+    save(content: string | Uint8Array, fileName: string): void {
+      // A drawing is JSON, a DXF its own type; anything else written
+      // (MASSPROP's .mpr) is text.
       const type = fileName.endsWith(".json")
         ? DRAWING_FILE_MIME_TYPE
-        : "text/plain"
-      const blob = new Blob([text], { type })
+        : /\.dxf$/i.test(fileName)
+          ? DXF_MIME_TYPE
+          : "text/plain"
+      const blob = new Blob([content as BlobPart], { type })
       const url = URL.createObjectURL(blob)
       const anchor = ownerDocument.createElement("a")
       anchor.href = url

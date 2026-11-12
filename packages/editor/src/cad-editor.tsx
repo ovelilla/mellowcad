@@ -31,6 +31,7 @@ import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
 import { StatusBar, type StatusBarProps } from "./status-bar"
 import { UnitsDialog } from "./units-dialog"
+import { SaveAsDialog } from "./save-as-dialog"
 import { LockedObjectsDialog } from "./locked-objects-dialog"
 import { UnsavedTextDialog } from "./unsaved-text-dialog"
 import { DynamicInput } from "./dynamic-input"
@@ -313,6 +314,7 @@ function Workspace({
               <SnapOverrideMenu engine={engine} state={state} />
               <SelectionCyclingList engine={engine} state={state} />
               <UnitsDialog engine={engine} state={state} />
+              <SaveAsDialog engine={engine} state={state} />
               <LockedObjectsDialog engine={engine} state={state} />
               <UnsavedTextDialog engine={engine} state={state} />
             </>

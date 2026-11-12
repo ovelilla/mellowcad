@@ -1,0 +1,5 @@
+(command "_.LINE" "0,0" "10,0" "")
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x018.dxf
+_B
+(getvar "DWGNAME")

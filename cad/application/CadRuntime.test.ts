@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
 import type { PropertyRow } from "./EngineState"
+import { DEFAULT_DXF_SETTINGS } from "./runtimeFiles"
 import {
   createMText,
   entityElevation,
@@ -1389,6 +1390,13 @@ describe("file save and open", () => {
       }
       return cad.commandLog().slice(from)
     }
+    // SAVEAS and SAVE save from their Save Drawing As dialog (desktop dxf/d01).
+    const savedFromDialog = (cad: CadHarness) =>
+      cad.runtime.saveAs({
+        fileName: "plan",
+        fileType: "drawing",
+        dxf: DEFAULT_DXF_SETTINGS,
+      })
     const withLine = (locale?: typeof es) => {
       const files = new MemoryFileTransport()
       const cad = createHarness({ locale, files })
@@ -1405,27 +1413,30 @@ describe("file save and open", () => {
       expect(cad.entityCount).toBe(1)
     })
 
-    // clipboard/p205
-    it("U after SAVEAS names it", () => {
+    // clipboard/p205; desktop dxf/d01: saved from its dialog
+    it("U after SAVEAS names it", async () => {
       const { cad } = withLine()
       written(cad, "_SAVEAS")
+      await savedFromDialog(cad)
       expect(written(cad, "_U").at(-1)).toBe("SAVEAS Regenerating model.")
       expect(cad.entityCount).toBe(1)
     })
 
     // clipboard/p202, p214: SAVE is a command of its own
-    it("SAVE echoes itself, saves, and U names it", () => {
+    it("SAVE echoes itself, saves, and U names it", async () => {
       const { cad, files } = withLine()
       expect(written(cad, "SAVE")).toEqual(["SAVE"])
+      await savedFromDialog(cad)
       expect(files.saved).toHaveLength(1)
       expect(written(cad, "_U").at(-1)).toBe("SAVE Regenerating model.")
       expect(cad.entityCount).toBe(1)
     })
 
     // clipboard/p204, p214 es-ES: GUARDARR is QSAVE, GUARDAR is SAVE
-    it("in Spanish, GUARDAR and GUARDARR each name their step", () => {
+    it("in Spanish, GUARDAR and GUARDARR each name their step", async () => {
       const { cad, files } = withLine(es)
       expect(written(cad, "GUARDAR")).toEqual(["GUARDAR"])
+      await savedFromDialog(cad)
       expect(files.saved).toHaveLength(1)
       expect(written(cad, "_U").at(-1)).toBe("GUARDAR Regenerando modelo.")
       written(cad, "GUARDARR")
@@ -1436,19 +1447,22 @@ describe("file save and open", () => {
 
     // acad.pgp `OPENURL, *OPEN`, `SAVEURL, *SAVE`; clipboard/p212 echoes the
     // expansion, written here on the echo's line as every alias's
-    it("SAVEURL runs SAVE and OPENURL runs OPEN", () => {
+    it("SAVEURL runs SAVE and OPENURL runs OPEN", async () => {
       const files = new MemoryFileTransport()
       const cad = createHarness({ files })
       expect(written(cad, "SAVEURL")).toEqual(["SAVEURL SAVE"])
+      await savedFromDialog(cad)
       written(cad, "OPENURL")
       expect(files.saved).toHaveLength(1)
       expect(files.openCalls).toBe(1)
     })
 
-    it("in Spanish, GUARDARURL and ABREURL", () => {
+    it("in Spanish, GUARDARURL and ABREURL", async () => {
       const files = new MemoryFileTransport()
       const cad = createHarness({ locale: es, files })
-      written(cad, "GUARDARURL", "ABREURL")
+      written(cad, "GUARDARURL")
+      await savedFromDialog(cad)
+      written(cad, "ABREURL")
       expect(files.saved).toHaveLength(1)
       expect(files.openCalls).toBe(1)
     })
@@ -1508,7 +1522,7 @@ describe("file save and open", () => {
     // the application menu's `_NEW`, `_OPEN`, `_QSave`, `_SAVEAS` — in a menu
     // group (a save made `QSAVE GROUP Regenerating model.`), OPEN's drawing
     // starting a history of its own.
-    it("the QAT's and application menu's file buttons run as their macros (d08)", () => {
+    it("the QAT's and application menu's file buttons run as their macros (d08)", async () => {
       for (const [bar, button, echo, undone] of [
         ["quickAccess", "new", "_qnew", "QNEW GROUP"],
         ["quickAccess", "open", "_open", null],
@@ -1545,6 +1559,7 @@ describe("file save and open", () => {
           expect(files.openCalls).toBe(1)
           continue
         }
+        if (button === "saveAs") await savedFromDialog(cad)
         expect(written(cad, "_U")).toEqual(["U", undone])
         expect(cad.entityCount).toBe(1)
       }

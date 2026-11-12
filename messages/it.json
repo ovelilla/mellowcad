@@ -143,7 +143,7 @@
     "fileBody": "Ctrl+S salva il disegno in un file nel formato versionato di MellowCAD. Ctrl+O lo riapre, su qualsiasi computer, e <dxf>apre anche i file DXF</dxf>.",
     "privateTitle": "Nessun invio",
     "privateBody": "I tuoi disegni non vengono mai inviati da nessuna parte. Le statistiche contano le pagine viste, senza cookie.",
-    "formats": "DXF: si apre, non si salva ancora. DWG: non ancora. I disegni si salvano nel formato versionato di MellowCAD.",
+    "formats": "DXF: si apre e si salva. DWG: non ancora. I disegni si salvano nel formato versionato di MellowCAD.",
     "warning": "Cancellare i dati di questo sito cancella anche il salvataggio automatico. Premi Ctrl+S per tenere un file.",
     "diagramAlt": "Dentro il tuo dispositivo, l'editor salva in automatico nel browser, e salva e apre un file; nulla esce dal dispositivo.",
     "diagramEditor": "EDITOR",
@@ -165,7 +165,7 @@
     "makersTitle": "Appassionati",
     "makersBody": "Disegna una staffa o una piastra in scala, o modellala come solido, gratis.",
     "practice": "Studenti e docenti: <link>esercizi AutoCAD</link>, dalla prima guarnizione ai solidi 3D, ciascuno risolto passo passo e aperto nell'editor con il suo disegno.",
-    "notFor": "Non ancora per salvare in DXF o scambiare file DWG, né per stampare tavole su carta o PDF."
+    "notFor": "Non ancora per scambiare file DWG, né per stampare tavole su carta o PDF."
   },
   "Status": {
     "label": "06 · Stato",
@@ -176,10 +176,10 @@
     "today2": "{snaps, number} snap ad oggetto, puntamento snap ad oggetto, puntamento polare e Orto",
     "today3": "Layer, tipi di linea, {lineweights, number} spessori di linea e colori",
     "today4": "Quote, testo, tratteggi e blocchi con attributi",
-    "today5": "Salvataggio automatico, salva e apri, apertura di file DXF e Appunti",
+    "today5": "Salvataggio automatico, salva e apri, apertura e salvataggio di file DXF e Appunti",
     "today6": "Solidi 3D, ancora parziali: primitive, estrusioni e rivoluzioni, booleane, trance e sezioni, e viste ombreggiate",
     "notYetTitle": "Non ancora",
-    "notYet1": "File DWG, e salvataggio in DXF",
+    "notYet1": "File DWG",
     "notYet2": "Stampa e PDF",
     "notYet3": "Layout e spazio carta",
     "notYet4": "Sweep, loft, mesh e rendering in 3D",
@@ -201,7 +201,7 @@
     "q4": "Funziona davvero come AutoCAD?",
     "a4": "È la specifica: comandi, alias, ordine delle richieste, lettere d'opzione e valori predefiniti seguono l'AutoCAD attuale. Alcuni comandi sono ancora parziali, e la roadmap elenca esattamente quali opzioni mancano.",
     "q5": "Posso aprire o salvare file DWG o DXF, o stampare?",
-    "a5": "MellowCAD <dxf>apre i file DXF</dxf>, da AutoCAD R12 al 2018, testo o binari: linee, archi, cerchi, ellissi, polilinee, spline, testi, quote, tratteggi e blocchi, sui loro layer. Ciò per cui non ha ancora un oggetto — punti, direttrici, tabelle, layout, solidi 3D — viene lasciato fuori ed elencato all'apertura del file. Il salvataggio in DXF e i file DWG non ci sono ancora, e non ci sono ancora stampa né esportazione in PDF.",
+    "a5": "MellowCAD <dxf>apre i file DXF</dxf>, da AutoCAD R12 al 2018, testo o binari: linee, archi, cerchi, ellissi, polilinee, spline, testi, quote, tratteggi e blocchi, sui loro layer. Ciò per cui non ha ancora un oggetto — punti, direttrici, tabelle, layout, solidi 3D — viene lasciato fuori ed elencato all'apertura del file. Salva anche in DXF, da AutoCAD 2000 al 2018. I file DWG non ci sono ancora, e non ci sono ancora stampa né esportazione in PDF.",
     "q6": "Dove vengono conservati i miei disegni?",
     "a6": "Sul tuo dispositivo. MellowCAD salva in automatico nel browser e non invia mai i tuoi disegni. Cancellare i dati del sito elimina il salvataggio automatico, quindi premi Ctrl+S per tenere un file.",
     "q7": "MellowCAD è affiliato ad Autodesk?",
@@ -336,7 +336,7 @@
           },
           "online": {
             "question": "Posso esercitarmi con AutoCAD online gratis?",
-            "answer": "Sì. MellowCAD gira nel browser, gratis e senza account: digiti i comandi e gli alias di AutoCAD, con i nomi della tua lingua, e rispondi alle loro richieste nello stesso ordine, con le stesse lettere d'opzione. Non è AutoCAD: apre i file DXF ma non può ancora salvarli né aprire DWG, e i suoi solidi 3D sono ancora parziali."
+            "answer": "Sì. MellowCAD gira nel browser, gratis e senza account: digiti i comandi e gli alias di AutoCAD, con i nomi della tua lingua, e rispondi alle loro richieste nello stesso ordine, con le stesse lettere d'opzione. Non è AutoCAD: apre e salva i file DXF, ma non ancora i DWG, e i suoi solidi 3D sono ancora parziali."
           },
           "solutions": {
             "question": "Gli esercizi hanno le soluzioni?",

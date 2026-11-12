@@ -1,0 +1,14 @@
+(command "_.LINE" "0,0" "123.456789012345,0.001234567890123" "")
+(command "_.CIRCLE" (list (/ 1.0 3) (/ 2.0 3)) (/ 10.0 3))
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x015-p3.dxf
+3
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x015-p0.dxf
+0
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x015-p8.dxf
+8
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x015-p16.dxf
+16

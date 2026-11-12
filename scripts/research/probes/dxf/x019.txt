@@ -1,0 +1,12 @@
+(command "_.LINE" "0,0" "10,0" "")
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x019.dxf
+17
+-1
+FOO
+_V
+_2010
+6
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x019b.dxf
+

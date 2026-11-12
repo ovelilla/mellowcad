@@ -49,3 +49,29 @@ export function trueColor(value: number): EntityColor | null {
   if (!Number.isInteger(value) || value < 0) return null
   return `#${(value & 0xffffff).toString(16).padStart(6, "0")}`
 }
+
+/**
+ * The index colour a true colour is written as: the index whose RGB it is
+ * (`exact`, the lowest one, so white is 7, not 255), else the nearest, which
+ * AutoCAD writes beside the true colour (420) for programs that read only 62.
+ */
+export function aciIndex(rgb: number): { index: number; exact: boolean } {
+  const r = (rgb >> 16) & 0xff
+  const g = (rgb >> 8) & 0xff
+  const b = rgb & 0xff
+  let index = 7
+  let nearest = Infinity
+  for (let i = 1; i <= 255; i++) {
+    const v = Number.parseInt(ACI_RGB.slice((i - 1) * 6, i * 6), 16)
+    if (v === rgb) return { index: i, exact: true }
+    const d =
+      (((v >> 16) & 0xff) - r) ** 2 +
+      (((v >> 8) & 0xff) - g) ** 2 +
+      ((v & 0xff) - b) ** 2
+    if (d < nearest) {
+      nearest = d
+      index = i
+    }
+  }
+  return { index, exact: false }
+}

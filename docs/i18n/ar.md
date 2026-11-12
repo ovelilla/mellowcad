@@ -54,6 +54,7 @@ marks a choice between competing terms that a native review should settle first 
 | Drawing units | Drawing Units; Length, Type, Precision, Decimal; Insertion scale; Sample output | وحدات الرسم؛ الطول، النوع، الدقة، عشري؛ مقياس الإدراج؛ نموذج للإخراج (L) |
 |  | Millimeters, Centimeters, Meters | مليمترات، سنتيمترات، أمتار (M) |
 |  | OK, Cancel | موافق، إلغاء (M) |
+| Save Drawing As | Save Drawing As; File name, Files of type; Tools, Options…; Saveas Options, DXF Options, Format, BINARY, Select objects, Save thumbnail preview image, Decimal places of accuracy (0 to 16) | حفظ الرسم باسم؛ اسم الملف، نوع الملف؛ أدوات، خيارات…؛ خيارات الحفظ باسم، خيارات ⁨DXF⁩، التنسيق، ثنائي، تحديد الكائنات، حفظ صورة معاينة مصغّرة، عدد المنازل العشرية للدقة (L) |
 | Ribbon | Home; Draw, Modify, Annotation panels; the ribbon | الرئيسية؛ الرسم، التعديل، التعليقات التوضيحية؛ الشريط (C) |
 | Draw | Line, Polyline, Circle, Arc, Ellipse, Elliptical arc | خط، خط متعدد، دائرة، قوس، قطع ناقص، قوس قطع ناقص (M) † |
 |  | Center, Radius · Center, Diameter · 2-Point · 3-Point | دائرة بالمركز ونصف القطر · بالقطر · بنقطتين · بثلاث نقاط (M) |

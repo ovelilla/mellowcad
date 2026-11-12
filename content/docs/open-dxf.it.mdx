@@ -3,7 +3,7 @@ title: Aprire un file DXF online
 metaTitle: "Aprire file DXF online: visualizzatore gratis"
 description: "Apri gratis un file DXF nel browser, senza caricarlo: AutoCAD da R12 al 2018, testo o binario, con layer, testi, quote, tratteggi e blocchi."
 type: howTo
-sourceHash: "4f4ae829f9cf"
+sourceHash: "369c803bd85d"
 faq:
   - question: "Come aprire un file DXF senza AutoCAD?"
     answer: "Sceglilo o trascinalo in cima a questa pagina: MellowCAD lo apre nel suo editor, nel tuo browser, senza installare nulla e senza account. Nell'editor, APRI (Ctrl+O) e DXFIN ne aprono uno."
@@ -12,7 +12,7 @@ faq:
   - question: "Posso aprire un file DWG?"
     answer: "Non ancora. Salvalo come DXF nel programma che lo ha creato (in AutoCAD, SALVACOME con un tipo di file DXF) e apri quello."
   - question: "Posso salvare le mie modifiche come file DXF?"
-    answer: "Non ancora. Ctrl+S salva il disegno come file nel formato versionato di MellowCAD, che qui si riapre."
+    answer: "Sì. SALVACOME (Ctrl+Maiusc+S) o DXFOUT salva il disegno come DXF di AutoCAD dal 2000 al 2018, testo o binario, che AutoCAD apre. I solidi 3D e le regioni vengono lasciati fuori, e la riga di comando lo segnala."
   - question: "Perché mancano alcuni oggetti?"
     answer: "Ciò per cui MellowCAD non ha ancora un oggetto, come punti, direttrici, tabelle o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout."
 ---
@@ -56,7 +56,7 @@ Nell'editor, un DXF si apre come un disegno: <Command id="OPEN" /> (`Ctrl+O`) of
 
 ## Modificalo e conservalo [#keep]
 
-Una volta aperto, un DXF è un disegno come un altro: misuralo con <Command id="DIST" /> e <Command id="AREA" />, modificalo con <Command id="MOVE" />, <Command id="TRIM" /> o <Command id="OFFSET" />, e disegnaci sopra. Viene conservato in questo browser mentre lavori, e `Ctrl+S` lo salva come file nel formato versionato di MellowCAD. Il salvataggio come DXF non c'è ancora, e nemmeno i file DWG.
+Una volta aperto, un DXF è un disegno come un altro: misuralo con <Command id="DIST" /> e <Command id="AREA" />, modificalo con <Command id="MOVE" />, <Command id="TRIM" /> o <Command id="OFFSET" />, e disegnaci sopra. Viene conservato in questo browser mentre lavori, e `Ctrl+S` lo salva come file nel formato versionato di MellowCAD. <Command id="SAVEAS" /> (`Ctrl+Maiusc+S`) e <Command id="DXFOUT" /> lo risalvano come DXF, come la finestra Salva con nome di AutoCAD: AutoCAD dal 2000 al 2018, testo o binario, con le posizioni decimali e Seleziona oggetti delle sue Opzioni DXF. Ciò che MellowCAD non sa ancora scrivere, i solidi 3D e le regioni, viene lasciato fuori ed elencato nella riga di comando. I file DWG non ci sono ancora.
 
 ## Domande [#questions]
 
@@ -74,7 +74,7 @@ Non ancora. Salvalo come DXF nel programma che lo ha creato (in AutoCAD, <Comman
 
 ### Posso salvare le mie modifiche come file DXF? [#save-dxf]
 
-Non ancora. `Ctrl+S` salva il disegno come file nel formato versionato di MellowCAD, che qui si riapre.
+Sì. <Command id="SAVEAS" /> (`Ctrl+Maiusc+S`) o <Command id="DXFOUT" /> salva il disegno come DXF di AutoCAD dal 2000 al 2018, testo o binario, che AutoCAD apre. I solidi 3D e le regioni vengono lasciati fuori, e la riga di comando lo segnala.
 
 ### Perché mancano alcuni oggetti? [#missing]
 

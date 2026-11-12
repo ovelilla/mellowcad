@@ -145,6 +145,7 @@ export const fr: EngineLocale = {
       "SAVE": "Enregistre le dessin dans un fichier",
       "OPEN": "Ouvre un fichier de dessin",
       "DXFIN": "Ouvre un fichier DXF",
+      "DXFOUT": "Enregistre le dessin dans un fichier DXF",
       "PASTECLIP": "Colle le contenu du Presse-papiers dans le dessin",
       "DIMSTYLE": "Crée et modifie des styles de cote",
       "STYLE": "Crée et modifie des styles de texte",
@@ -1004,8 +1005,7 @@ export const fr: EngineLocale = {
         "SAUVERAP"
       ],
       "SAVEAS": [
-        "SAUVENOM",
-        "SAUVEDXF"
+        "SAUVENOM"
       ],
       "SAVE": [
         "SAUVEGRD",
@@ -1018,6 +1018,9 @@ export const fr: EngineLocale = {
       ],
       "DXFIN": [
         "CHARGDXF"
+      ],
+      "DXFOUT": [
+        "SAUVEDXF"
       ],
       "PASTECLIP": [
         "COLLERPRESS"
@@ -3372,6 +3375,7 @@ export const fr: EngineLocale = {
       "saveUnavailable": "L'enregistrement dans un fichier n'est pas disponible ici.",
       "openUnavailable": "L'ouverture d'un fichier n'est pas disponible ici.",
       "openFailed": "Impossible d'ouvrir le fichier.",
+      "saveFailed": "Impossible d'enregistrer le fichier.",
       "dxfHeaderError": [
         "Erreur dans l'en-tête du dessin à la ligne ",
         [
@@ -3405,6 +3409,28 @@ export const fr: EngineLocale = {
             "other": [
               0,
               " objets non ouverts"
+            ]
+          }
+        ],
+        ": ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfLowPrecision": "Avertissement:  Vous avez spécifié une précision inférieure pour le fichier DXF. Ceci peut entraîner une diminution de la précision du dessin.",
+      "dxfNotSaved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objet non enregistré"
+            ],
+            "other": [
+              0,
+              " objets non enregistrés"
             ]
           }
         ],

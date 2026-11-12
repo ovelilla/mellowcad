@@ -3,7 +3,7 @@ title: Différences avec AutoCAD
 metaTitle: "Différences avec AutoCAD, et pourquoi"
 description: "Où MellowCAD fonctionne autrement qu'AutoCAD, et pourquoi : ce que le navigateur garde pour lui, et ce qui n'existe pas ici."
 type: concept
-sourceHash: "6f396a17e390"
+sourceHash: "cd14006ca4f1"
 ---
 
 MellowCAD suit AutoCAD 2027 : les mêmes commandes et les mêmes alias, le même ordre des invites, les mêmes lettres d'option et les mêmes valeurs par défaut. Il ne s'en écarte que là où le navigateur l'y oblige, ou là où ce qui entoure la fonction n'existe pas ici. Chaque différence ci-dessous dit ce que fait AutoCAD, ce que MellowCAD fait à la place, et pourquoi. Ce qui manque encore à une commande donnée est indiqué par un lien depuis son entrée sur [la page des commandes](/docs/commands).
@@ -14,7 +14,7 @@ AutoCAD ouvre un nouveau dessin dans un onglet à part et garde l'ancien ouvert.
 
 ## Enregistrer télécharge un fichier [#saving]
 
-MellowCAD conserve le dessin dans ce navigateur pendant que vous travaillez, sur cet appareil uniquement. <Command id="QSAVE" />, <Command id="SAVEAS" /> et <Command id="SAVE" /> téléchargent tous trois un fichier au format versionné propre à MellowCAD : un téléchargement du navigateur demande toujours le nom du fichier, si bien que rien ne distingue l'enregistrement sur le fichier courant, sous un autre nom ou en copie.
+MellowCAD conserve le dessin dans ce navigateur pendant que vous travaillez, sur cet appareil uniquement. <Command id="QSAVE" /> télécharge aussitôt un fichier au format versionné propre à MellowCAD, comme pour un dessin déjà nommé : ici, aucun dessin ne garde son nom. <Command id="SAVEAS" /> et <Command id="SAVE" /> ouvrent Enregistrer le dessin sous, avec son nom de fichier et ses types, dont le DXF, mais sans ses dossiers : le navigateur place le fichier là où il place chaque téléchargement.
 
 ## Les touches que le navigateur garde [#browser-keys]
 

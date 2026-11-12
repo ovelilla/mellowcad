@@ -11,6 +11,12 @@ import {
 } from "../serialization/drawingFile"
 import { DxfReadError, looksLikeDxf } from "../serialization/dxf/dxfFormat"
 import type { DxfOpenReport } from "../serialization/dxf/readDxf"
+import type {
+  DxfSaveOptions,
+  DxfSaveReport,
+  DxfVersion,
+} from "../serialization/dxf/writeDxf"
+import type { DxfSaveSettings, SaveAsChoice, SaveFileType } from "./EngineState"
 import { EngineText } from "./EngineText"
 import { FileKind, OpenedFile } from "./ports"
 import {
@@ -218,6 +224,93 @@ export function dxfErrorLines(
       : []),
     text.message("dxfDiscarded"),
   ]
+}
+
+/** DXF Options as a session starts: AutoCAD's (x015's `Precision= 16 Format= ASCII`). */
+export const DEFAULT_DXF_SETTINGS: DxfSaveSettings = {
+  binary: false,
+  precision: 16,
+  selectObjects: false,
+}
+
+export type DxfWriter = typeof import("../serialization/dxf/writeDxf")
+
+let dxfWriter: Promise<DxfWriter> | null = null
+
+/** The DXF writer, loaded once and only when a save may need it. */
+export function loadDxfWriter(): Promise<DxfWriter> {
+  // A chunk that failed to load (a deploy since the page opened) is asked
+  // for again next time, not remembered as failed.
+  dxfWriter ??= import("../serialization/dxf/writeDxf").catch((error) => {
+    dxfWriter = null
+    throw error
+  })
+  return dxfWriter
+}
+
+/**
+ * The name a save writes: the one given with its type's extension, put
+ * there or in place of the other type's, as Save Drawing As does when the
+ * type changes (desktop dxf/d01: `Drawing2.dwg` became `Drawing2.dxf`).
+ */
+export function saveFileName(name: string, type: SaveFileType): string {
+  const stem = name.trim().replace(/(\.ecad\.json|\.json|\.ecad|\.dxf)$/i, "")
+  return `${stem || "drawing"}.${type === "drawing" ? "ecad.json" : "dxf"}`
+}
+
+const DXF_VERSIONS: Readonly<
+  Record<Exclude<SaveFileType, "drawing">, DxfVersion>
+> = {
+  dxf2018: "2018",
+  dxf2013: "2013",
+  dxf2010: "2010",
+  dxf2007: "2007",
+  dxf2004: "2004",
+  dxf2000: "2000",
+}
+
+/** A Save's DXF Options, the precision a whole number from 0 to 16, and what the writer takes of them. */
+export function dxfSaveOptions(choice: SaveAsChoice): {
+  settings: DxfSaveSettings
+  write: DxfSaveOptions
+} {
+  const raw = Math.round(choice.dxf.precision)
+  const precision = Number.isFinite(raw) ? Math.min(16, Math.max(0, raw)) : 16
+  const settings: DxfSaveSettings = {
+    binary: choice.dxf.binary,
+    precision,
+    selectObjects: choice.dxf.selectObjects,
+  }
+  const version =
+    choice.fileType === "drawing" ? "2018" : DXF_VERSIONS[choice.fileType]
+  return {
+    settings,
+    write: { version, binary: settings.binary, precision },
+  }
+}
+
+/**
+ * What the command line says once a DXF is written: AutoCAD's warning for a
+ * precision under 16 (27480, probe x015, desktop dxf/d01), then what the
+ * file could not hold. WHY words of our own for that: AutoCAD writes
+ * everything it has.
+ */
+export function dxfSaveLines(
+  settings: DxfSaveSettings,
+  report: DxfSaveReport,
+  text: EngineText
+): string[] {
+  const lines: string[] = []
+  if (settings.precision < 16) lines.push(text.message("dxfLowPrecision"))
+  let total = 0
+  for (const count of report.leftOut.values()) total += count
+  if (total > 0) {
+    const types = [...report.leftOut]
+      .map(([type, count]) => `${count} ${type}`)
+      .join(", ")
+    lines.push(text.message("dxfNotSaved", { count: total, types }))
+  }
+  return lines
 }
 
 /** Ctrl+A's set: what the object selector's ALL takes (clipboard/p126). */

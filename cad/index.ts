@@ -67,8 +67,13 @@ export type {
   ShortcutMenuEntry,
   ShortcutMenuMode,
   ShortcutMenuUi,
+  SaveAsDialog,
+  SaveAsChoice,
+  SaveFileType,
+  DxfSaveSettings,
 } from "./application/EngineState"
-export { PALETTE_TABS } from "./application/EngineState"
+export { PALETTE_TABS, SAVE_FILE_TYPES } from "./application/EngineState"
+export { saveFileName } from "./application/runtimeFiles"
 export type {
   CommandLineEntry,
   CommandLineEntryKind,

@@ -145,6 +145,7 @@ export const en: EngineCatalog = {
       "SAVE": "Save the drawing to a file",
       "OPEN": "Open a drawing file",
       "DXFIN": "Open a DXF file",
+      "DXFOUT": "Save the drawing as a DXF file",
       "PASTECLIP": "Paste the clipboard into the drawing",
       "DIMSTYLE": "Create and modify dimension styles",
       "STYLE": "Create and modify text styles",
@@ -1025,6 +1026,9 @@ export const en: EngineCatalog = {
       ],
       "DXFIN": [
         "DXFIN"
+      ],
+      "DXFOUT": [
+        "DXFOUT"
       ],
       "PASTECLIP": [
         "PASTECLIP"
@@ -2723,6 +2727,7 @@ export const en: EngineCatalog = {
       "saveUnavailable": "Saving to a file is not available here.",
       "openUnavailable": "Opening a file is not available here.",
       "openFailed": "Could not open the file.",
+      "saveFailed": "Could not save the file.",
       "dxfHeaderError": [
         "Error in drawing header on line ",
         [
@@ -2760,6 +2765,28 @@ export const en: EngineCatalog = {
           }
         ],
         " not opened: ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfLowPrecision": "Warning:  You have specified a lower precision for the DXF file, which may result in loss of drawing accuracy.",
+      "dxfNotSaved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object"
+            ],
+            "other": [
+              0,
+              " objects"
+            ]
+          }
+        ],
+        " not saved: ",
         [
           "types"
         ],

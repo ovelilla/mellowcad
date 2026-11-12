@@ -143,7 +143,7 @@
     "fileBody": "Ctrl+S enregistre le dessin dans un fichier au format versionné propre à MellowCAD. Ctrl+O le rouvre, sur n'importe quel ordinateur, et <dxf>ouvre aussi les fichiers DXF</dxf>.",
     "privateTitle": "Aucun envoi",
     "privateBody": "Vos dessins ne sont jamais envoyés nulle part. Les statistiques comptent les pages vues, sans cookies.",
-    "formats": "DXF : s'ouvre, ne s'enregistre pas encore. DWG : pas encore. Les dessins sont enregistrés au format versionné propre à MellowCAD.",
+    "formats": "DXF : s'ouvre et s'enregistre. DWG : pas encore. Les dessins sont enregistrés au format versionné propre à MellowCAD.",
     "warning": "Effacer les données de ce site efface aussi l'enregistrement automatique. Appuyez sur Ctrl+S pour garder un fichier.",
     "diagramAlt": "Dans votre appareil, l'éditeur enregistre automatiquement dans le navigateur, et enregistre et ouvre un fichier ; rien ne sort de l'appareil.",
     "diagramEditor": "ÉDITEUR",
@@ -165,7 +165,7 @@
     "makersTitle": "Bricoleurs",
     "makersBody": "Dessinez une équerre ou une plaque aux cotes, ou modélisez-la en solide, gratuitement.",
     "practice": "Étudiants et enseignants : des <link>exercices AutoCAD pour s'entraîner</link>, du premier joint aux solides 3D, chacun corrigé pas à pas et ouvert dans l'éditeur avec son dessin.",
-    "notFor": "Pas encore pour enregistrer en DXF ni échanger des fichiers DWG, ni pour tracer des feuilles sur papier ou en PDF."
+    "notFor": "Pas encore pour échanger des fichiers DWG, ni pour tracer des feuilles sur papier ou en PDF."
   },
   "Status": {
     "label": "06 · État",
@@ -176,10 +176,10 @@
     "today2": "{snaps, number} accrochages aux objets, le repérage d'accrochage aux objets, le repérage polaire et Ortho",
     "today3": "Calques, types de ligne, {lineweights, number} épaisseurs de ligne et couleurs",
     "today4": "Cotes, texte, hachures, et blocs avec attributs",
-    "today5": "Enregistrement automatique, enregistrer et ouvrir, ouvrir un DXF, le Presse-papiers",
+    "today5": "Enregistrement automatique, enregistrer et ouvrir, le DXF, le Presse-papiers",
     "today6": "Solides 3D, encore partiels : primitives, extrusions et révolutions, opérations booléennes, coupes et sections, et vues ombrées",
     "notYetTitle": "Pas encore",
-    "notYet1": "Fichiers DWG, et enregistrer en DXF",
+    "notYet1": "Fichiers DWG",
     "notYet2": "Impression et PDF",
     "notYet3": "Présentations et espace papier",
     "notYet4": "Balayages, lissages, maillages et rendu en 3D",
@@ -201,7 +201,7 @@
     "q4": "Fonctionne-t-il vraiment comme AutoCAD ?",
     "a4": "C'est le cahier des charges : les commandes, les alias, l'ordre des invites, les lettres d'option et les valeurs par défaut suivent l'AutoCAD actuel. Certaines commandes sont encore partielles, et la feuille de route liste exactement les options qui manquent.",
     "q5": "Puis-je ouvrir ou enregistrer des fichiers DWG ou DXF, ou imprimer ?",
-    "a5": "MellowCAD <dxf>ouvre les fichiers DXF</dxf> d'AutoCAD R12 à 2018, texte ou binaires : lignes, arcs, cercles, ellipses, polylignes, splines, textes, cotes, hachures et blocs, sur leurs calques. Ce qu'il ne gère pas encore (points, lignes de repère, tableaux, présentations, solides 3D) est laissé de côté et listé à l'ouverture. Pas encore d'enregistrement en DXF ni de DWG, ni d'impression ou d'export PDF.",
+    "a5": "MellowCAD <dxf>ouvre les fichiers DXF</dxf> d'AutoCAD R12 à 2018, texte ou binaires : lignes, arcs, cercles, ellipses, polylignes, splines, textes, cotes, hachures et blocs, sur leurs calques. Ce qu'il ne gère pas encore (points, lignes de repère, tableaux, présentations, solides 3D) est laissé de côté et listé à l'ouverture. Il les enregistre aussi (2000 à 2018). Pas encore de DWG, ni d'impression ou d'export PDF.",
     "q6": "Où sont stockés mes dessins ?",
     "a6": "Sur votre appareil. MellowCAD enregistre automatiquement dans votre navigateur et n'envoie jamais vos dessins. Effacer les données du site efface cet enregistrement : appuyez sur Ctrl+S pour garder un fichier.",
     "q7": "MellowCAD est-il lié à Autodesk ?",
@@ -336,7 +336,7 @@
           },
           "online": {
             "question": "Peut-on s'entraîner sur AutoCAD en ligne gratuitement ?",
-            "answer": "Oui. MellowCAD fonctionne dans le navigateur, gratuitement et sans compte : vous tapez les commandes et les alias d'AutoCAD, avec les noms de votre langue, et répondez à leurs invites dans le même ordre, avec les mêmes lettres d'option. Ce n'est pas AutoCAD : il ouvre les fichiers DXF mais ne peut pas encore les enregistrer ni ouvrir de DWG, et ses solides 3D sont encore partiels."
+            "answer": "Oui. MellowCAD fonctionne dans le navigateur, gratuitement et sans compte : vous tapez les commandes et les alias d'AutoCAD, avec les noms de votre langue, et répondez à leurs invites dans le même ordre, avec les mêmes lettres d'option. Ce n'est pas AutoCAD : il ouvre et enregistre les fichiers DXF, mais pas encore les DWG, et ses solides 3D sont encore partiels."
           },
           "solutions": {
             "question": "Les exercices ont-ils des corrigés ?",

@@ -134,8 +134,8 @@ claims follow `i18n.md`.
 - **The DXF page** (`open-dxf`, searched as «abrir dxf online» and "dxf viewer online") is a written
   "Use" page whose `<OpenDxf />` is the docs' island that hands a file to the editor
   (`DxfOpener`, `ui.md`); its `.md` drops the island, as its text says where else a file opens.
-  What it claims opens is DXFIN's coverage entry: a change there is a change here, in every
-  language.
+  What it claims opens is DXFIN's coverage entry, and what saves DXFOUT's: a change there is a
+  change here, in every language.
 - **An exercise prints** on its own, dark on white (`marketing.css`, `@media print`): its drawing as
   AutoCAD's monochrome plot style plots it, the site's chrome `print:hidden`; `PrintButton` is the
   docs' island for it.

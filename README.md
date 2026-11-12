@@ -10,8 +10,8 @@ English, Spanish, Brazilian Portuguese and French (with their AutoCAD's command 
 
 The bar is that someone who uses AutoCAD every day can sit down and work from muscle memory. Some
 commands are still partial, and each one's missing options are listed in
-[docs/coverage/](docs/coverage/README.md). Not there yet: DWG files and saving as DXF (a DXF
-opens), printing and PDF, layouts and paper space, sweeps, lofts, meshes and rendering in 3D, and
+[docs/coverage/](docs/coverage/README.md). Not there yet: DWG files (a DXF opens and
+saves), printing and PDF, layouts and paper space, sweeps, lofts, meshes and rendering in 3D, and
 phones and tablets.
 
 ## Packages

@@ -56,7 +56,8 @@ export class MemoryStore implements DrawingStore {
  * kinds each pick offered.
  */
 export class MemoryFileTransport implements FileTransport {
-  readonly saved: { text: string; fileName: string }[] = []
+  /** Each file saved: text as it came, bytes (a DXF) in `bytes` with their Latin-1 text. */
+  readonly saved: { text: string; fileName: string; bytes?: Uint8Array }[] = []
   openCalls = 0
   readonly openedKinds: (readonly FileKind[] | undefined)[] = []
   nextFile: OpenedFile | string | null = null
@@ -67,8 +68,13 @@ export class MemoryFileTransport implements FileTransport {
     this.nextFile = nextFile
   }
 
-  save(text: string, fileName: string): void {
-    this.saved.push({ text, fileName })
+  save(content: string | Uint8Array, fileName: string): void {
+    if (typeof content === "string")
+      this.saved.push({ text: content, fileName })
+    else {
+      const text = new TextDecoder("latin1").decode(content)
+      this.saved.push({ text, fileName, bytes: content })
+    }
   }
 
   open(request?: OpenRequest): Promise<OpenedFile | string | null> {

@@ -111,6 +111,50 @@ import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../domain/dimStyles"
 /** Which of the two style tables the manager is showing. */
 export type StylesPanelTab = "dimension" | "text"
 
+/**
+ * The Save Drawing As dialog's Files of type, in AutoCAD's order (desktop
+ * dxf/d01): this engine's drawing where AutoCAD lists its DWG versions, then
+ * the DXF versions it writes. WHY no R12: its DXF converts what R12 lacks,
+ * which is not written yet (`docs/coverage/`).
+ */
+export const SAVE_FILE_TYPES = [
+  "drawing",
+  "dxf2018",
+  "dxf2013",
+  "dxf2010",
+  "dxf2007",
+  "dxf2004",
+  "dxf2000",
+] as const
+
+export type SaveFileType = (typeof SAVE_FILE_TYPES)[number]
+
+/** DXF Options, the Saveas Options dialog's tab, kept for the session. */
+export interface DxfSaveSettings {
+  /** Format: ASCII (false) or BINARY. */
+  readonly binary: boolean
+  /** Decimal places of accuracy, 0 to 16. */
+  readonly precision: number
+  /** Select objects: the command asks which objects the file holds. */
+  readonly selectObjects: boolean
+}
+
+/** What the Save Drawing As dialog opens on. */
+export interface SaveAsDialog {
+  /** SAVEAS, SAVE or DXFOUT: the command it belongs to. */
+  readonly command: string
+  readonly fileName: string
+  readonly fileType: SaveFileType
+  readonly dxf: DxfSaveSettings
+}
+
+/** The dialog's Save: the name and type chosen, and DXF Options as left. */
+export interface SaveAsChoice {
+  readonly fileName: string
+  readonly fileType: SaveFileType
+  readonly dxf: DxfSaveSettings
+}
+
 /** The palette panel's tabs, in their order. */
 export const PALETTE_TABS = [
   "properties",
@@ -617,6 +661,12 @@ export interface EngineState {
   readonly palette: PaletteUi
   /** Whether the Drawing Units dialog (UNITS) is showing. */
   readonly unitsDialog: boolean
+  /**
+   * The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, with what it
+   * opens on, or null while it is not showing. The host draws it and answers
+   * with `saveAs` or closes it with `setSaveAsDialog(false)`.
+   */
+  readonly saveAsDialog: SaveAsDialog | null
   /**
    * The task dialog `Properties - Locked objects`, with how many objects on a
    * locked layer an edit left out of the selection, or null while it is not

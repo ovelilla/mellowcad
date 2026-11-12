@@ -298,16 +298,25 @@ describe("the accelerators' macros", () => {
   })
 
   // ID_Save `^C^C_qsave `, ID_Saveas `^C^C_saveas `, ID_Open `^C^C_open `
-  it.each([
-    ["s", false, "_qsave"],
-    ["s", true, "_saveas"],
-  ])("Ctrl+%s (Shift %s) ends LINE, then saves: %s", (key, shift, echo) => {
+  it("Ctrl+S ends LINE, then saves: _qsave", () => {
     const files = new MemoryFileTransport()
     const cad = inLine(files)
 
-    expect(pressed(cad, key, shift)).toEqual([CANCEL, echo])
+    expect(pressed(cad, "s")).toEqual([CANCEL, "_qsave"])
     expect(cad.activeToolId()).toBe("select")
     expect(files.saved).toHaveLength(1)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // SAVEAS runs while its Save Drawing As dialog shows (desktop dxf/d01).
+  it("Ctrl+Shift+S ends LINE, then opens SAVEAS's dialog: _saveas", () => {
+    const files = new MemoryFileTransport()
+    const cad = inLine(files)
+
+    expect(pressed(cad, "s", true)).toEqual([CANCEL, "_saveas"])
+    expect(cad.activeToolId()).toBe("saveas")
+    expect(cad.state().saveAsDialog?.command).toBe("SAVEAS")
+    expect(files.saved).toHaveLength(0)
     expect(cad.entityCount).toBe(1)
   })
 

@@ -282,6 +282,14 @@ export declare class CadEngine {
     togglePalette(tab: PaletteTab): void;
     setPaletteOpen(open: boolean): void;
     setUnitsDialog(open: boolean): void;
+    /** The Save Drawing As dialog's Cancel: SAVEAS, SAVE or DXFOUT ends, writing nothing. */
+    setSaveAsDialog(open: boolean): void;
+    /**
+     * The Save Drawing As dialog's Save: the drawing, or a DXF with DXF
+     * Options, through the file transport. Resolves once written, or once
+     * Select objects is asking for the set.
+     */
+    saveAs(choice: SaveAsChoice): Promise<void>;
     openDrawingUnits(): void;
     openDrawingUnitsFromMenu(): void;
     runFileButton(bar: "quickAccess" | "applicationMenu", button: "new" | "open" | "save" | "saveAs"): void;
@@ -682,6 +690,17 @@ export interface DimStyleInfo extends DimStyle {
     readonly entityCount: number;
 }
 
+export type { DxfSaveSettings }
+/** DXF Options, the Saveas Options dialog's tab, kept for the session. */
+export interface DxfSaveSettings {
+    /** Format: ASCII (false) or BINARY. */
+    readonly binary: boolean;
+    /** Decimal places of accuracy, 0 to 16. */
+    readonly precision: number;
+    /** Select objects: the command asks which objects the file holds. */
+    readonly selectObjects: boolean;
+}
+
 export type { DynamicFieldKind }
 /**
  * Dynamic input is AutoCAD's floating "type a value near the cursor" mechanism.
@@ -925,6 +944,12 @@ export interface EngineState {
     /** Whether the Drawing Units dialog (UNITS) is showing. */
     readonly unitsDialog: boolean;
     /**
+     * The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, with what it
+     * opens on, or null while it is not showing. The host draws it and answers
+     * with `saveAs` or closes it with `setSaveAsDialog(false)`.
+     */
+    readonly saveAsDialog: SaveAsDialog | null;
+    /**
      * The task dialog `Properties - Locked objects`, with how many objects on a
      * locked layer an edit left out of the selection, or null while it is not
      * showing (desktop properties/d03-6).
@@ -1138,6 +1163,52 @@ export interface RolloverUi {
     readonly layer: string;
     readonly linetype: string;
 }
+
+export { SAVE_FILE_TYPES }
+/**
+ * The Save Drawing As dialog's Files of type, in AutoCAD's order (desktop
+ * dxf/d01): this engine's drawing where AutoCAD lists its DWG versions, then
+ * the DXF versions it writes. WHY no R12: its DXF converts what R12 lacks,
+ * which is not written yet (`docs/coverage/`).
+ */
+export declare const SAVE_FILE_TYPES: readonly [
+    "drawing",
+    "dxf2018",
+    "dxf2013",
+    "dxf2010",
+    "dxf2007",
+    "dxf2004",
+    "dxf2000"
+];
+
+export type { SaveAsChoice }
+/** The dialog's Save: the name and type chosen, and DXF Options as left. */
+export interface SaveAsChoice {
+    readonly fileName: string;
+    readonly fileType: SaveFileType;
+    readonly dxf: DxfSaveSettings;
+}
+
+export type { SaveAsDialog }
+/** What the Save Drawing As dialog opens on. */
+export interface SaveAsDialog {
+    /** SAVEAS, SAVE or DXFOUT: the command it belongs to. */
+    readonly command: string;
+    readonly fileName: string;
+    readonly fileType: SaveFileType;
+    readonly dxf: DxfSaveSettings;
+}
+
+export { saveFileName }
+/**
+ * The name a save writes: the one given with its type's extension, put
+ * there or in place of the other type's, as Save Drawing As does when the
+ * type changes (desktop dxf/d01: `Drawing2.dwg` became `Drawing2.dxf`).
+ */
+export declare function saveFileName(name: string, type: SaveFileType): string;
+
+export type { SaveFileType }
+export type SaveFileType = (typeof SAVE_FILE_TYPES)[number];
 
 export type { SelectionCandidateUi }
 /** One of the overlapping objects offered by selection cycling. */
@@ -1471,10 +1542,11 @@ export type { FileTransport }
  */
 export interface FileTransport {
     /**
-     * Hands text to the user as a named file: the drawing, or what a command
-     * writes beside it (MASSPROP's `.mpr`).
+     * Hands a file to the user under its name: the drawing as text, what a
+     * command writes beside it (MASSPROP's `.mpr`), or a DXF as bytes (SAVEAS
+     * and DXFOUT: a binary one, or one up to 2004 in its code page).
      */
-    save(text: string, fileName: string): void;
+    save(content: string | Uint8Array, fileName: string): void;
     /**
      * Asks the user for a file of the kinds `request` names — AutoCAD's Select
      * File and its Files of type: OPEN offers drawings and DXF, DXFIN DXF

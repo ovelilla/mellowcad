@@ -11,7 +11,7 @@ faq:
   - question: "Can I open a DWG file?"
     answer: "Not yet. Save it as DXF in the program that made it (in AutoCAD, SAVEAS with a DXF file type) and open that."
   - question: "Can I save my changes as a DXF file?"
-    answer: "Not yet. Ctrl+S saves the drawing as a file in MellowCAD's own versioned format, which opens here again."
+    answer: "Yes. SAVEAS (Ctrl+Shift+S) or DXFOUT saves the drawing as a DXF of AutoCAD 2000 to 2018, text or binary, which AutoCAD opens. 3D solids and regions are left out, and the command line says so."
   - question: "Why are some objects missing?"
     answer: "What MellowCAD has no object for yet, such as points, leaders, tables or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet."
 ---
@@ -55,7 +55,7 @@ In the editor, a DXF opens as a drawing does: <Command id="OPEN" /> (`Ctrl+O`) o
 
 ## Edit it and keep it [#keep]
 
-Once open, a DXF is a drawing like any other: measure it with <Command id="DIST" /> and <Command id="AREA" />, change it with <Command id="MOVE" />, <Command id="TRIM" /> or <Command id="OFFSET" />, and draw on it. It is kept in this browser as you work, and `Ctrl+S` saves it as a file in MellowCAD's own versioned format. Saving as DXF is not there yet, nor are DWG files.
+Once open, a DXF is a drawing like any other: measure it with <Command id="DIST" /> and <Command id="AREA" />, change it with <Command id="MOVE" />, <Command id="TRIM" /> or <Command id="OFFSET" />, and draw on it. It is kept in this browser as you work, and `Ctrl+S` saves it as a file in MellowCAD's own versioned format. <Command id="SAVEAS" /> (`Ctrl+Shift+S`) and <Command id="DXFOUT" /> save it as a DXF again, as AutoCAD's Save Drawing As does: AutoCAD 2000 to 2018, text or binary, with the decimal places and Select objects of its DXF Options. What MellowCAD cannot write yet, 3D solids and regions, is left out and listed on the command line. DWG files are not there yet.
 
 ## Questions [#questions]
 
@@ -73,7 +73,7 @@ Not yet. Save it as DXF in the program that made it (in AutoCAD, <Command id="SA
 
 ### Can I save my changes as a DXF file? [#save-dxf]
 
-Not yet. `Ctrl+S` saves the drawing as a file in MellowCAD's own versioned format, which opens here again.
+Yes. <Command id="SAVEAS" /> (`Ctrl+Shift+S`) or <Command id="DXFOUT" /> saves the drawing as a DXF of AutoCAD 2000 to 2018, text or binary, which AutoCAD opens. 3D solids and regions are left out, and the command line says so.
 
 ### Why are some objects missing? [#missing]
 

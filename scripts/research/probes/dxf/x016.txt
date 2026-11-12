@@ -1,0 +1,8 @@
+(command "_.LINE" "0,0" "10,0" "")
+(command "_.CIRCLE" "5,5" "2")
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\x016.dxf
+_O
+_L
+
+(getvar "DWGNAME")

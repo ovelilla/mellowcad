@@ -102,9 +102,6 @@ export async function CommandsSection() {
                   const also = command.aliases.filter(
                     (alias) => alias !== command.key
                   )
-                  // Joined here, so each stays a single text node.
-                  const described =
-                    common("labelSeparator") + command.description
                   const aliases =
                     also.length > 0 &&
                     ` · ${t("also", {
@@ -145,8 +142,14 @@ export async function CommandsSection() {
                       ) : (
                         cap
                       )}
-                      <span className="sr-only">{described}</span>
-                      <span role="tooltip" aria-hidden="true">
+                      {/* Read by a screen reader after the cap, as shown on
+                          hover: one copy of each description, where a second,
+                          hidden one weighed on every landing (/fr's first
+                          load sat at its budget). */}
+                      <span role="tooltip">
+                        <span className="sr-only">
+                          {common("labelSeparator")}
+                        </span>
                         {command.description}
                         {aliases}
                       </span>

@@ -44,10 +44,11 @@ export interface DrawingStore {
  */
 export interface FileTransport {
   /**
-   * Hands text to the user as a named file: the drawing, or what a command
-   * writes beside it (MASSPROP's `.mpr`).
+   * Hands a file to the user under its name: the drawing as text, what a
+   * command writes beside it (MASSPROP's `.mpr`), or a DXF as bytes (SAVEAS
+   * and DXFOUT: a binary one, or one up to 2004 in its code page).
    */
-  save(text: string, fileName: string): void
+  save(content: string | Uint8Array, fileName: string): void
   /**
    * Asks the user for a file of the kinds `request` names — AutoCAD's Select
    * File and its Files of type: OPEN offers drawings and DXF, DXFIN DXF

@@ -11,8 +11,8 @@
 
 Every text follows `.claude/rules/i18n.md` («Claims and copy»): the 3D is "3D solids, still
 partial" and, where described, names what it lacks (sweeps, lofts, meshes, rendering); a DXF
-opens (since 7/11, session 07), but no DWG, saving as DXF, printing, PDF, collaboration or mobile
-claims; "the code is MIT", never "MellowCAD is MIT"; "same order, same option letters", never
+opens (since 7/11, session 07) and saves (since 12/11, DXF 2000 to 2018), but no DWG, printing,
+PDF, collaboration or mobile claims; "the code is MIT", never "MellowCAD is MIT"; "same order, same option letters", never
 "same prompts"; AutoCAD only nominatively; no hype, no emojis.
 **Figures are the landing's on the day** (`lib/facts.ts`); on 2026-11-06: 140 AutoCAD commands,
 131 aliases, 12 object snaps, 4 languages (5 since 9/11: French; 6 since 12/11: Italian), 6,000+ automated tests, 38
@@ -96,7 +96,7 @@ and the facts, not text to paste.
      build time; tools tested by driving a headless engine with moves, clicks and keys (6,000+
      tests); one gesture, one undo step; 3D solids, still partial, on a B-rep kernel written for the
      project; a versioned file format that always opens older files.
-  5. Not there yet: DWG files and saving as DXF, printing and PDF, paper space, sweeps, lofts,
+  5. Not there yet: DWG files, printing and PDF, paper space, sweeps, lofts,
      meshes and rendering, moving and rotating solids in 3D, phones and tablets; each command's
      missing options are in the repository.
   6. The code is MIT (in the first comment: https://github.com/ovelilla/mellowcad).
@@ -133,7 +133,7 @@ Where does it break your muscle memory?_
 > (@100<30, #120,80) work. Layers, linetypes, lineweights, dimensions, text, hatches, blocks with
 > attributes and the Properties palette are there too, and 3D solids, still partial.
 >
-> So nobody wastes time: it opens DXF but doesn't save it, has no DWG, doesn't print or make PDFs,
+> So nobody wastes time: it opens and saves DXF but has no DWG, doesn't print or make PDFs,
 > has no paper space, the 3D has no sweeps, lofts, meshes or rendering, and it's desktop only.
 >
 > https://mellowcad.com/draw
@@ -148,8 +148,8 @@ feedback_
 > I made this, and I'm after criticism more than compliments. MellowCAD is drafting in a desktop
 > browser, driven from the command line the way AutoCAD is: same names and aliases, prompts in the
 > same order with the same option letters, object snaps, OTRACK and polar. 2D is the core; 3D
-> solids exist but are partial (no sweeps, lofts, meshes or rendering). It opens DXF but doesn't
-> save it yet; no DWG, no printing.
+> solids exist but are partial (no sweeps, lofts, meshes or rendering). It opens and saves DXF;
+> no DWG, no printing yet.
 >
 > The engine underneath is a separate TypeScript package with no DOM (@mellowcad/engine on npm),
 > with its own B-rep kernel for the solids. The code is MIT.
@@ -173,7 +173,7 @@ browser CAD app where AutoCAD's behaviour is the spec, not a suggestion_
 > static site. Every figure on the landing is drawn by the engine at build time, not screenshots.
 > 6,000+ tests drive a headless engine with clicks and keystrokes. The code is MIT.
 >
-> Honest limits: it opens DXF but doesn't save it, no DWG or printing yet, 3D solids still partial,
+> Honest limits: it opens and saves DXF, but no DWG or printing yet, 3D solids still partial,
 > desktop only.
 >
 > Feedback I'd value: does the landing tell you what this is in five seconds? Where did you get
@@ -196,7 +196,7 @@ RECORTA…). ¿Me ayudan a probarlo?_
 > todavía parciales (sin barridos, solevados, mallas ni renderizado). Cada comando tiene su página
 > con sus solicitudes en https://mellowcad.com/es/docs/commands.
 >
-> Lo que todavía no hace, para no hacer perder el tiempo a nadie: abre DXF pero no lo guarda, no
+> Lo que todavía no hace, para no hacer perder el tiempo a nadie: abre y guarda DXF, pero no
 > abre DWG, no imprime ni exporta a PDF y no tiene espacio papel. Solo en ordenador.
 >
 > https://mellowcad.com/es/draw
@@ -212,8 +212,8 @@ with LINHA, CIRCULO, DESLOCAMENTO, APARAR and https://mellowcad.com/pt-br/draw):
 > Usa los nombres de comando de AutoCAD en español (LINEA, CIRCULO, DESFASE, RECORTA…) con sus
 > alias, y las solicitudes en el mismo orden y con las mismas letras de opción, así que lo que se
 > practica en clase sirve después en AutoCAD. Los dibujos se quedan en el equipo: se guardan solos
-> en el navegador, y con Ctrl+S en un archivo; no se envían a ningún sitio. Límites: abre DXF pero
-> no lo guarda, no abre DWG, no imprime y el 3D es parcial. Si les sirve para clase, me gustaría
+> en el navegador, y con Ctrl+S en un archivo; no se envían a ningún sitio. Límites: abre y guarda
+> DXF, pero no abre DWG, no imprime y el 3D es parcial. Si les sirve para clase, me gustaría
 > saber qué echan en falta.
 
 ## 4. Product Hunt
@@ -249,7 +249,7 @@ ban); votes from new accounts count far less; featuring is an editorial choice.
 > lineweights and colours; dimensions, text, hatches and blocks with attributes; 3D solids, still
 > partial. In Spanish, Brazilian Portuguese, French and Italian it takes AutoCAD's localized command names,
 > and the interface is also in Arabic. Each command has a page with its prompts.
-> Not yet: DWG, saving as DXF (a DXF opens), printing and PDF, paper space, sweeps, lofts, meshes
+> Not yet: DWG (a DXF opens and saves), printing and PDF, paper space, sweeps, lofts, meshes
 > and rendering in 3D, phones and tablets.
 >
 > The code is MIT on GitHub, and the engine is on npm for anyone who wants to build on it. What
@@ -281,7 +281,7 @@ a time, never in bulk or BCC; one follow-up after 7–10 days at most. The base 
 > partially, 3D solids. It's free, with nothing to install and no account, and drawings stay on the
 > user's device. The code is MIT on GitHub.
 >
-> The limits, so you can judge the fit: it opens DXF but doesn't save it yet, no DWG, no printing
+> The limits, so you can judge the fit: it opens and saves DXF, but no DWG yet, no printing
 > or PDF, the 3D lacks sweeps, lofts, meshes and rendering, and it needs a desktop browser.
 >
 > If it fits your next update, one line under the browser-based tools would be plenty. I'm glad to
@@ -331,8 +331,8 @@ by hand with its own text. Both descriptions name French the same day (below).
   > with attributes, arrays and the Properties palette — and 3D solids, still partial (no sweeps,
   > lofts, meshes or rendering). Nothing to install and no account; drawings autosave in the browser
   > and save to a file. In English, Spanish, Brazilian Portuguese, French and Italian (with AutoCAD's
-  > localized command names) and Arabic. It opens DXF files but does not save them yet, and has no
-  > DWG or printing. The code is open source under the MIT licence. Not affiliated with Autodesk.
+  > localized command names) and Arabic. It opens and saves DXF files, but has no DWG
+  > or printing yet. The code is open source under the MIT licence. Not affiliated with Autodesk.
 
 - **SaaSHub** (free listing, moderated; `nofollow`): name the competitors when submitting (AutoCAD,
   LibreCAD, QCAD, DraftSight, Onshape), or the listing goes to the end of the queue; verifying with
@@ -342,7 +342,7 @@ by hand with its own text. Both descriptions name French the same day (below).
   > Free CAD in the browser that works like AutoCAD: the same commands and aliases, prompts in the
   > same order with the same option letters, object snaps and dynamic input. 2D drafting, and 3D
   > solids that are still partial. No install, no account; drawings stay on your device. The code
-  > is MIT on GitHub. It opens DXF; no DWG, saving as DXF or printing yet.
+  > is MIT on GitHub. It opens and saves DXF; no DWG or printing yet.
 
 - **G2** (its "best free CAD" article ranks #1–2): a product listing in G2's directory is the way
   into its articles. **Appvizer** (pt-BR and fr articles) and **Quelle-Alternative** (fr): request

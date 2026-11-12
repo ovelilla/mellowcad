@@ -3,7 +3,7 @@ title: Differenze rispetto ad AutoCAD
 metaTitle: "Differenze rispetto ad AutoCAD, e perché"
 description: "Dove MellowCAD funziona diversamente da AutoCAD, e perché: ciò che il browser tiene per sé e ciò che qui non esiste."
 type: concept
-sourceHash: "6f396a17e390"
+sourceHash: "cd14006ca4f1"
 ---
 
 MellowCAD segue AutoCAD 2027: gli stessi comandi e gli stessi alias, lo stesso ordine delle richieste, le stesse lettere delle opzioni e gli stessi valori predefiniti. Se ne discosta solo dove lo impone il browser o dove la funzione correlata qui non esiste. Ogni differenza qui sotto dice che cosa fa AutoCAD, che cosa fa invece MellowCAD, e perché. Ciò che manca ancora a ogni singolo comando è indicato nella sua voce della [pagina dei comandi](/docs/commands).
@@ -14,7 +14,7 @@ AutoCAD apre un nuovo disegno in una scheda a parte e tiene aperto quello vecchi
 
 ## Salvare scarica un file [#saving]
 
-MellowCAD conserva il disegno in questo browser mentre lavori, solo su questo dispositivo. <Command id="QSAVE" />, <Command id="SAVEAS" /> e <Command id="SAVE" /> scaricano tutti un file nel formato versionato di MellowCAD: un download del browser chiede sempre il nome del file, quindi non c'è modo di distinguere tra salvare sul file corrente, con un altro nome o come copia.
+MellowCAD conserva il disegno in questo browser mentre lavori, solo su questo dispositivo. <Command id="QSAVE" /> scarica subito un file nel formato versionato di MellowCAD, come per un disegno che ha già un nome: qui nessun disegno conserva il suo nome. <Command id="SAVEAS" /> e <Command id="SAVE" /> aprono Salva con nome, con il nome del file e i tipi di file, DXF compreso, ma senza le cartelle: il browser mette il file dove mette ogni download.
 
 ## I tasti che il browser tiene per sé [#browser-keys]
 

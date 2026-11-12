@@ -61,7 +61,7 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEDXF` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF` · it `SALVAVEL` / `SALVACOME` / `DXFOUT` / `SALVA` / `SALVAURL` / `APRI` / `APRIURL`
+### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF` · it `SALVAVEL` / `SALVACOME` / `SALVA` / `SALVAURL` / `APRI` / `APRIURL`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
@@ -70,9 +70,11 @@ Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justification, ORTHOMODE,
 SNAPMODE, SNAPUNIT, GRIDMODE: rectang/p302, p304, p311, p316, p321), and OPEN puts what it keeps
 per drawing unsaved back to its defaults, as NEW does; SAVE a command of its own (clipboard/p202),
-acad.pgp's `SAVEURL` / `OPENURL` (es `GUARDARURL` / `ABREURL`, p212); SAVEAS and SAVE write the
-same download as QSAVE, since a browser download always names the file, so saving over the current
-name, prompting for a new one and writing a copy cannot be told apart (CLIPBOARD-D4); each save a
+acad.pgp's `SAVEURL` / `OPENURL` (es `GUARDARURL` / `ABREURL`, p212); SAVEAS and SAVE run while
+their Save Drawing As dialog shows (FILEDIA 1, desktop dxf/d01), this engine's drawing its first
+type, where AutoCAD lists its DWG versions, and the DXF ones after it (DXFOUT's entry), Save writing
+the name given with its type's extension, Cancel ending the command with nothing written; QSAVE
+writes the same download at once, since nothing here keeps the drawing's name (CLIPBOARD-D4); each save a
 step U and REDO name and regenerate for, `QSAVE Regenerating model.` (es `GUARDARR Regenerando
 modelo.`; p204, p205, p214), Enter repeating it (p206); none transparent (p117); Ctrl+S,
 Ctrl+Shift+S and Ctrl+O are acad.cuix's `^C^C_qsave`, `^C^C_saveas` and `^C^C_open` (ID_Save,
@@ -86,10 +88,15 @@ cancelled, the QAT's `_open`, `_QSAVE`, `_SAVEAS` and the menu's `_OPEN`, `_QSav
 echoed, the same groups as the keys' (a save made `QSAVE GROUP Regenerating model.`, as Ctrl+S on a
 titled drawing in d08)
 
+**Deviations:** Save Drawing As without its folder pane, Save in, Places, Views and Tools' other
+entries, WHY: a download goes where the browser puts it; File name and Files of type, Tools ▸
+Options… and Save and Cancel are AutoCAD's, its labels the language's (acui26res.dll's dialog 131,
+21433)
+
 **Missing:** File System Access API handles (QSAVE on a titled drawing saves silently, p203; SAVE
 asks and writes a copy, p215), the `Save drawing as` and SAVEAS's format prompts (FILEDIA 0),
-SAVEAS's DXF types and its Options (`docs/next-dxf.md`), drag-and-drop open, unsaved-changes
-prompt, the drawing's name and the file tab's unsaved asterisk
+the DWG types and DWG Options, drag-and-drop open, unsaved-changes prompt, the drawing's name
+(SAVEAS to a DXF names the drawing after it, x018) and the file tab's unsaved asterisk
 
 ### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF` · fr `CHARGDXF` · it `DXFIN`
 
@@ -140,7 +147,7 @@ the text's place; a hatch's elliptical and spline edges are laid as straight run
 is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
 model has only those three
 
-**Missing:** saving as DXF (SAVEAS's DXF types, DXFOUT: docs/next-dxf.md); POINT, SOLID, TRACE,
+**Missing:** POINT, SOLID, TRACE,
 3DFACE, XLINE, RAY, LEADER, MLEADER, TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
@@ -151,3 +158,44 @@ lacks them typed); named UCSs and views, the drawing opened at its saved view; D
 prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured round from −X
 (AutoCAD wrote f006's clockwise island as a polyline loop), and an elliptical edge's angles, read
 as the ellipse's parameters
+
+### `DXFOUT` and SAVEAS of a DXF · es `SALVADXF` · pt-BR `EXPDXF` · fr `SAUVEDXF` · it `DXFOUT`
+
+**Implemented:** DXFOUT's Save Drawing As, SAVEAS's and SAVE's, on «AutoCAD 2018 DXF (*.dxf)»
+(desktop dxf/d01), and their DXF types: 2018, 2013, 2010, 2007, 2004 and 2000, each its
+`$ACADVER`; Tools ▸ Options…, Saveas Options' DXF Options tab: Format ASCII or BINARY, Select
+objects, Decimal places of accuracy (0 to 16), kept for the session whatever type is saved
+(x015, x020); with Select objects the command asks `Select objects:` once the dialog closes and
+the file holds that set (d01: `Select objects: _L`, `1 found`, `Select objects:`); a precision under
+16 warns at the command line as AutoCAD does (`Warning:  You have specified a lower precision…`,
+27480, x015, d01), rounding to its places the groups AutoCAD rounds (points, angles, bulges, text
+sizes) and leaving whole those it leaves (a radius, an ellipse, a spline, a hatch's boundary and
+pattern, a normal: x015, x021), with no exponent and at most 16 significant digits; up to 2004
+the text in ANSI_1252 with `\U+XXXX` beyond it, from 2007 UTF-8 (x014); the tables (layers on,
+off and locked, with their colour, linetype and lineweight; the linetypes used, the six with
+acadiso.lin's dashes; text styles; dimension styles, every variable the model holds; the blocks),
+the header's settings the reader takes back, the active viewport framing the drawing, and every
+object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
+vertices, a spline with its fit data or its knots, weights and control points (a closed one
+clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
+reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN; each
+file of the two reference drawings and of one of every other kind, in every version, ASCII and
+binary, opened by AutoCAD 2027's console with no AUDIT error and plotted as AutoCAD's own
+(scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
+regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,
+27480) and dialogs (acui26res.dll's 131, acadres.dll's 2489 and 5103)
+
+**Deviations:** what a DXF of ours cannot hold is left out and counted at the command line by its
+DXF type (`1 object not saved: 1 3DSOLID.`), WHY words of our own: AutoCAD writes everything it
+has, and the ACIS objects (3DSOLID, REGION) need their SAT, not written here; a dimension's style
+overrides and an array's parameters are not written, so AutoCAD opens the array as a block of its
+items and a dimension at its style; Save thumbnail preview image shows greyed and off, WHY: no
+preview is written yet (AutoCAD greyed it too in the owner's profile, d01); the drawing keeps its
+name after a DXF is written, WHY: nothing here names it
+
+**Missing:** «AutoCAD R12/LT2 DXF (*.dxf)» and the Version prompt's R12, which converts what R12
+lacks (`docs/next-dxf.md`); the thumbnail preview; named UCSs and views (`$UCSNAME` left out
+with them); DXFOUT's and SAVEAS's FILEDIA 0 prompts
+(`Enter decimal places of accuracy (0 to 16) or [Binary/select Objects/Preview/Version] <16>:`,
+x002, x003, x016–x019). **Unverified:** whether Select objects starts from a set selected before
+the command (here it is dropped)

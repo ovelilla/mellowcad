@@ -145,6 +145,7 @@ export const ptBR: EngineLocale = {
       "SAVE": "Salva o desenho em um arquivo",
       "OPEN": "Abre um arquivo de desenho",
       "DXFIN": "Abre um arquivo DXF",
+      "DXFOUT": "Salva o desenho como arquivo DXF",
       "PASTECLIP": "Cola o conteúdo da área de transferência no desenho",
       "DIMSTYLE": "Cria e modifica estilos de cota",
       "STYLE": "Cria e modifica estilos de texto",
@@ -1020,6 +1021,9 @@ export const ptBR: EngineLocale = {
       ],
       "DXFIN": [
         "IMPDXF"
+      ],
+      "DXFOUT": [
+        "EXPDXF"
       ],
       "PASTECLIP": [
         "COLARAT"
@@ -3368,6 +3372,7 @@ export const ptBR: EngineLocale = {
       "saveUnavailable": "Não é possível salvar em um arquivo aqui.",
       "openUnavailable": "Não é possível abrir um arquivo aqui.",
       "openFailed": "Não foi possível abrir o arquivo.",
+      "saveFailed": "Não foi possível salvar o arquivo.",
       "dxfHeaderError": [
         "Erro no cabeçalho do desenho online ",
         [
@@ -3401,6 +3406,28 @@ export const ptBR: EngineLocale = {
             "other": [
               0,
               " objetos não abertos"
+            ]
+          }
+        ],
+        ": ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfLowPrecision": "Atenção: Você especificou uma precisão baixa para o arquivo DXF, o que pode resultar na perda da exatidão do desenho.",
+      "dxfNotSaved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto não salvo"
+            ],
+            "other": [
+              0,
+              " objetos não salvos"
             ]
           }
         ],

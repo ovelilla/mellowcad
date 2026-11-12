@@ -112,10 +112,13 @@ async function openFromServer() {
 
 ### SAVE and OPEN
 
-When the user saves (SAVE, or QSAVE with Ctrl+S) or opens (OPEN, Ctrl+O), `CadEngine` downloads
-the file or shows a file picker, as the browser allows; a bad file is reported on the command
-line.
-`saveDrawingToFile()` and `openDrawingFromFile()` do the same from a button. `newDrawing()` is
+When the user saves with QSAVE (Ctrl+S) or opens (OPEN, Ctrl+O), `CadEngine` downloads the file
+or shows a file picker, as the browser allows; a bad file is reported on the command line. SAVEAS
+(Ctrl+Shift+S), SAVE and DXFOUT run while their Save Drawing As dialog shows:
+`state.saveAsDialog` holds what it opens on, your host draws it (`@mellowcad/editor` does), and
+answers with `saveAs({ fileName, fileType, dxf })` or closes it with `setSaveAsDialog(false)`.
+`SAVE_FILE_TYPES` lists its types and `saveFileName(name, type)` puts a type's extension on a name.
+`saveDrawingToFile()` and `openDrawingFromFile()` do QSAVE and OPEN from a button. `newDrawing()` is
 NEW: an empty drawing, which U brings back from. MASSPROP's analysis goes out the same way, a text
 file named as the drawing with `.mpr`: a `FileTransport` of your own receives it in `save` too.
 
@@ -129,6 +132,11 @@ DXFIN from a button. A `FileTransport` of your own gets the kinds a pick offers 
 opens a drawing and an ASCII DXF in UTF-8. A file your page already holds — dropped on it, or
 handed over by another page — opens with `openFile({ name, bytes })`, as OPEN opens the one it
 picks.
+
+SAVEAS's DXF types and DXFOUT write a DXF of AutoCAD 2000 to 2018, ASCII or binary, with DXF
+Options' decimal places and Select objects; the writer loads only when the dialog opens. Up to 2004
+the file is in its code page and a binary one is bytes, so `save` takes a `Uint8Array` as well as
+text.
 
 ## The clipboard
 

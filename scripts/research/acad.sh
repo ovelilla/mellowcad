@@ -3,7 +3,7 @@
 #
 #   scripts/research/acad.sh <tool> [args...]
 #
-# <tool> is a script of scripts/research/acad/ (com, shot, cursor, type, wins, children, uia,
+# <tool> is a script of scripts/research/acad/ (com, shot, cursor, type, wins, children, uia, dialog,
 # launch, post); each says its arguments in its first lines. They run in Windows PowerShell 5.1, the
 # one with [Marshal]::GetActiveObject. A Windows path the tool prints on a line of its own (a
 # screenshot, a dump) comes back as a WSL path, ready to read. See

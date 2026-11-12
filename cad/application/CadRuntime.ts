@@ -144,6 +144,7 @@ import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { SystemVariableTool } from "./tools/SystemVariableTool"
 import { UnitsTool } from "./tools/UnitsTool"
+import { SaveAsTool } from "./tools/SaveAsTool"
 import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
@@ -192,8 +193,11 @@ import {
   buildSelectionCandidates,
   buildTextStyleInfos,
   CommandOptionUi,
+  DxfSaveSettings,
   DynamicInputUi,
   EngineState,
+  SaveAsChoice,
+  SaveAsDialog,
   ObjectType,
   RolloverUi,
   PaletteTab,
@@ -256,9 +260,16 @@ import {
   applyDrawingFile,
   autosaveText,
   copyToClipboard,
+  DEFAULT_DXF_SETTINGS,
+  DxfWriter,
+  documentSnapshot,
   dxfErrorLines,
   dxfReportLines,
+  dxfSaveLines,
+  dxfSaveOptions,
+  loadDxfWriter,
   readClipboardFragment,
+  saveFileName,
   readOpenedFile,
   selectAll,
   serializeDrawing,
@@ -597,6 +608,14 @@ export class CadRuntime extends Observable {
   private paletteVertex = 0
   // Whether the Drawing Units dialog (UNITS) is showing.
   private unitsDialog = false
+  // The Save Drawing As dialog of SAVEAS, SAVE and DXFOUT, null while closed.
+  private saveAsDialog: SaveAsDialog | null = null
+  // DXF Options, kept for the session as AutoCAD keeps them (x015, x020).
+  private dxfSettings: DxfSaveSettings = DEFAULT_DXF_SETTINGS
+  // The DXF writer, loaded as the dialog opens (a page that never saves one
+  // never downloads it), and the DXF a Save waits to write after its set.
+  private dxfWriter: DxfWriter | null = null
+  private pendingDxf: { readonly choice: SaveAsChoice } | null = null
   // The Properties palette's task dialog for locked objects left out of an
   // edit, with how many: null while it is not showing.
   private lockedObjectsDialog: { readonly removed: number } | null = null
@@ -6064,6 +6083,139 @@ export class CadRuntime extends Observable {
     this.history.recordEmpty(this.startingName)
   }
 
+  /** Whether the host can write files: SAVEAS opens its dialog only then. */
+  filesAvailable(): boolean {
+    return this.files !== null
+  }
+
+  /**
+   * Shows or hides SAVEAS's, SAVE's or DXFOUT's Save Drawing As dialog, on
+   * the 2018 DXF type for DXFOUT and on this engine's drawing for the others
+   * (desktop dxf/d01), with the session's DXF Options. Opening it loads the
+   * DXF writer, so a Save never waits on it.
+   */
+  showSaveAsDialog(command: string, open: boolean): void {
+    if (!open) {
+      if (this.saveAsDialog === null) return
+      this.saveAsDialog = null
+      this.invalidateState()
+      return
+    }
+    const fileType = command === "DXFOUT" ? "dxf2018" : "drawing"
+    this.saveAsDialog = {
+      command,
+      fileType,
+      fileName: saveFileName(this.suggestedFileName(), fileType),
+      dxf: this.dxfSettings,
+    }
+    void loadDxfWriter().then(
+      (writer) => {
+        this.dxfWriter = writer
+      },
+      () => {}
+    )
+    this.invalidateState()
+  }
+
+  /**
+   * The Save Drawing As dialog closed with Cancel or Escape: its command
+   * ends, writing nothing (desktop dxf/d01: `Command: _DXFOUT`, then
+   * `Command:`). Opening it is the commands' own.
+   */
+  setSaveAsDialog(open: boolean): void {
+    if (open || this.saveAsDialog === null) return
+    const tool = this.activeTool
+    if (tool instanceof SaveAsTool && tool.atDialog()) {
+      this.returnToNeutralTool()
+      return
+    }
+    this.showSaveAsDialog("", false)
+  }
+
+  /**
+   * The Save Drawing As dialog's Save: this engine's drawing, or a DXF of
+   * the version chosen with DXF Options, which the session keeps. With
+   * Select objects the command asks `Select objects:` first and the file
+   * holds that set (desktop dxf/d01). A precision under 16 warns as AutoCAD
+   * does (27480, x015), and what a DXF cannot hold is said.
+   */
+  async saveAs(choice: SaveAsChoice): Promise<void> {
+    if (!this.atSaveAsDialog()) return
+    const settled: SaveAsChoice = {
+      ...choice,
+      fileName: saveFileName(choice.fileName, choice.fileType),
+    }
+    if (choice.fileType !== "drawing") {
+      let writer: DxfWriter
+      try {
+        writer = this.dxfWriter ?? (await loadDxfWriter())
+      } catch {
+        // The writer would not load: said where AutoCAD answers, the dialog
+        // left open for another try.
+        if (this.atSaveAsDialog()) {
+          this.reportFileError(this.text.message("saveFailed"))
+        }
+        return
+      }
+      if (!this.atSaveAsDialog()) return
+      this.dxfWriter = writer
+    }
+    // Options' OK keeps them, whatever type is saved.
+    this.dxfSettings = dxfSaveOptions(choice).settings
+    const tool = this.activeTool as SaveAsTool
+    if (choice.fileType === "drawing") {
+      this.files?.save(this.serializeDrawing(), settled.fileName)
+      this.history.markRegenerated()
+      this.returnToNeutralTool()
+      return
+    }
+    this.pendingDxf = { choice: settled }
+    if (this.dxfSettings.selectObjects) {
+      tool.selectObjects(this.toolContext)
+      this.invalidateState()
+      this.host.requestRender()
+      return
+    }
+    this.writePendingDxf(null)
+    this.returnToNeutralTool()
+  }
+
+  /** Whether SAVEAS's run is at its dialog, before any prompt. */
+  private atSaveAsDialog(): boolean {
+    const tool = this.activeTool
+    return tool instanceof SaveAsTool && tool.atDialog()
+  }
+
+  /** Writes the DXF a Save chose: the whole drawing, or the set `ids` asked for. */
+  private writePendingDxf(ids: readonly EntityId[] | null): void {
+    const pending = this.pendingDxf
+    this.pendingDxf = null
+    if (!pending || !this.dxfWriter || !this.files) return
+    const options = dxfSaveOptions(pending.choice)
+    const objects = ids
+      ?.map((id) => this.document.get(id))
+      .filter((entity): entity is Entity => entity !== undefined)
+    const { bytes, report } = this.dxfWriter.writeDxf(
+      documentSnapshot(this.document),
+      { ...options.write, ...(objects ? { objects } : {}) }
+    )
+    this.files.save(bytes, pending.choice.fileName)
+    for (const line of dxfSaveLines(options.settings, report, this.text)) {
+      this.commandLine.write("info", line)
+    }
+    this.history.markRegenerated()
+    this.invalidateState()
+  }
+
+  /** The SAVEAS, SAVE or DXFOUT run: its dialog, and the set Select objects asks for. */
+  saveAsTool(id: string, command: string): SaveAsTool {
+    return new SaveAsTool(
+      id,
+      (open) => this.showSaveAsDialog(command, open),
+      (ids) => this.writePendingDxf(ids)
+    )
+  }
+
   /**
    * Asks the transport for a file and opens it: AutoCAD's OPEN, a drawing or
    * a DXF, and DXFIN, a DXF alone (`kinds`). What a DXF holds that the model
@@ -7892,6 +8044,7 @@ export class CadRuntime extends Observable {
       ),
       palette: { open: this.paletteOpen, tab: this.paletteTab },
       unitsDialog: this.unitsDialog,
+      saveAsDialog: this.saveAsDialog,
       lockedObjectsDialog: this.lockedObjectsDialog,
       unsavedTextDialog: this.unsavedTextDialog,
       cleanScreen: {

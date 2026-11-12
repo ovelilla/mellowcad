@@ -15,6 +15,7 @@ import {
   EngineState,
   ObjectType,
   PaletteTab,
+  SaveAsChoice,
   SelectionScope,
   ShortcutMenuAction,
   StylesPanelTab,
@@ -755,6 +756,20 @@ export class CadEngine {
 
   setUnitsDialog(open: boolean): void {
     this.runtime.setUnitsDialog(open)
+  }
+
+  /** The Save Drawing As dialog's Cancel: SAVEAS, SAVE or DXFOUT ends, writing nothing. */
+  setSaveAsDialog(open: boolean): void {
+    this.runtime.setSaveAsDialog(open)
+  }
+
+  /**
+   * The Save Drawing As dialog's Save: the drawing, or a DXF with DXF
+   * Options, through the file transport. Resolves once written, or once
+   * Select objects is asking for the set.
+   */
+  saveAs(choice: SaveAsChoice): Promise<void> {
+    return this.runtime.saveAs(choice)
   }
 
   openDrawingUnits(): void {

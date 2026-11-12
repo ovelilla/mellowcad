@@ -1,10 +1,10 @@
 # DXF: abrir y guardar como en AutoCAD — brief
 
 > **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
-> publicados el 7/11/2026 (sesión 07 del plan de visibilidad), y la fase 3 (la página «abrir DXF
-> online», sesión 07b) hecha y publicada el 8/11, con la fase 4 ordenada por lo que falta en 731
-> DXF reales; siguiente, la fase 2 (guardar como DXF). Se borra cuando la fase 5 esté hecha;
-> hasta entonces cada fase cerrada se marca aquí.
+> publicados el 7/11/2026 (sesión 07 del plan de visibilidad), la fase 3 (la página «abrir DXF
+> online», sesión 07b) el 8/11, con la fase 4 ordenada por lo que falta en 731 DXF reales, y la
+> fase 2 (guardar como DXF, de 2000 a 2018) el 12/11; queda de ella el DXF R12. Siguiente, la
+> fase 4. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -135,7 +135,16 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    binario, con su precisión y _Select objects_; cada fichero, abierto por AutoCAD en la consola en
    los tests de su desarrollo. R12 convierte lo que R12 no tiene (como hace AutoCAD: una elipse,
    polilínea): fase propia si pesa. Al cerrarla, la página «abrir DXF online», su FAQ y el kit de
-   lanzamiento dicen que guarda.
+   lanzamiento dicen que guarda. **Hecha** (12/11/2026, tras la sesión 09 del plan de visibilidad), sin
+   R12: el cuadro, visto en el escritorio en inglés (sonda `d01`) y con sus etiquetas de los cinco
+   idiomas de AutoCAD; el escritor en `cad/serialization/dxf/writeDxf.ts`, cargado solo al abrir el
+   cuadro, cuyos ficheros de los dos dibujos de referencia y de uno de cada clase restante, en las
+   seis versiones, ASCII y binarios, abre la consola de AutoCAD 2027 sin un error de AUDIT
+   (`scripts/research/probes/dxf/audit.sh`) y traza como los suyos (`plot.sh`); la precisión
+   redondea los grupos que redondea AutoCAD (x015, x021). Lo que hace y lo que le falta, en la
+   entrada de DXFOUT de `docs/coverage/clipboard-and-files.md`. Queda, como fase propia: R12 (su
+   tipo y la versión R12, que convierten lo que R12 no tiene), y las vistas preliminares van con
+   la fase 5.
 3. **Las páginas «abrir DXF online»** por idioma, en una sesión de contenido (`docs/next-seo.md`).
    **Hecha** (8/11/2026, sesión 07b, `bbeefd64`): `/docs/open-dxf` en los cuatro idiomas, que abre
    en `/draw` el DXF que se elige o se suelta en ella, sin subirlo (`openFile`, `761a6083`); lo que

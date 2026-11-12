@@ -164,13 +164,25 @@ export function registerCommands(
   // both start the blank drawing QNEW starts from the default template.
   register({ id: "NEW", run: () => runtime.newDrawing() })
   register({ id: "QNEW", run: () => runtime.newDrawing() })
-  // A browser download always names the file, so AutoCAD's QSAVE (save over
-  // the current name), SAVEAS (prompt for one) and SAVE (prompt, and on a
-  // titled drawing write a copy, clipboard/p215) cannot be told apart here;
-  // all three run the one save we can offer (CLIPBOARD-D4).
+  // A browser download always names the file, and nothing here keeps the
+  // drawing's name, so QSAVE saves at once, as on a titled drawing
+  // (CLIPBOARD-D4). SAVEAS, SAVE and DXFOUT run while their Save Drawing As
+  // dialog shows (FILEDIA 1), DXFOUT's on the 2018 DXF type (desktop
+  // dxf/d01); with no file access each reports it, as QSAVE does.
   register({ id: "QSAVE", run: () => runtime.saveDrawingToFile() })
-  register({ id: "SAVEAS", run: () => runtime.saveDrawingToFile() })
-  register({ id: "SAVE", run: () => runtime.saveDrawingToFile() })
+  for (const [command, id] of [
+    ["SAVEAS", "saveas"],
+    ["SAVE", "save"],
+    ["DXFOUT", "dxfout"],
+  ] as const) {
+    register({
+      id: command,
+      run: () => {
+        if (runtime.filesAvailable()) startTool(runtime.saveAsTool(id, command))
+        else runtime.saveDrawingToFile()
+      },
+    })
+  }
   register({
     id: "OPEN",
     run: () => {

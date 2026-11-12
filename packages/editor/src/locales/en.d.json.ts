@@ -149,6 +149,31 @@ declare const source: {
     "ok": string
     "cancel": string
   }
+  "SaveAs": {
+    "title": string
+    "fileName": string
+    "fileType": string
+    "tools": string
+    "options": string
+    "save": string
+    "cancel": string
+    "drawing": string
+    "dxf2018": string
+    "dxf2013": string
+    "dxf2010": string
+    "dxf2007": string
+    "dxf2004": string
+    "dxf2000": string
+    "optionsTitle": string
+    "dxfOptions": string
+    "format": string
+    "ascii": string
+    "binary": string
+    "selectObjects": string
+    "preview": string
+    "precision": string
+    "ok": string
+  }
   "SnapOverride": {
     "from": string
     "pointFilters": string

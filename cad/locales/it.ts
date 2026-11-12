@@ -145,6 +145,7 @@ export const it: EngineLocale = {
       "SAVE": "Salva il disegno in un file",
       "OPEN": "Apre un file di disegno",
       "DXFIN": "Apre un file DXF",
+      "DXFOUT": "Salva il disegno in un file DXF",
       "PASTECLIP": "Incolla il contenuto degli Appunti nel disegno",
       "DIMSTYLE": "Crea e modifica gli stili di quota",
       "STYLE": "Crea e modifica gli stili di testo",
@@ -1001,8 +1002,7 @@ export const it: EngineLocale = {
         "SALVAVEL"
       ],
       "SAVEAS": [
-        "SALVACOME",
-        "DXFOUT"
+        "SALVACOME"
       ],
       "SAVE": [
         "SALVA",
@@ -1014,6 +1014,9 @@ export const it: EngineLocale = {
       ],
       "DXFIN": [
         "DXFIN"
+      ],
+      "DXFOUT": [
+        "DXFOUT"
       ],
       "PASTECLIP": [
         "INCOLLACLIP"
@@ -3369,6 +3372,7 @@ export const it: EngineLocale = {
       "saveUnavailable": "Il salvataggio in un file non è disponibile qui.",
       "openUnavailable": "L'apertura di un file non è disponibile qui.",
       "openFailed": "Impossibile aprire il file.",
+      "saveFailed": "Impossibile salvare il file.",
       "dxfHeaderError": [
         "Errore nell'intestazione del disegno alla linea ",
         [
@@ -3402,6 +3406,28 @@ export const it: EngineLocale = {
             "other": [
               0,
               " oggetti non aperti"
+            ]
+          }
+        ],
+        ": ",
+        [
+          "types"
+        ],
+        "."
+      ],
+      "dxfLowPrecision": "Avvertimento: per il file DXF è stata specificata una precisione inferiore. È possibile che si ottenga una perdita di precisione del disegno.",
+      "dxfNotSaved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " oggetto non salvato"
+            ],
+            "other": [
+              0,
+              " oggetti non salvati"
             ]
           }
         ],

@@ -32,7 +32,11 @@ export const DIFFERENCES: readonly {
       {
         file: "docs/coverage/clipboard-and-files.md",
         quote:
-          "SAVEAS and SAVE write the same download as QSAVE, since a browser download always names the file",
+          "QSAVE writes the same download at once, since nothing here keeps the drawing's name",
+      },
+      {
+        file: "docs/coverage/clipboard-and-files.md",
+        quote: "WHY: a download goes where the browser puts it",
       },
       {
         file: "docs/coverage/clipboard-and-files.md",
