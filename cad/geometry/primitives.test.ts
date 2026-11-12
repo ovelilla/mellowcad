@@ -801,6 +801,29 @@ describe("circlesMeetingThree", () => {
     ).toEqual([])
   })
 
+  it("touches a large circle from a small one as exactly as from a huge one", () => {
+    // On the X axis, centred on a line nearly along Y, touching a circle of
+    // 780 that passes 0.86 from the origin: the small fits' and the huge
+    // ones' parameters 10¹⁰ apart, where the textbook root lost ten digits
+    // (the property below, seed -1019015864: 1.3·10⁻⁶ off).
+    const big = { center: p(780.96, 0.01), radius: 780.1 }
+    const fits = circlesMeetingThree([
+      { kind: "line", a: p(0, 0), b: p(1.01, 0) },
+      { kind: "centerOn", a: p(0, 0), b: p(-0.01, -32.3) },
+      { kind: "circle", ...big },
+    ])
+    expect(fits.filter((f) => f.radius < 1)).toHaveLength(2)
+    for (const fit of fits) {
+      const size = Math.max(1, fit.radius)
+      const apart = V.distance(fit.center, big.center)
+      const off = Math.abs(apart - (big.radius + fit.radius))
+      expect(off / size).toBeLessThan(1e-12)
+      expect(Math.abs(Math.abs(fit.center.y) - fit.radius) / size).toBeLessThan(
+        1e-12
+      )
+    }
+  })
+
   it("returns circles meeting every constraint where they say", () => {
     const constraint: fc.Arbitrary<CircleConstraint> = fc.oneof(
       point.map((q): CircleConstraint => ({ kind: "point", point: q })),

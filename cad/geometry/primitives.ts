@@ -1287,7 +1287,16 @@ function solveRows(rows: readonly number[][]): [number, number, number][] {
     const disc = qB * qB - 4 * qA * qC
     if (disc < -1e-9 * Math.max(1, qB * qB)) return []
     const root = Math.sqrt(Math.max(0, disc))
-    roots.push((-qB - root) / (2 * qA), (-qB + root) / (2 * qA))
+    // The far root by the formula, the near one from their product C / A:
+    // (−B ± √disc) / 2A cancels in the near one when they lie 10¹⁰ apart, a
+    // small circle beside a large one off a nearly square line, 10⁻⁶ off
+    // (primitives.test.ts). In the formula's order, − then +. A double root
+    // (disc rounded up to 0) is −B / 2A twice: C / q there would carry C's
+    // rounding unbounded.
+    const q = -(qB + (qB < 0 ? -root : root)) / 2
+    const far = q / qA
+    const near = disc > 0 ? qC / q : far
+    roots.push(...(qB < 0 ? [near, far] : [far, near]))
   }
   return roots.map((t) => [xa + xb * t, ya + yb * t, ra + rb * t])
 }

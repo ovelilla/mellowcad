@@ -93,6 +93,19 @@ child's environment, or its `git init` and commits land in the real repository
   ids whenever identity matters (update in place against replace).
 - `test/arbitraries.ts` — fast-check generators (`coordinate` is well-conditioned on purpose,
   `wildCoordinate` for stress). Use property tests for `geometry/` and `domain/` invariants.
+- `test/breps.ts` — `eulerHolds` counts a vertex once per umbrella: where solids touch, the kernel
+  makes one vertex a face's loop runs through twice, a sound solid the plain count calls broken.
+- `test/timeLimit.ts` — every property fails past 10 s (`setup.ts`); one whose every run builds
+  solids states its own with `withTimeLimit` (`SOLIDS_TIME_LIMIT`), since the gate's coverage and
+  parallel workers slow it severalfold, in CPU as much as wall time. Never fewer runs to fit.
+
+## A property that fails now and then
+
+Each run draws a new seed, so "passes alone" is another seed, not less load. Read fast-check's
+message: **"Property interrupted"** is the time limit; **"Property failed"** carries a
+counterexample, real until shown otherwise. Replay it (`{ seed, path }`), find which check it
+breaks and whether the kernel or the check is wrong, fix that, and keep the case as a fixed test
+that fails without the fix. Sweeping hundreds of seeds outside the suite finds the rare ones.
 
 ## Coverage
 

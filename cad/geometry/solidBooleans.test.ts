@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { solidPair } from "../../test/arbitraries"
 import { eulerHolds } from "../../test/breps"
+import { SOLIDS_TIME_LIMIT, withTimeLimit } from "../../test/timeLimit"
 
 import { Vec3 } from "./Vec3"
 import {
@@ -221,7 +222,13 @@ describe("booleans of solids", () => {
       const vu = u ? brepVolume(u) : 0
       const vi = i ? brepVolume(i) : 0
       const vd = d ? brepVolume(d) : 0
-      for (const r of [u, i, d]) if (r) expect(brepIsClosed(r), name).toBe(true)
+      // Euler's count too where they touch: the slanted box's corner lies on
+      // the box's front, so the difference's faces meet there twice.
+      for (const r of [u, i, d]) {
+        if (!r) continue
+        expect(brepIsClosed(r), name).toBe(true)
+        expect(eulerHolds(r), name).toBe(true)
+      }
       expect(vu, name).toBeCloseTo(va + vb - vi, 6)
       expect(vd, name).toBeCloseTo(va - vi, 6)
     }
@@ -240,7 +247,11 @@ function addsUp(name: string, A: Brep, B: Brep, digits = 6) {
   const u = brepBoolean("union", A, B)
   const i = brepBoolean("intersect", A, B)
   const d = brepBoolean("subtract", A, B)
-  for (const r of [u, i, d]) if (r) expect(brepIsClosed(r), name).toBe(true)
+  for (const r of [u, i, d]) {
+    if (!r) continue
+    expect(brepIsClosed(r), name).toBe(true)
+    expect(eulerHolds(r), name).toBe(true)
+  }
   const vi = i ? brepVolume(i) : 0
   expect(u ? brepVolume(u) : 0, name).toBeCloseTo(va + vb - vi, digits)
   expect(d ? brepVolume(d) : 0, name).toBeCloseTo(va - vi, digits)
@@ -393,6 +404,47 @@ describe("booleans in each closed form", () => {
     addsUp("apex", cone, box(0, -10, -1, 10, 20, 15))
   })
 
+  it("cut a sphere by a box whose face passes just by its pole, as its cap", () => {
+    // Its pole a tenth off the box's top, which passes just by it: the cut's
+    // circle turns half a turn round the pole in that stretch. Pieces even
+    // along it measured the cap 6 % off (booleans of any solids, seed 2059,
+    // where the cap made the union's volume wrong).
+    const r = 10
+    const axis = normalize({ x: 1, y: 0, z: 0.1 })
+    const sphere = sphereBrep(O, axis, normalize({ x: -0.1, y: 0, z: 1 }), r)
+    const ball = (4 / 3) * Math.PI * r ** 3
+    // Under the pole the box takes it; over it, the sphere keeps it.
+    for (const gap of [0.35, 0.05, 0.001, -0.001, -0.05, -0.35]) {
+      const level = r * axis.z - gap
+      const h = r - level
+      const cap = (Math.PI * h * h * (3 * r - h)) / 3
+      const slab = box(-20, -20, level, 40, 40, 20)
+      const { u, i, d } = addsUp(`${gap}`, sphere, slab)
+      const off = (r: Brep, volume: number) => (brepVolume(r) - volume) / ball
+      expect(off(i!, cap), `${gap}`).toBeCloseTo(0, 9)
+      expect(off(d!, ball - cap), `${gap}`).toBeCloseTo(0, 9)
+      expect(off(u!, ball + 32_000 - cap), `${gap}`).toBeCloseTo(0, 9)
+    }
+  })
+
+  it("close an elliptical cylinder cut by a box's face nearly along its axis", () => {
+    // The face 5·10⁻⁵ off the axis meets the cylinder in an ellipse some 10⁴
+    // times longer than wide, whose vertices lie on it but read off it as its
+    // radius stretched by the minor axis: open, all three (booleans of any
+    // solids, seed 1268, at 2·10⁻⁴), and a drawing file would drop them.
+    const e = 5e-5
+    const cylinder = roundBrep(O, Z, X, 10, 5, 20, 1)
+    for (const y of [2, 4]) {
+      const slab = boxBrep(
+        { x: -20, y, z: -5 },
+        { x: 40, y: 0, z: 0 },
+        { x: 0, y: 20 * Math.cos(e), z: 20 * Math.sin(e) },
+        { x: 0, y: -30 * Math.sin(e), z: 30 * Math.cos(e) }
+      )
+      addsUp(`${y}`, cylinder, slab)
+    }
+  })
+
   it("leave solids apart alone, and refuse a pair with no closed form", () => {
     const a = box(0, 0, 0, 1, 1, 1)
     const b = box(5, 5, 5, 1, 1, 1)
@@ -413,44 +465,46 @@ describe("booleans of any solids", () => {
   it("close, keep Euler's count and add up their volumes, or refuse, rarely", () => {
     let made = 0
     let refused = 0
-    fc.assert(
-      fc.property(solidPair, ({ a, b, kind }) => {
-        let u: Brep | null
-        let i: Brep | null
-        let d: Brep | null
-        try {
-          u = brepBoolean("union", a, b)
-          i = brepBoolean("intersect", a, b)
-          d = brepBoolean("subtract", a, b)
-        } catch (e) {
-          if (!(e instanceof SolidBooleanError)) throw e
-          // A refusal leaves the solids as they were (the command says so):
-          // safe, and counted below.
-          if (e.reason === "failed") refused++
-          return
-        }
-        made++
-        for (const r of [u, i, d]) {
-          if (!r) continue
-          expect(brepIsClosed(r), kind).toBe(true)
-          expect(eulerHolds(r), kind).toBe(true)
-        }
-        const va = brepVolume(a)
-        const vb = brepVolume(b)
-        const vi = i ? brepVolume(i) : 0
-        const scale = Math.max(va, vb)
-        expect(
-          ((u ? brepVolume(u) : 0) - (va + vb - vi)) / scale,
-          kind
-        ).toBeCloseTo(0, 6)
-        expect(((d ? brepVolume(d) : 0) - (va - vi)) / scale, kind).toBeCloseTo(
-          0,
-          6
-        )
-      }),
-      // 5.6 s alone with coverage at its slowest seed seen (1692859543), over
-      // 10 s with the whole suite beside it at 20 runs.
-      { numRuns: 12 }
+    withTimeLimit(SOLIDS_TIME_LIMIT, () =>
+      fc.assert(
+        fc.property(solidPair, ({ a, b, kind }) => {
+          let u: Brep | null
+          let i: Brep | null
+          let d: Brep | null
+          try {
+            u = brepBoolean("union", a, b)
+            i = brepBoolean("intersect", a, b)
+            d = brepBoolean("subtract", a, b)
+          } catch (e) {
+            if (!(e instanceof SolidBooleanError)) throw e
+            // A refusal leaves the solids as they were (the command says so):
+            // safe, and counted below.
+            if (e.reason === "failed") refused++
+            return
+          }
+          made++
+          for (const r of [u, i, d]) {
+            if (!r) continue
+            expect(brepIsClosed(r), kind).toBe(true)
+            expect(eulerHolds(r), kind).toBe(true)
+          }
+          const va = brepVolume(a)
+          const vb = brepVolume(b)
+          const vi = i ? brepVolume(i) : 0
+          const scale = Math.max(va, vb)
+          expect(
+            ((u ? brepVolume(u) : 0) - (va + vb - vi)) / scale,
+            kind
+          ).toBeCloseTo(0, 6)
+          expect(
+            ((d ? brepVolume(d) : 0) - (va - vi)) / scale,
+            kind
+          ).toBeCloseTo(0, 6)
+        }),
+        // 5.6 s alone with coverage at its slowest seed seen (1692859543) at
+        // 20 runs; at 12, 9 s with the whole suite beside it.
+        { numRuns: 12 }
+      )
     )
     expect(made).toBeGreaterThan(5)
     // About 1 in 1000 sampled pairs, a sliver between a cut and an edge.

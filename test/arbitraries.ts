@@ -49,12 +49,13 @@ import type { Vec2 } from "../cad/geometry/Vec2"
 import type { PlanarCurve } from "../cad/geometry/planarCurves"
 import type { RegionFace } from "../cad/geometry/planarRegions"
 import { arbitraryAxis, axesToWorld } from "../cad/geometry/ocs"
-import { Vec3, add3, scale3, sub3 } from "../cad/geometry/Vec3"
+import { Vec3, add3, dot3, scale3, sub3 } from "../cad/geometry/Vec3"
 import { curveBox, curveMapped } from "../cad/geometry/planarCurves"
 import {
   type Brep,
   boxBrep,
   brepBox,
+  brepMapped,
   roundBrep,
   sphereBrep,
 } from "../cad/geometry/solids"
@@ -1163,6 +1164,18 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
       )
   )
 
+/** How deep the solid runs along `d`: its box's depth turned so `d` is Z. */
+function depthAlong(brep: Brep, d: Vec3): number {
+  const axes = arbitraryAxis(d)!
+  const into = (p: Vec3) => ({
+    x: dot3(p, axes.x),
+    y: dot3(p, axes.y),
+    z: dot3(p, axes.z),
+  })
+  const box = brepBox(brepMapped(brep, into, into, false))!
+  return box.max.z - box.min.z
+}
+
 /**
  * A solid a boolean can take: a primitive or a sweep, never a sliver —
  * thinner than a fiftieth of its length one way, or an elliptical round side
@@ -1191,7 +1204,25 @@ const boolSolid = fc
         (f.surface.kind === "cylinder" || f.surface.kind === "cone") &&
         (f.surface.ratio < 0.1 || f.surface.ratio > 10)
     )
-    return !flat && d[0] >= d[2] / 50 && d[0] >= 0.5
+    if (flat || d[0] < d[2] / 50 || d[0] < 0.5) return false
+    // Thin along its own axes too, which the world's box misses when they
+    // lie aslant: a cone 446 wide and 0.03 high lying on its side read 892
+    // by 192 by 892 there (any solid cut by any plane, seed 3085). Each way
+    // once, a box's six faces three.
+    const own: Vec3[] = []
+    for (const { surface: s } of brep.faces) {
+      const n =
+        s.kind === "plane"
+          ? s.normal
+          : s.kind === "extrusion"
+            ? s.direction
+            : s.axis
+      if (own.every((m) => Math.abs(dot3(m, n)) < 1 - 1e-9)) own.push(n)
+    }
+    return own.every((n) => {
+      const depth = depthAlong(brep, n)
+      return depth >= d[2] / 50 && depth >= 0.5
+    })
   })
 
 /**

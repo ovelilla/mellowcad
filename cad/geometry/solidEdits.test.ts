@@ -3,9 +3,10 @@ import { describe, expect, it } from "vitest"
 
 import { solidCut } from "../../test/arbitraries"
 import { eulerHolds, shellCount } from "../../test/breps"
+import { SOLIDS_TIME_LIMIT, withTimeLimit } from "../../test/timeLimit"
 
-import { Vec3, cross3, normalize3, sub3 } from "./Vec3"
-import { curveEnd, curveStart } from "./planarCurves"
+import { Vec3, cross3, normalize3, scale3, sub3 } from "./Vec3"
+import { MODEL_TOLERANCE, curveEnd, curveStart } from "./planarCurves"
 import { facesArea } from "./planarRegions"
 import {
   Brep,
@@ -84,15 +85,27 @@ function faceAt(b: Brep, normal: Vec3, level: number): number {
   )
 }
 
-/** Each loop of the section runs end to start round. */
+/**
+ * Each loop of the section runs end to start round, within the model's
+ * tolerance of its size, as `brepIsClosed` holds a vertex to its edges: an
+ * ellipse's end met a line's 2·10⁻⁶ apart 2000 out (any solid cut by any
+ * plane, seed 7115), which 10⁻⁶ flat called open.
+ */
 function closedLoops(section: PlaneSection): boolean {
+  const ends = section.faces.flatMap((face) =>
+    face.loops.flat().flatMap((c) => [curveStart(c), curveEnd(c)])
+  )
+  const size = Math.max(
+    1,
+    ...ends.map((p) => Math.max(Math.abs(p.x), Math.abs(p.y)))
+  )
   return section.faces.every((face) =>
     face.loops.every((loop) =>
       loop.every((c, i) => {
         const next = loop[(i + 1) % loop.length]
         const a = curveEnd(c)
         const b = curveStart(next)
-        return Math.hypot(a.x - b.x, a.y - b.y) < 1e-6
+        return Math.hypot(a.x - b.x, a.y - b.y) < MODEL_TOLERANCE * size
       })
     )
   )
@@ -207,6 +220,38 @@ describe("a solid cut by a plane", () => {
     expect(counts(front!)).toEqual({ v: 16, e: 24, f: 12 })
     expect(brepVolume(back!)).toBeCloseTo(4000, 9)
     expect(counts(back!)).toEqual({ v: 16, e: 24, f: 10 })
+  })
+
+  it("halves a sphere just off its pole as its caps' closed forms", () => {
+    // Its pole along X, the plane nearly across it passing just by the pole:
+    // the cut's circle turns half a turn round it in that stretch. Pieces
+    // even along the circle measured the halves 2·10⁻³ off (any solid cut by
+    // any plane, seed 1228), and up to a fifth of the sphere nearer; read
+    // the wrong way round the pole between two samples, a cap round it lost
+    // the whole sphere.
+    const r = 1000
+    const ball = (4 / 3) * Math.PI * r ** 3
+    const sphere = sphereBrep({ x: 0, y: 0, z: 0 }, X, Y, r)
+    for (const turn of [0, Math.PI / 16]) {
+      const normal = normalize3({
+        x: 0.1,
+        y: Math.sin(turn),
+        z: Math.cos(turn),
+      })!
+      // Past the pole, the front cap holds it; short of it, the back half.
+      for (const gap of [3.5, 0.5, 0.05, 0.01, -0.01, -0.5, -3.5]) {
+        const d = r * normal.x - gap
+        const { front, back } = brepSliced(sphere, {
+          origin: scale3(normal, d),
+          normal,
+        })
+        const h = r - d
+        const cap = (Math.PI * h * h * (3 * r - h)) / 3
+        const at = `${turn} ${gap}`
+        expect((brepVolume(front!) - cap) / ball, at).toBeCloseTo(0, 9)
+        expect((brepVolume(back!) - (ball - cap)) / ball, at).toBeCloseTo(0, 9)
+      }
+    }
   })
 })
 
@@ -364,35 +409,37 @@ describe("a face pulled, pressed and offset", () => {
 describe("any solid cut by any plane", () => {
   it("halves add up to it, each closed and Euler's, its section closed", () => {
     let made = 0
-    fc.assert(
-      fc.property(solidCut, ({ brep, origin, normal, kind }) => {
-        let halves
-        let section
-        try {
-          halves = brepSliced(brep, { origin, normal })
-          section = brepSection(brep, { origin, normal })
-        } catch (e) {
-          if (!(e instanceof SolidBooleanError)) throw e
-          return
-        }
-        made++
-        const { front, back } = halves
-        let sum = 0
-        for (const half of [front, back]) {
-          if (!half) continue
-          expect(brepIsClosed(half), kind).toBe(true)
-          expect(eulerHolds(half), kind).toBe(true)
-          sum += brepVolume(half)
-        }
-        const whole = brepVolume(brep)
-        expect((sum - whole) / whole, kind).toBeCloseTo(0, 6)
-        if (front && back) {
-          expect(section, kind).not.toBeNull()
-          expect(facesArea(section!.faces), kind).toBeGreaterThan(0)
-          expect(closedLoops(section!), kind).toBe(true)
-        }
-      }),
-      { numRuns: 10 }
+    withTimeLimit(SOLIDS_TIME_LIMIT, () =>
+      fc.assert(
+        fc.property(solidCut, ({ brep, origin, normal, kind }) => {
+          let halves
+          let section
+          try {
+            halves = brepSliced(brep, { origin, normal })
+            section = brepSection(brep, { origin, normal })
+          } catch (e) {
+            if (!(e instanceof SolidBooleanError)) throw e
+            return
+          }
+          made++
+          const { front, back } = halves
+          let sum = 0
+          for (const half of [front, back]) {
+            if (!half) continue
+            expect(brepIsClosed(half), kind).toBe(true)
+            expect(eulerHolds(half), kind).toBe(true)
+            sum += brepVolume(half)
+          }
+          const whole = brepVolume(brep)
+          expect((sum - whole) / whole, kind).toBeCloseTo(0, 6)
+          if (front && back) {
+            expect(section, kind).not.toBeNull()
+            expect(facesArea(section!.faces), kind).toBeGreaterThan(0)
+            expect(closedLoops(section!), kind).toBe(true)
+          }
+        }),
+        { numRuns: 10 }
+      )
     )
     expect(made).toBeGreaterThan(5)
   }, 120_000)

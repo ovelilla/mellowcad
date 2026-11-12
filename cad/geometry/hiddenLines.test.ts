@@ -2,6 +2,7 @@ import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 
 import { solidPair } from "../../test/arbitraries"
+import { SOLIDS_TIME_LIMIT, withTimeLimit } from "../../test/timeLimit"
 
 import { Vec3, add3, length3, normalize3, scale3, sub3 } from "./Vec3"
 import { bsplineDomain, bsplinePoint } from "./nurbs"
@@ -338,11 +339,13 @@ describe("hidden lines of any solids", () => {
         y: Math.cos(e) * Math.sin(a),
         z: Math.sin(e),
       }))
-    fc.assert(
-      fc.property(solidPair, direction, ({ a, b, kind }, w) =>
-        expectNothingInFront([a, b], w, kind)
-      ),
-      { numRuns: 8 }
+    withTimeLimit(SOLIDS_TIME_LIMIT, () =>
+      fc.assert(
+        fc.property(solidPair, direction, ({ a, b, kind }, w) =>
+          expectNothingInFront([a, b], w, kind)
+        ),
+        { numRuns: 8 }
+      )
     )
   }, 60_000)
 })

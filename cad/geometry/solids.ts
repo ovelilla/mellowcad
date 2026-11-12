@@ -1740,11 +1740,19 @@ function onCurve(c: BrepCurve, p: Vec3, tolerance: number): boolean {
   if (Math.abs(dot3(d, c.normal)) > tolerance) return false
   if (c.kind === "circle") return Math.abs(length3(d) - c.radius) <= tolerance
   const a = length3(c.majorAxis)
+  const b = a * c.ratio
   const x = scale3(c.majorAxis, 1 / a)
   const y = cross3(c.normal, x)
   const u = dot3(d, x)
-  const v = dot3(d, y) / c.ratio
-  return Math.abs(Math.hypot(u, v) - a) <= tolerance
+  const v = dot3(d, y)
+  // The residual over its gradient: the distance, to first order. The radial
+  // reading hypot(u, v / ratio) − a is none, stretched 1 / ratio by the minor
+  // axis: it failed a box's face nearly along an elliptical cylinder's axis,
+  // whose ellipse runs 10⁴ times longer than wide, its vertices on it within
+  // 4·10⁻⁷ (solidBooleans.test.ts), and a file would drop that solid.
+  const f = (u / a) ** 2 + (v / b) ** 2 - 1
+  const gradient = 2 * Math.hypot(u / (a * a), v / (b * b))
+  return Math.abs(f) <= tolerance * gradient
 }
 
 const isUnit = (v: Vec3) => Math.abs(length3(v) - 1) <= 1e-9

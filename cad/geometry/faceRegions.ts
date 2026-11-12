@@ -377,6 +377,43 @@ function passages(
 
 const GOLDEN = (1 + Math.sqrt(5)) / 2
 
+/** The share of its period an edge's `u` may run between two points it is followed through. */
+const FOLLOW_SHARE = 1 / 8
+
+/** Halvings at most in following an edge's angle, as `PIECE_HALVINGS`. */
+const FOLLOW_HALVINGS = 40
+
+/**
+ * The parameters at `t`, the angle carried on from `uv0` at `t0` through
+ * halvings where it runs more than {@link FOLLOW_SHARE} of `period` at once,
+ * a `u` that does not close read as it comes. Within half
+ * a turn of the last sample's is no answer where an edge passes a pole
+ * between two samples, turning nearly half a turn round it either way:
+ * read the wrong way, a cap round a pole lost the whole sphere (a plane
+ * 10⁻⁵ of the radius past its pole: solidEdits.test.ts).
+ */
+function followed(
+  s: Curved,
+  trace: EdgeTrace,
+  t0: number,
+  uv0: UV,
+  t: number,
+  period: number | null,
+  depth: number
+): UV {
+  const uv = surfaceParams(s, trace.point(t), uv0)
+  if (
+    period === null ||
+    depth >= FOLLOW_HALVINGS ||
+    Math.abs(uv.u - uv0.u) <= FOLLOW_SHARE * period
+  ) {
+    return uv
+  }
+  const m = (t0 + t) / 2
+  const mid = followed(s, trace, t0, uv0, m, period, depth + 1)
+  return followed(s, trace, m, mid, t, period, depth + 1)
+}
+
 /** A stretch of an edge sampled in the face's parameters, a pole's angle taken from its neighbour. */
 function mapStretch(
   s: Curved,
@@ -388,14 +425,20 @@ function mapStretch(
   const n = sampleCount(trace, from, to)
   const samples: { t: number; u: number; v: number }[] = []
   const pole: boolean[] = []
+  const period = surfacePeriods(s).u
   let prev: UV | undefined
+  let prevT = from
   for (let i = 0; i <= n; i++) {
     const t = from + ((to - from) * i) / n
-    const uv = surfaceParams(s, trace.point(t), prev)
+    const uv = prev
+      ? followed(s, trace, prevT, prev, t, period, 0)
+      : surfaceParams(s, trace.point(t))
     samples.push({ t, ...uv })
     pole.push(pinched(s, uv.v, uv.u))
-    if (!pole[i]) prev = uv
-    else if (prev) prev = { u: prev.u, v: uv.v }
+    if (!pole[i]) {
+      prev = uv
+      prevT = t
+    } else if (prev) prev = { u: prev.u, v: uv.v }
   }
   const firstSound = pole.findIndex((x) => !x)
   for (let i = 0; i < firstSound; i++) samples[i].u = samples[firstSound].u
@@ -810,6 +853,71 @@ function edgePieces(c: EdgeRun): number {
   return 8
 }
 
+/**
+ * How unevenly, as a share of its period, a Gauss piece of an edge may run
+ * along a closed `u`: its two halves' runs may differ by no more. An edge
+ * that passes near a pole turns nearly half a turn there over a stretch as
+ * short as its distance from the pole, where `−H du`, H the column from the
+ * far pole, is sharp and large: pieces even along the edge missed it by up
+ * to a fifth of a sphere's volume (a sphere sliced, or cut by a box's face,
+ * just off its north pole: solidEdits.test.ts). Halved where they run
+ * unevenly, the pieces grade down to the passage, where Gauss is exact
+ * again, and stay whole where `u` runs evenly, as round a parallel.
+ */
+const PIECE_UNEVENNESS = 1 / 4096
+
+/** Halvings at most: down to 2⁻⁴⁰ of a piece, past where `passages` sees the pole itself. */
+const PIECE_HALVINGS = 40
+
+/**
+ * Gauss's rule on `parts` pieces of `[a, b]` along the coedge, each halved
+ * while it runs unevenly along `u` ({@link PIECE_UNEVENNESS}).
+ */
+function edgeRule(
+  s: Curved,
+  c: EdgeRun,
+  a: number,
+  b: number,
+  parts: number,
+  period: number | null
+): Rule {
+  if (period === null) return gaussRule(a, b, parts)
+  // At a pole `u` is no angle (where a stretch through one starts or ends):
+  // NaN, which halves nothing.
+  const u = (t: number) => {
+    const uv = surfaceParams(s, c.trace.point(t))
+    return pinched(s, uv.v, uv.u) ? NaN : uv.u
+  }
+  const run = (u0: number, u1: number) => nearest(u1, u0, period) - u0
+  const rule: { t: number; w: number }[] = []
+  const piece = (
+    t0: number,
+    u0: number,
+    t1: number,
+    u1: number,
+    depth: number
+  ) => {
+    const m = (t0 + t1) / 2
+    const um = u(m)
+    if (
+      depth < PIECE_HALVINGS &&
+      Math.abs(run(u0, um) - run(um, u1)) > PIECE_UNEVENNESS * period
+    ) {
+      piece(t0, u0, m, um, depth + 1)
+      piece(m, um, t1, u1, depth + 1)
+      return
+    }
+    rule.push(...gaussRule(t0, t1))
+  }
+  const step = (b - a) / parts
+  for (let k = 0; k < parts; k++) {
+    const t0 = a + step * k
+    const t1 = k === parts - 1 ? b : t0 + step
+    piece(t0, u(t0), t1, u(t1), 0)
+  }
+  return rule
+}
+
 function splineSpans(curve: BSplineCurve, a: number, b: number): number[] {
   const lo = Math.min(a, b)
   const hi = Math.max(a, b)
@@ -964,16 +1072,19 @@ export function faceSamples(
           }
           for (const { t, w } of spans
             .slice(1)
-            .flatMap((y, k) => gaussRule(spans[k], y, 2))) {
+            .flatMap((y, k) => edgeRule(s, c, spans[k], y, 2, periods.u))) {
             at(t, c.trace.point(t), c.trace.derivative(t), w)
           }
           continue
         }
         const share = Math.abs(b - a) / Math.abs(c.to - c.from)
-        for (const { t, w } of gaussRule(
+        for (const { t, w } of edgeRule(
+          s,
+          c,
           a,
           b,
-          Math.max(1, Math.ceil(edgePieces(c) * share))
+          Math.max(1, Math.ceil(edgePieces(c) * share)),
+          periods.u
         )) {
           at(t, c.trace.point(t), c.trace.derivative(t), w)
         }

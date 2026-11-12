@@ -1,5 +1,6 @@
 import fc from "fast-check"
 import "./matchers"
+import { propertyTimeLimit } from "./timeLimit"
 
 /**
  * Global test setup. Loaded once per worker before any test file.
@@ -15,6 +16,4 @@ fc.configureGlobal({
 })
 
 // Property tests must stay pure and fast; a slow one is a design smell.
-fc.installGlobalPlugin(
-  fc.interruptAfterTimeLimit(10_000, { failOnInterrupt: true })
-)
+fc.installGlobalPlugin(propertyTimeLimit)
