@@ -3,7 +3,7 @@
 > **Estado:** investigación, brief y fase 1 (abrir un DXF con OPEN y DXFIN) hechos y
 > publicados el 7/11/2026 (sesión 07 del plan de visibilidad), la fase 3 (la página «abrir DXF
 > online», sesión 07b) el 8/11, con la fase 4 ordenada por lo que falta en 731 DXF reales, y la
-> fase 2 (guardar como DXF, de 2000 a 2018) el 12/11; queda de ella el DXF R12. Siguiente, la
+> fase 2 (guardar como DXF, de 2000 a 2018) publicada el 12/11; queda de ella el DXF R12. Siguiente, la
 > fase 4. Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -135,7 +135,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    binario, con su precisión y _Select objects_; cada fichero, abierto por AutoCAD en la consola en
    los tests de su desarrollo. R12 convierte lo que R12 no tiene (como hace AutoCAD: una elipse,
    polilínea): fase propia si pesa. Al cerrarla, la página «abrir DXF online», su FAQ y el kit de
-   lanzamiento dicen que guarda. **Hecha** (12/11/2026, tras la sesión 09 del plan de visibilidad), sin
+   lanzamiento dicen que guarda. **Hecha y publicada** (12/11/2026, `6e75779c`, tras la sesión 09 del
+   plan de visibilidad), sin
    R12: el cuadro, visto en el escritorio en inglés (sonda `d01`) y con sus etiquetas de los cinco
    idiomas de AutoCAD; el escritor en `cad/serialization/dxf/writeDxf.ts`, cargado solo al abrir el
    cuadro, cuyos ficheros de los dos dibujos de referencia y de uno de cada clase restante, en las

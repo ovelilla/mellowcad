@@ -7,9 +7,9 @@
 > un DXF con OPEN y DXFIN) y la 05b (un sitio para reportar problemas, la condición del
 > lanzamiento suave del 12/11) hechas y publicadas el 7/11, y la 07b (la página «abrir DXF
 > online») hecha y publicada el 8/11, y la 08 (el francés, `live` en `/fr`) hecha y publicada el
-> 9/11, y la 09 (el italiano, `live` en `/it`) hecha y publicada el 12/11; por decisión del dueño
-> la visibilidad va antes que cualquier funcionalidad; siguiente: lo que queda de §7 y guardar como
-> DXF. Esperan detrás
+> 9/11, y la 09 (el italiano, `live` en `/it`) y guardar como DXF (la fase 2 de `docs/next-dxf.md`)
+> hechas y publicadas el 12/11; por decisión del dueño la visibilidad va antes que cualquier
+> funcionalidad; siguiente: lo que queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -689,4 +689,18 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   Yemen, Siria, Arabia Saudí, Irak, Palestina, posiciones 1–5): un idioma `global` también rinde,
   así que si el dueño amplía el criterio, el vietnamita y el indonesio (auditoría, 3.º y 5.º) van
   antes que el alemán.
+- Guardar como DXF (L7, la fase 2 de `docs/next-dxf.md`): hecho y publicado el 12/11/2026
+  (`6e75779c`; el push, la comprobación en producción e IndexNow, 741 URLs con respuesta 200, por la
+  sesión a petición del dueño). SAVEAS, SAVE y DXFOUT (SALVADXF, EXPDXF, SAUVEDXF) con el cuadro
+  Guardar dibujo como de AutoCAD 2027, visto en su escritorio, y sus Opciones DXF; el DXF de 2000 a
+  2018, ASCII o binario, que la consola de AutoCAD abre sin un error de AUDIT (36 ficheros). R12
+  queda como fase propia. El sitio lo dice en los seis idiomas: Estado, el FAQ, la sección de
+  archivos, la página «abrir DXF online» y su FAQ, la de diferencias, el README y el kit de
+  lanzamiento (también los 51 correos de `~/seo-data/launch/outreach/`, que decían «sin DWG/DXF»).
+  **La primera carga de cada portada**, Brotli q11, del build de `main` a este: `/` 253.822 →
+  252.867, `/es` 255.094 → 254.232, `/pt-br` 255.211 → 254.361, `/ar` 278.702 → 277.786, `/fr`
+  255.864 → 255.080, `/it` 255.124 → 254.184 bytes. La tecla de DXFOUT en el tablero de comandos
+  dejaba `/fr` 58 bytes por encima de los 250 KiB; quitar del tablero la segunda copia, oculta, de
+  cada descripción (el lector de pantalla lee ahora la burbuja) bajó todas las portadas por debajo
+  de `main`. Las páginas cambiadas, ya rastreables, no entran en la cola de §7: no son nuevas.
 - 10 Medición: la primera, un mes después del push de 01–02.
