@@ -1,0 +1,74 @@
+---
+title: "Befehl FANG (SNAP) in AutoCAD: Fangmodus und Raster"
+metaTitle: "Befehl FANG (SNAP) in AutoCAD"
+description: "Wie FANG (SNAP) in AutoCAD das Fadenkreuz an ein Raster bindet: F9, Fangabstand, Seitenverhältnis und der Unterschied zum Objektfang. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von FANG (SNAP) in AutoCAD?","answer":"F9 schaltet den Fangmodus ein und aus. Der Befehl ist F, dann die Eingabetaste oder die Leertaste, um den Abstand einzustellen; der volle Name funktioniert ebenfalls, und _SNAP in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen FANG und OFANG?","answer":"Der Fangmodus rundet das Fadenkreuz auf ein Gitter von Punkten im Raum. Objektfänge (F3) binden es an Punkte auf Objekten, Endpunkte, Mittelpunkte, Mittelpunkte von Kreisen. Sie arbeiten zusammen, und ein Objektfang geht vor, wo beide einen Punkt finden."},{"question":"Warum springt mein Fadenkreuz in Schritten?","answer":"Der Fangmodus ist eingeschaltet: Drücken Sie F9 oder die Fang-Schaltfläche der Statusleiste, um ihn auszuschalten. Stellen Sie mit FANG einen kleineren Abstand ein, wenn Sie feinere Schritte wollen."},{"question":"Wie stellt man unterschiedliche Fangabstände für X und Y ein?","answer":"Starten Sie FANG, wählen Sie ASpekt und geben Sie den horizontalen Abstand an, dann den vertikalen."},{"question":"Gibt es einen isometrischen Fang?","answer":"Noch nicht: Die Option Style von FANG, die das Gitter für isometrisches Zeichnen dreht, wird nicht angeboten."}]
+---
+
+Der Fangmodus bindet das Fadenkreuz an ein Gitter: Jede Wahl landet auf dem nächsten seiner Punkte, sodass bei einem Abstand von 10 ein Klick bei 13,7 zu 10,10 wird. Das Gitter ist das des aktuellen BKS, von dessen Ursprung entlang seiner Achsen. F9 schaltet den Fangmodus ein und aus und schreibt `<Fang ein>` oder `<Fang aus>`, ebenso seine Schaltfläche in der Statusleiste. Nur Wahlen werden gerundet: Eine eingegebene Koordinate gilt, wie eingegeben, und ein Objektfang geht dem Gitter vor. Das Raster (F7) zeichnet ein eigenes Gitter und zeigt es, ob der Fang ein- oder ausgeschaltet ist.
+
+Der Befehl FANG stellt den Abstand ein: Geben Sie ihn ein, oder geben Sie zwei Punkte in diesem Abstand an, und der Fangmodus schaltet sich damit in X und Y ein. Die Eingabetaste schaltet ihn ein, wie er ist. Ein Abstand von 0 oder darunter wird mit `Wert muss positiv und ungleich Null sein.` abgelehnt. Mit einem Apostroph eingegeben, `'FANG`, funktioniert er innerhalb eines anderen Befehls. Der Fangmodus und sein Abstand werden mit der Zeichnung gespeichert, und `Z` nimmt ein FANG zurück.
+
+Das Menü „Fang“ der Statusleiste wählt stattdessen den Polarfang: Entlang eines Spurverfolgungspfads geht das Fadenkreuz in Schritten von POLARDIST oder, solange POLARDIST 0 ist, vom X-Abstand des Fangs.
+
+- **Befehl:** `FANG`
+- **Auf Englisch:** `SNAP`, in jeder Sprache als `_SNAP` eingegeben
+- **Aliasnamen:** `F`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `F` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="snap" caption="FANG 10 bei eingeschaltetem Raster, dann LINIE abseits des Gitters gewählt: Jeder Punkt landet darauf, und das Fadenkreuz auch." />
+
+## Optionen [#options]
+
+### `Ein` (`E`) [#on]
+
+Schaltet den Fangmodus mit dem aktuellen Abstand ein, wie es die Eingabetaste tut.
+
+### `Aus` (`A`) [#off]
+
+Schaltet den Fangmodus aus; der Abstand bleibt erhalten.
+
+### `ASpekt` (`AS`) [#aspect]
+
+Fragt nach einem horizontalen Abstand, dann nach einem vertikalen, und schaltet den Fangmodus ein: ein Gitter, das höher oder breiter als quadratisch ist. Die Vorgabe der Eingabeaufforderung ist dann Aspect, sodass die Eingabetaste sie erneut abfragt.
+
+## Was er noch nicht kann [#missing]
+
+Style, der isometrische Fang, und Type, Raster oder Polar, bei der Eingabeaufforderung: Das Menü der Statusleiste wählt den Typ. Legacy, das verborgene Rotate (SNAPANG) und SNAPBASE. Ein negatives POLARDIST, das der Polarfang von AutoCAD als seine Größe nimmt: −10 geht in Schritten von 10.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--pt-br-snap--sn--snap-mode-f9--fr-resol--rl--snap-mode-f9--it-snap--sn--snap-mode-f9--de-fang--f--snap-mode-f9)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von FANG (SNAP) in AutoCAD?
+
+F9 schaltet den Fangmodus ein und aus. Der Befehl ist `F`, dann die Eingabetaste oder die Leertaste, um den Abstand einzustellen; der volle Name funktioniert ebenfalls, und `_SNAP` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen FANG und OFANG?
+
+Der Fangmodus rundet das Fadenkreuz auf ein Gitter von Punkten im Raum. Objektfänge (F3) binden es an Punkte auf Objekten, Endpunkte, Mittelpunkte, Mittelpunkte von Kreisen. Sie arbeiten zusammen, und ein Objektfang geht vor, wo beide einen Punkt finden.
+
+### Warum springt mein Fadenkreuz in Schritten?
+
+Der Fangmodus ist eingeschaltet: Drücken Sie F9 oder die Fang-Schaltfläche der Statusleiste, um ihn auszuschalten. Stellen Sie mit FANG einen kleineren Abstand ein, wenn Sie feinere Schritte wollen.
+
+### Wie stellt man unterschiedliche Fangabstände für X und Y ein?
+
+Starten Sie FANG, wählen Sie `ASpekt` und geben Sie den horizontalen Abstand an, dann den vertikalen.
+
+### Gibt es einen isometrischen Fang?
+
+Noch nicht: Die Option Style von FANG, die das Gitter für isometrisches Zeichnen dreht, wird nicht angeboten.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)
+- [Befehl LINIE (LINE) in AutoCAD](/docs/commands/line)
+- [VON (FROM)](/docs/commands#from): Gibt einen Punkt mit Versatz zu einem Basispunkt an

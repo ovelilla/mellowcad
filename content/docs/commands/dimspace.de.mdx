@@ -1,0 +1,61 @@
+---
+title: "Befehl BEMPLATZ (DIMSPACE) in AutoCAD"
+description: "Wie BEMPLATZ (DIMSPACE) in AutoCAD den Abstand zwischen Bemaßungen angleicht oder sie auf 0 ausrichtet, mit Automatisch aus der Texthöhe. Kostenlos im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie richte ich Bemaßungen in AutoCAD aus?","answer":"Starten Sie BEMPLATZ, wählen Sie die Bemaßung, an der sich die anderen ausrichten sollen, wählen Sie sie aus, drücken Sie die Eingabetaste und geben Sie 0 ein: Jede Maßlinie wandert auf die der Basis."},{"question":"Wie erzeuge ich gleiche Abstände zwischen Bemaßungen?","answer":"Starten Sie BEMPLATZ, wählen Sie die Bemaßung nahe dem Objekt als Basis, wählen Sie den Rest und drücken Sie zweimal die Eingabetaste: Auto ordnet sie im Abstand der doppelten Texthöhe an. Oder geben Sie den gewünschten Abstand ein, etwa 8."},{"question":"Wie groß ist der Standardabstand von Bemaßungen in AutoCAD?","answer":"Auto von BEMPLATZ ist die doppelte Texthöhe des Bemaßungsstils. BEMBASISL verwendet stattdessen den Basislinienabstand des Stils, in ISO-25 3,75, für jede Bemaßung, die es hinzufügt."},{"question":"Warum verschiebt BEMPLATZ eine Bemaßung nicht?","answer":"Es ordnet nur Bemaßungen parallel zur Basis an: Eine in einem anderen Winkel wird gezählt und bleibt, wo sie ist. Winkelbemaßungen werden noch nicht angeordnet."}]
+---
+
+BEMPLATZ (DIMSPACE) passt den Abstand zwischen parallelen linearen und ausgerichteten Bemaßungen an. Sie wählen die Basisbemaßung, die bleibt, wo sie ist, dann die Bemaßungen, deren Abstand angepasst wird; die Eingabetaste beendet die Auswahl und fragt nach dem Abstand. Die Linie jeder Bemaßung wird dann verschoben, von der Basis weg in der Reihenfolge, in der sie liegen, in diesem Abstand von der davor. Ein Abstand von 0 richtet alle auf der Linie der Basis aus: Eine Kette, die so versetzt ist, wie sie gezeichnet wurde, liest sich dann wie eine. Seine einzige Änderung ist die Lage der Maßlinien, in einem Schritt, den `Z` zurücknimmt.
+
+Die Basis wird gewählt oder als Punkt eingegeben oder mit `Last` genommen; eine, die keine Bemaßung ist, ergibt `Gewähltes Objekt ist keine Bemaßung.`, und es wird erneut gefragt. Eine vor dem Befehl gewählte Menge ist die Menge, deren Abstand angepasst wird. Eine Bemaßung in einem Winkel zur Basis wird gezählt und bleibt, wo sie ist, und ein negativer Abstand wird mit `Ungültiger Abstandswert, Abstandswert darf nicht negativ sein.` abgelehnt.
+
+- **Befehl:** `BEMPLATZ`
+- **Auf Englisch:** `DIMSPACE`, in jeder Sprache als `_DIMSPACE` eingegeben
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BEMPLATZ` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="dimspaceBefore" caption="Die Oberkante einer Platte in einer Kette von drei Bemaßungen bemaßt, jede in einer eigenen Höhe platziert, wie sie gezeichnet wurden." />
+
+<Session name="dimspace" caption="BEMPLATZ von der ersten Bemaßung aus, die anderen zwei gewählt und der Abstand 0: die Kette auf einer Linie ausgerichtet." />
+
+## Optionen [#options]
+
+### `Auto` (`A`) [#auto]
+
+Die Vorgabe, die Eingabetaste: ein Abstand vom Doppelten der Texthöhe des Bemaßungsstils der Basis, mit seiner Gesamtskalierung skaliert, sodass der Stapel zu seinem eigenen Text passt.
+
+## Was er noch nicht kann [#missing]
+
+Winkelbemaßungen, deren Abstand BEMPLATZ noch nicht anpasst. AutoCAD verschiebt eine Bemaßung nur dort, wo es nötig ist; hier wird jede gewählte Bemaßung neu angeordnet.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz)
+
+## Fragen [#questions]
+
+### Wie richte ich Bemaßungen in AutoCAD aus?
+
+Starten Sie BEMPLATZ, wählen Sie die Bemaßung, an der sich die anderen ausrichten sollen, wählen Sie sie aus, drücken Sie die Eingabetaste und geben Sie `0` ein: Jede Maßlinie wandert auf die der Basis.
+
+### Wie erzeuge ich gleiche Abstände zwischen Bemaßungen?
+
+Starten Sie BEMPLATZ, wählen Sie die Bemaßung nahe dem Objekt als Basis, wählen Sie den Rest und drücken Sie zweimal die Eingabetaste: `Auto` ordnet sie im Abstand der doppelten Texthöhe an. Oder geben Sie den gewünschten Abstand ein, etwa `8`.
+
+### Wie groß ist der Standardabstand von Bemaßungen in AutoCAD?
+
+`Auto` von BEMPLATZ ist die doppelte Texthöhe des Bemaßungsstils. [`BEMBASISL`](/docs/commands/dimbaseline) verwendet stattdessen den Basislinienabstand des Stils, in ISO-25 3,75, für jede Bemaßung, die es hinzufügt.
+
+### Warum verschiebt BEMPLATZ eine Bemaßung nicht?
+
+Es ordnet nur Bemaßungen parallel zur Basis an: Eine in einem anderen Winkel wird gezählt und bleibt, wo sie ist. Winkelbemaßungen werden noch nicht angeordnet.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BEMLINEAR (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Befehl BEMWEITER (DIMCONTINUE) in AutoCAD](/docs/commands/dimcontinue)
+- [Befehl BEMBASISL (DIMBASELINE) in AutoCAD](/docs/commands/dimbaseline)
+- [Befehl BEMSTIL (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

@@ -1,0 +1,101 @@
+---
+title: "Befehl PEDIT (Polylinie bearbeiten) in AutoCAD"
+description: "So arbeitet AutoCADs PEDIT (Alias PE): Linien zur Polylinie machen, Verbinden, Breite, Angleichen und Spline, Scheitelpunkt bearbeiten, Mehrfach. Gratis testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für PEDIT in AutoCAD?","answer":"PE, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _PEDIT in jeder Sprache von AutoCAD. Ein Doppelklick auf eine Polylinie startet ihn ebenfalls. In der deutschen AutoCAD-Version heißt der Befehl ebenfalls PEDIT."},{"question":"Wie verbinde ich Linien zu einer Polylinie?","answer":"Starten Sie PEDIT, wählen Sie eine der Linien aus und drücken Sie die Eingabetaste, um sie in eine Polylinie umzuwandeln, wählen Sie dann Verbinden und wählen Sie die anderen aus: Die, die Ende an Ende aufeinandertreffen, werden zu einer Polylinie. VERBINDEN tut dasselbe in einem Schritt."},{"question":"Warum funktioniert PEDIT bei meinem Objekt nicht?","answer":"PEDIT bearbeitet Polylinien und bietet an, Linien, Bögen und Splines umzuwandeln; alles andere, Text, ein Kreis, ein Block, wird abgelehnt und erneut abgefragt. Ein Objekt auf einem gesperrten Layer meldet „Das Objekt ist auf einem gesperrten Layer.“. Verbinden fügt nur Objekte hinzu, deren Enden genau an die Polylinie anschließen: Bei Lücken verwenden Sie Mehrere und einen Toleranzabstand."},{"question":"Wie ändere ich die Breite einer Polylinie?","answer":"Wählen Sie Breite und geben Sie die Breite ein: Jedes Segment übernimmt sie. Für ein einzelnes Segment verwenden Sie BEarbeiten, setzen das X auf den Scheitelpunkt, an dem es beginnt, und wählen dessen Breite."},{"question":"Wie mache ich eine Polylinie rund?","answer":"Angleichen legt Bögen durch jeden Scheitelpunkt; Kurvenlinie macht eine glattere Kurve, die von den Scheitelpunkten umrahmt wird. beGradigen macht sie wieder gerade."}]
+---
+
+PEDIT bearbeitet eine Polylinie. Wählen Sie bei `Polylinie wählen oder [Mehrfach]:` eine aus, oder wählen Sie sie vor dem Befehl aus; auch ein Doppelklick auf eine Polylinie startet PEDIT für sie. Wählen Sie stattdessen eine Linie, einen Bogen oder einen Spline, meldet der Befehl `Das gewählte Objekt ist keine Polylinie` und fragt, ob das Objekt in eine Polylinie umgewandelt werden soll, standardmäßig Ja: Die neue Polylinie tritt an seine Stelle und übernimmt seine Eigenschaften. Danach fragt er immer wieder nach einer Option, jede wird sofort angewendet, bis die Eingabetaste den Befehl beendet. Eine 3D-Polylinie bekommt eine kürzere Liste, ohne Breite, ohne Kurvenangleichung und ohne Linientyp-Generierung, und ihre Spline-Option heißt `Kurvenlinie`. Esc behält, was bereits getan wurde; die gesamte Bearbeitung ist ein einziger Schritt, den `Z` zurücknimmt.
+
+- **Befehl:** `PEDIT`
+- **Aliasnamen:** `PE`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `PE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="pedit" caption="Drei Linien, die Ende an Ende aufeinandertreffen: PEDIT macht die erste zur Polylinie, verbindet die beiden anderen mit ihr und gibt ihr die Breite 2." />
+
+## Optionen [#options]
+
+### `Mehrere` (`M`) [#multiple]
+
+Bearbeitet mehrere Polylinien auf einmal: Wählen Sie sie aus, geben Sie an, ob die darin enthaltenen Linien, Bögen und Splines umgewandelt werden sollen, dann wird jede Option auf alle angewendet. Sein Verbinden fragt nach einem Toleranzabstand und einem `Verbindungstyp`: `Dehnen` stutzt oder dehnt die Endsegmente, bis sie sich treffen, `Hinzufügen` überbrückt die Lücke mit einem neuen Segment, `Beides` dehnt, wo es geht, und fügt hinzu, wo es nicht geht.
+
+### `Schließen` (`S`) [#close]
+
+Schließt die Polylinie mit einem Segment vom letzten zum ersten Scheitelpunkt, mit einem Bogen, wo das letzte Segment ein Bogen ist. Bei einer geschlossenen Polylinie lautet die Option `Öffnen` und nimmt dieses Segment wieder weg.
+
+### `Verbinden` (`V`) [#join]
+
+Fügt Linien, Bögen und offene Polylinien, die an die Enden der Polylinie anschließen, Ende an Ende hinzu und meldet, wie viele Segmente es hinzugefügt hat. An eine geschlossene Polylinie kann nichts angefügt werden: `Kann nicht mit einer geschlossenen Polylinie verbinden`.
+
+### `Breite` (`B`) [#width]
+
+Eine Breite für alle Segmente, getippt oder durch zwei Punkte gemessen; 0 nimmt die Breite weg.
+
+### `BEarbeiten` (`BE`) [#edit-vertex]
+
+Setzt ein X auf den ersten Scheitelpunkt und fragt, was dort geschehen soll: `Nächster` und `Vorher` setzen das X weiter, `Schieben` verschiebt den Scheitelpunkt, `Einfügen` fügt danach einen hinzu, `BRUch` und `Linie` merken sich den Scheitelpunkt, Sie setzen das X auf einen anderen, und `Los` trennt die Polylinie zwischen den beiden oder macht aus dem, was dazwischen liegt, ein gerades Segment, `Breite` legt die Anfangs- und Endbreite des nächsten Segments fest, `Tangente` gibt dem Scheitelpunkt eine Richtung für ein späteres Angleichen, und `eXit` geht zurück.
+
+### `Angleichen` (`A`) [#fit]
+
+Zeichnet durch jeden Scheitelpunkt eine glatte Kurve aus Bögen, tangential, wo sie aufeinandertreffen, so wie AutoCADs Kurvenangleichung sie legt. Die Scheitelpunkte bleiben, und ihre Bearbeitung formt die Kurve um.
+
+### `Kurvenlinie` (`K`) [#spline]
+
+Passt der Polylinie einen B-Spline an, der von ihren Scheitelpunkten umrahmt wird, statt durch sie zu laufen: quadratisch oder kubisch, mit SPLINETYPE, und so fein wie SPLINESEGS. Bei einer 3D-Polylinie heißt er `Kurvenlinie`. Die Option Objekt von SPLINE macht aus einer solchen Polylinie einen echten Spline.
+
+### `beGradigen` (`G`) [#decurve]
+
+Nimmt die Kurve von Fit oder Spline weg: wieder gerade Segmente zwischen den Scheitelpunkten.
+
+### `LInientyp` (`LI`) [#ltype-gen]
+
+`Ein` legt den Linientyp als ein einziges Muster über die ganze Polylinie, sodass eine gestrichelte Polylinie mit kurzen Segmenten dennoch Striche zeigt; `Aus`, die Vorgabe, beginnt das Muster an jedem Scheitelpunkt neu.
+
+### `Richtung` (`R`) [#reverse]
+
+Dreht die Polylinie um: ihre Scheitelpunkte in die andere Richtung, die Bögen und Breiten mit ihnen.
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt die letzte Option dieses Durchlaufs zurück und fragt weiter.
+
+## Was er noch nicht kann [#missing]
+
+PEDITACCEPT: Wählen Sie eine Linie, einen Bogen oder einen Spline, wird immer vor dem Umwandeln gefragt. PLINECONVERTMODE: Ein Spline wird zu einer Polylinie aus geraden Segmenten, weit mehr als AutoCAD sie erzeugt, nie aus Bögen. Eine angeglichene Polylinie erscheint in der Eigenschaften-Palette als einfache Polylinie, ohne AutoCADs Titel 2D-Polylinie und ihre Zeile Angleichen/Glätten. Mehrfach mit nur 3D-Polylinien in der Auswahl stellt die 3D-Eingabeaufforderung, wo AutoCAD die 2D-Eingabeaufforderung stellt. Netze zum Bearbeiten gibt es nicht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep--de-pedit--pe)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für PEDIT in AutoCAD?
+
+`PE`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_PEDIT` in jeder Sprache von AutoCAD. Ein Doppelklick auf eine Polylinie startet ihn ebenfalls. In der deutschen AutoCAD-Version heißt der Befehl ebenfalls PEDIT.
+
+### Wie verbinde ich Linien zu einer Polylinie?
+
+Starten Sie PEDIT, wählen Sie eine der Linien aus und drücken Sie die Eingabetaste, um sie in eine Polylinie umzuwandeln, wählen Sie dann `Verbinden` und wählen Sie die anderen aus: Die, die Ende an Ende aufeinandertreffen, werden zu einer Polylinie. [`VERBINDEN`](/docs/commands/join) tut dasselbe in einem Schritt.
+
+### Warum funktioniert PEDIT bei meinem Objekt nicht?
+
+PEDIT bearbeitet Polylinien und bietet an, Linien, Bögen und Splines umzuwandeln; alles andere, Text, ein Kreis, ein Block, wird abgelehnt und erneut abgefragt. Ein Objekt auf einem gesperrten Layer meldet `Das Objekt ist auf einem gesperrten Layer.`. Verbinden fügt nur Objekte hinzu, deren Enden genau an die Polylinie anschließen: Bei Lücken verwenden Sie `Mehrere` und einen Toleranzabstand.
+
+### Wie ändere ich die Breite einer Polylinie?
+
+Wählen Sie `Breite` und geben Sie die Breite ein: Jedes Segment übernimmt sie. Für ein einzelnes Segment verwenden Sie `BEarbeiten`, setzen das X auf den Scheitelpunkt, an dem es beginnt, und wählen dessen `Breite`.
+
+### Wie mache ich eine Polylinie rund?
+
+`Angleichen` legt Bögen durch jeden Scheitelpunkt; `Kurvenlinie` macht eine glattere Kurve, die von den Scheitelpunkten umrahmt wird. `beGradigen` macht sie wieder gerade.
+
+## Verwandte Befehle [#related]
+
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl VERBINDEN (JOIN) in AutoCAD](/docs/commands/join)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)
+- [Befehl SPLINE in AutoCAD](/docs/commands/spline)

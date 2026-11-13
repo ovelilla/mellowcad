@@ -1,0 +1,86 @@
+---
+title: "Befehl ZOOM in AutoCAD"
+description: "Wie ZOOM (Alias ZO) in AutoCAD funktioniert: Grenzen, Fenster, Vorher, Faktor mit nX, Objekt und Alles, das Mausrad, Zoomen innerhalb eines Befehls."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für ZOOM in AutoCAD?","answer":"ZO, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _ZOOM in jeder Sprache von AutoCAD. ZOOM mit der Option Grenzen ist ZOOM Grenzen."},{"question":"Wie zeige ich die ganze Zeichnung formatfüllend?","answer":"Grenzen: Geben Sie ZO ein, drücken Sie die Eingabetaste und wählen Sie die Option. Oder doppelklicken Sie auf die Radtaste der Maus."},{"question":"Was bedeutet ZOOM XP in AutoCAD?","answer":"nXP zoomt einen Layout-Ansichtsbereich auf einen Maßstab relativ zum Papierbereich: 1/50XP zeigt das Modell im Maßstab 1:50 auf dem Blatt. MellowCAD hat keine Layouts, XP wird also als X gelesen."},{"question":"Wie zoome ich in AutoCAD auf ein Objekt?","answer":"Wählen Sie Objekt und wählen Sie es, oder wählen Sie es zuerst und starten Sie dann ZOOM Objekt: Die Ansicht zeigt es formatfüllend."},{"question":"Wie gehe ich zur vorherigen Ansicht zurück?","answer":"Vorher, immer wieder für die Ansichten davor, bis zu 20."}]
+---
+
+ZOOM macht die Ansicht größer oder kleiner; nichts in der Zeichnung bewegt sich oder ändert seine Größe. Seine erste Eingabeaufforderung nimmt eine Ecke, die ein Fenster beginnt, einen Skalierungsfaktor oder eine Option. Mit Apostroph eingegeben, `'ZOOM` oder `'ZO`, funktioniert er innerhalb eines anderen Befehls, der danach weitermacht. Das Mausrad zoomt um den Cursor heraus und hinein, und ein Doppelklick auf die Radtaste ist ZOOM Grenzen. Jedes ZOOM ist ein Rückgängig-Schritt, aufeinanderfolgende ein einziger, sodass auch `Z` die Ansicht zurücknimmt.
+
+- **Befehl:** `ZOOM`
+- **Aliasnamen:** `ZO`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `ZO` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="zoom" caption="Eine Platte mit einem kleinen Loch nahe ihrer Ecke: ZOOM Grenzen, dann ein Fenster um das Loch, das danach die Ansicht füllt." />
+
+## Optionen [#options]
+
+### `Alles` (`A`) [#all]
+
+Zeigt alles Gezeichnete, wie `Grenzen`.
+
+### `Grenzen` (`G`) [#extents]
+
+Zeigt alles Gezeichnete, so groß, wie das Fenster es erlaubt. Ist nichts gezeichnet, meldet der Befehl `Regeneriert Modell.`, und innerhalb eines anderen Befehls eingegeben, lehnt er mit `** Regenerierung erforderlich, kann nicht transparent sein.` ab, wie der von AutoCAD.
+
+### `Vorher` (`V`) [#previous]
+
+Geht zur vorherigen Ansicht zurück, bis zu 20 Ansichten. Ist keine mehr übrig: `Kein vorhergehende Ansicht gespeichert.`.
+
+### `FAktor` (`FA`) [#scale]
+
+Ein Faktor: `2X` zoomt doppelt so nah wie die aktuelle Ansicht, `0.5X` halb so nah, und `2` ohne das X den doppelten Maßstab der Ansicht von ZOOM Alles. `nXP`, der Faktor des Papierbereichs, wird als `nX` gelesen: Hier gibt es nur den Modellbereich. Ein bei der ersten Eingabeaufforderung eingegebener Faktor tut dasselbe, ohne die Option zu wählen.
+
+### `FEnster` (`FE`) [#window]
+
+Zwei Ecken, gewählt oder aufgezogen, zeigen dieses Rechteck. Eine bei der ersten Eingabeaufforderung gewählte Ecke tut dasselbe.
+
+### `Objekt` (`O`) [#object]
+
+Zeigt die Objekte, die Sie wählen, oder die vor ZOOM gewählten.
+
+## Was er noch nicht kann [#missing]
+
+Realtime: Die Eingabetaste bei der ersten Eingabeaufforderung beendet ZOOM, wo AutoCAD das Zoomen mit der Maus beginnt; das Rad tut das hier. Dynamic, Center und die verborgenen Left und Vmax.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z--fr-zoom--z--it-zoom--z--de-zoom--zo)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für ZOOM in AutoCAD?
+
+`ZO`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_ZOOM` in jeder Sprache von AutoCAD. ZOOM mit der Option `Grenzen` ist ZOOM Grenzen.
+
+### Wie zeige ich die ganze Zeichnung formatfüllend?
+
+`Grenzen`: Geben Sie `ZO` ein, drücken Sie die Eingabetaste und wählen Sie die Option. Oder doppelklicken Sie auf die Radtaste der Maus.
+
+### Was bedeutet ZOOM XP in AutoCAD?
+
+`nXP` zoomt einen Layout-Ansichtsbereich auf einen Maßstab relativ zum Papierbereich: `1/50XP` zeigt das Modell im Maßstab 1:50 auf dem Blatt. MellowCAD hat keine Layouts, `XP` wird also als `X` gelesen.
+
+### Wie zoome ich in AutoCAD auf ein Objekt?
+
+Wählen Sie `Objekt` und wählen Sie es, oder wählen Sie es zuerst und starten Sie dann ZOOM Objekt: Die Ansicht zeigt es formatfüllend.
+
+### Wie gehe ich zur vorherigen Ansicht zurück?
+
+`Vorher`, immer wieder für die Ansichten davor, bis zu 20.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung 3D: eine Riemenscheibe](/docs/exercises/pulley)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl PAN in AutoCAD](/docs/commands/pan)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)
+- [REGEN](/docs/commands#regen): Regenerieren

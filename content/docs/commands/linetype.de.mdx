@@ -1,0 +1,64 @@
+---
+title: "Befehl LINIENTYP (LINETYPE) in AutoCAD"
+description: "Wie LINIENTYP (LINETYPE, Alias LT) in AutoCAD den aktuellen Linientyp setzt: ByLayer, Set und ?, die sechs geladenen Linientypen. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von LINIENTYP (LINETYPE) in AutoCAD?","answer":"LT, dann die Eingabetaste oder die Leertaste; LTYP und DDLTYPE ebenfalls. Der volle Name funktioniert auch, und _LINETYPE in jeder Sprache von AutoCAD."},{"question":"Warum wird meine gestrichelte Linie durchgezogen dargestellt?","answer":"Eine Linie, die kürzer ist als eine Wiederholung ihres Musters, wird durchgezogen gezeichnet, wie in AutoCAD: Das Muster von CENTER ist beim vorgegebenen Faktor etwa 51 Einheiten lang. Erhöhen oder verringern Sie LTFAKTOR, um das Muster der Zeichnung anzupassen. Prüfen Sie auch, ob der Linientyp des Objekts oder, bei ByLayer, der seines Layers nicht Continuous ist."},{"question":"Wie ändert man den Linientyp eines vorhandenen Objekts?","answer":"Wählen Sie es und wählen Sie den Linientyp in der Zeile Linientyp der Eigenschaftenpalette, oder übertragen Sie ihn von einem anderen Objekt mit EIGANPASS. LINIENTYP legt nur den Linientyp von Objekten fest, die danach gezeichnet werden."},{"question":"Wie ändert man den Linientypfaktor in AutoCAD?","answer":"Geben Sie LTFAKTOR und den neuen Faktor ein: 2 macht jeden Strich in der ganzen Zeichnung doppelt so lang."}]
+---
+
+LINIENTYP (LINETYPE) legt den Linientyp fest, mit dem neue Objekte gezeichnet werden. AutoCAD öffnet den Linientyp-Manager; MellowCAD hat noch keinen, daher führt LINIENTYP die Befehlszeilenform aus, die AutoCAD auch hat, `-LINIENTYP`. Er nennt den aktuellen Linientyp, zunächst `ByLayer`, und fragt nach jeder Antwort erneut nach einer Option, bis die Eingabetaste ihn beendet. ByLayer bedeutet, dass jedes Objekt den Linientyp seines Layers annimmt; ein stattdessen benannter Linientyp ist der des Objekts selbst. Der ganze Durchlauf ist ein Schritt, den `Z` zurücknimmt, und mit einem Apostroph innerhalb eines Befehls eingegeben, gilt sein Linientyp für das, was dieser Befehl als Nächstes zeichnet.
+
+Jede Zeichnung hat sechs geladene Linientypen: Continuous und, aus AutoCADs metrischer Datei acadiso.lin, DASHED, HIDDEN, CENTER, PHANTOM und DASHDOT. Ein Muster wird auf jede Linie so gelegt, wie AutoCAD es legt, entlang ihrer Länge zentriert, mit gleich langen Strichen an beiden Enden.
+
+- **Befehl:** `LINIENTYP`
+- **Auf Englisch:** `LINETYPE`, in jeder Sprache als `_LINETYPE` eingegeben
+- **Aliasnamen:** `LT`, `LTYP`, `DDLTYPE`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `LT` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="linetype" caption="Eine Platte, deren Bohrung mit HIDDEN als aktuellem Linientyp gezeichnet ist und deren zwei Achsen mit CENTER, dann LINIENTYP zurück auf ByLayer gesetzt." />
+
+## Optionen [#options]
+
+### `?` [#list]
+
+Listet Linientypen in zwei Spalten auf, Name und Beschreibung. Bei der Optionen-Eingabeaufforderung die Linientypen von acadiso.lin; bei der Eingabeaufforderung von Set die in der Zeichnung geladenen, deren Namen zu dem passen, was Sie eingeben, alle mit `*`.
+
+### `Setzen` (`S`) [#set]
+
+Fragt nach dem Namen des Linientyps und bietet den aktuellen an; geben Sie den Namen eines geladenen Linientyps ein, oder `VONLayer`. Ein Name, der nicht geladen ist, wird nicht gefunden, wie AutoCAD es meldet, und die Optionen-Eingabeaufforderung kehrt zurück; die Eingabetaste behält den aktuellen.
+
+## Was er noch nicht kann [#missing]
+
+Der Linientyp-Manager und das Laden, Erstellen oder Beschreiben von Linientypen: Es gibt nur die sechs oben, und die Auflistung beschreibt nur Continuous. Ein Linientypfaktor je Objekt (CELTSCALE): nur der der Zeichnung, [`LTFAKTOR`](/docs/commands/ltscale). VonBlock. PSLTSCALE und MSLTSCALE, da es keinen Papierbereich gibt. Die Linientypnamen des deutschen AutoCAD: Sie sind hier in jeder Sprache englisch. PLINEGEN: Eine neue Polylinie beginnt ihr Muster an jedem Scheitelpunkt neu, es sei denn, die Option Ltype gen von PEDIT schaltet es ein.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von LINIENTYP (LINETYPE) in AutoCAD?
+
+`LT`, dann die Eingabetaste oder die Leertaste; `LTYP` und `DDLTYPE` ebenfalls. Der volle Name funktioniert auch, und `_LINETYPE` in jeder Sprache von AutoCAD.
+
+### Warum wird meine gestrichelte Linie durchgezogen dargestellt?
+
+Eine Linie, die kürzer ist als eine Wiederholung ihres Musters, wird durchgezogen gezeichnet, wie in AutoCAD: Das Muster von CENTER ist beim vorgegebenen Faktor etwa 51 Einheiten lang. Erhöhen oder verringern Sie [`LTFAKTOR`](/docs/commands/ltscale), um das Muster der Zeichnung anzupassen. Prüfen Sie auch, ob der Linientyp des Objekts oder, bei ByLayer, der seines Layers nicht Continuous ist.
+
+### Wie ändert man den Linientyp eines vorhandenen Objekts?
+
+Wählen Sie es und wählen Sie den Linientyp in der Zeile Linientyp der Eigenschaftenpalette, oder übertragen Sie ihn von einem anderen Objekt mit [`EIGANPASS`](/docs/commands/matchprop). LINIENTYP legt nur den Linientyp von Objekten fest, die danach gezeichnet werden.
+
+### Wie ändert man den Linientypfaktor in AutoCAD?
+
+Geben Sie [`LTFAKTOR`](/docs/commands/ltscale) und den neuen Faktor ein: 2 macht jeden Strich in der ganzen Zeichnung doppelt so lang.
+
+## Verwandte Befehle [#related]
+
+- [Befehl LTFAKTOR (LTSCALE) in AutoCAD](/docs/commands/ltscale)
+- [Befehl LAYER (DDLMODI) in AutoCAD](/docs/commands/layer)
+- [Befehl LSTÄRKE (LWEIGHT) in AutoCAD: Linienstärke](/docs/commands/lweight)
+- [Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD](/docs/commands/properties)

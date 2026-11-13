@@ -1,0 +1,63 @@
+---
+title: "Befehl TEXT (DTEXT) in AutoCAD: einzeiliger Text"
+description: "Wie TEXT (Alias DT) in AutoCAD einzeiligen Text schreibt, Schritt für Schritt: Startpunkt, Höhe und Drehung, Ausrichten und Stil, ein Objekt je Zeile."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von TEXT in AutoCAD?","answer":"DT, dann die Eingabetaste oder die Leertaste; DTEXT und TEXT funktionieren ebenfalls, und _TEXT in jeder Sprache von AutoCAD. T gehört nicht zu TEXT: Es startet MTEXT, mehrzeiligen Text."},{"question":"Wie richtet man Text in AutoCAD aus?","answer":"Wählen Sie posItion bei der ersten Eingabeaufforderung, oder geben Sie dort die Buchstaben der Ausrichtung ein, und geben Sie dann den Punkt an, den sie benennt: Mitte Mitte setzt die Mitte jeder Zeile auf ihren Punkt, wie eine Beschriftung in die Mitte eines Kastens gehört. Um den Text entlang einer schrägen Linie laufen zu lassen, geben Sie diesen Winkel bei der Eingabeaufforderung der Drehung ein."},{"question":"Was ist der Unterschied zwischen TEXT und MTEXT?","answer":"TEXT erzeugt ein Objekt je Zeile, jedes für sich verschoben, bearbeitet und ausgerichtet, und bricht nie um. MTEXT erzeugt ein Objekt aus Absätzen, die auf die Breite eines Kastens umbrechen, als Ganzes ausgerichtet. Beide teilen die Texthöhe und die Textstile."},{"question":"Wie bearbeitet man Text in AutoCAD?","answer":"Doppelklicken Sie ihn: TEXTBEARB öffnet ihn zum Neueingeben und fragt dann nach dem nächsten zu bearbeitenden Text, bis Sie Esc drücken. Seine Höhe und Drehung sind Zeilen der Eigenschaftenpalette, und seine Griffe verschieben ihn."}]
+---
+
+TEXT schreibt einzeiligen Text. Sie geben einen Startpunkt, eine Höhe und einen Drehwinkel an, geben dann eine Zeile ein und drücken die Eingabetaste: Die Zeile wird zu einem eigenen Objekt, und die nächste beginnt eine Zeile darunter. Eine leere Zeile beendet den Befehl. Ein Klick an anderer Stelle davor beginnt die nächsten Zeilen an diesem Punkt, und Esc behält die schon eingegebenen Zeilen und verwirft die gerade getippte. Für einen Absatz, der auf eine Breite umbricht, als ein Objekt, verwenden Sie [`MTEXT`](/docs/commands/mtext).
+
+Die erste Zeile nennt den aktuellen Stil, die Höhe und die Ausrichtung. Die Höhe ist die, die er mit [`MTEXT`](/docs/commands/mtext) und [`ATTDEF`](/docs/commands/attdef) teilt, in der Zeichnung gehalten, und das nächste TEXT bietet sie als Vorgabe an; ein Stil mit eigener Höhe überspringt die Eingabeaufforderung der Höhe. Die Eingabetaste beim Startpunkt macht unter der letzten Zeile weiter, die TEXT geschrieben hat, ohne Höhe oder Winkel erneut abzufragen. `Z` nimmt den ganzen Durchlauf zurück.
+
+- **Befehl:** `TEXT`
+- **Aliasnamen:** `DT`, `DTEXT`
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `DT` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="text" caption="Zwei Zeilen einzeiligen Textes, zentriert in einem Kasten, mit Mitte Mitte ausgerichtet: jede Zeile ein eigenes Objekt." />
+
+## Optionen [#options]
+
+### `posItion` (`I`) [#justify]
+
+Fragt, woran der Text an seinem Punkt hängt: `Links` (die Vorgabe), `Zentrieren`, `Rechts`, `MIttel` oder einer von neun Punkten, oben, Mitte und unten nach links, Mitte und rechts, wie die Eingabeaufforderung sie auflistet. Die Eingabeaufforderung des Startpunkts fragt dann nach dem Punkt, den die Ausrichtung benennt: bei Mitte Mitte der Mittelpunkt. Wie in AutoCAD werden die neun auch unaufgeführt bei der ersten Eingabeaufforderung angenommen, sodass die Eingabe der Buchstaben für Mitte Mitte dort sofort nach dem Mittelpunkt fragt. Die Ausrichtung wird in der Zeichnung für das nächste TEXT behalten.
+
+### `Stil` (`S`) [#style]
+
+Fragt nach dem Namen des Textstils, der aktuell werden soll, wobei die Eingabetaste den vorhandenen behält. `?` listet die Stile der Zeichnung auf; ein Name, den die Zeichnung nicht hat, wird abgelehnt und erneut abgefragt. Stile werden in der Palette angelegt, die [`STIL`](/docs/commands/style) öffnet.
+
+## Was er noch nicht kann [#missing]
+
+Die Ausrichtungen Ausrichten und Einpassen. `?` von Stil listet alle Stile auf einmal auf, ohne zu fragen, welche, und ohne Seite für Seite anzuhalten. Der Text wird im Feld der dynamischen Eingabe getippt, nicht mit einer Einfügemarke in der Zeichnung, und sein Wortlaut lässt sich in der Eigenschaftenpalette nicht neu eingeben, der außerdem die Zeilen Annotativ, Breitenfaktor, Schrägstellung, Kopfstehend und Rückwärts fehlen. Ein Klick in den Kasten eines Textes wählt ihn auch abseits seiner Buchstaben, wo AutoCAD nichts wählt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto--fr-texte--t--textdyn---texte--it-testo--t--td--testodin---testo--de-text--dt--dtext---text)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von TEXT in AutoCAD?
+
+`DT`, dann die Eingabetaste oder die Leertaste; `DTEXT` und `TEXT` funktionieren ebenfalls, und `_TEXT` in jeder Sprache von AutoCAD. `T` gehört nicht zu TEXT: Es startet [`MTEXT`](/docs/commands/mtext), mehrzeiligen Text.
+
+### Wie richtet man Text in AutoCAD aus?
+
+Wählen Sie `posItion` bei der ersten Eingabeaufforderung, oder geben Sie dort die Buchstaben der Ausrichtung ein, und geben Sie dann den Punkt an, den sie benennt: Mitte Mitte setzt die Mitte jeder Zeile auf ihren Punkt, wie eine Beschriftung in die Mitte eines Kastens gehört. Um den Text entlang einer schrägen Linie laufen zu lassen, geben Sie diesen Winkel bei der Eingabeaufforderung der Drehung ein.
+
+### Was ist der Unterschied zwischen TEXT und MTEXT?
+
+TEXT erzeugt ein Objekt je Zeile, jedes für sich verschoben, bearbeitet und ausgerichtet, und bricht nie um. [`MTEXT`](/docs/commands/mtext) erzeugt ein Objekt aus Absätzen, die auf die Breite eines Kastens umbrechen, als Ganzes ausgerichtet. Beide teilen die Texthöhe und die Textstile.
+
+### Wie bearbeitet man Text in AutoCAD?
+
+Doppelklicken Sie ihn: [`TEXTBEARB`](/docs/commands/textedit) öffnet ihn zum Neueingeben und fragt dann nach dem nächsten zu bearbeitenden Text, bis Sie Esc drücken. Seine Höhe und Drehung sind Zeilen der Eigenschaftenpalette, und seine Griffe verschieben ihn.
+
+## Verwandte Befehle [#related]
+
+- [Befehl MTEXT (Absatztext) in AutoCAD](/docs/commands/mtext)
+- [Befehl TEXTBEARB (TEXTEDIT) in AutoCAD](/docs/commands/textedit)
+- [Befehl STIL (STYLE) in AutoCAD](/docs/commands/style)
+- [Befehl EIGANPASS (MATCHPROP) in AutoCAD](/docs/commands/matchprop)

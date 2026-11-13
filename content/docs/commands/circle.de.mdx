@@ -1,0 +1,80 @@
+---
+title: "Befehl KREIS (CIRCLE) in AutoCAD"
+description: "Wie KREIS (CIRCLE, Alias K) in AutoCAD funktioniert: Mittelpunkt und Radius oder Durchmesser, 2P, 3P und TTR, ein Kreis tangential an zwei Objekten."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für KREIS (CIRCLE) in AutoCAD?","answer":"K, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _CIRCLE in jeder Sprache von AutoCAD."},{"question":"Wie zeichne ich einen Kreis tangential an zwei Linien?","answer":"Wählen Sie Ttr, wählen Sie die erste Linie, dann die zweite, nahe der Stelle, an der der Kreis sie berühren soll, und geben Sie den Radius ein."},{"question":"Wie zeichne ich einen Kreis tangential an drei Objekten?","answer":"Wählen Sie 3P und geben Sie vor jedem der drei Punkte _TAN ein, wobei Sie jedes Objekt nahe der Stelle wählen, an der der Kreis es berühren soll."},{"question":"Wie zeichne ich einen Kreis über seinen Durchmesser?","answer":"Geben Sie den Mittelpunkt an, wählen Sie dann Durchmesser und geben Sie ihn ein. Oder wählen Sie 2P und geben Sie die zwei Enden des Durchmessers an."}]
+---
+
+KREIS (CIRCLE) zeichnet einen Kreis aus seinem Mittelpunkt und seinem Radius, eingegeben oder durch einen Punkt auf dem Kreis angegeben, oder auf eine der anderen Arten, die seine erste Eingabeaufforderung anbietet. Die Eingabetaste beim Radius wiederholt die Größe des letzten Kreises, für die Zeichnung beibehalten. Während Sie den Radius angeben, verläuft eine bernsteinfarbene gestrichelte Linie vom Mittelpunkt zum Cursor, beim Durchmesser über den Rand hinaus, wie AutoCAD sie zeichnet. Der Kreis liegt in der Ebene seines ersten Punkts, auf der aktuellen Erhebung, wenn der Punkt kein eigenes Z hat.
+
+- **Befehl:** `KREIS`
+- **Auf Englisch:** `CIRCLE`, in jeder Sprache als `_CIRCLE` eingegeben
+- **Aliasnamen:** `K`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `K` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="circle" caption="Drei Kreise: Mittelpunkt und Radius, die zwei Enden eines Durchmessers (2P), Mittelpunkt und Durchmesser." />
+
+## Optionen [#options]
+
+### `3P` [#3p]
+
+Durch drei Punkte. Mit Objektfang Tangente eingegeben, `_TAN` bei jedem, ist es Tan, Tan, Tan von AutoCAD: der Kreis, der drei Objekte berührt.
+
+### `2P` [#2p]
+
+Aus den zwei Enden eines Durchmessers.
+
+### `Ttr (Tangente Tangente Radius)` (`T`) [#ttr]
+
+Tangential an zwei Objekten, mit einem Radius: Wählen Sie jede Linie, jeden Kreis oder Bogen nahe der Stelle, an der der Kreis sie berühren soll, und geben Sie dann den Radius an. Von den passenden Kreisen zeichnet er den, der Ihre Auswahlen am nächsten berührt; passt keiner, meldet der Befehl `Kreis existiert nicht.`.
+
+### `Durchmesser` (`D`) [#diameter]
+
+Bei der Eingabeaufforderung des Radius: Geben Sie stattdessen den Durchmesser an, eingegeben oder als Punkt.
+
+## Was er noch nicht kann [#missing]
+
+Ttr an einem Polyliniensegment, das AutoCAD nimmt und MellowCAD ablehnt; der Eintrag Tan, Tan, Tan der Werkzeugpalette (die Eingabe, 3P mit drei Objektfängen Tangente, funktioniert); Schnelleigenschaften bei einem Doppelklick auf einen Kreis.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c--pt-br-circulo--ci--fr-cercle--c--it-cerchio--c--de-kreis--k)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für KREIS (CIRCLE) in AutoCAD?
+
+`K`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_CIRCLE` in jeder Sprache von AutoCAD.
+
+### Wie zeichne ich einen Kreis tangential an zwei Linien?
+
+Wählen Sie `Ttr`, wählen Sie die erste Linie, dann die zweite, nahe der Stelle, an der der Kreis sie berühren soll, und geben Sie den Radius ein.
+
+### Wie zeichne ich einen Kreis tangential an drei Objekten?
+
+Wählen Sie `3P` und geben Sie vor jedem der drei Punkte `_TAN` ein, wobei Sie jedes Objekt nahe der Stelle wählen, an der der Kreis es berühren soll.
+
+### Wie zeichne ich einen Kreis über seinen Durchmesser?
+
+Geben Sie den Mittelpunkt an, wählen Sie dann `Durchmesser` und geben Sie ihn ein. Oder wählen Sie `2P` und geben Sie die zwei Enden des Durchmessers an.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket)
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table)
+- [AutoCAD-Übung: eine Lasche mit Tangenten](/docs/exercises/link)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl BOGEN (ARC) in AutoCAD](/docs/commands/arc)
+- [Befehl ELLIPSE in AutoCAD](/docs/commands/ellipse)
+- [Befehl VERSETZ (OFFSET) in AutoCAD](/docs/commands/offset)
+- [Befehl BEMRADIUS (DIMRADIUS) in AutoCAD](/docs/commands/dimradius)

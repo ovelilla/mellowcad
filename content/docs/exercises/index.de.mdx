@@ -1,0 +1,166 @@
+---
+title: "AutoCAD-Übungen"
+metaTitle: "AutoCAD-Übungen kostenlos, mit Lösungen"
+description: "AutoCAD-Übungszeichnungen für Einsteiger und darüber, in 2D, isometrisch und 3D, jede Schritt für Schritt gelöst, im kostenlosen Online-Editor geöffnet."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wo finde ich AutoCAD-Übungen zum Üben?","answer":"Hier: Jede Übung hat ihre bemaßte Zeichnung, die Befehle, die sie übt, und ihre Lösung Schritt für Schritt, und öffnet sich in einem kostenlosen Editor, der wie AutoCAD funktioniert, im Browser. Beginnen Sie mit denen für Einsteiger; jeder Befehl, den sie verwenden, führt zu dem, was er tut, und den Optionen, die er abfragt."},{"question":"Kann ich AutoCAD online kostenlos üben?","answer":"Ja. MellowCAD läuft im Browser, kostenlos und ohne Konto: Sie geben die Befehle und Aliasnamen von AutoCAD ein, mit den Namen Ihrer Sprache, und beantworten ihre Eingabeaufforderungen in derselben Reihenfolge, mit denselben Optionsbuchstaben. Es ist nicht AutoCAD: Es öffnet und speichert DXF-Dateien, aber noch keine DWG, und seine 3D-Volumenkörper sind noch unvollständig."},{"question":"Haben die Übungen Lösungen?","answer":"Jede Übung ist unter ihrer Zeichnung Schritt für Schritt gelöst. Die Engine zeichnet jeden Schritt und schreibt den Verlauf der Befehlszeile, sodass Sie Ihre Arbeit Zeile für Zeile damit vergleichen können."},{"question":"Kann ich die Übungen drucken oder als PDF speichern?","answer":"Ja. Die Seite einer Übung druckt für sich, dunkle Linien auf Weiß, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF."}]
+---
+
+Zeichnungen zum Üben von AutoCAD, von der ersten Dichtung bis zu 3D-Volumenkörpern, jede mit ihren Bemaßungen, den Befehlen, die sie übt, und ihrer Lösung Schritt für Schritt. Die Engine zeichnet jeden Schritt und schreibt den Verlauf der Befehlszeile so, wie Sie ihn eingeben werden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Öffnen Sie eine im Editor, und ihre Zeichnung liegt neben dem Platz, an dem Sie Ihre zeichnen, in Ihrem Browser, ohne Installation und ohne Konto.
+
+## Einsteiger [#beginner]
+
+### AutoCAD-Übung: eine Dichtung [#gasket]
+
+<Session name="exercises/gasket" caption="Die Dichtung, 120 mal 80, bemaßt." />
+
+Eine Dichtung in AutoCAD zeichnen: abgerundete Platte, Bohrung, vier von einem kopierte Löcher, Mittellinien und Bemaßung, Schritt für Schritt.
+
+- **Übung:** Einsteiger · Maschinenbau · 2D
+- **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`KREIS`](/docs/commands/circle), [`KOPIEREN`](/docs/commands/copy), [`LINIE`](/docs/commands/line), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMDURCHM`](/docs/commands/dimdiameter)
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+
+### AutoCAD-Übung: ein L-Winkel [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="Der L-Winkel, 100 mal 80, von seiner unteren linken Ecke aus bemaßt." />
+
+Einen L-Winkel in AutoCAD mit relativen Koordinaten zeichnen: Kontur, Verrundung, zwei Löcher und Basislinienbemaßung, Schritt für Schritt.
+
+- **Übung:** Einsteiger · Maschinenbau · 2D
+- **Befehle:** [`LINIE`](/docs/commands/line), [`ABRUNDEN`](/docs/commands/fillet), [`KREIS`](/docs/commands/circle), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMBASISL`](/docs/commands/dimbaseline), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket)
+
+### AutoCAD-Übung: eine Treppe im Grundriss [#stairs]
+
+<Session name="exercises/stairs" caption="Eine gerade Treppe im Grundriss, 280 mal 100 Zentimeter, ihr Pfeil weist den Lauf hinauf." />
+
+Eine gerade Treppe im Grundriss in AutoCAD zeichnen: zehn Trittstufen aus einer Linie und einem rechteckigen Muster, der Laufpfeil und die Bemaßung. Kostenlos.
+
+- **Übung:** Einsteiger · Architektur · 2D
+- **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`LINIE`](/docs/commands/line), [`REIHERECHTECK`](/docs/commands/arrayrect), [`PLINIE`](/docs/commands/pline), [`BEMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD-Übung: eine Treppe im Grundriss](/docs/exercises/stairs)
+
+### AutoCAD-Übung 3D: eine Montageplatte [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="Die Kontur der Platte, 100 mal 60 mit vier Löchern, bemaßt." />
+
+Eine Montageplatte in AutoCAD 3D modellieren: Regionen, eine Differenz für die Löcher und eine einzige Extrusion, Schritt für Schritt. 3D kostenlos online üben.
+
+- **Übung:** Einsteiger · Maschinenbau · 3D-Volumenkörper
+- **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`KREIS`](/docs/commands/circle), [`KOPIEREN`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`DIFFERENZ`](/docs/commands/subtract), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`EXTRUSION`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+
+## Fortgeschritten [#intermediate]
+
+### AutoCAD-Übung: ein Flansch [#flange]
+
+<Session name="exercises/flange" caption="Der Flansch, 140 Durchmesser, mit Passfedernut, acht Löchern und den Durchmessern." />
+
+Einen Flansch in AutoCAD zeichnen: Bohrung mit gestutzter Passfedernut, acht Löcher als polares Muster, Mittellinien und Durchmesser, Schritt für Schritt.
+
+- **Übung:** Fortgeschritten · Maschinenbau · 2D
+- **Befehle:** [`KREIS`](/docs/commands/circle), [`RECHTECK`](/docs/commands/rectang), [`STUTZEN`](/docs/commands/trim), [`REIHEKREIS`](/docs/commands/arraypolar), [`LINIE`](/docs/commands/line), [`BEMDURCHM`](/docs/commands/dimdiameter), [`BEMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+
+### AutoCAD-Übung: ein runder Tisch mit Stühlen [#round-table]
+
+<Session name="exercises/round-table" caption="Ein runder Tisch von 120 mit sechs Stühlen, in der Draufsicht, in Zentimetern bemaßt." />
+
+Einen runden Tisch mit sechs Stühlen in AutoCAD zeichnen: ein Stuhl, dann ein polares Muster um den Mittelpunkt des Tisches, und die Bemaßung. Kostenlos online.
+
+- **Übung:** Fortgeschritten · Architektur · 2D
+- **Befehle:** [`KREIS`](/docs/commands/circle), [`RECHTECK`](/docs/commands/rectang), [`REIHEKREIS`](/docs/commands/arraypolar), [`BEMDURCHM`](/docs/commands/dimdiameter), [`BEMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table)
+
+### AutoCAD-Übung: ein Grundstück [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="Ein Grundstück mit fünf Seiten, in Metern, mit der Bemaßung jeder Seite und eines Winkels." />
+
+Ein Grundstück in AutoCAD aus Länge und Winkel seiner Seiten mit Polarkoordinaten zeichnen, dann seine Fläche messen und es bemaßen. Schritt für Schritt.
+
+- **Übung:** Fortgeschritten · Bauingenieurwesen · 2D
+- **Befehle:** [`PLINIE`](/docs/commands/pline), [`FLÄCHE`](/docs/commands/area), [`BEMAUSG`](/docs/commands/dimaligned), [`BEMWINKEL`](/docs/commands/dimangular)
+- [AutoCAD-Übung: ein Grundstück](/docs/exercises/plot-of-land)
+
+### AutoCAD-Übung: eine Stufenwelle [#shaft]
+
+<Session name="exercises/shaft" caption="Eine Stufenwelle in der Seitenansicht, 150 lang, mit ihren Längen als Kettenbemaßung." />
+
+Eine Stufenwelle in AutoCAD zeichnen: halbe Kontur als Polylinie, mit Fasen, an der Achse gespiegelt, und ihre Längen als Kettenbemaßung. Schritt für Schritt.
+
+- **Übung:** Fortgeschritten · Maschinenbau · 2D
+- **Befehle:** [`PLINIE`](/docs/commands/pline), [`FASE`](/docs/commands/chamfer), [`SPIEGELN`](/docs/commands/mirror), [`LINIE`](/docs/commands/line), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMWEITER`](/docs/commands/dimcontinue)
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft)
+
+### AutoCAD-Übung Isometrie: ein Stufenblock [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="Ein Stufenblock in Isometrie, 60 lang, 40 tief und 40 hoch, mit den an seinen Kanten bemaßten Größen." />
+
+Einen Stufenblock in AutoCAD isometrisch zeichnen, mit LINIE (LINE) und Polarkoordinaten auf den Achsen 30°, 90° und 150°, und bemaßen. Schritt für Schritt.
+
+- **Übung:** Fortgeschritten · Maschinenbau · Isometrisch
+- **Befehle:** [`LINIE`](/docs/commands/line), [`BEMAUSG`](/docs/commands/dimaligned)
+- [AutoCAD-Übung Isometrie: ein Stufenblock](/docs/exercises/isometric-block)
+
+### AutoCAD-Übung 3D: eine Riemenscheibe [#pulley]
+
+<Session name="exercises/pulley" caption="Der halbe Schnitt der Riemenscheibe neben ihrer Achse, mit den Abständen von der Achse bemaßt." />
+
+Eine Riemenscheibe in AutoCAD 3D modellieren: ihren halben Schnitt als geschlossene Polylinie, um die Y-Achse zu einem Volumenkörper gedreht.
+
+- **Übung:** Fortgeschritten · Maschinenbau · 3D-Volumenkörper
+- **Befehle:** [`PLINIE`](/docs/commands/pline), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`ROTATION`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD-Übung 3D: eine Riemenscheibe](/docs/exercises/pulley)
+
+## Profi [#advanced]
+
+### AutoCAD-Übung: eine Lasche mit Tangenten [#link]
+
+<Session name="exercises/link" caption="Eine Lasche aus zwei Augen im Abstand 90, durch Tangenten verbunden, bemaßt." />
+
+Eine Lasche in AutoCAD zeichnen: zwei Augen, mit dem Objektfang Tangente durch Tangenten verbunden, die Bögen dazwischen gestutzt, und ihre Bemaßung.
+
+- **Übung:** Profi · Maschinenbau · 2D
+- **Befehle:** [`KREIS`](/docs/commands/circle), [`LINIE`](/docs/commands/line), [`STUTZEN`](/docs/commands/trim), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
+- [AutoCAD-Übung: eine Lasche mit Tangenten](/docs/exercises/link)
+
+### AutoCAD-Übung 3D: ein Lagerbock [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="Der Lagerbock in der Draufsicht, 100 mal 60, mit Nabe, Bohrung und Löchern bemaßt." />
+
+Einen Lagerbock in AutoCAD 3D modellieren: extrudieren, vereinigen, dann Bohrung und zwei Befestigungslöcher als Zylinder abziehen, Schritt für Schritt.
+
+- **Übung:** Profi · Maschinenbau · 3D-Volumenkörper
+- **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`KREIS`](/docs/commands/circle), [`EXTRUSION`](/docs/commands/extrude), [`VEREINIG`](/docs/commands/union), [`ZYLINDER`](/docs/commands/cylinder), [`KOPIEREN`](/docs/commands/copy), [`DIFFERENZ`](/docs/commands/subtract), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Anleitungen Schritt für Schritt [#guides]
+
+Die Fertigkeiten der Übungen einzeln: Punkte eingeben, der Grundriss eines Hauses, eine 2D-Zeichnung, zu einem Volumenkörper gemacht. Jede Anleitung zeigt die Zeichnung jedes Schritts und seinen Verlauf.
+
+- [Koordinaten in AutoCAD](/docs/coordinates): Punkte in AutoCAD eingeben: absolute, relative und Polarkoordinaten, eine Linie im Winkel und die polare Spurverfolgung. Üben Sie sie kostenlos online.
+- [Grundriss in AutoCAD zeichnen](/docs/floor-plan): Den Grundriss eines Hauses in AutoCAD zeichnen, ohne Anmeldung: Wände mit VERSETZ (OFFSET), Öffnungen mit STUTZEN (TRIM), Türen, Fenster, Bemaßung.
+- [Von 2D zu 3D in AutoCAD](/docs/2d-to-3d): Aus einer 2D-Zeichnung einen 3D-Volumenkörper in AutoCAD machen: ein geschlossenes Profil extrudieren, drücken/ziehen, drehen, vereinigen. Noch unvollständig.
+
+## So funktionieren die Übungen [#how]
+
+Eine Übung öffnet sich im Editor mit ihrer Zeichnung, bemaßt, links vom Ursprung: Zeichnen Sie Ihre ab 0,0, wie es ihre Lösung tut. Was Sie zeichnen, bleibt in diesem Browser für diese Übung allein. Die Zeichnung, an der Sie arbeiteten, bleibt, wie sie war, und der für sich geöffnete Editor bringt sie zurück. Um eine Übung neu zu beginnen, führen Sie NEU aus und öffnen sie dann auf ihrer Seite. Jede Seite druckt für sich, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF.
+
+## Fragen [#questions]
+
+### Wo finde ich AutoCAD-Übungen zum Üben?
+
+Hier: Jede Übung hat ihre bemaßte Zeichnung, die Befehle, die sie übt, und ihre Lösung Schritt für Schritt, und öffnet sich in einem kostenlosen Editor, der wie AutoCAD funktioniert, im Browser. Beginnen Sie mit denen für Einsteiger; jeder Befehl, den sie verwenden, führt zu dem, was er tut, und den Optionen, die er abfragt.
+
+### Kann ich AutoCAD online kostenlos üben?
+
+Ja. MellowCAD läuft im Browser, kostenlos und ohne Konto: Sie geben die Befehle und Aliasnamen von AutoCAD ein, mit den Namen Ihrer Sprache, und beantworten ihre Eingabeaufforderungen in derselben Reihenfolge, mit denselben Optionsbuchstaben. Es ist nicht AutoCAD: Es öffnet und speichert DXF-Dateien, aber noch keine DWG, und seine 3D-Volumenkörper sind noch unvollständig.
+
+### Haben die Übungen Lösungen?
+
+Jede Übung ist unter ihrer Zeichnung Schritt für Schritt gelöst. Die Engine zeichnet jeden Schritt und schreibt den Verlauf der Befehlszeile, sodass Sie Ihre Arbeit Zeile für Zeile damit vergleichen können.
+
+### Kann ich die Übungen drucken oder als PDF speichern?
+
+Ja. Die Seite einer Übung druckt für sich, dunkle Linien auf Weiß, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF.

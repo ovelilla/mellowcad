@@ -1,0 +1,73 @@
+---
+title: "Befehl FÜHRUNG (LEADER) in AutoCAD"
+description: "Wie FÜHRUNG (LEADER) in AutoCAD funktioniert: eine Führungslinie von der Pfeilspitze zum Text, der Haken, die Formatoptionen und der Unterschied zu MLEADER."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie heißt der Befehl LEADER auf Deutsch?","answer":"FÜHRUNG, englisch LEADER. Geben Sie FÜHRUNG ein, dann die Eingabetaste oder die Leertaste. Der englische Name funktioniert ebenfalls, mit vorangestelltem Unterstrich: _LEADER in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen FÜHRUNG (LEADER) und MLEADER?","answer":"FÜHRUNG ist der ältere Befehl: eine Führungslinie und ein eigener Text, dem die Linie folgt. MLEADER, das AutoCAD heute empfiehlt, erzeugt ein einziges Multi-Führungslinienobjekt mit eigenen Stilen und mehreren Führungslinien zu einer Anmerkung. MellowCAD hat FÜHRUNG; es öffnet und speichert die Führungslinien einer DXF-Datei und lässt deren Multi-Führungslinien weg."},{"question":"Wie erstellt man eine Führungslinie mit Text?","answer":"Starten Sie FÜHRUNG, wählen Sie den Punkt, auf den gezeigt werden soll, dann die Stelle für den Text, drücken Sie die Eingabetaste und geben Sie den Text Zeile für Zeile ein. Die Eingabetaste auf einer leeren Zeile beendet ihn. Die Eingabetaste bei der ersten Zeile bietet stattdessen die anderen Anmerkungen an, darunter den Texteditor."},{"question":"Wie ändert man die Größe des Pfeils einer Führungslinie?","answer":"Wählen Sie die Führungslinie und ändern Sie die Pfeilgröße in der Eigenschaftenpalette, was nur für diese Führungslinie gilt; oder ändern Sie die Pfeilgröße des Bemaßungsstils, der jede Führungslinie dieses Stils folgt. Die Länge des Hakens folgt der Pfeilgröße ebenfalls."},{"question":"Warum hat die Führungslinie keinen Pfeil?","answer":"Entweder hat KEine unter Format ihn weggelassen, oder das erste Segment ist kürzer als die doppelte Pfeilgröße; dann zeichnet auch AutoCAD keine Pfeilspitze. Wählen Sie den zweiten Punkt weiter vom ersten entfernt oder stellen Sie eine kleinere Pfeilgröße ein."}]
+---
+
+FÜHRUNG (LEADER) zeichnet eine Linie von einer Pfeilspitze zu einer Anmerkung. Wählen Sie den Startpunkt, an dem die Pfeilspitze sitzt, dann beliebig viele weitere Punkte; ab dem zweiten bietet die Eingabeaufforderung `Beschriftung` an, was auch die Eingabetaste wählt, sowie `Format` und `Zurück`. Die Eingabetaste bei den ersten beiden Punkten beendet den Befehl, ohne etwas zu zeichnen. Danach geben Sie die Anmerkung Zeile für Zeile ein, mit der Eingabetaste nach jeder, und beenden sie mit der Eingabetaste auf einer leeren Zeile: Die Führungslinie und ihr Text, ein mehrzeiliger Text, entstehen zusammen in einem Schritt, auf dem aktuellen Layer mit der aktuellen Farbe, dem aktuellen Linientyp und der aktuellen Linienstärke.
+
+Der Text übernimmt Höhe, Abstand zur Linie und Lage vom aktuellen Bemaßungsstil: hinter dem Ende der Führungslinie oder davor, wenn sie von rechts kommt, und über der letzten Zeile, die unter dem Text weiterläuft. Steigt das letzte Segment um mehr als 15° gegenüber der Waagerechten an, fügt FÜHRUNG einen Haken hinzu, eine kurze waagerechte Linie in der Länge der Pfeilspitze, die an dem Punkt endet, den Sie gewählt haben. Die Pfeilspitze ist die geschlossene, gefüllte und wird nur gezeichnet, wenn das erste Segment mindestens doppelt so lang ist wie sie.
+
+Die Führungslinie folgt ihrem Text: Verschieben, drehen oder skalieren Sie den Text, und das Ende der Führungslinie geht mit, der Haken wird neu berechnet; löschen Sie den Text, bleibt die Führungslinie ohne Haken zurück. Eine zusammen mit ihrem Text kopierte Führungslinie bleibt ein Paar. Die Griffe der Führungslinie liegen an ihren Punkten; die Eigenschaftenpalette zeigt ihren Typ, die Pfeilgröße, den Textversatz und die Textposition sowie ihren Maßstab.
+
+- **Befehl:** `FÜHRUNG`
+- **Auf Englisch:** `LEADER`, in jeder Sprache als `_LEADER` eingegeben
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `FÜHRUNG` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="leader" caption="Eine Bohrung und ihre Anmerkung: FÜHRUNG vom Rand des Kreises, zwei Punkte, dann zwei Textzeilen; das letzte Segment steigt an, deshalb verbindet ein Haken es mit dem Text." />
+
+## Optionen [#options]
+
+### `Beschriftung` (`B`) [#annotation]
+
+Fragt nach dem Text, Zeile für Zeile. Die Eingabetaste bei der ersten Zeile fragt stattdessen nach einer anderen Art von Anmerkung: `Mtext` (die Vorgabe) öffnet den Texteditor am Ende der Führungslinie, wo die Eingabetaste eine Zeile umbricht und Strg+Eingabetaste oder ein Klick außerhalb abschließt; `KOpieren` setzt eine Kopie eines mehrzeiligen Textes, eines einzeiligen Textes oder eines Blockverweises, den Sie wählen, an das Ende und lehnt alles andere mit `Wählen Sie ein MText-, Text-, Blockreferenz- oder Toleranzobjekt.` ab; `KEine` zeichnet nur die Führungslinie.
+
+### `Format` (`F`) [#format]
+
+Legt fest, wie die Führungslinie gezeichnet wird, und kehrt dann zu den Punkten zurück: `Spline` macht sie zu einer glatten Kurve durch die Punkte, `Gerade` wieder zu geraden Segmenten, `Pfeil` setzt die Pfeilspitze wieder ein, und `KEine` lässt sie weg. Die Eingabetaste behält das Format bei.
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt den letzten Punkt zurück und fragt erneut danach. Beim zweiten Punkt gibt es nichts zurückzunehmen, und `Ungültige Eingabe.` sagt das.
+
+## Was er noch nicht kann [#missing]
+
+Die Anmerkungen Toleranz und Block: MellowCAD hat kein Objekt für Form- und Lagetoleranzen, und ein Block wird nicht aus FÜHRUNG heraus eingefügt, daher listet die Optionen-Eingabeaufforderung nur Kopieren, Keine und MText. Andere Pfeilspitzen als die geschlossene, gefüllte, und die eigene Linienfarbe und Linienstärke der Führungslinie aus dem Bemaßungsstil. QLEADER und MLEADER, die Schnellführung und die Multi-Führungslinie, gibt es noch nicht: Die Multi-Führungslinien einer DXF-Datei werden beim Öffnen weggelassen.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice--de-führung)
+
+## Fragen [#questions]
+
+### Wie heißt der Befehl LEADER auf Deutsch?
+
+FÜHRUNG, englisch LEADER. Geben Sie `FÜHRUNG` ein, dann die Eingabetaste oder die Leertaste. Der englische Name funktioniert ebenfalls, mit vorangestelltem Unterstrich: `_LEADER` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen FÜHRUNG (LEADER) und MLEADER?
+
+FÜHRUNG ist der ältere Befehl: eine Führungslinie und ein eigener Text, dem die Linie folgt. MLEADER, das AutoCAD heute empfiehlt, erzeugt ein einziges Multi-Führungslinienobjekt mit eigenen Stilen und mehreren Führungslinien zu einer Anmerkung. MellowCAD hat FÜHRUNG; es öffnet und speichert die Führungslinien einer DXF-Datei und lässt deren Multi-Führungslinien weg.
+
+### Wie erstellt man eine Führungslinie mit Text?
+
+Starten Sie FÜHRUNG, wählen Sie den Punkt, auf den gezeigt werden soll, dann die Stelle für den Text, drücken Sie die Eingabetaste und geben Sie den Text Zeile für Zeile ein. Die Eingabetaste auf einer leeren Zeile beendet ihn. Die Eingabetaste bei der ersten Zeile bietet stattdessen die anderen Anmerkungen an, darunter den Texteditor.
+
+### Wie ändert man die Größe des Pfeils einer Führungslinie?
+
+Wählen Sie die Führungslinie und ändern Sie die Pfeilgröße in der Eigenschaftenpalette, was nur für diese Führungslinie gilt; oder ändern Sie die Pfeilgröße des Bemaßungsstils, der jede Führungslinie dieses Stils folgt. Die Länge des Hakens folgt der Pfeilgröße ebenfalls.
+
+### Warum hat die Führungslinie keinen Pfeil?
+
+Entweder hat `KEine` unter Format ihn weggelassen, oder das erste Segment ist kürzer als die doppelte Pfeilgröße; dann zeichnet auch AutoCAD keine Pfeilspitze. Wählen Sie den zweiten Punkt weiter vom ersten entfernt oder stellen Sie eine kleinere Pfeilgröße ein.
+
+## Verwandte Befehle [#related]
+
+- [Befehl MTEXT (Absatztext) in AutoCAD](/docs/commands/mtext)
+- [Befehl BEMSTIL (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)
+- [Befehl BEMRADIUS (DIMRADIUS) in AutoCAD](/docs/commands/dimradius)
+- [Befehl TEXT (DTEXT) in AutoCAD: einzeiliger Text](/docs/commands/text)

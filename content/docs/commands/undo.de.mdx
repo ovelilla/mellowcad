@@ -1,0 +1,86 @@
+---
+title: "Befehl ZURÜCK (UNDO) in AutoCAD"
+metaTitle: "Befehl ZURÜCK (UNDO) in AutoCAD"
+description: "So arbeitet AutoCADs ZURÜCK (UNDO): mehrere Schritte zurück, Markierung und Rück, Beginn und Ende, Steuern, und der Unterschied zu Z und Strg+Z. Online testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für ZURÜCK (UNDO) in AutoCAD?","answer":"Strg+Z, oder Z und die Eingabetaste: ein Schritt zurück. In der deutschen AutoCAD-Version ist Z der Befehl für einen Schritt zurück, in der englischen U. ZURÜCK hat keinen Alias; tippen Sie ihn vollständig für eine Anzahl von Schritten oder seine Optionen, oder _UNDO in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen Z und ZURÜCK?","answer":"Z nimmt den letzten Befehl zurück und fragt nichts. ZURÜCK fragt, wie viele zurückgenommen werden sollen, und hat Markierung und Rück, um zu einem von Ihnen markierten Punkt zurückzugehen, Beginn und Ende, um mehrere Befehle zu einem Schritt zu machen, und Steuern, um Rückgängig zu begrenzen oder auszuschalten."},{"question":"Wie mache ich mehrere Befehle auf einmal rückgängig?","answer":"Tippen Sie ZURÜCK und die Anzahl der Befehle, etwa 5. Oder wählen Sie Markierung vor einer Reihe, die Sie vielleicht verwerfen wollen, und Rück, um zu ihr zurückzugehen."},{"question":"Warum funktioniert der Befehl ZURÜCK nicht?","answer":"Rückgängig wurde mit Steuern Nichts ausgeschaltet: Z sagt es, und ZURÜCK fragt nach Steuern. Antworten Sie Ganz, um es wieder einzuschalten. Die Schritte davor sind verloren."},{"question":"Wie stelle ich wieder her, was ich rückgängig gemacht habe?","answer":"ZLÖSCH direkt nach Z oder ZURÜCK stellt alles wieder her. Strg+Y stellt Schritt für Schritt wieder her."}]
+---
+
+ZURÜCK (UNDO) nimmt Befehle zurück. Ein Schritt ist ein ganzer Befehl: Alles, was ein LINIE-Aufruf gezeichnet hat, verschwindet auf einmal, wie viele Segmente er auch hatte, und ebenso alles, was ein Befehl festgelegt hat, etwa LTSCALE. ZURÜCK schreibt seine aktuellen Einstellungen und fragt dann nach der Anzahl der zurückzunehmenden Vorgänge oder nach einer Option; die Eingabetaste nimmt einen zurück. Es schreibt die Namen der zurückgenommenen Befehle in eine Zeile, `CIRCLE LINE`, und `Es wurde bereits alles gelöscht`, wenn nichts mehr übrig ist; danach `Nichts zu löschen`. Auch ein Befehl, der nichts geändert hat, wie ID oder LIST, ist ein Schritt, ebenso das, was ZOOM und PAN mit der Ansicht getan haben.
+
+`Z` ist die Kurzform: ein Schritt zurück, ohne Frage. Strg+Z an der Eingabeaufforderung führt Z aus; innerhalb eines Befehls ist es das eigene Zurück dieses Befehls, so wie AutoCADs Makro es tippt: LINIE nimmt sein letztes Segment zurück und macht weiter. [`ZLÖSCH`](/docs/commands/redo) stellt direkt danach wieder her, was das letzte Z oder ZURÜCK zurückgenommen hat.
+
+- **Befehl:** `ZURÜCK`
+- **Auf Englisch:** `UNDO`, in jeder Sprache als `_UNDO` eingegeben
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `ZURÜCK` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="undoBefore" caption="Eine Platte mit zwei Bohrungen und einer Linie quer darüber, gezeichnet mit vier Befehlen: RECTANG, zweimal CIRCLE und LINE." />
+
+<Session name="undo" caption="UNDO 2: Die letzten zwei Befehle werden zurückgenommen, die Linie und die zweite Bohrung, und die Platte behält ihre erste Bohrung." />
+
+## Optionen [#options]
+
+### `Auto` (`A`) [#auto]
+
+Fragt `Ein` oder `Aus` und bietet die aktuelle Einstellung an, die die Einstellungszeile danach zeigt. In AutoCAD macht es aus den Befehlen, die ein Menüeintrag ausführt, einen Schritt; hier führt kein Menü mehr als einen aus, sodass es hier nichts zusammenfasst.
+
+### `Steuern` (`S`) [#control]
+
+Fragt, wie viel Rückgängig aufbewahrt werden soll, standardmäßig `Ganz`. `Nichts` verwirft jeden aufbewahrten Schritt und schaltet Rückgängig aus: Z meldet dann `Befehl Z deaktiviert.  ZURÜCK um wieder zu aktivieren`, und ZURÜCK fragt gleich nach Steuern. `Eine` behält nur den letzten Schritt, und ZURÜCK fragt dann nach 1 oder Steuern. Ganz schaltet das volle Rückgängig wieder ein. `Kombinieren` bestimmt, ob aufeinanderfolgende ZOOM und PAN ein Schritt sind, und `Layer`, ob es aufeinanderfolgende Änderungen im Layer-Eigenschaften-Manager sind, bei beiden standardmäßig Ja. Die Einstellungen gehören zur Zeichnung und werden nicht mit ihr gespeichert: Eine neue oder geöffnete Zeichnung beginnt bei Ganz, Kombinieren Ja und Layer Ja.
+
+### `Beginn` (`B`) [#begin]
+
+Beginnt eine Gruppe: Die Befehle, die bis `Ende` laufen, bilden einen Schritt, den Z als Ganzes zurücknimmt und mit ihnen `GROUP` nennt. Solange eine Gruppe offen ist, halten Z, eine Zahl und Rück an ihrem Anfang an. Beginn bei offener Gruppe schließt sie zuerst.
+
+### `Ende` (`E`) [#end]
+
+Schließt die Gruppe, die Beginn geöffnet hat.
+
+### `Markierung` (`M`) [#mark]
+
+Setzt eine Markierung in die Schritte. Rück, Z und eine Zahl halten an ihr an, mit `Markierung gefunden`.
+
+### `Rück` (`R`) [#back]
+
+Nimmt jeden Schritt bis zur letzten Markierung zurück, und die Markierung mit ihnen. Ohne Markierung fragt es, ob alles rückgängig gemacht werden soll, standardmäßig Ja.
+
+## Was er noch nicht kann [#missing]
+
+Auto fasst nichts zusammen, da hier kein Menü mehr als einen Befehl ausführt. Kombinieren und Layer gelten für die Browsersitzung, wo AutoCAD sie von einer Sitzung zur nächsten behält. Die Schaltflächen Rückgängig und Wiederholen der oberen Leiste schreiben nichts in den Verlauf, wo AutoCADs Schnellzugriff-Werkzeugkasten seinen eigenen schreibt. Strg+Umschalt+Z stellt ebenfalls wieder her, stumm, obwohl AutoCAD nichts daran bindet.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für ZURÜCK (UNDO) in AutoCAD?
+
+Strg+Z, oder `Z` und die Eingabetaste: ein Schritt zurück. In der deutschen AutoCAD-Version ist `Z` der Befehl für einen Schritt zurück, in der englischen `U`. ZURÜCK hat keinen Alias; tippen Sie ihn vollständig für eine Anzahl von Schritten oder seine Optionen, oder `_UNDO` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen Z und ZURÜCK?
+
+`Z` nimmt den letzten Befehl zurück und fragt nichts. ZURÜCK fragt, wie viele zurückgenommen werden sollen, und hat Markierung und Rück, um zu einem von Ihnen markierten Punkt zurückzugehen, Beginn und Ende, um mehrere Befehle zu einem Schritt zu machen, und Steuern, um Rückgängig zu begrenzen oder auszuschalten.
+
+### Wie mache ich mehrere Befehle auf einmal rückgängig?
+
+Tippen Sie `ZURÜCK` und die Anzahl der Befehle, etwa `5`. Oder wählen Sie `Markierung` vor einer Reihe, die Sie vielleicht verwerfen wollen, und `Rück`, um zu ihr zurückzugehen.
+
+### Warum funktioniert der Befehl ZURÜCK nicht?
+
+Rückgängig wurde mit Steuern `Nichts` ausgeschaltet: Z sagt es, und ZURÜCK fragt nach Steuern. Antworten Sie `Ganz`, um es wieder einzuschalten. Die Schritte davor sind verloren.
+
+### Wie stelle ich wieder her, was ich rückgängig gemacht habe?
+
+[`ZLÖSCH`](/docs/commands/redo) direkt nach Z oder ZURÜCK stellt alles wieder her. Strg+Y stellt Schritt für Schritt wieder her.
+
+## Verwandte Befehle [#related]
+
+- [Z (U)](/docs/commands#u): Macht den letzten Vorgang rückgängig
+- [Befehl ZLÖSCH (REDO) in AutoCAD: Wiederherstellen](/docs/commands/redo)
+- [MZLÖSCH (MREDO)](/docs/commands#mredo): Mehrfach wiederherstellen
+- [Befehl LÖSCHEN (ERASE) in AutoCAD](/docs/commands/erase)

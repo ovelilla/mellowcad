@@ -1,0 +1,78 @@
+---
+title: "Befehl VERSETZ (OFFSET) in AutoCAD"
+description: "Wie VERSETZ (OFFSET, Alias VS) in AutoCAD funktioniert: ein Abstand oder Durchgang, Löschen und Layer, ein Objekt und eine Seite nach der anderen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für VERSETZ (OFFSET) in AutoCAD?","answer":"VS, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _OFFSET in jeder Sprache von AutoCAD."},{"question":"Warum kann ich ein Objekt nicht versetzen?","answer":"VERSETZ versetzt Linien, Bögen, Kreise, 2D-Polylinien, Ellipsen und Splines. Text, Mehrzeilentext, Blockverweise, Bemaßungen und Schraffuren lehnt der Befehl mit „Dieses Objekt kann nicht versetzt werden.“ ab, ebenso, wenn der Abstand einen Kreis, einen Bogen oder eine Polylinie auf nichts schrumpfen ließe. Ein Objekt auf einem gesperrten Layer kann nicht gewählt werden, und eine 3D-Polylinie wird übergangen."},{"question":"Wie versetze ich dieselbe Linie mehrmals?","answer":"Wählen Sie die Linie, geben Sie dann bei der Eingabeaufforderung der Seite den Buchstaben von Mehrfach ein: Jede Auswahl auf dieser Seite erzeugt eine weitere Kopie, jede einen Abstand hinter der letzten. Oder behalten Sie die Vorgabe und wählen Sie jedes Mal die neueste Kopie."},{"question":"Wie lege ich die versetzten Kopien auf den aktuellen Layer?","answer":"Wählen Sie bei der ersten Eingabeaufforderung Layer, dann Aktuell. Von da an kommt jede Kopie auf den aktuellen Layer, bis Sie wieder Quelle wählen."}]
+---
+
+VERSETZ (OFFSET) zeichnet eine Kopie eines Objekts parallel dazu, in einem Abstand, den Sie eingeben, oder durch einen Punkt, den Sie wählen: Eine Linie ergibt eine parallele Linie, ein Kreis oder ein Bogen einen konzentrischen, eine Polylinie einen Umriss innerhalb oder außerhalb, eine Ellipse oder ein Spline einen Spline, der ihr folgt. Wie in AutoCAD nimmt der Befehl ein Objekt nach dem anderen: Sie geben den Abstand einmal an, wählen dann ein Objekt und die Seite, auf die seine Kopie kommt, so oft Sie möchten. Die Eingabetaste beendet ihn.
+
+- **Befehl:** `VERSETZ`
+- **Auf Englisch:** `OFFSET`, in jeder Sprache als `_OFFSET` eingegeben
+- **Aliasnamen:** `VS`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `VS` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="offset" caption="Ein Rechteck um 6 nach innen versetzt und ein Kreis um 6 nach außen, jeweils gewählt, dann seine Seite." />
+
+## Optionen [#options]
+
+### `Durch punkt` (`D`) [#through]
+
+Anstelle eines Abstands verläuft jede Kopie durch einen Punkt, den Sie wählen oder eingeben. Es ist die Vorgabe der ersten Eingabeaufforderung, die Eingabetaste wählt es dort also, bis ein Abstand angegeben wurde; von da an wiederholt die Eingabetaste den letzten Abstand, in dieser Zeichnung.
+
+### `lÖschen` (`Ö`) [#erase]
+
+Fragt, ob jedes Ausgangsobjekt nach dem Versetzen gelöscht werden soll, `Ja` oder `Nein` (die Vorgabe). Mit `Ja` ersetzt die Kopie das Objekt. Die Wahl bleibt für den Rest der Sitzung erhalten, und das nächste VERSETZ nennt sie in seiner ersten Zeile.
+
+### `Layer` (`L`) [#layer]
+
+Fragt, wohin die Kopien kommen: auf den `Aktuell`-Layer oder auf den des `Quelle`-Objekts (die Vorgabe). Ebenfalls für die Sitzung beibehalten.
+
+### `Beenden` (`B`) [#exit]
+
+Beendet den Befehl, wie die Eingabetaste bei der Eingabeaufforderung des Objekts.
+
+### `Mehrfach` (`M`) [#multiple]
+
+Bei der Eingabeaufforderung der Seite: Versetzt dasselbe Objekt weiter, ohne es erneut zu wählen, jede Kopie einen Abstand weiter außen als die letzte, bis zur Eingabetaste oder `Beenden`.
+
+### `Rückgängig` (`R`) [#undo]
+
+Nimmt die letzte Kopie zurück, von welchem Objekt sie auch stammt, und fragt erneut nach einem Objekt. Ist keine Kopie mehr zurückzunehmen, meldet der Befehl es.
+
+## Was er noch nicht kann [#missing]
+
+OFFSETGAPTYPE 1 und 2: Die Ecken einer versetzten Polylinie werden immer wie bei 0 geschlossen, die Segmente bis zum Treffen verlängert. Der Versatz eines Splines oder einer Ellipse liegt innerhalb der Toleranz von AutoCAD, aber seine Knoten liegen dort, wo MellowCAD sie setzt, nicht dort, wo AutoCAD sie setzt. Through an einem Spline zeigt in seiner QuickInfo X und Y, nicht den Abstand.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für VERSETZ (OFFSET) in AutoCAD?
+
+`VS`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_OFFSET` in jeder Sprache von AutoCAD.
+
+### Warum kann ich ein Objekt nicht versetzen?
+
+VERSETZ versetzt Linien, Bögen, Kreise, 2D-Polylinien, Ellipsen und Splines. Text, Mehrzeilentext, Blockverweise, Bemaßungen und Schraffuren lehnt der Befehl mit `Dieses Objekt kann nicht versetzt werden.` ab, ebenso, wenn der Abstand einen Kreis, einen Bogen oder eine Polylinie auf nichts schrumpfen ließe. Ein Objekt auf einem gesperrten Layer kann nicht gewählt werden, und eine 3D-Polylinie wird übergangen.
+
+### Wie versetze ich dieselbe Linie mehrmals?
+
+Wählen Sie die Linie, geben Sie dann bei der Eingabeaufforderung der Seite den Buchstaben von `Mehrfach` ein: Jede Auswahl auf dieser Seite erzeugt eine weitere Kopie, jede einen Abstand hinter der letzten. Oder behalten Sie die Vorgabe und wählen Sie jedes Mal die neueste Kopie.
+
+### Wie lege ich die versetzten Kopien auf den aktuellen Layer?
+
+Wählen Sie bei der ersten Eingabeaufforderung `Layer`, dann `Aktuell`. Von da an kommt jede Kopie auf den aktuellen Layer, bis Sie wieder `Quelle` wählen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl DEHNEN (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Befehl ABRUNDEN (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Befehl KOPIEREN (COPY) in AutoCAD](/docs/commands/copy)

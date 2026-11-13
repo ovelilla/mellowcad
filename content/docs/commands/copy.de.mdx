@@ -1,0 +1,72 @@
+---
+title: "Befehl KOPIEREN (COPY) in AutoCAD"
+description: "So arbeitet AutoCADs KOPIEREN (COPY, Alias KO und CP): ein Basispunkt, dann so viele Kopien, wie Sie platzieren, mit Zurück und Beenden, oder per Verschiebung."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für KOPIEREN (COPY) in AutoCAD?","answer":"KO oder CP, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _COPY in jeder Sprache von AutoCAD."},{"question":"Wie mache ich mehrere Kopien auf einmal?","answer":"Platzieren Sie weiter: Jeder Punkt, den Sie angeben, ist eine weitere Kopie vom selben Basispunkt aus, bis zur Eingabetaste. Für Kopien in Zeilen, Spalten oder um einen Mittelpunkt macht REIHE sie in einem Zug."},{"question":"Wie kopiere ich ein Objekt um einen festen Abstand?","answer":"Geben Sie den Basispunkt an und tippen Sie dann den zweiten Punkt als Abstand: 30,0 kopiert es 30 entlang X, da die dynamische Eingabe einen Punkt nach dem ersten daraus liest. Oder richten Sie den Cursor in die gewünschte Richtung, mit Ortho oder Spurverfolgung, und tippen Sie nur den Abstand."},{"question":"Warum gibt es in KOPIEREN keine Option Anordnung?","answer":"MellowCAD bietet sie noch nicht an. Für eine Reihe gleichmäßig verteilter Kopien macht REIHERECHTECK mit einer Zeile dasselbe und behält sie als eine Anordnung, die Sie bearbeiten können."}]
+---
+
+KOPIEREN (COPY) platziert Kopien der gewählten Objekte: Wählen Sie sie, geben Sie einen Basispunkt an, dann für jede Kopie einen zweiten Punkt. Wie in AutoCAD, dessen Kopiermodus standardmäßig Mehrfach ist, fragt er immer weiter nach einer weiteren, bis Sie die Eingabetaste drücken oder Beenden wählen, jede Kopie vom selben Basispunkt aus gemessen. Die Kopien behalten Layer, Farbe und jede andere Eigenschaft der Objekte. Vor dem Befehl gewählte Objekte sind die, die er kopiert, und während Sie eine Kopie platzieren, folgt die Auswahl dem Cursor.
+
+- **Befehl:** `KOPIEREN`
+- **Auf Englisch:** `COPY`, in jeder Sprache als `_COPY` eingegeben
+- **Aliasnamen:** `KO`, `CP`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `KO` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="copy" caption="Ein Kreis, dreimal entlang X von einem Basispunkt aus kopiert, dann die Eingabetaste." />
+
+## Optionen [#options]
+
+### `Verschiebung` (`V`) [#displacement]
+
+Bei der Eingabeaufforderung für den Basispunkt gewählt, oder durch die Eingabetaste dort: fragt nach einer Verschiebung als Vektor, `30,0` platziert eine Kopie 30 entlang X, und endet. Seine Vorgabe ist die zuletzt von KOPIEREN in dieser Zeichnung verwendete.
+
+### `Beenden` (`B`) [#exit]
+
+Beendet den Befehl, wie es die Eingabetaste tut, sobald eine Kopie platziert ist.
+
+### `Rückgängig` (`R`) [#undo]
+
+Nimmt die zuletzt platzierte Kopie zurück. Die erste zurückzunehmen meldet `Der Befehl wurde vollständig gelöscht.` und fragt erneut nach dem zweiten Punkt.
+
+## Was er noch nicht kann [#missing]
+
+Einzeln von COPYMODE (einmal kopieren und beenden) wird nicht angeboten: KOPIEREN ist immer Mehrfach, sodass die Eingabeaufforderung für den Basispunkt nur `Verschiebung` auflistet. Auch Anordnung beim zweiten Punkt, AutoCADs Reihe gleichmäßig verteilter Kopien, wird nicht angeboten.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp--de-kopieren--ko--cp)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für KOPIEREN (COPY) in AutoCAD?
+
+`KO` oder `CP`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_COPY` in jeder Sprache von AutoCAD.
+
+### Wie mache ich mehrere Kopien auf einmal?
+
+Platzieren Sie weiter: Jeder Punkt, den Sie angeben, ist eine weitere Kopie vom selben Basispunkt aus, bis zur Eingabetaste. Für Kopien in Zeilen, Spalten oder um einen Mittelpunkt macht [`REIHE`](/docs/commands/array) sie in einem Zug.
+
+### Wie kopiere ich ein Objekt um einen festen Abstand?
+
+Geben Sie den Basispunkt an und tippen Sie dann den zweiten Punkt als Abstand: `30,0` kopiert es 30 entlang X, da die dynamische Eingabe einen Punkt nach dem ersten daraus liest. Oder richten Sie den Cursor in die gewünschte Richtung, mit Ortho oder Spurverfolgung, und tippen Sie nur den Abstand.
+
+### Warum gibt es in KOPIEREN keine Option Anordnung?
+
+MellowCAD bietet sie noch nicht an. Für eine Reihe gleichmäßig verteilter Kopien macht [`REIHERECHTECK`](/docs/commands/arrayrect) mit einer Zeile dasselbe und behält sie als eine Anordnung, die Sie bearbeiten können.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl SCHIEBEN (MOVE) in AutoCAD](/docs/commands/move)
+- [Befehl REIHE (ARRAY) in AutoCAD](/docs/commands/array)
+- [Befehl VERSETZ (OFFSET) in AutoCAD](/docs/commands/offset)
+- [Befehl SPIEGELN (MIRROR) in AutoCAD](/docs/commands/mirror)

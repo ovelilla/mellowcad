@@ -1,0 +1,82 @@
+---
+title: "Befehl ABSTAND (DIST) in AutoCAD"
+description: "Wie ABSTAND (DIST, Alias AB) in AutoCAD funktioniert: der Abstand zwischen zwei Punkten mit Winkeln und Deltas in X, Y und Z, oder die Länge eines Punktzugs."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für ABSTAND (DIST) in AutoCAD?","answer":"AB, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _DIST in jeder Sprache von AutoCAD."},{"question":"Wie messe ich einen Abstand in AutoCAD?","answer":"Geben Sie AB ein und wählen Sie dann die zwei Punkte, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas."},{"question":"Wie messe ich die Gesamtlänge mehrerer Segmente?","answer":"Wählen Sie beim zweiten Punkt Mehrere Punkte und wählen Sie weiter: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe."},{"question":"Wie messe ich einen Abstand in 3D?","answer":"Geben Sie die Punkte mit ihrem Z-Wert an oder fangen Sie Objekte in ihrer Höhe: ABSTAND misst den wahren Abstand im Raum und schreibt den Winkel zur XY-Ebene und das Delta in Z."},{"question":"Warum zeigt ABSTAND weniger Dezimalstellen, als ich brauche?","answer":"Er schreibt Längen mit der Genauigkeit der Zeichnung, in einer neuen Zeichnung hier zwei Stellen. Stellen Sie in EINHEIT mehr ein, bis zu acht."}]
+---
+
+ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Wählen, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.
+
+- **Befehl:** `ABSTAND`
+- **Auf Englisch:** `DIST`, in jeder Sprache als `_DIST` eingegeben
+- **Aliasnamen:** `AB`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `AB` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="dist" caption="ABSTAND entlang der Diagonale einer Platte von 100 mal 60: der Abstand, der Winkel in der XY-Ebene und die Deltas." />
+
+## Optionen [#options]
+
+### `Mehrere Punkte` (`M`) [#multiple]
+
+`Mehrere` Punkte, bei der zweiten Eingabeaufforderung: ein Punktzug statt einer Strecke, der bisherige Abstand wird vor jedem nächsten Punkt geschrieben und über dem Cursor angezeigt, bis zur Eingabetaste oder `Gesamt`.
+
+### `Kreisbogen` (`K`) [#arc]
+
+Misst stattdessen entlang von Bögen, mit den Bogenoptionen von PLINIE: `Winkel`, `ZE`, `Schließen`, `RIchtung`, `LInie`, `RAdius`, `Pkt`, `ZUrück`. Die Länge jedes Bogens wird dem Punktzug hinzugefügt.
+
+### `Schließen` (`S`) [#close]
+
+Geht zurück zum ersten Punkt, fügt diese letzte Strecke hinzu, schreibt die Summe und endet.
+
+### `Länge` (`L`) [#length]
+
+Fügt eine Strecke der eingegebenen Länge entlang der letzten hinzu.
+
+### `ZUrück` (`ZU`) [#undo]
+
+Nimmt den letzten Punkt des Punktzugs zurück.
+
+### `Gesamt` (`G`) [#total]
+
+Schreibt die Summe des Punktzugs und endet; die Eingabetaste tut dasselbe.
+
+## Was er noch nicht kann [#missing]
+
+MEASUREGEOM, die Werkzeuge Messen des Menübands, die die Eingabeaufforderungen von ABSTAND in einer Schleife mit Radius, Winkel, Fläche, Volumen und Schnell stellen: Hier startet die Schaltfläche Abstand des Menübands ABSTAND. Bei `ZE` der Option Arc wird der eingeschlossene Winkel in Grad gelesen, wo AutoCAD 2027 dort eine Zahl als Abstand entlang des Cursors liest.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für ABSTAND (DIST) in AutoCAD?
+
+`AB`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_DIST` in jeder Sprache von AutoCAD.
+
+### Wie messe ich einen Abstand in AutoCAD?
+
+Geben Sie `AB` ein und wählen Sie dann die zwei Punkte, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas.
+
+### Wie messe ich die Gesamtlänge mehrerer Segmente?
+
+Wählen Sie beim zweiten Punkt `Mehrere` Punkte und wählen Sie weiter: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe.
+
+### Wie messe ich einen Abstand in 3D?
+
+Geben Sie die Punkte mit ihrem Z-Wert an oder fangen Sie Objekte in ihrer Höhe: ABSTAND misst den wahren Abstand im Raum und schreibt den Winkel zur XY-Ebene und das Delta in Z.
+
+### Warum zeigt ABSTAND weniger Dezimalstellen, als ich brauche?
+
+Er schreibt Längen mit der Genauigkeit der Zeichnung, in einer neuen Zeichnung hier zwei Stellen. Stellen Sie in [`EINHEIT`](/docs/commands/units) mehr ein, bis zu acht.
+
+## Verwandte Befehle [#related]
+
+- [Befehl FLÄCHE (AREA): Fläche messen in AutoCAD](/docs/commands/area)
+- [Befehl ID in AutoCAD](/docs/commands/id)
+- [Befehl LISTE (LIST) in AutoCAD](/docs/commands/list)
+- [Befehl EINHEIT (UNITS) in AutoCAD](/docs/commands/units)

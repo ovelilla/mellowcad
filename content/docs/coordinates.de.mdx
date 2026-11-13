@@ -1,0 +1,44 @@
+---
+title: Koordinaten in AutoCAD
+metaTitle: "AutoCAD Polarkoordinaten eingeben: Anleitung"
+description: "Punkte in AutoCAD eingeben: absolute, relative und Polarkoordinaten, eine Linie im Winkel und die polare Spurverfolgung. Üben Sie sie kostenlos online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Jeden Punkt, den ein Befehl abfragt, können Sie in der Zeichnung wählen oder eingeben. Eingegeben besteht ein Punkt aus zwei Zahlen, X und Y, durch ein Komma getrennt, und wovon aus sie gemessen werden, hängt davon ab, wie Sie sie schreiben: vom Ursprung, vom letzten Punkt oder als Länge und Winkel ab diesem. MellowCAD liest sie wie AutoCAD bei eingeschalteter dynamischer Eingabe, seiner Vorgabe. Jeder Abschnitt zeichnet eine Figur und zeigt ihren Verlauf.
+
+## Absolute Koordinaten [#absolute]
+
+Gemessen vom Ursprung, `0,0`. So wird der erste Punkt gelesen, den ein Befehl abfragt: `20,10` ist 20 in X-Richtung und 10 in Y-Richtung. Danach liest die dynamische Eingabe einen eingegebenen Punkt ab dem letzten, ein vom Ursprung gemessener Punkt braucht also ein `#` davor: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Ein Dreieck, jede Ecke vom Ursprung gemessen." />
+
+## Relative Koordinaten [#relative]
+
+Gemessen vom letzten Punkt: wie weit es in X-Richtung geht, dann in Y-Richtung. Nach dem ersten Punkt eines Befehls bedeutet ein eingegebener Punkt genau das, und der Verlauf schreibt ihn mit `@` davor, wie ihn die Befehlszeile liest: `100,0` ist 100 rechts vom letzten Punkt, `-50,70` 50 zurück und 70 nach oben. Wenn Sie selbst `@` eingeben, ist ein Punkt überall relativ, wo Sie ihn eingeben.
+
+<Session name="coordinatesRelative" caption="Dasselbe Dreieck, jede Ecke von der vorigen aus gemessen." />
+
+## Polarkoordinaten [#polar]
+
+Eine Länge und ein Winkel, gemessen vom letzten Punkt: `100<0` geht 100 in X-Richtung, `60<120` geht 60 unter 120°. Winkel werden von der X-Achse aus gemessen, gegen den Uhrzeigersinn: 90° ist oben, 180° links und 270°, oder -90°, unten. Auch der Verlauf schreibt sie mit `@`.
+
+<Session name="coordinatesPolar" caption="Drei Seiten, jede eine Länge und ein Winkel ab dem Ende der vorigen." />
+
+## Eine Linie im Winkel [#angle]
+
+Um eine Linie einer bestimmten Länge unter einem bestimmten Winkel zu zeichnen, geben Sie das Ende als Polarkoordinaten ein, `100<30`. Oder legen Sie zuerst den Winkel fest: Geben Sie `<30` ein und drücken Sie die Eingabetaste, dann bleibt der nächste Punkt auf dieser Richtung, auf der Seite des Cursors; geben Sie danach die Länge ein, `100`.
+
+<Session name="coordinatesAngle" caption="Eine auf 30° festgelegte Linie, dann mit ihrer Länge, 100." />
+
+## Polare Spurverfolgung [#tracking]
+
+Bei eingeschalteter Spurverfolgung, `F10` oder ihre Schaltfläche in der Statusleiste, zeigt der Cursor eine Hilfslinie bei jedem Vielfachen ihres Winkels, den Sie im Menü dieser Schaltfläche einstellen, und eine eingegebene Länge folgt der Hilfslinie. Der Tooltip nennt, wie weit und unter welchem Winkel der Cursor steht.
+
+<Session name="coordinatesTracking" caption="Spurverfolgung bei 30°: ihre Hilfslinie sowie Entfernung und Winkel am Cursor." />
+
+## Weiter [#next]
+
+- [Übungen](/docs/exercises), die von Anfang bis Ende eingegeben werden: [ein L-Winkel](/docs/exercises/l-bracket) mit relativen Koordinaten, [ein Grundstück](/docs/exercises/plot-of-land) mit Polarkoordinaten und [ein Block in Isometrie](/docs/exercises/isometric-block) entlang der isometrischen Winkel.
+- Die Seite von <Command id="LINE" /> und [Erste Schritte](/docs/getting-started) für die ersten Schritte mit der Befehlszeile.

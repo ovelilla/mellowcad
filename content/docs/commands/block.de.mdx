@@ -1,0 +1,63 @@
+---
+title: "Befehl BLOCK in AutoCAD"
+description: "Wie BLOCK (Alias BL) in AutoCAD einen Block erstellt, Schritt für Schritt: ein Name, ein Basispunkt und die Objekte; einen Block neu definieren, Attribute."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von BLOCK in AutoCAD?","answer":"BL, dann die Eingabetaste oder die Leertaste. B ist in der deutschen Version BOGEN. In AutoCAD öffnet BLOCK den Dialog „Blockdefinition“; hier fragt er in der Befehlszeile, wie es -BLOCK (-BLOCK) tut. _BLOCK funktioniert in jeder Sprache von AutoCAD."},{"question":"Wie erstellt man in AutoCAD einen Block?","answer":"Geben Sie BL ein, einen Namen, wählen Sie dann den Basispunkt, eine Ecke oder die Mitte der Kante, an der der Block sitzen wird, und wählen Sie die Objekte. Die Eingabetaste definiert den Block und macht die Objekte zu einem Verweis auf ihn. Eine vor dem Befehl getroffene Auswahl wird ebenfalls übernommen, nach dem Basispunkt."},{"question":"Wie definiert man einen Block neu?","answer":"Starten Sie BLOCK mit dem Namen des Blocks und antworten Sie Ja, geben Sie dann einen Basispunkt an und wählen Sie die neuen Objekte: Jeder Verweis auf den Block zeigt die neue Definition. Die Objekte dürfen keinen Verweis auf den Block selbst enthalten; ein solcher Satz wird abgelehnt, und der Befehl endet."},{"question":"Wie erstellt man einen Block mit Attributen?","answer":"Definieren Sie zuerst die Attribute mit ATTDEF, wählen Sie sie dann zusammen mit den anderen Objekten: Sie treten dem Block in der Reihenfolge bei, in der Sie sie wählen. Der Verweis, der sie ersetzt, öffnet ein Feld mit einem Eingabefeld für jedes Attribut, beschriftet mit dessen Eingabeaufforderung und gefüllt mit dessen Vorgabewert: Die Eingabetaste übernimmt die Werte, Esc behält die Vorgaben."},{"question":"Wie löst man einen Block auf?","answer":"URSPRUNG macht einen Verweis wieder zu den Objekten, die er zeigt, eine Verschachtelungsebene nach der anderen, jedes auf seinem eigenen Layer und in seiner eigenen Farbe. Attribute kommen als ihre Definitionen zurück; die Werte entfallen."}]
+---
+
+BLOCK speichert eine Gruppe von Objekten unter einem Namen in der Zeichnung, sodass [`EINFÜGE`](/docs/commands/insert) sie beliebig oft wieder einfügen kann, jede Kopie ein Verweis auf diese eine Definition. Er fragt nach einem Namen, dann nach dem Einfügebasispunkt, dem Punkt, an dem jeder Verweis platziert wird, dann nach den Objekten. Die Eingabetaste beendet die Auswahl und definiert den Block, und die gewählten Objekte werden an ihrer Stelle zu einem Verweis auf ihn. Der ganze Befehl ist ein Schritt, den Rückgängig zurücknimmt.
+
+AutoCADs BLOCK öffnet den Dialog „Blockdefinition“, den MellowCAD nicht hat: Hier fragt BLOCK in der Befehlszeile das, was `-BLOCK` fragt, wie die Konsole von AutoCAD. Ein Name darf Leerzeichen und bis zu 255 Zeichen enthalten, aber keines von `< > / \ " : ; ? * | , =` und keinen Gravis: Die Eingabetaste allein oder ein solcher Name meldet `Ungültiger Block Name.` und fragt erneut. Bei einem Namen, den die Zeichnung schon hat, in beliebiger Schreibweise, wird gefragt, ob dieser Block neu definiert werden soll, `Ja` oder `Nein` (die Vorgabe, die den Befehl beendet).
+
+- **Befehl:** `BLOCK`
+- **Aliasnamen:** `BL`, `ACADBLOCKDIALOG`, `BMAKE`, `BMOD`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BL` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="block" caption="Ein Stuhl, ein Rechteck und eine Linie, zum Block B1 gemacht: sein Name, ein Basispunkt in der Mitte seiner Vorderkante, beide Objekte gewählt." />
+
+## Optionen [#options]
+
+### `?` [#list]
+
+Listet die Blöcke der Zeichnung auf: Er fragt, welche aufgelistet werden sollen, vorgegeben `*` für alle oder ein Name mit Platzhaltern, schreibt die Namen, die passen, und eine Anzahl je Art und endet dann. Anonyme Blöcke, etwa die eines Arrays, werden gezählt, nie benannt.
+
+## Was er noch nicht kann [#missing]
+
+Der Dialog „Blockdefinition“ von AutoCAD: BLOCK fragt in der Befehlszeile. Beim Basispunkt die Optionen Annotativ und Modus (Beibehalten, Löschen): Die Objekte werden immer in einen Verweis umgewandelt. ATTREQ 0, das das Eingabefeld für die Attributwerte überspringt, sowie ATTSYNC, ATTREDEF, BATTMAN und BATTORDER: Ein neu definierter Block lässt die Attribute seiner Verweise, wie sie waren, wie AutoCAD es tut. VonBlock: Ein Objekt in einem Block kann nicht die eigene Farbe, den eigenen Linientyp oder die eigene Linienstärke des Verweises annehmen, wie es ein VonBlock gezeichnetes in AutoCAD tut. In einem gedrehten BKS verschiebt AutoCAD 2027 die Objekte, die es umwandelt; hier bleiben sie absichtlich, wo sie waren.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq--pt-br-bloco--cb--acadblockdialog--criarb--defb--bloco---cb--fr-bloc--b--acadblockdialog--_bmake--bmod--bloc---b--it-blocco--b--acadblockdialog--bmod--blocco---b--de-block--bl--acadblockdialog--bmake--bmod--block---bl)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von BLOCK in AutoCAD?
+
+`BL`, dann die Eingabetaste oder die Leertaste. `B` ist in der deutschen Version BOGEN. In AutoCAD öffnet BLOCK den Dialog „Blockdefinition“; hier fragt er in der Befehlszeile, wie es `-BLOCK` (`-BLOCK`) tut. `_BLOCK` funktioniert in jeder Sprache von AutoCAD.
+
+### Wie erstellt man in AutoCAD einen Block?
+
+Geben Sie `BL` ein, einen Namen, wählen Sie dann den Basispunkt, eine Ecke oder die Mitte der Kante, an der der Block sitzen wird, und wählen Sie die Objekte. Die Eingabetaste definiert den Block und macht die Objekte zu einem Verweis auf ihn. Eine vor dem Befehl getroffene Auswahl wird ebenfalls übernommen, nach dem Basispunkt.
+
+### Wie definiert man einen Block neu?
+
+Starten Sie BLOCK mit dem Namen des Blocks und antworten Sie `Ja`, geben Sie dann einen Basispunkt an und wählen Sie die neuen Objekte: Jeder Verweis auf den Block zeigt die neue Definition. Die Objekte dürfen keinen Verweis auf den Block selbst enthalten; ein solcher Satz wird abgelehnt, und der Befehl endet.
+
+### Wie erstellt man einen Block mit Attributen?
+
+Definieren Sie zuerst die Attribute mit [`ATTDEF`](/docs/commands/attdef), wählen Sie sie dann zusammen mit den anderen Objekten: Sie treten dem Block in der Reihenfolge bei, in der Sie sie wählen. Der Verweis, der sie ersetzt, öffnet ein Feld mit einem Eingabefeld für jedes Attribut, beschriftet mit dessen Eingabeaufforderung und gefüllt mit dessen Vorgabewert: Die Eingabetaste übernimmt die Werte, Esc behält die Vorgaben.
+
+### Wie löst man einen Block auf?
+
+[`URSPRUNG`](/docs/commands/explode) macht einen Verweis wieder zu den Objekten, die er zeigt, eine Verschachtelungsebene nach der anderen, jedes auf seinem eigenen Layer und in seiner eigenen Farbe. Attribute kommen als ihre Definitionen zurück; die Werte entfallen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl EINFÜGE (INSERT): Block einfügen in AutoCAD](/docs/commands/insert)
+- [Befehl ATTDEF in AutoCAD](/docs/commands/attdef)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)
+- [Befehl BEREINIG (PURGE) in AutoCAD](/docs/commands/purge)

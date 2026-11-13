@@ -1,0 +1,81 @@
+---
+title: DXF-Datei online öffnen
+metaTitle: "DXF-Datei online öffnen: kostenloser DXF-Viewer"
+description: "DXF-Datei kostenlos im Browser öffnen, ohne Upload: AutoCAD R12 bis 2018, Text oder binär, mit Layern, Texten, Bemaßungen, Schraffuren und Blöcken."
+type: howTo
+sourceHash: "8e5afbec73fd"
+faq:
+  - question: "Wie öffne ich eine DXF-Datei ohne AutoCAD?"
+    answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: MellowCAD öffnet sie in seinem Editor, in Ihrem Browser, ohne Installation und ohne Konto. Im Editor öffnen auch ÖFFNEN (Strg+O) und DXFIN eine."
+  - question: "Wird meine DXF-Datei hochgeladen?"
+    answer: "Nein. Ihr Browser liest die Datei und übergibt sie auf diesem Gerät an den Editor; sie wird nie an einen Server gesendet."
+  - question: "Kann ich eine DWG-Datei öffnen?"
+    answer: "Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD SICHALS mit einem DXF-Dateityp) und öffnen Sie diese."
+  - question: "Kann ich meine Änderungen als DXF-Datei speichern?"
+    answer: "Ja. SICHALS (Strg+Umschalt+S) oder DXFOUT speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen bleiben draußen, und die Befehlszeile sagt es."
+  - question: "Warum fehlen manche Objekte?"
+    answer: "Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, bleibt draußen, und die Befehlszeile nennt beim Öffnen der Datei, wie viele es je Typ sind. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht."
+---
+
+<OpenDxf />
+
+MellowCAD öffnet DXF-Dateien in Ihrem Browser und zeichnet sie in seinem Editor, wo Sie sich in einer Zeichnung umsehen, sie messen und mit den Befehlen von AutoCAD ändern können, eingegeben in Ihrer Sprache. Die Datei wird auf Ihrem Computer gelesen: Es wird nichts hochgeladen, und es muss nichts installiert und kein Konto angelegt werden.
+
+## Was sich öffnet [#opens]
+
+- **DXF von AutoCAD R12 bis 2018**, dem neuesten DXF-Format, das AutoCAD schreibt, in Text (ASCII) oder binär, erstellt von AutoCAD oder einem anderen Programm. Sein Text behält seine Zeichen: bis 2004 in der Codepage, die die Datei nennt, ab 2007 in UTF-8.
+- **Linien, Bögen, Kreise, Ellipsen und Polylinien**, mit ihren Breiten und ihren Kurven- und Splineanpassungen, 3D-Polylinien und Splines sowie Punkte, gezeichnet im [Punktstil](/docs/commands/ptype) der Zeichnung, und 2D-Volumenkörper, gefüllt, wie FILLMODE es bestimmt.
+- **Einzeiliger und mehrzeiliger Text**, Führungslinien mit ihrem Text, Blöcke mit ihren Attributen, lineare, ausgerichtete, Winkel-, Radius- und Durchmesserbemaßungen sowie Schraffuren.
+- **Der Layer jedes Objekts**, Farbe, Linientyp, Linienstärke, Objekthöhe und Erhebung, und die Layer, ob ein, aus oder gesperrt; ein gefrorener Layer öffnet sich ausgeschaltet.
+- **Die Text- und Bemaßungsstile der Zeichnung** und ihre Einheiten, wenn es Millimeter, Zentimeter oder Meter sind.
+
+## Was draußen bleibt [#left-out]
+
+Enthält ein DXF etwas, wofür MellowCAD noch kein Objekt hat, öffnet es den Rest und nennt in der Befehlszeile, wie viele Objekte jedes Typs es draußen gelassen hat. Heute sind das:
+
+- Spuren, 3D-Flächen und Netze;
+- Konstruktionslinien und Strahlen, Mehrfachlinien;
+- Multi-Führungslinien und Toleranzen, Tabellen, Wipeouts und Bilder;
+- externe Referenzen;
+- 3D-Volumenkörper, Regionen und Flächen;
+- Verlaufsfüllungen sowie Ordinat- und Bogenlängenbemaßungen.
+
+Was in einem Layout liegt, wird gesondert gezählt, da es noch keine Layouts gibt: Eine Zeichnung, deren Objekte alle in ihren Layouts liegen, öffnet sich leer.
+
+Manches öffnet sich, aber nicht ganz so, wie es war:
+
+- Ein Linientyp außer Continuous, Dashed, Hidden, Center, Phantom und DashDot behält seinen Namen und wird durchgezogen gezeichnet.
+- Ein Schraffurmuster, das nicht zu [den Mustern von `acadiso.pat` gehört, die MellowCAD zeichnet](/docs/commands/hatch), behält seinen Namen und zeichnet nur seine Begrenzung.
+- Eine Farbe über ihren Index öffnet sich als ihre RGB-Farbe und VonBlock als VonLayer.
+- Eine Zeichnung in Zoll oder Fuß behält ihre Zahlen, gelesen als Millimeter.
+- Text wird mit den Maßen von Arial gezeichnet, welche Schriftart sein Stil auch nennt, ohne seinen Breitenfaktor und seine Schrägstellung.
+
+## Im Editor öffnen [#editor]
+
+Im Editor öffnet sich ein DXF wie eine Zeichnung: <Command id="OPEN" /> (`Strg+O`) bietet Zeichnungen und DXF-Dateien an, wie es „Datei auswählen“ von AutoCAD tut, und <Command id="DXFIN" /> nur DXF-Dateien. Eine von dieser Seite oder mit <Command id="OPEN" /> geöffnete Datei ersetzt die Zeichnung im Editor, speichern Sie daher zuerst Ihre mit `Strg+S`: Es gibt [eine Zeichnung zugleich](/docs/differences#one-drawing).
+
+## Bearbeiten und behalten [#keep]
+
+Einmal geöffnet, ist ein DXF eine Zeichnung wie jede andere: Messen Sie sie mit <Command id="DIST" /> und <Command id="AREA" />, ändern Sie sie mit <Command id="MOVE" />, <Command id="TRIM" /> oder <Command id="OFFSET" /> und zeichnen Sie darauf. Sie wird bei der Arbeit in diesem Browser gespeichert, und `Strg+S` speichert sie als Datei im eigenen, versionierten Format von MellowCAD. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) und <Command id="DXFOUT" /> speichern sie wieder als DXF, AutoCAD 2000 bis 2018, Text oder binär: [DXF online bearbeiten](/docs/edit-dxf) erklärt, wie und was die Datei behält. DWG-Dateien gibt es noch nicht.
+
+## Fragen [#questions]
+
+### Wie öffne ich eine DXF-Datei ohne AutoCAD? [#without-autocad]
+
+Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: MellowCAD öffnet sie in seinem Editor, in Ihrem Browser, ohne Installation und ohne Konto. Im Editor öffnen auch <Command id="OPEN" /> (`Strg+O`) und <Command id="DXFIN" /> eine.
+
+### Wird meine DXF-Datei hochgeladen? [#uploaded]
+
+Nein. Ihr Browser liest die Datei und übergibt sie auf diesem Gerät an den Editor; sie wird nie an einen Server gesendet.
+
+### Kann ich eine DWG-Datei öffnen? [#dwg]
+
+Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD <Command id="SAVEAS" /> mit einem DXF-Dateityp) und öffnen Sie diese.
+
+### Kann ich meine Änderungen als DXF-Datei speichern? [#save-dxf]
+
+Ja. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) oder <Command id="DXFOUT" /> speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen bleiben draußen, und die Befehlszeile sagt es. [DXF online bearbeiten](/docs/edit-dxf) erklärt mehr.
+
+### Warum fehlen manche Objekte? [#missing]
+
+Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, bleibt draußen, und die Befehlszeile nennt beim Öffnen der Datei, wie viele es je Typ sind. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht.

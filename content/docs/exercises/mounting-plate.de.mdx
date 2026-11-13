@@ -1,0 +1,60 @@
+---
+title: "AutoCAD-Übung 3D: eine Montageplatte"
+metaTitle: "AutoCAD-Übung 3D für Anfänger: eine Platte"
+description: "Eine Montageplatte in AutoCAD 3D modellieren: Regionen, eine Differenz für die Löcher und eine einzige Extrusion, Schritt für Schritt. 3D kostenlos online üben."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modellieren Sie eine 10 dicke Montageplatte, in Millimetern: ihre Kontur 100 mal 60 mit Eckenradius 8 und vier Löchern von 10, deren Mittelpunkte 15 von den Kanten entfernt sind. Sie beginnt flach. Die Kontur und die Kreise werden zu Regionen, die Löcher werden abgezogen, solange die Platte noch flach ist, und eine einzige Extrusion macht daraus einen Volumenkörper mit seinen Löchern.
+
+- **Übung:** Einsteiger · Maschinenbau · 3D-Volumenkörper
+- **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`KREIS`](/docs/commands/circle), [`KOPIEREN`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`DIFFERENZ`](/docs/commands/subtract), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`EXTRUSION`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **Im Editor:** [Mit ihrer Zeichnung öffnen](/de/draw?drawing=mounting-plate), bemaßt, neben dem Platz, an dem Sie Ihre zeichnen
+
+## Die Zeichnung [#drawing]
+
+<Session name="exercises/mounting-plate" caption="Die Kontur der Platte, 100 mal 60 mit vier Löchern, bemaßt." />
+
+<Session name="exercises/mounting-plate/model" caption="Die Platte als Volumenkörper, 10 dick, von Südosten gesehen mit entfernten verdeckten Linien." />
+
+## Schritt für Schritt [#steps]
+
+Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; \# misst vom Ursprung.
+
+### 1. Das Profil zeichnen [#profile]
+
+Auf dem Layer Kontur: [`RECHTECK`](/docs/commands/rectang) mit einer `Abrunden` von `8`, von `0,0` bis `100,60`. Dann ein Kreis in `15,15` mit einem `Durchmesser` von `10`, und [`KOPIEREN`](/docs/commands/copy) ihn von seinem Mittelpunkt nach `70,0`, `70,30` und `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Das Profil zeichnen" />
+
+### 2. Regionen erstellen [#region]
+
+[`REGION`](/docs/commands/region) macht aus geschlossenen Objekten Regionen: Wählen Sie die Kontur und die vier Kreise, dann die Eingabetaste. Fünf Schleifen, fünf Regionen.
+
+<Session name="exercises/mounting-plate/region" caption="2. Regionen erstellen" />
+
+### 3. Die Löcher abziehen [#subtract]
+
+[`DIFFERENZ`](/docs/commands/subtract): Wählen Sie die Region der Platte und drücken Sie die Eingabetaste, dann die Regionen der vier Kreise und die Eingabetaste. Es bleibt eine Region mit vier Löchern.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Die Löcher abziehen" />
+
+### 4. Die Ansicht drehen [#view]
+
+`-AUSSCHNT` und `SOIso` betrachten sie von Südosten und oben; [`VSAKTUELL`](/docs/commands/vscurrent) und `Verdeckt` verbergen, was Flächen verdecken. Auch der ViewCube dreht die Ansicht mit einem Klick.
+
+<Session name="exercises/mounting-plate/view" caption="4. Die Ansicht drehen" />
+
+### 5. Sie extrudieren [#extrude]
+
+[`EXTRUSION`](/docs/commands/extrude): Wählen Sie die Region, drücken Sie die Eingabetaste und geben Sie die Höhe ein, `10`. Die Platte ist ein Volumenkörper, mit allen Löchern. [`ZOOM`](/docs/commands/zoom) `Grenzen` passt sie ein, und ein Maßstab von `0.8x` lässt Platz um sie herum.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Sie extrudieren" />
+
+## Weitere Übungen [#more]
+
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange): Fortgeschritten · Maschinenbau · 2D
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table): Fortgeschritten · Architektur · 2D
+- [AutoCAD-Übung: ein Grundstück](/docs/exercises/plot-of-land): Fortgeschritten · Bauingenieurwesen · 2D
+- [AutoCAD-Übungen](/docs/exercises)

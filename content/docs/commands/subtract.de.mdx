@@ -1,0 +1,64 @@
+---
+title: "Befehl DIFFERENZ (SUBTRACT) in AutoCAD"
+description: "Wie DIFFERENZ (SUBTRACT, Alias DI) in AutoCAD funktioniert: die Volumenkörper oder Regionen, die bleiben, dann die abzuziehenden, mit Löchern und Flächen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für DIFFERENZ (SUBTRACT) in AutoCAD?","answer":"DI, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _SUBTRACT in jeder Sprache von AutoCAD."},{"question":"Wie ziehe ich einen Volumenkörper von einem anderen ab?","answer":"Zeichnen Sie den abzuziehenden Volumenkörper dort, wo er den anderen überschneidet: einen Zylinder durch einen Quader, für ein Loch. Starten Sie DIFFERENZ, wählen Sie den Quader und drücken Sie die Eingabetaste, wählen Sie dann den Zylinder und drücken Sie die Eingabetaste: Der Quader behält ein Loch, und der Zylinder ist weg. Die Reihenfolge ist wichtig, denn was Sie zuerst wählen, bleibt übrig."},{"question":"Warum funktioniert DIFFERENZ nicht?","answer":"Oft liegt es an der Reihenfolge: Was bleiben soll, gehört in die erste Menge, was abgezogen wird, in die zweite. Enthält die erste Menge keinen Volumenkörper und keine Region, oder die zweite keinen, der nicht schon in der ersten ist, meldet der Befehl „Keine Volumenkörper, Flächen oder Regionen gewählt.“ und endet; kann nichts der zweiten Menge von der ersten abgezogen werden, etwa ein Volumenkörper von einer Region oder eine Region in einer anderen Ebene, meldet er „Mindestens zwei Volumenkörper, Flächen oder koplanare Regionen müssen gewählt werden.“ und ändert nichts. Linien und Polylinien müssen zuerst zu Regionen gemacht werden. Meldet er, dass eine boolesche Operation fehlgeschlagen ist, treffen die Volumenkörper so aufeinander, dass MellowCAD es noch nicht berechnen kann, und bleiben, wie sie waren."},{"question":"Wie ziehe ich eine Fläche in AutoCAD ab?","answer":"Um eine 2D-Form aus einer anderen auszuschneiden, machen Sie beide mit REGION zu Regionen und ziehen Sie mit DIFFERENZ die innere von der äußeren ab: Ein Quadrat ohne Kreis wird zu einer Region mit Loch. Um eine Fläche zu messen, ohne die Zeichnung zu ändern, nimmt FLÄCHE mit Abziehen Flächen aus seiner laufenden Summe heraus."},{"question":"Kann ich abziehen, ohne das Objekt zu löschen?","answer":"DIFFERENZ löscht, was es abzieht, wie das von AutoCAD. Um es zu behalten, kopieren Sie es zuerst an Ort und Stelle: KOPIEREN, das Objekt und die Eingabetaste, ein Basispunkt von 0,0, dann wieder die Eingabetaste, um es um 0,0 zu kopieren, auf sich selbst. DIFFERENZ verbraucht dann eines der beiden."}]
+---
+
+DIFFERENZ (SUBTRACT) zieht 3D-Volumenkörper von anderen Volumenkörpern ab, oder Regionen von Regionen in derselben Ebene: Ein aus einem Quader herausgenommener Zylinder hinterlässt ein Loch hindurch, ein aus einem Quadrat herausgenommener Kreis ein Quadrat mit Loch. Der Befehl fragt zweimal. Zuerst meldet er `Volumenkörper, Flächen und Regionen, von denen subtrahiert werden soll, wählen...` und fragt bis zur Eingabetaste nach den Objekten, die bleiben; dann `Volumenkörper, Flächen und Regionen für Subtraktion wählen...` und fragt wieder bis zur Eingabetaste nach den Objekten, die abgezogen werden. Wie in AutoCAD 2027 wird eine vorher gewählte Menge verworfen und erneut abgefragt.
+
+Die Volumenkörper der ersten Menge werden zu einem Volumenkörper, und jeder Volumenkörper der zweiten Menge wird davon abgezogen und gelöscht, ob er sich überschnitten hat oder nicht. Regionen werden Ebene für Ebene behandelt: Die Regionen der ersten Menge in einer Ebene werden vereinigt, die der zweiten Menge in dieser Ebene davon abgezogen und gelöscht, und eine Region in einer Ebene, in der die erste Menge keine hat, bleibt, wie sie war. Ein Volumenkörper als Ergebnis ist ein zusammengesetzter Volumenkörper, kein Quader oder Zylinder mehr, ohne Verlauf. Bleibt nichts übrig, meldet der Befehl `Kein Volumenkörper erstellt - gelöscht` oder `Keine Region erstellt - gelöscht` und löscht sie. Der ganze Befehl ist ein Rückgängig-Schritt. Das 3D von MellowCAD ist noch unvollständig: Volumenkörper gibt es, Flächen und Netze nicht.
+
+- **Befehl:** `DIFFERENZ`
+- **Auf Englisch:** `SUBTRACT`, in jeder Sprache als `_SUBTRACT` eingegeben
+- **Aliasnamen:** `DI`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `DI` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="subtract" caption="Ein Zylinder, mit DIFFERENZ aus einem Quader herausgenommen, ein Loch hindurch: erst der Quader gewählt, dann der Zylinder." />
+
+## Was er noch nicht kann [#missing]
+
+Flächen, die es hier nicht gibt. Gekrümmte Flächen, die sich entlang einer Kurve treffen und für die MellowCAD noch keine exakte Form hat: Zylinder, Kegel, Kugeln oder Tori, deren Achsen weder zusammenfallen noch parallel verlaufen (zwei Zylinder dürfen sich auch kreuzen); ein Kegel mit etwas anderem als einer Ebene oder einem Volumenkörper auf seiner Achse; ein Torus oder ein Rotationskörper mit einer Ebene, die weder senkrecht zu seiner Achse steht noch durch sie geht, oder mit einem Volumenkörper abseits seiner Achse; ein extrudierter Volumenkörper mit etwas anderem als einer Ebene oder einer in seine Richtung extrudierten Fläche. Diese werden abgelehnt, und die Volumenkörper bleiben, wie sie waren; ebenso ein Schnitt, der eine Kante tangential trifft, Flächen, die fast, aber nicht ganz auf einer Fläche liegen, und ein sehr dünner Span zwischen einem Schnitt und einer Kante. Previous nach DIFFERENZ meldet, dass es keine vorherige Auswahlmenge gibt, wo AutoCAD keines der gelöschten Objekte findet. Es wird kein Volumenkörperverlauf geführt (SOLIDHIST, SHOWHISTORY).
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su--fr-soustraction--su--it-sottrai--sot--de-differenz--di)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für DIFFERENZ (SUBTRACT) in AutoCAD?
+
+`DI`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_SUBTRACT` in jeder Sprache von AutoCAD.
+
+### Wie ziehe ich einen Volumenkörper von einem anderen ab?
+
+Zeichnen Sie den abzuziehenden Volumenkörper dort, wo er den anderen überschneidet: einen Zylinder durch einen Quader, für ein Loch. Starten Sie DIFFERENZ, wählen Sie den Quader und drücken Sie die Eingabetaste, wählen Sie dann den Zylinder und drücken Sie die Eingabetaste: Der Quader behält ein Loch, und der Zylinder ist weg. Die Reihenfolge ist wichtig, denn was Sie zuerst wählen, bleibt übrig.
+
+### Warum funktioniert DIFFERENZ nicht?
+
+Oft liegt es an der Reihenfolge: Was bleiben soll, gehört in die erste Menge, was abgezogen wird, in die zweite. Enthält die erste Menge keinen Volumenkörper und keine Region, oder die zweite keinen, der nicht schon in der ersten ist, meldet der Befehl `Keine Volumenkörper, Flächen oder Regionen gewählt.` und endet; kann nichts der zweiten Menge von der ersten abgezogen werden, etwa ein Volumenkörper von einer Region oder eine Region in einer anderen Ebene, meldet er `Mindestens zwei Volumenkörper, Flächen oder koplanare Regionen müssen gewählt werden.` und ändert nichts. Linien und Polylinien müssen zuerst zu Regionen gemacht werden. Meldet er, dass eine boolesche Operation fehlgeschlagen ist, treffen die Volumenkörper so aufeinander, dass MellowCAD es noch nicht berechnen kann, und bleiben, wie sie waren.
+
+### Wie ziehe ich eine Fläche in AutoCAD ab?
+
+Um eine 2D-Form aus einer anderen auszuschneiden, machen Sie beide mit [`REGION`](/docs/commands/region) zu Regionen und ziehen Sie mit DIFFERENZ die innere von der äußeren ab: Ein Quadrat ohne Kreis wird zu einer Region mit Loch. Um eine Fläche zu messen, ohne die Zeichnung zu ändern, nimmt [`FLÄCHE`](/docs/commands/area) mit `Abziehen` Flächen aus seiner laufenden Summe heraus.
+
+### Kann ich abziehen, ohne das Objekt zu löschen?
+
+DIFFERENZ löscht, was es abzieht, wie das von AutoCAD. Um es zu behalten, kopieren Sie es zuerst an Ort und Stelle: [`KOPIEREN`](/docs/commands/copy), das Objekt und die Eingabetaste, ein Basispunkt von 0,0, dann wieder die Eingabetaste, um es um 0,0 zu kopieren, auf sich selbst. DIFFERENZ verbraucht dann eines der beiden.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl VEREINIG (UNION) in AutoCAD](/docs/commands/union)
+- [Befehl SCHNITTMENGE (INTERSECT) in AutoCAD](/docs/commands/intersect)
+- [Befehl REGION in AutoCAD](/docs/commands/region)
+- [Befehl ZYLINDER (CYLINDER) in AutoCAD](/docs/commands/cylinder)
+- [Befehl KAPPEN (SLICE) in AutoCAD](/docs/commands/slice)

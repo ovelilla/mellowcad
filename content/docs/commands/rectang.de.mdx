@@ -1,0 +1,95 @@
+---
+title: "Befehl RECHTECK (RECTANG) in AutoCAD"
+description: "Wie RECHTECK (RECTANG, Alias RE) in AutoCAD ein Rechteck zeichnet: zwei Ecken, Abmessungen, Fläche, Drehung, Abrundung und Fase. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von RECHTECK (RECTANG) in AutoCAD?","answer":"RE, dann die Eingabetaste oder die Leertaste. REC des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und _RECTANG in jeder Sprache von AutoCAD."},{"question":"Wie zeichnet man ein Rechteck mit genauen Abmessungen?","answer":"Geben Sie die erste Ecke an und geben Sie dann die andere relativ dazu ein: 100,50 bei eingeschalteter dynamischer Eingabe, wie sie beginnt, oder @100,50 ohne sie, macht es 100 lang und 50 breit. Oder wählen Sie Abmessungen und geben Sie die beiden Seiten ein."},{"question":"Wie zeichnet man ein Rechteck mit abgerundeten Ecken?","answer":"Wählen Sie Abrunden bei der ersten Eingabeaufforderung und geben Sie den Radius ein, dann die beiden Ecken."},{"question":"Warum hat mein Rechteck abgerundete oder abgeschnittene Ecken?","answer":"RECHTECK behält Fillet und Chamfer für die Sitzung, ein danach gezeichnetes Rechteck trägt sie also ebenfalls: Seine erste Zeile sagt es. Wählen Sie Abrunden und geben Sie 0 ein, um wieder glatte Ecken zu zeichnen."},{"question":"Ist ein Rechteck in AutoCAD eine Polylinie?","answer":"Ja: eine geschlossene Polylinie. URSPRUNG zerlegt sie in vier Linien, und VERSETZ versetzt sie als Ganzes."}]
+---
+
+RECHTECK (RECTANG) zeichnet ein Rechteck aus zwei gegenüberliegenden Ecken, gewählt oder eingegeben: `0,0` dann `100,50`, relativ zur ersten bei dynamischer Eingabe, ergibt eines von 100 mal 50. Es ist eine geschlossene Polylinie aus vier Scheitelpunkten, auf dem aktuellen Layer erzeugt. Die Optionen der ersten Eingabeaufforderung legen fest, wie die nächsten Rechtecke gezeichnet werden, und jede behält ihren Wert für den Rest der Sitzung: Das nächste RECHTECK nennt die geltenden in seiner ersten Zeile. Seine Breitenoption gibt jeder Seite eine Polylinienbreite. Während Sie die andere Ecke setzen, folgt das Rechteck dem Fadenkreuz; bei eingeschalteter dynamischer Eingabe können Sie seine Länge, Tab und seine Breite eingeben.
+
+- **Befehl:** `RECHTECK`
+- **Auf Englisch:** `RECTANG`, in jeder Sprache als `_RECTANG` eingegeben
+- **Aliasnamen:** `RE`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `RE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="rectang" caption="Zwei Rechtecke aus zwei Ecken, das zweite relativ zum ersten eingegeben: eines mit Abrunden 8, das nächste mit Fase 8." />
+
+## Optionen [#options]
+
+### `Fasen` (`F`) [#chamfer]
+
+Fragt nach einem ersten und einem zweiten Fasenabstand und schneidet jede Ecke um diese: acht Scheitelpunkte. Ein Abstand von 0 schaltet es aus. Es ersetzt Fillet.
+
+### `Erhebung` (`E`) [#elevation]
+
+Fragt nach der Höhe, in der das Rechteck gezeichnet wird, seinem Z.
+
+### `Abrunden` (`A`) [#fillet]
+
+Fragt nach einem Radius und rundet jede Ecke damit ab. Ein Radius von 0 schaltet es aus. Es ersetzt Chamfer.
+
+### `Objekthöhe` (`O`) [#thickness]
+
+Fragt nach einer Objekthöhe: Das Rechteck steht so hoch, wie eine Wand es täte, in einer 3D-Ansicht.
+
+### `Fläche` (`F`) [#area]
+
+Bei der anderen Ecke: fragt nach der Fläche, dann ob die `Länge` oder die `Breite` angegeben werden soll, dann nach dieser Seite. Die andere Seite wird berechnet, die Ecken eingerechnet, und das Rechteck sofort erzeugt.
+
+### `Abmessungen` (`A`) [#dimensions]
+
+Bei der anderen Ecke: fragt nach der Länge und der Breite, dann nach einem Punkt, der festlegt, in welcher Richtung von der ersten Ecke aus das Rechteck liegt.
+
+### `Drehung` (`D`) [#rotation]
+
+Bei der anderen Ecke: fragt nach dem Winkel, um den das Rechteck gedreht ist, eingegeben oder als Punkt von der ersten Ecke aus, oder zwei Punkte mit `Auswählen`. Der Winkel gilt für die Sitzung.
+
+## Was er noch nicht kann [#missing]
+
+Eine Länge oder Breite von 0 unter `Fläche`, die hier nichts zeichnet und in AutoCAD eine gebrochene Polylinie. Nach einer abgelehnten Antwort bei der Eingabeaufforderung von Rotation fragt MellowCAD die Eingabeaufforderung erneut vollständig, wo AutoCAD nichts weiter schreibt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret--fr-rectangle--rec--rectang--it-rettangolo--rt--rettang--de-rechteck--re)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von RECHTECK (RECTANG) in AutoCAD?
+
+`RE`, dann die Eingabetaste oder die Leertaste. `REC` des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und `_RECTANG` in jeder Sprache von AutoCAD.
+
+### Wie zeichnet man ein Rechteck mit genauen Abmessungen?
+
+Geben Sie die erste Ecke an und geben Sie dann die andere relativ dazu ein: `100,50` bei eingeschalteter dynamischer Eingabe, wie sie beginnt, oder `@100,50` ohne sie, macht es 100 lang und 50 breit. Oder wählen Sie `Abmessungen` und geben Sie die beiden Seiten ein.
+
+### Wie zeichnet man ein Rechteck mit abgerundeten Ecken?
+
+Wählen Sie `Abrunden` bei der ersten Eingabeaufforderung und geben Sie den Radius ein, dann die beiden Ecken.
+
+### Warum hat mein Rechteck abgerundete oder abgeschnittene Ecken?
+
+RECHTECK behält Fillet und Chamfer für die Sitzung, ein danach gezeichnetes Rechteck trägt sie also ebenfalls: Seine erste Zeile sagt es. Wählen Sie `Abrunden` und geben Sie `0` ein, um wieder glatte Ecken zu zeichnen.
+
+### Ist ein Rechteck in AutoCAD eine Polylinie?
+
+Ja: eine geschlossene Polylinie. [`URSPRUNG`](/docs/commands/explode) zerlegt sie in vier Linien, und [`VERSETZ`](/docs/commands/offset) versetzt sie als Ganzes.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+- [AutoCAD-Übung: eine Treppe im Grundriss](/docs/exercises/stairs)
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl POLYGON in AutoCAD](/docs/commands/polygon)
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)
+- [Befehl ABRUNDEN (FILLET) in AutoCAD](/docs/commands/fillet)

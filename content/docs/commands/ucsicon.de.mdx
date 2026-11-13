@@ -1,0 +1,70 @@
+---
+title: "Befehl BKSYMBOL (UCSICON) in AutoCAD"
+description: "So zeigt oder verbirgt AutoCADs BKSYMBOL (UCSICON) das BKS-Symbol und setzt es in den Ursprung oder die Ecke: ON, OFF, Noorigin, ORigin. Gratis testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie schalte ich das BKS-Symbol in AutoCAD aus?","answer":"Tippen Sie BKSYMBOL, drücken Sie die Eingabetaste, dann AUs. EIN bringt es zurück."},{"question":"Wie setze ich das BKS-Symbol in den Ursprung?","answer":"BKSYMBOL, dann URsprung: Das Symbol sitzt im Ursprung des BKS. Bleibt es in der Ecke, liegt der Ursprung außerhalb des Bildschirms oder zu nah an dessen Rand: Verschieben Sie die Ansicht oder zoomen Sie heraus. Keinursprung behält es in der Ecke."},{"question":"Was bedeutet das Quadrat am BKS-Symbol?","answer":"Dass das BKS das Weltkoordinatensystem ist. Verschieben oder drehen Sie das BKS mit BKS, und das Quadrat verschwindet; BKS und die Eingabetaste bringen das WKS zurück, und mit ihm das Quadrat."},{"question":"Wie ändere ich Stil, Größe oder Farbe des BKS-Symbols?","answer":"In AutoCAD mit den Eigenschaften von BKSYMBOL, dem Dialogfeld BKS-Symbol. MellowCAD hat es noch nicht: Das Symbol wird so gezeichnet, wie AutoCAD 2027 es standardmäßig zeichnet, im 3D-Stil."}]
+---
+
+BKSYMBOL (UCSICON) zeigt oder verbirgt das BKS-Symbol, die X- und Y-Arme, die zeigen, wo das aktuelle BKS liegt und wohin es weist, und legt fest, wo es sitzt: im Ursprung des BKS oder in der linken unteren Ecke der Zeichnung. Seine einzige Eingabeaufforderung bietet den aktuellen Zustand als Vorgabe an, sodass die Eingabetaste ihn behält. Die Einstellung wird in der Zeichnung gespeichert, und jedes BKSYMBOL ist ein Schritt für Rückgängig.
+
+Das Symbol ist das 3D-Symbol von AutoCAD 2027: ein Arm für X und einer für Y, ein Buchstabe an jedem Ende und ein Quadrat im Ursprung, solange das BKS das Weltkoordinatensystem ist. Außerhalb der Draufsicht zeigt ein Z-Arm, wohin die Z-Achse des BKS weist, und ein Arm, der von vorn gesehen wird, entfällt. In 2D-Drahtmodell ist es weiß; in Hidden und Conceptual ist sein X rot, Y grün und Z blau. Mit Apostroph getippt, setzt `'BKSYMBOL` stattdessen die Variable UCSICON, auch innerhalb eines anderen Befehls: 0 bis 3, wobei 1 das Symbol zeigt und 2 es in den Ursprung setzt.
+
+- **Befehl:** `BKSYMBOL`
+- **Auf Englisch:** `UCSICON`, in jeder Sprache als `_UCSICON` eingegeben
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BKSYMBOL` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="ucsicon" caption="UCSICON Noorigin schickt das Symbol in die Ecke; UCS verschiebt den Ursprung auf die Stufe des Blocks, und ORigin zeichnet das Symbol dort, sein X rot, Y grün und Z blau." />
+
+## Optionen [#options]
+
+### `EIN` [#on]
+
+Zeigt das Symbol.
+
+### `AUs` (`AU`) [#off]
+
+Verbirgt das Symbol. Das BKS ist weiterhin da, und was Sie zeichnen, liegt weiterhin darin.
+
+### `Keinursprung` (`K`) [#noorigin]
+
+Behält das Symbol in der linken unteren Ecke der Zeichnung, wo auch der Ursprung liegt.
+
+### `URsprung` (`UR`) [#origin]
+
+Zeichnet das Symbol im Ursprung des BKS, die Vorgabe. Wenn der Ursprung außerhalb des Bildschirms oder so nah an dessen Rand liegt, dass das Symbol nicht passt, geht das Symbol in die linke untere Ecke, bis der Ursprung wieder im Blick ist.
+
+## Was er noch nicht kann [#missing]
+
+Alle, das in AutoCAD die Einstellung auf jeden Ansichtsbereich anwendet (hier gibt es nur einen); Auswählbar, die Griffe des Symbols; und Eigenschaften, das Dialogfeld BKS-Symbol, mit dem 2D-Stil, der Größe, der Linienbreite und den Farben.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucsicon--es-simbscp--pt-br-iconeucs--fr-iconescu--it-iconaucs--de-bksymbol)
+
+## Fragen [#questions]
+
+### Wie schalte ich das BKS-Symbol in AutoCAD aus?
+
+Tippen Sie `BKSYMBOL`, drücken Sie die Eingabetaste, dann `AUs`. `EIN` bringt es zurück.
+
+### Wie setze ich das BKS-Symbol in den Ursprung?
+
+BKSYMBOL, dann `URsprung`: Das Symbol sitzt im Ursprung des BKS. Bleibt es in der Ecke, liegt der Ursprung außerhalb des Bildschirms oder zu nah an dessen Rand: Verschieben Sie die Ansicht oder zoomen Sie heraus. `Keinursprung` behält es in der Ecke.
+
+### Was bedeutet das Quadrat am BKS-Symbol?
+
+Dass das BKS das Weltkoordinatensystem ist. Verschieben oder drehen Sie das BKS mit [`BKS`](/docs/commands/ucs), und das Quadrat verschwindet; [`BKS`](/docs/commands/ucs) und die Eingabetaste bringen das WKS zurück, und mit ihm das Quadrat.
+
+### Wie ändere ich Stil, Größe oder Farbe des BKS-Symbols?
+
+In AutoCAD mit den Eigenschaften von BKSYMBOL, dem Dialogfeld BKS-Symbol. MellowCAD hat es noch nicht: Das Symbol wird so gezeichnet, wie AutoCAD 2027 es standardmäßig zeichnet, im 3D-Stil.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)
+- [Befehl DRSICHT (PLAN) in AutoCAD](/docs/commands/plan)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)

@@ -1,0 +1,82 @@
+---
+title: "Befehl REIHEKREIS (ARRAYPOLAR) in AutoCAD"
+description: "Wie REIHEKREIS (ARRAYPOLAR) in AutoCAD Objekte kreisförmig um einen Mittelpunkt anordnet: Anzahl, Winkel, Drehen, assoziativ. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie erstellt man eine Polaranordnung?","answer":"Geben Sie REIHEKREIS ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Mittelpunkt; oder geben Sie RH für REIHE ein und wählen Sie nach den Objekten POlar. Wählen Sie dann Objekte, um die Anzahl einzustellen, und drücken Sie die Eingabetaste, um sie zu erzeugen."},{"question":"Wie ordnet man Objekte um einen Teil eines Kreises an?","answer":"Wählen Sie Füllwinkel und geben Sie den Winkel ein: 180 legt die Elemente über einen halben Kreis gegen den Uhrzeigersinn, -180 im Uhrzeigersinn. Die Anzahl der Elemente bleibt erhalten, das erste und das letzte an jedem Ende des Winkels."},{"question":"Wie verhindert man, dass sich die Elemente drehen?","answer":"Wählen Sie Drehen und antworten Sie Nein: Jedes Element wird um den Mittelpunkt bewegt, ohne sich zu drehen."},{"question":"Wie ändert man den Radius einer Polaranordnung?","answer":"Wählen Sie die Anordnung und ziehen Sie ihren quadratischen Griff am Basispunkt zum Mittelpunkt hin oder von ihm weg: Der Abstand zum Mittelpunkt ist der neue Radius. Oder geben Sie den Radius in der Eigenschaftenpalette neu ein."}]
+---
+
+REIHEKREIS (ARRAYPOLAR) kopiert eine Auswahl um einen Mittelpunkt, als ein Anordnungsobjekt. Er fragt nach den Objekten, nennt den Typ und ob die Anordnung assoziativ ist, fragt nach dem Mittelpunkt und zeigt die Anordnung sofort: 6 Elemente über eine volle Drehung, jedes so gedreht, wie es herumgeht. Dann bearbeitet eine Eingabeaufforderung sie live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD. Die gewählten Objekte werden zu ihrem ersten Element.
+
+- **Befehl:** `REIHEKREIS`
+- **Auf Englisch:** `ARRAYPOLAR`, in jeder Sprache als `_ARRAYPOLAR` eingegeben
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `REIHEKREIS` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="arraypolar" caption="Eine Bohrung an einem Flansch, um die Mitte des Flansches angeordnet: 8 Elemente über eine volle Drehung." />
+
+## Optionen [#options]
+
+### `ASsoziativ` (`AS`) [#associative]
+
+`Ja`, die Vorgabe, erzeugt ein Anordnungsobjekt, das seine Griffe und die Eigenschaftenpalette später ändern; `Nein` erzeugt einzelne Kopien neben den gewählten Objekten. Die Antwort gilt für die Sitzung, auch für REIHERECHTECK und REIHEPFAD.
+
+### `Objekte` (`O`) [#items]
+
+Die Anzahl der Elemente, von 1 bis 32767; der Winkel, den sie füllen, bleibt erhalten.
+
+### `Winkel zwischen` (`W`) [#angle-between]
+
+Der Winkel von einem Element zum nächsten. Der gefüllte Winkel wird zu so vielen Schritten, die Richtung bleibt erhalten, und zu einer vollen Drehung, sobald sie 360° erreichen.
+
+### `Füllwinkel` (`F`) [#fill-angle]
+
+Der Winkel, den die Elemente füllen, positiv gegen den Uhrzeigersinn und negativ im Uhrzeigersinn; die Anzahl der Elemente bleibt erhalten. Über eine volle Drehung liegen die Elemente eine Drehung geteilt durch ihre Anzahl auseinander; über weniger landet das letzte am Ende des Winkels.
+
+### `objekte Drehen` (`D`) [#rotate-items]
+
+`Ja`, die Vorgabe, dreht jedes Element, wie es um den Mittelpunkt herumgeht; `Nein` verschiebt es nur, sodass jedes Element so steht wie das erste.
+
+### `eXit` (`X`) [#exit]
+
+Erzeugt die Anordnung und beendet den Befehl, wie es die Eingabetaste tut.
+
+## Was er noch nicht kann [#missing]
+
+Basispunkt; Drehachse, für eine Anordnung um eine Achse im Raum; Zeilen und Ebenen, für Ringe von Elementen und in Z gestapelte Kopien; Ausdruck, der einen Wert an die Parameter der Zeichnung bindet. Die Menüs der Griffe der Anordnung (Radius strecken, Elementanzahl, Füllwinkel …) und Strg zum Durchschalten.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare--de-reihekreis)
+
+## Fragen [#questions]
+
+### Wie erstellt man eine Polaranordnung?
+
+Geben Sie `REIHEKREIS` ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Mittelpunkt; oder geben Sie `RH` für [`REIHE`](/docs/commands/array) ein und wählen Sie nach den Objekten `POlar`. Wählen Sie dann `Objekte`, um die Anzahl einzustellen, und drücken Sie die Eingabetaste, um sie zu erzeugen.
+
+### Wie ordnet man Objekte um einen Teil eines Kreises an?
+
+Wählen Sie `Füllwinkel` und geben Sie den Winkel ein: 180 legt die Elemente über einen halben Kreis gegen den Uhrzeigersinn, -180 im Uhrzeigersinn. Die Anzahl der Elemente bleibt erhalten, das erste und das letzte an jedem Ende des Winkels.
+
+### Wie verhindert man, dass sich die Elemente drehen?
+
+Wählen Sie `Drehen` und antworten Sie `Nein`: Jedes Element wird um den Mittelpunkt bewegt, ohne sich zu drehen.
+
+### Wie ändert man den Radius einer Polaranordnung?
+
+Wählen Sie die Anordnung und ziehen Sie ihren quadratischen Griff am Basispunkt zum Mittelpunkt hin oder von ihm weg: Der Abstand zum Mittelpunkt ist der neue Radius. Oder geben Sie den Radius in der Eigenschaftenpalette neu ein.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table)
+
+## Verwandte Befehle [#related]
+
+- [Befehl REIHE (ARRAY) in AutoCAD](/docs/commands/array)
+- [Befehl REIHERECHTECK (ARRAYRECT) in AutoCAD](/docs/commands/arrayrect)
+- [Befehl REIHEPFAD (ARRAYPATH) in AutoCAD](/docs/commands/arraypath)
+- [Befehl DREHEN (ROTATE) in AutoCAD](/docs/commands/rotate)

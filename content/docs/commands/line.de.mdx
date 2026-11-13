@@ -1,0 +1,72 @@
+---
+title: "Befehl LINIE (LINE) in AutoCAD"
+description: "So arbeitet AutoCADs LINIE (LINE, Alias L): Punkte wählen oder tippen, Zurück und Schließen, und die Eingabetaste, um von der letzten Linie weiterzuzeichnen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für LINIE (LINE) in AutoCAD?","answer":"L, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _LINE in jeder Sprache von AutoCAD."},{"question":"Wie zeichne ich eine Linie mit Winkel und Länge?","answer":"Geben Sie den ersten Punkt an, tippen Sie dann den nächsten als Länge und Winkel: @100<30 zeichnet 100 unter 30°. Oder schalten Sie die Spurverfolgung ein, folgen Sie ihrer Hilfslinie in diesem Winkel und tippen Sie nur die Länge."},{"question":"Wie zeichne ich von der zuletzt gezeichneten Linie aus weiter?","answer":"Starten Sie LINIE und drücken Sie beim ersten Punkt die Eingabetaste: Er beginnt am Ende der letzten Linie, Polylinie oder des letzten Bogens. Von einem Bogen aus läuft die Linie tangential an ihn weiter, und LINIE fragt nur nach ihrer Länge. Gibt es nichts zum Weiterzeichnen, meldet er „Keine Linie oder Bogen zum Weiterführen.“."},{"question":"Warum besteht meine Linie aus einzelnen Stücken?","answer":"Jedes Segment, das LINIE zeichnet, ist wie in AutoCAD eine eigene Linie. Für ein Objekt zeichnen Sie mit PLINIE, oder verbinden Sie die Linien danach mit VERBINDEN."}]
+---
+
+LINIE (LINE) zeichnet gerade Segmente, jedes ein eigenes Objekt: Geben Sie den ersten Punkt an, dann jeden nächsten, bis zur Eingabetaste. Ein Punkt wird gewählt, mit einem Objektfang genommen oder getippt. Wie in AutoCAD bei eingeschalteter dynamischer Eingabe wird ein nach dem ersten getippter Punkt vom letzten aus gemessen, sodass `80,0` 80 entlang X zeichnet und der Verlauf es als `@80,0` schreibt; eine Zahl allein ist ein Abstand in Richtung des Cursors, und `<30` hält den nächsten Punkt auf 30°. Die Eingabetaste oder ein Rechtsklick beim ersten Punkt macht vom Ende der letzten Linie, Polylinie oder des letzten Bogens aus weiter, tangential an einen Bogen und nur nach der Länge fragend. Wie viele Segmente er auch zeichnet, ein Z nimmt den ganzen Befehl zurück.
+
+- **Befehl:** `LINIE`
+- **Auf Englisch:** `LINE`, in jeder Sprache als `_LINE` eingegeben
+- **Aliasnamen:** `L`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `L` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="line" caption="Ein Dreieck: sein erster Punkt getippt, die nächsten zwei vom letzten Punkt aus, dann Schließen." />
+
+## Optionen [#options]
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt das letzte Segment zurück und fragt erneut ab dem Punkt davor. Ist kein Segment mehr da, meldet er `Alle Segmente bereits zurückgesetzt.` und fragt erneut nach dem ersten Punkt.
+
+### `Schließen` (`S`) [#close]
+
+Ab dem zweiten Segment angeboten: zeichnet das letzte Segment zurück zum ersten Punkt und beendet den Befehl, die Form geschlossen.
+
+## Was er noch nicht kann [#missing]
+
+Tangent oder Perpendicular, beim ersten Punkt getippt, wartet auf den nächsten (ein aufgeschobener Fang), wie in AutoCAD, aber nur über Linien, Kreisen und Bögen, nicht über einem Polylinien-Segment, einer Ellipse oder einem Spline, und zwei aufgeschobene Perpendicular werden nicht gelöst.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für LINIE (LINE) in AutoCAD?
+
+`L`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_LINE` in jeder Sprache von AutoCAD.
+
+### Wie zeichne ich eine Linie mit Winkel und Länge?
+
+Geben Sie den ersten Punkt an, tippen Sie dann den nächsten als Länge und Winkel: `@100<30` zeichnet 100 unter 30°. Oder schalten Sie die Spurverfolgung ein, folgen Sie ihrer Hilfslinie in diesem Winkel und tippen Sie nur die Länge.
+
+### Wie zeichne ich von der zuletzt gezeichneten Linie aus weiter?
+
+Starten Sie LINIE und drücken Sie beim ersten Punkt die Eingabetaste: Er beginnt am Ende der letzten Linie, Polylinie oder des letzten Bogens. Von einem Bogen aus läuft die Linie tangential an ihn weiter, und LINIE fragt nur nach ihrer Länge. Gibt es nichts zum Weiterzeichnen, meldet er `Keine Linie oder Bogen zum Weiterführen.`.
+
+### Warum besteht meine Linie aus einzelnen Stücken?
+
+Jedes Segment, das LINIE zeichnet, ist wie in AutoCAD eine eigene Linie. Für ein Objekt zeichnen Sie mit [`PLINIE`](/docs/commands/pline), oder verbinden Sie die Linien danach mit [`VERBINDEN`](/docs/commands/join).
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket)
+- [AutoCAD-Übung: eine Treppe im Grundriss](/docs/exercises/stairs)
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft)
+- [AutoCAD-Übung Isometrie: ein Stufenblock](/docs/exercises/isometric-block)
+- [AutoCAD-Übung: eine Lasche mit Tangenten](/docs/exercises/link)
+
+## Verwandte Befehle [#related]
+
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl VERSETZ (OFFSET) in AutoCAD](/docs/commands/offset)
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl VERBINDEN (JOIN) in AutoCAD](/docs/commands/join)

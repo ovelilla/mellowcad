@@ -1,1 +1,457 @@
-{}
+{
+  "Metadata": {
+    "title": "Kostenloses CAD-Programm online mit AutoCAD-Befehlen — MellowCAD",
+    "titleTemplate": "%s · MellowCAD",
+    "description": "Kostenloses CAD-Programm im Browser, ohne Installation: technisches Zeichnen online mit den AutoCAD-Befehlen auf Deutsch und Englisch. 2D und 3D-Volumenkörper, noch unvollständig. Ohne Anmeldung.",
+    "drawTitle": "Zeichnen",
+    "drawDescription": "Kostenloses CAD im Browser-Tab: technisches Zeichnen in 2D und 3D-Volumenkörper, noch unvollständig, mit den Befehlen, Objektfangmodi und der Tastaturbedienung von AutoCAD.",
+    "ogAlt": "Ein in MellowCAD gezeichneter Flansch und sein 3D-Volumenkörper, mit den Worten: CAD online kostenlos, mit AutoCAD-Befehlen. Geben Sie L ein. Drücken Sie die Eingabetaste. Zeichnen Sie.",
+    "appDescription": "Kostenloses CAD im Browser mit AutoCAD-Befehlen, Aliasnamen und Objektfangmodi: technisches Zeichnen in 2D und 3D-Volumenkörper, noch unvollständig.",
+    "browserRequirements": "Erfordert JavaScript und einen aktuellen Desktop-Browser."
+  },
+  "Common": {
+    "brand": "MellowCAD",
+    "startDrawing": "Zeichnen",
+    "skipToContent": "Zum Inhalt springen",
+    "home": "MellowCAD-Startseite",
+    "labelSeparator": ": "
+  },
+  "Header": {
+    "features": "2D-Zeichnen",
+    "solids": "3D-Volumenkörper",
+    "commands": "Befehle",
+    "roadmap": "Roadmap",
+    "faq": "FAQ",
+    "docs": "Dokumentation",
+    "menu": "Menü",
+    "closeMenu": "Menü schließen",
+    "navLabel": "Hauptnavigation",
+    "language": "Sprache",
+    "cta": "Zeichnen"
+  },
+  "Hero": {
+    "pill": "Kostenlos · Ohne Anmeldung · Ohne Installation",
+    "title": "CAD online kostenlos, mit AutoCAD-Befehlen",
+    "lead": "<brand>MellowCAD</brand> läuft im Browser, für 2D-Zeichnen und 3D-Volumenkörper, noch unvollständig. Geben Sie {examples} ein: Es fragt in AutoCAD-Reihenfolge, mit denselben Optionsbuchstaben.",
+    "alias": "{alias} für {command}",
+    "secondaryCta": "Alle {commands, number} Befehle",
+    "solids": "Neu: 3D-Volumenkörper, noch unvollständig",
+    "tagline": "Geben Sie L ein. Drücken Sie die Eingabetaste. Zeichnen Sie.",
+    "continue": "{count, plural, one {Zeichnung fortsetzen · # Objekt} other {Zeichnung fortsetzen · # Objekte}}",
+    "mobileNote": "Am besten am Computer, mit Tastatur und Maus.",
+    "drawingTitle": "Ein in MellowCAD gezeichneter Flansch, dann als 3D-Volumenkörper modelliert",
+    "drawingDescription": "Vorderansicht eines Flanschs mit zentraler Bohrung und sechs Schraubenlöchern auf einem Mittellinien-Lochkreis, daneben Schnitt A–A, mit ANSI31 schraffiert, mit einer Durchmesser- und einer Dickenbemaßung. Dann wechselt die Ansicht zu ISO-Ansicht SW: Die Zeichnung liegt flach, der Flansch steht als 3D-Volumenkörper davor, mit ausgeblendeten verdeckten Linien.",
+    "caption": "Jede Zeichnung auf dieser Seite wurde in MellowCAD gezeichnet.",
+    "transcriptSummary": "Befehlsprotokoll anzeigen",
+    "transcriptLabel": "Befehle, die den Flansch gezeichnet und seinen Volumenkörper modelliert haben",
+    "pause": "Zeichnung anhalten",
+    "play": "Zeichnung fortsetzen",
+    "replay": "Zeichnung wiederholen",
+    "cursor": "Cursorposition",
+    "tryLabel": "Befehl ausprobieren",
+    "tryPlaceholder": "Befehl eingeben, z. B. L",
+    "tryHint": "Die Eingabetaste öffnet den Editor."
+  },
+  "SendToDesktop": {
+    "action": "An meinen Computer senden",
+    "copied": "Link kopiert",
+    "shareTitle": "MellowCAD — CAD online kostenlos, mit AutoCAD-Befehlen",
+    "shareText": "Öffnen Sie dies an einem Computer, um zu zeichnen."
+  },
+  "Proof": {
+    "label": "MellowCAD in Zahlen",
+    "commands": "{count, number} AutoCAD-Befehle",
+    "aliases": "{count, number} Aliasnamen",
+    "snaps": "{count, number} Objektfangmodi",
+    "languages": "{count, number} Sprachen",
+    "tests": "{count, number}+ automatische Tests",
+    "source": "Open-Source-Code, MIT-Lizenz"
+  },
+  "Commands": {
+    "label": "01 · AutoCAD-Befehle",
+    "title": "Die AutoCAD-Befehle auf Deutsch und Englisch, mit ihren Aliasnamen.",
+    "lead": "Jeder Befehl hört auf seinen AutoCAD-Namen und Aliasnamen — auf Spanisch, brasilianischem Portugiesisch, Französisch und Italienisch auf die Namen dieser AutoCAD-Versionen — und fragt in derselben Reihenfolge, mit denselben Optionsbuchstaben.",
+    "count": "{commands, number} AutoCAD-Befehle, {aliases, number} Aliasnamen",
+    "reference": "Alle Befehle, mit Aliasnamen und Eingabeaufforderungen",
+    "boardLabel": "Befehle und ihre Aliasnamen, gruppiert wie in der Multifunktionsleiste",
+    "also": "Auch: {aliases}",
+    "linked": "Ein unterstrichener Befehl hat eine eigene Seite, mit Eingabeaufforderungen und Optionen.",
+    "languages": "<en>{english}</en> heißt im spanischen AutoCAD <es>{spanish}</es>, auf brasilianischem Portugiesisch <pt>{portuguese}</pt> und im französischen <fr>{french}</fr>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
+    "transcriptTitle": "Ein VERSETZ, von Anfang bis Ende",
+    "transcriptCaption": "Von der Engine beim Erstellen dieser Seite wiedergegeben. Gleiche Reihenfolge, gleiche Optionsbuchstaben wie AutoCAD."
+  },
+  "Groups": {
+    "draw": "Zeichnen",
+    "modify": "Ändern",
+    "annotate": "Beschriften",
+    "organize": "Organisieren",
+    "inquiry": "Abfrage und Ansicht",
+    "files": "Dateien und Zwischenablage"
+  },
+  "Precision": {
+    "label": "02 · 2D-Zeichnen",
+    "title": "Präzises 2D-Zeichnen: Objektfang, Spurverfolgung und Polar.",
+    "lead": "Objektfang, Spurverfolgung und Polarwinkel verhalten sich, wie Sie es erwarten, und Koordinaten tippen Sie wie in AutoCAD am Cursor: @100<30 für relativ polar, #120,80 für absolut.",
+    "osnapTitle": "Objektfang",
+    "osnapBody": "{count, number} Objektfangmodi mit AutoCAD-Markierungen und QuickInfos. Umschalt+Rechtsklick erzwingt einen für die nächste Wahl — hier Tangente.",
+    "otrackTitle": "Objektfangspur",
+    "otrackBody": "Verweilen Sie auf zwei Punkten, um sie zu erfassen, und folgen Sie dann ihren Spurlinien bis zum Schnittpunkt.",
+    "polarTitle": "Spurverfolgung und Ortho",
+    "polarBody": "Polar rastet das Gummiband auf Ihr Inkrement ein und zeigt Abstand und Winkel an. Ortho hält es im rechten Winkel.",
+    "selectionTitle": "Fenster und Kreuzen",
+    "selectionBody": "Nach rechts ziehen für ein Fenster, das erfasst, was es umschließt; nach links für ein Kreuzen, das erfasst, was es berührt.",
+    "windowLabel": "Fenster",
+    "crossingLabel": "Kreuzen",
+    "osnapAlt": "Eine Linie, die zu einem Kreis gezeichnet wird, am Tangentenpunkt eingerastet, mit Tangente-Markierung und QuickInfo.",
+    "otrackAlt": "Zwei erfasste Endpunkte, deren punktierte Spurlinien sich am Cursor kreuzen.",
+    "polarAlt": "Eine Linie, auf den Polarstrahl von 30 Grad eingerastet, mit QuickInfo für Abstand und Winkel.",
+    "windowAlt": "Ein blaues Fenster, von links nach rechts um einen Kreis über eine Linie gezogen, der erfasste Kreis hervorgehoben.",
+    "crossingAlt": "Ein grünes, gestricheltes Kreuzen, von rechts nach links um einen Kreis über eine Linie gezogen, beide hervorgehoben."
+  },
+  "Toolset": {
+    "drawBody": "Linien, Polylinien, Kreise, Bögen, Ellipsen, Splines, Rechtecke, Polygone und Schraffuren.",
+    "modifyBody": "Verschieben, kopieren, drehen, skalieren, spiegeln und strecken; versetzen, stutzen, dehnen, abrunden, fasen und Reihen.",
+    "annotateBody": "Text und Absatztext sowie sieben Arten von Bemaßung, mit ihren Stilen.",
+    "organizeBody": "Layer, {linetypes, number} Linientypen, {lineweights, number} Linienstärken und Farben, VonLayer; Blöcke mit Attributen.",
+    "drawAlt": "Eine Platte mit Langloch: eine Polylinie mit zwei Bogenenden und zwei Bohrungen.",
+    "modifyAlt": "Vier konzentrische Konturen, jede von der letzten versetzt.",
+    "annotateAlt": "Ein gestuftes Profil, bemaßt mit einer zweimal fortgesetzten linearen Bemaßung.",
+    "organizeAlt": "Ein Rechteck mit verdecktem Langloch und einer Mittellinie, jedes auf seinem eigenen Layer."
+  },
+  "Solids": {
+    "label": "03 · 3D-Volumenkörper",
+    "title": "3D-Volumenkörper im Browser — neu und noch unvollständig.",
+    "lead": "Volumenkörper direkt erstellt und bearbeitet, ohne Feature-Historie: Grundkörper, Extrusionen und Rotationen, Boolesche Operationen, Schnitte und abgerundete Kanten, im ViewCube oder Orbit.",
+    "extrudeTitle": "Profil zeichnen, dann extrudieren oder rotieren",
+    "booleansTitle": "Volumenkörper vereinen, subtrahieren, schneiden",
+    "stylesTitle": "Ein Volumenkörper, drei visuelle Stile",
+    "wireframeAlt": "Ein L-förmiger Volumenkörper im 2D-Drahtmodell: alle Kanten gezeichnet, auch die verdeckten.",
+    "hiddenAlt": "Derselbe Volumenkörper in Verdeckt: nur die sichtbaren Kanten.",
+    "conceptualAlt": "Derselbe Volumenkörper in Konzeptionell: Flächen zum Licht hin warm, abgewandt kühl schattiert, die Kanten darübergezeichnet.",
+    "todayTitle": "Heute möglich",
+    "notYetTitle": "Noch nicht",
+    "notYet": "Sweeps und Lofts, Netze und Rendern sowie das Verschieben und Drehen von Volumenkörpern in 3D."
+  },
+  "LocalFirst": {
+    "label": "04 · Kostenlos und privat",
+    "title": "Kostenlos, ohne Anmeldung und ohne Installation.",
+    "freeTitle": "Kostenlos, ohne Konto",
+    "freeBody": "Es gibt nichts zu registrieren und nichts zu bezahlen: Seite öffnen und zeichnen.",
+    "autosaveTitle": "Im Browser automatisch gespeichert",
+    "autosaveBody": "Jede Änderung wird beim Zeichnen auf diesem Gerät gespeichert. Schließen Sie den Tab; die Zeichnung ist danach da.",
+    "fileTitle": "Eine Datei, wenn Sie wollen",
+    "fileBody": "Strg+S speichert die Zeichnung als Datei im versionierten MellowCAD-Format. Strg+O öffnet sie wieder, auf jedem Computer, und <dxf>öffnet auch DXF-Dateien</dxf>.",
+    "privateTitle": "Kein Hochladen",
+    "privateBody": "Ihre Zeichnungen werden nie irgendwohin gesendet. Die Statistik zählt Seitenaufrufe ohne Cookies.",
+    "formats": "DXF: wird geöffnet und gespeichert. DWG: noch nicht. Zeichnungen werden im versionierten MellowCAD-Format gespeichert.",
+    "warning": "Das Löschen der Websitedaten löscht auch die automatische Sicherung. Drücken Sie Strg+S, um eine Datei zu behalten.",
+    "diagramAlt": "Im Gerät speichert der Editor automatisch im Browser und speichert und öffnet eine Datei; nichts verlässt das Gerät.",
+    "diagramEditor": "EDITOR",
+    "diagramBrowser": "BROWSER",
+    "diagramFile": "DATEI",
+    "diagramDevice": "IHR GERÄT",
+    "diagramAutosave": "Autosave",
+    "privacyLink": "Was genau gespeichert wird"
+  },
+  "Audience": {
+    "label": "05 · Für wen",
+    "title": "Zum Üben von AutoCAD-Befehlen, Skizzieren und Lehren.",
+    "studentsTitle": "Studierende",
+    "studentsBody": "Üben Sie die AutoCAD-Befehle Ihres Kurses in Ihrer Sprache, an jedem Computer, ohne Installation und Lizenz.",
+    "draftersTitle": "Zeichner",
+    "draftersBody": "Prüfen Sie das Verhalten eines Befehls oder skizzieren Sie unterwegs ein Teil, mit den Aliasnamen, die Sie im Finger haben.",
+    "teachersTitle": "Lehrende",
+    "teachersBody": "Alle haben dieselben Befehle in derselben Reihenfolge, im Labor oder zu Hause, ohne Installation.",
+    "makersTitle": "Maker",
+    "makersBody": "Zeichnen Sie ein Winkelblech oder eine Platte maßgerecht, oder modellieren Sie sie als Volumenkörper, kostenlos.",
+    "practice": "Studierende und Lehrende: <link>AutoCAD-Übungen</link>, von der ersten Dichtung bis zu 3D-Volumenkörpern, jede Schritt für Schritt gelöst und mit ihrer Zeichnung im Editor geöffnet.",
+    "notFor": "Noch nicht für den Austausch von DWG-Dateien oder das Plotten auf Papier oder PDF."
+  },
+  "Status": {
+    "label": "06 · Stand",
+    "title": "Ehrlich über das, was da ist — und was noch nicht.",
+    "lead": "MellowCAD ist ein unabhängiges Open-Source-Projekt in aktiver Entwicklung. So ist der Stand.",
+    "todayTitle": "Heute möglich",
+    "today1": "{commands, number} AutoCAD-Befehle und {aliases, number} Aliasnamen",
+    "today2": "{snaps, number} Objektfangmodi, Objektfangspur, Spurverfolgung und Ortho",
+    "today3": "Layer, Linientypen, {lineweights, number} Linienstärken und Farben",
+    "today4": "Bemaßung, Text, Schraffuren und Blöcke mit Attributen",
+    "today5": "Automatisches Speichern, Speichern und Öffnen, DXF öffnen und speichern, Zwischenablage",
+    "today6": "3D-Volumenkörper, noch unvollständig: Grundkörper, Extrusionen und Rotationen, Boolesche Operationen, Schnitte, schattierte Ansichten",
+    "notYetTitle": "Noch nicht",
+    "notYet1": "DWG-Dateien",
+    "notYet2": "Drucken und PDF",
+    "notYet3": "Layouts und Papierbereich",
+    "notYet4": "Sweeps, Lofts, Netze und Rendern in 3D",
+    "notYet5": "Smartphones und Tablets",
+    "nextTitle": "Als Nächstes",
+    "next1": "3D-Volumenkörper: in 3D verschoben und gedreht, das BKS auf einer Fläche gesetzt",
+    "updated": "Aktualisiert am {date}",
+    "contact": "Fehlt Ihnen etwas? Schreiben Sie mir."
+  },
+  "Faq": {
+    "label": "07 · FAQ",
+    "title": "Fragen und Antworten.",
+    "q1": "Ist MellowCAD kostenlos?",
+    "a1": "Ja — kostenlos, ohne Konto und ohne Testzeit. Es ist ein unabhängiges Projekt in aktiver Entwicklung.",
+    "q2": "Ist MellowCAD Open Source?",
+    "a2": "Ja. Der Code liegt auf <github>GitHub</github> unter der MIT-Lizenz, die Engine ist auf npm als <npm>{package}</npm> veröffentlicht. Die Lizenz gilt für den Code, nicht für Namen und Logo von MellowCAD.",
+    "q3": "Muss ich etwas installieren?",
+    "a3": "Nein. Es läuft in einem aktuellen Desktop-Browser — Chrome, Edge, Firefox oder Safari. Öffnen Sie mellowcad.com/de/draw und geben Sie einen Befehl ein.",
+    "q4": "Funktioniert es wirklich wie AutoCAD?",
+    "a4": "Das ist die Vorgabe: Befehle, Aliasnamen, Reihenfolge der Eingabeaufforderungen, Optionsbuchstaben und Vorgaben folgen dem aktuellen AutoCAD. Einige Befehle sind noch unvollständig, und die Roadmap nennt genau, welche Optionen fehlen.",
+    "q5": "Kann ich DWG- oder DXF-Dateien öffnen, speichern oder drucken?",
+    "a5": "MellowCAD <dxf>öffnet DXF-Dateien</dxf>, von AutoCAD R12 bis 2018, Text oder binär: Linien, Bögen, Kreise, Ellipsen, Polylinien, Splines, Text, Bemaßungen, Führungslinien, Schraffuren, Punkte und Blöcke, auf ihren Layern. Wofür es noch kein Objekt hat — Multiführungslinien, Tabellen, Layouts, 3D-Volumenkörper — wird weggelassen und beim Öffnen aufgelistet. Es <edit>speichert auch DXF</edit>, AutoCAD 2000 bis 2018. DWG gibt es noch nicht, ebenso wenig Drucken oder PDF-Export.",
+    "q6": "Wo werden meine Zeichnungen gespeichert?",
+    "a6": "Auf Ihrem Gerät. MellowCAD speichert automatisch im Browser und lädt Ihre Zeichnungen nie hoch. Das Löschen der Websitedaten löscht die Sicherung; drücken Sie Strg+S, um eine Datei zu behalten.",
+    "q7": "Ist MellowCAD mit Autodesk verbunden?",
+    "a7": "Nein. Es ist ein unabhängiges Projekt. AutoCAD ist eine eingetragene Marke von Autodesk, Inc.",
+    "q8": "Funktioniert es auf Tablets oder Smartphones?",
+    "a8": "Es öffnet sich, ist aber wie AutoCAD für Tastatur und Maus gebaut. Nutzen Sie einen Computer.",
+    "q9": "Welche Befehle werden unterstützt?",
+    "a9": "{commands, number} Befehle, darunter LINIE, PLINIE, KREIS, BOGEN, ELLIPSE, SCHRAFF, VERSETZ, STUTZEN, ABRUNDEN, REIHE, Bemaßungen, Blöcke und Layer. Die <reference>Befehlsreferenz</reference> listet jeden auf, mit Aliasnamen und erster Eingabeaufforderung.",
+    "q10": "Kann es auch 3D?",
+    "a10": "Teilweise. Es erstellt 3D-Volumenkörper — Grundkörper, Extrusionen und Rotationen, Vereinigungen, Differenzen, Schnittmengen, Schnitte, abgerundete und gefaste Kanten, bearbeitete Flächen —, misst ihre Masseneigenschaften und zeigt sie im Orbit, im ViewCube und in schattierten visuellen Stilen. Sweeps, Lofts, Netze und Rendern fehlen noch.",
+    "q11": "Kann ich damit für meinen AutoCAD-Kurs üben?",
+    "a11": "Ja, für die Befehle: Namen, Aliasnamen, Reihenfolge der Eingabeaufforderungen und Optionen folgen AutoCAD, auf Englisch, Spanisch, brasilianischem Portugiesisch, Französisch oder Italienisch, und <exercises>die Übungen</exercises> geben Ihnen Zeichnungen zum Bearbeiten, jede Schritt für Schritt gelöst. DWG kann es noch nicht öffnen oder speichern: Was Sie als DWG oder PDF abgeben, braucht noch ein anderes Programm."
+  },
+  "FinalCta": {
+    "title": "Ihr Zeichenbrett ist einen Tastendruck entfernt."
+  },
+  "Footer": {
+    "tagline": "CAD online kostenlos, mit AutoCAD-Befehlen",
+    "product": "Produkt",
+    "contact": "Kontakt",
+    "report": "Problem melden",
+    "code": "Code",
+    "docs": "Dokumentation",
+    "commands": "Befehlsreferenz",
+    "exercises": "AutoCAD-Übungen",
+    "repository": "GitHub",
+    "npm": "npm",
+    "licence": "MIT-Lizenz",
+    "privacy": "Datenschutz",
+    "language": "Sprache",
+    "drawingNumber": "Zeichn.-Nr.",
+    "revision": "Rev",
+    "scale": "Maßstab",
+    "sheet": "Blatt",
+    "sheetValue": "1 von 1",
+    "trademark": "Autodesk und AutoCAD sind Marken der Autodesk-Unternehmensgruppe. MellowCAD ist ein unabhängiges Projekt, weder mit Autodesk verbunden noch von Autodesk unterstützt."
+  },
+  "Privacy": {
+    "metaTitle": "Datenschutz",
+    "metaDescription": "Was MellowCAD in Ihrem Browser speichert, was es misst, wer diese Daten verarbeitet und auf welcher Grundlage, und Ihre Rechte.",
+    "label": "Datenschutz",
+    "title": "Was wo bleibt.",
+    "lead": "MellowCAD hat keine Konten und keine Server, die Ihre Zeichnungen sehen. Hier steht alles, was es speichert, alles, was es misst, und wer es verarbeitet.",
+    "storedTitle": "In Ihrem Browser",
+    "stored1": "Ihre Zeichnung, beim Arbeiten automatisch im lokalen Speicher des Browsers gesichert. Sie verlässt nie das Gerät.",
+    "stored2": "Was Sie in einer Übung zeichnen, getrennt von Ihrer Zeichnung gehalten, und wie Sie die Paletten des Editors anordnen. Eine auf der Seite „DXF-Datei online öffnen“ gewählte DXF-Datei wartet im Speicher des Browsers, bis der Editor sie öffnet, und wird dann gelöscht. Sonst nichts, und keine Cookies.",
+    "storedNote": "Das Löschen der Daten dieser Website in Ihrem Browser löscht die automatische Sicherung. Drücken Sie im Editor Strg+S, um eine Datei zu behalten.",
+    "analyticsTitle": "Was gemessen wird",
+    "analytics1": "Vercel Web Analytics zählt Seitenaufrufe: die Seite, die Seite, von der Sie kamen, Ihr Land und Ihre Stadt sowie Ihren Browser, Ihr System und Ihren Gerätetyp. Es setzt keine Cookies; ein Besuch wird an einem Hash der Anfrage erkannt, der nach 24 Stunden verworfen wird, und die Statistiken sind anonym.",
+    "analytics2": "Vercel Speed Insights meldet, wie schnell Seiten laden und reagieren, mit der Seite, Ihrem Browser, System, Gerätetyp, der Netzwerkgeschwindigkeit und dem Land — ebenfalls anonym.",
+    "analytics3": "Keines von beiden sieht Ihre Zeichnungen, und keines dient der Werbung, dem Profiling oder einer automatisierten Entscheidung.",
+    "handledTitle": "Wer es verarbeitet, und warum",
+    "handled1": "MellowCAD ist ein unabhängiges Projekt von {name}, der für diese Daten verantwortlich ist und unter <email>{address}</email> antwortet.",
+    "handled2": "Das Bereitstellen der Website und das Messen von Nutzung und Geschwindigkeit beruhen auf einem berechtigten Interesse am guten Betrieb eines kostenlosen Dienstes, beschränkt auf anonyme Statistiken (Art. 6 Abs. 1 Buchst. f DSGVO).",
+    "handled3": "Vercel Inc. hostet die Website und führt beide Messungen durch. Wie jeder Host verarbeitet es Ihre IP-Adresse, um die Seiten auszuliefern. Es hat seinen Sitz in den Vereinigten Staaten und ist nach dem EU-U.S. Data Privacy Framework zertifiziert.",
+    "handled4": "Wenn Sie schreiben, erreicht Ihre Nachricht Google, den E-Mail-Anbieter, über Cloudflare, das sie weiterleitet, ohne eine Kopie zu behalten. Sie dient nur dazu, Ihnen zu antworten, so lange das Gespräch es braucht. Beide Unternehmen haben ihren Sitz in den Vereinigten Staaten und sind nach dem EU-U.S. Data Privacy Framework zertifiziert.",
+    "rightsTitle": "Ihre Rechte",
+    "rights1": "Sie können Auskunft über Ihre Daten verlangen, sie berichtigen oder löschen lassen, ihre Verarbeitung einschränken oder ihr widersprechen oder eine Kopie erhalten: Schreiben Sie an die obige Adresse.",
+    "rights2": "Sie können sich auch bei einer Datenschutzbehörde beschweren — in der EU bei der an Ihrem Wohn- oder Arbeitsort.",
+    "updated": "Zuletzt aktualisiert am {date}"
+  },
+  "NotFound": {
+    "metaTitle": "Seite nicht gefunden",
+    "fallbackCommand": "SEITE",
+    "home": "Zurück zum Zeichenblatt",
+    "cta": "Zeichnen"
+  },
+  "Og": {
+    "tagline": "CAD online kostenlos, mit AutoCAD-Befehlen",
+    "drawTitle": "Zeichnen"
+  },
+  "Docs": {
+    "navLabel": "Dokumentation",
+    "breadcrumb": "Brotkrumennavigation",
+    "metaTitle": "Dokumentation",
+    "metaDescription": "Wie Sie mit MellowCAD zeichnen und damit bauen: alle Befehle und Tastenkombinationen, die Unterschiede zu AutoCAD sowie die Engine, ihre React-Bindings und der Editor.",
+    "label": "Dokumentation",
+    "title": "Dokumentation",
+    "lead": "Wie Sie mit MellowCAD zeichnen und mit seinen Paketen bauen.",
+    "buildTitle": "Mit MellowCAD bauen",
+    "buildLead": "Die Engine, ihre React-Bindings und der ganze Editor, für alle, die sie in eine eigene Anwendung einbauen. Auf Englisch.",
+    "guide": "Anleitung",
+    "api": "API-Referenz",
+    "published": "Auf npm",
+    "notPublished": "Noch nicht veröffentlicht",
+    "englishOnly": "Dieser Abschnitt ist nur auf Englisch verfasst.",
+    "inEnglish": "Auf Englisch",
+    "onThisPage": "Auf dieser Seite",
+    "menu": "Dokumentationsmenü",
+    "closeMenu": "Dokumentationsmenü schließen",
+    "search": "Suchen",
+    "searchTitle": "Dokumentation durchsuchen",
+    "searchPlaceholder": "Dokumentation durchsuchen",
+    "searchEmpty": "Nichts passt zu „{query}“.",
+    "searchFailed": "Die Suche hat nicht geantwortet. Versuchen Sie es gleich noch einmal.",
+    "searching": "Suche läuft…",
+    "close": "Schließen",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "markdown": "Markdown",
+    "source": "Quellcode auf GitHub",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "useTitle": "MellowCAD verwenden",
+    "useLead": "Für alle, die zeichnen: die ersten Schritte, alle Befehle und Tastenkombinationen und wo sich MellowCAD von AutoCAD unterscheidet.",
+    "pages": {
+      "commands": {
+        "title": "AutoCAD-Befehle auf Deutsch und Englisch",
+        "metaTitle": "AutoCAD-Befehle auf Deutsch und Englisch",
+        "description": "Die AutoCAD-Befehle auf Deutsch und Englisch, nach Gruppe der Multifunktionsleiste: Name, Aliasnamen, erste Eingabeaufforderung, für die wichtigsten eine Seite.",
+        "lead": "Jeder Befehl, wie Sie ihn in der Befehlszeile eingeben, abgelegt unter der Gruppe der Multifunktionsleiste, in der Sie ihn suchen würden. Die erste Eingabeaufforderung ist die der Engine: dieselbe Reihenfolge und dieselben Optionsbuchstaben, die Sie beim Ausführen sehen. Ein Befehl mit eigener Seite verweist darauf: seine Optionen, eine von der Engine gezeichnete Sitzung und was er noch nicht kann."
+      },
+      "shortcuts": {
+        "title": "AutoCAD-Tastenkombinationen",
+        "metaTitle": "AutoCAD-Tastenkürzel: F-Tasten und Strg-Tasten",
+        "description": "Die Tasten, auf die MellowCAD antwortet: Zeichenhilfen, Bearbeiten und Dateien, Fenster und Befehlszeile.",
+        "lead": "Die Tasten, auf die MellowCAD antwortet, die jemand, der AutoCAD nutzt, schon im Finger hat. Ein Befehl steht so, wie Sie ihn eingeben; seine Aliasnamen stehen auf der Befehlsseite."
+      },
+      "exercises": {
+        "title": "AutoCAD-Übungen",
+        "metaTitle": "AutoCAD-Übungen kostenlos, mit Lösungen",
+        "description": "AutoCAD-Übungszeichnungen für Einsteiger und darüber, in 2D, isometrisch und 3D, jede Schritt für Schritt gelöst, im kostenlosen Online-Editor geöffnet.",
+        "lead": "Zeichnungen zum Üben von AutoCAD, von der ersten Dichtung bis zu 3D-Volumenkörpern, jede mit ihren Bemaßungen, den Befehlen, die sie übt, und ihrer Lösung Schritt für Schritt. Die Engine zeichnet jeden Schritt und schreibt den Verlauf der Befehlszeile so, wie Sie ihn eingeben werden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Öffnen Sie eine im Editor, und ihre Zeichnung liegt neben dem Platz, an dem Sie Ihre zeichnen, in Ihrem Browser, ohne Installation und ohne Konto.",
+        "guidesTitle": "Anleitungen Schritt für Schritt",
+        "guides": "Die Fertigkeiten der Übungen einzeln: Punkte eingeben, der Grundriss eines Hauses, eine 2D-Zeichnung, zu einem Volumenkörper gemacht. Jede Anleitung zeigt die Zeichnung jedes Schritts und seinen Verlauf.",
+        "howTitle": "So funktionieren die Übungen",
+        "how": "Eine Übung öffnet sich im Editor mit ihrer Zeichnung, bemaßt, links vom Ursprung: Zeichnen Sie Ihre ab 0,0, wie es ihre Lösung tut. Was Sie zeichnen, bleibt in diesem Browser für diese Übung allein. Die Zeichnung, an der Sie arbeiteten, bleibt, wie sie war, und der für sich geöffnete Editor bringt sie zurück. Um eine Übung neu zu beginnen, führen Sie NEU aus und öffnen sie dann auf ihrer Seite. Jede Seite druckt für sich, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF.",
+        "questions": {
+          "where": {
+            "question": "Wo finde ich AutoCAD-Übungen zum Üben?",
+            "answer": "Hier: Jede Übung hat ihre bemaßte Zeichnung, die Befehle, die sie übt, und ihre Lösung Schritt für Schritt, und öffnet sich in einem kostenlosen Editor, der wie AutoCAD funktioniert, im Browser. Beginnen Sie mit denen für Einsteiger; jeder Befehl, den sie verwenden, führt zu dem, was er tut, und den Optionen, die er abfragt."
+          },
+          "online": {
+            "question": "Kann ich AutoCAD online kostenlos üben?",
+            "answer": "Ja. MellowCAD läuft im Browser, kostenlos und ohne Konto: Sie geben die Befehle und Aliasnamen von AutoCAD ein, mit den Namen Ihrer Sprache, und beantworten ihre Eingabeaufforderungen in derselben Reihenfolge, mit denselben Optionsbuchstaben. Es ist nicht AutoCAD: Es öffnet und speichert DXF-Dateien, aber noch keine DWG, und seine 3D-Volumenkörper sind noch unvollständig."
+          },
+          "solutions": {
+            "question": "Haben die Übungen Lösungen?",
+            "answer": "Jede Übung ist unter ihrer Zeichnung Schritt für Schritt gelöst. Die Engine zeichnet jeden Schritt und schreibt den Verlauf der Befehlszeile, sodass Sie Ihre Arbeit Zeile für Zeile damit vergleichen können."
+          },
+          "pdf": {
+            "question": "Kann ich die Übungen drucken oder als PDF speichern?",
+            "answer": "Ja. Die Seite einer Übung druckt für sich, dunkle Linien auf Weiß, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF."
+          }
+        }
+      }
+    },
+    "reference": {
+      "aliases": "Aliasnamen",
+      "firstPrompt": "Erste Eingabeaufforderung",
+      "coverage": "Was er kann und noch nicht kann, im Detail (auf Englisch)"
+    },
+    "command": {
+      "command": "Befehl",
+      "english": "Auf Englisch",
+      "englishValue": "{name}, in jeder Sprache als {typed} eingegeben",
+      "panel": "Gruppe",
+      "try": "Ausprobieren",
+      "tryText": "<editor>Öffnen Sie den Editor</editor>, geben Sie {key} ein und drücken Sie die Eingabetaste.",
+      "session": "In der Befehlszeile",
+      "sessionLead": "Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.",
+      "options": "Optionen",
+      "missing": "Was er noch nicht kann",
+      "questions": "Fragen",
+      "practice": "Üben",
+      "related": "Verwandte Befehle"
+    },
+    "shortcuts": {
+      "key": "Taste",
+      "action": "Was sie bewirkt",
+      "command": "Befehl",
+      "sections": {
+        "aids": "Zeichenhilfen",
+        "editing": "Bearbeiten und Dateien",
+        "window": "Fenster",
+        "commandLine": "Befehlszeile"
+      },
+      "help": "Öffnet die Hilfe des laufenden Befehls in einem neuen Tab, ohne Befehl diese Dokumentation.",
+      "selectAll": "Wählt jedes Objekt",
+      "enter": "Führt das Eingegebene aus. Ohne Eingabe übernimmt sie die Vorgabe der Eingabeaufforderung oder beendet den Befehl, und ohne laufenden Befehl wiederholt sie den letzten.",
+      "escape": "Bricht den laufenden Befehl ab; ein erstes Esc löscht das halb Eingegebene.",
+      "recall": "Ohne laufenden Befehl holt sie die zuvor eingegebenen Befehle zurück.",
+      "complete": "Vervollständigt den eingegebenen Befehlsnamen; bei einer Punktaufforderung schaltet sie durch die Objektfangmodi unter dem Cursor.",
+      "cycle": "Schaltet durch die überlappenden Objekte unter dem Cursor, solange die wechselnde Auswahl ihr Symbol zeigt."
+    },
+    "keys": {
+      "shift": "Umschalt",
+      "ctrl": "Strg",
+      "space": "Leertaste",
+      "enter": "Eingabetaste",
+      "escape": "Esc",
+      "tab": "Tab",
+      "up": "↑",
+      "down": "↓"
+    },
+    "sessions": {
+      "firstLine": "Ein Rechteck aus vier Segmenten, Punkt für Punkt eingegeben; der letzte schließt es.",
+      "circleDiameter": "Ein Kreis aus Mittelpunkt und Durchmesser, eingegeben, nachdem die Option gewählt ist.",
+      "endpointSnap": "Nahe einer Ecke zeigt der Objektfang seine Markierung und nennt den Punkt, den er nimmt.",
+      "offsetRectangle": "Ein Rechteck und seine versetzte Kopie, auf der Innenseite gewählt."
+    },
+    "types": {
+      "gettingStarted": "Erste Schritte",
+      "howTo": "Anleitungen",
+      "reference": "Referenz",
+      "concept": "Konzepte",
+      "practice": "Übung"
+    },
+    "exercise": {
+      "kind": "Übung",
+      "commands": "Befehle",
+      "editor": "Im Editor",
+      "editorText": "<editor>Mit ihrer Zeichnung öffnen</editor>, bemaßt, neben dem Platz, an dem Sie Ihre zeichnen",
+      "drawing": "Die Zeichnung",
+      "steps": "Schritt für Schritt",
+      "stepsLead": "Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; # misst vom Ursprung.",
+      "more": "Weitere Übungen",
+      "open": "Im Editor öffnen",
+      "print": "Drucken oder als PDF speichern",
+      "levels": {
+        "beginner": "Einsteiger",
+        "intermediate": "Fortgeschritten",
+        "advanced": "Profi"
+      },
+      "disciplines": {
+        "mechanical": "Maschinenbau",
+        "architecture": "Architektur",
+        "civil": "Bauingenieurwesen"
+      },
+      "spaces": {
+        "2d": "2D",
+        "isometric": "Isometrisch",
+        "3d": "3D-Volumenkörper"
+      },
+      "layers": {
+        "outline": "Kontur",
+        "centre": "Mittellinien",
+        "hidden": "Verdeckte Linien",
+        "dimensions": "Bemaßung"
+      }
+    },
+    "openDxf": {
+      "choose": "DXF-Datei wählen",
+      "drop": "oder hier ablegen",
+      "local": "Sie öffnet sich im Editor, in diesem Browser: Die Datei wird nicht hochgeladen.",
+      "replaces": "Sie ersetzt die Zeichnung, die Sie im Editor haben, wie ÖFFNEN es tut: Sichern Sie Ihre dort zuerst mit Strg+S.",
+      "opening": "Öffnen…",
+      "dwg": "DWG-Dateien lassen sich hier noch nicht öffnen. Speichern Sie sie im Programm, das sie erstellt hat, als DXF und öffnen Sie diese.",
+      "failed": "Dieser Browser hat der Seite nicht erlaubt, die Datei an den Editor zu übergeben: Öffnen Sie sie dort mit Strg+O.",
+      "editor": "Editor öffnen"
+    }
+  }
+}

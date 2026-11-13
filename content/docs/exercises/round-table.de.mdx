@@ -1,0 +1,52 @@
+---
+title: "AutoCAD-Übung: ein runder Tisch mit Stühlen"
+metaTitle: "AutoCAD-Übung: runder Tisch mit sechs Stühlen"
+description: "Einen runden Tisch mit sechs Stühlen in AutoCAD zeichnen: ein Stuhl, dann ein polares Muster um den Mittelpunkt des Tisches, und die Bemaßung. Kostenlos online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zeichnen Sie einen runden Tisch von 120 mit sechs Stühlen, in Zentimetern: jeder Stuhl eine Sitzfläche 44 mal 40 mit auf 4 gerundeten Ecken und eine 8 tiefe Lehne, seine Vorderkante 8 vom Rand des Tisches entfernt. Zeichnen Sie einen Stuhl über dem Tisch und lassen Sie ein polares Muster alle sechs platzieren. Der Bemaßungsmaßstab der Zeichnung ist für Zentimeter eingestellt.
+
+- **Übung:** Fortgeschritten · Architektur · 2D
+- **Befehle:** [`KREIS`](/docs/commands/circle), [`RECHTECK`](/docs/commands/rectang), [`REIHEKREIS`](/docs/commands/arraypolar), [`BEMDURCHM`](/docs/commands/dimdiameter), [`BEMLINEAR`](/docs/commands/dimlinear)
+- **Im Editor:** [Mit ihrer Zeichnung öffnen](/de/draw?drawing=round-table), bemaßt, neben dem Platz, an dem Sie Ihre zeichnen
+
+## Die Zeichnung [#drawing]
+
+<Session name="exercises/round-table" caption="Ein runder Tisch von 120 mit sechs Stühlen, in der Draufsicht, in Zentimetern bemaßt." />
+
+## Schritt für Schritt [#steps]
+
+Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; \# misst vom Ursprung.
+
+### 1. Den Tisch zeichnen [#table]
+
+Auf dem Layer Kontur: [`KREIS`](/docs/commands/circle) in `0,0`, `Durchmesser` `120`.
+
+<Session name="exercises/round-table/table" caption="1. Den Tisch zeichnen" />
+
+### 2. Einen Stuhl zeichnen [#chair]
+
+Die Sitzfläche, über dem Tisch: [`RECHTECK`](/docs/commands/rectang) mit einer `Abrunden` von `4`, von `-22,68` bis `44,40` weiter. Dann die Lehne, mit der auf `0` zurückgesetzten Verrundung, von `-22,108` bis `44,8` weiter. [`RECHTECK`](/docs/commands/rectang) behält seinen Verrundungsradius, bis Sie ihn ändern.
+
+<Session name="exercises/round-table/chair" caption="2. Einen Stuhl zeichnen" />
+
+### 3. Die Stühle anordnen [#array]
+
+[`REIHEKREIS`](/docs/commands/arraypolar): Wählen Sie die Sitzfläche und die Lehne, drücken Sie die Eingabetaste, geben Sie den Mittelpunkt des Tisches an, `0,0`, dann `Objekte`, `6`. Jeder Stuhl dreht sich beim Platzieren, sodass alle sechs zum Tisch zeigen.
+
+<Session name="exercises/round-table/array" caption="3. Die Stühle anordnen" />
+
+### 4. Bemaßen [#dimensions]
+
+Auf dem Layer Bemaßung: [`BEMDURCHM`](/docs/commands/dimdiameter) auf den Tisch, innen platziert, und [`BEMLINEAR`](/docs/commands/dimlinear) für die Breite des oberen Stuhls, 44, und seine Tiefe mit der Lehne, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Bemaßen" />
+
+## Weitere Übungen [#more]
+
+- [AutoCAD-Übung: ein Grundstück](/docs/exercises/plot-of-land): Fortgeschritten · Bauingenieurwesen · 2D
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft): Fortgeschritten · Maschinenbau · 2D
+- [AutoCAD-Übung Isometrie: ein Stufenblock](/docs/exercises/isometric-block): Fortgeschritten · Maschinenbau · Isometrisch
+- [AutoCAD-Übungen](/docs/exercises)

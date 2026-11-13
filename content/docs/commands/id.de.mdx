@@ -1,0 +1,46 @@
+---
+title: "Befehl ID in AutoCAD"
+description: "Wie der Befehl ID in AutoCAD funktioniert: Wählen oder fangen Sie einen Punkt und lesen Sie sein X, Y und Z im aktuellen BKS ab, auch innerhalb eines Befehls."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Was macht der Befehl ID in AutoCAD?","answer":"Er meldet, wo ein Punkt liegt: X, Y und Z, im aktuellen BKS. Er zeichnet und ändert nichts."},{"question":"Wie ermittle ich die Koordinaten eines Punkts?","answer":"Geben Sie ID ein und klicken Sie dann den Punkt mit einem Objektfang an, Endpunkt oder Mittelpunkt, sodass er genau darauf landet. Die Koordinaten werden in die Befehlszeile geschrieben."},{"question":"Wie erhalte ich die Z-Koordinate eines Punkts?","answer":"Fangen Sie ihn mit einem Objektfang: ID schreibt dort das Z des Objekts. Ein einfacher Klick ergibt das Z der Erhebungsebene, 0, sofern ELEVATION oder das BKS sie nicht anheben."},{"question":"Warum zeigt ID Koordinaten, die ich nicht erwartet habe?","answer":"ID liest im aktuellen BKS. Wurde das BKS verschoben oder gedreht, werden die Zahlen von seinem Ursprung entlang seiner Achsen gemessen: BKS Welt, um Weltkoordinaten zu lesen."}]
+---
+
+ID schreibt die Koordinaten eines Punkts. Wählen, fangen oder geben Sie ihn bei `Specify point:` ein, und ID schreibt sein X, Y und Z in einer Zeile in die Befehlszeile und endet. Die Werte stehen im aktuellen BKS, mit der Genauigkeit der Zeichnung. Mit einem Objektfang ist Z die Höhe des Objekts an diesem Punkt; sonst ist es die der Erhebungsebene. Die Eingabetaste beendet ihn ohne ein Wort, und vor ID gewählte Objekte werden beim Start verworfen. Mit Apostroph eingegeben, `'ID`, läuft er innerhalb eines anderen Befehls, der danach weitermacht.
+
+- **Befehl:** `ID`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `ID` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="id" caption="ID mit einem Mittelpunktfang auf dem Loch einer Platte: X, Y und Z des Mittelpunkts." />
+
+## Fragen [#questions]
+
+### Was macht der Befehl ID in AutoCAD?
+
+Er meldet, wo ein Punkt liegt: X, Y und Z, im aktuellen BKS. Er zeichnet und ändert nichts.
+
+### Wie ermittle ich die Koordinaten eines Punkts?
+
+Geben Sie `ID` ein und klicken Sie dann den Punkt mit einem Objektfang an, Endpunkt oder Mittelpunkt, sodass er genau darauf landet. Die Koordinaten werden in die Befehlszeile geschrieben.
+
+### Wie erhalte ich die Z-Koordinate eines Punkts?
+
+Fangen Sie ihn mit einem Objektfang: ID schreibt dort das Z des Objekts. Ein einfacher Klick ergibt das Z der Erhebungsebene, 0, sofern ELEVATION oder das BKS sie nicht anheben.
+
+### Warum zeigt ID Koordinaten, die ich nicht erwartet habe?
+
+ID liest im aktuellen BKS. Wurde das BKS verschoben oder gedreht, werden die Zahlen von seinem Ursprung entlang seiner Achsen gemessen: [`BKS`](/docs/commands/ucs) Welt, um Weltkoordinaten zu lesen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl ABSTAND (DIST) in AutoCAD](/docs/commands/dist)
+- [Befehl LISTE (LIST) in AutoCAD](/docs/commands/list)
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)
+- [Befehl FLÄCHE (AREA): Fläche messen in AutoCAD](/docs/commands/area)
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#id--es-id--pt-br-id--fr-id--it-id--de-id)

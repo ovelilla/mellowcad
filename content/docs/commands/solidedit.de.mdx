@@ -1,0 +1,95 @@
+---
+title: "Befehl VOLKÖRPERBEARB (SOLIDEDIT) in AutoCAD"
+description: "Wie VOLKÖRPERBEARB (SOLIDEDIT) in AutoCAD die Flächen eines 3D-Volumenkörpers bearbeitet: Extrudieren, Verschieben, Drehen, Versetzen, Verjüngen. Zum Testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie bearbeitet man einen 3D-Volumenkörper in AutoCAD?","answer":"Starten Sie VOLKÖRPERBEARB, wählen Sie Fläche und dann, was geschehen soll: Extrusion oder Schieben einer Fläche, um den Volumenkörper höher zu machen, Löschen, um ein Loch zu füllen, verJüngung, um eine Seite zu neigen. Wählen Sie die Flächen, drücken Sie die Eingabetaste und beantworten Sie die Fragen der Option. Zum schnellen Drücken oder Ziehen zieht KLICKZIEHEN ebenfalls eine Fläche."},{"question":"Wie extrudiert man eine Fläche eines 3D-Volumenkörpers?","answer":"VOLKÖRPERBEARB, Fläche, Extrusion, die Fläche wählen und die Eingabetaste drücken, dann die Höhe und den Verjüngungswinkel: Die 15 und 15 der Sitzung erzeugen einen Kegelstumpf auf der Oberseite eines Quaders."},{"question":"Wie entfernt man ein Loch aus einem Volumenkörper?","answer":"VOLKÖRPERBEARB, Fläche, Löschen, die Wand des Lochs wählen und die Eingabetaste drücken: Das Loch wird gefüllt. Auf dieselbe Weise lässt sich eine Abrundung oder eine Fase entfernen."},{"question":"Was ist der Unterschied zwischen VOLKÖRPERBEARB und PRESSPULL?","answer":"KLICKZIEHEN bewegt eine Fläche durch Ziehen oder mit einem Abstand, senkrecht zu ihr selbst. VOLKÖRPERBEARB kann das und mehr: Es verjüngt, dreht, versetzt, löscht und kopiert Flächen, auch mehrere auf einmal."}]
+---
+
+VOLKÖRPERBEARB (SOLIDEDIT) bearbeitet einen 3D-Volumenkörper über seine Flächen. Der Befehl sagt, ob jede Bearbeitung geprüft wird, und fragt dann, was bearbeitet werden soll: `Fläche`, dann die Flächenoption, dann die Flächen, dann das, was die Option verlangt. Jede Bearbeitung wird sofort ausgeführt, und die Flächenoptionen werden erneut abgefragt, sodass ein Aufruf mehrere Bearbeitungen umfassen kann; `eXit` oder die Eingabetaste verlässt die Flächenoptionen, dann den Befehl. Die Nachbarflächen folgen einer Fläche: Verschieben Sie die Oberseite eines Quaders nach oben, und seine Seiten wachsen mit.
+
+Der Volumenkörper behält seinen Layer und seine Eigenschaften, verliert aber, wodurch er entstanden ist: Ein Quader ist danach kein Quader mehr. Der ganze Aufruf ist ein Rückgängig-Schritt, und sein `Zurück` nimmt die Bearbeitungen darin einzeln zurück. Die Eingabetaste an der Eingabeaufforderung `Befehl:` führt ihn erneut ab der ersten Frage aus. Die Schaltfläche für Flächen im Bereich „Volumenkörper bearbeiten“ führt jede Flächenoption direkt aus. In MellowCAD gibt es nur 3D-Volumenkörper, und diese sind noch unvollständig.
+
+- **Befehl:** `VOLKÖRPERBEARB`
+- **Auf Englisch:** `SOLIDEDIT`, in jeder Sprache als `_SOLIDEDIT` eingegeben
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `VOLKÖRPERBEARB` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="solidedit" caption="Die obere Fläche eines Quaders, mit VOLKÖRPERBEARB um 15 nach oben und mit einer Verjüngung von 15 Grad extrudiert: ein Kegelstumpf auf dem Quader, von Südosten gesehen." />
+
+## Optionen [#options]
+
+### `Fläche` (`F`) [#face]
+
+Die Flächenoptionen. Jede fragt nach Flächen, bis Sie die Eingabetaste drücken: Ein Klick oder ein eingegebener Punkt wählt die Fläche, die Ihnen dort am nächsten liegt, oder die beiden Flächen einer Kante, und eine bereits gewählte Fläche gibt die dahinterliegende. Sobald eine Fläche gewählt ist, wählt `ALLE` alle Flächen ihres Volumenkörpers; `Entfernen` nimmt stattdessen Flächen aus der Auswahl heraus, und `Zurück` macht die letzte Wahl rückgängig. Eine Wahl ins Leere meldet `Keine Volumenkörper gefunden.`. Nur Flächen eines einzigen Volumenkörpers.
+
+### `Extrusion` (`E`) [#extrude]
+
+Fragt nach einer Höhe und einem Verjüngungswinkel: Jede Fläche wächst zu einem Prisma heran, das dem Volumenkörper hinzugefügt oder bei negativer Höhe aus ihm herausgenommen wird; bei positivem Winkel wird es nach oben schmaler. Die Eingabetaste bei der Höhe übernimmt die letzte Höhe, die die Grundkörper oder [`EXTRUSION`](/docs/commands/extrude) verwendet haben.
+
+### `Schieben` (`S`) [#move]
+
+Fragt nach einem Basispunkt und einem zweiten Punkt: Eine ebene Fläche bewegt sich so weit, wie diese Strecke entlang ihrer Normalen verläuft, ihre Nachbarn nimmt sie mit. Die Eingabetaste beim zweiten Punkt übernimmt den Basispunkt als Verschiebung.
+
+### `Drehen` (`D`) [#rotate]
+
+Fragt nach einer Achse, durch zwei Punkte oder entlang der `X-achse`, `Y-achse` oder `Z-achse` des BKS oder senkrecht zum Bildschirm mit `ANsicht`, dann nach einem Winkel: Die Fläche dreht sich um sie nach der Rechte-Hand-Regel.
+
+### `Versetzen` (`V`) [#offset]
+
+Fragt nach einem Abstand: Die Fläche bewegt sich entlang ihrer Normalen nach außen oder bei einem negativen Wert nach innen, ihre Nachbarn nimmt sie mit, runde Flächen auch um ihre Achse. Ein Versatz nach innen, der die halbe längste Seite des Quaders um den Volumenkörper erreicht, wird abgelehnt, und die Meldung nennt, wie weit er gehen darf.
+
+### `verJüngung` (`J`) [#taper]
+
+Fragt nach einem Basispunkt, einem Punkt entlang der Verjüngungsachse und einem Winkel: Die Fläche neigt sich um die Stelle, an der sie die Ebene durch den Basispunkt trifft; ein positiver Winkel neigt sie entlang der Achse nach innen.
+
+### `Löschen` (`L`) [#delete]
+
+Entfernt die Wand eines Lochs und schließt es damit, oder den Streifen einer Abrundung oder einer Fase und gibt die Kante zurück, die er ersetzt hat.
+
+### `Kopieren` (`K`) [#copy]
+
+Erzeugt aus jeder ebenen Fläche eine Region, dort wo sie liegt oder um zwei Punkte verschoben, auf dem aktuellen Layer und mit den aktuellen Eigenschaften.
+
+### `Zurück` (`Z`) [#undo]
+
+Macht bei den Flächenoptionen die letzte Bearbeitung dieses Aufrufs rückgängig; ist keine mehr übrig, meldet `Der Befehl wurde vollständig gelöscht.`.
+
+### `eXit` (`X`) [#exit]
+
+Verlässt die Flächenoptionen zur ersten Frage, und deren eXit verlässt den Befehl; die Eingabetaste tut dasselbe.
+
+## Was er noch nicht kann [#missing]
+
+`Kante` und `Volumenkörper` sowie `Farbe` und `Material` der Flächen, die angeboten und abgelehnt werden, ebenso `Pfad` beim Extrudieren, die Achse nach Objekt beim Drehen und deren `Bezug`-Winkel. Kreuzen, Zaun und KPolygon zum Wählen von Flächen. Das Verschieben, Drehen, Verjüngen oder Kopieren einer gekrümmten Fläche, das Versetzen einer Fläche zwischen anderen Nachbarn, das Löschen einer Fläche, die weder Lochwand noch Streifen ist, und eine Bearbeitung, die die Form des Volumenkörpers so stark ändert, dass eine Fläche eine andere aufzehrt. Bearbeitungen neben einer verjüngt extrudierten Fläche. Ein Versatz nach außen, der zu weit geht: AutoCAD lässt ihn stillschweigend fallen, MellowCAD führt ihn aus. Eine Vorschau, während Sie einen Abstand oder einen Winkel angeben.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#solidedit--es-editsolido--pt-br-editarsolido--fr-editsolide--it-modifsolidi--de-volkörperbearb)
+
+## Fragen [#questions]
+
+### Wie bearbeitet man einen 3D-Volumenkörper in AutoCAD?
+
+Starten Sie VOLKÖRPERBEARB, wählen Sie `Fläche` und dann, was geschehen soll: `Extrusion` oder `Schieben` einer Fläche, um den Volumenkörper höher zu machen, `Löschen`, um ein Loch zu füllen, `verJüngung`, um eine Seite zu neigen. Wählen Sie die Flächen, drücken Sie die Eingabetaste und beantworten Sie die Fragen der Option. Zum schnellen Drücken oder Ziehen zieht [`KLICKZIEHEN`](/docs/commands/presspull) ebenfalls eine Fläche.
+
+### Wie extrudiert man eine Fläche eines 3D-Volumenkörpers?
+
+VOLKÖRPERBEARB, `Fläche`, `Extrusion`, die Fläche wählen und die Eingabetaste drücken, dann die Höhe und den Verjüngungswinkel: Die `15` und `15` der Sitzung erzeugen einen Kegelstumpf auf der Oberseite eines Quaders.
+
+### Wie entfernt man ein Loch aus einem Volumenkörper?
+
+VOLKÖRPERBEARB, `Fläche`, `Löschen`, die Wand des Lochs wählen und die Eingabetaste drücken: Das Loch wird gefüllt. Auf dieselbe Weise lässt sich eine Abrundung oder eine Fase entfernen.
+
+### Was ist der Unterschied zwischen VOLKÖRPERBEARB und PRESSPULL?
+
+[`KLICKZIEHEN`](/docs/commands/presspull) bewegt eine Fläche durch Ziehen oder mit einem Abstand, senkrecht zu ihr selbst. VOLKÖRPERBEARB kann das und mehr: Es verjüngt, dreht, versetzt, löscht und kopiert Flächen, auch mehrere auf einmal.
+
+## Verwandte Befehle [#related]
+
+- [Befehl KLICKZIEHEN (PRESSPULL) in AutoCAD](/docs/commands/presspull)
+- [Befehl ABRUNDKANTE (FILLETEDGE) in AutoCAD](/docs/commands/filletedge)
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Befehl DIFFERENZ (SUBTRACT) in AutoCAD](/docs/commands/subtract)

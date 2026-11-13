@@ -1,0 +1,87 @@
+---
+title: "Befehl STUTZEN (TRIM) in AutoCAD"
+description: "Wie STUTZEN (TRIM, Alias SU) in AutoCAD funktioniert, Schritt für Schritt: Modi Schnell und Standard, Schnittkanten, Zaun, Kreuzen und Umschalttaste zum Dehnen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von STUTZEN in AutoCAD?","answer":"SU, dann die Eingabetaste oder die Leertaste. TR des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und _TRIM in jeder Sprache von AutoCAD."},{"question":"Warum löscht STUTZEN die ganze Linie?","answer":"Weil STUTZEN im Modus Schnell ist, AutoCADs Vorgabe seit der Version 2021: Eine Wahl auf einem Objekt, das keine Kante kreuzt, löscht es. Wählen Sie Modus und dann sTandard, damit STUTZEN es stehen lässt und das meldet."},{"question":"Wie stutzt man viele Linien auf einmal?","answer":"Wählen Sie an einer leeren Stelle und geben Sie einen zweiten Punkt an: Jedes Objekt, das dieser Zaun kreuzt, wird in einem Schritt gestutzt. Oder wählen Sie KReuzen und ziehen Sie ein Fenster über die zu entfernenden Stücke."},{"question":"Wie verlängert man eine Linie mit STUTZEN?","answer":"Halten Sie beim Wählen der Linie nahe dem zu dehnenden Ende die Umschalttaste gedrückt: Sie wächst bis zur nächsten Kante, wie bei DEHNEN, und die nächste Wahl ohne Umschalttaste stutzt wieder."}]
+---
+
+STUTZEN (TRIM) schneidet ein Objekt bis dorthin zurück, wo andere Objekte es kreuzen: Sie wählen das Stück, das weg soll, und es verschwindet bis zum nächsten Schnittpunkt auf jeder Seite. Er beginnt im Modus Schnell, wie der von AutoCAD: Jedes Objekt ist eine Schnittkante, und ein Objekt, das nichts kreuzt, wird ganz gelöscht. Halten Sie beim Wählen die Umschalttaste gedrückt, dehnt er das Objekt stattdessen bis zur nächsten Kante, wie es [`DEHNEN`](/docs/commands/extend) tut. Jede Wahl ist ein Schritt, den Rückgängig zurücknimmt; die Eingabetaste beendet den Befehl.
+
+- **Befehl:** `STUTZEN`
+- **Auf Englisch:** `TRIM`, in jeder Sprache als `_TRIM` eingegeben
+- **Aliasnamen:** `SU`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `SU` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="trim" caption="Eine Linie, bis zu den beiden Linien zurückgestutzt, die sie kreuzen: jedes Ende einmal gewählt, im Modus Schnell." />
+
+## Optionen [#options]
+
+### `Schnittkanten` (`S`) [#cutting]
+
+Wählt, welche Objekte schneiden: Wählen Sie sie, oder drücken Sie die Eingabetaste, um jedes Objekt zu nehmen. Von da an schneiden nur diese, in jedem Modus, bis der Befehl endet.
+
+### `ZAun` (`ZA`) [#fence]
+
+Fragt nach den Punkten einer Linie, beliebig viele bis zur Eingabetaste: Jedes Objekt, das sie kreuzt, wird dort gestutzt, wo sie es kreuzt, in einem Schritt. Der Modus Standard listet ihn auf; der Modus Schnell nimmt ihn ebenfalls an, und eine Wahl ins Leere beginnt dort von selbst einen Zaun aus zwei Punkten.
+
+### `KReuzen` (`KR`) [#crossing]
+
+Fragt nach den beiden Ecken eines Fensters: Alles, was sein Umriss kreuzt, wird gestutzt, in einem Schritt. Ein Objekt ganz innerhalb des Fensters ist keines, das es kreuzt.
+
+### `Modus` (`M`) [#mode]
+
+Schaltet zwischen `Schnell` und `sTandard` um. Im Modus Standard fragt STUTZEN zuerst nach den Schnittkanten (die Eingabetaste nimmt alle), lässt ein Objekt, das keine Kante kreuzt, mit `Schneidet sich nicht mit der Schnittkante.` unverändert, listet Fence und Edge auf, und eine Wahl ins Leere beginnt ein Kreuzen-Fenster. Der Modus gilt für STUTZEN und DEHNEN zugleich und hält für die Sitzung.
+
+### `Kante` (`K`) [#edge]
+
+Nur im Modus Standard. Mit `Dehnen` schneidet eine Kante auch dort, wo sie kreuzen würde, wenn sie verlängert wäre, eine Linie in beide Richtungen, ein Bogen auf seinem Kreis; `Nicht` ist die Vorgabe.
+
+### `Löschen` (`L`) [#erase]
+
+Löscht Objekte, ohne den Befehl zu verlassen: Wählen Sie sie, dann löscht die Eingabetaste sie, als ein Schritt von STUTZEN, den Rückgängig zurücknehmen kann.
+
+### `ZUrück` (`ZU`) [#undo]
+
+Aufgeführt, sobald die Eingabeaufforderung eine Antwort hatte, eine Wahl, einen Zaun, ein Fenster: nimmt das letzte Stutzen zurück und meldet, wenn nichts mehr zurückzunehmen ist, genau das.
+
+## Was er noch nicht kann [#missing]
+
+Projizieren: Die Projektionsoption von AutoCAD (Keine, BKS, Ansicht) wird nicht angeboten, und alles wird auf die XY-Ebene des BKS projiziert berechnet, was AutoCADs Vorgabe BKS ist. Ein Zaun lässt sich noch nicht mit dem Fadenkreuz ziehen, nur Punkt für Punkt wählen. Der Stutzmodus und die Wahl von Kante gelten für die Sitzung, während AutoCAD sie von einer Sitzung zur nächsten behält. Ein Objekt, das schräg zum BKS liegt, ein Spline ausgenommen, schneidet weder, noch wird es gestutzt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von STUTZEN in AutoCAD?
+
+`SU`, dann die Eingabetaste oder die Leertaste. `TR` des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und `_TRIM` in jeder Sprache von AutoCAD.
+
+### Warum löscht STUTZEN die ganze Linie?
+
+Weil STUTZEN im Modus Schnell ist, AutoCADs Vorgabe seit der Version 2021: Eine Wahl auf einem Objekt, das keine Kante kreuzt, löscht es. Wählen Sie `Modus` und dann `sTandard`, damit STUTZEN es stehen lässt und das meldet.
+
+### Wie stutzt man viele Linien auf einmal?
+
+Wählen Sie an einer leeren Stelle und geben Sie einen zweiten Punkt an: Jedes Objekt, das dieser Zaun kreuzt, wird in einem Schritt gestutzt. Oder wählen Sie `KReuzen` und ziehen Sie ein Fenster über die zu entfernenden Stücke.
+
+### Wie verlängert man eine Linie mit STUTZEN?
+
+Halten Sie beim Wählen der Linie nahe dem zu dehnenden Ende die Umschalttaste gedrückt: Sie wächst bis zur nächsten Kante, wie bei [`DEHNEN`](/docs/commands/extend), und die nächste Wahl ohne Umschalttaste stutzt wieder.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: eine Lasche mit Tangenten](/docs/exercises/link)
+
+## Verwandte Befehle [#related]
+
+- [Befehl DEHNEN (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Befehl VERSETZ (OFFSET) in AutoCAD](/docs/commands/offset)
+- [Befehl ABRUNDEN (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Befehl BRUCH (BREAK) in AutoCAD](/docs/commands/break)

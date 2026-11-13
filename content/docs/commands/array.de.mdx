@@ -1,0 +1,67 @@
+---
+title: "Befehl REIHE (ARRAY) in AutoCAD"
+description: "Wie REIHE (ARRAY, Alias RH) in AutoCAD funktioniert, Schritt für Schritt: rechteckige, polare und Pfadreihen, vor dem Erzeugen live bearbeitet."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für REIHE (ARRAY) in AutoCAD?","answer":"RH, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _ARRAY in jeder Sprache von AutoCAD. REIHERECHTECK, REIHEKREIS und REIHEPFAD haben keinen Alias und überspringen, vollständig eingegeben, die Frage nach dem Typ."},{"question":"Wie erstelle ich eine kreisförmige Reihe?","answer":"Wählen Sie POlar oder starten Sie REIHEKREIS und wählen Sie den Mittelpunkt: Die Auswahl wird um ihn herum kopiert, zunächst 6 Elemente. Ändern Sie die Anzahl mit Objekte und legen Sie den Winkel, den sie füllen, mit Füllwinkel fest."},{"question":"Wie löse ich eine Reihe auf?","answer":"Wählen Sie sie und starten Sie URSPRUNG: Die Reihe wird zu den Objekten ihrer Elemente, jedes Objekt auf seinem eigenen Layer. Um von Anfang an lose Kopien zu erhalten, antworten Sie auf ASsoziativ mit Nein, bevor Sie die Eingabetaste drücken."},{"question":"Wie ändere ich eine Reihe, nachdem sie erzeugt wurde?","answer":"Wählen Sie sie. Ihre Griffe ändern sie: Das Quadrat am Basispunkt verschiebt sie, die Pfeile legen die Anzahlen und den Abstand fest, und eine Zahl, die eingegeben wird, während ein Anzahlpfeil heiß ist, ist die Anzahl. Die Palette Eigenschaften listet ihre Spalten, Zeilen und Abstände oder ihre Elemente und Winkel zur Neueingabe auf. ARRAYEDIT gibt es noch nicht."}]
+---
+
+REIHE (ARRAY) kopiert eine Auswahl in einem Muster: in Spalten und Zeilen, um einen Mittelpunkt oder entlang eines Pfads. Der Befehl fragt nach den Objekten, dann nach dem Typ der Reihe, wobei die Eingabetaste eine rechteckige nimmt, und übergibt die Auswahl an [`REIHERECHTECK`](/docs/commands/arrayrect), [`REIHEKREIS`](/docs/commands/arraypolar) oder [`REIHEPFAD`](/docs/commands/arraypath), die weitermachen, ohne erneut nach den Objekten zu fragen. Jeder zeigt die Reihe sofort und bearbeitet sie live, über seine Optionen und seine Griffe, bis die Eingabetaste sie erzeugt: ein Reihenobjekt oder lose Kopien, wenn Sie angegeben haben, dass sie nicht assoziativ sein soll. Der ganze Durchlauf ist ein Rückgängig-Schritt, und die Eingabetaste in der Befehlszeile wiederholt REIHE.
+
+- **Befehl:** `REIHE`
+- **Auf Englisch:** `ARRAY`, in jeder Sprache als `_ARRAY` eingegeben
+- **Aliasnamen:** `RH`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `RH` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="array" caption="Ein Quadrat und sein Kreis mit den Vorgaben als Reihe: die Eingabetaste für eine rechteckige Reihe, 4 Spalten und 3 Zeilen." />
+
+## Optionen [#options]
+
+### `Rechteckig` (`R`) [#rectangular]
+
+Spalten und Zeilen, und auf Wunsch entlang Z gestapelte Ebenen: [`REIHERECHTECK`](/docs/commands/arrayrect). Er beginnt mit 4 Spalten und 3 Zeilen, im Abstand der anderthalbfachen Größe der Auswahl.
+
+### `PFad` (`PF`) [#path]
+
+Entlang einer Linie, eines Bogens, eines Kreises oder einer Polylinie: [`REIHEPFAD`](/docs/commands/arraypath). Er fragt nach der Pfadkurve und legt dann die Elemente entlang ihr, jedes so gedreht, wie der Pfad dreht.
+
+### `POlar` (`PO`) [#polar]
+
+Um einen Mittelpunkt: [`REIHEKREIS`](/docs/commands/arraypolar). Er fragt nach dem Mittelpunkt und beginnt mit 6 Elementen über eine volle Drehung.
+
+## Was er noch nicht kann [#missing]
+
+Der angebotene Typ ist immer Rectangular: ARRAYTYPE, die Variable, die die Vorgabe von AutoCAD festlegt, wird nicht gelesen.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma--fr-reseau--re--it-serie--sr--de-reihe--rh)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für REIHE (ARRAY) in AutoCAD?
+
+`RH`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_ARRAY` in jeder Sprache von AutoCAD. [`REIHERECHTECK`](/docs/commands/arrayrect), [`REIHEKREIS`](/docs/commands/arraypolar) und [`REIHEPFAD`](/docs/commands/arraypath) haben keinen Alias und überspringen, vollständig eingegeben, die Frage nach dem Typ.
+
+### Wie erstelle ich eine kreisförmige Reihe?
+
+Wählen Sie `POlar` oder starten Sie [`REIHEKREIS`](/docs/commands/arraypolar) und wählen Sie den Mittelpunkt: Die Auswahl wird um ihn herum kopiert, zunächst 6 Elemente. Ändern Sie die Anzahl mit `Objekte` und legen Sie den Winkel, den sie füllen, mit `Füllwinkel` fest.
+
+### Wie löse ich eine Reihe auf?
+
+Wählen Sie sie und starten Sie [`URSPRUNG`](/docs/commands/explode): Die Reihe wird zu den Objekten ihrer Elemente, jedes Objekt auf seinem eigenen Layer. Um von Anfang an lose Kopien zu erhalten, antworten Sie auf `ASsoziativ` mit `Nein`, bevor Sie die Eingabetaste drücken.
+
+### Wie ändere ich eine Reihe, nachdem sie erzeugt wurde?
+
+Wählen Sie sie. Ihre Griffe ändern sie: Das Quadrat am Basispunkt verschiebt sie, die Pfeile legen die Anzahlen und den Abstand fest, und eine Zahl, die eingegeben wird, während ein Anzahlpfeil heiß ist, ist die Anzahl. Die Palette Eigenschaften listet ihre Spalten, Zeilen und Abstände oder ihre Elemente und Winkel zur Neueingabe auf. ARRAYEDIT gibt es noch nicht.
+
+## Verwandte Befehle [#related]
+
+- [Befehl REIHERECHTECK (ARRAYRECT) in AutoCAD](/docs/commands/arrayrect)
+- [Befehl REIHEKREIS (ARRAYPOLAR) in AutoCAD](/docs/commands/arraypolar)
+- [Befehl REIHEPFAD (ARRAYPATH) in AutoCAD](/docs/commands/arraypath)
+- [Befehl KOPIEREN (COPY) in AutoCAD](/docs/commands/copy)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)

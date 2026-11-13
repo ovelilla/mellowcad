@@ -1,0 +1,55 @@
+---
+title: "Befehl ZLÖSCH (REDO) in AutoCAD: Wiederherstellen"
+metaTitle: "Befehl ZLÖSCH (REDO) in AutoCAD"
+description: "Wie ZLÖSCH (REDO) in AutoCAD wiederherstellt, was das letzte Z oder ZURÜCK zurückgenommen hat: nur direkt danach, MZLÖSCH und Strg+Y. Zum Testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von ZLÖSCH (REDO) in AutoCAD?","answer":"Strg+Y, das einen Schritt wiederherstellt (MZLÖSCH 1). ZLÖSCH selbst hat kein Alias: Geben Sie ZLÖSCH ein, oder _REDO in jeder Sprache von AutoCAD."},{"question":"Warum funktioniert ZLÖSCH nicht?","answer":"ZLÖSCH macht nur das Z oder ZURÜCK direkt davor rückgängig. Nach jedem anderen Befehl gibt es nichts wiederherzustellen, auch wenn er nichts geändert hat: erst zurücknehmen, dann sofort wiederherstellen."},{"question":"Was ist der Unterschied zwischen ZLÖSCH und MZLÖSCH?","answer":"ZLÖSCH stellt das Ganze der letzten Rücknahme wieder her, und nur direkt danach. MZLÖSCH stellt eine Anzahl der zurückgenommenen Schritte einzeln wieder her, oder alle, und funktioniert auch nach einem ZLÖSCH noch."},{"question":"Wie wiederholt man den letzten Befehl in AutoCAD?","answer":"Drücken Sie die Eingabetaste oder die Leertaste an der Eingabeaufforderung Befehl:: Der letzte Befehl startet erneut. ZLÖSCH wiederholt keinen Befehl; er macht eine Rücknahme rückgängig."}]
+---
+
+ZLÖSCH (REDO) macht das letzte `Z` oder [`ZURÜCK`](/docs/commands/undo) rückgängig: Was es zurückgenommen hat, wird wieder gezeichnet, alles davon, sodass ZLÖSCH nach einem ZURÜCK von fünf Befehlen die fünf wiederherstellt. Er schreibt dabei die Namen der Befehle, dann `Es wurde alles wiederhergestellt.`, sobald nichts mehr wiederherzustellen ist. Er fragt nichts und hat keine Optionen.
+
+Er funktioniert nur direkt nach dem Zurücknehmen. Sonst meldet er `ZLÖSCH muss unmittelbar auf den Befehl ZURÜCK oder Z folgen.`, und sobald ein anderer Befehl gelaufen ist, auch einer, der nichts ändert wie LISTE oder ZOOM, `Keine Wiederherstellung möglich.`. Ist das Zurücknehmen durch Control Keine von ZURÜCK ausgeschaltet, meldet ZLÖSCH, dass es deaktiviert ist.
+
+`MZLÖSCH` stellt Schritt für Schritt wieder her: Er fragt nach einer Anzahl von Aktionen oder `Alle` oder `Letzte` und stellt so viele der Schritte wieder her, die die Rücknahmen zurückgenommen haben, was auch Z, ZURÜCK und ZLÖSCH seither ausgeführt haben; Last ist das Ganze der letzten Rücknahme, einmal (`Die letzte ZURÜCK-Operation wurde bereits wiederhergestellt.`). Strg+Y und der Eintrag Wiederherstellen des Kontextmenüs führen MZLÖSCH mit 1 aus und brechen den laufenden Befehl ab.
+
+- **Befehl:** `ZLÖSCH`
+- **Auf Englisch:** `REDO`, in jeder Sprache als `_REDO` eingegeben
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `ZLÖSCH` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="redo" caption="Eine in einer Platte gezeichnete Bohrung, mit Z zurückgenommen und mit ZLÖSCH wiederhergestellt." />
+
+## Was er noch nicht kann [#missing]
+
+Strg+Umschalt+Z stellt ebenfalls wieder her, still, obwohl AutoCAD nichts darauf legt. Die Schaltflächen Rückgängig und Wiederherstellen der oberen Leiste schreiben nichts in den Verlauf, wo die Schnellzugriff-Werkzeugleiste von AutoCAD ihren eigenen schreibt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von ZLÖSCH (REDO) in AutoCAD?
+
+Strg+Y, das einen Schritt wiederherstellt (MZLÖSCH 1). ZLÖSCH selbst hat kein Alias: Geben Sie `ZLÖSCH` ein, oder `_REDO` in jeder Sprache von AutoCAD.
+
+### Warum funktioniert ZLÖSCH nicht?
+
+ZLÖSCH macht nur das Z oder ZURÜCK direkt davor rückgängig. Nach jedem anderen Befehl gibt es nichts wiederherzustellen, auch wenn er nichts geändert hat: erst zurücknehmen, dann sofort wiederherstellen.
+
+### Was ist der Unterschied zwischen ZLÖSCH und MZLÖSCH?
+
+ZLÖSCH stellt das Ganze der letzten Rücknahme wieder her, und nur direkt danach. `MZLÖSCH` stellt eine Anzahl der zurückgenommenen Schritte einzeln wieder her, oder alle, und funktioniert auch nach einem ZLÖSCH noch.
+
+### Wie wiederholt man den letzten Befehl in AutoCAD?
+
+Drücken Sie die Eingabetaste oder die Leertaste an der Eingabeaufforderung `Befehl:`: Der letzte Befehl startet erneut. ZLÖSCH wiederholt keinen Befehl; er macht eine Rücknahme rückgängig.
+
+## Verwandte Befehle [#related]
+
+- [Befehl ZURÜCK (UNDO) in AutoCAD](/docs/commands/undo)
+- [Z (U)](/docs/commands#u): Macht den letzten Vorgang rückgängig
+- [MZLÖSCH (MREDO)](/docs/commands#mredo): Mehrfach wiederherstellen

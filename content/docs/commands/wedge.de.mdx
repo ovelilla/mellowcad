@@ -1,0 +1,72 @@
+---
+title: "Befehl KEIL (WEDGE) in AutoCAD"
+description: "Wie KEIL (WEDGE, Alias KE) in AutoCAD einen 3D-Keil zeichnet: zwei Ecken und eine Höhe, Mittelpunkt, Würfel, Länge und 2 Punkte."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für KEIL (WEDGE) in AutoCAD?","answer":"KE. Geben Sie es ein und drücken Sie die Eingabetaste oder die Leertaste, geben Sie dann die erste Ecke, die andere Ecke und die Höhe an: 0,0, 60,40 und 25 zeichnen den Keil der Sitzung."},{"question":"In welche Richtung fällt der Keil ab?","answer":"Vom Ende der ersten Ecke nach unten, entlang der X-Achse des BKS. Um ihn zu drehen, geben Sie die andere Ecke bei kleinerem X an, was ihn um 180° dreht, oder drehen Sie ihn danach mit DREHEN."},{"question":"Wie zeichne ich ein dreieckiges Prisma?","answer":"Ein Keil ist eines: ein rechtwinkliges Dreieck an jedem Ende, entlang der Breite gezogen. Für jedes andere Dreieck zeichnen Sie es geschlossen mit PLINIE und wenden EXTRUSION darauf an."},{"question":"Wie zeichne ich einen Keil von seinem Mittelpunkt aus?","answer":"Wählen Sie MIttelpunkt und geben Sie den Mittelpunkt an, dann eine Ecke, Würfel oder Länge: Der Keil ist auf den Punkt zentriert, auch in der Höhe."}]
+---
+
+KEIL (WEDGE) zeichnet einen 3D-Volumenkörper in Keilform: einen Quader, dessen Oberseite von einem Ende zum anderen abfällt. Der Befehl fragt, was [`QUADER`](/docs/commands/box) fragt: die erste Ecke, die andere Ecke, dann die Höhe. Das hohe Ende liegt an der ersten Ecke, und die Schräge fällt entlang der X-Achse des BKS zur Seite der anderen Ecke ab; eine Ecke bei kleinerem X dreht ihn um. Die Höhe wächst entlang der Z-Achse des BKS, eine negative geht nach unten. Länge, Breite und Höhe sind die Vorgaben von [`QUADER`](/docs/commands/box), die die Eingabetaste nimmt. Der Keil liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
+
+[`LISTE`](/docs/commands/list) zeigt seine Position, Länge, Breite, Höhe und Drehung, und in der Palette Eigenschaften können Sie sie eingeben. Seine Griffe sind die von [`QUADER`](/docs/commands/box). Er ist ein 3D-Volumenkörper für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und den Rest des 3D von MellowCAD, das nur aus Volumenkörpern besteht und noch unvollständig ist; [`URSPRUNG`](/docs/commands/explode) macht daraus eine Region je Fläche.
+
+- **Befehl:** `KEIL`
+- **Auf Englisch:** `WEDGE`, in jeder Sprache als `_WEDGE` eingegeben
+- **Aliasnamen:** `KE`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `KE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="wedge" caption="Ein Keil von 60 mal 40 mal 25, aus zwei Ecken und einer Höhe, seine Schräge fällt vom Ende der ersten Ecke ab, von Südosten im visuellen Stil Verdeckt gesehen." />
+
+## Optionen [#options]
+
+### `MIttelpunkt` (`MI`) [#center]
+
+Bei der ersten Eingabeaufforderung: fragt nach dem Mittelpunkt, dann nach einer Ecke, `Würfel` oder `Länge`. Der Keil ist auf den Punkt zentriert, auch in der Höhe, sein hohes Ende liegt der angegebenen Ecke gegenüber.
+
+### `Würfel` (`W`) [#cube]
+
+Bei der anderen Ecke: fragt nach einer Länge und erzeugt einen Keil, dessen Seiten alle so lang sind. Anders als bei [`QUADER`](/docs/commands/box) verläuft er entlang der X-Achse des BKS, bei negativem Wert rückwärts.
+
+### `Länge` (`L`) [#length]
+
+Bei der anderen Ecke: fragt nach der Länge entlang der X-Achse des BKS, dann nach der Breite entlang seiner Y-Achse; eine negative verläuft rückwärts. Ein Punkt liefert nur seinen Abstand, nie seine Richtung.
+
+### `2Punkt` (`2P`) [#2point]
+
+Bei der Höhe: fragt nach zwei Punkten, und die Höhe ist der Abstand zwischen ihnen.
+
+## Was er noch nicht kann [#missing]
+
+Die von [`QUADER`](/docs/commands/box): Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, die eigenen 3D-Befehle, die gepunkteten Bemaßungen, während Sie die Ecke angeben, und die visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) fehlen. In der Draufsicht findet der Objektfang Endpunkt unter dem hohen Ende die Ecke der Oberseite, wo AutoCAD die der Grundfläche findet.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für KEIL (WEDGE) in AutoCAD?
+
+`KE`. Geben Sie es ein und drücken Sie die Eingabetaste oder die Leertaste, geben Sie dann die erste Ecke, die andere Ecke und die Höhe an: `0,0`, `60,40` und `25` zeichnen den Keil der Sitzung.
+
+### In welche Richtung fällt der Keil ab?
+
+Vom Ende der ersten Ecke nach unten, entlang der X-Achse des BKS. Um ihn zu drehen, geben Sie die andere Ecke bei kleinerem X an, was ihn um 180° dreht, oder drehen Sie ihn danach mit [`DREHEN`](/docs/commands/rotate).
+
+### Wie zeichne ich ein dreieckiges Prisma?
+
+Ein Keil ist eines: ein rechtwinkliges Dreieck an jedem Ende, entlang der Breite gezogen. Für jedes andere Dreieck zeichnen Sie es geschlossen mit [`PLINIE`](/docs/commands/pline) und wenden [`EXTRUSION`](/docs/commands/extrude) darauf an.
+
+### Wie zeichne ich einen Keil von seinem Mittelpunkt aus?
+
+Wählen Sie `MIttelpunkt` und geben Sie den Mittelpunkt an, dann eine Ecke, `Würfel` oder `Länge`: Der Keil ist auf den Punkt zentriert, auch in der Höhe.
+
+## Verwandte Befehle [#related]
+
+- [Befehl QUADER (BOX) in AutoCAD](/docs/commands/box)
+- [Befehl PYRAMIDE (PYRAMID) in AutoCAD](/docs/commands/pyramid)
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Befehl VEREINIG (UNION) in AutoCAD](/docs/commands/union)

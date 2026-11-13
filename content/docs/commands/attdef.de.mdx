@@ -1,0 +1,84 @@
+---
+title: "Befehl ATTDEF in AutoCAD"
+description: "Wie ATTDEF (Alias AD) in AutoCAD ein Blockattribut definiert: Modi, Tag, Eingabeaufforderung und Vorgabewert, dann der Ort des Textes. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von ATTDEF in AutoCAD, und wie heißt der Befehl auf Deutsch?","answer":"Der Befehl heißt auch im deutschen AutoCAD ATTDEF. Die Aliase sind AD und DDATTDEF, dann die Eingabetaste oder die Leertaste. -ATTDEF ist -ATTDEF, die Befehlszeilenform, die ATTDEF hier ebenfalls ausführt. _ATTDEF funktioniert in jeder Sprache von AutoCAD."},{"question":"Wie erstellt man in AutoCAD einen Block mit Attributen?","answer":"Zeichnen Sie das Symbol, starten Sie dann ATTDEF für jedes Attribut und setzen Sie seinen Text dorthin, wo der Wert erscheinen soll. Starten Sie BLOCK, wählen Sie einen Basispunkt und wählen Sie das Symbol und die Attribute, in der Reihenfolge, in der INSERT sie abfragen soll. Jedes EINFÜGE des Blocks fragt dann für jedes Attribut einen Wert ab und bietet dessen Vorgabewert an."},{"question":"Was ist der Unterschied zwischen Tag, Eingabeaufforderung und Vorgabewert?","answer":"Das Tag benennt das Attribut als Bezeichner: Es ist das, was die Definition zeigt, und die Beschriftung des Feldes in EATTEDIT. Die Eingabeaufforderung ist die Frage, mit der INSERT seinen Wert abfragt. Der Vorgabewert ist der angebotene Wert, den die Eingabetaste übernimmt."},{"question":"Wie bearbeitet man eine Attributdefinition?","answer":"Doppelklicken Sie sie, bevor sie einem Block beitritt: TEXTBEARB öffnet ihr Tag, ihre Eingabeaufforderung und ihren Vorgabewert. Sobald sie in einem Block ist, werden die Werte jedes Verweises mit ATTEDIT oder EATTEDIT bearbeitet."}]
+---
+
+ATTDEF definiert ein Attribut: ein Tag, eine Eingabeaufforderung und einen Vorgabewert, als Textzeile in der Zeichnung platziert. Wählen Sie es zusammen mit den anderen Objekten, wenn Sie mit [`BLOCK`](/docs/commands/block) einen Block erstellen, und jeder Verweis auf diesen Block trägt dafür einen eigenen Wert: die Nummer einer Tür, den Code eines Bauteils, den Namen eines Raums. Bis dahin zeigt die Definition ihr Tag.
+
+AutoCADs ATTDEF öffnet den Dialog „Attributdefinition“, den MellowCAD nicht hat: Hier fragt ATTDEF in der Befehlszeile das, was `-ATTDEF` fragt, wie die Konsole von AutoCAD. Er nennt die aktuellen Modi und fragt, welcher geändert werden soll, bis die Eingabetaste weitergeht. Dann das Tag: ohne Leerzeichen, da ein Leerzeichen es beendet, und Kleinbuchstaben werden zu Großbuchstaben; die Eingabetaste allein meldet `Bezeichnung darf nicht leer sein`. Dann die Eingabeaufforderung, mit der [`EINFÜGE`](/docs/commands/insert) den Wert abfragt, wobei die Eingabetaste das Tag übernimmt, und der Vorgabewert. Zuletzt der Ort des Textes, mit den Fragen von [`TEXT`](/docs/commands/text): ein Startpunkt, die Höhe und die Drehung. Die Höhe und die Ausrichtung sind die von TEXT, in beide Richtungen geteilt. Die Eingabetaste beim Startpunkt setzt die Definition eine Zeile unter die zuletzt definierte, mit deren Höhe, Drehung, Stil und Ausrichtung, sodass die Attribute eines Blocks untereinander stehen.
+
+- **Befehl:** `ATTDEF`
+- **Aliasnamen:** `AD`, `DDATTDEF`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `AD` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="attdef" caption="Ein Türschild: das Attribut NUM zentriert in einem Kreis, seine Eingabeaufforderung das Tag selbst und sein Vorgabewert 1, bereit, einem Block beizutreten." />
+
+## Optionen [#options]
+
+### `Unsichtbar` (`U`) [#invisible]
+
+Der Wert wird in den Verweisen nicht angezeigt, bis [`ATTZEIG`](/docs/commands/attdisp) ihn einschaltet. Jeder Modus ist ein Schalter: Seine Wahl wechselt ihn zwischen `Y` und `N`, schreibt die Modi erneut und fragt noch einmal. Die Modi bleiben für das nächste ATTDEF eingestellt.
+
+### `Konstant` (`K`) [#constant]
+
+Jeder Verweis trägt denselben Wert, den ATTDEF anstelle einer Eingabeaufforderung und eines Vorgabewerts abfragt; INSERT fragt ihn nie ab.
+
+### `Prüfen` (`P`) [#verify]
+
+INSERT fragt den Wert ein zweites Mal ab, zur Kontrolle, nachdem es jeden Wert einmal abgefragt hat.
+
+### `Vorwahl` (`V`) [#preset]
+
+INSERT fragt den Wert nicht ab: Jeder Verweis übernimmt den Vorgabewert.
+
+### `pOsitionssperrung` (`O`) [#lock-position]
+
+Zunächst ein: Das Attribut bleibt dort, wo der Block es hinsetzt.
+
+### `posItion` (`I`) [#justify]
+
+Fragt, woran der Text an seinem Punkt hängt, wie TEXT es tut: `Links`, `Zentrieren`, `Rechts`, `MIttel` oder einer der neun Punkte nach oben, Mitte und unten, links, Mitte und rechts. Die Eingabeaufforderung des Startpunkts fragt dann nach dem Punkt, den sie benennt: Mitte Mitte zentriert den Wert in einem Tag.
+
+### `Stil` (`S`) [#style]
+
+Fragt nach dem Textstil, der verwendet werden soll und zum aktuellen wird; `?` listet die Stile der Zeichnung auf.
+
+## Was er noch nicht kann [#missing]
+
+Der Dialog „Attributdefinition“: ATTDEF fragt in der Befehlszeile. Die Modi Annotativ und Mehrere Zeilen, die AutoCAD 2027 nach Position sperren aufführt, und die Zeilen eines mehrzeiligen Attributs. Felder, die Ausrichtungen Ausrichten und Einpassen und die Frage von Style `?`, welche Stile aufgelistet werden sollen.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von ATTDEF in AutoCAD, und wie heißt der Befehl auf Deutsch?
+
+Der Befehl heißt auch im deutschen AutoCAD ATTDEF. Die Aliase sind `AD` und `DDATTDEF`, dann die Eingabetaste oder die Leertaste. `-ATTDEF` ist `-ATTDEF`, die Befehlszeilenform, die ATTDEF hier ebenfalls ausführt. `_ATTDEF` funktioniert in jeder Sprache von AutoCAD.
+
+### Wie erstellt man in AutoCAD einen Block mit Attributen?
+
+Zeichnen Sie das Symbol, starten Sie dann ATTDEF für jedes Attribut und setzen Sie seinen Text dorthin, wo der Wert erscheinen soll. Starten Sie [`BLOCK`](/docs/commands/block), wählen Sie einen Basispunkt und wählen Sie das Symbol und die Attribute, in der Reihenfolge, in der INSERT sie abfragen soll. Jedes [`EINFÜGE`](/docs/commands/insert) des Blocks fragt dann für jedes Attribut einen Wert ab und bietet dessen Vorgabewert an.
+
+### Was ist der Unterschied zwischen Tag, Eingabeaufforderung und Vorgabewert?
+
+Das Tag benennt das Attribut als Bezeichner: Es ist das, was die Definition zeigt, und die Beschriftung des Feldes in [`EATTEDIT`](/docs/commands/eattedit). Die Eingabeaufforderung ist die Frage, mit der INSERT seinen Wert abfragt. Der Vorgabewert ist der angebotene Wert, den die Eingabetaste übernimmt.
+
+### Wie bearbeitet man eine Attributdefinition?
+
+Doppelklicken Sie sie, bevor sie einem Block beitritt: [`TEXTBEARB`](/docs/commands/textedit) öffnet ihr Tag, ihre Eingabeaufforderung und ihren Vorgabewert. Sobald sie in einem Block ist, werden die Werte jedes Verweises mit [`ATTEDIT`](/docs/commands/attedit) oder [`EATTEDIT`](/docs/commands/eattedit) bearbeitet.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BLOCK in AutoCAD](/docs/commands/block)
+- [Befehl EINFÜGE (INSERT): Block einfügen in AutoCAD](/docs/commands/insert)
+- [Befehl ATTEDIT in AutoCAD: Blockattribute bearbeiten](/docs/commands/attedit)
+- [Befehl ATTZEIG (ATTDISP) in AutoCAD](/docs/commands/attdisp)
+- [Befehl EATTEDIT in AutoCAD](/docs/commands/eattedit)

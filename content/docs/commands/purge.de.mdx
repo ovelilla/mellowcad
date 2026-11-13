@@ -1,0 +1,60 @@
+---
+title: "Befehl BEREINIG (PURGE) in AutoCAD"
+description: "So löscht AutoCADs BEREINIG (PURGE, Alias BE) Blöcke, die keine Referenz nutzt, nach Namen oder alle auf einmal, mit oder ohne Bestätigung. Gratis testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für BEREINIG (PURGE) in AutoCAD?","answer":"BE, danach Eingabetaste oder Leertaste. -BE ist -BEREINIG, die Befehlszeilenform, die BEREINIG hier ebenfalls ausführt. _PURGE funktioniert in jeder Sprache von AutoCAD."},{"question":"Wie bereinige ich ungenutzte Blöcke in AutoCAD?","answer":"Tippen Sie BE, wählen Sie BLöcke, drücken Sie die Eingabetaste für jeden Namen und antworten Sie Nein, um alle zu löschen, ohne bei jedem nachzufragen."},{"question":"Warum kann ich einen Block nicht bereinigen?","answer":"Weil er in Gebrauch ist: Eine Referenz in der Zeichnung platziert ihn, oder ein genutzter Block enthält ihn, vielleicht mehrere Ebenen tief verschachtelt. Löschen Sie seine Referenzen oder zerlegen Sie die Blöcke, die ihn enthalten, und BEREINIG kann ihn nehmen."},{"question":"Wie bereinige ich Layer?","answer":"In AutoCAD mit dem Typ Layer von BEREINIG. Hier noch nicht, wo BEREINIG nur Blöcke bereinigt; löschen Sie stattdessen einen leeren Layer im Layer-Eigenschaften-Manager."}]
+---
+
+BEREINIG (PURGE) entfernt, was eine Zeichnung definiert, aber nicht nutzt; hier sind das Blöcke. AutoCADs BEREINIG öffnet das Dialogfeld Bereinigen; MellowCAD hat keines, sodass BEREINIG in der Befehlszeile fragt, was `-BEREINIG` fragt, wie die Konsole von AutoCAD. Er nennt die Einstellungen Verschachtelte Elemente und Verwaiste Daten, beide aus, und fragt, welchen Typ ungenutzter Objekte er bereinigen soll, wobei er nur `BLöcke` anbietet; die Eingabetaste dort beendet ihn.
+
+Ein Block ist in Gebrauch, solange eine Referenz in der Zeichnung ihn platziert oder die Definition eines genutzten Blocks ihn enthält, wie tief auch immer. Löscht man die letzte Referenz eines Blocks, bleibt seine Definition in der Zeichnung, wo [`EINFÜGE`](/docs/commands/insert) ihn wieder platzieren kann: BEREINIG löscht sie. Ein Block, den ein behaltener Block enthält, wird nie genommen, und eine Kette von Blöcken, die nur einander enthalten, geht in einem Durchlauf. Gibt es keinen, meldet er `Keine unreferenzierten Blöcke gefunden.`. Jeder Durchlauf ist ein Schritt, den `Z` zurücknimmt.
+
+- **Befehl:** `BEREINIG`
+- **Auf Englisch:** `PURGE`, in jeder Sprache als `_PURGE` eingegeben
+- **Aliasnamen:** `BE`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="purge" caption="Zwei Blöcke, TAG an einer Wand platziert und BOX, dessen einzige Referenz gelöscht wurde: BEREINIG, alle Namen, ohne Bestätigung, löscht BOX allein." />
+
+## Optionen [#options]
+
+### `BLöcke` (`BL`) [#blocks]
+
+Fragt nach den zu bereinigenden Namen, standardmäßig `*` für jeden ungenutzten Block, oder Namen mit Platzhaltern, durch Kommas getrennt. Dann fragt er, ob jeder Name bestätigt werden soll: `Ja`, die Vorgabe, fragt bei jedem Block vor dem Löschen nach, `Nein` löscht alle und nennt jeden Namen und wie viele.
+
+## Was er noch nicht kann [#missing]
+
+Das Dialogfeld Bereinigen und jeder andere Typ: Layer, Linientypen, Text- und Bemaßungsstile, Gruppen, Materialien, Multi-Führungslinien-, Tabellen- und visuelle Stile, registrierte Anwendungen, Geometrie der Länge null, leere Textobjekte, verwaiste Daten und Alle. Die Einstellungen Verschachtelte Elemente und Verwaiste Daten lassen sich nicht ändern.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für BEREINIG (PURGE) in AutoCAD?
+
+`BE`, danach Eingabetaste oder Leertaste. `-BE` ist `-BEREINIG`, die Befehlszeilenform, die BEREINIG hier ebenfalls ausführt. `_PURGE` funktioniert in jeder Sprache von AutoCAD.
+
+### Wie bereinige ich ungenutzte Blöcke in AutoCAD?
+
+Tippen Sie `BE`, wählen Sie `BLöcke`, drücken Sie die Eingabetaste für jeden Namen und antworten Sie `Nein`, um alle zu löschen, ohne bei jedem nachzufragen.
+
+### Warum kann ich einen Block nicht bereinigen?
+
+Weil er in Gebrauch ist: Eine Referenz in der Zeichnung platziert ihn, oder ein genutzter Block enthält ihn, vielleicht mehrere Ebenen tief verschachtelt. Löschen Sie seine Referenzen oder zerlegen Sie die Blöcke, die ihn enthalten, und BEREINIG kann ihn nehmen.
+
+### Wie bereinige ich Layer?
+
+In AutoCAD mit dem Typ Layer von BEREINIG. Hier noch nicht, wo BEREINIG nur Blöcke bereinigt; löschen Sie stattdessen einen leeren Layer im Layer-Eigenschaften-Manager.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BLOCK in AutoCAD](/docs/commands/block)
+- [Befehl EINFÜGE (INSERT): Block einfügen in AutoCAD](/docs/commands/insert)
+- [Befehl LÖSCHEN (ERASE) in AutoCAD](/docs/commands/erase)
+- [BLOCKPALETTE (BLOCKSPALETTE)](/docs/commands#blockspalette): Zeigt die Blockpalette an

@@ -1,0 +1,89 @@
+---
+title: "Befehl SPLINE in AutoCAD"
+description: "Wie SPLINE (Alias SPL) in AutoCAD funktioniert: eine Kurve durch Anpassungspunkte oder von Kontrollscheitelpunkten gezogen, Knoten, Grad, Tangenten, Schließen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von SPLINE in AutoCAD, und wie heißt der Befehl auf Deutsch?","answer":"Der Befehl heißt auch im deutschen AutoCAD SPLINE. Das Alias ist SPL, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und _SPLINE in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen Anpassen und KS?","answer":"Ein Anpassungs-Spline verläuft durch die Punkte, die Sie anklicken, was für eine Kurve passt, die sie berühren muss. Ein KS-Spline wird von seinen Kontrollscheitelpunkten geformt, denen er sich nur nähert, was für eine glatte, gefällige Form passt. Wählen Sie mit Verfahren bei der ersten Eingabeaufforderung."},{"question":"Wie wandelt man einen Spline in eine Polylinie um?","answer":"Starten Sie PEDIT und wählen Sie den Spline: Er meldet „Das gewählte Objekt ist keine Polylinie“ und bietet an, ihn umzuwandeln, dann fragt er nach einer Genauigkeit von 0 bis 99, vorgegeben 10. Die Polylinie folgt dem Spline mit kurzen geraden Segmenten, mehr davon, als AutoCAD erzeugt."},{"question":"Wie wandelt man eine Polylinie in einen Spline um?","answer":"Passen Sie die Polylinie mit der Option Spline von PEDIT an, starten Sie dann SPLINE und wählen Sie Objekt: Die Polylinie wird zu einem Spline derselben Kurve."},{"question":"Kann man einen Spline in AutoCAD auflösen?","answer":"Nein: URSPRUNG lehnt einen Spline ab, wie es AutoCAD tut. Um ihn in Stücke zu zerlegen, wandeln Sie ihn zuerst mit PEDIT in eine Polylinie um und lösen diese dann in Linien auf."}]
+---
+
+SPLINE zeichnet eine glatte Kurve auf zwei Arten: durch Punkte, die Sie angeben (Anpassen, die Vorgabe), oder zu Kontrollscheitelpunkten hingezogen, die Sie setzen (KS). Er beginnt mit der Meldung seiner Einstellungen, `Verfahren=Anpassen   Knoten=Sehne`, und fragt dann nach dem ersten Punkt; die Eingabetaste wird dort abgelehnt, wie in AutoCAD. Jeder weitere Punkt biegt die Kurve, das Geisterbild folgt dem Fadenkreuz, und die Eingabetaste beendet den Befehl. Punkte lassen sich wählen, fangen oder eingeben, eine eingegebene Länge verläuft entlang des Fadenkreuzes, und ein Punkt behält sein Z, sodass ein Spline im Raum ansteigen kann. Esc verwirft die Kurve; der ganze Spline ist ein Schritt, den `Z` zurücknimmt. Die Schaltflächen Spline Anpassen und Spline KS des Menübands starten SPLINE mit bereits beantwortetem Verfahren.
+
+- **Befehl:** `SPLINE`
+- **Aliasnamen:** `SPL`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `SPL` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="spline" caption="Ein Anpassungs-Spline durch fünf Punkte und darunter ein KS-Spline über fünf ebenso gesetzten Scheitelpunkten: Der erste verläuft durch sie, der zweite wird zu ihnen hingezogen." />
+
+## Optionen [#options]
+
+### `Verfahren` (`V`) [#method]
+
+`Anpassen` oder `KS`. Ein Anpassungs-Spline verläuft durch jeden angegebenen Punkt; ein KS-Spline verläuft nur durch seinen ersten und letzten Scheitelpunkt, die anderen ziehen ihn zu sich hin, sodass er glatter ausfällt und weiter von ihnen entfernt bleibt. Das Verfahren wird, wie die Knoten und der Grad, für den Rest der Sitzung beibehalten.
+
+### `Knoten` (`K`) [#knots]
+
+Wie ein Anpassungs-Spline seine Punkte entlang der Kurve verteilt: `Sehne` (die Vorgabe, nach dem Abstand zwischen ihnen), `Quadratwurzel` dieses Abstands oder `Einheitlich`, alle gleich. Durch dieselben Punkte ergibt jede eine etwas andere Kurve.
+
+### `Grad` (`G`) [#degree]
+
+Der Grad eines KS-Splines, von 1 (gerade Linien zwischen den Scheitelpunkten) bis 10; 3, die Vorgabe, ist kubisch. Bei weniger Scheitelpunkten, als der Grad braucht, nimmt die Kurve den höchsten, der möglich ist.
+
+### `Objekt` (`O`) [#object]
+
+Wandelt eine Polylinie, die die Option Spline von PEDIT angepasst hat, 2D oder 3D, in einen KS-Spline derselben Kurve um und löscht die Polylinie, in einem Schritt. Alles andere wird mit `Nur an Splines angeglichene Polylinien können in Splines umgewandelt werden.` abgelehnt.
+
+### `Tangentialität starten` (`T`) [#start-tangency]
+
+Nach dem ersten Punkt angeboten: die Richtung, in der die Kurve ihn verlässt, von diesem Punkt aus gewählt oder eingegeben.
+
+### `Tangentialität beenden` (`T`) [#end-tangency]
+
+Die Richtung, in der die Kurve ihren letzten Punkt erreicht, dann endet der Spline.
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt den letzten Punkt zurück, bis hinunter zum ersten.
+
+### `Schließen` (`S`) [#close]
+
+Ab dem dritten Punkt: verbindet das Ende wieder mit dem Anfang in einer glatten Schleife ohne Ecke und beendet den Befehl.
+
+## Was er noch nicht kann [#missing]
+
+Anpassungstoleranz: Ein Anpassungs-Spline verläuft immer genau durch seine Punkte, und die Option toLerance wird nicht angeboten. Solange er gezeichnet wird, ist der Spline noch kein Objekt, an dem sich fangen oder verfolgen lässt, wie es der von AutoCAD ist. Object löscht die Polylinie immer (DELOBJ). An einem fertigen Spline gibt es kein CVSHOW oder CVHIDE und keine Griffmenüs zum Hinzufügen oder Entfernen eines Punktes, die Eigenschaftenpalette bearbeitet seine Punkte, aber nicht Verfahren, Grad, Knoten, Gewichte oder Schließen, und Geometrischer Mittelpunkt, Lot und Tangente fangen nicht an ihm. SCHRAFF findet einen Spline nicht als Begrenzung, und BLEND gibt es noch nicht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von SPLINE in AutoCAD, und wie heißt der Befehl auf Deutsch?
+
+Der Befehl heißt auch im deutschen AutoCAD SPLINE. Das Alias ist `SPL`, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und `_SPLINE` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen Anpassen und KS?
+
+Ein Anpassungs-Spline verläuft durch die Punkte, die Sie anklicken, was für eine Kurve passt, die sie berühren muss. Ein KS-Spline wird von seinen Kontrollscheitelpunkten geformt, denen er sich nur nähert, was für eine glatte, gefällige Form passt. Wählen Sie mit `Verfahren` bei der ersten Eingabeaufforderung.
+
+### Wie wandelt man einen Spline in eine Polylinie um?
+
+Starten Sie [`PEDIT`](/docs/commands/pedit) und wählen Sie den Spline: Er meldet `Das gewählte Objekt ist keine Polylinie` und bietet an, ihn umzuwandeln, dann fragt er nach einer Genauigkeit von 0 bis 99, vorgegeben 10. Die Polylinie folgt dem Spline mit kurzen geraden Segmenten, mehr davon, als AutoCAD erzeugt.
+
+### Wie wandelt man eine Polylinie in einen Spline um?
+
+Passen Sie die Polylinie mit der Option Spline von [`PEDIT`](/docs/commands/pedit) an, starten Sie dann SPLINE und wählen Sie `Objekt`: Die Polylinie wird zu einem Spline derselben Kurve.
+
+### Kann man einen Spline in AutoCAD auflösen?
+
+Nein: [`URSPRUNG`](/docs/commands/explode) lehnt einen Spline ab, wie es AutoCAD tut. Um ihn in Stücke zu zerlegen, wandeln Sie ihn zuerst mit [`PEDIT`](/docs/commands/pedit) in eine Polylinie um und lösen diese dann in Linien auf.
+
+## Verwandte Befehle [#related]
+
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl PEDIT (Polylinie bearbeiten) in AutoCAD](/docs/commands/pedit)
+- [Befehl SPLINEEDIT (SPLINEDIT) in AutoCAD](/docs/commands/splinedit)
+- [Befehl ELLIPSE in AutoCAD](/docs/commands/ellipse)

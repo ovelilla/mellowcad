@@ -1,0 +1,93 @@
+---
+title: "Befehl FARBE (COLOR) in AutoCAD"
+description: "So legt AutoCADs FARBE (COLOR, Alias FAR) die Farbe neuer Objekte fest: VonLayer, eine Indexfarbe nach Name oder Nummer, oder eine True Color in RGB. Testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für FARBE (COLOR) in AutoCAD?","answer":"FAR oder FE, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _COLOR in jeder Sprache von AutoCAD."},{"question":"Wie ändere ich die Farbe eines Objekts in AutoCAD?","answer":"Wählen Sie es aus und wählen Sie die Farbe in der Farbliste der oberen Leiste oder in der Zeile Farbe der Eigenschaften-Palette: Sie ändert sich in einem Schritt. Oder kopieren Sie die Farbe eines anderen Objekts mit EIGANPASS. FARBE legt nur die Farbe der danach gezeichneten Objekte fest."},{"question":"Was bedeutet VonLayer in AutoCAD?","answer":"Dass das Objekt die Farbe seines Layers annimmt, sodass eine Änderung der Layerfarbe im Layer-Eigenschaften-Manager jedes Objekt VonLayer darauf ändert. Es ist die Vorgabe und hält die Farben einer Zeichnung nach Layern geordnet: LAYER."},{"question":"Wie verwende ich RGB-Farben in AutoCAD?","answer":"Wählen Sie Truecolor und tippen Sie die drei Werte durch Kommas getrennt, etwa 0,128,255."}]
+---
+
+FARBE (COLOR) legt die Farbe fest, mit der neue Objekte gezeichnet werden. AutoCAD öffnet das Dialogfeld Farbe wählen; MellowCAD hat noch keines, sodass FARBE die Befehlszeilenform ausführt, die AutoCAD auch hat, `-FARBE`. Er fragt nach der Standardfarbe für Objekte und bietet die aktuelle an, `VONLAYER` in einer neuen Zeichnung: VonLayer bedeutet, dass jedes Objekt die Farbe seines Layers annimmt, und eine stattdessen gewählte Farbe ist die eigene des Objekts. Tippen Sie die Nummer oder den Namen einer Indexfarbe, oder wählen Sie `Truecolor`. Die Eingabetaste behält die aktuelle Farbe, und die Änderung ist ein Schritt, den `Z` zurücknimmt.
+
+Ein Wort, das er nicht lesen kann, ergibt `Eine Farbnummer oder ein Standardfarbname ist erforderlich.`, und 0, eine negative Zahl oder eine über 255 `Ungültige Farbnummer.`; er fragt erneut. Mit Apostroph innerhalb eines Befehls getippt, `'FARBE`, übernimmt jedes danach gezeichnete Objekt die neue Farbe: Jedes Segment eines [`LINIE`](/docs/commands/line) übernimmt die Farbe, die gilt, wenn es beginnt. FARBE legt nur fest, was als Nächstes kommt; die Eigenschaften-Palette oder die Farbliste der oberen Leiste ändert bereits gezeichnete Objekte.
+
+- **Befehl:** `FARBE`
+- **Auf Englisch:** `COLOR`, in jeder Sprache als `_COLOR` eingegeben
+- **Aliasnamen:** `FAR`, `FE`, `DDCOLOR`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `FE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="color" caption="Eine Platte VonLayer gezeichnet, ihr Loch in Rot, ihre Bohrung in der True Color 0,128,255, dann FARBE zurück auf VonLayer gesetzt." />
+
+## Optionen [#options]
+
+### `Truecolor` (`T`) [#truecolor]
+
+Fragt nach einer Farbe als drei Werten von 0 bis 255, Rot, Grün und Blau, durch Kommas ohne Leerzeichen getrennt: `0,128,255` ist ein mittleres Blau. Eine Farbe, die auch eine Indexfarbe ist, `255,0,0`, wird als diese Indexfarbe gespeichert.
+
+### `VONLayer` (`VONL`) [#bylayer]
+
+Neue Objekte übernehmen die Farbe ihres Layers, wie zu Beginn.
+
+### `Rot` (`R`) [#red]
+
+Indexfarbe 1, auch als `1` getippt.
+
+### `GElb` (`GE`) [#yellow]
+
+Indexfarbe 2, auch als `2` getippt.
+
+### `GRün` (`GR`) [#green]
+
+Indexfarbe 3, auch als `3` getippt.
+
+### `Cyan` (`C`) [#cyan]
+
+Indexfarbe 4, auch als `4` getippt.
+
+### `Blau` (`B`) [#blue]
+
+Indexfarbe 5, auch als `5` getippt.
+
+### `Magenta` (`M`) [#magenta]
+
+Indexfarbe 6, auch als `6` getippt.
+
+### `Weiss` (`W`) [#white]
+
+Indexfarbe 7, auch als `7` getippt: Weiß auf dunklem Hintergrund und Schwarz auf hellem.
+
+## Was er noch nicht kann [#missing]
+
+Das Dialogfeld Farbe wählen, Farbbücher und die HSL-Form. Die Indexfarben 8 bis 255: Nur 1 bis 7 werden genommen. VonBlock. Eine True Color, die einer Indexfarbe entspricht, wird als diese Indexfarbe gespeichert, wo AutoCAD das RGB behält. Transparenz (CETRANSPARENCY) und die typbezogenen Vorgaben HPCOLOR, HPLAYER, DIMLAYER und TEXTLAYER.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für FARBE (COLOR) in AutoCAD?
+
+`FAR` oder `FE`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_COLOR` in jeder Sprache von AutoCAD.
+
+### Wie ändere ich die Farbe eines Objekts in AutoCAD?
+
+Wählen Sie es aus und wählen Sie die Farbe in der Farbliste der oberen Leiste oder in der Zeile Farbe der Eigenschaften-Palette: Sie ändert sich in einem Schritt. Oder kopieren Sie die Farbe eines anderen Objekts mit [`EIGANPASS`](/docs/commands/matchprop). FARBE legt nur die Farbe der danach gezeichneten Objekte fest.
+
+### Was bedeutet VonLayer in AutoCAD?
+
+Dass das Objekt die Farbe seines Layers annimmt, sodass eine Änderung der Layerfarbe im Layer-Eigenschaften-Manager jedes Objekt VonLayer darauf ändert. Es ist die Vorgabe und hält die Farben einer Zeichnung nach Layern geordnet: [`LAYER`](/docs/commands/layer).
+
+### Wie verwende ich RGB-Farben in AutoCAD?
+
+Wählen Sie `Truecolor` und tippen Sie die drei Werte durch Kommas getrennt, etwa `0,128,255`.
+
+## Verwandte Befehle [#related]
+
+- [Befehl LAYER (DDLMODI) in AutoCAD](/docs/commands/layer)
+- [Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD](/docs/commands/properties)
+- [Befehl EIGANPASS (MATCHPROP) in AutoCAD](/docs/commands/matchprop)
+- [Befehl LINIENTYP (LINETYPE) in AutoCAD](/docs/commands/linetype)
+- [Befehl LSTÄRKE (LWEIGHT) in AutoCAD: Linienstärke](/docs/commands/lweight)

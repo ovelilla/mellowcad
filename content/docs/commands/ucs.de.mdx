@@ -1,0 +1,96 @@
+---
+title: "Befehl BKS (UCS) in AutoCAD"
+description: "Wie BKS (UCS) in AutoCAD das Benutzerkoordinatensystem verschiebt und dreht, Schritt für Schritt: Ursprung, 3 Punkte, Objekt, Ansicht, X, Y, Z."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie setze ich das BKS in AutoCAD auf WKS zurück?","answer":"Starten Sie BKS und drücken Sie die Eingabetaste: Welt ist die Vorgabe. Um wieder senkrecht auf die Zeichnung zu blicken, starten Sie DRSICHT und wählen Sie Welt."},{"question":"Wie drehe ich das BKS?","answer":"Starten Sie BKS, wählen Sie Z und geben Sie den Winkel ein: 30 dreht X und Y um 30 Grad gegen den Uhrzeigersinn. X und Y kippen die XY-Ebene auf, standardmäßig um 90 Grad."},{"question":"Was ist der Unterschied zwischen BKS und WKS?","answer":"Das Weltkoordinatensystem (WKS) bewegt sich nie; das Benutzerkoordinatensystem (BKS) ist das, das Sie verschieben und drehen. Am Anfang sind beide gleich, und BKS meldet das aktuelle als *WORLD*. Koordinaten, die Sie eingeben, werden im BKS gelesen, und was Sie zeichnen, liegt in seiner XY-Ebene."},{"question":"Wie zeichne ich auf einer Fläche eines 3D-Volumenkörpers?","answer":"Verschieben Sie das BKS darauf. Auf der Oberseite eines Quaders genügt sein Ursprung allein: BKS, dann eine Ecke der Oberseite, dann die Eingabetaste, wie in der Sitzung. Für eine Seitenfläche geben Sie drei Punkte an: den Ursprung an einer Ecke, einen Punkt entlang einer Kante für X und einen weiteren auf der Fläche für Y. Zeichnen Sie dann: Was Sie zeichnen, liegt auf der Fläche."}]
+---
+
+BKS (UCS) legt das Benutzerkoordinatensystem fest: einen Ursprung und X- und Y-Achsen an beliebiger Stelle im Raum, sodass seine XY-Ebene auch geneigt sein kann. Die Koordinaten, die Sie eingeben, werden darin gelesen, und was Sie zeichnen, liegt in seiner XY-Ebene: Mit dem Ursprung auf der Oberseite eines Quaders liegt ein Kreis mit dem Mittelpunkt `30,20` auf der Oberseite. Zuerst nennt der Befehl den Namen des aktuellen BKS, `*WORLD*`, `*NO NAME*` oder den Namen, unter dem es gespeichert wurde, und fragt dann nach dem neuen Ursprung oder einer Option; die Eingabetaste kehrt dort zum WKS zurück. Ein Punkt ist der Ursprung, mit seinem Z-Wert; ein Punkt ohne Z-Wert liegt auf der aktuellen Erhebung. Danach folgen ein Punkt auf der positiven X-Achse und ein Punkt auf der XY-Ebene, gelesen im aktuellen BKS: Die Eingabetaste bei einem von beiden behält die Achsen bei. Ein Punkt verschiebt das BKS, drei drehen es beliebig.
+
+Die Befehle arbeiten danach in der XY-Ebene des BKS: [`LINIE`](/docs/commands/line) und [`KREIS`](/docs/commands/circle) zeichnen darauf, [`QUADER`](/docs/commands/box) und [`EXTRUSION`](/docs/commands/extrude) wachsen davon entlang seiner Z-Achse. Jedes Objekt behält seine eigene Ebene, wenn sich das BKS ändert, und [`DRSICHT`](/docs/commands/plan) blickt senkrecht auf das aktuelle BKS. Das BKS wird in der Zeichnung gespeichert, und jeder Aufruf ist ein Rückgängig-Schritt. Das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig.
+
+- **Befehl:** `BKS`
+- **Auf Englisch:** `UCS`, in jeder Sprache als `_UCS` eingegeben
+- **Aliasnamen:** `DDUCS`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BKS` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="ucs" caption="Ein Quader aus Südosten gesehen: BKS verschiebt den Ursprung auf seine Oberseite, und ein danach bei 30,20 gezeichneter Kreis liegt auf der Deckfläche, nicht am Boden." />
+
+## Optionen [#options]
+
+### `FLäche` (`FL`) [#face]
+
+So aufgeführt, wie AutoCAD 2027 es aufführt, um das BKS an einer Fläche eines Volumenkörpers auszurichten. MellowCAD fragt nach der Fläche, richtet aber noch nicht daran aus: Jede Auswahl findet keine.
+
+### `bENannt` (`EN`) [#named]
+
+Gespeicherte BKS, nach Namen. `SPeichern` speichert das aktuelle und fragt `Ja` oder `Nein`, bevor es einen bereits gespeicherten Namen ersetzt; `HOlen` macht ein gespeichertes aktuell, sein Name in beliebiger Groß- und Kleinschreibung eingegeben; `Löschen` nimmt Namen, mit Kommas und Platzhaltern; `?` listet sie auf, jedes mit Ursprung und Achsen. Ein Name darf Leerzeichen enthalten, aber nicht `<>/\":;|,=*?` oder einen Gravis: `Ungültiger BKS Name.`.
+
+### `OBjekt` (`OB`) [#object]
+
+Richtet das BKS an einem Objekt aus, das Sie auswählen: einer Linie, einem Kreis, Bogen, einer Ellipse, Polylinie, einem Spline, Text, Mehrzeilentext, einer Attributdefinition oder einem Blockverweis. Ursprung und X-Achse liegen dort, wo AutoCAD sie für jede Art setzt, und Z ist die Normale des Objekts, sodass das BKS in der Ebene des Objekts liegt. Ein Objekt auf einem gesperrten Layer kann ausgewählt werden. Bei einer Schraffur erscheint `Dieses Objekt definiert kein Koordinatensystem`, und BKS endet mit dem BKS, wie es war.
+
+### `VOrher` (`VO`) [#previous]
+
+Geht zum vorherigen BKS zurück, bis zu zehn Schritte in einer Sitzung, darunter benannte und orthogonale. Ist keines mehr übrig: `Kein voriges Koordinatensystem gespeichert.`.
+
+### `ANsicht` (`AN`) [#view]
+
+Dreht die XY-Ebene senkrecht zu Ihrer Blickrichtung, X entlang der Horizontalen des Bildschirms, bei beibehaltenem Ursprung: Text, der danach gezeichnet wird, liegt in einer 3D-Ansicht flach auf dem Bildschirm.
+
+### `Welt` (`W`) [#world]
+
+Zurück zum Weltkoordinatensystem, das sich nie bewegt. Es ist die Vorgabe der ersten Eingabeaufforderung, die Eingabetaste wählt es also dort, und es setzt auch die Erhebung auf 0 zurück.
+
+### `X` [#x]
+
+Dreht das BKS um seine X-Achse: standardmäßig 90 Grad, einen eingegebenen Winkel oder einen Punkt, der ihn vorgibt. Ein positiver Winkel dreht nach der Rechte-Hand-Regel, sodass 90 die XY-Ebene auf der alten X-Achse aufrichtet.
+
+### `Y` [#y]
+
+Dreht das BKS um seine Y-Achse, wie `X` um X.
+
+### `Z` [#z]
+
+Dreht das BKS um seine Z-Achse, wie `X` um X: 30 dreht X und Y um 30 Grad gegen den Uhrzeigersinn, von oben gesehen.
+
+### `ZAchse` (`ZA`) [#zaxis]
+
+Ein neuer Ursprung, wobei die Eingabetaste den aktuellen behält, dann ein Punkt auf der positiven Z-Achse: Die XY-Ebene steht senkrecht dazu, ihre X-Achse bleibt waagerecht zur XY-Ebene des WKS. Zwei Punkte, die identisch sind, ergeben `Punkte sind kongruent`. Seine Option `Objekt` nimmt eine Linie, einen Bogen, eine offene Polylinie oder einen Spline: der Ursprung am Ende, das der Auswahl am nächsten liegt, Z entlang des Objekts, vom Ursprung wegzeigend.
+
+## Was er noch nicht kann [#missing]
+
+`FLäche`, das das BKS an der Fläche eines Volumenkörpers ausrichtet: Es fragt nach einer, findet aber noch keine. Apply und SEction, bei der ersten Eingabeaufforderung aufgeführt und hier abgelehnt, da es einen Ansichtsbereich und keine Schnittobjekte gibt. Der BKS-Dialog (UCSMAN), die Griffe des Symbols und sein Kontextmenü sowie das Symbol, das beim Platzieren das neue BKS zeigt. Das Fadenkreuz, das sich mit dem BKS dreht: Es bleibt auf dem Bildschirm aufrecht, bis [`DRSICHT`](/docs/commands/plan) die Ansicht danach ausrichtet. UCSFOLLOW, UCSVP und das dynamische BKS. `OBjekt` an einer Bemaßung und Group bei seiner Auswahl. Die Tiefe, die ein orthogonales BKS behält. Die Pause, Press ENTER to continue, in einer langen Liste.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs)
+
+## Fragen [#questions]
+
+### Wie setze ich das BKS in AutoCAD auf WKS zurück?
+
+Starten Sie BKS und drücken Sie die Eingabetaste: `Welt` ist die Vorgabe. Um wieder senkrecht auf die Zeichnung zu blicken, starten Sie [`DRSICHT`](/docs/commands/plan) und wählen Sie `Welt`.
+
+### Wie drehe ich das BKS?
+
+Starten Sie BKS, wählen Sie `Z` und geben Sie den Winkel ein: `30` dreht X und Y um 30 Grad gegen den Uhrzeigersinn. `X` und `Y` kippen die XY-Ebene auf, standardmäßig um 90 Grad.
+
+### Was ist der Unterschied zwischen BKS und WKS?
+
+Das Weltkoordinatensystem (WKS) bewegt sich nie; das Benutzerkoordinatensystem (BKS) ist das, das Sie verschieben und drehen. Am Anfang sind beide gleich, und BKS meldet das aktuelle als `*WORLD*`. Koordinaten, die Sie eingeben, werden im BKS gelesen, und was Sie zeichnen, liegt in seiner XY-Ebene.
+
+### Wie zeichne ich auf einer Fläche eines 3D-Volumenkörpers?
+
+Verschieben Sie das BKS darauf. Auf der Oberseite eines Quaders genügt sein Ursprung allein: BKS, dann eine Ecke der Oberseite, dann die Eingabetaste, wie in der Sitzung. Für eine Seitenfläche geben Sie drei Punkte an: den Ursprung an einer Ecke, einen Punkt entlang einer Kante für X und einen weiteren auf der Fläche für Y. Zeichnen Sie dann: Was Sie zeichnen, liegt auf der Fläche.
+
+## Verwandte Befehle [#related]
+
+- [Befehl DRSICHT (PLAN) in AutoCAD](/docs/commands/plan)
+- [Befehl 3DORBIT in AutoCAD](/docs/commands/3dorbit)
+- [Befehl QUADER (BOX) in AutoCAD](/docs/commands/box)
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)

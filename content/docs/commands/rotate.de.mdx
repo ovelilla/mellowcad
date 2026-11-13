@@ -1,0 +1,66 @@
+---
+title: "Befehl DREHEN (ROTATE) in AutoCAD"
+description: "Wie DREHEN (ROTATE, Alias DH) in AutoCAD Objekte um einen Basispunkt dreht: Winkel, Kopieren und Referenz, um sich an einer Kante auszurichten. Zum Testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von DREHEN (ROTATE) in AutoCAD?","answer":"DH, dann die Eingabetaste oder die Leertaste. Das RO des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und _ROTATE in jeder Sprache von AutoCAD."},{"question":"Wie dreht man ein Objekt, um es an einem anderen auszurichten?","answer":"Wählen Sie Bezug, wählen Sie zwei Punkte entlang der Kante des Objekts, dann wählen Sie Punkte und wählen Sie zwei Punkte entlang der Linie, der es folgen soll."},{"question":"Wie dreht man ein Objekt und behält das Original?","answer":"Wählen Sie Kopie vor der Winkelangabe: Die Kopie dreht sich, und das Original bleibt."},{"question":"Warum dreht DREHEN in die falsche Richtung?","answer":"Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile sagt. Geben Sie einen negativen Winkel ein, -30, um im Uhrzeigersinn zu drehen."}]
+---
+
+DREHEN (ROTATE) dreht die gewählten Objekte um einen Basispunkt: Wählen Sie sie, geben Sie den Basispunkt an, dann den Winkel, eingegeben oder als Punkt gewählt, dessen Richtung vom Basispunkt aus der Winkel ist. Seine erste Zeile nennt, welche Richtung positiv ist, vorgegeben gegen den Uhrzeigersinn (ANGDIR), und wo 0 liegt (ANGBASE). Die Eingabetaste beim Winkel wiederholt die letzte Drehung, in einer neuen Zeichnung 0. Die Objekte drehen sich um eine Achse parallel zum Z des BKS durch den Basispunkt, behalten in 3D also ihre Höhe. Die Drehung ist ein Schritt, den Rückgängig zurücknimmt.
+
+- **Befehl:** `DREHEN`
+- **Auf Englisch:** `ROTATE`, in jeder Sprache als `_ROTATE` eingegeben
+- **Aliasnamen:** `DH`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `DH` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="rotate" caption="Ein Rechteck um 30° um seine Ecke mit Kopieren gedreht, das Original behalten." />
+
+## Optionen [#options]
+
+### `Kopie` (`K`) [#copy]
+
+Dreht eine Kopie und lässt die Objekte, wo sie waren, und meldet `Kopie von ausgewählten Objekten wird gedreht.`. Die Eingabeaufforderung fragt dann erneut nach dem Winkel.
+
+### `Bezug` (`B`) [#reference]
+
+Dreht von einem Winkel, den Sie haben, zu dem, den Sie wollen: Er fragt nach dem Referenzwinkel (eingegeben oder zwei Punkte, die ihn messen), dann nach dem neuen Winkel und dreht um die Differenz. Um eine schräge Kante waagerecht zu stellen, wählen Sie ihre beiden Enden als Referenz und geben Sie 0 ein.
+
+### `Punkte` (`P`) [#points]
+
+Beim neuen Winkel von Reference: Der neue Winkel ist der einer Linie zwischen zwei gewählten Punkten, sodass sich die Objekte an einer bereits gezeichneten Kante ausrichten.
+
+## Was er noch nicht kann [#missing]
+
+Während Sie den Winkel angeben, folgt die gedrehte Auswahl dem Fadenkreuz in der Farbe jedes Objekts, aber nicht in seinem Linientyp oder seiner Linienstärke.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von DREHEN (ROTATE) in AutoCAD?
+
+`DH`, dann die Eingabetaste oder die Leertaste. Das `RO` des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und `_ROTATE` in jeder Sprache von AutoCAD.
+
+### Wie dreht man ein Objekt, um es an einem anderen auszurichten?
+
+Wählen Sie `Bezug`, wählen Sie zwei Punkte entlang der Kante des Objekts, dann wählen Sie `Punkte` und wählen Sie zwei Punkte entlang der Linie, der es folgen soll.
+
+### Wie dreht man ein Objekt und behält das Original?
+
+Wählen Sie `Kopie` vor der Winkelangabe: Die Kopie dreht sich, und das Original bleibt.
+
+### Warum dreht DREHEN in die falsche Richtung?
+
+Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile sagt. Geben Sie einen negativen Winkel ein, `-30`, um im Uhrzeigersinn zu drehen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl SCHIEBEN (MOVE) in AutoCAD](/docs/commands/move)
+- [Befehl KOPIEREN (COPY) in AutoCAD](/docs/commands/copy)
+- [Befehl SPIEGELN (MIRROR) in AutoCAD](/docs/commands/mirror)
+- [Befehl VARIA (SCALE): skalieren in AutoCAD](/docs/commands/scale)

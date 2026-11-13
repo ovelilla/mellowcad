@@ -1,0 +1,46 @@
+---
+title: "AutoCAD-Übung: ein Grundstück"
+metaTitle: "AutoCAD-Übung Vermessung: Grundstücksfläche"
+description: "Ein Grundstück in AutoCAD aus Länge und Winkel seiner Seiten mit Polarkoordinaten zeichnen, dann seine Fläche messen und es bemaßen. Schritt für Schritt."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zeichnen Sie dieses Grundstück, in Metern, aus Länge und Richtung seiner Seiten: 40 unter 0°, 30 unter 80°, 35 unter 155° und 25 unter 230°, dann zurück zum Anfang. Messen Sie seine Fläche und seinen Umfang und bemaßen Sie jede Seite und den Winkel an der zweiten Ecke. Polarkoordinaten, eine Länge und ein Winkel, zeichnen jede Seite vom Ende der vorigen aus. Der Bemaßungsmaßstab der Zeichnung ist für Meter eingestellt.
+
+- **Übung:** Fortgeschritten · Bauingenieurwesen · 2D
+- **Befehle:** [`PLINIE`](/docs/commands/pline), [`FLÄCHE`](/docs/commands/area), [`BEMAUSG`](/docs/commands/dimaligned), [`BEMWINKEL`](/docs/commands/dimangular)
+- **Im Editor:** [Mit ihrer Zeichnung öffnen](/de/draw?drawing=plot-of-land), bemaßt, neben dem Platz, an dem Sie Ihre zeichnen
+
+## Die Zeichnung [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Ein Grundstück mit fünf Seiten, in Metern, mit der Bemaßung jeder Seite und eines Winkels." />
+
+## Schritt für Schritt [#steps]
+
+Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; \# misst vom Ursprung.
+
+### 1. Die Grenze zeichnen [#boundary]
+
+Auf dem Layer Kontur: [`PLINIE`](/docs/commands/pline) von `0,0`, dann jede Seite als ihre Länge und ihr Winkel: `40<0`, `30<80`, `35<155` und `25<230`, jeweils vom letzten Punkt aus gemessen. `Schließen` zeichnet die fünfte Seite und schließt die Grenze: ein einziges Objekt, das [`FLÄCHE`](/docs/commands/area) messen kann.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Die Grenze zeichnen" />
+
+### 2. Seine Fläche messen [#area]
+
+[`FLÄCHE`](/docs/commands/area), dann `oBjekt`, und wählen Sie die Grenze: Die Befehlszeile nennt ihre Fläche, in Quadratmetern, und ihren Umfang.
+
+<Session name="exercises/plot-of-land/area" caption="2. Seine Fläche messen" />
+
+### 3. Bemaßen [#dimensions]
+
+Auf dem Layer Bemaßung: [`BEMAUSG`](/docs/commands/dimaligned) und die Eingabetaste bei der ersten Eingabeaufforderung: Danach fragt es ein Objekt ab, und ein Klick auf eine Seite bemaßt diese Seite, parallel zu ihr. Platzieren Sie jede außerhalb des Grundstücks. [`BEMWINKEL`](/docs/commands/dimangular) auf die beiden Seiten, die sich in `40,0` treffen, gibt den Winkel zwischen ihnen, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Bemaßen" />
+
+## Weitere Übungen [#more]
+
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft): Fortgeschritten · Maschinenbau · 2D
+- [AutoCAD-Übung Isometrie: ein Stufenblock](/docs/exercises/isometric-block): Fortgeschritten · Maschinenbau · Isometrisch
+- [AutoCAD-Übung 3D: eine Riemenscheibe](/docs/exercises/pulley): Fortgeschritten · Maschinenbau · 3D-Volumenkörper
+- [AutoCAD-Übungen](/docs/exercises)

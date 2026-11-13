@@ -98,7 +98,7 @@ STUTZEN, `FA` FASE, `DH` DREHEN, `V` VARIA, `SP` SPIEGELN, `BR` BRUCH, `VB` VERB
 URSPRUNG, `SCH` and `GS` SCHRAFF, `ZO` ZOOM, `PG` POLYGON, `EIN` EINFÜGE, `LS` and `LIS` LISTE,
 `LT` LINIENTYP, `LST` LSTÄRKE, `KA` KAPPEN (SLICE), `QU` QUERSCHNITT, `GP` GRUPPE, `RI` RING,
 `LÄ` LÄNGE, `ET` EINHEIT, `STI` STIL, `TL` TEILEN, `ME` MESSEN, `KL` KLINIE, `VEE` VEREINIG, `SM`
-SCHNITTMENGE, `MA` MANSFEN (MATCHPROP); `T` and `MT` are MTEXT and `DT` TEXT, as English. Names
+SCHNITTMENGE, `EG` EIGANPASS (MATCHPROP; `MA` is MVIEW's MANSFEN); `T` and `MT` are MTEXT and `DT` TEXT, as English. Names
 and aliases hold Ä, Ö and Ü (LÖSCHEN, ÄNDERN, LÄNGE, EINFÜGE), keys of their own on QWERTZ; none
 holds ß.
 
@@ -219,6 +219,31 @@ No probe shows these; each is worded from its neighbours and stays so until one 
 
 The list by key is the session's, outside git, and `germanPrompts.test.ts` holds what the console
 printed.
+
+## The site's words
+
+`messages/de.json`, the editor's catalog, the eight "Use" pages, the 101 command notes and the 12
+exercises (13/11/2026, six agents on one brief, each file then read by `docs:check` against its
+English's options, questions and elements): the landing's title is «Kostenloses CAD-Programm
+online mit AutoCAD-Befehlen», its description carries «im Browser», «ohne Installation»,
+«technisches Zeichnen online» and «AutoCAD-Befehle auf Deutsch und Englisch»; the hero says «CAD
+online kostenlos, mit AutoCAD-Befehlen»; a command's page «Befehl STUTZEN (TRIM) in AutoCAD», an
+exercise's «AutoCAD-Übung …». A command's prompt is Autodesk's «Eingabeaufforderung», polar
+tracking the status bar's «Spurverfolgung» (`Spurverfolgung (F10)`), object snap tracking
+«Objektfangspur».
+
+- **Keys** as a German keyboard and Autodesk print them: `Strg`, `Umschalt` in a combination
+  (`Strg+Umschalt+C`), Eingabetaste, Leertaste, Entf. The shortcuts page's combinations take the
+  language's `Docs.keys.ctrl` (every other language's `Ctrl`).
+- **The editor**: 131 labels by id, 66 by the row's place, 85 ours †: the layer dialogs (task
+  dialogs, BAML, not read), the snap and polar settings rows, the file types of Save As, the
+  palettes' own controls. The ribbon's ARRAY button is «Reihe» (the desktop), the command line's
+  placeholder «Befehl eingeben (LINIE, SU, KO…)». Dialog titles from the pack: «Speichern unter»
+  (acadres 131), «Optionen für Speichern als» (acadres 2489), «Zeichnungseinheiten» (unitsRes 500),
+  «Punktstil» (acddptyperes 101).
+- **Ours in the pages**: dialog names no resource was read for (Linientyp-Manager,
+  Linienstärkeeinstellungen, Blockdefinition), the exercises' mechanical words (Lagerbock, Lasche,
+  Nabe, Passfedernut, Teilkreis, Stufenwelle) and layer names (Kontur, Mittellinien, Bemaßung).
 
 ## Script and font
 

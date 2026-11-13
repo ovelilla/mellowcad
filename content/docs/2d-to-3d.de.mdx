@@ -1,0 +1,42 @@
+---
+title: Von 2D zu 3D in AutoCAD
+metaTitle: "AutoCAD 3D: von 2D-Zeichnung zum Volumenkörper"
+description: "Aus einer 2D-Zeichnung einen 3D-Volumenkörper in AutoCAD machen: ein geschlossenes Profil extrudieren, drücken/ziehen, drehen, vereinigen. Noch unvollständig."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+In AutoCAD beginnt ein Volumenkörper meist als 2D-Zeichnung: ein geschlossenes Profil, gezeichnet wie jeder Grundriss, dann auf eine Höhe extrudiert oder um eine Achse gedreht und mit anderen Volumenkörpern vereinigt oder von ihnen abgezogen. Die 3D-Volumenkörper von MellowCAD entstehen auf dieselbe Weise, mit denselben Befehlen. Sie sind noch unvollständig: Es gibt noch keine Sweeps, Lofts, Netze und kein Rendering. Jeder Abschnitt zeigt eine Sitzung, die der Editor zeichnet, mit ihrem Verlauf, wie Sie ihn eingeben würden.
+
+## Ein geschlossenes Profil zeichnen [#profile]
+
+Ein Volumenkörper braucht ein geschlossenes Profil: eine geschlossene Polylinie, ein Rechteck, einen Kreis oder eine Region. Linien, die Ende an Ende liegen, bleiben getrennte Objekte: <Command id="JOIN" /> macht daraus eine Polylinie oder <Command id="REGION" /> eine Region. Zeichnen Sie das Profil in der Draufsicht, wo sich seine Punkte am einfachsten eingeben lassen.
+
+## Es extrudieren [#extrude]
+
+<Command id="EXTRUDE" />: Wählen Sie das Profil, drücken Sie die Eingabetaste und geben Sie die Höhe ein. Von oben gesehen sieht ein Volumenkörper genau wie sein Profil aus: Drehen Sie die Ansicht mit <Command id="VIEW" /> oder dem ViewCube, um ihn zu sehen, und wählen Sie mit <Command id="VSCURRENT" />, wie er dargestellt wird.
+
+<Session name="solidExtrude" caption="Ein L-Profil als eine geschlossene Polylinie, um 30 extrudiert, von Südosten gesehen." />
+
+## Eine Fläche drücken und ziehen [#presspull]
+
+<Command id="PRESSPULL" /> braucht kein Profil: Klicken Sie in eine beliebige geschlossene Fläche, auch eine von getrennten Linien begrenzte, und geben Sie die Höhe ein. Auf die Fläche eines Volumenkörpers geklickt, drückt oder zieht es diese Fläche.
+
+<Session name="presspull" caption="Eine geschlossene Fläche, von innen gedrückt und gezogen: Sie wird zum Volumenkörper." />
+
+## Es drehen [#revolve]
+
+<Command id="REVOLVE" /> dreht ein Profil um eine Achse: Wählen Sie das Profil, geben Sie die Achse durch zwei Punkte, ein Objekt oder die X-, Y- oder Z-Achse an, dann den Winkel, vorgabegemäß eine volle Umdrehung.
+
+<Session name="revolve" caption="Ein halber Schnitt, um die Y-Achse gedreht." />
+
+## Volumenkörper vereinigen und abziehen [#booleans]
+
+<Command id="UNION" /> macht aus mehreren Volumenkörpern einen, <Command id="SUBTRACT" /> zieht einen oder mehrere von einem anderen ab, und <Command id="INTERSECT" /> behält, was sie gemeinsam haben. Eine Bohrung ist ein Zylinder, der von dem Volumenkörper abgezogen wird, den er durchdringt.
+
+<Session name="subtract" caption="Ein Zylinder von einem Quader abgezogen: eine Bohrung durch ihn hindurch." />
+
+## Weiter [#next]
+
+- Die 3D-[Übungen](/docs/exercises): [eine Montageplatte](/docs/exercises/mounting-plate) aus Regionen und einer einzigen Extrusion, [eine Riemenscheibe](/docs/exercises/pulley), aus ihrem Schnitt gedreht, und [ein Lagerbock](/docs/exercises/bearing-block), vereinigt und gebohrt.
+- <Command id="3DORBIT" /> dreht die Ansicht mit der Maus, und <Command id="VSCURRENT" /> schattiert die Flächen.

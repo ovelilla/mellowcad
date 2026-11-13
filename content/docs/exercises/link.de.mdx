@@ -1,0 +1,58 @@
+---
+title: "AutoCAD-Übung: eine Lasche mit Tangenten"
+metaTitle: "AutoCAD-Übung Fortgeschrittene: Lasche"
+description: "Eine Lasche in AutoCAD zeichnen: zwei Augen, mit dem Objektfang Tangente durch Tangenten verbunden, die Bögen dazwischen gestutzt, und ihre Bemaßung."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand 90, mit Radius 20 und 12, gebohrt auf Radius 10 und 6, verbunden durch Linien, die beide tangieren, die Bögen zwischen den Linien weggestutzt. Die Tangenten verwenden an beiden Enden den Objektfang Tangente; [`STUTZEN`](/docs/commands/trim) macht dann aus dem Kreis jedes Auges einen Bogen.
+
+- **Übung:** Profi · Maschinenbau · 2D
+- **Befehle:** [`KREIS`](/docs/commands/circle), [`LINIE`](/docs/commands/line), [`STUTZEN`](/docs/commands/trim), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
+- **Im Editor:** [Mit ihrer Zeichnung öffnen](/de/draw?drawing=link), bemaßt, neben dem Platz, an dem Sie Ihre zeichnen
+
+## Die Zeichnung [#drawing]
+
+<Session name="exercises/link" caption="Eine Lasche aus zwei Augen im Abstand 90, durch Tangenten verbunden, bemaßt." />
+
+## Schritt für Schritt [#steps]
+
+Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; \# misst vom Ursprung.
+
+### 1. Die Augen zeichnen [#bosses]
+
+Auf dem Layer Kontur vier Kreise mit [`KREIS`](/docs/commands/circle), jeder mit seinem Radius: `20` und `10` in `0,0`, `12` und `6` in `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Die Augen zeichnen" />
+
+### 2. Die Tangenten zeichnen [#tangents]
+
+[`LINIE`](/docs/commands/line), dann geben Sie `_TAN` ein, den Objektfang Tangente für einen einzelnen Punkt, und wählen Sie den großen Kreis nahe seinem oberen Punkt; wieder `_TAN` und wählen Sie den kleinen nahe seinem oberen Punkt. Die Linie berührt beide. Dasselbe an der Unterseite.
+
+<Session name="exercises/link/tangents" caption="2. Die Tangenten zeichnen" />
+
+### 3. Die Bögen stutzen [#trim]
+
+[`STUTZEN`](/docs/commands/trim): Wählen Sie jedes Auge zwischen den beiden Linien, auf der Seite, die dem anderen zugewandt ist. Die inneren Bögen sind weg, und jeder Kreis ist ein Bogen.
+
+<Session name="exercises/link/trim" caption="3. Die Bögen stutzen" />
+
+### 4. Die Mittellinien zeichnen [#centreLines]
+
+Auf Mittellinien die Achse durch beide Mittelpunkte und eine Linie quer durch jedes Auge.
+
+<Session name="exercises/link/centreLines" caption="4. Die Mittellinien zeichnen" />
+
+### 5. Bemaßen [#dimensions]
+
+Auf dem Layer Bemaßung der Abstand zwischen den Mittelpunkten mit [`BEMLINEAR`](/docs/commands/dimlinear), die Radien der Augen mit [`BEMRADIUS`](/docs/commands/dimradius) und ihre Bohrungen mit [`BEMDURCHM`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Bemaßen" />
+
+## Weitere Übungen [#more]
+
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block): Profi · Maschinenbau · 3D-Volumenkörper
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket): Einsteiger · Maschinenbau · 2D
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket): Einsteiger · Maschinenbau · 2D
+- [AutoCAD-Übungen](/docs/exercises)

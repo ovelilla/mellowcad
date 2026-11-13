@@ -389,6 +389,7 @@
     },
     "keys": {
       "shift": "Shift",
+      "ctrl": "Ctrl",
       "space": "Barra de espaço",
       "enter": "Enter",
       "escape": "Esc",

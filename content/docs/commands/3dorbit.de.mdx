@@ -1,0 +1,53 @@
+---
+title: "Befehl 3DORBIT in AutoCAD"
+description: "Wie 3DORBIT (3DO, ORBIT) in AutoCAD die Ansicht beim Ziehen dreht, wie Sie ihn verlassen, mit Umschalttaste und Rad kreisen und zur Draufsicht zurückkehren."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für 3DORBIT in AutoCAD?","answer":"3DO oder ORBIT, dann die Eingabetaste oder die Leertaste. Ohne etwas einzugeben, halten Sie die Umschalttaste und die Radtaste gedrückt und ziehen Sie."},{"question":"Wie kreise ich mit der Maus?","answer":"Halten Sie die Umschalttaste gedrückt, drücken Sie die Radtaste und ziehen Sie: zur Seite, um das Modell zu drehen, nach oben und unten, um es von höher oder tiefer zu betrachten. Lassen Sie los, und Sie sind wieder in dem Befehl, in dem Sie waren."},{"question":"Wie verlasse ich 3DORBIT?","answer":"Drücken Sie die Eingabetaste oder Esc. Die Ansicht bleibt, wo Sie sie verlassen haben."},{"question":"Wie kehre ich nach dem Kreisen zur Draufsicht zurück?","answer":"Starten Sie DRSICHT und drücken Sie die Eingabetaste, oder -AUSSCHNT und OBen, oder klicken Sie auf die Oberseite des ViewCube. ZOOM Vorher geht Ziehen für Ziehen zurück."}]
+---
+
+3DORBIT dreht die Ansicht um die Zeichnung, während Sie ziehen; nichts in der Zeichnung bewegt sich oder ändert sich. Ziehen zur Seite dreht die Kamera um die Z-Achse des WKS, Ziehen nach oben und unten hebt oder senkt sie, um die Mitte der Zeichnung unter der Mitte des Bildschirms, in Parallelprojektion. Der Befehl beginnt mit dem Hinweis, wie man ihn verlässt: Solange er läuft, können Sie nur kreisen, und die Eingabetaste oder Esc beendet ihn, gezogen oder nicht.
+
+Umschalttaste und Radtaste gedrückt zu halten, kreist von überall, auch innerhalb eines anderen Befehls, und die Schaltfläche Orbit der Navigationsleiste startet ihn ebenfalls. Mit Apostroph eingegeben, `'3DORBIT`, funktioniert er innerhalb eines anderen Befehls, der danach weitermacht. Jedes Ziehen ist ein Schritt für `Vorher` von [`ZOOM`](/docs/commands/zoom), und der ganze Durchlauf ist ein Rückgängig-Schritt, sodass `Z` die Ansicht zurücksetzt. Um die Volumenkörper als Volumenkörper zu sehen, nicht als Drahtmodell, verwenden Sie [`VSAKTUELL`](/docs/commands/vscurrent); das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig.
+
+- **Befehl:** `3DORBIT`
+- **Aliasnamen:** `3DO`, `ORBIT`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `3DO` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="3dorbit" caption="Ein Quader, zuerst in der Draufsicht gesehen: 3DORBIT, ein Ziehen zur Seite und nach unten, dann die Eingabetaste, und der Quader wird von über seiner vorderen Ecke gesehen." />
+
+## Was er noch nicht kann [#missing]
+
+Das Kontextmenü mit seinen Projektionen, visuellen Stilen und anderen Navigationsmodi. Das Kreisen nur um die gewählten Objekte. Perspektive. 3DFORBIT, 3DCORBIT und der Rest der 3D-Navigation von AutoCAD.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für 3DORBIT in AutoCAD?
+
+`3DO` oder `ORBIT`, dann die Eingabetaste oder die Leertaste. Ohne etwas einzugeben, halten Sie die Umschalttaste und die Radtaste gedrückt und ziehen Sie.
+
+### Wie kreise ich mit der Maus?
+
+Halten Sie die Umschalttaste gedrückt, drücken Sie die Radtaste und ziehen Sie: zur Seite, um das Modell zu drehen, nach oben und unten, um es von höher oder tiefer zu betrachten. Lassen Sie los, und Sie sind wieder in dem Befehl, in dem Sie waren.
+
+### Wie verlasse ich 3DORBIT?
+
+Drücken Sie die Eingabetaste oder Esc. Die Ansicht bleibt, wo Sie sie verlassen haben.
+
+### Wie kehre ich nach dem Kreisen zur Draufsicht zurück?
+
+Starten Sie [`DRSICHT`](/docs/commands/plan) und drücken Sie die Eingabetaste, oder `-AUSSCHNT` und `OBen`, oder klicken Sie auf die Oberseite des ViewCube. [`ZOOM`](/docs/commands/zoom) `Vorher` geht Ziehen für Ziehen zurück.
+
+## Verwandte Befehle [#related]
+
+- [Befehl VSAKTUELL (VSCURRENT) in AutoCAD](/docs/commands/vscurrent)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)
+- [Befehl DRSICHT (PLAN) in AutoCAD](/docs/commands/plan)
+- [Befehl ZOOM in AutoCAD](/docs/commands/zoom)

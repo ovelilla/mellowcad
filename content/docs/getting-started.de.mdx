@@ -1,0 +1,61 @@
+---
+title: Erste Schritte
+metaTitle: "Erste Schritte: Ihre erste CAD-Zeichnung online"
+description: "Ihre erste Zeichnung in MellowCAD: die Befehlszeile, Eingabeaufforderungen und Optionen, die Zeichenhilfen, Rückgängig und Speichern."
+type: gettingStarted
+sourceHash: "527b2d24b274"
+---
+
+MellowCAD funktioniert wie AutoCAD: Sie geben einen Befehl ein, beantworten seine Eingabeaufforderungen, und die Zeichnung entsteht. Wenn Sie schon mit AutoCAD arbeiten, genügen [die Befehle](/docs/commands) und [die Unterschiede](/docs/differences); diese Seite ist für die ersten zehn Minuten.
+
+## Den Editor öffnen [#open]
+
+[Öffnen Sie den Editor](/de/draw) in einem Browser auf dem Computer. Es muss nichts installiert und kein Konto angelegt werden. Die Zeichnung wird bei der Arbeit in diesem Browser gespeichert und ist beim nächsten Öffnen wieder da.
+
+## Einen Befehl eingeben [#command]
+
+Tippen Sie auf der Zeichnung, wo auch immer der Cursor steht: Die Buchstaben landen in der Befehlszeile unten, die die Befehle vorschlägt, die damit beginnen. Die Eingabetaste oder die Leertaste führt den Befehl aus. <Command id="LINE" /> zeichnet Linien, ebenso sein kürzerer Alias; alle Aliase stehen auf der [Seite der Befehle](/docs/commands). Die Namen sind die des deutschen AutoCAD; der englische Name funktioniert ebenfalls, mit vorangestelltem Unterstrich wie in AutoCAD (`_LINE`).
+
+## Die Eingabeaufforderungen beantworten [#prompts]
+
+Ein Befehl fragt immer nur eines ab, in der Befehlszeile und neben dem Cursor. Ein Punkt ist ein Klick in die Zeichnung oder zwei eingegebene Koordinaten in der Form `x,y`. Nach dem ersten Punkt werden eingegebene Koordinaten ab dem letzten Punkt gemessen, so wie es die dynamische Eingabe von AutoCAD tut, und der Verlauf schreibt sie mit `@`; `#x,y` wird dagegen ab dem Ursprung gemessen. Eine allein eingegebene Entfernung geht so weit in Richtung des Cursors.
+
+<Session name="firstLine" />
+
+## Eine Option wählen [#options]
+
+Die Optionen, die eine Eingabeaufforderung anbietet, stehen in eckigen Klammern, jede mit ihren Großbuchstaben: Geben Sie diese Buchstaben ein und drücken Sie die Eingabetaste. Ein Wert in spitzen Klammern ist die Vorgabe, und die Eingabetaste übernimmt sie.
+
+<Session name="circleDiameter" />
+
+## Beenden, wiederholen, abbrechen [#end]
+
+Die Eingabetaste oder die Leertaste beendet einen Befehl, der weiter abfragt, wie <Command id="LINE" />, und wiederholt, wenn kein Befehl läuft, den letzten. Ein Rechtsklick öffnet ein Menü mit denselben Möglichkeiten. Esc bricht ab. Alle Tasten stehen auf der [Seite der Tastenkürzel](/docs/shortcuts).
+
+## Genau zeichnen [#precision]
+
+Objektfang führt den Cursor auf die exakten Punkte des Gezeichneten: Endpunkte, Mittelpunkte, Zentren. `F3` schaltet ihn ein und aus, `F8` den Ortho-Modus und `F10` die polare Spurverfolgung, so wie ihre Schaltflächen in der Statusleiste.
+
+<Session name="endpointSnap" />
+
+## Das Gezeichnete ändern [#modify]
+
+Ein Änderungsbefehl fragt die Objekte ab, mit denen er arbeiten soll, oder zuerst einen Wert, wie es <Command id="OFFSET" /> tut: den Abstand, das Objekt, dann die Seite, auf die die Kopie kommt.
+
+<Session name="offsetRectangle" />
+
+## Rückgängig und Wiederherstellen [#undo]
+
+<Command id="U" /> oder `Strg+Z` macht den letzten Befehl rückgängig, vollständig, und `Strg+Y` stellt ihn wieder her. In einem Befehl, der eine eigene Option dafür bietet, nimmt diese einen einzelnen Schritt zurück, etwa ein Segment von <Command id="LINE" />.
+
+## Speichern [#save]
+
+Die Zeichnung wird bei der Arbeit in diesem Browser gespeichert. <Command id="QSAVE" /> oder `Strg+S` lädt sie als Datei im eigenen, versionierten Format von MellowCAD herunter, und <Command id="OPEN" /> oder `Strg+O` öffnet eine solche oder [eine DXF-Datei](/docs/open-dxf), die <Command id="SAVEAS" /> wieder [als DXF speichert](/docs/edit-dxf); [das Speichern ist nicht ganz das von AutoCAD](/docs/differences#saving).
+
+## Weiter [#next]
+
+- [Übungen](/docs/exercises): Zeichnungen zum Üben, jede Schritt für Schritt gelöst und mit ihrer Zeichnung im Editor zu öffnen.
+- [Koordinaten](/docs/coordinates): alle Arten, einen Punkt einzugeben, und eine Linie im Winkel.
+- [Befehle](/docs/commands): jeder Befehl, seine Aliase und das Erste, was er abfragt.
+- [Tastenkürzel](/docs/shortcuts): die Tasten, auf die der Editor reagiert.
+- [Unterschiede zu AutoCAD](/docs/differences): wo er anders arbeitet, und warum.

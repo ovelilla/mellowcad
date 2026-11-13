@@ -1,0 +1,59 @@
+---
+title: "Befehl LISTE (LIST) in AutoCAD"
+description: "Wie LISTE (LIST, Alias LS) in AutoCAD die Daten eines Objekts ausgibt: Typ, Layer, Länge, Fläche und Koordinaten der Punkte. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von LISTE (LIST) in AutoCAD?","answer":"LS oder LIS, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und _LIST in jeder Sprache von AutoCAD."},{"question":"Was zeigt der Befehl LISTE?","answer":"Alles, was LISTE von AutoCAD über das Objekt sagt: seinen Typ, Layer, Bereich und die Eigenschaften, die nicht VonLayer sind, dann seine Geometrie, jeden Punkt und jede Länge als Zahlen. Wählen Sie mehrere Objekte, und jedes erhält seinen Bericht."},{"question":"Wie ermittelt man die Länge oder Fläche eines Objekts?","answer":"Listen Sie es auf: die Länge einer Linie, Umfang und Fläche eines Kreises, Länge oder Umfang und Fläche einer Polylinie. Um mehrere Flächen zu addieren, verwenden Sie FLÄCHE."},{"question":"Wie sieht man die Koordinaten der Endpunkte einer Linie?","answer":"Listen Sie die Linie auf: „von Punkt“ und „nach Punkt“, im aktuellen BKS. Für einen einzelnen Punkt ID mit einem Objektfang."},{"question":"Was ist der Unterschied zwischen LISTE und EIGENSCHAFTEN?","answer":"LISTE schreibt einen Bericht, den Sie lesen und aus dem Verlauf kopieren. EIGENSCHAFTEN zeigt dieselben Werte in einer Palette, in der Sie sie ändern können."}]
+---
+
+LISTE (LIST) schreibt einen Bericht über jedes Objekt, das Sie an der Eingabeaufforderung wählen, in den Spalten und Worten von AutoCAD 2027. Jeder beginnt mit seinem Typ, seinem Layer und seinem Bereich, dann seiner Farbe, seinem Linientyp, seiner Linienstärke und seiner Objekthöhe, wo sie nicht VonLayer oder null sind, dann dem, was der Typ hat: die Enden, die Länge, der Winkel und die Deltas einer Linie; Mittelpunkt, Radius, Umfang und Fläche eines Kreises; die Winkel und die Länge eines Bogens; die Scheitelpunkte, Breiten, Fläche und Länge einer Polylinie; die Kontroll- und Anpassungspunkte eines Splines; Stil, Höhe und Ausrichtung eines Textes; Typ, Punkte und Stil einer Bemaßung; Muster, Maßstab und Fläche einer Schraffur; Name, Einfügepunkt, Maßstäbe und Attribute eines Blockverweises; Zeilen und Elemente einer Anordnung; Fläche, Umfang und Umgrenzungsrahmen einer Region.
+
+Punkte stehen im aktuellen BKS, Längen in der Genauigkeit der Zeichnung und Winkel in AUPREC. Objekte, die vor LISTE gewählt wurden, werden sofort aufgelistet, ohne die Eingabeaufforderung, und die Eingabetaste ins Leere beendet ihn ohne ein Wort. Jede Zeile kommt sofort: Das Textfenster von AutoCAD hält bei jeder Bildschirmseite bei `Drücken Sie die EINGABETASTE, um fortzufahren` an, während der Verlauf hier scrollt. Es gibt keine Zeile `Handle`: Objekte haben hier keine Handles.
+
+- **Befehl:** `LISTE`
+- **Auf Englisch:** `LIST`, in jeder Sprache als `_LIST` eingegeben
+- **Aliasnamen:** `LS`, `LIS`, `ZEIGMAT`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `LS` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="list" caption="LISTE für die Bohrung einer Platte: Layer, Mittelpunkt, Radius, Umfang und Fläche des Kreises." />
+
+## Was er noch nicht kann [#missing]
+
+Die Fläche einer offenen Polylinie mit Kurvenanpassung: Hier ist es die Fläche der Kurve, durch ihre Sehne geschlossen, und die von AutoCAD ist größer. Die Länge eines Splines ist hier exakt, wo die von AutoCAD eine enge Näherung ist. Eine aus zwei Linien erzeugte DIMANGULAR wird durch ihre drei Punkte aufgelistet, und keine Bemaßung ist jemals `associative: yes`. Die Pause und das Textfenster von AutoCAD. Was Objekte hier nicht haben: VonBlock, eine Linienstärke Standard, einen eigenen Linientypfaktor, Transparenz und Gruppen.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#list--li--ls--es-list--ls--lt--pt-br-lista--li--ls--mostrarmat--fr-liste--ls--lst--affmat--it-lista--li--ls--showmat--de-liste--ls--lis--zeigmat)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von LISTE (LIST) in AutoCAD?
+
+`LS` oder `LIS`, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und `_LIST` in jeder Sprache von AutoCAD.
+
+### Was zeigt der Befehl LISTE?
+
+Alles, was LISTE von AutoCAD über das Objekt sagt: seinen Typ, Layer, Bereich und die Eigenschaften, die nicht VonLayer sind, dann seine Geometrie, jeden Punkt und jede Länge als Zahlen. Wählen Sie mehrere Objekte, und jedes erhält seinen Bericht.
+
+### Wie ermittelt man die Länge oder Fläche eines Objekts?
+
+Listen Sie es auf: die Länge einer Linie, Umfang und Fläche eines Kreises, Länge oder Umfang und Fläche einer Polylinie. Um mehrere Flächen zu addieren, verwenden Sie [`FLÄCHE`](/docs/commands/area).
+
+### Wie sieht man die Koordinaten der Endpunkte einer Linie?
+
+Listen Sie die Linie auf: `von Punkt` und `nach Punkt`, im aktuellen BKS. Für einen einzelnen Punkt [`ID`](/docs/commands/id) mit einem Objektfang.
+
+### Was ist der Unterschied zwischen LISTE und EIGENSCHAFTEN?
+
+LISTE schreibt einen Bericht, den Sie lesen und aus dem Verlauf kopieren. [`EIGENSCHAFTEN`](/docs/commands/properties) zeigt dieselben Werte in einer Palette, in der Sie sie ändern können.
+
+## Verwandte Befehle [#related]
+
+- [Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD](/docs/commands/properties)
+- [Befehl ID in AutoCAD](/docs/commands/id)
+- [Befehl ABSTAND (DIST) in AutoCAD](/docs/commands/dist)
+- [Befehl FLÄCHE (AREA): Fläche messen in AutoCAD](/docs/commands/area)
+- [Befehl MASSEIG (MASSPROP) in AutoCAD](/docs/commands/massprop)

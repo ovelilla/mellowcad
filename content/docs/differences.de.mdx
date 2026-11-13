@@ -1,0 +1,45 @@
+---
+title: Unterschiede zu AutoCAD
+metaTitle: "Unterschiede zu AutoCAD, und warum"
+description: "Wo MellowCAD anders arbeitet als AutoCAD, und warum: was der Browser für sich behält und was es hier nicht gibt."
+type: concept
+sourceHash: "cd14006ca4f1"
+---
+
+MellowCAD folgt AutoCAD 2027: dieselben Befehle und Aliase, dieselbe Reihenfolge der Eingabeaufforderungen, dieselben Optionsbuchstaben und Vorgaben. Es weicht nur ab, wo der Browser es erzwingt oder wo die zugehörige Funktion hier nicht existiert. Jeder Unterschied unten sagt, was AutoCAD tut, was MellowCAD stattdessen tut und warum. Was einem einzelnen Befehl noch fehlt, ist von seinem Eintrag auf der [Seite der Befehle](/docs/commands) aus verlinkt.
+
+## Eine Zeichnung zugleich [#one-drawing]
+
+AutoCAD öffnet eine neue Zeichnung in einem eigenen Register und lässt die alte geöffnet. MellowCAD hält eine Zeichnung: <Command id="NEW" /> und <Command id="OPEN" /> ersetzen sie, und nach <Command id="NEW" /> holt ein einziges <Command id="U" /> die vorige zurück.
+
+## Speichern lädt eine Datei herunter [#saving]
+
+MellowCAD hält die Zeichnung bei der Arbeit in diesem Browser, nur auf diesem Gerät. <Command id="QSAVE" /> lädt sofort eine Datei im eigenen, versionierten Format von MellowCAD herunter, wie bei einer Zeichnung, die einen Namen hat: Hier behält keine Zeichnung ihren Namen. <Command id="SAVEAS" /> und <Command id="SAVE" /> öffnen „Zeichnung speichern unter“, mit Dateiname und Dateitypen, darunter DXF, aber ohne die Ordner: Der Browser legt die Datei dort ab, wo er jeden Download ablegt.
+
+## Tasten, die der Browser behält [#browser-keys]
+
+Eine Seite erhält nie `Strg+W`, das den Tab schließt, noch `Strg+N`, das ein Fenster öffnet. Die wechselnde Auswahl, in AutoCAD `Strg+W`, ist hier `F4`; AutoCAD belegt `F4` mit den 3D-Objektfangmodi, die MellowCAD noch nicht hat. Eine neue Zeichnung ist <Command id="NEW" />, eingegeben.
+
+## Die dynamische Eingabe ist immer eingeschaltet [#dynamic-input]
+
+Die dynamische Eingabe lässt sich nicht ausschalten, daher bleibt ihre Taste, `F12`, dem Browser überlassen.
+
+## Nur Modellbereich [#model-space]
+
+Es gibt keine Layouts und kein Plotten: Der Bildschirm ist der einzige Ort, an dem eine Zeichnung zu sehen ist. Deshalb werden Linienstärken von Anfang an angezeigt (`LWDISPLAY` ein, während AutoCAD mit der Variablen aus beginnt), und `MODELL` in der Statusleiste ist eine Beschriftung und kein Schalter zu einem Layout.
+
+## Befehlszeilenversionen einiger Dialogfelder [#dialogs]
+
+Wo AutoCAD ein Dialogfeld öffnet, das es hier nicht gibt, stellt der Befehl seine Fragen in der Befehlszeile, wie es seine Version mit Bindestrich tut: <Command id="COLOR" /> führt <Command id="-COLOR" /> aus, <Command id="LWEIGHT" /> führt <Command id="-LWEIGHT" /> aus und <Command id="LINETYPE" /> führt <Command id="-LINETYPE" /> aus. <Command id="DIMSTYLE" /> und <Command id="STYLE" /> öffnen die Palette Stile, mit den Bemaßungs- oder Textstilen.
+
+## Alle Linientypen sind geladen [#linetypes]
+
+Eine neue AutoCAD-Zeichnung enthält nur einen einzigen, durchgezogenen Linientyp, die anderen werden aus einer Datei geladen. Ohne einen Linientypmanager, um einen zu laden, bringt hier jede Zeichnung alle geladen mit.
+
+## Koordinaten in der Statusleiste [#coordinates]
+
+AutoCAD blendet die Koordinaten des Cursors seit 2015 in seiner Statusleiste aus. MellowCAD zeigt sie, da es keine andere Anzeige des Cursors hat; die Benutzeranpassung der Statusleiste blendet sie aus.
+
+## Arabisch verwendet die Befehle des englischen AutoCAD [#arabic]
+
+Es gibt kein arabisches AutoCAD, und wer auf Arabisch zeichnet, arbeitet im englischen. Deshalb spricht auf Arabisch die Oberfläche Arabisch und die Befehlszeile das englische AutoCAD: dieselben Namen, Aliase, Eingabeaufforderungen und Optionsbuchstaben. Ein `Strg`-Kürzel funktioniert bei jeder Tastaturbelegung, wie bei einem Desktop-Programm: `Strg+Z` macht auch dann rückgängig, wenn die arabische Belegung einen Buchstaben tippt.

@@ -1,0 +1,78 @@
+---
+title: "Befehl FASE (CHAMFER) in AutoCAD"
+description: "So arbeitet AutoCADs FASE (CHAMFER, Alias FA): zwei Abstände, zwei Linien oder die Ecken einer Polylinie, Mehrfach, Umschalttaste. Gratis im Browser testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für FASE (CHAMFER) in AutoCAD?","answer":"FA, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _CHAMFER in jeder Sprache von AutoCAD."},{"question":"Wie mache ich in AutoCAD eine Fase von 45 Grad?","answer":"Wählen Sie Abstand, tippen Sie den Abstand und drücken Sie beim zweiten die Eingabetaste: Bei einer rechtwinkligen Ecke ergeben zwei gleiche Abstände eine Schräge von 45 Grad."},{"question":"Was ist der Unterschied zwischen FASE und ABRUNDEN?","answer":"FASE verbindet zwei Linien mit einer geraden Schräge; ABRUNDEN mit einem Bogen, der beide tangential berührt. Beide stutzen oder dehnen die Linien bis dorthin, und beide machen bei 0 oder mit gehaltener Umschalttaste bei der zweiten Linie eine scharfe Ecke."},{"question":"Warum funktioniert FASE nicht?","answer":"Er sagt, warum: „Fasenabstand ist zu groß“, wenn ein Abstand über das Ende seiner Linie hinausreicht, „Linien sind parallel“ bei parallelen Linien und „Fase benötigt 2 Linien (keine Bogensegmente).“ bei einem Bogen oder Kreis. Mit beiden Abständen 0 macht er eine Ecke, keine Schräge."},{"question":"Wie fase ich jede Ecke eines Rechtecks an?","answer":"Ein Rechteck ist eine Polylinie: Wählen Sie Polylinie und wählen Sie es, und jede Ecke wird mit den aktuellen Abständen angefast."}]
+---
+
+FASE (CHAMFER) schneidet die Ecke zwischen zwei Linien mit einer geraden Schräge ab. Wählen Sie die erste Linie, dann die zweite: Jede wird bis zur Schräge gestutzt oder gedehnt, die erste um den ersten Abstand und die zweite um den zweiten, und die Schräge verbindet sie. Er arbeitet mit zwei Linien, mit zwei geraden Segmenten einer Polylinie oder mit einer Linie und einer Polylinie, die er zu einer Polylinie verbindet. Wie in AutoCAD nennt seine erste Zeile die aktuellen Abstände, die in der Zeichnung gespeichert sind; beide 0, die Vorgabe, ergibt eine scharfe Ecke, die Linien treffen sich. Während Sie die zweite Linie wählen, wird die Ecke, die sie ergäbe, über den Linien gezeigt.
+
+- **Befehl:** `FASE`
+- **Auf Englisch:** `CHAMFER`, in jeder Sprache als `_CHAMFER` eingegeben
+- **Aliasnamen:** `FA`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `FA` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="chamfer" caption="Vier Linien, dann Abstand 10 für beide und Mehrfach: zwei Ecken angefast, zwei bleiben scharf." />
+
+## Optionen [#options]
+
+### `rÜckgängig` (`Ü`) [#undo]
+
+Nimmt die letzte Fase dieses Durchlaufs zurück, und eine Änderung der Abstände mit ihr.
+
+### `Polylinie` (`P`) [#polyline]
+
+Fragt nach einer 2D-Polylinie und fast jede ihrer Ecken an, und meldet dann, wie viele Linien angefast wurden und warum einige nicht.
+
+### `Abstand` (`A`) [#distance]
+
+Fragt nach dem ersten und dem zweiten Fasenabstand. Der zweite bietet den ersten an, sodass die Eingabetaste dort die Schräge gleichmäßig macht, bei einer rechtwinkligen Ecke unter 45 Grad.
+
+### `MEHrere` (`MEH`) [#multiple]
+
+Fragt nach jeder Fase weiter nach einer ersten Linie, bis zur Eingabetaste oder Esc.
+
+## Was er noch nicht kann [#missing]
+
+Winkel, der die Schräge durch einen Abstand und einen Winkel festlegt, Methode und Stutzen: FASE arbeitet immer mit zwei Abständen und stutzt die Linien immer. Die Schräge übernimmt in AutoCAD den Linientypfaktor der zweiten Linie, hier nicht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm--de-fase--fa)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für FASE (CHAMFER) in AutoCAD?
+
+`FA`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_CHAMFER` in jeder Sprache von AutoCAD.
+
+### Wie mache ich in AutoCAD eine Fase von 45 Grad?
+
+Wählen Sie `Abstand`, tippen Sie den Abstand und drücken Sie beim zweiten die Eingabetaste: Bei einer rechtwinkligen Ecke ergeben zwei gleiche Abstände eine Schräge von 45 Grad.
+
+### Was ist der Unterschied zwischen FASE und ABRUNDEN?
+
+FASE verbindet zwei Linien mit einer geraden Schräge; [`ABRUNDEN`](/docs/commands/fillet) mit einem Bogen, der beide tangential berührt. Beide stutzen oder dehnen die Linien bis dorthin, und beide machen bei 0 oder mit gehaltener Umschalttaste bei der zweiten Linie eine scharfe Ecke.
+
+### Warum funktioniert FASE nicht?
+
+Er sagt, warum: `Fasenabstand ist zu groß`, wenn ein Abstand über das Ende seiner Linie hinausreicht, `Linien sind parallel` bei parallelen Linien und `Fase benötigt 2 Linien (keine Bogensegmente).` bei einem Bogen oder Kreis. Mit beiden Abständen 0 macht er eine Ecke, keine Schräge.
+
+### Wie fase ich jede Ecke eines Rechtecks an?
+
+Ein Rechteck ist eine Polylinie: Wählen Sie `Polylinie` und wählen Sie es, und jede Ecke wird mit den aktuellen Abständen angefast.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft)
+
+## Verwandte Befehle [#related]
+
+- [Befehl ABRUNDEN (FILLET) in AutoCAD](/docs/commands/fillet)
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl DEHNEN (EXTEND) in AutoCAD](/docs/commands/extend)
+- [Befehl GEFASTEKANTE (CHAMFEREDGE) in AutoCAD](/docs/commands/chamferedge)

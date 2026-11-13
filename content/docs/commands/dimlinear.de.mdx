@@ -1,0 +1,87 @@
+---
+title: "Befehl BEMLINEAR (DIMLINEAR) in AutoCAD"
+description: "Wie BEMLINEAR (DIMLINEAR, Alias BMLIN) in AutoCAD bemaßt: zwei Ursprünge oder ein Objekt, dann die Maßlinie, horizontal oder vertikal."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für BEMLINEAR (DIMLINEAR) in AutoCAD?","answer":"BMLIN, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _DIMLINEAR in jeder Sprache von AutoCAD."},{"question":"Welche Bemaßungsbefehle gibt es in AutoCAD?","answer":"BEMLINEAR für horizontale und vertikale Abstände, BEMAUSG für einen Abstand entlang einer schrägen Kante, BEMRADIUS und BEMDURCHM für Bögen und Kreise, BEMWINKEL für Winkel, BEMWEITER und BEMBASISL für Ketten, BEMPLATZ, um ihren Abstand anzugleichen, und BEMSTIL für ihr Aussehen. DIM von AutoCAD, das jede Art mit einer Eingabeaufforderung erzeugt, und QDIM, das viele Objekte auf einmal bemaßt, gibt es in MellowCAD noch nicht."},{"question":"Warum folgt die Bemaßung dem Objekt nicht, wenn ich es ändere?","answer":"Die Bemaßungen von MellowCAD sind noch nicht assoziativ, wie „Nicht-assoziative Bemaßung erstellt.“ sagt: Eine Bemaßung behält die Punkte, die ihr gegeben wurden. Strecken Sie sie gemeinsam: Fangen Sie das Ende, das Sie verschieben, und den Ursprung der Bemaßung dort in einem STRECKEN-Kreuzen-Fenster, und das Maß wird neu berechnet; oder ziehen Sie den Griff des Ursprungs an seine neue Stelle."},{"question":"Wie ändere ich die Größe von Bemaßungstext und Pfeilen?","answer":"Im Bemaßungsstil, wie in AutoCAD: BEMSTIL (D) öffnet die Bemaßungsstile, hier in der Palette Stile, wo AutoCAD den Bemaßungsstil-Manager hat. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil folgt."}]
+---
+
+BEMLINEAR (DIMLINEAR) misst den Abstand zwischen zwei Punkten entlang X oder entlang Y und zeichnet ihn als Bemaßung: zwei Maßhilfslinien, eine Maßlinie mit ihren Pfeilspitzen und das Maß darüber. Sie geben den ersten und den zweiten Ursprung der Maßhilfslinien an, dann die Lage der Maßlinie, und wo Sie sie platzieren, bestimmt die Richtung, wie in AutoCAD: über oder unter den beiden Punkten wird horizontal gemessen, daneben vertikal. Drücken Sie stattdessen bei der ersten Eingabeaufforderung die Eingabetaste und wählen Sie eine Linie, einen Bogen, ein Polyliniensegment oder einen Kreis: Seine zwei Enden oder der Durchmesser des Kreises sind die Ursprünge. Die Befehlszeile meldet dann das Maß, und der Befehl endet.
+
+Die Bemaßung wird im aktuellen Bemaßungsstil gezeichnet, in einer neuen Zeichnung ISO-25: ein Komma für Dezimalstellen und keine nachgestellten Nullen, wie AutoCAD sie in metrischen Zeichnungen schreibt. `BEMHORIZONTAL`, `BEMVERTIKAL` und `BEMDREHEN`, nur eingegeben, sind BEMLINEAR, auf eine Richtung festgelegt.
+
+- **Befehl:** `BEMLINEAR`
+- **Auf Englisch:** `DIMLINEAR`, in jeder Sprache als `_DIMLINEAR` eingegeben
+- **Aliasnamen:** `BMLIN`
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BMLIN` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="dimlinear" caption="Ein Rechteck, zweimal bemaßt: seine Oberkante durch ihre zwei Ecken, seine rechte Kante durch die Eingabetaste und eine Auswahl darauf." />
+
+## Optionen [#options]
+
+### `Text` (`T`) [#text]
+
+Fragt nach dem Text, der anstelle des Maßes geschrieben wird, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie eingeben, steht `<>` für das Maß, `<> mm` schreibt es also gefolgt von seiner Einheit.
+
+### `Winkel` (`W`) [#angle]
+
+Fragt nach dem Winkel des Texts, der dann in diesem Winkel statt entlang der Maßlinie gezeichnet wird. 0 legt ihn wieder entlang der Linie.
+
+### `Horizontal` (`H`) [#horizontal]
+
+Misst entlang X, wo auch immer Sie die Maßlinie platzieren, die horizontal bleibt; die Eingabeaufforderung bietet dann nur `Text` und `Winkel`.
+
+### `Vertikal` (`V`) [#vertical]
+
+Misst entlang Y, wo auch immer Sie die Maßlinie platzieren, die vertikal bleibt.
+
+### `Drehen` (`D`) [#rotated]
+
+Fragt nach dem Winkel der Maßlinie, standardmäßig `0`, und misst den Abstand zwischen den Ursprüngen entlang ihr. An einer schrägen Kante ergibt ihr eigener Winkel ihre Länge, wie [`BEMAUSG`](/docs/commands/dimaligned) es tut.
+
+## Was er noch nicht kann [#missing]
+
+Mtext: Der Text einer Bemaßung ist eine Zeile, in der Befehlszeile mit `Text` festgelegt, nie im Texteditor. Bei einem mit `Winkel` gesetzten Winkel zentriert AutoCAD den Text auf der Maßlinie; hier bleibt er darüber, wie ohne einen. Eine Bemaßung ist nicht assoziativ: Sie folgt dem Objekt, das sie misst, nicht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für BEMLINEAR (DIMLINEAR) in AutoCAD?
+
+`BMLIN`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_DIMLINEAR` in jeder Sprache von AutoCAD.
+
+### Welche Bemaßungsbefehle gibt es in AutoCAD?
+
+`BEMLINEAR` für horizontale und vertikale Abstände, [`BEMAUSG`](/docs/commands/dimaligned) für einen Abstand entlang einer schrägen Kante, [`BEMRADIUS`](/docs/commands/dimradius) und [`BEMDURCHM`](/docs/commands/dimdiameter) für Bögen und Kreise, [`BEMWINKEL`](/docs/commands/dimangular) für Winkel, [`BEMWEITER`](/docs/commands/dimcontinue) und [`BEMBASISL`](/docs/commands/dimbaseline) für Ketten, [`BEMPLATZ`](/docs/commands/dimspace), um ihren Abstand anzugleichen, und [`BEMSTIL`](/docs/commands/dimstyle) für ihr Aussehen. DIM von AutoCAD, das jede Art mit einer Eingabeaufforderung erzeugt, und QDIM, das viele Objekte auf einmal bemaßt, gibt es in MellowCAD noch nicht.
+
+### Warum folgt die Bemaßung dem Objekt nicht, wenn ich es ändere?
+
+Die Bemaßungen von MellowCAD sind noch nicht assoziativ, wie `Nicht-assoziative Bemaßung erstellt.` sagt: Eine Bemaßung behält die Punkte, die ihr gegeben wurden. Strecken Sie sie gemeinsam: Fangen Sie das Ende, das Sie verschieben, und den Ursprung der Bemaßung dort in einem [`STRECKEN`](/docs/commands/stretch)-Kreuzen-Fenster, und das Maß wird neu berechnet; oder ziehen Sie den Griff des Ursprungs an seine neue Stelle.
+
+### Wie ändere ich die Größe von Bemaßungstext und Pfeilen?
+
+Im Bemaßungsstil, wie in AutoCAD: [`BEMSTIL`](/docs/commands/dimstyle) (`D`) öffnet die Bemaßungsstile, hier in der Palette Stile, wo AutoCAD den Bemaßungsstil-Manager hat. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil folgt.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Dichtung](/docs/exercises/gasket)
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket)
+- [AutoCAD-Übung: eine Treppe im Grundriss](/docs/exercises/stairs)
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange)
+- [AutoCAD-Übung: ein runder Tisch mit Stühlen](/docs/exercises/round-table)
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft)
+- [AutoCAD-Übung: eine Lasche mit Tangenten](/docs/exercises/link)
+
+## Verwandte Befehle [#related]
+
+- [Befehl BEMAUSG (DIMALIGNED) in AutoCAD: ausgerichtet bemaßen](/docs/commands/dimaligned)
+- [Befehl BEMWEITER (DIMCONTINUE) in AutoCAD](/docs/commands/dimcontinue)
+- [Befehl BEMBASISL (DIMBASELINE) in AutoCAD](/docs/commands/dimbaseline)
+- [Befehl BEMRADIUS (DIMRADIUS) in AutoCAD](/docs/commands/dimradius)
+- [Befehl BEMSTIL (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

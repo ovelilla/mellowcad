@@ -3,5 +3,471 @@ import type { EditorLocale } from "./types"
 
 export const de: EditorLocale = {
   "tag": "de",
-  "messages": {}
+  "messages": {
+    "Workspace": {
+      "canvas": "CAD-Zeichenfläche"
+    },
+    "Keys": {
+      "save": "Strg+S",
+      "open": "Strg+O",
+      "undo": "Strg+Z",
+      "redo": "Strg+Y",
+      "commandLine": "Strg+9",
+      "cleanScreen": "Strg+0",
+      "cut": "Strg+X",
+      "copy": "Strg+C",
+      "copyBase": "Strg+Umschalt+C",
+      "paste": "Strg+V"
+    },
+    "TopBar": {
+      "menu": "Anwendungsmenü",
+      "new": "Neu",
+      "open": "Öffnen",
+      "save": "Speichern",
+      "saveAs": "Speichern unter",
+      "units": "Zeichnungseinheiten…",
+      "language": "Sprache",
+      "feedback": "Feedback senden",
+      "saving": "Wird gespeichert…",
+      "saved": "Gespeichert",
+      "savedHint": "Auf diesem Gerät gespeichert",
+      "undo": "Rückgängig",
+      "redo": "Wiederherstellen",
+      "commandLine": "Befehlszeile",
+      "layer": "Layer",
+      "color": "Objektfarbe",
+      "lineweight": "Linienstärke",
+      "linetype": "Linientyp"
+    },
+    "NavigationBar": {
+      "label": "Navigationsleiste",
+      "zoom": "Zoom",
+      "extents": "Zoom Grenzen",
+      "window": "Zoom Fenster",
+      "previous": "Zoom Vorher",
+      "in": "Vergrößern",
+      "out": "Verkleinern"
+    },
+    "Viewport": {
+      "view": [
+        "Ansichtssteuerung: ",
+        [
+          "name"
+        ]
+      ]
+    },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Start",
+      "parallel": "Parallel",
+      "setHome": "Aktuelle Ansicht als Startansicht festlegen",
+      "rollClockwise": "Im Uhrzeigersinn drehen",
+      "rollCounterclockwise": "Gegen den Uhrzeigersinn drehen",
+      "wcs": "WKS",
+      "unnamed": "Unbenannt",
+      "newUcs": "Neues BKS",
+      "adjacent": {
+        "up": "Fläche oben anzeigen",
+        "down": "Fläche unten anzeigen",
+        "left": "Fläche links anzeigen",
+        "right": "Fläche rechts anzeigen"
+      }
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "Kreis",
+        "arc": "Bogen",
+        "ellipse": "Ellipse",
+        "spline": "Spline",
+        "rectangle": "Rechteck",
+        "trim": "Stutzen",
+        "fillet": "Abrunden",
+        "filletedge": "Kante abrunden",
+        "solideditextrude": "Flächen extrudieren",
+        "break": "Bruch",
+        "pedit": "Polylinie bearbeiten",
+        "array": "Reihe",
+        "text": "Text",
+        "dimension": "Bemaßung",
+        "dimchain": "Weiter",
+        "attributes": "Attribute",
+        "measure": "Messen",
+        "union": "Volumenkörper bearbeiten",
+        "box": "Modellieren",
+        "extrude": "Extrusion",
+        "point": "Punkte"
+      },
+      "sections": {
+        "draw": "Zeichnen",
+        "modify": "Ändern",
+        "annotation": "Beschriftung",
+        "block": "Block",
+        "utilities": "Dienstprogramme"
+      }
+    },
+    "CommandLine": {
+      "label": "Befehlszeile",
+      "placeholder": "Befehl eingeben (LINIE, SU, KO…)",
+      "history": "Befehlsprotokoll"
+    },
+    "DynamicInput": {
+      "locked": "gesperrt"
+    },
+    "StatusBar": {
+      "coordinates": "Koordinaten",
+      "model": "MODELL",
+      "modelSpace": "Modellbereich",
+      "grid": "Raster",
+      "objectSnap": "Objektfang",
+      "objectSnapSettings": "Objektfang-Einstellungen",
+      "snapMode": "Fangmodus",
+      "snapSettings": "Fang-Einstellungen",
+      "snap": "Fang",
+      "gridSnap": "Rasterfang",
+      "polarSnap": "Polarfang",
+      "snapX": "Fang X",
+      "snapXSpacing": "Fang X-Abstand",
+      "snapY": "Fang Y",
+      "snapYSpacing": "Fang Y-Abstand",
+      "polarDistance": "Polare Entfernung",
+      "polarSnapDistance": "Polarfang-Entfernung",
+      "ortho": "Ortho-Modus",
+      "polarTracking": "Spurverfolgung",
+      "polarTrackingAngle": "Spurverfolgungswinkel",
+      "polarAngle": "Polarwinkel",
+      "objectSnapTracking": "Objektfangspur",
+      "selectionCycling": "Wechselnde Auswahl",
+      "selectionCyclingSettings": "Einstellungen für wechselnde Auswahl",
+      "selectionList": "Auswahlliste anzeigen",
+      "showLineweight": "Linienstärke anzeigen",
+      "units": "Einheiten",
+      "cleanScreen": "Vollbild",
+      "customization": "Benutzeranpassung"
+    },
+    "Units": {
+      "title": "Zeichnungseinheiten",
+      "length": "Länge",
+      "type": "Typ",
+      "precision": "Genauigkeit",
+      "decimal": "Dezimal",
+      "insertionScale": "Einfügungsmaßstab",
+      "insertedContent": "Einheiten zum Skalieren des eingefügten Inhalts:",
+      "millimeters": "Millimeter",
+      "centimeters": "Zentimeter",
+      "meters": "Meter",
+      "sampleOutput": "Beispiel-Ausgabe",
+      "ok": "OK",
+      "cancel": "Abbrechen"
+    },
+    "SaveAs": {
+      "title": "Speichern unter",
+      "fileName": "Dateiname:",
+      "fileType": "Dateityp:",
+      "tools": "Extras",
+      "options": "Optionen…",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "drawing": "MellowCAD-Zeichnung (*.ecad.json)",
+      "dxf2018": "AutoCAD 2018 DXF (*.dxf)",
+      "dxf2013": "AutoCAD 2013/LT2013 DXF (*.dxf)",
+      "dxf2010": "AutoCAD 2010/LT2010 DXF (*.dxf)",
+      "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
+      "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
+      "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "optionsTitle": "Optionen für Speichern als",
+      "dxfOptions": "DXF-Optionen",
+      "format": "Format",
+      "ascii": "ASCII",
+      "binary": "BINÄR",
+      "selectObjects": "Objekte wählen",
+      "preview": "Miniaturvoransicht speichern",
+      "precision": "Anzahl Dezimalstellen (0 bis 16)",
+      "ok": "OK"
+    },
+    "SnapOverride": {
+      "from": "Von",
+      "pointFilters": "Punktfilter",
+      "none": "Keine"
+    },
+    "SelectionCycling": {
+      "title": "Auswahl",
+      "none": "Keine"
+    },
+    "ShortcutMenu": {
+      "label": "Kontextmenü",
+      "repeat": [
+        [
+          "command"
+        ],
+        " wiederholen"
+      ],
+      "clipboard": "Zwischenablage",
+      "copyBase": "Kopieren mit Basispunkt",
+      "paste": "Einfügen",
+      "undo": "Rückgängig",
+      "redo": "Wiederherstellen",
+      "copySelection": "Auswahl kopieren",
+      "deselectAll": "Auswahl aufheben",
+      "properties": "Eigenschaften",
+      "enter": "Eingabe",
+      "cancel": "Abbrechen",
+      "snapOverrides": "OFang-Überschreibungen",
+      "dimensionStyle": "Bemaßungsstil"
+    },
+    "Layers": {
+      "title": "Layer",
+      "new": "Neuer Layer",
+      "setCurrentLabel": [
+        [
+          "name"
+        ],
+        " als aktuellen Layer festlegen"
+      ],
+      "current": "Aktueller Layer",
+      "setCurrent": "Als aktuell festlegen",
+      "colorLabel": [
+        "Farbe von ",
+        [
+          "name"
+        ]
+      ],
+      "color": "Layerfarbe",
+      "linetypeLabel": [
+        "Linientyp von ",
+        [
+          "name"
+        ]
+      ],
+      "lineweightLabel": [
+        "Linienstärke von ",
+        [
+          "name"
+        ]
+      ],
+      "on": "Ein",
+      "off": "Aus",
+      "unlocked": "Ungesperrt",
+      "locked": "Gesperrt",
+      "deleteLabel": [
+        "Layer ",
+        [
+          "name"
+        ],
+        " löschen"
+      ],
+      "delete": "Layer löschen",
+      "rename": "Erneut auf den Namen des ausgewählten Layers klicken, um ihn umzubenennen",
+      "renameLabel": [
+        "Layer ",
+        [
+          "name"
+        ],
+        " umbenennen"
+      ],
+      "list": "Layerliste",
+      "nextColumns": "Nächste Spalten",
+      "previousColumns": "Vorherige Spalten",
+      "dialog": {
+        "close": "Schließen",
+        "notDeleted": {
+          "title": "Layer - Nicht gelöscht",
+          "instruction": "Der ausgewählte Layer wurde nicht gelöscht.",
+          "content": "Die folgenden Layer können nicht gelöscht werden:",
+          "base": "Layer 0 und Defpoints",
+          "current": "Der aktuelle Layer",
+          "inUse": "Layer, die Objekte enthalten",
+          "xref": "Layer, die von Xrefs abhängig sind"
+        },
+        "currentOff": {
+          "title": "Layer - Aktueller Layer ausgeschaltet",
+          "instruction": "Der aktuelle Layer wird ausgeschaltet. Was möchten Sie tun?",
+          "turnOff": "Aktuellen Layer ausschalten",
+          "turnOffNote": "Objekte, die Sie ab jetzt erstellen, werden in der Zeichnung nicht angezeigt, bis Sie den Layer wieder einschalten.",
+          "keepOn": "Aktuellen Layer eingeschaltet lassen"
+        },
+        "nameInUse": {
+          "title": "Layer - Name bereits vorhanden",
+          "instruction": [
+            "Der Name ",
+            [
+              "name"
+            ],
+            " wird bereits verwendet."
+          ],
+          "content": "Sie müssen einen anderen Namen eingeben."
+        },
+        "invalidName": {
+          "title": "Layer",
+          "instruction": "Ungültige Zeichen im Layernamen.",
+          "content": "Die folgenden Zeichen sind in Layernamen nicht zulässig:"
+        },
+        "cannotRename": {
+          "title": "Layer - Umbenennen",
+          "instruction": "Der ausgewählte Layer kann nicht umbenannt werden.",
+          "content": "Die folgenden Layer können nicht umbenannt werden:",
+          "base": "Layer 0",
+          "xref": "Layer, die von Xrefs abhängig sind"
+        }
+      },
+      "columns": {
+        "status": "Status",
+        "name": "Name",
+        "on": "Ein",
+        "lock": "Sperre",
+        "color": "Farbe",
+        "linetype": "Linientyp",
+        "lineweight": "Linienstärke",
+        "objects": "Objekte"
+      }
+    },
+    "Styles": {
+      "title": "Stile",
+      "dimension": "Bemaßung",
+      "text": "Text",
+      "current": [
+        "Aktuell: ",
+        [
+          "value",
+          [
+            "name"
+          ]
+        ]
+      ],
+      "new": "Neu",
+      "setCurrent": [
+        [
+          "name"
+        ],
+        " als aktuell festlegen"
+      ],
+      "rename": [
+        [
+          "name"
+        ],
+        " umbenennen"
+      ],
+      "delete": [
+        [
+          "name"
+        ],
+        " löschen"
+      ],
+      "lines": "Linien",
+      "baselineSpacing": "Basislinienabstand",
+      "extendBeyond": "Über Bemaßungslinien hinaus erweitern",
+      "offsetFromOrigin": "Abstand von Ursprung",
+      "symbolsAndArrows": "Symbole und Pfeile",
+      "arrowSize": "Pfeilgröße",
+      "centerMark": "Größe der Mittelpunktmarkierung",
+      "textGroup": "Text",
+      "textHeight": "Texthöhe",
+      "offsetFromDimLine": "Abstand von Bem.-Linie",
+      "fit": "Anpassen",
+      "overallScale": "Globaler Skalierfaktor",
+      "drawDimLineBetween": "Bemaßungslinie zwischen Hilfslinien",
+      "primaryUnits": "Primäreinheiten",
+      "precision": "Genauigkeit",
+      "angularPrecision": "Winkelgenauigkeit",
+      "decimalSeparator": "Dezimaltrennzeichen",
+      "comma": "',' (Komma)",
+      "period": "'.' (Punkt)",
+      "space": "' ' (Leerzeichen)",
+      "suppressTrailingZeros": "Nullen nach Komma unterdrücken",
+      "yes": "Ja",
+      "no": "Nein",
+      "size": "Größe",
+      "height": "Höhe",
+      "heightHint": "Bei einer Höhe von 0 bleibt sie frei, daher fragt TEXT jedes Mal danach."
+    },
+    "Blocks": {
+      "title": "Blöcke",
+      "filter": "Filter (? und * zulässig)",
+      "filterLabel": "Blöcke filtern",
+      "empty": "Keine Blöcke definiert. Zeichnen Sie etwas und führen Sie BLOCK aus.",
+      "noMatch": "Kein Block entspricht dem Filter.",
+      "references": [
+        [
+          "name"
+        ],
+        " — ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " in der Zeichnung"
+            ],
+            "other": [
+              0,
+              " in der Zeichnung"
+            ]
+          }
+        ]
+      ]
+    },
+    "Properties": {
+      "noSelection": "Keine Auswahl",
+      "general": "Allgemein",
+      "color": "Farbe",
+      "colorLabel": "Farbe der ausgewählten Objekte",
+      "layer": "Layer",
+      "layerLabel": "Layer der ausgewählten Objekte",
+      "linetype": "Linientyp",
+      "linetypeLabel": "Linientyp der ausgewählten Objekte",
+      "lineweight": "Linienstärke",
+      "lineweightLabel": "Linienstärke der ausgewählten Objekte",
+      "textStyle": "Textstil",
+      "textStyleLabel": "Textstil der ausgewählten Objekte",
+      "dimStyle": "Bem-Stil",
+      "dimStyleLabel": "Bemaßungsstil der ausgewählten Objekte",
+      "varies": "*VARIIERT*",
+      "customColor": "Benutzerspezifische Farbe",
+      "title": "Eigenschaften",
+      "objectType": "Objekttyp",
+      "currentLayerLabel": "Aktueller Layer",
+      "currentColorLabel": "Aktuelle Farbe",
+      "currentLinetypeLabel": "Aktueller Linientyp",
+      "currentLineweightLabel": "Aktuelle Linienstärke",
+      "lockedObjects": {
+        "title": "Eigenschaften - Gesperrte Objekte",
+        "instruction": "Mindestens ein ausgewähltes Objekt ist gesperrt und kann nicht aktualisiert werden.",
+        "content": [
+          "Anzahl der aus dem Auswahlsatz entfernten Objekte: ",
+          [
+            "count",
+            4
+          ]
+        ],
+        "close": "Schließen"
+      }
+    },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Mehrzeiliger Text - Nicht gespeicherte Änderungen",
+        "instruction": "Möchten Sie die Textänderungen speichern?",
+        "yes": "Ja",
+        "no": "Nein",
+        "cancel": "Abbrechen"
+      }
+    },
+    "Palette": {
+      "label": "Paletten",
+      "fold": "Paletten einklappen",
+      "unfold": "Paletten anzeigen",
+      "resize": "Palettenbreite"
+    },
+    "PointStyle": {
+      "title": "Punktstil",
+      "figures": "Punktdarstellungsbilder",
+      "pointSize": "Punktgröße:",
+      "relative": "Größe verhältnismäßig zum Bildschirm einstellen",
+      "absolute": "Größe in absoluten Einheiten einstellen",
+      "percent": "%",
+      "units": "Einheiten",
+      "invalid": "Ungültige Eingabe.",
+      "ok": "OK",
+      "cancel": "Abbrechen"
+    }
+  }
 }

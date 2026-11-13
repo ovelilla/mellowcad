@@ -1,0 +1,92 @@
+---
+title: "Befehl ROTATION (REVOLVE) in AutoCAD"
+description: "So dreht AutoCADs ROTATION (REVOLVE, Alias ROT) ein 2D-Profil um eine Achse zum 3D-Volumenkörper: Achse, Objekt, X, Y, Z. Gratis im Browser testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für ROTATION (REVOLVE) in AutoCAD?","answer":"ROT, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _REVOLVE in jeder Sprache von AutoCAD. Vorsicht: In der deutschen AutoCAD-Version dreht DREHEN (ROTATE) Objekte in der Ebene; ROTATION (REVOLVE) macht daraus 3D-Volumenkörper."},{"question":"Wie drehe ich ein Profil um eine Achse?","answer":"Zeichnen Sie den halben Schnitt als ein geschlossenes Objekt neben der Achsenlinie, eine geschlossene Polylinie oder eine Region. Starten Sie ROTATION, wählen Sie das Profil und drücken Sie die Eingabetaste; drücken Sie erneut die Eingabetaste für Objekt und wählen Sie die Achsenlinie, oder geben Sie ihre beiden Enden an; dann die Eingabetaste für eine ganze Umdrehung."},{"question":"Warum funktioniert ROTATION nicht?","answer":"Meistens kreuzt die Achse das Profil: ROTATION meldet „Das Objekt sollte sich auf einer Seite der Achse befinden.“ und endet. Verschieben Sie die Achse an den Rand des Profils oder darüber hinaus; eine Kante, die auf der Achse liegt, ist erlaubt. Eine Achse senkrecht zur Ebene des Profils ergibt „Die Drehachse ist lotrecht zur Ebene der Drehkurve.“, und ein offenes Profil wird abgelehnt, da MellowCAD noch keine Flächen hat."},{"question":"Wie drehe ich nur einen Teil einer Umdrehung?","answer":"Tippen Sie den Winkel, 90 oder 270, bei der Winkel-Eingabeaufforderung. STartwinkel beginnt die Drehung weiter hinten, und Umkehren dreht sie in die andere Richtung."}]
+---
+
+ROTATION (REVOLVE) dreht geschlossene 2D-Profile um eine Achse zu 3D-Volumenkörpern: Ein Rechteck mit einer Kante auf der Achse ergibt einen Zylinder, ein Kreis daneben einen Ring. Wählen Sie die Profile aus, Kreise, Ellipsen, geschlossene Polylinien oder Splines, Regionen, und drücken Sie die Eingabetaste; geben Sie die Achse durch zwei Punkte oder eine ihrer Optionen an, dann den Winkel, wobei die Eingabetaste eine ganze Umdrehung nimmt. Jedes Profil wird zu einem Volumenkörper auf dem aktuellen Layer und gelöscht, wie DELOBJ es standardmäßig vorgibt. Der ganze Befehl ist ein Schritt, den Rückgängig zurücknimmt.
+
+Die Achse liegt in der Ebene des Profils, mit dem ganzen Profil auf einer Seite, sonst endet der Befehl mit `Das Objekt sollte sich auf einer Seite der Achse befinden.`, bevor ein Winkel abgefragt wird. Der Winkel dreht nach der Rechte-Hand-Regel um die Achse, von ihrem ersten zu ihrem zweiten Punkt; ein negativer dreht in die andere Richtung. MellowCADs 3D besteht nur aus Volumenkörpern und ist noch unvollständig: Offene Profile, die AutoCAD zu Flächen dreht, werden abgelehnt.
+
+- **Befehl:** `ROTATION`
+- **Auf Englisch:** `REVOLVE`, in jeder Sprache als `_REVOLVE` eingegeben
+- **Aliasnamen:** `ROT`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `ROT` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="revolve" caption="Ein Profil mit Flansch, eine ganze Umdrehung um die Y-Achse gedreht: eine Spule, von Südosten im visuellen Stil Hidden gesehen." />
+
+## Optionen [#options]
+
+### `MOdus` (`MO`) [#mode]
+
+Fragt nach `Volumenkörper` oder `Fläche`, wie [`EXTRUSION`](/docs/commands/extrude) es tut: Solange es noch keine Flächenobjekte gibt, wird nur `Volumenkörper`, die Vorgabe, angenommen.
+
+### `Objekt` (`O`) [#object]
+
+Die Vorgabe der Achsen-Eingabeaufforderung, sodass die Eingabetaste sie wählt: Wählen Sie eine Linie, eine Polylinie, einen Bogen oder einen Spline, und die Achse verläuft gerade zwischen deren beiden Enden, vom Ende, das Ihrer Wahl näher liegt. Ein geschlossenes Objekt hat keine Enden: `Achsrichtung kann nicht aus einem/einer geschlossenen Bogen oder Kante abgerufen werden.`, und der Befehl endet.
+
+### `X` [#x]
+
+Die X-Achse des BKS, durch seinen Ursprung.
+
+### `Y` [#y]
+
+Die Y-Achse des BKS, durch seinen Ursprung: Ein Profil, das rechts davon gezeichnet ist, wie in der Sitzung, wird zu einem Teil, das entlang Y liegt.
+
+### `Z` [#z]
+
+Die Z-Achse des BKS, durch seinen Ursprung. Ein Profil auf der XY-Ebene des BKS steht senkrecht dazu, sodass ROTATION mit `Die Drehachse ist lotrecht zur Ebene der Drehkurve.` antwortet und endet: Z ist für ein Profil, das aufrecht steht.
+
+### `STartwinkel` (`ST`) [#start]
+
+Bei der Winkel-Eingabeaufforderung: der Winkel, bei dem begonnen wird, seine Vorgabe ist immer 0. Das Profil wird zuerst dorthin gedreht, dann wird der Winkel erneut abgefragt.
+
+### `Umkehren` (`U`) [#reverse]
+
+Dreht die Achse um, sodass der Winkel in die andere Richtung läuft, und fragt den Winkel erneut.
+
+### `Ausdruck` (`A`) [#expression]
+
+Der Winkel als arithmetischer Ausdruck, wie bei [`EXTRUSION`](/docs/commands/extrude).
+
+## Was er noch nicht kann [#missing]
+
+Eine Achse außerhalb der Ebene des Profils, um die AutoCAD das Profil zu Flächen dreht: Hier meldet ROTATION `Kann gewähltes Objekt nicht rotieren.` und endet. Ein elliptischer Bogen oder eine Kante eines Volumenkörpers als Achse bei Objekt. Der Modus Fläche und offene Profile, da es noch keine Flächenobjekte gibt. Die Vorschau, die sich mit dem Cursor dreht: Während Sie den Winkel angeben, wird die ganze Umdrehung gezeigt. [`URSPRUNG`](/docs/commands/explode) eines gedrehten Volumenkörpers, den AutoCAD in Flächen und Regionen zerlegt. Seine Griffe und sein Winkel, bearbeitet in der Eigenschaften-Palette.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#revolve--rev--es-revolucion--rv--pt-br-revolucao--rev--fr-revolution--rev--it-rivoluzione--riv--de-rotation--rot)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für ROTATION (REVOLVE) in AutoCAD?
+
+`ROT`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_REVOLVE` in jeder Sprache von AutoCAD. Vorsicht: In der deutschen AutoCAD-Version dreht DREHEN (ROTATE) Objekte in der Ebene; ROTATION (REVOLVE) macht daraus 3D-Volumenkörper.
+
+### Wie drehe ich ein Profil um eine Achse?
+
+Zeichnen Sie den halben Schnitt als ein geschlossenes Objekt neben der Achsenlinie, eine geschlossene Polylinie oder eine Region. Starten Sie ROTATION, wählen Sie das Profil und drücken Sie die Eingabetaste; drücken Sie erneut die Eingabetaste für `Objekt` und wählen Sie die Achsenlinie, oder geben Sie ihre beiden Enden an; dann die Eingabetaste für eine ganze Umdrehung.
+
+### Warum funktioniert ROTATION nicht?
+
+Meistens kreuzt die Achse das Profil: ROTATION meldet `Das Objekt sollte sich auf einer Seite der Achse befinden.` und endet. Verschieben Sie die Achse an den Rand des Profils oder darüber hinaus; eine Kante, die auf der Achse liegt, ist erlaubt. Eine Achse senkrecht zur Ebene des Profils ergibt `Die Drehachse ist lotrecht zur Ebene der Drehkurve.`, und ein offenes Profil wird abgelehnt, da MellowCAD noch keine Flächen hat.
+
+### Wie drehe ich nur einen Teil einer Umdrehung?
+
+Tippen Sie den Winkel, 90 oder 270, bei der Winkel-Eingabeaufforderung. `STartwinkel` beginnt die Drehung weiter hinten, und `Umkehren` dreht sie in die andere Richtung.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung 3D: eine Riemenscheibe](/docs/exercises/pulley)
+
+## Verwandte Befehle [#related]
+
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Befehl KLICKZIEHEN (PRESSPULL) in AutoCAD](/docs/commands/presspull)
+- [Befehl REGION in AutoCAD](/docs/commands/region)
+- [Befehl VEREINIG (UNION) in AutoCAD](/docs/commands/union)

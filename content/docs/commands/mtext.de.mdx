@@ -1,0 +1,79 @@
+---
+title: "Befehl MTEXT (Absatztext) in AutoCAD"
+description: "So arbeitet AutoCADs MTEXT (Alias T): zwei Ecken oder Breite, Höhe, Ausrichten und Zeilenabstand, Absätze umbrochen in einem Objekt. Online gratis testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für MTEXT in AutoCAD?","answer":"T oder MT, danach Eingabetaste oder Leertaste; _MTEXT in jeder Sprache von AutoCAD. -MTEXT, -T, fragt dasselbe und nimmt den Text in der Befehlszeile entgegen."},{"question":"Wie beginne ich in Absatztext eine neue Zeile?","answer":"Drücken Sie die Eingabetaste: Sie beginnt einen neuen Absatz. Innerhalb eines Absatzes werden die Zeilen von selbst an der Breite des Rahmens umbrochen. Strg+Eingabe oder ein Klick außerhalb des Rahmens schließt den Editor und behält den Text."},{"question":"Wie ändere ich die Breite von Absatztext?","answer":"Wählen Sie ihn aus und ziehen Sie den Griff an seiner Seite: Der Text wird neu umbrochen, während sich die Breite ändert, um seinen Ausrichtungspunkt. Die Definierte Breite der Eigenschaften-Palette tut es per Zahl, und ihre Zeilen zum Zeilenabstand ändern den Abstand."},{"question":"Wie wandle ich MTEXT in einzeiligen Text um?","answer":"Zerlegen Sie ihn mit URSPRUNG: Jede seiner Zeilen wird zu einem TEXT, linksbündig dort, wo die Zeile stand, wie AutoCAD es tut. Doppelklicken Sie ihn stattdessen, um ihn in seinem Editor neu zu tippen."}]
+---
+
+MTEXT (in der deutschen AutoCAD-Version ebenfalls MTEXT, mit den Aliasen `MT` und `T`) schreibt mehrzeiligen Text, Absatztext: ein Objekt mit Absätzen, die auf eine Breite umbrochen werden. Sie wählen eine erste Ecke und die gegenüberliegende, und der Rahmen dazwischen legt die Breite fest; dann tippen Sie in einem an Ort und Stelle gezeichneten Editor, in dem die Eingabetaste einen neuen Absatz beginnt und Strg+Eingabe oder ein Klick außerhalb des Rahmens den Text behält. Esc mit getipptem Text fragt, ob er gespeichert werden soll, wie AutoCADs Dialogfeld Nicht gespeicherte Änderungen. Für Zeilen, die je ein eigenes Objekt sind, verwenden Sie [`TEXT`](/docs/commands/text).
+
+Die erste Zeile nennt den aktuellen Stil und die Höhe. Jede Option wird bei der Eingabeaufforderung der gegenüberliegenden Ecke gefragt und kehrt zu ihr zurück, sodass ein Durchlauf Höhe, Ausrichtung und den Rest festlegt, bevor der Rahmen geschlossen wird. Wörter werden umbrochen, wo eine Zeile die Breite überschreiten würde, und ein Wort, das länger als die Breite ist, ragt darüber hinaus. Die Höhe teilt sich [`TEXT`](/docs/commands/text) und wird in der Zeichnung gespeichert; Ausrichtung, Drehung und Zeilenabstand beginnen bei jedem Durchlauf mit ihren Vorgaben. `-MTEXT` fragt dasselbe und nimmt dann den Text in der Befehlszeile entgegen, Zeile für Zeile.
+
+- **Befehl:** `MTEXT`
+- **Aliasnamen:** `MT`, `T`
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `T` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="mtext" caption="Eine Notiz in einem Rahmen: zuerst die Höhe, dann die gegenüberliegende Ecke und ein Absatz, der auf die Breite dazwischen umbrochen wird." />
+
+## Optionen [#options]
+
+### `Höhe` (`H`) [#height]
+
+Legt die Texthöhe fest, getippt oder als Abstand von der ersten Ecke zu einem Punkt; sie muss größer als null sein. Sie bleibt für den nächsten Durchlauf und für [`TEXT`](/docs/commands/text).
+
+### `Ausrichten` (`A`) [#justify]
+
+Legt fest, an welchem der neun Punkte des Rahmens der Text hängt: standardmäßig oben links, oder oben, Mitte und unten bei links, zentriert und rechts, wie die Eingabeaufforderung sie auflistet. Der Text hängt an diesem Punkt des Rahmens, in welche Richtung der Rahmen auch aufgezogen wurde.
+
+### `Zeilenabstand` (`Z`) [#line-spacing]
+
+Fragt nach der Art, Mindestens (die Vorgabe), die Platz für eine Zeile mit höheren Buchstaben lässt, oder Genau, dann nach einem Faktor mit einem x, etwa `2x`, oder einem Abstand. Einfacher Abstand ist 1x, und der Faktor reicht von 0,25x bis 4x.
+
+### `Drehen` (`D`) [#rotation]
+
+Dreht den Rahmen und seinen Text, um einen getippten oder von der ersten Ecke aus angegebenen Winkel.
+
+### `STil` (`ST`) [#style]
+
+Macht einen Textstil aktuell, nach Namen; `?` listet die Stile der Zeichnung auf, und ein Name, den es nicht gibt, wird abgelehnt. Stile werden in der Palette erstellt, die [`STIL`](/docs/commands/style) öffnet.
+
+### `Breite` (`B`) [#width]
+
+Fragt statt nach der gegenüberliegenden Ecke nach der Breite, getippt oder als Abstand zu einem Punkt, und öffnet dann den Editor. Eine Breite von 0 oder die Eingabetaste lässt die Zeilen unumbrochen, jede so lang wie getippt.
+
+## Was er noch nicht kann [#missing]
+
+Spalten, die AutoCAD 2027 bei der Eingabeaufforderung der gegenüberliegenden Ecke auflistet, werden nicht angeboten. Formatierung innerhalb des Textes, etwa Höhe, Schriftart oder Farbe eines Wortes, gestapelte Brüche oder Unterstreichung, wird nicht gezeichnet oder angewendet, und der Editor hat kein Lineal, keine Tabulatoren, Einzüge, Listen oder Registerkarte Texteditor im Menüband, auch keine Einfügemarke in der Zeichnung. Es gibt keine Hintergrundmaske und keinen Textrahmen, keine definierte Höhe, keine annotative Skalierung und keinen Objektfang Node an seinen Ecken, und ein Klick innerhalb seines Rahmens wählt ihn auch abseits seiner Buchstaben, wo AutoCAD nichts wählt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t--fr-textmult--tt--tx---textmult---tx--it-testom--tsm--tstm--mtext---testom--de-mtext--mt--t---mtext---t)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für MTEXT in AutoCAD?
+
+`T` oder `MT`, danach Eingabetaste oder Leertaste; `_MTEXT` in jeder Sprache von AutoCAD. `-MTEXT`, `-T`, fragt dasselbe und nimmt den Text in der Befehlszeile entgegen.
+
+### Wie beginne ich in Absatztext eine neue Zeile?
+
+Drücken Sie die Eingabetaste: Sie beginnt einen neuen Absatz. Innerhalb eines Absatzes werden die Zeilen von selbst an der Breite des Rahmens umbrochen. Strg+Eingabe oder ein Klick außerhalb des Rahmens schließt den Editor und behält den Text.
+
+### Wie ändere ich die Breite von Absatztext?
+
+Wählen Sie ihn aus und ziehen Sie den Griff an seiner Seite: Der Text wird neu umbrochen, während sich die Breite ändert, um seinen Ausrichtungspunkt. Die Definierte Breite der Eigenschaften-Palette tut es per Zahl, und ihre Zeilen zum Zeilenabstand ändern den Abstand.
+
+### Wie wandle ich MTEXT in einzeiligen Text um?
+
+Zerlegen Sie ihn mit [`URSPRUNG`](/docs/commands/explode): Jede seiner Zeilen wird zu einem [`TEXT`](/docs/commands/text), linksbündig dort, wo die Zeile stand, wie AutoCAD es tut. Doppelklicken Sie ihn stattdessen, um ihn in seinem Editor neu zu tippen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl TEXT (DTEXT) in AutoCAD: einzeiliger Text](/docs/commands/text)
+- [Befehl TEXTBEARB (TEXTEDIT) in AutoCAD](/docs/commands/textedit)
+- [Befehl STIL (STYLE) in AutoCAD](/docs/commands/style)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)

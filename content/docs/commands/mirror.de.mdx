@@ -1,0 +1,66 @@
+---
+title: "Befehl SPIEGELN (MIRROR) in AutoCAD"
+description: "So arbeitet AutoCADs SPIEGELN (MIRROR, Alias SP): auswählen, zwei Punkte der Spiegelachse, dann die Quelle behalten oder löschen. Text bleibt lesbar."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für SPIEGELN (MIRROR) in AutoCAD?","answer":"SP, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _MIRROR in jeder Sprache von AutoCAD."},{"question":"Wie spiegele ich, ohne dass der Text rückwärts lesbar wird?","answer":"Sie müssen nichts tun: Wie in AutoCAD mit MIRRTEXT auf 0 bleibt ein gespiegelter Text normal lesbar, dort platziert, wo die Spiegelung seines Rahmens liegt."},{"question":"Wie spiegele ich und lösche das Original?","answer":"Antworten Sie Ja, wenn SPIEGELN fragt, ob die Quellobjekte gelöscht werden sollen."},{"question":"Wie spiegele ich waagerecht oder senkrecht?","answer":"Schalten Sie Ortho ein (F8) und geben Sie die zwei Punkte der Spiegelachse entlang der Achse an, an der gespiegelt werden soll: Eine senkrechte Linie spiegelt links und rechts, eine waagerechte oben und unten."}]
+---
+
+SPIEGELN (MIRROR) spiegelt die gewählten Objekte an einer Linie: Wählen Sie sie, geben Sie den ersten und den zweiten Punkt der Spiegelachse an und sagen Sie dann, ob die Quellobjekte gelöscht werden sollen. Die Spiegelung ist eine Kopie, und mit der Vorgabe Nein bleiben die Originale, so zeichnet man ein symmetrisches Teil in Hälften. Die beiden Punkte werden in der Draufsicht des BKS genommen, sodass eine bei eingeschaltetem Ortho gezeichnete Spiegelachse genau waagerecht oder senkrecht spiegelt. Wie in AutoCAD mit MIRRTEXT auf 0, seiner Vorgabe, bleibt ein Text in der Spiegelung von links nach rechts lesbar, und eine Schraffur behält den Winkel ihres Musters. Der Durchlauf ist ein Schritt, den Rückgängig zurücknimmt.
+
+- **Befehl:** `SPIEGELN`
+- **Auf Englisch:** `MIRROR`, in jeder Sprache als `_MIRROR` eingegeben
+- **Aliasnamen:** `SP`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `SP` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="mirror" caption="Ein geschlossener Umriss an einer senkrechten Spiegelachse gespiegelt, die Quelle behalten." />
+
+## Optionen [#options]
+
+### `Ja` (`J`) [#yes]
+
+Löscht die Quellobjekte, sodass nur die Spiegelung bleibt: ein Umklappen an Ort und Stelle.
+
+### `Nein` (`N`) [#no]
+
+Die Vorgabe: behält die Quellobjekte neben ihrer Spiegelung.
+
+## Was er noch nicht kann [#missing]
+
+MIRRTEXT und MIRRHATCH bleiben auf 0: Text wird nie rückwärts lesbar gespiegelt, und ein Schraffurmuster wird nie gespiegelt. Ein Text in einer gespiegelten Blockreferenz dreht sich zurück, um lesbar zu sein, wie ein einzelner es tut, wo AutoCAD ihn mit dem Block spiegelt. Eine gespiegelte Ellipse behält ihre Normale, sodass ihr Startwinkel und Endwinkel anders lauten als bei AutoCAD für dieselbe Kurve. Solange die Spiegelung dem Cursor folgt, trägt sie die Farbe jedes Objekts, nicht seinen Linientyp oder seine Linienstärke.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp--fr-miroir--mi--it-specchio--sp--de-spiegeln--sp)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für SPIEGELN (MIRROR) in AutoCAD?
+
+`SP`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_MIRROR` in jeder Sprache von AutoCAD.
+
+### Wie spiegele ich, ohne dass der Text rückwärts lesbar wird?
+
+Sie müssen nichts tun: Wie in AutoCAD mit MIRRTEXT auf 0 bleibt ein gespiegelter Text normal lesbar, dort platziert, wo die Spiegelung seines Rahmens liegt.
+
+### Wie spiegele ich und lösche das Original?
+
+Antworten Sie `Ja`, wenn SPIEGELN fragt, ob die Quellobjekte gelöscht werden sollen.
+
+### Wie spiegele ich waagerecht oder senkrecht?
+
+Schalten Sie Ortho ein (F8) und geben Sie die zwei Punkte der Spiegelachse entlang der Achse an, an der gespiegelt werden soll: Eine senkrechte Linie spiegelt links und rechts, eine waagerechte oben und unten.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: eine Stufenwelle](/docs/exercises/shaft)
+
+## Verwandte Befehle [#related]
+
+- [Befehl KOPIEREN (COPY) in AutoCAD](/docs/commands/copy)
+- [Befehl DREHEN (ROTATE) in AutoCAD](/docs/commands/rotate)
+- [Befehl SCHIEBEN (MOVE) in AutoCAD](/docs/commands/move)
+- [Befehl REIHEKREIS (ARRAYPOLAR) in AutoCAD](/docs/commands/arraypolar)

@@ -1,0 +1,63 @@
+---
+title: "Befehl 3DPOLY in AutoCAD"
+description: "So arbeitet AutoCADs 3DPOLY (3DP): 3D-Polylinie aus geraden Segmenten, jeder Punkt mit eigener Z-Höhe, Schließen, Zurück, und der Unterschied zu PLINIE."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für 3DPOLY in AutoCAD?","answer":"3DP, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _3DPOLY in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen PLINIE und 3DPOLY?","answer":"Eine PLINIE liegt in einer Ebene und kann Bögen und Breiten haben. Eine 3D-Polylinie hat nur gerade Segmente, aber jeder Scheitelpunkt kann auf einer anderen Höhe liegen: ein Rohrverlauf, die Mittellinie einer Straße, ein Kabel."},{"question":"Wie zeichne ich eine 3D-Polylinie auf unterschiedlichen Höhen?","answer":"Tippen Sie jeden Punkt mit seinem Z, x,y,z, oder fangen Sie auf Objekte in den gewünschten Höhen. Bei dynamischer Eingabe ist ein Punkt nach dem ersten relativ: 60,0,15 geht 60 entlang X und 15 nach oben vom letzten aus."},{"question":"Wie mache ich eine 3D-Polylinie glatt?","answer":"Bearbeiten Sie sie mit PEDIT und wählen Sie ihre Spline-Kurve: eine glatte Kurve, von den Scheitelpunkten umrahmt. Decurve macht sie wieder gerade."}]
+---
+
+3DPOLY zeichnet eine 3D-Polylinie: gerade Segmente durch Punkte, die jeweils eine eigene Z-Höhe haben, als ein Objekt. Geben Sie den Startpunkt an, dann für jedes Segment einen Endpunkt, bis die Eingabetaste endet; auch ein Startpunkt allein bleibt erhalten, als Polylinie aus einem Scheitelpunkt. Die Eingabetaste beim Startpunkt wird mit `Ungültiger Punkt.` abgewiesen: Es gibt keine Option Fortsetzen, die LINIE hat. Ein mit Z getippter Punkt behält es, `30,0,15`; ein ohne Z getippter oder geklickter liegt auf der Höhe der Arbeitsebene, und ein auf ein Objekt gefangener Punkt übernimmt dort das Z des Objekts. Punkte werden im aktuellen BKS gelesen.
+
+Anders als eine [`PLINIE`](/docs/commands/pline) hat sie keine Ebene, keine Bögen, keine Breiten und keine Objekthöhe, und sie wird unabhängig von ihrem Linientyp, den sie behält, durchgehend gezeichnet. Die ganze Polylinie ist ein Schritt, den `Z` zurücknimmt; Esc behält, was gezeichnet wurde. PEDIT bearbeitet sie mit einer kürzeren Liste von Optionen, und seine Spline-Kurve passt ihr eine glatte Kurve an.
+
+- **Befehl:** `3DPOLY`
+- **Aliasnamen:** `3DP`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `3DP` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="3dpoly" caption="Eine 3D-Polylinie, die an jeder Ecke eines Rechtecks 60 mal 40 am Boden um 15 steigt, von Südosten gesehen." />
+
+## Optionen [#options]
+
+### `Schließen` (`S`) [#close]
+
+Ab dem zweiten Segment: zeichnet ein Segment zurück zum Startpunkt und endet.
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt den letzten Scheitelpunkt zurück und macht vom vorigen aus weiter. Ist kein Segment mehr da: `Alle Segmente bereits zurückgesetzt.`.
+
+## Was er noch nicht kann [#missing]
+
+Eine kurvenangepasste 3D-Polylinie zeigt in der Zeile Angleichen/Glätten der Eigenschaften-Palette Keine, was AutoCAD Quadratisch oder Kubisch nennt, und lässt sich dort nicht ändern. Sie kann keine Schraffurbegrenzung und kein Pfad von ARRAYPATH sein, und die Palette hat keine Zeile Material. Die dynamische Eingabe fragt den Startpunkt in einem Feld ab, sein Z nach einem zweiten Komma getippt, wo AutoCAD Felder für X, Y und Z zeigt. Die Hover-Menüs der Griffe, Strecken, Scheitelpunkt hinzufügen, Scheitelpunkt entfernen und der Rest.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3--fr-poly3d--3p--it-3dpoli--3p--de-3dpoly--3dp)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für 3DPOLY in AutoCAD?
+
+`3DP`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_3DPOLY` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen PLINIE und 3DPOLY?
+
+Eine [`PLINIE`](/docs/commands/pline) liegt in einer Ebene und kann Bögen und Breiten haben. Eine 3D-Polylinie hat nur gerade Segmente, aber jeder Scheitelpunkt kann auf einer anderen Höhe liegen: ein Rohrverlauf, die Mittellinie einer Straße, ein Kabel.
+
+### Wie zeichne ich eine 3D-Polylinie auf unterschiedlichen Höhen?
+
+Tippen Sie jeden Punkt mit seinem Z, `x,y,z`, oder fangen Sie auf Objekte in den gewünschten Höhen. Bei dynamischer Eingabe ist ein Punkt nach dem ersten relativ: `60,0,15` geht 60 entlang X und 15 nach oben vom letzten aus.
+
+### Wie mache ich eine 3D-Polylinie glatt?
+
+Bearbeiten Sie sie mit [`PEDIT`](/docs/commands/pedit) und wählen Sie ihre Spline-Kurve: eine glatte Kurve, von den Scheitelpunkten umrahmt. Decurve macht sie wieder gerade.
+
+## Verwandte Befehle [#related]
+
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl PEDIT (Polylinie bearbeiten) in AutoCAD](/docs/commands/pedit)
+- [Befehl SPLINE in AutoCAD](/docs/commands/spline)
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)

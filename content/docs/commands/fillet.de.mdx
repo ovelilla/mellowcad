@@ -1,0 +1,78 @@
+---
+title: "Befehl ABRUNDEN (FILLET) in AutoCAD"
+description: "So arbeitet AutoCADs ABRUNDEN (FILLET, Alias AR): Radius, zwei Linien, die Ecken einer Polylinie, Radius 0 und Mehrfach. Gratis im Browser testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für ABRUNDEN (FILLET) in AutoCAD?","answer":"AR, danach Eingabetaste oder Leertaste. Vorsicht: In der deutschen AutoCAD-Version ist F nicht ABRUNDEN, sondern FANG (SNAP). Auch der vollständige Name funktioniert, ebenso _FILLET in jeder Sprache von AutoCAD."},{"question":"Wie runde ich zwei Linien ab?","answer":"Wählen Sie Radius, tippen Sie ihn und wählen Sie dann jede Linie auf der Seite, die bleiben soll. Linien, die sich nicht treffen, werden bis zum Bogen gedehnt, und Linien, die sich kreuzen, werden bis zu ihm zurückgestutzt. Zwei parallele Linien werden von einem Halbkreis verbunden, welcher Radius auch gilt. Eine Linie und das Segment einer Polylinie werden zu einer Polylinie verbunden."},{"question":"Was bewirkt ein Abrundungsradius von 0?","answer":"Er macht eine scharfe Ecke: Jede Linie wird gestutzt oder gedehnt, bis sie sich treffen, und es wird kein Bogen gezeichnet. Für eine einzelne scharfe Ecke, ohne den Radius zu ändern, halten Sie bei der Wahl des zweiten Objekts die Umschalttaste gedrückt."},{"question":"Warum funktioniert ABRUNDEN nicht?","answer":"Er sagt in der Befehlszeile, warum. „Rundungsradius ist zu groß“ bedeutet, dass der Bogen nicht zwischen die Linien passt; „Zu Polylinien gehörende Linien müssen fortlaufend sein oder durch ein Segment getrennt sein“, dass zwei Segmente einer Polylinie zu weit auseinanderliegen; Text, Blöcke, Bemaßungen und Schraffuren werden abgelehnt, Objekte in unterschiedlicher Höhe gelten als nicht koplanar, und ein Objekt auf einem gesperrten Layer wird nicht genommen."},{"question":"Wie runde ich die Kanten eines 3D-Volumenkörpers ab?","answer":"Starten Sie ABRUNDKANTE: Wählen Sie Radius, wenn der Radius nicht der genannte ist, wählen Sie die Kanten des Volumenkörpers, drücken Sie dann die Eingabetaste und noch einmal die Eingabetaste, um die Abrundung zu übernehmen. Er arbeitet mit 3D-Volumenkörpern, die hier noch unvollständig sind."}]
+---
+
+ABRUNDEN (FILLET) rundet die Ecke zwischen zwei Objekten mit einem Bogen des angegebenen Radius ab und stutzt oder dehnt jedes Objekt bis dorthin. Seine erste Zeile nennt den Modus und den aktuellen Radius; dann wählen Sie das erste und das zweite Objekt, jedes auf der Seite, die bleiben soll, und der Befehl endet. Er nimmt Linien, Bögen, Kreise, Ellipsen, Splines und die Segmente einer 2D-Polylinie. Zwei Linien müssen sich nicht treffen: Sie werden bis zum Bogen gedehnt, wie in AutoCAD. Bei Radius 0, oder mit gehaltener Umschalttaste bei der zweiten Wahl, entsteht stattdessen eine scharfe Ecke.
+
+- **Befehl:** `ABRUNDEN`
+- **Auf Englisch:** `FILLET`, in jeder Sprache als `_FILLET` eingegeben
+- **Aliasnamen:** `AR`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `AR` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="fillet" caption="Vier Linien, dann Radius 15 und Mehrfach: zwei Ecken abgerundet, zwei bleiben scharf." />
+
+## Optionen [#options]
+
+### `rÜckgängig` (`Ü`) [#undo]
+
+Nimmt das letzte Abrunden, `Polylinie` oder die angegebenen Radien dieses ABRUNDEN zurück, eines nach dem anderen. Ist nichts mehr zurückzunehmen, meldet er `Der Befehl wurde vollständig gelöscht.`
+
+### `Polylinie` (`P`) [#polyline]
+
+Fragt nach einer 2D-Polylinie und rundet in einem Schritt jede Ecke ab, an der zwei ihrer Segmente zusammentreffen, und meldet dann, wie viele es abgerundet und wie viele es übergangen hat, parallele oder für den Radius zu kurze. Ein mit [`RECHTECK`](/docs/commands/rectang) gezeichnetes Rechteck ist eine solche Polylinie.
+
+### `Radius` (`R`) [#radius]
+
+Fragt nach dem Radius, auch bei der zweiten Eingabeaufforderung angeboten. Er gehört der Zeichnung (FILLETRAD): Das nächste ABRUNDEN beginnt mit ihm, und er wird mit der Zeichnung gespeichert. 0 ergibt scharfe Ecken; ein negativer Radius wird abgelehnt.
+
+### `Mehrere` (`M`) [#multiple]
+
+Fragt nach jedem Abrunden erneut nach dem ersten Objekt, sodass Sie Ecke um Ecke abrunden, ohne neu zu beginnen, bis zur Eingabetaste.
+
+## Was er noch nicht kann [#missing]
+
+Stutzen: Die Objekte werden immer bis zum Bogen gestutzt oder gedehnt, wie mit TRIMMODE 1, AutoCADs Vorgabe; Nicht stutzen wird nicht angeboten. Der Bogen übernimmt nicht den Linientypfaktor des zweiten Objekts, da hier kein Objekt einen eigenen hat. Vor dem Klick zeigt der Tooltip die Eingabeaufforderung statt zu sagen, warum ein Paar nicht abgerundet werden kann, und kein Vorhängeschloss markiert ein Objekt auf einem gesperrten Layer. Einige seltene Paare aus Ellipsen oder Splines enden anders: ein geschlossener Spline mit einer Linie bei Radius 0, ein Bogen, der nur den Versatz einer Ellipse berührt, und ein solches Paar in einer geneigten Ebene.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#fillet--f--es-empalme--mp--pt-br-concord--cnc--fr-raccord--rd--it-raccordo--ra--de-abrunden--ar)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für ABRUNDEN (FILLET) in AutoCAD?
+
+`AR`, danach Eingabetaste oder Leertaste. Vorsicht: In der deutschen AutoCAD-Version ist `F` nicht ABRUNDEN, sondern FANG (SNAP). Auch der vollständige Name funktioniert, ebenso `_FILLET` in jeder Sprache von AutoCAD.
+
+### Wie runde ich zwei Linien ab?
+
+Wählen Sie `Radius`, tippen Sie ihn und wählen Sie dann jede Linie auf der Seite, die bleiben soll. Linien, die sich nicht treffen, werden bis zum Bogen gedehnt, und Linien, die sich kreuzen, werden bis zu ihm zurückgestutzt. Zwei parallele Linien werden von einem Halbkreis verbunden, welcher Radius auch gilt. Eine Linie und das Segment einer Polylinie werden zu einer Polylinie verbunden.
+
+### Was bewirkt ein Abrundungsradius von 0?
+
+Er macht eine scharfe Ecke: Jede Linie wird gestutzt oder gedehnt, bis sie sich treffen, und es wird kein Bogen gezeichnet. Für eine einzelne scharfe Ecke, ohne den Radius zu ändern, halten Sie bei der Wahl des zweiten Objekts die Umschalttaste gedrückt.
+
+### Warum funktioniert ABRUNDEN nicht?
+
+Er sagt in der Befehlszeile, warum. `Rundungsradius ist zu groß` bedeutet, dass der Bogen nicht zwischen die Linien passt; `Zu Polylinien gehörende Linien müssen fortlaufend sein oder durch ein Segment getrennt sein`, dass zwei Segmente einer Polylinie zu weit auseinanderliegen; Text, Blöcke, Bemaßungen und Schraffuren werden abgelehnt, Objekte in unterschiedlicher Höhe gelten als nicht koplanar, und ein Objekt auf einem gesperrten Layer wird nicht genommen.
+
+### Wie runde ich die Kanten eines 3D-Volumenkörpers ab?
+
+Starten Sie [`ABRUNDKANTE`](/docs/commands/filletedge): Wählen Sie `Radius`, wenn der Radius nicht der genannte ist, wählen Sie die Kanten des Volumenkörpers, drücken Sie dann die Eingabetaste und noch einmal die Eingabetaste, um die Abrundung zu übernehmen. Er arbeitet mit 3D-Volumenkörpern, die hier noch unvollständig sind.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: ein L-Winkel](/docs/exercises/l-bracket)
+
+## Verwandte Befehle [#related]
+
+- [Befehl FASE (CHAMFER) in AutoCAD](/docs/commands/chamfer)
+- [Befehl ABRUNDKANTE (FILLETEDGE) in AutoCAD](/docs/commands/filletedge)
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl VERSETZ (OFFSET) in AutoCAD](/docs/commands/offset)

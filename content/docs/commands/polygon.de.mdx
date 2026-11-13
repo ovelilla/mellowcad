@@ -1,0 +1,65 @@
+---
+title: "Befehl POLYGON in AutoCAD"
+description: "Wie POLYGON (Alias PG) in AutoCAD ein regelmäßiges Vieleck zeichnet: die Seiten, ein Mittelpunkt, Umkreis oder Inkreis, oder eine Kante."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für POLYGON in AutoCAD?","answer":"PG, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _POLYGON in jeder Sprache von AutoCAD."},{"question":"Wie zeichne ich ein Sechseck in AutoCAD?","answer":"Starten Sie POLYGON, geben Sie 6 für die Seiten ein, geben Sie den Mittelpunkt an, wählen Sie Umkreis oder Inkreis und geben Sie den Radius ein. Über die Flächen gemessen ist ein umschriebenes Sechseck doppelt so breit wie der Radius, den Sie eingeben."},{"question":"Was ist der Unterschied zwischen eingeschrieben und umschrieben?","answer":"Bei Umkreis berühren die Ecken des Vielecks den Kreis, es passt also hinein. Bei Inkreis berühren seine Seiten den Kreis, der Kreis passt also hinein. Bei gleichem Radius ist das umschriebene Vieleck das größere."},{"question":"Wie zeichne ich ein Vieleck mit gegebener Seitenlänge?","answer":"Wählen Sie Seite und geben Sie die zwei Enden einer Seite an: 0,0, dann die Länge relativ dazu eingegeben, etwa 40,0. Die anderen Seiten folgen, gegen den Uhrzeigersinn."}]
+---
+
+POLYGON zeichnet ein regelmäßiges Vieleck, jede Seite und jeder Winkel gleich, als eine geschlossene Polylinie. Der Befehl fragt nach der Anzahl der Seiten, von 3 bis 1024, dann nach dem Mittelpunkt und danach, ob das Vieleck in einen Kreis eingeschrieben oder um ihn umschrieben ist, dann nach dem Radius dieses Kreises. Oder es wird mit Edge auf einer seiner Seiten aufgebaut. Die Anzahl der Seiten und die Wahl von Inscribed oder Circumscribed sind die Vorgaben des nächsten POLYGON, in dieser Zeichnung. Ein als Zahl eingegebener Radius zeichnet die untere Kante waagerecht; einer, der als Punkt angegeben wird, gewählt oder eingegeben, legt sowohl die Größe als auch die Drehung des Vielecks fest. Während Sie den Radius angeben, folgt das Vieleck dem Cursor, mit einer bernsteinfarbenen gestrichelten Linie vom Mittelpunkt.
+
+- **Befehl:** `POLYGON`
+- **Aliasnamen:** `PG`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `PG` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="polygon" caption="Zwei Kreise mit Radius 30, ein Sechseck in den einen eingeschrieben und um den anderen umschrieben, und ein Fünfeck über seine Kante." />
+
+## Optionen [#options]
+
+### `Seite` (`S`) [#edge]
+
+Anstelle eines Mittelpunkts: Geben Sie die zwei Enden einer Seite an, und das Vieleck wird gegen den Uhrzeigersinn darauf aufgebaut.
+
+### `Umkreis` (`U`) [#inscribed]
+
+Die Scheitelpunkte liegen auf dem Kreis: Der Radius verläuft vom Mittelpunkt zu einem Scheitelpunkt. Die Vorgabe.
+
+### `Inkreis` (`I`) [#circumscribed]
+
+Die Seiten berühren den Kreis in ihren Mittelpunkten: Der Radius verläuft vom Mittelpunkt zur Mitte einer Seite.
+
+## Was er noch nicht kann [#missing]
+
+Ein gedrehter Fang: Ein als Zahl eingegebener Radius zeichnet die untere Kante immer waagerecht zum BKS, wo AutoCAD sie um den Fangwinkel SNAPANG dreht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg--it-poligono--pg--de-polygon--pg)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für POLYGON in AutoCAD?
+
+`PG`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_POLYGON` in jeder Sprache von AutoCAD.
+
+### Wie zeichne ich ein Sechseck in AutoCAD?
+
+Starten Sie POLYGON, geben Sie `6` für die Seiten ein, geben Sie den Mittelpunkt an, wählen Sie `Umkreis` oder `Inkreis` und geben Sie den Radius ein. Über die Flächen gemessen ist ein umschriebenes Sechseck doppelt so breit wie der Radius, den Sie eingeben.
+
+### Was ist der Unterschied zwischen eingeschrieben und umschrieben?
+
+Bei `Umkreis` berühren die Ecken des Vielecks den Kreis, es passt also hinein. Bei `Inkreis` berühren seine Seiten den Kreis, der Kreis passt also hinein. Bei gleichem Radius ist das umschriebene Vieleck das größere.
+
+### Wie zeichne ich ein Vieleck mit gegebener Seitenlänge?
+
+Wählen Sie `Seite` und geben Sie die zwei Enden einer Seite an: `0,0`, dann die Länge relativ dazu eingegeben, etwa `40,0`. Die anderen Seiten folgen, gegen den Uhrzeigersinn.
+
+## Verwandte Befehle [#related]
+
+- [Befehl RECHTECK (RECTANG) in AutoCAD](/docs/commands/rectang)
+- [Befehl KREIS (CIRCLE) in AutoCAD](/docs/commands/circle)
+- [Befehl PLINIE (PLINE) in AutoCAD](/docs/commands/pline)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)

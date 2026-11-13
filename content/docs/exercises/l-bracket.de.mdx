@@ -1,0 +1,52 @@
+---
+title: "AutoCAD-Übung: ein L-Winkel"
+metaTitle: "AutoCAD-Übung für Anfänger: ein L-Winkel"
+description: "Einen L-Winkel in AutoCAD mit relativen Koordinaten zeichnen: Kontur, Verrundung, zwei Löcher und Basislinienbemaßung, Schritt für Schritt."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zeichnen Sie diesen Winkel, in Millimetern: 100 lang, mit einem 20 hohen Fuß und einem 30 breiten und 80 hohen Schenkel, die Innenecke auf den Radius 10 gerundet, ein Loch von 8 im Fuß und eines von 10 im Schenkel, jedes in seinem Arm zentriert. Die Kontur ist ein Zug mit [`LINIE`](/docs/commands/line), jeder Punkt eingegeben als der Weg vom letzten, und ihre Bemaßungen beginnen alle an der unteren linken Ecke.
+
+- **Übung:** Einsteiger · Maschinenbau · 2D
+- **Befehle:** [`LINIE`](/docs/commands/line), [`ABRUNDEN`](/docs/commands/fillet), [`KREIS`](/docs/commands/circle), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMBASISL`](/docs/commands/dimbaseline), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
+- **Im Editor:** [Mit ihrer Zeichnung öffnen](/de/draw?drawing=l-bracket), bemaßt, neben dem Platz, an dem Sie Ihre zeichnen
+
+## Die Zeichnung [#drawing]
+
+<Session name="exercises/l-bracket" caption="Der L-Winkel, 100 mal 80, von seiner unteren linken Ecke aus bemaßt." />
+
+## Schritt für Schritt [#steps]
+
+Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben. Nach dem ersten Punkt eines Befehls wird ein eingegebener Punkt vom letzten aus gemessen, wie es die dynamische Eingabe misst, und der Verlauf schreibt ihn mit @; \# misst vom Ursprung.
+
+### 1. Die Kontur zeichnen [#outline]
+
+Auf dem Layer Kontur: [`LINIE`](/docs/commands/line) von `0,0`, dann jeder Punkt als Schritt vom letzten: `100,0`, `0,20`, `-70,0`, `0,60` und `-30,0`. `Schließen` zeichnet die letzte Seite zurück zum Anfang und beendet den Befehl.
+
+<Session name="exercises/l-bracket/outline" caption="1. Die Kontur zeichnen" />
+
+### 2. Die Innenecke runden [#fillet]
+
+[`ABRUNDEN`](/docs/commands/fillet): Wählen Sie `Radius`, geben Sie `10` ein und wählen Sie dann die beiden Linien, die sich in der Innenecke treffen, die Oberkante des Fußes und die Seite des Schenkels.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Die Innenecke runden" />
+
+### 3. Die Löcher zeichnen [#holes]
+
+Zwei Kreise mit [`KREIS`](/docs/commands/circle), jeder mit seinem `Durchmesser`: `8` in `80,10`, im Fuß, und `10` in `15,65`, im Schenkel.
+
+<Session name="exercises/l-bracket/holes" caption="3. Die Löcher zeichnen" />
+
+### 4. Bemaßen [#dimensions]
+
+Auf dem Layer Bemaßung: [`BEMLINEAR`](/docs/commands/dimlinear) von `0,0` zum Loch des Fußes, `80,10`, unten platziert: 80. [`BEMBASISL`](/docs/commands/dimbaseline) macht von derselben ersten Maßhilfslinie aus weiter: Geben Sie das rechte Ende ein, `#100,0`, wobei # vom Ursprung aus misst, dann zweimal die Eingabetaste, um zu beenden. Dasselbe an der linken Seite, zum oberen Loch und dann zur Oberkante, `#0,80`. [`BEMRADIUS`](/docs/commands/dimradius) auf die Verrundung und [`BEMDURCHM`](/docs/commands/dimdiameter) auf jedes Loch vervollständigen sie.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Bemaßen" />
+
+## Weitere Übungen [#more]
+
+- [AutoCAD-Übung: eine Treppe im Grundriss](/docs/exercises/stairs): Einsteiger · Architektur · 2D
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate): Einsteiger · Maschinenbau · 3D-Volumenkörper
+- [AutoCAD-Übung: ein Flansch](/docs/exercises/flange): Fortgeschritten · Maschinenbau · 2D
+- [AutoCAD-Übungen](/docs/exercises)

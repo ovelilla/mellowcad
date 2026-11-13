@@ -1,0 +1,71 @@
+---
+title: "Befehl QUADER (BOX) in AutoCAD"
+description: "Wie QUADER (BOX) in AutoCAD einen 3D-Quader zeichnet, Schritt für Schritt: zwei Ecken und eine Höhe, Mitte, Würfel und Länge. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie zeichnet man in AutoCAD einen 3D-Quader?","answer":"Starten Sie QUADER, geben Sie eine Ecke an, dann die gegenüberliegende Ecke, dann die Höhe: 0,0, 60,40 und 25 zeichnen den Quader der Sitzung. Länge und eine Breite statt der gegenüberliegenden Ecke drehen den Quader in einen beliebigen Winkel."},{"question":"Warum sieht mein Quader wie ein Rechteck aus?","answer":"Sie sehen ihn von oben, in der Draufsicht. Drehen Sie die Ansicht: eine Ecke des ViewCube, -AUSSCHNT und SOIso oder 3DORBIT. VSAKTUELL mit Verdeckt verbirgt die Kanten dahinter."},{"question":"Wie zeichnet man einen Würfel?","answer":"Geben Sie die erste Ecke an, wählen Sie dann Würfel und geben Sie die Länge einer Seite ein."},{"question":"Wie zeichnet man einen Quader von seinem Mittelpunkt aus?","answer":"Wählen Sie MIttelpunkt und geben Sie den Mittelpunkt an, dann eine Ecke, Würfel oder Länge: Der Quader ist auf dem Punkt zentriert, auch in der Höhe."}]
+---
+
+QUADER (BOX) zeichnet einen 3D-Volumenkörper-Quader mit seinen Seiten entlang der Achsen des BKS: Geben Sie die erste Ecke an, die andere Ecke, dann die Höhe. Die Höhe steigt entlang des Z des BKS, eine negative geht nach unten, und ein Punkt gibt sie durch seinen Abstand von der Ecke; eine Ecke mit einem anderen Z als die erste legt die Höhe fest, ohne zu fragen. Die letzte Höhe sowie die letzte Länge und Breite eines Würfels oder von Length werden als Vorgaben angeboten, die die Eingabetaste übernimmt und die mit den anderen Grundkörpern und [`EXTRUSION`](/docs/commands/extrude) geteilt werden. Der Quader liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
+
+Der Quader behält seine Maße: [`LISTE`](/docs/commands/list) zeigt seine Position, Länge, Breite, Höhe und Drehung, und die Eigenschaftenpalette lässt Sie die ersten vier eingeben. Seine Griffe verschieben und strecken ihn und stellen, außerhalb der Draufsicht, seine Höhe ein. Er ist ein 3D-Volumenkörper für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und das übrige 3D von MellowCAD, das nur aus Volumenkörpern besteht und noch unvollständig ist.
+
+- **Befehl:** `QUADER`
+- **Auf Englisch:** `BOX`, in jeder Sprache als `_BOX` eingegeben
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `QUADER` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="box" caption="Ein Quader 60 mal 40 mal 25, aus zwei Ecken und einer Höhe, von Südosten gesehen im Visuellen Stil Verdeckt." />
+
+## Optionen [#options]
+
+### `MIttelpunkt` (`MI`) [#center]
+
+Bei der ersten Eingabeaufforderung: fragt nach dem Mittelpunkt, dann nach einer Ecke, `Würfel` oder `Länge`. Der Quader ist auf dem Punkt zentriert, auch in der Höhe.
+
+### `Würfel` (`W`) [#cube]
+
+Bei der anderen Ecke: fragt nach einer Länge, eingegeben oder gezeigt, und macht einen Würfel, dessen Seiten alle so lang sind. Eine eingegebene Länge verläuft zum Fadenkreuz hin, eine negative von ihm weg.
+
+### `Länge` (`L`) [#length]
+
+Bei der anderen Ecke: fragt nach der Länge, dann nach der Breite. Die Länge verläuft zum Fadenkreuz hin, sodass der Quader schräg liegen kann; die Breite geht zu der Seite, auf der das Fadenkreuz steht.
+
+### `2Punkt` (`2P`) [#2point]
+
+Bei der Höhe: fragt nach zwei Punkten, und die Höhe ist der Abstand zwischen ihnen.
+
+## Was er noch nicht kann [#missing]
+
+Verschieben, Drehen, Skalieren und Spiegeln von einem heißen Griff aus, die AutoCAD mit der Eingabetaste durchschaltet. Die eigenen 3D-Befehle, 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, mit ihren Gizmos, und das Verschieben seiner Flächen, Kanten und Scheitelpunkte einzeln. Das dynamische BKS. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie die Ecke, die Länge und die Breite angeben. [`ABRUNDEN`](/docs/commands/fillet) und [`FASE`](/docs/commands/chamfer) seiner Kanten, was [`ABRUNDKANTE`](/docs/commands/filletedge) und [`GEFASTEKANTE`](/docs/commands/chamferedge) tun. Aufzeichnen und Anzeigen des Verlaufs von Volumenkörpern und die Zeile Material. Die Visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) über 2D-Drahtmodell, Verdeckt und Konzeptionell hinaus nicht hat.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader)
+
+## Fragen [#questions]
+
+### Wie zeichnet man in AutoCAD einen 3D-Quader?
+
+Starten Sie QUADER, geben Sie eine Ecke an, dann die gegenüberliegende Ecke, dann die Höhe: `0,0`, `60,40` und `25` zeichnen den Quader der Sitzung. `Länge` und eine Breite statt der gegenüberliegenden Ecke drehen den Quader in einen beliebigen Winkel.
+
+### Warum sieht mein Quader wie ein Rechteck aus?
+
+Sie sehen ihn von oben, in der Draufsicht. Drehen Sie die Ansicht: eine Ecke des ViewCube, `-AUSSCHNT` und `SOIso` oder [`3DORBIT`](/docs/commands/3dorbit). [`VSAKTUELL`](/docs/commands/vscurrent) mit `Verdeckt` verbirgt die Kanten dahinter.
+
+### Wie zeichnet man einen Würfel?
+
+Geben Sie die erste Ecke an, wählen Sie dann `Würfel` und geben Sie die Länge einer Seite ein.
+
+### Wie zeichnet man einen Quader von seinem Mittelpunkt aus?
+
+Wählen Sie `MIttelpunkt` und geben Sie den Mittelpunkt an, dann eine Ecke, `Würfel` oder `Länge`: Der Quader ist auf dem Punkt zentriert, auch in der Höhe.
+
+## Verwandte Befehle [#related]
+
+- [Befehl KEIL (WEDGE) in AutoCAD](/docs/commands/wedge)
+- [Befehl ZYLINDER (CYLINDER) in AutoCAD](/docs/commands/cylinder)
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)
+- [Befehl VEREINIG (UNION) in AutoCAD](/docs/commands/union)

@@ -1,0 +1,52 @@
+---
+title: "Befehl PAN in AutoCAD"
+description: "So arbeitet AutoCADs PAN (Alias P): die Ansicht mit dem Handcursor oder der Radtaste ziehen, -PAN über zwei Punkte, und PAN innerhalb eines anderen Befehls."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für PAN in AutoCAD?","answer":"P, danach Eingabetaste oder Leertaste. Oder gar kein Befehl: Halten Sie die Radtaste der Maus gedrückt und ziehen Sie. Auch der vollständige Name funktioniert, ebenso _PAN in jeder Sprache von AutoCAD."},{"question":"Wie verschiebe ich die Ansicht in AutoCAD mit der Maus?","answer":"Halten Sie die Radtaste gedrückt und ziehen Sie: Die Ansicht folgt dem Cursor. Drehen Sie das Rad, um um den Cursor herum hinein- und herauszuzoomen. Auf einem Trackpad starten Sie PAN und ziehen mit der linken Taste."},{"question":"Wie verschiebe ich die Ansicht beim Zeichnen?","answer":"Ziehen Sie mit der Radtaste, oder tippen Sie 'P bei der Eingabeaufforderung des Befehls: Der Befehl wartet, während Sie verschieben, und fragt dann dort weiter, wo er war."},{"question":"Wie verschiebe ich die Ansicht um einen genauen Abstand?","answer":"Verwenden Sie -PAN: Tippen Sie die Verschiebung, etwa 100,0, und drücken Sie beim zweiten Punkt die Eingabetaste. Die Ansicht bewegt sich 100 Einheiten entlang X."}]
+---
+
+PAN verschiebt die Ansicht; in der Zeichnung bewegt sich nichts. Er beginnt mit `Mit ESC oder EINGABETASTE beenden oder rechte Maustaste klicken, um das Kontextmenü zu aktivieren.` und fragt nichts mehr: Der Cursor wird zu einer Hand, und das Ziehen mit der linken Maustaste bewegt die Ansicht mit, so oft Sie wollen, bis die Eingabetaste oder Esc ihn beendet. Ohne PAN verschiebt das Ziehen mit der Radtaste der Maus jederzeit die Ansicht, auch mitten in einem Befehl. Jeder PAN ist ein Schritt für Rückgängig, zusammengefasst mit den ZOOM und PAN um ihn herum, sodass `Z` die Ansicht zurücknimmt. Mit Apostroph getippt, `'PAN` oder `'P`, funktioniert er innerhalb eines anderen Befehls, der danach weitergeht.
+
+`-PAN` verschiebt stattdessen über zwei Punkte: einen Basispunkt und einen zweiten Punkt, wobei sich die Ansicht um den Abstand zwischen ihnen bewegt; oder eine bei der ersten Eingabeaufforderung getippte Verschiebung, etwa `50,0`, und die Eingabetaste beim zweiten. Er ist ebenfalls transparent und ein eigener Schritt für Rückgängig.
+
+- **Befehl:** `PAN`
+- **Aliasnamen:** `P`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `P` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="pan" caption="PAN nach rechts und unten gezogen, dann die Eingabetaste: Die Platte gleitet in der Ansicht, ihre Koordinaten bleiben gleich." />
+
+## Was er noch nicht kann [#missing]
+
+Das Kontextmenü, das AutoCAD bei einem Rechtsklick während des Verschiebens zeigt, mit Beenden, Pan, Zoom, 3D-Orbit, Zoom Fenster, Zoom Original und Zoom Grenzen.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e--pt-br-pan--p---pan---p--fr-pan--p---pan---p--it-pan--p---pan---p--de-pan--p---pan---p)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für PAN in AutoCAD?
+
+`P`, danach Eingabetaste oder Leertaste. Oder gar kein Befehl: Halten Sie die Radtaste der Maus gedrückt und ziehen Sie. Auch der vollständige Name funktioniert, ebenso `_PAN` in jeder Sprache von AutoCAD.
+
+### Wie verschiebe ich die Ansicht in AutoCAD mit der Maus?
+
+Halten Sie die Radtaste gedrückt und ziehen Sie: Die Ansicht folgt dem Cursor. Drehen Sie das Rad, um um den Cursor herum hinein- und herauszuzoomen. Auf einem Trackpad starten Sie PAN und ziehen mit der linken Taste.
+
+### Wie verschiebe ich die Ansicht beim Zeichnen?
+
+Ziehen Sie mit der Radtaste, oder tippen Sie `'P` bei der Eingabeaufforderung des Befehls: Der Befehl wartet, während Sie verschieben, und fragt dann dort weiter, wo er war.
+
+### Wie verschiebe ich die Ansicht um einen genauen Abstand?
+
+Verwenden Sie `-PAN`: Tippen Sie die Verschiebung, etwa `100,0`, und drücken Sie beim zweiten Punkt die Eingabetaste. Die Ansicht bewegt sich 100 Einheiten entlang X.
+
+## Verwandte Befehle [#related]
+
+- [Befehl ZOOM in AutoCAD](/docs/commands/zoom)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)
+- [Befehl 3DORBIT in AutoCAD](/docs/commands/3dorbit)

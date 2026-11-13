@@ -1,0 +1,92 @@
+---
+title: "Befehl KAPPEN (SLICE) in AutoCAD"
+description: "Wie KAPPEN (SLICE, Alias KA) in AutoCAD funktioniert: die Volumenkörper, eine Ebene durch zwei Punkte, 3 Punkte, ein Objekt oder das BKS."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für KAPPEN (SLICE) in AutoCAD?","answer":"KA, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _SLICE in jeder Sprache von AutoCAD."},{"question":"Wie verwende ich KAPPEN in AutoCAD 3D?","answer":"Wählen Sie den Volumenkörper und drücken Sie die Eingabetaste. Wählen Sie zwei Punkte, durch die der Schnitt verläuft: Die Ebene steht senkrecht durch sie. Wählen Sie dann einen Punkt auf der Seite, die bleiben soll, oder drücken Sie die Eingabetaste, um beide Hälften zu behalten und eine mit SCHIEBEN wegzuschieben. Für einen schrägen Schnitt wählen Sie 3Punkte und geben drei Punkte darauf an."},{"question":"Kann KAPPEN Linien oder 2D-Objekte schneiden?","answer":"Nein: KAPPEN schneidet 3D-Volumenkörper und übergeht Linien, Regionen und Blöcke; eine Menge nur aus ihnen beendet den Befehl. Um 2D-Objekte zu schneiden, verwenden Sie STUTZEN oder BRUCH. In AutoCAD schneidet KAPPEN auch Flächen und Netze, die MellowCAD noch nicht hat."},{"question":"Warum meldet KAPPEN, dass die Schnittebene den Volumenkörper nicht schneidet?","answer":"Weil die Ebene ihn verfehlt oder nur an einer Fläche, entlang einer Kante oder an einer Ecke berührt: Dieser Volumenkörper bleibt ganz. Prüfen Sie, wie die Ebene angegeben wurde. Mit zwei Punkten steht sie senkrecht, zwei Punkte auf der Deckfläche eines Volumenkörpers schneiden ihn also senkrecht, nicht waagerecht; für einen waagerechten Schnitt wählen Sie XY und geben einen Punkt in der Höhe des Schnitts an."}]
+---
+
+KAPPEN (SLICE) schneidet 3D-Volumenkörper mit einer Ebene und behält den Teil auf einer Seite, oder beide Teile als zwei Volumenkörper. Der Befehl fragt bis zur Eingabetaste nach den zu kappenden Volumenkörpern: Wie in AutoCAD 2027 wird eine vorher gewählte Menge verworfen und erneut abgefragt, und was kein Volumenkörper ist, wird übergangen. Dann folgt die Ebene: Standardmäßig geben Sie zwei Punkte an, und sie steht senkrecht durch sie, rechtwinklig zur XY-Ebene des BKS; die Optionen legen sie auf andere Weise fest. Zuletzt ein Punkt auf der Seite, die bleiben soll, oder die Eingabetaste, um beide zu behalten.
+
+Jeder Volumenkörper der Menge wird von derselben Ebene geschnitten. Einer, den die Ebene verfehlt oder nur an einer Fläche, entlang einer Kante oder an einer Ecke berührt, bleibt, wie er war, und KAPPEN meldet es. Ein gekappter Volumenkörper ist kein Quader oder Zylinder mehr und hat keinen Verlauf. Der ganze Befehl ist ein Rückgängig-Schritt. Das 3D von MellowCAD ist noch unvollständig: Volumenkörper gibt es, Flächen und Netze nicht.
+
+- **Befehl:** `KAPPEN`
+- **Auf Englisch:** `SLICE`, in jeder Sprache als `_SLICE` eingegeben
+- **Aliasnamen:** `KA`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `KA` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="slice" caption="Ein Zylinder, durch zwei Punkte entlang seiner Achse gekappt, die Hälfte auf der gewählten Seite bleibt: von Südosten gesehen." />
+
+## Optionen [#options]
+
+### `planares Objekt` (`O`) [#object]
+
+Nimmt die Ebene eines Objekts, das Sie auswählen: eines Kreises, einer Ellipse, eines Bogens, einer 2D-Polylinie oder eines ebenen Splines, auch eines geneigten Kreises. Eine Linie oder der Volumenkörper selbst hat keine eigene Ebene: Es erscheint `Kann Ebene des gewählten Objekts nicht extrahieren.`, und es wird erneut gefragt. Die Eingabetaste beendet den Befehl.
+
+### `oBerfläche` (`B`) [#surface]
+
+Fragt nach einer Fläche, entlang der geschnitten wird. MellowCAD hat noch keine Flächen, eine Auswahl ergibt also `Keine Oberflächen ausgewählt.`, und die Eingabetaste beendet den Befehl.
+
+### `ZAchse` (`ZA`) [#zaxis]
+
+Fragt nach einem Punkt auf der Ebene, dann nach einem Punkt auf ihrer Z-Achse, der Linie senkrecht dazu. Beide dürfen nicht derselbe Punkt sein.
+
+### `Ansicht` (`A`) [#view]
+
+Die Ebene parallel zum Bildschirm, durch einen Punkt, den Sie angeben; die Eingabetaste nimmt 0,0,0.
+
+### `XY` [#xy]
+
+Die XY-Ebene des BKS, durch einen Punkt, den Sie angeben: Ein Punkt in einer Höhe ergibt dort einen waagerechten Schnitt. Die Eingabetaste nimmt den Ursprung des BKS.
+
+### `YZ` [#yz]
+
+Die YZ-Ebene des BKS, durch einen Punkt, den Sie angeben; die Eingabetaste nimmt den Ursprung des BKS.
+
+### `ZX` [#zx]
+
+Die ZX-Ebene des BKS, durch einen Punkt, den Sie angeben; die Eingabetaste nimmt den Ursprung des BKS.
+
+### `3Punkte` (`3P`) [#3points]
+
+Drei Punkte auf der Ebene, die dann beliebig geneigt sein darf. Das ist die Vorgabe der ersten Eingabeaufforderung, die Eingabetaste wählt sie also dort. Der zweite Punkt muss sich vom ersten unterscheiden, und der dritte darf nicht auf der Linie durch beide liegen.
+
+### `Beide seiten behalten` (`B`) [#both]
+
+Bei der Eingabeaufforderung der Seite und ihre Vorgabe, die Eingabetaste wählt sie also: Beide Teile bleiben. Der Volumenkörper behält einen, und der andere wird ein neuer Volumenkörper mit demselben Layer, derselben Farbe, demselben Linientyp und derselben Linienstärke, nicht den aktuellen. Ein Punkt behält stattdessen die Seite, auf der er liegt, und verwirft die andere; ein Punkt auf der Ebene wird abgelehnt.
+
+## Was er noch nicht kann [#missing]
+
+Flächen, als Schnittebene und als zu kappende Objekte, und Netze. Eine ebene 3D-Polylinie als Objekt der Ebene, die AutoCAD annimmt. Ein Torus oder ein Rotationskörper, weder senkrecht zu seiner Achse noch entlang ihr geschnitten, und die anderen Schnitte, für die MellowCAD noch keine exakte Form hat; sie melden, dass eine boolesche Operation fehlgeschlagen ist.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#slice--sl--es-corte--co--pt-br-fatiar--fat--fr-section--se--it-trancia--tc--de-kappen--ka)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für KAPPEN (SLICE) in AutoCAD?
+
+`KA`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_SLICE` in jeder Sprache von AutoCAD.
+
+### Wie verwende ich KAPPEN in AutoCAD 3D?
+
+Wählen Sie den Volumenkörper und drücken Sie die Eingabetaste. Wählen Sie zwei Punkte, durch die der Schnitt verläuft: Die Ebene steht senkrecht durch sie. Wählen Sie dann einen Punkt auf der Seite, die bleiben soll, oder drücken Sie die Eingabetaste, um beide Hälften zu behalten und eine mit [`SCHIEBEN`](/docs/commands/move) wegzuschieben. Für einen schrägen Schnitt wählen Sie `3Punkte` und geben drei Punkte darauf an.
+
+### Kann KAPPEN Linien oder 2D-Objekte schneiden?
+
+Nein: KAPPEN schneidet 3D-Volumenkörper und übergeht Linien, Regionen und Blöcke; eine Menge nur aus ihnen beendet den Befehl. Um 2D-Objekte zu schneiden, verwenden Sie [`STUTZEN`](/docs/commands/trim) oder [`BRUCH`](/docs/commands/break). In AutoCAD schneidet KAPPEN auch Flächen und Netze, die MellowCAD noch nicht hat.
+
+### Warum meldet KAPPEN, dass die Schnittebene den Volumenkörper nicht schneidet?
+
+Weil die Ebene ihn verfehlt oder nur an einer Fläche, entlang einer Kante oder an einer Ecke berührt: Dieser Volumenkörper bleibt ganz. Prüfen Sie, wie die Ebene angegeben wurde. Mit zwei Punkten steht sie senkrecht, zwei Punkte auf der Deckfläche eines Volumenkörpers schneiden ihn also senkrecht, nicht waagerecht; für einen waagerechten Schnitt wählen Sie `XY` und geben einen Punkt in der Höhe des Schnitts an.
+
+## Verwandte Befehle [#related]
+
+- [Befehl QUERSCHNITT (SECTION) in AutoCAD](/docs/commands/section)
+- [Befehl DIFFERENZ (SUBTRACT) in AutoCAD](/docs/commands/subtract)
+- [Befehl VEREINIG (UNION) in AutoCAD](/docs/commands/union)
+- [Befehl EXTRUSION (EXTRUDE) in AutoCAD](/docs/commands/extrude)

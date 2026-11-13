@@ -1,0 +1,90 @@
+---
+title: "Befehl SPLINEEDIT (SPLINEDIT) in AutoCAD"
+description: "Wie SPLINEEDIT (SPLINEDIT, Alias SIE) in AutoCAD funktioniert: Schließen, Verbinden, Fit-Daten, Scheitelpunkt, in Polylinie umwandeln, Umkehren."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für SPLINEEDIT in AutoCAD?","answer":"SIE, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _SPLINEDIT in jeder Sprache von AutoCAD. Ein Doppelklick auf einen Spline startet den Befehl auch."},{"question":"Wie wandle ich einen Spline in eine Polylinie um?","answer":"Starten Sie SPLINEEDIT, wählen Sie den Spline und wählen Sie Polylinie; eine Genauigkeit von 10 ergibt eine glatte Polylinie. Auch PEDIT auf einem Spline bietet die Umwandlung an."},{"question":"Wie füge ich Punkte eines Splines hinzu oder verschiebe sie?","answer":"Wählen Sie Anpassungsdaten, um an den Punkten zu arbeiten, durch die er verläuft, dann Hinzufügen oder Verschieben. Wählen Sie sCheitelpunkt, um an den Kontrollscheitelpunkten zu arbeiten, die ihn umrahmen."},{"question":"Wie schließe ich einen Spline?","answer":"Wählen Sie Schließen: Er schließt sich glatt, ohne Ecke an der Stelle, an der er sich selbst trifft. Öffnen öffnet ihn wieder."},{"question":"Wie verbinde ich zwei Splines?","answer":"Wählen Sie Verbinden und wählen Sie den Spline, dessen Ende auf dieses trifft, oder verwenden Sie VERBINDEN."}]
+---
+
+SPLINEEDIT (SPLINEDIT) bearbeitet einen Spline. Wählen Sie bei `Select spline:` einen aus oder wählen Sie ihn vor dem Befehl aus; ein Doppelklick auf einen Spline startet SPLINEEDIT ebenfalls darauf. Alles andere ergibt `Gewähltes Objekt ist kein Spline.` und es wird erneut gefragt; eine mit der Option Spline von PEDIT angepasste Polylinie wird ohne Meldung in einen Spline derselben Kurve umgewandelt. Danach fragt der Befehl immer wieder nach einer Option, jede sofort angewendet, bis `EXit` oder die Eingabetaste. Der Spline zeigt die Griffe seiner Fit-Punkte, beim Bearbeiten seiner Scheitelpunkte seine Kontrollscheitelpunkte und sein Netz. Die ganze Bearbeitung ist ein Schritt, den `Z` zurücknimmt. Das eingegebene `'ZOOM` funktioniert bei jeder seiner Eingabeaufforderungen.
+
+- **Befehl:** `SPLINEEDIT`
+- **Auf Englisch:** `SPLINEDIT`, in jeder Sprache als `_SPLINEDIT` eingegeben
+- **Aliasnamen:** `SIE`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `SIE` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="splinedit" caption="Ein Spline durch fünf Fit-Punkte, mit SPLINEEDIT geschlossen: eine glatte Schleife durch alle." />
+
+## Optionen [#options]
+
+### `Schließen` (`S`) [#close]
+
+Schließt den Spline glatt: ein Fit-Spline durch seine Fit-Punkte, ein CV-Spline über seinen Scheitelpunkten. Bei einem geschlossenen Spline lautet die Option `Öffnen`, und Join wird nicht angeboten.
+
+### `Verbinden` (`V`) [#join]
+
+Verbindet offene Kurven, die an seinen Enden zusammentreffen, nach den JOIN-Regeln für einen Spline, und meldet, wie viele es verbunden hat.
+
+### `Anpassungsdaten` (`A`) [#fit-data]
+
+Bearbeitet die Punkte, durch die der Spline verläuft. Ein CV-Spline, der keine hat, erhält zunächst Fit-Punkte auf seiner Kurve. Seine Optionen: `Hinzufügen` wählt einen Fit-Punkt und fügt danach neue hinzu, immer wieder (am ersten Punkt eines offenen Splines `Nachher` oder `Vorher`); `Löschen` entfernt Fit-Punkte, bis auf zwei, bei einem geschlossenen Spline drei (`Kann nicht mehr löschen.`); `Verschieben` geht die Fit-Punkte mit `Nächster` und `Vorher` durch, oder mit `Wählen`, und verschiebt den aktuellen an den Punkt, den Sie angeben; `Bereinigen` verwirft die Fit-Daten und lässt einen CV-Spline zurück; `TAngenten` legt die Start- und Endrichtung fest oder `Systemvorgabe`; `Schließen` und `EXit` wie bei der ersten Eingabeaufforderung. Eine Auswahl, die kein Fit-Punkt ist, ergibt `Kein Anpassungspunkt.`.
+
+### `sCheitelpunkt bearbeiten` (`C`) [#edit-vertex]
+
+Bearbeitet die Kontrollscheitelpunkte; ein Fit-Spline verliert bei der ersten Änderung seine Fit-Daten. `Hinzufügen` setzt einen Scheitelpunkt an dem Punkt, den Sie auf dem Spline wählen; `Löschen` entfernt einen, bis auf zwei, bei einem geschlossenen Spline drei; `Grad` erhöht die Ordnung, bis zu 26, nie nach unten; `Verschieben` verschiebt Scheitelpunkte, schrittweise wie Move bei Fit data; `liNienstärke` legt das Gewicht eines Scheitelpunkts fest, nach `Spline ist nicht rational. Wird umgewandelt.`, sodass die Kurve näher an ihn herangezogen oder weiter von ihm weggedrückt wird. Eine Auswahl, die kein Scheitelpunkt ist, ergibt `Kein Kontrollscheitelpunkt.`.
+
+### `in Polylinie konvertieren` (`P`) [#convert-to-polyline]
+
+Fragt eine Genauigkeit von 0 bis 99, standardmäßig 10, und ersetzt den Spline durch eine Polylinie aus geraden Segmenten, je mehr, desto höher die Genauigkeit; eine 3D-Polylinie, wo der Spline nicht eben liegt, parallel zur XY-Ebene. Das beendet den Befehl. Die Genauigkeit bleibt für die Sitzung erhalten, und auch die Umwandlung von PEDIT verwendet sie.
+
+### `Umkehren` (`U`) [#reverse]
+
+Kehrt den Spline um, sein erster Punkt wird der letzte: `Spline wurde umgedreht.`.
+
+### `Zurück` (`Z`) [#undo]
+
+Nimmt die letzte Option zurück, ein ganzes Fit data oder Edit vertex auf einmal. Ist keine mehr übrig: `Der Befehl wurde vollständig gelöscht.`.
+
+### `eXit` (`EX`) [#exit]
+
+Beendet den Befehl, wie die Eingabetaste.
+
+## Was er noch nicht kann [#missing]
+
+Kink, das eine scharfe Ecke an einem Fit-Punkt oder Scheitelpunkt setzt; toLerance, das den Spline innerhalb einer Toleranz neu anpasst; Tangents eines geschlossenen Splines. convert to Polyline erzeugt bei einem Fit-Spline weit mehr Scheitelpunkte als AutoCAD, nie Bögen, und ersetzt den Spline immer. Group bei `Select spline:`. Das `+`, das AutoCAD beim Durchgehen der Punkte auf den aktuellen Punkt zeichnet.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl--fr-editspline--esi--it-editspline--esi--de-splineedit--sie)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für SPLINEEDIT in AutoCAD?
+
+`SIE`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_SPLINEDIT` in jeder Sprache von AutoCAD. Ein Doppelklick auf einen Spline startet den Befehl auch.
+
+### Wie wandle ich einen Spline in eine Polylinie um?
+
+Starten Sie SPLINEEDIT, wählen Sie den Spline und wählen Sie `Polylinie`; eine Genauigkeit von 10 ergibt eine glatte Polylinie. Auch [`PEDIT`](/docs/commands/pedit) auf einem Spline bietet die Umwandlung an.
+
+### Wie füge ich Punkte eines Splines hinzu oder verschiebe sie?
+
+Wählen Sie `Anpassungsdaten`, um an den Punkten zu arbeiten, durch die er verläuft, dann `Hinzufügen` oder `Verschieben`. Wählen Sie `sCheitelpunkt`, um an den Kontrollscheitelpunkten zu arbeiten, die ihn umrahmen.
+
+### Wie schließe ich einen Spline?
+
+Wählen Sie `Schließen`: Er schließt sich glatt, ohne Ecke an der Stelle, an der er sich selbst trifft. `Öffnen` öffnet ihn wieder.
+
+### Wie verbinde ich zwei Splines?
+
+Wählen Sie `Verbinden` und wählen Sie den Spline, dessen Ende auf dieses trifft, oder verwenden Sie [`VERBINDEN`](/docs/commands/join).
+
+## Verwandte Befehle [#related]
+
+- [Befehl SPLINE in AutoCAD](/docs/commands/spline)
+- [Befehl PEDIT (Polylinie bearbeiten) in AutoCAD](/docs/commands/pedit)
+- [Befehl VERBINDEN (JOIN) in AutoCAD](/docs/commands/join)
+- [Befehl LISTE (LIST) in AutoCAD](/docs/commands/list)

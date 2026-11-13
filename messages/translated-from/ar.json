@@ -321,6 +321,7 @@
   "Docs.shortcuts.complete": "Completes the command name being typed; at a point prompt, steps through the object snaps under the cursor.",
   "Docs.shortcuts.cycle": "Steps through the overlapping objects under the cursor while selection cycling shows its badge.",
   "Docs.keys.shift": "Shift",
+  "Docs.keys.ctrl": "Ctrl",
   "Docs.keys.space": "Space",
   "Docs.keys.enter": "Enter",
   "Docs.keys.escape": "Esc",

@@ -1,0 +1,68 @@
+---
+title: "Befehl BEMAUSG (DIMALIGNED) in AutoCAD: ausgerichtet bemaßen"
+metaTitle: "Befehl BEMAUSG (DIMALIGNED) in AutoCAD"
+description: "Wie BEMAUSG (DIMALIGNED, Alias BMA) in AutoCAD den wahren Abstand zweier Punkte bemaßt: schräge Kanten, Text und Winkel. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von BEMAUSG (DIMALIGNED) in AutoCAD?","answer":"BMA, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und _DIMALIGNED in jeder Sprache von AutoCAD."},{"question":"Was ist der Unterschied zwischen BEMLINEAR und BEMAUSG?","answer":"An einer schrägen Kante gibt BEMLINEAR ihre Breite oder ihre Höhe an, je nachdem, ob seine Maßlinie waagerecht oder senkrecht ist; BEMAUSG gibt ihre Länge an, mit der Linie parallel zur Kante. An einer Kante entlang X oder Y geben beide dieselbe Zahl."},{"question":"Wie bemaßt man eine schräge Linie in AutoCAD?","answer":"Mit BEMAUSG: Drücken Sie die Eingabetaste bei der ersten Eingabeaufforderung, wählen Sie die Linie und platzieren Sie die Bemaßung auf der gewünschten Seite. Oder wählen Sie ihre beiden Enden, mit dem Objektfang Endpunkt, damit die Ursprünge exakt sind."},{"question":"Wie schreibt man einen eigenen Text auf eine Bemaßung?","answer":"Wählen Sie Text vor dem Platzieren und geben Sie den Text ein: <> steht für das Maß, „<> mm“ schreibt es also gefolgt von seiner Einheit, und die Eingabetaste ohne Eingabe behält das Maß allein. Nach dem Platzieren ändert die Textüberschreibung der Eigenschaftenpalette es."}]
+---
+
+BEMAUSG (DIMALIGNED) misst den wahren Abstand zwischen zwei Punkten: Seine Maßlinie verläuft parallel zur Linie durch sie, in jedem Winkel, wo [`BEMLINEAR`](/docs/commands/dimlinear) nur entlang X oder Y misst. Seine Eingabeaufforderungen sind die von [`BEMLINEAR`](/docs/commands/dimlinear): der Ursprung der ersten und der zweiten Maßhilfslinie, oder die Eingabetaste und eine Wahl auf einer Linie, einem Bogen oder einem Polyliniensegment für seine beiden Enden, dann die Lage der Maßlinie, auf einer der beiden Seiten. Ein gewählter Kreis ergibt seinen Durchmesser durch den gewählten Punkt. Die Befehlszeile nennt das Maß, und der Befehl endet.
+
+- **Befehl:** `BEMAUSG`
+- **Auf Englisch:** `DIMALIGNED`, in jeder Sprache als `_DIMALIGNED` eingegeben
+- **Aliasnamen:** `BMA`
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BMA` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="dimaligned" caption="Die schräge Seite eines Dreiecks, entlang ihrer Länge bemaßt: ihre beiden Enden, dann die Stelle der Maßlinie." />
+
+## Optionen [#options]
+
+### `Text` (`T`) [#text]
+
+Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das er als Vorgabe anbietet: Die Eingabetaste behält das Maß. In dem, was Sie eingeben, steht `<>` für das Maß.
+
+### `Winkel` (`W`) [#angle]
+
+Fragt nach dem Winkel des Textes, der dann in diesem Winkel statt entlang der Maßlinie gezeichnet wird. 0 setzt ihn wieder entlang der Linie.
+
+## Was er noch nicht kann [#missing]
+
+Mtext: Der Text einer Bemaßung ist eine Zeile, mit `Text` in der Befehlszeile festgelegt, nie im Texteditor. Bei einem mit `Winkel` festgelegten Winkel zentriert AutoCAD den Text auf der Maßlinie; hier bleibt er darüber, wie ohne einen. Eine Bemaßung ist nicht assoziativ: Sie folgt dem Objekt, das sie misst, nicht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota--it-dimallineata--dal--de-bemausg--bma)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von BEMAUSG (DIMALIGNED) in AutoCAD?
+
+`BMA`, dann die Eingabetaste oder die Leertaste. Der volle Name funktioniert ebenfalls, und `_DIMALIGNED` in jeder Sprache von AutoCAD.
+
+### Was ist der Unterschied zwischen BEMLINEAR und BEMAUSG?
+
+An einer schrägen Kante gibt [`BEMLINEAR`](/docs/commands/dimlinear) ihre Breite oder ihre Höhe an, je nachdem, ob seine Maßlinie waagerecht oder senkrecht ist; BEMAUSG gibt ihre Länge an, mit der Linie parallel zur Kante. An einer Kante entlang X oder Y geben beide dieselbe Zahl.
+
+### Wie bemaßt man eine schräge Linie in AutoCAD?
+
+Mit BEMAUSG: Drücken Sie die Eingabetaste bei der ersten Eingabeaufforderung, wählen Sie die Linie und platzieren Sie die Bemaßung auf der gewünschten Seite. Oder wählen Sie ihre beiden Enden, mit dem Objektfang Endpunkt, damit die Ursprünge exakt sind.
+
+### Wie schreibt man einen eigenen Text auf eine Bemaßung?
+
+Wählen Sie `Text` vor dem Platzieren und geben Sie den Text ein: `<>` steht für das Maß, `<> mm` schreibt es also gefolgt von seiner Einheit, und die Eingabetaste ohne Eingabe behält das Maß allein. Nach dem Platzieren ändert die Textüberschreibung der Eigenschaftenpalette es.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung: ein Grundstück](/docs/exercises/plot-of-land)
+- [AutoCAD-Übung Isometrie: ein Stufenblock](/docs/exercises/isometric-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl BEMLINEAR (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Befehl BEMWINKEL (DIMANGULAR) in AutoCAD](/docs/commands/dimangular)
+- [Befehl BEMWEITER (DIMCONTINUE) in AutoCAD](/docs/commands/dimcontinue)
+- [Befehl BEMSTIL (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)

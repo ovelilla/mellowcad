@@ -1,0 +1,58 @@
+---
+title: "Befehl BEMSTIL (DIMSTYLE) in AutoCAD"
+description: "Wie BEMSTIL (DIMSTYLE, Alias BMS) in AutoCAD funktioniert: Bemaßungsstile ab ISO-25, Neu, Aktuell und Einstellungen für Texthöhe, Pfeile, Skala und Einheiten."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für BEMSTIL (DIMSTYLE) in AutoCAD?","answer":"BMS, dann die Eingabetaste oder die Leertaste; ebenso BEM, DIMSTY und DDIM, und _DIMSTYLE in jeder Sprache von AutoCAD. -BEMSTIL funktioniert stattdessen in der Befehlszeile: Es speichert die aktuellen Einstellungen als neuen Stil oder macht einen Stil per Namen aktuell."},{"question":"Wie ändere ich die Größe des Bemaßungstexts in AutoCAD?","answer":"Wählen Sie den Stil in der Palette und ändern Sie Texthöhe unter Text oder Gesamtskalierung verwenden unter Einpassen, was jede Größe des Stils, Pfeile und Abstände mit dem Text, multipliziert. Jede Bemaßung in diesem Stil wird sofort neu gezeichnet. Um nur einige Bemaßungen zu ändern, geben Sie ihnen einen eigenen Stil."},{"question":"Wie weise ich vorhandenen Bemaßungen einen Bemaßungsstil zu?","answer":"Wählen Sie die Bemaßungen und wählen Sie den Stil in der Zeile Bemaßungsstil der Palette Eigenschaften, oder klicken Sie mit der rechten Maustaste darauf und wählen Sie ihn unter Bemaßungsstil: in beiden Fällen ein Rückgängig-Schritt. Neue Bemaßungen übernehmen den aktuellen Stil, den Aktuell setzen in der Palette ändert."},{"question":"Wie ändere ich das Dezimaltrennzeichen der Bemaßungen?","answer":"ISO-25 schreibt ein Komma, etwa 82,5. Setzen Sie unter Primäreinheiten das Dezimaltrennzeichen auf einen Punkt oder ein Leerzeichen; Genauigkeit und Nachgestellte Nullen unterdrücken finden sich dort ebenfalls. Die Befehlszeile meldet das Maß weiterhin mit einem Punkt, wie die von AutoCAD."},{"question":"Wie erstelle ich einen neuen Bemaßungsstil?","answer":"Wählen Sie den Stil, von dem Sie ausgehen, und drücken Sie Neu: Die Kopie wird nach ihm benannt, aktuell gesetzt und kann umbenannt und geändert werden. Jede danach gezeichnete Bemaßung übernimmt ihn."}]
+---
+
+BEMSTIL (DIMSTYLE) verwaltet die Bemaßungsstile der Zeichnung: benannte Gruppen von Einstellungen, Pfeilgröße, Texthöhe, Gesamtskalierung, Einheiten und den Rest, die jede Bemaßung von ihrem Stil übernimmt. Eine neue Zeichnung beginnt mit ISO-25 als aktuellem Stil, dem metrischen Stil, mit dem AutoCAD beginnt. Wo AutoCAD das Dialogfeld Bemaßungsstil-Manager öffnet, öffnet BEMSTIL hier die Bemaßungstabelle der Palette Stile, eine Registerkarte des Palettenbereichs, die beim Zeichnen geöffnet bleibt; [`STIL`](/docs/commands/style) öffnet dieselbe Palette bei ihren Textstilen.
+
+Die Palette listet die Stile auf, der aktuelle ist markiert. Neu erstellt eine Kopie des gewählten Stils, nach ihm benannt, und macht sie aktuell; ein Stil wird in der Liste umbenannt, und ein bereits verwendeter Name wird abgelehnt. ISO-25, der aktuelle Stil und ein verwendeter Stil können nicht gelöscht werden. Unter der Liste sind die Einstellungen des gewählten Stils unter den Namen der Registerkarten des Managers gruppiert: Linien (Basislinienabstand, Überstand über die Maßlinie, Abstand vom Ursprung), Symbole und Pfeile (Pfeilgröße, Größe der Mittelpunktmarkierung), Text (Texthöhe, Abstand von der Maßlinie), Einpassen (die Gesamtskalierung und ob zwischen den Maßhilfslinien eine Maßlinie gezeichnet wird) und Primäreinheiten (Genauigkeit, Dezimaltrennzeichen, nachgestellte Nullen, Winkelgenauigkeit). Eine Änderung zeichnet jede Bemaßung in diesem Stil sofort neu. Jede Änderung und jeder neue Stil, jede Umbenennung, Löschung und Änderung des aktuellen Stils ist ein Schritt, den Z zurücknimmt.
+
+- **Befehl:** `BEMSTIL`
+- **Auf Englisch:** `DIMSTYLE`, in jeder Sprache als `_DIMSTYLE` eingegeben
+- **Aliasnamen:** `BMS`, `BEM`, `DIMSTY`, `DDIM`
+- **Gruppe:** [Beschriften](/docs/commands#annotate)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BMS` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="dimstyle" caption="Bemaßungen im aktuellen Stil ISO-25 gezeichnet: Pfeile, der Text über der Linie und ein Komma als Dezimaltrennzeichen." />
+
+## Was er noch nicht kann [#missing]
+
+Das Dialogfeld Bemaßungsstil-Manager selbst: Die Palette hat keine Vorschau, keinen Listenfilter, kein Überschreiben, Vergleichen oder Beschreibung, keine Unterstile für eine Art von Bemaßung, keine Alternativeinheiten oder Toleranzen und nur die oben aufgeführten Einstellungen. Eine in der Befehlszeile eingegebene Bemaßungsvariable, etwa DIMSCALE, erzeugt keine Überschreibung des aktuellen Stils. Eine neue Zeichnung hat nur ISO-25, ohne die Stile Standard und Annotative, die eine neue metrische Zeichnung in AutoCAD ebenfalls enthält.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimstyle--d--dimsty--dst--ddim--es-acoestil--aces--acoest--aes--dcota--pt-br-estilocota--ec--dimsty--fr-cotstyle--cst--csty--ddim--it-dimstile--d--dst--ddim--de-bemstil)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für BEMSTIL (DIMSTYLE) in AutoCAD?
+
+`BMS`, dann die Eingabetaste oder die Leertaste; ebenso `BEM`, `DIMSTY` und `DDIM`, und `_DIMSTYLE` in jeder Sprache von AutoCAD. `-BEMSTIL` funktioniert stattdessen in der Befehlszeile: Es speichert die aktuellen Einstellungen als neuen Stil oder macht einen Stil per Namen aktuell.
+
+### Wie ändere ich die Größe des Bemaßungstexts in AutoCAD?
+
+Wählen Sie den Stil in der Palette und ändern Sie Texthöhe unter Text oder Gesamtskalierung verwenden unter Einpassen, was jede Größe des Stils, Pfeile und Abstände mit dem Text, multipliziert. Jede Bemaßung in diesem Stil wird sofort neu gezeichnet. Um nur einige Bemaßungen zu ändern, geben Sie ihnen einen eigenen Stil.
+
+### Wie weise ich vorhandenen Bemaßungen einen Bemaßungsstil zu?
+
+Wählen Sie die Bemaßungen und wählen Sie den Stil in der Zeile Bemaßungsstil der Palette Eigenschaften, oder klicken Sie mit der rechten Maustaste darauf und wählen Sie ihn unter Bemaßungsstil: in beiden Fällen ein Rückgängig-Schritt. Neue Bemaßungen übernehmen den aktuellen Stil, den Aktuell setzen in der Palette ändert.
+
+### Wie ändere ich das Dezimaltrennzeichen der Bemaßungen?
+
+ISO-25 schreibt ein Komma, etwa `82,5`. Setzen Sie unter Primäreinheiten das Dezimaltrennzeichen auf einen Punkt oder ein Leerzeichen; Genauigkeit und Nachgestellte Nullen unterdrücken finden sich dort ebenfalls. Die Befehlszeile meldet das Maß weiterhin mit einem Punkt, wie die von AutoCAD.
+
+### Wie erstelle ich einen neuen Bemaßungsstil?
+
+Wählen Sie den Stil, von dem Sie ausgehen, und drücken Sie Neu: Die Kopie wird nach ihm benannt, aktuell gesetzt und kann umbenannt und geändert werden. Jede danach gezeichnete Bemaßung übernimmt ihn.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BEMLINEAR (DIMLINEAR) in AutoCAD](/docs/commands/dimlinear)
+- [Befehl BEMAUSG (DIMALIGNED) in AutoCAD: ausgerichtet bemaßen](/docs/commands/dimaligned)
+- [Befehl BEMPLATZ (DIMSPACE) in AutoCAD](/docs/commands/dimspace)
+- [Befehl STIL (STYLE) in AutoCAD](/docs/commands/style)

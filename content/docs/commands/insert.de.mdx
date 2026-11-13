@@ -1,0 +1,69 @@
+---
+title: "Befehl EINFÜGE (INSERT): Block einfügen in AutoCAD"
+metaTitle: "Befehl EINFÜGE (INSERT) in AutoCAD"
+description: "So fügt AutoCADs EINFÜGE (INSERT, Alias EIN) einen Block ein: die Palette Blöcke oder -EINFÜGE in der Befehlszeile mit Maßstab, Drehung, Attributen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für EINFÜGE (INSERT) in AutoCAD?","answer":"EIN, danach Eingabetaste oder Leertaste: Es öffnet die Palette Blöcke, wie das von AutoCAD 2027. -EIN ist -EINFÜGE, das in der Befehlszeile fragt. _INSERT funktioniert in jeder Sprache von AutoCAD."},{"question":"Wie füge ich einen Block über die Befehlszeile ein?","answer":"Tippen Sie -EIN und den Namen des Blocks, wählen Sie dann den Einfügepunkt und beantworten Sie Maßstab und Drehung, wobei die Eingabetaste jeweils die Vorgabe behält. ? beim Namen listet die vorhandenen Blöcke auf."},{"question":"Wie füge ich einen Block in einem anderen Maßstab ein?","answer":"Tippen Sie den Maßstabsfaktor X nach dem Einfügepunkt und die Eingabetaste beim Faktor Y, damit beide gleich bleiben; oder wählen Sie Faktor vor dem Punkt und tippen Sie einen Faktor für beide. Ein negativer Faktor spiegelt den Block."},{"question":"Wie füge ich einen Block aus einer anderen Zeichnung ein?","answer":"Nicht aus ihrer Datei: EINFÜGE setzt nur in der Zeichnung definierte Blöcke ein. Kopieren Sie stattdessen eine Referenz von ihm (Strg+C), öffnen Sie die Zeichnung, in die er soll, und fügen Sie ihn ein (Strg+V): Sein Block kommt mit, es sei denn, diese Zeichnung hat bereits einen Block dieses Namens, dessen Definition behalten wird."}]
+---
+
+EINFÜGE (INSERT) setzt einen in der Zeichnung definierten Block als Referenz ein: eine weitere Kopie von ihm, mit eigenem Punkt, Maßstab und eigener Drehung, gezeichnet aus der einen Definition, die [`BLOCK`](/docs/commands/block) erstellt hat. Wie das EINFÜGE von AutoCAD 2027 öffnet es die Palette Blöcke, die die Blöcke der Zeichnung zeigt; klicken Sie einen an, und die Befehlszeile fragt nach seinem Einfügepunkt, der Block hängt dabei am Cursor, dann nach Maßstab und Drehung. Die Palette bleibt offen, sodass ein Block nach dem anderen je ein Klick ist.
+
+`-EINFÜGE` fragt alles in der Befehlszeile ab: den Namen des Blocks (die Eingabetaste nimmt den angebotenen: den zuletzt eingefügten Block, sonst den zuletzt definierten), den Einfügepunkt, dann den Maßstabsfaktor X, den Maßstabsfaktor Y (die Eingabetaste übernimmt den von X) und den Drehwinkel. Ein negativer Faktor spiegelt den Block, und ungleiche strecken ihn: Ein Kreis darin wird als Ellipse gezeichnet. Ein Block mit Attributen fragt dann jeden Wert mit seiner Eingabeaufforderung ab und bietet seine Vorgabe an. Die Objekte des Blocks auf Layer 0 übernehmen den Layer der Referenz, die anderen behalten ihren. Jedes Einfügen ist ein Schritt, den Rückgängig zurücknimmt.
+
+- **Befehl:** `EINFÜGE`
+- **Auf Englisch:** `INSERT`, in jeder Sprache als `_INSERT` eingegeben
+- **Aliasnamen:** `EIN`, `URLEINFÜGEN`
+- **Gruppe:** [Organisieren](/docs/commands#organize)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `EIN` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="insert" caption="Ein Stuhl, zum Block gemacht und dann zweimal an einem Tisch eingefügt: einmal nach seinem Punkt um 180 gedreht, einmal vor ihm mit Drehen um 90." />
+
+## Optionen [#options]
+
+### `?` [#list]
+
+Beim Namen des Blocks: listet die Blöcke der Zeichnung auf, wie [`BLOCK`](/docs/commands/block) es tut, und endet.
+
+### `Faktor` (`F`) [#scale]
+
+Beim Einfügepunkt: fragt einen Faktor für beide Achsen ab, dann erneut nach dem Punkt, der Block in dieser Größe am Cursor. Nach dem Punkt werden die Faktoren X und Y nicht mehr gefragt.
+
+### `Drehen` (`D`) [#rotate]
+
+Beim Einfügepunkt: fragt den Winkel ab, getippt oder zwischen zwei Punkten, dann erneut nach dem Punkt, der Block gedreht am Cursor. Nach dem Punkt wird die Drehung nicht mehr gefragt.
+
+## Was er noch nicht kann [#missing]
+
+Eine andere Zeichnungsdatei einfügen: Es lassen sich nur in der Zeichnung definierte Blöcke einfügen, und ein Name, den sie nicht enthält, wird abgelehnt. Beim Einfügepunkt Basispunkt, X, Y, Z, Zerlegen und Wiederholen; beim Maßstab X Ecke und XYZ sowie ein für die gegenüberliegende Ecke gewählter Punkt. Bei ungleichen Faktoren X und Y wird ein Text oder ein Attribut in der Größe von X gezeichnet statt gestreckt, und der Bogen einer Polylinie bleibt ein Bogen; ein negatives X schreibt keinen Text rückwärts. ATTDIA 1, das Dialogfeld Attribute bearbeiten beim Einfügen, und ATTREQ 0. Die Einträge Annotativ, Blockeinheit und Einheitenfaktor der Eigenschaften-Palette. VonBlock: Ein Objekt in einem Block kann nicht die Farbe, den Linientyp oder die Linienstärke der Referenz annehmen, wie es ein mit VonBlock gezeichnetes in AutoCAD tut.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in--pt-br-inserir--i--inserirurl--inserird--inserir---i--fr-inserer--i--inserurl--inserer---i--it-inser--in--inserurl--inser---in--de-einfüge--ein--urleinfügen--einfüge---e)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für EINFÜGE (INSERT) in AutoCAD?
+
+`EIN`, danach Eingabetaste oder Leertaste: Es öffnet die Palette Blöcke, wie das von AutoCAD 2027. `-EIN` ist `-EINFÜGE`, das in der Befehlszeile fragt. `_INSERT` funktioniert in jeder Sprache von AutoCAD.
+
+### Wie füge ich einen Block über die Befehlszeile ein?
+
+Tippen Sie `-EIN` und den Namen des Blocks, wählen Sie dann den Einfügepunkt und beantworten Sie Maßstab und Drehung, wobei die Eingabetaste jeweils die Vorgabe behält. `?` beim Namen listet die vorhandenen Blöcke auf.
+
+### Wie füge ich einen Block in einem anderen Maßstab ein?
+
+Tippen Sie den Maßstabsfaktor X nach dem Einfügepunkt und die Eingabetaste beim Faktor Y, damit beide gleich bleiben; oder wählen Sie `Faktor` vor dem Punkt und tippen Sie einen Faktor für beide. Ein negativer Faktor spiegelt den Block.
+
+### Wie füge ich einen Block aus einer anderen Zeichnung ein?
+
+Nicht aus ihrer Datei: EINFÜGE setzt nur in der Zeichnung definierte Blöcke ein. Kopieren Sie stattdessen eine Referenz von ihm (Strg+C), öffnen Sie die Zeichnung, in die er soll, und fügen Sie ihn ein (Strg+V): Sein Block kommt mit, es sei denn, diese Zeichnung hat bereits einen Block dieses Namens, dessen Definition behalten wird.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BLOCK in AutoCAD](/docs/commands/block)
+- [BLOCKPALETTE (BLOCKSPALETTE)](/docs/commands#blockspalette): Zeigt die Blockpalette an
+- [Befehl ATTEDIT in AutoCAD: Blockattribute bearbeiten](/docs/commands/attedit)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)

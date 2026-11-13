@@ -1,0 +1,54 @@
+---
+title: "Befehl EIGANPASS (MATCHPROP) in AutoCAD"
+description: "So arbeitet AutoCADs EIGANPASS (MATCHPROP, Alias EG): ein Quellobjekt wählen, dann die Objekte, die Layer, Farbe, Linientyp, Linienstärke und Stile übernehmen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für EIGANPASS (MATCHPROP) in AutoCAD?","answer":"EG, danach Eingabetaste oder Leertaste; PAINTER ist ebenfalls ein Alias. Auch der vollständige Name funktioniert, ebenso _MATCHPROP in jeder Sprache von AutoCAD."},{"question":"Wie kopiere ich die Eigenschaften einer Linie auf eine andere?","answer":"Starten Sie EIGANPASS, wählen Sie die Linie, deren Eigenschaften Sie wollen, wählen Sie dann die Linien, die sie übernehmen sollen, und drücken Sie die Eingabetaste. Sie gehen auf ihren Layer, mit ihrer Farbe, ihrem Linientyp und ihrer Linienstärke."},{"question":"Warum funktioniert Eigenschaften anpassen nicht?","answer":"Ein Ziel auf einem gesperrten Layer wird nicht geändert: Entsperren Sie zuerst den Layer. Eine Eigenschaft wird nur zwischen Objekten kopiert, die sie haben: Ein Bemaßungsstil geht nur auf Bemaßungen, ein Textstil nur auf Texte, ein Muster nur auf Schraffuren. Und ein Linientyp wird wie in AutoCAD nicht auf eine Schraffur oder auf Absatztext kopiert."},{"question":"Wie passe ich die Eigenschaften einer Bemaßung oder einer Schraffur an?","answer":"Wählen Sie eine Bemaßung als Quelle und andere Bemaßungen als Ziele: Sie übernehmen ihren Bemaßungsstil, mit Layer und Farbe. Eine Schraffur gibt ihr Muster, ihren Maßstab und ihren Winkel an andere Schraffuren weiter, und jede behält ihren eigenen Ursprung."}]
+---
+
+EIGANPASS (MATCHPROP) kopiert die Eigenschaften eines Objekts auf andere, AutoCADs Pinsel Eigenschaften anpassen. Wählen Sie das Quellobjekt, oder wählen Sie vor dem Befehl eines aus; er nimmt auch eines auf einem gesperrten Layer. Er nennt dann, welche Eigenschaften er kopiert, `Aktuelle aktive Einstellungen:` und die Liste, und fragt nach den Zielobjekten: Jede Wahl oder jedes Fenster malt sie sofort an, bis die Eingabetaste endet. Ein Ziel auf einem gesperrten Layer bleibt, wie es ist, mit `Zielobjekt ist auf einem gesperrten Layer. Kann nicht aktualisiert werden.`. Der Cursor trägt AutoCADs Pinsel, und der ganze Durchlauf ist ein Schritt, den `Z` zurücknimmt. Mit Apostroph getippt, `'EIGANPASS`, läuft er innerhalb eines anderen Befehls.
+
+Was er kopiert, sind die Vorgaben der Eigenschaftseinstellungen: der Layer, die Farbe und die Linienstärke; der Linientyp, außer auf Schraffuren, Absatztext und Attributdefinitionen; die Objekthöhe; zwischen Texten der Stil, die Höhe und die Drehung, und von einem einzeiligen Text auf einen anderen auch die Ausrichtung; zwischen Bemaßungen der Bemaßungsstil; zwischen Schraffuren das Muster, der Maßstab und der Winkel, aber nicht der Ursprung.
+
+- **Befehl:** `EIGANPASS`
+- **Auf Englisch:** `MATCHPROP`, in jeder Sprache als `_MATCHPROP` eingegeben
+- **Aliasnamen:** `EG`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `EG` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="matchprop" caption="Eine Platte und ihr Loch, eine senkrechte Achse in Rot und Center auf ihrem Layer, und eine waagerechte Linie auf Layer 0, die EIGANPASS zur selben Achse macht." />
+
+## Was er noch nicht kann [#missing]
+
+Die Option Einstellungen und ihr Dialogfeld Eigenschaftseinstellungen: Jede Eigenschaft, die er kennt, wird immer kopiert, und die erste Eingabeaufforderung listet `[Einstellungen]` nicht auf. Linientypfaktor, Transparenz und Plotstil, die Objekte hier nicht haben; die Breiten einer Polylinie, der Breitenfaktor und der Schrägstellungswinkel eines Textes und die annotativen Eigenschaften. AutoCADs Vorschau der Änderung unter dem Cursor.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop--pt-br-propig--pi--pintor--fr-corresprop--cor--copierprop--it-corrisprop--crp--copiaprop--de-eiganpass)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für EIGANPASS (MATCHPROP) in AutoCAD?
+
+`EG`, danach Eingabetaste oder Leertaste; `PAINTER` ist ebenfalls ein Alias. Auch der vollständige Name funktioniert, ebenso `_MATCHPROP` in jeder Sprache von AutoCAD.
+
+### Wie kopiere ich die Eigenschaften einer Linie auf eine andere?
+
+Starten Sie EIGANPASS, wählen Sie die Linie, deren Eigenschaften Sie wollen, wählen Sie dann die Linien, die sie übernehmen sollen, und drücken Sie die Eingabetaste. Sie gehen auf ihren Layer, mit ihrer Farbe, ihrem Linientyp und ihrer Linienstärke.
+
+### Warum funktioniert Eigenschaften anpassen nicht?
+
+Ein Ziel auf einem gesperrten Layer wird nicht geändert: Entsperren Sie zuerst den Layer. Eine Eigenschaft wird nur zwischen Objekten kopiert, die sie haben: Ein Bemaßungsstil geht nur auf Bemaßungen, ein Textstil nur auf Texte, ein Muster nur auf Schraffuren. Und ein Linientyp wird wie in AutoCAD nicht auf eine Schraffur oder auf Absatztext kopiert.
+
+### Wie passe ich die Eigenschaften einer Bemaßung oder einer Schraffur an?
+
+Wählen Sie eine Bemaßung als Quelle und andere Bemaßungen als Ziele: Sie übernehmen ihren Bemaßungsstil, mit Layer und Farbe. Eine Schraffur gibt ihr Muster, ihren Maßstab und ihren Winkel an andere Schraffuren weiter, und jede behält ihren eigenen Ursprung.
+
+## Verwandte Befehle [#related]
+
+- [Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD](/docs/commands/properties)
+- [Befehl LAYER (DDLMODI) in AutoCAD](/docs/commands/layer)
+- [Befehl LINIENTYP (LINETYPE) in AutoCAD](/docs/commands/linetype)
+- [Befehl LSTÄRKE (LWEIGHT) in AutoCAD: Linienstärke](/docs/commands/lweight)

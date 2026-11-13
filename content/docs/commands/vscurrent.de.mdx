@@ -1,0 +1,74 @@
+---
+title: "Befehl VSAKTUELL (VSCURRENT) in AutoCAD"
+description: "So legt AutoCADs VSAKTUELL (VSCURRENT, Alias VSA) den visuellen Stil fest: 2D-Drahtmodell, Hidden und Conceptual, was jeder zeichnet und wie es zurückgeht."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie ändere ich den visuellen Stil in AutoCAD?","answer":"Starten Sie VSAKTUELL (oder VSA) und wählen Sie den Stil: Verdeckt, um die Kanten dahinter auszublenden, Konzeptuell, um die Flächen zu schattieren. Es ändert nur die Ansicht, nicht die Objekte."},{"question":"Wie gehe ich zurück zu 2D-Drahtmodell?","answer":"Starten Sie VSAKTUELL und wählen Sie 2DDrahtkörper, sein Buchstabe 2."},{"question":"Was ist der Unterschied zwischen Hidden und Conceptual?","answer":"Beide blenden aus, was Flächen verdecken. Hidden zeichnet nur Kanten, auf dem Hintergrund, als Strichzeichnung; Conceptual malt auch die Flächen, vom Licht schattiert, mit denselben Kanten darüber."},{"question":"Warum sehe ich noch Linien durch meinen Volumenkörper?","answer":"Sie gehören nicht zu einem Volumenkörper. Linien, Kreise und Regionen werden in jedem Stil wie in 2D-Drahtmodell gezeichnet, sodass eine Linie hinter einem Quader weiter zu sehen ist. In 2DDrahtkörper sind auch die eigenen Kanten des Volumenkörpers dahinter zu sehen: Wählen Sie Verdeckt."}]
+---
+
+VSAKTUELL (VSCURRENT) legt den visuellen Stil fest: wie die Ansicht 3D-Volumenkörper zeichnet. Er fragt nach einem Stil, bietet den aktuellen als Vorgabe an, und die Eingabetaste behält ihn. `2DDrahtkörper` zeichnet jede Kante, auch die dahinter; `Verdeckt` blendet aus, was Flächen verdecken; `Konzeptuell` malt die Flächen, schattiert. Der Stil gehört zur Ansicht und wird mit der Zeichnung gespeichert, und jeder Aufruf ist ein Schritt für Rückgängig. Innerhalb eines anderen Befehls lässt er sich nicht verwenden.
+
+Was kein Volumenkörper ist, Linien, Kreise, Regionen, Text, wird unabhängig vom Stil wie in 2D-Drahtmodell in seinen eigenen Farben gezeichnet. In Hidden und Conceptual wählt ein Klick den Volumenkörper, dessen Fläche Ihnen unter dem Cursor am nächsten ist, nie einen durch eine Fläche hindurch, die ihn verdeckt, und die Objektfänge finden weiterhin jede Kante. Ein Volumenkörper auf einem gesperrten Layer zeichnet seine Kanten blasser. MellowCADs 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+
+- **Befehl:** `VSAKTUELL`
+- **Auf Englisch:** `VSCURRENT`, in jeder Sprache als `_VSCURRENT` eingegeben
+- **Aliasnamen:** `VSA`
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `VSA` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="vscurrent" caption="Ein Block mit einem Loch quer hindurch, von Südosten gesehen: VSCURRENT Conceptual schattiert seine Flächen und zeichnet seine Kanten darüber." />
+
+## Optionen [#options]
+
+### `2DDrahtkörper` (`2DD`) [#2dwireframe]
+
+Jede Kante jedes Volumenkörpers, auch die dahinter, mit den Linien, die seine gekrümmten Flächen zeigen; die Vorgabe in einer neuen Zeichnung. Bei der Rückkehr zu ihm von einem anderen Stil meldet VSAKTUELL `Regeneriert Modell.`.
+
+### `Verdeckt` (`V`) [#hidden]
+
+Die Kanten jedes Volumenkörpers und die Umrisse seiner gekrümmten Flächen, wo keine Fläche eines Volumenkörpers sie verdeckt, in der Farbe des Objekts: Ein Volumenkörper hinter einem anderen wird von ihm verdeckt. Die Linien, die in 2D-Drahtmodell eine gekrümmte Fläche zeigen, werden nicht gezeichnet.
+
+### `Konzeptuell` (`K`) [#conceptual]
+
+Die Ihnen zugewandten Flächen in der Farbe des Objekts gemalt, auf der vom Licht abgewandten Seite ins kühle Blau übergehend, wobei das Licht Ihrem Blickpunkt folgt, und die Kanten von Hidden in einer Farbe darüber gezeichnet, unabhängig vom Objekt. Hier und in Hidden zeigt ein Zylinder oder Kegel in der Draufsicht nur seinen Kreis, wie in AutoCAD.
+
+## Was er noch nicht kann [#missing]
+
+Die anderen Stile von AutoCAD, Drahtmodell, Realistisch, Schattiert, Schattiert mit Kanten, Graustufen, Skizzenhaft und Röntgen, und einen Stil benennen oder sie mit `?` auflisten: Die Eingabeaufforderung listet nur die drei Stile auf, die es gibt, und weist jede andere Antwort ab.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva--fr-stylviscourant--sv--it-stileviscorrente--svc--de-vsaktuell--vsa)
+
+## Fragen [#questions]
+
+### Wie ändere ich den visuellen Stil in AutoCAD?
+
+Starten Sie VSAKTUELL (oder `VSA`) und wählen Sie den Stil: `Verdeckt`, um die Kanten dahinter auszublenden, `Konzeptuell`, um die Flächen zu schattieren. Es ändert nur die Ansicht, nicht die Objekte.
+
+### Wie gehe ich zurück zu 2D-Drahtmodell?
+
+Starten Sie VSAKTUELL und wählen Sie `2DDrahtkörper`, sein Buchstabe `2`.
+
+### Was ist der Unterschied zwischen Hidden und Conceptual?
+
+Beide blenden aus, was Flächen verdecken. Hidden zeichnet nur Kanten, auf dem Hintergrund, als Strichzeichnung; Conceptual malt auch die Flächen, vom Licht schattiert, mit denselben Kanten darüber.
+
+### Warum sehe ich noch Linien durch meinen Volumenkörper?
+
+Sie gehören nicht zu einem Volumenkörper. Linien, Kreise und Regionen werden in jedem Stil wie in 2D-Drahtmodell gezeichnet, sodass eine Linie hinter einem Quader weiter zu sehen ist. In `2DDrahtkörper` sind auch die eigenen Kanten des Volumenkörpers dahinter zu sehen: Wählen Sie `Verdeckt`.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung 3D: eine Riemenscheibe](/docs/exercises/pulley)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl 3DORBIT in AutoCAD](/docs/commands/3dorbit)
+- [Befehl QUADER (BOX) in AutoCAD](/docs/commands/box)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)

@@ -1,0 +1,68 @@
+---
+title: "Befehl VARIA (SCALE): skalieren in AutoCAD"
+description: "So ändert AutoCADs VARIA (SCALE, Alias V) die Größe von Objekten um einen Basispunkt: ein Faktor, Kopieren und Referenz für eine bekannte Länge. Gratis testen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für VARIA (SCALE) in AutoCAD?","answer":"V, danach Eingabetaste oder Leertaste. Vorsicht: In der deutschen AutoCAD-Version heißt der Befehl VARIA, nicht SKALIEREN, und SC gibt es nicht. _SCALE funktioniert in jeder Sprache von AutoCAD."},{"question":"Wie skaliere ich in AutoCAD mit einer Referenz?","answer":"Wählen Sie Bezug beim Faktor, wählen Sie die zwei Enden einer Kante, deren Länge Sie kennen, und tippen Sie dann die Länge, die sie haben soll. Alles Gewählte wird mit der neuen Länge geteilt durch die alte skaliert, sodass eine Zeichnung in falscher Größe mit einem bekannten Maß stimmt."},{"question":"Wie skaliere ich ein Objekt und behalte das Original?","answer":"Wählen Sie Kopie beim Faktor: Die Kopie wird skaliert, das Original bleibt, wo es war."},{"question":"Wie ändere ich den Linientypfaktor?","answer":"Nicht mit VARIA, das die Objekte vergrößert oder verkleinert: LTFAKTOR legt fest, wie lang die Striche und Lücken jedes Linientyps gezeichnet werden."},{"question":"Wie lege ich einen Plot- oder Layoutmaßstab fest?","answer":"MellowCAD hat keine Layouts, Ansichtsfenster oder Plots: Sie zeichnen im Modellbereich in Originalgröße, und VARIA ändert die Größe der Objekte selbst, nicht, wie sie gedruckt würden."}]
+---
+
+VARIA (SCALE) macht die gewählten Objekte um einen Basispunkt größer oder kleiner, der dort bleibt, wo er ist: Ein Faktor von 2 verdoppelt sie, 0,5 halbiert sie, in jeder Richtung gleich. Wählen Sie die Objekte, wählen Sie den Basispunkt, tippen Sie dann den Faktor, oder bewegen Sie den Cursor und klicken: Die Objekte folgen ihm. Die Eingabetaste dort, ohne etwas zu tippen, skaliert mit dem zuletzt verwendeten Faktor. Jeder Durchlauf ist ein Schritt, den Rückgängig zurücknimmt.
+
+Es skaliert alles, was es nimmt, wie AutoCAD: Das Muster einer Schraffur wächst mit ihrer Begrenzung, eine Bemaßung misst ihre neue Länge, ein Objekt über der Ebene wird auch in Z um den Basispunkt skaliert.
+
+- **Befehl:** `VARIA`
+- **Auf Englisch:** `SCALE`, in jeder Sprache als `_SCALE` eingegeben
+- **Aliasnamen:** `V`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `V` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="scale" caption="Eine Platte und ihr Loch, mit Referenz an einer Kopie um ihre Ecke skaliert: die 40 lange Kante gewählt, dann auf 60 gebracht." />
+
+## Optionen [#options]
+
+### `Kopie` (`K`) [#copy]
+
+Skaliert eine Kopie und lässt die Objekte, wie sie waren: Es meldet `Kopie von ausgewählten Objekten wird skaliert.` und fragt erneut nach dem Faktor, `Kopie` weiterhin aufgelistet.
+
+### `Bezug` (`B`) [#reference]
+
+Fragt nach einer Referenzlänge, getippt oder als zwei Punkte gewählt, dann nach der Länge, die sie haben soll: Der Faktor ist die neue Länge geteilt durch die Referenz. Die neue Länge wird getippt, oder ein Punkt, dessen Abstand vom Basispunkt sie ist; `Punkte` fragt stattdessen zwei Punkte ab und misst zwischen ihnen. Beide Längen bieten die zuletzt angegebenen an, 1 in einer neuen Zeichnung.
+
+## Was er noch nicht kann [#missing]
+
+Die Eingabetaste beim ersten oder zweiten Punkt von `Punkte` beendet den Befehl ohne Skalierung, wo AutoCAD mit dem Wert des Cursors dort skaliert. Ein winziger Faktor wird stillschweigend angewendet, wo AutoCAD sagt, dass es ihn ignoriert. Die gezogenen Objekte werden so gezeichnet, wie [`SCHIEBEN`](/docs/commands/move) sie zieht, nur in ihrer Farbe.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es--fr-echelle--eh--it-scala--ss--de-varia--v)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für VARIA (SCALE) in AutoCAD?
+
+`V`, danach Eingabetaste oder Leertaste. Vorsicht: In der deutschen AutoCAD-Version heißt der Befehl VARIA, nicht SKALIEREN, und `SC` gibt es nicht. `_SCALE` funktioniert in jeder Sprache von AutoCAD.
+
+### Wie skaliere ich in AutoCAD mit einer Referenz?
+
+Wählen Sie `Bezug` beim Faktor, wählen Sie die zwei Enden einer Kante, deren Länge Sie kennen, und tippen Sie dann die Länge, die sie haben soll. Alles Gewählte wird mit der neuen Länge geteilt durch die alte skaliert, sodass eine Zeichnung in falscher Größe mit einem bekannten Maß stimmt.
+
+### Wie skaliere ich ein Objekt und behalte das Original?
+
+Wählen Sie `Kopie` beim Faktor: Die Kopie wird skaliert, das Original bleibt, wo es war.
+
+### Wie ändere ich den Linientypfaktor?
+
+Nicht mit VARIA, das die Objekte vergrößert oder verkleinert: [`LTFAKTOR`](/docs/commands/ltscale) legt fest, wie lang die Striche und Lücken jedes Linientyps gezeichnet werden.
+
+### Wie lege ich einen Plot- oder Layoutmaßstab fest?
+
+MellowCAD hat keine Layouts, Ansichtsfenster oder Plots: Sie zeichnen im Modellbereich in Originalgröße, und VARIA ändert die Größe der Objekte selbst, nicht, wie sie gedruckt würden.
+
+## Verwandte Befehle [#related]
+
+- [Befehl DREHEN (ROTATE) in AutoCAD](/docs/commands/rotate)
+- [Befehl SCHIEBEN (MOVE) in AutoCAD](/docs/commands/move)
+- [Befehl STRECKEN (STRETCH) in AutoCAD](/docs/commands/stretch)
+- [Befehl LTFAKTOR (LTSCALE) in AutoCAD](/docs/commands/ltscale)

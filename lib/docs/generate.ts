@@ -222,7 +222,7 @@ function comboText(combo: KeyCombo, keys: Messages["Docs"]["keys"]): string {
     ArrowUp: keys.up,
     ArrowDown: keys.down,
   }
-  return [combo.ctrl && "Ctrl", combo.shift && keys.shift, named[combo.key] ?? combo.key]
+  return [combo.ctrl && keys.ctrl, combo.shift && keys.shift, named[combo.key] ?? combo.key]
     .filter(Boolean)
     .join("+")
 }

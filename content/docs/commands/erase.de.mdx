@@ -1,0 +1,52 @@
+---
+title: "Befehl LÖSCHEN (ERASE) in AutoCAD"
+description: "Wie LÖSCHEN (ERASE, Alias LÖ) in AutoCAD Objekte löscht: wählen, Eingabetaste, Entf-Taste, alles löschen und das Gelöschte zurückholen. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Alias von LÖSCHEN (ERASE) in AutoCAD?","answer":"LÖ, dann die Eingabetaste oder die Leertaste; DELETE ist ebenfalls ein Alias. Das E des englischen AutoCAD gehört in der deutschen Version zu EIGENSCHAFTEN. Oder wählen Sie die Objekte bei Befehl: und drücken Sie die Entf-Taste. Der volle Name funktioniert auch, und _ERASE in jeder Sprache von AutoCAD."},{"question":"Wie löscht man alles in einer Zeichnung?","answer":"Starten Sie LÖSCHEN und geben Sie bei „Objekte wählen:“ ALLE ein, dann die Eingabetaste. Objekte auf einem gesperrten Layer werden ausgelassen, und die Auswahl sagt, wie viele es waren."},{"question":"Wie holt man zurück, was man gelöscht hat?","answer":"Geben Sie sofort Z ein oder drücken Sie Strg+Z: Das Löschen ist ein Rückgängig-Schritt. OOPS, das die zuletzt gelöschte Auswahl auch nach anderen Befehlen zurückbringt, ist noch nicht gebaut."},{"question":"Was ist der Unterschied zwischen LÖSCHEN und STUTZEN?","answer":"LÖSCHEN entfernt ganze Objekte. STUTZEN entfernt nur den Teil eines Objekts, der über die Kanten hinausläuft, die er trifft, und behält den Rest."}]
+---
+
+LÖSCHEN (ERASE) entfernt die gewählten Objekte aus der Zeichnung. Wählen Sie sie bei `Objekte wählen:`, durch Anklicken oder mit einem der Auswahlmodi von AutoCAD, darunter ein Fenster oder Kreuzen, dann drücken Sie die Eingabetaste oder die Leertaste: Sie sind weg, und der Befehl sagt nichts weiter. Esc beendet ihn, ohne etwas zu löschen. Wie in AutoCAD werden vor dem Befehl gewählte Objekte sofort gelöscht, und die Entf-Taste mit gewählten Objekten führt LÖSCHEN für sie aus. Während Sie wählen, werden das Objekt unter dem Fadenkreuz und die bereits gewählten verblasst gezeichnet, wie AutoCAD vorab zeigt, was es löschen wird. Das ganze Löschen ist ein Schritt, den Rückgängig zurücknimmt.
+
+- **Befehl:** `LÖSCHEN`
+- **Auf Englisch:** `ERASE`, in jeder Sprache als `_ERASE` eingegeben
+- **Aliasnamen:** `LÖ`, `DELETE`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `LÖ` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="erase" caption="Ein Rechteck und seine beiden Diagonalen: eine Diagonale gewählt, dann die Eingabetaste, und sie ist gelöscht." />
+
+## Was er noch nicht kann [#missing]
+
+OOPS, das in AutoCAD die zuletzt von LÖSCHEN gelöschte Auswahl zurückbringt, auch nach anderen Befehlen. Hier nimmt `Z` oder Strg+Z das Löschen zurück, mit allem, was danach kam.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#erase--e--delete--es-borra--b--delete--pt-br-apagar--apg--delete--fr-effacer--ef--delete--it-cancella--ca--delete--de-löschen--lö--delete)
+
+## Fragen [#questions]
+
+### Wie lautet das Alias von LÖSCHEN (ERASE) in AutoCAD?
+
+`LÖ`, dann die Eingabetaste oder die Leertaste; `DELETE` ist ebenfalls ein Alias. Das `E` des englischen AutoCAD gehört in der deutschen Version zu EIGENSCHAFTEN. Oder wählen Sie die Objekte bei `Befehl:` und drücken Sie die Entf-Taste. Der volle Name funktioniert auch, und `_ERASE` in jeder Sprache von AutoCAD.
+
+### Wie löscht man alles in einer Zeichnung?
+
+Starten Sie LÖSCHEN und geben Sie bei `Objekte wählen:` `ALLE` ein, dann die Eingabetaste. Objekte auf einem gesperrten Layer werden ausgelassen, und die Auswahl sagt, wie viele es waren.
+
+### Wie holt man zurück, was man gelöscht hat?
+
+Geben Sie sofort `Z` ein oder drücken Sie Strg+Z: Das Löschen ist ein Rückgängig-Schritt. OOPS, das die zuletzt gelöschte Auswahl auch nach anderen Befehlen zurückbringt, ist noch nicht gebaut.
+
+### Was ist der Unterschied zwischen LÖSCHEN und STUTZEN?
+
+LÖSCHEN entfernt ganze Objekte. [`STUTZEN`](/docs/commands/trim) entfernt nur den Teil eines Objekts, der über die Kanten hinausläuft, die er trifft, und behält den Rest.
+
+## Verwandte Befehle [#related]
+
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl BRUCH (BREAK) in AutoCAD](/docs/commands/break)
+- [Befehl URSPRUNG (EXPLODE) in AutoCAD](/docs/commands/explode)
+- [Befehl ZURÜCK (UNDO) in AutoCAD](/docs/commands/undo)

@@ -1,0 +1,85 @@
+---
+title: "Befehl EXTRUSION (EXTRUDE) in AutoCAD"
+description: "Wie EXTRUSION (EXTRUDE, Alias EX) in AutoCAD ein geschlossenes 2D-Profil in einen 3D-Volumenkörper verwandelt: Höhe, Richtung, Verjüngungswinkel."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für EXTRUSION (EXTRUDE) in AutoCAD?","answer":"EX, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _EXTRUDE in jeder Sprache von AutoCAD."},{"question":"Wie extrudiere ich eine 2D-Zeichnung in 3D?","answer":"Zeichnen Sie den Umriss als ein geschlossenes Objekt — eine geschlossene Polylinie, einen Kreis oder eine Region —, starten Sie EXTRUSION, wählen Sie es, drücken Sie die Eingabetaste und geben Sie die Höhe ein. Von oben sieht ein Volumenkörper aus wie sein Umriss: Drehen Sie die Ansicht mit dem ViewCube, oder mit -AUSSCHNT und SOIso, um ihn in 3D zu sehen."},{"question":"Warum erzeugt EXTRUSION keinen Volumenkörper?","answer":"Das Profil ist offen oder überschneidet sich selbst. Eine Linie, ein Bogen oder eine offene Polylinie ergibt in AutoCAD eine Fläche, und MellowCAD hat noch keine: EXTRUSION meldet „Sweeping oder Extrudieren eines Objekts dieses Typs nicht möglich.“ und entfernt sie aus der Auswahl; ein Profil, das sich selbst überschneidet, ergibt „Sweeping oder Extrudieren einer sich selbst schneidenden Kurve ist nicht möglich.“ und wird ebenfalls entfernt. Verbinden Sie die Teile mit VERBINDEN, machen Sie mit REGION eine Region daraus oder klicken Sie mit KLICKZIEHEN hinein."},{"question":"Wie extrudiere ich eine Form mit Loch?","answer":"Machen Sie eine Region daraus: REGION auf dem Umriss und dem Loch, dann DIFFERENZ der Region des Lochs von der des Umrisses. Extrudieren Sie diese Region, und das Loch verläuft durch den Volumenkörper. Oder starten Sie KLICKZIEHEN und klicken Sie zwischen den Umriss und das Loch."},{"question":"Wie extrudiere ich entlang eines Pfads?","answer":"Noch nicht: Pfad wird aufgeführt, aber abgelehnt, und SWEEP ist nicht gebaut. Richtung extrudiert entlang der geraden Linie zwischen zwei Punkten."}]
+---
+
+EXTRUSION (EXTRUDE) verwandelt geschlossene 2D-Profile in 3D-Volumenkörper, jedes um die angegebene Höhe gerade aus seiner Ebene gezogen. Wählen Sie die Profile — Kreise, Ellipsen, geschlossene Polylinien oder Splines, Regionen — und drücken Sie die Eingabetaste, geben Sie dann die Höhe ein oder zeigen Sie sie mit einem Punkt; die letzte Höhe ist die Vorgabe des nächsten Aufrufs. Jedes Profil wird ein eigener Volumenkörper auf dem aktuellen Layer und wird gelöscht, wie DELOBJ es standardmäßig vorgibt. Der ganze Befehl ist ein Schritt, den Rückgängig zurücknimmt.
+
+Das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig: Ein offenes Profil, aus dem AutoCAD eine Fläche macht, ergibt `Sweeping oder Extrudieren eines Objekts dieses Typs nicht möglich.` und wird aus der Auswahl entfernt.
+
+- **Befehl:** `EXTRUSION`
+- **Auf Englisch:** `EXTRUDE`, in jeder Sprache als `_EXTRUDE` eingegeben
+- **Aliasnamen:** `EX`
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `EX` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="extrude" caption="Eine geschlossene L-förmige Polylinie, um 20 zu einem Volumenkörper extrudiert, dann von Südosten im visuellen Stil Verdeckt gesehen." />
+
+## Optionen [#options]
+
+### `MOdus` (`MO`) [#mode]
+
+Fragt nach `Volumenkörper` oder `Fläche`. `Volumenkörper` ist die Vorgabe und der einzige, den es gibt: Da es noch keine Flächenobjekte gibt, wird `Fläche` abgelehnt.
+
+### `Richtung` (`R`) [#direction]
+
+Anstelle einer Höhe geben zwei Punkte die Richtung und die Länge an: Die Profile werden entlang dieser Linie extrudiert, schräg, wenn sie schräg ist. Eine Richtung in der Ebene des Profils ergibt `Extrusionsrichtung ist parallel zur Ebene der Sweep-Kurve.`, und der Befehl endet.
+
+### `Pfad` (`P`) [#path]
+
+Wie in AutoCAD aufgeführt, aber nicht gebaut: Die Wahl wird abgelehnt, und die Höhe wird erneut abgefragt.
+
+### `Verjüngungswinkel` (`V`) [#taper]
+
+Fragt nach einem Winkel zwischen −90 und 90 Grad, dann erneut nach der Höhe: Ein positiver Winkel verjüngt den Volumenkörper nach oben, ein negativer weitet ihn. Ein Kreis, der sich vor der Höhe schließt, endet in einer Spitze, einem Kegel; ein Profil, das die Verjüngung nicht verträgt, erzeugt nichts.
+
+### `Ausdruck` (`A`) [#expression]
+
+Die Höhe als Ausdruck: `2*3` ist 6. Bisher nur Arithmetik.
+
+## Was er noch nicht kann [#missing]
+
+Path, das Sweepen entlang eines Pfads. Der Modus SUrface und offene Profile, aus denen AutoCAD Flächen macht: Es gibt noch keine Flächenobjekte. Die Flächen von Volumenkörpern und die Bereiche, die ein Klick innerhalb von Objekten findet, die [`KLICKZIEHEN`](/docs/commands/presspull) nimmt. Eine Verjüngung an einer Ellipse, einem Spline oder einem Bogen, der an einer Ecke auf das nächste Segment trifft. Parameter und Funktionen von Expression. [`URSPRUNG`](/docs/commands/explode) eines extrudierten Volumenkörpers mit gekrümmten Seiten, den AutoCAD in Flächen und Regionen umwandelt. Seine Griffe sowie seine Höhe und sein Verjüngungswinkel, bearbeitet in der Palette Eigenschaften.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu--de-extrusion--ex)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für EXTRUSION (EXTRUDE) in AutoCAD?
+
+`EX`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_EXTRUDE` in jeder Sprache von AutoCAD.
+
+### Wie extrudiere ich eine 2D-Zeichnung in 3D?
+
+Zeichnen Sie den Umriss als ein geschlossenes Objekt — eine geschlossene Polylinie, einen Kreis oder eine Region —, starten Sie EXTRUSION, wählen Sie es, drücken Sie die Eingabetaste und geben Sie die Höhe ein. Von oben sieht ein Volumenkörper aus wie sein Umriss: Drehen Sie die Ansicht mit dem ViewCube, oder mit `-AUSSCHNT` und `SOIso`, um ihn in 3D zu sehen.
+
+### Warum erzeugt EXTRUSION keinen Volumenkörper?
+
+Das Profil ist offen oder überschneidet sich selbst. Eine Linie, ein Bogen oder eine offene Polylinie ergibt in AutoCAD eine Fläche, und MellowCAD hat noch keine: EXTRUSION meldet `Sweeping oder Extrudieren eines Objekts dieses Typs nicht möglich.` und entfernt sie aus der Auswahl; ein Profil, das sich selbst überschneidet, ergibt `Sweeping oder Extrudieren einer sich selbst schneidenden Kurve ist nicht möglich.` und wird ebenfalls entfernt. Verbinden Sie die Teile mit [`VERBINDEN`](/docs/commands/join), machen Sie mit [`REGION`](/docs/commands/region) eine Region daraus oder klicken Sie mit [`KLICKZIEHEN`](/docs/commands/presspull) hinein.
+
+### Wie extrudiere ich eine Form mit Loch?
+
+Machen Sie eine Region daraus: [`REGION`](/docs/commands/region) auf dem Umriss und dem Loch, dann [`DIFFERENZ`](/docs/commands/subtract) der Region des Lochs von der des Umrisses. Extrudieren Sie diese Region, und das Loch verläuft durch den Volumenkörper. Oder starten Sie [`KLICKZIEHEN`](/docs/commands/presspull) und klicken Sie zwischen den Umriss und das Loch.
+
+### Wie extrudiere ich entlang eines Pfads?
+
+Noch nicht: `Pfad` wird aufgeführt, aber abgelehnt, und SWEEP ist nicht gebaut. `Richtung` extrudiert entlang der geraden Linie zwischen zwei Punkten.
+
+## Üben [#practice]
+
+- [AutoCAD-Übung 3D: eine Montageplatte](/docs/exercises/mounting-plate)
+- [AutoCAD-Übung 3D: ein Lagerbock](/docs/exercises/bearing-block)
+
+## Verwandte Befehle [#related]
+
+- [Befehl KLICKZIEHEN (PRESSPULL) in AutoCAD](/docs/commands/presspull)
+- [Befehl ROTATION (REVOLVE) in AutoCAD](/docs/commands/revolve)
+- [Befehl REGION in AutoCAD](/docs/commands/region)
+- [Befehl DIFFERENZ (SUBTRACT) in AutoCAD](/docs/commands/subtract)

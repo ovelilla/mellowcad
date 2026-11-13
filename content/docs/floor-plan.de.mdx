@@ -1,0 +1,55 @@
+---
+title: Grundriss in AutoCAD zeichnen
+metaTitle: "Grundriss zeichnen online, kostenlos"
+description: "Den Grundriss eines Hauses in AutoCAD zeichnen, ohne Anmeldung: Wände mit VERSETZ (OFFSET), Öffnungen mit STUTZEN (TRIM), Türen, Fenster, Bemaßung."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Ein Grundriss ist das Haus, in etwa eineinhalb Metern Höhe durchgeschnitten und von oben gesehen: jede Wand als zwei Linien mit ihrer Stärke dazwischen, die Öffnungen, die Türen offen gezeichnet mit ihrem Schwenkbereich, die Fenster und die Bemaßung. Diese Anleitung zeichnet ein Haus mit zwei Räumen, 8 mal 6 Meter, in Zentimetern: Eine Einheit ist ein Zentimeter, die Außenwände sind also 20 stark und die Innenwand 10. Jeder Schritt zeigt seine Zeichnung und den Verlauf der Befehlszeile, wie Sie ihn eingeben würden. [Öffnen Sie den Editor](/de/draw) neben dieser Seite und folgen Sie ihr.
+
+## Layer anlegen [#layers]
+
+Jede Art von Objekt kommt auf einen eigenen Layer, mit eigener Farbe, damit Sie jeden davon ausschalten können: Wände, Türen, Fenster und Bemaßung. Legen Sie sie in der Layer-Palette an, <Command id="LAYER" />, und machen Sie vor jedem Schritt im Layer-Steuerelement den richtigen aktuell. Damit die Bemaßungen in der Größe eines Hauses lesbar sind, stellen Sie den Gesamtmaßstab ihres Stils in <Command id="DIMSTYLE" /> ein: hier 12, sodass ihr Text 30 hoch ist.
+
+## Die Außenwände zeichnen [#walls]
+
+Auf dem Layer Wände: <Command id="RECTANG" /> von `0,0` bis `800,600`, die Außenseite der Wände. <Command id="OFFSET" /> liefert die Innenseite: Geben Sie die Stärke ein, `20`, wählen Sie das Rechteck und klicken Sie in sein Inneres.
+
+<Session name="floorPlanWalls" caption="Die Außenwände: ein Rechteck und sein Versatz, 20 nach innen." />
+
+## Die Innenwand zeichnen [#inner-wall]
+
+Eine Linie mit <Command id="LINE" /> von `500,20`, `0,560` nach oben bis zur Innenseite der Außenwände, und ein <Command id="OFFSET" /> von `10` nach rechts: die Wand zwischen den beiden Räumen.
+
+<Session name="floorPlanInnerWall" caption="Die Innenwand: eine Linie und ihr Versatz, 10 rechts davon." />
+
+## Die Öffnungen ausschneiden [#openings]
+
+Eine Öffnung wird zwischen zwei Linien quer zur Wand geschnitten, ihren Leibungen. Zeichnen Sie sie mit <Command id="LINE" />, dann <Command id="TRIM" /> die Linien der Wand dazwischen, ein Klick je Linie: der Eingang, 90 breit, ab `100,0`; die Innentür, 80 breit, ab `500,200`; die Fenster, 120 breit, ab `200,580` in der oberen Wand und `780,250` in der rechten.
+
+<Session name="floorPlanOpenings" caption="Vier Öffnungen: je zwei Leibungen, und die Linien der Wand dazwischen gestutzt." />
+
+## Die Türen zeichnen [#doors]
+
+Auf dem Layer Türen ist jede Tür ihr Flügel, offen gezeichnet mit <Command id="LINE" />, und ihr Schwenkbereich, ein Bogen mit <Command id="ARC" />: Wählen Sie ihre Option Mittelpunkt, geben Sie dann das Scharnier als Mittelpunkt an, den Anfang des Schwenks und sein Ende. Beide Enden sind schon gezeichnete Punkte, die Ecke der Leibung und das Ende des Flügels: Geben Sie `_END` ein, den Objektfang Endpunkt für einen einzelnen Punkt, und wählen Sie jeden.
+
+<Session name="floorPlanDoors" caption="Jede Tür: ihr Flügel, um 90° geöffnet, und der Bogen ihres Schwenkbereichs." />
+
+## Die Fenster zeichnen [#windows]
+
+Auf dem Layer Fenster füllt ein <Command id="RECTANG" /> jede Öffnung ab ihrer Leibung, und eine Linie durch seine Mitte steht für das Glas.
+
+<Session name="floorPlanWindows" caption="Die Fenster: ein Rechteck in jeder Öffnung und eine Linie für das Glas." />
+
+## Den Grundriss bemaßen [#dimensions]
+
+Auf dem Layer Bemaßung: <Command id="DIMLINEAR" /> für die Außenmaße, dann die Räume von innen: die Breite des ersten Raums mit <Command id="DIMLINEAR" />, dann die Innenwand und den zweiten Raum mit <Command id="DIMCONTINUE" />, ab dem Ursprung eingegeben mit `#`.
+
+<Session name="floorPlanDimensions" caption="Der bemaßte Grundriss: außen 800 mal 600, innen die Räume." />
+
+## Weiter [#next]
+
+- Benennen Sie jeden Raum mit <Command id="TEXT" /> und füllen Sie die Wände mit <Command id="HATCH" />, indem Sie einen Punkt zwischen ihren beiden Linien wählen.
+- Üben Sie mit den [Übungen](/docs/exercises): die [Treppe im Grundriss](/docs/exercises/stairs) und [ein runder Tisch mit Stühlen](/docs/exercises/round-table) werden ebenfalls in Zentimetern gezeichnet.
+- [Koordinaten](/docs/coordinates): alle Arten, einen Punkt einzugeben.

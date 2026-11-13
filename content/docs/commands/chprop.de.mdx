@@ -1,0 +1,73 @@
+---
+title: "Befehl EIGÄNDR (CHPROP) in AutoCAD"
+description: "Wie EIGÄNDR (CHPROP) in AutoCAD Eigenschaften in der Befehlszeile ändert: Farbe, Layer, Linientyp, Linienstärke und Objekthöhe. Zum Testen im Browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Gibt es ein Alias für EIGÄNDR (CHPROP) in AutoCAD?","answer":"Es hat kein Alias: Geben Sie EIGÄNDR ein, oder _CHPROP in jeder Sprache von AutoCAD. Die Eingabetaste an der Eingabeaufforderung Befehl: wiederholt ihn."},{"question":"Was ist der Unterschied zwischen EIGÄNDR und EIGENSCHAFTEN?","answer":"Sie ändern dieselben Eigenschaften. EIGENSCHAFTEN zeigt sie in einer Palette, auch mit der Geometrie jedes Objekts; EIGÄNDR fragt sie in der Befehlszeile ab, was Ihre Hände auf der Tastatur lässt."},{"question":"Wie ändert man die Farbe von Objekten in der Befehlszeile?","answer":"Geben Sie EIGÄNDR ein, wählen Sie die Objekte, drücken Sie die Eingabetaste, wählen Sie Farbe und geben Sie die Farbe ein, etwa 1 für Rot. Drücken Sie die Eingabetaste erneut, um abzuschließen."},{"question":"Wie verschiebt man mehrere Objekte auf einen anderen Layer?","answer":"Starten Sie EIGÄNDR, wählen Sie sie, wählen Sie LAyer und geben Sie den Namen des Layers ein. Der Layer muss existieren: Legen Sie ihn zuerst in LAYER an."}]
+---
+
+EIGÄNDR (CHPROP) ändert die Eigenschaften der gewählten Objekte in der Befehlszeile: die Zeilen „Allgemein“ der Eigenschaftenpalette, als Eingabeaufforderungen abgefragt. Wählen Sie die Objekte, oder wählen Sie sie vor dem Befehl, dann wählen Sie eine Eigenschaft zum Ändern; er fragt nach jeder erneut nach einer, bis die Eingabetaste ihn beendet. Die Eingabeaufforderung jeder Eigenschaft bietet den Wert der Auswahl als Vorgabe an, `variiert` wo die Objekte sich unterscheiden, und die Eingabetaste dort lässt jedem Objekt seinen eigenen. Was Sie einstellen, wird beim Beenden des Befehls angewendet, sodass Esc jedes Objekt lässt, wie es war. Objekte auf einem gesperrten Layer werden gezählt und ausgelassen, jedes mit der Meldung `Das Objekt ist auf einem gesperrten Layer.`. Der ganze Durchlauf ist ein Schritt, den `Z` zurücknimmt.
+
+- **Befehl:** `EIGÄNDR`
+- **Auf Englisch:** `CHPROP`, in jeder Sprache als `_CHPROP` eingegeben
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `EIGÄNDR` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="chprop" caption="EIGÄNDR an einer Linie quer über der Bohrung einer Platte: Farbe 1 und Linientyp Center, eine Achse, auf dem Layer, auf dem sie war." />
+
+## Optionen [#options]
+
+### `Farbe` (`F`) [#color]
+
+Eine Farbnummer von 1 bis 255, ein Name wie `red`, `BYLAYER` oder `Truecolor` und sein `Red,Green,Blue`, wie [`FARBE`](/docs/commands/color) sie annimmt; was COLOR ablehnt, wird auch hier abgelehnt und erneut abgefragt.
+
+### `LAyer` (`LA`) [#layer]
+
+Der Name eines Layers, in beliebiger Schreibweise. Ein Name, der kein Layername sein kann, meldet `Ungültiger Layer Name.`, einer, der nicht in der Zeichnung ist, meldet, dass er nicht gefunden wurde; beide fragen erneut. EIGÄNDR legt keine Layer an.
+
+### `LTYp` (`LTY`) [#ltype]
+
+Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Jeder Linientyp ist hier geladen; ein anderer Name meldet, dass er nicht gefunden wurde, und kehrt zur Eigenschaften-Eingabeaufforderung zurück.
+
+### `LStärke` (`LS`) [#lweight]
+
+Eine Linienstärke in Millimetern, auf die nächste Standardstärke gerundet, wie [`LSTÄRKE`](/docs/commands/lweight) sie rundet, oder `ByLayer`; `?` listet sie auf.
+
+### `Objekthöhe` (`O`) [#thickness]
+
+Ein Abstand, eingegeben oder durch zwei Punkte gemessen, auch negativ und null. Er wird an den Linien, Kreisen, Bögen und Polylinien der Auswahl gesetzt, entlang der eigenen Normalen jedes Objekts; bei jedem anderen Typ meldet er beim Beenden, dass dessen Objekthöhe nicht geändert werden kann.
+
+## Was er noch nicht kann [#missing]
+
+ltScale, TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine Echtfarbe, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
+
+## Fragen [#questions]
+
+### Gibt es ein Alias für EIGÄNDR (CHPROP) in AutoCAD?
+
+Es hat kein Alias: Geben Sie `EIGÄNDR` ein, oder `_CHPROP` in jeder Sprache von AutoCAD. Die Eingabetaste an der Eingabeaufforderung `Befehl:` wiederholt ihn.
+
+### Was ist der Unterschied zwischen EIGÄNDR und EIGENSCHAFTEN?
+
+Sie ändern dieselben Eigenschaften. [`EIGENSCHAFTEN`](/docs/commands/properties) zeigt sie in einer Palette, auch mit der Geometrie jedes Objekts; EIGÄNDR fragt sie in der Befehlszeile ab, was Ihre Hände auf der Tastatur lässt.
+
+### Wie ändert man die Farbe von Objekten in der Befehlszeile?
+
+Geben Sie `EIGÄNDR` ein, wählen Sie die Objekte, drücken Sie die Eingabetaste, wählen Sie `Farbe` und geben Sie die Farbe ein, etwa `1` für Rot. Drücken Sie die Eingabetaste erneut, um abzuschließen.
+
+### Wie verschiebt man mehrere Objekte auf einen anderen Layer?
+
+Starten Sie EIGÄNDR, wählen Sie sie, wählen Sie `LAyer` und geben Sie den Namen des Layers ein. Der Layer muss existieren: Legen Sie ihn zuerst in [`LAYER`](/docs/commands/layer) an.
+
+## Verwandte Befehle [#related]
+
+- [Befehl EIGENSCHAFTEN (PROPERTIES) in AutoCAD](/docs/commands/properties)
+- [Befehl EIGANPASS (MATCHPROP) in AutoCAD](/docs/commands/matchprop)
+- [Befehl FARBE (COLOR) in AutoCAD](/docs/commands/color)
+- [Befehl LAYER (DDLMODI) in AutoCAD](/docs/commands/layer)

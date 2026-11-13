@@ -1,0 +1,62 @@
+---
+title: "Befehl BRUCH (BREAK) in AutoCAD"
+description: "Wie BRUCH (BREAK, Alias BR) in AutoCAD funktioniert: Die Auswahl ist der erste Punkt, dann der zweite, oder Erster Punkt; Bruch an einem Punkt."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie lautet das Kürzel für BRUCH (BREAK) in AutoCAD?","answer":"BR, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _BREAK in jeder Sprache von AutoCAD."},{"question":"Wie breche ich eine Linie an einem Punkt?","answer":"Starten Sie ANPUNKTBRECH, wählen Sie die Linie und geben Sie den Punkt an: Sie wird zu zwei Linien, die dort zusammentreffen. In BRUCH gibt @ beim zweiten Bruchpunkt dasselbe."},{"question":"Wie breche ich eine Linie zwischen zwei Punkten?","answer":"Wählen Sie die Linie, wählen Sie Erster und geben Sie dann den ersten und den zweiten Punkt an: Der Teil dazwischen wird entfernt. Oder wählen Sie die Linie am ersten Punkt und geben Sie nur den zweiten an."},{"question":"Warum kann ich einen Block oder einen Text nicht brechen?","answer":"BRUCH bricht Linien, Bögen, Kreise, Polylinien, Ellipsen und Splines. Ein Blockverweis ergibt „Block kann nicht gebrochen werden“, ein Text, eine Bemaßung oder eine Schraffur „Dieses Objekt kann nicht gebrochen werden“; lösen Sie einen Block zuerst mit URSPRUNG auf, um seine Teile zu brechen."},{"question":"In welche Richtung schneidet BRUCH einen Kreis?","answer":"Gegen den Uhrzeigersinn, vom ersten zum zweiten Punkt, wie in AutoCAD. Geben Sie die Punkte andersherum an, um den anderen Teil zu behalten."}]
+---
+
+BRUCH (BREAK) schneidet eine Lücke aus einem Objekt oder teilt es in zwei. Wählen Sie das Objekt: Wie in AutoCAD ist der Punkt, an dem Sie es gewählt haben, der erste Bruchpunkt, die nächste Eingabeaufforderung fragt also nur nach dem zweiten, und der Teil dazwischen wird entfernt. Eine Linie, ein Bogen, eine offene Polylinie, ein Ellipsenbogen oder ein Spline verliert den Teil zwischen den Punkten und wird zu zwei Objekten; ein Kreis oder eine Ellipse verliert den Teil, der gegen den Uhrzeigersinn vom ersten zum zweiten Punkt verläuft, und eine geschlossene Polylinie den Teil dazwischen in der Reihenfolge ihrer Scheitelpunkte: Jedes wird ein offenes Objekt. Ein Punkt abseits des Objekts wird an seinem nächsten Punkt genommen, und einer hinter einem Ende schneidet bis zu diesem Ende. Während Sie den zweiten Punkt angeben, wird der Teil, den BRUCH behalten würde, über dem Objekt gezeigt. Der Bruch ist ein Schritt, den Rückgängig zurücknimmt.
+
+- **Befehl:** `BRUCH`
+- **Auf Englisch:** `BREAK`, in jeder Sprache als `_BREAK` eingegeben
+- **Aliasnamen:** `BR`
+- **Gruppe:** [Ändern](/docs/commands#modify)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `BR` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="break" caption="Eine Linie, zwischen zwei mit Erster Punkt angegebenen Punkten gebrochen, und ein Kreis, von der Stelle seiner Auswahl gegen den Uhrzeigersinn bis zu einem zweiten Punkt gebrochen." />
+
+## Optionen [#options]
+
+### `Erster punkt` (`E`) [#first-point]
+
+Beim zweiten Bruchpunkt: Geben Sie den ersten Bruchpunkt erneut an, dann den zweiten, wenn die Stelle, an der Sie das Objekt gewählt haben, nicht der Beginn der Lücke ist.
+
+## Was er noch nicht kann [#missing]
+
+Ein Bogen, ein Kreis oder eine Ellipse, die nicht eben zum BKS liegt, die AutoCAD bricht und MellowCAD nicht findet. Eine ganze Ellipse, die [`SPIEGELN`](/docs/commands/mirror) umgedreht hat, die AutoCAD andersherum bricht.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#break--br--breakatpoint--es-parte--p--partirenpunto--pt-br-quebrar--qu--quebraremponto--fr-coupure--cu--coupureaupoint--it-spezza--sz--spezzaalpunto--de-bruch--br--anpunktbrech)
+
+## Fragen [#questions]
+
+### Wie lautet das Kürzel für BRUCH (BREAK) in AutoCAD?
+
+`BR`, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso `_BREAK` in jeder Sprache von AutoCAD.
+
+### Wie breche ich eine Linie an einem Punkt?
+
+Starten Sie `ANPUNKTBRECH`, wählen Sie die Linie und geben Sie den Punkt an: Sie wird zu zwei Linien, die dort zusammentreffen. In BRUCH gibt `@` beim zweiten Bruchpunkt dasselbe.
+
+### Wie breche ich eine Linie zwischen zwei Punkten?
+
+Wählen Sie die Linie, wählen Sie `Erster` und geben Sie dann den ersten und den zweiten Punkt an: Der Teil dazwischen wird entfernt. Oder wählen Sie die Linie am ersten Punkt und geben Sie nur den zweiten an.
+
+### Warum kann ich einen Block oder einen Text nicht brechen?
+
+BRUCH bricht Linien, Bögen, Kreise, Polylinien, Ellipsen und Splines. Ein Blockverweis ergibt `Block kann nicht gebrochen werden`, ein Text, eine Bemaßung oder eine Schraffur `Dieses Objekt kann nicht gebrochen werden`; lösen Sie einen Block zuerst mit [`URSPRUNG`](/docs/commands/explode) auf, um seine Teile zu brechen.
+
+### In welche Richtung schneidet BRUCH einen Kreis?
+
+Gegen den Uhrzeigersinn, vom ersten zum zweiten Punkt, wie in AutoCAD. Geben Sie die Punkte andersherum an, um den anderen Teil zu behalten.
+
+## Verwandte Befehle [#related]
+
+- [ANPUNKTBRECH (BREAKATPOINT)](/docs/commands#breakatpoint): An Punkt brechen
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl VERBINDEN (JOIN) in AutoCAD](/docs/commands/join)
+- [Befehl LÖSCHEN (ERASE) in AutoCAD](/docs/commands/erase)

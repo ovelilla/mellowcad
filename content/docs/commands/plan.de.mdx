@@ -1,0 +1,68 @@
+---
+title: "Befehl DRSICHT (PLAN) in AutoCAD"
+description: "Wie DRSICHT (PLAN) in AutoCAD senkrecht auf das aktuelle BKS blickt, auf ein gespeichertes oder das WKS: Aktuelles BKS, BKS, Welt, und zurück zur Draufsicht."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Wie kehre ich in AutoCAD zur Draufsicht zurück?","answer":"Geben Sie DRSICHT ein und drücken Sie zweimal die Eingabetaste: Die zweite Eingabe nimmt Aktuelles. Ist das BKS gedreht und Sie möchten die Draufsicht des WKS, wählen Sie stattdessen Welt."},{"question":"Was ist der BKS-Befehl für die Draufsicht?","answer":"DRSICHT mit Aktuelles: Er blickt auf das aktuelle BKS, seine X-Achse nach rechts. Drehen Sie zuerst das BKS mit BKS, starten Sie dann DRSICHT und drücken Sie zweimal die Eingabetaste, und Sie zeichnen auf der gedrehten Draufsicht, als wäre sie gerade."},{"question":"Warum ist meine Zeichnung in der Draufsicht gedreht?","answer":"Die Ansicht ist die Draufsicht eines gedrehten BKS. Starten Sie DRSICHT und wählen Sie Welt, um die Zeichnung wieder mit dem X des WKS nach rechts zu sehen; BKS und die Eingabetaste setzen das BKS ebenfalls auf WKS zurück."},{"question":"Ändert DRSICHT das BKS?","answer":"Nein. Es dreht nur die Ansicht; das BKS bleibt, wie es war. Die orthogonalen Ansichten von AUSSCHNT sind es, die auch das BKS drehen."}]
+---
+
+DRSICHT (PLAN) blickt senkrecht auf die XY-Ebene eines BKS, seine X-Achse nach rechts gerichtet: die Draufsicht, wie Sie sie gezeichnet haben. Der Befehl fragt, welches BKS — das aktuelle, ein gespeichertes oder das WKS —, und die Eingabetaste nimmt das aktuelle. Dann zeigt er die ganze Zeichnung und meldet `Regeneriert Modell.`.
+
+Nichts in der Zeichnung bewegt sich, und das BKS bleibt, wie es war: DRSICHT dreht nur die Ansicht. Es ist ein Rückgängig-Schritt, `Z` nimmt die Ansicht also zurück, und [`ZOOM`](/docs/commands/zoom) `Vorher` geht zur vorherigen Ansicht zurück. Es ist der Weg zurück zur Draufsicht nach [`3DORBIT`](/docs/commands/3dorbit) oder einer isometrischen [`AUSSCHNT`](/docs/commands/view). Das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig.
+
+- **Befehl:** `DRSICHT`
+- **Auf Englisch:** `PLAN`, in jeder Sprache als `_PLAN` eingegeben
+- **Gruppe:** [Abfrage und Ansicht](/docs/commands#inquiry)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `DRSICHT` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="plan" caption="Der gestufte Block von Südwesten gesehen, sein BKS um 30 Grad um Z gedreht: DRSICHT und die Eingabetaste blicken senkrecht auf dieses BKS, seine X-Achse nach rechts, der Block erscheint also gedreht." />
+
+## Optionen [#options]
+
+### `Aktuelles bks` (`A`) [#current-ucs]
+
+Die Draufsicht des aktuellen BKS, die Vorgabe. Nachdem [`BKS`](/docs/commands/ucs) das BKS um 30 Grad um Z gedreht hat, erscheint die Zeichnung um 30 Grad im Uhrzeigersinn gedreht, sodass die X-Achse des BKS nach rechts zeigt; nach einem BKS auf einer geneigten Fläche blickt sie senkrecht auf diese Fläche.
+
+### `Bks` (`B`) [#ucs]
+
+Die Draufsicht eines mit `bENannt` von [`BKS`](/docs/commands/ucs) gespeicherten BKS, das Sie per Namen eingeben. Bei einem nicht gespeicherten Namen meldet der Befehl, dass er dieses BKS nicht finden kann, und fragt erneut; `?` listet die gespeicherten auf, wie BKS, und fragt ebenfalls erneut. Das aktuelle BKS ändert sich nicht.
+
+### `Welt` (`W`) [#world]
+
+Die Draufsicht des Weltkoordinatensystems: die Zeichnung wie am Anfang, X nach rechts und Y nach oben, welches BKS auch aktuell ist, das bleibt, wie es war.
+
+## Was er noch nicht kann [#missing]
+
+Ist nichts gezeichnet, lässt DRSICHT den Zoom, wo er war, wo AutoCAD die Zeichnungsgrenzen zeigt.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta--fr-repere--it-piana--de-drsicht)
+
+## Fragen [#questions]
+
+### Wie kehre ich in AutoCAD zur Draufsicht zurück?
+
+Geben Sie `DRSICHT` ein und drücken Sie zweimal die Eingabetaste: Die zweite Eingabe nimmt `Aktuelles`. Ist das BKS gedreht und Sie möchten die Draufsicht des WKS, wählen Sie stattdessen `Welt`.
+
+### Was ist der BKS-Befehl für die Draufsicht?
+
+DRSICHT mit `Aktuelles`: Er blickt auf das aktuelle BKS, seine X-Achse nach rechts. Drehen Sie zuerst das BKS mit [`BKS`](/docs/commands/ucs), starten Sie dann DRSICHT und drücken Sie zweimal die Eingabetaste, und Sie zeichnen auf der gedrehten Draufsicht, als wäre sie gerade.
+
+### Warum ist meine Zeichnung in der Draufsicht gedreht?
+
+Die Ansicht ist die Draufsicht eines gedrehten BKS. Starten Sie DRSICHT und wählen Sie `Welt`, um die Zeichnung wieder mit dem X des WKS nach rechts zu sehen; [`BKS`](/docs/commands/ucs) und die Eingabetaste setzen das BKS ebenfalls auf WKS zurück.
+
+### Ändert DRSICHT das BKS?
+
+Nein. Es dreht nur die Ansicht; das BKS bleibt, wie es war. Die orthogonalen Ansichten von [`AUSSCHNT`](/docs/commands/view) sind es, die auch das BKS drehen.
+
+## Verwandte Befehle [#related]
+
+- [Befehl BKS (UCS) in AutoCAD](/docs/commands/ucs)
+- [Befehl AUSSCHNT (VIEW) in AutoCAD](/docs/commands/view)
+- [Befehl 3DORBIT in AutoCAD](/docs/commands/3dorbit)
+- [Befehl ZOOM in AutoCAD](/docs/commands/zoom)
+- [Befehl BKSYMBOL (UCSICON) in AutoCAD](/docs/commands/ucsicon)
