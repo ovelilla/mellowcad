@@ -1,16 +1,16 @@
 {
-  "lastReview": "2026-11-06",
+  "lastReview": "2026-11-13",
   "intervalDays": 7,
   "deferred": [
     {
       "name": "typescript",
       "version": "7.0.2",
-      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0, still so in 8.72.1, until its 7.1 native-parser support lands (typescript-eslint#12803, open), and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
+      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0, still so in 8.72.2: its TypeScript 7.1 native-parser support (typescript-eslint#12803) merged on 2026-11-10 but ships only in the 8.72.3 alphas, as projectService.EXPERIMENTAL_backend, so wait for a stable release whose peer range admits 7; and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
     },
     {
       "name": "@babel/core",
       "version": "8.1.0",
-      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, still open on 2026-11-06; neither 8.0.10 nor 8.1.0 touches it), and the editor build runs it through @rolldown/plugin-babel"
+      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, still open on 2026-11-13; neither 8.1.0 nor 8.1.2, in quarantine, touches it), and the editor build runs it through @rolldown/plugin-babel"
     }
   ],
   "acceptedAdvisories": [
