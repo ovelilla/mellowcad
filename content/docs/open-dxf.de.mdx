@@ -10,11 +10,11 @@ faq:
   - question: "Wird meine DXF-Datei hochgeladen?"
     answer: "Nein. Ihr Browser liest die Datei und übergibt sie auf diesem Gerät an den Editor; sie wird nie an einen Server gesendet."
   - question: "Kann ich eine DWG-Datei öffnen?"
-    answer: "Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD SICHALS mit einem DXF-Dateityp) und öffnen Sie diese."
+    answer: "Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD SICHALS mit einem DXF-Dateityp) und öffnen Sie dann die DXF-Datei."
   - question: "Kann ich meine Änderungen als DXF-Datei speichern?"
-    answer: "Ja. SICHALS (Strg+Umschalt+S) oder DXFOUT speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen bleiben draußen, und die Befehlszeile sagt es."
+    answer: "Ja. SICHALS (Strg+Umschalt+S) oder DXFOUT speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen werden ausgelassen, und die Befehlszeile meldet es."
   - question: "Warum fehlen manche Objekte?"
-    answer: "Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, bleibt draußen, und die Befehlszeile nennt beim Öffnen der Datei, wie viele es je Typ sind. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht."
+    answer: "Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht."
 ---
 
 <OpenDxf />
@@ -26,12 +26,12 @@ MellowCAD öffnet DXF-Dateien in Ihrem Browser und zeichnet sie in seinem Editor
 - **DXF von AutoCAD R12 bis 2018**, dem neuesten DXF-Format, das AutoCAD schreibt, in Text (ASCII) oder binär, erstellt von AutoCAD oder einem anderen Programm. Sein Text behält seine Zeichen: bis 2004 in der Codepage, die die Datei nennt, ab 2007 in UTF-8.
 - **Linien, Bögen, Kreise, Ellipsen und Polylinien**, mit ihren Breiten und ihren Kurven- und Splineanpassungen, 3D-Polylinien und Splines sowie Punkte, gezeichnet im [Punktstil](/docs/commands/ptype) der Zeichnung, und 2D-Volumenkörper, gefüllt, wie FILLMODE es bestimmt.
 - **Einzeiliger und mehrzeiliger Text**, Führungslinien mit ihrem Text, Blöcke mit ihren Attributen, lineare, ausgerichtete, Winkel-, Radius- und Durchmesserbemaßungen sowie Schraffuren.
-- **Der Layer jedes Objekts**, Farbe, Linientyp, Linienstärke, Objekthöhe und Erhebung, und die Layer, ob ein, aus oder gesperrt; ein gefrorener Layer öffnet sich ausgeschaltet.
+- **Der Layer jedes Objekts**, Farbe, Linientyp, Linienstärke, Objekthöhe und Erhebung, und der Zustand der Layer (ein, aus, gesperrt); ein gefrorener Layer öffnet sich ausgeschaltet.
 - **Die Text- und Bemaßungsstile der Zeichnung** und ihre Einheiten, wenn es Millimeter, Zentimeter oder Meter sind.
 
-## Was draußen bleibt [#left-out]
+## Was ausgelassen wird [#left-out]
 
-Enthält ein DXF etwas, wofür MellowCAD noch kein Objekt hat, öffnet es den Rest und nennt in der Befehlszeile, wie viele Objekte jedes Typs es draußen gelassen hat. Heute sind das:
+Enthält ein DXF etwas, wofür MellowCAD noch kein Objekt hat, öffnet es den Rest und meldet in der Befehlszeile, wie viele Objekte jedes Typs es ausgelassen hat. Heute sind das:
 
 - Spuren, 3D-Flächen und Netze;
 - Konstruktionslinien und Strahlen, Mehrfachlinien;
@@ -46,17 +46,17 @@ Manches öffnet sich, aber nicht ganz so, wie es war:
 
 - Ein Linientyp außer Continuous, Dashed, Hidden, Center, Phantom und DashDot behält seinen Namen und wird durchgezogen gezeichnet.
 - Ein Schraffurmuster, das nicht zu [den Mustern von `acadiso.pat` gehört, die MellowCAD zeichnet](/docs/commands/hatch), behält seinen Namen und zeichnet nur seine Begrenzung.
-- Eine Farbe über ihren Index öffnet sich als ihre RGB-Farbe und VonBlock als VonLayer.
+- Eine Farbe, die über ihren Index angegeben ist, öffnet sich als RGB-Farbe und VonBlock als VonLayer.
 - Eine Zeichnung in Zoll oder Fuß behält ihre Zahlen, gelesen als Millimeter.
-- Text wird mit den Maßen von Arial gezeichnet, welche Schriftart sein Stil auch nennt, ohne seinen Breitenfaktor und seine Schrägstellung.
+- Text wird mit den Maßen von Arial gezeichnet, gleich welche Schriftart sein Stil nennt, ohne seinen Breitenfaktor und seine Schrägstellung.
 
 ## Im Editor öffnen [#editor]
 
-Im Editor öffnet sich ein DXF wie eine Zeichnung: <Command id="OPEN" /> (`Strg+O`) bietet Zeichnungen und DXF-Dateien an, wie es „Datei auswählen“ von AutoCAD tut, und <Command id="DXFIN" /> nur DXF-Dateien. Eine von dieser Seite oder mit <Command id="OPEN" /> geöffnete Datei ersetzt die Zeichnung im Editor, speichern Sie daher zuerst Ihre mit `Strg+S`: Es gibt [eine Zeichnung zugleich](/docs/differences#one-drawing).
+Im Editor öffnet sich ein DXF wie eine Zeichnung: <Command id="OPEN" /> (`Strg+O`) bietet Zeichnungen und DXF-Dateien an, wie es „Datei auswählen“ von AutoCAD tut, und <Command id="DXFIN" /> nur DXF-Dateien. Eine von dieser Seite oder mit <Command id="OPEN" /> geöffnete Datei ersetzt die Zeichnung im Editor, speichern Sie daher zuerst Ihre eigene mit `Strg+S`: Es gibt [nur eine Zeichnung zugleich](/docs/differences#one-drawing).
 
 ## Bearbeiten und behalten [#keep]
 
-Einmal geöffnet, ist ein DXF eine Zeichnung wie jede andere: Messen Sie sie mit <Command id="DIST" /> und <Command id="AREA" />, ändern Sie sie mit <Command id="MOVE" />, <Command id="TRIM" /> oder <Command id="OFFSET" /> und zeichnen Sie darauf. Sie wird bei der Arbeit in diesem Browser gespeichert, und `Strg+S` speichert sie als Datei im eigenen, versionierten Format von MellowCAD. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) und <Command id="DXFOUT" /> speichern sie wieder als DXF, AutoCAD 2000 bis 2018, Text oder binär: [DXF online bearbeiten](/docs/edit-dxf) erklärt, wie und was die Datei behält. DWG-Dateien gibt es noch nicht.
+Einmal geöffnet, ist ein DXF eine Zeichnung wie jede andere: Messen Sie sie mit <Command id="DIST" /> und <Command id="AREA" />, ändern Sie sie mit <Command id="MOVE" />, <Command id="TRIM" /> oder <Command id="OFFSET" /> und zeichnen Sie darin weiter. Sie wird bei der Arbeit in diesem Browser gespeichert, und `Strg+S` speichert sie als Datei im eigenen, versionierten Format von MellowCAD. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) und <Command id="DXFOUT" /> speichern sie wieder als DXF, AutoCAD 2000 bis 2018, Text oder binär: [DXF online bearbeiten](/docs/edit-dxf) erklärt, wie und was die Datei behält. DWG-Dateien gibt es noch nicht.
 
 ## Fragen [#questions]
 
@@ -70,12 +70,12 @@ Nein. Ihr Browser liest die Datei und übergibt sie auf diesem Gerät an den Edi
 
 ### Kann ich eine DWG-Datei öffnen? [#dwg]
 
-Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD <Command id="SAVEAS" /> mit einem DXF-Dateityp) und öffnen Sie diese.
+Noch nicht. Speichern Sie sie in dem Programm, das sie erstellt hat, als DXF (in AutoCAD <Command id="SAVEAS" /> mit einem DXF-Dateityp) und öffnen Sie dann die DXF-Datei.
 
 ### Kann ich meine Änderungen als DXF-Datei speichern? [#save-dxf]
 
-Ja. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) oder <Command id="DXFOUT" /> speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen bleiben draußen, und die Befehlszeile sagt es. [DXF online bearbeiten](/docs/edit-dxf) erklärt mehr.
+Ja. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) oder <Command id="DXFOUT" /> speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen werden ausgelassen, und die Befehlszeile meldet es. [DXF online bearbeiten](/docs/edit-dxf) erklärt mehr.
 
 ### Warum fehlen manche Objekte? [#missing]
 
-Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, bleibt draußen, und die Befehlszeile nennt beim Öffnen der Datei, wie viele es je Typ sind. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht.
+Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht.

@@ -5,7 +5,7 @@ figure: "Eine Platte, deren Bohrung mit HIDDEN als aktuellem Linientyp gezeichne
 sourceHash: "1cae7261efc0"
 ---
 
-LINIENTYP (LINETYPE) legt den Linientyp fest, mit dem neue Objekte gezeichnet werden. AutoCAD öffnet den Linientyp-Manager; MellowCAD hat noch keinen, daher führt LINIENTYP die Befehlszeilenform aus, die AutoCAD auch hat, <Command id="-LINETYPE" />. Er nennt den aktuellen Linientyp, zunächst `ByLayer`, und fragt nach jeder Antwort erneut nach einer Option, bis die Eingabetaste ihn beendet. ByLayer bedeutet, dass jedes Objekt den Linientyp seines Layers annimmt; ein stattdessen benannter Linientyp ist der des Objekts selbst. Der ganze Durchlauf ist ein Schritt, den <Command id="U" /> zurücknimmt, und mit einem Apostroph innerhalb eines Befehls eingegeben, gilt sein Linientyp für das, was dieser Befehl als Nächstes zeichnet.
+LINIENTYP (LINETYPE) legt den Linientyp fest, mit dem neue Objekte gezeichnet werden. AutoCAD öffnet den Linientyp-Manager; MellowCAD hat noch keinen, daher führt LINIENTYP die Befehlszeilenform aus, die AutoCAD auch hat, <Command id="-LINETYPE" />. Er meldet den aktuellen Linientyp, zunächst `ByLayer`, und fragt nach jeder Antwort erneut nach einer Option, bis die Eingabetaste ihn beendet. ByLayer bedeutet, dass jedes Objekt den Linientyp seines Layers annimmt; ein stattdessen benannter Linientyp ist der des Objekts selbst. Der ganze Durchlauf ist ein Schritt, den <Command id="U" /> zurücknimmt, und mit einem Apostroph innerhalb eines Befehls eingegeben, gilt sein Linientyp für das, was dieser Befehl als Nächstes zeichnet.
 
 Jede Zeichnung hat sechs geladene Linientypen: Continuous und, aus AutoCADs metrischer Datei acadiso.lin, DASHED, HIDDEN, CENTER, PHANTOM und DASHDOT. Ein Muster wird auf jede Linie so gelegt, wie AutoCAD es legt, entlang ihrer Länge zentriert, mit gleich langen Strichen an beiden Enden.
 
@@ -35,7 +35,7 @@ Eine Linie, die kürzer ist als eine Wiederholung ihres Musters, wird durchgezog
 
 ### Wie ändert man den Linientyp eines vorhandenen Objekts?
 
-Wählen Sie es und wählen Sie den Linientyp in der Zeile Linientyp der Eigenschaftenpalette, oder übertragen Sie ihn von einem anderen Objekt mit <Command id="MATCHPROP" />. LINIENTYP legt nur den Linientyp von Objekten fest, die danach gezeichnet werden.
+Wählen Sie es aus und wählen Sie den Linientyp in der Zeile Linientyp der Eigenschaftenpalette, oder übertragen Sie ihn von einem anderen Objekt mit <Command id="MATCHPROP" />. LINIENTYP legt nur den Linientyp von Objekten fest, die danach gezeichnet werden.
 
 ### Wie ändert man den Linientypfaktor in AutoCAD?
 

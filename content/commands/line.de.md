@@ -5,7 +5,7 @@ figure: "Ein Dreieck: sein erster Punkt getippt, die nächsten zwei vom letzten 
 sourceHash: "5065fc1817a1"
 ---
 
-LINIE (LINE) zeichnet gerade Segmente, jedes ein eigenes Objekt: Geben Sie den ersten Punkt an, dann jeden nächsten, bis zur Eingabetaste. Ein Punkt wird gewählt, mit einem Objektfang genommen oder getippt. Wie in AutoCAD bei eingeschalteter dynamischer Eingabe wird ein nach dem ersten getippter Punkt vom letzten aus gemessen, sodass `80,0` 80 entlang X zeichnet und der Verlauf es als `@80,0` schreibt; eine Zahl allein ist ein Abstand in Richtung des Cursors, und `<30` hält den nächsten Punkt auf 30°. Die Eingabetaste oder ein Rechtsklick beim ersten Punkt macht vom Ende der letzten Linie, Polylinie oder des letzten Bogens aus weiter, tangential an einen Bogen und nur nach der Länge fragend. Wie viele Segmente er auch zeichnet, ein Z nimmt den ganzen Befehl zurück.
+LINIE (LINE) zeichnet gerade Segmente, jedes ein eigenes Objekt: Geben Sie den ersten Punkt an, dann jeden nächsten, bis zur Eingabetaste. Ein Punkt wird angeklickt, mit einem Objektfang gefangen oder eingegeben. Wie in AutoCAD bei eingeschalteter dynamischer Eingabe wird ein nach dem ersten eingegebener Punkt vom letzten aus gemessen, sodass `80,0` 80 entlang X zeichnet und der Verlauf es als `@80,0` schreibt; eine Zahl allein ist ein Abstand in Richtung des Cursors, und `<30` hält den nächsten Punkt auf 30°. Die Eingabetaste oder ein Rechtsklick beim ersten Punkt setzt die Zeichnung am Ende der letzten Linie, Polylinie oder des letzten Bogens fort: tangential an einen Bogen und nur mit der Frage nach der Länge. Wie viele Segmente er auch zeichnet, ein <Command id="U" /> nimmt den ganzen Befehl zurück.
 
 ## Options
 
@@ -19,7 +19,7 @@ Ab dem zweiten Segment angeboten: zeichnet das letzte Segment zurück zum ersten
 
 ## Missing
 
-Tangent oder Perpendicular, beim ersten Punkt getippt, wartet auf den nächsten (ein aufgeschobener Fang), wie in AutoCAD, aber nur über Linien, Kreisen und Bögen, nicht über einem Polylinien-Segment, einer Ellipse oder einem Spline, und zwei aufgeschobene Perpendicular werden nicht gelöst.
+Tangente oder Lot, beim ersten Punkt eingegeben, wartet auf den nächsten (ein aufgeschobener Fang), wie in AutoCAD, aber nur bei Linien, Kreisen und Bögen, nicht bei einem Polylinien-Segment, einer Ellipse oder einem Spline, und zwei aufgeschobene Lote werden nicht gelöst.
 
 ## Questions
 
@@ -29,7 +29,7 @@ Tangent oder Perpendicular, beim ersten Punkt getippt, wartet auf den nächsten 
 
 ### Wie zeichne ich eine Linie mit Winkel und Länge?
 
-Geben Sie den ersten Punkt an, tippen Sie dann den nächsten als Länge und Winkel: `@100<30` zeichnet 100 unter 30°. Oder schalten Sie die Spurverfolgung ein, folgen Sie ihrer Hilfslinie in diesem Winkel und tippen Sie nur die Länge.
+Geben Sie den ersten Punkt an, geben Sie dann den nächsten als Länge und Winkel ein: `@100<30` zeichnet 100 unter 30°. Oder schalten Sie die Spurverfolgung ein, folgen Sie ihrer Hilfslinie in diesem Winkel und geben Sie nur die Länge ein.
 
 ### Wie zeichne ich von der zuletzt gezeichneten Linie aus weiter?
 

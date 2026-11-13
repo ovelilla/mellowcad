@@ -7,7 +7,7 @@ sourceHash: "44d0e1a420a7"
 
 TEXT schreibt einzeiligen Text. Sie geben einen Startpunkt, eine Höhe und einen Drehwinkel an, geben dann eine Zeile ein und drücken die Eingabetaste: Die Zeile wird zu einem eigenen Objekt, und die nächste beginnt eine Zeile darunter. Eine leere Zeile beendet den Befehl. Ein Klick an anderer Stelle davor beginnt die nächsten Zeilen an diesem Punkt, und Esc behält die schon eingegebenen Zeilen und verwirft die gerade getippte. Für einen Absatz, der auf eine Breite umbricht, als ein Objekt, verwenden Sie <Command id="MTEXT" />.
 
-Die erste Zeile nennt den aktuellen Stil, die Höhe und die Ausrichtung. Die Höhe ist die, die er mit <Command id="MTEXT" /> und <Command id="ATTDEF" /> teilt, in der Zeichnung gehalten, und das nächste TEXT bietet sie als Vorgabe an; ein Stil mit eigener Höhe überspringt die Eingabeaufforderung der Höhe. Die Eingabetaste beim Startpunkt macht unter der letzten Zeile weiter, die TEXT geschrieben hat, ohne Höhe oder Winkel erneut abzufragen. `Z` nimmt den ganzen Durchlauf zurück.
+Die erste Zeile zeigt den aktuellen Stil, die Höhe und die Ausrichtung. Die Höhe ist die, die er mit <Command id="MTEXT" /> und <Command id="ATTDEF" /> teilt, in der Zeichnung gehalten, und das nächste TEXT bietet sie als Vorgabe an; ein Stil mit eigener Höhe überspringt die Eingabeaufforderung der Höhe. Die Eingabetaste beim Startpunkt macht unter der letzten Zeile weiter, die TEXT geschrieben hat, ohne Höhe oder Winkel erneut abzufragen. `Z` nimmt den ganzen Durchlauf zurück.
 
 ## Options
 
@@ -21,21 +21,21 @@ Fragt nach dem Namen des Textstils, der aktuell werden soll, wobei die Eingabeta
 
 ## Missing
 
-Die Ausrichtungen Ausrichten und Einpassen. <Keyword id="?" /> von Stil listet alle Stile auf einmal auf, ohne zu fragen, welche, und ohne Seite für Seite anzuhalten. Der Text wird im Feld der dynamischen Eingabe getippt, nicht mit einer Einfügemarke in der Zeichnung, und sein Wortlaut lässt sich in der Eigenschaftenpalette nicht neu eingeben, der außerdem die Zeilen Annotativ, Breitenfaktor, Schrägstellung, Kopfstehend und Rückwärts fehlen. Ein Klick in den Kasten eines Textes wählt ihn auch abseits seiner Buchstaben, wo AutoCAD nichts wählt.
+Die Ausrichtungen Ausrichten und Einpassen. <Keyword id="?" /> von Stil listet alle Stile auf einmal auf, ohne zu fragen, welche, und ohne Seite für Seite anzuhalten. Der Text wird im Feld der dynamischen Eingabe getippt, nicht mit einer Einfügemarke in der Zeichnung, und sein Wortlaut lässt sich in der Eigenschaftenpalette nicht neu eingeben, der außerdem die Zeilen Annotativ, Breitenfaktor, Schrägstellung, Kopfstehend und Rückwärts fehlen. Ein Klick in den Rahmen eines Textes wählt ihn auch abseits seiner Buchstaben, wo AutoCAD nichts wählt.
 
 ## Questions
 
 ### Wie lautet das Alias von TEXT in AutoCAD?
 
-`DT`, dann die Eingabetaste oder die Leertaste; `DTEXT` und `TEXT` funktionieren ebenfalls, und `_TEXT` in jeder Sprache von AutoCAD. `T` gehört nicht zu TEXT: Es startet <Command id="MTEXT" />, mehrzeiligen Text.
+`DT`, dann die Eingabetaste oder die Leertaste; `DTEXT` und `TEXT` funktionieren ebenfalls, und `_TEXT` in jeder Sprache von AutoCAD. `T` gehört nicht zu TEXT: Es startet <Command id="MTEXT" />, Absatztext.
 
 ### Wie richtet man Text in AutoCAD aus?
 
-Wählen Sie <Keyword id="Justify" /> bei der ersten Eingabeaufforderung, oder geben Sie dort die Buchstaben der Ausrichtung ein, und geben Sie dann den Punkt an, den sie benennt: Mitte Mitte setzt die Mitte jeder Zeile auf ihren Punkt, wie eine Beschriftung in die Mitte eines Kastens gehört. Um den Text entlang einer schrägen Linie laufen zu lassen, geben Sie diesen Winkel bei der Eingabeaufforderung der Drehung ein.
+Wählen Sie <Keyword id="Justify" /> bei der ersten Eingabeaufforderung, oder geben Sie dort die Buchstaben der Ausrichtung ein, und geben Sie dann den Punkt an, den sie benennt: Mitte Mitte setzt die Mitte jeder Zeile auf ihren Punkt, wie eine Beschriftung in die Mitte eines Rahmens gehört. Um den Text entlang einer schrägen Linie laufen zu lassen, geben Sie diesen Winkel bei der Eingabeaufforderung der Drehung ein.
 
 ### Was ist der Unterschied zwischen TEXT und MTEXT?
 
-TEXT erzeugt ein Objekt je Zeile, jedes für sich verschoben, bearbeitet und ausgerichtet, und bricht nie um. <Command id="MTEXT" /> erzeugt ein Objekt aus Absätzen, die auf die Breite eines Kastens umbrechen, als Ganzes ausgerichtet. Beide teilen die Texthöhe und die Textstile.
+TEXT erzeugt ein Objekt je Zeile, jedes für sich verschoben, bearbeitet und ausgerichtet, und bricht nie um. <Command id="MTEXT" /> erzeugt ein Objekt aus Absätzen, die auf die Breite eines Rahmens umbrechen, als Ganzes ausgerichtet. Beide teilen die Texthöhe und die Textstile.
 
 ### Wie bearbeitet man Text in AutoCAD?
 

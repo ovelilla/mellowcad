@@ -5,7 +5,7 @@ figure: "Ein Rechteck um 30° um seine Ecke mit Kopieren gedreht, das Original b
 sourceHash: "0e5ae021e108"
 ---
 
-DREHEN (ROTATE) dreht die gewählten Objekte um einen Basispunkt: Wählen Sie sie, geben Sie den Basispunkt an, dann den Winkel, eingegeben oder als Punkt gewählt, dessen Richtung vom Basispunkt aus der Winkel ist. Seine erste Zeile nennt, welche Richtung positiv ist, vorgegeben gegen den Uhrzeigersinn (ANGDIR), und wo 0 liegt (ANGBASE). Die Eingabetaste beim Winkel wiederholt die letzte Drehung, in einer neuen Zeichnung 0. Die Objekte drehen sich um eine Achse parallel zum Z des BKS durch den Basispunkt, behalten in 3D also ihre Höhe. Die Drehung ist ein Schritt, den Rückgängig zurücknimmt.
+DREHEN (ROTATE) dreht die gewählten Objekte um einen Basispunkt: Wählen Sie sie, geben Sie den Basispunkt an, dann den Winkel, eingegeben oder als Punkt gewählt, dessen Richtung vom Basispunkt aus der Winkel ist. Seine erste Zeile zeigt, welche Richtung positiv ist, vorgegeben gegen den Uhrzeigersinn (ANGDIR), und wo 0 liegt (ANGBASE). Die Eingabetaste beim Winkel wiederholt die letzte Drehung, in einer neuen Zeichnung 0. Die Objekte drehen sich um eine Achse parallel zum Z des BKS durch den Basispunkt, behalten in 3D also ihre Höhe. Die Drehung ist ein Schritt, den Rückgängig zurücknimmt.
 
 ## Options
 
@@ -41,4 +41,4 @@ Wählen Sie <Keyword id="Copy" /> vor der Winkelangabe: Die Kopie dreht sich, un
 
 ### Warum dreht DREHEN in die falsche Richtung?
 
-Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile sagt. Geben Sie einen negativen Winkel ein, `-30`, um im Uhrzeigersinn zu drehen.
+Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile angezeigt wird. Geben Sie einen negativen Winkel ein, `-30`, um im Uhrzeigersinn zu drehen.

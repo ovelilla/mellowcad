@@ -5,9 +5,9 @@ figure: "Eine Platte VonLayer gezeichnet, ihr Loch in Rot, ihre Bohrung in der T
 sourceHash: "93793c2915da"
 ---
 
-FARBE (COLOR) legt die Farbe fest, mit der neue Objekte gezeichnet werden. AutoCAD öffnet das Dialogfeld Farbe wählen; MellowCAD hat noch keines, sodass FARBE die Befehlszeilenform ausführt, die AutoCAD auch hat, <Command id="-COLOR" />. Er fragt nach der Standardfarbe für Objekte und bietet die aktuelle an, `VONLAYER` in einer neuen Zeichnung: VonLayer bedeutet, dass jedes Objekt die Farbe seines Layers annimmt, und eine stattdessen gewählte Farbe ist die eigene des Objekts. Tippen Sie die Nummer oder den Namen einer Indexfarbe, oder wählen Sie <Keyword id="Truecolor" />. Die Eingabetaste behält die aktuelle Farbe, und die Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt.
+FARBE (COLOR) legt die Farbe fest, mit der neue Objekte gezeichnet werden. AutoCAD öffnet das Dialogfeld Farbe wählen; MellowCAD hat noch keines, sodass FARBE die Befehlszeilenform ausführt, die AutoCAD auch hat, <Command id="-COLOR" />. Er fragt nach der Standardfarbe für Objekte und bietet die aktuelle an, `VONLAYER` in einer neuen Zeichnung: VonLayer bedeutet, dass jedes Objekt die Farbe seines Layers annimmt, und eine stattdessen gewählte Farbe ist die eigene des Objekts. Geben Sie die Nummer oder den Namen einer Indexfarbe ein, oder wählen Sie <Keyword id="Truecolor" />. Die Eingabetaste behält die aktuelle Farbe, und die Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt.
 
-Ein Wort, das er nicht lesen kann, ergibt <Message id="colorRequired" />, und 0, eine negative Zahl oder eine über 255 <Message id="invalidColorNumber" />; er fragt erneut. Mit Apostroph innerhalb eines Befehls getippt, `'FARBE`, übernimmt jedes danach gezeichnete Objekt die neue Farbe: Jedes Segment eines <Command id="LINE" /> übernimmt die Farbe, die gilt, wenn es beginnt. FARBE legt nur fest, was als Nächstes kommt; die Eigenschaften-Palette oder die Farbliste der oberen Leiste ändert bereits gezeichnete Objekte.
+Ein Wort, das er nicht versteht, ergibt <Message id="colorRequired" />, und 0, eine negative Zahl oder eine über 255 <Message id="invalidColorNumber" />; er fragt erneut. Mit Apostroph innerhalb eines Befehls getippt, `'FARBE`, übernimmt jedes danach gezeichnete Objekt die neue Farbe: Jedes Segment eines <Command id="LINE" /> übernimmt die Farbe, die gilt, wenn es beginnt. FARBE legt nur fest, was als Nächstes kommt; die Eigenschaften-Palette oder die Farbliste der oberen Leiste ändert bereits gezeichnete Objekte.
 
 ## Options
 
@@ -67,4 +67,4 @@ Dass das Objekt die Farbe seines Layers annimmt, sodass eine Änderung der Layer
 
 ### Wie verwende ich RGB-Farben in AutoCAD?
 
-Wählen Sie <Keyword id="Truecolor" /> und tippen Sie die drei Werte durch Kommas getrennt, etwa `0,128,255`.
+Wählen Sie <Keyword id="Truecolor" /> und geben Sie die drei Werte durch Kommas getrennt ein, etwa `0,128,255`.

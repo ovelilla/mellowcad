@@ -5,7 +5,7 @@ figure: "Eine Linie, ein tangentialer Bogen und eine Linie zurück, dann ein Kop
 sourceHash: "216b83656483"
 ---
 
-PLINIE (PLINE) zeichnet eine Polylinie: ein Objekt aus geraden Segmenten und Bögen, die aneinander anschließen, jedes mit einer Breite. Nach dem Startpunkt nennt der Befehl die aktuelle Breite; dann fügt jeder Punkt ein Segment hinzu, bis die Eingabetaste oder <Keyword id="Close" /> ihn beendet. Wie in AutoCAD beginnt er mit Linien: <Keyword id="Arc" /> wechselt zu Bögen, jeder tangential zum vorherigen Segment, und <Keyword id="Line" /> wechselt zurück. Die Eingabetaste beim Startpunkt setzt am Ende der zuletzt gezeichneten Linie, des Bogens oder der Polylinie fort.
+PLINIE (PLINE) zeichnet eine Polylinie: ein Objekt aus geraden Segmenten und Bögen, die aneinander anschließen, jedes mit einer Breite. Nach dem Startpunkt meldet der Befehl die aktuelle Breite; dann fügt jeder Punkt ein Segment hinzu, bis die Eingabetaste oder <Keyword id="Close" /> ihn beendet. Wie in AutoCAD beginnt er mit Linien: <Keyword id="Arc" /> wechselt zu Bögen, jeder tangential zum vorherigen Segment, und <Keyword id="Line" /> wechselt zurück. Die Eingabetaste beim Startpunkt setzt am Ende der zuletzt gezeichneten Linie, des Bogens oder der Polylinie fort.
 
 ## Options
 
@@ -73,7 +73,7 @@ Wählen Sie <Keyword id="Arc" />: Jeder Punkt beendet dann einen Bogen tangentia
 
 ### Warum wird meine Polylinie dick gezeichnet?
 
-Eine in einer früheren PLINIE angegebene Breite bleibt erhalten, und die nächste Polylinie beginnt damit, wie die Zeile nach ihrem Startpunkt sagt. Wählen Sie <Keyword id="Width" /> und geben Sie zweimal 0 an, um wieder dünn zu zeichnen. Bei ausgeschaltetem <Command id="FILL" /> erscheinen breite Polylinien als Umrisse.
+Eine in einer früheren PLINIE angegebene Breite bleibt erhalten, und die nächste Polylinie beginnt damit, wie die Zeile nach ihrem Startpunkt zeigt. Wählen Sie <Keyword id="Width" /> und geben Sie zweimal 0 an, um wieder dünn zu zeichnen. Bei ausgeschaltetem <Command id="FILL" /> erscheinen breite Polylinien als Umrisse.
 
 ### Wie verbinde ich Linien zu einer Polylinie?
 

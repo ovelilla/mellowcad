@@ -6,7 +6,7 @@ figure: "Eine Platte mit 0,70 mm umrissen, dann 0.1 für ihre Bohrung eingegeben
 sourceHash: "154784b2b402"
 ---
 
-LSTÄRKE (LWEIGHT) legt die Linienstärke fest, mit der neue Objekte gezeichnet werden, in Millimetern. AutoCAD öffnet den Dialog „Linienstärkeeinstellungen“; MellowCAD hat noch keinen, daher führt LSTÄRKE die Befehlszeilenform aus, die AutoCAD auch hat, <Command id="-LWEIGHT" />. Er nennt die aktuelle Linienstärke, zunächst `BYLAYER`, und fragt nach einer neuen: einer der 24 Standardwerte von AutoCAD, von 0.00 bis 2.11 mm. Jeder andere Wert wird auf den nächsten Standardwert gesetzt, und er meldet es, und ein negativer wird mit <Message id="invalidLineweightNumber" /> abgelehnt. Die Eingabetaste behält die aktuelle Linienstärke. Jede Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt.
+LSTÄRKE (LWEIGHT) legt die Linienstärke fest, mit der neue Objekte gezeichnet werden, in Millimetern. AutoCAD öffnet den Dialog „Linienstärkeeinstellungen“; MellowCAD hat noch keinen, daher führt LSTÄRKE die Befehlszeilenform aus, die AutoCAD auch hat, <Command id="-LWEIGHT" />. Er meldet die aktuelle Linienstärke, zunächst `BYLAYER`, und fragt nach einer neuen: einer der 24 Standardwerte von AutoCAD, von 0.00 bis 2.11 mm. Jeder andere Wert wird auf den nächsten Standardwert gesetzt, und er meldet es, und ein negativer wird mit <Message id="invalidLineweightNumber" /> abgelehnt. Die Eingabetaste behält die aktuelle Linienstärke. Jede Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt.
 
 Linienstärken werden hier von Anfang an auf dem Bildschirm gezeigt: AutoCAD zeigt sie erst, wenn die Schaltfläche „Linienstärke“ der Statusleiste (LWDISPLAY) eingeschaltet ist, doch da MellowCAD keine Layouts oder Plots hat, ist der Bildschirm der einzige Ort, an dem sie sich zeigen könnten. Die Schaltfläche schaltet sie aus und ein. Eine breite Polylinie zeigt in der Draufsicht ihre Breite, nicht ihre Linienstärke.
 
@@ -36,7 +36,7 @@ In AutoCAD werden Linienstärken nur bei eingeschalteter Schaltfläche „Linien
 
 ### Wie ändert man die Linienstärke eines vorhandenen Objekts?
 
-Wählen Sie es und wählen Sie die Linienstärke in der Zeile Linienstärke der Eigenschaftenpalette, oder bei VonLayer die eigene Linienstärke des Layers im Layer-Eigenschaften-Manager. LSTÄRKE legt nur die Linienstärke von Objekten fest, die danach gezeichnet werden.
+Wählen Sie es aus und wählen Sie die Linienstärke in der Zeile Linienstärke der Eigenschaftenpalette, oder bei VonLayer die eigene Linienstärke des Layers im Layer-Eigenschaften-Manager. LSTÄRKE legt nur die Linienstärke von Objekten fest, die danach gezeichnet werden.
 
 ### Welche Linienstärken hat AutoCAD?
 

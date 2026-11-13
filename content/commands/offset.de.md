@@ -15,7 +15,7 @@ Anstelle eines Abstands verläuft jede Kopie durch einen Punkt, den Sie wählen 
 
 ### Erase
 
-Fragt, ob jedes Ausgangsobjekt nach dem Versetzen gelöscht werden soll, <Keyword id="Yes" /> oder <Keyword id="No" /> (die Vorgabe). Mit <Keyword id="Yes" /> ersetzt die Kopie das Objekt. Die Wahl bleibt für den Rest der Sitzung erhalten, und das nächste VERSETZ nennt sie in seiner ersten Zeile.
+Fragt, ob jedes Ausgangsobjekt nach dem Versetzen gelöscht werden soll, <Keyword id="Yes" /> oder <Keyword id="No" /> (die Vorgabe). Mit <Keyword id="Yes" /> ersetzt die Kopie das Objekt. Die Wahl bleibt für den Rest der Sitzung erhalten, und das nächste VERSETZ zeigt sie in seiner ersten Zeile.
 
 ### Layer
 
@@ -45,7 +45,7 @@ OFFSETGAPTYPE 1 und 2: Die Ecken einer versetzten Polylinie werden immer wie bei
 
 ### Warum kann ich ein Objekt nicht versetzen?
 
-VERSETZ versetzt Linien, Bögen, Kreise, 2D-Polylinien, Ellipsen und Splines. Text, Mehrzeilentext, Blockverweise, Bemaßungen und Schraffuren lehnt der Befehl mit <Message id="cannotOffsetObject" /> ab, ebenso, wenn der Abstand einen Kreis, einen Bogen oder eine Polylinie auf nichts schrumpfen ließe. Ein Objekt auf einem gesperrten Layer kann nicht gewählt werden, und eine 3D-Polylinie wird übergangen.
+VERSETZ versetzt Linien, Bögen, Kreise, 2D-Polylinien, Ellipsen und Splines. Text, Absatztext, Blockreferenzen, Bemaßungen und Schraffuren lehnt der Befehl mit <Message id="cannotOffsetObject" /> ab, ebenso, wenn der Abstand einen Kreis, einen Bogen oder eine Polylinie auf nichts schrumpfen ließe. Ein Objekt auf einem gesperrten Layer kann nicht gewählt werden, und eine 3D-Polylinie wird übergangen.
 
 ### Wie versetze ich dieselbe Linie mehrmals?
 

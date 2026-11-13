@@ -3,10 +3,10 @@ title: "Befehl REIHEPFAD (ARRAYPATH) in AutoCAD"
 description: "Wie REIHEPFAD (ARRAYPATH) in AutoCAD Objekte entlang eines Pfads anordnet: Messen oder Teilen, Anzahl, Ausrichten, assoziativ. Zum Testen im Browser."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie ordnet man Objekte entlang einer Kurve an?","answer":"Geben Sie REIHEPFAD ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Pfad nahe dem Ende, von dem aus begonnen werden soll; oder geben Sie RH für REIHE ein und wählen Sie nach den Objekten PFad. Stellen Sie dann den Abstand oder die Anzahl der Elemente ein und drücken Sie die Eingabetaste, um sie zu erzeugen."},{"question":"Warum folgt meine Pfadanordnung dem Pfad nicht?","answer":"Hier behält eine Anordnung den Pfad, wie er war, als die Anordnung erzeugt wurde: Verschieben oder strecken Sie den Pfad später, bleibt die Anordnung, wie sie ist, wo eine assoziative Pfadanordnung in AutoCAD ihm folgen würde. Auch das Löschen des Pfads lässt die Anordnung stehen. Drehen sich die Elemente nicht mit dem Pfad, wählen Sie AUsrichten und antworten Sie Ja."},{"question":"Wie ändert man die Richtung einer Pfadanordnung?","answer":"Wählen Sie den Pfad nahe seinem anderen Ende: Ein offener Pfad läuft von dem Ende, das näher an der Wahl liegt. Ein Kreis läuft immer gegen den Uhrzeigersinn ab seinem Winkel 0."},{"question":"Wie verteilt man Elemente gleichmäßig über den ganzen Pfad?","answer":"Wählen Sie Methode, dann Teilen, dann Objekte und geben Sie die Anzahl ein: Sie werden gleichmäßig verteilt, das erste und das letzte an den Enden eines offenen Pfads."}]
+faq: [{"question":"Wie ordnet man Objekte entlang einer Kurve an?","answer":"Geben Sie REIHEPFAD ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Pfad nahe dem Ende, an dem die Anordnung beginnen soll; oder geben Sie RH für REIHE ein und wählen Sie nach den Objekten PFad. Stellen Sie dann den Abstand oder die Anzahl der Elemente ein und drücken Sie die Eingabetaste, um sie zu erzeugen."},{"question":"Warum folgt meine Pfadanordnung dem Pfad nicht?","answer":"Hier behält eine Anordnung den Pfad, wie er war, als die Anordnung erzeugt wurde: Verschieben oder strecken Sie den Pfad später, bleibt die Anordnung, wie sie ist, wo eine assoziative Pfadanordnung in AutoCAD ihm folgen würde. Auch das Löschen des Pfads lässt die Anordnung stehen. Drehen sich die Elemente nicht mit dem Pfad mit, wählen Sie AUsrichten und antworten Sie Ja."},{"question":"Wie ändert man die Richtung einer Pfadanordnung?","answer":"Wählen Sie den Pfad nahe seinem anderen Ende: Ein offener Pfad läuft von dem Ende, das näher an der Wahl liegt. Ein Kreis läuft immer gegen den Uhrzeigersinn ab seinem Winkel 0."},{"question":"Wie verteilt man Elemente gleichmäßig über den ganzen Pfad?","answer":"Wählen Sie Methode, dann Teilen, dann Objekte und geben Sie die Anzahl ein: Sie werden gleichmäßig verteilt, das erste und das letzte an den Enden eines offenen Pfads."}]
 ---
 
-REIHEPFAD (ARRAYPATH) kopiert eine Auswahl entlang eines Pfads, einer Linie, eines Bogens, eines Kreises oder einer Polylinie, als ein Anordnungsobjekt. Er fragt nach den Objekten, nennt den Typ und ob die Anordnung assoziativ ist, fragt nach der Pfadkurve und zeigt die Anordnung sofort: die Elemente im Abstand des Eineinhalbfachen der Größe der Auswahl, so viele, wie entlang des Pfads passen, jedes so gedreht, wie der Pfad sich dreht. Ein offener Pfad läuft von dem Ende, das näher an Ihrer Wahl liegt, ein Kreis gegen den Uhrzeigersinn ab seinem Winkel 0. Dann bearbeitet eine Eingabeaufforderung die Anordnung live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD. Die gewählten Objekte bleiben, wo sie sind, als ihr erstes Element.
+REIHEPFAD (ARRAYPATH) kopiert eine Auswahl entlang eines Pfads, einer Linie, eines Bogens, eines Kreises oder einer Polylinie, als ein Anordnungsobjekt. Er fragt nach den Objekten, meldet den Typ und ob die Anordnung assoziativ ist, fragt nach der Pfadkurve und zeigt die Anordnung sofort: die Elemente im Abstand des Eineinhalbfachen der Größe der Auswahl, so viele, wie entlang des Pfads passen, jedes so gedreht, wie der Pfad verläuft. Ein offener Pfad läuft von dem Ende, das näher an Ihrer Wahl liegt, ein Kreis gegen den Uhrzeigersinn ab seinem Winkel 0. Dann bearbeiten Sie die Anordnung über eine Eingabeaufforderung live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD. Die gewählten Objekte bleiben, wo sie sind, als erstes Element.
 
 - **Befehl:** `REIHEPFAD`
 - **Auf Englisch:** `ARRAYPATH`, in jeder Sprache als `_ARRAYPATH` eingegeben
@@ -31,11 +31,11 @@ Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden
 
 ### `Objekte` (`O`) [#items]
 
-Bei Divide die Anzahl der Elemente. Bei Measure der Abstand zwischen ihnen, dann wie viele, bis zur größten Zahl, die passt und die er nennt; `Füllwinkel` nimmt alle.
+Bei Divide die Anzahl der Elemente. Bei Measure der Abstand zwischen ihnen, dann die Anzahl, höchstens so viele, wie passen; die größte Zahl nennt der Befehl. `Füllwinkel` nimmt alle.
 
 ### `objekte AUsrichten` (`AU`) [#align-items]
 
-`Ja`, die Vorgabe, dreht jedes Element, wie der Pfad sich von seinem Anfang an dreht; `Nein` verschiebt es nur entlang.
+`Ja`, die Vorgabe, dreht jedes Element mit dem Verlauf des Pfads von seinem Anfang an; `Nein` verschiebt es nur entlang des Pfads.
 
 ### `eXit` (`X`) [#exit]
 
@@ -43,7 +43,7 @@ Erzeugt die Anordnung und beendet den Befehl, wie es die Eingabetaste tut.
 
 ## Was er noch nicht kann [#missing]
 
-Die Anordnung folgt ihrem Pfad nicht: Bearbeiten Sie den Pfad später, behält die Anordnung den, auf dem sie erzeugt wurde. Splines, Ellipsen und 3D-Polylinien können noch keine Pfade sein, ebenso kein Pfad außerhalb der Ebene des BKS. Basispunkt, Tangentenrichtung, Zeilen, Ebenen, Z-Richtung und Ausdruck werden nicht angeboten, ebenso keine Gruppe bei der Pfad-Eingabeaufforderung, und die Griffe der Anordnung haben keine Menüs.
+Die Anordnung folgt ihrem Pfad nicht: Ändern Sie den Pfad später, behält die Anordnung den, auf dem sie erzeugt wurde. Splines, Ellipsen und 3D-Polylinien können noch keine Pfade sein, ebenso kein Pfad außerhalb der Ebene des BKS. Basispunkt, Tangentenrichtung, Zeilen, Ebenen, Z-Richtung und Ausdruck werden nicht angeboten, ebenso keine Gruppe bei der Pfad-Eingabeaufforderung, und die Griffe der Anordnung haben keine Menüs.
 
 [Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett--de-reihepfad)
 
@@ -51,11 +51,11 @@ Die Anordnung folgt ihrem Pfad nicht: Bearbeiten Sie den Pfad später, behält d
 
 ### Wie ordnet man Objekte entlang einer Kurve an?
 
-Geben Sie `REIHEPFAD` ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Pfad nahe dem Ende, von dem aus begonnen werden soll; oder geben Sie `RH` für [`REIHE`](/docs/commands/array) ein und wählen Sie nach den Objekten `PFad`. Stellen Sie dann den Abstand oder die Anzahl der Elemente ein und drücken Sie die Eingabetaste, um sie zu erzeugen.
+Geben Sie `REIHEPFAD` ein, wählen Sie die Objekte, drücken Sie die Eingabetaste und wählen Sie den Pfad nahe dem Ende, an dem die Anordnung beginnen soll; oder geben Sie `RH` für [`REIHE`](/docs/commands/array) ein und wählen Sie nach den Objekten `PFad`. Stellen Sie dann den Abstand oder die Anzahl der Elemente ein und drücken Sie die Eingabetaste, um sie zu erzeugen.
 
 ### Warum folgt meine Pfadanordnung dem Pfad nicht?
 
-Hier behält eine Anordnung den Pfad, wie er war, als die Anordnung erzeugt wurde: Verschieben oder strecken Sie den Pfad später, bleibt die Anordnung, wie sie ist, wo eine assoziative Pfadanordnung in AutoCAD ihm folgen würde. Auch das Löschen des Pfads lässt die Anordnung stehen. Drehen sich die Elemente nicht mit dem Pfad, wählen Sie `AUsrichten` und antworten Sie `Ja`.
+Hier behält eine Anordnung den Pfad, wie er war, als die Anordnung erzeugt wurde: Verschieben oder strecken Sie den Pfad später, bleibt die Anordnung, wie sie ist, wo eine assoziative Pfadanordnung in AutoCAD ihm folgen würde. Auch das Löschen des Pfads lässt die Anordnung stehen. Drehen sich die Elemente nicht mit dem Pfad mit, wählen Sie `AUsrichten` und antworten Sie `Ja`.
 
 ### Wie ändert man die Richtung einer Pfadanordnung?
 

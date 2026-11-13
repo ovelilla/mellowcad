@@ -2,11 +2,11 @@
 title: "AutoCAD-Übung: eine Lasche mit Tangenten"
 metaTitle: "AutoCAD-Übung Fortgeschrittene: Lasche"
 description: "Eine Lasche in AutoCAD zeichnen: zwei Augen, mit dem Objektfang Tangente durch Tangenten verbunden, die Bögen dazwischen gestutzt, und ihre Bemaßung."
-figure: "Eine Lasche aus zwei Augen im Abstand 90, durch Tangenten verbunden, bemaßt."
+figure: "Eine Lasche aus zwei Augen im Abstand von 90, durch Tangenten verbunden, bemaßt."
 sourceHash: "383984af61b7"
 ---
 
-Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand 90, mit Radius 20 und 12, gebohrt auf Radius 10 und 6, verbunden durch Linien, die beide tangieren, die Bögen zwischen den Linien weggestutzt. Die Tangenten verwenden an beiden Enden den Objektfang Tangente; <Command id="TRIM" /> macht dann aus dem Kreis jedes Auges einen Bogen.
+Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand von 90, mit Radius 20 und 12, gebohrt auf Radius 10 und 6, verbunden durch Linien, die beide tangieren, die dazwischenliegenden Bögen weggestutzt. Die Tangenten verwenden an beiden Enden den Objektfang Tangente; <Command id="TRIM" /> macht dann aus dem Kreis jedes Auges einen Bogen.
 
 ## Steps
 
@@ -16,7 +16,7 @@ Auf dem Layer Kontur vier Kreise mit <Command id="CIRCLE" />, jeder mit seinem R
 
 ### Die Tangenten zeichnen [#tangents]
 
-<Command id="LINE" />, dann geben Sie `_TAN` ein, den Objektfang Tangente für einen einzelnen Punkt, und wählen Sie den großen Kreis nahe seinem oberen Punkt; wieder `_TAN` und wählen Sie den kleinen nahe seinem oberen Punkt. Die Linie berührt beide. Dasselbe an der Unterseite.
+<Command id="LINE" />, dann geben Sie `_TAN` ein, den Objektfang Tangente für einen einzelnen Punkt, und wählen Sie den großen Kreis nahe an seinem oberen Punkt; wieder `_TAN` und wählen Sie den kleinen nahe an seinem oberen Punkt. Die Linie berührt beide. Dasselbe an der Unterseite.
 
 ### Die Bögen stutzen [#trim]
 

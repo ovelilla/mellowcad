@@ -5,7 +5,7 @@ figure: "Die obere Fläche eines Quaders, mit VOLKÖRPERBEARB um 15 nach oben un
 sourceHash: "775cdc271d4f"
 ---
 
-VOLKÖRPERBEARB (SOLIDEDIT) bearbeitet einen 3D-Volumenkörper über seine Flächen. Der Befehl sagt, ob jede Bearbeitung geprüft wird, und fragt dann, was bearbeitet werden soll: <Keyword id="Face" />, dann die Flächenoption, dann die Flächen, dann das, was die Option verlangt. Jede Bearbeitung wird sofort ausgeführt, und die Flächenoptionen werden erneut abgefragt, sodass ein Aufruf mehrere Bearbeitungen umfassen kann; <Keyword id="eXit" /> oder die Eingabetaste verlässt die Flächenoptionen, dann den Befehl. Die Nachbarflächen folgen einer Fläche: Verschieben Sie die Oberseite eines Quaders nach oben, und seine Seiten wachsen mit.
+VOLKÖRPERBEARB (SOLIDEDIT) bearbeitet einen 3D-Volumenkörper über seine Flächen. Der Befehl meldet, ob jede Bearbeitung geprüft wird, und fragt dann, was bearbeitet werden soll: <Keyword id="Face" />, dann die Flächenoption, dann die Flächen, dann das, was die Option verlangt. Jede Bearbeitung wird sofort ausgeführt, und die Flächenoptionen werden erneut abgefragt, sodass ein Aufruf mehrere Bearbeitungen umfassen kann; <Keyword id="eXit" /> oder die Eingabetaste verlässt die Flächenoptionen, dann den Befehl. Die Nachbarflächen folgen einer Fläche: Verschieben Sie die Oberseite eines Quaders nach oben, und seine Seiten wachsen mit.
 
 Der Volumenkörper behält seinen Layer und seine Eigenschaften, verliert aber, wodurch er entstanden ist: Ein Quader ist danach kein Quader mehr. Der ganze Aufruf ist ein Rückgängig-Schritt, und sein <Keyword id="Undo" /> nimmt die Bearbeitungen darin einzeln zurück. Die Eingabetaste an der Eingabeaufforderung `Befehl:` führt ihn erneut ab der ersten Frage aus. Die Schaltfläche für Flächen im Bereich „Volumenkörper bearbeiten“ führt jede Flächenoption direkt aus. In MellowCAD gibt es nur 3D-Volumenkörper, und diese sind noch unvollständig.
 
@@ -29,7 +29,7 @@ Fragt nach einer Achse, durch zwei Punkte oder entlang der <Keyword id="Xaxis" /
 
 ### Offset
 
-Fragt nach einem Abstand: Die Fläche bewegt sich entlang ihrer Normalen nach außen oder bei einem negativen Wert nach innen, ihre Nachbarn nimmt sie mit, runde Flächen auch um ihre Achse. Ein Versatz nach innen, der die halbe längste Seite des Quaders um den Volumenkörper erreicht, wird abgelehnt, und die Meldung nennt, wie weit er gehen darf.
+Fragt nach einem Abstand: Die Fläche bewegt sich entlang ihrer Normalen nach außen oder bei einem negativen Wert nach innen, ihre Nachbarn nimmt sie mit, runde Flächen auch um ihre Achse. Ein Versatz nach innen, der die halbe längste Seite des Quaders um den Volumenkörper erreicht, wird abgelehnt, und die Meldung gibt an, wie weit er gehen darf.
 
 ### Taper
 

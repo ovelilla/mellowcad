@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie diese Stufenwelle in der Seitenansicht, in Millimetern: 150 lang, mit Durchmessern von 30, 40 und 30 über Längen von 40, 60 und 50 und beiden Enden mit 2 mal 2 angefast. Zeichnen Sie die Hälfte über der Achse als eine Polylinie, fasen Sie sie an und spiegeln Sie sie; dann die quer über die Welle gesehenen Kanten, die Achse und die Längen. Die Durchmesser sind die hier genannten.
+Zeichnen Sie diese Stufenwelle in der Seitenansicht, in Millimetern: 150 lang, mit Durchmessern von 30, 40 und 30 über Längen von 40, 60 und 50 und beiden Enden mit 2 mal 2 angefast. Zeichnen Sie die Hälfte über der Achse als eine Polylinie, fasen Sie sie an und spiegeln Sie sie; dann die quer über die Welle gesehenen Kanten, die Achse und die Längen. Maßgebend sind die hier genannten Durchmesser.
 
 - **Übung:** Fortgeschritten · Maschinenbau · 2D
 - **Befehle:** [`PLINIE`](/docs/commands/pline), [`FASE`](/docs/commands/chamfer), [`SPIEGELN`](/docs/commands/mirror), [`LINIE`](/docs/commands/line), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMWEITER`](/docs/commands/dimcontinue)
@@ -32,11 +32,11 @@ Auf dem Layer Kontur eine [`PLINIE`](/docs/commands/pline) von `0,0`: hoch `0,15
 
 <Session name="exercises/shaft/chamfers" caption="2. Die Enden anfasen" />
 
-### 3. Sie spiegeln [#mirror]
+### 3. Spiegeln [#mirror]
 
 [`SPIEGELN`](/docs/commands/mirror): Wählen Sie die Polylinie, drücken Sie die Eingabetaste, dann die Spiegelachse von `0,0` bis `150,0`, die Achse, und die Eingabetaste, um das Original zu behalten.
 
-<Session name="exercises/shaft/mirror" caption="3. Sie spiegeln" />
+<Session name="exercises/shaft/mirror" caption="3. Spiegeln" />
 
 ### 4. Die Kanten zeichnen [#edges]
 
@@ -46,13 +46,13 @@ Mit [`LINIE`](/docs/commands/line) die quer über die Welle gesehenen Kanten, je
 
 ### 5. Die Achse zeichnen [#axis]
 
-Auf Mittellinien die Achse: eine Linie von `-8,0` bis `166,0` weiter.
+Auf Mittellinien die Achse: eine Linie von `-8,0` um `166,0`.
 
 <Session name="exercises/shaft/axis" caption="5. Die Achse zeichnen" />
 
 ### 6. Bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: [`BEMLINEAR`](/docs/commands/dimlinear) für die erste Länge, 40, unten platziert. [`BEMWEITER`](/docs/commands/dimcontinue) macht von ihrer zweiten Maßhilfslinie aus weiter: `#100,-20`, dann `#150,-15`, ab dem Ursprung eingegeben mit #, und zweimal die Eingabetaste, um zu beenden. Eine letzte [`BEMLINEAR`](/docs/commands/dimlinear) gibt die Gesamtlänge, 150, weiter unten.
+Auf dem Layer Bemaßung: [`BEMLINEAR`](/docs/commands/dimlinear) für die erste Länge, 40, unten platziert. [`BEMWEITER`](/docs/commands/dimcontinue) setzt von ihrer zweiten Maßhilfslinie aus fort: `#100,-20`, dann `#150,-15`, mit # vom Ursprung aus eingegeben, und zweimal die Eingabetaste, um zu beenden. Eine letzte [`BEMLINEAR`](/docs/commands/dimlinear) liefert die Gesamtlänge, 150, weiter unten.
 
 <Session name="exercises/shaft/dimensions" caption="6. Bemaßen" />
 

@@ -3,12 +3,12 @@ title: "Befehl ZYLINDER (CYLINDER) in AutoCAD"
 description: "So zeichnet AutoCADs ZYLINDER (CYLINDER, Alias ZYL) einen 3D-Zylinder: Grundfläche, Radius, Höhe, 3P, 2P, Ttr, Elliptisch, Achsenendpunkt. Online testen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie lautet das Kürzel für ZYLINDER (CYLINDER) in AutoCAD?","answer":"ZYL. Tippen Sie es und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: 0,0, 20 und 40 zeichnen den Zylinder der Sitzung."},{"question":"Wie zeichne ich einen liegenden Zylinder?","answer":"Wählen Sie bei der Höhe Achsenendpunkt und geben Sie das andere Ende der Achse an: Von einer Grundfläche bei 0,0,0 aus legt der Punkt 60,0,0 den Zylinder entlang X."},{"question":"Wie mache ich einen Hohlzylinder oder ein Rohr?","answer":"Zeichnen Sie zwei Zylinder vom selben Mittelpunkt aus, den inneren schmaler, und starten Sie dann DIFFERENZ: den äußeren wählen, Eingabetaste, den inneren wählen, Eingabetaste."},{"question":"Warum sieht mein Zylinder wie ein Kreis aus?","answer":"Sie betrachten ihn von oben, in der Draufsicht. Drehen Sie die Ansicht: eine Ecke des ViewCube, -AUSSCHNT und SOIso, oder 3DORBIT."}]
+faq: [{"question":"Wie lautet das Kürzel für ZYLINDER (CYLINDER) in AutoCAD?","answer":"ZYL. Geben Sie es ein und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: 0,0, 20 und 40 zeichnen den Zylinder der Sitzung."},{"question":"Wie zeichne ich einen liegenden Zylinder?","answer":"Wählen Sie bei der Höhe Achsenendpunkt und geben Sie das andere Ende der Achse an: Von einer Grundfläche bei 0,0,0 aus legt der Punkt 60,0,0 den Zylinder entlang X."},{"question":"Wie mache ich einen Hohlzylinder oder ein Rohr?","answer":"Zeichnen Sie zwei Zylinder vom selben Mittelpunkt aus, den inneren schmaler, und starten Sie dann DIFFERENZ: den äußeren wählen, Eingabetaste, den inneren wählen, Eingabetaste."},{"question":"Warum sieht mein Zylinder wie ein Kreis aus?","answer":"Sie betrachten ihn von oben, in der Draufsicht. Drehen Sie die Ansicht: eine Ecke des ViewCube, -AUSSCHNT und SOIso, oder 3DORBIT."}]
 ---
 
-ZYLINDER (CYLINDER) zeichnet einen 3D-Zylinder als Volumenkörper: Geben Sie den Mittelpunkt seiner Grundfläche an, dann den Radius, dann die Höhe. Die Grundfläche liegt auf der XY-Ebene des BKS, auf der Z-Höhe des Mittelpunkts, und die Höhe steigt entlang seiner Z-Achse; eine negative geht nach unten, und ein Punkt gibt sie durch seinen Abstand von der Grundfläche an, wie bei [`QUADER`](/docs/commands/box). Radius und Höhe werden als Vorgaben angeboten, die die Eingabetaste übernimmt, geteilt mit den anderen Grundkörpern und [`EXTRUSION`](/docs/commands/extrude). Der Zylinder liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
+ZYLINDER (CYLINDER) zeichnet einen 3D-Zylinder als Volumenkörper: Geben Sie den Mittelpunkt seiner Grundfläche an, dann den Radius, dann die Höhe. Die Grundfläche liegt auf der XY-Ebene des BKS, auf der Z-Höhe des Mittelpunkts, und die Höhe steigt entlang seiner Z-Achse; eine negative geht nach unten, und ein angegebener Punkt legt sie durch seinen Abstand von der Grundfläche fest, wie bei [`QUADER`](/docs/commands/box). Radius und Höhe werden als Vorgaben angeboten, die die Eingabetaste übernimmt, geteilt mit den anderen Grundkörpern und [`EXTRUSION`](/docs/commands/extrude). Der Zylinder liegt auf dem aktuellen Layer, und `Z` nimmt ihn in einem Schritt zurück.
 
-Der Zylinder behält seine Maße: [`LISTE`](/docs/commands/list) zeigt seine Position, Normale, Radius und Höhe, und in der Eigenschaften-Palette können Sie Radius und Höhe eintippen. Seine Griffe verschieben ihn, legen seine Höhe fest und, an jedem Viertel der Grundfläche, seinen Radius. Er ist für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+Der Zylinder behält seine Maße: [`LISTE`](/docs/commands/list) zeigt seine Position, Normale, Radius und Höhe, und in der Eigenschaften-Palette können Sie Radius und Höhe eingeben. Seine Griffe verschieben ihn, legen seine Höhe fest und, an jedem Viertel der Grundfläche, seinen Radius. Für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und das übrige 3D von MellowCAD ist er ein Volumenkörper; dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
 
 - **Befehl:** `ZYLINDER`
 - **Auf Englisch:** `CYLINDER`, in jeder Sprache als `_CYLINDER` eingegeben
@@ -34,7 +34,7 @@ Beim Mittelpunkt der Grundfläche: fragt nach den beiden Enden des Durchmessers 
 
 ### `Ttr` (`T`) [#ttr]
 
-Beim Mittelpunkt der Grundfläche: Wählen Sie zwei Linien, Kreise oder Bögen unter dem Objektfang Tangent und geben Sie einen Radius an: Die Grundfläche berührt beide, nahe der gewählten Punkte, auf ihrer Höhe.
+Beim Mittelpunkt der Grundfläche: Wählen Sie zwei Linien, Kreise oder Bögen unter dem Objektfang Tangente und geben Sie einen Radius an: Die Grundfläche berührt beide, nahe der gewählten Punkte, auf ihrer Höhe.
 
 ### `Elliptisch` (`E`) [#elliptical]
 
@@ -54,7 +54,7 @@ Bei der Höhe: fragt nach dem anderen Ende der Achse. Der Zylinder verläuft vom
 
 ## Was er noch nicht kann [#missing]
 
-[`URSPRUNG`](/docs/commands/explode) eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nearest den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) über 2D-Drahtmodell, Hidden und Conceptual hinaus fehlen.
+[`URSPRUNG`](/docs/commands/explode) eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nächster den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) über 2D-Drahtmodell, Verdeckt und Konzeptionell hinaus fehlen.
 
 [Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl)
 
@@ -62,7 +62,7 @@ Bei der Höhe: fragt nach dem anderen Ende der Achse. Der Zylinder verläuft vom
 
 ### Wie lautet das Kürzel für ZYLINDER (CYLINDER) in AutoCAD?
 
-`ZYL`. Tippen Sie es und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: `0,0`, `20` und `40` zeichnen den Zylinder der Sitzung.
+`ZYL`. Geben Sie es ein und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: `0,0`, `20` und `40` zeichnen den Zylinder der Sitzung.
 
 ### Wie zeichne ich einen liegenden Zylinder?
 

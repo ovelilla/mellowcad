@@ -5,7 +5,7 @@ figure: "Ein großer Kreis innen bemaßt und ein kleiner außen: jeder Kreis gew
 sourceHash: "76537f5f9854"
 ---
 
-BEMDURCHM (DIMDIAMETER) bemaßt den Durchmesser eines Kreises, eines Bogens oder eines Bogensegments einer Polylinie, mit den Eingabeaufforderungen von <Command id="DIMRADIUS" />: Wählen Sie die Kurve, und die Befehlszeile meldet sofort das Maß; platzieren Sie dann die Bemaßung, und der Befehl endet. Ihr Text ist der Durchmesser nach dem Durchmesserzeichen. Innerhalb des Kreises platziert, verläuft eine Linie vom Text zu einer Pfeilspitze am Rand; außerhalb platziert, durchquert die Linie den Kreis von Rand zu Rand, ihre ferne Pfeilspitze zeigt von einem kurzen Stück zurück nach innen, wie ISO-25 es zeichnet.
+BEMDURCHM (DIMDIAMETER) bemaßt den Durchmesser eines Kreises, eines Bogens oder eines Bogensegments einer Polylinie, mit den Eingabeaufforderungen von <Command id="DIMRADIUS" />: Wählen Sie die Kurve, und die Befehlszeile meldet sofort das Maß; platzieren Sie dann die Bemaßung, und der Befehl endet. Ihr Text ist der Durchmesser mit vorangestelltem Durchmesserzeichen. Innerhalb des Kreises platziert, verläuft eine Linie vom Text zu einer Pfeilspitze am Rand; außerhalb platziert, durchquert die Linie den Kreis von Rand zu Rand, ihre ferne Pfeilspitze zeigt von einem kurzen Stück zurück nach innen, wie ISO-25 es zeichnet.
 
 ## Options
 
@@ -19,7 +19,7 @@ Fragt nach dem Winkel des Texts, der dann in diesem Winkel gezeichnet wird, sein
 
 ## Missing
 
-Mtext: Der Text einer Bemaßung ist eine Zeile, in der Befehlszeile mit <Keyword id="Text" /> festgelegt, nie im Texteditor. Das Zeichen wird als Ø gezeichnet, wo AutoCAD ∅ schreibt: Die Zeichnungsschrift hat kein ∅. Bei einem Bogen bleiben die Pfeilspitzen zwischen seinen Enden, wo AutoCAD eine Maßhilfslinie als Bogen zeichnet. Wie bei <Command id="DIMRADIUS" /> kann eine Kurve in einem Blockverweis nicht gewählt werden, die Mittellinien des Stils werden nicht gezeichnet, und seine Einstellungen für Text außerhalb der Kurve werden nicht angeboten. Eine Bemaßung ist nicht assoziativ: Sie folgt der Kurve, die sie misst, nicht.
+Mtext: Der Text einer Bemaßung ist eine Zeile, in der Befehlszeile mit <Keyword id="Text" /> festgelegt, nie im Texteditor. Das Zeichen wird als Ø gezeichnet, wo AutoCAD ∅ schreibt: Die Zeichnungsschrift hat kein ∅. Bei einem Bogen bleiben die Pfeilspitzen zwischen seinen Enden, wo AutoCAD eine Maßhilfslinie als Bogen zeichnet. Wie bei <Command id="DIMRADIUS" /> kann eine Kurve in einer Blockreferenz nicht gewählt werden, die Mittellinien des Stils werden nicht gezeichnet, und seine Einstellungen für Text außerhalb der Kurve werden nicht angeboten. Eine Bemaßung ist nicht assoziativ: Sie folgt der Kurve, die sie misst, nicht.
 
 ## Questions
 
@@ -37,4 +37,4 @@ Ja: einen Bogen oder das Bogensegment einer Polylinie, wie einen Kreis, und der 
 
 ### Wie füge ich einer Durchmesserbemaßung THRU oder eine Anmerkung hinzu?
 
-Wählen Sie <Keyword id="Text" /> vor dem Platzieren und geben Sie `<> THRU` ein: `<>` ist das Maß mit seinem Zeichen. Nach dem Platzieren ändert die Textüberschreibung der Palette Eigenschaften es.
+Wählen Sie <Keyword id="Text" /> vor dem Platzieren und geben Sie `<> THRU` ein: `<>` ist das Maß mit seinem Zeichen. Nach dem Platzieren ändert die Textüberschreibung in der Eigenschaftenpalette es.

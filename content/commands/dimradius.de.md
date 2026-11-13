@@ -5,13 +5,13 @@ figure: "Die gerundete Ecke einer Platte außen bemaßt und ihr Loch innen: jede
 sourceHash: "6b1cdea584be"
 ---
 
-BEMRADIUS (DIMRADIUS) bemaßt den Radius eines Kreises, eines Bogens oder des Bogensegments einer Polylinie. Wählen Sie die Kurve, und die Befehlszeile nennt sofort das Maß; platzieren Sie dann die Bemaßung, und der Befehl endet. Wie in AutoCAD ist ihr Text der Radius nach einem R, auf einer Linie entlang eines Radius, die in einer Pfeilspitze auf der Kurve endet, innerhalb oder außerhalb der Kurve, je nachdem, wo Sie sie platzieren. Außen läuft die Linie über die Kurve hinweg zum Mittelpunkt weiter, wie ISO-25 sie zeichnet.
+BEMRADIUS (DIMRADIUS) bemaßt den Radius eines Kreises, eines Bogens oder des Bogensegments einer Polylinie. Wählen Sie die Kurve, und die Befehlszeile meldet sofort das Maß; platzieren Sie dann die Bemaßung, und der Befehl endet. Wie in AutoCAD ist ihr Text der Radius nach einem R, auf einer Linie entlang eines Radius, die in einer Pfeilspitze auf der Kurve endet, innerhalb oder außerhalb der Kurve, je nachdem, wo Sie sie platzieren. Außen läuft die Linie über die Kurve hinweg zum Mittelpunkt weiter, wie ISO-25 sie zeichnet.
 
 ## Options
 
 ### Text
 
-Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie tippen, steht `<>` für das Maß mit seinem R, sodass `<> TYP` bei einem Radius von 10 `R10 TYP` schreibt.
+Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie eingeben, steht `<>` für das Maß mit seinem R, sodass `<> TYP` bei einem Radius von 10 `R10 TYP` schreibt.
 
 ### Angle
 
@@ -33,8 +33,8 @@ Wählen Sie die Rundung: Eine Abrundung ist ein Bogen oder das Bogensegment eine
 
 ### Warum kann ich das zu bemaßende Objekt nicht wählen?
 
-BEMRADIUS nimmt einen Kreis, einen Bogen oder das Bogensegment einer Polylinie, auch auf einem gesperrten Layer. Alles andere, auch eine Ellipse, ergibt <Message id="notCircleOrArc" /> und wird erneut gefragt; eine Kurve in einer Blockreferenz lässt sich noch nicht wählen.
+BEMRADIUS nimmt einen Kreis, einen Bogen oder das Bogensegment einer Polylinie, auch auf einem gesperrten Layer. Alles andere, auch eine Ellipse, ergibt <Message id="notCircleOrArc" /> und es wird erneut gefragt; eine Kurve in einer Blockreferenz lässt sich noch nicht wählen.
 
 ### Wie füge ich TYP zu einer Radiusbemaßung hinzu?
 
-Wählen Sie <Keyword id="Text" /> vor dem Platzieren und tippen Sie `<> TYP`: `<>` ist das Maß mit seinem R, sodass die Bemaßung `R10 TYP` liest. Ist sie platziert, ändert die Textüberschreibung der Eigenschaften-Palette sie.
+Wählen Sie <Keyword id="Text" /> vor dem Platzieren und geben Sie `<> TYP` ein: `<>` ist das Maß mit seinem R, sodass die Bemaßung `R10 TYP` liest. Ist sie platziert, ändert die Textüberschreibung der Eigenschaften-Palette sie.

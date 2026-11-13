@@ -5,7 +5,7 @@ figure: "ABSTAND entlang der Diagonale einer Platte von 100 mal 60: der Abstand,
 sourceHash: "31fbe420bc43"
 ---
 
-ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Wählen, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.
+ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Klicken, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.
 
 ## Options
 
@@ -45,11 +45,11 @@ MEASUREGEOM, die Werkzeuge Messen des Menübands, die die Eingabeaufforderungen 
 
 ### Wie messe ich einen Abstand in AutoCAD?
 
-Geben Sie `AB` ein und wählen Sie dann die zwei Punkte, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas.
+Geben Sie `AB` ein und geben Sie dann die zwei Punkte an, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas.
 
 ### Wie messe ich die Gesamtlänge mehrerer Segmente?
 
-Wählen Sie beim zweiten Punkt <Keyword id="Multiple" /> Punkte und wählen Sie weiter: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe.
+Wählen Sie beim zweiten Punkt <Keyword id="Multiple" /> Punkte und geben Sie weiter Punkte an: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe.
 
 ### Wie messe ich einen Abstand in 3D?
 

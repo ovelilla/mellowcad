@@ -5,7 +5,7 @@ export const de: EditorLocale = {
   "tag": "de",
   "messages": {
     "Workspace": {
-      "canvas": "CAD-Zeichenfläche"
+      "canvas": "CAD-Zeichenbereich"
     },
     "Keys": {
       "save": "Strg+S",

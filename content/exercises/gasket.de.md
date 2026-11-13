@@ -12,7 +12,7 @@ Zeichnen Sie diese Dichtung, in Millimetern: eine Platte 120 mal 80 mit auf den 
 
 ### Die Kontur zeichnen [#outline]
 
-Machen Sie Kontur im Layer-Steuerelement zum aktuellen Layer. <Command id="RECTANG" /> zeichnet die Platte in einem Zug: Wählen Sie <Keyword command="RECTANG" id="Fillet" /> und geben Sie den Radius ein, `10`, dann die erste Ecke, `0,0`, und die andere Ecke, `120,80`, vom ersten Punkt aus gemessen.
+Machen Sie Kontur in der Layer-Steuerung zum aktuellen Layer. <Command id="RECTANG" /> zeichnet die Platte in einem Zug: Wählen Sie <Keyword command="RECTANG" id="Fillet" /> und geben Sie den Radius ein, `10`, dann die erste Ecke, `0,0`, und die andere Ecke, `120,80`, vom ersten Punkt aus gemessen.
 
 ### Die Bohrung zeichnen [#bore]
 
@@ -24,8 +24,8 @@ Zeichnen Sie ein Loch, einen Kreis in `12,12` mit einem <Keyword command="CIRCLE
 
 ### Die Mittellinien zeichnen [#centreLines]
 
-Machen Sie Mittellinien aktuell. Zwei Linien mit <Command id="LINE" /> kreuzen sich im Mittelpunkt der Bohrung und stehen 6 über ihren Rand hinaus: von `60,14`, `0,52` senkrecht; von `34,40`, `52,0` waagerecht. Die Eingabetaste beendet jede.
+Machen Sie Mittellinien aktuell. Zwei Linien mit <Command id="LINE" /> kreuzen sich im Mittelpunkt der Bohrung und ragen 6 über ihren Rand hinaus: von `60,14`, `0,52` senkrecht; von `34,40`, `52,0` waagerecht. Die Eingabetaste beendet jede.
 
 ### Bemaßen [#dimensions]
 
-Machen Sie Bemaßung aktuell. <Command id="DIMLINEAR" /> nimmt zwei Punkte und dann, wohin die Maßlinie kommt: die Länge von `0,10` bis `120,0` weiter, unten platziert; die Höhe rechts; den Lochabstand, 96 und 56. Ein bei den Eingabeaufforderungen eingegebener Punkt berührt kein Objekt, daher wird jede dieser Bemaßungen nicht assoziativ erstellt, und die Befehlszeile sagt es. <Command id="DIMDIAMETER" /> wählt einen Kreis und platziert seinen Durchmesser: den der Bohrung, dann den eines Lochs.
+Machen Sie Bemaßung aktuell. <Command id="DIMLINEAR" /> fragt zwei Punkte ab und dann die Lage der Maßlinie: die Länge von `0,10`, dann `120,0` vom ersten Punkt aus, unten platziert; die Höhe rechts; den Lochabstand, 96 und 56. Ein bei den Eingabeaufforderungen eingegebener Punkt berührt kein Objekt, daher wird jede dieser Bemaßungen nicht assoziativ erstellt, und die Befehlszeile meldet es. <Command id="DIMDIAMETER" /> wählt einen Kreis und platziert seinen Durchmesser: den der Bohrung, dann den eines Lochs.

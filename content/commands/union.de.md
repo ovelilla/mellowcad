@@ -21,7 +21,7 @@ Flächen, die es hier nicht gibt. Gekrümmte Flächen, die sich entlang einer Ku
 
 ### Warum funktioniert VEREINIG nicht?
 
-Er braucht zwei Volumenkörper oder zwei Regionen in derselben Ebene: Bei weniger meldet er <Message id="booleanNeedsTwo" /> und ändert nichts. Linien, Bögen und Polylinien sind keine Regionen, auch nicht geschlossen: Machen Sie sie zuerst mit <Command id="REGION" /> zu Regionen. Vor VEREINIG gewählte Objekte werden verworfen, wie in AutoCAD 2027: Wählen Sie sie bei seiner Eingabeaufforderung. Meldet er, dass eine Boolesche Operation fehlgeschlagen ist, treffen sich die Volumenkörper auf eine Weise, die MellowCAD noch nicht berechnen kann, und bleiben, wie sie waren.
+Er braucht zwei Volumenkörper oder zwei Regionen in derselben Ebene: Bei weniger meldet er <Message id="booleanNeedsTwo" /> und ändert nichts. Linien, Bögen und Polylinien sind keine Regionen, auch nicht geschlossen: Machen Sie sie zuerst mit <Command id="REGION" /> zu Regionen. Vor VEREINIG gewählte Objekte werden verworfen, wie in AutoCAD 2027: Wählen Sie sie bei seiner Eingabeaufforderung. Meldet er, dass eine boolesche Operation fehlgeschlagen ist, treffen sich die Volumenkörper auf eine Weise, die MellowCAD noch nicht berechnen kann, und bleiben, wie sie waren.
 
 ### Wie mache ich eine Vereinigung rückgängig?
 

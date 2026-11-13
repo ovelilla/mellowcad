@@ -5,7 +5,7 @@ figure: "Ein Rechteck, zweimal bemaßt: seine Oberkante durch ihre zwei Ecken, s
 sourceHash: "e48a0a6f18c9"
 ---
 
-BEMLINEAR (DIMLINEAR) misst den Abstand zwischen zwei Punkten entlang X oder entlang Y und zeichnet ihn als Bemaßung: zwei Maßhilfslinien, eine Maßlinie mit ihren Pfeilspitzen und das Maß darüber. Sie geben den ersten und den zweiten Ursprung der Maßhilfslinien an, dann die Lage der Maßlinie, und wo Sie sie platzieren, bestimmt die Richtung, wie in AutoCAD: über oder unter den beiden Punkten wird horizontal gemessen, daneben vertikal. Drücken Sie stattdessen bei der ersten Eingabeaufforderung die Eingabetaste und wählen Sie eine Linie, einen Bogen, ein Polyliniensegment oder einen Kreis: Seine zwei Enden oder der Durchmesser des Kreises sind die Ursprünge. Die Befehlszeile meldet dann das Maß, und der Befehl endet.
+BEMLINEAR (DIMLINEAR) misst den Abstand zwischen zwei Punkten entlang X oder entlang Y und zeichnet ihn als Bemaßung: zwei Maßhilfslinien, eine Maßlinie mit ihren Pfeilspitzen und das Maß darüber. Sie geben den ersten und den zweiten Ursprung der Maßhilfslinien an, dann die Lage der Maßlinie, und die Lage der Maßlinie bestimmt die Richtung, wie in AutoCAD: über oder unter den beiden Punkten wird horizontal gemessen, daneben vertikal. Drücken Sie stattdessen bei der ersten Eingabeaufforderung die Eingabetaste und wählen Sie eine Linie, einen Bogen, ein Polyliniensegment oder einen Kreis: Seine zwei Enden oder der Durchmesser des Kreises sind die Ursprünge. Die Befehlszeile meldet dann das Maß, und der Befehl endet.
 
 Die Bemaßung wird im aktuellen Bemaßungsstil gezeichnet, in einer neuen Zeichnung ISO-25: ein Komma für Dezimalstellen und keine nachgestellten Nullen, wie AutoCAD sie in metrischen Zeichnungen schreibt. <Command id="DIMHORIZONTAL" />, <Command id="DIMVERTICAL" /> und <Command id="DIMROTATED" />, nur eingegeben, sind BEMLINEAR, auf eine Richtung festgelegt.
 
@@ -21,15 +21,15 @@ Fragt nach dem Winkel des Texts, der dann in diesem Winkel statt entlang der Ma�
 
 ### Horizontal
 
-Misst entlang X, wo auch immer Sie die Maßlinie platzieren, die horizontal bleibt; die Eingabeaufforderung bietet dann nur <Keyword id="Text" /> und <Keyword id="Angle" />.
+Misst entlang X, egal wo Sie die Maßlinie platzieren, die horizontal bleibt; die Eingabeaufforderung bietet dann nur <Keyword id="Text" /> und <Keyword id="Angle" />.
 
 ### Vertical
 
-Misst entlang Y, wo auch immer Sie die Maßlinie platzieren, die vertikal bleibt.
+Misst entlang Y, egal wo Sie die Maßlinie platzieren, die vertikal bleibt.
 
 ### Rotated
 
-Fragt nach dem Winkel der Maßlinie, standardmäßig `0`, und misst den Abstand zwischen den Ursprüngen entlang ihr. An einer schrägen Kante ergibt ihr eigener Winkel ihre Länge, wie <Command id="DIMALIGNED" /> es tut.
+Fragt nach dem Winkel der Maßlinie, standardmäßig `0`, und misst den Abstand zwischen den Ursprüngen in dieser Richtung. An einer schrägen Kante ergibt ihr eigener Winkel ihre Länge, wie <Command id="DIMALIGNED" /> es tut.
 
 ## Missing
 
@@ -47,8 +47,8 @@ Mtext: Der Text einer Bemaßung ist eine Zeile, in der Befehlszeile mit <Keyword
 
 ### Warum folgt die Bemaßung dem Objekt nicht, wenn ich es ändere?
 
-Die Bemaßungen von MellowCAD sind noch nicht assoziativ, wie <Message id="nonAssociativeDimension" /> sagt: Eine Bemaßung behält die Punkte, die ihr gegeben wurden. Strecken Sie sie gemeinsam: Fangen Sie das Ende, das Sie verschieben, und den Ursprung der Bemaßung dort in einem <Command id="STRETCH" />-Kreuzen-Fenster, und das Maß wird neu berechnet; oder ziehen Sie den Griff des Ursprungs an seine neue Stelle.
+Die Bemaßungen von MellowCAD sind noch nicht assoziativ, wie <Message id="nonAssociativeDimension" /> meldet: Eine Bemaßung behält die Punkte, die ihr gegeben wurden. Strecken Sie sie gemeinsam: Fangen Sie das Ende, das Sie verschieben, und den Ursprung der Bemaßung dort in einem Kreuzen-Fenster von <Command id="STRETCH" />, und das Maß wird neu berechnet; oder ziehen Sie den Griff des Ursprungs an seine neue Stelle.
 
 ### Wie ändere ich die Größe von Bemaßungstext und Pfeilen?
 
-Im Bemaßungsstil, wie in AutoCAD: <Command id="DIMSTYLE" /> (`D`) öffnet die Bemaßungsstile, hier in der Palette Stile, wo AutoCAD den Bemaßungsstil-Manager hat. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil folgt.
+Im Bemaßungsstil, wie in AutoCAD: <Command id="DIMSTYLE" /> (`D`) öffnet die Bemaßungsstile, hier in der Palette Stile, wo AutoCAD den Bemaßungsstil-Manager hat. Dort werden Texthöhe, Pfeilgröße, Gesamtskalierung und Dezimalstellen des aktuellen Stils festgelegt, und jede Bemaßung in diesem Stil übernimmt sie.

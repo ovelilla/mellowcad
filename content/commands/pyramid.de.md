@@ -5,9 +5,9 @@ figure: "Eine Pyramide mit sechs Seiten, ihre Grundfläche 25 bis zur Mitte jede
 sourceHash: "acbc5ffa71cb"
 ---
 
-PYRAMIDE (PYRAMID) zeichnet eine 3D-Pyramide als Volumenkörper: Ihre erste Zeile nennt, wie viele Seiten die Grundfläche hat und wie ihr Radius gelesen wird, dann fragt sie nach dem Mittelpunkt der Grundfläche, dem Radius und der Höhe. Die Grundfläche ist ein regelmäßiges Polygon, wie <Command id="POLYGON" /> es zeichnet, zunächst mit 4 Seiten: Ein getippter Radius dreht es zum Cursor hin, ein Punkt zu sich selbst. Die Höhe steigt entlang der Z-Achse des BKS, eine negative geht nach unten, und ein Punkt gibt sie durch seinen Abstand von der Grundfläche an. Die Seitenzahl und die Art, den Radius zu lesen, bleiben für die nächste PYRAMIDE erhalten; Radius und Höhe sind die gemeinsamen Vorgaben der Grundkörper. Die Pyramide liegt auf dem aktuellen Layer, und Rückgängig nimmt sie in einem Schritt zurück.
+PYRAMIDE (PYRAMID) zeichnet eine 3D-Pyramide als Volumenkörper: Ihre erste Zeile zeigt, wie viele Seiten die Grundfläche hat und wie ihr Radius gelesen wird, dann fragt sie nach dem Mittelpunkt der Grundfläche, dem Radius und der Höhe. Die Grundfläche ist ein regelmäßiges Polygon, wie <Command id="POLYGON" /> es zeichnet, zunächst mit 4 Seiten: Ein getippter Radius dreht es zum Cursor hin, ein Punkt zu sich selbst. Die Höhe steigt entlang der Z-Achse des BKS, eine negative geht nach unten, und ein Punkt gibt sie durch seinen Abstand von der Grundfläche an. Die Seitenzahl und die Art, den Radius zu lesen, bleiben für die nächste PYRAMIDE erhalten; Radius und Höhe sind die gemeinsamen Vorgaben der Grundkörper. Die Pyramide liegt auf dem aktuellen Layer, und Rückgängig nimmt sie in einem Schritt zurück.
 
-<Command id="LIST" /> zeigt ihre Position, beide Radien der Grundfläche und der Spitze, ihre Höhe, Drehung und Seitenzahl, und in der Eigenschaften-Palette können Sie die Radien, die Seiten und die Höhe eintippen. Ihre Griffe verschieben sie, legen ihre Höhe fest und bemessen die Grundfläche von einer Ecke oder der Mitte einer Seite aus. Sie ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig; <Command id="EXPLODE" /> macht aus ihr eine Region je Fläche.
+<Command id="LIST" /> zeigt ihre Position, beide Radien der Grundfläche und der Spitze, ihre Höhe, Drehung und Seitenzahl, und in der Eigenschaftenpalette können Sie die Radien, die Seiten und die Höhe eintippen. Ihre Griffe verschieben sie, legen ihre Höhe fest und bemessen die Grundfläche von einer Ecke oder der Mitte einer Seite aus. Sie ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig; <Command id="EXPLODE" /> macht aus ihr eine Region je Fläche.
 
 ## Options
 
@@ -41,7 +41,7 @@ Bei der Höhe: fragt nach dem Radius oben, gelesen wie der der Grundfläche, dan
 
 ## Missing
 
-Die von <Command id="BOX" />: Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, die eigenen 3D-Befehle und die visuellen Stile, die <Command id="VSCURRENT" /> fehlen. Ihre Art, einbeschrieben oder umschrieben, in der Eigenschaften-Palette eingetippt. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie den Radius und eine Kante angeben.
+Die von <Command id="BOX" />: Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, die eigenen 3D-Befehle und die visuellen Stile, die <Command id="VSCURRENT" /> fehlen. Ihre Art, einbeschrieben oder umschrieben, in der Eigenschaftenpalette eingetippt. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie den Radius und eine Kante angeben.
 
 ## Questions
 

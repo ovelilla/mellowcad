@@ -7,7 +7,7 @@ sourceHash: "a35a57352d16"
 
 KUGEL (SPHERE) zeichnet eine 3D-Kugel als Volumenkörper: Geben Sie den Mittelpunkt an, dann den Radius. Ein mit der Maus gewählter Radius wird auf der Ebene durch den Mittelpunkt gelesen, und der letzte Radius wird als Vorgabe angeboten, die die Eingabetaste übernimmt, geteilt mit <Command id="CYLINDER" />, <Command id="CONE" /> und den anderen Grundkörpern. Die Kugel liegt auf dem aktuellen Layer, und Rückgängig nimmt sie in einem Schritt zurück.
 
-In 2D-Drahtmodell und Hidden wird sie als Linien gezeichnet: Meridiane und Breitenkreise, so viele, wie `ISOLINES` angibt, und nichts anderes als ihr Mittelpunkt lässt sich darauf fangen. <Command id="LIST" /> zeigt ihre Position und ihren Radius, und in der Eigenschaften-Palette können Sie den Radius oder den Durchmesser eintippen. Ihre Griffe verschieben sie und legen, an jedem Viertel ihres Äquators, ihren Radius fest. Sie ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+In 2D-Drahtmodell und Hidden wird sie als Linien gezeichnet: Meridiane und Breitenkreise, so viele, wie `ISOLINES` angibt, und nichts anderes als ihr Mittelpunkt lässt sich darauf fangen. <Command id="LIST" /> zeigt ihre Position und ihren Radius, und in der Eigenschaftenpalette können Sie den Radius oder den Durchmesser eintippen. Ihre Griffe verschieben sie und legen, an jedem Viertel ihres Äquators, ihren Radius fest. Sie ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
 
 ## Options
 

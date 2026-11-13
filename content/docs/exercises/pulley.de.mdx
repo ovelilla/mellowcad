@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Modellieren Sie diese Riemenscheibe, indem Sie ihren halben Schnitt um ihre Achse drehen, in Millimetern: eine Bohrung von 20, eine 30 lange Nabe mit 40 Durchmesser, eine 10 dicke Scheibe und ein 24 breiter Kranz von 90 bis 110 Durchmesser, auf der Nabe zentriert. Der Schnitt wird als Abstände von der Achse gezeichnet, die entlang der Y-Achse verläuft, daher wird jeder Durchmesser als seine Hälfte gezeichnet.
+Modellieren Sie diese Riemenscheibe, indem Sie ihren halben Schnitt um ihre Achse drehen, in Millimetern: eine Bohrung von 20, eine 30 lange Nabe mit 40 Durchmesser, eine 10 dicke Scheibe und ein 24 breiter Kranz im Durchmesser von 90 bis 110, auf der Nabe zentriert. Der Schnitt wird als Abstände von der Achse gezeichnet, die entlang der Y-Achse verläuft, daher wird jeder Durchmesser als seine Hälfte gezeichnet.
 
 - **Übung:** Fortgeschritten · Maschinenbau · 3D-Volumenkörper
 - **Befehle:** [`PLINIE`](/docs/commands/pline), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`ROTATION`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
@@ -30,15 +30,15 @@ Auf dem Layer Kontur eine geschlossene [`PLINIE`](/docs/commands/pline) von `10,
 
 ### 2. Die Ansicht drehen [#view]
 
-`-AUSSCHNT` und `SOIso` betrachten sie von Südosten und oben; [`VSAKTUELL`](/docs/commands/vscurrent) und `Konzeptuell` schattieren die Flächen, woran man ein Drehteil am besten erkennt.
+`-AUSSCHNT` und `SOIso` zeigen sie von Südosten und oben; [`VSAKTUELL`](/docs/commands/vscurrent) und `Konzeptuell` schattieren die Flächen, woran man ein Drehteil am besten erkennt.
 
 <Session name="exercises/pulley/view" caption="2. Die Ansicht drehen" />
 
-### 3. Sie drehen [#revolve]
+### 3. Drehen [#revolve]
 
-[`ROTATION`](/docs/commands/revolve): Wählen Sie den Schnitt und drücken Sie die Eingabetaste, dann `Y`: Die Y-Achse ist die der Riemenscheibe. Die Eingabetaste übernimmt den vorgegebenen Winkel, eine volle Umdrehung. [`ZOOM`](/docs/commands/zoom) `Grenzen` passt sie ein, und ein Maßstab von `0.8x` lässt Platz um sie herum.
+[`ROTATION`](/docs/commands/revolve): Wählen Sie den Schnitt und drücken Sie die Eingabetaste, dann `Y`: Die Y-Achse ist die der Riemenscheibe. Die Eingabetaste übernimmt den Vorgabewinkel, eine volle Umdrehung. [`ZOOM`](/docs/commands/zoom) `Grenzen` zeigt sie formatfüllend, und ein Maßstab von `0.8x` lässt Platz um sie herum.
 
-<Session name="exercises/pulley/revolve" caption="3. Sie drehen" />
+<Session name="exercises/pulley/revolve" caption="3. Drehen" />
 
 ## Weitere Übungen [#more]
 

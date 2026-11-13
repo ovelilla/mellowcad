@@ -5,7 +5,7 @@ figure: "Ein Kreis, dreimal entlang X von einem Basispunkt aus kopiert, dann die
 sourceHash: "e74bbdabf97c"
 ---
 
-KOPIEREN (COPY) platziert Kopien der gewählten Objekte: Wählen Sie sie, geben Sie einen Basispunkt an, dann für jede Kopie einen zweiten Punkt. Wie in AutoCAD, dessen Kopiermodus standardmäßig Mehrfach ist, fragt er immer weiter nach einer weiteren, bis Sie die Eingabetaste drücken oder Beenden wählen, jede Kopie vom selben Basispunkt aus gemessen. Die Kopien behalten Layer, Farbe und jede andere Eigenschaft der Objekte. Vor dem Befehl gewählte Objekte sind die, die er kopiert, und während Sie eine Kopie platzieren, folgt die Auswahl dem Cursor.
+KOPIEREN (COPY) platziert Kopien der gewählten Objekte: Wählen Sie sie, geben Sie einen Basispunkt an, dann für jede Kopie einen zweiten Punkt. Wie in AutoCAD, dessen Kopiermodus standardmäßig Mehrfach ist, fragt er immer wieder nach einer weiteren, bis Sie die Eingabetaste drücken oder Beenden wählen, jede Kopie vom selben Basispunkt aus gemessen. Die Kopien behalten Layer, Farbe und jede andere Eigenschaft der Objekte. Er kopiert auch Objekte, die schon vor dem Befehl gewählt waren, und während Sie eine Kopie platzieren, folgt die Auswahl dem Cursor.
 
 ## Options
 
@@ -19,11 +19,11 @@ Beendet den Befehl, wie es die Eingabetaste tut, sobald eine Kopie platziert ist
 
 ### Undo
 
-Nimmt die zuletzt platzierte Kopie zurück. Die erste zurückzunehmen meldet <Message id="commandCompletelyUndone" /> und fragt erneut nach dem zweiten Punkt.
+Nimmt die zuletzt platzierte Kopie zurück. Wird die erste zurückgenommen, meldet er <Message id="commandCompletelyUndone" /> und fragt erneut nach dem zweiten Punkt.
 
 ## Missing
 
-Einzeln von COPYMODE (einmal kopieren und beenden) wird nicht angeboten: KOPIEREN ist immer Mehrfach, sodass die Eingabeaufforderung für den Basispunkt nur <Keyword id="Displacement" /> auflistet. Auch Anordnung beim zweiten Punkt, AutoCADs Reihe gleichmäßig verteilter Kopien, wird nicht angeboten.
+Die Option Einzeln von COPYMODE (einmal kopieren und beenden) wird nicht angeboten: KOPIEREN ist immer Mehrfach, sodass die Eingabeaufforderung für den Basispunkt nur <Keyword id="Displacement" /> auflistet. Auch Anordnung beim zweiten Punkt, AutoCADs Reihe gleichmäßig verteilter Kopien, wird nicht angeboten.
 
 ## Questions
 
@@ -37,7 +37,7 @@ Platzieren Sie weiter: Jeder Punkt, den Sie angeben, ist eine weitere Kopie vom 
 
 ### Wie kopiere ich ein Objekt um einen festen Abstand?
 
-Geben Sie den Basispunkt an und tippen Sie dann den zweiten Punkt als Abstand: `30,0` kopiert es 30 entlang X, da die dynamische Eingabe einen Punkt nach dem ersten daraus liest. Oder richten Sie den Cursor in die gewünschte Richtung, mit Ortho oder Spurverfolgung, und tippen Sie nur den Abstand.
+Geben Sie den Basispunkt an und geben Sie dann den zweiten Punkt als Abstand ein: `30,0` kopiert es 30 entlang X, da die dynamische Eingabe einen Punkt nach dem ersten daraus liest. Oder richten Sie den Cursor in die gewünschte Richtung, mit Ortho oder Spurverfolgung, und geben Sie nur den Abstand ein.
 
 ### Warum gibt es in KOPIEREN keine Option Anordnung?
 

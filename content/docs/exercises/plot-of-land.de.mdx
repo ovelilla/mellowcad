@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie dieses Grundstück, in Metern, aus Länge und Richtung seiner Seiten: 40 unter 0°, 30 unter 80°, 35 unter 155° und 25 unter 230°, dann zurück zum Anfang. Messen Sie seine Fläche und seinen Umfang und bemaßen Sie jede Seite und den Winkel an der zweiten Ecke. Polarkoordinaten, eine Länge und ein Winkel, zeichnen jede Seite vom Ende der vorigen aus. Der Bemaßungsmaßstab der Zeichnung ist für Meter eingestellt.
+Zeichnen Sie dieses Grundstück, in Metern, aus Länge und Richtung seiner Seiten: 40 unter 0°, 30 unter 80°, 35 unter 155° und 25 unter 230°, dann zurück zum Anfang. Messen Sie seine Fläche und seinen Umfang und bemaßen Sie jede Seite und den Winkel an der zweiten Ecke. Mit Polarkoordinaten, also Länge und Winkel, wird jede Seite vom Ende der vorigen aus gezeichnet. Der Bemaßungsmaßstab der Zeichnung ist für Meter eingestellt.
 
 - **Übung:** Fortgeschritten · Bauingenieurwesen · 2D
 - **Befehle:** [`PLINIE`](/docs/commands/pline), [`FLÄCHE`](/docs/commands/area), [`BEMAUSG`](/docs/commands/dimaligned), [`BEMWINKEL`](/docs/commands/dimangular)
@@ -26,15 +26,15 @@ Auf dem Layer Kontur: [`PLINIE`](/docs/commands/pline) von `0,0`, dann jede Seit
 
 <Session name="exercises/plot-of-land/boundary" caption="1. Die Grenze zeichnen" />
 
-### 2. Seine Fläche messen [#area]
+### 2. Die Fläche messen [#area]
 
 [`FLÄCHE`](/docs/commands/area), dann `oBjekt`, und wählen Sie die Grenze: Die Befehlszeile nennt ihre Fläche, in Quadratmetern, und ihren Umfang.
 
-<Session name="exercises/plot-of-land/area" caption="2. Seine Fläche messen" />
+<Session name="exercises/plot-of-land/area" caption="2. Die Fläche messen" />
 
 ### 3. Bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: [`BEMAUSG`](/docs/commands/dimaligned) und die Eingabetaste bei der ersten Eingabeaufforderung: Danach fragt es ein Objekt ab, und ein Klick auf eine Seite bemaßt diese Seite, parallel zu ihr. Platzieren Sie jede außerhalb des Grundstücks. [`BEMWINKEL`](/docs/commands/dimangular) auf die beiden Seiten, die sich in `40,0` treffen, gibt den Winkel zwischen ihnen, 100°.
+Auf dem Layer Bemaßung: [`BEMAUSG`](/docs/commands/dimaligned) und die Eingabetaste bei der ersten Eingabeaufforderung: Danach fragt der Befehl nach einem Objekt, und ein Klick auf eine Seite bemaßt diese Seite, parallel zu ihr. Platzieren Sie jede außerhalb des Grundstücks. [`BEMWINKEL`](/docs/commands/dimangular) auf die beiden Seiten, die sich in `40,0` treffen, liefert den Winkel zwischen ihnen, 100°.
 
 <Session name="exercises/plot-of-land/dimensions" caption="3. Bemaßen" />
 

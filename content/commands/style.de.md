@@ -5,9 +5,9 @@ figure: "Ein Typenschild: STIL, dann TEXT, dessen Stil ? den Stil der Zeichnung 
 sourceHash: "8c15a1a95e66"
 ---
 
-STIL (STYLE) verwaltet die Textstile der Zeichnung: womit ein Text geschrieben wird. Jeder Text, Mehrzeilentext und jedes Attribut hat einen Stil, und neue übernehmen den aktuellen Stil, in einer neuen Zeichnung Standard. STIL von AutoCAD öffnet das Dialogfeld Textstil; MellowCAD hat noch keines, STIL öffnet also die Texttabelle der Palette Stile, in der auch die Bemaßungsstile von <Command id="DIMSTYLE" /> stehen. Eine davor getroffene Auswahl wird verworfen, wie das Dialogfeld sie verwirft, und mit Apostroph innerhalb eines Befehls eingegeben, `'STYLE`, öffnet er sich, ohne diesen Befehl zu beenden.
+STIL (STYLE) verwaltet die Textstile der Zeichnung: womit ein Text geschrieben wird. Jeder Text, Absatztext und jedes Attribut hat einen Stil, und neue übernehmen den aktuellen Stil, in einer neuen Zeichnung Standard. STIL von AutoCAD öffnet das Dialogfeld Textstil; MellowCAD hat noch keines, STIL öffnet also die Texttabelle der Palette Stile, in der auch die Bemaßungsstile von <Command id="DIMSTYLE" /> stehen. Eine davor getroffene Auswahl wird verworfen, wie das Dialogfeld sie verwirft, und mit Apostroph innerhalb eines Befehls eingegeben, `'STYLE`, öffnet er sich, ohne diesen Befehl zu beenden.
 
-Die Tabelle listet die Stile auf, der aktuelle ist markiert. Neu erstellt eine Kopie des gewählten Stils, `style1`, `style2` … benannt, der erste freie Name, und macht sie aktuell. Aktuell setzen macht einen Stil aktuell; sein Name kann neu eingegeben werden, und ein bereits verwendeter Name, in beliebiger Schreibweise, wird abgelehnt, wie AutoCAD ihn ablehnt. Löschen entfernt einen Stil, aber nie Standard, den aktuellen Stil oder einen verwendeten. Höhe gibt einem Stil eine feste Höhe: 0, die Vorgabe, lässt sie frei, sodass <Command id="TEXT" /> jedes Mal nach einer fragt; bei festgelegter Höhe fragt TEXT nicht. Jede Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt. Bei gewählten Texten gibt die Zeile Stil der Palette Eigenschaften ihnen einen anderen Stil, in einem Schritt.
+Die Tabelle listet die Stile auf, der aktuelle ist markiert. Neu erstellt eine Kopie des gewählten Stils, `style1`, `style2` … benannt, der erste freie Name, und macht sie aktuell. Aktuell setzen macht einen Stil aktuell; sein Name kann neu eingegeben werden, und ein bereits verwendeter Name, in beliebiger Schreibweise, wird abgelehnt, wie AutoCAD ihn ablehnt. Löschen entfernt einen Stil, aber nie Standard, den aktuellen Stil oder einen verwendeten. Höhe gibt einem Stil eine feste Höhe: 0, die Vorgabe, lässt sie frei, sodass <Command id="TEXT" /> jedes Mal nach einer fragt; bei festgelegter Höhe fragt TEXT nicht. Jede Änderung ist ein Schritt, den <Command id="U" /> zurücknimmt. Bei gewählten Texten gibt die Zeile Stil der Eigenschaftenpalette ihnen einen anderen Stil, in einem Schritt.
 
 ## Missing
 
@@ -21,7 +21,7 @@ Das Dialogfeld Textstil und seine Vorschau: STIL öffnet stattdessen die Palette
 
 ### Wie ändere ich den Textstil in AutoCAD?
 
-Für neuen Text machen Sie den Stil in der von STIL geöffneten Palette Stile aktuell oder mit der Option <Keyword command="TEXT" id="Style" /> von <Command id="TEXT" />. Für bereits geschriebenen Text wählen Sie ihn und wählen den Stil in der Zeile Stil der Palette Eigenschaften.
+Für neuen Text machen Sie den Stil in der von STIL geöffneten Palette Stile aktuell oder mit der Option <Keyword command="TEXT" id="Style" /> von <Command id="TEXT" />. Für bereits geschriebenen Text wählen Sie ihn und wählen den Stil in der Zeile Stil der Eigenschaftenpalette.
 
 ### Wie ändere ich die Schriftart eines Textstils?
 

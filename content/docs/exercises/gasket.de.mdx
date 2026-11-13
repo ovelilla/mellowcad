@@ -22,7 +22,7 @@ Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn einge
 
 ### 1. Die Kontur zeichnen [#outline]
 
-Machen Sie Kontur im Layer-Steuerelement zum aktuellen Layer. [`RECHTECK`](/docs/commands/rectang) zeichnet die Platte in einem Zug: Wählen Sie `Abrunden` und geben Sie den Radius ein, `10`, dann die erste Ecke, `0,0`, und die andere Ecke, `120,80`, vom ersten Punkt aus gemessen.
+Machen Sie Kontur in der Layer-Steuerung zum aktuellen Layer. [`RECHTECK`](/docs/commands/rectang) zeichnet die Platte in einem Zug: Wählen Sie `Abrunden` und geben Sie den Radius ein, `10`, dann die erste Ecke, `0,0`, und die andere Ecke, `120,80`, vom ersten Punkt aus gemessen.
 
 <Session name="exercises/gasket/outline" caption="1. Die Kontur zeichnen" />
 
@@ -40,13 +40,13 @@ Zeichnen Sie ein Loch, einen Kreis in `12,12` mit einem `Durchmesser` von `10`, 
 
 ### 4. Die Mittellinien zeichnen [#centreLines]
 
-Machen Sie Mittellinien aktuell. Zwei Linien mit [`LINIE`](/docs/commands/line) kreuzen sich im Mittelpunkt der Bohrung und stehen 6 über ihren Rand hinaus: von `60,14`, `0,52` senkrecht; von `34,40`, `52,0` waagerecht. Die Eingabetaste beendet jede.
+Machen Sie Mittellinien aktuell. Zwei Linien mit [`LINIE`](/docs/commands/line) kreuzen sich im Mittelpunkt der Bohrung und ragen 6 über ihren Rand hinaus: von `60,14`, `0,52` senkrecht; von `34,40`, `52,0` waagerecht. Die Eingabetaste beendet jede.
 
 <Session name="exercises/gasket/centreLines" caption="4. Die Mittellinien zeichnen" />
 
 ### 5. Bemaßen [#dimensions]
 
-Machen Sie Bemaßung aktuell. [`BEMLINEAR`](/docs/commands/dimlinear) nimmt zwei Punkte und dann, wohin die Maßlinie kommt: die Länge von `0,10` bis `120,0` weiter, unten platziert; die Höhe rechts; den Lochabstand, 96 und 56. Ein bei den Eingabeaufforderungen eingegebener Punkt berührt kein Objekt, daher wird jede dieser Bemaßungen nicht assoziativ erstellt, und die Befehlszeile sagt es. [`BEMDURCHM`](/docs/commands/dimdiameter) wählt einen Kreis und platziert seinen Durchmesser: den der Bohrung, dann den eines Lochs.
+Machen Sie Bemaßung aktuell. [`BEMLINEAR`](/docs/commands/dimlinear) fragt zwei Punkte ab und dann die Lage der Maßlinie: die Länge von `0,10`, dann `120,0` vom ersten Punkt aus, unten platziert; die Höhe rechts; den Lochabstand, 96 und 56. Ein bei den Eingabeaufforderungen eingegebener Punkt berührt kein Objekt, daher wird jede dieser Bemaßungen nicht assoziativ erstellt, und die Befehlszeile meldet es. [`BEMDURCHM`](/docs/commands/dimdiameter) wählt einen Kreis und platziert seinen Durchmesser: den der Bohrung, dann den eines Lochs.
 
 <Session name="exercises/gasket/dimensions" caption="5. Bemaßen" />
 

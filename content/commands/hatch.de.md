@@ -5,9 +5,9 @@ figure: "Ein Rechteck mit einem Kreis darin, mit ANSI31 von einem Punkt innerhal
 sourceHash: "d3ed16b85a19"
 ---
 
-SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Schritt, den Rückgängig zurücknimmt.
+SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Rückgängig-Schritt.
 
-AutoCADs SCHRAFF legt sein Muster auf der Registerkarte „Schraffurerstellung“ oder in einem Dialog fest, die MellowCAD nicht hat: Hier fragt er in der Befehlszeile das, was <Command id="-HATCH" /> fragt, das Muster unter <Keyword id="Properties" />. Die beiden unterscheiden sich nur bei Esc, das unter <Command id="-HATCH" /> die Flächen verwirft. Jede Schraffur beginnt mit dem Muster, dem Maßstab und dem Winkel, die die letzte erhalten hat: ANGLE, mit Maßstab 1 und Winkel 0, in einer neuen Zeichnung.
+AutoCADs SCHRAFF legt sein Muster auf der Registerkarte „Schraffurerstellung“ oder in einem Dialog fest, die MellowCAD nicht hat: Hier stellt er in der Befehlszeile dieselben Fragen wie <Command id="-HATCH" />, das Muster unter <Keyword id="Properties" />. Die beiden unterscheiden sich nur bei Esc, das unter <Command id="-HATCH" /> die Flächen verwirft. Jede Schraffur beginnt mit dem Muster, dem Maßstab und dem Winkel, die die letzte erhalten hat: ANGLE, mit Maßstab 1 und Winkel 0, in einer neuen Zeichnung.
 
 ## Options
 
@@ -15,11 +15,11 @@ AutoCADs SCHRAFF legt sein Muster auf der Registerkarte „Schraffurerstellung�
 
 Fragt nach dem Namen des Musters, in beliebiger Schreibweise, und bietet das aktuelle an: <Keyword id="Solid" /> füllt die Fläche, und <Keyword id="?" /> listet die Muster mit ihren Beschreibungen auf und kehrt dann zum Punkt zurück. Bei einem Muster fragt er dann nach dem Maßstab, einer Zahl größer als 0 oder zwei gemessenen Punkten, und nach dem Winkel, eingegeben oder durch zwei Punkte. Die nächste Schraffur behält alle drei.
 
-<Session name="hatchPatterns" caption="SOLID und elf Muster aus acadiso.pat, jedes in einem Quadrat von 30 Seitenlänge mit Maßstab 1 schraffiert, AR-CONC und AR-SAND mit 0,08 und 0,1." />
+<Session name="hatchPatterns" caption="SOLID und elf Muster aus acadiso.pat, jedes in einem Quadrat der Seitenlänge 30 mit Maßstab 1 schraffiert, AR-CONC und AR-SAND mit 0,08 und 0,1." />
 
 ### Select objects
 
-Statt eines Punktes innerhalb wählen Sie die Objekte, die die Fläche begrenzen; die Eingabetaste kehrt zum Punkt zurück. Ein Objekt, das keine Fläche schließt, wird ausgelassen; begrenzt keines davon eine Fläche, meldet die Eingabetaste <Message id="unableToHatchBoundary" /> und erzeugt nichts. Eine Region liefert ihren Umriss, ihre Löcher als Inseln.
+Statt eines Punktes innerhalb wählen Sie die Objekte, die die Fläche begrenzen; die Eingabetaste kehrt zum Punkt zurück. Ein Objekt, das keine Fläche schließt, wird ausgelassen; begrenzt keines davon eine Fläche, meldet der Befehl bei der Eingabetaste <Message id="unableToHatchBoundary" /> und erzeugt nichts. Eine Region liefert ihren Umriss, ihre Löcher als Inseln.
 
 ### Undo
 
@@ -33,11 +33,11 @@ Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nich
 
 ### Wie heißt der Befehl HATCH auf Deutsch, und wie lautet sein Alias?
 
-SCHRAFF, englisch HATCH. Die Aliase sind `SCH` und `GS`, dann die Eingabetaste oder die Leertaste; `BH` gibt es hier ebenfalls. Ohne die Registerkarte „Schraffurerstellung“ fragt er in der Befehlszeile, wie es `-SCHRAFF` (<Command id="-HATCH" />) tut. `_HATCH` funktioniert in jeder Sprache von AutoCAD.
+SCHRAFF, englisch HATCH. Die Aliase sind `SCH` und `GS`, dann die Eingabetaste oder die Leertaste; `BH` gibt es hier ebenfalls. Ohne die Registerkarte „Schraffurerstellung“ fragt er in der Befehlszeile, wie `-SCHRAFF` (<Command id="-HATCH" />) tut. `_HATCH` funktioniert in jeder Sprache von AutoCAD.
 
 ### Warum funktioniert die Schraffur nicht?
 
-Meistens, weil die Fläche nicht geschlossen ist: Er meldet <Message id="hatchNoBoundary" />, und die kleinste Lücke genügt, da nichts eine überbrückt. Schließen Sie den Umriss und wählen Sie erneut. Eine Fläche, die eine Ellipse oder ein Spline schließt, wird noch nicht gefunden, und Objekte auf einem ausgeschalteten Layer werden nicht gesehen.
+Meistens, weil die Fläche nicht geschlossen ist: Er meldet <Message id="hatchNoBoundary" />, und die kleinste Lücke genügt, da nichts eine überbrückt. Schließen Sie den Umriss und wählen Sie erneut. Eine Fläche, die eine Ellipse oder ein Spline schließt, wird noch nicht gefunden, und Objekte auf einem ausgeschalteten Layer werden nicht erkannt.
 
 ### Welche Schraffurmuster gibt es, und kann ich weitere herunterladen?
 
@@ -45,7 +45,7 @@ Eine Auswahl aus acadiso.pat, AutoCADs metrischer Musterdatei: SOLID, ANGLE, ANS
 
 ### Wie ändert man den Maßstab einer Schraffur?
 
-Vor der Wahl, unter <Keyword id="Properties" />: Der Maßstab kommt nach dem Namen des Musters. Danach wählen Sie die Schraffur und geben den Maßstab in der Eigenschaftenpalette neu ein, oder Sie übertragen Muster, Maßstab und Winkel einer anderen Schraffur mit <Command id="MATCHPROP" />. Ein so kleiner Maßstab, dass das Muster zu viele Linien bräuchte, meldet <Message id="hatchTooDense" /> und erzeugt keine Schraffur.
+Vor der Wahl, unter <Keyword id="Properties" />: Der Maßstab kommt nach dem Namen des Musters. Danach wählen Sie die Schraffur und geben den Maßstab in der Eigenschaftenpalette neu ein, oder Sie übertragen Muster, Maßstab und Winkel einer anderen Schraffur mit <Command id="MATCHPROP" />. Bei einem so kleinen Maßstab, dass das Muster zu viele Linien bräuchte, meldet der Befehl <Message id="hatchTooDense" /> und erzeugt keine Schraffur.
 
 ### Wie ermittelt man die Fläche einer Schraffur?
 

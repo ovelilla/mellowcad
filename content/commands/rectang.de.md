@@ -5,7 +5,7 @@ figure: "Zwei Rechtecke aus zwei Ecken, das zweite relativ zum ersten eingegeben
 sourceHash: "a5d4e90c06aa"
 ---
 
-RECHTECK (RECTANG) zeichnet ein Rechteck aus zwei gegenüberliegenden Ecken, gewählt oder eingegeben: `0,0` dann `100,50`, relativ zur ersten bei dynamischer Eingabe, ergibt eines von 100 mal 50. Es ist eine geschlossene Polylinie aus vier Scheitelpunkten, auf dem aktuellen Layer erzeugt. Die Optionen der ersten Eingabeaufforderung legen fest, wie die nächsten Rechtecke gezeichnet werden, und jede behält ihren Wert für den Rest der Sitzung: Das nächste RECHTECK nennt die geltenden in seiner ersten Zeile. Seine Breitenoption gibt jeder Seite eine Polylinienbreite. Während Sie die andere Ecke setzen, folgt das Rechteck dem Fadenkreuz; bei eingeschalteter dynamischer Eingabe können Sie seine Länge, Tab und seine Breite eingeben.
+RECHTECK (RECTANG) zeichnet ein Rechteck aus zwei gegenüberliegenden Ecken, gewählt oder eingegeben: `0,0` dann `100,50`, relativ zur ersten bei dynamischer Eingabe, ergibt eines von 100 mal 50. Es ist eine geschlossene Polylinie aus vier Scheitelpunkten, auf dem aktuellen Layer erzeugt. Die Optionen der ersten Eingabeaufforderung legen fest, wie die nächsten Rechtecke gezeichnet werden, und jede behält ihren Wert für den Rest der Sitzung: Das nächste RECHTECK zeigt die geltenden in seiner ersten Zeile. Seine Breitenoption gibt jeder Seite eine Polylinienbreite. Während Sie die andere Ecke setzen, folgt das Rechteck dem Fadenkreuz; bei eingeschalteter dynamischer Eingabe können Sie seine Länge, Tab und seine Breite eingeben.
 
 ## Options
 
@@ -57,7 +57,7 @@ Wählen Sie <Keyword id="Fillet" /> bei der ersten Eingabeaufforderung und geben
 
 ### Warum hat mein Rechteck abgerundete oder abgeschnittene Ecken?
 
-RECHTECK behält Fillet und Chamfer für die Sitzung, ein danach gezeichnetes Rechteck trägt sie also ebenfalls: Seine erste Zeile sagt es. Wählen Sie <Keyword id="Fillet" /> und geben Sie `0` ein, um wieder glatte Ecken zu zeichnen.
+RECHTECK behält Fillet und Chamfer für die Sitzung, ein danach gezeichnetes Rechteck trägt sie also ebenfalls: Seine erste Zeile zeigt es. Wählen Sie <Keyword id="Fillet" /> und geben Sie `0` ein, um wieder glatte Ecken zu zeichnen.
 
 ### Ist ein Rechteck in AutoCAD eine Polylinie?
 

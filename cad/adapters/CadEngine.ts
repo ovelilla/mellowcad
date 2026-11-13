@@ -1246,9 +1246,16 @@ const GLOBAL_CTRL_KEYS = new Set(["s", "o", "9", "0", "1", "l"])
  * the layout: the physical key (`e.code`) decides, as the platform's own
  * shortcuts do. Only under Ctrl — typed text is taken exactly as typed, so
  * LINE typed on an Arabic layout is an unknown command, as in AutoCAD.
+ * Ctrl with Alt is Windows' AltGr, which types (`@` is AltGr+Q in German):
+ * its key is the character, never the physical one.
  */
 function shortcutKey(e: KeyboardEvent): string {
-  if (!e.ctrlKey || e.key.length !== 1 || /^[A-Za-z0-9]$/.test(e.key)) {
+  if (
+    !e.ctrlKey ||
+    e.altKey ||
+    e.key.length !== 1 ||
+    /^[A-Za-z0-9]$/.test(e.key)
+  ) {
     return e.key
   }
   const letter = /^Key([A-Z])$/.exec(e.code)?.[1]

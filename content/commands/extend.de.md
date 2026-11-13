@@ -5,7 +5,7 @@ figure: "Zwei Linien, bis zur Linie auf ihrem Weg verlängert: jede einmal nahe 
 sourceHash: "b2c0044f8e87"
 ---
 
-DEHNEN (EXTEND) verlängert ein Objekt, bis es auf ein anderes trifft: Sie wählen es nahe dem Ende, das wachsen soll, und dieses Ende läuft bis zur nächsten Kante in seinem Weg weiter. Er dehnt Linien, Bögen, elliptische Bögen, offene Polylinien (entlang ihres Endsegments, gerade oder auf seinem Bogen), 3D-Polylinien und offene Splines. Er beginnt im Modus Schnell, wie der von AutoCAD: Jedes Objekt ist eine Grenze. Halten Sie beim Wählen die Umschalttaste gedrückt, stutzt er stattdessen, wie es <Command id="TRIM" /> tut. Jede Wahl ist ein Schritt, den Rückgängig zurücknimmt; die Eingabetaste beendet den Befehl.
+DEHNEN (EXTEND) verlängert ein Objekt, bis es auf ein anderes trifft: Sie wählen es nahe dem Ende, das wachsen soll, und dieses Ende läuft bis zur nächsten Kante in seinem Weg weiter. Er dehnt Linien, Bögen, elliptische Bögen, offene Polylinien (entlang ihres Endsegments, gerade oder auf seinem Bogen), 3D-Polylinien und offene Splines. Er beginnt im Modus Schnell, wie der von AutoCAD: Jedes Objekt ist eine Grenze. Halten Sie beim Wählen die Umschalttaste gedrückt, stutzt er stattdessen, wie es <Command id="TRIM" /> tut. Jede Wahl ist ein Rückgängig-Schritt; die Eingabetaste beendet den Befehl.
 
 ## Options
 

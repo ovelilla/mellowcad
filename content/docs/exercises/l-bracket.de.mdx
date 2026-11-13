@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie diesen Winkel, in Millimetern: 100 lang, mit einem 20 hohen Fuß und einem 30 breiten und 80 hohen Schenkel, die Innenecke auf den Radius 10 gerundet, ein Loch von 8 im Fuß und eines von 10 im Schenkel, jedes in seinem Arm zentriert. Die Kontur ist ein Zug mit [`LINIE`](/docs/commands/line), jeder Punkt eingegeben als der Weg vom letzten, und ihre Bemaßungen beginnen alle an der unteren linken Ecke.
+Zeichnen Sie diesen Winkel, in Millimetern: 100 lang, mit einem 20 hohen Fuß und einem 30 breiten und 80 hohen Schenkel, die Innenecke auf den Radius 10 gerundet, ein Loch von 8 im Fuß und eines von 10 im Schenkel, jedes in seinem Schenkel zentriert. Die Kontur ist ein Zug mit [`LINIE`](/docs/commands/line), jeder Punkt eingegeben als Abstand vom letzten, und ihre Bemaßungen beginnen alle an der unteren linken Ecke.
 
 - **Übung:** Einsteiger · Maschinenbau · 2D
 - **Befehle:** [`LINIE`](/docs/commands/line), [`ABRUNDEN`](/docs/commands/fillet), [`KREIS`](/docs/commands/circle), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMBASISL`](/docs/commands/dimbaseline), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
@@ -40,7 +40,7 @@ Zwei Kreise mit [`KREIS`](/docs/commands/circle), jeder mit seinem `Durchmesser`
 
 ### 4. Bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: [`BEMLINEAR`](/docs/commands/dimlinear) von `0,0` zum Loch des Fußes, `80,10`, unten platziert: 80. [`BEMBASISL`](/docs/commands/dimbaseline) macht von derselben ersten Maßhilfslinie aus weiter: Geben Sie das rechte Ende ein, `#100,0`, wobei # vom Ursprung aus misst, dann zweimal die Eingabetaste, um zu beenden. Dasselbe an der linken Seite, zum oberen Loch und dann zur Oberkante, `#0,80`. [`BEMRADIUS`](/docs/commands/dimradius) auf die Verrundung und [`BEMDURCHM`](/docs/commands/dimdiameter) auf jedes Loch vervollständigen sie.
+Auf dem Layer Bemaßung: [`BEMLINEAR`](/docs/commands/dimlinear) von `0,0` zum Loch des Fußes, `80,10`, unten platziert: 80. [`BEMBASISL`](/docs/commands/dimbaseline) setzt von derselben ersten Maßhilfslinie aus fort: Geben Sie das rechte Ende ein, `#100,0`, wobei `#` vom Ursprung aus misst, dann zweimal die Eingabetaste, um zu beenden. Dasselbe an der linken Seite, zum oberen Loch und dann zur Oberkante, `#0,80`. [`BEMRADIUS`](/docs/commands/dimradius) auf die Verrundung und [`BEMDURCHM`](/docs/commands/dimdiameter) auf jedes Loch runden die Bemaßung ab.
 
 <Session name="exercises/l-bracket/dimensions" caption="4. Bemaßen" />
 

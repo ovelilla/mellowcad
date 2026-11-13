@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie diesen Flansch, in Millimetern: 140 Durchmesser, eine Bohrung von 60 mit einer 16 breiten Passfedernut, deren Oberkante 36 vom Mittelpunkt entfernt ist, acht Löcher von 14 auf einem Teilkreis von 110 und seine Mittellinien. Die Passfedernut ist ein Rechteck, das in die Bohrung gestutzt wird; die Löcher sind ein Kreis und ein polares Muster.
+Zeichnen Sie diesen Flansch, in Millimetern: 140 Durchmesser, eine Bohrung von 60 mit einer 16 breiten Passfedernut, deren Oberkante 36 vom Mittelpunkt entfernt ist, acht Löcher von 14 auf einem Teilkreis von 110 und seine Mittellinien. Die Passfedernut ist ein Rechteck, das in die Bohrung gestutzt wird; die Löcher sind ein Kreis und eine polare Reihe.
 
 - **Übung:** Fortgeschritten · Maschinenbau · 2D
 - **Befehle:** [`KREIS`](/docs/commands/circle), [`RECHTECK`](/docs/commands/rectang), [`STUTZEN`](/docs/commands/trim), [`REIHEKREIS`](/docs/commands/arraypolar), [`LINIE`](/docs/commands/line), [`BEMDURCHM`](/docs/commands/dimdiameter), [`BEMLINEAR`](/docs/commands/dimlinear)
@@ -28,19 +28,19 @@ Auf dem Layer Kontur zwei Kreise in `0,0`, jeder mit seinem `Durchmesser`: `140`
 
 ### 2. Die Passfedernut ausschneiden [#keyway]
 
-[`RECHTECK`](/docs/commands/rectang) von `-8,20` bis `16,16` weiter: Es durchquert die Bohrung. [`STUTZEN`](/docs/commands/trim) schneidet ein Objekt dort, wo die anderen es kreuzen: Wählen Sie den Bogen der Bohrung zwischen den Seiten des Rechtecks, dann die Unterkante des Rechtecks, innerhalb der Bohrung. Übrig bleibt die Passfedernut, mit ihren zwei Seiten und ihrer Oberkante.
+[`RECHTECK`](/docs/commands/rectang) von `-8,20`, die andere Ecke `16,16` vom ersten Punkt aus: Es durchquert die Bohrung. [`STUTZEN`](/docs/commands/trim) schneidet ein Objekt dort, wo die anderen es kreuzen: Wählen Sie den Bogen der Bohrung zwischen den Seiten des Rechtecks, dann die Unterkante des Rechtecks, innerhalb der Bohrung. Übrig bleibt die Passfedernut, mit ihren zwei Seiten und ihrer Oberkante.
 
 <Session name="exercises/flange/keyway" caption="2. Die Passfedernut ausschneiden" />
 
 ### 3. Die Löcher anordnen [#holes]
 
-Ein Loch auf dem Teilkreis: ein Kreis in `55<22.5`, 55 vom Ursprung unter 22,5°, mit einem `Durchmesser` von `14`. [`REIHEKREIS`](/docs/commands/arraypolar): Wählen Sie ihn, drücken Sie die Eingabetaste und geben Sie den Mittelpunkt an, `0,0`; `ASsoziativ` und `Nein` lassen acht getrennte Kreise, die eine Bemaßung wählen kann, und `Objekte`, `8`, verteilt sie auf den ganzen Kreis. Dann, auf dem Layer Mittellinien, der Teilkreis in `0,0`, sein Durchmesser `110`.
+Ein Loch auf dem Teilkreis: ein Kreis in `55<22.5`, 55 vom Ursprung unter 22,5°, mit einem `Durchmesser` von `14`. [`REIHEKREIS`](/docs/commands/arraypolar): Wählen Sie ihn, drücken Sie die Eingabetaste und geben Sie den Mittelpunkt an, `0,0`; `ASsoziativ` und `Nein` ergeben acht getrennte Kreise, die sich einzeln bemaßen lassen, und `Objekte`, `8`, verteilt sie über den ganzen Kreis. Dann, auf dem Layer Mittellinien, der Teilkreis in `0,0`, sein Durchmesser `110`.
 
 <Session name="exercises/flange/holes" caption="3. Die Löcher anordnen" />
 
 ### 4. Die Mittellinien zeichnen [#centreLines]
 
-Weiter auf Mittellinien zwei Linien mit [`LINIE`](/docs/commands/line) durch den Mittelpunkt, 156 lang: von `-78,0`, `156,0` waagerecht; von `0,-78`, `0,156` senkrecht.
+Weiterhin auf dem Layer Mittellinien zwei Linien mit [`LINIE`](/docs/commands/line) durch den Mittelpunkt, 156 lang: von `-78,0`, `156,0` waagerecht; von `0,-78`, `0,156` senkrecht.
 
 <Session name="exercises/flange/centreLines" caption="4. Die Mittellinien zeichnen" />
 

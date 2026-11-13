@@ -20,8 +20,8 @@ Wieder von `0,0`, die linke Seite: `40<150`, `40<90`, `20<330`, `20<270` und `20
 
 ### Die Oberseite zeichnen [#top]
 
-Der Rest beginnt an schon gezeichneten Ecken: Geben Sie `_END` ein, den Objektfang Endpunkt für einen einzelnen Punkt, und wählen Sie die Ecke. Von der oberen rechten Ecke der Vorderseite: `20<150`, `20<90`, `20<150` und `60<210`. Dann zwei Linien von `60<210`, vom Fuß der Stufenhöhe und von ihrer Oberkante.
+Der Rest beginnt an bereits gezeichneten Ecken: Geben Sie `_END` ein, den Objektfang Endpunkt für einen einzelnen Punkt, und wählen Sie die Ecke. Von der oberen rechten Ecke der Vorderseite: `20<150`, `20<90`, `20<150` und `60<210`. Dann zwei Linien von `60<210`, vom Fuß der Stufenhöhe und von ihrer Oberkante.
 
 ### Bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: <Command id="DIMALIGNED" /> entlang der Kanten, jede neben ihrer eigenen platziert: 60 und 40 unten, 40 links hoch, 20 rechts hoch.
+Auf dem Layer Bemaßung: <Command id="DIMALIGNED" /> entlang der Kanten, jede neben ihrer Kante platziert: 60 und 40 unten, 40 links hoch, 20 rechts hoch.

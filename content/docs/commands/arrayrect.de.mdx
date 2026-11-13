@@ -3,10 +3,10 @@ title: "Befehl REIHERECHTECK (ARRAYRECT) in AutoCAD"
 description: "So arbeitet AutoCADs REIHERECHTECK (ARRAYRECT): Spalten, Zeilen und Ebenen, ihre Abstände, assoziativ oder nicht. Gratis im Browser testen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie starte ich eine rechteckige Anordnung?","answer":"Tippen Sie REIHERECHTECK, das keinen Alias hat, oder RH für REIHE und die Eingabetaste bei seiner Frage, da Rechteckig die Vorgabe ist. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Die Anordnung wird sofort gezeichnet, bereit zum Bearbeiten."},{"question":"Wie lege ich den Abstand zwischen Zeilen und Spalten fest?","answer":"Wählen Sie ABstand und tippen Sie den Abstand zwischen den Spalten, dann zwischen den Zeilen; ein negativer geht nach links oder unten. Mit Zelle geben zwei Ecken beide auf einmal an. Oder ziehen Sie die Pfeile an der zweiten Spalte und Zeile."},{"question":"Wie mache ich die Kopien zu einzelnen Objekten?","answer":"Wählen Sie ASsoziativ und antworten Sie Nein, bevor Sie die Eingabetaste drücken: Jede Kopie ist ein eigenes Objekt. Eine assoziative Anordnung lässt sich später mit URSPRUNG in ihre Elemente zerlegen."},{"question":"Wie mache ich eine 3D-Anordnung?","answer":"Wählen Sie Ebenen: Die Zeilen und Spalten werden entlang der Z-Achse des BKS nach oben kopiert, so viele Ebenen, wie Sie angeben, im angegebenen Abstand. ZEilen fragt auch nach einer Höhe, die jede Zeile über die vorige hebt."}]
+faq: [{"question":"Wie starte ich eine rechteckige Anordnung?","answer":"Geben Sie REIHERECHTECK ein (er hat keinen Alias) oder RH für REIHE und drücken Sie bei der Frage nach dem Typ die Eingabetaste, da Rechteckig die Vorgabe ist. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Die Anordnung wird sofort gezeichnet, bereit zum Bearbeiten."},{"question":"Wie lege ich den Abstand zwischen Zeilen und Spalten fest?","answer":"Wählen Sie ABstand und geben Sie den Abstand zwischen den Spalten ein, dann zwischen den Zeilen; ein negativer geht nach links oder unten. Mit Zelle legen zwei Ecken beide auf einmal fest. Oder ziehen Sie die Pfeile an der zweiten Spalte und Zeile."},{"question":"Wie mache ich die Kopien zu einzelnen Objekten?","answer":"Wählen Sie ASsoziativ und antworten Sie Nein, bevor Sie die Eingabetaste drücken: Jede Kopie ist ein eigenes Objekt. Eine assoziative Anordnung lässt sich später mit URSPRUNG in ihre Elemente zerlegen."},{"question":"Wie mache ich eine 3D-Anordnung?","answer":"Wählen Sie Ebenen: Die Zeilen und Spalten werden entlang der Z-Achse des BKS nach oben kopiert, so viele Ebenen, wie Sie angeben, im angegebenen Abstand. ZEilen fragt auch nach einer Höhe, die jede Zeile über die vorige hebt."}]
 ---
 
-REIHERECHTECK (ARRAYRECT) kopiert eine Auswahl in Spalten und Zeilen, auf Wunsch auch in Ebenen, als ein Anordnungsobjekt. Er fragt nach den Objekten, nennt den Typ und ob die Anordnung assoziativ ist, und zeigt sie sofort: 4 Spalten entlang der X-Achse des BKS und 3 Zeilen entlang seiner Y-Achse, anderthalbmal so weit auseinander, wie die Auswahl groß ist. Dann bearbeitet eine Eingabeaufforderung sie live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD: Klicken Sie einen ihrer Pfeile an, dann klicken Sie dorthin, wo er hin soll, oder tippen Sie eine Zahl, um eine Anzahl oder einen Abstand festzulegen. Auch Esc erzeugt dort die Anordnung. Die gewählten Objekte werden ihr erstes Element.
+REIHERECHTECK (ARRAYRECT) kopiert eine Auswahl in Spalten und Zeilen, auf Wunsch auch in Ebenen, als ein Anordnungsobjekt. Er fragt nach den Objekten, meldet den Typ und ob die Anordnung assoziativ ist, und zeigt sie sofort: 4 Spalten entlang der X-Achse des BKS und 3 Zeilen entlang seiner Y-Achse, anderthalbmal so weit auseinander, wie die Auswahl groß ist. Dann bearbeiten Sie sie über eine Eingabeaufforderung live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD: Klicken Sie einen ihrer Pfeile an und dann dorthin, wohin er soll, oder geben Sie eine Zahl ein, um eine Anzahl oder einen Abstand festzulegen. Auch Esc erzeugt dort die Anordnung. Die gewählten Objekte werden ihr erstes Element.
 
 - **Befehl:** `REIHERECHTECK`
 - **Auf Englisch:** `ARRAYRECT`, in jeder Sprache als `_ARRAYRECT` eingegeben
@@ -23,7 +23,7 @@ Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden
 
 ### `ASsoziativ` (`AS`) [#associative]
 
-`Ja`, die Vorgabe, erzeugt ein Anordnungsobjekt: Seine Griffe und die Eigenschaften-Palette ändern es später, und [`URSPRUNG`](/docs/commands/explode) zerlegt es in seine Elemente. `Nein` erzeugt einzelne Kopien neben den gewählten Objekten. Die Antwort bleibt für die Sitzung erhalten, auch für ARRAYPOLAR und ARRAYPATH.
+`Ja`, die Vorgabe, erzeugt ein Anordnungsobjekt: Seine Griffe und die Eigenschaftenpalette ändern es später, und [`URSPRUNG`](/docs/commands/explode) zerlegt es in seine Elemente. `Nein` erzeugt einzelne Kopien neben den gewählten Objekten. Die Antwort bleibt für die Sitzung erhalten, auch für ARRAYPOLAR und ARRAYPATH.
 
 ### `ANzahl` (`AN`) [#count]
 
@@ -51,7 +51,7 @@ Erzeugt die Anordnung und beendet den Befehl, wie es die Eingabetaste tut.
 
 ## Was er noch nicht kann [#missing]
 
-Basispunkt; Gesamt bei den Abständen zwischen Spalten und zwischen Zeilen (Ebenen hat es); Ausdruck, der einen Wert an die Parameter der Zeichnung bindet. ARRAYEDIT und ARRAYCLOSE, die die Quelle einer Anordnung bearbeiten oder ihre Elemente ersetzen. Die Menüs der Griffe der Anordnung (Spaltenanzahl, Gesamter Spaltenabstand, Achsenwinkel…) und Strg, um sie durchzuschalten, sodass sich ein Gesamtabstand oder ein Achsenwinkel nicht über einen Griff festlegen lässt; ein Griff schreibt auch keine Zeilen in die Befehlszeile. Die Werte Basis X und Basis Y der Palette lassen sich nicht neu eintippen.
+Basispunkt; Gesamt bei den Abständen zwischen Spalten und zwischen Zeilen (bei Ebenen ist es vorhanden); Ausdruck, der einen Wert an die Parameter der Zeichnung bindet. ARRAYEDIT und ARRAYCLOSE, die die Quelle einer Anordnung bearbeiten oder ihre Elemente ersetzen. Die Menüs der Griffe der Anordnung (Spaltenanzahl, Gesamter Spaltenabstand, Achsenwinkel…) und Strg, um sie durchzuschalten, sodass sich ein Gesamtabstand oder ein Achsenwinkel nicht über einen Griff festlegen lässt; ein Griff schreibt auch keine Zeilen in die Befehlszeile. Die Werte Basis X und Basis Y der Eigenschaftenpalette lassen sich nicht neu eingeben.
 
 [Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck)
 
@@ -59,11 +59,11 @@ Basispunkt; Gesamt bei den Abständen zwischen Spalten und zwischen Zeilen (Eben
 
 ### Wie starte ich eine rechteckige Anordnung?
 
-Tippen Sie `REIHERECHTECK`, das keinen Alias hat, oder `RH` für [`REIHE`](/docs/commands/array) und die Eingabetaste bei seiner Frage, da Rechteckig die Vorgabe ist. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Die Anordnung wird sofort gezeichnet, bereit zum Bearbeiten.
+Geben Sie `REIHERECHTECK` ein (er hat keinen Alias) oder `RH` für [`REIHE`](/docs/commands/array) und drücken Sie bei der Frage nach dem Typ die Eingabetaste, da Rechteckig die Vorgabe ist. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Die Anordnung wird sofort gezeichnet, bereit zum Bearbeiten.
 
 ### Wie lege ich den Abstand zwischen Zeilen und Spalten fest?
 
-Wählen Sie `ABstand` und tippen Sie den Abstand zwischen den Spalten, dann zwischen den Zeilen; ein negativer geht nach links oder unten. Mit `Zelle` geben zwei Ecken beide auf einmal an. Oder ziehen Sie die Pfeile an der zweiten Spalte und Zeile.
+Wählen Sie `ABstand` und geben Sie den Abstand zwischen den Spalten ein, dann zwischen den Zeilen; ein negativer geht nach links oder unten. Mit `Zelle` legen zwei Ecken beide auf einmal fest. Oder ziehen Sie die Pfeile an der zweiten Spalte und Zeile.
 
 ### Wie mache ich die Kopien zu einzelnen Objekten?
 

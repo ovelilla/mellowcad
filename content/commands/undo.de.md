@@ -57,7 +57,7 @@ Tippen Sie `ZURÜCK` und die Anzahl der Befehle, etwa `5`. Oder wählen Sie <Key
 
 ### Warum funktioniert der Befehl ZURÜCK nicht?
 
-Rückgängig wurde mit Steuern <Keyword id="None" /> ausgeschaltet: Z sagt es, und ZURÜCK fragt nach Steuern. Antworten Sie <Keyword id="All" />, um es wieder einzuschalten. Die Schritte davor sind verloren.
+Rückgängig wurde mit Steuern <Keyword id="None" /> ausgeschaltet: Z meldet es, und ZURÜCK fragt nach Steuern. Antworten Sie <Keyword id="All" />, um es wieder einzuschalten. Die Schritte davor sind verloren.
 
 ### Wie stelle ich wieder her, was ich rückgängig gemacht habe?
 

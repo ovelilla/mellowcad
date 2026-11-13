@@ -7,7 +7,7 @@ sourceHash: "c8ea61c0525d"
 
 SCHNITTMENGE (INTERSECT) behält nur das, was zwei oder mehr 3D-Volumenkörper oder zwei oder mehr Regionen in einer Ebene gemeinsam haben, und löscht den Rest: Ein Quader und eine Kugel, die ihn überlappt, hinterlassen eine Kugel mit ebenen Flächen. Er fragt nach Objekten bis zur Eingabetaste, wie es <Command id="UNION" /> tut, und übergeht, was weder Volumenkörper noch Region ist. Wie in AutoCAD 2027 wird eine vorher gewählte Auswahl verworfen und erneut abgefragt. Volumenkörper und Regionen werden getrennt berechnet, die Regionen Ebene für Ebene.
 
-Das zuerst gewählte Objekt wird zum Ergebnis, mit seinem Layer und seiner Farbe, und die anderen werden gelöscht; bei einem Fenster, Kreuzen oder ALL ist es das neueste davon. Das Ergebnis ist ein zusammengesetzter Volumenkörper, kein Quader oder keine Kugel mehr, ohne Verlauf. Haben die Objekte nichts gemeinsam, meldet er <Message id="nullSolid" /> oder <Message id="nullRegion" /> und löscht sie alle, wie es AutoCAD tut. Der ganze Befehl ist ein Rückgängig-Schritt. Das 3D von MellowCAD ist noch unvollständig: Volumenkörper gibt es, Flächen und Netze nicht.
+Das zuerst gewählte Objekt wird zum Ergebnis, mit seinem Layer und seiner Farbe, und die anderen werden gelöscht; bei einem Fenster, Kreuzen oder ALL ist es das neueste davon. Das Ergebnis ist ein zusammengesetzter Volumenkörper, weder Quader noch Kugel mehr, ohne Verlauf. Haben die Objekte nichts gemeinsam, meldet er <Message id="nullSolid" /> oder <Message id="nullRegion" /> und löscht sie alle, wie es AutoCAD tut. Der ganze Befehl ist ein Rückgängig-Schritt. Das 3D von MellowCAD ist noch unvollständig: Volumenkörper gibt es, Flächen und Netze nicht.
 
 ## Missing
 
@@ -19,7 +19,7 @@ Flächen, die es hier nicht gibt. Gekrümmte Flächen, die sich entlang einer Ku
 
 `SM`, dann die Eingabetaste oder die Leertaste. `IN` des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und `_INTERSECT` in jeder Sprache von AutoCAD.
 
-### Was ist der Unterschied zwischen VEREINIGUNG, DIFFERENZ und SCHNITTMENGE?
+### Was ist der Unterschied zwischen VEREINIG, DIFFERENZ und SCHNITTMENGE?
 
 Alle drei machen aus 3D-Volumenkörpern oder Regionen in einer Ebene ein Objekt. <Command id="UNION" /> behält alles, was irgendeines davon bedeckt, <Command id="SUBTRACT" /> behält die erste Menge abzüglich der zweiten, und SCHNITTMENGE behält nur das, was alle gemeinsam haben. Jeder ist ein Rückgängig-Schritt, und jeder löscht die Objekte, die er aufgebraucht hat.
 

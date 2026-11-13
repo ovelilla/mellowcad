@@ -15,7 +15,7 @@ Die Führungslinie folgt ihrem Text: Verschieben, drehen oder skalieren Sie den 
 
 ### Annotation
 
-Fragt nach dem Text, Zeile für Zeile. Die Eingabetaste bei der ersten Zeile fragt stattdessen nach einer anderen Art von Anmerkung: <Keyword id="Mtext" /> (die Vorgabe) öffnet den Texteditor am Ende der Führungslinie, wo die Eingabetaste eine Zeile umbricht und Strg+Eingabetaste oder ein Klick außerhalb abschließt; <Keyword id="Copy" /> setzt eine Kopie eines mehrzeiligen Textes, eines einzeiligen Textes oder eines Blockverweises, den Sie wählen, an das Ende und lehnt alles andere mit <Message id="leaderCopyRefused" /> ab; <Keyword id="None" /> zeichnet nur die Führungslinie.
+Fragt nach dem Text, Zeile für Zeile. Die Eingabetaste bei der ersten Zeile fragt stattdessen nach einer anderen Art von Anmerkung: <Keyword id="Mtext" /> (die Vorgabe) öffnet den Texteditor am Ende der Führungslinie, wo die Eingabetaste eine Zeile umbricht und Strg+Eingabetaste oder ein Klick außerhalb abschließt; <Keyword id="Copy" /> setzt eine Kopie eines mehrzeiligen Textes, eines einzeiligen Textes oder einer Blockreferenz, die Sie wählen, an das Ende und lehnt alles andere mit <Message id="leaderCopyRefused" /> ab; <Keyword id="None" /> zeichnet nur die Führungslinie.
 
 ### Format
 
@@ -23,7 +23,7 @@ Legt fest, wie die Führungslinie gezeichnet wird, und kehrt dann zu den Punkten
 
 ### Undo
 
-Nimmt den letzten Punkt zurück und fragt erneut danach. Beim zweiten Punkt gibt es nichts zurückzunehmen, und <Message id="invalidInputCapital" /> sagt das.
+Nimmt den letzten Punkt zurück und fragt erneut danach. Beim zweiten Punkt gibt es nichts zurückzunehmen, und <Message id="invalidInputCapital" /> meldet das.
 
 ## Missing
 
@@ -45,7 +45,7 @@ Starten Sie FÜHRUNG, wählen Sie den Punkt, auf den gezeigt werden soll, dann d
 
 ### Wie ändert man die Größe des Pfeils einer Führungslinie?
 
-Wählen Sie die Führungslinie und ändern Sie die Pfeilgröße in der Eigenschaftenpalette, was nur für diese Führungslinie gilt; oder ändern Sie die Pfeilgröße des Bemaßungsstils, der jede Führungslinie dieses Stils folgt. Die Länge des Hakens folgt der Pfeilgröße ebenfalls.
+Wählen Sie die Führungslinie und ändern Sie die Pfeilgröße in der Eigenschaftenpalette, was nur für diese Führungslinie gilt; oder ändern Sie die Pfeilgröße des Bemaßungsstils, dem jede Führungslinie dieses Stils folgt. Die Länge des Hakens folgt der Pfeilgröße ebenfalls.
 
 ### Warum hat die Führungslinie keinen Pfeil?
 

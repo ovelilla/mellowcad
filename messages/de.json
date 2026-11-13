@@ -1,10 +1,10 @@
 {
   "Metadata": {
-    "title": "Kostenloses CAD-Programm online mit AutoCAD-Befehlen — MellowCAD",
+    "title": "Kostenloses CAD-Programm mit AutoCAD-Befehlen — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
-    "description": "Kostenloses CAD-Programm im Browser, ohne Installation: technisches Zeichnen online mit den AutoCAD-Befehlen auf Deutsch und Englisch. 2D und 3D-Volumenkörper, noch unvollständig. Ohne Anmeldung.",
+    "description": "Kostenloses CAD-Programm im Browser, ohne Installation: technisches Zeichnen mit AutoCAD-Befehlen auf Deutsch. 2D und 3D-Volumenkörper, noch unvollständig.",
     "drawTitle": "Zeichnen",
-    "drawDescription": "Kostenloses CAD im Browser-Tab: technisches Zeichnen in 2D und 3D-Volumenkörper, noch unvollständig, mit den Befehlen, Objektfangmodi und der Tastaturbedienung von AutoCAD.",
+    "drawDescription": "Kostenloses CAD im Browser-Tab: 2D-Zeichnen und 3D-Volumenkörper, noch unvollständig, mit den Befehlen, Objektfangmodi und Tasten von AutoCAD.",
     "ogAlt": "Ein in MellowCAD gezeichneter Flansch und sein 3D-Volumenkörper, mit den Worten: CAD online kostenlos, mit AutoCAD-Befehlen. Geben Sie L ein. Drücken Sie die Eingabetaste. Zeichnen Sie.",
     "appDescription": "Kostenloses CAD im Browser mit AutoCAD-Befehlen, Aliasnamen und Objektfangmodi: technisches Zeichnen in 2D und 3D-Volumenkörper, noch unvollständig.",
     "browserRequirements": "Erfordert JavaScript und einen aktuellen Desktop-Browser."
@@ -30,7 +30,7 @@
     "cta": "Zeichnen"
   },
   "Hero": {
-    "pill": "Kostenlos · Ohne Anmeldung · Ohne Installation",
+    "pill": "Kostenlos · Ohne Konto · Ohne Installation",
     "title": "CAD online kostenlos, mit AutoCAD-Befehlen",
     "lead": "<brand>MellowCAD</brand> läuft im Browser, für 2D-Zeichnen und 3D-Volumenkörper, noch unvollständig. Geben Sie {examples} ein: Es fragt in AutoCAD-Reihenfolge, mit denselben Optionsbuchstaben.",
     "alias": "{alias} für {command}",
@@ -70,13 +70,13 @@
   "Commands": {
     "label": "01 · AutoCAD-Befehle",
     "title": "Die AutoCAD-Befehle auf Deutsch und Englisch, mit ihren Aliasnamen.",
-    "lead": "Jeder Befehl hört auf seinen AutoCAD-Namen und Aliasnamen — auf Spanisch, brasilianischem Portugiesisch, Französisch und Italienisch auf die Namen dieser AutoCAD-Versionen — und fragt in derselben Reihenfolge, mit denselben Optionsbuchstaben.",
+    "lead": "Jeder Befehl hört auf seinen AutoCAD-Namen und seine Aliasnamen — auf Deutsch die des deutschen AutoCAD — und fragt in derselben Reihenfolge, mit denselben Optionsbuchstaben.",
     "count": "{commands, number} AutoCAD-Befehle, {aliases, number} Aliasnamen",
     "reference": "Alle Befehle, mit Aliasnamen und Eingabeaufforderungen",
     "boardLabel": "Befehle und ihre Aliasnamen, gruppiert wie in der Multifunktionsleiste",
     "also": "Auch: {aliases}",
     "linked": "Ein unterstrichener Befehl hat eine eigene Seite, mit Eingabeaufforderungen und Optionen.",
-    "languages": "<en>{english}</en> heißt im spanischen AutoCAD <es>{spanish}</es>, auf brasilianischem Portugiesisch <pt>{portuguese}</pt> und im französischen <fr>{french}</fr>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
+    "languages": "<de>{german}</de> heißt im englischen AutoCAD <en>{english}</en>, im spanischen <es>{spanish}</es>, im brasilianisch-portugiesischen <pt>{portuguese}</pt> und im französischen <fr>{french}</fr>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
     "transcriptTitle": "Ein VERSETZ, von Anfang bis Ende",
     "transcriptCaption": "Von der Engine beim Erstellen dieser Seite wiedergegeben. Gleiche Reihenfolge, gleiche Optionsbuchstaben wie AutoCAD."
   },
@@ -213,7 +213,7 @@
     "q10": "Kann es auch 3D?",
     "a10": "Teilweise. Es erstellt 3D-Volumenkörper — Grundkörper, Extrusionen und Rotationen, Vereinigungen, Differenzen, Schnittmengen, Schnitte, abgerundete und gefaste Kanten, bearbeitete Flächen —, misst ihre Masseneigenschaften und zeigt sie im Orbit, im ViewCube und in schattierten visuellen Stilen. Sweeps, Lofts, Netze und Rendern fehlen noch.",
     "q11": "Kann ich damit für meinen AutoCAD-Kurs üben?",
-    "a11": "Ja, für die Befehle: Namen, Aliasnamen, Reihenfolge der Eingabeaufforderungen und Optionen folgen AutoCAD, auf Englisch, Spanisch, brasilianischem Portugiesisch, Französisch oder Italienisch, und <exercises>die Übungen</exercises> geben Ihnen Zeichnungen zum Bearbeiten, jede Schritt für Schritt gelöst. DWG kann es noch nicht öffnen oder speichern: Was Sie als DWG oder PDF abgeben, braucht noch ein anderes Programm."
+    "a11": "Ja, für die Befehle: Namen, Aliasnamen, Reihenfolge der Eingabeaufforderungen und Optionen folgen AutoCAD, auf Englisch, Spanisch, brasilianischem Portugiesisch, Französisch, Italienisch oder Deutsch, und <exercises>die Übungen</exercises> geben Ihnen Zeichnungen zum Bearbeiten, jede Schritt für Schritt gelöst. DWG kann es noch nicht öffnen oder speichern: Was Sie als DWG oder PDF abgeben, braucht noch ein anderes Programm."
   },
   "FinalCta": {
     "title": "Ihr Zeichenbrett ist einen Tastendruck entfernt."
@@ -250,7 +250,7 @@
     "stored2": "Was Sie in einer Übung zeichnen, getrennt von Ihrer Zeichnung gehalten, und wie Sie die Paletten des Editors anordnen. Eine auf der Seite „DXF-Datei online öffnen“ gewählte DXF-Datei wartet im Speicher des Browsers, bis der Editor sie öffnet, und wird dann gelöscht. Sonst nichts, und keine Cookies.",
     "storedNote": "Das Löschen der Daten dieser Website in Ihrem Browser löscht die automatische Sicherung. Drücken Sie im Editor Strg+S, um eine Datei zu behalten.",
     "analyticsTitle": "Was gemessen wird",
-    "analytics1": "Vercel Web Analytics zählt Seitenaufrufe: die Seite, die Seite, von der Sie kamen, Ihr Land und Ihre Stadt sowie Ihren Browser, Ihr System und Ihren Gerätetyp. Es setzt keine Cookies; ein Besuch wird an einem Hash der Anfrage erkannt, der nach 24 Stunden verworfen wird, und die Statistiken sind anonym.",
+    "analytics1": "Vercel Web Analytics zählt Seitenaufrufe: die aufgerufene Seite, die Seite, von der Sie kamen, Ihr Land und Ihre Stadt sowie Ihren Browser, Ihr System und Ihren Gerätetyp. Es setzt keine Cookies; ein Besuch wird an einem Hash der Anfrage erkannt, der nach 24 Stunden verworfen wird, und die Statistiken sind anonym.",
     "analytics2": "Vercel Speed Insights meldet, wie schnell Seiten laden und reagieren, mit der Seite, Ihrem Browser, System, Gerätetyp, der Netzwerkgeschwindigkeit und dem Land — ebenfalls anonym.",
     "analytics3": "Keines von beiden sieht Ihre Zeichnungen, und keines dient der Werbung, dem Profiling oder einer automatisierten Entscheidung.",
     "handledTitle": "Wer es verarbeitet, und warum",
@@ -328,7 +328,7 @@
         "guidesTitle": "Anleitungen Schritt für Schritt",
         "guides": "Die Fertigkeiten der Übungen einzeln: Punkte eingeben, der Grundriss eines Hauses, eine 2D-Zeichnung, zu einem Volumenkörper gemacht. Jede Anleitung zeigt die Zeichnung jedes Schritts und seinen Verlauf.",
         "howTitle": "So funktionieren die Übungen",
-        "how": "Eine Übung öffnet sich im Editor mit ihrer Zeichnung, bemaßt, links vom Ursprung: Zeichnen Sie Ihre ab 0,0, wie es ihre Lösung tut. Was Sie zeichnen, bleibt in diesem Browser für diese Übung allein. Die Zeichnung, an der Sie arbeiteten, bleibt, wie sie war, und der für sich geöffnete Editor bringt sie zurück. Um eine Übung neu zu beginnen, führen Sie NEU aus und öffnen sie dann auf ihrer Seite. Jede Seite druckt für sich, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF.",
+        "how": "Eine Übung öffnet sich im Editor mit ihrer Zeichnung, bemaßt, links vom Ursprung: Zeichnen Sie Ihre ab 0,0, wie es ihre Lösung tut. Was Sie zeichnen, bleibt in diesem Browser für diese Übung allein. Die Zeichnung, an der Sie arbeiteten, bleibt, wie sie war, und der für sich geöffnete Editor bringt sie zurück. Um eine Übung neu zu beginnen, führen Sie NEU aus und öffnen sie dann auf ihrer Seite. Jede Seite lässt sich einzeln drucken, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF.",
         "questions": {
           "where": {
             "question": "Wo finde ich AutoCAD-Übungen zum Üben?",
@@ -344,7 +344,7 @@
           },
           "pdf": {
             "question": "Kann ich die Übungen drucken oder als PDF speichern?",
-            "answer": "Ja. Die Seite einer Übung druckt für sich, dunkle Linien auf Weiß, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF."
+            "answer": "Ja. Die Seite einer Übung lässt sich einzeln drucken, dunkle Linien auf Weiß, erst die Zeichnung, dann die Schritte, und der Druckdialog Ihres Browsers speichert sie als PDF."
           }
         }
       }
@@ -380,7 +380,7 @@
         "commandLine": "Befehlszeile"
       },
       "help": "Öffnet die Hilfe des laufenden Befehls in einem neuen Tab, ohne Befehl diese Dokumentation.",
-      "selectAll": "Wählt jedes Objekt",
+      "selectAll": "Wählt alle Objekte",
       "enter": "Führt das Eingegebene aus. Ohne Eingabe übernimmt sie die Vorgabe der Eingabeaufforderung oder beendet den Befehl, und ohne laufenden Befehl wiederholt sie den letzten.",
       "escape": "Bricht den laufenden Befehl ab; ein erstes Esc löscht das halb Eingegebene.",
       "recall": "Ohne laufenden Befehl holt sie die zuvor eingegebenen Befehle zurück.",
@@ -400,7 +400,7 @@
     "sessions": {
       "firstLine": "Ein Rechteck aus vier Segmenten, Punkt für Punkt eingegeben; der letzte schließt es.",
       "circleDiameter": "Ein Kreis aus Mittelpunkt und Durchmesser, eingegeben, nachdem die Option gewählt ist.",
-      "endpointSnap": "Nahe einer Ecke zeigt der Objektfang seine Markierung und nennt den Punkt, den er nimmt.",
+      "endpointSnap": "Nahe einer Ecke zeigt der Objektfang seine Markierung und nennt den Punkt, den er erfasst.",
       "offsetRectangle": "Ein Rechteck und seine versetzte Kopie, auf der Innenseite gewählt."
     },
     "types": {

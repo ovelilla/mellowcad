@@ -5,9 +5,9 @@ figure: "Ein falsch geschriebenes PALTE auf einem Typenschild, mit TEXTBEARB gew
 sourceHash: "2d0ed6fe5acc"
 ---
 
-TEXTBEARB (TEXTEDIT) bearbeitet Beschriftungsobjekte: Er nennt den aktuellen Bearbeitungsmodus, zunächst Multiple, und fordert Sie auf, eines zu wählen. Ein einzeiliger Text öffnet sich zum Neueingeben an Ort und Stelle, ein mehrzeiliger Text im Editor von <Command id="MTEXT" />, eine Attributdefinition als ihr Tag, ihre Eingabeaufforderung und ihr Vorgabewert. Im Modus Multiple fragt er dann nach dem nächsten Objekt, bis Esc oder die Eingabetaste den Befehl beendet, und der ganze Durchlauf ist ein Schritt, den <Command id="U" /> zurücknimmt. Ein Doppelklick auf einen Text oder eine Attributdefinition führt TEXTBEARB aus, und bei einem mehrzeiligen Text öffnet er den Editor für dieses eine Objekt.
+TEXTBEARB (TEXTEDIT) bearbeitet Beschriftungsobjekte: Er meldet den aktuellen Bearbeitungsmodus, zunächst Multiple, und fordert Sie auf, eines zu wählen. Ein einzeiliger Text öffnet sich zum Neueingeben an Ort und Stelle, ein Absatztext im Editor von <Command id="MTEXT" />, eine Attributdefinition als ihr Tag, ihre Eingabeaufforderung und ihr Vorgabewert. Im Modus Multiple fragt er dann nach dem nächsten Objekt, bis Esc oder die Eingabetaste den Befehl beendet, und der ganze Durchlauf ist ein Schritt, den <Command id="U" /> zurücknimmt. Ein Doppelklick auf einen Text oder eine Attributdefinition führt TEXTBEARB aus, und bei einem Absatztext öffnet er den Editor für dieses eine Objekt.
 
-Esc im Editor eines einzeiligen Textes verwirft diese Bearbeitung und fragt nach dem nächsten Objekt; ein zweites Esc beendet den Befehl. Ein Objekt auf einem gesperrten Layer meldet <Message id="objectOnLockedLayer" /> und fragt erneut, und eine Wahl auf etwas anderem fragt schweigend erneut. Ein vor dem Befehl gewählter Text öffnet sich sofort.
+Esc im Editor eines einzeiligen Textes verwirft diese Bearbeitung und fragt nach dem nächsten Objekt; ein zweites Esc beendet den Befehl. Ein Objekt auf einem gesperrten Layer meldet <Message id="objectOnLockedLayer" /> und fragt erneut, und eine Wahl auf etwas anderem fragt ohne Meldung erneut. Ein vor dem Befehl gewählter Text öffnet sich sofort.
 
 ## Options
 

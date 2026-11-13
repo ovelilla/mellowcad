@@ -15,11 +15,11 @@ Eine Farbnummer von 1 bis 255, ein Name wie `red`, `BYLAYER` oder <Keyword id="T
 
 ### LAyer
 
-Der Name eines Layers, in beliebiger Schreibweise. Ein Name, der kein Layername sein kann, meldet <Message id="invalidLayerName" />, einer, der nicht in der Zeichnung ist, meldet, dass er nicht gefunden wurde; beide fragen erneut. EIGÄNDR legt keine Layer an.
+Der Name eines Layers, in beliebiger Schreibweise. Bei einem Namen, der kein Layername sein kann, meldet der Befehl <Message id="invalidLayerName" />, bei einem, der nicht in der Zeichnung ist, dass er nicht gefunden wurde; beide Male fragt er erneut. EIGÄNDR legt keine Layer an.
 
 ### LType
 
-Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Jeder Linientyp ist hier geladen; ein anderer Name meldet, dass er nicht gefunden wurde, und kehrt zur Eigenschaften-Eingabeaufforderung zurück.
+Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Jeder Linientyp ist hier geladen; bei einem anderen Namen meldet der Befehl, er sei nicht gefunden worden, und kehrt zur Eingabeaufforderung der Eigenschaften zurück.
 
 ### LWeight
 
@@ -31,17 +31,17 @@ Ein Abstand, eingegeben oder durch zwei Punkte gemessen, auch negativ und null. 
 
 ## Missing
 
-ltScale, TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine Echtfarbe, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
+ltScale, TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine True Color, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
 
 ## Questions
 
 ### Gibt es ein Alias für EIGÄNDR (CHPROP) in AutoCAD?
 
-Es hat kein Alias: Geben Sie `EIGÄNDR` ein, oder `_CHPROP` in jeder Sprache von AutoCAD. Die Eingabetaste an der Eingabeaufforderung `Befehl:` wiederholt ihn.
+Er hat kein Alias: Geben Sie `EIGÄNDR` ein, oder `_CHPROP` in jeder Sprache von AutoCAD. Die Eingabetaste an der Eingabeaufforderung `Befehl:` wiederholt ihn.
 
 ### Was ist der Unterschied zwischen EIGÄNDR und EIGENSCHAFTEN?
 
-Sie ändern dieselben Eigenschaften. <Command id="PROPERTIES" /> zeigt sie in einer Palette, auch mit der Geometrie jedes Objekts; EIGÄNDR fragt sie in der Befehlszeile ab, was Ihre Hände auf der Tastatur lässt.
+Sie ändern dieselben Eigenschaften. <Command id="PROPERTIES" /> zeigt sie in einer Palette, auch mit der Geometrie jedes Objekts; EIGÄNDR fragt sie in der Befehlszeile ab, sodass Ihre Hände auf der Tastatur bleiben.
 
 ### Wie ändert man die Farbe von Objekten in der Befehlszeile?
 

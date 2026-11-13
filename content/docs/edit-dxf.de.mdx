@@ -8,13 +8,13 @@ faq:
   - question: "Wie bearbeite ich eine DXF-Datei online?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: Sie öffnet sich im Editor von MellowCAD, in Ihrem Browser. Ändern Sie sie mit den Befehlen von AutoCAD, dann speichert SICHALS (Strg+Umschalt+S) oder DXFOUT sie wieder als DXF-Datei."
   - question: "Ist es kostenlos? Brauche ich ein Konto?"
-    answer: "Es ist kostenlos, ohne Konto und ohne etwas zu installieren. Die Datei wird auf Ihrem Computer gelesen und nie hochgeladen."
+    answer: "Es ist kostenlos, ohne Konto und ohne Installation. Die Datei wird auf Ihrem Computer gelesen und nie hochgeladen."
   - question: "In welchen DXF-Versionen kann ich speichern?"
     answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 und 2000, in Text (ASCII) oder binär. Noch nicht R12, und nicht DWG."
   - question: "Öffnet AutoCAD das DXF, das ich speichere?"
     answer: "Ja. Jede Art von Objekt, die MellowCAD schreibt, in jeder Version, als Text und binär, wurde von AutoCAD 2027 geöffnet, ohne dass sein AUDIT einen Fehler fand."
   - question: "Geht beim Speichern etwas verloren?"
-    answer: "Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Tabellen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile listet sie auf. Behalten Sie Ihre Originaldatei."
+    answer: "Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Tabellen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei."
   - question: "Kann ich eine neue DXF-Datei von Grund auf erstellen?"
     answer: "Ja. Öffnen Sie den Editor, zeichnen Sie und speichern Sie mit SICHALS, indem Sie einen DXF-Dateityp wählen."
 ---
@@ -31,11 +31,11 @@ Wählen Sie oben ein DXF aus oder ziehen Sie es dorthin, dann öffnet es sich im
 - **Korrigieren Sie Texte und Layer** mit <Command id="TEXTEDIT" />, <Command id="LAYER" />, <Command id="PROPERTIES" /> und <Command id="MATCHPROP" />.
 - **Messen** Sie sie mit <Command id="DIST" /> und <Command id="AREA" />.
 
-[Was sich öffnet und was draußen bleibt](/docs/open-dxf#opens) steht auf der Seite zum Öffnen eines DXF. Bei der Arbeit wird die Zeichnung in diesem Browser gespeichert.
+[Was sich öffnet und was ausgelassen wird](/docs/open-dxf#opens) steht auf der Seite zum Öffnen eines DXF. Bei der Arbeit wird die Zeichnung in diesem Browser gespeichert.
 
 ## Als DXF speichern [#save]
 
-<Command id="SAVEAS" /> (`Strg+Umschalt+S`), <Command id="SAVE" /> und <Command id="DXFOUT" /> öffnen „Zeichnung speichern unter“, wie in AutoCAD: einen Dateinamen und einen Dateityp unter den DXF von AutoCAD 2018, 2013, 2010, 2007, 2004 und 2000 (<Command id="DXFOUT" /> öffnet sich auf DXF von AutoCAD 2018). Extras ▸ Optionen… öffnet die DXF-Optionen von „Optionen für Speichern als“:
+<Command id="SAVEAS" /> (`Strg+Umschalt+S`), <Command id="SAVE" /> und <Command id="DXFOUT" /> öffnen „Zeichnung speichern unter“, wie in AutoCAD: einen Dateinamen und einen Dateityp unter den DXF-Typen von AutoCAD 2018, 2013, 2010, 2007, 2004 und 2000 (<Command id="DXFOUT" /> schlägt DXF von AutoCAD 2018 vor). Extras ▸ Optionen… öffnet die DXF-Optionen von „Optionen für Speichern als“:
 
 - **Format**: ASCII, der Text, den die meisten Programme lesen, oder BINÄR.
 - **Objekte auswählen**: Nach dem Schließen des Dialogfelds fordert der Befehl Sie auf, Objekte auszuwählen, und die Datei enthält nur diese.
@@ -45,16 +45,16 @@ Die Datei wird heruntergeladen, wie alles, was hier gespeichert wird ([das Speic
 
 ## Was das DXF enthält [#holds]
 
-Jedes Objekt, das MellowCAD hat, geschrieben, wie AutoCAD es schreibt: Linien, Bögen, Kreise, Ellipsen, Polylinien mit ihren Breiten und Kurvenanpassungen, 3D-Polylinien, Splines, einzeiliger und mehrzeiliger Text, Blöcke mit ihren Attributen, Bemaßungen, Schraffuren mit ihrem Muster, Punkte, 2D-Volumenkörper und Anordnungen als Block ihrer Elemente. Dazu die Layer (ein, aus, gesperrt) mit Farbe, Linientyp und Linienstärke, die Text- und Bemaßungsstile, die Blöcke sowie die Einheiten und Einstellungen der Zeichnung. Text behält seine Zeichen: bis 2004 in der Windows-Codepage, die AutoCAD verwendet, mit einer Escape-Folge für den Rest, und ab 2007 in UTF-8.
+MellowCAD schreibt jedes seiner Objekte so, wie AutoCAD es schreibt: Linien, Bögen, Kreise, Ellipsen, Polylinien mit ihren Breiten und Kurvenanpassungen, 3D-Polylinien, Splines, einzeiliger und mehrzeiliger Text, Blöcke mit ihren Attributen, Bemaßungen, Schraffuren mit ihrem Muster, Punkte, 2D-Volumenkörper und Reihen als Block ihrer Elemente. Dazu die Layer (ein, aus, gesperrt) mit Farbe, Linientyp und Linienstärke, die Text- und Bemaßungsstile, die Blöcke sowie die Einheiten und Einstellungen der Zeichnung. Text behält seine Zeichen: bis 2004 in der Windows-Codepage, die AutoCAD verwendet, mit einer Escape-Folge für den Rest, und ab 2007 in UTF-8.
 
 ## Was nicht zurückkommt [#lost]
 
 - **Was sich nicht geöffnet hat, wird nicht gespeichert.** Wofür MellowCAD noch kein Objekt hat — Multi-Führungslinien, Tabellen, externe Referenzen und [der Rest dieser Liste](/docs/open-dxf#left-out) — wird beim Öffnen der Datei in der Befehlszeile gezählt und steht nicht in der Datei, die Sie speichern. Behalten Sie das Original.
-- **3D-Volumenkörper und Regionen werden nicht geschrieben**: Die Befehlszeile nennt, wie viele draußen geblieben sind.
-- Die eigenen Stilüberschreibungen einer Bemaßung und die Parameter einer Anordnung werden nicht geschrieben: AutoCAD öffnet die Bemaßung mit den Einstellungen ihres Stils und die Anordnung als Block ihrer Elemente.
-- Es gibt keine Miniaturvoransicht, noch keinen DXF-Typ AutoCAD R12/LT2 und kein DWG.
+- **3D-Volumenkörper und Regionen werden nicht geschrieben**: Die Befehlszeile nennt, wie viele ausgelassen wurden.
+- Die eigenen Stilüberschreibungen einer Bemaßung und die Parameter einer Reihe werden nicht geschrieben: AutoCAD öffnet die Bemaßung mit den Einstellungen ihres Stils und die Reihe als Block ihrer Elemente.
+- Es gibt keine Miniaturvorschau, noch keinen DXF-Typ AutoCAD R12/LT2 und keine DWG-Dateien.
 
-## Ein DXF von Grund auf beginnen [#new]
+## Ein DXF von Grund auf neu erstellen [#new]
 
 Um ein DXF zu erstellen, ohne eines als Ausgangspunkt zu haben, [öffnen Sie den Editor](/de/draw), zeichnen Sie es und speichern Sie es mit <Command id="SAVEAS" /> als DXF-Dateityp. [Erste Schritte](/docs/getting-started) ist der Einstieg.
 
@@ -66,7 +66,7 @@ Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: Sie öffn
 
 ### Ist es kostenlos? Brauche ich ein Konto? [#free]
 
-Es ist kostenlos, ohne Konto und ohne etwas zu installieren. Die Datei wird auf Ihrem Computer gelesen und nie hochgeladen.
+Es ist kostenlos, ohne Konto und ohne Installation. Die Datei wird auf Ihrem Computer gelesen und nie hochgeladen.
 
 ### In welchen DXF-Versionen kann ich speichern? [#versions]
 
@@ -78,7 +78,7 @@ Ja. Jede Art von Objekt, die MellowCAD schreibt, in jeder Version, als Text und 
 
 ### Geht beim Speichern etwas verloren? [#lost-on-save]
 
-Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Tabellen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile listet sie auf. Behalten Sie Ihre Originaldatei.
+Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Tabellen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei.
 
 ### Kann ich eine neue DXF-Datei von Grund auf erstellen? [#from-scratch]
 

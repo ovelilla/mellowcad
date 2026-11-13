@@ -5,7 +5,7 @@ figure: "Drei Bögen: durch drei Punkte, von einem Start um einen Mittelpunkt zu
 sourceHash: "af9b22e35456"
 ---
 
-BOGEN (ARC) zeichnet standardmäßig einen Bogen durch drei Punkte: seinen Start, einen Punkt, durch den er läuft, und sein Ende. Oder er zeichnet einen um einen Mittelpunkt, von einem Startpunkt zu einem Ende, so wie die Schaltflächen Start, Mittelpunkt, Ende und Mittelpunkt, Start, Ende des Menübands ihn ausführen. Wie in AutoCAD läuft ein durch seinen Mittelpunkt gegebener Bogen gegen den Uhrzeigersinn von seinem Start, und das Ende legt nur fest, wo er aufhört: Es muss nicht auf dem Bogen liegen. Während Sie die Punkte setzen, folgt der Bogen dem Fadenkreuz, mit einer bernsteinfarbenen gestrichelten Linie vom Start oder vom Mittelpunkt. Der Bogen liegt in der Ebene seines ersten Punkts. Ein Bogen, der sich nicht erzeugen lässt, drei Punkte auf einer Linie oder ein Ende auf dem Start, meldet <Message id="invalid" /> und zeichnet nichts.
+BOGEN (ARC) zeichnet standardmäßig einen Bogen durch drei Punkte: seinen Start, einen Punkt, durch den er läuft, und sein Ende. Oder er zeichnet ihn um einen Mittelpunkt, von einem Startpunkt zu einem Ende, so wie die Schaltflächen Start, Mittelpunkt, Ende und Mittelpunkt, Start, Ende des Menübands ihn ausführen. Wie in AutoCAD läuft ein durch seinen Mittelpunkt gegebener Bogen gegen den Uhrzeigersinn von seinem Start, und das Ende legt nur fest, wo er aufhört: Es muss nicht auf dem Bogen liegen. Während Sie die Punkte setzen, folgt der Bogen dem Fadenkreuz, mit einer bernsteinfarbenen gestrichelten Linie vom Start oder vom Mittelpunkt. Der Bogen liegt in der Ebene seines ersten Punkts. Lässt sich ein Bogen nicht erzeugen (drei Punkte auf einer Linie oder ein Ende auf dem Start), meldet BOGEN <Message id="invalid" /> und zeichnet nichts.
 
 ## Options
 
@@ -15,7 +15,7 @@ Bei der ersten Eingabeaufforderung: Geben Sie zuerst den Mittelpunkt an, dann de
 
 ## Missing
 
-Die Optionen, die einen Bogen durch seinen Winkel, seine Sehnenlänge, eine Richtung oder einen Radius statt eines Endpunkts abschließen, und Endpunkt beim zweiten Punkt, der zu ihnen führt; auch die Schaltflächen des Menübands für diese Wege fehlen. Fortsetzen: Die Eingabetaste bei der ersten Eingabeaufforderung, die in AutoCAD einen Bogen tangential zur letzten Linie oder zum letzten Bogen zeichnet, beendet BOGEN hier. Das Feld für den eingeschlossenen Winkel, das die dynamische Eingabe am Ende eines Mittelpunktmodus zeigt.
+Die Optionen, die einen Bogen durch seinen Winkel, seine Sehnenlänge, eine Richtung oder einen Radius statt eines Endpunkts abschließen, und Endpunkt beim zweiten Punkt, die zu ihnen führt; auch die Schaltflächen des Menübands für diese Wege fehlen. Fortsetzen: Die Eingabetaste bei der ersten Eingabeaufforderung, die in AutoCAD einen Bogen tangential zur letzten Linie oder zum letzten Bogen zeichnet, beendet BOGEN hier. Das Feld für den eingeschlossenen Winkel, das die dynamische Eingabe am Ende einer Mittelpunkt-Variante zeigt.
 
 ## Questions
 

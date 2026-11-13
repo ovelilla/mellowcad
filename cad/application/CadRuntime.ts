@@ -7378,6 +7378,24 @@ export class CadRuntime extends Observable {
     if (!e.ctrlKey && !e.altKey && this.dynamicOptionKey(e.key)) return true
 
     const box = this.typingField()
+    // WHY: Windows sends AltGr as Ctrl+Alt, so the `@` of `@10,0` arrives with
+    // both held on a German, French or Spanish keyboard (AltGr+Q, +0, +2), as
+    // do `{ [ \ | ~`: such a character is text, not a shortcut. A latin
+    // letter or digit with Ctrl+Alt is a chord on a layout without AltGr.
+    if (
+      e.ctrlKey &&
+      e.altKey &&
+      e.key.length === 1 &&
+      !/^[A-Za-z0-9 ]$/.test(e.key)
+    ) {
+      if (box !== null) {
+        this.setDynamicInputText(this.dynamicInput.getText(box) + e.key, box)
+      } else {
+        this.commandLine.appendChar(e.key)
+        this.invalidateState()
+      }
+      return true
+    }
     // WHY: with a value box up, what is typed on the drawing goes into it, as
     // AutoCAD's dynamic input takes the keyboard wherever the cursor is. The
     // box takes focus back only after the next render, and a first key that

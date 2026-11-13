@@ -15,7 +15,7 @@ Bei der Eingabeaufforderung des Basispunkts gewählt, oder dort mit der Eingabet
 
 ## Missing
 
-Zwei der Auswahlmodi von AutoCAD bei der Objekt-Eingabeaufforderung, Gruppe und Mehrfach, und das Wählen von Flächen, Kanten oder Scheitelpunkten eines Volumenkörpers mit Strg, um ihn umzuformen. Solange die Auswahl dem Fadenkreuz folgt, trägt sie die Farbe jedes Objekts, aber nicht seinen Linientyp oder seine Linienstärke, und alle Objekte eines Blockverweises tragen die Farbe des Verweises.
+Zwei der Auswahlmodi von AutoCAD bei der Objekt-Eingabeaufforderung, Gruppe und Mehrfach, und das Wählen von Flächen, Kanten oder Scheitelpunkten eines Volumenkörpers mit Strg, um ihn umzuformen. Solange die Auswahl dem Fadenkreuz folgt, trägt sie die Farbe jedes Objekts, aber nicht seinen Linientyp oder seine Linienstärke, und alle Objekte eines Blockreferenz tragen die Farbe des Verweises.
 
 ## Questions
 

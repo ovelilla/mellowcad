@@ -8,7 +8,7 @@ sourceHash: "7ec7c0eb9883"
 
 BEMPLATZ (DIMSPACE) passt den Abstand zwischen parallelen linearen und ausgerichteten Bemaßungen an. Sie wählen die Basisbemaßung, die bleibt, wo sie ist, dann die Bemaßungen, deren Abstand angepasst wird; die Eingabetaste beendet die Auswahl und fragt nach dem Abstand. Die Linie jeder Bemaßung wird dann verschoben, von der Basis weg in der Reihenfolge, in der sie liegen, in diesem Abstand von der davor. Ein Abstand von 0 richtet alle auf der Linie der Basis aus: Eine Kette, die so versetzt ist, wie sie gezeichnet wurde, liest sich dann wie eine. Seine einzige Änderung ist die Lage der Maßlinien, in einem Schritt, den <Command id="U" /> zurücknimmt.
 
-Die Basis wird gewählt oder als Punkt eingegeben oder mit `Last` genommen; eine, die keine Bemaßung ist, ergibt <Message id="selectedObjectNotDimension" />, und es wird erneut gefragt. Eine vor dem Befehl gewählte Menge ist die Menge, deren Abstand angepasst wird. Eine Bemaßung in einem Winkel zur Basis wird gezählt und bleibt, wo sie ist, und ein negativer Abstand wird mit <Message id="negativeSpacing" /> abgelehnt.
+Die Basis wird gewählt, als Punkt eingegeben oder mit `Last` übernommen; eine, die keine Bemaßung ist, ergibt <Message id="selectedObjectNotDimension" />, und es wird erneut gefragt. Eine vor dem Befehl gewählte Menge wird als die Menge übernommen, deren Abstand angepasst wird. Eine Bemaßung in einem Winkel zur Basis wird gezählt und bleibt, wo sie ist, und ein negativer Abstand wird mit <Message id="negativeSpacing" /> abgelehnt.
 
 ## Options
 
@@ -24,7 +24,7 @@ Winkelbemaßungen, deren Abstand BEMPLATZ noch nicht anpasst. AutoCAD verschiebt
 
 ### Wie richte ich Bemaßungen in AutoCAD aus?
 
-Starten Sie BEMPLATZ, wählen Sie die Bemaßung, an der sich die anderen ausrichten sollen, wählen Sie sie aus, drücken Sie die Eingabetaste und geben Sie `0` ein: Jede Maßlinie wandert auf die der Basis.
+Starten Sie BEMPLATZ, wählen Sie die Bemaßung, an der sich die anderen ausrichten sollen, dann die anderen, drücken Sie die Eingabetaste und geben Sie `0` ein: Jede Maßlinie wandert auf die der Basis.
 
 ### Wie erzeuge ich gleiche Abstände zwischen Bemaßungen?
 
@@ -36,4 +36,4 @@ Starten Sie BEMPLATZ, wählen Sie die Bemaßung nahe dem Objekt als Basis, wähl
 
 ### Warum verschiebt BEMPLATZ eine Bemaßung nicht?
 
-Es ordnet nur Bemaßungen parallel zur Basis an: Eine in einem anderen Winkel wird gezählt und bleibt, wo sie ist. Winkelbemaßungen werden noch nicht angeordnet.
+Er ordnet nur Bemaßungen parallel zur Basis an: Eine in einem anderen Winkel wird gezählt und bleibt, wo sie ist. Winkelbemaßungen werden noch nicht angeordnet.

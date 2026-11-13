@@ -5,7 +5,7 @@ figure: "Ein Quader aus Südosten gesehen: ABRUNDKANTE mit einem Radius von 8 ru
 sourceHash: "403a055efb24"
 ---
 
-ABRUNDKANTE (FILLETEDGE) rundet die Kanten eines 3D-Volumenkörpers ab. Der Befehl nennt den aktuellen Radius und fragt dann bis zur Eingabetaste nach Kanten: Ein Klick nimmt die Kante unter dem Cursor, die beim Überfahren hervorgehoben wird, und ein eingegebener Punkt nimmt die Kante, die durch ihn verläuft. Während Kanten gewählt werden, wird der Volumenkörper so gezeichnet, wie er wird, die Verrundungen an Ort und Stelle. Die Eingabetaste zählt die Kanten und bittet Sie, zur Annahme erneut die Eingabetaste zu drücken oder den Radius zu ändern; diese Eingabe erzeugt die Verrundungen. Nur Kanten eines Volumenkörpers: Die eines anderen ergeben <Message id="filletMultipleBodies" />, eine zweimal gewählte <Message id="edgeAlreadyPicked" />.
+ABRUNDKANTE (FILLETEDGE) rundet die Kanten eines 3D-Volumenkörpers ab. Der Befehl meldet den aktuellen Radius und fragt dann bis zur Eingabetaste nach Kanten: Ein Klick nimmt die Kante unter dem Cursor, die beim Überfahren hervorgehoben wird, und ein eingegebener Punkt nimmt die Kante, die durch ihn verläuft. Während Kanten gewählt werden, wird der Volumenkörper so gezeichnet, wie er wird, die Verrundungen an Ort und Stelle. Die Eingabetaste zählt die Kanten und bittet Sie, zur Annahme erneut die Eingabetaste zu drücken oder den Radius zu ändern; diese Eingabe erzeugt die Verrundungen. Nur Kanten eines Volumenkörpers: Die eines anderen ergeben <Message id="filletMultipleBodies" />, eine zweimal gewählte <Message id="edgeAlreadyPicked" />.
 
 Eine gerade Kante zwischen zwei ebenen Flächen wird zu einem Viertel eines Zylinders, die runde Kante eines Lochs oder eines Rands zu einem Viertel eines Torus; Verrundungen, die an einer Ecke zusammentreffen, werden verbunden, drei davon durch ein Stück einer Kugel. Der Radius wird in der Zeichnung gespeichert und beim nächsten Mal wieder angeboten. Der Volumenkörper behält seinen Layer und seine Eigenschaften, verliert aber, woraus er entstand: Ein Quader ist kein Quader mehr. Der ganze Befehl ist ein Rückgängig-Schritt. Das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig.
 
@@ -39,7 +39,7 @@ Wählen Sie <Keyword id="Loop" /> und eine Kante der Fläche, dann <Keyword id="
 
 ### Warum funktioniert ABRUNDEN (FILLET) nicht an einem 3D-Volumenkörper?
 
-<Command id="FILLET" /> von AutoCAD rundet auch die Kante eines Volumenkörpers ab, das von MellowCAD aber noch nicht: Verwenden Sie ABRUNDKANTE und <Command id="CHAMFEREDGE" /> für eine Fase.
+<Command id="FILLET" /> von AutoCAD rundet auch die Kante eines Volumenkörpers ab, das von MellowCAD aber noch nicht: Verwenden Sie ABRUNDKANTE; für eine Fase <Command id="CHAMFEREDGE" />.
 
 ### Wie ändere ich den Verrundungsradius?
 

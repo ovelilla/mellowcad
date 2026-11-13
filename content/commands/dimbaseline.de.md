@@ -5,7 +5,7 @@ figure: "Ein gestuftes Profil, 30 von seiner linken Kante bemaßt, dann 70 und 1
 sourceHash: "cd7902f90b59"
 ---
 
-BEMBASISL (DIMBASELINE) zeichnet Bemaßungen, die alle von einer Maßhilfslinie aus messen, der Basis: Jede verläuft von der ersten Maßhilfslinie der letzten Bemaßung zum nächsten Punkt, den Sie angeben, ihre Maßlinie einen Schritt weiter außen. Er beginnt bei der zuletzt erzeugten linearen oder ausgerichteten Bemaßung, seit die Zeichnung geöffnet wurde, folgt also meist auf <Command id="DIMLINEAR" /> oder <Command id="DIMALIGNED" />; ohne eine fragt er, von welcher er ausgehen soll. Die Befehlszeile nennt jedes Maß, sobald es erzeugt ist. Die Eingabetaste bei der Eingabeaufforderung des Ursprungs wählt <Keyword id="Select" />, und die Eingabetaste dort beendet den Befehl, wie Esc.
+BEMBASISL (DIMBASELINE) zeichnet Bemaßungen, die alle von einer Maßhilfslinie aus messen, der Basis: Jede verläuft von der ersten Maßhilfslinie der letzten Bemaßung zum nächsten Punkt, den Sie angeben, ihre Maßlinie einen Schritt weiter außen. Er beginnt bei der zuletzt erzeugten linearen oder ausgerichteten Bemaßung, seit die Zeichnung geöffnet wurde, folgt also meist auf <Command id="DIMLINEAR" /> oder <Command id="DIMALIGNED" />; ohne eine fragt er, von welcher er ausgehen soll. Die Befehlszeile meldet jedes Maß, sobald es erzeugt ist. Die Eingabetaste bei der Eingabeaufforderung des Ursprungs wählt <Keyword id="Select" />, und die Eingabetaste dort beendet den Befehl, wie Esc.
 
 Der Schritt ist der Basislinienabstand des aktuellen Bemaßungsstils, in ISO-25 3,75, mal die Gesamtskalierung der Basis. Wie in AutoCAD misst jede neue Bemaßung entlang der Richtung ihrer Basis und übernimmt den Bemaßungsstil und den Layer der Basis, mit der aktuellen Farbe, dem aktuellen Linientyp und der aktuellen Linienstärke.
 
@@ -17,7 +17,7 @@ Fragt nach der Basisbemaßung: Wählen Sie eine lineare oder ausgerichtete, nahe
 
 ### Undo
 
-Nimmt die zuletzt erzeugte Bemaßung zurück und macht bei der vorherigen weiter, so oft, wie es welche gibt. Ist keine mehr übrig, lautet seine Antwort <Message id="commandCompletelyUndone" />, und die Eingabeaufforderung bleibt.
+Nimmt die zuletzt erzeugte Bemaßung zurück und macht bei der vorherigen weiter, so oft, wie es welche gibt. Ist keine mehr übrig, lautet die Meldung <Message id="commandCompletelyUndone" />, und die Eingabeaufforderung bleibt.
 
 ## Missing
 

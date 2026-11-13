@@ -7,7 +7,7 @@ sourceHash: "06fba2eeb7be"
 
 KEIL (WEDGE) zeichnet einen 3D-Volumenkörper in Keilform: einen Quader, dessen Oberseite von einem Ende zum anderen abfällt. Der Befehl fragt, was <Command id="BOX" /> fragt: die erste Ecke, die andere Ecke, dann die Höhe. Das hohe Ende liegt an der ersten Ecke, und die Schräge fällt entlang der X-Achse des BKS zur Seite der anderen Ecke ab; eine Ecke bei kleinerem X dreht ihn um. Die Höhe wächst entlang der Z-Achse des BKS, eine negative geht nach unten. Länge, Breite und Höhe sind die Vorgaben von <Command id="BOX" />, die die Eingabetaste nimmt. Der Keil liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
 
-<Command id="LIST" /> zeigt seine Position, Länge, Breite, Höhe und Drehung, und in der Palette Eigenschaften können Sie sie eingeben. Seine Griffe sind die von <Command id="BOX" />. Er ist ein 3D-Volumenkörper für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest des 3D von MellowCAD, das nur aus Volumenkörpern besteht und noch unvollständig ist; <Command id="EXPLODE" /> macht daraus eine Region je Fläche.
+<Command id="LIST" /> zeigt seine Position, Länge, Breite, Höhe und Drehung, und in der Eigenschaftenpalette können Sie sie eingeben. Seine Griffe sind die von <Command id="BOX" />. Er ist ein 3D-Volumenkörper für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest des 3D von MellowCAD, das nur aus Volumenkörpern besteht und noch unvollständig ist; <Command id="EXPLODE" /> macht daraus eine Region je Fläche.
 
 ## Options
 

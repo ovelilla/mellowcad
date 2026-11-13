@@ -342,6 +342,22 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, page.search, "ئ").defaultPrevented).toBe(false)
   })
 
+  // Windows sends AltGr as Ctrl+Alt: `@` on a German keyboard is AltGr+Q,
+  // and it is the character typed, never the physical key's Q.
+  it("types an AltGr character on the drawing, never its physical key", () => {
+    const engine = editor()
+    const altGr = dispatch(page.document, "keydown", page.canvas, {
+      key: "@",
+      code: "KeyQ",
+      ctrlKey: true,
+      shiftKey: false,
+      altKey: true,
+    })
+
+    expect(altGr.defaultPrevented).toBe(true)
+    expect(engine.getState().commandLine.buffer).toBe("@")
+  })
+
   // The lasso's Space arrives while the button is held, at the canvas the
   // press focused (desktop erase/d04).
   it("hands the runtime a Space pressed while a lasso is dragged", () => {

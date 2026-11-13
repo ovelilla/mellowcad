@@ -7,7 +7,7 @@ model: "Die Riemenscheibe als Volumenkörper, von Südosten gesehen im visuellen
 sourceHash: "f9c2a81b39fe"
 ---
 
-Modellieren Sie diese Riemenscheibe, indem Sie ihren halben Schnitt um ihre Achse drehen, in Millimetern: eine Bohrung von 20, eine 30 lange Nabe mit 40 Durchmesser, eine 10 dicke Scheibe und ein 24 breiter Kranz von 90 bis 110 Durchmesser, auf der Nabe zentriert. Der Schnitt wird als Abstände von der Achse gezeichnet, die entlang der Y-Achse verläuft, daher wird jeder Durchmesser als seine Hälfte gezeichnet.
+Modellieren Sie diese Riemenscheibe, indem Sie ihren halben Schnitt um ihre Achse drehen, in Millimetern: eine Bohrung von 20, eine 30 lange Nabe mit 40 Durchmesser, eine 10 dicke Scheibe und ein 24 breiter Kranz im Durchmesser von 90 bis 110, auf der Nabe zentriert. Der Schnitt wird als Abstände von der Achse gezeichnet, die entlang der Y-Achse verläuft, daher wird jeder Durchmesser als seine Hälfte gezeichnet.
 
 ## Steps
 
@@ -17,8 +17,8 @@ Auf dem Layer Kontur eine geschlossene <Command id="PLINE" /> von `10,0`, jeder 
 
 ### Die Ansicht drehen [#view]
 
-<Command id="-VIEW" /> und <Keyword command="VIEW" id="SEiso" /> betrachten sie von Südosten und oben; <Command id="VSCURRENT" /> und <Keyword command="VSCURRENT" id="Conceptual" /> schattieren die Flächen, woran man ein Drehteil am besten erkennt.
+<Command id="-VIEW" /> und <Keyword command="VIEW" id="SEiso" /> zeigen sie von Südosten und oben; <Command id="VSCURRENT" /> und <Keyword command="VSCURRENT" id="Conceptual" /> schattieren die Flächen, woran man ein Drehteil am besten erkennt.
 
-### Sie drehen [#revolve]
+### Drehen [#revolve]
 
-<Command id="REVOLVE" />: Wählen Sie den Schnitt und drücken Sie die Eingabetaste, dann <Keyword command="REVOLVE" id="Y" />: Die Y-Achse ist die der Riemenscheibe. Die Eingabetaste übernimmt den vorgegebenen Winkel, eine volle Umdrehung. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> passt sie ein, und ein Maßstab von `0.8x` lässt Platz um sie herum.
+<Command id="REVOLVE" />: Wählen Sie den Schnitt und drücken Sie die Eingabetaste, dann <Keyword command="REVOLVE" id="Y" />: Die Y-Achse ist die der Riemenscheibe. Die Eingabetaste übernimmt den Vorgabewinkel, eine volle Umdrehung. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> zeigt sie formatfüllend, und ein Maßstab von `0.8x` lässt Platz um sie herum.

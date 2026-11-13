@@ -3,7 +3,8 @@
 CAD in your browser that works like AutoCAD: the same commands and aliases, the prompts in the
 same order with the same option letters, the same defaults and object snaps, for 2D drafting and,
 still in part, 3D solids. Free, nothing to install, no account; drawings stay on your device. In
-English, Spanish, Brazilian Portuguese and French (with their AutoCAD's command names) and Arabic.
+English, Spanish, Brazilian Portuguese, French, Italian and German (with their AutoCAD's command
+names) and Arabic.
 
 **[Start drawing at mellowcad.com/draw](https://mellowcad.com/draw)** ·
 [mellowcad.com](https://mellowcad.com)
@@ -23,7 +24,7 @@ on. The site at mellowcad.com is a Next.js shell around the third package.
 | ------------------------------------------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [`@mellowcad/engine`](cad/README.md)             | The drafting engine: model, commands, snapping, rendering. No framework, no DOM. | [on npm](https://www.npmjs.com/package/@mellowcad/engine), 0.x |
 | [`@mellowcad/react`](packages/react/README.md)   | React bindings: the canvas, the engine's state as React state, the input wiring. | [on npm](https://www.npmjs.com/package/@mellowcad/react), 0.x  |
-| [`@mellowcad/editor`](packages/editor/README.md) | The whole editor as one component, its chrome and its words in six languages.    | [on npm](https://www.npmjs.com/package/@mellowcad/editor), 0.x |
+| [`@mellowcad/editor`](packages/editor/README.md) | The whole editor as one component, its chrome and its words in seven languages.  | [on npm](https://www.npmjs.com/package/@mellowcad/editor), 0.x |
 
 Each README has the package's entry points and examples; its `api.md` lists every export.
 Runnable hosts are in [examples/](examples/README.md).

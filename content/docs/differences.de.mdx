@@ -10,15 +10,15 @@ MellowCAD folgt AutoCAD 2027: dieselben Befehle und Aliase, dieselbe Reihenfolge
 
 ## Eine Zeichnung zugleich [#one-drawing]
 
-AutoCAD öffnet eine neue Zeichnung in einem eigenen Register und lässt die alte geöffnet. MellowCAD hält eine Zeichnung: <Command id="NEW" /> und <Command id="OPEN" /> ersetzen sie, und nach <Command id="NEW" /> holt ein einziges <Command id="U" /> die vorige zurück.
+AutoCAD öffnet eine neue Zeichnung in einer eigenen Registerkarte und lässt die alte geöffnet. MellowCAD kennt nur eine Zeichnung: <Command id="NEW" /> und <Command id="OPEN" /> ersetzen sie, und nach <Command id="NEW" /> holt ein einziges <Command id="U" /> die vorige zurück.
 
 ## Speichern lädt eine Datei herunter [#saving]
 
-MellowCAD hält die Zeichnung bei der Arbeit in diesem Browser, nur auf diesem Gerät. <Command id="QSAVE" /> lädt sofort eine Datei im eigenen, versionierten Format von MellowCAD herunter, wie bei einer Zeichnung, die einen Namen hat: Hier behält keine Zeichnung ihren Namen. <Command id="SAVEAS" /> und <Command id="SAVE" /> öffnen „Zeichnung speichern unter“, mit Dateiname und Dateitypen, darunter DXF, aber ohne die Ordner: Der Browser legt die Datei dort ab, wo er jeden Download ablegt.
+MellowCAD speichert die Zeichnung bei der Arbeit in diesem Browser, nur auf diesem Gerät. <Command id="QSAVE" /> lädt sofort eine Datei im eigenen, versionierten Format von MellowCAD herunter, wie bei einer Zeichnung, die einen Namen hat: Hier behält keine Zeichnung ihren Namen. <Command id="SAVEAS" /> und <Command id="SAVE" /> öffnen „Zeichnung speichern unter“, mit Dateiname und Dateitypen, darunter DXF, aber ohne die Ordner: Der Browser legt die Datei dort ab, wo er jeden Download ablegt.
 
 ## Tasten, die der Browser behält [#browser-keys]
 
-Eine Seite erhält nie `Strg+W`, das den Tab schließt, noch `Strg+N`, das ein Fenster öffnet. Die wechselnde Auswahl, in AutoCAD `Strg+W`, ist hier `F4`; AutoCAD belegt `F4` mit den 3D-Objektfangmodi, die MellowCAD noch nicht hat. Eine neue Zeichnung ist <Command id="NEW" />, eingegeben.
+Eine Seite erhält nie `Strg+W`, das den Tab schließt, noch `Strg+N`, das ein Fenster öffnet. Die wechselnde Auswahl, in AutoCAD `Strg+W`, ist hier `F4`; AutoCAD belegt `F4` mit den 3D-Objektfangmodi, die MellowCAD noch nicht hat. Eine neue Zeichnung legen Sie mit <Command id="NEW" /> an, eingegeben.
 
 ## Die dynamische Eingabe ist immer eingeschaltet [#dynamic-input]
 
@@ -26,11 +26,11 @@ Die dynamische Eingabe lässt sich nicht ausschalten, daher bleibt ihre Taste, `
 
 ## Nur Modellbereich [#model-space]
 
-Es gibt keine Layouts und kein Plotten: Der Bildschirm ist der einzige Ort, an dem eine Zeichnung zu sehen ist. Deshalb werden Linienstärken von Anfang an angezeigt (`LWDISPLAY` ein, während AutoCAD mit der Variablen aus beginnt), und `MODELL` in der Statusleiste ist eine Beschriftung und kein Schalter zu einem Layout.
+Es gibt keine Layouts und kein Plotten: Der Bildschirm ist der einzige Ort, an dem eine Zeichnung zu sehen ist. Deshalb werden Linienstärken von Anfang an angezeigt (`LWDISPLAY` ein, während AutoCAD sie zunächst ausgeschaltet lässt), und `MODELL` in der Statusleiste ist eine Beschriftung und kein Schalter zu einem Layout.
 
 ## Befehlszeilenversionen einiger Dialogfelder [#dialogs]
 
-Wo AutoCAD ein Dialogfeld öffnet, das es hier nicht gibt, stellt der Befehl seine Fragen in der Befehlszeile, wie es seine Version mit Bindestrich tut: <Command id="COLOR" /> führt <Command id="-COLOR" /> aus, <Command id="LWEIGHT" /> führt <Command id="-LWEIGHT" /> aus und <Command id="LINETYPE" /> führt <Command id="-LINETYPE" /> aus. <Command id="DIMSTYLE" /> und <Command id="STYLE" /> öffnen die Palette Stile, mit den Bemaßungs- oder Textstilen.
+Wo AutoCAD ein Dialogfeld öffnet, das es hier nicht gibt, stellt der Befehl seine Fragen in der Befehlszeile, wie es seine Version mit Bindestrich tut: <Command id="COLOR" /> führt <Command id="-COLOR" /> aus, <Command id="LWEIGHT" /> führt <Command id="-LWEIGHT" /> aus und <Command id="LINETYPE" /> führt <Command id="-LINETYPE" /> aus. <Command id="DIMSTYLE" /> und <Command id="STYLE" /> öffnen die Palette „Stile“, mit den Bemaßungs- oder Textstilen.
 
 ## Alle Linientypen sind geladen [#linetypes]
 
@@ -38,7 +38,7 @@ Eine neue AutoCAD-Zeichnung enthält nur einen einzigen, durchgezogenen Linienty
 
 ## Koordinaten in der Statusleiste [#coordinates]
 
-AutoCAD blendet die Koordinaten des Cursors seit 2015 in seiner Statusleiste aus. MellowCAD zeigt sie, da es keine andere Anzeige des Cursors hat; die Benutzeranpassung der Statusleiste blendet sie aus.
+AutoCAD blendet die Koordinaten des Cursors seit 2015 in seiner Statusleiste aus. MellowCAD zeigt sie, da es keine andere Anzeige des Cursors hat; die Anpassung der Statusleiste blendet sie aus.
 
 ## Arabisch verwendet die Befehle des englischen AutoCAD [#arabic]
 

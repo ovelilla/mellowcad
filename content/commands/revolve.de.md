@@ -45,7 +45,7 @@ Der Winkel als arithmetischer Ausdruck, wie bei <Command id="EXTRUDE" />.
 
 ## Missing
 
-Eine Achse außerhalb der Ebene des Profils, um die AutoCAD das Profil zu Flächen dreht: Hier meldet ROTATION <Message id="revolveUnable" /> und endet. Ein elliptischer Bogen oder eine Kante eines Volumenkörpers als Achse bei Objekt. Der Modus Fläche und offene Profile, da es noch keine Flächenobjekte gibt. Die Vorschau, die sich mit dem Cursor dreht: Während Sie den Winkel angeben, wird die ganze Umdrehung gezeigt. <Command id="EXPLODE" /> eines gedrehten Volumenkörpers, den AutoCAD in Flächen und Regionen zerlegt. Seine Griffe und sein Winkel, bearbeitet in der Eigenschaften-Palette.
+Eine Achse außerhalb der Ebene des Profils, um die AutoCAD das Profil zu Flächen dreht: Hier meldet ROTATION <Message id="revolveUnable" /> und endet. Ein elliptischer Bogen oder eine Kante eines Volumenkörpers als Achse bei Objekt. Der Modus Fläche und offene Profile, da es noch keine Flächenobjekte gibt. Die Vorschau, die sich mit dem Cursor dreht: Während Sie den Winkel angeben, wird die ganze Umdrehung gezeigt. <Command id="EXPLODE" /> eines gedrehten Volumenkörpers, den AutoCAD in Flächen und Regionen zerlegt. Seine Griffe und sein Winkel, bearbeitet in der Eigenschaftenpalette.
 
 ## Questions
 

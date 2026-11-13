@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie einen runden Tisch von 120 mit sechs Stühlen, in Zentimetern: jeder Stuhl eine Sitzfläche 44 mal 40 mit auf 4 gerundeten Ecken und eine 8 tiefe Lehne, seine Vorderkante 8 vom Rand des Tisches entfernt. Zeichnen Sie einen Stuhl über dem Tisch und lassen Sie ein polares Muster alle sechs platzieren. Der Bemaßungsmaßstab der Zeichnung ist für Zentimeter eingestellt.
+Zeichnen Sie einen runden Tisch von 120 mit sechs Stühlen, in Zentimetern: jeder Stuhl eine Sitzfläche 44 mal 40 mit auf 4 gerundeten Ecken und eine 8 tiefe Lehne, seine Vorderkante 8 vom Rand des Tisches entfernt. Zeichnen Sie einen Stuhl über dem Tisch und lassen Sie eine polare Reihe alle sechs anordnen. Der Bemaßungsmaßstab der Zeichnung ist für Zentimeter eingestellt.
 
 - **Übung:** Fortgeschritten · Architektur · 2D
 - **Befehle:** [`KREIS`](/docs/commands/circle), [`RECHTECK`](/docs/commands/rectang), [`REIHEKREIS`](/docs/commands/arraypolar), [`BEMDURCHM`](/docs/commands/dimdiameter), [`BEMLINEAR`](/docs/commands/dimlinear)
@@ -28,7 +28,7 @@ Auf dem Layer Kontur: [`KREIS`](/docs/commands/circle) in `0,0`, `Durchmesser` `
 
 ### 2. Einen Stuhl zeichnen [#chair]
 
-Die Sitzfläche, über dem Tisch: [`RECHTECK`](/docs/commands/rectang) mit einer `Abrunden` von `4`, von `-22,68` bis `44,40` weiter. Dann die Lehne, mit der auf `0` zurückgesetzten Verrundung, von `-22,108` bis `44,8` weiter. [`RECHTECK`](/docs/commands/rectang) behält seinen Verrundungsradius, bis Sie ihn ändern.
+Die Sitzfläche, über dem Tisch: [`RECHTECK`](/docs/commands/rectang) mit der Option `Abrunden` `4`, von `-22,68`, die andere Ecke `44,40` vom ersten Punkt aus. Dann die Lehne, mit der auf `0` zurückgesetzten Verrundung, von `-22,108`, die andere Ecke `44,8` vom ersten Punkt aus. [`RECHTECK`](/docs/commands/rectang) behält seinen Verrundungsradius, bis Sie ihn ändern.
 
 <Session name="exercises/round-table/chair" caption="2. Einen Stuhl zeichnen" />
 

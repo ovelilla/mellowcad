@@ -5,7 +5,7 @@ figure: "Eine geschlossene L-förmige Polylinie, um 20 zu einem Volumenkörper e
 sourceHash: "53bfe3dd1e9c"
 ---
 
-EXTRUSION (EXTRUDE) verwandelt geschlossene 2D-Profile in 3D-Volumenkörper, jedes um die angegebene Höhe gerade aus seiner Ebene gezogen. Wählen Sie die Profile — Kreise, Ellipsen, geschlossene Polylinien oder Splines, Regionen — und drücken Sie die Eingabetaste, geben Sie dann die Höhe ein oder zeigen Sie sie mit einem Punkt; die letzte Höhe ist die Vorgabe des nächsten Aufrufs. Jedes Profil wird ein eigener Volumenkörper auf dem aktuellen Layer und wird gelöscht, wie DELOBJ es standardmäßig vorgibt. Der ganze Befehl ist ein Schritt, den Rückgängig zurücknimmt.
+EXTRUSION (EXTRUDE) verwandelt geschlossene 2D-Profile in 3D-Volumenkörper, jedes um die angegebene Höhe gerade aus seiner Ebene gezogen. Wählen Sie die Profile — Kreise, Ellipsen, geschlossene Polylinien oder Splines, Regionen — und drücken Sie die Eingabetaste, geben Sie dann die Höhe ein oder zeigen Sie sie mit einem Punkt; die letzte Höhe ist die Vorgabe des nächsten Aufrufs. Jedes Profil wird ein eigener Volumenkörper auf dem aktuellen Layer und wird gelöscht, wie DELOBJ es standardmäßig vorgibt. Der ganze Befehl ist ein Rückgängig-Schritt.
 
 Das 3D von MellowCAD besteht nur aus Volumenkörpern und ist noch unvollständig: Ein offenes Profil, aus dem AutoCAD eine Fläche macht, ergibt <Message id="sweepRefusedType" /> und wird aus der Auswahl entfernt.
 
@@ -21,7 +21,7 @@ Anstelle einer Höhe geben zwei Punkte die Richtung und die Länge an: Die Profi
 
 ### Path
 
-Wie in AutoCAD aufgeführt, aber nicht gebaut: Die Wahl wird abgelehnt, und die Höhe wird erneut abgefragt.
+Wie in AutoCAD aufgeführt, aber nicht umgesetzt: Die Wahl wird abgelehnt, und die Höhe wird erneut abgefragt.
 
 ### Taper
 
@@ -33,7 +33,7 @@ Die Höhe als Ausdruck: `2*3` ist 6. Bisher nur Arithmetik.
 
 ## Missing
 
-Path, das Sweepen entlang eines Pfads. Der Modus SUrface und offene Profile, aus denen AutoCAD Flächen macht: Es gibt noch keine Flächenobjekte. Die Flächen von Volumenkörpern und die Bereiche, die ein Klick innerhalb von Objekten findet, die <Command id="PRESSPULL" /> nimmt. Eine Verjüngung an einer Ellipse, einem Spline oder einem Bogen, der an einer Ecke auf das nächste Segment trifft. Parameter und Funktionen von Expression. <Command id="EXPLODE" /> eines extrudierten Volumenkörpers mit gekrümmten Seiten, den AutoCAD in Flächen und Regionen umwandelt. Seine Griffe sowie seine Höhe und sein Verjüngungswinkel, bearbeitet in der Palette Eigenschaften.
+Path, das Sweepen entlang eines Pfads. Der Modus SUrface und offene Profile, aus denen AutoCAD Flächen macht: Es gibt noch keine Flächenobjekte. Die Flächen von Volumenkörpern und die Bereiche, die ein Klick innerhalb von Objekten findet, die <Command id="PRESSPULL" /> nimmt. Eine Verjüngung an einer Ellipse, einem Spline oder einem Bogen, der an einer Ecke auf das nächste Segment trifft. Parameter und Funktionen von Expression. <Command id="EXPLODE" /> eines extrudierten Volumenkörpers mit gekrümmten Seiten, den AutoCAD in Flächen und Regionen umwandelt. Seine Griffe sowie seine Höhe und sein Verjüngungswinkel, bearbeitet in der Eigenschaftenpalette.
 
 ## Questions
 
@@ -55,4 +55,4 @@ Machen Sie eine Region daraus: <Command id="REGION" /> auf dem Umriss und dem Lo
 
 ### Wie extrudiere ich entlang eines Pfads?
 
-Noch nicht: <Keyword id="Path" /> wird aufgeführt, aber abgelehnt, und SWEEP ist nicht gebaut. <Keyword id="Direction" /> extrudiert entlang der geraden Linie zwischen zwei Punkten.
+Noch nicht: <Keyword id="Path" /> wird aufgeführt, aber abgelehnt, und SWEEP ist nicht umgesetzt. <Keyword id="Direction" /> extrudiert entlang der geraden Linie zwischen zwei Punkten.

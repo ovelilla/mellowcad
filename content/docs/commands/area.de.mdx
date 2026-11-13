@@ -3,10 +3,10 @@ title: "Befehl FLÄCHE (AREA): Fläche messen in AutoCAD"
 description: "So arbeitet AutoCADs FLÄCHE (AREA, Alias FL): Fläche und Umfang von Punkten oder einem Objekt, und eine Summe mit Fläche addieren und subtrahieren."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie lautet das Kürzel für FLÄCHE (AREA) in AutoCAD?","answer":"FL, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _AREA in jeder Sprache von AutoCAD."},{"question":"Wie finde ich die Fläche einer Polylinie oder einer Schraffur?","answer":"Starten Sie FLÄCHE, drücken Sie die Eingabetaste, um oBjekt zu wählen, und wählen Sie die geschlossene Polylinie oder die Schraffur: Ihre Fläche und ihr Umfang werden an die Eingabeaufforderung geschrieben. Die Fläche einer Schraffur lässt ihre Inseln aus."},{"question":"Wie ziehe ich in AutoCAD eine Fläche ab?","answer":"Wählen Sie Hinzufügen und dann oBjekt, wählen Sie die äußere Form und drücken Sie die Eingabetaste; wählen Sie dann Abziehen, oBjekt und wählen Sie jedes Loch. FLÄCHE schreibt nach jedem die verbleibende Summe; zweimal die Eingabetaste beendet."},{"question":"Wie erhalte ich die Fläche in Quadratmetern?","answer":"FLÄCHE schreibt Quadrat-Zeichnungseinheiten. Zeichnen Sie in Millimetern, teilen Sie durch 1.000.000: 6.000.000 sind 6 m². In Zentimetern durch 10.000."},{"question":"Warum sagt FLÄCHE, das Objekt habe keine Fläche?","answer":"Nur geschlossene Formen und Kurven haben eine: Linien, einzelne Bögen, Text und Bemaßungen nicht. Wählen Sie eine geschlossene Polylinie, einen Kreis oder eine Schraffur, oder verbinden Sie die Linien zuerst mit VERBINDEN zu einer Polylinie; oder umreißen Sie die Form über ihre Ecken."}]
+faq: [{"question":"Wie lautet das Kürzel für FLÄCHE (AREA) in AutoCAD?","answer":"FL, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _AREA in jeder Sprache von AutoCAD."},{"question":"Wie finde ich die Fläche einer Polylinie oder einer Schraffur?","answer":"Starten Sie FLÄCHE, drücken Sie die Eingabetaste, um oBjekt zu wählen, und wählen Sie die geschlossene Polylinie oder die Schraffur: Ihre Fläche und ihr Umfang werden in die Eingabeaufforderung geschrieben. Die Fläche einer Schraffur spart ihre Inseln aus."},{"question":"Wie ziehe ich in AutoCAD eine Fläche ab?","answer":"Wählen Sie Hinzufügen und dann oBjekt, wählen Sie die äußere Form und drücken Sie die Eingabetaste; wählen Sie dann Abziehen, oBjekt und wählen Sie jedes Loch. FLÄCHE schreibt nach jedem die verbleibende Summe; zweimal die Eingabetaste beendet."},{"question":"Wie erhalte ich die Fläche in Quadratmetern?","answer":"FLÄCHE schreibt Quadrateinheiten der Zeichnung. Zeichnen Sie in Millimetern, teilen Sie durch 1.000.000: 6.000.000 sind 6 m². In Zentimetern durch 10.000."},{"question":"Warum meldet FLÄCHE, das Objekt habe keine Fläche?","answer":"Nur geschlossene Formen und Kurven haben eine: Linien, einzelne Bögen, Text und Bemaßungen nicht. Wählen Sie eine geschlossene Polylinie, einen Kreis oder eine Schraffur, oder verbinden Sie die Linien zuerst mit VERBINDEN zu einer Polylinie; oder umreißen Sie die Form über ihre Ecken."}]
 ---
 
-FLÄCHE (AREA) misst die Fläche und den Umfang einer geschlossenen Form, entweder einer, die Sie über ihre Ecken umreißen, oder eines Objekts, das Sie wählen. Geben Sie die erste Ecke an, dann die nächsten: Ab der zweiten füllt sich die durch den Cursor geschlossene Form durchscheinend grün, wie AutoCAD sie schattiert. Die Eingabetaste oder `Gesamt` schreibt `Fläche = …, Umfang = …` an die Eingabeaufforderung und endet; die Eingabetaste vor der dritten Ecke wird abgelehnt. Mit Fläche addieren und Fläche subtrahieren führt sie eine Summe über mehrere Formen. Zahlen werden mit der Genauigkeit der Zeichnung geschrieben, und die zuletzt gemessene Fläche lässt sich durch Tippen von `'AREA` wieder abrufen.
+FLÄCHE (AREA) misst die Fläche und den Umfang einer geschlossenen Form, entweder einer, die Sie über ihre Ecken umreißen, oder eines Objekts, das Sie wählen. Geben Sie die erste Ecke an, dann die nächsten: Ab der zweiten füllt sich die durch den Cursor geschlossene Form durchscheinend grün, wie AutoCAD sie schattiert. Die Eingabetaste oder `Gesamt` schreibt `Fläche = …, Umfang = …` in die Eingabeaufforderung und endet; die Eingabetaste vor der dritten Ecke wird abgelehnt. Mit Fläche addieren und Fläche subtrahieren führt sie eine Summe über mehrere Formen. Zahlen erscheinen mit der Genauigkeit der Zeichnung, und die zuletzt gemessene Fläche lässt sich mit `'AREA` wieder abrufen.
 
 - **Befehl:** `FLÄCHE`
 - **Auf Englisch:** `AREA`, in jeder Sprache als `_AREA` eingegeben
@@ -24,7 +24,7 @@ Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden
 
 ### `oBjekt` (`B`) [#object]
 
-Die Vorgabe der ersten Eingabeaufforderung, sodass die Eingabetaste sie wählt: Wählen Sie einen Kreis, eine Ellipse, eine geschlossene Polylinie oder einen Spline, eine Schraffur oder eine Region, und FLÄCHE schreibt ihre Fläche mit ihrem Umfang, bei einem Kreis den Kreisumfang. Eine offene Polylinie, ein offener Spline oder ein elliptischer Bogen wird durch eine gerade Linie von Ende zu Ende geschlossen, und FLÄCHE schreibt seine Länge. Eine Linie oder ein Text hat keine Fläche: `Ausgewähltes Objekt hat keine Fläche`, und es fragt erneut.
+Die Vorgabe der ersten Eingabeaufforderung, sodass die Eingabetaste sie wählt: Wählen Sie einen Kreis, eine Ellipse, eine geschlossene Polylinie oder einen Spline, eine Schraffur oder eine Region, und FLÄCHE schreibt ihre Fläche mit ihrem Umfang, bei einem Kreis den Kreisumfang. Eine offene Polylinie, ein offener Spline oder ein elliptischer Bogen wird durch eine gerade Linie von Ende zu Ende geschlossen, und FLÄCHE schreibt seine Länge. Eine Linie oder ein Text hat keine Fläche: `Ausgewähltes Objekt hat keine Fläche`, und FLÄCHE fragt erneut.
 
 ### `fläche Hinzufügen` (`H`) [#add]
 
@@ -56,7 +56,7 @@ MEASUREGEOM, die Messwerkzeuge des Menübands, mit ihren Optionen Radius, Winkel
 
 ### Wie finde ich die Fläche einer Polylinie oder einer Schraffur?
 
-Starten Sie FLÄCHE, drücken Sie die Eingabetaste, um `oBjekt` zu wählen, und wählen Sie die geschlossene Polylinie oder die Schraffur: Ihre Fläche und ihr Umfang werden an die Eingabeaufforderung geschrieben. Die Fläche einer Schraffur lässt ihre Inseln aus.
+Starten Sie FLÄCHE, drücken Sie die Eingabetaste, um `oBjekt` zu wählen, und wählen Sie die geschlossene Polylinie oder die Schraffur: Ihre Fläche und ihr Umfang werden in die Eingabeaufforderung geschrieben. Die Fläche einer Schraffur spart ihre Inseln aus.
 
 ### Wie ziehe ich in AutoCAD eine Fläche ab?
 
@@ -64,9 +64,9 @@ Wählen Sie `Hinzufügen` und dann `oBjekt`, wählen Sie die äußere Form und d
 
 ### Wie erhalte ich die Fläche in Quadratmetern?
 
-FLÄCHE schreibt Quadrat-Zeichnungseinheiten. Zeichnen Sie in Millimetern, teilen Sie durch 1.000.000: 6.000.000 sind 6 m². In Zentimetern durch 10.000.
+FLÄCHE schreibt Quadrateinheiten der Zeichnung. Zeichnen Sie in Millimetern, teilen Sie durch 1.000.000: 6.000.000 sind 6 m². In Zentimetern durch 10.000.
 
-### Warum sagt FLÄCHE, das Objekt habe keine Fläche?
+### Warum meldet FLÄCHE, das Objekt habe keine Fläche?
 
 Nur geschlossene Formen und Kurven haben eine: Linien, einzelne Bögen, Text und Bemaßungen nicht. Wählen Sie eine geschlossene Polylinie, einen Kreis oder eine Schraffur, oder verbinden Sie die Linien zuerst mit [`VERBINDEN`](/docs/commands/join) zu einer Polylinie; oder umreißen Sie die Form über ihre Ecken.
 

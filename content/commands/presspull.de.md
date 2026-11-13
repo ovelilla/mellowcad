@@ -35,4 +35,4 @@ Es braucht einen Klick auf etwas Geschlossenes. KLICKZIEHEN beantwortet eine Zah
 
 ### Gibt es ein Kürzel für KLICKZIEHEN (PRESSPULL)?
 
-Es hat keinen Alias: Geben Sie KLICKZIEHEN ein, oder `_PRESSPULL` in jeder Sprache von AutoCAD. Strg+Umschalttaste+E, die Taste von AutoCAD dafür, ist noch nicht gebaut.
+Es hat keinen Alias: Geben Sie KLICKZIEHEN ein, oder `_PRESSPULL` in jeder Sprache von AutoCAD. Strg+Umschalttaste+E, das Tastenkürzel von AutoCAD dafür, ist noch nicht umgesetzt.

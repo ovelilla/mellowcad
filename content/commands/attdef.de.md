@@ -5,19 +5,19 @@ figure: "Ein Türschild: das Attribut NUM zentriert in einem Kreis, seine Eingab
 sourceHash: "f0fc3d8763e7"
 ---
 
-ATTDEF definiert ein Attribut: ein Tag, eine Eingabeaufforderung und einen Vorgabewert, als Textzeile in der Zeichnung platziert. Wählen Sie es zusammen mit den anderen Objekten, wenn Sie mit <Command id="BLOCK" /> einen Block erstellen, und jeder Verweis auf diesen Block trägt dafür einen eigenen Wert: die Nummer einer Tür, den Code eines Bauteils, den Namen eines Raums. Bis dahin zeigt die Definition ihr Tag.
+ATTDEF definiert ein Attribut: ein Tag, eine Eingabeaufforderung und einen Vorgabewert, als Textzeile in der Zeichnung platziert. Wählen Sie es zusammen mit den anderen Objekten, wenn Sie mit <Command id="BLOCK" /> einen Block erstellen, und jede Blockreferenz trägt dafür einen eigenen Wert: die Nummer einer Tür, den Code eines Bauteils, den Namen eines Raums. Bis dahin zeigt die Definition ihr Tag.
 
-AutoCADs ATTDEF öffnet den Dialog „Attributdefinition“, den MellowCAD nicht hat: Hier fragt ATTDEF in der Befehlszeile das, was <Command id="-ATTDEF" /> fragt, wie die Konsole von AutoCAD. Er nennt die aktuellen Modi und fragt, welcher geändert werden soll, bis die Eingabetaste weitergeht. Dann das Tag: ohne Leerzeichen, da ein Leerzeichen es beendet, und Kleinbuchstaben werden zu Großbuchstaben; die Eingabetaste allein meldet <Message id="tagCannotBeNull" />. Dann die Eingabeaufforderung, mit der <Command id="INSERT" /> den Wert abfragt, wobei die Eingabetaste das Tag übernimmt, und der Vorgabewert. Zuletzt der Ort des Textes, mit den Fragen von <Command id="TEXT" />: ein Startpunkt, die Höhe und die Drehung. Die Höhe und die Ausrichtung sind die von TEXT, in beide Richtungen geteilt. Die Eingabetaste beim Startpunkt setzt die Definition eine Zeile unter die zuletzt definierte, mit deren Höhe, Drehung, Stil und Ausrichtung, sodass die Attribute eines Blocks untereinander stehen.
+AutoCADs ATTDEF öffnet den Dialog „Attributdefinition“, den MellowCAD nicht hat: Hier stellt ATTDEF in der Befehlszeile dieselben Fragen wie <Command id="-ATTDEF" />, wie die Konsole von AutoCAD. Er nennt die aktuellen Modi und fragt, welcher geändert werden soll, bis die Eingabetaste weitergeht. Dann das Tag: ohne Leerzeichen, da ein Leerzeichen die Eingabe beendet, und Kleinbuchstaben werden zu Großbuchstaben; die Eingabetaste allein meldet <Message id="tagCannotBeNull" />. Dann die Eingabeaufforderung, mit der <Command id="INSERT" /> den Wert abfragt, wobei die Eingabetaste das Tag übernimmt, und der Vorgabewert. Zuletzt der Ort des Textes, mit den Fragen von <Command id="TEXT" />: ein Startpunkt, die Höhe und die Drehung. Die Höhe und die Ausrichtung sind die von TEXT, in beide Richtungen geteilt. Die Eingabetaste beim Startpunkt setzt die Definition eine Zeile unter die zuletzt definierte, mit deren Höhe, Drehung, Stil und Ausrichtung, sodass die Attribute eines Blocks untereinander stehen.
 
 ## Options
 
 ### Invisible
 
-Der Wert wird in den Verweisen nicht angezeigt, bis <Command id="ATTDISP" /> ihn einschaltet. Jeder Modus ist ein Schalter: Seine Wahl wechselt ihn zwischen `Y` und `N`, schreibt die Modi erneut und fragt noch einmal. Die Modi bleiben für das nächste ATTDEF eingestellt.
+Der Wert wird in den Blockreferenzen nicht angezeigt, bis <Command id="ATTDISP" /> ihn einschaltet. Jeder Modus ist ein Schalter: Seine Wahl wechselt ihn zwischen `Y` und `N`, schreibt die Modi erneut und fragt noch einmal. Die Modi bleiben für das nächste ATTDEF eingestellt.
 
 ### Constant
 
-Jeder Verweis trägt denselben Wert, den ATTDEF anstelle einer Eingabeaufforderung und eines Vorgabewerts abfragt; INSERT fragt ihn nie ab.
+Jede Blockreferenz trägt denselben Wert, den ATTDEF anstelle einer Eingabeaufforderung und eines Vorgabewerts abfragt; INSERT fragt ihn nie ab.
 
 ### Verify
 
@@ -25,15 +25,15 @@ INSERT fragt den Wert ein zweites Mal ab, zur Kontrolle, nachdem es jeden Wert e
 
 ### Preset
 
-INSERT fragt den Wert nicht ab: Jeder Verweis übernimmt den Vorgabewert.
+INSERT fragt den Wert nicht ab: Jede Blockreferenz übernimmt den Vorgabewert.
 
 ### Lock position
 
-Zunächst ein: Das Attribut bleibt dort, wo der Block es hinsetzt.
+Zunächst eingeschaltet: Das Attribut bleibt dort, wo der Block es hinsetzt.
 
 ### Justify
 
-Fragt, woran der Text an seinem Punkt hängt, wie TEXT es tut: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" /> oder einer der neun Punkte nach oben, Mitte und unten, links, Mitte und rechts. Die Eingabeaufforderung des Startpunkts fragt dann nach dem Punkt, den sie benennt: Mitte Mitte zentriert den Wert in einem Tag.
+Fragt, woran der Text an seinem Punkt hängt, wie TEXT es tut: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" /> oder einer der neun Punkte nach oben, Mitte und unten, links, Mitte und rechts. Die Eingabeaufforderung des Startpunkts fragt dann nach dem Punkt, den sie nennt: Mitte Mitte zentriert den Wert in einem Tag.
 
 ### Style
 
@@ -59,4 +59,4 @@ Das Tag benennt das Attribut als Bezeichner: Es ist das, was die Definition zeig
 
 ### Wie bearbeitet man eine Attributdefinition?
 
-Doppelklicken Sie sie, bevor sie einem Block beitritt: <Command id="TEXTEDIT" /> öffnet ihr Tag, ihre Eingabeaufforderung und ihren Vorgabewert. Sobald sie in einem Block ist, werden die Werte jedes Verweises mit <Command id="ATTEDIT" /> oder <Command id="EATTEDIT" /> bearbeitet.
+Doppelklicken Sie sie, solange sie noch in keinem Block ist: <Command id="TEXTEDIT" /> öffnet ihr Tag, ihre Eingabeaufforderung und ihren Vorgabewert. Sobald sie in einem Block ist, werden die Werte jeder Blockreferenz mit <Command id="ATTEDIT" /> oder <Command id="EATTEDIT" /> bearbeitet.

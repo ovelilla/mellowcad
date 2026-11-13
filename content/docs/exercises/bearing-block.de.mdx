@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Modellieren Sie diesen Lagerbock, in Millimetern: eine Grundplatte 100 mal 60 mit Eckenradius 10, 12 dick; eine Nabe mit 40 Durchmesser, 40 hoch, in der Mitte; eine Bohrung von 20 durch die Nabe und zwei Befestigungslöcher von 10 durch die Grundplatte, 76 Lochabstand. Grundplatte und Nabe werden aus ihren Konturen extrudiert und zu einem Volumenkörper vereinigt; die Bohrung und die Löcher sind Zylinder, die davon abgezogen werden.
+Modellieren Sie diesen Lagerbock, in Millimetern: eine Grundplatte 100 mal 60 mit Eckenradius 10, 12 dick; eine Nabe mit 40 Durchmesser, 40 hoch, in der Mitte; eine Bohrung von 20 durch die Nabe und zwei Befestigungslöcher von 10 durch die Grundplatte, im Abstand von 76. Grundplatte und Nabe werden aus ihren Konturen extrudiert und zu einem Volumenkörper vereinigt; die Bohrung und die Löcher sind Zylinder, die davon abgezogen werden.
 
 - **Übung:** Profi · Maschinenbau · 3D-Volumenkörper
 - **Befehle:** [`RECHTECK`](/docs/commands/rectang), [`KREIS`](/docs/commands/circle), [`EXTRUSION`](/docs/commands/extrude), [`VEREINIG`](/docs/commands/union), [`ZYLINDER`](/docs/commands/cylinder), [`KOPIEREN`](/docs/commands/copy), [`DIFFERENZ`](/docs/commands/subtract), [`-AUSSCHNT`](/docs/commands#-view), [`VSAKTUELL`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
@@ -24,7 +24,7 @@ Die Engine zeichnet jeden Schritt und schreibt seinen Verlauf, wie Sie ihn einge
 
 ### 1. Die Draufsicht zeichnen [#plan]
 
-Auf dem Layer Kontur: [`RECHTECK`](/docs/commands/rectang) mit einer `Abrunden` von `10`, von `0,0` bis `100,60`, und ein Kreis in seiner Mitte, `50,30`, mit einem `Durchmesser` von `40`.
+Auf dem Layer Kontur: [`RECHTECK`](/docs/commands/rectang) mit der Option `Abrunden` `10`, von `0,0` bis `100,60`, und ein Kreis in seiner Mitte, `50,30`, mit einem `Durchmesser` von `40`.
 
 <Session name="exercises/bearing-block/plan" caption="1. Die Draufsicht zeichnen" />
 
@@ -34,27 +34,27 @@ Auf dem Layer Kontur: [`RECHTECK`](/docs/commands/rectang) mit einer `Abrunden` 
 
 <Session name="exercises/bearing-block/extrude" caption="2. Grundplatte und Nabe extrudieren" />
 
-### 3. Sie vereinigen [#union]
+### 3. Vereinigen [#union]
 
-[`VEREINIG`](/docs/commands/union): Wählen Sie beide und drücken Sie die Eingabetaste. Sie sind ein einziger Volumenkörper.
+[`VEREINIG`](/docs/commands/union): Wählen Sie beide und drücken Sie die Eingabetaste. Danach ist es ein einziger Volumenkörper.
 
-<Session name="exercises/bearing-block/union" caption="3. Sie vereinigen" />
+<Session name="exercises/bearing-block/union" caption="3. Vereinigen" />
 
 ### 4. Die Zylinder zeichnen [#holes]
 
-Die Bohrung und ein Befestigungsloch als Zylinder, mit [`ZYLINDER`](/docs/commands/cylinder): die Bohrung in `50,30`, `Durchmesser` `20` und `40` hoch; ein Befestigungsloch in `12,30`, Durchmesser `10` und `12` hoch. Dann [`KOPIEREN`](/docs/commands/copy) das Loch von `12,30` nach `76,0` weiter.
+Die Bohrung und ein Befestigungsloch als Zylinder, mit [`ZYLINDER`](/docs/commands/cylinder): die Bohrung in `50,30`, `Durchmesser` `20` und `40` hoch; ein Befestigungsloch in `12,30`, Durchmesser `10` und `12` hoch. Kopieren Sie das Loch dann mit [`KOPIEREN`](/docs/commands/copy) von `12,30` um `76,0` weiter.
 
 <Session name="exercises/bearing-block/holes" caption="4. Die Zylinder zeichnen" />
 
-### 5. Sie abziehen [#subtract]
+### 5. Abziehen [#subtract]
 
 [`DIFFERENZ`](/docs/commands/subtract): Wählen Sie den Lagerbock und drücken Sie die Eingabetaste, dann die drei Zylinder und die Eingabetaste. Die Bohrung und die Löcher gehen durch.
 
-<Session name="exercises/bearing-block/subtract" caption="5. Sie abziehen" />
+<Session name="exercises/bearing-block/subtract" caption="5. Abziehen" />
 
 ### 6. Die Ansicht drehen [#view]
 
-`-AUSSCHNT` und `SOIso`, [`VSAKTUELL`](/docs/commands/vscurrent) und `Konzeptuell`, dann [`ZOOM`](/docs/commands/zoom) `Grenzen` und `0.8x`, um ihn einzupassen.
+`-AUSSCHNT` und `SOIso`, [`VSAKTUELL`](/docs/commands/vscurrent) und `Konzeptuell`, dann [`ZOOM`](/docs/commands/zoom) `Grenzen` und `0.8x`, damit er ins Bild passt.
 
 <Session name="exercises/bearing-block/view" caption="6. Die Ansicht drehen" />
 

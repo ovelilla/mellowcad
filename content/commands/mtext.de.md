@@ -5,9 +5,9 @@ figure: "Eine Notiz in einem Rahmen: zuerst die Höhe, dann die gegenüberliegen
 sourceHash: "a53001f9674d"
 ---
 
-MTEXT (in der deutschen AutoCAD-Version ebenfalls MTEXT, mit den Aliasen `MT` und `T`) schreibt mehrzeiligen Text, Absatztext: ein Objekt mit Absätzen, die auf eine Breite umbrochen werden. Sie wählen eine erste Ecke und die gegenüberliegende, und der Rahmen dazwischen legt die Breite fest; dann tippen Sie in einem an Ort und Stelle gezeichneten Editor, in dem die Eingabetaste einen neuen Absatz beginnt und Strg+Eingabe oder ein Klick außerhalb des Rahmens den Text behält. Esc mit getipptem Text fragt, ob er gespeichert werden soll, wie AutoCADs Dialogfeld Nicht gespeicherte Änderungen. Für Zeilen, die je ein eigenes Objekt sind, verwenden Sie <Command id="TEXT" />.
+MTEXT (in der deutschen AutoCAD-Version ebenfalls MTEXT, mit den Aliasen `MT` und `T`) schreibt mehrzeiligen Text, Absatztext: ein Objekt mit Absätzen, die auf eine Breite umgebrochen werden. Sie wählen eine erste Ecke und die gegenüberliegende, und der Rahmen dazwischen legt die Breite fest; dann tippen Sie in einem an Ort und Stelle gezeichneten Editor, in dem die Eingabetaste einen neuen Absatz beginnt und Strg+Eingabe oder ein Klick außerhalb des Rahmens den Text behält. Esc mit getipptem Text fragt, ob er gespeichert werden soll, wie AutoCADs Dialogfeld Nicht gespeicherte Änderungen. Für Zeilen, die je ein eigenes Objekt sind, verwenden Sie <Command id="TEXT" />.
 
-Die erste Zeile nennt den aktuellen Stil und die Höhe. Jede Option wird bei der Eingabeaufforderung der gegenüberliegenden Ecke gefragt und kehrt zu ihr zurück, sodass ein Durchlauf Höhe, Ausrichtung und den Rest festlegt, bevor der Rahmen geschlossen wird. Wörter werden umbrochen, wo eine Zeile die Breite überschreiten würde, und ein Wort, das länger als die Breite ist, ragt darüber hinaus. Die Höhe teilt sich <Command id="TEXT" /> und wird in der Zeichnung gespeichert; Ausrichtung, Drehung und Zeilenabstand beginnen bei jedem Durchlauf mit ihren Vorgaben. <Command id="-MTEXT" /> fragt dasselbe und nimmt dann den Text in der Befehlszeile entgegen, Zeile für Zeile.
+Die erste Zeile zeigt den aktuellen Stil und die Höhe. Jede Option wird bei der Eingabeaufforderung der gegenüberliegenden Ecke gefragt und kehrt zu ihr zurück, sodass ein Durchlauf Höhe, Ausrichtung und den Rest festlegt, bevor der Rahmen geschlossen wird. Wörter werden umgebrochen, wo eine Zeile die Breite überschreiten würde, und ein Wort, das länger als die Breite ist, ragt darüber hinaus. Die Höhe teilt sich <Command id="TEXT" /> und wird in der Zeichnung gespeichert; Ausrichtung, Drehung und Zeilenabstand beginnen bei jedem Durchlauf mit ihren Vorgaben. <Command id="-MTEXT" /> fragt dasselbe und nimmt dann den Text in der Befehlszeile entgegen, Zeile für Zeile.
 
 ## Options
 
@@ -33,7 +33,7 @@ Macht einen Textstil aktuell, nach Namen; <Keyword id="?" /> listet die Stile de
 
 ### Width
 
-Fragt statt nach der gegenüberliegenden Ecke nach der Breite, getippt oder als Abstand zu einem Punkt, und öffnet dann den Editor. Eine Breite von 0 oder die Eingabetaste lässt die Zeilen unumbrochen, jede so lang wie getippt.
+Fragt statt nach der gegenüberliegenden Ecke nach der Breite, getippt oder als Abstand zu einem Punkt, und öffnet dann den Editor. Eine Breite von 0 oder die Eingabetaste lässt die Zeilen ohne Umbruch, jede so lang wie getippt.
 
 ## Missing
 
@@ -47,11 +47,11 @@ Spalten, die AutoCAD 2027 bei der Eingabeaufforderung der gegenüberliegenden Ec
 
 ### Wie beginne ich in Absatztext eine neue Zeile?
 
-Drücken Sie die Eingabetaste: Sie beginnt einen neuen Absatz. Innerhalb eines Absatzes werden die Zeilen von selbst an der Breite des Rahmens umbrochen. Strg+Eingabe oder ein Klick außerhalb des Rahmens schließt den Editor und behält den Text.
+Drücken Sie die Eingabetaste: Sie beginnt einen neuen Absatz. Innerhalb eines Absatzes werden die Zeilen von selbst an der Breite des Rahmens umgebrochen. Strg+Eingabe oder ein Klick außerhalb des Rahmens schließt den Editor und behält den Text.
 
 ### Wie ändere ich die Breite von Absatztext?
 
-Wählen Sie ihn aus und ziehen Sie den Griff an seiner Seite: Der Text wird neu umbrochen, während sich die Breite ändert, um seinen Ausrichtungspunkt. Die Definierte Breite der Eigenschaften-Palette tut es per Zahl, und ihre Zeilen zum Zeilenabstand ändern den Abstand.
+Wählen Sie ihn aus und ziehen Sie den Griff an seiner Seite: Der Text wird neu umgebrochen, während sich die Breite ändert, um seinen Ausrichtungspunkt. Die Definierte Breite der Eigenschaftenpalette tut es per Zahl, und ihre Zeilen zum Zeilenabstand ändern den Abstand.
 
 ### Wie wandle ich MTEXT in einzeiligen Text um?
 

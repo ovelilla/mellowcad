@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand 90, mit Radius 20 und 12, gebohrt auf Radius 10 und 6, verbunden durch Linien, die beide tangieren, die Bögen zwischen den Linien weggestutzt. Die Tangenten verwenden an beiden Enden den Objektfang Tangente; [`STUTZEN`](/docs/commands/trim) macht dann aus dem Kreis jedes Auges einen Bogen.
+Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand von 90, mit Radius 20 und 12, gebohrt auf Radius 10 und 6, verbunden durch Linien, die beide tangieren, die dazwischenliegenden Bögen weggestutzt. Die Tangenten verwenden an beiden Enden den Objektfang Tangente; [`STUTZEN`](/docs/commands/trim) macht dann aus dem Kreis jedes Auges einen Bogen.
 
 - **Übung:** Profi · Maschinenbau · 2D
 - **Befehle:** [`KREIS`](/docs/commands/circle), [`LINIE`](/docs/commands/line), [`STUTZEN`](/docs/commands/trim), [`BEMLINEAR`](/docs/commands/dimlinear), [`BEMRADIUS`](/docs/commands/dimradius), [`BEMDURCHM`](/docs/commands/dimdiameter)
@@ -14,7 +14,7 @@ Zeichnen Sie diese Lasche, in Millimetern: zwei Augen im Abstand 90, mit Radius 
 
 ## Die Zeichnung [#drawing]
 
-<Session name="exercises/link" caption="Eine Lasche aus zwei Augen im Abstand 90, durch Tangenten verbunden, bemaßt." />
+<Session name="exercises/link" caption="Eine Lasche aus zwei Augen im Abstand von 90, durch Tangenten verbunden, bemaßt." />
 
 ## Schritt für Schritt [#steps]
 
@@ -28,7 +28,7 @@ Auf dem Layer Kontur vier Kreise mit [`KREIS`](/docs/commands/circle), jeder mit
 
 ### 2. Die Tangenten zeichnen [#tangents]
 
-[`LINIE`](/docs/commands/line), dann geben Sie `_TAN` ein, den Objektfang Tangente für einen einzelnen Punkt, und wählen Sie den großen Kreis nahe seinem oberen Punkt; wieder `_TAN` und wählen Sie den kleinen nahe seinem oberen Punkt. Die Linie berührt beide. Dasselbe an der Unterseite.
+[`LINIE`](/docs/commands/line), dann geben Sie `_TAN` ein, den Objektfang Tangente für einen einzelnen Punkt, und wählen Sie den großen Kreis nahe an seinem oberen Punkt; wieder `_TAN` und wählen Sie den kleinen nahe an seinem oberen Punkt. Die Linie berührt beide. Dasselbe an der Unterseite.
 
 <Session name="exercises/link/tangents" caption="2. Die Tangenten zeichnen" />
 

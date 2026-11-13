@@ -6,7 +6,7 @@ figure: "Der L-Winkel, 100 mal 80, von seiner unteren linken Ecke aus bemaßt."
 sourceHash: "5c7cd5d57c92"
 ---
 
-Zeichnen Sie diesen Winkel, in Millimetern: 100 lang, mit einem 20 hohen Fuß und einem 30 breiten und 80 hohen Schenkel, die Innenecke auf den Radius 10 gerundet, ein Loch von 8 im Fuß und eines von 10 im Schenkel, jedes in seinem Arm zentriert. Die Kontur ist ein Zug mit <Command id="LINE" />, jeder Punkt eingegeben als der Weg vom letzten, und ihre Bemaßungen beginnen alle an der unteren linken Ecke.
+Zeichnen Sie diesen Winkel, in Millimetern: 100 lang, mit einem 20 hohen Fuß und einem 30 breiten und 80 hohen Schenkel, die Innenecke auf den Radius 10 gerundet, ein Loch von 8 im Fuß und eines von 10 im Schenkel, jedes in seinem Schenkel zentriert. Die Kontur ist ein Zug mit <Command id="LINE" />, jeder Punkt eingegeben als Abstand vom letzten, und ihre Bemaßungen beginnen alle an der unteren linken Ecke.
 
 ## Steps
 
@@ -24,4 +24,4 @@ Zwei Kreise mit <Command id="CIRCLE" />, jeder mit seinem <Keyword command="CIRC
 
 ### Bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: <Command id="DIMLINEAR" /> von `0,0` zum Loch des Fußes, `80,10`, unten platziert: 80. <Command id="DIMBASELINE" /> macht von derselben ersten Maßhilfslinie aus weiter: Geben Sie das rechte Ende ein, `#100,0`, wobei # vom Ursprung aus misst, dann zweimal die Eingabetaste, um zu beenden. Dasselbe an der linken Seite, zum oberen Loch und dann zur Oberkante, `#0,80`. <Command id="DIMRADIUS" /> auf die Verrundung und <Command id="DIMDIAMETER" /> auf jedes Loch vervollständigen sie.
+Auf dem Layer Bemaßung: <Command id="DIMLINEAR" /> von `0,0` zum Loch des Fußes, `80,10`, unten platziert: 80. <Command id="DIMBASELINE" /> setzt von derselben ersten Maßhilfslinie aus fort: Geben Sie das rechte Ende ein, `#100,0`, wobei `#` vom Ursprung aus misst, dann zweimal die Eingabetaste, um zu beenden. Dasselbe an der linken Seite, zum oberen Loch und dann zur Oberkante, `#0,80`. <Command id="DIMRADIUS" /> auf die Verrundung und <Command id="DIMDIAMETER" /> auf jedes Loch runden die Bemaßung ab.

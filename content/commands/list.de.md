@@ -5,7 +5,7 @@ figure: "LISTE für die Bohrung einer Platte: Layer, Mittelpunkt, Radius, Umfang
 sourceHash: "d0ebcf466ff5"
 ---
 
-LISTE (LIST) schreibt einen Bericht über jedes Objekt, das Sie an der Eingabeaufforderung wählen, in den Spalten und Worten von AutoCAD 2027. Jeder beginnt mit seinem Typ, seinem Layer und seinem Bereich, dann seiner Farbe, seinem Linientyp, seiner Linienstärke und seiner Objekthöhe, wo sie nicht VonLayer oder null sind, dann dem, was der Typ hat: die Enden, die Länge, der Winkel und die Deltas einer Linie; Mittelpunkt, Radius, Umfang und Fläche eines Kreises; die Winkel und die Länge eines Bogens; die Scheitelpunkte, Breiten, Fläche und Länge einer Polylinie; die Kontroll- und Anpassungspunkte eines Splines; Stil, Höhe und Ausrichtung eines Textes; Typ, Punkte und Stil einer Bemaßung; Muster, Maßstab und Fläche einer Schraffur; Name, Einfügepunkt, Maßstäbe und Attribute eines Blockverweises; Zeilen und Elemente einer Anordnung; Fläche, Umfang und Umgrenzungsrahmen einer Region.
+LISTE (LIST) schreibt einen Bericht über jedes Objekt, das Sie an der Eingabeaufforderung wählen, in den Spalten und Worten von AutoCAD 2027. Jeder beginnt mit seinem Typ, seinem Layer und seinem Bereich, dann seiner Farbe, seinem Linientyp, seiner Linienstärke und seiner Objekthöhe, wo sie nicht VonLayer oder null sind, dann dem, was der Typ hat: die Enden, die Länge, der Winkel und die Deltas einer Linie; Mittelpunkt, Radius, Umfang und Fläche eines Kreises; die Winkel und die Länge eines Bogens; die Scheitelpunkte, Breiten, Fläche und Länge einer Polylinie; die Kontroll- und Anpassungspunkte eines Splines; Stil, Höhe und Ausrichtung eines Textes; Typ, Punkte und Stil einer Bemaßung; Muster, Maßstab und Fläche einer Schraffur; Name, Einfügepunkt, Maßstäbe und Attribute eines Blockreferenz; Zeilen und Elemente einer Anordnung; Fläche, Umfang und Umgrenzungsrahmen einer Region.
 
 Punkte stehen im aktuellen BKS, Längen in der Genauigkeit der Zeichnung und Winkel in AUPREC. Objekte, die vor LISTE gewählt wurden, werden sofort aufgelistet, ohne die Eingabeaufforderung, und die Eingabetaste ins Leere beendet ihn ohne ein Wort. Jede Zeile kommt sofort: Das Textfenster von AutoCAD hält bei jeder Bildschirmseite bei `Drücken Sie die EINGABETASTE, um fortzufahren` an, während der Verlauf hier scrollt. Es gibt keine Zeile `Handle`: Objekte haben hier keine Handles.
 
@@ -21,7 +21,7 @@ Die Fläche einer offenen Polylinie mit Kurvenanpassung: Hier ist es die Fläche
 
 ### Was zeigt der Befehl LISTE?
 
-Alles, was LISTE von AutoCAD über das Objekt sagt: seinen Typ, Layer, Bereich und die Eigenschaften, die nicht VonLayer sind, dann seine Geometrie, jeden Punkt und jede Länge als Zahlen. Wählen Sie mehrere Objekte, und jedes erhält seinen Bericht.
+Alles, was LISTE von AutoCAD über das Objekt meldet: seinen Typ, Layer, Bereich und die Eigenschaften, die nicht VonLayer sind, dann seine Geometrie, jeden Punkt und jede Länge als Zahlen. Wählen Sie mehrere Objekte, und jedes erhält seinen Bericht.
 
 ### Wie ermittelt man die Länge oder Fläche eines Objekts?
 

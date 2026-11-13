@@ -5,13 +5,13 @@ figure: "Zwei Linien, die sich unter 30 Grad treffen: jede Linie gewählt, dann 
 sourceHash: "30943abd60f6"
 ---
 
-BEMWINKEL (DIMANGULAR) bemaßt einen Winkel mit einem Bogen als Maßlinie. Was Sie zuerst wählen, entscheidet über den Rest, wie in AutoCAD: Eine Linie verlangt eine zweite Linie, auch zwei Segmente einer Polylinie; ein Bogen wird von Ende zu Ende um seinen Mittelpunkt gemessen; ein Kreis vom gewählten Punkt darauf bis zu einem zweiten Punkt, den Sie angeben; und die Eingabetaste verlangt stattdessen den Scheitelpunkt des Winkels, dann seine beiden Endpunkte. Platzieren Sie dann den Bogen: Wo Sie ihn hinsetzen, bestimmt den gemessenen Winkel. Zwischen zwei Linien ist es der ihrer vier Sektoren, der ihn enthält; sonst der Winkel oder, über seine Schenkel hinweg, der überstumpfe Winkel über 180°. Die Befehlszeile nennt das Maß in Grad, und der Befehl endet.
+BEMWINKEL (DIMANGULAR) bemaßt einen Winkel mit einem Bogen als Maßlinie. Was Sie zuerst wählen, entscheidet über den Rest, wie in AutoCAD: Eine Linie verlangt eine zweite Linie, auch zwei Segmente einer Polylinie; ein Bogen wird von Ende zu Ende um seinen Mittelpunkt gemessen; ein Kreis vom gewählten Punkt darauf bis zu einem zweiten Punkt, den Sie angeben; und die Eingabetaste verlangt stattdessen den Scheitelpunkt des Winkels, dann seine beiden Endpunkte. Platzieren Sie dann den Bogen: Die Lage des Bogens bestimmt den gemessenen Winkel. Zwischen zwei Linien ist es der ihrer vier Sektoren, der ihn enthält; sonst der Winkel oder, über seine Schenkel hinweg, der überstumpfe Winkel über 180°. Die Befehlszeile meldet das Maß in Grad, und der Befehl endet.
 
 ## Options
 
 ### Text
 
-Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie tippen, steht `<>` für das Maß.
+Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie eingeben, steht `<>` für das Maß.
 
 ### Angle
 
@@ -35,7 +35,7 @@ Drücken Sie bei der ersten Eingabeaufforderung die Eingabetaste, geben Sie den 
 
 Wählen Sie den Bogen bei der ersten Eingabeaufforderung: Sein Mittelpunkt ist der Scheitelpunkt und seine Enden die Ursprünge der Maßhilfslinien, sodass die nächste Frage schon lautet, wo die Bemaßung platziert werden soll.
 
-### Warum sagt BEMWINKEL, die Linien seien parallel?
+### Warum meldet BEMWINKEL, die Linien seien parallel?
 
 Zwei parallele Linien, oder dieselbe Linie zweimal gewählt, ergeben keinen Winkel: <Message id="dimLinesParallel" />, und der Befehl endet.
 

@@ -7,7 +7,7 @@ sourceHash: "1fd1973c3ebf"
 
 EINHEIT (UNITS) öffnet das Dialogfeld Zeichnungseinheiten, das festlegt, wie die Zeichnung Längen schreibt und wofür eine Zeichnungseinheit steht. Wie in AutoCAD ist das Dialogfeld modal: Der Befehl dauert, bis OK oder Abbrechen es schließt, die Änderung von OK ist ein Schritt, den <Command id="U" /> zurücknimmt, und Abbrechen oder Esc ändert nichts. Mit Apostroph eingegeben, `'UNITS`, öffnet er sich innerhalb eines laufenden Befehls, der nach dem Schließen des Dialogfelds weitermacht. Auch die Einheiten der Statusleiste und die Zeichnungseinheiten des Anwendungsmenüs öffnen es.
 
-Der Typ der Länge ist Dezimal, und seine Genauigkeit, von 0 bis 8 Dezimalstellen, bestimmt, womit jede Länge geschrieben wird: Koordinaten, Abstände, Flächen, die in den Eingabeaufforderungen angebotenen Vorgaben. Eine neue Zeichnung beginnt hier mit zwei Stellen, wo die metrische Vorlage von AutoCAD mit vier beginnt. Der Einfügemaßstab sagt, was eine Zeichnungseinheit ist, Millimeter, Zentimeter oder Meter; die Statusleiste und die dynamische Eingabe zeigen es. Die Beispielausgabe zeigt einen Punkt mit der gewählten Genauigkeit.
+Der Typ der Länge ist Dezimal, und seine Genauigkeit, von 0 bis 8 Dezimalstellen, bestimmt, womit jede Länge geschrieben wird: Koordinaten, Abstände, Flächen, die in den Eingabeaufforderungen angebotenen Vorgaben. Eine neue Zeichnung beginnt hier mit zwei Stellen, wo die metrische Vorlage von AutoCAD mit vier beginnt. Der Einfügemaßstab legt fest, was eine Zeichnungseinheit ist, Millimeter, Zentimeter oder Meter; die Statusleiste und die dynamische Eingabe zeigen es. Die Beispielausgabe zeigt einen Punkt mit der gewählten Genauigkeit.
 
 ## Missing
 
@@ -21,7 +21,7 @@ Die anderen Längentypen, Architektur, Technisch, Brüche und Wissenschaftlich, 
 
 ### Wie stelle ich die Zeichnungseinheiten auf Millimeter oder Meter?
 
-Öffnen Sie EINHEIT und wählen Sie unter Einfügemaßstab Millimeter, Zentimeter oder Meter. Eine Zeichnungseinheit bleibt eine Einheit: Zeichnen Sie eine 5 m lange Wand als 5 in Metern oder 5000 in Millimetern. Die Wahl sagt, welches, und die Statusleiste und die dynamische Eingabe zeigen es.
+Öffnen Sie EINHEIT und wählen Sie unter Einfügemaßstab Millimeter, Zentimeter oder Meter. Eine Zeichnungseinheit bleibt eine Einheit: Zeichnen Sie eine 5 m lange Wand als 5 in Metern oder 5000 in Millimetern. Die Wahl legt fest, welches, und die Statusleiste und die dynamische Eingabe zeigen es.
 
 ### Wie ändere ich die Anzahl der Dezimalstellen?
 

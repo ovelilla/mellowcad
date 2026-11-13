@@ -5,7 +5,7 @@ figure: "Ein geschlossener Umriss an einer senkrechten Spiegelachse gespiegelt, 
 sourceHash: "fd4b7540311a"
 ---
 
-SPIEGELN (MIRROR) spiegelt die gewählten Objekte an einer Linie: Wählen Sie sie, geben Sie den ersten und den zweiten Punkt der Spiegelachse an und sagen Sie dann, ob die Quellobjekte gelöscht werden sollen. Die Spiegelung ist eine Kopie, und mit der Vorgabe Nein bleiben die Originale, so zeichnet man ein symmetrisches Teil in Hälften. Die beiden Punkte werden in der Draufsicht des BKS genommen, sodass eine bei eingeschaltetem Ortho gezeichnete Spiegelachse genau waagerecht oder senkrecht spiegelt. Wie in AutoCAD mit MIRRTEXT auf 0, seiner Vorgabe, bleibt ein Text in der Spiegelung von links nach rechts lesbar, und eine Schraffur behält den Winkel ihres Musters. Der Durchlauf ist ein Schritt, den Rückgängig zurücknimmt.
+SPIEGELN (MIRROR) spiegelt die gewählten Objekte an einer Linie: Wählen Sie sie, geben Sie den ersten und den zweiten Punkt der Spiegelachse an und geben Sie dann an, ob die Quellobjekte gelöscht werden sollen. Die Spiegelung ist eine Kopie, und mit der Vorgabe Nein bleiben die Originale, so zeichnet man ein symmetrisches Teil in Hälften. Die beiden Punkte werden in der Draufsicht des BKS genommen, sodass eine bei eingeschaltetem Ortho gezeichnete Spiegelachse genau waagerecht oder senkrecht spiegelt. Wie in AutoCAD mit MIRRTEXT auf 0, seiner Vorgabe, bleibt ein Text in der Spiegelung von links nach rechts lesbar, und eine Schraffur behält den Winkel ihres Musters. Der Durchlauf ist ein Schritt, den Rückgängig zurücknimmt.
 
 ## Options
 

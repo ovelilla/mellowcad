@@ -21,7 +21,7 @@ Fragt nach einer Referenzlänge, getippt oder als zwei Punkte gewählt, dann nac
 
 ## Missing
 
-Die Eingabetaste beim ersten oder zweiten Punkt von <Keyword id="Points" /> beendet den Befehl ohne Skalierung, wo AutoCAD mit dem Wert des Cursors dort skaliert. Ein winziger Faktor wird stillschweigend angewendet, wo AutoCAD sagt, dass es ihn ignoriert. Die gezogenen Objekte werden so gezeichnet, wie <Command id="MOVE" /> sie zieht, nur in ihrer Farbe.
+Die Eingabetaste beim ersten oder zweiten Punkt von <Keyword id="Points" /> beendet den Befehl ohne Skalierung, wo AutoCAD mit dem Wert des Cursors dort skaliert. Ein winziger Faktor wird stillschweigend angewendet, wo AutoCAD meldet, dass es ihn ignoriert. Die gezogenen Objekte werden so gezeichnet, wie <Command id="MOVE" /> sie zieht, nur in ihrer Farbe.
 
 ## Questions
 

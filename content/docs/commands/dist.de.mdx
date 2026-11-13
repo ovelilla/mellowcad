@@ -3,10 +3,10 @@ title: "Befehl ABSTAND (DIST) in AutoCAD"
 description: "Wie ABSTAND (DIST, Alias AB) in AutoCAD funktioniert: der Abstand zwischen zwei Punkten mit Winkeln und Deltas in X, Y und Z, oder die Länge eines Punktzugs."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie lautet das Kürzel für ABSTAND (DIST) in AutoCAD?","answer":"AB, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _DIST in jeder Sprache von AutoCAD."},{"question":"Wie messe ich einen Abstand in AutoCAD?","answer":"Geben Sie AB ein und wählen Sie dann die zwei Punkte, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas."},{"question":"Wie messe ich die Gesamtlänge mehrerer Segmente?","answer":"Wählen Sie beim zweiten Punkt Mehrere Punkte und wählen Sie weiter: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe."},{"question":"Wie messe ich einen Abstand in 3D?","answer":"Geben Sie die Punkte mit ihrem Z-Wert an oder fangen Sie Objekte in ihrer Höhe: ABSTAND misst den wahren Abstand im Raum und schreibt den Winkel zur XY-Ebene und das Delta in Z."},{"question":"Warum zeigt ABSTAND weniger Dezimalstellen, als ich brauche?","answer":"Er schreibt Längen mit der Genauigkeit der Zeichnung, in einer neuen Zeichnung hier zwei Stellen. Stellen Sie in EINHEIT mehr ein, bis zu acht."}]
+faq: [{"question":"Wie lautet das Kürzel für ABSTAND (DIST) in AutoCAD?","answer":"AB, dann die Eingabetaste oder die Leertaste. Der vollständige Name funktioniert ebenfalls, ebenso _DIST in jeder Sprache von AutoCAD."},{"question":"Wie messe ich einen Abstand in AutoCAD?","answer":"Geben Sie AB ein und geben Sie dann die zwei Punkte an, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas."},{"question":"Wie messe ich die Gesamtlänge mehrerer Segmente?","answer":"Wählen Sie beim zweiten Punkt Mehrere Punkte und geben Sie weiter Punkte an: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe."},{"question":"Wie messe ich einen Abstand in 3D?","answer":"Geben Sie die Punkte mit ihrem Z-Wert an oder fangen Sie Objekte in ihrer Höhe: ABSTAND misst den wahren Abstand im Raum und schreibt den Winkel zur XY-Ebene und das Delta in Z."},{"question":"Warum zeigt ABSTAND weniger Dezimalstellen, als ich brauche?","answer":"Er schreibt Längen mit der Genauigkeit der Zeichnung, in einer neuen Zeichnung hier zwei Stellen. Stellen Sie in EINHEIT mehr ein, bis zu acht."}]
 ---
 
-ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Wählen, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.
+ABSTAND (DIST) misst den Abstand zwischen zwei Punkten. Klicken, fangen oder geben Sie den ersten und den zweiten Punkt ein, und der Befehl schreibt in die Befehlszeile den Abstand, den Winkel in der XY-Ebene und den Winkel zu ihr sowie die Deltas in X, Y und Z, und endet. Jeder Punkt wird dort gemessen, wo er liegt, sein Z-Wert eingeschlossen, der Abstand ist also der wahre im Raum. Die Eingabetaste beim ersten Punkt beginnt beim zuletzt angegebenen Punkt, und beim zweiten misst sie zurück zum ersten. Die Zahlen folgen der Genauigkeit der Zeichnung, die Winkel AUPREC.
 
 - **Befehl:** `ABSTAND`
 - **Auf Englisch:** `DIST`, in jeder Sprache als `_DIST` eingegeben
@@ -60,11 +60,11 @@ MEASUREGEOM, die Werkzeuge Messen des Menübands, die die Eingabeaufforderungen 
 
 ### Wie messe ich einen Abstand in AutoCAD?
 
-Geben Sie `AB` ein und wählen Sie dann die zwei Punkte, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas.
+Geben Sie `AB` ein und geben Sie dann die zwei Punkte an, mit Objektfang, um auf den Endpunkten oder Mittelpunkten der Objekte zu landen. Der Abstand wird in die Befehlszeile geschrieben, mit dem Winkel und den Deltas.
 
 ### Wie messe ich die Gesamtlänge mehrerer Segmente?
 
-Wählen Sie beim zweiten Punkt `Mehrere` Punkte und wählen Sie weiter: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe.
+Wählen Sie beim zweiten Punkt `Mehrere` Punkte und geben Sie weiter Punkte an: Der bisherige Abstand wird an jedem Punkt angezeigt, und die Eingabetaste schreibt die Summe.
 
 ### Wie messe ich einen Abstand in 3D?
 

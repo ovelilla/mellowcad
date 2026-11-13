@@ -6,7 +6,7 @@ figure: "Die schräge Seite eines Dreiecks, entlang ihrer Länge bemaßt: ihre b
 sourceHash: "243f7657ed7d"
 ---
 
-BEMAUSG (DIMALIGNED) misst den wahren Abstand zwischen zwei Punkten: Seine Maßlinie verläuft parallel zur Linie durch sie, in jedem Winkel, wo <Command id="DIMLINEAR" /> nur entlang X oder Y misst. Seine Eingabeaufforderungen sind die von <Command id="DIMLINEAR" />: der Ursprung der ersten und der zweiten Maßhilfslinie, oder die Eingabetaste und eine Wahl auf einer Linie, einem Bogen oder einem Polyliniensegment für seine beiden Enden, dann die Lage der Maßlinie, auf einer der beiden Seiten. Ein gewählter Kreis ergibt seinen Durchmesser durch den gewählten Punkt. Die Befehlszeile nennt das Maß, und der Befehl endet.
+BEMAUSG (DIMALIGNED) misst den wahren Abstand zwischen zwei Punkten: Seine Maßlinie verläuft parallel zur Linie durch sie, in jedem Winkel, wo <Command id="DIMLINEAR" /> nur entlang X oder Y misst. Seine Eingabeaufforderungen sind die von <Command id="DIMLINEAR" />: der Ursprung der ersten und der zweiten Maßhilfslinie, oder die Eingabetaste und eine Wahl auf einer Linie, einem Bogen oder einem Polyliniensegment für seine beiden Enden, dann die Lage der Maßlinie, auf einer der beiden Seiten. Ein gewählter Kreis ergibt seinen Durchmesser durch den gewählten Punkt. Die Befehlszeile meldet das Maß, und der Befehl endet.
 
 ## Options
 
@@ -30,7 +30,7 @@ Mtext: Der Text einer Bemaßung ist eine Zeile, mit <Keyword id="Text" /> in der
 
 ### Was ist der Unterschied zwischen BEMLINEAR und BEMAUSG?
 
-An einer schrägen Kante gibt <Command id="DIMLINEAR" /> ihre Breite oder ihre Höhe an, je nachdem, ob seine Maßlinie waagerecht oder senkrecht ist; BEMAUSG gibt ihre Länge an, mit der Linie parallel zur Kante. An einer Kante entlang X oder Y geben beide dieselbe Zahl.
+An einer schrägen Kante gibt <Command id="DIMLINEAR" /> ihre Breite oder ihre Höhe an, je nachdem, ob seine Maßlinie waagerecht oder senkrecht ist; BEMAUSG gibt ihre Länge an, mit der Linie parallel zur Kante. An einer Kante entlang X oder Y liefern beide dieselbe Zahl.
 
 ### Wie bemaßt man eine schräge Linie in AutoCAD?
 

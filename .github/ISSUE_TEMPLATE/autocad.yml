@@ -10,7 +10,7 @@ body:
         command already does, and what it still lacks, is on its page of the
         [command reference](https://mellowcad.com/docs/commands).
 
-        English, Spanish, Portuguese, French, Italian or Arabic: write in whichever is yours. **An issue is
+        English, Spanish, Portuguese, French, Italian, German or Arabic: write in whichever is yours. **An issue is
         public:** leave out personal data, and attach only a drawing anyone may see.
   - type: input
     id: command

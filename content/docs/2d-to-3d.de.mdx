@@ -6,13 +6,13 @@ type: howTo
 sourceHash: "6ead7769724f"
 ---
 
-In AutoCAD beginnt ein Volumenkörper meist als 2D-Zeichnung: ein geschlossenes Profil, gezeichnet wie jeder Grundriss, dann auf eine Höhe extrudiert oder um eine Achse gedreht und mit anderen Volumenkörpern vereinigt oder von ihnen abgezogen. Die 3D-Volumenkörper von MellowCAD entstehen auf dieselbe Weise, mit denselben Befehlen. Sie sind noch unvollständig: Es gibt noch keine Sweeps, Lofts, Netze und kein Rendering. Jeder Abschnitt zeigt eine Sitzung, die der Editor zeichnet, mit ihrem Verlauf, wie Sie ihn eingeben würden.
+In AutoCAD beginnt ein Volumenkörper meist als 2D-Zeichnung: ein geschlossenes Profil, gezeichnet wie jeder Grundriss, dann auf eine Höhe extrudiert oder um eine Achse gedreht und mit anderen Volumenkörpern vereinigt oder von ihnen abgezogen. Die 3D-Volumenkörper von MellowCAD entstehen auf dieselbe Weise, mit denselben Befehlen. Sie sind noch unvollständig: Es fehlen noch Sweeps, Lofts, Netze und Rendering. Jeder Abschnitt zeigt eine Sitzung, die der Editor zeichnet, mit ihrem Verlauf, wie Sie ihn eingeben würden.
 
 ## Ein geschlossenes Profil zeichnen [#profile]
 
 Ein Volumenkörper braucht ein geschlossenes Profil: eine geschlossene Polylinie, ein Rechteck, einen Kreis oder eine Region. Linien, die Ende an Ende liegen, bleiben getrennte Objekte: <Command id="JOIN" /> macht daraus eine Polylinie oder <Command id="REGION" /> eine Region. Zeichnen Sie das Profil in der Draufsicht, wo sich seine Punkte am einfachsten eingeben lassen.
 
-## Es extrudieren [#extrude]
+## Extrudieren [#extrude]
 
 <Command id="EXTRUDE" />: Wählen Sie das Profil, drücken Sie die Eingabetaste und geben Sie die Höhe ein. Von oben gesehen sieht ein Volumenkörper genau wie sein Profil aus: Drehen Sie die Ansicht mit <Command id="VIEW" /> oder dem ViewCube, um ihn zu sehen, und wählen Sie mit <Command id="VSCURRENT" />, wie er dargestellt wird.
 
@@ -20,13 +20,13 @@ Ein Volumenkörper braucht ein geschlossenes Profil: eine geschlossene Polylinie
 
 ## Eine Fläche drücken und ziehen [#presspull]
 
-<Command id="PRESSPULL" /> braucht kein Profil: Klicken Sie in eine beliebige geschlossene Fläche, auch eine von getrennten Linien begrenzte, und geben Sie die Höhe ein. Auf die Fläche eines Volumenkörpers geklickt, drückt oder zieht es diese Fläche.
+<Command id="PRESSPULL" /> braucht kein Profil: Klicken Sie in eine beliebige geschlossene Fläche, auch eine von getrennten Linien begrenzte, und geben Sie die Höhe ein. Klicken Sie auf die Fläche eines Volumenkörpers, drückt oder zieht der Befehl diese Fläche.
 
 <Session name="presspull" caption="Eine geschlossene Fläche, von innen gedrückt und gezogen: Sie wird zum Volumenkörper." />
 
-## Es drehen [#revolve]
+## Drehen [#revolve]
 
-<Command id="REVOLVE" /> dreht ein Profil um eine Achse: Wählen Sie das Profil, geben Sie die Achse durch zwei Punkte, ein Objekt oder die X-, Y- oder Z-Achse an, dann den Winkel, vorgabegemäß eine volle Umdrehung.
+<Command id="REVOLVE" /> dreht ein Profil um eine Achse: Wählen Sie das Profil, geben Sie die Achse durch zwei Punkte, ein Objekt oder die X-, Y- oder Z-Achse an, dann den Winkel, als Vorgabe eine volle Umdrehung.
 
 <Session name="revolve" caption="Ein halber Schnitt, um die Y-Achse gedreht." />
 

@@ -6,7 +6,7 @@ type: howTo
 sourceHash: "357757f5ae4d"
 ---
 
-Jeden Punkt, den ein Befehl abfragt, können Sie in der Zeichnung wählen oder eingeben. Eingegeben besteht ein Punkt aus zwei Zahlen, X und Y, durch ein Komma getrennt, und wovon aus sie gemessen werden, hängt davon ab, wie Sie sie schreiben: vom Ursprung, vom letzten Punkt oder als Länge und Winkel ab diesem. MellowCAD liest sie wie AutoCAD bei eingeschalteter dynamischer Eingabe, seiner Vorgabe. Jeder Abschnitt zeichnet eine Figur und zeigt ihren Verlauf.
+Jeden Punkt, den ein Befehl abfragt, können Sie in der Zeichnung wählen oder eingeben. Eingegeben besteht ein Punkt aus zwei Zahlen, X und Y, durch ein Komma getrennt, und der Bezugspunkt, von dem aus sie gemessen werden, hängt von der Schreibweise ab: der Ursprung, der letzte Punkt oder, als Länge und Winkel, ebenfalls der letzte Punkt. MellowCAD liest sie wie AutoCAD bei eingeschalteter dynamischer Eingabe, seiner Vorgabe. Jeder Abschnitt zeichnet eine Figur und zeigt ihren Verlauf.
 
 ## Absolute Koordinaten [#absolute]
 
@@ -16,7 +16,7 @@ Gemessen vom Ursprung, `0,0`. So wird der erste Punkt gelesen, den ein Befehl ab
 
 ## Relative Koordinaten [#relative]
 
-Gemessen vom letzten Punkt: wie weit es in X-Richtung geht, dann in Y-Richtung. Nach dem ersten Punkt eines Befehls bedeutet ein eingegebener Punkt genau das, und der Verlauf schreibt ihn mit `@` davor, wie ihn die Befehlszeile liest: `100,0` ist 100 rechts vom letzten Punkt, `-50,70` 50 zurück und 70 nach oben. Wenn Sie selbst `@` eingeben, ist ein Punkt überall relativ, wo Sie ihn eingeben.
+Gemessen vom letzten Punkt: wie weit es in X-Richtung geht, dann in Y-Richtung. Nach dem ersten Punkt eines Befehls bedeutet ein eingegebener Punkt genau das, und der Verlauf schreibt ihn mit `@` davor, wie ihn die Befehlszeile liest: `100,0` ist 100 rechts vom letzten Punkt, `-50,70` 50 zurück und 70 nach oben. Wenn Sie selbst `@` voranstellen, ist ein Punkt immer relativ, wo auch immer Sie ihn eingeben.
 
 <Session name="coordinatesRelative" caption="Dasselbe Dreieck, jede Ecke von der vorigen aus gemessen." />
 
@@ -34,7 +34,7 @@ Um eine Linie einer bestimmten Länge unter einem bestimmten Winkel zu zeichnen,
 
 ## Polare Spurverfolgung [#tracking]
 
-Bei eingeschalteter Spurverfolgung, `F10` oder ihre Schaltfläche in der Statusleiste, zeigt der Cursor eine Hilfslinie bei jedem Vielfachen ihres Winkels, den Sie im Menü dieser Schaltfläche einstellen, und eine eingegebene Länge folgt der Hilfslinie. Der Tooltip nennt, wie weit und unter welchem Winkel der Cursor steht.
+Bei eingeschalteter Spurverfolgung (`F10` oder ihre Schaltfläche in der Statusleiste) zeigt der Cursor eine Hilfslinie bei jedem Vielfachen ihres Winkels, den Sie im Menü dieser Schaltfläche einstellen, und eine eingegebene Länge folgt der Hilfslinie. Die QuickInfo nennt, wie weit und unter welchem Winkel der Cursor steht.
 
 <Session name="coordinatesTracking" caption="Spurverfolgung bei 30°: ihre Hilfslinie sowie Entfernung und Winkel am Cursor." />
 

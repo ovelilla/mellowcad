@@ -3,10 +3,10 @@ title: "Befehl BEMWINKEL (DIMANGULAR) in AutoCAD"
 description: "So bemaßt AutoCADs BEMWINKEL (DIMANGULAR, Alias BMWIN) Winkel: zwei Linien, ein Bogen, ein Kreis oder drei Punkte, dann die Lage des Bogens."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie lautet das Kürzel für BEMWINKEL (DIMANGULAR) in AutoCAD?","answer":"BMWIN, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _DIMANGULAR in jeder Sprache von AutoCAD."},{"question":"Wie bemaße ich einen Winkel größer als 180 Grad?","answer":"Drücken Sie bei der ersten Eingabeaufforderung die Eingabetaste, geben Sie den Scheitelpunkt und die beiden Endpunkte an und platzieren Sie dann den Bogen außerhalb des Winkels zwischen ihnen: Er misst den überstumpfen Winkel, 360° minus den anderen. Ein Bogen oder ein Kreis funktioniert genauso. Zwischen zwei Linien ist der Winkel immer unter 180°."},{"question":"Wie bemaße ich den Winkel eines Bogens?","answer":"Wählen Sie den Bogen bei der ersten Eingabeaufforderung: Sein Mittelpunkt ist der Scheitelpunkt und seine Enden die Ursprünge der Maßhilfslinien, sodass die nächste Frage schon lautet, wo die Bemaßung platziert werden soll."},{"question":"Warum sagt BEMWINKEL, die Linien seien parallel?","answer":"Zwei parallele Linien, oder dieselbe Linie zweimal gewählt, ergeben keinen Winkel: „Linien sind parallel.“, und der Befehl endet."},{"question":"Wie ändere ich die Dezimalstellen einer Winkelbemaßung?","answer":"Im Bemaßungsstil: BEMSTIL (D) öffnet ihn in der Palette Stile, wo die Winkelgenauigkeit der Primäreinheiten sie festlegt, 0 in ISO-25. Jede Winkelbemaßung in diesem Stil folgt ihr."}]
+faq: [{"question":"Wie lautet das Kürzel für BEMWINKEL (DIMANGULAR) in AutoCAD?","answer":"BMWIN, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso _DIMANGULAR in jeder Sprache von AutoCAD."},{"question":"Wie bemaße ich einen Winkel größer als 180 Grad?","answer":"Drücken Sie bei der ersten Eingabeaufforderung die Eingabetaste, geben Sie den Scheitelpunkt und die beiden Endpunkte an und platzieren Sie dann den Bogen außerhalb des Winkels zwischen ihnen: Er misst den überstumpfen Winkel, 360° minus den anderen. Ein Bogen oder ein Kreis funktioniert genauso. Zwischen zwei Linien ist der Winkel immer unter 180°."},{"question":"Wie bemaße ich den Winkel eines Bogens?","answer":"Wählen Sie den Bogen bei der ersten Eingabeaufforderung: Sein Mittelpunkt ist der Scheitelpunkt und seine Enden die Ursprünge der Maßhilfslinien, sodass die nächste Frage schon lautet, wo die Bemaßung platziert werden soll."},{"question":"Warum meldet BEMWINKEL, die Linien seien parallel?","answer":"Zwei parallele Linien, oder dieselbe Linie zweimal gewählt, ergeben keinen Winkel: „Linien sind parallel.“, und der Befehl endet."},{"question":"Wie ändere ich die Dezimalstellen einer Winkelbemaßung?","answer":"Im Bemaßungsstil: BEMSTIL (D) öffnet ihn in der Palette Stile, wo die Winkelgenauigkeit der Primäreinheiten sie festlegt, 0 in ISO-25. Jede Winkelbemaßung in diesem Stil folgt ihr."}]
 ---
 
-BEMWINKEL (DIMANGULAR) bemaßt einen Winkel mit einem Bogen als Maßlinie. Was Sie zuerst wählen, entscheidet über den Rest, wie in AutoCAD: Eine Linie verlangt eine zweite Linie, auch zwei Segmente einer Polylinie; ein Bogen wird von Ende zu Ende um seinen Mittelpunkt gemessen; ein Kreis vom gewählten Punkt darauf bis zu einem zweiten Punkt, den Sie angeben; und die Eingabetaste verlangt stattdessen den Scheitelpunkt des Winkels, dann seine beiden Endpunkte. Platzieren Sie dann den Bogen: Wo Sie ihn hinsetzen, bestimmt den gemessenen Winkel. Zwischen zwei Linien ist es der ihrer vier Sektoren, der ihn enthält; sonst der Winkel oder, über seine Schenkel hinweg, der überstumpfe Winkel über 180°. Die Befehlszeile nennt das Maß in Grad, und der Befehl endet.
+BEMWINKEL (DIMANGULAR) bemaßt einen Winkel mit einem Bogen als Maßlinie. Was Sie zuerst wählen, entscheidet über den Rest, wie in AutoCAD: Eine Linie verlangt eine zweite Linie, auch zwei Segmente einer Polylinie; ein Bogen wird von Ende zu Ende um seinen Mittelpunkt gemessen; ein Kreis vom gewählten Punkt darauf bis zu einem zweiten Punkt, den Sie angeben; und die Eingabetaste verlangt stattdessen den Scheitelpunkt des Winkels, dann seine beiden Endpunkte. Platzieren Sie dann den Bogen: Die Lage des Bogens bestimmt den gemessenen Winkel. Zwischen zwei Linien ist es der ihrer vier Sektoren, der ihn enthält; sonst der Winkel oder, über seine Schenkel hinweg, der überstumpfe Winkel über 180°. Die Befehlszeile meldet das Maß in Grad, und der Befehl endet.
 
 - **Befehl:** `BEMWINKEL`
 - **Auf Englisch:** `DIMANGULAR`, in jeder Sprache als `_DIMANGULAR` eingegeben
@@ -24,7 +24,7 @@ Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden
 
 ### `Text` (`T`) [#text]
 
-Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie tippen, steht `<>` für das Maß.
+Fragt nach dem Text, der statt des Maßes geschrieben werden soll, das als Vorgabe angeboten wird: Die Eingabetaste behält das Maß. In dem, was Sie eingeben, steht `<>` für das Maß.
 
 ### `Winkel` (`W`) [#angle]
 
@@ -50,7 +50,7 @@ Drücken Sie bei der ersten Eingabeaufforderung die Eingabetaste, geben Sie den 
 
 Wählen Sie den Bogen bei der ersten Eingabeaufforderung: Sein Mittelpunkt ist der Scheitelpunkt und seine Enden die Ursprünge der Maßhilfslinien, sodass die nächste Frage schon lautet, wo die Bemaßung platziert werden soll.
 
-### Warum sagt BEMWINKEL, die Linien seien parallel?
+### Warum meldet BEMWINKEL, die Linien seien parallel?
 
 Zwei parallele Linien, oder dieselbe Linie zweimal gewählt, ergeben keinen Winkel: `Linien sind parallel.`, und der Befehl endet.
 

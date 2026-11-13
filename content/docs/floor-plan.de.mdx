@@ -10,7 +10,7 @@ Ein Grundriss ist das Haus, in etwa eineinhalb Metern Höhe durchgeschnitten und
 
 ## Layer anlegen [#layers]
 
-Jede Art von Objekt kommt auf einen eigenen Layer, mit eigener Farbe, damit Sie jeden davon ausschalten können: Wände, Türen, Fenster und Bemaßung. Legen Sie sie in der Layer-Palette an, <Command id="LAYER" />, und machen Sie vor jedem Schritt im Layer-Steuerelement den richtigen aktuell. Damit die Bemaßungen in der Größe eines Hauses lesbar sind, stellen Sie den Gesamtmaßstab ihres Stils in <Command id="DIMSTYLE" /> ein: hier 12, sodass ihr Text 30 hoch ist.
+Jede Art von Objekt kommt auf einen eigenen Layer, mit eigener Farbe, damit Sie jeden davon ausschalten können: Wände, Türen, Fenster und Bemaßung. Legen Sie sie in der Layer-Palette an, <Command id="LAYER" />, und machen Sie vor jedem Schritt in der Layer-Steuerung den richtigen aktuell. Damit die Bemaßungen in der Größe eines Hauses lesbar sind, stellen Sie den Gesamtmaßstab ihres Stils in <Command id="DIMSTYLE" /> ein: hier 12, sodass ihr Text 30 hoch ist.
 
 ## Die Außenwände zeichnen [#walls]
 
@@ -26,25 +26,25 @@ Eine Linie mit <Command id="LINE" /> von `500,20`, `0,560` nach oben bis zur Inn
 
 ## Die Öffnungen ausschneiden [#openings]
 
-Eine Öffnung wird zwischen zwei Linien quer zur Wand geschnitten, ihren Leibungen. Zeichnen Sie sie mit <Command id="LINE" />, dann <Command id="TRIM" /> die Linien der Wand dazwischen, ein Klick je Linie: der Eingang, 90 breit, ab `100,0`; die Innentür, 80 breit, ab `500,200`; die Fenster, 120 breit, ab `200,580` in der oberen Wand und `780,250` in der rechten.
+Eine Öffnung wird zwischen zwei Linien quer zur Wand geschnitten, ihren Leibungen. Zeichnen Sie sie mit <Command id="LINE" />, dann mit <Command id="TRIM" /> die Wandlinien dazwischen stutzen, ein Klick je Linie: der Eingang, 90 breit, ab `100,0`; die Innentür, 80 breit, ab `500,200`; die Fenster, 120 breit, ab `200,580` in der oberen Wand und `780,250` in der rechten.
 
-<Session name="floorPlanOpenings" caption="Vier Öffnungen: je zwei Leibungen, und die Linien der Wand dazwischen gestutzt." />
+<Session name="floorPlanOpenings" caption="Vier Öffnungen: je zwei Leibungen, und die Wandlinien dazwischen gestutzt." />
 
 ## Die Türen zeichnen [#doors]
 
-Auf dem Layer Türen ist jede Tür ihr Flügel, offen gezeichnet mit <Command id="LINE" />, und ihr Schwenkbereich, ein Bogen mit <Command id="ARC" />: Wählen Sie ihre Option Mittelpunkt, geben Sie dann das Scharnier als Mittelpunkt an, den Anfang des Schwenks und sein Ende. Beide Enden sind schon gezeichnete Punkte, die Ecke der Leibung und das Ende des Flügels: Geben Sie `_END` ein, den Objektfang Endpunkt für einen einzelnen Punkt, und wählen Sie jeden.
+Auf dem Layer Türen besteht jede Tür aus ihrem Flügel, offen gezeichnet mit <Command id="LINE" />, und ihrem Schwenkbereich, einem Bogen mit <Command id="ARC" />: Wählen Sie die Option Mittelpunkt, geben Sie dann das Scharnier als Mittelpunkt an, danach den Anfang und das Ende des Schwenks. Beide Enden sind schon gezeichnete Punkte, die Ecke der Leibung und das Ende des Flügels: Geben Sie `_END` ein, den Objektfang Endpunkt für einen einzelnen Punkt, und wählen Sie jeden davon.
 
 <Session name="floorPlanDoors" caption="Jede Tür: ihr Flügel, um 90° geöffnet, und der Bogen ihres Schwenkbereichs." />
 
 ## Die Fenster zeichnen [#windows]
 
-Auf dem Layer Fenster füllt ein <Command id="RECTANG" /> jede Öffnung ab ihrer Leibung, und eine Linie durch seine Mitte steht für das Glas.
+Auf dem Layer Fenster füllt je ein <Command id="RECTANG" /> die Öffnung von ihrer Leibung aus, und eine Linie durch seine Mitte steht für das Glas.
 
 <Session name="floorPlanWindows" caption="Die Fenster: ein Rechteck in jeder Öffnung und eine Linie für das Glas." />
 
 ## Den Grundriss bemaßen [#dimensions]
 
-Auf dem Layer Bemaßung: <Command id="DIMLINEAR" /> für die Außenmaße, dann die Räume von innen: die Breite des ersten Raums mit <Command id="DIMLINEAR" />, dann die Innenwand und den zweiten Raum mit <Command id="DIMCONTINUE" />, ab dem Ursprung eingegeben mit `#`.
+Auf dem Layer Bemaßung: <Command id="DIMLINEAR" /> für die Außenmaße, dann die Räume von innen: die Breite des ersten Raums mit <Command id="DIMLINEAR" />, dann die Innenwand und den zweiten Raum mit <Command id="DIMCONTINUE" />, mit `#` vom Ursprung aus eingegeben.
 
 <Session name="floorPlanDimensions" caption="Der bemaßte Grundriss: außen 800 mal 600, innen die Räume." />
 

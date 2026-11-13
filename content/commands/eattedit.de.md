@@ -5,9 +5,9 @@ figure: "Zwei Schreibtische, Referenzen auf einen Block mit den Attributen NUM u
 sourceHash: "3517c89fd5da"
 ---
 
-EATTEDIT öffnet AutoCADs Erweiterten Attributeditor für eine Blockreferenz: Er bittet Sie, einen Block zu wählen, und zeigt dann für jedes seiner Attribute ein Feld, mit dem Tag beschriftet und mit seinem Wert gefüllt, wie die Registerkarte Attribut des Editors sie auflistet. Tippen Sie die Werte neu, wobei Tab von Feld zu Feld springt, und die Eingabetaste wendet sie in einem Schritt an, den <Command id="U" /> zurücknimmt; Esc ändert nichts.
+EATTEDIT öffnet AutoCADs Erweiterten Attributeditor für eine Blockreferenz: Er bittet Sie, einen Block zu wählen, und zeigt dann für jedes seiner Attribute ein Eingabefeld, mit dem Tag beschriftet und mit seinem Wert gefüllt, wie die Registerkarte Attribut des Editors sie auflistet. Geben Sie die Werte neu ein; Tab springt von Feld zu Feld, und die Eingabetaste wendet sie in einem Schritt an, den <Command id="U" /> zurücknimmt; Esc ändert nichts.
 
-Ein Doppelklick auf eine Referenz mit Attributen startet EATTEDIT, wie in AutoCAD: Die Befehlszeile schreibt ihn mit dem Punkt, auf den Sie doppelgeklickt haben, als Antwort, und das Fenster öffnet sich sofort. Die Wahl nimmt das Objekt unter dem Fenster: Alles außer einer Blockreferenz wird abgelehnt, ebenso ein Block ohne Attribute, und die Frage wird erneut gestellt. Nur die gewählte Referenz ändert sich; die Definition des Blocks und seine anderen Referenzen behalten ihre Werte.
+Ein Doppelklick auf eine Referenz mit Attributen startet EATTEDIT, wie in AutoCAD: Die Befehlszeile gibt ihn mit dem Punkt, auf den Sie doppelgeklickt haben, als Antwort aus, und das Dialogfeld öffnet sich sofort. Die Wahl nimmt das Objekt unter dem Auswahlkästchen: Alles außer einer Blockreferenz wird abgelehnt, ebenso ein Block ohne Attribute, und die Frage wird erneut gestellt. Nur die gewählte Referenz ändert sich; die Definition des Blocks und seine anderen Referenzen behalten ihre Werte.
 
 ## Missing
 
@@ -17,11 +17,11 @@ Die Registerkarte Textoptionen des Editors (Stil, Ausrichtung, Höhe, Drehung, B
 
 ### Wie öffne ich den Erweiterten Attributeditor in AutoCAD?
 
-Doppelklicken Sie auf eine Blockreferenz mit Attributen, oder tippen Sie `EATTEDIT` und wählen Sie sie. `_EATTEDIT` funktioniert in jeder Sprache von AutoCAD.
+Doppelklicken Sie auf eine Blockreferenz mit Attributen, oder geben Sie `EATTEDIT` ein und wählen Sie sie. `_EATTEDIT` funktioniert in jeder Sprache von AutoCAD.
 
 ### Wie ändere ich einen Attributwert in AutoCAD?
 
-Doppelklicken Sie auf den Block, tippen Sie den neuen Wert in das Feld des Attributs und drücken Sie die Eingabetaste. Jede Referenz behält ihre eigenen Werte: Die Änderung einer lässt die anderen, wie sie sind.
+Doppelklicken Sie auf den Block, geben Sie den neuen Wert im Eingabefeld des Attributs ein und drücken Sie die Eingabetaste. Jede Referenz behält ihre eigenen Werte: Die Änderung einer lässt die anderen, wie sie sind.
 
 ### Warum kann ich nicht doppelklicken, um die Attribute eines Blocks zu bearbeiten?
 
@@ -29,4 +29,4 @@ EATTEDIT öffnet sich für eine Referenz, deren Block Attribute enthält, und ei
 
 ### Was ist der Unterschied zwischen EATTEDIT und ATTEDIT?
 
-Sie bearbeiten dieselben Werte. EATTEDIT beschriftet jedes Feld mit seinem Tag, wie die Registerkarte Attribut des Erweiterten Attributeditors es tut; <Command id="ATTEDIT" /> mit seiner Eingabeaufforderung, wie das Dialogfeld Attribute bearbeiten es tut. In AutoCAD bearbeitet EATTEDIT auch die Textoptionen und Eigenschaften jedes Attributs.
+Sie bearbeiten dieselben Werte. EATTEDIT beschriftet jedes Eingabefeld mit seinem Tag, wie die Registerkarte Attribut des Erweiterten Attributeditors es tut; <Command id="ATTEDIT" /> mit seiner Eingabeaufforderung, wie das Dialogfeld Attribute bearbeiten es tut. In AutoCAD bearbeitet EATTEDIT auch die Textoptionen und Eigenschaften jedes Attributs.

@@ -3,10 +3,10 @@ title: "Befehl DREHEN (ROTATE) in AutoCAD"
 description: "Wie DREHEN (ROTATE, Alias DH) in AutoCAD Objekte um einen Basispunkt dreht: Winkel, Kopieren und Referenz, um sich an einer Kante auszurichten. Zum Testen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie lautet das Alias von DREHEN (ROTATE) in AutoCAD?","answer":"DH, dann die Eingabetaste oder die Leertaste. Das RO des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und _ROTATE in jeder Sprache von AutoCAD."},{"question":"Wie dreht man ein Objekt, um es an einem anderen auszurichten?","answer":"Wählen Sie Bezug, wählen Sie zwei Punkte entlang der Kante des Objekts, dann wählen Sie Punkte und wählen Sie zwei Punkte entlang der Linie, der es folgen soll."},{"question":"Wie dreht man ein Objekt und behält das Original?","answer":"Wählen Sie Kopie vor der Winkelangabe: Die Kopie dreht sich, und das Original bleibt."},{"question":"Warum dreht DREHEN in die falsche Richtung?","answer":"Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile sagt. Geben Sie einen negativen Winkel ein, -30, um im Uhrzeigersinn zu drehen."}]
+faq: [{"question":"Wie lautet das Alias von DREHEN (ROTATE) in AutoCAD?","answer":"DH, dann die Eingabetaste oder die Leertaste. Das RO des englischen AutoCAD gibt es in der deutschen Version nicht. Der volle Name funktioniert ebenfalls, und _ROTATE in jeder Sprache von AutoCAD."},{"question":"Wie dreht man ein Objekt, um es an einem anderen auszurichten?","answer":"Wählen Sie Bezug, wählen Sie zwei Punkte entlang der Kante des Objekts, dann wählen Sie Punkte und wählen Sie zwei Punkte entlang der Linie, der es folgen soll."},{"question":"Wie dreht man ein Objekt und behält das Original?","answer":"Wählen Sie Kopie vor der Winkelangabe: Die Kopie dreht sich, und das Original bleibt."},{"question":"Warum dreht DREHEN in die falsche Richtung?","answer":"Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile angezeigt wird. Geben Sie einen negativen Winkel ein, -30, um im Uhrzeigersinn zu drehen."}]
 ---
 
-DREHEN (ROTATE) dreht die gewählten Objekte um einen Basispunkt: Wählen Sie sie, geben Sie den Basispunkt an, dann den Winkel, eingegeben oder als Punkt gewählt, dessen Richtung vom Basispunkt aus der Winkel ist. Seine erste Zeile nennt, welche Richtung positiv ist, vorgegeben gegen den Uhrzeigersinn (ANGDIR), und wo 0 liegt (ANGBASE). Die Eingabetaste beim Winkel wiederholt die letzte Drehung, in einer neuen Zeichnung 0. Die Objekte drehen sich um eine Achse parallel zum Z des BKS durch den Basispunkt, behalten in 3D also ihre Höhe. Die Drehung ist ein Schritt, den Rückgängig zurücknimmt.
+DREHEN (ROTATE) dreht die gewählten Objekte um einen Basispunkt: Wählen Sie sie, geben Sie den Basispunkt an, dann den Winkel, eingegeben oder als Punkt gewählt, dessen Richtung vom Basispunkt aus der Winkel ist. Seine erste Zeile zeigt, welche Richtung positiv ist, vorgegeben gegen den Uhrzeigersinn (ANGDIR), und wo 0 liegt (ANGBASE). Die Eingabetaste beim Winkel wiederholt die letzte Drehung, in einer neuen Zeichnung 0. Die Objekte drehen sich um eine Achse parallel zum Z des BKS durch den Basispunkt, behalten in 3D also ihre Höhe. Die Drehung ist ein Schritt, den Rückgängig zurücknimmt.
 
 - **Befehl:** `DREHEN`
 - **Auf Englisch:** `ROTATE`, in jeder Sprache als `_ROTATE` eingegeben
@@ -56,7 +56,7 @@ Wählen Sie `Kopie` vor der Winkelangabe: Die Kopie dreht sich, und das Original
 
 ### Warum dreht DREHEN in die falsche Richtung?
 
-Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile sagt. Geben Sie einen negativen Winkel ein, `-30`, um im Uhrzeigersinn zu drehen.
+Ein positiver Winkel dreht gegen den Uhrzeigersinn, wie ANGDIR in der ersten Zeile angezeigt wird. Geben Sie einen negativen Winkel ein, `-30`, um im Uhrzeigersinn zu drehen.
 
 ## Verwandte Befehle [#related]
 

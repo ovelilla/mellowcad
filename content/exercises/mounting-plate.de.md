@@ -13,7 +13,7 @@ Modellieren Sie eine 10 dicke Montageplatte, in Millimetern: ihre Kontur 100 mal
 
 ### Das Profil zeichnen [#profile]
 
-Auf dem Layer Kontur: <Command id="RECTANG" /> mit einer <Keyword command="RECTANG" id="Fillet" /> von `8`, von `0,0` bis `100,60`. Dann ein Kreis in `15,15` mit einem <Keyword command="CIRCLE" id="Diameter" /> von `10`, und <Command id="COPY" /> ihn von seinem Mittelpunkt nach `70,0`, `70,30` und `0,30`.
+Auf dem Layer Kontur: <Command id="RECTANG" /> mit der Option <Keyword command="RECTANG" id="Fillet" /> `8`, von `0,0` bis `100,60`. Dann ein Kreis in `15,15` mit einem <Keyword command="CIRCLE" id="Diameter" /> von `10`, und kopieren Sie ihn mit <Command id="COPY" /> von seinem Mittelpunkt aus um `70,0`, `70,30` und `0,30`.
 
 ### Regionen erstellen [#region]
 
@@ -25,8 +25,8 @@ Auf dem Layer Kontur: <Command id="RECTANG" /> mit einer <Keyword command="RECTA
 
 ### Die Ansicht drehen [#view]
 
-<Command id="-VIEW" /> und <Keyword command="VIEW" id="SEiso" /> betrachten sie von Südosten und oben; <Command id="VSCURRENT" /> und <Keyword command="VSCURRENT" id="Hidden" /> verbergen, was Flächen verdecken. Auch der ViewCube dreht die Ansicht mit einem Klick.
+<Command id="-VIEW" /> und <Keyword command="VIEW" id="SEiso" /> zeigen sie von Südosten und oben; <Command id="VSCURRENT" /> und <Keyword command="VSCURRENT" id="Hidden" /> verbergen, was Flächen verdecken. Auch der ViewCube dreht die Ansicht mit einem Klick.
 
-### Sie extrudieren [#extrude]
+### Extrudieren [#extrude]
 
-<Command id="EXTRUDE" />: Wählen Sie die Region, drücken Sie die Eingabetaste und geben Sie die Höhe ein, `10`. Die Platte ist ein Volumenkörper, mit allen Löchern. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> passt sie ein, und ein Maßstab von `0.8x` lässt Platz um sie herum.
+<Command id="EXTRUDE" />: Wählen Sie die Region, drücken Sie die Eingabetaste und geben Sie die Höhe ein, `10`. Die Platte ist ein Volumenkörper, mit allen Löchern. <Command id="ZOOM" /> <Keyword command="ZOOM" id="Extents" /> zeigt sie formatfüllend, und ein Maßstab von `0.8x` lässt Platz um sie herum.

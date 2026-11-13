@@ -5,7 +5,7 @@ figure: "Ein Rechteck und seine beiden Diagonalen: eine Diagonale gewählt, dann
 sourceHash: "2de33971060a"
 ---
 
-LÖSCHEN (ERASE) entfernt die gewählten Objekte aus der Zeichnung. Wählen Sie sie bei `Objekte wählen:`, durch Anklicken oder mit einem der Auswahlmodi von AutoCAD, darunter ein Fenster oder Kreuzen, dann drücken Sie die Eingabetaste oder die Leertaste: Sie sind weg, und der Befehl sagt nichts weiter. Esc beendet ihn, ohne etwas zu löschen. Wie in AutoCAD werden vor dem Befehl gewählte Objekte sofort gelöscht, und die Entf-Taste mit gewählten Objekten führt LÖSCHEN für sie aus. Während Sie wählen, werden das Objekt unter dem Fadenkreuz und die bereits gewählten verblasst gezeichnet, wie AutoCAD vorab zeigt, was es löschen wird. Das ganze Löschen ist ein Schritt, den Rückgängig zurücknimmt.
+LÖSCHEN (ERASE) entfernt die gewählten Objekte aus der Zeichnung. Wählen Sie sie bei `Objekte wählen:`, durch Anklicken oder mit einem der Auswahlmodi von AutoCAD, darunter ein Fenster oder Kreuzen, dann drücken Sie die Eingabetaste oder die Leertaste: Sie sind weg, und der Befehl meldet nichts weiter. Esc beendet ihn, ohne etwas zu löschen. Wie in AutoCAD werden vor dem Befehl gewählte Objekte sofort gelöscht, und die Entf-Taste mit gewählten Objekten führt LÖSCHEN für sie aus. Während Sie wählen, werden das Objekt unter dem Fadenkreuz und die bereits gewählten verblasst gezeichnet, wie AutoCAD vorab zeigt, was es löschen wird. Das ganze Löschen ist ein Rückgängig-Schritt.
 
 ## Missing
 
@@ -19,11 +19,11 @@ OOPS, das in AutoCAD die zuletzt von LÖSCHEN gelöschte Auswahl zurückbringt, 
 
 ### Wie löscht man alles in einer Zeichnung?
 
-Starten Sie LÖSCHEN und geben Sie bei `Objekte wählen:` `ALLE` ein, dann die Eingabetaste. Objekte auf einem gesperrten Layer werden ausgelassen, und die Auswahl sagt, wie viele es waren.
+Starten Sie LÖSCHEN und geben Sie bei `Objekte wählen:` `ALLE` ein, dann die Eingabetaste. Objekte auf einem gesperrten Layer werden ausgelassen, und der Befehl meldet, wie viele es waren.
 
 ### Wie holt man zurück, was man gelöscht hat?
 
-Geben Sie sofort <Command id="U" /> ein oder drücken Sie Strg+Z: Das Löschen ist ein Rückgängig-Schritt. OOPS, das die zuletzt gelöschte Auswahl auch nach anderen Befehlen zurückbringt, ist noch nicht gebaut.
+Geben Sie sofort <Command id="U" /> ein oder drücken Sie Strg+Z: Das Löschen ist ein Rückgängig-Schritt. OOPS, das die zuletzt gelöschte Auswahl auch nach anderen Befehlen zurückbringt, ist noch nicht umgesetzt.
 
 ### Was ist der Unterschied zwischen LÖSCHEN und STUTZEN?
 

@@ -5,7 +5,7 @@ figure: "Ein Rechteck, eine Polylinie, in vier Linien aufgelöst, und eine davon
 sourceHash: "479cf1cd58d9"
 ---
 
-URSPRUNG (EXPLODE) zerlegt ein zusammengesetztes Objekt in die Objekte, aus denen es besteht. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Eine Polylinie wird zu Linien und Bögen entlang ihrer Mittellinie, ein Blockverweis zu den Objekten seines Blocks, eine Ebene tiefer, Mehrzeilentext zu je einer Textzeile für jede Zeile, die er zeigt, und eine Musterschraffur zu den Linien ihres Musters. Jedes Teil behält den Layer und die Eigenschaften des Objekts; die Teile eines Blocks behalten ihre eigenen. Eine breite Polylinie verliert ihre Breite, und URSPRUNG meldet es. Linien, Kreise, Bögen, einzeiliger Text und Bemaßungen können nicht aufgelöst werden: Sie werden bei der Auswahl abgelehnt, und ein Spline, eine Ellipse oder eine Volltonschraffur, wenn die Auswahl abgeschlossen wird. Das Auflösen ist ein Schritt, den Rückgängig zurücknimmt.
+URSPRUNG (EXPLODE) zerlegt ein zusammengesetztes Objekt in die Objekte, aus denen es besteht. Wählen Sie die Objekte und drücken Sie die Eingabetaste: Eine Polylinie wird zu Linien und Bögen entlang ihrer Mittellinie, eine Blockreferenz zu den Objekten ihres Blocks, eine Ebene tiefer, Mehrzeilentext zu je einer Textzeile für jede Zeile, die er zeigt, und eine Musterschraffur zu den Linien ihres Musters. Jedes Teil behält den Layer und die Eigenschaften des Objekts; die Teile eines Blocks behalten ihre eigenen. Eine breite Polylinie verliert ihre Breite, und URSPRUNG meldet es. Linien, Kreise, Bögen, einzeiliger Text und Bemaßungen können nicht aufgelöst werden: Sie werden bei der Auswahl abgelehnt, und ein Spline, eine Ellipse oder eine Volltonschraffur, wenn die Auswahl abgeschlossen wird. Das Auflösen ist ein Rückgängig-Schritt.
 
 ## Missing
 
@@ -27,4 +27,4 @@ Mehrzeilentext ja: Jede Zeile wird ein einzeiliger Text. Einzeiliger Text ist be
 
 ### Wie löse ich einen Block in AutoCAD auf?
 
-Wählen Sie den Blockverweis und drücken Sie die Eingabetaste: Er wird zu den Objekten seines Blocks, dort, wo der Verweis sie gezeichnet hat. Ein Block darin bleibt ein Block: Lösen Sie ihn erneut auf. Attribute kommen als ihre Definitionen zurück, ohne die Werte.
+Wählen Sie die Blockreferenz und drücken Sie die Eingabetaste: Sie wird zu den Objekten ihres Blocks, dort, wo die Referenz sie gezeichnet hat. Ein Block darin bleibt ein Block: Lösen Sie ihn erneut auf. Attribute kommen als ihre Definitionen zurück, ohne die Werte.

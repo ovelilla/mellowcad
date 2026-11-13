@@ -5,9 +5,9 @@ figure: "Ein Zylinder mit Radius 20 und Höhe 40, vom Mittelpunkt seiner Grundfl
 sourceHash: "ce397d8dcb5d"
 ---
 
-ZYLINDER (CYLINDER) zeichnet einen 3D-Zylinder als Volumenkörper: Geben Sie den Mittelpunkt seiner Grundfläche an, dann den Radius, dann die Höhe. Die Grundfläche liegt auf der XY-Ebene des BKS, auf der Z-Höhe des Mittelpunkts, und die Höhe steigt entlang seiner Z-Achse; eine negative geht nach unten, und ein Punkt gibt sie durch seinen Abstand von der Grundfläche an, wie bei <Command id="BOX" />. Radius und Höhe werden als Vorgaben angeboten, die die Eingabetaste übernimmt, geteilt mit den anderen Grundkörpern und <Command id="EXTRUDE" />. Der Zylinder liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
+ZYLINDER (CYLINDER) zeichnet einen 3D-Zylinder als Volumenkörper: Geben Sie den Mittelpunkt seiner Grundfläche an, dann den Radius, dann die Höhe. Die Grundfläche liegt auf der XY-Ebene des BKS, auf der Z-Höhe des Mittelpunkts, und die Höhe steigt entlang seiner Z-Achse; eine negative geht nach unten, und ein angegebener Punkt legt sie durch seinen Abstand von der Grundfläche fest, wie bei <Command id="BOX" />. Radius und Höhe werden als Vorgaben angeboten, die die Eingabetaste übernimmt, geteilt mit den anderen Grundkörpern und <Command id="EXTRUDE" />. Der Zylinder liegt auf dem aktuellen Layer, und <Command id="U" /> nimmt ihn in einem Schritt zurück.
 
-Der Zylinder behält seine Maße: <Command id="LIST" /> zeigt seine Position, Normale, Radius und Höhe, und in der Eigenschaften-Palette können Sie Radius und Höhe eintippen. Seine Griffe verschieben ihn, legen seine Höhe fest und, an jedem Viertel der Grundfläche, seinen Radius. Er ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+Der Zylinder behält seine Maße: <Command id="LIST" /> zeigt seine Position, Normale, Radius und Höhe, und in der Eigenschaften-Palette können Sie Radius und Höhe eingeben. Seine Griffe verschieben ihn, legen seine Höhe fest und, an jedem Viertel der Grundfläche, seinen Radius. Für <Command id="UNION" />, <Command id="SUBTRACT" /> und das übrige 3D von MellowCAD ist er ein Volumenkörper; dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
 
 ## Options
 
@@ -21,7 +21,7 @@ Beim Mittelpunkt der Grundfläche: fragt nach den beiden Enden des Durchmessers 
 
 ### Ttr
 
-Beim Mittelpunkt der Grundfläche: Wählen Sie zwei Linien, Kreise oder Bögen unter dem Objektfang Tangent und geben Sie einen Radius an: Die Grundfläche berührt beide, nahe der gewählten Punkte, auf ihrer Höhe.
+Beim Mittelpunkt der Grundfläche: Wählen Sie zwei Linien, Kreise oder Bögen unter dem Objektfang Tangente und geben Sie einen Radius an: Die Grundfläche berührt beide, nahe der gewählten Punkte, auf ihrer Höhe.
 
 ### Elliptical
 
@@ -41,13 +41,13 @@ Bei der Höhe: fragt nach dem anderen Ende der Achse. Der Zylinder verläuft vom
 
 ## Missing
 
-<Command id="EXPLODE" /> eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nearest den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtmodell, Hidden und Conceptual hinaus fehlen.
+<Command id="EXPLODE" /> eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nächster den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtmodell, Verdeckt und Konzeptionell hinaus fehlen.
 
 ## Questions
 
 ### Wie lautet das Kürzel für ZYLINDER (CYLINDER) in AutoCAD?
 
-`ZYL`. Tippen Sie es und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: `0,0`, `20` und `40` zeichnen den Zylinder der Sitzung.
+`ZYL`. Geben Sie es ein und drücken Sie die Eingabetaste oder Leertaste, geben Sie dann den Mittelpunkt der Grundfläche, den Radius und die Höhe an: `0,0`, `20` und `40` zeichnen den Zylinder der Sitzung.
 
 ### Wie zeichne ich einen liegenden Zylinder?
 

@@ -1,9 +1,8 @@
 # German (`de`)
 
-> **Command language:** `localized`, German AutoCAD's. **Status:** `draft` since 13/11/2026, at
-> `/de`. **Review:** none yet; no native speaker is at hand (the owner knows none), so a model's
-> reread of what Autodesk did not write before going live. The plan and its phases:
-> `docs/plans/de-language.md`.
+> **Command language:** `localized`, German AutoCAD's. **Status:** `live` since 13/11/2026, at
+> `/de`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
+> Autodesk did not write ("Review"). The plan and its commits: `docs/plans/de-language.md`.
 
 The words are Autodesk's own German localization of AutoCAD, never a translation of ours, as
 Spanish's, pt-BR's, French's and Italian's are. One German for every German reader — Germany,
@@ -270,5 +269,52 @@ not wrap. The longest word of a label is 8 letters at the median and 13 at the 9
 
 German QWERTZ (Germany, Austria; Switzerland its own QWERTZ): Z and Y swap places, so Ctrl+Z
 arrives as `z` from the key labelled Z; ä ö ü and ß are keys of their own; `@ { [ ] } \ | ~` need
-AltGr; `^`, `´` and `` ` `` are dead keys. To check in the command line and the dynamic input
-before going live.
+AltGr; `^`, `´` and `` ` `` are dead keys.
+
+Checked in Chrome on a production build before going live (13/11/2026, skill `browser-verify`,
+keys sent through CDP as the layout sends them): LINIE and LÖ typed on the drawing reach the
+command line (LÖSCHEN runs), Ctrl+Z from the key labelled Z (`KeyY`) undoes, and the dead keys,
+the Windows way and as a composition, reach the dynamic input (TEXT kept `âéèßäöüô`). **AltGr was
+lost on the drawing**: Windows sends it as Ctrl+Alt, the runtime typed nothing with Ctrl held, and
+the adapter read the key as its physical one, so the `@` of `@10,0` (AltGr+Q; AltGr+0 on AZERTY,
+AltGr+2 on a Spanish keyboard) never reached the box or the command line. Fixed for every
+language: a character typed with Ctrl and Alt is text (`CadRuntime.keyDown`, `shortcutKey`;
+`germanPrompts.test.ts`, `CadEngine.test.ts`). Chrome on Linux inserts no text for an emulated
+Ctrl+Alt key even in a plain field, so a real Windows keyboard in a field stays unverified.
+
+## Going live
+
+On 13/11/2026, from production builds in a clean worktree (every page `○` or `●` but
+`/api/search`; the sitemap 897 URLs, 126 of them German; `/de/draw` the only `draw.html` with the
+engine's German, no client chunk with it):
+
+- **The landing's first load**, Brotli q11, in bytes, before German (`a9bfffc0`), German a draft
+  (`4be7bdf1`) and live: `/` 253,200 → 253,232 → 253,258, `/es` 254,495 → 254,506 → 254,579,
+  `/pt-br` 254,697 → 254,707 → 254,907, `/ar` 278,052 → 278,110 → 278,190, `/fr` 255,406 →
+  255,372 → 255,528 (472 under 250 KiB), `/it` 254,566 → 254,615 → 254,558, `/de` 254,957 →
+  254,953. A build moves a landing by some 50 bytes on its own; naming German costs each up to
+  about 200.
+- **Naming German** in every landing's commands sentence (`<de>{german}</de>`: VERSETZ beside
+  DESFASE, DESLOCAMENTO and DECALER), its lead and the FAQ's class answer.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720 with its palettes): the
+  hero's pill wrapped, «Ohne Anmeldung»: «Ohne Konto», as `LocalFirst.freeTitle` says. The
+  landing's title passed 60 characters: «Kostenloses CAD-Programm mit AutoCAD-Befehlen» («online»
+  is the H1's and the description's). The Layers palette's scroll edge cuts «Sperre» as it cuts
+  any column there.
+
+## Review
+
+No native reader: the owner knows none. What Autodesk did not write was read again by a model on
+13/11/2026, four agents against the English, Autodesk's tables and the German catalogs, each change
+read again before its commit:
+
+- **The site and the editor**, 6 strings: «CAD-Zeichenbereich», the calque «den er nimmt» →
+  «erfasst», «Jede Seite lässt sich einzeln drucken».
+- **The "Use" pages and exercises**, some 90 edits: «Registerkarte», «QuickInfo»,
+  «Layer-Steuerung», headings without a stray pronoun («Extrudieren»), FILLET's option named.
+- **The command pages**, 84 files: «Blockreferenz» for «Blockverweis», «Absatztext» for
+  «Mehrzeilentext», «Eigenschaftenpalette», the verbs «meldet» and «zeigt» for «sagt» and «nennt»,
+  ID's prompt quoted in German (`Punkt angeben:`).
+- **Left, for a native reader if one is found**: «Kreuzen» and «Gummiband» in prose, «Anordnung»
+  (the array object) beside the ribbon's «Reihe», «Historie» and «Verlauf», «Auswahlkästchen» for
+  the pickbox, the ours-marked editor labels, the exercises' mechanical words.

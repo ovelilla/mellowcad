@@ -5,7 +5,7 @@ figure: "Vier Linien, dann Radius 15 und Mehrfach: zwei Ecken abgerundet, zwei b
 sourceHash: "f97d737f74a9"
 ---
 
-ABRUNDEN (FILLET) rundet die Ecke zwischen zwei Objekten mit einem Bogen des angegebenen Radius ab und stutzt oder dehnt jedes Objekt bis dorthin. Seine erste Zeile nennt den Modus und den aktuellen Radius; dann wählen Sie das erste und das zweite Objekt, jedes auf der Seite, die bleiben soll, und der Befehl endet. Er nimmt Linien, Bögen, Kreise, Ellipsen, Splines und die Segmente einer 2D-Polylinie. Zwei Linien müssen sich nicht treffen: Sie werden bis zum Bogen gedehnt, wie in AutoCAD. Bei Radius 0, oder mit gehaltener Umschalttaste bei der zweiten Wahl, entsteht stattdessen eine scharfe Ecke.
+ABRUNDEN (FILLET) rundet die Ecke zwischen zwei Objekten mit einem Bogen des angegebenen Radius ab und stutzt oder dehnt jedes Objekt bis dorthin. Seine erste Zeile meldet den Modus und den aktuellen Radius; dann wählen Sie das erste und das zweite Objekt, jedes auf der Seite, die bleiben soll, und der Befehl endet. Er nimmt Linien, Bögen, Kreise, Ellipsen, Splines und die Segmente einer 2D-Polylinie. Zwei Linien müssen sich nicht treffen: Sie werden bis zum Bogen gedehnt, wie in AutoCAD. Bei Radius 0, oder mit gedrückter Umschalttaste bei der zweiten Wahl, entsteht stattdessen eine scharfe Ecke.
 
 ## Options
 
@@ -27,7 +27,7 @@ Fragt nach jedem Abrunden erneut nach dem ersten Objekt, sodass Sie Ecke um Ecke
 
 ## Missing
 
-Stutzen: Die Objekte werden immer bis zum Bogen gestutzt oder gedehnt, wie mit TRIMMODE 1, AutoCADs Vorgabe; Nicht stutzen wird nicht angeboten. Der Bogen übernimmt nicht den Linientypfaktor des zweiten Objekts, da hier kein Objekt einen eigenen hat. Vor dem Klick zeigt der Tooltip die Eingabeaufforderung statt zu sagen, warum ein Paar nicht abgerundet werden kann, und kein Vorhängeschloss markiert ein Objekt auf einem gesperrten Layer. Einige seltene Paare aus Ellipsen oder Splines enden anders: ein geschlossener Spline mit einer Linie bei Radius 0, ein Bogen, der nur den Versatz einer Ellipse berührt, und ein solches Paar in einer geneigten Ebene.
+Stutzen: Die Objekte werden immer bis zum Bogen gestutzt oder gedehnt, wie mit TRIMMODE 1, AutoCADs Vorgabe; Nicht stutzen wird nicht angeboten. Der Bogen übernimmt nicht den Linientypfaktor des zweiten Objekts, da hier kein Objekt einen eigenen hat. Vor dem Klick zeigt der Tooltip die Eingabeaufforderung statt zu nennen, warum ein Paar nicht abgerundet werden kann, und kein Vorhängeschloss markiert ein Objekt auf einem gesperrten Layer. Einige seltene Paare aus Ellipsen oder Splines enden anders: ein geschlossener Spline mit einer Linie bei Radius 0, ein Bogen, der nur den Versatz einer Ellipse berührt, und ein solches Paar in einer geneigten Ebene.
 
 ## Questions
 
@@ -37,7 +37,7 @@ Stutzen: Die Objekte werden immer bis zum Bogen gestutzt oder gedehnt, wie mit T
 
 ### Wie runde ich zwei Linien ab?
 
-Wählen Sie <Keyword id="Radius" />, tippen Sie ihn und wählen Sie dann jede Linie auf der Seite, die bleiben soll. Linien, die sich nicht treffen, werden bis zum Bogen gedehnt, und Linien, die sich kreuzen, werden bis zu ihm zurückgestutzt. Zwei parallele Linien werden von einem Halbkreis verbunden, welcher Radius auch gilt. Eine Linie und das Segment einer Polylinie werden zu einer Polylinie verbunden.
+Wählen Sie <Keyword id="Radius" />, geben Sie ihn ein und wählen Sie dann jede Linie auf der Seite, die bleiben soll. Linien, die sich nicht treffen, werden bis zum Bogen gedehnt, und Linien, die sich kreuzen, werden bis zu ihm zurückgestutzt. Zwei parallele Linien werden von einem Halbkreis verbunden, welcher Radius auch gilt. Eine Linie und das Segment einer Polylinie werden zu einer Polylinie verbunden.
 
 ### Was bewirkt ein Abrundungsradius von 0?
 
@@ -45,7 +45,7 @@ Er macht eine scharfe Ecke: Jede Linie wird gestutzt oder gedehnt, bis sie sich 
 
 ### Warum funktioniert ABRUNDEN nicht?
 
-Er sagt in der Befehlszeile, warum. <Message id="filletRadiusTooLarge" /> bedeutet, dass der Bogen nicht zwischen die Linien passt; <Message id="segmentsNotConsecutive" />, dass zwei Segmente einer Polylinie zu weit auseinanderliegen; Text, Blöcke, Bemaßungen und Schraffuren werden abgelehnt, Objekte in unterschiedlicher Höhe gelten als nicht koplanar, und ein Objekt auf einem gesperrten Layer wird nicht genommen.
+Er nennt den Grund in der Befehlszeile. <Message id="filletRadiusTooLarge" /> bedeutet, dass der Bogen nicht zwischen die Linien passt; <Message id="segmentsNotConsecutive" />, dass zwei Segmente einer Polylinie zu weit auseinanderliegen; Text, Blöcke, Bemaßungen und Schraffuren werden abgelehnt, Objekte in unterschiedlicher Höhe gelten als nicht koplanar, und ein Objekt auf einem gesperrten Layer wird nicht berücksichtigt.
 
 ### Wie runde ich die Kanten eines 3D-Volumenkörpers ab?
 

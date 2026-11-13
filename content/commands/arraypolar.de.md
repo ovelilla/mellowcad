@@ -5,7 +5,7 @@ figure: "Eine Bohrung an einem Flansch, um die Mitte des Flansches angeordnet: 8
 sourceHash: "efed541dea7f"
 ---
 
-REIHEKREIS (ARRAYPOLAR) kopiert eine Auswahl um einen Mittelpunkt, als ein Anordnungsobjekt. Er fragt nach den Objekten, nennt den Typ und ob die Anordnung assoziativ ist, fragt nach dem Mittelpunkt und zeigt die Anordnung sofort: 6 Elemente über eine volle Drehung, jedes so gedreht, wie es herumgeht. Dann bearbeitet eine Eingabeaufforderung sie live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD. Die gewählten Objekte werden zu ihrem ersten Element.
+REIHEKREIS (ARRAYPOLAR) kopiert eine Auswahl um einen Mittelpunkt, als ein Anordnungsobjekt. Er fragt nach den Objekten, meldet den Typ und ob die Anordnung assoziativ ist, fragt nach dem Mittelpunkt und zeigt die Anordnung sofort: 6 Elemente über eine volle Drehung, jedes so gedreht, wie es um den Mittelpunkt läuft. Dann bearbeiten Sie sie über eine Eingabeaufforderung live, bis die Eingabetaste sie erzeugt, über ihre Optionen oder die Griffe der Vorschau, wie in AutoCAD. Die gewählten Objekte werden zu ihrem ersten Element.
 
 ## Options
 
@@ -19,7 +19,7 @@ Die Anzahl der Elemente, von 1 bis 32767; der Winkel, den sie füllen, bleibt er
 
 ### Angle between
 
-Der Winkel von einem Element zum nächsten. Der gefüllte Winkel wird zu so vielen Schritten, die Richtung bleibt erhalten, und zu einer vollen Drehung, sobald sie 360° erreichen.
+Der Winkel von einem Element zum nächsten. Der gefüllte Winkel wird zu so vielen Schritten, wobei die Richtung erhalten bleibt, und zu einer vollen Drehung, sobald sie 360° erreichen.
 
 ### Fill angle
 
@@ -27,7 +27,7 @@ Der Winkel, den die Elemente füllen, positiv gegen den Uhrzeigersinn und negati
 
 ### ROTate items
 
-<Keyword id="Yes" />, die Vorgabe, dreht jedes Element, wie es um den Mittelpunkt herumgeht; <Keyword id="No" /> verschiebt es nur, sodass jedes Element so steht wie das erste.
+<Keyword id="Yes" />, die Vorgabe, dreht jedes Element mit seinem Lauf um den Mittelpunkt; <Keyword id="No" /> verschiebt es nur, sodass jedes Element so steht wie das erste.
 
 ### eXit
 

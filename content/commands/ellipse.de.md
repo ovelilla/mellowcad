@@ -5,7 +5,7 @@ figure: "Eine Ellipse über die zwei Enden einer Achse, eine über ihren Mittelp
 sourceHash: "2ee0d1b3a8a4"
 ---
 
-ELLIPSE zeichnet eine Ellipse aus den zwei Enden einer Achse, dann dem Abstand von ihrer Mitte bis zum Ende der anderen Achse: die halbe Länge der anderen Achse. Jede Achse darf die längere sein. Es ist eine echte Ellipse, wie die von AutoCAD, keine Polylinie, sodass Mittelpunkt, Quadrant und Nächster an ihr fangen und ihre Griffe sie verschieben und jede Halbachse festlegen. Während Sie das zweite Ende angeben, verläuft eine bernsteinfarbene gestrichelte Linie vom ersten; beim Abstand folgt die Ellipse dem Cursor. Die Ellipse wird auf dem aktuellen Layer erzeugt, mit den Eigenschaften, die beim Festlegen aktuell sind.
+ELLIPSE zeichnet eine Ellipse aus den zwei Enden einer Achse, dann dem Abstand von ihrer Mitte bis zum Ende der anderen Achse: die halbe Länge der anderen Achse. Jede Achse darf die längere sein. Es ist eine echte Ellipse, wie die von AutoCAD, keine Polylinie, sodass Zentrum, Quadrant und Nächster an ihr fangen und ihre Griffe sie verschieben und jede Halbachse festlegen. Während Sie das zweite Ende angeben, verläuft eine bernsteinfarbene gestrichelte Linie vom ersten; beim Abstand folgt die Ellipse dem Cursor. Die Ellipse wird auf dem aktuellen Layer erzeugt, mit den Eigenschaften, die beim Festlegen aktuell sind.
 
 ## Options
 
@@ -27,11 +27,11 @@ Bei einem Bogen anstelle des Start- oder Endwinkels: der Winkel auf dem Kreis, a
 
 ### Included angle
 
-Bei einem Bogen anstelle des Endwinkels: wie weit er vom Start aus überstreicht. Die Eingabetaste nimmt 180, die halbe Ellipse.
+Bei einem Bogen anstelle des Endwinkels: wie weit er vom Start aus überstreicht. Die Eingabetaste übernimmt 180, die halbe Ellipse.
 
 ## Missing
 
-Isokreis, den AutoCAD nur beim isometrischen Fangstil anbietet, der hier nicht gebaut ist. PELLIPSE 1, eine als Polylinie gezeichnete Ellipse. Das Schraffieren oder Bemaßen einer Ellipse und die Objektfänge Schnittpunkt, Tangente und Lot an ihr. Die Pfeilgriffe an den Enden eines Ellipsenbogens, hier quadratisch gezeichnet, und das Eingeben einer Länge oder eines Winkels, während ein Griff heiß ist. Ein Punkt mit Z-Wert beim Abstand wird in der Draufsicht gemessen, wo AutoCAD ihn im Raum misst.
+Isokreis, den AutoCAD nur beim isometrischen Fangstil anbietet, der hier noch nicht umgesetzt ist. PELLIPSE 1, eine als Polylinie gezeichnete Ellipse. Das Schraffieren oder Bemaßen einer Ellipse und die Objektfänge Schnittpunkt, Tangente und Lot an ihr. Die Pfeilgriffe an den Enden eines Ellipsenbogens, hier quadratisch gezeichnet, und das Eingeben einer Länge oder eines Winkels, während ein Griff heiß ist. Ein Punkt mit Z-Wert beim Abstand wird in der Draufsicht gemessen, wo AutoCAD ihn im Raum misst.
 
 ## Questions
 
@@ -49,4 +49,4 @@ Wählen Sie <Keyword id="Center" />, geben Sie den Mittelpunkt an, dann das Ende
 
 ### Wie zeichne ich einen isometrischen Kreis in AutoCAD?
 
-AutoCAD zeichnet ihn mit Isokreis von ELLIPSE, sobald der Fangstil isometrisch ist. Beides ist in MellowCAD noch nicht gebaut.
+AutoCAD zeichnet ihn mit Isokreis von ELLIPSE, sobald der Fangstil isometrisch ist. Beides gibt es in MellowCAD noch nicht.

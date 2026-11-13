@@ -104,6 +104,22 @@ describe("German AutoCAD's command language", () => {
   })
 })
 
+// QWERTZ's `@` is AltGr+Q, which Windows sends as Ctrl+Alt: typed on the
+// drawing it is the relative point's `@`, in the box as at the command line.
+describe("German keyboard", () => {
+  it("types AltGr's @ on the drawing: @10,0 is a relative point", () => {
+    const cad = answer(inGerman(), "LINIE", "5,5")
+    cad.press("@", { ctrlKey: true, altKey: true })
+    for (const key of "10,0") cad.press(key)
+    cad.press("Enter")
+    const drawn = cad.latest()
+    expect(drawn.type === "line" && drawn.end).toBeCloseToPoint(p(15, 5))
+    const idle = inGerman()
+    idle.press("@", { ctrlKey: true, altKey: true })
+    expect(idle.state().commandLine.buffer).toBe("@")
+  })
+})
+
 // What only the desktop shows (names/d01, de-DE, 13/11/2026): each drafting
 // toggle says ein or aus, but Selection Cycling, whose two lines are worded
 // apart: Wechselnde Auswahl ein, Auswahl wechseln aus.

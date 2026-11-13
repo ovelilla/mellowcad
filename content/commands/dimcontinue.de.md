@@ -5,7 +5,7 @@ figure: "Ein gestuftes Profil mit 30 bemaßt, dann mit 40 und 30 auf derselben L
 sourceHash: "11fa474694fd"
 ---
 
-BEMWEITER (DIMCONTINUE) zeichnet eine Kette von Bemaßungen Ende an Ende: Jede beginnt an der zweiten Maßhilfslinie der vorigen und misst bis zum nächsten Punkt, den Sie angeben, auf derselben Maßlinie. Er führt die zuletzt seit dem Öffnen der Zeichnung erstellte lineare oder ausgerichtete Bemaßung weiter, folgt also meist auf <Command id="DIMLINEAR" /> oder <Command id="DIMALIGNED" />; ohne eine fragt er, welche weitergeführt werden soll. Die Befehlszeile nennt jedes Maß, wenn es erstellt wird. Die Eingabetaste bei der Eingabeaufforderung für den Ursprung wählt <Keyword id="Select" />, und die Eingabetaste dort beendet den Befehl, wie Esc es tut.
+BEMWEITER (DIMCONTINUE) zeichnet eine Kette von Bemaßungen Ende an Ende: Jede beginnt an der zweiten Maßhilfslinie der vorigen und misst bis zum nächsten Punkt, den Sie angeben, auf derselben Maßlinie. Er führt die zuletzt seit dem Öffnen der Zeichnung erstellte lineare oder ausgerichtete Bemaßung weiter, folgt also meist auf <Command id="DIMLINEAR" /> oder <Command id="DIMALIGNED" />; ohne eine fragt er, welche weitergeführt werden soll. Die Befehlszeile meldet jedes Maß, wenn es erstellt wird. Die Eingabetaste bei der Eingabeaufforderung für den Ursprung wählt <Keyword id="Select" />, und die Eingabetaste dort beendet den Befehl, wie Esc es tut.
 
 Wie in AutoCAD misst jede neue Bemaßung in der Richtung ihrer Basis und übernimmt den Bemaßungsstil und den Layer der Basis, mit der aktuellen Farbe, dem aktuellen Linientyp und der aktuellen Linienstärke.
 
@@ -13,11 +13,11 @@ Wie in AutoCAD misst jede neue Bemaßung in der Richtung ihrer Basis und überni
 
 ### Select
 
-Fragt nach der Bemaßung, von der aus weitergeführt wird: Wählen Sie eine lineare oder ausgerichtete, nahe der Maßhilfslinie, von der aus es weitergehen soll. Auch ein dort getippter Punkt wählt. Eine Radius- oder Durchmesserbemaßung wird mit <Message id="associativeDimensionRequired" /> abgelehnt und die Frage erneut gestellt.
+Fragt nach der Bemaßung, von der aus weitergeführt wird: Wählen Sie eine lineare oder ausgerichtete, nahe der Maßhilfslinie, von der aus es weitergehen soll. Auch ein dort eingegebener Punkt wählt. Eine Radius- oder Durchmesserbemaßung wird mit <Message id="associativeDimensionRequired" /> abgelehnt und die Frage erneut gestellt.
 
 ### Undo
 
-Nimmt die letzte Bemaßung der Kette zurück und macht von der davor weiter, so oft, wie es welche gibt. Ist keine mehr da, lautet die Antwort <Message id="commandCompletelyUndone" /> und die Eingabeaufforderung bleibt.
+Nimmt die letzte Bemaßung der Kette zurück und macht von der davor weiter, so oft, wie es welche gibt. Ist keine mehr da, lautet die Meldung <Message id="commandCompletelyUndone" /> und die Eingabeaufforderung bleibt.
 
 ## Missing
 
@@ -29,7 +29,7 @@ Eine Bemaßung ist nicht assoziativ: Eine Kette folgt den Objekten, die sie miss
 
 `BMWT`, danach Eingabetaste oder Leertaste. Auch der vollständige Name funktioniert, ebenso `_DIMCONTINUE` in jeder Sprache von AutoCAD.
 
-### Was ist der Unterschied zwischen BEMWEITER und BEMBASISLINIE?
+### Was ist der Unterschied zwischen BEMWEITER und BEMBASISL?
 
 BEMWEITER setzt die Bemaßungen Ende an Ende auf eine Linie, jede von dort, wo die letzte endete. <Command id="DIMBASELINE" /> misst sie alle von derselben Maßhilfslinie, jede auf einer weiter außen liegenden Linie.
 
