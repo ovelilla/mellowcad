@@ -1,0 +1,23 @@
+_-LINETYPE
+_S
+HIDDEN2
+
+(getvar "CELTYPE")
+(tblsearch "LTYPE" "HIDDEN2")
+_-LAYER
+_L
+CENTER2
+0
+
+(tblsearch "LTYPE" "CENTER2")
+_LINE
+0,0
+10,0
+
+_CHPROP
+_L
+
+_LT
+DASHED2
+
+(tblsearch "LTYPE" "DASHED2")

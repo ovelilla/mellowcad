@@ -9,7 +9,7 @@ import {
   samePlane,
 } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE, DimStyle } from "../../domain/dimStyles"
-import { ParsedDrawing } from "../drawingFile"
+import { ParsedDrawing, withLinetypeTable } from "../drawingFile"
 import { dxfGroups } from "./dxfGroups"
 import { DxfBlock, DxfRecord, dxfSections } from "./dxfSections"
 import {
@@ -71,7 +71,8 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     (header("$ACADVER", 1) ?? "AC1009").slice(2),
     10
   )
-  const linetype = dxfLinetypes(table("LTYPE"))
+  const linetypes = dxfLinetypes(table("LTYPE"), table("STYLE"))
+  const linetype = linetypes.name
   const layers = new DxfLayers(table("LAYER"), linetype)
   const textStyles = dxfTextStyles(table("STYLE"))
   const dimStyles = dxfDimStyles(table("DIMSTYLE"))
@@ -200,17 +201,18 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   const entities = readSpace(modelRecords)
 
   return {
-    drawing: {
+    drawing: withLinetypeTable({
       settings,
       layers: layers.layers(),
       currentLayerId: layers.id(header("$CLAYER", 8)),
+      linetypes: [...linetypes.linetypes],
       textStyles: textStyles.entries(),
       currentTextStyleId: textStyles.id(header("$TEXTSTYLE", 7)),
       dimStyles: dimStyles.entries(),
       currentDimStyleId: dimStyles.id(header("$DIMSTYLE", 2)),
       blocks,
       entities,
-    },
+    }),
     report: { leftOut, inLayouts, unreadable },
   }
 }

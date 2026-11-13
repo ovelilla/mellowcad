@@ -3,7 +3,7 @@ title: Differenze rispetto ad AutoCAD
 metaTitle: "Differenze rispetto ad AutoCAD, e perché"
 description: "Dove MellowCAD funziona diversamente da AutoCAD, e perché: ciò che il browser tiene per sé e ciò che qui non esiste."
 type: concept
-sourceHash: "cd14006ca4f1"
+sourceHash: "0aafe6ab8ce7"
 ---
 
 MellowCAD segue AutoCAD 2027: gli stessi comandi e gli stessi alias, lo stesso ordine delle richieste, le stesse lettere delle opzioni e gli stessi valori predefiniti. Se ne discosta solo dove lo impone il browser o dove la funzione correlata qui non esiste. Ogni differenza qui sotto dice che cosa fa AutoCAD, che cosa fa invece MellowCAD, e perché. Ciò che manca ancora a ogni singolo comando è indicato nella sua voce della [pagina dei comandi](/docs/commands).
@@ -32,9 +32,9 @@ Non ci sono layout né stampa: lo schermo è l'unico posto in cui si vede un dis
 
 Dove AutoCAD apre una finestra di dialogo che qui non esiste, il comando pone le sue domande nella riga di comando, come fa la sua versione con il trattino: <Command id="COLOR" /> esegue <Command id="-COLOR" />, <Command id="LWEIGHT" /> esegue <Command id="-LWEIGHT" /> e <Command id="LINETYPE" /> esegue <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> e <Command id="STYLE" /> aprono la palette Stili, con gli stili di quota o di testo.
 
-## Tutti i tipi di linea sono caricati [#linetypes]
+## Sei tipi di linea in ogni disegno [#linetypes]
 
-Un nuovo disegno di AutoCAD contiene un solo tipo di linea, continuo, e gli altri si caricano da un file. Senza la finestra Gestione tipo di linea per caricarne uno, ogni disegno qui li contiene tutti, già caricati.
+Un nuovo disegno di AutoCAD contiene un solo tipo di linea, continuo, e gli altri si caricano da un file, quando ne scegli uno nella finestra Gestione tipo di linea o con la voce Altro… di un elenco a discesa. Qui non esiste né l'una né l'altra, quindi ogni disegno ne contiene sei — Continuous, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT — perché gli elenchi a discesa li propongano; l'opzione Richiama di <Command id="LINETYPE" /> carica gli altri da acadiso.lin.
 
 ## Le coordinate nella barra di stato [#coordinates]
 

@@ -107,8 +107,8 @@ DXF is told by its name or its first group (a binary one by its sentinel) and re
 as one of ours does: a history of its own, the view framed, the autosave written; ASCII and
 binary, R12 to 2018, read in AutoCAD 2027's own files of two reference drawings
 (`cad/serialization/dxf/fixtures/`, f001–f005), the text up to 2004 in `$DWGCODEPAGE`'s code page
-with its `\U+XXXX` escapes; the objects the model has, each with its layer, colour, linetype,
-lineweight, thickness, elevation and normal: LINE, CIRCLE, ARC, ELLIPSE, LWPOLYLINE, the 2D
+with its `\U+XXXX` escapes; the objects the model has, each with its layer, colour, linetype and
+its own linetype scale (48), lineweight, thickness, elevation and normal: LINE, CIRCLE, ARC, ELLIPSE, LWPOLYLINE, the 2D
 POLYLINE with PEDIT's Fit arcs and Spline frame as AutoCAD left them, the 3D POLYLINE, SPLINE by
 its fit points, end tangents and knot spacing (70's 32, 64, 128, f006) or its control points,
 knots and weights (a closed one, which AutoCAD writes on open knots, as that curve), TEXT, MTEXT,
@@ -124,9 +124,13 @@ hook, horizontal and its DSTYLE overrides of DIMSCALE, DIMASZ, DIMTAD and DIMGAP
 style's kept as its own, linked by its 340 to the MTEXT or block reference of its space it points
 at, its offset from it read off where they stand (f001's, AutoCAD's own leader/p22, and the 823 of
 22 of AutoCAD's samples: leader/p22, the corpus); the tables: layers (on,
-off, locked), text and dimension styles (a group left out at the DXF reference's value, not
+off, locked), the drawing's linetypes (each with its description, its lengths and a complex one's
+text or shapes, the text's style or the shape file found by its 340; ACAD_ISO02W100, HIDDEN2,
+Spanish AutoCAD's TRAZOS, LibreCAD's K5LT ones, each drawn as its file defines it, a complex one's text too: 49 of the 52 of
+AutoCAD's samples and all 28 of other programs' files whose linetypes drew continuous before; an
+imperial drawing's DASHED its own 0.5 inches), text and dimension styles (a group left out at the DXF reference's value, not
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
-CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
+CLAYER, CECOLOR, CELTYPE, CELTSCALE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
 PLINEWID, FILLMODE, ATTMODE, ORTHOMODE, ELEVATION, THICKNESS, SPLINETYPE, SPLINESEGS, ISOLINES,
 PDMODE, PDSIZE, the UCS and the active viewport's snap and grid; what is no DXF said in AutoCAD's three lines
 (`Error in drawing header on line 1.`, `<file> is not valid DXF file`, `Invalid or incomplete DXF
@@ -144,9 +148,9 @@ marker, an EOF missing after the last section or a malformed object discard the 
 there (`Undefined group code 77 for object on line 22.`, t-*), and RECOVER does not take them
 either (r-*), WHY: they are what other programs write, and the rest opens; a frozen layer opens off
 (no FREEZE here); an index colour opens as its RGB (AutoCAD 2027's palette, read from its
-AcCmColor) and ByBlock as ByLayer (the model has neither); a linetype the six do not name but
-whose dashes one of them has opens as that one (WHY: the Spanish AutoCAD's acadiso.lin calls
-DASHED `TRAZOS`), any other by its name, drawn continuous; LWDISPLAY stays on, WHY: as every
+AcCmColor) and ByBlock as ByLayer (the model has neither); the six linetypes every drawing holds
+here join the file's when it lacks them (WHY at `LINETYPES`), and a linetype an object names that
+the table lacks is added without dashes, drawn continuous; LWDISPLAY stays on, WHY: as every
 drawing here starts, the screen being the only place a lineweight shows; a MINSERT opens as one
 reference per row and column, WHY: there is no MINSERT; TEXT's Align and Fit open left-justified
 at their first point with their height and rotation, WHY: the model has neither; a radial
@@ -159,8 +163,10 @@ model has only those three
 3DFACE, XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
 TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
-in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
-outside the 24, or user-defined, keeps its name and draws no fill), the index colours as such,
+in them, external references; a gradient hatch; a complex linetype's shapes (BATTING, ZIGZAG:
+the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a drawing's
+own hatch patterns (one outside the 24, or user-defined, keeps its name
+and draws no fill), the index colours as such,
 each dimension's style overrides (xdata DSTYLE), a text style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
@@ -181,9 +187,12 @@ the file holds that set (d01: `Select objects: _L`, `1 found`, `Select objects:`
 sizes) and leaving whole those it leaves (a radius, an ellipse, a spline, a hatch's boundary and
 pattern, a normal: x015, x021), with no exponent and at most 16 significant digits; up to 2004
 the text in ANSI_1252 with `\U+XXXX` beyond it, from 2007 UTF-8 (x014); the tables (layers on,
-off and locked, with their colour, linetype and lineweight; the linetypes used, the six with
-acadiso.lin's dashes; text styles; dimension styles, every variable the model holds; the blocks),
-the header's settings the reader takes back, the active viewport framing the drawing, and every
+off and locked, with their colour, linetype and lineweight; the drawing's linetypes, each with
+its description, lengths and a complex one's text and shapes as AutoCAD writes them, the text's
+style and the shape file's STYLE record (name empty, flag 1, `ltypeshp.shx`) by handle, which
+AutoCAD 2027's console reads back as its own records of GAS_LINE and BATTING, ltype/p06; text styles; dimension styles, every variable the model holds; the blocks),
+the header's settings the reader takes back (`$CELTSCALE` among them), an object's own linetype
+scale (48), the active viewport framing the drawing, and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
@@ -198,7 +207,8 @@ and tilted (the console reading back each one's place, DXF 50, thickness, plane 
 PDMODE 35 and PDSIZE −7) and of 2D solids flat, thick and raised, and tilted (solid2d/p19 the
 same drawn by AutoCAD, plotted alike) and of leaders (hooked, to the left, alone, a spline, centred
 at DIMSCALE 10 with no arrowhead, to a block reference, facing down: AutoCAD reads each pair
-associated and its leader follows the text moved, p23), in every version, ASCII and binary, opened by AutoCAD 2027's console with
+associated and its leader follows the text moved, p23) and of linetypes (ISO, scaled, GAS_LINE's
+text and BATTING's shapes, a layer's, an object's own scale, CELTSCALE and CELTYPE), in every version, ASCII and binary, opened by AutoCAD 2027's console with
 no AUDIT error and plotted as AutoCAD's own
 (scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
 regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,

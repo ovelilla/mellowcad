@@ -12,7 +12,13 @@ import { createSweptSolid } from "../domain/sweptSolids"
 import { revolutionBrep, revolveSide } from "../geometry/sweeps"
 import type { Vec3 } from "../geometry/Vec3"
 import { DEFAULT_LAYER_ID } from "../domain/layers"
-import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
+import {
+  DEFAULT_LINETYPE_ID,
+  LINETYPES,
+  linetypeNamed,
+} from "../domain/linetypes"
+import { ACADISO_LIN } from "../domain/linetypeLibrary"
+import { withLinetypeScale } from "../domain/entities"
 import { DEFAULT_LINEWEIGHT } from "../domain/lineweights"
 import { DEFAULT_DOCUMENT_SETTINGS, LengthUnit } from "../domain/units"
 import { Ucs, createUcs } from "../domain/ucs"
@@ -121,7 +127,7 @@ describe("round trip", () => {
       {
         ...lineOf(p(0, 0), p(10, 0), { id: "L1" }),
         color: "#ff0000",
-        linetype: "Dashed",
+        linetype: "DASHED",
         lineweight: 1.4,
       },
     ]
@@ -165,7 +171,7 @@ describe("round trip", () => {
       layerOf("walls", {
         name: "Walls",
         color: "#ff0000",
-        linetype: "Hidden",
+        linetype: "HIDDEN",
         lineweight: 0.7,
         visible: false,
         locked: true,
@@ -229,7 +235,8 @@ describe("round trip", () => {
         },
       },
       currentColor: "#00ff00",
-      currentLinetype: "Center",
+      currentLinetype: "CENTER",
+      currentLinetypeScale: 0.5,
       currentLineweight: 0.5,
       fillMode: false,
       polylineWidth: 4,
@@ -401,6 +408,103 @@ describe("round trip", () => {
       ).settings.ucsOrthographic
     expect(read("back")).toBe("back")
     expect(read("BACK")).toBeNull()
+  })
+
+  it("keeps the drawing's linetypes, a complex one's text and shapes too", () => {
+    const gas = linetypeNamed(ACADISO_LIN, "GAS_LINE")!
+    const batting = linetypeNamed(ACADISO_LIN, "BATTING")!
+    const line = withLinetypeScale(
+      { ...lineOf(p(0, 0), p(10, 0), { id: "L1" }), linetype: "GAS_LINE" },
+      2.5
+    )
+    const parsed = parseDrawingFile(
+      serializeDrawing(
+        snapshotOf([line], {
+          linetypes: [...LINETYPES, gas, batting],
+          settings: { ...DEFAULT_DOCUMENT_SETTINGS, currentLinetypeScale: 0.5 },
+        })
+      )
+    )
+    expect(parsed.linetypes).toEqual([...LINETYPES, gas, batting])
+    expect(parsed.entities[0]).toEqual(line)
+    expect(parsed.settings.currentLinetypeScale).toBe(0.5)
+  })
+
+  it("opens a drawing from before 53 with the six, named as acadiso.lin names them", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 52,
+        settings: { unit: "mm", currentLinetype: "DashDot" },
+        layers: [{ id: "0", name: "0", color: "#ffffff", linetype: "Hidden" }],
+        entities: [
+          { ...lineOf(p(0, 0), p(1, 0), { id: "L1" }), linetype: "Dashed" },
+          // A name kept from a DXF before the table was the drawing's.
+          { ...lineOf(p(0, 0), p(1, 0), { id: "L2" }), linetype: "K5LT_THIN" },
+        ],
+      })
+    )
+    expect(parsed.linetypes.map((l) => l.name)).toEqual([
+      ...LINETYPES.map((l) => l.name),
+      "K5LT_THIN",
+    ])
+    expect(parsed.entities.map((e) => e.linetype)).toEqual([
+      "DASHED",
+      "K5LT_THIN",
+    ])
+    expect(parsed.layers[0].linetype).toBe("HIDDEN")
+    expect(parsed.settings.currentLinetype).toBe("DASHDOT")
+    expect(parsed.settings.currentLinetypeScale).toBe(1)
+  })
+
+  it("reads a damaged linetype table tolerantly", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        settings: { unit: "mm", currentLinetypeScale: -2 },
+        linetypes: [
+          { name: "A", description: "x".repeat(60), pattern: [1, -1] },
+          { name: "a", pattern: [5, -5] },
+          { name: "", pattern: [1, -1] },
+          7,
+          {
+            name: "B",
+            pattern: [1, -1],
+            elements: [
+              { index: 0, kind: "text", text: "T" },
+              { index: 9, kind: "text", text: "T" },
+              { index: 1, kind: "shape", shape: 1 },
+              { index: 1, kind: "blob" },
+            ],
+          },
+        ],
+        entities: [],
+      })
+    )
+    expect(parsed.linetypes).toEqual([
+      { name: "A", description: "x".repeat(47), pattern: [1, -1] },
+      {
+        name: "B",
+        description: "",
+        pattern: [1, -1],
+        elements: [
+          {
+            index: 0,
+            kind: "text",
+            text: "T",
+            style: "",
+            scale: 1,
+            rotation: 0,
+            rotationMode: "relative",
+            offset: { x: 0, y: 0 },
+          },
+        ],
+      },
+      // The base layer's, which the table lacked.
+      { name: "Continuous", description: "Solid line", pattern: [] },
+    ])
+    expect(parsed.settings.currentLinetypeScale).toBe(1)
   })
 
   it("opens a drawing from before 25 with everything new ByLayer", () => {
@@ -1290,7 +1394,7 @@ describe("opens drawings written by every earlier schema", () => {
             id: "0",
             name: "0",
             color: "#e2e8f0",
-            linetype: "Dashed",
+            linetype: "DASHED",
             lineweight: 0.5,
             visible: true,
             locked: false,
@@ -1301,7 +1405,7 @@ describe("opens drawings written by every earlier schema", () => {
             id: "l1",
             type: "line",
             layerId: "0",
-            linetype: "Hidden",
+            linetype: "HIDDEN",
             lineweight: 1.2,
             start: { x: 0, y: 0 },
             end: { x: 1, y: 0 },
@@ -1309,9 +1413,9 @@ describe("opens drawings written by every earlier schema", () => {
         ],
       })
     )
-    expect(parsed.layers[0].linetype).toBe("Dashed")
+    expect(parsed.layers[0].linetype).toBe("DASHED")
     expect(parsed.layers[0].lineweight).toBe(0.5)
-    expect(parsed.entities[0].linetype).toBe("Hidden")
+    expect(parsed.entities[0].linetype).toBe("HIDDEN")
     expect(parsed.entities[0].lineweight).toBe(1.2)
     expect(parsed.settings.ltScale).toBe(3)
     expect(parsed.settings.lwDisplay).toBe(false)
@@ -2159,7 +2263,7 @@ describe("tolerates damaged content in the later types and tables", () => {
                 position: { x: 1, y: 2 },
                 elevation: 3,
                 color: "#ff0000",
-                linetype: "Dashed",
+                linetype: "DASHED",
                 lineweight: 0.5,
               },
             ],
@@ -2175,7 +2279,7 @@ describe("tolerates damaged content in the later types and tables", () => {
         value: "",
         elevation: 3,
         color: "#ff0000",
-        linetype: "Dashed",
+        linetype: "DASHED",
         layerId: DEFAULT_LAYER_ID,
       }),
     ])

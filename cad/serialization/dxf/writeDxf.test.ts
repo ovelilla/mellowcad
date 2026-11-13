@@ -6,6 +6,7 @@ import { circleOf, lineOf, p, snapshotOf } from "../../../test/builders"
 import {
   attachLeaderBlock,
   attachLeaderText,
+  assignEntityLinetype,
   createBlockDefinition,
   createInsert,
   createLeader,
@@ -14,10 +15,14 @@ import {
   createText,
   dimLook,
   withLeaderOverride,
+  withLinetypeScale,
   withNormal,
   withThickness,
 } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
+import { linetypeNamed } from "../../domain/linetypes"
+import { ACADISO_LIN } from "../../domain/linetypeLibrary"
+import { withLoaded } from "../../application/commands/linetypeCommands"
 import { parseDxf } from "./readDxf"
 import { dxfReal } from "./dxfOut"
 import { DxfVersion, writeDxf } from "./writeDxf"
@@ -73,6 +78,35 @@ function pointsDrawing() {
   return {
     ...drawing,
     settings: { ...drawing.settings, pointMode: 35, pointSize: -7 },
+  }
+}
+
+/**
+ * The drawing's own linetypes (ltype/p06): ISO and scaled ones, GAS_LINE's
+ * text and BATTING's shapes, one a layer names, a line at each, one with a
+ * linetype scale of its own, and CELTSCALE and CELTYPE set.
+ */
+function linetypesDrawing() {
+  const extra = ["ACAD_ISO02W100", "HIDDEN2", "GAS_LINE", "BATTING"].map(
+    (name) => linetypeNamed(ACADISO_LIN, name)!
+  )
+  const lines = extra.map((linetype, i) =>
+    assignEntityLinetype(lineOf(p(0, i * 10), p(100, i * 10)), linetype.name)
+  )
+  const scaled = withLinetypeScale(
+    assignEntityLinetype(lineOf(p(0, 50), p(100, 50)), "DASHED"),
+    2.5
+  )
+  const drawing = snapshotOf([...lines, scaled])
+  return {
+    ...drawing,
+    linetypes: withLoaded(drawing.linetypes, extra, drawing.textStyles),
+    layers: drawing.layers.map((layer) => ({ ...layer, linetype: "HIDDEN2" })),
+    settings: {
+      ...drawing.settings,
+      currentLinetype: "GAS_LINE",
+      currentLinetypeScale: 0.5,
+    },
   }
 }
 
@@ -190,6 +224,26 @@ describe("writeDxf", () => {
         ).drawing
         expect(shape(back.entities)).toEqual(shape(drawing.entities))
         expect(back.settings).toMatchObject({ pointMode: 35, pointSize: -7 })
+      }
+    }
+  })
+
+  // ltype/p06: the drawing's linetypes, a complex one's text and shapes with
+  // their styles, an object's own scale (48), CELTSCALE and CELTYPE.
+  it("writes the drawing's linetypes, read back the same", () => {
+    const drawing = linetypesDrawing()
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const back = parseDxf(
+          writeDxf(drawing, { version, binary, precision: 16 }).bytes
+        ).drawing
+        expect(shape(back.linetypes)).toEqual(shape(drawing.linetypes))
+        expect(shape(back.entities)).toEqual(shape(drawing.entities))
+        expect(back.layers[0].linetype).toBe("HIDDEN2")
+        expect(back.settings).toMatchObject({
+          currentLinetype: "GAS_LINE",
+          currentLinetypeScale: 0.5,
+        })
       }
     }
   })
@@ -385,6 +439,7 @@ describe("writeDxf", () => {
       "points-2018",
       "solids-2018",
       "leaders-2018",
+      "linetypes-2018",
     ]) {
       const drawing =
         name === "points-2018"
@@ -393,7 +448,9 @@ describe("writeDxf", () => {
             ? solidsDrawing()
             : name === "leaders-2018"
               ? leadersDrawing()
-              : parseDxf(fixture(name)).drawing
+              : name === "linetypes-2018"
+                ? linetypesDrawing()
+                : parseDxf(fixture(name)).drawing
       for (const version of VERSIONS) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {

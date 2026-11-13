@@ -70,7 +70,7 @@ const localFirstStart = (width: number) =>
     width: 560,
     height: 260,
     dimScale: 1.6,
-    layers: [{ name: "BOUNDARY", color: "#94a3b8", linetype: "Dashed" }],
+    layers: [{ name: "BOUNDARY", color: "#94a3b8", linetype: "DASHED" }],
     view: { min: { x: -6, y: -6 }, max: { x: width + 6, y: 76 } },
   })
     .layer("BOUNDARY")

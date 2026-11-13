@@ -5,7 +5,7 @@ description: "How AutoCAD's LTSCALE (LTS) sets the linetype scale for the whole 
 before: "A plate 4 metres long, its hole drawn with HIDDEN and its axes with CENTER, at the default linetype scale of 1: the dashes too fine to see."
 figure: "The same plate after LTSCALE 20: the dashes of the hole and the axes drawn 20 times longer."
 related: ["LINETYPE", "LAYER", "PROPERTIES", "LWEIGHT"]
-coverage: "4c2e2169854b"
+coverage: "7097d8b7888d"
 ---
 
 LTSCALE sets the global linetype scale factor: how long the dashes and gaps of every dashed linetype are in the drawing. It asks for the new factor, offering the current one, 1.0000 in a new drawing: 2 makes every dash twice as long, 0.5 half as long. The factor must be more than 0, otherwise it says <Message id="positiveNonzero" /> and asks again, and `1/2` and `1e3` are read as numbers. A change redraws the whole drawing, `Regenerating model.` as AutoCAD 2027 says it, and is saved with the drawing; it is a step that <Command id="U" /> takes back. Typed with an apostrophe inside a command, `'LTSCALE`, the drawing is redrawn when that command ends.
@@ -14,7 +14,7 @@ Linetypes are patterns made for a drawing of the paper's size: in a drawing 4 me
 
 ## Missing
 
-A linetype scale for each object (CELTSCALE, the Properties palette's Linetype scale): only the drawing's. The Linetype Manager, whose Global scale factor is LTSCALE. PSLTSCALE and MSLTSCALE, as there is no paper space. Linetypes other than Continuous, DASHED, HIDDEN, CENTER, PHANTOM and DASHDOT.
+The Linetype Manager, whose Global scale factor is LTSCALE and Current object scale CELTSCALE. PSLTSCALE and MSLTSCALE, as there is no paper space. The shapes of complex linetypes such as BATTING, drawn as their gaps.
 
 ## Questions
 

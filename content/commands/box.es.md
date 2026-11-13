@@ -3,7 +3,7 @@ title: "Prisma rectangular en AutoCAD: PRISMARECT (BOX)"
 metaTitle: "Prisma en AutoCAD 3D: comando PRISMARECT (BOX)"
 description: "Cómo funciona PRISMARECT (BOX) de AutoCAD en español, solicitud a solicitud: dos esquinas y una altura, Centro, Cubo, Longitud y 2Puntos. Pruébalo gratis."
 figure: "Un prisma de 60 por 40 por 25, con dos esquinas y una altura, visto desde el sureste con el estilo visual Oculto."
-sourceHash: "68b09d9eff63"
+sourceHash: "46936b3da48e"
 ---
 
 PRISMARECT (BOX en inglés) dibuja un prisma rectangular, un sólido 3D con sus caras alineadas con los ejes del SCP: precisa la primera esquina, la otra esquina y después la altura. La altura sube por el eje Z del SCP, una negativa baja, y un punto la da por su distancia a la esquina; una esquina precisada a otra Z que la primera fija la altura sin preguntarla. La última altura, y la última longitud y anchura de un cubo o de <Keyword id="Length" />, se ofrecen como valores por defecto que Intro acepta, compartidos con las demás primitivas y con <Command id="EXTRUDE" />. El prisma va a la capa actual, y Deshacer lo revierte en un paso.

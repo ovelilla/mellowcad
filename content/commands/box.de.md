@@ -2,7 +2,7 @@
 title: "Befehl QUADER (BOX) in AutoCAD"
 description: "Wie QUADER (BOX) in AutoCAD einen 3D-Quader zeichnet, Schritt für Schritt: zwei Ecken und eine Höhe, Mitte, Würfel und Länge. Zum Testen im Browser."
 figure: "Ein Quader 60 mal 40 mal 25, aus zwei Ecken und einer Höhe, von Südosten gesehen im Visuellen Stil Verdeckt."
-sourceHash: "68b09d9eff63"
+sourceHash: "46936b3da48e"
 ---
 
 QUADER (BOX) zeichnet einen 3D-Volumenkörper-Quader mit seinen Seiten entlang der Achsen des BKS: Geben Sie die erste Ecke an, die andere Ecke, dann die Höhe. Die Höhe steigt entlang der Z-Achse des BKS, eine negative geht nach unten, und ein angegebener Punkt legt sie durch seinen Abstand von der Ecke fest; eine Ecke mit einem anderen Z als die erste legt die Höhe fest, ohne zu fragen. Die letzte Höhe sowie die letzte Länge und Breite eines Würfels oder von Length werden als Vorgaben angeboten, die die Eingabetaste übernimmt und die sich die anderen Grundkörper und <Command id="EXTRUDE" /> teilen. Der Quader liegt auf dem aktuellen Layer, und <Command id="U" /> nimmt ihn in einem Schritt zurück.

@@ -92,6 +92,8 @@ export function previewScene(
     ucs: WORLD_UCS,
     ucsIcon: null,
     ltScale: document.getSettings().ltScale,
+    linetypes: document.linetypeLookup(),
+    textStyles: document.getTextStyles(),
     lwDisplay,
     attributeDisplay: document.getSettings().attributeDisplay,
     fillMode: document.getSettings().fillMode,

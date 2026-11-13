@@ -211,14 +211,6 @@
       },
       "compass": { "N": "N", "E": "E", "S": "S", "W": "W" }
     },
-    "linetype": {
-      "Continuous": "Continuous",
-      "Dashed": "Dashed",
-      "Hidden": "Hidden",
-      "Center": "Center",
-      "Phantom": "Phantom",
-      "DashDot": "Dash dot"
-    },
     "hatchPattern": {
       "SOLID": "Solid",
       "ANGLE": "ANGLE",
@@ -328,6 +320,7 @@
         "z": "Z",
         "elevation": "Elevation",
         "thickness": "Thickness",
+        "linetypeScale": "Linetype scale",
         "startAngle": "Start angle",
         "endAngle": "End angle",
         "totalAngle": "Total angle",
@@ -963,7 +956,12 @@
         "?": "?"
       },
       "ATTDISP": { "OFF": "OFf", "Normal": "Normal", "ON": "ON" },
-      "PURGE": { "Blocks": "Blocks", "Yes": "Yes", "No": "No" },
+      "PURGE": {
+        "Blocks": "Blocks",
+        "LTypes": "LTypes",
+        "Yes": "Yes",
+        "No": "No"
+      },
       "SNAP": { "ON": "ON", "OFF": "OFf", "Aspect": "Aspect" },
       "TEXT": {
         "Justify": "Justify",
@@ -1270,6 +1268,7 @@
         "Color": "Color",
         "LAyer": "LAyer",
         "LType": "LType",
+        "ltScale": "ltScale",
         "LWeight": "LWeight",
         "Thickness": "Thickness",
         "Truecolor": "Truecolor",
@@ -1298,7 +1297,10 @@
       },
       "LINETYPE": {
         "?": "?",
+        "Load": "Load",
         "Set": "Set",
+        "Yes": "Yes",
+        "No": "No",
         "BYLAYER": "BYLayer",
         "BYLayer": "BYLayer"
       },
@@ -1542,6 +1544,7 @@
       "purgeVerify": "Verify each name to be purged?",
       "massPropWriteFile": "Write analysis to a file?",
       "purgeBlock": "Purge block \"{name}\"?",
+      "purgeLinetype": "Purge linetype \"{name}\"?",
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point or",
       "specifyInsertionPoint": "Specify insertion point",
@@ -1678,6 +1681,10 @@
       "trueColor": "Red,Green,Blue",
       "linetypeName": "Specify linetype name or",
       "linetypeListNames": "Enter linetype name(s) to list",
+      "linetypeFileToList": "Enter name of linetype file to list",
+      "linetypesToLoad": "Enter linetype(s) to load",
+      "linetypeFileToSearch": "Enter name of linetype file to search",
+      "reloadLinetype": "Linetype \"{name}\" is already loaded.  Reload it?",
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
       "distSecondPointOr": "Specify second point or",
@@ -1695,6 +1702,7 @@
       "newLinetypeName": "Enter new linetype name",
       "newLineweight": "Enter new lineweight",
       "newThickness": "Specify new thickness",
+      "newLinetypeScale": "Specify new linetype scale",
       "viewPoint": "Specify a view point",
       "specifyViewPointOr": "Specify a view point or",
       "attributeVisibilitySetting": "Enter attribute visibility setting",
@@ -2114,6 +2122,8 @@
     "promptForms": {
       "convertToPolylines": "open",
       "purgeBlock": "open",
+      "purgeLinetype": "open",
+      "reloadLinetype": "open",
       "selectGripToEditArrayOr": "tight",
       "selectGripToEditPathArrayOr": "tight",
       "turnIntoPolyline": "open",
@@ -2284,6 +2294,9 @@
       "deletingBlock": "Deleting block \"{name}\".",
       "blocksDeleted": "{count, plural, one {# block deleted.} other {# blocks deleted.}}",
       "noUnreferencedBlocks": "No unreferenced blocks found.",
+      "deletingLinetype": "Deleting linetype \"{name}\".",
+      "linetypesDeleted": "{count, plural, one {# linetype deleted.} other {# linetypes deleted.}}",
+      "noUnreferencedLinetypes": "No unreferenced linetypes found.",
       "noBlocks": "No blocks defined.",
       "blockUndefined": "Block \"{name}\" is not defined.",
       "hatchPatternUnknown": "Unknown pattern name.",
@@ -2368,6 +2381,10 @@
       "fileLinetypeColumns": "      Name          Description\n---------------- -------------------",
       "solidLine": "Solid line",
       "noMatchingLinetypes": "  No matching linetype names found.",
+      "linetypeLoaded": "Linetype \"{name}\" loaded.",
+      "linetypeReloaded": "Linetype \"{name}\" reloaded.",
+      "noLinetypesInFile": "No matching linetypes found in file {file}.",
+      "cantFindFile": "\"{file}\": Can't find file.",
       "invalidColorNumber": "Invalid color number.",
       "tagCannotBeNull": "Tag cannot be null",
       "attdefTextStyle": "Current text style:  \"{style}\"  Text height:  {height}  Justify:  {justify}",

@@ -4,7 +4,7 @@ metaTitle: "Escala de línea en AutoCAD: comando ESCALATL"
 description: "Cómo funciona ESCALATL (LTSCALE, alias EC) de AutoCAD en español: la escala de tipo de línea del dibujo, para que se vean los trazos. Pruébalo gratis."
 before: "Una placa de 4 metros de largo, con su agujero dibujado en HIDDEN y sus ejes en CENTER, a la escala de tipo de línea por defecto, 1: los trazos, demasiado finos para verse."
 figure: "La misma placa tras ESCALATL 20: los trazos del agujero y de los ejes, dibujados 20 veces más largos."
-sourceHash: "f951ec391451"
+sourceHash: "33b956c956fa"
 ---
 
 ESCALATL (LTSCALE en inglés) fija el factor de escala global de los tipos de línea: lo largos que son los trazos y los huecos de cada tipo de línea de trazos del dibujo. Pide el nuevo factor y ofrece el actual, 1.0000 en un dibujo nuevo: 2 hace cada trazo el doble de largo; 0.5, la mitad. El factor debe ser mayor que 0; si no, dice <Message id="positiveNonzero" /> y vuelve a preguntar, y `1/2` y `1e3` se leen como números. Un cambio vuelve a dibujar todo el dibujo, <Message id="regeneratingModel" /> como lo dice AutoCAD 2027, y se guarda con el dibujo; es un paso que <Command id="U" /> deshace. Escrito con un apóstrofo dentro de un comando, `'ESCALATL`, el dibujo se vuelve a dibujar cuando ese comando termina.
@@ -13,7 +13,7 @@ Los tipos de línea son patrones hechos para un dibujo del tamaño del papel: en
 
 ## Missing
 
-Una escala de tipo de línea por objeto (CELTSCALE, la fila Escala de tipo de línea de la paleta Propiedades): solo la del dibujo. El Administrador de tipos de línea, cuyo Factor de escala global es ESCALATL. PSLTSCALE y MSLTSCALE, porque no hay espacio papel. Los tipos de línea que no sean Continuous, DASHED, HIDDEN, CENTER, PHANTOM y DASHDOT.
+El Administrador de tipos de línea, cuyo Factor de escala global es ESCALATL y su Escala de objeto actual, CELTSCALE. PSLTSCALE y MSLTSCALE, porque no hay espacio papel. Las formas de los tipos de línea complejos como BATTING, que se dibujan como sus huecos.
 
 ## Questions
 

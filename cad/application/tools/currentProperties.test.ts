@@ -29,7 +29,7 @@ const RED = "#ff0000"
 
 function setCurrent(cad: CadHarness) {
   cad.runtime.setCurrentColor(RED)
-  cad.runtime.setCurrentLinetype("Hidden")
+  cad.runtime.setCurrentLinetype("HIDDEN")
   cad.runtime.setCurrentLineweight(0.5)
   return cad
 }
@@ -659,7 +659,7 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
       for (const entity of made) {
         expect(entity).toMatchObject({
           color: RED,
-          linetype: "Hidden",
+          linetype: "HIDDEN",
           lineweight: 0.5,
         })
       }
@@ -692,7 +692,7 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
 
     expect(cad.only("insert")).toMatchObject({
       color: RED,
-      linetype: "Hidden",
+      linetype: "HIDDEN",
       lineweight: 0.5,
     })
     // The definition keeps its objects as they were drawn.
@@ -706,7 +706,7 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
     const l1 = cad.runtime.createLayer("L1", undefined, false)
     const dress = (entity: Entity) =>
       assignEntityLineweight(
-        assignEntityLinetype(assignEntityColor(entity, BLUE), "Dashed"),
+        assignEntityLinetype(assignEntityColor(entity, BLUE), "DASHED"),
         0.3
       )
     cad.runtime.document.load(
@@ -726,7 +726,7 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
       expect(copy).toMatchObject({
         layerId: l1,
         color: BLUE,
-        linetype: "Dashed",
+        linetype: "DASHED",
         lineweight: 0.3,
         thickness: 3,
       })
@@ -756,7 +756,7 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
 
     expect(copy.state()).toMatchObject({
       currentColor: RED,
-      currentLinetype: "Hidden",
+      currentLinetype: "HIDDEN",
       currentLineweight: 0.5,
     })
     copy.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
@@ -790,7 +790,7 @@ describe("what a new LINE wears", () => {
     expect(line).toMatchObject({
       layerId: l1,
       color: RED,
-      linetype: "Hidden",
+      linetype: "HIDDEN",
       lineweight: 0.5,
       thickness: 3,
     })
@@ -850,7 +850,7 @@ describe("what a new PLINE wears", () => {
     expect(cad.only<PolylineEntity>("polyline")).toMatchObject({
       layerId: l1,
       color: RED,
-      linetype: "Hidden",
+      linetype: "HIDDEN",
       lineweight: 0.5,
       elevation: 5,
       thickness: 3,
@@ -875,7 +875,7 @@ describe("what a new PLINE wears", () => {
     expect(polyline.thickness).toBeUndefined()
     expect(cad.runtime.document.getSettings()).toMatchObject({
       currentColor: RED,
-      currentLinetype: "Hidden",
+      currentLinetype: "HIDDEN",
       currentLineweight: 0.5,
       thickness: 3,
     })

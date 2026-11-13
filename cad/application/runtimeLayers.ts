@@ -50,14 +50,18 @@ export function updateLayer(
 ): LayerNameRefusal | null {
   const layer = document.getLayer(id)
   if (!layer) return null
-  const { name, ...rest } = patch
+  const { name, linetype: typed, ...rest } = patch
+  // A linetype the drawing has, named as its table names it; any other is
+  // no change (the drop-down offers only the drawing's).
+  const linetype =
+    typed === undefined ? undefined : document.getLinetype(typed)?.name
   const renamed = name?.trim()
   if (renamed && renamed !== layer.name) {
     const refusal = layerNameRefusal(document.getLayers(), id, renamed)
     if (refusal !== null) return refusal
   }
   const changed: LayerPatch = Object.fromEntries(
-    Object.entries({ ...rest, name: renamed || undefined }).filter(
+    Object.entries({ ...rest, linetype, name: renamed || undefined }).filter(
       ([key, value]) =>
         value !== undefined && layer[key as keyof Layer] !== value
     )

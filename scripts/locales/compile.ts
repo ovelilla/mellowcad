@@ -31,7 +31,7 @@ const VOCABULARY = new Set([
 
 /**
  * Where a missing entry falls back to its own key: a keyword's global word is
- * its id, and a linetype or hatch pattern without a display name shows its id.
+ * its id, and a hatch pattern without a display name shows its id.
  * English is the global language, so there an entry equal to its key says
  * nothing the engine does not already know — it stays in the source, as the
  * inventory the other languages translate, and is left out of the module the
@@ -39,11 +39,7 @@ const VOCABULARY = new Set([
  * table that spells it otherwise (-VIEW Orthographic's `Right`, `RIght` at
  * its first prompt).
  */
-const KEY_FALLBACK = new Set([
-  "commands.keywords",
-  "interface.linetype",
-  "interface.hatchPattern",
-])
+const KEY_FALLBACK = new Set(["commands.keywords", "interface.hatchPattern"])
 
 function withoutIdentities(node: Json, depth: number): Json | undefined {
   if (typeof node === "string" || Array.isArray(node)) return node

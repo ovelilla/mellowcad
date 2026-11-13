@@ -335,7 +335,7 @@ describe("layers", () => {
       layers: [
         layerOf("styled", {
           color: "#00ff00",
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.7,
         }),
       ],
@@ -343,15 +343,15 @@ describe("layers", () => {
     const inherited = lineOf(p(0, 0), p(1, 0), { id: "A", layerId: "styled" })
     const overridden = assignEntityLinetype(
       assignEntityColor(inherited, "#ff0000"),
-      "Hidden"
+      "HIDDEN"
     )
 
     expect(document.resolveEntityColor(inherited)).toBe("#00ff00")
-    expect(document.resolveEntityLinetype(inherited)).toBe("Dashed")
+    expect(document.resolveEntityLinetype(inherited)).toBe("DASHED")
     expect(document.resolveEntityLineweight(inherited)).toBe(0.7)
 
     expect(document.resolveEntityColor(overridden)).toBe("#ff0000")
-    expect(document.resolveEntityLinetype(overridden)).toBe("Hidden")
+    expect(document.resolveEntityLinetype(overridden)).toBe("HIDDEN")
   })
 
   it("falls back to the base layer for a dangling reference", () => {

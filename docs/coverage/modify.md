@@ -2193,8 +2193,8 @@ edits in place and asks none, so the prompt reads `TEXTEDIT:`); MTEDIT (es EDITT
 
 **Implemented:** PURGE asks -PURGE's prompts, as AutoCAD's console runs it (blocks/p151, p152): the
 line `Nested items = Off    Orphaned data = Off` (es `Elementos anidados = DES Datos huérfanos =
-DES`), `Enter type of unused objects to purge [Blocks]:` offering only Blocks, the one type built
-(Enter ends, p04), `Enter name(s) to purge <*>:` (wild cards, case-blind, commas between names, spaces typed key by
+DES`), `Enter type of unused objects to purge [Blocks/LTypes]:` offering Blocks and LTypes, the
+types built (es `[Bloques/tLíneas]`; Enter ends, p04), `Enter name(s) to purge <*>:` (wild cards, case-blind, commas between names, spaces typed key by
 key, `AB CD` whole, desktop workspace/d06;
 Enter is `*`; p140, p146, p154) and `Verify each name to be purged? [Yes/No] <Y>:` (FOO says `Yes
 or No, please.`). No names each block, `Deleting block "B1".`, then `2 blocks deleted.` (es
@@ -2205,10 +2205,18 @@ in the drawing places it or the definition of a block in use holds it, at any de
 of unused blocks goes in one run (p142), and one a kept block still holds is never taken. `*` takes
 an erased array's anonymous block too, by name (p147). Each run is one undo step, named as typed
 (p138); not transparent (p103). The Blocks palette deletes nothing, as AutoCAD's (desktop
-blocks/d06-4).
+blocks/d06-4). LTypes takes the drawing's linetypes but Continuous, the current one (CELTYPE) and
+one a layer or an object names, a block's included (table 4454), in the table's order: No names
+each, `Deleting linetype "DASHED".`, then `2 linetypes deleted.`, Yes asks `Purge linetype
+"CENTER"? <N>`, none `No unreferenced linetypes found.`, in each language's words (es
+`Suprimiendo tipo de línea`, `2 tipos de línea suprimido(s).`, `Limpiar tipo de línea "X"?`,
+`No se ha encontrado ningún elemento sin referencia tipos de línea.`; pt-BR, fr, it and de from
+their consoles, ltype/p04, p09, p11, p12); undone, each back at its place in the table.
 
 **Missing:** the Purge dialog (d07); the other types (DEtailviewstyles, Dimstyles, Groups, LAyers,
-LTypes, MAterials, MUltileaderstyles, Plotstyles, SHapes, textSTyles, Mlinestyles,
+MAterials, MUltileaderstyles, Plotstyles, SHapes, textSTyles, Mlinestyles,
 SEctionviewstyles, Tablestyles, Visualstyles, Regapps, Zero-length geometry, Empty text objects,
 Orphaned data, All); the Nested items and Orphaned data settings. Whether Yes at Verify with nothing
-to take says `No unreferenced blocks found.` is **unverified** (it does here).
+to take says `No unreferenced blocks found.` is **unverified** (it does here), and so is the order
+LTypes names linetypes loaded out of their names' order in (here the table's; AutoCAD's p04 loaded
+them in that order).

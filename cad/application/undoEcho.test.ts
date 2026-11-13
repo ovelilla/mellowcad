@@ -558,7 +558,7 @@ describe("an edit made outside a command", () => {
   it("the Object Color drop-down on a selection is CHPROP (desktop properties/d05-3b)", () => {
     for (const edit of [
       (cad: CadHarness) => cad.runtime.applyColorControl("#ff0000"),
-      (cad: CadHarness) => cad.runtime.applyLinetypeControl("Dashed"),
+      (cad: CadHarness) => cad.runtime.applyLinetypeControl("DASHED"),
       (cad: CadHarness) => cad.runtime.applyLineweightControl(0.5),
     ]) {
       const cad = selected()

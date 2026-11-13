@@ -171,7 +171,7 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     expect(layers["0"].id).toBe("0")
     expect(layers.Walls).toMatchObject({
       color: "#ff0000",
-      linetype: "Dashed",
+      linetype: "DASHED",
       lineweight: 0.5,
       visible: true,
     })
@@ -221,7 +221,7 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     expect(centre).toMatchObject({
       deltaZ: 5,
       color: "#00ff00",
-      linetype: "Center",
+      linetype: "CENTER",
       lineweight: 0.35,
     })
   })
@@ -760,7 +760,7 @@ describe("parseDxf: text and tables written by other programs", () => {
     expect(text.value).toBe("Привет")
   })
 
-  it("names a linetype by the six's when it draws their dashes", () => {
+  it("keeps each linetype of the file under its own name, the six added after", () => {
     const parsed = parseDxf(
       dxf(
         "  0",
@@ -867,7 +867,24 @@ describe("parseDxf: text and tables written by other programs", () => {
     )
     expect(
       (parsed.drawing.entities as LineEntity[]).map((l) => l.linetype)
-    ).toEqual(["Dashed", "MINE", undefined])
+    ).toEqual(["TRAZOS", "MINE", undefined])
+    // A Spanish AutoCAD's TRAZOS is its own linetype, with its own dashes.
+    expect(parsed.drawing.linetypes.slice(0, 3)).toEqual([
+      { name: "TRAZOS", description: "Trazos __ __", pattern: [12.7, -6.35] },
+      { name: "MINE", description: "", pattern: [2, -1] },
+      // Continuous, which the file lacks, among the six every drawing holds.
+      { name: "Continuous", description: "Solid line", pattern: [] },
+    ])
+    expect(parsed.drawing.linetypes.map((l) => l.name)).toEqual([
+      "TRAZOS",
+      "MINE",
+      "Continuous",
+      "DASHED",
+      "HIDDEN",
+      "CENTER",
+      "PHANTOM",
+      "DASHDOT",
+    ])
   })
 
   it("unescapes \\U+ but not what follows MTEXT's literal backslash", () => {

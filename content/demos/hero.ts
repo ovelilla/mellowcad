@@ -11,7 +11,7 @@ export const heroDrawing = demo({
   height: 480,
   dimScale: 1.6,
   layers: [
-    { name: "CENTER", color: "#94a3b8", linetype: "Center" },
+    { name: "CENTER", color: "#94a3b8", linetype: "CENTER" },
     { name: "HATCH", color: "#94a3b8" },
     { name: "DIMS", color: "#94a3b8" },
   ],

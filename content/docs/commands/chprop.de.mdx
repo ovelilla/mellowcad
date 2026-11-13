@@ -1,6 +1,6 @@
 ---
 title: "Befehl EIGÄNDR (CHPROP) in AutoCAD"
-description: "Wie EIGÄNDR (CHPROP) in AutoCAD Eigenschaften in der Befehlszeile ändert: Farbe, Layer, Linientyp, Linienstärke und Objekthöhe. Zum Testen im Browser."
+description: "Wie EIGÄNDR (CHPROP) in AutoCAD Eigenschaften in der Befehlszeile ändert: Farbe, Layer, Linientyp und sein Faktor, Linienstärke, Objekthöhe. Gratis testen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Gibt es ein Alias für EIGÄNDR (CHPROP) in AutoCAD?","answer":"Er hat kein Alias: Geben Sie EIGÄNDR ein, oder _CHPROP in jeder Sprache von AutoCAD. Die Eingabetaste an der Eingabeaufforderung Befehl: wiederholt ihn."},{"question":"Was ist der Unterschied zwischen EIGÄNDR und EIGENSCHAFTEN?","answer":"Sie ändern dieselben Eigenschaften. EIGENSCHAFTEN zeigt sie in einer Palette, auch mit der Geometrie jedes Objekts; EIGÄNDR fragt sie in der Befehlszeile ab, sodass Ihre Hände auf der Tastatur bleiben."},{"question":"Wie ändert man die Farbe von Objekten in der Befehlszeile?","answer":"Geben Sie EIGÄNDR ein, wählen Sie die Objekte, drücken Sie die Eingabetaste, wählen Sie Farbe und geben Sie die Farbe ein, etwa 1 für Rot. Drücken Sie die Eingabetaste erneut, um abzuschließen."},{"question":"Wie verschiebt man mehrere Objekte auf einen anderen Layer?","answer":"Starten Sie EIGÄNDR, wählen Sie sie, wählen Sie LAyer und geben Sie den Namen des Layers ein. Der Layer muss existieren: Legen Sie ihn zuerst in LAYER an."}]
@@ -17,7 +17,7 @@ EIGÄNDR (CHPROP) ändert die Eigenschaften der gewählten Objekte in der Befehl
 
 Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
 
-<Session name="chprop" caption="EIGÄNDR an einer Linie quer über der Bohrung einer Platte: Farbe 1 und Linientyp Center, eine Achse, auf dem Layer, auf dem sie war." />
+<Session name="chprop" caption="EIGÄNDR an einer Linie quer über der Bohrung einer Platte: Farbe 1 und Linientyp CENTER, eine Achse, auf dem Layer, auf dem sie war." />
 
 ## Optionen [#options]
 
@@ -31,7 +31,11 @@ Der Name eines Layers, in beliebiger Schreibweise. Bei einem Namen, der kein Lay
 
 ### `LTYp` (`LTY`) [#ltype]
 
-Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Jeder Linientyp ist hier geladen; bei einem anderen Namen meldet der Befehl, er sei nicht gefunden worden, und kehrt zur Eingabeaufforderung der Eigenschaften zurück.
+Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Einer, den die Zeichnung nicht geladen hat, wird aus acad.lin geladen, AutoCADs Datei in Zoll, wie AutoCAD es auch in einer metrischen Zeichnung tut; bei einem Namen, den auch diese Datei nicht enthält, meldet der Befehl, er sei nicht gefunden worden, und kehrt zur Eingabeaufforderung der Eigenschaften zurück.
+
+### `LTFaktor` (`LTF`) [#ltscale]
+
+Der eigene Linientypfaktor der Objekte, mit dem der von [`LTFAKTOR`](/docs/commands/ltscale) nur für sie multipliziert wird: ein Abstand, eingegeben oder durch zwei Punkte gemessen; ein negativer wird als sein Betrag genommen, und bei 0 meldet der Befehl `Wert muss ungleich Null sein.` und fragt erneut.
 
 ### `LStärke` (`LS`) [#lweight]
 
@@ -43,7 +47,7 @@ Ein Abstand, eingegeben oder durch zwei Punkte gemessen, auch negativ und null. 
 
 ## Was er noch nicht kann [#missing]
 
-ltScale, TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine True Color, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
+TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine True Color, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
 
 [Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
 

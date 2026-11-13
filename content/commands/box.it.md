@@ -2,7 +2,7 @@
 title: "Comando PARALLELEPIPEDO (BOX) in AutoCAD"
 description: "Come AutoCAD disegna un parallelepipedo solido 3D con PARALLELEPIPEDO (BOX): due angoli e un'altezza, Centro, Cubo, Lunghezza. Provalo."
 figure: "Un parallelepipedo 60 per 40 per 25, da due angoli e un'altezza, visto da sud-est nello stile visivo Nascosto."
-sourceHash: "68b09d9eff63"
+sourceHash: "46936b3da48e"
 ---
 
 PARALLELEPIPEDO disegna un parallelepipedo solido 3D con i lati lungo gli assi dell'UCS: indica il primo angolo, l'altro angolo, poi l'altezza. L'altezza sale lungo Z dell'UCS, una negativa scende, e un punto la dà con la sua distanza dall'angolo; un angolo dato a una Z diversa dal primo imposta l'altezza senza chiederla. L'ultima altezza, e l'ultima lunghezza e larghezza di un cubo o di Lunghezza, sono proposte come predefiniti che Invio accetta, condivisi con le altre primitive e con <Command id="EXTRUDE" />. Il parallelepipedo sta sul layer corrente, e Annulla lo annulla in un solo passo.

@@ -232,9 +232,12 @@ export function carryOverrides<T extends Entity>(source: Entity, copy: T): T {
   const withColor = source.color
     ? assignEntityColor(generated, source.color)
     : generated
-  const withLinetype = source.linetype
-    ? assignEntityLinetype(withColor, source.linetype)
-    : withColor
+  const withLinetype = withLinetypeScale(
+    source.linetype
+      ? assignEntityLinetype(withColor, source.linetype)
+      : withColor,
+    entityLinetypeScale(source)
+  )
   return carryPlane(
     source,
     (source.lineweight !== undefined
@@ -248,9 +251,33 @@ export function carryPiece<T extends Entity>(source: Entity, piece: T): T {
   return alongSource(source, carryOverrides(source, piece))
 }
 
+/** An object's own linetype scale: 1 unless it has one. */
+export function entityLinetypeScale(entity: Entity): number {
+  return entity.linetypeScale ?? 1
+}
+
+/**
+ * `entity` with its own linetype scale: 1, or a scale that is no positive
+ * number, leaves none stored, as AutoCAD writes no 48 for 1 (ltype/p05).
+ */
+export function withLinetypeScale<T extends Entity>(
+  entity: T,
+  scale: number
+): T {
+  if (scale === 1 || !(scale > 0) || !Number.isFinite(scale)) {
+    if (entity.linetypeScale === undefined) return entity
+    const copy: Record<string, unknown> = { ...entity }
+    delete copy.linetypeScale
+    return copy as T
+  }
+  return entity.linetypeScale === scale
+    ? entity
+    : { ...entity, linetypeScale: scale }
+}
+
 /**
  * Gives `target` the properties of `source` MATCHPROP's Property Settings copy
- * by default — layer, colour, linetype, lineweight and thickness, then the
+ * by default — layer, colour, linetype and its scale, lineweight and thickness, then the
  * Text, Dimension and Hatch special properties between objects of that kind —
  * keeping its own geometry and identity. An override the source does *not*
  * have is cleared on the target, so the two end up drawn the same way rather
@@ -266,7 +293,10 @@ export function matchEntityProperties(source: Entity, target: Entity): Entity {
     withColor.type === "mtext" ||
     withColor.type === "attdef"
       ? withColor
-      : assignEntityLinetype(withColor, source.linetype)
+      : withLinetypeScale(
+          assignEntityLinetype(withColor, source.linetype),
+          entityLinetypeScale(source)
+        )
   const matched = assignEntityLineweight(withLinetype, source.lineweight)
   return matchSpecialProperties(
     source,

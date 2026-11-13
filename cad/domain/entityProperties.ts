@@ -1,3 +1,4 @@
+import { withLinetypeScale } from "./entityOverrides"
 import { withSolid2dCorner } from "./solids2d"
 import { withLeaderOverride, withLeaderVertex } from "./leaders"
 import { SolidProperty, primitiveRetyped } from "./solidGrips"
@@ -64,6 +65,8 @@ import { replacePolyline3dVertex } from "./polylines3d"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
+  /** General's Linetype scale: the object's own, above 0 (DXF 48). */
+  | "linetypeScale"
   | "startX"
   | "startY"
   | "endX"
@@ -196,6 +199,9 @@ export function applyEntityProperty(
   vertex = 0
 ): Entity | null {
   if (!Number.isFinite(value)) return null
+  if (property === "linetypeScale") {
+    return value > 0 ? withLinetypeScale(entity, value) : null
+  }
   if (isZProperty(property)) return applyZProperty(entity, property, value)
   switch (entity.type) {
     case "line":

@@ -6573,6 +6573,8 @@ export class CadRuntime extends Observable {
             }
           : null,
       ltScale: settings.ltScale,
+      linetypes: this.document.linetypeLookup(),
+      textStyles: this.document.getTextStyles(),
       lwDisplay: settings.lwDisplay,
       fillMode: settings.fillMode,
       isolines: settings.isolines,
@@ -8129,6 +8131,9 @@ export class CadRuntime extends Observable {
       ),
       currentLayerId: this.document.getCurrentLayerId(),
       currentColor: settings.currentColor,
+      linetypes: [...this.document.getLinetypes()].sort((a, b) =>
+        a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+      ),
       currentLinetype: settings.currentLinetype,
       currentLineweight: settings.currentLineweight,
       canUndo: this.history.canUndo(),

@@ -1,0 +1,10 @@
+_-LINETYPE
+_L
+GAS_LINE,BATTING,ZIGZAG,HOT_WATER_SUPPLY
+
+
+(entget (tblobjname "LTYPE" "GAS_LINE"))
+(entget (tblobjname "LTYPE" "BATTING"))
+(entget (tblobjname "LTYPE" "ZIGZAG"))
+(entget (tblobjname "LTYPE" "HOT_WATER_SUPPLY"))
+(progn (setq e (tblnext "STYLE" T)) (while e (print e) (setq e (tblnext "STYLE"))) (princ))

@@ -2,7 +2,7 @@
 title: "Commande BOITE (BOX) dans AutoCAD"
 description: "Dessiner une boîte 3D dans AutoCAD en français : BOITE (BOX), deux coins et une hauteur, Centre, Cube, Longueur et 2Point. Essayez-le gratuitement en ligne."
 figure: "Une boîte de 60 sur 40 sur 25, par deux coins et une hauteur, vue du sud-est dans le style visuel Masqué."
-sourceHash: "68b09d9eff63"
+sourceHash: "46936b3da48e"
 ---
 
 BOITE (BOX en anglais) dessine une boîte, un solide 3D dont les faces suivent les axes du SCU : donnez le premier coin, l'autre coin, puis la hauteur. La hauteur monte selon l'axe Z du SCU, une hauteur négative descend, et un point la donne par sa distance au coin ; un coin donné à un autre Z que le premier fixe la hauteur sans la demander. La dernière hauteur, et les dernières longueur et largeur d'un cube ou de Longueur, sont proposées comme valeurs par défaut qu'Entrée accepte, partagées avec les autres primitives et <Command id="EXTRUDE" />. La boîte est créée sur le calque courant, et Annuler la supprime en une seule étape.

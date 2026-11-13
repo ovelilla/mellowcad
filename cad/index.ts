@@ -162,8 +162,14 @@ export {
 export type { Layer, LayerId, LayerNameRefusal } from "./domain/layers"
 export { STANDARD_COLORS, COLOR_BYLAYER, normalizeColor } from "./domain/colors"
 export type { EntityColor, ColorDef } from "./domain/colors"
-export { LINETYPES, LINETYPE_BYLAYER } from "./domain/linetypes"
-export type { LinetypeId, LinetypeDef } from "./domain/linetypes"
+export { LINETYPES, LINETYPE_BYLAYER, linetypeDashes } from "./domain/linetypes"
+export type {
+  Linetype,
+  LinetypeElement,
+  LinetypeId,
+  LinetypeShape,
+  LinetypeText,
+} from "./domain/linetypes"
 export { HATCH_PATTERNS } from "./domain/hatchPatterns"
 export type {
   HatchPatternId,

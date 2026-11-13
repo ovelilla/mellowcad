@@ -1328,7 +1328,7 @@ describe("what PEDIT makes and leaves", () => {
     for (const e of made) {
       expect(e.layerId).not.toBe("0")
       expect(e.color).toBe(RED)
-      expect(e.linetype).toBe("Dashed")
+      expect(e.linetype).toBe("DASHED")
       expect(e.lineweight).toBe(0.3)
       expect(e.thickness).toBe(2)
     }
@@ -1350,7 +1350,7 @@ describe("what PEDIT makes and leaves", () => {
         {
           ...p5(),
           color: RED,
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.3,
           thickness: 2,
         },
@@ -1362,7 +1362,7 @@ describe("what PEDIT makes and leaves", () => {
     expect(piece.id).not.toBe("P")
     for (const e of [kept, piece]) {
       expect(e.color).toBe(RED)
-      expect(e.linetype).toBe("Dashed")
+      expect(e.linetype).toBe("DASHED")
       expect(e.lineweight).toBe(0.3)
       expect(e.thickness).toBe(2)
     }

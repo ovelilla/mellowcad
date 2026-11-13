@@ -68,8 +68,8 @@ no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`ma
   catalog, `packages/editor/src/locales/en.json`, read with `useEditorText("<Part>")`; never next-intl,
   which is the site's (`i18n/messages.test.ts`).
 - What the engine names is read from the engine, never copied into the catalog: tool labels and
-  aliases (`state.tools`), snap, colour and linetype names, the preset views, the ViewCube's faces
-  and compass letters (`state.names`), property rows. A shortcut that is a command alias comes from
+  aliases (`state.tools`), snap and colour names, the preset views, the ViewCube's faces and
+  compass letters (`state.names`), the drawing's linetypes (`state.linetypes`), property rows. A shortcut that is a command alias comes from
   `state.tools`; a key combination is `Keys` (keys have local names — `Supr` in Spanish); a
   function key is literal.
 - The editor speaks the page's language: `CadEditor` takes the catalogs the page loaded
@@ -150,11 +150,11 @@ One body, as AutoCAD's Segoe UI at 9 pt: hierarchy is weight and colour, never s
 tokens in `packages/editor/src/styles.css` (`@theme inline`), each one class carrying size, weight
 and line height; the editor's root starts every text, its popups too, as `text-ui text-foreground`.
 
-| Role  | Classes                            | Size / weight / line | For                                                                                     |
-| ----- | ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------- |
-| value | `text-ui` (inherited)              | 12 / 400 / 16        | values, menu items, list options, buttons, tabs, tooltips                               |
-| label | `text-ui text-muted-foreground`    | 12 / 400 / 16        | what names a value: field and row labels, column headers, help, the save state          |
-| title | `text-title text-muted-foreground` | 12 / 600 / 16        | a section of a palette or popover, a menu's heading                                     |
+| Role  | Classes                            | Size / weight / line | For                                                                                        |
+| ----- | ---------------------------------- | -------------------- | ------------------------------------------------------------------------------------------ |
+| value | `text-ui` (inherited)              | 12 / 400 / 16        | values, menu items, list options, buttons, tabs, tooltips                                  |
+| label | `text-ui text-muted-foreground`    | 12 / 400 / 16        | what names a value: field and row labels, column headers, help, the save state             |
+| title | `text-title text-muted-foreground` | 12 / 600 / 16        | a section of a palette or popover, a menu's heading                                        |
 | typed | `font-mono` on `text-ui`           | 12 / 400 / 16        | what is typed or read as a figure: command line, dynamic input, coordinates, aliases, keys |
 
 - **Nothing under 12 px.** A new size is a new role, argued here, never a `text-xs` or `text-[Npx]`.
@@ -167,8 +167,7 @@ and line height; the editor's root starts every text, its popups too, as `text-u
   titles: sentence case.
 - **Arabic** (`:lang(ar)`, the editor's `styles.css`; this file owns it for the landing too): both
   roles take a 20 px line — Readex Pro reaches 14 px above the baseline and 6 below at 12 px, and a
-  16 px line clips it wherever a text truncates. The command language's islands carry `lang="en"` and keep
-  16. Select by attributes, never `:dir()`: Lightning CSS lowers it to `:lang()` lists that match
+  16 px line clips it wherever a text truncates. The command language's islands carry `lang="en"` and keep 16. Select by attributes, never `:dir()`: Lightning CSS lowers it to `:lang()` lists that match
   inside the islands too.
 - **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`). Text
   starts 12 px from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a
@@ -187,13 +186,13 @@ and line height; the editor's root starts every text, its popups too, as `text-u
 One size for everything one presses: **28 px**, with 16 px icons (WCAG 2.2's 2.5.8 asks 24; at 32
 the tool palette would fold on a Full HD laptop at 125 %).
 
-| What                                                                       | Size                                                                                    |
-| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| An icon button (`Button size="icon"`, `IconAction`)                        | 28 × 28, its icon 16                                                                    |
-| A text button, a drop-down's trigger, a field, a tab, a row of a list      | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                    |
-| A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button    | 14 × 28, 28 × 14 — attached, so the 28 px mode is the equivalent target (2.5.8's exception) |
-| A docked bar: the top bar, the status bar, the command line, the tab bar   | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide                |
-| The tool palette                                                           | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                       |
+| What                                                                     | Size                                                                                        |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| An icon button (`Button size="icon"`, `IconAction`)                      | 28 × 28, its icon 16                                                                        |
+| A text button, a drop-down's trigger, a field, a tab, a row of a list    | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                        |
+| A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button  | 14 × 28, 28 × 14 — attached, so the 28 px mode is the equivalent target (2.5.8's exception) |
+| A docked bar: the top bar, the status bar, the command line, the tab bar | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide                   |
+| The tool palette                                                         | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                         |
 
 - **A zone sizes its content** (`box-content`): its border lies outside those numbers. A border
   inside the box eats a pixel, every control lands on a half pixel and its icon blurs.

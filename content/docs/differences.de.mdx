@@ -3,7 +3,7 @@ title: Unterschiede zu AutoCAD
 metaTitle: "Unterschiede zu AutoCAD, und warum"
 description: "Wo MellowCAD anders arbeitet als AutoCAD, und warum: was der Browser für sich behält und was es hier nicht gibt."
 type: concept
-sourceHash: "cd14006ca4f1"
+sourceHash: "0aafe6ab8ce7"
 ---
 
 MellowCAD folgt AutoCAD 2027: dieselben Befehle und Aliase, dieselbe Reihenfolge der Eingabeaufforderungen, dieselben Optionsbuchstaben und Vorgaben. Es weicht nur ab, wo der Browser es erzwingt oder wo die zugehörige Funktion hier nicht existiert. Jeder Unterschied unten sagt, was AutoCAD tut, was MellowCAD stattdessen tut und warum. Was einem einzelnen Befehl noch fehlt, ist von seinem Eintrag auf der [Seite der Befehle](/docs/commands) aus verlinkt.
@@ -32,9 +32,9 @@ Es gibt keine Layouts und kein Plotten: Der Bildschirm ist der einzige Ort, an d
 
 Wo AutoCAD ein Dialogfeld öffnet, das es hier nicht gibt, stellt der Befehl seine Fragen in der Befehlszeile, wie es seine Version mit Bindestrich tut: <Command id="COLOR" /> führt <Command id="-COLOR" /> aus, <Command id="LWEIGHT" /> führt <Command id="-LWEIGHT" /> aus und <Command id="LINETYPE" /> führt <Command id="-LINETYPE" /> aus. <Command id="DIMSTYLE" /> und <Command id="STYLE" /> öffnen die Palette „Stile“, mit den Bemaßungs- oder Textstilen.
 
-## Alle Linientypen sind geladen [#linetypes]
+## Sechs Linientypen in jeder Zeichnung [#linetypes]
 
-Eine neue AutoCAD-Zeichnung enthält nur einen einzigen, durchgezogenen Linientyp, die anderen werden aus einer Datei geladen. Ohne einen Linientypmanager, um einen zu laden, bringt hier jede Zeichnung alle geladen mit.
+Eine neue AutoCAD-Zeichnung enthält nur einen einzigen, durchgezogenen Linientyp, die anderen werden aus einer Datei geladen, wenn Sie einen im Linientyp-Manager oder unter „Andere…“ einer Auswahlliste wählen. Beides gibt es hier nicht, daher enthält jede Zeichnung sechs — Continuous, DASHED, HIDDEN, CENTER, PHANTOM und DASHDOT —, damit die Auswahllisten sie anbieten; Load von <Command id="LINETYPE" /> lädt die anderen aus acadiso.lin.
 
 ## Koordinaten in der Statusleiste [#coordinates]
 

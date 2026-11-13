@@ -49,7 +49,7 @@ const ARCS: [string, () => ArcEntity][] = [
     () => {
       let arc = arcOf(p(100, 0), 10, 0, deg(90), { id: "A" })
       arc = assignEntityColor(arc, "#0a141e") as ArcEntity
-      arc = assignEntityLinetype(arc, "Dashed") as ArcEntity
+      arc = assignEntityLinetype(arc, "DASHED") as ArcEntity
       return assignEntityLineweight(arc, 0.5) as ArcEntity
     },
   ],

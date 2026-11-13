@@ -2,9 +2,10 @@
 
 import type { ReactElement } from "react"
 import {
-  LINETYPES,
   LINETYPE_BYLAYER,
+  linetypeDashes,
   type EngineNames,
+  type Linetype,
 } from "@mellowcad/engine"
 import {
   Select,
@@ -18,12 +19,15 @@ import { useEditorText } from "./editor-text"
 /**
  * A compact linetype picker with an inline dash preview, shared by the layer
  * manager (a layer's default linetype) and the properties palette (a
- * selection's ByObject override). When `includeByLayer` is set it offers a
- * leading "ByLayer" option, matching AutoCAD's per-object linetype control.
+ * selection's ByObject override). It offers the drawing's linetypes
+ * (`state.linetypes`), each by its name, the drawing's data. When
+ * `includeByLayer` is set it offers a leading "ByLayer" option, matching
+ * AutoCAD's per-object linetype control.
  */
 export function LinetypeSelect({
   value,
   names,
+  linetypes,
   onValueChange,
   includeByLayer = false,
   ariaLabel,
@@ -32,8 +36,10 @@ export function LinetypeSelect({
   below = false,
 }: {
   value: string | null
-  /** The engine's names for the linetypes and for ByLayer. */
+  /** The engine's names, for ByLayer. */
   names: EngineNames
+  /** The drawing's linetypes, in the order to offer them. */
+  linetypes: readonly Linetype[]
   onValueChange: (value: string) => void
   includeByLayer?: boolean
   ariaLabel: string
@@ -47,16 +53,11 @@ export function LinetypeSelect({
   below?: boolean
 }): ReactElement {
   const t = useEditorText("Properties")
-  // The closed trigger shows what the list shows (`Dash dot`, not the id
-  // `DashDot`), and ByLayer in the page's language.
+  // The closed trigger shows ByLayer in the page's language, a linetype by
+  // its name.
   const items = {
     [LINETYPE_BYLAYER]: names.byLayer,
-    ...Object.fromEntries(
-      LINETYPES.map((linetype) => [
-        linetype.id,
-        linetypeLabel(names, linetype.id),
-      ])
-    ),
+    ...Object.fromEntries(linetypes.map(({ name }) => [name, name])),
   }
   return (
     <Select
@@ -80,10 +81,10 @@ export function LinetypeSelect({
             {names.byLayer}
           </SelectItem>
         )}
-        {LINETYPES.map((linetype) => (
-          <SelectItem key={linetype.id} value={linetype.id}>
-            <LinetypePreview pattern={linetype.pattern} />
-            {linetypeLabel(names, linetype.id)}
+        {linetypes.map((linetype) => (
+          <SelectItem key={linetype.name} value={linetype.name}>
+            <LinetypePreview pattern={linetypeDashes(linetype.pattern)} />
+            {linetype.name}
           </SelectItem>
         ))}
       </SelectContent>
@@ -91,14 +92,9 @@ export function LinetypeSelect({
   )
 }
 
-/** A linetype's display name; one the catalog does not name shows its id. */
-function linetypeLabel(names: EngineNames, id: string): string {
-  return names.linetypes[id] ?? id
-}
-
 /**
  * The sample's scale: acadiso.lin's periods run to 63.5 mm, and at half size
- * Phantom's still shows whole in the 38 px sample.
+ * PHANTOM's still shows whole in the 38 px sample.
  */
 const PREVIEW_SCALE = 0.5
 

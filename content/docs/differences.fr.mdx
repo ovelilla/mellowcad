@@ -3,7 +3,7 @@ title: Différences avec AutoCAD
 metaTitle: "Différences avec AutoCAD, et pourquoi"
 description: "Où MellowCAD fonctionne autrement qu'AutoCAD, et pourquoi : ce que le navigateur garde pour lui, et ce qui n'existe pas ici."
 type: concept
-sourceHash: "cd14006ca4f1"
+sourceHash: "0aafe6ab8ce7"
 ---
 
 MellowCAD suit AutoCAD 2027 : les mêmes commandes et les mêmes alias, le même ordre des invites, les mêmes lettres d'option et les mêmes valeurs par défaut. Il ne s'en écarte que là où le navigateur l'y oblige, ou là où ce qui entoure la fonction n'existe pas ici. Chaque différence ci-dessous dit ce que fait AutoCAD, ce que MellowCAD fait à la place, et pourquoi. Ce qui manque encore à une commande donnée est indiqué par un lien depuis son entrée sur [la page des commandes](/docs/commands).
@@ -32,9 +32,9 @@ Il n'y a ni présentations ni traçage : l'écran est le seul endroit où l'on 
 
 Là où AutoCAD ouvre une boîte de dialogue qui n'existe pas ici, la commande pose ses questions sur la ligne de commande, comme sa version précédée d'un tiret : <Command id="COLOR" /> lance <Command id="-COLOR" />, <Command id="LWEIGHT" /> lance <Command id="-LWEIGHT" /> et <Command id="LINETYPE" /> lance <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> et <Command id="STYLE" /> ouvrent la palette Styles, sur les styles de cote ou de texte.
 
-## Tous les types de ligne sont chargés [#linetypes]
+## Six types de ligne dans chaque dessin [#linetypes]
 
-Un nouveau dessin AutoCAD ne contient qu'un type de ligne, continu, et les autres se chargent depuis un fichier. Faute de Gestionnaire des types de ligne pour en charger un, chaque dessin ici les contient tous, déjà chargés.
+Un nouveau dessin AutoCAD ne contient qu'un type de ligne, continu, et les autres se chargent depuis un fichier, quand vous en choisissez un dans le Gestionnaire des types de ligne ou dans l'entrée Autre… d'une liste déroulante. Ni l'un ni l'autre n'existe ici, donc chaque dessin en contient six — Continuous, DASHED, HIDDEN, CENTER, PHANTOM et DASHDOT — pour que les listes déroulantes les proposent ; l'option Charger de <Command id="LINETYPE" /> charge les autres depuis acadiso.lin.
 
 ## Les coordonnées dans la barre d'état [#coordinates]
 

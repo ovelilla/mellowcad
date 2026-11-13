@@ -15,7 +15,15 @@ import {
   EntityId,
 } from "./entities"
 import { createDefaultLayer, DEFAULT_LAYER_ID, Layer, LayerId } from "./layers"
-import { LinetypeId } from "./linetypes"
+import {
+  CONTINUOUS,
+  DEFAULT_LINETYPE_ID,
+  LINETYPES,
+  Linetype,
+  LinetypeId,
+  LinetypeLookup,
+  sameLinetypeName,
+} from "./linetypes"
 import { Lineweight } from "./lineweights"
 import {
   createDefaultTextStyle,
@@ -66,6 +74,14 @@ export interface DocumentReader {
   getLayer(id: LayerId): Layer | undefined
   /** The layer new geometry is drawn on. */
   getCurrentLayerId(): LayerId
+  /** The drawing's linetypes, in its table's order (Continuous among them). */
+  getLinetypes(): Linetype[]
+  /** The linetype of that name, any case. */
+  getLinetype(name: LinetypeId): Linetype | undefined
+  /** The linetype table as a plain function, for the scene and the queries. */
+  linetypeLookup(): LinetypeLookup
+  /** Whether PURGE may delete the linetype (`CadDocument.canRemoveLinetype`). */
+  canRemoveLinetype(name: LinetypeId): boolean
   /** All text styles in creation order (the base style `Standard` first). */
   getTextStyles(): TextStyle[]
   getTextStyle(id: TextStyleId): TextStyle | undefined
@@ -110,6 +126,8 @@ export interface DocumentTables {
   readonly settings?: DocumentSettings
   readonly layers?: Iterable<Layer>
   readonly currentLayerId?: LayerId
+  /** The linetype table; Continuous is kept whatever it holds. */
+  readonly linetypes?: Iterable<Linetype>
   readonly textStyles?: Iterable<TextStyle>
   readonly currentTextStyleId?: TextStyleId
   readonly dimStyles?: Iterable<DimStyle>
@@ -134,6 +152,10 @@ export class CadDocument extends Observable implements DocumentReader {
   private settings: DocumentSettings = DEFAULT_DOCUMENT_SETTINGS
   private layers = new Map<LayerId, Layer>()
   private currentLayerId: LayerId = DEFAULT_LAYER_ID
+  /** By the name in capitals: AutoCAD's table names are case-blind. */
+  private linetypes = new Map<string, Linetype>()
+  private readonly linetypesByName: LinetypeLookup = (name) =>
+    this.linetypes.get(name.toUpperCase())
   private textStyles = new Map<TextStyleId, TextStyle>()
   private currentTextStyleId: TextStyleId = DEFAULT_TEXT_STYLE_ID
   private dimStyles = new Map<DimStyleId, DimStyle>()
@@ -149,6 +171,7 @@ export class CadDocument extends Observable implements DocumentReader {
     super()
     const base = createDefaultLayer()
     this.layers.set(base.id, base)
+    this.replaceLinetypes(LINETYPES)
     const style = createDefaultTextStyle()
     this.textStyles.set(style.id, style)
     const dimStyle = createDefaultDimStyle()
@@ -244,6 +267,7 @@ export class CadDocument extends Observable implements DocumentReader {
    */
   load(entities: Iterable<Entity>, tables: DocumentTables = {}): void {
     if (tables.layers) this.replaceLayers(tables.layers)
+    if (tables.linetypes) this.replaceLinetypes(tables.linetypes)
     if (tables.textStyles) this.replaceTextStyles(tables.textStyles)
     if (tables.dimStyles) this.replaceDimStyles(tables.dimStyles)
     if (tables.blocks) {
@@ -303,6 +327,65 @@ export class CadDocument extends Observable implements DocumentReader {
     this.blocks.delete(id)
     this.emit()
     return true
+  }
+
+  getLinetypes(): Linetype[] {
+    return Array.from(this.linetypes.values())
+  }
+
+  getLinetype(name: LinetypeId): Linetype | undefined {
+    return this.linetypesByName(name)
+  }
+
+  linetypeLookup(): LinetypeLookup {
+    return this.linetypesByName
+  }
+
+  /**
+   * Replaces the whole linetype table (Continuous kept): a command's do and
+   * undo (`LinetypeTableCommand`, PASTECLIP's), which load, reload and purge.
+   */
+  setLinetypes(linetypes: Iterable<Linetype>): void {
+    this.replaceLinetypes(linetypes)
+    this.emit()
+  }
+
+  /**
+   * Whether PURGE may delete the linetype: "Linetypes ByLayer, ByBlock, and
+   * Continuous", "the current linetype" and "linetypes referenced by layers
+   * or objects" cannot be (table 4454), an object in a block's definition
+   * included.
+   */
+  canRemoveLinetype(name: LinetypeId): boolean {
+    return (
+      this.linetypes.has(name.toUpperCase()) &&
+      !sameLinetypeName(name, DEFAULT_LINETYPE_ID) &&
+      !sameLinetypeName(name, this.settings.currentLinetype) &&
+      !this.linetypeInUse(name)
+    )
+  }
+
+  /** Whether a layer or an object, in the drawing or in a block, names it. */
+  linetypeInUse(name: LinetypeId): boolean {
+    const names = (entity: Entity) =>
+      (entity.linetype !== undefined &&
+        sameLinetypeName(entity.linetype, name)) ||
+      (entity.type === "insert" &&
+        (entity.attributes ?? []).some(
+          (attribute) =>
+            attribute.linetype !== undefined &&
+            sameLinetypeName(attribute.linetype, name)
+        ))
+    for (const layer of this.layers.values()) {
+      if (sameLinetypeName(layer.linetype, name)) return true
+    }
+    for (const entity of this.entities.values()) {
+      if (names(entity)) return true
+    }
+    for (const block of this.blocks.values()) {
+      if (block.entities.some(names)) return true
+    }
+    return false
   }
 
   getTextStyles(): TextStyle[] {
@@ -575,6 +658,21 @@ export class CadDocument extends Observable implements DocumentReader {
     if (!this.layers.has(DEFAULT_LAYER_ID)) {
       const base = createDefaultLayer()
       this.layers.set(base.id, base)
+    }
+  }
+
+  /** Rebuilds the linetype table, always keeping Continuous. */
+  private replaceLinetypes(linetypes: Iterable<Linetype>): void {
+    this.linetypes = new Map()
+    for (const linetype of linetypes) {
+      const key = linetype.name.toUpperCase()
+      if (!this.linetypes.has(key)) this.linetypes.set(key, linetype)
+    }
+    if (!this.linetypes.has(DEFAULT_LINETYPE_ID.toUpperCase())) {
+      this.linetypes = new Map([
+        [DEFAULT_LINETYPE_ID.toUpperCase(), CONTINUOUS],
+        ...this.linetypes,
+      ])
     }
   }
 

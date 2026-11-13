@@ -1,5 +1,6 @@
 import { CadDocument } from "../../domain/Document"
 import { Entity } from "../../domain/entities"
+import { Linetype } from "../../domain/linetypes"
 import { PastePlan } from "../clipboard"
 import { Command } from "./Command"
 
@@ -14,6 +15,9 @@ import { Command } from "./Command"
 export class PasteCommand implements Command {
   readonly label = "paste"
 
+  /** The linetype table as the paste found it, which undo puts back whole. */
+  private linetypesBefore: readonly Linetype[] = []
+
   constructor(private readonly plan: PastePlan) {}
 
   /** Block definitions are in the block's own coordinates, which no frame changes. */
@@ -25,6 +29,10 @@ export class PasteCommand implements Command {
   }
 
   execute(doc: CadDocument): void {
+    this.linetypesBefore = doc.getLinetypes()
+    if (this.plan.linetypes.length > 0) {
+      doc.setLinetypes([...this.linetypesBefore, ...this.plan.linetypes])
+    }
     for (const layer of this.plan.layers) doc.addLayer(layer)
     for (const style of this.plan.textStyles) doc.addTextStyle(style)
     for (const style of this.plan.dimStyles) doc.addDimStyle(style)
@@ -40,5 +48,6 @@ export class PasteCommand implements Command {
     for (const style of this.plan.dimStyles) doc.removeDimStyle(style.id)
     for (const style of this.plan.textStyles) doc.removeTextStyle(style.id)
     for (const layer of this.plan.layers) doc.removeLayer(layer.id)
+    if (this.plan.linetypes.length > 0) doc.setLinetypes(this.linetypesBefore)
   }
 }

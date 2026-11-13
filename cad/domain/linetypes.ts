@@ -1,24 +1,63 @@
 /**
- * Linetypes give geometry a dash pattern ("Continuous", "Dashed", "Center", …)
- * exactly the way {@link Layer} colours give it a colour. A layer carries a
- * default linetype (an entity's "ByLayer" appearance) and an entity may
- * override it with its own ("ByObject").
+ * Linetypes give geometry a dash pattern exactly the way {@link Layer} colours
+ * give it a colour. A layer carries a default linetype (an entity's "ByLayer"
+ * appearance) and an entity may override it with its own ("ByObject").
  *
- * A pattern is a list of dash/gap lengths in *world units* (positive = dash,
- * the next = gap, alternating), matching AutoCAD's linetype definition. The
- * global `ltScale` (AutoCAD's LTSCALE) multiplies every length so the same
- * pattern reads well at any drawing size. `Continuous` has an empty pattern
- * (solid).
+ * A drawing holds its own linetypes, a table as AutoCAD's LTYPE table: each
+ * named, with its description and its pattern as AutoCAD defines one, a list
+ * of lengths in drawing units (a dash positive, a gap negative, a dot 0),
+ * and the text or shapes a complex linetype draws in it. LTSCALE and an
+ * object's own linetype scale multiply every length. `Continuous` has an
+ * empty pattern (solid).
  */
 
+/** A linetype's name: what an object, a layer and CELTYPE store. */
 export type LinetypeId = string
 
-export interface LinetypeDef {
-  /** The name a drawing stores, and the key of its display name. */
-  readonly id: LinetypeId
-  /** Dash/gap run lengths in world units; empty means a solid line. */
-  readonly pattern: readonly number[]
+interface ElementPlacement {
+  /** The dash or gap of the pattern at whose end the element stands. */
+  readonly index: number
+  /** S: its size in drawing units, as the pattern's lengths are scaled. */
+  readonly scale: number
+  /** R, A or U, in radians: relative to the line, absolute, or upright. */
+  readonly rotation: number
+  readonly rotationMode: "relative" | "absolute" | "upright"
+  /** X and Y: along the line and across it, in drawing units. */
+  readonly offset: { readonly x: number; readonly y: number }
 }
+
+/** Text a complex linetype draws (`GAS_LINE`'s `GAS`), in a text style of the drawing. */
+export interface LinetypeText extends ElementPlacement {
+  readonly kind: "text"
+  readonly text: string
+  /** The text style's name. */
+  readonly style: string
+}
+
+/** A shape a complex linetype draws, by its number in a shape file (`ltypeshp.shx`). */
+export interface LinetypeShape extends ElementPlacement {
+  readonly kind: "shape"
+  readonly shape: number
+  readonly shapeFile: string
+}
+
+export type LinetypeElement = LinetypeText | LinetypeShape
+
+export interface Linetype {
+  /** The identity, case-blind (`dashed` is `DASHED`). */
+  readonly name: LinetypeId
+  /** At most {@link MAX_LINETYPE_DESCRIPTION} characters. */
+  readonly description: string
+  /** AutoCAD's lengths: a dash > 0, a gap < 0, a dot 0. Empty is solid. */
+  readonly pattern: readonly number[]
+  readonly elements?: readonly LinetypeElement[]
+}
+
+/**
+ * AutoCAD keeps a description's first 47 characters ("Linetype descriptions
+ * cannot exceed 47 characters"): `Batting SSS…` loads cut there (ltype/p06).
+ */
+export const MAX_LINETYPE_DESCRIPTION = 47
 
 /** The always-present solid linetype, matching AutoCAD's `Continuous`. */
 export const DEFAULT_LINETYPE_ID: LinetypeId = "Continuous"
@@ -30,38 +69,120 @@ export const DEFAULT_LINETYPE_ID: LinetypeId = "Continuous"
  */
 export const LINETYPE_BYLAYER = "ByLayer"
 
+/** A drawing's linetypes by name, as the scene and the queries look one up. */
+export type LinetypeLookup = (name: LinetypeId) => Linetype | undefined
+
+/** Whether two names are one linetype: AutoCAD's table names are case-blind. */
+export function sameLinetypeName(a: string, b: string): boolean {
+  return a.toUpperCase() === b.toUpperCase()
+}
+
+/** The linetype named `name` in `linetypes`, any case. */
+export function linetypeNamed(
+  linetypes: readonly Linetype[],
+  name: string
+): Linetype | undefined {
+  return linetypes.find((linetype) => sameLinetypeName(linetype.name, name))
+}
+
+/** Continuous, the one linetype a new AutoCAD drawing holds (properties/p221). */
+export const CONTINUOUS: Linetype = {
+  name: DEFAULT_LINETYPE_ID,
+  description: "Solid line",
+  pattern: [],
+}
+
 /**
- * The built-in linetypes, in the order shown by the pickers. Each is
- * acadiso.lin's, the file a metric drawing (MEASUREMENT 1) loads from: probe
- * line/p202 reads them back with `tblsearch`. A dash of 0 is a dot. WHY all
- * six loaded in every drawing, where AutoCAD's new one holds Continuous alone
- * (properties/p221) and loads the rest from the file: there is no Load option
- * or Linetype Manager here to load one.
+ * The linetypes every drawing holds: Continuous and five of acadiso.lin, the
+ * file a metric drawing (MEASUREMENT 1) loads from (probe line/p202 reads them
+ * back with `tblsearch`), in the order the pickers showed them before the
+ * table was the drawing's. WHY all six, where AutoCAD's new drawing holds
+ * Continuous alone (properties/p221) and loads the rest when asked: the
+ * ribbon's, the layer palette's and the Properties palette's drop-downs have
+ * no Other… here (the Linetype Manager, where AutoCAD loads one from a
+ * picker, does not exist), so a linetype must be in the drawing to be picked
+ * there; -LINETYPE's Load and Set load the others.
  */
-export const LINETYPES: readonly LinetypeDef[] = [
-  { id: "Continuous", pattern: [] },
+export const LINETYPES: readonly Linetype[] = [
+  CONTINUOUS,
   // *DASHED,Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _
   // A, 12.7, -6.35
-  { id: "Dashed", pattern: [12.7, 6.35] },
+  {
+    name: "DASHED",
+    description: "Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _",
+    pattern: [12.7, -6.35],
+  },
   // *HIDDEN,Hidden __ __ __ __ __ __ __ __ __ __ __ __ __ __
   // A, 6.35, -3.175
-  { id: "Hidden", pattern: [6.35, 3.175] },
+  {
+    name: "HIDDEN",
+    description: "Hidden __ __ __ __ __ __ __ __ __ __ __ __ __ _",
+    pattern: [6.35, -3.175],
+  },
   // *CENTER,Center ____ _ ____ _ ____ _ ____ _ ____ _ ____
   // A, 31.75, -6.35, 6.35, -6.35
-  { id: "Center", pattern: [31.75, 6.35, 6.35, 6.35] },
+  {
+    name: "CENTER",
+    description: "Center ____ _ ____ _ ____ _ ____ _ ____ _ ____",
+    pattern: [31.75, -6.35, 6.35, -6.35],
+  },
   // *PHANTOM,Phantom ______  __  __  ______  __  __  ______
   // A, 31.75, -6.35, 6.35, -6.35, 6.35, -6.35
-  { id: "Phantom", pattern: [31.75, 6.35, 6.35, 6.35, 6.35, 6.35] },
+  {
+    name: "PHANTOM",
+    description: "Phantom ______  __  __  ______  __  __  ______",
+    pattern: [31.75, -6.35, 6.35, -6.35, 6.35, -6.35],
+  },
   // *DASHDOT,Dash dot __ . __ . __ . __ . __ . __ . __ . __
   // A, 12.7, -6.35, 0, -6.35
-  { id: "DashDot", pattern: [12.7, 6.35, 0, 6.35] },
+  {
+    name: "DASHDOT",
+    description: "Dash dot __ . __ . __ . __ . __ . __ . __ . __",
+    pattern: [12.7, -6.35, 0, -6.35],
+  },
 ]
 
-const BY_ID = new Map<LinetypeId, LinetypeDef>(LINETYPES.map((l) => [l.id, l]))
+/**
+ * A pattern as a stroke lays it: runs alternating dash and gap, a dash first,
+ * every run positive (a dot a dash of 0). AutoCAD's own may run two dashes or
+ * two gaps together where a complex linetype's text or shape stands
+ * (`GAS_LINE`'s `-5.08, -6.35`): they are one run here, and one ending on a
+ * dash (`FENCELINE1`'s `25.4`) ends on a gap of 0, so the next period's first
+ * dash still starts it. A pattern with no gap is solid, `[]`. One starting on
+ * a gap, which AutoCAD's A alignment does not allow, starts on a dash of 0.
+ */
+export function linetypeDashes(pattern: readonly number[]): number[] {
+  const runs: number[] = []
+  for (const length of pattern) {
+    if (!Number.isFinite(length)) return []
+    const gap = length < 0
+    if (runs.length === 0 && gap) runs.push(0)
+    // Even runs are dashes, so an odd count ends on one.
+    const afterDash = runs.length % 2 === 1
+    if (runs.length > 0 && gap !== afterDash) {
+      runs[runs.length - 1] += Math.abs(length)
+    } else {
+      runs.push(Math.abs(length))
+    }
+  }
+  if (runs.length % 2 === 1) runs.push(0)
+  const gaps = runs.reduce((sum, run, i) => (i % 2 === 1 ? sum + run : sum), 0)
+  return gaps > 0 ? runs : []
+}
 
-/** The dash/gap pattern for a linetype id (world units); `[]` when unknown/solid. */
-export function linetypePattern(id: LinetypeId): readonly number[] {
-  return BY_ID.get(id)?.pattern ?? []
+/** Every length of `linetype` times `factor`: its definition in other units. */
+export function scaledLinetype(linetype: Linetype, factor: number): Linetype {
+  return {
+    ...linetype,
+    pattern: linetype.pattern.map((length) => length * factor),
+    ...(linetype.elements && {
+      elements: linetype.elements.map((element) => ({
+        ...element,
+        scale: element.scale * factor,
+        offset: { x: element.offset.x * factor, y: element.offset.y * factor },
+      })),
+    }),
+  }
 }
 
 /**
@@ -70,7 +191,8 @@ export function linetypePattern(id: LinetypeId): readonly number[] {
  * `m` whole periods in the length each end dash is `(length − m·period +
  * first dash) / 2` (probe line/p207, five lines measured on the plot), which
  * may be longer than the pattern's first dash. A run shorter than one period
- * is drawn solid: `null`. Lengths are in the pattern's units.
+ * is drawn solid: `null`. Lengths are in the pattern's units; `pattern` is
+ * runs as {@link linetypeDashes} gives them.
  *
  * `offset` is how far into the pattern the run starts (a canvas's
  * `lineDashOffset`); `lead` is how much solid comes before the pattern starts

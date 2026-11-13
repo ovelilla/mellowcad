@@ -242,6 +242,7 @@ function tablesOf(doc: CadDocument): DocumentTables {
     settings: doc.getSettings(),
     layers: doc.getLayers(),
     currentLayerId: doc.getCurrentLayerId(),
+    linetypes: doc.getLinetypes(),
     textStyles: doc.getTextStyles(),
     currentTextStyleId: doc.getCurrentTextStyleId(),
     dimStyles: doc.getDimStyles(),

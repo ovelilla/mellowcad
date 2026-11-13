@@ -4,7 +4,7 @@ metaTitle: "BOX in AutoCAD: 3D box command and options"
 description: "How AutoCAD's BOX draws a 3D solid box, prompt by prompt: two corners and a height, Center, Cube, Length and 2Point. Try it free in your browser."
 figure: "A box 60 by 40 by 25, from two corners and a height, seen from the south-east in the Hidden visual style."
 related: ["WEDGE", "CYLINDER", "EXTRUDE", "UNION"]
-coverage: "694cc8d49ade"
+coverage: "df8ced3ccdc9"
 ---
 
 BOX draws a 3D solid box with its sides along the UCS's axes: give the first corner, the other corner, then the height. The height rises along the UCS's Z, a negative one goes down, and a point gives it by how far it is from the corner; a corner given at another Z than the first sets the height without asking. The last height, and the last length and width of a cube or Length, are offered as defaults that Enter takes, shared with the other primitives and <Command id="EXTRUDE" />. The box lies on the current layer, and Undo takes it back in one step.

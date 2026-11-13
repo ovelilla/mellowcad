@@ -1165,9 +1165,9 @@ describe("Z", () => {
   // all objects except attributes, hatches, multiline text, points, and
   // viewports".
   it("gives no linetype to a hatch, a multiline text or an attribute definition", () => {
-    const source = { ...lineOf(p(0, 0), p(1, 0)), linetype: "Dashed" }
+    const source = { ...lineOf(p(0, 0), p(1, 0)), linetype: "DASHED" }
     const kept = [
-      { ...createHatch([loopOf(p(0, 0), p(1, 1))]), linetype: "Hidden" },
+      { ...createHatch([loopOf(p(0, 0), p(1, 1))]), linetype: "HIDDEN" },
       createMText(p(0, 0), "A"),
       createAttributeDefinition(p(0, 0), "TAG"),
     ]
@@ -1177,7 +1177,7 @@ describe("Z", () => {
       )
     }
     expect(matchEntityProperties(source, textOf(p(0, 0), "A")).linetype).toBe(
-      "Dashed"
+      "DASHED"
     )
   })
 
@@ -1570,13 +1570,13 @@ describe("copy transforms", () => {
             const source = assignEntityLineweight(
               assignEntityLinetype(
                 assignEntityColor(entity, "#ff0000"),
-                "Dashed"
+                "DASHED"
               ),
               1.4
             )
             const result = copy(source)
             expect(result.color).toBe("#ff0000")
-            expect(result.linetype).toBe("Dashed")
+            expect(result.linetype).toBe("DASHED")
             expect(result.lineweight).toBe(1.4)
           })
         )
@@ -1601,11 +1601,11 @@ describe("ByObject overrides", () => {
     fc.assert(
       fc.property(entityArb, (entity) => {
         expect(assignEntityColor(entity, "#123456").color).toBe("#123456")
-        expect(assignEntityLinetype(entity, "Hidden").linetype).toBe("Hidden")
+        expect(assignEntityLinetype(entity, "HIDDEN").linetype).toBe("HIDDEN")
         expect(assignEntityLineweight(entity, 0.5).lineweight).toBe(0.5)
         expect(assignEntityLayer(entity, "roof").layerId).toBe("roof")
 
-        const overridden = assignEntityLinetype(entity, "Hidden")
+        const overridden = assignEntityLinetype(entity, "HIDDEN")
         expect(
           assignEntityLinetype(overridden, undefined).linetype
         ).toBeUndefined()
@@ -2106,14 +2106,14 @@ describe("property editing", () => {
   it("preserves the id and every ByObject override", () => {
     const line = assignEntityLinetype(
       assignEntityColor(lineOf(p(0, 0), p(10, 0)), "#ff0000"),
-      "Dashed"
+      "DASHED"
     )
 
     const edited = applyEntityProperty(line, "endX", 20) as LineEntity
 
     expect(edited.id).toBe(line.id)
     expect(edited.color).toBe("#ff0000")
-    expect(edited.linetype).toBe("Dashed")
+    expect(edited.linetype).toBe("DASHED")
     expect(edited.layerId).toBe(line.layerId)
   })
 

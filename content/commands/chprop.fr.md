@@ -1,8 +1,8 @@
 ---
 title: "Commande CHPROP dans AutoCAD"
-description: "Modifier les propriétés à la ligne de commande dans AutoCAD en français : CHPROP, couleur, calque, type de ligne, épaisseur de ligne, hauteur. Essayez-le."
-figure: "CHPROP sur une ligne qui traverse le trou d'une plaque : couleur 1 et type de ligne Center, un axe, sur le calque où elle se trouvait."
-sourceHash: "da2b2e65e05e"
+description: "Modifier les propriétés à la ligne de commande dans AutoCAD en français : CHPROP, couleur, calque, type de ligne et son échelle, épaisseur de ligne, hauteur."
+figure: "CHPROP sur une ligne qui traverse le trou d'une plaque : couleur 1 et type de ligne CENTER, un axe, sur le calque où elle se trouvait."
+sourceHash: "4ba30c3c6070"
 ---
 
 CHPROP modifie les propriétés des objets que vous sélectionnez, à la ligne de commande : les lignes Général de la palette Propriétés, demandées sous forme d'invites. Sélectionnez les objets, ou sélectionnez-les avant la commande, puis choisissez une propriété à modifier ; elle en redemande une après chacune, jusqu'à ce qu'Entrée la termine. L'invite de chaque propriété propose par défaut la valeur du jeu, <Message id="varies" /> là où les objets diffèrent, et Entrée à cette invite laisse à chaque objet la sienne. Ce que vous réglez est appliqué à la fin de la commande, si bien qu'Echap laisse chaque objet tel qu'il était. Les objets d'un calque verrouillé sont comptés et laissés de côté, chacun affichant <Message id="objectOnLockedLayer" />. Toute l'exécution est une seule étape que <Command id="U" /> annule.
@@ -19,7 +19,11 @@ Le nom d'un calque, quelle que soit la casse. Un nom qui ne peut pas être celui
 
 ### LType
 
-Le nom d'un type de ligne, quelle que soit la casse, ou `DuCalque`. Ici, tous les types de ligne sont chargés ; un autre nom est signalé comme introuvable et ramène à l'invite des propriétés.
+Le nom d'un type de ligne, quelle que soit la casse, ou `DuCalque`. Un type que le dessin n'a pas chargé est chargé depuis acad.lin, le fichier d'AutoCAD en pouces, comme le fait AutoCAD même dans un dessin métrique ; un nom que ce fichier n'a pas non plus est signalé comme introuvable et ramène à l'invite des propriétés.
+
+### ltScale
+
+L'échelle du type de ligne propre aux objets, qui multiplie celle de <Command id="LTSCALE" /> pour eux seuls : une distance, tapée ou mesurée par deux points ; une valeur négative est prise pour sa grandeur, et 0 affiche <Message id="valueMustBeNonzero" /> et redemande.
 
 ### LWeight
 
@@ -31,7 +35,7 @@ Une distance, tapée ou mesurée par deux points, négative ou nulle aussi. Elle
 
 ## Missing
 
-EChltl, TRansparence, Matériau et Annotatif, que les objets n'ont pas ici, si bien que l'invite ne les liste pas. DuBloc pour la couleur, le type de ligne et l'épaisseur de ligne, et Par défaut pour l'épaisseur de ligne. Une couleur vraie égale à une couleur d'index se relit comme celle-ci : `255,0,0` est proposé comme `1 (rouge)`. Les carnets de couleurs. La hauteur (l'épaisseur) d'un texte et d'une définition d'attribut, laissée telle quelle. CHANGER (CHANGE), dont l'option Propriétés pose la même question avec Elév.
+TRansparence, Matériau et Annotatif, que les objets n'ont pas ici, si bien que l'invite ne les liste pas. DuBloc pour la couleur, le type de ligne et l'épaisseur de ligne, et Par défaut pour l'épaisseur de ligne. Une couleur vraie égale à une couleur d'index se relit comme celle-ci : `255,0,0` est proposé comme `1 (rouge)`. Les carnets de couleurs. La hauteur (l'épaisseur) d'un texte et d'une définition d'attribut, laissée telle quelle. CHANGER (CHANGE), dont l'option Propriétés pose la même question avec Elév.
 
 ## Questions
 

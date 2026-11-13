@@ -249,7 +249,12 @@ describe("the palettes", () => {
     expect(english.snaps.endpoint).toBe("Endpoint")
     expect(english.colors.red).toBe("Red")
     expect(english.byLayer).toBe("ByLayer")
-    expect(english.linetypes.DashDot).toBe("Dash dot")
+    // A linetype is named by its name, the drawing's data.
+    expect(
+      createHarness()
+        .state()
+        .linetypes.map((l) => l.name)
+    ).toContain("DASHDOT")
     const other = createHarness({
       locale: { tag: "es", interface: { byLayer: "PorCapa" } },
     }).state().names
@@ -262,10 +267,10 @@ describe("Spanish AutoCAD's command language", () => {
   // Someone who works in Spanish AutoCAD types LINEA or L, DESFASE, _LINE and
   // H, and it works (docs/i18n/es.md).
   it("names the interface in Spanish and leaves the drawing's data alone", () => {
-    const { names, tools } = createHarness({ locale: es }).state()
+    const { names, tools, linetypes } = createHarness({ locale: es }).state()
     expect(names.snaps.endpoint).toBe("Punto final")
     expect(names.byLayer).toBe("PorCapa")
-    expect(names.linetypes.DashDot).toBe("Dash dot")
+    expect(linetypes.map((l) => l.name)).toContain("DASHDOT")
     expect(tools.find((tool) => tool.id === "line")?.label).toBe("Línea")
     expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
   })
@@ -1105,7 +1110,10 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.select("L")
     const info = cad.state().properties.info!
-    expect(info.general.map((row) => row.label)).toEqual(["Altura de objeto"])
+    expect(info.general.map((row) => row.label)).toEqual([
+      "Escala de tipo de línea",
+      "Altura de objeto",
+    ])
     expect(
       info.groups.map((group) => [
         group.title,
@@ -1157,10 +1165,10 @@ describe("Arabic: its own interface, the global command language", () => {
   // There is no Arabic AutoCAD, and someone who drafts in Arabic works in the
   // English one: the palettes speak Arabic, the command line English.
   it("names the interface in Arabic and leaves the drawing's data alone", () => {
-    const { names, tools } = createHarness({ locale: ar }).state()
+    const { names, tools, linetypes } = createHarness({ locale: ar }).state()
     expect(names.snaps.endpoint).toBe("نقطة النهاية")
     expect(names.byLayer).toBe("بالطبقة")
-    expect(names.linetypes.DashDot).toBe("Dash dot")
+    expect(linetypes.map((l) => l.name)).toContain("DASHDOT")
     expect(tools.find((tool) => tool.id === "line")?.label).toBe("خط")
     expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
   })

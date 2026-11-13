@@ -3,7 +3,7 @@ title: "Paleta Propiedades en AutoCAD: PROPIEDADES (PROPERTIES)"
 metaTitle: "Paleta Propiedades en AutoCAD: PROPIEDADES"
 description: "Cómo funciona la paleta PROPIEDADES (PROPERTIES, Ctrl+1) de AutoCAD en español: filas General y Geometría, *VARIOS*, un tipo de objeto cada vez. Pruébalo."
 figure: "Un círculo designado en la solicitud Comando, con sus pinzamientos, y después PROPIEDADES: la paleta se abre junto al dibujo con las filas del círculo."
-sourceHash: "696137498888"
+sourceHash: "14d097ac5b0b"
 ---
 
 PROPIEDADES (PROPERTIES en inglés) abre la paleta Propiedades. Como en AutoCAD es una paleta, no un cuadro de diálogo: se queda abierta junto al dibujo, aquí como una pestaña del panel de paletas, mientras designas y dibujas, hasta que <Command id="PROPERTIESCLOSE" /> la cierra. Ctrl+1 la muestra y la oculta, y escrito con un apóstrofo delante, `'PROPIEDADES`, se abre dentro de un comando en curso. En una ventana ancha está abierta desde el principio.
@@ -12,7 +12,7 @@ Con objetos designados muestra sus propiedades, y cambias una escribiendo o elig
 
 ## Missing
 
-La escala del tipo de línea, el estilo de trazado, la transparencia y el hipervínculo de General, y el material. Las filas de geometría de varios objetos del mismo tipo a la vez, el contenido de un texto y los valores de los atributos no se editan aquí. Selección rápida, el conmutador de PICKADD, ocultar automáticamente, anclar y dejar flotante la paleta.
+La escala del tipo de línea de General para varios objetos a la vez o, sin ninguno designado, para los nuevos (CELTSCALE); el estilo de trazado, la transparencia y el hipervínculo de General, y el material. Las filas de geometría de varios objetos del mismo tipo a la vez, el contenido de un texto y los valores de los atributos no se editan aquí. Selección rápida, el conmutador de PICKADD, ocultar automáticamente, anclar y dejar flotante la paleta.
 
 ## Questions
 

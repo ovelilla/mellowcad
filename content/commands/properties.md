@@ -4,7 +4,7 @@ metaTitle: "PROPERTIES in AutoCAD: the palette, Ctrl+1, PR"
 description: "How AutoCAD's PROPERTIES palette (PR, Ctrl+1) works: General and Geometry rows, *VARIES*, one object type at a time, the current settings. Try it free online."
 figure: "A circle selected at the Command prompt, its grips showing, then PROPERTIES: the palette opens beside the drawing on the circle's rows."
 related: ["MATCHPROP", "LAYER", "LIST", "COLOR"]
-coverage: "47b5e9bd3862"
+coverage: "42267b03e3fa"
 ---
 
 PROPERTIES opens the Properties palette. As in AutoCAD it is a palette, not a dialog: it stays open beside the drawing, here as a tab of the palette panel, while you select and draw, until <Command id="PROPERTIESCLOSE" /> closes it. Ctrl+1 shows and hides it, and typed with an apostrophe, `'PROPERTIES`, it opens inside a running command. On a wide window it is open from the start.
@@ -13,7 +13,7 @@ With objects selected, it shows their properties, and you change one by typing o
 
 ## Missing
 
-General's Linetype scale, Plot style, Transparency and Hyperlink, and Material. The geometry rows of several objects of one type at once, a text's contents and attribute values cannot be edited here. Quick Select, the PICKADD toggle, auto-hide, docking and floating the palette.
+General's Linetype scale for several objects at once or, with none selected, for new ones (CELTSCALE); Plot style, Transparency and Hyperlink, and Material. The geometry rows of several objects of one type at once, a text's contents and attribute values cannot be edited here. Quick Select, the PICKADD toggle, auto-hide, docking and floating the palette.
 
 ## Questions
 

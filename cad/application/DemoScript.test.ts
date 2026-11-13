@@ -42,7 +42,7 @@ describe("recordDemo", () => {
     const store = createMemoryDrawingStore()
     await recordDemo(
       demo({
-        layers: [{ name: "Centre", color: "#ff0000", linetype: "Center" }],
+        layers: [{ name: "Centre", color: "#ff0000", linetype: "CENTER" }],
       })
         .layer("Centre")
         .command("CIRCLE")
@@ -60,7 +60,7 @@ describe("recordDemo", () => {
     const [circle] = opened.entities() as [CircleEntity]
     expect(circle.radius).toBeCloseTo(12)
     const layer = opened.runtime.document.getLayer(circle.layerId)
-    expect(layer).toMatchObject({ name: "Centre", linetype: "Center" })
+    expect(layer).toMatchObject({ name: "Centre", linetype: "CENTER" })
   })
 
   it("writes a typed object snap with the point it finds, on one line", async () => {
@@ -130,7 +130,7 @@ describe("recordDemo", () => {
 
   it("draws on a template layer made current without a word on the prompt", async () => {
     const recording = await recordDemo(
-      demo({ layers: [{ name: "CENTER", linetype: "Center" }] })
+      demo({ layers: [{ name: "CENTER", linetype: "CENTER" }] })
         .layer("CENTER")
         .command("LINE")
         .type("0,0")
@@ -143,7 +143,7 @@ describe("recordDemo", () => {
     const layer = recording.document
       .getLayers()
       .find((candidate) => candidate.name === "CENTER")!
-    expect(layer.linetype).toBe("Center")
+    expect(layer.linetype).toBe("CENTER")
     expect(recording.document.getEntities()[0].layerId).toBe(layer.id)
     expect(recording.steps[0].output).toEqual([])
   })

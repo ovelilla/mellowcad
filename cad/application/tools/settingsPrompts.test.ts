@@ -45,14 +45,14 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     expect(cad.commandLog()).toEqual([
       "-LINETYPE",
       'Current line type:  "ByLayer"',
-      "Enter an option [?/Set]: FOO",
+      "Enter an option [?/Load/Set]: FOO",
       "Invalid option keyword.",
-      "Enter an option [?/Set]: S",
+      "Enter an option [?/Load/Set]: S",
       "Specify linetype name or [?] <ByLayer>: FOO",
       'Linetype "FOO" not found in acad.lin.\nYou can use the "Load" option to load it from another file.',
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "-LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Load/Set]:"
     )
   })
 
@@ -128,7 +128,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     answer(cad, "D", "FOO")
     expect(cad.commandLog().slice(-4)).toEqual([
       'Tipo de línea actual: "PorCapa"',
-      "Indique una opción [?/Definir]: D",
+      "Indique una opción [?/Cargar/Definir]: D",
       "Precise nombre de tipo de línea o [?] <PorCapa>: FOO",
       'Tipo de línea "FOO" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.',
     ])

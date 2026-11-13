@@ -57,6 +57,7 @@ import {
   entityElevation,
   entityNormal,
   entityPointToWorld,
+  entityLinetypeScale,
   entityThickness,
   hasThickness,
   isAnonymousBlock,
@@ -104,7 +105,7 @@ import {
   LayerId,
 } from "../domain/layers"
 import { EntityColor, STANDARD_COLORS } from "../domain/colors"
-import { LinetypeId } from "../domain/linetypes"
+import { Linetype, LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../domain/dimStyles"
@@ -616,7 +617,14 @@ export interface EngineState {
   readonly currentLayerId: LayerId
   /** CECOLOR: the colour new objects take, a hex value or `"ByLayer"`. */
   readonly currentColor: EntityColor | "ByLayer"
-  /** CELTYPE: the linetype new objects take, a linetype's id or `"ByLayer"`. */
+  /**
+   * The drawing's linetypes, sorted by name whatever the case, as AutoCAD's
+   * Linetype Manager and -LINETYPE's `?` list them: what the linetype
+   * drop-downs offer, each shown by its name (`linetypeDashes` draws its
+   * sample).
+   */
+  readonly linetypes: readonly Linetype[]
+  /** CELTYPE: the linetype new objects take, a linetype's name or `"ByLayer"`. */
   readonly currentLinetype: LinetypeId | "ByLayer"
   /** CELWEIGHT: the lineweight new objects take, in millimetres, or `"ByLayer"`. */
   readonly currentLineweight: Lineweight | "ByLayer"
@@ -840,10 +848,7 @@ export function buildRolloverUi(
           : entity.color,
     swatch: entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR,
     layer: layer?.name ?? "",
-    linetype:
-      entity.linetype === undefined
-        ? names.byLayer
-        : (names.linetypes[entity.linetype] ?? entity.linetype),
+    linetype: entity.linetype ?? names.byLayer,
   }
 }
 
@@ -1009,16 +1014,30 @@ export function buildSelectionInfo(
 type RowId = Parameters<EngineText["propertyRow"]>[0]
 type GroupId = Parameters<EngineText["propertyGroup"]>[0]
 
-/** Thickness, which AutoCAD lists under General for the types that have one. */
+/**
+ * The rows of the palette's General section that are no picker: Linetype
+ * scale, which AutoCAD lists after Linetype (acopmRes 139), and Thickness,
+ * last, for the types that have one.
+ */
 function generalRows(
   entity: Entity,
   settings: DocumentSettings,
   text: EngineText
 ): PropertyRow[] {
-  if (!hasThickness(entity)) return []
+  const scale = formatLength(entityLinetypeScale(entity), settings)
+  const rows: PropertyRow[] = [
+    {
+      id: "linetypeScale",
+      label: text.propertyRow("linetypeScale"),
+      value: scale,
+      edit: { property: "linetypeScale", text: scale, unit: "" },
+    },
+  ]
+  if (!hasThickness(entity)) return rows
   const thickness = formatLength(entityThickness(entity), settings)
   const unit = unitSuffix(settings.unit)
   return [
+    ...rows,
     {
       id: "thickness",
       label: text.propertyRow("thickness"),

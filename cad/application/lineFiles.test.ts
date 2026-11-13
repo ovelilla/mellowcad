@@ -24,7 +24,7 @@ import {
 function fullLine(): LineEntity {
   let line = lineOf(p(1.25, -2.5), p(30, 40), { id: "L" })
   line = assignEntityColor(line, "#d29b5f") as LineEntity
-  line = assignEntityLinetype(line, "Hidden") as LineEntity
+  line = assignEntityLinetype(line, "HIDDEN") as LineEntity
   line = assignEntityLineweight(line, 0.5) as LineEntity
   line = withDeltaZ(withElevation(line, 5), -2.75)
   line = withThickness(line, 3)

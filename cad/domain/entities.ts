@@ -318,6 +318,8 @@ export {
   assignEntityLayer,
   assignEntityColor,
   assignEntityLinetype,
+  entityLinetypeScale,
+  withLinetypeScale,
   assignEntityLineweight,
   carryOverrides,
   carryPiece,

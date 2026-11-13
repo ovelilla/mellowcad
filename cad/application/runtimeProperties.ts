@@ -26,7 +26,7 @@ import {
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
-import { LINETYPE_BYLAYER, LINETYPES, LinetypeId } from "../domain/linetypes"
+import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import {
   LINEWEIGHT_BYLAYER,
   LINEWEIGHTS,
@@ -122,14 +122,12 @@ export function setSelectionLinetype(
   history: CommandHistory,
   linetype: LinetypeId | typeof LINETYPE_BYLAYER
 ): void {
-  // A linetype that is not loaded is refused, as `setCurrentProperties` does.
-  if (
-    linetype !== LINETYPE_BYLAYER &&
-    !LINETYPES.some((entry) => entry.id === linetype)
-  ) {
-    return
-  }
-  const next = linetype === LINETYPE_BYLAYER ? undefined : linetype
+  // A linetype that is not loaded is refused, as `setCurrentProperties` does;
+  // one is named as the drawing's table names it.
+  const loaded =
+    linetype === LINETYPE_BYLAYER ? null : document.getLinetype(linetype)
+  if (linetype !== LINETYPE_BYLAYER && !loaded) return
+  const next = loaded?.name
   updateSelection(document, ids, history, (entity) =>
     entity.linetype === next ? null : assignEntityLinetype(entity, next)
   )
@@ -178,13 +176,12 @@ export function setCurrentProperties(
         : normalizeColor(patch.currentColor)
     if (color && color !== settings.currentColor) changed.currentColor = color
   }
-  const linetype = patch.currentLinetype
-  if (
-    linetype !== undefined &&
-    linetype !== settings.currentLinetype &&
-    (linetype === LINETYPE_BYLAYER ||
-      LINETYPES.some((entry) => entry.id === linetype))
-  ) {
+  const linetype =
+    patch.currentLinetype === undefined ||
+    patch.currentLinetype === LINETYPE_BYLAYER
+      ? patch.currentLinetype
+      : document.getLinetype(patch.currentLinetype)?.name
+  if (linetype !== undefined && linetype !== settings.currentLinetype) {
     changed.currentLinetype = linetype
   }
   const lineweight = patch.currentLineweight

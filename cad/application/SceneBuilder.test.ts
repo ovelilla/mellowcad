@@ -23,7 +23,10 @@ import {
   ellipseEndPoint,
   ellipseLengthTable,
   ellipseStartPoint,
+  withLinetypeScale,
 } from "../domain/entities"
+import { linetypeNamed } from "../domain/linetypes"
+import { ACADISO_LIN } from "../domain/linetypeLibrary"
 import { THEME } from "../scene/theme"
 import { createHarness } from "../../test/harness"
 import { entityScenePrimitive } from "./SceneBuilder"
@@ -230,7 +233,7 @@ describe("appearance resolution", () => {
     const solid = strokes(cad.scene().primitives, THEME.entity)[0]
     expect("stroke" in solid && solid.stroke?.dash).toBeUndefined()
 
-    cad.runtime.updateLayer("0", { linetype: "Dashed" })
+    cad.runtime.updateLayer("0", { linetype: "DASHED" })
 
     const dashed = strokes(cad.scene().primitives, THEME.entity)[0]
     expect("stroke" in dashed ? dashed.stroke?.dash : undefined).toBeDefined()
@@ -253,9 +256,9 @@ describe("appearance resolution", () => {
     expect(
       cad.entities().map((e) => [e.type, e.linetype, "fit" in e && !!e.fit])
     ).toEqual([
-      ["line", "Dashed", false],
-      ["polyline3d", "Dashed", false],
-      ["polyline3d", "Dashed", true],
+      ["line", "DASHED", false],
+      ["polyline3d", "DASHED", false],
+      ["polyline3d", "DASHED", true],
     ])
     cad.moveTo(p(500, 500))
     const dashed = strokes(cad.scene().primitives, THEME.entity).filter(
@@ -273,7 +276,7 @@ describe("appearance resolution", () => {
     const cad = createHarness({
       entities: [lineOf(p(-500, 0), p(500, 0), { id: "L1" })],
     })
-    cad.runtime.updateLayer("0", { linetype: "Dashed" })
+    cad.runtime.updateLayer("0", { linetype: "DASHED" })
 
     const dashAt = (ltScale: number) => {
       cad.runtime.setLtScale(ltScale)
@@ -286,11 +289,11 @@ describe("appearance resolution", () => {
 
   // probe line/p202: acadiso.lin's definitions, read back with `tblsearch`.
   it.each([
-    ["Dashed", [12.7, 6.35]],
-    ["Hidden", [6.35, 3.175]],
-    ["Center", [31.75, 6.35, 6.35, 6.35]],
-    ["Phantom", [31.75, 6.35, 6.35, 6.35, 6.35, 6.35]],
-    ["DashDot", [12.7, 6.35, 0, 6.35]],
+    ["DASHED", [12.7, 6.35]],
+    ["HIDDEN", [6.35, 3.175]],
+    ["CENTER", [31.75, 6.35, 6.35, 6.35]],
+    ["PHANTOM", [31.75, 6.35, 6.35, 6.35, 6.35, 6.35]],
+    ["DASHDOT", [12.7, 6.35, 0, 6.35]],
   ])("dashes %s as acadiso.lin does", (linetype, pattern) => {
     const cad = createHarness({
       entities: [
@@ -318,9 +321,13 @@ describe("appearance resolution", () => {
     )
   }
 
-  /** The drawn runs of an object lying along the X axis from 0. */
-  function runsOf(entity: Entity): number[] {
+  /** The drawn runs of an object lying along the X axis from 0, the drawing holding `loaded` too. */
+  function runsOf(entity: Entity, loaded: readonly string[] = []): number[] {
     const cad = createHarness({ entities: [entity] })
+    cad.runtime.document.setLinetypes([
+      ...cad.runtime.document.getLinetypes(),
+      ...loaded.map((name) => linetypeNamed(ACADISO_LIN, name)!),
+    ])
     const origin = cad.runtime.viewport.worldToScreen(p(0, 0)).x
     const on: [number, number][] = []
     for (const piece of strokes(cad.scene().primitives, THEME.entity)) {
@@ -360,26 +367,55 @@ describe("appearance resolution", () => {
   // probe line/p207, measured on the plot: a line begins and ends on a dash of
   // the same length, (L − m·period + first dash) / 2 with m whole periods.
   it("lays a line's pattern centred, its end dashes equal", () => {
-    const hidden = drawnRuns("Hidden", 100)
+    const hidden = drawnRuns("HIDDEN", 100)
     expect(hidden[0]).toBeCloseTo(5.55, 6)
     expect(hidden.at(-1)).toBeCloseTo(5.55, 6)
     expect(hidden).toHaveLength(21)
-    expect(drawnRuns("Hidden", 20).map((run) => +run.toFixed(3))).toEqual([
+    expect(drawnRuns("HIDDEN", 20).map((run) => +run.toFixed(3))).toEqual([
       3.65, 3.175, 6.35, 3.175, 3.65,
     ])
   })
 
   it("draws an end dash longer than the pattern's first, as AutoCAD does", () => {
     // probe line/p207: DASHDOT's ends are 18.25 long on a 100-unit line.
-    const runs = drawnRuns("DashDot", 100)
+    const runs = drawnRuns("DASHDOT", 100)
     expect(runs[0]).toBeCloseTo(18.25, 6)
     expect(runs.at(-1)).toBeCloseTo(18.25, 6)
     expect(runs.reduce((sum, run) => sum + run, 0)).toBeCloseTo(100, 6)
   })
 
+  it("draws an object's own linetype scale with LTSCALE's (line/p207's CELTSCALE 2)", () => {
+    const runs = runsOf(
+      withLinetypeScale(
+        assignEntityLinetype(
+          lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+          "HIDDEN"
+        ),
+        2
+      )
+    )
+    expect(runs[0]).toBeCloseTo(8.725, 6)
+    expect(runs[1]).toBeCloseTo(6.35, 6)
+  })
+
+  it("draws a linetype of the drawing's own, a complex one's gaps as one", () => {
+    const line = (name: string) =>
+      assignEntityLinetype(lineOf(p(0, 0), p(100, 0), { id: "L1" }), name)
+    // ACAD_ISO02W100, 12 and -3: six periods, ends of (100 - 90 + 12) / 2.
+    const iso = runsOf(line("ACAD_ISO02W100"), ["ACAD_ISO02W100"])
+    expect(iso[0]).toBeCloseTo(11, 6)
+    expect(iso[1]).toBeCloseTo(3, 6)
+    // GAS_LINE, 12.7, -5.08, -6.35: one gap of 11.43 where its text stands.
+    const gas = runsOf(line("GAS_LINE"), ["GAS_LINE"])
+    expect(gas[0]).toBeCloseTo((100 - 4 * 24.13 + 12.7) / 2, 6)
+    expect(gas[1]).toBeCloseTo(11.43, 6)
+    // A name the drawing does not hold draws continuous.
+    expect(runsOf(line("NOPE"))).toEqual([100])
+  })
+
   it("draws a line shorter than one period solid", () => {
     // probe line/p207: a 5-unit HIDDEN line plots as one stroke.
-    expect(drawnRuns("Hidden", 5)).toEqual([5])
+    expect(drawnRuns("HIDDEN", 5)).toEqual([5])
   })
 
   // probe pline/p232, PLINEGEN 0: each segment laid as a line of its
@@ -393,7 +429,7 @@ describe("appearance resolution", () => {
             xs.map((x) => p(x, 0)),
             { id: "P1" }
           ),
-          "Dashed"
+          "DASHED"
         )
       )
     const runs = along(0, 50, 100, 150)
@@ -411,7 +447,7 @@ describe("appearance resolution", () => {
     const polyline = {
       ...assignEntityLinetype(
         polylineOf([p(0, 0), p(50, 0), p(100, 0), p(150, 0)], { id: "P1" }),
-        "Dashed"
+        "DASHED"
       ),
       linetypeGeneration: true as const,
     }
@@ -491,7 +527,7 @@ describe("appearance resolution", () => {
   const dashedCircle = (radius: number, normal?: Vec3): CircleEntity => {
     const circle = assignEntityLinetype(
       circleOf(p(0, 0), radius, { id: "C1" }),
-      "Dashed"
+      "DASHED"
     ) as CircleEntity
     return normal ? withNormal(circle, normal) : circle
   }
@@ -583,7 +619,7 @@ describe("appearance resolution", () => {
     // 62.83 / 25.4 = 2.47 periods of DASHDOT: two, stretched by 1.2368.
     const cad = createHarness({
       entities: [
-        assignEntityLinetype(circleOf(p(0, 0), 10, { id: "C1" }), "DashDot"),
+        assignEntityLinetype(circleOf(p(0, 0), 10, { id: "C1" }), "DASHDOT"),
       ],
     })
     const pieces = strokes(cad.scene().primitives, THEME.entity)
@@ -645,7 +681,7 @@ describe("appearance resolution", () => {
   const dashedArc = (radius: number, from: number, to: number) =>
     assignEntityLinetype(
       arcOf(p(0, 0), radius, deg(from), deg(to), { id: "A1" }),
-      "Dashed"
+      "DASHED"
     )
 
   // probe arc/p200 (and desktop arc/d10, the screen alike), measured along
@@ -707,7 +743,7 @@ describe("appearance resolution", () => {
       entities: [
         assignEntityLinetype(
           arcOf(p(0, 0), 30, 0, deg(120), { id: "A1" }),
-          "DashDot"
+          "DASHDOT"
         ),
       ],
     })
@@ -745,7 +781,7 @@ describe("appearance resolution", () => {
    */
   function ellipseDashes(ellipse: EllipseEntity): [number, number][] | null {
     const cad = createHarness({
-      entities: [assignEntityLinetype(ellipse, "Dashed")],
+      entities: [assignEntityLinetype(ellipse, "DASHED")],
     })
     const drawn = strokes(cad.scene().primitives, THEME.entity)
     const only = drawn[0]
@@ -836,7 +872,7 @@ describe("appearance resolution", () => {
    */
   function splineDashes(spline: SplineEntity): [number, number][] | null {
     const cad = createHarness({
-      entities: [assignEntityLinetype(spline, "Dashed")],
+      entities: [assignEntityLinetype(spline, "DASHED")],
     })
     cad.runtime.setLtScale(3)
     const camera = cad.runtime.viewport
@@ -912,7 +948,7 @@ describe("appearance resolution", () => {
     "runs one dash across a closed %s spline's start",
     (_, spline) => {
       const cad = createHarness({
-        entities: [assignEntityLinetype(spline, "Dashed")],
+        entities: [assignEntityLinetype(spline, "DASHED")],
       })
       cad.runtime.setLtScale(3)
       const drawn = strokes(cad.scene().primitives, THEME.entity)

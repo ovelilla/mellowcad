@@ -3,7 +3,7 @@ title: Diferencias con AutoCAD
 metaTitle: "Diferencias con AutoCAD, y por qué"
 description: "En qué trabaja MellowCAD de otro modo que AutoCAD, y por qué: lo que el navegador se guarda para sí y lo que aquí no existe."
 type: concept
-sourceHash: "cd14006ca4f1"
+sourceHash: "0aafe6ab8ce7"
 ---
 
 MellowCAD sigue a AutoCAD 2027: los mismos comandos y alias, el mismo orden de solicitudes, las mismas letras de opción y los mismos valores por defecto. Solo se aparta de él donde lo obliga el navegador o donde aquí no existe lo que rodea a esa función. Cada diferencia dice qué hace AutoCAD, qué hace MellowCAD en su lugar y por qué. Lo que aún le falta a un comando concreto está enlazado desde su entrada en [la página de comandos](/docs/commands).
@@ -32,9 +32,9 @@ No hay presentaciones ni trazado: la pantalla es el único sitio donde se ve un 
 
 Donde AutoCAD abre un cuadro de diálogo que aquí no existe, el comando hace sus preguntas en la línea de comandos, como su versión con guion: <Command id="COLOR" /> ejecuta <Command id="-COLOR" />, <Command id="LWEIGHT" /> ejecuta <Command id="-LWEIGHT" /> y <Command id="LINETYPE" /> ejecuta <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> y <Command id="STYLE" /> abren la paleta Estilos, con los estilos de cota o de texto.
 
-## Todos los tipos de línea están cargados [#linetypes]
+## Seis tipos de línea en cada dibujo [#linetypes]
 
-Un dibujo nuevo de AutoCAD tiene un solo tipo de línea, el continuo, y los demás se cargan desde un archivo. Sin un administrador de tipos de línea con el que cargarlos, aquí cada dibujo trae todos cargados.
+Un dibujo nuevo de AutoCAD tiene un solo tipo de línea, el continuo, y los demás se cargan desde un archivo, al elegir uno en el Administrador de tipos de línea o en el Otro… de una lista desplegable. Aquí no existe ninguno de los dos, así que cada dibujo tiene seis —Continuous, DASHED, HIDDEN, CENTER, PHANTOM y DASHDOT— para que las listas desplegables los ofrezcan; la opción Cargar de <Command id="LINETYPE" /> carga los demás desde acadiso.lin.
 
 ## Las coordenadas en la barra de estado [#coordinates]
 

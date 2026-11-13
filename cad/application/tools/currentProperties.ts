@@ -4,6 +4,7 @@ import {
   assignEntityLineweight,
   Entity,
   ThickEntity,
+  withLinetypeScale,
   withThickness,
 } from "../../domain/entities"
 import { COLOR_BYLAYER } from "../../domain/colors"
@@ -15,7 +16,8 @@ import type { DocumentSettings } from "../../domain/units"
 import { ToolContext } from "./Tool"
 
 /**
- * CECOLOR, CELTYPE and CELWEIGHT, which every object drawn from scratch takes.
+ * CECOLOR, CELTYPE, CELTSCALE and CELWEIGHT, which every object drawn from
+ * scratch takes.
  * An object made from another — a copy, a piece, an offset — carries the
  * source's instead (`carryOverrides`), and ByLayer stores nothing.
  */
@@ -34,18 +36,28 @@ export function withCurrentProperties<T extends Entity>(
  */
 export interface CurrentProperties extends Pick<
   DocumentSettings,
-  "currentColor" | "currentLinetype" | "currentLineweight" | "thickness"
+  | "currentColor"
+  | "currentLinetype"
+  | "currentLinetypeScale"
+  | "currentLineweight"
+  | "thickness"
 > {
   readonly layerId: string
 }
 
 export function currentProperties(ctx: ToolContext): CurrentProperties {
-  const { currentColor, currentLinetype, currentLineweight, thickness } =
-    ctx.document.getSettings()
+  const {
+    currentColor,
+    currentLinetype,
+    currentLinetypeScale,
+    currentLineweight,
+    thickness,
+  } = ctx.document.getSettings()
   return {
     layerId: ctx.document.getCurrentLayerId(),
     currentColor,
     currentLinetype,
+    currentLinetypeScale,
     currentLineweight,
     thickness,
   }
@@ -78,13 +90,21 @@ function wearing<T extends Entity>(
   {
     currentColor,
     currentLinetype,
+    currentLinetypeScale,
     currentLineweight,
   }: Pick<
     DocumentSettings,
-    "currentColor" | "currentLinetype" | "currentLineweight"
+    | "currentColor"
+    | "currentLinetype"
+    | "currentLinetypeScale"
+    | "currentLineweight"
   >
 ): T {
-  let placed: Entity = entity
+  // A 3D solid keeps 1 whatever CELTSCALE says (primitives/p421: BOX's).
+  let placed: Entity =
+    entity.type === "solid3d"
+      ? entity
+      : withLinetypeScale(entity, currentLinetypeScale)
   if (currentColor !== COLOR_BYLAYER) {
     placed = assignEntityColor(placed, currentColor)
   }

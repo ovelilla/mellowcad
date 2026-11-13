@@ -1,0 +1,15 @@
+_-LINETYPE
+_L
+INTERROMPU
+
+_L
+INTERROMPU
+
+_Y
+_L
+INTERROMPU
+foo
+_L
+NOPE
+
+

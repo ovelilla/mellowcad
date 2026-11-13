@@ -30,7 +30,7 @@ export function drawn(
     ctx.viewport,
     piece,
     tables ? tables.layer(piece.layerId) : ctx.document.getLayer(piece.layerId),
-    settings,
+    { ...settings, linetypes: ctx.document.linetypeLookup() },
     look === "faded"
   )
   const options = {
@@ -92,7 +92,7 @@ export function glow(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
     ctx.viewport,
     entity,
     ctx.document.getLayer(entity.layerId),
-    settings
+    { ...settings, linetypes: ctx.document.linetypeLookup() }
   )
   return selectionGlow(ctx.viewport, entity, stroke, {
     fill: settings.fillMode,

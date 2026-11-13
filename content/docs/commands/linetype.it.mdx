@@ -1,14 +1,14 @@
 ---
 title: "Comando TLINEA (LINETYPE) in AutoCAD"
-description: "Come funziona TLINEA (LINETYPE, alias TL) di AutoCAD in italiano: il tipo di linea corrente, quelli caricati, DaLayer, e perché un tratteggio sembra continuo."
+description: "TLINEA (LINETYPE, alias TL) di AutoCAD in italiano: caricare tipi di linea da acadiso.lin, quello corrente, DaLayer, e perché un tratteggio sembra continuo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Come si chiama il comando LINETYPE in italiano?","answer":"TLINEA, alias TL, poi Invio o barra spaziatrice; anche TLIN e DDLTYPE, mentre l'alias inglese LT in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _LINETYPE."},{"question":"Perché la mia linea tratteggiata sembra continua?","answer":"Una linea più corta di una ripetizione del suo modello viene disegnata continua, come in AutoCAD: il modello di CENTER è lungo circa 51 unità alla scala predefinita. Aumenta o diminuisci SCALATL per adattare il modello al disegno. Controlla anche che il tipo di linea dell'oggetto, o quello del suo layer quando è DaLayer, non sia Continuous."},{"question":"Come si cambia il tipo di linea di un oggetto esistente?","answer":"Selezionalo e scegli il tipo di linea nella riga Tipo di linea della tavolozza Proprietà, oppure copialo da un altro oggetto con CORRISPROP. TLINEA imposta solo il tipo di linea degli oggetti disegnati dopo di esso."},{"question":"Come si cambia la scala del tipo di linea in AutoCAD?","answer":"Digita SCALATL e il nuovo fattore: 2 rende ogni tratto lungo il doppio, in tutto il disegno."}]
+faq: [{"question":"Come si chiama il comando LINETYPE in italiano?","answer":"TLINEA, alias TL, poi Invio o barra spaziatrice; anche TLIN e DDLTYPE, mentre l'alias inglese LT in AutoCAD in italiano non esiste. Come in AutoCAD in italiano, il nome inglese funziona anche con il trattino basso davanti: _LINETYPE."},{"question":"Perché la mia linea tratteggiata sembra continua?","answer":"Una linea più corta di una ripetizione del suo modello viene disegnata continua, come in AutoCAD: il modello di CENTER è lungo circa 51 unità alla scala predefinita. Aumenta o diminuisci SCALATL per adattare il modello al disegno. Controlla anche che il tipo di linea dell'oggetto, o quello del suo layer quando è DaLayer, non sia Continuous."},{"question":"Come si cambia il tipo di linea di un oggetto esistente?","answer":"Selezionalo e scegli il tipo di linea nella riga Tipo di linea della tavolozza Proprietà, oppure copialo da un altro oggetto con CORRISPROP. TLINEA imposta solo il tipo di linea degli oggetti disegnati dopo di esso."},{"question":"Come si cambia la scala del tipo di linea in AutoCAD?","answer":"Digita SCALATL e il nuovo fattore: 2 rende ogni tratto lungo il doppio, in tutto il disegno."},{"question":"Come si carica un tipo di linea in AutoCAD?","answer":"AutoCAD ne carica uno nella finestra Gestione tipo di linea. Qui digita -TLINEA, scegli Richiama, digita il nome del tipo di linea, come HIDDEN2 o ACAD_ISO02W100, e premi Invio per cercarlo in acadiso.lin. Seleziona carica uno che acadiso.lin contiene mentre lo rende corrente."}]
 ---
 
 TLINEA (LINETYPE in inglese) imposta il tipo di linea con cui vengono disegnati i nuovi oggetti. AutoCAD apre la finestra Gestione tipo di linea; MellowCAD non ne ha ancora uno, quindi TLINEA esegue la forma da riga di comando che ha anche AutoCAD, `-TLINEA`. Indica il tipo di linea corrente, `DaLayer` all'inizio, e chiede di nuovo un'opzione dopo ogni risposta, finché Invio la termina. DaLayer significa che ogni oggetto prende il tipo di linea del proprio layer; un tipo di linea indicato per nome è invece quello proprio dell'oggetto. L'intera sessione è un solo passo che `A` annulla, e digitato con un apostrofo dentro un comando, il suo tipo di linea si applica a ciò che quel comando disegna dopo.
 
-Ogni disegno ha sei tipi di linea caricati: Continuous e, dal file metrico di AutoCAD acadiso.lin, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT. Un modello viene applicato a ogni linea come lo applica AutoCAD, centrato lungo la sua lunghezza con tratti uguali alle due estremità.
+Un disegno contiene i propri tipi di linea, salvati con esso e nel suo DXF. Uno nuovo ne ha sei: Continuous e, dal file metrico di AutoCAD acadiso.lin, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT; gli altri si caricano da acadiso.lin, e un DXF porta i propri, anche ISO e complessi, il cui testo, come il `GAS` di GAS_LINE, viene disegnato lungo la linea. Un modello viene applicato a ogni linea come lo applica AutoCAD, centrato lungo la sua lunghezza con tratti uguali alle due estremità, in scala secondo [`SCALATL`](/docs/commands/ltscale) e la scala del tipo di linea propria dell'oggetto, che impostano [`CAPROP`](/docs/commands/chprop) e la tavolozza Proprietà e che CELTSCALE assegna ai nuovi oggetti.
 
 - **Comando:** `TLINEA`
 - **In inglese:** `LINETYPE`, digitato `_LINETYPE` in ogni lingua
@@ -26,15 +26,19 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 ### `?` [#list]
 
-Elenca i tipi di linea in due colonne, nome e descrizione. Alla richiesta delle opzioni, quelli di acadiso.lin; alla richiesta di Set, quelli caricati nel disegno i cui nomi corrispondono a ciò che digiti, tutti con `*`.
+Elenca i tipi di linea in due colonne, nome e descrizione. Alla richiesta delle opzioni chiede quale file elencare, acadiso.lin per impostazione predefinita o acad.lin, il file di AutoCAD in pollici, ed elenca i suoi tipi di linea nell'ordine del file; alla richiesta di Set, quelli caricati nel disegno i cui nomi corrispondono a ciò che digiti, tutti con `*`, in ordine di nome.
+
+### `Richiama` (`R`) [#load]
+
+Chiede quali tipi di linea caricare, un nome o più separati da virgole, anche con caratteri jolly (`DASH*`), poi in quale file cercarli, acadiso.lin all'inizio e poi l'ultimo in cui hai cercato. Ognuno trovato viene caricato e indicato, nell'ordine del file; per uno già caricato chiede prima conferma, e `Sì`, il valore predefinito, lo carica di nuovo. Un nome che il file non ha, o un file diverso da acadiso.lin e acad.lin, viene segnalato.
 
 ### `Seleziona` (`S`) [#set]
 
-Chiede il nome del tipo di linea, proponendo quello corrente; digita il nome di un tipo di linea caricato, oppure `DALayer`. Un nome che non è caricato non viene trovato, come lo scrive AutoCAD, e torna la richiesta delle opzioni; Invio mantiene quello corrente.
+Chiede il nome del tipo di linea, proponendo quello corrente; digita il nome di un tipo di linea caricato, oppure `DALayer`. Uno che acadiso.lin contiene viene prima caricato, come fa AutoCAD; qualsiasi altro non viene trovato, come lo scrive AutoCAD, e torna la richiesta delle opzioni. Invio mantiene quello corrente.
 
 ## Cosa non fa ancora [#missing]
 
-La finestra Gestione tipo di linea, e caricare, creare o descrivere tipi di linea: esistono solo i sei sopra, e l'elenco descrive soltanto Continuous. Una scala del tipo di linea per ogni oggetto (CELTSCALE): solo quella del disegno, [`SCALATL`](/docs/commands/ltscale). DaBlocco. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. I nomi dei tipi di linea di AutoCAD in italiano: qui sono in inglese in tutte le lingue. PLINEGEN: una nuova polilinea ricomincia il suo modello a ogni vertice, a meno che l'opzione `Tipolinea` di [`EDITPL`](/docs/commands/pedit) non lo attivi.
+La finestra Gestione tipo di linea, e creare tipi di linea o caricarli da un file tuo. Le forme dei tipi di linea complessi come BATTING o ZIGZAG, disegnate come gli spazi che occupano. DaBlocco. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. L'acadiso.lin dell'AutoCAD di ogni lingua, i cui nomi carica AutoCAD in italiano (TRATTEGGIATA): `Richiama` legge quello inglese in tutte le lingue, anche se un disegno fatto con essi si apre con i propri. PLINEGEN: una nuova polilinea ricomincia il suo modello a ogni vertice, a meno che l'opzione `Tipolinea` di [`EDITPL`](/docs/commands/pedit) non lo attivi.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp)
 
@@ -55,6 +59,10 @@ Selezionalo e scegli il tipo di linea nella riga Tipo di linea della tavolozza P
 ### Come si cambia la scala del tipo di linea in AutoCAD?
 
 Digita [`SCALATL`](/docs/commands/ltscale) e il nuovo fattore: 2 rende ogni tratto lungo il doppio, in tutto il disegno.
+
+### Come si carica un tipo di linea in AutoCAD?
+
+AutoCAD ne carica uno nella finestra Gestione tipo di linea. Qui digita `-TLINEA`, scegli `Richiama`, digita il nome del tipo di linea, come `HIDDEN2` o `ACAD_ISO02W100`, e premi Invio per cercarlo in acadiso.lin. `Seleziona` carica uno che acadiso.lin contiene mentre lo rende corrente.
 
 ## Comandi correlati [#related]
 

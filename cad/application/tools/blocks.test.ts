@@ -754,6 +754,7 @@ describe("blocks in the drawing file", () => {
     settings: cad.runtime.document.getSettings(),
     layers: cad.runtime.document.getLayers(),
     currentLayerId: cad.runtime.document.getCurrentLayerId(),
+    linetypes: cad.runtime.document.getLinetypes(),
     textStyles: cad.runtime.document.getTextStyles(),
     currentTextStyleId: cad.runtime.document.getCurrentTextStyleId(),
     dimStyles: cad.runtime.document.getDimStyles(),

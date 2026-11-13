@@ -496,6 +496,7 @@ function PropertyControls({
         includeByLayer
         value={selected ? state.selectionLinetype : state.currentLinetype}
         names={state.names}
+        linetypes={state.linetypes}
         onValueChange={(value) => {
           engine.applyLinetypeControl(value)
           done()

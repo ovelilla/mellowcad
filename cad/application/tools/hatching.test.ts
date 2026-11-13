@@ -1930,7 +1930,7 @@ describe("hatch in the scene", () => {
         {
           ...createHatch(RECT, { patternId: "ANSI31", patternScale: 10 }),
           color: RED,
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.5,
         },
       ],

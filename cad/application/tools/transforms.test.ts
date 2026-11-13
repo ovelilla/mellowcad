@@ -2413,7 +2413,7 @@ describe("EXPLODE", () => {
             patternId: "ANSI31",
           }),
           color: "#ff0000",
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.5,
         },
       ],

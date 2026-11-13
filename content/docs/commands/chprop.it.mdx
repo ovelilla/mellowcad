@@ -1,6 +1,6 @@
 ---
 title: "Comando CAPROP (CHPROP) in AutoCAD"
-description: "Come funziona CAPROP (CHPROP) di AutoCAD in italiano: scegli gli oggetti, poi cambia colore, layer, tipo e spessore di linea dalla riga di comando. Provalo."
+description: "CAPROP (CHPROP) di AutoCAD in italiano: scegli gli oggetti, poi cambia colore, layer, tipo di linea e sua scala, spessore di linea dalla riga di comando."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"C'è una scorciatoia per CAPROP in AutoCAD?","answer":"Non ha alias: digita CAPROP, oppure _CHPROP in qualsiasi lingua di AutoCAD. Invio alla richiesta Comando lo ripete."},{"question":"Qual è la differenza tra CAPROP e PROPRIETA?","answer":"Cambiano le stesse proprietà. PROPRIETA le mostra in una tavolozza, con anche la geometria di ogni oggetto; CAPROP le chiede alla riga di comando, il che tiene le mani sulla tastiera."},{"question":"Come si cambia il colore degli oggetti dalla riga di comando?","answer":"Digita CAPROP, seleziona gli oggetti, premi Invio, scegli Colore e digita il colore, come 1 per il rosso. Premi di nuovo Invio per finire."},{"question":"Come si spostano più oggetti su un altro layer?","answer":"Esegui CAPROP, selezionali, scegli Layer e digita il nome del layer. Il layer deve esistere: crealo prima in LAYER."}]
@@ -17,7 +17,7 @@ CAPROP cambia le proprietà degli oggetti che selezioni, dalla riga di comando: 
 
 Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
 
-<Session name="chprop" caption="CAPROP su una linea attraverso il foro di una piastra: colore 1 e tipo di linea Center, un asse, sul layer in cui si trovava." />
+<Session name="chprop" caption="CAPROP su una linea attraverso il foro di una piastra: colore 1 e tipo di linea CENTER, un asse, sul layer in cui si trovava." />
 
 ## Opzioni [#options]
 
@@ -31,7 +31,11 @@ Il nome di un layer, senza distinzione tra maiuscole e minuscole. Un nome che no
 
 ### `Tipolinea` (`T`) [#ltype]
 
-Il nome di un tipo di linea, senza distinzione tra maiuscole e minuscole, oppure `ByLayer`. Ogni tipo di linea qui è caricato; un altro nome dice che non si trova e torna alla richiesta della proprietà.
+Il nome di un tipo di linea, senza distinzione tra maiuscole e minuscole, oppure `ByLayer`. Uno che il disegno non ha caricato viene caricato da acad.lin, il file di AutoCAD in pollici, come fa AutoCAD anche in un disegno metrico; un nome che manca anche in quel file dice che non si trova e torna alla richiesta della proprietà.
+
+### `Scalatl` (`S`) [#ltscale]
+
+La scala del tipo di linea propria degli oggetti, che moltiplica quella di [`SCALATL`](/docs/commands/ltscale) solo per loro: una distanza, digitata o misurata con due punti; una negativa viene presa per il suo valore assoluto, e 0 mostra `Il valore deve essere diverso da zero.` e chiede di nuovo.
 
 ### `SPesslin` (`SP`) [#lweight]
 
@@ -43,7 +47,7 @@ Una distanza, digitata o misurata con due punti, anche negativa e zero. È impos
 
 ## Cosa non fa ancora [#missing]
 
-ltScale, TRansparency, Material e Annotative, che qui gli oggetti non hanno, quindi la richiesta non li elenca. DaBlocco a Color, LType e LWeight, e Predefinito di LWeight. Un colore RGB uguale a un colore indicizzato è riletto come quello indicizzato: `255,0,0` è proposto come `1 (red)`. I libri di colori. Lo spessore di un testo e di una definizione di attributo, lasciato com'è. CHANGE, le cui Proprietà pongono la stessa richiesta con Quota.
+TRansparency, Material e Annotative, che qui gli oggetti non hanno, quindi la richiesta non li elenca. DaBlocco a Color, LType e LWeight, e Predefinito di LWeight. Un colore RGB uguale a un colore indicizzato è riletto come quello indicizzato: `255,0,0` è proposto come `1 (red)`. I libri di colori. Lo spessore di un testo e di una definizione di attributo, lasciato com'è. CHANGE, le cui Proprietà pongono la stessa richiesta con Quota.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
 

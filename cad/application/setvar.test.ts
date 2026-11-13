@@ -200,7 +200,7 @@ describe("SETVAR's ? pages every 20 variables", () => {
     const second = written(cad, "")
     expect(second[0]).toBe("Press ENTER to continue:")
     expect(second[1].split("\n")).toHaveLength(20)
-    expect(second[1].split("\n")[0]).toMatch(/^HPSCALE /)
+    expect(second[1].split("\n")[0]).toMatch(/^HPNAME /)
     // The third page full too, since PDMODE and PDSIZE: the fourth ends it.
     expect(written(cad, "")[1].split("\n")).toHaveLength(20)
     written(cad, "")
@@ -641,7 +641,7 @@ describe("each variable takes AutoCAD's values", () => {
     answer(cad, "CELTYPE")
     expect(prompt(cad)).toBe('CELTYPE Enter new value for CELTYPE <"BYLAYER">:')
     answer(cad, "dashed", "CELTYPE")
-    expect(prompt(cad)).toBe('CELTYPE Enter new value for CELTYPE <"Dashed">:')
+    expect(prompt(cad)).toBe('CELTYPE Enter new value for CELTYPE <"DASHED">:')
     answer(cad, "bylayer")
     expect(settings(cad).currentLinetype).toBe("ByLayer")
     expect(written(cad, "CELTYPE", "BYBLOCK").at(-2)).toBe(

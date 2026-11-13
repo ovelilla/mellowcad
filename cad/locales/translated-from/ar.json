@@ -272,6 +272,7 @@
   "interface.property.row.z": "Z",
   "interface.property.row.elevation": "Elevation",
   "interface.property.row.thickness": "Thickness",
+  "interface.property.row.linetypeScale": "Linetype scale",
   "interface.property.row.startAngle": "Start angle",
   "interface.property.row.endAngle": "End angle",
   "interface.property.row.totalAngle": "Total angle",

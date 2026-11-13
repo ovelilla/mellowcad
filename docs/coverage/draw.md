@@ -1307,8 +1307,7 @@ pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md)
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
-Material row; a linetype scale of its own (none here: CELTSCALE, properties.md), which AutoCAD
-leaves at 1 on a solid whatever CELTSCALE says (p421); the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
+Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
 as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
 OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
 as Length's (p500); Polar at the other corner, which bends it here as at any point; the corner

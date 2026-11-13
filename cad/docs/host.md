@@ -165,8 +165,9 @@ runs. Escape on the drawing closes whichever menu is open.
   `updateLayer`, `removeLayer` and `setCurrentLayer(id, "manager")`.
 - **Colour, linetype, lineweight**: the drop-downs are `applyColorControl`,
   `applyLinetypeControl` and `applyLineweightControl`, showing `selectionColor` and its
-  siblings, or the current values with nothing selected. Their lists are `STANDARD_COLORS`,
-  `LINETYPES` and `LINEWEIGHTS`, named in `state.names`.
+  siblings, or the current values with nothing selected. Their lists are `STANDARD_COLORS` and
+  `LINEWEIGHTS`, named in `state.names`, and the drawing's own linetypes, `state.linetypes`, each
+  shown by its name (`linetypeDashes` draws its sample).
 - **The Properties palette** is `state.properties`: a type filter (`filters`,
   `setPropertiesFilter`) and `info`, the rows to show in groups. A row with `edit` can be retyped:
   `setSelectionProperty(row.edit.property, text)`.

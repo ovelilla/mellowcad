@@ -158,7 +158,6 @@ What the engine names, a host reads from its state and never copies. `state.name
 | `snaps`         | `SnapType`                 | Snap menus, the status bar                 |
 | `colors`        | `STANDARD_COLORS[].id`     | Colour pickers                             |
 | `byLayer`       | —                          | Colour, linetype and lineweight pickers    |
-| `linetypes`     | `LINETYPES[].id`           | Linetype pickers (a missing one is its id) |
 | `views`         | `ViewPreset`, and `custom` | The view menu (`state.view.preset`)        |
 | `viewCubeFaces` | `ViewCubeFace`             | The ViewCube (`state.viewCube`)            |
 | `compass`       | `CompassLetter`            | The ViewCube's compass                     |

@@ -1850,7 +1850,7 @@ describe("a region in the other commands", () => {
         cad.entities().map((entity, i) => {
           const coloured = i % 2 ? entity : assignEntityColor(entity, "#0a141e")
           const dashed =
-            i % 3 ? coloured : assignEntityLinetype(coloured, "Dashed")
+            i % 3 ? coloured : assignEntityLinetype(coloured, "DASHED")
           return i % 2 ? assignEntityLineweight(dashed, 0.5) : dashed
         })
       )

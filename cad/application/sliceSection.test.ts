@@ -256,7 +256,7 @@ describe("SLICE", () => {
     answer(cad, "CHPROP", "L", "", "LA", "L1", "C", "3", "LT", "HIDDEN")
     answer(cad, "LW", "0.3", "")
     cad.runtime.setCurrentColor("#0000ff")
-    cad.runtime.setCurrentLinetype("Dashed")
+    cad.runtime.setCurrentLinetype("DASHED")
     cad.runtime.setCurrentLineweight(0.5)
     answer(cad, "SLICE", "L", "", "XY", "0,0,5", "")
     const wears = (s: Solid3dEntity) => [

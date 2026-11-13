@@ -1,7 +1,7 @@
 ---
 title: "CHPROP in AutoCAD"
 metaTitle: "CHPROP in AutoCAD: change properties by prompt"
-description: "How AutoCAD's CHPROP works: select objects, then change their colour, layer, linetype, lineweight or thickness at the command line. Try it free online."
+description: "How AutoCAD's CHPROP works: select objects, then change their colour, layer, linetype and its scale, lineweight or thickness at the command line. Try it free."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Is there a shortcut for CHPROP in AutoCAD?","answer":"It has no alias: type CHPROP, or _CHPROP in any language of AutoCAD. Enter at the Command prompt repeats it."},{"question":"What is the difference between CHPROP and PROPERTIES?","answer":"They change the same properties. PROPERTIES shows them in a palette, with each object's geometry too; CHPROP asks for them at the command line, which keeps your hands on the keyboard."},{"question":"How do I change the colour of objects from the command line?","answer":"Type CHPROP, select the objects, press Enter, choose Color and type the colour, such as 1 for red. Press Enter again to finish."},{"question":"How do I move several objects to another layer?","answer":"Run CHPROP, select them, choose LAyer and type the layer's name. The layer must exist: create it in LAYER first."}]
@@ -17,7 +17,7 @@ CHPROP changes the properties of the objects you select, at the command line: th
 
 The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
 
-<Session name="chprop" caption="CHPROP on a line across a plate's hole: colour 1 and linetype Center, an axis, on the layer it was on." />
+<Session name="chprop" caption="CHPROP on a line across a plate's hole: colour 1 and linetype CENTER, an axis, on the layer it was on." />
 
 ## Options [#options]
 
@@ -31,7 +31,11 @@ A layer's name, in any case. A name that cannot be a layer's says `Invalid layer
 
 ### `LType` (`LT`) [#ltype]
 
-A linetype's name, in any case, or `ByLayer`. Every linetype here is loaded; another name says it is not found and goes back to the property prompt.
+A linetype's name, in any case, or `ByLayer`. One the drawing has not loaded is loaded from acad.lin, AutoCAD's file in inches, as AutoCAD does even in a metric drawing; a name that file lacks too says it is not found and goes back to the property prompt.
+
+### `ltScale` (`S`) [#ltscale]
+
+The objects' own linetype scale, which multiplies [`LTSCALE`](/docs/commands/ltscale)'s for them alone: a distance, typed or measured by two points; a negative one is taken as its size, and 0 says `Value must be nonzero.` and asks again.
 
 ### `LWeight` (`LW`) [#lweight]
 
@@ -43,7 +47,7 @@ A distance, typed or measured by two points, negative and zero too. It is set on
 
 ## What it does not do yet [#missing]
 
-ltScale, TRansparency, Material and Annotative, which objects here do not have, so the prompt does not list them. ByBlock at Color, LType and LWeight, and LWeight's Default. A true colour equal to an index colour reads back as the index one: `255,0,0` is offered as `1 (red)`. Color books. A text's and an attribute definition's thickness, left as they are. CHANGE, whose Properties asks the same prompt with Elev.
+TRansparency, Material and Annotative, which objects here do not have, so the prompt does not list them. ByBlock at Color, LType and LWeight, and LWeight's Default. A true colour equal to an index colour reads back as the index one: `255,0,0` is offered as `1 (red)`. Color books. A text's and an attribute definition's thickness, left as they are. CHANGE, whose Properties asks the same prompt with Elev.
 
 [What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
 

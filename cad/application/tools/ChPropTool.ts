@@ -6,13 +6,17 @@ import {
   assignEntityLayer,
   assignEntityLinetype,
   assignEntityLineweight,
+  entityLinetypeScale,
   entityThickness,
   hasThickness,
+  withLinetypeScale,
   withThickness,
 } from "../../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../../domain/colors"
 import { INVALID_LAYER_NAME_CHARACTERS, LayerId } from "../../domain/layers"
-import { LINETYPE_BYLAYER, LINETYPES, LinetypeId } from "../../domain/linetypes"
+import { LINETYPE_BYLAYER, LinetypeId } from "../../domain/linetypes"
+import { LinetypeTableCommand, withLoaded } from "../commands/linetypeCommands"
+import { acadFile, fileLinetype } from "./linetypeFiles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../../domain/lineweights"
 import type { PromptId } from "../../locales/types"
 import type { ScenePrimitive } from "../../scene/types"
@@ -49,6 +53,7 @@ type Phase =
   | "trueColor"
   | "layer"
   | "linetype"
+  | "linetypeScale"
   | "lineweight"
   | "lineweightAgain"
   | "thickness"
@@ -58,6 +63,7 @@ interface Changes {
   color?: EntityColor | typeof COLOR_BYLAYER
   layerId?: LayerId
   linetype?: LinetypeId | typeof LINETYPE_BYLAYER
+  linetypeScale?: number
   lineweight?: Lineweight | typeof LINEWEIGHT_BYLAYER
   thickness?: number
 }
@@ -65,15 +71,16 @@ interface Changes {
 const VARIES = Symbol("varies")
 
 /**
- * `Enter property to change [Color/LAyer/LType/LWeight/Thickness]:`. WHY not
- * ltScale, TRansparency, Material and Annotative, which AutoCAD lists (table
- * 20403): no object here has a linetype scale, a transparency, a material or
- * annotative scales of its own.
+ * `Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:`.
+ * WHY not TRansparency, Material and Annotative, which AutoCAD lists (table
+ * 20403): no object here has a transparency, a material or annotative scales
+ * of its own.
  */
 const PROPERTIES: readonly CommandOption[] = [
   { id: "Color" },
   { id: "LAyer" },
   { id: "LType" },
+  { id: "ltScale" },
   { id: "LWeight" },
   { id: "Thickness" },
 ]
@@ -180,6 +187,8 @@ export class ChPropTool extends SelectionActionTool {
         return { id: "newLineweight", enter: { name: this.lineweightShown } }
       case "lineweightAgain":
         return "defaultLineweight"
+      case "linetypeScale":
+        return { id: "newLinetypeScale", enter: this.linetypeScaleShown }
       case "thickness":
         return { id: "newThickness", enter: this.thicknessShown }
     }
@@ -295,6 +304,9 @@ export class ChPropTool extends SelectionActionTool {
         break
       case "LWeight":
         this.askLineweight("lineweight", ctx)
+        break
+      case "ltScale":
+        this.askLinetypeScale(ctx)
         break
       case "Thickness":
         this.askThickness(ctx)
@@ -415,11 +427,24 @@ export class ChPropTool extends SelectionActionTool {
     const byLayer =
       typed.toUpperCase() === BY_LAYER ||
       ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
-    const linetype = byLayer
+    let linetype = byLayer
       ? LINETYPE_BYLAYER
-      : LINETYPES.find(
-          (entry) => entry.id.toUpperCase() === typed.toUpperCase()
-        )?.id
+      : ctx.document.getLinetype(typed)?.name
+    // One the drawing lacks is loaded from acad.lin, the imperial file, even
+    // in a metric drawing, saying nothing (ltype/p03: DASHED2 at 0.25).
+    const found = linetype === undefined && fileLinetype(acadFile(), typed)
+    if (found) {
+      ctx.execute(
+        new LinetypeTableCommand(
+          withLoaded(
+            ctx.document.getLinetypes(),
+            [found],
+            ctx.document.getTextStyles()
+          )
+        )
+      )
+      linetype = found.name
+    }
     if (linetype === undefined) {
       ctx.report(ctx.text.message("linetypeNotLoaded", { name: typed }))
     } else {
@@ -487,9 +512,44 @@ export class ChPropTool extends SelectionActionTool {
     this.place(ctx)
   }
 
+  /**
+   * A distance, so two points give it too, and a negative one is taken as
+   * its size (p08b: -2 is 2, 0,0 to 3,4 is 5); 0 says `Value must be
+   * nonzero.` and asks again (p08); Enter keeps each object's own.
+   */
+  private askLinetypeScale(ctx: ToolContext): void {
+    this.phase = "linetypeScale"
+    const shown = this.shownLinetypeScale(ctx)
+    this.linetypeScaleShown = shown
+    const back = (commitCtx: ToolContext) => {
+      if (commitCtx.dynamicInput.hasTypedText()) return false
+      this.askProperty(commitCtx)
+      return true
+    }
+    ctx.dynamicInput.open({
+      fields: [{ id: "value", prompt: "newLinetypeScale", kind: "distance" }],
+      commit: (values, commitCtx) => {
+        if (back(commitCtx)) return
+        if (values.value === 0) {
+          commitCtx.report(
+            commitCtx.text.message("valueMustBeNonzero"),
+            "error"
+          )
+          return this.askLinetypeScale(commitCtx)
+        }
+        this.changes.linetypeScale = Math.abs(values.value)
+        this.askProperty(commitCtx)
+      },
+      commitRaw: back,
+    })
+    if (typeof shown === "number") ctx.dynamicInput.setDefault("value", shown)
+    this.place(ctx)
+  }
+
   /** What the run set, applied to every object of the set it changes. */
   private apply(ctx: ToolContext): void {
-    const { color, layerId, linetype, lineweight, thickness } = this.changes
+    const { color, layerId, linetype, linetypeScale, lineweight, thickness } =
+      this.changes
     const updated: Entity[] = []
     const refused = new Set<string>()
     for (const entity of this.entities(ctx)) {
@@ -504,6 +564,9 @@ export class ChPropTool extends SelectionActionTool {
       const ownLinetype = linetype === LINETYPE_BYLAYER ? undefined : linetype
       if (linetype !== undefined && next.linetype !== ownLinetype) {
         next = assignEntityLinetype(next, ownLinetype)
+      }
+      if (linetypeScale !== undefined) {
+        next = withLinetypeScale(next, linetypeScale)
       }
       const ownLineweight =
         lineweight === LINEWEIGHT_BYLAYER ? undefined : lineweight
@@ -549,6 +612,7 @@ export class ChPropTool extends SelectionActionTool {
   private linetypeShown = ""
   private lineweightShown = ""
   private thicknessShown: number | { readonly name: string } = 0
+  private linetypeScaleShown: number | { readonly name: string } = 1
 
   private shownColor(ctx: ToolContext): string {
     const color =
@@ -587,6 +651,14 @@ export class ChPropTool extends SelectionActionTool {
           ? ctx.text.message("linetypeByLayer")
           : lineweightWord(lineweight, ctx)
     return this.lineweightShown
+  }
+
+  private shownLinetypeScale(
+    ctx: ToolContext
+  ): number | { readonly name: string } {
+    const scale =
+      this.changes.linetypeScale ?? this.common(ctx, entityLinetypeScale)
+    return scale === VARIES ? { name: varies(ctx) } : scale
   }
 
   private shownThickness(ctx: ToolContext): number | { readonly name: string } {

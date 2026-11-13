@@ -113,7 +113,7 @@ export const DIFFERENCES: readonly {
       {
         file: "docs/coverage/properties.md",
         quote:
-          "all six loaded in every drawing, where AutoCAD's new drawing holds Continuous alone (p221) — WHY (at `LINETYPES`): there is no Load option or Linetype Manager to load one",
+          "where AutoCAD's new drawing holds Continuous alone (p221) — WHY (at `LINETYPES`): the drop-downs here have no Other… and there is no Linetype Manager to load one from",
       },
     ],
   },

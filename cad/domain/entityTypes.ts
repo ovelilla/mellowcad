@@ -56,6 +56,12 @@ interface BaseEntity {
    */
   readonly linetype?: LinetypeId
   /**
+   * The object's own linetype scale (Properties' Linetype scale, DXF 48),
+   * which multiplies LTSCALE for it alone: CELTSCALE when it was made. Absent
+   * means 1, which is never stored (ltype/p05).
+   */
+  readonly linetypeScale?: number
+  /**
    * Per-object lineweight override in mm (ByObject). When absent the entity
    * inherits its layer's lineweight (ByLayer), like {@link linetype}.
    */

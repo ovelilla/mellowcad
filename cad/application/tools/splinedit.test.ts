@@ -1192,7 +1192,7 @@ describe("convert to Polyline (splinedit/p142–p152, p157, p159, p163, p164)", 
         {
           ...fit(),
           color: "#ff0000",
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.5,
         },
       ],
@@ -1201,7 +1201,7 @@ describe("convert to Polyline (splinedit/p142–p152, p157, p159, p163, p164)", 
     expect(cad.latest()).toMatchObject({
       type: "polyline",
       color: "#ff0000",
-      linetype: "Dashed",
+      linetype: "DASHED",
       lineweight: 0.5,
     })
   })

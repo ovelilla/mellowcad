@@ -362,11 +362,11 @@ ptype "Point Style" PTYPE
 > PROPERTIESCLOSE
   command| PROPERTIESCLOSE
 > PURGE with nothing
-  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  prompt: PURGE Enter type of unused objects to purge [Blocks/LTypes]:
   asks: 
   tip: Enter type of unused objects to purge
   dyn: 
-  options: [B] Blocks
+  options: [B] Blocks, [LT] LTypes
   command| PU PURGE
   info| Nested items = Off    Orphaned data = Off
 > B
@@ -375,7 +375,7 @@ ptype "Point Style" PTYPE
   tip: Enter name(s) to purge
   dyn: "Enter name(s) to purge"=""||*
   options: -
-  prompt| Enter type of unused objects to purge [Blocks]: B
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: B
 > names
   prompt: PURGE Verify each name to be purged? [Yes/No] <Y>:
   asks: 
@@ -392,11 +392,11 @@ ptype "Point Style" PTYPE
   prompt| Verify each name to be purged? [Yes/No] <Y>: N
   info| No unreferenced blocks found.
 > Enter repeats
-  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  prompt: PURGE Enter type of unused objects to purge [Blocks/LTypes]:
   asks: 
   tip: Enter type of unused objects to purge
   dyn: 
-  options: [B] Blocks
+  options: [B] Blocks, [LT] LTypes
   command| PURGE
   info| Nested items = Off    Orphaned data = Off
 
@@ -425,11 +425,11 @@ ptype "Point Style" PTYPE
   properties: -
   cycling: -
 > PURGE two
-  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  prompt: PURGE Enter type of unused objects to purge [Blocks/LTypes]:
   asks: 
   tip: Enter type of unused objects to purge
   dyn: 
-  options: [B] Blocks
+  options: [B] Blocks, [LT] LTypes
   command| PURGE
   info| Nested items = Off    Orphaned data = Off
 > B
@@ -438,7 +438,7 @@ ptype "Point Style" PTYPE
   tip: Enter name(s) to purge
   dyn: "Enter name(s) to purge"=""||*
   options: -
-  prompt| Enter type of unused objects to purge [Blocks]: B
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: B
 > names
   prompt: PURGE Verify each name to be purged? [Yes/No] <Y>:
   asks: 
@@ -468,11 +468,11 @@ ptype "Point Style" PTYPE
   properties: -
   cycling: -
 > -PURGE one
-  prompt: -PURGE Enter type of unused objects to purge [Blocks]:
+  prompt: -PURGE Enter type of unused objects to purge [Blocks/LTypes]:
   asks: 
   tip: Enter type of unused objects to purge
   dyn: 
-  options: [B] Blocks
+  options: [B] Blocks, [LT] LTypes
   command| -PURGE
   info| Nested items = Off    Orphaned data = Off
 > B
@@ -481,7 +481,7 @@ ptype "Point Style" PTYPE
   tip: Enter name(s) to purge
   dyn: "Enter name(s) to purge"=""||*
   options: -
-  prompt| Enter type of unused objects to purge [Blocks]: B
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: B
 > names
   dyn: "Enter name(s) to purge"="bar"||*
 > enter
@@ -505,6 +505,118 @@ ptype "Point Style" PTYPE
   tip: -
   dyn: -
   prompt| Purge block "BAR"? <N> Y
+
+## purge linetypes
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PURGE linetypes
+  prompt: PURGE Enter type of unused objects to purge [Blocks/LTypes]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks, [LT] LTypes
+  command| PURGE
+  info| Nested items = Off    Orphaned data = Off
+> LT
+  prompt: PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: LT
+> names
+  prompt: PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>: D*
+> verify
+  prompt: PURGE Purge linetype "DASHED"? <N>
+  tip: Purge linetype "DASHED"?
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>:
+> Y
+  prompt: PURGE Purge linetype "DASHDOT"? <N>
+  tip: Purge linetype "DASHDOT"?
+  prompt| Purge linetype "DASHED"? <N> Y
+> N
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Purge linetype "DASHDOT"? <N> N
+> -PURGE again
+  prompt: -PURGE Enter type of unused objects to purge [Blocks/LTypes]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks, [LT] LTypes
+  command| -PURGE
+  info| Nested items = Off    Orphaned data = Off
+> LT
+  prompt: -PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: LT
+> names
+  prompt: -PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>:
+> N
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>: N
+  info| Deleting linetype "HIDDEN".
+  info| Deleting linetype "CENTER".
+  info| Deleting linetype "PHANTOM".
+  info| Deleting linetype "DASHDOT".
+  info| 4 linetypes deleted.
+> -PURGE none
+  prompt: -PURGE Enter type of unused objects to purge [Blocks/LTypes]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks, [LT] LTypes
+  command| -PURGE
+  info| Nested items = Off    Orphaned data = Off
+> LT
+  prompt: -PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks/LTypes]: LT
+> names
+  prompt: -PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>:
+> N
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>: N
+  info| No unreferenced linetypes found.
 
 ## open not JSON
 > start
@@ -1373,7 +1485,7 @@ ptype "Point Style" PTYPE
   options: -
   prompt| Specify endpoint of line or [Close/Undo]: C
 > select it
-  properties: 3D Polyline (1) [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~, Length=365.03 mm] [Misc: Fit/Smooth=None, Closed=Yes~]
+  properties: 3D Polyline (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~, Length=365.03 mm] [Misc: Fit/Smooth=None, Closed=Yes~]
 > escape
   properties: -
   command| *Cancel*
@@ -1456,7 +1568,7 @@ ptype "Point Style" PTYPE
   dyn: -
   prompt| Specify end tangent:
 > select it
-  properties: Spline (1) [Data Points: Number of fit points=3, Current Fit point=1~, Fit point X=0.00~, Fit point Y=0.00~, Fit point Z=0.00~, Knot parameterization=SqrtChord, CV frame=Hide] [Misc: Method=Fit, Degree=3, Closed=No, Periodic=No, Planar=Yes, Start tangent vector X=0.00, Start tangent vector Y=50.00, Start tangent vector Z=0.00, End tangent vector X=0.00, End tangent vector Y=-1.00, End tangent vector Z=0.00, Fit tolerance=0.00]
+  properties: Spline (1) {Linetype scale=1.00~} [Data Points: Number of fit points=3, Current Fit point=1~, Fit point X=0.00~, Fit point Y=0.00~, Fit point Z=0.00~, Knot parameterization=SqrtChord, CV frame=Hide] [Misc: Method=Fit, Degree=3, Closed=No, Periodic=No, Planar=Yes, Start tangent vector X=0.00, Start tangent vector Y=50.00, Start tangent vector Z=0.00, End tangent vector X=0.00, End tangent vector Y=-1.00, End tangent vector Z=0.00, Fit tolerance=0.00]
 > escape
   properties: -
   command| *Cancel*
@@ -1856,7 +1968,7 @@ ptype "Point Style" PTYPE
   options: -
   prompt| Specify internal point or [Properties/Select objects]: S
 > pick object
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: HATCH Specify internal point or [Properties/Select objects]:
@@ -1915,7 +2027,7 @@ ptype "Point Style" PTYPE
   options: -
   prompt| Specify internal point or [Properties/Select objects]: S
 > pick line
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: -HATCH Specify internal point or [Properties/Select objects]:
@@ -2002,7 +2114,7 @@ ptype "Point Style" PTYPE
   dyn: 
   prompt| Specify insertion base point:
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -2056,7 +2168,7 @@ ptype "Point Style" PTYPE
   prompt| Specify insertion base point: 0,0,5
   info| Beware, Z insertion base is not zero.
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -2097,7 +2209,7 @@ ptype "Point Style" PTYPE
   dyn: 
   prompt| Specify insertion base point: 0,0
 > pick its reference
-  properties: Block Reference (1) [Geometry: Position X=0.00~, Position Y=200.00~, Position Z=0.00~, Scale X=1.00~, Scale Y=1.00~, Scale Z=1.00] [Misc: Name=BAR, Rotation=0°~]
+  properties: Block Reference (1) {Linetype scale=1.00~} [Geometry: Position X=0.00~, Position Y=200.00~, Position Z=0.00~, Scale X=1.00~, Scale Y=1.00~, Scale Z=1.00] [Misc: Name=BAR, Rotation=0°~]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -2469,7 +2581,7 @@ ptype "Point Style" PTYPE
   dyn: -
   prompt| Specify rotation angle of text <0>:
 > select it
-  properties: Attribute Definition (1) [Text: Tag=PART, Prompt=NO, Value=X-0, Justify=Top left, Height=5.00 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~] [Misc: Invisible=No, Constant=No, Verify=No, Preset=No, Lock position=Yes]
+  properties: Attribute Definition (1) {Linetype scale=1.00~} [Text: Tag=PART, Prompt=NO, Value=X-0, Justify=Top left, Height=5.00 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~] [Misc: Invisible=No, Constant=No, Verify=No, Preset=No, Lock position=Yes]
 > escape
   properties: -
   command| *Cancel*
@@ -2848,7 +2960,7 @@ ptype "Point Style" PTYPE
   asks: -
   dyn: -
 > select
-  properties: MText (1) [Text: Contents=FIRST LINE
+  properties: MText (1) {Linetype scale=1.00~} [Text: Contents=FIRST LINE
 SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 
 ## -TEXT
@@ -3496,7 +3608,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Select dimensions to space:
   prompt| Select base dimension:
 > pick
-  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=26.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=26.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
   prompt| Select dimensions to space:1 found
 > pick
   properties: 2 objects (2) [Selection: Dimensions=2]
@@ -3647,7 +3759,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: 
   command| M MOVE
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: MOVE Specify base point or [Displacement] <Displacement>:
@@ -3691,7 +3803,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: 
   command| CO COPY
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: COPY Specify base point or [Displacement] <Displacement>:
@@ -3741,7 +3853,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   command| S STRETCH
   info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   info| Crossing Lasso  Press Spacebar to cycle options
   info| 1 found
 > enter
@@ -3785,7 +3897,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| RO ROTATE
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
@@ -3830,7 +3942,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| ROTATE
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
@@ -3882,7 +3994,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| SC SCALE 1 found
 > base
   prompt: SCALE Specify scale factor or [Copy/Reference]:
@@ -3925,7 +4037,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| SCALE
   info| 1 found
 > base
@@ -3976,7 +4088,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "First point of mirror line"
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| MI MIRROR 1 found
 > first
   prompt: MIRROR Specify second point of mirror line:
@@ -4003,7 +4115,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "First point of mirror line"
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| MIRROR
   info| 1 found
 > first
@@ -4043,7 +4155,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Enter array type
   dyn: 
   options: [R] Rectangular, [PA] PAth, [PO] POlar
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| AR ARRAY 1 found
 > _X
   prompt| Enter array type [Rectangular/PAth/POlar] <Rectangular>: _X
@@ -4087,7 +4199,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Select grip to edit array or
   dyn: 
   options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [L] Levels, [X] eXit
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARRAYRECT
   info| 1 found
   info| Type = Rectangular  Associative = No
@@ -4152,7 +4264,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Center point"
   tip: Specify center point of array:
   dyn: "X,Y"=""||*
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARRAYPOLAR
   info| 1 found
   info| Type = Polar  Associative = No
@@ -4191,7 +4303,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: 
   tip: Select path curve:
   dyn: 
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARRAYPATH
   info| 1 found
   info| Type = Path  Associative = No
@@ -4232,7 +4344,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   properties: -
   prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:
 > pick the array
-  properties: Array (Path) (1) [Geometry: Base X=0.00, Base Y=100.00, Base Z=0.00, Path length=300.00 mm] [Misc: Method=Measure~, Items=11~, Item spacing=30.00 mm~, Align items=Yes~]
+  properties: Array (Path) (1) {Linetype scale=1.00~} [Geometry: Base X=0.00, Base Y=100.00, Base Z=0.00, Path length=300.00 mm] [Misc: Method=Measure~, Items=11~, Item spacing=30.00 mm~, Align items=Yes~]
 
 ## TRIM EXTEND FILLET CHAMFER
 > start
@@ -4468,7 +4580,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 found
   prompt| Select objects:
 > select the region
-  properties: Region (1) [Geometry: Area=17500.00 mm², Perimeter=600.00 mm]
+  properties: Region (1) {Linetype scale=1.00~} [Geometry: Area=17500.00 mm², Perimeter=600.00 mm]
 > escape
   properties: -
   command| *Cancel*
@@ -4636,7 +4748,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 40.00
                  Rotation: 180
 > select the box
-  properties: 3D Solid (1) [Geometry: Solid type=Box, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Box, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4710,7 +4822,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 30.00
                  Rotation: 0
 > select the wedge
-  properties: 3D Solid (1) [Geometry: Solid type=Wedge, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Wedge, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4806,7 +4918,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 50.00
                  Rotation: 45
 > select the cylinder
-  properties: 3D Solid (1) [Geometry: Solid type=Cylinder, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Radius=50.00 mm~, Height=80.00 mm~] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Cylinder, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Radius=50.00 mm~, Height=80.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4865,7 +4977,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 50.00
                  Rotation: 149
 > select the cone
-  properties: 3D Solid (1) [Geometry: Solid type=Cone, Position X=200.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Base radius=50.00 mm~, Top radius=20.00 mm~, Height=60.00 mm~] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Cone, Position X=200.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Base radius=50.00 mm~, Top radius=20.00 mm~, Height=60.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4916,7 +5028,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Position, X = 350.00    Y = 50.00     Z = 0.00
                    Radius: 70.71
 > select the sphere
-  properties: 3D Solid (1) [Geometry: Solid type=Sphere, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Sphere, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4982,7 +5094,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
              Torus radius: 50.00
               Tube radius: 10.00
 > select the torus
-  properties: 3D Solid (1) [Geometry: Solid type=Torus, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Torus radius=50.00 mm~, Tube radius=10.00 mm~] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Torus, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Torus radius=50.00 mm~, Tube radius=10.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -5070,7 +5182,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Rotation: 270
           Number of sides: 6
 > select the pyramid
-  properties: 3D Solid (1) [Geometry: Solid type=Pyramid, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Type=Circumscribed, Base radius=50.00 mm~, Top radius=0.00 mm~, Sides=4~, Rotation=0°, Height=80.00 mm~] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) {Linetype scale=1.00~} [Geometry: Solid type=Pyramid, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Type=Circumscribed, Base radius=50.00 mm~, Top radius=0.00 mm~, Sides=4~, Rotation=0°, Height=80.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -5970,7 +6082,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: J
 > line
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=400.00~, Start Y=100.00~, Start Z=0.00~, End X=500.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=400.00~, Start Y=100.00~, Start Z=0.00~, End X=500.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select any open curves to join to source: 1 found
 > enter
   prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
@@ -6046,7 +6158,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]: J
 > pick
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
   prompt| Select objects: 1 found
 > enter
   prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:
@@ -6255,7 +6367,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Specify first point or [Method/Knots/Object]: O
 > pick
-  properties: 3D Polyline (1) [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=300.00~, Vertex Z=0.00~, Length=265.97 mm] [Misc: Fit/Smooth=None, Closed=No~]
+  properties: 3D Polyline (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=300.00~, Vertex Z=0.00~, Length=265.97 mm] [Misc: Fit/Smooth=None, Closed=No~]
   prompt| Select spline-fit polyline: 1 found
 > enter
   prompt: Command:
@@ -6293,7 +6405,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Specify first point or [Method/Knots/Object]: O
 > pick
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=4142.91 mm², Length=263.10 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=4142.91 mm², Length=263.10 mm] [Misc: Closed=No~]
   prompt| Select spline-fit polyline: 1 found
 > enter
   prompt: Command:
@@ -6423,7 +6535,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: 
   command| COPYCLIP
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -6692,7 +6804,7 @@ Specify next point or
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: O
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -7645,31 +7757,83 @@ Specify next point or
   properties: -
   cycling: -
 > -LINETYPE
-  prompt: -LINETYPE Enter an option [?/Set]:
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [?] ?, [S] Set
+  options: [?] ?, [L] Load, [S] Set
   command| -LINETYPE
   info| Current line type:  "ByLayer"
 > ?
-  prompt| Enter an option [?/Set]: ?
-  info| Linetypes defined in file acadiso.lin:
+  prompt: -LINETYPE Enter name of linetype file to list <acadiso.lin>:
+  asks: "Enter name of linetype file to list"
+  tip: Enter name of linetype file to list
+  dyn: "Enter name of linetype file to list"=""||*
+  options: -
+  prompt| Enter an option [?/Load/Set]: ?
+> file
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [L] Load, [S] Set
+  prompt| Enter name of linetype file to list <acadiso.lin>: acad
+  info| Linetypes defined in file acad.lin:
         
               Name          Description
         ---------------- -------------------
-        "Center"
-        "DashDot"
-        "Dashed"
-        "Hidden"
-        "Phantom"
+        "BORDER"         Border __ __ . __ __ . __ __ . __ __ . __ __ .
+        "BORDER2"        Border (.5x) __.__.__.__.__.__.__.__.__.__.__.
+        "BORDERX2"       Border (2x) ____  ____  .  ____  ____  .  ___
+        "CENTER"         Center ____ _ ____ _ ____ _ ____ _ ____ _ ____
+        "CENTER2"        Center (.5x) ___ _ ___ _ ___ _ ___ _ ___ _ ___
+        "CENTERX2"       Center (2x) ________  __  ________  __  _____
+        "DASHDOT"        Dash dot __ . __ . __ . __ . __ . __ . __ . __
+        "DASHDOT2"       Dash dot (.5x) _._._._._._._._._._._._._._._.
+        "DASHDOTX2"      Dash dot (2x) ____  .  ____  .  ____  .  ___
+        "DASHED"         Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _
+        "DASHED2"        Dashed (.5x) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+        "DASHEDX2"       Dashed (2x) ____  ____  ____  ____  ____  ___
+        "DIVIDE"         Divide ____ . . ____ . . ____ . . ____ . . ____
+        "DIVIDE2"        Divide (.5x) __..__..__..__..__..__..__..__.._
+        "DIVIDEX2"       Divide (2x) ________  .  .  ________  .  .  _
+        "DOT"            Dot . . . . . . . . . . . . . . . . . . . . . .
+        "DOT2"           Dot (.5x) .....................................
+        "DOTX2"          Dot (2x) .  .  .  .  .  .  .  .  .  .  .  .  . 
+        "HIDDEN"         Hidden __ __ __ __ __ __ __ __ __ __ __ __ __ _
+        "HIDDEN2"        Hidden (.5x) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+        "HIDDENX2"       Hidden (2x) ____ ____ ____ ____ ____ ____ ____
+        "PHANTOM"        Phantom ______  __  __  ______  __  __  ______
+        "PHANTOM2"       Phantom (.5x) ___ _ _ ___ _ _ ___ _ _ ___ _ _
+        "PHANTOMX2"      Phantom (2x) ____________    ____    ____   _
+        "ACAD_ISO02W100"  ISO dash __ __ __ __ __ __ __ __ __ __ __ __ __
+        "ACAD_ISO03W100"  ISO dash space __    __    __    __    __    __
+        "ACAD_ISO04W100"  ISO long-dash dot ____ . ____ . ____ . ____ . _
+        "ACAD_ISO05W100"  ISO long-dash double-dot ____ .. ____ .. ____ .
+        "ACAD_ISO06W100"  ISO long-dash triple-dot ____ ... ____ ... ____
+        "ACAD_ISO07W100"  ISO dot . . . . . . . . . . . . . . . . . . . .
+        "ACAD_ISO08W100"  ISO long-dash short-dash ____ __ ____ __ ____ _
+        "ACAD_ISO09W100"  ISO long-dash double-short-dash ____ __ __ ____
+        "ACAD_ISO10W100"  ISO dash dot __ . __ . __ . __ . __ . __ . __ .
+        "ACAD_ISO11W100"  ISO double-dash dot __ __ . __ __ . __ __ . __ 
+        "ACAD_ISO12W100"  ISO dash double-dot __ . . __ . . __ . . __ . .
+        "ACAD_ISO13W100"  ISO double-dash double-dot __ __ . . __ __ . . 
+        "ACAD_ISO14W100"  ISO dash triple-dot __ . . . __ . . . __ . . . 
+        "ACAD_ISO15W100"  ISO double-dash triple-dot __ __ . . . __ __ . 
+        "FENCELINE1"     Fenceline circle ----0-----0----0-----0----0---
+        "FENCELINE2"     Fenceline square ----[]-----[]----[]-----[]----
+        "TRACKS"         Tracks -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+        "BATTING"        Batting SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+        "HOT_WATER_SUPPLY"  Hot water supply ---- HW ---- HW ---- HW ----
+        "GAS_LINE"       Gas line ----GAS----GAS----GAS----GAS----GAS---
+        "ZIGZAG"         Zig zag /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 > S
   prompt: -LINETYPE Specify linetype name or [?] <ByLayer>:
   asks: "Specify linetype name or"
   tip: Specify linetype name or
   dyn: "Specify linetype name or"=""||*
   options: [?] ?
-  prompt| Enter an option [?/Set]: S
+  prompt| Enter an option [?/Load/Set]: S
 > ?
   prompt: -LINETYPE Enter linetype name(s) to list <*>:
   asks: "Enter linetype name(s) to list"
@@ -7678,17 +7842,17 @@ Specify next point or
   options: -
   prompt| Specify linetype name or [?] <ByLayer>: ?
 > pattern
-  prompt: -LINETYPE Enter an option [?/Set]:
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [?] ?, [S] Set
+  options: [?] ?, [L] Load, [S] Set
   prompt| Enter linetype name(s) to list <*>: C*
   info| ByLayer, ByBlock, or one of these loaded linetypes:
         
               Name          Description
         ---------------- ------------------
-        "Center"
+        "CENTER"         Center ____ _ ____ _ ____ _ ____ _ ____ _ ____
         "Continuous"     Solid line
 > S
   prompt: -LINETYPE Specify linetype name or [?] <ByLayer>:
@@ -7696,31 +7860,78 @@ Specify next point or
   tip: Specify linetype name or
   dyn: "Specify linetype name or"=""||*
   options: [?] ?
-  prompt| Enter an option [?/Set]: S
+  prompt| Enter an option [?/Load/Set]: S
 > name
-  prompt: -LINETYPE Enter an option [?/Set]:
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [?] ?, [S] Set
-  prompt| Specify linetype name or [?] <ByLayer>: Center
+  options: [?] ?, [L] Load, [S] Set
+  prompt| Specify linetype name or [?] <ByLayer>: CENTER
+> L
+  prompt: -LINETYPE Enter linetype(s) to load:
+  asks: "Enter linetype(s) to load"
+  tip: Enter linetype(s) to load:
+  dyn: "Enter linetype(s) to load"=""||*
+  options: -
+  prompt| Enter an option [?/Load/Set]: L
+> names
+  prompt: -LINETYPE Enter name of linetype file to search <acadiso.lin>:
+  asks: "Enter name of linetype file to search"
+  tip: Enter name of linetype file to search
+  dyn: "Enter name of linetype file to search"=""||*
+  prompt| Enter linetype(s) to load: GAS*,CENTER
+> file
+  prompt: -LINETYPE Linetype "CENTER" is already loaded.  Reload it? <Y>
+  asks: 
+  tip: Linetype "CENTER" is already loaded.  Reload it?
+  dyn: 
+  prompt| Enter name of linetype file to search <acadiso.lin>:
+> reload
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
+  tip: Enter an option
+  options: [?] ?, [L] Load, [S] Set
+  prompt| Linetype "CENTER" is already loaded.  Reload it? <Y>
+  info| Linetype "CENTER" reloaded.
+  info| Linetype "GAS_LINE" loaded.
+> L
+  prompt: -LINETYPE Enter linetype(s) to load:
+  asks: "Enter linetype(s) to load"
+  tip: Enter linetype(s) to load:
+  dyn: "Enter linetype(s) to load"=""||*
+  options: -
+  prompt| Enter an option [?/Load/Set]: L
+> names
+  prompt: -LINETYPE Enter name of linetype file to search <acadiso.lin>:
+  asks: "Enter name of linetype file to search"
+  tip: Enter name of linetype file to search
+  dyn: "Enter name of linetype file to search"=""||*
+  prompt| Enter linetype(s) to load: NOPE
+> file
+  prompt: -LINETYPE Enter an option [?/Load/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [L] Load, [S] Set
+  prompt| Enter name of linetype file to search <acadiso.lin>: foo
+  info| "foo.lin": Can't find file.
 > enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [?/Set]:
+  prompt| Enter an option [?/Load/Set]:
 > unknown
-  prompt: LINETYPE Enter an option [?/Set]:
+  prompt: LINETYPE Enter an option [?/Load/Set]:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [?] ?, [S] Set
+  options: [?] ?, [L] Load, [S] Set
   command| LT LINETYPE
-  info| Current line type:  "Center"
-  prompt| Enter an option [?/Set]: S
-  prompt| Specify linetype name or [?] <Center>: NOPE
+  info| Current line type:  "CENTER"
+  prompt| Enter an option [?/Load/Set]: S
+  prompt| Specify linetype name or [?] <CENTER>: NOPE
   info| Linetype "NOPE" not found in acad.lin.
         You can use the "Load" option to load it from another file.
 
@@ -7890,7 +8101,7 @@ Specify next point or
   info| Current dimension style: ISO-25   Annotative: No
   prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: A
 > pick
-  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=5.00~, Text position Y=6.88~, Text rotation=0°~, Measurement=10, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=5.00~, Text position Y=6.88~, Text rotation=0°~, Measurement=10, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -8058,7 +8269,7 @@ Specify next point or
   dyn: -
   prompt| Specify third point:
 > pick
-  properties: Solid (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
+  properties: Solid (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
 
 ## LEADER
 > start
@@ -8142,7 +8353,7 @@ Specify next point or
   dyn: -
   prompt| Enter next line of annotation text:
 > pick
-  properties: Leader (1) [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~] [Misc: Type=Line with arrow~, Annotative=No] [Lines & Arrows: Arrow=Closed filled, Arrow size=2.5~] [Text: Text offset=0.625~, Text pos vert=Above~] [Fit: Dim scale overall=1~]
+  properties: Leader (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~] [Misc: Type=Line with arrow~, Annotative=No] [Lines & Arrows: Arrow=Closed filled, Arrow size=2.5~] [Text: Text offset=0.625~, Text pos vert=Above~] [Fit: Dim scale overall=1~]
 > LIST
   properties: -
   command| LIST
@@ -8305,13 +8516,13 @@ Specify next point or
   dyn: 
   command| CHPROP
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Select objects:
 > Color
   prompt: CHPROP New color [Truecolor] <BYLAYER>:
@@ -8319,7 +8530,7 @@ Specify next point or
   tip: New color
   dyn: "New color"=""|BYLAYER|*
   options: [T] Truecolor
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: C
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: C
 > FOO
   prompt| New color [Truecolor] <BYLAYER>: FOO
   error| A color number or standard color name is required.
@@ -8334,11 +8545,11 @@ Specify next point or
   prompt| Red,Green,Blue: 1,2
   error| Invalid color.  Type three comma separated values from 0 to 255.
 > rgb
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
   dyn: 
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Red,Green,Blue: 1,2,3
 > LAyer
   prompt: CHPROP Enter new layer name <0>:
@@ -8346,16 +8557,16 @@ Specify next point or
   tip: Enter new layer name
   dyn: "Enter new layer name"=""||*
   options: -
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LA
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: LA
 > FOO
   prompt| Enter new layer name <0>: FOO
   error| Cannot find layer "FOO".
 > enter
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
   dyn: 
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Enter new layer name <0>:
 > LType
   prompt: CHPROP Enter new linetype name <ByLayer>:
@@ -8363,13 +8574,13 @@ Specify next point or
   tip: Enter new linetype name
   dyn: "Enter new linetype name"=""||*
   options: -
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LT
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: LT
 > FOO
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
   dyn: 
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Enter new linetype name <ByLayer>: FOO
   info| Linetype "FOO" not found.  Use LINETYPE command to load it.
 > LWeight
@@ -8378,7 +8589,7 @@ Specify next point or
   tip: Enter new lineweight
   dyn: "Enter new lineweight"=""|ByLayer|*
   options: -
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LW
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: LW
 > ?
   prompt: CHPROP Enter default lineweight for new objects or [?]:
   asks: "Enter default lineweight for new objects or"
@@ -8392,26 +8603,57 @@ Specify next point or
         0.53 mm 0.60 mm  0.70 mm    0.80 mm 0.90 mm  1.00 mm
         1.06 mm 1.20 mm  1.40 mm    1.58 mm 2.00 mm  2.11 mm
 > weight
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
   dyn: 
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Enter default lineweight for new objects or [?]: 0.33
   info| Lineweight rounded to nearest valid value of 0.35 mm
+> ltScale
+  prompt: CHPROP Specify new linetype scale <1.00>:
+  asks: "Specify new linetype scale"
+  tip: Specify new linetype scale
+  dyn: "Specify new linetype scale"=""|1.00|mm*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: S
+> zero
+  prompt| Specify new linetype scale <1.00>: 0
+  error| Value must be nonzero.
+> scale
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
+  prompt| Specify new linetype scale <1.00>: -2
+> ltScale
+  prompt: CHPROP Specify new linetype scale <2.00>:
+  asks: "Specify new linetype scale"
+  tip: Specify new linetype scale
+  dyn: "Specify new linetype scale"=""|2.00|mm*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: S
+> enter
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
+  prompt| Specify new linetype scale <2.00>:
 > Thickness
   prompt: CHPROP Specify new thickness <0.00>:
   asks: "Specify new thickness"
   tip: Specify new thickness
   dyn: "Specify new thickness"=""|0.00|mm*
   options: -
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: T
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]: T
 > thickness
-  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
   dyn: 
-  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  options: [C] Color, [LA] LAyer, [LT] LType, [S] ltScale, [LW] LWeight, [T] Thickness
   prompt| Specify new thickness <0.00>: 2
 > enter
   prompt: Command:
@@ -8420,7 +8662,7 @@ Specify next point or
   dyn: -
   options: -
   properties: -
-  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  prompt| Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:
 
 ## LIST
 > start
@@ -8442,7 +8684,7 @@ Specify next point or
   error| *Invalid selection*
   error| Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -8814,7 +9056,7 @@ Specify next point or
   properties: -
   cycling: -
 > select line
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
 > grab end
   asks: "Length"
   dyn: "Length"=""|100.00|mm*
@@ -8823,7 +9065,7 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
 > grab middle
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -8832,12 +9074,12 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
 > escape
   properties: -
   command| *Cancel*
 > select circle
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > grab quadrant
   asks: "Radius"
   dyn: "Radius"=""|50.00|mm*
@@ -8846,12 +9088,12 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm~, Area=15393.80 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm~, Area=15393.80 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > escape
   properties: -
   command| *Cancel*
 > select arc
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=350.00, Start Y=300.00, Start Z=0.00, Center X=300.00~, Center Y=300.00~, Center Z=0.00~, End X=300.00, End Y=350.00, End Z=0.00, Radius=50.00 mm~, Start angle=0°~, End angle=90°~, Total angle=90°, Arc length=78.54 mm, Area=713.50 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Arc (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=350.00, Start Y=300.00, Start Z=0.00, Center X=300.00~, Center Y=300.00~, Center Z=0.00~, End X=300.00, End Y=350.00, End Z=0.00, Radius=50.00 mm~, Start angle=0°~, End angle=90°~, Total angle=90°, Arc length=78.54 mm, Area=713.50 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > grab end
   asks: "Angle"
   dyn: "Angle"=""|0|°*
@@ -8860,12 +9102,12 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=340.00, Start Y=330.00, Start Z=0.00, Center X=300.00~, Center Y=300.00~, Center Z=0.00~, End X=300.00, End Y=350.00, End Z=0.00, Radius=50.00 mm~, Start angle=37°~, End angle=90°~, Total angle=53°, Arc length=46.36 mm, Area=159.12 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Arc (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=340.00, Start Y=330.00, Start Z=0.00, Center X=300.00~, Center Y=300.00~, Center Z=0.00~, End X=300.00, End Y=350.00, End Z=0.00, Radius=50.00 mm~, Start angle=37°~, End angle=90°~, Total angle=53°, Arc length=46.36 mm, Area=159.12 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > escape
   properties: -
   command| *Cancel*
 > select polyline
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6747.25 mm², Length=215.91 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6747.25 mm², Length=215.91 mm] [Misc: Closed=No~]
 > grab vertex
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -8874,7 +9116,7 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=7019.68 mm², Length=227.58 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=7019.68 mm², Length=227.58 mm] [Misc: Closed=No~]
 > grab straight midpoint
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -8883,12 +9125,12 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-320.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=8586.77 mm², Length=247.78 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-320.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=8586.77 mm², Length=247.78 mm] [Misc: Closed=No~]
 > escape
   properties: -
   command| *Cancel*
 > select dimension
-  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=350.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=350.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > grab definition point
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -8897,7 +9139,7 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=345.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=110, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=345.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=110, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > escape
   properties: -
   command| *Cancel*
@@ -8937,14 +9179,14 @@ Specify next point or
   prompt| Select path curve: 65,0
   prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>: _X
 > select rectangular
-  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
+  properties: Array (Rectangular) (1) {Linetype scale=1.00~} [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
 > grab column count
   asks: "Columns"
   dyn: "Columns"=""|4|*
 > type 6
   asks: -
   dyn: -
-  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=6~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
+  properties: Array (Rectangular) (1) {Linetype scale=1.00~} [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=6~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
 > grab column spacing
   asks: "Column spacing"
   dyn: "Column spacing"=""|8.00|mm*
@@ -8955,7 +9197,7 @@ Specify next point or
   properties: -
   command| *Cancel*
 > select polar
-  properties: Array (Polar) (1) [Geometry: Base X=23.00, Base Y=43.00, Base Z=0.00, Center X=23.00, Center Y=25.00, Center Z=0.00, Radius=18.00 mm~] [Misc: Direction=Counter-clockwise~, Items=6~, Angle between items=60°~, Fill angle=360°~, Rotate items=Yes~]
+  properties: Array (Polar) (1) {Linetype scale=1.00~} [Geometry: Base X=23.00, Base Y=43.00, Base Z=0.00, Center X=23.00, Center Y=25.00, Center Z=0.00, Radius=18.00 mm~] [Misc: Direction=Counter-clockwise~, Items=6~, Angle between items=60°~, Fill angle=360°~, Rotate items=Yes~]
 > grab radius
   asks: "Radius"
   dyn: "Radius"=""|18.00|mm*
@@ -8972,7 +9214,7 @@ Specify next point or
   properties: -
   command| *Cancel*
 > select path
-  properties: Array (Path) (1) [Geometry: Base X=60.00, Base Y=0.00, Base Z=0.00, Path length=80.00 mm] [Misc: Method=Measure~, Items=14~, Item spacing=6.00 mm~, Align items=Yes~]
+  properties: Array (Path) (1) {Linetype scale=1.00~} [Geometry: Base X=60.00, Base Y=0.00, Base Z=0.00, Path length=80.00 mm] [Misc: Method=Measure~, Items=14~, Item spacing=6.00 mm~, Align items=Yes~]
 > grab item spacing
   asks: "Spacing"
   dyn: "Spacing"=""|6.00|mm*
@@ -8994,7 +9236,7 @@ Specify next point or
   properties: -
   cycling: -
 > select
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=3926.99 mm², Length=157.08 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=3926.99 mm², Length=157.08 mm] [Misc: Closed=No~]
 > grab arc middle
   asks: "Bulge"
   dyn: "Bulge"=""|1|*
@@ -9003,7 +9245,7 @@ Specify next point or
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6168.57 mm², Length=200.97 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6168.57 mm², Length=200.97 mm] [Misc: Closed=No~]
 > escape
   properties: -
   command| *Cancel*
@@ -9020,68 +9262,68 @@ Specify next point or
   cycling: -
 > park the cursor
 > select L1
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
 > select C1
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select A1
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=0.00, End Y=50.00, End Z=0.00, Radius=50.00 mm~, Start angle=0°~, End angle=90°~, Total angle=90°, Arc length=78.54 mm, Area=713.50 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Arc (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=50.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=0.00, End Y=50.00, End Z=0.00, Radius=50.00 mm~, Start angle=0°~, End angle=90°~, Total angle=90°, Arc length=78.54 mm, Area=713.50 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select E1
-  properties: Ellipse (1) [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°, End angle=360°, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=15707.96 mm²]
+  properties: Ellipse (1) {Linetype scale=1.00~} [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°, End angle=360°, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=15707.96 mm²]
 > select E2
-  properties: Elliptical arc (1) [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=-100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°~, End angle=180°~, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=7853.98 mm²]
+  properties: Elliptical arc (1) {Linetype scale=1.00~} [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=-100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°~, End angle=180°~, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=7853.98 mm²]
 > select P1
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
 > select P2
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=10000.00 mm², Length=400.00 mm] [Misc: Closed=Yes~]
+  properties: Polyline (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=10000.00 mm², Length=400.00 mm] [Misc: Closed=Yes~]
 > select T-left
-  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center
-  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.00, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.00, Z=0.00]
 > select T-right
-  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.00, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.00, Z=0.00]
 > select T-middle
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.20, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.20, Z=0.00]
 > select T-tl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-2.50, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-2.50, Z=0.00]
 > select T-tc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-2.50, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-2.50, Z=0.00]
 > select T-tr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-2.50, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-2.50, Z=0.00]
 > select T-ml
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-1.25, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-1.25, Z=0.00]
 > select T-mc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.25, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.25, Z=0.00]
 > select T-mr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-1.25, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-1.25, Z=0.00]
 > select T-bl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=0.74, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=0.74, Z=0.00]
 > select T-bc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.74, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.74, Z=0.00]
 > select T-br
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.74, Z=0.00]
+  properties: Text (1) {Linetype scale=1.00~} [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.74, Z=0.00]
 > select D1
-  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=31.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Rotated Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=31.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D2
-  properties: Angular Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=61.33~, Text position Y=61.33~, Text rotation=0°~, Measurement=90°, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Angular Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=61.33~, Text position Y=61.33~, Text rotation=0°~, Measurement=90°, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D3
-  properties: Radial Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=50, Text override=R<>~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Radial Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=50, Text override=R<>~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D4
-  properties: Aligned Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=-25.90~, Text position Y=81.93~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Aligned Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=-25.90~, Text position Y=81.93~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D5
-  properties: Diametric Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  properties: Diametric Dimension (1) {Linetype scale=1.00~} [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select H1
-  properties: Hatch (1) [Pattern: Type=Predefined, Pattern name=ANGLE, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
+  properties: Hatch (1) {Linetype scale=1.00~} [Pattern: Type=Predefined, Pattern name=ANGLE, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
 > select H2
-  properties: Hatch (1) [Pattern: Type=Predefined, Pattern name=Solid, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
+  properties: Hatch (1) {Linetype scale=1.00~} [Pattern: Type=Predefined, Pattern name=Solid, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
 > select I1
-  properties: Block Reference (1) [Geometry: Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Scale X=1.00~, Scale Y=1.00~, Scale Z=1.00] [Misc: Name=BAR, Rotation=0°~]
+  properties: Block Reference (1) {Linetype scale=1.00~} [Geometry: Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Scale X=1.00~, Scale Y=1.00~, Scale Z=1.00] [Misc: Name=BAR, Rotation=0°~]
 > select I2
 > select L2
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~, Delta X=10.00 mm, Delta Y=10.00 mm, Delta Z=0.00 mm, Length=14.14 mm, Angle=45°]
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~, Delta X=10.00 mm, Delta Y=10.00 mm, Delta Z=0.00 mm, Length=14.14 mm, Angle=45°]
 > select C2
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm~, Area=78.54 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Circle (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm~, Area=78.54 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select A2
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=5.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=2.70, End Y=4.21, End Z=0.00, Radius=5.00 mm~, Start angle=0°~, End angle=57°~, Total angle=57°, Arc length=5.00 mm, Area=1.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
+  properties: Arc (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=5.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=2.70, End Y=4.21, End Z=0.00, Radius=5.00 mm~, Start angle=0°~, End angle=57°~, Total angle=57°, Arc length=5.00 mm, Area=1.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select everything
   properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block References=2]
 > select one of each

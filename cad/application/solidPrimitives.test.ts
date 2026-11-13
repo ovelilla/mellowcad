@@ -2782,7 +2782,7 @@ describe("CYLINDER and CONE, answer by answer", () => {
       expect(solid).toMatchObject({
         layerId: l1,
         color: "#00ff00",
-        linetype: "Dashed",
+        linetype: "DASHED",
         lineweight: 0.5,
       })
       expect(solid.primitive?.position.z).toBe(5)

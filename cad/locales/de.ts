@@ -495,6 +495,7 @@ export const de: EngineLocale = {
         "z": "Z",
         "elevation": "Erhebung",
         "thickness": "Objekthöhe",
+        "linetypeScale": "Linientypfaktor",
         "startAngle": "Startwinkel",
         "endAngle": "Endwinkel",
         "totalAngle": "Gesamtwinkel",
@@ -1614,6 +1615,7 @@ export const de: EngineLocale = {
       },
       "PURGE": {
         "Blocks": "BLöcke",
+        "LTypes": "LTypen",
         "Yes": "Ja",
         "No": "Nein"
       },
@@ -1974,6 +1976,7 @@ export const de: EngineLocale = {
         "Color": "Farbe",
         "LAyer": "LAyer",
         "LType": "LTYp",
+        "ltScale": "LTFaktor",
         "LWeight": "LStärke",
         "Thickness": "Objekthöhe",
         "Truecolor": "Truecolor",
@@ -2002,7 +2005,10 @@ export const de: EngineLocale = {
       },
       "LINETYPE": {
         "?": "?",
+        "Load": "Laden",
         "Set": "Setzen",
+        "Yes": "Ja",
+        "No": "Nein",
         "BYLAYER": "VONLayer",
         "BYLayer": "VONLayer"
       },
@@ -2318,6 +2324,13 @@ export const de: EngineLocale = {
         ],
         "\" bereinigen?"
       ],
+      "purgeLinetype": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" bereinigen?"
+      ],
       "insertionBasePoint": "Einfügebasispunkt angeben",
       "insertionPoint": "Einfügepunkt angeben oder",
       "specifyInsertionPoint": "Einfügepunkt angeben",
@@ -2482,6 +2495,16 @@ export const de: EngineLocale = {
       "trueColor": "Rot,Grün,Blau",
       "linetypeName": "Linientypnamen angeben oder",
       "linetypeListNames": "Aufzulistende(n) Linientyp(en) eingeben",
+      "linetypeFileToList": "Namen der aufzulistenden Linientypdatei eingeben",
+      "linetypesToLoad": "Zu ladende Linientypen eingeben",
+      "linetypeFileToSearch": "Namen der zu suchenden Linientypdatei eingeben",
+      "reloadLinetype": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" wurde bereits geladen. Nochmals laden?"
+      ],
       "defaultLineweight": "Standard-Linienstärke für neue Objekte eingeben oder",
       "idPoint": "Punkt angeben",
       "distSecondPointOr": "Zweiten Punkt angeben oder",
@@ -2499,6 +2522,7 @@ export const de: EngineLocale = {
       "newLinetypeName": "Neuen Linientypnamen eingeben",
       "newLineweight": "Neue Linienstärke angeben",
       "newThickness": "Neue(r) Objekthöhe",
+      "newLinetypeScale": "Neue(r) Linientypfaktor",
       "viewPoint": "Ansichtspunkt angeben",
       "specifyViewPointOr": "Ansichtspunkt angeben oder",
       "attributeVisibilitySetting": "Einstellung für Sichtbarkeit von Objekten eingeben",
@@ -2929,6 +2953,8 @@ export const de: EngineLocale = {
     "promptForms": {
       "convertToPolylines": "open",
       "purgeBlock": "open",
+      "purgeLinetype": "open",
+      "reloadLinetype": "open",
       "selectGripToEditArrayOr": "spaced",
       "selectGripToEditPathArrayOr": "tight",
       "turnIntoPolyline": "open",
@@ -3755,6 +3781,30 @@ export const de: EngineLocale = {
         ]
       ],
       "noUnreferencedBlocks": "Keine unreferenzierten Blöcke gefunden.",
+      "deletingLinetype": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" wird gelöscht."
+      ],
+      "linetypesDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " Linientyp gelöscht."
+            ],
+            "other": [
+              0,
+              " Linientypen gelöscht."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedLinetypes": "Keine unreferenzierten Linientypen gefunden.",
       "noBlocks": "Keine Blöcke definiert.",
       "blockUndefined": [
         "Block \"",
@@ -4445,6 +4495,34 @@ export const de: EngineLocale = {
       "fileLinetypeColumns": "      Name          Beschreibung\n---------------- -------------------",
       "solidLine": "Durchgezogene Linie",
       "noMatchingLinetypes": "  Keine passenden Linientypnamen gefunden.",
+      "linetypeLoaded": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" geladen."
+      ],
+      "linetypeReloaded": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" wieder geladen."
+      ],
+      "noLinetypesInFile": [
+        "In Datei ",
+        [
+          "file"
+        ],
+        " keine passenden Linientypen gefunden."
+      ],
+      "cantFindFile": [
+        "\"",
+        [
+          "file"
+        ],
+        "\": Kann Datei nicht finden."
+      ],
       "invalidColorNumber": "Ungültige Farbnummer.",
       "tagCannotBeNull": "Bezeichnung darf nicht leer sein",
       "attdefTextStyle": [

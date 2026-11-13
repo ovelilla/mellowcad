@@ -100,6 +100,9 @@ function head(
   color(out, entity.color)
   if (entity.lineweight !== undefined)
     out.int(370, Math.round(entity.lineweight * 100))
+  if ("linetypeScale" in entity && entity.linetypeScale !== undefined) {
+    out.real(48, entity.linetypeScale)
+  }
 }
 
 /**

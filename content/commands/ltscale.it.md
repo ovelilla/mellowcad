@@ -3,7 +3,7 @@ title: "Comando SCALATL (LTSCALE) in AutoCAD"
 description: "Come funziona SCALATL (LTSCALE, alias CT) di AutoCAD in italiano: la scala del tipo di linea per tutto il disegno, così i tratti si vedono a ogni dimensione."
 before: "Una piastra lunga 4 metri, il suo foro disegnato con HIDDEN e i suoi assi con CENTER, alla scala predefinita del tipo di linea di 1: i tratti troppo fini per vedersi."
 figure: "La stessa piastra dopo SCALATL 20: i tratti del foro e degli assi disegnati 20 volte più lunghi."
-sourceHash: "f951ec391451"
+sourceHash: "33b956c956fa"
 ---
 
 SCALATL (LTSCALE in inglese) imposta il fattore di scala globale dei tipi di linea: quanto sono lunghi i tratti e gli spazi di ogni tipo di linea tratteggiato nel disegno. Chiede il nuovo fattore, proponendo quello corrente, 1,0000 in un nuovo disegno: 2 rende ogni tratto lungo il doppio, 0,5 la metà. Il fattore deve essere maggiore di 0, altrimenti segnala <Message id="positiveNonzero" /> e chiede di nuovo, e `1/2` e `1e3` vengono letti come numeri. Una modifica rigenera tutto il disegno, `Rigenerazione modello in corso.` come la scrive AutoCAD 2027, e viene salvata con il disegno; è un passaggio che <Command id="U" /> annulla. Digitato con un apostrofo dentro un comando, `'SCALATL`, il disegno viene rigenerato quando quel comando termina.
@@ -12,7 +12,7 @@ I tipi di linea sono modelli pensati per un disegno della dimensione del foglio:
 
 ## Missing
 
-Una scala del tipo di linea per ogni oggetto (CELTSCALE, Scala tipo di linea della tavolozza Proprietà): solo quella del disegno. La finestra Gestione tipo di linea, il cui Fattore di scala globale è SCALATL. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. Tipi di linea diversi da Continuous, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT.
+La finestra Gestione tipo di linea, il cui Fattore di scala globale è SCALATL e la Scala oggetto corrente CELTSCALE. PSLTSCALE e MSLTSCALE, perché non esiste lo spazio carta. Le forme dei tipi di linea complessi come BATTING, disegnate come i loro spazi.
 
 ## Questions
 

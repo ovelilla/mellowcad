@@ -220,9 +220,6 @@ export const en: EngineCatalog = {
         "W": "W"
       }
     },
-    "linetype": {
-      "DashDot": "Dash dot"
-    },
     "hatchPattern": {
       "SOLID": "Solid"
     },
@@ -501,6 +498,7 @@ export const en: EngineCatalog = {
         "z": "Z",
         "elevation": "Elevation",
         "thickness": "Thickness",
+        "linetypeScale": "Linetype scale",
         "startAngle": "Start angle",
         "endAngle": "End angle",
         "totalAngle": "Total angle",
@@ -1653,6 +1651,13 @@ export const en: EngineCatalog = {
         ],
         "\"?"
       ],
+      "purgeLinetype": [
+        "Purge linetype \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point or",
       "specifyInsertionPoint": "Specify insertion point",
@@ -1816,6 +1821,16 @@ export const en: EngineCatalog = {
       "trueColor": "Red,Green,Blue",
       "linetypeName": "Specify linetype name or",
       "linetypeListNames": "Enter linetype name(s) to list",
+      "linetypeFileToList": "Enter name of linetype file to list",
+      "linetypesToLoad": "Enter linetype(s) to load",
+      "linetypeFileToSearch": "Enter name of linetype file to search",
+      "reloadLinetype": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" is already loaded.  Reload it?"
+      ],
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
       "distSecondPointOr": "Specify second point or",
@@ -1833,6 +1848,7 @@ export const en: EngineCatalog = {
       "newLinetypeName": "Enter new linetype name",
       "newLineweight": "Enter new lineweight",
       "newThickness": "Specify new thickness",
+      "newLinetypeScale": "Specify new linetype scale",
       "viewPoint": "Specify a view point",
       "specifyViewPointOr": "Specify a view point or",
       "attributeVisibilitySetting": "Enter attribute visibility setting",
@@ -2263,6 +2279,8 @@ export const en: EngineCatalog = {
     "promptForms": {
       "convertToPolylines": "open",
       "purgeBlock": "open",
+      "purgeLinetype": "open",
+      "reloadLinetype": "open",
       "selectGripToEditArrayOr": "tight",
       "selectGripToEditPathArrayOr": "tight",
       "turnIntoPolyline": "open",
@@ -3066,6 +3084,30 @@ export const en: EngineCatalog = {
         ]
       ],
       "noUnreferencedBlocks": "No unreferenced blocks found.",
+      "deletingLinetype": [
+        "Deleting linetype \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "linetypesDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " linetype deleted."
+            ],
+            "other": [
+              0,
+              " linetypes deleted."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedLinetypes": "No unreferenced linetypes found.",
       "noBlocks": "No blocks defined.",
       "blockUndefined": [
         "Block \"",
@@ -3756,6 +3798,34 @@ export const en: EngineCatalog = {
       "fileLinetypeColumns": "      Name          Description\n---------------- -------------------",
       "solidLine": "Solid line",
       "noMatchingLinetypes": "  No matching linetype names found.",
+      "linetypeLoaded": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" loaded."
+      ],
+      "linetypeReloaded": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" reloaded."
+      ],
+      "noLinetypesInFile": [
+        "No matching linetypes found in file ",
+        [
+          "file"
+        ],
+        "."
+      ],
+      "cantFindFile": [
+        "\"",
+        [
+          "file"
+        ],
+        "\": Can't find file."
+      ],
       "invalidColorNumber": "Invalid color number.",
       "tagCannotBeNull": "Tag cannot be null",
       "attdefTextStyle": [

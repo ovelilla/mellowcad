@@ -1,0 +1,7 @@
+_CELTYPE
+HIDDEN2
+(getvar "CELTYPE")
+(tblsearch "LTYPE" "HIDDEN2")
+_CELTYPE
+NOPE
+

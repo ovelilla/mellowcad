@@ -25,7 +25,8 @@ MellowCAD opens DXF files in your browser and draws them in its editor, where yo
 - **DXF from AutoCAD R12 to 2018**, the newest DXF format AutoCAD writes, in text (ASCII) or binary, made by AutoCAD or by another program. Its text keeps its characters: up to 2004 in the code page the file names, from 2007 in UTF-8.
 - **Lines, arcs, circles, ellipses and polylines**, with their widths and their curve-fit and spline-fit forms, 3D polylines and splines, and points, drawn in the drawing's [point style](/docs/commands/ptype), and 2D solids, filled as FILLMODE says.
 - **Single-line and multiline text**, leaders with their text, blocks with their attributes, linear, aligned, angular, radius and diameter dimensions, and hatches.
-- **Each object's layer**, colour, linetype, lineweight, thickness and elevation, and the layers on, off or locked; a frozen layer opens off.
+- **Each object's layer**, colour, linetype and its scale, lineweight, thickness and elevation, and the layers on, off or locked; a frozen layer opens off.
+- **The drawing's linetypes**, drawn with their dashes, dots and gaps at the drawing's linetype scale, and the text of complex ones such as GAS_LINE.
 - **The drawing's text and dimension styles**, and its units when they are millimetres, centimetres or metres.
 
 ## What is left out [#left-out]
@@ -43,7 +44,7 @@ What is in a layout is counted apart, as there are no layouts yet: a drawing who
 
 Some things open, but not quite as they were:
 
-- A linetype other than Continuous, Dashed, Hidden, Center, Phantom and DashDot keeps its name and draws continuous.
+- The shapes of complex linetypes such as BATTING or ZIGZAG are not drawn, only the dashes and gaps around them.
 - A hatch pattern that is not among [the patterns of `acadiso.pat` MellowCAD draws](/docs/commands/hatch) keeps its name and draws its boundary alone.
 - A colour by its index opens as its RGB colour, and ByBlock as ByLayer.
 - A drawing in inches or feet keeps its numbers, read as millimetres.

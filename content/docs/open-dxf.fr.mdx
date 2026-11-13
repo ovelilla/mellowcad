@@ -3,7 +3,7 @@ title: Ouvrir un fichier DXF en ligne
 metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
 description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
 type: howTo
-sourceHash: "8e5afbec73fd"
+sourceHash: "d692fd6abe65"
 faq:
   - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
@@ -26,7 +26,8 @@ MellowCAD ouvre les fichiers DXF dans votre navigateur et les dessine dans son �
 - **Le DXF d'AutoCAD R12 à 2018**, le format DXF le plus récent qu'écrit AutoCAD, en texte (ASCII) ou binaire, créé par AutoCAD ou par un autre programme. Son texte garde ses caractères : jusqu'à 2004 dans la page de codes que le fichier indique, à partir de 2007 en UTF-8.
 - **Lignes, arcs, cercles, ellipses et polylignes**, avec leurs largeurs et leurs formes ajustées par courbe ou par spline, polylignes 3D et splines, et les points, dessinés dans le [style des points](/docs/commands/ptype) du dessin, et les solides 2D, remplis selon FILLMODE.
 - **Texte sur une ligne et texte multiligne**, lignes de repère avec leur texte, blocs avec leurs attributs, cotes linéaires, alignées, angulaires, de rayon et de diamètre, et hachures.
-- **Le calque de chaque objet**, sa couleur, son type de ligne, son épaisseur de ligne, sa hauteur et son élévation, et les calques activés, désactivés ou verrouillés ; un calque gelé s'ouvre désactivé.
+- **Le calque de chaque objet**, sa couleur, son type de ligne et son échelle, son épaisseur de ligne, sa hauteur et son élévation, et les calques activés, désactivés ou verrouillés ; un calque gelé s'ouvre désactivé.
+- **Les types de ligne du dessin**, dessinés avec leurs tirets, leurs points et leurs espaces à l'échelle du type de ligne du dessin, et le texte des types complexes comme GAS_LINE.
 - **Les styles de texte et de cote du dessin**, et ses unités quand ce sont des millimètres, des centimètres ou des mètres.
 
 ## Ce qui est laissé de côté [#left-out]
@@ -44,7 +45,7 @@ Ce qui se trouve dans une présentation est compté à part, puisqu'il n'y a pas
 
 Certaines choses s'ouvrent, mais pas tout à fait comme elles étaient :
 
-- Un type de ligne autre que Continuous, Dashed, Hidden, Center, Phantom et DashDot garde son nom et se dessine en continu.
+- Les formes des types de ligne complexes comme BATTING ou ZIGZAG ne sont pas dessinées, seulement les tirets et les espaces qui les entourent.
 - Un motif de hachures qui ne fait pas partie [des motifs du fichier `acadiso.pat` que dessine MellowCAD](/docs/commands/hatch) garde son nom et ne dessine que son contour.
 - Une couleur donnée par son numéro d'index s'ouvre comme sa couleur RVB, et DuBloc comme DuCalque.
 - Un dessin en pouces ou en pieds garde ses nombres, lus comme des millimètres.

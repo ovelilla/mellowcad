@@ -65,14 +65,14 @@ describe("MATCHPROP", () => {
     })
     cad.select("src")
     cad.runtime.setSelectionColor("#00ff00")
-    cad.runtime.setSelectionLinetype("Dashed")
+    cad.runtime.setSelectionLinetype("DASHED")
     cad.runtime.setSelectionLineweight(1.2)
 
     paint(cad).click(p(50, 0)).click(p(50, 100))
 
     const destination = cad.byId("dst")
     expect(destination.color).toBe("#00ff00")
-    expect(destination.linetype).toBe("Dashed")
+    expect(destination.linetype).toBe("DASHED")
     expect(destination.lineweight).toBe(1.2)
   })
 
@@ -85,7 +85,7 @@ describe("MATCHPROP", () => {
     })
     cad.select("dst")
     cad.runtime.setSelectionColor("#00ff00")
-    cad.runtime.setSelectionLinetype("Dashed")
+    cad.runtime.setSelectionLinetype("DASHED")
     cad.escape()
 
     paint(cad).click(p(50, 0)).click(p(50, 100))
@@ -144,7 +144,7 @@ describe("MATCHPROP", () => {
         {
           ...lineOf(p(0, 0), p(100, 0), { id: "src", layerId: "red" }),
           color: "#00ff00",
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.5,
         },
       ],
@@ -156,7 +156,7 @@ describe("MATCHPROP", () => {
     expect(cad.byId("src")).toMatchObject({
       layerId: "red",
       color: "#00ff00",
-      linetype: "Dashed",
+      linetype: "DASHED",
       lineweight: 0.5,
     })
     expect(cad.entityCount).toBe(1)

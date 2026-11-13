@@ -55,6 +55,8 @@ export interface DocumentSettings {
   readonly currentColor: EntityColor | typeof COLOR_BYLAYER
   /** CELTYPE: the linetype new objects take, a linetype's name or ByLayer. */
   readonly currentLinetype: LinetypeId | typeof LINETYPE_BYLAYER
+  /** CELTSCALE: the linetype scale new objects take as their own, above 0. */
+  readonly currentLinetypeScale: number
   /** CELWEIGHT: the lineweight new objects take, in millimetres, or ByLayer. */
   readonly currentLineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
   /** FILLMODE: whether wide polylines are drawn filled or as their outline. */
@@ -174,6 +176,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   viewCube: { visible: true, home: null },
   currentColor: COLOR_BYLAYER,
   currentLinetype: LINETYPE_BYLAYER,
+  currentLinetypeScale: 1,
   currentLineweight: LINEWEIGHT_BYLAYER,
   fillMode: true,
   polylineWidth: 0,

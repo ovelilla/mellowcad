@@ -495,6 +495,7 @@ export const fr: EngineLocale = {
         "z": "Z",
         "elevation": "Elévation",
         "thickness": "Epaisseur",
+        "linetypeScale": "Echelle du type de ligne",
         "startAngle": "Angle de départ",
         "endAngle": "Angle d'arrivée",
         "totalAngle": "Angle total",
@@ -1618,6 +1619,7 @@ export const fr: EngineLocale = {
       },
       "PURGE": {
         "Blocks": "Blocs",
+        "LTypes": "TYpelignes",
         "Yes": "Oui",
         "No": "Non"
       },
@@ -1978,6 +1980,7 @@ export const fr: EngineLocale = {
         "Color": "COuleur",
         "LAyer": "CAlque",
         "LType": "Tligne",
+        "ltScale": "EChltl",
         "LWeight": "EPaisseurl",
         "Thickness": "Hauteur",
         "Truecolor": "coUleursvraies",
@@ -2006,7 +2009,10 @@ export const fr: EngineLocale = {
       },
       "LINETYPE": {
         "?": "?",
+        "Load": "CHarger",
         "Set": "Actuel",
+        "Yes": "Oui",
+        "No": "Non",
         "BYLAYER": "DUCalque",
         "BYLayer": "DUCalque"
       },
@@ -2322,6 +2328,13 @@ export const fr: EngineLocale = {
         ],
         "\"?"
       ],
+      "purgeLinetype": [
+        "Purger type de ligne \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
       "insertionBasePoint": "Spécifiez le point de base pour l'insertion",
       "insertionPoint": "Spécifiez le point d'insertion ou",
       "specifyInsertionPoint": "Spécifiez un point d'insertion",
@@ -2485,6 +2498,16 @@ export const fr: EngineLocale = {
       "trueColor": "Rouge,Vert,Bleu",
       "linetypeName": "Spécifiez le nom du type de ligne ou",
       "linetypeListNames": "Entrez les noms de types de ligne à répertorier",
+      "linetypeFileToList": "Entrez le nom du fichier type de ligne à répertorier",
+      "linetypesToLoad": "Entrez les types de ligne à charger",
+      "linetypeFileToSearch": "Entrez le nom du fichier type de ligne à rechercher",
+      "reloadLinetype": [
+        "Le type de ligne \"",
+        [
+          "name"
+        ],
+        "\" est déjà chargé. Rechargez-le?"
+      ],
       "defaultLineweight": "Entrez l'épaisseur de ligne par défaut pour les nouveaux objets ou",
       "idPoint": "Spécifiez un point",
       "distSecondPointOr": "Spécifiez le second point ou",
@@ -2502,6 +2525,7 @@ export const fr: EngineLocale = {
       "newLinetypeName": "Entrez un nouveau nom de type de ligne",
       "newLineweight": "Entrez une nouvelle épaisseur de ligne",
       "newThickness": "Spécifiez une nouvelle hauteur",
+      "newLinetypeScale": "Spécifiez une nouvelle échelle du type de ligne",
       "viewPoint": "Indiquez un point de vue",
       "specifyViewPointOr": "Indiquez un point de vue ou",
       "attributeVisibilitySetting": "Entrez les paramètres de visibilité des attributs",
@@ -2932,6 +2956,8 @@ export const fr: EngineLocale = {
     "promptForms": {
       "convertToPolylines": "open",
       "purgeBlock": "open",
+      "purgeLinetype": "open",
+      "reloadLinetype": "open",
       "selectGripToEditArrayOr": "spaced",
       "selectGripToEditPathArrayOr": "spaced",
       "turnIntoPolyline": "open",
@@ -3736,6 +3762,30 @@ export const fr: EngineLocale = {
         ]
       ],
       "noUnreferencedBlocks": "Aucun élément blocs sans référence trouvé.",
+      "deletingLinetype": [
+        "Suppression de type de ligne \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "linetypesDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " type de ligne supprimé(s)."
+            ],
+            "other": [
+              0,
+              " types de lignes supprimé(s)."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedLinetypes": "Aucun élément types de lignes sans référence trouvé.",
       "noBlocks": "Aucun bloc défini.",
       "blockUndefined": [
         "Bloc \"",
@@ -4428,6 +4478,34 @@ export const fr: EngineLocale = {
       "fileLinetypeColumns": "      Nom           Description\n---------------- ------------------",
       "solidLine": "Lignes solides",
       "noMatchingLinetypes": "  Pas de type de ligne correspondant trouvé.",
+      "linetypeLoaded": [
+        "Type de ligne \"",
+        [
+          "name"
+        ],
+        "\" chargé."
+      ],
+      "linetypeReloaded": [
+        "Type de ligne \"",
+        [
+          "name"
+        ],
+        "\" rechargé."
+      ],
+      "noLinetypesInFile": [
+        "Type(s) de ligne inexistant(s) dans le fichier ",
+        [
+          "file"
+        ],
+        "."
+      ],
+      "cantFindFile": [
+        "\"",
+        [
+          "file"
+        ],
+        "\": Impossible de trouver le fichier."
+      ],
       "invalidColorNumber": "Numéro de couleur incorrect.",
       "tagCannotBeNull": "L'étiquette ne peut pas être nulle",
       "attdefTextStyle": [

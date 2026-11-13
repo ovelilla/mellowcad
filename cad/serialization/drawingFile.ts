@@ -63,6 +63,7 @@ import {
   withElevation,
   withNormal,
   withThickness,
+  withLinetypeScale,
   SolidPrimitive,
   SolidSweep,
   LeaderAnnotation,
@@ -96,7 +97,17 @@ import {
   Layer,
   LayerId,
 } from "../domain/layers"
-import { DEFAULT_LINETYPE_ID, LINETYPE_BYLAYER } from "../domain/linetypes"
+import {
+  CONTINUOUS,
+  DEFAULT_LINETYPE_ID,
+  LINETYPES,
+  LINETYPE_BYLAYER,
+  Linetype,
+  LinetypeElement,
+  MAX_LINETYPE_DESCRIPTION,
+  linetypeNamed,
+  sameLinetypeName,
+} from "../domain/linetypes"
 import {
   clampLineweight,
   DEFAULT_LINEWEIGHT,
@@ -139,7 +150,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 52
+export const DRAWING_FILE_VERSION = 53
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -152,6 +163,7 @@ export interface DrawingSnapshot {
   readonly settings: DocumentSettings
   readonly layers: readonly Layer[]
   readonly currentLayerId: LayerId
+  readonly linetypes: readonly Linetype[]
   readonly textStyles: readonly TextStyle[]
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: readonly DimStyle[]
@@ -213,6 +225,7 @@ export type StoredSettings = Omit<
 
 /** The command settings AutoCAD saves in the drawing, written only when not the default. */
 type SavedCommandSetting =
+  | "currentLinetypeScale"
   | "filletRadius"
   | "splineType"
   | "splineSegments"
@@ -243,6 +256,8 @@ export interface DrawingFile {
   readonly settings: StoredSettings
   readonly layers: Layer[]
   readonly currentLayerId: LayerId
+  /** The drawing's linetypes, from 53: before, the six every drawing held. */
+  readonly linetypes: Linetype[]
   readonly textStyles: TextStyle[]
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: DimStyle[]
@@ -256,6 +271,7 @@ export interface ParsedDrawing {
   readonly settings: DocumentSettings
   readonly layers: Layer[]
   readonly currentLayerId: LayerId
+  readonly linetypes: Linetype[]
   readonly textStyles: TextStyle[]
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: DimStyle[]
@@ -272,6 +288,7 @@ export function toDrawingFile(snapshot: DrawingSnapshot): DrawingFile {
     settings: storedSettings(snapshot.settings),
     layers: snapshot.layers.map(cloneLayer),
     currentLayerId: snapshot.currentLayerId,
+    linetypes: snapshot.linetypes.map(cloneLinetype),
     textStyles: snapshot.textStyles.map(cloneTextStyle),
     currentTextStyleId: snapshot.currentTextStyleId,
     dimStyles: snapshot.dimStyles.map(cloneDimStyle),
@@ -372,10 +389,12 @@ export function parseDrawingData(data: unknown): ParsedDrawing {
   const defined = new Set(blocks.map((block) => block.id))
   const entities = parseEntities(data.entities, version)
 
-  return {
+  return withLinetypeTable({
     settings: parseSettings(data.settings),
     layers: parseLayers(data.layers),
     currentLayerId: parseLayerId(data.currentLayerId),
+    // Before 53 every drawing held the six (`LINETYPES`) and nothing else.
+    linetypes: version < 53 ? [...LINETYPES] : parseLinetypes(data.linetypes),
     textStyles: parseTextStyles(data.textStyles),
     currentTextStyleId: parseId(data.currentTextStyleId, DEFAULT_TEXT_STYLE_ID),
     dimStyles: parseDimStyles(data.dimStyles),
@@ -386,11 +405,17 @@ export function parseDrawingData(data: unknown): ParsedDrawing {
     entities: entities.filter(
       (entity) => entity.type !== "insert" || defined.has(entity.blockId)
     ),
-  }
+  })
 }
 
 function cloneEntity(entity: Entity): Entity {
-  return { ...cloneEntityShape(entity), ...planeOf(entity) }
+  return {
+    ...cloneEntityShape(entity),
+    ...(entity.linetypeScale !== undefined
+      ? { linetypeScale: entity.linetypeScale }
+      : {}),
+    ...planeOf(entity),
+  }
 }
 
 /** The plane fields, written only when they are not 0 (or, the normal, +Z). */
@@ -991,6 +1016,20 @@ function cloneDimStyle(style: DimStyle): DimStyle {
   return { ...style }
 }
 
+function cloneLinetype(linetype: Linetype): Linetype {
+  return {
+    name: linetype.name,
+    description: linetype.description,
+    pattern: [...linetype.pattern],
+    ...(linetype.elements && {
+      elements: linetype.elements.map((element) => ({
+        ...element,
+        offset: { ...element.offset },
+      })),
+    }),
+  }
+}
+
 function cloneTextStyle(style: TextStyle): TextStyle {
   return { id: style.id, name: style.name, height: style.height }
 }
@@ -1009,6 +1048,7 @@ function cloneLayer(layer: Layer): Layer {
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
+    currentLinetypeScale,
     filletRadius,
     splineType,
     splineSegments,
@@ -1065,6 +1105,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(thickness ? { thickness } : {}),
     ...(fillMode ? {} : { fillMode: false as const }),
     ...(polylineWidth ? { polylineWidth } : {}),
+    ...(currentLinetypeScale !== 1 ? { currentLinetypeScale } : {}),
     ...(filletRadius ? { filletRadius } : {}),
     ...(splineType !== 6 ? { splineType } : {}),
     ...(splineSegments !== 8 ? { splineSegments } : {}),
@@ -1178,6 +1219,12 @@ function parseSettings(value: unknown): DocumentSettings {
     currentLineweight: isFiniteNumber(value.currentLineweight)
       ? clampLineweight(value.currentLineweight)
       : LINEWEIGHT_BYLAYER,
+    // A drawing from before 53 has the starting 1.
+    currentLinetypeScale:
+      isFiniteNumber(value.currentLinetypeScale) &&
+      value.currentLinetypeScale > 0
+        ? value.currentLinetypeScale
+        : 1,
     // A drawing from before 27 fills, and PLINE starts at 0.
     fillMode: value.fillMode !== false,
     polylineWidth:
@@ -1307,7 +1354,13 @@ function parseEntities(value: unknown, version: number): Entity[] {
 
 function parseEntity(raw: unknown, version: number): Entity | null {
   const shape = parseEntityShape(raw, version)
-  return shape && isRecord(raw) ? parsePlane(raw, shape) : shape
+  if (!shape || !isRecord(raw)) return shape
+  return parsePlane(
+    raw,
+    isFiniteNumber(raw.linetypeScale)
+      ? withLinetypeScale(shape, raw.linetypeScale)
+      : shape
+  )
 }
 
 /**
@@ -2450,6 +2503,130 @@ function parseLayerId(value: unknown): LayerId {
 
 function parseId(value: unknown, fallback: string): string {
   return typeof value === "string" && value.length > 0 ? value : fallback
+}
+
+/**
+ * Parses the linetype table: a linetype without a name, or with a length that
+ * is no number, is left out, and so is an element that cannot be drawn; the
+ * first of two names one but for case wins. Continuous is the document's to
+ * keep (`CadDocument.load`).
+ */
+function parseLinetypes(value: unknown): Linetype[] {
+  const linetypes: Linetype[] = []
+  if (!Array.isArray(value)) return linetypes
+  for (const raw of value) {
+    if (!isRecord(raw) || typeof raw.name !== "string") continue
+    const name = raw.name.trim()
+    if (name === "" || linetypeNamed(linetypes, name)) continue
+    const pattern = parseNumbers(raw.pattern) ?? []
+    const elements = Array.isArray(raw.elements)
+      ? raw.elements.flatMap((element) => {
+          const parsed = parseLinetypeElement(element, pattern.length)
+          return parsed ? [parsed] : []
+        })
+      : []
+    linetypes.push({
+      name,
+      description:
+        typeof raw.description === "string"
+          ? raw.description.slice(0, MAX_LINETYPE_DESCRIPTION)
+          : "",
+      pattern,
+      ...(elements.length > 0 && { elements }),
+    })
+  }
+  return linetypes
+}
+
+function parseLinetypeElement(
+  raw: unknown,
+  count: number
+): LinetypeElement | null {
+  if (!isRecord(raw)) return null
+  const { index, scale, rotation } = raw
+  const offset = parseVec2(raw.offset) ?? { x: 0, y: 0 }
+  if (!isFiniteNumber(index) || !Number.isInteger(index)) return null
+  if (index < 0 || index >= count) return null
+  const placement = {
+    index,
+    scale: isFiniteNumber(scale) ? scale : 1,
+    rotation: isFiniteNumber(rotation) ? rotation : 0,
+    rotationMode: (raw.rotationMode === "absolute" ||
+    raw.rotationMode === "upright"
+      ? raw.rotationMode
+      : "relative") as LinetypeElement["rotationMode"],
+    offset: { x: offset.x, y: offset.y },
+  }
+  if (raw.kind === "text" && typeof raw.text === "string") {
+    return {
+      kind: "text",
+      text: raw.text,
+      style: typeof raw.style === "string" ? raw.style : "",
+      ...placement,
+    }
+  }
+  if (
+    raw.kind === "shape" &&
+    isFiniteNumber(raw.shape) &&
+    typeof raw.shapeFile === "string"
+  ) {
+    return {
+      kind: "shape",
+      shape: raw.shape,
+      shapeFile: raw.shapeFile,
+      ...placement,
+    }
+  }
+  return null
+}
+
+/**
+ * The drawing with every linetype a layer, an object or CELTYPE names in its
+ * table, under the table's name: one named in another case takes the table's
+ * (`Dashed`, as files before 53 wrote the six, is `DASHED`), and one the table
+ * lacks is added without dashes, drawn continuous as before. WHY added, not
+ * dropped: the name is the object's, and saved again it is written with it.
+ */
+export function withLinetypeTable(drawing: ParsedDrawing): ParsedDrawing {
+  const linetypes = [...drawing.linetypes]
+  const named = (name: string): string => {
+    const held = linetypeNamed(linetypes, name)
+    if (held) return held.name
+    const added = sameLinetypeName(name, DEFAULT_LINETYPE_ID)
+      ? CONTINUOUS
+      : { name, description: "", pattern: [] }
+    linetypes.push(added)
+    return added.name
+  }
+  const entity = <T extends Entity>(e: T): T => {
+    let renamed: Entity = e.linetype ? { ...e, linetype: named(e.linetype) } : e
+    if (renamed.type === "insert" && renamed.attributes) {
+      renamed = {
+        ...renamed,
+        attributes: renamed.attributes.map((attribute) =>
+          attribute.linetype
+            ? { ...attribute, linetype: named(attribute.linetype) }
+            : attribute
+        ),
+      }
+    }
+    return renamed as T
+  }
+  const layers = drawing.layers.map((layer) => ({
+    ...layer,
+    linetype: named(layer.linetype),
+  }))
+  const { currentLinetype } = drawing.settings
+  const settings =
+    currentLinetype === LINETYPE_BYLAYER
+      ? drawing.settings
+      : { ...drawing.settings, currentLinetype: named(currentLinetype) }
+  const blocks = drawing.blocks.map((block) => ({
+    ...block,
+    entities: block.entities.map(entity),
+  }))
+  const entities = drawing.entities.map(entity)
+  return { ...drawing, settings, layers, blocks, entities, linetypes }
 }
 
 /**

@@ -35,7 +35,7 @@ const asking = (cad: CadHarness) => cad.state().dynamicInput?.fields[0]
 
 function setCurrent(cad: CadHarness) {
   cad.runtime.setCurrentColor(RED)
-  cad.runtime.setCurrentLinetype("Hidden")
+  cad.runtime.setCurrentLinetype("HIDDEN")
   cad.runtime.setCurrentLineweight(0.5)
   return cad
 }
@@ -110,17 +110,17 @@ describe("the Properties panel's drop-downs", () => {
     const cad = createHarness()
 
     cad.runtime.applyColorControl(RED)
-    cad.runtime.applyLinetypeControl("Center")
+    cad.runtime.applyLinetypeControl("CENTER")
     cad.runtime.applyLineweightControl(0.35)
 
     expect(cad.state()).toMatchObject({
       currentColor: RED,
-      currentLinetype: "Center",
+      currentLinetype: "CENTER",
       currentLineweight: 0.35,
     })
     cad.undo()
     expect(cad.state().currentLineweight).toBe("ByLayer")
-    expect(cad.state().currentLinetype).toBe("Center")
+    expect(cad.state().currentLinetype).toBe("CENTER")
     cad.undo().undo()
     expect(cad.state().currentColor).toBe("ByLayer")
   })
@@ -132,12 +132,12 @@ describe("the Properties panel's drop-downs", () => {
 
     cad.select("L1")
     cad.runtime.applyColorControl(RED)
-    cad.runtime.applyLinetypeControl("Center")
+    cad.runtime.applyLinetypeControl("CENTER")
     cad.runtime.applyLineweightControl(0.35)
 
     expect(cad.byId("L1")).toMatchObject({
       color: RED,
-      linetype: "Center",
+      linetype: "CENTER",
       lineweight: 0.35,
     })
     expect(cad.state().currentColor).toBe("ByLayer")
@@ -480,7 +480,7 @@ describe("-LINETYPE", () => {
     cad.command("-LINETYPE")
     expect(cad.commandLog().at(-1)).toBe('Current line type:  "ByLayer"')
     expect(cad.state().commandLine.prompt).toBe(
-      "-LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Load/Set]:"
     )
     cad.option("Set")
     expect(cad.state().commandLine.prompt).toBe(
@@ -488,9 +488,9 @@ describe("-LINETYPE", () => {
     )
     cad.type("dashed").enter()
 
-    expect(cad.state().currentLinetype).toBe("Dashed")
+    expect(cad.state().currentLinetype).toBe("DASHED")
     expect(cad.state().commandLine.prompt).toBe(
-      "-LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Load/Set]:"
     )
     cad.enter()
     expect(cad.activeToolId()).toBe("select")
@@ -509,21 +509,137 @@ describe("-LINETYPE", () => {
       "Specify linetype name or [?] <Continuous>:"
     )
     expect(cad.state().commandLine.prompt).toBe(
-      "-LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Load/Set]:"
     )
     expect(cad.state().currentLinetype).toBe("Continuous")
   })
 
-  it("lists acadiso.lin's linetypes at the option prompt, in the file's order and without Continuous (probe properties/p202)", () => {
+  it("lists a file's linetypes at the option prompt, in the file's order, with their descriptions (probe line/p205)", () => {
     const cad = createHarness()
 
-    // probe line/p205: a metric drawing's file is acadiso.lin
+    // A metric drawing's file is acadiso.lin, the default.
     cad.command("LT").option("?")
-    expect(cad.commandLog().at(-1)).toBe(
-      'Linetypes defined in file acadiso.lin:\n\n      Name          Description\n---------------- -------------------\n"Center"\n"DashDot"\n"Dashed"\n"Hidden"\n"Phantom"'
-    )
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter an option [?/Set]:"
+      "LINETYPE Enter name of linetype file to list <acadiso.lin>:"
+    )
+    cad.enter()
+    const listing = cad.commandLog().at(-1)!.split("\n")
+    expect(listing.slice(0, 6)).toEqual([
+      "Linetypes defined in file acadiso.lin:",
+      "",
+      "      Name          Description",
+      "---------------- -------------------",
+      '"BORDER"         Border __ __ . __ __ . __ __ . __ __ . __ __ .',
+      '"BORDER2"        Border (.5x) __.__.__.__.__.__.__.__.__.__.__.',
+    ])
+    // A long name pushes its description on, two spaces after it.
+    expect(listing).toContain(
+      '"ACAD_ISO02W100"  ISO dash __ __ __ __ __ __ __ __ __ __ __ __ __'
+    )
+    expect(listing).toHaveLength(4 + 59)
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter an option [?/Load/Set]:"
+    )
+
+    // acad.lin's are in inches; another file it cannot find (ltype/p08).
+    answer(cad, "?", "acad")
+    expect(cad.commandLog().at(-1)!.split("\n")[0]).toBe(
+      "Linetypes defined in file acad.lin:"
+    )
+    answer(cad, "?", "foo")
+    expect(cad.commandLog().at(-1)).toBe('"foo.lin": Can\'t find file.')
+  })
+
+  it("loads from acadiso.lin, asks before a reload, and says what it cannot find (probes ltype/p01, p02, p08)", () => {
+    const cad = answer(createHarness(), "-LINETYPE", "L")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Enter linetype(s) to load:"
+    )
+    answer(cad, "HIDDEN2,ACAD_ISO02W100")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Enter name of linetype file to search <acadiso.lin>:"
+    )
+    answer(cad, "")
+    // In the file's order, not the typed one.
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'Linetype "HIDDEN2" loaded.',
+      'Linetype "ACAD_ISO02W100" loaded.',
+    ])
+    expect(cad.runtime.document.getLinetype("acad_iso02w100")?.pattern).toEqual(
+      [12, -3]
+    )
+
+    // DASHDOT and DASHED are among the six every drawing holds.
+    answer(cad, "L", "DASH*", "")
+    expect(cad.state().commandLine.prompt).toBe(
+      '-LINETYPE Linetype "DASHDOT" is already loaded.  Reload it? <Y>'
+    )
+    answer(cad, "N")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'Linetype "DASHDOT2" loaded.',
+      'Linetype "DASHDOTX2" loaded.',
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      '-LINETYPE Linetype "DASHED" is already loaded.  Reload it? <Y>'
+    )
+    answer(cad, "")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      'Linetype "DASHED" is already loaded.  Reload it? <Y>',
+      'Linetype "DASHED" reloaded.',
+      'Linetype "DASHED2" loaded.',
+      'Linetype "DASHEDX2" loaded.',
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Enter an option [?/Load/Set]:"
+    )
+
+    // The file last searched is the next default; acad.lin's are in inches.
+    answer(cad, "L", "CENTER2", "acad")
+    expect(cad.runtime.document.getLinetype("CENTER2")?.pattern).toEqual([
+      0.75, -0.125, 0.125, -0.125,
+    ])
+    answer(cad, "L", "NOPE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Enter name of linetype file to search <acad.lin>:"
+    )
+    answer(cad, "acadiso")
+    expect(cad.commandLog().at(-1)).toBe(
+      "No matching linetypes found in file acadiso.lin."
+    )
+    answer(cad, "L", "DASHED", "foo")
+    expect(cad.commandLog().at(-1)).toBe('"foo.lin": Can\'t find file.')
+
+    // The whole run is one step.
+    answer(cad, "")
+    answer(cad, "U")
+    expect(cad.runtime.document.getLinetype("HIDDEN2")).toBeUndefined()
+    expect(cad.runtime.document.getLinetype("DASHED")).toBeDefined()
+  })
+
+  it("loads at Set a linetype acadiso.lin has, saying nothing (probe ltype/p03)", () => {
+    const cad = answer(createHarness(), "-LINETYPE", "S", "hidden2")
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify linetype name or [?] <ByLayer>: hidden2"
+    )
+    expect(cad.state().currentLinetype).toBe("HIDDEN2")
+    expect(cad.runtime.document.getLinetype("HIDDEN2")?.pattern).toEqual([
+      3.175, -1.5875,
+    ])
+  })
+
+  it("speaks Spanish AutoCAD's words at Load (probe ltype/p13)", () => {
+    const cad = answer(createHarness({ locale: es }), "-TIPOLIN", "C", "DASHED")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-TIPOLIN Indique nombre de archivo de tipos de línea que se van a buscar <acadiso.lin>:"
+    )
+    answer(cad, "")
+    expect(cad.state().commandLine.prompt).toBe(
+      '-TIPOLIN Tipo de línea "DASHED" ya cargado. Recárguelo? <S>'
+    )
+    answer(cad, "S")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Tipo de línea "DASHED" cargado otra vez.'
     )
   })
 
@@ -536,10 +652,10 @@ describe("-LINETYPE", () => {
     )
     cad.type("D*,C*").enter()
     expect(cad.commandLog().at(-1)).toBe(
-      'ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------\n"Center"\n"Continuous"     Solid line\n"DashDot"\n"Dashed"'
+      'ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------\n"CENTER"         Center ____ _ ____ _ ____ _ ____ _ ____ _ ____\n"Continuous"     Solid line\n"DASHDOT"        Dash dot __ . __ . __ . __ . __ . __ . __ . __\n"DASHED"         Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _'
     )
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter an option [?/Set]:"
+      "LINETYPE Enter an option [?/Load/Set]:"
     )
   })
 
@@ -582,13 +698,13 @@ describe("-LINETYPE", () => {
 
   it("goes back to ByLayer, one undo step", () => {
     const cad = createHarness()
-    cad.runtime.setCurrentLinetype("Center")
+    cad.runtime.setCurrentLinetype("CENTER")
 
     cad.command("-LINETYPE").option("Set").type("BYLAYER").enter().enter()
     expect(cad.state().currentLinetype).toBe("ByLayer")
 
     cad.undo()
-    expect(cad.state().currentLinetype).toBe("Center")
+    expect(cad.state().currentLinetype).toBe("CENTER")
   })
 
   it.each<[string, readonly string[]]>([
@@ -599,7 +715,7 @@ describe("-LINETYPE", () => {
     (language, typed) => {
       for (const name of typed) {
         const cad = createHarness(language === "Spanish" ? { locale: es } : {})
-        cad.runtime.setCurrentLinetype("Center")
+        cad.runtime.setCurrentLinetype("CENTER")
 
         answer(cad, "_-LINETYPE", "_S", name)
 
@@ -612,14 +728,14 @@ describe("-LINETYPE", () => {
     "refuses %s in Spanish as a linetype not found (probes properties/p223, p228)",
     (typed) => {
       const cad = createHarness({ locale: es })
-      cad.runtime.setCurrentLinetype("Center")
+      cad.runtime.setCurrentLinetype("CENTER")
 
       answer(cad, "-TIPOLIN", "D", typed)
 
       expect(cad.commandLog().at(-1)).toBe(
         `Tipo de línea "${typed}" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.`
       )
-      expect(cad.state().currentLinetype).toBe("Center")
+      expect(cad.state().currentLinetype).toBe("CENTER")
     }
   )
 
@@ -704,9 +820,9 @@ describe("-LINETYPE", () => {
     ).toEqual([
       "Specify next point or [Undo]: '-LINETYPE",
       'Current line type:  "ByLayer"',
-      ">>Enter an option [?/Set]: S",
+      ">>Enter an option [?/Load/Set]: S",
       ">>Specify linetype name or [?] <ByLayer>: Continuous",
-      ">>Enter an option [?/Set]:",
+      ">>Enter an option [?/Load/Set]:",
       "Resuming LINE command.",
       "Specify next point or [Undo]: 20,0",
       "Specify next point or [Close/Undo]:",
@@ -747,11 +863,11 @@ describe("-LINETYPE", () => {
       cad.command(name)
       expect(cad.commandLog().at(-1)).toBe('Tipo de línea actual: "PorCapa"')
       expect(cad.state().commandLine.prompt).toContain(
-        "Indique una opción [?/Definir]:"
+        "Indique una opción [?/Cargar/Definir]:"
       )
       cad.option("Set").type("hidden").enter()
 
-      expect(cad.state().currentLinetype).toBe("Hidden")
+      expect(cad.state().currentLinetype).toBe("HIDDEN")
     }
   )
 

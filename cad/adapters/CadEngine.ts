@@ -434,8 +434,8 @@ export class CadEngine {
   }
 
   /**
-   * Gives the selected objects a linetype, an id of `LINETYPES` or
-   * `"ByLayer"`, in one undo step.
+   * Gives the selected objects a linetype, the name of one the drawing has
+   * (`state.linetypes`, any case) or `"ByLayer"`, in one undo step.
    */
   setSelectionLinetype(linetype: string, scope?: SelectionScope): void {
     this.runtime.setSelectionLinetype(linetype, scope)

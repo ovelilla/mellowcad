@@ -77,7 +77,7 @@ const SPLINES: [string, () => SplineEntity][] = [
         knots: "uniform",
       })
       spline = assignEntityColor(spline, "#0a141e") as SplineEntity
-      spline = assignEntityLinetype(spline, "Dashed") as SplineEntity
+      spline = assignEntityLinetype(spline, "DASHED") as SplineEntity
       return assignEntityLineweight(spline, 0.5) as SplineEntity
     },
   ],

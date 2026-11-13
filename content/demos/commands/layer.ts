@@ -13,7 +13,7 @@ export const sessions = {
         layers: [
           { name: "WALLS" },
           { name: "DOORS", color: "#ffff00" },
-          { name: "AXES", color: "#ff0000", linetype: "Center" },
+          { name: "AXES", color: "#ff0000", linetype: "CENTER" },
         ],
       })
         .command("_LAYER")

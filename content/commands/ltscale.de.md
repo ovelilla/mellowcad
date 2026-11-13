@@ -3,7 +3,7 @@ title: "Befehl LTFAKTOR (LTSCALE) in AutoCAD"
 description: "Wie LTFAKTOR (LTSCALE, Alias LK) in AutoCAD den Linientypfaktor einstellt: Warum eine gestrichelte Linie durchgezogen aussieht und welcher Wert passt."
 before: "Eine Platte von 4 Metern Länge, ihre Bohrung mit HIDDEN und ihre Achsen mit CENTER gezeichnet, beim vorgegebenen Linientypfaktor 1: Die Striche sind zu fein, um sichtbar zu sein."
 figure: "Dieselbe Platte nach LTFAKTOR 20: Die Striche der Bohrung und der Achsen sind 20-mal länger gezeichnet."
-sourceHash: "f951ec391451"
+sourceHash: "33b956c956fa"
 ---
 
 LTFAKTOR (LTSCALE) legt den globalen Linientypfaktor fest: wie lang die Striche und Lücken jedes gestrichelten Linientyps in der Zeichnung sind. Er fragt nach dem neuen Faktor und bietet den aktuellen an, in einer neuen Zeichnung 1.0000: 2 macht jeden Strich doppelt so lang, 0.5 halb so lang. Der Faktor muss größer als 0 sein, sonst meldet er <Message id="positiveNonzero" /> und fragt erneut, und `1/2` und `1e3` werden als Zahlen gelesen. Eine Änderung zeichnet die ganze Zeichnung neu, `Regeneriert Modell.`, wie AutoCAD 2027 es meldet, und wird mit der Zeichnung gespeichert; sie ist ein Schritt, den <Command id="U" /> zurücknimmt. Mit einem Apostroph innerhalb eines Befehls eingegeben, `'LTFAKTOR`, wird die Zeichnung neu gezeichnet, wenn dieser Befehl endet.
@@ -12,7 +12,7 @@ Linientypen sind Muster, die für eine Zeichnung in Papiergröße gemacht sind: 
 
 ## Missing
 
-Ein Linientypfaktor je Objekt (CELTSCALE, der Linientypfaktor der Eigenschaftenpalette): nur der der Zeichnung. Der Linientyp-Manager, dessen globaler Skalierfaktor LTSCALE ist. PSLTSCALE und MSLTSCALE, da es keinen Papierbereich gibt. Andere Linientypen als Continuous, DASHED, HIDDEN, CENTER, PHANTOM und DASHDOT.
+Der Linientyp-Manager, dessen globaler Skalierfaktor LTSCALE ist und dessen aktuelle Objektskalierung CELTSCALE. PSLTSCALE und MSLTSCALE, da es keinen Papierbereich gibt. Die Formen komplexer Linientypen wie BATTING, als ihre Lücken gezeichnet.
 
 ## Questions
 

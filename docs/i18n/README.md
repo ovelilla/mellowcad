@@ -63,8 +63,9 @@ In this order, each section only where it applies:
 ## Never translated
 
 - **Drawing data:** layer, block and style names (`0`, `Standard`, `ISO-25`), linetype names
-  (`Continuous`, `Dashed`…) and hatch pattern names (`SOLID`, `ANSI31`). They are the drawing's, as
-  in AutoCAD, so `cad/locales/es.json` leaves `interface.linetype` and `interface.hatchPattern` out.
+  (`Continuous`, `DASHED`…) and hatch pattern names (`SOLID`, `ANSI31`). They are the drawing's, as
+  in AutoCAD: no catalog names a linetype, and `cad/locales/es.json` leaves `interface.hatchPattern`
+  out.
 - **Technical values:** a point for decimals, a comma between coordinates, latin digits, in every
   language.
 - **Brand and notation:** MellowCAD, AutoCAD, DWG, DXF, the axis names X and Y; GitHub, npm, MIT

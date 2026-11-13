@@ -8,7 +8,11 @@ import {
 import {
   DEFAULT_LINETYPE_ID,
   LINETYPES,
+  Linetype,
+  LinetypeElement,
   LinetypeId,
+  MAX_LINETYPE_DESCRIPTION,
+  linetypeNamed,
 } from "../../domain/linetypes"
 import { DEFAULT_LINEWEIGHT } from "../../domain/lineweights"
 import {
@@ -32,51 +36,128 @@ function key(name: string): string {
   return name.trim().toUpperCase()
 }
 
+/** A drawing's LTYPE table as the model's, and the name of each linetype an object or layer names. */
+export interface DxfLinetypes {
+  readonly linetypes: readonly Linetype[]
+  /** ByLayer and ByBlock none (the model has no ByBlock), any other the table's name in its case. */
+  readonly name: (name: string | undefined) => LinetypeId | undefined
+}
+
 /**
- * The linetype an object or layer names, as the model holds it: ByLayer and
- * ByBlock none (the model has no ByBlock), one of the six by its name, one
- * whose dashes are one of the six's by that one's (WHY: a Spanish AutoCAD
- * writes acadiso.lin's DASHED as TRAZOS, docs/next-dxf.md), and any other by
- * its own name, which draws continuous until the model holds a drawing's own
- * linetypes.
+ * The LTYPE table: each linetype with its description (3), its lengths (49)
+ * and what a complex one draws after a length (74: 2 text, 4 shape, 1 an
+ * absolute rotation, 8 upright; 75 the shape's number, 340 the STYLE that is
+ * its text style or shape file, 46 scale, 50 rotation, 44 and 45 offset, 9 the
+ * text; ltype/p06). ByLayer, ByBlock and an external reference's
+ * (`xref|name`, flag 16) are no linetype of the model's; the six every drawing
+ * holds (`LINETYPES`) are added after the file's when it lacks them.
  */
 export function dxfLinetypes(
-  records: readonly DxfRecord[]
-): (name: string | undefined) => LinetypeId | undefined {
-  const byKey = new Map<string, LinetypeId>()
-  for (const def of LINETYPES) byKey.set(key(def.id), def.id)
-  for (const record of records) {
-    const name = str(record, 2)
-    if (!name || byKey.has(key(name))) continue
-    const twin = samePattern(record)
-    if (twin) byKey.set(key(name), twin)
+  records: readonly DxfRecord[],
+  styles: readonly DxfRecord[]
+): DxfLinetypes {
+  const styleByHandle = new Map<string, DxfRecord>()
+  for (const style of styles) {
+    const handle = str(style, 5)?.trim().toUpperCase()
+    if (handle) styleByHandle.set(handle, style)
   }
-  return (name) => {
-    if (name === undefined || name.trim() === "") return undefined
+  const linetypes: Linetype[] = []
+  for (const record of records) {
+    const name = str(record, 2)?.trim()
+    if (!name || (int(record, 70) ?? 0) & 16) continue
     const k = key(name)
-    if (k === "BYLAYER" || k === "BYBLOCK") return undefined
-    return byKey.get(k) ?? name.trim()
+    if (k === "BYLAYER" || k === "BYBLOCK" || linetypeNamed(linetypes, name)) {
+      continue
+    }
+    linetypes.push(linetypeOf(name, record, styleByHandle))
+  }
+  for (const linetype of LINETYPES) {
+    if (!linetypeNamed(linetypes, linetype.name)) linetypes.push(linetype)
+  }
+  return {
+    linetypes,
+    name: (name) => {
+      if (name === undefined || name.trim() === "") return undefined
+      const k = key(name)
+      if (k === "BYLAYER" || k === "BYBLOCK") return undefined
+      return linetypeNamed(linetypes, name.trim())?.name ?? name.trim()
+    },
   }
 }
 
-/** The registry's linetype drawn with the dashes this LTYPE record gives (49), if any. */
-function samePattern(record: DxfRecord): LinetypeId | null {
-  const dashes: number[] = []
+function linetypeOf(
+  name: string,
+  record: DxfRecord,
+  styleByHandle: ReadonlyMap<string, DxfRecord>
+): Linetype {
+  const pattern: number[] = []
+  const elements: LinetypeElement[] = []
+  let groups: Map<number, string> | null = null
+  const flush = () => {
+    if (!groups) return
+    const read = readElement(groups, pattern.length - 1, styleByHandle)
+    if (read) elements.push(read)
+    groups = null
+  }
   record.codes.forEach((code, i) => {
-    if (code === 49) dashes.push(Math.abs(finite(record.values[i]) ?? NaN))
-    // A dash with a shape or text in it (74) is no simple pattern.
-    if (code === 74 && (finite(record.values[i]) ?? 0) !== 0) dashes.push(NaN)
+    const value = record.values[i]
+    if (code === 49) {
+      flush()
+      pattern.push(finite(value) ?? 0)
+    } else if (pattern.length > 0 && ELEMENT_CODES.has(code)) {
+      groups ??= new Map()
+      groups.set(code, value)
+    }
   })
-  if (dashes.length === 0 || dashes.some((d) => !Number.isFinite(d)))
-    return null
-  const match = LINETYPES.find(
-    (def) =>
-      def.pattern.length === dashes.length &&
-      def.pattern.every(
-        (d, i) => Math.abs(d - dashes[i]) <= 1e-6 * Math.max(1, d)
-      )
-  )
-  return match?.id ?? null
+  flush()
+  return {
+    name,
+    description: (str(record, 3) ?? "").slice(0, MAX_LINETYPE_DESCRIPTION),
+    pattern,
+    ...(elements.length > 0 && { elements }),
+  }
+}
+
+/** The groups that follow a length (49) and describe what it draws. */
+const ELEMENT_CODES = new Set([74, 75, 340, 46, 50, 44, 45, 9])
+
+/** A complex linetype's text or shape, or `null` for a plain length (74 is 0) or one that cannot be drawn. */
+function readElement(
+  groups: ReadonlyMap<number, string>,
+  index: number,
+  styleByHandle: ReadonlyMap<string, DxfRecord>
+): LinetypeElement | null {
+  const value = (code: number) => {
+    const text = groups.get(code)
+    return text === undefined ? undefined : finite(text)
+  }
+  const flags = value(74) ?? 0
+  if ((flags & 6) === 0) return null
+  const style = styleByHandle.get((groups.get(340) ?? "").trim().toUpperCase())
+  const placement = {
+    index,
+    scale: value(46) ?? 1,
+    // In degrees in the file (`50|180.0`), in radians to entget (ltype/p06).
+    rotation: ((value(50) ?? 0) * Math.PI) / 180,
+    rotationMode: (flags & 1
+      ? "absolute"
+      : flags & 8
+        ? "upright"
+        : "relative") as LinetypeElement["rotationMode"],
+    offset: { x: value(44) ?? 0, y: value(45) ?? 0 },
+  }
+  if (flags & 2) {
+    return {
+      kind: "text",
+      text: groups.get(9) ?? "",
+      style: (style && str(style, 2)?.trim()) || DEFAULT_TEXT_STYLE_ID,
+      ...placement,
+    }
+  }
+  const shapeFile = style && str(style, 3)?.trim()
+  return shapeFile
+    ? { kind: "shape", shape: value(75) ?? 0, shapeFile, ...placement }
+    : null
 }
 
 /**

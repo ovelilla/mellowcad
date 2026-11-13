@@ -23,6 +23,8 @@ import {
 } from "../domain/entities"
 import { DEFAULT_LAYER_ID, Layer, LayerId, nextLayerId } from "../domain/layers"
 import { DimStyle } from "../domain/dimStyles"
+import { LINETYPE_BYLAYER, Linetype } from "../domain/linetypes"
+import { styleNamed } from "../domain/styleNames"
 import { TextStyle } from "../domain/textStyles"
 import { Ucs, ucsAxes } from "../domain/ucs"
 import { ClipboardFragment } from "../serialization/clipboardFile"
@@ -98,10 +100,39 @@ export function clipboardSnapshot(
   }
   visit(entities, 0)
 
+  // The linetypes its layers and objects name, a block's objects included.
+  const linetypes = new Map<string, Linetype>()
+  const keepLinetype = (name: string | undefined) => {
+    const linetype = name ? document.getLinetype(name) : undefined
+    if (!linetype) return
+    linetypes.set(linetype.name.toUpperCase(), linetype)
+    // A complex one's text is in a style of the drawing, which goes too.
+    for (const element of linetype.elements ?? []) {
+      if (element.kind !== "text") continue
+      const style = styleNamed(document.getTextStyles(), element.style)
+      if (style) textStyles.set(style.id, style)
+    }
+  }
+  for (const layer of layers.values()) keepLinetype(layer.linetype)
+  for (const entity of [
+    ...entities,
+    ...[...blocks.values()].flatMap((block) => block.entities),
+  ]) {
+    keepLinetype(entity.linetype)
+    if (entity.type === "insert") {
+      for (const attribute of entity.attributes ?? []) {
+        keepLinetype(attribute.linetype)
+      }
+    }
+  }
+
   return {
-    settings: document.getSettings(),
+    // CELTYPE names no linetype of the fragment's, which a reader would add
+    // to its table: a paste takes no setting.
+    settings: { ...document.getSettings(), currentLinetype: LINETYPE_BYLAYER },
     layers: Array.from(layers.values()),
     currentLayerId: document.getCurrentLayerId(),
+    linetypes: Array.from(linetypes.values()),
     textStyles: Array.from(textStyles.values()),
     currentTextStyleId: document.getCurrentTextStyleId(),
     dimStyles: Array.from(dimStyles.values()),
@@ -149,6 +180,7 @@ export interface PastePlan {
   /** The objects, with fresh ids, translated, and on the resolved layers. */
   readonly entities: readonly Entity[]
   readonly layers: readonly Layer[]
+  readonly linetypes: readonly Linetype[]
   readonly textStyles: readonly TextStyle[]
   readonly dimStyles: readonly DimStyle[]
   readonly blocks: readonly BlockDefinition[]
@@ -204,6 +236,10 @@ export function planPaste(
       )
     ),
     layers,
+    // A linetype is named, any case, as the target's of that name draws it.
+    linetypes: fragment.drawing.linetypes.filter(
+      (linetype) => !document.getLinetype(linetype.name)
+    ),
     // A style's name *is* its id, so an exact miss is the whole test — there
     // is nothing to remap, only entries to add.
     textStyles: fragment.drawing.textStyles.filter(

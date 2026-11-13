@@ -1,0 +1,9 @@
+_-LINETYPE
+_L
+*
+
+
+(progn (setq e (tblnext "LTYPE" T) n 0) (while e (setq n (1+ n)) (setq e (tblnext "LTYPE"))) n)
+(entget (tblobjname "LTYPE" "JIS_09_29"))
+(entget (tblobjname "LTYPE" "TRACKS"))
+(entget (tblobjname "LTYPE" "FENCELINE1"))

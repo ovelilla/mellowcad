@@ -10,6 +10,7 @@ import {
   withDeltaZ,
   withElevation,
   withNormal,
+  withLinetypeScale,
   withThickness,
   type ArcEntity,
   type ArrayParameters,
@@ -1195,9 +1196,12 @@ export const entity: fc.Arbitrary<Entity> = fc
             z: Math.sin(tilt),
           })),
       }
-    )
+    ),
+    // An object's own linetype scale, which every copy carries.
+    fc.constantFrom(1, 1, 0.5, 2.5)
   )
-  .map(([flat, elevation, deltaZ, thickness, normal]) => {
+  .map(([shape, elevation, deltaZ, thickness, normal, linetypeScale]) => {
+    const flat = withLinetypeScale(shape, linetypeScale)
     // Every transform has to carry the Z fields and the normal, which
     // TypeScript cannot check on optional ones; a flat drawing alone would
     // never notice one dropped. A 3D polyline or a solid has none: its
@@ -1217,7 +1221,7 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
     fc.constantFrom(...Object.values(LengthUnit)),
     fc.integer({ min: 0, max: 8 }),
     fc.constantFrom(COLOR_BYLAYER, "#ff0000", "#1a2b3c"),
-    fc.constantFrom(LINETYPE_BYLAYER, ...LINETYPES.map((l) => l.id)),
+    fc.constantFrom(LINETYPE_BYLAYER, ...LINETYPES.map((l) => l.name)),
     fc.constantFrom<number | typeof LINEWEIGHT_BYLAYER>(
       LINEWEIGHT_BYLAYER,
       ...LINEWEIGHTS

@@ -30,6 +30,7 @@ import {
   CadEngine,
   DEFAULT_LAYER_ID,
   EngineNames,
+  Linetype,
   INVALID_LAYER_NAME_CHARACTERS,
   LayerInfo,
   LayerNameRefusal,
@@ -194,6 +195,7 @@ export function LayersControl({
                     engine={engine}
                     layer={layer}
                     names={state.names}
+                    linetypes={state.linetypes}
                     isCurrent={layer.id === state.currentLayerId}
                     isSelected={layer.id === selected.id}
                     renaming={layer.id === renamingId}
@@ -413,6 +415,7 @@ function LayerRow({
   engine,
   layer,
   names,
+  linetypes,
   isCurrent,
   isSelected,
   renaming,
@@ -425,6 +428,7 @@ function LayerRow({
   engine: CadEngine
   layer: LayerInfo
   names: EngineNames
+  linetypes: readonly Linetype[]
   isCurrent: boolean
   isSelected: boolean
   renaming: boolean
@@ -539,6 +543,7 @@ function LayerRow({
         <LinetypeSelect
           value={layer.linetype}
           names={names}
+          linetypes={linetypes}
           onValueChange={(linetype) => {
             engine.updateLayer(layer.id, { linetype })
             done()

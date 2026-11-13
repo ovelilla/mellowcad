@@ -41,6 +41,7 @@ import {
   hatchGeometry,
   insertFlatGeometry,
   ellipseLengthTable,
+  ellipsePointAt,
   isFullEllipse,
   lineEndZ,
   lineStartZ,
@@ -72,11 +73,24 @@ import {
 import { polarPoint } from "../geometry/primitives"
 import { Ucs, ucsPointToWorld, worldPointToUcs } from "../domain/ucs"
 import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
+import { TextStyle } from "../domain/textStyles"
+import {
+  LinetypePath,
+  LinetypeTextPlacement,
+  arcPath,
+  linePath,
+  linetypeTextPlacements,
+  segmentsPath,
+} from "../domain/linetypeText"
 import { normalizeColor } from "../domain/colors"
 import {
   DEFAULT_LINETYPE_ID,
+  LINETYPES,
+  Linetype,
+  LinetypeLookup,
   centredPattern,
-  linetypePattern,
+  linetypeDashes,
+  linetypeNamed,
   loopPattern,
 } from "../domain/linetypes"
 import {
@@ -191,6 +205,10 @@ export interface SceneInput {
   readonly ucsIcon: UcsIconInput | null
   /** Global linetype scale (LTSCALE): multiplies every dash pattern length. */
   readonly ltScale: number
+  /** The drawing's linetypes; the six every drawing holds when absent. */
+  readonly linetypes?: LinetypeLookup
+  /** Its text styles, for a complex linetype's text: none, or a fixed height, when absent. */
+  readonly textStyles?: readonly TextStyle[]
   /** Whether lineweights are drawn thick (LWDISPLAY) or everything hairline. */
   readonly lwDisplay: boolean
   /** FILLMODE: wide polylines filled, or their outline only. On when absent. */
@@ -274,8 +292,12 @@ export function buildScene(input: SceneInput): Scene {
     input.selectedIds,
     input.hiddenIds,
     input.fadedIds ?? NONE,
-    input.ltScale,
-    input.lwDisplay,
+    {
+      ltScale: input.ltScale,
+      lwDisplay: input.lwDisplay,
+      linetypes: input.linetypes,
+    },
+    input.textStyles ?? [],
     input.attributeDisplay ?? "normal",
     input.fillMode ?? true,
     input.isolines,
@@ -763,6 +785,17 @@ export interface EntityDrawOptions {
    * ghost's dash is the editor's own and runs from the start.
    */
   readonly linetype?: boolean
+  /** The texts of the object's complex linetype, drawn with its dashes. */
+  readonly linetypeText?: LinetypeTextLook
+}
+
+/** A complex linetype with texts, as an object wears it. */
+export interface LinetypeTextLook {
+  readonly linetype: Linetype
+  /** LTSCALE times the object's own scale. */
+  readonly factor: number
+  /** A text style's fixed height, 0 for none. */
+  readonly styleHeight: (style: string) => number
 }
 
 export function entityScenePrimitive(
@@ -963,6 +996,166 @@ export function extrusionEdges(
  * looks the same, or through the camera of the entity's plane.
  */
 function planarPrimitives(
+  camera: CameraTransform,
+  entity: Entity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  const drawn = planarShapes(camera, entity, stroke, options)
+  // No dash, no text: under a couple of pixels a pattern is drawn solid.
+  return options.linetype && options.linetypeText && stroke.dash
+    ? [
+        ...drawn,
+        ...linetypeTextPrimitives(
+          camera,
+          entity,
+          options.linetypeText,
+          stroke.color
+        ),
+      ]
+    : drawn
+}
+
+/**
+ * A complex linetype's texts along an object, laid as its dashes are
+ * ({@link linetypeTextPlacements}): a line's, a straight polyline segment's
+ * and an arc's centred, a circle's and a whole ellipse's round from its start,
+ * an elliptical arc's and a spline's centred along its length, a polyline's
+ * with Ltype gen along all of it. A polyline's arc segment, whose pattern runs
+ * from its start (**unverified**), and a wide polyline get none.
+ */
+function linetypeTextPrimitives(
+  camera: CameraTransform,
+  entity: Entity,
+  look: LinetypeTextLook,
+  color: string
+): ScenePrimitive[] {
+  return linetypeTextsOf(entity, look).map((placement) =>
+    textPrimitive(camera, placement.at, placement.text, {
+      height: placement.height,
+      angle: placement.angle,
+      align: "left",
+      color,
+    })
+  )
+}
+
+/**
+ * Kept per object, as a hatch's pattern is: where its texts stand is the
+ * world's, whatever the camera, and walking a long curve every frame is the
+ * costly part.
+ */
+const linetypeTextCache = new WeakMap<
+  Entity,
+  {
+    readonly look: LinetypeTextLook
+    readonly heights: string
+    readonly placements: readonly LinetypeTextPlacement[]
+  }
+>()
+
+function linetypeTextsOf(
+  entity: Entity,
+  look: LinetypeTextLook
+): readonly LinetypeTextPlacement[] {
+  const heights = (look.linetype.elements ?? [])
+    .map((element) =>
+      element.kind === "text" ? look.styleHeight(element.style) : 0
+    )
+    .join()
+  const cached = linetypeTextCache.get(entity)
+  if (
+    cached &&
+    cached.look.linetype === look.linetype &&
+    cached.look.factor === look.factor &&
+    cached.heights === heights
+  ) {
+    return cached.placements
+  }
+  const placements = linetypeTexts(entity, look)
+  linetypeTextCache.set(entity, { look, heights, placements })
+  return placements
+}
+
+function linetypeTexts(
+  entity: Entity,
+  look: LinetypeTextLook
+): LinetypeTextPlacement[] {
+  const placed = (path: LinetypePath, laid: "centred" | "loop") =>
+    linetypeTextPlacements(
+      path,
+      laid,
+      look.linetype,
+      look.factor,
+      look.styleHeight
+    )
+  let placements: LinetypeTextPlacement[]
+  switch (entity.type) {
+    case "line":
+      placements = placed(linePath(entity.start, entity.end), "centred")
+      break
+    case "circle":
+      placements = placed(
+        arcPath(entity.center, entity.radius, 0, 2 * Math.PI),
+        "loop"
+      )
+      break
+    case "arc":
+      placements = placed(
+        arcPath(
+          entity.center,
+          entity.radius,
+          entity.startAngle,
+          arcSweepAngle(entity)
+        ),
+        "centred"
+      )
+      break
+    case "ellipse": {
+      const along = ellipseLengthTable(entity)
+      placements = placed(
+        {
+          length: along.length,
+          pointAt: (distance) =>
+            ellipsePointAt(entity, along.paramAt(distance)),
+        },
+        isFullEllipse(entity) ? "loop" : "centred"
+      )
+      break
+    }
+    case "spline": {
+      const along = splineLengthOf(entity)
+      placements = placed(
+        {
+          length: along.length,
+          pointAt: (distance) => {
+            const point = bsplinePoint(along.curve, along.paramAt(distance))
+            return { x: point.x, y: point.y }
+          },
+        },
+        "centred"
+      )
+      break
+    }
+    case "polyline": {
+      if (isWidePolyline(entity)) return []
+      const segments = polylineSegmentGeometries(entity)
+      placements = entity.linetypeGeneration
+        ? placed(segmentsPath(segments), "centred")
+        : segments.flatMap((segment) =>
+            segment.kind === "line"
+              ? placed(linePath(segment.a, segment.b), "centred")
+              : []
+          )
+      break
+    }
+    default:
+      return []
+  }
+  return placements
+}
+
+function planarShapes(
   camera: CameraTransform,
   entity: Entity,
   stroke: StrokeStyle,
@@ -1941,8 +2134,8 @@ function pushEntities(
   selectedIds: ReadonlySet<EntityId>,
   hiddenIds: ReadonlySet<EntityId>,
   fadedIds: ReadonlySet<EntityId>,
-  ltScale: number,
-  lwDisplay: boolean,
+  look: StrokeLook,
+  textStyles: readonly TextStyle[],
   attributeDisplay: AttributeDisplay,
   fillMode: boolean,
   isolines: number | undefined,
@@ -1996,6 +2189,27 @@ function pushEntities(
       }
     }
   }
+  const heights = new Map(
+    textStyles.map((style) => [style.name.toUpperCase(), style.height])
+  )
+  const styleHeight = (name: string) => heights.get(name.toUpperCase()) ?? 0
+  // The texts of an object's complex linetype, if it wears one with texts.
+  const textLook = (
+    entity: Entity,
+    layer: Layer | undefined
+  ): LinetypeTextLook | undefined => {
+    if (entity.type === "polyline3d") return undefined
+    const linetype = (look.linetypes ?? builtInLinetype)(
+      entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
+    )
+    return linetype?.elements?.some((element) => element.kind === "text")
+      ? {
+          linetype,
+          factor: look.ltScale * (entity.linetypeScale ?? 1),
+          styleHeight,
+        }
+      : undefined
+  }
   const dimStyleById = new Map<DimStyleId, DimStyle>()
   for (const style of dimStyles) dimStyleById.set(style.id, style)
 
@@ -2015,13 +2229,7 @@ function pushEntities(
     // Entities on a hidden (Off) layer are not drawn at all.
     if (layer && !layer.visible) return
     const locked = inLocked || layer?.locked === true
-    const drawn = entityStroke(
-      camera,
-      entity,
-      layer,
-      { ltScale, lwDisplay },
-      isFaded
-    )
+    const drawn = entityStroke(camera, entity, layer, look, isFaded)
     // Conceptual draws edges in colour 7 whatever the object's (VSEDGECOLOR "7", visualstyle/v06).
     const edged =
       visualStyle === "conceptual" && entity.type === "solid3d"
@@ -2064,6 +2272,7 @@ function pushEntities(
       points,
       solidLines,
       linetype: true,
+      linetypeText: textLook(entity, layer),
       dimStyle:
         entity.type === "dimension" || entity.type === "leader"
           ? (dimStyleById.get(entity.styleId) ??
@@ -2094,18 +2303,23 @@ export function entityStroke(
   camera: CameraTransform,
   entity: Entity,
   layer: Layer | undefined,
-  look: { readonly ltScale: number; readonly lwDisplay: boolean },
+  look: StrokeLook,
   faded = false
 ): StrokeStyle {
-  // Resolve the linetype ByObject → ByLayer, then turn its world-unit pattern
-  // into a screen-pixel dash (scaled by LTSCALE and the current zoom).
+  // Resolve the linetype ByObject → ByLayer, then turn its pattern into a
+  // screen-pixel dash (scaled by LTSCALE, the object's own scale and the
+  // current zoom).
   const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
   // WHY: AutoCAD draws a 3D polyline continuous whatever linetype it keeps
   // (3dpoly/p118, p122, p123); a fitted one is the same object.
   const dash =
     entity.type === "polyline3d"
       ? undefined
-      : dashFor(linetypeId, look.ltScale, camera.scale)
+      : dashFor(
+          (look.linetypes ?? builtInLinetype)(linetypeId)?.pattern ?? [],
+          look.ltScale * (entity.linetypeScale ?? 1),
+          camera.scale
+        )
   const lineweight =
     entity.lineweight ?? layer?.lineweight ?? DEFAULT_LINEWEIGHT
   // "Wide polylines display lineweights only when displayed outside of
@@ -2219,18 +2433,29 @@ function widthFor(lineweight: Lineweight, lwDisplay: boolean): number {
     : HAIRLINE_WIDTH
 }
 
+/** What strokes an object besides its own properties: the drawing's scale, display and linetypes. */
+export interface StrokeLook {
+  readonly ltScale: number
+  readonly lwDisplay: boolean
+  /** The drawing's linetypes; the six every drawing holds when absent. */
+  readonly linetypes?: LinetypeLookup
+}
+
+const builtInLinetype: LinetypeLookup = (name) => linetypeNamed(LINETYPES, name)
+
 /**
- * Converts a linetype's world-unit dash pattern into a screen-pixel dash array,
- * scaled by LTSCALE and the current zoom so dashes keep a constant drawing size.
+ * Converts a linetype's pattern (AutoCAD's lengths, `Linetype.pattern`) into
+ * a screen-pixel dash array, scaled by `ltScale` (LTSCALE times the object's
+ * own scale) and the current zoom so dashes keep a constant drawing size.
  * Returns undefined for a solid line, or when the whole pattern would collapse
  * to sub-pixel dashes (drawn solid to avoid a smeared, slow-to-render line).
  */
 function dashFor(
-  linetypeId: string,
+  definition: readonly number[],
   ltScale: number,
   scale: number
 ): number[] | undefined {
-  const pattern = linetypePattern(linetypeId)
+  const pattern = linetypeDashes(definition)
   if (pattern.length === 0) return undefined
   const factor = ltScale * scale
   const dash = pattern.map((run) => run * factor)

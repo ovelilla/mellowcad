@@ -18,7 +18,15 @@ import {
 } from "../../domain/arrays"
 import { dimensionGeometry } from "../../domain/dimensions"
 import { DimStyle, DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
-import { LINETYPES, LINETYPE_BYLAYER } from "../../domain/linetypes"
+import {
+  CONTINUOUS,
+  DEFAULT_LINETYPE_ID,
+  LINETYPE_BYLAYER,
+  Linetype,
+  LinetypeElement,
+  sameLinetypeName,
+} from "../../domain/linetypes"
+import { DEFAULT_TEXT_STYLE_ID } from "../../domain/textStyles"
 import { LINEWEIGHT_BYLAYER } from "../../domain/lineweights"
 import { COLOR_BYLAYER } from "../../domain/colors"
 import { DEFAULT_LAYER_ID } from "../../domain/layers"
@@ -65,15 +73,6 @@ export interface DxfSaveReport {
 export interface SavedDxf {
   readonly bytes: Uint8Array
   readonly report: DxfSaveReport
-}
-
-/** acadiso.lin's descriptions of the six linetypes, written with their patterns. */
-const LINETYPE_TEXT: Readonly<Record<string, string>> = {
-  Dashed: "Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _",
-  Hidden: "Hidden __ __ __ __ __ __ __ __ __ __ __ __ __ __",
-  Center: "Center ____ _ ____ _ ____ _ ____ _ ____ _ ____",
-  Phantom: "Phantom ______  __  __  ______  __  __  ______",
-  DashDot: "Dash dot __ . __ . __ . __ . __ . __ . __ . __",
 }
 
 const INSUNITS: Readonly<Record<LengthUnit, number>> = {
@@ -262,7 +261,9 @@ export function writeDxf(
   for (const block of drawing.blocks) plan(block.entities)
   plan(modelEntities)
 
-  const linetypes = usedLinetypes(drawing, modelEntities)
+  const linetypes = drawing.linetypes.filter(
+    (l) => !sameLinetypeName(l.name, DEFAULT_LINETYPE_ID)
+  )
 
   // TABLES
   const out = body
@@ -272,20 +273,46 @@ export function writeDxf(
   activeViewport(out, handle(), T.vports, drawing, modelEntities, lookup)
   out.str(0, "ENDTAB")
 
+  // A complex linetype's text names its STYLE by handle (340), and a shape its
+  // shape file's: a STYLE with no name, flag 1, the file as its font, as
+  // AutoCAD writes ltypeshp.shx (the DesignCenter sample's handle 53).
+  const styleHandles = new Map<string, string>()
+  for (const style of drawing.textStyles) {
+    styleHandles.set(style.name.toUpperCase(), handle())
+  }
+  const shapeFiles = new Map<string, string>()
+  for (const l of linetypes) {
+    for (const element of l.elements ?? []) {
+      const key =
+        element.kind === "shape" ? element.shapeFile.toLowerCase() : ""
+      if (key && !shapeFiles.has(key)) shapeFiles.set(key, handle())
+    }
+  }
+  const elementStyle = (element: LinetypeElement): string =>
+    element.kind === "shape"
+      ? shapeFiles.get(element.shapeFile.toLowerCase())!
+      : (styleHandles.get(element.style.toUpperCase()) ??
+        styleHandles.get(DEFAULT_TEXT_STYLE_ID.toUpperCase()) ??
+        "")
+
   table(out, "LTYPE", T.linetypes, linetypes.length + 3)
-  linetype(out, T.byBlock, T.linetypes, "ByBlock", "", [])
-  linetype(out, T.byLayer, T.linetypes, "ByLayer", "", [])
-  linetype(out, T.continuous, T.linetypes, "Continuous", "Solid line", [])
-  for (const name of linetypes) {
-    const def = LINETYPES.find((l) => l.id === name)
-    linetype(
-      out,
-      handle(),
-      T.linetypes,
-      def ? name.toUpperCase() : name,
-      LINETYPE_TEXT[name] ?? "",
-      def?.pattern ?? []
-    )
+  linetype(
+    out,
+    T.byBlock,
+    T.linetypes,
+    { name: "ByBlock", description: "", pattern: [] },
+    elementStyle
+  )
+  linetype(
+    out,
+    T.byLayer,
+    T.linetypes,
+    { name: "ByLayer", description: "", pattern: [] },
+    elementStyle
+  )
+  linetype(out, T.continuous, T.linetypes, CONTINUOUS, elementStyle)
+  for (const l of linetypes) {
+    linetype(out, handle(), T.linetypes, l, elementStyle)
   }
   out.str(0, "ENDTAB")
 
@@ -299,7 +326,7 @@ export function writeDxf(
     // An off layer's colour is negative (the reader's DxfLayers).
     out.int(62, layer.visible ? index : -index)
     if (!exact) out.int(420, rgb)
-    out.str(6, linetypeName(layer.linetype))
+    out.str(6, layer.linetype)
     // AutoCAD refuses the whole file when DEFPOINTS plots ("Invalid
     // AcDbLayerTableRecord plot flag for DEFPOINTS layer").
     if (layer.name.toUpperCase() === "DEFPOINTS") out.int(290, 0)
@@ -308,11 +335,9 @@ export function writeDxf(
   }
   out.str(0, "ENDTAB")
 
-  const styleHandles = new Map<string, string>()
-  table(out, "STYLE", T.styles, drawing.textStyles.length)
+  table(out, "STYLE", T.styles, drawing.textStyles.length + shapeFiles.size)
   for (const style of drawing.textStyles) {
-    const own = handle()
-    styleHandles.set(style.name.toUpperCase(), own)
+    const own = styleHandles.get(style.name.toUpperCase())!
     record(out, "STYLE", own, T.styles, "AcDbTextStyleTableRecord")
     out.str(2, style.name)
     out.int(70, 0)
@@ -322,6 +347,18 @@ export function writeDxf(
     out.int(71, 0)
     out.real(42, style.height || drawing.settings.textSize)
     out.str(3, "arial.ttf")
+    out.str(4, "")
+  }
+  for (const [file, own] of shapeFiles) {
+    record(out, "STYLE", own, T.styles, "AcDbTextStyleTableRecord")
+    out.str(2, "")
+    out.int(70, 1)
+    out.real(40, 0)
+    out.real(41, 1)
+    out.real(50, 0)
+    out.int(71, 0)
+    out.real(42, drawing.settings.textSize)
+    out.str(3, file)
     out.str(4, "")
   }
   out.str(0, "ENDTAB")
@@ -446,40 +483,6 @@ export function writeDxf(
   header(file, drawing, version, handle())
   file.append(body)
   return { bytes: file.result(), report: { leftOut } }
-
-  function linetypeName(id: string): string {
-    if (id === "Continuous") return "Continuous"
-    return LINETYPES.some((l) => l.id === id) ? id.toUpperCase() : id
-  }
-}
-
-/** The linetypes of the six and the names kept from a DXF that the file's objects and layers use. */
-function usedLinetypes(
-  drawing: DrawingSnapshot,
-  entities: readonly Entity[]
-): string[] {
-  const names = new Set<string>(
-    LINETYPES.map((l) => l.id).filter((id) => id !== "Continuous")
-  )
-  const add = (id: string | undefined) => {
-    if (id && id !== "Continuous" && id !== LINETYPE_BYLAYER) names.add(id)
-  }
-  for (const layer of drawing.layers) add(layer.linetype)
-  const visit = (list: readonly Entity[]) => {
-    for (const e of list) {
-      add(e.linetype)
-      if (e.type === "insert")
-        for (const attribute of e.attributes ?? []) add(attribute.linetype)
-    }
-  }
-  visit(entities)
-  for (const block of drawing.blocks) visit(block.entities)
-  add(
-    drawing.settings.currentLinetype === LINETYPE_BYLAYER
-      ? undefined
-      : drawing.settings.currentLinetype
-  )
-  return [...names]
 }
 
 function table(out: DxfOut, name: string, handle: string, count: number): void {
@@ -505,14 +508,19 @@ function record(
   out.str(100, subclass)
 }
 
+/**
+ * An LTYPE record as AutoCAD writes one (ltype/p06): its lengths signed, 40
+ * their absolute sum, and after a length its text or shape (74's bits 2 text,
+ * 4 shape, 1 absolute, 8 upright; the rotation in degrees).
+ */
 function linetype(
   out: DxfOut,
   handle: string,
   owner: string,
-  name: string,
-  description: string,
-  pattern: readonly number[]
+  definition: Linetype,
+  styleOf: (element: LinetypeElement) => string
 ): void {
+  const { name, description, pattern } = definition
   record(out, "LTYPE", handle, owner, "AcDbLinetypeTableRecord")
   out.str(2, name)
   out.int(70, 0)
@@ -521,11 +529,29 @@ function linetype(
   out.int(73, pattern.length)
   out.real(
     40,
-    pattern.reduce((sum, d) => sum + d, 0)
+    pattern.reduce((sum, d) => sum + Math.abs(d), 0)
   )
   pattern.forEach((d, i) => {
-    out.real(49, i % 2 === 0 ? d : -d)
-    out.int(74, 0)
+    out.real(49, d)
+    const element = definition.elements?.find((e) => e.index === i)
+    if (!element) {
+      out.int(74, 0)
+      return
+    }
+    const mode =
+      element.rotationMode === "absolute"
+        ? 1
+        : element.rotationMode === "upright"
+          ? 8
+          : 0
+    out.int(74, mode | (element.kind === "text" ? 2 : 4))
+    out.int(75, element.kind === "shape" ? element.shape : 0)
+    out.str(340, styleOf(element))
+    out.real(46, element.scale)
+    out.real(50, (element.rotation * 180) / Math.PI)
+    out.real(44, element.offset.x)
+    out.real(45, element.offset.y)
+    if (element.kind === "text") out.str(9, element.text)
   })
 }
 
@@ -851,17 +877,13 @@ function header(
   variable("$CELTYPE")
   out.str(
     6,
-    s.currentLinetype === LINETYPE_BYLAYER
-      ? "ByLayer"
-      : s.currentLinetype === "Continuous"
-        ? "Continuous"
-        : LINETYPES.some((l) => l.id === s.currentLinetype)
-          ? s.currentLinetype.toUpperCase()
-          : s.currentLinetype
+    s.currentLinetype === LINETYPE_BYLAYER ? "ByLayer" : s.currentLinetype
   )
   variable("$CECOLOR")
   if (s.currentColor === COLOR_BYLAYER) out.int(62, 256)
   else color(out, s.currentColor)
+  variable("$CELTSCALE")
+  out.real(40, s.currentLinetypeScale)
   variable("$DIMSTYLE")
   out.str(2, dimStyle)
   variable("$LUNITS")

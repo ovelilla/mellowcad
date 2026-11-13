@@ -2,7 +2,7 @@
 title: "Comando BOX (CAIXA) no AutoCAD 3D"
 description: "Como funciona o BOX do AutoCAD em português, CAIXA, prompt a prompt: dois cantos e uma altura, Centro, CUbo, COmprimento e 2Pontos. Experimente grátis online."
 figure: "Uma caixa de 60 por 40 por 25, com dois cantos e uma altura, vista do sudeste no estilo visual Oculto."
-sourceHash: "68b09d9eff63"
+sourceHash: "46936b3da48e"
 ---
 
 O BOX, CAIXA no AutoCAD em português, desenha uma caixa, um sólido 3D com as faces alinhadas aos eixos do UCS: especifique o primeiro canto, o outro canto e depois a altura. A altura sobe pelo eixo Z do UCS, uma negativa desce, e um ponto a dá pela distância até o canto; um canto dado num Z diferente do primeiro define a altura sem perguntá-la. A última altura, e o último comprimento e a última largura de um cubo ou de <Keyword id="Length" />, são oferecidos como padrões que o Enter aceita, compartilhados com as outras primitivas e com o <Command id="EXTRUDE" />. A caixa fica na camada atual, e o Desfazer a reverte num passo.

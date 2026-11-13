@@ -3,7 +3,7 @@ title: Abrir un archivo DXF online
 metaTitle: "Abrir DXF online gratis: visor DXF sin instalar"
 description: "Abre un archivo DXF gratis en tu navegador, sin subirlo: de AutoCAD R12 a 2018, de texto o binario, con sus capas, textos, cotas, sombreados y bloques."
 type: howTo
-sourceHash: "8e5afbec73fd"
+sourceHash: "d692fd6abe65"
 faq:
   - question: "¿Cómo abrir un archivo DXF sin AutoCAD?"
     answer: "Elígelo o suéltalo arriba, en esta página: MellowCAD lo abre en su editor, en tu navegador, sin instalar nada y sin cuenta. En el editor también lo abren ABRE (Ctrl+O) y CARGADXF."
@@ -26,7 +26,8 @@ MellowCAD abre archivos DXF en tu navegador y los dibuja en su editor, donde pue
 - **DXF de AutoCAD R12 a 2018**, el formato DXF más reciente que escribe AutoCAD, de texto (ASCII) o binario, hecho con AutoCAD o con otro programa. Su texto conserva sus caracteres: hasta 2004, en la página de códigos que indica el archivo; desde 2007, en UTF-8.
 - **Líneas, arcos, círculos, elipses y polilíneas**, con sus grosores y sus formas de ajuste de curva y de spline, polilíneas 3D y splines, y los puntos, dibujados con el [estilo de punto](/docs/commands/ptype) del dibujo, y los sólidos 2D, rellenos según diga FILLMODE.
 - **Texto de una línea y de líneas múltiples**, directrices con su texto, bloques con sus atributos, cotas lineales, alineadas, angulares, de radio y de diámetro, y sombreados.
-- **La capa de cada objeto**, su color, tipo de línea, grosor de línea, altura de objeto y elevación, y las capas activadas, desactivadas o bloqueadas; una capa inutilizada se abre desactivada.
+- **La capa de cada objeto**, su color, tipo de línea y su escala, grosor de línea, altura de objeto y elevación, y las capas activadas, desactivadas o bloqueadas; una capa inutilizada se abre desactivada.
+- **Los tipos de línea del dibujo**, dibujados con sus trazos, puntos y huecos a la escala de tipo de línea del dibujo, y el texto de los complejos como GAS_LINE.
 - **Los estilos de texto y de cota del dibujo**, y sus unidades cuando son milímetros, centímetros o metros.
 
 ## Lo que se queda fuera [#left-out]
@@ -44,7 +45,7 @@ Lo que está en una presentación se cuenta aparte, porque aún no hay presentac
 
 Algunas cosas se abren, pero no del todo como eran:
 
-- Un tipo de línea que no sea Continuous, Dashed, Hidden, Center, Phantom o Dash dot conserva su nombre y se dibuja continuo.
+- Las formas de los tipos de línea complejos como BATTING o ZIGZAG no se dibujan, solo los trazos y los huecos que las rodean.
 - Un patrón de sombreado que no esté entre [los patrones de `acadiso.pat` que dibuja MellowCAD](/docs/commands/hatch) conserva su nombre y solo dibuja su contorno.
 - Un color por su índice se abre como su color RGB, y PorBloque como PorCapa.
 - Un dibujo en pulgadas o en pies conserva sus números, leídos como milímetros.

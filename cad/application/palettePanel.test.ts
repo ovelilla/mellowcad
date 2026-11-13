@@ -203,8 +203,8 @@ describe("the Properties palette's object type drop-down", () => {
     // Mixed over the whole selection: the circle stayed on 0.
     expect(cad.state().selectionLayerId).toBeNull()
 
-    cad.runtime.setSelectionLinetype("Dashed")
-    expect(cad.entities().every((entity) => entity.linetype === "Dashed")).toBe(
+    cad.runtime.setSelectionLinetype("DASHED")
+    expect(cad.entities().every((entity) => entity.linetype === "DASHED")).toBe(
       true
     )
   })
@@ -443,7 +443,10 @@ describe("the Properties palette's object type drop-down", () => {
         ],
       ],
     ])
-    expect(info.general?.map((r) => r.label)).toEqual(["Thickness"])
+    expect(info.general?.map((r) => r.label)).toEqual([
+      "Linetype scale",
+      "Thickness",
+    ])
   })
 
   it("measures an arc's segment area as AutoCAD's palette does", () => {

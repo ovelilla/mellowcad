@@ -1,7 +1,7 @@
 ---
 title: "Comando CHPROP (ALTPROP) no AutoCAD"
 metaTitle: "Alterar propriedades no AutoCAD: CHPROP"
-description: "Como funciona o CHPROP do AutoCAD em português, ALTPROP: selecione objetos e mude cor, camada, tipo de linha, espessura de linha ou espessura no prompt."
+description: "Como funciona o CHPROP do AutoCAD em português, ALTPROP: mude cor, camada, tipo de linha e sua escala, espessura de linha ou espessura dos objetos, no prompt."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Existe atalho para o CHPROP no AutoCAD?","answer":"Ele não tem alias: digite ALTPROP, ou _CHPROP em qualquer idioma do AutoCAD. Enter no prompt Comando o repete."},{"question":"Qual é a diferença entre ALTPROP e PROPRIEDADES?","answer":"Eles mudam as mesmas propriedades. O PROPRIEDADES as mostra numa paleta, com a geometria de cada objeto também; o ALTPROP as pede na linha de comando, o que mantém as suas mãos no teclado."},{"question":"Como mudar a cor de objetos pela linha de comando?","answer":"Digite ALTPROP, selecione os objetos, pressione Enter, escolha Cor e digite a cor, como 1 para vermelho. Pressione Enter de novo para terminar."},{"question":"Como passar vários objetos para outra camada?","answer":"Execute o ALTPROP, selecione-os, escolha CAmada e digite o nome da camada. A camada precisa existir: crie-a antes no CAMADA."}]
@@ -18,7 +18,7 @@ O CHPROP, ALTPROP no AutoCAD em português, muda as propriedades dos objetos que
 
 O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
 
-<Session name="chprop" caption="O ALTPROP numa linha que atravessa o furo de uma placa: cor 1 e tipo de linha Center, um eixo, na camada em que estava." />
+<Session name="chprop" caption="O ALTPROP numa linha que atravessa o furo de uma placa: cor 1 e tipo de linha CENTER, um eixo, na camada em que estava." />
 
 ## Opções [#options]
 
@@ -32,7 +32,11 @@ O nome de uma camada, em maiúsculas ou minúsculas. Um nome que não pode ser o
 
 ### `TIpolinha` (`TI`) [#ltype]
 
-O nome de um tipo de linha, em maiúsculas ou minúsculas, ou `PorCamada`. Todos os tipos de linha aqui estão carregados; outro nome diz que não foi encontrado e volta ao prompt da propriedade.
+O nome de um tipo de linha, em maiúsculas ou minúsculas, ou `PorCamada`. Um que o desenho não carregou é carregado do acad.lin, o arquivo do AutoCAD em polegadas, como faz o AutoCAD mesmo num desenho métrico; um nome que esse arquivo também não tem diz que não foi encontrado e volta ao prompt da propriedade.
+
+### `escalaTL` (`TL`) [#ltscale]
+
+A escala do tipo de linha dos próprios objetos, que multiplica a do [`ESCALATL`](/docs/commands/ltscale) só para eles: uma distância, digitada ou medida por dois pontos; uma negativa é tomada pelo seu tamanho, e 0 diz `O valor deve ser diferente de zero.` e pergunta de novo.
 
 ### `ESplinha` (`ES`) [#lweight]
 
@@ -44,7 +48,7 @@ Uma distância, digitada ou medida por dois pontos, negativa e zero também. É 
 
 ## O que ainda não faz [#missing]
 
-escalaTL, TRansparência, Material e Anotativo, que os objetos aqui não têm, então o prompt não os lista. PorBloco em Cor, TIpolinha e ESplinha, e o Padrão de ESplinha. Uma true color igual a uma cor de índice volta como a de índice: `255,0,0` é oferecida como `1 (vermelho)`. Os livros de cores. A espessura de um texto e de uma definição de atributo, que ficam como estão. O ALTERAR (`_CHANGE`), cuja opção Propriedades faz o mesmo prompt com ELevação.
+TRansparência, Material e Anotativo, que os objetos aqui não têm, então o prompt não os lista. PorBloco em Cor, TIpolinha e ESplinha, e o Padrão de ESplinha. Uma true color igual a uma cor de índice volta como a de índice: `255,0,0` é oferecida como `1 (vermelho)`. Os livros de cores. A espessura de um texto e de uma definição de atributo, que ficam como estão. O ALTERAR (`_CHANGE`), cuja opção Propriedades faz o mesmo prompt com ELevação.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
 

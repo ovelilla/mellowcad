@@ -520,6 +520,7 @@ export const ar: EngineLocale = {
         "z": "Z",
         "elevation": "المنسوب",
         "thickness": "السماكة",
+        "linetypeScale": "مقياس نوع الخط",
         "startAngle": "زاوية البداية",
         "endAngle": "زاوية النهاية",
         "totalAngle": "الزاوية الكلية",

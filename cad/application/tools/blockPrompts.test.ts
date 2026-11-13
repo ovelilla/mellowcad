@@ -169,7 +169,7 @@ const bar = (name: string) =>
   createBlockDefinition(name, p(0, 0), [lineOf(p(0, 0), p(10, 0))])
 
 const PURGE_SETTINGS = "Nested items = Off    Orphaned data = Off"
-const PURGE_TYPE = "Enter type of unused objects to purge [Blocks]:"
+const PURGE_TYPE = "Enter type of unused objects to purge [Blocks/LTypes]:"
 
 // AutoCAD 2027's console, offering only the one type built: Blocks.
 describe("PURGE asks -PURGE's prompts, as AutoCAD 2027", () => {
@@ -251,7 +251,7 @@ describe("PURGE asks -PURGE's prompts, as AutoCAD 2027", () => {
       const cad = createHarness({ locale: es })
       answer(cad, name)
       expect(cad.state().commandLine.prompt, name).toBe(
-        `${name.startsWith("-") ? "-LIMPIA" : "LIMPIA"} Indique un tipo de objetos sin utilizar para limpiar [Bloques]:`
+        `${name.startsWith("-") ? "-LIMPIA" : "LIMPIA"} Indique un tipo de objetos sin utilizar para limpiar [Bloques/tLíneas]:`
       )
     }
   })
@@ -263,7 +263,7 @@ describe("PURGE asks -PURGE's prompts, as AutoCAD 2027", () => {
     expect(cad.commandLog()).toEqual([
       "-LIMPIA",
       "Elementos anidados = DES Datos huérfanos = DES",
-      "Indique un tipo de objetos sin utilizar para limpiar [Bloques]: B",
+      "Indique un tipo de objetos sin utilizar para limpiar [Bloques/tLíneas]: B",
       "Indique nombres que limpiar <*>:",
       "Verifique cada nombre que se va a limpiar? [Sí/No] <S>: N",
       'Suprimiendo bloque "B1".',

@@ -1,12 +1,12 @@
 ---
 title: "Comando ELIMINA (PURGE) in AutoCAD"
-description: "Come ELIMINA (PURGE, alias EN) di AutoCAD in italiano cancella i blocchi inutilizzati: per nome o tutti, con verifica o no, anche annidati. Provalo."
+description: "Come ELIMINA (PURGE, alias EN) di AutoCAD in italiano cancella i blocchi e i tipi di linea inutilizzati: per nome o tutti, con verifica o no, anche annidati."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Qual è l'alias di ELIMINA in AutoCAD?","answer":"EN, poi Invio o barra spaziatrice. -ELIMINA è -ELIMINA, la forma da riga di comando, che qui esegue anche ELIMINA. _PURGE funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si eliminano i blocchi inutilizzati in AutoCAD?","answer":"Digita EN, scegli Blocchi, premi Invio per ogni nome e rispondi No per eliminarli tutti senza chiedere conferma per ciascuno."},{"question":"Perché non riesco a eliminare un blocco?","answer":"Perché è in uso: un riferimento nel disegno lo inserisce, o lo contiene un blocco in uso, magari annidato a più livelli. Cancella i suoi riferimenti, o esplodi i blocchi che lo contengono, e ELIMINA potrà eliminarlo."},{"question":"Come si eliminano i layer?","answer":"In AutoCAD, con il tipo Layer di ELIMINA. Non ancora qui, dove ELIMINA elimina solo i blocchi; cancella invece un layer vuoto in Gestore proprietà layer."}]
+faq: [{"question":"Qual è l'alias di ELIMINA in AutoCAD?","answer":"EN, poi Invio o barra spaziatrice. -ELIMINA è -ELIMINA, la forma da riga di comando, che qui esegue anche ELIMINA. _PURGE funziona in qualsiasi lingua di AutoCAD."},{"question":"Come si eliminano i blocchi inutilizzati in AutoCAD?","answer":"Digita EN, scegli Blocchi, premi Invio per ogni nome e rispondi No per eliminarli tutti senza chiedere conferma per ciascuno."},{"question":"Perché non riesco a eliminare un blocco?","answer":"Perché è in uso: un riferimento nel disegno lo inserisce, o lo contiene un blocco in uso, magari annidato a più livelli. Cancella i suoi riferimenti, o esplodi i blocchi che lo contengono, e ELIMINA potrà eliminarlo."},{"question":"Come si eliminano i layer?","answer":"In AutoCAD, con il tipo Layer di ELIMINA. Non ancora qui, dove ELIMINA elimina i blocchi e i tipi di linea; cancella invece un layer vuoto in Gestore proprietà layer."}]
 ---
 
-ELIMINA (PURGE) rimuove ciò che un disegno definisce ma non usa; qui sono i blocchi. ELIMINA di AutoCAD apre la finestra Elimina; MellowCAD non ne ha una, quindi ELIMINA chiede alla riga di comando ciò che chiede `-ELIMINA`, come la console di AutoCAD. Indica le impostazioni Elementi annidati e Dati orfani, entrambe disattivate, e chiede quale tipo di oggetti inutilizzati eliminare, proponendo solo `Blocchi`; Invio a questa richiesta termina il comando.
+ELIMINA (PURGE) rimuove ciò che un disegno definisce ma non usa; qui sono i blocchi e i tipi di linea. ELIMINA di AutoCAD apre la finestra Elimina; MellowCAD non ne ha una, quindi ELIMINA chiede alla riga di comando ciò che chiede `-ELIMINA`, come la console di AutoCAD. Indica le impostazioni Elementi annidati e Dati orfani, entrambe disattivate, e chiede quale tipo di oggetti inutilizzati eliminare, proponendo `Blocchi` e `TIpilin`; Invio a questa richiesta termina il comando.
 
 Un blocco è in uso finché un riferimento nel disegno lo inserisce, o la definizione di un blocco in uso lo contiene, a qualsiasi profondità. Cancellare l'ultimo riferimento di un blocco ne lascia la definizione nel disegno, dove [`INSER`](/docs/commands/insert) può inserirlo di nuovo: è ELIMINA a cancellarla. Un blocco contenuto in un blocco conservato non viene mai eliminato, e una catena di blocchi che si contengono solo a vicenda sparisce in una sola esecuzione. Se non ce n'è nessuno da eliminare, segnala `Non è stato trovato nessun blocchi senza riferimenti.`. Ogni esecuzione è un solo passaggio che `A` annulla.
 
@@ -28,9 +28,13 @@ Il motore la disegna e scrive la cronologia come la digiteresti: le richieste ne
 
 Chiede i nomi da eliminare, `*` per ogni blocco inutilizzato per impostazione predefinita, oppure nomi con caratteri jolly, separati da virgole. Poi chiede se verificare ogni nome: `Sì`, il valore predefinito, chiede conferma per ogni blocco prima di eliminarlo, `No` li elimina tutti e indica ogni nome e quanti sono.
 
+### `TIpilin` (`TI`) [#ltypes]
+
+Chiede i nomi e se verificare ognuno, come `Blocchi`, ed elimina i tipi di linea che niente usa. Continuous, il tipo di linea corrente e quelli usati da un layer o da un oggetto, anche dentro un blocco, restano sempre; se non ce n'è nessuno da eliminare, segnala `Non è stato trovato nessun tipi di linea senza riferimenti.`. L'opzione `Richiama` di [`TLINEA`](/docs/commands/linetype) ne riporta uno.
+
 ## Cosa non fa ancora [#missing]
 
-La finestra Elimina, e ogni altro tipo: layer, tipi di linea, stili di testo e di quota, gruppi, materiali, stili di multilinea, di tabella e visivi, applicazioni registrate, geometria di lunghezza zero, oggetti di testo vuoti, dati orfani e Tutto. Le impostazioni Elementi annidati e Dati orfani non si possono cambiare.
+La finestra Elimina, e ogni altro tipo: layer, stili di testo e di quota, gruppi, materiali, stili di multilinea, di tabella e visivi, applicazioni registrate, geometria di lunghezza zero, oggetti di testo vuoti, dati orfani e Tutto. Le impostazioni Elementi annidati e Dati orfani non si possono cambiare.
 
 [Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig)
 
@@ -50,7 +54,7 @@ Perché è in uso: un riferimento nel disegno lo inserisce, o lo contiene un blo
 
 ### Come si eliminano i layer?
 
-In AutoCAD, con il tipo Layer di ELIMINA. Non ancora qui, dove ELIMINA elimina solo i blocchi; cancella invece un layer vuoto in Gestore proprietà layer.
+In AutoCAD, con il tipo Layer di ELIMINA. Non ancora qui, dove ELIMINA elimina i blocchi e i tipi di linea; cancella invece un layer vuoto in Gestore proprietà layer.
 
 ## Comandi correlati [#related]
 

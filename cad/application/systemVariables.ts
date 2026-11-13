@@ -3,7 +3,7 @@ import { type Vec3, withZOf } from "../geometry/Vec3"
 import { normalizeAngle, normalizeDegrees } from "../geometry/primitives"
 import { COLOR_BYLAYER, STANDARD_COLORS } from "../domain/colors"
 import { DEFAULT_HATCH_PATTERN_ID } from "../domain/hatchPatterns"
-import { LINETYPE_BYLAYER, LINETYPES } from "../domain/linetypes"
+import { LINETYPE_BYLAYER } from "../domain/linetypes"
 import { isPointMode } from "../domain/entities"
 import { LINEWEIGHT_BYLAYER, LINEWEIGHTS } from "../domain/lineweights"
 import {
@@ -158,7 +158,8 @@ function distance(
     | "chamferDistance1"
     | "chamferDistance2"
     | "hatchPatternScale"
-    | "pointSize",
+    | "pointSize"
+    | "currentLinetypeScale",
   valid: (value: number) => boolean
 ): RealVariable {
   return {
@@ -283,11 +284,14 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
         return patch({ currentLinetype: LINETYPE_BYLAYER })
       }
       // WHY refused where AutoCAD takes it (p215): ByBlock is not modelled
-      // (cad-engine.md, Blocks).
-      const linetype = LINETYPES.find((def) => def.id.toUpperCase() === word)
-      return linetype ? patch({ currentLinetype: linetype.id }) : null
+      // (cad-engine.md, Blocks). One not loaded is refused, never loaded
+      // (ltype/p07).
+      const linetype = ctx.document.getLinetype(value)
+      return linetype ? patch({ currentLinetype: linetype.name }) : null
     },
   },
+  // Saved in the drawing (DXF $CELTSCALE); 0 or less: `Cannot set` (ltype/p05).
+  distance("CELTSCALE", "currentLinetypeScale", (value) => value > 0),
   integer(
     "CELWEIGHT",
     -3,

@@ -268,12 +268,12 @@ describe("the manager's New Layer (LAY-05, desktop d04-4)", () => {
   it("copies the selected layer's colour, linetype and lineweight; the current layer stays", () => {
     const cad = createHarness()
     const walls = cad.runtime.createLayer("Walls", "#ff0000", false)
-    cad.runtime.updateLayer(walls, { linetype: "Dashed", lineweight: 0.5 })
+    cad.runtime.updateLayer(walls, { linetype: "DASHED", lineweight: 0.5 })
     const id = cad.runtime.newLayer(walls)
     expect(layer(cad, id)).toMatchObject({
       name: "Layer1",
       color: "#ff0000",
-      linetype: "Dashed",
+      linetype: "DASHED",
       lineweight: 0.5,
     })
     expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)

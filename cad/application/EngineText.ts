@@ -52,13 +52,12 @@ export interface EngineNames {
   readonly snaps: Readonly<Record<SnapType, string>>
   /** The standard colours, by `STANDARD_COLORS[].id`. */
   readonly colors: Readonly<Record<string, string>>
-  /** ByLayer, for the colour, linetype and lineweight pickers. */
-  readonly byLayer: string
   /**
-   * Linetypes, by `LINETYPES[].id`. One without an entry shows its id: a
-   * linetype's name is the drawing's data, the same in every language.
+   * ByLayer, for the colour, linetype and lineweight pickers. A linetype is
+   * shown by its name, the drawing's data, the same in every language
+   * (`EngineState.linetypes`).
    */
-  readonly linetypes: Readonly<Record<string, string>>
+  readonly byLayer: string
   /** The preset views (`state.view.preset`), and `custom` for any other. */
   readonly views: Readonly<Record<ViewPreset | "custom", string>>
   /** The ViewCube's face labels, by the faces of `state.viewCube`. */
@@ -212,7 +211,6 @@ export class EngineText {
       snaps: this.table(this.ui.snap) as Record<SnapType, string>,
       colors: this.table(this.ui.color),
       byLayer: this.format(this.ui.byLayer),
-      linetypes: this.table(this.ui.linetype),
       views: this.table(this.ui.view) as Record<ViewPreset | "custom", string>,
       viewCubeFaces: this.table(this.ui.viewCube.face) as Record<
         ViewCubeFace,

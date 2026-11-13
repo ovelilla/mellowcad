@@ -4,7 +4,7 @@ metaTitle: "Escala de linha no AutoCAD: LTSCALE (ESCALATL)"
 description: "Como o LTSCALE do AutoCAD em português, ESCALATL (alias ETL), define a escala do tipo de linha do desenho, para o tracejado aparecer. Experimente grátis."
 before: "Uma placa de 4 metros, o furo desenhado com HIDDEN e os eixos com CENTER, na escala de tipo de linha padrão, 1: os traços finos demais para se ver."
 figure: "A mesma placa depois do ESCALATL 20: os traços do furo e dos eixos desenhados 20 vezes mais longos."
-sourceHash: "f951ec391451"
+sourceHash: "33b956c956fa"
 ---
 
 O LTSCALE, ESCALATL no AutoCAD em português, define o fator de escala global do tipo de linha, a «escala de linha»: o comprimento dos traços e dos espaços de todo tipo de linha tracejado do desenho. Ele pede o novo fator, oferecendo o atual, 1.0000 num desenho novo: 2 deixa cada traço duas vezes mais longo, 0.5 com a metade do comprimento. O fator tem de ser maior que 0, senão ele mostra <Message id="positiveNonzero" /> e pergunta de novo, e `1/2` e `1e3` são lidos como números. Uma mudança redesenha o desenho inteiro, `Regenerando modelo.` como diz o AutoCAD 2027 em português, e é salva com o desenho; é um passo que o <Command id="U" /> desfaz. Digitado com um apóstrofo dentro de um comando, `'ESCALATL`, o desenho é redesenhado quando esse comando termina.
@@ -13,7 +13,7 @@ Os tipos de linha são padrões feitos para um desenho do tamanho do papel: num 
 
 ## Missing
 
-Uma escala de tipo de linha para cada objeto (CELTSCALE, a Escala do tipo de linha da paleta Propriedades): só a do desenho. O Gerenciador de tipos de linha, cujo Fator de escala global é o ESCALATL. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. Tipos de linha além de Continuous, DASHED, HIDDEN, CENTER, PHANTOM e DASHDOT.
+O Gerenciador de tipos de linha, cujo Fator de escala global é o ESCALATL e a Escala do objeto atual, o CELTSCALE. PSLTSCALE e MSLTSCALE, porque não há espaço do papel. As formas dos tipos de linha complexos como BATTING, desenhadas como os seus vãos.
 
 ## Questions
 

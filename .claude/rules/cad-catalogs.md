@@ -28,7 +28,7 @@ wording comes from: `autocad-research.md`.
   help). What no source shows is worded in Autodesk's style and marked **unverified** in its
   `docs/i18n/<tag>.md`. No letter means what it means in English (in Spanish `H` undoes and `U` is
   UNIR). A `global` language has no `commands`.
-- A language translates the whole `interface` but `linetype` and `hatchPattern` (drawing data).
+- A language translates the whole `interface` but `hatchPattern` (drawing data, as linetypes).
 - `names` and `keywords` are words, not compiled messages. Messages are ICU: `{count, plural, …}`,
   never a hand-made plural.
 - **After editing a catalog, run `npm run locales`** and commit all it writes: the compiled `.ts`

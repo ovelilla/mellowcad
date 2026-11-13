@@ -205,9 +205,10 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
   through block definitions, as a one-off drawing (`clipboardFile.ts`). Landing it (`planPaste`): **a
   name the target already has wins**, and **only layers and anonymous or other-case blocks are
   remapped** (a layer's id is not its name).
-- A _registry_ is per build (`linetypes.ts`, `hatchPatterns.ts`): an entity stores the **name**,
-  and an unknown one draws nothing rather than failing the load. Transcribe a definition from
-  AutoCAD's, quoted verbatim beside the data; adding one is data only, or the model is wrong.
+- A _registry_ is per build (`hatchPatterns.ts`, `linetypeLibrary.ts`): an entity stores the
+  **name**; an unknown one draws nothing. Transcribe a definition verbatim beside the data.
+- **Linetypes are a table by name**, case-blind; a reader keeps every name it meets in it
+  (`withLinetypeTable`).
 
 ## Editable geometry (the Properties palette)
 

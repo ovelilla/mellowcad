@@ -1,7 +1,7 @@
 ---
 title: "Cambiar propiedades en AutoCAD: CAMBPROP (CHPROP)"
 metaTitle: "Cambiar propiedades en AutoCAD: comando CAMBPROP"
-description: "Cómo funciona CAMBPROP (CHPROP) de AutoCAD en español: cambia el color, la capa, el tipo de línea, el grosor de línea o la altura de objeto de lo que designas."
+description: "Cómo funciona CAMBPROP (CHPROP) de AutoCAD en español: cambia color, capa, tipo de línea y su escala, grosor de línea o altura de objeto de lo que designas."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"¿Cómo se llama el comando CHPROP en español?","answer":"CAMBPROP, sin alias: escribe CAMBPROP, o _CHPROP en cualquier idioma de AutoCAD. Intro en la solicitud de comando lo repite."},{"question":"¿Qué diferencia hay entre CAMBPROP y PROPIEDADES?","answer":"Cambian las mismas propiedades. PROPIEDADES las muestra en una paleta, también con la geometría de cada objeto; CAMBPROP las pide en la línea de comandos, lo que te deja las manos en el teclado."},{"question":"¿Cómo cambio el color de unos objetos desde la línea de comandos?","answer":"Escribe CAMBPROP, designa los objetos, pulsa Intro, elige COlor y escribe el color, como 1 para el rojo. Pulsa Intro otra vez para terminar."},{"question":"¿Cómo paso varios objetos a otra capa?","answer":"Ejecuta CAMBPROP, desígnalos, elige Capa y escribe el nombre de la capa. La capa tiene que existir: créala antes en CAPA."}]
@@ -18,7 +18,7 @@ CAMBPROP (CHPROP en inglés) cambia las propiedades de los objetos que designas,
 
 El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
 
-<Session name="chprop" caption="CAMBPROP en una línea que cruza el agujero de una placa: color 1 y tipo de línea Center, un eje, en la capa en la que estaba." />
+<Session name="chprop" caption="CAMBPROP en una línea que cruza el agujero de una placa: color 1 y tipo de línea CENTER, un eje, en la capa en la que estaba." />
 
 ## Opciones [#options]
 
@@ -32,7 +32,11 @@ El nombre de una capa, en mayúsculas o minúsculas. Un nombre que no puede ser 
 
 ### `Tlínea` (`T`) [#ltype]
 
-El nombre de un tipo de línea, en mayúsculas o minúsculas, o `PorCapa`. Aquí todos los tipos de línea están cargados; otro nombre dice que no se encuentra y vuelve a la solicitud de propiedad.
+El nombre de un tipo de línea, en mayúsculas o minúsculas, o `PorCapa`. Uno que el dibujo no ha cargado se carga desde acad.lin, el archivo de AutoCAD en pulgadas, como hace AutoCAD incluso en un dibujo métrico; un nombre que tampoco tiene ese archivo dice que no se encuentra y vuelve a la solicitud de propiedad.
+
+### `Escalatl` (`E`) [#ltscale]
+
+La escala de tipo de línea propia de los objetos, que multiplica la de [`ESCALATL`](/docs/commands/ltscale) solo para ellos: una distancia, escrita o medida con dos puntos; una negativa se toma por su tamaño, y 0 dice `El valor debe ser diferente de cero.` y vuelve a preguntar.
 
 ### `Grosorl` (`G`) [#lweight]
 
@@ -44,7 +48,7 @@ Una distancia, escrita o medida con dos puntos, también negativa o cero. Se fij
 
 ## Lo que aún no hace [#missing]
 
-Escalatl, TRansparencia, Material y aNotativo, que los objetos no tienen aquí, así que la solicitud no los muestra. PorBloque en Color, Tlínea y Grosorl, y el Por defecto de Grosorl. Un color verdadero igual a un color de índice se lee como el de índice: `255,0,0` se ofrece como `1 (rojo)`. Los libros de colores. La altura de objeto de un texto y de una definición de atributo, que se quedan como están. CAMBIA (CHANGE), cuya opción Propiedades hace la misma pregunta con eLev.
+TRansparencia, Material y aNotativo, que los objetos no tienen aquí, así que la solicitud no los muestra. PorBloque en Color, Tlínea y Grosorl, y el Por defecto de Grosorl. Un color verdadero igual a un color de índice se lee como el de índice: `255,0,0` se ofrece como `1 (rojo)`. Los libros de colores. La altura de objeto de un texto y de una definición de atributo, que se quedan como están. CAMBIA (CHANGE), cuya opción Propiedades hace la misma pregunta con eLev.
 
 [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr)
 

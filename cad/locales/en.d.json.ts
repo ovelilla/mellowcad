@@ -217,14 +217,6 @@ declare const source: {
         "W": string
       }
     }
-    "linetype": {
-      "Continuous": string
-      "Dashed": string
-      "Hidden": string
-      "Center": string
-      "Phantom": string
-      "DashDot": string
-    }
     "hatchPattern": {
       "SOLID": string
       "ANGLE": string
@@ -334,6 +326,7 @@ declare const source: {
         "z": string
         "elevation": string
         "thickness": string
+        "linetypeScale": string
         "startAngle": string
         "endAngle": string
         "totalAngle": string
@@ -1009,6 +1002,7 @@ declare const source: {
       }
       "PURGE": {
         "Blocks": string
+        "LTypes": string
         "Yes": string
         "No": string
       }
@@ -1369,6 +1363,7 @@ declare const source: {
         "Color": string
         "LAyer": string
         "LType": string
+        "ltScale": string
         "LWeight": string
         "Thickness": string
         "Truecolor": string
@@ -1397,7 +1392,10 @@ declare const source: {
       }
       "LINETYPE": {
         "?": string
+        "Load": string
         "Set": string
+        "Yes": string
+        "No": string
         "BYLAYER": string
         "BYLayer": string
       }
@@ -1701,6 +1699,7 @@ declare const source: {
       "purgeVerify": string
       "massPropWriteFile": string
       "purgeBlock": string
+      "purgeLinetype": string
       "insertionBasePoint": string
       "insertionPoint": string
       "specifyInsertionPoint": string
@@ -1837,6 +1836,10 @@ declare const source: {
       "trueColor": string
       "linetypeName": string
       "linetypeListNames": string
+      "linetypeFileToList": string
+      "linetypesToLoad": string
+      "linetypeFileToSearch": string
+      "reloadLinetype": string
       "defaultLineweight": string
       "idPoint": string
       "distSecondPointOr": string
@@ -1854,6 +1857,7 @@ declare const source: {
       "newLinetypeName": string
       "newLineweight": string
       "newThickness": string
+      "newLinetypeScale": string
       "viewPoint": string
       "specifyViewPointOr": string
       "attributeVisibilitySetting": string
@@ -2273,6 +2277,8 @@ declare const source: {
     "promptForms": {
       "convertToPolylines": string
       "purgeBlock": string
+      "purgeLinetype": string
+      "reloadLinetype": string
       "selectGripToEditArrayOr": string
       "selectGripToEditPathArrayOr": string
       "turnIntoPolyline": string
@@ -2443,6 +2449,9 @@ declare const source: {
       "deletingBlock": string
       "blocksDeleted": string
       "noUnreferencedBlocks": string
+      "deletingLinetype": string
+      "linetypesDeleted": string
+      "noUnreferencedLinetypes": string
       "noBlocks": string
       "blockUndefined": string
       "hatchPatternUnknown": string
@@ -2527,6 +2536,10 @@ declare const source: {
       "fileLinetypeColumns": string
       "solidLine": string
       "noMatchingLinetypes": string
+      "linetypeLoaded": string
+      "linetypeReloaded": string
+      "noLinetypesInFile": string
+      "cantFindFile": string
       "invalidColorNumber": string
       "tagCannotBeNull": string
       "attdefTextStyle": string

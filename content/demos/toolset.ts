@@ -103,8 +103,8 @@ export const annotateGroup = demo({
 export const organizeGroup = demo({
   ...figure,
   layers: [
-    { name: "CENTER", color: "#94a3b8", linetype: "Center" },
-    { name: "HIDDEN", color: "#94a3b8", linetype: "Hidden" },
+    { name: "CENTER", color: "#94a3b8", linetype: "CENTER" },
+    { name: "HIDDEN", color: "#94a3b8", linetype: "HIDDEN" },
   ],
   view: { min: { x: -8, y: -12 }, max: { x: 98, y: 52 } },
 })

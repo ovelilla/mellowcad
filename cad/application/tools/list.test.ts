@@ -677,9 +677,10 @@ describe("LIST against AutoCAD 2027's console in English", () => {
   })
 
   it("lists a linetype or a lineweight alone (p427)", () => {
+    // `_Y`: DASHED is loaded here already (`LINETYPES`), so Load asks to reload it.
     const cad = run(
       en,
-      "_-LINETYPE|_L|DASHED|acadiso.lin||CELTYPE|DASHED|_LINE|0,0|10,0||_LIST|_L||CELTYPE|BYLAYER|CELWEIGHT|50|_LINE|0,0,1|10,0,1||_LIST|_L||CELWEIGHT|0|_LINE|0,0|0,10||_LIST|_L|"
+      "_-LINETYPE|_L|DASHED|acadiso.lin|_Y||CELTYPE|DASHED|_LINE|0,0|10,0||_LIST|_L||CELTYPE|BYLAYER|CELWEIGHT|50|_LINE|0,0,1|10,0,1||_LIST|_L||CELWEIGHT|0|_LINE|0,0|0,10||_LIST|_L|"
     )
     expect(listed(cad)).toEqual([
       '                  LINE      Layer: "0"',
@@ -2049,7 +2050,7 @@ describe("LIST", () => {
         {
           ...lineOf(p(0, 0), p(10, 5)),
           color: "#ff0000",
-          linetype: "Dashed",
+          linetype: "DASHED",
           lineweight: 0.3,
           thickness: 2,
           elevation: 1,

@@ -495,6 +495,7 @@ export const it: EngineLocale = {
         "z": "Z",
         "elevation": "Elevazione",
         "thickness": "Spessore",
+        "linetypeScale": "Scala tipo di linea",
         "startAngle": "Angolo iniziale",
         "endAngle": "Angolo finale",
         "totalAngle": "Angolo totale",
@@ -1616,6 +1617,7 @@ export const it: EngineLocale = {
       },
       "PURGE": {
         "Blocks": "Blocchi",
+        "LTypes": "TIpilin",
         "Yes": "Sì",
         "No": "No"
       },
@@ -1976,6 +1978,7 @@ export const it: EngineLocale = {
         "Color": "Colore",
         "LAyer": "Layer",
         "LType": "Tipolinea",
+        "ltScale": "Scalatl",
         "LWeight": "SPesslin",
         "Thickness": "Altezza",
         "Truecolor": "Truecolor",
@@ -2004,7 +2007,10 @@ export const it: EngineLocale = {
       },
       "LINETYPE": {
         "?": "?",
+        "Load": "Richiama",
         "Set": "Seleziona",
+        "Yes": "Sì",
+        "No": "No",
         "BYLAYER": "DALayer",
         "BYLayer": "DALayer"
       },
@@ -2320,6 +2326,13 @@ export const it: EngineLocale = {
         ],
         "\"?"
       ],
+      "purgeLinetype": [
+        "Elimina tipo di linea \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
       "insertionBasePoint": "Specificare il punto base di inserimento",
       "insertionPoint": "Specificare il punto di inserimento o",
       "specifyInsertionPoint": "Specificare punto di inserimento",
@@ -2483,6 +2496,16 @@ export const it: EngineLocale = {
       "trueColor": "Rosso,Verde,Blu",
       "linetypeName": "Specificare nome del tipo di linea o",
       "linetypeListNames": "Digitare nome/i tipo di linea da elencare",
+      "linetypeFileToList": "Digitare nome del file di tipo di linea da caricare",
+      "linetypesToLoad": "Digitare tipo/i di linea da caricare",
+      "linetypeFileToSearch": "Digitare nome del file di tipo di linea da cercare",
+      "reloadLinetype": [
+        "Tipo di linea \"",
+        [
+          "name"
+        ],
+        "\" già caricato. Ricaricare?"
+      ],
       "defaultLineweight": "Digitare spessore linea di default per i nuovi oggetti o",
       "idPoint": "Specificare punto",
       "distSecondPointOr": "Specificare secondo punto o",
@@ -2500,6 +2523,7 @@ export const it: EngineLocale = {
       "newLinetypeName": "Digitare nome del nuovo tipo di linea",
       "newLineweight": "Digitare nuovo spessore linea",
       "newThickness": "Specificare nuova altezza",
+      "newLinetypeScale": "Specificare nuova scala del tipo di linea",
       "viewPoint": "Specificare un punto di vista",
       "specifyViewPointOr": "Specificare un punto di vista o",
       "attributeVisibilitySetting": "Digitare l'impostazione di visibilità degli attributi",
@@ -2930,6 +2954,8 @@ export const it: EngineLocale = {
     "promptForms": {
       "convertToPolylines": "open",
       "purgeBlock": "open",
+      "purgeLinetype": "open",
+      "reloadLinetype": "open",
       "selectGripToEditArrayOr": "tight",
       "selectGripToEditPathArrayOr": "spaced",
       "turnIntoPolyline": "open",
@@ -3733,6 +3759,30 @@ export const it: EngineLocale = {
         ]
       ],
       "noUnreferencedBlocks": "Non è stato trovato nessun blocchi senza riferimenti.",
+      "deletingLinetype": [
+        "Eliminazione di tipo di linea \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "linetypesDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " tipo di linea eliminato."
+            ],
+            "other": [
+              0,
+              " tipi di linea eliminato."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedLinetypes": "Non è stato trovato nessun tipi di linea senza riferimenti.",
       "noBlocks": "Nessun blocco definito.",
       "blockUndefined": [
         "Blocco \"",
@@ -4425,6 +4475,34 @@ export const it: EngineLocale = {
       "fileLinetypeColumns": "      Nome            Descrizione\n----------------   -------------------",
       "solidLine": "Linea continua",
       "noMatchingLinetypes": "  Non è stato trovato alcun tipo di linea corrispondente.",
+      "linetypeLoaded": [
+        "Tipo di linea \"",
+        [
+          "name"
+        ],
+        "\" caricato."
+      ],
+      "linetypeReloaded": [
+        "Tipo di linea \"",
+        [
+          "name"
+        ],
+        "\" ricaricato."
+      ],
+      "noLinetypesInFile": [
+        "Non è stato trovato alcun tipo di linea corrispondente\nnel file ",
+        [
+          "file"
+        ],
+        "."
+      ],
+      "cantFindFile": [
+        "\"",
+        [
+          "file"
+        ],
+        "\": Impossibile trovare il file."
+      ],
       "invalidColorNumber": "Il numero di colore non è valido.",
       "tagCannotBeNull": "L'etichetta non può essere nulla",
       "attdefTextStyle": [

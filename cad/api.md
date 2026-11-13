@@ -146,8 +146,8 @@ export declare class CadEngine {
      */
     choosePointFilter(filter: PointFilterName): void;
     /**
-     * Gives the selected objects a linetype, an id of `LINETYPES` or
-     * `"ByLayer"`, in one undo step.
+     * Gives the selected objects a linetype, the name of one the drawing has
+     * (`state.linetypes`, any case) or `"ByLayer"`, in one undo step.
      */
     setSelectionLinetype(linetype: string, scope?: SelectionScope): void;
     setSelectionLineweight(lineweight: number | "ByLayer", scope?: SelectionScope): void;
@@ -786,13 +786,12 @@ export interface EngineNames {
     readonly snaps: Readonly<Record<SnapType, string>>;
     /** The standard colours, by `STANDARD_COLORS[].id`. */
     readonly colors: Readonly<Record<string, string>>;
-    /** ByLayer, for the colour, linetype and lineweight pickers. */
-    readonly byLayer: string;
     /**
-     * Linetypes, by `LINETYPES[].id`. One without an entry shows its id: a
-     * linetype's name is the drawing's data, the same in every language.
+     * ByLayer, for the colour, linetype and lineweight pickers. A linetype is
+     * shown by its name, the drawing's data, the same in every language
+     * (`EngineState.linetypes`).
      */
-    readonly linetypes: Readonly<Record<string, string>>;
+    readonly byLayer: string;
     /** The preset views (`state.view.preset`), and `custom` for any other. */
     readonly views: Readonly<Record<ViewPreset | "custom", string>>;
     /** The ViewCube's face labels, by the faces of `state.viewCube`. */
@@ -901,7 +900,14 @@ export interface EngineState {
     readonly currentLayerId: LayerId;
     /** CECOLOR: the colour new objects take, a hex value or `"ByLayer"`. */
     readonly currentColor: EntityColor | "ByLayer";
-    /** CELTYPE: the linetype new objects take, a linetype's id or `"ByLayer"`. */
+    /**
+     * The drawing's linetypes, sorted by name whatever the case, as AutoCAD's
+     * Linetype Manager and -LINETYPE's `?` list them: what the linetype
+     * drop-downs offer, each shown by its name (`linetypeDashes` draws its
+     * sample).
+     */
+    readonly linetypes: readonly Linetype[];
+    /** CELTYPE: the linetype new objects take, a linetype's name or `"ByLayer"`. */
     readonly currentLinetype: LinetypeId | "ByLayer";
     /** CELWEIGHT: the lineweight new objects take, in millimetres, or `"ByLayer"`. */
     readonly currentLineweight: Lineweight | "ByLayer";
@@ -2154,6 +2160,14 @@ export interface DocumentReader {
     getLayer(id: LayerId): Layer | undefined;
     /** The layer new geometry is drawn on. */
     getCurrentLayerId(): LayerId;
+    /** The drawing's linetypes, in its table's order (Continuous among them). */
+    getLinetypes(): Linetype[];
+    /** The linetype of that name, any case. */
+    getLinetype(name: LinetypeId): Linetype | undefined;
+    /** The linetype table as a plain function, for the scene and the queries. */
+    linetypeLookup(): LinetypeLookup;
+    /** Whether PURGE may delete the linetype (`CadDocument.canRemoveLinetype`). */
+    canRemoveLinetype(name: LinetypeId): boolean;
     /** All text styles in creation order (the base style `Standard` first). */
     getTextStyles(): TextStyle[];
     getTextStyle(id: TextStyleId): TextStyle | undefined;
@@ -2226,7 +2240,9 @@ export type EntityId = string;
 
 export type { EntityProperty }
 /** A geometry value that can be retyped directly on a selected entity. */
-export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | "diameter"
+export type EntityProperty = 
+/** General's Linetype scale: the object's own, above 0 (DXF 48). */
+"linetypeScale" | "startX" | "startY" | "endX" | "endY" | "radius" | "diameter"
 /** A circle's, which set its radius (desktop circle/d10). */
  | "circumference" | "area" | "majorRadius" | "minorRadius"
 /** An ellipse's minor radius over its major, the major kept. */
@@ -2404,6 +2420,17 @@ export declare enum LengthUnit {
     Meter = "m"
 }
 
+export type { Linetype }
+export interface Linetype {
+    /** The identity, case-blind (`dashed` is `DASHED`). */
+    readonly name: LinetypeId;
+    /** At most {@link MAX_LINETYPE_DESCRIPTION} characters. */
+    readonly description: string;
+    /** AutoCAD's lengths: a dash > 0, a gap < 0, a dot 0. Empty is solid. */
+    readonly pattern: readonly number[];
+    readonly elements?: readonly LinetypeElement[];
+}
+
 export { LINETYPE_BYLAYER }
 /**
  * The sentinel an entity's linetype picker uses for "inherit the layer's
@@ -2412,39 +2439,55 @@ export { LINETYPE_BYLAYER }
  */
 export declare const LINETYPE_BYLAYER = "ByLayer";
 
-export type { LinetypeDef }
-export interface LinetypeDef {
-    /** The name a drawing stores, and the key of its display name. */
-    readonly id: LinetypeId;
-    /** Dash/gap run lengths in world units; empty means a solid line. */
-    readonly pattern: readonly number[];
-}
+export { linetypeDashes }
+/**
+ * A pattern as a stroke lays it: runs alternating dash and gap, a dash first,
+ * every run positive (a dot a dash of 0). AutoCAD's own may run two dashes or
+ * two gaps together where a complex linetype's text or shape stands
+ * (`GAS_LINE`'s `-5.08, -6.35`): they are one run here, and one ending on a
+ * dash (`FENCELINE1`'s `25.4`) ends on a gap of 0, so the next period's first
+ * dash still starts it. A pattern with no gap is solid, `[]`. One starting on
+ * a gap, which AutoCAD's A alignment does not allow, starts on a dash of 0.
+ */
+export declare function linetypeDashes(pattern: readonly number[]): number[];
+
+export type { LinetypeElement }
+export type LinetypeElement = LinetypeText | LinetypeShape;
 
 export type { LinetypeId }
-/**
- * Linetypes give geometry a dash pattern ("Continuous", "Dashed", "Center", …)
- * exactly the way {@link Layer} colours give it a colour. A layer carries a
- * default linetype (an entity's "ByLayer" appearance) and an entity may
- * override it with its own ("ByObject").
- *
- * A pattern is a list of dash/gap lengths in *world units* (positive = dash,
- * the next = gap, alternating), matching AutoCAD's linetype definition. The
- * global `ltScale` (AutoCAD's LTSCALE) multiplies every length so the same
- * pattern reads well at any drawing size. `Continuous` has an empty pattern
- * (solid).
- */
+/** A linetype's name: what an object, a layer and CELTYPE store. */
 export type LinetypeId = string;
 
 export { LINETYPES }
 /**
- * The built-in linetypes, in the order shown by the pickers. Each is
- * acadiso.lin's, the file a metric drawing (MEASUREMENT 1) loads from: probe
- * line/p202 reads them back with `tblsearch`. A dash of 0 is a dot. WHY all
- * six loaded in every drawing, where AutoCAD's new one holds Continuous alone
- * (properties/p221) and loads the rest from the file: there is no Load option
- * or Linetype Manager here to load one.
+ * The linetypes every drawing holds: Continuous and five of acadiso.lin, the
+ * file a metric drawing (MEASUREMENT 1) loads from (probe line/p202 reads them
+ * back with `tblsearch`), in the order the pickers showed them before the
+ * table was the drawing's. WHY all six, where AutoCAD's new drawing holds
+ * Continuous alone (properties/p221) and loads the rest when asked: the
+ * ribbon's, the layer palette's and the Properties palette's drop-downs have
+ * no Other… here (the Linetype Manager, where AutoCAD loads one from a
+ * picker, does not exist), so a linetype must be in the drawing to be picked
+ * there; -LINETYPE's Load and Set load the others.
  */
-export declare const LINETYPES: readonly LinetypeDef[];
+export declare const LINETYPES: readonly Linetype[];
+
+export type { LinetypeShape }
+/** A shape a complex linetype draws, by its number in a shape file (`ltypeshp.shx`). */
+export interface LinetypeShape extends ElementPlacement {
+    readonly kind: "shape";
+    readonly shape: number;
+    readonly shapeFile: string;
+}
+
+export type { LinetypeText }
+/** Text a complex linetype draws (`GAS_LINE`'s `GAS`), in a text style of the drawing. */
+export interface LinetypeText extends ElementPlacement {
+    readonly kind: "text";
+    readonly text: string;
+    /** The text style's name. */
+    readonly style: string;
+}
 
 export type { Lineweight }
 /** A lineweight in millimetres. */
@@ -2779,11 +2822,10 @@ export declare function extendLocale(base: EngineLocale, overrides: LocaleOverri
 
 export type { InterfaceCatalog }
 /**
- * The interface language. A linetype or hatch pattern whose display name is its
- * id is left out of the English module, which falls back to the id.
+ * The interface language. A hatch pattern whose display name is its id is left
+ * out of the English module, which falls back to the id.
  */
-export type InterfaceCatalog = Omit<Compiled<Source["interface"]>, "linetype" | "hatchPattern"> & {
-    readonly linetype: Partial<Compiled<Source["interface"]["linetype"]>>;
+export type InterfaceCatalog = Omit<Compiled<Source["interface"]>, "hatchPattern"> & {
     readonly hatchPattern: Partial<Compiled<Source["interface"]["hatchPattern"]>>;
 };
 
@@ -4077,6 +4119,12 @@ interface BaseEntity {
      */
     readonly linetype?: LinetypeId;
     /**
+     * The object's own linetype scale (Properties' Linetype scale, DXF 48),
+     * which multiplies LTSCALE for it alone: CELTSCALE when it was made. Absent
+     * means 1, which is never stored (ltype/p05).
+     */
+    readonly linetypeScale?: number;
+    /**
      * Per-object lineweight override in mm (ByObject). When absent the entity
      * inherits its layer's lineweight (ByLayer), like {@link linetype}.
      */
@@ -4095,6 +4143,26 @@ interface BaseEntity {
      * direction. Absent means +Z, the only one the plan draws as it is stored.
      */
     readonly normal?: Vec3;
+}
+
+// domain/linetypes.ts
+/** A drawing's linetypes by name, as the scene and the queries look one up. */
+export type LinetypeLookup = (name: LinetypeId) => Linetype | undefined;
+
+// domain/linetypes.ts
+interface ElementPlacement {
+    /** The dash or gap of the pattern at whose end the element stands. */
+    readonly index: number;
+    /** S: its size in drawing units, as the pattern's lengths are scaled. */
+    readonly scale: number;
+    /** R, A or U, in radians: relative to the line, absolute, or upright. */
+    readonly rotation: number;
+    readonly rotationMode: "relative" | "absolute" | "upright";
+    /** X and Y: along the line and across it, in drawing units. */
+    readonly offset: {
+        readonly x: number;
+        readonly y: number;
+    };
 }
 
 // domain/solidGrips.ts
@@ -4179,6 +4247,8 @@ export interface DocumentSettings {
     readonly currentColor: EntityColor | typeof COLOR_BYLAYER;
     /** CELTYPE: the linetype new objects take, a linetype's name or ByLayer. */
     readonly currentLinetype: LinetypeId | typeof LINETYPE_BYLAYER;
+    /** CELTSCALE: the linetype scale new objects take as their own, above 0. */
+    readonly currentLinetypeScale: number;
     /** CELWEIGHT: the lineweight new objects take, in millimetres, or ByLayer. */
     readonly currentLineweight: Lineweight | typeof LINEWEIGHT_BYLAYER;
     /** FILLMODE: whether wide polylines are drawn filled or as their outline. */

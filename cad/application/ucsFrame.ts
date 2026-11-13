@@ -13,7 +13,7 @@ import {
   entityInOcs,
 } from "../domain/entities"
 import { Layer, LayerId } from "../domain/layers"
-import { LinetypeId } from "../domain/linetypes"
+import { Linetype, LinetypeId, LinetypeLookup } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
@@ -195,6 +195,22 @@ class FramedDocument implements DocumentReader {
 
   getCurrentLayerId(): LayerId {
     return this.source.getCurrentLayerId()
+  }
+
+  getLinetypes(): Linetype[] {
+    return this.source.getLinetypes()
+  }
+
+  getLinetype(name: LinetypeId): Linetype | undefined {
+    return this.source.getLinetype(name)
+  }
+
+  linetypeLookup(): LinetypeLookup {
+    return this.source.linetypeLookup()
+  }
+
+  canRemoveLinetype(name: LinetypeId): boolean {
+    return this.source.canRemoveLinetype(name)
   }
 
   getTextStyles(): TextStyle[] {

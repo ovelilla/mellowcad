@@ -1,8 +1,8 @@
 ---
 title: "Befehl EIGÄNDR (CHPROP) in AutoCAD"
-description: "Wie EIGÄNDR (CHPROP) in AutoCAD Eigenschaften in der Befehlszeile ändert: Farbe, Layer, Linientyp, Linienstärke und Objekthöhe. Zum Testen im Browser."
-figure: "EIGÄNDR an einer Linie quer über der Bohrung einer Platte: Farbe 1 und Linientyp Center, eine Achse, auf dem Layer, auf dem sie war."
-sourceHash: "da2b2e65e05e"
+description: "Wie EIGÄNDR (CHPROP) in AutoCAD Eigenschaften in der Befehlszeile ändert: Farbe, Layer, Linientyp und sein Faktor, Linienstärke, Objekthöhe. Gratis testen."
+figure: "EIGÄNDR an einer Linie quer über der Bohrung einer Platte: Farbe 1 und Linientyp CENTER, eine Achse, auf dem Layer, auf dem sie war."
+sourceHash: "4ba30c3c6070"
 ---
 
 EIGÄNDR (CHPROP) ändert die Eigenschaften der gewählten Objekte in der Befehlszeile: die Zeilen „Allgemein“ der Eigenschaftenpalette, als Eingabeaufforderungen abgefragt. Wählen Sie die Objekte, oder wählen Sie sie vor dem Befehl, dann wählen Sie eine Eigenschaft zum Ändern; er fragt nach jeder erneut nach einer, bis die Eingabetaste ihn beendet. Die Eingabeaufforderung jeder Eigenschaft bietet den Wert der Auswahl als Vorgabe an, <Message id="varies" /> wo die Objekte sich unterscheiden, und die Eingabetaste dort lässt jedem Objekt seinen eigenen. Was Sie einstellen, wird beim Beenden des Befehls angewendet, sodass Esc jedes Objekt lässt, wie es war. Objekte auf einem gesperrten Layer werden gezählt und ausgelassen, jedes mit der Meldung <Message id="objectOnLockedLayer" />. Der ganze Durchlauf ist ein Schritt, den <Command id="U" /> zurücknimmt.
@@ -19,7 +19,11 @@ Der Name eines Layers, in beliebiger Schreibweise. Bei einem Namen, der kein Lay
 
 ### LType
 
-Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Jeder Linientyp ist hier geladen; bei einem anderen Namen meldet der Befehl, er sei nicht gefunden worden, und kehrt zur Eingabeaufforderung der Eigenschaften zurück.
+Der Name eines Linientyps, in beliebiger Schreibweise, oder `ByLayer`. Einer, den die Zeichnung nicht geladen hat, wird aus acad.lin geladen, AutoCADs Datei in Zoll, wie AutoCAD es auch in einer metrischen Zeichnung tut; bei einem Namen, den auch diese Datei nicht enthält, meldet der Befehl, er sei nicht gefunden worden, und kehrt zur Eingabeaufforderung der Eigenschaften zurück.
+
+### ltScale
+
+Der eigene Linientypfaktor der Objekte, mit dem der von <Command id="LTSCALE" /> nur für sie multipliziert wird: ein Abstand, eingegeben oder durch zwei Punkte gemessen; ein negativer wird als sein Betrag genommen, und bei 0 meldet der Befehl <Message id="valueMustBeNonzero" /> und fragt erneut.
 
 ### LWeight
 
@@ -31,7 +35,7 @@ Ein Abstand, eingegeben oder durch zwei Punkte gemessen, auch negativ und null. 
 
 ## Missing
 
-ltScale, TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine True Color, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
+TRansparency, Material und Annotative, die Objekte hier nicht haben, sodass die Eingabeaufforderung sie nicht auflistet. VonBlock bei Color, LType und LWeight und Default bei LWeight. Eine True Color, die einer Indexfarbe entspricht, wird als Indexfarbe zurückgelesen: `255,0,0` wird als `1 (red)` angeboten. Farbbücher. Die Objekthöhe eines Textes und einer Attributdefinition, die so bleibt, wie sie ist. CHANGE, dessen Properties dieselbe Eingabeaufforderung mit Elev fragt.
 
 ## Questions
 

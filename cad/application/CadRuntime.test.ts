@@ -457,7 +457,7 @@ describe("selection properties", () => {
     ["colour", (cad: CadHarness) => cad.runtime.setSelectionColor("#ff0000")],
     [
       "linetype",
-      (cad: CadHarness) => cad.runtime.setSelectionLinetype("Dashed"),
+      (cad: CadHarness) => cad.runtime.setSelectionLinetype("DASHED"),
     ],
     [
       "lineweight",
@@ -526,7 +526,7 @@ describe("an edit of a set holding locked objects", () => {
     [
       "palette's linetype",
       (cad: CadHarness) =>
-        cad.runtime.setSelectionLinetype("Dashed", "properties"),
+        cad.runtime.setSelectionLinetype("DASHED", "properties"),
     ],
   ])(
     "changes the others of a mixed set from the %s, the locked ones left out",
@@ -580,7 +580,7 @@ describe("rollover tooltip", () => {
         {
           ...lineOf(p(0, 0), p(100, 0), { id: "L1" }),
           color: "#ff0000",
-          linetype: "Dashed",
+          linetype: "DASHED",
         },
       ],
     })
@@ -589,7 +589,7 @@ describe("rollover tooltip", () => {
     expect(cad.state().rollover).toMatchObject({
       color: "Red",
       swatch: "#ff0000",
-      linetype: "Dashed",
+      linetype: "DASHED",
     })
     cad.command("LINE").moveTo(p(50, 1))
     expect(cad.state().rollover).toBeNull()
@@ -824,6 +824,7 @@ describe("property editing", () => {
     expect(editable[3].edit?.text).toBe("100.00")
     expect(editable[3].edit?.unit).toBe("")
     expect(cad.state().properties.info?.general.map((row) => row.id)).toEqual([
+      "linetypeScale",
       "thickness",
     ])
   })
@@ -929,6 +930,7 @@ describe("the palette's Z", () => {
     cad.select("C")
 
     expect(cad.state().properties.info?.general).toEqual([
+      expect.objectContaining({ id: "linetypeScale", value: "1.00" }),
       expect.objectContaining({
         id: "thickness",
         label: "Thickness",
@@ -940,7 +942,9 @@ describe("the palette's Z", () => {
     expect(cad.byId<CircleEntity>("C").thickness).toBe(-2)
 
     cad.select("T")
-    expect(cad.state().properties.info?.general).toEqual([])
+    expect(cad.state().properties.info?.general.map((row) => row.id)).toEqual([
+      "linetypeScale",
+    ])
     expect(cad.runtime.setSelectionProperty("thickness", "4")).toBe(false)
   })
 })

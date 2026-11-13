@@ -450,7 +450,7 @@ describe("3DPOLY in the session", () => {
     expect(layerName(cad, poly)).toBe("L1")
     expect(poly).toMatchObject({
       color: "#ff0000",
-      linetype: "Dashed",
+      linetype: "DASHED",
       lineweight: 0.5,
     })
     expect(poly).not.toHaveProperty("thickness")

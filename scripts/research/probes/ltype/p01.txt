@@ -1,0 +1,19 @@
+_-LINETYPE
+_L
+ACAD_ISO02W100
+
+
+(entget (tblobjname "LTYPE" "ACAD_ISO02W100"))
+_-LINETYPE
+_L
+ACAD_ISO02W100
+
+_N
+
+_-LINETYPE
+_L
+ACAD_ISO02W100
+
+_Y
+
+(entget (tblobjname "LTYPE" "ACAD_ISO02W100"))

@@ -3,7 +3,7 @@ title: DXF-Datei online öffnen
 metaTitle: "DXF-Datei online öffnen: kostenloser DXF-Viewer"
 description: "DXF-Datei kostenlos im Browser öffnen, ohne Upload: AutoCAD R12 bis 2018, Text oder binär, mit Layern, Texten, Bemaßungen, Schraffuren und Blöcken."
 type: howTo
-sourceHash: "8e5afbec73fd"
+sourceHash: "d692fd6abe65"
 faq:
   - question: "Wie öffne ich eine DXF-Datei ohne AutoCAD?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: MellowCAD öffnet sie in seinem Editor, in Ihrem Browser, ohne Installation und ohne Konto. Im Editor öffnen auch ÖFFNEN (Strg+O) und DXFIN eine."
@@ -26,7 +26,8 @@ MellowCAD öffnet DXF-Dateien in Ihrem Browser und zeichnet sie in seinem Editor
 - **DXF von AutoCAD R12 bis 2018**, dem neuesten DXF-Format, das AutoCAD schreibt, in Text (ASCII) oder binär, erstellt von AutoCAD oder einem anderen Programm. Sein Text behält seine Zeichen: bis 2004 in der Codepage, die die Datei nennt, ab 2007 in UTF-8.
 - **Linien, Bögen, Kreise, Ellipsen und Polylinien**, mit ihren Breiten und ihren Kurven- und Splineanpassungen, 3D-Polylinien und Splines sowie Punkte, gezeichnet im [Punktstil](/docs/commands/ptype) der Zeichnung, und 2D-Volumenkörper, gefüllt, wie FILLMODE es bestimmt.
 - **Einzeiliger und mehrzeiliger Text**, Führungslinien mit ihrem Text, Blöcke mit ihren Attributen, lineare, ausgerichtete, Winkel-, Radius- und Durchmesserbemaßungen sowie Schraffuren.
-- **Der Layer jedes Objekts**, Farbe, Linientyp, Linienstärke, Objekthöhe und Erhebung, und der Zustand der Layer (ein, aus, gesperrt); ein gefrorener Layer öffnet sich ausgeschaltet.
+- **Der Layer jedes Objekts**, Farbe, Linientyp und sein Faktor, Linienstärke, Objekthöhe und Erhebung, und der Zustand der Layer (ein, aus, gesperrt); ein gefrorener Layer öffnet sich ausgeschaltet.
+- **Die Linientypen der Zeichnung**, mit ihren Strichen, Punkten und Lücken beim Linientypfaktor der Zeichnung gezeichnet, und der Text komplexer Linientypen wie GAS_LINE.
 - **Die Text- und Bemaßungsstile der Zeichnung** und ihre Einheiten, wenn es Millimeter, Zentimeter oder Meter sind.
 
 ## Was ausgelassen wird [#left-out]
@@ -44,7 +45,7 @@ Was in einem Layout liegt, wird gesondert gezählt, da es noch keine Layouts gib
 
 Manches öffnet sich, aber nicht ganz so, wie es war:
 
-- Ein Linientyp außer Continuous, Dashed, Hidden, Center, Phantom und DashDot behält seinen Namen und wird durchgezogen gezeichnet.
+- Die Formen komplexer Linientypen wie BATTING oder ZIGZAG werden nicht gezeichnet, nur die Striche und Lücken um sie herum.
 - Ein Schraffurmuster, das nicht zu [den Mustern von `acadiso.pat` gehört, die MellowCAD zeichnet](/docs/commands/hatch), behält seinen Namen und zeichnet nur seine Begrenzung.
 - Eine Farbe, die über ihren Index angegeben ist, öffnet sich als RGB-Farbe und VonBlock als VonLayer.
 - Eine Zeichnung in Zoll oder Fuß behält ihre Zahlen, gelesen als Millimeter.

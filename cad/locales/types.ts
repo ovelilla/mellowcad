@@ -32,14 +32,13 @@ export type AnswerForm = "spaced" | "tight"
 export type CommandName = keyof Commands["names"]
 
 /**
- * The interface language. A linetype or hatch pattern whose display name is its
- * id is left out of the English module, which falls back to the id.
+ * The interface language. A hatch pattern whose display name is its id is left
+ * out of the English module, which falls back to the id.
  */
 export type InterfaceCatalog = Omit<
   Compiled<Source["interface"]>,
-  "linetype" | "hatchPattern"
+  "hatchPattern"
 > & {
-  readonly linetype: Partial<Compiled<Source["interface"]["linetype"]>>
   readonly hatchPattern: Partial<Compiled<Source["interface"]["hatchPattern"]>>
 }
 

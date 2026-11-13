@@ -42,7 +42,7 @@ const CIRCLES: [string, () => CircleEntity][] = [
     () => {
       let circle = circleOf(p(20, -10), 5, { id: "C" })
       circle = assignEntityColor(circle, "#0a141e") as CircleEntity
-      circle = assignEntityLinetype(circle, "Dashed") as CircleEntity
+      circle = assignEntityLinetype(circle, "DASHED") as CircleEntity
       return assignEntityLineweight(circle, 0.5) as CircleEntity
     },
   ],

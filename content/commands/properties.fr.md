@@ -2,7 +2,7 @@
 title: "Commande PROPRIETES (PROPERTIES) dans AutoCAD"
 description: "La palette PROPRIETES (PROPERTIES, Ctrl+1) d'AutoCAD en français : Général et Géométrie, *VARIE*, un type d'objet à la fois. Essayez-le en ligne."
 figure: "Un cercle sélectionné à l'invite Commande, ses poignées affichées, puis PROPRIETES : la palette s'ouvre à côté du dessin sur les lignes du cercle."
-sourceHash: "696137498888"
+sourceHash: "14d097ac5b0b"
 ---
 
 PROPRIETES (PROPERTIES) ouvre la palette Propriétés. Comme dans AutoCAD, c'est une palette, pas une boîte de dialogue : elle reste ouverte à côté du dessin, ici comme un onglet du panneau des palettes, pendant que vous sélectionnez et dessinez, jusqu'à ce que <Command id="PROPERTIESCLOSE" /> la ferme. Ctrl+1 l'affiche et la masque, et, tapée avec une apostrophe, `'PROPRIETES`, elle s'ouvre à l'intérieur d'une commande en cours. Dans une fenêtre large, elle est ouverte dès le départ.
@@ -11,7 +11,7 @@ Avec des objets sélectionnés, elle montre leurs propriétés, et vous en chang
 
 ## Missing
 
-Dans Général, Echelle du type de ligne, Style de tracé, Transparence et Lien hypertexte, et le matériau. Les lignes de géométrie de plusieurs objets d'un même type à la fois, le contenu d'un texte et les valeurs d'attributs ne se modifient pas ici. La Sélection rapide, le bouton PICKADD, le masquage automatique, l'ancrage de la palette et la palette flottante.
+Dans Général, Echelle du type de ligne pour plusieurs objets à la fois ou, sans rien de sélectionné, pour les nouveaux (CELTSCALE) ; Style de tracé, Transparence et Lien hypertexte, et le matériau. Les lignes de géométrie de plusieurs objets d'un même type à la fois, le contenu d'un texte et les valeurs d'attributs ne se modifient pas ici. La Sélection rapide, le bouton PICKADD, le masquage automatique, l'ancrage de la palette et la palette flottante.
 
 ## Questions
 

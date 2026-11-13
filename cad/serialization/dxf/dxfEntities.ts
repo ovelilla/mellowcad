@@ -47,6 +47,7 @@ import {
   withElevation,
   withNormal,
   withThickness,
+  withLinetypeScale,
 } from "../../domain/entities"
 import { EntityColor } from "../../domain/colors"
 import {
@@ -192,7 +193,7 @@ export function dxfLineweight(
   return value < 0 ? undefined : clampLineweight(value / 100)
 }
 
-/** The layer, colour, linetype and lineweight every object carries. */
+/** The layer, colour, linetype and its scale, and lineweight every object carries. */
 function common<T extends Entity>(
   entity: T,
   record: DxfRecord,
@@ -201,13 +202,16 @@ function common<T extends Entity>(
   const color = dxfColor(record)
   const linetype = ctx.linetype(str(record, 6))
   const lineweight = dxfLineweight(int(record, 370))
-  return {
-    ...entity,
-    layerId: ctx.layer(str(record, 8)),
-    ...(color ? { color } : {}),
-    ...(linetype ? { linetype } : {}),
-    ...(lineweight !== undefined ? { lineweight } : {}),
-  }
+  return withLinetypeScale(
+    {
+      ...entity,
+      layerId: ctx.layer(str(record, 8)),
+      ...(color ? { color } : {}),
+      ...(linetype ? { linetype } : {}),
+      ...(lineweight !== undefined ? { lineweight } : {}),
+    },
+    num(record, 48) ?? 1
+  )
 }
 
 function normal(record: DxfRecord): Vec3 | undefined {

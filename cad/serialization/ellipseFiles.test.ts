@@ -52,7 +52,7 @@ const ELLIPSES: [string, () => EllipseEntity][] = [
     () => {
       let ellipse = ellipseOf(p(60, 0), p(0, 10), 0.4, { id: "E" })
       ellipse = assignEntityColor(ellipse, "#0a141e") as EllipseEntity
-      ellipse = assignEntityLinetype(ellipse, "Dashed") as EllipseEntity
+      ellipse = assignEntityLinetype(ellipse, "DASHED") as EllipseEntity
       return assignEntityLineweight(ellipse, 0.5) as EllipseEntity
     },
   ],

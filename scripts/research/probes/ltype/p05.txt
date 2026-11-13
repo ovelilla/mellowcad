@@ -1,0 +1,22 @@
+(getvar "CELTSCALE")
+_CELTSCALE
+0.5
+_LINE
+0,0
+10,0
+
+(entget (entlast))
+_CELTSCALE
+1
+_LINE
+0,5
+10,5
+
+(entget (entlast))
+_CELTSCALE
+0
+_CELTSCALE
+-1
+_CELTSCALE
+FOO
+

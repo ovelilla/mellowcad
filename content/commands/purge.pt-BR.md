@@ -1,12 +1,12 @@
 ---
 title: "Comando PURGE (ELIMINAR) no AutoCAD"
 metaTitle: "PURGE no AutoCAD: eliminar blocos não usados"
-description: "Como o PURGE do AutoCAD em português, ELIMINAR (alias ELM), exclui os blocos que nenhuma referência usa, por nome ou todos, e os aninhados. Experimente grátis."
+description: "Como o PURGE do AutoCAD em português, ELIMINAR (alias ELM), exclui os blocos e tipos de linha que nada usa, por nome ou todos, e os aninhados. Experimente."
 figure: "Dois blocos, TAG colocado numa parede e BOX, cuja única referência foi apagada: o ELIMINAR, todos os nomes, sem verificar, exclui só o BOX."
-sourceHash: "635e8ae855cb"
+sourceHash: "7a22ff19d409"
 ---
 
-O PURGE, ELIMINAR no AutoCAD em português, remove o que um desenho define mas não usa; aqui, os blocos. O ELIMINAR do AutoCAD abre a caixa de diálogo Eliminar; o MellowCAD não a tem, então o ELIMINAR pergunta na linha de comando o mesmo que o <Command id="-PURGE" />, como faz o console do AutoCAD. Ele mostra as configurações Itens aninhados e Dados órfãos, ambas desativadas, e pergunta que tipo de objetos não usados eliminar, oferecendo só <Keyword id="Blocks" />; Enter ali o encerra.
+O PURGE, ELIMINAR no AutoCAD em português, remove o que um desenho define mas não usa; aqui, os blocos e os tipos de linha. O ELIMINAR do AutoCAD abre a caixa de diálogo Eliminar; o MellowCAD não a tem, então o ELIMINAR pergunta na linha de comando o mesmo que o <Command id="-PURGE" />, como faz o console do AutoCAD. Ele mostra as configurações Itens aninhados e Dados órfãos, ambas desativadas, e pergunta que tipo de objetos não usados eliminar, oferecendo <Keyword id="Blocks" /> e <Keyword id="LTypes" />; Enter ali o encerra.
 
 Um bloco está em uso enquanto uma referência no desenho o coloca, ou a definição de um bloco em uso o contém, em qualquer profundidade. Apagar a última referência de um bloco deixa a definição dele no desenho, onde o <Command id="INSERT" /> pode colocá-lo de novo: é o ELIMINAR que a exclui. Um bloco contido num bloco que fica nunca é eliminado, e uma cadeia de blocos que só contêm uns aos outros sai numa só execução. Sem nenhum a eliminar, ele diz <Message id="noUnreferencedBlocks" />. Cada execução é um passo que o <Command id="U" /> desfaz.
 
@@ -16,9 +16,13 @@ Um bloco está em uso enquanto uma referência no desenho o coloca, ou a defini�
 
 Pede os nomes a eliminar, `*` para todos os blocos não usados por padrão, ou nomes com curingas, separados por vírgulas. Depois pergunta se cada nome deve ser verificado: <Keyword id="Yes" />, o padrão, pergunta sobre cada bloco antes de excluí-lo, <Keyword id="No" /> exclui todos e diz cada nome e quantos foram.
 
+### LTypes
+
+Pede os nomes e se cada um deve ser verificado, como o <Keyword id="Blocks" />, e exclui os tipos de linha que nada usa. Continuous, o tipo de linha atual e um que uma camada ou um objeto usa, dentro de um bloco também, sempre ficam; sem nenhum a eliminar, ele diz <Message id="noUnreferencedLinetypes" />. A opção Carregar do <Command id="LINETYPE" /> o traz de volta.
+
 ## Missing
 
-A caixa de diálogo Eliminar, e todos os outros tipos: camadas, tipos de linha, estilos de texto e de cota, grupos, materiais, estilos de linha de chamada múltipla, de tabela e visuais, aplicativos registrados, geometria de comprimento zero, objetos de texto vazios, dados órfãos e Todos. As configurações Itens aninhados e Dados órfãos não podem ser alteradas.
+A caixa de diálogo Eliminar, e todos os outros tipos: camadas, estilos de texto e de cota, grupos, materiais, estilos de linha de chamada múltipla, de tabela e visuais, aplicativos registrados, geometria de comprimento zero, objetos de texto vazios, dados órfãos e Todos. As configurações Itens aninhados e Dados órfãos não podem ser alteradas.
 
 ## Questions
 
@@ -36,4 +40,4 @@ Porque ele está em uso: uma referência no desenho o coloca, ou um bloco em uso
 
 ### Como eliminar layers no AutoCAD?
 
-No AutoCAD, com o tipo Camadas do ELIMINAR. Aqui ainda não, porque o ELIMINAR só elimina blocos; exclua uma camada vazia no Gerenciador de propriedades de camadas.
+No AutoCAD, com o tipo Camadas do ELIMINAR. Aqui ainda não, porque o ELIMINAR só elimina blocos e tipos de linha; exclua uma camada vazia no Gerenciador de propriedades de camadas.

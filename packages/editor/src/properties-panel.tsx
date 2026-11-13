@@ -140,6 +140,7 @@ export function PropertiesPanel({
             <LinetypeSelect
               value={selected ? properties.linetype : state.currentLinetype}
               names={state.names}
+              linetypes={state.linetypes}
               onValueChange={(value) => {
                 if (selected) engine.setSelectionLinetype(value, "properties")
                 else engine.setCurrentLinetype(value)
@@ -152,6 +153,17 @@ export function PropertiesPanel({
               className="w-36 bg-background dark:bg-background"
             />
           </div>
+
+          {/* Linetype scale follows Linetype, as AutoCAD's General lists it. */}
+          {info && info.general.some((row) => row.id === "linetypeScale") && (
+            <dl className="mt-1 flex flex-col gap-1">
+              {info.general
+                .filter((row) => row.id === "linetypeScale")
+                .map((row) => (
+                  <PropertyRowView key={row.id} engine={engine} row={row} />
+                ))}
+            </dl>
+          )}
 
           <div className="mt-1 flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{t("lineweight")}</span>
@@ -174,11 +186,13 @@ export function PropertiesPanel({
             />
           </div>
 
-          {info && info.general.length > 0 && (
+          {info && info.general.some((row) => row.id !== "linetypeScale") && (
             <dl className="mt-1 flex flex-col gap-1">
-              {info.general.map((row) => (
-                <PropertyRowView key={row.id} engine={engine} row={row} />
-              ))}
+              {info.general
+                .filter((row) => row.id !== "linetypeScale")
+                .map((row) => (
+                  <PropertyRowView key={row.id} engine={engine} row={row} />
+                ))}
             </dl>
           )}
 

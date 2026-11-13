@@ -81,6 +81,10 @@ export function dxfSettings(
     currentColor: (color && dxfColor(color)) ?? COLOR_BYLAYER,
     currentLinetype: (celtype && linetype(str(celtype, 6))) ?? LINETYPE_BYLAYER,
     currentLineweight: dxfLineweight(celweight) ?? LINEWEIGHT_BYLAYER,
+    currentLinetypeScale: positive(
+      real("$CELTSCALE", 40),
+      d.currentLinetypeScale
+    ),
     fillMode: flag(integer("$FILLMODE", 70), d.fillMode),
     polylineWidth: notNegative(real("$PLINEWID", 40), d.polylineWidth),
     filletRadius: notNegative(real("$FILLETRAD", 40), d.filletRadius),

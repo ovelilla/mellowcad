@@ -1,0 +1,16 @@
+_-LINETYPE
+_L
+HIDDEN,CENTER
+
+
+_-PURGE
+_LT
+
+_Y
+_Y
+_N
+(progn (setq e (tblnext "LTYPE" T)) (while e (princ (strcat "\n> " (cdr (assoc 2 e)))) (setq e (tblnext "LTYPE"))) (princ))
+_-PURGE
+_LT
+NOPE
+_N

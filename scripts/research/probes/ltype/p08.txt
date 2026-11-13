@@ -1,0 +1,20 @@
+_-LINETYPE
+_L
+DASHED
+acad
+
+(cdr (assoc 49 (tblsearch "LTYPE" "DASHED")))
+_-LINETYPE
+_L
+DASHED
+foo
+
+
+_-LINETYPE
+_L
+DASH*
+
+
+
+
+

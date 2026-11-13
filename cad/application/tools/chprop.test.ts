@@ -59,7 +59,7 @@ function dressed(id: string): Entity {
 }
 
 const PROPERTY =
-  "Enter property to change [Color/LAyer/LType/LWeight/Thickness]:"
+  "Enter property to change [Color/LAyer/LType/ltScale/LWeight/Thickness]:"
 
 describe("CHPROP against AutoCAD 2027's console in English", () => {
   it("asks each property again until Enter, offering the set's value (p01)", () => {
@@ -218,7 +218,7 @@ describe("CHPROP against AutoCAD 2027's console in English", () => {
       "Enter new linetype name <ByLayer>: dashed",
       PROPERTY,
     ])
-    expect(entity(cad, "l1").linetype).toBe("Dashed")
+    expect(entity(cad, "l1").linetype).toBe("DASHED")
     answer(cad, "_CHPROP", "_L", "", "_LT", "bylayer", "")
     expect(entity(cad, "l1").linetype).toBeUndefined()
   })
@@ -412,9 +412,9 @@ describe("CHPROP in AutoCAD 2027's other languages", () => {
       "Designe objetos: _ALL",
       "2 encontrados",
       "Designe objetos:",
-      "Indique propiedad que cambiar [COlor/Capa/Tlínea/Grosorl/Alt-objeto]: CO",
+      "Indique propiedad que cambiar [COlor/Capa/Tlínea/Escalatl/Grosorl/Alt-objeto]: CO",
       "Nuevo color [COlorverdadero] <varía>:",
-      "Indique propiedad que cambiar [COlor/Capa/Tlínea/Grosorl/Alt-objeto]:",
+      "Indique propiedad que cambiar [COlor/Capa/Tlínea/Escalatl/Grosorl/Alt-objeto]:",
     ])
     const one = drawing([line()], es)
     const lines = written(
@@ -448,11 +448,11 @@ describe("CHPROP in AutoCAD 2027's other languages", () => {
       "Selecionar objetos: _ALL",
       "2 encontrado(s)",
       "Selecionar objetos:",
-      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/ESplinha/espessURa]: C",
+      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/escalaTL/ESplinha/espessURa]: C",
       "Nova cor [Truecolor] <PORCAMADA>:",
-      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/ESplinha/espessURa]: UR",
+      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/escalaTL/ESplinha/espessURa]: UR",
       "Especificar nova espessura <0.0000>: 5",
-      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/ESplinha/espessURa]:",
+      "Inserir propriedade a alterar [Cor/CAmada/TIpolinha/escalaTL/ESplinha/espessURa]:",
       "Não é possível alterar a espessura para ELLIPSE.",
     ])
     expect(written(cad, "_U")).toEqual(["D", "ALTPROP"])

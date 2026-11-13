@@ -31,9 +31,9 @@ There are no layouts and no plotting: the screen is the only place a drawing is 
 
 Where AutoCAD opens a dialog that does not exist here, the command asks its questions at the command line, as its dash version does: <Command id="COLOR" /> runs <Command id="-COLOR" />, <Command id="LWEIGHT" /> runs <Command id="-LWEIGHT" />, and <Command id="LINETYPE" /> runs <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> and <Command id="STYLE" /> open the Styles palette, with the dimension or text styles.
 
-## Every linetype is loaded [#linetypes]
+## Six linetypes in every drawing [#linetypes]
 
-A new AutoCAD drawing holds a single, continuous linetype, and the others are loaded from a file. With no Linetype Manager to load one, every drawing here comes with all of them loaded.
+A new AutoCAD drawing holds a single, continuous linetype, and the others are loaded from a file, as you pick one in the Linetype Manager or a drop-down's Other…. Neither exists here, so every drawing holds six — Continuous, DASHED, HIDDEN, CENTER, PHANTOM and DASHDOT — for the drop-downs to offer; <Command id="LINETYPE" />'s Load loads the others from acadiso.lin.
 
 ## Coordinates in the status bar [#coordinates]
 

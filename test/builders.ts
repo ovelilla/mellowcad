@@ -40,6 +40,7 @@ import {
   DEFAULT_DIM_STYLE_ID,
   createDefaultDimStyle,
 } from "../cad/domain/dimStyles"
+import { LINETYPES } from "../cad/domain/linetypes"
 import type { Vec2 } from "../cad/geometry/Vec2"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 
@@ -212,6 +213,7 @@ export function snapshotOf(
     settings: DEFAULT_DOCUMENT_SETTINGS,
     layers: [createDefaultLayer()],
     currentLayerId: DEFAULT_LAYER_ID,
+    linetypes: LINETYPES,
     textStyles: [createDefaultTextStyle()],
     currentTextStyleId: DEFAULT_TEXT_STYLE_ID,
     dimStyles: [createDefaultDimStyle()],

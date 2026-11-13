@@ -304,6 +304,7 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   ],
   "PURGE": [
     "Blocks",
+    "LTypes",
     "Yes",
     "No"
   ],
@@ -664,6 +665,7 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Color",
     "LAyer",
     "LType",
+    "ltScale",
     "LWeight",
     "Thickness",
     "Truecolor",
@@ -692,7 +694,10 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   ],
   "LINETYPE": [
     "?",
+    "Load",
     "Set",
+    "Yes",
+    "No",
     "BYLAYER",
     "BYLayer"
   ],
