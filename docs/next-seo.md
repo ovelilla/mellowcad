@@ -209,27 +209,31 @@ para 2027. **Ninguna publicación la hace una sesión.**
 fecha aquí.
 
 **Calendario** (preparado el 6/11/2026; las fechas son objetivos y cada paso espera a su condición;
-el texto de cada uno, en la sección del kit indicada; anota la fecha real al hacerlo):
+el texto de cada uno, en la sección del kit indicada; anota la fecha real al hacerlo). **Retrasado
+una semana el 13/11:** ninguna sesión puso al dueño delante sus pasos del 9 y el 12/11, que no se
+hicieron; desde las cuentas, cada paso va siete días después, salvo el outreach, que no se mueve
+(diciembre, antes de que las listas se reescriban para 2027). Una sesión que cierra le recuerda al
+dueño el paso siguiente de esta tabla y su fecha:
 
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
-| lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
+| sáb 14 – lun 16/11 (era el 9/11) | GitHub: la vista previa social (descripción y temas, puestos el 6/11; la imagen, puesta: `usesCustomOpenGraphImage`, 13/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
 | 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado a la cola gratuita (sin la revisión de 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto, en el canal renombrado `ovelilla`; hello@mellowcad.com reenvía al dueño. **7/11, noche:** la descripción de SaaSHub dice ya que abre DXF (la sesión 05b, con la sesión del dueño). **9/11:** SaaSHub aprueba la ficha (su correo: en «Recently verified»); sus ofertas, no (la ficha destacada de pago, su insignia con enlace y SaaSHub Submit: kit §6); su descripción dice ya el francés (§7, punto 9) | kit §6 | — |
 | 9/11 (hecho) | Appvizer y Quelle-Alternative, por la sesión a petición del dueño: en Appvizer, el alta gratuita de editor (su enlace francés da 404; el internacional, con hello@mellowcad.com), que valida la cuenta en 24 h y luego pide la ficha, con texto propio; Quelle-Alternative no tiene formulario, y la propuesta, en francés, salió por correo a contact@digitiz.fr desde la dirección del dueño. **10/11:** Digitiz contesta que toda alta es de pago (200 €, primera posición de por vida): descartado por el dueño, como las demás ofertas de pago | kit §6 | — |
-| 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
-| jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
+| 16–18/11 (era 9–13/11) | Participar de verdad en r/AutoCAD y r/cad, sin enlazar nada | kit §3 | — |
+| jue 19/11, 15:00 (hora de España; 9:00 en la costa este, la mañana de EE. UU. de entre semana, la costumbre de Reddit, sin medir en este subreddit), y las dos horas siguientes respondiendo (era el 12/11) | **r/SideProject** (https://www.reddit.com/r/SideProject/submit, enlazando https://mellowcad.com), pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | el sitio para reportar problemas (sesión 05b): publicado y probado el 7/11 (§7, punto 8) |
 | 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; se ven las seis capturas y el vídeo, y la categoría, Photos & Graphics, es la de AutoCAD, FreeCAD y Onshape. Acceso de desarrollador pedido por la sesión con hello@mellowcad.com y confirmado por el dueño el mismo día: espera la revisión de su equipo. El autor, de «Oscar Velilla» a «ovelilla» por decisión del dueño: enviado como sugerencia, espera la aprobación de un administrador. Su insignia, no: un enlace saliente en la landing que no da posicionamiento. **7/11, 00:30:** sale en la lista de AutoCAD gratis y online (17.ª de 24, tras «Show more»); el autor sigue siendo «Oscar Velilla» y la ficha no ofrece edición: ni el cambio de autor ni el acceso de desarrollador, aprobados aún. **7/11, 13:34:** acceso de desarrollador aprobado (los cambios se publican al momento) y la ficha dice ya «Developed by ovelilla». **7/11, noche:** su descripción decía que no lee DXF; la sesión 05b, a petición del dueño, la cambió por la frase del kit §6 («It opens DXF files but does not save them yet, and has no DWG or printing.»), visible con sesión al momento y en la página pública cuando caduque su caché | kit §6 | — |
 | lun 16/11 y cada lunes | Seguimiento: ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
-| semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
-| mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
-| jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
-| lun 23/11 | r/AutoCAD | kit §3 | los fallos de Show HN, arreglados |
-| mar 24/11 | En español: r/programacion (dentro de su 10 %), foros y grupos de estudiantes | kit §3 | — |
-| mié 25/11 | r/cad | kit §3 | — |
-| jue 26/11 | r/Arquitectura, con la etiqueta «Software» | kit §3 | — |
-| sáb 28/11 | r/webdev, Showoff Saturday, escrito a mano | kit §3 | — |
+| 20–24/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
+| mié 25/11, 14:00–16:00 (hora de España; era el 18/11) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
+| jue 26/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
+| lun 30/11 | r/AutoCAD | kit §3 | los fallos de Show HN, arreglados |
+| mar 1/12 | En español: r/programacion (dentro de su 10 %), foros y grupos de estudiantes | kit §3 | — |
+| mié 2/12 | r/cad | kit §3 | — |
+| jue 3/12 | r/Arquitectura, con la etiqueta «Software» | kit §3 | — |
+| sáb 5/12 | r/webdev, Showoff Saturday, escrito a mano | kit §3 | — |
 | mar 1 – jue 3/12 | Outreach, tanda 1: los artículos A en inglés, MakeUseOf y Hackaday | `~/seo-data/launch/outreach/` | — |
-| sáb 5/12, 00:01 PT (09:01 en España) | **Product Hunt**, programado desde el día antes | kit §4 | cuenta con una semana; vídeo en YouTube |
+| sáb 12/12, 00:01 PT (09:01 en España; era el 5/12) | **Product Hunt**, programado desde el día antes | kit §4 | cuenta con una semana; vídeo en YouTube |
 | mar 8 – vie 11/12 | Outreach, tanda 2: los A en español, portugués, árabe, francés y alemán; recordatorio único de la tanda 1 (jue 10) | ídem | — |
 | lun 14 – mié 16/12 | Outreach, tanda 3 (B y C); los creadores (`authority-creators.csv`) con los hilos de HN y PH como contexto; profesores (correo del kit §3) | ídem | — |
 | vie 18/12 | Recordatorio único de la tanda 2 | ídem | — |

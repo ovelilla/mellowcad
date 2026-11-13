@@ -15,7 +15,7 @@ opens (since 7/11, session 07) and saves (since 12/11, DXF 2000 to 2018), but no
 PDF, collaboration or mobile claims; "the code is MIT", never "MellowCAD is MIT"; "same order, same option letters", never
 "same prompts"; AutoCAD only nominatively; no hype, no emojis.
 **Figures are the landing's on the day** (`lib/facts.ts`); on 2026-11-06: 140 AutoCAD commands,
-131 aliases, 12 object snaps, 4 languages (5 since 9/11: French; 6 since 12/11: Italian; 7 since 13/11: German; 8 the same day: Russian), 6,000+ automated tests, 38
+131 aliases, 12 object snaps, 4 languages (5 since 9/11: French; 6 since 12/11: Italian; 7 since 13/11: German; 8 the same day: Russian), 11,000+ automated tests, 38
 commands with a page of their own. Read them off https://mellowcad.com before posting.
 
 **Write by hand where the site says so.** Hacker News now forbids generated or AI-edited text in
@@ -94,7 +94,7 @@ and the facts, not text to paste.
      the interface is also in Arabic.
   4. Technical notes: a TypeScript engine with no framework and no DOM, in layers whose imports only
      point down, on npm as @mellowcad/engine; every figure on the landing drawn by the engine at
-     build time; tools tested by driving a headless engine with moves, clicks and keys (6,000+
+     build time; tools tested by driving a headless engine with moves, clicks and keys (11,000+
      tests); one gesture, one undo step; 3D solids, still partial, on a B-rep kernel written for the
      project; a versioned file format that always opens older files.
   5. Not there yet: DWG files, printing and PDF, paper space, sweeps, lofts,
@@ -172,7 +172,7 @@ browser CAD app where AutoCAD's behaviour is the spec, not a suggestion_
 >
 > Stack: a framework-free TypeScript engine with no DOM (on npm), a React editor on top, a Next.js
 > static site. Every figure on the landing is drawn by the engine at build time, not screenshots.
-> 6,000+ tests drive a headless engine with clicks and keystrokes. The code is MIT.
+> 11,000+ tests drive a headless engine with clicks and keystrokes. The code is MIT.
 >
 > Honest limits: it opens and saves DXF, but no DWG or printing yet, 3D solids still partial,
 > desktop only.
