@@ -131,7 +131,8 @@
       "divide": "تقسيم",
       "measuresegments": "قياس",
       "ptype": "نمط النقطة",
-      "solid": "مجسم ثنائي الأبعاد"
+      "solid": "مجسم ثنائي الأبعاد",
+      "leader": "خط إشارة"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -232,7 +233,8 @@
       "solid3d": "{count, plural, one {مجسم ثلاثي الأبعاد} two {مجسمان ثلاثيا الأبعاد} other {مجسمات ثلاثية الأبعاد}}",
       "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}",
       "point": "{count, plural, one {نقطة} two {نقطتان} other {نقاط}}",
-      "solid2d": "{count, plural, one {مجسم ثنائي الأبعاد} two {مجسمان ثنائيا الأبعاد} other {مجسمات ثنائية الأبعاد}}"
+      "solid2d": "{count, plural, one {مجسم ثنائي الأبعاد} two {مجسمان ثنائيا الأبعاد} other {مجسمات ثنائية الأبعاد}}",
+      "leader": "{count, plural, one {خط إشارة} two {خطا إشارة} other {خطوط إشارة}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",
@@ -440,7 +442,9 @@
         "decimalSeparator": "الفاصل العشري",
         "suppressTrailingZeros": "حذف الأصفار اللاحقة",
         "precision": "الدقة",
-        "perimeter": "المحيط"
+        "perimeter": "المحيط",
+        "arrow": "السهم",
+        "textPosVert": "الموضع العمودي للنص"
       },
       "value": {
         "yes": "نعم",
@@ -474,7 +478,14 @@
         "predefined": "معرّف مسبقًا",
         "outer": "خارجي",
         "extrusion": "بثق",
-        "revolve": "دوران"
+        "revolve": "دوران",
+        "lineWithNoArrow": "خط بلا سهم",
+        "splineWithNoArrow": "منحنى شرائحي بلا سهم",
+        "lineWithArrow": "خط بسهم",
+        "splineWithArrow": "منحنى شرائحي بسهم",
+        "closedFilled": "مغلق مُصمت",
+        "centered": "في الوسط",
+        "above": "فوق"
       },
       "justify": {
         "left": "يسار",

@@ -38,6 +38,7 @@ export type EntityType =
   | "solid3d"
   | "point"
   | "solid2d"
+  | "leader"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -903,6 +904,64 @@ export interface Solid3dEntity extends BaseEntity {
   readonly sweep?: SolidSweep
 }
 
+/**
+ * What a leader points from (DXF 73 and 340): the MTEXT or block reference it
+ * is associated with, which it follows (`domain/leaders.ts`). AutoCAD's third
+ * kind, a TOLERANCE, has no object here.
+ */
+export interface LeaderAnnotation {
+  readonly kind: "mtext" | "block"
+  readonly id: EntityId
+}
+
+/**
+ * The dimension variables a leader overrides of its style (DXF's `DSTYLE`
+ * xdata), the ones its Properties palette shows: DIMASZ, DIMSCALE, DIMGAP and
+ * DIMTAD. Absent, the style's.
+ */
+export interface LeaderOverrides {
+  readonly arrowSize?: number
+  readonly scale?: number
+  readonly textGap?: number
+  /**
+   * DIMTAD: whether the text sits above the leader's last line (1, ISO-25's,
+   * the only placement a style here has) or centred on its end (0). Absent,
+   * above.
+   */
+  readonly textAbove?: boolean
+}
+
+/**
+ * A leader (DXF LEADER, LEADER's object): a line or a spline from an arrowhead
+ * through the points picked to its annotation. Its vertices are in the OCS of
+ * its normal, at its elevation, as AutoCAD stores them, the hook line
+ * included: with {@link hook}, the last vertex is the point picked and the one
+ * before it was added a hook's length short of it (leader/p02). The arrowhead,
+ * the spline and the line under its text are derived (`leaderGeometry`).
+ */
+export interface LeaderEntity extends BaseEntity {
+  readonly type: "leader"
+  readonly vertices: readonly Vec2[]
+  /** DXF 71: an arrowhead at the first vertex. */
+  readonly arrow: boolean
+  /** DXF 72: a spline through the vertices rather than straight segments. */
+  readonly spline: boolean
+  /** DXF 75: the last segment is the hook line. */
+  readonly hook: boolean
+  /** DXF 211, the direction of the hook and the text, radians from the OCS's X. Absent, 0. */
+  readonly horizontal?: number
+  readonly annotation?: LeaderAnnotation
+  /** DXF 41 and 40: the size of its text when last placed, which the line under it runs. */
+  readonly textWidth?: number
+  readonly textHeight?: number
+  /** DXF 213: the last vertex's offset from where its text puts it, after a stretch (leader/p14). */
+  readonly textOffset?: Vec2
+  /** DXF 212: the last vertex's offset from its block reference's insertion point (leader/p05). */
+  readonly blockOffset?: Vec2
+  readonly styleId: DimStyleId
+  readonly overrides?: LeaderOverrides
+}
+
 export type Entity =
   | LineEntity
   | CircleEntity
@@ -921,6 +980,7 @@ export type Entity =
   | Solid3dEntity
   | PointEntity
   | Solid2dEntity
+  | LeaderEntity
 
 export interface Bounds {
   readonly min: Vec2

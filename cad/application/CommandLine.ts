@@ -257,6 +257,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   polyline3d: "3DPOLY",
   point: "POINT",
   solid: "SOLID",
+  leader: "LEADER",
   divide: "DIVIDE",
   measuresegments: "MEASURE",
   ptype: "PTYPE",

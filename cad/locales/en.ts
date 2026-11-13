@@ -135,7 +135,8 @@ export const en: EngineCatalog = {
       "divide": "Divide",
       "measuresegments": "Measure",
       "ptype": "Point Style",
-      "solid": "2D Solid"
+      "solid": "2D Solid",
+      "leader": "Leader"
     },
     "description": {
       "U": "Undo the last action",
@@ -395,6 +396,16 @@ export const en: EngineCatalog = {
             "other": "Solids"
           }
         ]
+      ],
+      "leader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Leader",
+            "other": "Leaders"
+          }
+        ]
       ]
     },
     "array": {
@@ -633,7 +644,9 @@ export const en: EngineCatalog = {
         "decimalSeparator": "Decimal separator",
         "suppressTrailingZeros": "Suppress trailing zeros",
         "precision": "Precision",
-        "perimeter": "Perimeter"
+        "perimeter": "Perimeter",
+        "arrow": "Arrow",
+        "textPosVert": "Text pos vert"
       },
       "value": {
         "yes": "Yes",
@@ -667,7 +680,14 @@ export const en: EngineCatalog = {
         "predefined": "Predefined",
         "outer": "Outer",
         "extrusion": "Extrusion",
-        "revolve": "Revolve"
+        "revolve": "Revolve",
+        "lineWithNoArrow": "Line with no arrow",
+        "splineWithNoArrow": "Spline with no arrow",
+        "lineWithArrow": "Line with arrow",
+        "splineWithArrow": "Spline with arrow",
+        "closedFilled": "Closed filled",
+        "centered": "Centered",
+        "above": "Above"
       },
       "justify": {
         "left": "Left",
@@ -1292,6 +1312,10 @@ export const en: EngineCatalog = {
       "SOLID": [
         "SOLID",
         "SO"
+      ],
+      "LEADER": [
+        "LEADER",
+        "LEAD"
       ]
     },
     "keywords": {
@@ -2194,7 +2218,16 @@ export const en: EngineCatalog = {
       "solidSecondPoint": "Specify second point",
       "solidThirdPoint": "Specify third point",
       "solidFourthPointOr": "Specify fourth point or",
-      "exitSolid": "exit"
+      "exitSolid": "exit",
+      "leaderStartPoint": "Specify leader start point",
+      "leaderNextPoint": "Specify next point",
+      "leaderNextPointOr": "Specify next point or",
+      "leaderFormatOption": "Enter leader format option",
+      "leaderFirstLine": "Enter first line of annotation text or",
+      "leaderOptions": "options",
+      "leaderNextLine": "Enter next line of annotation text",
+      "leaderAnnotationOption": "Enter an annotation option",
+      "leaderCopyObject": "Select an object to copy"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -4914,6 +4947,7 @@ export const en: EngineCatalog = {
             "region": "REGION",
             "solid3d": "3DSOLID",
             "solid2d": "SOLID",
+            "leader": "LEADER",
             "other": "ARRAY"
           }
         ]
@@ -6969,7 +7003,84 @@ export const en: EngineCatalog = {
         ],
         "\"."
       ],
-      "blockNameNotValid": "Invalid block name."
+      "blockNameNotValid": "Invalid block name.",
+      "leaderCopyRefused": "Please select an mtext, text, block reference, or tolerance object.",
+      "listLeaderNormal": [
+        "Normal:               X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHorizontal": [
+        "Horizontal direction: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderVertex": [
+        "Vertex:        X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHook": [
+        "Hook Line: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listLeaderArrow": [
+        "Arrow:     ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listLeaderPath": [
+        "Path type: ",
+        [
+          "spline",
+          1,
+          {
+            "yes": "Spline",
+            "other": "Straight"
+          }
+        ]
+      ],
+      "listLeaderAnnotative": "        Annotative: No"
     },
     "feedback": {
       "snap": {

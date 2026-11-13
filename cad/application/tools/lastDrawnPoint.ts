@@ -92,6 +92,7 @@ export function continuePoint(
       case "solid3d":
       case "point":
       case "solid2d":
+      case "leader":
         break
       default: {
         const unhandled: never = entity
@@ -154,6 +155,7 @@ export function lastDrawnDirection(
       case "solid3d":
       case "point":
       case "solid2d":
+      case "leader":
         break
       default: {
         const unhandled: never = entity

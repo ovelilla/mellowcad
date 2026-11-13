@@ -20,6 +20,7 @@ import {
   type CircleEntity,
   type PointEntity,
   type Solid2dEntity,
+  type LeaderEntity,
   type DimensionEntity,
   type EllipseEntity,
   type Entity,
@@ -197,6 +198,67 @@ export const solid2dEntity: fc.Arbitrary<Solid2dEntity> = fc
         corners: [a, b, c, triangle && other ? { x: c.x, y: c.y } : d],
       },
       "solid2d"
+    )
+  )
+
+/**
+ * A leader: two to five vertices, straight or a spline, with or without an
+ * arrowhead, its hook, horizontal, annotation (an id the drawing need not
+ * hold), text size, offsets and overrides each there half the time.
+ */
+export const leaderEntity: fc.Arbitrary<LeaderEntity> = fc
+  .record({
+    vertices: fc.array(point, { minLength: 2, maxLength: 5 }),
+    arrow: fc.boolean(),
+    spline: fc.boolean(),
+    hook: fc.boolean(),
+    horizontal: fc.option(angle, { nil: undefined }),
+    annotation: fc.option(
+      fc.record({
+        kind: fc.constantFrom("mtext" as const, "block" as const),
+        id: fc.constantFrom("e1", "e2"),
+      }),
+      { nil: undefined }
+    ),
+    textWidth: fc.option(fc.double({ min: 0, max: 100, noNaN: true }), {
+      nil: undefined,
+    }),
+    textOffset: fc.option(point, { nil: undefined }),
+    blockOffset: fc.option(point, { nil: undefined }),
+    textAbove: fc.option(fc.boolean(), { nil: undefined }),
+    scale: fc.option(fc.double({ min: 0.1, max: 100, noNaN: true }), {
+      nil: undefined,
+    }),
+  })
+  .map((r) =>
+    withId<LeaderEntity>(
+      {
+        type: "leader",
+        layerId: DEFAULT_LAYER_ID,
+        vertices: r.vertices,
+        arrow: r.arrow,
+        spline: r.spline,
+        hook: r.hook && r.vertices.length > 2,
+        ...(r.horizontal ? { horizontal: r.horizontal } : {}),
+        ...(r.annotation ? { annotation: r.annotation } : {}),
+        ...(r.textWidth !== undefined
+          ? { textWidth: r.textWidth, textHeight: r.textWidth / 4 }
+          : {}),
+        ...(r.textOffset ? { textOffset: r.textOffset } : {}),
+        ...(r.blockOffset ? { blockOffset: r.blockOffset } : {}),
+        styleId: DEFAULT_DIM_STYLE_ID,
+        ...(r.textAbove !== undefined || r.scale !== undefined
+          ? {
+              overrides: {
+                ...(r.textAbove !== undefined
+                  ? { textAbove: r.textAbove }
+                  : {}),
+                ...(r.scale !== undefined ? { scale: r.scale } : {}),
+              },
+            }
+          : {}),
+      },
+      "leader"
     )
   )
 
@@ -1112,7 +1174,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       solidEntity,
       sweptSolidEntity,
       pointEntity,
-      solid2dEntity
+      solid2dEntity,
+      leaderEntity
     ),
     zValue,
     zValue,

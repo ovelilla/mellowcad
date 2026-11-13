@@ -1,4 +1,5 @@
 import { withSolid2dCorner } from "./solids2d"
+import { withLeaderOverride, withLeaderVertex } from "./leaders"
 import { SolidProperty, primitiveRetyped } from "./solidGrips"
 import { solidRemade } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
@@ -14,6 +15,7 @@ import {
   InsertEntity,
   PolylineEntity,
   Polyline3dEntity,
+  LeaderEntity,
   Entity,
   ArrayParameters,
 } from "./entityTypes"
@@ -137,6 +139,18 @@ export type EntityProperty =
   | "arrayItemSpacing"
   /** A path array's Align items, a choice: 1 Yes, 0 No. */
   | "arrayAlignItems"
+  /**
+   * A leader's overrides of its style (desktop leader/d01): Arrow size,
+   * Text offset (DIMGAP), Dim scale overall; its Type, a choice in the
+   * palette's order (ax26res 115): 0 Line with no arrow, 1 Spline with no
+   * arrow, 2 Line with arrow, 3 Spline with arrow; its Text pos vert, a
+   * choice: 1 Above, 0 Centered.
+   */
+  | "leaderArrowSize"
+  | "leaderTextGap"
+  | "leaderScale"
+  | "leaderType"
+  | "leaderTextAbove"
   /** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
   | SolidProperty
   | ZProperty
@@ -164,7 +178,7 @@ const PLANE_ROWS: Readonly<
 > = {
   centerZ: ["circle", "arc", "ellipse"],
   positionZ: ["text", "mtext", "attdef", "insert", "point"],
-  elevation: ["polyline", "hatch", "solid2d"],
+  elevation: ["polyline", "hatch", "solid2d", "leader"],
 }
 
 /**
@@ -266,6 +280,8 @@ export function applyEntityProperty(
         property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
       )
     }
+    case "leader":
+      return applyLeaderProperty(entity, property, value, vertex)
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null
@@ -281,6 +297,44 @@ export function applyEntityProperty(
 }
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+
+/**
+ * A leader's rows (desktop leader/d01): its current vertex's X and Y, which
+ * at the end take the hook along as a grip does; its overrides of the style;
+ * its Type and Text pos vert, choices.
+ */
+function applyLeaderProperty(
+  leader: LeaderEntity,
+  property: EntityProperty,
+  value: number,
+  vertex: number
+): LeaderEntity | null {
+  switch (property) {
+    case "vertexX":
+    case "vertexY": {
+      if (vertex < 0 || vertex >= leader.vertices.length) return null
+      const at = leader.vertices[vertex]
+      return withLeaderVertex(
+        leader,
+        vertex,
+        property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
+      )
+    }
+    case "leaderArrowSize":
+      return value >= 0 ? withLeaderOverride(leader, "arrowSize", value) : null
+    case "leaderTextGap":
+      return withLeaderOverride(leader, "textGap", value)
+    case "leaderScale":
+      return value > 0 ? withLeaderOverride(leader, "scale", value) : null
+    case "leaderType":
+      if (![0, 1, 2, 3].includes(value)) return null
+      return { ...leader, spline: value % 2 === 1, arrow: value >= 2 }
+    case "leaderTextAbove":
+      return withLeaderOverride(leader, "textAbove", value !== 0)
+    default:
+      return null
+  }
+}
 
 const VERTEX_AXES: Partial<Record<EntityProperty, "x" | "y" | "z">> = {
   vertexX: "x",

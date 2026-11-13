@@ -954,6 +954,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
     case "insert":
     case "point":
     case "solid2d":
+    case "leader":
     case "region":
     case "solid3d":
       return null
@@ -974,6 +975,8 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "arc":
     case "polyline":
     case "ellipse":
+    // Taken, then `Cannot offset that object.` at the side (leader/p21).
+    case "leader":
       return "offsets"
     case "spline":
       return offsetsCurve(entity) ? "offsets" : "notPicked"
@@ -1080,6 +1083,7 @@ function computeOffset(
     case "insert":
     case "point":
     case "solid2d":
+    case "leader":
     case "region":
     case "solid3d":
       return CANNOT_OFFSET
@@ -1178,6 +1182,7 @@ function computeThrough(picked: Entity, point: Vec2): OffsetResult {
     case "insert":
     case "point":
     case "solid2d":
+    case "leader":
     case "region":
     case "solid3d":
       return CANNOT_OFFSET

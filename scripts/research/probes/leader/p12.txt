@@ -1,0 +1,80 @@
+(progn (defun pr (e) (print (entget e)) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_DIMTAD
+0
+_LEADER
+0,0
+10,10
+
+One line
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_LEADER
+100,0
+110,10
+
+First
+Second
+Third
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_DIMTAD
+1
+_LEADER
+200,0
+210,10
+
+First
+Second
+Third
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_DIMSCALE
+10
+_DIMGAP
+-0.625
+_LEADER
+300,0
+400,100
+
+Boxed
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_DIMSCALE
+1
+_DIMGAP
+0.625
+_LEADER
+500,0
+510,1.5
+
+Hook15a
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_LEADER
+600,0
+610,3
+
+Hook16
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_LEADER
+700,0
+710,2.6795
+
+Hook15
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_LEADER
+800,0
+800,10
+
+Vertical
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))
+_LEADER
+900,0
+900.5,1
+
+Short
+
+(progn (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))) (pr (entlast)))

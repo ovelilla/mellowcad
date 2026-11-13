@@ -65,6 +65,8 @@ import {
   withThickness,
   SolidPrimitive,
   SolidSweep,
+  LeaderAnnotation,
+  LeaderOverrides,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -137,7 +139,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 51
+export const DRAWING_FILE_VERSION = 52
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -639,6 +641,33 @@ function cloneEntityShape(entity: Entity): Entity {
         layerId: entity.layerId,
         ...overrides,
         corners: [at(a), at(b), at(c), at(d)],
+      }
+    }
+    case "leader": {
+      const at = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
+      return {
+        id: entity.id,
+        type: "leader",
+        layerId: entity.layerId,
+        ...overrides,
+        vertices: entity.vertices.map(at),
+        arrow: entity.arrow,
+        spline: entity.spline,
+        hook: entity.hook,
+        ...(entity.horizontal ? { horizontal: entity.horizontal } : {}),
+        ...(entity.annotation ? { annotation: { ...entity.annotation } } : {}),
+        ...(entity.textWidth !== undefined
+          ? { textWidth: entity.textWidth }
+          : {}),
+        ...(entity.textHeight !== undefined
+          ? { textHeight: entity.textHeight }
+          : {}),
+        ...(entity.textOffset ? { textOffset: at(entity.textOffset) } : {}),
+        ...(entity.blockOffset ? { blockOffset: at(entity.blockOffset) } : {}),
+        styleId: entity.styleId,
+        ...(entity.overrides
+          ? { overrides: storedLeaderOverrides(entity.overrides) }
+          : {}),
       }
     }
   }
@@ -1698,9 +1727,81 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         corners: [a, b, c, d],
       }
     }
+    case "leader": {
+      // Since 52.
+      if (!Array.isArray(raw.vertices)) return null
+      const vertices = raw.vertices.map(parseVec2)
+      if (vertices.length < 2) return null
+      if (vertices.some((v) => v === null)) return null
+      const annotation = isRecord(raw.annotation) ? raw.annotation : undefined
+      const kind = annotation?.kind
+      const target: LeaderAnnotation | undefined =
+        annotation &&
+        (kind === "mtext" || kind === "block") &&
+        typeof annotation.id === "string"
+          ? { kind, id: annotation.id }
+          : undefined
+      const size = (value: unknown) =>
+        isFiniteNumber(value) && value >= 0 ? value : undefined
+      const textWidth = size(raw.textWidth)
+      const textHeight = size(raw.textHeight)
+      const textOffset = parseVec2(raw.textOffset)
+      const blockOffset = parseVec2(raw.blockOffset)
+      const own = parseLeaderOverrides(raw.overrides)
+      return {
+        id,
+        type: "leader",
+        layerId,
+        ...overrides,
+        vertices: vertices as Vec2[],
+        arrow: raw.arrow !== false,
+        spline: raw.spline === true,
+        hook: raw.hook === true && vertices.length > 2,
+        ...(isFiniteNumber(raw.horizontal) && raw.horizontal !== 0
+          ? { horizontal: raw.horizontal }
+          : {}),
+        ...(target ? { annotation: target } : {}),
+        ...(textWidth !== undefined ? { textWidth } : {}),
+        ...(textHeight !== undefined ? { textHeight } : {}),
+        ...(textOffset ? { textOffset } : {}),
+        ...(blockOffset ? { blockOffset } : {}),
+        styleId: parseId(raw.styleId, DEFAULT_DIM_STYLE_ID),
+        ...(own ? { overrides: own } : {}),
+      }
+    }
     default:
       return null
   }
+}
+
+/** A leader's overrides in one order, whatever order they were set in. */
+function storedLeaderOverrides(o: LeaderOverrides): LeaderOverrides {
+  return {
+    ...(o.arrowSize !== undefined ? { arrowSize: o.arrowSize } : {}),
+    ...(o.scale !== undefined ? { scale: o.scale } : {}),
+    ...(o.textGap !== undefined ? { textGap: o.textGap } : {}),
+    ...(o.textAbove !== undefined ? { textAbove: o.textAbove } : {}),
+  }
+}
+
+/** A leader's overrides of its style: each a number in range, DIMTAD a boolean. */
+function parseLeaderOverrides(raw: unknown): LeaderOverrides | undefined {
+  if (!isRecord(raw)) return undefined
+  const size = (value: unknown) =>
+    isFiniteNumber(value) && value >= 0 ? value : undefined
+  const arrowSize = size(raw.arrowSize)
+  const scale =
+    isFiniteNumber(raw.scale) && raw.scale > 0 ? raw.scale : undefined
+  const textGap = isFiniteNumber(raw.textGap) ? raw.textGap : undefined
+  const textAbove =
+    typeof raw.textAbove === "boolean" ? raw.textAbove : undefined
+  const overrides: LeaderOverrides = {
+    ...(arrowSize !== undefined ? { arrowSize } : {}),
+    ...(scale !== undefined ? { scale } : {}),
+    ...(textGap !== undefined ? { textGap } : {}),
+    ...(textAbove !== undefined ? { textAbove } : {}),
+  }
+  return Object.keys(overrides).length > 0 ? overrides : undefined
 }
 
 function parseBrep(raw: unknown): Brep | null {

@@ -131,7 +131,8 @@
       "divide": "Dividir",
       "measuresegments": "Medir",
       "ptype": "Estilo de ponto",
-      "solid": "Sólido 2D"
+      "solid": "Sólido 2D",
+      "leader": "Linha de chamada"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -232,7 +233,8 @@
       "solid3d": "{count, plural, one {Sólido 3D} other {Sólidos 3D}}",
       "region": "{count, plural, one {Região} other {Regiões}}",
       "point": "{count, plural, one {Ponto} other {Pontos}}",
-      "solid2d": "{count, plural, one {Sólido} other {Sólidos}}"
+      "solid2d": "{count, plural, one {Sólido} other {Sólidos}}",
+      "leader": "{count, plural, one {Linha de chamada} other {Linhas de chamada}}"
     },
     "array": {
       "rectangular": "Matriz (Retangular)",
@@ -440,7 +442,9 @@
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir zeros à direita",
         "precision": "Precisão",
-        "perimeter": "Perímetro"
+        "perimeter": "Perímetro",
+        "arrow": "Seta",
+        "textPosVert": "Posição vertical do texto"
       },
       "value": {
         "yes": "Sim",
@@ -474,7 +478,14 @@
         "predefined": "Predefinido",
         "outer": "Externa",
         "extrusion": "Extrusão",
-        "revolve": "Revolução"
+        "revolve": "Revolução",
+        "lineWithNoArrow": "Linha sem seta",
+        "splineWithNoArrow": "Spline sem seta",
+        "lineWithArrow": "Linha com seta",
+        "splineWithArrow": "Spline com seta",
+        "closedFilled": "Preenchido fechado",
+        "centered": "Centralizado",
+        "above": "Acima"
       },
       "justify": {
         "left": "Esquerda",
@@ -655,7 +666,8 @@
       "DIVIDE": ["DIVIDIR", "DIV"],
       "MEASURE": ["MEDIDA", "ME"],
       "PTYPE": ["TIPOP", "TIP", "DDPTYPE", "TIPOPD"],
-      "SOLID": ["SÓLIDO"]
+      "SOLID": ["SÓLIDO"],
+      "LEADER": ["LINHACHAM", "LCHAM", "LEAD"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1458,6 +1470,18 @@
         "Block": "Bloco",
         "Yes": "Sim",
         "No": "Não"
+      },
+      "LEADER": {
+        "Annotation": "Anotação",
+        "Format": "Formato",
+        "Undo": "Desfazer",
+        "Spline": "SPline",
+        "STraight": "Reta",
+        "Arrow": "SEta",
+        "None": "Nenhum",
+        "Exit": "Sair",
+        "Copy": "Cópia",
+        "Mtext": "textoM"
       }
     },
     "promptKeywords": {
@@ -2162,7 +2186,16 @@
       "solidSecondPoint": "Especificar segundo ponto",
       "solidThirdPoint": "Especificar terceiro ponto",
       "solidFourthPointOr": "Especificar quarto ponto ou",
-      "exitSolid": "sair"
+      "exitSolid": "sair",
+      "leaderStartPoint": "Especificar ponto inicial da linha de chamada",
+      "leaderNextPoint": "Especificar próximo ponto",
+      "leaderNextPointOr": "Especificar próximo ponto ou",
+      "leaderFormatOption": "Insira a opção de formato da linha de chamada",
+      "leaderFirstLine": "Insira a primeira linha do texto de anotação ou",
+      "leaderOptions": "opções",
+      "leaderNextLine": "Inserir a próxima linha do texto de anotação",
+      "leaderAnnotationOption": "Insira uma opção de anotação",
+      "leaderCopyObject": "Selecione um objeto a ser copiado"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2608,7 +2641,7 @@
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
       "allAdditionsUndone": "Todas as adições foram desfeitas.",
-      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} other {MATRIZ}}",
       "listObject": "                  {name}  Camada: \"{layer}\"",
       "listSpace": "                            Espaço: Espaço do modelo",
       "listColor": "                   Cor: {color}    Tipo de linha: \"{linetype}\"",
@@ -2898,7 +2931,15 @@
       "objectNotThatLong": "O objeto não é tão longo.",
       "objectTooLong": "O objeto é longo demais.",
       "cannotFindBlock": "Não é possível localizar bloco \"{name}\".",
-      "blockNameNotValid": "Nome bloco inválido."
+      "blockNameNotValid": "Nome bloco inválido.",
+      "leaderCopyRefused": "Selecione um textom, texto, referência de bloco ou objeto de tolerância.",
+      "listLeaderNormal": "Normal:               X={x}  Y={y}  Z={z}",
+      "listLeaderHorizontal": "Direção horizontal:   X={x}  Y={y}  Z={z}",
+      "listLeaderVertex": "Vértice:       X={x}  Y={y}  Z={z}",
+      "listLeaderHook": "Linha no gancho: {on, select, yes {Ativado} other {Desativado}}",
+      "listLeaderArrow": "Seta:            {on, select, yes {Ativado} other {Desativado}}",
+      "listLeaderPath": "Tipo de caminho: {spline, select, yes {Spline} other {Direto}}",
+      "listLeaderAnnotative": "        Anotativo: Não"
     },
     "feedback": {
       "snap": {

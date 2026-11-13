@@ -216,6 +216,7 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
     case "line":
     case "polyline3d":
     case "dimension":
+    case "leader":
     case "hatch":
     case "region":
     case "solid3d":
@@ -264,6 +265,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "mtext":
     case "attdef":
     case "dimension":
+    case "leader":
     case "hatch":
     case "insert":
     case "region":
@@ -385,6 +387,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "mtext":
     case "attdef":
     case "dimension":
+    case "leader":
     case "hatch":
     case "insert":
     case "region":
@@ -469,6 +472,7 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "attdef":
     case "insert":
     case "dimension":
+    case "leader":
     case "hatch":
     case "polyline3d":
     // WHY: unverified, read as a pick at the WCS's origin, the edge nearest it.

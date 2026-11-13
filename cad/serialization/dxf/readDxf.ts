@@ -3,7 +3,12 @@ import {
   BlockDefinition,
   Entity,
   createBlockDefinition,
+  leaderLook,
+  leaderInPlaneOf,
+  leaderOffsetRead,
+  samePlane,
 } from "../../domain/entities"
+import { DEFAULT_DIM_STYLE, DimStyle } from "../../domain/dimStyles"
 import { ParsedDrawing } from "../drawingFile"
 import { dxfGroups } from "./dxfGroups"
 import { DxfBlock, DxfRecord, dxfSections } from "./dxfSections"
@@ -15,6 +20,7 @@ import {
 } from "./dxfEntities"
 import {
   DxfLayers,
+  dxfDimStyleTextAbove,
   dxfDimStyles,
   dxfLinetypes,
   dxfTextStyles,
@@ -69,6 +75,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   const layers = new DxfLayers(table("LAYER"), linetype)
   const textStyles = dxfTextStyles(table("STYLE"))
   const dimStyles = dxfDimStyles(table("DIMSTYLE"))
+  const dimStyleTextAbove = dxfDimStyleTextAbove(table("DIMSTYLE"))
   const leftOut = new Map<string, number>()
   let inLayouts = 0
   let unreadable = 0
@@ -104,6 +111,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     linetype,
     textStyle: (name) => textStyles.id(name),
     dimStyle: (name) => dimStyles.id(name),
+    dimStyleTextAbove,
     block: (name) => targets.get(name.toUpperCase()) ?? null,
     splineSegments: settings.splineSegments,
     hatchSplineFitData: version >= 1024,
@@ -111,6 +119,64 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     unreadable: () => {
       unreadable++
     },
+  }
+
+  const styles = new Map(dimStyles.entries().map((s) => [s.id, s]))
+  const styleOf = (id: string): DimStyle => styles.get(id) ?? DEFAULT_DIM_STYLE
+  /**
+   * One space's objects, each leader linked to the MTEXT or block reference
+   * its 340 names, when that is in the same space, and its offset from it read
+   * off where they stand (DXF 213 and 212 are relative to where AutoCAD puts
+   * the text, which this reads the same way: leader/p14, p22).
+   */
+  const readSpace = (records: readonly DxfRecord[]): Entity[] => {
+    const out: Entity[] = []
+    const byHandle = new Map<string, Entity>()
+    const pending: { index: number; handle: string }[] = []
+    for (const record of records) {
+      const made = dxfEntities(record, ctx)
+      const handle = str(record, 5)?.trim().toUpperCase()
+      if (
+        handle &&
+        made[0] &&
+        (record.type === "MTEXT" || record.type === "INSERT")
+      ) {
+        byHandle.set(handle, made[0])
+      }
+      const target = str(record, 340)?.trim().toUpperCase()
+      if (record.type === "LEADER" && made[0] && target && target !== "0") {
+        pending.push({ index: out.length, handle: target })
+      }
+      out.push(...made)
+    }
+    for (const { index, handle } of pending) {
+      const read = out[index]
+      const annotation = byHandle.get(handle)
+      if (read?.type !== "leader" || !annotation) continue
+      if (annotation.type !== "mtext" && annotation.type !== "insert") continue
+      // A leader linked to an object in another plane would mix two frames;
+      // one in its plane facing the other way is read in the object's.
+      const leader = samePlane(read, annotation)
+        ? read
+        : leaderInPlaneOf(read, annotation)
+      if (!leader) continue
+      const linked = {
+        ...leader,
+        annotation: {
+          kind:
+            annotation.type === "mtext"
+              ? ("mtext" as const)
+              : ("block" as const),
+          id: annotation.id,
+        },
+      }
+      out[index] = leaderOffsetRead(
+        linked,
+        annotation,
+        leaderLook(linked, styleOf(linked.styleId))
+      )
+    }
+    return out
   }
 
   const blocks: BlockDefinition[] = definitions.map((block) => {
@@ -121,19 +187,17 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     return createBlockDefinition(
       target.id,
       target.basePoint as Vec2,
-      block.entities.flatMap((record) => dxfEntities(record, ctx)),
+      readSpace(block.entities),
       base?.z ?? 0
     )
   })
 
-  const entities: Entity[] = []
+  const modelRecords: DxfRecord[] = []
   for (const record of dxf.entities) {
-    if (inPaperSpace(record)) {
-      if (countable([record])) inLayouts++
-      continue
-    }
-    entities.push(...dxfEntities(record, ctx))
+    if (!inPaperSpace(record)) modelRecords.push(record)
+    else if (countable([record])) inLayouts++
   }
+  const entities = readSpace(modelRecords)
 
   return {
     drawing: {

@@ -268,6 +268,14 @@ clipboard, FROM's, `messages.erased`), the keys `research/console/fr.md` lists `
   `Spécifiez un quatrième point ou <Quitter>`, `Point 2D incorrect.`; the object `Solide`, the
   Properties palette's (desktop solid2d/d03), the tool `Solide 2D`, acad.cuix's ID_Solid; LIST's
   lines the console's (`SOLIDE`, `de point`, `et point`, `à point`, p21).
+- **LEADER:** the name by the help page that shares the English GUID and the console (`LREPERE`,
+  leader/p17; no alias: the `acad.pgp`'s `LE` is QLEADER's `LREPERERAP`, and `LEAD` is unknown
+  there); the prompts AcDimRes 5507–5529's, the console's (leader/p17 and the others run in it); the palette's labels `ax26res.dll`'s by id (297, 115, 1069, 191–192, 174, 186, 169): `Indiquez le point de départ de la ligne de repère`, `Indiquez le
+  point suivant ou [Annotation/Format/annUler] <Annotation>`, `Entrez une option de format pour la
+  ligne de repère [SPline/Droite/Flèche/Aucun(e)] <Quitter>`, `Entrez une option d'annotation
+  [Copier/Aucun(e)/textMult] <textMult>`; the object `Ligne de repère`, Arrow `Fermé plein`, `Position
+  verticale du texte` `Au-dessus` / `Centré`; LIST's lines the console's (`Direction horizontale`,
+  `Sommet`, `Attache de ligne de repère: Inactif`, `Type de chemin: Droit`, p20).
 
 ## Script and font
 

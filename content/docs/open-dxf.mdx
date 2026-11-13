@@ -13,7 +13,7 @@ faq:
   - question: "Can I save my changes as a DXF file?"
     answer: "Yes. SAVEAS (Ctrl+Shift+S) or DXFOUT saves the drawing as a DXF of AutoCAD 2000 to 2018, text or binary, which AutoCAD opens. 3D solids and regions are left out, and the command line says so."
   - question: "Why are some objects missing?"
-    answer: "What MellowCAD has no object for yet, such as leaders, tables or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet."
+    answer: "What MellowCAD has no object for yet, such as multileaders, tables or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet."
 ---
 
 <OpenDxf />
@@ -24,7 +24,7 @@ MellowCAD opens DXF files in your browser and draws them in its editor, where yo
 
 - **DXF from AutoCAD R12 to 2018**, the newest DXF format AutoCAD writes, in text (ASCII) or binary, made by AutoCAD or by another program. Its text keeps its characters: up to 2004 in the code page the file names, from 2007 in UTF-8.
 - **Lines, arcs, circles, ellipses and polylines**, with their widths and their curve-fit and spline-fit forms, 3D polylines and splines, and points, drawn in the drawing's [point style](/docs/commands/ptype), and 2D solids, filled as FILLMODE says.
-- **Single-line and multiline text**, blocks with their attributes, linear, aligned, angular, radius and diameter dimensions, and hatches.
+- **Single-line and multiline text**, leaders with their text, blocks with their attributes, linear, aligned, angular, radius and diameter dimensions, and hatches.
 - **Each object's layer**, colour, linetype, lineweight, thickness and elevation, and the layers on, off or locked; a frozen layer opens off.
 - **The drawing's text and dimension styles**, and its units when they are millimetres, centimetres or metres.
 
@@ -34,7 +34,7 @@ When a DXF holds something MellowCAD has no object for yet, it opens the rest an
 
 - traces, 3D faces and meshes;
 - construction lines and rays, multilines;
-- leaders, multileaders and tolerances, tables, wipeouts and images;
+- multileaders and tolerances, tables, wipeouts and images;
 - external references;
 - 3D solids, regions and surfaces;
 - gradient fills, and ordinate and arc length dimensions.
@@ -77,4 +77,4 @@ Yes. <Command id="SAVEAS" /> (`Ctrl+Shift+S`) or <Command id="DXFOUT" /> saves t
 
 ### Why are some objects missing? [#missing]
 
-What MellowCAD has no object for yet, such as leaders, tables or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet.
+What MellowCAD has no object for yet, such as multileaders, tables or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet.

@@ -2,6 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Axes3, arbitraryAxis, axesToWorld } from "../../geometry/ocs"
 import {
   BlockDefinition,
+  BlockAttribute,
   BlockLookup,
   DimensionEntity,
   Entity,
@@ -163,10 +164,61 @@ export function writeDxf(
   const styleOf = (id: string): DimStyle =>
     dimStyles.get(id) ?? DEFAULT_DIM_STYLE
 
+  // A leader and the annotation it points at, when both are written in one
+  // space: each needs the other's handle (340, ACAD_REACTORS). Keyed by the
+  // space and the id, as two blocks can hold objects of one id (a pasted
+  // array's), and set to the space being written as it is written.
+  const MODEL = "\u0000model"
+  let space = MODEL
+  const key = (scope: string, id: string) => `${scope}\u0000${id}`
+  const annotationOf = new Map<string, string>()
+  const reactorsOf = new Map<string, string[]>()
+  const pair = (scope: string, entities: readonly Entity[]): void => {
+    const byId = new Map(entities.map((e) => [e.id, e]))
+    for (const e of entities) {
+      if (e.type !== "leader" || !e.annotation) continue
+      const target = byId.get(e.annotation.id)
+      const wanted = e.annotation.kind === "mtext" ? "mtext" : "insert"
+      if (target?.type !== wanted) continue
+      const from = key(scope, e.id)
+      const to = key(scope, target.id)
+      annotationOf.set(from, to)
+      reactorsOf.set(to, [...(reactorsOf.get(to) ?? []), from])
+    }
+  }
+  pair(MODEL, modelEntities)
+  for (const block of drawing.blocks) pair(block.name, block.entities)
+  const paired = new Map<string, string>()
+  const pairedHandle = (k: string): string => {
+    let h = paired.get(k)
+    if (h === undefined) {
+      h = handle()
+      paired.set(k, h)
+    }
+    return h
+  }
+  const keyOf = (entity: Entity | BlockAttribute): string | null => {
+    if (!("id" in entity)) return null
+    const k = key(space, entity.id)
+    return annotationOf.has(k) || reactorsOf.has(k) ? k : null
+  }
+
   const ctx: DxfWriteContext = {
     out: body,
     version,
     handle,
+    entityHandle: (entity) => {
+      const k = keyOf(entity)
+      return k === null ? handle() : pairedHandle(k)
+    },
+    reactors: (entity) => {
+      const k = keyOf(entity)
+      return k === null ? [] : (reactorsOf.get(k) ?? []).map(pairedHandle)
+    },
+    annotation: (leader) => {
+      const target = annotationOf.get(key(space, leader.id))
+      return target ? pairedHandle(target) : null
+    },
     layerName: (id) => layers.get(id)?.name ?? "0",
     textStyleName: (id) => textStyles.get(id)?.name ?? "Standard",
     dimStyleName: (id) => dimStyles.get(id)?.name ?? "ISO-25",
@@ -201,7 +253,9 @@ export function writeDxf(
       baseZ: block.baseElevation ?? 0,
       anonymous: block.name.startsWith("*"),
       write: (c, owner) => {
+        space = block.name
         for (const e of block.entities) writeEntity(c, e, owner)
+        space = MODEL
       },
     })
   }
@@ -343,6 +397,7 @@ export function writeDxf(
   // ENTITIES
   out.str(0, "SECTION")
   out.str(2, "ENTITIES")
+  space = MODEL
   for (const entity of modelEntities) writeEntity(ctx, entity, T.modelRecord)
   out.str(0, "ENDSEC")
 

@@ -303,6 +303,7 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     case "region":
     case "solid3d":
     case "point":
+    case "leader":
       return null
     default: {
       const unhandled: never = entity

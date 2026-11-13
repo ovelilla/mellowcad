@@ -1,0 +1,11 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e (list "*"))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+(list (getvar "DIMSTYLE") (getvar "DIMASZ") (getvar "DIMSCALE") (getvar "DIMGAP") (getvar "DIMTAD") (getvar "DIMTXT") (getvar "DIMLDRBLK") (getvar "MEASUREMENT") (getvar "TEXTSTYLE") (getvar "DIMTXSTY"))
+_LEADER
+0,0
+10,10
+20,10
+
+Hello
+World
+
+(dump)

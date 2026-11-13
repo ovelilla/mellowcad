@@ -345,6 +345,7 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
     case "region":
     case "solid3d":
     case "point":
+    case "leader":
       return null
     default: {
       const unhandled: never = entity

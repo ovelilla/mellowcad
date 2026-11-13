@@ -119,7 +119,11 @@ without the style code AutoCAD may write after it (`ANSI31,_O`), POINT with its 
 DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files), SOLID
 with its four corners in their order, thickness and plane, a fourth left out the third (f001's, and
 the 2,831 of 67 of AutoCAD's samples, mostly the arrowheads and fills of old blocks, and 8 of 2 other
-programs' files: solid2d/p01, p08); the tables: layers (on,
+programs' files: solid2d/p01, p08), LEADER with its vertices from the WCS, arrowhead, spline,
+hook, horizontal and its DSTYLE overrides of DIMSCALE, DIMASZ, DIMTAD and DIMGAP, a DIMTAD of 0 its
+style's kept as its own, linked by its 340 to the MTEXT or block reference of its space it points
+at, its offset from it read off where they stand (f001's, AutoCAD's own leader/p22, and the 823 of
+22 of AutoCAD's samples: leader/p22, the corpus); the tables: layers (on,
 off, locked), text and dimension styles (a group left out at the DXF reference's value, not
 ISO-25's: f001's Standard), blocks; the header's INSUNITS (mm, cm, m), LUPREC, AUPREC, LTSCALE,
 CLAYER, CECOLOR, CELTYPE, CELWEIGHT, TEXTSTYLE, DIMSTYLE, TEXTSIZE, FILLETRAD, CHAMFERA and B,
@@ -152,7 +156,8 @@ is vertices and bulges; units other than mm, cm and m keep their numbers, in mil
 model has only those three
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
-3DFACE, XLINE, RAY, LEADER, MLEADER, TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
+3DFACE, XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
+TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them, external references; a gradient hatch; a drawing's own linetypes and hatch patterns (one
 outside the 24, or user-defined, keeps its name and draws no fill), the index colours as such,
@@ -184,11 +189,16 @@ vertices, a spline with its fit data or its knots, weights and control points (a
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
 reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN, a
 point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
-2D solid's corners in its OCS with its thickness and plane (solid2d/p08); each
+2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a leader as AutoCAD's
+DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
+its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given
+together (leader/p22); each
 file of the two reference drawings, of one of every other kind, of points flat, thick, turned
 and tilted (the console reading back each one's place, DXF 50, thickness, plane and the drawing's
 PDMODE 35 and PDSIZE −7) and of 2D solids flat, thick and raised, and tilted (solid2d/p19 the
-same drawn by AutoCAD, plotted alike), in every version, ASCII and binary, opened by AutoCAD 2027's console with
+same drawn by AutoCAD, plotted alike) and of leaders (hooked, to the left, alone, a spline, centred
+at DIMSCALE 10 with no arrowhead, to a block reference, facing down: AutoCAD reads each pair
+associated and its leader follows the text moved, p23), in every version, ASCII and binary, opened by AutoCAD 2027's console with
 no AUDIT error and plotted as AutoCAD's own
 (scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
 regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,

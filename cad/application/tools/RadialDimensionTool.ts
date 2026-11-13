@@ -453,6 +453,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
     case "insert":
     case "point":
     case "solid2d":
+    case "leader":
       return null
     default: {
       const unhandled: never = entity

@@ -1,0 +1,26 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e (list "*"))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+(progn (entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 50.0 50.0 0.0) (cons 40 5.0) (cons 71 1) (cons 1 "Copied\\Pnote"))) (setq mt (entlast)) (entmake (list (cons 0 "TEXT") (list 10 50.0 80.0 0.0) (cons 40 3.0) (cons 1 "Plain text"))) (setq tx (entlast)) (princ))
+_LEADER
+0,0
+10,10
+
+
+_C
+(list mt (list 50.5 49 0))
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 340 (entget (entlast)))))) (princ))
+_LEADER
+100,0
+90,10
+
+
+_C
+(list tx (list 51 80.5 0))
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 340 (entget (entlast)))))) (princ))
+_LEADER
+200,0
+210,10
+
+
+_C
+(list (entlast) (list 210 10 0))
+(progn (print (entget (entlast))) (princ))

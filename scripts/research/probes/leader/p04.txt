@@ -1,0 +1,27 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e (list "*"))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+_LEADER
+
+(getvar "LASTPOINT")
+_LEADER
+0,0
+
+(getvar "LASTPOINT")
+_LEADER
+0,0
+10,0
+_U
+_U
+20,0
+_F
+_N
+_F
+_ST
+_F
+_A
+_F
+
+30,10
+
+_N
+(dump)
+(getvar "LASTPOINT")

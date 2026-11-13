@@ -304,6 +304,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "solid3d":
       case "point":
       case "solid2d":
+      case "leader":
         break
       default: {
         const unhandled: never = entity

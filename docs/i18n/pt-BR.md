@@ -395,6 +395,14 @@ each one's own is fixed by its test.
   solid2d/d03), the tool `Sólido 2D`, acad.cuix's ID_Solid; LIST's lines the console's (`SÓLIDO`,
   `de ponto`, `e ponto`, `para ponto`, p21). LIST's `Espessura =` was written three spaces wide of
   the console's (inquiry/p401, p402), now as it.
+- **LEADER:** the name by the help page that shares the English GUID and the console (`LINHACHAM`,
+  leader/p17), the aliases from the `acad.pgp` (`LCHAM`, `LEAD`, both run there); the prompts AcDimRes 5507–5529's, the console's (leader/p17 and the others run in it); the palette's labels `ax26res.dll`'s by id (297, 115, 1069, 191–192, 174, 186, 169):
+  `Especificar ponto inicial da linha de chamada`, `Especificar próximo ponto ou
+  [Anotação/Formato/Desfazer] <Anotação>`, `Insira a opção de formato da linha de chamada
+  [SPline/Reta/SEta/Nenhum] <Sair>`, `Selecione um objeto a ser copiado`; the object `Linha de
+  chamada`, Arrow `Preenchido fechado`, `Posição vertical do texto` `Acima` / `Centralizado`; LIST's
+  lines the console's (`Direção horizontal:   `, `Vértice:       `, `Linha no gancho: Desativado`,
+  `Tipo de caminho: Direto`, p20).
 
 ## Script and font
 

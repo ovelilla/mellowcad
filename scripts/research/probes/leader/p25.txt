@@ -1,0 +1,14 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (setvar "TILEMODE" 1) (princ))
+(progn (setq l (handent "25E11") t1 (handent "25E12") l2 (handent "25E49") t2 (handent "25E4A")) (princ))
+(progn (foreach x (list l l2) (print (vl-remove-if-not (quote (lambda (g) (member (car g) (quote (10 211 213 210 75))))) (entget x)))) (foreach x (list t1 t2) (print (vl-remove-if-not (quote (lambda (g) (member (car g) (quote (10 71 41 42 43 50))))) (entget x)))) (princ))
+_MOVE
+(ssadd t1)
+
+0,0
+10,0
+_MOVE
+(ssadd t2)
+
+0,0
+10,0
+(progn (foreach x (list l l2) (print (vl-remove-if-not (quote (lambda (g) (member (car g) (quote (10 211 213 210 75))))) (entget x)))) (foreach x (list t1 t2) (print (vl-remove-if-not (quote (lambda (g) (member (car g) (quote (10 71 41 42 43 50))))) (entget x)))) (princ))

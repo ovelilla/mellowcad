@@ -6,10 +6,10 @@
 > fase 2 (guardar como DXF, de 2000 a 2018) y su página, «editar DXF online» (sesión 07c),
 > publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
 > PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día, y siguió con SOLID,
-> hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154; siguiente en ella, LEADER
-> (de 107 a 121, corpus del 12/11); tras él, por orden del dueño, el alemán (`docs/next-seo.md`,
-> L8), y lo que quede de esta fase alterna con idiomas, una sesión cada vez. Se borra cuando la
-> fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154, y con LEADER,
+> hecho el 13/11, que las llevó a 121; siguiente, por orden del dueño, el alemán
+> (`docs/next-seo.md`, L8), y lo que quede de esta fase alterna con idiomas, una sesión cada vez.
+> Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -181,7 +181,27 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       solid», «relleno sólido» y «fillmode» valen 0 en Trends en los siete mercados frente a
       «autocad hatch» 71–79, y «solid fill» es el sombreado SOLID de HATCH (datos en
       `~/seo-data/raw-2026-11-12/solid/`). Lo que hace y le falta, en `docs/coverage/draw.md`.
-   2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros).
+   2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros). **LEADER
+      hecho** (13/11/2026): la directriz (sus vértices con el gancho, la flecha cerrada rellena de
+      DIMASZ × DIMSCALE, dibujada solo si el primer tramo mide al menos el doble, el spline, la
+      línea bajo el texto con DIMTAD 1, las sustituciones DSTYLE que su paleta muestra) asociada a
+      su MTEXT o bloque, que sigue en el mismo paso cuando se mueve, gira, escala o borra el texto,
+      y que COPY y los demás copian en pareja; LEADER con sus solicitudes, Formato, Deshacer y las
+      anotaciones Copiar, Ninguna y Textom (el editor en sitio) en los seis idiomas (consola,
+      tablas AcDimRes 5507–5533, escritorio; sondas `leader/`); pinzamientos, Propiedades,
+      transformaciones, STRETCH, EXPLODE y LIST como los de AutoCAD. El DXF en los dos sentidos con
+      su texto (340 y ACAD_REACTORS, las sustituciones como DSTYLE): la consola abre los 12 ficheros
+      (seis versiones, ASCII y binario) sin un error de AUDIT, los lee asociados (mover el texto
+      arrastra la directriz) y los traza como los suyos. El corpus, medido otra vez: abren las 823
+      directrices de las 22 muestras y las muestras enteras pasan de 107 a 121; los ficheros de
+      otros, 572 de 577 (ninguno tenía directrices). Se anotan: MLEADER y QLEADER (MULTILEADER es
+      otro objeto, con su tabla MLEADERSTYLE: 1 muestra y 4 objetos de 2 ficheros de otros), y las
+      anotaciones Tolerancia (no hay objeto TOLERANCE) y Bloque. Con página de comando,
+      `/docs/commands/leader` en los seis idiomas: «autocad leader» vale 13 en Trends en el mundo
+      y 18 en EE. UU., como «autocad offset» (12–17), y el autocompletado español pide su nombre
+      inglés («comando directriz en ingles autocad»); los términos localizados, MLEADER y QLEADER
+      valen 0 (`~/seo-data/raw-2026-11-13/leader/`). Lo que hace y le falta, en
+      `docs/coverage/dimensions.md`.
    3. **POINT** y PDMODE: 20 muestras y 18 ficheros de otros (16 piezas de LibreCAD, el
       levantamiento de un medidor láser Leica DISTO). **Hecho** (12/11/2026): la entidad POINT,
       PDMODE y PDSIZE (sus figuras medidas en el escritorio de AutoCAD 2027), POINT, PTYPE y su

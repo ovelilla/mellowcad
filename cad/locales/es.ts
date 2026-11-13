@@ -135,7 +135,8 @@ export const es: EngineLocale = {
       "divide": "Dividir",
       "measuresegments": "Medir",
       "ptype": "Tipo de punto",
-      "solid": "Sólido 2D"
+      "solid": "Sólido 2D",
+      "leader": "Directriz"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -389,6 +390,16 @@ export const es: EngineLocale = {
             "other": "Sólidos"
           }
         ]
+      ],
+      "leader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Directriz",
+            "other": "Directrices"
+          }
+        ]
       ]
     },
     "array": {
@@ -627,7 +638,9 @@ export const es: EngineLocale = {
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir ceros a la derecha",
         "precision": "Precisión",
-        "perimeter": "Perímetro"
+        "perimeter": "Perímetro",
+        "arrow": "Flecha",
+        "textPosVert": "Pos. texto vert."
       },
       "value": {
         "yes": "Sí",
@@ -661,7 +674,14 @@ export const es: EngineLocale = {
         "predefined": "Predefinido",
         "outer": "Exterior",
         "extrusion": "Extrusión",
-        "revolve": "Revolución"
+        "revolve": "Revolución",
+        "lineWithNoArrow": "Línea sin flecha",
+        "splineWithNoArrow": "Spline sin flecha",
+        "lineWithArrow": "Línea con flecha",
+        "splineWithArrow": "Spline con flecha",
+        "closedFilled": "Cerrado relleno",
+        "centered": "Centrado",
+        "above": "Encima"
       },
       "justify": {
         "left": "Izquierda",
@@ -1277,6 +1297,10 @@ export const es: EngineLocale = {
       "SOLID": [
         "SOLIDO",
         "SO"
+      ],
+      "LEADER": [
+        "DIRECTRIZ",
+        "DIREC"
       ]
     },
     "keywords": {
@@ -2085,6 +2109,18 @@ export const es: EngineLocale = {
         "Block": "Bloque",
         "Yes": "Sí",
         "No": "No"
+      },
+      "LEADER": {
+        "Annotation": "Anotación",
+        "Format": "Formato",
+        "Undo": "desHacer",
+        "Spline": "sPline",
+        "STraight": "Recta",
+        "Arrow": "Flecha",
+        "None": "Ninguna",
+        "Exit": "Salir",
+        "Copy": "Copiar",
+        "Mtext": "textoM"
       }
     },
     "promptKeywords": {
@@ -2841,7 +2877,16 @@ export const es: EngineLocale = {
       "solidSecondPoint": "Precise segundo punto",
       "solidThirdPoint": "Precise tercer punto",
       "solidFourthPointOr": "Precise cuarto punto o",
-      "exitSolid": "salir"
+      "exitSolid": "salir",
+      "leaderStartPoint": "Precise punto inicial de directriz",
+      "leaderNextPoint": "Precise el punto siguiente",
+      "leaderNextPointOr": "Precise siguiente punto o",
+      "leaderFormatOption": "Indique opción de formato de directriz",
+      "leaderFirstLine": "Indique la primera línea de texto de anotación u",
+      "leaderOptions": "opciones",
+      "leaderNextLine": "Indique línea siguiente de texto de anotación",
+      "leaderAnnotationOption": "Indique opción de anotación",
+      "leaderCopyObject": "Designe un objeto a copiar"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5569,6 +5614,7 @@ export const es: EngineLocale = {
             "region": "REGION",
             "solid3d": "3DSOLID",
             "solid2d": "SOLIDO",
+            "leader": "LEADER",
             "other": "MATRIZ"
           }
         ]
@@ -7636,7 +7682,84 @@ export const es: EngineLocale = {
         ],
         "\"."
       ],
-      "blockNameNotValid": "Nombre bloque no válido."
+      "blockNameNotValid": "Nombre bloque no válido.",
+      "leaderCopyRefused": "Seleccione un objeto de textom, texto, referencia a bloque o tolerancia.",
+      "listLeaderNormal": [
+        "Normal:               X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHorizontal": [
+        "Dirección horizontal: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderVertex": [
+        "Vértice:        X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHook": [
+        "Línea de conexión: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "ACT",
+            "other": "DES"
+          }
+        ]
+      ],
+      "listLeaderArrow": [
+        "Flecha:     ",
+        [
+          "on",
+          1,
+          {
+            "yes": "ACT",
+            "other": "DES"
+          }
+        ]
+      ],
+      "listLeaderPath": [
+        "Tipo de trayectoria: ",
+        [
+          "spline",
+          1,
+          {
+            "yes": "Spline",
+            "other": "Recta"
+          }
+        ]
+      ],
+      "listLeaderAnnotative": "        Anotativo: no"
     },
     "feedback": {
       "snap": {

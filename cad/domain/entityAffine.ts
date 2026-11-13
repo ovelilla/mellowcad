@@ -22,6 +22,7 @@ import { curveAffine } from "../geometry/planarCurves"
 import { loopReversed } from "../geometry/planarRegions"
 import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
+import { mapLeader } from "./leaders"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -125,6 +126,8 @@ export function linearEntity(
       )
     case "solid2d":
       return mapSolid2dCorners(entity, at)
+    case "leader":
+      return mapLeader(entity, at, at, (angle) => mappedAngle(map, angle))
     case "region": {
       const [xx, yx, xy, yy] = map
       const affine = { linear: { xx, xy, yx, yy }, translation: { x: 0, y: 0 } }

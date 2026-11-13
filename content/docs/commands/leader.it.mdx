@@ -1,0 +1,74 @@
+---
+title: "Comando DIRETTRICE (LEADER) in AutoCAD"
+metaTitle: "Direttrice in AutoCAD: DIRETTRICE (LEADER)"
+description: "Come funziona DIRETTRICE (LEADER) di AutoCAD in italiano: una linea dalla freccia al testo, la linea di aggancio e la differenza con MLEADER. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando direttrice in inglese?","answer":"LEADER. In AutoCAD in italiano è DIRETTRICE, senza alias: digita DIRETTRICE e premi Invio o la barra spaziatrice. DRAP avvia DIRRAPID, la direttrice rapida, e _LEADER funziona in ogni lingua di AutoCAD."},{"question":"Che differenza c'è tra DIRETTRICE e MLEADER?","answer":"DIRETTRICE è il comando di prima: una linea di direttrice e un testo a parte che la linea segue. MLEADER, che oggi AutoCAD consiglia, crea un unico oggetto direttrice multipla, con stili propri e più linee verso la stessa nota. MellowCAD ha DIRETTRICE; apre e salva le direttrici di un file DXF, e lascia fuori le sue direttrici multiple."},{"question":"Come faccio una direttrice con il testo?","answer":"Avvia DIRETTRICE, specifica il punto da indicare, poi dove andrà il testo, premi Invio e digita il testo, riga per riga. Invio su una riga vuota termina. Invio alla prima riga mostra le altre annotazioni, tra cui l'editor di testo."},{"question":"Come cambio la dimensione della freccia della direttrice?","answer":"Seleziona la direttrice e cambia Dimensione freccia nella tavolozza Proprietà, che vale solo per lei; oppure cambia la dimensione della freccia dello stile di quota, che tutte le direttrici di quello stile seguono. Anche la lunghezza della linea di aggancio segue la dimensione della freccia."},{"question":"Perché la direttrice non ha la freccia?","answer":"O l'ha tolta Nessuna in Formato, o il primo tratto misura meno del doppio della dimensione della freccia, e lì nemmeno AutoCAD la disegna. Specifica il secondo punto più lontano dal primo, o usa una freccia più piccola."}]
+---
+
+DIRETTRICE (LEADER) traccia una linea da una freccia a una nota. Specifica il punto iniziale, dove va la freccia, poi tutti i punti che vuoi; dal secondo in poi la richiesta offre `Nota`, che anche Invio sceglie, `Formato` e `Annulla`. Invio ai primi due punti termina il comando senza tracciare niente. Poi digita la nota riga per riga, Invio dopo ognuna, e Invio su una riga vuota per finire: la direttrice e il suo testo, un testo multilinea, si creano insieme in un solo passo, sul layer corrente con il colore, il tipo di linea e lo spessore di linea correnti.
+
+Il testo prende l'altezza, la distanza dalla linea e la posizione dallo stile di quota corrente: dopo la fine della direttrice, o prima quando la direttrice arriva da destra, e sopra l'ultimo tratto, che prosegue sotto il testo. Quando l'ultimo tratto sale di più di 15° dall'orizzontale, DIRETTRICE aggiunge una linea di aggancio, un tratto orizzontale lungo quanto la freccia che finisce nel punto specificato. La freccia è quella chiusa piena, disegnata solo quando il primo tratto misura almeno il doppio della freccia.
+
+La direttrice segue il suo testo: sposta, ruota o scala il testo e la fine della direttrice lo segue, con la linea di aggancio ricalcolata; cancella il testo e la direttrice resta, senza aggancio. Una direttrice e il suo testo copiati insieme restano una coppia. I grip della direttrice sono nei suoi punti; la tavolozza Proprietà mostra il tipo, la dimensione della freccia, l'offset e la posizione del testo, e la scala.
+
+- **Comando:** `DIRETTRICE`
+- **In inglese:** `LEADER`, digitato `_LEADER` in ogni lingua
+- **Gruppo:** [Annota](/docs/commands#annotate)
+- **Provalo:** [Apri l'editor](/it/draw), digita `DIRETTRICE` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="leader" caption="Un foro e la sua nota: DIRETTRICE dal bordo del cerchio, due punti, poi due righe di testo; l'ultimo tratto sale, quindi una linea di aggancio lo unisce al testo." />
+
+## Opzioni [#options]
+
+### `Nota` (`N`) [#annotation]
+
+Chiede il testo, riga per riga. Invio alla prima riga chiede invece un altro tipo di annotazione: `testoM` (predefinita) apre l'editor di testo alla fine della direttrice, dove Invio va a capo e Ctrl+Invio o un clic fuori termina; `Copia` mette alla fine una copia del testo multilinea, del testo su una riga o del riferimento di blocco che selezioni, e rifiuta qualsiasi altro oggetto con `Selezionare un oggetto testom, testo, riferimento di blocco o tolleranza.`; `Nessuna` traccia la sola direttrice.
+
+### `Formato` (`F`) [#format]
+
+Stabilisce come si traccia la direttrice e torna ai punti: `Spline` la rende una curva morbida per i punti, `Retta` torna ai tratti diritti, `Freccia` rimette la freccia e `Nessuna` la toglie. Invio lascia il formato com'è.
+
+### `Annulla` (`A`) [#undo]
+
+Annulla l'ultimo punto e lo chiede di nuovo. Al secondo punto non c'è niente da annullare, e `Input non valido.` lo dice.
+
+## Cosa non fa ancora [#missing]
+
+Le annotazioni Tolleranza e Blocco: MellowCAD non ha un oggetto tolleranza geometrica, e un blocco non si inserisce da DIRETTRICE, quindi la richiesta delle opzioni offre Copia, Nessuna e testoM. Le frecce diverse da quella chiusa piena, e il colore e lo spessore di linea propri della direttrice dati dallo stile di quota. DIRRAPID (QLEADER) e MLEADER, la direttrice rapida e quella multipla, non ci sono ancora: le direttrici multiple di un DXF restano fuori all'apertura.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice)
+
+## Domande [#questions]
+
+### Come si chiama il comando direttrice in inglese?
+
+LEADER. In AutoCAD in italiano è DIRETTRICE, senza alias: digita DIRETTRICE e premi Invio o la barra spaziatrice. `DRAP` avvia DIRRAPID, la direttrice rapida, e `_LEADER` funziona in ogni lingua di AutoCAD.
+
+### Che differenza c'è tra DIRETTRICE e MLEADER?
+
+DIRETTRICE è il comando di prima: una linea di direttrice e un testo a parte che la linea segue. MLEADER, che oggi AutoCAD consiglia, crea un unico oggetto direttrice multipla, con stili propri e più linee verso la stessa nota. MellowCAD ha DIRETTRICE; apre e salva le direttrici di un file DXF, e lascia fuori le sue direttrici multiple.
+
+### Come faccio una direttrice con il testo?
+
+Avvia DIRETTRICE, specifica il punto da indicare, poi dove andrà il testo, premi Invio e digita il testo, riga per riga. Invio su una riga vuota termina. Invio alla prima riga mostra le altre annotazioni, tra cui l'editor di testo.
+
+### Come cambio la dimensione della freccia della direttrice?
+
+Seleziona la direttrice e cambia Dimensione freccia nella tavolozza Proprietà, che vale solo per lei; oppure cambia la dimensione della freccia dello stile di quota, che tutte le direttrici di quello stile seguono. Anche la lunghezza della linea di aggancio segue la dimensione della freccia.
+
+### Perché la direttrice non ha la freccia?
+
+O l'ha tolta Nessuna in Formato, o il primo tratto misura meno del doppio della dimensione della freccia, e lì nemmeno AutoCAD la disegna. Specifica il secondo punto più lontano dal primo, o usa una freccia più piccola.
+
+## Comandi correlati [#related]
+
+- [Comando TESTOM (MTEXT) in AutoCAD](/docs/commands/mtext)
+- [Comando DIMSTILE (DIMSTYLE) in AutoCAD](/docs/commands/dimstyle)
+- [Comando DIMRAGGIO (DIMRADIUS) in AutoCAD](/docs/commands/dimradius)
+- [Comando TESTO (TEXT) in AutoCAD](/docs/commands/text)

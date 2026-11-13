@@ -314,7 +314,7 @@ describe("the engine's English surface", () => {
           " 20",
           "1",
           "  0",
-          "LEADER",
+          "XLINE",
           "  8",
           "0",
           " 10",
@@ -2348,6 +2348,37 @@ describe("the engine's English surface", () => {
         .do("triangle", (c) => c.enter())
         .do("exit", (c) => c.enter())
         .do("pick", (c) => c.click(at(5, 2)))
+    )
+    walk("LEADER", createHarness(), (s) =>
+      s
+        .do("LEADER", (c) => c.command("LEAD"))
+        .do("start", (c) => c.type("0,0").enter())
+        .do("Undo refused", (c) => c.type("U").enter())
+        .do("next", (c) => c.type("10,10").enter())
+        .do("Format", (c) => c.type("F").enter())
+        .do("Spline", (c) => answer(c, "S"))
+        .do("Format again", (c) => c.type("F").enter())
+        .do("Straight", (c) => answer(c, "ST"))
+        .do("third", (c) => c.type("20,10").enter())
+        .do("Annotation", (c) => c.enter())
+        .do("first line", (c) => c.type("First").enter())
+        .do("second line", (c) => c.type("Second").enter())
+        .do("done", (c) => c.enter())
+        .do("pick", (c) => c.click(at(5, 5)))
+        .do("LIST", (c) => c.command("LIST"))
+        .do("options", (c) =>
+          c
+            .escape()
+            .command("LEADER")
+            .type("30,0")
+            .enter()
+            .type("40,10")
+            .enter()
+            .enter()
+            .enter()
+        )
+        .do("Copy", (c) => answer(c, "C"))
+        .do("copy refused", (c) => c.click(at(5, 5)))
     )
     walk("DIVIDE", createHarness({ entities: [line()] }), (s) =>
       s

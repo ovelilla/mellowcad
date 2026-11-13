@@ -22,6 +22,7 @@ import {
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
   textInsertionPoint,
+  leaderGripIndices,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -344,6 +345,17 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             world: corner,
           })
         })
+        break
+      case "leader":
+        // One at each vertex but a hook's start, which follows the end
+        // (desktop leader/d01).
+        for (const index of leaderGripIndices(entity)) {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: entity.vertices[index],
+          })
+        }
         break
       case "region":
         for (const point of regionGripPoints(entity)) {

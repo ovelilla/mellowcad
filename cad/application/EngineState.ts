@@ -18,6 +18,7 @@ import {
   BlockDefinition,
   BlockId,
   DimensionEntity,
+  LeaderEntity,
   Entity,
   EntityId,
   EntityProperty,
@@ -746,12 +747,16 @@ function hasStyleOf(
   entity: Entity,
   type: "text" | "dimension"
 ): entity is
-  TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity {
+  | TextEntity
+  | MTextEntity
+  | AttributeDefinitionEntity
+  | DimensionEntity
+  | LeaderEntity {
   return type === "text"
     ? entity.type === "text" ||
         entity.type === "mtext" ||
         entity.type === "attdef"
-    : entity.type === "dimension"
+    : entity.type === "dimension" || entity.type === "leader"
 }
 
 export function buildTextStyleInfos(
@@ -1824,6 +1829,91 @@ function singleEntityInfo(
             coordRow("vertexX", "vertexX", at(entity.corners[current]).x),
             coordRow("vertexY", "vertexY", at(entity.corners[current]).y),
             planeRow("elevation", "elevation"),
+          ]),
+        ],
+      }
+    }
+    case "leader": {
+      // AutoCAD's rows (desktop leader/d01): the current vertex, its X, Y and
+      // Z; Type; Arrow and Arrow size; Text offset and Text pos vert; Dim
+      // scale overall — the overrides of the style the leader keeps (DXF's
+      // DSTYLE), editable as they are there. Dim style is General's picker.
+      // Not built: Annotative, the other arrowheads, Dim line lineweight and
+      // colour (DIMLWD, DIMCLRD).
+      const style = dimStyles?.(entity.styleId) ?? DEFAULT_DIM_STYLE
+      const own = entity.overrides ?? {}
+      const plain = (value: number) => String(Number(value.toFixed(8)))
+      const numberRow = (
+        id: RowId,
+        property: EntityProperty,
+        value: number
+      ): PropertyRow => ({
+        ...row(id, plain(value)),
+        edit: { property, text: plain(value), unit: "" },
+      })
+      const current = Math.min(vertex, entity.vertices.length - 1)
+      const point = at(entity.vertices[current])
+      const types = [
+        text.propertyValue("lineWithNoArrow"),
+        text.propertyValue("splineWithNoArrow"),
+        text.propertyValue("lineWithArrow"),
+        text.propertyValue("splineWithArrow"),
+      ]
+      const type = (entity.arrow ? 2 : 0) + (entity.spline ? 1 : 0)
+      return {
+        title: title("leader"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", point.x),
+            coordRow("vertexY", "vertexY", point.y),
+            planeRow("vertexZ", "elevation"),
+          ]),
+          group("misc", [
+            {
+              ...row("type", types[type]),
+              edit: {
+                property: "leaderType",
+                text: String(type),
+                unit: "",
+                choices: types.map((label, value) => ({
+                  value: String(value),
+                  label,
+                })),
+              },
+            },
+            row("annotative", text.propertyValue("no")),
+          ]),
+          group("linesArrows", [
+            row("arrow", text.propertyValue("closedFilled")),
+            numberRow(
+              "arrowSize",
+              "leaderArrowSize",
+              own.arrowSize ?? style.arrowSize
+            ),
+          ]),
+          group("text", [
+            numberRow(
+              "textOffset",
+              "leaderTextGap",
+              own.textGap ?? style.textGap
+            ),
+            choiceRow("textPosVert", "leaderTextAbove", own.textAbove ?? true, [
+              text.propertyValue("centered"),
+              text.propertyValue("above"),
+            ]),
+          ]),
+          group("fit", [
+            numberRow(
+              "dimScaleOverall",
+              "leaderScale",
+              own.scale ?? style.scale
+            ),
           ]),
         ],
       }

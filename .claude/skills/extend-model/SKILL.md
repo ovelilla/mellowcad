@@ -30,6 +30,10 @@ the file is untrusted). Bump `DRAWING_FILE_VERSION`. The Z fields come through `
 also owes the type tests in `assignTextStyle`, `reconcile`, `setSelectionTextStyle` and
 `EngineState`'s `hasStyleOf`: miss one and a style in use can be deleted.
 
+A type that follows another (a leader its MTEXT or block) is kept in step by the entity commands
+(`LeaderFollowers`) and keeps its pair in every copy (`withCopiedAssociations`): a new way to
+change or copy objects owes the same call, or a moved text leaves its leader behind.
+
 A type that is drawn as other objects (a reference, a region, a solid) answers each query through
 them (`insertFlatGeometry`, `regionLevelEdgeEntities`, `solidEdgeEntities`), and a command that takes "the edge picked" reads
 it as that object (`regionEdgeAt`).

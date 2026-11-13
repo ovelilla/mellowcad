@@ -1,0 +1,30 @@
+(progn (defun pr (e) (print (entget e)) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_CIRCLE
+0,0
+2
+_-BLOCK
+TAG
+0,0
+_L
+
+_-INSERT
+TAG
+50,50
+2
+2
+30
+(setq B (entlast))
+_LEADER
+0,0
+10,10
+
+
+_C
+(list B (list 52 50 0))
+(progn (setq C (entlast)) (pr C) (pr (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget C))))))
+_LEADER
+100,0
+110,10
+_U
+FOO
+_U

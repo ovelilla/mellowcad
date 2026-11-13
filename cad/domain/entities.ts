@@ -59,6 +59,9 @@ export type {
   Solid3dEntity,
   PointEntity,
   Solid2dEntity,
+  LeaderEntity,
+  LeaderAnnotation,
+  LeaderOverrides,
   Entity,
   Bounds,
 } from "./entityTypes"
@@ -75,6 +78,30 @@ export {
   solid2dOutlinePolyline,
   withSolid2dCorner,
 } from "./solids2d"
+export {
+  attachLeaderBlock,
+  attachLeaderCopy,
+  attachLeaderText,
+  createLeader,
+  detachLeader,
+  dimLook,
+  followAnnotation,
+  leaderOffsetRead,
+  leaderGeometry,
+  leaderGripIndices,
+  leaderHorizontal,
+  leaderLook,
+  leaderPathEntity,
+  leaderSide,
+  mapLeader,
+  withLeaderOverride,
+  withCopiedAssociations,
+  samePlane,
+  leaderInPlaneOf,
+  stretchLeaderVertices,
+  withLeaderVertex,
+} from "./leaders"
+export type { LeaderGeometry, LeaderLook, LeaderOptions } from "./leaders"
 export type { PointFigure } from "./points"
 export {
   MAX_DIVISIONS,

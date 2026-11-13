@@ -3,7 +3,7 @@ title: Editar un archivo DXF online
 metaTitle: "Editor DXF online gratis: editar y guardar DXF"
 description: "Edita un archivo DXF gratis en tu navegador con los comandos de AutoCAD y vuelve a guardarlo como DXF, de AutoCAD 2000 a 2018. Sin instalar ni subir nada."
 type: howTo
-sourceHash: "809cc36da58a"
+sourceHash: "22e45b1337cd"
 faq:
   - question: "¿Cómo editar un archivo DXF online?"
     answer: "Elígelo o suéltalo arriba, en esta página: se abre en el editor de MellowCAD, en tu navegador. Cámbialo con los comandos de AutoCAD y, después, GUARDARCOMO (Ctrl+Mayús+S) o SALVADXF lo vuelven a guardar como archivo DXF."
@@ -14,7 +14,7 @@ faq:
   - question: "¿Abrirá AutoCAD el DXF que guarde?"
     answer: "Sí. Cada tipo de objeto que escribe MellowCAD, en cada versión, de texto y binario, lo abrió AutoCAD 2027 sin que su AUDIT encontrara un error."
   - question: "¿Se pierde algo al guardar?"
-    answer: "Lo que no se abrió no está en el archivo que guardas: directrices, tablas y los demás objetos que la línea de comandos contó al abrir el archivo. Los sólidos 3D y las regiones tampoco se escriben, y la línea de comandos los enumera. Conserva tu archivo original."
+    answer: "Lo que no se abrió no está en el archivo que guardas: directrices múltiples, tablas y los demás objetos que la línea de comandos contó al abrir el archivo. Los sólidos 3D y las regiones tampoco se escriben, y la línea de comandos los enumera. Conserva tu archivo original."
   - question: "¿Puedo crear un archivo DXF desde cero?"
     answer: "Sí. Abre el editor, dibuja y guarda con GUARDARCOMO, eligiendo un tipo de archivo DXF."
 ---
@@ -49,7 +49,7 @@ Cada objeto que tiene MellowCAD, escrito como lo escribe AutoCAD: líneas, arcos
 
 ## Qué no vuelve [#lost]
 
-- **Lo que no se abrió no se guarda.** Lo que MellowCAD aún no tiene — directrices, tablas, referencias externas y [el resto de esa lista](/docs/open-dxf#left-out) — se cuenta en la línea de comandos al abrir el archivo, y no está en el archivo que guardas. Conserva el original.
+- **Lo que no se abrió no se guarda.** Lo que MellowCAD aún no tiene — directrices múltiples, tablas, referencias externas y [el resto de esa lista](/docs/open-dxf#left-out) — se cuenta en la línea de comandos al abrir el archivo, y no está en el archivo que guardas. Conserva el original.
 - **Los sólidos 3D y las regiones no se escriben**: la línea de comandos dice cuántos se quedaron fuera.
 - Las modificaciones de estilo propias de una cota y los parámetros de una matriz no se escriben: AutoCAD abre la cota con los ajustes de su estilo, y la matriz como un bloque de sus elementos.
 - No hay vista preliminar en miniatura, ni todavía el tipo DXF de AutoCAD R12/LT2, ni DWG.
@@ -78,7 +78,7 @@ Sí. Cada tipo de objeto que escribe MellowCAD, en cada versión, de texto y bin
 
 ### ¿Se pierde algo al guardar? [#lost-on-save]
 
-Lo que no se abrió no está en el archivo que guardas: directrices, tablas y los demás objetos que la línea de comandos contó al abrir el archivo. Los sólidos 3D y las regiones tampoco se escriben, y la línea de comandos los enumera. Conserva tu archivo original.
+Lo que no se abrió no está en el archivo que guardas: directrices múltiples, tablas y los demás objetos que la línea de comandos contó al abrir el archivo. Los sólidos 3D y las regiones tampoco se escriben, y la línea de comandos los enumera. Conserva tu archivo original.
 
 ### ¿Puedo crear un archivo DXF desde cero? [#from-scratch]
 

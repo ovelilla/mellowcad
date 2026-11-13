@@ -196,6 +196,22 @@ export type { NamedTable }
  * them (f001's ISO-25 omits DIMSCALE 1; its Standard, all), the DXF
  * reference's defaults, not ISO-25's.
  */
+/**
+ * Whether each dimension style puts its text above the line, by its name in
+ * capitals: DIMTAD (77) other than 0, absent 0 (the imperial initial value).
+ * The model's styles hold no DIMTAD; a leader keeps a 0 as its own.
+ */
+export function dxfDimStyleTextAbove(
+  records: readonly DxfRecord[]
+): (name: string | undefined) => boolean {
+  const above = new Map<string, boolean>()
+  for (const record of records) {
+    const name = str(record, 2)?.trim()
+    if (name) above.set(name.toUpperCase(), (int(record, 77) ?? 0) !== 0)
+  }
+  return (name) => above.get((name ?? "").trim().toUpperCase()) ?? true
+}
+
 export function dxfDimStyles(
   records: readonly DxfRecord[]
 ): NamedTable<DimStyle> {

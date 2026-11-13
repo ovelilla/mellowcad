@@ -203,6 +203,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Leaders, layouts (the FAQ's DXF answer); a binary file; Open a DXF file (DXFIN) | خطوط الإشارة، التخطيطات (L) †؛ ثنائية (M)؛ فتح ملف ⁨DXF⁩ (L) |
 |  | Point (an object), points; Multiple Points, Divide, Measure (the tool palette); Point Style (PTYPE's dialog and its labels); Node (the object snap) | نقطة، نقاط (M)؛ نقاط متعددة، تقسيم، قياس (L)؛ نمط النقطة، حجم النقطة، تعيين الحجم نسبةً إلى الشاشة، بالوحدات المطلقة (L)؛ عقدة (C, the snap's usual name) |
 |  | Solid (a 2D solid, the object), 2D Solid (the tool) | مجسم ثنائي الأبعاد (L) † |
+|  | Leader (the object and the tool), its palette's Arrow, Text pos vert, Line or Spline with or without arrow, Closed filled, Above, Centered | خط إشارة، خطوط إشارة (L, as the FAQ's)؛ السهم؛ الموضع العمودي للنص؛ خط أو منحنى شرائحي بسهم أو بلا سهم؛ مغلق مُصمت؛ فوق؛ في الوسط (L) † |
 | Guides | How-to guide; floor plan (a house's) | دليل، أدلة (M)؛ مخطط منزل، المسقط الأفقي (C) — «رسم مخطط منزل» is the searched phrase, المسقط الأفقي the drawing's name |
 |  | A plan's layers: Walls, Doors, Windows, Dimensions (the reader's own) | الجدران، الأبواب، النوافذ، الأبعاد (M) |
 |  | Outer and inner face (a wall's); inner wall; opening; entrance | الوجه الخارجي والداخلي؛ الجدار الداخلي؛ فتحة؛ المدخل (M) |

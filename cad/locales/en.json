@@ -131,7 +131,8 @@
       "divide": "Divide",
       "measuresegments": "Measure",
       "ptype": "Point Style",
-      "solid": "2D Solid"
+      "solid": "2D Solid",
+      "leader": "Leader"
     },
     "description": {
       "U": "Undo the last action",
@@ -261,7 +262,8 @@
       "solid3d": "{count, plural, one {3D Solid} other {3D Solids}}",
       "region": "{count, plural, one {Region} other {Regions}}",
       "point": "{count, plural, one {Point} other {Points}}",
-      "solid2d": "{count, plural, one {Solid} other {Solids}}"
+      "solid2d": "{count, plural, one {Solid} other {Solids}}",
+      "leader": "{count, plural, one {Leader} other {Leaders}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -469,7 +471,9 @@
         "decimalSeparator": "Decimal separator",
         "suppressTrailingZeros": "Suppress trailing zeros",
         "precision": "Precision",
-        "perimeter": "Perimeter"
+        "perimeter": "Perimeter",
+        "arrow": "Arrow",
+        "textPosVert": "Text pos vert"
       },
       "value": {
         "yes": "Yes",
@@ -503,7 +507,14 @@
         "predefined": "Predefined",
         "outer": "Outer",
         "extrusion": "Extrusion",
-        "revolve": "Revolve"
+        "revolve": "Revolve",
+        "lineWithNoArrow": "Line with no arrow",
+        "splineWithNoArrow": "Spline with no arrow",
+        "lineWithArrow": "Line with arrow",
+        "splineWithArrow": "Spline with arrow",
+        "closedFilled": "Closed filled",
+        "centered": "Centered",
+        "above": "Above"
       },
       "justify": {
         "left": "Left",
@@ -684,7 +695,8 @@
       "DIVIDE": ["DIVIDE", "DIV"],
       "MEASURE": ["MEASURE", "ME"],
       "PTYPE": ["PTYPE", "DDPTYPE"],
-      "SOLID": ["SOLID", "SO"]
+      "SOLID": ["SOLID", "SO"],
+      "LEADER": ["LEADER", "LEAD"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1394,6 +1406,18 @@
         "Block": "Block",
         "Yes": "Yes",
         "No": "No"
+      },
+      "LEADER": {
+        "Annotation": "Annotation",
+        "Format": "Format",
+        "Undo": "Undo",
+        "Spline": "Spline",
+        "STraight": "STraight",
+        "Arrow": "Arrow",
+        "None": "None",
+        "Exit": "Exit",
+        "Copy": "Copy",
+        "Mtext": "Mtext"
       }
     },
     "promptKeywords": {
@@ -2058,7 +2082,16 @@
       "solidSecondPoint": "Specify second point",
       "solidThirdPoint": "Specify third point",
       "solidFourthPointOr": "Specify fourth point or",
-      "exitSolid": "exit"
+      "exitSolid": "exit",
+      "leaderStartPoint": "Specify leader start point",
+      "leaderNextPoint": "Specify next point",
+      "leaderNextPointOr": "Specify next point or",
+      "leaderFormatOption": "Enter leader format option",
+      "leaderFirstLine": "Enter first line of annotation text or",
+      "leaderOptions": "options",
+      "leaderNextLine": "Enter next line of annotation text",
+      "leaderAnnotationOption": "Enter an annotation option",
+      "leaderCopyObject": "Select an object to copy"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2504,7 +2537,7 @@
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
       "allAdditionsUndone": "All the additions are undone.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -2794,7 +2827,15 @@
       "objectNotThatLong": "Object isn't that long.",
       "objectTooLong": "Object is too long.",
       "cannotFindBlock": "Cannot find block \"{name}\".",
-      "blockNameNotValid": "Invalid block name."
+      "blockNameNotValid": "Invalid block name.",
+      "leaderCopyRefused": "Please select an mtext, text, block reference, or tolerance object.",
+      "listLeaderNormal": "Normal:               X={x}  Y={y}  Z={z}",
+      "listLeaderHorizontal": "Horizontal direction: X={x}  Y={y}  Z={z}",
+      "listLeaderVertex": "Vertex:        X={x}  Y={y}  Z={z}",
+      "listLeaderHook": "Hook Line: {on, select, yes {On} other {Off}}",
+      "listLeaderArrow": "Arrow:     {on, select, yes {On} other {Off}}",
+      "listLeaderPath": "Path type: {spline, select, yes {Spline} other {Straight}}",
+      "listLeaderAnnotative": "        Annotative: No"
     },
     "feedback": {
       "snap": {

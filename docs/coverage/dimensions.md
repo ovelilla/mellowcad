@@ -244,6 +244,88 @@ the lines: an arc moved later keeps its extension lines from there, where AutoCA
 against the lines; where a line does not reach the location's side of the vertex, what AutoCAD
 takes is **unverified**.
 
+### `LEADER` / `LEAD` · es `DIRECTRIZ` / `DIREC` · pt-BR `LINHACHAM` / `LCHAM` / `LEAD` · fr `LREPERE` · it `DIRETTRICE`
+
+**Implemented:** the leader — a model type of its own (DXF LEADER: its vertices, the hook line among
+them, an arrowhead, straight or spline, its dimension style and the overrides its palette shows,
+its annotation) — and LEADER as AutoCAD 2027's console asks it (probes leader/p01–p06, p17;
+AcDimRes 5507–5533): `Specify leader start point:`, `Specify next point:`, then `Specify next
+point or [Annotation/Format/Undo] <Annotation>:` for as many points as wanted (es `Precise punto
+inicial de directriz`, `Precise siguiente punto o [Anotación/Formato/desHacer]`; pt-BR `Especificar
+ponto inicial da linha de chamada`, `[Anotação/Formato/Desfazer]`; fr `Indiquez le point de départ
+de la ligne de repère`, `[Annotation/Format/annUler]`; it `Specificare il punto iniziale della
+direttrice`, `[Nota/Formato/Annulla]`). Enter at the first two points ends it and makes nothing;
+Undo takes back the last point and is refused at the second with `Invalid Input.` (p03, p04).
+Format's `Enter leader format option [Spline/STraight/Arrow/None] <Exit>:` sets how the leader is
+made and goes back to the point prompt, Enter too. Annotation, or Enter: `Enter first line of
+annotation text or <options>:` and `Enter next line of annotation text:` until an empty line, the
+lines an MTEXT's paragraphs (p01); Enter at the first asks `Enter an annotation option
+[Copy/None/Mtext] <Mtext>:` — Mtext opens the in-place editor at the end, with no box (desktop
+d01); Copy asks `Select an object to copy:` and puts a copy of an MTEXT or a TEXT (an MTEXT, Middle
+Left or Right) or of a block reference (at the end, its scale kept, its angle 0) there, refusing
+anything else with `Please select an mtext, text, block reference, or tolerance object.` (p06,
+p19); None makes the leader alone (p05). The text is the current style's, DIMTXT × DIMSCALE tall,
+of no width, DIMGAP after the end along the horizontal: with DIMTAD 1 (ISO-25's) Bottom Left
+DIMGAP above the line, with 0 Middle Left on it; before the end, Right (p01, p02, p12). A straight
+leader whose last segment rises more than 15° gets a hook: a vertex a DIMASZ × DIMSCALE short of
+the point picked, which stays the end (p02, p12). The leader and its text are one step, each in
+the current properties.
+
+**The leader follows its annotation**, AutoCAD's reactor, in the step that changes it (p08, p09,
+p14, p18): the text moved, turned or scaled, its end goes to where the text attaches (DIMGAP off
+its near side, its bottom or its middle) and the hook is worked out again; a text moved past the
+vertex before the end turns side, Bottom Left to Bottom Right, its box kept in place (p18), and one
+that stays on its side keeps its justification, even one that does not match it (p25); a block
+reference takes the end by its offset (DXF 212, p05). The text erased, the leader keeps no
+annotation and no hook (p08). The leader moved alone keeps its offset from the text, so the next
+move of the text brings it back (p08); its end stretched, or grip-dragged, takes the hook along and
+the end's distance from the text becomes its offset (DXF 213, p14). COPY, ARRAY, the copies of
+ROTATE, SCALE and MIRROR, PASTECLIP and a block exploded keep a leader with its text as a pair; a
+leader copied alone keeps none (p09).
+
+**What it draws** (p10, p13, p16, p18, which explode and plot it): a closed filled arrowhead, 1:6,
+DIMASZ × DIMSCALE long, only when the first segment is at least twice that, the line starting at
+its base; a spline leader is the fit spline from there through the vertices, its start along the
+first segment, its end along the horizontal towards an annotation; with DIMTAD on and a text, the
+line runs on under it, DIMGAP and the text's width. Picked, windowed and snapped by its line or
+spline through the vertices: Endpoint at the vertices, Midpoint of each segment (the first one's
+whole, arrowhead and all), Nearest, Perpendicular, Intersection; a spline leader's ends, middle and
+nearest (p11). A grip at each vertex but a hook's start, which follows the end (desktop d01). The
+Properties palette (d01): Geometry's Current Vertex, Vertex X, Y and Z; Misc's Type (Line or
+Spline, with or without arrow) and Annotative (No); Lines & Arrows' Arrow (Closed filled) and Arrow
+size; Text's Text offset and Text pos vert (Above or Centered); Fit's Dim scale overall — the last
+four the leader's overrides of its style, as DXF's DSTYLE keeps them; Dim style is General's
+picker; its type `Leader` (es `Directriz`, pt-BR `Linha de chamada`, fr `Ligne de repère`, it
+`Direttrice`: `ax26res.dll` 297, 115, 1069, 191–192). MOVE, COPY, ROTATE, SCALE, MIRROR and STRETCH
+move its vertices; EXPLODE leaves a 2D solid for the arrowhead and a polyline from its base, the
+line under the text included, or the spline and that line, the text staying (p10, p16); AREA `Selected object does not have an area`, OFFSET takes it and
+then `Cannot offset that object.`, TRIM and EXTEND `Cannot TRIM this object.` / `Cannot EXTEND this
+object.`, BREAK `Object can't be broken`, FILLET `Fillet requires 2 lines, arcs, or circles.`
+(p11, p15, p21). LIST as each console writes it (p10, p20): `associative: no`, `Normal:`,
+`Horizontal direction:`, a `Vertex:` each, `Hook Line:`, `Arrow:`, `Path type:`, its style,
+`Annotative: No`. Typed only: no acad.cuix macro of AutoCAD 2027 runs LEADER (ID_Leader, "Dimension,
+Leader", is QLEADER's). Not transparent. Saved from drawing file version 52; a DXF opens and saves
+it with its text (clipboard-and-files.md).
+
+**Deviations:** LIST leaves out `Associated to:   MTEXT    Handle = 2D8`, which names the text by a
+handle the model has none of (as the header's `Handle =` line); a leader moved alone and then
+rotated or scaled reads its offset afresh where AutoCAD keeps it (**unverified**); Escape in the
+Mtext editor drops the leader with its text, and the editor closed empty makes the leader alone
+(**unverified**); the horizontal is the UCS's X (**unverified** in a turned UCS). A DXF's leader
+facing -Z whose text faces +Z, as AutoCAD's mirrored details are (39 in the samples), is read in
+its text's frame, the WCS, where AutoCAD keeps the two in step (p25); a leader and its annotation
+in different planes are not kept in step (**unverified**: AutoCAD follows them in space).
+
+**Missing:** Tolerance (there is no TOLERANCE object) and Block (INSERT's prompts inside LEADER's),
+not offered, so the prompt lists `[Copy/None/Mtext]` where AutoCAD's lists
+`[Tolerance/Copy/Block/None/Mtext]`; DIMLDRBLK's other arrowheads (every leader of the 154 samples
+draws the closed filled one), DIMCLRD and DIMLWD, the box of a negative DIMGAP, a leader's
+overrides of the other dimension variables; DIVIDE and MEASURE along it (they take it in AutoCAD,
+p15); the grips' hover menus; annotative scaling. QLEADER (`LE`: `Specify first leader point, or
+[Settings] <Settings>:`, AcDimRes 8200–8203, and its Leader Settings dialog) and MLEADER (a
+MULTILEADER object with its own MLEADERSTYLE table: 1 of the 154 samples and 4 objects in 2 other
+programs' files) are not built: a DXF's MULTILEADER is left out.
+
 ### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA` · pt-BR `ESTILOCOTA` / `EC` / `DIMSTY` · fr `COTSTYLE` / `CST` / `CSTY` / `DDIM` · it `DIMSTILE` / `D` / `DST` / `DDIM`
 
 **Implemented:** style manager, set current, New with Start-With copy and auto-name (`Copy of

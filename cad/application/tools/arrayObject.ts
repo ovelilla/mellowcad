@@ -7,6 +7,7 @@ import {
   createBlockDefinition,
   createInsert,
   withElevation,
+  withCopiedAssociations,
 } from "../../domain/entities"
 import {
   ArrayItem,
@@ -132,7 +133,10 @@ export function makeArray(
       )
     }
     const copies = arrayItems(array).flatMap((item) =>
-      originals.map((entity) => arrayItemCopy(entity, shifted(item, offset)))
+      withCopiedAssociations(
+        originals,
+        originals.map((entity) => arrayItemCopy(entity, shifted(item, offset)))
+      )
     )
     if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     return

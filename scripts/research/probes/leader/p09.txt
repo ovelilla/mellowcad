@@ -1,0 +1,63 @@
+(progn (defun pr (e) (print (entget e)) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+
+Pair
+
+(progn (setq M (entlast)) (setq L (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget M))))) (princ))
+_COPY
+(ssadd M)
+
+0,0
+0,30
+
+(progn (pr (entlast)) (pr M) (princ))
+_COPY
+(ssadd L)
+
+0,0
+0,-30
+
+(progn (setq L3 (entlast)) (pr L3) (pr M) (princ))
+_MOVE
+(ssadd M)
+
+0,0
+4,0
+(progn (pr L) (pr L3) (pr M) (princ))
+_MIRROR
+(ssadd M (ssadd L))
+
+0,-50
+0,50
+_N
+(progn (pr L) (pr M) (princ))
+_U
+_U
+_STRETCH
+_C
+13.5,13.5
+14.5,14.5
+
+0,0
+3,3
+(progn (pr L) (pr M) (princ))
+_U
+_STRETCH
+_C
+-1,-1
+1,1
+
+0,0
+-3,0
+(progn (pr L) (pr M) (princ))
+_U
+_STRETCH
+_C
+13.5,9
+16,16
+
+0,0
+0,3
+(progn (pr L) (pr M) (princ))

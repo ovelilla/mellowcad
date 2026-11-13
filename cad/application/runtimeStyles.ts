@@ -111,7 +111,7 @@ export function removeDimStyle(
   return true
 }
 
-/** Puts every selected dimension on style `id`: one step. */
+/** Puts every selected dimension and leader on style `id`: one step. */
 export function setSelectionDimStyle(
   document: CadDocument,
   ids: readonly EntityId[],
@@ -123,7 +123,8 @@ export function setSelectionDimStyle(
     .map((entityId) => document.get(entityId))
     .filter(
       (entity): entity is Entity =>
-        entity?.type === "dimension" && entity.styleId !== id
+        (entity?.type === "dimension" || entity?.type === "leader") &&
+        entity.styleId !== id
     )
     .map((entity) => assignDimStyle(entity, id))
   if (changed.length > 0) history.execute(new UpdateEntitiesCommand(changed))

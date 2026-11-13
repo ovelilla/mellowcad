@@ -42,6 +42,7 @@ import { sessions as dimspaceSessions } from "./demos/commands/dimspace"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
 import { sessions as distSessions } from "./demos/commands/dist"
 import { sessions as divideSessions } from "./demos/commands/divide"
+import { sessions as leaderSessions } from "./demos/commands/leader"
 import { sessions as eatteditSessions } from "./demos/commands/eattedit"
 import { sessions as ellipseSessions } from "./demos/commands/ellipse"
 import { sessions as eraseSessions } from "./demos/commands/erase"
@@ -240,6 +241,7 @@ export const COMMAND_SESSIONS = {
   ...dimstyleSessions,
   ...distSessions,
   ...divideSessions,
+  ...leaderSessions,
   ...eatteditSessions,
   ...ellipseSessions,
   ...eraseSessions,

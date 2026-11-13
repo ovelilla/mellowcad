@@ -1,0 +1,91 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+200,0
+210,20
+_F
+_S
+230,10
+250,25
+
+Spline
+
+(setq M (entlast))
+(setq L (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget M)))))
+(setq S (entlast))
+_EXPLODE
+(ssadd L)
+
+(dumpfrom (entnext S))
+_LEADER
+0,0
+2.4,0
+2.4,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+20,0
+26,0
+26,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+40,0
+44,0
+44,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+60,0
+65,0
+65,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+80,0
+82.6,0
+82.6,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+100,0
+110,10
+_F
+_S
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))

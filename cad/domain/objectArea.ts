@@ -102,6 +102,8 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "insert":
     case "point":
     case "solid2d":
+    // "Selected object does not have an area" (leader/p11).
+    case "leader":
       return null
     default: {
       const unhandled: never = entity

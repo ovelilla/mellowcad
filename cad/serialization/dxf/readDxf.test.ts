@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs"
 import { gunzipSync } from "node:zlib"
 import { describe, expect, it } from "vitest"
+import type { LeaderEntity } from "../../domain/entities"
 import { p } from "../../../test/builders"
+import { createHarness } from "../../../test/harness"
 import type {
   ArcEntity,
   CircleEntity,
@@ -146,7 +148,6 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
     expect([...drawing.report.leftOut]).toEqual([
       ["XLINE", 1],
       ["RAY", 1],
-      ["LEADER", 1],
       ["3DSOLID", 1],
       ["REGION", 1],
     ])
@@ -873,5 +874,120 @@ describe("parseDxf: text and tables written by other programs", () => {
     expect(unicode("a \\U+03B1 b")).toBe("a α b")
     expect(unicode("\\\\U+03B1")).toBe("\\\\U+03B1")
     expect(unicode("plain")).toBe("plain")
+  })
+})
+
+// leader/p22: AutoCAD 2027's DXFOUT of a leader with a hook, one to the left,
+// one alone, a spline, one with no arrowhead whose text was moved, one to a
+// block reference and one at DIMSCALE 10 (its DSTYLE override).
+describe("parseDxf: AutoCAD 2027's leaders (leader/p22)", () => {
+  const { drawing, report } = parseDxf(fixture("leaders-2018"))
+  const leaders = drawing.entities.filter(
+    (e): e is LeaderEntity => e.type === "leader"
+  )
+  const byId = new Map(drawing.entities.map((e) => [e.id, e]))
+  const xy = (l: LeaderEntity) =>
+    l.vertices.map((v) => [+v.x.toFixed(9), +v.y.toFixed(9)])
+
+  it("opens every leader, none left out", () => {
+    expect(report.leftOut.has("LEADER")).toBe(false)
+    expect(leaders).toHaveLength(7)
+  })
+
+  it("keeps the vertices, hook, arrowhead and spline as written", () => {
+    expect(xy(leaders[0])).toEqual([
+      [0, 0],
+      [7.5, 10],
+      [10, 10],
+    ])
+    expect(leaders[0].hook).toBe(true)
+    expect(leaders[2].annotation).toBeUndefined()
+    expect(leaders[3].spline).toBe(true)
+    expect(leaders[4].arrow).toBe(false)
+    expect(leaders[6].overrides).toEqual({ scale: 10 })
+  })
+
+  it("links each to the MTEXT or block reference its 340 names", () => {
+    const text = byId.get(leaders[0].annotation!.id)
+    expect(text?.type === "mtext" && text.contents).toBe("Hooked")
+    expect(leaders[1].annotation?.kind).toBe("mtext")
+    const block = byId.get(leaders[5].annotation!.id)
+    expect(block?.type).toBe("insert")
+    expect(leaders[5].annotation?.kind).toBe("block")
+    // 212: the end 5,5 short of the insertion point.
+    expect(leaders[5].blockOffset).toBeCloseToPoint({ x: -5, y: -5 })
+    // Its end where the text puts it: no offset, as 213 says none.
+    expect(leaders[0].textOffset).toBeUndefined()
+  })
+})
+
+// A leader of AutoCAD's Sheet_Sets_Architectural_S-04 sample (handle 25E11)
+// and its text: a mirrored detail's, the leader facing -Z, its Top Right MTEXT
+// +Z and after its end, 39 such in the samples (leader/p25).
+const MIRRORED_LEADER = dxf(
+  ...["  0", "SECTION", "  2", "ENTITIES"],
+  ...["  0", "LEADER", "  5", "25E11", "100", "AcDbEntity", "  8", "0"],
+  ...["100", "AcDbLeader", " 73", "     0", " 40", "3.0"],
+  ...[" 41", "9.035714285714277", " 76", "     3"],
+  ...[" 10", "8968.735423327149", " 20", "2964.111485398453", " 30", "0.0"],
+  ...[" 10", "8976.262337993395", " 20", "2956.58457073221", " 30", "0.0"],
+  ...[" 10", "8982.412921497695", " 20", "2956.58457073221", " 30", "0.0"],
+  ...["340", "25E12", "210", "0.0", "220", "0.0", "230", "-1.0"],
+  ...["213", "-9.035714285714286", "223", "-1.5", "233", "0.0"],
+  ...["1001", "ACAD", "1000", "DSTYLE", "1002", "{"],
+  ...["1070", "   147", "1040", "0.0625", "1070", "    77", "1070", "     0"],
+  ...["1002", "}"],
+  ...["  0", "MTEXT", "  5", "25E12", "100", "AcDbEntity", "  8", "0"],
+  ...["100", "AcDbMText", " 10", "8991.511135783406"],
+  ...[" 20", "2958.08457073221", " 30", "0.0", " 40", "3.0", " 41", "0.0"],
+  ...[" 71", "     3", " 72", "     1", "  1", "C-1", " 73", "     1"],
+  ...["  0", "ENDSEC", "  0", "EOF"]
+)
+
+describe("parseDxf: a leader facing -Z with its text facing +Z (leader/p25)", () => {
+  const parsed = parseDxf(MIRRORED_LEADER)
+  const [leader] = ofType<LeaderEntity>(parsed, "leader")
+  const [text] = ofType<MTextEntity>(parsed, "mtext")
+
+  it("reads it in its text's frame, the WCS, linked to it", () => {
+    expect(leader.normal).toBeUndefined()
+    expect(leader.vertices[2]).toBeCloseToPoint({
+      x: 8982.412921497695,
+      y: 2956.58457073221,
+    })
+    expect(leader.horizontal).toBeUndefined()
+    expect(leader.annotation).toEqual({ kind: "mtext", id: text.id })
+  })
+
+  it("reads the offset AutoCAD wrote, from its Top Right text's corner", () => {
+    expect(text.attachment).toBe("tr")
+    expect(leader.textOffset).toBeCloseToPoint({
+      x: -9.035714285714286,
+      y: -1.5,
+    })
+  })
+
+  it("follows the text moved as AutoCAD does: the end by as much, the text still Top Right", () => {
+    const cad = createHarness({ entities: parsed.drawing.entities })
+    cad.select(text.id).command("MOVE").type("0,0").enter()
+    cad.type("10,0").enter()
+    const moved = cad.runtime.document.get(leader.id) as LeaderEntity
+    expect(moved.vertices[2]).toBeCloseToPoint({
+      x: 8992.412921497695,
+      y: 2956.58457073221,
+    })
+    const after = cad.runtime.document.get(text.id) as MTextEntity
+    expect(after.attachment).toBe("tr")
+  })
+
+  it("keeps one facing -Z as it faces with no text to read it by", () => {
+    const alone = parseDxf(MIRRORED_LEADER.replace("340\n25E12\n", ""))
+    const [read] = ofType<LeaderEntity>(alone, "leader")
+    expect(read.annotation).toBeUndefined()
+    expect(read.normal).toEqual({ x: 0, y: 0, z: -1 })
+    expect(read.vertices[2]).toBeCloseToPoint({
+      x: -8982.412921497695,
+      y: 2956.58457073221,
+    })
   })
 })

@@ -1,0 +1,62 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+20,10
+30,0
+
+
+_N
+(setq L1 (entlast))
+_LEADER
+50,0
+60,10
+_F
+_S
+70,0
+80,10
+
+
+_N
+(setq L2 (entlast))
+_ZOOM
+_W
+-5,-5
+85,15
+(princ (list "END" (osnap '(0.05 0.05) "_end") (osnap '(1.75 1.8) "_end") (osnap '(19.9 10.0) "_end") (osnap '(29.9 0.1) "_end")))
+(princ (list "MID" (osnap '(5.2 5) "_mid") (osnap '(15 10.1) "_mid")))
+(princ (list "NEA" (osnap '(0.5 0.6) "_nea") (osnap '(15 10.3) "_nea")))
+(princ (list "SPL" (osnap '(50.05 0.05) "_end") (osnap '(79.9 10) "_end") (osnap '(65 5) "_mid") (osnap '(65 5) "_nea") (osnap '(60 10) "_int")))
+_AREA
+_O
+(list L1 (list 15 10 0))
+(princ (list (getvar "AREA") (getvar "PERIMETER")))
+_OFFSET
+1
+(list L1 (list 15 10 0))
+_BREAK
+(list L1 (list 15 10 0))
+(list 16 10 0)
+_LENGTHEN
+(list L1 (list 15 10 0))
+
+_PEDIT
+(list L1 (list 15 10 0))
+_EXTEND
+
+(list L1 (list 15 10 0))
+
+_TRIM
+
+(list L1 (list 15 10 0))
+
+_FILLET
+(list L1 (list 5 5 0))
+(list L1 (list 15 10 0))
+_JOIN
+(ssadd L1 (ssadd L2))
+
+_ZOOM
+_O
+(ssadd L1)
+

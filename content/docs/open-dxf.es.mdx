@@ -3,7 +3,7 @@ title: Abrir un archivo DXF online
 metaTitle: "Abrir DXF online gratis: visor DXF sin instalar"
 description: "Abre un archivo DXF gratis en tu navegador, sin subirlo: de AutoCAD R12 a 2018, de texto o binario, con sus capas, textos, cotas, sombreados y bloques."
 type: howTo
-sourceHash: "9e0d6e766f41"
+sourceHash: "8e5afbec73fd"
 faq:
   - question: "¿Cómo abrir un archivo DXF sin AutoCAD?"
     answer: "Elígelo o suéltalo arriba, en esta página: MellowCAD lo abre en su editor, en tu navegador, sin instalar nada y sin cuenta. En el editor también lo abren ABRE (Ctrl+O) y CARGADXF."
@@ -14,7 +14,7 @@ faq:
   - question: "¿Puedo guardar mis cambios como DXF?"
     answer: "Sí. GUARDARCOMO (Ctrl+Mayús+S) o SALVADXF guardan el dibujo como DXF de AutoCAD 2000 a 2018, de texto o binario, que AutoCAD abre. Los sólidos 3D y las regiones se quedan fuera, y la línea de comandos lo dice."
   - question: "¿Por qué faltan algunos objetos?"
-    answer: "Lo que MellowCAD aún no tiene, como directrices, tablas o sólidos 3D, se queda fuera, y la línea de comandos dice cuántos de cada tipo al abrir el archivo. Lo que está en una presentación se cuenta aparte: aún no hay presentaciones."
+    answer: "Lo que MellowCAD aún no tiene, como directrices múltiples, tablas o sólidos 3D, se queda fuera, y la línea de comandos dice cuántos de cada tipo al abrir el archivo. Lo que está en una presentación se cuenta aparte: aún no hay presentaciones."
 ---
 
 <OpenDxf />
@@ -25,7 +25,7 @@ MellowCAD abre archivos DXF en tu navegador y los dibuja en su editor, donde pue
 
 - **DXF de AutoCAD R12 a 2018**, el formato DXF más reciente que escribe AutoCAD, de texto (ASCII) o binario, hecho con AutoCAD o con otro programa. Su texto conserva sus caracteres: hasta 2004, en la página de códigos que indica el archivo; desde 2007, en UTF-8.
 - **Líneas, arcos, círculos, elipses y polilíneas**, con sus grosores y sus formas de ajuste de curva y de spline, polilíneas 3D y splines, y los puntos, dibujados con el [estilo de punto](/docs/commands/ptype) del dibujo, y los sólidos 2D, rellenos según diga FILLMODE.
-- **Texto de una línea y de líneas múltiples**, bloques con sus atributos, cotas lineales, alineadas, angulares, de radio y de diámetro, y sombreados.
+- **Texto de una línea y de líneas múltiples**, directrices con su texto, bloques con sus atributos, cotas lineales, alineadas, angulares, de radio y de diámetro, y sombreados.
 - **La capa de cada objeto**, su color, tipo de línea, grosor de línea, altura de objeto y elevación, y las capas activadas, desactivadas o bloqueadas; una capa inutilizada se abre desactivada.
 - **Los estilos de texto y de cota del dibujo**, y sus unidades cuando son milímetros, centímetros o metros.
 
@@ -35,7 +35,7 @@ Cuando un DXF tiene algo para lo que MellowCAD aún no tiene objeto, abre el res
 
 - trazos, caras 3D y mallas;
 - líneas auxiliares y rayos, líneas múltiples;
-- directrices, directrices múltiples y tolerancias, tablas, coberturas e imágenes;
+- directrices múltiples y tolerancias, tablas, coberturas e imágenes;
 - referencias externas;
 - sólidos 3D, regiones y superficies;
 - degradados, y cotas de coordenadas y de longitud de arco.
@@ -78,4 +78,4 @@ Sí. <Command id="SAVEAS" /> (`Ctrl+Mayús+S`) o <Command id="DXFOUT" /> guardan
 
 ### ¿Por qué faltan algunos objetos? [#missing]
 
-Lo que MellowCAD aún no tiene, como directrices, tablas o sólidos 3D, se queda fuera, y la línea de comandos dice cuántos de cada tipo al abrir el archivo. Lo que está en una presentación se cuenta aparte: aún no hay presentaciones.
+Lo que MellowCAD aún no tiene, como directrices múltiples, tablas o sólidos 3D, se queda fuera, y la línea de comandos dice cuántos de cada tipo al abrir el archivo. Lo que está en una presentación se cuenta aparte: aún no hay presentaciones.

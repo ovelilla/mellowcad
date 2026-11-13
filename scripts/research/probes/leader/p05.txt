@@ -1,0 +1,48 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e (list "*"))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+
+
+FOO
+_N
+(dump)
+_CIRCLE
+0,0
+2
+_-BLOCK
+TAG
+0,0
+_L
+
+_LEADER
+100,0
+110,10
+
+
+_B
+FOO
+TAG
+115,15
+1
+1
+0
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast))))))) (princ))
+_LEADER
+200,0
+210,10
+_A
+
+_B
+TAG
+_S
+2
+220,20
+0
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast))))))) (princ))
+_MOVE
+_L
+
+0,0
+5,5
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast))))))) (princ))

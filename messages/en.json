@@ -201,7 +201,7 @@
     "q4": "Does it really work like AutoCAD?",
     "a4": "That's the spec: commands, aliases, prompt order, option letters and defaults follow current AutoCAD. Some commands are still partial, and the roadmap lists exactly which options are missing.",
     "q5": "Can I open or save DWG or DXF files, or print?",
-    "a5": "MellowCAD <dxf>opens DXF files</dxf>, from AutoCAD R12 to 2018, text or binary: lines, arcs, circles, ellipses, polylines, splines, text, dimensions, hatches, points and blocks, on their layers. What it has no object for yet — leaders, tables, layouts, 3D solids — is left out and listed when the file opens. It <edit>saves DXF</edit> too, AutoCAD 2000 to 2018. DWG files are not there yet, and there is no printing or PDF export yet.",
+    "a5": "MellowCAD <dxf>opens DXF files</dxf>, from AutoCAD R12 to 2018, text or binary: lines, arcs, circles, ellipses, polylines, splines, text, dimensions, leaders, hatches, points and blocks, on their layers. What it has no object for yet — multileaders, tables, layouts, 3D solids — is left out and listed when the file opens. It <edit>saves DXF</edit> too, AutoCAD 2000 to 2018. DWG files are not there yet, and there is no printing or PDF export yet.",
     "q6": "Where are my drawings stored?",
     "a6": "On your device. MellowCAD autosaves in your browser and never uploads your drawings. Clearing the site's data deletes the autosave, so press Ctrl+S to keep a file.",
     "q7": "Is MellowCAD affiliated with Autodesk?",

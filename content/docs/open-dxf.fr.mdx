@@ -3,7 +3,7 @@ title: Ouvrir un fichier DXF en ligne
 metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
 description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
 type: howTo
-sourceHash: "9e0d6e766f41"
+sourceHash: "8e5afbec73fd"
 faq:
   - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
@@ -14,7 +14,7 @@ faq:
   - question: "Puis-je enregistrer mes modifications en DXF ?"
     answer: "Oui. SAUVENOM (Ctrl+Maj+S) ou SAUVEDXF enregistre le dessin en DXF d'AutoCAD 2000 à 2018, texte ou binaire, qu'AutoCAD ouvre. Les solides 3D et les régions sont laissés de côté, et la ligne de commande le signale."
   - question: "Pourquoi certains objets manquent-ils ?"
-    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
+    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère multiples, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
 ---
 
 <OpenDxf />
@@ -25,7 +25,7 @@ MellowCAD ouvre les fichiers DXF dans votre navigateur et les dessine dans son �
 
 - **Le DXF d'AutoCAD R12 à 2018**, le format DXF le plus récent qu'écrit AutoCAD, en texte (ASCII) ou binaire, créé par AutoCAD ou par un autre programme. Son texte garde ses caractères : jusqu'à 2004 dans la page de codes que le fichier indique, à partir de 2007 en UTF-8.
 - **Lignes, arcs, cercles, ellipses et polylignes**, avec leurs largeurs et leurs formes ajustées par courbe ou par spline, polylignes 3D et splines, et les points, dessinés dans le [style des points](/docs/commands/ptype) du dessin, et les solides 2D, remplis selon FILLMODE.
-- **Texte sur une ligne et texte multiligne**, blocs avec leurs attributs, cotes linéaires, alignées, angulaires, de rayon et de diamètre, et hachures.
+- **Texte sur une ligne et texte multiligne**, lignes de repère avec leur texte, blocs avec leurs attributs, cotes linéaires, alignées, angulaires, de rayon et de diamètre, et hachures.
 - **Le calque de chaque objet**, sa couleur, son type de ligne, son épaisseur de ligne, sa hauteur et son élévation, et les calques activés, désactivés ou verrouillés ; un calque gelé s'ouvre désactivé.
 - **Les styles de texte et de cote du dessin**, et ses unités quand ce sont des millimètres, des centimètres ou des mètres.
 
@@ -35,7 +35,7 @@ Quand un DXF contient quelque chose pour quoi MellowCAD n'a pas encore d'objet, 
 
 - les traces, les faces 3D et les maillages ;
 - les lignes de construction et les demi-droites, les multilignes ;
-- les lignes de repère, les lignes de repère multiples et les tolérances, les tableaux, les masques et les images ;
+- les lignes de repère multiples et les tolérances, les tableaux, les masques et les images ;
 - les références externes ;
 - les solides 3D, les régions et les surfaces ;
 - les remplissages avec gradients, et les cotes superposées et de longueur d'arc.
@@ -78,4 +78,4 @@ Oui. <Command id="SAVEAS" /> (`Ctrl+Maj+S`) ou <Command id="DXFOUT" /> enregistr
 
 ### Pourquoi certains objets manquent-ils ? [#missing]
 
-Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.
+Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère multiples, les tableaux ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.

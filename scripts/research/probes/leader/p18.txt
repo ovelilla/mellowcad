@@ -1,0 +1,44 @@
+(progn (defun pr (e) (print (entget e)) (princ)) (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+_F
+_S
+20,0
+30,10
+
+
+_N
+(setq S (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext S))
+_LEADER
+100,0
+110,10
+120,10
+
+Side
+
+(progn (setq M (entlast)) (setq L (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget M))))) (princ))
+_MOVE
+(ssadd M)
+
+0,0
+-40,0
+(progn (pr L) (pr M))
+_U
+_DIMTAD
+0
+_LEADER
+200,0
+210,10
+
+Centered
+
+(setq S (entlast))
+_EXPLODE
+(cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget S))))
+
+(dumpfrom (entnext S))

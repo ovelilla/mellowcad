@@ -1,0 +1,39 @@
+(progn (defun pr (e) (print (entget e)) (princ)) (defun ld () (pr L) (pr M)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+20,10
+
+Moved
+
+(progn (setq M (entlast)) (setq L (cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget M))))) (ld))
+_MOVE
+(ssadd M)
+
+0,0
+5,7
+(ld)
+_MOVE
+(ssadd L)
+
+0,0
+0,-3
+(ld)
+_ROTATE
+(ssadd M)
+
+20,10
+30
+(ld)
+_SCALE
+(ssadd M)
+
+20,10
+2
+(ld)
+_ERASE
+(ssadd M)
+
+(pr L)
+_U
+(ld)

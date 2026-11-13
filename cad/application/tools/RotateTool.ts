@@ -5,6 +5,7 @@ import {
   EntityId,
   rotateEntity,
   rotateEntityCopy,
+  withCopiedAssociations,
 } from "../../domain/entities"
 import { formatAngle, parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -524,7 +525,10 @@ export class RotateTool implements Tool {
     if (state.copy) {
       ctx.execute(
         new AddEntitiesCommand(
-          state.originals.map((e) => rotateEntityCopy(e, state.base, rad))
+          withCopiedAssociations(
+            state.originals,
+            state.originals.map((e) => rotateEntityCopy(e, state.base, rad))
+          )
         )
       )
     } else if (Math.abs(normalizeSigned(rotationDeg)) > 1e-9) {

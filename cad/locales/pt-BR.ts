@@ -135,7 +135,8 @@ export const ptBR: EngineLocale = {
       "divide": "Dividir",
       "measuresegments": "Medir",
       "ptype": "Estilo de ponto",
-      "solid": "Sólido 2D"
+      "solid": "Sólido 2D",
+      "leader": "Linha de chamada"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -389,6 +390,16 @@ export const ptBR: EngineLocale = {
             "other": "Sólidos"
           }
         ]
+      ],
+      "leader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Linha de chamada",
+            "other": "Linhas de chamada"
+          }
+        ]
       ]
     },
     "array": {
@@ -627,7 +638,9 @@ export const ptBR: EngineLocale = {
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir zeros à direita",
         "precision": "Precisão",
-        "perimeter": "Perímetro"
+        "perimeter": "Perímetro",
+        "arrow": "Seta",
+        "textPosVert": "Posição vertical do texto"
       },
       "value": {
         "yes": "Sim",
@@ -661,7 +674,14 @@ export const ptBR: EngineLocale = {
         "predefined": "Predefinido",
         "outer": "Externa",
         "extrusion": "Extrusão",
-        "revolve": "Revolução"
+        "revolve": "Revolução",
+        "lineWithNoArrow": "Linha sem seta",
+        "splineWithNoArrow": "Spline sem seta",
+        "lineWithArrow": "Linha com seta",
+        "splineWithArrow": "Spline com seta",
+        "closedFilled": "Preenchido fechado",
+        "centered": "Centralizado",
+        "above": "Acima"
       },
       "justify": {
         "left": "Esquerda",
@@ -1287,6 +1307,11 @@ export const ptBR: EngineLocale = {
       ],
       "SOLID": [
         "SÓLIDO"
+      ],
+      "LEADER": [
+        "LINHACHAM",
+        "LCHAM",
+        "LEAD"
       ]
     },
     "keywords": {
@@ -2095,6 +2120,18 @@ export const ptBR: EngineLocale = {
         "Block": "Bloco",
         "Yes": "Sim",
         "No": "Não"
+      },
+      "LEADER": {
+        "Annotation": "Anotação",
+        "Format": "Formato",
+        "Undo": "Desfazer",
+        "Spline": "SPline",
+        "STraight": "Reta",
+        "Arrow": "SEta",
+        "None": "Nenhum",
+        "Exit": "Sair",
+        "Copy": "Cópia",
+        "Mtext": "textoM"
       }
     },
     "promptKeywords": {
@@ -2852,7 +2889,16 @@ export const ptBR: EngineLocale = {
       "solidSecondPoint": "Especificar segundo ponto",
       "solidThirdPoint": "Especificar terceiro ponto",
       "solidFourthPointOr": "Especificar quarto ponto ou",
-      "exitSolid": "sair"
+      "exitSolid": "sair",
+      "leaderStartPoint": "Especificar ponto inicial da linha de chamada",
+      "leaderNextPoint": "Especificar próximo ponto",
+      "leaderNextPointOr": "Especificar próximo ponto ou",
+      "leaderFormatOption": "Insira a opção de formato da linha de chamada",
+      "leaderFirstLine": "Insira a primeira linha do texto de anotação ou",
+      "leaderOptions": "opções",
+      "leaderNextLine": "Inserir a próxima linha do texto de anotação",
+      "leaderAnnotationOption": "Insira uma opção de anotação",
+      "leaderCopyObject": "Selecione um objeto a ser copiado"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5576,6 +5622,7 @@ export const ptBR: EngineLocale = {
             "region": "REGION",
             "solid3d": "3DSOLID",
             "solid2d": "SÓLIDO",
+            "leader": "LEADER",
             "other": "MATRIZ"
           }
         ]
@@ -7653,7 +7700,84 @@ export const ptBR: EngineLocale = {
         ],
         "\"."
       ],
-      "blockNameNotValid": "Nome bloco inválido."
+      "blockNameNotValid": "Nome bloco inválido.",
+      "leaderCopyRefused": "Selecione um textom, texto, referência de bloco ou objeto de tolerância.",
+      "listLeaderNormal": [
+        "Normal:               X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHorizontal": [
+        "Direção horizontal:   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderVertex": [
+        "Vértice:       X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLeaderHook": [
+        "Linha no gancho: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ativado",
+            "other": "Desativado"
+          }
+        ]
+      ],
+      "listLeaderArrow": [
+        "Seta:            ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ativado",
+            "other": "Desativado"
+          }
+        ]
+      ],
+      "listLeaderPath": [
+        "Tipo de caminho: ",
+        [
+          "spline",
+          1,
+          {
+            "yes": "Spline",
+            "other": "Direto"
+          }
+        ]
+      ],
+      "listLeaderAnnotative": "        Anotativo: Não"
     },
     "feedback": {
       "snap": {

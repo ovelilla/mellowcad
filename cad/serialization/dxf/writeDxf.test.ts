@@ -4,12 +4,20 @@ import { gunzipSync } from "node:zlib"
 import { describe, expect, it } from "vitest"
 import { circleOf, lineOf, p, snapshotOf } from "../../../test/builders"
 import {
+  attachLeaderBlock,
+  attachLeaderText,
+  createBlockDefinition,
+  createInsert,
+  createLeader,
   createPoint,
   createSolid2d,
   createText,
+  dimLook,
+  withLeaderOverride,
   withNormal,
   withThickness,
 } from "../../domain/entities"
+import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { parseDxf } from "./readDxf"
 import { dxfReal } from "./dxfOut"
 import { DxfVersion, writeDxf } from "./writeDxf"
@@ -82,6 +90,70 @@ function solidsDrawing() {
   return snapshotOf([quad, triangle, bowTie])
 }
 
+/**
+ * Leaders as LEADER makes them (leader/p01, p02, p05): one hooked to its
+ * text, one to the left, one alone, a spline, one without an arrowhead at
+ * DIMSCALE 10 with its text centred (DIMTAD 0), one to a block reference, and
+ * one in a plane facing down, its text with it.
+ */
+function leadersDrawing() {
+  const look = dimLook(DEFAULT_DIM_STYLE)
+  const texted = (points: { x: number; y: number }[], text: string) =>
+    attachLeaderText(createLeader(points, "ISO-25"), text, look, "Standard")
+  const hooked = texted([p(0, 0), p(10, 10)], "Hooked")
+  const left = texted([p(100, 0), p(90, 10)], "Left side")
+  const alone = createLeader([p(200, 0), p(210, 10), p(220, 10)], "ISO-25")
+  const spline = attachLeaderText(
+    createLeader([p(300, 0), p(310, 10), p(320, 5)], "ISO-25", {
+      spline: true,
+    }),
+    "Splined",
+    look,
+    "Standard"
+  )
+  const scaled = withLeaderOverride(
+    withLeaderOverride(
+      createLeader([p(400, 0), p(450, 50)], "ISO-25", { arrow: false }),
+      "scale",
+      10
+    ),
+    "textAbove",
+    false
+  )
+  const centred = attachLeaderText(
+    scaled,
+    "Scaled",
+    dimLook(DEFAULT_DIM_STYLE, scaled.overrides),
+    "Standard"
+  )
+  const reference = createInsert("TAG", p(515, 15))
+  const block = attachLeaderBlock(
+    createLeader([p(500, 0), p(510, 10)], "ISO-25"),
+    reference
+  )
+  const down = { x: 0, y: 0, z: -1 }
+  const facing = texted([p(600, 0), p(610, 10)], "Below")
+  const drawing = snapshotOf([
+    hooked.leader,
+    hooked.text,
+    left.leader,
+    left.text,
+    alone,
+    spline.leader,
+    spline.text,
+    centred.leader,
+    centred.text,
+    block,
+    reference,
+    withNormal(facing.leader, down),
+    withNormal(facing.text, down),
+  ])
+  return {
+    ...drawing,
+    blocks: [createBlockDefinition("TAG", p(0, 0), [circleOf(p(0, 0), 2)])],
+  }
+}
+
 describe("writeDxf", () => {
   for (const name of ["fixture-2018", "fixture2-2018"]) {
     const drawing = parseDxf(fixture(name)).drawing
@@ -133,6 +205,92 @@ describe("writeDxf", () => {
         expect(shape(back.entities)).toEqual(shape(drawing.entities))
       }
     }
+  })
+
+  // leader/p22: each leader with its vertices, flags, overrides and plane,
+  // and with its text or block reference, linked again by 340.
+  it("writes leaders with their annotations, read back the same", () => {
+    const drawing = leadersDrawing()
+    for (const version of ["2000", "2018"] as const) {
+      for (const binary of [false, true]) {
+        const back = parseDxf(
+          writeDxf(drawing, { version, binary, precision: 16 }).bytes
+        ).drawing
+        expect(shape(back.entities)).toEqual(shape(drawing.entities))
+        const leaders = back.entities.filter((e) => e.type === "leader")
+        const texts = back.entities.filter((e) => e.type !== "leader")
+        for (const leader of leaders) {
+          if (leader.type !== "leader" || !leader.annotation) continue
+          expect(texts.map((t) => t.id)).toContain(leader.annotation.id)
+        }
+      }
+    }
+  })
+
+  // A pasted array's block holds the objects of the one it was copied from,
+  // ids and all: each block's pair keeps handles of its own, linked inside it.
+  it("pairs a leader with its text in each block, when two blocks share their ids", () => {
+    const pair = attachLeaderText(
+      createLeader([p(0, 0), p(10, 10)], "ISO-25"),
+      "Twice",
+      dimLook(DEFAULT_DIM_STYLE),
+      "Standard"
+    )
+    const drawing = {
+      ...snapshotOf([
+        createInsert("*U1", p(0, 0)),
+        createInsert("*U2", p(100, 0)),
+      ]),
+      blocks: ["*U1", "*U2"].map((name) =>
+        createBlockDefinition(name, p(0, 0), [pair.leader, pair.text])
+      ),
+    }
+    const text = new TextDecoder().decode(
+      writeDxf(drawing, { version: "2018", binary: false, precision: 16 }).bytes
+    )
+    const groups = text.split("\r\n")
+    const handles: string[] = []
+    const links: [string, string][] = []
+    let type = ""
+    let own = ""
+    for (let i = 0; i < groups.length - 1; i += 2) {
+      const code = groups[i].trim()
+      const value = groups[i + 1].trim()
+      if (code === "0") type = value
+      if (code === "5" || code === "105") {
+        handles.push(value)
+        own = value
+      }
+      if (type === "LEADER" && code === "340") links.push([own, value])
+    }
+    expect(new Set(handles).size).toBe(handles.length)
+    expect(links).toHaveLength(2)
+    expect(new Set(links.map(([, to]) => to)).size).toBe(2)
+    const back = parseDxf(text).drawing
+    for (const block of back.blocks.filter((b) => b.name.startsWith("*U"))) {
+      const [leader, mtext] = block.entities
+      expect(leader.type === "leader" && leader.annotation?.id).toBe(mtext.id)
+    }
+  })
+
+  it("writes a leader as AutoCAD's DXFOUT does, its defaults left out (p22)", () => {
+    const text = new TextDecoder().decode(
+      writeDxf(leadersDrawing(), {
+        version: "2018",
+        binary: false,
+        precision: 16,
+      }).bytes
+    )
+    const first = text.slice(text.indexOf("LEADER\r\n"))
+    const record = first.slice(0, first.indexOf("\r\n  0\r\n"))
+    expect(record).toContain("AcDbLeader\r\n  3\r\nISO-25\r\n 73\r\n     0")
+    expect(record).toContain(" 74\r\n     0\r\n 75\r\n     1")
+    expect(record).not.toContain(" 71\r\n")
+    expect(record).toMatch(/340\r\n[0-9A-F]+/)
+    expect(text).toContain("102\r\n{ACAD_REACTORS")
+    expect(text).toContain(
+      "1001\r\nACAD\r\n1000\r\nDSTYLE\r\n1002\r\n{\r\n1070\r\n    40\r\n1040\r\n10.0\r\n1070\r\n    77\r\n1070\r\n     0\r\n1002\r\n}"
+    )
   })
 
   // x015: a line to 123.456789012345,0.001234567890123 at 0, 3, 8 and 16
@@ -226,13 +384,16 @@ describe("writeDxf", () => {
       "fixture2-2018",
       "points-2018",
       "solids-2018",
+      "leaders-2018",
     ]) {
       const drawing =
         name === "points-2018"
           ? pointsDrawing()
           : name === "solids-2018"
             ? solidsDrawing()
-            : parseDxf(fixture(name)).drawing
+            : name === "leaders-2018"
+              ? leadersDrawing()
+              : parseDxf(fixture(name)).drawing
       for (const version of VERSIONS) {
         for (const binary of [false, true]) {
           const { bytes } = writeDxf(drawing, {

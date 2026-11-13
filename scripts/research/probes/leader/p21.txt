@@ -1,0 +1,25 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+20,10
+
+
+_N
+(setq L1 (entlast))
+_ZOOM
+_W
+-5,-5
+35,15
+_OFFSET
+1
+(list L1 (list 15 10 0))
+15,5
+
+(dumpfrom (entnext L1))
+_LENGTHEN
+(list L1 (list 15 10 0))
+
+_DIMLINEAR
+(list L1 (list 15 10 0))
+

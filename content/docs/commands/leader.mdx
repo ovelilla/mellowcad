@@ -1,0 +1,74 @@
+---
+title: "LEADER in AutoCAD"
+metaTitle: "LEADER in AutoCAD: a leader line with text"
+description: "How AutoCAD's LEADER (LEAD) works: a leader line from an arrowhead to its text, the hook, the format options, and how it differs from MLEADER. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for LEADER in AutoCAD?","answer":"LEAD, then Enter or Space. The full name works too, and _LEADER in any language of AutoCAD."},{"question":"What is the difference between LEADER and MLEADER?","answer":"LEADER is the older command: a leader line and a separate text the line follows. MLEADER, which AutoCAD now recommends, makes one multileader object, with its own styles and several leader lines to one note. MellowCAD has LEADER; it opens and saves the leaders of a DXF file, and leaves its multileaders out."},{"question":"How do I make a leader with text?","answer":"Run LEADER, pick the point to point at, then where the text should be, press Enter and type the text, a line at a time. Enter on an empty line finishes. Enter at the first line instead gives the other annotations, the text editor among them."},{"question":"How do I change the size of the leader's arrow?","answer":"Select the leader and change Arrow size in the Properties palette, which keeps it on that leader alone; or change the dimension style's arrow size, which every leader on that style follows. The hook's length follows the arrow size too."},{"question":"Why does the leader have no arrow?","answer":"Either Format's None left it out, or the first segment is shorter than twice the arrow size, where AutoCAD draws no arrowhead either. Pick the second point farther from the first, or set a smaller arrow size."}]
+---
+
+LEADER draws a line from an arrowhead to a note. Pick the start point, where the arrowhead goes, then as many points as you want; from the second on the prompt offers `Annotation`, which Enter also takes, `Format` and `Undo`. Enter at the first two points ends the command and draws nothing. Then type the note a line at a time, Enter after each, and Enter on an empty line to finish: the leader and its text, a multiline text, are made together as one step, on the current layer with the current colour, linetype and lineweight.
+
+The text takes its height, its gap from the line and its place from the current dimension style: after the leader's end, or before it when the leader comes in from the right, and above the last line, which runs on under the text. When the last segment rises more than 15° from the horizontal, LEADER adds a hook, a short horizontal line as long as the arrowhead, ending at the point you picked. The arrowhead is the closed filled one, drawn only when the first segment is at least twice its length.
+
+The leader follows its text: move, rotate or scale the text and the leader's end goes with it, the hook worked out again; erase the text and the leader stays, with no hook. A leader and its text copied together stay a pair. The leader's grips are at its points; the Properties palette shows its type, arrow size, text offset and position, and its scale.
+
+- **Command:** `LEADER`
+- **Aliases:** `LEAD`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `LEAD` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="leader" caption="A hole and its note: LEADER from the circle's rim, two points, then two lines of text; the last segment rises, so a hook joins it to the text." />
+
+## Options [#options]
+
+### `Annotation` (`A`) [#annotation]
+
+Asks for the text, a line at a time. Enter at the first line asks for another kind of annotation instead: `Mtext` (the default) opens the text editor at the leader's end, where Enter breaks a line and Ctrl+Enter or a click outside finishes; `Copy` puts a copy of a multiline text, a single-line text or a block reference you select at the end, refusing anything else with `Please select an mtext, text, block reference, or tolerance object.`; `None` draws the leader alone.
+
+### `Format` (`F`) [#format]
+
+Sets how the leader is drawn, then goes back to the points: `Spline` makes it a smooth curve through the points, `STraight` straight segments again, `Arrow` puts the arrowhead back and `None` leaves it out. Enter keeps the format as it is.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last point and asks for it again. At the second point there is nothing to take back, and `Invalid Input.` says so.
+
+## What it does not do yet [#missing]
+
+The Tolerance and Block annotations: MellowCAD has no geometric tolerance object, and a block is not inserted from inside LEADER, so the option prompt lists Copy, None and Mtext. The arrowheads other than the closed filled one, and the leader's own line colour and lineweight from the dimension style. QLEADER and MLEADER, the quick leader and the multileader, are not there yet: a DXF's multileaders are left out when it opens.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice)
+
+## Questions [#questions]
+
+### What is the shortcut for LEADER in AutoCAD?
+
+`LEAD`, then Enter or Space. The full name works too, and `_LEADER` in any language of AutoCAD.
+
+### What is the difference between LEADER and MLEADER?
+
+LEADER is the older command: a leader line and a separate text the line follows. MLEADER, which AutoCAD now recommends, makes one multileader object, with its own styles and several leader lines to one note. MellowCAD has LEADER; it opens and saves the leaders of a DXF file, and leaves its multileaders out.
+
+### How do I make a leader with text?
+
+Run LEADER, pick the point to point at, then where the text should be, press Enter and type the text, a line at a time. Enter on an empty line finishes. Enter at the first line instead gives the other annotations, the text editor among them.
+
+### How do I change the size of the leader's arrow?
+
+Select the leader and change Arrow size in the Properties palette, which keeps it on that leader alone; or change the dimension style's arrow size, which every leader on that style follows. The hook's length follows the arrow size too.
+
+### Why does the leader have no arrow?
+
+Either Format's None left it out, or the first segment is shorter than twice the arrow size, where AutoCAD draws no arrowhead either. Pick the second point farther from the first, or set a smaller arrow size.
+
+## Related commands [#related]
+
+- [MTEXT in AutoCAD](/docs/commands/mtext)
+- [DIMSTYLE in AutoCAD](/docs/commands/dimstyle)
+- [DIMRADIUS in AutoCAD](/docs/commands/dimradius)
+- [TEXT in AutoCAD](/docs/commands/text)

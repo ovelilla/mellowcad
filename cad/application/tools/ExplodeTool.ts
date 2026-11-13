@@ -13,12 +13,18 @@ import {
   polylineSegmentGeometries,
   polyline3dSegments,
   polylineCurve,
+  withCopiedAssociations,
+  createPolyline,
+  createSolid2d,
+  leaderGeometry,
+  leaderLook,
 } from "../../domain/entities"
 import {
   hatchPatternLines,
   isSolidHatchPattern,
 } from "../../domain/hatchPatterns"
 import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
+import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { createRegion, regionEdgeEntity } from "../../domain/regions"
 import { solidFaceRegions, solidHasCurvedFaces } from "../../domain/solids"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -36,6 +42,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "hatch",
   "region",
   "solid3d",
+  "leader",
 ])
 
 /**
@@ -136,7 +143,12 @@ export class ExplodeTool extends SelectionActionTool {
         removedIds.push(entity.id)
         // The definition's objects keep their ids inside the block, so each
         // piece is copied to mint one of its own.
-        for (const part of parts) pieces.push(copyEntity(part, { x: 0, y: 0 }))
+        pieces.push(
+          ...withCopiedAssociations(
+            parts,
+            parts.map((part) => copyEntity(part, { x: 0, y: 0 }))
+          )
+        )
         continue
       }
       if (entity.type === "hatch") {
@@ -174,6 +186,42 @@ export class ExplodeTool extends SelectionActionTool {
           for (const edge of loop) {
             pieces.push(regionEdgeEntity(entity, edge, nextEntityId()))
           }
+        }
+        continue
+      }
+      if (entity.type === "leader") {
+        // Its arrowhead a 2D solid, its line a polyline from the arrowhead's
+        // base, the line under its text included, or its spline and that
+        // line apart; its text stays, no more associated (leader/p10, p16).
+        removedIds.push(entity.id)
+        const style =
+          ctx.document.getDimStyle(entity.styleId) ?? DEFAULT_DIM_STYLE
+        const g = leaderGeometry(entity, leaderLook(entity, style))
+        if (g.arrow) {
+          const [tip, left, right] = g.arrow
+          pieces.push(
+            carryOverrides(
+              entity,
+              createSolid2d([right, tip, left, left], entity.layerId)
+            )
+          )
+        }
+        if (g.curve) {
+          const { id: _id, ...curve } = g.curve
+          void _id
+          const z = entity.elevation ?? 0
+          pieces.push({
+            ...carryOverrides(entity, { ...curve, id: nextEntityId() }),
+            points: curve.points.map((p) => ({ ...p, z })),
+          } as Entity)
+        }
+        if (g.path.length >= 2) {
+          pieces.push(
+            carryOverrides(
+              entity,
+              createPolyline(g.path, false, entity.layerId)
+            )
+          )
         }
         continue
       }

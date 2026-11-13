@@ -1,5 +1,10 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Entity, mirrorEntity, mirrorEntityCopy } from "../../domain/entities"
+import {
+  Entity,
+  mirrorEntity,
+  mirrorEntityCopy,
+  withCopiedAssociations,
+} from "../../domain/entities"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
 import {
@@ -361,7 +366,10 @@ export class MirrorTool implements Tool {
     } else {
       ctx.execute(
         new AddEntitiesCommand(
-          originals.map((e) => mirrorEntityCopy(e, first, second))
+          withCopiedAssociations(
+            originals,
+            originals.map((e) => mirrorEntityCopy(e, first, second))
+          )
         )
       )
     }

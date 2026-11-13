@@ -6,6 +6,7 @@ import {
   EntityId,
 } from "../../domain/entities"
 import { Command } from "./Command"
+import { LeaderFollowers } from "./leaderFollowers"
 
 /**
  * BLOCK, as one reversible step: the definition is added to the block table and
@@ -21,6 +22,7 @@ export class CreateBlockCommand implements Command {
   readonly label = "create-block"
   private removed: PlacedEntity[] = []
   private previousDefinition: BlockDefinition | undefined
+  private readonly followers = new LeaderFollowers()
 
   constructor(
     private readonly block: BlockDefinition,
@@ -43,9 +45,14 @@ export class CreateBlockCommand implements Command {
     doc.addBlock(this.block)
     doc.removeMany(this.removedIds)
     if (this.reference) doc.add(this.reference)
+    this.followers.apply(
+      doc,
+      new Map(this.removed.map((place) => [place.entity.id, place.entity]))
+    )
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     if (this.reference) doc.remove(this.reference.id)
     doc.restoreMany(this.removed)
     if (this.previousDefinition) doc.addBlock(this.previousDefinition)

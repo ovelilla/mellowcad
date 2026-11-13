@@ -19,6 +19,7 @@ import {
   Similarity3,
   transformEntity,
   MAX_BLOCK_NESTING,
+  withCopiedAssociations,
 } from "../domain/entities"
 import { DEFAULT_LAYER_ID, Layer, LayerId, nextLayerId } from "../domain/layers"
 import { DimStyle } from "../domain/dimStyles"
@@ -55,7 +56,8 @@ export function clipboardSnapshot(
         case "attdef":
           keepTextStyle(entity.styleId)
           break
-        case "dimension": {
+        case "dimension":
+        case "leader": {
           const style = document.getDimStyle(entity.styleId)
           if (style) dimStyles.set(style.id, style)
           break
@@ -195,8 +197,11 @@ export function planPaste(
   return {
     // Fresh ids, or a paste into the drawing it came from would overwrite the
     // originals; `copyEntity` also does the translation and keeps the overrides.
-    entities: fragment.drawing.entities.map((entity) =>
-      onLayer(copyEntity(entity, delta))
+    entities: withCopiedAssociations(
+      fragment.drawing.entities,
+      fragment.drawing.entities.map((entity) =>
+        onLayer(copyEntity(entity, delta))
+      )
     ),
     layers,
     // A style's name *is* its id, so an exact miss is the whole test — there

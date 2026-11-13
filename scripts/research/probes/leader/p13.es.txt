@@ -1,0 +1,71 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+20,20
+40,20
+
+Straight
+
+_LEADER
+60,0
+80,20
+
+Hook
+
+_LEADER
+120,20
+100,0
+
+Down left
+
+_LEADER
+140,0
+150,20
+_F
+_N
+170,20
+
+No arrow
+
+_LEADER
+200,0
+210,20
+_F
+_S
+230,10
+250,25
+
+Spline
+
+_LEADER
+300,0
+301,0.5
+310,20
+
+Tiny first
+
+_LEADER
+350,0
+352,4
+_A
+
+_N
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 píxeles)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\leader-p13.png
+_N
+_Y

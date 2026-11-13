@@ -133,6 +133,7 @@ declare const source: {
       "measuresegments": string
       "ptype": string
       "solid": string
+      "leader": string
     }
     "description": {
       "U": string
@@ -268,6 +269,7 @@ declare const source: {
       "region": string
       "point": string
       "solid2d": string
+      "leader": string
     }
     "array": {
       "rectangular": string
@@ -476,6 +478,8 @@ declare const source: {
         "suppressTrailingZeros": string
         "precision": string
         "perimeter": string
+        "arrow": string
+        "textPosVert": string
       }
       "value": {
         "yes": string
@@ -510,6 +514,13 @@ declare const source: {
         "outer": string
         "extrusion": string
         "revolve": string
+        "lineWithNoArrow": string
+        "splineWithNoArrow": string
+        "lineWithArrow": string
+        "splineWithArrow": string
+        "closedFilled": string
+        "centered": string
+        "above": string
       }
       "justify": {
         "left": string
@@ -691,6 +702,7 @@ declare const source: {
       "MEASURE": string[]
       "PTYPE": string[]
       "SOLID": string[]
+      "LEADER": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1499,6 +1511,18 @@ declare const source: {
         "Yes": string
         "No": string
       }
+      "LEADER": {
+        "Annotation": string
+        "Format": string
+        "Undo": string
+        "Spline": string
+        "STraight": string
+        "Arrow": string
+        "None": string
+        "Exit": string
+        "Copy": string
+        "Mtext": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2205,6 +2229,15 @@ declare const source: {
       "solidThirdPoint": string
       "solidFourthPointOr": string
       "exitSolid": string
+      "leaderStartPoint": string
+      "leaderNextPoint": string
+      "leaderNextPointOr": string
+      "leaderFormatOption": string
+      "leaderFirstLine": string
+      "leaderOptions": string
+      "leaderNextLine": string
+      "leaderAnnotationOption": string
+      "leaderCopyObject": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2941,6 +2974,14 @@ declare const source: {
       "objectTooLong": string
       "cannotFindBlock": string
       "blockNameNotValid": string
+      "leaderCopyRefused": string
+      "listLeaderNormal": string
+      "listLeaderHorizontal": string
+      "listLeaderVertex": string
+      "listLeaderHook": string
+      "listLeaderArrow": string
+      "listLeaderPath": string
+      "listLeaderAnnotative": string
     }
     "feedback": {
       "snap": {

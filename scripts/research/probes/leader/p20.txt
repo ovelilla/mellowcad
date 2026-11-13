@@ -1,0 +1,47 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+20,10
+
+
+_N
+_LIST
+_L
+
+_LEADER
+100,0
+110,10
+_F
+_S
+_F
+_N
+120,5
+
+Splined
+
+_LIST
+(cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))
+
+_CIRCLE
+0,0
+2
+_-BLOCK
+TAG
+0,0
+_L
+
+_LEADER
+200,0
+210,10
+
+
+_B
+TAG
+215,15
+1
+1
+0
+_LIST
+(cdr (assoc 330 (member (quote (102 . "{ACAD_REACTORS")) (entget (entlast)))))
+

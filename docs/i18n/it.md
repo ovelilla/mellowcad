@@ -120,6 +120,14 @@ SEZIONE (`SEZ`). `LAYER` and `PROPRIETA` keep `LA` and `PR`, as English.
   `Specificare quarto punto o <Esci>`, `Punto 2D errato.`); the object `Solido`, the Properties
   palette's (desktop solid2d/d03), the tool `Solido 2D`, acad.cuix's ID_Solid; LIST's lines the
   console's (`SOLIDO`, `da punto`, `e punto`, `a punto`, p21).
+- **LEADER:** the name by the help page that shares the English GUID and the console
+  (`DIRETTRICE`, leader/p17; no alias: `LEAD` is unknown there, `DRAP` is QLEADER's); the prompts AcDimRes 5507–5529's, the console's (leader/p17 and the others run in it); the palette's labels `ax26res.dll`'s by id (297, 115, 1069, 191–192, 174, 186, 169):
+  `Specificare il punto iniziale della direttrice`, `Specificare il punto successivo o
+  [Nota/Formato/Annulla] <Nota>`, `Digitare la prima riga del testo di annotazione o <OPzioni>` (its
+  capitals as printed), `Digitare un'opzione di annotazione [Copia/Nessuna/testoM] <testoM>`; the
+  object `Direttrice`, Arrow `Chiusa piena`, `Posizione testo verticale` `Sopra` / `Centrato`; LIST's
+  lines the console's (`Direzione orizzontale`, `Vertice`, `Linea di aggancio: Off`, `Annotativa:
+  No`, p20).
 
 ## Interface terms
 

@@ -805,5 +805,17 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Block",
     "Yes",
     "No"
+  ],
+  "LEADER": [
+    "Annotation",
+    "Format",
+    "Undo",
+    "Spline",
+    "STraight",
+    "Arrow",
+    "None",
+    "Exit",
+    "Copy",
+    "Mtext"
   ]
 }

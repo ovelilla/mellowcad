@@ -93,6 +93,19 @@ const FROM_SCRATCH: ReadonlyArray<
         .click(p(40, 90))
         .enter(),
   ],
+  // leader/p01: the leader and its text, both in the current properties.
+  [
+    "LEADER",
+    (c) =>
+      c
+        .command("LEADER")
+        .click(p(0, 50))
+        .click(p(40, 90))
+        .enter()
+        .type("A")
+        .enter()
+        .enter(),
+  ],
   [
     "DIVIDE",
     (c) => c.command("DIVIDE").click(p(50, 0)).type("2").enter(),

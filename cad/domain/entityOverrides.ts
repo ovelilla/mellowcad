@@ -24,7 +24,9 @@ export function assignTextStyle(entity: Entity, styleId: TextStyleId): Entity {
 
 /** Returns a copy of `entity` using another dimension style (preserves its id). */
 export function assignDimStyle(entity: Entity, styleId: DimStyleId): Entity {
-  return entity.type === "dimension" ? { ...entity, styleId } : entity
+  return entity.type === "dimension" || entity.type === "leader"
+    ? { ...entity, styleId }
+    : entity
 }
 
 /** Returns a copy of `entity` moved onto layer `layerId` (preserves its id). */
@@ -63,6 +65,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
     case "point":
       return { ...entity, layerId }
     case "solid2d":
+      return { ...entity, layerId }
+    case "leader":
       return { ...entity, layerId }
   }
 }
@@ -111,6 +115,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "solid2d":
       return { ...entity, color }
+    case "leader":
+      return { ...entity, color }
   }
 }
 
@@ -157,6 +163,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "solid2d":
       return { ...entity, linetype }
+    case "leader":
+      return { ...entity, linetype }
   }
 }
 
@@ -202,6 +210,8 @@ export function assignEntityLineweight(
     case "point":
       return { ...entity, lineweight }
     case "solid2d":
+      return { ...entity, lineweight }
+    case "leader":
       return { ...entity, lineweight }
   }
 }

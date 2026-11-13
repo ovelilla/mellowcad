@@ -5,15 +5,19 @@ import {
 } from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
 import { Command } from "./Command"
+import { LeaderFollowers } from "./leaderFollowers"
 
 /**
  * The built-in reversible edits. Each command captures whatever it needs at
- * execution time so `undo` can restore the document exactly.
+ * execution time so `undo` can restore the document exactly. Each brings the
+ * leaders the objects it adds, changes or removes reach along in the same
+ * step (`LeaderFollowers`), as AutoCAD's leader follows its text.
  */
 
 /** Adds a single entity (line tool, future draw tools, paste, plugins...). */
 export class AddEntityCommand implements Command {
   readonly label = "add-entity"
+  private readonly followers = new LeaderFollowers()
 
   constructor(private readonly entity: Entity) {}
 
@@ -23,9 +27,11 @@ export class AddEntityCommand implements Command {
 
   execute(doc: CadDocument): void {
     doc.add(this.entity)
+    this.followers.apply(doc, new Map([[this.entity.id, undefined]]))
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     doc.remove(this.entity.id)
   }
 }
@@ -36,6 +42,7 @@ export class AddEntityCommand implements Command {
  */
 export class AddEntitiesCommand implements Command {
   readonly label = "add-entities"
+  private readonly followers = new LeaderFollowers()
 
   constructor(private readonly entities: readonly Entity[]) {}
 
@@ -45,9 +52,14 @@ export class AddEntitiesCommand implements Command {
 
   execute(doc: CadDocument): void {
     doc.addMany(this.entities)
+    this.followers.apply(
+      doc,
+      new Map(this.entities.map((entity) => [entity.id, undefined] as const))
+    )
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     doc.removeMany(this.entities.map((entity) => entity.id))
   }
 }
@@ -60,6 +72,7 @@ export class AddEntitiesCommand implements Command {
 export class UpdateEntityCommand implements Command {
   readonly label = "update-entity"
   private previous: Entity | undefined
+  private readonly followers = new LeaderFollowers()
 
   constructor(private readonly next: Entity) {}
 
@@ -70,9 +83,11 @@ export class UpdateEntityCommand implements Command {
   execute(doc: CadDocument): void {
     this.previous = doc.get(this.next.id)
     doc.update(this.next)
+    this.followers.apply(doc, new Map([[this.next.id, this.previous]]))
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     if (this.previous) doc.update(this.previous)
     else doc.remove(this.next.id)
   }
@@ -86,6 +101,7 @@ export class UpdateEntityCommand implements Command {
 export class UpdateEntitiesCommand implements Command {
   readonly label = "update-entities"
   private previous: Entity[] = []
+  private readonly followers = new LeaderFollowers()
 
   constructor(private readonly next: readonly Entity[]) {}
 
@@ -98,9 +114,11 @@ export class UpdateEntitiesCommand implements Command {
       .map((entity) => doc.get(entity.id))
       .filter((entity): entity is Entity => entity !== undefined)
     doc.updateMany(this.next)
+    this.followers.apply(doc, touchedOf(this.next, this.previous))
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     doc.updateMany(this.previous)
   }
 }
@@ -117,6 +135,7 @@ export class UpdateEntitiesCommand implements Command {
 export class ReplaceEntitiesCommand implements Command {
   readonly label = "replace-entities"
   private removed: PlacedEntity[] = []
+  private readonly followers = new LeaderFollowers()
 
   constructor(
     private readonly removedIds: readonly EntityId[],
@@ -132,9 +151,14 @@ export class ReplaceEntitiesCommand implements Command {
     const kept = new Set(this.added.map((entity) => entity.id))
     doc.removeMany(this.removedIds.filter((id) => !kept.has(id)))
     doc.addMany(this.added)
+    this.followers.apply(
+      doc,
+      new Map(this.removed.map((place) => [place.entity.id, place.entity]))
+    )
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     const removed = new Set(this.removedIds)
     doc.removeMany(
       this.added.map((entity) => entity.id).filter((id) => !removed.has(id))
@@ -147,6 +171,7 @@ export class ReplaceEntitiesCommand implements Command {
 export class RemoveEntitiesCommand implements Command {
   readonly label = "remove-entities"
   private removed: PlacedEntity[] = []
+  private readonly followers = new LeaderFollowers()
 
   constructor(private readonly ids: readonly EntityId[]) {}
 
@@ -157,9 +182,14 @@ export class RemoveEntitiesCommand implements Command {
   execute(doc: CadDocument): void {
     this.removed = doc.placesOf(this.ids)
     doc.removeMany(this.ids)
+    this.followers.apply(
+      doc,
+      new Map(this.removed.map((place) => [place.entity.id, place.entity]))
+    )
   }
 
   undo(doc: CadDocument): void {
+    this.followers.undo(doc)
     doc.restoreMany(this.removed)
   }
 }
@@ -218,4 +248,13 @@ function tablesOf(doc: CadDocument): DocumentTables {
     currentDimStyleId: doc.getCurrentDimStyleId(),
     blocks: doc.getBlocks(),
   }
+}
+
+/** The objects an update touched, each with what it was. */
+function touchedOf(
+  next: readonly Entity[],
+  previous: readonly Entity[]
+): Map<EntityId, Entity | undefined> {
+  const before = new Map(previous.map((entity) => [entity.id, entity]))
+  return new Map(next.map((entity) => [entity.id, before.get(entity.id)]))
 }

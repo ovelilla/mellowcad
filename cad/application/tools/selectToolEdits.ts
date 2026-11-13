@@ -42,6 +42,7 @@ import {
   rotatePoint,
   replacePolyline3dVertex,
   mapSolid2dCorners,
+  withLeaderVertex,
 } from "../../domain/entities"
 import type {
   BlockLookup,
@@ -83,6 +84,12 @@ export function withVertexAt(
   }
   if (entity.type === "polyline") {
     return stretchPolylineVertices(entity, new Map([[index, point]]))
+  }
+  if (entity.type === "leader") {
+    // A vertex goes to the point in its plane; the end takes the hook with
+    // it and records its offset from the text (leader/p14).
+    if (!entity.vertices[index]) return null
+    return withLeaderVertex(entity, index, { x: point.x, y: point.y })
   }
   if (entity.type === "solid2d") {
     // A corner goes to the point in its plane, as a polyline's vertex does,

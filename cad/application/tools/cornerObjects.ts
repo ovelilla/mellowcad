@@ -528,6 +528,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "insert":
     case "point":
     case "solid2d":
+    case "leader":
     case "region":
     case "solid3d":
       return null

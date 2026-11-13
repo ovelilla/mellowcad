@@ -69,6 +69,7 @@ import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
 import { PointTool } from "./tools/PointTool"
 import { SolidTool } from "./tools/SolidTool"
+import { LeaderTool } from "./tools/LeaderTool"
 import { DivideTool } from "./tools/DivideTool"
 import { ListTool } from "./tools/ListTool"
 import { MassPropTool } from "./tools/MassPropTool"
@@ -143,6 +144,7 @@ export function defaultTools(
     new Polyline3dTool(),
     new PointTool(),
     new SolidTool(),
+    new LeaderTool(),
     new DivideTool("divide", "divide"),
     new DivideTool("measure", "measuresegments"),
     new RectangleTool(),

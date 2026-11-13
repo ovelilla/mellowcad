@@ -135,7 +135,8 @@ export const ar: EngineLocale = {
       "divide": "تقسيم",
       "measuresegments": "قياس",
       "ptype": "نمط النقطة",
-      "solid": "مجسم ثنائي الأبعاد"
+      "solid": "مجسم ثنائي الأبعاد",
+      "leader": "خط إشارة"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -406,6 +407,17 @@ export const ar: EngineLocale = {
             "other": "مجسمات ثنائية الأبعاد"
           }
         ]
+      ],
+      "leader": [
+        [
+          "count",
+          2,
+          {
+            "one": "خط إشارة",
+            "two": "خطا إشارة",
+            "other": "خطوط إشارة"
+          }
+        ]
       ]
     },
     "array": {
@@ -651,7 +663,9 @@ export const ar: EngineLocale = {
         "decimalSeparator": "الفاصل العشري",
         "suppressTrailingZeros": "حذف الأصفار اللاحقة",
         "precision": "الدقة",
-        "perimeter": "المحيط"
+        "perimeter": "المحيط",
+        "arrow": "السهم",
+        "textPosVert": "الموضع العمودي للنص"
       },
       "value": {
         "yes": "نعم",
@@ -685,7 +699,14 @@ export const ar: EngineLocale = {
         "predefined": "معرّف مسبقًا",
         "outer": "خارجي",
         "extrusion": "بثق",
-        "revolve": "دوران"
+        "revolve": "دوران",
+        "lineWithNoArrow": "خط بلا سهم",
+        "splineWithNoArrow": "منحنى شرائحي بلا سهم",
+        "lineWithArrow": "خط بسهم",
+        "splineWithArrow": "منحنى شرائحي بسهم",
+        "closedFilled": "مغلق مُصمت",
+        "centered": "في الوسط",
+        "above": "فوق"
       },
       "justify": {
         "left": "يسار",

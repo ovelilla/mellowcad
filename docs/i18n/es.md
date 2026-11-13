@@ -386,3 +386,11 @@ origen/Origen` from the 2026 help and the same captures;
   object `Sólido`, as the Properties palette names it (desktop solid2d/d03), and the tool `Sólido 2D`,
   acad.cuix's ID_Solid; LIST's lines the console's (`SOLIDO`, `de punto`, `y punto`, `hasta punto`,
   p21).
+- **LEADER:** the name by the help page that shares the English GUID and the console (`DIRECTRIZ`,
+  leader/p17), the alias from the `acad.pgp` (`DIREC`); the prompts AcDimRes 5507–5529's, the console's (leader/p17 and the others run in it); the palette's labels `ax26res.dll`'s by id (297, 115, 1069, 191–192, 174, 186, 169): `Precise punto inicial
+  de directriz`, `Precise siguiente punto o [Anotación/Formato/desHacer] <Anotación>`, `Indique la
+  primera línea de texto de anotación u <opciones>` (its `u` before a vowel), `Indique opción de
+  formato de directriz [sPline/Recta/Flecha/Ninguna] <Salir>`, `Designe un objeto a copiar`; the
+  object `Directriz`, its Type `Línea con flecha` and the others, Arrow `Cerrado relleno`, `Pos. texto
+  vert.` `Encima` / `Centrado`; LIST's lines the console's (`Dirección horizontal`, `Vértice`, `Línea
+  de conexión: DES`, `Flecha:     ACT`, `Tipo de trayectoria: Recta`, `Anotativo: no`, p20).

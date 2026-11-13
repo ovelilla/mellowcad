@@ -444,7 +444,11 @@ export class CadDocument extends Observable implements DocumentReader {
 
   dimStyleInUse(id: DimStyleId): boolean {
     for (const entity of this.entities.values()) {
-      if (entity.type === "dimension" && entity.styleId === id) return true
+      if (
+        (entity.type === "dimension" || entity.type === "leader") &&
+        entity.styleId === id
+      )
+        return true
     }
     return false
   }
@@ -619,7 +623,10 @@ export class CadDocument extends Observable implements DocumentReader {
     ) {
       return assignTextStyle(onLayer, DEFAULT_TEXT_STYLE_ID)
     }
-    if (onLayer.type === "dimension" && !this.dimStyles.has(onLayer.styleId)) {
+    if (
+      (onLayer.type === "dimension" || onLayer.type === "leader") &&
+      !this.dimStyles.has(onLayer.styleId)
+    ) {
       return assignDimStyle(onLayer, DEFAULT_DIM_STYLE_ID)
     }
     if (onLayer.type === "insert" && onLayer.attributes) {
@@ -821,6 +828,7 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
     case "solid3d":
     case "point":
     case "solid2d":
+    case "leader":
       return false
     default: {
       const unhandled: never = entity

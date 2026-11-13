@@ -4,6 +4,7 @@ PLINE ["PL"] "Polyline"
 3DPOLY ["3P"] "3D Polyline"
 POINT ["PO"] "Multiple Points"
 SOLID ["SO"] "2D Solid"
+LEADER ["LEAD"] "Leader"
 DIVIDE ["DIV"] "Divide"
 MEASURE ["ME"] "Measure"
 PTYPE ["DDPTYPE"] "Point Style"
@@ -173,6 +174,7 @@ splinecv "Spline CV" -
 polyline3d "3D Polyline" 3P
 point "Multiple Points" PO
 solid "2D Solid" SO
+leader "Leader" LEAD
 divide "Divide" DIV
 measuresegments "Measure" ME
 rectangle "Rectangle" REC
@@ -585,7 +587,7 @@ ptype "Point Style" PTYPE
   properties: -
   cycling: -
   command| OPEN
-  info| 1 object not opened: 1 LEADER.
+  info| 1 object not opened: 1 XLINE.
   info| 1 object in a layout not opened.
   info| 1 object could not be read.
 > after open
@@ -8057,6 +8059,129 @@ Specify next point or
   prompt| Specify third point:
 > pick
   properties: Solid (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
+
+## LEADER
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LEADER
+  prompt: LEADER Specify leader start point:
+  asks: "Specify leader start point"
+  tip: Specify leader start point:
+  dyn: "X,Y"=""||*
+  command| LEAD LEADER
+> start
+  prompt: LEADER Specify next point:
+  asks: "Specify next point"
+  tip: Specify next point:
+  prompt| Specify leader start point: 0,0
+> Undo refused
+  prompt| Specify next point: U
+  error| Invalid Input.
+> next
+  prompt: LEADER Specify next point or [Annotation/Format/Undo] <Annotation>:
+  asks: "Specify next point or"
+  tip: Specify next point or
+  options: [A] Annotation, [F] Format, [U] Undo
+  prompt| Specify next point: @10,10
+> Format
+  prompt: LEADER Enter leader format option [Spline/STraight/Arrow/None] <Exit>:
+  asks: 
+  tip: Enter leader format option
+  dyn: 
+  options: [S] Spline, [ST] STraight, [A] Arrow, [N] None
+  prompt| Specify next point or [Annotation/Format/Undo] <Annotation>: F
+> Spline
+  prompt: LEADER Specify next point or [Annotation/Format/Undo] <Annotation>:
+  asks: "Specify next point or"
+  tip: Specify next point or
+  dyn: "X,Y"=""||*
+  options: [A] Annotation, [F] Format, [U] Undo
+  prompt| Enter leader format option [Spline/STraight/Arrow/None] <Exit>: S
+> Format again
+  prompt: LEADER Enter leader format option [Spline/STraight/Arrow/None] <Exit>:
+  asks: 
+  tip: Enter leader format option
+  dyn: 
+  options: [S] Spline, [ST] STraight, [A] Arrow, [N] None
+  prompt| Specify next point or [Annotation/Format/Undo] <Annotation>: F
+> Straight
+  prompt: LEADER Specify next point or [Annotation/Format/Undo] <Annotation>:
+  asks: "Specify next point or"
+  tip: Specify next point or
+  dyn: "X,Y"=""||*
+  options: [A] Annotation, [F] Format, [U] Undo
+  prompt| Enter leader format option [Spline/STraight/Arrow/None] <Exit>: ST
+> third
+  prompt| Specify next point or [Annotation/Format/Undo] <Annotation>: @20,10
+> Annotation
+  prompt: LEADER Enter first line of annotation text or <options>:
+  asks: "Enter first line of annotation text or"
+  tip: Enter first line of annotation text or
+  dyn: "Enter first line of annotation text or"=""||*
+  options: -
+  prompt| Specify next point or [Annotation/Format/Undo] <Annotation>:
+> first line
+  prompt: LEADER Enter next line of annotation text:
+  asks: "Enter next line of annotation text"
+  tip: Enter next line of annotation text:
+  dyn: "Enter next line of annotation text"=""||*
+  prompt| Enter first line of annotation text or <options>: First
+> second line
+  prompt| Enter next line of annotation text: Second
+> done
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter next line of annotation text:
+> pick
+  properties: Leader (1) [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~] [Misc: Type=Line with arrow~, Annotative=No] [Lines & Arrows: Arrow=Closed filled, Arrow size=2.5~] [Text: Text offset=0.625~, Text pos vert=Above~] [Fit: Dim scale overall=1~]
+> LIST
+  properties: -
+  command| LIST
+  info| 1 found
+  info|                   LEADER    Layer: "0"
+                                    Space: Model space
+        associative: no
+        Normal:               X=     0.00  Y=     0.00  Z=     1.00
+        Horizontal direction: X=     1.00  Y=     0.00  Z=     0.00
+        Vertex:        X=     0.00  Y=     0.00  Z=     0.00
+        Vertex:        X=    10.00  Y=    10.00  Z=     0.00
+        Vertex:        X=    20.00  Y=    10.00  Z=     0.00
+        Hook Line: Off
+        Arrow:     On
+        Path type: Straight
+        dimension style: "ISO-25"
+                Annotative: No
+> options
+  prompt: LEADER Enter an annotation option [Copy/None/Mtext] <Mtext>:
+  asks: 
+  tip: Enter an annotation option
+  dyn: 
+  options: [C] Copy, [N] None, [M] Mtext
+  command| *Cancel*
+  command| LEADER
+  prompt| Specify leader start point: 30,0
+  prompt| Specify next point: @40,10
+  prompt| Specify next point or [Annotation/Format/Undo] <Annotation>:
+  prompt| Enter first line of annotation text or <options>:
+> Copy
+  prompt: LEADER Select an object to copy:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an annotation option [Copy/None/Mtext] <Mtext>: C
+> copy refused
+  prompt| Select an object to copy:
+  error| Please select an mtext, text, block reference, or tolerance object.
 
 ## DIVIDE
 > start

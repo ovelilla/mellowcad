@@ -6,6 +6,7 @@ import {
   entitiesBounds,
   scaleEntity,
   scaleEntityCopy,
+  withCopiedAssociations,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -579,7 +580,10 @@ export class ScaleTool implements Tool {
     if (state.copy) {
       ctx.execute(
         new AddEntitiesCommand(
-          state.originals.map((e) => scaleEntityCopy(e, state.base, factor))
+          withCopiedAssociations(
+            state.originals,
+            state.originals.map((e) => scaleEntityCopy(e, state.base, factor))
+          )
         )
       )
     } else if (Math.abs(factor - 1) > 1e-9) {

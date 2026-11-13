@@ -28,6 +28,7 @@ import {
   polyline3dSegments,
   entityShape,
   solid2dEdges,
+  leaderPathEntity,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
@@ -148,6 +149,15 @@ function snapEntities(
             carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
           )
         }
+        continue
+      }
+      if (piece.type === "leader") {
+        // Its line or spline through the vertices, of its id: ends at the
+        // vertices, middles, nearest and perpendicular points and crossings,
+        // as the console finds them; a spline's ends, middle and nearest
+        // (leader/p11). The arrowhead and the line under the text are not
+        // snapped (unverified).
+        entities.push(leaderPathEntity(piece))
         continue
       }
       if (piece.type !== "polyline3d") {

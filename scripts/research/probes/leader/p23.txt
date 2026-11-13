@@ -1,0 +1,10 @@
+(progn (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+(progn (setq s (ssget "_X" (list (cons 0 "LEADER"))) i 0) (repeat (sslength s) (setq e (entget (ssname s i))) (print (list (cdr (assoc 73 e)) (cdr (assoc 75 e)) (if (cdr (assoc 340 e)) (cdr (assoc 0 (entget (cdr (assoc 340 e)))))) (assoc 213 e) (assoc 212 e))) (setq i (1+ i))) (princ))
+(progn (setq t1 (ssname (ssget "_X" (list (cons 0 "MTEXT") (cons 1 "Hooked"))) 0)) (princ))
+_MOVE
+(ssadd t1)
+
+0,0
+5,7
+(progn (setq s (ssget "_X" (list (cons 0 "LEADER"))) l (ssname s (1- (sslength s)))) (princ))
+(progn (setq s (ssget "_X" (list (cons 0 "LEADER")))) (setq i 0) (repeat (sslength s) (setq e (entget (ssname s i))) (if (equal (cdr (assoc 340 e)) t1) (print (vl-remove-if-not (quote (lambda (g) (= (car g) 10))) e))) (setq i (1+ i))) (princ))

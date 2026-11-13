@@ -32,6 +32,9 @@ import {
   PointEntity,
   withXAxisAngle,
   createDimension,
+  createLeader,
+  LeaderEntity,
+  LeaderOverrides,
   createEllipse,
   createHatch,
   createInsert,
@@ -82,6 +85,8 @@ export interface DxfEntityContext {
   linetype(name: string | undefined): LinetypeId | undefined
   textStyle(name: string | undefined): TextStyleId
   dimStyle(name: string | undefined): DimStyleId
+  /** Whether the style of that name puts its text above the line (DIMTAD other than 0). */
+  dimStyleTextAbove(name: string | undefined): boolean
   /** The block a reference names, `"xref"` for an external reference, `null` for none. */
   block(name: string): DxfBlockTarget | "xref" | null
   /** SPLINESEGS, for a spline-fit polyline whose vertices do not say it. */
@@ -145,6 +150,8 @@ export function dxfEntities(
       return dimension(record, ctx)
     case "HATCH":
       return hatch(record, ctx)
+    case "LEADER":
+      return made(leader(record, ctx))
     // WHY not counted: a viewport is a layout's window onto the model, which
     // is what opens; the others belong to an object already read, or are its end.
     case "VIEWPORT":
@@ -294,6 +301,87 @@ function pointObject(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   const thickness = num(r, 39)
   if (thickness) entity = withThickness(entity, thickness)
   return common(n ? withNormal(entity, n) : entity, r, ctx)
+}
+
+/**
+ * A leader's vertices are the WCS's, its normal 210 (leader/p22: AutoCAD's
+ * DXFOUT, and the samples' leaders with a 210 of -Z beside their text); the
+ * model keeps them in its OCS. A group at its default is left out: 71 1, 72
+ * 0, 73 3, 75 0, 211 the X axis. Its annotation (340) is linked by the reader
+ * once the space is read (`readDxf`); the overrides its palette shows come
+ * from its DSTYLE xdata (DIMSCALE 40, DIMASZ 41, DIMTAD 77, DIMGAP 147), and
+ * a DIMTAD of 0, its own or its style's, is kept as one.
+ */
+function leader(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  // The vertices are the WCS's, put in the OCS as every object's points are;
+  // one facing -Z with a text facing +Z is turned to its text's frame when
+  // the two are linked (`leaderInPlaneOf`, readDxf).
+  const n = normal(r)
+  const toOcs = ocsOf(n)
+  const ocs = (p: Vec3) => (toOcs ? toOcs(p) : p)
+  const points: Vec3[] = []
+  const cursor = new GroupCursor(r)
+  while (!cursor.done()) {
+    if (cursor.code() === 10) points.push(ocs(cursor.takePoint(10, true)!))
+    else cursor.next()
+  }
+  if (points.length < 2) return null
+  // 211 is a WCS direction, world X when left out (leader/p25: a leader facing
+  // -Z without one runs along its OCS's -X).
+  const along = point(r, 211) ?? { x: 1, y: 0, z: 0 }
+  const local = toOcs ? toOcs(along) : along
+  const angle =
+    Math.hypot(local.x, local.y) > 1e-12 ? Math.atan2(local.y, local.x) : 0
+  const styleName = str(r, 3)
+  const { textAbove: ownAbove, ...sizes } = dstyleOverrides(r)
+  const textAbove = ownAbove ?? ctx.dimStyleTextAbove(styleName)
+  const overrides: LeaderOverrides = textAbove
+    ? sizes
+    : { ...sizes, textAbove: false }
+  let entity: LeaderEntity = createLeader(
+    points.map((p) => planar(p)),
+    ctx.dimStyle(styleName),
+    {
+      arrow: (int(r, 71) ?? 1) !== 0,
+      spline: (int(r, 72) ?? 0) === 1,
+      ...(Math.abs(angle) > 1e-12 ? { horizontal: normalizeAngle(angle) } : {}),
+    }
+  )
+  entity = {
+    ...entity,
+    hook: (int(r, 75) ?? 0) === 1 && points.length > 2,
+    ...(Object.keys(overrides).length > 0 ? { overrides } : {}),
+  }
+  const raised = withElevation(entity, points[0].z)
+  return common(n ? withNormal(raised, n) : raised, r, ctx)
+}
+
+/** A leader's DSTYLE xdata: the dimension variables it overrides, those its palette shows. */
+function dstyleOverrides(r: DxfRecord): LeaderOverrides {
+  const { codes, values } = r
+  let i = codes.findIndex(
+    (code, k) => code === 1000 && values[k].trim().toUpperCase() === "DSTYLE"
+  )
+  if (i < 0) return {}
+  const found: {
+    scale?: number
+    arrowSize?: number
+    textGap?: number
+    textAbove?: boolean
+  } = {}
+  for (i++; i < codes.length - 1; i++) {
+    if (codes[i] === 1002 && values[i].trim() === "}") break
+    if (codes[i] !== 1070) continue
+    const variable = Number.parseInt(values[i], 10)
+    const value = finite(values[i + 1])
+    if (value === undefined) continue
+    if (variable === 40 && value > 0) found.scale = value
+    else if (variable === 41 && value >= 0) found.arrowSize = value
+    else if (variable === 147) found.textGap = value
+    else if (variable === 77) found.textAbove = value !== 0
+    i++
+  }
+  return found
 }
 
 function arc(r: DxfRecord, ctx: DxfEntityContext): Entity | null {

@@ -1,4 +1,5 @@
 import { pointInsideSolid2d, solid2dEdges } from "./solids2d"
+import { leaderPathEntity } from "./leaders"
 import { regionLevelEdgeEntities } from "./regions"
 import { solidEdgeEntities } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
@@ -338,6 +339,8 @@ export function closestOnEntity(
       }
       return pointInsideSolid2d(entity, point) ? { ...best, distance: 0 } : best
     }
+    case "leader":
+      return closestOnEntity(leaderPathEntity(entity), point)
     case "point":
       // WHY by its place alone: what the figure shows is a display of
       // PDMODE, not the object (unverified on the desktop).
@@ -539,6 +542,8 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
     }
     case "point":
       return { min: entity.position, max: entity.position }
+    case "leader":
+      return entityBounds(leaderPathEntity(entity))
     case "solid2d": {
       const xs = entity.corners.map((p) => p.x)
       const ys = entity.corners.map((p) => p.y)
@@ -847,6 +852,8 @@ export function entityCrossesRect(
     }
     case "point":
       return pointInRect(entity.position, min, max)
+    case "leader":
+      return entityCrossesRect(leaderPathEntity(entity), min, max)
     case "solid2d": {
       if (entity.corners.some((v) => pointInRect(v, min, max))) return true
       for (const [a, b] of solid2dEdges(entity)) {

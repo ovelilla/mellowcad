@@ -1,5 +1,9 @@
 import { Vec3 } from "../../geometry/Vec3"
-import { Entity, copyEntity } from "../../domain/entities"
+import {
+  Entity,
+  copyEntity,
+  withCopiedAssociations,
+} from "../../domain/entities"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ToolContext, ToolQuestion } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
@@ -49,7 +53,10 @@ export class CopyTool extends PlacementTool {
   ): void {
     ctx.execute(
       new AddEntitiesCommand(
-        originals.map((entity) => copyEntity(entity, delta))
+        withCopiedAssociations(
+          originals,
+          originals.map((entity) => copyEntity(entity, delta))
+        )
       )
     )
   }

@@ -23,6 +23,7 @@ import type {
   InsertEntity,
   LineEntity,
   Solid2dEntity,
+  LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
   PolylineEntity,
@@ -30,7 +31,7 @@ import type {
   TextEntity,
   TextJustify,
 } from "../../domain/entityTypes"
-import { entitiesBounds } from "../../domain/entities"
+import { entitiesBounds, leaderHorizontal } from "../../domain/entities"
 import { entityAxes, entityPointToWorld } from "../../domain/elevation"
 import {
   ellipseEndPoint,
@@ -115,6 +116,7 @@ type ObjectName =
   | "region"
   | "solid3d"
   | "solid2d"
+  | "leader"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -204,6 +206,9 @@ class Report {
         break
       case "solid2d":
         this.solid2d(entity)
+        break
+      case "leader":
+        this.leader(entity)
         break
     }
     return this.lines
@@ -346,6 +351,32 @@ class Report {
     this.say("listSolidTo", this.xyz(c))
     this.say("listSolidAnd", this.xyz(d))
     this.sayExtrusion(solid)
+  }
+
+  /**
+   * As each console lists it (leader/p10, p20): its plane, its horizontal
+   * and vertices in the UCS, hook, arrowhead and path, its style. WHY no
+   * `Associated to:   MTEXT    Handle = 2D8` line: it names the annotation by
+   * its handle, which the model has none of (the header's reason).
+   */
+  private leader(leader: LeaderEntity): void {
+    this.header("leader", leader)
+    this.say("listDimensionAssociative")
+    const normal = worldDirectionToUcs(this.settings.ucs, leader.normal ?? UP)
+    this.say("listLeaderNormal", this.xyz(normal))
+    this.say(
+      "listLeaderHorizontal",
+      this.xyz(this.direction(leader, leaderHorizontal(leader)))
+    )
+    for (const vertex of leader.vertices) {
+      this.say("listLeaderVertex", this.xyz(this.at(leader, vertex)))
+    }
+    this.say("listLeaderHook", { on: leader.hook ? "yes" : "no" })
+    this.say("listLeaderArrow", { on: leader.arrow ? "yes" : "no" })
+    this.say("listLeaderPath", { spline: leader.spline ? "yes" : "no" })
+    const style = this.ctx.document.getDimStyle(leader.styleId)
+    this.say("listDimensionStyle", { style: style?.name ?? leader.styleId })
+    this.say("listLeaderAnnotative")
   }
 
   private line(line: LineEntity): void {

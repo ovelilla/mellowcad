@@ -2190,7 +2190,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity;
 
 export type { EntityColor }
 /**
@@ -2259,11 +2259,19 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
  | "arrayMethod" | "arrayItemSpacing"
 /** A path array's Align items, a choice: 1 Yes, 0 No. */
  | "arrayAlignItems"
+/**
+ * A leader's overrides of its style (desktop leader/d01): Arrow size,
+ * Text offset (DIMGAP), Dim scale overall; its Type, a choice in the
+ * palette's order (ax26res 115): 0 Line with no arrow, 1 Spline with no
+ * arrow, 2 Line with arrow, 3 Spline with arrow; its Text pos vert, a
+ * choice: 1 Above, 0 Centered.
+ */
+ | "leaderArrowSize" | "leaderTextGap" | "leaderScale" | "leaderType" | "leaderTextAbove"
 /** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3396,6 +3404,38 @@ export interface HatchEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A leader (DXF LEADER, LEADER's object): a line or a spline from an arrowhead
+ * through the points picked to its annotation. Its vertices are in the OCS of
+ * its normal, at its elevation, as AutoCAD stores them, the hook line
+ * included: with {@link hook}, the last vertex is the point picked and the one
+ * before it was added a hook's length short of it (leader/p02). The arrowhead,
+ * the spline and the line under its text are derived (`leaderGeometry`).
+ */
+export interface LeaderEntity extends BaseEntity {
+    readonly type: "leader";
+    readonly vertices: readonly Vec2[];
+    /** DXF 71: an arrowhead at the first vertex. */
+    readonly arrow: boolean;
+    /** DXF 72: a spline through the vertices rather than straight segments. */
+    readonly spline: boolean;
+    /** DXF 75: the last segment is the hook line. */
+    readonly hook: boolean;
+    /** DXF 211, the direction of the hook and the text, radians from the OCS's X. Absent, 0. */
+    readonly horizontal?: number;
+    readonly annotation?: LeaderAnnotation;
+    /** DXF 41 and 40: the size of its text when last placed, which the line under it runs. */
+    readonly textWidth?: number;
+    readonly textHeight?: number;
+    /** DXF 213: the last vertex's offset from where its text puts it, after a stretch (leader/p14). */
+    readonly textOffset?: Vec2;
+    /** DXF 212: the last vertex's offset from its block reference's insertion point (leader/p05). */
+    readonly blockOffset?: Vec2;
+    readonly styleId: DimStyleId;
+    readonly overrides?: LeaderOverrides;
+}
+
+// domain/entityTypes.ts
+/**
  * A multiline text object (AutoCAD's MTEXT): paragraphs that wrap to a width,
  * as one object. Only what AutoCAD stores is kept; the lines as wrapped and the
  * size of the box come out of `mtextLayout`.
@@ -3748,6 +3788,24 @@ export interface RegionEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * The dimension variables a leader overrides of its style (DXF's `DSTYLE`
+ * xdata), the ones its Properties palette shows: DIMASZ, DIMSCALE, DIMGAP and
+ * DIMTAD. Absent, the style's.
+ */
+export interface LeaderOverrides {
+    readonly arrowSize?: number;
+    readonly scale?: number;
+    readonly textGap?: number;
+    /**
+     * DIMTAD: whether the text sits above the leader's last line (1, ISO-25's,
+     * the only placement a style here has) or centred on its end (0). Absent,
+     * above.
+     */
+    readonly textAbove?: boolean;
+}
+
+// domain/entityTypes.ts
+/**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
  * polylines", points (point/p04) and 2D solids (solid2d/p07) among the ones
  * modelled here. Absent
@@ -3771,6 +3829,17 @@ interface Thick {
  *   drawing a radial line or a leader instead of extension lines.
  */
 export type DimensionKind = "linear" | "aligned" | "angular" | "radius" | "diameter";
+
+// domain/entityTypes.ts
+/**
+ * What a leader points from (DXF 73 and 340): the MTEXT or block reference it
+ * is associated with, which it follows (`domain/leaders.ts`). AutoCAD's third
+ * kind, a TOLERANCE, has no object here.
+ */
+export interface LeaderAnnotation {
+    readonly kind: "mtext" | "block";
+    readonly id: EntityId;
+}
 
 // domain/entityTypes.ts
 /**

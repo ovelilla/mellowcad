@@ -1,0 +1,74 @@
+---
+title: "Commande LREPERE (LEADER) dans AutoCAD"
+metaTitle: "Ligne de repère dans AutoCAD : LREPERE (LEADER)"
+description: "Tracer une ligne de repère avec LREPERE (LEADER) d'AutoCAD en français : de la flèche au texte, l'attache, le format, et la différence avec MLEADER. Essayez-la."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande ligne de repère en anglais ?","answer":"LEADER. Dans AutoCAD en français, c'est LREPERE, sans alias : tapez LREPERE et appuyez sur Entrée ou Espace. LE lance LREPERERAP, la ligne de repère rapide, et _LEADER fonctionne dans toutes les langues d'AutoCAD."},{"question":"Quelle différence entre LREPERE et MLEADER ?","answer":"LREPERE est l'ancienne commande : une ligne de repère et un texte à part que la ligne suit. MLEADER, qu'AutoCAD recommande aujourd'hui, crée un seul objet ligne de repère multiple, avec ses propres styles et plusieurs lignes vers une même note. MellowCAD a LREPERE ; il ouvre et enregistre les lignes de repère d'un fichier DXF, et laisse de côté ses lignes de repère multiples."},{"question":"Comment faire une ligne de repère avec du texte ?","answer":"Lancez LREPERE, indiquez le point visé, puis l'endroit du texte, appuyez sur Entrée et tapez le texte, ligne par ligne. Entrée sur une ligne vide termine. Entrée à la première ligne donne les autres annotations, dont l'éditeur de texte."},{"question":"Comment changer la taille de la flèche d'une ligne de repère ?","answer":"Sélectionnez la ligne de repère et changez Taille de la flèche dans la palette Propriétés, ce qui ne vaut que pour elle ; ou changez la taille de flèche du style de cote, que suivent toutes les lignes de repère de ce style. La longueur de l'attache suit aussi la taille de la flèche."},{"question":"Pourquoi la ligne de repère n'a-t-elle pas de flèche ?","answer":"Soit Aucun(e) dans Format l'a enlevée, soit le premier segment mesure moins du double de la taille de la flèche, et AutoCAD n'en trace pas non plus. Indiquez le deuxième point plus loin du premier, ou réduisez la taille de la flèche."}]
+---
+
+LREPERE (LEADER) trace une ligne d'une flèche jusqu'à une note. Indiquez le point de départ, où se trouve la flèche, puis autant de points que vous voulez ; à partir du deuxième, l'invite propose `Annotation`, qu'Entrée choisit aussi, `Format` et `annUler`. Entrée aux deux premiers points termine la commande sans rien tracer. Tapez ensuite la note ligne par ligne, Entrée après chacune, et Entrée sur une ligne vide pour finir : la ligne de repère et son texte, un texte multiligne, sont créés ensemble en une seule étape, sur le calque courant avec la couleur, le type de ligne et l'épaisseur de ligne courants.
+
+Le texte prend sa hauteur, son écart avec la ligne et sa place dans le style de cote courant : après la fin de la ligne de repère, ou avant quand elle arrive par la droite, et au-dessus du dernier segment, qui se prolonge sous le texte. Quand le dernier segment monte de plus de 15° par rapport à l'horizontale, LREPERE ajoute une attache, un trait horizontal aussi long que la flèche qui finit au point indiqué. La flèche est la flèche pleine fermée, tracée seulement quand le premier segment mesure au moins le double de sa longueur.
+
+La ligne de repère suit son texte : déplacez, faites pivoter ou mettez à l'échelle le texte et la fin de la ligne de repère le suit, l'attache recalculée ; effacez le texte et la ligne de repère reste, sans attache. Une ligne de repère et son texte copiés ensemble restent une paire. Les poignées de la ligne de repère sont sur ses points ; la palette Propriétés montre son type, la taille de la flèche, le décalage et la position du texte, et son échelle.
+
+- **Commande :** `LREPERE`
+- **En anglais :** `LEADER`, tapé `_LEADER` dans toutes les langues
+- **Groupe :** [Annotation](/docs/commands#annotate)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `LREPERE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="leader" caption="Un trou et sa note : LREPERE depuis le bord du cercle, deux points, puis deux lignes de texte ; le dernier segment monte, donc une attache le relie au texte." />
+
+## Options [#options]
+
+### `Annotation` (`A`) [#annotation]
+
+Demande le texte, ligne par ligne. Entrée à la première ligne demande à la place une autre sorte d'annotation : `textMult` (par défaut) ouvre l'éditeur de texte à la fin de la ligne de repère, où Entrée coupe la ligne et Ctrl+Entrée ou un clic en dehors termine ; `Copier` place à la fin une copie du texte multiligne, du texte sur une ligne ou de la référence de bloc que vous sélectionnez, et refuse tout autre objet avec `Sélectionnez un objet textmult, texte, référence de bloc ou tolérance.` ; `Aucun(e)` trace la ligne de repère seule.
+
+### `Format` (`F`) [#format]
+
+Fixe comment la ligne de repère est tracée, puis revient aux points : `SPline` en fait une courbe lisse par les points, `Droite` revient aux segments droits, `Flèche` remet la flèche et `Aucun(e)` l'enlève. Entrée laisse le format tel quel.
+
+### `annUler` (`U`) [#undo]
+
+Annule le dernier point et le redemande. Au deuxième point il n'y a rien à annuler, et `Entrée incorrecte.` le dit.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Les annotations Tolérance et Bloc : MellowCAD n'a pas d'objet de tolérance géométrique, et un bloc ne s'insère pas depuis LREPERE, donc l'invite des options propose Copier, Aucun(e) et textMult. Les flèches autres que la flèche pleine fermée, et la couleur et l'épaisseur de ligne propres à la ligne de repère que donne le style de cote. LREPERERAP (QLEADER) et MLEADER, la ligne de repère rapide et la ligne de repère multiple, ne sont pas encore là : les lignes de repère multiples d'un DXF sont laissées de côté à l'ouverture.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande ligne de repère en anglais ?
+
+LEADER. Dans AutoCAD en français, c'est LREPERE, sans alias : tapez LREPERE et appuyez sur Entrée ou Espace. `LE` lance LREPERERAP, la ligne de repère rapide, et `_LEADER` fonctionne dans toutes les langues d'AutoCAD.
+
+### Quelle différence entre LREPERE et MLEADER ?
+
+LREPERE est l'ancienne commande : une ligne de repère et un texte à part que la ligne suit. MLEADER, qu'AutoCAD recommande aujourd'hui, crée un seul objet ligne de repère multiple, avec ses propres styles et plusieurs lignes vers une même note. MellowCAD a LREPERE ; il ouvre et enregistre les lignes de repère d'un fichier DXF, et laisse de côté ses lignes de repère multiples.
+
+### Comment faire une ligne de repère avec du texte ?
+
+Lancez LREPERE, indiquez le point visé, puis l'endroit du texte, appuyez sur Entrée et tapez le texte, ligne par ligne. Entrée sur une ligne vide termine. Entrée à la première ligne donne les autres annotations, dont l'éditeur de texte.
+
+### Comment changer la taille de la flèche d'une ligne de repère ?
+
+Sélectionnez la ligne de repère et changez Taille de la flèche dans la palette Propriétés, ce qui ne vaut que pour elle ; ou changez la taille de flèche du style de cote, que suivent toutes les lignes de repère de ce style. La longueur de l'attache suit aussi la taille de la flèche.
+
+### Pourquoi la ligne de repère n'a-t-elle pas de flèche ?
+
+Soit Aucun(e) dans Format l'a enlevée, soit le premier segment mesure moins du double de la taille de la flèche, et AutoCAD n'en trace pas non plus. Indiquez le deuxième point plus loin du premier, ou réduisez la taille de la flèche.
+
+## Commandes associées [#related]
+
+- [Commande TEXTMULT (MTEXT) dans AutoCAD](/docs/commands/mtext)
+- [Commande COTSTYLE (DIMSTYLE) dans AutoCAD](/docs/commands/dimstyle)
+- [Commande COTRAYON (DIMRADIUS) dans AutoCAD](/docs/commands/dimradius)
+- [Commande TEXTE (TEXT) dans AutoCAD](/docs/commands/text)

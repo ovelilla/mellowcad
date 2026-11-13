@@ -48,6 +48,10 @@ import {
   mtextToWorld,
   isWidePolyline,
   solid2dOutline,
+  leaderGeometry,
+  leaderLook,
+  leaderPathEntity,
+  LeaderEntity,
   polylineOutline,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
@@ -1102,7 +1106,61 @@ function planarPrimitives(
       return solidPrimitives(camera, entity, stroke, options)
     case "point":
       return pointPrimitives(camera, entity, stroke, options.points)
+    case "leader":
+      return leaderPrimitives(
+        camera,
+        entity,
+        stroke,
+        options,
+        options.dimStyle ?? DEFAULT_DIM_STYLE
+      )
   }
+}
+
+/**
+ * A leader as AutoCAD draws it (`leaderGeometry`): its line, or its spline,
+ * in its linetype, the line under its text, and the arrowhead filled, as a
+ * dimension's is.
+ */
+function leaderPrimitives(
+  camera: CameraTransform,
+  leader: LeaderEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions,
+  style: DimStyle
+): ScenePrimitive[] {
+  const g = leaderGeometry(leader, leaderLook(leader, style))
+  const line = (vertices: readonly Vec2[]): ScenePrimitive[] =>
+    vertices.length < 2
+      ? []
+      : planarPrimitives(
+          camera,
+          {
+            ...leaderPathEntity(leader),
+            type: "polyline",
+            vertices,
+            closed: false,
+          },
+          stroke,
+          options
+        )
+  const primitives: ScenePrimitive[] = g.curve
+    ? [
+        ...splinePrimitives(camera, g.curve, stroke, options, (p) =>
+          camera.worldToScreen(p)
+        ),
+        ...line(g.path),
+      ]
+    : line(g.path)
+  if (g.arrow) {
+    primitives.push({
+      kind: "path",
+      points: g.arrow.map((p) => camera.worldToScreen(p)),
+      closed: true,
+      fill: stroke.color,
+    })
+  }
+  return primitives
 }
 
 /**
@@ -2007,7 +2065,7 @@ function pushEntities(
       solidLines,
       linetype: true,
       dimStyle:
-        entity.type === "dimension"
+        entity.type === "dimension" || entity.type === "leader"
           ? (dimStyleById.get(entity.styleId) ??
             dimStyleById.get(DEFAULT_DIM_STYLE_ID) ??
             DEFAULT_DIM_STYLE)

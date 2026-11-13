@@ -19,6 +19,7 @@ import {
   Entity,
   HatchEntity,
   InsertEntity,
+  LeaderEntity,
   LineEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -29,6 +30,7 @@ import {
   MTEXT_ATTACHMENTS,
 } from "../../domain/entityTypes"
 import { lineEndZ, lineStartZ } from "../../domain/elevation"
+import { leaderSide } from "../../domain/leaders"
 import { isPeriodicSpline, splineCurve } from "../../domain/splines"
 import { polylineCurve, polyline3dCurve } from "../../domain/polylineFits"
 import {
@@ -50,6 +52,15 @@ export interface DxfWriteContext {
   /** AC1015 (2000) to AC1032 (2018), as a number: groups added in a release are written from it. */
   readonly version: number
   handle(): string
+  /**
+   * The handle an object takes: a new one, or, for a leader and its
+   * annotation, the one each was given when the other named it first.
+   */
+  entityHandle(entity: Entity | BlockAttribute): string
+  /** The leaders an annotation answers to (ACAD_REACTORS), by handle. */
+  reactors(entity: Entity | BlockAttribute): readonly string[]
+  /** A leader's annotation written with it: its handle, or none. */
+  annotation(leader: LeaderEntity): string | null
   layerName(id: string): string
   textStyleName(id: string): string
   dimStyleName(id: string): string
@@ -70,11 +81,18 @@ function head(
   type: string,
   entity: Entity | BlockAttribute,
   owner: string,
-  handle: string = ctx.handle()
+  handle: string = ctx.entityHandle(entity)
 ): void {
   const { out } = ctx
   out.str(0, type)
   out.str(5, handle)
+  // An annotation names its leaders before its owner (leader/p22).
+  const reactors = ctx.reactors(entity)
+  if (reactors.length > 0) {
+    out.str(102, "{ACAD_REACTORS")
+    for (const reactor of reactors) out.str(330, reactor)
+    out.str(102, "}")
+  }
   out.str(330, owner)
   out.str(100, "AcDbEntity")
   out.str(8, ctx.layerName(entity.layerId))
@@ -158,6 +176,8 @@ export function writeEntity(
       return dimension(ctx, entity, owner)
     case "hatch":
       return hatch(ctx, entity, owner)
+    case "leader":
+      return leader(ctx, entity, owner)
     // WHY counted, not written: a region and a solid are ACIS bodies, whose
     // SAT this engine does not write (docs/next-solids.md §6).
     case "region":
@@ -304,7 +324,7 @@ function polyline2d(
 ): void {
   const { out } = ctx
   const fit = e.fit!
-  const own = ctx.handle()
+  const own = ctx.entityHandle(e)
   const z = e.elevation ?? 0
   head(ctx, "POLYLINE", e, owner, own)
   out.str(100, "AcDb2dPolyline")
@@ -355,7 +375,7 @@ function polyline3d(
   owner: string
 ): void {
   const { out } = ctx
-  const own = ctx.handle()
+  const own = ctx.entityHandle(e)
   head(ctx, "POLYLINE", e, owner, own)
   out.str(100, "AcDb3dPolyline")
   out.int(66, 1)
@@ -524,6 +544,77 @@ function mtextChunks(ctx: DxfWriteContext, contents: string): void {
   ctx.out.str(1, chars.slice(at).join(""))
 }
 
+/**
+ * A LEADER as AutoCAD 2027's DXFOUT writes one (leader/p22): its vertices in
+ * the WCS, each group at its default left out (71 1, 72 0, 73 3, 74 1, 75 0,
+ * 40 and 41 0, 211 the X axis, 212 and 213 none), 74 0 for an annotation
+ * after the end; its overrides of the style as its DSTYLE xdata, in their
+ * codes' order (DIMSCALE 40, DIMASZ 41, DIMTAD 77, DIMGAP 147).
+ */
+function leader(ctx: DxfWriteContext, e: LeaderEntity, owner: string): void {
+  const { out } = ctx
+  const a = axes(e)
+  const z = e.elevation ?? 0
+  const world = (p: Vec2): Vec3 =>
+    a ? axesToWorld(a, { ...p, z }) : { ...p, z }
+  const vector = (v: Vec2): Vec3 =>
+    a ? axesToWorld(a, { ...v, z: 0 }) : { ...v, z: 0 }
+  const annotation = ctx.annotation(e)
+  const kind = annotation ? e.annotation?.kind : undefined
+  head(ctx, "LEADER", e, owner)
+  out.str(100, "AcDbLeader")
+  out.str(3, ctx.dimStyleName(e.styleId))
+  if (!e.arrow) out.int(71, 0)
+  if (e.spline) out.int(72, 1)
+  if (kind) out.int(73, kind === "mtext" ? 0 : 2)
+  if (kind && leaderSide(e) > 0) out.int(74, 0)
+  if (e.hook) out.int(75, 1)
+  if (kind === "mtext" && e.textHeight) out.real(40, e.textHeight)
+  if (kind === "mtext" && e.textWidth) out.real(41, e.textWidth)
+  out.int(76, e.vertices.length)
+  for (const v of e.vertices) {
+    const p = world(v)
+    out.point(10, p.x, p.y, p.z)
+  }
+  if (annotation) out.str(340, annotation)
+  writeNormal(ctx, e)
+  // 211 is a WCS direction, left out when it is world X (leader/p25: a leader
+  // facing -Z along its OCS's X writes one).
+  const angle = e.horizontal ?? 0
+  const h = vector({ x: Math.cos(angle), y: Math.sin(angle) })
+  if (
+    Math.abs(h.x - 1) > 1e-12 ||
+    Math.abs(h.y) > 1e-12 ||
+    Math.abs(h.z) > 1e-12
+  ) {
+    out.point(211, h.x, h.y, h.z, true)
+  }
+  if (kind === "block" && e.blockOffset) {
+    const v = vector(e.blockOffset)
+    out.point(212, v.x, v.y, v.z)
+  }
+  if (kind === "mtext" && e.textOffset) {
+    const v = vector(e.textOffset)
+    out.point(213, v.x, v.y, v.z)
+  }
+  const o = e.overrides ?? {}
+  const overrides: [number, number, boolean][] = []
+  if (o.scale !== undefined) overrides.push([40, o.scale, false])
+  if (o.arrowSize !== undefined) overrides.push([41, o.arrowSize, false])
+  if (o.textAbove !== undefined) overrides.push([77, o.textAbove ? 1 : 0, true])
+  if (o.textGap !== undefined) overrides.push([147, o.textGap, false])
+  if (overrides.length === 0) return
+  out.str(1001, "ACAD")
+  out.str(1000, "DSTYLE")
+  out.str(1002, "{")
+  for (const [code, value, integer] of overrides) {
+    out.int(1070, code)
+    if (integer) out.int(1070, value)
+    else out.real(1040, value)
+  }
+  out.str(1002, "}")
+}
+
 /** MTEXT's point and direction are the WCS's (the reader's f004). */
 function mtext(ctx: DxfWriteContext, e: MTextEntity, owner: string): void {
   const { out } = ctx
@@ -592,7 +683,7 @@ function rotate(v: Vec2, angle: number): Vec2 {
  */
 function insert(ctx: DxfWriteContext, e: InsertEntity, owner: string): void {
   const { out } = ctx
-  const own = ctx.handle()
+  const own = ctx.entityHandle(e)
   const arrayBlock = e.array ? ctx.arrayBlock(e) : null
   const block = ctx.block(e.blockId)
   const attributes = arrayBlock ? [] : (e.attributes ?? [])

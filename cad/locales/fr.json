@@ -131,7 +131,8 @@
       "divide": "Diviser",
       "measuresegments": "Mesurer",
       "ptype": "Style de points",
-      "solid": "Solide 2D"
+      "solid": "Solide 2D",
+      "leader": "Ligne de repère"
     },
     "description": {
       "U": "Annule la dernière action",
@@ -232,7 +233,8 @@
       "solid3d": "{count, plural, one {Solide 3D} other {Solides 3D}}",
       "region": "{count, plural, one {Région} other {Régions}}",
       "point": "{count, plural, one {Point} other {Points}}",
-      "solid2d": "{count, plural, one {Solide} other {Solides}}"
+      "solid2d": "{count, plural, one {Solide} other {Solides}}",
+      "leader": "{count, plural, one {Ligne de repère} other {Lignes de repère}}"
     },
     "array": {
       "rectangular": "Réseau (Rectangulaire)",
@@ -440,7 +442,9 @@
         "decimalSeparator": "Séparateur décimal",
         "suppressTrailingZeros": "Supprimer les zéros de fin",
         "precision": "Précision",
-        "perimeter": "Périmètre"
+        "perimeter": "Périmètre",
+        "arrow": "Flèche",
+        "textPosVert": "Position verticale du texte"
       },
       "value": {
         "yes": "Oui",
@@ -474,7 +478,14 @@
         "predefined": "Prédéfini",
         "outer": "Extérieur",
         "extrusion": "Extrusion",
-        "revolve": "Révolution"
+        "revolve": "Révolution",
+        "lineWithNoArrow": "Ligne sans flèche",
+        "splineWithNoArrow": "Spline sans flèche",
+        "lineWithArrow": "Ligne avec flèche",
+        "splineWithArrow": "Spline avec flèche",
+        "closedFilled": "Fermé plein",
+        "centered": "Centré",
+        "above": "Au-dessus"
       },
       "justify": {
         "left": "Gauche",
@@ -655,7 +666,8 @@
       "DIVIDE": ["DIVISER", "DIV"],
       "MEASURE": ["MESURER", "ME"],
       "PTYPE": ["TYPEPT", "DDPTYPE"],
-      "SOLID": ["SOLIDE", "SO"]
+      "SOLID": ["SOLIDE", "SO"],
+      "LEADER": ["LREPERE"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1463,6 +1475,18 @@
         "Block": "Bloc",
         "Yes": "Oui",
         "No": "Non"
+      },
+      "LEADER": {
+        "Annotation": "Annotation",
+        "Format": "Format",
+        "Undo": "annUler",
+        "Spline": "SPline",
+        "STraight": "Droite",
+        "Arrow": "Flèche",
+        "None": "Aucun(e)",
+        "Exit": "Quitter",
+        "Copy": "Copier",
+        "Mtext": "textMult"
       }
     },
     "promptKeywords": {
@@ -2167,7 +2191,16 @@
       "solidSecondPoint": "Spécifiez le second point",
       "solidThirdPoint": "Spécifiez un troisième point",
       "solidFourthPointOr": "Spécifiez un quatrième point ou",
-      "exitSolid": "Quitter"
+      "exitSolid": "Quitter",
+      "leaderStartPoint": "Indiquez le point de départ de la ligne de repère",
+      "leaderNextPoint": "Indiquez le point suivant",
+      "leaderNextPointOr": "Indiquez le point suivant ou",
+      "leaderFormatOption": "Entrez une option de format pour la ligne de repère",
+      "leaderFirstLine": "Entrez la première ligne du texte d'annotation ou",
+      "leaderOptions": "options",
+      "leaderNextLine": "Entrez la ligne suivante du texte annotation",
+      "leaderAnnotationOption": "Entrez une option d'annotation",
+      "leaderCopyObject": "Sélectionnez un objet à copier"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2613,7 +2646,7 @@
       "notAFitPoint": "Point incorrect.",
       "notAControlVertex": "Ce n'est pas un sommet de contrôle.",
       "allAdditionsUndone": "Tous les ajouts sont annulés.",
-      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} other {RESEAU}}",
+      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} other {RESEAU}}",
       "listObject": "                  {name}  Calque: \"{layer}\"",
       "listSpace": "                            Espace: Espace objet",
       "listColor": "                   Couleur: {color}    Type de ligne: \"{linetype}\"",
@@ -2903,7 +2936,15 @@
       "objectNotThatLong": "L'objet n'est pas assez long.",
       "objectTooLong": "L'objet est trop long.",
       "cannotFindBlock": "Impossible de trouver le bloc \"{name}\".",
-      "blockNameNotValid": "Nom bloc incorrect."
+      "blockNameNotValid": "Nom bloc incorrect.",
+      "leaderCopyRefused": "Sélectionnez un objet textmult, texte, référence de bloc ou tolérance.",
+      "listLeaderNormal": "Normal:               X={x}  Y={y}  Z={z}",
+      "listLeaderHorizontal": "Direction horizontale: X={x}  Y={y}  Z={z}",
+      "listLeaderVertex": "Sommet:        X={x}  Y={y}  Z={z}",
+      "listLeaderHook": "Attache de ligne de repère: {on, select, yes {Actif} other {Inactif}}",
+      "listLeaderArrow": "Flèche:    {on, select, yes {Actif} other {Inactif}}",
+      "listLeaderPath": "Type de chemin: {spline, select, yes {Spline} other {Droit}}",
+      "listLeaderAnnotative": "        Annotatif: Non"
     },
     "feedback": {
       "snap": {

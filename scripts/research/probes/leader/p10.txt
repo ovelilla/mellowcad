@@ -1,0 +1,27 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_LEADER
+0,0
+10,10
+20,10
+
+Listed
+
+_LIST
+(ssadd (entnext))
+
+_LEADER
+100,0
+110,10
+_F
+_S
+120,5
+130,15
+
+_N
+_LIST
+_L
+
+_EXPLODE
+(ssadd (entnext))
+
+(dump)

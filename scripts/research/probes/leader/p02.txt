@@ -1,0 +1,22 @@
+(progn (defun dump (/ e) (setq e (entnext)) (while e (print (entget e (list "*"))) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+_LEADER
+0,0
+10,10
+
+Single
+
+(dump)
+_LEADER
+100,0
+90,10
+
+Left side
+
+(progn (print (entget (entlast))) (print (entget (cdr (assoc 340 (entget (entlast)))))) (princ))
+_LEADER
+200,0
+210,1
+
+Shallow
+
+(progn (print (entget (entlast))) (princ))
