@@ -456,9 +456,10 @@ el dueño dio a las sesiones el 6/11).
     cola de Google rehecha (punto 2); la ficha de AlternativeTo, con la sesión del dueño en el
     Chrome de ~/seo-data: el alemán en la descripción y en «Supported Languages»; los cuatro
     correos alemanes de `~/seo-data/launch/outreach/` dicen ya que habla alemán con los nombres del
-    AutoCAD alemán, y los franceses nombran el italiano y el alemán. SaaSHub: su sesión había
-    caducado y entrar pide un enlace por correo a `hello@mellowcad.com` tras la verificación de
-    Cloudflare: queda en manos del dueño.
+    AutoCAD alemán, y los franceses nombran el italiano y el alemán. Y la ficha de SaaSHub, en su
+    descripción («Details» de su «Manage»), cuando el dueño volvió a entrar: su sesión había
+    caducado, y entrar pide pasar la verificación de Cloudflare y un enlace por correo a
+    `hello@mellowcad.com`, abierto en el mismo Chrome de ~/seo-data. La página pública lo sirve ya.
 
 ## 8. Estado
 
@@ -812,8 +813,8 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   reproducible con su semilla (un cilindro visto a lo largo de su eje con una caja delante):
   guardado en `research/flaky/hiddenLines-2026-11-13.txt` para la sesión que lo arregle.
 - Alemán (L8): hecho y publicado el 13/11/2026 (`c3c2d6d9` a `1fa1997c`; `docs/plans/de-language.md`,
-  `docs/i18n/de.md`; el push, la comprobación en producción, IndexNow, la cola de §7 y la ficha de
-  AlternativeTo, por la sesión a petición del dueño: §7, punto 10). El paquete de idioma instalado
+  `docs/i18n/de.md`; el push, la comprobación en producción, IndexNow, la cola de §7 y las fichas de
+  AlternativeTo y SaaSHub, por la sesión a petición del dueño: §7, punto 10). El paquete de idioma instalado
   en el AutoCAD del dueño y la 2027.1 otra vez, el lenguaje de comandos de la consola alemana (425
   sondas: LINIE, VERSETZ, STUTZEN; `U` es `Z`, MATCHPROP `EIGANPASS`, -OFANG sin `OFF`), los
   conmutadores, la lectura polar y el ViewCube vistos en el escritorio (Ctrl+W dice «Wechselnde
