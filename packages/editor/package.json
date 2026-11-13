@@ -59,6 +59,10 @@
       "types": "./dist/locales/it.d.ts",
       "default": "./dist/locales/it.js"
     },
+    "./locales/de": {
+      "types": "./dist/locales/de.d.ts",
+      "default": "./dist/locales/de.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

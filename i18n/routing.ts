@@ -11,7 +11,7 @@ const PREFIXES: Readonly<Record<string, `/${string}`>> = { "pt-BR": "/pt-br" }
  * the sitemap and the metadata all read this.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "ar", "pt-BR", "fr", "it"],
+  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de"],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
   // No negotiation by Accept-Language: Google advises against it and its
@@ -65,6 +65,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   "pt-BR": "ltr",
   fr: "ltr",
   it: "ltr",
+  de: "ltr",
 }
 
 /**
@@ -79,6 +80,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   "pt-BR": "live",
   fr: "live",
   it: "live",
+  de: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -101,6 +103,7 @@ export const COMMAND_LANGUAGE: Readonly<
   "pt-BR": "localized",
   fr: "localized",
   it: "localized",
+  de: "localized",
 }
 
 /**
@@ -114,6 +117,7 @@ export const SCRIPT: Readonly<Record<AppLocale, "latin" | "arabic">> = {
   "pt-BR": "latin",
   fr: "latin",
   it: "latin",
+  de: "latin",
 }
 
 export type NonLatinScript = Exclude<(typeof SCRIPT)[AppLocale], "latin">
@@ -130,6 +134,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   "pt-BR": "Português (Brasil)",
   fr: "Français",
   it: "Italiano",
+  de: "Deutsch",
 }
 
 /** Open Graph wants language and territory. */
@@ -140,4 +145,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   "pt-BR": "pt_BR",
   fr: "fr_FR",
   it: "it_IT",
+  de: "de_DE",
 }

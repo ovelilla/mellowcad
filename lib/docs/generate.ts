@@ -321,6 +321,7 @@ const LABEL_END: Record<AppLocale, string> = {
   ar: ":",
   fr: "\u00a0:",
   it: ":",
+  de: ":",
 }
 
 /** A list item's bold label, ended as its language ends one. */
@@ -337,6 +338,8 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   // French typography spaces its guillemets, with a no-break space (docs/i18n/fr.md).
   fr: ["\u00ab\u00a0", "\u00a0\u00bb"],
   it: ["\u00ab", "\u00bb"],
+  // German quotes low, then high: „…“ (docs/i18n/de.md).
+  de: ["\u201e", "\u201c"],
 }
 
 /**
