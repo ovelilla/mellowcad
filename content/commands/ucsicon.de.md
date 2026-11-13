@@ -7,7 +7,7 @@ sourceHash: "c431e70eda01"
 
 BKSYMBOL (UCSICON) zeigt oder verbirgt das BKS-Symbol, die X- und Y-Arme, die zeigen, wo das aktuelle BKS liegt und wohin es weist, und legt fest, wo es sitzt: im Ursprung des BKS oder in der linken unteren Ecke der Zeichnung. Seine einzige Eingabeaufforderung bietet den aktuellen Zustand als Vorgabe an, sodass die Eingabetaste ihn behält. Die Einstellung wird in der Zeichnung gespeichert, und jedes BKSYMBOL ist ein Schritt für Rückgängig.
 
-Das Symbol ist das 3D-Symbol von AutoCAD 2027: ein Arm für X und einer für Y, ein Buchstabe an jedem Ende und ein Quadrat im Ursprung, solange das BKS das Weltkoordinatensystem ist. Außerhalb der Draufsicht zeigt ein Z-Arm, wohin die Z-Achse des BKS weist, und ein Arm, der von vorn gesehen wird, entfällt. In 2D-Drahtmodell ist es weiß; in Hidden und Conceptual ist sein X rot, Y grün und Z blau. Mit Apostroph getippt, setzt `'BKSYMBOL` stattdessen die Variable UCSICON, auch innerhalb eines anderen Befehls: 0 bis 3, wobei 1 das Symbol zeigt und 2 es in den Ursprung setzt.
+Das Symbol ist das 3D-Symbol von AutoCAD 2027: ein Arm für X und einer für Y, ein Buchstabe an jedem Ende und ein Quadrat im Ursprung, solange das BKS das Weltkoordinatensystem ist. Außerhalb der Draufsicht zeigt ein Z-Arm, wohin die Z-Achse des BKS weist, und ein Arm, der von vorn gesehen wird, entfällt. In 2D-Drahtkörper ist es weiß; in Verdeckt und Konzeptuell ist sein X rot, Y grün und Z blau. Mit Apostroph getippt, setzt `'BKSYMBOL` stattdessen die Variable UCSICON, auch innerhalb eines anderen Befehls: 0 bis 3, wobei 1 das Symbol zeigt und 2 es in den Ursprung setzt.
 
 ## Options
 

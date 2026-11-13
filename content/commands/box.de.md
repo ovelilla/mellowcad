@@ -29,7 +29,7 @@ Bei der Höhe: fragt nach zwei Punkten, und die Höhe ist der Abstand zwischen i
 
 ## Missing
 
-Verschieben, Drehen, Skalieren und Spiegeln von einem heißen Griff aus, die AutoCAD mit der Eingabetaste durchschaltet. Die eigenen 3D-Befehle, 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, mit ihren Gizmos, und das Verschieben seiner Flächen, Kanten und Scheitelpunkte einzeln. Das dynamische BKS. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie die Ecke, die Länge und die Breite angeben. <Command id="FILLET" /> und <Command id="CHAMFER" /> an seinen Kanten; das übernehmen hier <Command id="FILLETEDGE" /> und <Command id="CHAMFEREDGE" />. Aufzeichnen und Anzeigen des Verlaufs von Volumenkörpern und die Zeile Material. Die Visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtmodell, Verdeckt und Konzeptionell hinaus nicht hat.
+Verschieben, Drehen, Skalieren und Spiegeln von einem heißen Griff aus, die AutoCAD mit der Eingabetaste durchschaltet. Die eigenen 3D-Befehle, 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN, mit ihren Gizmos, und das Verschieben seiner Flächen, Kanten und Scheitelpunkte einzeln. Das dynamische BKS. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie die Ecke, die Länge und die Breite angeben. <Command id="FILLET" /> und <Command id="CHAMFER" /> an seinen Kanten; das übernehmen hier <Command id="FILLETEDGE" /> und <Command id="CHAMFEREDGE" />. Aufzeichnen und Anzeigen des Verlaufs von Volumenkörpern und die Zeile Material. Die Visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus nicht hat.
 
 ## Questions
 

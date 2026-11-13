@@ -3,7 +3,7 @@ title: "AutoCAD-Übung 3D: eine Riemenscheibe"
 metaTitle: "AutoCAD-Übung 3D: Riemenscheibe durch Rotation"
 description: "Eine Riemenscheibe in AutoCAD 3D modellieren: ihren halben Schnitt als geschlossene Polylinie, um die Y-Achse zu einem Volumenkörper gedreht."
 figure: "Der halbe Schnitt der Riemenscheibe neben ihrer Achse, mit den Abständen von der Achse bemaßt."
-model: "Die Riemenscheibe als Volumenkörper, von Südosten gesehen im visuellen Stil Konzeptionell."
+model: "Die Riemenscheibe als Volumenkörper, von Südosten gesehen im visuellen Stil Konzeptuell."
 sourceHash: "f9c2a81b39fe"
 ---
 

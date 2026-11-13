@@ -3,12 +3,12 @@ title: "Befehl KUGEL (SPHERE) in AutoCAD"
 description: "So zeichnet AutoCADs KUGEL (SPHERE) eine 3D-Kugel als Volumenkörper: Mittelpunkt und Radius, Durchmesser, 3P, 2P und Ttr, und warum sie als Linien erscheint."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie erstelle ich in AutoCAD eine Kugel?","answer":"Starten Sie KUGEL, geben Sie den Mittelpunkt an, dann den Radius: 0,0,0 und 25 zeichnen die Kugel der Sitzung. Drehen Sie die Ansicht, um sie rund zu sehen, mit einer Ecke des ViewCube oder -AUSSCHNT und SOIso."},{"question":"Warum sieht meine Kugel wie ein Kreis mit Linien aus?","answer":"2D-Drahtmodell und Hidden zeichnen eine Kugel als ihre Meridiane und Breitenkreise; in der Draufsicht sind sie ein Kreis und Linien durch ihn. VSAKTUELL mit Konzeptuell schattiert sie, und ISOLINES legt fest, wie viele Linien sie zeigt."},{"question":"Wie mache ich eine Halbkugel?","answer":"Zeichnen Sie die Kugel und schneiden Sie sie dann mit KAPPEN durch ihren Mittelpunkt: drei Punkte auf der Ebene, oder XY und den Mittelpunkt, und die Seite, die bleiben soll."},{"question":"Wie zeichne ich eine Kugel über ihren Durchmesser?","answer":"Wählen Sie beim Radius Durchmesser und tippen Sie den Durchmesser. Mit 2P platzieren auch die zwei Enden eines Durchmessers sie."}]
+faq: [{"question":"Wie erstelle ich in AutoCAD eine Kugel?","answer":"Starten Sie KUGEL, geben Sie den Mittelpunkt an, dann den Radius: 0,0,0 und 25 zeichnen die Kugel der Sitzung. Drehen Sie die Ansicht, um sie rund zu sehen, mit einer Ecke des ViewCube oder -AUSSCHNT und SOIso."},{"question":"Warum sieht meine Kugel wie ein Kreis mit Linien aus?","answer":"2D-Drahtkörper und Hidden zeichnen eine Kugel als ihre Meridiane und Breitenkreise; in der Draufsicht sind sie ein Kreis und Linien durch ihn. VSAKTUELL mit Konzeptuell schattiert sie, und ISOLINES legt fest, wie viele Linien sie zeigt."},{"question":"Wie mache ich eine Halbkugel?","answer":"Zeichnen Sie die Kugel und schneiden Sie sie dann mit KAPPEN durch ihren Mittelpunkt: drei Punkte auf der Ebene, oder XY und den Mittelpunkt, und die Seite, die bleiben soll."},{"question":"Wie zeichne ich eine Kugel über ihren Durchmesser?","answer":"Wählen Sie beim Radius Durchmesser und tippen Sie den Durchmesser. Mit 2P platzieren auch die zwei Enden eines Durchmessers sie."}]
 ---
 
 KUGEL (SPHERE) zeichnet eine 3D-Kugel als Volumenkörper: Geben Sie den Mittelpunkt an, dann den Radius. Ein mit der Maus gewählter Radius wird auf der Ebene durch den Mittelpunkt gelesen, und der letzte Radius wird als Vorgabe angeboten, die die Eingabetaste übernimmt, geteilt mit [`ZYLINDER`](/docs/commands/cylinder), [`KEGEL`](/docs/commands/cone) und den anderen Grundkörpern. Die Kugel liegt auf dem aktuellen Layer, und Rückgängig nimmt sie in einem Schritt zurück.
 
-In 2D-Drahtmodell und Hidden wird sie als Linien gezeichnet: Meridiane und Breitenkreise, so viele, wie `ISOLINES` angibt, und nichts anderes als ihr Mittelpunkt lässt sich darauf fangen. [`LISTE`](/docs/commands/list) zeigt ihre Position und ihren Radius, und in der Eigenschaftenpalette können Sie den Radius oder den Durchmesser eintippen. Ihre Griffe verschieben sie und legen, an jedem Viertel ihres Äquators, ihren Radius fest. Sie ist für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+In 2D-Drahtkörper und Hidden wird sie als Linien gezeichnet: Meridiane und Breitenkreise, so viele, wie `ISOLINES` angibt, und nichts anderes als ihr Mittelpunkt lässt sich darauf fangen. [`LISTE`](/docs/commands/list) zeigt ihre Position und ihren Radius, und in der Eigenschaftenpalette können Sie den Radius oder den Durchmesser eintippen. Ihre Griffe verschieben sie und legen, an jedem Viertel ihres Äquators, ihren Radius fest. Sie ist für [`VEREINIG`](/docs/commands/union), [`DIFFERENZ`](/docs/commands/subtract) und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
 
 - **Befehl:** `KUGEL`
 - **Auf Englisch:** `SPHERE`, in jeder Sprache als `_SPHERE` eingegeben
@@ -19,7 +19,7 @@ In 2D-Drahtmodell und Hidden wird sie als Linien gezeichnet: Meridiane und Breit
 
 Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
 
-<Session name="sphere" caption="Eine Kugel mit Radius 25 von ihrem Mittelpunkt aus, von Südosten im visuellen Stil Conceptual gesehen." />
+<Session name="sphere" caption="Eine Kugel mit Radius 25 von ihrem Mittelpunkt aus, von Südosten im visuellen Stil Konzeptuell gesehen." />
 
 ## Optionen [#options]
 
@@ -41,7 +41,7 @@ Beim Radius: fragt stattdessen nach dem Durchmesser und bietet das Doppelte des 
 
 ## Was er noch nicht kann [#missing]
 
-[`URSPRUNG`](/docs/commands/explode) einer Kugel, die AutoCAD in eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es sie nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und die eigenen 3D-Befehle (3DMOVE, 3DROTATE, 3DSCALE). Die Silhouette, die AutoCADs `DISPSILH` zeichnet. Die visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) über 2D-Drahtmodell, Hidden und Conceptual hinaus fehlen.
+[`URSPRUNG`](/docs/commands/explode) einer Kugel, die AutoCAD in eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es sie nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und die eigenen 3D-Befehle (3DMOVE, 3DROTATE, 3DSCALE). Die Silhouette, die AutoCADs `DISPSILH` zeichnet. Die visuellen Stile, die [`VSAKTUELL`](/docs/commands/vscurrent) über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus fehlen.
 
 [Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera--de-kugel)
 
@@ -53,7 +53,7 @@ Starten Sie KUGEL, geben Sie den Mittelpunkt an, dann den Radius: `0,0,0` und `2
 
 ### Warum sieht meine Kugel wie ein Kreis mit Linien aus?
 
-2D-Drahtmodell und Hidden zeichnen eine Kugel als ihre Meridiane und Breitenkreise; in der Draufsicht sind sie ein Kreis und Linien durch ihn. [`VSAKTUELL`](/docs/commands/vscurrent) mit `Konzeptuell` schattiert sie, und `ISOLINES` legt fest, wie viele Linien sie zeigt.
+2D-Drahtkörper und Hidden zeichnen eine Kugel als ihre Meridiane und Breitenkreise; in der Draufsicht sind sie ein Kreis und Linien durch ihn. [`VSAKTUELL`](/docs/commands/vscurrent) mit `Konzeptuell` schattiert sie, und `ISOLINES` legt fest, wie viele Linien sie zeigt.
 
 ### Wie mache ich eine Halbkugel?
 

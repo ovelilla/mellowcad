@@ -1,7 +1,7 @@
 ---
 title: "Befehl AUSSCHNT (VIEW) in AutoCAD"
 description: "So wechselt AutoCADs AUSSCHNT (VIEW, -VIEW) in die sechs orthogonalen und die vier isometrischen Ansichten und setzt das BKS jeder Ansicht. Online testen."
-figure: "Ein gestufter Block im Grundriss: -VIEW und SW Isometric, und er wird von Südwesten und von oben gesehen, im visuellen Stil Hidden."
+figure: "Ein gestufter Block im Grundriss: -AUSSCHNT und ISO-Ansicht SW, und er wird von Südwesten und von oben gesehen, im visuellen Stil Verdeckt."
 sourceHash: "261c8657f5f7"
 ---
 
@@ -41,7 +41,7 @@ Benannte Ansichten: <Keyword id="Orthographic" /> ist die einzige Option, die di
 
 ### Wie bekomme ich in AutoCAD eine isometrische Ansicht?
 
-Geben Sie <Command id="-VIEW" /> ein, dann <Keyword id="SWiso" /> für die Isometrie Südwest; <Keyword id="SEiso" />, <Keyword id="NEiso" /> und <Keyword id="NWiso" /> ergeben die anderen drei Ecken. Oder wählen Sie SW Isometric in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. <Command id="VSCURRENT" /> mit <Keyword command="VSCURRENT" id="Hidden" /> blendet die Kanten dahinter aus.
+Geben Sie <Command id="-VIEW" /> ein, dann <Keyword id="SWiso" /> für die Isometrie Südwest; <Keyword id="SEiso" />, <Keyword id="NEiso" /> und <Keyword id="NWiso" /> ergeben die anderen drei Ecken. Oder wählen Sie ISO-Ansicht SW in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. <Command id="VSCURRENT" /> mit <Keyword command="VSCURRENT" id="Hidden" /> blendet die Kanten dahinter aus.
 
 ### Welcher Befehl ergibt die Draufsicht?
 

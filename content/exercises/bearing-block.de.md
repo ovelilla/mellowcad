@@ -3,7 +3,7 @@ title: "AutoCAD-Übung 3D: ein Lagerbock"
 metaTitle: "AutoCAD-Übung 3D für Fortgeschrittene: Lagerbock"
 description: "Einen Lagerbock in AutoCAD 3D modellieren: extrudieren, vereinigen, dann Bohrung und zwei Befestigungslöcher als Zylinder abziehen, Schritt für Schritt."
 figure: "Der Lagerbock in der Draufsicht, 100 mal 60, mit Nabe, Bohrung und Löchern bemaßt."
-model: "Der Lagerbock als Volumenkörper, von Südosten gesehen im visuellen Stil Konzeptionell."
+model: "Der Lagerbock als Volumenkörper, von Südosten gesehen im visuellen Stil Konzeptuell."
 sourceHash: "5579d6bd5a86"
 ---
 

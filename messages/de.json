@@ -125,9 +125,9 @@
     "extrudeTitle": "Profil zeichnen, dann extrudieren oder rotieren",
     "booleansTitle": "Volumenkörper vereinen, subtrahieren, schneiden",
     "stylesTitle": "Ein Volumenkörper, drei visuelle Stile",
-    "wireframeAlt": "Ein L-förmiger Volumenkörper im 2D-Drahtmodell: alle Kanten gezeichnet, auch die verdeckten.",
+    "wireframeAlt": "Ein L-förmiger Volumenkörper im 2D-Drahtkörper: alle Kanten gezeichnet, auch die verdeckten.",
     "hiddenAlt": "Derselbe Volumenkörper in Verdeckt: nur die sichtbaren Kanten.",
-    "conceptualAlt": "Derselbe Volumenkörper in Konzeptionell: Flächen zum Licht hin warm, abgewandt kühl schattiert, die Kanten darübergezeichnet.",
+    "conceptualAlt": "Derselbe Volumenkörper in Konzeptuell: Flächen zum Licht hin warm, abgewandt kühl schattiert, die Kanten darübergezeichnet.",
     "todayTitle": "Heute möglich",
     "notYetTitle": "Noch nicht",
     "notYet": "Sweeps und Lofts, Netze und Rendern sowie das Verschieben und Drehen von Volumenkörpern in 3D."

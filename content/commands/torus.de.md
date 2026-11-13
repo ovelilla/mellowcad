@@ -1,13 +1,13 @@
 ---
 title: "Befehl TORUS in AutoCAD"
 description: "So zeichnet AutoCADs TORUS (Alias TOR) einen 3D-Ring als Volumenkörper: Mittelpunkt, Radius des Rings, Radius des Rohrs, Durchmesser, 3P, 2P und Ttr. Testen."
-figure: "Ein Torus mit Radius 30 um ein Rohr mit Radius 8, von Südosten im visuellen Stil Conceptual gesehen."
+figure: "Ein Torus mit Radius 30 um ein Rohr mit Radius 8, von Südosten im visuellen Stil Konzeptuell gesehen."
 sourceHash: "a19600f3e357"
 ---
 
 TORUS zeichnet einen 3D-Ring als Volumenkörper, einen Donut: Geben Sie den Mittelpunkt an, dann den Radius des Rings, vom Mittelpunkt bis zur Mitte des Rohrs, dann den Radius des Rohrs. Der Ring liegt auf der XY-Ebene des BKS, auf der Z-Höhe des Mittelpunkts. Ein Punkt bei der Eingabeaufforderung für das Rohr wird vom Punkt des Rings aus gemessen, bei dem der Radius angegeben wurde. Der Radius des Rings ist die gemeinsame Vorgabe der Grundkörper, der Radius des Rohrs eine eigene Vorgabe, die die Eingabetaste übernimmt. Der Torus liegt auf dem aktuellen Layer, und Rückgängig nimmt ihn in einem Schritt zurück.
 
-Ein negativer Radius des Rings mit einem weiteren Rohr ergibt einen Ball wie einen Rugbyball, mit spitzen Enden; ein Ring, der schmaler ist als sein Rohr, einen Apfel. In 2D-Drahtmodell und Hidden wird er als Linien um das Rohr und um den Ring gezeichnet, so viele, wie `ISOLINES` angibt. <Command id="LIST" /> zeigt seine Position, Normale, Torusradius und Rohrradius, und in der Eigenschaftenpalette können Sie beide eintippen. Seine Griffe verschieben ihn, legen den Radius des Rings fest und den des Rohrs. Er ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
+Ein negativer Radius des Rings mit einem weiteren Rohr ergibt einen Ball wie einen Rugbyball, mit spitzen Enden; ein Ring, der schmaler ist als sein Rohr, einen Apfel. In 2D-Drahtkörper und Hidden wird er als Linien um das Rohr und um den Ring gezeichnet, so viele, wie `ISOLINES` angibt. <Command id="LIST" /> zeigt seine Position, Normale, Torusradius und Rohrradius, und in der Eigenschaftenpalette können Sie beide eintippen. Seine Griffe verschieben ihn, legen den Radius des Rings fest und den des Rohrs. Er ist für <Command id="UNION" />, <Command id="SUBTRACT" /> und den Rest von MellowCADs 3D ein 3D-Volumenkörper, und dieses 3D besteht nur aus Volumenkörpern und ist noch unvollständig.
 
 ## Options
 

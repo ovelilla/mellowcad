@@ -1,7 +1,7 @@
 ---
 title: "Befehl PYRAMIDE (PYRAMID) in AutoCAD"
 description: "So zeichnet AutoCADs PYRAMIDE (PYRAMID, Alias PYR) eine 3D-Pyramide: Seiten, Grundfläche, Höhe, Kante, Umkreis und Radius oben für einen Stumpf. Online testen."
-figure: "Eine Pyramide mit sechs Seiten, ihre Grundfläche 25 bis zur Mitte jeder Seite und 40 hoch, von Südosten im visuellen Stil Hidden gesehen."
+figure: "Eine Pyramide mit sechs Seiten, ihre Grundfläche 25 bis zur Mitte jeder Seite und 40 hoch, von Südosten im visuellen Stil Verdeckt gesehen."
 sourceHash: "acbc5ffa71cb"
 ---
 

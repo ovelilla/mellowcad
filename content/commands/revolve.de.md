@@ -1,7 +1,7 @@
 ---
 title: "Befehl ROTATION (REVOLVE) in AutoCAD"
 description: "So dreht AutoCADs ROTATION (REVOLVE, Alias ROT) ein 2D-Profil um eine Achse zum 3D-Volumenkörper: Achse, Objekt, X, Y, Z. Gratis im Browser testen."
-figure: "Ein Profil mit Flansch, eine ganze Umdrehung um die Y-Achse gedreht: eine Spule, von Südosten im visuellen Stil Hidden gesehen."
+figure: "Ein Profil mit Flansch, eine ganze Umdrehung um die Y-Achse gedreht: eine Spule, von Südosten im visuellen Stil Verdeckt gesehen."
 sourceHash: "dc0576311912"
 ---
 

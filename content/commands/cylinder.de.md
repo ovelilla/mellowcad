@@ -1,7 +1,7 @@
 ---
 title: "Befehl ZYLINDER (CYLINDER) in AutoCAD"
 description: "So zeichnet AutoCADs ZYLINDER (CYLINDER, Alias ZYL) einen 3D-Zylinder: Grundfläche, Radius, Höhe, 3P, 2P, Ttr, Elliptisch, Achsenendpunkt. Online testen."
-figure: "Ein Zylinder mit Radius 20 und Höhe 40, vom Mittelpunkt seiner Grundfläche aus, von Südosten im visuellen Stil Hidden gesehen."
+figure: "Ein Zylinder mit Radius 20 und Höhe 40, vom Mittelpunkt seiner Grundfläche aus, von Südosten im visuellen Stil Verdeckt gesehen."
 sourceHash: "ce397d8dcb5d"
 ---
 
@@ -41,7 +41,7 @@ Bei der Höhe: fragt nach dem anderen Ende der Achse. Der Zylinder verläuft vom
 
 ## Missing
 
-<Command id="EXPLODE" /> eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nächster den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtmodell, Verdeckt und Konzeptionell hinaus fehlen.
+<Command id="EXPLODE" /> eines Zylinders, den AutoCAD in seine zwei Enden und eine Fläche zerlegt: MellowCAD hat keine Flächen und meldet, dass es ihn nicht zerlegen konnte. Verschieben, Drehen, Skalieren und Spiegeln über einen heißen Griff, und eine über die Grundfläche hinaus gezogene Höhe. Die gepunkteten Bemaßungen, die AutoCAD zeichnet, während Sie Radius, die Punkte der Ellipse und die Achse angeben. Das Umwandeln eines runden Zylinders in einen elliptischen in der Eigenschaften-Palette. Die Silhouetten, die AutoCADs `DISPSILH` zeichnet. In der Draufsicht, wo der obere Kreis den der Grundfläche verdeckt, findet der Objektfang Nächster den Kreis der Grundfläche, wo AutoCAD den oberen findet. Die visuellen Stile, die <Command id="VSCURRENT" /> über 2D-Drahtkörper, Verdeckt und Konzeptuell hinaus fehlen.
 
 ## Questions
 

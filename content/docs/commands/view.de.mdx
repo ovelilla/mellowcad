@@ -3,7 +3,7 @@ title: "Befehl AUSSCHNT (VIEW) in AutoCAD"
 description: "So wechselt AutoCADs AUSSCHNT (VIEW, -VIEW) in die sechs orthogonalen und die vier isometrischen Ansichten und setzt das BKS jeder Ansicht. Online testen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Wie bekomme ich in AutoCAD eine isometrische Ansicht?","answer":"Geben Sie -AUSSCHNT ein, dann SWIso für die Isometrie Südwest; SOIso, NOIso und NWIso ergeben die anderen drei Ecken. Oder wählen Sie SW Isometric in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. VSAKTUELL mit Verdeckt blendet die Kanten dahinter aus."},{"question":"Welcher Befehl ergibt die Draufsicht?","answer":"-AUSSCHNT, dann OBen, was auch das BKS auf die Achsen des WKS setzt. DRSICHT blickt stattdessen auf das aktuelle BKS herab und lässt es, wie es ist."},{"question":"Warum hat sich mein BKS nach einer Vorderansicht geändert?","answer":"Eine orthogonale Ansicht dreht das BKS so, dass es Ihnen zugewandt ist, damit das, was Sie zeichnen, auf dem Bildschirm liegt. BKS und die Eingabetaste gehen zurück zum WKS; Z nimmt die Ansicht und ihr BKS zusammen zurück."},{"question":"Ist eine isometrische Ansicht dasselbe wie eine isometrische Zeichnung?","answer":"Nein. Eine isometrische Ansicht blickt von einer Ecke auf ein 3D-Modell. Eine isometrische Zeichnung ist 2D, gezeichnet auf den isometrischen Ebenen mit dem isometrischen Stil von FANG, den MellowCAD noch nicht hat."},{"question":"Wo ist der Ansichten-Manager?","answer":"AUSSCHNT startet -AUSSCHNT in der Befehlszeile: Es gibt keinen Ansichten-Manager, und benannte Ansichten (Speichern, Wiederherstellen) gibt es noch nicht."}]
+faq: [{"question":"Wie bekomme ich in AutoCAD eine isometrische Ansicht?","answer":"Geben Sie -AUSSCHNT ein, dann SWIso für die Isometrie Südwest; SOIso, NOIso und NWIso ergeben die anderen drei Ecken. Oder wählen Sie ISO-Ansicht SW in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. VSAKTUELL mit Verdeckt blendet die Kanten dahinter aus."},{"question":"Welcher Befehl ergibt die Draufsicht?","answer":"-AUSSCHNT, dann OBen, was auch das BKS auf die Achsen des WKS setzt. DRSICHT blickt stattdessen auf das aktuelle BKS herab und lässt es, wie es ist."},{"question":"Warum hat sich mein BKS nach einer Vorderansicht geändert?","answer":"Eine orthogonale Ansicht dreht das BKS so, dass es Ihnen zugewandt ist, damit das, was Sie zeichnen, auf dem Bildschirm liegt. BKS und die Eingabetaste gehen zurück zum WKS; Z nimmt die Ansicht und ihr BKS zusammen zurück."},{"question":"Ist eine isometrische Ansicht dasselbe wie eine isometrische Zeichnung?","answer":"Nein. Eine isometrische Ansicht blickt von einer Ecke auf ein 3D-Modell. Eine isometrische Zeichnung ist 2D, gezeichnet auf den isometrischen Ebenen mit dem isometrischen Stil von FANG, den MellowCAD noch nicht hat."},{"question":"Wo ist der Ansichten-Manager?","answer":"AUSSCHNT startet -AUSSCHNT in der Befehlszeile: Es gibt keinen Ansichten-Manager, und benannte Ansichten (Speichern, Wiederherstellen) gibt es noch nicht."}]
 ---
 
 AUSSCHNT (VIEW) dreht die Ansicht in eine der zehn voreingestellten Ansichten von AutoCAD: sechs orthogonale, die frontal auf eine Seite des Modells blicken, und vier isometrische, die von einer Ecke herabblicken. In der Zeichnung bewegt sich nichts. AUSSCHNT startet `-AUSSCHNT`, die Befehlszeilenform: Ihre erste Eingabeaufforderung listet `Orthogonal` auf, die dann nach der Seite fragt, und sie nimmt auch gleich den Namen einer Ansicht entgegen, wie AutoCADs Menüs es beantworten: `-AUSSCHNT`, dann `SWIso`. Jede Ansicht zeigt die gesamte Zeichnung und meldet `Regeneriert Modell.`.
@@ -20,7 +20,7 @@ Die Ansichtssteuerung oben links in der Zeichnung listet dieselben zehn Ansichte
 
 Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
 
-<Session name="view" caption="Ein gestufter Block im Grundriss: -VIEW und SW Isometric, und er wird von Südwesten und von oben gesehen, im visuellen Stil Hidden." />
+<Session name="view" caption="Ein gestufter Block im Grundriss: -AUSSCHNT und ISO-Ansicht SW, und er wird von Südwesten und von oben gesehen, im visuellen Stil Verdeckt." />
 
 ## Optionen [#options]
 
@@ -56,7 +56,7 @@ Benannte Ansichten: `Orthogonal` ist die einzige Option, die die erste Eingabeau
 
 ### Wie bekomme ich in AutoCAD eine isometrische Ansicht?
 
-Geben Sie `-AUSSCHNT` ein, dann `SWIso` für die Isometrie Südwest; `SOIso`, `NOIso` und `NWIso` ergeben die anderen drei Ecken. Oder wählen Sie SW Isometric in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. [`VSAKTUELL`](/docs/commands/vscurrent) mit `Verdeckt` blendet die Kanten dahinter aus.
+Geben Sie `-AUSSCHNT` ein, dann `SWIso` für die Isometrie Südwest; `SOIso`, `NOIso` und `NWIso` ergeben die anderen drei Ecken. Oder wählen Sie ISO-Ansicht SW in der Ansichtssteuerung oben links, oder klicken Sie auf eine obere Ecke des ViewCube. [`VSAKTUELL`](/docs/commands/vscurrent) mit `Verdeckt` blendet die Kanten dahinter aus.
 
 ### Welcher Befehl ergibt die Draufsicht?
 

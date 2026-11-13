@@ -10,10 +10,11 @@
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
 > y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
 > MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando) y SOLID, y LEADER (con
-> su página de comando) el 13/11; por decisión del dueño la visibilidad va antes que cualquier
-> funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca en
-> paralelo: el alemán (L8) y luego idiomas alternando con lo que quede del DXF, además de lo que
-> queda de §7.
+> su página de comando) el 13/11, y el alemán (`live` en `/de`, L8) hecho y publicado el 13/11;
+> por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente, por
+> orden del dueño (12/11/2026), una sesión cada vez, nunca en paralelo: el punto 4 de la fase 4
+> del DXF (los tipos de línea del dibujo, la tabla LTYPE; `docs/next-dxf.md`) y después idiomas
+> alternando con lo que quede del DXF, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -269,7 +270,8 @@ Con el criterio del dueño (demanda y AutoCAD 2027 en ese idioma), cada uno con 
 el 9/11, sesión 08, `docs/plans/fr-language.md`) y
 **italiano** (localizado; la mayor proporción de búsquedas de AutoCAD de los grandes mercados de la
 UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesión 09,
-`docs/plans/it-language.md`). Después, alemán, ruso (Yandex tiene el 72 %
+`docs/plans/it-language.md`) y **alemán** (localizado; Alemania, Austria y Suiza; hecho el 13/11,
+`docs/plans/de-language.md`). Después, ruso (Yandex tiene el 72 %
 de sus búsquedas), polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
@@ -392,6 +394,11 @@ el dueño dio a las sesiones el 6/11).
    **12/11, 21:51 UTC (sesión de SOLID):** la tanda del día, 11 pedidas (`/it`, sus comandos, su
    guía del plano y su página de abrir un DXF, `/ar/docs/floor-plan`, `/docs/edit-dxf`…) hasta la
    cuota: 682 en la cola, de 765 en el sitemap.
+   **13/11 (sesión del alemán):** el alemán, publicado. Sus 126 URLs entran por
+   `gsc-prioritize.mjs`, que pesa `/de` a 0,25 (Alemania, 57 en el índice de la auditoría, con
+   Austria y Suiza casi a 0 en Trends para las mismas consultas: el 0,4 del italiano × 57/113) y
+   que ya reconoce su prefijo: 813 en la cola, `/de` y sus centros delante. IndexNow, las 897 del
+   sitemap (200). La tanda del día no salió: la sesión acabó antes de las 21:51 UTC.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -442,6 +449,16 @@ el dueño dio a las sesiones el 6/11).
    «Supported Languages»; y la de SaaSHub, en su descripción, cuando el dueño volvió a entrar
    (su sesión, un enlace por correo a `hello@mellowcad.com`, había caducado), el día en que
    SaaSHub la aprobó.
+10. **Lo de la sesión del alemán, hecho por la sesión a petición del dueño (13/11):** el push
+    (`a9bfffc0..1fa1997c`), verificado en producción (las páginas de `/de` responden 200, el
+    sitemap tiene 897 URLs, `/de/draw` pregunta «LINIE Ersten Punkt angeben:» y «VERSETZ Abstand
+    angeben oder [Durch punkt/lÖschen/Layer] <Durch punkt>:»); IndexNow con las 897 URLs (200); la
+    cola de Google rehecha (punto 2); la ficha de AlternativeTo, con la sesión del dueño en el
+    Chrome de ~/seo-data: el alemán en la descripción y en «Supported Languages»; los cuatro
+    correos alemanes de `~/seo-data/launch/outreach/` dicen ya que habla alemán con los nombres del
+    AutoCAD alemán, y los franceses nombran el italiano y el alemán. SaaSHub: su sesión había
+    caducado y entrar pide un enlace por correo a `hello@mellowcad.com` tras la verificación de
+    Cloudflare: queda en manos del dueño.
 
 ## 8. Estado
 
@@ -794,4 +811,30 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   (`cad/geometry/hiddenLines.test.ts`) dio una vez un contraejemplo, ajeno a esta entrega y
   reproducible con su semilla (un cilindro visto a lo largo de su eje con una caja delante):
   guardado en `research/flaky/hiddenLines-2026-11-13.txt` para la sesión que lo arregle.
+- Alemán (L8): hecho y publicado el 13/11/2026 (`c3c2d6d9` a `1fa1997c`; `docs/plans/de-language.md`,
+  `docs/i18n/de.md`; el push, la comprobación en producción, IndexNow, la cola de §7 y la ficha de
+  AlternativeTo, por la sesión a petición del dueño: §7, punto 10). El paquete de idioma instalado
+  en el AutoCAD del dueño y la 2027.1 otra vez, el lenguaje de comandos de la consola alemana (425
+  sondas: LINIE, VERSETZ, STUTZEN; `U` es `Z`, MATCHPROP `EIGANPASS`, -OFANG sin `OFF`), los
+  conmutadores, la lectura polar y el ViewCube vistos en el escritorio (Ctrl+W dice «Wechselnde
+  Auswahl ein» y «Auswahl wechseln aus»), y el sitio con lo que se busca en alemán («Kostenloses
+  CAD-Programm mit AutoCAD-Befehlen»: Bing da 1K a «cad programm kostenlos» en Alemania;
+  «AutoCAD-Befehle auf Deutsch und Englisch»; «Befehl STUTZEN (TRIM) in AutoCAD»). Lo que no
+  encajó, corregido en el sistema: el verbo alemán tras la lista de opciones («Höhe oder [2Punkt]
+  angeben <5.0000>:», `commands.promptTails`, y el valor por defecto antes de él donde AutoCAD lo
+  pone), ids propios para las solicitudes de los sólidos sin valor por defecto, la página de atajos
+  con «Strg», y AltGr, que Windows envía como Ctrl+Alt y se perdía sobre el dibujo en todos los
+  idiomas (la `@` de `@10,0` en los teclados alemán, francés y español). Sin nativo, la relectura de
+  un modelo. **La primera carga de cada portada**, Brotli q11, antes, con el alemán en borrador y
+  `live`: `/` 253.200 → 253.232 → 253.258, `/es` 254.495 → 254.506 → 254.579, `/pt-br` 254.697 →
+  254.707 → 254.907, `/ar` 278.052 → 278.110 → 278.190, `/fr` 255.406 → 255.372 → 255.528 (472
+  bytes bajo 250 KiB), `/it` 254.566 → 254.615 → 254.558, `/de` 254.957 → 254.953.
+  **Siguiente idioma propuesto: el ruso**, el siguiente de L8 con el criterio del dueño (AutoCAD
+  localizado): «автокад» es el término mayor fuera del inglés en la auditoría (1.011 contra
+  «autocad gratuit» 100) y Rusia vale 73 en el índice contando solo Google, por delante de Polonia
+  (40), con Ucrania y Kazajistán buscando en ruso; cuesta más (cirílico en las palabras clave, y
+  Yandex con el 72 % de sus búsquedas). Search Console (28 días al 13/11) sigue dando los clics a
+  España y a los países árabes (Egipto 4, Arabia Saudí 2, Yemen 2, Siria, Irak, Palestina) y uno a
+  Turquía (posición 2): un idioma `global` también rinde, así que si el dueño amplía el criterio,
+  el turco, el vietnamita y el indonesio van antes que el ruso.
 - 10 Medición: la primera, un mes después del push de 01–02.
