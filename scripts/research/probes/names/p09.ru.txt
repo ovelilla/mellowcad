@@ -1,0 +1,33 @@
+_LINE
+0,0
+10,0
+
+_ZOOM
+_E
+_LINE
+СЕР
+5,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+КОН
+9,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+С
+30,30
+40,40
+
+_LINE
+К
+30,30
+40,40
+
+_LINE
+П
+30,30
+40,40
+

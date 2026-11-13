@@ -1,0 +1,12 @@
+_RECTANG
+0,0
+10,10
+_-PURGE
+_A
+*
+_N
+_BREAKATPOINT
+_L
+5,0
+(arxload "acmatch.crx")
+(foreach n (list "RECTANG" "PURGE" "-PURGE" "BREAKATPOINT" "MATCHPROP" "ARRAYRECT" "ARRAYPOLAR" "ARRAYPATH" "MTEXT" "-MTEXT" "UNITS" "-UNITS" "FROM" "PROPERTIES" "BLOCKSPALETTE") (princ (strcat "\n" n " = " (cond ((getcname (strcat "_" n))) ("nil")))))

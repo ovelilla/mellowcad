@@ -50,19 +50,29 @@ args=(/utf8 /noCER /l "$L")
 [[ $real ]] || args+=(/isolate "$id" "$wdir")
 [[ $dwg ]] && args+=(/i "$dwg")
 
-{
-  if [[ $trace ]]; then
-    cp "$here/mellowprobe/bin/out/MellowProbe.dll" "$dir/" || exit 1
-    printf '_SECURELOAD\n0\n_NETLOAD\n%s\\MellowProbe.dll\nMPTRACE\nDb\n' "$wdir"
-  fi
+[[ $trace ]] && { cp "$here/mellowprobe/bin/out/MellowProbe.dll" "$dir/" || exit 1; }
+feed() {
+  [[ $trace ]] && printf '_SECURELOAD\n0\n_NETLOAD\n%s\\MellowProbe.dll\nMPTRACE\nDb\n' "$wdir"
   cat "$probe"
   printf '_.QUIT\n_Y\n'
-} | iconv -f utf-8 -t cp1252 | sed 's/$/\r/' |
+}
+# WHY a script for a probe Windows-1252 cannot write (Cyrillic): the console reads its input
+# as 1252 whatever its culture, but a script (/s) with a BOM as UTF-8. A script loads no
+# acad.pgp, so an alias there is an unknown command, and it stops at the first error.
+if feed | iconv -f utf-8 -t cp1252 >/dev/null 2>&1; then
+  encode() { iconv -f utf-8 -t cp1252; }
+else
+  { printf '\xef\xbb\xbf'; feed | sed 's/$/\r/'; } >"$dir/probe.scr"
+  args+=(/s "$wdir\\probe.scr")
+  encode() { cat >/dev/null; }
+fi
+feed | encode | sed 's/$/\r/' |
   (cd "$dir" && timeout -k 5 "${ACC_TIMEOUT:-90}" "$ACCORE" "${args[@]}" 2>&1) |
   tr -d '\r' |
-  # The banner's last line, in each installed culture: it is in no string table.
+  # The banner's last line, in each installed culture: it is in no string table. Russian's
+  # («Утилиты меню AutoCAD загружены.») comes out as Windows-1251 bytes read as 1252.
   awk -v t="$trace" '
-    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen/ { f = 1; if (!t) print; next }
+    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen|ìåíþ AutoCAD/ { f = 1; if (!t) print; next }
     t && /SECURELOAD|NETLOAD|MellowProbe|MPTRACE|«MP (loaded|clm skipped|trace db)/ { next }
     f { print }' |
   grep -v "^$"

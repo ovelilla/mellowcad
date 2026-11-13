@@ -1,0 +1,48 @@
+_-OSNAP
+КОН
+(getvar "OSMODE")
+_-OSNAP
+СЕР
+(getvar "OSMODE")
+_-OSNAP
+ЦЕН
+(getvar "OSMODE")
+_-OSNAP
+ГЦЕ
+(getvar "OSMODE")
+_-OSNAP
+УЗЕ
+(getvar "OSMODE")
+_-OSNAP
+КВА
+(getvar "OSMODE")
+_-OSNAP
+ПЕР
+(getvar "OSMODE")
+_-OSNAP
+ПРО
+(getvar "OSMODE")
+_-OSNAP
+ТВС
+(getvar "OSMODE")
+_-OSNAP
+НОР
+(getvar "OSMODE")
+_-OSNAP
+КАС
+(getvar "OSMODE")
+_-OSNAP
+БЛИ
+(getvar "OSMODE")
+_-OSNAP
+КАЖ
+(getvar "OSMODE")
+_-OSNAP
+ПАР
+(getvar "OSMODE")
+_-OSNAP
+НИЧ
+(getvar "OSMODE")
+_-OSNAP
+ОТКЛ
+(getvar "OSMODE")

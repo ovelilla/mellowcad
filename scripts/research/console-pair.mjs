@@ -35,6 +35,42 @@ const select = args.includes("--select")
 const probes = new URL("research/probes/", root)
 const read = (path) => JSON.parse(readFileSync(new URL(path, root), "utf8"))
 
+/**
+ * The tracer's records, `«MP <kind> <json>»`, in order. WHY not up to the first `»`: Russian
+ * messages quote with « » (`Удалить блок «B1»?`), so a record ends where its JSON does.
+ */
+function* records(text) {
+  const opening = /«MP (\S+) ?/g
+  let m
+  while ((m = opening.exec(text))) {
+    const from = opening.lastIndex
+    let end = from
+    if (text[end] === "{") {
+      let depth = 0
+      let quoted = false
+      for (; end < text.length; end++) {
+        const c = text[end]
+        if (quoted) {
+          if (c === "\\") end++
+          else if (c === '"') quoted = false
+        } else if (c === '"') quoted = true
+        else if (c === "{") depth++
+        else if (c === "}" && --depth === 0) break
+      }
+      end++
+    }
+    const close = text.indexOf("»", end)
+    if (close < 0) return
+    yield {
+      index: m.index,
+      length: close + 1 - m.index,
+      kind: m[1],
+      body: text.slice(from, end).trim(),
+    }
+    opening.lastIndex = close + 1
+  }
+}
+
 // A transcript as events: the command started, each prompt the tracer saw, each printed line.
 function parse(text) {
   const events = []
@@ -49,10 +85,10 @@ function parse(text) {
     }
   }
   let at = 0
-  for (const m of text.matchAll(/«MP (\S+) ?([^»]*)»/g)) {
+  for (const m of records(text)) {
     lines(text.slice(at, m.index))
-    at = m.index + m[0].length
-    const [kind, body] = [m[1], m[2]]
+    at = m.index + m.length
+    const { kind, body } = m
     if (kind === "doc.CommandWillStart")
       running.push(JSON.parse(body).GlobalCommandName)
     else if (kind === "doc.CommandEnded" || kind === "doc.CommandFailed")
