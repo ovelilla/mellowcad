@@ -9,7 +9,7 @@ paths:
 
 # UI layer (the editor, `@mellowcad/editor`, at `/draw`)
 
-> Verified against **@base-ui/react 1.9.0**, **cn 0.5.2**, **lucide-react 1.67.0**.
+> Verified against **@base-ui/react 1.9.0**, **cn 0.5.2**, **lucide-react 1.71.0**.
 
 **The layout follows AutoCAD 2027** (owner, 2026-11-07): the ribbon, the application menu, the
 palettes and the bars in AutoCAD's places, order and states, with our own icons and no Autodesk
