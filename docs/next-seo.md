@@ -882,6 +882,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   `/de` 254.981 → 254.957; `/ru` 288.456, bajo el presupuesto nuevo de 285 KiB para una escritura
   con dos fuentes (Inter y Geist Mono en cirílico). Ya `live`, «Русский» y ПОДОБИЕ en las demás
   portadas les hacían bajar los subconjuntos cirílicos (31,6 KB más cada una, por encima de su
-  presupuesto): `25436ced` les da la fuente del sistema, como al nombre árabe. **Siguiente**, por
+  presupuesto): `25436ced` les da la fuente del sistema, como al nombre árabe. Con él, `live`: `/` 253.399,
+  `/es` 254.712, `/pt-br` 254.887, `/ar` 278.284, `/fr` 255.633 (367 bytes bajo 250 KiB), `/it`
+  254.757, `/de` 255.093, `/ru` 288.538 (3.302 bajo 285 KiB); solo `/ru` baja las caras
+  cirílicas. **Siguiente**, por
   orden del dueño: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`), y después otro idioma.
 - 10 Medición: la primera, un mes después del push de 01–02.
