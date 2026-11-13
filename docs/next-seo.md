@@ -771,4 +771,27 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   254.753, `/ar` 278.020 → 278.039, `/fr` 255.258 → 255.405 (595 bytes bajo 250 KiB), `/it`
   254.489 → 254.625. De paso: §7 sin los párrafos repetidos de la 07c, y la tanda del día a Google
   (11, hasta la cuota de las 21:51 UTC; 682 en la cola).
+- DXF fase 4, LEADER: hecha y publicada el 13/11/2026 (`f17f119e`; L7, la excepción, por orden del
+  dueño: el objeto que más falta ahora en los DXF reales). En producción: abrir y editar un DXF y
+  el FAQ de la portada dicen en los seis idiomas que las directrices abren y se guardan, el índice
+  de comandos enlaza `/docs/commands/leader`, cuyas seis páginas responden, y `/draw` pregunta la
+  primera solicitud de LEADER, DIRECTRIZ, LINHACHAM, LREPERE y DIRETTRICE en cada idioma; IndexNow
+  recibió las 771 URLs del sitemap (200), y la cola de §7 pasa de 682 a 688 con las seis páginas
+  nuevas. La directriz y LEADER (`docs/next-dxf.md`, fase 4, y `docs/coverage/dimensions.md`);
+  con ella abren enteras 121 de las 154 muestras (antes, 107). **Página de comando nueva**, en los
+  seis idiomas: «LEADER in AutoCAD», «Directriz en AutoCAD: comando DIRECTRIZ (LEADER)», «Linha de
+  chamada no AutoCAD: comando LINHACHAM (LEADER)», «Commande LREPERE (LEADER) dans AutoCAD»,
+  «Comando DIRETTRICE (LEADER) in AutoCAD» y «أمر ⁨LEADER⁩ في الأوتوكاد: خط الإشارة»: «autocad
+  leader» vale 13 en Trends en el mundo y 18 en EE. UU., como «autocad offset» (12–17), y el
+  autocompletado de cada idioma pide su nombre inglés («comando directriz en ingles autocad»,
+  «direttrice autocad inglese»); MLEADER, QLEADER y los términos localizados valen 0
+  (`~/seo-data/raw-2026-11-13/leader/`). Lo que se queda fuera al abrir un DXF son ahora las
+  directrices múltiples. `gsc-prioritize.mjs`: `leader` 0,184 (0,241 de offset × 13/17; la
+  inglesa, la 83.ª de la cola). **La primera carga de cada portada**, Brotli q11, del build de
+  `main` a este: `/` 253.214 → 253.204, `/es` 254.528 → 254.630, `/pt-br` 254.756 → 254.772,
+  `/ar` 278.062 → 278.074, `/fr` 255.375 → 255.492 (508 bytes bajo 250 KiB), `/it` 254.615 →
+  254.655. De paso: la propiedad de las líneas ocultas de dos sólidos
+  (`cad/geometry/hiddenLines.test.ts`) dio una vez un contraejemplo, ajeno a esta entrega y
+  reproducible con su semilla (un cilindro visto a lo largo de su eje con una caja delante):
+  guardado en `research/flaky/hiddenLines-2026-11-13.txt` para la sesión que lo arregle.
 - 10 Medición: la primera, un mes después del push de 01–02.

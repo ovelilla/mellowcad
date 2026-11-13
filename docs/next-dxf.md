@@ -7,7 +7,7 @@
 > publicadas el 12/11; queda de ella el DXF R12. La fase 4 empezó el 12/11 con POINT (y PDMODE,
 > PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día, y siguió con SOLID,
 > hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154, y con LEADER,
-> hecho el 13/11, que las llevó a 121; siguiente, por orden del dueño, el alemán
+> hecho y publicado el 13/11, que las llevó a 121; siguiente, por orden del dueño, el alemán
 > (`docs/next-seo.md`, L8), y lo que quede de esta fase alterna con idiomas, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -182,7 +182,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       «autocad hatch» 71–79, y «solid fill» es el sombreado SOLID de HATCH (datos en
       `~/seo-data/raw-2026-11-12/solid/`). Lo que hace y le falta, en `docs/coverage/draw.md`.
    2. **LEADER** (22 muestras, 823 objetos) y MLEADER (1 muestra y 2 ficheros de otros). **LEADER
-      hecho** (13/11/2026): la directriz (sus vértices con el gancho, la flecha cerrada rellena de
+      hecho y publicado** (13/11/2026, `f17f119e`): la directriz (sus vértices con el gancho, la flecha cerrada rellena de
       DIMASZ × DIMSCALE, dibujada solo si el primer tramo mide al menos el doble, el spline, la
       línea bajo el texto con DIMTAD 1, las sustituciones DSTYLE que su paleta muestra) asociada a
       su MTEXT o bloque, que sigue en el mismo paso cuando se mueve, gira, escala o borra el texto,
