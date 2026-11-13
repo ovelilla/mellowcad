@@ -25,6 +25,8 @@ const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
       import("@mellowcad/engine/locales/it").then((module) => module.it),
     de: () =>
       import("@mellowcad/engine/locales/de").then((module) => module.de),
+    ru: () =>
+      import("@mellowcad/engine/locales/ru").then((module) => module.ru),
   }
 
 export async function loadEngineLocale(

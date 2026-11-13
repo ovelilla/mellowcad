@@ -2731,6 +2731,11 @@ export declare class EngineText {
      * command language, or `_` and a global name.
      */
     resolveCommand(text: string): string | null;
+    /**
+     * Whether `text` names `modifier` (FROM), read where a point is asked:
+     * its name or alias, or `_` and its global name.
+     */
+    namesModifier(modifier: string, text: string): boolean;
     /** The keywords `ids` of `command`, as the command language and `_` spell them. */
     keywords(command: string | null, ids: readonly string[], prompt?: PromptId | null): Keyword[];
     /** How `command` spells keyword `id`, at `prompt` when it spells it its way. */
@@ -3101,6 +3106,13 @@ export declare const it: EngineLocale;
 ```ts
 export { de }
 export declare const de: EngineLocale;
+```
+
+## ./locales/ru
+
+```ts
+export { ru }
+export declare const ru: EngineLocale;
 ```
 
 ## Reached, not exported

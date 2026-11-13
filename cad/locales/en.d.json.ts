@@ -1560,6 +1560,9 @@ declare const source: {
         "Right": string
         "Bottom": string
       }
+      "specifyNextPointOrClose": {
+        "Undo": string
+      }
       "specifyEndpointOfLineOr": {
         "Undo": string
       }

@@ -1,6 +1,11 @@
 import type { CSSProperties } from "react"
 
-import { type AppLocale, type NonLatinScript, SCRIPT } from "@/i18n/routing"
+import {
+  type AppLocale,
+  INTER_SCRIPTS,
+  SCRIPT,
+  type ScriptNeedingFace,
+} from "@/i18n/routing"
 
 /** A `next/font` family list: the face, then its metric-matched fallback. */
 type FontFamily = { readonly style: { readonly fontFamily: string } }
@@ -34,14 +39,20 @@ export function scriptFontStack(
 export function scriptFontVariables(
   locale: AppLocale,
   fonts: { sans: FontFamily; mono: FontFamily } & Record<
-    NonLatinScript,
+    ScriptNeedingFace,
     FontFamily
   >
 ): CSSProperties | undefined {
   const script = SCRIPT[locale]
-  if (script === "latin") return undefined
+  if (isInterScript(script)) return undefined
   return {
     "--font-sans": scriptFontStack(fonts.sans, fonts[script]),
     "--font-mono": scriptFontStack(fonts.mono, fonts[script]),
   } as CSSProperties
+}
+
+function isInterScript(
+  script: (typeof SCRIPT)[AppLocale]
+): script is (typeof INTER_SCRIPTS)[number] {
+  return (INTER_SCRIPTS as readonly string[]).includes(script)
 }

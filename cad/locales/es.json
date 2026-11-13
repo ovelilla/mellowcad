@@ -1483,6 +1483,7 @@
         "Right": "Derecha",
         "Bottom": "Inferior"
       },
+      "specifyNextPointOrClose": { "Undo": "desHacer" },
       "specifyEndpointOfLineOr": { "Undo": "desHacer" },
       "select2dPolylineOr": { "Radius": "Radio" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radio" },

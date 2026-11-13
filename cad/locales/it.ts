@@ -2175,6 +2175,9 @@ export const it: EngineLocale = {
         "Right": "Destra",
         "Bottom": "Basso"
       },
+      "specifyNextPointOrClose": {
+        "Undo": "Annulla"
+      },
       "specifyEndpointOfLineOr": {
         "Undo": "Annulla"
       },

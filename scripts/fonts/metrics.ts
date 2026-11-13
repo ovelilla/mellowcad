@@ -24,11 +24,12 @@ import { fileURLToPath } from "node:url"
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 const OUTPUT = resolve(ROOT, "cad/domain/textFontMetrics.ts")
 
-/** Latin, Greek, and the punctuation, currency and maths blocks. */
+/** Latin, Greek, Cyrillic, and the punctuation, currency and maths blocks. */
 const RANGES: readonly (readonly [number, number])[] = [
   [0x20, 0x7e],
   [0xa0, 0x24f],
   [0x370, 0x3ff],
+  [0x400, 0x4ff],
   [0x2000, 0x22ff],
 ]
 

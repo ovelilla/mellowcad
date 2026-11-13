@@ -15,6 +15,11 @@ export interface PluralMessage {
 // `many` starts at 11 and its `other` at 100).
 const SAMPLES = Array.from({ length: 200 }, (_, n) => n)
 
+// WHY: Russian gives every whole number `one`, `few` or `many`, and only a
+// fraction `other`, which a split still needs: no count picks it, but a form
+// missing from the message is English.
+const FRACTION = 1.5
+
 /**
  * Splits an ICU plural message into its forms: formatted once with a count of
  * each category, the printed count becomes `#` again. A form that prints the
@@ -29,7 +34,9 @@ export function pluralMessage(
   const forms: Partial<Record<Intl.LDMLPluralRule, string>> = {}
   for (const category of rules.resolvedOptions().pluralCategories) {
     // A category only fractions reach is never used to count objects.
-    const sample = SAMPLES.find((n) => rules.select(n) === category)
+    const sample =
+      SAMPLES.find((n) => rules.select(n) === category) ??
+      (category === "other" ? FRACTION : undefined)
     if (sample === undefined) continue
     const text = format(sample)
     const parts = text.split(numbers.format(sample))

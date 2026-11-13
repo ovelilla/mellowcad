@@ -131,6 +131,15 @@ export function visualPieces(line: string): string[] {
 const ARABIC_FAMILY = "Inter, Readex Pro"
 
 /**
+ * Inter and Geist Mono, each with its Cyrillic subset behind it. WHY a family
+ * of its own: Satori takes a glyph a face lacks from the families the text
+ * names, not from another face of the same name, and next/og fetched a
+ * regular Noto for the Cyrillic instead (the Russian card's thin letters).
+ */
+const SANS_FAMILY = "Inter, Inter Cyrillic"
+const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic"
+
+/**
  * How wide a word of a right-to-left script is set, shaped: its letters
  * joined, as Satori draws them.
  *
@@ -184,11 +193,21 @@ export async function ogImage({
   title: string
 }) {
   const rtl = DIRECTION[locale as AppLocale] === "rtl"
-  const [{ src, texts }, model, inter, mono, arabic] = await Promise.all([
+  const [
+    { src, texts },
+    model,
+    inter,
+    interCyrillic,
+    mono,
+    monoCyrillic,
+    arabic,
+  ] = await Promise.all([
     flange(),
     solid(),
     font("inter-latin-600-normal.woff"),
+    font("inter-cyrillic-600-normal.woff"),
     font("geist-mono-latin-400-normal.woff"),
+    font("geist-mono-cyrillic-400-normal.woff"),
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
     // Arabic subset as soon as a word meets a character the subset lacks.
     rtl ? font("readex-pro-600.ttf") : undefined,
@@ -210,7 +229,7 @@ export async function ogImage({
         backgroundSize: "24px 24px",
         color: BRAND.ink,
         padding: 56,
-        fontFamily: "Inter",
+        fontFamily: SANS_FAMILY,
         // The composition mirrors; the drawing does not.
         ...(rtl && { flexDirection: "row-reverse" }),
       }}
@@ -272,7 +291,7 @@ export async function ogImage({
                     color: "#94a3b8",
                   }
                 : {
-                    fontFamily: "Geist Mono",
+                    fontFamily: MONO_FAMILY,
                     fontSize: 20,
                     letterSpacing: "0.14em",
                     textTransform: "uppercase",
@@ -362,7 +381,7 @@ export async function ogImage({
                   top: text.at.y - baseline,
                   width,
                   height: size,
-                  fontFamily: "Geist Mono",
+                  fontFamily: MONO_FAMILY,
                   fontSize: size,
                   lineHeight: 1,
                   color: text.color,
@@ -381,7 +400,19 @@ export async function ogImage({
       ...OG_SIZE,
       fonts: [
         { name: "Inter", data: inter, weight: 600, style: "normal" },
+        {
+          name: "Inter Cyrillic",
+          data: interCyrillic,
+          weight: 600,
+          style: "normal",
+        },
         { name: "Geist Mono", data: mono, weight: 400, style: "normal" },
+        {
+          name: "Geist Mono Cyrillic",
+          data: monoCyrillic,
+          weight: 400,
+          style: "normal",
+        },
         // WHY last: Satori shapes Arabic into contextual forms that have no
         // code point, takes each for a missing glyph and asks its fallback
         // resolver for a face for `undefined`, which answers with the last

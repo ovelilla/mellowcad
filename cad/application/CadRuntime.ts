@@ -1940,6 +1940,11 @@ export class CadRuntime extends Observable {
    * global name, an apostrophe before it or not.
    */
   private commandNamed(typed: string): CommandDefinition | undefined {
+    // FROM before any command where a point is asked: Russian's ОТ is FROM
+    // there and ОТРЕЗОК's alias at `Command:` (names/p03).
+    if (this.wantsPoint() && this.namesFrom(bareCommand(typed))) {
+      return this.commands.get("FROM")
+    }
     const id = this.text.resolveCommand(bareCommand(typed))
     return id === null ? undefined : this.commands.get(id)
   }
@@ -2631,7 +2636,7 @@ export class CadRuntime extends Observable {
    */
   private namesFrom(text: string): boolean {
     const typed = text.trim().toUpperCase()
-    return this.text.resolveCommand(typed) === "FROM" || typed === "_FRO"
+    return this.text.namesModifier("FROM", typed) || typed === "_FRO"
   }
 
   /**
@@ -3050,10 +3055,22 @@ export class CadRuntime extends Observable {
     return ui
   }
 
+  /**
+   * What the prompt may suggest: FROM only where a point is asked, as at
+   * `Command:` it is an unknown command — and in Russian its `ОТ` there is
+   * ОТРЕЗОК's alias, which its row would run under FROM's description.
+   */
+  private suggestibleCommands(): CommandInfo[] {
+    if (this.wantsPoint()) return this.commandInfos
+    return this.commandInfos.filter(
+      (info) => !this.commands.get(info.id)?.modifier
+    )
+  }
+
   /** Completes the prompt to the best autocomplete match (Tab). */
   completeCommandLine(): void {
     const [best] = matchCommands(
-      this.commandInfos,
+      this.suggestibleCommands(),
       this.commandLine.getBuffer(),
       1
     )
@@ -8205,7 +8222,7 @@ export class CadRuntime extends Observable {
         takesSpaces: this.takesSpaces(),
         lines: this.commandLine.getLines(),
         suggestions: matchCommands(
-          this.commandInfos,
+          this.suggestibleCommands(),
           this.commandLine.getBuffer()
         ),
         lang: this.text.commandTag,

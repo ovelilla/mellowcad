@@ -2167,6 +2167,9 @@ export const es: EngineLocale = {
         "Right": "Derecha",
         "Bottom": "Inferior"
       },
+      "specifyNextPointOrClose": {
+        "Undo": "desHacer"
+      },
       "specifyEndpointOfLineOr": {
         "Undo": "desHacer"
       },

@@ -41,6 +41,21 @@ describe("plural messages for client islands", () => {
     expect(formatPlural(arabic, 2)).toBe("اثنان")
   })
 
+  it("keeps the other form of a language whose whole numbers never reach it", () => {
+    const russian = split(
+      "ru",
+      "{count, plural, one {# объект} few {# объекта} many {# объектов} other {# объекта}}"
+    )
+    expect(russian.forms).toEqual({
+      one: "# объект",
+      few: "# объекта",
+      many: "# объектов",
+      other: "# объекта",
+    })
+    expect(formatPlural(russian, 21)).toBe("21 объект")
+    expect(formatPlural(russian, 1200)).toBe("1\u00a0200 объектов")
+  })
+
   it("refuses a form that prints its count twice", () => {
     expect(() =>
       split("en", "{count, plural, one {# of #} other {# of #}}")

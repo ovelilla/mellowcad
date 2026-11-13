@@ -284,10 +284,15 @@ describe("a command language of our own", () => {
     for (const tag of catalogTags()) {
       const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
       if (!commands) continue
-      const typed = Object.values(
-        commands.names as Readonly<Record<string, readonly string[]>>
-      ).flat()
+      // FROM is typed only where a point is asked, so its names may be a
+      // command's: Russian's ОТ is FROM there and ОТРЕЗОК's alias at
+      // `Command:` (EngineText's POINT_MODIFIERS, names/p03).
+      const { FROM, ...atCommand } = commands.names as Readonly<
+        Record<string, readonly string[]>
+      >
+      const typed = Object.values(atCommand).flat()
       expect(new Set(typed).size, tag).toBe(typed.length)
+      expect(new Set(FROM).size, tag).toBe(FROM.length)
     }
   })
 })

@@ -1452,6 +1452,7 @@
         "Right": "Right",
         "Bottom": "Bottom"
       },
+      "specifyNextPointOrClose": { "Undo": "Undo" },
       "specifyEndpointOfLineOr": { "Undo": "Undo" },
       "select2dPolylineOr": { "Radius": "Radius" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" },

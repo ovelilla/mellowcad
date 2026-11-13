@@ -1,6 +1,6 @@
 # Properties and tables
 
-### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA` · pt-BR `CAMADA` / `CA` / `LAYER` / `DDLMODES` · `FECHARCAMADA` · fr `CALQUE` / `LAYER` / `PL` / `DDLMODES` · `FERMERCALQUE` · it `LAYER` / `LA` / `DDLMODES` · `CHIUDILAYER` · de `LAYER` / `LA` / `DDLMODES` / `DDLMODI` · `LAYERSCHL`
+### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA` · pt-BR `CAMADA` / `CA` / `LAYER` / `DDLMODES` · `FECHARCAMADA` · fr `CALQUE` / `LAYER` / `PL` / `DDLMODES` · `FERMERCALQUE` · it `LAYER` / `LA` / `DDLMODES` · `CHIUDILAYER` · de `LAYER` / `LA` / `DDLMODES` / `DDLMODI` · `LAYERSCHL` · ru `СЛОЙ` / `СЛ` / `ДИАЛСЛОЙ` · `СЛОЙЗАКРЫТЬ`
 
 **Implemented:** colour, visibility, lock, current layer, ByLayer resolution; an Off layer's
 objects are neither drawn, picked nor snapped (p323), and turning a layer off drops them from the
@@ -75,7 +75,7 @@ the drop-downs' answer to a set holding locked objects (only the palette's was p
 same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
 `Command:`; here neither the padlock nor any fade but ERASE's)
 
-### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` / `LTYPE` / `DDLTYPE` · `-LINETYPE` / `-LT` / `-LTYPE` · es `ESCALATL` / `EC` · `TIPOLIN` / `TL` / `TLINEA` / `DDLTYPE` · `-TIPOLIN` / `-TL` / `-TLINEA` · pt-BR `ESCALATL` / `ETL` · `TIPOLINHA` / `TL` / `DDLTYPE` · `-TIPOLINHA` / `-TL` · fr `ECHLTP` / `ECT` · `TYPELIGNE` / `TL` / `TYPEL` / `DDLTYPE` · `-TYPELIGNE` / `-TL` / `-TYPEL` · it `SCALATL` / `CT` · `TLINEA` / `TL` / `TLIN` / `DDLTYPE` · `-TLINEA` / `-TL` / `-TLIN` · de `LTFAKTOR` / `LK` · `LINIENTYP` / `LT` / `LTYP` / `DDLTYPE` · `-LINIENTYP` / `-LT` / `-LTYP`
+### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` / `LTYPE` / `DDLTYPE` · `-LINETYPE` / `-LT` / `-LTYPE` · es `ESCALATL` / `EC` · `TIPOLIN` / `TL` / `TLINEA` / `DDLTYPE` · `-TIPOLIN` / `-TL` / `-TLINEA` · pt-BR `ESCALATL` / `ETL` · `TIPOLINHA` / `TL` / `DDLTYPE` · `-TIPOLINHA` / `-TL` · fr `ECHLTP` / `ECT` · `TYPELIGNE` / `TL` / `TYPEL` / `DDLTYPE` · `-TYPELIGNE` / `-TL` / `-TYPEL` · it `SCALATL` / `CT` · `TLINEA` / `TL` / `TLIN` / `DDLTYPE` · `-TLINEA` / `-TL` / `-TLIN` · de `LTFAKTOR` / `LK` · `LINIENTYP` / `LT` / `LTYP` / `DDLTYPE` · `-LINIENTYP` / `-LT` / `-LTYP` · ru `ЛМАСШТАБ` / `ЛМ` · `ТИПЛИН` / `ТЛ` / `ДИАЛТИПЛИН` · `-ТИПЛИН` / `-ТЛ`
 
 **Implemented:** the drawing's own linetypes, a table as AutoCAD's LTYPE: each by its name
 (case-blind, drawing data, the same in every language), its description (47 characters, as AutoCAD
@@ -181,7 +181,7 @@ AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a 
 thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,
 its pattern not foreshortened; a circle's dot is drawn as a line's, a run as long as the stroke is wide
 
-### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` / `LINEWEIGHT` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN` · pt-BR `ESPLINHA` / `ESL` · `-ESPLINHA` · fr `EPAISSLIGNE` / `EPL` / `EPLIGNE` · `-EPAISSLIGNE` · it `SPESSLIN` / `SLI` / `SPESSLINEA` / `LINEWEIGHT` · `-SPESSLIN` · de `LSTÄRKE` / `LINIENSTÄRKE` / `LST` · `-LSTÄRKE`
+### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` / `LINEWEIGHT` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN` · pt-BR `ESPLINHA` / `ESL` · `-ESPLINHA` · fr `EPAISSLIGNE` / `EPL` / `EPLIGNE` · `-EPAISSLIGNE` · it `SPESSLIN` / `SLI` / `SPESSLINEA` / `LINEWEIGHT` · `-SPESSLIN` · de `LSTÄRKE` / `LINIENSTÄRKE` / `LST` · `-LSTÄRKE` · ru `ВЕСЛИН` / `ВЛИ` · `-ВЕСЛИН`
 
 **Implemented:** 24 standard values, ByLayer and ByObject; CELWEIGHT, the lineweight new objects
 take (saved in the drawing, initial ByLayer, one undo step U names `-LWEIGHT`, es `-GROSORLIN`,
@@ -211,7 +211,7 @@ takes back naming `LWDISPLAY`, as it names the variable typed (p157b; after the 
 **Missing:** ByBlock and Default (LWDEFAULT; so the `?` listing's first line names ByLayer alone),
 inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…
 
-### `FILL` · es `RELLENAR` · pt-BR `PREENCHER` · fr `REMPLIR` · it `PIENO` · de `FÜLLEN`
+### `FILL` · es `RELLENAR` · pt-BR `PREENCHER` · fr `REMPLIR` · it `PIENO` · de `FÜLLEN` · ru `ЗАКРАСИТЬ`
 
 **Implemented:** `Enter mode [ON/OFF] <ON>:` (es `Indique modo [ACT/DES]`, the table's; RELLENAR
 runs it in Spanish, p176), offering the current FILLMODE, which the drawing keeps: wide polylines
@@ -225,7 +225,7 @@ hatch draws nothing, SOLID or pattern alike (hatch/p341, plotted)
 **Missing:** the change shows at once rather than at the next regeneration (WHY in the tool:
 nothing here keeps a regenerated display apart)
 
-### Colour · `COLOR` / `COL` / `COLOUR` · `-COLOR` · es `COLOR` / `COL` · `-COLOR` · pt-BR `COR` / `C` / `COLOUR` / `CORDIAG` · `-COR` · fr `COULEUR` / `CL` / `COUL` / `DDCOLOR` · `-COULEUR` · it `COLORE` / `CO` / `DDCOLOR` · `-COLORE` · de `FARBE` / `FAR` / `FE` / `DDCOLOR` · `-FARBE`
+### Colour · `COLOR` / `COL` / `COLOUR` · `-COLOR` · es `COLOR` / `COL` · `-COLOR` · pt-BR `COR` / `C` / `COLOUR` / `CORDIAG` · `-COR` · fr `COULEUR` / `CL` / `COUL` / `DDCOLOR` · `-COULEUR` · it `COLORE` / `CO` / `DDCOLOR` · `-COLORE` · de `FARBE` / `FAR` / `FE` / `DDCOLOR` · `-FARBE` · ru `ЦВЕТ` / `ЦВ` / `ДИАЛЦВЕТ` · `-ЦВЕТ`
 
 **Implemented:** ByLayer and ByObject per-object override; CECOLOR, the colour new objects take
 (saved in the drawing, initial ByLayer, one undo step that U, UNDO 2 and REDO name, `-COLOR -COLOR`,
@@ -271,7 +271,7 @@ step U names nothing (d05-3)
 linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
 lists, Transparency, the List drop-down
 
-### `CHPROP` · es `CAMBPROP` · pt-BR `ALTPROP` · fr `CHPROP` · it `CAPROP` · de `EIGÄNDR`
+### `CHPROP` · es `CAMBPROP` · pt-BR `ALTPROP` · fr `CHPROP` · it `CAPROP` · de `EIGÄNDR` · ru `СВОЙСТВА`
 
 **Implemented:** `Select objects:`, a set of whole objects (its refusal ends at SIngle, chprop/p17),
 a preselection taken at once (p14), Enter on nothing ending it silently (p17), each object on a
@@ -337,7 +337,7 @@ says it and counts it, p13b); CHANGE, whose Properties asks the same prompt with
 (`[Color/Elev/LAyer/…]`, 20404, p18); **unverified**: whether the desktop draws the set as the run
 changes it (the console's database changes only as it ends, p21; here nothing changes before Enter)
 
-### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP` · pt-BR `PROPRIEDADES` / `ALT` / `PROPS` / `ALTPROPD` / `MODIFICARD` · `FECHARPROP` / `FPROP` · fr `PROPRIETES` / `PROP` / `PROPS` / `DDCHPROP` / `DDMODIFY` · `FERMERPROPRIETES` / `FRPROP` · it `PROPRIETA` / `PR` / `PRO` / `PROP` / `CH` / `DDCHPROP` / `DDMODIFY` · `CHIUDIPROP` / `CPR` · de `EIGENSCHAFTEN` · `EIGSCHLIESS`
+### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP` · pt-BR `PROPRIEDADES` / `ALT` / `PROPS` / `ALTPROPD` / `MODIFICARD` · `FECHARPROP` / `FPROP` · fr `PROPRIETES` / `PROP` / `PROPS` / `DDCHPROP` / `DDMODIFY` · `FERMERPROPRIETES` / `FRPROP` · it `PROPRIETA` / `PR` / `PRO` / `PROP` / `CH` / `DDCHPROP` / `DDMODIFY` · `CHIUDIPROP` / `CPR` · de `EIGENSCHAFTEN` · `EIGSCHLIESS` · ru `ОКНОСВ` / `ИЗ` / `ДИАЛСВОЙ` / `ДИАЛИЗМ` · `ОКНОСВЗАКР` / `ОСЗ`
 **Implemented:** PROPERTIES opens the Properties palette, a tab of the modeless palette panel, and
 PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and MO are the aliases
 of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in Spanish CH is

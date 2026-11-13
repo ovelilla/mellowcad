@@ -79,6 +79,13 @@ function compiledTable(
 }
 
 /**
+ * What is typed only where a point is asked, never at `Command:` (where FROM
+ * is an unknown command, line/p211): its names are read apart, and may be a
+ * command's too. Russian's FROM is `ОТ`, ОТРЕЗОК's alias (names/p03).
+ */
+const POINT_MODIFIERS: ReadonlySet<string> = new Set(["FROM"])
+
+/**
  * One language as the engine speaks it: the locale laid over English key by
  * key, formatted with latin digits. Everything the engine says goes through
  * here — the interface (palettes, pickers) and the command language (names,
@@ -110,6 +117,12 @@ export class EngineText {
     this.commands = {
       ...mergeCatalog<CommandCatalog>(en.commands, locale.commands),
       names: commandLanguageNames(locale),
+      // WHY not English's: a slot English fills with its own words would
+      // spell a language's keyword in English where the language left it out
+      // (`[Cerrar/Undo]`); a word missing there is the command's own.
+      ...(locale.commands && {
+        promptKeywords: locale.commands.promptKeywords ?? {},
+      }),
     }
     // A language's own names come last, so one equal to a global name it left
     // out still runs its own command.
@@ -121,6 +134,7 @@ export class EngineText {
       ...entries.filter(([global]) => own[global] === undefined),
       ...entries.filter(([global]) => own[global] !== undefined),
     ]) {
+      if (POINT_MODIFIERS.has(global)) continue
       for (const name of names) this.byName.set(name.toUpperCase(), global)
     }
     for (const [global, names] of Object.entries(en.commands.names)) {
@@ -252,6 +266,19 @@ export class EngineText {
     const { name, global } = parseCommandInput(text)
     if (name === "") return null
     return (global ? this.byGlobalName : this.byName).get(name) ?? null
+  }
+
+  /**
+   * Whether `text` names `modifier` (FROM), read where a point is asked:
+   * its name or alias, or `_` and its global name.
+   */
+  namesModifier(modifier: string, text: string): boolean {
+    const { name, global } = parseCommandInput(text)
+    if (name === "") return false
+    if (global) return this.byGlobalName.get(name) === modifier
+    return this.commandNames(modifier).some(
+      (each) => each.toUpperCase() === name
+    )
   }
 
   /** The keywords `ids` of `command`, as the command language and `_` spell them. */

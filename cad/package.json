@@ -64,6 +64,10 @@
       "types": "./dist/locales/de.d.ts",
       "default": "./dist/locales/de.js"
     },
+    "./locales/ru": {
+      "types": "./dist/locales/ru.d.ts",
+      "default": "./dist/locales/ru.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

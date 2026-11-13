@@ -17,8 +17,8 @@ the branch `worktree-ru-language`.
 | Block | State |
 | --- | --- |
 | Research and plan | Done 13/11/2026: this plan; `runacc.sh` reads the Russian console and runs a probe in Cyrillic; `console-pair.mjs` reads a trace whose message quotes with « » |
-| Draft (phases 1–5) | Next |
-| Live (phase 6) | — |
+| Draft (phases 1–5) | Done 13/11/2026: registered as a `draft`; the engine's catalog whole (console, desktop, tables); the site, the editor, the "Use" pages, the command notes and the exercises; the Cyrillic metrics and share card; FROM read apart; `pluralMessage`'s `other`; `docs/i18n/ru.md` |
+| Live (phase 6) | Next |
 
 ## 0. Research (13/11/2026)
 
@@ -84,9 +84,10 @@ INTERSECT ПЕРЕСЕЧЕНИЕ (`ПЕР`), SLICE РАЗРЕЗ (`РАЗ`), UNDO
   what one command letters otherwise than another at a prompt English shares.
 - **No space before a prompt's colon**, as English: `Команда:` (22843).
 - **No «ё»**: the tables write «е» throughout (0 «ё» in 11,000 strings); the site follows them.
-- **Two wordings for one English prompt**, as the others: OFFSET's distance is `Величина смещения
-  или [Точка] <Точка>:` at 21215, `Расстояние смещения или […]` at 5406, `Укажите расстояние для
-  смещения или [Несколько]:` at 67.
+- **Several wordings for one English prompt**, as the others: OFFSET's distance is `Величина
+  смещения или [Точка] <Точка>:` at 21215, `Расстояние смещения или […]` at 5406, `Укажите
+  расстояние для смещения или [Несколько]:` at 67, and the console asks none of them: `Укажите
+  расстояние смещения или [Через/Удалить/Слой] <Через>:` (the offset probes).
 - `propose-commands.mjs --lang ru` (13/11/2026): 1,466 proposed, 217 `several`, 150 `partial`, 41
   `plural`, 8 `select`, 519 `no-source` (German's: 1,435, 221, 144, 40, 8, 512).
 - **-OSNAP's words** (names/p07, typed through a script): `КОН` Endpoint, `СЕР` Midpoint, `ЦЕН`
@@ -240,6 +241,5 @@ first where it is searched («Штриховка в AutoCAD: команда ШТ
 
 ## Unverified
 
-Until the console has run (phase 4): which of several table strings a prompt uses (217
-`several`), the capitals of an `initget` the table does not hold, and the names the tables lack.
-Until the desktop: whether `О` runs U or UNION, the drafting toggles' lines and Polar's readout.
+`docs/i18n/ru.md`, "Unverified" and "Per command": what no probe showed, and what Russian words
+per command where English shares one prompt id.

@@ -55,7 +55,7 @@
   other bits (leading zeros, feet and inches), DIMAZIN, DIMTMOVE (always 0: the text keeps its
   line).
 
-### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN` / `DIMLIN` · pt-BR `COTALINEAR` / `CLI` / `DIMLIN` · fr `COTLIN` / `LI` / `COTHOR` / `COTROTATION` / `COTVERTICAL` · it `DIMLINEARE` / `DLI` · de `BEMLINEAR` / `BMLIN`
+### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN` / `DIMLIN` · pt-BR `COTALINEAR` / `CLI` / `DIMLIN` · fr `COTLIN` / `LI` / `COTHOR` / `COTROTATION` / `COTVERTICAL` · it `DIMLINEARE` / `DLI` · de `BEMLINEAR` / `BMLIN` · ru `РЗМЛИНЕЙНЫЙ` / `РЛИ`
 
 **Implemented:** the prompts AutoCAD 2027's console asks, written answered (p01, p104, p126, p129,
 p137): `Specify first extension line origin or <select object>:` (Enter: `Select object to
@@ -98,7 +98,7 @@ cota`, `Texto de cota = `).
 line (p129, p168), drawn here above it as without one; a hatch picked says `No object selected.`
 (**unverified**: not probed).
 
-### `DIMALIGNED` / `DAL` · es `ACOALINEADA` / `ACOALI` · pt-BR `COTAALIN` / `COA` / `DIMALI` · fr `COTALI` / `COTA` · it `DIMALLINEATA` / `DAL` · de `BEMAUSG` / `BMA`
+### `DIMALIGNED` / `DAL` · es `ACOALINEADA` / `ACOALI` · pt-BR `COTAALIN` / `COA` / `DIMALI` · fr `COTALI` / `COTA` · it `DIMALLINEATA` / `DAL` · de `BEMAUSG` / `BMA` · ru `РЗМПАРАЛ` / `РПА`
 
 **Implemented:** DIMLINEAR's prompts with `[Text/Angle]` (p01, p143), its object pick, Text and
 Angle (es `Designe ángulo de texto de cota`, as the console asks, though the table words
@@ -107,21 +107,21 @@ DIMALIGNED's otherwise, p143); a circle's diameter through the pick (p147, p167)
 **Missing:** Mtext (a dimension's text is one line); the text centred under an explicit Angle, as
 DIMLINEAR's.
 
-### `DIMHORIZONTAL` · es `ACOHORIZONTAL` · pt-BR `COTAHORIZONTAL` · fr `COTEHORIZONTALE` · it `DIMORIZZONTALE` · de `BEMHORIZONTAL`
+### `DIMHORIZONTAL` · es `ACOHORIZONTAL` · pt-BR `COTAHORIZONTAL` · fr `COTEHORIZONTALE` · it `DIMORIZZONTALE` · de `BEMHORIZONTAL` · ru `РЗМГОРИЗ`
 
 **Implemented:** DIMLINEAR measuring horizontally whatever the location, its location prompt
 offering `[Text/Angle]` (p100, p101, p113). Typed only: no ribbon panel offers it.
 
 **Missing:** as DIMLINEAR's.
 
-### `DIMVERTICAL` · es `ACOVERTICAL` · pt-BR `COTAVERTICAL` · fr `COTEVERTICALE` · it `DIMVERTICALE` · de `BEMVERTIKAL`
+### `DIMVERTICAL` · es `ACOVERTICAL` · pt-BR `COTAVERTICAL` · fr `COTEVERTICALE` · it `DIMVERTICALE` · de `BEMVERTIKAL` · ru `РЗМВЕРТИК`
 
 **Implemented:** DIMLINEAR measuring vertically whatever the location, `[Text/Angle]` (p100, p101,
 p113). Typed only.
 
 **Missing:** as DIMLINEAR's.
 
-### `DIMROTATED` · es `ACOGIRADA` · pt-BR `COTAROTACIONADA` · fr `COTEPIVOTEE` · it `DIMRUOTATO` · de `BEMDREHEN`
+### `DIMROTATED` · es `ACOGIRADA` · pt-BR `COTAROTACIONADA` · fr `COTEPIVOTEE` · it `DIMRUOTATO` · de `BEMDREHEN` · ru `РЗМПОВЕРН`
 
 **Implemented:** `Specify angle of dimension line <0>:` first (a number, or two points: ` Specify
 second point:`), then DIMLINEAR's prompts measuring along that angle, `[Text/Angle]` at the location
@@ -129,7 +129,7 @@ second point:`), then DIMLINEAR's prompts measuring along that angle, `[Text/Ang
 
 **Missing:** as DIMLINEAR's.
 
-### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE` · pt-BR `COTALINBASE` / `CLB` / `DIMBASE` · fr `COTLIGN` / `COTL` · it `DIMLBASE` / `DBA` · de `BEMBASISL` / `BMB` / `BASISLINIE`
+### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE` · pt-BR `COTALINBASE` / `CLB` / `DIMBASE` · fr `COTLIGN` / `COTL` · it `DIMLBASE` / `DBA` · de `BEMBASISL` / `BMB` / `BASISLINIE` · ru `РЗМБАЗОВЫЙ` / `РБА`
 
 **Implemented:** `Specify second extension line origin or [Select/Undo] <Select>:` (Undo offered
 with nothing to undo too, as AutoCAD's; with nothing left, `Command has been completely undone.`,
@@ -154,7 +154,7 @@ opens at Select, and one picked or Last is refused as a radial one is (the WHY o
 `No object selected.`); whether a dimension copied, pasted or exploded counts as made in the
 session (here it does: any object the opened file did not hold)
 
-### `DIMCONTINUE` / `DCO` · es `ACOCONTINUA` / `ACOCONT` · pt-BR `COTASERIE` / `CSE` / `DIMCONT` · fr `COTCONT` / `COTN` · it `DIMCONTINUA` / `DCO` · de `BEMWEITER` / `BMWT`
+### `DIMCONTINUE` / `DCO` · es `ACOCONTINUA` / `ACOCONT` · pt-BR `COTASERIE` / `CSE` / `DIMCONT` · fr `COTCONT` / `COTN` · it `DIMCONTINUA` / `DCO` · de `BEMWEITER` / `BMWT` · ru `РЗМЦЕПЬ` / `РЦП`
 
 **Implemented:** DIMBASELINE's prompts and bases, its own `Select continued dimension:` (es
 `Designe cota continua`; a radial picked refused, p402); `@` from LASTPOINT (p230); chains from
@@ -163,7 +163,7 @@ axis in its style and layer (DIMCONTINUEMODE 1) with the current colour, linetyp
 
 **Missing:** as DIMBASELINE's
 
-### `DIMSPACE` · es `ACOESPAC` · pt-BR `ESPACOCOTA` · fr `ESPACECOTES` · it `SPAZIOQUOTE` · de `BEMPLATZ`
+### `DIMSPACE` · es `ACOESPAC` · pt-BR `ESPACOCOTA` · fr `ESPACECOTES` · it `SPAZIOQUOTE` · de `BEMPLATZ` · ru `РЗМСМЕЩ`
 
 **Implemented:** `Select base dimension:` (es `Designar cota base`) — a pick, a point typed there
 (erase/p221, p256) or `Last` (p257); one that is no dimension `Selected object is not a dimension.`
@@ -185,7 +185,7 @@ at an angle spaced along their normal (p256)
 design). **Unverified:** what AutoCAD says to a radial or angular base (here it is passed over in
 silence)
 
-### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD` · pt-BR `COTARAIOS` / `CRA` / `DIMRAD` · fr `COTRAYON` / `COTY` · it `DIMRAGGIO` / `DRA` · de `BEMRADIUS` / `BMRAD`
+### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD` · pt-BR `COTARAIOS` / `CRA` / `DIMRAD` · fr `COTRAYON` / `COTY` · it `DIMRAGGIO` / `DRA` · de `BEMRADIUS` / `BMRAD` · ru `РЗМРАДИУС` / `РРА`
 
 **Implemented:** `Select arc or circle:` (es `Designe un arco o un círculo`; FOO `Expects a single
 object.`, p307), a circle, arc or polyline arc segment picked, on a locked layer too (p315), or a
@@ -205,7 +205,7 @@ text's middle on the line, the run stopping at its box.
 reference (the prompt is a nested pick, p300's trace), DIMCEN negative centrelines, DIMATFIT and
 DIMTOH (ISO-25 writes the text along the leader with no landing, desktop d04).
 
-### `DIMDIAMETER` / `DIMDIA` / `DDI` · es `ACODIAMETRO` / `ACODIA` · pt-BR `COTADIAMETRO` / `CDI` / `DIMDIA` · fr `COTDIA` / `CM` · it `DIMDIAMETRO` / `DDI` · de `BEMDURCHM` / `BMD`
+### `DIMDIAMETER` / `DIMDIA` / `DDI` · es `ACODIAMETRO` / `ACODIA` · pt-BR `COTADIAMETRO` / `CDI` / `DIMDIA` · fr `COTDIA` / `CM` · it `DIMDIAMETRO` / `DDI` · de `BEMDURCHM` / `BMD` · ru `РЗМДИАМЕТР` / `РДИ`
 
 **Implemented:** DIMRADIUS's prompts, refusals and placement, reporting the diameter; inside one
 run to one arrowhead (p302); outside DIMTOFL's line across from rim to rim, the far arrowhead
@@ -215,7 +215,7 @@ outside on a stub as long as it (p303). The sign is drawn Ø (U+00D8) where Auto
 **Missing:** what DIMRADIUS lacks; **unverified**: outside with DIMTOFL off (the centre mark and
 the far arrowhead on its stub, not probed).
 
-### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULAR` / `ACOANG` · pt-BR `COTAANG` / `CANG` / `DIMANG` · fr `COTANG` / `CAN` · it `DIMANGOLO` / `DAN` · de `BEMWINKEL` / `BMWIN`
+### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULAR` / `ACOANG` · pt-BR `COTAANG` / `CANG` / `DIMANG` · fr `COTANG` / `CAN` · it `DIMANGOLO` / `DAN` · de `BEMWINKEL` / `BMWIN` · ru `РЗМУГЛОВОЙ` / `РУГ`
 
 **Implemented:** `Select arc, circle, line, or <specify vertex>:` (es
 `Designe arco, círculo, línea o <designar vértice>`), `Select second line:`, Enter's
@@ -244,7 +244,7 @@ the lines: an arc moved later keeps its extension lines from there, where AutoCA
 against the lines; where a line does not reach the location's side of the vertex, what AutoCAD
 takes is **unverified**.
 
-### `LEADER` / `LEAD` · es `DIRECTRIZ` / `DIREC` · pt-BR `LINHACHAM` / `LCHAM` / `LEAD` · fr `LREPERE` · it `DIRETTRICE` · de `FÜHRUNG`
+### `LEADER` / `LEAD` · es `DIRECTRIZ` / `DIREC` · pt-BR `LINHACHAM` / `LCHAM` / `LEAD` · fr `LREPERE` · it `DIRETTRICE` · de `FÜHRUNG` · ru `ВЫНОСКА`
 
 **Implemented:** the leader — a model type of its own (DXF LEADER: its vertices, the hook line among
 them, an arrowhead, straight or spline, its dimension style and the overrides its palette shows,
@@ -326,7 +326,7 @@ p15); the grips' hover menus; annotative scaling. QLEADER (`LE`: `Specify first 
 MULTILEADER object with its own MLEADERSTYLE table: 1 of the 154 samples and 4 objects in 2 other
 programs' files) are not built: a DXF's MULTILEADER is left out.
 
-### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA` · pt-BR `ESTILOCOTA` / `EC` / `DIMSTY` · fr `COTSTYLE` / `CST` / `CSTY` / `DDIM` · it `DIMSTILE` / `D` / `DST` / `DDIM` · de `BEMSTIL`
+### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA` · pt-BR `ESTILOCOTA` / `EC` / `DIMSTY` · fr `COTSTYLE` / `CST` / `CSTY` / `DDIM` · it `DIMSTILE` / `D` / `DST` / `DDIM` · de `BEMSTIL` · ru `РЗМСТИЛЬ` / `РСТ` / `ДИАЛРАЗМ`
 
 **Implemented:** style manager, set current, New with Start-With copy and auto-name (`Copy of
 ISO-25`), rename, delete guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/
@@ -359,7 +359,7 @@ wording, text/p323).
   p14, d05-1). Annotative is inert without annotative scaling (TEXT-D50); Standard's look (DIMTXT
   0.18, DIMTAD 0, DIMTIH On) needs DIMTAD and DIMTIH, which are not modelled (DIMS-D8).
 
-### `-DIMSTYLE` · es `-ACOESTIL` · pt-BR `-ESTILOCOTA` · fr `-COTSTYLE` · it `-DIMSTILE` · de `-BEMSTIL`
+### `-DIMSTYLE` · es `-ACOESTIL` · pt-BR `-ESTILOCOTA` · fr `-COTSTYLE` · it `-DIMSTILE` · de `-BEMSTIL` · ru `-РЗМСТИЛЬ`
 
 **Implemented** (p04–p11, p16): `Current dimension style: ISO-25   Annotative: No` (es `Estilo de
 cota actual: ISO-25   Anotativo: No`), then `Enter a dimension style option
@@ -402,7 +402,7 @@ take says `Invalid option keyword.` and asks again (p11).
   AcDimRes 5301), the redefinition prompt's refusal of a word other than Yes or No, and Apply on a
   preselection (the selection is dropped here).
 
-### `STYLE` / `ST` / `DDSTYLE` · es `ESTILO` / `EST` / `ESTILODD` · pt-BR `ESTILO` / `ET` / `DDSTYLE` · fr `STYLE` / `S` / `DDSTYLE` · it `STILE` / `ST` / `DDSTILE` · de `STIL` / `STI` / `DDSTYLE`
+### `STYLE` / `ST` / `DDSTYLE` · es `ESTILO` / `EST` / `ESTILODD` · pt-BR `ESTILO` / `ET` / `DDSTYLE` · fr `STYLE` / `S` / `DDSTYLE` · it `STILE` / `ST` / `DDSTILE` · de `STIL` / `STI` / `DDSTYLE` · ru `СТИЛЬ` / `СТ` / `ДИАЛСТИЛЬ`
 
 **Implemented:** text-style manager (the Styles palette's text table), set current, assign per
 selection (the drop-down: one undo step over every text, TEXT-D46), delete guarded against

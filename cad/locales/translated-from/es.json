@@ -1297,6 +1297,7 @@
   "commands.promptKeywords.ucsOrthographic.Left": "Left",
   "commands.promptKeywords.ucsOrthographic.Right": "Right",
   "commands.promptKeywords.ucsOrthographic.Bottom": "Bottom",
+  "commands.promptKeywords.specifyNextPointOrClose.Undo": "Undo",
   "commands.promptKeywords.specifyEndpointOfLineOr.Undo": "Undo",
   "commands.promptKeywords.select2dPolylineOr.Radius": "Radius",
   "commands.promptKeywords.selectSecondObjectOrApplyCornerOr.Radius": "Radius",

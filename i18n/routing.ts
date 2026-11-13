@@ -11,7 +11,7 @@ const PREFIXES: Readonly<Record<string, `/${string}`>> = { "pt-BR": "/pt-br" }
  * the sitemap and the metadata all read this.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de"],
+  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de", "ru"],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
   // No negotiation by Accept-Language: Google advises against it and its
@@ -66,6 +66,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   fr: "ltr",
   it: "ltr",
   de: "ltr",
+  ru: "ltr",
 }
 
 /**
@@ -81,6 +82,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   fr: "live",
   it: "live",
   de: "live",
+  ru: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -104,13 +106,17 @@ export const COMMAND_LANGUAGE: Readonly<
   fr: "localized",
   it: "localized",
   de: "localized",
+  ru: "localized",
 }
 
 /**
- * The script each language is written in. Any but latin needs a face Inter
- * and Geist Mono lack, which `scriptFontVariables` then requires by type.
+ * The script each language is written in. Inter and Geist Mono draw latin
+ * and Cyrillic (`INTER_SCRIPTS`); any other needs a face they lack, which
+ * `scriptFontVariables` then requires by type.
  */
-export const SCRIPT: Readonly<Record<AppLocale, "latin" | "arabic">> = {
+export const SCRIPT: Readonly<
+  Record<AppLocale, "latin" | "cyrillic" | "arabic">
+> = {
   en: "latin",
   es: "latin",
   ar: "arabic",
@@ -118,9 +124,20 @@ export const SCRIPT: Readonly<Record<AppLocale, "latin" | "arabic">> = {
   fr: "latin",
   it: "latin",
   de: "latin",
+  ru: "cyrillic",
 }
 
-export type NonLatinScript = Exclude<(typeof SCRIPT)[AppLocale], "latin">
+/**
+ * The scripts Inter and Geist Mono have. `next/font` declares every subset
+ * with its `unicode-range` and preloads only latin: a page downloads the
+ * Cyrillic file only when it shows a Cyrillic letter.
+ */
+export const INTER_SCRIPTS = ["latin", "cyrillic"] as const
+
+export type ScriptNeedingFace = Exclude<
+  (typeof SCRIPT)[AppLocale],
+  (typeof INTER_SCRIPTS)[number]
+>
 
 /**
  * Each language named in itself, as the language selector offers it — a
@@ -135,6 +152,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   fr: "Français",
   it: "Italiano",
   de: "Deutsch",
+  ru: "Русский",
 }
 
 /** Open Graph wants language and territory. */
@@ -146,4 +164,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   fr: "fr_FR",
   it: "it_IT",
   de: "de_DE",
+  ru: "ru_RU",
 }

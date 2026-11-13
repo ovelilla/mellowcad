@@ -1500,6 +1500,9 @@ export const en: EngineCatalog = {
         "Right": "Right",
         "Bottom": "Bottom"
       },
+      "specifyNextPointOrClose": {
+        "Undo": "Undo"
+      },
       "specifyEndpointOfLineOr": {
         "Undo": "Undo"
       },

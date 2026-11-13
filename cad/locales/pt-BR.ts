@@ -2178,6 +2178,9 @@ export const ptBR: EngineLocale = {
         "Right": "Direito",
         "Bottom": "Inferior"
       },
+      "specifyNextPointOrClose": {
+        "Undo": "Desfazer"
+      },
       "specifyEndpointOfLineOr": {
         "Undo": "Desfazer"
       },

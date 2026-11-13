@@ -103,7 +103,7 @@ What each command does, with its prompts and options, is in the user's
 | Import                            | What                                                                                                      |
 | --------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `@mellowcad/editor`               | `CadEditor`, its pieces and their types                                                                   |
-| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it`, `de` |
+| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it`, `de`, `ru` (in progress) |
 | `@mellowcad/editor/styles.css`    | The stylesheet                                                                                            |
 
 ## Versioning

@@ -25,6 +25,7 @@
     "src/locales/pt-BR.ts",
     "src/locales/fr.ts",
     "src/locales/it.ts",
-    "src/locales/de.ts"
+    "src/locales/de.ts",
+    "src/locales/ru.ts"
   ]
 }

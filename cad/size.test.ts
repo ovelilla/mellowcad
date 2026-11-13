@@ -35,6 +35,21 @@ const ENGINE_MAX_GZIP_BYTES = 452 * KB
  */
 const CATALOG_MAX_RATIO = 1.4
 
+/**
+ * The same, for a catalog whose letters UTF-8 writes in two bytes (Cyrillic,
+ * Arabic). WHY: Russian runs 1.10 times English in characters, as French and
+ * Italian do, but 1.53 in bytes and 1.41 gzipped (2026-11-13): its pages pay
+ * for the script, as a landing pays for a script's font, not for anything
+ * carried twice.
+ */
+const TWO_BYTE_CATALOG_MAX_RATIO = 1.6
+
+/** Whether most of a catalog's letters are two bytes long in UTF-8. */
+function twoByteScript(tag: string): boolean {
+  const text = readFileSync(path.join(CAD, "locales", `${tag}.json`), "utf8")
+  return Buffer.byteLength(text) > text.length * 1.2
+}
+
 const CAD = import.meta.dirname
 const fromTsdown = createRequire(
   createRequire(path.join(CAD, "package.json")).resolve("tsdown")
@@ -101,7 +116,9 @@ describe("the package's weight on a page", () => {
           async (each) => (await bundle(loadingCatalog(each))).gzip
         )
       )
-      expect(catalog / english).toBeLessThan(CATALOG_MAX_RATIO)
+      expect(catalog / english).toBeLessThan(
+        twoByteScript(tag) ? TWO_BYTE_CATALOG_MAX_RATIO : CATALOG_MAX_RATIO
+      )
     }
   )
 })
