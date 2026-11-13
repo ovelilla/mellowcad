@@ -2554,7 +2554,7 @@ export type { CommandCatalog }
  * The command language. `names` and `keywords` are vocabulary, not messages: a
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
-export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms" | "answerForms">> & {
+export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms" | "answerForms" | "promptTails">> & {
     readonly names: {
         readonly [C in CommandName]: readonly string[];
     };
@@ -2592,6 +2592,14 @@ export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "pro
      */
     readonly answerForms: {
         readonly [P in keyof Commands["prompts"]]?: AnswerForm;
+    };
+    /**
+     * What a language writes after a prompt's keyword list, before its default
+     * and colon: German puts the verb last (`Höhe oder [2Punkt] angeben <1>:`).
+     * A prompt left out ends at its list, as English's all do.
+     */
+    readonly promptTails: {
+        readonly [P in keyof Commands["prompts"]]?: CompiledMessage;
     };
 };
 
@@ -2697,6 +2705,8 @@ export declare class EngineText {
     abbreviation(command: string | null, id: string): string;
     /** How prompt `id` writes its default in the command language. */
     promptForm(id: PromptId): PromptForm;
+    /** What prompt `id` writes after its keyword list, or null where it ends there. */
+    promptTail(id: PromptId): string | null;
     /** How the history writes an answer after prompt `id` in the command language. */
     answerForm(id: PromptId): AnswerForm;
     prompt(id: PromptId, values?: MessageValues): string;
@@ -2748,9 +2758,10 @@ export declare class EngineText {
      * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
      * `LINE [Close/Undo]:` or `UCSICON [ON/OFF/Noorigin/ORigin] <ON>:`;
      * `tight`, the default written against them (`[Zdepth]<0,0,0>:`); `open`,
-     * a default with no colon after it (`OK? <Y>`).
+     * a default with no colon after it (`OK? <Y>`). A `tail` follows the list
+     * (German `Höhe oder [2Punkt] angeben <1>:`, {@link promptTail}).
      */
-    composePrompt(head: string, keywords: readonly string[], fallback?: string | null, form?: PromptForm): PromptSegment[];
+    composePrompt(head: string, keywords: readonly string[], fallback?: string | null, form?: PromptForm, tail?: string | null): PromptSegment[];
 }
 
 export { extendLocale }
@@ -3041,6 +3052,13 @@ export declare const fr: EngineLocale;
 ```ts
 export { it }
 export declare const it: EngineLocale;
+```
+
+## ./locales/de
+
+```ts
+export { de }
+export declare const de: EngineLocale;
 ```
 
 ## Reached, not exported
@@ -4523,9 +4541,10 @@ export type MessageValues = Readonly<Record<string, string | number>>;
 // locales/types.ts
 /**
  * How a prompt writes its default: `<1>:`, against what precedes it
- * (`[Zdepth]<0,0,0>:`), or with no colon (`OK? <Y>`).
+ * (`[Zdepth]<0,0,0>:`), with no colon (`OK? <Y>`), or before the prompt's
+ * tail (German `[2Punkt/…] <8.0000> angeben:`; `promptTails`).
  */
-export type PromptForm = "spaced" | "tight" | "open";
+export type PromptForm = "spaced" | "tight" | "open" | "beforeTail";
 
 // locales/types.ts
 /**

@@ -1,0 +1,24 @@
+_CIRCLE
+0,0
+5
+_LINE
+20,0
+LOT
+3,4
+TAN
+-3,4.2
+
+_LINE
+END
+20,0
+LOT
+3,-4
+
+_-OSNAP
+OFF
+(getvar "OSMODE")
+_-OSNAP
+END
+_-OSNAP
+KEI
+(getvar "OSMODE")

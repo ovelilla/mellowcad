@@ -1447,18 +1447,24 @@
         "Front": "Front",
         "BAck": "BAck",
         "Left": "Left",
-        "Right": "Right"
+        "Right": "Right",
+        "Bottom": "Bottom"
       },
       "specifyEndpointOfLineOr": { "Undo": "Undo" },
       "select2dPolylineOr": { "Radius": "Radius" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" },
-      "specifyEndpointOfArcOr": { "Close": "CLose", "Arc": "ARc" },
+      "specifyEndpointOfArcOr": {
+        "Close": "CLose",
+        "Arc": "ARc",
+        "Undo": "Undo",
+        "Length": "Length"
+      },
       "plineNextPointOr": { "Line": "LIne" },
       "specifyFirstCornerPointOr": { "Width": "Width" },
       "specifyAxisEndpointOfEllipticalArcOr": { "Centre": "Centre" },
       "splineditOptionClosed": { "convert to Polyline": "Polyline" },
       "peditOption": { "eXit": "EXit" },
-      "peditMultipleOption": { "eXit": "EXit" },
+      "peditMultipleOption": { "eXit": "EXit", "Width": "Width" },
       "peditOption3d": { "Join": "Join", "eXit": "EXit" },
       "peditWalkOption": { "eXit": "eXit" },
       "enterFitDataOption": {
@@ -1469,9 +1475,16 @@
         "Delete": "Delete",
         "Tangents": "Tangents"
       },
-      "enterVertexEditingOption": { "X": "X" },
+      "enterVertexEditingOption": { "X": "X", "Width": "Width" },
       "specifyNewLocationOr": { "eXit": "EXit", "X": "X" },
-      "enterNewWeightOr": { "eXit": "EXit", "X": "X" }
+      "enterNewWeightOr": { "eXit": "EXit", "X": "X" },
+      "selectSplineFitPolyline": { "Undo": "Undo" },
+      "selectOpenCurvesToJoinToSource": { "Undo": "Undo" },
+      "selectObjectsOr": { "mOde": "mOde" },
+      "selectEdgesOr": { "mOde": "mOde" },
+      "selectFacesOr": { "Undo": "Undo" },
+      "removeFacesOr": { "Undo": "Undo" },
+      "leaderFormatOption": { "None": "None" }
     },
     "prompts": {
       "length": "Length",
@@ -1698,8 +1711,11 @@
       "boxLength": "Specify length",
       "boxWidth": "Specify width",
       "boxHeightOr": "Specify height or",
+      "boxHeightNoDefaultOr": "Specify height or",
       "pyramidCenterOr": "Specify center point of base or",
       "specifyBaseRadiusOr": "Specify base radius or",
+      "pyramidInscribedRadiusOr": "Specify base radius or",
+      "specifyBaseRadiusNoDefaultOr": "Specify base radius or",
       "pyramidBaseRadiusOr": "Specify base radius or",
       "solidHeightTopOr": "Specify height or",
       "solidHeightOr": "Specify height or",
@@ -1707,8 +1723,10 @@
       "specifyTopRadius": "Specify top radius",
       "sphereCenterOr": "Specify center point or",
       "specifyRadiusOr": "Specify radius or",
+      "specifyRadiusNoDefaultOr": "Specify radius or",
       "torusDiameter": "Specify diameter of torus",
       "tubeRadiusOr": "Specify tube radius or",
+      "tubeRadiusNoDefaultOr": "Specify tube radius or",
       "tubeDiameter": "Specify tube diameter",
       "roundBaseCenterOr": "Specify center point of base or",
       "specifyDiameter": "Specify diameter",
@@ -2105,7 +2123,8 @@
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight",
-      "sliceStartOr": "spaced"
+      "sliceStartOr": "spaced",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2135,6 +2154,7 @@
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
     },
+    "promptTails": {},
     "format": {
       "idle": "Command",
       "commandPrompt": "{command} {question}",
@@ -2151,6 +2171,9 @@
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "promptWithDefaultTight": "{head} <keywords>[{list}]</keywords>'<'{value}>:",
       "promptWithDefaultOpen": "{head} <keywords>[{list}]</keywords> '<'{value}>",
+      "promptWithKeywordsTail": "{head} <keywords>[{list}]</keywords> {tail}:",
+      "promptWithDefaultTail": "{head} <keywords>[{list}]</keywords> {tail} '<'{value}>:",
+      "promptWithDefaultBeforeTail": "{head} <keywords>[{list}]</keywords> '<'{value}> {tail}:",
       "keywordSeparator": "/",
       "keywordOr": " or ",
       "optionValue": "{keyword}: {value}",

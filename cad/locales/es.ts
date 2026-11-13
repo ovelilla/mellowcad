@@ -2158,7 +2158,8 @@ export const es: EngineLocale = {
         "Front": "Frontal",
         "BAck": "Posterior",
         "Left": "IZquierda",
-        "Right": "Derecha"
+        "Right": "Derecha",
+        "Bottom": "Inferior"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "desHacer"
@@ -2171,7 +2172,9 @@ export const es: EngineLocale = {
       },
       "specifyEndpointOfArcOr": {
         "Close": "Cerrar",
-        "Arc": "Arco"
+        "Arc": "Arco",
+        "Undo": "desHacer",
+        "Length": "Longitud"
       },
       "plineNextPointOr": {
         "Line": "líNea"
@@ -2189,7 +2192,8 @@ export const es: EngineLocale = {
         "eXit": "SAlir"
       },
       "peditMultipleOption": {
-        "eXit": "SAlir"
+        "eXit": "SAlir",
+        "Width": "Grosor"
       },
       "peditOption3d": {
         "Join": "Unir",
@@ -2207,7 +2211,8 @@ export const es: EngineLocale = {
         "Tangents": "Tangentes"
       },
       "enterVertexEditingOption": {
-        "X": "S"
+        "X": "S",
+        "Width": "Grosor"
       },
       "specifyNewLocationOr": {
         "eXit": "Salir",
@@ -2216,6 +2221,27 @@ export const es: EngineLocale = {
       "enterNewWeightOr": {
         "eXit": "Salir",
         "X": "SA"
+      },
+      "selectSplineFitPolyline": {
+        "Undo": "desHacer"
+      },
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": "desHacer"
+      },
+      "selectObjectsOr": {
+        "mOde": "MOdo"
+      },
+      "selectEdgesOr": {
+        "mOde": "MOdo"
+      },
+      "selectFacesOr": {
+        "Undo": "desHacer"
+      },
+      "removeFacesOr": {
+        "Undo": "desHacer"
+      },
+      "leaderFormatOption": {
+        "None": "Ninguna"
       }
     },
     "prompts": {
@@ -2482,8 +2508,11 @@ export const es: EngineLocale = {
       "boxLength": "Precise longitud",
       "boxWidth": "Precise anchura",
       "boxHeightOr": "Precise altura o",
+      "boxHeightNoDefaultOr": "Precise altura o",
       "pyramidCenterOr": "Precise centro de base o",
       "specifyBaseRadiusOr": "Precise radio de base o",
+      "pyramidInscribedRadiusOr": "Precise radio de base o",
+      "specifyBaseRadiusNoDefaultOr": "Precise radio de base o",
       "pyramidBaseRadiusOr": "Precise radio de base o",
       "solidHeightTopOr": "Indique altura o",
       "solidHeightOr": "Precise altura o",
@@ -2491,8 +2520,10 @@ export const es: EngineLocale = {
       "specifyTopRadius": "Precise radio superior",
       "sphereCenterOr": "Precise centro o",
       "specifyRadiusOr": "Precise radio o",
+      "specifyRadiusNoDefaultOr": "Precise radio o",
       "torusDiameter": "Precise diámetro de toroide",
       "tubeRadiusOr": "Precise radio de sección o",
+      "tubeRadiusNoDefaultOr": "Precise radio de sección o",
       "tubeDiameter": "Precise diámetro de sección",
       "roundBaseCenterOr": "Precise centro de base o",
       "specifyDiameter": "Precise diámetro",
@@ -2900,7 +2931,8 @@ export const es: EngineLocale = {
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight",
-      "sliceStartOr": "spaced"
+      "sliceStartOr": "spaced",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -3091,6 +3123,71 @@ export const es: EngineLocale = {
           "value"
         ],
         ">"
+      ],
+      "promptWithKeywordsTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        ":"
+      ],
+      "promptWithDefaultTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultBeforeTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        "> ",
+        [
+          "tail"
+        ],
+        ":"
       ],
       "keywordSeparator": "/",
       "keywordOr": " o ",

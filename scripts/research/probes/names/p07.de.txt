@@ -1,0 +1,36 @@
+_-OSNAP
+END
+(getvar "OSMODE")
+_-OSNAP
+ENDP
+(getvar "OSMODE")
+_-OSNAP
+MIT
+(getvar "OSMODE")
+_-OSNAP
+ZEN,QUA,SCH
+(getvar "OSMODE")
+_-OSNAP
+BAS,LOT,TAN
+(getvar "OSMODE")
+_-OSNAP
+NÄC
+(getvar "OSMODE")
+_-OSNAP
+ANG
+(getvar "OSMODE")
+_-OSNAP
+HIL
+(getvar "OSMODE")
+_-OSNAP
+PAR
+(getvar "OSMODE")
+_-OSNAP
+KEI
+(getvar "OSMODE")
+_-OSNAP
+PUN
+(getvar "OSMODE")
+_-OSNAP
+GZE
+(getvar "OSMODE")

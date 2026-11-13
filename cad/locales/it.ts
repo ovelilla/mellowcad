@@ -2166,7 +2166,8 @@ export const it: EngineLocale = {
         "Front": "Fronte",
         "BAck": "Retro",
         "Left": "Sinistra",
-        "Right": "Destra"
+        "Right": "Destra",
+        "Bottom": "Basso"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "Annulla"
@@ -2179,7 +2180,9 @@ export const it: EngineLocale = {
       },
       "specifyEndpointOfArcOr": {
         "Close": "CHiudi",
-        "Arc": "ARco"
+        "Arc": "ARco",
+        "Undo": "ANnulla",
+        "Length": "Lunghezza"
       },
       "plineNextPointOr": {
         "Line": "LInea"
@@ -2197,7 +2200,8 @@ export const it: EngineLocale = {
         "eXit": "esCi"
       },
       "peditMultipleOption": {
-        "eXit": "esCi"
+        "eXit": "esCi",
+        "Width": "Larghezza"
       },
       "peditOption3d": {
         "Join": "Unisci",
@@ -2215,7 +2219,8 @@ export const it: EngineLocale = {
         "Tangents": "TAngenti"
       },
       "enterVertexEditingOption": {
-        "X": "E"
+        "X": "E",
+        "Width": "Larghezza"
       },
       "specifyNewLocationOr": {
         "eXit": "Esci",
@@ -2224,6 +2229,27 @@ export const it: EngineLocale = {
       "enterNewWeightOr": {
         "eXit": "ESci",
         "X": "E"
+      },
+      "selectSplineFitPolyline": {
+        "Undo": "Annulla"
+      },
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": "Annulla"
+      },
+      "selectObjectsOr": {
+        "mOde": "mOdalità"
+      },
+      "selectEdgesOr": {
+        "mOde": "mOdalità"
+      },
+      "selectFacesOr": {
+        "Undo": "Annulla"
+      },
+      "removeFacesOr": {
+        "Undo": "Annulla"
+      },
+      "leaderFormatOption": {
+        "None": "Nessuna"
       }
     },
     "prompts": {
@@ -2490,8 +2516,11 @@ export const it: EngineLocale = {
       "boxLength": "Specificare lunghezza",
       "boxWidth": "Specificare larghezza",
       "boxHeightOr": "Specificare altezza o",
+      "boxHeightNoDefaultOr": "Specificare altezza o",
       "pyramidCenterOr": "Specificare centro della base o",
       "specifyBaseRadiusOr": "Specificare raggio della base o",
+      "pyramidInscribedRadiusOr": "Specificare raggio della base o",
+      "specifyBaseRadiusNoDefaultOr": "Specificare raggio della base o",
       "pyramidBaseRadiusOr": "Specificare raggio della base o",
       "solidHeightTopOr": "Specificare altezza o",
       "solidHeightOr": "Specificare altezza o",
@@ -2499,8 +2528,10 @@ export const it: EngineLocale = {
       "specifyTopRadius": "Specificare raggio superiore",
       "sphereCenterOr": "Specificare centro o",
       "specifyRadiusOr": "Specificare raggio o",
+      "specifyRadiusNoDefaultOr": "Specificare raggio o",
       "torusDiameter": "Specificare diametro del toro",
       "tubeRadiusOr": "Specificare raggio del tubo o",
+      "tubeRadiusNoDefaultOr": "Specificare raggio del tubo o",
       "tubeDiameter": "Specificare diametro del tubo",
       "roundBaseCenterOr": "Specificare centro della base o",
       "specifyDiameter": "Specificare diametro",
@@ -2908,7 +2939,8 @@ export const it: EngineLocale = {
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "spaced",
-      "sliceStartOr": "spaced"
+      "sliceStartOr": "spaced",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -3099,6 +3131,71 @@ export const it: EngineLocale = {
           "value"
         ],
         ">"
+      ],
+      "promptWithKeywordsTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        ":"
+      ],
+      "promptWithDefaultTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultBeforeTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        "> ",
+        [
+          "tail"
+        ],
+        ":"
       ],
       "keywordSeparator": "/",
       "keywordOr": " o ",

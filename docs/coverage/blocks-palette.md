@@ -1,6 +1,6 @@
 # Blocks palette
 
-### `BLOCKSPALETTE` · es `PALETABLOQUES` · pt-BR `PALETABLOCOS` · fr `PALETTEBLOCS` · it `TAVOLOZZABLOCCHI`
+### `BLOCKSPALETTE` · es `PALETABLOQUES` · pt-BR `PALETABLOCOS` · fr `PALETTEBLOCS` · it `TAVOLOZZABLOCCHI` · de `BLOCKPALETTE`
 
 `BLOCKSPALETTE` implements the Current Drawing tab only, as a tab of the modeless palette panel:
 thumbnails rendered through the real `SceneBuilder`, wildcard filter (`?` / `*`). INSERT (`I`, es

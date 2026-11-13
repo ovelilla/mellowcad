@@ -432,18 +432,20 @@ export function commandPrompt(
   // last, not part of the question the prompt line and the tooltip show.
   const shown = question?.trimStart() ?? null
   const form: PromptForm = id === null ? "spaced" : text.promptForm(id)
+  const tail = id === null ? null : text.promptTail(id)
   return {
     command: name,
     segments: text.composePrompt(
       shown === null ? name : text.commandQuestion(name, shown),
       labels,
       value,
-      form
+      form,
+      tail
     ),
     echo:
       question === null
         ? null
-        : text.composePrompt(question, labels, value, form),
+        : text.composePrompt(question, labels, value, form, tail),
     answerForm: id === null ? "spaced" : text.answerForm(id),
     dynamic:
       shown === null || labels.length > 0 || value !== null

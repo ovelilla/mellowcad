@@ -1524,7 +1524,8 @@
         "Front": "Avant",
         "BAck": "ARrière",
         "Left": "Gauche",
-        "Right": "Droite"
+        "Right": "Droite",
+        "Bottom": "Bas"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "annUler"
@@ -1537,7 +1538,9 @@
       },
       "specifyEndpointOfArcOr": {
         "Close": "CLore",
-        "Arc": "ARc"
+        "Arc": "ARc",
+        "Undo": "annUler",
+        "Length": "Longueur"
       },
       "plineNextPointOr": {
         "Line": "LIgne"
@@ -1554,7 +1557,10 @@
       "peditOption": {
         "eXit": "Quitter"
       },
-      "peditMultipleOption": { "eXit": "Quitter" },
+      "peditMultipleOption": {
+        "eXit": "Quitter",
+        "Width": "LArgeur"
+      },
       "peditOption3d": {
         "Join": "Joindre",
         "eXit": "Quitter"
@@ -1571,7 +1577,8 @@
         "Tangents": "TAngentes"
       },
       "enterVertexEditingOption": {
-        "X": "X"
+        "X": "X",
+        "Width": "LArgeur"
       },
       "specifyNewLocationOr": {
         "eXit": "Quitter",
@@ -1580,6 +1587,27 @@
       "enterNewWeightOr": {
         "eXit": "Quitter",
         "X": "Q"
+      },
+      "selectSplineFitPolyline": {
+        "Undo": "annUler"
+      },
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": "annUler"
+      },
+      "selectObjectsOr": {
+        "mOde": "mOde"
+      },
+      "selectEdgesOr": {
+        "mOde": "mOde"
+      },
+      "selectFacesOr": {
+        "Undo": "annUler"
+      },
+      "removeFacesOr": {
+        "Undo": "annUler"
+      },
+      "leaderFormatOption": {
+        "None": "Aucun(e)"
       }
     },
     "prompts": {
@@ -1807,8 +1835,11 @@
       "boxLength": "Spécifiez la longueur",
       "boxWidth": "Spécifiez la largeur",
       "boxHeightOr": "Spécifiez la hauteur ou",
+      "boxHeightNoDefaultOr": "Spécifiez la hauteur ou",
       "pyramidCenterOr": "Spécifiez le point central de la base ou",
       "specifyBaseRadiusOr": "Spécifiez le rayon de base ou",
+      "pyramidInscribedRadiusOr": "Spécifiez le rayon de base ou",
+      "specifyBaseRadiusNoDefaultOr": "Spécifiez le rayon de base ou",
       "pyramidBaseRadiusOr": "Spécifiez le rayon de base ou",
       "solidHeightTopOr": "Spécifiez la hauteur ou",
       "solidHeightOr": "Spécifiez la hauteur ou",
@@ -1816,8 +1847,10 @@
       "specifyTopRadius": "Spécifiez le rayon supérieur",
       "sphereCenterOr": "Spécifiez le point central ou",
       "specifyRadiusOr": "Spécifiez le rayon ou",
+      "specifyRadiusNoDefaultOr": "Spécifiez le rayon ou",
       "torusDiameter": "Spécifiez le diamètre du tore",
       "tubeRadiusOr": "Spécifiez le rayon du tube ou",
+      "tubeRadiusNoDefaultOr": "Spécifiez le rayon du tube ou",
       "tubeDiameter": "Spécifiez le diamètre du tube",
       "roundBaseCenterOr": "Spécifiez le point central de la base ou",
       "specifyDiameter": "Spécifiez le diamètre",
@@ -2214,7 +2247,8 @@
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight",
-      "sliceStartOr": "spaced"
+      "sliceStartOr": "spaced",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2260,6 +2294,9 @@
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "promptWithDefaultTight": "{head} <keywords>[{list}]</keywords>'<'{value}>:",
       "promptWithDefaultOpen": "{head} <keywords>[{list}]</keywords> '<'{value}>",
+      "promptWithKeywordsTail": "{head} <keywords>[{list}]</keywords> {tail}:",
+      "promptWithDefaultTail": "{head} <keywords>[{list}]</keywords> {tail} '<'{value}>:",
+      "promptWithDefaultBeforeTail": "{head} <keywords>[{list}]</keywords> '<'{value}> {tail}:",
       "keywordSeparator": "/",
       "keywordOr": " ou ",
       "optionValue": "{keyword}: {value}",

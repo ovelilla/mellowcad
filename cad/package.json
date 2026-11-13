@@ -60,6 +60,10 @@
       "types": "./dist/locales/it.d.ts",
       "default": "./dist/locales/it.js"
     },
+    "./locales/de": {
+      "types": "./dist/locales/de.d.ts",
+      "default": "./dist/locales/de.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

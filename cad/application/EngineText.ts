@@ -341,6 +341,12 @@ export class EngineText {
     return this.commands.promptForms[id] ?? "spaced"
   }
 
+  /** What prompt `id` writes after its keyword list, or null where it ends there. */
+  promptTail(id: PromptId): string | null {
+    const tail = this.commands.promptTails[id]
+    return tail === undefined ? null : this.format(tail)
+  }
+
   /** How the history writes an answer after prompt `id` in the command language. */
   answerForm(id: PromptId): AnswerForm {
     return this.commands.answerForms[id] ?? "spaced"
@@ -500,13 +506,15 @@ export class EngineText {
    * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
    * `LINE [Close/Undo]:` or `UCSICON [ON/OFF/Noorigin/ORigin] <ON>:`;
    * `tight`, the default written against them (`[Zdepth]<0,0,0>:`); `open`,
-   * a default with no colon after it (`OK? <Y>`).
+   * a default with no colon after it (`OK? <Y>`). A `tail` follows the list
+   * (German `Höhe oder [2Punkt] angeben <1>:`, {@link promptTail}).
    */
   composePrompt(
     head: string,
     keywords: readonly string[],
     fallback: string | null = null,
-    form: PromptForm = "spaced"
+    form: PromptForm = "spaced",
+    tail: string | null = null
   ): PromptSegment[] {
     const format = this.commands.format
     if (keywords.length === 0) {
@@ -525,14 +533,25 @@ export class EngineText {
     }
     return this.formatter
       .formatParts<PromptSegment>(
-        fallback === null
-          ? format.promptWithKeywords
-          : form === "tight"
-            ? format.promptWithDefaultTight
-            : form === "open"
-              ? format.promptWithDefaultOpen
-              : format.promptWithDefault,
-        { head, list: this.keywordList(keywords), value: fallback ?? "" },
+        tail !== null
+          ? fallback === null
+            ? format.promptWithKeywordsTail
+            : form === "beforeTail"
+              ? format.promptWithDefaultBeforeTail
+              : format.promptWithDefaultTail
+          : fallback === null
+            ? format.promptWithKeywords
+            : form === "tight"
+              ? format.promptWithDefaultTight
+              : form === "open"
+                ? format.promptWithDefaultOpen
+                : format.promptWithDefault,
+        {
+          head,
+          list: this.keywordList(keywords),
+          value: fallback ?? "",
+          tail: tail ?? "",
+        },
         {
           keywords: (chunks) => ({
             text: chunks.join(""),

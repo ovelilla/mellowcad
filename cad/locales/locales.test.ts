@@ -83,6 +83,17 @@ describe("the engine's catalogs", () => {
     const reference = new Map(messages(english))
     for (const tag of catalogTags().filter((tag) => tag !== "en")) {
       for (const [path, message] of messages(readCatalog(tag) as Tree)) {
+        // A tail is a language's own (English's prompts end at their list):
+        // it names a prompt English has, and takes no arguments.
+        const tail = /^commands\.promptTails\.(.+)$/.exec(path)
+        if (tail) {
+          expect(
+            reference.has(`commands.prompts.${tail[1]}`),
+            `${tag}: ${path} names no English prompt`
+          ).toBe(true)
+          expect(signature(parse(message)), `${tag}: ${path}`).toEqual([])
+          continue
+        }
         const source = reference.get(path)
         expect(source, `${tag}: ${path} is not an English key`).toBeDefined()
         expect(signature(parse(message)), `${tag}: ${path}`).toEqual(
@@ -259,11 +270,13 @@ describe("a command language of our own", () => {
   // A catalog that brings a command language brings all of it: a gap would
   // leave one command, keyword or prompt in English in the middle of Spanish.
   it("is complete or absent", () => {
+    // What a language writes after a prompt's list is its own: English has none.
+    const own = (path: string) => !path.startsWith("promptTails.")
     const reference = paths(english.commands as Tree)
     for (const tag of catalogTags().filter((tag) => tag !== "en")) {
       const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
       if (!commands) continue
-      expect(paths(commands).sort(), tag).toEqual(reference.sort())
+      expect(paths(commands).filter(own).sort(), tag).toEqual(reference.sort())
     }
   })
 

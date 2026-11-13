@@ -16,9 +16,10 @@ type Compiled<T> = T extends string
 
 /**
  * How a prompt writes its default: `<1>:`, against what precedes it
- * (`[Zdepth]<0,0,0>:`), or with no colon (`OK? <Y>`).
+ * (`[Zdepth]<0,0,0>:`), with no colon (`OK? <Y>`), or before the prompt's
+ * tail (German `[2Punkt/…] <8.0000> angeben:`; `promptTails`).
  */
-export type PromptForm = "spaced" | "tight" | "open"
+export type PromptForm = "spaced" | "tight" | "open" | "beforeTail"
 
 /**
  * How the history writes an answer after a prompt: past its colon's space
@@ -49,7 +50,12 @@ export type InterfaceCatalog = Omit<
 export type CommandCatalog = Compiled<
   Omit<
     Commands,
-    "names" | "keywords" | "promptKeywords" | "promptForms" | "answerForms"
+    | "names"
+    | "keywords"
+    | "promptKeywords"
+    | "promptForms"
+    | "answerForms"
+    | "promptTails"
   >
 > & {
   readonly names: { readonly [C in CommandName]: readonly string[] }
@@ -87,6 +93,14 @@ export type CommandCatalog = Compiled<
    */
   readonly answerForms: {
     readonly [P in keyof Commands["prompts"]]?: AnswerForm
+  }
+  /**
+   * What a language writes after a prompt's keyword list, before its default
+   * and colon: German puts the verb last (`Höhe oder [2Punkt] angeben <1>:`).
+   * A prompt left out ends at its list, as English's all do.
+   */
+  readonly promptTails: {
+    readonly [P in keyof Commands["prompts"]]?: CompiledMessage
   }
 }
 

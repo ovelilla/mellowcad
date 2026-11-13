@@ -260,8 +260,10 @@ export class BoxTool implements Tool {
       case "width":
         return width === null ? "boxWidth" : { id: "boxWidth", enter: width }
       case "height":
+        // German words the two apart: `Höhe angeben oder [2Punkt]:` but
+        // `Höhe oder [2Punkt] angeben <10.0000>:` (27565, 27566).
         return height === null
-          ? "boxHeightOr"
+          ? "boxHeightNoDefaultOr"
           : { id: "boxHeightOr", enter: height }
       case "twoFirst":
         return "specifyFirstPoint"

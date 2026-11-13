@@ -17,7 +17,8 @@ starts from `main` and from the table below; its work in progress is on the bran
 | --- | --- |
 | 0 | Done 13/11/2026: this plan; `runacc.sh`'s German banner |
 | 1 | Done 13/11/2026: registered as a `draft`; `docs/i18n/de.md` |
-| 3–4 | Next |
+| 3–4 | Done 13/11/2026: the engine's catalog whole, the desktop's words; `promptTails` |
+| 2 | Next |
 
 ## 0. Research (13/11/2026)
 

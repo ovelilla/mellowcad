@@ -1,6 +1,6 @@
 # Languages
 
-The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French and Italian, and a host can reword
+The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian and German, and a host can reword
 any of it or add a language of its own. A language is passed to the engine, never registered globally, so
 one page can run two engines in two languages.
 
@@ -21,6 +21,7 @@ As in AutoCAD's language packs, a language has two parts:
 | Brazilian Portuguese | `pt-BR` (`ptBR`) | Brazilian Portuguese AutoCAD's: `LINHA`, `DESLOCAMENTO`, `[Fechar/Desfazer]`              |
 | French               | `fr`             | French AutoCAD's: `LIGNE`, `DECALER`, `[Clore/annUler]`                                   |
 | Italian              | `it`             | Italian AutoCAD's: `LINEA`, `TAGLIA`, `[Chiudi/Annulla]`                                  |
+| German               | `de`             | German AutoCAD's: `LINIE`, `STUTZEN`, `[Schließen/Zurück]`                                |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as
@@ -115,6 +116,9 @@ word the engine says, and its type is the type of every other language.
 - **`answerForms`** says how the history writes an answer after a prompt, by the prompt's id:
   `spaced` (`[Multiple]: M`, any prompt left out) or `tight`, against the colon, where the
   language's prompt ends without a space: Brazilian Portuguese writes `[Múltiplo]:M`.
+- **`promptTails`** is what a prompt writes after its keyword list, by the prompt's id, before its
+  default and colon: German puts the verb last (`Höhe oder [2Punkt] angeben <10.0000>:`). A prompt
+  left out ends at its list, as every English one does.
 - A linetype's or hatch pattern's name is drawing data, the same in every language, and may be left
   out.
 

@@ -1519,7 +1519,8 @@
         "Front": "Frontal",
         "BAck": "Posterior",
         "Left": "Esquerdo",
-        "Right": "Direito"
+        "Right": "Direito",
+        "Bottom": "Inferior"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "Desfazer"
@@ -1532,7 +1533,9 @@
       },
       "specifyEndpointOfArcOr": {
         "Close": "Fechar",
-        "Arc": "Arco"
+        "Arc": "Arco",
+        "Undo": "Desfazer",
+        "Length": "Comprimento"
       },
       "plineNextPointOr": {
         "Line": "LInha"
@@ -1549,7 +1552,10 @@
       "peditOption": {
         "eXit": "SAir"
       },
-      "peditMultipleOption": { "eXit": "SAir" },
+      "peditMultipleOption": {
+        "eXit": "SAir",
+        "Width": "Largura"
+      },
       "peditOption3d": {
         "Join": "Unir",
         "eXit": "SAir"
@@ -1566,7 +1572,8 @@
         "Tangents": "Tangentes"
       },
       "enterVertexEditingOption": {
-        "X": "X"
+        "X": "X",
+        "Width": "Largura"
       },
       "specifyNewLocationOr": {
         "eXit": "Sair",
@@ -1575,6 +1582,27 @@
       "enterNewWeightOr": {
         "eXit": "Sair",
         "X": "S"
+      },
+      "selectSplineFitPolyline": {
+        "Undo": "Desfazer"
+      },
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": "Desfazer"
+      },
+      "selectObjectsOr": {
+        "mOde": "mOdo"
+      },
+      "selectEdgesOr": {
+        "mOde": "mOdo"
+      },
+      "selectFacesOr": {
+        "Undo": "Desfazer"
+      },
+      "removeFacesOr": {
+        "Undo": "Desfazer"
+      },
+      "leaderFormatOption": {
+        "None": "Nenhum"
       }
     },
     "prompts": {
@@ -1802,8 +1830,11 @@
       "boxLength": "Especificar comprimento",
       "boxWidth": "Especificar largura",
       "boxHeightOr": "Especificar altura ou",
+      "boxHeightNoDefaultOr": "Especificar altura ou",
       "pyramidCenterOr": "Especificar ponto central da base ou",
       "specifyBaseRadiusOr": "Especificar raio de base ou",
+      "pyramidInscribedRadiusOr": "Especificar raio de base ou",
+      "specifyBaseRadiusNoDefaultOr": "Especificar raio de base ou",
       "pyramidBaseRadiusOr": "Especificar raio base  ou",
       "solidHeightTopOr": "Especificar altura ou",
       "solidHeightOr": "Especificar altura ou",
@@ -1811,8 +1842,10 @@
       "specifyTopRadius": "Especificar raio superior",
       "sphereCenterOr": "Especificar ponto central ou",
       "specifyRadiusOr": "Especificar raio ou",
+      "specifyRadiusNoDefaultOr": "Especificar raio ou",
       "torusDiameter": "Especificar o diâmetro do toroide",
       "tubeRadiusOr": "Especificar raio ou",
+      "tubeRadiusNoDefaultOr": "Especificar raio ou",
       "tubeDiameter": "Especificar diâmetro",
       "roundBaseCenterOr": "Especificar centro do ponto base ou",
       "specifyDiameter": "Especificar diâmetro",
@@ -2209,7 +2242,8 @@
       "ucsZdepth": "spaced",
       "undoEverything": "open",
       "viewOrthographic": "spaced",
-      "sliceStartOr": "open"
+      "sliceStartOr": "open",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2255,6 +2289,9 @@
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "promptWithDefaultTight": "{head} <keywords>[{list}]</keywords>'<'{value}>:",
       "promptWithDefaultOpen": "{head} <keywords>[{list}]</keywords> '<'{value}>",
+      "promptWithKeywordsTail": "{head} <keywords>[{list}]</keywords> {tail}:",
+      "promptWithDefaultTail": "{head} <keywords>[{list}]</keywords> {tail} '<'{value}>:",
+      "promptWithDefaultBeforeTail": "{head} <keywords>[{list}]</keywords> '<'{value}> {tail}:",
       "keywordSeparator": "/",
       "keywordOr": " ou ",
       "optionValue": "{keyword}: {value}",

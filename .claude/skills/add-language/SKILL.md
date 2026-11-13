@@ -125,8 +125,12 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    (`promptForms`, `promptKeywordLabels`): read each table string's `]<`. So is a prompt
    that ends without its space, the answer written against the colon (`answerForms`): grep
    the traced transcripts' `"Message"` for a `:"` end, in both languages (pt-BR's PEDIT,
-   MREDO, ARRAYPATH; a table `%s` string can lose the space the console has). MATCHPROP's words come
-   from its console once `acmatch.crx` is loaded.
+   MREDO, ARRAYPATH; a table `%s` string can lose the space the console has). So is text after
+   the list (German's verb, `promptTails`, the default before it `beforeTail`): grep the
+   transcripts for `] word:`; where it moves with the default (German QUADER), the prompt
+   asked without one needs an id of its own. MATCHPROP's words come
+   from its console once `acmatch.crx` is loaded; `getcname` names a command the `acad.pgp` misleads
+   about (German `MA` is MVIEW's).
    **What AutoCAD composes is in no table and no transcript**: the drafting toggles' lines (F3,
    F7, F8, F9, F10, F11 and Ctrl+W, each twice at the Command prompt) and the readouts drawn by
    the cursor (Polar's, along Z too). The language's desktop settles them in the same session

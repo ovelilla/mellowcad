@@ -1499,7 +1499,8 @@ export const en: EngineCatalog = {
         "Front": "Front",
         "BAck": "BAck",
         "Left": "Left",
-        "Right": "Right"
+        "Right": "Right",
+        "Bottom": "Bottom"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "Undo"
@@ -1512,7 +1513,9 @@ export const en: EngineCatalog = {
       },
       "specifyEndpointOfArcOr": {
         "Close": "CLose",
-        "Arc": "ARc"
+        "Arc": "ARc",
+        "Undo": "Undo",
+        "Length": "Length"
       },
       "plineNextPointOr": {
         "Line": "LIne"
@@ -1530,7 +1533,8 @@ export const en: EngineCatalog = {
         "eXit": "EXit"
       },
       "peditMultipleOption": {
-        "eXit": "EXit"
+        "eXit": "EXit",
+        "Width": "Width"
       },
       "peditOption3d": {
         "Join": "Join",
@@ -1548,7 +1552,8 @@ export const en: EngineCatalog = {
         "Tangents": "Tangents"
       },
       "enterVertexEditingOption": {
-        "X": "X"
+        "X": "X",
+        "Width": "Width"
       },
       "specifyNewLocationOr": {
         "eXit": "EXit",
@@ -1557,6 +1562,27 @@ export const en: EngineCatalog = {
       "enterNewWeightOr": {
         "eXit": "EXit",
         "X": "X"
+      },
+      "selectSplineFitPolyline": {
+        "Undo": "Undo"
+      },
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": "Undo"
+      },
+      "selectObjectsOr": {
+        "mOde": "mOde"
+      },
+      "selectEdgesOr": {
+        "mOde": "mOde"
+      },
+      "selectFacesOr": {
+        "Undo": "Undo"
+      },
+      "removeFacesOr": {
+        "Undo": "Undo"
+      },
+      "leaderFormatOption": {
+        "None": "None"
       }
     },
     "prompts": {
@@ -1823,8 +1849,11 @@ export const en: EngineCatalog = {
       "boxLength": "Specify length",
       "boxWidth": "Specify width",
       "boxHeightOr": "Specify height or",
+      "boxHeightNoDefaultOr": "Specify height or",
       "pyramidCenterOr": "Specify center point of base or",
       "specifyBaseRadiusOr": "Specify base radius or",
+      "pyramidInscribedRadiusOr": "Specify base radius or",
+      "specifyBaseRadiusNoDefaultOr": "Specify base radius or",
       "pyramidBaseRadiusOr": "Specify base radius or",
       "solidHeightTopOr": "Specify height or",
       "solidHeightOr": "Specify height or",
@@ -1832,8 +1861,10 @@ export const en: EngineCatalog = {
       "specifyTopRadius": "Specify top radius",
       "sphereCenterOr": "Specify center point or",
       "specifyRadiusOr": "Specify radius or",
+      "specifyRadiusNoDefaultOr": "Specify radius or",
       "torusDiameter": "Specify diameter of torus",
       "tubeRadiusOr": "Specify tube radius or",
+      "tubeRadiusNoDefaultOr": "Specify tube radius or",
       "tubeDiameter": "Specify tube diameter",
       "roundBaseCenterOr": "Specify center point of base or",
       "specifyDiameter": "Specify diameter",
@@ -2241,7 +2272,8 @@ export const en: EngineCatalog = {
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight",
-      "sliceStartOr": "spaced"
+      "sliceStartOr": "spaced",
+      "solidHeightTopOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2271,6 +2303,7 @@ export const en: EngineCatalog = {
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
     },
+    "promptTails": {},
     "format": {
       "idle": "Command",
       "commandPrompt": [
@@ -2432,6 +2465,71 @@ export const en: EngineCatalog = {
           "value"
         ],
         ">"
+      ],
+      "promptWithKeywordsTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        ":"
+      ],
+      "promptWithDefaultTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " ",
+        [
+          "tail"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultBeforeTail": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        "> ",
+        [
+          "tail"
+        ],
+        ":"
       ],
       "keywordSeparator": "/",
       "keywordOr": " or ",

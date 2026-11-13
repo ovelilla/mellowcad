@@ -958,7 +958,10 @@ export class CadRuntime extends Observable {
                 (keyword) =>
                   this.text.keywordLabel(command, keyword, id) ??
                   this.text.keyword(command, keyword, id)
-              )
+              ),
+              null,
+              "spaced",
+              this.text.promptTail(id)
             )
           )
         },

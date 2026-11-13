@@ -117,6 +117,108 @@ holds ß.
   oder [Durch punkt]` at 21215, `Versatzentfernung bestimmen oder […]` at 5406.
 - `propose-commands.mjs --lang de` (13/11/2026): 1,435 proposed, 221 `several`, 144 `partial`, 40
   `plural`, 8 `select`, 512 `no-source` (Italian's: 1,393, 213, 139, 39, 8, 497).
+- **The verb after the list.** German writes some prompts `Höhe oder [2Punkt] angeben <5.0000>:`:
+  what follows the list is `commands.promptTails` (TEXT's points, TEXTBEARB's
+  `Beschriftungs-Objekt oder [Zurück/Modus] wählen:`, the solids' base and height prompts), and
+  where the default comes before it (`[2Punkt/Achsenendpunkt/Oberen radius] <8.0000> angeben:`,
+  KEGEL's and ZYLINDER's height with a top radius, 25220) its `promptForms` entry is
+  `beforeTail`. With no default, QUADER's height, KUGEL's and TORUS' radius, the tube's and a
+  cylinder's base put the verb first (`Höhe angeben oder [2Punkt]:`, 27565 against 27566):
+  those prompts have ids of their own (`boxHeightNoDefaultOr` and the like), as PYRAMIDE's
+  inscribed radius (`pyramidInscribedRadiusOr`, `Basisradius oder [Umkreis] angeben`). TEXT's
+  points take two spaces before `oder` and `angeben` (`Startpunkt des Texts  oder [posItion/Stil]
+angeben:`), copied.
+
+## Interface terms
+
+From the installed pack by id against `en-US/` (`propose-interface.mjs --lang de --like it`,
+13/11/2026), as Italian's: `P <dll> <id>` a string table, `D <dll> <dialog>:<control>` a dialog's
+label, `N <assembly> <key>` a .NET resource, `X <uid>` an element of
+`UserDataCache/de-de/Support/acad.CUIX`. The engine's `interface`: 230 settled by one wording or
+as Italian's ids, 151 by the row's place (a palette row takes `ax26res`'s word, abbreviated
+where it is: `Hilfslinie verläng`, `Textpos vert`, `Bem-Faktor global`; a tool the ribbon's), the
+rest ours, below. Changed from the proposal: `Gedreht` for a rotated dimension (the proposal's
+`DREHEN` is a keyword), `Zoom`, `Systemvariablen`, `Scheitelpunkte` (ax26res 553).
+
+| Area | English | German | Source | Verified |
+| --- | --- | --- | --- | --- |
+| Tools | Diameter circle, 2-Point circle, 3-Point circle; Start, Center, End arc; Center ellipse | Kreis Mittelpunkt, Durchmesser; Kreis 2 Punkte; Kreis 3 Punkte; Bogen Startpunkt, Mittelpunkt, Endpunkt; Ellipse Zentrum | ours, written out from the ribbon's abbreviations (`Mittel, Durchm`, `Startp, Mittelp, Endp`) | — |
+|  | Array | Reihe | the ribbon, seen on the desktop (Start tab, Ändern) | yes |
+|  | Change properties, Pan by points, Multiple redo, Linetype scale, Elevation | Eigenschaften ändern, Pan nach Punkten, Mehrfach wiederherstellen, Linientypfaktor, Erhebung | ours, from the neighbouring tables' words | — |
+| Descriptions | The tools' descriptions | «Macht den letzten Vorgang rückgängig»… | ours, in the style of the cuix tooltips | — |
+| Palette | Normal X, Major axis vector X, Text alignment X, First X, Definition points (our own rows); Weight | Normale X, Hauptachsenvektor X, Textausrichtung X, Erstes X, Definitionspunkte; Gewicht | ours, worded from the palette's; ax26res 1255 says `Stärke` | — |
+| Objects | Plural entity names; the 2D solid | Linie/Linien, Bogen/Bögen…; Körper | the tables' singulars, plurals ours; `Körper` the Properties palette's (names/d06) | the solid |
+| ViewCube | The cube's faces, the compass, the UCS menu | OBEN, UNTEN, VORNE, HINTEN, LINKS, RECHTS; N, O, S, W; `WKS`, `Neues BKS`, `Unbenannt` | the desktop (names/d05) | yes |
+
+## The command language, how it was set
+
+- **The console**, the 425 of the 446 probes `console-pair.mjs --lang de --select` picked that
+  run in de-DE (the rest are English-only), on 13/11/2026: 512 keys match the tables, 320 differ
+  and take the console's wording, 171 are worded more than one way, 76 unpaired, 290 unseen.
+  The messages were rebuilt as ICU with English's arguments; three agents (one brief, each output
+  checked against the parser and English's arguments) settled the rest.
+- **Names** by `getcname` (`U` is `Z`, UNDO `ZURÜCK`, LEADER `FÜHRUNG`, MATCHPROP `EIGANPASS`, and
+  the `acad.pgp`'s `MA` is MVIEW's `MANSFEN`), the `acad.pgp`'s targets and the DEU help's titles
+  for what the console loads on demand (`RECHTECK`, `REIHERECHTECK`, `REIHEKREIS`, `ANPUNKTBRECH`,
+  `BLOCKPALETTE`, `BEREINIG`, `EIGENSCHAFTEN`, `AUSSCHNT`, `EINHEIT`, `PTYP`, `VON`). An alias
+  that is another command's name is dropped (`DXFIN` of ÖFFNEN, `DXFOUT` of SICHALS). Our own
+  commands take the base name and the ribbon's initials, as Italian's: `KREISD`, `KREIS2P`,
+  `KREIS3P`, `BOGENSME`, `BOGENMSE`, `ELLIPSEM`, `ELLIPSEBOGEN`.
+- **Probes of our own** (`scripts/research/probes/names/`, `.de.txt`): -OFANG's words (p07, p33:
+  `END`, `MIT`, `ZEN`, `QUA`, `SCH`, `BAS`, `LOT`, `TAN`, `NÄC` Nearest, `ANG` Apparent, `HIL`
+  Extension, `PAR`, `PUN` Node, `GZE`, `KEI` none; listed as `End,Zen,Schn,Hil`; **`OFF` is
+  refused**, `Ungültige Objektfang-Modi.`, so German has no OFF word), single letters refused at a
+  point prompt with `Ungültiger Punkt.` (p09), VON (p03: `Basispunkt:`, `<Abstand>:`), a typed
+  snap's echo (p31: `von` after END and MIT, `nach` after LOT and TAN; not found: «Kein Endpunkt
+  für den spezifizierten Punkt gefunden.», and TAN's «Kein für den spezifizierten Punkt
+  gefunden.» without its name, copied).
+- **The tables**, `propose-commands.mjs`, where no probe shows a key.
+
+### Per command
+
+What German words per prompt where English words alike got `promptKeywords` slots of its own,
+filled in every language with the words it already used: PLINE's and DIST's arc endpoint
+(`ZUrück`, `sehnenLänge`), SPLINE's fit polyline and SPLINEDIT's join (`ZUrück`), PEDIT's multiple
+and vertex Width (`BReite`, `BREite`), TRIM's and EXTEND's object and edge prompts (`MOdus`),
+SOLIDEDIT's faces (`ZUrück`), LEADER's format None (`Keine`, `KEine` at its annotation) and UCS's
+orthographic Bottom (`Unten`). Where one id still serves two wordings, one command's stands:
+
+- `valueMustBeNonzero`: `Wert muss ungleich Null sein.` (REIHERECHTECK, -EINFÜGE, PLINIE), where
+  QUADER and KEIL print `Wert darf nicht null sein.`.
+- `specifyEndpointOfLineOr`: `Endpunkt der Linie angeben oder`, where 3DPOLY with Close on offer
+  prints `eingeben`.
+- EXTRUSION's path prompt declares its Taper `verJüngung`: it has no prompt id here yet.
+- `PLINE.Radius`, `REVOLVE.STart` and LEADER's None are worded two ways at one prompt
+  (`RAdius`/`Radius`, `STartwinkel`/`Startwinkel`): the first stands.
+- **Copied as German prints them**: `1Region ignoriert.`, `gestutzer Bereich`, and TAN's not
+  found without its name.
+
+### The desktop
+
+The drafting toggles are composed by AutoCAD and in no table, so the German desktop settled them
+(names/d01, 13/11/2026, `/language de-DE`): `<Fang ein>` (F9), `<Ofang ein>` (F3), `<Ortho ein>`,
+`<Polar ein>`, `<Objektfangspur ein>` (F11) and `<Raster ein>`, each with `aus`; Selection
+Cycling words its two lines apart, `<Wechselnde Auswahl ein>` and `<Auswahl wechseln aus>`. Held
+by `germanPrompts.test.ts`. Polar along Z writes `Polar: 6.6533 < +Z` and `Polar: 6.5589 < -Z`
+(LINIE from 0,0,0 in ISO-Ansicht SW, names/d02), `feedback.polarZ`'s form. The ViewCube's faces
+OBEN, UNTEN, VORNE, HINTEN, LINKS, RECHTS, the compass N, O, S, W, the UCS menu `WKS`, `Neues
+BKS` and `Unbenannt` (names/d05); a SOLID is `Körper` in the Properties palette (names/d06).
+
+### Unverified
+
+No probe shows these; each is worded from its neighbours and stays so until one does:
+
+- **The unused readout** `feedback.measure*`, as in the other languages.
+- **Ours in every language**: the file, DXF and clipboard messages, the history's steps for what
+  the chrome does, VON's own messages (`fromNeedsPoint`), our own commands' names.
+- **Not probed**: `format.polar` (`Abst'<'Winkel`), `splineDegree`, `firstDistance`,
+  `secondDistance`, `selectABlock`, `selectBlockReference`, three prompt forms; LIST's lines for
+  cones, tori, boxes and 3D lines, the mass properties of a region, the `?` listings' descriptions
+  of hatch patterns and dimension variables; which of `noValidFillet` and `noValidCurveFillet`
+  each fillet prints.
+
+The list by key is the session's, outside git, and `germanPrompts.test.ts` holds what the console
+printed.
 
 ## Script and font
 

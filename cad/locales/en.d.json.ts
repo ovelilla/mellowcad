@@ -1560,6 +1560,7 @@ declare const source: {
         "BAck": string
         "Left": string
         "Right": string
+        "Bottom": string
       }
       "specifyEndpointOfLineOr": {
         "Undo": string
@@ -1573,6 +1574,8 @@ declare const source: {
       "specifyEndpointOfArcOr": {
         "Close": string
         "Arc": string
+        "Undo": string
+        "Length": string
       }
       "plineNextPointOr": {
         "Line": string
@@ -1591,6 +1594,7 @@ declare const source: {
       }
       "peditMultipleOption": {
         "eXit": string
+        "Width": string
       }
       "peditOption3d": {
         "Join": string
@@ -1609,6 +1613,7 @@ declare const source: {
       }
       "enterVertexEditingOption": {
         "X": string
+        "Width": string
       }
       "specifyNewLocationOr": {
         "eXit": string
@@ -1617,6 +1622,27 @@ declare const source: {
       "enterNewWeightOr": {
         "eXit": string
         "X": string
+      }
+      "selectSplineFitPolyline": {
+        "Undo": string
+      }
+      "selectOpenCurvesToJoinToSource": {
+        "Undo": string
+      }
+      "selectObjectsOr": {
+        "mOde": string
+      }
+      "selectEdgesOr": {
+        "mOde": string
+      }
+      "selectFacesOr": {
+        "Undo": string
+      }
+      "removeFacesOr": {
+        "Undo": string
+      }
+      "leaderFormatOption": {
+        "None": string
       }
     }
     "prompts": {
@@ -1844,8 +1870,11 @@ declare const source: {
       "boxLength": string
       "boxWidth": string
       "boxHeightOr": string
+      "boxHeightNoDefaultOr": string
       "pyramidCenterOr": string
       "specifyBaseRadiusOr": string
+      "pyramidInscribedRadiusOr": string
+      "specifyBaseRadiusNoDefaultOr": string
       "pyramidBaseRadiusOr": string
       "solidHeightTopOr": string
       "solidHeightOr": string
@@ -1853,8 +1882,10 @@ declare const source: {
       "specifyTopRadius": string
       "sphereCenterOr": string
       "specifyRadiusOr": string
+      "specifyRadiusNoDefaultOr": string
       "torusDiameter": string
       "tubeRadiusOr": string
+      "tubeRadiusNoDefaultOr": string
       "tubeDiameter": string
       "roundBaseCenterOr": string
       "specifyDiameter": string
@@ -2252,6 +2283,7 @@ declare const source: {
       "undoEverything": string
       "viewOrthographic": string
       "sliceStartOr": string
+      "solidHeightTopOr": string
     }
     "answerForms": {
       "dimStyleRedefine": string
@@ -2281,6 +2313,7 @@ declare const source: {
       "selectArcCircleLineOrVertex": string
       "enterThirdCvPointOr": string
     }
+    "promptTails": Record<string, never>
     "format": {
       "idle": string
       "commandPrompt": string
@@ -2297,6 +2330,9 @@ declare const source: {
       "promptWithDefault": string
       "promptWithDefaultTight": string
       "promptWithDefaultOpen": string
+      "promptWithKeywordsTail": string
+      "promptWithDefaultTail": string
+      "promptWithDefaultBeforeTail": string
       "keywordSeparator": string
       "keywordOr": string
       "optionValue": string

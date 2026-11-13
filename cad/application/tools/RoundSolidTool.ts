@@ -307,18 +307,27 @@ export class RoundSolidTool implements Tool {
     switch (state.phase) {
       case "center":
         return this.round ? "roundBaseCenterOr" : "sphereCenterOr"
+      // German puts the verb first with no default and last with one
+      // (`Radius angeben oder [Durchmesser]:`, `Radius oder [Durchmesser]
+      // angeben <5.0000>:`; 25184, 25183), so each has an id of its own.
       case "radius":
-        return sized(
-          this.round ? "specifyBaseRadiusOr" : "specifyRadiusOr",
-          radius
-        )
+        return radius === null
+          ? this.round
+            ? "specifyBaseRadiusNoDefaultOr"
+            : "specifyRadiusNoDefaultOr"
+          : {
+              id: this.round ? "specifyBaseRadiusOr" : "specifyRadiusOr",
+              enter: radius,
+            }
       case "diameter":
         return sized(
           this.kind === "torus" ? "torusDiameter" : "specifyDiameter",
           twice(radius)
         )
       case "tube":
-        return sized("tubeRadiusOr", tubeRadius)
+        return tubeRadius === null
+          ? "tubeRadiusNoDefaultOr"
+          : { id: "tubeRadiusOr", enter: tubeRadius }
       case "tubeDiameter":
         // Before any tube, `<0.0000>` once a diameter was given (r08).
         return sized(

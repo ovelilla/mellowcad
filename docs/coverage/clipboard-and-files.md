@@ -1,6 +1,6 @@
 # Clipboard and files
 
-### `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP` · pt-BR `COPIACORTE` / `RECORTAT` / `COPIABASE` / `COLARAT` · fr `COPIERPRESS` / `COUPERPRESS` / `COPIERBASE` / `COLLERPRESS` · it `COPIACLIP` / `TAGLIACLIP` / `COPIAPUNTOB` / `INCOLLACLIP`
+### `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP` · pt-BR `COPIACORTE` / `RECORTAT` / `COPIABASE` / `COLARAT` · fr `COPIERPRESS` / `COUPERPRESS` / `COPIERBASE` / `COLLERPRESS` · it `COPIACLIP` / `TAGLIACLIP` / `COPIAPUNTOB` / `INCOLLACLIP` · de `COPYCLIP` / `AUSSCHNEIDEN` / `KOPIEBASISP` / `CLIPEINFÜG`
 
 **Implemented:** all four plus select-all; COPYBASE's `Specify base point:` refuses Enter and what
 is no point with `Invalid point.` and asks again (clipboard/p106, p107); COPYCLIP and COPYBASE keep
@@ -43,7 +43,7 @@ text pasted as MTEXT, listening to the native `paste` event; PASTECLIP's hidden 
 its point (Scale, PScale, Rotate, PRotate, Basepoint, Explode, REpeat: desktop d02's trace), so no
 scaled, turned or exploded paste
 
-### `NEW` / `QNEW` · es `NUEVO` / `RNUEVO` · pt-BR `NOVO` / `NOVOR` · fr `NOUVEAU` / `RAPNOUV` · it `NUOVO` / `CNUOVO`
+### `NEW` / `QNEW` · es `NUEVO` / `RNUEVO` · pt-BR `NOVO` / `NOVOR` · fr `NOUVEAU` / `RAPNOUV` · it `NUOVO` / `CNUOVO` · de `NEU` / `SNEU`
 
 **Implemented:** the application menu's New runs NEW and the Quick Access Toolbar's QNEW, as
 acad.cuix's `^C^C` macros: the running command cancelled, `_NEW` and `_qnew` echoed, a group U
@@ -61,7 +61,7 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF` · it `SALVAVEL` / `SALVACOME` / `SALVA` / `SALVAURL` / `APRI` / `APRIURL`
+### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE` · pt-BR `SALVARR` / `SALVARCOMO` / `SALVAR` / `SALVARURL` / `ABRIR` / `ABRIRURL` / `OPENURL` · fr `SAUVERAP` / `SAUVENOM` / `SAUVEGRD` / `SAUVEURL` / `OUVRIR` / `OUVRIRURL` / `CHRGDXF` · it `SALVAVEL` / `SALVACOME` / `SALVA` / `SALVAURL` / `APRI` / `APRIURL` · de `KSICH` / `SICHALS` / `SICHERN` / `URLSPEICHERN` / `ÖFFNEN` / `URLÖFFNEN`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
@@ -98,7 +98,7 @@ asks and writes a copy, p215), the `Save drawing as` and SAVEAS's format prompts
 the DWG types and DWG Options, drag-and-drop open, unsaved-changes prompt, the drawing's name
 (SAVEAS to a DXF names the drawing after it, x018) and the file tab's unsaved asterisk
 
-### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF` · fr `CHARGDXF` · it `DXFIN`
+### `DXFIN` and OPEN of a DXF · es `CARGADXF` · pt-BR `IMPDXF` · fr `CHARGDXF` · it `DXFIN` · de `DXFIN`
 
 **Implemented:** OPEN's picker, AutoCAD's Select File, offers drawings and DXF, DXFIN's DXF alone
 (desktop: its Select File opens on «DXF (*.dxf)»; with FILEDIA 0 both ask `Enter name of drawing
@@ -168,7 +168,7 @@ prompt. **Unverified:** a hatch's clockwise arc edge (73 = 0), read as measured 
 (AutoCAD wrote f006's clockwise island as a polyline loop), and an elliptical edge's angles, read
 as the ellipse's parameters
 
-### `DXFOUT` and SAVEAS of a DXF · es `SALVADXF` · pt-BR `EXPDXF` · fr `SAUVEDXF` · it `DXFOUT`
+### `DXFOUT` and SAVEAS of a DXF · es `SALVADXF` · pt-BR `EXPDXF` · fr `SAUVEDXF` · it `DXFOUT` · de `DXFOUT`
 
 **Implemented:** DXFOUT's Save Drawing As, SAVEAS's and SAVE's, on «AutoCAD 2018 DXF (*.dxf)»
 (desktop dxf/d01), and their DXF types: 2018, 2013, 2010, 2007, 2004 and 2000, each its

@@ -1,6 +1,6 @@
 # Modify
 
-### `MOVE` / `M` · es `DESPLAZA` / `D` · pt-BR `MOVER` / `M` · fr `DEPLACER` / `DP` · it `SPOSTA` / `S`
+### `MOVE` / `M` · es `DESPLAZA` / `D` · pt-BR `MOVER` / `M` · fr `DEPLACER` / `DP` · it `SPOSTA` / `S` · de `SCHIEBEN` / `S`
 
 **Implemented:** `Select objects:` (es `Designe objetos:`), each pick writing what it found on that
 line — `1 found`, `1 found (1 duplicate), 2 total`, a window's `Specify opposite corner: 3 found`,
@@ -33,7 +33,7 @@ wear the reference's, where AutoCAD drags the set as itself (d01); what the desk
 draws at `Specify displacement` (no line from the origin here) and what a number does after `<a`
 there are **unverified** (the console ignores it, p139)
 
-### `COPY` / `CO` · es `COPIA` / `CP` / `DUP` · pt-BR `COPIAR` / `CO` / `CP` · fr `COPIER` / `CP` · it `COPIA` / `CP`
+### `COPY` / `CO` · es `COPIA` / `CP` / `DUP` · pt-BR `COPIAR` / `CO` / `CP` · fr `COPIER` / `CP` · it `COPIA` / `CP` · de `KOPIEREN` / `KO` / `CP`
 
 **Implemented:** MOVE's selection and base point, then `Current settings:  Copy mode = Multiple` (es
 `Parámetros actuales:  modo de copia = Múltiple`),
@@ -57,7 +57,7 @@ Array (so the second point's `[Array]` is not offered; the first form still refu
 with Array's keyword's `Point or option keyword required.`, es `Se requiere un punto o una
 opción.`, where MOVE's says `Invalid point.`, p154–p158)
 
-### `ROTATE` / `RO` · es `GIRA` / `GI` · pt-BR `ROTAC` / `RO` · fr `ROTATION` / `RI` · it `RUOTA` / `RU`
+### `ROTATE` / `RO` · es `GIRA` / `GI` · pt-BR `ROTAC` / `RO` · fr `ROTATION` / `RI` · it `RUOTA` / `RU` · de `DREHEN` / `DH`
 
 **Implemented:** `Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0` (es
 `Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0`), `Select objects:`
@@ -92,7 +92,7 @@ Spanish `acad.pgp` (p101)
 **Missing:** Enter at Points' points ends ROTATE unturned, **unverified** (SCALE's console reads
 its cursor there); the drag's ghost as MOVE's (each object's colour only)
 
-### `SCALE` / `SC` · es `ESCALA` / `ES` · pt-BR `ESCALA` / `ES` · fr `ECHELLE` / `EH` · it `SCALA` / `SS`
+### `SCALE` / `SC` · es `ESCALA` / `ES` · pt-BR `ESCALA` / `ES` · fr `ECHELLE` / `EH` · it `SCALA` / `SS` · de `VARIA` / `V`
 
 **Implemented:** `Select objects:`, `Specify base point:`,
 `Specify scale factor or [Copy/Reference]:` — a number is the factor; a point, picked or typed
@@ -129,7 +129,7 @@ says `Extremely small scale factor ignored.` (es `Factor de escala demasiado peq
 table 21197, p170): the threshold and what follows are **unverified** (the console read its cursor
 after it); the drag's ghost as MOVE's (each object's colour only)
 
-### `MIRROR` / `MI` · es `SIMETRIA` / `SI` · pt-BR `ESPELHAR` / `ESP` · fr `MIROIR` / `MI` · it `SPECCHIO` / `SP`
+### `MIRROR` / `MI` · es `SIMETRIA` / `SI` · pt-BR `ESPELHAR` / `ESP` · fr `MIROIR` / `MI` · it `SPECCHIO` / `SP` · de `SPIEGELN` / `SP`
 
 **Implemented:** `Select objects:`, `Specify first point of mirror line:`,
 `Specify second point of mirror line:`, `Erase source objects? [Yes/No] <No>:` (es
@@ -170,7 +170,7 @@ where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p3
 three quarters, Area 3570.243), differ. WHY not built: an ellipse turned to −Z no longer reads in
 plan here, so TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH and its grips would refuse it (ELLIPSE-D43)
 
-### `ARRAY` / `AR` · es `MATRIZ` / `MA` · pt-BR `MATRIZ` / `MA` · fr `RESEAU` / `RE` · it `SERIE` / `SR`
+### `ARRAY` / `AR` · es `MATRIZ` / `MA` · pt-BR `MATRIZ` / `MA` · fr `RESEAU` / `RE` · it `SERIE` / `SR` · de `REIHE` / `RH`
 
 **Implemented:** `Select objects:` (MOVE's counts, a preselection counted), then
 `Enter array type [Rectangular/PAth/POlar] <Rectangular>:` (es
@@ -184,7 +184,7 @@ run stays ARRAY's: one undo step, which U names ARRAY, ARRAY heading the prompts
 **Missing:** ARRAYTYPE as the default (AutoCAD's is 0, Rectangular, p00; whether ARRAY sets it to
 the last type chosen: **unverified**, so `<Rectangular>` always)
 
-### `ARRAYRECT` · es `MATRIZRECTANG` · pt-BR `MATRIZRETANG` · fr `RESEAURECT` · it `SERIERETTANG`
+### `ARRAYRECT` · es `MATRIZRECTANG` · pt-BR `MATRIZRETANG` · fr `RESEAURECT` · it `SERIERETTANG` · de `REIHERECHTECK`
 
 **Implemented:** `Select objects:` (MOVE's counts; ARRAY's set),
 `Type = Rectangular  Associative = Yes` (es `Tipo = Rectangular  Asociativa = Sí`, arrays/p01,
@@ -374,7 +374,7 @@ functions — `sqrt(16)`, `max(2,5)`, `SQRT(9)` — refusing `FOO` with
 `The syntax is incorrect or a variable is not defined.  Reenter the expression or value.` and a
 fraction with `Requires an integer between 1 an 32767, or option keyword.`)
 
-### `ARRAYPOLAR` · es `MATRIZPOLAR` · pt-BR `MATRIZPOLAR` · fr `RESEAUPOLAIRE` · it `SERIEPOLARE`
+### `ARRAYPOLAR` · es `MATRIZPOLAR` · pt-BR `MATRIZPOLAR` · fr `RESEAUPOLAIRE` · it `SERIEPOLARE` · de `REIHEKREIS`
 
 **Implemented:** `Select objects:` (MOVE's counts; ARRAY's set), `Type = Polar  Associative = Yes`
 (es `Tipo = Polar  Asociativa = Sí`, p02; `No` as ARRAYRECT's), `Specify center point of array:` (es
@@ -434,7 +434,7 @@ as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; t
 (`Adjust angle between to fit items to 360 degrees?`, table 5669), which the console never asks
 (p267): whether the desktop does is **unverified**
 
-### `ARRAYPATH` · es `MATRIZCAMINO` · pt-BR `MATRIZCAMINHO` · fr `TRAJECTOIRERESEAU` · it `SERIETRAIETT`
+### `ARRAYPATH` · es `MATRIZCAMINO` · pt-BR `MATRIZCAMINHO` · fr `TRAJECTOIRERESEAU` · it `SERIETRAIETT` · de `REIHEPFAD`
 
 **Implemented:** `Select objects:` (or ARRAY's set), `Type = Path  Associative = Yes` (es
 `Tipo = Ruta  Asociativa = Sí`, p03; `No` as ARRAYRECT's), `Select path curve:` (es `Seleccione la curva de trayectoria`): a
@@ -515,7 +515,7 @@ hidden clicK (an integer asked with no prompt, `Requires a positive nonzero inte
 `Requiere un nº entero positivo que no sea cero.`, p323) and UPdate (the main prompt asked again,
 p324); Expression (as ARRAYRECT's) and the `[Expression]` the value prompts list; a 3D polyline as the path, filtered out here
 
-### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL` · pt-BR `APARAR` / `AP` / `ESTENDER` / `EST` · fr `AJUSTER` / `AJ` / `PROLONGER` / `PR` / `PROLONGE` · it `TAGLIA` / `TA` / `ESTENDI` / `ES`
+### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL` · pt-BR `APARAR` / `AP` / `ESTENDER` / `EST` · fr `AJUSTER` / `AJ` / `PROLONGER` / `PR` / `PROLONGE` · it `TAGLIA` / `TA` / `ESTENDI` / `ES` · de `STUTZEN` / `SU` / `DEHNEN` / `DE`
 
 **Implemented:** `Current settings: Projection=UCS, Edge=None, Mode=Quick` (es
 `Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido`; `Mode=Standard`, es
@@ -751,7 +751,7 @@ polyline (a line's does not, p261; here theirs does); the circle-and-slash over 
 refuses (only TRIM's refusals were seen), the look of EXTEND's fence or window running (here its
 hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does)
 
-### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ` · pt-BR `DESLOCAMENTO` · fr `DECALER` / `DC` · it `OFFSET` / `OF`
+### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ` · pt-BR `DESLOCAMENTO` · fr `DECALER` / `DC` · it `OFFSET` / `OF` · de `VERSETZ` / `VS`
 
 **Implemented:** `Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0` (es
 `Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0`), then
@@ -861,7 +861,7 @@ polyline of more than two vertices on one straight line (refused as p192); a thr
 arc's circle outside its span (refused as p209); an open polyline the offset pinches apart (its
 pieces stitched as a closed one's, a piece doubled by two collinear offsets left out)
 
-### `FILLET` / `F` · es `EMPALME` / `MP` · pt-BR `CONCORD` / `CNC` · fr `RACCORD` / `RD` · it `RACCORDO` / `RA`
+### `FILLET` / `F` · es `EMPALME` / `MP` · pt-BR `CONCORD` / `CNC` · fr `RACCORD` / `RD` · it `RACCORDO` / `RA` · de `ABRUNDEN` / `AR`
 
 **Implemented:** `Current settings: Mode = TRIM, Radius = 0.0000` (es
 `Parámetros actuales: Modo = Recortar, Radio = 0.0000`),
@@ -1080,7 +1080,7 @@ finds stands picked at its angle 0 or at 180° (here 180°, which p303–p305 ma
 settles only that it is one of them), two closed ellipses at radius 0 (not taken), the arc–arc rule beyond p219, p322 and p362–p365, and an open polyline's
 first and last of three that cross along the first segment itself (one apart here)
 
-### `CHAMFER` / `CHA` · es `CHAFLAN` / `CH` · pt-BR `CHANFRO` / `CHA` · fr `CHANFREIN` / `CF` · it `CIMA` / `CM`
+### `CHAMFER` / `CHA` · es `CHAFLAN` / `CH` · pt-BR `CHANFRO` / `CHA` · fr `CHANFREIN` / `CF` · it `CIMA` / `CM` · de `FASE` / `FA`
 
 **Implemented:** `(TRIM mode) Current chamfer Dist1 = 0.0000, Dist2 = 0.0000` (es
 `(Modo Recortar) Primera distancia de chaflán actual  = 0.0000, Segunda distancia = 0.0000`,
@@ -1163,7 +1163,7 @@ refusal's words at the cursor, the padlock and the locked layers' fade, as FILLE
 **unverified**: an ellipse or a spline with anything but a line (said as with one), and one a mode
 finds (not taken)
 
-### `STRETCH` / `S` · es `ESTIRA` / `EI` · pt-BR `ESTICAR` / `E` · fr `ETIRER` / `E` · it `STIRA` / `STI`
+### `STRETCH` / `S` · es `ESTIRA` / `EI` · pt-BR `ESTICAR` / `E` · fr `ETIRER` / `E` · it `STIRA` / `STI` · de `STRECKEN` / `STR`
 
 **Implemented:** `Select objects to stretch by crossing-window or crossing-polygon...` (es
 `Designe objetos que estirar mediante ventana o polígono...`), then MOVE's selection, its modes
@@ -1205,7 +1205,7 @@ its geometry); a dimension with both origins caught and its own point out (its l
 angular or radial dimension's line (it follows when both origins move); Enter at the
 Displacement's second point; a hatch loop's arc segments, which keep their bulges
 
-### `ERASE` / `E` / `DELETE` · es `BORRA` / `B` / `DELETE` · pt-BR `APAGAR` / `APG` / `DELETE` · fr `EFFACER` / `EF` / `DELETE` · it `CANCELLA` / `CA` / `DELETE`
+### `ERASE` / `E` / `DELETE` · es `BORRA` / `B` / `DELETE` · pt-BR `APAGAR` / `APG` / `DELETE` · fr `EFFACER` / `EF` / `DELETE` · it `CANCELLA` / `CA` / `DELETE` · de `LÖSCHEN` / `LÖ` / `DELETE`
 
 **Implemented:** noun-verb and verb-noun (MOVE's `Select objects:` and its modes; Enter or Space
 erases, Escape erases nothing), one undo step that U names `ERASE`; nothing said once the set
@@ -1221,7 +1221,7 @@ Backspace there is unverified)
 **Missing:** OOPS, which in 2027 brings back the last set ERASE erased even after other commands, as
 a step U names `OOPS`, and with nothing to bring back says nothing (erase/p307, p309)
 
-### `EXPLODE` / `X` · es `DESCOMP` / `DP` · pt-BR `EXPLODIR` / `X` · fr `DECOMPOSER` / `DE` / `DECOMPOS` · it `ESPLODI` / `E`
+### `EXPLODE` / `X` · es `DESCOMP` / `DP` · pt-BR `EXPLODIR` / `X` · fr `DECOMPOSER` / `DE` / `DECOMPOS` · it `ESPLODI` / `E` · de `URSPRUNG` / `UR`
 
 **Implemented:** `X` echoed `X EXPLODE`, es `DP` (`DESCOMP`), Enter repeats it (pieces/p240, p243,
 p245); one undo step that U names `EXPLODE` (es `DESCOMP`, p247), which puts the exploded objects
@@ -1261,11 +1261,11 @@ associative here; exploded MTEXT's positions differ by the font's metrics (EXP-0
 9.324693,39.822647 in AutoCAD, 9.338336,40 here by Arimo's ink); ByBlock resolution; a reference scaled unequally gives
 its pieces as it draws them, its texts at X's size (INSERT's Missing)
 
-### `UNION` / `UNI` · es `UNION` / `UNI` · pt-BR `UNIAO` / `U` · fr `UNION` / `UNI` · it `UNIONE` / `UNI`
+### `UNION` / `UNI` · es `UNION` / `UNI` · pt-BR `UNIAO` / `U` · fr `UNION` / `UNI` · it `UNIONE` / `UNI` · de `VEREINIG` / `VEE`
 
-### `SUBTRACT` / `SU` · es `DIFERENCIA` / `DIF` · pt-BR `SUBTRAIR` / `SU` · fr `SOUSTRACTION` / `SU` · it `SOTTRAI` / `SOT`
+### `SUBTRACT` / `SU` · es `DIFERENCIA` / `DIF` · pt-BR `SUBTRAIR` / `SU` · fr `SOUSTRACTION` / `SU` · it `SOTTRAI` / `SOT` · de `DIFFERENZ` / `DI`
 
-### `INTERSECT` / `IN` · es `INTERSEC` / `INT` · pt-BR `INTERSEC` / `INT` · fr `INTERSECT` / `IR` · it `INTERSEZIONE` / `IT`
+### `INTERSECT` / `IN` · es `INTERSEC` / `INT` · pt-BR `INTERSEC` / `INT` · fr `INTERSECT` / `IR` · it `INTERSEZIONE` / `IT` · de `SCHNITTMENGE` / `SM`
 
 **Implemented** (regions and solids; region/b01–b11, n01; union/k01–k08, s01–s10; regions/p300–p342,
 p400): UNION and INTERSECT ask `Select objects:` (whole objects); SUBTRACT reports `Select solids,
@@ -1346,7 +1346,7 @@ set.` here (regions/p334); where a combined solid's grip lies under a turned UCS
 taken in the UCS here; d03 ran in the WCS, the turned UCS unprobed); DELOBJ-like history
 (SOLIDHIST, SHOWHISTORY).
 
-### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT` · fr `SECTION` / `SE` · it `TRANCIA` / `TC`
+### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT` · fr `SECTION` / `SE` · it `TRANCIA` / `TC` · de `KAPPEN` / `KA`
 
 **Implemented:** As 2027's console asks it in en, es and pt-BR (slice/s01–s13,
 solid-edits/p100–p179): a preselection is dropped and the set asked, as MOVE takes it in the same
@@ -1410,9 +1410,9 @@ here (phase 7); whether a refused second or third point sets LASTPOINT, as here 
 refused side point does, desktop d05-b), and a click on nothing or on an object refused at Object's
 pick (**unverified**).
 
-### `FILLETEDGE` · es `ARISTAEMPALME` · pt-BR `ARESTACONCORD` · fr `ARETERACCORD` · it `RACCORDASPIGOLO`
+### `FILLETEDGE` · es `ARISTAEMPALME` · pt-BR `ARESTACONCORD` · fr `ARETERACCORD` · it `RACCORDASPIGOLO` · de `ABRUNDKANTE`
 
-### `CHAMFEREDGE` · es `ACHAFLANAARISTA` · pt-BR `CHANFRARARESTA` · fr `ARETECHANFREIN` · it `CIMASPIGOLO`
+### `CHAMFEREDGE` · es `ACHAFLANAARISTA` · pt-BR `CHANFRARARESTA` · fr `ARETECHANFREIN` · it `CIMASPIGOLO` · de `GEFASTEKANTE`
 
 **Implemented** (filletedge/f01–f07, chamferedge/c01–c07, solid-edits/p200–p239, p265, p266, en, es
 and pt-BR; desktop solid-edits/d04, d06): FILLETEDGE says `Radius = 1.0000` (es `Radio =`, pt-BR
@@ -1506,7 +1506,7 @@ radius or [Expression]:` and `Base surface selection...`, BOX's entry); the blen
 mesh while edges are picked (d04-b); the cube badge beside the pick box over an edge (d04-a);
 whether CHAMFERA and CHAMFERB become 1 at the start or at the commit (here the commit; no probe
 tells them apart, **unverified**).
-### `SOLIDEDIT` · es `EDITSOLIDO` · pt-BR `EDITARSOLIDO` · fr `EDITSOLIDE` · it `MODIFSOLIDI`
+### `SOLIDEDIT` · es `EDITSOLIDO` · pt-BR `EDITARSOLIDO` · fr `EDITSOLIDE` · it `MODIFSOLIDI` · de `VOLKÖRPERBEARB`
 
 **Implemented** (its faces; solidedit/e01–e12, en, es and pt-BR): it says `Solids editing automatic
 checking:  SOLIDCHECK=1` (es `Comprobación automática de edición de sólidos:`, pt-BR `Verificação
@@ -1603,7 +1603,7 @@ here `Modeling Operation Error:` twice, then 103009); an offset too far out to m
 drops in silence (p349: 100000 on a 20 × 10 × 6 box's top) and the kernel makes; a preview while a
 distance or an angle is given.
 
-### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE` · fr `JOINDRE` / `J` · it `UNISCI` / `U`
+### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE` · fr `JOINDRE` / `J` · it `UNISCI` / `U` · de `VERBINDEN` / `VB`
 
 **Implemented:** `Select source object or multiple objects to join at once:`, then
 `Select objects to join:` once one is picked (es
@@ -1722,7 +1722,7 @@ joins nothing, which AutoCAD gives as `1 object discarded` of two (3dpoly/p53, p
 into one (its frame here), both **unverified**; a spline-fit polyline (unprobed: its frame here,
 the polyline kept)
 
-### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO` · pt-BR `QUEBRAR` / `QU` / `QUEBRAREMPONTO` · fr `COUPURE` / `CU` / `COUPUREAUPOINT` · it `SPEZZA` / `SZ` / `SPEZZAALPUNTO`
+### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO` · pt-BR `QUEBRAR` / `QU` / `QUEBRAREMPONTO` · fr `COUPURE` / `CU` / `COUPUREAUPOINT` · it `SPEZZA` / `SZ` / `SPEZZAALPUNTO` · de `BRUCH` / `BR` / `ANPUNKTBRECH`
 
 **Implemented:** `Select object:` (es `Designe objeto:`; nothing there: `No object found`, es
 `No se ha encontrado ningún objeto`), whose pick is the first point — a point typed there is one, of
@@ -1809,7 +1809,7 @@ p188 does not settle (PIECES-D10); the ghost under a far Endpoint marker trails 
 AutoCAD while the click takes the marker (desktop d13), here it follows the point the click takes
 (PIECES-D30)
 
-### `SPLINEDIT` / `SPE` · es `EDITSPLINE` / `SPE` · pt-BR `EDITARSPLINE` / `ESPL` · fr `EDITSPLINE` / `ESI` · it `EDITSPLINE` / `ESI`
+### `SPLINEDIT` / `SPE` · es `EDITSPLINE` / `SPE` · pt-BR `EDITARSPLINE` / `ESPL` · fr `EDITSPLINE` / `ESI` · it `EDITSPLINE` / `ESI` · de `SPLINEEDIT` / `SIE`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the spline (probes
 spline-knots/k11, k57–k146, splinedit/p100–p166 and pedit/p320–p338, traced, MPDUMP, en, es and
@@ -1928,7 +1928,7 @@ mode finding only locked splines at `Select spline:` (said as a pick's and asked
 pedit/p328); LASTPOINT after Select point and at Add's `[After/Before]` (the point given here),
 after Move's Enter and keywords and at Tangents' start (kept here).
 
-### `PEDIT` / `PE` · es `EDITPOL` / `PE` · pt-BR `EDITARP` / `EDP` · fr `PEDIT` / `PE` · it `EDITPL` / `EP`
+### `PEDIT` / `PE` · es `EDITPOL` / `PE` · pt-BR `EDITARP` / `EDP` · fr `PEDIT` / `PE` · it `EDITPL` / `EP` · de `PEDIT` / `PE`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
 pedit/p01–p253 and p300–p308, p332, p333, traced, MPDUMP, en, es and pt-BR; not transparent, `** That command may not be
@@ -2116,7 +2116,7 @@ within (its straight distance here; p207 within both), MID just past a Fit joint
 the aperture), a mode finding only locked polylines at `Select polyline` (said as a pick's and
 asked again here, p307).
 
-### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP` · pt-BR `PROPIG` / `PI` / `PINTOR` · fr `CORRESPROP` / `COR` / `COPIERPROP` · it `CORRISPROP` / `CRP` / `COPIAPROP`
+### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP` · pt-BR `PROPIG` / `PI` / `PINTOR` · fr `CORRESPROP` / `COR` / `COPIERPROP` · it `CORRISPROP` / `CRP` / `COPIAPROP` · de `EIGANPASS`
 
 **Implemented:** `Select source object:` (es `Designe objeto de origen:`, acmatchRes 15), a pick
 that takes an object on a locked layer too (desktop properties/d08-3), Enter there ending it
@@ -2152,7 +2152,7 @@ before it (**unverified**: acmatchRes 11 `Only one entity can be selected as sou
 suggests a refusal; here they are dropped and the source asked); Command Preview's preview of the
 change under the cursor
 
-### `TEXTEDIT` / `ED` / `DDEDIT` / `TEDIT` · es `EDITARTEXTO` / `ED` / `DDEDIC` / `TEDIT` · pt-BR `EDITARTEXTO` / `TEDIT` / `DDEDIT` / `ED` · fr `MODIFTEXTE` / `ED` / `DDEDIT` / `MO` · it `MODTESTO` / `MOD` / `DDEDIT` / `MT`
+### `TEXTEDIT` / `ED` / `DDEDIT` / `TEDIT` · es `EDITARTEXTO` / `ED` / `DDEDIC` / `TEDIT` · pt-BR `EDITARTEXTO` / `TEDIT` / `DDEDIT` / `ED` · fr `MODIFTEXTE` / `ED` / `DDEDIT` / `MO` · it `MODTESTO` / `MOD` / `DDEDIT` / `MT` · de `TEXTBEARB` / `TBEARB` / `DDEDIT` / `TBEAR`
 
 **Implemented** (AutoCAD 2027's console, text/p241–p249, p274, p282–p285; desktop text/d06):
 `Current settings: Edit mode = Multiple` (es `Parámetros actuales: Editar modo = Múltiple`; es mode
@@ -2189,7 +2189,7 @@ edits in place and asks none, so the prompt reads `TEXTEDIT:`); MTEDIT (es EDITT
 `Select an MTEXT object:` (es `Designe un objeto TextoM:`) and `Expects a point or Last` (p289), and
 -MTEDIT
 
-### `PURGE` / `PU`, `-PURGE` / `-PU` · es `LIMPIA` / `LI`, `-LIMPIA` / `-LI` · pt-BR `ELIMINAR` / `ELM`, `-ELIMINAR` / `-ELM` · fr `PURGER` / `UR`, `-PURGER` / `-PU` · it `ELIMINA` / `EN`, `-ELIMINA` / `-EN`
+### `PURGE` / `PU`, `-PURGE` / `-PU` · es `LIMPIA` / `LI`, `-LIMPIA` / `-LI` · pt-BR `ELIMINAR` / `ELM`, `-ELIMINAR` / `-ELM` · fr `PURGER` / `UR`, `-PURGER` / `-PU` · it `ELIMINA` / `EN`, `-ELIMINA` / `-EN` · de `BEREINIG`, `-BEREINIG`
 
 **Implemented:** PURGE asks -PURGE's prompts, as AutoCAD's console runs it (blocks/p151, p152): the
 line `Nested items = Off    Orphaned data = Off` (es `Elementos anidados = DES Datos huérfanos =

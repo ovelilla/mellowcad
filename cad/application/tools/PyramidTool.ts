@@ -201,7 +201,11 @@ export class PyramidTool implements Tool {
         return "specifySecondEndpointOfEdge"
       case "radius": {
         // pt-BR words the two apart (`raio base  ou`, `raio de base ou`, y02).
-        const id = inscribed ? "specifyBaseRadiusOr" : "pyramidBaseRadiusOr"
+        // German words it as neither CYLINDER's nor the circumscribed one's
+        // (`Basisradius oder [Umkreis] angeben`, primitives/p321).
+        const id = inscribed
+          ? "pyramidInscribedRadiusOr"
+          : "pyramidBaseRadiusOr"
         return radius === null ? id : { id, enter: radius }
       }
       case "height": {

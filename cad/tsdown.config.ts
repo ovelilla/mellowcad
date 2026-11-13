@@ -9,6 +9,7 @@ export default defineConfig({
     "locales/pt-BR": "locales/pt-BR.ts",
     "locales/fr": "locales/fr.ts",
     "locales/it": "locales/it.ts",
+    "locales/de": "locales/de.ts",
   },
   format: "esm",
   platform: "neutral",

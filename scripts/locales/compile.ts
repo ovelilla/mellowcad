@@ -143,6 +143,8 @@ export function localeModule(
 function typeOf(node: Json, depth: number): string {
   if (typeof node === "string") return "string"
   if (Array.isArray(node)) return "string[]"
+  // An empty table (English's `promptTails`): `{}` would type any value.
+  if (Object.keys(node).length === 0) return "Record<string, never>"
   const indent = "  ".repeat(depth + 1)
   const rows = Object.entries(node).map(
     ([key, value]) =>
