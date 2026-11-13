@@ -8,8 +8,9 @@
 > PDSIZE, PTYPE, DIVIDE, MEASURE y la referencia Nodo), publicado ese día, y siguió con SOLID,
 > hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154, y con LEADER,
 > hecho y publicado el 13/11, que las llevó a 121; el alemán (`docs/next-seo.md`, L8), hecho y
-> publicado el 13/11; siguiente, por orden del dueño, el punto 4 de la fase 4 (los tipos de línea
-> del dibujo, su tabla LTYPE), y después lo que quede de esta fase alterna con idiomas, una sesión
+> publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
+> hecho y publicado el 13/11; siguiente, por orden del dueño, un idioma (el ruso, propuesto en
+> `docs/next-seo.md` §8), y después lo que quede de esta fase alterna con idiomas, una sesión
 > cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -217,9 +218,28 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    4. **Los tipos de línea del dibujo**, su tabla LTYPE: ACAD_ISO02W100 a ISO09W100 (de 6 a 12
       muestras cada uno), los escalados (HIDDEN2, CENTER2, DASHED2…), DOT, los nombres del
       `acadiso.lin` español y brasileño (OCULTO, PONTOS, HÍFEN) y los complejos (BATTING, GAS,
-      ZIGZAG); en LibreCAD, los K5LT de un conversor (27 piezas). Hoy dibujan continuo. Es una
-      tabla por dibujo, no más entradas en el registro de los seis, que saldrían en todos los
-      selectores con un nombre en cada catálogo.
+      ZIGZAG); en LibreCAD, los K5LT de un conversor (27 piezas). **Hecho y publicado**
+      (13/11/2026, `4240632d`): una tabla por dibujo, como la LTYPE de AutoCAD (nombre, sin
+      distinguir mayúsculas; descripción de 47 caracteres; las longitudes de AutoCAD, con
+      puntos y huecos, y el texto y las formas de un complejo), guardada en el fichero (versión
+      53) y en el DXF de R12 a 2018 (74/75/340/46/50/44/45/9, el estilo del texto y el STYLE del
+      fichero de formas por handle). Los seis que trae todo dibujo, con sus nombres de
+      acadiso.lin (DASHED…) y su WHY reescrito: los desplegables no tienen «Otro…» ni hay
+      Administrador de tipos de línea; los demás se cargan de acadiso.lin (sus 59, citados) o de
+      acad.lin (en pulgadas). -LINETYPE con Cargar, Definir que carga de acadiso.lin y `?` que
+      pide el fichero; PURGE con tLíneas; CHPROP con Escalatl y su Tlínea que carga de acad.lin;
+      la escala de cada objeto (DXF 48, CELTSCALE, la fila Escala de tipo de línea de la paleta;
+      un sólido 3D se queda en 1), en los seis idiomas (consola de AutoCAD 2027, tablas de cadenas;
+      sondas `ltype/`). El texto de un complejo (GAS_LINE, HOT_WATER_SUPPLY, CLF) se dibuja como lo
+      traza AutoCAD (p14, p15: nuestro render y su trazado coinciden); las formas no (falta el
+      SHX). La consola de AutoCAD abre los 12 ficheros del dibujo de tipos de línea sin un error
+      de AUDIT y lee GAS_LINE y BATTING como sus propios registros, y los 60 de referencia
+      anteriores siguen limpios. El corpus: enteras, 121 de 154 muestras y 572 de 577 ficheros de
+      otros, como antes (ningún tipo de objeto nuevo); con tipos de línea que AutoCAD dibuja de
+      otro modo, de 52 muestras a 3 (solo formas: BATTING, ZIGZAG) y de 28 ficheros de otros a 0.
+      En producción, un DXF de AutoCAD con ACAD_ISO02W100 y HIDDEN2 abierto en `/draw` dibuja sus
+      guiones. Lo que hace y le falta, en `docs/coverage/properties.md` (Linetypes, CHPROP, la
+      paleta), `modify.md` (PURGE) y `clipboard-and-files.md` (DXFIN, DXFOUT).
    5. **Las referencias externas**: 16 muestras (los planos de los conjuntos de planos tienen su
       modelo en referencias).
    6. **El patrón de cada sombreado**: un DXF trae las líneas de cualquier patrón (53, 43–46, 79,

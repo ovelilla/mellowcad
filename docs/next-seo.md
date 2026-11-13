@@ -10,11 +10,12 @@
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
 > y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
 > MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando) y SOLID, y LEADER (con
-> su página de comando) el 13/11, y el alemán (`live` en `/de`, L8) hecho y publicado el 13/11;
+> su página de comando) el 13/11, y el alemán (`live` en `/de`, L8) y los tipos de línea del
+> dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) hechos y publicados el 13/11;
 > por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente, por
-> orden del dueño (12/11/2026), una sesión cada vez, nunca en paralelo: el punto 4 de la fase 4
-> del DXF (los tipos de línea del dibujo, la tabla LTYPE; `docs/next-dxf.md`) y después idiomas
-> alternando con lo que quede del DXF, además de lo que queda de §7.
+> orden del dueño (12/11/2026), una sesión cada vez, nunca en paralelo: un idioma (el ruso,
+> propuesto en §8) y después lo que quede de la fase 4 del DXF (`docs/next-dxf.md`), alternando,
+> además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -838,4 +839,16 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   España y a los países árabes (Egipto 4, Arabia Saudí 2, Yemen 2, Siria, Irak, Palestina) y uno a
   Turquía (posición 2): un idioma `global` también rinde, así que si el dueño amplía el criterio,
   el turco, el vietnamita y el indonesio van antes que el ruso.
+- DXF fase 4, los tipos de línea del dibujo: hecha y publicada el 13/11/2026 (`4240632d`; L7, la
+  excepción, por orden del dueño). La tabla LTYPE por dibujo, el texto de los complejos, Cargar en
+  -LINETYPE, tLíneas en PURGE, Escalatl en CHPROP, la escala de cada objeto y CELTSCALE
+  (`docs/next-dxf.md`, fase 4, punto 4). En producción, un DXF de AutoCAD con ACAD_ISO02W100 y
+  HIDDEN2 abierto en `/draw` dibuja sus guiones; IndexNow recibió las 897 URLs del sitemap (200);
+  ninguna página nueva, así que la cola de §7 no cambia. Cambian, en los siete idiomas, las
+  páginas de comando de LINETYPE (con Load y una pregunta nueva, «How do I load a linetype in
+  AutoCAD?»), PURGE, CHPROP, LTSCALE y PROPERTIES, las de abrir y editar un DXF y la diferencia
+  «Six linetypes in every drawing». Los títulos no cambian: la sesión no añade términos de
+  búsqueda nuevos (LINETYPE ya tenía página por «linetype», y Load es su opción). El FAQ de la
+  portada no cambia (no decía nada de los tipos de línea que haya dejado de ser cierto), así que
+  no se midió la primera carga de las portadas.
 - 10 Medición: la primera, un mes después del push de 01–02.
