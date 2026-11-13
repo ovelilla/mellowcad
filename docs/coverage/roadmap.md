@@ -102,6 +102,20 @@ BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
 
 Plot-to-PDF remains end-of-roadmap and unscheduled (there are no layouts).
 
+Rendering performance, ideas to explore (owner, 2026-11-13), not scheduled and not measured yet:
+first time a frame on the largest real DXFs (moving the cursor, zoom, pan), then decide.
+
+- **Two layers.** Every frame now rebuilds and repaints the whole drawing, even when only the
+  crosshair or a snap marker moved. One layer for the drawing, repainted only when the document or
+  the view changes; one above it for the cursor, snaps and the command's preview, the only one a
+  mouse move repaints. It is what AutoCAD's display list does, and the largest win on big drawings.
+  Presenter and `CadEngine` work: no layering rule moves.
+- **Skip what is not on screen.** Entities off the view are converted and only clipped at the end,
+  segment by segment. A spatial index (a tree of what lies in each region) would process only the
+  visible ones, and would speed up snaps and selection, which now test every entity.
+- **WebGL** when the solids' shaded and Realistic styles arrive (step 4): one more presenter of the
+  same scene, never a replacement for the canvas.
+
 ## Command reviews
 
 **Paused behind visibility** (`docs/next-seo.md`): on 2026-11-05 the owner put being found ahead of
