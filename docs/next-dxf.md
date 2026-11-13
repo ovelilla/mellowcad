@@ -9,9 +9,9 @@
 > hecho y publicado el 12/11, que llevó las muestras enteras de 64 a 107 de 154, y con LEADER,
 > hecho y publicado el 13/11, que las llevó a 121; el alemán (`docs/next-seo.md`, L8), hecho y
 > publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
-> hecho y publicado el 13/11; siguiente, por orden del dueño, un idioma (el ruso, propuesto en
-> `docs/next-seo.md` §8), y después lo que quede de esta fase alterna con idiomas, una sesión
-> cada vez.
+> hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
+> siguiente, por orden del dueño, lo que quede de esta fase (las referencias externas, el patrón
+> de cada sombreado…), y después otro idioma, alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo

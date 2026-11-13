@@ -10,12 +10,12 @@
 > 9/11, y la 09 (el italiano, `live` en `/it`), guardar como DXF (la fase 2 de `docs/next-dxf.md`)
 > y la 07c (la página «editar DXF online») hechas y publicadas el 12/11, como POINT, DIVIDE y
 > MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando) y SOLID, y LEADER (con
-> su página de comando) el 13/11, y el alemán (`live` en `/de`, L8) y los tipos de línea del
-> dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) hechos y publicados el 13/11;
-> por decisión del dueño la visibilidad va antes que cualquier funcionalidad; siguiente, por
-> orden del dueño (12/11/2026), una sesión cada vez, nunca en paralelo: un idioma (el ruso,
-> propuesto en §8) y después lo que quede de la fase 4 del DXF (`docs/next-dxf.md`), alternando,
-> además de lo que queda de §7.
+> su página de comando) el 13/11, y el alemán (`live` en `/de`, L8), los tipos de línea del
+> dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) y el ruso (`live` en `/ru`, L8)
+> hechos y publicados el 13/11; por decisión del dueño la visibilidad va antes que cualquier
+> funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca en
+> paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas, el
+> patrón de cada sombreado…) y después otro idioma, alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -272,8 +272,9 @@ el 9/11, sesión 08, `docs/plans/fr-language.md`) y
 **italiano** (localizado; la mayor proporción de búsquedas de AutoCAD de los grandes mercados de la
 UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesión 09,
 `docs/plans/it-language.md`) y **alemán** (localizado; Alemania, Austria y Suiza; hecho el 13/11,
-`docs/plans/de-language.md`). Después, ruso (Yandex tiene el 72 %
-de sus búsquedas), polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
+`docs/plans/de-language.md`) y **ruso** (localizado; Rusia, con Ucrania, Kazajistán y
+Bielorrusia buscando en ruso; Yandex tiene el 72 % de sus búsquedas; hecho el 13/11,
+`docs/plans/ru-language.md`). Después, polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
@@ -400,6 +401,11 @@ el dueño dio a las sesiones el 6/11).
    Austria y Suiza casi a 0 en Trends para las mismas consultas: el 0,4 del italiano × 57/113) y
    que ya reconoce su prefijo: 813 en la cola, `/de` y sus centros delante. IndexNow, las 897 del
    sitemap (200). La tanda del día no salió: la sesión acabó antes de las 21:51 UTC.
+   **13/11 (sesión del ruso):** el ruso, publicado. Sus 125 URLs (126 en el sitemap, sin
+   `/privacy`) entran por `gsc-prioritize.mjs`, que pesa `/ru` a 0,26 (Rusia, 73 en el índice de
+   la auditoría, que ya cuenta solo Google: el 72 % de Yandex nunca llega a esta cola; Ucrania y
+   Kazajistán lo buscan poco en ruso: el 0,4 del italiano × 73/113) y que ya reconoce su prefijo:
+   938 en la cola, `/ru` la primera. IndexNow, las 1.023 del sitemap (200).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -461,6 +467,15 @@ el dueño dio a las sesiones el 6/11).
     descripción («Details» de su «Manage»), cuando el dueño volvió a entrar: su sesión había
     caducado, y entrar pide pasar la verificación de Cloudflare y un enlace por correo a
     `hello@mellowcad.com`, abierto en el mismo Chrome de ~/seo-data. La página pública lo sirve ya.
+11. **Lo de la sesión del ruso, hecho por la sesión a petición del dueño (13/11):** el push
+    (`f0a53789..4085ea00`, y después el arreglo de las fuentes cirílicas), verificado en producción
+    (las páginas de `/ru` responden 200, el sitemap tiene 1.023 URLs, 126 rusas, `hreflang="ru"`
+    en las portadas; `/ru/draw` pregunta «ОТРЕЗОК Первая точка:», «ОТРЕЗОК Следующая точка или
+    [оТменить]:» y, al tercer punto, «[Замкнуть/Отменить]:», y el alias «ОТ» abre ОТРЕЗОК, todo
+    tecleado sobre el dibujo); IndexNow con las 1.023 URLs (200); la cola de Google rehecha (punto
+    2); la ficha de AlternativeTo, con la sesión del dueño en el Chrome de ~/seo-data: el ruso en
+    la descripción y en «Supported Languages»; y la de SaaSHub, en su descripción (la sesión
+    seguía abierta): la página pública lo sirve ya.
 
 ## 8. Estado
 
@@ -851,4 +866,22 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   búsqueda nuevos (LINETYPE ya tenía página por «linetype», y Load es su opción). El FAQ de la
   portada no cambia (no decía nada de los tipos de línea que haya dejado de ser cierto), así que
   no se midió la primera carga de las portadas.
+- Ruso (L8): hecho y publicado el 13/11/2026 (`adf9dba1` a `4085ea00`, y `25436ced`;
+  `docs/plans/ru-language.md`, `docs/i18n/ru.md`; el push, la comprobación en producción, IndexNow,
+  la cola de §7 y las fichas de AlternativeTo y SaaSHub, por la sesión a petición del dueño: §7,
+  punto 11). El paquete de idioma instalado en el AutoCAD del dueño y la 2027.1 otra vez; la
+  consola lee su entrada como Windows-1252, así que una sonda rusa corre como guion UTF-8
+  (`runacc.sh`); el lenguaje de comandos de la consola rusa (426 sondas: ОТРЕЗОК, ПОДОБИЕ, ОБРЕЗАТЬ;
+  FROM es `ОТ` aparte), y el sitio con «Команда ОБРЕЗАТЬ (TRIM) в AutoCAD». Lo que no encajó,
+  corregido en el sistema: una palabra clave que falta en `promptKeywords` se escribe con la tabla
+  de palabras clave del idioma, nunca en inglés; el `nXП` de ZOOM con П cirílica; el presupuesto de
+  un catálogo en una escritura de dos bytes por letra (1,6 veces el inglés). Sin nativo, la
+  relectura de un modelo. **La primera carga de cada portada**, Brotli q11, antes y con el ruso en
+  borrador: `/` 253.278 → 253.333, `/es` 254.660 → 254.664, `/pt-br` 254.807 → 254.912, `/ar`
+  278.236 → 278.173, `/fr` 255.550 → 255.457 (543 bytes bajo 250 KiB), `/it` 254.671 → 254.705,
+  `/de` 254.981 → 254.957; `/ru` 288.456, bajo el presupuesto nuevo de 285 KiB para una escritura
+  con dos fuentes (Inter y Geist Mono en cirílico). Ya `live`, «Русский» y ПОДОБИЕ en las demás
+  portadas les hacían bajar los subconjuntos cirílicos (31,6 KB más cada una, por encima de su
+  presupuesto): `25436ced` les da la fuente del sistema, como al nombre árabe. **Siguiente**, por
+  orden del dueño: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`), y después otro idioma.
 - 10 Medición: la primera, un mes después del push de 01–02.
