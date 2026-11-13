@@ -1,6 +1,6 @@
 # Languages
 
-The editor speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian and German. Its words
+The editor speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian, German and Russian. Its words
 come in two catalogs, one per package:
 
 - **`editorLocale`**, the editor's own words: menus, tooltips, the palettes' labels, the dialogs.

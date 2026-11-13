@@ -53,6 +53,15 @@ describe("Russian AutoCAD's command language", () => {
     expect(drawn.type === "line" && drawn.start).toBeCloseToPoint(p(10, 0))
   })
 
+  // `(nX или nXП)`: the console takes 2xп and refuses a Cyrillic х (names/p37).
+  it("takes ПОКАЗАТЬ's factor with the П its prompt writes", () => {
+    const cad = answer(inRussian(), "ПОКАЗАТЬ", "2xп")
+    expect(cad.commandLog().join("\n")).not.toContain("Требуется")
+    expect(asked(cad)).toBe("Команда:")
+    const refused = answer(inRussian(), "ПОКАЗАТЬ", "2хп")
+    expect(asked(refused)).toMatch(/^ПОКАЗАТЬ /)
+  })
+
   it("suggests ОТРЕЗОК for ОТ at Команда:, never FROM", () => {
     const cad = inRussian()
     cad.runtime.setCommandLineText("ОТ")

@@ -1,8 +1,8 @@
 # Russian (`ru`)
 
-> **Command language:** `localized`, Russian AutoCAD's. **Status:** `draft` since 13/11/2026, at
-> `/ru`, reachable but unannounced. **Review:** none by a native speaker (the owner knows none).
-> The plan and its commits: `docs/plans/ru-language.md`.
+> **Command language:** `localized`, Russian AutoCAD's. **Status:** `live` since 13/11/2026, at
+> `/ru`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
+> Autodesk did not write ("Review"). The plan and its commits: `docs/plans/ru-language.md`.
 
 The words are Autodesk's own Russian localization of AutoCAD, never a translation of ours, as the
 other localized languages' are. One Russian for every Russian reader — Russia, Ukraine,
@@ -267,3 +267,49 @@ physical key (`shortcutKey`): Ctrl+Z undoes from the key labelled Я. Typed text
 `ОТ` runs ОТРЕЗОК, `LINE` typed on the latin layout is an unknown command, as in Russian AutoCAD,
 and `_LINE` runs in both (`russianPrompts.test.ts`). The layout has no `@`, `<` or `>`: a Russian
 user switches to the latin layout to type `@10<45`, as in AutoCAD.
+
+Checked in Chrome before going live (13/11/2026, keys sent through CDP as ЙЦУКЕН sends them, the
+letter in `key` and `text`, the physical key in `code`): `от` typed on the drawing runs ОТРЕЗОК,
+`0,0` with the comma from Shift+`/`, and Ctrl+Z from the key labelled Я undoes it (`Команда: О`,
+`ОТРЕЗОК`, as AutoCAD echoes U). ZOOM's prompt asks `(nX или nXП)` with a Cyrillic П, which the
+console takes (`2xп`; a Cyrillic `х` is refused, names/p37): the factor reads the letter its
+language's prompt writes (`ZoomTool`'s `factorPattern`).
+
+## Going live
+
+On 13/11/2026, from production builds in a clean worktree (every page `○` or `●` but
+`/api/search`):
+
+- **The landing's first load**, Brotli q11, in bytes, before Russian (`adf9dba1`) and Russian a
+  draft (`92e2bfe7`): `/` 253,278 → 253,333, `/es` 254,660 → 254,664, `/pt-br` 254,807 → 254,912,
+  `/ar` 278,236 → 278,173, `/fr` 255,550 → 255,457 (543 under 250 KiB), `/it` 254,671 → 254,705,
+  `/de` 254,981 → 254,957; `/ru` 288,456. Live: the commit's message.
+- **`/ru` passed 275 KiB by 6,856 bytes**, and no trimming of copy could close it: Cyrillic takes
+  two faces, Inter's (18,744) and Geist Mono's (12,876, the landing's command line), where Arabic's
+  one is 22,765, and its HTML is 1.9 KB heavier than German's by UTF-8's two bytes a letter. The
+  budget for a script with two faces is 285 KiB (`.claude/rules/i18n.md`, "Budgets").
+- **Naming Russian** in every landing's commands sentence (`<ru>{russian}</ru>`: ПОДОБИЕ beside
+  DESFASE and VERSETZ), its lead and the FAQ's class answer.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): the header's «Начать
+  чертить» wrapped (`Header.cta` «Чертить», as German's «Zeichnen»), and so did the hero's pill
+  («Бесплатно · Без регистрации · Онлайн»: «онлайн» is the most searched modifier).
+
+## Review
+
+No native reader: the owner knows none. What Autodesk did not write was read again by a model on
+13/11/2026, four agents against the English, Autodesk's tables and the Russian catalogs:
+
+- **The site**, 49 strings: «впервые» (a claim the English does not make) → «Новое», «без
+  лицензии» (read as unlicensed) → «без запроса лицензии», «как ждут ваши руки» → «как привыкли
+  ваши руки», «в 3D-орбите» (32879), «Однострочный и многострочный текст». The editor: none.
+- **The "Use" pages and exercises**, some 115 edits: Esc «прерывает» (as `*Прервано*`), not
+  «отменяет»; «тонирует», as the «Тонированный» style; «Не удаляйте оригинал» where «сохраните»
+  read as «save»; steps without a verb completed.
+- **The command pages**, some 900 edits: a name never bare but after «команда» («Команда ДУГА
+  (ARC) рисует»), «параметр» for «опция», the alias answers to `acad_ru.pgp` (`ПРЯМОУГ` its former
+  name, `ДИАЛТТОЧ` PTYPE's DD form), the words the screen shows («центральный угол»,
+  «квадрант», «линия отслеживания»), meaning restored (PURGE's nested block, SUBTRACT's «или»).
+- **Left, for a native reader if one is found**: «пунктирная» or «штриховая» for the dashed
+  guide, «вхождение блока» beside «ссылка на блок», «зумирование», «сдвиг» and «построение по
+  сечениям» (SWEEP, LOFT), «Проектировщики» and «Мастера» (Drafters, Makers), the exercises'
+  mechanical words, the ours-marked editor labels.

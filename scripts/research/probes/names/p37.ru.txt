@@ -1,0 +1,5 @@
+_ZOOM
+2xп
+(getvar "VIEWSIZE")
+_ZOOM
+2хп

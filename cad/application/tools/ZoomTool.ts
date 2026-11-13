@@ -54,6 +54,17 @@ type ZoomState =
  */
 const FACTOR = /^([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(xp?)?$/i
 
+/**
+ * {@link FACTOR} with the paper-space letter the command language's prompt
+ * writes after `nX`: Russian's `(nX или nXП)` takes `2xп` (and latin `2xp`;
+ * a Cyrillic `х` is refused, names/p37 console run, 13/11/2026).
+ */
+function factorPattern(ctx: ToolContext): RegExp {
+  const letter = /nX(\S)\)/.exec(ctx.text.prompt("zoomScaleFactor"))?.[1]
+  if (letter === undefined || /p/i.test(letter)) return FACTOR
+  return new RegExp(FACTOR.source.replace("xp?", `x[p${letter}]?`), "iu")
+}
+
 export class ZoomTool implements Tool {
   readonly id = "zoom"
   readonly changesView = true
@@ -313,7 +324,7 @@ export class ZoomTool implements Tool {
     const state = this.state
     const text = ctx.dynamicInput.getText("point").trim()
     if (text === "") return false
-    if (state.phase === "main" && FACTOR.test(text)) {
+    if (state.phase === "main" && factorPattern(ctx).test(text)) {
       return this.commitFactor("point", ctx)
     }
     const point = isCoordinateExpression(text)
@@ -384,7 +395,7 @@ export class ZoomTool implements Tool {
    * without, to ZOOM All's. False for anything else, which is refused.
    */
   private commitFactor(id: string, ctx: ToolContext): boolean {
-    const match = FACTOR.exec(ctx.dynamicInput.getText(id).trim())
+    const match = factorPattern(ctx).exec(ctx.dynamicInput.getText(id).trim())
     if (match === null) return false
     this.zoomBy(Number(match[1]), match[2] !== undefined, ctx)
     return true

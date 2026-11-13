@@ -76,7 +76,7 @@
     "boardLabel": "Les commandes et leurs alias, rangés comme sur le ruban",
     "also": "Aussi : {aliases}",
     "linked": "Une commande soulignée a sa propre page, avec ses invites et ses options.",
-    "languages": "<fr>{french}</fr> est <en>{english}</en> dans AutoCAD en anglais, <es>{spanish}</es> en espagnol, <pt>{portuguese}</pt> en portugais du Brésil et <de>{german}</de> en allemand, et le nom global <all>{global}</all> fonctionne dans toutes les langues.",
+    "languages": "<fr>{french}</fr> est <en>{english}</en> dans AutoCAD en anglais, <es>{spanish}</es> en espagnol, <pt>{portuguese}</pt> en portugais du Brésil, <de>{german}</de> en allemand et <ru>{russian}</ru> en russe, et le nom global <all>{global}</all> fonctionne dans toutes les langues.",
     "transcriptTitle": "Un DECALER, du début à la fin",
     "transcriptCaption": "Rejoué par le moteur à la création de cette page. Même ordre et mêmes lettres d'option qu'AutoCAD."
   },
@@ -213,7 +213,7 @@
     "q10": "Fait-il de la 3D ?",
     "a10": "En partie. Il crée des solides 3D — primitives, extrusions et révolutions, unions, soustractions et intersections, coupes et sections, arêtes raccordées et chanfreinées, faces modifiées —, calcule leurs propriétés de masse et les montre en orbite, depuis le ViewCube et dans des styles visuels ombrés. Balayages, lissages, maillages et rendu ne sont pas encore là.",
     "q11": "Puis-je l'utiliser pour m'entraîner pour mon cours d'AutoCAD ?",
-    "a11": "Oui, pour les commandes : leurs noms et alias, l'ordre de leurs invites et leurs options suivent AutoCAD, en anglais, en espagnol, en portugais du Brésil, en français, en italien ou en allemand, et <exercises>les exercices</exercises> vous donnent des dessins à faire, chacun corrigé pas à pas. Il n'ouvre ni n'enregistre encore de DWG : un travail à rendre en DWG ou en PDF demande un autre logiciel."
+    "a11": "Oui, pour les commandes : leurs noms et alias, l'ordre de leurs invites et leurs options suivent AutoCAD, en anglais, en espagnol, en portugais du Brésil, en français, en italien, en allemand ou en russe, et <exercises>les exercices</exercises> vous donnent des dessins à faire, chacun corrigé pas à pas. Il n'ouvre ni n'enregistre encore de DWG : un travail à rendre en DWG ou en PDF demande un autre logiciel."
   },
   "FinalCta": {
     "title": "Votre planche à dessin est à une touche."

@@ -1,7 +1,7 @@
 {
   "name": "@mellowcad/editor",
   "version": "0.2.0",
-  "description": "The MellowCAD drafting editor as one React component: the canvas with AutoCAD-style chrome, menus and dialogs, its stylesheet and its words in seven languages.",
+  "description": "The MellowCAD drafting editor as one React component: the canvas with AutoCAD-style chrome, menus and dialogs, its stylesheet and its words in eight languages.",
   "keywords": [
     "cad",
     "2d",

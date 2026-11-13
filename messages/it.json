@@ -76,7 +76,7 @@
     "boardLabel": "I comandi e i loro alias, raggruppati come sulla barra multifunzione",
     "also": "Anche: {aliases}",
     "linked": "Un comando sottolineato ha una pagina propria, con richieste e opzioni.",
-    "languages": "<en>{english}</en> è <es>{spanish}</es> in AutoCAD spagnolo, <pt>{portuguese}</pt> in portoghese brasiliano, <fr>{french}</fr> in francese e <de>{german}</de> in tedesco, e il nome globale <all>{global}</all> vale in ogni lingua.",
+    "languages": "<en>{english}</en> è <es>{spanish}</es> in AutoCAD spagnolo, <pt>{portuguese}</pt> in portoghese brasiliano, <fr>{french}</fr> in francese, <de>{german}</de> in tedesco e <ru>{russian}</ru> in russo, e il nome globale <all>{global}</all> vale in ogni lingua.",
     "transcriptTitle": "Un OFFSET, dall'inizio alla fine",
     "transcriptCaption": "Riprodotto dal motore alla creazione di questa pagina. Stesso ordine e stesse lettere d'opzione di AutoCAD."
   },
@@ -213,7 +213,7 @@
     "q10": "Fa anche il 3D?",
     "a10": "In parte. Crea solidi 3D — primitive, estrusioni e rivoluzioni, unioni, sottrazioni e intersezioni, trance e sezioni, spigoli raccordati e smussati, facce modificate —, ne calcola le proprietà di massa e li mostra in orbita, dal ViewCube e in stili di visualizzazione ombreggiati. Sweep, loft, mesh e rendering non ci sono ancora.",
     "q11": "Posso usarlo per esercitarmi per il corso di AutoCAD?",
-    "a11": "Sì, per i comandi: nomi e alias, ordine delle richieste e opzioni seguono AutoCAD, in inglese, spagnolo, portoghese brasiliano, francese, italiano o tedesco, e <exercises>gli esercizi</exercises> ti danno disegni da fare, ciascuno risolto passo passo. Non apre né salva ancora file DWG: un lavoro da consegnare in DWG o PDF richiede ancora un altro programma."
+    "a11": "Sì, per i comandi: nomi e alias, ordine delle richieste e opzioni seguono AutoCAD, in inglese, spagnolo, portoghese brasiliano, francese, italiano, tedesco o russo, e <exercises>gli esercizi</exercises> ti danno disegni da fare, ciascuno risolto passo passo. Non apre né salva ancora file DWG: un lavoro da consegnare in DWG o PDF richiede ancora un altro programma."
   },
   "FinalCta": {
     "title": "Il tuo tavolo da disegno è a un tasto."

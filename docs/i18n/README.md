@@ -15,6 +15,7 @@ how it is written, and how far it has been reviewed. A `live` language without o
 | `fr.md`    | French               | `localized`      | `live` |
 | `it.md`    | Italian              | `localized`      | `live` |
 | `de.md`    | German               | `localized`      | `live` |
+| `ru.md`    | Russian              | `localized`      | `live` |
 
 **Next** (`docs/next-seo.md`, L8 and its §8): the language proposed there, through skill
 `add-language`; a language Autodesk does not ship (Turkish, Persian…) when the analytics ask for

@@ -76,7 +76,7 @@
     "boardLabel": "Comandos y sus alias, agrupados como en la cinta de opciones",
     "also": "También: {aliases}",
     "linked": "Un comando subrayado tiene página propia, con sus solicitudes y opciones.",
-    "languages": "<es>{spanish}</es> es <en>{english}</en> en el AutoCAD en inglés, <pt>{portuguese}</pt> en el de portugués de Brasil, <fr>{french}</fr> en el francés y <de>{german}</de> en el alemán, y el nombre global <all>{global}</all> funciona en todos los idiomas.",
+    "languages": "<es>{spanish}</es> es <en>{english}</en> en el AutoCAD en inglés, <pt>{portuguese}</pt> en el de portugués de Brasil, <fr>{french}</fr> en el francés, <de>{german}</de> en el alemán y <ru>{russian}</ru> en el ruso, y el nombre global <all>{global}</all> funciona en todos los idiomas.",
     "transcriptTitle": "Un DESFASE, de principio a fin",
     "transcriptCaption": "Reproducido por el motor al generar esta página. El mismo orden y las mismas letras de opción que en AutoCAD."
   },
@@ -213,7 +213,7 @@
     "q10": "¿Sirve para 3D?",
     "a10": "En parte. Construye sólidos 3D —primitivas, extrusiones y revoluciones, uniones, diferencias e intersecciones, cortes y secciones, aristas empalmadas y achaflanadas, caras editadas—, calcula sus propiedades físicas y los muestra en órbita, desde el ViewCube y con estilos visuales sombreados. Todavía no hay barridos, solevaciones, mallas ni renderizado.",
     "q11": "¿Puedo usarlo para practicar para mi clase de AutoCAD?",
-    "a11": "Sí, para los comandos: sus nombres y alias, el orden de sus solicitudes y sus opciones siguen a AutoCAD, en inglés, español, portugués de Brasil, francés, italiano o alemán, y los <exercises>ejercicios para practicar</exercises> te dan planos con los que trabajar, cada uno resuelto paso a paso. Aún no abre ni guarda archivos DWG, así que lo que entregues en DWG o PDF todavía necesita otro programa."
+    "a11": "Sí, para los comandos: sus nombres y alias, el orden de sus solicitudes y sus opciones siguen a AutoCAD, en inglés, español, portugués de Brasil, francés, italiano, alemán o ruso, y los <exercises>ejercicios para practicar</exercises> te dan planos con los que trabajar, cada uno resuelto paso a paso. Aún no abre ni guarda archivos DWG, así que lo que entregues en DWG o PDF todavía necesita otro programa."
   },
   "FinalCta": {
     "title": "Tu mesa de dibujo está a una tecla."

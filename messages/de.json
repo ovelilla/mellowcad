@@ -76,7 +76,7 @@
     "boardLabel": "Befehle und ihre Aliasnamen, gruppiert wie in der Multifunktionsleiste",
     "also": "Auch: {aliases}",
     "linked": "Ein unterstrichener Befehl hat eine eigene Seite, mit Eingabeaufforderungen und Optionen.",
-    "languages": "<de>{german}</de> heißt im englischen AutoCAD <en>{english}</en>, im spanischen <es>{spanish}</es>, im brasilianisch-portugiesischen <pt>{portuguese}</pt> und im französischen <fr>{french}</fr>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
+    "languages": "<de>{german}</de> heißt im englischen AutoCAD <en>{english}</en>, im spanischen <es>{spanish}</es>, im brasilianisch-portugiesischen <pt>{portuguese}</pt>, im französischen <fr>{french}</fr> und im russischen <ru>{russian}</ru>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
     "transcriptTitle": "Ein VERSETZ, von Anfang bis Ende",
     "transcriptCaption": "Von der Engine beim Erstellen dieser Seite wiedergegeben. Gleiche Reihenfolge, gleiche Optionsbuchstaben wie AutoCAD."
   },
@@ -213,7 +213,7 @@
     "q10": "Kann es auch 3D?",
     "a10": "Teilweise. Es erstellt 3D-Volumenkörper — Grundkörper, Extrusionen und Rotationen, Vereinigungen, Differenzen, Schnittmengen, Schnitte, abgerundete und gefaste Kanten, bearbeitete Flächen —, misst ihre Masseneigenschaften und zeigt sie im Orbit, im ViewCube und in schattierten visuellen Stilen. Sweeps, Lofts, Netze und Rendern fehlen noch.",
     "q11": "Kann ich damit für meinen AutoCAD-Kurs üben?",
-    "a11": "Ja, für die Befehle: Namen, Aliasnamen, Reihenfolge der Eingabeaufforderungen und Optionen folgen AutoCAD, auf Englisch, Spanisch, brasilianischem Portugiesisch, Französisch, Italienisch oder Deutsch, und <exercises>die Übungen</exercises> geben Ihnen Zeichnungen zum Bearbeiten, jede Schritt für Schritt gelöst. DWG kann es noch nicht öffnen oder speichern: Was Sie als DWG oder PDF abgeben, braucht noch ein anderes Programm."
+    "a11": "Ja, für die Befehle: Namen, Aliasnamen, Reihenfolge der Eingabeaufforderungen und Optionen folgen AutoCAD, auf Englisch, Spanisch, brasilianischem Portugiesisch, Französisch, Italienisch, Deutsch oder Russisch, und <exercises>die Übungen</exercises> geben Ihnen Zeichnungen zum Bearbeiten, jede Schritt für Schritt gelöst. DWG kann es noch nicht öffnen oder speichern: Was Sie als DWG oder PDF abgeben, braucht noch ein anderes Programm."
   },
   "FinalCta": {
     "title": "Ihr Zeichenbrett ist einen Tastendruck entfernt."
