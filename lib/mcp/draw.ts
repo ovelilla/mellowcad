@@ -1,6 +1,11 @@
 import { runInNewContext } from "node:vm"
 
-import { CadDriver, commandCatalog } from "@mellowcad/engine"
+import {
+  CadDriver,
+  SvgScenePresenter,
+  buildDrawingPreview,
+  commandCatalog,
+} from "@mellowcad/engine"
 
 import {
   DIALOG_COMMANDS,
@@ -80,12 +85,41 @@ const NOT_OFFERED: ReadonlySet<string> = new Set([
   "VSCURRENT",
 ])
 
+/**
+ * The most the drawing's SVG takes, in characters: past it the chat's view
+ * shows none. Claude shows no view of a result past some 150,000
+ * characters, the text and the JSON's escapes counted with it; the bench's
+ * largest drawing (the section, 70 primitives) is 6,400.
+ */
+export const MAX_VIEW_CHARACTERS = 80_000
+
+/** An SVG element is at least this long: a scene of more cannot fit. */
+const MIN_ELEMENT_CHARACTERS = 40
+
+/** The long side of the SVG's frame, in its own units. */
+const VIEW_LONG_SIDE = 1200
+const VIEW_PADDING = 24
+/** How far from square the frame follows the drawing's proportions. */
+const VIEW_MAX_RATIO = 4
+
+/** What the chat's view shows (`lib/mcp/viewer.ts`); the agent never reads it. */
+export interface DrawView {
+  /** Null when nothing is drawn, or past {@link MAX_VIEW_CHARACTERS}. */
+  readonly svg: string | null
+  /** The editor's link, null where the text gives none. */
+  readonly link: string | null
+  readonly objects: number
+}
+
 export interface DrawAnswer {
   readonly text: string
   /** The script stopped, or could not run: the agent has something to fix. */
   readonly isError: boolean
   readonly objects: number
+  readonly view: DrawView
 }
+
+const NO_VIEW: DrawView = { svg: null, link: null, objects: 0 }
 
 export interface DrawOptions {
   /** The clock the deadline between answers reads, in milliseconds. */
@@ -128,6 +162,7 @@ export function draw(
         "Nothing of it is returned. Draw less in one call (fewer or smaller arrays, fewer objects).",
       isError: true,
       objects: 0,
+      view: NO_VIEW,
     }
   } finally {
     cad.dispose()
@@ -148,6 +183,7 @@ export function drawOn(
         `characters and ${MAX_SCRIPT_LINES} lines at most. Nothing was drawn.`,
       isError: true,
       objects: 0,
+      view: NO_VIEW,
     }
   }
   const { stopped, cancelled } = runScript(target(cad), script, {
@@ -155,6 +191,12 @@ export function drawOn(
     now,
   })
   const objects = cad.entityCount
+  // WHY none after the time ran out: the editor has no deadline, and would
+  // type the lines this call did not.
+  const link =
+    objects === 0 || stopped?.reason === "time"
+      ? null
+      : `${origin}${runHref(EDITOR_PATH, script)}`
   const parts = [transcript(cad.commandLog())]
   if (stopped !== null) parts.push(stopText(stopped))
   if (cancelled !== null) {
@@ -173,15 +215,49 @@ export function drawOn(
     )
   } else {
     parts.push(listing(cad), `Drawing: ${extentsText(objects, cad.extents())}`)
-    // WHY none after the time ran out: the editor has no deadline, and would
-    // type the lines this call did not.
     parts.push(
-      stopped?.reason === "time"
+      link === null
         ? "No link: the editor would type the lines this call did not run."
-        : `Open it in MellowCAD: ${origin}${runHref(EDITOR_PATH, script)}`
+        : `Open it in MellowCAD: ${link}`
     )
   }
-  return { text: parts.join("\n\n"), isError: stopped !== null, objects }
+  return {
+    text: parts.join("\n\n"),
+    isError: stopped !== null,
+    objects,
+    view: { svg: objects === 0 ? null : drawingSvg(cad), link, objects },
+  }
+}
+
+/**
+ * The drawing as the editor draws it, framed to its own proportions, or
+ * null past {@link MAX_VIEW_CHARACTERS}: the engine's preview scene and SVG
+ * presenter, as the landing's drawings are made.
+ */
+function drawingSvg(cad: CadDriver): string | null {
+  const bounds = cad.extents()
+  if (bounds === null) return null
+  const across = bounds.max.x - bounds.min.x
+  const up = bounds.max.y - bounds.min.y
+  const ratio = Math.min(
+    VIEW_MAX_RATIO,
+    Math.max(1 / VIEW_MAX_RATIO, across > 0 ? up / across : VIEW_MAX_RATIO)
+  )
+  const scene = buildDrawingPreview(cad.runtime.document, {
+    width: Math.round(ratio > 1 ? VIEW_LONG_SIDE / ratio : VIEW_LONG_SIDE),
+    height: Math.round(ratio > 1 ? VIEW_LONG_SIDE : VIEW_LONG_SIDE * ratio),
+    padding: VIEW_PADDING,
+  })
+  // WHY before writing it: writing is the cost (a dense hatch's 44,000
+  // lines took 160 ms), and a scene of that many cannot fit.
+  if (
+    scene === null ||
+    scene.primitives.length > MAX_VIEW_CHARACTERS / MIN_ELEMENT_CHARACTERS
+  ) {
+    return null
+  }
+  const svg = new SvgScenePresenter().render(scene)
+  return svg.length > MAX_VIEW_CHARACTERS ? null : svg
 }
 
 function target(cad: CadDriver): ScriptTarget {

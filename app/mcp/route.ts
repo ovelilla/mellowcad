@@ -7,6 +7,13 @@ import {
   draw,
   drawDescription,
 } from "@/lib/mcp/draw"
+import {
+  DRAW_TOOL_META,
+  VIEWER_MIME_TYPE,
+  VIEWER_URI,
+  VIEW_META_KEY,
+  viewerContents,
+} from "@/lib/mcp/viewer"
 import { SITE_NAME, SITE_URL } from "@/lib/site"
 
 // The MCP server (`docs/next-mcp.md`): stateless, one tool, nothing stored.
@@ -47,17 +54,29 @@ function handlerFor(origin: string): (request: Request) => Promise<Response> {
             idempotentHint: true,
             openWorldHint: false,
           },
+          _meta: DRAW_TOOL_META,
         },
         ({ script }) => {
           const answer = draw(script, origin)
           return {
             content: [{ type: "text", text: answer.text }],
             isError: answer.isError,
+            // The chat's view reads it; the model never does.
+            _meta: { [VIEW_META_KEY]: answer.view },
           }
         }
       )
+      server.registerResource(
+        "drawing",
+        VIEWER_URI,
+        { title: `${SITE_NAME} drawing`, mimeType: VIEWER_MIME_TYPE },
+        () => ({ contents: [viewerContents(origin)] })
+      )
     },
-    { serverInfo: { name: SITE_NAME, version: "1.0.0" } }
+    {
+      serverInfo: { name: SITE_NAME, version: "1.0.0" },
+      capabilities: { extensions: { "io.modelcontextprotocol/ui": {} } },
+    }
   )
 }
 

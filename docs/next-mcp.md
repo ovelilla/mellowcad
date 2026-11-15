@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026: la entrega 1 está en producción por decisión del dueño, probada como conector en Claude (en ChatGPT su cuenta de empresa no lo permite), sin anunciar, y con el cortafuegos puesto; antes de anunciarla, la función pasa a Cloudflare (§7). Cuándo empieza lo siguiente frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026: la entrega 1 está en producción por decisión del dueño, probada como conector en Claude (en ChatGPT su cuenta de empresa no lo permite), sin anunciar, y con el cortafuegos puesto; antes de anunciarla, la función pasa a Cloudflare (§7). La entrega 2 (el visor en el chat) está hecha y en `main` el 15/11/2026, sin desplegar: espera el sí del dueño para el push y su prueba en Claude (§6, punto 2). Cuándo empieza lo siguiente frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -270,6 +270,44 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
    desplazamiento y zoom, y «Abrir en MellowCAD». Es lo que convierte una respuesta de texto en
    un dibujo, y lo que copia el éxito de draw.io y Excalidraw. **Terminado:** se ve en Claude y
    en ChatGPT, y el botón abre el editor con el dibujo.
+
+   **Hecho el 15/11/2026** (`lib/mcp/viewer.ts`, las reglas en `.claude/rules/mcp.md`), con la
+   especificación estable de MCP Apps (2026-01-26, paquete `ext-apps` 2.x) y lo que hacen draw.io
+   y Excalidraw, leídos en su código:
+   - **Una página estática** (`ui://mellowcad/drawing-v1.html`, `text/html;profile=mcp-app`) de
+     12 KB, todo en línea, sin el SDK (draw.io lo incrusta: 689 KB su página; Excalidraw carga de
+     esm.sh). El anfitrión puede pedirla antes de la llamada y guardarla por su URI: un cambio que
+     la versión anterior no entienda es una URI nueva. Sin `ui.domain`, que en Claude, si no
+     cuadra, deja el visor en blanco.
+   - **El dibujo va en el `_meta` del resultado**, que el modelo no lee; no en
+     `structuredContent`, que ChatGPT le pasa al modelo y Claude Code le da en lugar del texto. Ni
+     draw.io ni Excalidraw lo hacen así (pintan desde la entrada, porque su visor sabe dibujar el
+     XML o el JSON); los ejemplos oficiales (mapa, PDF) sí. El SVG sale de la vista previa y el
+     presentador del motor, los de la landing, encuadrado en las proporciones del dibujo.
+   - **El tope**: Claude no pinta un resultado de más de unos 150.000 caracteres, así que el SVG
+     se topa en 80.000 (`MAX_VIEW_CHARACTERS`); por encima, el visor lo dice y deja el botón. El
+     peor encargo del banco (la sección: sombreado, cotas, 70 primitivas) son 6.400 caracteres, y
+     ninguno pasa de la décima parte del tope. Fuera del banco: 4.900 círculos son 420.000 y un
+     sombreado denso, 3,7 MB y 160 ms en escribirse, de modo que el número de primitivas se mira
+     antes de escribirlo.
+   - **Desplazar y ampliar** como en el editor: arrastrar (también con la rueda pulsada), la rueda
+     amplía, doble clic es Zoom Extents, y un botón Extents. En línea la rueda pide Ctrl, como en
+     draw.io y Excalidraw, para no robarle el desplazamiento a la conversación; en pantalla
+     completa (el botón, si el anfitrión la ofrece) basta la rueda. Pellizcar en el móvil.
+   - **«Open in MellowCAD»** pide `ui/open-link` con el mismo enlace del texto (Claude, con un
+     conector propio, siempre pregunta antes); si el anfitrión lo rechaza, el enlace queda en un
+     campo para copiarlo. En ChatGPT, `window.openai.openExternal`, y el dominio va en
+     `openai/widgetCSP.redirect_domains` para que no pregunte.
+   - **Comprobado** en Chrome con dos anfitriones: uno escrito a mano, con la CSP por defecto de
+     la especificación, y el `AppBridge` de ext-apps 2.0.4, que valida cada mensaje con sus
+     esquemas: saludo, datos, tamaño, enlace y pantalla completa sin un error. Salieron y se
+     arreglaron tres fallos: el tamaño se mandaba antes del saludo, en pantalla completa crecía un
+     píxel por vuelta con un anfitrión que obedece, y al volver no se reenviaba la altura. Temas
+     claro y oscuro, y 300 px de ancho.
+   - **Sin comprobar**: que Claude lo pinte de verdad (la prueba del dueño tras el push: pedirle a
+     Claude el dibujo de la placa, ver el visor, pulsar el botón) y ChatGPT entero, que su cuenta no deja.
+     Si Claude no pinta nada, lo primero que mirar es si reenvía el `_meta` del resultado; si
+     pinta el visor pero sin dibujo, el mensaje «This answer has no drawing to show» lo confirma.
 3. **El paquete de npm**, por stdio y con estado, para Claude Code, Cursor y Codex. Ahí compite
    con CADCraft y con escribir código, así que vale menos; pero el núcleo es el mismo y cuesta
    poco. Su README es también la página de documentación del MCP en «Build», la remota
@@ -387,6 +425,8 @@ prototipo, el banco y AutoCAD 2027. Lo demás lo leyeron tres investigaciones en
   la mediana de 0,81 a 0,956 y la visión, a 0,963) y CADCodeVerify (arxiv.org/abs/2410.05340).
 - Clientes y especificación: modelcontextprotocol.io (la revisión 2026-07-28, la matriz de
   clientes de MCP Apps, el registro), claude.com/docs/connectors, developers.openai.com/apps-sdk,
+  github.com/modelcontextprotocol/ext-apps (la especificación 2026-01-26 y los ejemplos, leídos
+  el 15/11/2026), claude.com/docs/connectors/building/mcp-apps,
   code.claude.com/docs/en/mcp.
 - Coste: vercel.com/docs/plans/hobby, vercel.com/docs/functions/usage-and-pricing,
   vercel.com/docs/vercel-firewall, github.com/vercel/mcp-handler,

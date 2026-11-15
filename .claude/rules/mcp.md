@@ -31,6 +31,15 @@ Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
   (a 1000 × 1000 ARRAYRECT, a million objects in 3.3 s), so `draw` runs in a `node:vm` context
   whose timeout ends it mid-answer (`MAX_CALL_MILLISECONDS`), the route's `maxDuration` behind it.
   Never a worker: it loads the engine per call. A cut drawing is never read again.
+- **The chat's view** (MCP Apps, `lib/mcp/viewer.ts`): one static page, `VIEWER_URI`, that a
+  host may fetch before the call and cache by its URI, so a change it cannot read is a new URI.
+  Everything inline, nothing fetched (the default CSP; Claude's `ui.domain` is left out: a wrong
+  one hides the view). The drawing travels in the result's `_meta` (`VIEW_META_KEY`), never in
+  `structuredContent`, which ChatGPT reads to the model and Claude Code sends instead of the
+  text. Its SVG is the engine's preview and presenter, capped at `MAX_VIEW_CHARACTERS` (Claude
+  shows no view of a result past some 150,000). The script is hand-written ES2020 in a string
+  (no compiler touches it; the SDK is 300 KB): a test parses it, a browser runs it against
+  ext-apps' own AppBridge (skill `browser-verify`). It reports its height inline only.
 - **The link draws what the answer says**: none after a stop by time, which the editor would
   outrun. Its origin is `SITE_URL` in production and the request's elsewhere, so a preview's link
   opens that preview. `/draw`'s measurements drop the fragment (`EditorMetrics`): `/privacy`

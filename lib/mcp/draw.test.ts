@@ -5,7 +5,12 @@ import { commandCatalog } from "@mellowcad/engine"
 import { MAX_SCRIPT_CHARACTERS } from "@/lib/command-script"
 import { scriptOfHash } from "@/lib/script-link"
 
-import { MAX_DRAW_MILLISECONDS, draw, drawDescription } from "./draw"
+import {
+  MAX_DRAW_MILLISECONDS,
+  MAX_VIEW_CHARACTERS,
+  draw,
+  drawDescription,
+} from "./draw"
 
 const ORIGIN = "https://mellowcad.com"
 
@@ -70,6 +75,7 @@ describe("a call of the draw tool", () => {
     )
     expect(answer.text).toContain("circle center (0,0) radius 5")
     expect(answer.text).not.toContain("Open it in MellowCAD")
+    expect(answer.view.link).toBeNull()
   })
 
   it("is cut in the middle of an answer that runs long", () => {
@@ -86,6 +92,35 @@ describe("a call of the draw tool", () => {
     expect(answer.text).toMatch(/^CUT: one call runs for /)
     // The process goes on: the next call draws.
     expect(draw("CIRCLE 0,0 1", ORIGIN).objects).toBe(1)
+  })
+
+  it("gives the chat's view the drawing as SVG, framed to its proportions", () => {
+    const { view, text } = draw("RECTANG 0,0 100,25", ORIGIN)
+    expect(view.objects).toBe(1)
+    expect(view.svg).toMatch(/^<svg [^>]*viewBox="0 0 1200 300"/)
+    expect(view.link).toBe(text.match(/Open it in MellowCAD: (\S+)$/)?.[1])
+    expect(draw("LIST", ORIGIN).view).toEqual({
+      svg: null,
+      link: null,
+      objects: 0,
+    })
+  })
+
+  it("leaves out an SVG past its cap, and keeps the link", () => {
+    // ANSI31 at 0.01 over a square of 1000 is 44,000 lines on screen.
+    const { view } = draw(
+      "RECTANG 0,0 1000,1000\n-HATCH P ANSI31 0.01 0\nS L\n\n\n",
+      ORIGIN
+    )
+    expect(view).toMatchObject({ svg: null, objects: 2 })
+    expect(view.link).toMatch(/\/draw#run=/)
+    // Under the count it is cut by size: 4,900 circles are 420,000 characters.
+    const circles = draw(
+      "CIRCLE 0,0 1\nARRAYRECT L\n\nAS N COU 70 70 S 3 3\nX",
+      ORIGIN
+    )
+    expect(circles.view).toMatchObject({ svg: null, objects: 4900 })
+    expect(MAX_VIEW_CHARACTERS).toBeLessThan(150_000 / 1.5)
   })
 
   it("refuses a script longer than a call takes, drawing nothing", () => {

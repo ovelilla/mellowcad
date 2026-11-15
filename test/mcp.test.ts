@@ -2,7 +2,7 @@ import { describe, expect, it, onTestFinished } from "vitest"
 import { shapesOfDxf } from "../scripts/mcp/bench/shapes.ts"
 import { CadDriver } from "@mellowcad/engine"
 import { SCRIPT_VIEW } from "../lib/command-script"
-import { drawOn } from "../lib/mcp/draw"
+import { MAX_VIEW_CHARACTERS, drawOn } from "../lib/mcp/draw"
 import { SOLUTIONS, solve } from "../scripts/mcp/bench/solutions.ts"
 import { TASKS } from "../scripts/mcp/bench/tasks.ts"
 import { createServer } from "../scripts/mcp/server.ts"
@@ -225,6 +225,8 @@ describe("the bench through the remote tool", () => {
       onTestFinished(() => cad.dispose())
       const answer = drawOn(cad, script, "https://mellowcad.com")
       expect(answer.isError).toBe(false)
+      // The chat shows it, with room: the largest, the section, is 6,400.
+      expect(answer.view.svg?.length).toBeLessThan(MAX_VIEW_CHARACTERS / 10)
       const checks = task.checks(shapesOfDxf((await cad.writeDxf()).bytes))
       expect(checks.filter(([, pass]) => !pass).map(([name]) => name)).toEqual(
         []
