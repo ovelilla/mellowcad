@@ -9,8 +9,11 @@ import type {
   Clipboard,
   DrawingStore,
   EngineHost,
+  FileKind,
   FileTransport,
+  OpenedFile,
 } from "./ports"
+import type { DxfWriteOptions, WrittenDxf } from "./runtimeFiles"
 import type { BlockDefinition, Entity, EntityId } from "../domain/entities"
 import type { Scene } from "../scene/types"
 import type { Vec2 } from "../geometry/Vec2"
@@ -479,6 +482,29 @@ export class CadDriver {
   zoomToFit(padding?: number): this {
     this.runtime.zoomToFit(padding)
     return this
+  }
+
+  /**
+   * Opens a file in place of the drawing, as OPEN opens the one it picks: a
+   * DXF by its name or its first group, else a drawing file. What a DXF
+   * holds that the model has not, or a file that is no drawing, is said on
+   * the command line, as `commandLog()` reads. Never rejects.
+   */
+  openFile(
+    file: OpenedFile | string,
+    kinds?: readonly FileKind[]
+  ): Promise<void> {
+    return this.runtime.openFile(file, kinds)
+  }
+
+  /**
+   * The drawing as a DXF, with no command: no dialog, no line in the
+   * history, no undo step. What DXFOUT writes, an AutoCAD 2018 ASCII DXF at
+   * 16 decimal places unless `options` say otherwise, with what the file
+   * could not hold counted. Rejects for a version it does not write.
+   */
+  writeDxf(options?: DxfWriteOptions): Promise<WrittenDxf> {
+    return this.runtime.writeDxf(options)
   }
 
   /** Runs a command by name or alias, as typing it at the prompt would. */

@@ -13,6 +13,7 @@ import { fr } from "../locales/fr"
 import { parseDxf } from "../serialization/dxf/readDxf"
 import { DEFAULT_DXF_SETTINGS } from "./runtimeFiles"
 import type { SaveAsChoice } from "./EngineState"
+import type { DxfVersion } from "../serialization/dxf/writeDxf"
 
 // SAVEAS, SAVE and DXFOUT through their Save Drawing As dialog, as AutoCAD
 // 2027's desktop runs them (desktop dxf/d01, probes dxf/x015–x020).
@@ -274,5 +275,77 @@ describe("the Save Drawing As dialog", () => {
     typed(cad, "DXFOUT")
     expect(cad.state().saveAsDialog).toBeNull()
     expect(cad.commandLog().join(" ")).toMatch(/not available/i)
+  })
+})
+
+// What a host writes for itself (an MCP server, a script): what DXFOUT
+// writes, with no dialog, no command and nothing in the drawing's history.
+describe("writeDxf, with no command", () => {
+  it("writes DXFOUT's file, AutoCAD 2018 ASCII at 16 places, and leaves no trace", async () => {
+    const { cad, files } = drawing()
+    typed(cad, "_CIRCLE", "0,0", "1/3")
+    typed(cad, "DXFOUT")
+    const dialog = cad.state().saveAsDialog
+    cad.runtime.setSaveAsDialog(false)
+    const log = cad.commandLog()
+    const { bytes, leftOut } = await cad.writeDxf()
+    const text = new TextDecoder().decode(bytes)
+    expect(text).toContain("AC1032")
+    expect(text).toContain("0.3333333333333333")
+    expect(leftOut.size).toBe(0)
+    expect(parseDxf(bytes).drawing.entities.map((e) => e.type)).toEqual([
+      "line",
+      "circle",
+      "circle",
+    ])
+    await cad.writeDxf({ version: "2004", binary: true, precision: 3 })
+    expect(cad.commandLog()).toEqual(log)
+    expect(files.saved).toHaveLength(0)
+    // The last step still the DXFOUT cancelled, then the circle; the
+    // drawing's name and DXF Options as they were.
+    expect(typed(cad, "_U").at(-1)).toBe("DXFOUT")
+    typed(cad, "_U")
+    expect(cad.entityCount).toBe(2)
+    typed(cad, "DXFOUT")
+    expect(cad.state().saveAsDialog).toEqual(dialog)
+  })
+
+  it("takes a version, binary and decimal places, clamped as DXF Options clamps them", async () => {
+    const { cad } = drawing()
+    typed(cad, "_LINE", "0,0", "0.123456789,0", "")
+    const ascii = async (precision: number) =>
+      new TextDecoder().decode((await cad.writeDxf({ precision })).bytes)
+    expect(await ascii(3)).toContain("\r\n0.123\r\n")
+    expect(await ascii(99)).toBe(await ascii(16))
+    expect(await ascii(-5)).toBe(await ascii(0))
+    const old = await cad.writeDxf({ version: "2000" })
+    expect(new TextDecoder().decode(old.bytes)).toContain("AC1015")
+    const binary = await cad.writeDxf({ binary: true })
+    const head = new TextDecoder().decode(binary.bytes.slice(0, 22))
+    expect(head).toBe("AutoCAD Binary DXF\r\n\x1a\0")
+    expect(parseDxf(binary.bytes).drawing.entities).toHaveLength(3)
+  })
+
+  it("refuses a version it does not write, by name", async () => {
+    const { cad } = drawing()
+    const version = "2019" as DxfVersion
+    await expect(cad.writeDxf({ version })).rejects.toThrow(
+      "No DXF version 2019: one of 2018, 2013, 2010, 2007, 2004, 2000."
+    )
+  })
+
+  it("counts what the file cannot hold, saying nothing", async () => {
+    const { cad } = drawing()
+    typed(cad, "_BOX", "0,0,0", "10,10,10")
+    const log = cad.commandLog()
+    const { leftOut } = await cad.writeDxf()
+    expect([...leftOut]).toEqual([["3DSOLID", 1]])
+    expect(cad.commandLog()).toEqual(log)
+  })
+
+  it("needs no file access", async () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    const { bytes } = await cad.writeDxf()
+    expect(parseDxf(bytes).drawing.entities).toHaveLength(1)
   })
 })

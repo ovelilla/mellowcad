@@ -271,13 +271,56 @@ const DXF_VERSIONS: Readonly<
   dxf2000: "2000",
 }
 
+/** How `writeDxf` writes a DXF; each option left out is DXFOUT's default. */
+export interface DxfWriteOptions {
+  /** The AutoCAD release the file is for: 2018 unless said. */
+  readonly version?: DxfVersion
+  /** Binary instead of ASCII. */
+  readonly binary?: boolean
+  /** Decimal places of accuracy, 0 to 16: 16 unless said. */
+  readonly precision?: number
+}
+
+/** A DXF `writeDxf` wrote. */
+export interface WrittenDxf {
+  /** The file: ASCII text, in UTF-8 from 2007 and in its code page before, or the binary form. */
+  readonly bytes: Uint8Array
+  /** What the file could not hold, counted by DXF type (`3DSOLID`); empty when it holds everything. */
+  readonly leftOut: ReadonlyMap<string, number>
+}
+
+/** Decimal places as DXF Options takes them: a whole number from 0 to 16, 16 for what is no number. */
+function dxfPrecision(value: number): number {
+  const raw = Math.round(value)
+  return Number.isFinite(raw) ? Math.min(16, Math.max(0, raw)) : 16
+}
+
+/**
+ * What the writer takes of {@link DxfWriteOptions}: DXFOUT's defaults, the
+ * precision as DXF Options takes it. Throws for a version it does not
+ * write: a host may pass on what an agent typed, which no type checked.
+ */
+export function dxfWriteOptions(options: DxfWriteOptions): DxfSaveOptions {
+  const version = options.version ?? "2018"
+  const versions = Object.values(DXF_VERSIONS)
+  if (!versions.includes(version)) {
+    throw new RangeError(
+      `No DXF version ${String(version)}: one of ${versions.join(", ")}.`
+    )
+  }
+  return {
+    version,
+    binary: options.binary ?? false,
+    precision: dxfPrecision(options.precision ?? 16),
+  }
+}
+
 /** A Save's DXF Options, the precision a whole number from 0 to 16, and what the writer takes of them. */
 export function dxfSaveOptions(choice: SaveAsChoice): {
   settings: DxfSaveSettings
   write: DxfSaveOptions
 } {
-  const raw = Math.round(choice.dxf.precision)
-  const precision = Number.isFinite(raw) ? Math.min(16, Math.max(0, raw)) : 16
+  const precision = dxfPrecision(choice.dxf.precision)
   const settings: DxfSaveSettings = {
     binary: choice.dxf.binary,
     precision,

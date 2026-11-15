@@ -82,6 +82,24 @@ To read what happened:
 | `scene()`                              | The frame a canvas would show, for a presenter                 |
 | `commandLog()`                         | The command line's history, as text                            |
 
+## DXF in and out
+
+`openFile({ name, bytes })` opens a DXF, or a drawing file, in place of the drawing, as OPEN opens
+the one it picks: what the DXF holds that the engine has no object for is said on the command line.
+`writeDxf()` returns the drawing as a DXF with no command, no line in the history and no undo
+step (see [DXF](drawings.md#dxf)):
+
+```ts
+import { readFileSync, writeFileSync } from "node:fs"
+
+import { CadDriver } from "@mellowcad/engine"
+
+const cad = new CadDriver()
+await cad.openFile({ name: "plan.dxf", bytes: readFileSync("plan.dxf") })
+cad.keyIn("CIRCLE 0,0 25")
+writeFileSync("plan-2.dxf", (await cad.writeDxf()).bytes)
+```
+
 ## Options
 
 ```ts

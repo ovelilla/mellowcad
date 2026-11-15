@@ -119,6 +119,8 @@ export type {
   OpenedFile,
   Clipboard,
 } from "./application/ports"
+export type { DxfWriteOptions, WrittenDxf } from "./application/runtimeFiles"
+export type { DxfVersion } from "./serialization/dxf/writeDxf"
 export type { SaveState } from "./application/Autosave"
 export type { DrawingSummary } from "./serialization/drawingSummary"
 

@@ -33,6 +33,7 @@ import { ConstraintType } from "../application/constraints/types"
 import type { ViewPreset } from "../application/tools/viewPresets"
 import type { ZoomOption } from "../application/tools/zoomMenu"
 import type { PointerModifiers } from "../application/CadDriver"
+import type { DxfWriteOptions, WrittenDxf } from "../application/runtimeFiles"
 import type {
   ViewCubeRoll,
   ViewCubeSide,
@@ -885,6 +886,17 @@ export class CadEngine {
     kinds?: readonly FileKind[]
   ): Promise<void> {
     return this.runtime.openFile(file, kinds)
+  }
+
+  /**
+   * The drawing as a DXF, handed back with no command: no Save Drawing As
+   * dialog, no line on the command line, no undo step. What DXFOUT writes,
+   * an AutoCAD 2018 ASCII DXF at 16 decimal places unless `options` say
+   * otherwise, with what the file could not hold counted. Rejects for a
+   * version it does not write.
+   */
+  writeDxf(options?: DxfWriteOptions): Promise<WrittenDxf> {
+    return this.runtime.writeDxf(options)
   }
 
   /**

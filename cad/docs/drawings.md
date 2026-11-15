@@ -138,6 +138,16 @@ Options' decimal places and Select objects; the writer loads only when the dialo
 the file is in its code page and a binary one is bytes, so `save` takes a `Uint8Array` as well as
 text.
 
+For a DXF of your own, with no dialog, `writeDxf()` returns the file's bytes and what it could not
+hold, counted by DXF type. It is no command: nothing on the command line, no undo step, the
+drawing's name and DXF Options as they were. Left out, its options are DXFOUT's: AutoCAD 2018,
+ASCII, 16 decimal places.
+
+```ts
+const { bytes, leftOut } = await engine.writeDxf({ version: "2013", binary: true })
+leftOut // Map { "3DSOLID" => 1 } for a solid, which no DXF of ours holds
+```
+
 ## The clipboard
 
 COPYCLIP (Ctrl+C), CUTCLIP (Ctrl+X) and PASTECLIP (Ctrl+V) use the system clipboard, as AutoCAD

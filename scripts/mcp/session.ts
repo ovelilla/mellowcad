@@ -2,9 +2,8 @@ import {
   CadDriver,
   SvgScenePresenter,
   buildDrawingPreview,
-  createMemoryDrawingStore,
 } from "@mellowcad/engine"
-import type { Entity, EntityId, FileTransport, Vec2 } from "@mellowcad/engine"
+import type { Entity, EntityId, Vec2 } from "@mellowcad/engine"
 // WHY deep: the prototype measures before the engine grows a public surface
 // for it; what the product needs exported is listed in `docs/next-mcp.md`.
 import { entitiesBounds } from "../../cad/domain/entities"
@@ -232,7 +231,7 @@ export class DrawingSession {
   async openFile(name: string, bytes: Uint8Array): Promise<readonly string[]> {
     this.cancel()
     const logBefore = this.cad.state().commandLine.lines
-    await this.cad.runtime.openFile({ name, bytes })
+    await this.cad.openFile({ name, bytes })
     this.cad.zoomToFit()
     this.handles.clear()
     this.ids.clear()
@@ -243,39 +242,9 @@ export class DrawingSession {
     return this.cad.runtime.serializeDrawing()
   }
 
-  /**
-   * The drawing as an AutoCAD 2018 DXF, written by DXFOUT on a copy: on the
-   * session itself the save would be a step of the agent's undo history.
-   */
+  /** The drawing as an AutoCAD 2018 DXF, with no step in the agent's undo history. */
   async dxf(): Promise<Uint8Array> {
-    let saved: string | Uint8Array | null = null
-    const files: FileTransport = {
-      save: (content) => {
-        saved = content
-      },
-      open: () => Promise.resolve(null),
-    }
-    const copy = new CadDriver({
-      store: createMemoryDrawingStore(this.drawingFile()),
-      files,
-    })
-    try {
-      copy.keyIn("DXFOUT")
-      const dialog = copy.state().saveAsDialog
-      if (!dialog) throw new Error("DXFOUT did not ask for a file.")
-      await copy.runtime.saveAs({
-        fileName: "drawing",
-        fileType: dialog.fileType,
-        dxf: dialog.dxf,
-      })
-    } finally {
-      copy.dispose()
-    }
-    const content = saved as string | Uint8Array | null
-    if (content === null) throw new Error("DXFOUT wrote nothing.")
-    return typeof content === "string"
-      ? new TextEncoder().encode(content)
-      : content
+    return (await this.cad.writeDxf()).bytes
   }
 
   /** The objects alone, framed, as an SVG document; null for an empty drawing. */

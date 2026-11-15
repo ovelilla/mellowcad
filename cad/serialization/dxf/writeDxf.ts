@@ -41,7 +41,7 @@ import {
   writeEntity,
 } from "./dxfWriteEntities"
 
-/** The DXF versions SAVEAS and DXFOUT write, as their Version prompt names them (probe x003). */
+/** The AutoCAD releases a DXF is written for, as SAVEAS and DXFOUT name them (probe x003). */
 export type DxfVersion = "2000" | "2004" | "2007" | "2010" | "2013" | "2018"
 
 /** Each version's $ACADVER. */

@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER) y 1.2 (`CadDriver.keyIn`), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`) y 1.3 (DXF sin cuadro), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -236,8 +236,10 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
       respuesta rechazada (un mensaje de error del motor); `zoomToFit` encuadra sin escribir en
       el historial. El prototipo ya teclea por ahí; lo que hace suyo (juntar `0, 0`, saltar
       una línea en blanco en `Command:`) es del MCP, no del motor, que es fiel.
-   3. **DXF sin cuadro**: el dibujo a DXF y de DXF como funciones públicas del paquete; hoy solo
-      se llega por el cuadro de DXFOUT, que además es un paso de deshacer.
+   3. **DXF sin cuadro** (hecho el 15/11/2026): `writeDxf()` en `CadEngine` y `CadDriver` da el
+      DXF, con las opciones de DXFOUT, sin cuadro, sin comando y sin paso de deshacer, y cuenta
+      lo que no cabe; `CadDriver.openFile` abre un DXF como OPEN. Métodos y no funciones sueltas:
+      quien los usa ya tiene un motor, y el escritor sigue cargándose aparte.
    4. **`/draw#run=`** en el editor.
    5. **La ruta** en el sitio, fuera de los idiomas, con `mcp-handler`; sus topes y sus reglas
       del cortafuegos (§7); la página de privacidad corregida en todos los idiomas, porque hoy

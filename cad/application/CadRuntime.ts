@@ -270,6 +270,8 @@ import {
   dxfReportLines,
   dxfSaveLines,
   dxfSaveOptions,
+  dxfWriteOptions,
+  type DxfWriteOptions,
   loadDxfWriter,
   readClipboardFragment,
   saveFileName,
@@ -277,6 +279,7 @@ import {
   selectAll,
   serializeDrawing,
   suggestedFileName,
+  type WrittenDxf,
 } from "./runtimeFiles"
 import {
   buildPropertiesUi,
@@ -6338,6 +6341,20 @@ export class CadRuntime extends Observable {
     }
     this.history.markRegenerated()
     this.invalidateState()
+  }
+
+  /**
+   * The drawing as a DXF, handed to the caller with no command: no dialog,
+   * no line in the history, no undo step, the drawing's name and DXF Options
+   * as they were. What DXFOUT would write of the drawing as it stands.
+   */
+  async writeDxf(options: DxfWriteOptions = {}): Promise<WrittenDxf> {
+    // Read before the writer loads: what is drawn meanwhile is not in it.
+    const drawing = documentSnapshot(this.document)
+    const writer = this.dxfWriter ?? (await loadDxfWriter())
+    this.dxfWriter = writer
+    const { bytes, report } = writer.writeDxf(drawing, dxfWriteOptions(options))
+    return { bytes, leftOut: report.leftOut }
   }
 
   /** The SAVEAS, SAVE or DXFOUT run: its dialog, and the set Select objects asks for. */

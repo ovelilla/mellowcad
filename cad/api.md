@@ -349,6 +349,14 @@ export declare class CadEngine {
      */
     openFile(file: OpenedFile | string, kinds?: readonly FileKind[]): Promise<void>;
     /**
+     * The drawing as a DXF, handed back with no command: no Save Drawing As
+     * dialog, no line on the command line, no undo step. What DXFOUT writes,
+     * an AutoCAD 2018 ASCII DXF at 16 decimal places unless `options` say
+     * otherwise, with what the file could not hold counted. Rejects for a
+     * version it does not write.
+     */
+    writeDxf(options?: DxfWriteOptions): Promise<WrittenDxf>;
+    /**
      * PASTECLIP: reads the clipboard and starts placing what was copied there.
      */
     pasteFromClipboard(): Promise<void>;
@@ -506,6 +514,20 @@ export declare class CadDriver {
      * framing the drawing keeps "on the object" a constant share of its size.
      */
     zoomToFit(padding?: number): this;
+    /**
+     * Opens a file in place of the drawing, as OPEN opens the one it picks: a
+     * DXF by its name or its first group, else a drawing file. What a DXF
+     * holds that the model has not, or a file that is no drawing, is said on
+     * the command line, as `commandLog()` reads. Never rejects.
+     */
+    openFile(file: OpenedFile | string, kinds?: readonly FileKind[]): Promise<void>;
+    /**
+     * The drawing as a DXF, with no command: no dialog, no line in the
+     * history, no undo step. What DXFOUT writes, an AutoCAD 2018 ASCII DXF at
+     * 16 decimal places unless `options` say otherwise, with what the file
+     * could not hold counted. Rejects for a version it does not write.
+     */
+    writeDxf(options?: DxfWriteOptions): Promise<WrittenDxf>;
     /** Runs a command by name or alias, as typing it at the prompt would. */
     command(text: string): this;
     tool(id: string): this;
@@ -1594,6 +1616,21 @@ export interface DrawingSummary {
     readonly layers: number;
 }
 
+export type { DxfVersion }
+/** The AutoCAD releases a DXF is written for, as SAVEAS and DXFOUT name them (probe x003). */
+export type DxfVersion = "2000" | "2004" | "2007" | "2010" | "2013" | "2018";
+
+export type { DxfWriteOptions }
+/** How `writeDxf` writes a DXF; each option left out is DXFOUT's default. */
+export interface DxfWriteOptions {
+    /** The AutoCAD release the file is for: 2018 unless said. */
+    readonly version?: DxfVersion;
+    /** Binary instead of ASCII. */
+    readonly binary?: boolean;
+    /** Decimal places of accuracy, 0 to 16: 16 unless said. */
+    readonly precision?: number;
+}
+
 export type { FileKind }
 /** A kind of file the engine opens: its own drawings, or a DXF. */
 export type FileKind = "drawing" | "dxf";
@@ -1647,6 +1684,15 @@ export declare function readSavedDrawingSummary(): DrawingSummary | null;
 export type { SaveState }
 /** Lifecycle of the transparent auto-save, surfaced to the UI save button. */
 export type SaveState = "idle" | "saving" | "saved";
+
+export type { WrittenDxf }
+/** A DXF `writeDxf` wrote. */
+export interface WrittenDxf {
+    /** The file: ASCII text, in UTF-8 from 2007 and in its code page before, or the binary form. */
+    readonly bytes: Uint8Array;
+    /** What the file could not hold, counted by DXF type (`3DSOLID`); empty when it holds everything. */
+    readonly leftOut: ReadonlyMap<string, number>;
+}
 ```
 
 ### Rendering
