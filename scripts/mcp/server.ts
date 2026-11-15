@@ -4,6 +4,7 @@ import { basename, extname, join } from "node:path"
 import { createInterface } from "node:readline"
 import { pathToFileURL } from "node:url"
 import { STANDARD_COLORS, normalizeColor } from "@mellowcad/engine"
+import { stopText } from "../../lib/mcp/draw"
 import { DrawingSession } from "./session.ts"
 import type { RunResult } from "./session.ts"
 
@@ -75,12 +76,7 @@ export function createServer(
 
   function runText(result: RunResult): string {
     const parts = [result.transcript.join("\n")]
-    if (result.stopped) {
-      parts.push(
-        `STOPPED at script line ${result.stopped.line}: "${result.stopped.typed}" was refused (see the last lines above). ` +
-          `${result.stopped.linesNotRun} line(s) after it were not run.`
-      )
-    }
+    if (result.stopped) parts.push(stopText(result.stopped))
     if (result.cancelled !== null) {
       parts.push(
         `A command was still asking "${result.cancelled}" and was cancelled; what it had already drawn stays.`

@@ -3,10 +3,8 @@ import {
   SvgScenePresenter,
   buildDrawingPreview,
 } from "@mellowcad/engine"
-import type { Entity, EntityId, Vec2 } from "@mellowcad/engine"
-// WHY deep: the prototype measures before the engine grows a public surface
-// for it; what the product needs exported is listed in `docs/next-mcp.md`.
-import { entitiesBounds } from "../../cad/domain/entities"
+import type { Entity, EntityId } from "@mellowcad/engine"
+import { describeGeometry, extentsText } from "../../lib/mcp/describe"
 import {
   SCRIPT_VIEW,
   runScript,
@@ -168,15 +166,7 @@ export class DrawingSession {
   }
 
   extentsText(): string {
-    const bounds = entitiesBounds(
-      this.entities(),
-      this.cad.runtime.document.blockLookup()
-    )
-    if (!bounds) return "The drawing is empty."
-    return (
-      `${this.cad.entityCount} objects, extents ` +
-      `${point(bounds.min)} to ${point(bounds.max)}`
-    )
+    return extentsText(this.cad.entityCount, this.cad.extents())
   }
 
   /** `#handle type layer geometry`, a line per object. */
@@ -232,72 +222,4 @@ function newLines(
     if (at >= 0) return after.slice(at + 1).map((line) => line.text)
   }
   return after.map((line) => line.text)
-}
-
-function num(value: number): string {
-  const rounded = Math.round(value * 1e4) / 1e4
-  return Object.is(rounded, -0) ? "0" : String(rounded)
-}
-
-function point(p: Vec2): string {
-  return `(${num(p.x)},${num(p.y)})`
-}
-
-function degrees(radians: number): string {
-  return num((radians * 180) / Math.PI)
-}
-
-function describeGeometry(entity: Entity): string {
-  switch (entity.type) {
-    case "line":
-      return `line ${point(entity.start)} to ${point(entity.end)}`
-    case "circle":
-      return `circle center ${point(entity.center)} radius ${num(entity.radius)}`
-    case "arc": {
-      const at = (angle: number) => ({
-        x: entity.center.x + entity.radius * Math.cos(angle),
-        y: entity.center.y + entity.radius * Math.sin(angle),
-      })
-      return (
-        `arc center ${point(entity.center)} radius ${num(entity.radius)} ` +
-        `from ${degrees(entity.startAngle)}° to ${degrees(entity.endAngle)}° ccw, ` +
-        `ends ${point(at(entity.startAngle))} ${point(at(entity.endAngle))}`
-      )
-    }
-    case "polyline": {
-      const vertices = entity.vertices.map((vertex, i) => {
-        const bulge = entity.bulges?.[i] ?? 0
-        return point(vertex) + (bulge === 0 ? "" : ` bulge ${num(bulge)}`)
-      })
-      return `polyline ${entity.closed ? "closed" : "open"} ${vertices.join(" ")}`
-    }
-    case "ellipse":
-      return (
-        `ellipse center ${point(entity.center)} major axis vector ` +
-        `${point(entity.majorAxis)} ratio ${num(entity.ratio)}`
-      )
-    case "text":
-      return (
-        `text "${entity.value}" at ${point(entity.position)} ` +
-        `height ${num(entity.height)} rotation ${degrees(entity.rotation)}°`
-      )
-    case "mtext":
-      return (
-        `mtext "${entity.contents}" at ${point(entity.position)} ` +
-        `height ${num(entity.height)}`
-      )
-    case "dimension":
-      return (
-        `dimension ${entity.kind} from ${point(entity.first)} to ` +
-        `${point(entity.second)}, dimension line through ${point(entity.linePoint)}`
-      )
-    case "hatch":
-      return `hatch ${entity.patternId}, ${entity.loops.length} loop(s)`
-    case "insert":
-      return `block reference at ${point(entity.position)} rotation ${degrees(entity.rotation)}°`
-    case "point":
-      return `point ${point(entity.position)}`
-    default:
-      return entity.type
-  }
 }

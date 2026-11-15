@@ -1,0 +1,52 @@
+---
+description: The MCP server at /mcp — stateless, one tool over the command line, its limits, its firewall and what it promises
+paths:
+  - "app/mcp/**"
+  - "lib/mcp/**"
+  - "lib/command-script.ts"
+  - "scripts/mcp/**"
+---
+
+# The MCP server (`/mcp`)
+
+> Verified against **mcp-handler 2.3.1**, **@modelcontextprotocol/server 2.4.0**.
+
+Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
+
+- **Stateless, one tool** (`draw`): every call types its script on an empty drawing
+  (`lib/mcp/draw.ts`, nothing of Vercel's in it, so it can move) and answers with the command
+  window, the objects and the editor's link. No session, store, account or log of a script:
+  `/privacy` says so (`Privacy.assistant*`), and anything kept would change it in the same commit.
+- **The script is typed by `runScript`** (`lib/command-script.ts`), the editor's `#run=` too, so a
+  link draws what the server answered. Its leniencies and stops are the script's, never the
+  engine's; a command that opens a dialog box stops it (`DIALOG_COMMANDS`, which a test holds to
+  every command that opens one).
+- **The description is built from the engine's catalog** (`drawDescription`): a command added is
+  offered, and one that reaches a file, the clipboard or the screen is left out (`NOT_OFFERED`).
+- **Limits**: the script's size and objects (`MAX_SCRIPT_CHARACTERS`, `MAX_SCRIPT_LINES`,
+  `MAX_SCRIPT_OBJECTS`, the editor's too), a deadline checked between answers
+  (`MAX_DRAW_MILLISECONDS`), a body over 64 KB refused, and **the cut**: one answer can run long
+  (a 1000 × 1000 ARRAYRECT, a million objects in 3.3 s), so `draw` runs in a `node:vm` context
+  whose timeout ends it mid-answer (`MAX_CALL_MILLISECONDS`), the route's `maxDuration` behind it.
+  Never a worker: it loads the engine per call. A cut drawing is never read again.
+- **The link draws what the answer says**: none after a stop by time, which the editor would
+  outrun. Its origin is `SITE_URL` in production and the request's elsewhere, so a preview's link
+  opens that preview. `/draw`'s measurements drop the fragment (`EditorMetrics`): `/privacy`
+  promises the script never reaches a server.
+
+## The firewall (Vercel dashboard, the owner's)
+
+Hobby pauses the whole team past a limit, the site with it; Active CPU (4 h a month) is the one
+an abuser reaches. Three custom rules, Hobby's all, applied without a deploy:
+
+1. **`mcp-off`**: path `/mcp`, Deny; kept **disabled**. Enabled, it is the switch that turns the
+   server off at once.
+2. **`mcp-rate`**: path `/mcp` and IP **not** in Claude's egress (`160.79.104.0/21`,
+   `153.61.208.0/20`, platform.claude.com/docs/en/api/ip-addresses) nor ChatGPT's
+   (openai.com/chatgpt-connectors.json, 289 prefixes on 2026-11-06, 75 a condition): Rate Limit,
+   10 requests per 60 s by IP, fixed window, 429. Per IP, never for the providers: all their
+   users leave through the same addresses. A stale list only limits a ChatGPT address it lacks.
+3. Free.
+
+Whether a custom rule's IP condition takes a CIDR was not verifiable from the docs: check it while
+setting the rule.

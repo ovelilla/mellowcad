@@ -1,6 +1,4 @@
 import { Geist_Mono, Inter, Readex_Pro } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 
@@ -16,6 +14,7 @@ import {
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site"
+import { EditorMetrics } from "@/components/editor-metrics"
 import { cn } from "@/lib/utils"
 import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
@@ -109,8 +108,7 @@ export default async function AppLayout({
       </head>
       <body>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        <EditorMetrics />
       </body>
     </html>
   )

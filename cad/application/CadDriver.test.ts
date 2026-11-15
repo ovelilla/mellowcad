@@ -118,6 +118,18 @@ describe("zoomToFit", () => {
   })
 })
 
+describe("extents", () => {
+  it("bounds every object, and is null for an empty drawing", () => {
+    const cad = createHarness()
+    expect(cad.extents()).toBeNull()
+    cad.keyIn("CIRCLE 0,0 10")
+    cad.keyIn("LINE 50,-20 60,30 ")
+    const extents = cad.extents()
+    expect(extents?.min).toBeCloseToPoint({ x: -10, y: -20 })
+    expect(extents?.max).toBeCloseToPoint({ x: 60, y: 30 })
+  })
+})
+
 describe("cancelCommand", () => {
   it("ends what is asking, as ^C^C, keeping what the command drew", () => {
     const cad = createHarness()

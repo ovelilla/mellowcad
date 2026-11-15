@@ -1,6 +1,9 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, onTestFinished } from "vitest"
 import { shapesOfDxf } from "../scripts/mcp/bench/shapes.ts"
-import { solve } from "../scripts/mcp/bench/solutions.ts"
+import { CadDriver } from "@mellowcad/engine"
+import { SCRIPT_VIEW } from "../lib/command-script"
+import { drawOn } from "../lib/mcp/draw"
+import { SOLUTIONS, solve } from "../scripts/mcp/bench/solutions.ts"
 import { TASKS } from "../scripts/mcp/bench/tasks.ts"
 import { createServer } from "../scripts/mcp/server.ts"
 import type { Feedback } from "../scripts/mcp/server.ts"
@@ -42,7 +45,12 @@ describe("a drawing session at the command line", () => {
   it("stops at the first refused answer and leaves the rest unrun", () => {
     const session = new DrawingSession()
     const result = session.run("-PLOT\nY\nModel\n\nERASE\nALL\n")
-    expect(result.stopped).toEqual({ line: 1, typed: "-PLOT", linesNotRun: 6 })
+    expect(result.stopped).toEqual({
+      reason: "refused",
+      line: 1,
+      typed: "-PLOT",
+      linesNotRun: 6,
+    })
     expect(result.transcript.at(-1)).toMatch(/^Unknown command "-PLOT"/)
 
     const refused = session.run("LINE\n0,0\nfoo\n10,10")
@@ -196,6 +204,31 @@ describe("the bench", () => {
       )
       // What is true of the untouched drawing cannot be all of a task.
       expect(before.length).toBeLessThan(checks.length)
+    }
+  )
+})
+
+describe("the bench through the remote tool", () => {
+  // WHY not the two that open a DXF: the remote server reads no file
+  // (`docs/next-mcp.md`, §8); they are the npm package's.
+  it.each(
+    TASKS.filter((task) => !task.seed).map((task) => [task.id, task] as const)
+  )(
+    "%s: its reference, as one stateless script, passes every check",
+    async (_id, task) => {
+      const script = (SOLUTIONS[task.id] ?? [])
+        .map((step) =>
+          "layer" in step ? `-LAYER\nM\n${step.layer}\n` : step.script
+        )
+        .join("\n")
+      const cad = new CadDriver(SCRIPT_VIEW).leave()
+      onTestFinished(() => cad.dispose())
+      const answer = drawOn(cad, script, "https://mellowcad.com")
+      expect(answer.isError).toBe(false)
+      const checks = task.checks(shapesOfDxf((await cad.writeDxf()).bytes))
+      expect(checks.filter(([, pass]) => !pass).map(([name]) => name)).toEqual(
+        []
+      )
     }
   )
 })

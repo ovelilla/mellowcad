@@ -62,3 +62,9 @@ export const INDEXNOW_KEY = "1eb5d0fec5dc99d5695b010f04667a07"
  * is bumped by hand with the copy — never stamped with the build time.
  */
 export const CONTENT_UPDATED = "2026-11-13"
+
+/**
+ * When the privacy notice last changed: what it says it keeps, measures or
+ * hands on. Bumped by hand with the notice, apart from the landing's copy.
+ */
+export const PRIVACY_UPDATED = "2026-11-15"

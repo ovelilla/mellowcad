@@ -5,8 +5,8 @@ import type { ReactNode } from "react"
 import { pageMetadata } from "@/lib/metadata"
 import {
   CONTACT_EMAIL,
-  CONTENT_UPDATED,
   DATA_CONTROLLER,
+  PRIVACY_UPDATED,
   SITE_NAME,
 } from "@/lib/site"
 
@@ -77,6 +77,10 @@ export default async function PrivacyPage() {
         note={t("storedNote")}
       />
       <Block
+        title={t("assistantTitle")}
+        items={[t("assistant1"), t("assistant2"), t("assistant3")]}
+      />
+      <Block
         title={t("analyticsTitle")}
         items={[t("analytics1"), t("analytics2"), t("analytics3")]}
       />
@@ -104,7 +108,7 @@ export default async function PrivacyPage() {
       <Block title={t("rightsTitle")} items={[t("rights1"), t("rights2")]} />
       <p className="data-mono text-xs text-fg-subtle">
         {t("updated", {
-          date: format.dateTime(new Date(CONTENT_UPDATED), {
+          date: format.dateTime(new Date(PRIVACY_UPDATED), {
             dateStyle: "long",
           }),
         })}

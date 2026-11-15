@@ -173,7 +173,7 @@ claims follow `i18n.md`.
 ## Rendering and weight
 
 - Pages are `●`; the `.md` (`[locale]/docs-md`, reached through `markdownRewrites`), `llms.txt`
-  and `llms-full.txt` are force-static. **`/api/search` is the one `ƒ`, on purpose**: nubigest's static
+  and `llms-full.txt` are force-static. **`/api/search` is the docs' one `ƒ`, on purpose**: nubigest's static
   index of three languages passed Vercel's 20 MB limit for a static body
   (`FALLBACK_BODY_TOO_LARGE`) and every reader downloaded it whole. A day of CDN cache answers a
   repeated query.

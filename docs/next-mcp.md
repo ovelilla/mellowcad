@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro) y 1.4 (`/draw#run=`), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026; falta para cerrar la entrega 1 probarla como conector desde una vista previa de Vercel, que pide subir una rama (el sí del dueño), y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -248,10 +248,21 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
       2000×1500 (`withViewSize`), y los quince encargos salen idénticos en cinco tamaños. Salió
       además un fallo del motor: LINE, PLINE y 3DPOLY rechazaban un punto tecleado con el ratón
       fuera del dibujo; arreglado.
-   5. **La ruta** en el sitio, fuera de los idiomas, con `mcp-handler`; sus topes y sus reglas
-      del cortafuegos (§7); la página de privacidad corregida en todos los idiomas, porque hoy
-      dice «no servers that see your drawings» y dejaría de ser verdad, y una página de
-      documentación en inglés, que el directorio de Claude pide.
+   5. **La ruta** (hecha el 15/11/2026): `/mcp` (`app/mcp/route.ts`), fuera de los idiomas, con
+      `mcp-handler` 2.3.1 (la cuarentena de npm dejó fuera la 2.4.0); el núcleo, sin nada de
+      Vercel, en `lib/mcp/draw.ts`; sus topes, y las tres reglas del cortafuegos, escritas en
+      `.claude/rules/mcp.md` para que el dueño las ponga en el panel (§7). El guion para ante un
+      comando que aquí abre un cuadro o una paleta (LAYER, INSERT, BLOCKSPALETTE, PROPERTIES,
+      DIMSTYLE, STYLE, UNITS, PTYPE: una prueba los encuentra todos tecleando cada comando) y
+      dice su forma de guion; el enlace para en el mismo sitio. La privacidad, corregida en los
+      ocho idiomas, con un bloque propio y su fecha. Comprobado: los trece encargos del banco que
+      no abren un DXF, cada uno en un solo guion, pasan sus comprobaciones por la herramienta
+      remota (los dos que editan un DXF son del paquete, §8), y Haiku, como cliente real contra
+      el servidor de desarrollo, dibujó la placa en una llamada (0,0055 $).
+      **La página de documentación pasa a la entrega 3**: «Build» es la carpeta de un paquete y
+      una página «Use» se exige en los ocho idiomas; su fuente natural es el README del paquete
+      de npm, que documentará la URL remota y la línea de `npx` a la vez, y nadie la lee antes de
+      enviar la ficha (entrega 4).
 
    **Terminado:** añadido como conector en Claude y en ChatGPT desde una vista previa de
    Vercel, dibuja los quince encargos del banco y cada enlace abre su dibujo en `/draw`.
@@ -261,7 +272,9 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
    en ChatGPT, y el botón abre el editor con el dibujo.
 3. **El paquete de npm**, por stdio y con estado, para Claude Code, Cursor y Codex. Ahí compite
    con CADCraft y con escribir código, así que vale menos; pero el núcleo es el mismo y cuesta
-   poco. **Terminado:** una línea de `npx` lo instala y edita un DXF del disco.
+   poco. Su README es también la página de documentación del MCP en «Build», la remota
+   incluida, que el directorio de Claude pide. **Terminado:** una línea de `npx` lo instala y
+   edita un DXF del disco.
 4. **Las fichas y el lanzamiento**, que hace el dueño: el directorio de conectores de Claude (el
    enlace que cuenta), el registro oficial, el directorio de ChatGPT, y el anuncio. Es un
    segundo lanzamiento ante otro público y va detrás del calendario de L5, que no se mueve.
@@ -299,6 +312,20 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
   por IP a los demás; y un interruptor que apague la ruta sin desplegar. Limitar por IP a los
   proveedores no sirve: todos sus usuarios salen por las mismas. Qué deja configurar Hobby en
   esas reglas se comprueba al construir.
+- **Medido al construir** (15/11/2026): Hobby da tres reglas (una sola de frecuencia, por IP,
+  ventana fija de 10 s a 10 min), que se aplican sin desplegar, y una regla desactivada es el
+  interruptor. Claude llama desde `160.79.104.0/21` y `153.61.208.0/20`; ChatGPT, desde los 289
+  prefijos de openai.com/chatgpt-connectors.json. Las reglas, en `.claude/rules/mcp.md`; si la
+  condición de IP de una regla acepta un CIDR no se pudo comprobar en la documentación.
+- **El peor caso de una llamada no son 25 ms**: una sola respuesta puede tardar mucho (un
+  ARRAYRECT asociativo de 2000 × 2000 tardó 89 s; uno de 1000 × 1000 sin asociar, un millón de
+  objetos y 900 MB en 3,3 s; AutoCAD 2027 no tiene MAXARRAY, así que el motor no lo topa). Cada
+  llamada corre en un contexto de `node:vm` cuyo plazo la corta a media respuesta a los 2,5 s, y
+  `maxDuration` (5 s) va detrás, para un lote de llamadas en una sola petición. Un abusador
+  desde una IP, a 10 peticiones por minuto, gastaría las 4 h de CPU en unas 10 horas; desde
+  varias, antes. Es lo que debe pesar la revisión de las guardas con Fable (§6.1) antes de
+  desplegar: si bastan el interruptor y los avisos de uso de Vercel, o si hace falta Cloudflare
+  desde el principio.
 - **Si hay tracción o abuso**, la salida es mover la misma función a Workers de Cloudflare de
   pago (5 $ al mes), que aísla el sitio: su plan gratis da 10 ms de CPU por petición y no llega.
   Es gasto, así que es del dueño. El núcleo se escribe sin nada de Vercel para que el paso sea

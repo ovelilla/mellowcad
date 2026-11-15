@@ -15,7 +15,13 @@ import type {
 } from "./ports"
 import type { DxfWriteOptions, WrittenDxf } from "./runtimeFiles"
 import type { KeyedInLine } from "./runtimeKeyIn"
-import type { BlockDefinition, Entity, EntityId } from "../domain/entities"
+import { entitiesBounds } from "../domain/entities"
+import type {
+  BlockDefinition,
+  Bounds,
+  Entity,
+  EntityId,
+} from "../domain/entities"
 import type { Scene } from "../scene/types"
 import type { Vec2 } from "../geometry/Vec2"
 import type { Vec3 } from "../geometry/Vec3"
@@ -524,6 +530,18 @@ export class CadDriver {
 
   get entityCount(): number {
     return this.runtime.document.size
+  }
+
+  /**
+   * The drawing's extents in the world's XY, EXTMIN and EXTMAX: the box
+   * every object fits in, block references by what they show. Null for an
+   * empty drawing.
+   */
+  extents(): Bounds | null {
+    return entitiesBounds(
+      this.runtime.document.getEntities(),
+      this.runtime.document.blockLookup()
+    )
   }
 
   /** The most recently added entity — what a draw command just produced. */

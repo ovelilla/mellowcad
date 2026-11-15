@@ -582,6 +582,12 @@ export declare class CadDriver {
     selectedIds(): EntityId[];
     entities(): Entity[];
     get entityCount(): number;
+    /**
+     * The drawing's extents in the world's XY, EXTMIN and EXTMAX: the box
+     * every object fits in, block references by what they show. Null for an
+     * empty drawing.
+     */
+    extents(): Bounds | null;
     /** The most recently added entity — what a draw command just produced. */
     latest(): Entity;
     /**
