@@ -34,10 +34,9 @@ export type { CadEngineOptions } from "./adapters/CadEngine"
 export { CadDriver } from "./application/CadDriver"
 export type {
   CadDriverOptions,
-  KeyedInLine,
   PointerModifiers,
-  RefusedAnswer,
 } from "./application/CadDriver"
+export type { KeyedInLine, RefusedAnswer } from "./application/runtimeKeyIn"
 
 // @group State
 export type {

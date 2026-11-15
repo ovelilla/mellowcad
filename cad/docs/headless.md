@@ -51,9 +51,12 @@ the driver projects them through its view, 1000×800 pixels at scale 1 unless `w
 | `option("Close")`                      | Answers `[Close/Undo]` with a keyword, by its global id         |
 | `press("F8")`                          | Presses a key on the drawing                                    |
 | `moveTo`, `drag`, `rightClick`, `wheel` | Moves, drags a window or a grip, right-clicks, zooms           |
+| `leave()`                              | Takes the pointer off the drawing, to the command line          |
 | `select(...ids)`, `selectAll()`        | Sets the selection directly, with no clicks                     |
 | `undo()`, `redo()`                     | U and REDO                                                      |
+| `cancelCommand()`                      | Ends whatever is asking, as a menu macro's `^C^C`               |
 | `zoomToFit()`                          | Frames the drawing, with no command in the history              |
+| `withViewSize(width, height, work)`    | Runs `work` in a view of that size, its own size back after     |
 
 `option` names a keyword by its global id in every language, and types it as a user of the
 command language would: `option("Close")` types `C` in English and `C` for `Cerrar` in Spanish.

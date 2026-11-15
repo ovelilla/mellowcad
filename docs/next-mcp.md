@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER), 1.2 (`CadDriver.keyIn`) y 1.3 (DXF sin cuadro), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro) y 1.4 (`/draw#run=`), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -240,7 +240,14 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
       DXF, con las opciones de DXFOUT, sin cuadro, sin comando y sin paso de deshacer, y cuenta
       lo que no cabe; `CadDriver.openFile` abre un DXF como OPEN. Métodos y no funciones sueltas:
       quien los usa ya tiene un motor, y el escritor sigue cargándose aparte.
-   4. **`/draw#run=`** en el editor.
+   4. **`/draw#run=`** en el editor (hecho el 15/11/2026): el guion va en el fragmento, legible
+      (`+` un espacio, `;` un salto de línea), y el editor lo teclea a la vista con el mismo
+      `runScript` que usará la ruta (`lib/command-script.ts`), en un hueco propio que no toca el
+      autoguardado. Un punto tecleado para designar mide píxeles: en un lienzo de móvil el piso
+      del banco borraba otro tabique, así que el guion se teclea siempre en una vista de
+      2000×1500 (`withViewSize`), y los quince encargos salen idénticos en cinco tamaños. Salió
+      además un fallo del motor: LINE, PLINE y 3DPOLY rechazaban un punto tecleado con el ratón
+      fuera del dibujo; arreglado.
    5. **La ruta** en el sitio, fuera de los idiomas, con `mcp-handler`; sus topes y sus reglas
       del cortafuegos (§7); la página de privacidad corregida en todos los idiomas, porque hoy
       dice «no servers that see your drawings» y dejaría de ser verdad, y una página de

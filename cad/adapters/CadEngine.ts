@@ -34,6 +34,7 @@ import type { ViewPreset } from "../application/tools/viewPresets"
 import type { ZoomOption } from "../application/tools/zoomMenu"
 import type { PointerModifiers } from "../application/CadDriver"
 import type { DxfWriteOptions, WrittenDxf } from "../application/runtimeFiles"
+import type { KeyedInLine } from "../application/runtimeKeyIn"
 import type {
   ViewCubeRoll,
   ViewCubeSide,
@@ -531,6 +532,40 @@ export class CadEngine {
    */
   setCommandLineText(text: string): void {
     this.runtime.setCommandLineText(text)
+  }
+
+  /**
+   * Types `line` in the command window, key by key, and presses Enter, as a
+   * user typing there does: Space is Enter too, except in a text and after
+   * the start of a name that holds spaces, so one line holds a command and
+   * its answers, as a line of an AutoCAD script file does
+   * (`CIRCLE 50,25 10`). Two spaces are two Enters, and an Enter at
+   * `Command:` repeats the last command. It stops at the first answer the
+   * command window answers with an error, the rest of the line untyped. A
+   * line break throws: type each line apart.
+   */
+  keyIn(line: string): KeyedInLine {
+    return this.runtime.keyIn(line)
+  }
+
+  /**
+   * Runs `work` with the view `width` × `height` CSS pixels, as if the
+   * canvas measured that, and gives the view the canvas's size back after
+   * it, the camera as `work` left it; nothing is drawn meanwhile. A pick
+   * typed at `Select objects:` takes what is within a few pixels, so a
+   * script typed inside picks the same objects on any screen.
+   */
+  withViewSize<T>(width: number, height: number, work: () => T): T {
+    return this.runtime.withViewSize(width, height, work)
+  }
+
+  /**
+   * The Command menu's Cancel, a menu macro's `^C^C`: the running command
+   * ends, and one a transparent command interrupted with it, as Escape ends
+   * each.
+   */
+  cancelCommand(): void {
+    this.runtime.cancelCommand()
   }
 
   /**

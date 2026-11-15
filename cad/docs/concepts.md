@@ -45,6 +45,11 @@ A host starts commands the way AutoCAD's own interface does:
 - **Typed**: `runCommand("LINE")`, or the user typing on the drawing or in your command line
   field. A command is found by its name or alias in the command language (`L`, `LINE`, `LINEA` in
   Spanish), or by `_` and its global name in any language (`_LINE`).
+- **A line of a script**: `keyIn("CIRCLE 50,25 10")` types a line in the command window and
+  presses Enter, Space ending each answer as in an AutoCAD script file, and stops at the first
+  answer refused; `cancelCommand()` ends whatever is asking, a menu macro's `^C^C`. A pick typed
+  at `Select objects:` takes what is within a few pixels, so a script meant to pick the same
+  objects on any screen runs inside `withViewSize(2000, 1500, () => …)`.
 - **From a button**: `setActiveTool("line")`, by the ids of `state.tools`. It runs the command as a
   ribbon button's macro would, so the command line echoes `_line`.
 - **From a menu or a key**: Delete is `deleteSelection()` (ERASE), Ctrl+A is `selectAll()`, and

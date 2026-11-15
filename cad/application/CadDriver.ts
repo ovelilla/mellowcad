@@ -14,6 +14,7 @@ import type {
   OpenedFile,
 } from "./ports"
 import type { DxfWriteOptions, WrittenDxf } from "./runtimeFiles"
+import type { KeyedInLine } from "./runtimeKeyIn"
 import type { BlockDefinition, Entity, EntityId } from "../domain/entities"
 import type { Scene } from "../scene/types"
 import type { Vec2 } from "../geometry/Vec2"
@@ -110,27 +111,6 @@ export interface PointerModifiers {
   readonly ctrlKey?: boolean
   readonly altKey?: boolean
   readonly button?: number
-}
-
-/** What {@link CadDriver.keyIn} typed, and where the engine said no. */
-export interface KeyedInLine {
-  /**
-   * What the command window wrote meanwhile, a history line each: the
-   * commands echoed, each question with its answer, what the commands
-   * reported.
-   */
-  readonly lines: readonly string[]
-  /** The answer the engine refused; null when it took the whole line. */
-  readonly refused: RefusedAnswer | null
-}
-
-export interface RefusedAnswer {
-  /** As typed: `foo`, or `CHAIR` that `Command:` does not know. */
-  readonly answer: string
-  /** The first line of the refusal: `Point or option keyword required.` */
-  readonly message: string
-  /** What followed it on the line, never typed. */
-  readonly untyped: string
 }
 
 export class CadDriver {
@@ -273,6 +253,16 @@ export class CadDriver {
     this.mouseDown(first, modifiers)
     for (const point of rest) this.moveTo(point, modifiers)
     return this.mouseUp(last, modifiers)
+  }
+
+  /**
+   * The pointer leaves the drawing, as the mouse moved to the command line:
+   * no crosshair, no rollover, and a length typed alone at a point prompt
+   * no longer runs towards a cursor.
+   */
+  leave(): this {
+    this.runtime.pointerLeave()
+    return this
   }
 
   wheel(world: WorldPoint, deltaY: number): this {
@@ -434,43 +424,26 @@ export class CadDriver {
    * throws: type each line apart.
    */
   keyIn(line: string): KeyedInLine {
-    if (/[\r\n]/.test(line)) {
-      throw new Error("keyIn types one line: key each line in apart.")
-    }
-    const { commandLine } = this.runtime
-    const start = commandLine.mark()
-    const written = (since: number) => {
-      const count = commandLine.mark() - since
-      return count === 0 ? [] : commandLine.getLines().slice(-count)
-    }
-    for (let at = 0; at <= line.length; at++) {
-      const key = at < line.length ? line[at] : "Enter"
-      if (key !== " " && key !== "Enter") {
-        this.runtime.setCommandLineText(commandLine.getBuffer() + key)
-        continue
-      }
-      const answer = commandLine.getBuffer().trim()
-      const mark = commandLine.mark()
-      if (!this.runtime.commandLineKey(key)) {
-        this.runtime.setCommandLineText(commandLine.getBuffer() + key)
-        continue
-      }
-      const refusal = written(mark).find((entry) => entry.kind === "error")
-      if (refusal) {
-        return {
-          lines: written(start).map((entry) => entry.text),
-          refused: {
-            answer,
-            message: refusal.text,
-            untyped: line.slice(at + 1),
-          },
-        }
-      }
-    }
-    return {
-      lines: written(start).map((entry) => entry.text),
-      refused: null,
-    }
+    return this.runtime.keyIn(line)
+  }
+
+  /**
+   * Runs `work` with the view `width` × `height` pixels and gives the view
+   * its own size back after it, the camera as `work` left it, as
+   * `CadEngine.withViewSize` does with the canvas's.
+   */
+  withViewSize<T>(width: number, height: number, work: () => T): T {
+    return this.runtime.withViewSize(width, height, work)
+  }
+
+  /**
+   * The Command menu's Cancel, a menu macro's `^C^C`: the running command
+   * ends, and one a transparent command interrupted with it, as Escape ends
+   * each.
+   */
+  cancelCommand(): this {
+    this.runtime.cancelCommand()
+    return this
   }
 
   /**

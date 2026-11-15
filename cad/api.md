@@ -193,6 +193,31 @@ export declare class CadEngine {
      */
     setCommandLineText(text: string): void;
     /**
+     * Types `line` in the command window, key by key, and presses Enter, as a
+     * user typing there does: Space is Enter too, except in a text and after
+     * the start of a name that holds spaces, so one line holds a command and
+     * its answers, as a line of an AutoCAD script file does
+     * (`CIRCLE 50,25 10`). Two spaces are two Enters, and an Enter at
+     * `Command:` repeats the last command. It stops at the first answer the
+     * command window answers with an error, the rest of the line untyped. A
+     * line break throws: type each line apart.
+     */
+    keyIn(line: string): KeyedInLine;
+    /**
+     * Runs `work` with the view `width` × `height` CSS pixels, as if the
+     * canvas measured that, and gives the view the canvas's size back after
+     * it, the camera as `work` left it; nothing is drawn meanwhile. A pick
+     * typed at `Select objects:` takes what is within a few pixels, so a
+     * script typed inside picks the same objects on any screen.
+     */
+    withViewSize<T>(width: number, height: number, work: () => T): T;
+    /**
+     * The Command menu's Cancel, a menu macro's `^C^C`: the running command
+     * ends, and one a transparent command interrupted with it, as Escape ends
+     * each.
+     */
+    cancelCommand(): void;
+    /**
      * Runs a command as typed at the prompt and confirmed: its name or alias in
      * the command language, or `_` and its global name in any (`_LINE`). Returns
      * false, writing the error on the command line, when no command has the name.
@@ -451,6 +476,12 @@ export declare class CadDriver {
      * and released at its last: AutoCAD's lasso, drawn along that path.
      */
     lasso(path: readonly WorldPoint[], modifiers?: PointerModifiers): this;
+    /**
+     * The pointer leaves the drawing, as the mouse moved to the command line:
+     * no crosshair, no rollover, and a length typed alone at a point prompt
+     * no longer runs towards a cursor.
+     */
+    leave(): this;
     wheel(world: WorldPoint, deltaY: number): this;
     /** Sends a key to the drawing surface. Returns whether it was consumed. */
     press(key: string, modifiers?: Omit<PointerModifiers, "button">): boolean;
@@ -507,6 +538,18 @@ export declare class CadDriver {
      * throws: type each line apart.
      */
     keyIn(line: string): KeyedInLine;
+    /**
+     * Runs `work` with the view `width` × `height` pixels and gives the view
+     * its own size back after it, the camera as `work` left it, as
+     * `CadEngine.withViewSize` does with the canvas's.
+     */
+    withViewSize<T>(width: number, height: number, work: () => T): T;
+    /**
+     * The Command menu's Cancel, a menu macro's `^C^C`: the running command
+     * ends, and one a transparent command interrupted with it, as Escape ends
+     * each.
+     */
+    cancelCommand(): this;
     /**
      * ZOOM Extents: frames every object, `padding` screen pixels in from the
      * edges, with no command and no line in the history. A point picked by
@@ -594,7 +637,7 @@ export interface CadDriverOptions {
 }
 
 export type { KeyedInLine }
-/** What {@link CadDriver.keyIn} typed, and where the engine said no. */
+/** What a line keyed in at the command window typed, and where the engine said no. */
 export interface KeyedInLine {
     /**
      * What the command window wrote meanwhile, a history line each: the

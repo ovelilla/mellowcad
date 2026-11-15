@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import { CadEditor, type CadEditorProps } from "@mellowcad/editor"
 import {
@@ -8,6 +8,7 @@ import {
   type CadEngine,
 } from "@mellowcad/engine"
 
+import { runScript } from "@/lib/command-script"
 import {
   handedFileId,
   takeHandedFile,
@@ -21,11 +22,17 @@ import {
   type PublishedDrawings,
 } from "@/lib/opened-drawing"
 import { reportUrl, type ReportFields } from "@/lib/report"
+import { runDrawing, scriptOfHash, withRun } from "@/lib/script-link"
 
 /** Room round what the editor frames as a drawing opens, in the canvas's pixels. */
 const VIEW_PADDING = 24
 
 const noSubscription = () => () => {}
+
+function onHashChange(change: () => void): () => void {
+  window.addEventListener("hashchange", change)
+  return () => window.removeEventListener("hashchange", change)
+}
 
 /**
  * `/draw`'s editor. Where its query names a drawing the site publishes
@@ -35,6 +42,9 @@ const noSubscription = () => () => {}
  * nothing, so a reload or a return finds the reader's work as they left it.
  * Where it names a file another page handed over (`?open=<id>`, the DXF
  * page's), the editor opens that file as OPEN would, into its own drawing.
+ * Where its fragment carries a script (`#run=…`, an MCP answer's link), the
+ * editor types it at the command line in a drawing of its own, kept apart
+ * as an exercise's is; that one wins over a `?drawing=`.
  * The page is static: the query is read in the browser, and so is the
  * browser that Send Feedback's forms name beside the page's `report`.
  */
@@ -58,11 +68,45 @@ export function DrawEditor({
     () => navigator.userAgent,
     () => undefined
   )
-  const opened = openedDrawing(search, drawings)
+  const hash = useSyncExternalStore(
+    onHashChange,
+    () => window.location.hash,
+    () => ""
+  )
+  const run = scriptOfHash(hash)
+  const opened = run === null ? openedDrawing(search, drawings) : null
+  /** The script the engine was built for, null for none; unset before. */
+  const builtFor = useRef<string | null | undefined>(undefined)
+  /** The script still to type, once the engine is up. */
+  const toType = useRef<string | null>(null)
+
+  useEffect(() => {
+    const script = toType.current
+    if (!engine || script === null) return
+    toType.current = null
+    runScript(engine, script)
+    engine.zoomToFit(VIEW_PADDING)
+  }, [engine])
+
+  useEffect(() => {
+    // WHY: a fragment changed in place (another link pasted, Back) loads no
+    // page, and the drawing's store is chosen as the engine is built.
+    if (!engine || builtFor.current === undefined) return
+    if (scriptOfHash(window.location.hash) !== builtFor.current) {
+      window.location.reload()
+    }
+  }, [engine, hash])
 
   useEffect(() => {
     const drawing = openedDrawing(search, drawings)
-    if (!engine || !drawing || engine.getState().entityCount > 0) return
+    if (
+      !engine ||
+      !drawing ||
+      builtFor.current !== null ||
+      engine.getState().entityCount > 0
+    ) {
+      return
+    }
     const controller = new AbortController()
     fetch(drawing.url, { signal: controller.signal })
       .then((response) =>
@@ -82,7 +126,8 @@ export function DrawEditor({
 
   useEffect(() => {
     const id = handedFileId(search)
-    if (!engine || !id) return
+    // A script's drawing is the link's: a file handed too waits for `/draw`.
+    if (!engine || !id || builtFor.current !== null) return
     // Taken once: a reload, or a language link, must not ask again.
     window.history.replaceState(
       window.history.state,
@@ -100,16 +145,28 @@ export function DrawEditor({
     <CadEditor
       {...props}
       languages={
-        opened
+        run !== null
           ? languages?.map((link) => ({
               ...link,
-              href: withDrawing(link.href, opened.name),
+              href: withRun(link.href, run),
             }))
-          : languages
+          : opened
+            ? languages?.map((link) => ({
+                ...link,
+                href: withDrawing(link.href, opened.name),
+              }))
+            : languages
       }
       feedback={reportUrl({ ...report, browser })}
       // Called once, as the engine is built in the browser.
       store={() => {
+        const script = scriptOfHash(window.location.hash)
+        builtFor.current = script
+        if (script !== null) {
+          const drawing = runDrawing(script, () => window.localStorage)
+          toType.current = drawing.pending ? script : null
+          return drawing.store
+        }
         const drawing = openedDrawing(window.location.search, drawings)
         return drawing
           ? keyedDrawingStore(

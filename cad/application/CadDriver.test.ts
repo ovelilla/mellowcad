@@ -117,3 +117,40 @@ describe("zoomToFit", () => {
     })
   })
 })
+
+describe("cancelCommand", () => {
+  it("ends what is asking, as ^C^C, keeping what the command drew", () => {
+    const cad = createHarness()
+    cad.keyIn("LINE 0,0 10,0 10,10")
+    cad.cancelCommand()
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.typeCounts()).toEqual({ line: 2 })
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify next point or [Close/Undo]: *Cancel*"
+    )
+  })
+})
+
+describe("withViewSize", () => {
+  it("measures the view at that size inside, and gives its own back", () => {
+    const cad = createHarness()
+    cad.keyIn("CIRCLE 0,0 10")
+    const centre = cad.withViewSize(2000, 1500, () => {
+      cad.zoomToFit()
+      return cad.toScreen({ x: 0, y: 0 })
+    })
+    expect(centre).toBeCloseToPoint({ x: 1000, y: 750 })
+    expect(cad.runtime.viewport.width).toBe(1000)
+    expect(cad.runtime.viewport.height).toBe(800)
+  })
+
+  it("gives its own size back when the work throws", () => {
+    const cad = createHarness()
+    expect(() =>
+      cad.withViewSize(10, 10, () => {
+        throw new Error("no")
+      })
+    ).toThrow("no")
+    expect(cad.runtime.viewport.width).toBe(1000)
+  })
+})

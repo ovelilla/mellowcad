@@ -1,4 +1,5 @@
 import { Observable } from "../shared/Observable"
+import { keyInLine, type KeyedInLine } from "./runtimeKeyIn"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, planar, vec3, withZ, zOf } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
@@ -3131,6 +3132,23 @@ export class CadRuntime extends Observable {
       return false
     }
     return true
+  }
+
+  /**
+   * Types `line` in the command window, key by key, and presses Enter, as a
+   * user typing there does: Space is Enter too, except in a text (TEXT's, an
+   * attribute's value) and after the start of a name that holds spaces, so
+   * one line can hold a command and its answers, as a line of an AutoCAD
+   * script file can (`CIRCLE 50,25 10`). Stops at the first answer the
+   * command window answers with an error, the rest of the line untyped.
+   */
+  keyIn(line: string): KeyedInLine {
+    return keyInLine(
+      line,
+      this.commandLine,
+      (text) => this.setCommandLineText(text),
+      (key) => this.commandLineKey(key)
+    )
   }
 
   /** Shows or hides the command prompt (AutoCAD's Ctrl+9). */
@@ -6771,6 +6789,24 @@ export class CadRuntime extends Observable {
    * Updates the view size (CSS pixels). On the first real layout the view is
    * initialised: either framing a restored drawing or centring the origin.
    */
+  /**
+   * Runs `work` with the view `width` × `height` pixels, as if the canvas
+   * measured that, and gives the view its own size back after it, the
+   * camera as `work` left it. What depends on pixels inside — a typed pick's
+   * aperture, a zoom's framing — then reads alike on any screen.
+   */
+  withViewSize<T>(width: number, height: number, work: () => T): T {
+    const own = { width: this.viewport.width, height: this.viewport.height }
+    this.viewport.setSize(width, height)
+    try {
+      return work()
+    } finally {
+      this.viewport.setSize(own.width, own.height)
+      this.invalidateState()
+      this.host.requestRender()
+    }
+  }
+
   setViewSize(width: number, height: number): void {
     this.viewport.setSize(width, height)
     if (!this.initializedView && width > 1 && height > 1) {

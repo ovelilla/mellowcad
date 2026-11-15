@@ -59,6 +59,12 @@ and `DrawEditor` takes it, deletes it, drops the query (a reload or a language l
 again) and opens it with the engine's `openFile`, as OPEN opens a pick: into the editor's own
 drawing, which it replaces.
 
+**`/draw#run=<script>` types a script** (an MCP answer's link; why each choice, in
+`lib/script-link.ts` and `lib/command-script.ts`): in one place of its own with its script
+(`mellowcad:run:v1`, FROZEN), never the autosave, typed once per script through the MCP server's
+own `runScript`, so the link draws what the server drew. It wins over `?drawing=` and `?open=`;
+the language links keep it.
+
 **Where the editor links out is the host's** (`languages`, `help`, `feedback`): the package names
 no site. `/draw`'s Send Feedback is the repository's issue forms, filled in (`marketing.md`).
 

@@ -7,14 +7,12 @@ import type { Entity, EntityId, Vec2 } from "@mellowcad/engine"
 // WHY deep: the prototype measures before the engine grows a public surface
 // for it; what the product needs exported is listed in `docs/next-mcp.md`.
 import { entitiesBounds } from "../../cad/domain/entities"
-
-/** One typed line the engine refused, and what the script still held. */
-export interface ScriptStop {
-  /** 1-based line of the script. */
-  readonly line: number
-  readonly typed: string
-  readonly linesNotRun: number
-}
+import {
+  SCRIPT_VIEW,
+  runScript,
+  type ScriptStop,
+  type ScriptTarget,
+} from "../../lib/command-script"
 
 export interface RunResult {
   /** The command line's history for this script, as AutoCAD's would read. */
@@ -33,7 +31,7 @@ export interface LayerRequest {
   readonly color?: string
 }
 
-const VIEW = { width: 2000, height: 1500 }
+const VIEW = SCRIPT_VIEW
 
 /**
  * One drawing an agent works on through the engine's command line: every
@@ -51,7 +49,9 @@ export class DrawingSession {
   private readonly ids = new Map<number, EntityId>()
 
   constructor() {
-    this.cad = new CadDriver(VIEW)
+    // WHY off the drawing: the editor types a link's script with no pointer
+    // yet, and a length typed alone runs towards the cursor.
+    this.cad = new CadDriver(VIEW).leave()
   }
 
   dispose(): void {
@@ -60,7 +60,7 @@ export class DrawingSession {
 
   reset(): void {
     this.cad.dispose()
-    this.cad = new CadDriver(VIEW)
+    this.cad = new CadDriver(VIEW).leave()
     this.handles.clear()
     this.ids.clear()
   }
@@ -93,28 +93,7 @@ export class DrawingSession {
     if (select.length > 0) {
       this.cad.select(...select.flatMap((handle) => this.ids.get(handle) ?? []))
     }
-
-    const lines = script.replace(/\r/g, "").split("\n")
-    let stopped: ScriptStop | null = null
-    for (const [index, line] of lines.entries()) {
-      const refused = this.typeLine(line)
-      if (refused !== null) {
-        stopped = {
-          line: index + 1,
-          typed: refused,
-          linesNotRun: lines.length - index - 1,
-        }
-        break
-      }
-      // WHY: a typed pick takes what is within a few pixels, so the view
-      // decides how near "on the object" is. Framing the drawing between
-      // commands keeps that tolerance a constant fraction of its size.
-      if (this.cad.activeToolId() === "select") this.cad.zoomToFit()
-    }
-
-    const cancelled = this.cancel()
-    this.cad.zoomToFit()
-
+    const { stopped, cancelled } = runScript(this.target(), script)
     const after = this.entities()
     const afterIds = new Set(after.map((e) => e.id))
     return {
@@ -127,46 +106,23 @@ export class DrawingSession {
     }
   }
 
-  /**
-   * Types one script line: its words one by one, as AutoCAD's script files
-   * end an answer at a space, except where the prompt takes text with spaces.
-   * Returns the answer the engine refused, or null.
-   */
-  private typeLine(line: string): string | null {
-    let rest = line.trim()
-    do {
-      const state = this.cad.state()
-      const takesSpaces =
-        state.commandLine.takesSpaces ||
-        (state.dynamicInput?.fields ?? []).some(
-          (field) => field.kind === "text" || field.kind === "paragraphs"
-        )
-      let answer = rest
-      if (!takesSpaces) {
-        // `0, 0` is one point to whoever writes it; a space would end it.
-        rest = rest.replace(/\s*,\s*/g, ",")
-        const space = rest.search(/\s/)
-        answer = space < 0 ? rest : rest.slice(0, space)
-        rest = space < 0 ? "" : rest.slice(space).trimStart()
-      } else {
-        rest = ""
-      }
-      // WHY: Enter at `Command:` repeats the last command, which a script's
-      // stray blank line never means.
-      if (answer === "" && this.cad.activeToolId() === "select") continue
-      const { refused } = this.cad.keyIn(answer)
-      if (refused !== null) return refused.answer
-    } while (rest !== "")
-    return null
+  private target(): ScriptTarget {
+    const cad = this.cad
+    return {
+      keyIn: (line) => cad.keyIn(line),
+      getState: () => cad.state(),
+      zoomToFit: () => cad.zoomToFit(),
+      cancelCommand: () => cad.cancelCommand(),
+      withViewSize: (width, height, work) =>
+        cad.withViewSize(width, height, work),
+    }
   }
 
   /** Escape until `Command:`; the prompt that was asking, if one was. */
   private cancel(): string | null {
     if (this.cad.activeToolId() === "select") return null
     const prompt = this.cad.state().commandLine.prompt
-    for (let i = 0; i < 6 && this.cad.activeToolId() !== "select"; i++) {
-      this.cad.press("Escape")
-    }
+    this.cad.cancelCommand()
     return prompt
   }
 

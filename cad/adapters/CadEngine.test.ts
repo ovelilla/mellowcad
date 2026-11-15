@@ -9,6 +9,8 @@ import {
 } from "vitest"
 import { serializeDrawing } from "../serialization/drawingFile"
 import { circleOf, lineOf, p, snapshotOf } from "../../test/builders"
+import { CadDriver } from "../application/CadDriver"
+import type { LineEntity } from "../domain/entities"
 import { CadEngine, type CadEngineOptions } from "./CadEngine"
 import { createLocalStorageDrawingStore } from "./localStorageDrawingStore"
 import { createMemoryDrawingStore } from "./memoryDrawingStore"
@@ -217,6 +219,43 @@ describe("CadEngine by default", () => {
     expect(engine.getState().entityCount).toBe(0)
     engine.loadDrawing(drawingOf(lineOf(p(0, 0), p(10, 0))))
     expect(page.storage.setItem).not.toHaveBeenCalled()
+  })
+
+  it("types a script's line, in a view of the size asked, then cancels", () => {
+    const engine = engineOn()
+    const keyed = engine.withViewSize(2000, 1500, () =>
+      engine.keyIn("LINE 0,0 10,0")
+    )
+    expect(keyed).toMatchObject({
+      refused: null,
+      lines: [
+        "LINE",
+        "Specify first point: 0,0",
+        "Specify next point or [Undo]: 10,0",
+      ],
+    })
+    engine.cancelCommand()
+    expect(engine.getState()).toMatchObject({
+      activeToolId: "select",
+      entityCount: 1,
+    })
+  })
+
+  // A link's script is typed before any pointer reached the canvas; the MCP
+  // server's driver leaves the drawing so a length typed alone runs alike.
+  it("types a length alone as a driver off the drawing does", () => {
+    const engine = engineOn()
+    expect(engine.keyIn("LINE 50,0 30 ").refused).toBeNull()
+    const driver = new CadDriver().leave()
+    onTestFinished(() => driver.dispose())
+    driver.keyIn("LINE 50,0 30 ")
+    const drawn = driver.latest() as LineEntity
+    const [line] = JSON.parse(engine.serializeDrawing()).entities
+    expect(line).toMatchObject({
+      type: "line",
+      start: drawn.start,
+      end: drawn.end,
+    })
   })
 
   it("is scoped to its canvas", () => {
