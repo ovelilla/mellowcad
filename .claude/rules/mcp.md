@@ -36,7 +36,15 @@ Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
   opens that preview. `/draw`'s measurements drop the fragment (`EditorMetrics`): `/privacy`
   promises the script never reaches a server.
 
-## The firewall (Vercel dashboard, the owner's)
+## The firewall (Vercel, set through its API)
+
+The Vercel CLI runs as `npm run vercel -- <args>`, with MELLOWCAD_VERCEL_TOKEN (a token scoped
+to the `mellowcad` project, with an expiry, the owner's, in `~/.config/mcp-keys.env`): the shell's
+`VERCEL_TOKEN` is nubigest's and answers "User not found" here, and `vercel login` lapses in 8 h.
+The script pins the team and project, as a worktree has no `.vercel/`. A project token reads no
+user, so `whoami`, `ls`, `inspect` and `remove` fail: use `vercel api`
+(`/v1/security/firewall/config`, `/v6/deployments`, `/v13/deployments/<id>`). Usage and the
+deployment retention are dashboard-only. A token past its expiry: the owner makes another.
 
 Hobby pauses the whole team past a limit, the site with it; Active CPU (4 h a month) is the one
 an abuser reaches. Three custom rules, Hobby's all, applied without a deploy:
