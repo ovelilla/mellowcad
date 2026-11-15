@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
-> **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; nada construido
-> más que el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hecha la pieza 1.1
+> (-LAYER, 15/11/2026), lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -229,7 +229,7 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
 
 1. **El MCP remoto.** Lo que más aporta y lo único que nadie tiene. Lleva delante lo que le
    falta al motor, que es AutoCAD por derecho propio:
-   1. **`-LAYER`**: hoy no hay forma de crear una capa tecleando (el prototipo lo suple con una
+   1. **`-LAYER`** (hecho el 15/11/2026): no había forma de crear una capa tecleando (el prototipo lo suple con una
       herramienta aparte). Con él, el guion es el dibujo entero. Por la skill `new-command`.
    2. **Teclear un guion, en `CadDriver`**: una entrada pública que teclee una línea y diga si
       la pregunta la tomó. El prototipo llega al `runtime` interno y cuenta líneas de error.

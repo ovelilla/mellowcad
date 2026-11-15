@@ -2160,6 +2160,8 @@ export interface DocumentReader {
     getLayer(id: LayerId): Layer | undefined;
     /** The layer new geometry is drawn on. */
     getCurrentLayerId(): LayerId;
+    /** Whether the layer may be deleted (`CadDocument.canRemoveLayer`). */
+    canRemoveLayer(id: LayerId): boolean;
     /** The drawing's linetypes, in its table's order (Continuous among them). */
     getLinetypes(): Linetype[];
     /** The linetype of that name, any case. */

@@ -103,6 +103,7 @@ export const ru: EngineLocale = {
       "osnap": "Режимы объектной привязки",
       "color": "Цвет",
       "linetype": "Тип линий",
+      "dashlayer": "Слой (командная строка)",
       "lweight": "Вес линий",
       "snap": "Шаговая привязка",
       "region": "Область",
@@ -1239,6 +1240,10 @@ export const ru: EngineLocale = {
         "-ТИПЛИН",
         "-ТЛ"
       ],
+      "-LAYER": [
+        "-СЛОЙ",
+        "-СЛ"
+      ],
       "LWEIGHT": [
         "ВЕСЛИН",
         "ВЛИ"
@@ -2043,6 +2048,31 @@ export const ru: EngineLocale = {
         "?": "?",
         "BYLAYER": "ПОСлою"
       },
+      "-LAYER": {
+        "?": "?",
+        "Make": "Создать",
+        "Set": "Установить",
+        "New": "Новый",
+        "Rename": "ПЕРеименоватЬ",
+        "ON": "Вкл",
+        "OFF": "Откл",
+        "Color": "Цвет",
+        "Ltype": "Тип",
+        "LWeight": "вЕс",
+        "LOck": "Блок",
+        "Unlock": "рАзблок",
+        "DELete": "Удалить",
+        "Truecolor": "изПалитры",
+        "RED": "Красный",
+        "YELLOW": "Желтый",
+        "GREEN": "Зеленый",
+        "CYAN": "Голубой",
+        "BLUE": "Синий",
+        "MAGENTA": "Фиолетовый",
+        "WHITE": "Белый",
+        "Yes": "Да",
+        "No": "Нет"
+      },
       "EXTRUDE": {
         "MOde": "РEжим",
         "SOlid": "Тело",
@@ -2526,6 +2556,50 @@ export const ru: EngineLocale = {
       "linetypeListNames": "Имена каких типов линий вывести",
       "linetypeFileToList": "Из какого файла извлечь список имен типов линий",
       "linetypesToLoad": "Какие типы линий загрузить",
+      "layerNamesToList": "Имена каких слоев вывести",
+      "layerToMake": "Введите имя нового слоя (этот слой станет текущим)",
+      "layerToSet": "Имя слоя для установки текущим или",
+      "layerSelectObject": "выбрать объект",
+      "newLayerNames": "Имя нового слоя(ев)",
+      "renamedLayerName": "Новое имя элемента слой",
+      "oldLayerName": "Старое имя элемента слой",
+      "layersToTurnOn": "Список имен слоев для включения",
+      "layersToTurnOff": "Список имен слоев для отключения или",
+      "layersToLock": "Список имен слоев для блокирования или",
+      "layersToUnlock": "Список имен слоев для разблокирования или",
+      "layerSelectObjects": "выбрать объекты",
+      "currentLayerOff": [
+        "Отключить слой \"",
+        [
+          "name"
+        ],
+        "\" (ТЕКУЩИЙ слой)?"
+      ],
+      "layerColor": "Новый цвет",
+      "layersForColor": [
+        "Список имен слоев для присвоения цвета ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Введите имя загруженного типа линий или",
+      "layersForLinetype": [
+        "Список имен слоев для присвоения типа линий \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerLineweight": "Вес линий (0.0мм - 2.11мм)",
+      "layersForLineweight": [
+        "Список имен слоев для присвоения веса линий ",
+        [
+          "value"
+        ],
+        "мм"
+      ],
+      "layersToDelete": "Слои для удаления",
+      "currentLayerOffNo": "Н",
       "linetypeFileToSearch": "В каком файле проводить поиск",
       "reloadLinetype": [
         "Тип линий \"",
@@ -2981,6 +3055,7 @@ export const ru: EngineLocale = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -3023,6 +3098,9 @@ export const ru: EngineLocale = {
       "specifyIncrementingElevationBetweenRows": "spaced",
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
+    },
+    "promptTails": {
+      "layerColor": ""
     },
     "format": {
       "idle": "Команда",
@@ -3401,6 +3479,72 @@ export const ru: EngineLocale = {
         "\"."
       ],
       "invalidLayerName": "слой -- неверное имя.",
+      "currentLayerName": [
+        "Текущий слой:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "    Имя слоя      Состояние     Цвет       Тип линий   Вес линий\n------------------ ----------- ------------- ------------ ------------",
+      "layerOn": "вкл",
+      "layerOff": "откл",
+      "layerLockedFlag": "-L",
+      "layerPlotsFlag": "-P",
+      "layerListCurrent": [
+        "Текущий слой: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "Не найдены соответствующие имена слоев.",
+      "layerAlreadyExists": [
+        "Слой \"",
+        [
+          "name"
+        ],
+        "\" уже существует."
+      ],
+      "invalidLayerNameQuoted": [
+        "Недопустимое имя слоя: \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "cannotRenameLayer": [
+        "Не удается переименовать слой \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layerNameInUse": [
+        "слой с именем \"",
+        [
+          "name"
+        ],
+        "\" уже существует."
+      ],
+      "layersNotDeleted": "Невозможно удалить выбранные слои.",
+      "layerNoObjectFound": "Объект не найден.",
+      "layerMadeCurrent": [
+        "Слой \"",
+        [
+          "name"
+        ],
+        "\" установлен текущим."
+      ],
+      "invalidColor": "Неверный цвет.",
+      "layerLoadedLinetypes": "Загруженные типы линий:",
+      "layerLinetypeNotFound": [
+        "Тип линий \"",
+        [
+          "name"
+        ],
+        "\" не найден. Для загрузки используйте команду ТИПЛИН."
+      ],
       "linetypeNotLoaded": [
         "Тип линий \"",
         [
@@ -8713,6 +8857,9 @@ export const ru: EngineLocale = {
       },
       "ATTDISP": {
         "ON": "Вкл",
+        "OFF": "Откл"
+      },
+      "-LAYER": {
         "OFF": "Откл"
       },
       "SNAP": {

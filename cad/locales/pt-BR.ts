@@ -103,6 +103,7 @@ export const ptBR: EngineLocale = {
       "osnap": "Modos de snap ao objeto",
       "color": "Cor",
       "linetype": "Tipo de linha",
+      "dashlayer": "Camada (linha de comando)",
       "lweight": "Espessura de linha",
       "snap": "Modo snap",
       "region": "Região",
@@ -1212,6 +1213,10 @@ export const ptBR: EngineLocale = {
         "-TIPOLINHA",
         "-TL"
       ],
+      "-LAYER": [
+        "-CAMADA",
+        "-CA"
+      ],
       "LWEIGHT": [
         "ESPLINHA",
         "ESL"
@@ -2021,6 +2026,31 @@ export const ptBR: EngineLocale = {
         "?": "?",
         "BYLAYER": "PORCamada"
       },
+      "-LAYER": {
+        "?": "?",
+        "Make": "CRiar",
+        "Set": "DEFinir",
+        "New": "Nova",
+        "Rename": "Renomear",
+        "ON": "Ativada",
+        "OFF": "DESAtivada",
+        "Color": "Cor",
+        "Ltype": "Tipolinha",
+        "LWeight": "ESPlinha",
+        "LOck": "Bloquear",
+        "Unlock": "DESBloquear",
+        "DELete": "EXcluir",
+        "Truecolor": "Truecolor",
+        "RED": "Vermelho",
+        "YELLOW": "Amarelo",
+        "GREEN": "Verde",
+        "CYAN": "Ciano",
+        "BLUE": "Azul",
+        "MAGENTA": "Magenta",
+        "WHITE": "Branco",
+        "Yes": "Sim",
+        "No": "Não"
+      },
       "EXTRUDE": {
         "MOde": "MOdo",
         "SOlid": "SÓlido",
@@ -2505,6 +2535,50 @@ export const ptBR: EngineLocale = {
       "linetypeListNames": "Inserir nome(s) de tipo(s) de linha a relacionar",
       "linetypeFileToList": "Inserir nome do arquivo de tipo de linha a relacionar",
       "linetypesToLoad": "Inserir tipo(s) de linha a carregar",
+      "layerNamesToList": "Inserir nome(s) de camada(s) a relacionar",
+      "layerToMake": "Inserir nome para nova camada (torna-se a camada atual)",
+      "layerToSet": "Inserir o nome da camada a ser transformada em atual ou",
+      "layerSelectObject": "selecionar objeto",
+      "newLayerNames": "Inserir lista de nomes para nova(s) camada(s)",
+      "renamedLayerName": "Digitar novo nome de camada",
+      "oldLayerName": "Digitar nome de camada antigo",
+      "layersToTurnOn": "Inserir lista de nomes de camadas a ativar",
+      "layersToTurnOff": "Digitar a lista de nomes de camadas para desativar ou",
+      "layersToLock": "Digitar a lista de nomes de camadas para bloquear ou",
+      "layersToUnlock": "Digitar a lista de nomes de camadas para desbloquear ou",
+      "layerSelectObjects": "selecionar objetos",
+      "currentLayerOff": [
+        "Deseja realmente desativar a camada \"",
+        [
+          "name"
+        ],
+        "\" (a camada ATUAL)?"
+      ],
+      "layerColor": "Nova cor",
+      "layersForColor": [
+        "Inserir lista de nomes de camadas para a cor ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Inserir nome do tipo de linha carregado ou",
+      "layersForLinetype": [
+        "Inserir lista de nomes de camadas para o tipo de linha \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerLineweight": "Inserir espessura de linha (0.0mm – 2.11mm)",
+      "layersForLineweight": [
+        "Inserir lista de nome(s) de camada(s) para espessura de linha ",
+        [
+          "value"
+        ],
+        "mm"
+      ],
+      "layersToDelete": "Insira as camadas a serem excluídas",
+      "currentLayerOffNo": "N",
       "linetypeFileToSearch": "Inserir nome do arquivo de tipo de linha a pesquisar",
       "reloadLinetype": [
         "O tipo de linha \"",
@@ -2960,6 +3034,7 @@ export const ptBR: EngineLocale = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -3002,6 +3077,9 @@ export const ptBR: EngineLocale = {
       "specifyIncrementingElevationBetweenRows": "spaced",
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
+    },
+    "promptTails": {
+      "layerColor": ""
     },
     "format": {
       "idle": "Comando",
@@ -3380,6 +3458,72 @@ export const ptBR: EngineLocale = {
         "\"."
       ],
       "invalidLayerName": "Nome camada inválido.",
+      "currentLayerName": [
+        "Camada atual:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "    Nome da camada       Estado       Cor      Tipo de linha  Espessura de linha\n-------------------------  ----------- ----------    --------------  ---------------",
+      "layerOn": "ativada",
+      "layerOff": "desativada",
+      "layerLockedFlag": "-B",
+      "layerPlotsFlag": "-P",
+      "layerListCurrent": [
+        "Camada atual: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "Não foram encontrados nomes de camadas correspondentes.",
+      "layerAlreadyExists": [
+        "A camada \"",
+        [
+          "name"
+        ],
+        "\" já existe."
+      ],
+      "invalidLayerNameQuoted": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" é um nome de camada inválido."
+      ],
+      "cannotRenameLayer": [
+        "Não é possível renomear camada \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layerNameInUse": [
+        "Já existe um camada nomeado como \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layersNotDeleted": "As camadas selecionadas não puderam ser excluídas.",
+      "layerNoObjectFound": "Não foi encontrado nenhum objeto.",
+      "layerMadeCurrent": [
+        "A camada \"",
+        [
+          "name"
+        ],
+        "\" se transformou na atual."
+      ],
+      "invalidColor": "Cor inválida.",
+      "layerLoadedLinetypes": "Tipos de linha carregados:",
+      "layerLinetypeNotFound": [
+        "Tipo de linha \"",
+        [
+          "name"
+        ],
+        "\" não encontrado. Use o comando TIPOLINHA para carregá-lo."
+      ],
       "linetypeNotLoaded": [
         "Tipo de linha \"",
         [
@@ -8141,6 +8285,9 @@ export const ptBR: EngineLocale = {
       "ATTDISP": {
         "ON": "ATivado",
         "OFF": "Desativado"
+      },
+      "-LAYER": {
+        "OFF": "DESAtivada"
       },
       "SNAP": {
         "OFF": "Desativado"

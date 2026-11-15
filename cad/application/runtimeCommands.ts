@@ -54,6 +54,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "-LINETYPE",
   "LWEIGHT",
   "-LWEIGHT",
+  "-LAYER",
   "-VIEW",
   "3DORBIT",
   "SNAP",

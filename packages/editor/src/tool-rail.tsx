@@ -464,6 +464,8 @@ const RAIL_EXCLUDED = new Set([
   "color",
   "linetype",
   "lweight",
+  // -LAYER is typed; the Layer Properties Manager is LAYER's palette.
+  "dashlayer",
   // PURGE is typed: AutoCAD files it in the Application menu and the Manage
   // tab, neither of which this editor has.
   "purge",

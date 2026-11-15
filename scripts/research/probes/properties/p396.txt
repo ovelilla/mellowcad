@@ -1,0 +1,13 @@
+_-LAYER
+_N
+L1,L2,L3
+_M
+K1
+_DEL
+L*
+_DEL
+ZZ
+_DEL
+K1,L1
+
+(mapcar (quote (lambda (n) (if (tblsearch "LAYER" n) n))) (quote ("K1" "L1" "L2" "L3")))

@@ -393,7 +393,7 @@ export class LinetypeTool implements Tool {
         : [
             ...heading,
             ctx.text.message("linetypeColumns"),
-            ...this.rows(matching, ctx),
+            ...linetypeRows(matching, ctx),
           ].join("\n")
     )
   }
@@ -410,23 +410,9 @@ export class LinetypeTool implements Tool {
         ctx.text.message("linetypesInFile", { file: file.name }),
         "",
         ctx.text.message("fileLinetypeColumns"),
-        ...this.rows(file.linetypes, ctx),
+        ...linetypeRows(file.linetypes, ctx),
       ].join("\n")
     )
-  }
-
-  /**
-   * `"DASHED"         Dashed __ __ …`. WHY Continuous's in the command
-   * language: AutoCAD's own drawing names it so (es `Línea continua`).
-   */
-  private rows(entries: readonly Linetype[], ctx: ToolContext): string[] {
-    return entries.map((entry) => {
-      const description = sameLinetypeName(entry.name, DEFAULT_LINETYPE_ID)
-        ? ctx.text.message("solidLine")
-        : entry.description
-      const name = `"${entry.name}"`.padEnd(NAME_COLUMN)
-      return description === "" ? name.trimEnd() : `${name}  ${description}`
-    })
   }
 
   private currentName(ctx: ToolContext): string {
@@ -440,4 +426,22 @@ export class LinetypeTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
+}
+
+/**
+ * `"DASHED"         Dashed __ __ …`, as -LINETYPE's and -LAYER's `?` list a
+ * linetype. WHY Continuous's in the command language: AutoCAD's own drawing
+ * names it so (es `Línea continua`).
+ */
+export function linetypeRows(
+  entries: readonly Linetype[],
+  ctx: ToolContext
+): string[] {
+  return entries.map((entry) => {
+    const description = sameLinetypeName(entry.name, DEFAULT_LINETYPE_ID)
+      ? ctx.text.message("solidLine")
+      : entry.description
+    const name = `"${entry.name}"`.padEnd(NAME_COLUMN)
+    return description === "" ? name.trimEnd() : `${name}  ${description}`
+  })
 }

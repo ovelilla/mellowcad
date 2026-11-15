@@ -2314,6 +2314,51 @@ describe("the engine's English surface", () => {
         )
     )
     walk(
+      "-LAYER",
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] }),
+      (s) =>
+        s
+          .do("-LAYER", (c) => c.command("-LAYER"))
+          .do("New", (c) => answer(c, "N"))
+          .do("names", (c) => c.type("L1,L2,A<B,l1").enter())
+          .do("Make", (c) => answer(c, "M"))
+          .do("make", (c) => c.type("K1").enter())
+          .do("Set", (c) => answer(c, "S"))
+          .do("unknown", (c) => c.type("ZZ").enter())
+          .do("object", (c) => c.enter())
+          .do("Last", (c) => answer(c, "L"))
+          .do("Rename", (c) => answer(c, "R"))
+          .do("old", (c) => c.type("0").enter())
+          .do("Rename again", (c) => answer(c, "R"))
+          .do("old", (c) => c.type("L1").enter())
+          .do("new", (c) => c.type("L2").enter())
+          .do("Color", (c) => answer(c, "C"))
+          .do("refused", (c) => c.type("300").enter())
+          .do("negative", (c) => c.type("-1").enter())
+          .do("layers", (c) => c.type("L*").enter())
+          .do("Ltype", (c) => answer(c, "L"))
+          .do("?", (c) => c.type("?").enter())
+          .do("pattern", (c) => c.enter())
+          .do("Ltype again", (c) => answer(c, "L"))
+          .do("unknown", (c) => c.type("NOPE").enter())
+          .do("LWeight", (c) => answer(c, "LW"))
+          .do("rounded", (c) => c.type("0.33").enter())
+          .do("current", (c) => c.enter())
+          .do("LOck", (c) => answer(c, "LO"))
+          .do("selected", (c) => c.enter())
+          .do("ALL", (c) => answer(c, "ALL"))
+          .do("done", (c) => c.enter())
+          .do("OFF", (c) => answer(c, "OFF"))
+          .do("all", (c) => c.type("*").enter())
+          .do("No", (c) => c.enter())
+          .do("?", (c) => answer(c, "?"))
+          .do("all", (c) => c.enter())
+          .do("DELete", (c) => answer(c, "DEL"))
+          .do("names", (c) => c.type("K1").enter())
+          .do("end", (c) => c.enter())
+          .do("U", (c) => c.command("U"))
+    )
+    walk(
       "-DIMSTYLE",
       createHarness({
         entities: [

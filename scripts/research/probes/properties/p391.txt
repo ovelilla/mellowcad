@@ -1,0 +1,21 @@
+_-LAYER
+_N
+L1,L2
+_OFF
+L1,L2
+_ON
+L1
+_LO
+L*
+_U
+L2
+_OFF
+ZZ
+_ON
+ZZ
+_OFF
+*
+_N
+
+(cdr (assoc 62 (tblsearch "LAYER" "L2")))
+(cdr (assoc 70 (tblsearch "LAYER" "L1")))

@@ -118,6 +118,7 @@ MREDO [] "Multiple redo"
 SNAP ["SN"] "Snap mode"
 COLOR ["COL","COLOUR"] "Color"
 LINETYPE ["LT","LTYPE","DDLTYPE"] "Linetype"
+-LAYER ["-LA"] "Layer (command line)"
 LWEIGHT ["LW","LINEWEIGHT"] "Lineweight"
 U [] "Undo the last action"
 -TEXT [] "Text"
@@ -284,6 +285,7 @@ osnap "Object snap modes" -OS
 snap "Snap mode" SN
 color "Color" COL
 linetype "Linetype" LT
+dashlayer "Layer (command line)" -LA
 lweight "Lineweight" LW
 ptype "Point Style" PTYPE
 
@@ -7934,6 +7936,292 @@ Specify next point or
   prompt| Specify linetype name or [?] <CENTER>: NOPE
   info| Linetype "NOPE" not found in acad.lin.
         You can use the "Load" option to load it from another file.
+
+## -LAYER
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -LAYER
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  command| -LAYER
+  info| Current layer:  "0"
+> New
+  prompt: -LAYER Enter name list for new layer(s):
+  asks: "Enter name list for new layer(s)"
+  tip: Enter name list for new layer(s):
+  dyn: "Enter name list for new layer(s)"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: N
+> names
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter name list for new layer(s): L1,L2,A<B,l1
+  info| "A<B" is an invalid layer name.
+  info| Layer "l1" already exists.
+> Make
+  prompt: -LAYER Enter name for new layer (becomes the current layer) <0>:
+  asks: "Enter name for new layer (becomes the current layer)"
+  tip: Enter name for new layer (becomes the current layer)
+  dyn: "Enter name for new layer (becomes the current layer)"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: M
+> make
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter name for new layer (becomes the current layer) <0>: K1
+> Set
+  prompt: -LAYER Enter layer name to make current or <select object>:
+  asks: "Enter layer name to make current or"
+  tip: Enter layer name to make current or
+  dyn: "Enter layer name to make current or"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: S
+> unknown
+  prompt| Enter layer name to make current or <select object>: ZZ
+  error| Cannot find layer "ZZ".
+> object
+  prompt: -LAYER Select object:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter layer name to make current or <select object>:
+> Last
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Select object: L
+  info| Layer "0" has been made current.
+> Rename
+  prompt: -LAYER Enter old layer name:
+  asks: "Enter old layer name"
+  tip: Enter old layer name:
+  dyn: "Enter old layer name"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: R
+> old
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter old layer name: 0
+  info| Cannot rename layer "0".
+> Rename again
+  prompt: -LAYER Enter old layer name:
+  asks: "Enter old layer name"
+  tip: Enter old layer name:
+  dyn: "Enter old layer name"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: R
+> old
+  prompt: -LAYER Enter new layer name:
+  asks: "Enter new layer name"
+  tip: Enter new layer name:
+  dyn: "Enter new layer name"=""||*
+  prompt| Enter old layer name: L1
+> new
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter new layer name: L2
+  info| A layer named "L2" already exists.
+> Color
+  prompt: -LAYER New color [Truecolor] :
+  asks: "New color"
+  tip: New color
+  dyn: "New color"=""||*
+  options: [T] Truecolor
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: C
+> refused
+  prompt| New color [Truecolor] : 300
+  error| Invalid color number.
+> negative
+  prompt: -LAYER Enter name list of layer(s) for color -1 (red) <0>:
+  asks: ""
+  tip: Enter name list of layer(s) for color -1 (red)
+  dyn: ""=""||*
+  options: -
+  prompt| New color [Truecolor] : -1
+> layers
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter name list of layer(s) for color -1 (red) <0>: L*
+> Ltype
+  prompt: -LAYER Enter loaded linetype name or [?] <Continuous>:
+  asks: "Enter loaded linetype name or"
+  tip: Enter loaded linetype name or
+  dyn: "Enter loaded linetype name or"=""||*
+  options: [?] ?
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: L
+> ?
+  prompt: -LAYER Enter linetype name(s) to list <*>:
+  asks: "Enter linetype name(s) to list"
+  tip: Enter linetype name(s) to list
+  dyn: "Enter linetype name(s) to list"=""||*
+  options: -
+  prompt| Enter loaded linetype name or [?] <Continuous>: ?
+> pattern
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter linetype name(s) to list <*>:
+  info| Loaded linetypes:
+              Name          Description
+        ---------------- ------------------
+        "CENTER"         Center ____ _ ____ _ ____ _ ____ _ ____ _ ____
+        "Continuous"     Solid line
+        "DASHDOT"        Dash dot __ . __ . __ . __ . __ . __ . __ . __
+        "DASHED"         Dashed __ __ __ __ __ __ __ __ __ __ __ __ __ _
+        "HIDDEN"         Hidden __ __ __ __ __ __ __ __ __ __ __ __ __ _
+        "PHANTOM"        Phantom ______  __  __  ______  __  __  ______
+> Ltype again
+  prompt: -LAYER Enter loaded linetype name or [?] <Continuous>:
+  asks: "Enter loaded linetype name or"
+  tip: Enter loaded linetype name or
+  dyn: "Enter loaded linetype name or"=""||*
+  options: [?] ?
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: L
+> unknown
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter loaded linetype name or [?] <Continuous>: NOPE
+  info| Linetype "NOPE" not found.  Use LINETYPE command to load it.
+> LWeight
+  prompt: -LAYER Enter lineweight (0.0mm - 2.11mm):
+  asks: "Enter lineweight (0.0mm - 2.11mm)"
+  tip: Enter lineweight (0.0mm - 2.11mm):
+  dyn: "Enter lineweight (0.0mm - 2.11mm)"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: LW
+> rounded
+  prompt: -LAYER Enter name list of layers(s) for lineweight 0.35mm <0>:
+  asks: ""
+  tip: Enter name list of layers(s) for lineweight 0.35mm
+  dyn: ""=""||*
+  prompt| Enter lineweight (0.0mm - 2.11mm): 0.33
+  info| Lineweight rounded to nearest valid value of 0.35 mm
+> current
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter name list of layers(s) for lineweight 0.35mm <0>:
+> LOck
+  prompt: -LAYER Enter name list of layer(s) to lock or <select objects>:
+  asks: "Enter name list of layer(s) to lock or"
+  tip: Enter name list of layer(s) to lock or
+  dyn: "Enter name list of layer(s) to lock or"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: LO
+> selected
+  prompt: -LAYER Select objects:
+  asks: -
+  tip: Select objects:
+  dyn: 
+  prompt| Enter name list of layer(s) to lock or <select objects>:
+> ALL
+  properties: Line (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: ALL
+  info| 1 found
+> done
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  properties: -
+  prompt| Select objects:
+> OFF
+  prompt: -LAYER Enter name list of layer(s) to turn off or <select objects>:
+  asks: "Enter name list of layer(s) to turn off or"
+  tip: Enter name list of layer(s) to turn off or
+  dyn: "Enter name list of layer(s) to turn off or"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: OFF
+> all
+  prompt: -LAYER Really want layer "0" (the CURRENT layer) off? <N>
+  asks: 
+  tip: Really want layer "0" (the CURRENT layer) off?
+  dyn: 
+  prompt| Enter name list of layer(s) to turn off or <select objects>: *
+> No
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  tip: Enter an option
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Really want layer "0" (the CURRENT layer) off? <N>
+> ?
+  prompt: -LAYER Enter layer name(s) to list <*>:
+  asks: "Enter layer name(s) to list"
+  tip: Enter layer name(s) to list
+  dyn: "Enter layer name(s) to list"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: ?
+> all
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter layer name(s) to list <*>:
+  info|     Layer name        State          Color         Linetype     Lineweight
+        ------------------ ----------- ------------------ ------------ ------------
+        "0"                on     -L-P   7 (white)        "Continuous"  0.350 mm.
+        "K1"               off      -P   7 (white)        "Continuous"  0.250 mm.
+        "L1"               off      -P   1 (red)          "Continuous"  0.250 mm.
+        "L2"               off      -P   1 (red)          "Continuous"  0.250 mm.
+        Current layer: "0"
+> DELete
+  prompt: -LAYER Enter layer(s) to delete:
+  asks: "Enter layer(s) to delete"
+  tip: Enter layer(s) to delete:
+  dyn: "Enter layer(s) to delete"=""||*
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]: DEL
+> names
+  prompt: -LAYER Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
+  prompt| Enter layer(s) to delete: K1
+> end
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:
+> U
+  command| U
+  info| -LAYER Regenerating model.
 
 ## -DIMSTYLE
 > start

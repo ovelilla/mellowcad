@@ -1013,14 +1013,14 @@ const MAKES_NOTHING = [
   ...["ATTEDIT", "EATTEDIT", "ATTDISP", "BLOCKSPALETTE", "LAYER"],
   ...["LAYERCLOSE", "PROPERTIES", "PROPERTIESCLOSE", "PURGE", "-PURGE"],
   ...["LTSCALE", "AUPREC", "SETVAR", "COLOR", "-COLOR", "LINETYPE"],
-  ...["-LINETYPE", "LWEIGHT", "-LWEIGHT", "DIST", "AREA", "ID", "LIST"],
+  ...["-LINETYPE", "LWEIGHT", "-LWEIGHT", "-LAYER", "DIST", "AREA", "ID"],
   ...["MASSPROP", "ZOOM", "PAN", "-PAN", "U", "UNDO", "REDO", "MREDO"],
   ...["SNAP", "-OSNAP", "FROM", "UCS", "UCSICON", "PLAN", "ELEV"],
   ...["VPOINT", "-VPOINT", "VIEW", "-VIEW", "3DORBIT", "NAVVCUBE"],
   ...["VSCURRENT", "REGEN", "REGENALL", "FILL", "UNITS", "CLEANSCREENON"],
   ...["CLEANSCREENOFF", "NEW", "QNEW", "QSAVE", "SAVE", "SAVEAS", "OPEN"],
   ...["DXFIN", "DXFOUT", "COPYCLIP", "CUTCLIP", "COPYBASE"],
-  ...["PTYPE"],
+  ...["LIST", "PTYPE"],
 ]
 
 describe("the creating commands", () => {

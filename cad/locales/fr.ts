@@ -103,6 +103,7 @@ export const fr: EngineLocale = {
       "osnap": "Modes d'accrochage aux objets",
       "color": "Couleur",
       "linetype": "Type de ligne",
+      "dashlayer": "Calque (ligne de commande)",
       "lweight": "Epaisseur de ligne",
       "snap": "Mode Résolution",
       "region": "Région",
@@ -1213,6 +1214,10 @@ export const fr: EngineLocale = {
         "-TL",
         "-TYPEL"
       ],
+      "-LAYER": [
+        "-CALQUE",
+        "-PL"
+      ],
       "LWEIGHT": [
         "EPAISSLIGNE",
         "EPL",
@@ -2020,6 +2025,31 @@ export const fr: EngineLocale = {
         "?": "?",
         "BYLAYER": "DUCalque"
       },
+      "-LAYER": {
+        "?": "?",
+        "Make": "Etablir",
+        "Set": "CHoisir",
+        "New": "Nouv",
+        "Rename": "Renommer",
+        "ON": "ACtif",
+        "OFF": "INactif",
+        "Color": "COuleur",
+        "Ltype": "TLigne",
+        "LWeight": "EPaisseurl",
+        "LOck": "Verrouiller",
+        "Unlock": "Déverrouiller",
+        "DELete": "Supprimer",
+        "Truecolor": "coUleursvraies",
+        "RED": "Rouge",
+        "YELLOW": "Jaune",
+        "GREEN": "Vert",
+        "CYAN": "Cyan",
+        "BLUE": "Bleu",
+        "MAGENTA": "Magenta",
+        "WHITE": "blAnc",
+        "Yes": "Oui",
+        "No": "Non"
+      },
       "EXTRUDE": {
         "MOde": "MOde",
         "SOlid": "SOlide",
@@ -2503,6 +2533,50 @@ export const fr: EngineLocale = {
       "linetypeListNames": "Entrez les noms de types de ligne à répertorier",
       "linetypeFileToList": "Entrez le nom du fichier type de ligne à répertorier",
       "linetypesToLoad": "Entrez les types de ligne à charger",
+      "layerNamesToList": "Entrez le(s) nom(s) de calque à répertorier",
+      "layerToMake": "Entrez le nom du nouveau calque (il devient le calque courant)",
+      "layerToSet": "Entrez le nom du calque à rendre courant ou",
+      "layerSelectObject": "sélectionnez un objet",
+      "newLayerNames": "Entrez la liste des noms des nouveaux calques",
+      "renamedLayerName": "Entrez un nouveau nom calque",
+      "oldLayerName": "Entrez l'ancien nom calque",
+      "layersToTurnOn": "Entrez la liste des noms de calque à activer: .",
+      "layersToTurnOff": "Entrer la liste des noms de calque de désactiver ou",
+      "layersToLock": "Entrer la liste des noms de calque de verrouiller ou",
+      "layersToUnlock": "Entrer la liste des noms de calque de déverrouiller ou",
+      "layerSelectObjects": "sélectionnez des objets",
+      "currentLayerOff": [
+        "Voulez-vous réellement désactiver \"",
+        [
+          "name"
+        ],
+        "\" (le calque COURANT)?"
+      ],
+      "layerColor": "Nouvelle couleur",
+      "layersForColor": [
+        "Entrez la liste de noms des calques pour la couleur ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Entrez le nom du type de ligne chargé ou",
+      "layersForLinetype": [
+        "Entrez la liste des noms des calques pour le type de ligne \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerLineweight": "Entrez l'épaisseur de ligne (0.0mm - 2.11mm)",
+      "layersForLineweight": [
+        "Entrez la liste des noms de calques pour l'épaisseur de ligne: ",
+        [
+          "value"
+        ],
+        "mm"
+      ],
+      "layersToDelete": "Entrez les calques à supprimer",
+      "currentLayerOffNo": "N",
       "linetypeFileToSearch": "Entrez le nom du fichier type de ligne à rechercher",
       "reloadLinetype": [
         "Le type de ligne \"",
@@ -2958,6 +3032,7 @@ export const fr: EngineLocale = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -3000,6 +3075,9 @@ export const fr: EngineLocale = {
       "specifyIncrementingElevationBetweenRows": "tight",
       "selectArcCircleLineOrVertex": "tight",
       "enterThirdCvPointOr": "tight"
+    },
+    "promptTails": {
+      "layerColor": ""
     },
     "format": {
       "idle": "Commande",
@@ -3378,6 +3456,72 @@ export const fr: EngineLocale = {
         "\"."
       ],
       "invalidLayerName": "Nom calque incorrect.",
+      "currentLayerName": [
+        "Calque courant:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "   Nom du calque       Etat          Couleur     Type de ligne Ep. de ligne\n------------------ ----------- ------------------ ------------ ------------",
+      "layerOn": "actif",
+      "layerOff": "inactif",
+      "layerLockedFlag": "-V",
+      "layerPlotsFlag": "-T",
+      "layerListCurrent": [
+        "Calque courant: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "Pas de noms de calques correspondants trouvés.",
+      "layerAlreadyExists": [
+        "Le calque \"",
+        [
+          "name"
+        ],
+        "\" existe déjà."
+      ],
+      "invalidLayerNameQuoted": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" est un nom de calque non valable."
+      ],
+      "cannotRenameLayer": [
+        "Impossible de renommer calque \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layerNameInUse": [
+        "Un calque nommé \"",
+        [
+          "name"
+        ],
+        "\" existe déjà."
+      ],
+      "layersNotDeleted": "Les calques sélectionnés n'ont pas pu être supprimés.",
+      "layerNoObjectFound": "Aucun objet trouvé.",
+      "layerMadeCurrent": [
+        "Le calque \"",
+        [
+          "name"
+        ],
+        "\" est devenu le calque courant."
+      ],
+      "invalidColor": "Couleur incorrecte.",
+      "layerLoadedLinetypes": "Types de lignes chargés:",
+      "layerLinetypeNotFound": [
+        "Type de ligne \"",
+        [
+          "name"
+        ],
+        "\" non trouvé. Utilisez TYPELIGNE pour le charger."
+      ],
       "linetypeNotLoaded": [
         "Type de ligne \"",
         [
@@ -8133,6 +8277,9 @@ export const fr: EngineLocale = {
       },
       "ATTDISP": {
         "ON": "ACtif",
+        "OFF": "INactif"
+      },
+      "-LAYER": {
         "OFF": "INactif"
       },
       "SNAP": {

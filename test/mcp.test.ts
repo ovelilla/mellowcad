@@ -41,9 +41,9 @@ describe("a drawing session at the command line", () => {
 
   it("stops at the first refused answer and leaves the rest unrun", () => {
     const session = new DrawingSession()
-    const result = session.run("-LAYER\nM\nWALLS\n\nERASE\nALL\n")
-    expect(result.stopped).toEqual({ line: 1, typed: "-LAYER", linesNotRun: 6 })
-    expect(result.transcript.at(-1)).toMatch(/^Unknown command "-LAYER"/)
+    const result = session.run("-PLOT\nY\nModel\n\nERASE\nALL\n")
+    expect(result.stopped).toEqual({ line: 1, typed: "-PLOT", linesNotRun: 6 })
+    expect(result.transcript.at(-1)).toMatch(/^Unknown command "-PLOT"/)
 
     const refused = session.run("LINE\n0,0\nfoo\n10,10")
     expect(refused.stopped).toMatchObject({ line: 3, typed: "foo" })

@@ -1,0 +1,19 @@
+_-LAYER
+_N
+L1
+_LW
+0.5
+L1
+_LW
+0.33
+L1
+_LW
+3
+_LW
+
+_LW
+0
+
+
+(entget (tblobjname "LAYER" "L1"))
+(entget (tblobjname "LAYER" "0"))

@@ -1,0 +1,10 @@
+_LINE
+0,0
+'_-LAYER
+_M
+L1
+
+100,0
+
+(getvar "CLAYER")
+(cdr (assoc 8 (entget (entlast))))

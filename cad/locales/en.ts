@@ -103,6 +103,7 @@ export const en: EngineCatalog = {
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
+      "dashlayer": "Layer (command line)",
       "lweight": "Lineweight",
       "snap": "Snap mode",
       "region": "Region",
@@ -1214,6 +1215,10 @@ export const en: EngineCatalog = {
         "-LT",
         "-LTYPE"
       ],
+      "-LAYER": [
+        "-LAYER",
+        "-LA"
+      ],
       "LWEIGHT": [
         "LWEIGHT",
         "LW",
@@ -1460,6 +1465,16 @@ export const en: EngineCatalog = {
       },
       "LWEIGHT": {
         "BYLAYER": "BYLayer"
+      },
+      "-LAYER": {
+        "OFF": "OFf",
+        "RED": "Red",
+        "YELLOW": "Yellow",
+        "GREEN": "Green",
+        "CYAN": "Cyan",
+        "BLUE": "Blue",
+        "MAGENTA": "Magenta",
+        "WHITE": "White"
       }
     },
     "promptKeywords": {
@@ -1826,6 +1841,50 @@ export const en: EngineCatalog = {
       "linetypeListNames": "Enter linetype name(s) to list",
       "linetypeFileToList": "Enter name of linetype file to list",
       "linetypesToLoad": "Enter linetype(s) to load",
+      "layerNamesToList": "Enter layer name(s) to list",
+      "layerToMake": "Enter name for new layer (becomes the current layer)",
+      "layerToSet": "Enter layer name to make current or",
+      "layerSelectObject": "select object",
+      "newLayerNames": "Enter name list for new layer(s)",
+      "oldLayerName": "Enter old layer name",
+      "renamedLayerName": "Enter new layer name",
+      "layersToTurnOn": "Enter name list of layer(s) to turn on",
+      "layersToTurnOff": "Enter name list of layer(s) to turn off or",
+      "layersToLock": "Enter name list of layer(s) to lock or",
+      "layersToUnlock": "Enter name list of layer(s) to unlock or",
+      "layerSelectObjects": "select objects",
+      "currentLayerOff": [
+        "Really want layer \"",
+        [
+          "name"
+        ],
+        "\" (the CURRENT layer) off?"
+      ],
+      "layerColor": "New color",
+      "layersForColor": [
+        "Enter name list of layer(s) for color ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Enter loaded linetype name or",
+      "layersForLinetype": [
+        "Enter name list of layer(s) for linetype \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerLineweight": "Enter lineweight (0.0mm - 2.11mm)",
+      "layersForLineweight": [
+        "Enter name list of layers(s) for lineweight ",
+        [
+          "value"
+        ],
+        "mm"
+      ],
+      "layersToDelete": "Enter layer(s) to delete",
+      "currentLayerOffNo": "N",
       "linetypeFileToSearch": "Enter name of linetype file to search",
       "reloadLinetype": [
         "Linetype \"",
@@ -2281,6 +2340,7 @@ export const en: EngineCatalog = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -2324,7 +2384,9 @@ export const en: EngineCatalog = {
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
     },
-    "promptTails": {},
+    "promptTails": {
+      "layerColor": ""
+    },
     "format": {
       "idle": "Command",
       "commandPrompt": [
@@ -2702,6 +2764,72 @@ export const en: EngineCatalog = {
         "\"."
       ],
       "invalidLayerName": "Invalid layer name.",
+      "currentLayerName": [
+        "Current layer:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "    Layer name        State          Color         Linetype     Lineweight\n------------------ ----------- ------------------ ------------ ------------",
+      "layerOn": "on",
+      "layerOff": "off",
+      "layerLockedFlag": "-L",
+      "layerPlotsFlag": "-P",
+      "layerListCurrent": [
+        "Current layer: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "No matching layer names found.",
+      "layerAlreadyExists": [
+        "Layer \"",
+        [
+          "name"
+        ],
+        "\" already exists."
+      ],
+      "invalidLayerNameQuoted": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" is an invalid layer name."
+      ],
+      "cannotRenameLayer": [
+        "Cannot rename layer \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layerNameInUse": [
+        "A layer named \"",
+        [
+          "name"
+        ],
+        "\" already exists."
+      ],
+      "layersNotDeleted": "The selected layers could not be deleted.",
+      "layerNoObjectFound": "No object found.",
+      "layerMadeCurrent": [
+        "Layer \"",
+        [
+          "name"
+        ],
+        "\" has been made current."
+      ],
+      "invalidColor": "Invalid color.",
+      "layerLoadedLinetypes": "Loaded linetypes:",
+      "layerLinetypeNotFound": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" not found.  Use LINETYPE command to load it."
+      ],
       "linetypeNotLoaded": [
         "Linetype \"",
         [
@@ -7436,6 +7564,9 @@ export const en: EngineCatalog = {
       },
       "ATTDISP": {
         "ON": "ON",
+        "OFF": "OFF"
+      },
+      "-LAYER": {
         "OFF": "OFF"
       },
       "SNAP": {

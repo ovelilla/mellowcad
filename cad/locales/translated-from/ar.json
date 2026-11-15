@@ -97,6 +97,7 @@
   "interface.tool.osnap": "Object snap modes",
   "interface.tool.color": "Color",
   "interface.tool.linetype": "Linetype",
+  "interface.tool.dashlayer": "Layer (command line)",
   "interface.tool.lweight": "Lineweight",
   "interface.tool.snap": "Snap mode",
   "interface.tool.region": "Region",

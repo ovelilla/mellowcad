@@ -213,6 +213,10 @@ class FramedDocument implements DocumentReader {
     return this.source.canRemoveLinetype(name)
   }
 
+  canRemoveLayer(id: LayerId): boolean {
+    return this.source.canRemoveLayer(id)
+  }
+
   getTextStyles(): TextStyle[] {
     return this.source.getTextStyles()
   }

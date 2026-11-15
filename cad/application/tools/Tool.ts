@@ -193,7 +193,7 @@ export interface UndoHistory {
  * which takes Crossing, Fence and CPolygon only, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension,
  * `Group` for one that takes no selection mode as SLICE's planar Object and
- * Surface, or `Expects a single object.` for the dimension commands' picks), or a
+ * Surface, `Last/Group` for -LAYER's Set, or `Expects a single object.` for the dimension commands' picks), or a
  * command's own refusal (CIRCLE's radius, POLYGON's sides), a line each when
  * it is several (-VPOINT's `Invalid input. Try again.` and the current view
  * direction again).
@@ -217,6 +217,7 @@ export type QuestionInput =
   | "object"
   | "objectOrLast"
   | "objectOrGroup"
+  | "objectLastOrGroup"
   | "singleObject"
   | {
       readonly refusal: MessageId | readonly MessageId[]
@@ -760,6 +761,14 @@ export interface Tool {
    * runs in, itself or the one it interrupts.
    */
   readonly changesView?: true
+
+  /**
+   * Whether a run is a layer-table step, as -LAYER's: under UNDO's Layer it
+   * joins the one just before when that is a layer step too, -LAYER's or
+   * the Layer Properties Manager's, U naming them all (`-LAYER -LAYER`,
+   * properties/p303, p306).
+   */
+  readonly layerSteps?: true
 
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void

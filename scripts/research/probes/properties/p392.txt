@@ -1,0 +1,30 @@
+_-LAYER
+_N
+L1
+_C
+_T
+255,0,0
+L1
+_C
+300
+cyan
+
+_C
+4
+ZZ
+_C
+-5
+L1
+_C
+BYLAYER
+_C
+3
+
+_C
+0
+_C
+256
+
+
+(tblsearch "LAYER" "L1")
+(tblsearch "LAYER" "0")

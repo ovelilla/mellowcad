@@ -1391,7 +1391,10 @@ export class CadRuntime extends Observable {
     // what it holds on deactivation, with what it did to the view.
     if (this.activeTool.id !== "select") this.recordView()
     const zoom = this.activeTool.id !== "select" && this.typedZoom
-    this.history.endGroup(zoom ? { withLast: this.zoomCombines } : undefined)
+    this.history.endGroup(
+      zoom ? { withLast: this.zoomCombines } : undefined,
+      this.activeTool.layerSteps === true
+    )
     if (this.typedZoom) this.zoomCombines = zoom
     this.history.nameCommand(next.id === "select" ? null : this.startingName)
     this.resetTracking()

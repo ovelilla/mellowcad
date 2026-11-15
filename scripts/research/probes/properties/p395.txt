@@ -1,0 +1,35 @@
+_LINE
+0,0
+100,0
+
+_-LAYER
+_N
+L1
+_S
+ZZ
+_S
+
+50,0
+_S
+L1
+_M
+L1
+_M
+
+_M
+L3
+_N
+L1
+_N
+A, B
+_R
+ZZ
+_R
+L1
+A<B
+_R
+L1
+l1
+
+(getvar "CLAYER")
+(mapcar (quote (lambda (n) (cdr (assoc 2 (tblsearch "LAYER" n))))) (quote ("0" "L1" "L3" "A" "B")))

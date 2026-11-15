@@ -1,0 +1,21 @@
+_-LAYER
+_N
+L1
+_OFF
+L1
+_S
+L1
+
+(cdr (assoc 62 (tblsearch "LAYER" "L1")))
+(getvar "CLAYER")
+_-LAYER
+_OFF
+L1
+_Y
+
+(cdr (assoc 62 (tblsearch "LAYER" "L1")))
+_-LAYER
+_M
+L1
+
+(cdr (assoc 62 (tblsearch "LAYER" "L1")))

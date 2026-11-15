@@ -118,8 +118,9 @@ word the engine says, and its type is the type of every other language.
   `spaced` (`[Multiple]: M`, any prompt left out) or `tight`, against the colon, where the
   language's prompt ends without a space: Brazilian Portuguese writes `[Múltiplo]:M`.
 - **`promptTails`** is what a prompt writes after its keyword list, by the prompt's id, before its
-  default and colon: German puts the verb last (`Höhe oder [2Punkt] angeben <10.0000>:`). A prompt
-  left out ends at its list, as every English one does.
+  default and colon: German puts the verb last (`Höhe oder [2Punkt] angeben <10.0000>:`); an empty
+  one leaves a space before the colon, as -LAYER's `New color [Truecolor] :` does in every language,
+  English too. A prompt left out ends at its list.
 - A linetype's or hatch pattern's name is drawing data, the same in every language, and may be left
   out.
 

@@ -95,6 +95,7 @@ import { RegenTool } from "./tools/RegenTool"
 import { OsnapTool } from "./tools/OsnapTool"
 import { SnapTool } from "./tools/SnapTool"
 import { ColorTool } from "./tools/ColorTool"
+import { LayerTool } from "./tools/LayerTool"
 import { LinetypeTool } from "./tools/LinetypeTool"
 import { LweightTool } from "./tools/LweightTool"
 
@@ -255,6 +256,7 @@ export function defaultTools(
     new SnapTool(),
     new ColorTool(),
     new LinetypeTool(),
+    new LayerTool(),
     new LweightTool(),
   ]
 }

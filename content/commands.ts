@@ -162,6 +162,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   BLOCKSPALETTE: { group: "organize" },
   LAYER: { group: "organize" },
   LAYERCLOSE: { group: "organize" },
+  "-LAYER": { group: "organize" },
   PROPERTIES: { group: "organize" },
   PROPERTIESCLOSE: { group: "organize" },
   PURGE: { group: "organize" },

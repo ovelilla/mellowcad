@@ -1,0 +1,21 @@
+_-LAYER
+_N
+L1
+_L
+DASHED
+L1
+_L
+
+
+_L
+FOO
+_L
+?
+
+_L
+HIDDEN
+ZZ
+
+(tblsearch "LAYER" "L1")
+(tblsearch "LAYER" "ZZ")
+(tblsearch "LTYPE" "DASHED")

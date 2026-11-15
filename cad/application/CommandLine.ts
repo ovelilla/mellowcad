@@ -371,6 +371,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   snap: "SNAP",
   color: "COLOR",
   linetype: "LINETYPE",
+  dashlayer: "-LAYER",
   lweight: "LWEIGHT",
 }
 

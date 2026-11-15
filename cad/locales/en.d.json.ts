@@ -100,6 +100,7 @@ declare const source: {
       "osnap": string
       "color": string
       "linetype": string
+      "dashlayer": string
       "lweight": string
       "snap": string
       "region": string
@@ -669,6 +670,7 @@ declare const source: {
       "-COLOR": string[]
       "LINETYPE": string[]
       "-LINETYPE": string[]
+      "-LAYER": string[]
       "LWEIGHT": string[]
       "-LWEIGHT": string[]
       "BOX": string[]
@@ -1403,6 +1405,31 @@ declare const source: {
         "?": string
         "BYLAYER": string
       }
+      "-LAYER": {
+        "?": string
+        "Make": string
+        "Set": string
+        "New": string
+        "Rename": string
+        "ON": string
+        "OFF": string
+        "Color": string
+        "Ltype": string
+        "LWeight": string
+        "LOck": string
+        "Unlock": string
+        "DELete": string
+        "Truecolor": string
+        "RED": string
+        "YELLOW": string
+        "GREEN": string
+        "CYAN": string
+        "BLUE": string
+        "MAGENTA": string
+        "WHITE": string
+        "Yes": string
+        "No": string
+      }
       "EXTRUDE": {
         "MOde": string
         "SOlid": string
@@ -1841,6 +1868,27 @@ declare const source: {
       "linetypeListNames": string
       "linetypeFileToList": string
       "linetypesToLoad": string
+      "layerNamesToList": string
+      "layerToMake": string
+      "layerToSet": string
+      "layerSelectObject": string
+      "newLayerNames": string
+      "oldLayerName": string
+      "renamedLayerName": string
+      "layersToTurnOn": string
+      "layersToTurnOff": string
+      "layersToLock": string
+      "layersToUnlock": string
+      "layerSelectObjects": string
+      "currentLayerOff": string
+      "layerColor": string
+      "layersForColor": string
+      "layerLinetype": string
+      "layersForLinetype": string
+      "layerLineweight": string
+      "layersForLineweight": string
+      "layersToDelete": string
+      "currentLayerOffNo": string
       "linetypeFileToSearch": string
       "reloadLinetype": string
       "defaultLineweight": string
@@ -2279,6 +2327,7 @@ declare const source: {
     }
     "promptForms": {
       "convertToPolylines": string
+      "currentLayerOff": string
       "purgeBlock": string
       "purgeLinetype": string
       "reloadLinetype": string
@@ -2322,7 +2371,9 @@ declare const source: {
       "selectArcCircleLineOrVertex": string
       "enterThirdCvPointOr": string
     }
-    "promptTails": Record<string, never>
+    "promptTails": {
+      "layerColor": string
+    }
     "format": {
       "idle": string
       "commandPrompt": string
@@ -2393,6 +2444,24 @@ declare const source: {
       "varies": string
       "layerNotFound": string
       "invalidLayerName": string
+      "currentLayerName": string
+      "layerListColumns": string
+      "layerOn": string
+      "layerOff": string
+      "layerLockedFlag": string
+      "layerPlotsFlag": string
+      "layerListCurrent": string
+      "noMatchingLayerNames": string
+      "layerAlreadyExists": string
+      "invalidLayerNameQuoted": string
+      "cannotRenameLayer": string
+      "layerNameInUse": string
+      "layersNotDeleted": string
+      "layerNoObjectFound": string
+      "layerMadeCurrent": string
+      "invalidColor": string
+      "layerLoadedLinetypes": string
+      "layerLinetypeNotFound": string
       "linetypeNotLoaded": string
       "invalidLinetypeName": string
       "cannotChangeThickness": string
@@ -3144,6 +3213,9 @@ declare const source: {
       }
       "ATTDISP": {
         "ON": string
+        "OFF": string
+      }
+      "-LAYER": {
         "OFF": string
       }
       "SNAP": {

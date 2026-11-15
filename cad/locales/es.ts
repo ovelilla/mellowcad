@@ -103,6 +103,7 @@ export const es: EngineLocale = {
       "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
+      "dashlayer": "Capa (línea de comando)",
       "lweight": "Grosor de línea",
       "snap": "Modo Forzcursor",
       "region": "Región",
@@ -1202,6 +1203,10 @@ export const es: EngineLocale = {
         "-TL",
         "-TLINEA"
       ],
+      "-LAYER": [
+        "-CAPA",
+        "-CA"
+      ],
       "LWEIGHT": [
         "GROSORLIN",
         "LINEWEIGHT"
@@ -2010,6 +2015,31 @@ export const es: EngineLocale = {
         "?": "?",
         "BYLAYER": "porCapa"
       },
+      "-LAYER": {
+        "?": "?",
+        "Make": "Establ",
+        "Set": "Def",
+        "New": "CRear",
+        "Rename": "RENombrar",
+        "ON": "ACT",
+        "OFF": "DES",
+        "Color": "COlor",
+        "Ltype": "Tlínea",
+        "LWeight": "Grosorl",
+        "LOck": "Bloq",
+        "Unlock": "desbLoq",
+        "DELete": "SUPrimir",
+        "Truecolor": "COlorverdadero",
+        "RED": "Rojo",
+        "YELLOW": "Amarillo",
+        "GREEN": "Verde",
+        "CYAN": "cIán",
+        "BLUE": "aZul",
+        "MAGENTA": "Magenta",
+        "WHITE": "bLanco",
+        "Yes": "Sí",
+        "No": "No"
+      },
       "EXTRUDE": {
         "MOde": "MOdo",
         "SOlid": "Sólido",
@@ -2493,6 +2523,50 @@ export const es: EngineLocale = {
       "linetypeListNames": "Indique nombre(s) de tlínea que se van a enumerar",
       "linetypeFileToList": "Indique nombre de archivo de tipos de líneas que se van a enumerar",
       "linetypesToLoad": "Indique tipo(s) de línea que se va(n) a cargar",
+      "layerNamesToList": "Indique nombre(s) de capa que se van a enumerar",
+      "layerToMake": "Indique nombre de nueva capa (se convierte en la capa actual)",
+      "layerToSet": "Indique nombre de capa para convertirla en la actual o",
+      "layerSelectObject": "seleccionar objeto",
+      "newLayerNames": "Indique lista de nombres para la nueva capa",
+      "renamedLayerName": "Indique nombre capa nuevo",
+      "oldLayerName": "Indique nombre capa antiguo",
+      "layersToTurnOn": "Indique la lista de nombres de capa para activar",
+      "layersToTurnOff": "Indique lista de nombres de capa(s) para desactivar o",
+      "layersToLock": "Indique lista de nombres de capa(s) para bloquear o",
+      "layersToUnlock": "Indique lista de nombres de capa(s) para desbloquear o",
+      "layerSelectObjects": "designar objetos",
+      "currentLayerOff": [
+        "¿Desea desactivar la capa \"",
+        [
+          "name"
+        ],
+        "\" (ACTUAL)?"
+      ],
+      "layerColor": "Nuevo color",
+      "layersForColor": [
+        "Indique lista de nombres de capa para el color ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Indique el nombre de tlínea cargado o",
+      "layersForLinetype": [
+        "Indique la lista de nombres de capa para del tipo de línea \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerLineweight": "Indique el grosor de línea (0.0mm - 2.11mm)",
+      "layersForLineweight": [
+        "Indique lista de nombres de capa para el grosor de línea ",
+        [
+          "value"
+        ],
+        "mm"
+      ],
+      "layersToDelete": "Indique capa(s) para suprimir",
+      "currentLayerOffNo": "N",
       "linetypeFileToSearch": "Indique nombre de archivo de tipos de línea que se van a buscar",
       "reloadLinetype": [
         "Tipo de línea \"",
@@ -2948,6 +3022,7 @@ export const es: EngineLocale = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -2990,6 +3065,9 @@ export const es: EngineLocale = {
       "specifyIncrementingElevationBetweenRows": "spaced",
       "selectArcCircleLineOrVertex": "spaced",
       "enterThirdCvPointOr": "spaced"
+    },
+    "promptTails": {
+      "layerColor": ""
     },
     "format": {
       "idle": "Comando",
@@ -3366,6 +3444,72 @@ export const es: EngineLocale = {
         "\"."
       ],
       "invalidLayerName": "Nombre capa no válido.",
+      "currentLayerName": [
+        "Capa actual:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "    Nombre capa        Estado       Color       Tlínea     Grosorl\n------------------ ----------- ------------------ ------------ ------------",
+      "layerOn": "act",
+      "layerOff": "des",
+      "layerLockedFlag": "-L",
+      "layerPlotsFlag": "-I",
+      "layerListCurrent": [
+        "Capa actual: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "No se han encontrado nombres de capa correspondientes.",
+      "layerAlreadyExists": [
+        "La capa \"",
+        [
+          "name"
+        ],
+        "\" ya existe."
+      ],
+      "invalidLayerNameQuoted": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" no es un nombre de capa válido."
+      ],
+      "cannotRenameLayer": [
+        "No es posible cambiar nombre a capa \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layerNameInUse": [
+        "Ya existe un capa con el nombre \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "layersNotDeleted": "Error al suprimir las capas designadas.",
+      "layerNoObjectFound": "No se ha encontrado ningún objeto.",
+      "layerMadeCurrent": [
+        "La capa \"",
+        [
+          "name"
+        ],
+        "\" se ha actualizado."
+      ],
+      "invalidColor": "Color no válido.",
+      "layerLoadedLinetypes": "Tipos de línea cargados:",
+      "layerLinetypeNotFound": [
+        "Tipo de línea \"",
+        [
+          "name"
+        ],
+        " no encontrado. Use el comando TIPOLIN para cargarlo."
+      ],
       "linetypeNotLoaded": [
         "Tipo de línea \"",
         [
@@ -8122,6 +8266,9 @@ export const es: EngineLocale = {
       },
       "ATTDISP": {
         "ON": "ACT",
+        "OFF": "DES"
+      },
+      "-LAYER": {
         "OFF": "DES"
       },
       "SNAP": {

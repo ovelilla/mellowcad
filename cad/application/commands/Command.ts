@@ -152,21 +152,39 @@ export class CommandHistory extends Observable {
       regenerates,
       layer: true,
     }
-    const below = this.undoStack.at(-1)
-    const { control, layer } = this.undoSettings
-    if (layer && control === "all" && below?.layer && below.command) {
-      this.undoStack[this.undoStack.length - 1] = {
-        ...below,
-        command: new GroupCommand([below.command, command]),
-        name: null,
-        names: [...namesOf(below), name],
-        regenerates: below.regenerates || regenerates,
-      }
+    if (this.joinLayer(entry)) {
       this.redoStack = []
       this.emit()
       return
     }
     this.push(entry)
+  }
+
+  /**
+   * Joins `entry`, a layer step, to the layer step just below under UNDO's
+   * Layer, U naming them all, unless Control keeps fewer than all. Whether
+   * it did.
+   */
+  private joinLayer(entry: Entry): boolean {
+    const below = this.undoStack.at(-1)
+    const { control, layer } = this.undoSettings
+    if (
+      !layer ||
+      control !== "all" ||
+      !below?.layer ||
+      !below.command ||
+      !entry.command
+    ) {
+      return false
+    }
+    this.undoStack[this.undoStack.length - 1] = {
+      ...below,
+      command: new GroupCommand([below.command, entry.command]),
+      name: null,
+      names: [...namesOf(below), ...namesOf(entry)],
+      regenerates: below.regenerates || entry.regenerates,
+    }
+    return true
   }
 
   private push(entry: Entry): void {
@@ -242,9 +260,11 @@ export class CommandHistory extends Observable {
    * regenerates if anything in it did. UNDO's marks and group starts, which
    * execute nothing, stay as they are. A ZOOM's (`zoom`) joins the ZOOM's
    * just below when `withLast`, U naming them both (`ZOOM 'ZOOM`), unless
-   * UNDO Combine is No or Control One (acc/k15, h33).
+   * UNDO Combine is No or Control One (acc/k15, h33). A layer step's
+   * (`layer`, -LAYER's) joins the layer step just below, as the Layer
+   * Properties Manager's edits do ({@link executeLayerEdit}).
    */
-  endGroup(zoom?: ZoomStep): void {
+  endGroup(zoom?: ZoomStep, layer = false): void {
     const start = this.groupStart
     const regenerated = this.regenerated
     this.groupStart = null
@@ -268,7 +288,13 @@ export class CommandHistory extends Observable {
           this.emit()
           return
         }
-        this.push(zoom ? { ...entry, combines: true } : entry)
+        this.push(
+          zoom
+            ? { ...entry, combines: true }
+            : layer
+              ? { ...entry, layer: true }
+              : entry
+        )
       }
       return
     }
@@ -277,14 +303,15 @@ export class CommandHistory extends Observable {
       this.undoStack.push(...steps)
       return
     }
-    this.fold(steps, regenerated, zoom)
+    this.fold(steps, regenerated, zoom, layer)
     this.keepOne()
   }
 
   private fold(
     steps: readonly Entry[],
     regenerated: boolean,
-    zoom: ZoomStep | undefined
+    zoom: ZoomStep | undefined,
+    layer: boolean
   ): void {
     const command =
       steps.length === 1
@@ -296,6 +323,10 @@ export class CommandHistory extends Observable {
       name: steps[0].name,
       names: [],
       regenerates: regenerated || steps.some((step) => step.regenerates),
+    }
+    if (layer) {
+      if (!this.joinLayer(entry)) this.undoStack.push({ ...entry, layer: true })
+      return
     }
     if (!zoom || !(command instanceof ViewChangeCommand)) {
       this.undoStack.push(entry)

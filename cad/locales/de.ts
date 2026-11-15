@@ -103,6 +103,7 @@ export const de: EngineLocale = {
       "osnap": "Objektfangmodi",
       "color": "Farbe",
       "linetype": "Linientyp",
+      "dashlayer": "Layer (Befehlszeile)",
       "lweight": "Linienstärke",
       "snap": "Fangmodus",
       "region": "Region",
@@ -1209,6 +1210,10 @@ export const de: EngineLocale = {
         "-LT",
         "-LTYP"
       ],
+      "-LAYER": [
+        "-LAYER",
+        "-LA"
+      ],
       "LWEIGHT": [
         "LSTÄRKE",
         "LINIENSTÄRKE",
@@ -2016,6 +2021,31 @@ export const de: EngineLocale = {
         "?": "?",
         "BYLAYER": "VONLayer"
       },
+      "-LAYER": {
+        "?": "?",
+        "Make": "Machen",
+        "Set": "SEtzen",
+        "New": "Neu",
+        "Rename": "Umbenennen",
+        "ON": "EIN",
+        "OFF": "AUs",
+        "Color": "FArbe",
+        "Ltype": "Ltyp",
+        "LWeight": "LStärke",
+        "LOck": "SPerren",
+        "Unlock": "ENtsperren",
+        "DELete": "LÖschen",
+        "Truecolor": "Truecolor",
+        "RED": "Rot",
+        "YELLOW": "GElb",
+        "GREEN": "GRün",
+        "CYAN": "Cyan",
+        "BLUE": "Blau",
+        "MAGENTA": "Magenta",
+        "WHITE": "Weiss",
+        "Yes": "Ja",
+        "No": "Nein"
+      },
       "EXTRUDE": {
         "MOde": "MOdus",
         "SOlid": "Volumenkörper",
@@ -2500,6 +2530,50 @@ export const de: EngineLocale = {
       "linetypeListNames": "Aufzulistende(n) Linientyp(en) eingeben",
       "linetypeFileToList": "Namen der aufzulistenden Linientypdatei eingeben",
       "linetypesToLoad": "Zu ladende Linientypen eingeben",
+      "layerNamesToList": "Aufzulistende(n) Layernamen eingeben",
+      "layerToMake": "Namen für neuen Layer eingeben (wird aktueller Layer)",
+      "layerToSet": "Namen des zu aktivierenden Layers eingeben oder",
+      "layerSelectObject": "Objekt wählen",
+      "newLayerNames": "Namensliste für neue(n) Layer eingeben ",
+      "renamedLayerName": "Neuen Namen für Layer eingeben",
+      "oldLayerName": "Alten Namen für Layer eingeben",
+      "layersToTurnOn": "Namensliste der Layer für einschalten eingeben",
+      "layersToTurnOff": "Namensliste der Layer für ausschalten eingeben oder",
+      "layersToLock": "Namensliste der Layer für sperren eingeben oder",
+      "layersToUnlock": "Namensliste der Layer für entsperren eingeben oder",
+      "layerSelectObjects": "Objekte wählen",
+      "currentLayerOff": [
+        "Soll Layer \"",
+        [
+          "name"
+        ],
+        "\" (der AKTUELLE Layer) wirklich ausgeschaltet werden?"
+      ],
+      "layerColor": "Neue Farbe",
+      "layersForColor": [
+        "Namensliste der/des Layer/s für Farbe eingeben ",
+        [
+          "color"
+        ]
+      ],
+      "layerLinetype": "Namen des geladenen Linientyps eingeben oder",
+      "layersForLinetype": [
+        "Namensliste der/des Layer/s für Linientyp \"",
+        [
+          "name"
+        ],
+        "\" eingeben"
+      ],
+      "layerLineweight": "Linienstärke eingeben (0.0mm - 2.11mm)",
+      "layersForLineweight": [
+        "Namensliste der/des Layer/s für Linienstärke eingeben ",
+        [
+          "value"
+        ],
+        "mm"
+      ],
+      "layersToDelete": "Zu löschende(n) Layer eingeben",
+      "currentLayerOffNo": "N",
       "linetypeFileToSearch": "Namen der zu suchenden Linientypdatei eingeben",
       "reloadLinetype": [
         "Linientyp \"",
@@ -2955,6 +3029,7 @@ export const de: EngineLocale = {
     },
     "promptForms": {
       "convertToPolylines": "open",
+      "currentLayerOff": "open",
       "purgeBlock": "open",
       "purgeLinetype": "open",
       "reloadLinetype": "open",
@@ -2999,6 +3074,7 @@ export const de: EngineLocale = {
       "enterThirdCvPointOr": "spaced"
     },
     "promptTails": {
+      "layerColor": "",
       "boxHeightOr": "angeben",
       "pyramidCenterOr": "angeben",
       "pyramidBaseRadiusOr": "angeben",
@@ -3399,6 +3475,72 @@ export const de: EngineLocale = {
         "\" nicht finden."
       ],
       "invalidLayerName": "Ungültiger Layer Name.",
+      "currentLayerName": [
+        "Aktueller Layer:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "layerListColumns": "    Layername        Status       Farbe        Linientyp     Linienstärke\n------------------ ----------- ------------- ------------ ------------",
+      "layerOn": "ein",
+      "layerOff": "aus",
+      "layerLockedFlag": "-S",
+      "layerPlotsFlag": "-P",
+      "layerListCurrent": [
+        "Aktueller Layer: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "noMatchingLayerNames": "Keine übereinstimmenden Layernamen gefunden.",
+      "layerAlreadyExists": [
+        "Layer \"",
+        [
+          "name"
+        ],
+        "\" existiert bereits."
+      ],
+      "invalidLayerNameQuoted": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" ist ein ungültiger Layername."
+      ],
+      "cannotRenameLayer": [
+        "Kann Layer nicht in \"",
+        [
+          "name"
+        ],
+        "\" umbenennen."
+      ],
+      "layerNameInUse": [
+        "Ein Layer namens \"",
+        [
+          "name"
+        ],
+        "\" existiert bereits."
+      ],
+      "layersNotDeleted": "Ausgewählte Layer konnten nicht gelöscht werden.",
+      "layerNoObjectFound": "Kein Objekt gefunden.",
+      "layerMadeCurrent": [
+        "Layer \"",
+        [
+          "name"
+        ],
+        "\" wurde zum aktuellen Layer gemacht."
+      ],
+      "invalidColor": "Ungültige Farbe.",
+      "layerLoadedLinetypes": "Geladene Linientypen:",
+      "layerLinetypeNotFound": [
+        "Linientyp \"",
+        [
+          "name"
+        ],
+        "\" nicht gefunden. Mit dem Befehl LINIENTYP laden."
+      ],
       "linetypeNotLoaded": [
         "Linientyp \"",
         [
@@ -8127,6 +8269,9 @@ export const de: EngineLocale = {
       "ATTDISP": {
         "ON": "Ein",
         "OFF": "Aus"
+      },
+      "-LAYER": {
+        "OFF": "AUs"
       },
       "SNAP": {
         "OFF": "Aus"

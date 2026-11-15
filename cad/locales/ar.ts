@@ -103,6 +103,7 @@ export const ar: EngineLocale = {
       "osnap": "أوضاع التقاط الكائنات",
       "color": "اللون",
       "linetype": "نوع الخط",
+      "dashlayer": "الطبقة (سطر الأوامر)",
       "lweight": "وزن الخط",
       "snap": "وضع الالتقاط",
       "region": "منطقة",

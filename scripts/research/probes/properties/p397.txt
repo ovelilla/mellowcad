@@ -1,0 +1,40 @@
+_LINE
+10,10
+100,100
+
+_-LAYER
+_M
+L1
+
+_LINE
+10,100
+100,10
+
+_-LAYER
+_S
+0
+_OFF
+
+_L
+
+_LO
+
+_ALL
+
+
+_-LAYER
+_U
+
+_L
+
+_S
+
+_L
+_L
+
+
+(cdr (assoc 62 (tblsearch "LAYER" "0")))
+(cdr (assoc 62 (tblsearch "LAYER" "L1")))
+(cdr (assoc 70 (tblsearch "LAYER" "0")))
+(cdr (assoc 70 (tblsearch "LAYER" "L1")))
+(getvar "CLAYER")

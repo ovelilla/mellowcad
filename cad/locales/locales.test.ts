@@ -83,8 +83,8 @@ describe("the engine's catalogs", () => {
     const reference = new Map(messages(english))
     for (const tag of catalogTags().filter((tag) => tag !== "en")) {
       for (const [path, message] of messages(readCatalog(tag) as Tree)) {
-        // A tail is a language's own (English's prompts end at their list):
-        // it names a prompt English has, and takes no arguments.
+        // A tail is a language's own: it names a prompt English has, and
+        // takes no arguments.
         const tail = /^commands\.promptTails\.(.+)$/.exec(path)
         if (tail) {
           expect(
@@ -270,9 +270,10 @@ describe("a command language of our own", () => {
   // A catalog that brings a command language brings all of it: a gap would
   // leave one command, keyword or prompt in English in the middle of Spanish.
   it("is complete or absent", () => {
-    // What a language writes after a prompt's list is its own: English has none.
+    // What a language writes after a prompt's list is its own, English's too
+    // (-LAYER's `New color [Truecolor] :`).
     const own = (path: string) => !path.startsWith("promptTails.")
-    const reference = paths(english.commands as Tree)
+    const reference = paths(english.commands as Tree).filter(own)
     for (const tag of catalogTags().filter((tag) => tag !== "en")) {
       const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
       if (!commands) continue

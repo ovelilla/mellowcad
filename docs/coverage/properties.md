@@ -1,6 +1,6 @@
 # Properties and tables
 
-### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA` · pt-BR `CAMADA` / `CA` / `LAYER` / `DDLMODES` · `FECHARCAMADA` · fr `CALQUE` / `LAYER` / `PL` / `DDLMODES` · `FERMERCALQUE` · it `LAYER` / `LA` / `DDLMODES` · `CHIUDILAYER` · de `LAYER` / `LA` / `DDLMODES` / `DDLMODI` · `LAYERSCHL` · ru `СЛОЙ` / `СЛ` / `ДИАЛСЛОЙ` · `СЛОЙЗАКРЫТЬ`
+### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · `-LAYER` / `-LA` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA` · `-CAPA` / `-CA` · pt-BR `CAMADA` / `CA` / `LAYER` / `DDLMODES` · `FECHARCAMADA` · `-CAMADA` / `-CA` · fr `CALQUE` / `LAYER` / `PL` / `DDLMODES` · `FERMERCALQUE` · `-CALQUE` / `-PL` · it `LAYER` / `LA` / `DDLMODES` · `CHIUDILAYER` · `-LAYER` / `-LA` · de `LAYER` / `LA` / `DDLMODES` / `DDLMODI` · `LAYERSCHL` · `-LAYER` / `-LA` · ru `СЛОЙ` / `СЛ` / `ДИАЛСЛОЙ` · `СЛОЙЗАКРЫТЬ` · `-СЛОЙ` / `-СЛ`
 
 **Implemented:** colour, visibility, lock, current layer, ByLayer resolution; an Off layer's
 objects are neither drawn, picked nor snapped (p323), and turning a layer off drops them from the
@@ -51,13 +51,43 @@ d06-1) or, with nothing selected, the current one; choosing a layer moves the se
 it in one undo step and keeps the current layer, or with nothing selected makes it current
 ("If no objects are selected, the drop-down lists … display the current settings", 2026), a step U
 names `'CLAYER` (d05-1) and never joins the manager's (p308); the Properties palette's Layer with
-nothing selected sets it so too
+nothing selected sets it so too; -LAYER (p300–p329, p390–p399, p410–p412, in the seven
+languages) says `Current layer:  "0"` and asks `Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/LOck/Unlock]:`
+until Enter, typed transparently too (`'-LAYER` inside LINE, its prompts headed `>>`, p412): `?`
+lists the layers a pattern matches in AutoCAD's columns (On or Off, `-L` locked, `-P` plots; es
+`act`/`des`, `-I`), then `Current layer: "0"`, or `No matching layer names found.` (p390); Make
+makes a layer current, creating it if need be and turning it on, the current one offered (p305,
+p317, p411); Set makes one current, turned on, `Cannot find layer "ZZ".` asking again, or at Enter
+the layer of the object picked at `Select object:` (a point or Last; `Layer "L1" has been made
+current.`, `No object found.`, `Expects a point or Last/Group`, p395, p397); New makes each layer of
+a comma list, `Layer "L1" already exists.` and `"A<B" is an invalid layer name.` for the rest
+(p321, p395, p399); Rename asks the old name and the new, refusing layer 0 (`Cannot rename layer
+"0".`), a name it does not find (asked again), one in use (`A layer named "L2" already exists.`)
+and an invalid one (`Invalid layer name.`, asked again; p319, p320, p395); ON, OFF, LOck and
+Unlock take a comma list with wildcards, any case, and OFF, LOck and Unlock the objects of
+`Select objects:` at Enter, a locked layer's too (p391, p397, p410), turning the current layer off
+asking `Really want layer "0" (the CURRENT layer) off? <N>` once the others are off (`Yes or No,
+please.`, p310–p312); Color asks `New color [Truecolor] :` (a space before the colon in every
+language: `promptTails`), an index colour by number or name, a negative one turning the layers off
+too (`for color -5 (blue)`), Truecolor's three values, `Invalid color number.` and `Invalid color.`
+asking again (p301, p392, p398); Ltype asks `Enter loaded linetype name or [?] <Continuous>:`, one
+the drawing lacks loaded from acad.lin as CHPROP's, any other `Linetype "FOO" not found.  Use
+LINETYPE command to load it.`, its `?` listing the loaded ones (p393); LWeight asks `Enter
+lineweight (0.0mm - 2.11mm):`, rounded to a valid one and said so (p394, p399); each then asks
+the layers, the current one at Enter; DELete, declared and not listed, deletes what may go
+(`The selected layers could not be deleted.`, p324–p327, p396); the run is one undo step U names
+`-LAYER`, which the next -LAYER run joins under UNDO's Layer (`-LAYER -LAYER`, p303, p306; its
+own with Layer No, p315; parted by any command, p329), a lock or an unlock regenerating on U (p302)
 
-**Missing:** -LAYER (`-LA`, es `-CA`; p300, p314: `Current layer:  "0"` and
-`Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/TRansparency/MATerial/Plot/Freeze/Thaw/LOck/Unlock/stAte/Description/rEconcile/Xref]:`,
-es `[?/Establ/Def/CRear/RENombrar/ACT/DES/COlor/Tlínea/Grosorl/tranSParencia/MATerial/TRazar/Inut/Reut/Bloq/desbLoq/eStado/DESCr/REConciliar/refX]`;
-its refusals `Cannot rename layer "0".`, `"A<B" is an invalid layer name.`,
-`The selected layers could not be deleted.`, p319–p326), LAYDEL, LAYER as a step of its own, which the manager's edits join (U after LAYER and a lock says
+**Missing:** -LAYER's TRansparency, MATerial, Plot, Freeze, Thaw, stAte, Description, rEconcile
+and Xref (none is modelled; typed, `Invalid option keyword.`), so its list leaves them out, Color's
+COlorbook and index colours 8 to 255 (asked again, as -COLOR's), Group at `Select object:`, the
+listing's Default lineweight (here a layer's 0.25 mm) and its pages (`Press ENTER to continue:`);
+**unverified** for -LAYER: whether a -LAYER run joins the manager's edits (here they join each
+other as two layer steps), Make's answer to an invalid name (here New's words), Enter at Rename's
+and at Color's prompts (here back to the options), a positive colour on a layer that is off (here
+it stays off), Spanish AutoCAD loading no DASHED (its acad.lin is its own: here acad.lin's
+English, as -LINETYPE's WHY); LAYDEL, LAYER as a step of its own, which the manager's edits join (U after LAYER and a lock says
 `'.-LAYER LAYER Regenerating model.`, d04-2; here LAYER makes no step), the drop-down's On / Freeze /
 Lock icons, Make Object's Layer Current, Match Layer, Layer Previous and the rest of the Layers
 panel, freezing, Freeze / Plot / Transparency / Plot Style / New VP Freeze / Description columns,
