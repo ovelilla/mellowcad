@@ -1,10 +1,10 @@
 # Un MCP de MellowCAD — brief
 
-> **Estado:** investigación, prototipo y banco hechos el 15/11/2026, en una sesión intercalada
-> entre la fase 4 del DXF y el idioma siguiente; es la propuesta de la sesión, sin acordar por el
-> dueño, y nada está publicado ni desplegado. Construirlo espera su palabra; publicar en npm,
-> desplegar, el registro de MCP, los directorios y el push, su sí. Lo siguiente del plan no cambia
-> (`docs/next-seo.md`): lo que queda de la fase 4 del DXF. Se borra cuando cada entrega de §6
+> **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; nada construido
+> más que el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
+> el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
+> modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
 > esté hecha o descartada.
 
 ## 1. Qué se propone, en corto
@@ -253,6 +253,22 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
 4. **Las fichas y el lanzamiento**, que hace el dueño: el directorio de conectores de Claude (el
    enlace que cuenta), el registro oficial, el directorio de ChatGPT, y el anuncio. Es un
    segundo lanzamiento ante otro público y va detrás del calendario de L5, que no se mueve.
+
+### 6.1 Con qué modelo
+
+Por encargo del dueño (15/11/2026): Fable agota pronto su límite semanal, así que **todo lo que
+razonablemente pueda hacer Opus 5.5 se hace con Opus**, y la duda se resuelve a su favor. Lo que
+pedía el modelo más capaz, decidir qué construir, ya está hecho y escrito aquí; lo que queda es
+ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan el error.
+
+- **Cada sesión de este plan empieza con Opus 5.5**, las siete piezas de §6.
+- **Fable 5.2 solo en dos casos**: una pieza en la que una sesión de Opus se atascó (dice en qué
+  y por qué al cerrar; no se insiste con el mismo modelo), y una lectura de las guardas de la
+  ruta (§7) antes de desplegarla en producción, que es donde un error pausa la web: una sesión
+  corta de revisión, no la de construcción.
+- **Al cerrar, cada sesión le dice al dueño el modelo de la siguiente** y por qué, siendo
+  crítica: «Fable» pide un motivo concreto de esa pieza (qué se intentó y no salió, o qué
+  decisión queda abierta que los datos no resuelven), nunca «es más difícil».
 
 ## 7. Coste y abuso
 
