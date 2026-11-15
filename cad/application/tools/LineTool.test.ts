@@ -47,6 +47,19 @@ function expectEnds(cad: CadHarness, want: readonly number[][]): void {
 }
 
 describe("LINE", () => {
+  // The mouse on the command line, never over the drawing: the first point's
+  // box opened only at the first move, and `0,0` was `Invalid point.`.
+  it.each([
+    ["LINE 0,0 10,0 10,10 ", { line: 2 }],
+    ["PLINE 0,0 10,0 10,10 ", { polyline: 1 }],
+    ["3DPOLY 0,0,0 10,0,5 ", { polyline3d: 1 }],
+  ])("%s takes points typed with the mouse off the drawing", (line, made) => {
+    const cad = createHarness()
+    cad.runtime.pointerLeave()
+    expect(cad.keyIn(line).refused).toBeNull()
+    expect(cad.typeCounts()).toEqual(made)
+  })
+
   it("draws a segment between two picked points", () => {
     const cad = createHarness()
 

@@ -65,6 +65,9 @@ export class Polyline3dTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
+    // WHY now, not at the first move: a point typed at the command line
+    // with the mouse off the drawing reaches the box, or it is refused.
+    this.openStartInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
   }
 
   onDeactivate(ctx: ToolContext): void {
