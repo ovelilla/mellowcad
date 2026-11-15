@@ -30,17 +30,21 @@ export const DRAW_TOOL_TITLE = "Draw with AutoCAD commands"
 
 /**
  * How long one call may type for, checked between answers, past which it
- * stops with what it drew; a bench drawing takes about 25 ms.
+ * stops with what it drew. A bench drawing takes about 25 ms; a gear of
+ * three solids and their UNION, 0.55 s on a laptop and 1.3–1.5 s on
+ * Vercel's function, which stopped it once at 1.5 s.
  */
-export const MAX_DRAW_MILLISECONDS = 1_500
+export const MAX_DRAW_MILLISECONDS = 3_000
 
 /**
  * How long one call may run, its answer included, past which it is cut in
  * the middle of whatever it is doing: one answer can run long (a 1000 ×
  * 1000 ARRAYRECT made a million objects and 900 MB in 3.3 s), and no check
- * between answers stops it.
+ * between answers stops it. Inside the route's `maxDuration` (5 s); what
+ * one call can allocate before the cut stays under the function's 2 GB,
+ * Vercel's CPU running some three times slower than a laptop's.
  */
-export const MAX_CALL_MILLISECONDS = 2_500
+export const MAX_CALL_MILLISECONDS = 4_000
 
 /** The objects listed one by one; past that, a count. */
 const MAX_LISTED = 200

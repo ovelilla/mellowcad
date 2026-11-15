@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026; falta para cerrar la entrega 1 probarla como conector desde una vista previa de Vercel, que pide subir una rama (el sí del dueño), y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026: la entrega 1 está en producción por decisión del dueño, probada como conector en Claude (en ChatGPT su cuenta de empresa no lo permite), sin anunciar, y con el cortafuegos puesto; antes de anunciarla, la función pasa a Cloudflare (§7). Cuándo empieza lo siguiente frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -320,12 +320,20 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
 - **El peor caso de una llamada no son 25 ms**: una sola respuesta puede tardar mucho (un
   ARRAYRECT asociativo de 2000 × 2000 tardó 89 s; uno de 1000 × 1000 sin asociar, un millón de
   objetos y 900 MB en 3,3 s; AutoCAD 2027 no tiene MAXARRAY, así que el motor no lo topa). Cada
-  llamada corre en un contexto de `node:vm` cuyo plazo la corta a media respuesta a los 2,5 s, y
-  `maxDuration` (5 s) va detrás, para un lote de llamadas en una sola petición. Un abusador
-  desde una IP, a 10 peticiones por minuto, gastaría las 4 h de CPU en unas 10 horas; desde
-  varias, antes. Es lo que debe pesar la revisión de las guardas con Fable (§6.1) antes de
-  desplegar: si bastan el interruptor y los avisos de uso de Vercel, o si hace falta Cloudflare
-  desde el principio.
+  llamada corre en un contexto de `node:vm` cuyo plazo la corta a media respuesta a los 4 s
+  (3 s entre respuesta y respuesta), con `maxDuration` (5 s) detrás. Los primeros 1,5 y 2,5 s
+  paraban un engranaje de tres sólidos y su UNION: 0,55 s en un portátil, 1,3–1,5 s en la
+  función de Vercel, unas tres veces más lenta.
+- **La revisión de las guardas con Fable** (15/11/2026, sobre el código solo) encontró los lotes
+  JSON-RPC (cien llamadas en una petición) y el tope de 64 KB que leía solo la cabecera:
+  arreglados. Las tres reglas del cortafuegos están puestas en producción (el límite por IP
+  activo, comprobado: la undécima llamada en un minuto da 429; los dos interruptores apagados).
+  Su veredicto: **aceptable en Hobby solo sin anunciar**. Lo que ninguna regla acota es la
+  memoria de una respuesta (un ARRAYRECT grande pasa de 2 GB y tumbaría la instancia) y el abuso
+  que llegue por Claude o ChatGPT, exentos del límite: desde una IP, unas 4,7 h para agotar la
+  CPU del mes; desde cincuenta, minutos. **Antes de anunciar el MCP, la función pasa a
+  Cloudflare Workers de pago** (el gasto es del dueño), que además permite subir los topes del
+  3D; queda por medir si el motor cabe en sus 128 MB.
 - **Si hay tracción o abuso**, la salida es mover la misma función a Workers de Cloudflare de
   pago (5 $ al mes), que aísla el sitio: su plan gratis da 10 ms de CPU por petición y no llega.
   Es gasto, así que es del dueño. El núcleo se escribe sin nada de Vercel para que el paso sea
