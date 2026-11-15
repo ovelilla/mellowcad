@@ -1,8 +1,11 @@
 # Para quien integra — brief
 
 > **Estado:** en pausa: la visibilidad va antes por decisión del dueño del 5/11/2026; sin acordar,
-> nada empezado. El plan de la visibilidad es `docs/next-seo.md`. Los tres paquetes están en npm desde el 2026-10-31 (motor
-> 0.2.0, react y editor 0.1.0). Se borra cuando cada idea esté hecha o descartada.
+> nada empezado, salvo el MCP del motor (§2), que una sesión intercalada el 15/11/2026 investigó,
+> prototipó y midió: su brief es `docs/next-mcp.md`, también sin acordar y sin publicar. El plan
+> de la visibilidad es `docs/next-seo.md`, y lo siguiente en él, lo que queda de la fase 4 del DXF
+> (`docs/next-dxf.md`). Los tres paquetes están en npm desde el 2026-10-31 (motor 0.2.0, react y
+> editor 0.1.0). Se borra cuando cada idea esté hecha o descartada.
 
 Lo que queda del brief de la librería, cerrado el 2026-10-31 con los tres paquetes publicados (está
 en el historial de git). Ordenado por lo que aporta. Ninguna idea se
@@ -25,9 +28,10 @@ La web ya sirve el `.md` de cada página y `llms.txt`.
   generado de los mismos READMEs y guías (una fuente, como las páginas de _Construir_).
 - **Un MCP de la documentación** (buscar y leer páginas): `fumadocs-core/mcp` lo trae, pero cada
   llamada es una función y aporta poco sobre `llms.txt` con tan pocas páginas.
-- **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin navegador,
-  y devuelve SVG o el fichero del dibujo): lo más interesante como producto, y una decisión de
-  producto con su propio brief y la regla de afirmaciones (`.claude/rules/i18n.md`) delante.
+- **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin
+  navegador): tiene su brief, `docs/next-mcp.md` (15/11/2026), con quién hay ya (no es el
+  primero: CADCraft), un prototipo (`scripts/mcp/server.ts`) y un banco de 291 ejecuciones. Su
+  propuesta es un MCP remoto y sin estado antes que el paquete de terminal.
 
 ## 3. Decisiones que siguen en pie
 

@@ -12,12 +12,14 @@
 > MEASURE (la fase 4 de `docs/next-dxf.md`, con sus páginas de comando) y SOLID, y LEADER (con
 > su página de comando) el 13/11, y el alemán (`live` en `/de`, L8), los tipos de línea del
 > dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) y el ruso (`live` en `/ru`, L8)
-> hechos y publicados el 13/11; por decisión del dueño la visibilidad va antes que cualquier
+> hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
+> (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
+> de L5; por decisión del dueño la visibilidad va antes que cualquier
 > funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca en
 > paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas, el
 > patrón de cada sombreado…) y después otro idioma, alternando, además de lo que queda de §7.
 > Esperan detrás
-> `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
+> `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
 ## 1. Objetivo
@@ -891,4 +893,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   254.757, `/de` 255.093, `/ru` 288.538 (3.302 bajo 285 KiB); solo `/ru` baja las caras
   cirílicas. **Siguiente**, por
   orden del dueño: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`), y después otro idioma.
+- Cuña (un MCP): investigación, prototipo y brief hechos el 15/11/2026, sin publicar
+  (`docs/next-mcp.md`, `scripts/mcp/server.ts`). No es contenido ni funcionalidad del sitio: nada
+  cambia en producción ni en la cola de §7. Lo que toca a la visibilidad: el directorio de
+  conectores de Claude da un enlace seguido a la web y pide un servidor remoto; CADCraft (por las
+  fechas, el de Bing en §2.2) tiene ya un MCP de comandos de AutoCAD. Un lanzamiento del MCP iría detrás del
+  calendario de L5, que no se mueve. **Siguiente**, sin cambios: lo que quede de la fase 4 del
+  DXF (`docs/next-dxf.md`), y después otro idioma.
 - 10 Medición: la primera, un mes después del push de 01–02.
