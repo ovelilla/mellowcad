@@ -1198,7 +1198,7 @@ export abstract class EdgeEditTool implements Tool {
    * corner asked again after the object prompt, on its line.
    */
   private refuseCorner(ctx: ToolContext): void {
-    ctx.report(ctx.text.message("invalidWindowSpecification"))
+    ctx.report(ctx.text.message("invalidWindowSpecification"), "error")
     this.reportObjectPrompt(ctx)
     this.openWindowInput(ctx)
   }

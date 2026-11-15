@@ -41,9 +41,9 @@ const VIEW = { width: 2000, height: 1500 }
  * line is typed at the prompt and entered, as a user would, so what the
  * agent reads back is the history AutoCAD's command window would show.
  *
- * WHY the driver's internal `runtime`: `CadDriver` has no input for a line
- * typed at the command line yet, nor a way to say a prompt refused it. Both
- * belong on the driver before this leaves `scripts/` (`docs/next-mcp.md`, §6).
+ * WHY the driver's internal `runtime` still: the layers, the files and the
+ * document a picture is drawn from have no public way yet; the brief says
+ * which belong on the package (`docs/next-mcp.md`, §6).
  */
 export class DrawingSession {
   private cad: CadDriver
@@ -88,7 +88,6 @@ export class DrawingSession {
    * script would otherwise answer the wrong prompts with its remaining lines.
    */
   run(script: string, select: readonly number[] = []): RunResult {
-    const runtime = this.cad.runtime
     this.cancel()
     const before = new Map(this.entities().map((e) => [e.id, e]))
     const logBefore = this.cad.state().commandLine.lines
@@ -111,11 +110,11 @@ export class DrawingSession {
       // WHY: a typed pick takes what is within a few pixels, so the view
       // decides how near "on the object" is. Framing the drawing between
       // commands keeps that tolerance a constant fraction of its size.
-      if (this.cad.activeToolId() === "select") runtime.zoomToFit()
+      if (this.cad.activeToolId() === "select") this.cad.zoomToFit()
     }
 
     const cancelled = this.cancel()
-    runtime.zoomToFit()
+    this.cad.zoomToFit()
 
     const after = this.entities()
     const afterIds = new Set(after.map((e) => e.id))
@@ -135,7 +134,6 @@ export class DrawingSession {
    * Returns the answer the engine refused, or null.
    */
   private typeLine(line: string): string | null {
-    const runtime = this.cad.runtime
     let rest = line.trim()
     do {
       const state = this.cad.state()
@@ -157,12 +155,8 @@ export class DrawingSession {
       // WHY: Enter at `Command:` repeats the last command, which a script's
       // stray blank line never means.
       if (answer === "" && this.cad.activeToolId() === "select") continue
-      const errorsBefore = errorCount(this.cad.state().commandLine.lines)
-      runtime.setCommandLineText(answer)
-      runtime.submitCommandLine()
-      if (errorCount(this.cad.state().commandLine.lines) > errorsBefore) {
-        return answer
-      }
+      const { refused } = this.cad.keyIn(answer)
+      if (refused !== null) return refused.answer
     } while (rest !== "")
     return null
   }
@@ -239,7 +233,7 @@ export class DrawingSession {
     this.cancel()
     const logBefore = this.cad.state().commandLine.lines
     await this.cad.runtime.openFile({ name, bytes })
-    this.cad.runtime.zoomToFit()
+    this.cad.zoomToFit()
     this.handles.clear()
     this.ids.clear()
     return newLines(logBefore, this.cad.state().commandLine.lines)
@@ -266,8 +260,7 @@ export class DrawingSession {
       files,
     })
     try {
-      copy.runtime.setCommandLineText("DXFOUT")
-      copy.runtime.submitCommandLine()
+      copy.keyIn("DXFOUT")
       const dialog = copy.state().saveAsDialog
       if (!dialog) throw new Error("DXFOUT did not ask for a file.")
       await copy.runtime.saveAs({
@@ -298,10 +291,6 @@ export class DrawingSession {
       attributes: { width, height },
     })
   }
-}
-
-function errorCount(lines: readonly { readonly kind: string }[]): number {
-  return lines.filter((line) => line.kind === "error").length
 }
 
 /**

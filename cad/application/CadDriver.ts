@@ -109,6 +109,27 @@ export interface PointerModifiers {
   readonly button?: number
 }
 
+/** What {@link CadDriver.keyIn} typed, and where the engine said no. */
+export interface KeyedInLine {
+  /**
+   * What the command window wrote meanwhile, a history line each: the
+   * commands echoed, each question with its answer, what the commands
+   * reported.
+   */
+  readonly lines: readonly string[]
+  /** The answer the engine refused; null when it took the whole line. */
+  readonly refused: RefusedAnswer | null
+}
+
+export interface RefusedAnswer {
+  /** As typed: `foo`, or `CHAIR` that `Command:` does not know. */
+  readonly answer: string
+  /** The first line of the refusal: `Point or option keyword required.` */
+  readonly message: string
+  /** What followed it on the line, never typed. */
+  readonly untyped: string
+}
+
 export class CadDriver {
   // WHY internal: the engine's own tests reach past the driver into the
   // runtime and its ports; a host drives it through the methods alone, and
@@ -392,6 +413,72 @@ export class CadDriver {
       (option) => option.id === id
     )
     return offered?.abbreviation ?? abbreviationOf(text.keyword(command, id))
+  }
+
+  /**
+   * Types `line` in the command window, key by key, and presses Enter, as a
+   * user typing there does: Space is Enter too, except in a text (TEXT's, an
+   * attribute's value) and after the start of a name that holds spaces, so
+   * one line can hold a command and its answers, as a line of an AutoCAD
+   * script file can (`CIRCLE 50,25 10`). Two spaces are two Enters, and an
+   * Enter at `Command:` repeats the last command.
+   *
+   * It stops at the first answer the command window answers with an error —
+   * an unknown command, a prompt's `Point or option keyword required.`, a
+   * name not found, an object on a locked layer —, the rest of the line
+   * untyped, since what followed was meant for another question. A notice
+   * (LINE's `All segments already undone.`) is no refusal. A line break
+   * throws: type each line apart.
+   */
+  keyIn(line: string): KeyedInLine {
+    if (/[\r\n]/.test(line)) {
+      throw new Error("keyIn types one line: key each line in apart.")
+    }
+    const { commandLine } = this.runtime
+    const start = commandLine.mark()
+    const written = (since: number) => {
+      const count = commandLine.mark() - since
+      return count === 0 ? [] : commandLine.getLines().slice(-count)
+    }
+    for (let at = 0; at <= line.length; at++) {
+      const key = at < line.length ? line[at] : "Enter"
+      if (key !== " " && key !== "Enter") {
+        this.runtime.setCommandLineText(commandLine.getBuffer() + key)
+        continue
+      }
+      const answer = commandLine.getBuffer().trim()
+      const mark = commandLine.mark()
+      if (!this.runtime.commandLineKey(key)) {
+        this.runtime.setCommandLineText(commandLine.getBuffer() + key)
+        continue
+      }
+      const refusal = written(mark).find((entry) => entry.kind === "error")
+      if (refusal) {
+        return {
+          lines: written(start).map((entry) => entry.text),
+          refused: {
+            answer,
+            message: refusal.text,
+            untyped: line.slice(at + 1),
+          },
+        }
+      }
+    }
+    return {
+      lines: written(start).map((entry) => entry.text),
+      refused: null,
+    }
+  }
+
+  /**
+   * ZOOM Extents: frames every object, `padding` screen pixels in from the
+   * edges, with no command and no line in the history. A point picked by
+   * typing it (at `Select objects:`) takes what is within a few pixels, so
+   * framing the drawing keeps "on the object" a constant share of its size.
+   */
+  zoomToFit(padding?: number): this {
+    this.runtime.zoomToFit(padding)
+    return this
   }
 
   /** Runs a command by name or alias, as typing it at the prompt would. */

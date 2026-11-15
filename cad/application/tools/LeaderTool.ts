@@ -378,7 +378,7 @@ export class LeaderTool implements Tool {
       typeof question === "string" ? question : (question?.id ?? null)
     if (!prompt) return
     ctx.dynamicInput.open({
-      fields: [{ id: "line", prompt, kind: "text" }],
+      fields: [{ id: "line", prompt, kind: "text", freeText: true }],
       commit: () => {},
       commitRaw: (commitCtx) =>
         this.commitLine(commitCtx.dynamicInput.getText("line"), commitCtx),

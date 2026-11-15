@@ -415,8 +415,18 @@ export class TextEditTool implements Tool {
       ctx.dynamicInput.open({
         fields: [
           { id: "tag", prompt: "definitionTag", kind: "text" },
-          { id: "prompt", prompt: "definitionPrompt", kind: "text" },
-          { id: "default", prompt: "definitionDefault", kind: "text" },
+          {
+            id: "prompt",
+            prompt: "definitionPrompt",
+            kind: "text",
+            freeText: true,
+          },
+          {
+            id: "default",
+            prompt: "definitionDefault",
+            kind: "text",
+            freeText: true,
+          },
         ],
         commit: () => {},
         commitRaw,

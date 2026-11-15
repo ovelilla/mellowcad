@@ -433,7 +433,9 @@ export class MTextTool implements Tool {
     this.state = { phase: "edit", box, lines: [] }
     const session: DynamicInputSession = this.atCommandLine
       ? {
-          fields: [{ id: "line", prompt: "mtextLine", kind: "text" }],
+          fields: [
+            { id: "line", prompt: "mtextLine", kind: "text", freeText: true },
+          ],
           commit: () => {},
           commitRaw: (commitCtx) => this.commitLine(commitCtx),
         }

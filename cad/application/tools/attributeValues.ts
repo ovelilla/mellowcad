@@ -76,7 +76,12 @@ export class AttributeValuePrompts {
     const definition = this.definitions[index]
     ctx.dynamicInput.open({
       fields: [
-        { id: "value", label: attributePrompt(definition), kind: "text" },
+        {
+          id: "value",
+          label: attributePrompt(definition),
+          kind: "text",
+          freeText: true,
+        },
       ],
       commit: () => {},
       commitRaw: (commitCtx) => {

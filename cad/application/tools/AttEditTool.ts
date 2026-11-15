@@ -232,6 +232,7 @@ export class AttributeEditBox {
               ? attribute.tag
               : attributePrompt(definition),
           kind: "text" as const,
+          freeText: true,
         }
       }),
       commit: () => {},

@@ -1925,6 +1925,15 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /** Whether the box's field is a text, where Space is a character. */
+  private takesFreeText(): boolean {
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((entry) => entry.id === id)
+    return field?.kind === "paragraphs" || field?.freeText === true
+  }
+
   /** Whether the question asked takes a space typed after something. */
   private takesSpaces(): boolean {
     const asked = this.asking().question?.()
@@ -3097,8 +3106,14 @@ export class CadRuntime extends Observable {
   commandLineKey(key: string): boolean {
     const typed = this.commandLine.getBuffer()
     // A name that holds spaces (UCS's Save, desktop ucs/d05) takes one
-    // after what is typed: the field types it.
-    if (key === " " && typed.trim() !== "" && this.takesSpaces()) return false
+    // after what is typed, and a text any (TEXT's `HELLO WORLD`, leading
+    // spaces too, text/p155): the field types it.
+    if (
+      key === " " &&
+      (this.takesFreeText() || (typed.trim() !== "" && this.takesSpaces()))
+    ) {
+      return false
+    }
     if (key === "Enter" || key === " ") {
       this.submitCommandLine()
     } else if (key === "Tab" && typed !== "") {

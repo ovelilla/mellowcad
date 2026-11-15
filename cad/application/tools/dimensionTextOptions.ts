@@ -22,7 +22,9 @@ export function openDimensionTextInput(
   apply: (text: string | undefined, ctx: ToolContext) => void
 ): void {
   const session: DynamicInputSession = {
-    fields: [{ id: "value", prompt: "dimensionText", kind: "text" }],
+    fields: [
+      { id: "value", prompt: "dimensionText", kind: "text", freeText: true },
+    ],
     commit: () => {},
     commitRaw: (commitCtx) => {
       const typed = commitCtx.dynamicInput.getText("value")

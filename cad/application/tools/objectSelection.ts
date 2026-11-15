@@ -1311,7 +1311,7 @@ export class ObjectSelector {
     step: Extract<Step, { kind: "firstCorner" | "oppositeCorner" }>,
     ctx: ToolContext
   ): void {
-    ctx.report(ctx.text.message("invalidWindowSpecification"))
+    ctx.report(ctx.text.message("invalidWindowSpecification"), "error")
     if (step.kind !== "oppositeCorner" || !step.implied) {
       this.step = { kind: "firstCorner", rule: step.rule }
     } else {

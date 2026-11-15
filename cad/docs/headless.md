@@ -45,6 +45,7 @@ the driver projects them through its view, 1000×800 pixels at scale 1 unless `w
 | Input                                  | What the user does                                              |
 | -------------------------------------- | --------------------------------------------------------------- |
 | `command("CIRCLE")`                    | Types a command at the `Command:` prompt and presses Enter      |
+| `keyIn("CIRCLE 50,25 10")`             | Types a line in the command window, a space ending each answer  |
 | `click(point)`, `doubleClick(point)`   | Picks a point                                                   |
 | `type("30")`, `enter()`, `escape()`    | Types into the prompt's field, then Enter or Escape             |
 | `option("Close")`                      | Answers `[Close/Undo]` with a keyword, by its global id         |
@@ -52,10 +53,23 @@ the driver projects them through its view, 1000×800 pixels at scale 1 unless `w
 | `moveTo`, `drag`, `rightClick`, `wheel` | Moves, drags a window or a grip, right-clicks, zooms           |
 | `select(...ids)`, `selectAll()`        | Sets the selection directly, with no clicks                     |
 | `undo()`, `redo()`                     | U and REDO                                                      |
+| `zoomToFit()`                          | Frames the drawing, with no command in the history              |
 
 `option` names a keyword by its global id in every language, and types it as a user of the
 command language would: `option("Close")` types `C` in English and `C` for `Cerrar` in Spanish.
 An id the prompt does not offer throws, since it is a mistake in the script.
+
+`keyIn` types a line as a user types it in the command window, so it can drive the engine from
+text alone, a line of an AutoCAD script file at a time. It stops at the first answer the engine
+refuses, and says which, with what it wrote and what was left untyped:
+
+```ts
+import { CadDriver } from "@mellowcad/engine"
+
+const cad = new CadDriver()
+const { refused } = cad.keyIn("LINE 0,0 foo 100,0")
+refused // { answer: "foo", message: "Point or option keyword required.", untyped: "100,0" }
+```
 
 To read what happened:
 

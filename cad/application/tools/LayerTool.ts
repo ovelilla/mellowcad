@@ -561,7 +561,10 @@ export class LayerTool implements Tool {
       const layer = this.layerNamed(typed, ctx)
       if (layer) this.makeCurrent(layer, ctx)
       else if (this.invalid(typed)) {
-        ctx.report(ctx.text.message("invalidLayerNameQuoted", { name: typed }))
+        ctx.report(
+          ctx.text.message("invalidLayerNameQuoted", { name: typed }),
+          "error"
+        )
       } else ctx.execute(new AddLayerCommand(createLayer(typed), true))
     }
     this.askOption(ctx)
@@ -621,7 +624,10 @@ export class LayerTool implements Tool {
       if (this.layerNamed(name, ctx)) {
         ctx.report(ctx.text.message("layerAlreadyExists", { name }))
       } else if (this.invalid(name)) {
-        ctx.report(ctx.text.message("invalidLayerNameQuoted", { name }))
+        ctx.report(
+          ctx.text.message("invalidLayerNameQuoted", { name }),
+          "error"
+        )
       } else ctx.execute(new AddLayerCommand(createLayer(name), false))
     }
   }

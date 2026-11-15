@@ -391,7 +391,7 @@ export class LineTool implements Tool {
   }
 
   private takeFirstPointBack(at: Vec2, ctx: ToolContext): void {
-    ctx.report(ctx.text.message("allLineSegmentsUndone"), "error")
+    ctx.report(ctx.text.message("allLineSegmentsUndone"))
     this.state = { phase: "idle" }
     this.openFirstPointInput(ctx, at)
     ctx.requestRender()

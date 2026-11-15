@@ -276,7 +276,10 @@ export class LinetypeTool implements Tool {
     if (linetype === null) {
       const found = fileLinetype(acadisoFile(), typed)
       if (!found) {
-        ctx.report(ctx.text.message("linetypeNotFound", { name: typed }))
+        ctx.report(
+          ctx.text.message("linetypeNotFound", { name: typed }),
+          "error"
+        )
         return this.askOption(ctx)
       }
       ctx.execute(

@@ -367,7 +367,7 @@ export class ZoomTool implements Tool {
    * the first prompt started the window.
    */
   private refuseWindow(ctx: ToolContext): void {
-    ctx.report(ctx.text.message("invalidWindowSpecification"))
+    ctx.report(ctx.text.message("invalidWindowSpecification"), "error")
     if (this.state.phase === "opposite" && this.state.implied) return
     this.ask({ phase: "first" }, ctx)
   }

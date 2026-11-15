@@ -483,6 +483,29 @@ export declare class CadDriver {
      * abbreviation in the command language.
      */
     optionAnswer(id: string): string;
+    /**
+     * Types `line` in the command window, key by key, and presses Enter, as a
+     * user typing there does: Space is Enter too, except in a text (TEXT's, an
+     * attribute's value) and after the start of a name that holds spaces, so
+     * one line can hold a command and its answers, as a line of an AutoCAD
+     * script file can (`CIRCLE 50,25 10`). Two spaces are two Enters, and an
+     * Enter at `Command:` repeats the last command.
+     *
+     * It stops at the first answer the command window answers with an error —
+     * an unknown command, a prompt's `Point or option keyword required.`, a
+     * name not found, an object on a locked layer —, the rest of the line
+     * untyped, since what followed was meant for another question. A notice
+     * (LINE's `All segments already undone.`) is no refusal. A line break
+     * throws: type each line apart.
+     */
+    keyIn(line: string): KeyedInLine;
+    /**
+     * ZOOM Extents: frames every object, `padding` screen pixels in from the
+     * edges, with no command and no line in the history. A point picked by
+     * typing it (at `Select objects:`) takes what is within a few pixels, so
+     * framing the drawing keeps "on the object" a constant share of its size.
+     */
+    zoomToFit(padding?: number): this;
     /** Runs a command by name or alias, as typing it at the prompt would. */
     command(text: string): this;
     tool(id: string): this;
@@ -548,12 +571,35 @@ export interface CadDriverOptions {
     readonly help?: (command: string | null) => void;
 }
 
+export type { KeyedInLine }
+/** What {@link CadDriver.keyIn} typed, and where the engine said no. */
+export interface KeyedInLine {
+    /**
+     * What the command window wrote meanwhile, a history line each: the
+     * commands echoed, each question with its answer, what the commands
+     * reported.
+     */
+    readonly lines: readonly string[];
+    /** The answer the engine refused; null when it took the whole line. */
+    readonly refused: RefusedAnswer | null;
+}
+
 export type { PointerModifiers }
 export interface PointerModifiers {
     readonly shiftKey?: boolean;
     readonly ctrlKey?: boolean;
     readonly altKey?: boolean;
     readonly button?: number;
+}
+
+export type { RefusedAnswer }
+export interface RefusedAnswer {
+    /** As typed: `foo`, or `CHAIR` that `Command:` does not know. */
+    readonly answer: string;
+    /** The first line of the refusal: `Point or option keyword required.` */
+    readonly message: string;
+    /** What followed it on the line, never typed. */
+    readonly untyped: string;
 }
 ```
 

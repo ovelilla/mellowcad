@@ -356,15 +356,22 @@ export class AttDefTool implements Tool {
     this.openText(ctx, prompt)
   }
 
-  /** The tag's answer ends at a space (AllowSpaces off, probe blocks/p313). */
+  /**
+   * The tag's answer ends at a space (AllowSpaces off, probe blocks/p313);
+   * the prompt and the value are texts, a style a name.
+   */
   private openText(ctx: ToolContext, prompt: PromptId): void {
+    const { phase } = this.state
     ctx.dynamicInput.open({
       fields: [
         {
           id: "text",
           prompt,
           kind: "text",
-          ...(this.state.phase === "tag" ? { endsAtSpace: true } : {}),
+          ...(phase === "tag" ? { endsAtSpace: true } : {}),
+          ...(phase === "prompt" || phase === "value"
+            ? { freeText: true }
+            : {}),
         },
       ],
       commit: () => {},

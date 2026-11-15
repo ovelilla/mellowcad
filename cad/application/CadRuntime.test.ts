@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
+import type {
+  CircleEntity,
+  Entity,
+  LineEntity,
+  TextEntity,
+} from "../domain/entities"
 import type { PropertyRow } from "./EngineState"
 import { DEFAULT_DXF_SETTINGS } from "./runtimeFiles"
 import {
@@ -209,6 +214,18 @@ describe("command line", () => {
     expect(cad.runtime.commandLineKey(" ")).toBe(false)
     cad.runtime.setCommandLineText("")
     expect(cad.runtime.commandLineKey(" ")).toBe(true)
+  })
+
+  it("types every space of a text in the field, leading ones too", () => {
+    // text/p155: `HELLO WORLD` at `Enter text:` is one text, `  LEAD` kept.
+    const cad = createHarness()
+    cad.command("TEXT").type("0,0").enter().type("5").enter().enter()
+    expect(cad.runtime.commandLineKey(" ")).toBe(false)
+    cad.runtime.setCommandLineText("  HELLO")
+    expect(cad.runtime.commandLineKey(" ")).toBe(false)
+    cad.runtime.setCommandLineText("  HELLO WORLD")
+    expect(cad.runtime.commandLineKey("Enter")).toBe(true)
+    expect(cad.only<TextEntity>("text").value).toBe("  HELLO WORLD")
   })
 
   it("hides on Ctrl+9 but reappears the moment something is typed", () => {

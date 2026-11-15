@@ -64,6 +64,13 @@ export interface DynamicField {
    */
   readonly verbatim?: boolean
   /**
+   * A text, not a name: Space is a character in it wherever it is typed, at
+   * the command line too, as at a prompt AutoCAD asks with spaces allowed
+   * (TEXT's `HELLO WORLD`, text/p155; an attribute's value, a leader's line).
+   * A name that holds spaces says `takesSpaces` on its question instead.
+   */
+  readonly freeText?: boolean
+  /**
    * A space ends the answer, as at a prompt AutoCAD asks with AllowSpaces off
    * (ATTDEF's tag, probe blocks/p313): what follows it answers the next
    * question, typed in the box or at the command line.

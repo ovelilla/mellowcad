@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
-> **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hecha la pieza 1.1
-> (-LAYER, 15/11/2026), lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
+> **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
+> (-LAYER) y 1.2 (`CadDriver.keyIn`), el 15/11/2026, lo demás sin construir salvo el prototipo, y nada publicado ni desplegado. Cuándo empieza frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
@@ -231,8 +231,11 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
    falta al motor, que es AutoCAD por derecho propio:
    1. **`-LAYER`** (hecho el 15/11/2026): no había forma de crear una capa tecleando (el prototipo lo suple con una
       herramienta aparte). Con él, el guion es el dibujo entero. Por la skill `new-command`.
-   2. **Teclear un guion, en `CadDriver`**: una entrada pública que teclee una línea y diga si
-      la pregunta la tomó. El prototipo llega al `runtime` interno y cuenta líneas de error.
+   2. **Teclear un guion, en `CadDriver`** (hecho el 15/11/2026): `keyIn` teclea una línea en
+      la ventana de comandos, el espacio como Enter salvo en un texto, y para en la primera
+      respuesta rechazada (un mensaje de error del motor); `zoomToFit` encuadra sin escribir en
+      el historial. El prototipo ya teclea por ahí; lo que hace suyo (juntar `0, 0`, saltar
+      una línea en blanco en `Command:`) es del MCP, no del motor, que es fiel.
    3. **DXF sin cuadro**: el dibujo a DXF y de DXF como funciones públicas del paquete; hoy solo
       se llega por el cuadro de DXFOUT, que además es un paso de deshacer.
    4. **`/draw#run=`** en el editor.

@@ -315,7 +315,7 @@ export class DimStyleTool implements Tool {
       if (typed === "") return this.askDimension(purpose, commitCtx)
       const style = styleNamed(commitCtx.document.getDimStyles(), typed)
       if (!style) {
-        commitCtx.report(commitCtx.text.message("unknownDimStyle"))
+        commitCtx.report(commitCtx.text.message("unknownDimStyle"), "error")
         this.sayCurrent(commitCtx)
         return commitCtx.endCommand()
       }

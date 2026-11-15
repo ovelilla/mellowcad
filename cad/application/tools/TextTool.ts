@@ -561,7 +561,15 @@ export class TextTool implements Tool {
 
   private openEntryInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "value", prompt: "text", kind: "text", verbatim: true }],
+      fields: [
+        {
+          id: "value",
+          prompt: "text",
+          kind: "text",
+          verbatim: true,
+          freeText: true,
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitLine(commitCtx),
     }

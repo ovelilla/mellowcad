@@ -898,7 +898,7 @@ ptype "Point Style" PTYPE
   dyn: "X,Y"=""||*
   options: -
   prompt| Specify next point or [Undo]: U
-  error| All segments already undone.
+  info| All segments already undone.
 > escape
   prompt: Command:
   asks: -
@@ -7934,7 +7934,7 @@ Specify next point or
   info| Current line type:  "CENTER"
   prompt| Enter an option [?/Load/Set]: S
   prompt| Specify linetype name or [?] <CENTER>: NOPE
-  info| Linetype "NOPE" not found in acad.lin.
+  error| Linetype "NOPE" not found in acad.lin.
         You can use the "Load" option to load it from another file.
 
 ## -LAYER
@@ -7969,7 +7969,7 @@ Specify next point or
   dyn: 
   options: [?] ?, [M] Make, [S] Set, [N] New, [R] Rename, [ON] ON, [OF] OFF, [C] Color, [L] Ltype, [LW] LWeight, [LO] LOck, [U] Unlock
   prompt| Enter name list for new layer(s): L1,L2,A<B,l1
-  info| "A<B" is an invalid layer name.
+  error| "A<B" is an invalid layer name.
   info| Layer "l1" already exists.
 > Make
   prompt: -LAYER Enter name for new layer (becomes the current layer) <0>:
@@ -8316,7 +8316,7 @@ Specify next point or
   tip: -
   dyn: -
   prompt| Enter a dimension style name, [?] or <select dimension>: FOO
-  info| Unknown dimension style.
+  error| Unknown dimension style.
   info| Current dimension style: Plans   Annotative: No
 > Enter
   prompt: -DIMSTYLE Enter a dimension style name, [?] or <select dimension>:
