@@ -66,17 +66,47 @@ describe("the MCP route", () => {
     )
   })
 
-  it("refuses a body larger than a script can make", async () => {
+  it("refuses a body larger than a script can make, whatever its header says", async () => {
+    // A stream carries no Content-Length: the body is measured as it is read.
+    const big = new TextEncoder().encode(" ".repeat(1024 * 1024))
+    const response = await POST(
+      new Request(URL_, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: new ReadableStream({
+          start(controller) {
+            controller.enqueue(big)
+            controller.close()
+          },
+        }),
+        duplex: "half",
+      } as RequestInit)
+    )
+    expect(response.status).toBe(413)
+  })
+
+  it("refuses a batch, which would hold many calls in one request", async () => {
+    const call = {
+      jsonrpc: "2.0",
+      method: "tools/call",
+      params: { name: "draw", arguments: { script: "CIRCLE 0,0 10" } },
+    }
     const response = await POST(
       new Request(URL_, {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "content-length": String(1024 * 1024),
+          accept: "application/json, text/event-stream",
         },
-        body: "{}",
+        body: JSON.stringify([
+          { ...call, id: 1 },
+          { ...call, id: 2 },
+        ]),
       })
     )
-    expect(response.status).toBe(413)
+    expect(response.status).toBe(400)
+    expect(await response.json()).toMatchObject({
+      error: { message: /Batches are not accepted/ },
+    })
   })
 })

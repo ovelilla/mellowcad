@@ -71,12 +71,57 @@ function editorOrigin(request: Request): string {
     : getPublicOrigin(request)
 }
 
-async function handle(request: Request): Promise<Response> {
-  const length = Number(request.headers.get("content-length") ?? 0)
-  if (length > MAX_BODY_BYTES) {
-    return new Response("Request too large.", { status: 413 })
+/**
+ * The body, read up to `MAX_BODY_BYTES`; null past it. WHY read, not the
+ * header: a chunked body carries no `Content-Length`.
+ */
+async function boundedBody(request: Request): Promise<string | null> {
+  if (request.body === null) return ""
+  const reader = request.body.getReader()
+  const chunks: Uint8Array[] = []
+  let size = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    size += value.byteLength
+    if (size > MAX_BODY_BYTES) {
+      await reader.cancel()
+      return null
+    }
+    chunks.push(value)
   }
-  return handlerFor(editorOrigin(request))(request)
+  return new TextDecoder().decode(Buffer.concat(chunks))
+}
+
+function rpcError(status: number, message: string): Response {
+  return Response.json(
+    { jsonrpc: "2.0", id: null, error: { code: -32600, message } },
+    { status }
+  )
+}
+
+async function handle(request: Request): Promise<Response> {
+  if (request.method !== "POST") {
+    return handlerFor(editorOrigin(request))(request)
+  }
+  const body = await boundedBody(request)
+  if (body === null) return rpcError(413, "Request too large.")
+  // WHY: the SDK takes a JSON-RPC batch of up to 100 messages, each draw a
+  // call's whole cost, in one request no limit per call sees. Neither Claude
+  // nor ChatGPT sends one.
+  if (body.trimStart().startsWith("[")) {
+    return rpcError(
+      400,
+      "Batches are not accepted: send one request at a time."
+    )
+  }
+  return handlerFor(editorOrigin(request))(
+    new Request(request.url, {
+      method: "POST",
+      headers: request.headers,
+      body,
+    })
+  )
 }
 
 export { handle as DELETE, handle as GET, handle as POST }

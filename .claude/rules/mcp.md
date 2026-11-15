@@ -25,7 +25,9 @@ Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
   offered, and one that reaches a file, the clipboard or the screen is left out (`NOT_OFFERED`).
 - **Limits**: the script's size and objects (`MAX_SCRIPT_CHARACTERS`, `MAX_SCRIPT_LINES`,
   `MAX_SCRIPT_OBJECTS`, the editor's too), a deadline checked between answers
-  (`MAX_DRAW_MILLISECONDS`), a body over 64 KB refused, and **the cut**: one answer can run long
+  (`MAX_DRAW_MILLISECONDS`), a body read up to 64 KB whatever its header says, **no JSON-RPC
+  batch** (the SDK takes 100 calls in one request, which no limit per call sees; neither Claude
+  nor ChatGPT sends one), and **the cut**: one answer can run long
   (a 1000 × 1000 ARRAYRECT, a million objects in 3.3 s), so `draw` runs in a `node:vm` context
   whose timeout ends it mid-answer (`MAX_CALL_MILLISECONDS`), the route's `maxDuration` behind it.
   Never a worker: it loads the engine per call. A cut drawing is never read again.
@@ -46,7 +48,10 @@ an abuser reaches. Three custom rules, Hobby's all, applied without a deploy:
    (openai.com/chatgpt-connectors.json, 289 prefixes on 2026-11-06, 75 a condition): Rate Limit,
    10 requests per 60 s by IP, fixed window, 429. Per IP, never for the providers: all their
    users leave through the same addresses. A stale list only limits a ChatGPT address it lacks.
-3. Free.
+3. **`mcp-providers-only`**: path `/mcp` and IP not in those lists, Deny; kept **disabled**. The
+   switch for an attack from many addresses, which a limit per IP does not stop, that leaves
+   Claude and ChatGPT working.
 
-Whether a custom rule's IP condition takes a CIDR was not verifiable from the docs: check it while
-setting the rule.
+What none of them bounds: one answer's memory (a large ARRAYRECT passed 2 GB before the cut,
+which would end the instance and the requests it shares), and abuse sent through the providers.
+On Hobby only moving the function off the team's plan removes that (`docs/next-mcp.md`, §7).
