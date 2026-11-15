@@ -63,6 +63,21 @@ describe("lastCommitDay", () => {
     expect(lastCommitDay(["old.md"], clone)).toBeUndefined()
   })
 
+  it("reads a renamed file and a name out of ASCII as git log does", () => {
+    const dir = repo()
+    run(dir, "init", "-q")
+    commit(dir, "old-name.md", "2026-10-01")
+    commit(dir, "café.md", "2026-10-02")
+    run(dir, "mv", "old-name.md", "new-name.md")
+    execFileSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "mv"], {
+      cwd: dir,
+      env: { ...env, GIT_AUTHOR_DATE: "2026-10-03T12:00:00Z", GIT_COMMITTER_DATE: "2026-10-03T12:00:00Z" },
+      stdio: "ignore",
+    })
+    expect(lastCommitDay(["new-name.md"], dir)).toBe("2026-10-03")
+    expect(lastCommitDay(["café.md"], dir)).toBe("2026-10-02")
+  })
+
   it("is unknown outside a repository", () => {
     expect(lastCommitDay(["a.md"], repo())).toBeUndefined()
   })
