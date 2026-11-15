@@ -76,7 +76,7 @@ LINETYPE command to load it.`, its `?` listing the loaded ones (p393); LWeight a
 lineweight (0.0mm - 2.11mm):`, rounded to a valid one and said so (p394, p399); each then asks
 the layers, the current one at Enter; DELete, declared and not listed, deletes what may go
 (`The selected layers could not be deleted.`, p324–p327, p396); the run is one undo step U names
-`-LAYER`, which the next -LAYER run joins under UNDO's Layer (`-LAYER -LAYER`, p303, p306; its
+`-LAYER`, which the next -LAYER run joins under UNDO's Layer (`-LAYER -LAYER`, p303, p306, a run that changed nothing too, p413; its
 own with Layer No, p315; parted by any command, p329), a lock or an unlock regenerating on U (p302)
 
 **Missing:** -LAYER's TRansparency, MATerial, Plot, Freeze, Thaw, stAte, Description, rEconcile

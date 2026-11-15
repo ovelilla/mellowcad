@@ -329,7 +329,26 @@ describe("-LAYER typed transparently", () => {
   })
 })
 
+describe("-LAYER's options", () => {
+  it("Ltype's ? is an option too, as its chip and the menu give it", () => {
+    const cad = createHarness()
+    answer(cad, "-LAYER", "L")
+    expect(cad.runtime.invokeToolOption("?")).toBe(true)
+    expect(asked(cad)).toBe("Enter linetype name(s) to list <*>:")
+  })
+})
+
 describe("-LAYER's undo step", () => {
+  it("joins a run that changed nothing, either way round (p413)", () => {
+    const cad = createHarness()
+    answer(cad, "-LAYER", "N", "L1", "", "-LAYER", "")
+    expect(written(cad, "U")).toEqual(["U", "-LAYER -LAYER"])
+    expect(named(cad, "L1")).toBeUndefined()
+    answer(cad, "-LAYER", "", "-LAYER", "N", "L2", "")
+    expect(written(cad, "U")).toEqual(["U", "-LAYER -LAYER"])
+    expect(named(cad, "L2")).toBeUndefined()
+  })
+
   it("is the whole run, U naming it (p304)", () => {
     const cad = createHarness()
     answer(cad, "-LAYER", "N", "L1", "C", "1", "L1", "")

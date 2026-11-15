@@ -168,18 +168,17 @@ export class CommandHistory extends Observable {
   private joinLayer(entry: Entry): boolean {
     const below = this.undoStack.at(-1)
     const { control, layer } = this.undoSettings
-    if (
-      !layer ||
-      control !== "all" ||
-      !below?.layer ||
-      !below.command ||
-      !entry.command
-    ) {
-      return false
-    }
+    if (!layer || control !== "all" || !below?.layer) return false
+    // A run that changed nothing joins and is joined too (p413).
+    const commands = [below.command, entry.command].filter(
+      (command): command is Command => command !== null
+    )
     this.undoStack[this.undoStack.length - 1] = {
       ...below,
-      command: new GroupCommand([below.command, entry.command]),
+      command:
+        commands.length > 1
+          ? new GroupCommand(commands)
+          : (commands[0] ?? null),
       name: null,
       names: [...namesOf(below), ...namesOf(entry)],
       regenerates: below.regenerates || entry.regenerates,
@@ -283,7 +282,10 @@ export class CommandHistory extends Observable {
         }
         // WHY a ZOOM or PAN that left the view joins too: U after ZOOM 2X
         // and a PAN with no drag writes `PAN ZOOM` (desktop view/d03).
-        if (zoom && this.joinZoom(entry, zoom)) {
+        if (
+          (zoom && this.joinZoom(entry, zoom)) ||
+          (layer && this.joinLayer(entry))
+        ) {
           this.redoStack = []
           this.emit()
           return

@@ -297,6 +297,10 @@ export class LayerTool implements Tool {
         if (id !== "Last") return "unhandled"
         this.takeObject(lastObject(ctx) ?? null, ctx)
         return "continue"
+      case "linetype":
+        if (id !== "?") return "unhandled"
+        this.askLinetypeList(ctx)
+        return "continue"
       case "objects":
         return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
       case "currentOff":
@@ -790,18 +794,16 @@ export class LayerTool implements Tool {
    * the imperial file, as CHPROP's LType (ltype/p03, p393), and one it lacks
    * too is said, the options following.
    */
+  private askLinetypeList(ctx: ToolContext): void {
+    this.askText({ kind: "linetypeList" }, ctx, (pattern, listCtx) => {
+      this.listLinetypes(pattern === "" ? "*" : pattern, listCtx)
+      this.askOption(listCtx)
+    })
+  }
+
   private askLinetype(ctx: ToolContext): void {
     this.askText({ kind: "linetype" }, ctx, (typed, answerCtx) => {
-      if (typed === "?") {
-        return this.askText(
-          { kind: "linetypeList" },
-          answerCtx,
-          (pattern, listCtx) => {
-            this.listLinetypes(pattern === "" ? "*" : pattern, listCtx)
-            this.askOption(listCtx)
-          }
-        )
-      }
+      if (typed === "?") return this.askLinetypeList(answerCtx)
       const name = typed === "" ? DEFAULT_LINETYPE_ID : typed
       const linetype = this.loadedLinetype(name, answerCtx)
       if (linetype === null) {
