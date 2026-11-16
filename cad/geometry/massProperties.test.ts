@@ -504,6 +504,17 @@ describe("a solid's mass properties against closed forms, placed anywhere", () =
     )
   })
 
+  // The property's seed 1263941487: a frustum all but a cylinder, its apex
+  // 7.7e6 off, measured 1.3e-8 short when its heights ran from the apex.
+  it("a cone all but a cylinder, its apex far off, holds its frustum's volume", () => {
+    const s = 0.05999999992173527 / 0.06
+    const brep = roundBrep(at(0, 0, 0), X, Y, 0.03, 0.06, 0.01, s)
+    const exact = (Math.PI * 0.03 * 0.06 * 0.01 * (1 + s + s * s)) / 3
+    expect(Math.abs(brepMoments(brep).measure - exact)).toBeLessThan(
+      1e-12 * exact
+    )
+  })
+
   it("any primitive keeps its volume and principal moments through a rigid motion, its centroid carried", () => {
     fc.assert(
       fc.property(solidEntity, placement, (solid, f) => {

@@ -200,19 +200,26 @@ function faceFlux(brep: Brep, face: BrepFace, about: Vec3, flux: Flux): void {
       return
     }
     case "cone": {
-      const heights = loopHeights(brep, face, s.apex, s.axis)
-      const at = along(s.apex, s.axis, s.xAxis)
+      // Measured from the face's own height, never from the apex: a cone
+      // all but a cylinder has its apex far off (7.7e6 for a face 0.01 tall,
+      // massProperties.test's seed 1263941487), and heights from there lose
+      // the digits the face spans. The apex's distance only sets the radius.
+      const base = Math.min(...loopHeights(brep, face, s.apex, s.axis))
+      const origin = add3(s.apex, scale3(s.axis, base))
+      const heights = loopHeights(brep, face, origin, s.axis)
+      const at = along(origin, s.axis, s.xAxis)
       const y = cross3(s.axis, s.xAxis)
       const k = s.slope
       const r = s.ratio
       for (const { t: theta, w } of round) {
         const c = Math.cos(theta)
         const sn = Math.sin(theta)
-        for (const { t, w: v } of polynomialRule(
+        for (const { t: h, w: v } of polynomialRule(
           Math.min(...heights),
           Math.max(...heights)
         )) {
-          const p = add3(at(k * t * c, k * r * t * sn), scale3(s.axis, t))
+          const t = base + h
+          const p = add3(at(k * t * c, k * r * t * sn), scale3(s.axis, h))
           // ∂θ × ∂t = t k (r cos θ X + sin θ Y − k r Z), away from the axis.
           const n = scale3(
             add3(
