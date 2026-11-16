@@ -1,7 +1,7 @@
 ---
 title: "Polilinia 3D w AutoCADzie: polecenie 3WPLINIA (3DPOLY)"
 metaTitle: "Polilinia 3D w AutoCADzie: 3WPLINIA (3DPOLY)"
-description: "Jak narysować polilinię 3D w AutoCADzie poleceniem 3WPLINIA (3DPOLY, skrót 3P): proste segmenty, każdy punkt z własnym Z, Zamknij, Cofaj i różnica z PLINIA."
+description: "Jak narysować polilinię 3D w AutoCADzie poleceniem 3WPLINIA (3DPOLY, 3P): proste segmenty, każdy punkt z własnym Z, Zamknij, Cofaj i różnice wobec PLINIA."
 figure: "Polilinia 3D wznosząca się o 15 w każdym narożniku prostokąta 60 na 40 leżącego na ziemi, widziana od południowego wschodu."
 sourceHash: "b74d0c411c73"
 ---
@@ -22,7 +22,7 @@ Cofa ostatni wierzchołek i kontynuuje od poprzedniego. Gdy nie zostaje żaden s
 
 ## Missing
 
-Polilinia 3D dopasowana krzywą ma w palecie Właściwości wartość Brak we właściwości dopasowania i wygładzenia, którą AutoCAD nazywa kwadratową lub sześcienną, i nie można jej tam zmienić. Nie może być obwiednią kreskowania ani ścieżką polecenia ŚCIEŻKASZYK, a paleta nie ma wiersza Materiał. Wprowadzanie dynamiczne pyta o punkt początkowy w jednym polu, z Z wpisywanym po drugim przecinku, tam gdzie AutoCAD pokazuje pola X, Y i Z. Menu uchwytów po najechaniu kursorem: Rozciągnij, Dodaj wierzchołek, Usuń wierzchołek i reszta.
+Polilinia 3D dopasowana krzywą ma w palecie Właściwości, we właściwości dopasowania i wygładzenia, wartość Brak zamiast typu kwadratowego lub sześciennego z AutoCADa, i nie można jej tam zmienić. Nie może być obwiednią kreskowania ani ścieżką polecenia ŚCIEŻKASZYK, a paleta nie ma wiersza Materiał. Wprowadzanie dynamiczne pyta o punkt początkowy w jednym polu, z Z wpisywanym po drugim przecinku, podczas gdy AutoCAD pokazuje pola X, Y i Z. Menu uchwytów po najechaniu kursorem: Rozciągnij, Dodaj wierzchołek, Usuń wierzchołek i reszta.
 
 ## Questions
 
@@ -36,8 +36,8 @@ Polilinia polecenia <Command id="PLINE" /> leży w jednej płaszczyźnie i może
 
 ### Jak narysować polilinię 3D na różnych wysokościach?
 
-Wpisz każdy punkt z jego Z, `x,y,z`, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: `60,0,15` idzie 60 wzdłuż X i 15 w górę od poprzedniego.
+Wpisz każdy punkt z jego współrzędną Z, `x,y,z`, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: `60,0,15` idzie 60 wzdłuż X i 15 w górę od poprzedniego.
 
 ### Jak wygładzić polilinię 3D?
 
-Użyj na niej polecenia <Command id="PEDIT" /> i wybierz opcję splaJn: gładką krzywą, którą wyznaczają wierzchołki. Opcja Polilinia znów ją prostuje.
+Użyj na niej polecenia <Command id="PEDIT" /> i wybierz opcję splaJn: gładką krzywą rozpiętą na wierzchołkach. Opcja Polilinia znów ją prostuje.

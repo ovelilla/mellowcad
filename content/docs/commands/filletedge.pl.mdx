@@ -6,9 +6,9 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak zaokrąglić krawędź bryły 3D w AutoCADzie?","answer":"Uruchom polecenie ZAOKRĄGLKRAW, wybierz pRomień i wpisz go, wskaż krawędzie, a potem dwa razy naciśnij Enter: raz, aby zakończyć wskazywanie, drugi raz, aby przyjąć. W pokazanej sesji 8 zaokrągla dwie krawędzie prostopadłościanu."},{"question":"Jak zaokrąglić wszystkie krawędzie ściany?","answer":"Wybierz Pętla i wskaż krawędź ściany, potem Akceptuj albo Następna, jeśli pokazana pętla należy do drugiej ściany. Dla krawędzi, które już płynnie przechodzą jedna w drugą, jak wokół góry zaokrąglonego klocka, łańCuch bierze je wszystkie."},{"question":"Dlaczego polecenie ZAOKRĄGL nie działa na bryle 3D?","answer":"Polecenie ZAOKRĄGL w AutoCADzie też zaokrągla krawędź bryły, ale w MellowCAD jeszcze nie: użyj polecenia ZAOKRĄGLKRAW, a do fazy – polecenia FAZOWKRAW."},{"question":"Jak zmienić promień zaokrąglenia?","answer":"Wybierz pRomień przed wskazaniem albo przy monicie przyjęcia, lub przeciągnij uchwyt strzałkowy w środku pierwszego zaokrąglenia. Ostatni promień jest proponowany następnym razem."}]
 ---
 
-Polecenie ZAOKRĄGLKRAW (FILLETEDGE) zaokrągla krawędzie bryły 3D. Podaje bieżący promień, a potem pyta o krawędzie, aż do Enter: kliknięcie bierze krawędź pod kursorem, podświetlaną, gdy kursor nad nią przechodzi, a wpisany punkt bierze krawędź narysowaną przez niego. W miarę wybierania krawędzi bryła jest rysowana tak, jak będzie wyglądać, z zaokrągleniami na miejscu. Enter liczy krawędzie i prosi o ponowne naciśnięcie Enter, aby przyjąć, albo o zmianę promienia; to Enter tworzy zaokrąglenia. Tylko krawędzie jednej bryły: krawędź innej daje `Nie można zaokrąglić wielu brył.`, a wybrana dwa razy `Krawędź już była wskazana.`.
+Polecenie ZAOKRĄGLKRAW (FILLETEDGE) zaokrągla krawędzie bryły 3D. Podaje bieżący promień, a potem pyta o krawędzie, aż do Enter: kliknięcie bierze krawędź pod kursorem, podświetlaną, gdy kursor nad nią przechodzi, a wpisany punkt – krawędź, która przez niego przechodzi. W miarę wybierania krawędzi bryła jest rysowana tak, jak będzie wyglądać, z zaokrągleniami na miejscu. Enter liczy krawędzie i prosi o ponowne naciśnięcie Enter, aby przyjąć, albo o zmianę promienia; ten Enter tworzy zaokrąglenia. Tylko krawędzie jednej bryły: krawędź innej daje `Nie można zaokrąglić wielu brył.`, a wybrana dwa razy `Krawędź już była wskazana.`.
 
-Prosta krawędź między dwiema płaskimi ścianami staje się ćwiartką walca, a okrągła krawędź otworu lub obrzeża – ćwiartką torusa; zaokrąglenia, które spotykają się w narożniku, są łączone, trzy z nich fragmentem kuli. Promień jest zapisywany w rysunku i proponowany ponownie następnym razem. Bryła zachowuje warstwę i właściwości, ale traci to, z czego powstała: prostopadłościan nie jest już prostopadłościanem. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły i wciąż częściowo.
+Prosta krawędź między dwiema płaskimi ścianami staje się ćwiartką walca, a okrągła krawędź otworu lub obrzeża – ćwiartką torusa; zaokrąglenia, które spotykają się w narożniku, są łączone, trzy z nich fragmentem kuli. Promień jest zapisywany w rysunku i proponowany ponownie następnym razem. Bryła zachowuje warstwę i właściwości, ale traci to, z czego powstała: prostopadłościan nie jest już prostopadłościanem. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły 3D, na razie częściowo.
 
 - **Polecenie:** `ZAOKRĄGLKRAW`
 - **Po angielsku:** `FILLETEDGE`, wpisywane jako `_FILLETEDGE` w każdym języku
@@ -17,7 +17,7 @@ Prosta krawędź między dwiema płaskimi ścianami staje się ćwiartką walca,
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="filletedge" caption="Prostopadłościan widziany z południowego wschodu: ZAOKRĄGLKRAW z promieniem 8 zaokrągla jego dwie pionowe krawędzie po prawej." />
 

@@ -76,7 +76,7 @@
     "boardLabel": "Commands and their aliases, grouped as on the ribbon",
     "also": "Also: {aliases}",
     "linked": "An underlined command has a page of its own, with its prompts and options.",
-    "languages": "<en>{english}</en> is <es>{spanish}</es> in Spanish AutoCAD, <pt>{portuguese}</pt> in Brazilian Portuguese, <fr>{french}</fr> in French, <de>{german}</de> in German and <ru>{russian}</ru> in Russian, and the global <all>{global}</all> runs in every language.",
+    "languages": "<en>{english}</en> is <es>{spanish}</es> in Spanish AutoCAD, <pt>{portuguese}</pt> in Brazilian Portuguese, <fr>{french}</fr> in French, <de>{german}</de> in German, <ru>{russian}</ru> in Russian and <pl>{polish}</pl> in Polish, and the global <all>{global}</all> runs in every language.",
     "transcriptTitle": "One OFFSET, start to finish",
     "transcriptCaption": "Replayed by the engine when this page was built. Same order, same option letters as AutoCAD."
   },

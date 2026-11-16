@@ -515,599 +515,162 @@
   },
   "commands": {
     "names": {
-      "LINE": [
-        "LINIA",
-        "L"
-      ],
-      "PLINE": [
-        "PLINIA",
-        "PL"
-      ],
-      "3DPOLY": [
-        "3WPLINIA",
-        "3P"
-      ],
-      "CIRCLE": [
-        "OKRĄG",
-        "O"
-      ],
-      "CIRCLED": [
-        "OKRĄGD"
-      ],
-      "CIRCLE2P": [
-        "OKRĄG2P"
-      ],
-      "CIRCLE3P": [
-        "OKRĄG3P"
-      ],
-      "ARC": [
-        "ŁUK",
-        "U"
-      ],
-      "ARCSCE": [
-        "ŁUKPŚK"
-      ],
-      "ARCCSE": [
-        "ŁUKŚPK"
-      ],
-      "ELLIPSE": [
-        "ELIPSA",
-        "E"
-      ],
-      "ELLIPSEC": [
-        "ELIPSAŚ"
-      ],
-      "ELLIPSEARC": [
-        "ELIPSAŁUK"
-      ],
-      "SPLINE": [
-        "SPLAJN",
-        "SPL"
-      ],
-      "SPLINEDIT": [
-        "EDSPLAJN",
-        "SPE"
-      ],
-      "PEDIT": [
-        "EDPLIN",
-        "EDP"
-      ],
-      "RECTANG": [
-        "PROSTOK",
-        "PRO",
-        "PROSTOKĄT"
-      ],
-      "POLYGON": [
-        "WIELOBOK",
-        "WBO"
-      ],
-      "HATCH": [
-        "KRESKUJ"
-      ],
-      "-HATCH": [
-        "-KRESKUJ",
-        "-KRE"
-      ],
-      "BLOCK": [
-        "BLOK",
-        "B",
-        "BMOD",
-        "ODTBLOK",
-        "TBLOK"
-      ],
-      "-BLOCK": [
-        "-BLOK",
-        "-B"
-      ],
-      "INSERT": [
-        "WSTAW",
-        "W",
-        "WSTAWURL",
-        "ODWSTAW"
-      ],
-      "-INSERT": [
-        "-WSTAW",
-        "-W"
-      ],
-      "ATTEDIT": [
-        "ATRRED",
-        "ATE",
-        "ODATR"
-      ],
-      "EATTEDIT": [
-        "RATRRED"
-      ],
-      "ATTDEF": [
-        "ATRDEF",
-        "ATR",
-        "ODATRDEF"
-      ],
-      "-ATTDEF": [
-        "-ATRDEF"
-      ],
-      "ATTDISP": [
-        "ATRWID"
-      ],
-      "TEXT": [
-        "TEKST",
-        "DT",
-        "DTEKST"
-      ],
-      "-TEXT": [
-        "-TEKST"
-      ],
-      "MTEXT": [
-        "WTEKST"
-      ],
-      "-MTEXT": [
-        "-WTEKST",
-        "-T",
-        "-WT"
-      ],
-      "TEXTEDIT": [
-        "EDTEKST",
-        "EDT",
-        "ODTEKST",
-        "ET"
-      ],
-      "DIMLINEAR": [
-        "WYMLINIOWY",
-        "WL",
-        "WYMLIN"
-      ],
-      "DIMALIGNED": [
-        "WYMNORMALNY",
-        "WN",
-        "WYMNO"
-      ],
-      "DIMHORIZONTAL": [
-        "WYMPOZIOMY"
-      ],
-      "DIMVERTICAL": [
-        "WYMPIONOWY"
-      ],
-      "DIMROTATED": [
-        "WYMOBRÓCONY"
-      ],
-      "DIMRADIUS": [
-        "WYMPROMIEŃ",
-        "WR",
-        "WYMR"
-      ],
-      "DIMDIAMETER": [
-        "WYMŚREDNICA",
-        "WD",
-        "WYMD"
-      ],
-      "DIMANGULAR": [
-        "WYMKĄTOWY",
-        "WK",
-        "WYMK"
-      ],
-      "DIMBASELINE": [
-        "WYMBAZA",
-        "WB",
-        "WYMBA"
-      ],
-      "DIMCONTINUE": [
-        "WYMSZEREG",
-        "WS",
-        "WYMSZ"
-      ],
-      "DIMSPACE": [
-        "PRZESTRZWYM"
-      ],
-      "OFFSET": [
-        "ODSUŃ",
-        "OD"
-      ],
-      "MOVE": [
-        "PRZESUŃ",
-        "PRS"
-      ],
-      "COPY": [
-        "KOPIUJ",
-        "K"
-      ],
-      "STRETCH": [
-        "ROZCIĄGNIJ",
-        "ROZC"
-      ],
-      "ROTATE": [
-        "OBRÓĆ",
-        "OB"
-      ],
-      "SCALE": [
-        "SKALA",
-        "S"
-      ],
-      "MIRROR": [
-        "LUSTRO",
-        "LUS"
-      ],
-      "ARRAY": [
-        "SZYK",
-        "SZ"
-      ],
-      "ARRAYRECT": [
-        "SZYKPROST"
-      ],
-      "ARRAYPOLAR": [
-        "SZYKBIEGUN"
-      ],
-      "ARRAYPATH": [
-        "ŚCIEŻKASZYK"
-      ],
-      "TRIM": [
-        "UTNIJ",
-        "UT"
-      ],
-      "EXTEND": [
-        "WYDŁUŻ",
-        "WYD"
-      ],
-      "FILLET": [
-        "ZAOKRĄGL",
-        "ZA"
-      ],
-      "CHAMFER": [
-        "FAZUJ",
-        "FA"
-      ],
-      "EXPLODE": [
-        "ROZBIJ",
-        "R"
-      ],
-      "JOIN": [
-        "POŁĄCZ"
-      ],
-      "BREAK": [
-        "PRZERWIJ",
-        "PRZ"
-      ],
-      "BREAKATPOINT": [
-        "PRZERWIJWPUNKCIE"
-      ],
-      "MATCHPROP": [
-        "UZGWŁAŚCIWOŚCI",
-        "UZG",
-        "MALARZ"
-      ],
-      "CHPROP": [
-        "ZMCECHY"
-      ],
-      "COPYCLIP": [
-        "KOPIUJ_S"
-      ],
-      "CUTCLIP": [
-        "WYTNIJ"
-      ],
-      "COPYBASE": [
-        "KOPIUJBAZA"
-      ],
-      "DIST": [
-        "ODLEG",
-        "ODL"
-      ],
-      "AREA": [
-        "POLE",
-        "POL"
-      ],
-      "ID": [
-        "ID"
-      ],
-      "LIST": [
-        "LISTA",
-        "LI",
-        "LS",
-        "POKMAT"
-      ],
-      "MASSPROP": [
-        "PARAMFIZ"
-      ],
-      "ZOOM": [
-        "ZOOM",
-        "Z"
-      ],
-      "PAN": [
-        "NFRAGM",
-        "NF"
-      ],
-      "-PAN": [
-        "-NFRAGM",
-        "-NF"
-      ],
-      "ERASE": [
-        "WYMAŻ",
-        "WY",
-        "DELETE"
-      ],
-      "U": [
-        "C"
-      ],
-      "UNDO": [
-        "COFAJ"
-      ],
-      "REDO": [
-        "ODTWÓRZ"
-      ],
-      "MREDO": [
-        "WODTWÓRZ"
-      ],
-      "SNAP": [
-        "SKOK",
-        "SKO"
-      ],
-      "-OSNAP": [
-        "-OBIEKT",
-        "-O"
-      ],
-      "FROM": [
-        "OD"
-      ],
-      "NEW": [
-        "NOWY"
-      ],
-      "QNEW": [
-        "SNOWY"
-      ],
-      "QSAVE": [
-        "SZAPISZ"
-      ],
-      "SAVEAS": [
-        "NZAPISZ"
-      ],
-      "SAVE": [
-        "ZAPISZ",
-        "ZAPISZURL"
-      ],
-      "OPEN": [
-        "OTWÓRZ",
-        "OTWÓRZURL"
-      ],
-      "DXFIN": [
-        "DXFWE"
-      ],
-      "DXFOUT": [
-        "DXFWY"
-      ],
-      "PASTECLIP": [
-        "WKLEJ"
-      ],
-      "DIMSTYLE": [
-        "WYMSTYL",
-        "WST",
-        "WYMST",
-        "ODWYM"
-      ],
-      "-DIMSTYLE": [
-        "-WYMSTYL"
-      ],
-      "STYLE": [
-        "STYL",
-        "ST",
-        "ODSTYL"
-      ],
-      "BLOCKSPALETTE": [
-        "PALETABLOKI"
-      ],
-      "PURGE": [
-        "USUŃ",
-        "US"
-      ],
-      "-PURGE": [
-        "-USUŃ"
-      ],
-      "LAYER": [
-        "WARSTWA",
-        "WA",
-        "ODWARSTWA"
-      ],
-      "LAYERCLOSE": [
-        "WARSTWAZAMKNIJ"
-      ],
-      "PROPERTIES": [
-        "WŁAŚCIWOŚCI",
-        "CE"
-      ],
-      "PROPERTIESCLOSE": [
-        "WŁAŚCIWOŚCIZAMKNIJ",
-        "CZ"
-      ],
-      "UCS": [
-        "LUW"
-      ],
-      "UCSICON": [
-        "LUWSYMB"
-      ],
-      "FILL": [
-        "WYPEŁNIJ"
-      ],
-      "PLAN": [
-        "PLAN"
-      ],
-      "ELEV": [
-        "POZIOM"
-      ],
-      "VPOINT": [
-        "PKTOBS",
-        "ODPKTOBS",
-        "PO"
-      ],
-      "-VPOINT": [
-        "-PKTOBS",
-        "-PO"
-      ],
-      "VIEW": [
-        "WIDOK",
-        "WID",
-        "ODWIDOK"
-      ],
-      "-VIEW": [
-        "-WIDOK",
-        "-WID"
-      ],
-      "3DORBIT": [
-        "3DORBITA",
-        "3DO"
-      ],
-      "NAVVCUBE": [
-        "NAVVCUBE",
-        "CUBE"
-      ],
-      "VSCURRENT": [
-        "BIEŻSTYLWIZ"
-      ],
-      "REGEN": [
-        "REGEN",
-        "RE"
-      ],
-      "REGENALL": [
-        "REGENW",
-        "REW"
-      ],
-      "UNITS": [
-        "JEDN",
-        "JED"
-      ],
-      "LTSCALE": [
-        "RLSKALA",
-        "RLS"
-      ],
-      "AUPREC": [
-        "AUPREC"
-      ],
-      "SETVAR": [
-        "ZMSYS",
-        "ZMS"
-      ],
-      "CLEANSCREENON": [
-        "CZYŚĆEKRANWŁ"
-      ],
-      "CLEANSCREENOFF": [
-        "CZYŚĆEKRANWYŁ"
-      ],
-      "COLOR": [
-        "KOLOR",
-        "KOL",
-        "ODKOLOR"
-      ],
-      "-COLOR": [
-        "-KOLOR"
-      ],
-      "LINETYPE": [
-        "RODZLIN",
-        "RL",
-        "ODRODZLIN"
-      ],
-      "-LINETYPE": [
-        "-RODZLIN",
-        "-RL"
-      ],
-      "-LAYER": [
-        "-WARSTWA",
-        "-WA"
-      ],
-      "LWEIGHT": [
-        "SZERLIN",
-        "SL"
-      ],
-      "-LWEIGHT": [
-        "-SZERLIN"
-      ],
-      "BOX": [
-        "KOSTKA"
-      ],
-      "WEDGE": [
-        "KLIN",
-        "KL"
-      ],
-      "PYRAMID": [
-        "OSTROSŁUP",
-        "OST"
-      ],
-      "CYLINDER": [
-        "WALEC",
-        "WAL"
-      ],
-      "CONE": [
-        "STOŻEK"
-      ],
-      "SPHERE": [
-        "SFERA"
-      ],
-      "TORUS": [
-        "TORUS",
-        "TOR"
-      ],
-      "REGION": [
-        "REGION",
-        "REG"
-      ],
-      "UNION": [
-        "SUMA",
-        "SUM"
-      ],
-      "SUBTRACT": [
-        "RÓŻNICA",
-        "ROZ"
-      ],
-      "INTERSECT": [
-        "ILOCZYN",
-        "IL"
-      ],
-      "EXTRUDE": [
-        "WYCIĄGNIJ",
-        "WYC"
-      ],
-      "REVOLVE": [
-        "PRZEKRĘĆ",
-        "PRZK"
-      ],
-      "PRESSPULL": [
-        "NACIŚNIJCIĄG"
-      ],
-      "SLICE": [
-        "PŁAT",
-        "PAT"
-      ],
-      "SECTION": [
-        "PRZEKRÓJ",
-        "PKR"
-      ],
-      "FILLETEDGE": [
-        "ZAOKRĄGLKRAW"
-      ],
-      "CHAMFEREDGE": [
-        "FAZOWKRAW"
-      ],
-      "SOLIDEDIT": [
-        "EDBRYŁA"
-      ],
-      "POINT": [
-        "PUNKT",
-        "PU"
-      ],
-      "DIVIDE": [
-        "PODZIEL",
-        "POD"
-      ],
-      "MEASURE": [
-        "ZMIERZ",
-        "ZMI"
-      ],
-      "PTYPE": [
-        "PTYPE"
-      ],
-      "SOLID": [
-        "OBSZAR",
-        "OBS"
-      ],
-      "LEADER": [
-        "LODNIES",
-        "LO",
-        "LODN"
-      ]
+      "LINE": ["LINIA", "L"],
+      "PLINE": ["PLINIA", "PL"],
+      "3DPOLY": ["3WPLINIA", "3P"],
+      "CIRCLE": ["OKRĄG", "O"],
+      "CIRCLED": ["OKRĄGD"],
+      "CIRCLE2P": ["OKRĄG2P"],
+      "CIRCLE3P": ["OKRĄG3P"],
+      "ARC": ["ŁUK", "U"],
+      "ARCSCE": ["ŁUKPŚK"],
+      "ARCCSE": ["ŁUKŚPK"],
+      "ELLIPSE": ["ELIPSA", "E"],
+      "ELLIPSEC": ["ELIPSAŚ"],
+      "ELLIPSEARC": ["ELIPSAŁUK"],
+      "SPLINE": ["SPLAJN", "SPL"],
+      "SPLINEDIT": ["EDSPLAJN", "SPE"],
+      "PEDIT": ["EDPLIN", "EDP"],
+      "RECTANG": ["PROSTOK", "PRO", "PROSTOKĄT"],
+      "POLYGON": ["WIELOBOK", "WBO"],
+      "HATCH": ["KRESKUJ"],
+      "-HATCH": ["-KRESKUJ", "-KRE"],
+      "BLOCK": ["BLOK", "B", "BMOD", "ODTBLOK", "TBLOK"],
+      "-BLOCK": ["-BLOK", "-B"],
+      "INSERT": ["WSTAW", "W", "WSTAWURL", "ODWSTAW"],
+      "-INSERT": ["-WSTAW", "-W"],
+      "ATTEDIT": ["ATRRED", "ATE", "ODATR"],
+      "EATTEDIT": ["RATRRED"],
+      "ATTDEF": ["ATRDEF", "ATR", "ODATRDEF"],
+      "-ATTDEF": ["-ATRDEF"],
+      "ATTDISP": ["ATRWID"],
+      "TEXT": ["TEKST", "DT", "DTEKST"],
+      "-TEXT": ["-TEKST"],
+      "MTEXT": ["WTEKST"],
+      "-MTEXT": ["-WTEKST", "-T", "-WT"],
+      "TEXTEDIT": ["EDTEKST", "EDT", "ODTEKST", "ET"],
+      "DIMLINEAR": ["WYMLINIOWY", "WL", "WYMLIN"],
+      "DIMALIGNED": ["WYMNORMALNY", "WN", "WYMNO"],
+      "DIMHORIZONTAL": ["WYMPOZIOMY"],
+      "DIMVERTICAL": ["WYMPIONOWY"],
+      "DIMROTATED": ["WYMOBRÓCONY"],
+      "DIMRADIUS": ["WYMPROMIEŃ", "WR", "WYMR"],
+      "DIMDIAMETER": ["WYMŚREDNICA", "WD", "WYMD"],
+      "DIMANGULAR": ["WYMKĄTOWY", "WK", "WYMK"],
+      "DIMBASELINE": ["WYMBAZA", "WB", "WYMBA"],
+      "DIMCONTINUE": ["WYMSZEREG", "WS", "WYMSZ"],
+      "DIMSPACE": ["PRZESTRZWYM"],
+      "OFFSET": ["ODSUŃ", "OD"],
+      "MOVE": ["PRZESUŃ", "PRS"],
+      "COPY": ["KOPIUJ", "K"],
+      "STRETCH": ["ROZCIĄGNIJ", "ROZC"],
+      "ROTATE": ["OBRÓĆ", "OB"],
+      "SCALE": ["SKALA", "S"],
+      "MIRROR": ["LUSTRO", "LUS"],
+      "ARRAY": ["SZYK", "SZ"],
+      "ARRAYRECT": ["SZYKPROST"],
+      "ARRAYPOLAR": ["SZYKBIEGUN"],
+      "ARRAYPATH": ["ŚCIEŻKASZYK"],
+      "TRIM": ["UTNIJ", "UT"],
+      "EXTEND": ["WYDŁUŻ", "WYD"],
+      "FILLET": ["ZAOKRĄGL", "ZA"],
+      "CHAMFER": ["FAZUJ", "FA"],
+      "EXPLODE": ["ROZBIJ", "R"],
+      "JOIN": ["POŁĄCZ"],
+      "BREAK": ["PRZERWIJ", "PRZ"],
+      "BREAKATPOINT": ["PRZERWIJWPUNKCIE"],
+      "MATCHPROP": ["UZGWŁAŚCIWOŚCI", "UZG", "MALARZ"],
+      "CHPROP": ["ZMCECHY"],
+      "COPYCLIP": ["KOPIUJ_S"],
+      "CUTCLIP": ["WYTNIJ"],
+      "COPYBASE": ["KOPIUJBAZA"],
+      "DIST": ["ODLEG", "ODL"],
+      "AREA": ["POLE", "POL"],
+      "ID": ["ID"],
+      "LIST": ["LISTA", "LI", "LS", "POKMAT"],
+      "MASSPROP": ["PARAMFIZ"],
+      "ZOOM": ["ZOOM", "Z"],
+      "PAN": ["NFRAGM", "NF"],
+      "-PAN": ["-NFRAGM", "-NF"],
+      "ERASE": ["WYMAŻ", "WY", "DELETE"],
+      "U": ["C"],
+      "UNDO": ["COFAJ"],
+      "REDO": ["ODTWÓRZ"],
+      "MREDO": ["WODTWÓRZ"],
+      "SNAP": ["SKOK", "SKO"],
+      "-OSNAP": ["-OBIEKT", "-O"],
+      "FROM": ["OD"],
+      "NEW": ["NOWY"],
+      "QNEW": ["SNOWY"],
+      "QSAVE": ["SZAPISZ"],
+      "SAVEAS": ["NZAPISZ"],
+      "SAVE": ["ZAPISZ", "ZAPISZURL"],
+      "OPEN": ["OTWÓRZ", "OTWÓRZURL"],
+      "DXFIN": ["DXFWE"],
+      "DXFOUT": ["DXFWY"],
+      "PASTECLIP": ["WKLEJ"],
+      "DIMSTYLE": ["WYMSTYL", "WST", "WYMST", "ODWYM"],
+      "-DIMSTYLE": ["-WYMSTYL"],
+      "STYLE": ["STYL", "ST", "ODSTYL"],
+      "BLOCKSPALETTE": ["PALETABLOKI"],
+      "PURGE": ["USUŃ", "US"],
+      "-PURGE": ["-USUŃ"],
+      "LAYER": ["WARSTWA", "WA", "ODWARSTWA"],
+      "LAYERCLOSE": ["WARSTWAZAMKNIJ"],
+      "PROPERTIES": ["WŁAŚCIWOŚCI", "CE"],
+      "PROPERTIESCLOSE": ["WŁAŚCIWOŚCIZAMKNIJ", "CZ"],
+      "UCS": ["LUW"],
+      "UCSICON": ["LUWSYMB"],
+      "FILL": ["WYPEŁNIJ"],
+      "PLAN": ["PLAN"],
+      "ELEV": ["POZIOM"],
+      "VPOINT": ["PKTOBS", "ODPKTOBS", "PO"],
+      "-VPOINT": ["-PKTOBS", "-PO"],
+      "VIEW": ["WIDOK", "WID", "ODWIDOK"],
+      "-VIEW": ["-WIDOK", "-WID"],
+      "3DORBIT": ["3DORBITA", "3DO", "OR"],
+      "NAVVCUBE": ["NAVVCUBE", "CUBE"],
+      "VSCURRENT": ["BIEŻSTYLWIZ"],
+      "REGEN": ["REGEN", "RE"],
+      "REGENALL": ["REGENW", "REW"],
+      "UNITS": ["JEDN", "JED", "ODJEDN"],
+      "LTSCALE": ["RLSKALA", "RLS"],
+      "AUPREC": ["AUPREC"],
+      "SETVAR": ["ZMSYS", "ZMS"],
+      "CLEANSCREENON": ["CZYŚĆEKRANWŁ"],
+      "CLEANSCREENOFF": ["CZYŚĆEKRANWYŁ"],
+      "COLOR": ["KOLOR", "KOL", "ODKOLOR"],
+      "-COLOR": ["-KOLOR"],
+      "LINETYPE": ["RODZLIN", "RL", "ODRODZLIN"],
+      "-LINETYPE": ["-RODZLIN", "-RL"],
+      "-LAYER": ["-WARSTWA", "-WA"],
+      "LWEIGHT": ["SZERLIN", "SL"],
+      "-LWEIGHT": ["-SZERLIN"],
+      "BOX": ["KOSTKA"],
+      "WEDGE": ["KLIN", "KL"],
+      "PYRAMID": ["OSTROSŁUP", "OST"],
+      "CYLINDER": ["WALEC", "WAL"],
+      "CONE": ["STOŻEK"],
+      "SPHERE": ["SFERA"],
+      "TORUS": ["TORUS", "TOR"],
+      "REGION": ["REGION", "REG"],
+      "UNION": ["SUMA", "SUM"],
+      "SUBTRACT": ["RÓŻNICA", "ROZ"],
+      "INTERSECT": ["ILOCZYN", "IL"],
+      "EXTRUDE": ["WYCIĄGNIJ", "WYC"],
+      "REVOLVE": ["PRZEKRĘĆ", "PRZK"],
+      "PRESSPULL": ["NACIŚNIJCIĄG"],
+      "SLICE": ["PŁAT", "PAT"],
+      "SECTION": ["PRZEKRÓJ", "PKR"],
+      "FILLETEDGE": ["ZAOKRĄGLKRAW"],
+      "CHAMFEREDGE": ["FAZOWKRAW"],
+      "SOLIDEDIT": ["EDBRYŁA"],
+      "POINT": ["PUNKT", "PU"],
+      "DIVIDE": ["PODZIEL", "POD"],
+      "MEASURE": ["ZMIERZ", "ZMI"],
+      "PTYPE": ["PTYPE"],
+      "SOLID": ["OBSZAR", "OBS"],
+      "LEADER": ["LODNIES", "LO", "LODN"]
     },
     "keywords": {
       "-OSNAP": {

@@ -6,9 +6,9 @@ figure: "Krzesło, prostokąt i linia, zamienione w blok B1: jego nazwa, punkt b
 sourceHash: "ca24f209008c"
 ---
 
-Polecenie BLOK (BLOCK) zapisuje zestaw obiektów w rysunku pod nazwą, aby <Command id="INSERT" /> mogło go wstawiać dowolnie wiele razy, a każda kopia była odnośnikiem do tej jednej definicji. Pyta o nazwę, potem o bazowy punkt wstawienia – punkt, według którego umieszczany jest każdy odnośnik – a potem o obiekty. Enter kończy wybór i definiuje blok, a wskazane obiekty stają się odnośnikiem do niego, w tym samym miejscu. Całe polecenie to jeden krok cofania.
+Polecenie BLOK (BLOCK) zapisuje zestaw obiektów w rysunku pod nazwą, aby polecenie <Command id="INSERT" /> mogło go wstawiać dowolnie wiele razy, a każda kopia była odnośnikiem do tej jednej definicji. Pyta o nazwę, potem o bazowy punkt wstawienia – punkt, według którego umieszczany jest każdy odnośnik – a potem o obiekty. Enter kończy wybór i definiuje blok, a wskazane obiekty stają się odnośnikiem do niego, w tym samym miejscu. Całe polecenie to jeden krok cofania.
 
-BLOK w AutoCADzie otwiera okno dialogowe Definicja bloku, którego MellowCAD nie ma: tu BLOK pyta w wierszu polecenia o to, o co pyta <Command id="-BLOCK" />, tak jak w konsoli AutoCADa. Nazwa może zawierać spacje i do 255 znaków, ale żadnego z `< > / \ " : ; ? * | , =` ani grawisu: sam Enter lub taka nazwa daje komunikat <Message id="invalidNewBlockName" /> i pytanie się powtarza. Nazwa, którą rysunek już ma, niezależnie od wielkości liter, prowadzi do pytania, czy przedefiniować ten blok: <Keyword id="Yes" /> lub <Keyword id="No" /> (wartość domyślna, która kończy polecenie).
+BLOK w AutoCADzie otwiera okno dialogowe Definicja bloku, którego MellowCAD nie ma: tu BLOK pyta w wierszu polecenia o to, o co pyta <Command id="-BLOCK" />, tak jak w konsoli AutoCADa. Nazwa może zawierać spacje i mieć do 255 znaków, ale żadnego z `< > / \ " : ; ? * | , =` ani grawisu: sam Enter lub taka nazwa daje komunikat <Message id="invalidNewBlockName" /> i pytanie się powtarza. Nazwa, którą rysunek już ma, niezależnie od wielkości liter, prowadzi do pytania, czy przedefiniować ten blok: <Keyword id="Yes" /> lub <Keyword id="No" /> (wartość domyślna, która kończy polecenie).
 
 ## Options
 
@@ -40,4 +40,4 @@ Najpierw zdefiniuj atrybuty poleceniem <Command id="ATTDEF" />, a potem zaznacz 
 
 ### Jak rozbić blok w AutoCADzie?
 
-<Command id="EXPLODE" /> zamienia odnośnik z powrotem w obiekty, które pokazuje, po jednym poziomie zagnieżdżenia naraz, każdy na swojej warstwie i we własnym kolorze. Atrybuty wracają jako swoje definicje; wartości przepadają.
+<Command id="EXPLODE" /> zamienia odnośnik z powrotem w obiekty, które pokazuje, po jednym poziomie zagnieżdżenia za każdym razem, każdy na swojej warstwie i we własnym kolorze. Atrybuty wracają jako swoje definicje; wartości przepadają.

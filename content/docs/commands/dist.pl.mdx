@@ -3,10 +3,10 @@ title: "Polecenie ODLEG (DIST) w AutoCADzie"
 description: "Jak zmierzyć odległość w AutoCADzie poleceniem ODLEG (DIST, skrót ODL): między dwoma punktami, z kątami i przyrostami X, Y i Z, albo długość ciągu punktów."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie ODLEG po angielsku i jaki ma skrót?","answer":"DIST. W polskim AutoCADzie jego skrót to ODL: wpisz go i naciśnij Enter lub spację. Angielskie DI w polskiej wersji nie działa; _DIST działa w AutoCADzie w każdym języku."},{"question":"Jak zmierzyć odległość w AutoCADzie?","answer":"Wpisz ODL, a potem wskaż dwa punkty, z lokalizacją względem obiektu, aby trafić w punkty końcowe lub środki obiektów. Odległość pojawia się w wierszu polecenia razem z kątem i przyrostami."},{"question":"Jak zmierzyć łączną długość kilku odcinków?","answer":"Przy drugim punkcie wybierz Wiele i wskazuj dalej: przy każdym punkcie widać dotychczasową odległość, a Enter wypisuje sumę."},{"question":"Jak zmierzyć odległość w 3D?","answer":"Podaj punkty z ich współrzędną Z albo przyciągnij do obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z."},{"question":"Dlaczego polecenie ODLEG pokazuje mniej miejsc po przecinku, niż potrzebuję?","answer":"Wypisuje długości z dokładnością rysunku, tutaj dwa miejsca w nowym rysunku. Ustaw więcej, do ośmiu, w poleceniu JEDN."}]
+faq: [{"question":"Jak się nazywa polecenie ODLEG po angielsku i jaki ma skrót?","answer":"DIST. W polskim AutoCADzie jego skrót to ODL: wpisz go i naciśnij Enter lub spację. Angielskie DI w polskiej wersji nie działa; _DIST działa w AutoCADzie w każdym języku."},{"question":"Jak zmierzyć odległość w AutoCADzie?","answer":"Wpisz ODL, a potem wskaż dwa punkty, z lokalizacją względem obiektu, aby trafić w punkty końcowe lub środki obiektów. Odległość pojawia się w wierszu polecenia razem z kątem i przyrostami."},{"question":"Jak zmierzyć łączną długość kilku odcinków?","answer":"Przy drugim punkcie wybierz Wiele i wskazuj dalej: przy każdym punkcie widać dotychczasową odległość, a Enter wypisuje sumę."},{"question":"Jak zmierzyć odległość w 3D?","answer":"Podaj punkty z ich współrzędną Z albo zlokalizuj je względem obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z."},{"question":"Dlaczego polecenie ODLEG pokazuje mniej miejsc po przecinku, niż potrzebuję?","answer":"Wypisuje długości z dokładnością rysunku, tutaj dwa miejsca w nowym rysunku. Ustaw więcej, do ośmiu, w poleceniu JEDN."}]
 ---
 
-Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż, przyciągnij lub wpisz pierwszy punkt i drugi, a polecenie wypisze w wierszu polecenia odległość, kąt w płaszczyźnie XY i kąt od tej płaszczyzny oraz przyrosty X, Y i Z, po czym się zakończy. Każdy punkt jest mierzony tam, gdzie leży, razem ze swoją współrzędną Z, więc odległość jest rzeczywista w przestrzeni. Enter przy pierwszym punkcie zaczyna od ostatnio podanego punktu, a przy drugim mierzy z powrotem do pierwszego. Liczby mają dokładność rysunku, a kąty – AUPREC.
+Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż (także z lokalizacją względem obiektu) lub wpisz pierwszy punkt i drugi, a polecenie wypisze w wierszu polecenia odległość, kąt w płaszczyźnie XY i kąt od tej płaszczyzny oraz przyrosty X, Y i Z, po czym się zakończy. Każdy punkt jest mierzony tam, gdzie leży, razem ze swoją współrzędną Z, więc odległość jest rzeczywista w przestrzeni. Enter przy pierwszym punkcie zaczyna od ostatnio podanego punktu, a przy drugim mierzy z powrotem do pierwszego. Liczby mają dokładność rysunku, a kąty – AUPREC.
 
 - **Polecenie:** `ODLEG`
 - **Po angielsku:** `DIST`, wpisywane jako `_DIST` w każdym języku
@@ -16,7 +16,7 @@ Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż, przyc
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="dist" caption="ODLEG wzdłuż przekątnej płytki 100 na 60: odległość, kąt w płaszczyźnie XY i przyrosty." />
 
@@ -68,7 +68,7 @@ Przy drugim punkcie wybierz `Wiele` i wskazuj dalej: przy każdym punkcie widać
 
 ### Jak zmierzyć odległość w 3D?
 
-Podaj punkty z ich współrzędną Z albo przyciągnij do obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z.
+Podaj punkty z ich współrzędną Z albo zlokalizuj je względem obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z.
 
 ### Dlaczego polecenie ODLEG pokazuje mniej miejsc po przecinku, niż potrzebuję?
 

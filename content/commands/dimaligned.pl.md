@@ -1,6 +1,6 @@
 ---
-title: "Wymiar dopasowany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)"
-metaTitle: "Wymiar dopasowany w AutoCADzie: WYMNORMALNY"
+title: "Wymiar wyrównany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)"
+metaTitle: "Wymiar wyrównany w AutoCADzie: WYMNORMALNY"
 description: "Jak zwymiarować ukośną krawędź w AutoCADzie poleceniem WYMNORMALNY (DIMALIGNED, skrót WN): dwa punkty lub obiekt, potem linia do nich równoległa."
 figure: "Ukośny bok trójkąta zwymiarowany wzdłuż jego długości: dwa jego końce, potem położenie linii."
 sourceHash: "243f7657ed7d"
@@ -24,7 +24,7 @@ Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją <Keyword i
 
 ## Questions
 
-### Jak się nazywa polecenie wymiaru dopasowanego po angielsku i jaki ma skrót?
+### Jak się nazywa polecenie wymiaru wyrównanego po angielsku i jaki ma skrót?
 
 Po angielsku DIMALIGNED, w polskim AutoCADzie WYMNORMALNY: wpisz `WN` lub `WYMNO`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMALIGNED` – w AutoCADzie w każdym języku.
 

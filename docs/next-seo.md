@@ -14,11 +14,11 @@
 > dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) y el ruso (`live` en `/ru`, L8)
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
-> de L5; por decisión del dueño la visibilidad va antes que cualquier
-> funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca en
-> paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
-> hechas el 16/11 y sin publicar; el patrón de cada sombreado…) y otro idioma, alternando, además
-> de lo que queda de §7.
+> de L5, y el polaco (`live` en `/pl`, L8) hecho el 17/11 y sin publicar; por decisión del dueño
+> la visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño
+> (12/11/2026), una sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF
+> (`docs/next-dxf.md`: las referencias externas, hechas el 16/11 y sin publicar; el patrón de
+> cada sombreado…) y otro idioma (el checo), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -281,7 +281,8 @@ UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesió
 `docs/plans/it-language.md`) y **alemán** (localizado; Alemania, Austria y Suiza; hecho el 13/11,
 `docs/plans/de-language.md`) y **ruso** (localizado; Rusia, con Ucrania, Kazajistán y
 Bielorrusia buscando en ruso; Yandex tiene el 72 % de sus búsquedas; hecho el 13/11,
-`docs/plans/ru-language.md`). Después, polaco, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
+`docs/plans/ru-language.md`) y **polaco** (localizado; Polonia, 40 en el índice de la auditoría;
+hecho el 17/11, `docs/plans/pl-language.md`). Después, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
@@ -906,4 +907,30 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   fechas, el de Bing en §2.2) tiene ya un MCP de comandos de AutoCAD. Un lanzamiento del MCP iría detrás del
   calendario de L5, que no se mueve. **Siguiente**, sin cambios: lo que quede de la fase 4 del
   DXF (`docs/next-dxf.md`), y después otro idioma.
+- Polaco (L8): hecho el 17/11/2026, sin publicar (`71cf4bfb`, `04deda37` y el commit que lo pasa a
+  `live`; `docs/plans/pl-language.md`, `docs/i18n/pl.md`). El paquete de idioma instalado en el
+  AutoCAD del dueño y la 2027.1 otra vez; el lenguaje de comandos de la consola polaca (434
+  sondas: LINIA, ODSUŃ, UTNIJ; `U` es `C`, `O` es OKRĄG y `U` es ŁUK; FROM es `OD`, el alias de
+  ODSUŃ, como el `ОТ` ruso; -OBIEKT toma `KOŃ` aunque su propio listado escribe `Kon`), los
+  conmutadores, la lectura polar y el ViewCube vistos en el escritorio («<Skok włącz>»,
+  «Biegunowy: 3.5966 < +Z», GÓRA, Pn), y el sitio con lo que se busca en polaco («Darmowy program
+  CAD online z poleceniami AutoCAD», «Polecenia AutoCAD po polsku i angielsku», «Polecenie ODSUŃ
+  (OFFSET) w AutoCADzie», «ćwiczenia», «w AutoCADzie»). Lo que no encajó, corregido en el
+  sistema: las letras polacas son Latin Extended-A, que `next/font` sirve en un fichero de 85 KB
+  de Inter y otro de 14,7 KB de Geist Mono; una cara de solo las 16 letras (8,9 KB) va delante
+  de Inter en las páginas polacas, y Google nunca se descarga (`SCRIPT` gana `latin-ext`); el
+  test de abreviaturas de los catálogos leía la etiqueta de una palabra clave como su id; la
+  consola desmintió cuatro alias del `acad.pgp` (`WT`, `ODLUW`, `D`, `DDUNITS`). Sin nativo, la
+  relectura de un modelo (unas 575 correcciones). **La primera carga de cada portada**, Brotli
+  q11, con el polaco en borrador y `live`: `/` 253.712 → 253.649, `/es` 254.981 → 255.044,
+  `/pt-br` 255.135 → 255.316, `/ar` 278.414 → 278.668, `/fr` 255.821 → 255.901 (99 bytes bajo
+  250 KiB: el siguiente cambio de la portada francesa tiene que medirse), `/it` 254.957 →
+  254.940, `/de` 255.228 → 255.499, `/ru` 288.763 → 288.889, `/pl` 265.037 → 265.093 (bajo los 275
+  KiB de una escritura con su fuente). Al publicarlo, con permiso del dueño: el push, IndexNow,
+  la cola de §7 rehecha con `/pl` (`gsc-prioritize.mjs` aún no conoce el prefijo: Polonia vale
+  40 en el índice de la auditoría, el 0,4 del italiano × 40/113 ≈ 0,14), las fichas de
+  AlternativeTo y SaaSHub. La tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota
+  hasta las 19:51 UTC). **Siguiente idioma propuesto: el checo** (localizado, `cs-CZ`; su paquete
+  está en la misma lista que el polaco, y su latin-ext se suma a la cara de las letras), alternando
+  con lo que quede de la fase 4 del DXF.
 - 10 Medición: la primera, un mes después del push de 01–02.

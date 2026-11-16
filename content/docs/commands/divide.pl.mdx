@@ -3,12 +3,12 @@ title: "Polecenie PODZIEL (DIVIDE) w AutoCADzie"
 description: "Jak podzielić linię lub okrąg na równe części w AutoCADzie poleceniem PODZIEL (DIVIDE, skrót POD): punkty lub bloki, i dlaczego punktów nie widać."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie PODZIEL po angielsku i jaki ma skrót?","answer":"DIVIDE. W polskim AutoCADzie jego skrót to POD: wpisz go i naciśnij Enter lub spację. Angielskie DIV w polskiej wersji nie działa; _DIVIDE działa w AutoCADzie w każdym języku."},{"question":"Dlaczego polecenie PODZIEL nie działa?","answer":"Najpewniej działa: punkty są na miejscu, narysowane jako kropki na linii. Otwórz polecenie PTYPE (DDPTYPE) i wybierz krzyżyk lub kółko albo wpisz PDMODE i 3: każdy punkt w rysunku zmienia się od razu. Aby je wskazać, użyj lokalizacji Punkt, PUN."},{"question":"Jak podzielić linię na równe części w AutoCADzie?","answer":"Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, 5 dla pięciu. Cztery punkty między częściami to miejsca, do których można przyciągać: znajduje je lokalizacja Punkt."},{"question":"Jak podzielić okrąg na równe części?","answer":"Tak samo: wybierz okrąg i wpisz liczbę części. Obiekt zamknięty dostaje tyle punktów, ile części, więc 6 daje sześć punktów, pierwszy w punkcie 0° okręgu, kolejne przeciwnie do ruchu wskazówek zegara."},{"question":"Jak przeciąć linię na osobne kawałki?","answer":"Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia PRZERWIJ albo PRZERWIJWPUNKCIE w każdym punkcie, przyciągając do niego lokalizacją Punkt."}]
+faq: [{"question":"Jak się nazywa polecenie PODZIEL po angielsku i jaki ma skrót?","answer":"DIVIDE. W polskim AutoCADzie jego skrót to POD: wpisz go i naciśnij Enter lub spację. Angielskie DIV w polskiej wersji nie działa; _DIVIDE działa w AutoCADzie w każdym języku."},{"question":"Dlaczego polecenie PODZIEL nie działa?","answer":"Najpewniej działa: punkty są na miejscu, narysowane jako kropki na linii. Otwórz polecenie PTYPE (DDPTYPE) i wybierz krzyżyk lub kółko albo wpisz PDMODE i 3: każdy punkt w rysunku zmienia się od razu. Aby je wskazać, użyj lokalizacji Punkt, PUN."},{"question":"Jak podzielić linię na równe części w AutoCADzie?","answer":"Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, 5 dla pięciu. Cztery punkty między częściami wyznaczają te miejsca: znajduje je lokalizacja Punkt."},{"question":"Jak podzielić okrąg na równe części?","answer":"Tak samo: wybierz okrąg i wpisz liczbę części. Obiekt zamknięty dostaje tyle punktów, ile części, więc 6 daje sześć punktów, pierwszy w punkcie 0° okręgu, kolejne przeciwnie do ruchu wskazówek zegara."},{"question":"Jak przeciąć linię na osobne kawałki?","answer":"Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia PRZERWIJ albo PRZERWIJWPUNKCIE w każdym punkcie, wskazując go lokalizacją Punkt."}]
 ---
 
 Polecenie PODZIEL (DIVIDE) zaznacza na obiekcie równe części. Wybierz jedną linię, łuk, okrąg, elipsę, łuk eliptyczny, polilinię, polilinię 3D lub splajn, wskazując ją lub wpisując punkt na niej, a potem podaj liczbę segmentów, od 2 do 32767: polecenie PODZIEL stawia obiekt punktu w każdym miejscu podziału i się kończy. Nie przecina obiektu, który zostaje w całości. Obiekt otwarty podzielony na 5 dostaje 4 punkty, licząc od jego początku; zamknięty dostaje 5, w tym swój początek: okrąg od swojego punktu 0°, przeciwnie do ruchu wskazówek zegara, zamknięta polilinia od pierwszego wierzchołka. Punkty leżą na obiekcie, na jego wysokości, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
-Punkty są rysowane tak, jak mówi styl punktów rysunku, a domyślnie jest to kropka, która chowa się pod linią: najpierw ustaw widoczny kształt poleceniem [`PTYPE`](/docs/commands/ptype) albo zmienną PDMODE. Cały podział to jeden krok, który cofa polecenie `C`, a jego punkty są zbiorem Poprzedni, gotowym do wymazania lub przesunięcia. Każdy inny obiekt, tekst lub odnośnik bloku, dostaje `Tego obiektu nie można podzielić.` i polecenie się kończy. Polecenie PODZIEL uruchamia też lista rozwijana „Punkty” w narzędziach rysowania.
+Punkty są rysowane zgodnie ze stylem punktów rysunku, a domyślnie jest to kropka, która chowa się pod linią: najpierw ustaw widoczny kształt poleceniem [`PTYPE`](/docs/commands/ptype) albo zmienną PDMODE. Cały podział to jeden krok, który cofa polecenie `C`, a jego punkty są zbiorem Poprzedni, gotowym do wymazania lub przesunięcia. Każdy inny obiekt, na przykład tekst lub odnośnik bloku, daje komunikat `Tego obiektu nie można podzielić.` i polecenie się kończy. Polecenie PODZIEL uruchamia też lista rozwijana „Punkty” w narzędziach rysowania.
 
 - **Polecenie:** `PODZIEL`
 - **Po angielsku:** `DIVIDE`, wpisywane jako `_DIVIDE` w każdym języku
@@ -18,7 +18,7 @@ Punkty są rysowane tak, jak mówi styl punktów rysunku, a domyślnie jest to k
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="divide" caption="PDMODE 3, aby punkty były widoczne jako krzyżyki, potem linia podzielona na 5 i okrąg na 6, zaczynając od jego punktu 0°." />
 
@@ -46,7 +46,7 @@ Najpewniej działa: punkty są na miejscu, narysowane jako kropki na linii. Otw�
 
 ### Jak podzielić linię na równe części w AutoCADzie?
 
-Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, `5` dla pięciu. Cztery punkty między częściami to miejsca, do których można przyciągać: znajduje je lokalizacja Punkt.
+Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, `5` dla pięciu. Cztery punkty między częściami wyznaczają te miejsca: znajduje je lokalizacja Punkt.
 
 ### Jak podzielić okrąg na równe części?
 
@@ -54,7 +54,7 @@ Tak samo: wybierz okrąg i wpisz liczbę części. Obiekt zamknięty dostaje tyl
 
 ### Jak przeciąć linię na osobne kawałki?
 
-Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia [`PRZERWIJ`](/docs/commands/break) albo `PRZERWIJWPUNKCIE` w każdym punkcie, przyciągając do niego lokalizacją Punkt.
+Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia [`PRZERWIJ`](/docs/commands/break) albo `PRZERWIJWPUNKCIE` w każdym punkcie, wskazując go lokalizacją Punkt.
 
 ## Powiązane polecenia [#related]
 

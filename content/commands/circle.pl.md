@@ -6,7 +6,7 @@ figure: "Trzy okręgi: środek i promień, dwa końce średnicy (2P) oraz środe
 sourceHash: "62e25bc029f9"
 ---
 
-Polecenie OKRĄG (CIRCLE) rysuje okrąg ze środka i promienia, wpisanego lub podanego punktem na okręgu, albo jednym z innych sposobów, które proponuje jego pierwszy monit. Enter przy promieniu powtarza rozmiar ostatniego okręgu, zapamiętany w rysunku. Gdy podajesz promień, od środka do kursora biegnie bursztynowa przerywana linia, a przy podawaniu średnicy wychodzi poza okrąg, tak jak rysuje ją AutoCAD. Okrąg leży w płaszczyźnie swojego pierwszego punktu, na bieżącym poziomie, jeśli punkt nie ma własnej współrzędnej Z.
+Polecenie OKRĄG (CIRCLE) rysuje okrąg na podstawie środka i promienia, wpisanego lub podanego punktem na okręgu, albo jednym z innych sposobów, które proponuje jego pierwszy monit. Enter przy promieniu powtarza rozmiar ostatniego okręgu, zapamiętany w rysunku. Gdy podajesz promień, od środka do kursora biegnie bursztynowa przerywana linia, a przy podawaniu średnicy wychodzi poza okrąg, tak jak rysuje ją AutoCAD. Okrąg leży w płaszczyźnie swojego pierwszego punktu, na bieżącym poziomie, jeśli punkt nie ma własnej współrzędnej Z.
 
 ## Options
 
@@ -24,11 +24,11 @@ Styczny do dwóch obiektów, z promieniem: wskaż każdą linię, okrąg lub łu
 
 ### Diameter
 
-Przy monicie o promień: zamiast niego podaj średnicę, wpisaną lub jako punkt.
+Przy monicie o promień: zamiast niego podaj średnicę, wpisaną lub wskazaną punktem.
 
 ## Missing
 
-Ssr na segmencie polilinii, który AutoCAD przyjmuje, a MellowCAD odrzuca; pozycja Sty, sty, sty na palecie narzędzi (wpisanie jej, 3P z trzema lokalizacjami Styczna, działa); Szybkie właściwości po dwukrotnym kliknięciu okręgu.
+Ssr na segmencie polilinii, który AutoCAD przyjmuje, a MellowCAD odrzuca; pozycja Sty, sty, sty na palecie narzędzi (wpisanie tego sposobu, czyli 3P z trzema lokalizacjami Styczna, działa); Szybkie właściwości po dwukrotnym kliknięciu okręgu.
 
 ## Questions
 

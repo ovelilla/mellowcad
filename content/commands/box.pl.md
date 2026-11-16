@@ -6,7 +6,7 @@ figure: "Prostopadłościan 60 na 40 na 25, z dwóch narożników i wysokości, 
 sourceHash: "46936b3da48e"
 ---
 
-Polecenie KOSTKA (BOX) rysuje bryłę 3D prostopadłościanu o bokach wzdłuż osi układu LUW: podaj pierwszy narożnik, drugi narożnik, a potem wysokość. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół, a punkt podaje ją odległością od narożnika; narożnik podany na innej wysokości Z niż pierwszy ustala wysokość bez pytania. Ostatnia wysokość oraz ostatnia długość i szerokość sześcianu lub opcji Długość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem <Command id="EXTRUDE" />. Prostopadłościan leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+Polecenie KOSTKA (BOX) rysuje prostopadłościan jako bryłę 3D, o bokach wzdłuż osi układu LUW: podaj pierwszy narożnik, drugi narożnik, a potem wysokość. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół, a punkt podaje ją odległością od narożnika; narożnik podany na innej wysokości Z niż pierwszy ustala wysokość bez pytania. Ostatnia wysokość oraz ostatnia długość i szerokość sześcianu lub opcji Długość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem <Command id="EXTRUDE" />. Prostopadłościan leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
 Prostopadłościan zachowuje swoje wymiary: <Command id="LIST" /> pokazuje jego położenie, długość, szerokość, wysokość i obrót, a paleta Właściwości pozwala wpisać pierwsze cztery. Jego uchwyty go przesuwają, rozciągają, a poza widokiem planu ustawiają jego wysokość. To bryła 3D dla poleceń <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
 
@@ -36,7 +36,7 @@ Przesuń, Obróć, Skala i Lustro z aktywnego uchwytu, które AutoCAD przełącz
 
 ### Jak narysować prostopadłościan 3D w AutoCADzie?
 
-Uruchom KOSTKA, podaj jeden narożnik, potem przeciwległy narożnik, potem wysokość: `0,0`, `60,40` i `25` rysują prostopadłościan z sesji. <Keyword id="Length" /> i szerokość zamiast przeciwległego narożnika obracają prostopadłościan pod dowolnym kątem.
+Uruchom polecenie KOSTKA, podaj jeden narożnik, potem przeciwległy narożnik, potem wysokość: `0,0`, `60,40` i `25` rysują prostopadłościan z sesji. <Keyword id="Length" /> i szerokość zamiast przeciwległego narożnika obracają prostopadłościan pod dowolnym kątem.
 
 ### Dlaczego prostopadłościan wygląda jak prostokąt?
 

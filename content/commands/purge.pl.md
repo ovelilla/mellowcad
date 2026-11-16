@@ -5,7 +5,7 @@ figure: "Dwa bloki, TAG wstawiony na ścianie i BOX, którego jedyny odnośnik w
 sourceHash: "7a22ff19d409"
 ---
 
-Polecenie USUŃ (PURGE) usuwa to, co rysunek definiuje, ale czego nie używa; tutaj są to bloki i rodzaje linii. W AutoCADzie polecenie USUŃ otwiera okno dialogowe Usuń; MellowCAD go nie ma, więc polecenie USUŃ pyta w wierszu polecenia o to, o co pyta <Command id="-PURGE" />, tak jak robi to konsola AutoCADa. Podaje ustawienia Elementy zagnieżdżone i Osierocone dane, oba wyłączone, i pyta, jaki typ nieużywanych obiektów usunąć, proponując <Keyword id="Blocks" /> i <Keyword id="LTypes" />; Enter w tym miejscu kończy polecenie.
+Polecenie USUŃ (PURGE) usuwa to, co rysunek definiuje, ale czego nie używa; tutaj są to bloki i rodzaje linii. W AutoCADzie polecenie USUŃ otwiera okno dialogowe Usuń; MellowCAD takiego okna nie ma, więc polecenie USUŃ pyta w wierszu polecenia o to, o co pyta <Command id="-PURGE" />, tak jak robi to konsola AutoCADa. Podaje ustawienia Elementy zagnieżdżone i Osierocone dane, oba wyłączone, i pyta, jaki typ nieużywanych obiektów usunąć, proponując <Keyword id="Blocks" /> i <Keyword id="LTypes" />; Enter w tym miejscu kończy polecenie.
 
 Blok jest w użyciu, dopóki umieszcza go odnośnik w rysunku albo zawiera go definicja używanego bloku, na dowolnej głębokości. Wymazanie ostatniego odnośnika bloku zostawia jego definicję w rysunku, skąd <Command id="INSERT" /> może go wstawić ponownie: to polecenie USUŃ ją kasuje. Blok zawarty w zachowanym bloku nigdy nie jest usuwany, a łańcuch bloków, które zawierają tylko siebie nawzajem, znika w jednym uruchomieniu. Gdy nie ma czego usunąć, polecenie wyświetla <Message id="noUnreferencedBlocks" />. Każde uruchomienie to jeden krok, który cofa <Command id="U" />.
 
@@ -17,7 +17,7 @@ Pyta o nazwy do usunięcia, domyślnie `*` dla każdego nieużywanego bloku, alb
 
 ### LTypes
 
-Pyta o nazwy i o potwierdzanie każdej, tak jak <Keyword id="Blocks" />, i usuwa rodzaje linii, których nic nie używa. Continuous, bieżący rodzaj linii i rodzaj używany przez warstwę lub obiekt, także wewnątrz bloku, zawsze zostają; gdy nie ma czego usunąć, polecenie wyświetla <Message id="noUnreferencedLinetypes" />. Opcja <Keyword command="LINETYPE" id="Load" /> polecenia <Command id="LINETYPE" /> przywraca usunięty rodzaj.
+Pyta o nazwy i o potwierdzanie każdej, tak jak <Keyword id="Blocks" />, i usuwa rodzaje linii, których nic nie używa. Continuous, bieżący rodzaj linii i rodzaj używany przez warstwę lub obiekt, także wewnątrz bloku, zawsze zostają; gdy nie ma czego usunąć, polecenie wyświetla <Message id="noUnreferencedLinetypes" />. Opcja <Keyword command="LINETYPE" id="Load" /> polecenia <Command id="LINETYPE" /> wczytuje usunięty rodzaj linii ponownie.
 
 ## Missing
 

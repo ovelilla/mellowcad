@@ -5,9 +5,9 @@ figure: "Błędnie napisane PALTE na tabliczce wskazane poleceniem EDTEKST i pop
 sourceHash: "2d0ed6fe5acc"
 ---
 
-Polecenie EDTEKST (TEXTEDIT) edytuje obiekty opisu: podaje bieżący tryb edycji, na początku <Keyword id="Multiple" />, i prosi o wybranie obiektu. Tekst jednowierszowy otwiera się do ponownego wpisania w miejscu, gdzie jest, tekst wielowierszowy – w edytorze polecenia <Command id="MTEXT" />, a definicja atrybutu – jako jej etykieta, monit i wartość domyślna. W trybie <Keyword id="Multiple" /> polecenie pyta potem o następny obiekt, aż Esc lub Enter je zakończy, a całe wykonanie to jeden krok, który cofa <Command id="U" />. Dwukrotne kliknięcie tekstu lub definicji atrybutu uruchamia EDTEKST, a na tekście wielowierszowym otwiera edytor dla tego jednego obiektu.
+Polecenie EDTEKST (TEXTEDIT) edytuje obiekty opisu: podaje bieżący tryb edycji, na początku <Keyword id="Multiple" />, i prosi o wybranie obiektu. Tekst jednowierszowy otwiera się do ponownego wpisania w miejscu, gdzie jest, tekst wielowierszowy – w edytorze polecenia <Command id="MTEXT" />, a definicja atrybutu – jako jej oznaczenie, monit i wartość domyślna. W trybie <Keyword id="Multiple" /> polecenie pyta potem o następny obiekt, aż Esc lub Enter je zakończy, a całe wykonanie to jeden krok, który cofa <Command id="U" />. Dwukrotne kliknięcie tekstu lub definicji atrybutu uruchamia EDTEKST, a na tekście wielowierszowym otwiera edytor dla tego jednego obiektu.
 
-Esc w edytorze tekstu jednowierszowego porzuca tę edycję i pyta o następny obiekt; drugie Esc kończy polecenie. Obiekt na zablokowanej warstwie daje <Message id="objectOnLockedLayer" /> i pytanie pada ponownie, a wskazanie czegokolwiek innego ponawia pytanie bez komunikatu. Jeden tekst zaznaczony przed poleceniem otwiera się od razu.
+Esc w edytorze tekstu jednowierszowego porzuca tę edycję i pyta o następny obiekt; drugie naciśnięcie Esc kończy polecenie. Przy obiekcie na zablokowanej warstwie polecenie wyświetla <Message id="objectOnLockedLayer" /> i pyta ponownie, a wskazanie czegokolwiek innego ponawia pytanie bez komunikatu. Jeden tekst wybrany przed uruchomieniem polecenia otwiera się od razu.
 
 ## Options
 
@@ -17,7 +17,7 @@ Cofa ostatnią edycję tego wykonania i ponownie pyta; gdy nie ma już nic do co
 
 ### Mode
 
-Pyta o tryb edycji: <Keyword id="Single" /> kończy polecenie po jednym obiekcie, <Keyword id="Multiple" /> pyta o następny. Tryb zostaje zachowany dla następnego EDTEKST, w każdym rysunku.
+Pyta o tryb edycji: <Keyword id="Single" /> kończy polecenie po jednym obiekcie, <Keyword id="Multiple" /> pyta o następny. Tryb zostaje zachowany dla następnego wywołania polecenia EDTEKST, w każdym rysunku.
 
 ## Missing
 
@@ -31,11 +31,11 @@ TEXTEDIT. W polskim AutoCADzie wpisz `EDT` i naciśnij Enter lub spację; dział
 
 ### Jak edytować tekst w AutoCADzie?
 
-Kliknij go dwukrotnie albo wpisz `EDT` i wskaż go; wpisz go ponownie i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl.
+Kliknij go dwukrotnie albo wpisz `EDT` i wskaż go; wpisz nową treść i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl.
 
 ### Jak edytować kilka tekstów po kolei?
 
-Zostaw EDTEKST w trybie <Keyword id="Multiple" />, domyślnym: po każdym tekście pyta o następny. <Keyword id="Mode" /> i <Keyword id="Single" /> sprawiają, że kończy po jednym, jak przy dwukrotnym kliknięciu.
+Zostaw EDTEKST w trybie <Keyword id="Multiple" />, domyślnym: po każdym tekście pyta o następny. <Keyword id="Mode" /> i <Keyword id="Single" /> sprawiają, że polecenie kończy się po jednym tekście, jak przy dwukrotnym kliknięciu.
 
 ### Dlaczego dwukrotne kliknięcie nie edytuje tekstu?
 

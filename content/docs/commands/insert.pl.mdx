@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie WSTAW po angielsku i jaki ma skrót?","answer":"INSERT. W polskim AutoCADzie jego skrót to W: wpisz go i naciśnij Enter lub spację, a otworzy się paleta „Bloki”, tak jak w AutoCADzie 2027. -W to polecenie -WSTAW, które pyta w wierszu polecenia. Angielskie I w polskiej wersji nie działa; _INSERT działa w AutoCADzie w każdym języku."},{"question":"Jak wstawić blok z wiersza polecenia?","answer":"Wpisz -W i nazwę bloku, potem wskaż punkt wstawienia i odpowiedz na pytania o skalę i obrót, a Enter zachowa każdą wartość domyślną. ? przy nazwie wyświetla listę istniejących bloków."},{"question":"Jak wstawić blok w innej skali?","answer":"Wpisz współczynnik skali X po punkcie wstawienia, a przy współczynniku Y naciśnij Enter, aby były równe; albo wybierz Skala przed punktem i wpisz jeden współczynnik dla obu. Ujemny współczynnik odbija blok lustrzanie."},{"question":"Jak wstawić blok z innego rysunku w AutoCADzie?","answer":"Nie z jego pliku: polecenie WSTAW umieszcza tylko bloki zdefiniowane w rysunku. Zamiast tego skopiuj jego odnośnik (Ctrl+C), otwórz rysunek, do którego ma trafić, i wklej go (Ctrl+V): jego blok przychodzi razem z nim, chyba że ten rysunek ma już blok o tej nazwie, którego definicja zostaje zachowana."}]
 ---
 
-Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie [`BLOK`](/docs/commands/block). Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem, potem o skalę i obrót. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to kliknięcie na każdy.
+Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie [`BLOK`](/docs/commands/block). Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem, potem o skalę i obrót. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to po jednym kliknięciu na każdy.
 
 Polecenie `-WSTAW` pyta o wszystko w wierszu polecenia: nazwę bloku (Enter przyjmuje proponowaną: ostatnio wstawiony blok albo, jeśli go nie ma, ostatnio zdefiniowany), punkt wstawienia, potem współczynnik skali X, współczynnik skali Y (Enter przyjmuje współczynnik X) i kąt obrotu. Ujemny współczynnik odbija blok, a nierówne go rozciągają: okrąg w nim jest rysowany jako elipsa. Blok z atrybutami pyta potem o każdą wartość jej monitem, proponując wartość domyślną. Obiekty bloku na warstwie 0 przyjmują warstwę odnośnika, pozostałe zachowują swoje. Każde wstawienie to jeden krok cofania.
 
@@ -19,9 +19,9 @@ Polecenie `-WSTAW` pyta o wszystko w wierszu polecenia: nazwę bloku (Enter przy
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
-<Session name="insert" caption="Krzesło zamienione w blok, potem wstawione dwa razy przy stole: obrócone o 180 po podaniu punktu, potem o 90 opcją Obróć przed nim." />
+<Session name="insert" caption="Krzesło zamienione w blok, potem wstawione dwa razy przy stole: obrócone o 180 po podaniu punktu, potem o 90 opcją Obrót przed nim." />
 
 ## Opcje [#options]
 
@@ -35,7 +35,7 @@ Przy punkcie wstawienia: pyta o jeden współczynnik dla obu osi, a potem ponown
 
 ### `Obrót` (`O`) [#rotate]
 
-Przy punkcie wstawienia: pyta o kąt, wpisany lub między dwoma punktami, a potem ponownie o punkt, z blokiem przeciąganym w obróceniu. Po podaniu punktu nie pyta już o obrót.
+Przy punkcie wstawienia: pyta o kąt, wpisany lub między dwoma punktami, a potem ponownie o punkt, z blokiem przeciąganym już obróconym. Po podaniu punktu nie pyta już o obrót.
 
 ## Czego jeszcze nie robi [#missing]
 

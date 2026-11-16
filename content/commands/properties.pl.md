@@ -6,9 +6,9 @@ figure: "Okrąg wybrany, gdy żadne polecenie nie działa, z widocznymi uchwytam
 sourceHash: "14d097ac5b0b"
 ---
 
-Polecenie WŁAŚCIWOŚCI (PROPERTIES) otwiera paletę Właściwości. Jak w AutoCADzie jest to paleta, a nie okno dialogowe: zostaje otwarta obok rysunku, tutaj jako karta panelu palet, gdy wybierasz i rysujesz, dopóki nie zamknie jej polecenie <Command id="PROPERTIESCLOSE" />. Ctrl+1 ją pokazuje i ukrywa, a wpisane z apostrofem, `'WŁAŚCIWOŚCI`, otwiera się w trakcie innego polecenia. W szerokim oknie jest otwarta od początku.
+Polecenie WŁAŚCIWOŚCI (PROPERTIES) otwiera paletę Właściwości. Jak w AutoCADzie jest to paleta, a nie okno dialogowe: zostaje otwarta obok rysunku, tutaj jako karta panelu palet, gdy wybierasz i rysujesz, dopóki nie zamknie jej polecenie <Command id="PROPERTIESCLOSE" />. Ctrl+1 ją pokazuje i ukrywa, a polecenie wpisane z apostrofem, `'WŁAŚCIWOŚCI`, otwiera ją w trakcie innego polecenia. W szerokim oknie jest otwarta od początku.
 
-Gdy obiekty są wybrane, pokazuje ich właściwości, a każdą zmieniasz, wpisując lub wybierając nową wartość w jej wierszu. Najpierw idzie grupa Ogólne, w kolejności AutoCADa: Kolor, Warstwa, Rodzaj linii, Szerokość linii i Grubość, z `*RÓŻNE*` tam, gdzie wybrane obiekty się różnią. Pod nią wiersze własne każdego typu: punkt początkowy i końcowy linii, jej długość i kąt; środek okręgu, promień, średnica, obwód i pole; wiersze łuku, elipsy, wierzchołki i szerokości polilinii, punkty splajnu, wiersze tekstu i odnośnika bloku. Współrzędne są w bieżącym LUW, a wiersze, które tylko informują, takie jak długość linii, są wyszarzone. Lista rozwijana na górze wymienia `Wszystkie` i każdy typ z liczbą obiektów: wybierz jeden, aby widzieć i edytować tylko ten typ. Gdy nic nie jest wybrane, grupa Ogólne pokazuje bieżącą warstwę, kolor, rodzaj linii i szerokość linii, które ustawia się tam dla nowych obiektów. Każda zmiana to jeden krok, który cofa <Command id="U" />.
+Gdy obiekty są wybrane, pokazuje ich właściwości, a każdą zmieniasz, wpisując lub wybierając nową wartość w jej wierszu. Najpierw jest grupa Ogólne, w kolejności AutoCADa: Kolor, Warstwa, Rodzaj linii, Szerokość linii i Grubość, z `*RÓŻNE*` tam, gdzie wybrane obiekty się różnią. Pod nią wiersze własne każdego typu: punkt początkowy i końcowy linii, jej długość i kąt; środek okręgu, promień, średnica, obwód i pole; wiersze łuku, elipsy, wierzchołki i szerokości polilinii, punkty splajnu, wiersze tekstu i odnośnika bloku. Współrzędne są w bieżącym LUW, a wiersze, które tylko informują, takie jak długość linii, są wyszarzone. Lista rozwijana na górze wymienia `Wszystkie` i każdy typ z liczbą obiektów: wybierz jeden, aby widzieć i edytować tylko ten typ. Gdy nic nie jest wybrane, grupa Ogólne pokazuje bieżącą warstwę, kolor, rodzaj linii i szerokość linii, które ustawia się tam dla nowych obiektów. Każda zmiana to jeden krok, który cofa <Command id="U" />.
 
 ## Missing
 
@@ -22,7 +22,7 @@ PROPERTIES. Najszybciej – Ctrl+1, który także z powrotem ukrywa paletę. Z k
 
 ### Paleta Właściwości zniknęła: jak ją przywrócić?
 
-Naciśnij Ctrl+1 albo wpisz `CE`: paleta pojawi się znowu jako karta panelu palet obok rysunku. Ctrl+1 naciśnięte, gdy paleta jest widoczna, ukrywa ją – często właśnie tak znika.
+Naciśnij Ctrl+1 albo wpisz `CE`: paleta pojawi się znowu jako karta panelu palet obok rysunku. Ctrl+1 naciśnięty, gdy paleta jest widoczna, ukrywa ją – często właśnie tak znika.
 
 ### Jak zmienić właściwości kilku obiektów naraz?
 

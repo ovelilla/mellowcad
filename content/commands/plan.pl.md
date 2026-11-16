@@ -8,13 +8,13 @@ sourceHash: "50d157803309"
 
 Polecenie PLAN patrzy prosto z góry na płaszczyznę XY układu LUW, z jego osią X skierowaną w prawo: to widok planu, w którym powstawał rysunek. Pyta, który LUW – bieżący, zapisany czy globalny – a Enter wybiera bieżący. Potem kadruje cały rysunek i wyświetla <Message id="regeneratingModel" />.
 
-Nic w rysunku się nie przesuwa, a LUW zostaje bez zmian: polecenie PLAN obraca tylko widok. To jeden krok cofania, więc <Command id="U" /> przywraca widok, a <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" /> wraca do widoku sprzed niego. To droga powrotu do planu po <Command id="3DORBIT" /> lub izometrycznym widoku z <Command id="VIEW" />. 3D w MellowCAD to wyłącznie bryły 3D, wciąż częściowe.
+Nic w rysunku się nie przesuwa, a LUW zostaje bez zmian: polecenie PLAN obraca tylko widok. To jeden krok cofania, więc <Command id="U" /> przywraca widok, a <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" /> wraca do widoku sprzed niego. To droga powrotu do planu po <Command id="3DORBIT" /> lub izometrycznym widoku z <Command id="VIEW" />. 3D w MellowCAD to wyłącznie bryły i wciąż jest częściowe.
 
 ## Options
 
 ### Current ucs
 
-Plan bieżącego LUW, wartość domyślna. Gdy polecenie <Command id="UCS" /> obróciło LUW o 30 stopni wokół Z, rysunek wygląda na obrócony o 30 stopni zgodnie z ruchem wskazówek zegara, tak by oś X układu LUW wskazywała w prawo; po LUW ustawionym na pochyłej ścianie patrzy prosto na tę ścianę.
+Plan bieżącego LUW, wartość domyślna. Gdy poleceniem <Command id="UCS" /> obrócono LUW o 30 stopni wokół Z, rysunek wygląda na obrócony o 30 stopni zgodnie z ruchem wskazówek zegara, tak by oś X układu LUW wskazywała w prawo; po LUW ustawionym na pochyłej ścianie patrzy prosto na tę ścianę.
 
 ### Ucs
 
@@ -36,7 +36,7 @@ Wpisz `PLAN` i naciśnij Enter dwa razy: drugi Enter wybiera <Keyword id="Curren
 
 ### Jakie polecenie daje widok z góry na LUW?
 
-PLAN z opcją <Keyword id="Current ucs" />: patrzy z góry na bieżący LUW, z jego osią X w prawo. Najpierw obróć LUW poleceniem <Command id="UCS" />, potem uruchom polecenie PLAN i naciśnij Enter dwa razy, a będziesz rysować na obróconym planie tak, jakby był prosty.
+PLAN z opcją <Keyword id="Current ucs" />: patrzy z góry na bieżący LUW, z jego osią X w prawo. Najpierw obróć LUW poleceniem <Command id="UCS" />, potem uruchom polecenie PLAN i naciśnij Enter dwa razy, a będziesz rysować na obróconym planie tak, jakby nie był obrócony.
 
 ### Dlaczego mój rysunek jest obrócony w widoku planu?
 

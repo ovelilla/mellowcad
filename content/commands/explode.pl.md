@@ -1,15 +1,15 @@
 ---
 title: "Polecenie ROZBIJ (EXPLODE) w AutoCADzie"
 description: "Jak rozbić blok lub polilinię w AutoCADzie poleceniem ROZBIJ (EXPLODE, skrót R): na linie i łuki, obiekty bloku, wiersze tekstu, linie kreskowania."
-figure: "Prostokąt, jedna polilinia, rozbity na cztery linie, z których jedna zostaje potem wymazana osobno."
+figure: "Prostokąt, czyli jedna polilinia, rozbity na cztery linie, z których jedna zostaje potem wymazana osobno."
 sourceHash: "479cf1cd58d9"
 ---
 
-Polecenie ROZBIJ (EXPLODE) rozbija obiekt złożony na obiekty, z których się składa. Wybierz obiekty i naciśnij Enter: polilinia staje się liniami i łukami wzdłuż swojej linii środkowej, odnośnik bloku – obiektami swojego bloku, o jeden poziom niżej, tekst wielowierszowy – jednym tekstem na każdy wyświetlany wiersz, a kreskowanie wzorem – liniami swojego wzoru. Każdy kawałek zachowuje warstwę i właściwości obiektu; kawałki bloku zachowują własne. Polilinia z szerokością traci szerokość, a polecenie ROZBIJ o tym informuje. Linii, okręgów, łuków, tekstu jednowierszowego i wymiarów nie można rozbić: są odrzucane już przy wyborze, a splajn, elipsa i kreskowanie pełne – przy zamknięciu wyboru. Rozbicie to jeden krok cofania.
+Polecenie ROZBIJ (EXPLODE) rozbija obiekt złożony na obiekty, z których się składa. Wybierz obiekty i naciśnij Enter: polilinia staje się liniami i łukami wzdłuż swojej linii środkowej, odnośnik bloku – obiektami swojego bloku, o jeden poziom niżej, tekst wielowierszowy – jednym tekstem na każdy wyświetlany wiersz, a kreskowanie wzorem – liniami swojego wzoru. Każda część zachowuje warstwę i właściwości obiektu; części bloku zachowują własne. Polilinia z szerokością traci szerokość, a polecenie ROZBIJ o tym informuje. Linii, okręgów, łuków, tekstu jednowierszowego i wymiarów nie można rozbić: są odrzucane już przy wyborze, a splajn, elipsa i kreskowanie pełne – przy zamknięciu wyboru. Rozbicie to jeden krok cofania.
 
 ## Missing
 
-Wymiary, które AutoCAD rozbija na linie, groty strzałek i tekst, a MellowCAD odrzuca. Kreskowanie wzorem, którego tutaj nie ma, jest odrzucane jak pełne, a rozbity tekst wielowierszowy stoi tam, gdzie rysuje go czcionka, odrobinę obok miejsca AutoCADa.
+Wymiary, które AutoCAD rozbija na linie, groty strzałek i tekst, a MellowCAD odrzuca. Kreskowanie wzorem, którego tutaj nie ma, jest odrzucane jak pełne, a rozbity tekst wielowierszowy stoi tam, gdzie wypada w naszej czcionce, odrobinę obok miejsca, w którym stawia go AutoCAD.
 
 ## Questions
 
@@ -27,4 +27,4 @@ Tekst wielowierszowy tak: każdy wiersz staje się tekstem jednowierszowym. Teks
 
 ### Jak rozbić blok w AutoCADzie?
 
-Wybierz odnośnik bloku i naciśnij Enter: staje się obiektami swojego bloku, tam gdzie rysował je odnośnik. Blok zagnieżdżony w nim pozostaje blokiem: rozbij go jeszcze raz. Atrybuty wracają jako ich definicje, bez wartości.
+Wybierz odnośnik bloku i naciśnij Enter: staje się obiektami swojego bloku, tam, gdzie rysował je odnośnik. Blok zagnieżdżony w nim pozostaje blokiem: rozbij go jeszcze raz. Atrybuty wracają jako ich definicje, bez wartości.

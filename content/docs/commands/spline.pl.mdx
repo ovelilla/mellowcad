@@ -3,10 +3,10 @@ title: "Polecenie SPLAJN (SPLINE) w AutoCADzie"
 description: "Jak działa polecenie SPLAJN (SPLINE, skrót SPL) w AutoCADzie: krzywa przez punkty dopasowania lub wierzchołki sterujące, węzły, stopień, styczne, Zamknij."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie SPLAJN po angielsku?","answer":"SPLINE. W polskim AutoCADzie wpisz SPL lub pełną nazwę SPLAJN i naciśnij Enter lub spację; skrót SPL jest taki sam jak w wersji angielskiej. _SPLINE działa w AutoCADzie w każdym języku."},{"question":"Czym się różni splajn dopasowania od splajnu wierzchołków sterujących?","answer":"Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją Metoda przy pierwszym pytaniu."},{"question":"Jak zamienić splajn na polilinię w AutoCADzie?","answer":"Uruchom EDPLIN i wskaż splajn: polecenie wyświetla „Wybrany obiekt nie jest polilinią” i proponuje zamianę, a potem pyta o dokładność od 0 do 99, domyślnie 10. Polilinia biegnie wzdłuż splajnu krótkimi odcinkami prostymi, w większej liczbie niż w AutoCADzie."},{"question":"Jak zamienić polilinię na splajn?","answer":"Wygładź polilinię opcją splaJn polecenia EDPLIN, potem uruchom SPLAJN i wybierz Obiekt: polilinia staje się splajnem o tej samej krzywej."},{"question":"Czy można rozbić splajn w AutoCADzie?","answer":"Nie: ROZBIJ odrzuca splajn, tak jak AutoCAD. Aby podzielić go na części, najpierw zamień go na polilinię poleceniem EDPLIN, a potem rozbij ją na linie."}]
+faq: [{"question":"Jak się nazywa polecenie SPLAJN po angielsku?","answer":"SPLINE. W polskim AutoCADzie wpisz SPL lub pełną nazwę SPLAJN i naciśnij Enter lub spację; skrót SPL jest taki sam jak w wersji angielskiej. _SPLINE działa w AutoCADzie w każdym języku."},{"question":"Czym się różni splajn dopasowania od splajnu wierzchołków sterujących?","answer":"Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją Metoda w pierwszym monicie."},{"question":"Jak zamienić splajn na polilinię w AutoCADzie?","answer":"Uruchom EDPLIN i wskaż splajn: polecenie wyświetla „Wybrany obiekt nie jest polilinią” i proponuje zamianę, a potem pyta o dokładność od 0 do 99, domyślnie 10. Polilinia biegnie wzdłuż splajnu krótkimi odcinkami prostymi, w większej liczbie niż w AutoCADzie."},{"question":"Jak zamienić polilinię na splajn?","answer":"Wygładź polilinię opcją splaJn polecenia EDPLIN, potem uruchom SPLAJN i wybierz Obiekt: polilinia staje się splajnem o tej samej krzywej."},{"question":"Czy można rozbić splajn w AutoCADzie?","answer":"Nie: ROZBIJ odrzuca splajn, tak jak AutoCAD. Aby podzielić go na części, najpierw zamień go na polilinię poleceniem EDPLIN, a potem rozbij ją na linie."}]
 ---
 
-Polecenie SPLAJN (SPLINE) rysuje gładką krzywą na jeden z dwóch sposobów: przez podane punkty (`Dopasuj`, domyślnie) albo przyciąganą ku umieszczonym wierzchołkom sterującym (`Wierzchołki`). Na początku podaje swoje ustawienia, `Metoda = Dopasuj; Węzły = Cięciwa`, a potem pyta o pierwszy punkt; Enter w tym miejscu jest odrzucany, jak w AutoCADzie. Każdy kolejny punkt wygina krzywą, której podgląd podąża za kursorem, a Enter ją kończy. Punkty można wskazywać, przyciągać lokalizacją lub wpisywać, wpisana długość biegnie w kierunku kursora, a punkt zachowuje swoją współrzędną Z, więc splajn może wznosić się w przestrzeni. Esc porzuca krzywą; cały splajn to jeden krok, który cofa `C`. Przyciski Splajn dopasowania i Splajn wierzchołków sterujących na wstążce uruchamiają SPLAJN z już wybraną metodą.
+Polecenie SPLAJN (SPLINE) rysuje gładką krzywą na jeden z dwóch sposobów: przez podane punkty (`Dopasuj`, domyślnie) albo przyciąganą ku umieszczonym wierzchołkom sterującym (`Wierzchołki`). Na początku podaje swoje ustawienia, `Metoda = Dopasuj; Węzły = Cięciwa`, a potem pyta o pierwszy punkt; Enter w tym miejscu jest odrzucany, jak w AutoCADzie. Każdy kolejny punkt wygina krzywą, której podgląd podąża za kursorem, a Enter ją kończy. Punkty można wskazywać, przyciągać lokalizacją lub wpisywać, wpisana długość biegnie w kierunku kursora, a punkt zachowuje swoją współrzędną Z, więc splajn może wznosić się w przestrzeni. Esc porzuca krzywą; cały splajn to jeden krok, który cofa `C`. Przyciski „Dopasowany do splajnu” i „Wierzchołek sterujący splajnu” na wstążce uruchamiają SPLAJN z już wybraną metodą.
 
 - **Polecenie:** `SPLAJN`
 - **Po angielsku:** `SPLINE`, wpisywane jako `_SPLINE` w każdym języku
@@ -16,7 +16,7 @@ Polecenie SPLAJN (SPLINE) rysuje gładką krzywą na jeden z dwóch sposobów: p
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="spline" caption="Splajn dopasowania przez pięć punktów, a pod nim splajn na pięciu wierzchołkach sterujących rozmieszczonych tak samo: pierwszy przez nie przechodzi, drugi jest ku nim przyciągany." />
 
@@ -24,15 +24,15 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Metoda` (`M`) [#method]
 
-`Dopasuj` lub `Wierzchołki`. Splajn dopasowania przechodzi przez każdy podany punkt; splajn wierzchołków sterujących przechodzi tylko przez pierwszy i ostatni wierzchołek, a pozostałe przyciągają go ku sobie, więc wychodzi gładszy i dalej od nich. Metoda, podobnie jak węzły i stopień, zostaje zachowana do końca sesji.
+`Dopasuj` lub `Wierzchołki`. Splajn dopasowania przechodzi przez każdy podany punkt; splajn wierzchołków sterujących przechodzi tylko przez pierwszy i ostatni wierzchołek, a pozostałe przyciągają go ku sobie, więc jest gładszy i biegnie dalej od nich. Metoda, podobnie jak węzły i stopień, zostaje zachowana do końca sesji.
 
 ### `Węzły` (`W`) [#knots]
 
-Jak splajn dopasowania rozkłada swoje punkty wzdłuż krzywej: `Cięciwa` (domyślnie, według odległości między nimi), `Kwadratowy` z tej odległości albo `Proporcjonalnie`, wszystkie jednakowo. Przez te same punkty każda z nich daje nieco inną krzywą.
+Jak splajn dopasowania rozkłada swoje punkty wzdłuż krzywej: `Cięciwa` (domyślnie, według odległości między nimi), `Kwadratowy` z tej odległości albo `Proporcjonalnie`, czyli wszystkie odstępy jednakowe. Przez te same punkty każda z tych opcji daje nieco inną krzywą.
 
 ### `Stopień` (`S`) [#degree]
 
-Stopień splajnu wierzchołków sterujących, od 1 (odcinki proste między wierzchołkami) do 10; 3, wartość domyślna, to krzywa sześcienna. Gdy wierzchołków jest mniej, niż wymaga stopień, krzywa przyjmuje najwyższy możliwy.
+Stopień splajnu wierzchołków sterujących, od 1 (odcinki proste między wierzchołkami) do 10; 3, wartość domyślna, daje krzywą trzeciego stopnia. Gdy wierzchołków jest mniej, niż wymaga stopień, krzywa przyjmuje najwyższy możliwy.
 
 ### `Obiekt` (`O`) [#object]
 
@@ -68,7 +68,7 @@ SPLINE. W polskim AutoCADzie wpisz `SPL` lub pełną nazwę `SPLAJN` i naciśnij
 
 ### Czym się różni splajn dopasowania od splajnu wierzchołków sterujących?
 
-Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją `Metoda` przy pierwszym pytaniu.
+Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją `Metoda` w pierwszym monicie.
 
 ### Jak zamienić splajn na polilinię w AutoCADzie?
 

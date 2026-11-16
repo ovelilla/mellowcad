@@ -5,7 +5,7 @@ figure: "Okrąg przesunięty o 50 w prawo: wskazany, jego środek jako punkt baz
 sourceHash: "753ca38448bf"
 ---
 
-Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wybierz je, podaj punkt bazowy, a potem drugi punkt, i przesuną się o odległość i w kierunku od pierwszego do drugiego. Nic innego się w nich nie zmienia. Jak w AutoCADzie, przesuwane są obiekty wybrane przed poleceniem, punkt można wskazać, chwycić trybem lokalizacji lub wpisać, a gdy wybierasz drugi punkt, zbiór podąża za kursorem, z linią od punktu bazowego. Przesunięcie to jeden krok, który cofa polecenie Cofaj.
+Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wybierz je, podaj punkt bazowy, a potem drugi punkt, i przesuną się o odległość i w kierunku od pierwszego do drugiego. Nic innego się w nich nie zmienia. Jak w AutoCADzie, przesuwane są obiekty wybrane przed poleceniem, punkt można wskazać, określić lokalizacją względem obiektu lub wpisać, a gdy wybierasz drugi punkt, zbiór podąża za kursorem, z linią od punktu bazowego. Przesunięcie to jeden krok, który cofa polecenie COFAJ.
 
 ## Options
 
@@ -29,7 +29,7 @@ Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: `50,0` przesuw
 
 ### Jak przesunąć obiekty w górę w 3D?
 
-Podaj przesunięciu współrzędną Z: `0,0,5` jako drugi punkt albo jako <Keyword id="Displacement" /> podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącej wysokości.
+Podaj przesunięcie ze współrzędną Z: `0,0,5` jako drugi punkt albo jako <Keyword id="Displacement" /> podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącym poziomie.
 
 ### Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?
 

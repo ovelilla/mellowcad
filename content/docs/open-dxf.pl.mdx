@@ -23,8 +23,8 @@ MellowCAD otwiera pliki DXF w przeglądarce i wyświetla je w swoim edytorze, gd
 
 ## Co się otwiera [#opens]
 
-- **DXF AutoCADa od R12 do 2018**, najnowszego formatu DXF, jaki zapisuje AutoCAD, tekstowy (ASCII) lub binarny, utworzony w AutoCADzie lub w innym programie. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej podanej w pliku, od 2007 w UTF-8.
-- **Linie, łuki, okręgi, elipsy i polilinie**, z ich szerokościami i wygładzeniem łukami lub splajnem, polilinie 3D i splajny, a także punkty, rysowane w [stylu punktów](/docs/commands/ptype) rysunku, oraz bryły 2D, wypełnione zgodnie z FILLMODE.
+- **DXF AutoCADa od R12 do 2018** – najnowszego formatu DXF, jaki zapisuje AutoCAD – tekstowy (ASCII) lub binarny, utworzony w AutoCADzie lub w innym programie. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej podanej w pliku, od 2007 w UTF-8.
+- **Linie, łuki, okręgi, elipsy i polilinie**, z ich szerokościami i wygładzeniem łukami lub splajnem, polilinie 3D i splajny, a także punkty, rysowane w [stylu punktów](/docs/commands/ptype) rysunku, oraz bryły 2D, wypełnione zgodnie ze zmienną FILLMODE.
 - **Tekst jednowierszowy i wielowierszowy**, linie odniesienia z tekstem, bloki z atrybutami, wymiary liniowe, wyrównane, kątowe, promienia i średnicy oraz kreskowania.
 - **Warstwa każdego obiektu**, kolor, rodzaj linii i jego skala, szerokość linii, grubość i poziom, a także warstwy włączone, wyłączone lub zablokowane; zamrożona warstwa otwiera się jako wyłączona.
 - **Rodzaje linii rysunku**, rysowane z kreskami, kropkami i przerwami w skali rodzaju linii rysunku, oraz tekst złożonych rodzajów linii, takich jak GAS_LINE.
@@ -42,7 +42,7 @@ Gdy DXF zawiera coś, dla czego MellowCAD nie ma jeszcze obiektu, otwiera reszt�
 
 To, co jest w układach, liczy się osobno, ponieważ układów jeszcze nie ma: rysunek, którego wszystkie obiekty są w układach, otwiera się pusty.
 
-Niektóre rzeczy się otwierają, ale nie całkiem takie, jakie były:
+Niektóre rzeczy się otwierają, ale nie całkiem w takiej postaci, w jakiej były:
 
 - Kształty złożonych rodzajów linii, takich jak BATTING czy ZIGZAG, nie są rysowane, tylko kreski i przerwy wokół nich.
 - Wzór kreskowania, którego nie ma wśród [wzorów z `acadiso.pat`, które rysuje MellowCAD](/docs/commands/hatch), zachowuje swoją nazwę, ale rysowana jest tylko jego obwiednia.
@@ -57,7 +57,7 @@ W edytorze DXF otwiera się tak jak rysunek: polecenie <Command id="OPEN" /> (`C
 
 ## Zmień go i zachowaj [#keep]
 
-Po otwarciu DXF jest rysunkiem jak każdy inny: zmierz go poleceniami <Command id="DIST" /> i <Command id="AREA" />, zmień poleceniami <Command id="MOVE" />, <Command id="TRIM" /> lub <Command id="OFFSET" /> i rysuj na nim. Jest przechowywany w tej przeglądarce w trakcie pracy, a `Ctrl+S` zapisuje go jako plik we własnym, wersjonowanym formacie MellowCAD. Polecenia <Command id="SAVEAS" /> (`Ctrl+Shift+S`) i <Command id="DXFOUT" /> zapisują go ponownie jako DXF AutoCADa od 2000 do 2018, tekstowy lub binarny: strona [„Edytor DXF online”](/docs/edit-dxf) opisuje, jak to zrobić i co zachowuje plik. Plików DWG jeszcze nie ma.
+Po otwarciu DXF jest rysunkiem jak każdy inny: zmierz go poleceniami <Command id="DIST" /> i <Command id="AREA" />, zmień poleceniami <Command id="MOVE" />, <Command id="TRIM" /> lub <Command id="OFFSET" /> i rysuj na nim. Jest przechowywany w tej przeglądarce w trakcie pracy, a `Ctrl+S` zapisuje go jako plik we własnym, wersjonowanym formacie MellowCAD. Polecenia <Command id="SAVEAS" /> (`Ctrl+Shift+S`) i <Command id="DXFOUT" /> zapisują go ponownie jako DXF AutoCADa od 2000 do 2018, tekstowy lub binarny: strona [„Edytor DXF online”](/docs/edit-dxf) opisuje, jak to zrobić i co zachowuje plik. Obsługi plików DWG jeszcze nie ma.
 
 ## Pytania [#questions]
 

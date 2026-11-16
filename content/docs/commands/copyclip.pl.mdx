@@ -4,7 +4,7 @@ metaTitle: "Kopiowanie do schowka w AutoCADzie: Ctrl+C"
 description: "Jak działa KOPIUJ_S (COPYCLIP, Ctrl+C) w AutoCADzie razem z WYTNIJ, KOPIUJBAZA i WKLEJ: kopiowanie obiektów do schowka i wklejanie ich w punkcie."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Czym się różni KOPIUJ od KOPIUJ_S?","answer":"KOPIUJ umieszcza kopie w tym samym rysunku, od punktu bazowego do drugiego punktu. KOPIUJ_S umieszcza obiekty w schowku, aby wkleić je poleceniem WKLEJ do tego rysunku lub do innego."},{"question":"Jak kopiować z punktem bazowym w AutoCADzie?","answer":"Naciśnij Ctrl+Shift+C albo wpisz KOPIUJBAZA, podaj punkt bazowy i wybierz obiekty. Ctrl+V umieszcza je potem według tego punktu."},{"question":"Jak skopiować obiekty z jednego rysunku do drugiego?","answer":"Wybierz je i naciśnij Ctrl+C, otwórz drugi rysunek i naciśnij Ctrl+V, a potem wskaż punkt wstawienia. Ich warstwy, style i bloki przechodzą razem z nimi."},{"question":"Dlaczego wklejanie nie działa?","answer":"Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli odmówi, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja."}]
+faq: [{"question":"Czym się różni KOPIUJ od KOPIUJ_S?","answer":"KOPIUJ umieszcza kopie w tym samym rysunku, od punktu bazowego do drugiego punktu. KOPIUJ_S umieszcza obiekty w schowku, aby wkleić je poleceniem WKLEJ do tego rysunku lub do innego."},{"question":"Jak kopiować z punktem bazowym w AutoCADzie?","answer":"Naciśnij Ctrl+Shift+C albo wpisz KOPIUJBAZA, podaj punkt bazowy i wybierz obiekty. Ctrl+V umieszcza je potem według tego punktu."},{"question":"Jak skopiować obiekty z jednego rysunku do drugiego?","answer":"Wybierz je i naciśnij Ctrl+C, otwórz drugi rysunek i naciśnij Ctrl+V, a potem wskaż punkt wstawienia. Ich warstwy, style i bloki przechodzą razem z nimi."},{"question":"Dlaczego wklejanie nie działa?","answer":"Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli przeglądarka odmówi dostępu, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja."}]
 ---
 
 Polecenie KOPIUJ_S (COPYCLIP) kopiuje wybrane obiekty do schowka, razem z warstwami, stylami i blokami, których używają; rysunek się nie zmienia, a obiekty wybrane przed nim pozostają wybrane. Uruchamia je Ctrl+C, przerywając działające polecenie. `WKLEJ`, Ctrl+V, pyta potem o punkt wstawienia: obiekty podążają za kursorem i lądują lewym dolnym narożnikiem swojego zakresu w tym punkcie, w bieżącym układzie LUW, wszystko w jednym kroku, który cofa `C`. Wklejać można do tego samego rysunku lub do innego: schowek jest systemowy, więc rysunek w innej karcie może go odczytać, jeśli przeglądarka pozwala stronie czytać schowek. Gdy wklejana warstwa, styl lub blok ma nazwę, którą rysunek już ma, używany jest ten z rysunku.
@@ -18,7 +18,7 @@ Polecenie KOPIUJ_S (COPYCLIP) kopiuje wybrane obiekty do schowka, razem z warstw
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="copyclip" caption="KOPIUJ_S otworu płyty, potem WKLEJ w 65,20: kopia ułożona tam swoim lewym dolnym narożnikiem, drugi otwór." />
 
@@ -44,7 +44,7 @@ Wybierz je i naciśnij Ctrl+C, otwórz drugi rysunek i naciśnij Ctrl+V, a potem
 
 ### Dlaczego wklejanie nie działa?
 
-Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli odmówi, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja.
+Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli przeglądarka odmówi dostępu, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja.
 
 ## Powiązane polecenia [#related]
 

@@ -195,6 +195,14 @@ html:not(:lang(ru)) .font-mono:lang(ru) {
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 
+/* The same for a Polish command name elsewhere, the commands sentence's
+   ODSUŃ: its Ń is in Geist Mono's Latin Extended file (14.7 KB), which only a
+   Polish page replaces with its letters' face (lib/fonts.ts). «Polski», in the
+   language links, has no such letter and keeps Inter. */
+html:not(:lang(pl)) .font-mono:lang(pl) {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
 /* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
    breaks the joins of a cursive script, and the script has no capitals and no
    italics. Its marks reach far above and below the line, so running text

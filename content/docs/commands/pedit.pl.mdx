@@ -4,7 +4,7 @@ metaTitle: "Edycja polilinii w AutoCADzie: EDPLIN (PEDIT)"
 description: "Jak edytować polilinię w AutoCADzie poleceniem EDPLIN (PEDIT, skrót EDP): linie w polilinię, łączenie, szerokość, wygładzanie, wierzchołki. Wypróbuj online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie EDPLIN po angielsku?","answer":"PEDIT. W polskim AutoCADzie jego skrót to EDP: wpisz go i naciśnij Enter lub spację. Angielskie PE w polskiej wersji nie działa; pełna nazwa EDPLIN działa, a _PEDIT – w AutoCADzie w każdym języku. Dwukrotne kliknięcie polilinii też je uruchamia."},{"question":"Jak połączyć linie w polilinię?","answer":"Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz Dołącz i wybierz pozostałe: te, które stykają się końcami, stają się jedną polilinią. POŁĄCZ robi to samo w jednym kroku."},{"question":"Dlaczego EDPLIN nie działa na moim obiekcie?","answer":"Polecenie EDPLIN edytuje polilinie i proponuje zamianę linii, łuków i splajnów; wszystko inne – tekst, okrąg, blok – odrzuca i pyta ponownie. Obiekt na zablokowanej warstwie daje „Obiekt jest na zablokowanej warstwie.”. Opcja Dołącz dołącza tylko obiekty, których końce dokładnie stykają się z końcami polilinii: przy przerwach użyj Wiele i odległości tolerancji."},{"question":"Jak zmienić szerokość polilinii?","answer":"Wybierz Szerokość i wpisz szerokość: przyjmie ją każdy segment. Dla jednego segmentu użyj Edwierzch, przejdź do wierzchołka, w którym się zaczyna, i wybierz jego Szerokość."},{"question":"Jak wygładzić polilinię?","answer":"Wstaw prowadzi łuki przez każdy wierzchołek; splaJn robi gładszą krzywą, którą obramowują wierzchołki. Polilinia znów ją prostuje."}]
+faq: [{"question":"Jak się nazywa polecenie EDPLIN po angielsku?","answer":"PEDIT. W polskim AutoCADzie jego skrót to EDP: wpisz go i naciśnij Enter lub spację. Angielskie PE w polskiej wersji nie działa; pełna nazwa EDPLIN działa, a _PEDIT – w AutoCADzie w każdym języku. Dwukrotne kliknięcie polilinii też je uruchamia."},{"question":"Jak połączyć linie w polilinię?","answer":"Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz Dołącz i wskaż pozostałe: te, które stykają się końcami, stają się jedną polilinią. POŁĄCZ robi to samo w jednym kroku."},{"question":"Dlaczego EDPLIN nie działa na moim obiekcie?","answer":"Polecenie EDPLIN edytuje polilinie i proponuje zamianę linii, łuków i splajnów; wszystko inne – tekst, okrąg, blok – odrzuca i pyta ponownie. Obiekt na zablokowanej warstwie daje „Obiekt jest na zablokowanej warstwie.”. Opcja Dołącz dołącza tylko obiekty, których końce dokładnie stykają się z końcami polilinii: przy przerwach użyj Wiele i odległości tolerancji."},{"question":"Jak zmienić szerokość polilinii?","answer":"Wybierz Szerokość i wpisz szerokość: przyjmie ją każdy segment. Dla jednego segmentu użyj Edwierzch, przejdź do wierzchołka, w którym się zaczyna, i wybierz jego Szerokość."},{"question":"Jak wygładzić polilinię?","answer":"Wstaw prowadzi łuki przez każdy wierzchołek; splaJn robi gładszą krzywą, którą obramowują wierzchołki. Polilinia znów ją prostuje."}]
 ---
 
 Polecenie EDPLIN (PEDIT) edytuje polilinię. Wskaż ją przy monicie `Wybierz polilinię lub [Wiele]:` albo wybierz przed poleceniem; dwukrotne kliknięcie polilinii też uruchamia na niej polecenie EDPLIN. Jeśli zamiast tego wskażesz linię, łuk lub splajn, polecenie wyświetli `Wybrany obiekt nie jest polilinią` i zapyta, czy zamienić obiekt w polilinię, domyślnie Tak: nowa polilinia zajmuje jego miejsce i przejmuje jego właściwości. Potem polecenie wciąż pyta o opcję, stosując każdą od razu, aż Enter je zakończy. Polilinia 3D dostaje krótszą listę, bez szerokości, wygładzania łukami i generowania rodzaju linii, a jej opcja splajnu to `splaJn`. Esc zachowuje to, co już zrobiono; cała edycja to jeden krok, który cofa `C`.
@@ -17,7 +17,7 @@ Polecenie EDPLIN (PEDIT) edytuje polilinię. Wskaż ją przy monicie `Wybierz po
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="pedit" caption="Trzy linie stykające się końcami: EDPLIN zamienia pierwszą w polilinię, dołącza do niej dwie pozostałe i nadaje jej szerokość 2." />
 
@@ -25,7 +25,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Wiele` (`W`) [#multiple]
 
-Edytuje kilka polilinii naraz: wybierz je, powiedz, czy zamienić linie, łuki i splajny wśród nich, a potem każda opcja zostaje zastosowana do wszystkich. Jej opcja `Dołącz` pyta o odległość tolerancji i o `Typ`: `Wydłuż` ucina lub wydłuża segmenty końcowe, aż się spotkają, `Dodaj` wypełnia przerwę nowym segmentem, `Obie` wydłuża, gdzie może, a dodaje, gdzie nie może.
+Edytuje kilka polilinii naraz: wybierz je, określ, czy zamienić linie, łuki i splajny wśród nich, a potem każda opcja zostaje zastosowana do wszystkich. Jej opcja `Dołącz` pyta o odległość tolerancji i o `Typ`: `Wydłuż` przycina lub wydłuża segmenty końcowe, aż się spotkają, `Dodaj` zamyka przerwę nowym segmentem, `Obie` wydłuża, gdzie może, a dodaje, gdzie nie może.
 
 ### `Zamknij` (`Z`) [#close]
 
@@ -41,7 +41,7 @@ Jedna szerokość dla wszystkich segmentów, wpisana lub zmierzona dwoma punktam
 
 ### `Edwierzch` (`E`) [#edit-vertex]
 
-Stawia X na pierwszym wierzchołku i pyta, co tam zrobić: `Nast` i `Poprz` przesuwają X, `prZesuń` przesuwa wierzchołek, `Dodaj` dodaje nowy za nim, `Rozłącz` i `prOstuj` zapamiętują wierzchołek, przesuwasz X do innego, a `idźDo` przerywa polilinię między nimi albo robi z tego, co leży pomiędzy, jeden prosty segment, `Szerokość` ustala szerokość początkową i końcową następnego segmentu, `sTyczna` nadaje wierzchołkowi kierunek dla późniejszego wygładzania łukami, a `konIec` wraca.
+Umieszcza znacznik X na pierwszym wierzchołku i pyta, co tam zrobić: `Nast` i `Poprz` przesuwają X, `prZesuń` przesuwa wierzchołek, `Dodaj` dodaje nowy za nim, `Rozłącz` i `prOstuj` zapamiętują wierzchołek, przesuwasz X do innego, a `idźDo` przerywa polilinię między nimi albo robi z tego, co leży pomiędzy, jeden prosty segment, `Szerokość` ustala szerokość początkową i końcową następnego segmentu, `sTyczna` nadaje wierzchołkowi kierunek dla późniejszego wygładzania łukami, a `konIec` wraca.
 
 ### `Wstaw` (`W`) [#fit]
 
@@ -57,7 +57,7 @@ Usuwa krzywą z opcji `Wstaw` lub `splaJn`: między wierzchołkami znów są pro
 
 ### `rodzajLinii` (`L`) [#ltype-gen]
 
-`Tak` kładzie rodzaj linii jednym wzorem wzdłuż całej polilinii, więc kreskowa polilinia o krótkich segmentach nadal pokazuje kreski; `Nie`, wartość domyślna, zaczyna wzór od nowa przy każdym wierzchołku.
+`Tak` układa wzór rodzaju linii w sposób ciągły wzdłuż całej polilinii, więc kreskowa polilinia o krótkich segmentach nadal pokazuje kreski; `Nie`, wartość domyślna, zaczyna wzór od nowa przy każdym wierzchołku.
 
 ### `ODwróć` (`OD`) [#reverse]
 
@@ -69,7 +69,7 @@ Cofa ostatnią opcję tego uruchomienia i pyta dalej.
 
 ## Czego jeszcze nie robi [#missing]
 
-PEDITACCEPT: wskazanie linii, łuku lub splajnu zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja `Wiele` z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
+PEDITACCEPT: po wskazaniu linii, łuku lub splajnu polecenie zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja `Wiele` z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep--de-pedit--pe--ru-полред--прд--pl-edplin--edp)
 
@@ -81,7 +81,7 @@ PEDIT. W polskim AutoCADzie jego skrót to `EDP`: wpisz go i naciśnij Enter lub
 
 ### Jak połączyć linie w polilinię?
 
-Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz `Dołącz` i wybierz pozostałe: te, które stykają się końcami, stają się jedną polilinią. [`POŁĄCZ`](/docs/commands/join) robi to samo w jednym kroku.
+Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz `Dołącz` i wskaż pozostałe: te, które stykają się końcami, stają się jedną polilinią. [`POŁĄCZ`](/docs/commands/join) robi to samo w jednym kroku.
 
 ### Dlaczego EDPLIN nie działa na moim obiekcie?
 

@@ -3,10 +3,10 @@ title: "Polecenie EDSPLAJN (SPLINEDIT) w AutoCADzie"
 description: "Jak działa polecenie EDSPLAJN (SPLINEDIT, skrót SPE) w AutoCADzie: zamknij, dołącz, punkty dopasowania, wierzchołki, konwersja na polilinię i odwrócenie."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie EDSPLAJN po angielsku?","answer":"SPLINEDIT. W polskim AutoCADzie wpisz SPE lub pełną nazwę EDSPLAJN i naciśnij Enter lub spację; skrót SPE jest taki sam jak w wersji angielskiej. _SPLINEDIT działa w AutoCADzie w każdym języku. Uruchamia je też dwukrotne kliknięcie splajnu."},{"question":"Jak zamienić splajn na polilinię?","answer":"Uruchom EDSPLAJN, wskaż splajn i wybierz Konwertuj; dokładność 10 daje gładką polilinię. EDPLIN na splajnie również proponuje zamianę."},{"question":"Jak dodać lub przesunąć punkty splajnu w AutoCADzie?","answer":"Wybierz WStaw, aby pracować na punktach, przez które przechodzi, a potem Dodaj lub Przesuń. Wybierz Edytuj, aby pracować na wierzchołkach sterujących, które go otaczają."},{"question":"Jak zamknąć splajn?","answer":"Wybierz Zamknij: zamyka się gładko, bez narożnika w miejscu, gdzie się spotyka. Otwórz otwiera go ponownie."},{"question":"Jak połączyć dwa splajny?","answer":"Wybierz Dołącz i zaznacz splajn, którego koniec styka się z końcem tego, albo użyj polecenia POŁĄCZ."}]
+faq: [{"question":"Jak się nazywa polecenie EDSPLAJN po angielsku?","answer":"SPLINEDIT. W polskim AutoCADzie wpisz SPE lub pełną nazwę EDSPLAJN i naciśnij Enter lub spację; skrót SPE jest taki sam jak w wersji angielskiej. _SPLINEDIT działa w AutoCADzie w każdym języku. Uruchamia je też dwukrotne kliknięcie splajnu."},{"question":"Jak zamienić splajn na polilinię?","answer":"Uruchom EDSPLAJN, wskaż splajn i wybierz Konwertuj; dokładność 10 daje gładką polilinię. EDPLIN na splajnie również proponuje zamianę."},{"question":"Jak dodać lub przesunąć punkty splajnu w AutoCADzie?","answer":"Wybierz WStaw, aby pracować na punktach, przez które przechodzi, a potem Dodaj lub Przesuń. Wybierz Edytuj, aby pracować na wierzchołkach sterujących, które go otaczają."},{"question":"Jak zamknąć splajn?","answer":"Wybierz Zamknij: splajn zamyka się gładko, bez narożnika w miejscu, gdzie spotykają się jego końce. Otwórz otwiera go ponownie."},{"question":"Jak połączyć dwa splajny?","answer":"Wybierz Dołącz i zaznacz splajn, którego koniec styka się z końcem tego, albo użyj polecenia POŁĄCZ."}]
 ---
 
-Polecenie EDSPLAJN (SPLINEDIT) edytuje splajn. Wskaż go przy pytaniu `Wybierz splajn:` albo zaznacz przed poleceniem; dwukrotne kliknięcie splajnu również uruchamia na nim EDSPLAJN. Każdy inny obiekt daje `Wybrany obiekt nie jest splajnem.` i pytanie pada ponownie; polilinia wygładzona opcją `splaJn` polecenia [`EDPLIN`](/docs/commands/pedit) zostaje bez słowa zamieniona w splajn o tej samej krzywej. Potem polecenie pyta o opcję raz za razem, każdą stosując od razu, aż do `konIec` lub Enter. Splajn pokazuje uchwyty swoich punktów dopasowania, a podczas edycji wierzchołków – swoje wierzchołki sterujące i ramkę. Cała edycja to jeden krok, który cofa `C`. Wpisane `'ZOOM` działa przy każdym jego pytaniu.
+Polecenie EDSPLAJN (SPLINEDIT) edytuje splajn. Wskaż go w monicie `Wybierz splajn:` albo zaznacz przed poleceniem; dwukrotne kliknięcie splajnu również uruchamia na nim EDSPLAJN. Dla każdego innego obiektu polecenie wyświetla `Wybrany obiekt nie jest splajnem.` i pyta ponownie; polilinia wygładzona opcją `splaJn` polecenia [`EDPLIN`](/docs/commands/pedit) zostaje bez słowa zamieniona w splajn o tej samej krzywej. Potem polecenie pyta o opcję raz za razem, każdą stosując od razu, aż wybierzesz `konIec` lub naciśniesz Enter. Splajn pokazuje uchwyty swoich punktów dopasowania, a podczas edycji wierzchołków – swoje wierzchołki sterujące i ramkę. Cała edycja to jeden krok, który cofa `C`. Wpisane `'ZOOM` działa w każdym jego monicie.
 
 - **Polecenie:** `EDSPLAJN`
 - **Po angielsku:** `SPLINEDIT`, wpisywane jako `_SPLINEDIT` w każdym języku
@@ -16,9 +16,9 @@ Polecenie EDSPLAJN (SPLINEDIT) edytuje splajn. Wskaż go przy pytaniu `Wybierz s
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
-<Session name="splinedit" caption="Splajn przez pięć punktów dopasowania zamknięty poleceniem EDSPLAJN: gładka pętla przez wszystkie." />
+<Session name="splinedit" caption="Splajn przez pięć punktów dopasowania zamknięty poleceniem EDSPLAJN: gładka pętla przechodząca przez wszystkie." />
 
 ## Opcje [#options]
 
@@ -28,19 +28,19 @@ Zamyka splajn gładko: splajn dopasowania przez jego punkty dopasowania, splajn 
 
 ### `Dołącz` (`D`) [#join]
 
-Dołącza otwarte krzywe stykające się z jego końcami, według reguł polecenia POŁĄCZ dla splajnu, i podaje, ile dołączył.
+Dołącza otwarte krzywe stykające się z jego końcami, według reguł polecenia POŁĄCZ dla splajnu, i podaje, ile ich dołączył.
 
 ### `WStaw dane` (`WS`) [#fit-data]
 
-Edytuje punkty, przez które przechodzi splajn. Splajn wierzchołków sterujących, który ich nie ma, najpierw otrzymuje punkty dopasowania na swojej krzywej. Jej opcje: `Dodaj` wskazuje punkt dopasowania i dodaje po nim nowe, raz za razem (przy pierwszym punkcie otwartego splajnu `Za` lub `Przed`); `Usuń` usuwa punkty dopasowania, do dwóch, a na zamkniętym splajnie do trzech (`Między tym nie można wymazać.`); `Przesuń` przechodzi przez punkty dopasowania opcjami `Następny` i `Poprzedni` albo `Wybierz` i przesuwa bieżący do podanego punktu; `Wyczyść` usuwa dane dopasowania, pozostawiając splajn wierzchołków sterujących; `Styczne` ustala kierunek początkowy i końcowy albo `Domyślna`; `Zamknij` i `konIec` działają jak przy pierwszym pytaniu. Wskazanie, które nie jest punktem dopasowania, daje `Nie jest punktem dopasowania.`.
+Edytuje punkty, przez które przechodzi splajn. Splajn wierzchołków sterujących, który ich nie ma, najpierw otrzymuje punkty dopasowania na swojej krzywej. Jej opcje: `Dodaj` wskazuje punkt dopasowania i dodaje po nim nowe, raz za razem (przy pierwszym punkcie otwartego splajnu `Za` lub `Przed`); `Usuń` usuwa punkty dopasowania, do dwóch, a na zamkniętym splajnie do trzech (`Między tym nie można wymazać.`); `Przesuń` przechodzi przez punkty dopasowania opcjami `Następny` i `Poprzedni` albo `Wybierz` i przesuwa bieżący do podanego punktu; `Wyczyść` usuwa dane dopasowania, pozostawiając splajn wierzchołków sterujących; `Styczne` ustala kierunek początkowy i końcowy albo `Domyślna`; `Zamknij` i `konIec` działają jak w pierwszym monicie. Po wskazaniu czegoś, co nie jest punktem dopasowania, polecenie wyświetla `Nie jest punktem dopasowania.`.
 
 ### `Edytuj wierzchołek` (`E`) [#edit-vertex]
 
-Edytuje wierzchołki sterujące; splajn dopasowania traci dane dopasowania przy pierwszej edycji. `Dodaj` umieszcza wierzchołek we wskazanym punkcie splajnu; `Usuń` usuwa jeden, do dwóch, a na zamkniętym splajnie do trzech; `Zwiększ` podnosi rząd, maksymalnie do 26, nigdy w dół; `Przesuń` przesuwa wierzchołki, przechodząc przez nie jak `Przesuń` w `WStaw`; `Waga` ustala wagę wierzchołka, po komunikacie `Splajn nie jest wymierny. Zostanie takim uczyniony.`, tak że krzywa zbliża się do niego lub oddala. Wskazanie, które nie jest wierzchołkiem, daje `Nie jest wierzchołkiem sterującym.`.
+Edytuje wierzchołki sterujące; splajn dopasowania traci dane dopasowania przy pierwszej edycji. `Dodaj` umieszcza wierzchołek we wskazanym punkcie splajnu; `Usuń` usuwa jeden, do dwóch, a na zamkniętym splajnie do trzech; `Zwiększ` podnosi rząd, maksymalnie do 26, ale nigdy go nie obniża; `Przesuń` przesuwa wierzchołki, przechodząc przez nie jak `Przesuń` w `WStaw`; `Waga` ustala wagę wierzchołka, po komunikacie `Splajn nie jest wymierny. Zostanie takim uczyniony.`, tak że krzywa zbliża się do niego lub oddala. Po wskazaniu czegoś, co nie jest wierzchołkiem, polecenie wyświetla `Nie jest wierzchołkiem sterującym.`.
 
 ### `Konwertuj na polilinię` (`K`) [#convert-to-polyline]
 
-Pyta o dokładność od 0 do 99, domyślnie 10, i zastępuje splajn polilinią z odcinków prostych, tym liczniejszych, im wyższa dokładność; polilinią 3D, gdy splajn nie leży płasko, równolegle do płaszczyzny XY. Kończy polecenie. Dokładność zostaje zachowana na całą sesję i korzysta z niej też konwersja w [`EDPLIN`](/docs/commands/pedit).
+Pyta o dokładność od 0 do 99, domyślnie 10, i zastępuje splajn polilinią z odcinków prostych, tym liczniejszych, im wyższa dokładność; polilinią 3D, gdy splajn nie leży płasko, równolegle do płaszczyzny XY. Kończy polecenie. Dokładność zostaje zachowana na całą sesję i korzysta z niej też konwersja w poleceniu [`EDPLIN`](/docs/commands/pedit).
 
 ### `ODWróć` (`ODW`) [#reverse]
 
@@ -56,7 +56,7 @@ Kończy polecenie, jak Enter.
 
 ## Czego jeszcze nie robi [#missing]
 
-Załamanie, które tworzy ostry narożnik w punkcie dopasowania lub wierzchołku; toLerancja, która dopasowuje splajn ponownie w granicach tolerancji; styczne zamkniętego splajnu. `Konwertuj` tworzy ze splajnu dopasowania znacznie więcej wierzchołków niż AutoCAD, nigdy łuków, i zawsze zastępuje splajn. Grupa przy `Wybierz splajn:`. Znak `+`, który AutoCAD rysuje na bieżącym punkcie podczas przechodzenia przez punkty.
+PUnkt podziału (Kink), który tworzy ostry narożnik w punkcie dopasowania lub wierzchołku; Tolerancja, która dopasowuje splajn ponownie w granicach tolerancji; Styczne zamkniętego splajnu. `Konwertuj` tworzy ze splajnu dopasowania znacznie więcej wierzchołków niż AutoCAD, nigdy łuków, i zawsze zastępuje splajn. Grupa przy `Wybierz splajn:`. Znak `+`, który AutoCAD rysuje na bieżącym punkcie podczas przechodzenia przez punkty.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl--fr-editspline--esi--it-editspline--esi--de-splineedit--sie--ru-редсплайн--рсп--pl-edsplajn--spe)
 
@@ -76,7 +76,7 @@ Wybierz `WStaw`, aby pracować na punktach, przez które przechodzi, a potem `Do
 
 ### Jak zamknąć splajn?
 
-Wybierz `Zamknij`: zamyka się gładko, bez narożnika w miejscu, gdzie się spotyka. `Otwórz` otwiera go ponownie.
+Wybierz `Zamknij`: splajn zamyka się gładko, bez narożnika w miejscu, gdzie spotykają się jego końce. `Otwórz` otwiera go ponownie.
 
 ### Jak połączyć dwa splajny?
 

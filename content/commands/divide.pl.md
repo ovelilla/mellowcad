@@ -7,7 +7,7 @@ sourceHash: "6f3c52078466"
 
 Polecenie PODZIEL (DIVIDE) zaznacza na obiekcie równe części. Wybierz jedną linię, łuk, okrąg, elipsę, łuk eliptyczny, polilinię, polilinię 3D lub splajn, wskazując ją lub wpisując punkt na niej, a potem podaj liczbę segmentów, od 2 do 32767: polecenie PODZIEL stawia obiekt punktu w każdym miejscu podziału i się kończy. Nie przecina obiektu, który zostaje w całości. Obiekt otwarty podzielony na 5 dostaje 4 punkty, licząc od jego początku; zamknięty dostaje 5, w tym swój początek: okrąg od swojego punktu 0°, przeciwnie do ruchu wskazówek zegara, zamknięta polilinia od pierwszego wierzchołka. Punkty leżą na obiekcie, na jego wysokości, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
-Punkty są rysowane tak, jak mówi styl punktów rysunku, a domyślnie jest to kropka, która chowa się pod linią: najpierw ustaw widoczny kształt poleceniem <Command id="PTYPE" /> albo zmienną PDMODE. Cały podział to jeden krok, który cofa polecenie <Command id="U" />, a jego punkty są zbiorem Poprzedni, gotowym do wymazania lub przesunięcia. Każdy inny obiekt, tekst lub odnośnik bloku, dostaje <Message id="cannotDivideObject" /> i polecenie się kończy. Polecenie PODZIEL uruchamia też lista rozwijana „Punkty” w narzędziach rysowania.
+Punkty są rysowane zgodnie ze stylem punktów rysunku, a domyślnie jest to kropka, która chowa się pod linią: najpierw ustaw widoczny kształt poleceniem <Command id="PTYPE" /> albo zmienną PDMODE. Cały podział to jeden krok, który cofa polecenie <Command id="U" />, a jego punkty są zbiorem Poprzedni, gotowym do wymazania lub przesunięcia. Każdy inny obiekt, na przykład tekst lub odnośnik bloku, daje komunikat <Message id="cannotDivideObject" /> i polecenie się kończy. Polecenie PODZIEL uruchamia też lista rozwijana „Punkty” w narzędziach rysowania.
 
 ## Options
 
@@ -31,7 +31,7 @@ Najpewniej działa: punkty są na miejscu, narysowane jako kropki na linii. Otw�
 
 ### Jak podzielić linię na równe części w AutoCADzie?
 
-Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, `5` dla pięciu. Cztery punkty między częściami to miejsca, do których można przyciągać: znajduje je lokalizacja Punkt.
+Uruchom polecenie PODZIEL, wybierz linię i wpisz liczbę części, `5` dla pięciu. Cztery punkty między częściami wyznaczają te miejsca: znajduje je lokalizacja Punkt.
 
 ### Jak podzielić okrąg na równe części?
 
@@ -39,4 +39,4 @@ Tak samo: wybierz okrąg i wpisz liczbę części. Obiekt zamknięty dostaje tyl
 
 ### Jak przeciąć linię na osobne kawałki?
 
-Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia <Command id="BREAK" /> albo <Command id="BREAKATPOINT" /> w każdym punkcie, przyciągając do niego lokalizacją Punkt.
+Polecenie PODZIEL tylko zaznacza miejsca. Aby w nich przeciąć linię, użyj polecenia <Command id="BREAK" /> albo <Command id="BREAKATPOINT" /> w każdym punkcie, wskazując go lokalizacją Punkt.

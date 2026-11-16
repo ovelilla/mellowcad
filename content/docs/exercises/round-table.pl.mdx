@@ -18,7 +18,7 @@ Narysuj okrągły stół o średnicy 120 z sześcioma krzesłami, w centymetrach
 
 ## Krok po kroku [#steps]
 
-Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
 
 ### 1. Narysuj stół [#table]
 
@@ -28,7 +28,7 @@ Na warstwie Kontur polecenie [`OKRĄG`](/docs/commands/circle) w `0,0`, opcja `�
 
 ### 2. Narysuj krzesło [#chair]
 
-Siedzisko, nad stołem: polecenie [`PROSTOK`](/docs/commands/rectang) z opcją `Zaokrąglij` równą `4`, od `-22,68` do punktu `44,40` dalej. Potem oparcie, z promieniem zaokrąglenia z powrotem na `0`, od `-22,108` do punktu `44,8` dalej. Polecenie [`PROSTOK`](/docs/commands/rectang) zachowuje promień zaokrąglenia, dopóki go nie zmienisz.
+Siedzisko, nad stołem: polecenie [`PROSTOK`](/docs/commands/rectang) z zaokrągleniem (`Zaokrąglij`) `4`, od `-22,68` do punktu `44,40` dalej. Potem oparcie, z promieniem zaokrąglenia ustawionym z powrotem na `0`, od `-22,108` do punktu `44,8` dalej. Polecenie [`PROSTOK`](/docs/commands/rectang) zachowuje promień zaokrąglenia, dopóki go nie zmienisz.
 
 <Session name="exercises/round-table/chair" caption="2. Narysuj krzesło" />
 
@@ -40,7 +40,7 @@ Polecenie [`SZYKBIEGUN`](/docs/commands/arraypolar): wskaż siedzisko i oparcie,
 
 ### 4. Zwymiaruj rysunek [#dimensions]
 
-Na warstwie Wymiary polecenie [`WYMŚREDNICA`](/docs/commands/dimdiameter) na stole, umieszczony wewnątrz, i polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) dla szerokości górnego krzesła, 44, oraz jego głębokości z oparciem, 48.
+Na warstwie Wymiary polecenie [`WYMŚREDNICA`](/docs/commands/dimdiameter) na stole, z wymiarem umieszczonym wewnątrz, i polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) dla szerokości górnego krzesła, 44, oraz jego głębokości z oparciem, 48.
 
 <Session name="exercises/round-table/dimensions" caption="4. Zwymiaruj rysunek" />
 

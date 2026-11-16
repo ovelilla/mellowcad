@@ -20,15 +20,15 @@ Liczba elementów, od 1 do 32767; kąt, który wypełniają, zostaje zachowany.
 
 ### Angle between
 
-Kąt od jednego elementu do następnego. Kąt wypełnienia staje się wielokrotnością tego kroku, z zachowanym kierunkiem, i pełnym obrotem, gdy dojdzie do 360°.
+Kąt od jednego elementu do następnego. Kąt wypełnienia staje się odpowiednią liczbą takich kroków, z zachowanym kierunkiem, a pełnym obrotem, gdy osiągnie 360°.
 
 ### Fill angle
 
-Kąt, który wypełniają elementy, dodatni przeciwnie do ruchu wskazówek zegara, a ujemny zgodnie z nim; liczba elementów zostaje zachowana. Na pełnym obrocie elementy dzieli obrót podzielony przez ich liczbę; na mniejszym ostatni trafia na koniec kąta.
+Kąt, który wypełniają elementy, dodatni przeciwnie do ruchu wskazówek zegara, a ujemny zgodnie z nim; liczba elementów zostaje zachowana. Na pełnym obrocie odstęp między elementami to pełny kąt podzielony przez ich liczbę; na mniejszym kącie ostatni element trafia na koniec kąta.
 
 ### ROTate items
 
-<Keyword id="Yes" />, wartość domyślna, obraca każdy element w miarę obiegania środka; <Keyword id="No" /> tylko go przesuwa, więc każdy element stoi tak jak pierwszy.
+<Keyword id="Yes" />, wartość domyślna, obraca każdy element w miarę obiegania środka; <Keyword id="No" /> tylko go przesuwa, więc każdy element jest ustawiony tak jak pierwszy.
 
 ### eXit
 
@@ -46,7 +46,7 @@ Wpisz `SZYKBIEGUN`, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; a
 
 ### Jak rozmieścić obiekty na części okręgu?
 
-Wybierz <Keyword id="Fill angle" /> i wpisz kąt: 180 rozkłada elementy na pół okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta.
+Wybierz <Keyword id="Fill angle" /> i wpisz kąt: 180 rozkłada elementy na połowie okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta.
 
 ### Jak sprawić, by elementy szyku się nie obracały?
 

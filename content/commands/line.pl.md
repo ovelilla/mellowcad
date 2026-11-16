@@ -5,7 +5,7 @@ figure: "Trójkąt: pierwszy punkt wpisany, dwa następne względem ostatniego p
 sourceHash: "5065fc1817a1"
 ---
 
-Polecenie LINIA (LINE) rysuje proste segmenty, każdy jako osobny obiekt: podaj pierwszy punkt, potem każdy następny, aż do Enter. Punkt można wskazać, chwycić trybem lokalizacji względem obiektu albo wpisać. Jak w AutoCADzie z włączonym wprowadzaniem dynamicznym, punkt wpisany po pierwszym jest liczony od ostatniego, więc `80,0` rysuje 80 wzdłuż X, a historia zapisuje go jako `@80,0`; sama liczba to odległość w kierunku kursora, a `<30` trzyma następny punkt pod kątem 30°. Enter lub kliknięcie prawym przyciskiem przy pierwszym punkcie kontynuuje od końca ostatniej linii, polilinii lub łuku: od łuku stycznie, pytając tylko o długość. Niezależnie od liczby segmentów jedno <Command id="U" /> cofa całe polecenie.
+Polecenie LINIA (LINE) rysuje proste segmenty, każdy jako osobny obiekt: podaj pierwszy punkt, potem każdy następny, aż do Enter. Punkt można wskazać, zlokalizować względem obiektu albo wpisać. Jak w AutoCADzie z włączonym wprowadzaniem dynamicznym, punkt wpisany po pierwszym jest liczony od ostatniego, więc `80,0` rysuje 80 wzdłuż X, a historia zapisuje go jako `@80,0`; sama liczba to odległość w kierunku kursora, a `<30` blokuje następny punkt na kącie 30°. Enter lub kliknięcie prawym przyciskiem przy pierwszym punkcie kontynuuje od końca ostatniej linii, polilinii lub łuku: od łuku stycznie, pytając tylko o długość. Niezależnie od liczby segmentów jedno <Command id="U" /> cofa całe polecenie.
 
 ## Options
 
@@ -19,7 +19,7 @@ Dostępna od drugiego segmentu: rysuje ostatni segment z powrotem do pierwszego 
 
 ## Missing
 
-Styczny lub Prostopadły wpisany przy pierwszym punkcie czeka na następny punkt (odroczona lokalizacja), jak w AutoCADzie, ale tylko nad liniami, okręgami i łukami, nie nad segmentem polilinii, elipsą ani splajnem, a dwa odroczone tryby Prostopadły nie są rozwiązywane.
+Lokalizacja Styczna lub Prostopadle wpisana przy pierwszym punkcie czeka na następny punkt (odroczona lokalizacja), jak w AutoCADzie, ale tylko nad liniami, okręgami i łukami, nie nad segmentem polilinii, elipsą ani splajnem, a dwie odroczone lokalizacje Prostopadle nie są rozwiązywane.
 
 ## Questions
 

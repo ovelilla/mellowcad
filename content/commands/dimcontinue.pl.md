@@ -6,7 +6,7 @@ figure: "Profil schodkowy zwymiarowany 30, potem szereg 40 i 30 na tej samej lin
 sourceHash: "11fa474694fd"
 ---
 
-Polecenie WYMSZEREG (DIMCONTINUE) rysuje szereg wymiarów jeden za drugim: każdy zaczyna się na drugiej linii pomocniczej poprzedniego i mierzy do następnego podanego punktu, na tej samej linii wymiarowej. Kontynuuje ostatni wymiar liniowy lub dopasowany utworzony od otwarcia rysunku, dlatego zwykle następuje po poleceniu <Command id="DIMLINEAR" /> lub <Command id="DIMALIGNED" />; gdy takiego nie ma, pyta, który kontynuować. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera <Keyword id="Select" />, a Enter przy tym monicie kończy polecenie, podobnie jak Esc.
+Polecenie WYMSZEREG (DIMCONTINUE) rysuje szereg wymiarów jeden za drugim: każdy zaczyna się na drugiej linii pomocniczej poprzedniego i mierzy do następnego podanego punktu, na tej samej linii wymiarowej. Kontynuuje ostatni wymiar liniowy lub wyrównany utworzony od otwarcia rysunku, dlatego zwykle następuje po poleceniu <Command id="DIMLINEAR" /> lub <Command id="DIMALIGNED" />; gdy takiego nie ma, pyta, który kontynuować. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera <Keyword id="Select" />, a Enter przy monicie wyboru wymiaru kończy polecenie, podobnie jak Esc.
 
 Jak w AutoCADzie, każdy nowy wymiar mierzy wzdłuż kierunku wymiaru bazowego i przejmuje jego styl wymiarowania i warstwę, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
@@ -14,7 +14,7 @@ Jak w AutoCADzie, każdy nowy wymiar mierzy wzdłuż kierunku wymiaru bazowego i
 
 ### Select
 
-Pyta o wymiar, od którego należy kontynuować: wskaż wymiar liniowy lub dopasowany blisko linii pomocniczej, od której szereg ma biec dalej. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem <Message id="associativeDimensionRequired" />, a pytanie pada ponownie.
+Pyta o wymiar, od którego należy kontynuować: wskaż wymiar liniowy lub wyrównany blisko linii pomocniczej, od której szereg ma biec dalej. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem <Message id="associativeDimensionRequired" />, a pytanie pada ponownie.
 
 ### Undo
 
@@ -40,4 +40,4 @@ Naciśnij Enter przy pierwszym monicie albo wybierz <Keyword id="Select" /> i ws
 
 ### Dlaczego polecenie WYMSZEREG prosi o wybranie wymiaru?
 
-Nie ma czego kontynuować: od otwarcia rysunku nie utworzono żadnego wymiaru liniowego ani dopasowanego, jak w AutoCADzie po otwarciu rysunku, albo ostatni utworzony jest kątowy. Wskaż wymiar, od którego chcesz kontynuować.
+Nie ma czego kontynuować: od otwarcia rysunku nie utworzono żadnego wymiaru liniowego ani wyrównanego, jak w AutoCADzie po otwarciu rysunku, albo ostatni utworzony jest kątowy. Wskaż wymiar, od którego chcesz kontynuować.

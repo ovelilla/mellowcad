@@ -1,13 +1,13 @@
 ---
 title: "Linia odniesienia w AutoCADzie: polecenie LODNIES (LEADER)"
 metaTitle: "Linia odniesienia w AutoCADzie: LODNIES (LEADER)"
-description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnica z WIELOLODN (MLEADER)."
+description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnice wobec WIELOLODN (MLEADER)."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie LODNIES po angielsku?","answer":"LEADER. W polskim AutoCADzie jego skróty to LO i LODN: wpisz jeden z nich i naciśnij Enter lub spację. Angielskie LEAD w polskiej wersji nie działa; pełna nazwa LODNIES działa, a _LEADER – w AutoCADzie w każdym języku."},{"question":"Czym się różni LODNIES od WIELOLODN (MLEADER)?","answer":"LODNIES to starsze polecenie: linia odniesienia i osobny tekst, za którym ta linia podąża. WIELOLODN, które AutoCAD dziś zaleca, tworzy jeden obiekt wielolinii odniesienia, z własnymi stylami i kilkoma liniami do jednego opisu. MellowCAD ma polecenie LODNIES; otwiera i zapisuje linie odniesienia pliku DXF, a jego wielolinie odniesienia pomija."},{"question":"Jak zrobić linię odniesienia z tekstem w AutoCADzie?","answer":"Uruchom polecenie LODNIES, wskaż punkt, na który ma pokazywać strzałka, potem miejsce na tekst, naciśnij Enter i wpisz tekst wiersz po wierszu. Enter w pustym wierszu kończy. Enter w pierwszym wierszu proponuje zamiast tego inne rodzaje opisu, w tym edytor tekstu."},{"question":"Jak zmienić rozmiar strzałki linii odniesienia?","answer":"Wybierz linię odniesienia i zmień Rozmiar strzałki na palecie Właściwości, co dotyczy tylko tej linii; albo zmień rozmiar strzałki w stylu wymiarowania, za którym idą wszystkie linie odniesienia tego stylu. Długość półki również zależy od rozmiaru strzałki."},{"question":"Dlaczego linia odniesienia nie ma strzałki?","answer":"Albo pominęła ją opcja bRak w Format, albo pierwszy segment jest krótszy niż dwa rozmiary strzałki – wtedy AutoCAD też nie rysuje grotu. Wskaż drugi punkt dalej od pierwszego albo ustaw mniejszy rozmiar strzałki."}]
 ---
 
-Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje `Opis`, którą wybiera też Enter, `Format` i `Cofaj`. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
+Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam, gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje `Opis`, którą wybiera też Enter, `Format` i `Cofaj`. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
 Wysokość tekstu, jego odstęp od linii i położenie wynikają z bieżącego stylu wymiarowania: za końcem linii odniesienia albo przed nim, gdy linia nadchodzi z prawej, i nad ostatnim segmentem, który biegnie dalej pod tekstem. Gdy ostatni segment wznosi się o więcej niż 15° od poziomu, polecenie LODNIES dodaje półkę: krótką poziomą linię długości grotu, kończącą się we wskazanym punkcie. Grot jest zamknięty i wypełniony, rysowany tylko wtedy, gdy pierwszy segment ma co najmniej dwie jego długości.
 
@@ -21,7 +21,7 @@ Linia odniesienia podąża za swoim tekstem: przesuń, obróć lub przeskaluj te
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="leader" caption="Otwór i jego opis: LODNIES od krawędzi okręgu, dwa punkty, potem dwa wiersze tekstu; ostatni segment się wznosi, więc łączy go z tekstem półka." />
 
@@ -41,7 +41,7 @@ Cofa ostatni punkt i pyta o niego ponownie. Przy drugim punkcie nie ma czego cof
 
 ## Czego jeszcze nie robi [#missing]
 
-Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko `Kopiuj`, `bRak` i `Wtekst`. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
+Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko `Kopiuj`, `bRak` i `Wtekst`. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia SLODNIES (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice--de-führung--ru-выноска--pl-lodnies--lo--lodn)
 

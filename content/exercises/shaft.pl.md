@@ -1,12 +1,12 @@
 ---
 title: "Ćwiczenie AutoCAD: wałek stopniowany"
 metaTitle: "Ćwiczenia AutoCAD 2D: wałek stopniowany"
-description: "Narysuj wałek stopniowany w AutoCADzie: połowa konturu jako polilinia, sfazowana, odbita względem osi, i długości w wymiarach łańcuchowych. Krok po kroku."
+description: "Narysuj wałek stopniowany w AutoCADzie: połowa konturu jako polilinia, sfazowana, odbita względem osi, i wymiary łańcuchowe. Krok po kroku, za darmo."
 figure: "Wałek stopniowany w widoku z boku, długość 150, długości zwymiarowane łańcuchowo."
 sourceHash: "8c649e73bc55"
 ---
 
-Narysuj ten wałek stopniowany w widoku z boku, w milimetrach: długość 150, średnice 30, 40 i 30 na długościach 40, 60 i 50, oba końce sfazowane 2 na 2. Narysuj połowę nad osią jako jedną polilinię, sfazuj ją i odbij lustrzanie; potem krawędzie widoczne w poprzek wałka, oś i długości. Średnice są te podane tutaj.
+Narysuj ten wałek stopniowany w widoku z boku, w milimetrach: długość 150, średnice 30, 40 i 30 na długościach 40, 60 i 50, oba końce sfazowane 2 na 2. Narysuj połowę nad osią jako jedną polilinię, sfazuj ją i odbij lustrzanie; potem krawędzie widoczne w poprzek wałka, oś i długości. Średnice są podane tutaj, w opisie.
 
 ## Steps
 
@@ -20,7 +20,7 @@ Polecenie <Command id="CHAMFER" />, potem opcja <Keyword command="CHAMFER" id="D
 
 ### Odbij lustrzanie [#mirror]
 
-Polecenie <Command id="MIRROR" />: wskaż polilinię, naciśnij Enter, potem oś symetrii od `0,0` do `150,0`, czyli oś wałka, i Enter, aby zachować oryginał.
+Polecenie <Command id="MIRROR" />: wskaż polilinię, naciśnij Enter, potem oś odbicia od `0,0` do `150,0`, czyli oś wałka, i Enter, aby zachować oryginał.
 
 ### Narysuj krawędzie [#edges]
 
@@ -32,4 +32,4 @@ Na warstwie Linie osiowe oś: linia od `-8,0` do punktu `166,0` dalej.
 
 ### Zwymiaruj rysunek [#dimensions]
 
-Na warstwie Wymiary polecenie <Command id="DIMLINEAR" /> dla pierwszej długości, 40, umieszczony poniżej. Polecenie <Command id="DIMCONTINUE" /> prowadzi łańcuch dalej od jego drugiej linii pomocniczej: `#100,-20`, potem `#150,-15`, wpisane od początku układu ze znakiem #, i dwa razy Enter, aby zakończyć. Ostatnie polecenie <Command id="DIMLINEAR" /> podaje całą długość, 150, jeszcze niżej.
+Na warstwie Wymiary polecenie <Command id="DIMLINEAR" /> dla pierwszej długości, 40, z wymiarem umieszczonym poniżej. Polecenie <Command id="DIMCONTINUE" /> prowadzi łańcuch dalej od jego drugiej linii pomocniczej: `#100,-20`, potem `#150,-15`, wpisane od początku układu ze znakiem #, i dwa razy Enter, aby zakończyć. Ostatnie polecenie <Command id="DIMLINEAR" /> podaje całą długość, 150, jeszcze niżej.

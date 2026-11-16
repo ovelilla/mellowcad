@@ -18,11 +18,11 @@ Ustala wysokość tekstu, wpisaną lub jako odległość od pierwszego narożnik
 
 ### Justify
 
-Ustala, od którego z dziewięciu punktów ramki wisi tekst: domyślnie od lewego górnego albo od górnego, środkowego i dolnego, każdy z lewej, środka i prawej, tak jak wymienia je monit. Tekst wisi od tego punktu ramki, niezależnie od tego, w którą stronę ją przeciągnięto.
+Ustala, od którego z dziewięciu punktów ramki wisi tekst: domyślnie od lewego górnego albo od dowolnego z punktów górnych, środkowych i dolnych – lewego, środkowego lub prawego – tak jak wymienia je monit. Tekst wisi od tego punktu ramki, niezależnie od tego, w którą stronę ją przeciągnięto.
 
 ### Line spacing
 
-Pyta o typ: co najmniej (domyślnie), który robi miejsce na wiersz z wyższymi literami, albo dokładnie, a potem o współczynnik zapisany z x, na przykład `2x`, albo o odległość. Pojedynczy odstęp to 1x, a współczynnik może wynosić od 0.25x do 4x.
+Pyta o rodzaj: Przynajmniej (domyślnie), który robi miejsce na wiersz z wyższymi literami, albo Dokładnie, a potem o współczynnik zapisany z x, na przykład `2x`, albo o odległość. Pojedynczy odstęp to 1x, a współczynnik może wynosić od 0.25x do 4x.
 
 ### Rotation
 
@@ -52,7 +52,7 @@ Naciśnij Enter: zaczyna nowy akapit. Wewnątrz akapitu wiersze zawijają się s
 
 ### Jak zmienić szerokość tekstu wielowierszowego?
 
-Wybierz go i przeciągnij uchwyt z boku: tekst zawija się na nowo, gdy szerokość się zmienia, względem punktu wyrównania. Wiersz Określona szerokość na palecie Właściwości robi to liczbowo, a wiersze odstępu wierszy zmieniają odstęp.
+Wybierz go i przeciągnij uchwyt z boku: tekst zawija się na nowo, gdy szerokość się zmienia, względem punktu wyrównania. Wiersz Określona szerokość na palecie Właściwości zmienia ją liczbowo, a wiersze odstępu między liniami zmieniają odstęp.
 
 ### Jak zamienić WTEKST na tekst jednowierszowy?
 

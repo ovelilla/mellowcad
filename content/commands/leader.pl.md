@@ -1,12 +1,12 @@
 ---
 title: "Linia odniesienia w AutoCADzie: polecenie LODNIES (LEADER)"
 metaTitle: "Linia odniesienia w AutoCADzie: LODNIES (LEADER)"
-description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnica z WIELOLODN (MLEADER)."
+description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnice wobec WIELOLODN (MLEADER)."
 figure: "Otwór i jego opis: LODNIES od krawędzi okręgu, dwa punkty, potem dwa wiersze tekstu; ostatni segment się wznosi, więc łączy go z tekstem półka."
 sourceHash: "1bf39ac320fd"
 ---
 
-Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje <Keyword id="Annotation" />, którą wybiera też Enter, <Keyword id="Format" /> i <Keyword id="Undo" />. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
+Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam, gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje <Keyword id="Annotation" />, którą wybiera też Enter, <Keyword id="Format" /> i <Keyword id="Undo" />. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
 Wysokość tekstu, jego odstęp od linii i położenie wynikają z bieżącego stylu wymiarowania: za końcem linii odniesienia albo przed nim, gdy linia nadchodzi z prawej, i nad ostatnim segmentem, który biegnie dalej pod tekstem. Gdy ostatni segment wznosi się o więcej niż 15° od poziomu, polecenie LODNIES dodaje półkę: krótką poziomą linię długości grotu, kończącą się we wskazanym punkcie. Grot jest zamknięty i wypełniony, rysowany tylko wtedy, gdy pierwszy segment ma co najmniej dwie jego długości.
 
@@ -28,7 +28,7 @@ Cofa ostatni punkt i pyta o niego ponownie. Przy drugim punkcie nie ma czego cof
 
 ## Missing
 
-Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko <Keyword id="Copy" />, <Keyword id="None" /> i <Keyword id="Mtext" />. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
+Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko <Keyword id="Copy" />, <Keyword id="None" /> i <Keyword id="Mtext" />. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia SLODNIES (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
 
 ## Questions
 

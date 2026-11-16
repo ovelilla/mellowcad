@@ -1,7 +1,7 @@
 ---
 title: "Ćwiczenie AutoCAD 3D: korpus łożyska"
 metaTitle: "Ćwiczenie AutoCAD 3D: korpus łożyska z otworami"
-description: "Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, połącz, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online."
+description: "Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, zsumuj, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online."
 type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
@@ -20,11 +20,11 @@ Zamodeluj ten korpus łożyska w milimetrach: podstawa 100 na 60 z narożami o p
 
 ## Krok po kroku [#steps]
 
-Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
 
 ### 1. Narysuj rzut [#plan]
 
-Na warstwie Kontur polecenie [`PROSTOK`](/docs/commands/rectang) z opcją `Zaokrąglij` równą `10`, od `0,0` do `100,60`, i okrąg w jego środku, `50,30`, o średnicy (`śreDnica`) `40`.
+Na warstwie Kontur polecenie [`PROSTOK`](/docs/commands/rectang) z zaokrągleniem (`Zaokrąglij`) `10`, od `0,0` do `100,60`, i okrąg w jego środku, `50,30`, o średnicy (`śreDnica`) `40`.
 
 <Session name="exercises/bearing-block/plan" caption="1. Narysuj rzut" />
 
@@ -34,11 +34,11 @@ Polecenie [`WYCIĄGNIJ`](/docs/commands/extrude): kontur na wysokość `12`, pot
 
 <Session name="exercises/bearing-block/extrude" caption="2. Wyciągnij podstawę i tuleję" />
 
-### 3. Połącz je [#union]
+### 3. Zsumuj je [#union]
 
-Polecenie [`SUMA`](/docs/commands/union): wskaż obie i naciśnij Enter. Są jedną bryłą.
+Polecenie [`SUMA`](/docs/commands/union): wskaż obie i naciśnij Enter. Tworzą jedną bryłę.
 
-<Session name="exercises/bearing-block/union" caption="3. Połącz je" />
+<Session name="exercises/bearing-block/union" caption="3. Zsumuj je" />
 
 ### 4. Narysuj walce [#holes]
 
@@ -54,7 +54,7 @@ Polecenie [`RÓŻNICA`](/docs/commands/subtract): wskaż korpus i naciśnij Ente
 
 ### 6. Obróć widok [#view]
 
-Polecenie `-WIDOK` i opcja `SEIzo`, polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny`, potem polecenie [`ZOOM`](/docs/commands/zoom) z opcją `Zakres` i `0.8x`, aby go objąć.
+Polecenie `-WIDOK` i opcja `SEIzo`, polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny`, potem polecenie [`ZOOM`](/docs/commands/zoom) z opcją `Zakres` i `0.8x`, aby dopasować go do ekranu.
 
 <Session name="exercises/bearing-block/view" caption="6. Obróć widok" />
 

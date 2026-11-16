@@ -49,4 +49,4 @@ Polecenie podaje przyczynę w wierszu polecenia. <Message id="filletRadiusTooLar
 
 ### Jak zaokrąglić krawędzie bryły 3D?
 
-Uruchom polecenie <Command id="FILLETEDGE" />: wybierz <Keyword command="FILLETEDGE" id="Radius" />, jeśli promień nie jest tym, który podaje, wskaż krawędzie bryły, a potem naciśnij Enter i jeszcze raz Enter, aby przyjąć zaokrąglenie. Działa na bryłach 3D, które są tutaj wciąż częściowe.
+Uruchom polecenie <Command id="FILLETEDGE" />: wybierz <Keyword command="FILLETEDGE" id="Radius" />, jeśli promień nie jest tym, który podaje, wskaż krawędzie bryły, a potem naciśnij Enter i jeszcze raz Enter, aby przyjąć zaokrąglenie. Działa na bryłach 3D, których obsługa jest tu wciąż częściowa.

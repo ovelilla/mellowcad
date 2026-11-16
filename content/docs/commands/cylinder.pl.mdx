@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie WALEC po angielsku i jaki ma skrót?","answer":"Po angielsku CYLINDER, w polskim AutoCADzie WALEC: wpisz WAL, naciśnij Enter albo spację, a potem podaj środek podstawy, promień i wysokość: 0,0, 20 i 40 rysują walec z sesji. Angielskie CYL w polskim AutoCADzie nie działa; _CYLINDER działa w AutoCADzie w każdym języku."},{"question":"Jak narysować walec poziomy w AutoCADzie?","answer":"Przy wysokości wybierz Osi i podaj drugi koniec osi: od podstawy w 0,0,0 punkt 60,0,0 kładzie walec wzdłuż X."},{"question":"Jak zrobić walec pusty w środku albo rurę?","answer":"Narysuj dwa walce z tego samego środka, wewnętrzny węższy, a potem uruchom RÓŻNICA: wskaż zewnętrzny, Enter, wewnętrzny, Enter."},{"question":"Dlaczego walec wygląda jak okrąg?","answer":"Patrzysz na niego z góry, w rzucie. Obróć widok: narożnik kostki ViewCube, -WIDOK i SEIzo albo 3DORBITA."}]
 ---
 
-Polecenie WALEC (CYLINDER) rysuje bryłę 3D walca: podaj środek jego podstawy, potem promień, potem wysokość. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna idzie w dół, a punkt podaje ją odległością od podstawy, jak w poleceniu [`KOSTKA`](/docs/commands/box). Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude). Walec leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+Polecenie WALEC (CYLINDER) rysuje walec jako bryłę 3D: podaj środek jego podstawy, potem promień, potem wysokość. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna idzie w dół, a punkt podaje ją odległością od podstawy, jak w poleceniu [`KOSTKA`](/docs/commands/box). Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude). Walec leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
 Walec zachowuje swoje wymiary: [`LISTA`](/docs/commands/list) pokazuje jego położenie, normalną, promień i wysokość, a paleta Właściwości pozwala wpisać promień i wysokość. Jego uchwyty go przesuwają, ustawiają jego wysokość, a w każdej ćwiartce podstawy jego promień. To bryła 3D dla poleceń [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
 
@@ -19,7 +19,7 @@ Walec zachowuje swoje wymiary: [`LISTA`](/docs/commands/list) pokazuje jego poł
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="cylinder" caption="Walec o promieniu 20 i wysokości 40, od środka podstawy, widziany od południowego wschodu w stylu wizualnym Ukryty." />
 

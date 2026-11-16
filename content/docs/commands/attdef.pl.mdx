@@ -19,7 +19,7 @@ ATRDEF w AutoCADzie otwiera okno dialogowe Definicja atrybutu, którego MellowCA
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="attdef" caption="Oznaczenie drzwi: atrybut NUM wyśrodkowany w okręgu, jego monitem jest sama etykieta, a wartością domyślną 1, gotowy do włączenia do bloku." />
 
@@ -27,7 +27,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Niewidoczny` (`N`) [#invisible]
 
-Wartość nie jest widoczna na odnośnikach, dopóki nie włączy jej [`ATRWID`](/docs/commands/attdisp). Każdy tryb to przełącznik: wybranie go zmienia go między `T` a `N`, ponownie wypisuje tryby i pyta jeszcze raz. Tryby pozostają ustawione dla następnego ATRDEF.
+Wartość nie jest widoczna na odnośnikach, dopóki nie włączy jej [`ATRWID`](/docs/commands/attdisp). Każdy tryb to przełącznik: wybranie go zmienia go między `T` a `N`, ponownie wypisuje tryby i pyta jeszcze raz. Tryby pozostają ustawione do następnego wywołania ATRDEF.
 
 ### `Stały` (`S`) [#constant]
 
@@ -35,7 +35,7 @@ Każdy odnośnik ma tę samą wartość, o którą ATRDEF pyta zamiast monitu i 
 
 ### `Weryfikowalny` (`W`) [#verify]
 
-WSTAW pyta o wartość drugi raz, aby ją sprawdzić, po zapytaniu raz o każdą wartość.
+WSTAW pyta o wartość po raz drugi, aby ją sprawdzić, gdy już raz zapyta o wszystkie wartości.
 
 ### `Ustawiony` (`U`) [#preset]
 
@@ -47,7 +47,7 @@ Na początku włączony: atrybut zostaje tam, gdzie umieszcza go blok.
 
 ### `wyrówNAnie` (`NA`) [#justify]
 
-Pyta, względem którego miejsca tekst jest zaczepiony w swoim punkcie, tak jak TEKST: `Lewo`, `Środek`, `Prawo`, `Centrum` albo jeden z dziewięciu punktów według góry, środka i dołu oraz lewej, środka i prawej. Monit o punkt początkowy pyta potem o wskazany punkt: środek-środek centruje wartość w symbolu.
+Pyta, jak tekst jest wyrównany względem swojego punktu, tak jak TEKST: `Lewo`, `Środek`, `Prawo`, `Centrum` albo jeden z dziewięciu punktów: u góry, pośrodku lub u dołu oraz z lewej, na środku lub z prawej. Monit o punkt początkowy pyta potem o wybrany punkt: środek w pionie i w poziomie centruje wartość w oznaczeniu.
 
 ### `STyl` (`ST`) [#style]
 

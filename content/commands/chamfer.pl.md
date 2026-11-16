@@ -24,7 +24,7 @@ Pyta o pierwszą i drugą długość fazy. Druga proponuje pierwszą, więc Ente
 
 ### Multiple
 
-Po każdej fazie znów pyta o pierwszą linię, aż do Enter lub Esc.
+Po każdej fazie znów pyta o pierwszą linię, aż do naciśnięcia Enter lub Esc.
 
 ## Missing
 
@@ -42,7 +42,7 @@ Wybierz <Keyword id="Distance" />, wpisz długość i naciśnij Enter przy drugi
 
 ### Czym się różni FAZUJ od ZAOKRĄGL?
 
-FAZUJ łączy dwie linie prostą fazą, a <Command id="FILLET" /> łukiem stycznym do obu. Oba polecenia ucinają lub wydłużają linie do niej i oba tworzą ostry narożnik przy 0 albo z przytrzymanym Shift przy drugiej linii.
+FAZUJ łączy dwie linie prostą fazą, a <Command id="FILLET" /> łukiem stycznym do obu. Oba polecenia ucinają lub wydłużają linie do fazy lub łuku i oba tworzą ostry narożnik przy 0 albo z przytrzymanym Shift przy drugiej linii.
 
 ### Dlaczego fazowanie nie działa w AutoCADzie?
 

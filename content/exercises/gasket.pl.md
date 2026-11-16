@@ -1,12 +1,12 @@
 ---
 title: "Ćwiczenie AutoCAD: uszczelka"
 metaTitle: "Ćwiczenie AutoCAD dla początkujących: uszczelka"
-description: "Narysuj uszczelkę w AutoCADzie: płytka z zaokrąglonymi narożami, otwór środkowy, cztery otwory skopiowane z jednego, osie i wymiary. Krok po kroku, online."
+description: "Narysuj uszczelkę w AutoCADzie: zaokrąglona płytka, otwór środkowy, cztery otwory skopiowane z jednego, osie i wymiary. Krok po kroku, za darmo online."
 figure: "Uszczelka 120 na 80 z wymiarami."
 sourceHash: "dc5c0e2b45b8"
 ---
 
-Narysuj tę uszczelkę w milimetrach: płytka 120 na 80 z narożami zaokrąglonymi promieniem 10, otwór środkowy o średnicy 40 i cztery otwory o średnicy 10, których środki leżą 12 od krawędzi, do tego osie otworu środkowego i wymiary. Wszystko wpisuje się z klawiatury: pierwszy punkt polecenia leży tam, gdzie go wpiszesz, a każdy następny jest mierzony od poprzedniego. Kontur, osie i wymiary trafiają każde na własną warstwę.
+Narysuj tę uszczelkę w milimetrach: płytka 120 na 80 z narożami zaokrąglonymi promieniem 10, otwór środkowy o średnicy 40 i cztery otwory o średnicy 10, których środki leżą 12 od krawędzi, do tego osie otworu środkowego i wymiary. Wszystko wpisuje się z klawiatury: pierwszy punkt polecenia leży tam, gdzie go wpiszesz, a każdy następny jest mierzony od poprzedniego. Kontur, osie i wymiary trafiają na osobne warstwy.
 
 ## Steps
 
@@ -28,4 +28,4 @@ Ustaw jako bieżącą warstwę Linie osiowe. Dwie linie narysowane poleceniem <C
 
 ### Zwymiaruj rysunek [#dimensions]
 
-Ustaw jako bieżącą warstwę Wymiary. Polecenie <Command id="DIMLINEAR" /> pyta o dwa punkty, a potem o położenie linii wymiarowej: długość od `0,10` do punktu `120,0` dalej, umieszczona poniżej; wysokość po prawej; rozstaw otworów, 96 i 56. Punkt wpisany w odpowiedzi na jego monity nie dotyka żadnego obiektu, więc każdy z tych wymiarów powstaje jako nieskojarzony, o czym informuje wiersz polecenia. Polecenie <Command id="DIMDIAMETER" /> wskazuje okrąg i umieszcza jego średnicę: najpierw otworu środkowego, potem jednego z małych otworów.
+Ustaw jako bieżącą warstwę Wymiary. Polecenie <Command id="DIMLINEAR" /> pyta o dwa punkty, a potem o położenie linii wymiarowej: długość od `0,10` do punktu `120,0` dalej, umieszczona poniżej; wysokość po prawej; rozstaw otworów, 96 i 56. Punkt wpisany w odpowiedzi na jego monity nie dotyka żadnego obiektu, więc każdy z tych wymiarów powstaje jako nieskojarzony, o czym informuje wiersz polecenia. W poleceniu <Command id="DIMDIAMETER" /> wskazujesz okrąg i umieszczasz wymiar jego średnicy: najpierw otworu środkowego, potem jednego z małych otworów.

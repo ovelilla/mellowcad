@@ -6,7 +6,7 @@ figure: "Profil schodkowy zwymiarowany 30 od lewej krawędzi, potem 70 i 100 od 
 sourceHash: "cd7902f90b59"
 ---
 
-Polecenie WYMBAZA (DIMBASELINE) rysuje wymiary mierzone od jednej linii pomocniczej, czyli bazy: każdy biegnie od pierwszej linii pomocniczej ostatniego wymiaru do następnego podanego punktu, a jego linia wymiarowa leży o krok dalej. Zaczyna od ostatniego wymiaru liniowego lub dopasowanego utworzonego od otwarcia rysunku, dlatego zwykle następuje po poleceniu <Command id="DIMLINEAR" /> lub <Command id="DIMALIGNED" />; gdy takiego nie ma, pyta, od którego zacząć. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera <Keyword id="Select" />, a Enter przy tym monicie kończy polecenie, podobnie jak Esc.
+Polecenie WYMBAZA (DIMBASELINE) rysuje wymiary mierzone od jednej linii pomocniczej, czyli bazy: każdy biegnie od pierwszej linii pomocniczej ostatniego wymiaru do następnego podanego punktu, a jego linia wymiarowa leży o krok dalej. Zaczyna od ostatniego wymiaru liniowego lub wyrównanego utworzonego od otwarcia rysunku, dlatego zwykle następuje po poleceniu <Command id="DIMLINEAR" /> lub <Command id="DIMALIGNED" />; gdy takiego nie ma, pyta, od którego zacząć. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera <Keyword id="Select" />, a Enter przy monicie wyboru wymiaru kończy polecenie, podobnie jak Esc.
 
 Krok to „Odstępy między liniami bazowymi” bieżącego stylu wymiarowania (3,75 w ISO-25), pomnożone przez globalną skalę wymiaru bazowego. Jak w AutoCADzie, każdy nowy wymiar mierzy wzdłuż kierunku wymiaru bazowego i przejmuje jego styl wymiarowania i warstwę, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
@@ -14,7 +14,7 @@ Krok to „Odstępy między liniami bazowymi” bieżącego stylu wymiarowania (
 
 ### Select
 
-Pyta o wymiar bazowy: wskaż wymiar liniowy lub dopasowany blisko linii pomocniczej, od której należy mierzyć. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem <Message id="associativeDimensionRequired" />, a pytanie pada ponownie.
+Pyta o wymiar bazowy: wskaż wymiar liniowy lub wyrównany blisko linii pomocniczej, od której należy mierzyć. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem <Message id="associativeDimensionRequired" />, a pytanie pada ponownie.
 
 ### Undo
 

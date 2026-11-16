@@ -4,22 +4,22 @@ metaTitle: "Orbita 3D w AutoCADzie: 3DORBITA i skrót"
 description: "Jak obracać widok w AutoCADzie poleceniem 3DORBITA (3DORBIT, skrót 3DO, OR): przeciąganiem, z Shift i kółkiem myszy, jak z niego wyjść i wrócić do widoku planu."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie Orbita 3D po angielsku i jaki ma skrót?","answer":"Po angielsku 3DORBIT, w polskim AutoCADzie 3DORBITA: wpisz 3DO lub OR, potem naciśnij Enter albo spację. _3DORBIT działa w AutoCADzie w każdym języku. Bez wpisywania czegokolwiek: przytrzymaj Shift i kółko myszy i przeciągaj."},{"question":"Jak obracać model myszką w AutoCADzie?","answer":"Przytrzymaj Shift, wciśnij kółko myszy i przeciągaj: w bok, aby obrócić model, w górę i w dół, aby spojrzeć na niego z wyższa lub z niższa. Po puszczeniu wracasz do polecenia, które było uruchomione."},{"question":"Jak wyjść z orbity 3D?","answer":"Naciśnij Enter lub Esc. Widok pozostaje taki, jaki był w chwili wyjścia."},{"question":"Jak wrócić do widoku planu po orbicie 3D?","answer":"Uruchom polecenie PLAN i naciśnij Enter, albo -WIDOK z opcją Góra, albo kliknij górną ścianę kostki ViewCube. Opcja Poprzedni polecenia ZOOM cofa widok o jedno przeciągnięcie naraz."}]
+faq: [{"question":"Jak się nazywa polecenie Orbita 3D po angielsku i jaki ma skrót?","answer":"Po angielsku 3DORBIT, w polskim AutoCADzie 3DORBITA: wpisz 3DO lub OR, potem naciśnij Enter albo spację. _3DORBIT działa w AutoCADzie w każdym języku. Bez wpisywania czegokolwiek: przytrzymaj Shift i kółko myszy i przeciągaj."},{"question":"Jak obracać model myszką w AutoCADzie?","answer":"Przytrzymaj Shift, wciśnij kółko myszy i przeciągaj: w bok, aby obrócić model, w górę i w dół, aby spojrzeć na niego z wyższego lub niższego punktu. Po puszczeniu przycisków wracasz do polecenia, które było uruchomione."},{"question":"Jak wyjść z orbity 3D?","answer":"Naciśnij Enter lub Esc. Widok pozostaje taki, jaki był w chwili wyjścia."},{"question":"Jak wrócić do widoku planu po orbicie 3D?","answer":"Uruchom polecenie PLAN i naciśnij Enter, albo -WIDOK z opcją Góra, albo kliknij górną ścianę kostki ViewCube. Opcja Poprzedni polecenia ZOOM cofa widok po jednym przeciągnięciu."}]
 ---
 
 Polecenie 3DORBITA (3DORBIT) obraca widok wokół rysunku, gdy przeciągasz kursor; w samym rysunku nic się nie przesuwa ani nie zmienia. Przeciąganie w bok obraca kamerę wokół osi Z układu GUW, a w górę i w dół podnosi ją lub opuszcza, wokół środka rysunku pod środkiem ekranu, w rzucie równoległym. Na początku polecenie mówi, jak z niego wyjść: dopóki działa, można tylko obracać widok, a Enter lub Esc je kończy, niezależnie od tego, czy było przeciąganie.
 
-Przytrzymanie Shift i kółka myszy obraca widok z dowolnego miejsca, nawet wewnątrz innego polecenia, a przycisk Orbita na pasku nawigacji także uruchamia polecenie. Wpisane z apostrofem, `'3DORBITA`, działa wewnątrz innego polecenia, które potem trwa dalej. Każde przeciągnięcie to krok dla opcji `Poprzedni` polecenia [`ZOOM`](/docs/commands/zoom), a całe polecenie to jeden krok cofania, więc `C` przywraca widok. Aby widzieć bryły jako bryły, a nie jako model szkieletowy, użyj polecenia [`BIEŻSTYLWIZ`](/docs/commands/vscurrent); 3D w MellowCAD to tylko bryły 3D, wciąż częściowo.
+Przytrzymanie Shift i kółka myszy obraca widok z dowolnego miejsca, nawet wewnątrz innego polecenia, a przycisk Orbita na pasku nawigacji także uruchamia polecenie. Wpisane z apostrofem, `'3DORBITA`, działa wewnątrz innego polecenia, które potem trwa dalej. Każde przeciągnięcie to krok dla opcji `Poprzedni` polecenia [`ZOOM`](/docs/commands/zoom), a całe polecenie to jeden krok cofania, więc `C` przywraca widok. Aby widzieć bryły jako bryły, a nie jako model szkieletowy, użyj polecenia [`BIEŻSTYLWIZ`](/docs/commands/vscurrent); 3D w MellowCAD to tylko bryły 3D, na razie częściowo.
 
 - **Polecenie:** `3DORBITA`
 - **Po angielsku:** `3DORBIT`, wpisywane jako `_3DORBIT` w każdym języku
-- **Aliasy:** `3DO`
+- **Aliasy:** `3DO`, `OR`
 - **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
-- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `3DO` i naciśnij Enter.
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `OR` i naciśnij Enter.
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="3dorbit" caption="Prostopadłościan widziany najpierw w rzucie: 3DORBITA, przeciągnięcie w bok i w dół, potem Enter, i prostopadłościan widać z góry, od strony przedniego narożnika." />
 
@@ -27,7 +27,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 Menu podręczne z jego rzutami, stylami wizualnymi i innymi trybami nawigacji. Obracanie tylko wokół wybranych obiektów. Perspektywa. Swobodna i ciągła orbita (3DFORBIT, 3DCORBIT) i reszta nawigacji 3D AutoCADa.
 
-[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do)
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do--or)
 
 ## Pytania [#questions]
 
@@ -37,7 +37,7 @@ Po angielsku 3DORBIT, w polskim AutoCADzie 3DORBITA: wpisz `3DO` lub `OR`, potem
 
 ### Jak obracać model myszką w AutoCADzie?
 
-Przytrzymaj Shift, wciśnij kółko myszy i przeciągaj: w bok, aby obrócić model, w górę i w dół, aby spojrzeć na niego z wyższa lub z niższa. Po puszczeniu wracasz do polecenia, które było uruchomione.
+Przytrzymaj Shift, wciśnij kółko myszy i przeciągaj: w bok, aby obrócić model, w górę i w dół, aby spojrzeć na niego z wyższego lub niższego punktu. Po puszczeniu przycisków wracasz do polecenia, które było uruchomione.
 
 ### Jak wyjść z orbity 3D?
 
@@ -45,7 +45,7 @@ Naciśnij Enter lub Esc. Widok pozostaje taki, jaki był w chwili wyjścia.
 
 ### Jak wrócić do widoku planu po orbicie 3D?
 
-Uruchom polecenie [`PLAN`](/docs/commands/plan) i naciśnij Enter, albo `-WIDOK` z opcją `Góra`, albo kliknij górną ścianę kostki ViewCube. Opcja `Poprzedni` polecenia [`ZOOM`](/docs/commands/zoom) cofa widok o jedno przeciągnięcie naraz.
+Uruchom polecenie [`PLAN`](/docs/commands/plan) i naciśnij Enter, albo `-WIDOK` z opcją `Góra`, albo kliknij górną ścianę kostki ViewCube. Opcja `Poprzedni` polecenia [`ZOOM`](/docs/commands/zoom) cofa widok po jednym przeciągnięciu.
 
 ## Powiązane polecenia [#related]
 

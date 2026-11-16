@@ -76,7 +76,7 @@
     "boardLabel": "Les commandes et leurs alias, rangés comme sur le ruban",
     "also": "Aussi : {aliases}",
     "linked": "Une commande soulignée a sa propre page, avec ses invites et ses options.",
-    "languages": "<fr>{french}</fr> est <en>{english}</en> dans AutoCAD en anglais, <es>{spanish}</es> en espagnol, <pt>{portuguese}</pt> en portugais du Brésil, <de>{german}</de> en allemand et <ru>{russian}</ru> en russe, et le nom global <all>{global}</all> fonctionne dans toutes les langues.",
+    "languages": "<fr>{french}</fr> est <en>{english}</en> dans AutoCAD en anglais, <es>{spanish}</es> en espagnol, <pt>{portuguese}</pt> en portugais du Brésil, <de>{german}</de> en allemand, <ru>{russian}</ru> en russe et <pl>{polish}</pl> en polonais, et le nom global <all>{global}</all> fonctionne dans toutes les langues.",
     "transcriptTitle": "Un DECALER, du début à la fin",
     "transcriptCaption": "Rejoué par le moteur à la création de cette page. Même ordre et mêmes lettres d'option qu'AutoCAD."
   },

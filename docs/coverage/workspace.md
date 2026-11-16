@@ -30,7 +30,7 @@ menus' "… Settings" items (the Drafting Settings dialog: Snap mode's spacing i
 instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, the Coordinates menu
 (Relative, Geographic, Specific)
 
-### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS` · pt-BR `UNIDADES` / `UN` / `UNIDADESD` · fr `UNITES` / `UI` / `DDUNITS` · it `UNITA` / `UT` / `DDUNITS` · de `EINHEIT` · ru `ЕДИНИЦЫ` / `ЕД` / `ДИАЛЕДИН` · pl `JEDN` / `JED`
+### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS` · pt-BR `UNIDADES` / `UN` / `UNIDADESD` · fr `UNITES` / `UI` / `DDUNITS` · it `UNITA` / `UT` / `DDUNITS` · de `EINHEIT` · ru `ЕДИНИЦЫ` / `ЕД` / `ДИАЛЕДИН` · pl `JEDN` / `JED` / `ODJEDN`
 
 **Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command
 (the aliases from both `acad.pgp` files, en:417, :505, es:284, :513; `DDUNITS` probe

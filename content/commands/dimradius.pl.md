@@ -1,7 +1,7 @@
 ---
 title: "Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)"
 metaTitle: "Wymiar promienia w AutoCADzie: WYMPROMIEŃ"
-description: "Jak zwymiarować promień okręgu, łuku lub zaokrąglenia w AutoCADzie poleceniem WYMPROMIEŃ (DIMRADIUS, skrót WR): wskaż krzywą i umieść tekst R wewnątrz lub obok."
+description: "Jak zwymiarować promień okręgu, łuku lub zaokrąglenia w AutoCADzie poleceniem WYMPROMIEŃ (DIMRADIUS, WR): wskaż krzywą, umieść tekst R wewnątrz lub na zewnątrz."
 figure: "Zaokrąglony narożnik płytki zwymiarowany na zewnątrz, a jej otwór wewnątrz: wskazana każda krzywa, potem umieszczony tekst."
 sourceHash: "6b1cdea584be"
 ---

@@ -17,7 +17,7 @@ Polecenie WYMKĄTOWY (DIMANGULAR) wymiaruje kąt, a jego linią wymiarową jest 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="dimangular" caption="Dwie linie schodzące się pod kątem 30 stopni: wskazana każda z nich, potem łuk wymiarowy umieszczony między nimi." />
 
@@ -33,7 +33,7 @@ Pyta o kąt tekstu, który jest wtedy rysowany pod tym kątem zamiast wzdłuż �
 
 ## Czego jeszcze nie robi [#missing]
 
-Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w wierszu polecenia. Opcja Kwadrant, która przypisuje wymiar do jednego sektora, aby jego tekst mógł stanąć poza nim. Jednostki kątowe inne niż stopnie dziesiętne (DIMAUNIT). Wymiaru kątowego nie można kontynuować ani rozmieścić: polecenia [`WYMSZEREG`](/docs/commands/dimcontinue), [`WYMBAZA`](/docs/commands/dimbaseline) i [`PRZESTRZWYM`](/docs/commands/dimspace) przyjmują tylko wymiary liniowe i dopasowane. Linii ani łuku wewnątrz odnośnika bloku nie można wskazać. Między dwiema liniami wymiar zachowuje punkty, w których przecinał je jego łuk, a nie same linie: przesunięty później, prowadzi linie pomocnicze od tych punktów, podczas gdy AutoCAD mierzy ponownie względem linii. Wymiar nie jest skojarzony: nie podąża za obiektami, które mierzy.
+Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w wierszu polecenia. Opcja Kwadrant, która przypisuje wymiar do jednego sektora, aby jego tekst mógł stanąć poza nim. Jednostki kątowe inne niż stopnie dziesiętne (DIMAUNIT). Wymiaru kątowego nie można kontynuować ani rozmieścić: polecenia [`WYMSZEREG`](/docs/commands/dimcontinue), [`WYMBAZA`](/docs/commands/dimbaseline) i [`PRZESTRZWYM`](/docs/commands/dimspace) przyjmują tylko wymiary liniowe i wyrównane. Linii ani łuku wewnątrz odnośnika bloku nie można wskazać. Między dwiema liniami wymiar zachowuje punkty, w których przecinał je jego łuk, a nie same linie: przesunięty później, prowadzi linie pomocnicze od tych punktów, podczas gdy AutoCAD mierzy ponownie względem linii. Wymiar nie jest skojarzony: nie podąża za obiektami, które mierzy.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimangular--dimang--dan--es-acoangular--acoang--pt-br-cotaang--cang--dimang--fr-cotang--can--it-dimangolo--dan--de-bemwinkel--bmwin--ru-рзмугловой--руг--pl-wymkątowy--wk--wymk)
 
@@ -66,6 +66,6 @@ W stylu wymiarowania: polecenie [`WYMSTYL`](/docs/commands/dimstyle) (`WST`) otw
 ## Powiązane polecenia [#related]
 
 - [Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)](/docs/commands/dimlinear)
-- [Wymiar dopasowany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)](/docs/commands/dimaligned)
+- [Wymiar wyrównany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)](/docs/commands/dimaligned)
 - [Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)](/docs/commands/dimradius)
 - [Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)](/docs/commands/dimstyle)

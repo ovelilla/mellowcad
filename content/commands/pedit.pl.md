@@ -12,7 +12,7 @@ Polecenie EDPLIN (PEDIT) edytuje polilinię. Wskaż ją przy monicie `Wybierz po
 
 ### Multiple
 
-Edytuje kilka polilinii naraz: wybierz je, powiedz, czy zamienić linie, łuki i splajny wśród nich, a potem każda opcja zostaje zastosowana do wszystkich. Jej opcja <Keyword id="Join" /> pyta o odległość tolerancji i o <Keyword id="Jointype" />: <Keyword id="Extend" /> ucina lub wydłuża segmenty końcowe, aż się spotkają, <Keyword id="Add" /> wypełnia przerwę nowym segmentem, <Keyword id="Both" /> wydłuża, gdzie może, a dodaje, gdzie nie może.
+Edytuje kilka polilinii naraz: wybierz je, określ, czy zamienić linie, łuki i splajny wśród nich, a potem każda opcja zostaje zastosowana do wszystkich. Jej opcja <Keyword id="Join" /> pyta o odległość tolerancji i o <Keyword id="Jointype" />: <Keyword id="Extend" /> przycina lub wydłuża segmenty końcowe, aż się spotkają, <Keyword id="Add" /> zamyka przerwę nowym segmentem, <Keyword id="Both" /> wydłuża, gdzie może, a dodaje, gdzie nie może.
 
 ### Close
 
@@ -28,7 +28,7 @@ Jedna szerokość dla wszystkich segmentów, wpisana lub zmierzona dwoma punktam
 
 ### Edit vertex
 
-Stawia X na pierwszym wierzchołku i pyta, co tam zrobić: <Keyword id="Next" /> i <Keyword id="Previous" /> przesuwają X, <Keyword id="Move" /> przesuwa wierzchołek, <Keyword id="Insert" /> dodaje nowy za nim, <Keyword id="Break" /> i <Keyword id="Straighten" /> zapamiętują wierzchołek, przesuwasz X do innego, a <Keyword id="Go" /> przerywa polilinię między nimi albo robi z tego, co leży pomiędzy, jeden prosty segment, <Keyword id="Width" /> ustala szerokość początkową i końcową następnego segmentu, <Keyword id="Tangent" /> nadaje wierzchołkowi kierunek dla późniejszego wygładzania łukami, a <Keyword id="eXit" /> wraca.
+Umieszcza znacznik X na pierwszym wierzchołku i pyta, co tam zrobić: <Keyword id="Next" /> i <Keyword id="Previous" /> przesuwają X, <Keyword id="Move" /> przesuwa wierzchołek, <Keyword id="Insert" /> dodaje nowy za nim, <Keyword id="Break" /> i <Keyword id="Straighten" /> zapamiętują wierzchołek, przesuwasz X do innego, a <Keyword id="Go" /> przerywa polilinię między nimi albo robi z tego, co leży pomiędzy, jeden prosty segment, <Keyword id="Width" /> ustala szerokość początkową i końcową następnego segmentu, <Keyword id="Tangent" /> nadaje wierzchołkowi kierunek dla późniejszego wygładzania łukami, a <Keyword id="eXit" /> wraca.
 
 ### Fit
 
@@ -44,7 +44,7 @@ Usuwa krzywą z opcji <Keyword id="Fit" /> lub <Keyword id="Spline" />: między 
 
 ### Ltype gen
 
-<Keyword id="ON" /> kładzie rodzaj linii jednym wzorem wzdłuż całej polilinii, więc kreskowa polilinia o krótkich segmentach nadal pokazuje kreski; <Keyword id="OFF" />, wartość domyślna, zaczyna wzór od nowa przy każdym wierzchołku.
+<Keyword id="ON" /> układa wzór rodzaju linii w sposób ciągły wzdłuż całej polilinii, więc kreskowa polilinia o krótkich segmentach nadal pokazuje kreski; <Keyword id="OFF" />, wartość domyślna, zaczyna wzór od nowa przy każdym wierzchołku.
 
 ### Reverse
 
@@ -56,7 +56,7 @@ Cofa ostatnią opcję tego uruchomienia i pyta dalej.
 
 ## Missing
 
-PEDITACCEPT: wskazanie linii, łuku lub splajnu zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja <Keyword id="Multiple" /> z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
+PEDITACCEPT: po wskazaniu linii, łuku lub splajnu polecenie zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja <Keyword id="Multiple" /> z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
 
 ## Questions
 
@@ -66,7 +66,7 @@ PEDIT. W polskim AutoCADzie jego skrót to `EDP`: wpisz go i naciśnij Enter lub
 
 ### Jak połączyć linie w polilinię?
 
-Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz <Keyword id="Join" /> i wybierz pozostałe: te, które stykają się końcami, stają się jedną polilinią. <Command id="JOIN" /> robi to samo w jednym kroku.
+Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz <Keyword id="Join" /> i wskaż pozostałe: te, które stykają się końcami, stają się jedną polilinią. <Command id="JOIN" /> robi to samo w jednym kroku.
 
 ### Dlaczego EDPLIN nie działa na moim obiekcie?
 

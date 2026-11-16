@@ -6,7 +6,7 @@ figure: "Kwadrat i jego okrąg w szyku z wartościami domyślnymi: Enter dla szy
 sourceHash: "5e0a412c9f13"
 ---
 
-Polecenie SZYK (ARRAY) kopiuje zaznaczenie według wzoru: w kolumnach i wierszach, wokół środka albo wzdłuż ścieżki. Pyta o obiekty, potem o typ szyku, przy czym Enter wybiera prostokątny, i przekazuje zaznaczenie poleceniu <Command id="ARRAYRECT" />, <Command id="ARRAYPOLAR" /> lub <Command id="ARRAYPATH" />, które działa dalej, nie pytając ponownie o obiekty. Każde z nich od razu pokazuje szyk i edytuje go na żywo, opcjami i uchwytami, aż Enter go utworzy: jeden obiekt szyku albo luźne kopie, jeśli odpowiedziano, że ma nie być skojarzony. Całe polecenie to jeden krok cofania, a Enter w wierszu polecenia powtarza SZYK.
+Polecenie SZYK (ARRAY) kopiuje zaznaczenie według wzoru: w kolumnach i wierszach, wokół środka albo wzdłuż ścieżki. Pyta o obiekty, potem o typ szyku, przy czym Enter wybiera prostokątny, i przekazuje zaznaczenie poleceniu <Command id="ARRAYRECT" />, <Command id="ARRAYPOLAR" /> lub <Command id="ARRAYPATH" />, które działa dalej, nie pytając ponownie o obiekty. Każde z nich od razu pokazuje szyk i edytuje go na żywo, opcjami i uchwytami, aż Enter go utworzy: jeden obiekt szyku albo luźne kopie, jeśli wybrano, że ma nie być skojarzony. Całe polecenie to jeden krok cofania, a Enter w wierszu polecenia powtarza SZYK.
 
 ## Options
 
@@ -34,7 +34,7 @@ Po angielsku ARRAY, w polskim AutoCADzie SZYK: wpisz `SZ`, potem naciśnij Enter
 
 ### Jak zrobić szyk kołowy w AutoCADzie?
 
-Wybierz <Keyword id="POlar" /> albo uruchom <Command id="ARRAYPOLAR" /> i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, na początku w 6 elementach. Liczbę zmień opcją <Keyword command="ARRAYPOLAR" id="Items" />, a kąt, który wypełniają, ustaw opcją <Keyword command="ARRAYPOLAR" id="Fill angle" />.
+Wybierz <Keyword id="POlar" /> albo uruchom <Command id="ARRAYPOLAR" /> i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, początkowo w 6 elementach. Liczbę zmień opcją <Keyword command="ARRAYPOLAR" id="Items" />, a kąt, który wypełniają, ustaw opcją <Keyword command="ARRAYPOLAR" id="Fill angle" />.
 
 ### Jak rozbić szyk w AutoCADzie?
 

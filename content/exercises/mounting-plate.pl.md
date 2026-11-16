@@ -7,13 +7,13 @@ model: "Płyta jako bryła o grubości 10, widziana z południowego wschodu, z u
 sourceHash: "87b8f906b0fd"
 ---
 
-Zamodeluj płytę montażową o grubości 10, w milimetrach: kontur 100 na 60 z narożami o promieniu 8 i cztery otwory o średnicy 10, których środki leżą 15 od krawędzi. Zaczyna się na płasko. Kontur i okręgi stają się regionami, otwory odejmuje się, póki płyta jest jeszcze płaska, a jedno wyciągnięcie zamienia ją w bryłę razem z otworami.
+Zamodeluj płytę montażową o grubości 10, w milimetrach: kontur 100 na 60 z narożami o promieniu 8 i cztery otwory o średnicy 10, których środki leżą 15 od krawędzi. Praca zaczyna się na płasko. Kontur i okręgi stają się regionami, otwory odejmuje się, póki płyta jest jeszcze płaska, a jedno wyciągnięcie zamienia ją w bryłę razem z otworami.
 
 ## Steps
 
 ### Narysuj profil [#profile]
 
-Na warstwie Kontur polecenie <Command id="RECTANG" /> z opcją <Keyword command="RECTANG" id="Fillet" /> równą `8`, od `0,0` do `100,60`. Potem okrąg w `15,15` o średnicy (<Keyword command="CIRCLE" id="Diameter" />) `10` i polecenie <Command id="COPY" />, które kopiuje go od jego środka do `70,0`, `70,30` i `0,30`.
+Na warstwie Kontur polecenie <Command id="RECTANG" /> z zaokrągleniem (<Keyword command="RECTANG" id="Fillet" />) `8`, od `0,0` do `100,60`. Potem okrąg w `15,15` o średnicy (<Keyword command="CIRCLE" id="Diameter" />) `10` i polecenie <Command id="COPY" />, które kopiuje go od jego środka do `70,0`, `70,30` i `0,30`.
 
 ### Utwórz regiony [#region]
 

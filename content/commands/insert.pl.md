@@ -2,11 +2,11 @@
 title: "Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)"
 metaTitle: "Wstawianie bloku w AutoCADzie: WSTAW (INSERT)"
 description: "Jak wstawić blok w AutoCADzie poleceniem WSTAW (INSERT, skrót W): paleta Bloki albo -WSTAW w wierszu polecenia, ze skalą, obrotem i atrybutami."
-figure: "Krzesło zamienione w blok, potem wstawione dwa razy przy stole: obrócone o 180 po podaniu punktu, potem o 90 opcją Obróć przed nim."
+figure: "Krzesło zamienione w blok, potem wstawione dwa razy przy stole: obrócone o 180 po podaniu punktu, potem o 90 opcją Obrót przed nim."
 sourceHash: "e9859c7871f3"
 ---
 
-Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie <Command id="BLOCK" />. Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem, potem o skalę i obrót. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to kliknięcie na każdy.
+Polecenie WSTAW (INSERT) umieszcza blok zdefiniowany w rysunku jako odnośnik: kolejną jego kopię, z własnym punktem, skalą i obrotem, rysowaną z jednej definicji, którą utworzyło polecenie <Command id="BLOCK" />. Tak jak polecenie WSTAW w AutoCADzie 2027, otwiera paletę „Bloki”, która pokazuje bloki rysunku; kliknij jeden, a wiersz polecenia zapyta o jego punkt wstawienia, z blokiem przeciąganym pod kursorem, potem o skalę i obrót. Paleta zostaje otwarta, więc wstawianie bloku za blokiem to po jednym kliknięciu na każdy.
 
 Polecenie <Command id="-INSERT" /> pyta o wszystko w wierszu polecenia: nazwę bloku (Enter przyjmuje proponowaną: ostatnio wstawiony blok albo, jeśli go nie ma, ostatnio zdefiniowany), punkt wstawienia, potem współczynnik skali X, współczynnik skali Y (Enter przyjmuje współczynnik X) i kąt obrotu. Ujemny współczynnik odbija blok, a nierówne go rozciągają: okrąg w nim jest rysowany jako elipsa. Blok z atrybutami pyta potem o każdą wartość jej monitem, proponując wartość domyślną. Obiekty bloku na warstwie 0 przyjmują warstwę odnośnika, pozostałe zachowują swoje. Każde wstawienie to jeden krok cofania.
 
@@ -22,7 +22,7 @@ Przy punkcie wstawienia: pyta o jeden współczynnik dla obu osi, a potem ponown
 
 ### Rotate
 
-Przy punkcie wstawienia: pyta o kąt, wpisany lub między dwoma punktami, a potem ponownie o punkt, z blokiem przeciąganym w obróceniu. Po podaniu punktu nie pyta już o obrót.
+Przy punkcie wstawienia: pyta o kąt, wpisany lub między dwoma punktami, a potem ponownie o punkt, z blokiem przeciąganym już obróconym. Po podaniu punktu nie pyta już o obrót.
 
 ## Missing
 

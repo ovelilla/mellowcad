@@ -6,9 +6,9 @@ figure: "COFAJ 2: dwa ostatnie polecenia zostają cofnięte, linia i drugi otwó
 sourceHash: "b4fed2178b6a"
 ---
 
-Polecenie COFAJ (UNDO) cofa polecenia. Krok to całe polecenie: wszystko, co narysowało jedno LINIA, znika naraz, bez względu na liczbę odcinków, tak samo jak to, co polecenie ustawiło, na przykład RLSKALA. COFAJ wypisuje swoje bieżące ustawienia, a potem pyta o liczbę operacji do cofnięcia lub opcję; Enter cofa jedną. Nazwy cofniętych poleceń wypisuje w jednym wierszu, `OKRĄG LINIA`, a gdy dojdzie do początku – <Message id="everythingUndone" />; potem <Message id="nothingToUndo" />. Polecenie, które niczego nie zmieniło, jak ID czy LISTA, też jest krokiem, podobnie jak to, co ZOOM i NFRAGM zrobiły z widokiem.
+Polecenie COFAJ (UNDO) cofa polecenia. Krok to całe polecenie: wszystko, co narysowało jedno polecenie LINIA, znika naraz, bez względu na liczbę odcinków, tak samo jak to, co polecenie ustawiło, na przykład RLSKALA. COFAJ wypisuje swoje bieżące ustawienia, a potem pyta o liczbę operacji do cofnięcia lub opcję; Enter cofa jedną. Nazwy cofniętych poleceń wypisuje w jednym wierszu, `OKRĄG LINIA`, a gdy dojdzie do początku – <Message id="everythingUndone" />; potem <Message id="nothingToUndo" />. Polecenie, które niczego nie zmieniło, jak ID czy LISTA, też jest krokiem, podobnie jak zmiany widoku wykonane poleceniami ZOOM i NFRAGM.
 
-<Command id="U" /> to forma skrócona: jeden krok wstecz, bez pytania. Ctrl+Z przy `Polecenie:` uruchamia C; wewnątrz polecenia jest to jego własna opcja Cofaj, tak jak wpisuje ją makro AutoCADa: LINIA cofa ostatni odcinek i działa dalej. <Command id="REDO" />, zaraz potem, przywraca to, co cofnęło ostatnie C lub COFAJ.
+<Command id="U" /> to forma skrócona: jeden krok wstecz, bez pytania. Ctrl+Z przy monicie `Polecenie:` uruchamia polecenie C; wewnątrz polecenia jest to jego własna opcja Cofaj, tak jak wpisuje ją makro AutoCADa: LINIA cofa ostatni odcinek i działa dalej. <Command id="REDO" /> użyte zaraz potem przywraca to, co cofnęło ostatnie C lub COFAJ.
 
 ## Options
 
@@ -18,11 +18,11 @@ Pyta <Keyword id="ON" /> lub <Keyword id="OFF" />, proponując bieżące ustawie
 
 ### Control
 
-Pyta, ile cofania zachować, domyślnie <Keyword id="All" />. <Keyword id="None" /> usuwa wszystkie zachowane kroki i wyłącza cofanie: C wyświetla wtedy <Message id="uDisabled" />, a COFAJ od razu pyta o <Keyword id="Control" />. <Keyword id="One" /> zachowuje tylko ostatni krok, a COFAJ pyta wtedy o 1 lub <Keyword id="Control" />. <Keyword id="All" /> przywraca pełne cofanie. <Keyword id="Combine" /> określa, czy kolejne ZOOM i NFRAGM są jednym krokiem, a <Keyword id="Layer" /> – czy są nim kolejne zmiany w Menedżerze właściwości warstw; w obu przypadkach domyślnie Tak. Ustawienia należą do rysunku, ale nie są z nim zapisywane: nowy lub otwarty rysunek zaczyna od <Keyword id="All" />, <Keyword id="Combine" /> Tak i <Keyword id="Layer" /> Tak.
+Pyta, w jakim zakresie zachować cofanie, domyślnie <Keyword id="All" />. <Keyword id="None" /> usuwa wszystkie zachowane kroki i wyłącza cofanie: C wyświetla wtedy <Message id="uDisabled" />, a COFAJ od razu pyta o <Keyword id="Control" />. <Keyword id="One" /> zachowuje tylko ostatni krok, a COFAJ pyta wtedy o 1 lub <Keyword id="Control" />. <Keyword id="All" /> przywraca pełne cofanie. <Keyword id="Combine" /> określa, czy kolejne ZOOM i NFRAGM są jednym krokiem, a <Keyword id="Layer" /> – czy są nim kolejne zmiany w Menedżerze właściwości warstw; w obu przypadkach domyślnie Tak. Ustawienia należą do rysunku, ale nie są z nim zapisywane: nowy lub otwarty rysunek zaczyna od <Keyword id="All" />, <Keyword id="Combine" /> Tak i <Keyword id="Layer" /> Tak.
 
 ### BEgin
 
-Rozpoczyna grupę: polecenia wykonane do <Keyword id="End" /> tworzą jeden krok, który C cofa w całości, nazywając go razem z nimi `GRUPA`. Gdy grupa jest otwarta, C, liczba i <Keyword id="Back" /> zatrzymują się na jej początku. <Keyword id="BEgin" /> przy otwartej grupie najpierw ją zamyka.
+Rozpoczyna grupę: polecenia wykonane do <Keyword id="End" /> tworzą jeden krok, który C cofa w całości, wypisując `GRUPA` razem z ich nazwami. Gdy grupa jest otwarta, C, liczba i <Keyword id="Back" /> zatrzymują się na jej początku. <Keyword id="BEgin" /> przy otwartej grupie najpierw ją zamyka.
 
 ### End
 
@@ -30,7 +30,7 @@ Zamyka grupę otwartą przez <Keyword id="BEgin" />.
 
 ### Mark
 
-Zostawia znacznik w krokach. <Keyword id="Back" />, C i liczba zatrzymują się na nim, z komunikatem <Message id="markEncountered" />.
+Wstawia znacznik między krokami. <Keyword id="Back" />, C i liczba zatrzymują się na nim, z komunikatem <Message id="markEncountered" />.
 
 ### Back
 
@@ -38,7 +38,7 @@ Cofa wszystkie kroki do ostatniego znacznika, razem ze znacznikiem. Bez znacznik
 
 ## Missing
 
-<Keyword id="Auto" /> niczego nie łączy, bo żadne menu nie uruchamia tutaj więcej niż jednego polecenia. <Keyword id="Combine" /> i <Keyword id="Layer" /> obowiązują do końca sesji przeglądarki, podczas gdy AutoCAD zachowuje je między sesjami. Przyciski Cofnij i Ponów na górnym pasku nie zapisują niczego w historii, podczas gdy pasek narzędzi szybkiego dostępu AutoCADa zapisuje własne wpisy. Ctrl+Shift+Z również przywraca, bez komunikatu, choć AutoCAD nie przypisuje do niego niczego.
+<Keyword id="Auto" /> niczego nie łączy, bo żadne menu nie uruchamia tutaj więcej niż jednego polecenia. <Keyword id="Combine" /> i <Keyword id="Layer" /> obowiązują do końca sesji przeglądarki, podczas gdy AutoCAD zachowuje je między sesjami. Przyciski Cofnij i Odtwórz na górnym pasku nie zapisują niczego w historii, podczas gdy pasek szybkiego dostępu AutoCADa zapisuje własne wpisy. Ctrl+Shift+Z również przywraca, bez komunikatu, choć AutoCAD nie przypisuje do niego niczego.
 
 ## Questions
 

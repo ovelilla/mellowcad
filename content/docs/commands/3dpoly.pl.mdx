@@ -1,10 +1,10 @@
 ---
 title: "Polilinia 3D w AutoCADzie: polecenie 3WPLINIA (3DPOLY)"
 metaTitle: "Polilinia 3D w AutoCADzie: 3WPLINIA (3DPOLY)"
-description: "Jak narysować polilinię 3D w AutoCADzie poleceniem 3WPLINIA (3DPOLY, skrót 3P): proste segmenty, każdy punkt z własnym Z, Zamknij, Cofaj i różnica z PLINIA."
+description: "Jak narysować polilinię 3D w AutoCADzie poleceniem 3WPLINIA (3DPOLY, 3P): proste segmenty, każdy punkt z własnym Z, Zamknij, Cofaj i różnice wobec PLINIA."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie 3WPLINIA po angielsku i jaki ma skrót?","answer":"Po angielsku 3DPOLY, w polskim AutoCADzie 3WPLINIA: wpisz 3P, potem naciśnij Enter albo spację. Pełna nazwa też działa, a _3DPOLY w AutoCADzie w każdym języku."},{"question":"Czym się różni PLINIA od 3WPLINIA?","answer":"Polilinia polecenia PLINIA leży w jednej płaszczyźnie i może mieć łuki i szerokości. Polilinia 3D ma tylko proste segmenty, ale każdy wierzchołek może leżeć na innej wysokości: rurociąg, oś drogi, kabel."},{"question":"Jak narysować polilinię 3D na różnych wysokościach?","answer":"Wpisz każdy punkt z jego Z, x,y,z, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: 60,0,15 idzie 60 wzdłuż X i 15 w górę od poprzedniego."},{"question":"Jak wygładzić polilinię 3D?","answer":"Użyj na niej polecenia EDPLIN i wybierz opcję splaJn: gładką krzywą, którą wyznaczają wierzchołki. Opcja Polilinia znów ją prostuje."}]
+faq: [{"question":"Jak się nazywa polecenie 3WPLINIA po angielsku i jaki ma skrót?","answer":"Po angielsku 3DPOLY, w polskim AutoCADzie 3WPLINIA: wpisz 3P, potem naciśnij Enter albo spację. Pełna nazwa też działa, a _3DPOLY w AutoCADzie w każdym języku."},{"question":"Czym się różni PLINIA od 3WPLINIA?","answer":"Polilinia polecenia PLINIA leży w jednej płaszczyźnie i może mieć łuki i szerokości. Polilinia 3D ma tylko proste segmenty, ale każdy wierzchołek może leżeć na innej wysokości: rurociąg, oś drogi, kabel."},{"question":"Jak narysować polilinię 3D na różnych wysokościach?","answer":"Wpisz każdy punkt z jego współrzędną Z, x,y,z, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: 60,0,15 idzie 60 wzdłuż X i 15 w górę od poprzedniego."},{"question":"Jak wygładzić polilinię 3D?","answer":"Użyj na niej polecenia EDPLIN i wybierz opcję splaJn: gładką krzywą rozpiętą na wierzchołkach. Opcja Polilinia znów ją prostuje."}]
 ---
 
 Polecenie 3WPLINIA (3DPOLY) rysuje polilinię 3D: proste segmenty przez punkty, z których każdy ma własną współrzędną Z, jako jeden obiekt. Podaj punkt początkowy, a potem punkt końcowy każdego segmentu, aż Enter zakończy polecenie; nawet sam punkt początkowy zostaje zachowany, jako polilinia o jednym wierzchołku. Enter przy punkcie początkowym zostaje odrzucony komunikatem `Niewłaściwy punkt.`: nie ma opcji Kontynuuj, którą ma polecenie LINIA. Punkt wpisany ze współrzędną Z zachowuje ją, `30,0,15`; wpisany bez niej lub kliknięty leży na poziomie płaszczyzny roboczej, a punkt zlokalizowany względem obiektu przyjmuje Z obiektu w tym miejscu. Punkty są odczytywane w bieżącym układzie LUW.
@@ -19,7 +19,7 @@ W przeciwieństwie do polecenia [`PLINIA`](/docs/commands/pline) nie ma płaszcz
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="3dpoly" caption="Polilinia 3D wznosząca się o 15 w każdym narożniku prostokąta 60 na 40 leżącego na ziemi, widziana od południowego wschodu." />
 
@@ -35,7 +35,7 @@ Cofa ostatni wierzchołek i kontynuuje od poprzedniego. Gdy nie zostaje żaden s
 
 ## Czego jeszcze nie robi [#missing]
 
-Polilinia 3D dopasowana krzywą ma w palecie Właściwości wartość Brak we właściwości dopasowania i wygładzenia, którą AutoCAD nazywa kwadratową lub sześcienną, i nie można jej tam zmienić. Nie może być obwiednią kreskowania ani ścieżką polecenia ŚCIEŻKASZYK, a paleta nie ma wiersza Materiał. Wprowadzanie dynamiczne pyta o punkt początkowy w jednym polu, z Z wpisywanym po drugim przecinku, tam gdzie AutoCAD pokazuje pola X, Y i Z. Menu uchwytów po najechaniu kursorem: Rozciągnij, Dodaj wierzchołek, Usuń wierzchołek i reszta.
+Polilinia 3D dopasowana krzywą ma w palecie Właściwości, we właściwości dopasowania i wygładzenia, wartość Brak zamiast typu kwadratowego lub sześciennego z AutoCADa, i nie można jej tam zmienić. Nie może być obwiednią kreskowania ani ścieżką polecenia ŚCIEŻKASZYK, a paleta nie ma wiersza Materiał. Wprowadzanie dynamiczne pyta o punkt początkowy w jednym polu, z Z wpisywanym po drugim przecinku, podczas gdy AutoCAD pokazuje pola X, Y i Z. Menu uchwytów po najechaniu kursorem: Rozciągnij, Dodaj wierzchołek, Usuń wierzchołek i reszta.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3--fr-poly3d--3p--it-3dpoli--3p--de-3dpoly--3dp--ru-3dплиния--3п--3-плиния--pl-3wplinia--3p)
 
@@ -51,11 +51,11 @@ Polilinia polecenia [`PLINIA`](/docs/commands/pline) leży w jednej płaszczyźn
 
 ### Jak narysować polilinię 3D na różnych wysokościach?
 
-Wpisz każdy punkt z jego Z, `x,y,z`, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: `60,0,15` idzie 60 wzdłuż X i 15 w górę od poprzedniego.
+Wpisz każdy punkt z jego współrzędną Z, `x,y,z`, albo zlokalizuj go względem obiektów na żądanych wysokościach. Przy wprowadzaniu dynamicznym punkt po pierwszym jest względny: `60,0,15` idzie 60 wzdłuż X i 15 w górę od poprzedniego.
 
 ### Jak wygładzić polilinię 3D?
 
-Użyj na niej polecenia [`EDPLIN`](/docs/commands/pedit) i wybierz opcję splaJn: gładką krzywą, którą wyznaczają wierzchołki. Opcja Polilinia znów ją prostuje.
+Użyj na niej polecenia [`EDPLIN`](/docs/commands/pedit) i wybierz opcję splaJn: gładką krzywą rozpiętą na wierzchołkach. Opcja Polilinia znów ją prostuje.
 
 ## Powiązane polecenia [#related]
 

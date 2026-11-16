@@ -6,7 +6,7 @@ figure: "Stożek o promieniu 20 i wysokości 40, od środka podstawy, widziany o
 sourceHash: "1c40f02e6b3c"
 ---
 
-Polecenie STOŻEK (CONE) rysuje bryłę 3D stożka: podaj środek jego podstawy, potem promień, potem wysokość, a stożek zwęża się do punktu. Pyta o to samo co <Command id="CYLINDER" />, z opcją <Keyword id="Top" /> przy wysokości dla stożka ściętego. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna kieruje stożek w dół, a punkt podaje ją odległością od podstawy. Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi. Stożek leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+Polecenie STOŻEK (CONE) rysuje stożek jako bryłę 3D: podaj środek jego podstawy, potem promień, potem wysokość, a stożek zwęża się do punktu. Pyta o to samo co <Command id="CYLINDER" />, z opcją <Keyword id="Top" /> przy wysokości dla stożka ściętego. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna kieruje stożek w dół, a punkt podaje ją odległością od podstawy. Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi. Stożek leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
 <Command id="LIST" /> pokazuje jego położenie, normalną, promień podstawy, promień górnej podstawy i wysokość, a paleta Właściwości pozwala je wpisać. Jego uchwyty go przesuwają, ustawiają jego wysokość, promień podstawy w każdej ćwiartce podstawy oraz promień górnej podstawy. Wierzchołek jest lokalizowany jako punkt końcowy. To bryła 3D dla poleceń <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
 
@@ -52,7 +52,7 @@ Polecenie <Command id="EXPLODE" /> na stożku, który AutoCAD zamienia w podstaw
 
 ### Jak narysować stożek w AutoCADzie?
 
-Uruchom STOŻEK, podaj środek podstawy, promień i wysokość: `0,0`, `20` i `40` rysują stożek z sesji. Obróć widok, aby go zobaczyć, narożnikiem kostki ViewCube albo poleceniem <Command id="-VIEW" /> i opcją <Keyword command="VIEW" id="SEiso" />.
+Uruchom polecenie STOŻEK, podaj środek podstawy, promień i wysokość: `0,0`, `20` i `40` rysują stożek z sesji. Obróć widok, aby go zobaczyć, narożnikiem kostki ViewCube albo poleceniem <Command id="-VIEW" /> i opcją <Keyword command="VIEW" id="SEiso" />.
 
 ### Jak narysować stożek ścięty w AutoCADzie?
 

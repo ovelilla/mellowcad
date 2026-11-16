@@ -31,15 +31,15 @@ Cofa ostatni segment i kontynuuje w trybie segmentu wcześniejszego. Gdy żadneg
 
 ### Width
 
-Szerokość początkowa, potem końcowa, każda wpisana lub wskazana od ostatniego wierzchołka: od 10 do 0 zwęża się do punktu, jak grot strzałki. Szerokość końcowa przechodzi na następne segmenty i, jako PLINEWID, na następne polecenie PLINIA.
+Szerokość początkowa, potem końcowa, każda wpisana lub wskazana od ostatniego wierzchołka: szerokości 10 i 0 zwężają segment do punktu, jak grot strzałki. Szerokość końcowa przechodzi na następne segmenty i, jako PLINEWID, na następne polecenie PLINIA.
 
 ### Angle
 
-Tryb łuku: kąt środkowy łuku, potem jego punkt końcowy, środek lub promień.
+Tryb łuku: kąt rozwarcia łuku, potem jego punkt końcowy, środek lub promień.
 
 ### Center
 
-Tryb łuku: środek łuku, potem jego punkt końcowy, kąt środkowy lub długość cięciwy.
+Tryb łuku: środek łuku, potem jego punkt końcowy, kąt rozwarcia lub długość cięciwy.
 
 ### Direction
 
@@ -51,7 +51,7 @@ Tryb łuku: powrót do prostych segmentów.
 
 ### Radius
 
-Tryb łuku: promień łuku, potem jego punkt końcowy lub kąt środkowy. Ujemny promień rysuje większy łuk.
+Tryb łuku: promień łuku, potem jego punkt końcowy lub kąt rozwarcia. Ujemny promień rysuje większy łuk.
 
 ### Second pt
 
@@ -59,7 +59,7 @@ Tryb łuku: punkt, przez który przechodzi łuk, potem jego punkt końcowy: łuk
 
 ## Missing
 
-PLINEGEN: nowa polilinia kładzie rodzaj linii segment po segmencie, jak przy PLINEGEN 0 (opcja <Keyword command="PEDIT" id="Ltype gen" /> polecenia <Command id="PEDIT" /> włącza go dla jednej polilinii). Kreskowy rodzaj linii na szerokim segmencie jest rysowany jako ciągły. Podgląd szerokiego segmentu nie jest rysowany w ciemniejszym odcieniu, a monit łuku jest pisany w jednym wierszu, podczas gdy AutoCAD łamie go na dwa.
+PLINEGEN: nowa polilinia rozkłada wzór rodzaju linii segment po segmencie, jak przy PLINEGEN 0 (opcja <Keyword command="PEDIT" id="Ltype gen" /> polecenia <Command id="PEDIT" /> włącza go dla jednej polilinii). Kreskowy rodzaj linii na szerokim segmencie jest rysowany jako ciągły. Podgląd szerokiego segmentu nie jest rysowany w przygaszonym odcieniu, a monit łuku jest pisany w jednym wierszu, podczas gdy AutoCAD łamie go na dwa.
 
 ## Questions
 
@@ -73,7 +73,7 @@ Wybierz <Keyword id="Arc" />: każdy punkt kończy wtedy łuk styczny do poprzed
 
 ### Dlaczego moja polilinia jest gruba?
 
-Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, co mówi wiersz po punkcie początkowym. Wybierz <Keyword id="Width" /> i podaj dwa razy 0, aby znów rysować cienko. Przy wyłączonym <Command id="FILL" /> szerokie polilinie są pokazywane jako obrysy.
+Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, o czym informuje wiersz wyświetlany po punkcie początkowym. Wybierz <Keyword id="Width" /> i podaj dwa razy 0, aby znów rysować cienko. Gdy tryb <Command id="FILL" /> jest wyłączony, szerokie polilinie są pokazywane jako obrysy.
 
 ### Jak połączyć linie w polilinię?
 
@@ -81,4 +81,4 @@ Uruchom polecenie <Command id="JOIN" /> i wybierz linie, łuki i polilinie, któ
 
 ### Jak obliczyć pole lub długość polilinii?
 
-Uruchom polecenie <Command id="AREA" />, naciśnij Enter, aby wybrać <Keyword command="AREA" id="Object" />, i wskaż polilinię: zamknięta podaje pole i obwód, otwarta – swoją długość.
+Uruchom polecenie <Command id="AREA" />, naciśnij Enter, aby wybrać <Keyword command="AREA" id="Object" />, i wskaż polilinię: dla zamkniętej podaje pole i obwód, dla otwartej – długość.

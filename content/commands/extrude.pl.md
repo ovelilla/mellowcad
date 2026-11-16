@@ -7,7 +7,7 @@ sourceHash: "53bfe3dd1e9c"
 
 Polecenie WYCIĄGNIJ (EXTRUDE) zamienia zamknięte profile 2D w bryły 3D, każdy wyciągnięty prosto ze swojej płaszczyzny na podaną wysokość. Wybierz profile – okręgi, elipsy, zamknięte polilinie lub splajny, regiony – i naciśnij Enter, a potem wpisz wysokość albo pokaż ją punktem; ostatnia wysokość jest domyślną przy następnym uruchomieniu. Każdy profil staje się osobną bryłą, na bieżącej warstwie, i jest wymazywany, jak domyślnie stanowi DELOBJ. Całe polecenie to jeden krok cofania.
 
-3D w MellowCAD to tylko bryły i wciąż częściowo: profil otwarty, z którego AutoCAD robi powierzchnię, dostaje <Message id="sweepRefusedType" /> i jest usuwany z wyboru.
+3D w MellowCAD to tylko bryły 3D, na razie częściowo: profil otwarty, z którego AutoCAD robi powierzchnię, dostaje <Message id="sweepRefusedType" /> i jest usuwany z wyboru.
 
 ## Options
 

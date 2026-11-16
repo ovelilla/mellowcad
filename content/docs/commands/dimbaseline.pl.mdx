@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie wymiarowania od bazy po angielsku i jaki ma skrót?","answer":"Po angielsku DIMBASELINE, w polskim AutoCADzie WYMBAZA: wpisz WB lub WYMBA, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMBASELINE – w AutoCADzie w każdym języku."},{"question":"Jak zmienić odstęp między wymiarami od bazy?","answer":"To „Odstępy między liniami bazowymi” stylu wymiarowania: polecenie WYMSTYL (WST) otwiera style w palecie „Style”, gdzie to ustawienie jest w grupie „Linie”, jak w AutoCADzie. Wymiary już narysowane zostają na swoich miejscach; polecenie PRZESTRZWYM rozmieszcza je ponownie, w równych odstępach."},{"question":"Jak zacząć od innego wymiaru?","answer":"Naciśnij Enter przy pierwszym monicie albo wybierz Wybierz i wskaż wymiar blisko linii pomocniczej, od której należy mierzyć: od niej zaczyna się każdy nowy wymiar."},{"question":"Czym się różni WYMBAZA od WYMSZEREG?","answer":"Polecenie WYMBAZA mierzy każdy wymiar od tej samej linii pomocniczej, każdy na linii położonej dalej. Polecenie WYMSZEREG ustawia je jeden za drugim na jednej linii, każdy od miejsca, w którym skończył się poprzedni."}]
 ---
 
-Polecenie WYMBAZA (DIMBASELINE) rysuje wymiary mierzone od jednej linii pomocniczej, czyli bazy: każdy biegnie od pierwszej linii pomocniczej ostatniego wymiaru do następnego podanego punktu, a jego linia wymiarowa leży o krok dalej. Zaczyna od ostatniego wymiaru liniowego lub dopasowanego utworzonego od otwarcia rysunku, dlatego zwykle następuje po poleceniu [`WYMLINIOWY`](/docs/commands/dimlinear) lub [`WYMNORMALNY`](/docs/commands/dimaligned); gdy takiego nie ma, pyta, od którego zacząć. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera `Wybierz`, a Enter przy tym monicie kończy polecenie, podobnie jak Esc.
+Polecenie WYMBAZA (DIMBASELINE) rysuje wymiary mierzone od jednej linii pomocniczej, czyli bazy: każdy biegnie od pierwszej linii pomocniczej ostatniego wymiaru do następnego podanego punktu, a jego linia wymiarowa leży o krok dalej. Zaczyna od ostatniego wymiaru liniowego lub wyrównanego utworzonego od otwarcia rysunku, dlatego zwykle następuje po poleceniu [`WYMLINIOWY`](/docs/commands/dimlinear) lub [`WYMNORMALNY`](/docs/commands/dimaligned); gdy takiego nie ma, pyta, od którego zacząć. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera `Wybierz`, a Enter przy monicie wyboru wymiaru kończy polecenie, podobnie jak Esc.
 
 Krok to „Odstępy między liniami bazowymi” bieżącego stylu wymiarowania (3,75 w ISO-25), pomnożone przez globalną skalę wymiaru bazowego. Jak w AutoCADzie, każdy nowy wymiar mierzy wzdłuż kierunku wymiaru bazowego i przejmuje jego styl wymiarowania i warstwę, z bieżącym kolorem, rodzajem linii i szerokością linii.
 
@@ -19,7 +19,7 @@ Krok to „Odstępy między liniami bazowymi” bieżącego stylu wymiarowania (
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="dimbaseline" caption="Profil schodkowy zwymiarowany 30 od lewej krawędzi, potem 70 i 100 od tej samej krawędzi, każdy wymiar o linię dalej." />
 
@@ -27,7 +27,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Wybierz` (`W`) [#select]
 
-Pyta o wymiar bazowy: wskaż wymiar liniowy lub dopasowany blisko linii pomocniczej, od której należy mierzyć. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem `Wymagany skojarzony wymiar liniowy, kątowy lub współrzędnych.`, a pytanie pada ponownie.
+Pyta o wymiar bazowy: wskaż wymiar liniowy lub wyrównany blisko linii pomocniczej, od której należy mierzyć. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem `Wymagany skojarzony wymiar liniowy, kątowy lub współrzędnych.`, a pytanie pada ponownie.
 
 ### `Cofaj` (`C`) [#undo]
 

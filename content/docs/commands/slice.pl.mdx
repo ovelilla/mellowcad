@@ -3,12 +3,12 @@ title: "Polecenie PŁAT (SLICE) w AutoCADzie"
 description: "Jak działa polecenie PŁAT (SLICE, skrót PAT) w AutoCADzie: bryły, płaszczyzna przez dwa punkty, 3punkty, obiekt lub LUW, potem zachowywana strona."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie PŁAT po angielsku?","answer":"SLICE. W polskim AutoCADzie wpisz PŁAT lub skrót PAT i naciśnij Enter lub spację; skrót SL z wersji angielskiej w polskiej nie działa, bo uruchamia SZERLIN. Angielska nazwa z podkreśleniem, _SLICE, działa w AutoCADzie w każdym języku."},{"question":"Jak przeciąć bryłę 3D w AutoCADzie?","answer":"Wybierz bryłę i naciśnij Enter. Wskaż dwa punkty, przez które biegnie cięcie: płaszczyzna stoi przez nie pionowo. Potem wskaż punkt po stronie, którą chcesz zachować, albo naciśnij Enter, aby zachować obie połowy, i odsuń jedną poleceniem PRZESUŃ. Aby ciąć pod kątem, wybierz 3punkty i podaj trzy punkty na płaszczyźnie."},{"question":"Czy PŁAT przecina linie lub obiekty 2D?","answer":"Nie: PŁAT przecina bryły 3D i pomija linie, regiony i bloki; zbiór złożony tylko z nich kończy polecenie. Do cięcia obiektów 2D służą UTNIJ i PRZERWIJ. W AutoCADzie PŁAT przecina też powierzchnie i siatki, których MellowCAD jeszcze nie ma."},{"question":"Dlaczego PŁAT informuje, że płaszczyzna nie przecina bryły?","answer":"Bo płaszczyzna jej nie trafia albo dotyka jej tylko ścianą, krawędzią lub narożnikiem: taka bryła pozostaje cała. Sprawdź, jak została wyznaczona płaszczyzna. Przez dwa punkty stoi ona pionowo, więc dwa punkty na górnej ścianie bryły tną ją pionowo, a nie poziomo; do cięcia poziomego wybierz XY i podaj punkt na wysokości cięcia."}]
+faq: [{"question":"Jak się nazywa polecenie PŁAT po angielsku?","answer":"SLICE. W polskim AutoCADzie wpisz PŁAT lub skrót PAT i naciśnij Enter lub spację; skrót SL z wersji angielskiej uruchamia w polskiej wersji polecenie SZERLIN. Angielska nazwa z podkreśleniem, _SLICE, działa w AutoCADzie w każdym języku."},{"question":"Jak przeciąć bryłę 3D w AutoCADzie?","answer":"Wybierz bryłę i naciśnij Enter. Wskaż dwa punkty, przez które biegnie cięcie: płaszczyzna przechodzi przez nie pionowo. Potem wskaż punkt po stronie, którą chcesz zachować, albo naciśnij Enter, aby zachować obie połowy, i przesuń jedną z nich poleceniem PRZESUŃ. Aby ciąć pod kątem, wybierz 3punkty i podaj trzy punkty na płaszczyźnie."},{"question":"Czy PŁAT przecina linie lub obiekty 2D?","answer":"Nie: PŁAT przecina bryły 3D i pomija linie, regiony i bloki; zbiór złożony tylko z nich kończy polecenie. Do cięcia obiektów 2D służą UTNIJ i PRZERWIJ. W AutoCADzie PŁAT przecina też powierzchnie i siatki, których MellowCAD jeszcze nie ma."},{"question":"Dlaczego PŁAT informuje, że płaszczyzna nie przecina bryły?","answer":"Bo płaszczyzna jej nie trafia albo dotyka jej tylko na ścianie, wzdłuż krawędzi lub w narożniku: taka bryła pozostaje cała. Sprawdź, jak została wyznaczona płaszczyzna. Wyznaczona dwoma punktami jest pionowa, więc dwa punkty na górnej ścianie bryły tną ją pionowo, a nie poziomo; do cięcia poziomego wybierz XY i podaj punkt na wysokości cięcia."}]
 ---
 
-Polecenie PŁAT (SLICE) przecina bryły 3D płaszczyzną i zachowuje część po jednej jej stronie albo obie części jako dwie bryły. Pyta o bryły do przecięcia, aż do Enter: jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie, a to, co nie jest bryłą, zostaje pominięte. Potem płaszczyzna: domyślnie podajesz dwa punkty, a płaszczyzna stoi pionowo przez nie, prostopadle do płaszczyzny XY układu LUW; opcje wyznaczają ją inaczej. Na koniec punkt po stronie, którą chcesz zachować, albo Enter, aby zachować obie.
+Polecenie PŁAT (SLICE) przecina bryły 3D płaszczyzną i zachowuje część po jednej jej stronie albo obie części jako dwie bryły. Pyta o bryły do przecięcia, aż naciśniesz Enter: jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie, a to, co nie jest bryłą, zostaje pominięte. Potem płaszczyzna: domyślnie podajesz dwa punkty, a płaszczyzna przechodzi przez nie pionowo, prostopadle do płaszczyzny XY układu LUW; opcje wyznaczają ją inaczej. Na koniec punkt po stronie, którą chcesz zachować, albo Enter, aby zachować obie.
 
-Każda bryła zbioru jest cięta tą samą płaszczyzną. Bryła, której płaszczyzna nie przecina albo której dotyka tylko ścianą, krawędzią lub narożnikiem, pozostaje bez zmian, a PŁAT o tym informuje. Przecięta bryła nie jest już prostopadłościanem ani walcem i nie ma historii. Całe polecenie to jeden krok cofania. 3D w MellowCAD wciąż jest częściowe: bryły istnieją, powierzchnie i siatki nie.
+Każda bryła zbioru jest cięta tą samą płaszczyzną. Bryła, której płaszczyzna nie przecina albo dotyka tylko na ścianie, wzdłuż krawędzi lub w narożniku, pozostaje bez zmian, a PŁAT o tym informuje. Przecięta bryła nie jest już prostopadłościanem ani walcem i nie ma historii. Całe polecenie to jeden krok cofania. 3D w MellowCAD wciąż jest częściowe: bryły istnieją, powierzchnie i siatki nie.
 
 - **Polecenie:** `PŁAT`
 - **Po angielsku:** `SLICE`, wpisywane jako `_SLICE` w każdym języku
@@ -18,7 +18,7 @@ Każda bryła zbioru jest cięta tą samą płaszczyzną. Bryła, której płasz
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="slice" caption="Walec przecięty przez oś dwoma punktami, z zachowaną połową po wskazanej stronie: widok z południowego wschodu." />
 
@@ -26,15 +26,15 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Obiekt planarny` (`O`) [#object]
 
-Przyjmuje płaszczyznę wskazanego obiektu: okręgu, elipsy, łuku, polilinii 2D lub płaskiego splajnu, także nachylonego okręgu. Linia, ani sama bryła, nie ma własnej płaszczyzny: wyświetla `Nie można wyodrębnić płaszczyzny wybranego obiektu.` i pyta ponownie. Enter kończy polecenie.
+Przyjmuje płaszczyznę wskazanego obiektu: okręgu, elipsy, łuku, polilinii 2D lub płaskiego splajnu, także nachylonego okręgu. Linia ani sama bryła nie mają własnej płaszczyzny: polecenie wyświetla `Nie można wyodrębnić płaszczyzny wybranego obiektu.` i pyta ponownie. Enter kończy polecenie.
 
 ### `Powierzchnia` (`P`) [#surface]
 
-Pyta o powierzchnię, wzdłuż której ma ciąć. MellowCAD nie ma jeszcze powierzchni, więc wskazanie daje `Nie wybrano powierzchni.`, a Enter kończy polecenie.
+Pyta o powierzchnię, wzdłuż której ma ciąć. MellowCAD nie ma jeszcze powierzchni, więc po wskazaniu wyświetla `Nie wybrano powierzchni.`, a Enter kończy polecenie.
 
 ### `ośZ` (`Z`) [#zaxis]
 
-Pyta o punkt na płaszczyźnie, a potem o punkt na jej osi Z, prostej do niej prostopadłej. Nie mogą to być te same punkty.
+Pyta o punkt na płaszczyźnie, a potem o punkt na jej osi Z, prostej do niej prostopadłej. Nie może to być ten sam punkt.
 
 ### `Widok` (`W`) [#view]
 
@@ -54,11 +54,11 @@ Płaszczyzna ZX układu LUW, przez podany punkt; Enter przyjmuje początek ukła
 
 ### `3punkty` (`3`) [#3points]
 
-Trzy punkty na płaszczyźnie, która może być wtedy dowolnie nachylona. To domyślna odpowiedź pierwszego pytania, więc wybiera ją Enter. Drugi punkt musi się różnić od pierwszego, a trzeci nie może leżeć na prostej przez nie.
+Trzy punkty na płaszczyźnie, która może być wtedy dowolnie nachylona. To opcja domyślna pierwszego monitu, więc wybiera ją Enter. Drugi punkt musi się różnić od pierwszego, a trzeci nie może leżeć na prostej przez nie.
 
 ### `zachowaj Obie strony` (`O`) [#both]
 
-Przy pytaniu o stronę, i jest to wartość domyślna, więc wybiera ją Enter: obie części zostają zachowane. Bryła zachowuje jedną, a druga staje się nową bryłą o tej samej warstwie, kolorze, rodzaju linii i szerokości linii, a nie bieżących. Punkt zamiast tego zachowuje stronę, po której leży, i odrzuca drugą; punkt na płaszczyźnie jest odrzucany.
+Przy monicie o stronę; to opcja domyślna, więc wybiera ją Enter: obie części zostają zachowane. Bryła zachowuje jedną, a druga staje się nową bryłą o tej samej warstwie, kolorze, rodzaju linii i szerokości linii, a nie bieżących. Punkt zamiast tego zachowuje stronę, po której leży, i odrzuca drugą; punkt na płaszczyźnie jest odrzucany.
 
 ## Czego jeszcze nie robi [#missing]
 
@@ -70,11 +70,11 @@ Powierzchnie, jako płaszczyzna tnąca i jako obiekty do przecięcia, oraz siatk
 
 ### Jak się nazywa polecenie PŁAT po angielsku?
 
-SLICE. W polskim AutoCADzie wpisz `PŁAT` lub skrót `PAT` i naciśnij Enter lub spację; skrót `SL` z wersji angielskiej w polskiej nie działa, bo uruchamia SZERLIN. Angielska nazwa z podkreśleniem, `_SLICE`, działa w AutoCADzie w każdym języku.
+SLICE. W polskim AutoCADzie wpisz `PŁAT` lub skrót `PAT` i naciśnij Enter lub spację; skrót `SL` z wersji angielskiej uruchamia w polskiej wersji polecenie SZERLIN. Angielska nazwa z podkreśleniem, `_SLICE`, działa w AutoCADzie w każdym języku.
 
 ### Jak przeciąć bryłę 3D w AutoCADzie?
 
-Wybierz bryłę i naciśnij Enter. Wskaż dwa punkty, przez które biegnie cięcie: płaszczyzna stoi przez nie pionowo. Potem wskaż punkt po stronie, którą chcesz zachować, albo naciśnij Enter, aby zachować obie połowy, i odsuń jedną poleceniem [`PRZESUŃ`](/docs/commands/move). Aby ciąć pod kątem, wybierz `3punkty` i podaj trzy punkty na płaszczyźnie.
+Wybierz bryłę i naciśnij Enter. Wskaż dwa punkty, przez które biegnie cięcie: płaszczyzna przechodzi przez nie pionowo. Potem wskaż punkt po stronie, którą chcesz zachować, albo naciśnij Enter, aby zachować obie połowy, i przesuń jedną z nich poleceniem [`PRZESUŃ`](/docs/commands/move). Aby ciąć pod kątem, wybierz `3punkty` i podaj trzy punkty na płaszczyźnie.
 
 ### Czy PŁAT przecina linie lub obiekty 2D?
 
@@ -82,7 +82,7 @@ Nie: PŁAT przecina bryły 3D i pomija linie, regiony i bloki; zbiór złożony 
 
 ### Dlaczego PŁAT informuje, że płaszczyzna nie przecina bryły?
 
-Bo płaszczyzna jej nie trafia albo dotyka jej tylko ścianą, krawędzią lub narożnikiem: taka bryła pozostaje cała. Sprawdź, jak została wyznaczona płaszczyzna. Przez dwa punkty stoi ona pionowo, więc dwa punkty na górnej ścianie bryły tną ją pionowo, a nie poziomo; do cięcia poziomego wybierz `XY` i podaj punkt na wysokości cięcia.
+Bo płaszczyzna jej nie trafia albo dotyka jej tylko na ścianie, wzdłuż krawędzi lub w narożniku: taka bryła pozostaje cała. Sprawdź, jak została wyznaczona płaszczyzna. Wyznaczona dwoma punktami jest pionowa, więc dwa punkty na górnej ścianie bryły tną ją pionowo, a nie poziomo; do cięcia poziomego wybierz `XY` i podaj punkt na wysokości cięcia.
 
 ## Powiązane polecenia [#related]
 

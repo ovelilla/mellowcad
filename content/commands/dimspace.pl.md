@@ -6,15 +6,15 @@ figure: "PRZESTRZWYM od pierwszego wymiaru, dwa pozostałe wybrane i odstęp 0: 
 sourceHash: "7ec7c0eb9883"
 ---
 
-Polecenie PRZESTRZWYM (DIMSPACE) ustawia odstęp między równoległymi wymiarami liniowymi i dopasowanymi. Wybierasz wymiar bazowy, który zostaje na miejscu, potem wymiary do rozmieszczenia; Enter kończy wybór i pyta o odstęp. Linia każdego wymiaru jest wtedy przesuwana, od wymiaru bazowego, w kolejności, w jakiej leżą, na tę odległość od poprzedniego. Odstęp 0 ustawia je wszystkie na linii wymiaru bazowego: szereg rozstrzelony tak, jak go narysowano, staje się jedną linią. Zmienia się tylko położenie linii wymiarowych, w jednym kroku, który cofa polecenie <Command id="U" />.
+Polecenie PRZESTRZWYM (DIMSPACE) ustawia odstęp między równoległymi wymiarami liniowymi i wyrównanymi. Wybierasz wymiar bazowy, który zostaje na miejscu, potem wymiary do rozmieszczenia; Enter kończy wybór i pyta o odstęp. Linia każdego wymiaru jest wtedy przesuwana, od wymiaru bazowego, w kolejności, w jakiej leżą, na tę odległość od poprzedniego. Odstęp 0 ustawia je wszystkie na linii wymiaru bazowego: szereg rozstrzelony tak, jak go narysowano, staje się jedną linią. Zmienia się tylko położenie linii wymiarowych, w jednym kroku, który cofa polecenie <Command id="U" />.
 
-Wymiar bazowy się wskazuje, wpisuje jako punkt albo bierze opcją `OSTATNI`; obiekt, który nie jest wymiarem, daje <Message id="selectedObjectNotDimension" /> i pytanie pada ponownie. Zbiór wybrany przed poleceniem jest zbiorem do rozmieszczenia. Wymiar ustawiony pod kątem do bazowego jest liczony i zostaje na miejscu, a ujemny odstęp jest odrzucany komunikatem <Message id="negativeSpacing" />.
+Wymiar bazowy można wskazać, wpisać jako punkt albo wybrać przez `Ostatni`; obiekt, który nie jest wymiarem, daje <Message id="selectedObjectNotDimension" /> i pytanie pada ponownie. Zbiór wybrany przed poleceniem jest zbiorem do rozmieszczenia. Wymiar ustawiony pod kątem do bazowego jest liczony i zostaje na miejscu, a ujemny odstęp jest odrzucany komunikatem <Message id="negativeSpacing" />.
 
 ## Options
 
 ### Auto
 
-Domyślna, Enter: odstęp równy dwukrotnej wysokości tekstu stylu wymiarowania wymiaru bazowego, pomnożonej przez jego globalną skalę, tak aby stos mieścił własny tekst.
+Opcja domyślna, wybierana Enterem: odstęp równy dwukrotnej wysokości tekstu stylu wymiarowania wymiaru bazowego, pomnożonej przez jego globalną skalę, tak aby stos mieścił własny tekst.
 
 ## Missing
 

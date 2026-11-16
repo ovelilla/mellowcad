@@ -1189,7 +1189,8 @@ export const pl: EngineLocale = {
       ],
       "3DORBIT": [
         "3DORBITA",
-        "3DO"
+        "3DO",
+        "OR"
       ],
       "NAVVCUBE": [
         "NAVVCUBE",
@@ -1208,7 +1209,8 @@ export const pl: EngineLocale = {
       ],
       "UNITS": [
         "JEDN",
-        "JED"
+        "JED",
+        "ODJEDN"
       ],
       "LTSCALE": [
         "RLSKALA",

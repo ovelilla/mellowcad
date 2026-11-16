@@ -1,6 +1,6 @@
 # Polish (`pl`)
 
-> **Command language:** `localized`, Polish AutoCAD's. **Status:** `draft` since 16/11/2026, at
+> **Command language:** `localized`, Polish AutoCAD's. **Status:** `live` since 17/11/2026, at
 > `/pl`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
 > Autodesk did not write ("Review"). The plan and its commits: `docs/plans/pl-language.md`.
 
@@ -79,7 +79,7 @@ long tail at 0: the suggestions and the results pages are the guide.
 `research/strings/acad_pl.pgp`. Ours: `L` LINIA, `PL` PLINIA, `O` OKRĄG, `U` ŁUK, `E` ELIPSA,
 `PRO` PROSTOK, `WBO` WIELOBOK, `SPL` SPLAJN, `PRS` PRZESUŃ, `K` KOPIUJ, `OD` ODSUŃ, `UT` UTNIJ,
 `WYD` WYDŁUŻ, `ZA` ZAOKRĄGL, `FA` FAZUJ, `WY` WYMAŻ, `LUS` LUSTRO, `OB` OBRÓĆ, `S` SKALA, `SZ` SZYK,
-`ROZC` ROZCIĄGNIJ, `R` ROZBIJ, `PRZ` PRZERWIJ, `B` BLOK, `W` WSTAW, `DT` TEKST, `WT` WTEKST, `WA`
+`ROZC` ROZCIĄGNIJ, `R` ROZBIJ, `PRZ` PRZERWIJ, `B` BLOK, `W` WSTAW, `DT` TEKST, `WA`
 WARSTWA, `ODL` ODLEG, `POL` POLE, `LI` LISTA, `Z` ZOOM, `NF` NFRAGM, `PU` PUNKT, `POD` PODZIEL, `ZMI`
 ZMIERZ, `WYC` WYCIĄGNIJ, `SUM` SUMA, `ROZ` RÓŻNICA, `IL` ILOCZYN, `CE` WŁAŚCIWOŚCI, `UZG`
 UZGWŁAŚCIWOŚCI, `US` USUŃ (PURGE), `JED` JEDN.
@@ -254,3 +254,53 @@ AltGr (`AltGr+A` ą, `AltGr+L` ł, `AltGr+N` ń, `AltGr+Z` ż, `AltGr+X` ź), no
 composition. Windows sends AltGr as Ctrl+Alt, which reaches the drawing for every language since
 the German session: `ODSUŃ` typed on the drawing takes it. Ctrl shortcuts are read by their
 physical key (`shortcutKey`); `@`, `<` and `>` are where English has them.
+
+Checked in Chrome before going live (17/11/2026, keys sent through CDP as the layout sends them on
+Windows, AltGr as Ctrl+Alt, the letter in `key` and `text`, the physical key in `code`): `odsuń`
+typed on the drawing runs ODSUŃ and asks `Określ odległość odsunięcia lub
+[przezPunkt/Wymaż/wArstwa] <przezPunkt>:`. Once a point prompt's box has the focus, the letter is
+the browser's to insert, which Linux Chrome does not do for an emulated Ctrl+Alt: AltGr in a
+field stays to be seen on a real Windows keyboard, as German's.
+
+## Going live
+
+On 17/11/2026, from production builds in a clean worktree (every page `○` or `●` but
+`/api/search` and `/mcp`; 126 Polish URLs in the sitemap, 1,149 in all):
+
+- **The landing's first load**, Brotli q11, in bytes, Polish a draft (`04deda37`) and live: `/`
+  253,712 → 253,649, `/es` 254,981 → 255,044, `/pt-br` 255,135 → 255,316, `/ar` 278,414 →
+  278,668, `/fr` 255,821 → 255,901 (99 under 250 KiB), `/it` 254,957 → 254,940, `/de` 255,228 →
+  255,499, `/ru` 288,763 → 288,889; `/pl` 265,037 → 265,093 (258.9 KiB), under the 275 KiB of a
+  script's font: its letters' two faces (5,252 and 3,640) and no Latin Extended file of Google's.
+  No other landing fetches a Polish face.
+- **Naming Polish** in every landing's commands sentence (`<pl>{polish}</pl>`: ODSUŃ beside
+  DESFASE and ПОДОБИЕ), in Geist Mono's place the system's monospace on another language's page
+  (`marketing.css`), as its Ń would fetch Geist Mono's Latin Extended file.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): nothing wraps or
+  overflows; the H1's en dash now keeps to the word before it (a no-break space), as Polish
+  typography wants no line to open with one.
+
+## Review
+
+No native reader: the owner knows none. What Autodesk did not write was read again by a model on
+17/11/2026, four agents against the English, Autodesk's tables and the Polish catalogs:
+
+- **The site and the editor**, 34 edits: what the English says and the first wording dropped
+  («Bez instalacji i konta», the hero's «Bez instalacji»), calques («jest o jedno naciśnięcie
+  klawisza stąd» → «Od deski kreślarskiej dzieli cię jedno naciśnięcie klawisza»), «AutoCADa 2027»,
+  «z Reactem»; in the editor only our own labels.
+- **The "Use" pages and exercises**, some 65 edits: agreement («z wymiarem umieszczonym poniżej»),
+  meaning restored («W poleceniu DIMDIAMETER wskazujesz okrąg»), AutoCAD's words («Wybieranie
+  cykliczne», «okręgi izo»), the exercises' names one way in every link (wspornik L, korpus
+  łożyska), UNION «zsumuj», never «połącz» (JOIN's POŁĄCZ).
+- **The command pages**, some 475 edits: «monit» for a prompt, a name always after «polecenie»
+  («Jak cofnąć polecenie SUMA?»), «wymiar wyrównany» (the engine's and Autodesk's, where «wymiar
+  dopasowany» was invented), «kąt rozwarcia», «oznaczenie» for an attribute's tag, «obwód
+  wieloboczny» as AREA prints it, F3's echo as the desktop's, `D` and `DDUNITS` gone (aliases of
+  aliases the console refuses), «zlokalizuj względem obiektu» for a snap.
+- **Left, for a native reader if one is found**: AcDimRes 305's «między liniami wymiarowymi» where
+  «pomocniczymi» is meant, and the cuix's «Nadpisania obiektu» (Autodesk's, kept); the layer
+  columns «Widoczność» and «Zamknięcie» (ours); «Sty, sty, sty», «kwadrat wyboru», «sylwetka»,
+  «Do góry nogami»; the drawings' «4 otw. <>» and «<> max» for THRU and TYP; the mechanical words
+  of the exercises (stopa, tuleja, oczko); the alias answers' added «… w polskiej wersji nie
+  działa», true for each one checked against `acad_pl.pgp`.

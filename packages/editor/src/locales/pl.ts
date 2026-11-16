@@ -282,7 +282,7 @@ export const pl: EditorLocale = {
           "instruction": "Bieżąca warstwa zostanie wyłączona. Co chcesz zrobić?",
           "turnOff": "Wyłącz bieżącą warstwę",
           "turnOffNote": "Obiekty tworzone od tej chwili nie będą wyświetlane na rysunku, dopóki warstwa nie zostanie ponownie włączona.",
-          "keepOn": "Zostaw bieżącą warstwę włączoną"
+          "keepOn": "Pozostaw bieżącą warstwę włączoną"
         },
         "nameInUse": {
           "title": "Warstwa – nazwa już istnieje",
@@ -377,7 +377,7 @@ export const pl: EditorLocale = {
       "no": "Nie",
       "size": "Rozmiar",
       "height": "Wysokość",
-      "heightHint": "Wysokość 0 pozostawia ją dowolną, więc polecenie TEKST pyta o nią za każdym razem."
+      "heightHint": "Przy wysokości 0 wysokość nie jest ustalona, więc polecenie TEKST pyta o nią za każdym razem."
     },
     "Blocks": {
       "title": "Bloki",

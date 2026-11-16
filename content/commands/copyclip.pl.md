@@ -30,4 +30,4 @@ Wybierz je i naciśnij Ctrl+C, otwórz drugi rysunek i naciśnij Ctrl+V, a potem
 
 ### Dlaczego wklejanie nie działa?
 
-Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli odmówi, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja.
+Przeglądarka może zapytać, czy strona może czytać schowek: zezwól. Jeśli przeglądarka odmówi dostępu, WKLEJ wkleja to, co ostatnio skopiowano na tej samej stronie. Gdy nic nie skopiowano, niczego nie wkleja.

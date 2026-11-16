@@ -52,4 +52,4 @@ Wymiary MellowCAD nie są jeszcze skojarzone, jak mówi <Message id="nonAssociat
 
 ### Jak zmienić wielkość tekstu i strzałek wymiaru?
 
-W stylu wymiarowania, jak w AutoCADzie: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera style wymiarowania, tutaj w palecie „Style”, tam gdzie AutoCAD ma Menedżer stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu.
+W stylu wymiarowania, jak w AutoCADzie: polecenie <Command id="DIMSTYLE" /> (`WST`) otwiera style wymiarowania, tutaj w palecie „Style”, a w AutoCADzie w Menedżerze stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu.

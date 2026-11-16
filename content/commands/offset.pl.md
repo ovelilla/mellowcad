@@ -5,7 +5,7 @@ figure: "Prostokąt odsunięty o 6 do wewnątrz i okrąg odsunięty o 6 na zewn�
 sourceHash: "b495af1e1410"
 ---
 
-Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odległości, którą wpisujesz, albo przez wskazany punkt: linia daje linię równoległą, okrąg lub łuk – współśrodkowy, polilinia – obrys wewnątrz lub na zewnątrz niej, elipsa lub splajn – splajn, który biegnie wzdłuż nich. Jak w AutoCADzie, polecenie bierze jeden obiekt naraz: odległość podajesz raz, a potem wskazujesz obiekt i stronę, po której ma stanąć kopia, tyle razy, ile chcesz. Enter kończy polecenie.
+Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odległości, którą wpisujesz, albo przez wskazany punkt: linia daje linię równoległą, okrąg lub łuk – współśrodkowy, polilinia – obrys wewnątrz lub na zewnątrz niej, elipsa lub splajn – splajn biegnący wzdłuż oryginału. Jak w AutoCADzie, polecenie przyjmuje jeden obiekt naraz: odległość podajesz raz, a potem wskazujesz obiekt i stronę, po której ma się znaleźć kopia, tyle razy, ile chcesz. Enter kończy polecenie.
 
 ## Options
 
@@ -45,7 +45,7 @@ OFFSET. W polskim AutoCADzie jego skrót to `OD`: wpisz go i naciśnij Enter lub
 
 ### Dlaczego nie mogę odsunąć obiektu?
 
-Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem <Message id="cannotOffsetObject" />; tak samo postępuje, gdy odległość ścisnęłaby okrąg, łuk lub polilinię do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana.
+Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem <Message id="cannotOffsetObject" />; tak samo postępuje, gdy przy tej odległości okrąg, łuk lub polilinia zmalałyby do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana.
 
 ### Jak odsunąć tę samą linię kilka razy?
 

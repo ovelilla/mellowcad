@@ -1,12 +1,12 @@
 ---
 title: "Polecenie ATRWID (ATTDISP) w AutoCADzie: pokaż i ukryj atrybuty"
 metaTitle: "Widoczność atrybutów w AutoCADzie: ATRWID"
-description: "Jak pokazać lub ukryć atrybuty bloków w AutoCADzie poleceniem ATRWID (ATTDISP): Standard, Tak także dla niewidocznych, Nie dla wszystkich. Zapisywane w rysunku."
+description: "Jak pokazać lub ukryć atrybuty bloków w AutoCADzie poleceniem ATRWID (ATTDISP): Standard, Tak – także niewidoczne, Nie – żadnych. Zapisywane w rysunku."
 figure: "Dwa biurka, których numery katalogowe to niewidoczne atrybuty: ATRWID Tak pokazuje je pod każdym biurkiem, obok widocznych numerów."
 sourceHash: "8821fdeb2077"
 ---
 
-Polecenie ATRWID (ATTDISP) ustala, które atrybuty pokazują odnośniki bloków w rysunku. Pyta o ustawienie, proponując bieżące, w nowym rysunku Standard; każde inne słowo daje komunikat, że słowo kluczowe jest niewłaściwe, i pytanie powtarza się, a Enter je zachowuje. Zmiana generuje ponownie cały rysunek, `Ponowne generowanie modelu.`, jak pisze AutoCAD 2027, i jest zapisywana w rysunku jako ATTMODE, w kroku, który cofa <Command id="U" />. Wpisane z apostrofem wewnątrz polecenia, działa także tam.
+Polecenie ATRWID (ATTDISP) ustala, które atrybuty pokazują odnośniki bloków w rysunku. Pyta o ustawienie, proponując bieżące, w nowym rysunku Standard; Enter zachowuje bieżące, a każde inne słowo daje komunikat, że słowo kluczowe jest niewłaściwe, i pytanie się powtarza. Zmiana generuje ponownie cały rysunek, `Ponowne generowanie modelu.`, jak pisze AutoCAD 2027, i jest zapisywana w rysunku jako zmienna ATTMODE; to krok, który cofa <Command id="U" />. Wpisane z apostrofem wewnątrz polecenia, działa także tam.
 
 Zmienia tylko to, co widać: niewidoczny atrybut zachowuje swoją wartość, a ukryty można nadal edytować poleceniem <Command id="ATTEDIT" /> lub <Command id="EATTEDIT" />.
 

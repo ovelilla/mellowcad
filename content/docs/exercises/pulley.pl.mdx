@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimetrach: otwór o średnicy 20, piasta długa na 30 i o średnicy 40, tarcza grubości 10 i wieniec szeroki na 24, od średnicy 90 do 110, wyśrodkowany na piaście. Przekrój rysuje się jako odległości od osi, która biegnie wzdłuż osi Y, więc każdą średnicę rysuje się jako jej połowę.
+Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimetrach: otwór o średnicy 20, piasta długa na 30 i o średnicy 40, tarcza o grubości 10 i wieniec szeroki na 24, od średnicy 90 do 110, wyśrodkowany na piaście. Przekrój rysuje się jako odległości od osi, która biegnie wzdłuż osi Y, więc każdą średnicę rysuje się jako jej połowę.
 
 - **Ćwiczenie:** Średniozaawansowany · Mechanika · Bryła 3D
 - **Polecenia:** [`PLINIA`](/docs/commands/pline), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`PRZEKRĘĆ`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
@@ -14,13 +14,13 @@ Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimet
 
 ## Rysunek [#drawing]
 
-<Session name="exercises/pulley" caption="Półprzekrój koła pasowego obok jego osi, z odległościami od osi zwymiarowanymi." />
+<Session name="exercises/pulley" caption="Półprzekrój koła pasowego obok jego osi, ze zwymiarowanymi odległościami od osi." />
 
 <Session name="exercises/pulley/model" caption="Koło pasowe jako bryła, widziane z południowego wschodu w stylu wizualnym Koncepcyjny." />
 
 ## Krok po kroku [#steps]
 
-Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
 
 ### 1. Narysuj półprzekrój [#profile]
 
@@ -30,7 +30,7 @@ Na warstwie Kontur jedna zamknięta polilinia poleceniem [`PLINIA`](/docs/comman
 
 ### 2. Obróć widok [#view]
 
-Polecenie `-WIDOK` i opcja `SEIzo` pokazują przekrój z południowego wschodu i z góry; polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny` cieniują ściany, co najlepiej pokazuje część toczoną.
+Polecenie `-WIDOK` i opcja `SEIzo` pokazują przekrój z południowego wschodu i z góry; polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny` cieniują ściany – tak najlepiej widać część toczoną.
 
 <Session name="exercises/pulley/view" caption="2. Obróć widok" />
 

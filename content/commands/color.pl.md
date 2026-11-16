@@ -50,7 +50,7 @@ Kolor indeksowany 7, wpisywany też jako `7`: biały na ciemnym tle i czarny na 
 
 ## Missing
 
-Okno dialogowe Wybierz kolor, palety kolorów i postać HSL. Kolory indeksowane od 8 do 255: przyjmowane są tylko od 1 do 7. JakBlok. Kolor Truecolor zgodny z kolorem indeksowanym jest zapisywany jako ten kolor indeksowany, tam gdzie AutoCAD zachowuje RGB. Przezroczystość (CETRANSPARENCY) oraz domyślne wartości dla typów HPCOLOR, HPLAYER, DIMLAYER i TEXTLAYER.
+Okno dialogowe Wybierz kolor, palety kolorów i postać HSL. Kolory indeksowane od 8 do 255: przyjmowane są tylko od 1 do 7. JakBlok. Kolor Truecolor zgodny z kolorem indeksowanym jest zapisywany jako ten kolor indeksowany, podczas gdy AutoCAD zachowuje RGB. Przezroczystość (CETRANSPARENCY) oraz domyślne wartości dla typów HPCOLOR, HPLAYER, DIMLAYER i TEXTLAYER.
 
 ## Questions
 

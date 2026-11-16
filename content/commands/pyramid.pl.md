@@ -2,13 +2,13 @@
 title: "Ostrosłup w AutoCADzie: polecenie OSTROSŁUP (PYRAMID)"
 metaTitle: "Ostrosłup w AutoCADzie: OSTROSŁUP (PYRAMID)"
 description: "Jak narysować ostrosłup 3D w AutoCADzie poleceniem OSTROSŁUP (PYRAMID, skrót OST): boki, podstawa, wysokość, krawędź i promień górny ściętego. Wypróbuj online."
-figure: "Ostrosłup o sześciu bokach, z podstawą 25 do połowy każdego boku i wysokości 40, widziany z południowego wschodu w stylu wizualnym Ukryty."
+figure: "Ostrosłup o sześciu bokach, z podstawą o promieniu 25 do połowy każdego boku i wysokości 40, widziany z południowego wschodu w stylu wizualnym Ukryty."
 sourceHash: "acbc5ffa71cb"
 ---
 
-Polecenie OSTROSŁUP (PYRAMID) rysuje bryłę 3D w kształcie ostrosłupa: pierwszy wiersz podaje, ile boków ma podstawa i jak jest odczytywany jej promień, potem polecenie pyta o środek podstawy, promień i wysokość. Podstawa to wielokąt foremny, taki, jaki rysuje <Command id="POLYGON" />, na początku o 4 bokach: wpisany promień obraca ją w stronę kursora, punkt – w stronę samego siebie. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół, a punkt podaje ją przez swoją odległość od podstawy. Liczba boków i sposób odczytu promienia zostają na następne polecenie OSTROSŁUP; promień i wysokość to wspólne wartości domyślne brył podstawowych. Ostrosłup leży na bieżącej warstwie, a polecenie Cofaj cofa go w jednym kroku.
+Polecenie OSTROSŁUP (PYRAMID) rysuje bryłę 3D w kształcie ostrosłupa: pierwszy wiersz podaje, ile boków ma podstawa i jak jest odczytywany jej promień, potem polecenie pyta o środek podstawy, promień i wysokość. Podstawa to wielokąt foremny, taki, jaki rysuje <Command id="POLYGON" />, na początku o 4 bokach: wpisany promień obraca ją w stronę kursora, punkt – w stronę samego siebie. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół, a punkt wyznacza ją swoją odległością od podstawy. Liczba boków i sposób odczytu promienia są zachowywane dla następnego polecenia OSTROSŁUP; promień i wysokość to wspólne wartości domyślne brył podstawowych. Ostrosłup leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
-<Command id="LIST" /> pokazuje jego położenie, oba promienie, podstawy i góry, wysokość, obrót i liczbę boków, a na palecie Właściwości można wpisać promienie, liczbę boków i wysokość. Jego uchwyty przesuwają go, ustalają wysokość i zmieniają rozmiar podstawy od narożnika lub od połowy boku. To bryła 3D dla <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty 3D w MellowCAD – tylko bryły 3D, wciąż częściowe; polecenie <Command id="EXPLODE" /> rozbija go na regiony, po jednym na ścianę.
+<Command id="LIST" /> pokazuje jego położenie, oba promienie, podstawy i góry, wysokość, obrót i liczbę boków, a na palecie Właściwości można wpisać promienie, liczbę boków i wysokość. Jego uchwyty przesuwają go, ustalają wysokość i zmieniają rozmiar podstawy z wierzchołka lub ze środka boku. To bryła 3D dla <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty funkcji 3D w MellowCAD, które obejmują tylko bryły i wciąż są częściowe; polecenie <Command id="EXPLODE" /> rozbija go na regiony, po jednym na ścianę.
 
 ## Options
 
@@ -22,7 +22,7 @@ Przy środku podstawy: pyta o liczbę boków, od 3 do 32, a potem znów o środe
 
 ### Inscribed
 
-Przy promieniu: odczytuje promień do narożnika podstawy, czyli wielokąt wpisany w ten okrąg, i pyta o niego ponownie.
+Przy promieniu: odczytuje promień do wierzchołka podstawy, czyli wielokąt wpisany w ten okrąg, i pyta o niego ponownie.
 
 ### Circumscribed
 
@@ -42,7 +42,7 @@ Przy wysokości: pyta o promień górny, odczytywany tak jak promień podstawy, 
 
 ## Missing
 
-To, czego brakuje poleceniu <Command id="BOX" />: Przesuń, Obróć, Skaluj i Lustro z gorącego uchwytu, jego własne polecenia 3D i style wizualne, których brakuje poleceniu <Command id="VSCURRENT" />. Jego typ, wpisany lub opisany, wpisywany na palecie Właściwości. Wymiary z kropkowanych linii, które AutoCAD rysuje, gdy podajesz promień i krawędź.
+To, czego brakuje poleceniu <Command id="BOX" />: Przesuń, Obróć, Skala i Lustro z aktywnego uchwytu, jego własne polecenia 3D i style wizualne, których brakuje poleceniu <Command id="VSCURRENT" />. Jego typ, wpisany lub opisany, wpisywany na palecie Właściwości. Wymiary kropkowane, które AutoCAD rysuje, gdy podajesz promień i krawędź.
 
 ## Questions
 

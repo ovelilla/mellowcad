@@ -1,7 +1,7 @@
 ---
 title: "Ćwiczenie AutoCAD 3D: korpus łożyska"
 metaTitle: "Ćwiczenie AutoCAD 3D: korpus łożyska z otworami"
-description: "Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, połącz, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online."
+description: "Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, zsumuj, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online."
 figure: "Korpus łożyska w rzucie, 100 na 60, z wymiarami tulei, otworu łożyskowego i otworów."
 model: "Korpus łożyska jako bryła, widziany z południowego wschodu w stylu wizualnym Koncepcyjny."
 sourceHash: "5579d6bd5a86"
@@ -13,15 +13,15 @@ Zamodeluj ten korpus łożyska w milimetrach: podstawa 100 na 60 z narożami o p
 
 ### Narysuj rzut [#plan]
 
-Na warstwie Kontur polecenie <Command id="RECTANG" /> z opcją <Keyword command="RECTANG" id="Fillet" /> równą `10`, od `0,0` do `100,60`, i okrąg w jego środku, `50,30`, o średnicy (<Keyword command="CIRCLE" id="Diameter" />) `40`.
+Na warstwie Kontur polecenie <Command id="RECTANG" /> z zaokrągleniem (<Keyword command="RECTANG" id="Fillet" />) `10`, od `0,0` do `100,60`, i okrąg w jego środku, `50,30`, o średnicy (<Keyword command="CIRCLE" id="Diameter" />) `40`.
 
 ### Wyciągnij podstawę i tuleję [#extrude]
 
 Polecenie <Command id="EXTRUDE" />: kontur na wysokość `12`, potem okrąg na wysokość `40`. Powstają dwie bryły.
 
-### Połącz je [#union]
+### Zsumuj je [#union]
 
-Polecenie <Command id="UNION" />: wskaż obie i naciśnij Enter. Są jedną bryłą.
+Polecenie <Command id="UNION" />: wskaż obie i naciśnij Enter. Tworzą jedną bryłę.
 
 ### Narysuj walce [#holes]
 
@@ -33,4 +33,4 @@ Polecenie <Command id="SUBTRACT" />: wskaż korpus i naciśnij Enter, potem trzy
 
 ### Obróć widok [#view]
 
-Polecenie <Command id="-VIEW" /> i opcja <Keyword command="VIEW" id="SEiso" />, polecenie <Command id="VSCURRENT" /> i opcja <Keyword command="VSCURRENT" id="Conceptual" />, potem polecenie <Command id="ZOOM" /> z opcją <Keyword command="ZOOM" id="Extents" /> i `0.8x`, aby go objąć.
+Polecenie <Command id="-VIEW" /> i opcja <Keyword command="VIEW" id="SEiso" />, polecenie <Command id="VSCURRENT" /> i opcja <Keyword command="VSCURRENT" id="Conceptual" />, potem polecenie <Command id="ZOOM" /> z opcją <Keyword command="ZOOM" id="Extents" /> i `0.8x`, aby dopasować go do ekranu.

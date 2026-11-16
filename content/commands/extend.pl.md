@@ -5,7 +5,7 @@ figure: "Dwie linie wydłużone do linii leżącej w poprzek ich drogi: każda w
 sourceHash: "b2c0044f8e87"
 ---
 
-Polecenie WYDŁUŻ (EXTEND) wydłuża obiekt, aż spotka inny: wskazujesz go blisko końca, który ma rosnąć, a ten koniec biegnie dalej do najbliższej krawędzi na swojej drodze. Wydłuża linie, łuki, łuki eliptyczne, otwarte polilinie (wzdłuż ich końcowego segmentu, prostego lub po jego łuku), polilinie 3D i otwarte splajny. Zaczyna w trybie szybkim, jak w AutoCADzie: każdy obiekt jest obwiednią. Wskazanie z wciśniętym klawiszem Shift ucina zamiast tego, jak polecenie <Command id="TRIM" />. Każde wskazanie to jeden krok cofania; Enter kończy polecenie.
+Polecenie WYDŁUŻ (EXTEND) wydłuża obiekt, aż spotka inny: wskazujesz go blisko końca, który ma rosnąć, a ten koniec biegnie dalej do najbliższej krawędzi na swojej drodze. Wydłuża linie, łuki, łuki eliptyczne, otwarte polilinie (wzdłuż ich końcowego segmentu, prostego lub po jego łuku), polilinie 3D i otwarte splajny. Zaczyna w trybie szybkim, jak w AutoCADzie: każdy obiekt jest obwiednią. Wskazanie z wciśniętym klawiszem Shift zamiast wydłużać, ucina, jak polecenie <Command id="TRIM" />. Każde wskazanie to jeden krok cofania; Enter kończy polecenie.
 
 ## Options
 
@@ -35,7 +35,7 @@ Pojawia się na liście, gdy monit dostał już odpowiedź – wskazanie, krawę
 
 ## Missing
 
-Rzutuj: opcja rzutowania AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest liczone w rzucie na płaszczyznę XY układu LUW, co jest domyślnym ustawieniem AutoCADa, LUW. Krawędzi wybierającej nie można jeszcze przeciągnąć kursorem, tylko wskazać punkt po punkcie. Tryb i wybór w opcji <Keyword id="Edge" /> obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt ustawiony pod kątem do LUW, z wyjątkiem splajnu, ani nie ogranicza, ani nie jest wydłużany, a polilinia wygładzona opcją <Keyword command="PEDIT" id="Fit" /> polecenia <Command id="PEDIT" /> jest odrzucana, podczas gdy AutoCAD wydłuża jej ostatni łuk.
+Rzutuj: opcja rzutowania AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest liczone w rzucie na płaszczyznę XY układu LUW, co jest domyślnym ustawieniem AutoCADa, LUW. Krawędzi wybierającej nie można jeszcze przeciągnąć kursorem, tylko wskazać punkt po punkcie. Tryb i wybór w opcji <Keyword id="Edge" /> obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt ustawiony pod kątem do LUW, z wyjątkiem splajnu, ani nie jest obwiednią, ani nie jest wydłużany, a polilinia wygładzona opcją <Keyword command="PEDIT" id="Fit" /> polecenia <Command id="PEDIT" /> jest odrzucana, podczas gdy AutoCAD wydłuża jej ostatni łuk.
 
 ## Questions
 

@@ -5,9 +5,9 @@ figure: "NFRAGM przeciągnięte w prawo i w dół, potem Enter: płytka przesuwa
 sourceHash: "0ca3050831f3"
 ---
 
-Polecenie NFRAGM (PAN) przesuwa widok; nic w rysunku się nie rusza. Zaczyna od <Message id="panExit" /> i o nic więcej nie pyta: kursor zmienia się w dłoń, a przeciąganie lewym przyciskiem przesuwa z nim widok, ile razy chcesz, aż Enter lub Esc je zakończy. Bez polecenia NFRAGM przeciąganie wciśniętym kółkiem myszy przesuwa widok w każdej chwili, nawet w trakcie polecenia. Każde użycie polecenia NFRAGM to krok cofania, łączony z sąsiednimi ZOOM i NFRAGM, więc <Command id="U" /> przywraca widok. Wpisane z apostrofem, `'NFRAGM` lub `'NF`, działa wewnątrz innego polecenia, które potem trwa dalej.
+Polecenie NFRAGM (PAN) przesuwa widok; nic w rysunku się nie rusza. Zaczyna od <Message id="panExit" /> i o nic więcej nie pyta: kursor zmienia się w dłoń, a przeciąganie lewym przyciskiem przesuwa z nim widok, ile razy chcesz, aż Enter lub Esc zakończy polecenie. Bez polecenia NFRAGM przeciąganie wciśniętym kółkiem myszy przesuwa widok w każdej chwili, nawet w trakcie polecenia. Każde użycie polecenia NFRAGM to krok cofania, łączony z sąsiednimi ZOOM i NFRAGM, więc <Command id="U" /> przywraca widok. Wpisane z apostrofem, `'NFRAGM` lub `'NF`, działa wewnątrz innego polecenia, które potem trwa dalej.
 
-<Command id="-PAN" /> przesuwa widok o dwa punkty: punkt bazowy i drugi punkt, a widok przesuwa się o odległość między nimi; albo o przemieszczenie wpisane przy pierwszym monicie, na przykład `50,0`, i Enter przy drugim. Ono również działa przezroczyście i jest osobnym krokiem cofania.
+<Command id="-PAN" /> przesuwa widok o dwa punkty: punkt bazowy i drugi punkt, a widok przesuwa się o odległość między nimi; albo o przemieszczenie wpisane przy pierwszym monicie, na przykład `50,0`, i Enter przy drugim. To polecenie również działa przezroczyście i jest osobnym krokiem cofania.
 
 ## Missing
 
@@ -21,11 +21,11 @@ PAN. W polskim AutoCADzie jego skrót to `NF`: wpisz go i naciśnij Enter lub sp
 
 ### Jak przesuwać widok myszą w AutoCADzie?
 
-Wciśnij kółko myszy i przeciągaj: widok podąża za kursorem. Obracaj kółkiem, aby powiększać i pomniejszać wokół kursora. Na touchpadzie uruchom polecenie NFRAGM i przeciągaj lewym przyciskiem.
+Wciśnij kółko myszy i przeciągaj: widok podąża za kursorem. Obracaj kółko, aby powiększać i pomniejszać wokół kursora. Na touchpadzie uruchom polecenie NFRAGM i przeciągaj lewym przyciskiem.
 
 ### Jak przesunąć widok w trakcie rysowania?
 
-Przeciągnij wciśniętym kółkiem albo wpisz `'NF` przy monicie polecenia: polecenie czeka, aż przesuniesz widok, a potem znów pyta tam, gdzie skończyło.
+Przeciągnij wciśniętym kółkiem albo wpisz `'NF` przy monicie polecenia: polecenie czeka, aż przesuniesz widok, a potem ponawia monit, przy którym zostało przerwane.
 
 ### Jak przesunąć widok o dokładną odległość?
 

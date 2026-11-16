@@ -6,7 +6,7 @@ figure: "Okrąg skopiowany trzy razy wzdłuż X z jednego punktu bazowego, potem
 sourceHash: "e74bbdabf97c"
 ---
 
-Polecenie KOPIUJ (COPY) umieszcza kopie wybranych obiektów: wybierz je, podaj punkt bazowy, a potem drugi punkt dla każdej kopii. Jak w AutoCADzie, którego tryb kopiowania to domyślnie Wiele, pyta o kolejną kopię, dopóki nie naciśniesz Enter albo nie wybierzesz opcji Zakończ, a każda kopia jest odmierzana od tego samego punktu bazowego. Kopie zachowują warstwę, kolor i wszystkie inne właściwości obiektów. Obiekty wybrane przed poleceniem są tymi, które kopiuje, a gdy umieszczasz kopię, zestaw podąża za kursorem.
+Polecenie KOPIUJ (COPY) umieszcza kopie wybranych obiektów: wybierz je, podaj punkt bazowy, a potem drugi punkt dla każdej kopii. Jak w AutoCADzie, którego tryb kopiowania to domyślnie Wiele, pyta o kolejną kopię, dopóki nie naciśniesz Enter albo nie wybierzesz opcji Zakończ, a każda kopia jest odmierzana od tego samego punktu bazowego. Kopie zachowują warstwę, kolor i wszystkie inne właściwości obiektów. Polecenie kopiuje także obiekty wybrane przed jego uruchomieniem, a gdy umieszczasz kopię, zestaw podąża za kursorem.
 
 ## Options
 
@@ -34,7 +34,7 @@ Po angielsku COPY, w polskim AutoCADzie KOPIUJ: wpisz `K`, potem naciśnij Enter
 
 ### Jak zrobić kilka kopii naraz w AutoCADzie?
 
-Umieszczaj dalej: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka <Command id="ARRAY" /> tworzy za jednym razem.
+Umieszczaj kolejne kopie: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka <Command id="ARRAY" /> tworzy za jednym razem.
 
 ### Jak skopiować obiekt o zadaną odległość?
 
@@ -42,4 +42,4 @@ Podaj punkt bazowy, a potem wpisz drugi punkt jako odległość: `30,0` kopiuje 
 
 ### Dlaczego w poleceniu KOPIUJ nie ma opcji Szyk?
 
-MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje <Command id="ARRAYRECT" /> z jednym wierszem, który zachowuje je jako jeden szyk do edycji.
+MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje <Command id="ARRAYRECT" /> z jednym wierszem i zachowuje je jako jeden szyk do edycji.

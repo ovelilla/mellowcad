@@ -1,7 +1,7 @@
 ---
 title: "Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)"
 metaTitle: "Wymiar promienia w AutoCADzie: WYMPROMIEŃ"
-description: "Jak zwymiarować promień okręgu, łuku lub zaokrąglenia w AutoCADzie poleceniem WYMPROMIEŃ (DIMRADIUS, skrót WR): wskaż krzywą i umieść tekst R wewnątrz lub obok."
+description: "Jak zwymiarować promień okręgu, łuku lub zaokrąglenia w AutoCADzie poleceniem WYMPROMIEŃ (DIMRADIUS, WR): wskaż krzywą, umieść tekst R wewnątrz lub na zewnątrz."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie wymiaru promienia po angielsku i jaki ma skrót?","answer":"Po angielsku DIMRADIUS, w polskim AutoCADzie WYMPROMIEŃ: wpisz WR lub WYMR, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMRADIUS – w AutoCADzie w każdym języku."},{"question":"Jak zwymiarować zaokrąglenie lub zaokrąglony narożnik?","answer":"Wskaż zaokrąglenie: jest ono łukiem albo łukowym segmentem polilinii, jak narożniki, które polecenie PROSTOK zaokrągla opcją Zaokrąglij, a polecenie WYMPROMIEŃ przyjmuje oba."},{"question":"Dlaczego nie mogę wybrać obiektu do zwymiarowania?","answer":"Polecenie WYMPROMIEŃ przyjmuje okrąg, łuk lub łukowy segment polilinii, także na zablokowanej warstwie. Każdy inny obiekt, również elipsa, daje „Wybrany obiekt nie jest łukiem ani okręgiem.” i pytanie pada ponownie; krzywej wewnątrz odnośnika bloku nie można jeszcze wskazać."},{"question":"Jak dodać opis do wymiaru promienia?","answer":"Wybierz Tekst przed umieszczeniem wymiaru i wpisz „<> max”: <> to wartość z literą R, więc wymiar brzmi „R10 max”. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”."}]
@@ -17,7 +17,7 @@ Polecenie WYMPROMIEŃ (DIMRADIUS) wymiaruje promień okręgu, łuku lub łukoweg
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="dimradius" caption="Zaokrąglony narożnik płytki zwymiarowany na zewnątrz, a jej otwór wewnątrz: wskazana każda krzywa, potem umieszczony tekst." />
 

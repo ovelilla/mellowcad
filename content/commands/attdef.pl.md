@@ -14,7 +14,7 @@ ATRDEF w AutoCADzie otwiera okno dialogowe Definicja atrybutu, którego MellowCA
 
 ### Invisible
 
-Wartość nie jest widoczna na odnośnikach, dopóki nie włączy jej <Command id="ATTDISP" />. Każdy tryb to przełącznik: wybranie go zmienia go między `T` a `N`, ponownie wypisuje tryby i pyta jeszcze raz. Tryby pozostają ustawione dla następnego ATRDEF.
+Wartość nie jest widoczna na odnośnikach, dopóki nie włączy jej <Command id="ATTDISP" />. Każdy tryb to przełącznik: wybranie go zmienia go między `T` a `N`, ponownie wypisuje tryby i pyta jeszcze raz. Tryby pozostają ustawione do następnego wywołania ATRDEF.
 
 ### Constant
 
@@ -22,7 +22,7 @@ Każdy odnośnik ma tę samą wartość, o którą ATRDEF pyta zamiast monitu i 
 
 ### Verify
 
-WSTAW pyta o wartość drugi raz, aby ją sprawdzić, po zapytaniu raz o każdą wartość.
+WSTAW pyta o wartość po raz drugi, aby ją sprawdzić, gdy już raz zapyta o wszystkie wartości.
 
 ### Preset
 
@@ -34,7 +34,7 @@ Na początku włączony: atrybut zostaje tam, gdzie umieszcza go blok.
 
 ### Justify
 
-Pyta, względem którego miejsca tekst jest zaczepiony w swoim punkcie, tak jak TEKST: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" /> albo jeden z dziewięciu punktów według góry, środka i dołu oraz lewej, środka i prawej. Monit o punkt początkowy pyta potem o wskazany punkt: środek-środek centruje wartość w symbolu.
+Pyta, jak tekst jest wyrównany względem swojego punktu, tak jak TEKST: <Keyword id="Left" />, <Keyword id="Center" />, <Keyword id="Right" />, <Keyword id="Middle" /> albo jeden z dziewięciu punktów: u góry, pośrodku lub u dołu oraz z lewej, na środku lub z prawej. Monit o punkt początkowy pyta potem o wybrany punkt: środek w pionie i w poziomie centruje wartość w oznaczeniu.
 
 ### Style
 

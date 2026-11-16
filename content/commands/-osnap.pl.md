@@ -1,14 +1,14 @@
 ---
 title: "Lokalizacja względem obiektu w AutoCADzie: polecenie -OBIEKT (-OSNAP)"
 metaTitle: "Lokalizacja w AutoCADzie: -OBIEKT (-OSNAP) i F3"
-description: "Lokalizacja względem obiektu w AutoCADzie: -OBIEKT (-OSNAP, -O) ustawia stałe tryby, F3 ją włącza, a KOŃ, SYM lub Shift + prawy przycisk dają jednorazową."
+description: "Lokalizacja względem obiektu w AutoCADzie: -OBIEKT (-OSNAP) ustawia stałe tryby, F3 je włącza i wyłącza, a KOŃ, SYM lub Shift + prawy przycisk wymuszają jeden."
 figure: "-OBIEKT ustawia stałe tryby Punkt symetrii i Środek; LINIA biegnie potem od punktu symetrii boku do środka okręgu, a górny bok pokazuje znacznik punktu symetrii."
 sourceHash: "627cd26c12df"
 ---
 
-Lokalizacja względem obiektu umieszcza wskazany punkt dokładnie w charakterystycznym punkcie obiektu: w punkcie końcowym, w punkcie symetrii, w środku. Gdy lokalizacja jest włączona, kursor w pobliżu takiego punktu pokazuje jego zielony znacznik i nazwę w etykiecie narzędzia; kliknięcie trafia wtedy w ten punkt, a nie tam, gdzie stoi kursor. Stałe tryby lokalizacji działają przy każdym monicie o punkt: na początku Punkt końcowy, Środek, Punkt przecięcia i Przedłużenie, jak w AutoCADzie. F3 włącza i wyłącza lokalizację względem obiektu, wypisując `<Lokalizacja włączona>` lub `<Lokalizacja wyłączona>`; to samo robi przycisk Lokalizacja względem obiektu na pasku stanu, którego menu ma pole wyboru dla każdego trybu. Gdy pod kursorem jest kilka punktów lokalizacji, wygrywa najbliższy, a klawisz Tab przechodzi między pozostałymi. Tryb orto, śledzenie biegunowe i tryb skoku nigdy nie przesuwają zlokalizowanego punktu.
+Lokalizacja względem obiektu umieszcza wskazany punkt dokładnie w charakterystycznym punkcie obiektu: w punkcie końcowym, w punkcie symetrii, w środku. Gdy lokalizacja jest włączona, kursor w pobliżu takiego punktu pokazuje jego zielony znacznik i nazwę w etykiecie narzędzia; kliknięcie trafia wtedy w ten punkt, a nie tam, gdzie stoi kursor. Stałe tryby lokalizacji działają przy każdym monicie o punkt: na początku Punkt końcowy, Środek, Punkt przecięcia i Przedłużenie, jak w AutoCADzie. F3 włącza i wyłącza lokalizację względem obiektu, wypisując `<Stałe tryby lokalizacji włącz>` lub `<Stałe tryby lokalizacji wyłącz>`; to samo robi przycisk Lokalizacja względem obiektu na pasku stanu, którego menu ma pole wyboru dla każdego trybu. Gdy pod kursorem jest kilka punktów lokalizacji, wygrywa najbliższy, a klawisz Tab przechodzi między pozostałymi. Tryb orto, śledzenie biegunowe i tryb skoku nigdy nie przesuwają zlokalizowanego punktu.
 
-Polecenie -OBIEKT (-OSNAP) ustawia stałe tryby w wierszu polecenia. Wypisuje tryby, które działają teraz, a potem prosi o listę trybów: każdy jego wielkimi literami, oddzielone przecinkami, jak `KOŃ,SYM,CEN`, lub `_END,_MID` w AutoCADzie w każdym języku. Lista zastępuje stały zestaw i włącza lokalizację względem obiektu; <Keyword id="NONe" />, <Keyword id="OFF" /> lub sam Enter go czyści. Na nieznany tryb polecenie odpowiada <Message id="invalidOsnapModes" /> i pyta ponownie. Wpisane z apostrofem, `'-OBIEKT`, działa wewnątrz innego polecenia. Stałe tryby obowiązują do ponownego wczytania strony, a potem znów są to cztery tryby AutoCADa: jak w AutoCADzie, rysunek ich nie przechowuje.
+Polecenie -OBIEKT (-OSNAP) ustawia stałe tryby w wierszu polecenia. Wypisuje tryby, które działają teraz, a potem prosi o listę trybów: każdy skrótem z wielkich liter jego nazwy, oddzielone przecinkami, jak `KOŃ,SYM,CEN`, lub `_END,_MID` w AutoCADzie w każdym języku. Lista zastępuje stały zestaw i włącza lokalizację względem obiektu; <Keyword id="NONe" />, <Keyword id="OFF" /> lub sam Enter go czyści. Na nieznany tryb polecenie odpowiada <Message id="invalidOsnapModes" /> i pyta ponownie. Wpisane z apostrofem, `'-OBIEKT`, działa wewnątrz innego polecenia. Stałe tryby obowiązują do ponownego wczytania strony, a potem znów są to cztery tryby AutoCADa: jak w AutoCADzie, rysunek ich nie przechowuje.
 
 Dla jednego punktu można je zastąpić: wpisz wielkie litery trybu w odpowiedzi na monit o punkt, `SYM` lub `_MID`, albo przytrzymaj Shift i kliknij prawym przyciskiem myszy, aby wybrać tryb z menu. Szukany jest wtedy tylko ten tryb, niezależnie od stałych, i tylko dla tego punktu; jeśli niczego nie znajdzie, punkt zostaje odrzucony i monit się powtarza. Wpisany wielkimi literami, <Keyword id="NONe" /> wyłącza lokalizację dla jednego punktu. To samo menu oferuje <Command id="FROM" />: punkt bazowy, a potem odsunięcie od niego, więc `@10,0` to 10 w prawo od niego.
 
@@ -20,7 +20,7 @@ Najbliższy koniec linii, łuku, segmentu polilinii, łuku eliptycznego lub spla
 
 ### MIDpoint
 
-Połowa długości linii, łuku, segmentu polilinii, łuku eliptycznego lub splajnu. Trójkąt.
+Punkt w połowie długości linii, łuku, segmentu polilinii, łuku eliptycznego lub splajnu. Trójkąt.
 
 ### CENter
 
@@ -44,7 +44,7 @@ Za końcem linii, łuku lub prostego segmentu polilinii: przesuń kursor nad kon
 
 ### INSertion
 
-Punkt, w którym zaczepiony jest tekst, definicja atrybutu lub odnośnik bloku.
+Punkt wstawienia tekstu, definicji atrybutu lub odnośnika bloku.
 
 ### PERpendicular
 
@@ -76,7 +76,7 @@ To samo co <Keyword id="NONe" />: stały zestaw zostaje wyczyszczony.
 
 ## Missing
 
-Okno dialogowe Ustawienia rysunkowe, które w AutoCADzie otwierają OBIEKT i OO: tu są to nieznane polecenia, a tryby ustawia menu paska stanu. Środek geometryczny, jako tryb i w menu. Punkt na punktach definiujących wymiar i początku jego tekstu: tu znajduje tylko obiekty punktów. Środek między 2 punktami, tymczasowy punkt śledzenia i klawisze przytrzymywane dla jednorazowej lokalizacji (Shift + A, Shift + Q…). Punkt przecięcia, Prostopadle i Styczna na elipsach, Prostopadle i Styczna na splajnach oraz Przedłużenie od końca łukowego segmentu polilinii albo z odległością i kątem w etykiecie narzędzia. Prostopadle lub Styczna czekające na drugi punkt na początku innego polecenia niż <Command id="LINE" /> i <Command id="CIRCLE" />. Ustawienia celownika i znacznika, CELOWNIK i AUTOSNAP.
+Okno dialogowe Ustawienia rysunkowe, które w AutoCADzie otwierają OBIEKT i OO: tu są to nieznane polecenia, a tryby ustawia menu paska stanu. Środek geometryczny, jako tryb i w menu. Tryb Punkt na punktach definiujących wymiar i na początku jego tekstu: tu znajduje tylko obiekty punktów. Środek między 2 punktami, tymczasowy punkt śledzenia i klawisze przytrzymywane dla jednorazowej lokalizacji (Shift + A, Shift + Q…). Punkt przecięcia, Prostopadle i Styczna na elipsach, Prostopadle i Styczna na splajnach oraz Przedłużenie od końca łukowego segmentu polilinii albo z odległością i kątem w etykiecie narzędzia. Prostopadle lub Styczna czekające na drugi punkt na początku innego polecenia niż <Command id="LINE" /> i <Command id="CIRCLE" />. Ustawienia celownika i znacznika, CELOWNIK i AUTOSNAP.
 
 ## Questions
 

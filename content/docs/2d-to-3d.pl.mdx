@@ -1,16 +1,16 @@
 ---
 title: Od 2D do 3D w AutoCADzie
 metaTitle: "AutoCAD 3D: od rysunku 2D do bryły"
-description: "Jak zamienić rysunek 2D w bryłę 3D w AutoCADzie: wyciągnij lub obróć zamknięty profil, dodaj i odejmij bryły. Darmowe bryły 3D online, wciąż częściowo."
+description: "Jak zamienić rysunek 2D w bryłę 3D w AutoCADzie: wyciągnij, naciśnij i pociągnij lub obróć profil, dodaj i odejmij. Darmowe bryły 3D online, na razie częściowo."
 type: howTo
 sourceHash: "6ead7769724f"
 ---
 
-W AutoCADzie bryła zwykle zaczyna się od rysunku 2D: zamkniętego profilu, narysowanego jak każdy rzut, potem wyciągniętego na wysokość lub obróconego wokół osi i połączonego z innymi bryłami albo przez nie przyciętego. Bryły 3D w MellowCAD tworzy się tak samo, tymi samymi poleceniami. Wciąż są częściowe: nie ma jeszcze przeciągnięć, wyciągnięć po przekrojach, siatek ani renderowania. Każda sekcja pokazuje sesję, którą rysuje silnik, i jej historię, tak jak ją wpiszesz.
+W AutoCADzie bryła zwykle zaczyna się od rysunku 2D: zamkniętego profilu, narysowanego jak każdy rzut, potem wyciągniętego na wysokość lub obróconego wokół osi i połączonego z innymi bryłami albo przez nie przyciętego. Bryły 3D w MellowCAD tworzy się tak samo, tymi samymi poleceniami. Ich obsługa jest wciąż częściowa: nie ma jeszcze przeciągania po ścieżce, wyciągnięcia po przekrojach, siatek ani renderowania. Każda sekcja pokazuje sesję, którą rysuje silnik, i jej historię, tak jak ją wpiszesz.
 
 ## Narysuj zamknięty profil [#profile]
 
-Bryła potrzebuje zamkniętego profilu: zamkniętej polilinii, prostokąta, okręgu lub regionu. Linie stykające się końcami nadal są osobnymi obiektami: polecenie <Command id="JOIN" /> robi z nich jedną polilinię, a polecenie <Command id="REGION" /> region. Rysuj profil w rzucie, gdzie najłatwiej wpisywać jego punkty.
+Bryła potrzebuje zamkniętego profilu: zamkniętej polilinii, prostokąta, okręgu lub regionu. Linie stykające się końcami nadal są osobnymi obiektami: polecenie <Command id="JOIN" /> tworzy z nich jedną polilinię, a polecenie <Command id="REGION" /> region. Rysuj profil w rzucie, gdzie najłatwiej wpisywać jego punkty.
 
 ## Wyciągnij go [#extrude]
 
@@ -20,7 +20,7 @@ Polecenie <Command id="EXTRUDE" />: wskaż profil, naciśnij Enter i wpisz wysok
 
 ## Naciśnij i pociągnij obszar [#presspull]
 
-Polecenie <Command id="PRESSPULL" /> nie potrzebuje profilu: kliknij wewnątrz dowolnego zamkniętego obszaru, nawet ograniczonego osobnymi liniami, i wpisz wysokość. Kliknięte na ścianie bryły, wciska lub wyciąga tę ścianę.
+Polecenie <Command id="PRESSPULL" /> nie potrzebuje profilu: kliknij wewnątrz dowolnego zamkniętego obszaru, nawet ograniczonego osobnymi liniami, i wpisz wysokość. Gdy klikniesz ścianę bryły, polecenie wciska lub wyciąga tę ścianę.
 
 <Session name="presspull" caption="Zamknięty obszar, naciśnięty i pociągnięty od środka, staje się bryłą." />
 
@@ -28,15 +28,15 @@ Polecenie <Command id="PRESSPULL" /> nie potrzebuje profilu: kliknij wewnątrz d
 
 Polecenie <Command id="REVOLVE" /> obraca profil wokół osi: wskaż profil, podaj oś dwoma punktami, obiektem albo osią X, Y lub Z, a potem kąt, domyślnie pełny obrót.
 
-<Session name="revolve" caption="Połowa przekroju obrócona wokół osi Y." />
+<Session name="revolve" caption="Półprzekrój obrócony wokół osi Y." />
 
 ## Dodaj i odejmij bryły [#booleans]
 
-Polecenie <Command id="UNION" /> robi jedną bryłę z kilku, polecenie <Command id="SUBTRACT" /> odejmuje jedną lub więcej od innej, a polecenie <Command id="INTERSECT" /> zostawia ich część wspólną. Otwór to walec odjęty od bryły, przez którą przechodzi.
+Polecenie <Command id="UNION" /> tworzy jedną bryłę z kilku, polecenie <Command id="SUBTRACT" /> odejmuje jedną lub więcej od innej, a polecenie <Command id="INTERSECT" /> zostawia ich część wspólną. Otwór to walec odjęty od bryły, przez którą przechodzi.
 
 <Session name="subtract" caption="Walec odjęty od prostopadłościanu: otwór na wylot." />
 
 ## Co dalej [#next]
 
-- [Ćwiczenia](/docs/exercises) 3D: [płyta montażowa](/docs/exercises/mounting-plate) z regionów i jednego wyciągnięcia, [koło pasowe](/docs/exercises/pulley) obrócone z przekroju i [obudowa łożyska](/docs/exercises/bearing-block) zsumowana i nawiercona.
+- [Ćwiczenia](/docs/exercises) 3D: [płyta montażowa](/docs/exercises/mounting-plate) z regionów i jednego wyciągnięcia, [koło pasowe](/docs/exercises/pulley) obrócone z przekroju i [korpus łożyska](/docs/exercises/bearing-block) zsumowana i nawiercona.
 - Polecenie <Command id="3DORBIT" /> obraca widok myszą, a polecenie <Command id="VSCURRENT" /> cieniuje ściany.

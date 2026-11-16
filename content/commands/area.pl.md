@@ -6,7 +6,7 @@ figure: "Płyta 100 na 60 z otworem o promieniu 18: POLE dodaje pole płyty, ode
 sourceHash: "a8ad70c08b3a"
 ---
 
-Polecenie POLE (AREA) mierzy pole powierzchni i obwód zamkniętego kształtu: takiego, który obrysowujesz jego narożnikami, albo wskazanego obiektu. Podaj pierwszy narożnik, potem kolejne: od drugiego kształt zamknięty przez kursor wypełnia się półprzezroczystą zielenią, jak cieniuje go AutoCAD. Enter lub <Keyword id="Total" /> wypisuje `Pole powierzchni = …, obwód = …` w wierszu polecenia i kończy; Enter przed trzecim narożnikiem zostaje odrzucony. Z opcjami Dodaj pole i Odejmij pole prowadzi bieżącą sumę dla kilku kształtów. Liczby są wypisywane z dokładnością rysunku, a ostatnie zmierzone pole można odczytać ponownie, wpisując `'POLE`.
+Polecenie POLE (AREA) mierzy pole powierzchni i obwód zamkniętego kształtu: takiego, który obrysowujesz jego narożnikami, albo wskazanego obiektu. Podaj pierwszy narożnik, potem kolejne: od drugiego kształt zamknięty przez kursor wypełnia się półprzezroczystą zielenią, jak cieniuje go AutoCAD. Enter lub <Keyword id="Total" /> wypisuje `Pole powierzchni = …, obwód wieloboczny = …` w wierszu polecenia i kończy; Enter przed trzecim narożnikiem zostaje odrzucony. Z opcjami Dodaj pole i Odejmij pole prowadzi bieżącą sumę dla kilku kształtów. Liczby są wypisywane z dokładnością rysunku, a ostatnie zmierzone pole można odczytać ponownie, wpisując `'POLE`.
 
 ## Options
 
@@ -16,7 +16,7 @@ Opcja domyślna pierwszego monitu, więc Enter ją wybiera: wskaż okrąg, elips
 
 ### Add
 
-Rozpoczyna bieżącą sumę: każde pole zmierzone potem, narożnikami lub opcją <Keyword id="Object" />, zostaje dodane, a POLE wypisuje je wraz z sumą. Enter kończy obiekty lub narożniki i pyta ponownie, aż Enter przy pierwszym monicie zakończy polecenie.
+Rozpoczyna bieżącą sumę: każde pole zmierzone potem, narożnikami lub opcją <Keyword id="Object" />, zostaje dodane, a POLE wypisuje je wraz z sumą. Enter kończy wskazywanie obiektów lub narożników, a polecenie pyta ponownie, aż Enter przy pierwszym monicie zakończy polecenie.
 
 ### Subtract
 
@@ -32,7 +32,7 @@ Wypisuje pole powierzchni i obwód podanych narożników i kończy.
 
 ## Missing
 
-ZMIERZGEOM, narzędzia Zmierz na wstążce, z opcjami Promień, Kąt, Objętość i Szybko: tu przyciski Odległość i Pole na wstążce uruchamiają ODLEG i POLE. Opcje Łuk i Długość przy następnym punkcie polecenia POLE. Narożniki poza płaszczyzną bieżącego układu LUW są mierzone w rzucie, tam gdzie AutoCAD mierzy je w 3D, a komunikat AutoCADa `Obiekt nie jest równoległy do LUW.` dla obiektu nachylonego do LUW się nie pojawia.
+ZMIERZGEOM, narzędzia Zmierz na wstążce, z opcjami Promień, Kąt, Objętość i Szybko: tu przyciski Odległość i Obszar na wstążce uruchamiają ODLEG i POLE. Opcje Łuk i Długość przy następnym punkcie polecenia POLE. Narożniki poza płaszczyzną bieżącego układu LUW są mierzone w rzucie, podczas gdy AutoCAD mierzy je w 3D, a komunikat AutoCADa `Obiekt nie jest równoległy do LUW.` dla obiektu nachylonego do LUW się nie pojawia.
 
 ## Questions
 
@@ -50,7 +50,7 @@ Wybierz <Keyword id="Add" />, a potem <Keyword id="Object" />, wskaż zewnętrzn
 
 ### Jak podać pole powierzchni w metrach kwadratowych?
 
-POLE wypisuje kwadratowe jednostki rysunku. Jeśli rysujesz w milimetrach, podziel przez 1 000 000: 6 000 000 to 6 m². W centymetrach – przez 10 000.
+POLE podaje wynik w kwadratowych jednostkach rysunku. Jeśli rysujesz w milimetrach, podziel przez 1 000 000: 6 000 000 to 6 m². W centymetrach – przez 10 000.
 
 ### Dlaczego polecenie POLE mówi, że obiekt nie ma pola powierzchni?
 

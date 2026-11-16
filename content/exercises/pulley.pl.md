@@ -2,12 +2,12 @@
 title: "Ćwiczenie AutoCAD 3D: koło pasowe"
 metaTitle: "Ćwiczenie AutoCAD 3D: obrót koła pasowego"
 description: "Zamodeluj koło pasowe w AutoCADzie 3D: półprzekrój jako zamknięta polilinia, obrócony wokół osi Y w bryłę. Krok po kroku, ćwiczenie 3D za darmo online."
-figure: "Półprzekrój koła pasowego obok jego osi, z odległościami od osi zwymiarowanymi."
+figure: "Półprzekrój koła pasowego obok jego osi, ze zwymiarowanymi odległościami od osi."
 model: "Koło pasowe jako bryła, widziane z południowego wschodu w stylu wizualnym Koncepcyjny."
 sourceHash: "f9c2a81b39fe"
 ---
 
-Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimetrach: otwór o średnicy 20, piasta długa na 30 i o średnicy 40, tarcza grubości 10 i wieniec szeroki na 24, od średnicy 90 do 110, wyśrodkowany na piaście. Przekrój rysuje się jako odległości od osi, która biegnie wzdłuż osi Y, więc każdą średnicę rysuje się jako jej połowę.
+Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimetrach: otwór o średnicy 20, piasta długa na 30 i o średnicy 40, tarcza o grubości 10 i wieniec szeroki na 24, od średnicy 90 do 110, wyśrodkowany na piaście. Przekrój rysuje się jako odległości od osi, która biegnie wzdłuż osi Y, więc każdą średnicę rysuje się jako jej połowę.
 
 ## Steps
 
@@ -17,7 +17,7 @@ Na warstwie Kontur jedna zamknięta polilinia poleceniem <Command id="PLINE" /> 
 
 ### Obróć widok [#view]
 
-Polecenie <Command id="-VIEW" /> i opcja <Keyword command="VIEW" id="SEiso" /> pokazują przekrój z południowego wschodu i z góry; polecenie <Command id="VSCURRENT" /> i opcja <Keyword command="VSCURRENT" id="Conceptual" /> cieniują ściany, co najlepiej pokazuje część toczoną.
+Polecenie <Command id="-VIEW" /> i opcja <Keyword command="VIEW" id="SEiso" /> pokazują przekrój z południowego wschodu i z góry; polecenie <Command id="VSCURRENT" /> i opcja <Keyword command="VSCURRENT" id="Conceptual" /> cieniują ściany – tak najlepiej widać część toczoną.
 
 ### Obróć przekrój [#revolve]
 

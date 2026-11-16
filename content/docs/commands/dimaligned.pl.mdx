@@ -1,10 +1,10 @@
 ---
-title: "Wymiar dopasowany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)"
-metaTitle: "Wymiar dopasowany w AutoCADzie: WYMNORMALNY"
+title: "Wymiar wyrównany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)"
+metaTitle: "Wymiar wyrównany w AutoCADzie: WYMNORMALNY"
 description: "Jak zwymiarować ukośną krawędź w AutoCADzie poleceniem WYMNORMALNY (DIMALIGNED, skrót WN): dwa punkty lub obiekt, potem linia do nich równoległa."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie wymiaru dopasowanego po angielsku i jaki ma skrót?","answer":"Po angielsku DIMALIGNED, w polskim AutoCADzie WYMNORMALNY: wpisz WN lub WYMNO, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMALIGNED – w AutoCADzie w każdym języku."},{"question":"Czym się różni WYMLINIOWY od WYMNORMALNY?","answer":"Na ukośnej krawędzi polecenie WYMLINIOWY daje jej szerokość albo wysokość, bo jego linia wymiarowa jest pozioma lub pionowa; polecenie WYMNORMALNY daje jej długość, z linią równoległą do krawędzi. Na krawędzi wzdłuż X lub Y oba dają tę samą liczbę."},{"question":"Jak zwymiarować ukośną linię w AutoCADzie?","answer":"Poleceniem WYMNORMALNY: naciśnij Enter przy pierwszym monicie, wskaż linię i umieść wymiar po wybranej stronie. Albo wskaż jej dwa końce z lokalizacją Punkt końcowy, aby początki linii pomocniczych były dokładne."},{"question":"Jak wpisać własny tekst na wymiarze?","answer":"Wybierz Tekst przed umieszczeniem wymiaru i wpisz tekst: <> oznacza zmierzoną wartość, więc „<> mm” wpisuje ją z jednostką, a Enter bez wpisanego tekstu zachowuje samą wartość. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”."}]
+faq: [{"question":"Jak się nazywa polecenie wymiaru wyrównanego po angielsku i jaki ma skrót?","answer":"Po angielsku DIMALIGNED, w polskim AutoCADzie WYMNORMALNY: wpisz WN lub WYMNO, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMALIGNED – w AutoCADzie w każdym języku."},{"question":"Czym się różni WYMLINIOWY od WYMNORMALNY?","answer":"Na ukośnej krawędzi polecenie WYMLINIOWY daje jej szerokość albo wysokość, bo jego linia wymiarowa jest pozioma lub pionowa; polecenie WYMNORMALNY daje jej długość, z linią równoległą do krawędzi. Na krawędzi wzdłuż X lub Y oba dają tę samą liczbę."},{"question":"Jak zwymiarować ukośną linię w AutoCADzie?","answer":"Poleceniem WYMNORMALNY: naciśnij Enter przy pierwszym monicie, wskaż linię i umieść wymiar po wybranej stronie. Albo wskaż jej dwa końce z lokalizacją Punkt końcowy, aby początki linii pomocniczych były dokładne."},{"question":"Jak wpisać własny tekst na wymiarze?","answer":"Wybierz Tekst przed umieszczeniem wymiaru i wpisz tekst: <> oznacza zmierzoną wartość, więc „<> mm” wpisuje ją z jednostką, a Enter bez wpisanego tekstu zachowuje samą wartość. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”."}]
 ---
 
 Polecenie WYMNORMALNY (DIMALIGNED) mierzy rzeczywistą odległość między dwoma punktami: linia wymiarowa biegnie równolegle do prostej przez te punkty, pod dowolnym kątem, podczas gdy polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) mierzy tylko wzdłuż X lub Y. Monity są takie same jak w poleceniu [`WYMLINIOWY`](/docs/commands/dimlinear): początek pierwszej i drugiej linii pomocniczej albo Enter i wskazanie linii, łuku lub segmentu polilinii, którego końce stają się tymi początkami, a potem położenie linii wymiarowej, po dowolnej stronie. Wskazany okrąg daje swoją średnicę przechodzącą przez wskazany punkt. Wiersz polecenia podaje zmierzoną wartość i polecenie się kończy.
@@ -17,7 +17,7 @@ Polecenie WYMNORMALNY (DIMALIGNED) mierzy rzeczywistą odległość między dwom
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="dimaligned" caption="Ukośny bok trójkąta zwymiarowany wzdłuż jego długości: dwa jego końce, potem położenie linii." />
 
@@ -39,7 +39,7 @@ Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w 
 
 ## Pytania [#questions]
 
-### Jak się nazywa polecenie wymiaru dopasowanego po angielsku i jaki ma skrót?
+### Jak się nazywa polecenie wymiaru wyrównanego po angielsku i jaki ma skrót?
 
 Po angielsku DIMALIGNED, w polskim AutoCADzie WYMNORMALNY: wpisz `WN` lub `WYMNO`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMALIGNED` – w AutoCADzie w każdym języku.
 

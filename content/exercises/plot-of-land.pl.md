@@ -6,13 +6,13 @@ figure: "Działka o pięciu bokach, w metrach, z wymiarem każdego boku i jedneg
 sourceHash: "f5542a75eef7"
 ---
 
-Narysuj tę działkę w metrach, z długości i kierunków jej boków: 40 pod kątem 0°, 30 pod kątem 80°, 35 pod kątem 155° i 25 pod kątem 230°, a potem z powrotem do początku. Zmierz jej pole i obwód, zwymiaruj każdy bok i kąt w drugim wierzchołku. Współrzędne biegunowe, długość i kąt, rysują każdy bok od końca poprzedniego. Skala wymiarów rysunku jest ustawiona dla metrów.
+Narysuj tę działkę w metrach, z długości i kierunków jej boków: 40 pod kątem 0°, 30 pod kątem 80°, 35 pod kątem 155° i 25 pod kątem 230°, a potem z powrotem do początku. Zmierz jej pole i obwód, zwymiaruj każdy bok i kąt w drugim wierzchołku. Współrzędne biegunowe – długość i kąt – wyznaczają każdy bok od końca poprzedniego. Skala wymiarów rysunku jest ustawiona dla metrów.
 
 ## Steps
 
 ### Narysuj granicę [#boundary]
 
-Na warstwie Kontur polecenie <Command id="PLINE" /> od `0,0`, potem każdy bok jako jego długość i kąt: `40<0`, `30<80`, `35<155` i `25<230`, każdy mierzony od ostatniego punktu. Opcja <Keyword command="PLINE" id="Close" /> rysuje piąty bok i zamyka granicę: jeden obiekt, który polecenie <Command id="AREA" /> potrafi zmierzyć.
+Na warstwie Kontur polecenie <Command id="PLINE" /> od `0,0`, potem każdy bok jako długość i kąt: `40<0`, `30<80`, `35<155` i `25<230`, każdy mierzony od ostatniego punktu. Opcja <Keyword command="PLINE" id="Close" /> rysuje piąty bok i zamyka granicę: jeden obiekt, który polecenie <Command id="AREA" /> potrafi zmierzyć.
 
 ### Zmierz pole [#area]
 

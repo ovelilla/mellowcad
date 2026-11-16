@@ -18,7 +18,7 @@ Wyświetla wartości, które przyjmuje: JakWarstwa i 24 standardowe szerokości 
 
 ### BYLAYER
 
-Nowe obiekty biorą szerokość linii swojej warstwy, tak jak na początku.
+Nowe obiekty przyjmują szerokość linii swojej warstwy, tak jak na początku.
 
 ## Missing
 
@@ -32,12 +32,12 @@ LWEIGHT. W polskim AutoCADzie jego skrót to `SL`: wpisz go i naciśnij Enter lu
 
 ### Dlaczego w AutoCADzie nie widać szerokości linii?
 
-W AutoCADzie szerokości linii są widoczne na ekranie tylko przy włączonym przycisku Szerokość linii na pasku stanu (LWDISPLAY 1); na początku jest wyłączony. Tutaj jest włączony od początku. Wszystkie cienkie szerokości rysują się najcieńszą linią ekranu, więc różnicę widać na grubszych; a obiekt o szerokości linii JakWarstwa bierze szerokość swojej warstwy.
+W AutoCADzie szerokości linii są widoczne na ekranie tylko przy włączonym przycisku Szerokość linii na pasku stanu (LWDISPLAY 1); na początku jest wyłączony. Tutaj jest włączony od początku. Wszystkie cienkie szerokości rysują się najcieńszą linią ekranu, więc różnicę widać na grubszych; a obiekt o szerokości linii JakWarstwa przyjmuje szerokość swojej warstwy.
 
 ### Jak zmienić szerokość linii istniejącego obiektu?
 
-Wybierz obiekt i wybierz szerokość w wierszu Szerokość linii na palecie Właściwości albo, gdy obiekt ma JakWarstwa, zmień szerokość linii jego warstwy w Menedżerze właściwości warstw. Polecenie SZERLIN ustala tylko szerokość linii obiektów rysowanych po nim.
+Wybierz obiekt i ustaw szerokość w wierszu Szerokość linii na palecie Właściwości albo, gdy obiekt ma JakWarstwa, zmień szerokość linii jego warstwy w Menedżerze właściwości warstw. Polecenie SZERLIN ustala tylko szerokość linii obiektów rysowanych po nim.
 
 ### Jakie szerokości linii ma AutoCAD?
 
-24 stałe wartości w milimetrach: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 i 2,11. Wpisz inną, na przykład `0.45`, a polecenie SZERLIN weźmie najbliższą, przy remisie cieńszą.
+24 stałe wartości w milimetrach: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 i 2,11. Wpisz inną, na przykład `0.45`, a polecenie SZERLIN przyjmie najbliższą, a przy równej odległości – cieńszą.

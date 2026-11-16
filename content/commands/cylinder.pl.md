@@ -6,7 +6,7 @@ figure: "Walec o promieniu 20 i wysokości 40, od środka podstawy, widziany od 
 sourceHash: "ce397d8dcb5d"
 ---
 
-Polecenie WALEC (CYLINDER) rysuje bryłę 3D walca: podaj środek jego podstawy, potem promień, potem wysokość. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna idzie w dół, a punkt podaje ją odległością od podstawy, jak w poleceniu <Command id="BOX" />. Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem <Command id="EXTRUDE" />. Walec leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+Polecenie WALEC (CYLINDER) rysuje walec jako bryłę 3D: podaj środek jego podstawy, potem promień, potem wysokość. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna idzie w dół, a punkt podaje ją odległością od podstawy, jak w poleceniu <Command id="BOX" />. Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem <Command id="EXTRUDE" />. Walec leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
 Walec zachowuje swoje wymiary: <Command id="LIST" /> pokazuje jego położenie, normalną, promień i wysokość, a paleta Właściwości pozwala wpisać promień i wysokość. Jego uchwyty go przesuwają, ustawiają jego wysokość, a w każdej ćwiartce podstawy jego promień. To bryła 3D dla poleceń <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
 

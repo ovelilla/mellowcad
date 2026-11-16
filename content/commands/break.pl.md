@@ -16,7 +16,7 @@ Przy drugim punkcie przerwania: podaj ponownie pierwszy punkt przerwania, a pote
 
 ## Missing
 
-Łuk, okrąg lub elipsa, które nie leżą równolegle do układu LUW: AutoCAD je przerywa, a MellowCAD ich nie znajduje. Cała elipsa odwrócona poleceniem <Command id="MIRROR" />, którą AutoCAD przerywa w przeciwną stronę.
+Łuk, okrąg lub elipsa, które nie leżą równolegle do płaszczyzny XY układu LUW: AutoCAD je przerywa, a MellowCAD ich nie znajduje. Cała elipsa odwrócona poleceniem <Command id="MIRROR" />, którą AutoCAD przerywa w przeciwną stronę.
 
 ## Questions
 

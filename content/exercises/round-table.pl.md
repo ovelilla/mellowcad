@@ -16,7 +16,7 @@ Na warstwie Kontur polecenie <Command id="CIRCLE" /> w `0,0`, opcja <Keyword com
 
 ### Narysuj krzesło [#chair]
 
-Siedzisko, nad stołem: polecenie <Command id="RECTANG" /> z opcją <Keyword command="RECTANG" id="Fillet" /> równą `4`, od `-22,68` do punktu `44,40` dalej. Potem oparcie, z promieniem zaokrąglenia z powrotem na `0`, od `-22,108` do punktu `44,8` dalej. Polecenie <Command id="RECTANG" /> zachowuje promień zaokrąglenia, dopóki go nie zmienisz.
+Siedzisko, nad stołem: polecenie <Command id="RECTANG" /> z zaokrągleniem (<Keyword command="RECTANG" id="Fillet" />) `4`, od `-22,68` do punktu `44,40` dalej. Potem oparcie, z promieniem zaokrąglenia ustawionym z powrotem na `0`, od `-22,108` do punktu `44,8` dalej. Polecenie <Command id="RECTANG" /> zachowuje promień zaokrąglenia, dopóki go nie zmienisz.
 
 ### Utwórz szyk krzeseł [#array]
 
@@ -24,4 +24,4 @@ Polecenie <Command id="ARRAYPOLAR" />: wskaż siedzisko i oparcie, naciśnij Ent
 
 ### Zwymiaruj rysunek [#dimensions]
 
-Na warstwie Wymiary polecenie <Command id="DIMDIAMETER" /> na stole, umieszczony wewnątrz, i polecenie <Command id="DIMLINEAR" /> dla szerokości górnego krzesła, 44, oraz jego głębokości z oparciem, 48.
+Na warstwie Wymiary polecenie <Command id="DIMDIAMETER" /> na stole, z wymiarem umieszczonym wewnątrz, i polecenie <Command id="DIMLINEAR" /> dla szerokości górnego krzesła, 44, oraz jego głębokości z oparciem, 48.

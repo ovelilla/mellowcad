@@ -18,7 +18,7 @@ Narysuj ten wspornik w milimetrach: długość 100, stopa wysoka na 20 i ramię 
 
 ## Krok po kroku [#steps]
 
-Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
 
 ### 1. Narysuj kontur [#outline]
 
@@ -34,13 +34,13 @@ Polecenie [`ZAOKRĄGL`](/docs/commands/fillet): wybierz opcję `pRomień`, wpisz
 
 ### 3. Narysuj otwory [#holes]
 
-Dwa okręgi poleceniem [`OKRĄG`](/docs/commands/circle), każdy przez opcję `śreDnica`: `8` w `80,10`, w stopie, i `10` w `15,65`, w ramieniu.
+Dwa okręgi poleceniem [`OKRĄG`](/docs/commands/circle), każdy przez opcję `śreDnica`: `8` w punkcie `80,10`, w stopie, i `10` w punkcie `15,65`, w ramieniu.
 
 <Session name="exercises/l-bracket/holes" caption="3. Narysuj otwory" />
 
 ### 4. Zwymiaruj rysunek [#dimensions]
 
-Na warstwie Wymiary polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) od `0,0` do otworu w stopie, `80,10`, umieszczony poniżej: 80. Polecenie [`WYMBAZA`](/docs/commands/dimbaseline) prowadzi kolejne wymiary od tej samej pierwszej linii pomocniczej: wpisz prawy koniec, `#100,0`, gdzie # mierzy od początku układu, a potem dwa razy Enter, aby zakończyć. Tak samo wzdłuż lewego boku, do górnego otworu, a potem do góry, `#0,80`. Polecenie [`WYMPROMIEŃ`](/docs/commands/dimradius) na zaokrągleniu i [`WYMŚREDNICA`](/docs/commands/dimdiameter) na każdym otworze kończą rysunek.
+Na warstwie Wymiary polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) od `0,0` do otworu w stopie, `80,10`, z wymiarem umieszczonym poniżej: 80. Polecenie [`WYMBAZA`](/docs/commands/dimbaseline) prowadzi kolejne wymiary od tej samej pierwszej linii pomocniczej: wpisz prawy koniec, `#100,0`, gdzie # oznacza pomiar od początku układu, a potem dwa razy Enter, aby zakończyć. Tak samo wzdłuż lewego boku, do górnego otworu, a potem do górnej krawędzi, `#0,80`. Polecenie [`WYMPROMIEŃ`](/docs/commands/dimradius) na zaokrągleniu i [`WYMŚREDNICA`](/docs/commands/dimdiameter) na każdym otworze kończą rysunek.
 
 <Session name="exercises/l-bracket/dimensions" caption="4. Zwymiaruj rysunek" />
 

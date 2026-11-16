@@ -6,9 +6,9 @@ figure: "Prostokąt z okręgiem w środku, zakreskowany wzorem ANSI31 z jednego 
 sourceHash: "d3ed16b85a19"
 ---
 
-Polecenie KRESKUJ (HATCH) wypełnia zamknięty obszar wzorem linii albo jednolicie. Wskaż punkt wewnątrz obszaru, a polecenie znajdzie jego obwiednię w otaczających go obiektach, pozostawiając puste to, co leży w środku jako wyspa – okrąg w prostokącie, tekst; albo wybierz obiekty, które go ograniczają. Wskaż tyle obszarów, ile chcesz: Enter lub Esc tworzy z nich wszystkich jedno kreskowanie, na bieżącej warstwie, pod jego obwiednią. Całe polecenie to jeden krok cofania.
+Polecenie KRESKUJ (HATCH) wypełnia zamknięty obszar wzorem linii albo jednolicie. Wskaż punkt wewnątrz obszaru, a polecenie znajdzie jego obwiednię w otaczających go obiektach, pozostawiając puste to, co leży w środku, jako wyspę – okrąg w prostokącie, tekst; albo wybierz obiekty, które go ograniczają. Wskaż tyle obszarów, ile chcesz: Enter lub Esc tworzy z nich wszystkich jedno kreskowanie, na bieżącej warstwie, pod swoją obwiednią. Całe polecenie to jeden krok cofania.
 
-Polecenie KRESKUJ w AutoCADzie ustawia wzór na karcie kontekstowej Tworzenie kreskowania albo w oknie dialogowym, których MellowCAD nie ma: tutaj pyta w wierszu polecenia o to, o co pyta polecenie <Command id="-HATCH" />, wzór w opcji <Keyword id="Properties" />. Oba różnią się tylko klawiszem Esc, który w poleceniu <Command id="-HATCH" /> porzuca obszary. Każde kreskowanie zaczyna od wzoru, skali i kąta, jakie dostało ostatnie: w nowym rysunku ANGLE, w skali 1 i pod kątem 0.
+Polecenie KRESKUJ w AutoCADzie ustawia wzór na karcie kontekstowej Tworzenie kreskowania albo w oknie dialogowym, których MellowCAD nie ma: tutaj pyta w wierszu polecenia o to, o co pyta polecenie <Command id="-HATCH" />, wzór w opcji <Keyword id="Properties" />. Oba polecenia różnią się tylko działaniem klawisza Esc, który w poleceniu <Command id="-HATCH" /> porzuca obszary. Każde kreskowanie zaczyna od wzoru, skali i kąta, jakie dostało ostatnie: w nowym rysunku ANGLE, w skali 1 i pod kątem 0.
 
 ## Options
 
@@ -38,7 +38,7 @@ HATCH. W polskim AutoCADzie polecenie KRESKUJ nie ma skrótu: wpisz pełną nazw
 
 ### Dlaczego kreskowanie w AutoCADzie nie działa?
 
-Najczęściej obszar nie jest zamknięty: polecenie mówi <Message id="hatchNoBoundary" />, a wystarczy najmniejsza przerwa, bo nic jej nie zamyka. Zamknij obrys i wskaż ponownie. Obszar zamknięty elipsą lub splajnem nie jest jeszcze znajdowany, a obiekty na wyłączonej warstwie nie są widziane.
+Najczęściej obszar nie jest zamknięty: polecenie mówi <Message id="hatchNoBoundary" />, a wystarczy najmniejsza przerwa, bo nic jej nie zamyka. Zamknij obrys i wskaż ponownie. Obszar zamknięty elipsą lub splajnem nie jest jeszcze znajdowany, a obiekty na wyłączonej warstwie nie są brane pod uwagę.
 
 ### Jakie są wzory kreskowania i czy można pobrać inne?
 
@@ -50,4 +50,4 @@ Przed wskazaniem, w opcji <Keyword id="Properties" />: skala następuje po nazwi
 
 ### Jak sprawdzić pole kreskowania?
 
-Wybierz je i odczytaj „Pole” w grupie „Geometria” palety „Właściwości”, bez wysp; przy kilku wybranych kreskowaniach „Pole łączne” je sumuje. Albo uruchom polecenie <Command id="AREA" />, wybierz <Keyword command="AREA" id="Object" /> i wskaż kreskowanie.
+Wybierz je i odczytaj „Obszar” w grupie „Geometria” palety „Właściwości”, bez wysp; przy kilku wybranych kreskowaniach „Obszar łączny” je sumuje. Albo uruchom polecenie <Command id="AREA" />, wybierz <Keyword command="AREA" id="Object" /> i wskaż kreskowanie.

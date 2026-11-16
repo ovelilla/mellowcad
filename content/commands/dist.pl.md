@@ -5,7 +5,7 @@ figure: "ODLEG wzdłuż przekątnej płytki 100 na 60: odległość, kąt w pła
 sourceHash: "31fbe420bc43"
 ---
 
-Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż, przyciągnij lub wpisz pierwszy punkt i drugi, a polecenie wypisze w wierszu polecenia odległość, kąt w płaszczyźnie XY i kąt od tej płaszczyzny oraz przyrosty X, Y i Z, po czym się zakończy. Każdy punkt jest mierzony tam, gdzie leży, razem ze swoją współrzędną Z, więc odległość jest rzeczywista w przestrzeni. Enter przy pierwszym punkcie zaczyna od ostatnio podanego punktu, a przy drugim mierzy z powrotem do pierwszego. Liczby mają dokładność rysunku, a kąty – AUPREC.
+Polecenie ODLEG (DIST) mierzy odległość między dwoma punktami. Wskaż (także z lokalizacją względem obiektu) lub wpisz pierwszy punkt i drugi, a polecenie wypisze w wierszu polecenia odległość, kąt w płaszczyźnie XY i kąt od tej płaszczyzny oraz przyrosty X, Y i Z, po czym się zakończy. Każdy punkt jest mierzony tam, gdzie leży, razem ze swoją współrzędną Z, więc odległość jest rzeczywista w przestrzeni. Enter przy pierwszym punkcie zaczyna od ostatnio podanego punktu, a przy drugim mierzy z powrotem do pierwszego. Liczby mają dokładność rysunku, a kąty – AUPREC.
 
 ## Options
 
@@ -53,7 +53,7 @@ Przy drugim punkcie wybierz <Keyword id="Multiple" /> i wskazuj dalej: przy każ
 
 ### Jak zmierzyć odległość w 3D?
 
-Podaj punkty z ich współrzędną Z albo przyciągnij do obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z.
+Podaj punkty z ich współrzędną Z albo zlokalizuj je względem obiektów na ich wysokości: polecenie ODLEG mierzy rzeczywistą odległość w przestrzeni i wypisuje kąt od płaszczyzny XY oraz przyrost Z.
 
 ### Dlaczego polecenie ODLEG pokazuje mniej miejsc po przecinku, niż potrzebuję?
 

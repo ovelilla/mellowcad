@@ -3,12 +3,12 @@ title: "Polecenie SFERA (SPHERE) w AutoCADzie"
 description: "Jak narysować kulę 3D w AutoCADzie poleceniem SFERA (SPHERE): środek i promień, Średnica, 3P, 2P i Ssr, oraz dlaczego sfera jest pokazana liniami."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak zrobić kulę w AutoCADzie?","answer":"Uruchom SFERA, podaj środek, a potem promień: 0,0,0 i 25 rysują sferę z sesji. Obróć widok, aby zobaczyć ją przestrzennie: narożnikiem ViewCube albo poleceniem -WIDOK z opcją SEIzo."},{"question":"Dlaczego sfera wygląda jak okrąg z liniami?","answer":"Style Model szkieletowy 2D i Ukryty rysują sferę jako jej południki i równoleżniki; w rzucie z góry są to okrąg i linie przez niego przechodzące. BIEŻSTYLWIZ z opcją Koncepcyjny cieniuje ją, a ISOLINES określa, ile linii pokazuje."},{"question":"Jak zrobić półkulę w AutoCADzie?","answer":"Narysuj sferę, a potem przetnij ją przez środek poleceniem PŁAT: trzy punkty na płaszczyźnie albo XY i środek, a potem strona do zachowania."},{"question":"Jak narysować sferę o danej średnicy?","answer":"Przy promieniu wybierz śreDnica i wpisz średnicę. Sferę wyznaczają też dwa końce średnicy podane w opcji 2P."}]
+faq: [{"question":"Jak zrobić kulę w AutoCADzie?","answer":"Uruchom SFERA, podaj środek, a potem promień: 0,0,0 i 25 rysują sferę z sesji. Obróć widok, aby zobaczyć ją przestrzennie: narożnikiem kostki ViewCube albo poleceniem -WIDOK z opcją SEIzo."},{"question":"Dlaczego sfera wygląda jak okrąg z liniami?","answer":"Style Model szkieletowy 2D i Ukryty rysują sferę jako jej południki i równoleżniki; w rzucie z góry są to okrąg i linie przez niego przechodzące. BIEŻSTYLWIZ z opcją Koncepcyjny cieniuje ją, a ISOLINES określa, ile linii pokazuje."},{"question":"Jak zrobić półkulę w AutoCADzie?","answer":"Narysuj sferę, a potem przetnij ją przez środek poleceniem PŁAT: trzy punkty na płaszczyźnie albo XY i środek, a na koniec strona, którą chcesz zachować."},{"question":"Jak narysować sferę o danej średnicy?","answer":"Przy promieniu wybierz śreDnica i wpisz średnicę. Sferę wyznaczają też dwa końce średnicy podane w opcji 2P."}]
 ---
 
-Polecenie SFERA (SPHERE) rysuje bryłę 3D w kształcie kuli: podaj środek, a potem promień. Promień wskazany myszą jest odczytywany na płaszczyźnie przechodzącej przez środek, a ostatni promień jest proponowany jako wartość domyślna, którą przyjmuje Enter; dzielą go [`WALEC`](/docs/commands/cylinder), [`STOŻEK`](/docs/commands/cone) i inne bryły podstawowe. Sfera leży na bieżącej warstwie i cofa się w jednym kroku.
+Polecenie SFERA (SPHERE) rysuje bryłę 3D w kształcie kuli: podaj środek, a potem promień. Promień wskazany myszą jest odczytywany na płaszczyźnie przechodzącej przez środek, a ostatni promień, wspólny z poleceniami [`WALEC`](/docs/commands/cylinder), [`STOŻEK`](/docs/commands/cone) i innymi bryłami podstawowymi, jest proponowany jako wartość domyślna, którą przyjmuje Enter. Sfera leży na bieżącej warstwie, a cofnięcie usuwa ją w jednym kroku.
 
-W stylach Model szkieletowy 2D i Ukryty jest rysowana liniami: południkami i równoleżnikami, w liczbie określonej przez `ISOLINES`, a lokalizacja względem obiektu znajduje na niej tylko środek. [`LISTA`](/docs/commands/list) pokazuje jej położenie i promień, a w palecie Właściwości można wpisać promień lub średnicę. Jej uchwyty przesuwają ją, a w każdej ćwiartce równika ustalają promień. Jest bryłą 3D dla [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły i wciąż jest częściowe.
+W stylach Model szkieletowy 2D i Ukryty jest rysowana liniami: południkami i równoleżnikami, w liczbie określonej przez `ISOLINES`, a lokalizacja względem obiektu znajduje na niej tylko środek. [`LISTA`](/docs/commands/list) pokazuje jej położenie i promień, a w palecie Właściwości można wpisać promień lub średnicę. Jej uchwyty przesuwają ją, a uchwyty w kwadrantach równika zmieniają promień. Jest bryłą 3D dla poleceń [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły i wciąż jest częściowe.
 
 - **Polecenie:** `SFERA`
 - **Po angielsku:** `SPHERE`, wpisywane jako `_SPHERE` w każdym języku
@@ -17,7 +17,7 @@ W stylach Model szkieletowy 2D i Ukryty jest rysowana liniami: południkami i r�
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="sphere" caption="Sfera o promieniu 25 narysowana od środka, widziana z południowego wschodu w stylu wizualnym Koncepcyjny." />
 
@@ -25,7 +25,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `3P` [#3p]
 
-Przy środku: pyta o trzy punkty, a środek sfery leży w środku okręgu przez nie przechodzącego, z jego promieniem.
+Przy środku: pyta o trzy punkty, a sfera otrzymuje środek i promień okręgu przez nie przechodzącego.
 
 ### `2P` [#2p]
 
@@ -41,7 +41,7 @@ Przy promieniu: pyta zamiast tego o średnicę, proponując dwukrotność ostatn
 
 ## Czego jeszcze nie robi [#missing]
 
-[`ROZBIJ`](/docs/commands/explode) sfery, którą AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może jej rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz własne polecenia 3D (3DPRZESUŃ, 3DOBRÓĆ, 3DSKALA). Kontur, który rysuje `DISPSILH` w AutoCADzie. Style wizualne, których brakuje w [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
+[`ROZBIJ`](/docs/commands/explode) sfery, którą AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może jej rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz własne polecenia 3D (3DPRZESUŃ, 3DOBRÓĆ, 3DSKALA). Sylwetka, którą w AutoCADzie rysuje `DISPSILH`. Style wizualne, których brakuje w [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera--de-kugel--ru-шар--pl-sfera)
 
@@ -49,7 +49,7 @@ Przy promieniu: pyta zamiast tego o średnicę, proponując dwukrotność ostatn
 
 ### Jak zrobić kulę w AutoCADzie?
 
-Uruchom SFERA, podaj środek, a potem promień: `0,0,0` i `25` rysują sferę z sesji. Obróć widok, aby zobaczyć ją przestrzennie: narożnikiem ViewCube albo poleceniem `-WIDOK` z opcją `SEIzo`.
+Uruchom SFERA, podaj środek, a potem promień: `0,0,0` i `25` rysują sferę z sesji. Obróć widok, aby zobaczyć ją przestrzennie: narożnikiem kostki ViewCube albo poleceniem `-WIDOK` z opcją `SEIzo`.
 
 ### Dlaczego sfera wygląda jak okrąg z liniami?
 
@@ -57,7 +57,7 @@ Style Model szkieletowy 2D i Ukryty rysują sferę jako jej południki i równol
 
 ### Jak zrobić półkulę w AutoCADzie?
 
-Narysuj sferę, a potem przetnij ją przez środek poleceniem [`PŁAT`](/docs/commands/slice): trzy punkty na płaszczyźnie albo `XY` i środek, a potem strona do zachowania.
+Narysuj sferę, a potem przetnij ją przez środek poleceniem [`PŁAT`](/docs/commands/slice): trzy punkty na płaszczyźnie albo `XY` i środek, a na koniec strona, którą chcesz zachować.
 
 ### Jak narysować sferę o danej średnicy?
 

@@ -20,8 +20,8 @@ Polecenie <Command id="FILLET" />: wybierz opcję <Keyword command="FILLET" id="
 
 ### Narysuj otwory [#holes]
 
-Dwa okręgi poleceniem <Command id="CIRCLE" />, każdy przez opcję <Keyword command="CIRCLE" id="Diameter" />: `8` w `80,10`, w stopie, i `10` w `15,65`, w ramieniu.
+Dwa okręgi poleceniem <Command id="CIRCLE" />, każdy przez opcję <Keyword command="CIRCLE" id="Diameter" />: `8` w punkcie `80,10`, w stopie, i `10` w punkcie `15,65`, w ramieniu.
 
 ### Zwymiaruj rysunek [#dimensions]
 
-Na warstwie Wymiary polecenie <Command id="DIMLINEAR" /> od `0,0` do otworu w stopie, `80,10`, umieszczony poniżej: 80. Polecenie <Command id="DIMBASELINE" /> prowadzi kolejne wymiary od tej samej pierwszej linii pomocniczej: wpisz prawy koniec, `#100,0`, gdzie # mierzy od początku układu, a potem dwa razy Enter, aby zakończyć. Tak samo wzdłuż lewego boku, do górnego otworu, a potem do góry, `#0,80`. Polecenie <Command id="DIMRADIUS" /> na zaokrągleniu i <Command id="DIMDIAMETER" /> na każdym otworze kończą rysunek.
+Na warstwie Wymiary polecenie <Command id="DIMLINEAR" /> od `0,0` do otworu w stopie, `80,10`, z wymiarem umieszczonym poniżej: 80. Polecenie <Command id="DIMBASELINE" /> prowadzi kolejne wymiary od tej samej pierwszej linii pomocniczej: wpisz prawy koniec, `#100,0`, gdzie # oznacza pomiar od początku układu, a potem dwa razy Enter, aby zakończyć. Tak samo wzdłuż lewego boku, do górnego otworu, a potem do górnej krawędzi, `#0,80`. Polecenie <Command id="DIMRADIUS" /> na zaokrągleniu i <Command id="DIMDIAMETER" /> na każdym otworze kończą rysunek.

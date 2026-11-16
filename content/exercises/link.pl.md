@@ -20,7 +20,7 @@ Polecenie <Command id="LINE" />, potem wpisz `_TAN`, tryb lokalizacji Styczny dl
 
 ### Utnij łuki [#trim]
 
-Polecenie <Command id="TRIM" />: wskaż każde oczko między dwiema liniami, po stronie zwróconej do drugiego oczka. Wewnętrzne łuki znikają, a każdy okrąg jest łukiem.
+Polecenie <Command id="TRIM" />: wskaż każde oczko między dwiema liniami, po stronie zwróconej do drugiego oczka. Wewnętrzne łuki znikają, a każdy okrąg staje się łukiem.
 
 ### Narysuj osie [#centreLines]
 

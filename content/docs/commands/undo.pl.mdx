@@ -6,9 +6,9 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie COFAJ po angielsku?","answer":"UNDO. Nie ma skrótu: wpisz COFAJ w całości, aby podać liczbę kroków lub opcję, albo _UNDO w AutoCADzie w każdym języku. Jeden krok wstecz to Ctrl+Z albo C i Enter; U z wersji angielskiej uruchamia w polskiej ŁUK."},{"question":"Czym się różni C od COFAJ?","answer":"C cofa ostatnie polecenie i o nic nie pyta. COFAJ pyta, ile cofnąć, i ma Zaznacz i Wróć, aby wrócić do zaznaczonego miejsca, Początek i konIec, aby kilka poleceń stało się jednym krokiem, oraz Tryb, aby ograniczyć lub wyłączyć cofanie."},{"question":"Jak cofnąć kilka poleceń naraz w AutoCADzie?","answer":"Wpisz COFAJ i liczbę poleceń, na przykład 5. Albo wybierz Zaznacz przed serią, którą być może zechcesz porzucić, i Wróć, aby do niej wrócić."},{"question":"Dlaczego COFAJ nie działa?","answer":"Cofanie zostało wyłączone opcją Tryb › Nic: C o tym informuje, a COFAJ pyta o Tryb. Odpowiedz WSzystko, aby je ponownie włączyć. Kroki wykonane wcześniej przepadły."},{"question":"Jak przywrócić cofnięte zmiany w AutoCADzie?","answer":"ODTWÓRZ zaraz po C lub COFAJ przywraca wszystko naraz. Ctrl+Y przywraca po jednym kroku."}]
 ---
 
-Polecenie COFAJ (UNDO) cofa polecenia. Krok to całe polecenie: wszystko, co narysowało jedno LINIA, znika naraz, bez względu na liczbę odcinków, tak samo jak to, co polecenie ustawiło, na przykład RLSKALA. COFAJ wypisuje swoje bieżące ustawienia, a potem pyta o liczbę operacji do cofnięcia lub opcję; Enter cofa jedną. Nazwy cofniętych poleceń wypisuje w jednym wierszu, `OKRĄG LINIA`, a gdy dojdzie do początku – `Efekty wszystkich operacji zostały cofnięte`; potem `Brak operacji do cofnięcia`. Polecenie, które niczego nie zmieniło, jak ID czy LISTA, też jest krokiem, podobnie jak to, co ZOOM i NFRAGM zrobiły z widokiem.
+Polecenie COFAJ (UNDO) cofa polecenia. Krok to całe polecenie: wszystko, co narysowało jedno polecenie LINIA, znika naraz, bez względu na liczbę odcinków, tak samo jak to, co polecenie ustawiło, na przykład RLSKALA. COFAJ wypisuje swoje bieżące ustawienia, a potem pyta o liczbę operacji do cofnięcia lub opcję; Enter cofa jedną. Nazwy cofniętych poleceń wypisuje w jednym wierszu, `OKRĄG LINIA`, a gdy dojdzie do początku – `Efekty wszystkich operacji zostały cofnięte`; potem `Brak operacji do cofnięcia`. Polecenie, które niczego nie zmieniło, jak ID czy LISTA, też jest krokiem, podobnie jak zmiany widoku wykonane poleceniami ZOOM i NFRAGM.
 
-`C` to forma skrócona: jeden krok wstecz, bez pytania. Ctrl+Z przy `Polecenie:` uruchamia C; wewnątrz polecenia jest to jego własna opcja Cofaj, tak jak wpisuje ją makro AutoCADa: LINIA cofa ostatni odcinek i działa dalej. [`ODTWÓRZ`](/docs/commands/redo), zaraz potem, przywraca to, co cofnęło ostatnie C lub COFAJ.
+`C` to forma skrócona: jeden krok wstecz, bez pytania. Ctrl+Z przy monicie `Polecenie:` uruchamia polecenie C; wewnątrz polecenia jest to jego własna opcja Cofaj, tak jak wpisuje ją makro AutoCADa: LINIA cofa ostatni odcinek i działa dalej. [`ODTWÓRZ`](/docs/commands/redo) użyte zaraz potem przywraca to, co cofnęło ostatnie C lub COFAJ.
 
 - **Polecenie:** `COFAJ`
 - **Po angielsku:** `UNDO`, wpisywane jako `_UNDO` w każdym języku
@@ -17,7 +17,7 @@ Polecenie COFAJ (UNDO) cofa polecenia. Krok to całe polecenie: wszystko, co nar
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="undoBefore" caption="Płyta z dwoma otworami i linią w poprzek, narysowana czterema poleceniami: PROSTOK, dwa razy OKRĄG i LINIA." />
 
@@ -31,11 +31,11 @@ Pyta `Tak` lub `Nie`, proponując bieżące ustawienie, które pokazuje potem wi
 
 ### `Tryb` (`T`) [#control]
 
-Pyta, ile cofania zachować, domyślnie `WSzystko`. `Nic` usuwa wszystkie zachowane kroki i wyłącza cofanie: C wyświetla wtedy `Zablokowane polecenie C. Do odblokowania wykorzystaj polecenie COFAJ`, a COFAJ od razu pyta o `Tryb`. `Raz` zachowuje tylko ostatni krok, a COFAJ pyta wtedy o 1 lub `Tryb`. `WSzystko` przywraca pełne cofanie. `Połącz` określa, czy kolejne ZOOM i NFRAGM są jednym krokiem, a `WArstwa` – czy są nim kolejne zmiany w Menedżerze właściwości warstw; w obu przypadkach domyślnie Tak. Ustawienia należą do rysunku, ale nie są z nim zapisywane: nowy lub otwarty rysunek zaczyna od `WSzystko`, `Połącz` Tak i `WArstwa` Tak.
+Pyta, w jakim zakresie zachować cofanie, domyślnie `WSzystko`. `Nic` usuwa wszystkie zachowane kroki i wyłącza cofanie: C wyświetla wtedy `Zablokowane polecenie C. Do odblokowania wykorzystaj polecenie COFAJ`, a COFAJ od razu pyta o `Tryb`. `Raz` zachowuje tylko ostatni krok, a COFAJ pyta wtedy o 1 lub `Tryb`. `WSzystko` przywraca pełne cofanie. `Połącz` określa, czy kolejne ZOOM i NFRAGM są jednym krokiem, a `WArstwa` – czy są nim kolejne zmiany w Menedżerze właściwości warstw; w obu przypadkach domyślnie Tak. Ustawienia należą do rysunku, ale nie są z nim zapisywane: nowy lub otwarty rysunek zaczyna od `WSzystko`, `Połącz` Tak i `WArstwa` Tak.
 
 ### `Początek` (`P`) [#begin]
 
-Rozpoczyna grupę: polecenia wykonane do `konIec` tworzą jeden krok, który C cofa w całości, nazywając go razem z nimi `GRUPA`. Gdy grupa jest otwarta, C, liczba i `Wróć` zatrzymują się na jej początku. `Początek` przy otwartej grupie najpierw ją zamyka.
+Rozpoczyna grupę: polecenia wykonane do `konIec` tworzą jeden krok, który C cofa w całości, wypisując `GRUPA` razem z ich nazwami. Gdy grupa jest otwarta, C, liczba i `Wróć` zatrzymują się na jej początku. `Początek` przy otwartej grupie najpierw ją zamyka.
 
 ### `konIec` (`I`) [#end]
 
@@ -43,7 +43,7 @@ Zamyka grupę otwartą przez `Początek`.
 
 ### `Zaznacz` (`Z`) [#mark]
 
-Zostawia znacznik w krokach. `Wróć`, C i liczba zatrzymują się na nim, z komunikatem `Napotkano znacznik`.
+Wstawia znacznik między krokami. `Wróć`, C i liczba zatrzymują się na nim, z komunikatem `Napotkano znacznik`.
 
 ### `Wróć` (`W`) [#back]
 
@@ -51,7 +51,7 @@ Cofa wszystkie kroki do ostatniego znacznika, razem ze znacznikiem. Bez znacznik
 
 ## Czego jeszcze nie robi [#missing]
 
-`Auto` niczego nie łączy, bo żadne menu nie uruchamia tutaj więcej niż jednego polecenia. `Połącz` i `WArstwa` obowiązują do końca sesji przeglądarki, podczas gdy AutoCAD zachowuje je między sesjami. Przyciski Cofnij i Ponów na górnym pasku nie zapisują niczego w historii, podczas gdy pasek narzędzi szybkiego dostępu AutoCADa zapisuje własne wpisy. Ctrl+Shift+Z również przywraca, bez komunikatu, choć AutoCAD nie przypisuje do niego niczego.
+`Auto` niczego nie łączy, bo żadne menu nie uruchamia tutaj więcej niż jednego polecenia. `Połącz` i `WArstwa` obowiązują do końca sesji przeglądarki, podczas gdy AutoCAD zachowuje je między sesjami. Przyciski Cofnij i Odtwórz na górnym pasku nie zapisują niczego w historii, podczas gdy pasek szybkiego dostępu AutoCADa zapisuje własne wpisy. Ctrl+Shift+Z również przywraca, bez komunikatu, choć AutoCAD nie przypisuje do niego niczego.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
 

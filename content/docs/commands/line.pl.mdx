@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie LINIA po angielsku?","answer":"LINE. W polskim AutoCADzie jego skrót to L, tak jak w angielskim: wpisz go i naciśnij Enter lub spację. Pełna nazwa LINIA też działa, a _LINE – w AutoCADzie w każdym języku."},{"question":"Jak narysować linię o danej długości pod kątem?","answer":"Podaj pierwszy punkt, a następny wpisz jako długość i kąt: @100<30 rysuje 100 pod kątem 30°. Albo włącz śledzenie biegunowe, prowadź kursor wzdłuż jego linii pod tym kątem i wpisz tylko długość."},{"question":"Jak kontynuować od ostatnio narysowanej linii?","answer":"Uruchom polecenie LINIA i naciśnij Enter przy pierwszym punkcie: zacznie od końca ostatniej linii, polilinii lub łuku. Od łuku linia biegnie stycznie do niego, a polecenie pyta tylko o jej długość. Gdy nie ma od czego kontynuować, wyświetla „Brak linii lub łuku do kontynuacji.”."},{"question":"Dlaczego moja linia składa się z osobnych kawałków?","answer":"Każdy segment narysowany poleceniem LINIA jest osobną linią, jak w AutoCADzie. Aby mieć jeden obiekt, rysuj poleceniem PLINIA albo połącz linie potem poleceniem POŁĄCZ."}]
 ---
 
-Polecenie LINIA (LINE) rysuje proste segmenty, każdy jako osobny obiekt: podaj pierwszy punkt, potem każdy następny, aż do Enter. Punkt można wskazać, chwycić trybem lokalizacji względem obiektu albo wpisać. Jak w AutoCADzie z włączonym wprowadzaniem dynamicznym, punkt wpisany po pierwszym jest liczony od ostatniego, więc `80,0` rysuje 80 wzdłuż X, a historia zapisuje go jako `@80,0`; sama liczba to odległość w kierunku kursora, a `<30` trzyma następny punkt pod kątem 30°. Enter lub kliknięcie prawym przyciskiem przy pierwszym punkcie kontynuuje od końca ostatniej linii, polilinii lub łuku: od łuku stycznie, pytając tylko o długość. Niezależnie od liczby segmentów jedno `C` cofa całe polecenie.
+Polecenie LINIA (LINE) rysuje proste segmenty, każdy jako osobny obiekt: podaj pierwszy punkt, potem każdy następny, aż do Enter. Punkt można wskazać, zlokalizować względem obiektu albo wpisać. Jak w AutoCADzie z włączonym wprowadzaniem dynamicznym, punkt wpisany po pierwszym jest liczony od ostatniego, więc `80,0` rysuje 80 wzdłuż X, a historia zapisuje go jako `@80,0`; sama liczba to odległość w kierunku kursora, a `<30` blokuje następny punkt na kącie 30°. Enter lub kliknięcie prawym przyciskiem przy pierwszym punkcie kontynuuje od końca ostatniej linii, polilinii lub łuku: od łuku stycznie, pytając tylko o długość. Niezależnie od liczby segmentów jedno `C` cofa całe polecenie.
 
 - **Polecenie:** `LINIA`
 - **Po angielsku:** `LINE`, wpisywane jako `_LINE` w każdym języku
@@ -16,7 +16,7 @@ Polecenie LINIA (LINE) rysuje proste segmenty, każdy jako osobny obiekt: podaj 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="line" caption="Trójkąt: pierwszy punkt wpisany, dwa następne względem ostatniego punktu, potem Zamknij." />
 
@@ -32,7 +32,7 @@ Dostępna od drugiego segmentu: rysuje ostatni segment z powrotem do pierwszego 
 
 ## Czego jeszcze nie robi [#missing]
 
-Styczny lub Prostopadły wpisany przy pierwszym punkcie czeka na następny punkt (odroczona lokalizacja), jak w AutoCADzie, ale tylko nad liniami, okręgami i łukami, nie nad segmentem polilinii, elipsą ani splajnem, a dwa odroczone tryby Prostopadły nie są rozwiązywane.
+Lokalizacja Styczna lub Prostopadle wpisana przy pierwszym punkcie czeka na następny punkt (odroczona lokalizacja), jak w AutoCADzie, ale tylko nad liniami, okręgami i łukami, nie nad segmentem polilinii, elipsą ani splajnem, a dwie odroczone lokalizacje Prostopadle nie są rozwiązywane.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l)
 

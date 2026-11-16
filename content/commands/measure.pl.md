@@ -7,13 +7,13 @@ sourceHash: "3975c3873eff"
 
 Polecenie ZMIERZ (MEASURE) zaznacza obiekt co zadaną długość. Wybierz jedną linię, łuk, okrąg, elipsę, łuk eliptyczny, polilinię, polilinię 3D lub splajn, a potem podaj długość, wpisaną lub jako dwa punkty: polecenie ZMIERZ umieszcza obiekt punktu co tę długość wzdłuż obiektu, dopóki się mieści, i kończy. Nie mierzy za ciebie odległości ani nie tnie obiektu. Zaczyna od końca bliższego miejscu wskazania, więc wskaż obiekt blisko końca, od którego chcesz odmierzać; reszta zostaje na drugim końcu, a gdy długość mieści się w obiekcie całkowitą liczbę razy, drugi koniec też dostaje punkt. Okrąg zaczyna się w swoim punkcie 0° i biegnie przeciwnie do ruchu wskazówek zegara, niezależnie od miejsca wskazania; zamknięta polilinia zaczyna się w pierwszym wierzchołku.
 
-Punkty są rysowane tak, jak mówi styl punktu rysunku, domyślnie jako kropka: wcześniej ustaw widoczny kształt poleceniem <Command id="PTYPE" /> albo przez PDMODE. Punkty leżą na obiekcie, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii; całe uruchomienie to jeden krok, który cofa <Command id="U" />, a punkty stają się zbiorem Poprzedni. Długość większa niż obiekt daje <Message id="objectNotThatLong" />, a tak mała, że powstałoby ponad 32767 punktów – <Message id="objectTooLong" />; w obu przypadkach nic nie powstaje. Każdy inny obiekt daje <Message id="cannotMeasureObject" />. Polecenie ZMIERZ uruchamia też lista rozwijana Punkty wśród narzędzi Rysuj.
+Punkty są rysowane tak, jak określa styl punktu rysunku, domyślnie jako kropka: wcześniej ustaw widoczny kształt poleceniem <Command id="PTYPE" /> albo przez PDMODE. Punkty leżą na obiekcie, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii; całe uruchomienie to jeden krok, który cofa <Command id="U" />, a punkty stają się zbiorem Poprzedni. Długość większa niż obiekt daje <Message id="objectNotThatLong" />, a tak mała, że powstałoby ponad 32767 punktów – <Message id="objectTooLong" />; w obu przypadkach nic nie powstaje. Każdy inny obiekt daje <Message id="cannotMeasureObject" />. Polecenie ZMIERZ uruchamia też lista rozwijana Punkty wśród narzędzi Rysuj.
 
 ## Options
 
 ### Block
 
-Zamiast punktów – odnośniki bloku, który już jest w rysunku: podaj jego nazwę, potem, czy wyrównać każdy z obiektem, <Keyword id="Yes" /> (domyślnie) lub <Keyword id="No" />, a potem długość. Wyrównany odnośnik obraca się z obiektem w swoim miejscu, wzdłuż linii lub stycznie do łuku, niezależnie od tego, od którego końca zaczyna się odmierzanie; niewyrównany zachowuje oś X układu LUW. Nazwa, za którą nie stoi żaden blok, zostaje odrzucona i polecenie znów o nią pyta.
+Zamiast punktów – odnośniki bloku, który już jest w rysunku: podaj jego nazwę, potem, czy wyrównać każdy z obiektem, <Keyword id="Yes" /> (domyślnie) lub <Keyword id="No" />, a potem długość. Wyrównany odnośnik obraca się z obiektem w swoim miejscu, wzdłuż linii lub stycznie do łuku, niezależnie od tego, od którego końca zaczyna się odmierzanie; niewyrównany zachowuje oś X układu LUW. Nazwa, której nie odpowiada żaden blok, zostaje odrzucona i polecenie znów o nią pyta.
 
 ## Missing
 
@@ -29,7 +29,7 @@ MEASURE. W polskim AutoCADzie jego skrót to `ZMI`: wpisz go i naciśnij Enter l
 
 Nie: rozmieszcza punkty co podaną długość. Aby odczytać odległość między dwoma punktami, użyj polecenia <Command id="DIST" />; długość obiektu podają <Command id="LIST" /> lub <Command id="AREA" />.
 
-### Od którego końca zaczyna polecenie ZMIERZ?
+### Od którego końca polecenie ZMIERZ zaczyna odmierzanie?
 
 Od końca bliższego punktowi, w którym wskazano obiekt. Wskaż go blisko końca, od którego ma być odmierzona pierwsza długość.
 

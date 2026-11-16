@@ -20,7 +20,7 @@ Pyta o kąt tekstu, który jest wtedy rysowany pod tym kątem zamiast wzdłuż �
 
 ## Missing
 
-Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją <Keyword id="Text" /> w wierszu polecenia. Opcja Kwadrant, która przypisuje wymiar do jednego sektora, aby jego tekst mógł stanąć poza nim. Jednostki kątowe inne niż stopnie dziesiętne (DIMAUNIT). Wymiaru kątowego nie można kontynuować ani rozmieścić: polecenia <Command id="DIMCONTINUE" />, <Command id="DIMBASELINE" /> i <Command id="DIMSPACE" /> przyjmują tylko wymiary liniowe i dopasowane. Linii ani łuku wewnątrz odnośnika bloku nie można wskazać. Między dwiema liniami wymiar zachowuje punkty, w których przecinał je jego łuk, a nie same linie: przesunięty później, prowadzi linie pomocnicze od tych punktów, podczas gdy AutoCAD mierzy ponownie względem linii. Wymiar nie jest skojarzony: nie podąża za obiektami, które mierzy.
+Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją <Keyword id="Text" /> w wierszu polecenia. Opcja Kwadrant, która przypisuje wymiar do jednego sektora, aby jego tekst mógł stanąć poza nim. Jednostki kątowe inne niż stopnie dziesiętne (DIMAUNIT). Wymiaru kątowego nie można kontynuować ani rozmieścić: polecenia <Command id="DIMCONTINUE" />, <Command id="DIMBASELINE" /> i <Command id="DIMSPACE" /> przyjmują tylko wymiary liniowe i wyrównane. Linii ani łuku wewnątrz odnośnika bloku nie można wskazać. Między dwiema liniami wymiar zachowuje punkty, w których przecinał je jego łuk, a nie same linie: przesunięty później, prowadzi linie pomocnicze od tych punktów, podczas gdy AutoCAD mierzy ponownie względem linii. Wymiar nie jest skojarzony: nie podąża za obiektami, które mierzy.
 
 ## Questions
 

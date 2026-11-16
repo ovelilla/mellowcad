@@ -3,7 +3,7 @@ title: "Polilinia w AutoCADzie: polecenie PLINIA (PLINE)"
 description: "Jak narysować polilinię w AutoCADzie poleceniem PLINIA (PLINE, skrót PL): linie i łuki w jednym obiekcie, szerokość i półszerokość, długość i zamykanie."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie PLINIA po angielsku?","answer":"PLINE. W polskim AutoCADzie jego skrót to PL, taki sam jak w angielskim: wpisz go i naciśnij Enter lub spację. Pełna nazwa PLINIA też działa, a _PLINE – w AutoCADzie w każdym języku."},{"question":"Jak narysować polilinię z łukami?","answer":"Wybierz łUk: każdy punkt kończy wtedy łuk styczny do poprzedniego segmentu, aż do Linia. Aby wygładzić już narysowaną polilinię przez jej wierzchołki, użyj polecenia EDPLIN i jego opcji Wstaw lub splaJn."},{"question":"Dlaczego moja polilinia jest gruba?","answer":"Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, co mówi wiersz po punkcie początkowym. Wybierz Szerokość i podaj dwa razy 0, aby znów rysować cienko. Przy wyłączonym WYPEŁNIJ szerokie polilinie są pokazywane jako obrysy."},{"question":"Jak połączyć linie w polilinię?","answer":"Uruchom polecenie POŁĄCZ i wybierz linie, łuki i polilinie, które stykają się końcami: każdy łańcuch staje się jedną polilinią. Albo uruchom polecenie EDPLIN na linii, odpowiedz Tak, aby zamienić ją w polilinię, i dołącz resztę opcją Dołącz."},{"question":"Jak obliczyć pole lub długość polilinii?","answer":"Uruchom polecenie POLE, naciśnij Enter, aby wybrać Obiekt, i wskaż polilinię: zamknięta podaje pole i obwód, otwarta – swoją długość."}]
+faq: [{"question":"Jak się nazywa polecenie PLINIA po angielsku?","answer":"PLINE. W polskim AutoCADzie jego skrót to PL, taki sam jak w angielskim: wpisz go i naciśnij Enter lub spację. Pełna nazwa PLINIA też działa, a _PLINE – w AutoCADzie w każdym języku."},{"question":"Jak narysować polilinię z łukami?","answer":"Wybierz łUk: każdy punkt kończy wtedy łuk styczny do poprzedniego segmentu, aż do Linia. Aby wygładzić już narysowaną polilinię przez jej wierzchołki, użyj polecenia EDPLIN i jego opcji Wstaw lub splaJn."},{"question":"Dlaczego moja polilinia jest gruba?","answer":"Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, o czym informuje wiersz wyświetlany po punkcie początkowym. Wybierz Szerokość i podaj dwa razy 0, aby znów rysować cienko. Gdy tryb WYPEŁNIJ jest wyłączony, szerokie polilinie są pokazywane jako obrysy."},{"question":"Jak połączyć linie w polilinię?","answer":"Uruchom polecenie POŁĄCZ i wybierz linie, łuki i polilinie, które stykają się końcami: każdy łańcuch staje się jedną polilinią. Albo uruchom polecenie EDPLIN na linii, odpowiedz Tak, aby zamienić ją w polilinię, i dołącz resztę opcją Dołącz."},{"question":"Jak obliczyć pole lub długość polilinii?","answer":"Uruchom polecenie POLE, naciśnij Enter, aby wybrać Obiekt, i wskaż polilinię: dla zamkniętej podaje pole i obwód, dla otwartej – długość."}]
 ---
 
 Polecenie PLINIA (PLINE) rysuje polilinię: jeden obiekt złożony z prostych segmentów i łuków połączonych końcami, każdy z własną szerokością. Po punkcie początkowym podaje bieżącą szerokość; potem każdy punkt dodaje segment, aż Enter lub `Zamknij` zakończy polecenie. Jak w AutoCADzie, zaczyna od linii: `łUk` przełącza na łuki, każdy styczny do poprzedniego segmentu, a `Linia` przełącza z powrotem. Enter przy punkcie początkowym kontynuuje od końca ostatnio narysowanej linii, łuku lub polilinii.
@@ -16,7 +16,7 @@ Polecenie PLINIA (PLINE) rysuje polilinię: jeden obiekt złożony z prostych se
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="pline" caption="Linia, styczny łuk i linia z powrotem, potem grot szeroki na 10 zwężający się do 0: jedna polilinia." />
 
@@ -44,15 +44,15 @@ Cofa ostatni segment i kontynuuje w trybie segmentu wcześniejszego. Gdy żadneg
 
 ### `Szerokość` (`S`) [#width]
 
-Szerokość początkowa, potem końcowa, każda wpisana lub wskazana od ostatniego wierzchołka: od 10 do 0 zwęża się do punktu, jak grot strzałki. Szerokość końcowa przechodzi na następne segmenty i, jako PLINEWID, na następne polecenie PLINIA.
+Szerokość początkowa, potem końcowa, każda wpisana lub wskazana od ostatniego wierzchołka: szerokości 10 i 0 zwężają segment do punktu, jak grot strzałki. Szerokość końcowa przechodzi na następne segmenty i, jako PLINEWID, na następne polecenie PLINIA.
 
 ### `kąT` (`T`) [#angle]
 
-Tryb łuku: kąt środkowy łuku, potem jego punkt końcowy, środek lub promień.
+Tryb łuku: kąt rozwarcia łuku, potem jego punkt końcowy, środek lub promień.
 
 ### `śrOdek` (`O`) [#center]
 
-Tryb łuku: środek łuku, potem jego punkt końcowy, kąt środkowy lub długość cięciwy.
+Tryb łuku: środek łuku, potem jego punkt końcowy, kąt rozwarcia lub długość cięciwy.
 
 ### `zWrot` (`W`) [#direction]
 
@@ -64,7 +64,7 @@ Tryb łuku: powrót do prostych segmentów.
 
 ### `pRomień` (`R`) [#radius]
 
-Tryb łuku: promień łuku, potem jego punkt końcowy lub kąt środkowy. Ujemny promień rysuje większy łuk.
+Tryb łuku: promień łuku, potem jego punkt końcowy lub kąt rozwarcia. Ujemny promień rysuje większy łuk.
 
 ### `Drugipunkt` (`D`) [#second-pt]
 
@@ -72,7 +72,7 @@ Tryb łuku: punkt, przez który przechodzi łuk, potem jego punkt końcowy: łuk
 
 ## Czego jeszcze nie robi [#missing]
 
-PLINEGEN: nowa polilinia kładzie rodzaj linii segment po segmencie, jak przy PLINEGEN 0 (opcja `rodzajLinii` polecenia [`EDPLIN`](/docs/commands/pedit) włącza go dla jednej polilinii). Kreskowy rodzaj linii na szerokim segmencie jest rysowany jako ciągły. Podgląd szerokiego segmentu nie jest rysowany w ciemniejszym odcieniu, a monit łuku jest pisany w jednym wierszu, podczas gdy AutoCAD łamie go na dwa.
+PLINEGEN: nowa polilinia rozkłada wzór rodzaju linii segment po segmencie, jak przy PLINEGEN 0 (opcja `rodzajLinii` polecenia [`EDPLIN`](/docs/commands/pedit) włącza go dla jednej polilinii). Kreskowy rodzaj linii na szerokim segmencie jest rysowany jako ciągły. Podgląd szerokiego segmentu nie jest rysowany w przygaszonym odcieniu, a monit łuku jest pisany w jednym wierszu, podczas gdy AutoCAD łamie go na dwa.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl--fr-polyligne--po--polylign--it-plinea--pl--de-plinie--pl--ru-плиния--пл--pl-plinia--pl)
 
@@ -88,7 +88,7 @@ Wybierz `łUk`: każdy punkt kończy wtedy łuk styczny do poprzedniego segmentu
 
 ### Dlaczego moja polilinia jest gruba?
 
-Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, co mówi wiersz po punkcie początkowym. Wybierz `Szerokość` i podaj dwa razy 0, aby znów rysować cienko. Przy wyłączonym `WYPEŁNIJ` szerokie polilinie są pokazywane jako obrysy.
+Szerokość podana we wcześniejszym poleceniu PLINIA zostaje zachowana i następna polilinia zaczyna się z nią, o czym informuje wiersz wyświetlany po punkcie początkowym. Wybierz `Szerokość` i podaj dwa razy 0, aby znów rysować cienko. Gdy tryb `WYPEŁNIJ` jest wyłączony, szerokie polilinie są pokazywane jako obrysy.
 
 ### Jak połączyć linie w polilinię?
 
@@ -96,7 +96,7 @@ Uruchom polecenie [`POŁĄCZ`](/docs/commands/join) i wybierz linie, łuki i pol
 
 ### Jak obliczyć pole lub długość polilinii?
 
-Uruchom polecenie [`POLE`](/docs/commands/area), naciśnij Enter, aby wybrać `Obiekt`, i wskaż polilinię: zamknięta podaje pole i obwód, otwarta – swoją długość.
+Uruchom polecenie [`POLE`](/docs/commands/area), naciśnij Enter, aby wybrać `Obiekt`, i wskaż polilinię: dla zamkniętej podaje pole i obwód, dla otwartej – długość.
 
 ## Ćwicz [#practice]
 

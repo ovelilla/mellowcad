@@ -3,12 +3,12 @@ title: "Polecenie ZMIERZ (MEASURE) w AutoCADzie"
 description: "Jak rozmieścić punkty co zadaną długość w AutoCADzie poleceniem ZMIERZ (MEASURE, skrót ZMI): punkty lub bloki od bliższego końca. Wypróbuj online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie ZMIERZ po angielsku?","answer":"MEASURE. W polskim AutoCADzie jego skrót to ZMI: wpisz go i naciśnij Enter lub spację. Angielskie ME w polskiej wersji nie działa; pełna nazwa ZMIERZ działa, a _MEASURE – w AutoCADzie w każdym języku."},{"question":"Czy polecenie ZMIERZ mierzy odległości?","answer":"Nie: rozmieszcza punkty co podaną długość. Aby odczytać odległość między dwoma punktami, użyj polecenia ODLEG; długość obiektu podają LISTA lub POLE."},{"question":"Od którego końca zaczyna polecenie ZMIERZ?","answer":"Od końca bliższego punktowi, w którym wskazano obiekt. Wskaż go blisko końca, od którego ma być odmierzona pierwsza długość."},{"question":"Dlaczego nie widać punktów utworzonych poleceniem ZMIERZ?","answer":"Są rysowane jako kropki, domyślny styl punktu. Otwórz PTYPE i wybierz krzyżyk lub kółko albo ustaw PDMODE na 3: wszystkie punkty zmienią się od razu."},{"question":"Czym się różni ZMIERZ od PODZIEL (DIVIDE)?","answer":"PODZIEL dzieli obiekt na podaną liczbę równych części; polecenie ZMIERZ odmierza go co podaną długość, a resztę zostawia na drugim końcu."}]
+faq: [{"question":"Jak się nazywa polecenie ZMIERZ po angielsku?","answer":"MEASURE. W polskim AutoCADzie jego skrót to ZMI: wpisz go i naciśnij Enter lub spację. Angielskie ME w polskiej wersji nie działa; pełna nazwa ZMIERZ działa, a _MEASURE – w AutoCADzie w każdym języku."},{"question":"Czy polecenie ZMIERZ mierzy odległości?","answer":"Nie: rozmieszcza punkty co podaną długość. Aby odczytać odległość między dwoma punktami, użyj polecenia ODLEG; długość obiektu podają LISTA lub POLE."},{"question":"Od którego końca polecenie ZMIERZ zaczyna odmierzanie?","answer":"Od końca bliższego punktowi, w którym wskazano obiekt. Wskaż go blisko końca, od którego ma być odmierzona pierwsza długość."},{"question":"Dlaczego nie widać punktów utworzonych poleceniem ZMIERZ?","answer":"Są rysowane jako kropki, domyślny styl punktu. Otwórz PTYPE i wybierz krzyżyk lub kółko albo ustaw PDMODE na 3: wszystkie punkty zmienią się od razu."},{"question":"Czym się różni ZMIERZ od PODZIEL (DIVIDE)?","answer":"PODZIEL dzieli obiekt na podaną liczbę równych części; polecenie ZMIERZ odmierza go co podaną długość, a resztę zostawia na drugim końcu."}]
 ---
 
 Polecenie ZMIERZ (MEASURE) zaznacza obiekt co zadaną długość. Wybierz jedną linię, łuk, okrąg, elipsę, łuk eliptyczny, polilinię, polilinię 3D lub splajn, a potem podaj długość, wpisaną lub jako dwa punkty: polecenie ZMIERZ umieszcza obiekt punktu co tę długość wzdłuż obiektu, dopóki się mieści, i kończy. Nie mierzy za ciebie odległości ani nie tnie obiektu. Zaczyna od końca bliższego miejscu wskazania, więc wskaż obiekt blisko końca, od którego chcesz odmierzać; reszta zostaje na drugim końcu, a gdy długość mieści się w obiekcie całkowitą liczbę razy, drugi koniec też dostaje punkt. Okrąg zaczyna się w swoim punkcie 0° i biegnie przeciwnie do ruchu wskazówek zegara, niezależnie od miejsca wskazania; zamknięta polilinia zaczyna się w pierwszym wierzchołku.
 
-Punkty są rysowane tak, jak mówi styl punktu rysunku, domyślnie jako kropka: wcześniej ustaw widoczny kształt poleceniem [`PTYPE`](/docs/commands/ptype) albo przez PDMODE. Punkty leżą na obiekcie, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii; całe uruchomienie to jeden krok, który cofa `C`, a punkty stają się zbiorem Poprzedni. Długość większa niż obiekt daje `Obiekt nie jest tak długi.`, a tak mała, że powstałoby ponad 32767 punktów – `Obiekt jest zbyt długi.`; w obu przypadkach nic nie powstaje. Każdy inny obiekt daje `Tego obiektu nie można zmierzyć.`. Polecenie ZMIERZ uruchamia też lista rozwijana Punkty wśród narzędzi Rysuj.
+Punkty są rysowane tak, jak określa styl punktu rysunku, domyślnie jako kropka: wcześniej ustaw widoczny kształt poleceniem [`PTYPE`](/docs/commands/ptype) albo przez PDMODE. Punkty leżą na obiekcie, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii; całe uruchomienie to jeden krok, który cofa `C`, a punkty stają się zbiorem Poprzedni. Długość większa niż obiekt daje `Obiekt nie jest tak długi.`, a tak mała, że powstałoby ponad 32767 punktów – `Obiekt jest zbyt długi.`; w obu przypadkach nic nie powstaje. Każdy inny obiekt daje `Tego obiektu nie można zmierzyć.`. Polecenie ZMIERZ uruchamia też lista rozwijana Punkty wśród narzędzi Rysuj.
 
 - **Polecenie:** `ZMIERZ`
 - **Po angielsku:** `MEASURE`, wpisywane jako `_MEASURE` w każdym języku
@@ -18,7 +18,7 @@ Punkty są rysowane tak, jak mówi styl punktu rysunku, domyślnie jako kropka: 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="measure" caption="Polilinia długości 190 odmierzana co 15 od końca, przy którym ją wskazano: dwanaście punktów, ostatni 10 przed drugim końcem." />
 
@@ -26,7 +26,7 @@ Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejn
 
 ### `Blok` (`B`) [#block]
 
-Zamiast punktów – odnośniki bloku, który już jest w rysunku: podaj jego nazwę, potem, czy wyrównać każdy z obiektem, `Tak` (domyślnie) lub `Nie`, a potem długość. Wyrównany odnośnik obraca się z obiektem w swoim miejscu, wzdłuż linii lub stycznie do łuku, niezależnie od tego, od którego końca zaczyna się odmierzanie; niewyrównany zachowuje oś X układu LUW. Nazwa, za którą nie stoi żaden blok, zostaje odrzucona i polecenie znów o nią pyta.
+Zamiast punktów – odnośniki bloku, który już jest w rysunku: podaj jego nazwę, potem, czy wyrównać każdy z obiektem, `Tak` (domyślnie) lub `Nie`, a potem długość. Wyrównany odnośnik obraca się z obiektem w swoim miejscu, wzdłuż linii lub stycznie do łuku, niezależnie od tego, od którego końca zaczyna się odmierzanie; niewyrównany zachowuje oś X układu LUW. Nazwa, której nie odpowiada żaden blok, zostaje odrzucona i polecenie znów o nią pyta.
 
 ## Czego jeszcze nie robi [#missing]
 
@@ -44,7 +44,7 @@ MEASURE. W polskim AutoCADzie jego skrót to `ZMI`: wpisz go i naciśnij Enter l
 
 Nie: rozmieszcza punkty co podaną długość. Aby odczytać odległość między dwoma punktami, użyj polecenia [`ODLEG`](/docs/commands/dist); długość obiektu podają [`LISTA`](/docs/commands/list) lub [`POLE`](/docs/commands/area).
 
-### Od którego końca zaczyna polecenie ZMIERZ?
+### Od którego końca polecenie ZMIERZ zaczyna odmierzanie?
 
 Od końca bliższego punktowi, w którym wskazano obiekt. Wskaż go blisko końca, od którego ma być odmierzona pierwsza długość.
 

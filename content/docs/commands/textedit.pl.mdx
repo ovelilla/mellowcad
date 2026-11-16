@@ -3,12 +3,12 @@ title: "Polecenie EDTEKST (TEXTEDIT) w AutoCADzie"
 description: "Jak polecenie EDTEKST (TEXTEDIT, skrót EDT) w AutoCADzie edytuje tekst, tekst wielowierszowy i definicje atrybutów, jeden po drugim, z Cofaj i Tryb."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie EDTEKST po angielsku?","answer":"TEXTEDIT. W polskim AutoCADzie wpisz EDT i naciśnij Enter lub spację; działają też ODTEKST i ET. Skrót ED z wersji angielskiej w polskiej nie działa. _TEXTEDIT działa w AutoCADzie w każdym języku."},{"question":"Jak edytować tekst w AutoCADzie?","answer":"Kliknij go dwukrotnie albo wpisz EDT i wskaż go; wpisz go ponownie i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl."},{"question":"Jak edytować kilka tekstów po kolei?","answer":"Zostaw EDTEKST w trybie Wiele, domyślnym: po każdym tekście pyta o następny. Tryb i Jedna sprawiają, że kończy po jednym, jak przy dwukrotnym kliknięciu."},{"question":"Dlaczego dwukrotne kliknięcie nie edytuje tekstu?","answer":"Tekst może leżeć na zablokowanej warstwie: odblokuj warstwę w Menedżerze właściwości warstw. Tekstu wymiaru EDTEKST jeszcze nie edytuje, a wartości atrybutów bloku otwiera RATRRED."}]
+faq: [{"question":"Jak się nazywa polecenie EDTEKST po angielsku?","answer":"TEXTEDIT. W polskim AutoCADzie wpisz EDT i naciśnij Enter lub spację; działają też ODTEKST i ET. Skrót ED z wersji angielskiej w polskiej nie działa. _TEXTEDIT działa w AutoCADzie w każdym języku."},{"question":"Jak edytować tekst w AutoCADzie?","answer":"Kliknij go dwukrotnie albo wpisz EDT i wskaż go; wpisz nową treść i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl."},{"question":"Jak edytować kilka tekstów po kolei?","answer":"Zostaw EDTEKST w trybie Wiele, domyślnym: po każdym tekście pyta o następny. Tryb i Jedna sprawiają, że polecenie kończy się po jednym tekście, jak przy dwukrotnym kliknięciu."},{"question":"Dlaczego dwukrotne kliknięcie nie edytuje tekstu?","answer":"Tekst może leżeć na zablokowanej warstwie: odblokuj warstwę w Menedżerze właściwości warstw. Tekstu wymiaru EDTEKST jeszcze nie edytuje, a wartości atrybutów bloku otwiera RATRRED."}]
 ---
 
-Polecenie EDTEKST (TEXTEDIT) edytuje obiekty opisu: podaje bieżący tryb edycji, na początku `Wiele`, i prosi o wybranie obiektu. Tekst jednowierszowy otwiera się do ponownego wpisania w miejscu, gdzie jest, tekst wielowierszowy – w edytorze polecenia [`WTEKST`](/docs/commands/mtext), a definicja atrybutu – jako jej etykieta, monit i wartość domyślna. W trybie `Wiele` polecenie pyta potem o następny obiekt, aż Esc lub Enter je zakończy, a całe wykonanie to jeden krok, który cofa `C`. Dwukrotne kliknięcie tekstu lub definicji atrybutu uruchamia EDTEKST, a na tekście wielowierszowym otwiera edytor dla tego jednego obiektu.
+Polecenie EDTEKST (TEXTEDIT) edytuje obiekty opisu: podaje bieżący tryb edycji, na początku `Wiele`, i prosi o wybranie obiektu. Tekst jednowierszowy otwiera się do ponownego wpisania w miejscu, gdzie jest, tekst wielowierszowy – w edytorze polecenia [`WTEKST`](/docs/commands/mtext), a definicja atrybutu – jako jej oznaczenie, monit i wartość domyślna. W trybie `Wiele` polecenie pyta potem o następny obiekt, aż Esc lub Enter je zakończy, a całe wykonanie to jeden krok, który cofa `C`. Dwukrotne kliknięcie tekstu lub definicji atrybutu uruchamia EDTEKST, a na tekście wielowierszowym otwiera edytor dla tego jednego obiektu.
 
-Esc w edytorze tekstu jednowierszowego porzuca tę edycję i pyta o następny obiekt; drugie Esc kończy polecenie. Obiekt na zablokowanej warstwie daje `Obiekt jest na zablokowanej warstwie.` i pytanie pada ponownie, a wskazanie czegokolwiek innego ponawia pytanie bez komunikatu. Jeden tekst zaznaczony przed poleceniem otwiera się od razu.
+Esc w edytorze tekstu jednowierszowego porzuca tę edycję i pyta o następny obiekt; drugie naciśnięcie Esc kończy polecenie. Przy obiekcie na zablokowanej warstwie polecenie wyświetla `Obiekt jest na zablokowanej warstwie.` i pyta ponownie, a wskazanie czegokolwiek innego ponawia pytanie bez komunikatu. Jeden tekst wybrany przed uruchomieniem polecenia otwiera się od razu.
 
 - **Polecenie:** `EDTEKST`
 - **Po angielsku:** `TEXTEDIT`, wpisywane jako `_TEXTEDIT` w każdym języku
@@ -18,7 +18,7 @@ Esc w edytorze tekstu jednowierszowego porzuca tę edycję i pyta o następny ob
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="textedit" caption="Błędnie napisane PALTE na tabliczce wskazane poleceniem EDTEKST i poprawione na PLATE, potem Esc kończy polecenie." />
 
@@ -30,7 +30,7 @@ Cofa ostatnią edycję tego wykonania i ponownie pyta; gdy nie ma już nic do co
 
 ### `Tryb` (`T`) [#mode]
 
-Pyta o tryb edycji: `Jedna` kończy polecenie po jednym obiekcie, `Wiele` pyta o następny. Tryb zostaje zachowany dla następnego EDTEKST, w każdym rysunku.
+Pyta o tryb edycji: `Jedna` kończy polecenie po jednym obiekcie, `Wiele` pyta o następny. Tryb zostaje zachowany dla następnego wywołania polecenia EDTEKST, w każdym rysunku.
 
 ## Czego jeszcze nie robi [#missing]
 
@@ -46,11 +46,11 @@ TEXTEDIT. W polskim AutoCADzie wpisz `EDT` i naciśnij Enter lub spację; dział
 
 ### Jak edytować tekst w AutoCADzie?
 
-Kliknij go dwukrotnie albo wpisz `EDT` i wskaż go; wpisz go ponownie i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl.
+Kliknij go dwukrotnie albo wpisz `EDT` i wskaż go; wpisz nową treść i naciśnij Enter. EDTEKST pyta potem o następny tekst do edycji, aż do Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego styl – wierszem Styl.
 
 ### Jak edytować kilka tekstów po kolei?
 
-Zostaw EDTEKST w trybie `Wiele`, domyślnym: po każdym tekście pyta o następny. `Tryb` i `Jedna` sprawiają, że kończy po jednym, jak przy dwukrotnym kliknięciu.
+Zostaw EDTEKST w trybie `Wiele`, domyślnym: po każdym tekście pyta o następny. `Tryb` i `Jedna` sprawiają, że polecenie kończy się po jednym tekście, jak przy dwukrotnym kliknięciu.
 
 ### Dlaczego dwukrotne kliknięcie nie edytuje tekstu?
 

@@ -3,12 +3,12 @@ title: "Polecenie LUWSYMB (UCSICON) w AutoCADzie"
 description: "Jak w AutoCADzie pokazać lub ukryć symbol LUW poleceniem LUWSYMB (UCSICON) i umieścić go w początku lub w rogu: Tak, Nie, Róg, Początek."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak wyłączyć symbol LUW w AutoCADzie?","answer":"Wpisz LUWSYMB, naciśnij Enter, a potem wybierz Nie. Tak go przywraca. Polecenie nie ma skrótu; angielska nazwa z podkreśleniem, _UCSICON, działa w AutoCADzie w każdym języku."},{"question":"Jak przenieść symbol LUW do początku układu?","answer":"LUWSYMB, potem Początek: symbol staje w początku układu LUW. Jeśli zostaje w rogu, początek jest poza ekranem lub zbyt blisko jego krawędzi: przesuń widok lub go oddal. Róg utrzymuje symbol w rogu."},{"question":"Co oznacza kwadrat na symbolu LUW?","answer":"Że LUW jest globalnym układem współrzędnych. Przesuń lub obróć LUW poleceniem LUW, a kwadrat zniknie; LUW i Enter przywracają układ globalny, a z nim kwadrat."},{"question":"Jak zmienić styl, rozmiar lub kolor symbolu LUW?","answer":"W AutoCADzie opcją Właściwości polecenia LUWSYMB, w oknie dialogowym Symbol LUW. MellowCAD jeszcze go nie ma: symbol jest rysowany tak, jak AutoCAD 2027 rysuje go domyślnie, w stylu 3D."}]
+faq: [{"question":"Jak wyłączyć symbol LUW w AutoCADzie?","answer":"Wpisz LUWSYMB, naciśnij Enter, a potem wybierz Nie. Tak go przywraca. Polecenie nie ma skrótu; angielska nazwa z podkreśleniem, _UCSICON, działa w AutoCADzie w każdym języku."},{"question":"Jak przenieść symbol LUW do początku układu?","answer":"LUWSYMB, potem Początek: symbol staje w początku układu LUW. Jeśli zostaje w rogu, początek jest poza ekranem lub zbyt blisko jego krawędzi: przesuń widok lub go pomniejsz. Róg utrzymuje symbol w rogu."},{"question":"Co oznacza kwadrat na symbolu LUW?","answer":"Że LUW jest globalnym układem współrzędnych. Przesuń lub obróć LUW poleceniem LUW, a kwadrat zniknie; LUW i Enter przywracają układ globalny, a z nim kwadrat."},{"question":"Jak zmienić styl, rozmiar lub kolor symbolu LUW?","answer":"W AutoCADzie opcją Właściwości polecenia LUWSYMB, w oknie dialogowym Symbol LUW. MellowCAD jeszcze go nie ma: symbol jest rysowany tak, jak AutoCAD 2027 rysuje go domyślnie, w stylu 3D."}]
 ---
 
-Polecenie LUWSYMB (UCSICON) pokazuje lub ukrywa symbol LUW, ramiona X i Y, które wskazują, gdzie jest bieżący LUW i w którą stronę jest skierowany, i ustala, gdzie symbol się znajduje: w początku układu LUW albo w lewym dolnym rogu rysunku. Jego jedyne pytanie proponuje bieżący stan jako domyślny, więc Enter go zachowuje. Ustawienie zapisuje się w rysunku, a każde LUWSYMB to krok cofania.
+Polecenie LUWSYMB (UCSICON) pokazuje lub ukrywa symbol LUW, ramiona X i Y, które wskazują, gdzie jest bieżący LUW i w którą stronę jest skierowany, i ustala, gdzie symbol się znajduje: w początku układu LUW albo w lewym dolnym rogu rysunku. Jego jedyny monit proponuje bieżący stan jako domyślny, więc Enter go zachowuje. Ustawienie zapisuje się w rysunku, a każde wykonanie polecenia LUWSYMB to jeden krok cofania.
 
-Symbol to symbol 3D z AutoCADa 2027: ramię dla X i ramię dla Y, z literą na każdym końcu, oraz kwadrat w początku, dopóki LUW jest układem globalnym. Poza widokiem z góry ramię Z pokazuje, dokąd wskazuje oś Z układu LUW, a ramię widziane od czoła zostaje pominięte. W stylu Model szkieletowy 2D symbol jest biały; w stylach Ukryty i Koncepcyjny jego X jest czerwona, Y zielona, a Z niebieska. Wpisane z apostrofem, `'LUWSYMB` ustawia zamiast tego zmienną UCSICON, nawet wewnątrz innego polecenia: od 0 do 3, gdzie 1 pokazuje symbol, a 2 umieszcza go w początku.
+Symbol ma styl 3D, jak w AutoCADzie 2027: ramię dla X i ramię dla Y, z literą na każdym końcu, oraz kwadrat w początku, dopóki LUW jest układem globalnym. Poza widokiem z góry ramię Z pokazuje, dokąd wskazuje oś Z układu LUW, a ramię widziane wzdłuż swojej osi zostaje pominięte. W stylu Model szkieletowy 2D symbol jest biały; w stylach Ukryty i Koncepcyjny jego oś X jest czerwona, Y zielona, a Z niebieska. Wpisane z apostrofem, `'LUWSYMB` ustawia zamiast tego zmienną UCSICON, nawet wewnątrz innego polecenia: od 0 do 3, gdzie 1 pokazuje symbol, a 2 umieszcza go w początku.
 
 - **Polecenie:** `LUWSYMB`
 - **Po angielsku:** `UCSICON`, wpisywane jako `_UCSICON` w każdym języku
@@ -17,7 +17,7 @@ Symbol to symbol 3D z AutoCADa 2027: ramię dla X i ramię dla Y, z literą na k
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="ucsicon" caption="LUWSYMB Róg przenosi symbol do rogu; LUW przenosi początek na stopień klocka, a Początek rysuje tam symbol, z osią X czerwoną, Y zieloną i Z niebieską." />
 
@@ -37,11 +37,11 @@ Utrzymuje symbol w lewym dolnym rogu rysunku, bez względu na to, gdzie jest poc
 
 ### `Początek` (`P`) [#origin]
 
-Rysuje symbol w początku układu LUW, domyślnie. Gdy początek jest poza ekranem albo tak blisko jego krawędzi, że symbol by się nie zmieścił, symbol przechodzi do lewego dolnego rogu, dopóki początek nie wróci do widoku.
+Rysuje symbol w początku układu LUW; to ustawienie domyślne. Gdy początek jest poza ekranem albo tak blisko jego krawędzi, że symbol by się nie zmieścił, symbol przechodzi do lewego dolnego rogu, dopóki początek nie wróci do widoku.
 
 ## Czego jeszcze nie robi [#missing]
 
-Wszystkie, która w AutoCADzie stosuje ustawienie do każdej rzutni (tutaj jest tylko jedna); Wybieralne, uchwyty symbolu; oraz Właściwości, okno dialogowe Symbol LUW, ze stylem 2D, rozmiarem, szerokością linii i kolorami.
+Opcja Wszystkie, która w AutoCADzie stosuje ustawienie do każdej rzutni (tutaj jest tylko jedna); Wybieralne, czyli uchwyty symbolu; oraz Właściwości, czyli okno dialogowe Symbol LUW, ze stylem 2D, rozmiarem, szerokością linii i kolorami.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucsicon--es-simbscp--pt-br-iconeucs--fr-iconescu--it-iconaucs--de-bksymbol--ru-знакпск--pl-luwsymb)
 
@@ -53,7 +53,7 @@ Wpisz `LUWSYMB`, naciśnij Enter, a potem wybierz `Nie`. `Tak` go przywraca. Pol
 
 ### Jak przenieść symbol LUW do początku układu?
 
-LUWSYMB, potem `Początek`: symbol staje w początku układu LUW. Jeśli zostaje w rogu, początek jest poza ekranem lub zbyt blisko jego krawędzi: przesuń widok lub go oddal. `Róg` utrzymuje symbol w rogu.
+LUWSYMB, potem `Początek`: symbol staje w początku układu LUW. Jeśli zostaje w rogu, początek jest poza ekranem lub zbyt blisko jego krawędzi: przesuń widok lub go pomniejsz. `Róg` utrzymuje symbol w rogu.
 
 ### Co oznacza kwadrat na symbolu LUW?
 

@@ -2,17 +2,17 @@
 title: "Polecenie UZGWŁAŚCIWOŚCI (MATCHPROP) w AutoCADzie"
 metaTitle: "UZGWŁAŚCIWOŚCI (MATCHPROP) w AutoCADzie"
 description: "Jak skopiować właściwości w AutoCADzie poleceniem UZGWŁAŚCIWOŚCI (MATCHPROP, skrót UZG): warstwa, kolor, rodzaj i szerokość linii, style. Wypróbuj online."
-figure: "Płytka i jej otwór, pionowa oś czerwona i z rodzajem Center na swojej warstwie, oraz pozioma linia na warstwie 0, którą UZGWŁAŚCIWOŚCI zamienia w taką samą oś."
+figure: "Płytka i jej otwór, pionowa oś, czerwona, z rodzajem linii Center, na swojej warstwie, oraz pozioma linia na warstwie 0, którą UZGWŁAŚCIWOŚCI zamienia w taką samą oś."
 sourceHash: "603d5ab849b1"
 ---
 
-Polecenie UZGWŁAŚCIWOŚCI (MATCHPROP) kopiuje właściwości jednego obiektu na inne: to pędzel Uzgodnij właściwości z AutoCADa. Wskaż obiekt źródłowy albo wybierz go przed poleceniem; przyjmuje też obiekt na zablokowanej warstwie. Potem polecenie podaje, które właściwości kopiuje, w wierszu bieżących ustawień z ich listą, i pyta o obiekty docelowe: każde wskazanie lub okno maluje je od razu, aż Enter zakończy polecenie. Obiekt docelowy na zablokowanej warstwie zostaje bez zmian, z komunikatem <Message id="matchpropLockedDestination" />. Kursor niesie pędzel AutoCADa, a całe uruchomienie to jeden krok, który cofa <Command id="U" />. Wpisane z apostrofem, `'UZGWŁAŚCIWOŚCI`, działa wewnątrz innego polecenia.
+Polecenie UZGWŁAŚCIWOŚCI (MATCHPROP) kopiuje właściwości jednego obiektu na inne: to pędzel Uzgodnij właściwości z AutoCADa. Wskaż obiekt źródłowy albo wybierz go przed poleceniem; przyjmuje też obiekt na zablokowanej warstwie. Potem polecenie podaje, które właściwości kopiuje, `Aktualnie aktywne ustawienia:` i ich listę, i pyta o obiekty docelowe: każde wskazanie lub okno maluje je od razu, aż Enter zakończy polecenie. Obiekt docelowy na zablokowanej warstwie zostaje bez zmian, z komunikatem <Message id="matchpropLockedDestination" />. Kursor ma kształt pędzla, jak w AutoCADzie, a całe uruchomienie to jeden krok, który cofa <Command id="U" />. Wpisane z apostrofem, `'UZGWŁAŚCIWOŚCI`, polecenie działa w trakcie innego polecenia.
 
 Kopiuje to, co domyślnie zaznaczają Ustawienia właściwości: warstwę, kolor i szerokość linii; rodzaj linii, z wyjątkiem kreskowań, tekstu wielowierszowego i definicji atrybutów; grubość; między tekstami styl, wysokość i obrót, a z jednego tekstu jednowierszowego na inny także wyrównanie; między wymiarami styl wymiarowania; między kreskowaniami wzór, skalę i kąt, ale nie punkt początkowy.
 
 ## Missing
 
-Opcja Ustawienia i jej okno dialogowe Ustawienia właściwości: każda znana właściwość jest zawsze kopiowana, a pierwszy monit nie wymienia opcji ustawień. Skala rodzaju linii, przezroczystość i styl wydruku, których obiekty tutaj nie mają; szerokości polilinii, współczynnik szerokości i kąt pochylenia tekstu oraz właściwości opisowe. Podgląd zmiany pod kursorem, który pokazuje AutoCAD.
+Opcja Ustawienia i jej okno dialogowe Ustawienia właściwości: każda znana właściwość jest zawsze kopiowana, a pierwszy monit nie wymienia `[Ustawienia]`. Skala rodzaju linii, przezroczystość i styl wydruku, których obiekty tutaj nie mają; szerokości polilinii, współczynnik szerokości i kąt pochylenia tekstu oraz właściwości opisowe. Podgląd zmiany pod kursorem, który pokazuje AutoCAD.
 
 ## Questions
 

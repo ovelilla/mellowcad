@@ -1,13 +1,13 @@
 ---
 title: "Polecenie PRZEKRÓJ (SECTION) w AutoCADzie"
-description: "Jak polecenie PRZEKRÓJ (SECTION, skrót PKR) w AutoCADzie tworzy region tam, gdzie płaszczyzna tnie bryły 3D: 3punkty, Obiekt, oś Z, Widok, XY, YZ, ZX."
+description: "Jak polecenie PRZEKRÓJ (SECTION, skrót PKR) w AutoCADzie tworzy region tam, gdzie płaszczyzna tnie bryły 3D: 3punkty, Obiekt, ośZ, Widok, XY, YZ, ZX."
 figure: "Klocek z otworem na wylot przecięty płaszczyzną ZX przez środek otworu: PRZEKRÓJ tworzy profil, wysunięty do przodu, dwa prostokąty z przerwą na otwór."
 sourceHash: "f1c01b76c810"
 ---
 
-Polecenie PRZEKRÓJ (SECTION) tworzy przekrój brył 3D: region w miejscu, gdzie płaszczyzna przecina każdą z nich, a same bryły pozostają bez zmian. Pyta o bryły, aż do Enter: jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie, to, co nie jest bryłą, zostaje pominięte, a zbiór bez żadnej bryły daje <Message id="noSolidsSelected" />. Potem płaszczyzna: domyślnie podajesz na niej trzy punkty, a opcje wyznaczają ją inaczej, jak w <Command id="SLICE" />.
+Polecenie PRZEKRÓJ (SECTION) tworzy przekrój brył 3D: region w miejscu, gdzie płaszczyzna przecina każdą z nich, a same bryły pozostają bez zmian. Pyta o bryły, aż naciśniesz Enter: jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie, to, co nie jest bryłą, zostaje pominięte, a dla zbioru bez żadnej bryły polecenie wyświetla <Message id="noSolidsSelected" />. Potem płaszczyzna: domyślnie podajesz na niej trzy punkty, a opcje wyznaczają ją inaczej, jak w poleceniu <Command id="SLICE" />.
 
-Każda bryła przecięta przez płaszczyznę otrzymuje swój region, leżący w tej płaszczyźnie: klocek z otworem na wylot daje obrys z przerwą na otwór, walec przecięty wzdłuż osi – prostokąt. Płaszczyzna leżąca na ścianie bryły daje tę ścianę. Bryła, której płaszczyzna nie przecina, daje <Message id="sectionMissedOne" />. Regiony otrzymują bieżącą warstwę i właściwości, nie właściwości bryły; <Command id="MOVE" /> wysuwa jeden, aby go obejrzeć, <Command id="AREA" /> i <Command id="MASSPROP" /> go mierzą, a <Command id="EXTRUDE" /> zamienia go w bryłę. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły i wciąż jest częściowe.
+Każda bryła przecięta przez płaszczyznę otrzymuje swój region, leżący w tej płaszczyźnie: klocek z otworem na wylot daje obrys z przerwą na otwór, walec przecięty wzdłuż osi – prostokąt. Płaszczyzna leżąca na ścianie bryły daje tę ścianę. Dla bryły, której płaszczyzna nie przecina, wyświetla <Message id="sectionMissedOne" />. Regiony otrzymują bieżącą warstwę i właściwości, nie właściwości bryły; <Command id="MOVE" /> wysuwa jeden, aby go obejrzeć, <Command id="AREA" /> i <Command id="MASSPROP" /> go mierzą, a <Command id="EXTRUDE" /> zamienia go w bryłę. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły i wciąż jest częściowe.
 
 ## Options
 
@@ -33,15 +33,15 @@ Płaszczyzna YZ układu LUW, przez podany punkt; Enter przyjmuje początek ukła
 
 ### ZX
 
-Płaszczyzna ZX układu LUW, przez podany punkt; Enter przyjmuje początek układu LUW. Przekrój w sesji to ta płaszczyzna przez środek otworu.
+Płaszczyzna ZX układu LUW, przez podany punkt; Enter przyjmuje początek układu LUW. W pokazanej sesji przekrój wyznacza ta płaszczyzna przez środek otworu.
 
 ### 3points
 
-Trzy punkty na płaszczyźnie, która może być wtedy dowolnie nachylona. To domyślna odpowiedź pierwszego pytania, więc punkt podany tam jest pierwszym z trzech.
+Trzy punkty na płaszczyźnie, która może być wtedy dowolnie nachylona. To opcja domyślna pierwszego monitu, więc punkt podany w nim jest pierwszym z trzech.
 
 ## Missing
 
-Powierzchnie i siatki, których MellowCAD nie ma. Płaska polilinia 3D jako obiekt wyznaczający płaszczyznę, którą AutoCAD przyjmuje. Przekroje, dla których MellowCAD nie ma jeszcze dokładnej postaci, jak w <Command id="SLICE" />: kończą się komunikatem, że jedna operacja logiczna się nie powiodła. SECTIONPLANE i przekrój dynamiczny, które wstążka AutoCADa oferuje w miejsce polecenia PRZEKRÓJ: tutaj PRZEKRÓJ się wpisuje.
+Powierzchnie i siatki, których MellowCAD nie ma. Płaska polilinia 3D jako obiekt wyznaczający płaszczyznę, którą AutoCAD przyjmuje. Przekroje, dla których MellowCAD nie ma jeszcze dokładnej postaci, jak w poleceniu <Command id="SLICE" />: kończą się komunikatem, że jedna operacja logiczna się nie powiodła. Polecenie PŁAPRZEKR (SECTIONPLANE) i przekrój na bieżąco, które wstążka AutoCADa oferuje w miejsce polecenia PRZEKRÓJ: tutaj PRZEKRÓJ się wpisuje.
 
 ## Questions
 

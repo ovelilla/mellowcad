@@ -4,7 +4,7 @@ metaTitle: "Zmiana właściwości w AutoCADzie: ZMCECHY"
 description: "Jak zmienić właściwości obiektów w AutoCADzie poleceniem ZMCECHY (CHPROP): kolor, warstwa, rodzaj linii i jego skala, szerokość linii lub grubość z klawiatury."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie ZMCECHY po angielsku i czy ma skrót?","answer":"Po angielsku CHPROP, w polskim AutoCADzie ZMCECHY. Nie ma skrótu: wpisz ZMCECHY albo _CHPROP, które działa w AutoCADzie w każdym języku. Enter przy monicie Polecenie je powtarza."},{"question":"Czym się różni ZMCECHY od WŁAŚCIWOŚCI?","answer":"Zmieniają te same właściwości. WŁAŚCIWOŚCI pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze."},{"question":"Jak zmienić kolor obiektów z wiersza polecenia?","answer":"Wpisz ZMCECHY, wybierz obiekty, naciśnij Enter, wybierz Kolor i wpisz kolor, na przykład 1 dla czerwonego. Ponownie naciśnij Enter, aby zakończyć."},{"question":"Jak przenieść kilka obiektów na inną warstwę?","answer":"Uruchom ZMCECHY, wybierz obiekty, wybierz wArstwa i wpisz nazwę warstwy. Warstwa musi istnieć: najpierw utwórz ją w poleceniu WARSTWA."}]
+faq: [{"question":"Jak się nazywa polecenie ZMCECHY po angielsku i czy ma skrót?","answer":"Po angielsku CHPROP, w polskim AutoCADzie ZMCECHY. Nie ma skrótu: wpisz ZMCECHY albo _CHPROP, które działa w AutoCADzie w każdym języku. Enter przy monicie Polecenie je powtarza."},{"question":"Czym się różni ZMCECHY od WŁAŚCIWOŚCI?","answer":"Oba polecenia zmieniają te same właściwości. WŁAŚCIWOŚCI pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze."},{"question":"Jak zmienić kolor obiektów z wiersza polecenia?","answer":"Wpisz ZMCECHY, wybierz obiekty, naciśnij Enter, wybierz Kolor i wpisz kolor, na przykład 1 dla czerwonego. Ponownie naciśnij Enter, aby zakończyć."},{"question":"Jak przenieść kilka obiektów na inną warstwę?","answer":"Uruchom ZMCECHY, wybierz obiekty, wybierz wArstwa i wpisz nazwę warstwy. Warstwa musi istnieć: najpierw utwórz ją w poleceniu WARSTWA."}]
 ---
 
 Polecenie ZMCECHY (CHPROP) zmienia właściwości wybranych obiektów w wierszu polecenia: wiersze sekcji Ogólne palety Właściwości, zadawane jako monity. Wybierz obiekty, także przed poleceniem, a potem wybierz właściwość do zmiany; po każdej pyta o kolejną, aż Enter zakończy polecenie. Monit każdej właściwości proponuje jako domyślną wartość zestawu, `różne` tam, gdzie obiekty się różnią, a Enter w tym miejscu zostawia każdemu obiektowi jego własną. To, co ustawisz, zostaje zastosowane po zakończeniu polecenia, więc Esc zostawia każdy obiekt bez zmian. Obiekty na zablokowanej warstwie są liczone i pomijane, każdy z komunikatem `Obiekt jest na zablokowanej warstwie.`. Całe wywołanie to jeden krok, który cofa `C`.
@@ -16,7 +16,7 @@ Polecenie ZMCECHY (CHPROP) zmienia właściwości wybranych obiektów w wierszu 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="chprop" caption="ZMCECHY na linii przechodzącej przez otwór płyty: kolor 1 i rodzaj linii CENTER, oś, na tej samej warstwie, na której była." />
 
@@ -60,7 +60,7 @@ Po angielsku CHPROP, w polskim AutoCADzie ZMCECHY. Nie ma skrótu: wpisz `ZMCECH
 
 ### Czym się różni ZMCECHY od WŁAŚCIWOŚCI?
 
-Zmieniają te same właściwości. [`WŁAŚCIWOŚCI`](/docs/commands/properties) pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze.
+Oba polecenia zmieniają te same właściwości. [`WŁAŚCIWOŚCI`](/docs/commands/properties) pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze.
 
 ### Jak zmienić kolor obiektów z wiersza polecenia?
 

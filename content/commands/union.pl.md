@@ -5,13 +5,13 @@ figure: "Dwa zachodzące na siebie prostopadłościany połączone w jedną bry�
 sourceHash: "be43813a7dee"
 ---
 
-Polecenie SUMA (UNION) łączy dwie lub więcej brył 3D w jedną bryłę albo dwa lub więcej regionów leżących w jednej płaszczyźnie w jeden region: część wspólna liczy się raz, a krawędzie wewnątrz znikają. Pyta o obiekty, ile tylko chcesz, a Enter je łączy. Jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie, a to, co nie jest ani bryłą, ani regionem, zostaje pominięte. Bryły i regiony są łączone osobno: wszystkie bryły w jedną, regiony płaszczyzna po płaszczyźnie.
+Polecenie SUMA (UNION) łączy dwie lub więcej brył 3D w jedną bryłę albo dwa lub więcej regionów leżących w jednej płaszczyźnie w jeden region: część wspólna liczy się raz, a krawędzie wewnątrz znikają. Pyta o dowolną liczbę obiektów, a Enter je łączy. Jak w AutoCADzie 2027 zbiór wybrany przed poleceniem zostaje odrzucony, a polecenie pyta o obiekty od nowa, a to, co nie jest ani bryłą, ani regionem, zostaje pominięte. Bryły i regiony są łączone osobno: wszystkie bryły w jedną, regiony płaszczyzna po płaszczyźnie.
 
-Obiekt wskazany jako pierwszy staje się wynikiem, ze swoją warstwą i kolorem, a pozostałe zostają usunięte; przy oknie, oknie przecinającym lub opcji Wszystko jest to najnowszy z nich. Wynik jest bryłą złożoną: nie jest już prostopadłościanem ani walcem i nie ma historii (<Command id="LIST" /> pokazuje Historia = Brak), a zaznaczony pokazuje jeden uchwyt, który przesuwa go w całości. Bryły, które się nie stykają, stają się jednym obiektem z dwóch części. Całe polecenie to jeden krok cofania. 3D w MellowCAD wciąż jest częściowe: bryły istnieją, powierzchnie i siatki nie.
+Obiekt wskazany jako pierwszy staje się wynikiem, ze swoją warstwą i kolorem, a pozostałe zostają usunięte; przy wyborze oknem, oknem przecinającym lub opcją WSZYSTKO jest to najnowszy z nich. Wynik jest bryłą złożoną: nie jest już prostopadłościanem ani walcem i nie ma historii (<Command id="LIST" /> pokazuje Historia = Brak), a po zaznaczeniu pokazuje jeden uchwyt, który przesuwa go w całości. Bryły, które się nie stykają, stają się jednym obiektem z dwóch części. Całe polecenie to jeden krok cofania. Funkcje 3D w MellowCAD wciąż są częściowe: bryły istnieją, powierzchnie i siatki nie.
 
 ## Missing
 
-Powierzchnie, których tu nie ma. Zakrzywione powierzchnie przecinające się wzdłuż krzywej, dla której MellowCAD nie ma jeszcze dokładnej postaci: walce, stożki, sfery lub torusy, których osie ani się nie pokrywają, ani nie są równoległe (dwa walce mogą też się przecinać); stożek z czymkolwiek poza płaszczyzną lub bryłą na jego osi; torus lub bryła obrotowa z płaszczyzną ani prostopadłą do osi, ani przez nią przechodzącą, albo z bryłą poza osią; bryła wyciągnięta z czymkolwiek poza płaszczyzną lub powierzchnią wyciągniętą w jej kierunku. Są one odrzucane, a bryły pozostają bez zmian; tak samo cięcie, które styka się z krawędzią stycznie, powierzchnie prawie, ale nie całkiem, na jednej płaszczyźnie i bardzo cienki pasek między cięciem a krawędzią. Walec leżący wzdłuż ściany prostopadłościanu łączy się w poprawną objętość, ale z jedną krawędzią i jedną powierzchnią mniej niż w AutoCADzie. Historia brył nie jest przechowywana (SOLIDHIST, SHOWHISTORY).
+Powierzchnie, których tu nie ma. Zakrzywione powierzchnie przecinające się wzdłuż krzywej, dla której MellowCAD nie ma jeszcze dokładnej postaci: walce, stożki, sfery lub torusy, których osie ani się nie pokrywają, ani nie są równoległe (dwa walce mogą też się przecinać); stożek z czymkolwiek poza płaszczyzną lub bryłą na jego osi; torus lub bryła obrotowa z płaszczyzną ani prostopadłą do osi, ani przez nią przechodzącą, albo z bryłą poza osią; bryła wyciągnięta z czymkolwiek poza płaszczyzną lub powierzchnią wyciągniętą w jej kierunku. Są one odrzucane, a bryły pozostają bez zmian; tak samo cięcie, które styka się z krawędzią stycznie, powierzchnie leżące prawie, ale nie całkiem, na jednej powierzchni i bardzo cienki pasek między cięciem a krawędzią. Walec leżący wzdłuż ściany prostopadłościanu daje po połączeniu poprawną objętość, ale z jedną krawędzią i jedną ścianą mniej niż w AutoCADzie. Historia brył nie jest przechowywana (SOLIDHIST, SHOWHISTORY).
 
 ## Questions
 
@@ -21,11 +21,11 @@ UNION. W polskim AutoCADzie wpisz `SUMA` lub skrót `SUM` i naciśnij Enter lub 
 
 ### Dlaczego SUMA nie działa?
 
-Potrzebuje dwóch brył albo dwóch regionów w tej samej płaszczyźnie: przy mniejszej liczbie wyświetla <Message id="booleanNeedsTwo" /> i niczego nie zmienia. Linie, łuki i polilinie nie są regionami, nawet zamknięte: najpierw utwórz z nich regiony poleceniem <Command id="REGION" />. Obiekty zaznaczone przed poleceniem SUMA są odrzucane, jak w AutoCADzie 2027: wybierz je przy jego pytaniu. Gdy informuje, że jedna operacja logiczna się nie powiodła, bryły stykają się w sposób, którego MellowCAD jeszcze nie potrafi obliczyć, i pozostają bez zmian.
+Potrzebuje dwóch brył albo dwóch regionów w tej samej płaszczyźnie: przy mniejszej liczbie wyświetla <Message id="booleanNeedsTwo" /> i niczego nie zmienia. Linie, łuki i polilinie nie są regionami, nawet zamknięte: najpierw utwórz z nich regiony poleceniem <Command id="REGION" />. Obiekty zaznaczone przed poleceniem SUMA są odrzucane, jak w AutoCADzie 2027: wybierz je przy jego monicie. Gdy polecenie informuje, że jedna operacja logiczna się nie powiodła, bryły stykają się w sposób, którego MellowCAD jeszcze nie potrafi obliczyć, i pozostają bez zmian.
 
-### Jak cofnąć SUMA?
+### Jak cofnąć polecenie SUMA?
 
-<Command id="U" /> lub Ctrl+Z zaraz po nim: całe polecenie cofa się w jednym kroku, a obiekty wracają do poprzedniego stanu. Później nie ma już czego rozdzielać, bo połączona bryła nie zachowuje informacji o swoich częściach. Operacją odwrotną jest <Command id="SUBTRACT" />, które odejmuje bryły zamiast je dodawać.
+<Command id="U" /> lub Ctrl+Z zaraz po nim: całe polecenie zostaje cofnięte w jednym kroku, a obiekty wracają do poprzedniego stanu. Później nie ma już czego rozdzielać, bo połączona bryła nie zachowuje informacji o swoich częściach. Operacją odwrotną jest polecenie <Command id="SUBTRACT" />, które odejmuje bryły zamiast je dodawać.
 
 ### Jak połączyć regiony w AutoCADzie?
 

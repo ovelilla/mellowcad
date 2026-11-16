@@ -3,10 +3,10 @@ title: "Polecenie ODSUŃ (OFFSET) w AutoCADzie"
 description: "Jak odsunąć obiekt w AutoCADzie poleceniem ODSUŃ (OFFSET, skrót OD): odległość lub punkt, wymazanie i warstwa, jeden obiekt naraz. Wypróbuj za darmo online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie ODSUŃ po angielsku?","answer":"OFFSET. W polskim AutoCADzie jego skrót to OD: wpisz go i naciśnij Enter lub spację. Angielskie O w polskiej wersji uruchamia polecenie OKRĄG; pełna nazwa ODSUŃ też działa, a _OFFSET – w AutoCADzie w każdym języku."},{"question":"Dlaczego nie mogę odsunąć obiektu?","answer":"Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem „Tego obiektu nie można odsunąć.”; tak samo postępuje, gdy odległość ścisnęłaby okrąg, łuk lub polilinię do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana."},{"question":"Jak odsunąć tę samą linię kilka razy?","answer":"Wskaż linię, a potem przy monicie o stronę wpisz literę opcji Wiele: każde kliknięcie po tej stronie daje kolejną kopię, każdą o jedną odległość dalej od poprzedniej. Albo zostaw tryb domyślny i za każdym razem wskazuj najnowszą kopię."},{"question":"Jak umieścić odsunięte kopie na bieżącej warstwie?","answer":"Przy pierwszym monicie wybierz wArstwa, potem Bieżąca. Od tej chwili każda kopia trafia na warstwę bieżącą, dopóki znów nie wybierzesz źRódłowa."}]
+faq: [{"question":"Jak się nazywa polecenie ODSUŃ po angielsku?","answer":"OFFSET. W polskim AutoCADzie jego skrót to OD: wpisz go i naciśnij Enter lub spację. Angielskie O w polskiej wersji uruchamia polecenie OKRĄG; pełna nazwa ODSUŃ też działa, a _OFFSET – w AutoCADzie w każdym języku."},{"question":"Dlaczego nie mogę odsunąć obiektu?","answer":"Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem „Tego obiektu nie można odsunąć.”; tak samo postępuje, gdy przy tej odległości okrąg, łuk lub polilinia zmalałyby do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana."},{"question":"Jak odsunąć tę samą linię kilka razy?","answer":"Wskaż linię, a potem przy monicie o stronę wpisz literę opcji Wiele: każde kliknięcie po tej stronie daje kolejną kopię, każdą o jedną odległość dalej od poprzedniej. Albo zostaw tryb domyślny i za każdym razem wskazuj najnowszą kopię."},{"question":"Jak umieścić odsunięte kopie na bieżącej warstwie?","answer":"Przy pierwszym monicie wybierz wArstwa, potem Bieżąca. Od tej chwili każda kopia trafia na warstwę bieżącą, dopóki znów nie wybierzesz źRódłowa."}]
 ---
 
-Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odległości, którą wpisujesz, albo przez wskazany punkt: linia daje linię równoległą, okrąg lub łuk – współśrodkowy, polilinia – obrys wewnątrz lub na zewnątrz niej, elipsa lub splajn – splajn, który biegnie wzdłuż nich. Jak w AutoCADzie, polecenie bierze jeden obiekt naraz: odległość podajesz raz, a potem wskazujesz obiekt i stronę, po której ma stanąć kopia, tyle razy, ile chcesz. Enter kończy polecenie.
+Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odległości, którą wpisujesz, albo przez wskazany punkt: linia daje linię równoległą, okrąg lub łuk – współśrodkowy, polilinia – obrys wewnątrz lub na zewnątrz niej, elipsa lub splajn – splajn biegnący wzdłuż oryginału. Jak w AutoCADzie, polecenie przyjmuje jeden obiekt naraz: odległość podajesz raz, a potem wskazujesz obiekt i stronę, po której ma się znaleźć kopia, tyle razy, ile chcesz. Enter kończy polecenie.
 
 - **Polecenie:** `ODSUŃ`
 - **Po angielsku:** `OFFSET`, wpisywane jako `_OFFSET` w każdym języku
@@ -16,7 +16,7 @@ Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odleg�
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="offset" caption="Prostokąt odsunięty o 6 do wewnątrz i okrąg odsunięty o 6 na zewnątrz: każdy wskazany, potem strona." />
 
@@ -60,7 +60,7 @@ OFFSET. W polskim AutoCADzie jego skrót to `OD`: wpisz go i naciśnij Enter lub
 
 ### Dlaczego nie mogę odsunąć obiektu?
 
-Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem `Tego obiektu nie można odsunąć.`; tak samo postępuje, gdy odległość ścisnęłaby okrąg, łuk lub polilinię do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana.
+Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem `Tego obiektu nie można odsunąć.`; tak samo postępuje, gdy przy tej odległości okrąg, łuk lub polilinia zmalałyby do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana.
 
 ### Jak odsunąć tę samą linię kilka razy?
 

@@ -46,7 +46,7 @@ Po angielsku CHPROP, w polskim AutoCADzie ZMCECHY. Nie ma skrótu: wpisz `ZMCECH
 
 ### Czym się różni ZMCECHY od WŁAŚCIWOŚCI?
 
-Zmieniają te same właściwości. <Command id="PROPERTIES" /> pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze.
+Oba polecenia zmieniają te same właściwości. <Command id="PROPERTIES" /> pokazuje je w palecie, razem z geometrią każdego obiektu; ZMCECHY pyta o nie w wierszu polecenia, dzięki czemu ręce zostają na klawiaturze.
 
 ### Jak zmienić kolor obiektów z wiersza polecenia?
 

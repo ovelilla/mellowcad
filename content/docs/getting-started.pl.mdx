@@ -18,7 +18,7 @@ Pisz na rysunku, gdziekolwiek jest kursor: litery trafiają do wiersza polecenia
 
 ## Odpowiadaj na monity [#prompts]
 
-Polecenie pyta o jedną rzecz naraz, w wierszu polecenia i obok kursora. Punkt to kliknięcie na rysunku albo dwie współrzędne wpisane jako `x,y`. Po pierwszym punkcie wpisane współrzędne są mierzone od ostatniego punktu, tak jak mierzy je wprowadzanie dynamiczne AutoCADa, a historia zapisuje je ze znakiem `@`; `#x,y` mierzy się natomiast od początku układu współrzędnych. Sama wpisana odległość odmierza się w kierunku kursora.
+Polecenie pyta o jedną rzecz naraz, w wierszu polecenia i obok kursora. Punkt to kliknięcie na rysunku albo dwie współrzędne wpisane jako `x,y`. Po pierwszym punkcie wpisane współrzędne są mierzone od ostatniego punktu, tak jak mierzy je wprowadzanie dynamiczne AutoCADa, a historia zapisuje je ze znakiem `@`; `#x,y` mierzy się natomiast od początku układu współrzędnych. Sama wpisana odległość jest odmierzana w kierunku kursora.
 
 <Session name="firstLine" />
 
@@ -46,7 +46,7 @@ Polecenie edycji pyta o obiekty, na których ma działać, albo najpierw o warto
 
 ## Cofnij i przywróć [#undo]
 
-<Command id="U" /> lub `Ctrl+Z` cofa ostatnie polecenie w całości, a `Ctrl+Y` je przywraca. Wewnątrz polecenia, które ją oferuje, jego własna opcja cofania cofa jeden krok, na przykład jeden odcinek polecenia <Command id="LINE" />.
+<Command id="U" /> lub `Ctrl+Z` cofa ostatnie polecenie w całości, a `Ctrl+Y` je przywraca. W poleceniu, które ma własną opcję cofania, ta opcja cofa jeden krok, na przykład jeden odcinek polecenia <Command id="LINE" />.
 
 ## Zapisz [#save]
 

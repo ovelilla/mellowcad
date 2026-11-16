@@ -25,7 +25,7 @@ Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszc
 
 ### Jak przeciąć linie w AutoCADzie?
 
-Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, przyciągnij do niego lokalizacją Przecięcie; aby się spotkały, użyj polecenia <Command id="FILLET" /> z promieniem 0, <Command id="TRIM" /> lub <Command id="EXTEND" />.
+Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, wskaż je z lokalizacją Punkt przecięcia; aby się spotkały, użyj polecenia <Command id="FILLET" /> z promieniem 0, <Command id="TRIM" /> lub <Command id="EXTEND" />.
 
 ### Dlaczego polecenie ILOCZYN usuwa moje obiekty?
 

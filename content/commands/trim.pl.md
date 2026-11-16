@@ -1,6 +1,6 @@
 ---
 title: "Polecenie UTNIJ (TRIM) w AutoCADzie"
-description: "Jak uciąć linię w AutoCADzie poleceniem UTNIJ (TRIM, skrót UT): tryby Szybki i Standardowy, krawędzie tnące, krawędź, przetnij i Shift do wydłużania."
+description: "Jak uciąć linię w AutoCADzie poleceniem UTNIJ (TRIM, skrót UT): tryby Szybki i Standardowy, krawędzie tnące, opcje Krawędź i Przetnij, Shift do wydłużania."
 figure: "Linia ucięta do dwóch linii, które ją przecinają: każdy koniec wskazany raz, w trybie Szybki."
 sourceHash: "fcbf44618cf3"
 ---
@@ -15,7 +15,7 @@ Określa, które obiekty tną: wybierz je albo naciśnij Enter, aby przyjąć ws
 
 ### Fence
 
-Pyta o punkty linii, ile tylko chcesz, aż do Enter: każdy obiekt, który ona przecina, zostaje ucięty w miejscu przecięcia, w jednym kroku. Tryb <Keyword id="Standard" /> wymienia tę opcję na liście; tryb <Keyword id="Quick" /> też ją przyjmuje, a wskazanie w pustym miejscu samo zaczyna linię z dwóch punktów.
+Pyta o kolejne punkty linii, aż do naciśnięcia Enter: każdy obiekt, który ona przecina, zostaje ucięty w miejscu przecięcia, w jednym kroku. Tryb <Keyword id="Standard" /> wymienia tę opcję na liście; tryb <Keyword id="Quick" /> też ją przyjmuje, a wskazanie w pustym miejscu samo zaczyna linię z dwóch punktów.
 
 ### Crossing
 
@@ -23,7 +23,7 @@ Pyta o dwa narożniki okna: wszystko, co przecina jego obrys, zostaje ucięte, w
 
 ### mOde
 
-Przełącza między <Keyword id="Quick" /> a <Keyword id="Standard" />. W trybie <Keyword id="Standard" /> polecenie UTNIJ najpierw pyta o krawędzie tnące (Enter przyjmuje wszystkie), pozostawia obiekt, którego nie przecina żadna krawędź, z komunikatem <Message id="doesNotIntersectCuttingEdge" />, wymienia na liście <Keyword id="Fence" /> i <Keyword id="Edge" />, a wskazanie w pustym miejscu zaczyna okno przecinające. Tryb jest wspólny dla UTNIJ i <Command id="EXTEND" /> i obowiązuje do końca sesji.
+Przełącza między <Keyword id="Quick" /> a <Keyword id="Standard" />. W trybie <Keyword id="Standard" /> polecenie UTNIJ najpierw pyta o krawędzie tnące (Enter przyjmuje wszystkie), pozostawia obiekt, którego nie przecina żadna krawędź, z komunikatem <Message id="doesNotIntersectCuttingEdge" />, wymienia na liście <Keyword id="Fence" /> i <Keyword id="Edge" />, a wskazanie w pustym miejscu zaczyna okno przecinające. Tryb jest wspólny dla poleceń UTNIJ i <Command id="EXTEND" /> i obowiązuje do końca sesji.
 
 ### Edge
 
@@ -35,11 +35,11 @@ Usuwa obiekty bez wychodzenia z polecenia: wybierz je, a Enter je usunie, jako j
 
 ### Undo
 
-Pojawia się na liście, gdy pytanie otrzymało już odpowiedź – wskazanie, linię, okno: cofa ostatnie ucięcie, a gdy nie ma już nic do cofnięcia, informuje o tym.
+Pojawia się na liście, gdy monit otrzymał już odpowiedź – wskazanie, linię, okno: cofa ostatnie ucięcie, a gdy nie ma już nic do cofnięcia, informuje o tym.
 
 ## Missing
 
-Rzut: opcja Rzut AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest obliczane w rzucie na płaszczyznę XY układu LUW, co odpowiada domyślnej wartości AutoCADa, LUW. Linii nie można jeszcze przeciągnąć kursorem, tylko wskazywać punkt po punkcie. Tryb ucinania i wybór w opcji <Keyword id="Edge" /> obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt nachylony do układu LUW, z wyjątkiem splajnu, ani nie tnie, ani nie jest ucinany.
+Rzut: opcja Rzut AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest obliczane w rzucie na płaszczyznę XY układu LUW, co odpowiada domyślnej wartości AutoCADa, LUW. Linii opcji Krawędź nie można jeszcze przeciągnąć kursorem, można ją tylko wskazywać punkt po punkcie. Tryb ucinania i wybór w opcji <Keyword id="Edge" /> obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt nachylony do układu LUW, z wyjątkiem splajnu, ani nie tnie, ani nie jest ucinany.
 
 ## Questions
 
@@ -49,12 +49,12 @@ TRIM. W polskim AutoCADzie wpisz `UTNIJ` lub skrót `UT` i naciśnij Enter lub s
 
 ### Dlaczego UTNIJ usuwa całą linię?
 
-Bo polecenie działa w trybie Szybki, domyślnym w AutoCADzie od wersji 2021: wskazanie obiektu, którego nie przecina żadna krawędź, usuwa go. Wybierz <Keyword id="mOde" />, a potem <Keyword id="Standard" />, aby UTNIJ pozostawiało taki obiekt i informowało o tym.
+Bo polecenie działa w trybie Szybki, domyślnym w AutoCADzie od wersji 2021: wskazanie obiektu, którego nie przecina żadna krawędź, usuwa go. Wybierz <Keyword id="mOde" />, a potem <Keyword id="Standard" />, aby polecenie UTNIJ pozostawiało taki obiekt i informowało o tym.
 
 ### Jak uciąć wiele linii naraz w AutoCADzie?
 
-Kliknij w pustym miejscu i wskaż drugi punkt: każdy obiekt, który przecina ta linia, zostaje ucięty w jednym kroku. Albo wybierz <Keyword id="Crossing" /> i narysuj okno przez części do usunięcia.
+Kliknij w pustym miejscu i wskaż drugi punkt: każdy obiekt, który przecina ta linia, zostaje ucięty w jednym kroku. Albo wybierz <Keyword id="Crossing" /> i narysuj okno przechodzące przez części do usunięcia.
 
 ### Jak wydłużyć linię poleceniem UTNIJ?
 
-Przytrzymaj Shift i wskaż linię przy końcu, który chcesz wydłużyć: urośnie do najbliższej krawędzi, jak przy <Command id="EXTEND" />, a następne wskazanie bez Shift znów ucina.
+Przytrzymaj Shift i wskaż linię przy końcu, który chcesz wydłużyć: wydłuży się do najbliższej krawędzi, jak przy <Command id="EXTEND" />, a następne wskazanie bez Shift znów ucina.

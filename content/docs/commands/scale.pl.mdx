@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Jak się nazywa polecenie SKALA po angielsku?","answer":"SCALE. W polskim AutoCADzie wpisz SKALA lub skrót S i naciśnij Enter lub spację; skrót SC z wersji angielskiej w polskiej nie działa, a S uruchamia w niej SKALA, a nie ROZCIĄGNIJ. _SCALE działa w AutoCADzie w każdym języku."},{"question":"Jak skalować z odniesieniem w AutoCADzie?","answer":"Przy współczynniku wybierz Odniesienie, wskaż dwa końce krawędzi o znanej długości, a potem wpisz długość, jaką ma mieć. Wszystko, co wybrano, skaluje się w stosunku nowej długości do starej, więc rysunek w złym rozmiarze można poprawić na podstawie jednego znanego wymiaru."},{"question":"Jak przeskalować obiekt i zachować oryginał?","answer":"Przy współczynniku wybierz Kopiuj: skaluje się kopia, a oryginał zostaje na miejscu."},{"question":"Jak zmienić skalę rodzaju linii?","answer":"Nie poleceniem SKALA, które zmienia rozmiar obiektów: RLSKALA ustala długość kresek i przerw każdego rodzaju linii."},{"question":"Jak ustawić skalę wydruku lub układu?","answer":"MellowCAD nie ma układów, rzutni ani drukowania: rysujesz w rzeczywistej wielkości w obszarze modelu, a SKALA zmienia rozmiar samych obiektów, a nie sposób, w jaki zostałyby wydrukowane."}]
 ---
 
-Polecenie SKALA (SCALE) powiększa lub pomniejsza wybrane obiekty względem punktu bazowego, który pozostaje na miejscu: współczynnik 2 podwaja je, 0.5 zmniejsza o połowę, jednakowo we wszystkich kierunkach. Wybierz obiekty, wskaż punkt bazowy, a potem wpisz współczynnik albo przesuń kursor i kliknij: obiekty podążają za nim. Enter w tym miejscu, bez wpisanej wartości, skaluje o ostatnio użyty współczynnik. Każde wykonanie to jeden krok, który można cofnąć.
+Polecenie SKALA (SCALE) powiększa lub pomniejsza wybrane obiekty względem punktu bazowego, który pozostaje na miejscu: współczynnik 2 podwaja je, 0,5 zmniejsza o połowę, jednakowo we wszystkich kierunkach. Wybierz obiekty, wskaż punkt bazowy, a potem wpisz współczynnik albo przesuń kursor i kliknij: obiekty podążają za nim. Enter w tym miejscu, bez wpisanej wartości, skaluje o ostatnio użyty współczynnik. Każde wykonanie to jeden krok, który można cofnąć.
 
 Skaluje wszystko, co obejmuje, tak jak AutoCAD: wzór kreskowania rośnie razem z obwiednią, wymiar mierzy swoją nową długość, a obiekt nad płaszczyzną skaluje się także w osi Z względem punktu bazowego.
 
@@ -18,9 +18,9 @@ Skaluje wszystko, co obejmuje, tak jak AutoCAD: wzór kreskowania rośnie razem 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
-<Session name="scale" caption="Płyta z otworem przeskalowana na kopii z opcją Odniesienie wokół narożnika: wskazana krawędź długości 40, potem długość 60." />
+<Session name="scale" caption="Płyta z otworem przeskalowana na kopii opcją Odniesienie względem narożnika: wskazana krawędź o długości 40 otrzymuje długość 60." />
 
 ## Opcje [#options]
 

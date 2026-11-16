@@ -3,7 +3,7 @@ title: "Polecenie ILOCZYN (INTERSECT) w AutoCADzie"
 description: "Jak działa ILOCZYN (INTERSECT) w AutoCADzie: z dwóch lub więcej brył 3D albo regionów w jednej płaszczyźnie zostaje tylko część wspólna, reszta znika."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie ILOCZYN po angielsku i jaki ma skrót?","answer":"INTERSECT. W polskim AutoCADzie jego skrót to IL: wpisz go i naciśnij Enter lub spację. Angielskie IN w polskiej wersji nie działa; pełna nazwa działa, a _INTERSECT – w AutoCADzie w każdym języku."},{"question":"Czym się różnią polecenia SUMA, RÓŻNICA i ILOCZYN?","answer":"Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszczyźnie. Polecenie SUMA zachowuje wszystko, co pokrywa którykolwiek z nich, polecenie RÓŻNICA zachowuje pierwszy zbiór pomniejszony o drugi, a polecenie ILOCZYN zachowuje tylko to, co wszystkie mają wspólne. Każde to jeden krok cofania i każde wymazuje obiekty, które zużyło."},{"question":"Jak przeciąć linie w AutoCADzie?","answer":"Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, przyciągnij do niego lokalizacją Przecięcie; aby się spotkały, użyj polecenia ZAOKRĄGL z promieniem 0, UTNIJ lub WYDŁUŻ."},{"question":"Dlaczego polecenie ILOCZYN usuwa moje obiekty?","answer":"Bo nie mają nic wspólnego: bez części wspólnej mówi „Utworzono pustą bryłę — usunięto”, a dla regionów „Utworzono pusty region — usunięto”, i wymazuje je, jak AutoCAD. Polecenie C je przywraca. Jedna bryła i jeden region albo dwa regiony w różnych płaszczyznach w ogóle nie są przecinane: polecenie mówi „Należy wybrać przynajmniej 2 brył, powierzchni lub współpłaszczyznowych regionów.” i niczego nie zmienia."}]
+faq: [{"question":"Jak się nazywa polecenie ILOCZYN po angielsku i jaki ma skrót?","answer":"INTERSECT. W polskim AutoCADzie jego skrót to IL: wpisz go i naciśnij Enter lub spację. Angielskie IN w polskiej wersji nie działa; pełna nazwa działa, a _INTERSECT – w AutoCADzie w każdym języku."},{"question":"Czym się różnią polecenia SUMA, RÓŻNICA i ILOCZYN?","answer":"Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszczyźnie. Polecenie SUMA zachowuje wszystko, co pokrywa którykolwiek z nich, polecenie RÓŻNICA zachowuje pierwszy zbiór pomniejszony o drugi, a polecenie ILOCZYN zachowuje tylko to, co wszystkie mają wspólne. Każde to jeden krok cofania i każde wymazuje obiekty, które zużyło."},{"question":"Jak przeciąć linie w AutoCADzie?","answer":"Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, wskaż je z lokalizacją Punkt przecięcia; aby się spotkały, użyj polecenia ZAOKRĄGL z promieniem 0, UTNIJ lub WYDŁUŻ."},{"question":"Dlaczego polecenie ILOCZYN usuwa moje obiekty?","answer":"Bo nie mają nic wspólnego: bez części wspólnej mówi „Utworzono pustą bryłę — usunięto”, a dla regionów „Utworzono pusty region — usunięto”, i wymazuje je, jak AutoCAD. Polecenie C je przywraca. Jedna bryła i jeden region albo dwa regiony w różnych płaszczyznach w ogóle nie są przecinane: polecenie mówi „Należy wybrać przynajmniej 2 brył, powierzchni lub współpłaszczyznowych regionów.” i niczego nie zmienia."}]
 ---
 
 Polecenie ILOCZYN (INTERSECT) zachowuje tylko to, co dwie lub więcej brył 3D albo dwa lub więcej regionów w jednej płaszczyźnie mają wspólne, a resztę wymazuje: prostopadłościan i nachodząca na niego kula zostawiają kulę z płaskimi ścianami. Pyta o obiekty aż do Enter, tak jak polecenie [`SUMA`](/docs/commands/union), i pomija to, co nie jest ani bryłą, ani regionem. Jak w AutoCADzie 2027, zbiór wybrany przed poleceniem jest porzucany i pytanie o obiekty pada ponownie. Bryły i regiony są liczone osobno, regiony płaszczyzna po płaszczyźnie.
@@ -18,7 +18,7 @@ Obiekt wskazany jako pierwszy staje się wynikiem, z jego warstwą i kolorem, a 
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="intersect" caption="Prostopadłościan i nachodząca na niego kula, przecięte: ich część wspólna to kula z sześcioma płaskimi ścianami, widziana z południowego wschodu." />
 
@@ -40,7 +40,7 @@ Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszc
 
 ### Jak przeciąć linie w AutoCADzie?
 
-Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, przyciągnij do niego lokalizacją Przecięcie; aby się spotkały, użyj polecenia [`ZAOKRĄGL`](/docs/commands/fillet) z promieniem 0, [`UTNIJ`](/docs/commands/trim) lub [`WYDŁUŻ`](/docs/commands/extend).
+Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, wskaż je z lokalizacją Punkt przecięcia; aby się spotkały, użyj polecenia [`ZAOKRĄGL`](/docs/commands/fillet) z promieniem 0, [`UTNIJ`](/docs/commands/trim) lub [`WYDŁUŻ`](/docs/commands/extend).
 
 ### Dlaczego polecenie ILOCZYN usuwa moje obiekty?
 

@@ -5,21 +5,21 @@ figure: "Splajn dopasowania przez pięć punktów, a pod nim splajn na pięciu w
 sourceHash: "1056b5067125"
 ---
 
-Polecenie SPLAJN (SPLINE) rysuje gładką krzywą na jeden z dwóch sposobów: przez podane punkty (<Keyword id="Fit" />, domyślnie) albo przyciąganą ku umieszczonym wierzchołkom sterującym (<Keyword id="CV" />). Na początku podaje swoje ustawienia, `Metoda = Dopasuj; Węzły = Cięciwa`, a potem pyta o pierwszy punkt; Enter w tym miejscu jest odrzucany, jak w AutoCADzie. Każdy kolejny punkt wygina krzywą, której podgląd podąża za kursorem, a Enter ją kończy. Punkty można wskazywać, przyciągać lokalizacją lub wpisywać, wpisana długość biegnie w kierunku kursora, a punkt zachowuje swoją współrzędną Z, więc splajn może wznosić się w przestrzeni. Esc porzuca krzywą; cały splajn to jeden krok, który cofa <Command id="U" />. Przyciski Splajn dopasowania i Splajn wierzchołków sterujących na wstążce uruchamiają SPLAJN z już wybraną metodą.
+Polecenie SPLAJN (SPLINE) rysuje gładką krzywą na jeden z dwóch sposobów: przez podane punkty (<Keyword id="Fit" />, domyślnie) albo przyciąganą ku umieszczonym wierzchołkom sterującym (<Keyword id="CV" />). Na początku podaje swoje ustawienia, `Metoda = Dopasuj; Węzły = Cięciwa`, a potem pyta o pierwszy punkt; Enter w tym miejscu jest odrzucany, jak w AutoCADzie. Każdy kolejny punkt wygina krzywą, której podgląd podąża za kursorem, a Enter ją kończy. Punkty można wskazywać, przyciągać lokalizacją lub wpisywać, wpisana długość biegnie w kierunku kursora, a punkt zachowuje swoją współrzędną Z, więc splajn może wznosić się w przestrzeni. Esc porzuca krzywą; cały splajn to jeden krok, który cofa <Command id="U" />. Przyciski „Dopasowany do splajnu” i „Wierzchołek sterujący splajnu” na wstążce uruchamiają SPLAJN z już wybraną metodą.
 
 ## Options
 
 ### Method
 
-<Keyword id="Fit" /> lub <Keyword id="CV" />. Splajn dopasowania przechodzi przez każdy podany punkt; splajn wierzchołków sterujących przechodzi tylko przez pierwszy i ostatni wierzchołek, a pozostałe przyciągają go ku sobie, więc wychodzi gładszy i dalej od nich. Metoda, podobnie jak węzły i stopień, zostaje zachowana do końca sesji.
+<Keyword id="Fit" /> lub <Keyword id="CV" />. Splajn dopasowania przechodzi przez każdy podany punkt; splajn wierzchołków sterujących przechodzi tylko przez pierwszy i ostatni wierzchołek, a pozostałe przyciągają go ku sobie, więc jest gładszy i biegnie dalej od nich. Metoda, podobnie jak węzły i stopień, zostaje zachowana do końca sesji.
 
 ### Knots
 
-Jak splajn dopasowania rozkłada swoje punkty wzdłuż krzywej: <Keyword id="Chord" /> (domyślnie, według odległości między nimi), <Keyword id="Square root" /> z tej odległości albo <Keyword id="Uniform" />, wszystkie jednakowo. Przez te same punkty każda z nich daje nieco inną krzywą.
+Jak splajn dopasowania rozkłada swoje punkty wzdłuż krzywej: <Keyword id="Chord" /> (domyślnie, według odległości między nimi), <Keyword id="Square root" /> z tej odległości albo <Keyword id="Uniform" />, czyli wszystkie odstępy jednakowe. Przez te same punkty każda z tych opcji daje nieco inną krzywą.
 
 ### Degree
 
-Stopień splajnu wierzchołków sterujących, od 1 (odcinki proste między wierzchołkami) do 10; 3, wartość domyślna, to krzywa sześcienna. Gdy wierzchołków jest mniej, niż wymaga stopień, krzywa przyjmuje najwyższy możliwy.
+Stopień splajnu wierzchołków sterujących, od 1 (odcinki proste między wierzchołkami) do 10; 3, wartość domyślna, daje krzywą trzeciego stopnia. Gdy wierzchołków jest mniej, niż wymaga stopień, krzywa przyjmuje najwyższy możliwy.
 
 ### Object
 
@@ -53,7 +53,7 @@ SPLINE. W polskim AutoCADzie wpisz `SPL` lub pełną nazwę `SPLAJN` i naciśnij
 
 ### Czym się różni splajn dopasowania od splajnu wierzchołków sterujących?
 
-Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją <Keyword id="Method" /> przy pierwszym pytaniu.
+Splajn dopasowania przechodzi przez klikane punkty, co pasuje do krzywej, która musi ich dotykać. Splajn wierzchołków sterujących jest kształtowany przez wierzchołki sterujące, do których tylko się zbliża, co pasuje do płynnego, gładkiego kształtu. Wybierz metodę opcją <Keyword id="Method" /> w pierwszym monicie.
 
 ### Jak zamienić splajn na polilinię w AutoCADzie?
 

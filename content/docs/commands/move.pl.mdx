@@ -3,10 +3,10 @@ title: "Polecenie PRZESUŃ (MOVE) w AutoCADzie"
 description: "Jak przesunąć obiekt w AutoCADzie poleceniem PRZESUŃ (MOVE, skrót PRS): punkt bazowy i drugi punkt albo przemieszczenie wpisane jako X,Y,Z. Wypróbuj online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie PRZESUŃ po angielsku?","answer":"MOVE. W polskim AutoCADzie jego skrót to PRS: wpisz go i naciśnij Enter lub spację. Angielskie M w polskiej wersji uruchamia polecenie MODEL; pełna nazwa PRZESUŃ działa, a _MOVE – w AutoCADzie w każdym języku."},{"question":"Jak przesunąć obiekt o zadaną odległość?","answer":"Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: 50,0 przesuwa o 50 wzdłuż X. Przy włączonym wprowadzaniu dynamicznym, a tak jest na początku, punkt po pierwszym jest względny, więc historia zapisuje go jako @50,0. Albo skieruj kursor w stronę ruchu, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość."},{"question":"Jak przesunąć obiekty w górę w 3D?","answer":"Podaj przesunięciu współrzędną Z: 0,0,5 jako drugi punkt albo jako Przesunięcie podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącej wysokości."},{"question":"Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?","answer":"Polecenie PRZESUŃ przesuwa całe obiekty. ROZCIĄGNIJ przesuwa tylko końce i wierzchołki wewnątrz swojego okna przecinającego i rozciąga obiekty, do których należą."}]
+faq: [{"question":"Jak się nazywa polecenie PRZESUŃ po angielsku?","answer":"MOVE. W polskim AutoCADzie jego skrót to PRS: wpisz go i naciśnij Enter lub spację. Angielskie M w polskiej wersji uruchamia polecenie MODEL; pełna nazwa PRZESUŃ działa, a _MOVE – w AutoCADzie w każdym języku."},{"question":"Jak przesunąć obiekt o zadaną odległość?","answer":"Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: 50,0 przesuwa o 50 wzdłuż X. Przy włączonym wprowadzaniu dynamicznym, a tak jest na początku, punkt po pierwszym jest względny, więc historia zapisuje go jako @50,0. Albo skieruj kursor w stronę ruchu, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość."},{"question":"Jak przesunąć obiekty w górę w 3D?","answer":"Podaj przesunięcie ze współrzędną Z: 0,0,5 jako drugi punkt albo jako Przesunięcie podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącym poziomie."},{"question":"Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?","answer":"Polecenie PRZESUŃ przesuwa całe obiekty. ROZCIĄGNIJ przesuwa tylko końce i wierzchołki wewnątrz swojego okna przecinającego i rozciąga obiekty, do których należą."}]
 ---
 
-Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wybierz je, podaj punkt bazowy, a potem drugi punkt, i przesuną się o odległość i w kierunku od pierwszego do drugiego. Nic innego się w nich nie zmienia. Jak w AutoCADzie, przesuwane są obiekty wybrane przed poleceniem, punkt można wskazać, chwycić trybem lokalizacji lub wpisać, a gdy wybierasz drugi punkt, zbiór podąża za kursorem, z linią od punktu bazowego. Przesunięcie to jeden krok, który cofa polecenie Cofaj.
+Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wybierz je, podaj punkt bazowy, a potem drugi punkt, i przesuną się o odległość i w kierunku od pierwszego do drugiego. Nic innego się w nich nie zmienia. Jak w AutoCADzie, przesuwane są obiekty wybrane przed poleceniem, punkt można wskazać, określić lokalizacją względem obiektu lub wpisać, a gdy wybierasz drugi punkt, zbiór podąża za kursorem, z linią od punktu bazowego. Przesunięcie to jeden krok, który cofa polecenie COFAJ.
 
 - **Polecenie:** `PRZESUŃ`
 - **Po angielsku:** `MOVE`, wpisywane jako `_MOVE` w każdym języku
@@ -16,7 +16,7 @@ Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wyb
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="move" caption="Okrąg przesunięty o 50 w prawo: wskazany, jego środek jako punkt bazowy, drugi punkt wpisany." />
 
@@ -44,7 +44,7 @@ Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: `50,0` przesuw
 
 ### Jak przesunąć obiekty w górę w 3D?
 
-Podaj przesunięciu współrzędną Z: `0,0,5` jako drugi punkt albo jako `Przesunięcie` podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącej wysokości.
+Podaj przesunięcie ze współrzędną Z: `0,0,5` jako drugi punkt albo jako `Przesunięcie` podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącym poziomie.
 
 ### Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?
 

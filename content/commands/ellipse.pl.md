@@ -5,7 +5,7 @@ figure: "Elipsa przez dwa końce osi, elipsa przez jej środek i pół łuku eli
 sourceHash: "2ee0d1b3a8a4"
 ---
 
-Polecenie ELIPSA (ELLIPSE) rysuje elipsę z dwóch końców jednej osi, a potem z odległości od jej środka do końca drugiej osi, czyli połowy długości drugiej osi. Każda z osi może być dłuższa. To prawdziwa elipsa, jak w AutoCADzie, a nie polilinia, więc działają na niej lokalizacje Środek, Kwadrant i Najbliższy, a jej uchwyty przesuwają ją i ustawiają każdą półoś. Gdy podajesz drugi koniec, od pierwszego biegnie bursztynowa linia kreskowa; przy odległości elipsa podąża za kursorem. Elipsa powstaje na bieżącej warstwie, z właściwościami bieżącymi w chwili jej utworzenia.
+Polecenie ELIPSA (ELLIPSE) rysuje elipsę z dwóch końców jednej osi, a potem z odległości od jej środka do końca drugiej osi, czyli połowy długości drugiej osi. Każda z osi może być dłuższa. To prawdziwa elipsa, jak w AutoCADzie, a nie polilinia, więc działają na niej lokalizacje Środek, Kwadrant i Najbliższy punkt, a jej uchwyty przesuwają ją i ustawiają każdą półoś. Gdy podajesz drugi koniec, od pierwszego biegnie bursztynowa przerywana linia; przy odległości elipsa podąża za kursorem. Elipsa powstaje na bieżącej warstwie, z właściwościami bieżącymi w chwili jej utworzenia.
 
 ## Options
 
@@ -27,11 +27,11 @@ W łuku, zamiast kąta początkowego lub końcowego: kąt na okręgu, z którego
 
 ### Included angle
 
-W łuku, zamiast kąta końcowego: o ile łuk biegnie od początku. Enter przyjmuje 180, połowę elipsy.
+W łuku, zamiast kąta końcowego: kąt, który łuk zakreśla od początku. Enter przyjmuje 180, połowę elipsy.
 
 ## Missing
 
-Izo, dostępna w AutoCADzie tylko przy izometrycznym stylu skoku, którego tutaj nie ma. PELLIPSE 1, czyli elipsa rysowana jako polilinia. Kreskowanie i wymiarowanie elipsy oraz lokalizacje Przecięcie, Styczny i Prostopadły na niej. Uchwyty strzałkowe na końcach łuku eliptycznego, tutaj rysowane jako kwadratowe, i wpisywanie długości lub kąta przy aktywnym uchwycie. Punkt ze współrzędną Z przy odległości jest mierzony w rzucie, podczas gdy AutoCAD mierzy go w przestrzeni.
+Opcja Izo, dostępna w AutoCADzie tylko przy izometrycznym stylu skoku, którego tutaj nie ma. PELLIPSE 1, czyli elipsa rysowana jako polilinia. Kreskowanie i wymiarowanie elipsy oraz lokalizacje Punkt przecięcia, Styczna i Prostopadle na niej. Uchwyty strzałkowe na końcach łuku eliptycznego, tutaj rysowane jako kwadratowe, i wpisywanie długości lub kąta przy aktywnym uchwycie. Punkt ze współrzędną Z przy odległości jest mierzony w rzucie, podczas gdy AutoCAD mierzy go w przestrzeni.
 
 ## Questions
 
@@ -41,7 +41,7 @@ ELLIPSE. W polskim AutoCADzie jego skrót to `E`: wpisz go i naciśnij Enter lub
 
 ### Jak narysować pół elipsy w AutoCADzie?
 
-Wybierz <Keyword id="Arc" />, podaj oś i odległość, a potem kąt początkowy `0` i kąt końcowy `180`. Albo naciśnij Enter przy opcji <Keyword id="Included angle" />, która domyślnie obejmuje 180.
+Wybierz <Keyword id="Arc" />, podaj oś i odległość, a potem kąt początkowy `0` i kąt końcowy `180`. Albo naciśnij Enter przy opcji <Keyword id="Included angle" />, która domyślnie zakreśla 180°.
 
 ### Jak narysować elipsę od środka?
 

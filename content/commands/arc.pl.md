@@ -1,12 +1,12 @@
 ---
 title: "Polecenie ŁUK (ARC) w AutoCADzie"
 metaTitle: "Łuk w AutoCADzie: polecenie ŁUK (ARC), 3 punkty"
-description: "Jak narysować łuk w AutoCADzie poleceniem ŁUK (ARC, skrót U): przez trzy punkty, początek-środek-koniec lub środek-początek-koniec i zgodnie z zegarem z Ctrl."
+description: "Jak narysować łuk w AutoCADzie poleceniem ŁUK (ARC, U): przez 3 punkty, początek-środek-koniec lub środek-początek-koniec, z Ctrl zgodnie ze wskazówkami zegara."
 figure: "Trzy łuki: przez trzy punkty, od początku wokół środka do końca oraz od środka, przez początek, do końca."
 sourceHash: "af9b22e35456"
 ---
 
-Polecenie ŁUK (ARC) domyślnie rysuje łuk przez trzy punkty: jego początek, punkt, przez który przechodzi, i jego koniec. Albo rysuje go wokół środka, od punktu początkowego do końca, tak jak uruchamiają go przyciski Początek, środek, koniec i Środek, początek, koniec na wstążce. Jak w AutoCADzie, łuk podany środkiem biegnie od początku przeciwnie do ruchu wskazówek zegara, a koniec wyznacza tylko, gdzie łuk się zatrzymuje: nie musi leżeć na łuku. Gdy umieszczasz punkty, łuk podąża za kursorem, z bursztynową przerywaną linią od początku lub od środka. Łuk leży w płaszczyźnie swojego pierwszego punktu. Łuk, którego nie da się utworzyć, trzy punkty na jednej prostej albo koniec w punkcie początkowym, daje komunikat <Message id="invalid" /> i nic nie zostaje narysowane.
+Polecenie ŁUK (ARC) domyślnie rysuje łuk przez trzy punkty: jego początek, punkt, przez który przechodzi, i jego koniec. Albo rysuje go wokół środka, od punktu początkowego do końca, tak jak uruchamiają go przyciski Początek, Środek, Koniec i Środek, Początek, Koniec na wstążce. Jak w AutoCADzie, łuk określony środkiem biegnie od początku przeciwnie do ruchu wskazówek zegara, a koniec wyznacza tylko, gdzie łuk się zatrzymuje: nie musi leżeć na łuku. Gdy umieszczasz punkty, łuk podąża za kursorem, z bursztynową przerywaną linią od początku lub od środka. Łuk leży w płaszczyźnie swojego pierwszego punktu. Gdy łuku nie da się utworzyć (trzy punkty na jednej prostej albo koniec w punkcie początkowym), polecenie wyświetla komunikat <Message id="invalid" /> i niczego nie rysuje.
 
 ## Options
 

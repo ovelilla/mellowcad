@@ -1,7 +1,7 @@
 ---
 title: "Ćwiczenie AutoCAD: schody w rzucie"
 metaTitle: "Ćwiczenie AutoCAD dla początkujących: schody"
-description: "Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z jednej linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Krok po kroku."
+description: "Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Za darmo, krok po kroku."
 figure: "Prosty bieg schodów w rzucie, 280 na 100 centymetrów, ze strzałką skierowaną w górę biegu."
 sourceHash: "ff6e60262cd9"
 ---
@@ -20,7 +20,7 @@ Krawędź pierwszego stopnia: polecenie <Command id="LINE" /> od `28,0`, `0,100`
 
 ### Utwórz szyk stopni [#array]
 
-Polecenie <Command id="ARRAYRECT" /> kopiuje ją wzdłuż biegu: wskaż linię i naciśnij Enter, potem wybierz opcję <Keyword command="ARRAYRECT" id="COUnt" />, `9` kolumn i `1` wiersz, oraz <Keyword command="ARRAYRECT" id="Spacing" />, `28` między kolumnami i `1` między wierszami, co przy jednym wierszu niczego nie zmienia. Opcja <Keyword command="ARRAYRECT" id="eXit" /> zachowuje go jako szyk skojarzony, który można później edytować uchwytami.
+Polecenie <Command id="ARRAYRECT" /> kopiuje ją wzdłuż biegu: wskaż linię i naciśnij Enter, potem wybierz opcję <Keyword command="ARRAYRECT" id="COUnt" />, `9` kolumn i `1` wiersz, oraz <Keyword command="ARRAYRECT" id="Spacing" />, `28` między kolumnami i `1` między wierszami, co przy jednym wierszu niczego nie zmienia. Opcja <Keyword command="ARRAYRECT" id="eXit" /> zachowuje wynik jako szyk skojarzony, który można później edytować uchwytami.
 
 ### Narysuj strzałkę [#arrow]
 

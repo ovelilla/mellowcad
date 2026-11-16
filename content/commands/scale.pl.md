@@ -1,11 +1,11 @@
 ---
 title: "Skalowanie w AutoCADzie: polecenie SKALA (SCALE)"
 description: "Jak skalować obiekty w AutoCADzie poleceniem SKALA (SCALE, skrót S): punkt bazowy, współczynnik skali, Kopiuj i Odniesienie do znanej długości."
-figure: "Płyta z otworem przeskalowana na kopii z opcją Odniesienie wokół narożnika: wskazana krawędź długości 40, potem długość 60."
+figure: "Płyta z otworem przeskalowana na kopii opcją Odniesienie względem narożnika: wskazana krawędź o długości 40 otrzymuje długość 60."
 sourceHash: "005829bf17ad"
 ---
 
-Polecenie SKALA (SCALE) powiększa lub pomniejsza wybrane obiekty względem punktu bazowego, który pozostaje na miejscu: współczynnik 2 podwaja je, 0.5 zmniejsza o połowę, jednakowo we wszystkich kierunkach. Wybierz obiekty, wskaż punkt bazowy, a potem wpisz współczynnik albo przesuń kursor i kliknij: obiekty podążają za nim. Enter w tym miejscu, bez wpisanej wartości, skaluje o ostatnio użyty współczynnik. Każde wykonanie to jeden krok, który można cofnąć.
+Polecenie SKALA (SCALE) powiększa lub pomniejsza wybrane obiekty względem punktu bazowego, który pozostaje na miejscu: współczynnik 2 podwaja je, 0,5 zmniejsza o połowę, jednakowo we wszystkich kierunkach. Wybierz obiekty, wskaż punkt bazowy, a potem wpisz współczynnik albo przesuń kursor i kliknij: obiekty podążają za nim. Enter w tym miejscu, bez wpisanej wartości, skaluje o ostatnio użyty współczynnik. Każde wykonanie to jeden krok, który można cofnąć.
 
 Skaluje wszystko, co obejmuje, tak jak AutoCAD: wzór kreskowania rośnie razem z obwiednią, wymiar mierzy swoją nową długość, a obiekt nad płaszczyzną skaluje się także w osi Z względem punktu bazowego.
 

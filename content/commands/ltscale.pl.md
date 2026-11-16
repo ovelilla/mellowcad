@@ -7,7 +7,7 @@ figure: "Ta sama płytka po RLSKALA 20: kreski otworu i osi narysowane 20 razy d
 sourceHash: "33b956c956fa"
 ---
 
-Polecenie RLSKALA (LTSCALE) ustala globalny współczynnik skali rodzaju linii: jak długie są kreski i przerwy każdego nieciągłego rodzaju linii w rysunku. Pyta o nowy współczynnik, proponując bieżący, w nowym rysunku `1.0000`: 2 wydłuża dwukrotnie każdą kreskę, 0,5 skraca ją o połowę. Współczynnik musi być większy od 0, inaczej polecenie wyświetla <Message id="positiveNonzero" /> i pyta ponownie, a `1/2` i `1e3` są czytane jako liczby. Zmiana przerysowuje cały rysunek, z komunikatem `Ponowne generowanie modelu.`, jak w AutoCADzie 2027, i zapisuje się razem z rysunkiem; to krok, który cofa <Command id="U" />. Wpisane z apostrofem wewnątrz polecenia, `'RLSKALA`, przerysowuje rysunek po zakończeniu tamtego polecenia.
+Polecenie RLSKALA (LTSCALE) ustala globalny współczynnik skali rodzaju linii: jak długie są kreski i przerwy każdego nieciągłego rodzaju linii w rysunku. Pyta o nowy współczynnik, proponując bieżący, w nowym rysunku `1.0000`: 2 wydłuża dwukrotnie każdą kreskę, 0,5 skraca ją o połowę. Współczynnik musi być większy od 0, inaczej polecenie wyświetla <Message id="positiveNonzero" /> i pyta ponownie, a `1/2` i `1e3` są czytane jako liczby. Zmiana przerysowuje cały rysunek z komunikatem `Ponowne generowanie modelu.`, jak w AutoCADzie 2027, i zapisuje się razem z rysunkiem; to krok, który cofa <Command id="U" />. Gdy wpiszesz je z apostrofem w trakcie innego polecenia, `'RLSKALA`, rysunek zostanie przerysowany po zakończeniu tamtego polecenia.
 
 Rodzaje linii to wzory przygotowane dla rysunku w rozmiarze arkusza: w rysunku szerokim na 4 metry, w milimetrach, wzór CENTER o długości około 51 jednostek powtarza się na nim jakieś 80 razy, zbyt drobno, by go zobaczyć, a linia krótsza niż jeden wzór jest rysowana jako ciągła. Właściwa skala to zwykle skala samego rysunku: 20 dla rysunku czytanego w skali 1:20, 50 dla 1:50.
 
@@ -31,4 +31,4 @@ Skalę rysunku: w rysunku w milimetrach czytanym w skali 1:50 – `50`. Dla rysu
 
 ### Czym się różni RLSKALA od samego rodzaju linii?
 
-Rodzaj linii, ustawiany poleceniem <Command id="LINETYPE" /> lub przez warstwę, to wzór: kreski, kropki i przerwy. RLSKALA mówi, jak długi jest rysowany ten wzór – jeden współczynnik dla każdego obiektu w rysunku.
+Rodzaj linii, ustawiany poleceniem <Command id="LINETYPE" /> lub przez warstwę, to wzór: kreski, kropki i przerwy. RLSKALA określa, jak długi jest rysowany ten wzór – jeden współczynnik dla każdego obiektu w rysunku.

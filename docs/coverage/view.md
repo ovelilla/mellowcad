@@ -179,7 +179,7 @@ leaves the zoom where AutoCAD frames LIMITS (p333: no LIMITS here); the View Man
 Previous's list; the UCS named `*TOP*` after U of an orthographic preset from the WCS (AutoCAD
 keeps the WCS's axes under that name, p351, and 2027 still does, ucs/p260; here `*WORLD*`)
 
-### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT` · pt-BR `ORBITA3D` / `O3D` · fr `ORBITE3D` / `3O` · it `3DORBITA` / `3DO` / `ORBIT` · de `3DORBIT` · ru `3DОРБИТА` / `3О` / `ОРБИТА` / `3-ОРБИТА` · pl `3DORBITA` / `3DO`
+### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT` · pt-BR `ORBITA3D` / `O3D` · fr `ORBITE3D` / `3O` · it `3DORBITA` / `3DO` / `ORBIT` · de `3DORBIT` · ru `3DОРБИТА` / `3О` / `ОРБИТА` / `3-ОРБИТА` · pl `3DORBITA` / `3DO` / `OR`
 
 **Implemented:** `Press ESC or ENTER to exit, or right-click to display shortcut-menu.` when it
 starts, hyphen and all (es

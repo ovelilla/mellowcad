@@ -6,13 +6,13 @@ figure: "Dwa prostokąty z dwóch narożników, drugi wpisany względem pierwsze
 sourceHash: "a5d4e90c06aa"
 ---
 
-Polecenie PROSTOK (RECTANG) rysuje prostokąt z dwóch przeciwległych narożników, wskazanych lub wpisanych: `0,0`, a potem `100,50`, względny do pierwszego przy wprowadzaniu dynamicznym, daje prostokąt 100 na 50. To jedna zamknięta polilinia o czterech wierzchołkach, utworzona na bieżącej warstwie. Opcje pierwszego monitu ustalają, jak rysowane są następne prostokąty, a każda zachowuje swoją wartość do końca sesji: następne polecenie PROSTOK podaje te obowiązujące w pierwszym wierszu. Jego opcja szerokości nadaje każdemu bokowi szerokość polilinii. Gdy umieszczasz drugi narożnik, prostokąt podąża za kursorem; przy włączonym wprowadzaniu dynamicznym możesz wpisać jego długość, Tab i szerokość.
+Polecenie PROSTOK (RECTANG) rysuje prostokąt z dwóch przeciwległych narożników, wskazanych lub wpisanych: `0,0`, a potem `100,50`, liczone względem pierwszego przy wprowadzaniu dynamicznym, daje prostokąt 100 na 50. To jedna zamknięta polilinia o czterech wierzchołkach, utworzona na bieżącej warstwie. Opcje pierwszego monitu ustalają, jak rysowane są następne prostokąty, a każda zachowuje swoją wartość do końca sesji: następne polecenie PROSTOK podaje w pierwszym wierszu te, które obowiązują. Jego opcja szerokości nadaje każdemu bokowi szerokość polilinii. Gdy umieszczasz drugi narożnik, prostokąt podąża za kursorem; przy włączonym wprowadzaniu dynamicznym możesz wpisać jego długość, Tab i szerokość.
 
 ## Options
 
 ### Chamfer
 
-Pyta o pierwszą i drugą odległość fazowania i ścina nimi każdy narożnik: osiem wierzchołków. Odległość 0 ją wyłącza. Zastępuje zaokrąglenie.
+Pyta o pierwszą i drugą odległość fazowania i ścina nimi każdy narożnik: osiem wierzchołków. Odległość 0 wyłącza fazowanie. Zastępuje zaokrąglenie.
 
 ### Elevation
 
@@ -24,11 +24,11 @@ Pyta o promień i zaokrągla nim każdy narożnik. Promień 0 wyłącza zaokrąg
 
 ### Thickness
 
-Pyta o grubość: prostokąt stoi na tę wysokość, jak ściana, w widoku 3D.
+Pyta o grubość: w widoku 3D prostokąt wznosi się na tę wysokość, jak ściana.
 
 ### Area
 
-Przy drugim narożniku: pyta o pole, potem, czy podać <Keyword id="Length" />, czy <Keyword id="Width" />, a potem o ten bok. Drugi bok zostaje obliczony, z uwzględnieniem narożników, a prostokąt powstaje od razu.
+Przy drugim narożniku: pyta o pole, potem, czy podać <Keyword id="Length" />, czy <Keyword id="Width" />, a potem o długość tego boku. Drugi bok zostaje obliczony, z uwzględnieniem narożników, a prostokąt powstaje od razu.
 
 ### Dimensions
 
@@ -36,7 +36,7 @@ Przy drugim narożniku: pyta o długość i szerokość, a potem o punkt, który
 
 ### Rotation
 
-Przy drugim narożniku: pyta o kąt obrotu prostokąta, wpisany lub jako punkt od pierwszego narożnika, albo o dwa punkty z <Keyword id="Pick" />. Kąt zostaje zachowany do końca sesji.
+Przy drugim narożniku: pyta o kąt obrotu prostokąta, wpisany lub jako punkt od pierwszego narożnika, albo o dwa punkty opcją <Keyword id="Pick" />. Kąt zostaje zachowany do końca sesji.
 
 ## Missing
 
@@ -50,7 +50,7 @@ RECTANG. W polskim AutoCADzie wpisz `PROSTOK`, jego skrót `PRO` albo `PROSTOKĄ
 
 ### Jak narysować prostokąt o dokładnych wymiarach?
 
-Podaj pierwszy narożnik, a drugi wpisz względem niego: `100,50` przy włączonym wprowadzaniu dynamicznym, a tak jest na początku, albo `@100,50` bez niego daje prostokąt o długości 100 i szerokości 50. Albo wybierz <Keyword id="Dimensions" /> i wpisz oba boki.
+Podaj pierwszy narożnik, a drugi wpisz względem niego: `100,50` przy włączonym wprowadzaniu dynamicznym (tak jest domyślnie) albo `@100,50` przy wyłączonym daje prostokąt o długości 100 i szerokości 50. Albo wybierz <Keyword id="Dimensions" /> i wpisz oba boki.
 
 ### Jak narysować prostokąt z zaokrąglonymi narożnikami?
 
@@ -58,7 +58,7 @@ Przy pierwszym monicie wybierz <Keyword id="Fillet" /> i wpisz promień, potem p
 
 ### Dlaczego mój prostokąt ma zaokrąglone lub ścięte narożniki?
 
-Polecenie PROSTOK zachowuje zaokrąglenie i fazowanie do końca sesji, więc prostokąt narysowany po jednym z nich też je ma: mówi o tym jego pierwszy wiersz. Wybierz <Keyword id="Fillet" /> i wpisz `0`, aby znów rysować zwykłe narożniki.
+Polecenie PROSTOK zachowuje zaokrąglenie i fazowanie do końca sesji, więc kolejne prostokąty też je mają: mówi o tym jego pierwszy wiersz. Wybierz <Keyword id="Fillet" /> i wpisz `0`, aby znów rysować zwykłe narożniki.
 
 ### Czy prostokąt w AutoCADzie to polilinia?
 

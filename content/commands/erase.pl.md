@@ -19,7 +19,7 @@ ERASE. W polskim AutoCADzie jego skróty to `WY` i `DELETE`: wpisz jeden z nich 
 
 ### Jak wymazać wszystko w rysunku?
 
-Uruchom polecenie WYMAŻ i wpisz `WSZYSTKO` przy monicie `Wybierz obiekty:`, a potem naciśnij Enter. Obiekty na zablokowanej warstwie są pomijane, a wybór mówi, ile ich było.
+Uruchom polecenie WYMAŻ i wpisz `WSZYSTKO` przy monicie `Wybierz obiekty:`, a potem naciśnij Enter. Obiekty na zablokowanej warstwie są pomijane, a monit wyboru podaje, ile ich było.
 
 ### Jak odzyskać to, co wymazałem?
 

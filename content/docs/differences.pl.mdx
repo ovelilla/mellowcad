@@ -6,7 +6,7 @@ type: concept
 sourceHash: "0aafe6ab8ce7"
 ---
 
-MellowCAD odwzorowuje AutoCAD 2027: te same polecenia i aliasy, ta sama kolejność monitów, te same litery opcji i wartości domyślne. Odchodzi od niego tylko tam, gdzie wymusza to przeglądarka albo gdzie nie istnieje tu funkcja, której dotyczy dane zachowanie. Przy każdej różnicy poniżej jest napisane, co robi AutoCAD, co zamiast tego robi MellowCAD i dlaczego. To, czego jeszcze brakuje pojedynczemu poleceniu, jest podlinkowane z jego wpisu na [stronie poleceń](/docs/commands).
+MellowCAD odwzorowuje AutoCAD 2027: te same polecenia i aliasy, ta sama kolejność monitów, te same litery opcji i wartości domyślne. Odchodzi od niego tylko tam, gdzie wymusza to przeglądarka albo gdzie nie istnieje tu funkcja, której dotyczy dane zachowanie. Przy każdej różnicy poniżej jest napisane, co robi AutoCAD, co zamiast tego robi MellowCAD i dlaczego. Odnośnik do tego, czego jeszcze brakuje pojedynczemu poleceniu, znajdziesz w jego wpisie na [stronie poleceń](/docs/commands).
 
 ## Jeden rysunek naraz [#one-drawing]
 
@@ -18,7 +18,7 @@ MellowCAD przechowuje rysunek w tej przeglądarce w trakcie pracy, tylko na tym 
 
 ## Klawisze, które przeglądarka zachowuje dla siebie [#browser-keys]
 
-Strona nigdy nie otrzymuje `Ctrl+W`, który zamyka kartę, ani `Ctrl+N`, który otwiera okno. Cykliczny wybór obiektów, w AutoCADzie `Ctrl+W`, jest tu pod klawiszem `F4`; AutoCAD przeznacza `F4` na lokalizację względem obiektów 3D, której MellowCAD jeszcze nie ma. Nowy rysunek tworzy się poleceniem <Command id="NEW" />, wpisanym z klawiatury.
+Strona nigdy nie otrzymuje skrótu `Ctrl+W`, który zamyka kartę, ani `Ctrl+N`, który otwiera okno. Wybieranie cykliczne, w AutoCADzie `Ctrl+W`, jest tu pod klawiszem `F4`; AutoCAD przeznacza `F4` na lokalizację obiektu 3D, której MellowCAD jeszcze nie ma. Nowy rysunek tworzy się poleceniem <Command id="NEW" />, wpisanym z klawiatury.
 
 ## Wprowadzanie dynamiczne jest zawsze włączone [#dynamic-input]
 
@@ -26,7 +26,7 @@ Wprowadzania dynamicznego nie można wyłączyć, więc jego klawisz, `F12`, poz
 
 ## Tylko obszar modelu [#model-space]
 
-Nie ma układów ani drukowania: ekran jest jedynym miejscem, w którym widać rysunek. Dlatego szerokości linii są wyświetlane od początku (`LWDISPLAY` włączona, podczas gdy AutoCAD zaczyna z wyłączoną), a `MODEL` na pasku stanu jest etykietą, a nie przełącznikiem na układ.
+Nie ma układów ani drukowania: ekran jest jedynym miejscem, w którym widać rysunek. Dlatego szerokości linii są wyświetlane od początku (zmienna `LWDISPLAY` włączona, podczas gdy AutoCAD zaczyna z wyłączoną), a `MODEL` na pasku stanu jest etykietą, a nie przełącznikiem na układ.
 
 ## Wersje niektórych okien dialogowych w wierszu polecenia [#dialogs]
 
@@ -38,7 +38,7 @@ Nowy rysunek AutoCADa zawiera jeden, ciągły rodzaj linii, a pozostałe wczytuj
 
 ## Współrzędne na pasku stanu [#coordinates]
 
-AutoCAD od 2015 roku ukrywa współrzędne kursora na pasku stanu. MellowCAD je pokazuje, ponieważ nie ma innego odczytu położenia kursora; można je ukryć w menu „Dostosowywanie” paska stanu.
+AutoCAD od 2015 roku ukrywa współrzędne kursora na pasku stanu. MellowCAD je pokazuje, ponieważ nie ma innego odczytu położenia kursora; można je ukryć w menu „Ustawienia” paska stanu.
 
 ## Arabski używa poleceń angielskiego AutoCADa [#arabic]
 

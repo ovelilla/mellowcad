@@ -4,7 +4,7 @@ metaTitle: "Szyk biegunowy w AutoCADzie: SZYKBIEGUN"
 description: "Jak zrobić szyk biegunowy (kołowy) w AutoCADzie poleceniem SZYKBIEGUN (ARRAYPOLAR): środek, liczba elementów, kąt między nimi lub wypełnienia, obrót elementów."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak zrobić szyk biegunowy w AutoCADzie?","answer":"Wpisz SZYKBIEGUN, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; albo wpisz SZ, czyli SZYK, i po obiektach wybierz BIegunowy. Potem wybierz Elementy, aby ustawić ich liczbę, i naciśnij Enter, aby utworzyć szyk."},{"question":"Jak rozmieścić obiekty na części okręgu?","answer":"Wybierz Wypełnienia i wpisz kąt: 180 rozkłada elementy na pół okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta."},{"question":"Jak sprawić, by elementy szyku się nie obracały?","answer":"Wybierz OBRóć i odpowiedz Nie: każdy element jest przesuwany wokół środka bez obracania."},{"question":"Jak zmienić promień szyku biegunowego?","answer":"Zaznacz szyk i przeciągnij jego kwadratowy uchwyt w punkcie bazowym w stronę środka lub od niego: odległość od środka to nowy promień. Albo wpisz ponownie Promień w palecie Właściwości."}]
+faq: [{"question":"Jak zrobić szyk biegunowy w AutoCADzie?","answer":"Wpisz SZYKBIEGUN, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; albo wpisz SZ, czyli SZYK, i po obiektach wybierz BIegunowy. Potem wybierz Elementy, aby ustawić ich liczbę, i naciśnij Enter, aby utworzyć szyk."},{"question":"Jak rozmieścić obiekty na części okręgu?","answer":"Wybierz Wypełnienia i wpisz kąt: 180 rozkłada elementy na połowie okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta."},{"question":"Jak sprawić, by elementy szyku się nie obracały?","answer":"Wybierz OBRóć i odpowiedz Nie: każdy element jest przesuwany wokół środka bez obracania."},{"question":"Jak zmienić promień szyku biegunowego?","answer":"Zaznacz szyk i przeciągnij jego kwadratowy uchwyt w punkcie bazowym w stronę środka lub od niego: odległość od środka to nowy promień. Albo wpisz ponownie Promień w palecie Właściwości."}]
 ---
 
 Polecenie SZYKBIEGUN (ARRAYPOLAR) kopiuje zaznaczenie wokół punktu środkowego jako jeden obiekt szyku. Pyta o obiekty, podaje typ i to, czy szyk jest skojarzony, pyta o punkt środkowy i od razu pokazuje szyk: 6 elementów na pełnym obrocie, każdy obrócony w miarę obiegania środka. Potem jeden monit edytuje go na żywo, aż Enter go utworzy, opcjami lub uchwytami podglądu, jak w AutoCADzie. Zaznaczone obiekty stają się jego pierwszym elementem.
@@ -16,7 +16,7 @@ Polecenie SZYKBIEGUN (ARRAYPOLAR) kopiuje zaznaczenie wokół punktu środkowego
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="arraypolar" caption="Otwór na kołnierzu rozłożony wokół środka kołnierza: 8 elementów na pełnym obrocie." />
 
@@ -32,15 +32,15 @@ Liczba elementów, od 1 do 32767; kąt, który wypełniają, zostaje zachowany.
 
 ### `Kąt między` (`K`) [#angle-between]
 
-Kąt od jednego elementu do następnego. Kąt wypełnienia staje się wielokrotnością tego kroku, z zachowanym kierunkiem, i pełnym obrotem, gdy dojdzie do 360°.
+Kąt od jednego elementu do następnego. Kąt wypełnienia staje się odpowiednią liczbą takich kroków, z zachowanym kierunkiem, a pełnym obrotem, gdy osiągnie 360°.
 
 ### `kąt Wypełnienia` (`W`) [#fill-angle]
 
-Kąt, który wypełniają elementy, dodatni przeciwnie do ruchu wskazówek zegara, a ujemny zgodnie z nim; liczba elementów zostaje zachowana. Na pełnym obrocie elementy dzieli obrót podzielony przez ich liczbę; na mniejszym ostatni trafia na koniec kąta.
+Kąt, który wypełniają elementy, dodatni przeciwnie do ruchu wskazówek zegara, a ujemny zgodnie z nim; liczba elementów zostaje zachowana. Na pełnym obrocie odstęp między elementami to pełny kąt podzielony przez ich liczbę; na mniejszym kącie ostatni element trafia na koniec kąta.
 
 ### `OBRóć elementy` (`OBR`) [#rotate-items]
 
-`Tak`, wartość domyślna, obraca każdy element w miarę obiegania środka; `Nie` tylko go przesuwa, więc każdy element stoi tak jak pierwszy.
+`Tak`, wartość domyślna, obraca każdy element w miarę obiegania środka; `Nie` tylko go przesuwa, więc każdy element jest ustawiony tak jak pierwszy.
 
 ### `konIec` (`I`) [#exit]
 
@@ -60,7 +60,7 @@ Wpisz `SZYKBIEGUN`, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; a
 
 ### Jak rozmieścić obiekty na części okręgu?
 
-Wybierz `Wypełnienia` i wpisz kąt: 180 rozkłada elementy na pół okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta.
+Wybierz `Wypełnienia` i wpisz kąt: 180 rozkłada elementy na połowie okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta.
 
 ### Jak sprawić, by elementy szyku się nie obracały?
 

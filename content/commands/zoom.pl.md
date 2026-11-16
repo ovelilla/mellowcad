@@ -5,7 +5,7 @@ figure: "Płyta z małym otworem przy narożniku: ZOOM Zakres, potem okno wokó�
 sourceHash: "cd72af4956e4"
 ---
 
-Polecenie ZOOM powiększa lub pomniejsza widok; nic w rysunku się nie przesuwa ani nie zmienia rozmiaru. Jego pierwsze pytanie przyjmuje narożnik, który zaczyna okno, współczynnik skali albo opcję. Wpisane z apostrofem, `'ZOOM` lub `'Z`, działa wewnątrz innego polecenia, które trwa dalej po nim. Kółko myszy powiększa i pomniejsza wokół kursora, a dwukrotne kliknięcie kółkiem to ZOOM <Keyword id="Extents" />. Każde ZOOM to krok cofania, a kolejne tworzą jeden krok, więc <Command id="U" /> cofa także widok.
+Polecenie ZOOM powiększa lub pomniejsza widok; nic w rysunku się nie przesuwa ani nie zmienia rozmiaru. Jego pierwszy monit przyjmuje narożnik, który zaczyna okno, współczynnik skali albo opcję. Wpisane z apostrofem, `'ZOOM` lub `'Z`, działa wewnątrz innego polecenia, które trwa dalej po nim. Kółko myszy powiększa i pomniejsza wokół kursora, a dwukrotne kliknięcie kółkiem to ZOOM <Keyword id="Extents" />. Każde wykonanie polecenia ZOOM to krok cofania, a kolejne wykonania tworzą jeden krok, więc <Command id="U" /> cofa także widok.
 
 ## Options
 
@@ -15,7 +15,7 @@ Pokazuje wszystko, co narysowano, jak <Keyword id="Extents" />.
 
 ### Extents
 
-Pokazuje wszystko, co narysowano, tak duże, jak pozwala okno. Gdy nic nie narysowano, wyświetla <Message id="regeneratingModel" />, a wpisane wewnątrz innego polecenia odmawia z komunikatem <Message id="requiresRegen" />, jak w AutoCADzie.
+Pokazuje wszystko, co narysowano, tak duże, jak pozwala na to okno. Gdy nic nie narysowano, wyświetla <Message id="regeneratingModel" />, a wpisane wewnątrz innego polecenia odmawia z komunikatem <Message id="requiresRegen" />, jak w AutoCADzie.
 
 ### Previous
 
@@ -23,11 +23,11 @@ Wraca do poprzedniego widoku, do 20 widoków wstecz. Gdy nie ma już żadnego: <
 
 ### Scale
 
-Współczynnik: `2X` powiększa dwa razy względem bieżącego widoku, `0.5X` dwa razy pomniejsza, a `2` bez X daje dwukrotność skali widoku ZOOM <Keyword id="All" />. `nXP`, współczynnik obszaru papieru, jest odczytywany jako `nX`: jest tu tylko obszar modelu. Współczynnik wpisany przy pierwszym pytaniu działa tak samo bez wybierania opcji.
+Współczynnik: `2X` powiększa dwa razy względem bieżącego widoku, `0.5X` dwa razy pomniejsza, a `2` bez X daje dwukrotność skali widoku ZOOM <Keyword id="All" />. `nXP`, współczynnik obszaru papieru, jest odczytywany jako `nX`: jest tu tylko obszar modelu. Współczynnik wpisany przy pierwszym monicie działa tak samo bez wybierania opcji.
 
 ### Window
 
-Dwa narożniki, wskazane lub przeciągnięte, pokazują ten prostokąt. Narożnik wskazany przy pierwszym pytaniu działa tak samo.
+Dwa narożniki, wskazane lub przeciągnięte, pokazują ten prostokąt. Narożnik wskazany przy pierwszym monicie działa tak samo.
 
 ### Object
 
@@ -35,7 +35,7 @@ Pokazuje wybrane obiekty albo te zaznaczone przed poleceniem ZOOM.
 
 ## Missing
 
-W czasie rzeczywistym: Enter przy pierwszym pytaniu kończy ZOOM, podczas gdy AutoCAD zaczyna powiększanie myszą; tutaj robi to kółko. Dynamiczny, Centrum oraz ukryte Lewy i Vmax.
+W czasie rzeczywistym: Enter przy pierwszym monicie kończy ZOOM, podczas gdy AutoCAD zaczyna powiększanie myszą; tutaj robi to kółko. Dynamiczny, Centrum oraz ukryte Lewy i Vmax.
 
 ## Questions
 

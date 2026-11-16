@@ -1,11 +1,11 @@
 ---
 title: "Polecenie POŁĄCZ (JOIN) w AutoCADzie"
 description: "Jak połączyć linie w polilinię w AutoCADzie poleceniem POŁĄCZ (JOIN): linie na jednej prostej w jedną, łuki w okrąg, krzywe w splajn. Wypróbuj za darmo online."
-figure: "Trzy linie połączone w jedną polilinię, za którą jedno wskazanie polecenia ODSUŃ podąża w całości."
+figure: "Trzy linie połączone w jedną polilinię, którą polecenie ODSUŃ jednym wskazaniem odsuwa w całości."
 sourceHash: "c4f26ede4174"
 ---
 
-Polecenie POŁĄCZ (JOIN) robi jeden obiekt z kilku. Wybierz je, ile chcesz, i naciśnij Enter: linie i łuki stykające się końcami stają się jedną polilinią, dołączoną do polilinii, jeśli jest wśród nich; linie na jednej prostej stają się jedną linią, ponad każdą przerwą; łuki jednego okręgu stają się jednym łukiem, a gdy się zamykają, polecenie POŁĄCZ pyta, czy zamienić go w okrąg, domyślnie <Keyword id="Yes" />, czy zostawić łuk, <Keyword id="No" />. Łuki eliptyczne jednej elipsy stają się jednym łukiem, a splajn lub łuk eliptyczny wśród stykających się krzywych daje splajn. Polecenie podaje potem, co utworzyło i ile obiektów pominęło. Polilinia łączy się tylko końcami, a zamknięta nie łączy niczego. Połączenie to jeden krok cofania.
+Polecenie POŁĄCZ (JOIN) tworzy jeden obiekt z kilku. Wybierz je, ile chcesz, i naciśnij Enter: linie i łuki stykające się końcami stają się jedną polilinią, dołączoną do polilinii, jeśli jest wśród nich; linie na jednej prostej stają się jedną linią, niezależnie od przerw; łuki jednego okręgu stają się jednym łukiem, a gdy się zamykają, polecenie POŁĄCZ pyta, czy zamienić go w okrąg, domyślnie <Keyword id="Yes" />, czy zostawić łuk, <Keyword id="No" />. Łuki eliptyczne jednej elipsy stają się jednym łukiem, a splajn lub łuk eliptyczny wśród stykających się krzywych daje splajn. Polecenie podaje potem, co utworzyło i ile obiektów pominęło. Polilinia łączy się tylko końcami, a zamknięta nie łączy niczego. Połączenie to jeden krok cofania.
 
 ## Options
 
@@ -29,7 +29,7 @@ Uruchom polecenie POŁĄCZ, wybierz linie, choćby oknem, i naciśnij Enter: te,
 
 ### Dlaczego polecenie POŁĄCZ nie działa?
 
-Obiekty muszą stykać się dokładnie, końcami i w jednej płaszczyźnie: przerwa lub przecięcie je wyklucza, a polecenie POŁĄCZ mówi, ile odrzuciło. Ponad przerwą łączone są tylko linie na jednej prostej, łuki jednego okręgu i łuki jednej elipsy. Zamknięta polilinia niczego nie łączy.
+Obiekty muszą stykać się dokładnie, końcami i w jednej płaszczyźnie: przerwa lub przecięcie je wyklucza, a polecenie POŁĄCZ mówi, ile odrzuciło. Mimo przerwy łączone są tylko linie na jednej prostej, łuki jednego okręgu i łuki jednej elipsy. Zamknięta polilinia niczego nie łączy.
 
 ### Jak połączyć łuki w okrąg?
 

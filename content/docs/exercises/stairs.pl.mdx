@@ -1,7 +1,7 @@
 ---
 title: "Ćwiczenie AutoCAD: schody w rzucie"
 metaTitle: "Ćwiczenie AutoCAD dla początkujących: schody"
-description: "Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z jednej linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Krok po kroku."
+description: "Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Za darmo, krok po kroku."
 type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
@@ -18,7 +18,7 @@ Narysuj rzut prostego biegu schodów w centymetrach: długość 280, szerokość
 
 ## Krok po kroku [#steps]
 
-Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
 
 ### 1. Narysuj obrys [#outline]
 
@@ -34,7 +34,7 @@ Krawędź pierwszego stopnia: polecenie [`LINIA`](/docs/commands/line) od `28,0`
 
 ### 3. Utwórz szyk stopni [#array]
 
-Polecenie [`SZYKPROST`](/docs/commands/arrayrect) kopiuje ją wzdłuż biegu: wskaż linię i naciśnij Enter, potem wybierz opcję `Liczba`, `9` kolumn i `1` wiersz, oraz `oDstęp`, `28` między kolumnami i `1` między wierszami, co przy jednym wierszu niczego nie zmienia. Opcja `konIec` zachowuje go jako szyk skojarzony, który można później edytować uchwytami.
+Polecenie [`SZYKPROST`](/docs/commands/arrayrect) kopiuje ją wzdłuż biegu: wskaż linię i naciśnij Enter, potem wybierz opcję `Liczba`, `9` kolumn i `1` wiersz, oraz `oDstęp`, `28` między kolumnami i `1` między wierszami, co przy jednym wierszu niczego nie zmienia. Opcja `konIec` zachowuje wynik jako szyk skojarzony, który można później edytować uchwytami.
 
 <Session name="exercises/stairs/array" caption="3. Utwórz szyk stopni" />
 

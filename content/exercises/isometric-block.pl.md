@@ -6,7 +6,7 @@ figure: "Klocek schodkowy w izometrii: długość 60, głębokość 40, wysokoś
 sourceHash: "c1039d3b5e97"
 ---
 
-Narysuj ten klocek schodkowy w izometrii, w milimetrach: długość 60, głębokość 40, wysokość 40, ze stopniem głębokim na 20 i wysokim na 20 wzdłuż przodu. Każda krawędź biegnie wzdłuż jednej z osi izometrycznych: 30° i 210° dla długości, 150° i 330° dla głębokości, 90° i 270° dla wysokości. MellowCAD nie ma jeszcze rysunku izometrycznego AutoCADa, jego skoku izometrycznego ani izookręgów, więc krawędzie to linie wpisane we współrzędnych biegunowych: długość i kąt.
+Narysuj ten klocek schodkowy w izometrii, w milimetrach: długość 60, głębokość 40, wysokość 40, ze stopniem głębokim na 20 i wysokim na 20 wzdłuż przodu. Każda krawędź biegnie wzdłuż jednej z osi izometrycznych: 30° i 210° dla długości, 150° i 330° dla głębokości, 90° i 270° dla wysokości. MellowCAD nie ma jeszcze rysowania izometrycznego AutoCADa, jego skoku izometrycznego ani okręgów izo, więc krawędzie to linie wpisane we współrzędnych biegunowych: długość i kąt.
 
 ## Steps
 

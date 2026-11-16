@@ -3,46 +3,46 @@ title: "Jednostki w AutoCADzie: polecenie JEDN (UNITS)"
 description: "Jak ustawić jednostki w AutoCADzie poleceniem JEDN (UNITS, skrót JED): okno Jednostki rysunku, dokładność od 0 do 8 miejsc, skala wstawiania w mm, cm lub m."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie JEDN po angielsku?","answer":"UNITS. W polskim AutoCADzie wpisz JEDN lub skrót JED (także ODJEDN albo DDUNITS) i naciśnij Enter lub spację; skrót UN z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, _UNITS, działa w AutoCADzie w każdym języku."},{"question":"Jak ustawić jednostki rysunku na milimetry lub metry?","answer":"Otwórz JEDN i wybierz Milimetry, Centymetry lub Metry w polu Skala wstawiania. Jednostka rysunku pozostaje jedną jednostką: ścianę długości 5 m narysuj jako 5 w metrach albo 5000 w milimetrach. Wybór określa, które z nich, a pokazują to pasek stanu i wprowadzanie dynamiczne."},{"question":"Jak zmienić liczbę miejsc po przecinku w AutoCADzie?","answer":"Wybierz Dokładność w JEDN, od 0 do 0.00000000. Zmienia ona zapis długości, nigdy geometrię: linia narysowana o długości 10,125 pozostaje długa na 10,125 przy każdej dokładności."},{"question":"Dlaczego wymiary nie stosują dokładności ustawionej w JEDN?","answer":"Wymiar zapisuje swoją wartość z dokładnością własnego stylu wymiarowania, a nie rysunku. Zmień ją w WYMSTYL, na karcie Jednostki podstawowe."},{"question":"Czy można rysować w stopach i calach?","answer":"Jeszcze nie: długości są dziesiętne, a skala wstawiania oferuje milimetry, centymetry i metry. Brakuje jednostek architektonicznych i inżynierskich."}]
+faq: [{"question":"Jak się nazywa polecenie JEDN po angielsku?","answer":"UNITS. W polskim AutoCADzie wpisz JEDN lub skrót JED (także ODJEDN) i naciśnij Enter lub spację; skrót UN z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, _UNITS, działa w AutoCADzie w każdym języku."},{"question":"Jak ustawić jednostki rysunku na milimetry lub metry?","answer":"Uruchom polecenie JEDN i wybierz Milimetry, Centymetry lub Metry w polu Skala wstawiania. Jednostka rysunku pozostaje jedną jednostką: ścianę długości 5 m narysuj jako 5 w metrach albo 5000 w milimetrach. Wybór określa, które z nich, a pokazują to pasek stanu i wprowadzanie dynamiczne."},{"question":"Jak zmienić liczbę miejsc po przecinku w AutoCADzie?","answer":"W oknie polecenia JEDN wybierz Dokładność, od 0 do 0.00000000. Zmienia ona zapis długości, nigdy geometrię: linia narysowana o długości 10,125 pozostaje długa na 10,125 przy każdej dokładności."},{"question":"Dlaczego wymiary nie mają dokładności ustawionej w JEDN?","answer":"Wymiar zapisuje swoją wartość z dokładnością własnego stylu wymiarowania, a nie rysunku. Zmień ją w WYMSTYL, na karcie Jednostki podstawowe."},{"question":"Czy można rysować w stopach i calach?","answer":"Jeszcze nie: długości są dziesiętne, a skala wstawiania oferuje milimetry, centymetry i metry. Brakuje jednostek architektonicznych i inżynierskich."}]
 ---
 
-Polecenie JEDN (UNITS) otwiera okno dialogowe Jednostki rysunku, które ustala, jak rysunek zapisuje długości i czemu odpowiada jedna jednostka rysunku. Jak w AutoCADzie okno jest modalne: polecenie trwa, dopóki OK lub Anuluj go nie zamknie, zmiana zatwierdzona przyciskiem OK to jeden krok, który cofa `C`, a Anuluj lub Esc niczego nie zmienia. Wpisane z apostrofem, `'JEDN`, otwiera się wewnątrz działającego polecenia, które trwa dalej po zamknięciu okna. Otwierają je też jednostki na pasku stanu i pozycja Jednostki rysunku w menu aplikacji.
+Polecenie JEDN (UNITS) otwiera okno dialogowe Jednostki rysunku, które ustala, jak rysunek zapisuje długości i czemu odpowiada jedna jednostka rysunku. Jak w AutoCADzie okno jest modalne: polecenie trwa, dopóki okna nie zamknie przycisk OK lub Anuluj, zmiana zatwierdzona przyciskiem OK to jeden krok, który cofa `C`, a Anuluj lub Esc niczego nie zmienia. Wpisane z apostrofem, `'JEDN`, otwiera się wewnątrz działającego polecenia, które trwa dalej po zamknięciu okna. Otwierają je też jednostki na pasku stanu i pozycja Jednostki rysunku w menu aplikacji.
 
-Typ długości to Dziesiętne, a jego Dokładność, od 0 do 8 miejsc po przecinku, określa zapis każdej długości: współrzędnych, odległości, pól, wartości domyślnych proponowanych w pytaniach. Nowy rysunek zaczyna tu od dwóch miejsc, podczas gdy metryczny szablon AutoCADa zaczyna od czterech. Skala wstawiania określa, czym jest jednostka rysunku: milimetrami, centymetrami lub metrami; pokazują to pasek stanu i wprowadzanie dynamiczne. Przykładowe wyniki pokazują punkt z wybraną dokładnością.
+Typ długości to Dziesiętne, a Dokładność długości, od 0 do 8 miejsc po przecinku, określa zapis każdej długości: współrzędnych, odległości, pól, wartości domyślnych proponowanych w monitach. Nowy rysunek zaczyna tu od dwóch miejsc, podczas gdy metryczny szablon AutoCADa zaczyna od czterech. Skala wstawiania określa, czym jest jednostka rysunku: milimetrem, centymetrem lub metrem; pokazują to pasek stanu i wprowadzanie dynamiczne. Przykładowy wygląd pokazuje punkt z wybraną dokładnością.
 
 - **Polecenie:** `JEDN`
 - **Po angielsku:** `UNITS`, wpisywane jako `_UNITS` w każdym języku
-- **Aliasy:** `JED`
+- **Aliasy:** `JED`, `ODJEDN`
 - **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
 - **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `JED` i naciśnij Enter.
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="units" caption="JEDN otwarte nad płytą 100 na 60, potem ID w jej dalekim narożniku: współrzędne z dokładnością rysunku, dwa miejsca." />
 
 ## Czego jeszcze nie robi [#missing]
 
-Pozostałe typy długości, Architektoniczne, Inżynierskie, Ułamkowe i Naukowe, oraz zapis naukowy bardzo dużej długości. Grupa Kąt: kąty są w stopniach dziesiętnych, przeciwnie do ruchu wskazówek zegara od wschodu, z dokładnością ustawianą wpisaniem AUPREC. Pozostałe jednostki wstawiania, w tym cale i stopy; Oświetlenie; Kierunek; oraz -JEDN, forma dla wiersza polecenia.
+Pozostałe typy długości, Architektoniczne, Inżynierskie, Ułamkowe i Naukowe, oraz zapis naukowy bardzo dużej długości. Grupa Kąt: kąty są w stopniach dziesiętnych, przeciwnie do ruchu wskazówek zegara od wschodu, z dokładnością ustawianą przez wpisanie zmiennej AUPREC. Pozostałe jednostki wstawiania, w tym cale i stopy; Oświetlenie; Kierunek; oraz -JEDN, forma dla wiersza polecenia.
 
-[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits--pt-br-unidades--un--unidadesd--fr-unites--ui--ddunits--it-unita--ut--ddunits--de-einheit--ru-единицы--ед--диаледин--pl-jedn--jed)
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits--pt-br-unidades--un--unidadesd--fr-unites--ui--ddunits--it-unita--ut--ddunits--de-einheit--ru-единицы--ед--диаледин--pl-jedn--jed--odjedn)
 
 ## Pytania [#questions]
 
 ### Jak się nazywa polecenie JEDN po angielsku?
 
-UNITS. W polskim AutoCADzie wpisz `JEDN` lub skrót `JED` (także `ODJEDN` albo `DDUNITS`) i naciśnij Enter lub spację; skrót `UN` z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, `_UNITS`, działa w AutoCADzie w każdym języku.
+UNITS. W polskim AutoCADzie wpisz `JEDN` lub skrót `JED` (także `ODJEDN`) i naciśnij Enter lub spację; skrót `UN` z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, `_UNITS`, działa w AutoCADzie w każdym języku.
 
 ### Jak ustawić jednostki rysunku na milimetry lub metry?
 
-Otwórz JEDN i wybierz Milimetry, Centymetry lub Metry w polu Skala wstawiania. Jednostka rysunku pozostaje jedną jednostką: ścianę długości 5 m narysuj jako 5 w metrach albo 5000 w milimetrach. Wybór określa, które z nich, a pokazują to pasek stanu i wprowadzanie dynamiczne.
+Uruchom polecenie JEDN i wybierz Milimetry, Centymetry lub Metry w polu Skala wstawiania. Jednostka rysunku pozostaje jedną jednostką: ścianę długości 5 m narysuj jako 5 w metrach albo 5000 w milimetrach. Wybór określa, które z nich, a pokazują to pasek stanu i wprowadzanie dynamiczne.
 
 ### Jak zmienić liczbę miejsc po przecinku w AutoCADzie?
 
-Wybierz Dokładność w JEDN, od `0` do `0.00000000`. Zmienia ona zapis długości, nigdy geometrię: linia narysowana o długości 10,125 pozostaje długa na 10,125 przy każdej dokładności.
+W oknie polecenia JEDN wybierz Dokładność, od `0` do `0.00000000`. Zmienia ona zapis długości, nigdy geometrię: linia narysowana o długości 10,125 pozostaje długa na 10,125 przy każdej dokładności.
 
-### Dlaczego wymiary nie stosują dokładności ustawionej w JEDN?
+### Dlaczego wymiary nie mają dokładności ustawionej w JEDN?
 
 Wymiar zapisuje swoją wartość z dokładnością własnego stylu wymiarowania, a nie rysunku. Zmień ją w [`WYMSTYL`](/docs/commands/dimstyle), na karcie Jednostki podstawowe.
 

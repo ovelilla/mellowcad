@@ -29,4 +29,4 @@ Polecenie RATRRED otwiera się dla odnośnika, którego blok zawiera atrybuty, a
 
 ### Czym się różni RATRRED (EATTEDIT) od ATRRED (ATTEDIT)?
 
-Edytują te same wartości. Polecenie RATRRED opisuje każde pole etykietą, jak karta „Atrybut” Rozszerzonego edytora atrybutów; polecenie <Command id="ATTEDIT" /> – monitem, jak okno dialogowe Edycja atrybutów. W AutoCADzie polecenie RATRRED edytuje też opcje tekstu i właściwości każdego atrybutu.
+Oba polecenia edytują te same wartości. Polecenie RATRRED opisuje każde pole etykietą, jak karta „Atrybut” Rozszerzonego edytora atrybutów; polecenie <Command id="ATTEDIT" /> – monitem, jak okno dialogowe Edycja atrybutów. W AutoCADzie polecenie RATRRED edytuje też opcje tekstu i właściwości każdego atrybutu.

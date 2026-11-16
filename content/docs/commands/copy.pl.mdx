@@ -4,10 +4,10 @@ metaTitle: "Jak kopiować w AutoCADzie: polecenie KOPIUJ"
 description: "Jak kopiować w AutoCADzie poleceniem KOPIUJ (COPY, skrót K): punkt bazowy, potem dowolnie wiele kopii, z Cofaj i Zakończ, albo jedna o przesunięcie."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie KOPIUJ po angielsku i jaki ma skrót?","answer":"Po angielsku COPY, w polskim AutoCADzie KOPIUJ: wpisz K, potem naciśnij Enter albo spację. Angielskie CO i CP w polskim AutoCADzie nie działają; _COPY działa w AutoCADzie w każdym języku."},{"question":"Jak zrobić kilka kopii naraz w AutoCADzie?","answer":"Umieszczaj dalej: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka SZYK tworzy za jednym razem."},{"question":"Jak skopiować obiekt o zadaną odległość?","answer":"Podaj punkt bazowy, a potem wpisz drugi punkt jako odległość: 30,0 kopiuje obiekt 30 wzdłuż X, bo wprowadzanie dynamiczne odczytuje punkt po pierwszym względem niego. Albo skieruj kursor w żądaną stronę, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość."},{"question":"Dlaczego w poleceniu KOPIUJ nie ma opcji Szyk?","answer":"MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje SZYKPROST z jednym wierszem, który zachowuje je jako jeden szyk do edycji."}]
+faq: [{"question":"Jak się nazywa polecenie KOPIUJ po angielsku i jaki ma skrót?","answer":"Po angielsku COPY, w polskim AutoCADzie KOPIUJ: wpisz K, potem naciśnij Enter albo spację. Angielskie CO i CP w polskim AutoCADzie nie działają; _COPY działa w AutoCADzie w każdym języku."},{"question":"Jak zrobić kilka kopii naraz w AutoCADzie?","answer":"Umieszczaj kolejne kopie: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka SZYK tworzy za jednym razem."},{"question":"Jak skopiować obiekt o zadaną odległość?","answer":"Podaj punkt bazowy, a potem wpisz drugi punkt jako odległość: 30,0 kopiuje obiekt 30 wzdłuż X, bo wprowadzanie dynamiczne odczytuje punkt po pierwszym względem niego. Albo skieruj kursor w żądaną stronę, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość."},{"question":"Dlaczego w poleceniu KOPIUJ nie ma opcji Szyk?","answer":"MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje SZYKPROST z jednym wierszem i zachowuje je jako jeden szyk do edycji."}]
 ---
 
-Polecenie KOPIUJ (COPY) umieszcza kopie wybranych obiektów: wybierz je, podaj punkt bazowy, a potem drugi punkt dla każdej kopii. Jak w AutoCADzie, którego tryb kopiowania to domyślnie Wiele, pyta o kolejną kopię, dopóki nie naciśniesz Enter albo nie wybierzesz opcji Zakończ, a każda kopia jest odmierzana od tego samego punktu bazowego. Kopie zachowują warstwę, kolor i wszystkie inne właściwości obiektów. Obiekty wybrane przed poleceniem są tymi, które kopiuje, a gdy umieszczasz kopię, zestaw podąża za kursorem.
+Polecenie KOPIUJ (COPY) umieszcza kopie wybranych obiektów: wybierz je, podaj punkt bazowy, a potem drugi punkt dla każdej kopii. Jak w AutoCADzie, którego tryb kopiowania to domyślnie Wiele, pyta o kolejną kopię, dopóki nie naciśniesz Enter albo nie wybierzesz opcji Zakończ, a każda kopia jest odmierzana od tego samego punktu bazowego. Kopie zachowują warstwę, kolor i wszystkie inne właściwości obiektów. Polecenie kopiuje także obiekty wybrane przed jego uruchomieniem, a gdy umieszczasz kopię, zestaw podąża za kursorem.
 
 - **Polecenie:** `KOPIUJ`
 - **Po angielsku:** `COPY`, wpisywane jako `_COPY` w każdym języku
@@ -17,7 +17,7 @@ Polecenie KOPIUJ (COPY) umieszcza kopie wybranych obiektów: wybierz je, podaj p
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="copy" caption="Okrąg skopiowany trzy razy wzdłuż X z jednego punktu bazowego, potem Enter." />
 
@@ -49,7 +49,7 @@ Po angielsku COPY, w polskim AutoCADzie KOPIUJ: wpisz `K`, potem naciśnij Enter
 
 ### Jak zrobić kilka kopii naraz w AutoCADzie?
 
-Umieszczaj dalej: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka [`SZYK`](/docs/commands/array) tworzy za jednym razem.
+Umieszczaj kolejne kopie: każdy podany punkt to kolejna kopia z tego samego punktu bazowego, aż do Enter. Kopie w wierszach, kolumnach lub wokół środka [`SZYK`](/docs/commands/array) tworzy za jednym razem.
 
 ### Jak skopiować obiekt o zadaną odległość?
 
@@ -57,7 +57,7 @@ Podaj punkt bazowy, a potem wpisz drugi punkt jako odległość: `30,0` kopiuje 
 
 ### Dlaczego w poleceniu KOPIUJ nie ma opcji Szyk?
 
-MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje [`SZYKPROST`](/docs/commands/arrayrect) z jednym wierszem, który zachowuje je jako jeden szyk do edycji.
+MellowCAD jeszcze jej nie oferuje. Rząd równo rozmieszczonych kopii daje [`SZYKPROST`](/docs/commands/arrayrect) z jednym wierszem i zachowuje je jako jeden szyk do edycji.
 
 ## Ćwicz [#practice]
 

@@ -15,7 +15,7 @@ Obraca kopię i pozostawia obiekty na miejscu, wyświetlając <Message id="rotat
 
 ### Reference
 
-Obraca od kąta, który masz, do kąta, który chcesz uzyskać: pyta o kąt odniesienia (wpisany albo zmierzony dwoma punktami), a potem o nowy kąt, i obraca o różnicę. Aby wypoziomować ukośną krawędź, wskaż jej dwa końce jako odniesienie i wpisz 0.
+Obraca od kąta, jaki obiekty mają, do kąta, jaki mają mieć: pyta o kąt odniesienia (wpisany albo zmierzony dwoma punktami), a potem o nowy kąt, i obraca o różnicę. Aby wypoziomować ukośną krawędź, wskaż jej dwa końce jako odniesienie i wpisz 0.
 
 ### Points
 
@@ -39,6 +39,6 @@ Wybierz <Keyword id="Reference" />, wskaż dwa punkty wzdłuż krawędzi obiektu
 
 Wybierz <Keyword id="Copy" />, zanim podasz kąt: obraca się kopia, a oryginał zostaje.
 
-### Dlaczego OBRÓĆ obraca w złą stronę?
+### Dlaczego polecenie OBRÓĆ obraca w złą stronę?
 
-Kąt dodatni obraca przeciwnie do ruchu wskazówek zegara, jak podaje ANGDIR w pierwszym wierszu. Wpisz kąt ujemny, `-30`, aby obrócić zgodnie z ruchem wskazówek zegara.
+Kąt dodatni obraca przeciwnie do ruchu wskazówek zegara, jak podaje ANGDIR w pierwszym wierszu. Wpisz kąt ujemny, na przykład `-30`, aby obrócić zgodnie z ruchem wskazówek zegara.

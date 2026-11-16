@@ -3,12 +3,12 @@ title: "Polecenie PRZEKRĘĆ (REVOLVE) w AutoCADzie"
 description: "Jak utworzyć bryłę obrotową w AutoCADzie poleceniem PRZEKRĘĆ (REVOLVE, skrót PRZK): profil 2D wokół osi, oś przez obiekt lub X, Y, Z, kąt. Wypróbuj za darmo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie PRZEKRĘĆ po angielsku?","answer":"REVOLVE. W polskim AutoCADzie wpisz PRZEKRĘĆ lub skrót PRZK i naciśnij Enter lub spację; skrót REV z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, _REVOLVE, działa w AutoCADzie w każdym języku."},{"question":"Jak obrócić profil wokół osi w AutoCADzie?","answer":"Narysuj połowę przekroju jako jeden zamknięty obiekt obok linii osi: zamkniętą polilinię lub region. Uruchom PRZEKRĘĆ, wybierz profil i naciśnij Enter; naciśnij Enter ponownie, aby wybrać Obiekt, i wskaż linię osi albo podaj jej dwa końce; potem Enter dla pełnego obrotu."},{"question":"Dlaczego PRZEKRĘĆ nie działa?","answer":"Najczęściej oś przecina profil: PRZEKRĘĆ wyświetla „Obiekt powinien znajdować się po jednej stronie osi.” i kończy działanie. Przesuń oś do krawędzi profilu lub dalej; krawędź leżąca na osi jest dozwolona. Oś prostopadła do płaszczyzny profilu daje „Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.”, a profil otwarty jest odrzucany, bo MellowCAD nie ma jeszcze powierzchni."},{"question":"Jak obrócić profil tylko o część obrotu?","answer":"Wpisz kąt, 90 lub 270, przy pytaniu o kąt. POczątkowy zaczyna obrót dalej, a ODWróć obraca w drugą stronę."}]
+faq: [{"question":"Jak się nazywa polecenie PRZEKRĘĆ po angielsku?","answer":"REVOLVE. W polskim AutoCADzie wpisz PRZEKRĘĆ lub skrót PRZK i naciśnij Enter lub spację; skrót REV z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, _REVOLVE, działa w AutoCADzie w każdym języku."},{"question":"Jak obrócić profil wokół osi w AutoCADzie?","answer":"Narysuj połowę przekroju jako jeden zamknięty obiekt obok linii osi: zamkniętą polilinię lub region. Uruchom polecenie PRZEKRĘĆ, wybierz profil i naciśnij Enter; naciśnij Enter ponownie, aby wybrać Obiekt, i wskaż linię osi albo podaj jej dwa końce; potem Enter dla pełnego obrotu."},{"question":"Dlaczego PRZEKRĘĆ nie działa?","answer":"Najczęściej oś przecina profil: polecenie PRZEKRĘĆ wyświetla „Obiekt powinien znajdować się po jednej stronie osi.” i kończy działanie. Przesuń oś do krawędzi profilu lub dalej; krawędź leżąca na osi jest dozwolona. Oś prostopadła do płaszczyzny profilu daje „Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.”, a profil otwarty jest odrzucany, bo MellowCAD nie ma jeszcze powierzchni."},{"question":"Jak obrócić profil tylko o część obrotu?","answer":"Przy monicie o kąt wpisz kąt, na przykład 90 lub 270. POczątkowy przesuwa początek obrotu dalej, a ODWróć obraca w drugą stronę."}]
 ---
 
-Polecenie PRZEKRĘĆ (REVOLVE) obraca zamknięte profile 2D wokół osi, tworząc bryły 3D: prostokąt z krawędzią na osi daje walec, okrąg obok osi – pierścień. Wybierz profile – okręgi, elipsy, zamknięte polilinie lub splajny, regiony – i naciśnij Enter; określ oś dwoma punktami albo jedną z opcji, a potem kąt; Enter oznacza pełny obrót. Każdy profil staje się bryłą na bieżącej warstwie i zostaje usunięty, jak domyślnie stanowi DELOBJ. Całe polecenie to jeden krok, który można cofnąć.
+Polecenie PRZEKRĘĆ (REVOLVE) obraca zamknięte profile 2D wokół osi, tworząc bryły 3D: prostokąt z krawędzią na osi daje walec, okrąg obok osi – pierścień. Wybierz profile – okręgi, elipsy, zamknięte polilinie lub splajny, regiony – i naciśnij Enter; określ oś dwoma punktami albo jedną z opcji, a potem kąt; Enter oznacza pełny obrót. Każdy profil staje się bryłą na bieżącej warstwie i zostaje wymazany, zgodnie z domyślnym ustawieniem DELOBJ. Całe polecenie to jeden krok, który można cofnąć.
 
-Oś leży w płaszczyźnie profilu, a cały profil po jednej jej stronie; w przeciwnym razie polecenie kończy się komunikatem `Obiekt powinien znajdować się po jednej stronie osi.`, zanim zapyta o kąt. Kąt obraca zgodnie z regułą prawej dłoni wokół osi skierowanej od jej pierwszego punktu do drugiego; kąt ujemny obraca w drugą stronę. 3D w MellowCAD to tylko bryły i wciąż jest częściowe: profile otwarte, z których AutoCAD tworzy powierzchnie, są odrzucane.
+Oś leży w płaszczyźnie profilu, a cały profil po jednej jej stronie; w przeciwnym razie polecenie kończy się komunikatem `Obiekt powinien znajdować się po jednej stronie osi.`, zanim zapyta o kąt. Obrót następuje zgodnie z regułą prawej dłoni wokół osi skierowanej od jej pierwszego punktu do drugiego; kąt ujemny obraca w drugą stronę. 3D w MellowCAD to tylko bryły i wciąż jest częściowe: profile otwarte, z których AutoCAD tworzy powierzchnie, są odrzucane.
 
 - **Polecenie:** `PRZEKRĘĆ`
 - **Po angielsku:** `REVOLVE`, wpisywane jako `_REVOLVE` w każdym języku
@@ -18,7 +18,7 @@ Oś leży w płaszczyźnie profilu, a cały profil po jednej jej stronie; w prze
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="revolve" caption="Profil z kołnierzami obrócony o pełny obrót wokół osi Y: szpula widziana z południowego wschodu w stylu wizualnym Ukryty." />
 
@@ -30,7 +30,7 @@ Pyta o `Bryła` lub `Powierzchnia`, jak [`WYCIĄGNIJ`](/docs/commands/extrude): 
 
 ### `Obiekt` (`O`) [#object]
 
-Domyślna odpowiedź na pytanie o oś, więc wybiera ją Enter: wskaż linię, polilinię, łuk lub splajn, a oś biegnie prosto między jego dwoma końcami, od końca bliższego miejscu wskazania. Obiekt zamknięty nie ma końców: `Nie można ustalić kierunku osi na podstawie krzywej zamkniętej lub krawędzi.`, i polecenie się kończy.
+Domyślna opcja monitu o oś, więc wybiera ją Enter: wskaż linię, polilinię, łuk lub splajn, a oś biegnie prosto między jego dwoma końcami, od końca bliższego miejscu wskazania. Obiekt zamknięty nie ma końców: `Nie można ustalić kierunku osi na podstawie krzywej zamkniętej lub krawędzi.` – i polecenie się kończy.
 
 ### `X` [#x]
 
@@ -38,15 +38,15 @@ Oś X układu LUW, przez jego początek.
 
 ### `Y` [#y]
 
-Oś Y układu LUW, przez jego początek: profil narysowany na prawo od niej, jak w sesji, zamienia się w część leżącą wzdłuż Y.
+Oś Y układu LUW, przez jego początek: profil narysowany na prawo od niej, jak w przykładzie, zamienia się w część leżącą wzdłuż Y.
 
 ### `Z` [#z]
 
-Oś Z układu LUW, przez jego początek. Profil na płaszczyźnie XY układu LUW jest do niej prostopadły, więc PRZEKRĘĆ odpowiada `Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.` i kończy działanie: Z służy profilom ustawionym pionowo.
+Oś Z układu LUW, przez jego początek. Profil na płaszczyźnie XY układu LUW jest do niej prostopadły, więc polecenie PRZEKRĘĆ odpowiada `Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.` i kończy działanie: Z służy profilom ustawionym pionowo.
 
 ### `kąt POczątkowy` (`PO`) [#start]
 
-Przy pytaniu o kąt: kąt początkowy, zawsze domyślnie 0. Profil zostaje najpierw obrócony do tego położenia, a potem pytanie o kąt pada ponownie.
+Przy monicie o kąt: kąt początkowy, zawsze domyślnie 0. Profil zostaje najpierw obrócony do tego położenia, a potem monit o kąt pojawia się ponownie.
 
 ### `ODWróć` (`ODW`) [#reverse]
 
@@ -58,7 +58,7 @@ Kąt jako wyrażenie arytmetyczne, jak w [`WYCIĄGNIJ`](/docs/commands/extrude).
 
 ## Czego jeszcze nie robi [#missing]
 
-Oś poza płaszczyzną profilu, wokół której AutoCAD obraca profil, tworząc powierzchnie: tutaj PRZEKRĘĆ wyświetla `Nie można przekręcić wybranego obiektu.` i kończy działanie. Łuk eliptyczny lub krawędź bryły jako oś `Obiekt`. Tryb `Powierzchnia` i profile otwarte, bo nie ma jeszcze obiektów powierzchniowych. Podgląd obracający się za kursorem: podczas podawania kąta widać pełny obrót. [`ROZBIJ`](/docs/commands/explode) bryły obrotowej, którą AutoCAD rozbija na powierzchnie i regiony. Jej uchwyty i edycja kąta w palecie Właściwości.
+Oś poza płaszczyzną profilu, wokół której AutoCAD obraca profil, tworząc powierzchnie: tutaj polecenie PRZEKRĘĆ wyświetla `Nie można przekręcić wybranego obiektu.` i kończy działanie. Łuk eliptyczny lub krawędź bryły jako oś `Obiekt`. Tryb `Powierzchnia` i profile otwarte, bo nie ma jeszcze obiektów powierzchniowych. Podgląd obracający się za kursorem: podczas podawania kąta widać pełny obrót. [`ROZBIJ`](/docs/commands/explode) bryły obrotowej, którą AutoCAD rozbija na powierzchnie i regiony. Jej uchwyty i edycja kąta w palecie Właściwości.
 
 [Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#revolve--rev--es-revolucion--rv--pt-br-revolucao--rev--fr-revolution--rev--it-rivoluzione--riv--de-rotation--rot--ru-вращать--вщ--pl-przekręć--przk)
 
@@ -70,15 +70,15 @@ REVOLVE. W polskim AutoCADzie wpisz `PRZEKRĘĆ` lub skrót `PRZK` i naciśnij E
 
 ### Jak obrócić profil wokół osi w AutoCADzie?
 
-Narysuj połowę przekroju jako jeden zamknięty obiekt obok linii osi: zamkniętą polilinię lub region. Uruchom PRZEKRĘĆ, wybierz profil i naciśnij Enter; naciśnij Enter ponownie, aby wybrać `Obiekt`, i wskaż linię osi albo podaj jej dwa końce; potem Enter dla pełnego obrotu.
+Narysuj połowę przekroju jako jeden zamknięty obiekt obok linii osi: zamkniętą polilinię lub region. Uruchom polecenie PRZEKRĘĆ, wybierz profil i naciśnij Enter; naciśnij Enter ponownie, aby wybrać `Obiekt`, i wskaż linię osi albo podaj jej dwa końce; potem Enter dla pełnego obrotu.
 
 ### Dlaczego PRZEKRĘĆ nie działa?
 
-Najczęściej oś przecina profil: PRZEKRĘĆ wyświetla `Obiekt powinien znajdować się po jednej stronie osi.` i kończy działanie. Przesuń oś do krawędzi profilu lub dalej; krawędź leżąca na osi jest dozwolona. Oś prostopadła do płaszczyzny profilu daje `Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.`, a profil otwarty jest odrzucany, bo MellowCAD nie ma jeszcze powierzchni.
+Najczęściej oś przecina profil: polecenie PRZEKRĘĆ wyświetla `Obiekt powinien znajdować się po jednej stronie osi.` i kończy działanie. Przesuń oś do krawędzi profilu lub dalej; krawędź leżąca na osi jest dozwolona. Oś prostopadła do płaszczyzny profilu daje `Oś obrotu jest prostopadła do płaszczyzny krzywej przekręcenia.`, a profil otwarty jest odrzucany, bo MellowCAD nie ma jeszcze powierzchni.
 
 ### Jak obrócić profil tylko o część obrotu?
 
-Wpisz kąt, 90 lub 270, przy pytaniu o kąt. `POczątkowy` zaczyna obrót dalej, a `ODWróć` obraca w drugą stronę.
+Przy monicie o kąt wpisz kąt, na przykład 90 lub 270. `POczątkowy` przesuwa początek obrotu dalej, a `ODWróć` obraca w drugą stronę.
 
 ## Ćwicz [#practice]
 

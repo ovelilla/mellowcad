@@ -4,10 +4,10 @@ metaTitle: "Szyk w AutoCADzie: polecenie SZYK (ARRAY)"
 description: "Jak zrobić szyk w AutoCADzie poleceniem SZYK (ARRAY, skrót SZ): prostokątny, biegunowy i wzdłuż ścieżki, edytowany na żywo przed utworzeniem. Wypróbuj za darmo."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie SZYK po angielsku i jaki ma skrót?","answer":"Po angielsku ARRAY, w polskim AutoCADzie SZYK: wpisz SZ, potem naciśnij Enter albo spację. Angielskie AR to w polskim AutoCADzie skrót polecenia ARKUSZ; _ARRAY działa w AutoCADzie w każdym języku. SZYKPROST, SZYKBIEGUN i ŚCIEŻKASZYK nie mają skrótu, a wpisane w całości pomijają pytanie o typ."},{"question":"Jak zrobić szyk kołowy w AutoCADzie?","answer":"Wybierz BIegunowy albo uruchom SZYKBIEGUN i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, na początku w 6 elementach. Liczbę zmień opcją Elementy, a kąt, który wypełniają, ustaw opcją Wypełnienia."},{"question":"Jak rozbić szyk w AutoCADzie?","answer":"Zaznacz go i uruchom ROZBIJ: szyk staje się obiektami swoich elementów, każdy obiekt na swojej warstwie. Aby od początku dostać luźne kopie, odpowiedz Nie na Skojarzony, zanim naciśniesz Enter."},{"question":"Jak zmienić szyk po jego utworzeniu?","answer":"Zaznacz go. Zmieniają go jego uchwyty: kwadrat w punkcie bazowym go przesuwa, strzałki ustawiają liczby i odstępy, a liczba wpisana, gdy strzałka liczby jest aktywna, to nowa liczba. Paleta Właściwości pokazuje jego kolumny, wiersze i odstępy albo elementy i kąty do ponownego wpisania. Polecenia EDYTUJSZYK jeszcze nie ma."}]
+faq: [{"question":"Jak się nazywa polecenie SZYK po angielsku i jaki ma skrót?","answer":"Po angielsku ARRAY, w polskim AutoCADzie SZYK: wpisz SZ, potem naciśnij Enter albo spację. Angielskie AR to w polskim AutoCADzie skrót polecenia ARKUSZ; _ARRAY działa w AutoCADzie w każdym języku. SZYKPROST, SZYKBIEGUN i ŚCIEŻKASZYK nie mają skrótu, a wpisane w całości pomijają pytanie o typ."},{"question":"Jak zrobić szyk kołowy w AutoCADzie?","answer":"Wybierz BIegunowy albo uruchom SZYKBIEGUN i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, początkowo w 6 elementach. Liczbę zmień opcją Elementy, a kąt, który wypełniają, ustaw opcją Wypełnienia."},{"question":"Jak rozbić szyk w AutoCADzie?","answer":"Zaznacz go i uruchom ROZBIJ: szyk staje się obiektami swoich elementów, każdy obiekt na swojej warstwie. Aby od początku dostać luźne kopie, odpowiedz Nie na Skojarzony, zanim naciśniesz Enter."},{"question":"Jak zmienić szyk po jego utworzeniu?","answer":"Zaznacz go. Zmieniają go jego uchwyty: kwadrat w punkcie bazowym go przesuwa, strzałki ustawiają liczby i odstępy, a liczba wpisana, gdy strzałka liczby jest aktywna, to nowa liczba. Paleta Właściwości pokazuje jego kolumny, wiersze i odstępy albo elementy i kąty do ponownego wpisania. Polecenia EDYTUJSZYK jeszcze nie ma."}]
 ---
 
-Polecenie SZYK (ARRAY) kopiuje zaznaczenie według wzoru: w kolumnach i wierszach, wokół środka albo wzdłuż ścieżki. Pyta o obiekty, potem o typ szyku, przy czym Enter wybiera prostokątny, i przekazuje zaznaczenie poleceniu [`SZYKPROST`](/docs/commands/arrayrect), [`SZYKBIEGUN`](/docs/commands/arraypolar) lub [`ŚCIEŻKASZYK`](/docs/commands/arraypath), które działa dalej, nie pytając ponownie o obiekty. Każde z nich od razu pokazuje szyk i edytuje go na żywo, opcjami i uchwytami, aż Enter go utworzy: jeden obiekt szyku albo luźne kopie, jeśli odpowiedziano, że ma nie być skojarzony. Całe polecenie to jeden krok cofania, a Enter w wierszu polecenia powtarza SZYK.
+Polecenie SZYK (ARRAY) kopiuje zaznaczenie według wzoru: w kolumnach i wierszach, wokół środka albo wzdłuż ścieżki. Pyta o obiekty, potem o typ szyku, przy czym Enter wybiera prostokątny, i przekazuje zaznaczenie poleceniu [`SZYKPROST`](/docs/commands/arrayrect), [`SZYKBIEGUN`](/docs/commands/arraypolar) lub [`ŚCIEŻKASZYK`](/docs/commands/arraypath), które działa dalej, nie pytając ponownie o obiekty. Każde z nich od razu pokazuje szyk i edytuje go na żywo, opcjami i uchwytami, aż Enter go utworzy: jeden obiekt szyku albo luźne kopie, jeśli wybrano, że ma nie być skojarzony. Całe polecenie to jeden krok cofania, a Enter w wierszu polecenia powtarza SZYK.
 
 - **Polecenie:** `SZYK`
 - **Po angielsku:** `ARRAY`, wpisywane jako `_ARRAY` w każdym języku
@@ -17,7 +17,7 @@ Polecenie SZYK (ARRAY) kopiuje zaznaczenie według wzoru: w kolumnach i wierszac
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="array" caption="Kwadrat i jego okrąg w szyku z wartościami domyślnymi: Enter dla szyku prostokątnego, 4 kolumny i 3 wiersze." />
 
@@ -49,7 +49,7 @@ Po angielsku ARRAY, w polskim AutoCADzie SZYK: wpisz `SZ`, potem naciśnij Enter
 
 ### Jak zrobić szyk kołowy w AutoCADzie?
 
-Wybierz `BIegunowy` albo uruchom [`SZYKBIEGUN`](/docs/commands/arraypolar) i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, na początku w 6 elementach. Liczbę zmień opcją `Elementy`, a kąt, który wypełniają, ustaw opcją `Wypełnienia`.
+Wybierz `BIegunowy` albo uruchom [`SZYKBIEGUN`](/docs/commands/arraypolar) i wskaż punkt środkowy: zaznaczenie zostaje skopiowane wokół niego, początkowo w 6 elementach. Liczbę zmień opcją `Elementy`, a kąt, który wypełniają, ustaw opcją `Wypełnienia`.
 
 ### Jak rozbić szyk w AutoCADzie?
 

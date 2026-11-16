@@ -5,9 +5,9 @@ figure: "Torus o promieniu 30 wokół rury o promieniu 8, widziany z południowe
 sourceHash: "a19600f3e357"
 ---
 
-Polecenie TORUS rysuje bryłę 3D w kształcie pierścienia, oponki: podaj środek, potem promień torusa, od środka do osi rury, a potem promień rury. Pierścień leży na płaszczyźnie XY układu LUW, na wysokości Z środka. Punkt podany przy pytaniu o rurę jest mierzony od punktu pierścienia, tego, w którym podano promień. Promień torusa to wspólna wartość domyślna brył podstawowych, a promień rury ma własną wartość domyślną, którą przyjmuje Enter. Torus leży na bieżącej warstwie i cofa się w jednym kroku.
+Polecenie TORUS rysuje bryłę 3D w kształcie pierścienia, oponki: podaj środek, potem promień torusa, od środka do osi rury, a potem promień rury. Pierścień leży na płaszczyźnie XY układu LUW, na wysokości Z środka. Punkt wskazany przy monicie o promień rury jest mierzony od punktu pierścienia, tego, w którym podano promień torusa. Promień torusa to wspólna wartość domyślna brył podstawowych, a promień rury ma własną wartość domyślną, którą przyjmuje Enter. Torus powstaje na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
 
-Ujemny promień torusa z szerszą rurą daje bryłę w kształcie piłki do rugby, ostro zakończoną; pierścień węższy niż rura – jabłko. W stylach Model szkieletowy 2D i Ukryty jest rysowany liniami wokół rury i wokół pierścienia, w liczbie określonej przez `ISOLINES`. <Command id="LIST" /> pokazuje jego położenie, normalną, promień torusa i promień rury, a w palecie Właściwości można wpisać oba promienie. Jego uchwyty przesuwają go, ustalają promień torusa i promień rury. Jest bryłą 3D dla <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty 3D w MellowCAD, które obejmuje tylko bryły i wciąż jest częściowe.
+Ujemny promień torusa z szerszą rurą daje bryłę w kształcie piłki do rugby, ostro zakończoną; pierścień węższy niż rura – jabłko. W stylach Model szkieletowy 2D i Ukryty jest rysowany liniami wokół rury i wokół pierścienia, w liczbie określonej przez `ISOLINES`. <Command id="LIST" /> pokazuje jego położenie, normalną, promień torusa i promień rury, a w palecie Właściwości można wpisać oba promienie. Jego uchwyty przesuwają go, ustalają promień torusa i promień rury. Jest bryłą 3D dla poleceń <Command id="UNION" />, <Command id="SUBTRACT" /> i reszty funkcji 3D w MellowCAD, które obejmują tylko bryły i wciąż są częściowe.
 
 ## Options
 
@@ -25,7 +25,7 @@ Przy środku: wskaż dwie linie, okręgi lub łuki z lokalizacją Styczny i poda
 
 ### Diameter
 
-Przy promieniu torusa: pyta zamiast tego o średnicę torusa. Przy promieniu rury: pyta o średnicę rury. Każda proponuje dwukrotność swojej wartości domyślnej.
+Przy promieniu torusa: pyta zamiast tego o średnicę torusa. Przy promieniu rury: pyta o średnicę rury. Każdy z tych monitów proponuje dwukrotność odpowiedniego promienia domyślnego.
 
 ### 2Point
 
@@ -33,7 +33,7 @@ Przy promieniu rury: pyta o dwa punkty, a promień rury to odległość między 
 
 ## Missing
 
-<Command id="EXPLODE" /> torusa, który AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może go rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz kontur, który rysuje `DISPSILH` w AutoCADzie.
+<Command id="EXPLODE" /> torusa, który AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może go rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz sylwetka, którą w AutoCADzie rysuje `DISPSILH`.
 
 ## Questions
 
@@ -47,8 +47,8 @@ Promień torusa biegnie od środka torusa do osi rury; promień rury to promień
 
 ### Jak narysować torus w kształcie piłki do rugby?
 
-Podaj ujemny promień, a potem promień rury większy od jego wartości bezwzględnej: `-5` i `8` tworzą zamkniętą bryłę ostro zakończoną z obu stron. Promień rury nie większy od niej jest odrzucany i pytanie pada ponownie.
+Podaj ujemny promień, a potem promień rury większy od jego wartości bezwzględnej: `-5` i `8` tworzą zamkniętą bryłę ostro zakończoną z obu stron. Promień rury nie większy od niej polecenie odrzuca i pyta ponownie.
 
 ### Dlaczego torus wygląda jak dwa okręgi?
 
-Patrzysz na niego z góry, w rzucie. Obróć widok: narożnikiem ViewCube, poleceniem <Command id="-VIEW" /> z opcją <Keyword command="VIEW" id="SEiso" /> albo poleceniem <Command id="3DORBIT" />. <Command id="VSCURRENT" /> z opcją <Keyword command="VSCURRENT" id="Conceptual" /> go cieniuje.
+Patrzysz na niego z góry, w rzucie. Obróć widok: kliknij narożnik ViewCube, użyj polecenia <Command id="-VIEW" /> z opcją <Keyword command="VIEW" id="SEiso" /> albo polecenia <Command id="3DORBIT" />. Polecenie <Command id="VSCURRENT" /> z opcją <Keyword command="VSCURRENT" id="Conceptual" /> go cieniuje.

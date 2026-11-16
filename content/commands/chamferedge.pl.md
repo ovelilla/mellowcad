@@ -6,9 +6,9 @@ figure: "Prostopadłościan widziany od południowego wschodu: FAZOWKRAW z obiem
 sourceHash: "43b1908ad4b3"
 ---
 
-Polecenie FAZOWKRAW (CHAMFEREDGE) ścina krawędzie bryły 3D. Podaje dwie bieżące odległości, a potem pyta o krawędź i, po pierwszej, o kolejne na tej samej ścianie, aż do Enter: kliknięcie bierze krawędź pod kursorem, wpisany punkt krawędź narysowaną przez niego. Krawędź, która nie ma wspólnej ściany z pierwszymi, daje komunikat <Message id="edgesOneFace" />, a krawędź innej bryły <Message id="chamferMultipleBodies" />. W miarę wskazywania krawędzi bryła jest rysowana tak, jak będzie wyglądać. Enter prosi potem o ponowne naciśnięcie Enter, aby zaakceptować fazowanie, albo o zmianę odległości dla tej fazy; ten Enter ją tworzy.
+Polecenie FAZOWKRAW (CHAMFEREDGE) ścina krawędzie bryły 3D. Podaje dwie bieżące odległości, a potem pyta o krawędź i, po pierwszej, o kolejne na tej samej ścianie, aż do Enter: kliknięcie bierze krawędź pod kursorem, a wpisany punkt – krawędź, która przez niego przechodzi. Krawędź, która nie ma wspólnej ściany z wcześniej wybranymi, daje komunikat <Message id="edgesOneFace" />, a krawędź innej bryły <Message id="chamferMultipleBodies" />. W miarę wskazywania krawędzi bryła jest rysowana tak, jak będzie wyglądać. Enter prosi potem o ponowne naciśnięcie Enter, aby zaakceptować fazowanie, albo o zmianę odległości dla tej fazy; ten Enter ją tworzy.
 
-Pierwsza odległość biegnie wzdłuż ściany wspólnej dla krawędzi; dla pojedynczej krawędzi wzdłuż ściany, którą wybiera AutoCAD: przedniej dla górnej przedniej krawędzi prostopadłościanu i górnej dla obrzeża walca. Prosta krawędź między dwiema płaskimi ścianami staje się płaskim pasem, okrągła krawędź otworu lub obrzeża pasem stożka, a fazy spotykające się w narożniku łączą się w linii. Odległości są proponowane ponownie przy następnym użyciu. Bryła zachowuje warstwę i właściwości, ale traci to, z czego powstała: prostopadłościan nie jest już prostopadłościanem. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły 3D, wciąż częściowo.
+Pierwsza odległość biegnie wzdłuż ściany wspólnej dla krawędzi; dla pojedynczej krawędzi wzdłuż ściany, którą wybiera AutoCAD: przedniej dla górnej przedniej krawędzi prostopadłościanu i górnej dla obrzeża walca. Prosta krawędź między dwiema płaskimi ścianami staje się płaskim pasem, okrągła krawędź otworu lub obrzeża pasem stożka, a fazy spotykające się w narożniku łączą się w linii. Odległości są proponowane ponownie przy następnym użyciu. Bryła zachowuje warstwę i właściwości, ale traci to, z czego powstała: prostopadłościan nie jest już prostopadłościanem. Całe polecenie to jeden krok cofania. 3D w MellowCAD to tylko bryły 3D, na razie częściowo.
 
 ## Options
 
@@ -28,7 +28,7 @@ Narożnik, w którym spotykają się trzy sfazowane krawędzie. Prosta krawędź
 
 ### Jak sfazować krawędź bryły 3D w AutoCADzie?
 
-Uruchom FAZOWKRAW, wybierz <Keyword id="Distance" /> i podaj obie odległości, wskaż krawędzie jednej ściany, a potem dwa razy naciśnij Enter: raz, aby zakończyć wskazywanie, i raz, aby zaakceptować. `6` i `6` z sesji ścinają dwie górne krawędzie prostopadłościanu.
+Uruchom polecenie FAZOWKRAW, wybierz <Keyword id="Distance" /> i podaj obie odległości, wskaż krawędzie jednej ściany, a potem dwa razy naciśnij Enter: raz, aby zakończyć wskazywanie, i raz, aby zaakceptować. `6` i `6` z sesji ścinają dwie górne krawędzie prostopadłościanu.
 
 ### Dlaczego FAZOWKRAW mówi, że krawędzie muszą należeć do jednej ściany?
 

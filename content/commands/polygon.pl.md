@@ -34,11 +34,11 @@ POLYGON. W polskim AutoCADzie jego skrót to `WBO`: wpisz go i naciśnij Enter l
 
 ### Jak narysować sześciokąt w AutoCADzie?
 
-Uruchom polecenie WIELOBOK, wpisz `6` jako liczbę boków, podaj środek, wybierz <Keyword id="Inscribed" /> lub <Keyword id="Circumscribed" /> i wpisz promień. Rozstaw przeciwległych boków sześciokąta opisanego to dwukrotność podanego promienia.
+Uruchom polecenie WIELOBOK, wpisz `6` jako liczbę boków, podaj środek, wybierz <Keyword id="Inscribed" /> lub <Keyword id="Circumscribed" /> i wpisz promień. Wymiar pod klucz sześciokąta opisanego, czyli odległość między przeciwległymi bokami, to dwukrotność podanego promienia.
 
 ### Czym się różni wielokąt wpisany od opisanego?
 
-Przy <Keyword id="Inscribed" /> narożniki wielokąta dotykają okręgu, więc mieści się on w okręgu. Przy <Keyword id="Circumscribed" /> okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy.
+Przy <Keyword id="Inscribed" /> wierzchołki wielokąta leżą na okręgu, więc mieści się on w okręgu. Przy <Keyword id="Circumscribed" /> okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy.
 
 ### Jak narysować wielokąt o zadanej długości boku?
 

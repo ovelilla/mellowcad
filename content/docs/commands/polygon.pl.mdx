@@ -4,7 +4,7 @@ metaTitle: "Wielokąt w AutoCADzie: WIELOBOK (POLYGON)"
 description: "Jak narysować wielokąt foremny w AutoCADzie poleceniem WIELOBOK (POLYGON, skrót WBO): liczba boków, środek, wpisany lub opisany albo bok. Wypróbuj online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak się nazywa polecenie WIELOBOK po angielsku?","answer":"POLYGON. W polskim AutoCADzie jego skrót to WBO: wpisz go i naciśnij Enter lub spację. Angielskie POL w polskiej wersji uruchamia polecenie POLE; pełna nazwa WIELOBOK działa, a _POLYGON – w AutoCADzie w każdym języku."},{"question":"Jak narysować sześciokąt w AutoCADzie?","answer":"Uruchom polecenie WIELOBOK, wpisz 6 jako liczbę boków, podaj środek, wybierz Wpisany lub Opisany i wpisz promień. Rozstaw przeciwległych boków sześciokąta opisanego to dwukrotność podanego promienia."},{"question":"Czym się różni wielokąt wpisany od opisanego?","answer":"Przy Wpisany narożniki wielokąta dotykają okręgu, więc mieści się on w okręgu. Przy Opisany okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy."},{"question":"Jak narysować wielokąt o zadanej długości boku?","answer":"Wybierz Bok i podaj dwa końce jednego boku: 0,0, a potem długość wpisaną względem niego, na przykład 40,0. Pozostałe boki powstaną przeciwnie do ruchu wskazówek zegara."}]
+faq: [{"question":"Jak się nazywa polecenie WIELOBOK po angielsku?","answer":"POLYGON. W polskim AutoCADzie jego skrót to WBO: wpisz go i naciśnij Enter lub spację. Angielskie POL w polskiej wersji uruchamia polecenie POLE; pełna nazwa WIELOBOK działa, a _POLYGON – w AutoCADzie w każdym języku."},{"question":"Jak narysować sześciokąt w AutoCADzie?","answer":"Uruchom polecenie WIELOBOK, wpisz 6 jako liczbę boków, podaj środek, wybierz Wpisany lub Opisany i wpisz promień. Wymiar pod klucz sześciokąta opisanego, czyli odległość między przeciwległymi bokami, to dwukrotność podanego promienia."},{"question":"Czym się różni wielokąt wpisany od opisanego?","answer":"Przy Wpisany wierzchołki wielokąta leżą na okręgu, więc mieści się on w okręgu. Przy Opisany okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy."},{"question":"Jak narysować wielokąt o zadanej długości boku?","answer":"Wybierz Bok i podaj dwa końce jednego boku: 0,0, a potem długość wpisaną względem niego, na przykład 40,0. Pozostałe boki powstaną przeciwnie do ruchu wskazówek zegara."}]
 ---
 
 Polecenie WIELOBOK (POLYGON) rysuje wielokąt foremny, o równych bokach i kątach, jako jedną zamkniętą polilinię. Pyta o liczbę boków, od 3 do 1024, potem o środek i o to, czy wielokąt jest wpisany w okrąg, czy opisany na nim, a potem o promień tego okręgu. Można go też zbudować na jednym z boków opcją `Bok`. Liczba boków i wybór wpisanego lub opisanego są wartościami domyślnymi następnego polecenia WIELOBOK w tym rysunku. Promień wpisany jako liczba rysuje dolny bok poziomo; podany jako punkt, wskazany lub wpisany, ustala zarówno rozmiar, jak i obrót wielokąta. Gdy podajesz promień, wielokąt podąża za kursorem, z bursztynową kreskową linią od środka.
@@ -17,7 +17,7 @@ Polecenie WIELOBOK (POLYGON) rysuje wielokąt foremny, o równych bokach i kąta
 
 ## W wierszu polecenia [#session]
 
-Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
 
 <Session name="polygon" caption="Dwa okręgi o promieniu 30, sześciokąt wpisany w jeden i opisany na drugim, oraz pięciokąt zbudowany na boku." />
 
@@ -49,11 +49,11 @@ POLYGON. W polskim AutoCADzie jego skrót to `WBO`: wpisz go i naciśnij Enter l
 
 ### Jak narysować sześciokąt w AutoCADzie?
 
-Uruchom polecenie WIELOBOK, wpisz `6` jako liczbę boków, podaj środek, wybierz `Wpisany` lub `Opisany` i wpisz promień. Rozstaw przeciwległych boków sześciokąta opisanego to dwukrotność podanego promienia.
+Uruchom polecenie WIELOBOK, wpisz `6` jako liczbę boków, podaj środek, wybierz `Wpisany` lub `Opisany` i wpisz promień. Wymiar pod klucz sześciokąta opisanego, czyli odległość między przeciwległymi bokami, to dwukrotność podanego promienia.
 
 ### Czym się różni wielokąt wpisany od opisanego?
 
-Przy `Wpisany` narożniki wielokąta dotykają okręgu, więc mieści się on w okręgu. Przy `Opisany` okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy.
+Przy `Wpisany` wierzchołki wielokąta leżą na okręgu, więc mieści się on w okręgu. Przy `Opisany` okręgu dotykają jego boki, więc to okrąg mieści się w nim. Przy tym samym promieniu wielokąt opisany jest większy.
 
 ### Jak narysować wielokąt o zadanej długości boku?
 
