@@ -1,0 +1,68 @@
+---
+title: "Skalowanie w AutoCADzie: polecenie SKALA (SCALE)"
+description: "Jak skalować obiekty w AutoCADzie poleceniem SKALA (SCALE, skrót S): punkt bazowy, współczynnik skali, Kopiuj i Odniesienie do znanej długości."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie SKALA po angielsku?","answer":"SCALE. W polskim AutoCADzie wpisz SKALA lub skrót S i naciśnij Enter lub spację; skrót SC z wersji angielskiej w polskiej nie działa, a S uruchamia w niej SKALA, a nie ROZCIĄGNIJ. _SCALE działa w AutoCADzie w każdym języku."},{"question":"Jak skalować z odniesieniem w AutoCADzie?","answer":"Przy współczynniku wybierz Odniesienie, wskaż dwa końce krawędzi o znanej długości, a potem wpisz długość, jaką ma mieć. Wszystko, co wybrano, skaluje się w stosunku nowej długości do starej, więc rysunek w złym rozmiarze można poprawić na podstawie jednego znanego wymiaru."},{"question":"Jak przeskalować obiekt i zachować oryginał?","answer":"Przy współczynniku wybierz Kopiuj: skaluje się kopia, a oryginał zostaje na miejscu."},{"question":"Jak zmienić skalę rodzaju linii?","answer":"Nie poleceniem SKALA, które zmienia rozmiar obiektów: RLSKALA ustala długość kresek i przerw każdego rodzaju linii."},{"question":"Jak ustawić skalę wydruku lub układu?","answer":"MellowCAD nie ma układów, rzutni ani drukowania: rysujesz w rzeczywistej wielkości w obszarze modelu, a SKALA zmienia rozmiar samych obiektów, a nie sposób, w jaki zostałyby wydrukowane."}]
+---
+
+Polecenie SKALA (SCALE) powiększa lub pomniejsza wybrane obiekty względem punktu bazowego, który pozostaje na miejscu: współczynnik 2 podwaja je, 0.5 zmniejsza o połowę, jednakowo we wszystkich kierunkach. Wybierz obiekty, wskaż punkt bazowy, a potem wpisz współczynnik albo przesuń kursor i kliknij: obiekty podążają za nim. Enter w tym miejscu, bez wpisanej wartości, skaluje o ostatnio użyty współczynnik. Każde wykonanie to jeden krok, który można cofnąć.
+
+Skaluje wszystko, co obejmuje, tak jak AutoCAD: wzór kreskowania rośnie razem z obwiednią, wymiar mierzy swoją nową długość, a obiekt nad płaszczyzną skaluje się także w osi Z względem punktu bazowego.
+
+- **Polecenie:** `SKALA`
+- **Po angielsku:** `SCALE`, wpisywane jako `_SCALE` w każdym języku
+- **Aliasy:** `S`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `S` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="scale" caption="Płyta z otworem przeskalowana na kopii z opcją Odniesienie wokół narożnika: wskazana krawędź długości 40, potem długość 60." />
+
+## Opcje [#options]
+
+### `Kopiuj` (`K`) [#copy]
+
+Skaluje kopię i pozostawia obiekty bez zmian: wyświetla `Skalowanie kopii wybranych obiektów.` i ponownie pyta o współczynnik, nadal z opcją `Kopiuj` na liście.
+
+### `Odniesienie` (`O`) [#reference]
+
+Pyta o długość odniesienia, wpisaną albo wskazaną dwoma punktami, a potem o długość, jaką ma mieć: współczynnik to nowa długość podzielona przez długość odniesienia. Nową długość wpisuje się albo wskazuje punktem, którego odległość od punktu bazowego ją wyznacza; `Punkty` pyta zamiast tego o dwa punkty i mierzy odległość między nimi. Obie długości proponują ostatnio podane, w nowym rysunku 1.
+
+## Czego jeszcze nie robi [#missing]
+
+Enter przy pierwszym lub drugim punkcie opcji `Punkty` kończy polecenie bez skalowania, podczas gdy AutoCAD skaluje według odczytu kursora w tym miejscu. Bardzo mały współczynnik jest stosowany bez komunikatu, podczas gdy AutoCAD informuje, że go ignoruje. Przeciągane obiekty są rysowane tak, jak przeciąga je [`PRZESUŃ`](/docs/commands/move), tylko w swoim kolorze.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es--fr-echelle--eh--it-scala--ss--de-varia--v--ru-масштаб--мш--pl-skala--s)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie SKALA po angielsku?
+
+SCALE. W polskim AutoCADzie wpisz `SKALA` lub skrót `S` i naciśnij Enter lub spację; skrót `SC` z wersji angielskiej w polskiej nie działa, a `S` uruchamia w niej SKALA, a nie ROZCIĄGNIJ. `_SCALE` działa w AutoCADzie w każdym języku.
+
+### Jak skalować z odniesieniem w AutoCADzie?
+
+Przy współczynniku wybierz `Odniesienie`, wskaż dwa końce krawędzi o znanej długości, a potem wpisz długość, jaką ma mieć. Wszystko, co wybrano, skaluje się w stosunku nowej długości do starej, więc rysunek w złym rozmiarze można poprawić na podstawie jednego znanego wymiaru.
+
+### Jak przeskalować obiekt i zachować oryginał?
+
+Przy współczynniku wybierz `Kopiuj`: skaluje się kopia, a oryginał zostaje na miejscu.
+
+### Jak zmienić skalę rodzaju linii?
+
+Nie poleceniem SKALA, które zmienia rozmiar obiektów: [`RLSKALA`](/docs/commands/ltscale) ustala długość kresek i przerw każdego rodzaju linii.
+
+### Jak ustawić skalę wydruku lub układu?
+
+MellowCAD nie ma układów, rzutni ani drukowania: rysujesz w rzeczywistej wielkości w obszarze modelu, a SKALA zmienia rozmiar samych obiektów, a nie sposób, w jaki zostałyby wydrukowane.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie OBRÓĆ (ROTATE) w AutoCADzie](/docs/commands/rotate)
+- [Polecenie PRZESUŃ (MOVE) w AutoCADzie](/docs/commands/move)
+- [Polecenie ROZCIĄGNIJ (STRETCH) w AutoCADzie](/docs/commands/stretch)
+- [Skala rodzaju linii w AutoCADzie: polecenie RLSKALA (LTSCALE)](/docs/commands/ltscale)

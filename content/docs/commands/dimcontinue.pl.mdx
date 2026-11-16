@@ -1,0 +1,69 @@
+---
+title: "Wymiarowanie szeregowe w AutoCADzie: polecenie WYMSZEREG (DIMCONTINUE)"
+metaTitle: "Wymiarowanie szeregowe w AutoCADzie: WYMSZEREG"
+description: "Jak wymiarować szeregowo w AutoCADzie poleceniem WYMSZEREG (DIMCONTINUE, skrót WS): od ostatniego wymiaru, kolejne początki, Wybierz i Cofaj."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie wymiarowania szeregowego po angielsku i jaki ma skrót?","answer":"Po angielsku DIMCONTINUE, w polskim AutoCADzie WYMSZEREG: wpisz WS lub WYMSZ, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMCONTINUE – w AutoCADzie w każdym języku."},{"question":"Czym się różni WYMSZEREG od WYMBAZA?","answer":"Polecenie WYMSZEREG ustawia wymiary jeden za drugim na jednej linii, każdy od miejsca, w którym skończył się poprzedni. Polecenie WYMBAZA mierzy je wszystkie od tej samej linii pomocniczej, każdy na linii położonej dalej."},{"question":"Jak kontynuować od wymiaru, który nie jest ostatni?","answer":"Naciśnij Enter przy pierwszym monicie albo wybierz Wybierz i wskaż wymiar blisko linii pomocniczej, od której szereg ma biec dalej: szereg rośnie od niej."},{"question":"Dlaczego polecenie WYMSZEREG prosi o wybranie wymiaru?","answer":"Nie ma czego kontynuować: od otwarcia rysunku nie utworzono żadnego wymiaru liniowego ani dopasowanego, jak w AutoCADzie po otwarciu rysunku, albo ostatni utworzony jest kątowy. Wskaż wymiar, od którego chcesz kontynuować."}]
+---
+
+Polecenie WYMSZEREG (DIMCONTINUE) rysuje szereg wymiarów jeden za drugim: każdy zaczyna się na drugiej linii pomocniczej poprzedniego i mierzy do następnego podanego punktu, na tej samej linii wymiarowej. Kontynuuje ostatni wymiar liniowy lub dopasowany utworzony od otwarcia rysunku, dlatego zwykle następuje po poleceniu [`WYMLINIOWY`](/docs/commands/dimlinear) lub [`WYMNORMALNY`](/docs/commands/dimaligned); gdy takiego nie ma, pyta, który kontynuować. Wiersz polecenia podaje każdą wartość w chwili utworzenia wymiaru. Enter przy monicie o początek wybiera `Wybierz`, a Enter przy tym monicie kończy polecenie, podobnie jak Esc.
+
+Jak w AutoCADzie, każdy nowy wymiar mierzy wzdłuż kierunku wymiaru bazowego i przejmuje jego styl wymiarowania i warstwę, z bieżącym kolorem, rodzajem linii i szerokością linii.
+
+- **Polecenie:** `WYMSZEREG`
+- **Po angielsku:** `DIMCONTINUE`, wpisywane jako `_DIMCONTINUE` w każdym języku
+- **Aliasy:** `WS`, `WYMSZ`
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WS` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="dimcontinue" caption="Profil schodkowy zwymiarowany 30, potem szereg 40 i 30 na tej samej linii: dwa początki, potem dwa razy Enter." />
+
+## Opcje [#options]
+
+### `Wybierz` (`W`) [#select]
+
+Pyta o wymiar, od którego należy kontynuować: wskaż wymiar liniowy lub dopasowany blisko linii pomocniczej, od której szereg ma biec dalej. Punkt wpisany przy tym monicie też wskazuje wymiar. Wymiar promienia lub średnicy jest odrzucany komunikatem `Wymagany skojarzony wymiar liniowy, kątowy lub współrzędnych.`, a pytanie pada ponownie.
+
+### `Cofaj` (`C`) [#undo]
+
+Cofa ostatni wymiar szeregu i kontynuuje od poprzedniego, tyle razy, ile jest wymiarów. Gdy nie zostaje żaden, odpowiedzią jest `Polecenie zostało całkowicie cofnięte.`, a monit się nie zmienia.
+
+## Czego jeszcze nie robi [#missing]
+
+Wymiar nie jest skojarzony: szereg nie podąża za obiektami, które mierzy. Wymiaru kątowego nie można kontynuować: AutoCAD kontynuuje taki wymiar utworzony jako ostatni lub wskazany; tutaj, gdy utworzono go jako ostatni, polecenie pyta o wymiar, a wskazany jest odrzucany jak promieniowy. Wymiarów współrzędnościowych jeszcze nie ma.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont--pt-br-cotaserie--cse--dimcont--fr-cotcont--cotn--it-dimcontinua--dco--de-bemweiter--bmwt--ru-рзмцепь--рцп--pl-wymszereg--ws--wymsz)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie wymiarowania szeregowego po angielsku i jaki ma skrót?
+
+Po angielsku DIMCONTINUE, w polskim AutoCADzie WYMSZEREG: wpisz `WS` lub `WYMSZ`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMCONTINUE` – w AutoCADzie w każdym języku.
+
+### Czym się różni WYMSZEREG od WYMBAZA?
+
+Polecenie WYMSZEREG ustawia wymiary jeden za drugim na jednej linii, każdy od miejsca, w którym skończył się poprzedni. Polecenie [`WYMBAZA`](/docs/commands/dimbaseline) mierzy je wszystkie od tej samej linii pomocniczej, każdy na linii położonej dalej.
+
+### Jak kontynuować od wymiaru, który nie jest ostatni?
+
+Naciśnij Enter przy pierwszym monicie albo wybierz `Wybierz` i wskaż wymiar blisko linii pomocniczej, od której szereg ma biec dalej: szereg rośnie od niej.
+
+### Dlaczego polecenie WYMSZEREG prosi o wybranie wymiaru?
+
+Nie ma czego kontynuować: od otwarcia rysunku nie utworzono żadnego wymiaru liniowego ani dopasowanego, jak w AutoCADzie po otwarciu rysunku, albo ostatni utworzony jest kątowy. Wskaż wymiar, od którego chcesz kontynuować.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft)
+
+## Powiązane polecenia [#related]
+
+- [Wymiarowanie od bazy w AutoCADzie: polecenie WYMBAZA (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)](/docs/commands/dimlinear)
+- [Polecenie PRZESTRZWYM (DIMSPACE) w AutoCADzie](/docs/commands/dimspace)
+- [Wymiar dopasowany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)](/docs/commands/dimaligned)

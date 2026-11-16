@@ -1,0 +1,58 @@
+---
+title: "Ćwiczenie AutoCAD: schody w rzucie"
+metaTitle: "Ćwiczenie AutoCAD dla początkujących: schody"
+description: "Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z jednej linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Krok po kroku."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj rzut prostego biegu schodów w centymetrach: długość 280, szerokość 100, dziesięć stopni o głębokości 28 i strzałka, która pokazuje kierunek wejścia. Skala wymiarów rysunku jest ustawiona dla rzutu w centymetrach, więc wymiary są czytelne przy tej wielkości. Rysuje się krawędź jednego stopnia, a resztę rozmieszcza szyk prostokątny.
+
+- **Ćwiczenie:** Początkujący · Architektura · 2D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`LINIA`](/docs/commands/line), [`SZYKPROST`](/docs/commands/arrayrect), [`PLINIA`](/docs/commands/pline), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=stairs), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/stairs" caption="Prosty bieg schodów w rzucie, 280 na 100 centymetrów, ze strzałką skierowaną w górę biegu." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj obrys [#outline]
+
+Na warstwie Kontur polecenie [`PROSTOK`](/docs/commands/rectang) od `0,0` do `280,100`: obrys biegu.
+
+<Session name="exercises/stairs/outline" caption="1. Narysuj obrys" />
+
+### 2. Narysuj pierwszy stopień [#tread]
+
+Krawędź pierwszego stopnia: polecenie [`LINIA`](/docs/commands/line) od `28,0`, `0,100` w górę, i Enter.
+
+<Session name="exercises/stairs/tread" caption="2. Narysuj pierwszy stopień" />
+
+### 3. Utwórz szyk stopni [#array]
+
+Polecenie [`SZYKPROST`](/docs/commands/arrayrect) kopiuje ją wzdłuż biegu: wskaż linię i naciśnij Enter, potem wybierz opcję `Liczba`, `9` kolumn i `1` wiersz, oraz `oDstęp`, `28` między kolumnami i `1` między wierszami, co przy jednym wierszu niczego nie zmienia. Opcja `konIec` zachowuje go jako szyk skojarzony, który można później edytować uchwytami.
+
+<Session name="exercises/stairs/array" caption="3. Utwórz szyk stopni" />
+
+### 4. Narysuj strzałkę [#arrow]
+
+Polecenie [`PLINIA`](/docs/commands/pline) od `14,50` wzdłuż biegu do punktu `226,0` dalej; potem opcja `Szerokość`, `10` na początku i `0` na końcu, i ostatni segment `24,0`: grot strzałki. Enter kończy polecenie.
+
+<Session name="exercises/stairs/arrow" caption="4. Narysuj strzałkę" />
+
+### 5. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary trzy razy polecenie [`WYMLINIOWY`](/docs/commands/dimlinear): długość poniżej, szerokość po prawej i jeden stopień, 28, powyżej.
+
+<Session name="exercises/stairs/dimensions" caption="5. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate): Początkujący · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange): Średniozaawansowany · Mechanika · 2D
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table): Średniozaawansowany · Architektura · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

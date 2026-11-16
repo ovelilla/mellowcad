@@ -1,0 +1,65 @@
+---
+title: "Polecenie TEKST (TEXT) w AutoCADzie: tekst jednowierszowy"
+metaTitle: "Polecenie TEKST (TEXT) w AutoCADzie"
+description: "Jak działa polecenie TEKST (TEXT, skrót DT) w AutoCADzie: punkt początkowy, wysokość i obrót, Wyrównanie i Styl, jeden obiekt na wiersz."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie TEKST po angielsku?","answer":"TEXT. W polskim AutoCADzie wpisz DT i naciśnij Enter lub spację; działają też DTEKST i TEKST, a _TEXT w AutoCADzie w każdym języku. Tekst wielowierszowy to WTEKST, bez skrótu w polskiej wersji (w angielskiej T i MT)."},{"question":"Jak wyrównać tekst w AutoCADzie?","answer":"Wybierz wyrówNAnie przy pierwszym pytaniu albo wpisz tam litery wyrównania, a potem podaj punkt, który ono wskazuje: środek-środek umieszcza środek każdego wiersza w jego punkcie, tak jak opis w środku prostokąta. Aby tekst biegł wzdłuż linii pod kątem, wpisz ten kąt przy pytaniu o obrót."},{"question":"Czym się różni TEKST od WTEKST?","answer":"TEKST tworzy jeden obiekt na wiersz, każdy przesuwany, edytowany i wyrównywany osobno, i nigdy nie zawija. WTEKST tworzy jeden obiekt z akapitów zawijanych do szerokości ramki, wyrównywany jako całość. Oba dzielą wysokość tekstu i style tekstu."},{"question":"Jak edytować tekst w AutoCADzie?","answer":"Kliknij go dwukrotnie: EDTEKST otwiera go do ponownego wpisania, a potem pyta o następny tekst do edycji, aż naciśniesz Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego uchwyty go przesuwają."}]
+---
+
+Polecenie TEKST (TEXT) tworzy tekst jednowierszowy. Podajesz punkt początkowy, wysokość i kąt obrotu, a potem wpisujesz wiersz i naciskasz Enter: wiersz staje się osobnym obiektem, a następny zaczyna się wiersz niżej. Pusty wiersz kończy polecenie. Kliknięcie w innym miejscu przed końcem zaczyna kolejne wiersze w tym punkcie, a Esc zachowuje wiersze już wprowadzone i porzuca ten, który jest wpisywany. Akapit zawijany do szerokości, jako jeden obiekt, tworzy [`WTEKST`](/docs/commands/mtext).
+
+Pierwszy wiersz podaje bieżący styl, wysokość i wyrównanie. Wysokość jest wspólna z [`WTEKST`](/docs/commands/mtext) i [`ATRDEF`](/docs/commands/attdef), zapisana w rysunku, a następne TEKST proponuje ją jako domyślną; styl z własną wysokością pomija pytanie o wysokość. Enter przy punkcie początkowym kontynuuje pod ostatnim wierszem napisanym przez TEKST, bez ponownego pytania o wysokość i kąt. `C` cofa całe wykonanie.
+
+- **Polecenie:** `TEKST`
+- **Po angielsku:** `TEXT`, wpisywane jako `_TEXT` w każdym języku
+- **Aliasy:** `DT`, `DTEKST`
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `DT` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="text" caption="Dwa wiersze tekstu jednowierszowego wyśrodkowane w prostokącie, z wyrównaniem środek-środek: każdy wiersz to osobny obiekt." />
+
+## Opcje [#options]
+
+### `wyrówNAnie` (`NA`) [#justify]
+
+Pyta, gdzie tekst jest zaczepiony w swoim punkcie: `Lewo` (domyślnie), `Środek`, `Prawo`, `Centrum` albo jeden z dziewięciu punktów, góra, środek i dół po lewej, pośrodku i po prawej, tak jak wymienia je pytanie. Pytanie o punkt początkowy pyta wtedy o punkt, który wskazuje wyrównanie: przy środek-środek – o punkt środkowy. Jak w AutoCADzie, dziewięć punktów jest przyjmowanych także bez listy przy pierwszym pytaniu, więc wpisanie tam liter wyrównania środek-środek od razu pyta o punkt środkowy. Wyrównanie zostaje zapisane w rysunku dla następnego TEKST.
+
+### `STyl` (`ST`) [#style]
+
+Pyta o nazwę stylu tekstu, który ma się stać bieżący; Enter zachowuje obecny. `?` wypisuje style rysunku; nazwa, której rysunek nie ma, jest odrzucana i pytanie pada ponownie. Style tworzy się w palecie, którą otwiera [`STYL`](/docs/commands/style).
+
+## Czego jeszcze nie robi [#missing]
+
+Wyrównania Wyrównaj i Dopasuj. `?` opcji `STyl` wypisuje od razu wszystkie style, bez pytania, które, i bez zatrzymywania się strona po stronie. Tekst wpisuje się w polu wprowadzania dynamicznego, a nie z kursorem tekstowym na rysunku, a jego treści nie można zmienić w palecie Właściwości, w której brakuje też wierszy Opisowy, Współczynnik szerokości, Kąt pochylenia, Do góry nogami i Wstecz. Kliknięcie wewnątrz ramki tekstu wybiera go nawet poza literami, podczas gdy AutoCAD niczego nie wybiera.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto--fr-texte--t--textdyn---texte--it-testo--t--td--testodin---testo--de-text--dt--dtext---text--ru-текст--дт--дтекст---текст--pl-tekst--dt--dtekst---tekst)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie TEKST po angielsku?
+
+TEXT. W polskim AutoCADzie wpisz `DT` i naciśnij Enter lub spację; działają też `DTEKST` i `TEKST`, a `_TEXT` w AutoCADzie w każdym języku. Tekst wielowierszowy to [`WTEKST`](/docs/commands/mtext), bez skrótu w polskiej wersji (w angielskiej `T` i `MT`).
+
+### Jak wyrównać tekst w AutoCADzie?
+
+Wybierz `wyrówNAnie` przy pierwszym pytaniu albo wpisz tam litery wyrównania, a potem podaj punkt, który ono wskazuje: środek-środek umieszcza środek każdego wiersza w jego punkcie, tak jak opis w środku prostokąta. Aby tekst biegł wzdłuż linii pod kątem, wpisz ten kąt przy pytaniu o obrót.
+
+### Czym się różni TEKST od WTEKST?
+
+TEKST tworzy jeden obiekt na wiersz, każdy przesuwany, edytowany i wyrównywany osobno, i nigdy nie zawija. [`WTEKST`](/docs/commands/mtext) tworzy jeden obiekt z akapitów zawijanych do szerokości ramki, wyrównywany jako całość. Oba dzielą wysokość tekstu i style tekstu.
+
+### Jak edytować tekst w AutoCADzie?
+
+Kliknij go dwukrotnie: [`EDTEKST`](/docs/commands/textedit) otwiera go do ponownego wpisania, a potem pyta o następny tekst do edycji, aż naciśniesz Esc. Jego wysokość i obrót są wierszami palety Właściwości, a jego uchwyty go przesuwają.
+
+## Powiązane polecenia [#related]
+
+- [Tekst wielowierszowy w AutoCADzie: polecenie WTEKST (MTEXT)](/docs/commands/mtext)
+- [Polecenie EDTEKST (TEXTEDIT) w AutoCADzie](/docs/commands/textedit)
+- [Styl tekstu w AutoCADzie: polecenie STYL (STYLE)](/docs/commands/style)
+- [Polecenie UZGWŁAŚCIWOŚCI (MATCHPROP) w AutoCADzie](/docs/commands/matchprop)

@@ -1,0 +1,68 @@
+---
+title: "Polecenie PLAN w AutoCADzie: widok z góry na LUW"
+metaTitle: "Polecenie PLAN w AutoCADzie: widok z góry"
+description: "Jak wrócić do widoku planu w AutoCADzie: polecenie PLAN patrzy prosto z góry na bieżący LUW, zapisany LUW lub GUW i kadruje cały rysunek. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak wrócić do widoku planu w AutoCADzie?","answer":"Wpisz PLAN i naciśnij Enter dwa razy: drugi Enter wybiera Bieżący. Jeśli LUW jest obrócony, a chcesz plan układu globalnego, wybierz zamiast tego Globalny."},{"question":"Jakie polecenie daje widok z góry na LUW?","answer":"PLAN z opcją Bieżący: patrzy z góry na bieżący LUW, z jego osią X w prawo. Najpierw obróć LUW poleceniem LUW, potem uruchom polecenie PLAN i naciśnij Enter dwa razy, a będziesz rysować na obróconym planie tak, jakby był prosty."},{"question":"Dlaczego mój rysunek jest obrócony w widoku planu?","answer":"Widok jest planem obróconego LUW. Uruchom polecenie PLAN i wybierz Globalny, aby znów widzieć rysunek z globalną osią X w prawo; LUW i Enter również przywracają LUW do układu globalnego."},{"question":"Czy polecenie PLAN zmienia LUW?","answer":"Nie. Obraca tylko widok; LUW zostaje bez zmian. To widoki ortogonalne polecenia WIDOK obracają również LUW."}]
+---
+
+Polecenie PLAN patrzy prosto z góry na płaszczyznę XY układu LUW, z jego osią X skierowaną w prawo: to widok planu, w którym powstawał rysunek. Pyta, który LUW – bieżący, zapisany czy globalny – a Enter wybiera bieżący. Potem kadruje cały rysunek i wyświetla `Ponowne generowanie modelu.`.
+
+Nic w rysunku się nie przesuwa, a LUW zostaje bez zmian: polecenie PLAN obraca tylko widok. To jeden krok cofania, więc `C` przywraca widok, a [`ZOOM`](/docs/commands/zoom) `Poprzedni` wraca do widoku sprzed niego. To droga powrotu do planu po [`3DORBITA`](/docs/commands/3dorbit) lub izometrycznym widoku z [`WIDOK`](/docs/commands/view). 3D w MellowCAD to wyłącznie bryły 3D, wciąż częściowe.
+
+- **Polecenie:** `PLAN`
+- **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `PLAN` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="plan" caption="Schodkowa bryła widziana z południowego zachodu, z LUW obróconym o 30 stopni wokół Z: PLAN i Enter patrzą prosto z góry na ten LUW, jego oś X w prawo, więc bryła wygląda na obróconą." />
+
+## Opcje [#options]
+
+### `Bieżący` (`B`) [#current-ucs]
+
+Plan bieżącego LUW, wartość domyślna. Gdy polecenie [`LUW`](/docs/commands/ucs) obróciło LUW o 30 stopni wokół Z, rysunek wygląda na obrócony o 30 stopni zgodnie z ruchem wskazówek zegara, tak by oś X układu LUW wskazywała w prawo; po LUW ustawionym na pochyłej ścianie patrzy prosto na tę ścianę.
+
+### `Luw` (`L`) [#ucs]
+
+Plan LUW zapisanego opcją `nAZwana` polecenia [`LUW`](/docs/commands/ucs), którego nazwę wpisujesz. Dla nazwy, która nie jest zapisana, informuje, że nie może znaleźć tego LUW, i pyta ponownie; `?` wyświetla zapisane układy, tak jak polecenie LUW, i też pyta ponownie. Bieżący LUW się nie zmienia.
+
+### `Globalny` (`G`) [#world]
+
+Plan globalnego układu współrzędnych: rysunek taki, jaki był na początku, X w prawo i Y w górę, niezależnie od bieżącego LUW, który zostaje bez zmian.
+
+## Czego jeszcze nie robi [#missing]
+
+Gdy nic nie jest narysowane, polecenie PLAN zostawia powiększenie tam, gdzie było, podczas gdy AutoCAD kadruje granice rysunku.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta--fr-repere--it-piana--de-drsicht--ru-план--pl-plan)
+
+## Pytania [#questions]
+
+### Jak wrócić do widoku planu w AutoCADzie?
+
+Wpisz `PLAN` i naciśnij Enter dwa razy: drugi Enter wybiera `Bieżący`. Jeśli LUW jest obrócony, a chcesz plan układu globalnego, wybierz zamiast tego `Globalny`.
+
+### Jakie polecenie daje widok z góry na LUW?
+
+PLAN z opcją `Bieżący`: patrzy z góry na bieżący LUW, z jego osią X w prawo. Najpierw obróć LUW poleceniem [`LUW`](/docs/commands/ucs), potem uruchom polecenie PLAN i naciśnij Enter dwa razy, a będziesz rysować na obróconym planie tak, jakby był prosty.
+
+### Dlaczego mój rysunek jest obrócony w widoku planu?
+
+Widok jest planem obróconego LUW. Uruchom polecenie PLAN i wybierz `Globalny`, aby znów widzieć rysunek z globalną osią X w prawo; [`LUW`](/docs/commands/ucs) i Enter również przywracają LUW do układu globalnego.
+
+### Czy polecenie PLAN zmienia LUW?
+
+Nie. Obraca tylko widok; LUW zostaje bez zmian. To widoki ortogonalne polecenia [`WIDOK`](/docs/commands/view) obracają również LUW.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie LUW (UCS) w AutoCADzie: lokalny układ współrzędnych](/docs/commands/ucs)
+- [Polecenie WIDOK (VIEW) w AutoCADzie](/docs/commands/view)
+- [Orbita 3D w AutoCADzie: polecenie 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [Polecenie ZOOM w AutoCADzie](/docs/commands/zoom)
+- [Polecenie LUWSYMB (UCSICON) w AutoCADzie](/docs/commands/ucsicon)

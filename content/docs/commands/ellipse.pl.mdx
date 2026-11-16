@@ -1,0 +1,74 @@
+---
+title: "Polecenie ELIPSA (ELLIPSE) w AutoCADzie"
+description: "Jak narysować elipsę w AutoCADzie poleceniem ELIPSA (ELLIPSE, skrót E): oś i druga półoś, ze środka, przez obrót, łuk eliptyczny. Wypróbuj za darmo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ELIPSA po angielsku i jaki ma skrót?","answer":"ELLIPSE. W polskim AutoCADzie jego skrót to E: wpisz go i naciśnij Enter lub spację. Angielskie EL w polskiej wersji nie działa; _ELLIPSE działa w AutoCADzie w każdym języku."},{"question":"Jak narysować pół elipsy w AutoCADzie?","answer":"Wybierz łUk, podaj oś i odległość, a potem kąt początkowy 0 i kąt końcowy 180. Albo naciśnij Enter przy opcji kątRozwarcia, która domyślnie obejmuje 180."},{"question":"Jak narysować elipsę od środka?","answer":"Wybierz śrOdek, podaj środek, potem koniec jednej osi, a następnie odległość od środka do końca drugiej: to dwie półosie elipsy."},{"question":"Jak narysować okrąg izometryczny w AutoCADzie?","answer":"AutoCAD rysuje go opcją Izo polecenia ELIPSA, gdy styl skoku jest izometryczny. Żadnej z tych funkcji nie ma jeszcze w MellowCAD."}]
+---
+
+Polecenie ELIPSA (ELLIPSE) rysuje elipsę z dwóch końców jednej osi, a potem z odległości od jej środka do końca drugiej osi, czyli połowy długości drugiej osi. Każda z osi może być dłuższa. To prawdziwa elipsa, jak w AutoCADzie, a nie polilinia, więc działają na niej lokalizacje Środek, Kwadrant i Najbliższy, a jej uchwyty przesuwają ją i ustawiają każdą półoś. Gdy podajesz drugi koniec, od pierwszego biegnie bursztynowa linia kreskowa; przy odległości elipsa podąża za kursorem. Elipsa powstaje na bieżącej warstwie, z właściwościami bieżącymi w chwili jej utworzenia.
+
+- **Polecenie:** `ELIPSA`
+- **Po angielsku:** `ELLIPSE`, wpisywane jako `_ELLIPSE` w każdym języku
+- **Aliasy:** `E`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `E` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="ellipse" caption="Elipsa przez dwa końce osi, elipsa przez jej środek i pół łuku eliptycznego, od 0 do 180 stopni." />
+
+## Opcje [#options]
+
+### `łUk` (`U`) [#arc]
+
+Rysuje łuk eliptyczny: te same monity co dla elipsy, potem kąt początkowy i kąt końcowy, przeciwnie do ruchu wskazówek zegara od końca pierwszej podanej osi.
+
+### `śrOdek` (`O`) [#center]
+
+Zaczyna od środka: potem koniec jednej osi, potem odległość do drugiej.
+
+### `oBrót` (`B`) [#rotation]
+
+Zamiast odległości: kąt, o jaki elipsa jest obrócona wokół swojej pierwszej osi, jak okrąg widziany pod tym kątem. 0 rysuje okrąg; kąt różniący się od 90 o mniej niż 0,6 stopnia jest odrzucany komunikatem `*Błąd*`.
+
+### `paraMetr` (`M`) [#parameter]
+
+W łuku, zamiast kąta początkowego lub końcowego: kąt na okręgu, z którego rysowana jest elipsa, czyli parametr AutoCADa. `Kąt` wraca do kątów.
+
+### `kątRozwarcia` (`R`) [#included-angle]
+
+W łuku, zamiast kąta końcowego: o ile łuk biegnie od początku. Enter przyjmuje 180, połowę elipsy.
+
+## Czego jeszcze nie robi [#missing]
+
+Izo, dostępna w AutoCADzie tylko przy izometrycznym stylu skoku, którego tutaj nie ma. PELLIPSE 1, czyli elipsa rysowana jako polilinia. Kreskowanie i wymiarowanie elipsy oraz lokalizacje Przecięcie, Styczny i Prostopadły na niej. Uchwyty strzałkowe na końcach łuku eliptycznego, tutaj rysowane jako kwadratowe, i wpisywanie długości lub kąta przy aktywnym uchwycie. Punkt ze współrzędną Z przy odległości jest mierzony w rzucie, podczas gdy AutoCAD mierzy go w przestrzeni.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ellipse--el--es-elipse--el--pt-br-elipse--el--fr-ellipse--el--it-ellisse--el--de-ellipse--el--ru-эллипс--э--pl-elipsa--e)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ELIPSA po angielsku i jaki ma skrót?
+
+ELLIPSE. W polskim AutoCADzie jego skrót to `E`: wpisz go i naciśnij Enter lub spację. Angielskie `EL` w polskiej wersji nie działa; `_ELLIPSE` działa w AutoCADzie w każdym języku.
+
+### Jak narysować pół elipsy w AutoCADzie?
+
+Wybierz `łUk`, podaj oś i odległość, a potem kąt początkowy `0` i kąt końcowy `180`. Albo naciśnij Enter przy opcji `kątRozwarcia`, która domyślnie obejmuje 180.
+
+### Jak narysować elipsę od środka?
+
+Wybierz `śrOdek`, podaj środek, potem koniec jednej osi, a następnie odległość od środka do końca drugiej: to dwie półosie elipsy.
+
+### Jak narysować okrąg izometryczny w AutoCADzie?
+
+AutoCAD rysuje go opcją Izo polecenia ELIPSA, gdy styl skoku jest izometryczny. Żadnej z tych funkcji nie ma jeszcze w MellowCAD.
+
+## Powiązane polecenia [#related]
+
+- [Okrąg w AutoCADzie: polecenie OKRĄG (CIRCLE)](/docs/commands/circle)
+- [Polecenie ŁUK (ARC) w AutoCADzie](/docs/commands/arc)
+- [Polecenie ODSUŃ (OFFSET) w AutoCADzie](/docs/commands/offset)
+- [Polecenie PRZERWIJ (BREAK) w AutoCADzie](/docs/commands/break)

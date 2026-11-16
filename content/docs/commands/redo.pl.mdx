@@ -1,0 +1,55 @@
+---
+title: "Polecenie ODTWÓRZ (REDO) w AutoCADzie: przywracanie cofniętych zmian"
+metaTitle: "Polecenie ODTWÓRZ (REDO) w AutoCADzie"
+description: "Jak działa polecenie ODTWÓRZ (REDO) w AutoCADzie: przywraca to, co cofnęło ostatnie C lub COFAJ, zaraz po nim; WODTWÓRZ i Ctrl+Y krok po kroku."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ODTWÓRZ po angielsku?","answer":"REDO. Nie ma skrótu: wpisz ODTWÓRZ albo _REDO w AutoCADzie w dowolnym języku. Najszybciej działa Ctrl+Y, które przywraca jeden krok (WODTWÓRZ 1)."},{"question":"Dlaczego ODTWÓRZ nie działa?","answer":"Polecenie ODTWÓRZ odwraca tylko C lub COFAJ wykonane tuż przed nim. Po każdym innym poleceniu nie ma już czego przywracać, nawet jeśli niczego ono nie zmieniło: cofnij, a potem od razu przywróć."},{"question":"Czym się różni ODTWÓRZ od WODTWÓRZ?","answer":"Polecenie ODTWÓRZ przywraca całe ostatnie cofnięcie i tylko bezpośrednio po nim. WODTWÓRZ przywraca wybraną liczbę cofniętych kroków, jeden po drugim, albo wszystkie, i działa także po ODTWÓRZ."},{"question":"Jak powtórzyć ostatnie polecenie w AutoCADzie?","answer":"Naciśnij Enter lub spację w wierszu Polecenie:: ostatnie polecenie uruchomi się ponownie. ODTWÓRZ nie powtarza polecenia, tylko odwraca cofnięcie."}]
+---
+
+Polecenie ODTWÓRZ (REDO) odwraca ostatnie `C` lub [`COFAJ`](/docs/commands/undo): wszystko, co zostało cofnięte, rysuje się ponownie w całości, więc po cofnięciu pięciu poleceń przez COFAJ polecenie ODTWÓRZ przywraca wszystkie pięć. Wypisuje przy tym nazwy poleceń, a gdy nie ma już nic do przywrócenia – `Wszystkie operacje zostały odtworzone`. O nic nie pyta i nie ma opcji.
+
+Działa tylko bezpośrednio po cofnięciu. W każdej innej chwili wyświetla `Polecenie ODTWÓRZ można wykorzystać tylko bezpośrednio po poleceniu C lub COFAJ.`, a gdy w międzyczasie zostało wykonane inne polecenie, nawet takie, które niczego nie zmienia, jak LISTA czy ZOOM – `Brak operacji do odtworzenia`. Gdy cofanie jest wyłączone opcją `Tryb` › `Nic` polecenia COFAJ, ODTWÓRZ informuje, że jest wyłączone.
+
+`WODTWÓRZ` przywraca krok po kroku: pyta o liczbę operacji albo o `WSzystko` lub `Ostatni` i przywraca tyle kroków spośród cofniętych, niezależnie od tego, jakie C, COFAJ i ODTWÓRZ zostały w międzyczasie wykonane; `Ostatni` to całe ostatnie cofnięcie, jeden raz (`Ostatnia operacja COFAJ została już odtworzona.`). Ctrl+Y i pozycja Ponów w menu skrótów uruchamiają WODTWÓRZ z wartością 1, przerywając bieżące polecenie.
+
+- **Polecenie:** `ODTWÓRZ`
+- **Po angielsku:** `REDO`, wpisywane jako `_REDO` w każdym języku
+- **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `ODTWÓRZ` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="redo" caption="Otwór narysowany w płycie, cofnięty poleceniem C i przywrócony poleceniem ODTWÓRZ." />
+
+## Czego jeszcze nie robi [#missing]
+
+Ctrl+Shift+Z również przywraca, bez komunikatu, choć AutoCAD nie przypisuje do niego niczego. Przyciski Cofnij i Ponów na górnym pasku nie zapisują niczego w historii, podczas gdy pasek narzędzi szybkiego dostępu AutoCADa zapisuje własne wpisy.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ODTWÓRZ po angielsku?
+
+REDO. Nie ma skrótu: wpisz `ODTWÓRZ` albo `_REDO` w AutoCADzie w dowolnym języku. Najszybciej działa Ctrl+Y, które przywraca jeden krok (WODTWÓRZ 1).
+
+### Dlaczego ODTWÓRZ nie działa?
+
+Polecenie ODTWÓRZ odwraca tylko C lub COFAJ wykonane tuż przed nim. Po każdym innym poleceniu nie ma już czego przywracać, nawet jeśli niczego ono nie zmieniło: cofnij, a potem od razu przywróć.
+
+### Czym się różni ODTWÓRZ od WODTWÓRZ?
+
+Polecenie ODTWÓRZ przywraca całe ostatnie cofnięcie i tylko bezpośrednio po nim. `WODTWÓRZ` przywraca wybraną liczbę cofniętych kroków, jeden po drugim, albo wszystkie, i działa także po ODTWÓRZ.
+
+### Jak powtórzyć ostatnie polecenie w AutoCADzie?
+
+Naciśnij Enter lub spację w wierszu `Polecenie:`: ostatnie polecenie uruchomi się ponownie. ODTWÓRZ nie powtarza polecenia, tylko odwraca cofnięcie.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie COFAJ (UNDO) w AutoCADzie](/docs/commands/undo)
+- [C (U)](/docs/commands#u): Cofa ostatnią czynność
+- [WODTWÓRZ (MREDO)](/docs/commands#mredo): Odtwórz wielokrotnie

@@ -1,0 +1,55 @@
+---
+title: Jak narysować rzut domu w AutoCADzie
+metaTitle: "Jak narysować rzut domu w AutoCADzie z wymiarami"
+description: "Jak narysować rzut domu w AutoCADzie: ściany poleceniem ODSUŃ (OFFSET), ściana wewnętrzna, otwory wycięte poleceniem UTNIJ (TRIM), drzwi, okna i wymiary."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Rzut to dom przecięty na wysokości około półtora metra i widziany z góry: każda ściana jako dwie linie, między którymi jest jej grubość, otwory w niej, drzwi narysowane jako otwarte, z łukiem otwierania, okna i wymiary. Ten poradnik rysuje dom z dwoma pokojami, 8 na 6 metrów, w centymetrach: jedna jednostka to jeden centymetr, więc ściany zewnętrzne mają grubość 20, a wewnętrzna 10. Każdy krok pokazuje swój rysunek i historię wiersza polecenia, tak jak ją wpiszesz. [Otwórz edytor](/pl/draw) obok tej strony i rysuj razem z nią.
+
+## Utwórz warstwy [#layers]
+
+Każdy rodzaj obiektów trafia na osobną warstwę, z własnym kolorem, aby każdą z nich można było wyłączyć: Ściany, Drzwi, Okna i Wymiary. Utwórz je w palecie warstw, poleceniem <Command id="LAYER" />, i przed każdym krokiem ustaw właściwą warstwę jako bieżącą na liście rozwijanej warstw. Aby wymiary były czytelne w skali domu, ustaw globalną skalę ich stylu poleceniem <Command id="DIMSTYLE" />: tutaj 12, więc ich tekst ma wysokość 30.
+
+## Narysuj ściany zewnętrzne [#walls]
+
+Na warstwie Ściany narysuj poleceniem <Command id="RECTANG" /> prostokąt od `0,0` do `800,600`: zewnętrzne lico ścian. Polecenie <Command id="OFFSET" /> tworzy wewnętrzne: wpisz grubość, `20`, wskaż prostokąt i kliknij wewnątrz niego.
+
+<Session name="floorPlanWalls" caption="Ściany zewnętrzne: prostokąt i jego odsunięcie o 20 do wewnątrz." />
+
+## Narysuj ścianę wewnętrzną [#inner-wall]
+
+Linia poleceniem <Command id="LINE" /> od `500,20`, `0,560` w górę, do wewnętrznego lica ścian zewnętrznych, i jej odsunięcie poleceniem <Command id="OFFSET" /> o `10` w prawo: ściana między dwoma pokojami.
+
+<Session name="floorPlanInnerWall" caption="Ściana wewnętrzna: linia i jej odsunięcie o 10 w prawo." />
+
+## Wytnij otwory [#openings]
+
+Otwór wycina się między dwiema liniami w poprzek ściany, jego ościeżami. Narysuj je poleceniem <Command id="LINE" />, a potem poleceniem <Command id="TRIM" /> utnij linie ściany między nimi, każdą jednym kliknięciem: wejście o szerokości 90 od `100,0`; drzwi wewnętrzne o szerokości 80 od `500,200`; okna o szerokości 120 od `200,580` w górnej ścianie i od `780,250` w prawej.
+
+<Session name="floorPlanOpenings" caption="Cztery otwory: po dwa ościeża i linie ściany ucięte między nimi." />
+
+## Narysuj drzwi [#doors]
+
+Na warstwie Drzwi każde drzwi to ich skrzydło, narysowane jako otwarte poleceniem <Command id="LINE" />, i łuk otwierania, narysowany poleceniem <Command id="ARC" />: wybierz jego opcję Środek, a potem podaj zawias jako środek, początek łuku i jego koniec. Oba końce to punkty już narysowane, narożnik ościeża i koniec skrzydła: wpisz `_END`, lokalizację względem obiektu Punkt końcowy dla jednego punktu, i wskaż każdy z nich.
+
+<Session name="floorPlanDoors" caption="Każde drzwi: skrzydło otwarte pod kątem 90° i łuk otwierania." />
+
+## Narysuj okna [#windows]
+
+Na warstwie Okna prostokąt narysowany poleceniem <Command id="RECTANG" /> wypełnia każdy otwór od ościeża do ościeża, a linia przez jego środek oznacza szybę.
+
+<Session name="floorPlanWindows" caption="Okna: prostokąt w każdym otworze i linia oznaczająca szybę." />
+
+## Zwymiaruj rzut [#dimensions]
+
+Na warstwie Wymiary zwymiaruj poleceniem <Command id="DIMLINEAR" /> wymiary zewnętrzne, a potem pokoje od wewnątrz: szerokość pierwszego pokoju poleceniem <Command id="DIMLINEAR" />, a następnie ścianę wewnętrzną i drugi pokój poleceniem <Command id="DIMCONTINUE" />, wpisując punkty od początku układu współrzędnych ze znakiem `#`.
+
+<Session name="floorPlanDimensions" caption="Zwymiarowany rzut: 800 na 600 na zewnątrz, pokoje wewnątrz." />
+
+## Co dalej [#next]
+
+- Nazwij każdy pokój poleceniem <Command id="TEXT" /> i wypełnij ściany poleceniem <Command id="HATCH" />, wskazując punkt między ich dwiema liniami.
+- Poćwicz na [ćwiczeniach](/docs/exercises): [schody w rzucie](/docs/exercises/stairs) i [okrągły stół z krzesłami](/docs/exercises/round-table) też rysuje się w centymetrach.
+- [Współrzędne](/docs/coordinates): wszystkie sposoby wpisania punktu.

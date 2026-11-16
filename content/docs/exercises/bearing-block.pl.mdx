@@ -1,0 +1,66 @@
+---
+title: "Ćwiczenie AutoCAD 3D: korpus łożyska"
+metaTitle: "Ćwiczenie AutoCAD 3D: korpus łożyska z otworami"
+description: "Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, połącz, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zamodeluj ten korpus łożyska w milimetrach: podstawa 100 na 60 z narożami o promieniu 10, grubość 12; tuleja o średnicy 40 i wysokości 40 pośrodku; otwór o średnicy 20 przez tuleję i dwa otwory na śruby o średnicy 10 przez podstawę, w rozstawie 76. Podstawę i tuleję wyciąga się z ich konturów i łączy w jedną bryłę; otwory to walce od niej odjęte.
+
+- **Ćwiczenie:** Zaawansowany · Mechanika · Bryła 3D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`OKRĄG`](/docs/commands/circle), [`WYCIĄGNIJ`](/docs/commands/extrude), [`SUMA`](/docs/commands/union), [`WALEC`](/docs/commands/cylinder), [`KOPIUJ`](/docs/commands/copy), [`RÓŻNICA`](/docs/commands/subtract), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=bearing-block), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/bearing-block" caption="Korpus łożyska w rzucie, 100 na 60, z wymiarami tulei, otworu łożyskowego i otworów." />
+
+<Session name="exercises/bearing-block/model" caption="Korpus łożyska jako bryła, widziany z południowego wschodu w stylu wizualnym Koncepcyjny." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj rzut [#plan]
+
+Na warstwie Kontur polecenie [`PROSTOK`](/docs/commands/rectang) z opcją `Zaokrąglij` równą `10`, od `0,0` do `100,60`, i okrąg w jego środku, `50,30`, o średnicy (`śreDnica`) `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Narysuj rzut" />
+
+### 2. Wyciągnij podstawę i tuleję [#extrude]
+
+Polecenie [`WYCIĄGNIJ`](/docs/commands/extrude): kontur na wysokość `12`, potem okrąg na wysokość `40`. Powstają dwie bryły.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Wyciągnij podstawę i tuleję" />
+
+### 3. Połącz je [#union]
+
+Polecenie [`SUMA`](/docs/commands/union): wskaż obie i naciśnij Enter. Są jedną bryłą.
+
+<Session name="exercises/bearing-block/union" caption="3. Połącz je" />
+
+### 4. Narysuj walce [#holes]
+
+Otwór łożyskowy i otwór na śrubę jako walce, poleceniem [`WALEC`](/docs/commands/cylinder): otwór łożyskowy w `50,30`, opcja `śreDnica` `20` i wysokość `40`; otwór na śrubę w `12,30`, średnica `10` i wysokość `12`. Potem polecenie [`KOPIUJ`](/docs/commands/copy) kopiuje otwór od `12,30` do punktu `76,0` dalej.
+
+<Session name="exercises/bearing-block/holes" caption="4. Narysuj walce" />
+
+### 5. Odejmij je [#subtract]
+
+Polecenie [`RÓŻNICA`](/docs/commands/subtract): wskaż korpus i naciśnij Enter, potem trzy walce i Enter. Otwory przechodzą na wylot.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Odejmij je" />
+
+### 6. Obróć widok [#view]
+
+Polecenie `-WIDOK` i opcja `SEIzo`, polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny`, potem polecenie [`ZOOM`](/docs/commands/zoom) z opcją `Zakres` i `0.8x`, aby go objąć.
+
+<Session name="exercises/bearing-block/view" caption="6. Obróć widok" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket): Początkujący · Mechanika · 2D
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket): Początkujący · Mechanika · 2D
+- [Ćwiczenie AutoCAD: schody w rzucie](/docs/exercises/stairs): Początkujący · Architektura · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

@@ -1,0 +1,65 @@
+---
+title: "Szerokość linii w AutoCADzie: polecenie SZERLIN (LWEIGHT)"
+metaTitle: "Szerokość linii w AutoCADzie: SZERLIN (LWEIGHT)"
+description: "Jak zmienić szerokość linii w AutoCADzie poleceniem SZERLIN (LWEIGHT, skrót SL): szerokość nowych obiektów w mm, 24 wartości standardowe, JakWarstwa i ekran."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie SZERLIN po angielsku?","answer":"LWEIGHT. W polskim AutoCADzie jego skrót to SL: wpisz go i naciśnij Enter lub spację. Angielskie LW i LINEWEIGHT w polskiej wersji nie działają; pełna nazwa SZERLIN działa, a _LWEIGHT – w AutoCADzie w każdym języku."},{"question":"Dlaczego w AutoCADzie nie widać szerokości linii?","answer":"W AutoCADzie szerokości linii są widoczne na ekranie tylko przy włączonym przycisku Szerokość linii na pasku stanu (LWDISPLAY 1); na początku jest wyłączony. Tutaj jest włączony od początku. Wszystkie cienkie szerokości rysują się najcieńszą linią ekranu, więc różnicę widać na grubszych; a obiekt o szerokości linii JakWarstwa bierze szerokość swojej warstwy."},{"question":"Jak zmienić szerokość linii istniejącego obiektu?","answer":"Wybierz obiekt i wybierz szerokość w wierszu Szerokość linii na palecie Właściwości albo, gdy obiekt ma JakWarstwa, zmień szerokość linii jego warstwy w Menedżerze właściwości warstw. Polecenie SZERLIN ustala tylko szerokość linii obiektów rysowanych po nim."},{"question":"Jakie szerokości linii ma AutoCAD?","answer":"24 stałe wartości w milimetrach: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 i 2,11. Wpisz inną, na przykład 0.45, a polecenie SZERLIN weźmie najbliższą, przy remisie cieńszą."}]
+---
+
+Polecenie SZERLIN (LWEIGHT) ustala szerokość linii, z jaką rysowane są nowe obiekty, w milimetrach. AutoCAD otwiera okno dialogowe Ustawienia szerokości linii; MellowCAD jeszcze go nie ma, więc polecenie SZERLIN uruchamia wersję dla wiersza polecenia, którą AutoCAD również ma, `-SZERLIN`. Podaje bieżącą szerokość linii, na początku `JAKWARSTWA`, i pyta o nową: jedną z 24 standardowych wartości AutoCADa, od 0,00 do 2,11 mm. Każda inna wartość zostaje zamieniona na najbliższą standardową, z informacją o tym, a ujemna jest odrzucana komunikatem `Niewłaściwa wartość szerokości linii.`. Enter zostawia bieżącą szerokość. Każda zmiana to krok, który cofa `C`.
+
+Szerokości linii są tutaj widoczne na ekranie od początku: AutoCAD pokazuje je dopiero po włączeniu przycisku Szerokość linii na pasku stanu (LWDISPLAY), ale MellowCAD nie ma układów ani drukowania, więc ekran to jedyne miejsce, w którym mogą się pokazać. Ten przycisk je wyłącza i włącza. Szeroka polilinia pokazuje w rzucie swoją szerokość, a nie szerokość linii.
+
+- **Polecenie:** `SZERLIN`
+- **Po angielsku:** `LWEIGHT`, wpisywane jako `_LWEIGHT` w każdym języku
+- **Aliasy:** `SL`
+- **Panel:** [Organizacja](/docs/commands#organize)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `SL` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="lweight" caption="Płytka obrysowana szerokością 0,70 mm, potem 0.1 wpisane dla otworu i zaokrąglone do 0,09 mm: obie szerokości tak, jak pokazuje je ekran." />
+
+## Opcje [#options]
+
+### `?` [#list]
+
+Wyświetla wartości, które przyjmuje: JakWarstwa i 24 standardowe szerokości linii, a potem znów pyta.
+
+### `jakWarstwa` (`W`) [#bylayer]
+
+Nowe obiekty biorą szerokość linii swojej warstwy, tak jak na początku.
+
+## Czego jeszcze nie robi [#missing]
+
+JakBlok i Domyślna (LWDEFAULT), szerokości linii w calach, okno dialogowe Ustawienia szerokości linii i pozycja Ustawienia szerokości linii… na liście rozwijanej.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne--it-spesslin--sli--spesslinea--lineweight---spesslin--de-lstärke--linienstärke--lst---lstärke--ru-веслин--вли---веслин--pl-szerlin--sl---szerlin)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie SZERLIN po angielsku?
+
+LWEIGHT. W polskim AutoCADzie jego skrót to `SL`: wpisz go i naciśnij Enter lub spację. Angielskie `LW` i `LINEWEIGHT` w polskiej wersji nie działają; pełna nazwa `SZERLIN` działa, a `_LWEIGHT` – w AutoCADzie w każdym języku.
+
+### Dlaczego w AutoCADzie nie widać szerokości linii?
+
+W AutoCADzie szerokości linii są widoczne na ekranie tylko przy włączonym przycisku Szerokość linii na pasku stanu (LWDISPLAY 1); na początku jest wyłączony. Tutaj jest włączony od początku. Wszystkie cienkie szerokości rysują się najcieńszą linią ekranu, więc różnicę widać na grubszych; a obiekt o szerokości linii JakWarstwa bierze szerokość swojej warstwy.
+
+### Jak zmienić szerokość linii istniejącego obiektu?
+
+Wybierz obiekt i wybierz szerokość w wierszu Szerokość linii na palecie Właściwości albo, gdy obiekt ma JakWarstwa, zmień szerokość linii jego warstwy w Menedżerze właściwości warstw. Polecenie SZERLIN ustala tylko szerokość linii obiektów rysowanych po nim.
+
+### Jakie szerokości linii ma AutoCAD?
+
+24 stałe wartości w milimetrach: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 i 2,11. Wpisz inną, na przykład `0.45`, a polecenie SZERLIN weźmie najbliższą, przy remisie cieńszą.
+
+## Powiązane polecenia [#related]
+
+- [Rodzaje linii w AutoCADzie: polecenie RODZLIN (LINETYPE)](/docs/commands/linetype)
+- [Warstwy w AutoCADzie: polecenie WARSTWA (LAYER)](/docs/commands/layer)
+- [Paleta Właściwości w AutoCADzie: polecenie WŁAŚCIWOŚCI (PROPERTIES)](/docs/commands/properties)
+- [Polilinia w AutoCADzie: polecenie PLINIA (PLINE)](/docs/commands/pline)

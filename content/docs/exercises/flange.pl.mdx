@@ -1,0 +1,58 @@
+---
+title: "Ćwiczenie AutoCAD: kołnierz"
+metaTitle: "Ćwiczenie AutoCAD: kołnierz z rowkiem wpustowym"
+description: "Narysuj kołnierz w AutoCADzie: otwór z wyciętym rowkiem wpustowym, osiem otworów w szyku biegunowym, osie i średnice. Krok po kroku, za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj ten kołnierz w milimetrach: średnica 140, otwór o średnicy 60 z rowkiem wpustowym szerokim na 16, którego dno leży 36 od środka, osiem otworów o średnicy 14 na okręgu podziałowym o średnicy 110 i osie. Rowek to prostokąt wycięty w otworze; otwory to jeden okrąg i szyk biegunowy.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`PROSTOK`](/docs/commands/rectang), [`UTNIJ`](/docs/commands/trim), [`SZYKBIEGUN`](/docs/commands/arraypolar), [`LINIA`](/docs/commands/line), [`WYMŚREDNICA`](/docs/commands/dimdiameter), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=flange), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/flange" caption="Kołnierz o średnicy 140 z rowkiem wpustowym, ośmioma otworami i średnicami." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj okręgi [#circles]
+
+Na warstwie Kontur dwa okręgi w `0,0`, każdy przez opcję `śreDnica`: `140` i `60`.
+
+<Session name="exercises/flange/circles" caption="1. Narysuj okręgi" />
+
+### 2. Wytnij rowek wpustowy [#keyway]
+
+Polecenie [`PROSTOK`](/docs/commands/rectang) od `-8,20` do punktu `16,16` dalej: przecina otwór. Polecenie [`UTNIJ`](/docs/commands/trim) ucina obiekt tam, gdzie przecinają go inne: wskaż łuk otworu między bokami prostokąta, a potem dolny bok prostokąta, wewnątrz otworu. Zostaje rowek wpustowy: jego dwa boki i dno.
+
+<Session name="exercises/flange/keyway" caption="2. Wytnij rowek wpustowy" />
+
+### 3. Utwórz szyk otworów [#holes]
+
+Otwór na okręgu podziałowym: okrąg w `55<22.5`, 55 od początku układu pod kątem 22,5°, o średnicy (`śreDnica`) `14`. Polecenie [`SZYKBIEGUN`](/docs/commands/arraypolar): wskaż go, naciśnij Enter i podaj środek, `0,0`; opcje `Skojarzony` i `Nie` zostawiają osiem osobnych okręgów, które można wskazać przy wymiarowaniu, a `Elementy`, `8`, rozkłada je na całym okręgu. Potem, na warstwie Linie osiowe, okrąg podziałowy w `0,0` o średnicy `110`.
+
+<Session name="exercises/flange/holes" caption="3. Utwórz szyk otworów" />
+
+### 4. Narysuj osie [#centreLines]
+
+Nadal na warstwie Linie osiowe dwie linie poleceniem [`LINIA`](/docs/commands/line) przez środek, długie na 156: od `-78,0` o `156,0` w poziomie; od `0,-78` o `0,156` w górę.
+
+<Session name="exercises/flange/centreLines" caption="4. Narysuj osie" />
+
+### 5. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary polecenie [`WYMŚREDNICA`](/docs/commands/dimdiameter) na otworze, jednym z małych otworów, okręgu podziałowym i konturze, każdy wskazany tam, gdzie nie przecina go jeszcze żaden wymiar, a potem polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) w poprzek dna rowka: 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table): Średniozaawansowany · Architektura · 2D
+- [Ćwiczenie AutoCAD: działka](/docs/exercises/plot-of-land): Średniozaawansowany · Budownictwo · 2D
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft): Średniozaawansowany · Mechanika · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

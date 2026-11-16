@@ -1,0 +1,78 @@
+---
+title: "Polecenie ZAOKRĄGL (FILLET) w AutoCADzie"
+description: "Jak zaokrąglić narożnik w AutoCADzie poleceniem ZAOKRĄGL (FILLET, skrót ZA): promień, dwie linie, narożniki polilinii, promień 0 i Wiele. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ZAOKRĄGL po angielsku i jaki ma skrót?","answer":"FILLET. W polskim AutoCADzie jego skrót to ZA: wpisz go i naciśnij Enter lub spację. Angielskie F w polskiej wersji nie działa; _FILLET działa w AutoCADzie w każdym języku."},{"question":"Jak zaokrąglić dwie linie w AutoCADzie?","answer":"Wybierz pRomień, wpisz go, a potem wskaż każdą linię po stronie, którą chcesz zachować. Linie, które się nie stykają, są wydłużane do łuku, a linie, które się przecinają, są do niego ucinane. Dwie równoległe linie łączy półokrąg, niezależnie od promienia. Linia i segment polilinii są łączone w jedną polilinię."},{"question":"Co daje promień zaokrąglenia 0?","answer":"Tworzy ostry narożnik: każda linia jest ucinana lub wydłużana, aż się spotkają, i nie powstaje żaden łuk. Aby zrobić jeden ostry narożnik bez zmiany promienia, przytrzymaj klawisz Shift przy wskazywaniu drugiego obiektu."},{"question":"Dlaczego zaokrąglanie nie działa?","answer":"Polecenie podaje przyczynę w wierszu polecenia. „Zbyt duża wartość dla Promień zaokrąglenia.” oznacza, że łuk nie mieści się między liniami; „Segmenty polilinii muszą się stykać lub być oddzielone jednym segmentem”, że dwa segmenty jednej polilinii są od siebie za daleko; tekst, bloki, wymiary i kreskowania są odrzucane, o obiektach na różnych wysokościach polecenie mówi, że nie są współpłaszczyznowe, a obiekt na zablokowanej warstwie nie jest przyjmowany."},{"question":"Jak zaokrąglić krawędzie bryły 3D?","answer":"Uruchom polecenie ZAOKRĄGLKRAW: wybierz pRomień, jeśli promień nie jest tym, który podaje, wskaż krawędzie bryły, a potem naciśnij Enter i jeszcze raz Enter, aby przyjąć zaokrąglenie. Działa na bryłach 3D, które są tutaj wciąż częściowe."}]
+---
+
+Polecenie ZAOKRĄGL (FILLET) zaokrągla narożnik między dwoma obiektami łukiem o podanym promieniu, ucinając lub wydłużając każdy obiekt do niego. Pierwszy wiersz podaje tryb i bieżący promień; potem wskazujesz pierwszy i drugi obiekt, każdy po stronie, którą chcesz zachować, i polecenie się kończy. Przyjmuje linie, łuki, okręgi, elipsy, splajny i segmenty polilinii 2D. Dwie linie nie muszą się stykać: są wydłużane do łuku, jak w AutoCADzie. Przy promieniu 0, albo z wciśniętym klawiszem Shift przy drugim wskazaniu, tworzy zamiast tego ostry narożnik.
+
+- **Polecenie:** `ZAOKRĄGL`
+- **Po angielsku:** `FILLET`, wpisywane jako `_FILLET` w każdym języku
+- **Aliasy:** `ZA`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `ZA` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="fillet" caption="Cztery linie, potem Promień 15 i Wiele: dwa narożniki zaokrąglone, dwa pozostawione ostre." />
+
+## Opcje [#options]
+
+### `Cofaj` (`C`) [#undo]
+
+Cofa ostatnie zaokrąglenie, opcję `Polilinia` lub promień podany w tym poleceniu ZAOKRĄGL, po jednym. Gdy nie ma już czego cofnąć, mówi `Polecenie zostało całkowicie cofnięte.`
+
+### `Polilinia` (`P`) [#polyline]
+
+Pyta o polilinię 2D i zaokrągla każdy narożnik, w którym stykają się dwa jej segmenty, w jednym kroku, a potem mówi, ile zaokrągliła, a ile pominęła, bo były równoległe albo za krótkie dla promienia. Prostokąt narysowany poleceniem [`PROSTOK`](/docs/commands/rectang) jest taką polilinią.
+
+### `pRomień` (`R`) [#radius]
+
+Pyta o promień, proponowany też przy drugim monicie. Jest to promień rysunku (FILLETRAD): następne polecenie ZAOKRĄGL zaczyna od niego i jest on zapisywany razem z rysunkiem. 0 tworzy ostre narożniki; promień ujemny jest odrzucany.
+
+### `Wiele` (`W`) [#multiple]
+
+Po każdym zaokrągleniu znowu pyta o pierwszy obiekt, więc zaokrąglasz narożnik za narożnikiem bez ponownego uruchamiania, aż do Enter.
+
+## Czego jeszcze nie robi [#missing]
+
+`Utnij`: obiekty są zawsze ucinane lub wydłużane do łuku, jak przy TRIMMODE 1, domyślnym ustawieniu AutoCADa; opcja Bez ucinania nie jest dostępna. Łuk nie przejmuje skali rodzaju linii drugiego obiektu, bo tutaj żaden obiekt nie ma własnej. Przed kliknięciem etykieta narzędzia pokazuje monit, a nie powód, dla którego pary nie da się zaokrąglić, i żadna kłódka nie oznacza obiektu na zablokowanej warstwie. Kilka rzadkich par elips lub splajnów kończy się inaczej: zamknięty splajn z linią przy promieniu 0, łuk, który tylko dotyka odsunięcia elipsy, i taka para w pochylonej płaszczyźnie.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#fillet--f--es-empalme--mp--pt-br-concord--cnc--fr-raccord--rd--it-raccordo--ra--de-abrunden--ar--ru-сопряжение--соп--pl-zaokrągl--za)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ZAOKRĄGL po angielsku i jaki ma skrót?
+
+FILLET. W polskim AutoCADzie jego skrót to `ZA`: wpisz go i naciśnij Enter lub spację. Angielskie `F` w polskiej wersji nie działa; `_FILLET` działa w AutoCADzie w każdym języku.
+
+### Jak zaokrąglić dwie linie w AutoCADzie?
+
+Wybierz `pRomień`, wpisz go, a potem wskaż każdą linię po stronie, którą chcesz zachować. Linie, które się nie stykają, są wydłużane do łuku, a linie, które się przecinają, są do niego ucinane. Dwie równoległe linie łączy półokrąg, niezależnie od promienia. Linia i segment polilinii są łączone w jedną polilinię.
+
+### Co daje promień zaokrąglenia 0?
+
+Tworzy ostry narożnik: każda linia jest ucinana lub wydłużana, aż się spotkają, i nie powstaje żaden łuk. Aby zrobić jeden ostry narożnik bez zmiany promienia, przytrzymaj klawisz Shift przy wskazywaniu drugiego obiektu.
+
+### Dlaczego zaokrąglanie nie działa?
+
+Polecenie podaje przyczynę w wierszu polecenia. `Zbyt duża wartość dla Promień zaokrąglenia.` oznacza, że łuk nie mieści się między liniami; `Segmenty polilinii muszą się stykać lub być oddzielone jednym segmentem`, że dwa segmenty jednej polilinii są od siebie za daleko; tekst, bloki, wymiary i kreskowania są odrzucane, o obiektach na różnych wysokościach polecenie mówi, że nie są współpłaszczyznowe, a obiekt na zablokowanej warstwie nie jest przyjmowany.
+
+### Jak zaokrąglić krawędzie bryły 3D?
+
+Uruchom polecenie [`ZAOKRĄGLKRAW`](/docs/commands/filletedge): wybierz `pRomień`, jeśli promień nie jest tym, który podaje, wskaż krawędzie bryły, a potem naciśnij Enter i jeszcze raz Enter, aby przyjąć zaokrąglenie. Działa na bryłach 3D, które są tutaj wciąż częściowe.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie FAZUJ (CHAMFER) w AutoCADzie](/docs/commands/chamfer)
+- [Polecenie ZAOKRĄGLKRAW (FILLETEDGE) w AutoCADzie](/docs/commands/filletedge)
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie ODSUŃ (OFFSET) w AutoCADzie](/docs/commands/offset)

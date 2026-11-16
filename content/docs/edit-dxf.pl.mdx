@@ -1,0 +1,85 @@
+---
+title: Edytor DXF online
+metaTitle: "Edytor DXF online: edycja i zapis plików DXF"
+description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD 2000 do 2018. Bez instalacji, nic nie jest wysyłane."
+type: howTo
+sourceHash: "5eb0b5897414"
+faq:
+  - question: "Jak edytować plik DXF online?"
+    answer: "Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisze go ponownie jako plik DXF."
+  - question: "Czy to jest darmowe? Czy potrzebuję konta?"
+    answer: "Jest darmowe, bez konta i bez instalacji. Plik jest odczytywany na twoim komputerze i nigdy nie jest wysyłany."
+  - question: "W jakich wersjach DXF mogę zapisać plik?"
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000, w formacie tekstowym (ASCII) lub binarnym. Jeszcze nie R12 i nie DWG."
+  - question: "Czy AutoCAD otworzy zapisany przeze mnie DXF?"
+    answer: "Tak. Każdy rodzaj obiektu, który zapisuje MellowCAD, w każdej wersji, tekstowo i binarnie, został otwarty w AutoCADzie 2027, a jego polecenie TEST (AUDIT) nie znalazło błędów."
+  - question: "Czy coś ginie przy zapisie?"
+    answer: "To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tabele i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik."
+  - question: "Czy mogę utworzyć nowy plik DXF od zera?"
+    answer: "Tak. Otwórz edytor, narysuj i zapisz poleceniem NZAPISZ, wybierając typ pliku DXF."
+---
+
+<OpenDxf />
+
+MellowCAD edytuje pliki DXF w przeglądarce, poleceniami, monitami i opcjami AutoCADa, wpisywanymi w twoim języku, i zapisuje je ponownie jako DXF dla AutoCADa i każdego programu, który je odczytuje. Plik jest odczytywany na twoim komputerze: nic nie jest wysyłane, niczego nie trzeba instalować ani zakładać konta.
+
+## Edytuj go [#edit]
+
+Wybierz lub upuść DXF powyżej, a otworzy się w edytorze, albo otwórz go tam poleceniem <Command id="OPEN" /> (`Ctrl+O`) lub <Command id="DXFIN" />. Potem jest rysunkiem jak każdy inny:
+
+- **Zmieniaj go** poleceniami <Command id="MOVE" />, <Command id="COPY" />, <Command id="ROTATE" />, <Command id="SCALE" />, <Command id="STRETCH" />, <Command id="TRIM" />, <Command id="EXTEND" />, <Command id="OFFSET" /> lub <Command id="ERASE" /> i rysuj na nim.
+- **Popraw jego tekst i warstwy** poleceniami <Command id="TEXTEDIT" />, <Command id="LAYER" />, <Command id="PROPERTIES" /> i <Command id="MATCHPROP" />.
+- **Mierz go** poleceniami <Command id="DIST" /> i <Command id="AREA" />.
+
+[Co się otwiera, a co jest pomijane](/docs/open-dxf#opens), opisuje strona o otwieraniu pliku DXF. W trakcie pracy rysunek jest przechowywany w tej przeglądarce.
+
+## Zapisz go jako DXF [#save]
+
+Polecenia <Command id="SAVEAS" /> (`Ctrl+Shift+S`), <Command id="SAVE" /> i <Command id="DXFOUT" /> otwierają okno „Zapisz rysunek jako”, jak w AutoCADzie: nazwa pliku i typ pliku spośród DXF AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000 (<Command id="DXFOUT" /> otwiera się na DXF AutoCAD 2018). „Narzędzia ▸ Opcje...” otwiera kartę „Opcje DXF” okna „Opcje Zapisz jako”:
+
+- **Format**: ASCII, tekst, który odczytuje większość programów, lub binarny.
+- **Wybierz obiekty**: po zamknięciu okna polecenie prosi o wybranie obiektów i plik zawiera tylko je.
+- **Liczba miejsc dziesiętnych (od 0 do 16)**: poniżej 16 wiersz polecenia wyświetla ostrzeżenie, jak w AutoCADzie, a współrzędne, kąty i wysokości tekstu są zaokrąglane do tej liczby miejsc.
+
+Plik jest pobierany, jak wszystko, co się tu zapisuje ([zapisywanie nie działa całkiem jak w AutoCADzie](/docs/differences#saving)). `Ctrl+S` zapisuje natomiast rysunek we własnym, wersjonowanym formacie MellowCAD: DXF zachowasz poleceniem <Command id="SAVEAS" />.
+
+## Co zawiera DXF [#holds]
+
+Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, łuki, okręgi, elipsy, polilinie z ich szerokościami i wygładzeniem, polilinie 3D, splajny, tekst jednowierszowy i wielowierszowy, bloki z atrybutami, wymiary, kreskowania z ich wzorem, punkty, bryły 2D, a szyki jako blok ich elementów. Razem z nimi warstwy (włączone, wyłączone, zablokowane) z ich kolorem, rodzajem linii i szerokością linii, rodzaje linii rysunku, także złożone, i skala rodzaju linii każdego obiektu, style tekstu i wymiarowania, bloki oraz jednostki i ustawienia rysunku. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej Windows, której używa AutoCAD, z sekwencjami sterującymi dla pozostałych, a od 2007 w UTF-8.
+
+## Czego nie da się odzyskać [#lost]
+
+- **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie odniesienia, tabele, maskowania i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
+- **Bryły 3D i regiony nie są zapisywane**: wiersz polecenia podaje, ile ich pominięto.
+- Własne nadpisania stylu wymiaru i parametry szyku nie są zapisywane: AutoCAD otwiera wymiar z ustawieniami jego stylu, a szyk jako blok jego elementów.
+- Nie ma miniatury podglądu, nie ma jeszcze typu DXF AutoCAD R12/LT2 i nie ma DWG.
+
+## Utwórz DXF od zera [#new]
+
+Aby zrobić DXF bez pliku, od którego można zacząć, [otwórz edytor](/pl/draw), narysuj go i zapisz poleceniem <Command id="SAVEAS" /> jako typ pliku DXF. [Pierwsze kroki](/docs/getting-started) pomogą ci zacząć.
+
+## Pytania [#questions]
+
+### Jak edytować plik DXF online? [#how]
+
+Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie <Command id="SAVEAS" /> (`Ctrl+Shift+S`) lub <Command id="DXFOUT" /> zapisze go ponownie jako plik DXF.
+
+### Czy to jest darmowe? Czy potrzebuję konta? [#free]
+
+Jest darmowe, bez konta i bez instalacji. Plik jest odczytywany na twoim komputerze i nigdy nie jest wysyłany.
+
+### W jakich wersjach DXF mogę zapisać plik? [#versions]
+
+AutoCAD 2018, 2013, 2010, 2007, 2004 i 2000, w formacie tekstowym (ASCII) lub binarnym. Jeszcze nie R12 i nie DWG.
+
+### Czy AutoCAD otworzy zapisany przeze mnie DXF? [#autocad]
+
+Tak. Każdy rodzaj obiektu, który zapisuje MellowCAD, w każdej wersji, tekstowo i binarnie, został otwarty w AutoCADzie 2027, a jego polecenie TEST (AUDIT) nie znalazło błędów.
+
+### Czy coś ginie przy zapisie? [#lost-on-save]
+
+To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tabele i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik.
+
+### Czy mogę utworzyć nowy plik DXF od zera? [#from-scratch]
+
+Tak. [Otwórz edytor](/pl/draw), narysuj i zapisz poleceniem <Command id="SAVEAS" />, wybierając typ pliku DXF.

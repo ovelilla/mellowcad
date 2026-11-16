@@ -1,0 +1,48 @@
+---
+title: "Ćwiczenie AutoCAD 3D: koło pasowe"
+metaTitle: "Ćwiczenie AutoCAD 3D: obrót koła pasowego"
+description: "Zamodeluj koło pasowe w AutoCADzie 3D: półprzekrój jako zamknięta polilinia, obrócony wokół osi Y w bryłę. Krok po kroku, ćwiczenie 3D za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zamodeluj to koło pasowe, obracając jego półprzekrój wokół osi, w milimetrach: otwór o średnicy 20, piasta długa na 30 i o średnicy 40, tarcza grubości 10 i wieniec szeroki na 24, od średnicy 90 do 110, wyśrodkowany na piaście. Przekrój rysuje się jako odległości od osi, która biegnie wzdłuż osi Y, więc każdą średnicę rysuje się jako jej połowę.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · Bryła 3D
+- **Polecenia:** [`PLINIA`](/docs/commands/pline), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`PRZEKRĘĆ`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=pulley), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/pulley" caption="Półprzekrój koła pasowego obok jego osi, z odległościami od osi zwymiarowanymi." />
+
+<Session name="exercises/pulley/model" caption="Koło pasowe jako bryła, widziane z południowego wschodu w stylu wizualnym Koncepcyjny." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj półprzekrój [#profile]
+
+Na warstwie Kontur jedna zamknięta polilinia poleceniem [`PLINIA`](/docs/commands/pline) od `10,0`, każdy następny punkt jako krok od poprzedniego: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` i `-10,0`, potem opcja `Zamknij`.
+
+<Session name="exercises/pulley/profile" caption="1. Narysuj półprzekrój" />
+
+### 2. Obróć widok [#view]
+
+Polecenie `-WIDOK` i opcja `SEIzo` pokazują przekrój z południowego wschodu i z góry; polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Koncepcyjny` cieniują ściany, co najlepiej pokazuje część toczoną.
+
+<Session name="exercises/pulley/view" caption="2. Obróć widok" />
+
+### 3. Obróć przekrój [#revolve]
+
+Polecenie [`PRZEKRĘĆ`](/docs/commands/revolve): wskaż przekrój i naciśnij Enter, potem opcja `Y`: oś Y jest osią koła. Enter przyjmuje domyślny kąt, pełny obrót. Polecenie [`ZOOM`](/docs/commands/zoom) z opcją `Zakres` dopasowuje je do ekranu, a skala `0.8x` zostawia wokół niego miejsce.
+
+<Session name="exercises/pulley/revolve" caption="3. Obróć przekrój" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link): Zaawansowany · Mechanika · 2D
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block): Zaawansowany · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket): Początkujący · Mechanika · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

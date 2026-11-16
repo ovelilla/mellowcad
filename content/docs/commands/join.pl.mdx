@@ -1,0 +1,57 @@
+---
+title: "Polecenie POŁĄCZ (JOIN) w AutoCADzie"
+description: "Jak połączyć linie w polilinię w AutoCADzie poleceniem POŁĄCZ (JOIN): linie na jednej prostej w jedną, łuki w okrąg, krzywe w splajn. Wypróbuj za darmo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie POŁĄCZ po angielsku i jaki ma skrót?","answer":"JOIN. W polskim AutoCADzie polecenie POŁĄCZ nie ma skrótu: wpisz pełną nazwę i naciśnij Enter lub spację. Angielskie J w polskiej wersji nie działa; _JOIN działa w AutoCADzie w każdym języku."},{"question":"Jak połączyć linie w polilinię w AutoCADzie?","answer":"Uruchom polecenie POŁĄCZ, wybierz linie, choćby oknem, i naciśnij Enter: te, które stykają się końcami, stają się jedną polilinią."},{"question":"Dlaczego polecenie POŁĄCZ nie działa?","answer":"Obiekty muszą stykać się dokładnie, końcami i w jednej płaszczyźnie: przerwa lub przecięcie je wyklucza, a polecenie POŁĄCZ mówi, ile odrzuciło. Ponad przerwą łączone są tylko linie na jednej prostej, łuki jednego okręgu i łuki jednej elipsy. Zamknięta polilinia niczego nie łączy."},{"question":"Jak połączyć łuki w okrąg?","answer":"Wybierz łuki jednego okręgu, które pokrywają go w całości, i naciśnij Enter: polecenie POŁĄCZ pyta, czy zamienić je w okrąg, a Tak, domyślna odpowiedź, to robi."}]
+---
+
+Polecenie POŁĄCZ (JOIN) robi jeden obiekt z kilku. Wybierz je, ile chcesz, i naciśnij Enter: linie i łuki stykające się końcami stają się jedną polilinią, dołączoną do polilinii, jeśli jest wśród nich; linie na jednej prostej stają się jedną linią, ponad każdą przerwą; łuki jednego okręgu stają się jednym łukiem, a gdy się zamykają, polecenie POŁĄCZ pyta, czy zamienić go w okrąg, domyślnie `Tak`, czy zostawić łuk, `Nie`. Łuki eliptyczne jednej elipsy stają się jednym łukiem, a splajn lub łuk eliptyczny wśród stykających się krzywych daje splajn. Polecenie podaje potem, co utworzyło i ile obiektów pominęło. Polilinia łączy się tylko końcami, a zamknięta nie łączy niczego. Połączenie to jeden krok cofania.
+
+- **Polecenie:** `POŁĄCZ`
+- **Po angielsku:** `JOIN`, wpisywane jako `_JOIN` w każdym języku
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `POŁĄCZ` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="join" caption="Trzy linie połączone w jedną polilinię, za którą jedno wskazanie polecenia ODSUŃ podąża w całości." />
+
+## Opcje [#options]
+
+### `Zamknij` (`Z`) [#close]
+
+Gdy źródłem jest łuk eliptyczny, wskazany sam: uzupełnia go do pełnej elipsy.
+
+## Czego jeszcze nie robi [#missing]
+
+Osobny krok AutoCADa, gdy źródłem jest pojedyncza linia, łuk lub polilinia wskazana sama (`Wybierz linie do dołączenia do źródła:`): tutaj niczego nie łączy. Obiekt zamknięty wskazany sam, o który AutoCAD pyta ponownie. Helisy, obiekty w pochylonej lub odwróconej płaszczyźnie oraz linie, które nie leżą w jednej płaszczyźnie, a które AutoCAD łączy w polilinię 3D lub spłaszcza do polilinii.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#join--j--es-unir--u--pt-br-unir--une--fr-joindre--j--it-unisci--u--de-verbinden--vb--ru-соединить--со--pl-połącz)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie POŁĄCZ po angielsku i jaki ma skrót?
+
+JOIN. W polskim AutoCADzie polecenie POŁĄCZ nie ma skrótu: wpisz pełną nazwę i naciśnij Enter lub spację. Angielskie `J` w polskiej wersji nie działa; `_JOIN` działa w AutoCADzie w każdym języku.
+
+### Jak połączyć linie w polilinię w AutoCADzie?
+
+Uruchom polecenie POŁĄCZ, wybierz linie, choćby oknem, i naciśnij Enter: te, które stykają się końcami, stają się jedną polilinią.
+
+### Dlaczego polecenie POŁĄCZ nie działa?
+
+Obiekty muszą stykać się dokładnie, końcami i w jednej płaszczyźnie: przerwa lub przecięcie je wyklucza, a polecenie POŁĄCZ mówi, ile odrzuciło. Ponad przerwą łączone są tylko linie na jednej prostej, łuki jednego okręgu i łuki jednej elipsy. Zamknięta polilinia niczego nie łączy.
+
+### Jak połączyć łuki w okrąg?
+
+Wybierz łuki jednego okręgu, które pokrywają go w całości, i naciśnij Enter: polecenie POŁĄCZ pyta, czy zamienić je w okrąg, a `Tak`, domyślna odpowiedź, to robi.
+
+## Powiązane polecenia [#related]
+
+- [Edycja polilinii w AutoCADzie: polecenie EDPLIN (PEDIT)](/docs/commands/pedit)
+- [Polecenie ROZBIJ (EXPLODE) w AutoCADzie](/docs/commands/explode)
+- [Polecenie PRZERWIJ (BREAK) w AutoCADzie](/docs/commands/break)
+- [Polilinia w AutoCADzie: polecenie PLINIA (PLINE)](/docs/commands/pline)

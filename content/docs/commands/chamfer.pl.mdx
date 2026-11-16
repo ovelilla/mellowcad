@@ -1,0 +1,79 @@
+---
+title: "Polecenie FAZUJ (CHAMFER) w AutoCADzie"
+metaTitle: "Fazowanie w AutoCADzie: FAZUJ (CHAMFER)"
+description: "Jak zrobić fazę w AutoCADzie poleceniem FAZUJ (CHAMFER, skrót FA): dwie długości, dwie linie lub narożniki polilinii, Wiele, Shift. Wypróbuj za darmo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie FAZUJ po angielsku i jaki ma skrót?","answer":"Po angielsku CHAMFER, w polskim AutoCADzie FAZUJ: wpisz FA, potem naciśnij Enter albo spację. Angielskie CHA w polskim AutoCADzie nie działa; _CHAMFER działa w AutoCADzie w każdym języku."},{"question":"Jak zrobić fazę 45 stopni w AutoCADzie?","answer":"Wybierz Fazy, wpisz długość i naciśnij Enter przy drugiej: na narożniku prostym dwie równe długości dają fazę pod kątem 45 stopni."},{"question":"Czym się różni FAZUJ od ZAOKRĄGL?","answer":"FAZUJ łączy dwie linie prostą fazą, a ZAOKRĄGL łukiem stycznym do obu. Oba polecenia ucinają lub wydłużają linie do niej i oba tworzą ostry narożnik przy 0 albo z przytrzymanym Shift przy drugiej linii."},{"question":"Dlaczego fazowanie nie działa w AutoCADzie?","answer":"Polecenie podaje przyczynę: „Zbyt duża wartość dla Odległość fazowania.”, gdy długość wychodzi poza koniec linii, „Linie są równoległe” dla linii równoległych i „Fazowanie wymaga wskazania 2 linii (nie mogą to być segmenty łukowe)” dla łuku lub okręgu. Gdy obie długości są równe 0, tworzy narożnik, a nie fazę."},{"question":"Jak sfazować wszystkie narożniki prostokąta?","answer":"Prostokąt to polilinia: wybierz Polilinia i wskaż go, a każdy narożnik zostanie sfazowany z bieżącymi długościami."}]
+---
+
+Polecenie FAZUJ (CHAMFER) ścina narożnik między dwiema liniami prostą fazą. Wskaż pierwszą linię, potem drugą: każda zostaje ucięta lub wydłużona do fazy, pierwsza o pierwszą długość, a druga o drugą, a faza je łączy. Działa na dwóch liniach, na dwóch prostych segmentach polilinii albo na linii i polilinii, które łączy w jedną polilinię. Jak w AutoCADzie, pierwszy wiersz podaje bieżące długości faz, przechowywane w rysunku; obie równe 0, wartość domyślna, dają ostry narożnik, w którym linie się spotykają. Gdy wskazujesz drugą linię, narożnik, który by powstał, jest pokazany na liniach.
+
+- **Polecenie:** `FAZUJ`
+- **Po angielsku:** `CHAMFER`, wpisywane jako `_CHAMFER` w każdym języku
+- **Aliasy:** `FA`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `FA` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="chamfer" caption="Cztery linie, potem Fazy 10 dla obu i Wiele: dwa narożniki ścięte, dwa pozostawione ostre." />
+
+## Opcje [#options]
+
+### `Cofaj` (`C`) [#undo]
+
+Cofa ostatnią fazę tego wywołania, a wraz z nią zmianę długości.
+
+### `Polilinia` (`P`) [#polyline]
+
+Pyta o polilinię 2D i fazuje każdy jej narożnik, a potem podaje, ile linii sfazowano i dlaczego któreś nie zostały sfazowane.
+
+### `Fazy` (`F`) [#distance]
+
+Pyta o pierwszą i drugą długość fazy. Druga proponuje pierwszą, więc Enter w tym miejscu daje równą fazę, pod kątem 45 stopni na narożniku prostym.
+
+### `Wiele` (`W`) [#multiple]
+
+Po każdej fazie znów pyta o pierwszą linię, aż do Enter lub Esc.
+
+## Czego jeszcze nie robi [#missing]
+
+Opcje kąT (faza ustalana jedną długością i kątem), Metoda i Utnij: FAZUJ zawsze działa dwiema długościami i zawsze ucina linie. W AutoCADzie faza przejmuje skalę rodzaju linii drugiej linii, tu nie.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm--de-fase--fa--ru-фаска--фас--pl-fazuj--fa)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie FAZUJ po angielsku i jaki ma skrót?
+
+Po angielsku CHAMFER, w polskim AutoCADzie FAZUJ: wpisz `FA`, potem naciśnij Enter albo spację. Angielskie `CHA` w polskim AutoCADzie nie działa; `_CHAMFER` działa w AutoCADzie w każdym języku.
+
+### Jak zrobić fazę 45 stopni w AutoCADzie?
+
+Wybierz `Fazy`, wpisz długość i naciśnij Enter przy drugiej: na narożniku prostym dwie równe długości dają fazę pod kątem 45 stopni.
+
+### Czym się różni FAZUJ od ZAOKRĄGL?
+
+FAZUJ łączy dwie linie prostą fazą, a [`ZAOKRĄGL`](/docs/commands/fillet) łukiem stycznym do obu. Oba polecenia ucinają lub wydłużają linie do niej i oba tworzą ostry narożnik przy 0 albo z przytrzymanym Shift przy drugiej linii.
+
+### Dlaczego fazowanie nie działa w AutoCADzie?
+
+Polecenie podaje przyczynę: `Zbyt duża wartość dla Odległość fazowania.`, gdy długość wychodzi poza koniec linii, `Linie są równoległe` dla linii równoległych i `Fazowanie wymaga wskazania 2 linii (nie mogą to być segmenty łukowe)` dla łuku lub okręgu. Gdy obie długości są równe 0, tworzy narożnik, a nie fazę.
+
+### Jak sfazować wszystkie narożniki prostokąta?
+
+Prostokąt to polilinia: wybierz `Polilinia` i wskaż go, a każdy narożnik zostanie sfazowany z bieżącymi długościami.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie ZAOKRĄGL (FILLET) w AutoCADzie](/docs/commands/fillet)
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie WYDŁUŻ (EXTEND) w AutoCADzie](/docs/commands/extend)
+- [Fazowanie krawędzi bryły w AutoCADzie: polecenie FAZOWKRAW (CHAMFEREDGE)](/docs/commands/chamferedge)

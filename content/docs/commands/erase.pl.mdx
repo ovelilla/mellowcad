@@ -1,0 +1,52 @@
+---
+title: "Polecenie WYMAŻ (ERASE) w AutoCADzie"
+description: "Jak usunąć obiekty w AutoCADzie poleceniem WYMAŻ (ERASE, skrót WY): wybór, Enter i ich nie ma; klawisz Delete, WSZYSTKO i jak odzyskać wymazane obiekty."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie WYMAŻ po angielsku i jaki ma skrót?","answer":"ERASE. W polskim AutoCADzie jego skróty to WY i DELETE: wpisz jeden z nich i naciśnij Enter lub spację. Angielskie E w polskiej wersji uruchamia polecenie ELIPSA; _ERASE działa w AutoCADzie w każdym języku. Możesz też wybrać obiekty przy monicie Polecenie: i nacisnąć klawisz Delete."},{"question":"Jak wymazać wszystko w rysunku?","answer":"Uruchom polecenie WYMAŻ i wpisz WSZYSTKO przy monicie „Wybierz obiekty:”, a potem naciśnij Enter. Obiekty na zablokowanej warstwie są pomijane, a wybór mówi, ile ich było."},{"question":"Jak odzyskać to, co wymazałem?","answer":"Wpisz polecenie C lub naciśnij Ctrl+Z od razu: wymazanie to jeden krok cofania. Polecenia ODDAJ, które przywraca ostatnio wymazany zbiór nawet po innych poleceniach, jeszcze nie ma."},{"question":"Czym się różni polecenie WYMAŻ od UTNIJ?","answer":"Polecenie WYMAŻ usuwa całe obiekty. Polecenie UTNIJ usuwa tylko tę część obiektu, która wychodzi poza krawędzie, na które trafia, a resztę zachowuje."}]
+---
+
+Polecenie WYMAŻ (ERASE) usuwa z rysunku wybrane obiekty. Wybierz je przy monicie `Wybierz obiekty:`, wskazując je lub dowolnym trybem wyboru AutoCADa, w tym oknem lub oknem przecinającym, a potem naciśnij Enter lub spację: znikają, a polecenie nic więcej nie mówi. Esc kończy je bez wymazania czegokolwiek. Jak w AutoCADzie, obiekty wybrane przed poleceniem są wymazywane od razu, a klawisz Delete przy wybranych obiektach uruchamia na nich polecenie WYMAŻ. Podczas wybierania obiekt pod kursorem i obiekty już wybrane są rysowane wyblakłe, tak jak AutoCAD pokazuje podgląd tego, co wymaże. Całe wymazanie to jeden krok cofania.
+
+- **Polecenie:** `WYMAŻ`
+- **Po angielsku:** `ERASE`, wpisywane jako `_ERASE` w każdym języku
+- **Aliasy:** `WY`, `DELETE`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WY` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="erase" caption="Prostokąt i jego dwie przekątne: wskazana jedna przekątna, potem Enter i zostaje wymazana." />
+
+## Czego jeszcze nie robi [#missing]
+
+Polecenie ODDAJ, które w AutoCADzie przywraca ostatni zbiór wymazany poleceniem WYMAŻ, nawet po innych poleceniach. Tutaj polecenie `C` lub Ctrl+Z cofa wymazanie razem z tym, co nastąpiło po nim.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#erase--e--delete--es-borra--b--delete--pt-br-apagar--apg--delete--fr-effacer--ef--delete--it-cancella--ca--delete--de-löschen--lö--delete--ru-стереть--с--delete--pl-wymaż--wy--delete)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie WYMAŻ po angielsku i jaki ma skrót?
+
+ERASE. W polskim AutoCADzie jego skróty to `WY` i `DELETE`: wpisz jeden z nich i naciśnij Enter lub spację. Angielskie `E` w polskiej wersji uruchamia polecenie ELIPSA; `_ERASE` działa w AutoCADzie w każdym języku. Możesz też wybrać obiekty przy monicie `Polecenie:` i nacisnąć klawisz Delete.
+
+### Jak wymazać wszystko w rysunku?
+
+Uruchom polecenie WYMAŻ i wpisz `WSZYSTKO` przy monicie `Wybierz obiekty:`, a potem naciśnij Enter. Obiekty na zablokowanej warstwie są pomijane, a wybór mówi, ile ich było.
+
+### Jak odzyskać to, co wymazałem?
+
+Wpisz polecenie `C` lub naciśnij Ctrl+Z od razu: wymazanie to jeden krok cofania. Polecenia ODDAJ, które przywraca ostatnio wymazany zbiór nawet po innych poleceniach, jeszcze nie ma.
+
+### Czym się różni polecenie WYMAŻ od UTNIJ?
+
+Polecenie WYMAŻ usuwa całe obiekty. Polecenie [`UTNIJ`](/docs/commands/trim) usuwa tylko tę część obiektu, która wychodzi poza krawędzie, na które trafia, a resztę zachowuje.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie PRZERWIJ (BREAK) w AutoCADzie](/docs/commands/break)
+- [Polecenie ROZBIJ (EXPLODE) w AutoCADzie](/docs/commands/explode)
+- [Polecenie COFAJ (UNDO) w AutoCADzie](/docs/commands/undo)

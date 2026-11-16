@@ -1,0 +1,88 @@
+---
+title: "Polecenie STOŻEK (CONE) w AutoCADzie"
+metaTitle: "Stożek i stożek ścięty w AutoCADzie: STOŻEK"
+description: "Jak narysować stożek 3D lub stożek ścięty w AutoCADzie poleceniem STOŻEK (CONE): podstawa, promień, wysokość, górna podstawa, Eliptyczny i punkt końcowy osi."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak narysować stożek w AutoCADzie?","answer":"Uruchom STOŻEK, podaj środek podstawy, promień i wysokość: 0,0, 20 i 40 rysują stożek z sesji. Obróć widok, aby go zobaczyć, narożnikiem kostki ViewCube albo poleceniem -WIDOK i opcją SEIzo."},{"question":"Jak narysować stożek ścięty w AutoCADzie?","answer":"Przy wysokości wybierz Promień, wpisz promień górnej podstawy, a potem wysokość. Stożek kończy się okręgiem o tym promieniu."},{"question":"Jak narysować odwrócony stożek?","answer":"Wpisz ujemną wysokość: stożek skierowany jest od podstawy w dół. Albo wybierz Osi i podaj wierzchołek w dowolnym miejscu."},{"question":"Czy podstawa stożka może być elipsą?","answer":"Tak: przy środku podstawy wybierz Eliptyczny i podaj jej osie. Promień górnej podstawy sprawia, że górna podstawa jest tą samą elipsą, mniejszą."}]
+---
+
+Polecenie STOŻEK (CONE) rysuje bryłę 3D stożka: podaj środek jego podstawy, potem promień, potem wysokość, a stożek zwęża się do punktu. Pyta o to samo co [`WALEC`](/docs/commands/cylinder), z opcją `Promień` przy wysokości dla stożka ściętego. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna kieruje stożek w dół, a punkt podaje ją odległością od podstawy. Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi. Stożek leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+
+[`LISTA`](/docs/commands/list) pokazuje jego położenie, normalną, promień podstawy, promień górnej podstawy i wysokość, a paleta Właściwości pozwala je wpisać. Jego uchwyty go przesuwają, ustawiają jego wysokość, promień podstawy w każdej ćwiartce podstawy oraz promień górnej podstawy. Wierzchołek jest lokalizowany jako punkt końcowy. To bryła 3D dla poleceń [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
+
+- **Polecenie:** `STOŻEK`
+- **Po angielsku:** `CONE`, wpisywane jako `_CONE` w każdym języku
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `STOŻEK` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="cone" caption="Stożek o promieniu 20 i wysokości 40, od środka podstawy, widziany od południowego wschodu w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `3P` [#3p]
+
+Przy środku podstawy: pyta o trzy punkty, a podstawa to okrąg przez nie, w ich płaszczyźnie.
+
+### `2P` [#2p]
+
+Przy środku podstawy: pyta o dwa końce średnicy podstawy.
+
+### `Ssr` (`S`) [#ttr]
+
+Przy środku podstawy: wskaż dwie linie, okręgi lub łuki, z lokalizacją Styczna, i podaj promień: podstawa dotyka obu.
+
+### `Eliptyczny` (`E`) [#elliptical]
+
+Przy środku podstawy: podstawa jest elipsą, podaną oboma końcami pierwszej osi i końcem drugiej albo, z opcją `śrOdek`, od jej środka. Promień górnej podstawy pomniejsza tę samą elipsę.
+
+### `śreDnica` (`D`) [#diameter]
+
+Przy promieniu: pyta zamiast niego o średnicę, proponując dwukrotność ostatniego promienia.
+
+### `2Punkty` (`2P`) [#2point]
+
+Przy wysokości: pyta o dwa punkty, a wysokość to odległość między nimi.
+
+### `punkt końcowy Osi` (`O`) [#axis]
+
+Przy wysokości: pyta o wierzchołek. Stożek biegnie od środka podstawy do tego punktu w dowolnym kierunku, z podstawą prostopadłą do osi.
+
+### `Promień górnej podstawy` (`P`) [#top]
+
+Przy wysokości: pyta o promień górnej podstawy, a potem znowu o wysokość. Stożek kończy się okręgiem zamiast punktu, jako stożek ścięty; górna podstawa tak szeroka jak dolna daje boki walca, a szersza stożek rozszerzający się ku górze. Proponuje promień górnej podstawy ostatniego stożka, na początku 0.
+
+## Czego jeszcze nie robi [#missing]
+
+Polecenie [`ROZBIJ`](/docs/commands/explode) na stożku, który AutoCAD zamienia w podstawę i powierzchnię: MellowCAD nie ma powierzchni, więc podaje, że nie mógł go rozbić. Zamiana okrągłego stożka na eliptyczny przez wpisanie w palecie Właściwości. Przy `ISOLINES` równym 0 kropka, którą AutoCAD rysuje w wierzchołku. Oraz to, czego brakuje poleceniu [`WALEC`](/docs/commands/cylinder): Przesuń, Obróć, Skala i Lustro z aktywnego uchwytu, kropkowane wymiary podczas podawania promienia i style wizualne, których nie ma [`BIEŻSTYLWIZ`](/docs/commands/vscurrent).
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cone--es-cono--pt-br-cone--fr-cone--it-cono--de-kegel--ru-конус--pl-stożek)
+
+## Pytania [#questions]
+
+### Jak narysować stożek w AutoCADzie?
+
+Uruchom STOŻEK, podaj środek podstawy, promień i wysokość: `0,0`, `20` i `40` rysują stożek z sesji. Obróć widok, aby go zobaczyć, narożnikiem kostki ViewCube albo poleceniem `-WIDOK` i opcją `SEIzo`.
+
+### Jak narysować stożek ścięty w AutoCADzie?
+
+Przy wysokości wybierz `Promień`, wpisz promień górnej podstawy, a potem wysokość. Stożek kończy się okręgiem o tym promieniu.
+
+### Jak narysować odwrócony stożek?
+
+Wpisz ujemną wysokość: stożek skierowany jest od podstawy w dół. Albo wybierz `Osi` i podaj wierzchołek w dowolnym miejscu.
+
+### Czy podstawa stożka może być elipsą?
+
+Tak: przy środku podstawy wybierz `Eliptyczny` i podaj jej osie. Promień górnej podstawy sprawia, że górna podstawa jest tą samą elipsą, mniejszą.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie WALEC (CYLINDER) w AutoCADzie](/docs/commands/cylinder)
+- [Ostrosłup w AutoCADzie: polecenie OSTROSŁUP (PYRAMID)](/docs/commands/pyramid)
+- [Polecenie PRZEKRĘĆ (REVOLVE) w AutoCADzie](/docs/commands/revolve)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)

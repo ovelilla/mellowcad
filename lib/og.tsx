@@ -131,13 +131,14 @@ export function visualPieces(line: string): string[] {
 const ARABIC_FAMILY = "Inter, Readex Pro"
 
 /**
- * Inter and Geist Mono, each with its Cyrillic subset behind it. WHY a family
- * of its own: Satori takes a glyph a face lacks from the families the text
- * names, not from another face of the same name, and next/og fetched a
- * regular Noto for the Cyrillic instead (the Russian card's thin letters).
+ * Inter and Geist Mono, each with its Cyrillic subset and Polish's letters
+ * behind it. WHY a family of its own: Satori takes a glyph a face lacks from
+ * the families the text names, not from another face of the same name, and
+ * next/og fetched a regular Noto for the Cyrillic instead (the Russian card's
+ * thin letters).
  */
-const SANS_FAMILY = "Inter, Inter Cyrillic"
-const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic"
+const SANS_FAMILY = "Inter, Inter Cyrillic, Inter Polish"
+const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Polish"
 
 /**
  * How wide a word of a right-to-left script is set, shaped: its letters
@@ -198,16 +199,20 @@ export async function ogImage({
     model,
     inter,
     interCyrillic,
+    interPolish,
     mono,
     monoCyrillic,
+    monoPolish,
     arabic,
   ] = await Promise.all([
     flange(),
     solid(),
     font("inter-latin-600-normal.woff"),
     font("inter-cyrillic-600-normal.woff"),
+    font("inter-polish-600-normal.woff"),
     font("geist-mono-latin-400-normal.woff"),
     font("geist-mono-cyrillic-400-normal.woff"),
+    font("geist-mono-polish-400-normal.woff"),
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
     // Arabic subset as soon as a word meets a character the subset lacks.
     rtl ? font("readex-pro-600.ttf") : undefined,
@@ -406,10 +411,22 @@ export async function ogImage({
           weight: 600,
           style: "normal",
         },
+        {
+          name: "Inter Polish",
+          data: interPolish,
+          weight: 600,
+          style: "normal",
+        },
         { name: "Geist Mono", data: mono, weight: 400, style: "normal" },
         {
           name: "Geist Mono Cyrillic",
           data: monoCyrillic,
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Geist Mono Polish",
+          data: monoPolish,
           weight: 400,
           style: "normal",
         },

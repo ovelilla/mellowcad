@@ -1,0 +1,58 @@
+---
+title: "Polecenie PRZESUŃ (MOVE) w AutoCADzie"
+description: "Jak przesunąć obiekt w AutoCADzie poleceniem PRZESUŃ (MOVE, skrót PRS): punkt bazowy i drugi punkt albo przemieszczenie wpisane jako X,Y,Z. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie PRZESUŃ po angielsku?","answer":"MOVE. W polskim AutoCADzie jego skrót to PRS: wpisz go i naciśnij Enter lub spację. Angielskie M w polskiej wersji uruchamia polecenie MODEL; pełna nazwa PRZESUŃ działa, a _MOVE – w AutoCADzie w każdym języku."},{"question":"Jak przesunąć obiekt o zadaną odległość?","answer":"Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: 50,0 przesuwa o 50 wzdłuż X. Przy włączonym wprowadzaniu dynamicznym, a tak jest na początku, punkt po pierwszym jest względny, więc historia zapisuje go jako @50,0. Albo skieruj kursor w stronę ruchu, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość."},{"question":"Jak przesunąć obiekty w górę w 3D?","answer":"Podaj przesunięciu współrzędną Z: 0,0,5 jako drugi punkt albo jako Przesunięcie podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącej wysokości."},{"question":"Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?","answer":"Polecenie PRZESUŃ przesuwa całe obiekty. ROZCIĄGNIJ przesuwa tylko końce i wierzchołki wewnątrz swojego okna przecinającego i rozciąga obiekty, do których należą."}]
+---
+
+Polecenie PRZESUŃ (MOVE) przenosi wybrane obiekty z jednego miejsca w inne: wybierz je, podaj punkt bazowy, a potem drugi punkt, i przesuną się o odległość i w kierunku od pierwszego do drugiego. Nic innego się w nich nie zmienia. Jak w AutoCADzie, przesuwane są obiekty wybrane przed poleceniem, punkt można wskazać, chwycić trybem lokalizacji lub wpisać, a gdy wybierasz drugi punkt, zbiór podąża za kursorem, z linią od punktu bazowego. Przesunięcie to jeden krok, który cofa polecenie Cofaj.
+
+- **Polecenie:** `PRZESUŃ`
+- **Po angielsku:** `MOVE`, wpisywane jako `_MOVE` w każdym języku
+- **Aliasy:** `PRS`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `PRS` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="move" caption="Okrąg przesunięty o 50 w prawo: wskazany, jego środek jako punkt bazowy, drugi punkt wpisany." />
+
+## Opcje [#options]
+
+### `Przesunięcie` (`P`) [#displacement]
+
+Wybierana przy monicie o punkt bazowy albo Enterem, bo jest tam wartością domyślną: pyta o przesunięcie jako wektor – `10,5` przesuwa o 10 wzdłuż X i o 5 wzdłuż Y – z wartością domyślną równą ostatniemu przesunięciu polecenia PRZESUŃ w tym rysunku. Przy drugim punkcie Enter robi to samo z punktem bazowym: jego współrzędne są przesunięciem.
+
+## Czego jeszcze nie robi [#missing]
+
+Dwa tryby wyboru AutoCADa przy monicie o obiekty, Grupa i Wiele, oraz wybieranie z klawiszem Ctrl powierzchni, krawędzi lub wierzchołków bryły, aby zmienić jej kształt. Gdy zbiór podąża za kursorem, ma kolor każdego obiektu, ale nie jego rodzaj ani szerokość linii, a wszystkie obiekty odnośnika bloku mają kolor odnośnika.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#move--m--es-desplaza--d--pt-br-mover--m--fr-deplacer--dp--it-sposta--s--de-schieben--s--ru-перенести--п--pl-przesuń--prs)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie PRZESUŃ po angielsku?
+
+MOVE. W polskim AutoCADzie jego skrót to `PRS`: wpisz go i naciśnij Enter lub spację. Angielskie `M` w polskiej wersji uruchamia polecenie MODEL; pełna nazwa `PRZESUŃ` działa, a `_MOVE` – w AutoCADzie w każdym języku.
+
+### Jak przesunąć obiekt o zadaną odległość?
+
+Podaj punkt bazowy, a potem wpisz przesunięcie jako drugi punkt: `50,0` przesuwa o 50 wzdłuż X. Przy włączonym wprowadzaniu dynamicznym, a tak jest na początku, punkt po pierwszym jest względny, więc historia zapisuje go jako `@50,0`. Albo skieruj kursor w stronę ruchu, z trybem orto lub śledzeniem biegunowym, i wpisz tylko odległość.
+
+### Jak przesunąć obiekty w górę w 3D?
+
+Podaj przesunięciu współrzędną Z: `0,0,5` jako drugi punkt albo jako `Przesunięcie` podnosi zbiór o 5. Punkt wpisany bez Z leży na bieżącej wysokości.
+
+### Czym się różni PRZESUŃ od ROZCIĄGNIJ (STRETCH)?
+
+Polecenie PRZESUŃ przesuwa całe obiekty. [`ROZCIĄGNIJ`](/docs/commands/stretch) przesuwa tylko końce i wierzchołki wewnątrz swojego okna przecinającego i rozciąga obiekty, do których należą.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie KOPIUJ (COPY) w AutoCADzie](/docs/commands/copy)
+- [Polecenie OBRÓĆ (ROTATE) w AutoCADzie](/docs/commands/rotate)
+- [Polecenie ROZCIĄGNIJ (STRETCH) w AutoCADzie](/docs/commands/stretch)
+- [Skalowanie w AutoCADzie: polecenie SKALA (SCALE)](/docs/commands/scale)

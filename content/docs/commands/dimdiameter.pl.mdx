@@ -1,0 +1,71 @@
+---
+title: "Wymiar średnicy w AutoCADzie: polecenie WYMŚREDNICA (DIMDIAMETER)"
+metaTitle: "Wymiar średnicy w AutoCADzie: WYMŚREDNICA"
+description: "Jak zwymiarować średnicę okręgu lub łuku w AutoCADzie poleceniem WYMŚREDNICA (DIMDIAMETER, skrót WD): wskaż krzywą i umieść wymiar wewnątrz lub na zewnątrz."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie wymiaru średnicy po angielsku i jaki ma skrót?","answer":"Po angielsku DIMDIAMETER, w polskim AutoCADzie WYMŚREDNICA: wpisz WD lub WYMD, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMDIAMETER – w AutoCADzie w każdym języku."},{"question":"Jak zwymiarować mały otwór?","answer":"Umieść tekst poza okręgiem: linia wymiarowa przecina wtedy otwór, z grotem strzałki po każdej stronie, a tekst stoi z dala od niego. Wewnątrz tekst potrzebuje miejsca w okręgu."},{"question":"Czy polecenie WYMŚREDNICA wymiaruje łuk?","answer":"Tak: łuk lub łukowy segment polilinii, tak jak okrąg, i podaje średnicę okręgu, do którego łuk należy. Każdy inny obiekt daje „Wybrany obiekt nie jest łukiem ani okręgiem.” i pytanie pada ponownie."},{"question":"Jak dodać liczbę otworów lub opis do wymiaru średnicy?","answer":"Wybierz Tekst przed umieszczeniem wymiaru i wpisz „4 otw. <>”: <> to wartość ze znakiem. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”."}]
+---
+
+Polecenie WYMŚREDNICA (DIMDIAMETER) wymiaruje średnicę okręgu, łuku lub łukowego segmentu polilinii, z monitami polecenia [`WYMPROMIEŃ`](/docs/commands/dimradius): wskaż krzywą, a wiersz polecenia od razu poda wartość; potem umieść wymiar i polecenie się kończy. Jego tekst to średnica poprzedzona znakiem średnicy. Umieszczony wewnątrz okręgu, wymiar ma jedną linię od tekstu do grotu strzałki na obwodzie; umieszczony na zewnątrz, linia przecina okrąg od brzegu do brzegu, a dalszy grot wskazuje do środka od krótkiego przedłużenia, tak jak rysuje to ISO-25.
+
+- **Polecenie:** `WYMŚREDNICA`
+- **Po angielsku:** `DIMDIAMETER`, wpisywane jako `_DIMDIAMETER` w każdym języku
+- **Aliasy:** `WD`, `WYMD`
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WD` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="dimdiameter" caption="Duży okrąg zwymiarowany wewnątrz, a mały na zewnątrz: wskazany każdy okrąg, potem umieszczony tekst." />
+
+## Opcje [#options]
+
+### `Tekst` (`T`) [#text]
+
+Pyta o tekst, który ma się pojawić zamiast zmierzonej wartości, i proponuje tę wartość jako domyślną: Enter ją zachowuje. We wpisanym tekście `<>` oznacza wartość ze znakiem, więc `4 otw. <>` wpisuje „4 otw.” przed średnicą.
+
+### `Kąt` (`K`) [#angle]
+
+Pyta o kąt tekstu, który jest wtedy rysowany pod tym kątem, środkiem na linii, a linia kończy się przy nim. 0 przywraca go wzdłuż linii.
+
+## Czego jeszcze nie robi [#missing]
+
+Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w wierszu polecenia, nigdy w edytorze tekstu. Znak jest rysowany jako Ø, podczas gdy AutoCAD pisze ∅: czcionka rysunku nie ma ∅. Na łuku groty strzałek zostają między jego końcami, a AutoCAD rysuje łukową linię pomocniczą. Tak jak w poleceniu [`WYMPROMIEŃ`](/docs/commands/dimradius), krzywej wewnątrz odnośnika bloku nie można wskazać, linie środkowe stylu nie są rysowane, a jego ustawienia tekstu poza krzywą nie są dostępne. Wymiar nie jest skojarzony: nie podąża za krzywą, którą mierzy.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia--pt-br-cotadiametro--cdi--dimdia--fr-cotdia--cm--it-dimdiametro--ddi--de-bemdurchm--bmd--ru-рзмдиаметр--рди--pl-wymśrednica--wd--wymd)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie wymiaru średnicy po angielsku i jaki ma skrót?
+
+Po angielsku DIMDIAMETER, w polskim AutoCADzie WYMŚREDNICA: wpisz `WD` lub `WYMD`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMDIAMETER` – w AutoCADzie w każdym języku.
+
+### Jak zwymiarować mały otwór?
+
+Umieść tekst poza okręgiem: linia wymiarowa przecina wtedy otwór, z grotem strzałki po każdej stronie, a tekst stoi z dala od niego. Wewnątrz tekst potrzebuje miejsca w okręgu.
+
+### Czy polecenie WYMŚREDNICA wymiaruje łuk?
+
+Tak: łuk lub łukowy segment polilinii, tak jak okrąg, i podaje średnicę okręgu, do którego łuk należy. Każdy inny obiekt daje `Wybrany obiekt nie jest łukiem ani okręgiem.` i pytanie pada ponownie.
+
+### Jak dodać liczbę otworów lub opis do wymiaru średnicy?
+
+Wybierz `Tekst` przed umieszczeniem wymiaru i wpisz `4 otw. <>`: `<>` to wartość ze znakiem. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket)
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket)
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange)
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table)
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link)
+
+## Powiązane polecenia [#related]
+
+- [Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)](/docs/commands/dimradius)
+- [Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)](/docs/commands/dimlinear)
+- [Wymiar kątowy w AutoCADzie: polecenie WYMKĄTOWY (DIMANGULAR)](/docs/commands/dimangular)
+- [Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)](/docs/commands/dimstyle)

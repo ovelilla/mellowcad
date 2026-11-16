@@ -1,0 +1,61 @@
+---
+title: "Polecenie PRZESTRZWYM (DIMSPACE) w AutoCADzie"
+description: "Jak wyrównać wymiary w AutoCADzie poleceniem PRZESTRZWYM (DIMSPACE): równy odstęp między wymiarami albo 0, aby ustawić je w linii, i Auto z wysokości tekstu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak wyrównać wymiary w AutoCADzie?","answer":"Uruchom polecenie PRZESTRZWYM, wskaż wymiar, do którego mają się wyrównać pozostałe, wybierz je, naciśnij Enter i wpisz 0: każda linia wymiarowa przesuwa się na linię wymiaru bazowego."},{"question":"Jak ustawić równe odstępy między wymiarami?","answer":"Uruchom polecenie PRZESTRZWYM, wskaż jako bazowy wymiar najbliższy obiektu, wybierz pozostałe i naciśnij dwa razy Enter: Automatycznie rozmieszcza je co dwie wysokości tekstu. Albo wpisz odległość, którą chcesz, na przykład 8."},{"question":"Jaki jest domyślny odstęp między wymiarami w AutoCADzie?","answer":"Automatycznie polecenia PRZESTRZWYM to dwukrotna wysokość tekstu stylu wymiarowania. Polecenie WYMBAZA używa zamiast tego „Odstępów między liniami bazowymi” stylu, 3,75 w ISO-25, dla każdego dodawanego wymiaru."},{"question":"Dlaczego polecenie PRZESTRZWYM nie przesuwa wymiaru?","answer":"Rozmieszcza tylko wymiary równoległe do bazowego: wymiar pod innym kątem jest liczony i zostaje na miejscu. Wymiary kątowe nie są jeszcze rozmieszczane."}]
+---
+
+Polecenie PRZESTRZWYM (DIMSPACE) ustawia odstęp między równoległymi wymiarami liniowymi i dopasowanymi. Wybierasz wymiar bazowy, który zostaje na miejscu, potem wymiary do rozmieszczenia; Enter kończy wybór i pyta o odstęp. Linia każdego wymiaru jest wtedy przesuwana, od wymiaru bazowego, w kolejności, w jakiej leżą, na tę odległość od poprzedniego. Odstęp 0 ustawia je wszystkie na linii wymiaru bazowego: szereg rozstrzelony tak, jak go narysowano, staje się jedną linią. Zmienia się tylko położenie linii wymiarowych, w jednym kroku, który cofa polecenie `C`.
+
+Wymiar bazowy się wskazuje, wpisuje jako punkt albo bierze opcją `OSTATNI`; obiekt, który nie jest wymiarem, daje `Wybrany obiekt nie jest wymiarem.` i pytanie pada ponownie. Zbiór wybrany przed poleceniem jest zbiorem do rozmieszczenia. Wymiar ustawiony pod kątem do bazowego jest liczony i zostaje na miejscu, a ujemny odstęp jest odrzucany komunikatem `Nieprawidłowa wartość odstępu, wartość odstępu nie może być ujemna.`.
+
+- **Polecenie:** `PRZESTRZWYM`
+- **Po angielsku:** `DIMSPACE`, wpisywane jako `_DIMSPACE` w każdym języku
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `PRZESTRZWYM` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="dimspaceBefore" caption="Górna krawędź płytki zwymiarowana szeregiem trzech wymiarów, każdy na własnej wysokości, tak jak je narysowano." />
+
+<Session name="dimspace" caption="PRZESTRZWYM od pierwszego wymiaru, dwa pozostałe wybrane i odstęp 0: szereg ustawiony w jednej linii." />
+
+## Opcje [#options]
+
+### `Automatycznie` (`A`) [#auto]
+
+Domyślna, Enter: odstęp równy dwukrotnej wysokości tekstu stylu wymiarowania wymiaru bazowego, pomnożonej przez jego globalną skalę, tak aby stos mieścił własny tekst.
+
+## Czego jeszcze nie robi [#missing]
+
+Wymiary kątowe, których polecenie PRZESTRZWYM jeszcze nie rozmieszcza. AutoCAD przesuwa wymiar tylko wtedy, gdy trzeba; tutaj każdy wybrany wymiar jest rozmieszczany na nowo.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym)
+
+## Pytania [#questions]
+
+### Jak wyrównać wymiary w AutoCADzie?
+
+Uruchom polecenie PRZESTRZWYM, wskaż wymiar, do którego mają się wyrównać pozostałe, wybierz je, naciśnij Enter i wpisz `0`: każda linia wymiarowa przesuwa się na linię wymiaru bazowego.
+
+### Jak ustawić równe odstępy między wymiarami?
+
+Uruchom polecenie PRZESTRZWYM, wskaż jako bazowy wymiar najbliższy obiektu, wybierz pozostałe i naciśnij dwa razy Enter: `Automatycznie` rozmieszcza je co dwie wysokości tekstu. Albo wpisz odległość, którą chcesz, na przykład `8`.
+
+### Jaki jest domyślny odstęp między wymiarami w AutoCADzie?
+
+`Automatycznie` polecenia PRZESTRZWYM to dwukrotna wysokość tekstu stylu wymiarowania. Polecenie [`WYMBAZA`](/docs/commands/dimbaseline) używa zamiast tego „Odstępów między liniami bazowymi” stylu, 3,75 w ISO-25, dla każdego dodawanego wymiaru.
+
+### Dlaczego polecenie PRZESTRZWYM nie przesuwa wymiaru?
+
+Rozmieszcza tylko wymiary równoległe do bazowego: wymiar pod innym kątem jest liczony i zostaje na miejscu. Wymiary kątowe nie są jeszcze rozmieszczane.
+
+## Powiązane polecenia [#related]
+
+- [Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)](/docs/commands/dimlinear)
+- [Wymiarowanie szeregowe w AutoCADzie: polecenie WYMSZEREG (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Wymiarowanie od bazy w AutoCADzie: polecenie WYMBAZA (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)](/docs/commands/dimstyle)

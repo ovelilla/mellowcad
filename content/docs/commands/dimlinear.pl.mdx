@@ -1,0 +1,88 @@
+---
+title: "Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)"
+metaTitle: "Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY"
+description: "Jak wymiarować w AutoCADzie poleceniem WYMLINIOWY (DIMLINEAR, skrót WL): dwa punkty lub obiekt, potem linia wymiarowa, pozioma lub pionowa. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie wymiaru liniowego po angielsku i jaki ma skrót?","answer":"Po angielsku DIMLINEAR, w polskim AutoCADzie WYMLINIOWY: wpisz WL lub WYMLIN, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMLINEAR – w AutoCADzie w każdym języku."},{"question":"Jakie są polecenia wymiarowania w AutoCADzie?","answer":"WYMLINIOWY do odległości poziomych i pionowych, WYMNORMALNY do odległości wzdłuż ukośnej krawędzi, WYMPROMIEŃ i WYMŚREDNICA do łuków i okręgów, WYMKĄTOWY do kątów, WYMSZEREG i WYMBAZA do szeregów, PRZESTRZWYM do wyrównania odstępów między nimi i WYMSTYL do ich wyglądu. Polecenia WYMIAR z AutoCADa, które tworzy każdy rodzaj wymiaru z jednego monitu, i SWYMIAR, które wymiaruje wiele obiektów naraz, nie ma jeszcze w MellowCAD."},{"question":"Dlaczego wymiar nie podąża za obiektem, gdy go zmieniam?","answer":"Wymiary MellowCAD nie są jeszcze skojarzone, jak mówi „Utworzono nie połączony wymiar”: wymiar zachowuje punkty, które dostał. Rozciągnij je razem: obejmij przesuwany koniec i leżący tam początek wymiaru jednym oknem przecinającym polecenia ROZCIĄGNIJ, a wartość zostanie przeliczona; albo przeciągnij uchwyt początku w nowe miejsce."},{"question":"Jak zmienić wielkość tekstu i strzałek wymiaru?","answer":"W stylu wymiarowania, jak w AutoCADzie: polecenie WYMSTYL (WST) otwiera style wymiarowania, tutaj w palecie „Style”, tam gdzie AutoCAD ma Menedżer stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu."}]
+---
+
+Polecenie WYMLINIOWY (DIMLINEAR) mierzy odległość między dwoma punktami wzdłuż X lub wzdłuż Y i rysuje ją jako wymiar: dwie linie pomocnicze, linię wymiarową z grotami strzałek i zmierzoną wartość nad nią. Podajesz początek pierwszej i drugiej linii pomocniczej, potem położenie linii wymiarowej, a to położenie wybiera kierunek, jak w AutoCADzie: nad dwoma punktami lub pod nimi wymiar jest poziomy, obok nich – pionowy. Możesz też nacisnąć Enter przy pierwszym monicie i wskazać linię, łuk, segment polilinii lub okrąg: jego dwa końce albo średnica okręgu są początkami linii pomocniczych. Wiersz polecenia podaje wtedy zmierzoną wartość i polecenie się kończy.
+
+Wymiar jest rysowany w bieżącym stylu wymiarowania, w nowym rysunku ISO-25: przecinek dziesiętny i bez zer końcowych, tak jak zapisują to metryczne rysunki AutoCADa. Polecenia `WYMPOZIOMY`, `WYMPIONOWY` i `WYMOBRÓCONY`, dostępne tylko z klawiatury, to polecenie WYMLINIOWY ograniczone do jednego kierunku.
+
+- **Polecenie:** `WYMLINIOWY`
+- **Po angielsku:** `DIMLINEAR`, wpisywane jako `_DIMLINEAR` w każdym języku
+- **Aliasy:** `WL`, `WYMLIN`
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WL` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="dimlinear" caption="Prostokąt zwymiarowany dwa razy: górna krawędź przez jej dwa narożniki, prawa przez Enter i wskazanie krawędzi." />
+
+## Opcje [#options]
+
+### `Tekst` (`T`) [#text]
+
+Pyta o tekst, który ma się pojawić zamiast zmierzonej wartości, i proponuje tę wartość jako domyślną: Enter ją zachowuje. We wpisanym tekście `<>` oznacza zmierzoną wartość, więc `<> mm` wpisuje ją z jednostką.
+
+### `Kąt` (`K`) [#angle]
+
+Pyta o kąt tekstu, który jest wtedy rysowany pod tym kątem zamiast wzdłuż linii wymiarowej. 0 przywraca go wzdłuż linii.
+
+### `Poziomo` (`P`) [#horizontal]
+
+Mierzy wzdłuż X, gdziekolwiek umieścisz linię wymiarową, która pozostaje pozioma; monit proponuje wtedy tylko `Tekst` i `Kąt`.
+
+### `pIonowo` (`I`) [#vertical]
+
+Mierzy wzdłuż Y, gdziekolwiek umieścisz linię wymiarową, która pozostaje pionowa.
+
+### `Obrócony` (`O`) [#rotated]
+
+Pyta o kąt linii wymiarowej, domyślnie `0`, i mierzy wzdłuż niego odległość między początkami. Na ukośnej krawędzi jej własny kąt daje jej długość, tak jak polecenie [`WYMNORMALNY`](/docs/commands/dimaligned).
+
+## Czego jeszcze nie robi [#missing]
+
+Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w wierszu polecenia, nigdy w edytorze tekstu. Gdy kąt ustawiono opcją `Kąt`, AutoCAD wyśrodkowuje tekst na linii wymiarowej; tutaj tekst zostaje nad nią, tak jak bez kąta. Wymiar nie jest skojarzony: nie podąża za obiektem, który mierzy.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin--ru-рзмлинейный--рли--pl-wymliniowy--wl--wymlin)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie wymiaru liniowego po angielsku i jaki ma skrót?
+
+Po angielsku DIMLINEAR, w polskim AutoCADzie WYMLINIOWY: wpisz `WL` lub `WYMLIN`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMLINEAR` – w AutoCADzie w każdym języku.
+
+### Jakie są polecenia wymiarowania w AutoCADzie?
+
+`WYMLINIOWY` do odległości poziomych i pionowych, [`WYMNORMALNY`](/docs/commands/dimaligned) do odległości wzdłuż ukośnej krawędzi, [`WYMPROMIEŃ`](/docs/commands/dimradius) i [`WYMŚREDNICA`](/docs/commands/dimdiameter) do łuków i okręgów, [`WYMKĄTOWY`](/docs/commands/dimangular) do kątów, [`WYMSZEREG`](/docs/commands/dimcontinue) i [`WYMBAZA`](/docs/commands/dimbaseline) do szeregów, [`PRZESTRZWYM`](/docs/commands/dimspace) do wyrównania odstępów między nimi i [`WYMSTYL`](/docs/commands/dimstyle) do ich wyglądu. Polecenia WYMIAR z AutoCADa, które tworzy każdy rodzaj wymiaru z jednego monitu, i SWYMIAR, które wymiaruje wiele obiektów naraz, nie ma jeszcze w MellowCAD.
+
+### Dlaczego wymiar nie podąża za obiektem, gdy go zmieniam?
+
+Wymiary MellowCAD nie są jeszcze skojarzone, jak mówi `Utworzono nie połączony wymiar`: wymiar zachowuje punkty, które dostał. Rozciągnij je razem: obejmij przesuwany koniec i leżący tam początek wymiaru jednym oknem przecinającym polecenia [`ROZCIĄGNIJ`](/docs/commands/stretch), a wartość zostanie przeliczona; albo przeciągnij uchwyt początku w nowe miejsce.
+
+### Jak zmienić wielkość tekstu i strzałek wymiaru?
+
+W stylu wymiarowania, jak w AutoCADzie: polecenie [`WYMSTYL`](/docs/commands/dimstyle) (`WST`) otwiera style wymiarowania, tutaj w palecie „Style”, tam gdzie AutoCAD ma Menedżer stylów wymiarowania. Ustawia się tam wysokość tekstu, rozmiar strzałki, globalną skalę i miejsca dziesiętne bieżącego stylu, a stosują się do nich wszystkie wymiary w tym stylu.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket)
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket)
+- [Ćwiczenie AutoCAD: schody w rzucie](/docs/exercises/stairs)
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange)
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table)
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft)
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link)
+
+## Powiązane polecenia [#related]
+
+- [Wymiar dopasowany w AutoCADzie: polecenie WYMNORMALNY (DIMALIGNED)](/docs/commands/dimaligned)
+- [Wymiarowanie szeregowe w AutoCADzie: polecenie WYMSZEREG (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Wymiarowanie od bazy w AutoCADzie: polecenie WYMBAZA (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)](/docs/commands/dimradius)
+- [Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)](/docs/commands/dimstyle)

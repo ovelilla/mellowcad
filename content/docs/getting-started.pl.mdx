@@ -1,0 +1,61 @@
+---
+title: Pierwsze kroki
+metaTitle: "Rysowanie CAD online: twój pierwszy rysunek"
+description: "Twój pierwszy rysunek w MellowCAD: wiersz polecenia, monity i opcje, narzędzia precyzyjnego rysowania, cofanie i zapisywanie."
+type: gettingStarted
+sourceHash: "527b2d24b274"
+---
+
+MellowCAD działa jak AutoCAD: wpisujesz polecenie, odpowiadasz na jego monity, a rysunek powstaje. Jeśli już pracujesz w AutoCADzie, wystarczą ci [lista poleceń](/docs/commands) i [różnice](/docs/differences); ta strona jest na pierwsze dziesięć minut.
+
+## Otwórz edytor [#open]
+
+[Otwórz edytor](/pl/draw) w przeglądarce na komputerze. Niczego nie trzeba instalować ani zakładać konta. Rysunek jest przechowywany w tej przeglądarce w trakcie pracy i czeka na ciebie, gdy otworzysz edytor następnym razem.
+
+## Wpisz polecenie [#command]
+
+Pisz na rysunku, gdziekolwiek jest kursor: litery trafiają do wiersza polecenia na dole, który podpowiada polecenia zaczynające się od nich. Enter lub spacja uruchamia polecenie. Polecenie <Command id="LINE" /> rysuje linie, tak samo jak jego krótszy alias; wszystkie aliasy są na [stronie poleceń](/docs/commands). Nazwy są nazwami z polskiej wersji AutoCADa; angielska nazwa też działa, poprzedzona podkreśleniem, jak w AutoCADzie (`_LINE`).
+
+## Odpowiadaj na monity [#prompts]
+
+Polecenie pyta o jedną rzecz naraz, w wierszu polecenia i obok kursora. Punkt to kliknięcie na rysunku albo dwie współrzędne wpisane jako `x,y`. Po pierwszym punkcie wpisane współrzędne są mierzone od ostatniego punktu, tak jak mierzy je wprowadzanie dynamiczne AutoCADa, a historia zapisuje je ze znakiem `@`; `#x,y` mierzy się natomiast od początku układu współrzędnych. Sama wpisana odległość odmierza się w kierunku kursora.
+
+<Session name="firstLine" />
+
+## Wybierz opcję [#options]
+
+Opcje, które proponuje monit, są w nawiasach kwadratowych, każda ze swoimi wielkimi literami: wpisz te litery i naciśnij Enter. Wartość w nawiasach ostrych jest domyślna i Enter ją przyjmuje.
+
+<Session name="circleDiameter" />
+
+## Zakończ, powtórz, anuluj [#end]
+
+Enter lub spacja kończy polecenie, które pyta dalej, takie jak <Command id="LINE" />, a gdy żadne polecenie nie działa, powtarza ostatnie. Kliknięcie prawym przyciskiem myszy otwiera menu z tymi samymi możliwościami. Esc anuluje. Wszystkie klawisze są na [stronie skrótów klawiszowych](/docs/shortcuts).
+
+## Rysuj precyzyjnie [#precision]
+
+Lokalizacja względem obiektu prowadzi kursor dokładnie do charakterystycznych punktów tego, co narysowane: końców, punktów symetrii, środków. `F3` włącza ją i wyłącza, `F8` tryb orto, a `F10` śledzenie biegunowe, tak jak ich przyciski na pasku stanu.
+
+<Session name="endpointSnap" />
+
+## Zmień to, co narysowane [#modify]
+
+Polecenie edycji pyta o obiekty, na których ma działać, albo najpierw o wartość, jak polecenie <Command id="OFFSET" />: odległość, obiekt, a potem stronę, po której ma się znaleźć kopia.
+
+<Session name="offsetRectangle" />
+
+## Cofnij i przywróć [#undo]
+
+<Command id="U" /> lub `Ctrl+Z` cofa ostatnie polecenie w całości, a `Ctrl+Y` je przywraca. Wewnątrz polecenia, które ją oferuje, jego własna opcja cofania cofa jeden krok, na przykład jeden odcinek polecenia <Command id="LINE" />.
+
+## Zapisz [#save]
+
+Rysunek jest przechowywany w tej przeglądarce w trakcie pracy. <Command id="QSAVE" /> lub `Ctrl+S` pobiera go jako plik we własnym, wersjonowanym formacie MellowCAD, a <Command id="OPEN" /> lub `Ctrl+O` otwiera taki plik albo [plik DXF](/docs/open-dxf), który <Command id="SAVEAS" /> ponownie [zapisuje jako DXF](/docs/edit-dxf); [zapisywanie nie działa całkiem jak w AutoCADzie](/docs/differences#saving).
+
+## Co dalej [#next]
+
+- [Ćwiczenia](/docs/exercises): rysunki do ćwiczeń, każdy rozwiązany krok po kroku i otwierany w edytorze razem ze swoim rysunkiem.
+- [Współrzędne](/docs/coordinates): wszystkie sposoby wpisania punktu i linia pod kątem.
+- [Polecenia](/docs/commands): wszystkie polecenia, ich aliasy i pierwszy monit każdego z nich.
+- [Skróty klawiszowe](/docs/shortcuts): klawisze, na które reaguje edytor.
+- [Różnice względem AutoCADa](/docs/differences): gdzie MellowCAD działa inaczej i dlaczego.

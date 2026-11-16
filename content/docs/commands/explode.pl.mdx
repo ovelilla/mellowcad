@@ -1,0 +1,52 @@
+---
+title: "Polecenie ROZBIJ (EXPLODE) w AutoCADzie"
+description: "Jak rozbić blok lub polilinię w AutoCADzie poleceniem ROZBIJ (EXPLODE, skrót R): na linie i łuki, obiekty bloku, wiersze tekstu, linie kreskowania."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ROZBIJ po angielsku i jaki ma skrót?","answer":"EXPLODE. W polskim AutoCADzie jego skrót to R: wpisz go i naciśnij Enter lub spację. Angielskie X w polskiej wersji nie działa; _EXPLODE działa w AutoCADzie w każdym języku."},{"question":"Jak cofnąć rozbicie w AutoCADzie?","answer":"Wpisz polecenie C lub naciśnij Ctrl+Z od razu: rozbicie to jeden krok cofania. Później polecenie POŁĄCZ łączy linie i łuki stykające się końcami z powrotem w jedną polilinię, a polecenie BLOK znowu robi z obiektów jeden blok."},{"question":"Czy można rozbić tekst w AutoCADzie?","answer":"Tekst wielowierszowy tak: każdy wiersz staje się tekstem jednowierszowym. Tekst jednowierszowy jest już najmniejszym kawałkiem i polecenie ROZBIJ go odrzuca."},{"question":"Jak rozbić blok w AutoCADzie?","answer":"Wybierz odnośnik bloku i naciśnij Enter: staje się obiektami swojego bloku, tam gdzie rysował je odnośnik. Blok zagnieżdżony w nim pozostaje blokiem: rozbij go jeszcze raz. Atrybuty wracają jako ich definicje, bez wartości."}]
+---
+
+Polecenie ROZBIJ (EXPLODE) rozbija obiekt złożony na obiekty, z których się składa. Wybierz obiekty i naciśnij Enter: polilinia staje się liniami i łukami wzdłuż swojej linii środkowej, odnośnik bloku – obiektami swojego bloku, o jeden poziom niżej, tekst wielowierszowy – jednym tekstem na każdy wyświetlany wiersz, a kreskowanie wzorem – liniami swojego wzoru. Każdy kawałek zachowuje warstwę i właściwości obiektu; kawałki bloku zachowują własne. Polilinia z szerokością traci szerokość, a polecenie ROZBIJ o tym informuje. Linii, okręgów, łuków, tekstu jednowierszowego i wymiarów nie można rozbić: są odrzucane już przy wyborze, a splajn, elipsa i kreskowanie pełne – przy zamknięciu wyboru. Rozbicie to jeden krok cofania.
+
+- **Polecenie:** `ROZBIJ`
+- **Po angielsku:** `EXPLODE`, wpisywane jako `_EXPLODE` w każdym języku
+- **Aliasy:** `R`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `R` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="explode" caption="Prostokąt, jedna polilinia, rozbity na cztery linie, z których jedna zostaje potem wymazana osobno." />
+
+## Czego jeszcze nie robi [#missing]
+
+Wymiary, które AutoCAD rozbija na linie, groty strzałek i tekst, a MellowCAD odrzuca. Kreskowanie wzorem, którego tutaj nie ma, jest odrzucane jak pełne, a rozbity tekst wielowierszowy stoi tam, gdzie rysuje go czcionka, odrobinę obok miejsca AutoCADa.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x--fr-decomposer--de--decompos--it-esplodi--e--de-ursprung--ur--ru-расчленить--расч--pl-rozbij--r)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ROZBIJ po angielsku i jaki ma skrót?
+
+EXPLODE. W polskim AutoCADzie jego skrót to `R`: wpisz go i naciśnij Enter lub spację. Angielskie `X` w polskiej wersji nie działa; `_EXPLODE` działa w AutoCADzie w każdym języku.
+
+### Jak cofnąć rozbicie w AutoCADzie?
+
+Wpisz polecenie `C` lub naciśnij Ctrl+Z od razu: rozbicie to jeden krok cofania. Później polecenie [`POŁĄCZ`](/docs/commands/join) łączy linie i łuki stykające się końcami z powrotem w jedną polilinię, a polecenie [`BLOK`](/docs/commands/block) znowu robi z obiektów jeden blok.
+
+### Czy można rozbić tekst w AutoCADzie?
+
+Tekst wielowierszowy tak: każdy wiersz staje się tekstem jednowierszowym. Tekst jednowierszowy jest już najmniejszym kawałkiem i polecenie ROZBIJ go odrzuca.
+
+### Jak rozbić blok w AutoCADzie?
+
+Wybierz odnośnik bloku i naciśnij Enter: staje się obiektami swojego bloku, tam gdzie rysował je odnośnik. Blok zagnieżdżony w nim pozostaje blokiem: rozbij go jeszcze raz. Atrybuty wracają jako ich definicje, bez wartości.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie POŁĄCZ (JOIN) w AutoCADzie](/docs/commands/join)
+- [Bloki w AutoCADzie: polecenie BLOK (BLOCK)](/docs/commands/block)
+- [Edycja polilinii w AutoCADzie: polecenie EDPLIN (PEDIT)](/docs/commands/pedit)
+- [Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)](/docs/commands/insert)

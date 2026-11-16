@@ -1,0 +1,85 @@
+---
+title: "Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie"
+description: "Jak wyciągnąć kontur 2D w bryłę 3D w AutoCADzie poleceniem WYCIĄGNIJ (EXTRUDE, skrót WYC): wysokość, kierunek, kąt zwężania. Wypróbuj za darmo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie WYCIĄGNIJ po angielsku i jaki ma skrót?","answer":"EXTRUDE. W polskim AutoCADzie jego skrót to WYC: wpisz go i naciśnij Enter lub spację. Angielskie EXT w polskiej wersji nie działa; _EXTRUDE działa w AutoCADzie w każdym języku."},{"question":"Jak zrobić 3D z rysunku 2D?","answer":"Narysuj obrys jako jeden zamknięty obiekt – zamkniętą polilinię, okrąg lub region – uruchom polecenie WYCIĄGNIJ, wybierz go, naciśnij Enter i wpisz wysokość. Z góry bryła wygląda jak jej obrys: obróć widok narzędziem ViewCube albo poleceniem -WIDOK i opcją SEIzo, aby zobaczyć ją w 3D."},{"question":"Dlaczego polecenie WYCIĄGNIJ nie tworzy bryły?","answer":"Profil jest otwarty albo sam się przecina. Linia, łuk lub otwarta polilinia tworzą w AutoCADzie powierzchnię, a MellowCAD jeszcze ich nie ma: polecenie WYCIĄGNIJ mówi „Nie można przeciągnąć ani wyciągnąć tego typu obiektu.” i usuwa je z wyboru; profil, który sam się przecina, dostaje „Nie można przeciągnąć ani wyciągnąć samoprzecinającej się krzywej.” i też jest usuwany. Połącz kawałki poleceniem POŁĄCZ, zrób z nich region poleceniem REGION albo kliknij wewnątrz nich poleceniem NACIŚNIJCIĄG."},{"question":"Jak wyciągnąć kształt z otworem?","answer":"Zrób z niego jeden region: polecenie REGION na obrysie i otworze, potem polecenie RÓŻNICA, aby odjąć region otworu od regionu obrysu. Wyciągnij ten region, a otwór przejdzie przez bryłę. Albo uruchom polecenie NACIŚNIJCIĄG i kliknij między obrysem a otworem."},{"question":"Jak wyciągnąć wzdłuż ścieżki?","answer":"Na razie się nie da: opcja śCieżka jest na liście, ale jest odrzucana, a polecenia SKOS nie ma. Opcja Kierunek wyciąga wzdłuż prostej między dwoma punktami."}]
+---
+
+Polecenie WYCIĄGNIJ (EXTRUDE) zamienia zamknięte profile 2D w bryły 3D, każdy wyciągnięty prosto ze swojej płaszczyzny na podaną wysokość. Wybierz profile – okręgi, elipsy, zamknięte polilinie lub splajny, regiony – i naciśnij Enter, a potem wpisz wysokość albo pokaż ją punktem; ostatnia wysokość jest domyślną przy następnym uruchomieniu. Każdy profil staje się osobną bryłą, na bieżącej warstwie, i jest wymazywany, jak domyślnie stanowi DELOBJ. Całe polecenie to jeden krok cofania.
+
+3D w MellowCAD to tylko bryły i wciąż częściowo: profil otwarty, z którego AutoCAD robi powierzchnię, dostaje `Nie można przeciągnąć ani wyciągnąć tego typu obiektu.` i jest usuwany z wyboru.
+
+- **Polecenie:** `WYCIĄGNIJ`
+- **Po angielsku:** `EXTRUDE`, wpisywane jako `_EXTRUDE` w każdym języku
+- **Aliasy:** `WYC`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WYC` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="extrude" caption="Zamknięta polilinia w kształcie litery L wyciągnięta o 20 w bryłę, potem widziana z południowego wschodu w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `TRyb` (`TR`) [#mode]
+
+Pyta o `Bryła` lub `Powierzchnia`. `Bryła` jest domyślna i jako jedyna istnieje: bez obiektów powierzchni `Powierzchnia` jest odrzucana.
+
+### `Kierunek` (`K`) [#direction]
+
+Zamiast wysokości dwa punkty podają kierunek i długość: profile są wyciągane wzdłuż tej linii, ukośnie, jeśli jest ukośna. Kierunek leżący w płaszczyźnie profilu dostaje `Kierunek wyciągnięcia prostego jest równoległy do płaszczyzny krzywej przeciągnięcia.` i polecenie się kończy.
+
+### `śCieżka` (`C`) [#path]
+
+Jest na liście, jak w AutoCADzie, ale nie działa: jej wybór jest odrzucany, a pytanie o wysokość pada ponownie.
+
+### `kąT zwężania` (`T`) [#taper]
+
+Pyta o kąt od −90 do 90 stopni, a potem znowu o wysokość: kąt dodatni zwęża bryłę w miarę wznoszenia, ujemny ją poszerza. Okrąg, który zamyka się przed osiągnięciem wysokości, kończy się w punkcie, jako stożek; profil, którego nie da się tak zwęzić, nic nie tworzy.
+
+### `Wyrażenie` (`W`) [#expression]
+
+Wysokość jako wyrażenie: `2*3` to 6. Na razie tylko arytmetyka.
+
+## Czego jeszcze nie robi [#missing]
+
+Ścieżka, czyli przeciągnięcie wzdłuż ścieżki. Tryb powierzchni i profile otwarte, z których AutoCAD robi powierzchnie: obiektów powierzchni jeszcze nie ma. Ściany brył i obszary, które kliknięcie znajduje wewnątrz obiektów, przyjmowane przez polecenie [`NACIŚNIJCIĄG`](/docs/commands/presspull). Zwężanie na elipsie, splajnie albo łuku, który spotyka następny segment w narożniku. Parametry i funkcje opcji Wyrażenie. Polecenie [`ROZBIJ`](/docs/commands/explode) wyciągniętej bryły o zakrzywionych bokach, którą AutoCAD zamienia w powierzchnie i regiony. Jej uchwyty oraz wysokość i kąt zwężania edytowane w palecie „Właściwości”.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu--de-extrusion--ex--ru-выдавить--выд--pl-wyciągnij--wyc)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie WYCIĄGNIJ po angielsku i jaki ma skrót?
+
+EXTRUDE. W polskim AutoCADzie jego skrót to `WYC`: wpisz go i naciśnij Enter lub spację. Angielskie `EXT` w polskiej wersji nie działa; `_EXTRUDE` działa w AutoCADzie w każdym języku.
+
+### Jak zrobić 3D z rysunku 2D?
+
+Narysuj obrys jako jeden zamknięty obiekt – zamkniętą polilinię, okrąg lub region – uruchom polecenie WYCIĄGNIJ, wybierz go, naciśnij Enter i wpisz wysokość. Z góry bryła wygląda jak jej obrys: obróć widok narzędziem ViewCube albo poleceniem `-WIDOK` i opcją `SEIzo`, aby zobaczyć ją w 3D.
+
+### Dlaczego polecenie WYCIĄGNIJ nie tworzy bryły?
+
+Profil jest otwarty albo sam się przecina. Linia, łuk lub otwarta polilinia tworzą w AutoCADzie powierzchnię, a MellowCAD jeszcze ich nie ma: polecenie WYCIĄGNIJ mówi `Nie można przeciągnąć ani wyciągnąć tego typu obiektu.` i usuwa je z wyboru; profil, który sam się przecina, dostaje `Nie można przeciągnąć ani wyciągnąć samoprzecinającej się krzywej.` i też jest usuwany. Połącz kawałki poleceniem [`POŁĄCZ`](/docs/commands/join), zrób z nich region poleceniem [`REGION`](/docs/commands/region) albo kliknij wewnątrz nich poleceniem [`NACIŚNIJCIĄG`](/docs/commands/presspull).
+
+### Jak wyciągnąć kształt z otworem?
+
+Zrób z niego jeden region: polecenie [`REGION`](/docs/commands/region) na obrysie i otworze, potem polecenie [`RÓŻNICA`](/docs/commands/subtract), aby odjąć region otworu od regionu obrysu. Wyciągnij ten region, a otwór przejdzie przez bryłę. Albo uruchom polecenie [`NACIŚNIJCIĄG`](/docs/commands/presspull) i kliknij między obrysem a otworem.
+
+### Jak wyciągnąć wzdłuż ścieżki?
+
+Na razie się nie da: opcja `śCieżka` jest na liście, ale jest odrzucana, a polecenia SKOS nie ma. Opcja `Kierunek` wyciąga wzdłuż prostej między dwoma punktami.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate)
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie NACIŚNIJCIĄG (PRESSPULL) w AutoCADzie](/docs/commands/presspull)
+- [Polecenie PRZEKRĘĆ (REVOLVE) w AutoCADzie](/docs/commands/revolve)
+- [Polecenie REGION w AutoCADzie](/docs/commands/region)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)

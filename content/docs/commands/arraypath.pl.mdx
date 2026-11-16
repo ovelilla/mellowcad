@@ -1,0 +1,74 @@
+---
+title: "Szyk wzdłuż ścieżki w AutoCADzie: polecenie ŚCIEŻKASZYK (ARRAYPATH)"
+metaTitle: "Szyk wzdłuż ścieżki w AutoCADzie: ŚCIEŻKASZYK"
+description: "Jak zrobić szyk wzdłuż ścieżki w AutoCADzie poleceniem ŚCIEŻKASZYK (ARRAYPATH): krzywa ścieżki, metoda Zmierz lub Podziel, elementy i ich wyrównanie."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak rozmieścić obiekty wzdłuż krzywej w AutoCADzie?","answer":"Wpisz ŚCIEŻKASZYK, zaznacz obiekty, naciśnij Enter i wskaż ścieżkę blisko końca, od którego ma się zaczynać; albo wpisz SZ, czyli SZYK, i po obiektach wybierz ŚCieżka. Potem ustaw odstęp lub liczbę elementów i naciśnij Enter, aby utworzyć szyk."},{"question":"Dlaczego szyk wzdłuż ścieżki nie podąża za ścieżką?","answer":"Tu szyk zachowuje ścieżkę taką, jaka była w chwili jego utworzenia: gdy potem przesuniesz lub rozciągniesz ścieżkę, szyk zostaje bez zmian, podczas gdy skojarzony szyk wzdłuż ścieżki w AutoCADzie podążyłby za nią. Wymazanie ścieżki również pozostawia szyk. Jeśli elementy nie obracają się razem ze ścieżką, wybierz Dopasuj i odpowiedz Tak."},{"question":"Jak zmienić kierunek szyku wzdłuż ścieżki?","answer":"Wskaż ścieżkę blisko jej drugiego końca: otwarta ścieżka biegnie od końca bliższego miejscu wskazania. Okrąg zawsze biegnie przeciwnie do ruchu wskazówek zegara od swojego kąta 0."},{"question":"Jak równomiernie rozmieścić elementy na całej ścieżce?","answer":"Wybierz Metoda, potem Podziel, potem Elementy i wpisz liczbę: elementy rozkładają się równomiernie, pierwszy i ostatni na końcach otwartej ścieżki."}]
+---
+
+Polecenie ŚCIEŻKASZYK (ARRAYPATH) kopiuje zaznaczenie wzdłuż ścieżki: linii, łuku, okręgu lub polilinii, jako jeden obiekt szyku. Pyta o obiekty, podaje typ i to, czy szyk jest skojarzony, pyta o krzywą ścieżki i od razu pokazuje szyk: elementy w odstępach półtora raza większych od rozmiaru zaznaczenia, tyle, ile zmieści się na ścieżce, każdy obrócony tak, jak skręca ścieżka. Otwarta ścieżka biegnie od końca bliższego miejscu wskazania, okrąg przeciwnie do ruchu wskazówek zegara od swojego kąta 0. Potem jeden monit edytuje szyk na żywo, aż Enter go utworzy, opcjami lub uchwytami podglądu, jak w AutoCADzie. Zaznaczone obiekty zostają na miejscu jako jego pierwszy element.
+
+- **Polecenie:** `ŚCIEŻKASZYK`
+- **Po angielsku:** `ARRAYPATH`, wpisywane jako `_ARRAYPATH` w każdym języku
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `ŚCIEŻKASZYK` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="arraypath" caption="Mały kwadrat na początku łuku, rozłożony wzdłuż niego: Podziel, 7 elementów, każdy obrócony zgodnie z łukiem." />
+
+## Opcje [#options]
+
+### `Skojarzony` (`S`) [#associative]
+
+`Tak`, wartość domyślna, tworzy jeden obiekt szyku, który później zmieniają jego uchwyty i paleta Właściwości; `Nie` tworzy oddzielne kopie obok zaznaczonych obiektów. Odpowiedź jest pamiętana do końca sesji, także przez SZYKPROST i SZYKBIEGUN.
+
+### `Metoda` (`M`) [#method]
+
+`Zmierz`, wartość domyślna, rozmieszcza elementy w zadanej odległości, tyle, ile się zmieści; `Podziel` rozkłada podaną liczbę elementów równomiernie na całej ścieżce, po jednym na każdym końcu otwartej ścieżki.
+
+### `Elementy` (`E`) [#items]
+
+Przy metodzie Podziel liczba elementów. Przy metodzie Zmierz odległość między nimi, a potem ich liczba, aż do największej, która się mieści i którą polecenie podaje; `Wypełnienia` bierze je wszystkie.
+
+### `Dopasuj elementy` (`D`) [#align-items]
+
+`Tak`, wartość domyślna, obraca każdy element tak, jak ścieżka skręca od swojego początku; `Nie` tylko go przesuwa.
+
+### `konIec` (`I`) [#exit]
+
+Tworzy szyk i kończy polecenie, tak jak Enter.
+
+## Czego jeszcze nie robi [#missing]
+
+Szyk nie podąża za swoją ścieżką: gdy później edytujesz ścieżkę, szyk zachowuje tę, na której powstał. Splajny, elipsy i polilinie 3D nie mogą jeszcze być ścieżkami, podobnie jak ścieżka poza płaszczyzną układu LUW. Nie są dostępne opcje punkt Bazowy, kierunek stycznej, Wiersze, Poziomy, kierunek Z i Wyrażenie ani grupa przy monicie o ścieżkę, a uchwyty szyku nie mają menu.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett--de-reihepfad--ru-массивтраект--pl-ścieżkaszyk)
+
+## Pytania [#questions]
+
+### Jak rozmieścić obiekty wzdłuż krzywej w AutoCADzie?
+
+Wpisz `ŚCIEŻKASZYK`, zaznacz obiekty, naciśnij Enter i wskaż ścieżkę blisko końca, od którego ma się zaczynać; albo wpisz `SZ`, czyli [`SZYK`](/docs/commands/array), i po obiektach wybierz `ŚCieżka`. Potem ustaw odstęp lub liczbę elementów i naciśnij Enter, aby utworzyć szyk.
+
+### Dlaczego szyk wzdłuż ścieżki nie podąża za ścieżką?
+
+Tu szyk zachowuje ścieżkę taką, jaka była w chwili jego utworzenia: gdy potem przesuniesz lub rozciągniesz ścieżkę, szyk zostaje bez zmian, podczas gdy skojarzony szyk wzdłuż ścieżki w AutoCADzie podążyłby za nią. Wymazanie ścieżki również pozostawia szyk. Jeśli elementy nie obracają się razem ze ścieżką, wybierz `Dopasuj` i odpowiedz `Tak`.
+
+### Jak zmienić kierunek szyku wzdłuż ścieżki?
+
+Wskaż ścieżkę blisko jej drugiego końca: otwarta ścieżka biegnie od końca bliższego miejscu wskazania. Okrąg zawsze biegnie przeciwnie do ruchu wskazówek zegara od swojego kąta 0.
+
+### Jak równomiernie rozmieścić elementy na całej ścieżce?
+
+Wybierz `Metoda`, potem `Podziel`, potem `Elementy` i wpisz liczbę: elementy rozkładają się równomiernie, pierwszy i ostatni na końcach otwartej ścieżki.
+
+## Powiązane polecenia [#related]
+
+- [Szyk w AutoCADzie: polecenie SZYK (ARRAY)](/docs/commands/array)
+- [Szyk prostokątny w AutoCADzie: polecenie SZYKPROST (ARRAYRECT)](/docs/commands/arrayrect)
+- [Szyk biegunowy w AutoCADzie: polecenie SZYKBIEGUN (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Polilinia w AutoCADzie: polecenie PLINIA (PLINE)](/docs/commands/pline)

@@ -1,0 +1,72 @@
+---
+title: "Prostopadłościan w AutoCADzie: polecenie KOSTKA (BOX)"
+metaTitle: "Prostopadłościan w AutoCADzie 3D: KOSTKA"
+description: "Jak narysować prostopadłościan 3D w AutoCADzie poleceniem KOSTKA (BOX): dwa narożniki i wysokość, Środek, Sześcian, Długość i 2Punkty. Wypróbuj za darmo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak narysować prostopadłościan 3D w AutoCADzie?","answer":"Uruchom KOSTKA, podaj jeden narożnik, potem przeciwległy narożnik, potem wysokość: 0,0, 60,40 i 25 rysują prostopadłościan z sesji. Długość i szerokość zamiast przeciwległego narożnika obracają prostopadłościan pod dowolnym kątem."},{"question":"Dlaczego prostopadłościan wygląda jak prostokąt?","answer":"Patrzysz na niego z góry, w rzucie. Obróć widok: narożnik kostki ViewCube, -WIDOK i SEIzo albo 3DORBITA. BIEŻSTYLWIZ z opcją Ukryty ukrywa krawędzie za nim."},{"question":"Jak narysować sześcian w AutoCADzie?","answer":"Podaj pierwszy narożnik, potem wybierz Sześcian i wpisz długość boku."},{"question":"Jak narysować prostopadłościan od środka?","answer":"Wybierz śrOdek i podaj punkt środkowy, potem narożnik, Sześcian lub Długość: prostopadłościan jest wyśrodkowany w punkcie, także w pionie."}]
+---
+
+Polecenie KOSTKA (BOX) rysuje bryłę 3D prostopadłościanu o bokach wzdłuż osi układu LUW: podaj pierwszy narożnik, drugi narożnik, a potem wysokość. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół, a punkt podaje ją odległością od narożnika; narożnik podany na innej wysokości Z niż pierwszy ustala wysokość bez pytania. Ostatnia wysokość oraz ostatnia długość i szerokość sześcianu lub opcji Długość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude). Prostopadłościan leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+
+Prostopadłościan zachowuje swoje wymiary: [`LISTA`](/docs/commands/list) pokazuje jego położenie, długość, szerokość, wysokość i obrót, a paleta Właściwości pozwala wpisać pierwsze cztery. Jego uchwyty go przesuwają, rozciągają, a poza widokiem planu ustawiają jego wysokość. To bryła 3D dla poleceń [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
+
+- **Polecenie:** `KOSTKA`
+- **Po angielsku:** `BOX`, wpisywane jako `_BOX` w każdym języku
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `KOSTKA` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="box" caption="Prostopadłościan 60 na 40 na 25, z dwóch narożników i wysokości, widziany od południowego wschodu w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `śrOdek` (`O`) [#center]
+
+Przy pierwszym monicie: pyta o środek, potem o narożnik, `Sześcian` lub `Długość`. Prostopadłościan jest wyśrodkowany w punkcie, także w pionie.
+
+### `Sześcian` (`S`) [#cube]
+
+Przy drugim narożniku: pyta o długość, wpisaną lub wskazaną, i tworzy sześcian o wszystkich bokach tej długości. Wpisana długość biegnie w stronę kursora, ujemna – od niego.
+
+### `Długość` (`D`) [#length]
+
+Przy drugim narożniku: pyta o długość, potem o szerokość. Długość biegnie w stronę kursora, więc prostopadłościan może leżeć pod kątem; szerokość idzie na tę stronę, po której jest kursor.
+
+### `2Punkty` (`2P`) [#2point]
+
+Przy wysokości: pyta o dwa punkty, a wysokość to odległość między nimi.
+
+## Czego jeszcze nie robi [#missing]
+
+Przesuń, Obróć, Skala i Lustro z aktywnego uchwytu, które AutoCAD przełącza Enterem. Własne polecenia 3D – 3DPRZESUŃ, 3DOBRÓT, SKALA3D, LUSTRO3D, OBRÓT3D, WYRÓWNAJ, 3DWYRÓWNAJ – z ich uchwytami narzędzi oraz przesuwanie jego ścian, krawędzi i wierzchołków pojedynczo. Dynamiczny układ LUW. Kropkowane wymiary, które AutoCAD rysuje, gdy podajesz narożnik, długość i szerokość. Polecenia [`ZAOKRĄGL`](/docs/commands/fillet) i [`FAZUJ`](/docs/commands/chamfer) na jego krawędziach, co robią [`ZAOKRĄGLKRAW`](/docs/commands/filletedge) i [`FAZOWKRAW`](/docs/commands/chamferedge). Zapisywanie i pokazywanie historii bryły oraz wiersz Materiał. Style wizualne, których [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) nie ma poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader--ru-ящик--pl-kostka)
+
+## Pytania [#questions]
+
+### Jak narysować prostopadłościan 3D w AutoCADzie?
+
+Uruchom KOSTKA, podaj jeden narożnik, potem przeciwległy narożnik, potem wysokość: `0,0`, `60,40` i `25` rysują prostopadłościan z sesji. `Długość` i szerokość zamiast przeciwległego narożnika obracają prostopadłościan pod dowolnym kątem.
+
+### Dlaczego prostopadłościan wygląda jak prostokąt?
+
+Patrzysz na niego z góry, w rzucie. Obróć widok: narożnik kostki ViewCube, `-WIDOK` i `SEIzo` albo [`3DORBITA`](/docs/commands/3dorbit). [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) z opcją `Ukryty` ukrywa krawędzie za nim.
+
+### Jak narysować sześcian w AutoCADzie?
+
+Podaj pierwszy narożnik, potem wybierz `Sześcian` i wpisz długość boku.
+
+### Jak narysować prostopadłościan od środka?
+
+Wybierz `śrOdek` i podaj punkt środkowy, potem narożnik, `Sześcian` lub `Długość`: prostopadłościan jest wyśrodkowany w punkcie, także w pionie.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie KLIN (WEDGE) w AutoCADzie](/docs/commands/wedge)
+- [Polecenie WALEC (CYLINDER) w AutoCADzie](/docs/commands/cylinder)
+- [Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie](/docs/commands/extrude)
+- [Polecenie SUMA (UNION) w AutoCADzie](/docs/commands/union)

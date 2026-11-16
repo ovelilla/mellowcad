@@ -1,0 +1,89 @@
+---
+title: "Polecenie WALEC (CYLINDER) w AutoCADzie"
+metaTitle: "Walec w AutoCADzie 3D: polecenie WALEC, WAL"
+description: "Jak narysować walec 3D w AutoCADzie poleceniem WALEC (CYLINDER, skrót WAL): podstawa, promień, wysokość, 3P, 2P, Ssr, Eliptyczny i punkt końcowy osi."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie WALEC po angielsku i jaki ma skrót?","answer":"Po angielsku CYLINDER, w polskim AutoCADzie WALEC: wpisz WAL, naciśnij Enter albo spację, a potem podaj środek podstawy, promień i wysokość: 0,0, 20 i 40 rysują walec z sesji. Angielskie CYL w polskim AutoCADzie nie działa; _CYLINDER działa w AutoCADzie w każdym języku."},{"question":"Jak narysować walec poziomy w AutoCADzie?","answer":"Przy wysokości wybierz Osi i podaj drugi koniec osi: od podstawy w 0,0,0 punkt 60,0,0 kładzie walec wzdłuż X."},{"question":"Jak zrobić walec pusty w środku albo rurę?","answer":"Narysuj dwa walce z tego samego środka, wewnętrzny węższy, a potem uruchom RÓŻNICA: wskaż zewnętrzny, Enter, wewnętrzny, Enter."},{"question":"Dlaczego walec wygląda jak okrąg?","answer":"Patrzysz na niego z góry, w rzucie. Obróć widok: narożnik kostki ViewCube, -WIDOK i SEIzo albo 3DORBITA."}]
+---
+
+Polecenie WALEC (CYLINDER) rysuje bryłę 3D walca: podaj środek jego podstawy, potem promień, potem wysokość. Podstawa leży na płaszczyźnie XY układu LUW, na wysokości Z środka, a wysokość rośnie wzdłuż jego osi Z; ujemna idzie w dół, a punkt podaje ją odległością od podstawy, jak w poleceniu [`KOSTKA`](/docs/commands/box). Promień i wysokość są proponowane jako wartości domyślne, które przyjmuje Enter, wspólne z innymi bryłami podstawowymi i poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude). Walec leży na bieżącej warstwie, a cofnięcie usuwa go w jednym kroku.
+
+Walec zachowuje swoje wymiary: [`LISTA`](/docs/commands/list) pokazuje jego położenie, normalną, promień i wysokość, a paleta Właściwości pozwala wpisać promień i wysokość. Jego uchwyty go przesuwają, ustawiają jego wysokość, a w każdej ćwiartce podstawy jego promień. To bryła 3D dla poleceń [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły 3D i wciąż jest częściowe.
+
+- **Polecenie:** `WALEC`
+- **Po angielsku:** `CYLINDER`, wpisywane jako `_CYLINDER` w każdym języku
+- **Aliasy:** `WAL`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WAL` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="cylinder" caption="Walec o promieniu 20 i wysokości 40, od środka podstawy, widziany od południowego wschodu w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `3P` [#3p]
+
+Przy środku podstawy: pyta o trzy punkty, a podstawa to okrąg przez nie, w ich płaszczyźnie. Trzy punkty na płaszczyźnie XY układu LUW nadal dają walec rosnący wzdłuż Z.
+
+### `2P` [#2p]
+
+Przy środku podstawy: pyta o dwa końce średnicy podstawy; drugi jest odczytywany w płaszczyźnie pierwszego.
+
+### `Ssr` (`S`) [#ttr]
+
+Przy środku podstawy: wskaż dwie linie, okręgi lub łuki, z lokalizacją Styczna, i podaj promień: podstawa dotyka obu, najbliżej wskazanych punktów, na ich wysokości.
+
+### `Eliptyczny` (`E`) [#elliptical]
+
+Przy środku podstawy: podstawa jest elipsą. Podaj oba końce jej pierwszej osi, a potem koniec drugiej; albo wybierz `śrOdek` i podaj jej środek, połowę długości pierwszej osi, a potem koniec drugiej osi.
+
+### `śreDnica` (`D`) [#diameter]
+
+Przy promieniu: pyta zamiast niego o średnicę, proponując dwukrotność ostatniego promienia.
+
+### `2Punkty` (`2P`) [#2point]
+
+Przy wysokości: pyta o dwa punkty, a wysokość to odległość między nimi.
+
+### `punkt końcowy Osi` (`O`) [#axis]
+
+Przy wysokości: pyta o drugi koniec osi. Walec biegnie od środka podstawy do tego punktu w dowolnym kierunku, z podstawą prostopadłą do osi.
+
+## Czego jeszcze nie robi [#missing]
+
+Polecenie [`ROZBIJ`](/docs/commands/explode) na walcu, który AutoCAD zamienia w dwie podstawy i powierzchnię: MellowCAD nie ma powierzchni, więc podaje, że nie mógł go rozbić. Przesuń, Obróć, Skala i Lustro z aktywnego uchwytu oraz wysokość przeciągnięta poza podstawę. Kropkowane wymiary, które AutoCAD rysuje, gdy podajesz promień, punkty elipsy i oś. Zamiana okrągłego walca na eliptyczny przez wpisanie w palecie Właściwości. Sylwetki, które rysuje `DISPSILH` w AutoCADzie. W rzucie, gdzie górny okrąg zasłania okrąg podstawy, lokalizacja Najbliższy punkt znajduje okrąg podstawy, a AutoCAD górny. Style wizualne, których [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) nie ma poza Modelem szkieletowym 2D, Ukrytym i Koncepcyjnym.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie WALEC po angielsku i jaki ma skrót?
+
+Po angielsku CYLINDER, w polskim AutoCADzie WALEC: wpisz `WAL`, naciśnij Enter albo spację, a potem podaj środek podstawy, promień i wysokość: `0,0`, `20` i `40` rysują walec z sesji. Angielskie `CYL` w polskim AutoCADzie nie działa; `_CYLINDER` działa w AutoCADzie w każdym języku.
+
+### Jak narysować walec poziomy w AutoCADzie?
+
+Przy wysokości wybierz `Osi` i podaj drugi koniec osi: od podstawy w `0,0,0` punkt `60,0,0` kładzie walec wzdłuż X.
+
+### Jak zrobić walec pusty w środku albo rurę?
+
+Narysuj dwa walce z tego samego środka, wewnętrzny węższy, a potem uruchom [`RÓŻNICA`](/docs/commands/subtract): wskaż zewnętrzny, Enter, wewnętrzny, Enter.
+
+### Dlaczego walec wygląda jak okrąg?
+
+Patrzysz na niego z góry, w rzucie. Obróć widok: narożnik kostki ViewCube, `-WIDOK` i `SEIzo` albo [`3DORBITA`](/docs/commands/3dorbit).
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie STOŻEK (CONE) w AutoCADzie](/docs/commands/cone)
+- [Prostopadłościan w AutoCADzie: polecenie KOSTKA (BOX)](/docs/commands/box)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)
+- [Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie](/docs/commands/extrude)

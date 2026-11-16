@@ -1,0 +1,83 @@
+---
+title: "Szyk biegunowy w AutoCADzie: polecenie SZYKBIEGUN (ARRAYPOLAR)"
+metaTitle: "Szyk biegunowy w AutoCADzie: SZYKBIEGUN"
+description: "Jak zrobić szyk biegunowy (kołowy) w AutoCADzie poleceniem SZYKBIEGUN (ARRAYPOLAR): środek, liczba elementów, kąt między nimi lub wypełnienia, obrót elementów."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak zrobić szyk biegunowy w AutoCADzie?","answer":"Wpisz SZYKBIEGUN, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; albo wpisz SZ, czyli SZYK, i po obiektach wybierz BIegunowy. Potem wybierz Elementy, aby ustawić ich liczbę, i naciśnij Enter, aby utworzyć szyk."},{"question":"Jak rozmieścić obiekty na części okręgu?","answer":"Wybierz Wypełnienia i wpisz kąt: 180 rozkłada elementy na pół okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta."},{"question":"Jak sprawić, by elementy szyku się nie obracały?","answer":"Wybierz OBRóć i odpowiedz Nie: każdy element jest przesuwany wokół środka bez obracania."},{"question":"Jak zmienić promień szyku biegunowego?","answer":"Zaznacz szyk i przeciągnij jego kwadratowy uchwyt w punkcie bazowym w stronę środka lub od niego: odległość od środka to nowy promień. Albo wpisz ponownie Promień w palecie Właściwości."}]
+---
+
+Polecenie SZYKBIEGUN (ARRAYPOLAR) kopiuje zaznaczenie wokół punktu środkowego jako jeden obiekt szyku. Pyta o obiekty, podaje typ i to, czy szyk jest skojarzony, pyta o punkt środkowy i od razu pokazuje szyk: 6 elementów na pełnym obrocie, każdy obrócony w miarę obiegania środka. Potem jeden monit edytuje go na żywo, aż Enter go utworzy, opcjami lub uchwytami podglądu, jak w AutoCADzie. Zaznaczone obiekty stają się jego pierwszym elementem.
+
+- **Polecenie:** `SZYKBIEGUN`
+- **Po angielsku:** `ARRAYPOLAR`, wpisywane jako `_ARRAYPOLAR` w każdym języku
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `SZYKBIEGUN` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="arraypolar" caption="Otwór na kołnierzu rozłożony wokół środka kołnierza: 8 elementów na pełnym obrocie." />
+
+## Opcje [#options]
+
+### `Skojarzony` (`S`) [#associative]
+
+`Tak`, wartość domyślna, tworzy jeden obiekt szyku, który później zmieniają jego uchwyty i paleta Właściwości; `Nie` tworzy oddzielne kopie obok zaznaczonych obiektów. Odpowiedź jest pamiętana do końca sesji, także przez SZYKPROST i ŚCIEŻKASZYK.
+
+### `Elementy` (`E`) [#items]
+
+Liczba elementów, od 1 do 32767; kąt, który wypełniają, zostaje zachowany.
+
+### `Kąt między` (`K`) [#angle-between]
+
+Kąt od jednego elementu do następnego. Kąt wypełnienia staje się wielokrotnością tego kroku, z zachowanym kierunkiem, i pełnym obrotem, gdy dojdzie do 360°.
+
+### `kąt Wypełnienia` (`W`) [#fill-angle]
+
+Kąt, który wypełniają elementy, dodatni przeciwnie do ruchu wskazówek zegara, a ujemny zgodnie z nim; liczba elementów zostaje zachowana. Na pełnym obrocie elementy dzieli obrót podzielony przez ich liczbę; na mniejszym ostatni trafia na koniec kąta.
+
+### `OBRóć elementy` (`OBR`) [#rotate-items]
+
+`Tak`, wartość domyślna, obraca każdy element w miarę obiegania środka; `Nie` tylko go przesuwa, więc każdy element stoi tak jak pierwszy.
+
+### `konIec` (`I`) [#exit]
+
+Tworzy szyk i kończy polecenie, tak jak Enter.
+
+## Czego jeszcze nie robi [#missing]
+
+Punkt bazowy; Oś obrotu, dla szyku wokół osi w przestrzeni; Wiersze i Poziomy, dla pierścieni elementów i kopii ułożonych wzdłuż Z; Wyrażenie, które wiąże wartość z parametrami rysunku. Menu uchwytów szyku (rozciąganie promienia, liczba elementów, kąt wypełnienia…) i Ctrl do przełączania między nimi.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare--de-reihekreis--ru-массивкруг--pl-szykbiegun)
+
+## Pytania [#questions]
+
+### Jak zrobić szyk biegunowy w AutoCADzie?
+
+Wpisz `SZYKBIEGUN`, zaznacz obiekty, naciśnij Enter i wskaż punkt środkowy; albo wpisz `SZ`, czyli [`SZYK`](/docs/commands/array), i po obiektach wybierz `BIegunowy`. Potem wybierz `Elementy`, aby ustawić ich liczbę, i naciśnij Enter, aby utworzyć szyk.
+
+### Jak rozmieścić obiekty na części okręgu?
+
+Wybierz `Wypełnienia` i wpisz kąt: 180 rozkłada elementy na pół okręgu przeciwnie do ruchu wskazówek zegara, -180 zgodnie z nim. Liczba elementów zostaje zachowana, a pierwszy i ostatni stoją na obu końcach kąta.
+
+### Jak sprawić, by elementy szyku się nie obracały?
+
+Wybierz `OBRóć` i odpowiedz `Nie`: każdy element jest przesuwany wokół środka bez obracania.
+
+### Jak zmienić promień szyku biegunowego?
+
+Zaznacz szyk i przeciągnij jego kwadratowy uchwyt w punkcie bazowym w stronę środka lub od niego: odległość od środka to nowy promień. Albo wpisz ponownie Promień w palecie Właściwości.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange)
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table)
+
+## Powiązane polecenia [#related]
+
+- [Szyk w AutoCADzie: polecenie SZYK (ARRAY)](/docs/commands/array)
+- [Szyk prostokątny w AutoCADzie: polecenie SZYKPROST (ARRAYRECT)](/docs/commands/arrayrect)
+- [Szyk wzdłuż ścieżki w AutoCADzie: polecenie ŚCIEŻKASZYK (ARRAYPATH)](/docs/commands/arraypath)
+- [Polecenie OBRÓĆ (ROTATE) w AutoCADzie](/docs/commands/rotate)

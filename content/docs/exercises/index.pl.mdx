@@ -1,0 +1,166 @@
+---
+title: "Ćwiczenia AutoCAD"
+metaTitle: "Ćwiczenia AutoCAD z rozwiązaniami, za darmo"
+description: "Ćwiczenia AutoCAD dla początkujących i nie tylko, w 2D, izometrii i 3D, każde rozwiązane krok po kroku i otwierane z rysunkiem w darmowym edytorze online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Gdzie znaleźć ćwiczenia AutoCAD do nauki?","answer":"Tutaj: każde ćwiczenie ma zwymiarowany rysunek, polecenia, które ćwiczy, i rozwiązanie krok po kroku, a otwiera się w darmowym edytorze, który działa jak AutoCAD, w przeglądarce. Zacznij od ćwiczeń dla początkujących; każde użyte w nich polecenie prowadzi do opisu tego, co robi, i opcji, o które pyta."},{"question":"Czy można ćwiczyć AutoCAD online za darmo?","answer":"Tak. MellowCAD działa w przeglądarce, za darmo i bez konta: wpisujesz polecenia i aliasy AutoCADa, pod nazwami w twoim języku, i odpowiadasz na ich monity w tej samej kolejności, z tymi samymi literami opcji. To nie jest AutoCAD: otwiera i zapisuje pliki DXF, ale jeszcze nie DWG, a jego bryły 3D są na razie niepełne."},{"question":"Czy ćwiczenia mają rozwiązania?","answer":"Każde ćwiczenie jest rozwiązane krok po kroku pod swoim rysunkiem. Silnik rysuje każdy krok i zapisuje historię wiersza polecenia, więc możesz porównać z nią swoją, wiersz po wierszu."},{"question":"Czy mogę wydrukować ćwiczenia lub zapisać je jako PDF?","answer":"Tak. Strona ćwiczenia drukuje się samodzielnie, ciemne linie na białym tle, najpierw rysunek, potem kroki, a okno drukowania przeglądarki zapisuje ją jako PDF."}]
+---
+
+Rysunki do ćwiczenia AutoCADa, od pierwszej uszczelki po bryły 3D, każdy z wymiarami, poleceniami, które ćwiczy, i rozwiązaniem krok po kroku. Silnik rysuje każdy krok i zapisuje historię wiersza polecenia tak, jak będziesz ją wpisywać: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Otwórz ćwiczenie w edytorze, a jego rysunek znajdzie się obok miejsca, w którym rysujesz swój – w przeglądarce, bez instalacji i bez zakładania konta.
+
+## Początkujący [#beginner]
+
+### Ćwiczenie AutoCAD: uszczelka [#gasket]
+
+<Session name="exercises/gasket" caption="Uszczelka 120 na 80 z wymiarami." />
+
+Narysuj uszczelkę w AutoCADzie: płytka z zaokrąglonymi narożami, otwór środkowy, cztery otwory skopiowane z jednego, osie i wymiary. Krok po kroku, online.
+
+- **Ćwiczenie:** Początkujący · Mechanika · 2D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`OKRĄG`](/docs/commands/circle), [`KOPIUJ`](/docs/commands/copy), [`LINIA`](/docs/commands/line), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMŚREDNICA`](/docs/commands/dimdiameter)
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket)
+
+### Ćwiczenie AutoCAD: wspornik L [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="Wspornik L, 100 na 80, zwymiarowany od lewego dolnego narożnika." />
+
+Narysuj wspornik L w AutoCADzie we współrzędnych względnych: kontur, zaokrąglenie, dwa otwory i wymiary od bazy. Krok po kroku, za darmo online.
+
+- **Ćwiczenie:** Początkujący · Mechanika · 2D
+- **Polecenia:** [`LINIA`](/docs/commands/line), [`ZAOKRĄGL`](/docs/commands/fillet), [`OKRĄG`](/docs/commands/circle), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMBAZA`](/docs/commands/dimbaseline), [`WYMPROMIEŃ`](/docs/commands/dimradius), [`WYMŚREDNICA`](/docs/commands/dimdiameter)
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket)
+
+### Ćwiczenie AutoCAD: schody w rzucie [#stairs]
+
+<Session name="exercises/stairs" caption="Prosty bieg schodów w rzucie, 280 na 100 centymetrów, ze strzałką skierowaną w górę biegu." />
+
+Narysuj w AutoCADzie rzut schodów jednobiegowych: dziesięć stopni z jednej linii i szyku prostokątnego, strzałka kierunku wejścia i wymiary. Krok po kroku.
+
+- **Ćwiczenie:** Początkujący · Architektura · 2D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`LINIA`](/docs/commands/line), [`SZYKPROST`](/docs/commands/arrayrect), [`PLINIA`](/docs/commands/pline), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- [Ćwiczenie AutoCAD: schody w rzucie](/docs/exercises/stairs)
+
+### Ćwiczenie AutoCAD 3D: płyta montażowa [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="Kontur płyty, 100 na 60, z czterema otworami i wymiarami." />
+
+Zamodeluj płytę montażową w AutoCADzie 3D: regiony, odjęcie otworów i jedno wyciągnięcie tworzą bryłę. Krok po kroku, ćwiczenie 3D za darmo online.
+
+- **Ćwiczenie:** Początkujący · Mechanika · Bryła 3D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`OKRĄG`](/docs/commands/circle), [`KOPIUJ`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`RÓŻNICA`](/docs/commands/subtract), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`WYCIĄGNIJ`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate)
+
+## Średniozaawansowany [#intermediate]
+
+### Ćwiczenie AutoCAD: kołnierz [#flange]
+
+<Session name="exercises/flange" caption="Kołnierz o średnicy 140 z rowkiem wpustowym, ośmioma otworami i średnicami." />
+
+Narysuj kołnierz w AutoCADzie: otwór z wyciętym rowkiem wpustowym, osiem otworów w szyku biegunowym, osie i średnice. Krok po kroku, za darmo online.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`PROSTOK`](/docs/commands/rectang), [`UTNIJ`](/docs/commands/trim), [`SZYKBIEGUN`](/docs/commands/arraypolar), [`LINIA`](/docs/commands/line), [`WYMŚREDNICA`](/docs/commands/dimdiameter), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange)
+
+### Ćwiczenie AutoCAD: okrągły stół i krzesła [#round-table]
+
+<Session name="exercises/round-table" caption="Okrągły stół o średnicy 120 z sześcioma krzesłami, w rzucie, zwymiarowany w centymetrach." />
+
+Narysuj w AutoCADzie okrągły stół z sześcioma krzesłami: jedno krzesło, potem szyk biegunowy wokół środka stołu i wymiary. Krok po kroku, za darmo online.
+
+- **Ćwiczenie:** Średniozaawansowany · Architektura · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`PROSTOK`](/docs/commands/rectang), [`SZYKBIEGUN`](/docs/commands/arraypolar), [`WYMŚREDNICA`](/docs/commands/dimdiameter), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table)
+
+### Ćwiczenie AutoCAD: działka [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="Działka o pięciu bokach, w metrach, z wymiarem każdego boku i jednego kąta." />
+
+Narysuj działkę w AutoCADzie z długości i kątów jej boków we współrzędnych biegunowych, potem zmierz jej pole i zwymiaruj ją. Krok po kroku, za darmo online.
+
+- **Ćwiczenie:** Średniozaawansowany · Budownictwo · 2D
+- **Polecenia:** [`PLINIA`](/docs/commands/pline), [`POLE`](/docs/commands/area), [`WYMNORMALNY`](/docs/commands/dimaligned), [`WYMKĄTOWY`](/docs/commands/dimangular)
+- [Ćwiczenie AutoCAD: działka](/docs/exercises/plot-of-land)
+
+### Ćwiczenie AutoCAD: wałek stopniowany [#shaft]
+
+<Session name="exercises/shaft" caption="Wałek stopniowany w widoku z boku, długość 150, długości zwymiarowane łańcuchowo." />
+
+Narysuj wałek stopniowany w AutoCADzie: połowa konturu jako polilinia, sfazowana, odbita względem osi, i długości w wymiarach łańcuchowych. Krok po kroku.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · 2D
+- **Polecenia:** [`PLINIA`](/docs/commands/pline), [`FAZUJ`](/docs/commands/chamfer), [`LUSTRO`](/docs/commands/mirror), [`LINIA`](/docs/commands/line), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMSZEREG`](/docs/commands/dimcontinue)
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft)
+
+### Ćwiczenie AutoCAD: klocek schodkowy w izometrii [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="Klocek schodkowy w izometrii: długość 60, głębokość 40, wysokość 40, wymiary wzdłuż krawędzi." />
+
+Narysuj klocek schodkowy w izometrii w AutoCADzie poleceniem LINIA (LINE) i współrzędnymi biegunowymi wzdłuż osi 30°, 90° i 150°, potem go zwymiaruj.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · Izometria
+- **Polecenia:** [`LINIA`](/docs/commands/line), [`WYMNORMALNY`](/docs/commands/dimaligned)
+- [Ćwiczenie AutoCAD: klocek schodkowy w izometrii](/docs/exercises/isometric-block)
+
+### Ćwiczenie AutoCAD 3D: koło pasowe [#pulley]
+
+<Session name="exercises/pulley" caption="Półprzekrój koła pasowego obok jego osi, z odległościami od osi zwymiarowanymi." />
+
+Zamodeluj koło pasowe w AutoCADzie 3D: półprzekrój jako zamknięta polilinia, obrócony wokół osi Y w bryłę. Krok po kroku, ćwiczenie 3D za darmo online.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · Bryła 3D
+- **Polecenia:** [`PLINIA`](/docs/commands/pline), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`PRZEKRĘĆ`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [Ćwiczenie AutoCAD 3D: koło pasowe](/docs/exercises/pulley)
+
+## Zaawansowany [#advanced]
+
+### Ćwiczenie AutoCAD: łącznik z liniami stycznymi [#link]
+
+<Session name="exercises/link" caption="Łącznik z dwoma oczkami w rozstawie 90, połączonymi liniami stycznymi, z wymiarami." />
+
+Narysuj łącznik w AutoCADzie: dwa oczka połączone liniami stycznymi do obu z lokalizacją Styczny, łuki między nimi ucięte, i wymiary. Za darmo online.
+
+- **Ćwiczenie:** Zaawansowany · Mechanika · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`LINIA`](/docs/commands/line), [`UTNIJ`](/docs/commands/trim), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMPROMIEŃ`](/docs/commands/dimradius), [`WYMŚREDNICA`](/docs/commands/dimdiameter)
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link)
+
+### Ćwiczenie AutoCAD 3D: korpus łożyska [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="Korpus łożyska w rzucie, 100 na 60, z wymiarami tulei, otworu łożyskowego i otworów." />
+
+Zamodeluj korpus łożyska w AutoCADzie 3D: wyciągnij, połącz, potem odejmij otwór i dwa otwory na śruby jako walce. Krok po kroku, bryły 3D za darmo online.
+
+- **Ćwiczenie:** Zaawansowany · Mechanika · Bryła 3D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`OKRĄG`](/docs/commands/circle), [`WYCIĄGNIJ`](/docs/commands/extrude), [`SUMA`](/docs/commands/union), [`WALEC`](/docs/commands/cylinder), [`KOPIUJ`](/docs/commands/copy), [`RÓŻNICA`](/docs/commands/subtract), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block)
+
+## Przewodniki krok po kroku [#guides]
+
+Umiejętności z ćwiczeń, po jednej naraz: wpisywanie punktów, rzut domu, rysunek 2D zamieniony w bryłę. Każdy przewodnik pokazuje rysunek i historię każdego kroku.
+
+- [Współrzędne w AutoCADzie](/docs/coordinates): Jak wpisywać punkty w AutoCADzie: współrzędne bezwzględne, względne i biegunowe, linia pod kątem i śledzenie biegunowe. Ćwicz za darmo online.
+- [Jak narysować rzut domu w AutoCADzie](/docs/floor-plan): Jak narysować rzut domu w AutoCADzie: ściany poleceniem ODSUŃ (OFFSET), ściana wewnętrzna, otwory wycięte poleceniem UTNIJ (TRIM), drzwi, okna i wymiary.
+- [Od 2D do 3D w AutoCADzie](/docs/2d-to-3d): Jak zamienić rysunek 2D w bryłę 3D w AutoCADzie: wyciągnij lub obróć zamknięty profil, dodaj i odejmij bryły. Darmowe bryły 3D online, wciąż częściowo.
+
+## Jak działają ćwiczenia [#how]
+
+Ćwiczenie otwiera się w edytorze ze swoim rysunkiem, zwymiarowanym, na lewo od początku układu współrzędnych: rysuj swój od 0,0, tak jak rozwiązanie. To, co narysujesz, jest przechowywane w tej przeglądarce tylko dla tego ćwiczenia. Twój bieżący rysunek zostaje bez zmian, a edytor otwarty bezpośrednio go przywraca. Aby zacząć ćwiczenie od nowa, uruchom polecenie NOWY, a potem otwórz ćwiczenie z jego strony. Każda strona drukuje się samodzielnie, najpierw rysunek, potem kroki, a okno drukowania przeglądarki zapisuje ją jako PDF.
+
+## Pytania [#questions]
+
+### Gdzie znaleźć ćwiczenia AutoCAD do nauki?
+
+Tutaj: każde ćwiczenie ma zwymiarowany rysunek, polecenia, które ćwiczy, i rozwiązanie krok po kroku, a otwiera się w darmowym edytorze, który działa jak AutoCAD, w przeglądarce. Zacznij od ćwiczeń dla początkujących; każde użyte w nich polecenie prowadzi do opisu tego, co robi, i opcji, o które pyta.
+
+### Czy można ćwiczyć AutoCAD online za darmo?
+
+Tak. MellowCAD działa w przeglądarce, za darmo i bez konta: wpisujesz polecenia i aliasy AutoCADa, pod nazwami w twoim języku, i odpowiadasz na ich monity w tej samej kolejności, z tymi samymi literami opcji. To nie jest AutoCAD: otwiera i zapisuje pliki DXF, ale jeszcze nie DWG, a jego bryły 3D są na razie niepełne.
+
+### Czy ćwiczenia mają rozwiązania?
+
+Każde ćwiczenie jest rozwiązane krok po kroku pod swoim rysunkiem. Silnik rysuje każdy krok i zapisuje historię wiersza polecenia, więc możesz porównać z nią swoją, wiersz po wierszu.
+
+### Czy mogę wydrukować ćwiczenia lub zapisać je jako PDF?
+
+Tak. Strona ćwiczenia drukuje się samodzielnie, ciemne linie na białym tle, najpierw rysunek, potem kroki, a okno drukowania przeglądarki zapisuje ją jako PDF.

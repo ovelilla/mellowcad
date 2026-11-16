@@ -67,6 +67,10 @@
       "types": "./dist/locales/ru.d.ts",
       "default": "./dist/locales/ru.js"
     },
+    "./locales/pl": {
+      "types": "./dist/locales/pl.d.ts",
+      "default": "./dist/locales/pl.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

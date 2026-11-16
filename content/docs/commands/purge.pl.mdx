@@ -1,0 +1,64 @@
+---
+title: "Polecenie USUŃ (PURGE) w AutoCADzie"
+description: "Jak usunąć nieużywane bloki i rodzaje linii w AutoCADzie poleceniem USUŃ (PURGE, skrót US): według nazwy lub wszystkie naraz, z potwierdzeniem lub bez."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie USUŃ po angielsku?","answer":"PURGE. W polskim AutoCADzie jego skrót to US: wpisz go i naciśnij Enter lub spację. Angielskie PU w polskiej wersji uruchamia polecenie PUNKT. -USUŃ to -USUŃ, wersja dla wiersza polecenia, którą polecenie USUŃ uruchamia też tutaj. _PURGE działa w AutoCADzie w każdym języku."},{"question":"Jak usunąć nieużywane bloki w AutoCADzie?","answer":"Wpisz US, wybierz BLoki, naciśnij Enter dla wszystkich nazw i odpowiedz Nie, aby usunąć je wszystkie bez pytania o każdy."},{"question":"Dlaczego nie mogę usunąć bloku?","answer":"Bo jest w użyciu: umieszcza go odnośnik w rysunku albo zawiera go używany blok, być może zagnieżdżony kilka poziomów głębiej. Wymaż jego odnośniki albo rozbij bloki, które go zawierają, a polecenie USUŃ będzie mogło go usunąć."},{"question":"Jak usunąć nieużywane warstwy?","answer":"W AutoCADzie – typem Warstwy polecenia USUŃ. Tutaj jeszcze nie: polecenie USUŃ czyści bloki i rodzaje linii; pustą warstwę usuń zamiast tego w Menedżerze właściwości warstw."}]
+---
+
+Polecenie USUŃ (PURGE) usuwa to, co rysunek definiuje, ale czego nie używa; tutaj są to bloki i rodzaje linii. W AutoCADzie polecenie USUŃ otwiera okno dialogowe Usuń; MellowCAD go nie ma, więc polecenie USUŃ pyta w wierszu polecenia o to, o co pyta `-USUŃ`, tak jak robi to konsola AutoCADa. Podaje ustawienia Elementy zagnieżdżone i Osierocone dane, oba wyłączone, i pyta, jaki typ nieużywanych obiektów usunąć, proponując `BLoki` i `rodzLinii`; Enter w tym miejscu kończy polecenie.
+
+Blok jest w użyciu, dopóki umieszcza go odnośnik w rysunku albo zawiera go definicja używanego bloku, na dowolnej głębokości. Wymazanie ostatniego odnośnika bloku zostawia jego definicję w rysunku, skąd [`WSTAW`](/docs/commands/insert) może go wstawić ponownie: to polecenie USUŃ ją kasuje. Blok zawarty w zachowanym bloku nigdy nie jest usuwany, a łańcuch bloków, które zawierają tylko siebie nawzajem, znika w jednym uruchomieniu. Gdy nie ma czego usunąć, polecenie wyświetla `Nie znaleziono bloki bez odnośników.`. Każde uruchomienie to jeden krok, który cofa `C`.
+
+- **Polecenie:** `USUŃ`
+- **Po angielsku:** `PURGE`, wpisywane jako `_PURGE` w każdym języku
+- **Aliasy:** `US`
+- **Panel:** [Organizacja](/docs/commands#organize)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `US` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="purge" caption="Dwa bloki, TAG wstawiony na ścianie i BOX, którego jedyny odnośnik wymazano: USUŃ, wszystkie nazwy, bez potwierdzania, usuwa tylko BOX." />
+
+## Opcje [#options]
+
+### `BLoki` (`BL`) [#blocks]
+
+Pyta o nazwy do usunięcia, domyślnie `*` dla każdego nieużywanego bloku, albo o nazwy z symbolami wieloznacznymi, oddzielone przecinkami. Potem pyta, czy potwierdzać każdą nazwę: `Tak`, odpowiedź domyślna, pyta o każdy blok przed jego usunięciem, a `Nie` usuwa wszystkie i podaje każdą nazwę oraz ich liczbę.
+
+### `rodzLinii` (`L`) [#ltypes]
+
+Pyta o nazwy i o potwierdzanie każdej, tak jak `BLoki`, i usuwa rodzaje linii, których nic nie używa. Continuous, bieżący rodzaj linii i rodzaj używany przez warstwę lub obiekt, także wewnątrz bloku, zawsze zostają; gdy nie ma czego usunąć, polecenie wyświetla `Nie znaleziono rodzaje linii bez odnośników.`. Opcja `Wczytaj` polecenia [`RODZLIN`](/docs/commands/linetype) przywraca usunięty rodzaj.
+
+## Czego jeszcze nie robi [#missing]
+
+Okno dialogowe Usuń i każdy inny typ: warstwy, style tekstu i wymiarowania, grupy, materiały, style wielolinii odniesienia, tabel i style wizualne, zarejestrowane aplikacje, geometria o zerowej długości, puste obiekty tekstowe, osierocone dane oraz Wszystko. Ustawień Elementy zagnieżdżone i Osierocone dane nie można zmienić.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig--ru-очистить--оч--удали--очистить--pl-usuń--us--usuń)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie USUŃ po angielsku?
+
+PURGE. W polskim AutoCADzie jego skrót to `US`: wpisz go i naciśnij Enter lub spację. Angielskie `PU` w polskiej wersji uruchamia polecenie PUNKT. `-USUŃ` to `-USUŃ`, wersja dla wiersza polecenia, którą polecenie USUŃ uruchamia też tutaj. `_PURGE` działa w AutoCADzie w każdym języku.
+
+### Jak usunąć nieużywane bloki w AutoCADzie?
+
+Wpisz `US`, wybierz `BLoki`, naciśnij Enter dla wszystkich nazw i odpowiedz `Nie`, aby usunąć je wszystkie bez pytania o każdy.
+
+### Dlaczego nie mogę usunąć bloku?
+
+Bo jest w użyciu: umieszcza go odnośnik w rysunku albo zawiera go używany blok, być może zagnieżdżony kilka poziomów głębiej. Wymaż jego odnośniki albo rozbij bloki, które go zawierają, a polecenie USUŃ będzie mogło go usunąć.
+
+### Jak usunąć nieużywane warstwy?
+
+W AutoCADzie – typem Warstwy polecenia USUŃ. Tutaj jeszcze nie: polecenie USUŃ czyści bloki i rodzaje linii; pustą warstwę usuń zamiast tego w Menedżerze właściwości warstw.
+
+## Powiązane polecenia [#related]
+
+- [Bloki w AutoCADzie: polecenie BLOK (BLOCK)](/docs/commands/block)
+- [Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)](/docs/commands/insert)
+- [Polecenie WYMAŻ (ERASE) w AutoCADzie](/docs/commands/erase)
+- [PALETABLOKI (BLOCKSPALETTE)](/docs/commands#blockspalette): Otwiera paletę Bloki

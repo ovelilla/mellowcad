@@ -1,0 +1,72 @@
+---
+title: "Polecenie KLIN (WEDGE) w AutoCADzie"
+description: "Jak narysować klin 3D w AutoCADzie poleceniem KLIN (WEDGE, skrót KL), krok po kroku: dwa narożniki i wysokość, Środek, Sześcian, Długość i 2Punkty."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie KLIN po angielsku?","answer":"WEDGE. W polskim AutoCADzie wpisz KLIN lub skrót KL i naciśnij Enter lub spację; skrót WE z wersji angielskiej uruchamia w polskiej WYMEDYCJA. _WEDGE działa w AutoCADzie w każdym języku. Potem podaj pierwszy narożnik, drugi narożnik i wysokość: 0,0, 60,40 i 25 rysują klin z sesji."},{"question":"W którą stronę opada klin?","answer":"W dół od strony pierwszego narożnika, wzdłuż osi X układu LUW. Aby go odwrócić, podaj drugi narożnik o mniejszym X, co obraca go o 180°, albo obróć go później poleceniem OBRÓĆ."},{"question":"Jak narysować graniastosłup trójkątny w AutoCADzie?","answer":"Klin nim jest: trójkąt prostokątny na każdym końcu, przeciągnięty wzdłuż szerokości. Każdy inny trójkąt narysuj jako zamknięty poleceniem PLINIA i wyciągnij go poleceniem WYCIĄGNIJ."},{"question":"Jak narysować klin od środka?","answer":"Wybierz śrOdek i podaj punkt środkowy, potem narożnik, Sześcian lub Długość: klin jest wyśrodkowany w punkcie, także w pionie."}]
+---
+
+Polecenie KLIN (WEDGE) rysuje bryłę 3D w kształcie klina: prostopadłościan, którego góra opada od jednego końca do drugiego. Pyta o to samo co [`KOSTKA`](/docs/commands/box): pierwszy narożnik, drugi narożnik, a potem wysokość. Wysoki koniec jest przy pierwszym narożniku, a spadek biegnie wzdłuż osi X układu LUW w stronę drugiego narożnika; narożnik o mniejszym X odwraca klin. Wysokość rośnie wzdłuż osi Z układu LUW, ujemna idzie w dół. Długość, szerokość i wysokość to wartości domyślne polecenia [`KOSTKA`](/docs/commands/box), które przyjmuje Enter. Klin leży na bieżącej warstwie i cofa się w jednym kroku.
+
+[`LISTA`](/docs/commands/list) pokazuje jego położenie, długość, szerokość, wysokość i obrót, a w palecie Właściwości można je wpisać. Jego uchwyty są takie jak uchwyty polecenia [`KOSTKA`](/docs/commands/box). Jest bryłą 3D dla [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły i wciąż jest częściowe; [`ROZBIJ`](/docs/commands/explode) zamienia go w region na każdą ścianę.
+
+- **Polecenie:** `KLIN`
+- **Po angielsku:** `WEDGE`, wpisywane jako `_WEDGE` w każdym języku
+- **Aliasy:** `KL`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `KL` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="wedge" caption="Klin 60 na 40 na 25 z dwóch narożników i wysokości, ze spadkiem od strony pierwszego narożnika, widziany z południowego wschodu w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `śrOdek` (`O`) [#center]
+
+Przy pierwszym pytaniu: pyta o środek, a potem o narożnik, `Sześcian` lub `Długość`. Klin jest wyśrodkowany w punkcie, także w pionie, a jego wysoki koniec leży naprzeciw podanego narożnika.
+
+### `Sześcian` (`S`) [#cube]
+
+Przy drugim narożniku: pyta o długość i tworzy klin o wszystkich bokach tej długości. Inaczej niż w [`KOSTKA`](/docs/commands/box), biegnie wzdłuż osi X układu LUW, wstecz przy wartości ujemnej.
+
+### `Długość` (`D`) [#length]
+
+Przy drugim narożniku: pyta o długość, wzdłuż osi X układu LUW, a potem o szerokość, wzdłuż jego osi Y; wartość ujemna biegnie wstecz. Punkt podaje tylko swoją odległość, nigdy kierunek.
+
+### `2Punkty` (`2P`) [#2point]
+
+Przy wysokości: pyta o dwa punkty, a wysokość to odległość między nimi.
+
+## Czego jeszcze nie robi [#missing]
+
+To, czego brakuje w [`KOSTKA`](/docs/commands/box): przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu, własne polecenia 3D, wymiary kropkowane podczas podawania narożnika oraz style wizualne, których brakuje w [`BIEŻSTYLWIZ`](/docs/commands/vscurrent). W rzucie z góry lokalizacja Punkt końcowy pod wysokim końcem znajduje narożnik góry, podczas gdy AutoCAD znajduje narożnik podstawy.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke--ru-клин--кл--pl-klin--kl)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie KLIN po angielsku?
+
+WEDGE. W polskim AutoCADzie wpisz `KLIN` lub skrót `KL` i naciśnij Enter lub spację; skrót `WE` z wersji angielskiej uruchamia w polskiej WYMEDYCJA. `_WEDGE` działa w AutoCADzie w każdym języku. Potem podaj pierwszy narożnik, drugi narożnik i wysokość: `0,0`, `60,40` i `25` rysują klin z sesji.
+
+### W którą stronę opada klin?
+
+W dół od strony pierwszego narożnika, wzdłuż osi X układu LUW. Aby go odwrócić, podaj drugi narożnik o mniejszym X, co obraca go o 180°, albo obróć go później poleceniem [`OBRÓĆ`](/docs/commands/rotate).
+
+### Jak narysować graniastosłup trójkątny w AutoCADzie?
+
+Klin nim jest: trójkąt prostokątny na każdym końcu, przeciągnięty wzdłuż szerokości. Każdy inny trójkąt narysuj jako zamknięty poleceniem [`PLINIA`](/docs/commands/pline) i wyciągnij go poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude).
+
+### Jak narysować klin od środka?
+
+Wybierz `śrOdek` i podaj punkt środkowy, potem narożnik, `Sześcian` lub `Długość`: klin jest wyśrodkowany w punkcie, także w pionie.
+
+## Powiązane polecenia [#related]
+
+- [Prostopadłościan w AutoCADzie: polecenie KOSTKA (BOX)](/docs/commands/box)
+- [Ostrosłup w AutoCADzie: polecenie OSTROSŁUP (PYRAMID)](/docs/commands/pyramid)
+- [Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie](/docs/commands/extrude)
+- [Polecenie SUMA (UNION) w AutoCADzie](/docs/commands/union)

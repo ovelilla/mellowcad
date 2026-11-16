@@ -11,7 +11,7 @@ const PREFIXES: Readonly<Record<string, `/${string}`>> = { "pt-BR": "/pt-br" }
  * the sitemap and the metadata all read this.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de", "ru"],
+  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de", "ru", "pl"],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
   // No negotiation by Accept-Language: Google advises against it and its
@@ -67,6 +67,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   it: "ltr",
   de: "ltr",
   ru: "ltr",
+  pl: "ltr",
 }
 
 /**
@@ -83,6 +84,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   it: "live",
   de: "live",
   ru: "live",
+  pl: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -107,15 +109,20 @@ export const COMMAND_LANGUAGE: Readonly<
   it: "localized",
   de: "localized",
   ru: "localized",
+  pl: "localized",
 }
 
 /**
  * The script each language is written in. Inter and Geist Mono draw latin
  * and Cyrillic (`INTER_SCRIPTS`); any other needs a face they lack, which
- * `scriptFontVariables` then requires by type.
+ * `scriptFontVariables` then requires by type. `latin-ext` is latin with
+ * letters of Latin Extended-A (Polish ą ł ń ś ż): Inter has them, but in one
+ * file of every such letter, 85 KB a Polish page would fetch by its
+ * `unicode-range`; a face of the language's letters alone goes before Inter
+ * instead (docs/i18n/pl.md, "Script and font").
  */
 export const SCRIPT: Readonly<
-  Record<AppLocale, "latin" | "cyrillic" | "arabic">
+  Record<AppLocale, "latin" | "latin-ext" | "cyrillic" | "arabic">
 > = {
   en: "latin",
   es: "latin",
@@ -125,6 +132,7 @@ export const SCRIPT: Readonly<
   it: "latin",
   de: "latin",
   ru: "cyrillic",
+  pl: "latin-ext",
 }
 
 /**
@@ -153,6 +161,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   it: "Italiano",
   de: "Deutsch",
   ru: "Русский",
+  pl: "Polski",
 }
 
 /** Open Graph wants language and territory. */
@@ -165,4 +174,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   it: "it_IT",
   de: "de_DE",
   ru: "ru_RU",
+  pl: "pl_PL",
 }

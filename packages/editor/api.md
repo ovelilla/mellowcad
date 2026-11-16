@@ -300,6 +300,13 @@ export { ru }
 export declare const ru: EditorLocale;
 ```
 
+## ./locales/pl
+
+```ts
+export { pl }
+export declare const pl: EditorLocale;
+```
+
 ## ./styles.css
 
 Scoped to `[data-mellowcad-editor]`: its rules match the editor's root and what is inside it, or an element by one of its classes.

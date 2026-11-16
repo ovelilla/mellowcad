@@ -1,0 +1,60 @@
+---
+title: "Ćwiczenie AutoCAD 3D: płyta montażowa"
+metaTitle: "Ćwiczenie AutoCAD 3D dla początkujących: płyta"
+description: "Zamodeluj płytę montażową w AutoCADzie 3D: regiony, odjęcie otworów i jedno wyciągnięcie tworzą bryłę. Krok po kroku, ćwiczenie 3D za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Zamodeluj płytę montażową o grubości 10, w milimetrach: kontur 100 na 60 z narożami o promieniu 8 i cztery otwory o średnicy 10, których środki leżą 15 od krawędzi. Zaczyna się na płasko. Kontur i okręgi stają się regionami, otwory odejmuje się, póki płyta jest jeszcze płaska, a jedno wyciągnięcie zamienia ją w bryłę razem z otworami.
+
+- **Ćwiczenie:** Początkujący · Mechanika · Bryła 3D
+- **Polecenia:** [`PROSTOK`](/docs/commands/rectang), [`OKRĄG`](/docs/commands/circle), [`KOPIUJ`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`RÓŻNICA`](/docs/commands/subtract), [`-WIDOK`](/docs/commands#-view), [`BIEŻSTYLWIZ`](/docs/commands/vscurrent), [`WYCIĄGNIJ`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=mounting-plate), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/mounting-plate" caption="Kontur płyty, 100 na 60, z czterema otworami i wymiarami." />
+
+<Session name="exercises/mounting-plate/model" caption="Płyta jako bryła o grubości 10, widziana z południowego wschodu, z usuniętymi liniami niewidocznymi." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj profil [#profile]
+
+Na warstwie Kontur polecenie [`PROSTOK`](/docs/commands/rectang) z opcją `Zaokrąglij` równą `8`, od `0,0` do `100,60`. Potem okrąg w `15,15` o średnicy (`śreDnica`) `10` i polecenie [`KOPIUJ`](/docs/commands/copy), które kopiuje go od jego środka do `70,0`, `70,30` i `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Narysuj profil" />
+
+### 2. Utwórz regiony [#region]
+
+Polecenie [`REGION`](/docs/commands/region) zamienia obiekty zamknięte w regiony: wskaż kontur i cztery okręgi, potem Enter. Pięć pętli, pięć regionów.
+
+<Session name="exercises/mounting-plate/region" caption="2. Utwórz regiony" />
+
+### 3. Odejmij otwory [#subtract]
+
+Polecenie [`RÓŻNICA`](/docs/commands/subtract): wskaż region płyty i naciśnij Enter, potem regiony czterech okręgów i Enter. Zostaje jeden region z czterema otworami.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Odejmij otwory" />
+
+### 4. Obróć widok [#view]
+
+Polecenie `-WIDOK` i opcja `SEIzo` pokazują płytę z południowego wschodu i z góry; polecenie [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) i opcja `Ukryty` ukrywają to, co zasłaniają ściany. Widok można też obrócić kliknięciem w ViewCube.
+
+<Session name="exercises/mounting-plate/view" caption="4. Obróć widok" />
+
+### 5. Wyciągnij region [#extrude]
+
+Polecenie [`WYCIĄGNIJ`](/docs/commands/extrude): wskaż region, naciśnij Enter i wpisz wysokość, `10`. Płyta jest bryłą, razem z otworami. Polecenie [`ZOOM`](/docs/commands/zoom) z opcją `Zakres` dopasowuje ją do ekranu, a skala `0.8x` zostawia wokół niej miejsce.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Wyciągnij region" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange): Średniozaawansowany · Mechanika · 2D
+- [Ćwiczenie AutoCAD: okrągły stół i krzesła](/docs/exercises/round-table): Średniozaawansowany · Architektura · 2D
+- [Ćwiczenie AutoCAD: działka](/docs/exercises/plot-of-land): Średniozaawansowany · Budownictwo · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

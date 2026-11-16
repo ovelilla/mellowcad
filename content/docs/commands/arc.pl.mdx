@@ -1,0 +1,59 @@
+---
+title: "Polecenie ŁUK (ARC) w AutoCADzie"
+metaTitle: "Łuk w AutoCADzie: polecenie ŁUK (ARC), 3 punkty"
+description: "Jak narysować łuk w AutoCADzie poleceniem ŁUK (ARC, skrót U): przez trzy punkty, początek-środek-koniec lub środek-początek-koniec i zgodnie z zegarem z Ctrl."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ŁUK po angielsku i jaki ma skrót?","answer":"Po angielsku ARC, w polskim AutoCADzie ŁUK: wpisz U, potem naciśnij Enter albo spację. Angielskie A w polskim AutoCADzie nie działa; _ARC działa w AutoCADzie w każdym języku."},{"question":"Jak narysować łuk przez trzy punkty w AutoCADzie?","answer":"Uruchom polecenie ŁUK i podaj trzy punkty: początek, dowolny punkt, przez który łuk przechodzi, i koniec. To sposób domyślny, bez wybierania opcji."},{"question":"Dlaczego łuk rysuje się w złą stronę?","answer":"Łuk rysowany od środka biegnie od początku przeciwnie do ruchu wskazówek zegara, jak w AutoCADzie. Zamień początek z końcem albo przytrzymaj Ctrl, podając punkt końcowy, aby łuk biegł zgodnie z ruchem wskazówek zegara."},{"question":"Jak narysować łuk styczny do dwóch linii?","answer":"Użyj polecenia ZAOKRĄGL z promieniem: rysuje łuk styczny do obu linii i przycina je do niego. Łuk styczny do poprzedniego segmentu narysuj w polilinii, opcją łuku polecenia PLINIA."}]
+---
+
+Polecenie ŁUK (ARC) domyślnie rysuje łuk przez trzy punkty: jego początek, punkt, przez który przechodzi, i jego koniec. Albo rysuje go wokół środka, od punktu początkowego do końca, tak jak uruchamiają go przyciski Początek, środek, koniec i Środek, początek, koniec na wstążce. Jak w AutoCADzie, łuk podany środkiem biegnie od początku przeciwnie do ruchu wskazówek zegara, a koniec wyznacza tylko, gdzie łuk się zatrzymuje: nie musi leżeć na łuku. Gdy umieszczasz punkty, łuk podąża za kursorem, z bursztynową przerywaną linią od początku lub od środka. Łuk leży w płaszczyźnie swojego pierwszego punktu. Łuk, którego nie da się utworzyć, trzy punkty na jednej prostej albo koniec w punkcie początkowym, daje komunikat `*Błąd*` i nic nie zostaje narysowane.
+
+- **Polecenie:** `ŁUK`
+- **Po angielsku:** `ARC`, wpisywane jako `_ARC` w każdym języku
+- **Aliasy:** `U`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `U` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="arc" caption="Trzy łuki: przez trzy punkty, od początku wokół środka do końca oraz od środka, przez początek, do końca." />
+
+## Opcje [#options]
+
+### `śrOdek` (`O`) [#center]
+
+Przy pierwszym monicie: najpierw podaj środek, potem punkt początkowy i punkt końcowy. Przy drugim monicie, po początku: następny jest środek, potem koniec. Przy końcu w obu przypadkach przytrzymaj Ctrl, aby łuk biegł zgodnie z ruchem wskazówek zegara.
+
+## Czego jeszcze nie robi [#missing]
+
+Opcje, które kończą łuk jego kątem, długością cięciwy, kierunkiem lub promieniem zamiast punktu końcowego, oraz Koniec przy drugim punkcie, który do nich prowadzi; brakuje też przycisków wstążki dla tych sposobów. Kontynuacja: Enter przy pierwszym monicie, który w AutoCADzie rysuje łuk styczny do ostatniej linii lub łuku, tu kończy polecenie ŁUK. Pole kąta rozwarcia, które wprowadzanie dynamiczne pokazuje na końcu trybów ze środkiem.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#arc--a--es-arco--a--pt-br-arco--a--fr-arc--a--it-arco--ar--de-bogen--b--ru-дуга--д--pl-łuk--u)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ŁUK po angielsku i jaki ma skrót?
+
+Po angielsku ARC, w polskim AutoCADzie ŁUK: wpisz `U`, potem naciśnij Enter albo spację. Angielskie `A` w polskim AutoCADzie nie działa; `_ARC` działa w AutoCADzie w każdym języku.
+
+### Jak narysować łuk przez trzy punkty w AutoCADzie?
+
+Uruchom polecenie ŁUK i podaj trzy punkty: początek, dowolny punkt, przez który łuk przechodzi, i koniec. To sposób domyślny, bez wybierania opcji.
+
+### Dlaczego łuk rysuje się w złą stronę?
+
+Łuk rysowany od środka biegnie od początku przeciwnie do ruchu wskazówek zegara, jak w AutoCADzie. Zamień początek z końcem albo przytrzymaj Ctrl, podając punkt końcowy, aby łuk biegł zgodnie z ruchem wskazówek zegara.
+
+### Jak narysować łuk styczny do dwóch linii?
+
+Użyj polecenia [`ZAOKRĄGL`](/docs/commands/fillet) z promieniem: rysuje łuk styczny do obu linii i przycina je do niego. Łuk styczny do poprzedniego segmentu narysuj w polilinii, opcją łuku polecenia [`PLINIA`](/docs/commands/pline).
+
+## Powiązane polecenia [#related]
+
+- [Okrąg w AutoCADzie: polecenie OKRĄG (CIRCLE)](/docs/commands/circle)
+- [Polecenie ELIPSA (ELLIPSE) w AutoCADzie](/docs/commands/ellipse)
+- [Polilinia w AutoCADzie: polecenie PLINIA (PLINE)](/docs/commands/pline)
+- [Polecenie ZAOKRĄGL (FILLET) w AutoCADzie](/docs/commands/fillet)

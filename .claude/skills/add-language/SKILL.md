@@ -146,7 +146,9 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
 
 A script Inter lacks: its face in both root layouts (`preload: false`), `scriptFontVariables`
 (`lib/fonts.ts`), its `:lang()` rules in both stylesheets, and a whole static face for the share
-card (`lib/og.tsx`) if Satori is to draw it. Right to left also needs its `DIRECTION` and a look at
+card (`lib/og.tsx`) if Satori is to draw it. Latin with letters of Latin Extended (Polish's,
+`latin-ext`) adds them to the letters' face before Inter (`i18n.md`, "Fonts per script"), its card
+faces too. Right to left also needs its `DIRECTION` and a look at
 every left-to-right island (`ui.md`). Plurals and IME as the plan found.
 
 ## 6. Verify, then live

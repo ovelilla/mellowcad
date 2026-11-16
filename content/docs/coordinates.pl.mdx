@@ -1,0 +1,44 @@
+---
+title: Współrzędne w AutoCADzie
+metaTitle: "Współrzędne biegunowe i względne w AutoCADzie"
+description: "Jak wpisywać punkty w AutoCADzie: współrzędne bezwzględne, względne i biegunowe, linia pod kątem i śledzenie biegunowe. Ćwicz za darmo online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Każdy punkt, o który pyta polecenie, można wskazać na rysunku albo wpisać. Wpisany punkt to dwie liczby, X i Y, oddzielone przecinkiem, a to, skąd są mierzone, zależy od sposobu zapisu: od początku układu współrzędnych, od ostatniego punktu albo jako długość i kąt od niego. MellowCAD odczytuje je tak jak AutoCAD z włączonym wprowadzaniem dynamicznym, czyli domyślnie. Każda sekcja rysuje jedną figurę i pokazuje jej historię.
+
+## Współrzędne bezwzględne [#absolute]
+
+Mierzone od początku układu współrzędnych, `0,0`. Tak odczytywany jest pierwszy punkt, o który pyta polecenie: `20,10` to 20 wzdłuż osi X i 10 wzdłuż osi Y. Po nim wprowadzanie dynamiczne odczytuje wpisany punkt względem ostatniego, więc punkt mierzony od początku układu poprzedza się znakiem `#`: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Trójkąt, każdy wierzchołek mierzony od początku układu współrzędnych." />
+
+## Współrzędne względne [#relative]
+
+Mierzone od ostatniego punktu: ile przejść wzdłuż osi X, a potem wzdłuż osi Y. Po pierwszym punkcie polecenia to właśnie oznacza wpisany punkt, a historia zapisuje go ze znakiem `@` z przodu, tak jak odczytuje go wiersz polecenia: `100,0` to 100 w prawo od ostatniego punktu, `-50,70` to 50 wstecz i 70 w górę. Punkt, przed którym sam wpiszesz `@`, jest względny, gdziekolwiek go wpiszesz.
+
+<Session name="coordinatesRelative" caption="Ten sam trójkąt, każdy wierzchołek mierzony od poprzedniego." />
+
+## Współrzędne biegunowe [#polar]
+
+Długość i kąt, mierzone od ostatniego punktu: `100<0` to 100 wzdłuż osi X, `60<120` to 60 pod kątem 120°. Kąty mierzy się od osi X, przeciwnie do ruchu wskazówek zegara: 90° to w górę, 180° w lewo, a 270°, czyli -90°, w dół. Historia również zapisuje je ze znakiem `@`.
+
+<Session name="coordinatesPolar" caption="Trzy boki, każdy jako długość i kąt od końca poprzedniego." />
+
+## Linia pod kątem [#angle]
+
+Aby narysować linię o zadanej długości pod zadanym kątem, wpisz jej koniec we współrzędnych biegunowych, `100<30`. Możesz też najpierw ustalić kąt: wpisz `<30` i naciśnij Enter, a następny punkt pozostanie na tym kierunku, po stronie kursora; potem wpisz długość, `100`.
+
+<Session name="coordinatesAngle" caption="Linia ustalona pod kątem 30°, a potem o długości 100." />
+
+## Śledzenie biegunowe [#tracking]
+
+Przy włączonym śledzeniu biegunowym, klawiszem `F10` lub jego przyciskiem na pasku stanu, kursor pokazuje linię pomocniczą przy każdej wielokrotności kąta ustawionego w menu tego przycisku, a wpisana długość odmierza się wzdłuż tej linii. Etykieta przy kursorze pokazuje, w jakiej odległości i pod jakim kątem jest kursor.
+
+<Session name="coordinatesTracking" caption="Śledzenie biegunowe co 30°: linia pomocnicza, a przy kursorze odległość i kąt." />
+
+## Co dalej [#next]
+
+- [Ćwiczenia](/docs/exercises) wpisywane od początku do końca z klawiatury: [kątownik w kształcie litery L](/docs/exercises/l-bracket) we współrzędnych względnych, [działka](/docs/exercises/plot-of-land) we współrzędnych biegunowych i [blok w izometrii](/docs/exercises/isometric-block) wzdłuż kątów izometrycznych.
+- Strona polecenia <Command id="LINE" /> i [pierwsze kroki](/docs/getting-started), czyli początki pracy w wierszu polecenia.

@@ -1,0 +1,58 @@
+---
+title: "Polecenie REGION w AutoCADzie"
+description: "Jak utworzyć region w AutoCADzie poleceniem REGION (skrót REG): jakie kontury znajduje, dlaczego nie tworzy żadnego i do czego służy region. Wypróbuj za darmo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie REGION po angielsku i jak go używać?","answer":"Tak samo: REGION, ze skrótem REG w polskim AutoCADzie, a _REGION działa w AutoCADzie w dowolnym języku. Uruchom polecenie, wybierz zamknięte kształty albo linie, które zamykają jeden kształt koniec do końca, i naciśnij Enter. W sesji okno wokół czterech linii i okręgu tworzy dwa regiony, a wiersz polecenia podaje dwa wyodrębnione kontury i dwa utworzone regiony."},{"question":"Dlaczego REGION nie tworzy regionu?","answer":"Kształt nie jest zamknięty koniec do końca. Linie, które się przecinają albo nie dochodzą do siebie, niczego nie zamykają: polecenie REGION łączy obiekty otwarte tylko ich końcami, a szczelina grubości włosa wystarczy, by łańcuch został pominięty. Kontur, który przecina sam siebie, jak muszka, zostaje odrzucony i policzony jako samoprzecięcie. Połącz końce poleceniem ZAOKRĄGL z promieniem 0 albo utnij poleceniem UTNIJ to, co wystaje, i spróbuj ponownie."},{"question":"Jak zrobić region z otworem w AutoCADzie?","answer":"Utwórz region z obrysu i drugi z otworu, a potem uruchom RÓŻNICA: wskaż obrys, Enter, otwór, Enter. Wynikiem jest jeden region, a WYCIĄGNIJ zamienia go w bryłę z otworem na wylot."},{"question":"Jak sprawdzić pole regionu?","answer":"Zaznacz go i odczytaj Pole w palecie Właściwości albo uruchom POLE, wybierz Obiekt i wskaż region. PARAMFIZ dodaje obwód, środek ciężkości i momenty bezwładności."}]
+---
+
+Polecenie REGION zamienia zamknięte kształty w regiony: płaskie obszary bez grubości, każdy ograniczony swoimi konturami. Wybierz obiekty i naciśnij Enter: każdy kontur, który tworzą, staje się regionem. Obiekt zamknięty jest konturem sam w sobie: okrąg, elipsa, zamknięta polilinia lub splajn. Obiekty otwarte – linie, łuki, łuki eliptyczne, otwarte polilinie i splajny – łączą się w łańcuch koniec do końca, nigdy w miejscu przecięcia, a łańcuch, który się nie zamyka, zostaje pominięty. Wiersz polecenia podaje następnie liczbę znalezionych konturów, odrzuconych konturów wraz z przyczyną i utworzonych regionów; Enter bez wybranych obiektów wyświetla `Nic nie znaleziono.`.
+
+Obiekty, które weszły w skład regionu, zostają usunięte, pozostałe zostają, a regiony otrzymują bieżącą warstwę i właściwości, nie właściwości obiektów. Kontur wewnątrz innego tworzy osobny region, a nie otwór w tamtym: [`RÓŻNICA`](/docs/commands/subtract) odejmuje jeden od drugiego. Region rysuje się jako swoje krawędzie i na nich działa lokalizacja; paleta Właściwości pokazuje jego pole i obwód, które mierzą też [`POLE`](/docs/commands/area), [`LISTA`](/docs/commands/list) i [`PARAMFIZ`](/docs/commands/massprop). [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i [`ILOCZYN`](/docs/commands/intersect) łączą regiony leżące w jednej płaszczyźnie, [`WYCIĄGNIJ`](/docs/commands/extrude), [`PRZEKRĘĆ`](/docs/commands/revolve) i [`NACIŚNIJCIĄG`](/docs/commands/presspull) zamieniają je w bryły 3D, a [`ROZBIJ`](/docs/commands/explode) oddaje z powrotem ich linie, łuki i okręgi. Całe polecenie to jeden krok cofania.
+
+- **Polecenie:** `REGION`
+- **Aliasy:** `REG`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `REG` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="region" caption="Cztery linie zamknięte koniec do końca i okrąg wewnątrz nich: REGION z oknem obejmującym oba kształty tworzy dwa regiony i usuwa obiekty." />
+
+## Czego jeszcze nie robi [#missing]
+
+Zmienna `DELOBJ` AutoCADa: obiekty, które weszły w skład regionu, są tu zawsze usuwane. Polecenie OBWIEDNIA (BOUNDARY), które potrafi utworzyć region z obszaru wokół punktu, oraz region z obwiedni kreskowania. Edycja regionu uchwytami: uchwyty są widoczne, ale przeciąganie ich niczego nie zmienia. Krawędzie regionu jako krawędzie tnące lub graniczne dla [`UTNIJ`](/docs/commands/trim) i [`WYDŁUŻ`](/docs/commands/extend) w trybie szybkim oraz [`KRESKUJ`](/docs/commands/hatch) regionu z krawędzią eliptyczną lub splajnową. Łączenie regionów z powierzchniami, których MellowCAD nie ma, oraz wiersz Materiał w palecie Właściwości.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg--it-regione--reg--de-region--rio--ru-область--обл--pl-region--reg)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie REGION po angielsku i jak go używać?
+
+Tak samo: REGION, ze skrótem `REG` w polskim AutoCADzie, a `_REGION` działa w AutoCADzie w dowolnym języku. Uruchom polecenie, wybierz zamknięte kształty albo linie, które zamykają jeden kształt koniec do końca, i naciśnij Enter. W sesji okno wokół czterech linii i okręgu tworzy dwa regiony, a wiersz polecenia podaje dwa wyodrębnione kontury i dwa utworzone regiony.
+
+### Dlaczego REGION nie tworzy regionu?
+
+Kształt nie jest zamknięty koniec do końca. Linie, które się przecinają albo nie dochodzą do siebie, niczego nie zamykają: polecenie REGION łączy obiekty otwarte tylko ich końcami, a szczelina grubości włosa wystarczy, by łańcuch został pominięty. Kontur, który przecina sam siebie, jak muszka, zostaje odrzucony i policzony jako samoprzecięcie. Połącz końce poleceniem [`ZAOKRĄGL`](/docs/commands/fillet) z promieniem 0 albo utnij poleceniem [`UTNIJ`](/docs/commands/trim) to, co wystaje, i spróbuj ponownie.
+
+### Jak zrobić region z otworem w AutoCADzie?
+
+Utwórz region z obrysu i drugi z otworu, a potem uruchom [`RÓŻNICA`](/docs/commands/subtract): wskaż obrys, Enter, otwór, Enter. Wynikiem jest jeden region, a [`WYCIĄGNIJ`](/docs/commands/extrude) zamienia go w bryłę z otworem na wylot.
+
+### Jak sprawdzić pole regionu?
+
+Zaznacz go i odczytaj Pole w palecie Właściwości albo uruchom [`POLE`](/docs/commands/area), wybierz `Obiekt` i wskaż region. [`PARAMFIZ`](/docs/commands/massprop) dodaje obwód, środek ciężkości i momenty bezwładności.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)
+- [Polecenie SUMA (UNION) w AutoCADzie](/docs/commands/union)
+- [Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie](/docs/commands/extrude)
+- [Polecenie POLE (AREA): jak obliczyć pole powierzchni w AutoCADzie](/docs/commands/area)
+- [Polecenie PARAMFIZ (MASSPROP) w AutoCADzie](/docs/commands/massprop)

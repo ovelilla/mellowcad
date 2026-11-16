@@ -1,0 +1,68 @@
+---
+title: "Wymiar promienia w AutoCADzie: polecenie WYMPROMIEŃ (DIMRADIUS)"
+metaTitle: "Wymiar promienia w AutoCADzie: WYMPROMIEŃ"
+description: "Jak zwymiarować promień okręgu, łuku lub zaokrąglenia w AutoCADzie poleceniem WYMPROMIEŃ (DIMRADIUS, skrót WR): wskaż krzywą i umieść tekst R wewnątrz lub obok."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie wymiaru promienia po angielsku i jaki ma skrót?","answer":"Po angielsku DIMRADIUS, w polskim AutoCADzie WYMPROMIEŃ: wpisz WR lub WYMR, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a _DIMRADIUS – w AutoCADzie w każdym języku."},{"question":"Jak zwymiarować zaokrąglenie lub zaokrąglony narożnik?","answer":"Wskaż zaokrąglenie: jest ono łukiem albo łukowym segmentem polilinii, jak narożniki, które polecenie PROSTOK zaokrągla opcją Zaokrąglij, a polecenie WYMPROMIEŃ przyjmuje oba."},{"question":"Dlaczego nie mogę wybrać obiektu do zwymiarowania?","answer":"Polecenie WYMPROMIEŃ przyjmuje okrąg, łuk lub łukowy segment polilinii, także na zablokowanej warstwie. Każdy inny obiekt, również elipsa, daje „Wybrany obiekt nie jest łukiem ani okręgiem.” i pytanie pada ponownie; krzywej wewnątrz odnośnika bloku nie można jeszcze wskazać."},{"question":"Jak dodać opis do wymiaru promienia?","answer":"Wybierz Tekst przed umieszczeniem wymiaru i wpisz „<> max”: <> to wartość z literą R, więc wymiar brzmi „R10 max”. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”."}]
+---
+
+Polecenie WYMPROMIEŃ (DIMRADIUS) wymiaruje promień okręgu, łuku lub łukowego segmentu polilinii. Wskaż krzywą, a wiersz polecenia od razu poda wartość; potem umieść wymiar i polecenie się kończy. Jak w AutoCADzie, tekstem jest promień poprzedzony literą R, na linii biegnącej wzdłuż promienia, zakończonej jednym grotem strzałki na krzywej, wewnątrz lub na zewnątrz krzywej, zależnie od tego, gdzie umieścisz wymiar. Na zewnątrz linia biegnie dalej przez krzywą aż do środka, tak jak rysuje to ISO-25.
+
+- **Polecenie:** `WYMPROMIEŃ`
+- **Po angielsku:** `DIMRADIUS`, wpisywane jako `_DIMRADIUS` w każdym języku
+- **Aliasy:** `WR`, `WYMR`
+- **Panel:** [Opis](/docs/commands#annotate)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WR` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="dimradius" caption="Zaokrąglony narożnik płytki zwymiarowany na zewnątrz, a jej otwór wewnątrz: wskazana każda krzywa, potem umieszczony tekst." />
+
+## Opcje [#options]
+
+### `Tekst` (`T`) [#text]
+
+Pyta o tekst, który ma się pojawić zamiast zmierzonej wartości, i proponuje tę wartość jako domyślną: Enter ją zachowuje. We wpisanym tekście `<>` oznacza wartość z literą R, więc `<> max` wpisuje `R10 max` dla promienia 10.
+
+### `Kąt` (`K`) [#angle]
+
+Pyta o kąt tekstu, który jest wtedy rysowany pod tym kątem, środkiem na linii, a linia kończy się przy nim. 0 przywraca go wzdłuż linii.
+
+## Czego jeszcze nie robi [#missing]
+
+Tekst wielowierszowy: tekst wymiaru to jeden wiersz, ustawiany opcją `Tekst` w wierszu polecenia, nigdy w edytorze tekstu. Na łuku grot strzałki zostaje między jego końcami, a AutoCAD rysuje łukową linię pomocniczą do wymiaru umieszczonego poza nimi. Krzywej wewnątrz odnośnika bloku nie można wskazać. Linie środkowe stylu (ujemny rozmiar znacznika środka) nie są rysowane, a jego ustawienia tekstu poza krzywą nie są dostępne: tekst zawsze biegnie wzdłuż linii, bez półki, tak jak rysuje to ISO-25. Wymiar nie jest skojarzony: nie podąża za krzywą, którą mierzy.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad--fr-cotrayon--coty--it-dimraggio--dra--de-bemradius--bmrad--ru-рзмрадиус--рра--pl-wympromień--wr--wymr)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie wymiaru promienia po angielsku i jaki ma skrót?
+
+Po angielsku DIMRADIUS, w polskim AutoCADzie WYMPROMIEŃ: wpisz `WR` lub `WYMR`, a potem naciśnij Enter lub spację. Pełna nazwa też działa, a `_DIMRADIUS` – w AutoCADzie w każdym języku.
+
+### Jak zwymiarować zaokrąglenie lub zaokrąglony narożnik?
+
+Wskaż zaokrąglenie: jest ono łukiem albo łukowym segmentem polilinii, jak narożniki, które polecenie [`PROSTOK`](/docs/commands/rectang) zaokrągla opcją `Zaokrąglij`, a polecenie WYMPROMIEŃ przyjmuje oba.
+
+### Dlaczego nie mogę wybrać obiektu do zwymiarowania?
+
+Polecenie WYMPROMIEŃ przyjmuje okrąg, łuk lub łukowy segment polilinii, także na zablokowanej warstwie. Każdy inny obiekt, również elipsa, daje `Wybrany obiekt nie jest łukiem ani okręgiem.` i pytanie pada ponownie; krzywej wewnątrz odnośnika bloku nie można jeszcze wskazać.
+
+### Jak dodać opis do wymiaru promienia?
+
+Wybierz `Tekst` przed umieszczeniem wymiaru i wpisz `<> max`: `<>` to wartość z literą R, więc wymiar brzmi `R10 max`. Po umieszczeniu wymiaru tekst zmienia wiersz „Nadpisanie tekstu” w palecie „Właściwości”.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket)
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link)
+
+## Powiązane polecenia [#related]
+
+- [Wymiar średnicy w AutoCADzie: polecenie WYMŚREDNICA (DIMDIAMETER)](/docs/commands/dimdiameter)
+- [Wymiar kątowy w AutoCADzie: polecenie WYMKĄTOWY (DIMANGULAR)](/docs/commands/dimangular)
+- [Wymiarowanie w AutoCADzie: polecenie WYMLINIOWY (DIMLINEAR)](/docs/commands/dimlinear)
+- [Styl wymiarowania w AutoCADzie: polecenie WYMSTYL (DIMSTYLE)](/docs/commands/dimstyle)

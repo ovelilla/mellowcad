@@ -1,0 +1,54 @@
+---
+title: "Polecenie ILOCZYN (INTERSECT) w AutoCADzie"
+description: "Jak działa ILOCZYN (INTERSECT) w AutoCADzie: z dwóch lub więcej brył 3D albo regionów w jednej płaszczyźnie zostaje tylko część wspólna, reszta znika."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ILOCZYN po angielsku i jaki ma skrót?","answer":"INTERSECT. W polskim AutoCADzie jego skrót to IL: wpisz go i naciśnij Enter lub spację. Angielskie IN w polskiej wersji nie działa; pełna nazwa działa, a _INTERSECT – w AutoCADzie w każdym języku."},{"question":"Czym się różnią polecenia SUMA, RÓŻNICA i ILOCZYN?","answer":"Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszczyźnie. Polecenie SUMA zachowuje wszystko, co pokrywa którykolwiek z nich, polecenie RÓŻNICA zachowuje pierwszy zbiór pomniejszony o drugi, a polecenie ILOCZYN zachowuje tylko to, co wszystkie mają wspólne. Każde to jeden krok cofania i każde wymazuje obiekty, które zużyło."},{"question":"Jak przeciąć linie w AutoCADzie?","answer":"Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, przyciągnij do niego lokalizacją Przecięcie; aby się spotkały, użyj polecenia ZAOKRĄGL z promieniem 0, UTNIJ lub WYDŁUŻ."},{"question":"Dlaczego polecenie ILOCZYN usuwa moje obiekty?","answer":"Bo nie mają nic wspólnego: bez części wspólnej mówi „Utworzono pustą bryłę — usunięto”, a dla regionów „Utworzono pusty region — usunięto”, i wymazuje je, jak AutoCAD. Polecenie C je przywraca. Jedna bryła i jeden region albo dwa regiony w różnych płaszczyznach w ogóle nie są przecinane: polecenie mówi „Należy wybrać przynajmniej 2 brył, powierzchni lub współpłaszczyznowych regionów.” i niczego nie zmienia."}]
+---
+
+Polecenie ILOCZYN (INTERSECT) zachowuje tylko to, co dwie lub więcej brył 3D albo dwa lub więcej regionów w jednej płaszczyźnie mają wspólne, a resztę wymazuje: prostopadłościan i nachodząca na niego kula zostawiają kulę z płaskimi ścianami. Pyta o obiekty aż do Enter, tak jak polecenie [`SUMA`](/docs/commands/union), i pomija to, co nie jest ani bryłą, ani regionem. Jak w AutoCADzie 2027, zbiór wybrany przed poleceniem jest porzucany i pytanie o obiekty pada ponownie. Bryły i regiony są liczone osobno, regiony płaszczyzna po płaszczyźnie.
+
+Obiekt wskazany jako pierwszy staje się wynikiem, z jego warstwą i kolorem, a pozostałe są wymazywane; przy oknie, oknie przecinającym lub WSZYSTKO jest to najnowszy z nich. Wynik to bryła złożona, już nie prostopadłościan ani kula, bez historii. Gdy obiekty nie mają nic wspólnego, polecenie mówi `Utworzono pustą bryłę — usunięto` lub `Utworzono pusty region — usunięto` i wymazuje je wszystkie, jak AutoCAD. Całe polecenie to jeden krok cofania. 3D w MellowCAD jest wciąż częściowe: bryły istnieją, powierzchnie i siatki nie.
+
+- **Polecenie:** `ILOCZYN`
+- **Po angielsku:** `INTERSECT`, wpisywane jako `_INTERSECT` w każdym języku
+- **Aliasy:** `IL`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `IL` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="intersect" caption="Prostopadłościan i nachodząca na niego kula, przecięte: ich część wspólna to kula z sześcioma płaskimi ścianami, widziana z południowego wschodu." />
+
+## Czego jeszcze nie robi [#missing]
+
+Powierzchnie, których tutaj nie ma. Zakrzywione ściany spotykające się wzdłuż krzywej, dla której MellowCAD nie ma jeszcze dokładnej postaci: walce, stożki, kule lub torusy, których osie ani się nie pokrywają, ani nie są równoległe (dwa walce mogą się też krzyżować); stożek z czymkolwiek poza płaszczyzną lub bryłą na jego osi; torus lub bryła obrotowa z płaszczyzną ani prostopadłą do jej osi, ani przez nią przechodzącą, albo z bryłą poza jej osią; bryła wyciągnięta z czymkolwiek poza płaszczyzną lub ścianą wyciągniętą w jej kierunku. Są one odrzucane z komunikatem, że jedna operacja logiczna się nie powiodła, a bryły zostają bez zmian; tak samo cięcie, które styka się z krawędzią stycznie, ściany prawie, ale nie całkiem na jednej powierzchni, i bardzo cienki pasek między cięciem a krawędzią. Walec leżący wzdłuż ściany prostopadłościanu łączy się w prawidłową objętość, ale z jedną krawędzią i jedną ścianą mniej niż w AutoCADzie. Historia brył nie jest zachowywana (SOLIDHIST, SHOWHISTORY), a to, który obiekt zostaje przy wyborze krawędzią wybierającą lub zbiorem Poprzedni, nie jest sprawdzone.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#intersect--in--es-intersec--int--pt-br-intersec--int--fr-intersect--ir--it-intersezione--it--de-schnittmenge--sm--ru-пересечение--пер--pl-iloczyn--il)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ILOCZYN po angielsku i jaki ma skrót?
+
+INTERSECT. W polskim AutoCADzie jego skrót to `IL`: wpisz go i naciśnij Enter lub spację. Angielskie `IN` w polskiej wersji nie działa; pełna nazwa działa, a `_INTERSECT` – w AutoCADzie w każdym języku.
+
+### Czym się różnią polecenia SUMA, RÓŻNICA i ILOCZYN?
+
+Wszystkie trzy tworzą jeden obiekt z brył 3D albo z regionów w jednej płaszczyźnie. Polecenie [`SUMA`](/docs/commands/union) zachowuje wszystko, co pokrywa którykolwiek z nich, polecenie [`RÓŻNICA`](/docs/commands/subtract) zachowuje pierwszy zbiór pomniejszony o drugi, a polecenie ILOCZYN zachowuje tylko to, co wszystkie mają wspólne. Każde to jeden krok cofania i każde wymazuje obiekty, które zużyło.
+
+### Jak przeciąć linie w AutoCADzie?
+
+Nie poleceniem ILOCZYN, które działa na bryłach i regionach i pomija linie. Aby znaleźć miejsce, w którym dwie linie się przecinają, przyciągnij do niego lokalizacją Przecięcie; aby się spotkały, użyj polecenia [`ZAOKRĄGL`](/docs/commands/fillet) z promieniem 0, [`UTNIJ`](/docs/commands/trim) lub [`WYDŁUŻ`](/docs/commands/extend).
+
+### Dlaczego polecenie ILOCZYN usuwa moje obiekty?
+
+Bo nie mają nic wspólnego: bez części wspólnej mówi `Utworzono pustą bryłę — usunięto`, a dla regionów `Utworzono pusty region — usunięto`, i wymazuje je, jak AutoCAD. Polecenie `C` je przywraca. Jedna bryła i jeden region albo dwa regiony w różnych płaszczyznach w ogóle nie są przecinane: polecenie mówi `Należy wybrać przynajmniej 2 brył, powierzchni lub współpłaszczyznowych regionów.` i niczego nie zmienia.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie SUMA (UNION) w AutoCADzie](/docs/commands/union)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)
+- [Polecenie PŁAT (SLICE) w AutoCADzie](/docs/commands/slice)
+- [Polecenie REGION w AutoCADzie](/docs/commands/region)

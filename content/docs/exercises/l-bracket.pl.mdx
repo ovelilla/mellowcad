@@ -1,0 +1,52 @@
+---
+title: "Ćwiczenie AutoCAD: wspornik L"
+metaTitle: "Ćwiczenie AutoCAD dla początkujących: wspornik L"
+description: "Narysuj wspornik L w AutoCADzie we współrzędnych względnych: kontur, zaokrąglenie, dwa otwory i wymiary od bazy. Krok po kroku, za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj ten wspornik w milimetrach: długość 100, stopa wysoka na 20 i ramię pionowe szerokie na 30 i wysokie na 80, naroże wewnętrzne zaokrąglone promieniem 10, otwór o średnicy 8 w stopie i otwór o średnicy 10 w ramieniu, każdy na środku swojej części. Kontur to jeden ciąg polecenia [`LINIA`](/docs/commands/line), każdy punkt wpisany jako przesunięcie od poprzedniego, a wszystkie wymiary wychodzą od lewego dolnego narożnika.
+
+- **Ćwiczenie:** Początkujący · Mechanika · 2D
+- **Polecenia:** [`LINIA`](/docs/commands/line), [`ZAOKRĄGL`](/docs/commands/fillet), [`OKRĄG`](/docs/commands/circle), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMBAZA`](/docs/commands/dimbaseline), [`WYMPROMIEŃ`](/docs/commands/dimradius), [`WYMŚREDNICA`](/docs/commands/dimdiameter)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=l-bracket), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/l-bracket" caption="Wspornik L, 100 na 80, zwymiarowany od lewego dolnego narożnika." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj kontur [#outline]
+
+Na warstwie Kontur polecenie [`LINIA`](/docs/commands/line) od `0,0`, potem każdy punkt jako krok od poprzedniego: `100,0`, `0,20`, `-70,0`, `0,60` i `-30,0`. Opcja `Zamknij` rysuje ostatni bok z powrotem do początku i kończy polecenie.
+
+<Session name="exercises/l-bracket/outline" caption="1. Narysuj kontur" />
+
+### 2. Zaokrąglij naroże wewnętrzne [#fillet]
+
+Polecenie [`ZAOKRĄGL`](/docs/commands/fillet): wybierz opcję `pRomień`, wpisz `10`, potem wskaż dwie linie, które spotykają się w narożu wewnętrznym: górę stopy i bok ramienia.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Zaokrąglij naroże wewnętrzne" />
+
+### 3. Narysuj otwory [#holes]
+
+Dwa okręgi poleceniem [`OKRĄG`](/docs/commands/circle), każdy przez opcję `śreDnica`: `8` w `80,10`, w stopie, i `10` w `15,65`, w ramieniu.
+
+<Session name="exercises/l-bracket/holes" caption="3. Narysuj otwory" />
+
+### 4. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) od `0,0` do otworu w stopie, `80,10`, umieszczony poniżej: 80. Polecenie [`WYMBAZA`](/docs/commands/dimbaseline) prowadzi kolejne wymiary od tej samej pierwszej linii pomocniczej: wpisz prawy koniec, `#100,0`, gdzie # mierzy od początku układu, a potem dwa razy Enter, aby zakończyć. Tak samo wzdłuż lewego boku, do górnego otworu, a potem do góry, `#0,80`. Polecenie [`WYMPROMIEŃ`](/docs/commands/dimradius) na zaokrągleniu i [`WYMŚREDNICA`](/docs/commands/dimdiameter) na każdym otworze kończą rysunek.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: schody w rzucie](/docs/exercises/stairs): Początkujący · Architektura · 2D
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate): Początkujący · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange): Średniozaawansowany · Mechanika · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

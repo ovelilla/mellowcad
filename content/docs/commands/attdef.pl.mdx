@@ -1,0 +1,86 @@
+---
+title: "Atrybuty bloku w AutoCADzie: polecenie ATRDEF (ATTDEF)"
+metaTitle: "Atrybuty bloku w AutoCADzie: polecenie ATRDEF"
+description: "Jak zdefiniować atrybut bloku w AutoCADzie poleceniem ATRDEF (ATTDEF, skrót ATR): tryby, etykieta, monit i wartość domyślna, potem miejsce tekstu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ATRDEF po angielsku i jaki ma skrót?","answer":"Po angielsku ATTDEF, w polskim AutoCADzie ATRDEF: wpisz ATR, potem naciśnij Enter albo spację; działa też ODATRDEF. -ATRDEF to forma wiersza polecenia, którą tu uruchamia także ATRDEF. _ATTDEF działa w AutoCADzie w każdym języku."},{"question":"Jak zrobić blok z atrybutami w AutoCADzie?","answer":"Narysuj symbol, potem uruchom ATRDEF dla każdego atrybutu i umieść jego tekst tam, gdzie ma być widoczna wartość. Uruchom BLOK, wskaż punkt bazowy i zaznacz symbol oraz atrybuty, w kolejności, w jakiej WSTAW ma o nie pytać. Każde wstawienie bloku poleceniem WSTAW pyta potem o wartość każdego atrybutu, proponując jego wartość domyślną."},{"question":"Czym się różnią etykieta, monit i wartość domyślna atrybutu?","answer":"Etykieta nazywa atrybut, jak identyfikator: to ją pokazuje definicja i nią RATRRED opisuje pole. Monit to pytanie, którym WSTAW prosi o wartość. Wartość domyślna to proponowana wartość, którą przyjmuje Enter."},{"question":"Jak edytować definicję atrybutu?","answer":"Kliknij ją dwukrotnie, zanim trafi do bloku: EDTEKST otwiera jej etykietę, monit i wartość domyślną. Gdy jest już w bloku, wartości każdego odnośnika edytuje się poleceniem ATRRED lub RATRRED."}]
+---
+
+Polecenie ATRDEF (ATTDEF) definiuje atrybut: etykietę, monit i wartość domyślną, umieszczone w rysunku jako wiersz tekstu. Zaznacz go razem z innymi obiektami, gdy tworzysz blok poleceniem [`BLOK`](/docs/commands/block), a każdy odnośnik tego bloku będzie miał dla niego własną wartość: numer drzwi, kod części, nazwę pomieszczenia. Do tego czasu definicja pokazuje swoją etykietę.
+
+ATRDEF w AutoCADzie otwiera okno dialogowe Definicja atrybutu, którego MellowCAD nie ma: tu ATRDEF pyta w wierszu polecenia o to, o co pyta `-ATRDEF`, tak jak w konsoli AutoCADa. Wypisuje bieżące tryby i pyta, który zmienić, aż Enter przejdzie dalej. Potem etykieta: bez spacji, bo spacja ją kończy, a małe litery zamieniane są na wielkie; sam Enter daje komunikat `Oznaczenie nie może być puste`. Potem monit, którym [`WSTAW`](/docs/commands/insert) zapyta o wartość, przy czym Enter przyjmuje etykietę, i wartość domyślna. Na końcu miejsce tekstu, z pytaniami polecenia [`TEKST`](/docs/commands/text): punkt początkowy, wysokość i obrót. Wysokość i wyrównanie są wspólne z poleceniem TEKST, w obie strony. Enter przy punkcie początkowym umieszcza definicję jeden wiersz poniżej ostatnio zdefiniowanej, z jej wysokością, obrotem, stylem i wyrównaniem, więc atrybuty bloku układają się jeden pod drugim.
+
+- **Polecenie:** `ATRDEF`
+- **Po angielsku:** `ATTDEF`, wpisywane jako `_ATTDEF` w każdym języku
+- **Aliasy:** `ATR`, `ODATRDEF`
+- **Panel:** [Organizacja](/docs/commands#organize)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `ATR` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="attdef" caption="Oznaczenie drzwi: atrybut NUM wyśrodkowany w okręgu, jego monitem jest sama etykieta, a wartością domyślną 1, gotowy do włączenia do bloku." />
+
+## Opcje [#options]
+
+### `Niewidoczny` (`N`) [#invisible]
+
+Wartość nie jest widoczna na odnośnikach, dopóki nie włączy jej [`ATRWID`](/docs/commands/attdisp). Każdy tryb to przełącznik: wybranie go zmienia go między `T` a `N`, ponownie wypisuje tryby i pyta jeszcze raz. Tryby pozostają ustawione dla następnego ATRDEF.
+
+### `Stały` (`S`) [#constant]
+
+Każdy odnośnik ma tę samą wartość, o którą ATRDEF pyta zamiast monitu i wartości domyślnej; WSTAW nigdy o nią nie pyta.
+
+### `Weryfikowalny` (`W`) [#verify]
+
+WSTAW pyta o wartość drugi raz, aby ją sprawdzić, po zapytaniu raz o każdą wartość.
+
+### `Ustawiony` (`U`) [#preset]
+
+WSTAW nie pyta o wartość: każdy odnośnik przyjmuje wartość domyślną.
+
+### `Blokada położenia` (`B`) [#lock-position]
+
+Na początku włączony: atrybut zostaje tam, gdzie umieszcza go blok.
+
+### `wyrówNAnie` (`NA`) [#justify]
+
+Pyta, względem którego miejsca tekst jest zaczepiony w swoim punkcie, tak jak TEKST: `Lewo`, `Środek`, `Prawo`, `Centrum` albo jeden z dziewięciu punktów według góry, środka i dołu oraz lewej, środka i prawej. Monit o punkt początkowy pyta potem o wskazany punkt: środek-środek centruje wartość w symbolu.
+
+### `STyl` (`ST`) [#style]
+
+Pyta o styl tekstu, który staje się bieżący; `?` wypisuje style rysunku.
+
+## Czego jeszcze nie robi [#missing]
+
+Okno dialogowe Definicja atrybutu: ATRDEF pyta w wierszu polecenia. Tryby Opisowy i Wiele linii, które AutoCAD 2027 wymienia po Blokadzie położenia, oraz wiersze atrybutu wielowierszowego. Pola, wyrównania Wyrównaj i Dopasuj oraz pytanie opcji Styl o to, które style wypisać po `?`.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ATRDEF po angielsku i jaki ma skrót?
+
+Po angielsku ATTDEF, w polskim AutoCADzie ATRDEF: wpisz `ATR`, potem naciśnij Enter albo spację; działa też `ODATRDEF`. `-ATRDEF` to forma wiersza polecenia, którą tu uruchamia także ATRDEF. `_ATTDEF` działa w AutoCADzie w każdym języku.
+
+### Jak zrobić blok z atrybutami w AutoCADzie?
+
+Narysuj symbol, potem uruchom ATRDEF dla każdego atrybutu i umieść jego tekst tam, gdzie ma być widoczna wartość. Uruchom [`BLOK`](/docs/commands/block), wskaż punkt bazowy i zaznacz symbol oraz atrybuty, w kolejności, w jakiej WSTAW ma o nie pytać. Każde wstawienie bloku poleceniem [`WSTAW`](/docs/commands/insert) pyta potem o wartość każdego atrybutu, proponując jego wartość domyślną.
+
+### Czym się różnią etykieta, monit i wartość domyślna atrybutu?
+
+Etykieta nazywa atrybut, jak identyfikator: to ją pokazuje definicja i nią [`RATRRED`](/docs/commands/eattedit) opisuje pole. Monit to pytanie, którym WSTAW prosi o wartość. Wartość domyślna to proponowana wartość, którą przyjmuje Enter.
+
+### Jak edytować definicję atrybutu?
+
+Kliknij ją dwukrotnie, zanim trafi do bloku: [`EDTEKST`](/docs/commands/textedit) otwiera jej etykietę, monit i wartość domyślną. Gdy jest już w bloku, wartości każdego odnośnika edytuje się poleceniem [`ATRRED`](/docs/commands/attedit) lub [`RATRRED`](/docs/commands/eattedit).
+
+## Powiązane polecenia [#related]
+
+- [Bloki w AutoCADzie: polecenie BLOK (BLOCK)](/docs/commands/block)
+- [Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)](/docs/commands/insert)
+- [Edycja atrybutów w AutoCADzie: polecenie ATRRED (ATTEDIT)](/docs/commands/attedit)
+- [Polecenie ATRWID (ATTDISP) w AutoCADzie: pokaż i ukryj atrybuty](/docs/commands/attdisp)
+- [Polecenie RATRRED (EATTEDIT) w AutoCADzie](/docs/commands/eattedit)

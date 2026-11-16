@@ -1,0 +1,53 @@
+---
+title: "Polecenie RATRRED (EATTEDIT) w AutoCADzie"
+description: "Jak zmienić atrybuty bloku w AutoCADzie poleceniem RATRRED (EATTEDIT) w Rozszerzonym edytorze atrybutów i dlaczego uruchamia je dwukrotne kliknięcie bloku."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak otworzyć Rozszerzony edytor atrybutów w AutoCADzie?","answer":"Kliknij dwukrotnie odnośnik bloku, który ma atrybuty, albo wpisz RATRRED i wskaż go. _EATTEDIT działa w AutoCADzie w każdym języku."},{"question":"Jak zmienić wartość atrybutu w AutoCADzie?","answer":"Kliknij dwukrotnie blok, wpisz nową wartość w polu atrybutu i naciśnij Enter. Każdy odnośnik ma własne wartości: zmiana jednego nie rusza pozostałych."},{"question":"Dlaczego dwukrotne kliknięcie nie otwiera atrybutów bloku?","answer":"Polecenie RATRRED otwiera się dla odnośnika, którego blok zawiera atrybuty, a blok utworzony bez nich ich nie ma: zdefiniuj je poleceniem ATRDEF i wybierz razem z pozostałymi obiektami, gdy tworzysz blok. Jeśli wartość atrybutu nie jest widoczna, sprawdź polecenie ATRWID, które może ukryć atrybuty niewidoczne albo wszystkie."},{"question":"Czym się różni RATRRED (EATTEDIT) od ATRRED (ATTEDIT)?","answer":"Edytują te same wartości. Polecenie RATRRED opisuje każde pole etykietą, jak karta „Atrybut” Rozszerzonego edytora atrybutów; polecenie ATRRED – monitem, jak okno dialogowe Edycja atrybutów. W AutoCADzie polecenie RATRRED edytuje też opcje tekstu i właściwości każdego atrybutu."}]
+---
+
+Polecenie RATRRED (EATTEDIT) otwiera Rozszerzony edytor atrybutów AutoCADa dla jednego odnośnika bloku: prosi o wybranie bloku, a potem pokazuje pole dla każdego jego atrybutu, opisane etykietą i wypełnione wartością, tak jak wymienia je karta „Atrybut” edytora. Wpisz nowe wartości, przechodząc między polami klawiszem Tab, a Enter zastosuje je w jednym kroku, który cofa polecenie `C`; Esc niczego nie zmienia.
+
+Dwukrotne kliknięcie odnośnika z atrybutami uruchamia polecenie RATRRED, jak w AutoCADzie: wiersz polecenia zapisuje je z dwukrotnie klikniętym punktem jako odpowiedzią, a okno otwiera się od razu. Wskazanie bierze obiekt pod kwadratem wyboru: wszystko, co nie jest odnośnikiem bloku, jest odrzucane, podobnie jak blok bez atrybutów, a pytanie pada ponownie. Zmienia się tylko wskazany odnośnik; definicja bloku i jego pozostałe odnośniki zachowują swoje wartości.
+
+- **Polecenie:** `RATRRED`
+- **Po angielsku:** `EATTEDIT`, wpisywane jako `_EATTEDIT` w każdym języku
+- **Panel:** [Organizacja](/docs/commands#organize)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `RATRRED` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="eattedit" caption="Dwa biurka, odnośniki bloku z atrybutami NUM i PART: RATRRED wskazuje drugie, a jego pole PART zmienia się na B-200." />
+
+## Czego jeszcze nie robi [#missing]
+
+Karta „Opcje tekstu” edytora (styl, wyrównanie, wysokość, obrót, współczynnik szerokości i pozostałe ustawienia tekstu każdego atrybutu) i jego karta „Właściwości” (warstwa, rodzaj linii, kolor, szerokość linii), a także jego przycisk „Wybierz blok”. Polecenie ATTIPEDIT, które edytuje jeden atrybut w miejscu, i jego Ctrl+dwukrotne kliknięcie. Własny uchwyt odblokowanego atrybutu na odnośniku i wiersze atrybutów w palecie „Właściwości”. `-ATRRED`.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred)
+
+## Pytania [#questions]
+
+### Jak otworzyć Rozszerzony edytor atrybutów w AutoCADzie?
+
+Kliknij dwukrotnie odnośnik bloku, który ma atrybuty, albo wpisz `RATRRED` i wskaż go. `_EATTEDIT` działa w AutoCADzie w każdym języku.
+
+### Jak zmienić wartość atrybutu w AutoCADzie?
+
+Kliknij dwukrotnie blok, wpisz nową wartość w polu atrybutu i naciśnij Enter. Każdy odnośnik ma własne wartości: zmiana jednego nie rusza pozostałych.
+
+### Dlaczego dwukrotne kliknięcie nie otwiera atrybutów bloku?
+
+Polecenie RATRRED otwiera się dla odnośnika, którego blok zawiera atrybuty, a blok utworzony bez nich ich nie ma: zdefiniuj je poleceniem [`ATRDEF`](/docs/commands/attdef) i wybierz razem z pozostałymi obiektami, gdy tworzysz blok. Jeśli wartość atrybutu nie jest widoczna, sprawdź polecenie [`ATRWID`](/docs/commands/attdisp), które może ukryć atrybuty niewidoczne albo wszystkie.
+
+### Czym się różni RATRRED (EATTEDIT) od ATRRED (ATTEDIT)?
+
+Edytują te same wartości. Polecenie RATRRED opisuje każde pole etykietą, jak karta „Atrybut” Rozszerzonego edytora atrybutów; polecenie [`ATRRED`](/docs/commands/attedit) – monitem, jak okno dialogowe Edycja atrybutów. W AutoCADzie polecenie RATRRED edytuje też opcje tekstu i właściwości każdego atrybutu.
+
+## Powiązane polecenia [#related]
+
+- [Edycja atrybutów w AutoCADzie: polecenie ATRRED (ATTEDIT)](/docs/commands/attedit)
+- [Atrybuty bloku w AutoCADzie: polecenie ATRDEF (ATTDEF)](/docs/commands/attdef)
+- [Polecenie ATRWID (ATTDISP) w AutoCADzie: pokaż i ukryj atrybuty](/docs/commands/attdisp)
+- [Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)](/docs/commands/insert)

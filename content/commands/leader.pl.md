@@ -1,0 +1,53 @@
+---
+title: "Linia odniesienia w AutoCADzie: polecenie LODNIES (LEADER)"
+metaTitle: "Linia odniesienia w AutoCADzie: LODNIES (LEADER)"
+description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnica z WIELOLODN (MLEADER)."
+figure: "Otwór i jego opis: LODNIES od krawędzi okręgu, dwa punkty, potem dwa wiersze tekstu; ostatni segment się wznosi, więc łączy go z tekstem półka."
+sourceHash: "1bf39ac320fd"
+---
+
+Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje <Keyword id="Annotation" />, którą wybiera też Enter, <Keyword id="Format" /> i <Keyword id="Undo" />. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
+
+Wysokość tekstu, jego odstęp od linii i położenie wynikają z bieżącego stylu wymiarowania: za końcem linii odniesienia albo przed nim, gdy linia nadchodzi z prawej, i nad ostatnim segmentem, który biegnie dalej pod tekstem. Gdy ostatni segment wznosi się o więcej niż 15° od poziomu, polecenie LODNIES dodaje półkę: krótką poziomą linię długości grotu, kończącą się we wskazanym punkcie. Grot jest zamknięty i wypełniony, rysowany tylko wtedy, gdy pierwszy segment ma co najmniej dwie jego długości.
+
+Linia odniesienia podąża za swoim tekstem: przesuń, obróć lub przeskaluj tekst, a koniec linii przesunie się z nim, a półka zostanie wyznaczona na nowo; wymaż tekst, a linia zostanie, bez półki. Linia odniesienia skopiowana razem z tekstem nadal tworzy z nim parę. Uchwyty linii odniesienia leżą w jej punktach; paleta Właściwości pokazuje jej typ, rozmiar strzałki, odsunięcie i położenie tekstu oraz skalę.
+
+## Options
+
+### Annotation
+
+Pyta o tekst, wiersz po wierszu. Enter w pierwszym wierszu pyta zamiast tego o inny rodzaj opisu: <Keyword id="Mtext" /> (domyślnie) otwiera edytor tekstu na końcu linii odniesienia, w którym Enter łamie wiersz, a Ctrl+Enter lub kliknięcie poza nim kończy; <Keyword id="Copy" /> umieszcza na końcu kopię wybranego tekstu wielowierszowego, tekstu jednowierszowego lub odnośnika bloku, a wszystko inne odrzuca komunikatem <Message id="leaderCopyRefused" />; <Keyword id="None" /> rysuje samą linię odniesienia.
+
+### Format
+
+Ustala, jak rysowana jest linia odniesienia, i wraca do punktów: <Keyword id="Spline" /> robi z niej gładką krzywą przez punkty, <Keyword id="STraight" /> przywraca proste segmenty, <Keyword id="Arrow" /> przywraca grot, a <Keyword id="None" /> go pomija. Enter zostawia format bez zmian.
+
+### Undo
+
+Cofa ostatni punkt i pyta o niego ponownie. Przy drugim punkcie nie ma czego cofać i mówi o tym <Message id="invalidInputCapital" />.
+
+## Missing
+
+Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko <Keyword id="Copy" />, <Keyword id="None" /> i <Keyword id="Mtext" />. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
+
+## Questions
+
+### Jak się nazywa polecenie LODNIES po angielsku?
+
+LEADER. W polskim AutoCADzie jego skróty to `LO` i `LODN`: wpisz jeden z nich i naciśnij Enter lub spację. Angielskie `LEAD` w polskiej wersji nie działa; pełna nazwa `LODNIES` działa, a `_LEADER` – w AutoCADzie w każdym języku.
+
+### Czym się różni LODNIES od WIELOLODN (MLEADER)?
+
+LODNIES to starsze polecenie: linia odniesienia i osobny tekst, za którym ta linia podąża. WIELOLODN, które AutoCAD dziś zaleca, tworzy jeden obiekt wielolinii odniesienia, z własnymi stylami i kilkoma liniami do jednego opisu. MellowCAD ma polecenie LODNIES; otwiera i zapisuje linie odniesienia pliku DXF, a jego wielolinie odniesienia pomija.
+
+### Jak zrobić linię odniesienia z tekstem w AutoCADzie?
+
+Uruchom polecenie LODNIES, wskaż punkt, na który ma pokazywać strzałka, potem miejsce na tekst, naciśnij Enter i wpisz tekst wiersz po wierszu. Enter w pustym wierszu kończy. Enter w pierwszym wierszu proponuje zamiast tego inne rodzaje opisu, w tym edytor tekstu.
+
+### Jak zmienić rozmiar strzałki linii odniesienia?
+
+Wybierz linię odniesienia i zmień Rozmiar strzałki na palecie Właściwości, co dotyczy tylko tej linii; albo zmień rozmiar strzałki w stylu wymiarowania, za którym idą wszystkie linie odniesienia tego stylu. Długość półki również zależy od rozmiaru strzałki.
+
+### Dlaczego linia odniesienia nie ma strzałki?
+
+Albo pominęła ją opcja <Keyword id="None" /> w <Keyword id="Format" />, albo pierwszy segment jest krótszy niż dwa rozmiary strzałki – wtedy AutoCAD też nie rysuje grotu. Wskaż drugi punkt dalej od pierwszego albo ustaw mniejszy rozmiar strzałki.

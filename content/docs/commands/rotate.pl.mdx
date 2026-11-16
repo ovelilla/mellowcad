@@ -1,0 +1,66 @@
+---
+title: "Polecenie OBRÓĆ (ROTATE) w AutoCADzie"
+description: "Jak obrócić obiekt w AutoCADzie poleceniem OBRÓĆ (ROTATE, skrót OB): punkt bazowy i kąt, Kopiuj z zachowaniem oryginału, Odniesienie."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie OBRÓĆ po angielsku?","answer":"ROTATE. W polskim AutoCADzie wpisz OBRÓĆ lub skrót OB i naciśnij Enter lub spację; skrót RO z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, _ROTATE, działa w AutoCADzie w każdym języku."},{"question":"Jak obrócić obiekt równolegle do innego w AutoCADzie?","answer":"Wybierz Odniesienie, wskaż dwa punkty wzdłuż krawędzi obiektu, potem wybierz Punkty i wskaż dwa punkty wzdłuż linii, do której ma się ustawić."},{"question":"Jak obrócić obiekt i zachować oryginał?","answer":"Wybierz Kopiuj, zanim podasz kąt: obraca się kopia, a oryginał zostaje."},{"question":"Dlaczego OBRÓĆ obraca w złą stronę?","answer":"Kąt dodatni obraca przeciwnie do ruchu wskazówek zegara, jak podaje ANGDIR w pierwszym wierszu. Wpisz kąt ujemny, -30, aby obrócić zgodnie z ruchem wskazówek zegara."}]
+---
+
+Polecenie OBRÓĆ (ROTATE) obraca wybrane obiekty wokół punktu bazowego: wybierz je, podaj punkt bazowy, a potem kąt – wpisany albo wskazany jako punkt, którego kierunek od punktu bazowego wyznacza kąt. Pierwszy wiersz podaje, który kierunek jest dodatni, domyślnie przeciwny do ruchu wskazówek zegara (ANGDIR), i gdzie leży 0 (ANGBASE). Enter przy kącie powtarza ostatni obrót, w nowym rysunku 0. Obiekty obracają się wokół osi równoległej do osi Z układu LUW, przechodzącej przez punkt bazowy, więc w 3D zachowują swoją wysokość. Obrót to jeden krok, który można cofnąć.
+
+- **Polecenie:** `OBRÓĆ`
+- **Po angielsku:** `ROTATE`, wpisywane jako `_ROTATE` w każdym języku
+- **Aliasy:** `OB`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `OB` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="rotate" caption="Prostokąt obrócony o 30° wokół narożnika z opcją Kopiuj: oryginał zostaje na miejscu." />
+
+## Opcje [#options]
+
+### `Kopiuj` (`K`) [#copy]
+
+Obraca kopię i pozostawia obiekty na miejscu, wyświetlając `Obracanie kopii wybranych obiektów.`. Następnie ponownie pyta o kąt.
+
+### `Odniesienie` (`O`) [#reference]
+
+Obraca od kąta, który masz, do kąta, który chcesz uzyskać: pyta o kąt odniesienia (wpisany albo zmierzony dwoma punktami), a potem o nowy kąt, i obraca o różnicę. Aby wypoziomować ukośną krawędź, wskaż jej dwa końce jako odniesienie i wpisz 0.
+
+### `Punkty` (`P`) [#points]
+
+Przy nowym kącie opcji `Odniesienie`: nowy kąt to kąt linii między dwoma wskazanymi punktami, więc obiekty ustawiają się wzdłuż krawędzi, która jest już narysowana.
+
+## Czego jeszcze nie robi [#missing]
+
+Podczas podawania kąta obracany zbiór podąża za kursorem w kolorze każdego obiektu, ale bez jego rodzaju linii i szerokości linii.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh--ru-повернуть--пов--pl-obróć--ob)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie OBRÓĆ po angielsku?
+
+ROTATE. W polskim AutoCADzie wpisz `OBRÓĆ` lub skrót `OB` i naciśnij Enter lub spację; skrót `RO` z wersji angielskiej w polskiej nie działa. Angielska nazwa z podkreśleniem, `_ROTATE`, działa w AutoCADzie w każdym języku.
+
+### Jak obrócić obiekt równolegle do innego w AutoCADzie?
+
+Wybierz `Odniesienie`, wskaż dwa punkty wzdłuż krawędzi obiektu, potem wybierz `Punkty` i wskaż dwa punkty wzdłuż linii, do której ma się ustawić.
+
+### Jak obrócić obiekt i zachować oryginał?
+
+Wybierz `Kopiuj`, zanim podasz kąt: obraca się kopia, a oryginał zostaje.
+
+### Dlaczego OBRÓĆ obraca w złą stronę?
+
+Kąt dodatni obraca przeciwnie do ruchu wskazówek zegara, jak podaje ANGDIR w pierwszym wierszu. Wpisz kąt ujemny, `-30`, aby obrócić zgodnie z ruchem wskazówek zegara.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie PRZESUŃ (MOVE) w AutoCADzie](/docs/commands/move)
+- [Polecenie KOPIUJ (COPY) w AutoCADzie](/docs/commands/copy)
+- [Polecenie LUSTRO (MIRROR) w AutoCADzie](/docs/commands/mirror)
+- [Skalowanie w AutoCADzie: polecenie SKALA (SCALE)](/docs/commands/scale)

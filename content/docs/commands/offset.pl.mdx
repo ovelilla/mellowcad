@@ -1,0 +1,78 @@
+---
+title: "Polecenie ODSUŃ (OFFSET) w AutoCADzie"
+description: "Jak odsunąć obiekt w AutoCADzie poleceniem ODSUŃ (OFFSET, skrót OD): odległość lub punkt, wymazanie i warstwa, jeden obiekt naraz. Wypróbuj za darmo online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie ODSUŃ po angielsku?","answer":"OFFSET. W polskim AutoCADzie jego skrót to OD: wpisz go i naciśnij Enter lub spację. Angielskie O w polskiej wersji uruchamia polecenie OKRĄG; pełna nazwa ODSUŃ też działa, a _OFFSET – w AutoCADzie w każdym języku."},{"question":"Dlaczego nie mogę odsunąć obiektu?","answer":"Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem „Tego obiektu nie można odsunąć.”; tak samo postępuje, gdy odległość ścisnęłaby okrąg, łuk lub polilinię do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana."},{"question":"Jak odsunąć tę samą linię kilka razy?","answer":"Wskaż linię, a potem przy monicie o stronę wpisz literę opcji Wiele: każde kliknięcie po tej stronie daje kolejną kopię, każdą o jedną odległość dalej od poprzedniej. Albo zostaw tryb domyślny i za każdym razem wskazuj najnowszą kopię."},{"question":"Jak umieścić odsunięte kopie na bieżącej warstwie?","answer":"Przy pierwszym monicie wybierz wArstwa, potem Bieżąca. Od tej chwili każda kopia trafia na warstwę bieżącą, dopóki znów nie wybierzesz źRódłowa."}]
+---
+
+Polecenie ODSUŃ (OFFSET) rysuje kopię obiektu równoległą do niego, w odległości, którą wpisujesz, albo przez wskazany punkt: linia daje linię równoległą, okrąg lub łuk – współśrodkowy, polilinia – obrys wewnątrz lub na zewnątrz niej, elipsa lub splajn – splajn, który biegnie wzdłuż nich. Jak w AutoCADzie, polecenie bierze jeden obiekt naraz: odległość podajesz raz, a potem wskazujesz obiekt i stronę, po której ma stanąć kopia, tyle razy, ile chcesz. Enter kończy polecenie.
+
+- **Polecenie:** `ODSUŃ`
+- **Po angielsku:** `OFFSET`, wpisywane jako `_OFFSET` w każdym języku
+- **Aliasy:** `OD`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `OD` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="offset" caption="Prostokąt odsunięty o 6 do wewnątrz i okrąg odsunięty o 6 na zewnątrz: każdy wskazany, potem strona." />
+
+## Opcje [#options]
+
+### `przezPunkt` (`P`) [#through]
+
+Zamiast odległości każda kopia przechodzi przez punkt, który wskazujesz lub wpisujesz. To wartość domyślna pierwszego monitu, więc Enter wybiera ją tam, dopóki nie podasz odległości; od tej chwili Enter powtarza ostatnią odległość w tym rysunku.
+
+### `Wymaż` (`W`) [#erase]
+
+Pyta, czy wymazać każdy obiekt źródłowy po odsunięciu: `Tak` lub `Nie` (domyślnie). Przy `Tak` kopia zastępuje obiekt. Wybór obowiązuje do końca sesji, a następne polecenie ODSUŃ podaje go w pierwszym wierszu.
+
+### `wArstwa` (`A`) [#layer]
+
+Pyta, na którą warstwę trafiają kopie: na bieżącą (`Bieżąca`) czy na warstwę obiektu źródłowego (`źRódłowa`, domyślnie). Ten wybór też obowiązuje do końca sesji.
+
+### `Zakończ` (`Z`) [#exit]
+
+Kończy polecenie, tak jak Enter przy monicie o obiekt.
+
+### `Wiele` (`W`) [#multiple]
+
+Przy monicie o stronę: odsuwa dalej ten sam obiekt bez ponownego wskazywania, każdą kopię o jedną odległość dalej od poprzedniej, aż do Enter lub `Zakończ`.
+
+### `Cofaj` (`C`) [#undo]
+
+Cofa ostatnią kopię, niezależnie od tego, z którego obiektu powstała, i znów pyta o obiekt. Gdy nie ma już czego cofać, informuje o tym.
+
+## Czego jeszcze nie robi [#missing]
+
+OFFSETGAPTYPE 1 i 2: narożniki odsuniętej polilinii zawsze domykają się jak przy 0, przez wydłużenie segmentów do przecięcia. Odsunięcie splajnu lub elipsy mieści się w tolerancji AutoCADa, ale jego węzły leżą tam, gdzie umieszcza je MellowCAD, a nie AutoCAD. Opcja `przezPunkt` przy splajnie pokazuje w etykiecie X i Y, a nie odległość.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs--ru-подобие--под--pl-odsuń--od)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie ODSUŃ po angielsku?
+
+OFFSET. W polskim AutoCADzie jego skrót to `OD`: wpisz go i naciśnij Enter lub spację. Angielskie `O` w polskiej wersji uruchamia polecenie OKRĄG; pełna nazwa `ODSUŃ` też działa, a `_OFFSET` – w AutoCADzie w każdym języku.
+
+### Dlaczego nie mogę odsunąć obiektu?
+
+Polecenie ODSUŃ odsuwa linie, łuki, okręgi, polilinie 2D, elipsy i splajny. Tekst, tekst wielowierszowy, odnośniki bloków, wymiary i kreskowania odrzuca komunikatem `Tego obiektu nie można odsunąć.`; tak samo postępuje, gdy odległość ścisnęłaby okrąg, łuk lub polilinię do zera. Obiektu na zablokowanej warstwie nie da się wskazać, a polilinia 3D jest pomijana.
+
+### Jak odsunąć tę samą linię kilka razy?
+
+Wskaż linię, a potem przy monicie o stronę wpisz literę opcji `Wiele`: każde kliknięcie po tej stronie daje kolejną kopię, każdą o jedną odległość dalej od poprzedniej. Albo zostaw tryb domyślny i za każdym razem wskazuj najnowszą kopię.
+
+### Jak umieścić odsunięte kopie na bieżącej warstwie?
+
+Przy pierwszym monicie wybierz `wArstwa`, potem `Bieżąca`. Od tej chwili każda kopia trafia na warstwę bieżącą, dopóki znów nie wybierzesz `źRódłowa`.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie WYDŁUŻ (EXTEND) w AutoCADzie](/docs/commands/extend)
+- [Polecenie ZAOKRĄGL (FILLET) w AutoCADzie](/docs/commands/fillet)
+- [Polecenie KOPIUJ (COPY) w AutoCADzie](/docs/commands/copy)

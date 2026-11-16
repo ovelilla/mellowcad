@@ -1,0 +1,74 @@
+---
+title: "Style wizualne w AutoCADzie: polecenie BIEŻSTYLWIZ (VSCURRENT)"
+metaTitle: "Style wizualne w AutoCADzie: BIEŻSTYLWIZ"
+description: "Styl wizualny w AutoCADzie: polecenie BIEŻSTYLWIZ (VSCURRENT), Model szkieletowy 2D, Ukryty i Koncepcyjny, co rysuje każdy i jak wrócić do szkieletu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak zmienić styl wizualny w AutoCADzie?","answer":"Uruchom BIEŻSTYLWIZ (polecenie nie ma skrótu w polskim AutoCADzie; angielskiego VS w nim nie ma) i wybierz styl: Ukryty, aby ukryć krawędzie z tyłu, Koncepcyjny, aby cieniować powierzchnie. Zmienia tylko widok, nie obiekty."},{"question":"Jak wrócić do modelu szkieletowego 2D?","answer":"Uruchom BIEŻSTYLWIZ i wybierz szkieletowy2D, w polskim AutoCADzie litery 2D."},{"question":"Czym się różni styl Ukryty od Koncepcyjnego?","answer":"Oba ukrywają to, co zasłaniają powierzchnie. Ukryty rysuje tylko krawędzie, na tle, jak rysunek kreskowy; Koncepcyjny maluje też powierzchnie, cieniowane światłem, z tymi samymi krawędziami na wierzchu."},{"question":"Dlaczego przez bryłę nadal widać linie?","answer":"Nie należą do bryły. Linie, okręgi i regiony rysują się jak w Modelu szkieletowym 2D w każdym stylu, więc linia za prostopadłościanem nadal jest widoczna. W stylu szkieletowy2D widać też tylne krawędzie samej bryły: wybierz Ukryty."}]
+---
+
+Polecenie BIEŻSTYLWIZ (VSCURRENT) ustawia styl wizualny: sposób, w jaki widok rysuje bryły 3D. Pyta o styl, proponując bieżący jako domyślny, a Enter go zachowuje. `szkieletowy2D` rysuje każdą krawędź, także te z tyłu; `Ukryty` ukrywa to, co zasłaniają powierzchnie; `Koncepcyjny` maluje powierzchnie, z cieniowaniem. Styl należy do widoku i zapisuje się w rysunku, a każde wykonanie to jeden krok cofania. Nie można go użyć wewnątrz innego polecenia.
+
+To, co nie jest bryłą – linie, okręgi, regiony, tekst – rysuje się jak w Modelu szkieletowym 2D bez względu na styl, we własnych kolorach. W stylach Ukryty i Koncepcyjny kliknięcie wybiera bryłę, której powierzchnia jest najbliżej ciebie pod kursorem, nigdy bryłę za zasłaniającą ją powierzchnią, a lokalizacja względem obiektu nadal znajduje każdą krawędź. Bryła na zablokowanej warstwie rysuje swoje krawędzie bledziej. 3D w MellowCAD to tylko bryły i wciąż jest częściowe.
+
+- **Polecenie:** `BIEŻSTYLWIZ`
+- **Po angielsku:** `VSCURRENT`, wpisywane jako `_VSCURRENT` w każdym języku
+- **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `BIEŻSTYLWIZ` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="vscurrent" caption="Klocek z otworem na wylot, widziany z południowego wschodu: BIEŻSTYLWIZ Koncepcyjny cieniuje jego powierzchnie i rysuje na nich krawędzie." />
+
+## Opcje [#options]
+
+### `szkieletowy2D` (`2D`) [#2dwireframe]
+
+Każda krawędź każdej bryły, także z tyłu, wraz z liniami pokazującymi jej zakrzywione powierzchnie; domyślny w nowym rysunku. Przy powrocie do niego z innego stylu BIEŻSTYLWIZ wyświetla `Ponowne generowanie modelu.`.
+
+### `Ukryty` (`U`) [#hidden]
+
+Krawędzie każdej bryły i obrysy jej zakrzywionych powierzchni tam, gdzie nie zasłania ich żadna powierzchnia żadnej bryły, w kolorze obiektu: bryła za inną jest przez nią zasłonięta. Linie, które pokazują zakrzywioną powierzchnię w Modelu szkieletowym 2D, nie są rysowane.
+
+### `Koncepcyjny` (`K`) [#conceptual]
+
+Powierzchnie zwrócone ku tobie pomalowane kolorem obiektu, przechodzącym w chłodny błękit po stronie odwróconej od światła, które podąża za punktem widzenia, a na nich krawędzie stylu Ukryty w jednym kolorze, bez względu na kolor obiektu. Tutaj i w stylu Ukryty walec lub stożek widziany w rzucie z góry pokazuje sam okrąg, jak w AutoCADzie.
+
+## Czego jeszcze nie robi [#missing]
+
+Pozostałe style AutoCADa – Model szkieletowy, Realistyczny, Cieniowany, Cieniowany z krawędziami, Odcienie szarości, Szkic i Pochłanianie światła – oraz podawanie nazwy stylu i wypisywanie ich przez `?`: pytanie wymienia tylko trzy zbudowane style i odrzuca każdą inną odpowiedź.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva--fr-stylviscourant--sv--it-stileviscorrente--svc--de-vsaktuell--vsa--ru-теквизстиль--pl-bieżstylwiz)
+
+## Pytania [#questions]
+
+### Jak zmienić styl wizualny w AutoCADzie?
+
+Uruchom BIEŻSTYLWIZ (polecenie nie ma skrótu w polskim AutoCADzie; angielskiego `VS` w nim nie ma) i wybierz styl: `Ukryty`, aby ukryć krawędzie z tyłu, `Koncepcyjny`, aby cieniować powierzchnie. Zmienia tylko widok, nie obiekty.
+
+### Jak wrócić do modelu szkieletowego 2D?
+
+Uruchom BIEŻSTYLWIZ i wybierz `szkieletowy2D`, w polskim AutoCADzie litery `2D`.
+
+### Czym się różni styl Ukryty od Koncepcyjnego?
+
+Oba ukrywają to, co zasłaniają powierzchnie. Ukryty rysuje tylko krawędzie, na tle, jak rysunek kreskowy; Koncepcyjny maluje też powierzchnie, cieniowane światłem, z tymi samymi krawędziami na wierzchu.
+
+### Dlaczego przez bryłę nadal widać linie?
+
+Nie należą do bryły. Linie, okręgi i regiony rysują się jak w Modelu szkieletowym 2D w każdym stylu, więc linia za prostopadłościanem nadal jest widoczna. W stylu `szkieletowy2D` widać też tylne krawędzie samej bryły: wybierz `Ukryty`.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate)
+- [Ćwiczenie AutoCAD 3D: koło pasowe](/docs/exercises/pulley)
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block)
+
+## Powiązane polecenia [#related]
+
+- [Orbita 3D w AutoCADzie: polecenie 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [Prostopadłościan w AutoCADzie: polecenie KOSTKA (BOX)](/docs/commands/box)
+- [Polecenie WIDOK (VIEW) w AutoCADzie](/docs/commands/view)
+- [Polecenie LUW (UCS) w AutoCADzie: lokalny układ współrzędnych](/docs/commands/ucs)

@@ -1,0 +1,78 @@
+---
+title: "Polecenie WYDŁUŻ (EXTEND) w AutoCADzie"
+description: "Jak wydłużyć linię w AutoCADzie poleceniem WYDŁUŻ (EXTEND, skrót WYD): tryb szybki i standardowy, krawędzie obwiedni, krawędź wybierająca i Shift do ucinania."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie WYDŁUŻ po angielsku i jaki ma skrót?","answer":"EXTEND. W polskim AutoCADzie jego skrót to WYD: wpisz go i naciśnij Enter lub spację. Angielskie EX w polskiej wersji nie działa; _EXTEND działa w AutoCADzie w każdym języku."},{"question":"Dlaczego polecenie WYDŁUŻ mówi, że nie ma krawędzi?","answer":"Bo nic nie leży w poprzek drogi, którą biegłby ten koniec. Linia mówi „W tym kierunku nie ma żadnej krawędzi.”, gdy jej drugi koniec dosięgnąłby krawędzi, a linia lub łuk w pozostałych przypadkach „Ścieżka nie przecina krawędzi obramowania.”; polilinia lub splajn mówi „Obiekt nie przecina krawędzi.”. Wskaż bliżej drugiego końca albo w trybie standardowym wybierz Krawędzie i Zrozciąganiem, aby obwiednia, która nie sięga, liczyła się tak, jakby biegła dalej. Okręgu, zamkniętej polilinii, pełnej elipsy, tekstu ani kreskowania w ogóle nie można wydłużyć: „Nie można wydłużyć tego obiektu.”"},{"question":"Jak wydłużyć kilka linii naraz?","answer":"Wskaż puste miejsce i drugi punkt: każdy obiekt przecinany przez tę krawędź wybierającą rośnie od bliższego końca, w jednym kroku. Albo wybierz prZetnij i narysuj okno na końcach do wydłużenia."},{"question":"Jak uciąć poleceniem WYDŁUŻ?","answer":"Wskazuj z wciśniętym klawiszem Shift: kawałek jest ucinany do najbliższych przecięć, tak jak zrobiłoby to polecenie UTNIJ, a obiekt, którego nic nie przecina, jest usuwany. Następne wskazanie bez klawisza Shift znowu wydłuża."}]
+---
+
+Polecenie WYDŁUŻ (EXTEND) wydłuża obiekt, aż spotka inny: wskazujesz go blisko końca, który ma rosnąć, a ten koniec biegnie dalej do najbliższej krawędzi na swojej drodze. Wydłuża linie, łuki, łuki eliptyczne, otwarte polilinie (wzdłuż ich końcowego segmentu, prostego lub po jego łuku), polilinie 3D i otwarte splajny. Zaczyna w trybie szybkim, jak w AutoCADzie: każdy obiekt jest obwiednią. Wskazanie z wciśniętym klawiszem Shift ucina zamiast tego, jak polecenie [`UTNIJ`](/docs/commands/trim). Każde wskazanie to jeden krok cofania; Enter kończy polecenie.
+
+- **Polecenie:** `WYDŁUŻ`
+- **Po angielsku:** `EXTEND`, wpisywane jako `_EXTEND` w każdym języku
+- **Aliasy:** `WYD`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WYD` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="extend" caption="Dwie linie wydłużone do linii leżącej w poprzek ich drogi: każda wskazana raz blisko końca, który rośnie, w trybie szybkim." />
+
+## Opcje [#options]
+
+### `grAnice wydłużania` (`A`) [#boundary]
+
+Wybiera obiekty, które będą obwiedniami: wybierz je albo naciśnij Enter, aby wziąć wszystkie obiekty. Od tej chwili obwiedniami są tylko one, w każdym trybie, aż do końca polecenia.
+
+### `KRAwędź` (`KRA`) [#fence]
+
+Pyta o punkty krawędzi wybierającej, ile chcesz, aż do Enter: każdy przecinany przez nią obiekt jest wydłużany od końca bliższego miejscu przecięcia, w jednym kroku. Tryb standardowy wymienia tę opcję; tryb szybki też ją przyjmuje.
+
+### `prZetnij` (`Z`) [#crossing]
+
+Pyta o dwa narożniki okna: każdy obiekt przecinany przez jego obrys jest wydłużany, w jednym kroku.
+
+### `Tryb` (`T`) [#mode]
+
+Przełącza między `Szybki` a `sTandardowy`. W trybie standardowym polecenie WYDŁUŻ najpierw pyta o krawędzie obwiedni (Enter bierze wszystkie) i wymienia opcje `KRAwędź` i `Krawędzie`. Tryb jest wspólny dla poleceń WYDŁUŻ i UTNIJ i obowiązuje do końca sesji.
+
+### `Krawędzie` (`K`) [#edge]
+
+Tylko w trybie standardowym. Z opcją `Zrozciąganiem` obiekt zatrzymuje się także tam, gdzie byłaby obwiednia, gdyby biegła dalej – linia w obie strony, łuk po swoim okręgu – więc linia może dorosnąć do takiej, która nie sięga jej drogi; domyślna jest `Bezrozciągania`.
+
+### `Cofaj` (`C`) [#undo]
+
+Pojawia się na liście, gdy monit dostał już odpowiedź – wskazanie, krawędź wybierającą, okno: cofa ostatnie wydłużenie, a gdy nie ma już czego cofnąć, mówi o tym.
+
+## Czego jeszcze nie robi [#missing]
+
+Rzutuj: opcja rzutowania AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest liczone w rzucie na płaszczyznę XY układu LUW, co jest domyślnym ustawieniem AutoCADa, LUW. Krawędzi wybierającej nie można jeszcze przeciągnąć kursorem, tylko wskazać punkt po punkcie. Tryb i wybór w opcji `Krawędzie` obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt ustawiony pod kątem do LUW, z wyjątkiem splajnu, ani nie ogranicza, ani nie jest wydłużany, a polilinia wygładzona opcją `Wstaw` polecenia [`EDPLIN`](/docs/commands/pedit) jest odrzucana, podczas gdy AutoCAD wydłuża jej ostatni łuk.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie WYDŁUŻ po angielsku i jaki ma skrót?
+
+EXTEND. W polskim AutoCADzie jego skrót to `WYD`: wpisz go i naciśnij Enter lub spację. Angielskie `EX` w polskiej wersji nie działa; `_EXTEND` działa w AutoCADzie w każdym języku.
+
+### Dlaczego polecenie WYDŁUŻ mówi, że nie ma krawędzi?
+
+Bo nic nie leży w poprzek drogi, którą biegłby ten koniec. Linia mówi `W tym kierunku nie ma żadnej krawędzi.`, gdy jej drugi koniec dosięgnąłby krawędzi, a linia lub łuk w pozostałych przypadkach `Ścieżka nie przecina krawędzi obramowania.`; polilinia lub splajn mówi `Obiekt nie przecina krawędzi.`. Wskaż bliżej drugiego końca albo w trybie standardowym wybierz `Krawędzie` i `Zrozciąganiem`, aby obwiednia, która nie sięga, liczyła się tak, jakby biegła dalej. Okręgu, zamkniętej polilinii, pełnej elipsy, tekstu ani kreskowania w ogóle nie można wydłużyć: `Nie można wydłużyć tego obiektu.`
+
+### Jak wydłużyć kilka linii naraz?
+
+Wskaż puste miejsce i drugi punkt: każdy obiekt przecinany przez tę krawędź wybierającą rośnie od bliższego końca, w jednym kroku. Albo wybierz `prZetnij` i narysuj okno na końcach do wydłużenia.
+
+### Jak uciąć poleceniem WYDŁUŻ?
+
+Wskazuj z wciśniętym klawiszem Shift: kawałek jest ucinany do najbliższych przecięć, tak jak zrobiłoby to polecenie [`UTNIJ`](/docs/commands/trim), a obiekt, którego nic nie przecina, jest usuwany. Następne wskazanie bez klawisza Shift znowu wydłuża.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie ODSUŃ (OFFSET) w AutoCADzie](/docs/commands/offset)
+- [Polecenie ZAOKRĄGL (FILLET) w AutoCADzie](/docs/commands/fillet)
+- [Polecenie POŁĄCZ (JOIN) w AutoCADzie](/docs/commands/join)

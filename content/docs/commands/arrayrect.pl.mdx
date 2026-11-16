@@ -1,0 +1,86 @@
+---
+title: "Szyk prostokątny w AutoCADzie: polecenie SZYKPROST (ARRAYRECT)"
+metaTitle: "Szyk prostokątny w AutoCADzie: SZYKPROST"
+description: "Jak zrobić szyk prostokątny w AutoCADzie poleceniem SZYKPROST (ARRAYRECT): kolumny, wiersze i poziomy, odstępy między nimi, szyk skojarzony lub nie."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak zrobić szyk prostokątny w AutoCADzie?","answer":"Wpisz SZYKPROST, które nie ma skrótu, albo SZ, czyli SZYK, i naciśnij Enter przy jego pytaniu, bo prostokątny to jego typ domyślny. Zaznacz obiekty i naciśnij Enter: szyk zostaje od razu narysowany, gotowy do edycji."},{"question":"Jak ustawić odległość między wierszami i kolumnami szyku?","answer":"Wybierz oDstęp i wpisz odległość między kolumnami, potem między wierszami; ujemna idzie w lewo lub w dół. Z opcją Jednostka dwa narożniki podają obie naraz. Albo przeciągnij strzałki przy drugiej kolumnie i drugim wierszu."},{"question":"Jak sprawić, by kopie szyku były oddzielnymi obiektami?","answer":"Wybierz Skojarzony i odpowiedz Nie, zanim naciśniesz Enter: każda kopia jest osobnym obiektem. Szyk skojarzony można później rozbić na elementy poleceniem ROZBIJ."},{"question":"Jak zrobić szyk 3D w AutoCADzie?","answer":"Wybierz Poziomy: wiersze i kolumny są kopiowane w górę wzdłuż osi Z układu LUW, w tylu poziomach, ile podasz, w podanej odległości. Opcja WIersze pyta też o przyrost rzędnej, który podnosi każdy wiersz względem poprzedniego."}]
+---
+
+Polecenie SZYKPROST (ARRAYRECT) kopiuje zaznaczenie w kolumnach i wierszach, a jeśli chcesz, także w poziomach, jako jeden obiekt szyku. Pyta o obiekty, podaje typ i to, czy szyk jest skojarzony, i od razu go pokazuje: 4 kolumny wzdłuż osi X układu LUW i 3 wiersze wzdłuż jego osi Y, w odstępach półtora raza większych od rozmiaru zaznaczenia. Potem jeden monit edytuje go na żywo, aż Enter go utworzy, opcjami lub uchwytami podglądu, jak w AutoCADzie: kliknij jedną z jego strzałek, a potem kliknij, gdzie ma się znaleźć, lub wpisz liczbę, aby ustawić liczbę lub odstęp. Esc w tym miejscu również tworzy szyk. Zaznaczone obiekty stają się jego pierwszym elementem.
+
+- **Polecenie:** `SZYKPROST`
+- **Po angielsku:** `ARRAYRECT`, wpisywane jako `_ARRAYRECT` w każdym języku
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `SZYKPROST` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="arrayrect" caption="Kwadrat i jego okrąg w 5 kolumnach i 3 wierszach, w odstępach 16 i 14: najpierw liczba, potem odstęp." />
+
+## Opcje [#options]
+
+### `Skojarzony` (`S`) [#associative]
+
+`Tak`, wartość domyślna, tworzy jeden obiekt szyku: później zmieniają go jego uchwyty i paleta Właściwości, a [`ROZBIJ`](/docs/commands/explode) rozbija go na elementy. `Nie` tworzy oddzielne kopie obok zaznaczonych obiektów. Odpowiedź jest pamiętana do końca sesji, także przez SZYKBIEGUN i ŚCIEŻKASZYK.
+
+### `Liczba` (`L`) [#count]
+
+Liczba kolumn, potem wierszy, każda od 1 do 32767.
+
+### `oDstęp` (`D`) [#spacing]
+
+Odległość między kolumnami, potem między wierszami, ujemna w lewo lub w dół. Albo `Jednostka`: dwa narożniki prostokąta, którego boki są obiema odległościami.
+
+### `kOlumny` (`O`) [#columns]
+
+Liczba kolumn i odległość między nimi.
+
+### `WIersze` (`WI`) [#rows]
+
+Liczba wierszy, odległość między nimi i przyrost rzędnej każdego wiersza względem poprzedniego.
+
+### `Poziomy` (`P`) [#levels]
+
+Kopie ułożone wzdłuż osi Z układu LUW: liczba poziomów, potem odległość między nimi albo, z opcją `Całkowity`, odległość od pierwszego poziomu do ostatniego.
+
+### `konIec` (`I`) [#exit]
+
+Tworzy szyk i kończy polecenie, tak jak Enter.
+
+## Czego jeszcze nie robi [#missing]
+
+Punkt bazowy; Całkowity przy odległościach między kolumnami i między wierszami (Poziomy go mają); Wyrażenie, które wiąże wartość z parametrami rysunku. EDYTUJSZYK i ZAMKNIJSZYK, które edytują źródło szyku lub zastępują jego elementy. Menu uchwytów szyku (liczba kolumn, całkowity odstęp kolumn, kąt osi…) i Ctrl do przełączania między nimi, więc całkowitego odstępu ani kąta osi nie można ustawić uchwytem; uchwyt nie wypisuje też swoich wierszy w wierszu polecenia. Wartości Bazowy X i Bazowy Y w palecie nie można wpisać ponownie.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost)
+
+## Pytania [#questions]
+
+### Jak zrobić szyk prostokątny w AutoCADzie?
+
+Wpisz `SZYKPROST`, które nie ma skrótu, albo `SZ`, czyli [`SZYK`](/docs/commands/array), i naciśnij Enter przy jego pytaniu, bo prostokątny to jego typ domyślny. Zaznacz obiekty i naciśnij Enter: szyk zostaje od razu narysowany, gotowy do edycji.
+
+### Jak ustawić odległość między wierszami i kolumnami szyku?
+
+Wybierz `oDstęp` i wpisz odległość między kolumnami, potem między wierszami; ujemna idzie w lewo lub w dół. Z opcją `Jednostka` dwa narożniki podają obie naraz. Albo przeciągnij strzałki przy drugiej kolumnie i drugim wierszu.
+
+### Jak sprawić, by kopie szyku były oddzielnymi obiektami?
+
+Wybierz `Skojarzony` i odpowiedz `Nie`, zanim naciśniesz Enter: każda kopia jest osobnym obiektem. Szyk skojarzony można później rozbić na elementy poleceniem [`ROZBIJ`](/docs/commands/explode).
+
+### Jak zrobić szyk 3D w AutoCADzie?
+
+Wybierz `Poziomy`: wiersze i kolumny są kopiowane w górę wzdłuż osi Z układu LUW, w tylu poziomach, ile podasz, w podanej odległości. Opcja `WIersze` pyta też o przyrost rzędnej, który podnosi każdy wiersz względem poprzedniego.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: schody w rzucie](/docs/exercises/stairs)
+
+## Powiązane polecenia [#related]
+
+- [Szyk w AutoCADzie: polecenie SZYK (ARRAY)](/docs/commands/array)
+- [Szyk biegunowy w AutoCADzie: polecenie SZYKBIEGUN (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Szyk wzdłuż ścieżki w AutoCADzie: polecenie ŚCIEŻKASZYK (ARRAYPATH)](/docs/commands/arraypath)
+- [Polecenie KOPIUJ (COPY) w AutoCADzie](/docs/commands/copy)

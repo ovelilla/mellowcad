@@ -15,9 +15,9 @@ progress is on the branch `worktree-polish`.
 
 | Block | State |
 | --- | --- |
-| Research and plan | Done 16/11/2026: this plan; `runacc.sh` knows the Polish console's banner; the Polish names probes |
-| Draft (phases 1–5) | Next |
-| Live (phase 6) | — |
+| Research and plan | Done 16/11/2026 (`71cf4bfb`): this plan; `runacc.sh` knows the Polish console's banner; the Polish names probes |
+| Draft (phases 1–5) | Done 17/11/2026: registered as a draft, the engine's catalog whole, the site, the editor, the pages, the Polish letters' face; its research and words now live in `docs/i18n/pl.md` |
+| Live (phase 6) | Next |
 
 ## 0. Research (16/11/2026)
 

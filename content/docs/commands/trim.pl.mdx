@@ -1,0 +1,87 @@
+---
+title: "Polecenie UTNIJ (TRIM) w AutoCADzie"
+description: "Jak uciąć linię w AutoCADzie poleceniem UTNIJ (TRIM, skrót UT): tryby Szybki i Standardowy, krawędzie tnące, krawędź, przetnij i Shift do wydłużania."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie UTNIJ po angielsku?","answer":"TRIM. W polskim AutoCADzie wpisz UTNIJ lub skrót UT i naciśnij Enter lub spację; skrótu TR z wersji angielskiej w polskiej nie ma. Angielska nazwa z podkreśleniem, _TRIM, działa w AutoCADzie w każdym języku."},{"question":"Dlaczego UTNIJ usuwa całą linię?","answer":"Bo polecenie działa w trybie Szybki, domyślnym w AutoCADzie od wersji 2021: wskazanie obiektu, którego nie przecina żadna krawędź, usuwa go. Wybierz Tryb, a potem sTandardowy, aby UTNIJ pozostawiało taki obiekt i informowało o tym."},{"question":"Jak uciąć wiele linii naraz w AutoCADzie?","answer":"Kliknij w pustym miejscu i wskaż drugi punkt: każdy obiekt, który przecina ta linia, zostaje ucięty w jednym kroku. Albo wybierz prZetnij i narysuj okno przez części do usunięcia."},{"question":"Jak wydłużyć linię poleceniem UTNIJ?","answer":"Przytrzymaj Shift i wskaż linię przy końcu, który chcesz wydłużyć: urośnie do najbliższej krawędzi, jak przy WYDŁUŻ, a następne wskazanie bez Shift znów ucina."}]
+---
+
+Polecenie UTNIJ (TRIM) ucina obiekt do miejsc, w których przecinają go inne obiekty: wskazujesz część do usunięcia, a ona znika do najbliższego przecięcia z każdej strony. Zaczyna w trybie `Szybki`, jak w AutoCADzie: każdy obiekt jest krawędzią tnącą, a obiekt, którego nic nie przecina, zostaje usunięty w całości. Przytrzymanie klawisza Shift podczas wskazywania wydłuża zamiast tego obiekt do najbliższej krawędzi, tak jak robi to [`WYDŁUŻ`](/docs/commands/extend). Każde wskazanie to jeden krok, który cofa `Cofaj`; Enter kończy polecenie.
+
+- **Polecenie:** `UTNIJ`
+- **Po angielsku:** `TRIM`, wpisywane jako `_TRIM` w każdym języku
+- **Aliasy:** `UT`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `UT` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="trim" caption="Linia ucięta do dwóch linii, które ją przecinają: każdy koniec wskazany raz, w trybie Szybki." />
+
+## Opcje [#options]
+
+### `krAwędzie tnące` (`A`) [#cutting]
+
+Określa, które obiekty tną: wybierz je albo naciśnij Enter, aby przyjąć wszystkie obiekty. Od tej chwili tną tylko one, w każdym trybie, do końca polecenia.
+
+### `KRAwędź` (`KRA`) [#fence]
+
+Pyta o punkty linii, ile tylko chcesz, aż do Enter: każdy obiekt, który ona przecina, zostaje ucięty w miejscu przecięcia, w jednym kroku. Tryb `sTandardowy` wymienia tę opcję na liście; tryb `Szybki` też ją przyjmuje, a wskazanie w pustym miejscu samo zaczyna linię z dwóch punktów.
+
+### `prZetnij` (`Z`) [#crossing]
+
+Pyta o dwa narożniki okna: wszystko, co przecina jego obrys, zostaje ucięte, w jednym kroku. Obiekt leżący w całości wewnątrz okna nie jest przez nie przecinany.
+
+### `Tryb` (`T`) [#mode]
+
+Przełącza między `Szybki` a `sTandardowy`. W trybie `sTandardowy` polecenie UTNIJ najpierw pyta o krawędzie tnące (Enter przyjmuje wszystkie), pozostawia obiekt, którego nie przecina żadna krawędź, z komunikatem `Nie przecina krawędzi tnącej.`, wymienia na liście `KRAwędź` i `Krawędzie`, a wskazanie w pustym miejscu zaczyna okno przecinające. Tryb jest wspólny dla UTNIJ i [`WYDŁUŻ`](/docs/commands/extend) i obowiązuje do końca sesji.
+
+### `Krawędzie` (`K`) [#edge]
+
+Tylko w trybie `sTandardowy`. Przy `Zrozciąganiem` krawędź tnie także tam, gdzie przecięłaby obiekt po przedłużeniu – linia w obie strony, łuk wzdłuż swojego okręgu; domyślnie `Bezrozciągania`.
+
+### `Wymaż` (`W`) [#erase]
+
+Usuwa obiekty bez wychodzenia z polecenia: wybierz je, a Enter je usunie, jako jeden krok polecenia UTNIJ, który można cofnąć.
+
+### `Cofaj` (`C`) [#undo]
+
+Pojawia się na liście, gdy pytanie otrzymało już odpowiedź – wskazanie, linię, okno: cofa ostatnie ucięcie, a gdy nie ma już nic do cofnięcia, informuje o tym.
+
+## Czego jeszcze nie robi [#missing]
+
+Rzut: opcja Rzut AutoCADa (Brak, LUW, Widok) nie jest dostępna, a wszystko jest obliczane w rzucie na płaszczyznę XY układu LUW, co odpowiada domyślnej wartości AutoCADa, LUW. Linii nie można jeszcze przeciągnąć kursorem, tylko wskazywać punkt po punkcie. Tryb ucinania i wybór w opcji `Krawędzie` obowiązują do końca sesji, podczas gdy AutoCAD zachowuje je między sesjami. Obiekt nachylony do układu LUW, z wyjątkiem splajnu, ani nie tnie, ani nie jest ucinany.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie UTNIJ po angielsku?
+
+TRIM. W polskim AutoCADzie wpisz `UTNIJ` lub skrót `UT` i naciśnij Enter lub spację; skrótu `TR` z wersji angielskiej w polskiej nie ma. Angielska nazwa z podkreśleniem, `_TRIM`, działa w AutoCADzie w każdym języku.
+
+### Dlaczego UTNIJ usuwa całą linię?
+
+Bo polecenie działa w trybie Szybki, domyślnym w AutoCADzie od wersji 2021: wskazanie obiektu, którego nie przecina żadna krawędź, usuwa go. Wybierz `Tryb`, a potem `sTandardowy`, aby UTNIJ pozostawiało taki obiekt i informowało o tym.
+
+### Jak uciąć wiele linii naraz w AutoCADzie?
+
+Kliknij w pustym miejscu i wskaż drugi punkt: każdy obiekt, który przecina ta linia, zostaje ucięty w jednym kroku. Albo wybierz `prZetnij` i narysuj okno przez części do usunięcia.
+
+### Jak wydłużyć linię poleceniem UTNIJ?
+
+Przytrzymaj Shift i wskaż linię przy końcu, który chcesz wydłużyć: urośnie do najbliższej krawędzi, jak przy [`WYDŁUŻ`](/docs/commands/extend), a następne wskazanie bez Shift znów ucina.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD: kołnierz](/docs/exercises/flange)
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie WYDŁUŻ (EXTEND) w AutoCADzie](/docs/commands/extend)
+- [Polecenie ODSUŃ (OFFSET) w AutoCADzie](/docs/commands/offset)
+- [Polecenie ZAOKRĄGL (FILLET) w AutoCADzie](/docs/commands/fillet)
+- [Polecenie PRZERWIJ (BREAK) w AutoCADzie](/docs/commands/break)

@@ -222,7 +222,22 @@ describe("every command language", () => {
       prompt: Object.entries(en.commands.prompts).find(
         ([, text]) => text === question
       )?.[0],
-      ids: list.split("/").map((entry) => entry.split(": ")[0]),
+      // A listed label is its keyword's id (`cuTting edges` is TRIM's
+      // `cuTting`): read as a word, it fell back to English in every
+      // language, and Polish's Tryb took its T.
+      ids: list.split("/").map((entry) => {
+        const label = entry.split(": ")[0]
+        const labels: Readonly<Record<string, string>> =
+          (
+            en.commands.keywordLabels as Readonly<
+              Record<string, Readonly<Record<string, string>>>
+            >
+          )[command] ?? {}
+        return (
+          Object.entries(labels).find(([, text]) => text === label)?.[0] ??
+          label
+        )
+      }),
     }))
     const justify = ["Left", "Center", "Right", "Middle"]
     const corners = ["TL", "TC", "TR", "ML", "MC", "MR", "BL", "BC", "BR"]

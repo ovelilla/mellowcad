@@ -1,0 +1,64 @@
+---
+title: "Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie"
+description: "Jak działa polecenie RÓŻNICA (SUBTRACT, skrót ROZ) w AutoCADzie: bryły lub regiony, które zostają, Enter, potem te do odjęcia, z otworami."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie RÓŻNICA po angielsku?","answer":"SUBTRACT. W polskim AutoCADzie wpisz RÓŻNICA lub skrót ROZ i naciśnij Enter lub spację; skrót SU z wersji angielskiej w polskiej nie działa. _SUBTRACT działa w AutoCADzie w każdym języku."},{"question":"Jak odjąć jedną bryłę od drugiej w AutoCADzie?","answer":"Narysuj bryłę do odjęcia tam, gdzie zachodzi na drugą: walec przez prostopadłościan, aby powstał otwór. Uruchom RÓŻNICA, wskaż prostopadłościan i naciśnij Enter, potem wskaż walec i naciśnij Enter: w prostopadłościanie zostaje otwór, a walec znika. Kolejność ma znaczenie, bo zostaje to, co wskazano najpierw."},{"question":"Dlaczego RÓŻNICA nie działa?","answer":"Często chodzi o kolejność: to, co ma zostać, trafia do pierwszego zbioru, a to, co należy odjąć, do drugiego. Gdy pierwszy zbiór nie zawiera bryły ani regionu albo drugi nie zawiera żadnego, którego nie ma już w pierwszym, polecenie wyświetla „Nie wybrano brył, powierzchni ani regionów.” i kończy działanie; gdy niczego z drugiego zbioru nie da się odjąć od pierwszego, na przykład bryły od regionu albo regionu w innej płaszczyźnie, wyświetla „Należy wybrać przynajmniej dwie bryły, powierzchnie lub współpłaszczyznowe regiony.” i niczego nie zmienia. Z linii i polilinii trzeba najpierw utworzyć regiony. Gdy informuje, że jedna operacja logiczna się nie powiodła, bryły stykają się w sposób, którego MellowCAD jeszcze nie potrafi obliczyć, i pozostają bez zmian."},{"question":"Jak odjąć pole w AutoCADzie?","answer":"Aby wyciąć jeden kształt 2D z drugiego, utwórz z obu regiony poleceniem REGION i odejmij wewnętrzny od zewnętrznego poleceniem RÓŻNICA: kwadrat, z którego odjęto okrąg, staje się jednym regionem z otworem. Aby zmierzyć pole bez zmieniania rysunku, POLE odejmuje obszary od bieżącej sumy opcją odeJmij."},{"question":"Czy można odjąć bez usuwania obiektu?","answer":"RÓŻNICA usuwa to, co odejmuje, tak jak w AutoCADzie. Aby to zachować, najpierw skopiuj obiekt w miejscu: KOPIUJ, obiekt i Enter, punkt bazowy 0,0, potem ponownie Enter, aby skopiować go o 0,0, na siebie. RÓŻNICA zużyje wtedy jeden z dwóch."}]
+---
+
+Polecenie RÓŻNICA (SUBTRACT) odejmuje bryły 3D od innych brył albo regiony od regionów w tej samej płaszczyźnie: walec odjęty od prostopadłościanu zostawia w nim otwór na wylot, okrąg odjęty od kwadratu – kwadrat z otworem. Pyta dwa razy. Najpierw wyświetla `Wybierz bryły, powierzchnie i regiony do odjęcia...` i pyta o obiekty, które mają zostać, aż do Enter; potem `Wybierz bryły, powierzchnie i regiony do odjęcia...` i pyta o obiekty do odjęcia, ponownie aż do Enter. Jak w AutoCADzie 2027 zbiór wybrany wcześniej zostaje odrzucony i pytanie pada ponownie.
+
+Bryły pierwszego zbioru stają się jedną bryłą, a każda bryła drugiego zbioru zostaje od niej odjęta i usunięta, niezależnie od tego, czy na nią zachodziła. Regiony są przetwarzane płaszczyzna po płaszczyźnie: regiony pierwszego zbioru w danej płaszczyźnie są łączone, regiony drugiego zbioru w tej płaszczyźnie są od nich odejmowane i usuwane, a region w płaszczyźnie, w której pierwszy zbiór nie ma żadnego, pozostaje bez zmian. Wynik bryłowy jest bryłą złożoną, nie jest już prostopadłościanem ani walcem i nie ma historii. Gdy nic nie zostaje, polecenie wyświetla `Utworzono pustą bryłę — usunięto` lub `Utworzono pusty region — usunięto` i usuwa obiekty. Całe polecenie to jeden krok cofania. 3D w MellowCAD wciąż jest częściowe: bryły istnieją, powierzchnie i siatki nie.
+
+- **Polecenie:** `RÓŻNICA`
+- **Po angielsku:** `SUBTRACT`, wpisywane jako `_SUBTRACT` w każdym języku
+- **Aliasy:** `ROZ`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `ROZ` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="subtract" caption="Walec odjęty od prostopadłościanu poleceniem RÓŻNICA, otwór na wylot: najpierw wskazany prostopadłościan, potem walec." />
+
+## Czego jeszcze nie robi [#missing]
+
+Powierzchnie, których tu nie ma. Zakrzywione powierzchnie przecinające się wzdłuż krzywej, dla której MellowCAD nie ma jeszcze dokładnej postaci: walce, stożki, sfery lub torusy, których osie ani się nie pokrywają, ani nie są równoległe (dwa walce mogą też się przecinać); stożek z czymkolwiek poza płaszczyzną lub bryłą na jego osi; torus lub bryła obrotowa z płaszczyzną ani prostopadłą do osi, ani przez nią przechodzącą, albo z bryłą poza osią; bryła wyciągnięta z czymkolwiek poza płaszczyzną lub powierzchnią wyciągniętą w jej kierunku. Są one odrzucane, a bryły pozostają bez zmian; tak samo cięcie, które styka się z krawędzią stycznie, powierzchnie prawie, ale nie całkiem, na jednej płaszczyźnie i bardzo cienki pasek między cięciem a krawędzią. Poprzedni po poleceniu RÓŻNICA informuje, że nie ma poprzedniego zbioru wskazań, podczas gdy AutoCAD nie znajduje żadnego z usuniętych obiektów. Historia brył nie jest przechowywana (SOLIDHIST, SHOWHISTORY).
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su--fr-soustraction--su--it-sottrai--sot--de-differenz--di--ru-вычитание--выч--pl-różnica--roz)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie RÓŻNICA po angielsku?
+
+SUBTRACT. W polskim AutoCADzie wpisz `RÓŻNICA` lub skrót `ROZ` i naciśnij Enter lub spację; skrót `SU` z wersji angielskiej w polskiej nie działa. `_SUBTRACT` działa w AutoCADzie w każdym języku.
+
+### Jak odjąć jedną bryłę od drugiej w AutoCADzie?
+
+Narysuj bryłę do odjęcia tam, gdzie zachodzi na drugą: walec przez prostopadłościan, aby powstał otwór. Uruchom RÓŻNICA, wskaż prostopadłościan i naciśnij Enter, potem wskaż walec i naciśnij Enter: w prostopadłościanie zostaje otwór, a walec znika. Kolejność ma znaczenie, bo zostaje to, co wskazano najpierw.
+
+### Dlaczego RÓŻNICA nie działa?
+
+Często chodzi o kolejność: to, co ma zostać, trafia do pierwszego zbioru, a to, co należy odjąć, do drugiego. Gdy pierwszy zbiór nie zawiera bryły ani regionu albo drugi nie zawiera żadnego, którego nie ma już w pierwszym, polecenie wyświetla `Nie wybrano brył, powierzchni ani regionów.` i kończy działanie; gdy niczego z drugiego zbioru nie da się odjąć od pierwszego, na przykład bryły od regionu albo regionu w innej płaszczyźnie, wyświetla `Należy wybrać przynajmniej dwie bryły, powierzchnie lub współpłaszczyznowe regiony.` i niczego nie zmienia. Z linii i polilinii trzeba najpierw utworzyć regiony. Gdy informuje, że jedna operacja logiczna się nie powiodła, bryły stykają się w sposób, którego MellowCAD jeszcze nie potrafi obliczyć, i pozostają bez zmian.
+
+### Jak odjąć pole w AutoCADzie?
+
+Aby wyciąć jeden kształt 2D z drugiego, utwórz z obu regiony poleceniem [`REGION`](/docs/commands/region) i odejmij wewnętrzny od zewnętrznego poleceniem RÓŻNICA: kwadrat, z którego odjęto okrąg, staje się jednym regionem z otworem. Aby zmierzyć pole bez zmieniania rysunku, [`POLE`](/docs/commands/area) odejmuje obszary od bieżącej sumy opcją `odeJmij`.
+
+### Czy można odjąć bez usuwania obiektu?
+
+RÓŻNICA usuwa to, co odejmuje, tak jak w AutoCADzie. Aby to zachować, najpierw skopiuj obiekt w miejscu: [`KOPIUJ`](/docs/commands/copy), obiekt i Enter, punkt bazowy 0,0, potem ponownie Enter, aby skopiować go o 0,0, na siebie. RÓŻNICA zużyje wtedy jeden z dwóch.
+
+## Ćwicz [#practice]
+
+- [Ćwiczenie AutoCAD 3D: płyta montażowa](/docs/exercises/mounting-plate)
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block)
+
+## Powiązane polecenia [#related]
+
+- [Polecenie SUMA (UNION) w AutoCADzie](/docs/commands/union)
+- [Polecenie ILOCZYN (INTERSECT) w AutoCADzie](/docs/commands/intersect)
+- [Polecenie REGION w AutoCADzie](/docs/commands/region)
+- [Polecenie WALEC (CYLINDER) w AutoCADzie](/docs/commands/cylinder)
+- [Polecenie PŁAT (SLICE) w AutoCADzie](/docs/commands/slice)

@@ -1,0 +1,83 @@
+---
+title: "Polecenie WIDOK (VIEW) w AutoCADzie"
+description: "Jak w AutoCADzie obrócić widok poleceniem WIDOK (VIEW, -WIDOK): sześć widoków prostokątnych i cztery izometryczne oraz LUW ustawiany przez każdy prostokątny."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak uzyskać widok izometryczny w AutoCADzie?","answer":"Wpisz -WIDOK, potem SWIzo dla izometrii południowo-zachodniej; SEIzo, NEIzo i NWIzo dają trzy pozostałe narożniki. Albo wybierz Izometryczny SW w kontrolce widoku w lewym górnym rogu lub kliknij górny narożnik ViewCube. BIEŻSTYLWIZ z opcją Ukryty ukrywa krawędzie z tyłu."},{"question":"Jakie polecenie daje widok z góry?","answer":"-WIDOK, potem Góra, które ustawia też LUW na osie układu globalnego. PLAN patrzy z góry na bieżący LUW i pozostawia go bez zmian."},{"question":"Dlaczego LUW zmienił się po widoku z przodu?","answer":"Widok prostokątny obraca LUW przodem do ciebie, aby to, co rysujesz, leżało na ekranie. LUW i Enter wracają do układu globalnego; C cofa widok razem z jego LUW."},{"question":"Czy widok izometryczny to to samo co rysunek izometryczny?","answer":"Nie. Widok izometryczny patrzy na model 3D od narożnika. Rysunek izometryczny jest 2D, rysowany na płaszczyznach izometrycznych w stylu izometrycznym polecenia SKOK, którego MellowCAD jeszcze nie ma."},{"question":"Gdzie jest Menedżer widoków?","answer":"WIDOK uruchamia -WIDOK w wierszu polecenia: nie ma Menedżera widoków, a widoków nazwanych (Zapisz, Przywróć) jeszcze tu nie ma."}]
+---
+
+Polecenie WIDOK (VIEW) obraca widok do jednego z dziesięciu predefiniowanych widoków AutoCADa: sześciu prostokątnych, patrzących prosto na jedną stronę modelu, i czterech izometrycznych, patrzących z góry od narożnika. Nic w rysunku się nie przesuwa. WIDOK uruchamia `-WIDOK`, formę dla wiersza polecenia: jego pierwsze pytanie wymienia `prostoKątny`, które potem pyta o stronę, a przyjmuje też od razu nazwę widoku, tak jak odpowiadają na nie menu AutoCADa: `-WIDOK`, potem `SWIzo`. Każdy widok pokazuje cały rysunek i wyświetla `Ponowne generowanie modelu.`.
+
+Kontrolka widoku w lewym górnym rogu rysunku wymienia te same dziesięć widoków i uruchamia `-WIDOK`, a ściany i narożniki ViewCube również do nich obracają, pozostawiając LUW bez zmian. Każde WIDOK to jeden krok cofania, więc `C` cofa widok razem z ustawionym przez niego LUW. Wpisane z apostrofem wewnątrz innego polecenia odmawia z komunikatem `** Wymagane ponowne wygenerowanie, niemożliwy tryb nakładkowy.`. 3D w MellowCAD to tylko bryły i wciąż jest częściowe.
+
+- **Polecenie:** `WIDOK`
+- **Po angielsku:** `VIEW`, wpisywane jako `_VIEW` w każdym języku
+- **Aliasy:** `WID`, `ODWIDOK`
+- **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WID` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="view" caption="Klocek ze stopniem narysowany w rzucie: -WIDOK i Izometryczny SW, i widać go z południowego zachodu i z góry, w stylu wizualnym Ukryty." />
+
+## Opcje [#options]
+
+### `prostoKątny` (`K`) [#orthographic]
+
+Pyta o stronę, na którą patrzeć, domyślnie `Góra`, więc Enter daje rzut z góry: `Góra`, `Dół`, `Przód`, `Tył`, `Lewo` lub `Prawo`. Każdy jest ustawiony prosto: `Góra` pokazuje X w prawo i Y w górę, `Przód` X w prawo i Z w górę, a `Dół`, widziany od spodu, X w lewo. Wpisana przy pierwszym pytaniu, każda strona działa bez tej opcji.
+
+Każdy obraca też LUW przodem do ciebie, od osi układu globalnego, bez względu na to, jaki był LUW, z początkiem w `0,0,0`, tak jak robi to opcja ortogonalna polecenia [`LUW`](/docs/commands/ucs): po widoku z przodu płaszczyzna XY to przód, więc to, co rysujesz, leży płasko na ekranie, a LUW nazywa się `*PRZÓD*`. Po widoku z góry ma osie układu globalnego i nazywa się `*GÓRA*`.
+
+### `SWIzo` (`SWI`) [#swiso]
+
+Izometria południowo-zachodnia: patrzy z góry od narożnika z przodu po lewej, widząc przód, lewy bok i górę. LUW pozostaje bez zmian. To widok z sesji.
+
+### `SEIzo` (`SEI`) [#seiso]
+
+Izometria południowo-wschodnia: patrzy z góry od narożnika z przodu po prawej, widząc przód, prawy bok i górę. LUW pozostaje bez zmian.
+
+### `NEIzo` (`NEI`) [#neiso]
+
+Izometria północno-wschodnia: patrzy z góry od narożnika z tyłu po prawej, widząc tył, prawy bok i górę. LUW pozostaje bez zmian.
+
+### `NWIzo` (`NWI`) [#nwiso]
+
+Izometria północno-zachodnia: patrzy z góry od narożnika z tyłu po lewej, widząc tył, lewy bok i górę. LUW pozostaje bez zmian.
+
+## Czego jeszcze nie robi [#missing]
+
+Widoki nazwane: `prostoKątny` to jedyna opcja wymieniana przy pierwszym pytaniu, podczas gdy w AutoCADzie lista zawiera też `?`, Usuń, Przywróć, Zapisz, Ustawienia i Okno, a wpisana tam nazwa jest odrzucana. Menedżer widoków, który WIDOK otwiera w AutoCADzie. Gdy nic nie narysowano, widok zachowuje powiększenie, podczas gdy AutoCAD pokazuje granice rysunku. UCSORTHO i UCSBASE jako zmienne: widok prostokątny zawsze wyrównuje LUW, od osi układu globalnego. Wyrównany LUW na liście `Poprzedni` polecenia [`LUW`](/docs/commands/ucs).
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview--it--vista---v--vista--v--ddview--de--ausschnt---as--ausschnt--as--ddview--ru--вид--вид--диалвид--pl--widok---wid--widok--wid--odwidok)
+
+## Pytania [#questions]
+
+### Jak uzyskać widok izometryczny w AutoCADzie?
+
+Wpisz `-WIDOK`, potem `SWIzo` dla izometrii południowo-zachodniej; `SEIzo`, `NEIzo` i `NWIzo` dają trzy pozostałe narożniki. Albo wybierz Izometryczny SW w kontrolce widoku w lewym górnym rogu lub kliknij górny narożnik ViewCube. [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) z opcją `Ukryty` ukrywa krawędzie z tyłu.
+
+### Jakie polecenie daje widok z góry?
+
+`-WIDOK`, potem `Góra`, które ustawia też LUW na osie układu globalnego. [`PLAN`](/docs/commands/plan) patrzy z góry na bieżący LUW i pozostawia go bez zmian.
+
+### Dlaczego LUW zmienił się po widoku z przodu?
+
+Widok prostokątny obraca LUW przodem do ciebie, aby to, co rysujesz, leżało na ekranie. [`LUW`](/docs/commands/ucs) i Enter wracają do układu globalnego; `C` cofa widok razem z jego LUW.
+
+### Czy widok izometryczny to to samo co rysunek izometryczny?
+
+Nie. Widok izometryczny patrzy na model 3D od narożnika. Rysunek izometryczny jest 2D, rysowany na płaszczyznach izometrycznych w stylu izometrycznym polecenia SKOK, którego MellowCAD jeszcze nie ma.
+
+### Gdzie jest Menedżer widoków?
+
+WIDOK uruchamia `-WIDOK` w wierszu polecenia: nie ma Menedżera widoków, a widoków nazwanych (Zapisz, Przywróć) jeszcze tu nie ma.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie PLAN w AutoCADzie: widok z góry na LUW](/docs/commands/plan)
+- [Orbita 3D w AutoCADzie: polecenie 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [Polecenie LUW (UCS) w AutoCADzie: lokalny układ współrzędnych](/docs/commands/ucs)
+- [Style wizualne w AutoCADzie: polecenie BIEŻSTYLWIZ (VSCURRENT)](/docs/commands/vscurrent)
+- [Polecenie ZOOM w AutoCADzie](/docs/commands/zoom)

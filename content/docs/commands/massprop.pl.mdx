@@ -1,0 +1,60 @@
+---
+title: "Polecenie PARAMFIZ (MASSPROP) w AutoCADzie"
+description: "Jak obliczyć objętość bryły 3D i środek ciężkości regionu w AutoCADzie poleceniem PARAMFIZ (MASSPROP): pole, momenty bezwładności i plik .mpr. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak obliczyć objętość bryły 3D w AutoCADzie?","answer":"Uruchom polecenie PARAMFIZ, wskaż bryłę i naciśnij Enter: objętość to drugi wiersz raportu. Prostopadłościan 60 na 40 na 25 z przykładu daje 60000. Naciśnij Enter przy pytaniu o plik, aby zakończyć."},{"question":"Jak znaleźć środek ciężkości figury?","answer":"Zamień ją w region poleceniem REGION albo w bryłę, potem uruchom polecenie PARAMFIZ i wskaż ją: wiersz środka ciężkości podaje jej X i Y, a dla bryły także Z, w bieżącym LUW."},{"question":"Dlaczego PARAMFIZ mówi, że nie wybrano brył ani regionów?","answer":"Bo wskazane obiekty nie są ani bryłami, ani regionami: linie, polilinie, okręgi i kreskowania nie mają parametrów fizycznych, a blok zawierający bryłę nie jest bryłą. Zamknięte kształty zamień w regiony poleceniem REGION albo w bryły poleceniem WYCIĄGNIJ."},{"question":"Dlaczego masa jest równa objętości?","answer":"Polecenie PARAMFIZ mierzy z gęstością 1, tak jak AutoCAD: bryły nie mają tutaj materiału. Pomnóż objętość przez gęstość materiału, aby otrzymać jego rzeczywistą masę."}]
+---
+
+Polecenie PARAMFIZ (MASSPROP) mierzy bryły 3D i regiony. Wybierz je i naciśnij Enter: raport zostaje wypisany w wierszu polecenia, w kolumnach AutoCADa, a potem polecenie pyta, czy zapisać go do pliku. Zbiór bez brył i regionów daje komunikat `Nie wybrano ani brył, ani regionów.` i kończy polecenie.
+
+Bryły są mierzone razem jako jedno ciało o gęstości 1, więc masa równa się objętości: masa, objętość, obwiednia, środek ciężkości, momenty bezwładności, iloczyny bezwładności i promienie bezwładności, wszystkie względem bieżącego LUW, a potem główne momenty względem środka ciężkości z ich kierunkami. Bryły, które na siebie zachodzą, są liczone dwa razy. Dla regionów w płaszczyźnie XY układu LUW: pole, obwód, obwiednia, środek ciężkości, momenty i iloczyn bezwładności, promienie bezwładności i główne momenty; region poza tą płaszczyzną daje tylko pole, obwód, obwiednię i środek ciężkości. Najpierw idą regiony, potem bryły; regiony spoza płaszczyzny pierwszego są pomijane i liczone. Liczby są wypisywane z dokładnością rysunku, ustawianą poleceniem [`JEDN`](/docs/commands/units), i są dokładne: bryły całkowane ściana po ścianie. Polecenie PARAMFIZ niczego w rysunku nie zmienia; wpisuje się je, jak w AutoCADzie, którego wstążka nie ma dla niego przycisku.
+
+- **Polecenie:** `PARAMFIZ`
+- **Po angielsku:** `MASSPROP`, wpisywane jako `_MASSPROP` w każdym języku
+- **Panel:** [Zapytanie i widok](/docs/commands#inquiry)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `PARAMFIZ` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="massprop" caption="Prostopadłościan 60 na 40 na 25 w początku układu: PARAMFIZ wypisuje jego objętość, obwiednię, środek ciężkości i momenty, a Enter odrzuca zapis do pliku." />
+
+## Opcje [#options]
+
+### `Tak` (`T`) [#yes]
+
+Przy pytaniu o plik, którego odpowiedź domyślna to `Nie`: zapisuje raport do pliku tak, jak zapisuje go AutoCAD, wiersz po wierszu. W AutoCADzie miejsce wskazuje się w oknie dialogowym; w przeglądarce tym oknem jest pobieranie pliku, a plik nosi nazwę rysunku z rozszerzeniem `.mpr`.
+
+## Czego jeszcze nie robi [#missing]
+
+Jednostki po każdej liczbie przy jednostkach architektonicznych lub inżynierskich (`sq in`, `cu in`, `lb`), które wypisuje AutoCAD: tutaj żadna liczba nie ma jednostki. Wybór nazwy pliku i pytanie przed zastąpieniem istniejącego. Daleko od początku układu AutoCAD zapisuje duże liczby w postaci wykładniczej i traci cyfry, a jego ostatnia cyfra może się różnić przez jego własne zaokrąglenie: liczby MellowCAD są dokładne. Dla bryły z dwoma równymi momentami głównymi – para kierunków, którą wybiera zaokrąglenie AutoCADa.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#massprop--es-propfis--pt-br-propmass--fr-propmeca--it-propmass--de-masseig--ru-масс-хар--pl-paramfiz)
+
+## Pytania [#questions]
+
+### Jak obliczyć objętość bryły 3D w AutoCADzie?
+
+Uruchom polecenie PARAMFIZ, wskaż bryłę i naciśnij Enter: objętość to drugi wiersz raportu. Prostopadłościan 60 na 40 na 25 z przykładu daje 60000. Naciśnij Enter przy pytaniu o plik, aby zakończyć.
+
+### Jak znaleźć środek ciężkości figury?
+
+Zamień ją w region poleceniem [`REGION`](/docs/commands/region) albo w bryłę, potem uruchom polecenie PARAMFIZ i wskaż ją: wiersz środka ciężkości podaje jej X i Y, a dla bryły także Z, w bieżącym LUW.
+
+### Dlaczego PARAMFIZ mówi, że nie wybrano brył ani regionów?
+
+Bo wskazane obiekty nie są ani bryłami, ani regionami: linie, polilinie, okręgi i kreskowania nie mają parametrów fizycznych, a blok zawierający bryłę nie jest bryłą. Zamknięte kształty zamień w regiony poleceniem [`REGION`](/docs/commands/region) albo w bryły poleceniem [`WYCIĄGNIJ`](/docs/commands/extrude).
+
+### Dlaczego masa jest równa objętości?
+
+Polecenie PARAMFIZ mierzy z gęstością 1, tak jak AutoCAD: bryły nie mają tutaj materiału. Pomnóż objętość przez gęstość materiału, aby otrzymać jego rzeczywistą masę.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie POLE (AREA): jak obliczyć pole powierzchni w AutoCADzie](/docs/commands/area)
+- [Polecenie LISTA (LIST) w AutoCADzie](/docs/commands/list)
+- [Polecenie REGION w AutoCADzie](/docs/commands/region)
+- [Prostopadłościan w AutoCADzie: polecenie KOSTKA (BOX)](/docs/commands/box)
+- [Jednostki w AutoCADzie: polecenie JEDN (UNITS)](/docs/commands/units)

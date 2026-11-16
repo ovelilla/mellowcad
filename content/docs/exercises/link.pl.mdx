@@ -1,0 +1,58 @@
+---
+title: "Ćwiczenie AutoCAD: łącznik z liniami stycznymi"
+metaTitle: "Ćwiczenie AutoCAD dla zaawansowanych: łącznik"
+description: "Narysuj łącznik w AutoCADzie: dwa oczka połączone liniami stycznymi do obu z lokalizacją Styczny, łuki między nimi ucięte, i wymiary. Za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj ten łącznik w milimetrach: dwa oczka w rozstawie 90, o promieniu 20 i 12, z otworami o promieniu 10 i 6, połączone liniami stycznymi do obu, a łuki między liniami ucięte. Linie styczne korzystają z lokalizacji Styczny na obu końcach; potem polecenie [`UTNIJ`](/docs/commands/trim) zamienia okrąg każdego oczka w łuk.
+
+- **Ćwiczenie:** Zaawansowany · Mechanika · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`LINIA`](/docs/commands/line), [`UTNIJ`](/docs/commands/trim), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMPROMIEŃ`](/docs/commands/dimradius), [`WYMŚREDNICA`](/docs/commands/dimdiameter)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=link), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/link" caption="Łącznik z dwoma oczkami w rozstawie 90, połączonymi liniami stycznymi, z wymiarami." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj oczka [#bosses]
+
+Na warstwie Kontur cztery okręgi poleceniem [`OKRĄG`](/docs/commands/circle), każdy przez promień: `20` i `10` w `0,0`, `12` i `6` w `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Narysuj oczka" />
+
+### 2. Narysuj linie styczne [#tangents]
+
+Polecenie [`LINIA`](/docs/commands/line), potem wpisz `_TAN`, tryb lokalizacji Styczny dla jednego punktu, i wskaż duży okrąg blisko jego góry; znowu `_TAN` i wskaż mały okrąg blisko jego góry. Linia jest styczna do obu. Tak samo na dole.
+
+<Session name="exercises/link/tangents" caption="2. Narysuj linie styczne" />
+
+### 3. Utnij łuki [#trim]
+
+Polecenie [`UTNIJ`](/docs/commands/trim): wskaż każde oczko między dwiema liniami, po stronie zwróconej do drugiego oczka. Wewnętrzne łuki znikają, a każdy okrąg jest łukiem.
+
+<Session name="exercises/link/trim" caption="3. Utnij łuki" />
+
+### 4. Narysuj osie [#centreLines]
+
+Na warstwie Linie osiowe oś przez oba środki i linia w poprzek każdego oczka.
+
+<Session name="exercises/link/centreLines" caption="4. Narysuj osie" />
+
+### 5. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary odległość między środkami poleceniem [`WYMLINIOWY`](/docs/commands/dimlinear), promienie oczek poleceniem [`WYMPROMIEŃ`](/docs/commands/dimradius), a ich otwory poleceniem [`WYMŚREDNICA`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block): Zaawansowany · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: uszczelka](/docs/exercises/gasket): Początkujący · Mechanika · 2D
+- [Ćwiczenie AutoCAD: wspornik L](/docs/exercises/l-bracket): Początkujący · Mechanika · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

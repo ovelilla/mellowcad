@@ -1,4 +1,5 @@
 import { Geist_Mono, Inter, Readex_Pro } from "next/font/google"
+import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
@@ -41,6 +42,35 @@ const fontMono = Geist_Mono({
 // would fetch it on every page of every language; its `unicode-range` and the
 // one page whose font stack names it keep it to Arabic.
 const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
+
+// Polish's letters alone, cut from Inter's and Geist Mono's Latin Extended
+// files (assets/fonts/README.md), before them on a Polish page (lib/fonts.ts).
+// The range is a literal: next/font reads its options statically.
+const fontPolishSans = localFont({
+  src: "../../../assets/fonts/inter-polish-wght.woff2",
+  weight: "100 900",
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [
+    {
+      prop: "unicode-range",
+      value: "U+0104-0107, U+0118-0119, U+0141-0144, U+015A-015B, U+0179-017C",
+    },
+  ],
+})
+
+const fontPolishMono = localFont({
+  src: "../../../assets/fonts/geist-mono-polish-wght.woff2",
+  weight: "100 900",
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [
+    {
+      prop: "unicode-range",
+      value: "U+0104-0107, U+0118-0119, U+0141-0144, U+015A-015B, U+0179-017C",
+    },
+  ],
+})
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale()
@@ -90,6 +120,7 @@ export default async function MarketingLayout({
         sans: inter,
         mono: fontMono,
         arabic: fontArabic,
+        "latin-ext": { sans: fontPolishSans, mono: fontPolishMono },
       })}
     >
       <head>

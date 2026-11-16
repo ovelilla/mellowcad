@@ -1,0 +1,52 @@
+---
+title: "Ćwiczenie AutoCAD: okrągły stół i krzesła"
+metaTitle: "Ćwiczenie AutoCAD: okrągły stół, sześć krzeseł"
+description: "Narysuj w AutoCADzie okrągły stół z sześcioma krzesłami: jedno krzesło, potem szyk biegunowy wokół środka stołu i wymiary. Krok po kroku, za darmo online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj okrągły stół o średnicy 120 z sześcioma krzesłami, w centymetrach: każde krzesło to siedzisko 44 na 40 z narożami zaokrąglonymi promieniem 4 i oparcie o głębokości 8, a przód siedziska leży 8 od krawędzi stołu. Narysuj jedno krzesło nad stołem, a wszystkie sześć rozmieści szyk biegunowy. Skala wymiarów rysunku jest ustawiona dla centymetrów.
+
+- **Ćwiczenie:** Średniozaawansowany · Architektura · 2D
+- **Polecenia:** [`OKRĄG`](/docs/commands/circle), [`PROSTOK`](/docs/commands/rectang), [`SZYKBIEGUN`](/docs/commands/arraypolar), [`WYMŚREDNICA`](/docs/commands/dimdiameter), [`WYMLINIOWY`](/docs/commands/dimlinear)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=round-table), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/round-table" caption="Okrągły stół o średnicy 120 z sześcioma krzesłami, w rzucie, zwymiarowany w centymetrach." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj stół [#table]
+
+Na warstwie Kontur polecenie [`OKRĄG`](/docs/commands/circle) w `0,0`, opcja `śreDnica`, `120`.
+
+<Session name="exercises/round-table/table" caption="1. Narysuj stół" />
+
+### 2. Narysuj krzesło [#chair]
+
+Siedzisko, nad stołem: polecenie [`PROSTOK`](/docs/commands/rectang) z opcją `Zaokrąglij` równą `4`, od `-22,68` do punktu `44,40` dalej. Potem oparcie, z promieniem zaokrąglenia z powrotem na `0`, od `-22,108` do punktu `44,8` dalej. Polecenie [`PROSTOK`](/docs/commands/rectang) zachowuje promień zaokrąglenia, dopóki go nie zmienisz.
+
+<Session name="exercises/round-table/chair" caption="2. Narysuj krzesło" />
+
+### 3. Utwórz szyk krzeseł [#array]
+
+Polecenie [`SZYKBIEGUN`](/docs/commands/arraypolar): wskaż siedzisko i oparcie, naciśnij Enter, podaj środek stołu, `0,0`, a potem opcję `Elementy`, `6`. Każde krzesło obraca się przy rozmieszczaniu, więc wszystkie sześć stoi przodem do stołu.
+
+<Session name="exercises/round-table/array" caption="3. Utwórz szyk krzeseł" />
+
+### 4. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary polecenie [`WYMŚREDNICA`](/docs/commands/dimdiameter) na stole, umieszczony wewnątrz, i polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) dla szerokości górnego krzesła, 44, oraz jego głębokości z oparciem, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: działka](/docs/exercises/plot-of-land): Średniozaawansowany · Budownictwo · 2D
+- [Ćwiczenie AutoCAD: wałek stopniowany](/docs/exercises/shaft): Średniozaawansowany · Mechanika · 2D
+- [Ćwiczenie AutoCAD: klocek schodkowy w izometrii](/docs/exercises/isometric-block): Średniozaawansowany · Mechanika · Izometria
+- [Ćwiczenia AutoCAD](/docs/exercises)

@@ -1,0 +1,103 @@
+---
+title: "Edycja polilinii w AutoCADzie: polecenie EDPLIN (PEDIT)"
+metaTitle: "Edycja polilinii w AutoCADzie: EDPLIN (PEDIT)"
+description: "Jak edytować polilinię w AutoCADzie poleceniem EDPLIN (PEDIT, skrót EDP): linie w polilinię, łączenie, szerokość, wygładzanie, wierzchołki. Wypróbuj online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie EDPLIN po angielsku?","answer":"PEDIT. W polskim AutoCADzie jego skrót to EDP: wpisz go i naciśnij Enter lub spację. Angielskie PE w polskiej wersji nie działa; pełna nazwa EDPLIN działa, a _PEDIT – w AutoCADzie w każdym języku. Dwukrotne kliknięcie polilinii też je uruchamia."},{"question":"Jak połączyć linie w polilinię?","answer":"Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz Dołącz i wybierz pozostałe: te, które stykają się końcami, stają się jedną polilinią. POŁĄCZ robi to samo w jednym kroku."},{"question":"Dlaczego EDPLIN nie działa na moim obiekcie?","answer":"Polecenie EDPLIN edytuje polilinie i proponuje zamianę linii, łuków i splajnów; wszystko inne – tekst, okrąg, blok – odrzuca i pyta ponownie. Obiekt na zablokowanej warstwie daje „Obiekt jest na zablokowanej warstwie.”. Opcja Dołącz dołącza tylko obiekty, których końce dokładnie stykają się z końcami polilinii: przy przerwach użyj Wiele i odległości tolerancji."},{"question":"Jak zmienić szerokość polilinii?","answer":"Wybierz Szerokość i wpisz szerokość: przyjmie ją każdy segment. Dla jednego segmentu użyj Edwierzch, przejdź do wierzchołka, w którym się zaczyna, i wybierz jego Szerokość."},{"question":"Jak wygładzić polilinię?","answer":"Wstaw prowadzi łuki przez każdy wierzchołek; splaJn robi gładszą krzywą, którą obramowują wierzchołki. Polilinia znów ją prostuje."}]
+---
+
+Polecenie EDPLIN (PEDIT) edytuje polilinię. Wskaż ją przy monicie `Wybierz polilinię lub [Wiele]:` albo wybierz przed poleceniem; dwukrotne kliknięcie polilinii też uruchamia na niej polecenie EDPLIN. Jeśli zamiast tego wskażesz linię, łuk lub splajn, polecenie wyświetli `Wybrany obiekt nie jest polilinią` i zapyta, czy zamienić obiekt w polilinię, domyślnie Tak: nowa polilinia zajmuje jego miejsce i przejmuje jego właściwości. Potem polecenie wciąż pyta o opcję, stosując każdą od razu, aż Enter je zakończy. Polilinia 3D dostaje krótszą listę, bez szerokości, wygładzania łukami i generowania rodzaju linii, a jej opcja splajnu to `splaJn`. Esc zachowuje to, co już zrobiono; cała edycja to jeden krok, który cofa `C`.
+
+- **Polecenie:** `EDPLIN`
+- **Po angielsku:** `PEDIT`, wpisywane jako `_PEDIT` w każdym języku
+- **Aliasy:** `EDP`
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `EDP` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="pedit" caption="Trzy linie stykające się końcami: EDPLIN zamienia pierwszą w polilinię, dołącza do niej dwie pozostałe i nadaje jej szerokość 2." />
+
+## Opcje [#options]
+
+### `Wiele` (`W`) [#multiple]
+
+Edytuje kilka polilinii naraz: wybierz je, powiedz, czy zamienić linie, łuki i splajny wśród nich, a potem każda opcja zostaje zastosowana do wszystkich. Jej opcja `Dołącz` pyta o odległość tolerancji i o `Typ`: `Wydłuż` ucina lub wydłuża segmenty końcowe, aż się spotkają, `Dodaj` wypełnia przerwę nowym segmentem, `Obie` wydłuża, gdzie może, a dodaje, gdzie nie może.
+
+### `Zamknij` (`Z`) [#close]
+
+Zamyka polilinię segmentem od ostatniego wierzchołka do pierwszego, łukiem, jeśli ostatni segment jest łukiem. W zamkniętej polilinii ta opcja to `Otwórz`, która usuwa ten segment.
+
+### `Dołącz` (`D`) [#join]
+
+Dołącza linie, łuki i otwarte polilinie, które stykają się końcami z końcami polilinii, i podaje, ile segmentów dodała. Do zamkniętej polilinii nie można niczego dołączyć: `Nie można dołączyć segmentu do zamkniętej polilinii`.
+
+### `Szerokość` (`S`) [#width]
+
+Jedna szerokość dla wszystkich segmentów, wpisana lub zmierzona dwoma punktami; 0 usuwa szerokość.
+
+### `Edwierzch` (`E`) [#edit-vertex]
+
+Stawia X na pierwszym wierzchołku i pyta, co tam zrobić: `Nast` i `Poprz` przesuwają X, `prZesuń` przesuwa wierzchołek, `Dodaj` dodaje nowy za nim, `Rozłącz` i `prOstuj` zapamiętują wierzchołek, przesuwasz X do innego, a `idźDo` przerywa polilinię między nimi albo robi z tego, co leży pomiędzy, jeden prosty segment, `Szerokość` ustala szerokość początkową i końcową następnego segmentu, `sTyczna` nadaje wierzchołkowi kierunek dla późniejszego wygładzania łukami, a `konIec` wraca.
+
+### `Wstaw` (`W`) [#fit]
+
+Rysuje gładką krzywą z łuków przez każdy wierzchołek, stycznych tam, gdzie się spotykają, tak jak układa je wygładzanie łukami w AutoCADzie. Wierzchołki zostają, a ich edycja zmienia kształt krzywej.
+
+### `splaJn` (`J`) [#spline]
+
+Dopasowuje do polilinii krzywą B-splajn, którą wierzchołki obramowują, zamiast przez nie przechodzić: kwadratową lub sześcienną, według SPLINETYPE, i tak dokładną, jak SPLINESEGS. Dla polilinii 3D jest to `splaJn`. Opcja `Obiekt` polecenia [`SPLAJN`](/docs/commands/spline) zamienia taką polilinię w prawdziwy splajn.
+
+### `Polilinia` (`P`) [#decurve]
+
+Usuwa krzywą z opcji `Wstaw` lub `splaJn`: między wierzchołkami znów są proste segmenty.
+
+### `rodzajLinii` (`L`) [#ltype-gen]
+
+`Tak` kładzie rodzaj linii jednym wzorem wzdłuż całej polilinii, więc kreskowa polilinia o krótkich segmentach nadal pokazuje kreski; `Nie`, wartość domyślna, zaczyna wzór od nowa przy każdym wierzchołku.
+
+### `ODwróć` (`OD`) [#reverse]
+
+Odwraca polilinię: jej wierzchołki w przeciwnej kolejności, razem z łukami i szerokościami.
+
+### `Cofaj` (`C`) [#undo]
+
+Cofa ostatnią opcję tego uruchomienia i pyta dalej.
+
+## Czego jeszcze nie robi [#missing]
+
+PEDITACCEPT: wskazanie linii, łuku lub splajnu zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja `Wiele` z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep--de-pedit--pe--ru-полред--прд--pl-edplin--edp)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie EDPLIN po angielsku?
+
+PEDIT. W polskim AutoCADzie jego skrót to `EDP`: wpisz go i naciśnij Enter lub spację. Angielskie `PE` w polskiej wersji nie działa; pełna nazwa `EDPLIN` działa, a `_PEDIT` – w AutoCADzie w każdym języku. Dwukrotne kliknięcie polilinii też je uruchamia.
+
+### Jak połączyć linie w polilinię?
+
+Uruchom polecenie EDPLIN, wskaż jedną z linii i naciśnij Enter, aby zamienić ją w polilinię, potem wybierz `Dołącz` i wybierz pozostałe: te, które stykają się końcami, stają się jedną polilinią. [`POŁĄCZ`](/docs/commands/join) robi to samo w jednym kroku.
+
+### Dlaczego EDPLIN nie działa na moim obiekcie?
+
+Polecenie EDPLIN edytuje polilinie i proponuje zamianę linii, łuków i splajnów; wszystko inne – tekst, okrąg, blok – odrzuca i pyta ponownie. Obiekt na zablokowanej warstwie daje `Obiekt jest na zablokowanej warstwie.`. Opcja `Dołącz` dołącza tylko obiekty, których końce dokładnie stykają się z końcami polilinii: przy przerwach użyj `Wiele` i odległości tolerancji.
+
+### Jak zmienić szerokość polilinii?
+
+Wybierz `Szerokość` i wpisz szerokość: przyjmie ją każdy segment. Dla jednego segmentu użyj `Edwierzch`, przejdź do wierzchołka, w którym się zaczyna, i wybierz jego `Szerokość`.
+
+### Jak wygładzić polilinię?
+
+`Wstaw` prowadzi łuki przez każdy wierzchołek; `splaJn` robi gładszą krzywą, którą obramowują wierzchołki. `Polilinia` znów ją prostuje.
+
+## Powiązane polecenia [#related]
+
+- [Polilinia w AutoCADzie: polecenie PLINIA (PLINE)](/docs/commands/pline)
+- [Polecenie POŁĄCZ (JOIN) w AutoCADzie](/docs/commands/join)
+- [Polecenie ROZBIJ (EXPLODE) w AutoCADzie](/docs/commands/explode)
+- [Polecenie SPLAJN (SPLINE) w AutoCADzie](/docs/commands/spline)

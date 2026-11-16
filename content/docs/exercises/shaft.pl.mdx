@@ -1,0 +1,64 @@
+---
+title: "Ćwiczenie AutoCAD: wałek stopniowany"
+metaTitle: "Ćwiczenia AutoCAD 2D: wałek stopniowany"
+description: "Narysuj wałek stopniowany w AutoCADzie: połowa konturu jako polilinia, sfazowana, odbita względem osi, i długości w wymiarach łańcuchowych. Krok po kroku."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj ten wałek stopniowany w widoku z boku, w milimetrach: długość 150, średnice 30, 40 i 30 na długościach 40, 60 i 50, oba końce sfazowane 2 na 2. Narysuj połowę nad osią jako jedną polilinię, sfazuj ją i odbij lustrzanie; potem krawędzie widoczne w poprzek wałka, oś i długości. Średnice są te podane tutaj.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · 2D
+- **Polecenia:** [`PLINIA`](/docs/commands/pline), [`FAZUJ`](/docs/commands/chamfer), [`LUSTRO`](/docs/commands/mirror), [`LINIA`](/docs/commands/line), [`WYMLINIOWY`](/docs/commands/dimlinear), [`WYMSZEREG`](/docs/commands/dimcontinue)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=shaft), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/shaft" caption="Wałek stopniowany w widoku z boku, długość 150, długości zwymiarowane łańcuchowo." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj górną połowę [#half]
+
+Na warstwie Kontur jedna polilinia poleceniem [`PLINIA`](/docs/commands/pline) od `0,0`: w górę `0,15`, wzdłuż `40,0`, w górę `0,5`, wzdłuż `60,0`, w dół `0,-5`, wzdłuż `50,0` i w dół `0,-15`, z powrotem do osi. Enter kończy polecenie.
+
+<Session name="exercises/shaft/half" caption="1. Narysuj górną połowę" />
+
+### 2. Sfazuj końce [#chamfers]
+
+Polecenie [`FAZUJ`](/docs/commands/chamfer), potem opcja `Fazy`: `2`, a Enter przyjmuje `2` także jako drugą odległość. Opcja `Wiele` fazuje jedno naroże po drugim bez ponownego uruchamiania: wskaż dwa segmenty w narożu każdego końca.
+
+<Session name="exercises/shaft/chamfers" caption="2. Sfazuj końce" />
+
+### 3. Odbij lustrzanie [#mirror]
+
+Polecenie [`LUSTRO`](/docs/commands/mirror): wskaż polilinię, naciśnij Enter, potem oś symetrii od `0,0` do `150,0`, czyli oś wałka, i Enter, aby zachować oryginał.
+
+<Session name="exercises/shaft/mirror" caption="3. Odbij lustrzanie" />
+
+### 4. Narysuj krawędzie [#edges]
+
+Poleceniem [`LINIA`](/docs/commands/line) krawędzie widoczne w poprzek wałka, każda o `0,30` w górę od dołu: od `2,-15` i `148,-15` przy fazach oraz od `40,-15` i `100,-15` przy odsadzeniach.
+
+<Session name="exercises/shaft/edges" caption="4. Narysuj krawędzie" />
+
+### 5. Narysuj oś [#axis]
+
+Na warstwie Linie osiowe oś: linia od `-8,0` do punktu `166,0` dalej.
+
+<Session name="exercises/shaft/axis" caption="5. Narysuj oś" />
+
+### 6. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) dla pierwszej długości, 40, umieszczony poniżej. Polecenie [`WYMSZEREG`](/docs/commands/dimcontinue) prowadzi łańcuch dalej od jego drugiej linii pomocniczej: `#100,-20`, potem `#150,-15`, wpisane od początku układu ze znakiem #, i dwa razy Enter, aby zakończyć. Ostatnie polecenie [`WYMLINIOWY`](/docs/commands/dimlinear) podaje całą długość, 150, jeszcze niżej.
+
+<Session name="exercises/shaft/dimensions" caption="6. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD: klocek schodkowy w izometrii](/docs/exercises/isometric-block): Średniozaawansowany · Mechanika · Izometria
+- [Ćwiczenie AutoCAD 3D: koło pasowe](/docs/exercises/pulley): Średniozaawansowany · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link): Zaawansowany · Mechanika · 2D
+- [Ćwiczenia AutoCAD](/docs/exercises)

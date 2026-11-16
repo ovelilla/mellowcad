@@ -1,0 +1,75 @@
+---
+title: "Polecenie TORUS w AutoCADzie"
+description: "Jak narysować torus 3D w AutoCADzie poleceniem TORUS (skrót TOR): środek, promień torusa, promień rury, Średnica, 3P, 2P i Ssr, krok po kroku."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak się nazywa polecenie TORUS po angielsku?","answer":"Tak samo: TORUS, a skrót TOR działa w polskim AutoCADzie tak jak w angielskim. Wpisz go i naciśnij Enter lub spację, potem podaj środek, promień torusa i promień rury: 0,0,0, 30 i 8 rysują torus z sesji. _TORUS działa w AutoCADzie w każdym języku."},{"question":"Czym się różni promień torusa od promienia rury?","answer":"Promień torusa biegnie od środka torusa do osi rury; promień rury to promień samej rury. Torus o średnicy zewnętrznej 76 i rurze grubości 16 ma promień 30 i promień rury 8."},{"question":"Jak narysować torus w kształcie piłki do rugby?","answer":"Podaj ujemny promień, a potem promień rury większy od jego wartości bezwzględnej: -5 i 8 tworzą zamkniętą bryłę ostro zakończoną z obu stron. Promień rury nie większy od niej jest odrzucany i pytanie pada ponownie."},{"question":"Dlaczego torus wygląda jak dwa okręgi?","answer":"Patrzysz na niego z góry, w rzucie. Obróć widok: narożnikiem ViewCube, poleceniem -WIDOK z opcją SEIzo albo poleceniem 3DORBITA. BIEŻSTYLWIZ z opcją Koncepcyjny go cieniuje."}]
+---
+
+Polecenie TORUS rysuje bryłę 3D w kształcie pierścienia, oponki: podaj środek, potem promień torusa, od środka do osi rury, a potem promień rury. Pierścień leży na płaszczyźnie XY układu LUW, na wysokości Z środka. Punkt podany przy pytaniu o rurę jest mierzony od punktu pierścienia, tego, w którym podano promień. Promień torusa to wspólna wartość domyślna brył podstawowych, a promień rury ma własną wartość domyślną, którą przyjmuje Enter. Torus leży na bieżącej warstwie i cofa się w jednym kroku.
+
+Ujemny promień torusa z szerszą rurą daje bryłę w kształcie piłki do rugby, ostro zakończoną; pierścień węższy niż rura – jabłko. W stylach Model szkieletowy 2D i Ukryty jest rysowany liniami wokół rury i wokół pierścienia, w liczbie określonej przez `ISOLINES`. [`LISTA`](/docs/commands/list) pokazuje jego położenie, normalną, promień torusa i promień rury, a w palecie Właściwości można wpisać oba promienie. Jego uchwyty przesuwają go, ustalają promień torusa i promień rury. Jest bryłą 3D dla [`SUMA`](/docs/commands/union), [`RÓŻNICA`](/docs/commands/subtract) i reszty 3D w MellowCAD, które obejmuje tylko bryły i wciąż jest częściowe.
+
+- **Polecenie:** `TORUS`
+- **Aliasy:** `TOR`
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `TOR` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="torus" caption="Torus o promieniu 30 wokół rury o promieniu 8, widziany z południowego wschodu w stylu wizualnym Koncepcyjny." />
+
+## Opcje [#options]
+
+### `3P` [#3p]
+
+Przy środku: pyta o trzy punkty, a pierścień to okrąg przez nie przechodzący, w ich płaszczyźnie.
+
+### `2P` [#2p]
+
+Przy środku: pyta o dwa końce średnicy pierścienia.
+
+### `Ssr` (`S`) [#ttr]
+
+Przy środku: wskaż dwie linie, okręgi lub łuki z lokalizacją Styczny i podaj promień: pierścień jest styczny do obu, na ich wysokości.
+
+### `śreDnica` (`D`) [#diameter]
+
+Przy promieniu torusa: pyta zamiast tego o średnicę torusa. Przy promieniu rury: pyta o średnicę rury. Każda proponuje dwukrotność swojej wartości domyślnej.
+
+### `2Punkty` (`2P`) [#2point]
+
+Przy promieniu rury: pyta o dwa punkty, a promień rury to odległość między nimi.
+
+## Czego jeszcze nie robi [#missing]
+
+[`ROZBIJ`](/docs/commands/explode) torusa, który AutoCAD zamienia w powierzchnię: MellowCAD nie ma powierzchni, więc informuje, że nie może go rozbić. Przesuwanie, obracanie, skalowanie i odbicie lustrzane z aktywnego uchwytu oraz kontur, który rysuje `DISPSILH` w AutoCADzie.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro--fr-tore--tor--it-toro--tor--de-torus--tor--ru-тор--pl-torus--tor)
+
+## Pytania [#questions]
+
+### Jak się nazywa polecenie TORUS po angielsku?
+
+Tak samo: TORUS, a skrót `TOR` działa w polskim AutoCADzie tak jak w angielskim. Wpisz go i naciśnij Enter lub spację, potem podaj środek, promień torusa i promień rury: `0,0,0`, `30` i `8` rysują torus z sesji. `_TORUS` działa w AutoCADzie w każdym języku.
+
+### Czym się różni promień torusa od promienia rury?
+
+Promień torusa biegnie od środka torusa do osi rury; promień rury to promień samej rury. Torus o średnicy zewnętrznej 76 i rurze grubości 16 ma promień 30 i promień rury 8.
+
+### Jak narysować torus w kształcie piłki do rugby?
+
+Podaj ujemny promień, a potem promień rury większy od jego wartości bezwzględnej: `-5` i `8` tworzą zamkniętą bryłę ostro zakończoną z obu stron. Promień rury nie większy od niej jest odrzucany i pytanie pada ponownie.
+
+### Dlaczego torus wygląda jak dwa okręgi?
+
+Patrzysz na niego z góry, w rzucie. Obróć widok: narożnikiem ViewCube, poleceniem `-WIDOK` z opcją `SEIzo` albo poleceniem [`3DORBITA`](/docs/commands/3dorbit). [`BIEŻSTYLWIZ`](/docs/commands/vscurrent) z opcją `Koncepcyjny` go cieniuje.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie SFERA (SPHERE) w AutoCADzie](/docs/commands/sphere)
+- [Polecenie WALEC (CYLINDER) w AutoCADzie](/docs/commands/cylinder)
+- [Polecenie PRZEKRĘĆ (REVOLVE) w AutoCADzie](/docs/commands/revolve)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)

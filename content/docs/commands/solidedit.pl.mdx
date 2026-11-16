@@ -1,0 +1,95 @@
+---
+title: "Polecenie EDBRYŁA (SOLIDEDIT) w AutoCADzie"
+description: "Jak polecenie EDBRYŁA (SOLIDEDIT) w AutoCADzie edytuje powierzchnie bryły 3D krok po kroku: Wyciągnij, Przesuń, Obróć, Odsuń, Pochyl, Usuń i Kopiuj."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak edytować bryłę 3D w AutoCADzie?","answer":"Uruchom EDBRYŁA, wybierz Powierzchnia, a potem działanie: Wyciągnij lub przEsuń powierzchni, aby podwyższyć bryłę, Usuń, aby zapełnić otwór, Pochyl, aby pochylić bok. Wskaż powierzchnie, naciśnij Enter i odpowiedz na pytania opcji. Szybkie wypchnięcie lub wciągnięcie powierzchni daje też NACIŚNIJCIĄG."},{"question":"Jak wyciągnąć powierzchnię bryły 3D?","answer":"EDBRYŁA, Powierzchnia, Wyciągnij, wskaż powierzchnię i naciśnij Enter, potem wysokość i kąt zbieżności: 15 i 15 z sesji wznoszą ostrosłup ścięty na górze prostopadłościanu."},{"question":"Jak usunąć otwór z bryły w AutoCADzie?","answer":"EDBRYŁA, Powierzchnia, Usuń, wskaż ściankę otworu i naciśnij Enter: otwór zostaje zapełniony. Tak samo usuwa się zaokrąglenie lub fazę."},{"question":"Czym się różni EDBRYŁA od NACIŚNIJCIĄG?","answer":"NACIŚNIJCIĄG przesuwa jedną powierzchnię przeciągnięciem lub o odległość, prostopadle do niej. EDBRYŁA robi to samo i więcej: pochyla, obraca, odsuwa, usuwa i kopiuje powierzchnie, kilka naraz."}]
+---
+
+Polecenie EDBRYŁA (SOLIDEDIT) edytuje bryłę 3D przez jej powierzchnie. Podaje, czy każda edycja jest sprawdzana, a potem pyta, co edytować: `Powierzchnia`, potem opcję powierzchni, potem powierzchnie, a potem to, czego opcja potrzebuje. Każda edycja jest wykonywana od razu, a opcje powierzchni pojawiają się ponownie, więc jedno wykonanie może wprowadzić kilka zmian; `konIec` lub Enter opuszcza opcje powierzchni, a potem polecenie. Sąsiednie powierzchnie podążają za edytowaną: przesuń górę prostopadłościanu w górę, a jego boki wydłużą się, aby się z nią spotkać.
+
+Bryła zachowuje swoją warstwę i właściwości, ale traci to, z czego powstała: prostopadłościan nie jest już prostopadłościanem. Całe wykonanie to jeden krok cofania, a jego opcja `Cofaj` cofa edycje wewnątrz niego jedna po drugiej. Enter przy `Polecenie:` uruchamia je ponownie od pierwszego pytania. Przycisk powierzchni w panelu Edycja brył uruchamia bezpośrednio każdą opcję powierzchni. 3D w MellowCAD to tylko bryły i wciąż jest częściowe.
+
+- **Polecenie:** `EDBRYŁA`
+- **Po angielsku:** `SOLIDEDIT`, wpisywane jako `_SOLIDEDIT` w każdym języku
+- **Panel:** [Zmień](/docs/commands#modify)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `EDBRYŁA` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji.
+
+<Session name="solidedit" caption="Górna powierzchnia prostopadłościanu wyciągnięta o 15 w górę z pochyleniem 15 stopni poleceniem EDBRYŁA: ostrosłup ścięty na prostopadłościanie, widok z południowego wschodu." />
+
+## Opcje [#options]
+
+### `Powierzchnia` (`P`) [#face]
+
+Opcje powierzchni. Każda pyta o powierzchnie, aż do Enter: kliknięcie lub wpisany punkt wybiera najbliższą ci powierzchnię pod nim albo dwie powierzchnie krawędzi w tym miejscu, a powierzchnia już wybrana daje tę, która leży za nią. Gdy wybrano już powierzchnię, `WSzystkie` wybiera wszystkie powierzchnie jej bryły; `Usuń` usuwa powierzchnie ze zbioru, a `Cofaj` cofa ostatnie wskazanie. Wskazanie w pustym miejscu daje `Nie wykryto brył.`. Tylko powierzchnie jednej bryły.
+
+### `Wyciągnij` (`W`) [#extrude]
+
+Pyta o wysokość i kąt zbieżności: każda powierzchnia wyrasta w graniastosłup dodany do bryły albo, przy wysokości ujemnej, z niej odjęty, zwężający się ku górze przy kącie dodatnim. Enter przy wysokości przyjmuje ostatnią wysokość użytą przez bryły podstawowe lub [`WYCIĄGNIJ`](/docs/commands/extrude).
+
+### `przEsuń` (`E`) [#move]
+
+Pyta o punkt bazowy i drugi punkt: płaska powierzchnia przesuwa się o tyle, ile ten wektor wynosi wzdłuż jej normalnej, pociągając za sobą sąsiednie. Enter przy drugim punkcie przyjmuje punkt bazowy jako przemieszczenie.
+
+### `Obróć` (`O`) [#rotate]
+
+Pyta o oś, przez dwa punkty albo wzdłuż osi `X`, `Y` lub `Z` układu LUW, albo prostopadle do ekranu przez `Widok`, a potem o kąt: powierzchnia obraca się wokół niej zgodnie z regułą prawej dłoni.
+
+### `oDsuń` (`D`) [#offset]
+
+Pyta o odległość: powierzchnia przesuwa się na zewnątrz wzdłuż swojej normalnej albo do wewnątrz przy wartości ujemnej, pociągając za sobą sąsiednie; powierzchnie zakrzywione – wokół swojej osi. Odsunięcie do wewnątrz o połowę najdłuższego boku prostopadłościanu otaczającego bryłę jest odrzucane z informacją, jak daleko można je wykonać.
+
+### `Pochyl` (`P`) [#taper]
+
+Pyta o punkt bazowy, punkt na osi pochylenia i kąt: powierzchnia pochyla się wokół miejsca, w którym przecina płaszczyznę przez punkt bazowy; kąt dodatni pochyla ją do wewnątrz wzdłuż osi.
+
+### `Usuń` (`U`) [#delete]
+
+Usuwa ściankę otworu, zamykając otwór, albo pas zaokrąglenia lub fazy, przywracając krawędź, którą zastąpił.
+
+### `Kopiuj` (`K`) [#copy]
+
+Tworzy region z każdej płaskiej powierzchni, w miejscu, gdzie leży, albo przesunięty o dwa punkty, na bieżącej warstwie i z bieżącymi właściwościami.
+
+### `Cofaj` (`C`) [#undo]
+
+Przy opcjach powierzchni cofa ostatnią edycję tego wykonania; gdy nie ma już żadnej, `Polecenie zostało całkowicie cofnięte.`.
+
+### `konIec` (`I`) [#exit]
+
+Opuszcza opcje powierzchni i wraca do pierwszego pytania, a ta sama opcja w pierwszym pytaniu kończy polecenie; Enter działa tak samo.
+
+## Czego jeszcze nie robi [#missing]
+
+`Krawędź` i `ciAło` oraz `koLor` i `Materiał` powierzchni, które są na liście, ale zostają odrzucone, podobnie jak `śCieżka` opcji `Wyciągnij`, oś przez obiekt opcji `Obróć` i jej kąt `Odniesienie`. `prZetnij`, `KRAwędź` i `ZWbok` przy wyborze powierzchni. Przesuwanie, obracanie, pochylanie lub kopiowanie powierzchni zakrzywionej, odsuwanie jej wśród innych sąsiadów, usuwanie powierzchni, która nie jest ścianką otworu ani pasem, oraz edycja zmieniająca kształt bryły tak bardzo, że jedna powierzchnia znosi drugą. Edycje obok powierzchni wyciągniętej z pochyleniem. Odsunięcie na zewnątrz zbyt dalekie, by je wykonać, które AutoCAD pomija bez komunikatu, a MellowCAD wykonuje. Podgląd podczas podawania odległości lub kąta.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#solidedit--es-editsolido--pt-br-editarsolido--fr-editsolide--it-modifsolidi--de-volkörperbearb--ru-редтел--pl-edbryła)
+
+## Pytania [#questions]
+
+### Jak edytować bryłę 3D w AutoCADzie?
+
+Uruchom EDBRYŁA, wybierz `Powierzchnia`, a potem działanie: `Wyciągnij` lub `przEsuń` powierzchni, aby podwyższyć bryłę, `Usuń`, aby zapełnić otwór, `Pochyl`, aby pochylić bok. Wskaż powierzchnie, naciśnij Enter i odpowiedz na pytania opcji. Szybkie wypchnięcie lub wciągnięcie powierzchni daje też [`NACIŚNIJCIĄG`](/docs/commands/presspull).
+
+### Jak wyciągnąć powierzchnię bryły 3D?
+
+EDBRYŁA, `Powierzchnia`, `Wyciągnij`, wskaż powierzchnię i naciśnij Enter, potem wysokość i kąt zbieżności: `15` i `15` z sesji wznoszą ostrosłup ścięty na górze prostopadłościanu.
+
+### Jak usunąć otwór z bryły w AutoCADzie?
+
+EDBRYŁA, `Powierzchnia`, `Usuń`, wskaż ściankę otworu i naciśnij Enter: otwór zostaje zapełniony. Tak samo usuwa się zaokrąglenie lub fazę.
+
+### Czym się różni EDBRYŁA od NACIŚNIJCIĄG?
+
+[`NACIŚNIJCIĄG`](/docs/commands/presspull) przesuwa jedną powierzchnię przeciągnięciem lub o odległość, prostopadle do niej. EDBRYŁA robi to samo i więcej: pochyla, obraca, odsuwa, usuwa i kopiuje powierzchnie, kilka naraz.
+
+## Powiązane polecenia [#related]
+
+- [Polecenie NACIŚNIJCIĄG (PRESSPULL) w AutoCADzie](/docs/commands/presspull)
+- [Polecenie ZAOKRĄGLKRAW (FILLETEDGE) w AutoCADzie](/docs/commands/filletedge)
+- [Polecenie WYCIĄGNIJ (EXTRUDE) w AutoCADzie](/docs/commands/extrude)
+- [Polecenie RÓŻNICA (SUBTRACT) w AutoCADzie](/docs/commands/subtract)

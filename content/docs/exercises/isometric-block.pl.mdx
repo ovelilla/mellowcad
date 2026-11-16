@@ -1,0 +1,52 @@
+---
+title: "Ćwiczenie AutoCAD: klocek schodkowy w izometrii"
+metaTitle: "Rysunek izometryczny w AutoCADzie: ćwiczenie"
+description: "Narysuj klocek schodkowy w izometrii w AutoCADzie poleceniem LINIA (LINE) i współrzędnymi biegunowymi wzdłuż osi 30°, 90° i 150°, potem go zwymiaruj."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Narysuj ten klocek schodkowy w izometrii, w milimetrach: długość 60, głębokość 40, wysokość 40, ze stopniem głębokim na 20 i wysokim na 20 wzdłuż przodu. Każda krawędź biegnie wzdłuż jednej z osi izometrycznych: 30° i 210° dla długości, 150° i 330° dla głębokości, 90° i 270° dla wysokości. MellowCAD nie ma jeszcze rysunku izometrycznego AutoCADa, jego skoku izometrycznego ani izookręgów, więc krawędzie to linie wpisane we współrzędnych biegunowych: długość i kąt.
+
+- **Ćwiczenie:** Średniozaawansowany · Mechanika · Izometria
+- **Polecenia:** [`LINIA`](/docs/commands/line), [`WYMNORMALNY`](/docs/commands/dimaligned)
+- **W edytorze:** [Otwórz je z rysunkiem](/pl/draw?drawing=isometric-block), zwymiarowanym obok miejsca, w którym rysujesz swój
+
+## Rysunek [#drawing]
+
+<Session name="exercises/isometric-block" caption="Klocek schodkowy w izometrii: długość 60, głębokość 40, wysokość 40, wymiary wzdłuż krawędzi." />
+
+## Krok po kroku [#steps]
+
+Silnik rysuje każdy krok i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCAD 2027, z tymi samymi literami opcji. Po pierwszym punkcie polecenia wpisany punkt jest mierzony od ostatniego, tak jak mierzy go wprowadzanie dynamiczne, a historia zapisuje go z @; \# mierzy od początku układu współrzędnych.
+
+### 1. Narysuj przód stopnia [#front]
+
+Na warstwie Kontur polecenie [`LINIA`](/docs/commands/line) od `0,0`, dolnego przedniego naroża: `60<30`, `20<90`, `60<210`, potem opcja `Zamknij`.
+
+<Session name="exercises/isometric-block/front" caption="1. Narysuj przód stopnia" />
+
+### 2. Narysuj bok [#side]
+
+Znowu od `0,0`, lewy bok: `40<150`, `40<90`, `20<330`, `20<270` i `20<330`. Enter kończy linię na przedniej krawędzi stopnia.
+
+<Session name="exercises/isometric-block/side" caption="2. Narysuj bok" />
+
+### 3. Narysuj górę [#top]
+
+Reszta zaczyna się w narożach już narysowanych: wpisz `_END`, tryb lokalizacji Punkt końcowy dla jednego punktu, i wskaż naroże. Od prawego górnego naroża przodu: `20<150`, `20<90`, `20<150` i `60<210`. Potem dwie linie `60<210`, od dołu podstopnicy i od jej góry.
+
+<Session name="exercises/isometric-block/top" caption="3. Narysuj górę" />
+
+### 4. Zwymiaruj rysunek [#dimensions]
+
+Na warstwie Wymiary polecenie [`WYMNORMALNY`](/docs/commands/dimaligned) wzdłuż krawędzi, każdy wymiar obok swojej krawędzi: 60 i 40 na dole, 40 wzdłuż lewego boku, 20 wzdłuż prawego.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Zwymiaruj rysunek" />
+
+## Więcej ćwiczeń [#more]
+
+- [Ćwiczenie AutoCAD 3D: koło pasowe](/docs/exercises/pulley): Średniozaawansowany · Mechanika · Bryła 3D
+- [Ćwiczenie AutoCAD: łącznik z liniami stycznymi](/docs/exercises/link): Zaawansowany · Mechanika · 2D
+- [Ćwiczenie AutoCAD 3D: korpus łożyska](/docs/exercises/bearing-block): Zaawansowany · Mechanika · Bryła 3D
+- [Ćwiczenia AutoCAD](/docs/exercises)

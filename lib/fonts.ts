@@ -32,19 +32,47 @@ export function scriptFontStack(
 }
 
 /**
+ * The page's font with a face of a few letters before it: that face's
+ * `unicode-range` holds only them, so a Polish letter finds it first and
+ * Inter's whole Latin Extended file (85 KB) is never fetched, while every
+ * other character falls through to Inter. No fallback of its own: Inter's
+ * follows.
+ */
+export function lettersFontStack(
+  primary: FontFamily,
+  letters: FontFamily
+): string {
+  const [lettersFace] = families(letters)
+  return [lettersFace, ...families(primary)].join(", ")
+}
+
+/** The faces of the scripts Inter and Geist Mono lack, or draw too heavily. */
+type ScriptFaces = {
+  readonly arabic: FontFamily
+  readonly "latin-ext": { readonly sans: FontFamily; readonly mono: FontFamily }
+}
+
+/**
  * The font variables a page in `locale` overrides on `<html>`, if its script
  * needs a face Inter lacks. Only that page names the face, so `/` and `/es`
  * never download it.
  */
 export function scriptFontVariables(
   locale: AppLocale,
-  fonts: { sans: FontFamily; mono: FontFamily } & Record<
-    ScriptNeedingFace,
-    FontFamily
+  fonts: { sans: FontFamily; mono: FontFamily } & Pick<
+    ScriptFaces,
+    ScriptNeedingFace
   >
 ): CSSProperties | undefined {
   const script = SCRIPT[locale]
   if (isInterScript(script)) return undefined
+  if (script === "latin-ext") {
+    const letters = fonts["latin-ext"]
+    return {
+      "--font-sans": lettersFontStack(fonts.sans, letters.sans),
+      "--font-mono": lettersFontStack(fonts.mono, letters.mono),
+    } as CSSProperties
+  }
   return {
     "--font-sans": scriptFontStack(fonts.sans, fonts[script]),
     "--font-mono": scriptFontStack(fonts.mono, fonts[script]),
