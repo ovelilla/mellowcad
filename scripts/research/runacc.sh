@@ -72,7 +72,7 @@ feed | encode | sed 's/$/\r/' |
   # The banner's last line, in each installed culture: it is in no string table. Russian's
   # («Утилиты меню AutoCAD загружены.») comes out as Windows-1251 bytes read as 1252.
   awk -v t="$trace" '
-    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen|ìåíþ AutoCAD/ { f = 1; if (!t) print; next }
+    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen|menu programu AutoCAD wczytano|ìåíþ AutoCAD/ { f = 1; if (!t) print; next }
     t && /SECURELOAD|NETLOAD|MellowProbe|MPTRACE|«MP (loaded|clm skipped|trace db)/ { next }
     f { print }' |
   grep -v "^$"

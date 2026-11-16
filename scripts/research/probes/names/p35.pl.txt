@@ -1,0 +1,5 @@
+_LINE
+KOŃ
+20,0
+
+(cdr (assoc 10 (entget (entlast))))

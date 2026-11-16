@@ -1,0 +1,48 @@
+_-OSNAP
+KOŃ
+(getvar "OSMODE")
+_-OSNAP
+ŚGE
+(getvar "OSMODE")
+_-OSNAP
+BAZ
+(getvar "OSMODE")
+_-OSNAP
+PRZ
+(getvar "OSMODE")
+_-OSNAP
+SYM
+(getvar "OSMODE")
+_-OSNAP
+BLI
+(getvar "OSMODE")
+_-OSNAP
+PUN
+(getvar "OSMODE")
+_-OSNAP
+PRO
+(getvar "OSMODE")
+_-OSNAP
+KWA
+(getvar "OSMODE")
+_-OSNAP
+STY
+(getvar "OSMODE")
+_-OSNAP
+NAT
+(getvar "OSMODE")
+_-OSNAP
+POZ
+(getvar "OSMODE")
+_-OSNAP
+RÓW
+(getvar "OSMODE")
+_-OSNAP
+PRZED
+(getvar "OSMODE")
+_-OSNAP
+CEN
+(getvar "OSMODE")
+_-OSNAP
+KOŃ,CEN,PRZ,PRZED
+(getvar "OSMODE")

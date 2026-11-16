@@ -1,0 +1,21 @@
+_-OSNAP
+POZ
+(getvar "OSMODE")
+_-OSNAP
+RÓW
+(getvar "OSMODE")
+_-OSNAP
+PRZED
+(getvar "OSMODE")
+_-OSNAP
+CEN
+(getvar "OSMODE")
+_-OSNAP
+BRAK
+(getvar "OSMODE")
+_-OSNAP
+KOŃ,CEN,PRZ,PRZED
+(getvar "OSMODE")
+_-OSNAP
+
+(getvar "OSMODE")

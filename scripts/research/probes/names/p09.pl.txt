@@ -1,0 +1,23 @@
+_LINE
+0,0
+10,0
+
+_ZOOM
+_E
+_LINE
+SYM
+5,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+KON
+9,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+S
+30,30
+40,40
+
