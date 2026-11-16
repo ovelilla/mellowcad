@@ -17,6 +17,7 @@ import {
   createPolyline,
   createSolid2d,
   leaderGeometry,
+  isXref,
   leaderLook,
 } from "../../domain/entities"
 import {
@@ -113,6 +114,15 @@ export class ExplodeTool extends SelectionActionTool {
           entity.type !== "ellipse") ||
         (entity.type === "solid3d" && solidHasCurvedFaces(entity)),
       message: "explodeRejected",
+      // An xref is no block of this drawing's to break up (probes xref/p08,
+      // p17: `1 was an external reference.`, after the line above).
+      also: [
+        {
+          rejects: (entity, ctx) =>
+            entity.type === "insert" && isXref(ctx.blocks(entity.blockId)),
+          message: "explodeXref",
+        },
+      ],
     }
   }
 

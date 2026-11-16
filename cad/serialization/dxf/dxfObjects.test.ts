@@ -68,18 +68,55 @@ describe("what the model has no object for", () => {
     expect([...parsed.report.leftOut]).toEqual([["HATCH", 1]])
   })
 
-  it("counts a reference to an external drawing as XREF", () => {
+  it("keeps an external reference and its path, its drawing never in the file", () => {
     const parsed = parseDxf(
       file({
         BLOCKS: [
           ...record("BLOCK", [2, "Site"], [70, 4], ...at(10, 0, 0)),
+          [1, ".\\Res\\Site.dwg"],
+          ...record("LINE", ...at(10, 0, 0), ...at(11, 1, 0)),
+          ...record("ENDBLK"),
+          ...record("BLOCK", [2, "Shared"], [70, 12], ...at(10, 5, 6)),
+          [1, "Shared.dwg"],
+          ...record("ENDBLK"),
+          // Nested in Site, whose drawing is not read: AutoCAD keeps none.
+          ...record("BLOCK", [2, "Site|Grid"], [70, 52], ...at(10, 0, 0)),
+          [1, "Grid.dwg"],
           ...record("ENDBLK"),
         ],
-        ENTITIES: record("INSERT", [2, "SITE"], ...at(10, 0, 0)),
+        ENTITIES: [
+          ...record("INSERT", [2, "SITE"], ...at(10, 3, 4), [41, 2], [50, 30]),
+          ...record("INSERT", [2, "Site|Grid"], ...at(10, 0, 0)),
+        ],
       })
     )
-    expect([...parsed.report.leftOut]).toEqual([["XREF", 1]])
-    expect(parsed.drawing.blocks).toEqual([])
+    expect(parsed.report.leftOut.size).toBe(0)
+    expect(parsed.report.unreadable).toBe(0)
+    expect(parsed.report.xrefs).toEqual([
+      { name: "Site", path: ".\\Res\\Site.dwg" },
+      { name: "Shared", path: "Shared.dwg" },
+    ])
+    expect(parsed.drawing.blocks).toEqual([
+      {
+        id: "Site",
+        name: "Site",
+        basePoint: { x: 0, y: 0 },
+        entities: [],
+        xref: { path: ".\\Res\\Site.dwg" },
+      },
+      {
+        id: "Shared",
+        name: "Shared",
+        basePoint: { x: 5, y: 6 },
+        entities: [],
+        xref: { path: "Shared.dwg", overlay: true },
+      },
+    ])
+    expect(only<InsertEntity>(parsed)).toMatchObject({
+      blockId: "Site",
+      position: { x: 3, y: 4 },
+      scaleX: 2,
+    })
   })
 
   it("counts what it cannot make of a known type", () => {

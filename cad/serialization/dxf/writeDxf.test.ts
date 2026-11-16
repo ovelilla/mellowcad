@@ -14,6 +14,7 @@ import {
   createSolid2d,
   createText,
   dimLook,
+  unresolvedXref,
   withLeaderOverride,
   withLinetypeScale,
   withNormal,
@@ -212,6 +213,55 @@ describe("writeDxf", () => {
       }
     }
   }
+
+  // xref/p04: AutoCAD's DXFOUT of a drawing whose xref it could not find,
+  // the BLOCK empty with flag 4 and its path, the reference kept.
+  it("writes an external reference as AutoCAD keeps one it cannot find", () => {
+    const drawing = parseDxf(fixture("xref-2018")).drawing
+    const labelled = {
+      ...drawing,
+      blocks: drawing.blocks.map((b) =>
+        b.xref ? unresolvedXref(b, `Xref ${b.xref.path}`, "Standard") : b
+      ),
+    }
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const written = writeDxf(labelled, { version, binary, precision: 16 })
+        // The label is never written: an xref's BLOCK holds nothing (and
+        // the reader would drop it, so only the bytes can tell).
+        expect(new TextDecoder("latin1").decode(written.bytes)).not.toContain(
+          "Xref C:"
+        )
+        const back = parseDxf(written.bytes)
+        expect(back.drawing.blocks).toEqual(drawing.blocks)
+        expect(back.report.xrefs).toEqual([
+          {
+            name: "part",
+            path: String.raw`C:\Users\oveli\AppData\Local\Temp\mcadxref\sub\part.dwg`,
+          },
+        ])
+        expect(shape(back.drawing.entities)).toEqual(shape(drawing.entities))
+      }
+    }
+    const overlaid = {
+      ...labelled,
+      blocks: labelled.blocks.map((b) =>
+        b.xref ? { ...b, xref: { path: "Shared.dwg", overlay: true } } : b
+      ),
+    }
+    const text = new TextDecoder().decode(
+      writeDxf(overlaid, { version: "2018", binary: false, precision: 16 })
+        .bytes
+    )
+    expect(text).toMatch(
+      /AcDbBlockBegin\r?\n {2}2\r?\npart\r?\n 70\r?\n {4}12\r?\n/
+    )
+    expect(text).toMatch(/ {2}1\r?\nShared\.dwg\r?\n {2}0\r?\nENDBLK/)
+    expect(parseDxf(text).drawing.blocks[0]?.xref).toEqual({
+      path: "Shared.dwg",
+      overlay: true,
+    })
+  })
 
   // point/p04: a point keeps its Z, thickness, plane and DXF 50, and the
   // drawing its PDMODE and PDSIZE.
@@ -440,6 +490,7 @@ describe("writeDxf", () => {
       "solids-2018",
       "leaders-2018",
       "linetypes-2018",
+      "xref-2018",
     ]) {
       const drawing =
         name === "points-2018"

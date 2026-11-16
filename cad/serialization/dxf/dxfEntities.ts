@@ -88,8 +88,8 @@ export interface DxfEntityContext {
   dimStyle(name: string | undefined): DimStyleId
   /** Whether the style of that name puts its text above the line (DIMTAD other than 0). */
   dimStyleTextAbove(name: string | undefined): boolean
-  /** The block a reference names, `"xref"` for an external reference, `null` for none. */
-  block(name: string): DxfBlockTarget | "xref" | null
+  /** The block a reference names, `"dependent"` for an xref nested in one, `null` for none. */
+  block(name: string): DxfBlockTarget | "dependent" | null
   /** SPLINESEGS, for a spline-fit polyline whose vertices do not say it. */
   readonly splineSegments: number
   /** Whether spline hatch edges carry their fit data (2010 on). */
@@ -881,10 +881,8 @@ function attributeDefinition(
 function insert(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
   const name = str(r, 2)?.trim()
   const target = name ? ctx.block(name) : null
-  if (target === "xref") {
-    ctx.leftOut("XREF")
-    return []
-  }
+  // Only an xref's own drawing, never in the file, references one nested in it.
+  if (target === "dependent") return []
   const position = point(r, 10)
   if (!target || !position) {
     ctx.unreadable()

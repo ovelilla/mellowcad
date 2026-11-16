@@ -1,4 +1,4 @@
-import { isAnonymousBlock } from "../../domain/entities"
+import { isAnonymousBlock, isXref } from "../../domain/entities"
 import { matchesWildcard } from "../../shared/wildcard"
 import { ToolContext, ToolQuestion } from "./Tool"
 
@@ -52,19 +52,23 @@ function listBlocks(
     .map((pattern) => pattern.trim())
     .filter((pattern) => pattern !== "")
   const blocks = ctx.document.getBlocks()
+  // -INSERT's `?` lists no xref; -BLOCK's says each as not found, counted
+  // under External References (probes xref/p10, p15).
   const listed = blocks.filter(
     (block) =>
       !isAnonymousBlock(block.name) &&
+      (layout === "block" || !isXref(block)) &&
       patterns.some((pattern) => matchesWildcard(block.name, pattern))
   )
+  const external = listed.filter((block) => isXref(block)).length
   const unnamed = blocks.filter((block) => isAnonymousBlock(block.name))
   // The table's `%5d` and `%6d`.
   const count = (n: number, width = 5) => String(n).padStart(width)
   const counts =
     layout === "block"
       ? ctx.text.message("blockCounts", {
-          user: count(listed.length),
-          external: count(0, 6),
+          user: count(listed.length - external),
+          external: count(external, 6),
           dependent: count(0),
           unnamed: count(unnamed.length),
         })
@@ -76,7 +80,12 @@ function listBlocks(
     [
       ctx.text.message("definedBlocks"),
       ...listed.map((block) =>
-        ctx.text.message("definedBlock", { name: block.name })
+        isXref(block)
+          ? // The table's `%-31s` of the quoted name (20833).
+            ctx.text.message("definedXref", {
+              name: `"${block.name}"`.padEnd(31),
+            })
+          : ctx.text.message("definedBlock", { name: block.name })
       ),
       counts,
     ].join("\n")

@@ -9,6 +9,7 @@ import {
   createBlockDefinition,
   createInsert,
   findBlockNamed,
+  isXref,
   onPlaneOf,
   rotateEntity,
   variableAttributes,
@@ -270,6 +271,16 @@ export class BlockTool implements Tool {
         // A name the table has in another case is that block, its spelling
         // kept (p115).
         const existing = findBlockNamed(commitCtx.document.getBlocks(), typed)
+        // An xref is the other drawing's: refused, and the command ends
+        // (probes xref/p11, p14).
+        if (existing && isXref(existing)) {
+          commitCtx.report(
+            commitCtx.text.message("blockIsXref", { name: existing.name }),
+            "error"
+          )
+          commitCtx.endCommand()
+          return true
+        }
         this.name = existing?.name ?? typed
         if (existing) this.enterRedefine(commitCtx)
         else this.enterBase(commitCtx)

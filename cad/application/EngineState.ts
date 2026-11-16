@@ -799,8 +799,10 @@ export function buildBlockInfos(
     if (entity.type !== "insert") continue
     counts.set(entity.blockId, (counts.get(entity.blockId) ?? 0) + 1)
   }
+  // No xref, as -INSERT's `?` lists none and INSERT refuses one (probes
+  // xref/p09, p15); the desktop's palette unverified.
   return blocks
-    .filter((block) => !isAnonymousBlock(block.name))
+    .filter((block) => !isAnonymousBlock(block.name) && !block.xref)
     .map((block) => ({
       id: block.id,
       name: block.name,

@@ -170,6 +170,8 @@ interface Sifted {
   readonly kept: readonly EntityId[]
   readonly locked: number
   readonly refused: number
+  /** How many each of the refusal's `also` took, in its order. */
+  readonly refusedAlso: readonly number[]
 }
 
 /** What one selection changed in the set, which `Undo` takes back. */
@@ -209,6 +211,14 @@ export interface ObjectSelectorOptions {
   readonly refuse?: {
     readonly rejects: (entity: Entity, ctx: ToolContext) => boolean
     readonly message: MessageId
+    /**
+     * What it refuses in words of its own, each said after `message`'s:
+     * EXPLODE's `1 was an external reference.` (probe xref/p17).
+     */
+    readonly also?: readonly {
+      readonly rejects: (entity: Entity, ctx: ToolContext) => boolean
+      readonly message: MessageId
+    }[]
   }
   /** Said when Enter closes an empty set: EXPLODE's `None found.` (p205). */
   readonly noneFound?: MessageId
@@ -1150,6 +1160,7 @@ export class ObjectSelector {
     const kept: EntityId[] = []
     let locked = 0
     let refused = 0
+    const refusedAlso = (refuse?.also ?? []).map(() => 0)
     for (const id of ids) {
       const entity = ctx.document.get(id)
       if (!entity) continue
@@ -1159,9 +1170,15 @@ export class ObjectSelector {
       ) {
         locked++
       } else if (refuse?.rejects(entity, ctx)) refused++
-      else kept.push(id)
+      else {
+        const also = (refuse?.also ?? []).findIndex((r) =>
+          r.rejects(entity, ctx)
+        )
+        if (also >= 0) refusedAlso[also]++
+        else kept.push(id)
+      }
     }
-    return { kept, locked, refused }
+    return { kept, locked, refused, refusedAlso }
   }
 
   /**
@@ -1201,6 +1218,10 @@ export class ObjectSelector {
     if (refuse && sifted.refused > 0) {
       ctx.report(ctx.text.message(refuse.message, { count: sifted.refused }))
     }
+    refuse?.also?.forEach((also, i) => {
+      const count = sifted.refusedAlso[i] ?? 0
+      if (count > 0) ctx.report(ctx.text.message(also.message, { count }))
+    })
   }
 
   /**

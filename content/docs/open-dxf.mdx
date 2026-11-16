@@ -36,7 +36,6 @@ When a DXF holds something MellowCAD has no object for yet, it opens the rest an
 - traces, 3D faces and meshes;
 - construction lines and rays, multilines;
 - multileaders and tolerances, tables, wipeouts and images;
-- external references;
 - 3D solids, regions and surfaces;
 - gradient fills, and ordinate and arc length dimensions.
 
@@ -49,6 +48,7 @@ Some things open, but not quite as they were:
 - A colour by its index opens as its RGB colour, and ByBlock as ByLayer.
 - A drawing in inches or feet keeps its numbers, read as millimetres.
 - Text is drawn with Arial's measures, whatever font its style names, without its width factor or obliquing.
+- An external reference keeps its place and its path, drawn as AutoCAD draws one whose drawing it cannot find: `Xref` and the path at its insertion point. A page reads only the file it is given, never the drawings beside it; saved as DXF again, the reference is kept.
 
 ## Open it in the editor [#editor]
 

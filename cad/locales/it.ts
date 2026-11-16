@@ -3800,6 +3800,29 @@ export const it: EngineLocale = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Risolve Xrif \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "Impossibile trovare \"",
+        [
+          "file"
+        ],
+        "\"."
+      ],
+      "xrefLabel": [
+        "Xrif ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Avvertimento: per il file DXF è stata specificata una precisione inferiore. È possibile che si ottenga una perdita di precisione del disegno.",
       "dxfNotSaved": [
         [
@@ -3938,6 +3961,7 @@ export const it: EngineLocale = {
         ],
         "\" non definito"
       ],
+      "insertXref": "** Errore: impossibile inserire xrif. Usare XRIF Attacca.",
       "hatchPatternUnknown": "Il nome del modello è sconosciuto.",
       "hatchTooDense": "La spaziatura del tratteggio è troppo fitta oppure le dimensioni del trattino sono troppo ridotte.",
       "hatchNoBoundary": "Non è stato trovato un contorno del tratteggio valido.",
@@ -4023,6 +4047,22 @@ export const it: EngineLocale = {
               "Impossibile esplodere ",
               0,
               " oggetti."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " era un riferimento esterno."
+            ],
+            "other": [
+              0,
+              " erano riferimenti esterni."
             ]
           }
         ]
@@ -4683,6 +4723,13 @@ export const it: EngineLocale = {
         ],
         "\" ridefinito"
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" è un Xrif. Impossibile ridefinirlo."
+      ],
       "zBaseNotZero": "Attenzione, la coordinata Z del punto di inserimento non è zero.",
       "definedBlocks": "Blocchi definiti.",
       "definedBlock": [
@@ -4691,6 +4738,13 @@ export const it: EngineLocale = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   xrif: non trovato"
       ],
       "blockCounts": [
         "Blocchi  Riferimenti  Blocchi      Blocchi\nUtente   Esterni      Dipendenti   Anonimi\n",
@@ -7078,6 +7132,7 @@ export const it: EngineLocale = {
         ],
         "\""
       ],
+      "listInsertXref": "                  Xrif",
       "listInsertPoint": [
         "                al punto, X=",
         [

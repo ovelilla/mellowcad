@@ -12,6 +12,7 @@ import {
   findBlockNamed,
   insertFlatGeometry,
   isAnonymousBlock,
+  isXref,
   onPlaneOf,
   variableAttributes,
 } from "../../domain/entities"
@@ -408,6 +409,13 @@ export class InsertTool implements Tool {
           this.enterName(commitCtx)
           return true
         }
+        // An xref is placed by XREF Attach, which is not here; the command
+        // ends (probes xref/p09, p14).
+        if (isXref(block)) {
+          commitCtx.report(commitCtx.text.message("insertXref"), "error")
+          commitCtx.endCommand()
+          return true
+        }
         this.blockId = block.id
         this.enterPoint(commitCtx)
         return true
@@ -585,7 +593,12 @@ function factorText(factor: number): string {
   return String(Number(factor.toPrecision(6)))
 }
 
-/** The blocks a user names: an array's anonymous block is none of them. */
+/**
+ * The blocks a user inserts: an array's anonymous block is none of them, nor
+ * an xref, which -INSERT's `?` leaves out (probe xref/p15).
+ */
 export function namedBlocks(document: DocumentReader): BlockDefinition[] {
-  return document.getBlocks().filter((block) => !isAnonymousBlock(block.name))
+  return document
+    .getBlocks()
+    .filter((block) => !isAnonymousBlock(block.name) && !isXref(block))
 }

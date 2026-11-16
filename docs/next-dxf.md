@@ -10,8 +10,9 @@
 > hecho y publicado el 13/11, que las llevó a 121; el alemán (`docs/next-seo.md`, L8), hecho y
 > publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
 > hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
-> siguiente, por orden del dueño, lo que quede de esta fase (las referencias externas, el patrón
-> de cada sombreado…), y después otro idioma, alternando, una sesión cada vez.
+> y el punto 5 (las referencias externas), hecho el 16/11 y sin publicar, que llevó las muestras
+> sin nada fuera de 121 a 135 de 154; siguiente, por orden del dueño, otro idioma, y después lo
+> que quede de esta fase (el patrón de cada sombreado…), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -120,8 +121,8 @@ los comandos, solicitudes y opciones de AutoCAD 2027 en inglés, español o port
 - **Las tablas**: capas (una inutilizada, apagada: no hay FREEZE), tipos de línea por nombre (los
   del registro dibujan su patrón; otro nombre se conserva y dibuja continuo), estilos de texto y de
   cota (un código ausente vale lo que dice la referencia DXF, los valores imperiales, no ISO-25),
-  bloques (los anónimos de las cotas, `*D`, se derivan aquí y se descartan; las referencias
-  externas no se cargan). Los colores índice pasan a su RGB con la paleta de AutoCAD y ByBlock a
+  bloques (los anónimos de las cotas, `*D`, se derivan aquí y se descartan; una referencia
+  externa se conserva como la abre AutoCAD cuando no encuentra su dibujo: fase 4, punto 5). Los colores índice pasan a su RGB con la paleta de AutoCAD y ByBlock a
   ByLayer (el modelo no tiene ninguno de los dos).
 - **Las unidades**: `$INSUNITS` milímetros, centímetros o metros pasa al dibujo; pulgadas, pies o
   sin unidad dejan los números como están, en milímetros (el modelo solo tiene esas tres).
@@ -241,7 +242,30 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       guiones. Lo que hace y le falta, en `docs/coverage/properties.md` (Linetypes, CHPROP, la
       paleta), `modify.md` (PURGE) y `clipboard-and-files.md` (DXFIN, DXFOUT).
    5. **Las referencias externas**: 16 muestras (los planos de los conjuntos de planos tienen su
-      modelo en referencias).
+      modelo en referencias). **Hecho** (16/11/2026, sin publicar): una referencia externa se abre
+      como la abre AutoCAD 2027 cuando no encuentra su dibujo junto al fichero, que en el
+      navegador es siempre (una página solo lee el fichero que se le da: WHY en la entrada de
+      DXFIN). Dice sus dos líneas al abrir (`Resolve Xref "part": <ruta>`, `"part.dwg" cannot be
+      found.`, acdb 7172/7174/7235, en los seis idiomas de sus consolas), se conserva y se dibuja
+      como el texto que AutoCAD pone en su lugar (`Xref <ruta>`, acdb 7211, altura 2,5 sea cual sea
+      TEXTSIZE o las unidades, en Standard, que la referencia mueve, escala, estira y refleja:
+      medido con EXTMIN/EXTMAX y TEXTBOX en la consola, sondas `xref/p04`–`p06`, `p16`); EXPLODE
+      (`1 was an external reference.`), -INSERT (`** Error: Cannot INSERT an Xref…`), -BLOCK
+      (`"part" is an Xref. It cannot be redefined.`, y su `?`, `Xref: not found` contada en
+      External References) y LIST (`External reference`) responden como AutoCAD (`p08`–`p15`,
+      `p17`), PURGE la borra si nadie la usa y COPY la copia, como allí; la paleta Bloques no la
+      ofrece. Se guarda en el fichero propio (versión 54) y DXFOUT la escribe como el DXFOUT de
+      AutoCAD guarda una que no encontró (el BLOCK vacío con el indicador 4 y su ruta): la consola
+      abre los 12 ficheros (seis versiones, ASCII y binario) sin un error de AUDIT, la lee como suya
+      y, con el dibujo de vuelta a su lado, la carga (`"part" loaded.`). El corpus, medido otra
+      vez: muestras sin nada fuera, de 121 a 135 de 154 (14 de ellas con referencias, abiertas
+      como las abre AutoCAD sin sus ficheros; las otras 2 tienen además 3DFACE o WIPEOUT); ficheros
+      de otros, 572 de 577, como antes (ninguno tiene referencias). Quedan anotados XREF y -XREF,
+      la paleta Referencias externas que AutoCAD abre en ese caso (la consola corre
+      EXTERNALREFERENCES; el escritorio, un cuadro de tareas), XREFNOTIFY y XCLIP. Lo que hace y le
+      falta, en `docs/coverage/clipboard-and-files.md` (DXFIN, DXFOUT), `modify.md` (EXPLODE),
+      `draw.md` (BLOCK, INSERT) e `inquiry.md` (LIST); las páginas «abrir DXF online» y «editar
+      DXF online», en los ocho idiomas, ya no la cuentan entre lo que queda fuera.
    6. **El patrón de cada sombreado**: un DXF trae las líneas de cualquier patrón (53, 43–46, 79,
       49), y dibujarlas del fichero cubre los que no están entre los 24 (HOUND, GRASS, INSUL), los
       definidos por el usuario (`_USER`, `U`: 9 muestras) y los propios de cada programa. Los

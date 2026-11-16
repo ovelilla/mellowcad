@@ -1,7 +1,8 @@
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 import { CadDocument } from "../domain/Document"
-import { Entity } from "../domain/entities"
+import { Entity, unresolvedXref } from "../domain/entities"
+import { DEFAULT_TEXT_STYLE_ID } from "../domain/textStyles"
 import {
   DrawingSnapshot,
   ParsedDrawing,
@@ -181,6 +182,40 @@ export async function readOpenedFile(
 }
 
 /**
+ * A DXF's external references as AutoCAD opens one it cannot find: in place
+ * of its drawing, `Xref <path>` in the command language, in the Standard text
+ * style (probes xref/p04, p06, p16). WHY always not found: a page reads only
+ * the file it is handed, never the disk beside it, so no reference's drawing
+ * is ever there to load (DXFIN's coverage entry).
+ */
+export function withXrefLabels(
+  drawing: ParsedDrawing,
+  text: EngineText
+): ParsedDrawing {
+  if (!drawing.blocks.some((block) => block.xref)) return drawing
+  const style =
+    drawing.textStyles.find((s) => s.name.toUpperCase() === "STANDARD")?.id ??
+    DEFAULT_TEXT_STYLE_ID
+  return {
+    ...drawing,
+    blocks: drawing.blocks.map((block) =>
+      block.xref && block.entities.length === 0
+        ? unresolvedXref(
+            block,
+            text.message("xrefLabel", { path: block.xref.path }),
+            style
+          )
+        : block
+    ),
+  }
+}
+
+/** The file a path names, as AutoCAD's `"part.dwg" cannot be found.` names it. */
+function fileOfPath(path: string): string {
+  return path.slice(Math.max(path.lastIndexOf("\\"), path.lastIndexOf("/")) + 1)
+}
+
+/**
  * What opening a DXF left out, one line per kind (`docs/next-dxf.md`):
  * WHY words of our own, where every other line is AutoCAD's, is that
  * AutoCAD has an object for everything a DXF holds and says nothing.
@@ -190,6 +225,14 @@ export function dxfReportLines(
   text: EngineText
 ): string[] {
   const lines: string[] = []
+  // AutoCAD's own two lines for each reference, as it opens the drawing
+  // (probes xref/p01, p14), before the lines of what the model lacks.
+  for (const xref of report.xrefs) {
+    lines.push(
+      text.message("xrefResolve", { name: xref.name, path: xref.path }),
+      text.message("xrefNotFound", { file: fileOfPath(xref.path) })
+    )
+  }
   let total = 0
   for (const count of report.leftOut.values()) total += count
   if (total > 0) {

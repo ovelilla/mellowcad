@@ -1,0 +1,6 @@
+_ZOOM
+_E
+(getvar "EXTMAX")
+(textbox '((1 . "Внешняя ссылка C:\\Users\\oveli\\AppData\\Local\\Temp\\mcadxref\\sub\\part.dwg") (40 . 2.5)))
+(textbox '((1 . "Вн-ссылка C:\\Users\\oveli\\AppData\\Local\\Temp\\mcadxref\\sub\\part.dwg") (40 . 2.5)))
+(textbox '((1 . "Xref C:\\Users\\oveli\\AppData\\Local\\Temp\\mcadxref\\sub\\part.dwg") (40 . 2.5)))

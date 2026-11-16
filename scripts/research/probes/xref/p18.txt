@@ -1,0 +1,6 @@
+_ZOOM
+_E
+_DIVIDE
+100,0
+_B
+part

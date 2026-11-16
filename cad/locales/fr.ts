@@ -3803,6 +3803,29 @@ export const fr: EngineLocale = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Résolu Xréf \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "\"",
+        [
+          "file"
+        ],
+        "\" introuvable."
+      ],
+      "xrefLabel": [
+        "Xréf ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Avertissement:  Vous avez spécifié une précision inférieure pour le fichier DXF. Ceci peut entraîner une diminution de la précision du dessin.",
       "dxfNotSaved": [
         [
@@ -3941,6 +3964,7 @@ export const fr: EngineLocale = {
         ],
         "\" non défini."
       ],
+      "insertXref": "** Erreur: impossible d' INSERER une Xréf. Utilisez XREF AJouter.",
       "hatchPatternUnknown": "Nom du motif de hachures inconnu.",
       "hatchTooDense": "Les hachures sont trop denses ou la taille des discontinuités est trop petite.",
       "hatchNoBoundary": "Auncun contour de hachures correct n'a été trouvé.",
@@ -4024,6 +4048,22 @@ export const fr: EngineLocale = {
             "other": [
               0,
               " n'ont pas pu être décomposés."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " était une référence externe."
+            ],
+            "other": [
+              0,
+              " étaient des références externes."
             ]
           }
         ]
@@ -4686,6 +4726,13 @@ export const fr: EngineLocale = {
         ],
         "\" est redéfini."
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" est un Xréf. Il ne peut pas être redéfini."
+      ],
       "zBaseNotZero": "ATTENTION, la coordonnée Z du point de base est différente de 0.",
       "definedBlocks": "Blocs définis:",
       "definedBlock": [
@@ -4694,6 +4741,13 @@ export const fr: EngineLocale = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   Xréf: introuvable"
       ],
       "blockCounts": [
         "Blocs     Références  Blocs       Blocs\nUtilisat. Externes    Dépendants  Sans nom\n",
@@ -7091,6 +7145,7 @@ export const fr: EngineLocale = {
         ],
         "\""
       ],
+      "listInsertXref": "                  référence externe",
       "listInsertPoint": [
         "                en point, X=",
         [

@@ -3110,6 +3110,29 @@ export const en: EngineCatalog = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Resolve Xref \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "\"",
+        [
+          "file"
+        ],
+        "\" cannot be found."
+      ],
+      "xrefLabel": [
+        "Xref ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Warning:  You have specified a lower precision for the DXF file, which may result in loss of drawing accuracy.",
       "dxfNotSaved": [
         [
@@ -3247,6 +3270,7 @@ export const en: EngineCatalog = {
         ],
         "\" is not defined."
       ],
+      "insertXref": "** Error: Cannot INSERT an Xref. Use XREF Attach, instead.",
       "hatchPatternUnknown": "Unknown pattern name.",
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
@@ -3330,6 +3354,22 @@ export const en: EngineCatalog = {
             "other": [
               0,
               " were not able to be exploded."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " was an external reference."
+            ],
+            "other": [
+              0,
+              " were an external reference."
             ]
           }
         ]
@@ -3990,6 +4030,13 @@ export const en: EngineCatalog = {
         ],
         "\" redefined"
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" is an Xref. It cannot be redefined."
+      ],
       "zBaseNotZero": "Beware, Z insertion base is not zero.",
       "definedBlocks": "Defined blocks.",
       "definedBlock": [
@@ -3998,6 +4045,13 @@ export const en: EngineCatalog = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   Xref: not found"
       ],
       "blockCounts": [
         "User     External     Dependent   Unnamed\nBlocks   References   Blocks      Blocks\n",
@@ -6381,6 +6435,7 @@ export const en: EngineCatalog = {
         ],
         "\""
       ],
+      "listInsertXref": "                  External reference",
       "listInsertPoint": [
         "                at point, X=",
         [

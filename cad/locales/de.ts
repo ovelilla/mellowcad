@@ -3821,6 +3821,29 @@ export const de: EngineLocale = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Bearbeiten XRef \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "\"",
+        [
+          "file"
+        ],
+        "\" ist unauffindbar."
+      ],
+      "xrefLabel": [
+        "XRef ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Warnung: Sie haben für die DXF-Datei eine geringere Präzision angegeben, was zu unpräziseren Zeichenergebnissen führen kann.",
       "dxfNotSaved": [
         [
@@ -3958,6 +3981,7 @@ export const de: EngineLocale = {
         ],
         "\" nicht definiert."
       ],
+      "insertXref": "** Fehler: Kann XRef nicht einfügen. Bitte XREF Anhang verwenden.",
       "hatchPatternUnknown": "Unbekannter Mustername.",
       "hatchTooDense": "Schraffurabstand zu eng oder Strichgröße zu klein.",
       "hatchNoBoundary": "Konnte keine gültige Schraffurumgrenzung finden.",
@@ -4041,6 +4065,22 @@ export const de: EngineLocale = {
             "other": [
               0,
               " konnten nicht aufgelöst werden."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " war eine externe Referenz."
+            ],
+            "other": [
+              0,
+              " waren externe Referenzen."
             ]
           }
         ]
@@ -4701,6 +4741,13 @@ export const de: EngineLocale = {
         ],
         "\" neu definiert"
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" ist eine XRef. Kann nicht neu definiert werden."
+      ],
       "zBaseNotZero": "Achtung, Z-Einfügebasispunkt ist ungleich null.",
       "definedBlocks": "Definierte Blöcke.",
       "definedBlock": [
@@ -4709,6 +4756,13 @@ export const de: EngineLocale = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   XRef: nicht gefunden"
       ],
       "blockCounts": [
         "Benutzer-    Externe      Abhängige   Unbenannte\nBlöcke      Referenzen   blöcke      Blöcke\n",
@@ -7092,6 +7146,7 @@ export const de: EngineLocale = {
         ],
         "\""
       ],
+      "listInsertXref": "                  Externe Referenz",
       "listInsertPoint": [
         "               bei Punkt, X=",
         [

@@ -1,0 +1,33 @@
+_QAFLAGS
+2
+_-XREF
+?
+*
+_LIST
+_L
+
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mcadxref\p04.png
+_N
+_Y
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcadxref\host2.dxf
+_V
+2018
+16
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadxref\host2.dwg

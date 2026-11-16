@@ -16,8 +16,9 @@
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5; por decisión del dueño la visibilidad va antes que cualquier
 > funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca en
-> paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas, el
-> patrón de cada sombreado…) y después otro idioma, alternando, además de lo que queda de §7.
+> paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
+> hechas el 16/11 y sin publicar; el patrón de cada sombreado…) y otro idioma, alternando, además
+> de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -412,6 +413,11 @@ el dueño dio a las sesiones el 6/11).
    la auditoría, que ya cuenta solo Google: el 72 % de Yandex nunca llega a esta cola; Ucrania y
    Kazajistán lo buscan poco en ruso: el 0,4 del italiano × 73/113) y que ya reconoce su prefijo:
    938 en la cola, `/ru` la primera. IndexNow, las 1.023 del sitemap (200).
+   **16/11, 19:51 UTC (sesión de las referencias externas del DXF):** la tanda del día, 12 pedidas
+   (`/ru/docs` y `/de/docs`, los ejercicios en árabe, ruso y alemán, `/pt-br/docs/edit-dxf`,
+   `/fr/docs/edit-dxf`, `/ar/docs/getting-started`…) y dos errores (`/de/docs/open-dxf`,
+   `/es/docs/2d-to-3d`, que la tanda siguiente vuelve a intentar), hasta la cuota: 915 en la cola,
+   de 1.023 en el sitemap.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

@@ -123,7 +123,16 @@ programs' files: solid2d/p01, p08), LEADER with its vertices from the WCS, arrow
 hook, horizontal and its DSTYLE overrides of DIMSCALE, DIMASZ, DIMTAD and DIMGAP, a DIMTAD of 0 its
 style's kept as its own, linked by its 340 to the MTEXT or block reference of its space it points
 at, its offset from it read off where they stand (f001's, AutoCAD's own leader/p22, and the 823 of
-22 of AutoCAD's samples: leader/p22, the corpus); the tables: layers (on,
+22 of AutoCAD's samples: leader/p22, the corpus), an external reference (BLOCK flag 4, overlaid
+8, its path in group 1) as AutoCAD 2027 opens one whose drawing it cannot find: its two lines
+before anything else (`Resolve Xref "part": C:\…\part.dwg`, `"part.dwg" cannot be found.`, acdb
+7172, 7174, 7235, in the six command languages from their consoles), the reference kept, drawn as
+the text AutoCAD draws in its place (`Xref <path>`, acdb 7211, 2.5 high whatever TEXTSIZE or the
+units, in Standard, at its insertion point, moved, scaled, stretched and mirrored with it), and
+an xref nested in it (flag 16) and its `xref|` layers left out as AutoCAD drops them; PURGE
+deletes an unused one, COPY copies one and DIVIDE and MEASURE's Block place one, as AutoCAD's do
+(p12, p13, p18; EXPLODE, -INSERT, -BLOCK and LIST in their entries) (probes xref/p01–p06, p14, p16; the 36 references of 16 of AutoCAD's samples, the sheets of its sheet
+sets, whose model is in references); the tables: layers (on,
 off, locked), the drawing's linetypes (each with its description, its lengths and a complex one's
 text or shapes, the text's style or the shape file found by its 340; ACAD_ISO02W100, HIDDEN2,
 Spanish AutoCAD's TRAZOS, LibreCAD's K5LT ones, each drawn as its file defines it, a complex one's text too: 49 of the 52 of
@@ -157,13 +166,20 @@ at their first point with their height and rotation, WHY: the model has neither;
 dimension takes its text's middle (11) for the point picked, WHY: AutoCAD keeps that point only in
 the text's place; a hatch's elliptical and spline edges are laid as straight runs, WHY: a loop here
 is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
-model has only those three
+model has only those three; an external reference is always not found, WHY: a page reads only the
+file it is handed, never the folder beside it, so the drawing a reference names is never there to
+load (the browser gives no path, and asking for each file would be a gesture of our own); its label
+keeps the command language it was opened in, AutoCAD's following its own
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
 3DFACE, XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
 TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
-in them, external references; a gradient hatch; a complex linetype's shapes (BATTING, ZIGZAG:
+in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
+Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
+cannot find (the console runs EXTERNALREFERENCES, p01; the desktop's task dialog *One or more
+reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's balloon and the
+xref's own clipping (XCLIP); a gradient hatch; a complex linetype's shapes (BATTING, ZIGZAG:
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a drawing's
 own hatch patterns (one outside the 24, or user-defined, keeps its name
 and draws no fill), the index colours as such,
@@ -201,14 +217,18 @@ point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZ
 2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
 its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given
-together (leader/p22); each
+together (leader/p22), an external reference as AutoCAD's DXFOUT keeps one it could not find: its
+BLOCK empty, flag 4 (with 8 overlaid) and its path in group 1, the label drawn in its place never
+written (xref/p04's host2.dxf; the console reads ours back as its own, `Resolve Xref` and, with the
+drawing back beside it, `"part" loaded.`); each
 file of the two reference drawings, of one of every other kind, of points flat, thick, turned
 and tilted (the console reading back each one's place, DXF 50, thickness, plane and the drawing's
 PDMODE 35 and PDSIZE −7) and of 2D solids flat, thick and raised, and tilted (solid2d/p19 the
 same drawn by AutoCAD, plotted alike) and of leaders (hooked, to the left, alone, a spline, centred
 at DIMSCALE 10 with no arrowhead, to a block reference, facing down: AutoCAD reads each pair
 associated and its leader follows the text moved, p23) and of linetypes (ISO, scaled, GAS_LINE's
-text and BATTING's shapes, a layer's, an object's own scale, CELTSCALE and CELTYPE), in every version, ASCII and binary, opened by AutoCAD 2027's console with
+text and BATTING's shapes, a layer's, an object's own scale, CELTSCALE and CELTYPE) and of an
+external reference, in every version, ASCII and binary, opened by AutoCAD 2027's console with
 no AUDIT error and plotted as AutoCAD's own
 (scripts/research/probes/dxf/audit.sh, plot.sh), and read back here the same; a step U names and
 regenerates for (`SAVEAS Regenerating model.`); es, pt-BR, fr and it from their tables (52636,

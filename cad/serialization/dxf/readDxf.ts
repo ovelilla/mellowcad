@@ -32,12 +32,24 @@ export { DxfReadError, looksLikeDxf } from "./dxfFormat"
 
 /** What opening a DXF left out, which the command line says (`docs/next-dxf.md`). */
 export interface DxfOpenReport {
-  /** Objects of a type the model has none of, counted by their DXF type (`POINT`), and references to external drawings (`XREF`). */
+  /** Objects of a type the model has none of, counted by their DXF type (`POINT`). */
   readonly leftOut: ReadonlyMap<string, number>
+  /**
+   * The external references the drawing defines, in its order: each opens
+   * as AutoCAD opens one it cannot find, for there is no disk here to find
+   * it on (`docs/coverage/clipboard-and-files.md`, DXFIN).
+   */
+  readonly xrefs: readonly DxfXref[]
   /** Objects in a layout's paper space: there are no layouts here. */
   readonly inLayouts: number
   /** Objects of a known type too malformed to make, which AutoCAD would have refused the file for. */
   readonly unreadable: number
+}
+
+/** An external reference's name and the path its file gives. */
+export interface DxfXref {
+  readonly name: string
+  readonly path: string
 }
 
 export interface ParsedDxf {
@@ -81,8 +93,9 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   let inLayouts = 0
   let unreadable = 0
 
-  const targets = new Map<string, DxfBlockTarget | "xref">()
+  const targets = new Map<string, DxfBlockTarget | "dependent">()
   const definitions: DxfBlock[] = []
+  const xrefs: (DxfXref & { overlay: boolean; z: number })[] = []
   for (const block of dxf.blocks) {
     const name = (str(block.record, 2) ?? str(block.record, 3))?.trim()
     if (!name) continue
@@ -93,11 +106,24 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     const flags = int(block.record, 70) ?? 0
     const key = name.toUpperCase()
     if (targets.has(key)) continue
+    const base = point(block.record, 10) ?? { x: 0, y: 0, z: 0 }
     if (flags & (4 | 8)) {
-      targets.set(key, "xref")
+      // An xref nested in another (16, dependent) goes with it: of an xref
+      // it cannot find AutoCAD keeps nothing it brought (probe xref/p04, its
+      // DXFOUT). An xref's objects are its drawing's, never in the file.
+      if (flags & 16) {
+        targets.set(key, "dependent")
+        continue
+      }
+      targets.set(key, { id: name, basePoint: { x: base.x, y: base.y } })
+      xrefs.push({
+        name,
+        path: str(block.record, 1)?.trim() ?? "",
+        overlay: (flags & 8) !== 0,
+        z: base.z,
+      })
       continue
     }
-    const base = point(block.record, 10) ?? { x: 0, y: 0, z: 0 }
     targets.set(key, { id: name, basePoint: { x: base.x, y: base.y } })
     definitions.push(block)
   }
@@ -180,6 +206,13 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     return out
   }
 
+  const external: BlockDefinition[] = xrefs.map((xref) => {
+    const target = targets.get(xref.name.toUpperCase()) as DxfBlockTarget
+    return {
+      ...createBlockDefinition(target.id, target.basePoint as Vec2, [], xref.z),
+      xref: { path: xref.path, ...(xref.overlay ? { overlay: true } : {}) },
+    }
+  })
   const blocks: BlockDefinition[] = definitions.map((block) => {
     const target = targets.get(
       (str(block.record, 2) ?? str(block.record, 3))!.trim().toUpperCase()
@@ -210,10 +243,15 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
       currentTextStyleId: textStyles.id(header("$TEXTSTYLE", 7)),
       dimStyles: dimStyles.entries(),
       currentDimStyleId: dimStyles.id(header("$DIMSTYLE", 2)),
-      blocks,
+      blocks: [...blocks, ...external],
       entities,
     }),
-    report: { leftOut, inLayouts, unreadable },
+    report: {
+      leftOut,
+      xrefs: xrefs.map(({ name, path }) => ({ name, path })),
+      inLayouts,
+      unreadable,
+    },
   }
 }
 

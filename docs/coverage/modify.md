@@ -1249,7 +1249,9 @@ everything was refused too, says `None found.` (es `No hallada.`, table 20841; p
 preselection is counted and sifted the same way after the echo; with nothing left it asks
 `Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
-pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
+cannot be exploded: `1 was an external reference.` (es `1 era una referencia externa.`, table
+25137–25138; xref/p08, p17)
 
 **Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
 (pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch

@@ -7,6 +7,7 @@ import {
   DimensionEntity,
   Entity,
   InsertEntity,
+  XrefSource,
   createInsert,
   entitiesBounds,
 } from "../../domain/entities"
@@ -88,6 +89,8 @@ interface WrittenBlock {
   readonly basePoint: Vec2
   readonly baseZ: number
   readonly anonymous: boolean
+  /** An external reference's path (group 1), written as AutoCAD keeps one it cannot find. */
+  readonly xref?: XrefSource
   write(ctx: DxfWriteContext, owner: string): void
 }
 
@@ -251,7 +254,12 @@ export function writeDxf(
       basePoint: block.basePoint,
       baseZ: block.baseElevation ?? 0,
       anonymous: block.name.startsWith("*"),
+      ...(block.xref ? { xref: block.xref } : {}),
       write: (c, owner) => {
+        // An xref's objects are only the label drawn in its place: AutoCAD
+        // writes its BLOCK empty, with the flag 4 alone of one it could not
+        // find (probe xref/p04, host2.dxf).
+        if (block.xref) return
         space = block.name
         for (const e of block.entities) writeEntity(c, e, owner)
         space = MODEL
@@ -422,9 +430,11 @@ export function writeDxf(
       handle(),
       block.record,
       block.name,
-      block.anonymous ? 1 : 0,
+      block.xref ? (block.xref.overlay ? 4 | 8 : 4) : block.anonymous ? 1 : 0,
       block.basePoint,
-      block.baseZ
+      block.baseZ,
+      false,
+      block.xref?.path
     )
     block.write(ctx, block.record)
     blockEnd(out, handle(), block.record, false)
@@ -672,7 +682,8 @@ function blockBegin(
   flags: number,
   base: Vec2,
   z: number,
-  paper = false
+  paper = false,
+  path = ""
 ): void {
   out.str(0, "BLOCK")
   out.str(5, handle)
@@ -685,7 +696,7 @@ function blockBegin(
   out.int(70, flags)
   out.point(10, base.x, base.y, z)
   out.str(3, name)
-  out.str(1, "")
+  out.str(1, path)
 }
 
 function blockEnd(

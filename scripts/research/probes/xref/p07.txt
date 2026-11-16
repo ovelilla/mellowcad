@@ -1,0 +1,9 @@
+_-TEXT
+200,100
+2.5
+0
+Xref C:\Users\oveli\AppData\Local\Temp\mcadxref\sub\part.dwg
+_ZOOM
+_E
+(getvar "EXTMIN")
+(getvar "EXTMAX")

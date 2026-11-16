@@ -634,6 +634,21 @@ export interface BlockDefinition {
   /** The base point's Z; absent means 0. */
   readonly baseElevation?: number
   readonly entities: readonly Entity[]
+  /**
+   * Set on an external reference (AutoCAD's xref): the drawing it names, which
+   * is never read here, so its {@link entities} are the text AutoCAD draws in
+   * place of one it cannot find, `Xref <path>`. A DXF written keeps the
+   * reference and its path, never that text.
+   */
+  readonly xref?: XrefSource
+}
+
+/** Where an external reference's drawing is, as the file that holds it says. */
+export interface XrefSource {
+  /** As saved (DXF group 1): absolute, relative (`.\Res\Wall Base.dwg`) or a bare name. */
+  readonly path: string
+  /** Overlaid rather than attached (BLOCK flag 8): a drawing referencing this one does not see it. */
+  readonly overlay?: boolean
 }
 
 /**

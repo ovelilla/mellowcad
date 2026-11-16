@@ -3803,6 +3803,29 @@ export const ptBR: EngineLocale = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Resolver Refex \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "\"",
+        [
+          "file"
+        ],
+        "\" não pode ser encontrado."
+      ],
+      "xrefLabel": [
+        "Refex ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Atenção: Você especificou uma precisão baixa para o arquivo DXF, o que pode resultar na perda da exatidão do desenho.",
       "dxfNotSaved": [
         [
@@ -3941,6 +3964,7 @@ export const ptBR: EngineLocale = {
         ],
         "\" não está definido."
       ],
+      "insertXref": "** Erro: Não é possível INSERIR uma refex. Em vez disso, utilize Anexar REFEX.",
       "hatchPatternUnknown": "Nome de padrão desconhecido.",
       "hatchTooDense": "Espaçamento de hachura denso demais, ou tamanho do traço pequeno demais.",
       "hatchNoBoundary": "Não foi encontrado nenhum limite de hachura válido.",
@@ -4024,6 +4048,22 @@ export const ptBR: EngineLocale = {
             "other": [
               0,
               " não puderam ser explodidos."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " era uma referência externa."
+            ],
+            "other": [
+              0,
+              " eram uma referência externa."
             ]
           }
         ]
@@ -4684,6 +4724,13 @@ export const ptBR: EngineLocale = {
         ],
         "\" redefinido"
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" é um Refex. Não pode ser redefinido."
+      ],
       "zBaseNotZero": "Cuidado, a base Z de inserção não é zero.",
       "definedBlocks": "Blocos definidos.",
       "definedBlock": [
@@ -4692,6 +4739,13 @@ export const ptBR: EngineLocale = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   Refex: não encontrada"
       ],
       "blockCounts": [
         "Blocos do   Referências   Blocos        Blocos\nusuário     externas      dependentes   sem nome\n",
@@ -7079,6 +7133,7 @@ export const ptBR: EngineLocale = {
         ],
         "\""
       ],
+      "listInsertXref": "                  Externo Referência",
       "listInsertPoint": [
         "                em ponto, X=",
         [

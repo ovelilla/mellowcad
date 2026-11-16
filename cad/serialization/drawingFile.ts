@@ -33,6 +33,7 @@ import {
   AttributeModes,
   BlockAttribute,
   BlockDefinition,
+  XrefSource,
   createAttributeDefinition,
   createBlockDefinition,
   createEllipse,
@@ -150,7 +151,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 53
+export const DRAWING_FILE_VERSION = 54
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -977,6 +978,23 @@ function cloneBlock(block: BlockDefinition): BlockDefinition {
     basePoint: { x: block.basePoint.x, y: block.basePoint.y },
     ...(block.baseElevation ? { baseElevation: block.baseElevation } : {}),
     entities: block.entities.map(cloneEntity),
+    ...(block.xref
+      ? {
+          xref: {
+            path: block.xref.path,
+            ...(block.xref.overlay ? { overlay: true } : {}),
+          },
+        }
+      : {}),
+  }
+}
+
+/** An external reference's source, from 54: a path, or no xref at all. */
+function parseXref(value: unknown): XrefSource | undefined {
+  if (!isRecord(value) || typeof value.path !== "string") return undefined
+  return {
+    path: value.path,
+    ...(value.overlay === true ? { overlay: true } : {}),
   }
 }
 
@@ -998,16 +1016,17 @@ function parseBlocks(value: unknown, version: number): BlockDefinition[] {
           : null
     if (!name || seen.has(name)) continue
     const entities = parseEntities(raw.entities, version)
-    if (entities.length === 0) continue
+    const xref = parseXref(raw.xref)
+    // An external reference's objects are only its label, drawn in its place.
+    if (entities.length === 0 && !xref) continue
     seen.add(name)
-    blocks.push(
-      createBlockDefinition(
-        name,
-        parseVec2(raw.basePoint) ?? { x: 0, y: 0 },
-        entities,
-        isFiniteNumber(raw.baseElevation) ? raw.baseElevation : 0
-      )
+    const block = createBlockDefinition(
+      name,
+      parseVec2(raw.basePoint) ?? { x: 0, y: 0 },
+      entities,
+      isFiniteNumber(raw.baseElevation) ? raw.baseElevation : 0
     )
+    blocks.push(xref ? { ...block, xref } : block)
   }
   return blocks
 }

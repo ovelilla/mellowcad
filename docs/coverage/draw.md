@@ -1945,7 +1945,9 @@ mode, layer-0 inheritance on insert; attribute definitions join in pick order (a
 picks them in reverse order of creation, p307–p309). The reference is converted with their
 defaults and ATTEDIT's box opens on it, a field per attribute labelled by its prompt: Enter applies
 the values, Escape keeps the defaults — the Edit Attributes dialog the desktop opens whatever ATTDIA
-(d00, d01; the console, which shows no dialog, asks nothing, p134, p305). One undo step.
+(d00, d01; the console, which shows no dialog, asks nothing, p134, p305). One undo step. An external reference's name ends the command with
+`"part" is an Xref. It cannot be redefined.` (20794, 20795; xref/p11, p14), and `?` lists one as `  "part"   Xref: not found`, its
+name padded to 31, counted under External References (20833, 20837, 20838; xref/p10)
 
 **Missing:** the base point's Annotative and mOde (Retain/Delete); BLOCK's Block Definition dialog
 (d08); ATTREQ 0, which skips the values' dialog; ATTSYNC / ATTREDEF / BATTMAN / BATTORDER
@@ -2005,7 +2007,9 @@ values at the command line (ATTDIA 0, ATTREQ 1), after the rotation (p303): `Ent
 by its prompt (its tag when it has none) with its default, `Prompt one <def1>:`, `Verify attribute
 values` (es `Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is
 drawn from the block; the reference is added once all are given (one undo step, Escape cancels the
-whole insertion)
+whole insertion). An external reference's name ends -INSERT with `** Error: Cannot INSERT an
+Xref. Use XREF Attach, instead.` (es with one `*`, 20804; xref/p09, p14), and its `?` leaves xrefs
+out (p15), as does the Blocks palette (unverified on the desktop)
 
 **Missing:** Corner and XYZ at the X scale, and a point there, its opposite corner (the box
 ignores a click and refuses a typed point); text, an MTEXT, attributes and a polyline's arc

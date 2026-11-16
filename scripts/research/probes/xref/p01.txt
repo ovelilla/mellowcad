@@ -1,0 +1,4 @@
+_-XREF
+?
+*
+(getvar "DWGNAME")

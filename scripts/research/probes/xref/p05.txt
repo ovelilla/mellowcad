@@ -1,0 +1,5 @@
+_ZOOM
+_E
+(getvar "EXTMIN")
+(getvar "EXTMAX")
+(getvar "TEXTSIZE")

@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+_LIST
+_L
+
+_-BLOCK
+part
+?
+*
+_-INSERT
+part
+?
+*
+_EXPLODE
+_L
+

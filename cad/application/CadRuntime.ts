@@ -277,6 +277,7 @@ import {
   readClipboardFragment,
   saveFileName,
   readOpenedFile,
+  withXrefLabels,
   selectAll,
   serializeDrawing,
   suggestedFileName,
@@ -6157,7 +6158,9 @@ export class CadRuntime extends Observable {
    * name the step -INSERT (desktop d06-6, d06-9).
    */
   insertBlock(id: BlockId): void {
-    if (!this.document.getBlock(id)) return
+    const block = this.document.getBlock(id)
+    // An xref is no block the palette offers, and -INSERT refuses its name.
+    if (!block || block.xref) return
     const command = "-INSERT"
     this.starting = command
     this.startingName = this.text.commandNames(command)[0]
@@ -6421,7 +6424,8 @@ export class CadRuntime extends Observable {
   ): Promise<void> {
     try {
       const opened = await readOpenedFile(file, kinds)
-      this.openParsed(opened.drawing)
+      // A drawing file of another program's may hold an xref with no label.
+      this.openParsed(withXrefLabels(opened.drawing, this.text))
       this.drawingName = typeof file === "string" ? null : file.name
       if (opened.kind === "dxf") {
         for (const line of dxfReportLines(opened.report, this.text)) {

@@ -2504,6 +2504,9 @@ declare const source: {
       "dxfNotValid": string
       "dxfDiscarded": string
       "dxfLeftOut": string
+      "xrefResolve": string
+      "xrefNotFound": string
+      "xrefLabel": string
       "dxfLowPrecision": string
       "dxfNotSaved": string
       "dxfInLayouts": string
@@ -2526,6 +2529,7 @@ declare const source: {
       "noUnreferencedLinetypes": string
       "noBlocks": string
       "blockUndefined": string
+      "insertXref": string
       "hatchPatternUnknown": string
       "hatchTooDense": string
       "hatchNoBoundary": string
@@ -2539,6 +2543,7 @@ declare const source: {
       "enterAttributeValues": string
       "verifyAttributeValues": string
       "explodeRejected": string
+      "explodeXref": string
       "explodeLostWidth": string
       "explodeCannot": string
       "noneFound": string
@@ -2620,9 +2625,11 @@ declare const source: {
       "invalidNewBlockName": string
       "blockReferencesItself": string
       "blockRedefined": string
+      "blockIsXref": string
       "zBaseNotZero": string
       "definedBlocks": string
       "definedBlock": string
+      "definedXref": string
       "blockCounts": string
       "insertBlockCounts": string
       "rectangleModes": string
@@ -2932,6 +2939,7 @@ declare const source: {
       "listHatchArea": string
       "listHatchOrigin": string
       "listInsertName": string
+      "listInsertXref": string
       "listInsertPoint": string
       "listInsertScaleX": string
       "listInsertScaleY": string

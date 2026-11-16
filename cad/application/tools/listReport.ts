@@ -1192,6 +1192,7 @@ class Report {
     this.header("insert", insert)
     const block = this.ctx.document.getBlock(insert.blockId)
     this.say("listInsertName", { name: block?.name ?? insert.blockId })
+    if (block?.xref) this.say("listInsertXref")
     this.insertLines(insert)
     const attributes = insert.attributes ?? []
     if (!block || attributes.length === 0) return

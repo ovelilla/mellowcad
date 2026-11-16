@@ -3791,6 +3791,29 @@ export const es: EngineLocale = {
         ],
         "."
       ],
+      "xrefResolve": [
+        "Resolver RefX \"",
+        [
+          "name"
+        ],
+        "\": ",
+        [
+          "path"
+        ]
+      ],
+      "xrefNotFound": [
+        "No se puede encontrar \"",
+        [
+          "file"
+        ],
+        "\"."
+      ],
+      "xrefLabel": [
+        "RefX ",
+        [
+          "path"
+        ]
+      ],
       "dxfLowPrecision": "Advertencia:  Ha especificado una precisión inferior para el archivo DXF, que puede dar como resultado la pérdida de precisión en el dibujo.",
       "dxfNotSaved": [
         [
@@ -3925,6 +3948,7 @@ export const es: EngineLocale = {
         ],
         "\" no está definido."
       ],
+      "insertXref": "* Error: imposible insertar una refX. Utilice REFX Enlazar.",
       "hatchPatternUnknown": "Nombre de patrón desconocido.",
       "hatchTooDense": "Intervalo de sombreado demasiado denso o trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
@@ -4008,6 +4032,22 @@ export const es: EngineLocale = {
             "other": [
               0,
               " no se han podido descomponer."
+            ]
+          }
+        ]
+      ],
+      "explodeXref": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " era una referencia externa."
+            ],
+            "other": [
+              0,
+              " eran referencias externas."
             ]
           }
         ]
@@ -4668,6 +4708,13 @@ export const es: EngineLocale = {
         ],
         "\" redefinido"
       ],
+      "blockIsXref": [
+        "\"",
+        [
+          "name"
+        ],
+        "\" es una RefX. No se puede redefinir."
+      ],
       "zBaseNotZero": "Cuidado, la base de inserción de Z no es cero.",
       "definedBlocks": "Bloques definidos.",
       "definedBlock": [
@@ -4676,6 +4723,13 @@ export const es: EngineLocale = {
           "name"
         ],
         "\""
+      ],
+      "definedXref": [
+        "  ",
+        [
+          "name"
+        ],
+        "   RefX: no se ha encontrado"
       ],
       "blockCounts": [
         "Bloques     Referencias     Bloques          Bloques\nusuario     externas        dependientes     sin nombre\n",
@@ -7071,6 +7125,7 @@ export const es: EngineLocale = {
         ],
         "\""
       ],
+      "listInsertXref": "                  Referencia externa",
       "listInsertPoint": [
         "                en punto, X=",
         [

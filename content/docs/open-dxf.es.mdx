@@ -3,7 +3,7 @@ title: Abrir un archivo DXF online
 metaTitle: "Abrir DXF online gratis: visor DXF sin instalar"
 description: "Abre un archivo DXF gratis en tu navegador, sin subirlo: de AutoCAD R12 a 2018, de texto o binario, con sus capas, textos, cotas, sombreados y bloques."
 type: howTo
-sourceHash: "d692fd6abe65"
+sourceHash: "cbd3a09725be"
 faq:
   - question: "¿Cómo abrir un archivo DXF sin AutoCAD?"
     answer: "Elígelo o suéltalo arriba, en esta página: MellowCAD lo abre en su editor, en tu navegador, sin instalar nada y sin cuenta. En el editor también lo abren ABRE (Ctrl+O) y CARGADXF."
@@ -37,7 +37,6 @@ Cuando un DXF tiene algo para lo que MellowCAD aún no tiene objeto, abre el res
 - trazos, caras 3D y mallas;
 - líneas auxiliares y rayos, líneas múltiples;
 - directrices múltiples y tolerancias, tablas, coberturas e imágenes;
-- referencias externas;
 - sólidos 3D, regiones y superficies;
 - degradados, y cotas de coordenadas y de longitud de arco.
 
@@ -50,6 +49,7 @@ Algunas cosas se abren, pero no del todo como eran:
 - Un color por su índice se abre como su color RGB, y PorBloque como PorCapa.
 - Un dibujo en pulgadas o en pies conserva sus números, leídos como milímetros.
 - El texto se dibuja con las medidas de Arial, sea cual sea la fuente de su estilo, sin su factor de anchura ni su oblicuidad.
+- Una referencia externa conserva su sitio y su ruta, y se dibuja como AutoCAD dibuja una cuyo dibujo no encuentra: `RefX` y la ruta en su punto de inserción. Una página solo lee el archivo que se le da, nunca los dibujos que lo acompañan; guardado de nuevo como DXF, la referencia se conserva.
 
 ## Ábrelo en el editor [#editor]
 

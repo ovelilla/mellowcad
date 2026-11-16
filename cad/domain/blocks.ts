@@ -6,8 +6,11 @@ import {
   entityPointToWorld,
   isTilted,
   scaleEntityZ,
+  withElevation,
 } from "./elevation"
 import { DEFAULT_LAYER_ID } from "./layers"
+import { createText } from "./text"
+import { TextStyleId } from "./textStyles"
 import {
   AttributeDisplay,
   BlockDefinition,
@@ -55,6 +58,44 @@ const BLOCK_X_AXIS: Vec2 = { x: 1, y: 0 }
  */
 export function isAnonymousBlock(name: string): boolean {
   return name.startsWith("*")
+}
+
+/**
+ * The height of the text AutoCAD draws for an external reference it cannot
+ * find, before the reference scales it: neither TEXTSIZE nor the drawing's
+ * units change it (probes xref/p05, h-t10 and h-imp).
+ */
+export const XREF_LABEL_HEIGHT = 2.5
+
+/** Whether a block is an external reference (AutoCAD's xref). */
+export function isXref(block: BlockDefinition | undefined): boolean {
+  return block?.xref !== undefined
+}
+
+/**
+ * An external reference as AutoCAD draws one it cannot find: in place of its
+ * drawing, `label` (`Xref <path>`, table acdb 7211, in the command language)
+ * at its base point, a text the reference moves, scales, stretches and
+ * mirrors as it would the drawing (probes xref/p04, p05).
+ */
+export function unresolvedXref(
+  block: BlockDefinition,
+  label: string,
+  styleId: TextStyleId
+): BlockDefinition {
+  return {
+    ...block,
+    entities: [
+      withElevation(
+        createText(block.basePoint, label, {
+          layerId: DEFAULT_LAYER_ID,
+          height: XREF_LABEL_HEIGHT,
+          styleId,
+        }),
+        block.baseElevation ?? 0
+      ),
+    ],
+  }
 }
 
 /**

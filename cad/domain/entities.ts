@@ -37,6 +37,7 @@ export type {
   HatchEntity,
   BlockId,
   BlockDefinition,
+  XrefSource,
   BlockLookup,
   InsertEntity,
   ArrayKind,
@@ -128,6 +129,9 @@ export {
 export {
   MAX_BLOCK_NESTING,
   isAnonymousBlock,
+  isXref,
+  unresolvedXref,
+  XREF_LABEL_HEIGHT,
   anonymousBlockName,
   findBlockNamed,
   blocksInUse,

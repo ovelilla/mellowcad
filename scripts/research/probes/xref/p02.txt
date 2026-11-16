@@ -1,0 +1,14 @@
+_-LAYER
+_M
+PART
+
+_CIRCLE
+0,0
+50
+_LINE
+-60,0
+60,0
+
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadxref\sub\part.dwg
