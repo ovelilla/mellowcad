@@ -32,6 +32,16 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/reap.mjs\" --once --dry-run --trigger session-start --quiet",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "InstructionsLoaded": [

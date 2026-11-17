@@ -15,7 +15,7 @@
     "node": "26.x"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
     "build": "next build",
     "start": "next start",
     "prepare": "git config core.hooksPath .githooks || exit 0",
