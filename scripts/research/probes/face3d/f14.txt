@@ -1,0 +1,11 @@
+_3DFACE
+0,0
+100,0
+100,50
+_I
+
+0,100
+100,100
+
+(cdr (assoc 70 (entget (entnext))))
+(cdr (assoc 70 (entget (entlast))))

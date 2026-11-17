@@ -1429,7 +1429,13 @@ function parseEntity(raw: unknown, version: number): Entity | null {
  */
 function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
   // Its vertices hold their Z: a plane in the file is not its own.
-  if (entity.type === "polyline3d" || entity.type === "solid3d") return entity
+  if (
+    entity.type === "polyline3d" ||
+    entity.type === "face3d" ||
+    entity.type === "solid3d"
+  ) {
+    return entity
+  }
   let placed = isFiniteNumber(raw.elevation)
     ? withElevation(entity, raw.elevation)
     : entity

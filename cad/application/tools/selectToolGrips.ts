@@ -436,6 +436,7 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
       world:
         (entity.type === "line" ||
           entity.type === "polyline3d" ||
+          entity.type === "face3d" ||
           entity.type === "solid3d") &&
         "z" in grip.world
           ? grip.world

@@ -182,10 +182,12 @@ export class Face3dTool implements Tool {
         ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
         return true
       case "fourth": {
+        // Its fourth edge hides with its third, or with an Invisible typed
+        // before this Enter (f06: 13; f14: 8, the next face clear).
         const third = this.points[2]
         this.make(
           [...this.points, third],
-          [...this.hidden, this.hidden[2]],
+          [...this.hidden, this.hideNext || this.hidden[2]],
           ctx
         )
         return true
@@ -210,6 +212,7 @@ export class Face3dTool implements Tool {
     const [a, b, c, d] = points
     // Updated before the commit, which rebuilds the state (cad-tools.md).
     this.points = [c, d]
+    this.hideNext = false
     // The shared edge keeps its hiding; the one from the fourth corner does
     // not pass on (f08: a hidden fourth edge, then a face of 70 0).
     this.hidden = [hidden[2], false]

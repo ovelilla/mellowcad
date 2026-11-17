@@ -101,10 +101,11 @@ export function drawingBox(
       }
       continue
     }
-    if (entity.type === "polyline3d") {
-      for (const vertex of entity.vertices) {
-        low = Math.min(low, vertex.z)
-        high = Math.max(high, vertex.z)
+    if (entity.type === "polyline3d" || entity.type === "face3d") {
+      const points = entity.type === "face3d" ? entity.corners : entity.vertices
+      for (const point of points) {
+        low = Math.min(low, point.z)
+        high = Math.max(high, point.z)
       }
       continue
     }

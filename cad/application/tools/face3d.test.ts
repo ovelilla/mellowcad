@@ -96,6 +96,27 @@ describe("3DFACE", () => {
     expect(faces(cad2)[0].invisibleEdges).toBe(13)
   })
 
+  // f14: Invisible typed before Enter at the fourth point hides the
+  // triangle's last edge, and the next face starts clear.
+  it("hides a triangle's last edge with an Invisible typed before Enter", () => {
+    const cad = createHarness()
+    typed(
+      cad,
+      "3DFACE",
+      "0,0",
+      "100,0",
+      "100,50",
+      "I",
+      "",
+      "0,100",
+      "100,100",
+      ""
+    )
+    const [triangle, next] = faces(cad)
+    expect(triangle.invisibleEdges).toBe(8)
+    expect(next.invisibleEdges).toBeUndefined()
+  })
+
   // f05: Enter at the second point is refused; at the first it ends.
   it("refuses Enter at the second point", () => {
     const cad = createHarness()
@@ -201,6 +222,41 @@ describe("the 3D face", () => {
     const log = typed(cad, "_EXPLODE", "_L", "")
     expect(log.join("\n")).toContain("1 was not able to be exploded.")
     expect(faces(cad)).toHaveLength(1)
+  })
+
+  // Off the plan a grip stands at its corner's own Z: dragging the one at
+  // 10,0,3 moves that corner, not the one under it at 10,0,0.
+  it("keeps each corner's own Z on its grip, a vertical face's too", () => {
+    const wall = createFace3d(
+      [
+        { x: 0, y: 0, z: 0 },
+        { x: 10, y: 0, z: 0 },
+        { x: 10, y: 0, z: 3 },
+        { x: 0, y: 0, z: 3 },
+      ],
+      0,
+      "0",
+      "w1"
+    )
+    const cad = createHarness({ entities: [wall] })
+    typed(cad, "-VIEW", "_SEISO")
+    cad.select("w1")
+    cad.click({ x: 10, y: 0, z: 3 }).click({ x: 30, y: 20, z: 0 })
+    const [moved] = faces(cad)
+    expect(moved.corners[1]).toEqual({ x: 10, y: 0, z: 0 })
+    expect(moved.corners[2]).not.toEqual({ x: 10, y: 0, z: 3 })
+  })
+
+  it("the drawing file keeps it, and gives it no plane of a file's", () => {
+    const planed = parseDrawingFile(
+      serializeDrawing(
+        documentSnapshot(createHarness({ entities: [face] }).runtime.document)
+      ).replace(
+        '"type":"face3d"',
+        '"type":"face3d","normal":{"x":1,"y":0,"z":0},"elevation":7'
+      )
+    )
+    expect(planed.entities[0]).toEqual(face)
   })
 
   it("the drawing file keeps it", () => {
