@@ -1,0 +1,78 @@
+---
+title: "Změna vlastností v AutoCADu: příkaz ZMĚNAV (CHPROP)"
+metaTitle: "Změna vlastností v AutoCADu: ZMĚNAV"
+description: "Jak změnit vlastnosti objektů v AutoCADu příkazem ZMĚNAV (CHPROP): barvu, hladinu, typ čáry a jeho měřítko, tloušťku čáry nebo výšku na příkazovém řádku."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ZMĚNAV anglicky a má zkratku?","answer":"Anglicky CHPROP, v českém AutoCADu ZMĚNAV. Zkratku nemá: zadejte ZMĚNAV nebo _CHPROP, který funguje v AutoCADu v jakémkoli jazyce. Enter na výzvu Příkaz ho zopakuje."},{"question":"Jaký je rozdíl mezi příkazy ZMĚNAV a VLASTNOSTI?","answer":"Mění tytéž vlastnosti. VLASTNOSTI je zobrazí v paletě, spolu s geometrií každého objektu; ZMĚNAV se na ně ptá na příkazovém řádku, takže ruce zůstanou na klávesnici."},{"question":"Jak změnit barvu objektů z příkazového řádku?","answer":"Zadejte ZMĚNAV, vyberte objekty, stiskněte Enter, zvolte Barva a zadejte barvu, například 1 pro červenou. Dalším stisknutím Enter příkaz ukončete."},{"question":"Jak přesunout několik objektů do jiné hladiny?","answer":"Spusťte ZMĚNAV, vyberte je, zvolte Hladina a zadejte název hladiny. Hladina musí existovat: nejprve ji vytvořte příkazem HLADINA."}]
+---
+
+Příkaz ZMĚNAV (CHPROP) mění vlastnosti vybraných objektů na příkazovém řádku: řádky oddílu Obecné palety Vlastnosti, kladené jako výzvy. Vyberte objekty, nebo je vyberte před příkazem, a pak zvolte vlastnost, kterou chcete změnit; po každé se zeptá na další, dokud příkaz neukončí Enter. Výzva každé vlastnosti nabízí jako výchozí hodnotu sady, `mění se` tam, kde se objekty liší, a Enter v tomto místě ponechá každému objektu jeho vlastní. Co nastavíte, se použije při ukončení příkazu, takže Esc ponechá všechny objekty beze změny. Objekty v uzamčené hladině se spočítají a vynechají, každý s hlášením `Objekt je v uzamknuté hladině.`. Celé spuštění je jeden krok, který `Z` vrátí zpět.
+
+- **Příkaz:** `ZMĚNAV`
+- **Anglicky:** `CHPROP`, zadávaný jako `_CHPROP` v libovolném jazyce
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ZMĚNAV` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="chprop" caption="ZMĚNAV na úsečce přes otvor desky: barva 1 a typ čáry CENTER, osa, v hladině, ve které byla." />
+
+## Možnosti [#options]
+
+### `Barva` (`B`) [#color]
+
+Číslo barvy od 1 do 255, název jako `červená`, `DLEHLAD` nebo `Truecolor` a jeho `červená,zelená,modrá`, jak je přijímá [`BARVA`](/docs/commands/color); co BARVA odmítne, odmítne se i zde a výzva se zopakuje.
+
+### `Hladina` (`H`) [#layer]
+
+Název hladiny, velkými i malými písmeny. Název, který nemůže být názvem hladiny, vypíše `Neplatný název hladina.`, název, který ve výkresu není, hlášení, že ho nelze najít; v obou případech se výzva zopakuje. ZMĚNAV hladiny nevytváří.
+
+### `Typč` (`T`) [#ltype]
+
+Název typu čáry, velkými i malými písmeny, nebo `DleHlad`. Typ, který výkres nemá načtený, se načte z acad.lin, souboru AutoCADu v palcích, jako to dělá AutoCAD i v metrickém výkresu; název, který chybí i v tomto souboru, vypíše, že nebyl nalezen, a příkaz se vrátí k výzvě vlastnosti.
+
+### `tčMěř` (`M`) [#ltscale]
+
+Vlastní měřítko typu čáry objektů, které násobí měřítko příkazu [`TČMĚŘ`](/docs/commands/ltscale) jen pro ně: vzdálenost zadaná číslem nebo změřená dvěma body; záporná se vezme jako její absolutní hodnota a 0 vypíše `Hodnota musí být nenulová.` a výzva se zopakuje.
+
+### `tLčáry` (`L`) [#lweight]
+
+Tloušťka čáry v milimetrech, zaokrouhlená na nejbližší standardní, jak ji zaokrouhlí [`TLČÁRY`](/docs/commands/lweight), nebo `DleHlad`; `?` je vypíše.
+
+### `Výška` (`V`) [#thickness]
+
+Vzdálenost zadaná číslem nebo změřená dvěma body, i záporná a nulová. Nastaví se úsečkám, kružnicím, obloukům a křivkám v sadě, podél normály každého z nich; u každého jiného typu příkaz na konci uvede, že jeho výšku nemůže změnit.
+
+## Co zatím neumí [#missing]
+
+pRůhlednost, mAteriál a Poznámky, které objekty zde nemají, takže je výzva neuvádí. DleBlok u možností Barva, Typč a tLčáry a výchozí hodnota tloušťky čáry. Barva Truecolor shodná s barvou indexu se načte zpět jako barva indexu: `255,0,0` se nabídne jako `1 (červená)`. Knihy barev. Výška textu a definice atributu, které zůstanou beze změny. ZMĚNA, jejíž možnost Vlastnosti klade tutéž výzvu s možností Zdvih.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr--ru-свойства--pl-zmcechy--cs-změnav)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ZMĚNAV anglicky a má zkratku?
+
+Anglicky CHPROP, v českém AutoCADu ZMĚNAV. Zkratku nemá: zadejte `ZMĚNAV` nebo `_CHPROP`, který funguje v AutoCADu v jakémkoli jazyce. Enter na výzvu Příkaz ho zopakuje.
+
+### Jaký je rozdíl mezi příkazy ZMĚNAV a VLASTNOSTI?
+
+Mění tytéž vlastnosti. [`VLASTNOSTI`](/docs/commands/properties) je zobrazí v paletě, spolu s geometrií každého objektu; ZMĚNAV se na ně ptá na příkazovém řádku, takže ruce zůstanou na klávesnici.
+
+### Jak změnit barvu objektů z příkazového řádku?
+
+Zadejte `ZMĚNAV`, vyberte objekty, stiskněte Enter, zvolte `Barva` a zadejte barvu, například `1` pro červenou. Dalším stisknutím Enter příkaz ukončete.
+
+### Jak přesunout několik objektů do jiné hladiny?
+
+Spusťte ZMĚNAV, vyberte je, zvolte `Hladina` a zadejte název hladiny. Hladina musí existovat: nejprve ji vytvořte příkazem [`HLADINA`](/docs/commands/layer).
+
+## Související příkazy [#related]
+
+- [Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)](/docs/commands/properties)
+- [Kopírování vlastností v AutoCADu: příkaz KOPIEVLAST (MATCHPROP)](/docs/commands/matchprop)
+- [Příkaz BARVA (COLOR) v AutoCADu](/docs/commands/color)
+- [Hladiny v AutoCADu: příkaz HLADINA (LAYER)](/docs/commands/layer)

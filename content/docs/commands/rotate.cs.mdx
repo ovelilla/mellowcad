@@ -1,0 +1,66 @@
+---
+title: "Příkaz OTOČ (ROTATE) v AutoCADu"
+description: "Jak v AutoCADu otočit objekt příkazem OTOČ (ROTATE, zkratka OT): základní bod a úhel, Kopie se zachováním originálu, Reference."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz OTOČ anglicky?","answer":"ROTATE. V české verzi AutoCADu zadejte OTOČ nebo zkratku OT a stiskněte Enter nebo mezerník; zkratka RO z anglické verze v české spouští -ROZVRŽENÍ (-LAYOUT). Anglický název s podtržítkem, _ROTATE, funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu otočit objekt rovnoběžně s jiným?","answer":"Zvolte Reference, určete dva body podél hrany objektu, pak zvolte Body a určete dva body podél čáry, ke které se má vyrovnat."},{"question":"Jak otočit objekt a zachovat originál?","answer":"Zvolte Kopie, než zadáte úhel: otočí se kopie a originál zůstane."},{"question":"Proč příkaz OTOČ otáčí na špatnou stranu?","answer":"Kladný úhel otáčí proti směru hodinových ručiček, jak uvádí ANGDIR v prvním řádku. Zadejte záporný úhel, například -30, a objekt se otočí po směru hodinových ručiček."}]
+---
+
+Příkaz OTOČ (ROTATE) otáčí vybrané objekty kolem základního bodu: vyberte je, zadejte základní bod a pak úhel – zapsaný, nebo určený bodem, jehož směr od základního bodu udává úhel. První řádek uvádí, který směr je kladný, ve výchozím nastavení proti směru hodinových ručiček (ANGDIR), a kde leží 0 (ANGBASE). Enter u úhlu zopakuje poslední otočení, v novém výkresu 0. Objekty se otáčejí kolem osy rovnoběžné s osou Z systému USS, procházející základním bodem, takže ve 3D si zachovají svou výšku. Otočení je jeden krok, který lze vrátit zpět.
+
+- **Příkaz:** `OTOČ`
+- **Anglicky:** `ROTATE`, zadávaný jako `_ROTATE` v libovolném jazyce
+- **Aliasy:** `OT`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `OT` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="rotate" caption="Obdélník otočený o 30° kolem rohu s možností Kopie: originál zůstane na místě." />
+
+## Možnosti [#options]
+
+### `Kopie` (`K`) [#copy]
+
+Otočí kopii a objekty ponechá na místě se zprávou `Otočení kopie vybraných objektů.`. Pak se znovu zeptá na úhel.
+
+### `Reference` (`R`) [#reference]
+
+Otočí z úhlu, který objekty mají, do úhlu, který mít mají: zeptá se na referenční úhel (zapsaný, nebo změřený dvěma body), pak na nový úhel a otočí o rozdíl. Chcete-li vyrovnat šikmou hranu do vodorovné polohy, určete její dva konce jako referenci a zadejte 0.
+
+### `Body` (`B`) [#points]
+
+U nového úhlu možnosti `Reference`: nový úhel je úhel úsečky mezi dvěma určenými body, takže se objekty vyrovnají podél hrany, která už je nakreslená.
+
+## Co zatím neumí [#missing]
+
+Při zadávání úhlu sleduje otáčená sada kurzor v barvě každého objektu, ale bez jeho typu čáry a tloušťky čáry.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh--ru-повернуть--пов--pl-obróć--ob--cs-otoč--ot)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz OTOČ anglicky?
+
+ROTATE. V české verzi AutoCADu zadejte `OTOČ` nebo zkratku `OT` a stiskněte Enter nebo mezerník; zkratka `RO` z anglické verze v české spouští -ROZVRŽENÍ (-LAYOUT). Anglický název s podtržítkem, `_ROTATE`, funguje v AutoCADu v každém jazyce.
+
+### Jak v AutoCADu otočit objekt rovnoběžně s jiným?
+
+Zvolte `Reference`, určete dva body podél hrany objektu, pak zvolte `Body` a určete dva body podél čáry, ke které se má vyrovnat.
+
+### Jak otočit objekt a zachovat originál?
+
+Zvolte `Kopie`, než zadáte úhel: otočí se kopie a originál zůstane.
+
+### Proč příkaz OTOČ otáčí na špatnou stranu?
+
+Kladný úhel otáčí proti směru hodinových ručiček, jak uvádí ANGDIR v prvním řádku. Zadejte záporný úhel, například `-30`, a objekt se otočí po směru hodinových ručiček.
+
+## Související příkazy [#related]
+
+- [Příkaz POSUN (MOVE) v AutoCADu](/docs/commands/move)
+- [Příkaz KOPIE (COPY) v AutoCADu](/docs/commands/copy)
+- [Zrcadlení v AutoCADu: příkaz ZRCADLI (MIRROR)](/docs/commands/mirror)
+- [Změna měřítka v AutoCADu: příkaz MĚŘÍTKO (SCALE)](/docs/commands/scale)

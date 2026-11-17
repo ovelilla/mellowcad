@@ -1,0 +1,68 @@
+---
+title: "Kóta poloměru v AutoCADu: příkaz KÓTYRÁDIUS (DIMRADIUS)"
+metaTitle: "Kóta poloměru v AutoCADu: KÓTYRÁDIUS"
+description: "Jak v AutoCADu okótovat poloměr kružnice, oblouku nebo zaoblení příkazem KÓTYRÁDIUS (DIMRADIUS, KRA): vyberte křivku, umístěte text R dovnitř nebo ven."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz pro kótu poloměru anglicky a jakou má zkratku?","answer":"Anglicky DIMRADIUS, v české verzi AutoCADu KÓTYRÁDIUS: zadejte KRA nebo KOTYRA a stiskněte Enter nebo mezerník. Funguje i celý název a _DIMRADIUS v AutoCADu v každém jazyce; anglické DRA a DIMRAD v české verzi nefungují."},{"question":"Jak okótovat zaoblení nebo zaoblený roh?","answer":"Vyberte zaoblení: je to oblouk nebo obloukový segment křivky, jako rohy, které příkaz OBD zaoblí možností zAoblení, a příkaz KÓTYRÁDIUS přijme obojí."},{"question":"Proč nemůžu vybrat objekt, který chci okótovat?","answer":"Příkaz KÓTYRÁDIUS přijme kružnici, oblouk nebo obloukový segment křivky, i v zamknuté hladině. Jakýkoli jiný objekt, i elipsa, vyvolá „Vybraný objekt není kružnice nebo oblouk.“ a otázka se zopakuje; křivku uvnitř reference bloku zatím vybrat nelze."},{"question":"Jak přidat ke kótě poloměru poznámku?","answer":"Před umístěním kóty zvolte Text a zadejte „<> max“: <> je naměřená hodnota s písmenem R, takže kóta zní „R10 max“. U už umístěné kóty text změní řádek „Přepsání textu“ v paletě Vlastnosti."}]
+---
+
+Příkaz KÓTYRÁDIUS (DIMRADIUS) kótuje poloměr kružnice, oblouku nebo obloukového segmentu křivky. Vyberte křivku a příkazový řádek hned vypíše naměřenou hodnotu; pak kótu umístěte a příkaz skončí. Jako v AutoCADu je textem poloměr za písmenem R, na čáře vedené po poloměru, která končí jednou šipkou na křivce, uvnitř nebo vně křivky podle toho, kam kótu umístíte. Vně pokračuje čára přes křivku až do středu, jak ji kreslí ISO-25.
+
+- **Příkaz:** `KÓTYRÁDIUS`
+- **Anglicky:** `DIMRADIUS`, zadávaný jako `_DIMRADIUS` v libovolném jazyce
+- **Aliasy:** `KRA`, `KOTYRA`
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KRA` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dimradius" caption="Zaoblený roh desky okótovaný vně a její otvor uvnitř: vybraná každá křivka, pak umístěný text." />
+
+## Možnosti [#options]
+
+### `Text` (`T`) [#text]
+
+Zeptá se na text, který se má napsat místo naměřené hodnoty, a tu nabídne jako výchozí: Enter ji ponechá. V zadaném textu zastupuje `<>` naměřenou hodnotu i s písmenem R, takže `<> max` napíše u poloměru 10 `R10 max`.
+
+### `úHel` (`H`) [#angle]
+
+Zeptá se na úhel textu, který se pak nakreslí pod tímto úhlem, středem na čáře, a čára u něj skončí. 0 ho vrátí podél čáry.
+
+## Co zatím neumí [#missing]
+
+Mtext: text kóty je jeden řádek, nastavený možností `Text` na příkazovém řádku, nikdy v textovém editoru. Na oblouku zůstává šipka mezi jeho konci, kde AutoCAD kreslí ke kótě umístěné za nimi obloukovou vynášecí čáru. Křivku uvnitř reference bloku nelze vybrat. Osy ze stylu (záporná velikost středové značky) se nekreslí a jeho nastavení textu vně křivky nejsou k dispozici: text vede vždy podél čáry, bez vodorovného ramene, jak ho kreslí ISO-25. Kóta není asociativní: nesleduje křivku, kterou měří.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad--fr-cotrayon--coty--it-dimraggio--dra--de-bemradius--bmrad--ru-рзмрадиус--рра--pl-wympromień--wr--wymr--cs-kótyrádius--kra--kotyra)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz pro kótu poloměru anglicky a jakou má zkratku?
+
+Anglicky DIMRADIUS, v české verzi AutoCADu KÓTYRÁDIUS: zadejte `KRA` nebo `KOTYRA` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMRADIUS` v AutoCADu v každém jazyce; anglické `DRA` a `DIMRAD` v české verzi nefungují.
+
+### Jak okótovat zaoblení nebo zaoblený roh?
+
+Vyberte zaoblení: je to oblouk nebo obloukový segment křivky, jako rohy, které příkaz [`OBD`](/docs/commands/rectang) zaoblí možností `zAoblení`, a příkaz KÓTYRÁDIUS přijme obojí.
+
+### Proč nemůžu vybrat objekt, který chci okótovat?
+
+Příkaz KÓTYRÁDIUS přijme kružnici, oblouk nebo obloukový segment křivky, i v zamknuté hladině. Jakýkoli jiný objekt, i elipsa, vyvolá `Vybraný objekt není kružnice nebo oblouk.` a otázka se zopakuje; křivku uvnitř reference bloku zatím vybrat nelze.
+
+### Jak přidat ke kótě poloměru poznámku?
+
+Před umístěním kóty zvolte `Text` a zadejte `<> max`: `<>` je naměřená hodnota s písmenem R, takže kóta zní `R10 max`. U už umístěné kóty text změní řádek „Přepsání textu“ v paletě Vlastnosti.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+## Související příkazy [#related]
+
+- [Kóta průměru v AutoCADu: příkaz KÓTYPRŮM (DIMDIAMETER)](/docs/commands/dimdiameter)
+- [Kótování v AutoCADu: úhlová kóta, příkaz KÓTYÚHEL (DIMANGULAR)](/docs/commands/dimangular)
+- [Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)](/docs/commands/dimlinear)
+- [Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)](/docs/commands/dimstyle)

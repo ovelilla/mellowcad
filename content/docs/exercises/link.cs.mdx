@@ -1,0 +1,58 @@
+---
+title: "Cvičení v AutoCADu: táhlo s tečnami"
+metaTitle: "Cvičení v AutoCADu pro pokročilé: táhlo"
+description: "Nakreslete táhlo v AutoCADu: dvě oka spojená úsečkami tečnými k oběma s uchopením Tečná, oblouky mezi nimi oříznuté, a kóty. Zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete toto táhlo v milimetrech: dvě oka vzdálená 90, o poloměru 20 a 12, s otvory o poloměru 10 a 6, spojená úsečkami tečnými k oběma, s oblouky mezi úsečkami oříznutými. Tečné úsečky používají na obou koncích uchopení objektu Tečná; příkaz [`OŘEŽ`](/docs/commands/trim) potom změní kružnici každého oka v oblouk.
+
+- **Cvičení:** Pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`ÚSEČKA`](/docs/commands/line), [`OŘEŽ`](/docs/commands/trim), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYRÁDIUS`](/docs/commands/dimradius), [`KÓTYPRŮM`](/docs/commands/dimdiameter)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=link), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/link" caption="Táhlo se dvěma oky ve vzdálenosti 90, spojenými tečnami, s kótami." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete oka [#bosses]
+
+V hladině Obrys čtyři kružnice příkazem [`KRUŽNICE`](/docs/commands/circle), každá zadaná poloměrem: `20` a `10` v bodě `0,0`, `12` a `6` v bodě `90,0`.
+
+<Session name="exercises/link/bosses" caption="1. Nakreslete oka" />
+
+### 2. Nakreslete tečny [#tangents]
+
+Příkaz [`ÚSEČKA`](/docs/commands/line), potom zadejte `_TAN`, uchopení objektu Tečná pro jeden bod, a vyberte velkou kružnici blízko jejího horního okraje; znovu `_TAN` a vyberte malou kružnici blízko jejího horního okraje. Úsečka se dotýká obou. Stejně podél spodní strany.
+
+<Session name="exercises/link/tangents" caption="2. Nakreslete tečny" />
+
+### 3. Ořízněte oblouky [#trim]
+
+Příkaz [`OŘEŽ`](/docs/commands/trim): vyberte každé oko mezi oběma úsečkami, na straně obrácené k druhému oku. Vnitřní oblouky zmizí a z každé kružnice je oblouk.
+
+<Session name="exercises/link/trim" caption="3. Ořízněte oblouky" />
+
+### 4. Nakreslete osy [#centreLines]
+
+V hladině Osy osa procházející oběma středy a úsečka napříč každým okem.
+
+<Session name="exercises/link/centreLines" caption="4. Nakreslete osy" />
+
+### 5. Okótujte výkres [#dimensions]
+
+V hladině Kóty vzdálenost středů příkazem [`KÓTYPŘÍM`](/docs/commands/dimlinear), poloměry ok příkazem [`KÓTYRÁDIUS`](/docs/commands/dimradius) a jejich otvory příkazem [`KÓTYPRŮM`](/docs/commands/dimdiameter).
+
+<Session name="exercises/link/dimensions" caption="5. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block): Pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket): Začátečník · Strojírenství · 2D
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket): Začátečník · Strojírenství · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

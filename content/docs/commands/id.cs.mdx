@@ -1,0 +1,46 @@
+---
+title: "Souřadnice bodu v AutoCADu: příkaz ID"
+description: "Jak v AutoCADu zjistit souřadnice bodu příkazem ID: vyberte bod, i s uchopením, a přečtěte X, Y a Z v aktuálním USS, i uvnitř jiného příkazu. Vyzkoušejte to."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"K čemu slouží příkaz ID v AutoCADu?","answer":"Řekne, kde leží bod: X, Y a Z v aktuálním USS. Nic nekreslí ani nemění. V české i anglické verzi AutoCADu má stejný název a _ID funguje v každém jazyce."},{"question":"Jak v AutoCADu zjistit souřadnice bodu?","answer":"Zadejte ID a pak klikněte na bod s uchopením objektu, Koncový bod nebo Střed, abyste ho trefili přesně. Souřadnice se vypíšou na příkazovém řádku."},{"question":"Jak zjistit souřadnici Z bodu?","answer":"Uchopte ho uchopením objektu: příkaz ID vypíše Z objektu v tomto místě. Obyčejné kliknutí dá Z roviny úrovně, 0, pokud ji nezvedne ELEVATION nebo USS."},{"question":"Proč příkaz ID ukazuje jiné souřadnice, než čekám?","answer":"Příkaz ID měří v aktuálním USS. Pokud byl USS posunut nebo otočen, čísla se měří od jeho počátku podél jeho os: příkaz USS s možností Globální vrátí globální souřadnice."}]
+---
+
+Příkaz ID vypíše souřadnice bodu. U výzvy `Určete bod:` bod vyberte, uchopte nebo zadejte a příkaz ID vypíše na příkazovém řádku na jednom řádku jeho X, Y a Z a skončí. Hodnoty jsou v aktuálním USS, s přesností výkresu. S uchopením objektu je Z výškou objektu v tomto bodě; jinak je to výška roviny úrovně. Enter příkaz ukončí beze slova a objekty vybrané před příkazem ID se při jeho spuštění odznačí. Zadaný s apostrofem, `'ID`, běží uvnitř jiného příkazu, který pak pokračuje.
+
+- **Příkaz:** `ID`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ID` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="id" caption="ID s uchopením Střed na otvoru desky: X, Y a Z středu." />
+
+## Otázky [#questions]
+
+### K čemu slouží příkaz ID v AutoCADu?
+
+Řekne, kde leží bod: X, Y a Z v aktuálním USS. Nic nekreslí ani nemění. V české i anglické verzi AutoCADu má stejný název a `_ID` funguje v každém jazyce.
+
+### Jak v AutoCADu zjistit souřadnice bodu?
+
+Zadejte `ID` a pak klikněte na bod s uchopením objektu, Koncový bod nebo Střed, abyste ho trefili přesně. Souřadnice se vypíšou na příkazovém řádku.
+
+### Jak zjistit souřadnici Z bodu?
+
+Uchopte ho uchopením objektu: příkaz ID vypíše Z objektu v tomto místě. Obyčejné kliknutí dá Z roviny úrovně, 0, pokud ji nezvedne ELEVATION nebo USS.
+
+### Proč příkaz ID ukazuje jiné souřadnice, než čekám?
+
+Příkaz ID měří v aktuálním USS. Pokud byl USS posunut nebo otočen, čísla se měří od jeho počátku podél jeho os: příkaz [`USS`](/docs/commands/ucs) s možností `Globální` vrátí globální souřadnice.
+
+## Související příkazy [#related]
+
+- [Příkaz VZD (DIST) v AutoCADu](/docs/commands/dist)
+- [Příkaz VÝPIS (LIST) v AutoCADu](/docs/commands/list)
+- [Příkaz USS (UCS) v AutoCADu: uživatelský souřadnicový systém](/docs/commands/ucs)
+- [Výpočet plochy v AutoCADu: příkaz PLOCHA (AREA)](/docs/commands/area)
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#id--es-id--pt-br-id--fr-id--it-id--de-id--ru-коорд--pl-id--cs-id)

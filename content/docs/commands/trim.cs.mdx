@@ -1,0 +1,87 @@
+---
+title: "Příkaz OŘEŽ (TRIM) v AutoCADu"
+description: "Jak v AutoCADu oříznout úsečku příkazem OŘEŽ (TRIM, zkratka OR): rychlý a standardní režim, řezné hrany, možnosti Hrana a Křížení, Shift pro prodloužení."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz OŘEŽ anglicky?","answer":"TRIM. V české verzi AutoCADu zadejte OŘEŽ nebo zkratku OR a stiskněte Enter nebo mezerník; zkratka TR z anglické verze v české nefunguje. Anglický název s podtržítkem, _TRIM, funguje v AutoCADu v každém jazyce."},{"question":"Proč OŘEŽ vymaže celou úsečku?","answer":"Protože příkaz pracuje v rychlém režimu, výchozím v AutoCADu od verze 2021: výběr objektu, který žádná hrana neprotíná, ho vymaže. Zvolte Režim a pak Standardní, aby příkaz OŘEŽ takový objekt ponechal a oznámil to."},{"question":"Jak v AutoCADu oříznout více úseček najednou?","answer":"Klikněte do prázdného místa a určete druhý bod: každý objekt, který tato čára protne, se ořízne v jednom kroku. Nebo zvolte Křížení a nakreslete okno přes části, které chcete odstranit."},{"question":"Jak prodloužit úsečku příkazem OŘEŽ?","answer":"Podržte Shift a vyberte úsečku u konce, který chcete prodloužit: prodlouží se k nejbližší hraně, jako u příkazu PRODLUŽ, a další výběr bez Shiftu zase ořezává."}]
+---
+
+Příkaz OŘEŽ (TRIM) ořízne objekt k místům, kde ho protínají jiné objekty: vyberete část, kterou chcete odstranit, a ta zmizí až k nejbližšímu průsečíku na každé straně. Začíná v režimu `Rychlé`, jako v AutoCADu: každý objekt je řeznou hranou a objekt, který nic neprotíná, se vymaže celý. Podržení klávesy Shift při výběru objekt místo toho prodlouží k nejbližší hraně, jako to dělá [`PRODLUŽ`](/docs/commands/extend). Každý výběr je jeden krok, který vrátí `Zpět`; Enter příkaz ukončí.
+
+- **Příkaz:** `OŘEŽ`
+- **Anglicky:** `TRIM`, zadávaný jako `_TRIM` v libovolném jazyce
+- **Aliasy:** `OR`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `OR` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="trim" caption="Úsečka oříznutá ke dvěma úsečkám, které ji protínají: každý konec vybraný jednou, v rychlém režimu." />
+
+## Možnosti [#options]
+
+### `řEzací hrany` (`E`) [#cutting]
+
+Určí, které objekty řežou: vyberte je, nebo stiskněte Enter a převezmou se všechny objekty. Od té chvíle řežou jen ony, v každém režimu, až do konce příkazu.
+
+### `Napříč` (`N`) [#fence]
+
+Ptá se na body čáry, kolik jich chcete, až do stisknutí Enter: každý objekt, který čára protne, se ořízne v místě průsečíku, v jednom kroku. Režim `Standardní` tuto možnost vypisuje; režim `Rychlé` ji přijme také a výběr v prázdném místě sám začne čáru ze dvou bodů.
+
+### `Křížení` (`K`) [#crossing]
+
+Zeptá se na dva rohy okna: všechno, co protíná jeho obrys, se ořízne, v jednom kroku. Objekt, který leží celý uvnitř okna, jím protnutý není.
+
+### `Režim` (`R`) [#mode]
+
+Přepíná mezi `Rychlé` a `Standardní`. V režimu `Standardní` se příkaz OŘEŽ nejprve zeptá na řezné hrany (Enter převezme všechny), objekt, který žádná hrana neprotíná, ponechá se zprávou `Neprotíná se s ořezávací hranou.`, vypisuje `Napříč` a `Hrana` a výběr v prázdném místě začne křížové okno. Režim je společný pro OŘEŽ i [`PRODLUŽ`](/docs/commands/extend) a platí do konce relace.
+
+### `Hrana` (`H`) [#edge]
+
+Jen v režimu `Standardní`. S `Prodluž` hrana řeže i tam, kde by objekt protnula po prodloužení – úsečka v obou směrech, oblouk podél své kružnice; výchozí je `Neprodluž`.
+
+### `Vymazat` (`V`) [#erase]
+
+Vymaže objekty bez opuštění příkazu: vyberte je a Enter je vymaže, jako jeden krok příkazu OŘEŽ, který lze vrátit zpět.
+
+### `Zpět` (`Z`) [#undo]
+
+Vypíše se, jakmile výzva dostala odpověď – výběr, čáru, okno: vrátí poslední oříznutí, a když už není co vrátit, oznámí to.
+
+## Co zatím neumí [#missing]
+
+Projekce: možnost Projekce AutoCADu (Nic, USS, Pohled) se nenabízí a vše se počítá v průmětu do roviny XY systému USS, což odpovídá výchozí hodnotě AutoCADu, USS. Čáru možnosti `Napříč` zatím nelze táhnout kurzorem, jen určovat bod po bodu. Režim oříznutí a volba v možnosti `Hrana` platí do konce relace, zatímco AutoCAD je zachová z jedné relace do další. Objekt skloněný vůči USS, kromě spline, neřeže ani se neořízne.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz OŘEŽ anglicky?
+
+TRIM. V české verzi AutoCADu zadejte `OŘEŽ` nebo zkratku `OR` a stiskněte Enter nebo mezerník; zkratka `TR` z anglické verze v české nefunguje. Anglický název s podtržítkem, `_TRIM`, funguje v AutoCADu v každém jazyce.
+
+### Proč OŘEŽ vymaže celou úsečku?
+
+Protože příkaz pracuje v rychlém režimu, výchozím v AutoCADu od verze 2021: výběr objektu, který žádná hrana neprotíná, ho vymaže. Zvolte `Režim` a pak `Standardní`, aby příkaz OŘEŽ takový objekt ponechal a oznámil to.
+
+### Jak v AutoCADu oříznout více úseček najednou?
+
+Klikněte do prázdného místa a určete druhý bod: každý objekt, který tato čára protne, se ořízne v jednom kroku. Nebo zvolte `Křížení` a nakreslete okno přes části, které chcete odstranit.
+
+### Jak prodloužit úsečku příkazem OŘEŽ?
+
+Podržte Shift a vyberte úsečku u konce, který chcete prodloužit: prodlouží se k nejbližší hraně, jako u příkazu [`PRODLUŽ`](/docs/commands/extend), a další výběr bez Shiftu zase ořezává.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+## Související příkazy [#related]
+
+- [Příkaz PRODLUŽ (EXTEND) v AutoCADu](/docs/commands/extend)
+- [Ekvidistanta v AutoCADu: příkaz EKVID (OFFSET)](/docs/commands/offset)
+- [Příkaz ZAOBLI (FILLET) v AutoCADu](/docs/commands/fillet)
+- [Příkaz PŘERUŠ (BREAK) v AutoCADu](/docs/commands/break)

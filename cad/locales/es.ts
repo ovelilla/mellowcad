@@ -2227,7 +2227,11 @@ export const es: EngineLocale = {
         "Centre": "cEntro"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Polilínea"
+        "convert to Polyline": "Polilínea",
+        "Edit vertex": "Editar",
+        "Reverse": "Invertir",
+        "eXit": "Salir",
+        "Open": "aBrir"
       },
       "peditOption": {
         "eXit": "SAlir"

@@ -33,7 +33,7 @@ export function scriptFontStack(
 
 /**
  * The page's font with a face of a few letters before it: that face's
- * `unicode-range` holds only them, so a Polish letter finds it first and
+ * `unicode-range` holds only them, so a Polish or Czech letter finds it first and
  * Inter's whole Latin Extended file (85 KB) is never fetched, while every
  * other character falls through to Inter. No fallback of its own: Inter's
  * follows.

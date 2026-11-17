@@ -1618,6 +1618,10 @@ declare const source: {
       }
       "splineditOptionClosed": {
         "convert to Polyline": string
+        "Edit vertex": string
+        "Reverse": string
+        "eXit": string
+        "Open": string
       }
       "peditOption": {
         "eXit": string

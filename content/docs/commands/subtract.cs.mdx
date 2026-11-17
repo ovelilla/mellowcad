@@ -1,0 +1,64 @@
+---
+title: "Příkaz ROZDÍL (SUBTRACT) v AutoCADu"
+description: "Jak funguje příkaz ROZDÍL (SUBTRACT, zkratka RZ) v AutoCADu: tělesa nebo oblasti, které zůstanou, Enter, pak ty, které se odečtou, i s otvory."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ROZDÍL anglicky?","answer":"SUBTRACT. V české verzi AutoCADu zadejte ROZDÍL nebo zkratku RZ a stiskněte Enter nebo mezerník; zkratka SU z anglické verze v české nefunguje. _SUBTRACT funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu odečíst jedno těleso od druhého?","answer":"Nakreslete těleso, které se má odečíst, tam, kde se překrývá s druhým: válec skrz kvádr, aby vznikl otvor. Spusťte ROZDÍL, vyberte kvádr a stiskněte Enter, pak vyberte válec a stiskněte Enter: v kvádru zůstane otvor a válec zmizí. Na pořadí záleží, protože zůstane to, co vyberete jako první."},{"question":"Proč ROZDÍL nefunguje?","answer":"Často jde o pořadí: co má zůstat, patří do první sady, co se má odečíst, do druhé. Když první sada neobsahuje těleso ani oblast, nebo druhá neobsahuje žádné, které už není v první, příkaz vypíše „Nevybráno žádné těleso, povrch ani oblast.“ a skončí; když od první sady nelze odečíst nic z druhé, například těleso od oblasti nebo oblast v jiné rovině, vypíše „Musí být vybrána nejméně dvě tělesa, povrchy nebo koplanární oblasti.“ a nic nezmění. Z úseček a křivek je třeba nejprve vytvořit oblasti. Když oznámí, že jedna booleovská operace selhala, tělesa se protínají způsobem, který MellowCAD zatím neumí spočítat, a zůstanou beze změny."},{"question":"Jak v AutoCADu odečíst plochu?","answer":"Chcete-li vyříznout jeden 2D tvar z druhého, vytvořte z obou oblasti příkazem OBLAST a vnitřní odečtěte od vnějšího příkazem ROZDÍL: čtverec, od kterého se odečte kružnice, se stane jednou oblastí s otvorem. Chcete-li změřit plochu beze změny výkresu, PLOCHA odečítá plochy od průběžného součtu možností oDečíst."},{"question":"Lze odečíst bez vymazání objektu?","answer":"ROZDÍL vymaže to, co odečte, stejně jako v AutoCADu. Chcete-li objekt zachovat, nejprve ho zkopírujte na totéž místo: KOPIE, objekt a Enter, základní bod 0,0, pak znovu Enter, aby se zkopíroval o 0,0, sám na sebe. ROZDÍL pak spotřebuje jeden z nich."}]
+---
+
+Příkaz ROZDÍL (SUBTRACT) odečte 3D tělesa od jiných těles, nebo oblasti od oblastí ve stejné rovině: válec odečtený od kvádru v něm zanechá průchozí otvor, kružnice odečtená od čtverce čtverec s otvorem. Ptá se dvakrát. Nejprve vypíše `Vyberte tělesa, povrchy a oblasti pro odečtení od..` a ptá se na objekty, které mají zůstat, dokud nestisknete Enter; pak `Vyberte tělesa, povrchy a oblasti pro odečtení..` a ptá se na objekty, které se odečtou, dokud znovu nestisknete Enter. Jako v AutoCADu 2027 se sada vybraná předem zahodí a příkaz se zeptá znovu.
+
+Tělesa první sady se stanou jedním tělesem a každé těleso druhé sady se od něj odečte a vymaže, ať se s ním překrývalo, nebo ne. Oblasti se zpracují rovinu po rovině: oblasti první sady v dané rovině se sjednotí, oblasti druhé sady v této rovině se od nich odečtou a vymažou a oblast v rovině, kde první sada žádnou nemá, zůstane beze změny. Výsledné těleso je složené těleso: už to není kvádr ani válec a nemá historii. Když nic nezbude, příkaz vypíše `Vytvořeno prázdné těleso – vymazáno` nebo `Vytvořena prázdná oblast – vymazána` a objekty vymaže. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCADu je zatím částečné: tělesa existují, povrchy a sítě ne.
+
+- **Příkaz:** `ROZDÍL`
+- **Anglicky:** `SUBTRACT`, zadávaný jako `_SUBTRACT` v libovolném jazyce
+- **Aliasy:** `RZ`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `RZ` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="subtract" caption="Válec odečtený od kvádru příkazem ROZDÍL, průchozí otvor: nejprve vybraný kvádr, pak válec." />
+
+## Co zatím neumí [#missing]
+
+Povrchy, které zde nejsou. Zakřivené plochy, které se protínají podél křivky, pro kterou MellowCAD zatím nemá přesný tvar: válce, kužely, koule nebo anuloidy, jejichž osy ani nesplývají, ani nejsou rovnoběžné (dva válce se také mohou křížit); kužel s čímkoli jiným než rovinou nebo tělesem na jeho ose; anuloid nebo rotační těleso s rovinou, která není kolmá k ose ani jí neprochází, nebo s tělesem mimo osu; vysunuté těleso s čímkoli jiným než rovinou nebo plochou vysunutou stejným směrem. Ty se odmítnou a tělesa zůstanou beze změny; stejně tak řez, který se hrany dotkne tečně, plochy ležící téměř, ale ne úplně, na jednom povrchu a velmi tenký pásek mezi řezem a hranou. Předchozí po příkazu ROZDÍL oznámí, že neexistuje předchozí výběrová sada, zatímco AutoCAD nenajde žádný z vymazaných objektů. Historie těles se neuchovává (SOLIDHIST, SHOWHISTORY).
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su--fr-soustraction--su--it-sottrai--sot--de-differenz--di--ru-вычитание--выч--pl-różnica--roz--cs-rozdíl--rz)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ROZDÍL anglicky?
+
+SUBTRACT. V české verzi AutoCADu zadejte `ROZDÍL` nebo zkratku `RZ` a stiskněte Enter nebo mezerník; zkratka `SU` z anglické verze v české nefunguje. `_SUBTRACT` funguje v AutoCADu v každém jazyce.
+
+### Jak v AutoCADu odečíst jedno těleso od druhého?
+
+Nakreslete těleso, které se má odečíst, tam, kde se překrývá s druhým: válec skrz kvádr, aby vznikl otvor. Spusťte ROZDÍL, vyberte kvádr a stiskněte Enter, pak vyberte válec a stiskněte Enter: v kvádru zůstane otvor a válec zmizí. Na pořadí záleží, protože zůstane to, co vyberete jako první.
+
+### Proč ROZDÍL nefunguje?
+
+Často jde o pořadí: co má zůstat, patří do první sady, co se má odečíst, do druhé. Když první sada neobsahuje těleso ani oblast, nebo druhá neobsahuje žádné, které už není v první, příkaz vypíše `Nevybráno žádné těleso, povrch ani oblast.` a skončí; když od první sady nelze odečíst nic z druhé, například těleso od oblasti nebo oblast v jiné rovině, vypíše `Musí být vybrána nejméně dvě tělesa, povrchy nebo koplanární oblasti.` a nic nezmění. Z úseček a křivek je třeba nejprve vytvořit oblasti. Když oznámí, že jedna booleovská operace selhala, tělesa se protínají způsobem, který MellowCAD zatím neumí spočítat, a zůstanou beze změny.
+
+### Jak v AutoCADu odečíst plochu?
+
+Chcete-li vyříznout jeden 2D tvar z druhého, vytvořte z obou oblasti příkazem [`OBLAST`](/docs/commands/region) a vnitřní odečtěte od vnějšího příkazem ROZDÍL: čtverec, od kterého se odečte kružnice, se stane jednou oblastí s otvorem. Chcete-li změřit plochu beze změny výkresu, [`PLOCHA`](/docs/commands/area) odečítá plochy od průběžného součtu možností `oDečíst`.
+
+### Lze odečíst bez vymazání objektu?
+
+ROZDÍL vymaže to, co odečte, stejně jako v AutoCADu. Chcete-li objekt zachovat, nejprve ho zkopírujte na totéž místo: [`KOPIE`](/docs/commands/copy), objekt a Enter, základní bod 0,0, pak znovu Enter, aby se zkopíroval o 0,0, sám na sebe. ROZDÍL pak spotřebuje jeden z nich.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate)
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Související příkazy [#related]
+
+- [Příkaz SJEDNOCENÍ (UNION) v AutoCADu](/docs/commands/union)
+- [Příkaz PRŮNIK (INTERSECT) v AutoCADu](/docs/commands/intersect)
+- [Příkaz OBLAST (REGION) v AutoCADu](/docs/commands/region)
+- [Příkaz VÁLEC (CYLINDER) v AutoCADu](/docs/commands/cylinder)
+- [Příkaz ODŘÍZNI (SLICE) v AutoCADu](/docs/commands/slice)

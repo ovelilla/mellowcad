@@ -1,0 +1,60 @@
+---
+title: "Příkaz ATRDISP (ATTDISP) v AutoCADu: zobrazení atributů"
+metaTitle: "Zobrazení atributů v AutoCADu: ATRDISP"
+description: "Jak zobrazit nebo skrýt atributy bloků v AutoCADu příkazem ATRDISP (ATTDISP): Normální, Ano i neviditelné, Ne žádné. Ukládá se do výkresu. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak zobrazit neviditelné atributy v AutoCADu?","answer":"Zadejte ATRDISP a zvolte Ano: zobrazí se všechny atributy, i neviditelné. nOrmální je znovu skryje."},{"question":"Proč se atributy bloku v AutoCADu nezobrazují?","answer":"ATRDISP může být nastaven na Ne, což skryje všechny atributy, nebo na nOrmální, když jsou atributy definovány jako neviditelné. Zvolte Ano, abyste viděli všechny. Reference, jejíž blok nemá atributy, nezobrazí žádné, ať je nastavení jakékoli."},{"question":"Jak skrýt hodnoty atributů v AutoCADu?","answer":"Definujte je jako neviditelné: režim Neviditelný příkazu ATRDEF, ještě než vytvoříte blok. ATRDISP Ne skryje najednou všechny atributy v celém výkresu."}]
+---
+
+Příkaz ATRDISP (ATTDISP) určuje, které atributy reference bloků ve výkresu zobrazují. Zeptá se na nastavení a nabídne aktuální, v novém výkresu Normální; každé jiné slovo vypíše, že klíčové slovo je neplatné, a zeptá se znovu, a Enter aktuální nastavení ponechá. Změna regeneruje celý výkres, `Regeneruji model.`, jak to píše AutoCAD 2027, ukládá se do výkresu jako ATTMODE a je to krok, který `Z` vrátí zpět. Zadaný s apostrofem uvnitř příkazu funguje i tam.
+
+Mění jen to, co je vidět: neviditelný atribut si ponechá svou hodnotu a skrytý lze dál upravovat příkazem [`ATREDIT`](/docs/commands/attedit) nebo [`EATREDIT`](/docs/commands/eattedit).
+
+- **Příkaz:** `ATRDISP`
+- **Anglicky:** `ATTDISP`, zadávaný jako `_ATTDISP` v libovolném jazyce
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ATRDISP` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="attdisp" caption="Dva stoly, jejichž katalogová čísla jsou neviditelné atributy: ATRDISP Ano je ukáže pod každým stolem, vedle viditelných čísel." />
+
+## Možnosti [#options]
+
+### `nOrmální` (`O`) [#normal]
+
+Zobrazí každý atribut tak, jak byl definován: viditelné, ale ne ty, které byly definovány s režimem `Neviditelný` příkazu [`ATRDEF`](/docs/commands/attdef).
+
+### `Ano` (`A`) [#on]
+
+Zobrazí všechny atributy, i neviditelné.
+
+### `Ne` (`N`) [#off]
+
+Skryje všechny atributy, i viditelné.
+
+## Otázky [#questions]
+
+### Jak zobrazit neviditelné atributy v AutoCADu?
+
+Zadejte `ATRDISP` a zvolte `Ano`: zobrazí se všechny atributy, i neviditelné. `nOrmální` je znovu skryje.
+
+### Proč se atributy bloku v AutoCADu nezobrazují?
+
+`ATRDISP` může být nastaven na `Ne`, což skryje všechny atributy, nebo na `nOrmální`, když jsou atributy definovány jako neviditelné. Zvolte `Ano`, abyste viděli všechny. Reference, jejíž blok nemá atributy, nezobrazí žádné, ať je nastavení jakékoli.
+
+### Jak skrýt hodnoty atributů v AutoCADu?
+
+Definujte je jako neviditelné: režim `Neviditelný` příkazu [`ATRDEF`](/docs/commands/attdef), ještě než vytvoříte blok. ATRDISP `Ne` skryje najednou všechny atributy v celém výkresu.
+
+## Související příkazy [#related]
+
+- [Atributy bloku v AutoCADu: příkaz ATRDEF (ATTDEF)](/docs/commands/attdef)
+- [Úprava atributů v AutoCADu: příkaz ATREDIT (ATTEDIT)](/docs/commands/attedit)
+- [Příkaz EATREDIT (EATTEDIT) v AutoCADu](/docs/commands/eattedit)
+- [Bloky v AutoCADu: příkaz BLOK (BLOCK)](/docs/commands/block)
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt--de-attzeig--ru-атэкр--pl-atrwid--cs-atrdisp)

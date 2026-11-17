@@ -1,0 +1,69 @@
+---
+title: "Řetězové kótování v AutoCADu: příkaz KÓTYŘET (DIMCONTINUE)"
+metaTitle: "Řetězové kótování v AutoCADu: KÓTYŘET"
+description: "Jak v AutoCADu kótovat řetězově příkazem KÓTYŘET (DIMCONTINUE, zkratka KRE): od poslední kóty, další počátky, Vybrat a Zpět. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz pro řetězové kótování anglicky a jakou má zkratku?","answer":"Anglicky DIMCONTINUE, v české verzi AutoCADu KÓTYŘET: zadejte KRE nebo KOTYRE a stiskněte Enter nebo mezerník. Funguje i celý název a _DIMCONTINUE v AutoCADu v každém jazyce; anglická zkratka DCO v české verzi nefunguje."},{"question":"Jaký je rozdíl mezi KÓTYŘET a KÓTYZÁKL?","answer":"Příkaz KÓTYŘET řadí kóty za sebou na jednu čáru, každou od místa, kde předchozí skončila. Příkaz KÓTYZÁKL je všechny měří od téže vynášecí čáry, každou na čáře položené dál."},{"question":"Jak navázat na kótu, která není poslední?","answer":"Stiskněte Enter u první výzvy nebo zvolte Vybrat a vyberte kótu blízko vynášecí čáry, od které má řetěz pokračovat: řetěz poroste od ní."},{"question":"Proč se příkaz KÓTYŘET ptá na výběr kóty?","answer":"Nemá na co navázat: od otevření výkresu nevznikla žádná lineární ani šikmá kóta, jako v AutoCADu po otevření výkresu, nebo je poslední vytvořená kóta úhlová. Vyberte kótu, na kterou chcete navázat."}]
+---
+
+Příkaz KÓTYŘET (DIMCONTINUE) kreslí řetěz kót za sebou: každá začíná na druhé vynášecí čáře předchozí a měří k dalšímu zadanému bodu, na téže kótovací čáře. Navazuje na poslední lineární nebo šikmou kótu vytvořenou od otevření výkresu, a proto obvykle následuje po příkazu [`KÓTYPŘÍM`](/docs/commands/dimlinear) nebo [`KÓTYSROVNEJ`](/docs/commands/dimaligned); když žádná taková není, zeptá se, na kterou navázat. Příkazový řádek vypíše každou naměřenou hodnotu, jakmile kóta vznikne. Enter u výzvy k zadání počátku zvolí `Vybrat` a Enter u výzvy k výběru kóty příkaz ukončí, stejně jako Esc.
+
+Jako v AutoCADu měří každá nová kóta ve směru základní kóty a přebírá její kótovací styl a hladinu, s aktuální barvou, typem čáry a tloušťkou čáry.
+
+- **Příkaz:** `KÓTYŘET`
+- **Anglicky:** `DIMCONTINUE`, zadávaný jako `_DIMCONTINUE` v libovolném jazyce
+- **Aliasy:** `KRE`, `KOTYRE`
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KRE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dimcontinue" caption="Stupňovitý profil okótovaný 30, pak řetězem 40 a 30 na téže čáře: dva počátky, pak dvakrát Enter." />
+
+## Možnosti [#options]
+
+### `Vybrat` (`V`) [#select]
+
+Zeptá se na kótu, na kterou se má navázat: vyberte lineární nebo šikmou kótu blízko vynášecí čáry, od které má řetěz pokračovat. Kótu vybere i bod zadaný u této výzvy. Kóta poloměru nebo průměru se odmítne zprávou `Je požadována lineární, staniční nebo úhlová asociativní kóta.` a otázka se zopakuje.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední kótu řetězu a pokračuje od předchozí, tolikrát, kolik kót je. Když už žádná nezbývá, odpoví `Příkaz byl kompletně vrácen zpět.` a výzva zůstane.
+
+## Co zatím neumí [#missing]
+
+Kóta není asociativní: řetěz nesleduje objekty, které měří. Na úhlovou kótu nelze navázat: AutoCAD naváže na takovou kótu vytvořenou jako poslední i vybranou; zde se příkaz při kótě vytvořené jako poslední zeptá na kótu a vybranou odmítne stejně jako radiální. Staniční kóty zatím neexistují.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont--pt-br-cotaserie--cse--dimcont--fr-cotcont--cotn--it-dimcontinua--dco--de-bemweiter--bmwt--ru-рзмцепь--рцп--pl-wymszereg--ws--wymsz--cs-kótyřet--kre--kotyre)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz pro řetězové kótování anglicky a jakou má zkratku?
+
+Anglicky DIMCONTINUE, v české verzi AutoCADu KÓTYŘET: zadejte `KRE` nebo `KOTYRE` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMCONTINUE` v AutoCADu v každém jazyce; anglická zkratka `DCO` v české verzi nefunguje.
+
+### Jaký je rozdíl mezi KÓTYŘET a KÓTYZÁKL?
+
+Příkaz KÓTYŘET řadí kóty za sebou na jednu čáru, každou od místa, kde předchozí skončila. Příkaz [`KÓTYZÁKL`](/docs/commands/dimbaseline) je všechny měří od téže vynášecí čáry, každou na čáře položené dál.
+
+### Jak navázat na kótu, která není poslední?
+
+Stiskněte Enter u první výzvy nebo zvolte `Vybrat` a vyberte kótu blízko vynášecí čáry, od které má řetěz pokračovat: řetěz poroste od ní.
+
+### Proč se příkaz KÓTYŘET ptá na výběr kóty?
+
+Nemá na co navázat: od otevření výkresu nevznikla žádná lineární ani šikmá kóta, jako v AutoCADu po otevření výkresu, nebo je poslední vytvořená kóta úhlová. Vyberte kótu, na kterou chcete navázat.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft)
+
+## Související příkazy [#related]
+
+- [Kótování od základny v AutoCADu: příkaz KÓTYZÁKL (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)](/docs/commands/dimlinear)
+- [Příkaz KÓTMEZERA (DIMSPACE) v AutoCADu](/docs/commands/dimspace)
+- [Kótování v AutoCADu: šikmá kóta, příkaz KÓTYSROVNEJ (DIMALIGNED)](/docs/commands/dimaligned)

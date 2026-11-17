@@ -1,0 +1,85 @@
+---
+title: "Příkaz VYTÁHNI (EXTRUDE) v AutoCADu"
+description: "Jak v AutoCADu vytáhnout 2D profil do 3D tělesa příkazem VYTÁHNI (EXTRUDE, zkratka VYT): výška, směr, úhel zešikmení. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?","answer":"EXTRUDE. V české verzi AutoCADu je jeho zkratka VYT: zadejte ji a stiskněte Enter nebo mezerník. Anglické EXT spouští v české verzi jiný příkaz; _EXTRUDE funguje v AutoCADu v každém jazyce."},{"question":"Jak z 2D výkresu udělat 3D?","answer":"Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled kostkou ViewCube nebo příkazem -POHLED a možností JViso, abyste ho viděli ve 3D."},{"question":"Proč příkaz VYTÁHNI nevytvoří těleso?","answer":"Profil je otevřený nebo protíná sám sebe. Úsečka, oblouk nebo otevřená křivka vytvoří v AutoCADu povrch a MellowCAD povrchy zatím nemá: příkaz VYTÁHNI vypíše „Nelze táhnout nebo vysunout objekt tohoto typu.“ a odebere je z výběru; profil, který protíná sám sebe, dostane „Nelze táhnout nebo vysunout křivku, která protíná sebe samu.“ a také se odebere. Spojte kusy příkazem SPOJ, vytvořte z nich oblast příkazem OBLAST nebo do nich klikněte příkazem TLAČTÁHNI."},{"question":"Jak vytáhnout tvar s otvorem?","answer":"Udělejte z něj jednu oblast: příkaz OBLAST na obrys a otvor, pak příkazem ROZDÍL odečtěte oblast otvoru od oblasti obrysu. Vytáhněte tuto oblast a otvor projde tělesem. Nebo spusťte příkaz TLAČTÁHNI a klikněte mezi obrys a otvor."},{"question":"Jak vytáhnout po trajektorii?","answer":"Zatím nelze: Trajektorie je v seznamu, ale odmítne se, a příkaz TAŽENÍ zatím není. Směr vytáhne podél přímky mezi dvěma body."}]
+---
+
+Příkaz VYTÁHNI (EXTRUDE) mění uzavřené 2D profily v 3D tělesa, každý vytažený kolmo ze své roviny do zadané výšky. Vyberte profily – kružnice, elipsy, uzavřené křivky nebo spline, oblasti – a stiskněte Enter, pak zadejte výšku nebo ji ukažte bodem; poslední výška je výchozí při dalším spuštění. Každý profil se stane samostatným tělesem v aktuální hladině a vymaže se, jak ve výchozím nastavení určuje DELOBJ. Celý příkaz je jeden krok, který lze vrátit zpět.
+
+3D v MellowCADu jsou jen tělesa, a zatím částečně: otevřený profil, ze kterého AutoCAD vytvoří povrch, dostane `Nelze táhnout nebo vysunout objekt tohoto typu.` a odebere se z výběru.
+
+- **Příkaz:** `VYTÁHNI`
+- **Anglicky:** `EXTRUDE`, zadávaný jako `_EXTRUDE` v libovolném jazyce
+- **Aliasy:** `VYT`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `VYT` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="extrude" caption="Uzavřená křivka ve tvaru písmene L vytažená o 20 do tělesa, pak viděná od jihovýchodu ve vizuálním stylu Skrytý." />
+
+## Možnosti [#options]
+
+### `Režim` (`R`) [#mode]
+
+Zeptá se na `Těleso` nebo `Povrch`. `Těleso` je výchozí a jediný, který existuje: bez povrchových objektů se `Povrch` odmítne.
+
+### `Směr` (`S`) [#direction]
+
+Místo výšky určí směr a délku dva body: profily se vytáhnou podél této přímky, šikmo, pokud je šikmá. Směr ležící v rovině profilu dostane `Směr vysunutí je rovnoběžný s rovinou křivky dráhy tažení.` a příkaz skončí.
+
+### `Trajektorie` (`T`) [#path]
+
+V seznamu je, jako v AutoCADu, ale nefunguje: její volba se odmítne a otázka na výšku se zopakuje.
+
+### `úhel Zešikmení` (`Z`) [#taper]
+
+Zeptá se na úhel mezi −90 a 90 stupni a pak znovu na výšku: kladný úhel těleso s výškou zužuje, záporný ho rozšiřuje. Kružnice, která se uzavře dřív, než dosáhne výšky, skončí v bodě, jako kužel; profil, který zešikmení nesnese, nic nevytvoří.
+
+### `Výraz` (`V`) [#expression]
+
+Výška jako výraz: `2*3` je 6. Zatím jen aritmetika.
+
+## Co zatím neumí [#missing]
+
+Trajektorie, tažení po trajektorii. Režim povrchu a otevřené profily, ze kterých AutoCAD vytváří povrchy: povrchové objekty zatím nejsou. Plochy těles a oblasti, které kliknutí najde uvnitř objektů, jež přijímá příkaz [`TLAČTÁHNI`](/docs/commands/presspull). Zešikmení na elipse, spline nebo oblouku, který na další segment navazuje v rohu. Parametry a funkce možnosti Výraz. Příkaz [`ROZLOŽ`](/docs/commands/explode) vytaženého tělesa se zakřivenými boky, které AutoCAD rozloží na povrchy a oblasti. Jeho uzly a výška a úhel zešikmení upravované v paletě Vlastnosti.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu--de-extrusion--ex--ru-выдавить--выд--pl-wyciągnij--wyc--cs-vytáhni--vyt)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?
+
+EXTRUDE. V české verzi AutoCADu je jeho zkratka `VYT`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `EXT` spouští v české verzi jiný příkaz; `_EXTRUDE` funguje v AutoCADu v každém jazyce.
+
+### Jak z 2D výkresu udělat 3D?
+
+Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled kostkou ViewCube nebo příkazem `-POHLED` a možností `JViso`, abyste ho viděli ve 3D.
+
+### Proč příkaz VYTÁHNI nevytvoří těleso?
+
+Profil je otevřený nebo protíná sám sebe. Úsečka, oblouk nebo otevřená křivka vytvoří v AutoCADu povrch a MellowCAD povrchy zatím nemá: příkaz VYTÁHNI vypíše `Nelze táhnout nebo vysunout objekt tohoto typu.` a odebere je z výběru; profil, který protíná sám sebe, dostane `Nelze táhnout nebo vysunout křivku, která protíná sebe samu.` a také se odebere. Spojte kusy příkazem [`SPOJ`](/docs/commands/join), vytvořte z nich oblast příkazem [`OBLAST`](/docs/commands/region) nebo do nich klikněte příkazem [`TLAČTÁHNI`](/docs/commands/presspull).
+
+### Jak vytáhnout tvar s otvorem?
+
+Udělejte z něj jednu oblast: příkaz [`OBLAST`](/docs/commands/region) na obrys a otvor, pak příkazem [`ROZDÍL`](/docs/commands/subtract) odečtěte oblast otvoru od oblasti obrysu. Vytáhněte tuto oblast a otvor projde tělesem. Nebo spusťte příkaz [`TLAČTÁHNI`](/docs/commands/presspull) a klikněte mezi obrys a otvor.
+
+### Jak vytáhnout po trajektorii?
+
+Zatím nelze: `Trajektorie` je v seznamu, ale odmítne se, a příkaz TAŽENÍ zatím není. `Směr` vytáhne podél přímky mezi dvěma body.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate)
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Související příkazy [#related]
+
+- [Příkaz TLAČTÁHNI (PRESSPULL) v AutoCADu](/docs/commands/presspull)
+- [Příkaz OROTUJ (REVOLVE) v AutoCADu](/docs/commands/revolve)
+- [Příkaz OBLAST (REGION) v AutoCADu](/docs/commands/region)
+- [Příkaz ROZDÍL (SUBTRACT) v AutoCADu](/docs/commands/subtract)

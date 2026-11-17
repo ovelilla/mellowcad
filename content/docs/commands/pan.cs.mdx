@@ -1,0 +1,53 @@
+---
+title: "Posun pohledu v AutoCADu: příkaz PP (PAN)"
+description: "Jak posouvat pohled v AutoCADu příkazem PP (PAN, zkratka P): kurzor ve tvaru ruky nebo kolečko myši, -PP o dva body a PP uvnitř jiného příkazu. Vyzkoušejte."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz PP anglicky?","answer":"PAN. V českém AutoCADu je jeho zkratka P, stejná jako v anglickém: zadejte ji a stiskněte Enter nebo mezerník. Nebo žádný příkaz: podržte stisknuté kolečko myši a táhněte. Celý název PP funguje také a _PAN v AutoCADu v jakémkoli jazyce."},{"question":"Jak posouvat pohled myší v AutoCADu?","answer":"Podržte stisknuté kolečko myši a táhněte: pohled sleduje kurzor. Otáčením kolečka se pohled přibližuje a oddaluje kolem kurzoru. Na touchpadu spusťte příkaz PP a táhněte levým tlačítkem."},{"question":"Jak posunout pohled během kreslení?","answer":"Táhněte se stisknutým kolečkem, nebo na výzvě příkazu zadejte 'P: příkaz počká, než pohled posunete, a pak se znovu zeptá tam, kde byl."},{"question":"Jak posunout pohled o přesnou vzdálenost?","answer":"Použijte -PP: zadejte posunutí, třeba 100,0, a u druhého bodu stiskněte Enter. Pohled se posune o 100 jednotek ve směru X."}]
+---
+
+Příkaz PP (PAN) posouvá pohled; nic ve výkresu se nepohne. Začne zprávou `Ukončete pomocí ESC nebo ENTER nebo pravým tlačítkem vyvolejte místní nabídku.` a na nic dalšího se neptá: kurzor se změní v ruku a tažení levým tlačítkem posouvá pohled s ním, kolikrát chcete, dokud příkaz neukončí Enter nebo Esc. Bez příkazu PP posouvá pohled kdykoli tažení se stisknutým kolečkem myši, i uprostřed příkazu. Každé PP je krok vrácení, spojený s okolními ZOOM a PP, takže `Z` vrátí pohled. Když příkaz zadáte s apostrofem, `'PP` nebo `'P`, funguje uvnitř jiného příkazu, který po něm pokračuje.
+
+`-PP` posouvá místo toho o dva body: základní bod a druhý bod, pohled se posune o vzdálenost mezi nimi; nebo posunutí zadané na první výzvě, třeba `50,0`, a Enter na druhé. Je také transparentní a je samostatným krokem vrácení.
+
+- **Příkaz:** `PP`
+- **Anglicky:** `PAN`, zadávaný jako `_PAN` v libovolném jazyce
+- **Aliasy:** `P`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `P` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="pan" caption="PP tažený doprava a dolů, pak Enter: deska se v pohledu posune, její souřadnice se nezmění." />
+
+## Co zatím neumí [#missing]
+
+Místní nabídka, kterou AutoCAD ukáže po kliknutí pravým tlačítkem během posunu, s položkami pro ukončení, posun pohledu, zoom, 3D orbit, zoom oknem, původní zoom a zoom na rozsah.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e--pt-br-pan--p---pan---p--fr-pan--p---pan---p--it-pan--p---pan---p--de-pan--p---pan---p--ru-пан---пан--pl-nfragm--nf---nfragm---nf--cs-pp--p---pp---p)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz PP anglicky?
+
+PAN. V českém AutoCADu je jeho zkratka `P`, stejná jako v anglickém: zadejte ji a stiskněte Enter nebo mezerník. Nebo žádný příkaz: podržte stisknuté kolečko myši a táhněte. Celý název `PP` funguje také a `_PAN` v AutoCADu v jakémkoli jazyce.
+
+### Jak posouvat pohled myší v AutoCADu?
+
+Podržte stisknuté kolečko myši a táhněte: pohled sleduje kurzor. Otáčením kolečka se pohled přibližuje a oddaluje kolem kurzoru. Na touchpadu spusťte příkaz PP a táhněte levým tlačítkem.
+
+### Jak posunout pohled během kreslení?
+
+Táhněte se stisknutým kolečkem, nebo na výzvě příkazu zadejte `'P`: příkaz počká, než pohled posunete, a pak se znovu zeptá tam, kde byl.
+
+### Jak posunout pohled o přesnou vzdálenost?
+
+Použijte `-PP`: zadejte posunutí, třeba `100,0`, a u druhého bodu stiskněte Enter. Pohled se posune o 100 jednotek ve směru X.
+
+## Související příkazy [#related]
+
+- [Příkaz ZOOM v AutoCADu](/docs/commands/zoom)
+- [Příkaz POHLED (VIEW) v AutoCADu](/docs/commands/view)
+- [3D orbit v AutoCADu: příkaz 3DORBIT](/docs/commands/3dorbit)

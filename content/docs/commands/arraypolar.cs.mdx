@@ -1,0 +1,83 @@
+---
+title: "Polární pole v AutoCADu: příkaz POLÁRPOLE (ARRAYPOLAR)"
+metaTitle: "Polární (kruhové) pole v AutoCADu: POLÁRPOLE"
+description: "Jak vytvořit polární (kruhové) pole v AutoCADu příkazem POLÁRPOLE (ARRAYPOLAR): střed, počet položek, úhel mezi nimi nebo vyplnění, otočení položek."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak vytvořit polární pole v AutoCADu?","answer":"Zadejte POLÁRPOLE, vyberte objekty, stiskněte Enter a určete středový bod; nebo zadejte PO, tedy POLE, a po objektech zvolte Polární. Potom zvolte Položky, nastavte jejich počet a stisknutím Enter pole vytvořte."},{"question":"Jak rozmístit objekty po části kružnice?","answer":"Zvolte Vyplnění a zadejte úhel: 180 rozloží položky po polovině kružnice proti směru hodinových ručiček, -180 ve směru hodinových ručiček. Počet položek se zachová, první a poslední stojí na obou koncích úhlu."},{"question":"Jak zabránit otáčení položek pole?","answer":"Zvolte oTočit a odpovězte Ne: každá položka se posune kolem středu, aniž by se otočila."},{"question":"Jak změnit poloměr polárního pole?","answer":"Vyberte pole a přetáhněte jeho čtvercový uzel v základním bodě ke středu nebo od něj: vzdálenost od středu je nový poloměr. Nebo znovu zadejte Poloměr v paletě Vlastnosti."}]
+---
+
+Příkaz POLÁRPOLE (ARRAYPOLAR) kopíruje výběr kolem středového bodu jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, zeptá se na středový bod a pole hned ukáže: 6 položek po celém obvodu, každá natočená podle toho, jak obíhá střed. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu. Vybrané objekty se stanou jeho první položkou.
+
+- **Příkaz:** `POLÁRPOLE`
+- **Anglicky:** `ARRAYPOLAR`, zadávaný jako `_ARRAYPOLAR` v libovolném jazyce
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `POLÁRPOLE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="arraypolar" caption="Otvor na přírubě rozmístěný kolem středu příruby: 8 položek po celém obvodu." />
+
+## Možnosti [#options]
+
+### `ASociativní` (`AS`) [#associative]
+
+`Ano`, výchozí, vytvoří jeden objekt pole, který později mění jeho uzly a paleta Vlastnosti; `Ne` vytvoří samostatné kopie vedle vybraných objektů. Odpověď platí po celou relaci, i pro příkazy OBDPOLE a KŘIVPOLE.
+
+### `Položky` (`P`) [#items]
+
+Počet položek, od 1 do 32767; úhel, který vyplňují, se zachová.
+
+### `úHel mezi` (`H`) [#angle-between]
+
+Úhel od jedné položky k další. Úhel vyplnění se stane odpovídajícím počtem těchto kroků, se zachovaným směrem, a celým obvodem, jakmile dosáhne 360°.
+
+### `úhel Vyplnění` (`V`) [#fill-angle]
+
+Úhel, který položky vyplňují, kladný proti směru hodinových ručiček a záporný ve směru hodinových ručiček; počet položek se zachová. Po celém obvodu jsou položky od sebe vzdáleny o plný úhel dělený jejich počtem; na menším úhlu padne poslední položka na konec úhlu.
+
+### `oTočit položky` (`T`) [#rotate-items]
+
+`Ano`, výchozí, natočí každou položku podle toho, jak obíhá střed; `Ne` ji jen posune, takže každá položka stojí stejně jako první.
+
+### `kOnec` (`O`) [#exit]
+
+Vytvoří pole a ukončí příkaz, stejně jako Enter.
+
+## Co zatím neumí [#missing]
+
+Základní bod; Osa rotace, pro pole kolem osy v prostoru; Řádky a Úrovně, pro soustředné prstence položek a kopie naskládané podél Z; Výraz, který váže hodnotu na parametry výkresu. Nabídky uzlů pole (protažení poloměru, počet položek, úhel vyplnění…) a Ctrl k přepínání mezi nimi.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare--de-reihekreis--ru-массивкруг--pl-szykbiegun--cs-polárpole)
+
+## Otázky [#questions]
+
+### Jak vytvořit polární pole v AutoCADu?
+
+Zadejte `POLÁRPOLE`, vyberte objekty, stiskněte Enter a určete středový bod; nebo zadejte `PO`, tedy [`POLE`](/docs/commands/array), a po objektech zvolte `Polární`. Potom zvolte `Položky`, nastavte jejich počet a stisknutím Enter pole vytvořte.
+
+### Jak rozmístit objekty po části kružnice?
+
+Zvolte `Vyplnění` a zadejte úhel: 180 rozloží položky po polovině kružnice proti směru hodinových ručiček, -180 ve směru hodinových ručiček. Počet položek se zachová, první a poslední stojí na obou koncích úhlu.
+
+### Jak zabránit otáčení položek pole?
+
+Zvolte `oTočit` a odpovězte `Ne`: každá položka se posune kolem středu, aniž by se otočila.
+
+### Jak změnit poloměr polárního pole?
+
+Vyberte pole a přetáhněte jeho čtvercový uzel v základním bodě ke středu nebo od něj: vzdálenost od středu je nový poloměr. Nebo znovu zadejte Poloměr v paletě Vlastnosti.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table)
+
+## Související příkazy [#related]
+
+- [Příkaz POLE (ARRAY) v AutoCADu](/docs/commands/array)
+- [Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)](/docs/commands/arrayrect)
+- [Křivkové pole v AutoCADu: příkaz KŘIVPOLE (ARRAYPATH)](/docs/commands/arraypath)
+- [Příkaz OTOČ (ROTATE) v AutoCADu](/docs/commands/rotate)

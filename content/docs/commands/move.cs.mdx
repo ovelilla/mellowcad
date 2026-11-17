@@ -1,0 +1,58 @@
+---
+title: "Příkaz POSUN (MOVE) v AutoCADu"
+description: "Jak posunout objekt v AutoCADu příkazem POSUN (MOVE, zkratka POS), výzva po výzvě: základní bod a druhý bod, nebo posunutí zadané jako X,Y,Z. Vyzkoušejte."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz POSUN anglicky?","answer":"MOVE. V českém AutoCADu je jeho zkratka POS: zadejte ji a stiskněte Enter nebo mezerník. Anglické M v české verzi nefunguje; celý název POSUN funguje také a _MOVE v AutoCADu v jakémkoli jazyce."},{"question":"Jak posunout objekt o zadanou vzdálenost?","answer":"Zadejte základní bod a pak posunutí napište jako druhý bod: 50,0 posune o 50 ve směru X. Se zapnutým dynamickým zadáváním, jak je na začátku, je bod po prvním relativní k němu, takže ho historie zapíše jako @50,0. Nebo ukažte kurzorem směr, s režimem ORTO nebo polárním trasováním, a zadejte jen vzdálenost."},{"question":"Jak posunout objekty nahoru ve 3D?","answer":"Dejte posunutí souřadnici Z: 0,0,5 jako druhý bod nebo jako Přemístění zvedne výběr o 5. Bod zadaný bez Z leží v aktuálním zdvihu."},{"question":"Jaký je rozdíl mezi příkazy POSUN a PROTÁHNI (STRETCH)?","answer":"Příkaz POSUN přesouvá celé objekty. PROTÁHNI přesune jen koncové body a vrcholy uvnitř svého křížového okna a objekty, k nimž patří, protáhne."}]
+---
+
+Příkaz POSUN (MOVE) přesune vybrané objekty z jednoho místa na jiné: vyberte je, zadejte základní bod a pak druhý bod a posunou se o vzdálenost a ve směru od prvního ke druhému. Nic jiného se na nich nezmění. Stejně jako v AutoCADu posune objekty vybrané před příkazem, bod lze ukázat, uchopit na objektu nebo zadat a při volbě druhého bodu sleduje výběr kurzor, s čárou od základního bodu. Posunutí je jeden krok, který vrátí `Z`.
+
+- **Příkaz:** `POSUN`
+- **Anglicky:** `MOVE`, zadávaný jako `_MOVE` v libovolném jazyce
+- **Aliasy:** `POS`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `POS` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="move" caption="Kružnice posunutá o 50 doprava: vybraná, její střed jako základní bod, druhý bod zadaný." />
+
+## Možnosti [#options]
+
+### `Přemístění` (`P`) [#displacement]
+
+Volí se na výzvě k základnímu bodu, nebo tamtéž klávesou Enter, protože je to její výchozí volba: zeptá se na posunutí jako vektor, `10,5` posune o 10 ve směru X a o 5 ve směru Y, a nabídne poslední, které příkaz POSUN v tomto výkresu použil. U druhého bodu udělá Enter totéž se základním bodem: jeho souřadnice jsou posunutím.
+
+## Co zatím neumí [#missing]
+
+Dva z režimů výběru AutoCADu na výzvě k výběru objektů, Skupina a Několik, a výběr ploch, hran nebo vrcholů tělesa s klávesou Ctrl pro změnu jeho tvaru. Zatímco výběr sleduje kurzor, má barvu každého objektu, ale ne jeho typ ani tloušťku čáry, a objekty reference bloku mají všechny barvu reference.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#move--m--es-desplaza--d--pt-br-mover--m--fr-deplacer--dp--it-sposta--s--de-schieben--s--ru-перенести--п--pl-przesuń--prs--cs-posun--pos)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz POSUN anglicky?
+
+MOVE. V českém AutoCADu je jeho zkratka `POS`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `M` v české verzi nefunguje; celý název `POSUN` funguje také a `_MOVE` v AutoCADu v jakémkoli jazyce.
+
+### Jak posunout objekt o zadanou vzdálenost?
+
+Zadejte základní bod a pak posunutí napište jako druhý bod: `50,0` posune o 50 ve směru X. Se zapnutým dynamickým zadáváním, jak je na začátku, je bod po prvním relativní k němu, takže ho historie zapíše jako `@50,0`. Nebo ukažte kurzorem směr, s režimem ORTO nebo polárním trasováním, a zadejte jen vzdálenost.
+
+### Jak posunout objekty nahoru ve 3D?
+
+Dejte posunutí souřadnici Z: `0,0,5` jako druhý bod nebo jako `Přemístění` zvedne výběr o 5. Bod zadaný bez Z leží v aktuálním zdvihu.
+
+### Jaký je rozdíl mezi příkazy POSUN a PROTÁHNI (STRETCH)?
+
+Příkaz POSUN přesouvá celé objekty. [`PROTÁHNI`](/docs/commands/stretch) přesune jen koncové body a vrcholy uvnitř svého křížového okna a objekty, k nimž patří, protáhne.
+
+## Související příkazy [#related]
+
+- [Příkaz KOPIE (COPY) v AutoCADu](/docs/commands/copy)
+- [Příkaz OTOČ (ROTATE) v AutoCADu](/docs/commands/rotate)
+- [Příkaz PROTÁHNI (STRETCH) v AutoCADu](/docs/commands/stretch)
+- [Změna měřítka v AutoCADu: příkaz MĚŘÍTKO (SCALE)](/docs/commands/scale)

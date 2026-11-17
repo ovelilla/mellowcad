@@ -2235,7 +2235,11 @@ export const it: EngineLocale = {
         "Centre": "CEntro"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Polilinea"
+        "convert to Polyline": "Polilinea",
+        "Edit vertex": "Edita",
+        "Reverse": "Inverti",
+        "eXit": "ESci",
+        "Open": "APri"
       },
       "peditOption": {
         "eXit": "esCi"

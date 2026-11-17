@@ -1,0 +1,52 @@
+---
+title: "Cvičení v AutoCADu: stupňovitý hranol v izometrii"
+metaTitle: "Izometrické zobrazení v AutoCADu: cvičení"
+description: "Nakreslete stupňovitý hranol v izometrii v AutoCADu příkazem ÚSEČKA (LINE) a polárními souřadnicemi podél os 30°, 90° a 150°, potom ho okótujte."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete tento stupňovitý hranol v izometrii, v milimetrech: délka 60, hloubka 40 a výška 40, se stupněm hlubokým 20 a vysokým 20 podél přední strany. Každá hrana vede podél jedné z izometrických os: 30° a 210° pro délku, 150° a 330° pro hloubku, 90° a 270° pro výšku. MellowCAD zatím nemá izometrické kreslení AutoCADu, jeho izometrický krok ani izokružnice, takže hrany jsou úsečky zadané polárními souřadnicemi: délkou a úhlem.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · Izometrie
+- **Příkazy:** [`ÚSEČKA`](/docs/commands/line), [`KÓTYSROVNEJ`](/docs/commands/dimaligned)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=isometric-block), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/isometric-block" caption="Stupňovitý hranol v izometrii: délka 60, hloubka 40, výška 40, kóty podél hran." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete přední stranu stupně [#front]
+
+V hladině Obrys příkaz [`ÚSEČKA`](/docs/commands/line) od `0,0`, dolního předního rohu: `60<30`, `20<90`, `60<210`, potom možnost `Uzavři`.
+
+<Session name="exercises/isometric-block/front" caption="1. Nakreslete přední stranu stupně" />
+
+### 2. Nakreslete bok [#side]
+
+Znovu od `0,0` levý bok: `40<150`, `40<90`, `20<330`, `20<270` a `20<330`. Enter ukončí úsečku na přední hraně stupně.
+
+<Session name="exercises/isometric-block/side" caption="2. Nakreslete bok" />
+
+### 3. Nakreslete horní plochy [#top]
+
+Zbytek začíná v rozích, které už jsou nakreslené: zadejte `_END`, uchopení objektu Koncový pro jeden bod, a vyberte roh. Od pravého horního rohu přední strany: `20<150`, `20<90`, `20<150` a `60<210`. Potom dvě úsečky `60<210`, od paty čela stupně a od jeho horní hrany.
+
+<Session name="exercises/isometric-block/top" caption="3. Nakreslete horní plochy" />
+
+### 4. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYSROVNEJ`](/docs/commands/dimaligned) podél hran, každá kóta vedle své hrany: 60 a 40 dole, 40 podél levé strany, 20 podél pravé.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley): Mírně pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link): Pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block): Pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu](/docs/exercises)

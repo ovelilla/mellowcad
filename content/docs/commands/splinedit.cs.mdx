@@ -1,0 +1,89 @@
+---
+title: "Příkaz SPLINEDIT v AutoCADu"
+description: "Jak funguje příkaz SPLINEDIT (zkratka SPE) v AutoCADu: uzavření, připojení, body vyhlazení, vrcholy, převod na křivku a obrácení. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz SPLINEDIT česky?","answer":"Také SPLINEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte SPLINEDIT nebo zkratku SPE a stiskněte Enter nebo mezerník; zkratka SPE je stejná jako v anglické verzi. _SPLINEDIT funguje v AutoCADu v každém jazyce. Spustí ho také poklepání na spline."},{"question":"Jak převést spline na křivku?","answer":"Spusťte SPLINEDIT, vyberte spline a zvolte Křivku; přesnost 10 dá hladkou křivku. KEDIT u spline převod také nabídne."},{"question":"Jak v AutoCADu přidat nebo posunout body spline?","answer":"Zvolte Data, chcete-li pracovat s body, kterými prochází, a pak přidAt nebo Posun. Zvolte Editace, chcete-li pracovat s řídicími vrcholy, které ji obklopují."},{"question":"Jak uzavřít spline?","answer":"Zvolte Uzavři: spline se uzavře hladce, bez rohu v místě, kde se její konce setkají. Otevřít ji znovu otevře."},{"question":"Jak spojit dvě spline?","answer":"Zvolte Připoj a vyberte spline, jejíž konec se dotýká konce této, nebo použijte příkaz SPOJ."}]
+---
+
+Příkaz SPLINEDIT upravuje spline. Určete ji u výzvy `Vyberte spline:`, nebo ji vyberte před spuštěním příkazu; poklepání na spline na ní také spustí SPLINEDIT. U každého jiného objektu příkaz vypíše `Vybraný objekt není spline.` a zeptá se znovu; křivka vyhlazená možností `Spline` příkazu [`KEDIT`](/docs/commands/pedit) se beze slova změní ve spline se stejným průběhem. Pak se příkaz ptá na možnost znovu a znovu, každou použije hned, dokud nezvolíte `kOnec` nebo nestisknete Enter. Spline ukazuje uzly svých bodů vyhlazení a při úpravě vrcholů své řídicí vrcholy a rámeček. Celá úprava je jeden krok, který vrátí `Z`. Zapsaný `'ZOOM` funguje u každé jeho výzvy.
+
+- **Příkaz:** `SPLINEDIT`
+- **Aliasy:** `SPE`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `SPE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="splinedit" caption="Spline pěti body vyhlazení uzavřená příkazem SPLINEDIT: hladká smyčka, která prochází všemi." />
+
+## Možnosti [#options]
+
+### `Uzavři` (`U`) [#close]
+
+Uzavře spline hladce: spline s body vyhlazení jejími body vyhlazení, spline s řídicími vrcholy na jejích vrcholech. U uzavřené spline je touto možností `Otevřít` a `Připoj` se nenabízí.
+
+### `Připoj` (`P`) [#join]
+
+Připojí otevřené křivky, které se dotýkají jejích konců, podle pravidel příkazu SPOJ pro spline, a vypíše, kolik jich připojil.
+
+### `Data vyhlazení` (`D`) [#fit-data]
+
+Upravuje body, kterými spline prochází. Spline s řídicími vrcholy, která je nemá, nejprve dostane body vyhlazení na své křivce. Její možnosti: `přidAt` vybere bod vyhlazení a za něj přidává nové, znovu a znovu (u prvního bodu otevřené spline `Po` nebo `přeD`); `oDstranit` odebírá body vyhlazení, až na dva, u uzavřené spline na tři (`Nelze vymazat za tímto.`); `Posun` prochází body vyhlazení možnostmi `Další` a `Předchozí`, nebo `Vybrat`, a aktuální přesune do zadaného bodu; `čIsti` zahodí data vyhlazení a ponechá spline s řídicími vrcholy; `Tečny` nastaví počáteční a koncový směr, nebo `Systémová`; `Uzavři` a `kOnec` fungují jako v první výzvě. Po výběru něčeho, co není bodem vyhlazení, příkaz vypíše `Není bod vyhlazení.`.
+
+### `Editace vrcholů` (`E`) [#edit-vertex]
+
+Upravuje řídicí vrcholy; spline s body vyhlazení při první úpravě ztratí data vyhlazení. `přidAt` umístí vrchol do bodu, který na spline určíte; `oDstranit` jeden odebere, až na dva, u uzavřené spline na tři; `Zvýšit` zvýší řád, nejvýše na 26, nikdy ho nesníží; `Posun` přesouvá vrcholy a prochází jimi jako `Posun` v `Data`; `Váha` nastaví váhu vrcholu, po zprávě `Spline není racionální. Bude převedena.`, takže se k němu křivka přiblíží nebo se od něj vzdálí. Po výběru něčeho, co není vrcholem, příkaz vypíše `Není řídicí vrchol.`.
+
+### `převeď na Křivku` (`K`) [#convert-to-polyline]
+
+Zeptá se na přesnost od 0 do 99, výchozí 10, a nahradí spline křivkou z přímých segmentů, tím početnějších, čím vyšší je přesnost; 3D křivkou, když spline neleží rovně, rovnoběžně s rovinou XY. Ukončí příkaz. Přesnost zůstane zachována po celou relaci a používá ji i převod v příkazu [`KEDIT`](/docs/commands/pedit).
+
+### `oBrátit` (`B`) [#reverse]
+
+Obrátí spline, její první bod se stane posledním: `Spline byla převrácena.`.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední možnost, celou `Data` nebo `Editace` najednou. Když už nic nezbývá: `Příkaz byl kompletně vrácen zpět.`.
+
+### `kOnec` (`O`) [#exit]
+
+Ukončí příkaz, jako Enter.
+
+## Co zatím neumí [#missing]
+
+Bod zalomení (Kink), který vytvoří ostrý roh v bodě vyhlazení nebo ve vrcholu; TOLerance, která spline znovu proloží v rámci tolerance; Tečny uzavřené spline. `Křivku` vytvoří ze spline s body vyhlazení mnohem víc vrcholů než AutoCAD, nikdy oblouky, a spline vždy nahradí. Skupina u výzvy `Vyberte spline:`. Značka `+`, kterou AutoCAD kreslí na aktuálním bodě, když body procházíte.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl--fr-editspline--esi--it-editspline--esi--de-splineedit--sie--ru-редсплайн--рсп--pl-edsplajn--spe--cs-splinedit--spe)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz SPLINEDIT česky?
+
+Také SPLINEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte `SPLINEDIT` nebo zkratku `SPE` a stiskněte Enter nebo mezerník; zkratka `SPE` je stejná jako v anglické verzi. `_SPLINEDIT` funguje v AutoCADu v každém jazyce. Spustí ho také poklepání na spline.
+
+### Jak převést spline na křivku?
+
+Spusťte SPLINEDIT, vyberte spline a zvolte `Křivku`; přesnost 10 dá hladkou křivku. [`KEDIT`](/docs/commands/pedit) u spline převod také nabídne.
+
+### Jak v AutoCADu přidat nebo posunout body spline?
+
+Zvolte `Data`, chcete-li pracovat s body, kterými prochází, a pak `přidAt` nebo `Posun`. Zvolte `Editace`, chcete-li pracovat s řídicími vrcholy, které ji obklopují.
+
+### Jak uzavřít spline?
+
+Zvolte `Uzavři`: spline se uzavře hladce, bez rohu v místě, kde se její konce setkají. `Otevřít` ji znovu otevře.
+
+### Jak spojit dvě spline?
+
+Zvolte `Připoj` a vyberte spline, jejíž konec se dotýká konce této, nebo použijte příkaz [`SPOJ`](/docs/commands/join).
+
+## Související příkazy [#related]
+
+- [Příkaz SPLINE v AutoCADu](/docs/commands/spline)
+- [Úprava křivky v AutoCADu: příkaz KEDIT (PEDIT)](/docs/commands/pedit)
+- [Příkaz SPOJ (JOIN) v AutoCADu](/docs/commands/join)
+- [Příkaz VÝPIS (LIST) v AutoCADu](/docs/commands/list)

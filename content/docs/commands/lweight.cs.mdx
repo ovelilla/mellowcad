@@ -1,0 +1,65 @@
+---
+title: "Tloušťka čáry v AutoCADu: příkaz TLČÁRY (LWEIGHT)"
+metaTitle: "Tloušťka čáry v AutoCADu: TLČÁRY (LWEIGHT)"
+description: "Jak nastavit tloušťku čáry v AutoCADu příkazem TLČÁRY (LWEIGHT, zkratka TLČ): tloušťka nových objektů v mm, 24 standardních hodnot, DleHlad a zobrazení."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz TLČÁRY anglicky?","answer":"LWEIGHT. V českém AutoCADu je jeho zkratka TLČ: zadejte ji a stiskněte Enter nebo mezerník. Anglické LW a LINEWEIGHT v české verzi nefungují; celý název TLČÁRY funguje také a _LWEIGHT v AutoCADu v jakémkoli jazyce."},{"question":"Proč se v AutoCADu nezobrazuje tloušťka čáry?","answer":"V AutoCADu se tloušťky čar na obrazovce zobrazují, jen když je zapnuté tlačítko Tloušťka čáry na stavovém řádku (LWDISPLAY 1); na začátku je vypnuté. Zde je zapnuté od začátku. Všechny tenké tloušťky se kreslí nejtenčí čarou obrazovky, takže rozdíl je vidět u silnějších; a objekt s tloušťkou čáry DleHlad přebírá tloušťku své hladiny."},{"question":"Jak změnit tloušťku čáry existujícího objektu?","answer":"Vyberte ho a zvolte tloušťku v řádku Tloušťka čáry palety Vlastnosti, nebo, když je objekt DleHlad, změňte tloušťku čáry jeho hladiny ve Správci vlastností hladin. Příkaz TLČÁRY nastavuje jen tloušťku čáry objektů nakreslených po něm."},{"question":"Jaké tloušťky čar má AutoCAD?","answer":"24 pevných hodnot v milimetrech: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 a 2,11. Zadejte jinou, třeba 0.45, a příkaz TLČÁRY vezme nejbližší, při shodě tenčí."}]
+---
+
+Příkaz TLČÁRY (LWEIGHT) nastaví tloušťku čáry, kterou se kreslí nové objekty, v milimetrech. AutoCAD otevře dialog Nastavení tloušťky čáry; MellowCAD ho zatím nemá, a tak příkaz TLČÁRY spustí verzi pro příkazový řádek, kterou má i AutoCAD, `-TLČÁRY`. Vypíše aktuální tloušťku čáry, na začátku `DLEHLAD`, a zeptá se na novou: jednu z 24 standardních hodnot AutoCADu, od 0,00 do 2,11 mm. Jakákoli jiná hodnota se nastaví na nejbližší standardní, s oznámením, a záporná se odmítne zprávou `Neplatné číslo tlčáry.`. Enter ponechá aktuální tloušťku. Každá změna je krok, který vrátí `Z`.
+
+Tloušťky čar se zde zobrazují od začátku: AutoCAD je ukazuje, až když je zapnuté tlačítko Tloušťka čáry na stavovém řádku (LWDISPLAY), ale MellowCAD nemá rozvržení ani vykreslování, takže obrazovka je jediné místo, kde se mohou ukázat. Tlačítko je vypíná a zapíná. Křivka se šířkou ukazuje v půdorysu svou šířku, ne tloušťku čáry.
+
+- **Příkaz:** `TLČÁRY`
+- **Anglicky:** `LWEIGHT`, zadávaný jako `_LWEIGHT` v libovolném jazyce
+- **Aliasy:** `TLČ`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `TLČ` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="lweight" caption="Deska obkreslená tloušťkou 0,70 mm, pak pro otvor zadáno 0.1, zaokrouhlené na 0,09 mm: obě tloušťky, jak je ukazuje obrazovka." />
+
+## Možnosti [#options]
+
+### `?` [#list]
+
+Vypíše hodnoty, které přijímá, DleHlad a 24 standardních tlouštěk čar, a znovu se zeptá.
+
+### `DLEHlad` (`DLEH`) [#bylayer]
+
+Nové objekty přebírají tloušťku čáry své hladiny, jako na začátku.
+
+## Co zatím neumí [#missing]
+
+DleBlok a Výchozí (LWDEFAULT), tloušťky čar v palcích, dialog Nastavení tloušťky čáry a položka Nastavení tloušťky čáry… v rozevíracím seznamu.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne--it-spesslin--sli--spesslinea--lineweight---spesslin--de-lstärke--linienstärke--lst---lstärke--ru-веслин--вли---веслин--pl-szerlin--sl---szerlin--cs-tlčáry--tlč---tlčáry)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz TLČÁRY anglicky?
+
+LWEIGHT. V českém AutoCADu je jeho zkratka `TLČ`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `LW` a `LINEWEIGHT` v české verzi nefungují; celý název `TLČÁRY` funguje také a `_LWEIGHT` v AutoCADu v jakémkoli jazyce.
+
+### Proč se v AutoCADu nezobrazuje tloušťka čáry?
+
+V AutoCADu se tloušťky čar na obrazovce zobrazují, jen když je zapnuté tlačítko Tloušťka čáry na stavovém řádku (LWDISPLAY 1); na začátku je vypnuté. Zde je zapnuté od začátku. Všechny tenké tloušťky se kreslí nejtenčí čarou obrazovky, takže rozdíl je vidět u silnějších; a objekt s tloušťkou čáry DleHlad přebírá tloušťku své hladiny.
+
+### Jak změnit tloušťku čáry existujícího objektu?
+
+Vyberte ho a zvolte tloušťku v řádku Tloušťka čáry palety Vlastnosti, nebo, když je objekt DleHlad, změňte tloušťku čáry jeho hladiny ve Správci vlastností hladin. Příkaz TLČÁRY nastavuje jen tloušťku čáry objektů nakreslených po něm.
+
+### Jaké tloušťky čar má AutoCAD?
+
+24 pevných hodnot v milimetrech: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 a 2,11. Zadejte jinou, třeba `0.45`, a příkaz TLČÁRY vezme nejbližší, při shodě tenčí.
+
+## Související příkazy [#related]
+
+- [Typ čáry v AutoCADu: příkaz TYPČ (LINETYPE)](/docs/commands/linetype)
+- [Hladiny v AutoCADu: příkaz HLADINA (LAYER)](/docs/commands/layer)
+- [Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)](/docs/commands/properties)
+- [Křivka v AutoCADu: příkaz KŘIVKA (PLINE)](/docs/commands/pline)

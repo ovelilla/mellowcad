@@ -1,0 +1,52 @@
+---
+title: "Cvičení v AutoCADu: úhelník tvaru L"
+metaTitle: "Cvičení v AutoCADu pro začátečníky: úhelník"
+description: "Nakreslete úhelník tvaru L v AutoCADu relativními souřadnicemi: obrys, zaoblení, dva otvory a kóty od základny. Krok za krokem, zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete tento úhelník v milimetrech: délka 100, vodorovné rameno vysoké 20 a svislé rameno široké 30 a vysoké 80, vnitřní roh zaoblený poloměrem 10, otvor o průměru 8 ve vodorovném rameni a otvor o průměru 10 ve svislém, každý uprostřed svého ramene. Obrys je jeden tah příkazu [`ÚSEČKA`](/docs/commands/line), každý bod zadaný jako posun od předchozího, a všechny kóty vycházejí z levého dolního rohu.
+
+- **Cvičení:** Začátečník · Strojírenství · 2D
+- **Příkazy:** [`ÚSEČKA`](/docs/commands/line), [`ZAOBLI`](/docs/commands/fillet), [`KRUŽNICE`](/docs/commands/circle), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYZÁKL`](/docs/commands/dimbaseline), [`KÓTYRÁDIUS`](/docs/commands/dimradius), [`KÓTYPRŮM`](/docs/commands/dimdiameter)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=l-bracket), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/l-bracket" caption="Úhelník tvaru L, 100 × 80, okótovaný od levého dolního rohu." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete obrys [#outline]
+
+V hladině Obrys příkaz [`ÚSEČKA`](/docs/commands/line) od `0,0`, potom každý bod jako krok od předchozího: `100,0`, `0,20`, `-70,0`, `0,60` a `-30,0`. Možnost `Uzavři` nakreslí poslední stranu zpět k počátečnímu bodu a příkaz ukončí.
+
+<Session name="exercises/l-bracket/outline" caption="1. Nakreslete obrys" />
+
+### 2. Zaoblete vnitřní roh [#fillet]
+
+Příkaz [`ZAOBLI`](/docs/commands/fillet): zvolte možnost `Poloměr`, zadejte `10` a potom vyberte dvě úsečky, které se setkávají ve vnitřním rohu: horní hranu vodorovného ramene a bok svislého.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Zaoblete vnitřní roh" />
+
+### 3. Nakreslete otvory [#holes]
+
+Dvě kružnice příkazem [`KRUŽNICE`](/docs/commands/circle), každá s možností `Průměr`: `8` v bodě `80,10`, ve vodorovném rameni, a `10` v bodě `15,65`, ve svislém rameni.
+
+<Session name="exercises/l-bracket/holes" caption="3. Nakreslete otvory" />
+
+### 4. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYPŘÍM`](/docs/commands/dimlinear) od `0,0` k otvoru ve vodorovném rameni, `80,10`, s kótou umístěnou dole: 80. Příkaz [`KÓTYZÁKL`](/docs/commands/dimbaseline) pokračuje od stejné první vynášecí čáry: zadejte pravý konec, `#100,0`, kde # měří od počátku souřadnic, a potom dvakrát Enter pro ukončení. Stejně podél levé strany, k hornímu otvoru a potom k horní hraně, `#0,80`. Příkaz [`KÓTYRÁDIUS`](/docs/commands/dimradius) na zaoblení a [`KÓTYPRŮM`](/docs/commands/dimdiameter) na každém otvoru výkres dokončí.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs): Začátečník · Architektura · 2D
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate): Začátečník · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange): Mírně pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

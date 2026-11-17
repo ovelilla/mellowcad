@@ -1,0 +1,71 @@
+---
+title: "Kóta průměru v AutoCADu: příkaz KÓTYPRŮM (DIMDIAMETER)"
+metaTitle: "Kóta průměru v AutoCADu: KÓTYPRŮM"
+description: "Jak v AutoCADu okótovat průměr kružnice nebo oblouku příkazem KÓTYPRŮM (DIMDIAMETER, zkratka KPR): vyberte křivku a umístěte kótu dovnitř nebo ven."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz pro kótu průměru anglicky a jakou má zkratku?","answer":"Anglicky DIMDIAMETER, v české verzi AutoCADu KÓTYPRŮM: zadejte KPR nebo KOTYPR a stiskněte Enter nebo mezerník. Funguje i celý název a _DIMDIAMETER v AutoCADu v každém jazyce; anglické DDI a DIMDIA v české verzi nefungují."},{"question":"Jak okótovat malý otvor?","answer":"Umístěte text vně kružnice: kótovací čára pak otvor přetne, se šipkou na každé straně, a text stojí mimo něj. Uvnitř potřebuje text v kružnici místo."},{"question":"Okótuje příkaz KÓTYPRŮM oblouk?","answer":"Ano: oblouk nebo obloukový segment křivky, stejně jako kružnici, a vypíše průměr kružnice, ke které oblouk patří. Jakýkoli jiný objekt vyvolá „Vybraný objekt není kružnice nebo oblouk.“ a otázka se zopakuje."},{"question":"Jak přidat ke kótě průměru počet otvorů nebo poznámku?","answer":"Před umístěním kóty zvolte Text a zadejte „4x <>“: <> je naměřená hodnota se značkou. U už umístěné kóty text změní řádek „Přepsání textu“ v paletě Vlastnosti."}]
+---
+
+Příkaz KÓTYPRŮM (DIMDIAMETER) kótuje průměr kružnice, oblouku nebo obloukového segmentu křivky, s výzvami příkazu [`KÓTYRÁDIUS`](/docs/commands/dimradius): vyberte křivku a příkazový řádek hned vypíše naměřenou hodnotu; pak kótu umístěte a příkaz skončí. Jejím textem je průměr za značkou průměru. Umístěná uvnitř kružnice má jednu čáru od textu k šipce na obvodu; umístěná vně přechází čára přes kružnici od okraje k okraji a vzdálenější šipka míří zpět dovnitř z krátkého prodloužení, jak ji kreslí ISO-25.
+
+- **Příkaz:** `KÓTYPRŮM`
+- **Anglicky:** `DIMDIAMETER`, zadávaný jako `_DIMDIAMETER` v libovolném jazyce
+- **Aliasy:** `KPR`, `KOTYPR`
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KPR` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dimdiameter" caption="Velká kružnice okótovaná uvnitř a malá vně: vybraná každá kružnice, pak umístěný text." />
+
+## Možnosti [#options]
+
+### `Text` (`T`) [#text]
+
+Zeptá se na text, který se má napsat místo naměřené hodnoty, a tu nabídne jako výchozí: Enter ji ponechá. V zadaném textu zastupuje `<>` naměřenou hodnotu i se značkou, takže `4x <>` napíše před průměr „4x“.
+
+### `úHel` (`H`) [#angle]
+
+Zeptá se na úhel textu, který se pak nakreslí pod tímto úhlem, středem na čáře, a čára u něj skončí. 0 ho vrátí podél čáry.
+
+## Co zatím neumí [#missing]
+
+Mtext: text kóty je jeden řádek, nastavený možností `Text` na příkazovém řádku, nikdy v textovém editoru. Značka se kreslí jako Ø, kde AutoCAD píše ∅: písmo výkresu ∅ nemá. Na oblouku zůstávají šipky mezi jeho konci, kde AutoCAD kreslí obloukovou vynášecí čáru. Stejně jako u příkazu [`KÓTYRÁDIUS`](/docs/commands/dimradius) nelze vybrat křivku uvnitř reference bloku, osy ze stylu se nekreslí a jeho nastavení textu vně křivky nejsou k dispozici. Kóta není asociativní: nesleduje křivku, kterou měří.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia--pt-br-cotadiametro--cdi--dimdia--fr-cotdia--cm--it-dimdiametro--ddi--de-bemdurchm--bmd--ru-рзмдиаметр--рди--pl-wymśrednica--wd--wymd--cs-kótyprům--kpr--kotypr)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz pro kótu průměru anglicky a jakou má zkratku?
+
+Anglicky DIMDIAMETER, v české verzi AutoCADu KÓTYPRŮM: zadejte `KPR` nebo `KOTYPR` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMDIAMETER` v AutoCADu v každém jazyce; anglické `DDI` a `DIMDIA` v české verzi nefungují.
+
+### Jak okótovat malý otvor?
+
+Umístěte text vně kružnice: kótovací čára pak otvor přetne, se šipkou na každé straně, a text stojí mimo něj. Uvnitř potřebuje text v kružnici místo.
+
+### Okótuje příkaz KÓTYPRŮM oblouk?
+
+Ano: oblouk nebo obloukový segment křivky, stejně jako kružnici, a vypíše průměr kružnice, ke které oblouk patří. Jakýkoli jiný objekt vyvolá `Vybraný objekt není kružnice nebo oblouk.` a otázka se zopakuje.
+
+### Jak přidat ke kótě průměru počet otvorů nebo poznámku?
+
+Před umístěním kóty zvolte `Text` a zadejte `4x <>`: `<>` je naměřená hodnota se značkou. U už umístěné kóty text změní řádek „Přepsání textu“ v paletě Vlastnosti.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket)
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket)
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+## Související příkazy [#related]
+
+- [Kóta poloměru v AutoCADu: příkaz KÓTYRÁDIUS (DIMRADIUS)](/docs/commands/dimradius)
+- [Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)](/docs/commands/dimlinear)
+- [Kótování v AutoCADu: úhlová kóta, příkaz KÓTYÚHEL (DIMANGULAR)](/docs/commands/dimangular)
+- [Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)](/docs/commands/dimstyle)

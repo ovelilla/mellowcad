@@ -1494,7 +1494,13 @@
       "plineNextPointOr": { "Line": "LIne" },
       "specifyFirstCornerPointOr": { "Width": "Width" },
       "specifyAxisEndpointOfEllipticalArcOr": { "Centre": "Centre" },
-      "splineditOptionClosed": { "convert to Polyline": "Polyline" },
+      "splineditOptionClosed": {
+        "convert to Polyline": "Polyline",
+        "Edit vertex": "Edit",
+        "Reverse": "REverse",
+        "eXit": "EXit",
+        "Open": "Open"
+      },
       "peditOption": { "eXit": "EXit" },
       "peditMultipleOption": { "eXit": "EXit", "Width": "Width" },
       "peditOption3d": { "Join": "Join", "eXit": "EXit" },

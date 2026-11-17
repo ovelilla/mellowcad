@@ -1,0 +1,75 @@
+---
+title: "Vizuální styly v AutoCADu: příkaz AKTUÁLNÍVS (VSCURRENT)"
+metaTitle: "Vizuální styly v AutoCADu: AKTUÁLNÍVS"
+description: "Jak v AutoCADu změnit vizuální styl příkazem AKTUÁLNÍVS (VSCURRENT, zkratka VC): 2D drátový model, Skrytý a Koncepční, co který kreslí a jak se vrátit do 2D."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak v AutoCADu změnit vizuální styl?","answer":"Spusťte AKTUÁLNÍVS (nebo zkratku VC; anglická VS v české verzi spouští SVLOŽSPEC) a zvolte styl: Skryté pro skrytí hran vzadu, Koncepční pro vystínování ploch. Mění jen pohled, ne objekty."},{"question":"Jak se vrátit k 2D drátovému modelu?","answer":"Spusťte AKTUÁLNÍVS a zvolte 2ddrátovýmodel."},{"question":"Jaký je rozdíl mezi stylem Skrytý a Koncepční?","answer":"Oba skrývají to, co zakrývají plochy. Skrytý kreslí jen hrany, na pozadí, jako čárový výkres; Koncepční navíc vybarví plochy, stínované světlem, se stejnými hranami navrchu."},{"question":"Proč tělesem stále prosvítají čáry?","answer":"Nepatří k tělesu. Úsečky, kružnice a oblasti se v každém stylu kreslí jako ve stylu 2D drátový model, takže úsečka za kvádrem zůstane vidět. Ve stylu 2ddrátovýmodel jsou vidět i zadní hrany samotného tělesa: zvolte Skryté."}]
+---
+
+Příkaz AKTUÁLNÍVS (VSCURRENT) nastaví vizuální styl: to, jak pohled kreslí 3D tělesa. Zeptá se na styl a nabídne aktuální jako výchozí, takže Enter ho ponechá. `2ddrátovýmodel` kreslí každou hranu, i ty vzadu; `Skryté` skryje to, co zakrývají plochy; `Koncepční` plochy vybarví, se stínováním. Styl patří pohledu a ukládá se do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. Uvnitř jiného příkazu ho použít nelze.
+
+To, co není těleso (úsečky, kružnice, oblasti, text), se kreslí jako ve stylu 2D drátový model bez ohledu na styl, ve vlastních barvách. Ve stylech Skrytý a Koncepční vybere kliknutí těleso, jehož plocha je pod kurzorem nejblíž k vám, nikdy těleso za plochou, která ho zakrývá, a uchopení objektu dál najde každou hranu. Hrany tělesa v zamknuté hladině se kreslí bledší. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+
+- **Příkaz:** `AKTUÁLNÍVS`
+- **Anglicky:** `VSCURRENT`, zadávaný jako `_VSCURRENT` v libovolném jazyce
+- **Aliasy:** `VC`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `VC` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="vscurrent" caption="Kvádr s průchozím otvorem, viděný od jihovýchodu: AKTUÁLNÍVS Koncepční vystínuje jeho plochy a nakreslí na ně hrany." />
+
+## Možnosti [#options]
+
+### `2ddrátovýmodel` (`2`) [#2dwireframe]
+
+Každá hrana každého tělesa, i vzadu, spolu s čarami, které ukazují jeho zakřivené plochy; výchozí styl nového výkresu. Při návratu k němu z jiného stylu vypíše AKTUÁLNÍVS `Regeneruji model.`.
+
+### `Skryté` (`S`) [#hidden]
+
+Hrany každého tělesa a obrysy jeho zakřivených ploch tam, kde je nezakrývá žádná plocha žádného tělesa, v barvě objektu: těleso za jiným je jím zakryté. Čáry, které ve stylu 2D drátový model ukazují zakřivenou plochu, se nekreslí.
+
+### `Koncepční` (`K`) [#conceptual]
+
+Plochy obrácené k vám vybarvené barvou objektu, která na straně odvrácené od světla přechází do chladné modré, přičemž světlo sleduje váš úhel pohledu, a na nich hrany stylu Skrytý v jedné barvě, bez ohledu na barvu objektu. Zde i ve stylu Skrytý ukáže válec nebo kužel viděný v půdorysu jen svou kružnici, jako v AutoCADu.
+
+## Co zatím neumí [#missing]
+
+Ostatní styly AutoCADu – Drátový model, Realistický, Stínovaný, Stínovaný s hranami, Odstíny šedé, Náčrt a Rentgen – a zadání názvu stylu nebo jejich výpis pomocí `?`: výzva vypisuje jen tři hotové styly a každou jinou odpověď odmítne.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva--fr-stylviscourant--sv--it-stileviscorrente--svc--de-vsaktuell--vsa--ru-теквизстиль--pl-bieżstylwiz--cs-aktuálnívs--vc)
+
+## Otázky [#questions]
+
+### Jak v AutoCADu změnit vizuální styl?
+
+Spusťte AKTUÁLNÍVS (nebo zkratku `VC`; anglická `VS` v české verzi spouští SVLOŽSPEC) a zvolte styl: `Skryté` pro skrytí hran vzadu, `Koncepční` pro vystínování ploch. Mění jen pohled, ne objekty.
+
+### Jak se vrátit k 2D drátovému modelu?
+
+Spusťte AKTUÁLNÍVS a zvolte `2ddrátovýmodel`.
+
+### Jaký je rozdíl mezi stylem Skrytý a Koncepční?
+
+Oba skrývají to, co zakrývají plochy. Skrytý kreslí jen hrany, na pozadí, jako čárový výkres; Koncepční navíc vybarví plochy, stínované světlem, se stejnými hranami navrchu.
+
+### Proč tělesem stále prosvítají čáry?
+
+Nepatří k tělesu. Úsečky, kružnice a oblasti se v každém stylu kreslí jako ve stylu 2D drátový model, takže úsečka za kvádrem zůstane vidět. Ve stylu `2ddrátovýmodel` jsou vidět i zadní hrany samotného tělesa: zvolte `Skryté`.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate)
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley)
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Související příkazy [#related]
+
+- [3D orbit v AutoCADu: příkaz 3DORBIT](/docs/commands/3dorbit)
+- [Kvádr v AutoCADu: příkaz KVÁDR (BOX)](/docs/commands/box)
+- [Příkaz POHLED (VIEW) v AutoCADu](/docs/commands/view)
+- [Příkaz USS (UCS) v AutoCADu: uživatelský souřadnicový systém](/docs/commands/ucs)

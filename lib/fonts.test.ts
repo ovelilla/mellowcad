@@ -5,8 +5,8 @@ import { scriptFontStack, scriptFontVariables } from "./fonts"
 const inter = { style: { fontFamily: "'Inter', 'Inter Fallback'" } }
 const mono = { style: { fontFamily: "'Geist Mono', 'Geist Mono Fallback'" } }
 const readex = { style: { fontFamily: "'Readex Pro', 'Readex Pro Fallback'" } }
-const interPolish = { style: { fontFamily: "'Inter Polish'" } }
-const monoPolish = { style: { fontFamily: "'Geist Mono Polish'" } }
+const interLetters = { style: { fontFamily: "'Inter Letters'" } }
+const monoLetters = { style: { fontFamily: "'Geist Mono Letters'" } }
 
 describe("scriptFontStack", () => {
   it("puts the script's face behind the page's, before both fallbacks", () => {
@@ -21,13 +21,17 @@ describe("scriptFontVariables", () => {
     sans: inter,
     mono,
     arabic: readex,
-    "latin-ext": { sans: interPolish, mono: monoPolish },
+    "latin-ext": { sans: interLetters, mono: monoLetters },
   }
 
-  it("puts the Polish letters' faces before Inter and Geist Mono on a Polish page", () => {
+  it("puts the letters' faces before Inter and Geist Mono on a Polish or Czech page", () => {
+    expect(scriptFontVariables("cs", fonts)).toEqual(
+      scriptFontVariables("pl", fonts)
+    )
     expect(scriptFontVariables("pl", fonts)).toEqual({
-      "--font-sans": "'Inter Polish', 'Inter', 'Inter Fallback'",
-      "--font-mono": "'Geist Mono Polish', 'Geist Mono', 'Geist Mono Fallback'",
+      "--font-sans": "'Inter Letters', 'Inter', 'Inter Fallback'",
+      "--font-mono":
+        "'Geist Mono Letters', 'Geist Mono', 'Geist Mono Fallback'",
     })
   })
 

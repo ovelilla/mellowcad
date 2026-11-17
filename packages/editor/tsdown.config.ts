@@ -15,6 +15,7 @@ export default defineConfig({
     "locales/de": "src/locales/de.ts",
     "locales/ru": "src/locales/ru.ts",
     "locales/pl": "src/locales/pl.ts",
+    "locales/cs": "src/locales/cs.ts",
   },
   format: "esm",
   platform: "neutral",

@@ -203,6 +203,17 @@ html:not(:lang(pl)) .font-mono:lang(pl) {
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 
+/* And Czech elsewhere: «Čeština», in the language links, has a Č in Inter's
+   Latin Extended file (85 KB). A Polish page keeps its letters' face, which
+   holds Czech's too. */
+html:not(:lang(cs)):not(:lang(pl)) :lang(cs) {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+html:not(:lang(cs)):not(:lang(pl)) .font-mono:lang(cs) {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
 /* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
    breaks the joins of a cursive script, and the script has no capitals and no
    italics. Its marks reach far above and below the line, so running text

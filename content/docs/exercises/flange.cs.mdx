@@ -1,0 +1,58 @@
+---
+title: "Cvičení v AutoCADu: příruba"
+metaTitle: "Cvičení v AutoCADu: příruba s drážkou pro pero"
+description: "Nakreslete přírubu v AutoCADu: otvor s drážkou pro pero vyříznutou oříznutím, osm otvorů v polárním poli, osy a průměry. Krok za krokem, zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete tuto přírubu v milimetrech: průměr 140, středový otvor o průměru 60 s drážkou pro pero širokou 16, jejíž dno leží 36 od středu, osm otvorů o průměru 14 na roztečné kružnici o průměru 110 a osy. Drážka je obdélník oříznutý do otvoru; otvory jsou jedna kružnice a polární pole.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`OBD`](/docs/commands/rectang), [`OŘEŽ`](/docs/commands/trim), [`POLÁRPOLE`](/docs/commands/arraypolar), [`ÚSEČKA`](/docs/commands/line), [`KÓTYPRŮM`](/docs/commands/dimdiameter), [`KÓTYPŘÍM`](/docs/commands/dimlinear)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=flange), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/flange" caption="Příruba o průměru 140 s drážkou pro pero, osmi otvory a kótami průměrů." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete kružnice [#circles]
+
+V hladině Obrys dvě kružnice v bodě `0,0`, každá s možností `Průměr`: `140` a `60`.
+
+<Session name="exercises/flange/circles" caption="1. Nakreslete kružnice" />
+
+### 2. Vyřízněte drážku pro pero [#keyway]
+
+Příkaz [`OBD`](/docs/commands/rectang) od `-8,20` do bodu o `16,16` dál: protne otvor. Příkaz [`OŘEŽ`](/docs/commands/trim) ořízne objekt tam, kde ho protínají jiné: vyberte oblouk otvoru mezi stranami obdélníku, potom spodní stranu obdélníku uvnitř otvoru. Zbude drážka pro pero: její dvě boční strany a dno.
+
+<Session name="exercises/flange/keyway" caption="2. Vyřízněte drážku pro pero" />
+
+### 3. Vytvořte pole otvorů [#holes]
+
+Otvor na roztečné kružnici: kružnice v bodě `55<22.5`, 55 od počátku pod úhlem 22,5°, s možností `Průměr` `14`. Příkaz [`POLÁRPOLE`](/docs/commands/arraypolar): vyberte ji, stiskněte Enter a zadejte střed, `0,0`; možnosti `ASociativní` a `Ne` ponechají osm samostatných kružnic, které lze vybrat při kótování, a `Položky`, `8`, je rozmístí po celé kružnici. Potom v hladině Osy roztečná kružnice v bodě `0,0`, její průměr `110`.
+
+<Session name="exercises/flange/holes" caption="3. Vytvořte pole otvorů" />
+
+### 4. Nakreslete osy [#centreLines]
+
+Stále v hladině Osy dvě úsečky příkazem [`ÚSEČKA`](/docs/commands/line) středem, dlouhé 156: od `-78,0` o `156,0` vodorovně; od `0,-78` o `0,156` nahoru.
+
+<Session name="exercises/flange/centreLines" caption="4. Nakreslete osy" />
+
+### 5. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYPRŮM`](/docs/commands/dimdiameter) na středovém otvoru, jednom z malých otvorů, roztečné kružnici a obrysu, každý vybraný tam, kde ho ještě žádná kóta neprotíná, potom příkaz [`KÓTYPŘÍM`](/docs/commands/dimlinear) přes dno drážky: 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table): Mírně pokročilý · Architektura · 2D
+- [Cvičení v AutoCADu: pozemek](/docs/exercises/plot-of-land): Mírně pokročilý · Stavebnictví · 2D
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft): Mírně pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

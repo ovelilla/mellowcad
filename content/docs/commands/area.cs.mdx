@@ -1,0 +1,83 @@
+---
+title: "Výpočet plochy v AutoCADu: příkaz PLOCHA (AREA)"
+metaTitle: "Výpočet plochy v AutoCADu: PLOCHA (AREA)"
+description: "Jak spočítat plochu v AutoCADu příkazem PLOCHA (AREA, zkratka PL): plocha a obvod z bodů nebo objektu a součet s možnostmi Přičíst oblast a Odečíst oblast."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz PLOCHA anglicky a jakou má zkratku?","answer":"Anglicky AREA, v českém AutoCADu PLOCHA: zadejte PL a stiskněte Enter nebo mezerník. Anglické AA v českém AutoCADu nefunguje; _AREA funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak zjistit plochu křivky nebo šraf v AutoCADu?","answer":"Spusťte příkaz PLOCHA, stiskem Enter vyberte OBjekt a vyberte uzavřenou křivku nebo šrafy: jejich plocha a obvod se vypíšou na příkazovém řádku. Plocha šraf nezahrnuje jejich ostrovy."},{"question":"Jak v AutoCADu odečíst plochu?","answer":"Vyberte Přičíst a pak OBjekt, vyberte vnější tvar a stiskněte Enter; pak vyberte oDečíst, OBjekt a vyberte každý otvor. PLOCHA po každém vypíše zbývající součet; dvakrát Enter příkaz ukončí."},{"question":"Jak získat plochu v metrech čtverečních?","answer":"PLOCHA vypisuje čtvereční jednotky výkresu. Kreslíte-li v milimetrech, vydělte 1 000 000: 6 000 000 je 6 m². V centimetrech 10 000."},{"question":"Proč PLOCHA hlásí, že objekt nemá plochu?","answer":"Mají ji jen uzavřené tvary a křivky: úsečky, samotné oblouky, texty a kóty ne. Vyberte uzavřenou křivku, kružnici nebo šrafy, nebo nejprve spojte úsečky do křivky příkazem SPOJ; případně obkreslete tvar jeho rohy."}]
+---
+
+Příkaz PLOCHA (AREA) měří plochu a obvod uzavřeného tvaru: buď takového, který obkreslíte jeho rohy, nebo vybraného objektu. Zadejte první roh, pak další: od druhého se tvar uzavřený přes kurzor vyplní průsvitnou zelenou, jak ho stínuje AutoCAD. Enter nebo `Celkem` vypíše na příkazovém řádku `Plocha = …, Obvod = …` a skončí; Enter před třetím rohem se odmítne. S možnostmi Přičíst oblast a Odečíst oblast vede průběžný součet přes několik tvarů. Čísla se vypisují s přesností výkresu a poslední změřenou plochu lze znovu přečíst zadáním `'PLOCHA`.
+
+- **Příkaz:** `PLOCHA`
+- **Anglicky:** `AREA`, zadávaný jako `_AREA` v libovolném jazyce
+- **Aliasy:** `PL`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `PL` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="area" caption="Deska 100 na 60 s otvorem o poloměru 18: PLOCHA přičte plochu desky, odečte plochu otvoru a vypíše zbývající součet." />
+
+## Možnosti [#options]
+
+### `OBjekt` (`OB`) [#object]
+
+Výchozí možnost první výzvy, takže ji vybere Enter: vyberte kružnici, elipsu, uzavřenou křivku nebo křivku spline, šrafy nebo oblast a PLOCHA vypíše její plochu s obvodem, u kružnice její obvod. Otevřenou křivku, křivku spline nebo eliptický oblouk uzavře přímkou od konce ke konci a vypíše její délku. Úsečka ani text plochu nemají: `Vybraný objekt nemá žádnou plochu`, a příkaz se zeptá znovu.
+
+### `Přičíst oblast` (`P`) [#add]
+
+Zahájí průběžný součet: každá plocha změřená potom, rohy nebo možností `OBjekt`, se přičte a PLOCHA ji vypíše i se součtem. Enter ukončí výběr objektů nebo rohů a příkaz se zeptá znovu, dokud ho Enter na první výzvu neukončí.
+
+### `oDečíst oblast` (`D`) [#subtract]
+
+Totéž, ale každá plocha se od součtu odečte: nejprve deska, pak její otvory.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední zadaný roh.
+
+### `Celkem` (`C`) [#total]
+
+Vypíše plochu a obvod zadaných rohů a skončí.
+
+## Co zatím neumí [#missing]
+
+MĚŘITGEOM, nástroje Odměřit na pásu karet, s možnostmi Poloměr, Úhel, Objem a Rychle: tady tlačítka Vzdálenost a Plocha na pásu karet spouštějí VZD a PLOCHA. Možnosti Oblouk a Délka u dalšího bodu příkazu PLOCHA. Rohy mimo rovinu aktuálního USS se měří v půdorysu, kde je AutoCAD měří ve 3D, a hlášení AutoCADu `Objekt není rovnoběžný s USS.` u objektu skloněného vůči USS se nezobrazí.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab--ru-дист--ди--pl-odleg--odl--cs-vzd--vz)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz PLOCHA anglicky a jakou má zkratku?
+
+Anglicky AREA, v českém AutoCADu PLOCHA: zadejte `PL` a stiskněte Enter nebo mezerník. Anglické `AA` v českém AutoCADu nefunguje; `_AREA` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak zjistit plochu křivky nebo šraf v AutoCADu?
+
+Spusťte příkaz PLOCHA, stiskem Enter vyberte `OBjekt` a vyberte uzavřenou křivku nebo šrafy: jejich plocha a obvod se vypíšou na příkazovém řádku. Plocha šraf nezahrnuje jejich ostrovy.
+
+### Jak v AutoCADu odečíst plochu?
+
+Vyberte `Přičíst` a pak `OBjekt`, vyberte vnější tvar a stiskněte Enter; pak vyberte `oDečíst`, `OBjekt` a vyberte každý otvor. PLOCHA po každém vypíše zbývající součet; dvakrát Enter příkaz ukončí.
+
+### Jak získat plochu v metrech čtverečních?
+
+PLOCHA vypisuje čtvereční jednotky výkresu. Kreslíte-li v milimetrech, vydělte 1 000 000: 6 000 000 je 6 m². V centimetrech 10 000.
+
+### Proč PLOCHA hlásí, že objekt nemá plochu?
+
+Mají ji jen uzavřené tvary a křivky: úsečky, samotné oblouky, texty a kóty ne. Vyberte uzavřenou křivku, kružnici nebo šrafy, nebo nejprve spojte úsečky do křivky příkazem [`SPOJ`](/docs/commands/join); případně obkreslete tvar jeho rohy.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: pozemek](/docs/exercises/plot-of-land)
+
+## Související příkazy [#related]
+
+- [Příkaz VZD (DIST) v AutoCADu](/docs/commands/dist)
+- [Příkaz VÝPIS (LIST) v AutoCADu](/docs/commands/list)
+- [Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)](/docs/commands/hatch)
+- [Jednotky v AutoCADu: příkaz JEDNOTKY (UNITS)](/docs/commands/units)

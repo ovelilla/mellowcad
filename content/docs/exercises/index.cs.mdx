@@ -1,0 +1,166 @@
+---
+title: "Cvičení v AutoCADu"
+metaTitle: "Cvičení v AutoCADu s řešením, zdarma"
+description: "Cvičení v AutoCADu pro začátečníky i pokročilé, ve 2D, izometrii a 3D, každé vyřešené krok za krokem a otevírané s výkresem v editoru online zdarma."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Kde najdu cvičení na procvičení AutoCADu?","answer":"Tady: každé cvičení má okótovaný výkres, příkazy, které procvičuje, a řešení krok za krokem a otevře se v editoru zdarma, který funguje jako AutoCAD, v prohlížeči. Začněte cvičeními pro začátečníky; každý příkaz, který používají, vede k popisu toho, co dělá, a možností, na které se ptá."},{"question":"Mohu si AutoCAD procvičovat online zdarma?","answer":"Ano. MellowCAD běží v prohlížeči, zdarma a bez účtu: zadáváte příkazy a aliasy AutoCADu, pod názvy ve vašem jazyce, a odpovídáte na jejich výzvy ve stejném pořadí, se stejnými písmeny možností. Není to AutoCAD: otevírá a ukládá soubory DXF, ale zatím ne DWG, a jeho 3D tělesa jsou zatím neúplná."},{"question":"Mají cvičení řešení?","answer":"Každé cvičení je vyřešené krok za krokem pod svým výkresem. Jádro nakreslí každý krok a zapíše historii příkazového řádku, takže ji můžete se svou porovnat řádek po řádku."},{"question":"Mohu cvičení vytisknout nebo uložit jako PDF?","answer":"Ano. Stránka cvičení se tiskne samostatně, tmavé čáry na bílém, nejdřív výkres a pak kroky, a dialog tisku prohlížeče ji uloží jako PDF."}]
+---
+
+Výkresy na procvičení AutoCADu, od prvního těsnění po 3D tělesa, každý s kótami, příkazy, které procvičuje, a řešením krok za krokem. Jádro nakreslí každý krok a zapíše historii příkazového řádku tak, jak ji budete zadávat: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Otevřete cvičení v editoru a jeho výkres bude vedle místa, kde kreslíte svůj, v prohlížeči, bez instalace a bez zakládání účtu.
+
+## Začátečník [#beginner]
+
+### Cvičení v AutoCADu: těsnění [#gasket]
+
+<Session name="exercises/gasket" caption="Těsnění 120 × 80 s kótami." />
+
+Nakreslete těsnění v AutoCADu: deska se zaoblenými rohy, středový otvor, čtyři otvory zkopírované z jednoho, osy a kóty. Krok za krokem, zdarma online.
+
+- **Cvičení:** Začátečník · Strojírenství · 2D
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`KRUŽNICE`](/docs/commands/circle), [`KOPIE`](/docs/commands/copy), [`ÚSEČKA`](/docs/commands/line), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYPRŮM`](/docs/commands/dimdiameter)
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket)
+
+### Cvičení v AutoCADu: úhelník tvaru L [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="Úhelník tvaru L, 100 × 80, okótovaný od levého dolního rohu." />
+
+Nakreslete úhelník tvaru L v AutoCADu relativními souřadnicemi: obrys, zaoblení, dva otvory a kóty od základny. Krok za krokem, zdarma online.
+
+- **Cvičení:** Začátečník · Strojírenství · 2D
+- **Příkazy:** [`ÚSEČKA`](/docs/commands/line), [`ZAOBLI`](/docs/commands/fillet), [`KRUŽNICE`](/docs/commands/circle), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYZÁKL`](/docs/commands/dimbaseline), [`KÓTYRÁDIUS`](/docs/commands/dimradius), [`KÓTYPRŮM`](/docs/commands/dimdiameter)
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket)
+
+### Cvičení v AutoCADu: schodiště v půdorysu [#stairs]
+
+<Session name="exercises/stairs" caption="Přímé schodišťové rameno v půdorysu, 280 × 100 centimetrů, se šipkou ve směru výstupu." />
+
+Nakreslete v AutoCADu půdorys přímého schodiště: deset stupňů z jedné úsečky a obdélníkového pole, šipka směru výstupu a kóty. Zdarma, krok za krokem.
+
+- **Cvičení:** Začátečník · Architektura · 2D
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`ÚSEČKA`](/docs/commands/line), [`OBDPOLE`](/docs/commands/arrayrect), [`KŘIVKA`](/docs/commands/pline), [`KÓTYPŘÍM`](/docs/commands/dimlinear)
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs)
+
+### Cvičení v AutoCADu 3D: montážní deska [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="Obrys desky, 100 × 60, se čtyřmi otvory a kótami." />
+
+Vymodelujte montážní desku v AutoCADu 3D: oblasti, odečtení otvorů a jedno vytažení vytvoří těleso. Krok za krokem, 3D cvičení zdarma online.
+
+- **Cvičení:** Začátečník · Strojírenství · 3D těleso
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`KRUŽNICE`](/docs/commands/circle), [`KOPIE`](/docs/commands/copy), [`OBLAST`](/docs/commands/region), [`ROZDÍL`](/docs/commands/subtract), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`VYTÁHNI`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate)
+
+## Mírně pokročilý [#intermediate]
+
+### Cvičení v AutoCADu: příruba [#flange]
+
+<Session name="exercises/flange" caption="Příruba o průměru 140 s drážkou pro pero, osmi otvory a kótami průměrů." />
+
+Nakreslete přírubu v AutoCADu: otvor s drážkou pro pero vyříznutou oříznutím, osm otvorů v polárním poli, osy a průměry. Krok za krokem, zdarma online.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`OBD`](/docs/commands/rectang), [`OŘEŽ`](/docs/commands/trim), [`POLÁRPOLE`](/docs/commands/arraypolar), [`ÚSEČKA`](/docs/commands/line), [`KÓTYPRŮM`](/docs/commands/dimdiameter), [`KÓTYPŘÍM`](/docs/commands/dimlinear)
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+
+### Cvičení v AutoCADu: kulatý stůl a židle [#round-table]
+
+<Session name="exercises/round-table" caption="Kulatý stůl o průměru 120 se šesti židlemi, v půdorysu, okótovaný v centimetrech." />
+
+Nakreslete v AutoCADu kulatý stůl se šesti židlemi: jednu židli, potom polární pole kolem středu stolu a kóty. Krok za krokem, zdarma online.
+
+- **Cvičení:** Mírně pokročilý · Architektura · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`OBD`](/docs/commands/rectang), [`POLÁRPOLE`](/docs/commands/arraypolar), [`KÓTYPRŮM`](/docs/commands/dimdiameter), [`KÓTYPŘÍM`](/docs/commands/dimlinear)
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table)
+
+### Cvičení v AutoCADu: pozemek [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="Pozemek o pěti stranách, v metrech, s kótou každé strany a jednoho úhlu." />
+
+Nakreslete pozemek v AutoCADu z délek a úhlů jeho stran polárními souřadnicemi, potom změřte jeho plochu a okótujte ho. Krok za krokem, zdarma online.
+
+- **Cvičení:** Mírně pokročilý · Stavebnictví · 2D
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`PLOCHA`](/docs/commands/area), [`KÓTYSROVNEJ`](/docs/commands/dimaligned), [`KÓTYÚHEL`](/docs/commands/dimangular)
+- [Cvičení v AutoCADu: pozemek](/docs/exercises/plot-of-land)
+
+### Cvičení v AutoCADu: osazený hřídel [#shaft]
+
+<Session name="exercises/shaft" caption="Osazený hřídel v bočním pohledu, délka 150, délky okótované řetězově." />
+
+Nakreslete osazený hřídel v AutoCADu: polovina obrysu jako křivka, zkosená, zrcadlená podle osy, a délky jako řetězové kóty. Krok za krokem, zdarma.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`ZKOS`](/docs/commands/chamfer), [`ZRCADLI`](/docs/commands/mirror), [`ÚSEČKA`](/docs/commands/line), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYŘET`](/docs/commands/dimcontinue)
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft)
+
+### Cvičení v AutoCADu: stupňovitý hranol v izometrii [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="Stupňovitý hranol v izometrii: délka 60, hloubka 40, výška 40, kóty podél hran." />
+
+Nakreslete stupňovitý hranol v izometrii v AutoCADu příkazem ÚSEČKA (LINE) a polárními souřadnicemi podél os 30°, 90° a 150°, potom ho okótujte.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · Izometrie
+- **Příkazy:** [`ÚSEČKA`](/docs/commands/line), [`KÓTYSROVNEJ`](/docs/commands/dimaligned)
+- [Cvičení v AutoCADu: stupňovitý hranol v izometrii](/docs/exercises/isometric-block)
+
+### Cvičení v AutoCADu 3D: řemenice [#pulley]
+
+<Session name="exercises/pulley" caption="Polovina profilu řemenice vedle její osy, s okótovanými vzdálenostmi od osy." />
+
+Vymodelujte řemenici v AutoCADu 3D: polovina profilu jako uzavřená křivka, kterou rotace kolem osy Y změní v těleso. Krok za krokem, 3D cvičení zdarma online.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 3D těleso
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`OROTUJ`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley)
+
+## Pokročilý [#advanced]
+
+### Cvičení v AutoCADu: táhlo s tečnami [#link]
+
+<Session name="exercises/link" caption="Táhlo se dvěma oky ve vzdálenosti 90, spojenými tečnami, s kótami." />
+
+Nakreslete táhlo v AutoCADu: dvě oka spojená úsečkami tečnými k oběma s uchopením Tečná, oblouky mezi nimi oříznuté, a kóty. Zdarma online.
+
+- **Cvičení:** Pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`ÚSEČKA`](/docs/commands/line), [`OŘEŽ`](/docs/commands/trim), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYRÁDIUS`](/docs/commands/dimradius), [`KÓTYPRŮM`](/docs/commands/dimdiameter)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+### Cvičení v AutoCADu 3D: ložiskové těleso [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="Ložiskové těleso v půdorysu, 100 × 60, s kótami nálitku, středového otvoru a otvorů pro šrouby." />
+
+Vymodelujte ložiskové těleso v AutoCADu 3D: vytáhněte, sjednoťte a odečtěte otvor a dva otvory pro šrouby jako válce. Krok za krokem, 3D tělesa zdarma online.
+
+- **Cvičení:** Pokročilý · Strojírenství · 3D těleso
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`KRUŽNICE`](/docs/commands/circle), [`VYTÁHNI`](/docs/commands/extrude), [`SJEDNOCENÍ`](/docs/commands/union), [`VÁLEC`](/docs/commands/cylinder), [`KOPIE`](/docs/commands/copy), [`ROZDÍL`](/docs/commands/subtract), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Návody krok za krokem [#guides]
+
+Dovednosti ze cvičení jedna po druhé: zadávání bodů, půdorys domu, 2D výkres převedený na těleso. Každý návod ukazuje výkres a historii každého kroku.
+
+- [Souřadnice v AutoCADu](/docs/coordinates): Jak zadávat body v AutoCADu: absolutní, relativní a polární souřadnice, úsečka dané délky pod úhlem a polární trasování. Procvičte si je zdarma online.
+- [Jak nakreslit půdorys domu v AutoCADu](/docs/floor-plan): Jak nakreslit půdorys domu v AutoCADu: stěny příkazem EKVID (OFFSET), vnitřní stěna, otvory oříznuté příkazem OŘEŽ (TRIM), dveře, okna a kóty.
+- [Od 2D k 3D v AutoCADu](/docs/2d-to-3d): Jak z 2D výkresu udělat 3D těleso v AutoCADu: vytáhněte nebo orotujte uzavřený profil, sjednoťte a odečtěte. 3D tělesa online zdarma, zatím částečně.
+
+## Jak cvičení fungují [#how]
+
+Cvičení se otevře v editoru se svým výkresem, okótovaným, vlevo od počátku: svůj kreslete od 0,0, jako to dělá řešení. Co nakreslíte, se uchová v tomto prohlížeči jen pro dané cvičení. Výkres, na kterém jste pracovali, zůstane, jak byl, a editor otevřený samostatně ho vrátí. Chcete-li cvičení začít znovu, spusťte příkaz NOVÝ a pak ho otevřete z jeho stránky. Každá stránka se tiskne samostatně, nejdřív výkres a pak kroky, a dialog tisku prohlížeče ji uloží jako PDF.
+
+## Otázky [#questions]
+
+### Kde najdu cvičení na procvičení AutoCADu?
+
+Tady: každé cvičení má okótovaný výkres, příkazy, které procvičuje, a řešení krok za krokem a otevře se v editoru zdarma, který funguje jako AutoCAD, v prohlížeči. Začněte cvičeními pro začátečníky; každý příkaz, který používají, vede k popisu toho, co dělá, a možností, na které se ptá.
+
+### Mohu si AutoCAD procvičovat online zdarma?
+
+Ano. MellowCAD běží v prohlížeči, zdarma a bez účtu: zadáváte příkazy a aliasy AutoCADu, pod názvy ve vašem jazyce, a odpovídáte na jejich výzvy ve stejném pořadí, se stejnými písmeny možností. Není to AutoCAD: otevírá a ukládá soubory DXF, ale zatím ne DWG, a jeho 3D tělesa jsou zatím neúplná.
+
+### Mají cvičení řešení?
+
+Každé cvičení je vyřešené krok za krokem pod svým výkresem. Jádro nakreslí každý krok a zapíše historii příkazového řádku, takže ji můžete se svou porovnat řádek po řádku.
+
+### Mohu cvičení vytisknout nebo uložit jako PDF?
+
+Ano. Stránka cvičení se tiskne samostatně, tmavé čáry na bílém, nejdřív výkres a pak kroky, a dialog tisku prohlížeče ji uloží jako PDF.

@@ -1,0 +1,55 @@
+---
+title: "Úprava atributů v AutoCADu: příkaz ATREDIT (ATTEDIT)"
+metaTitle: "Úprava atributů v AutoCADu: ATREDIT"
+description: "Jak změnit hodnoty atributů reference bloku v AutoCADu příkazem ATREDIT (ATTEDIT, zkratka ATE): pole pro každou výzvu, jeden krok zpět. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ATREDIT anglicky a jakou má zkratku?","answer":"Anglicky ATTEDIT, v českém AutoCADu ATREDIT: zadejte ATE a stiskněte Enter nebo mezerník; funguje i DIATR. _ATTEDIT funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak upravit atributy bloku v AutoCADu?","answer":"Zadejte ATE a vyberte referenci, nebo na ni poklepejte, což spustí EATREDIT. Změňte hodnoty v okně a stiskněte Enter. Chcete-li změnit samotné atributy, jejich název, výzvu nebo polohu, upravte definice a blok znovu definujte příkazem BLOK."},{"question":"Proč ATREDIT hlásí, že blok nemá upravitelné atributy?","answer":"Protože blok vybrané reference žádné atributy nemá: ATREDIT upravuje hodnoty reference bloku, který je má. Definice, která ještě není součástí bloku, se upravuje příkazem TEXTEDIT, poklepáním na ni."},{"question":"Jaký je rozdíl mezi příkazy ATREDIT a EATREDIT?","answer":"Oba upravují hodnoty jedné reference. Okno příkazu ATREDIT popisuje každé pole výzvou atributu, jako dialog Upravit atributy v AutoCADu; okno příkazu EATREDIT, Rozšířený editor atributů, jeho názvem. V AutoCADu má EATREDIT také karty s možnostmi textu a vlastnostmi každého atributu."}]
+---
+
+Příkaz ATREDIT (ATTEDIT) mění hodnoty atributů jedné reference bloku. Vyzve vás k výběru reference a potom otevře okno s polem pro každý z jejích atributů, popsaným výzvou atributu a vyplněným jeho hodnotou, jako dialog Upravit atributy v AutoCADu. Přepište hodnoty, klávesou Tab přecházejte z pole do pole, a Enter, v AutoCADu OK, je použije v jednom kroku, který `Z` vrátí zpět; Esc, jeho Storno, nic nezmění.
+
+Výběr vezme objekt pod kurzorem. Cokoli jiného než reference bloku je odmítnuto, stejně jako reference, jejíž blok nemá atributy, a otázka se zopakuje; výběr do prázdna se zeptá znovu bez hlášení. Definice bloku se nezmění, ani jeho ostatní reference: každá má vlastní hodnoty. [`EATREDIT`](/docs/commands/eattedit) upravuje tytéž hodnoty v okně popsaném názvy atributů a spustí ho poklepání na referenci s atributy.
+
+- **Příkaz:** `ATREDIT`
+- **Anglicky:** `ATTEDIT`, zadávaný jako `_ATTEDIT` v libovolném jazyce
+- **Aliasy:** `ATE`, `DIATR`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ATE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="attedit" caption="Tři označení dveří, reference bloku s atributem NUM: ATREDIT vybere poslední, vložené jako 2, a jeho okno ho změní na 3." />
+
+## Co zatím neumí [#missing]
+
+`-ATREDIT`, forma pro příkazový řádek, která upravuje atributy jednotlivě nebo globálně, a její zkratka `-ATE`. Tlačítka Předchozí a Další dialogu Upravit atributy, pro blok s více atributy, než se vejde na jednu stránku, a jeho řádek Název bloku. ATRPEDIT (ATTIPEDIT), který upravuje jeden atribut na místě, a jeho Ctrl + poklepání. Vlastní uzel odemknutého atributu na referenci a řádky atributů v paletě Vlastnosti.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ATREDIT anglicky a jakou má zkratku?
+
+Anglicky ATTEDIT, v českém AutoCADu ATREDIT: zadejte `ATE` a stiskněte Enter nebo mezerník; funguje i `DIATR`. `_ATTEDIT` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak upravit atributy bloku v AutoCADu?
+
+Zadejte `ATE` a vyberte referenci, nebo na ni poklepejte, což spustí [`EATREDIT`](/docs/commands/eattedit). Změňte hodnoty v okně a stiskněte Enter. Chcete-li změnit samotné atributy, jejich název, výzvu nebo polohu, upravte definice a blok znovu definujte příkazem [`BLOK`](/docs/commands/block).
+
+### Proč ATREDIT hlásí, že blok nemá upravitelné atributy?
+
+Protože blok vybrané reference žádné atributy nemá: ATREDIT upravuje hodnoty reference bloku, který je má. Definice, která ještě není součástí bloku, se upravuje příkazem [`TEXTEDIT`](/docs/commands/textedit), poklepáním na ni.
+
+### Jaký je rozdíl mezi příkazy ATREDIT a EATREDIT?
+
+Oba upravují hodnoty jedné reference. Okno příkazu ATREDIT popisuje každé pole výzvou atributu, jako dialog Upravit atributy v AutoCADu; okno příkazu [`EATREDIT`](/docs/commands/eattedit), Rozšířený editor atributů, jeho názvem. V AutoCADu má EATREDIT také karty s možnostmi textu a vlastnostmi každého atributu.
+
+## Související příkazy [#related]
+
+- [Příkaz EATREDIT (EATTEDIT) v AutoCADu](/docs/commands/eattedit)
+- [Atributy bloku v AutoCADu: příkaz ATRDEF (ATTDEF)](/docs/commands/attdef)
+- [Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)](/docs/commands/insert)
+- [Příkaz ATRDISP (ATTDISP) v AutoCADu: zobrazení atributů](/docs/commands/attdisp)

@@ -2238,7 +2238,11 @@ export const ptBR: EngineLocale = {
         "Centre": "Meio"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Polilinha"
+        "convert to Polyline": "Polilinha",
+        "Edit vertex": "Editar",
+        "Reverse": "REverter",
+        "eXit": "saIr",
+        "Open": "Abrir"
       },
       "peditOption": {
         "eXit": "SAir"

@@ -216,16 +216,11 @@ describe("every command language", () => {
       ...surface.matchAll(
         /^ {2}prompt: (\S+) (?:([^[\n]*) )?\[([^\]\n]+)\](?: ?<[^>\n]*>)?:$/gm
       ),
-    ].map(([, command, question, list]) => ({
-      command,
-      // Its id, for the words one prompt spells otherwise (promptKeywords).
-      prompt: Object.entries(en.commands.prompts).find(
-        ([, text]) => text === question
-      )?.[0],
+    ].map(([, command, question, list]) => {
       // A listed label is its keyword's id (`cuTting edges` is TRIM's
       // `cuTting`): read as a word, it fell back to English in every
       // language, and Polish's Tryb took its T.
-      ids: list.split("/").map((entry) => {
+      const ids = list.split("/").map((entry) => {
         const label = entry.split(": ")[0]
         const labels: Readonly<Record<string, string>> =
           (
@@ -237,8 +232,27 @@ describe("every command language", () => {
           Object.entries(labels).find(([, text]) => text === label)?.[0] ??
           label
         )
-      }),
-    }))
+      })
+      // Its id, for the words one prompt spells otherwise (promptKeywords).
+      // Several ids share a text (`Enter an option` is UCS's and both of
+      // SPLINEDIT's menus): one named after the command whose own words are
+      // all on this list (a closed spline's menu, by its Open), else the first.
+      const candidates = Object.entries(en.commands.prompts)
+        .filter(([, text]) => text === question)
+        .map(([id]) => id)
+      const own = en.commands.promptKeywords as Readonly<
+        Record<string, Readonly<Record<string, string>>>
+      >
+      const prompt =
+        [...candidates]
+          .sort((a, b) => Number(own[b] !== undefined) - Number(own[a] !== undefined))
+          .find(
+          (id) =>
+            id.toLowerCase().startsWith(command.toLowerCase()) &&
+            Object.keys(own[id] ?? {}).every((keyword) => ids.includes(keyword))
+        ) ?? candidates[0]
+      return { command, prompt, ids }
+    })
     const justify = ["Left", "Center", "Right", "Middle"]
     const corners = ["TL", "TC", "TR", "ML", "MC", "MR", "BL", "BC", "BR"]
     return [...prompts, { command: "TEXT", ids: [...justify, ...corners] }]

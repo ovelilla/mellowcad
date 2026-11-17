@@ -1,0 +1,81 @@
+---
+title: Otevřít DXF online
+metaTitle: "Otevřít DXF online: prohlížeč DXF zdarma"
+description: "Otevřete soubor DXF zdarma v prohlížeči, bez nahrávání: AutoCAD R12 až 2018, textový nebo binární, s hladinami, texty, kótami, šrafami a bloky."
+type: howTo
+sourceHash: "01c6b918a0d5"
+faq:
+  - question: "Jak otevřít soubor DXF bez AutoCADu?"
+    answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: MellowCAD ho otevře ve svém editoru, v prohlížeči, bez instalace a bez účtu. V editoru soubor otevřou také příkazy OTEVŘI (Ctrl+O) a ČTIDXF."
+  - question: "Nahrává se můj soubor DXF na server?"
+    answer: "Ne. Prohlížeč soubor přečte a předá ho editoru na tomto zařízení; na server se nikdy neodesílá."
+  - question: "Mohu otevřít soubor DWG?"
+    answer: "Zatím ne. Uložte ho jako DXF v programu, ve kterém vznikl (v AutoCADu příkazem ULOŽJAKO s typem souboru DXF), a otevřete ten."
+  - question: "Mohu své změny uložit jako soubor DXF?"
+    answer: "Ano. Příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF uloží výkres jako DXF AutoCADu 2000 až 2018, textový nebo binární, který AutoCAD otevře. 3D tělesa a oblasti se vynechají a příkazový řádek to oznámí."
+  - question: "Proč některé objekty chybí?"
+    answer: "Co v MellowCAD zatím nemá svůj objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou."
+---
+
+<OpenDxf />
+
+MellowCAD otevírá soubory DXF v prohlížeči a kreslí je ve svém editoru, kde si výkres můžete prohlédnout, změřit a upravit příkazy AutoCADu, zadávanými ve vašem jazyce. Soubor se čte ve vašem počítači: nic se nenahrává, nic se neinstaluje a nezakládá se žádný účet.
+
+## Co se otevře [#opens]
+
+- **DXF z AutoCADu R12 až 2018**, nejnovějšího formátu DXF, který AutoCAD zapisuje, textový (ASCII) nebo binární, vytvořený v AutoCADu nebo v jiném programu. Text si zachová své znaky: do verze 2004 v kódové stránce, kterou soubor uvádí, od 2007 v UTF-8.
+- **Úsečky, oblouky, kružnice, elipsy a křivky**, s jejich šířkami a vyhlazením oblouky nebo splinem, 3D křivky a spliny, body, kreslené [stylem bodu](/docs/commands/ptype) výkresu, a 2D desky, vyplněné podle proměnné FILLMODE.
+- **Jednořádkový a víceřádkový text**, odkazy s textem, bloky s atributy, přímé, zarovnané, úhlové kóty, kóty poloměru a průměru a šrafy, každé s čarami vzoru, které obsahuje, tak jak je kreslí AutoCAD: i uživatelský vzor nebo vzor jiného programu.
+- **Hladina každého objektu**, barva, typ čáry a jeho měřítko, tloušťka čáry, tloušťka a zdvih, a hladiny zapnuté, vypnuté nebo zamknuté; zmrazená hladina se otevře jako vypnutá.
+- **Typy čar výkresu**, kreslené s čárkami, tečkami a mezerami v měřítku typu čáry výkresu, a text složitých typů čar, jako je GAS_LINE.
+- **Textové a kótovací styly výkresu** a jeho jednotky, pokud jsou to milimetry, centimetry nebo metry.
+
+## Co se vynechá [#left-out]
+
+Když DXF obsahuje něco, pro co MellowCAD zatím nemá objekt, otevře zbytek a v příkazovém řádku vypíše, kolik objektů kterého typu vynechal. Dnes jsou to:
+
+- stopy (TRACE), 3D plochy a sítě;
+- přímky a polopřímky, multičáry;
+- multiodkazy a tolerance, tabulky, zakrytí a obrázky;
+- 3D tělesa, oblasti a povrchy;
+- přechodové výplně a staniční kóty a kóty délky oblouku.
+
+Co je v rozvržení, se počítá zvlášť, protože rozvržení tu zatím nejsou: výkres, jehož objekty jsou všechny v rozvrženích, se otevře prázdný.
+
+Některé věci se otevřou, ale ne úplně tak, jak byly:
+
+- Tvary složitých typů čar, jako je BATTING nebo ZIGZAG, se nekreslí, jen čárky a mezery kolem nich.
+- Barva zadaná indexem se otevře jako barva RGB a DleBlok jako DleHlad.
+- Výkres v palcích nebo stopách si zachová svá čísla, čtená jako milimetry.
+- Text se kreslí s mírami písma Arial, ať jeho styl uvádí jakékoli písmo, bez faktoru šířky a úhlu sklonu.
+- Externí reference si zachová své umístění a cestu a kreslí se tak, jak AutoCAD kreslí referenci, jejíž výkres nemůže najít: `Xref` a cesta v jejím bodu vložení. Stránka čte jen soubor, který dostane, nikdy výkresy vedle něj; při novém uložení jako DXF se reference zachová.
+
+## Otevřete ho v editoru [#editor]
+
+V editoru se DXF otevře jako výkres: příkaz <Command id="OPEN" /> (`Ctrl+O`) nabídne výkresy a soubory DXF, jako okno „Vyberte soubor“ v AutoCADu, a příkaz <Command id="DXFIN" /> jen soubory DXF. Soubor otevřený z této stránky nebo příkazem <Command id="OPEN" /> nahradí výkres v editoru, proto si ten svůj nejdřív uložte klávesami `Ctrl+S`: otevřený je [jeden výkres najednou](/docs/differences#one-drawing).
+
+## Upravte ho a uchovejte [#keep]
+
+Po otevření je DXF výkres jako každý jiný: změřte ho příkazy <Command id="DIST" /> a <Command id="AREA" />, upravte příkazy <Command id="MOVE" />, <Command id="TRIM" /> nebo <Command id="OFFSET" /> a kreslete do něj. Během práce se ukládá v tomto prohlížeči a `Ctrl+S` ho uloží jako soubor ve vlastním verzovaném formátu MellowCAD. Příkazy <Command id="SAVEAS" /> (`Ctrl+Shift+S`) a <Command id="DXFOUT" /> ho znovu uloží jako DXF AutoCADu 2000 až 2018, textový nebo binární: stránka [„DXF editor online“](/docs/edit-dxf) popisuje, jak na to a co soubor zachová. Soubory DWG zatím podporované nejsou.
+
+## Otázky [#questions]
+
+### Jak otevřít soubor DXF bez AutoCADu? [#without-autocad]
+
+Vyberte ho nebo ho přetáhněte do horní části této stránky: MellowCAD ho otevře ve svém editoru, v prohlížeči, bez instalace a bez účtu. V editoru soubor otevřou také příkazy <Command id="OPEN" /> (`Ctrl+O`) a <Command id="DXFIN" />.
+
+### Nahrává se můj soubor DXF na server? [#uploaded]
+
+Ne. Prohlížeč soubor přečte a předá ho editoru na tomto zařízení; na server se nikdy neodesílá.
+
+### Mohu otevřít soubor DWG? [#dwg]
+
+Zatím ne. Uložte ho jako DXF v programu, ve kterém vznikl (v AutoCADu příkazem <Command id="SAVEAS" /> s typem souboru DXF), a otevřete ten.
+
+### Mohu své změny uložit jako soubor DXF? [#save-dxf]
+
+Ano. Příkaz <Command id="SAVEAS" /> (`Ctrl+Shift+S`) nebo <Command id="DXFOUT" /> uloží výkres jako DXF AutoCADu 2000 až 2018, textový nebo binární, který AutoCAD otevře. 3D tělesa a oblasti se vynechají a příkazový řádek to oznámí. Více na stránce [„DXF editor online“](/docs/edit-dxf).
+
+### Proč některé objekty chybí? [#missing]
+
+Co v MellowCAD zatím nemá svůj objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou.

@@ -1,0 +1,68 @@
+---
+title: "Příkaz POLE (ARRAY) v AutoCADu"
+metaTitle: "Pole objektů v AutoCADu: příkaz POLE (ARRAY)"
+description: "Jak vytvořit pole v AutoCADu příkazem POLE (ARRAY, zkratka PO): obdélníkové, polární a křivkové, upravované živě před vytvořením. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz POLE anglicky a jakou má zkratku?","answer":"Anglicky ARRAY, v českém AutoCADu POLE: zadejte PO a stiskněte Enter nebo mezerník. Anglické AR v českém AutoCADu nefunguje; _ARRAY funguje v AutoCADu v jakémkoli jazyce. OBDPOLE, POLÁRPOLE a KŘIVPOLE zkratku nemají a zadané celé přeskočí otázku na typ."},{"question":"Jak v AutoCADu vytvořit kruhové pole?","answer":"Vyberte Polární nebo spusťte POLÁRPOLE a vyberte středový bod: výběr se zkopíruje kolem něj, zpočátku v 6 položkách. Počet změňte možností Položky a úhel, který vyplňují, nastavte možností Vyplnění."},{"question":"Jak rozložit pole v AutoCADu?","answer":"Vyberte ho a spusťte ROZLOŽ: pole se rozpadne na objekty svých položek, každý objekt ve své hladině. Chcete-li volné kopie hned od začátku, odpovězte Ne na ASociativní, než stisknete Enter."},{"question":"Jak změnit pole po jeho vytvoření?","answer":"Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řady a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není."}]
+---
+
+Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řadách, kolem středu nebo podél trajektorie. Zeptá se na objekty, pak na typ pole, přičemž Enter vybere obdélníkové, a předá výběr příkazu [`OBDPOLE`](/docs/commands/arrayrect), [`POLÁRPOLE`](/docs/commands/arraypolar) nebo [`KŘIVPOLE`](/docs/commands/arraypath), který pokračuje, aniž by se znovu ptal na objekty. Každý z nich pole hned ukáže a upravuje ho živě, svými možnostmi a uzly, dokud ho Enter nevytvoří: jeden objekt pole, nebo volné kopie, pokud jste zvolili, že nemá být asociativní. Celý příkaz je jeden krok zpět a Enter na příkazovém řádku příkaz POLE zopakuje.
+
+- **Příkaz:** `POLE`
+- **Anglicky:** `ARRAY`, zadávaný jako `_ARRAY` v libovolném jazyce
+- **Aliasy:** `PO`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `PO` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="array" caption="Čtverec a jeho kružnice v poli s výchozími hodnotami: Enter pro obdélníkové pole, 4 sloupce a 3 řady." />
+
+## Možnosti [#options]
+
+### `Obdélníkové` (`O`) [#rectangular]
+
+Sloupce a řady a podle potřeby úrovně skládané podél Z: [`OBDPOLE`](/docs/commands/arrayrect). Začíná se 4 sloupci a 3 řadami, s roztečí jedenapůlkrát větší než velikost výběru.
+
+### `Křivkové` (`K`) [#path]
+
+Podél úsečky, oblouku, kružnice nebo křivky: [`KŘIVPOLE`](/docs/commands/arraypath). Zeptá se na křivku trajektorie a pak na ni rozloží položky, každou natočenou tak, jak se trajektorie stáčí.
+
+### `Polární` (`P`) [#polar]
+
+Kolem středového bodu: [`POLÁRPOLE`](/docs/commands/arraypolar). Zeptá se na střed a začíná se 6 položkami na celé otočce.
+
+## Co zatím neumí [#missing]
+
+Nabízený typ je vždy obdélníkový: proměnná ARRAYTYPE, která v AutoCADu nastavuje výchozí typ, se nečte.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma--fr-reseau--re--it-serie--sr--de-reihe--rh--ru-массив--мс--pl-szyk--sz--cs-pole--po)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz POLE anglicky a jakou má zkratku?
+
+Anglicky ARRAY, v českém AutoCADu POLE: zadejte `PO` a stiskněte Enter nebo mezerník. Anglické `AR` v českém AutoCADu nefunguje; `_ARRAY` funguje v AutoCADu v jakémkoli jazyce. [`OBDPOLE`](/docs/commands/arrayrect), [`POLÁRPOLE`](/docs/commands/arraypolar) a [`KŘIVPOLE`](/docs/commands/arraypath) zkratku nemají a zadané celé přeskočí otázku na typ.
+
+### Jak v AutoCADu vytvořit kruhové pole?
+
+Vyberte `Polární` nebo spusťte [`POLÁRPOLE`](/docs/commands/arraypolar) a vyberte středový bod: výběr se zkopíruje kolem něj, zpočátku v 6 položkách. Počet změňte možností `Položky` a úhel, který vyplňují, nastavte možností `Vyplnění`.
+
+### Jak rozložit pole v AutoCADu?
+
+Vyberte ho a spusťte [`ROZLOŽ`](/docs/commands/explode): pole se rozpadne na objekty svých položek, každý objekt ve své hladině. Chcete-li volné kopie hned od začátku, odpovězte `Ne` na `ASociativní`, než stisknete Enter.
+
+### Jak změnit pole po jeho vytvoření?
+
+Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řady a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není.
+
+## Související příkazy [#related]
+
+- [Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)](/docs/commands/arrayrect)
+- [Polární pole v AutoCADu: příkaz POLÁRPOLE (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Křivkové pole v AutoCADu: příkaz KŘIVPOLE (ARRAYPATH)](/docs/commands/arraypath)
+- [Příkaz KOPIE (COPY) v AutoCADu](/docs/commands/copy)
+- [Příkaz ROZLOŽ (EXPLODE) v AutoCADu](/docs/commands/explode)

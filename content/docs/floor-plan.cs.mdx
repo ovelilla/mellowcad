@@ -1,0 +1,55 @@
+---
+title: Jak nakreslit půdorys domu v AutoCADu
+metaTitle: "Jak nakreslit půdorys domu v AutoCADu s kótami"
+description: "Jak nakreslit půdorys domu v AutoCADu: stěny příkazem EKVID (OFFSET), vnitřní stěna, otvory oříznuté příkazem OŘEŽ (TRIM), dveře, okna a kóty."
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+Půdorys je dům rozříznutý zhruba ve výšce metr a půl a viděný shora: každá stěna jako dvě čáry, mezi nimiž je její tloušťka, otvory v ní, dveře nakreslené otevřené s obloukem otevírání, okna a kóty. Tento návod kreslí dům se dvěma místnostmi, 8 na 6 metrů, v centimetrech: jedna jednotka je jeden centimetr, takže obvodové stěny mají tloušťku 20 a vnitřní 10. Každý krok ukazuje svůj výkres a historii příkazového řádku tak, jak ji zadáte. [Otevřete editor](/cs/draw) vedle této stránky a postupujte s ní.
+
+## Vytvořte hladiny [#layers]
+
+Každý druh objektů patří do vlastní hladiny s vlastní barvou, abyste kteroukoli z nich mohli vypnout: Stěny, Dveře, Okna a Kóty. Vytvořte je v paletě hladin, příkazem <Command id="LAYER" />, a před každým krokem nastavte správnou hladinu jako aktuální v rozevíracím seznamu hladin. Aby byly kóty čitelné ve velikosti domu, nastavte celkové měřítko jejich stylu příkazem <Command id="DIMSTYLE" />: zde 12, takže jejich text má výšku 30.
+
+## Nakreslete obvodové stěny [#walls]
+
+V hladině Stěny nakreslete příkazem <Command id="RECTANG" /> obdélník od `0,0` do `800,600`: vnější líc stěn. Příkaz <Command id="OFFSET" /> vytvoří vnitřní: zadejte tloušťku, `20`, vyberte obdélník a klikněte dovnitř něj.
+
+<Session name="floorPlanWalls" caption="Obvodové stěny: obdélník a jeho ekvidistanta 20 dovnitř." />
+
+## Nakreslete vnitřní stěnu [#inner-wall]
+
+Úsečka příkazem <Command id="LINE" /> od `500,20`, `0,560` nahoru k vnitřnímu líci obvodových stěn, a její ekvidistanta příkazem <Command id="OFFSET" /> o `10` doprava: stěna mezi oběma místnostmi.
+
+<Session name="floorPlanInnerWall" caption="Vnitřní stěna: úsečka a její ekvidistanta 10 doprava." />
+
+## Vyřízněte otvory [#openings]
+
+Otvor se vyřízne mezi dvěma čarami napříč stěnou, jeho ostěními. Nakreslete je příkazem <Command id="LINE" /> a pak příkazem <Command id="TRIM" /> ořízněte čáry stěny mezi nimi, každou jedním kliknutím: vstup široký 90 od `100,0`; vnitřní dveře široké 80 od `500,200`; okna široká 120 od `200,580` v horní stěně a od `780,250` v pravé.
+
+<Session name="floorPlanOpenings" caption="Čtyři otvory: po dvou ostěních a čáry stěny oříznuté mezi nimi." />
+
+## Nakreslete dveře [#doors]
+
+V hladině Dveře tvoří každé dveře jejich křídlo, nakreslené otevřené příkazem <Command id="LINE" />, a oblouk otevírání, nakreslený příkazem <Command id="ARC" />: zvolte jeho možnost Střed a pak zadejte pant jako střed, začátek oblouku a jeho konec. Oba konce jsou už nakreslené body, roh ostění a konec křídla: zadejte `_END`, uchopení objektu Koncový bod pro jeden bod, a ukažte každý z nich.
+
+<Session name="floorPlanDoors" caption="Každé dveře: křídlo otevřené o 90° a oblouk otevírání." />
+
+## Nakreslete okna [#windows]
+
+V hladině Okna vyplní obdélník nakreslený příkazem <Command id="RECTANG" /> každý otvor od ostění k ostění a čára jeho středem znázorňuje sklo.
+
+<Session name="floorPlanWindows" caption="Okna: obdélník v každém otvoru a čára znázorňující sklo." />
+
+## Okótujte půdorys [#dimensions]
+
+V hladině Kóty okótujte příkazem <Command id="DIMLINEAR" /> vnější rozměry a pak místnosti zevnitř: šířku první místnosti příkazem <Command id="DIMLINEAR" />, potom vnitřní stěnu a druhou místnost příkazem <Command id="DIMCONTINUE" />, s body zadanými od počátku znakem `#`.
+
+<Session name="floorPlanDimensions" caption="Okótovaný půdorys: vně 800 na 600, uvnitř místnosti." />
+
+## Co dál [#next]
+
+- Pojmenujte každou místnost příkazem <Command id="TEXT" /> a vyplňte stěny příkazem <Command id="HATCH" />, ukázáním bodu mezi jejich dvěma čarami.
+- Procvičte si to na [cvičeních](/docs/exercises): [schodiště v půdorysu](/docs/exercises/stairs) a [kulatý stůl se židlemi](/docs/exercises/round-table) se také kreslí v centimetrech.
+- [Souřadnice](/docs/coordinates): všechny způsoby, jak zadat bod.

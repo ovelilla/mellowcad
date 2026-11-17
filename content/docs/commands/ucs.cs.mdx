@@ -1,0 +1,96 @@
+---
+title: "Příkaz USS (UCS) v AutoCADu: uživatelský souřadnicový systém"
+metaTitle: "Příkaz USS (UCS) v AutoCADu"
+description: "Jak příkaz USS (UCS) v AutoCADu posouvá a otáčí uživatelský souřadnicový systém: počátek a 3 body, Objekt, Pohled, X, Y, Z, ZOsa, Pojmenovaný, Globální."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak v AutoCADu vrátit USS na globální systém?","answer":"Spusťte příkaz USS a stiskněte Enter: Globální je výchozí možnost. Chcete-li se na výkres znovu dívat přímo shora, spusťte PŮDORYS a zvolte Globální."},{"question":"Jak v AutoCADu otočit USS?","answer":"Spusťte příkaz USS, zvolte Z a zapište úhel: 30 otočí X a Y o 30 stupňů proti směru hodinových ručiček. X a Y rovinu XY nakloní, ve výchozím nastavení o 90 stupňů."},{"question":"Jaký je rozdíl mezi USS a GSS?","answer":"Globální souřadnicový systém (GSS) se nikdy nehýbe; uživatelský souřadnicový systém (USS) je ten, který posouváte a otáčíte. Na začátku jsou stejné a příkaz USS uvede, že aktuální je *GLOBÁLNÍ*. Zapsané souřadnice se čtou v USS a to, co kreslíte, leží v jeho rovině XY."},{"question":"Jak kreslit na plochu 3D tělesa?","answer":"Přesuňte na ni USS. Na horní ploše kvádru stačí samotný počátek: USS, pak roh horní plochy, pak Enter, jako v ukázce. Na boku zadejte tři body: počátek v rohu, bod podél hrany pro X a ještě jeden na ploše pro Y. Pak kreslete: co nakreslíte, leží na ploše."}]
+---
+
+Příkaz USS (UCS) nastaví uživatelský souřadnicový systém: počátek a osy X a Y kdekoli v prostoru, takže jeho rovina XY může být skloněná. Zapsané souřadnice se v něm čtou a to, co kreslíte, leží v jeho rovině XY: po přesunu počátku na horní plochu kvádru leží kružnice se středem v `30,20` na horní ploše. Nejprve uvede název aktuálního USS – `*GLOBÁLNÍ*`, `*BEZ NÁZVU*` nebo název, pod kterým byl uložen – a pak se zeptá na nový počátek nebo možnost; Enter na tomto místě se vrátí ke globálnímu systému. Bod je počátkem, se svou souřadnicí Z, a bod bez Z leží v aktuální výšce. Pak se zeptá na bod na kladné ose X a bod v rovině XY, čtené v aktuálním USS: Enter u kteréhokoli z nich ponechá osy beze změny. Jeden bod USS posune, tři ho natočí libovolně.
+
+Příkazy pak pracují v rovině XY systému USS: [`ÚSEČKA`](/docs/commands/line) a [`KRUŽNICE`](/docs/commands/circle) kreslí na ni a [`KVÁDR`](/docs/commands/box) a [`VYTÁHNI`](/docs/commands/extrude) z ní vytvářejí tělesa podél její osy Z. Každý objekt si při změně USS ponechá vlastní rovinu a [`PŮDORYS`](/docs/commands/plan) ukáže aktuální USS přímo shora. USS se ukládá do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+
+- **Příkaz:** `USS`
+- **Anglicky:** `UCS`, zadávaný jako `_UCS` v libovolném jazyce
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `USS` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="ucs" caption="Kvádr viděný od jihovýchodu: USS přesune počátek na jeho horní plochu a kružnice nakreslená potom v 30,20 leží na horní ploše, ne na zemi." />
+
+## Možnosti [#options]
+
+### `PLocha` (`PL`) [#face]
+
+Vypsaná tak, jak ji vypisuje AutoCAD 2027, k zarovnání USS s plochou tělesa. MellowCAD se na plochu zeptá, ale zatím se k ní nezarovná: žádný výběr ji nenajde.
+
+### `poJMenovaný` (`JM`) [#named]
+
+Uložené systémy USS, podle názvu. `Ulož` uloží aktuální a před nahrazením už uloženého názvu se zeptá `Ano` nebo `Ne`; `oBnov` nastaví uložený jako aktuální, jeho název lze zapsat malými i velkými písmeny; `Vymaž` přijme názvy, s čárkami a zástupnými znaky; `?` je vypíše, každý s jeho počátkem a osami. Název smí obsahovat mezery, ale ne `<>/\":;|,=*?` ani obrácený apostrof: `Neplatný název USS.`.
+
+### `obJekt` (`J`) [#object]
+
+Zarovná USS s objektem, který vyberete: úsečkou, kružnicí, obloukem, elipsou, křivkou, spline, textem, víceřádkovým textem, definicí atributu nebo referencí bloku. Počátek a osa X se umístí tam, kam je pro daný druh objektu umístí AutoCAD, a osa Z je vlastní normála objektu, takže USS leží v rovině objektu. Vybrat lze i objekt v zamknuté hladině. U šraf příkaz vypíše `Tento objekt nedefinuje souřadnicový systém` a skončí, aniž by USS změnil.
+
+### `Předchozí` (`P`) [#previous]
+
+Vrátí se k předchozímu USS, až deset zpět v jedné relaci, včetně pojmenovaných a ortogonálních. Když už žádný nezbývá: `Není uložen žádný předchozí souřadnicový systém.`.
+
+### `poHled` (`H`) [#view]
+
+Natočí rovinu XY kolmo ke směru pohledu, s osou X podél vodorovného okraje obrazovky, a počátek ponechá: text nakreslený potom leží ve 3D pohledu rovně na obrazovce.
+
+### `Globální` (`G`) [#world]
+
+Návrat ke globálnímu souřadnicovému systému, který se nikdy nehýbe. Je to výchozí možnost první výzvy, takže ji zvolí Enter, a vrátí i výšku na 0.
+
+### `X` [#x]
+
+Otočí USS kolem jeho osy X: ve výchozím nastavení o 90 stupňů, o zapsaný úhel nebo o úhel určený bodem. Kladný úhel otáčí podle pravidla pravé ruky, takže 90 postaví rovinu XY svisle na původní ose X.
+
+### `Y` [#y]
+
+Otočí USS kolem jeho osy Y, stejně jako `X` kolem X.
+
+### `Z` [#z]
+
+Otočí USS kolem jeho osy Z, stejně jako `X` kolem X: 30 otočí X a Y o 30 stupňů proti směru hodinových ručiček, při pohledu shora.
+
+### `ZOsa` (`ZO`) [#zaxis]
+
+Zeptá se na nový počátek (Enter ponechá aktuální) a pak na bod na kladné ose Z: rovina XY se postaví kolmo k ní a její osa X zůstane vodorovná vzhledem k rovině XY globálního systému. Dva body, které splývají, vedou ke zprávě `Body jsou shodné`. Její možnost `OBjekt` přijme úsečku, oblouk, otevřenou křivku nebo spline: počátek v konci nejbližším místu výběru a osa Z podél objektu, směřující od tohoto konce.
+
+## Co zatím neumí [#missing]
+
+`PLocha`, která zarovná USS s plochou tělesa: zeptá se na ni, ale zatím žádnou nenajde. Použít a Řez, vypsané v první výzvě a zde odmítnuté, protože je jen jeden výřez a neexistují objekty řezu. Dialog USS (SPRUSS), uzly ikony a její místní nabídka a ikona, která ukazuje nový USS při jeho umisťování. Nitkový kříž, který se otáčí spolu s USS: zůstává na obrazovce rovně, dokud [`PŮDORYS`](/docs/commands/plan) nevyrovná pohled s USS. UCSFOLLOW, UCSVP a dynamický USS. `obJekt` u kóty a Skupina při výběru. Hloubka, kterou ortogonální USS zachovává. Pauza `Pokračujte stisknutím klávesy ENTER:` v dlouhém výpisu.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss)
+
+## Otázky [#questions]
+
+### Jak v AutoCADu vrátit USS na globální systém?
+
+Spusťte příkaz USS a stiskněte Enter: `Globální` je výchozí možnost. Chcete-li se na výkres znovu dívat přímo shora, spusťte [`PŮDORYS`](/docs/commands/plan) a zvolte `Globální`.
+
+### Jak v AutoCADu otočit USS?
+
+Spusťte příkaz USS, zvolte `Z` a zapište úhel: `30` otočí X a Y o 30 stupňů proti směru hodinových ručiček. `X` a `Y` rovinu XY nakloní, ve výchozím nastavení o 90 stupňů.
+
+### Jaký je rozdíl mezi USS a GSS?
+
+Globální souřadnicový systém (GSS) se nikdy nehýbe; uživatelský souřadnicový systém (USS) je ten, který posouváte a otáčíte. Na začátku jsou stejné a příkaz USS uvede, že aktuální je `*GLOBÁLNÍ*`. Zapsané souřadnice se čtou v USS a to, co kreslíte, leží v jeho rovině XY.
+
+### Jak kreslit na plochu 3D tělesa?
+
+Přesuňte na ni USS. Na horní ploše kvádru stačí samotný počátek: USS, pak roh horní plochy, pak Enter, jako v ukázce. Na boku zadejte tři body: počátek v rohu, bod podél hrany pro X a ještě jeden na ploše pro Y. Pak kreslete: co nakreslíte, leží na ploše.
+
+## Související příkazy [#related]
+
+- [Příkaz PŮDORYS (PLAN) v AutoCADu: pohled shora na USS](/docs/commands/plan)
+- [3D orbit v AutoCADu: příkaz 3DORBIT](/docs/commands/3dorbit)
+- [Kvádr v AutoCADu: příkaz KVÁDR (BOX)](/docs/commands/box)
+- [Příkaz VYTÁHNI (EXTRUDE) v AutoCADu](/docs/commands/extrude)

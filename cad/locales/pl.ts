@@ -2269,7 +2269,11 @@ export const pl: EngineLocale = {
         "Centre": "Centrum"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Konwertuj"
+        "convert to Polyline": "Konwertuj",
+        "Edit vertex": "Edytuj",
+        "Reverse": "ODWróć",
+        "eXit": "konIec",
+        "Open": "Otwórz"
       },
       "peditOption": {
         "eXit": "konIec"
@@ -6635,13 +6639,13 @@ export const pl: EngineLocale = {
         ]
       ],
       "listBulge": [
-        "             wypukłość      ",
+        "             wypukłość ",
         [
           "bulge"
         ]
       ],
       "listVertexBulge": [
-        "             wypukłość      ",
+        "         wypukłość ",
         [
           "bulge"
         ]

@@ -1,0 +1,86 @@
+---
+title: "Příkaz ZOOM v AutoCADu"
+description: "Jak funguje příkaz ZOOM (zkratka ZO) v AutoCADu: Maximálně, Okno, Předchozí, měříTko s nX, oBjekt a Vše, kolečko myši, zoom uvnitř příkazu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jaká je zkratka příkazu ZOOM v AutoCADu?","answer":"ZO, pak Enter nebo mezerník: v české verzi AutoCADu má příkaz stejný název, ZOOM, ale anglická zkratka Z v české verzi spouští příkaz Z (U), který vrátí jeden krok zpět. _ZOOM funguje v AutoCADu v každém jazyce. ZO, pak M je ZOOM Maximálně."},{"question":"Jak v AutoCADu zobrazit celý výkres?","answer":"Maximálně: zadejte ZO, Enter, M, Enter. Nebo poklepejte kolečkem myši."},{"question":"Co v AutoCADu znamená ZOOM XP?","answer":"nXP zvětší výřez rozvržení v měřítku vůči výkresovému prostoru: 1/50XP ukáže model na listu v měřítku 1:50. MellowCAD nemá rozvržení, takže se XP čte jako X."},{"question":"Jak v AutoCADu přiblížit objekt?","answer":"Zvolte oBjekt a vyberte objekt, nebo ho nejprve vyberte a pak spusťte ZOOM oBjekt: pohled ho zobrazí."},{"question":"Jak se vrátit k předchozímu pohledu?","answer":"Předchozí, znovu a znovu pro starší pohledy, až 20."}]
+---
+
+Příkaz ZOOM zvětší nebo zmenší pohled; ve výkresu se nic neposune ani nezmění velikost. Jeho první výzva přijme roh, který začne okno, faktor měřítka nebo možnost. Zadaný s apostrofem, `'ZOOM` nebo `'ZO`, funguje uvnitř jiného příkazu, který po něm pokračuje. Kolečko myši zvětšuje a zmenšuje kolem kurzoru a poklepání kolečkem je ZOOM `Maximálně`. Každé spuštění příkazu ZOOM je krok, který lze vrátit zpět, a po sobě jdoucí spuštění tvoří jeden krok, takže `Z` vrátí i pohled.
+
+- **Příkaz:** `ZOOM`
+- **Aliasy:** `ZO`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ZO` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="zoom" caption="Deska s malým otvorem u rohu: ZOOM Maximálně, pak okno kolem otvoru, který pak vyplní pohled." />
+
+## Možnosti [#options]
+
+### `Vše` (`V`) [#all]
+
+Zobrazí všechno nakreslené, jako `Maximálně`.
+
+### `Maximálně` (`M`) [#extents]
+
+Zobrazí všechno nakreslené, tak velké, jak okno dovolí. Když není nic nakreslené, vypíše `Regeneruji model.`, a zadaný uvnitř jiného příkazu odmítne se zprávou `** Vyžaduje regeneraci, nemůže být transparentní.`, jako v AutoCADu.
+
+### `Předchozí` (`P`) [#previous]
+
+Vrátí se k předchozímu pohledu, až 20 pohledů zpět. Když už žádný nezbývá: `Žádné předchozí pohledy nejsou uloženy.`.
+
+### `měříTko` (`T`) [#scale]
+
+Faktor: `2X` zvětší dvakrát vůči aktuálnímu pohledu, `0.5X` dvakrát zmenší a `2` bez X dá dvojnásobek měřítka pohledu ZOOM `Vše`. `nXP`, faktor výkresového prostoru, se čte jako `nX`: je zde jen modelový prostor. Faktor zapsaný v první výzvě funguje stejně i bez volby možnosti.
+
+### `Okno` (`O`) [#window]
+
+Dva rohy, určené nebo tažené, zobrazí tento obdélník. Roh určený v první výzvě funguje stejně.
+
+### `oBjekt` (`B`) [#object]
+
+Zobrazí vybrané objekty, nebo ty, které byly vybrány před příkazem ZOOM.
+
+## Co zatím neumí [#missing]
+
+Rychlý: Enter v první výzvě ukončí ZOOM, zatímco AutoCAD začne zvětšovat myší; zde to dělá kolečko. Dynamický, Střed a skryté Levý a VMax.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z--fr-zoom--z--it-zoom--z--de-zoom--zo--ru-показать--по--pl-zoom--z--cs-zoom--zo)
+
+## Otázky [#questions]
+
+### Jaká je zkratka příkazu ZOOM v AutoCADu?
+
+`ZO`, pak Enter nebo mezerník: v české verzi AutoCADu má příkaz stejný název, ZOOM, ale anglická zkratka `Z` v české verzi spouští příkaz Z (U), který vrátí jeden krok zpět. `_ZOOM` funguje v AutoCADu v každém jazyce. `ZO`, pak `M` je ZOOM Maximálně.
+
+### Jak v AutoCADu zobrazit celý výkres?
+
+`Maximálně`: zadejte `ZO`, Enter, `M`, Enter. Nebo poklepejte kolečkem myši.
+
+### Co v AutoCADu znamená ZOOM XP?
+
+`nXP` zvětší výřez rozvržení v měřítku vůči výkresovému prostoru: `1/50XP` ukáže model na listu v měřítku 1:50. MellowCAD nemá rozvržení, takže se `XP` čte jako `X`.
+
+### Jak v AutoCADu přiblížit objekt?
+
+Zvolte `oBjekt` a vyberte objekt, nebo ho nejprve vyberte a pak spusťte ZOOM `oBjekt`: pohled ho zobrazí.
+
+### Jak se vrátit k předchozímu pohledu?
+
+`Předchozí`, znovu a znovu pro starší pohledy, až 20.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu 3D: montážní deska](/docs/exercises/mounting-plate)
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley)
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Související příkazy [#related]
+
+- [Posun pohledu v AutoCADu: příkaz PP (PAN)](/docs/commands/pan)
+- [Příkaz POHLED (VIEW) v AutoCADu](/docs/commands/view)
+- [REGEN](/docs/commands#regen): Regeneruj

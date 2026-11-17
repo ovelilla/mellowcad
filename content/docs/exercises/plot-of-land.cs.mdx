@@ -1,0 +1,46 @@
+---
+title: "Cvičení v AutoCADu: pozemek"
+metaTitle: "Cvičení v AutoCADu: plocha a strany pozemku"
+description: "Nakreslete pozemek v AutoCADu z délek a úhlů jeho stran polárními souřadnicemi, potom změřte jeho plochu a okótujte ho. Krok za krokem, zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete tento pozemek v metrech podle délek a směrů jeho stran: 40 pod úhlem 0°, 30 pod úhlem 80°, 35 pod úhlem 155° a 25 pod úhlem 230°, a potom zpět k počátečnímu bodu. Změřte jeho plochu a obvod a okótujte každou stranu i úhel u jeho druhého vrcholu. Polární souřadnice – délka a úhel – vedou každou stranu od konce předchozí. Měřítko kót výkresu je nastavené pro metry.
+
+- **Cvičení:** Mírně pokročilý · Stavebnictví · 2D
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`PLOCHA`](/docs/commands/area), [`KÓTYSROVNEJ`](/docs/commands/dimaligned), [`KÓTYÚHEL`](/docs/commands/dimangular)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=plot-of-land), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Pozemek o pěti stranách, v metrech, s kótou každé strany a jednoho úhlu." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete hranici [#boundary]
+
+V hladině Obrys příkaz [`KŘIVKA`](/docs/commands/pline) od `0,0`, potom každou stranu jako její délku a úhel: `40<0`, `30<80`, `35<155` a `25<230`, každou měřenou od posledního bodu. Možnost `Uzavři` nakreslí pátou stranu a hranici uzavře: jeden objekt, který příkaz [`PLOCHA`](/docs/commands/area) dokáže změřit.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Nakreslete hranici" />
+
+### 2. Změřte plochu [#area]
+
+Příkaz [`PLOCHA`](/docs/commands/area), potom možnost `OBjekt`, a vyberte hranici: příkazový řádek vypíše její plochu ve čtverečních metrech a obvod.
+
+<Session name="exercises/plot-of-land/area" caption="2. Změřte plochu" />
+
+### 3. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYSROVNEJ`](/docs/commands/dimaligned) a Enter na jeho první výzvu: příkaz se pak zeptá na objekt a výběr strany okótuje tuto stranu, rovnoběžně s ní. Každou kótu umístěte vně pozemku. Příkaz [`KÓTYÚHEL`](/docs/commands/dimangular) na dvou stranách, které se setkávají v bodě `40,0`, udá úhel mezi nimi, 100°.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft): Mírně pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu: stupňovitý hranol v izometrii](/docs/exercises/isometric-block): Mírně pokročilý · Strojírenství · Izometrie
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley): Mírně pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu](/docs/exercises)

@@ -16,8 +16,8 @@ progress is on the branch `worktree-cs-language`.
 | Block | State |
 | --- | --- |
 | Research and plan | Done 17/11/2026: this plan; `runacc.sh` knows the Czech console's banner; the Czech names probes |
-| Draft (phases 1–5) | Next |
-| Live (phase 6) | — |
+| Draft (phases 1–5) | Done 17/11/2026: registered as a draft; the engine's catalog whole (433 probes, the desktop, the tables, four agents); the site, the editor, the "Use" pages, the 101 command notes and the 12 exercises (seven agents); the letters' face with Czech's |
+| Live (phase 6) | Next |
 
 ## 0. Research (17/11/2026)
 

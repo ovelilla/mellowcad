@@ -1,0 +1,5 @@
+(getcname "_PTYPE")
+(getcname "BTYP")
+(getcname "_DDPTYPE")
+(getcname "_LAYERCLOSE")
+(getcname "HLADZAVŘI")

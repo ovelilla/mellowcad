@@ -1,0 +1,48 @@
+---
+title: "Cvičení v AutoCADu 3D: řemenice"
+metaTitle: "Cvičení v AutoCADu 3D: řemenice rotací profilu"
+description: "Vymodelujte řemenici v AutoCADu 3D: polovina profilu jako uzavřená křivka, kterou rotace kolem osy Y změní v těleso. Krok za krokem, 3D cvičení zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Vymodelujte tuto řemenici rotací poloviny jejího profilu kolem osy, v milimetrech: otvor o průměru 20, náboj dlouhý 30 o průměru 40, disk tloušťky 10 a věnec široký 24, od průměru 90 do 110, vystředěný na náboji. Profil se kreslí jako vzdálenosti od osy, která vede podél osy Y, takže každý průměr se kreslí jako jeho polovina.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 3D těleso
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`OROTUJ`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=pulley), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/pulley" caption="Polovina profilu řemenice vedle její osy, s okótovanými vzdálenostmi od osy." />
+
+<Session name="exercises/pulley/model" caption="Řemenice jako těleso, pohled od jihovýchodu ve vizuálním stylu Koncepční." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete polovinu profilu [#profile]
+
+V hladině Obrys jedna uzavřená křivka příkazem [`KŘIVKA`](/docs/commands/pline) od `10,0`, každý další bod jako krok od předchozího: `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10` a `-10,0`, potom možnost `Uzavři`.
+
+<Session name="exercises/pulley/profile" caption="1. Nakreslete polovinu profilu" />
+
+### 2. Natočte pohled [#view]
+
+Příkaz `-POHLED` a možnost `JViso` ukážou profil od jihovýchodu a shora; příkaz [`AKTUÁLNÍVS`](/docs/commands/vscurrent) a možnost `Koncepční` stínují plochy – tak je soustružená součást vidět nejlépe.
+
+<Session name="exercises/pulley/view" caption="2. Natočte pohled" />
+
+### 3. Orotujte profil [#revolve]
+
+Příkaz [`OROTUJ`](/docs/commands/revolve): vyberte profil a stiskněte Enter, potom možnost `Y`: osa Y je osou řemenice. Enter přijme výchozí úhel, celou otáčku. Příkaz [`ZOOM`](/docs/commands/zoom) s možností `Maximálně` ji přizpůsobí obrazovce a měřítko `0.8x` kolem ní ponechá místo.
+
+<Session name="exercises/pulley/revolve" caption="3. Orotujte profil" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link): Pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block): Pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket): Začátečník · Strojírenství · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

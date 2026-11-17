@@ -1,0 +1,54 @@
+---
+title: "3D orbit v AutoCADu: příkaz 3DORBIT"
+metaTitle: "3D orbit v AutoCADu: příkaz 3DORBIT a zkratka"
+description: "Jak otáčet pohled v AutoCADu příkazem 3DORBIT (zkratky 3DO, ORBIT): tažením, se Shiftem a kolečkem myši a návrat k půdorysu. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jakou zkratku má 3D orbit v AutoCADu?","answer":"3DO nebo ORBIT, pak Enter nebo mezerník; v českém AutoCADu se příkaz jmenuje stejně jako v anglickém, 3DORBIT, a _3DORBIT funguje v AutoCADu v jakémkoli jazyce. Bez psaní: podržte Shift a kolečko myši a táhněte."},{"question":"Jak otáčet model myší v AutoCADu?","answer":"Podržte Shift, stiskněte kolečko myši a táhněte: do strany, abyste model otočili, nahoru a dolů, abyste se na něj podívali z výšky nebo zespodu. Po uvolnění se vrátíte do příkazu, který běžel."},{"question":"Jak ukončit 3D orbit?","answer":"Stiskněte Enter nebo Esc. Pohled zůstane tak, jak jste ho nechali."},{"question":"Jak se po orbitě vrátit k půdorysu?","answer":"Spusťte PŮDORYS a stiskněte Enter, nebo -POHLED s možností Horní, nebo klikněte na horní stěnu krychle ViewCube. Možnost Předchozí příkazu ZOOM vrací pohled po jednom tažení."}]
+---
+
+Příkaz 3DORBIT otáčí pohled kolem výkresu, zatímco táhnete myší; ve výkresu se nic neposune ani nezmění. Tažení do strany otáčí kameru kolem osy Z globálního souřadného systému, tažení nahoru a dolů ji zvedá nebo snižuje, kolem středu výkresu pod středem obrazovky, v rovnoběžném promítání. Na začátku příkaz řekne, jak ho ukončit: dokud běží, můžete jen otáčet pohled a Enter nebo Esc ho ukončí, ať jste táhli, nebo ne.
+
+Podržení Shiftu a kolečka myši otáčí pohled odkudkoli, i uvnitř jiného příkazu, a příkaz spouští také tlačítko Orbit na panelu navigace. Zadaný s apostrofem, `'3DORBIT`, funguje uvnitř jiného příkazu, který pak pokračuje. Každé tažení je krok pro možnost `Předchozí` příkazu [`ZOOM`](/docs/commands/zoom) a celý příkaz je jeden krok, takže `Z` vrátí pohled zpět. Chcete-li vidět tělesa jako tělesa, ne jako drátový model, použijte [`AKTUÁLNÍVS`](/docs/commands/vscurrent); 3D v MellowCADu jsou jen 3D tělesa, zatím částečně.
+
+- **Příkaz:** `3DORBIT`
+- **Aliasy:** `3DO`, `ORBIT`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `3DO` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="3dorbit" caption="Kvádr nejprve v půdorysu: 3DORBIT, tažení do strany a dolů, pak Enter, a kvádr je vidět shora, od předního rohu." />
+
+## Co zatím neumí [#missing]
+
+Místní nabídka s promítáním, vizuálními styly a dalšími režimy navigace. Otáčení jen kolem vybraných objektů. Perspektiva. Volná a nepřetržitá orbita (3DFORBIT, 3DCORBIT) a zbytek 3D navigace AutoCADu.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do--or--cs-3dorbit--3do--orbit)
+
+## Otázky [#questions]
+
+### Jakou zkratku má 3D orbit v AutoCADu?
+
+`3DO` nebo `ORBIT`, pak Enter nebo mezerník; v českém AutoCADu se příkaz jmenuje stejně jako v anglickém, 3DORBIT, a `_3DORBIT` funguje v AutoCADu v jakémkoli jazyce. Bez psaní: podržte Shift a kolečko myši a táhněte.
+
+### Jak otáčet model myší v AutoCADu?
+
+Podržte Shift, stiskněte kolečko myši a táhněte: do strany, abyste model otočili, nahoru a dolů, abyste se na něj podívali z výšky nebo zespodu. Po uvolnění se vrátíte do příkazu, který běžel.
+
+### Jak ukončit 3D orbit?
+
+Stiskněte Enter nebo Esc. Pohled zůstane tak, jak jste ho nechali.
+
+### Jak se po orbitě vrátit k půdorysu?
+
+Spusťte [`PŮDORYS`](/docs/commands/plan) a stiskněte Enter, nebo `-POHLED` s možností `Horní`, nebo klikněte na horní stěnu krychle ViewCube. Možnost `Předchozí` příkazu [`ZOOM`](/docs/commands/zoom) vrací pohled po jednom tažení.
+
+## Související příkazy [#related]
+
+- [Vizuální styly v AutoCADu: příkaz AKTUÁLNÍVS (VSCURRENT)](/docs/commands/vscurrent)
+- [Příkaz POHLED (VIEW) v AutoCADu](/docs/commands/view)
+- [Příkaz PŮDORYS (PLAN) v AutoCADu: pohled shora na USS](/docs/commands/plan)
+- [Příkaz ZOOM v AutoCADu](/docs/commands/zoom)

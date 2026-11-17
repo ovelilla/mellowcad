@@ -1,0 +1,44 @@
+---
+title: Souřadnice v AutoCADu
+metaTitle: "Zadávání souřadnic v AutoCADu"
+description: "Jak zadávat body v AutoCADu: absolutní, relativní a polární souřadnice, úsečka dané délky pod úhlem a polární trasování. Procvičte si je zdarma online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Každý bod, na který se příkaz ptá, lze ukázat ve výkresu, nebo zadat. Zadaný bod jsou dvě čísla, X a Y, oddělená čárkou, a odkud se měří, závisí na tom, jak je zapíšete: od počátku, od posledního bodu, nebo jako délka a úhel od něj. MellowCAD je čte tak jako AutoCAD se zapnutým dynamickým zadáváním, tedy ve výchozím nastavení. Každá část nakreslí jeden obrazec a ukáže jeho historii.
+
+## Absolutní souřadnice [#absolute]
+
+Měří se od počátku, `0,0`. Takto se čte první bod, na který se příkaz ptá: `20,10` je 20 ve směru X a 10 ve směru Y. Po něm dynamické zadávání čte zadaný bod od posledního, takže bod měřený od počátku dostane na začátek `#`: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Trojúhelník, každý vrchol měřený od počátku." />
+
+## Relativní souřadnice [#relative]
+
+Měří se od posledního bodu: o kolik se posunout ve směru X a pak ve směru Y. Po prvním bodu příkazu to zadaný bod znamená a historie ho zapisuje se znakem `@` na začátku, tak jak ho čte příkazový řádek: `100,0` je 100 doprava od posledního bodu, `-50,70` je 50 zpět a 70 nahoru. Bod, před který `@` napíšete sami, je relativní, ať ho zadáte kdekoli.
+
+<Session name="coordinatesRelative" caption="Tentýž trojúhelník, každý vrchol měřený od předchozího." />
+
+## Polární souřadnice [#polar]
+
+Délka a úhel, měřené od posledního bodu: `100<0` vede 100 ve směru X, `60<120` vede 60 pod úhlem 120°. Úhly se měří od osy X proti směru hodinových ručiček: 90° je nahoru, 180° doleva a 270°, neboli -90°, dolů. Historie je také zapisuje se znakem `@`.
+
+<Session name="coordinatesPolar" caption="Tři strany, každá jako délka a úhel od konce předchozí." />
+
+## Úsečka pod úhlem [#angle]
+
+Chcete-li nakreslit úsečku dané délky pod daným úhlem, zadejte její konec polárními souřadnicemi, `100<30`. Nebo nejdřív zamkněte úhel: zadejte `<30` a stiskněte Enter a další bod zůstane v tomto směru, na straně kurzoru; pak zadejte délku, `100`.
+
+<Session name="coordinatesAngle" caption="Úsečka se zamčeným úhlem 30°, pak s délkou 100." />
+
+## Polární trasování [#tracking]
+
+Když je polární trasování zapnuté, klávesou `F10` nebo jeho tlačítkem ve stavovém řádku, ukazuje kurzor vodicí čáru u každého násobku úhlu nastaveného v nabídce tohoto tlačítka a zadaná délka se odměří podél ní. Popisek u kurzoru ukazuje, jak daleko a pod jakým úhlem kurzor je.
+
+<Session name="coordinatesTracking" caption="Polární trasování po 30°: vodicí čára a u kurzoru vzdálenost a úhel." />
+
+## Co dál [#next]
+
+- [Cvičení](/docs/exercises), která se zadávají od začátku do konce z klávesnice: [úhelník tvaru L](/docs/exercises/l-bracket) v relativních souřadnicích, [pozemek](/docs/exercises/plot-of-land) v polárních a [kvádr v izometrii](/docs/exercises/isometric-block) podél izometrických úhlů.
+- Vlastní stránka příkazu <Command id="LINE" /> a [Začínáme](/docs/getting-started) pro první kroky v příkazovém řádku.

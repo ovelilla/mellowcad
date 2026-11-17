@@ -1,0 +1,67 @@
+---
+title: "Příkaz ZAOBLIHRANU (FILLETEDGE) v AutoCADu"
+description: "Jak v AutoCADu zaoblit hrany 3D tělesa příkazem ZAOBLIHRANU (FILLETEDGE): hrany, řetěz, smyčka, poloměr a šipkový uzel. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak v AutoCADu zaoblit hranu 3D tělesa?","answer":"Spusťte příkaz ZAOBLIHRANU, zvolte Poloměr a zadejte ho, vyberte hrany a pak dvakrát stiskněte Enter: jednou pro ukončení výběru, podruhé pro potvrzení. V ukázce 8 zaoblí dvě hrany kvádru."},{"question":"Jak zaoblit všechny hrany plochy?","answer":"Zvolte Smyčka a vyberte hranu plochy, pak Akceptovat, nebo Další, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, je řeTěz vezme všechny."},{"question":"Proč příkaz ZAOBLI nefunguje na 3D tělese?","answer":"Příkaz ZAOBLI v AutoCADu hranu tělesa také zaoblí, ale v MellowCAD zatím ne: použijte příkaz ZAOBLIHRANU a pro zkosení příkaz ZKOSHRANU."},{"question":"Jak změnit poloměr zaoblení?","answer":"Zvolte Poloměr před výběrem nebo u výzvy k potvrzení, nebo přetáhněte šipkový uzel uprostřed prvního zaoblení. Poslední poloměr se příště nabídne znovu."}]
+---
+
+Příkaz ZAOBLIHRANU (FILLETEDGE) zaoblí hrany 3D tělesa. Uvede aktuální poloměr a pak se ptá na hrany, až do Enter: kliknutí vezme hranu pod kurzorem, zvýrazněnou, když nad ní kurzor přejde, a zadaný bod vezme hranu, která jím prochází. Jak hrany přibývají, kreslí se těleso tak, jak bude vypadat, se zaobleními na místě. Enter hrany spočítá a vyzve vás, abyste znovu stiskli Enter pro potvrzení, nebo změnili poloměr; tento Enter zaoblení vytvoří. Jen hrany jednoho tělesa: hrana jiného vyvolá `Nelze zaoblit více těles.`, hrana vybraná dvakrát `Hrana již byla vybrána.`.
+
+Přímá hrana mezi dvěma rovinnými plochami se stane čtvrtinou válce a kruhová hrana otvoru nebo okraje čtvrtinou anuloidu; zaoblení, která se setkají v rohu, se spojí, tři z nich kusem koule. Poloměr se uloží ve výkresu a příště se nabídne znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+
+- **Příkaz:** `ZAOBLIHRANU`
+- **Anglicky:** `FILLETEDGE`, zadávaný jako `_FILLETEDGE` v libovolném jazyce
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ZAOBLIHRANU` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="filletedge" caption="Kvádr viděný od jihovýchodu: ZAOBLIHRANU s poloměrem 8 zaoblí jeho dvě svislé hrany vpravo." />
+
+## Možnosti [#options]
+
+### `řeTěz` (`T`) [#chain]
+
+Vezme vybranou hranu a každou hranu k ní tečnou, jednu za druhou: osm kolem horní plochy kvádru, jehož svislé hrany už jsou zaoblené. Když žádná tečná není, vypíše `Žádné přilehlé tečné hrany nebyly v řetězu nalezeny.` a vezme jen vybranou. `Hrana` se vrátí k jednotlivým hranám.
+
+### `Smyčka` (`S`) [#loop]
+
+Vezme každou hranu kolem plochy: vyberte jednu hranu a pak `Akceptovat` pro zobrazenou smyčku nebo `Další` pro smyčku druhé plochy, ke které hrana patří.
+
+### `Poloměr` (`P`) [#radius]
+
+Zeptá se na poloměr, zadaný nebo jako vzdálenost mezi dvěma body; 0 nebo méně vyvolá `Příliš malý poloměr. *Neplatné*`. `Výraz` ho přijme jako vzorec. U výzvy k potvrzení změní poloměr zobrazených zaoblení. Šipkový uzel uprostřed prvního zaoblení ho nastaví tažením: klikněte na něj, posuňte, klikněte; `kOnec` nebo Esc ho ponechá beze změny.
+
+## Co zatím neumí [#missing]
+
+Zaoblení dvou poloměrů, která se setkají, a zaoblení končící na zakřivené ploše. Zaoblení širší než sousední plocha, které AutoCAD převalí přes další hranu: zde skončí chybou modelování. Přímá hrana vedle zakřivené plochy, kruhová hrana mimo osu svého válce a jakákoli hrana koule, anuloidu, vytaženého nebo rotačního tělesa, které skončí stejně. Některé rohy, kde se zaoblení setkávají na hranách s různým sklonem. Šipkový uzel na jiné než první hraně a čára od něj ke kurzoru. Výběr hrany tělesa v příkazu [`ZAOBLI`](/docs/commands/fillet), který AutoCAD také umožňuje. Zaoblení kreslené jako síť během výběru a povrchy.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord--fr-areteraccord--it-raccordaspigolo--de-abrundkante--ru-сопряжениекромки--pl-zaokrąglkraw--cs-zaoblihranu)
+
+## Otázky [#questions]
+
+### Jak v AutoCADu zaoblit hranu 3D tělesa?
+
+Spusťte příkaz ZAOBLIHRANU, zvolte `Poloměr` a zadejte ho, vyberte hrany a pak dvakrát stiskněte Enter: jednou pro ukončení výběru, podruhé pro potvrzení. V ukázce `8` zaoblí dvě hrany kvádru.
+
+### Jak zaoblit všechny hrany plochy?
+
+Zvolte `Smyčka` a vyberte hranu plochy, pak `Akceptovat`, nebo `Další`, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, je `řeTěz` vezme všechny.
+
+### Proč příkaz ZAOBLI nefunguje na 3D tělese?
+
+Příkaz [`ZAOBLI`](/docs/commands/fillet) v AutoCADu hranu tělesa také zaoblí, ale v MellowCAD zatím ne: použijte příkaz ZAOBLIHRANU a pro zkosení příkaz [`ZKOSHRANU`](/docs/commands/chamferedge).
+
+### Jak změnit poloměr zaoblení?
+
+Zvolte `Poloměr` před výběrem nebo u výzvy k potvrzení, nebo přetáhněte šipkový uzel uprostřed prvního zaoblení. Poslední poloměr se příště nabídne znovu.
+
+## Související příkazy [#related]
+
+- [Zkosení hrany tělesa v AutoCADu: příkaz ZKOSHRANU (CHAMFEREDGE)](/docs/commands/chamferedge)
+- [Příkaz ZAOBLI (FILLET) v AutoCADu](/docs/commands/fillet)
+- [Příkaz OBJEDIT (SOLIDEDIT) v AutoCADu](/docs/commands/solidedit)
+- [Kvádr v AutoCADu: příkaz KVÁDR (BOX)](/docs/commands/box)

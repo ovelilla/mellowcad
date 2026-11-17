@@ -1,0 +1,61 @@
+---
+title: "Příkaz KÓTMEZERA (DIMSPACE) v AutoCADu"
+description: "Jak v AutoCADu zarovnat kóty příkazem KÓTMEZERA (DIMSPACE): stejný rozestup mezi kótami, nebo 0 pro zarovnání do řady, a Auto podle výšky textu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak zarovnat kóty v AutoCADu?","answer":"Spusťte příkaz KÓTMEZERA, vyberte kótu, ke které se mají ostatní zarovnat, vyberte je, stiskněte Enter a zadejte 0: každá kótovací čára se přesune na čáru základní kóty."},{"question":"Jak nastavit stejné rozestupy mezi kótami?","answer":"Spusťte příkaz KÓTMEZERA, jako základní vyberte kótu nejblíže objektu, vyberte ostatní a stiskněte dvakrát Enter: Auto je rozmístí po dvojnásobku výšky textu. Nebo zadejte vzdálenost, kterou chcete, například 8."},{"question":"Jaký je výchozí rozestup kót v AutoCADu?","answer":"Auto příkazu KÓTMEZERA je dvojnásobek výšky textu kótovacího stylu. Příkaz KÓTYZÁKL místo toho používá pro každou přidanou kótu „Odsazení základny“ stylu, 3,75 v ISO-25."},{"question":"Proč příkaz KÓTMEZERA neposune kótu?","answer":"Rozmísťuje jen kóty rovnoběžné se základní: kóta pod jiným úhlem se započítá a zůstane na místě. Úhlové kóty se zatím nerozmísťují."}]
+---
+
+Příkaz KÓTMEZERA (DIMSPACE) upraví rozestup mezi rovnoběžnými lineárními a šikmými kótami. Vyberete základní kótu, která zůstane na místě, a pak kóty, které se mají rozmístit; Enter výběr ukončí a zeptá se na rozestup. Kótovací čára každé kóty se pak posune, od základní kóty v pořadí, v jakém leží, do této vzdálenosti od předchozí. Rozestup 0 je všechny zarovná na čáru základní kóty: řetěz rozházený tak, jak byl nakreslen, se čte jako jeden. Změní se jen poloha kótovacích čar, v jednom kroku, který vrátí příkaz `Z`.
+
+Základní kótu lze vybrat, zadat jako bod nebo vzít možností `Poslední`; objekt, který není kótou, vyvolá `Vybraný objekt není kóta.` a otázka se zopakuje. Sada vybraná před příkazem je sadou k rozmístění. Kóta pod úhlem k základní se započítá a zůstane na místě a záporný rozestup se odmítne zprávou `Neplatná hodnota řádkování, hodnota řádkování nemůže být záporná.`.
+
+- **Příkaz:** `KÓTMEZERA`
+- **Anglicky:** `DIMSPACE`, zadávaný jako `_DIMSPACE` v libovolném jazyce
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KÓTMEZERA` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dimspaceBefore" caption="Horní hrana desky okótovaná řetězem tří kót, každá ve vlastní výšce, jak byly nakresleny." />
+
+<Session name="dimspace" caption="KÓTMEZERA od první kóty, další dvě vybrané a rozestup 0: řetěz zarovnaný na jednu čáru." />
+
+## Možnosti [#options]
+
+### `Auto` (`A`) [#auto]
+
+Výchozí možnost, Enter: rozestup rovný dvojnásobku výšky textu kótovacího stylu základní kóty, vynásobený jeho celkovým měřítkem, aby se do řady vešel její vlastní text.
+
+## Co zatím neumí [#missing]
+
+Úhlové kóty, které příkaz KÓTMEZERA zatím nerozmísťuje. AutoCAD posune kótu jen tam, kde je to potřeba; zde se znovu rozmístí každá vybraná kóta.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym--cs-kótmezera)
+
+## Otázky [#questions]
+
+### Jak zarovnat kóty v AutoCADu?
+
+Spusťte příkaz KÓTMEZERA, vyberte kótu, ke které se mají ostatní zarovnat, vyberte je, stiskněte Enter a zadejte `0`: každá kótovací čára se přesune na čáru základní kóty.
+
+### Jak nastavit stejné rozestupy mezi kótami?
+
+Spusťte příkaz KÓTMEZERA, jako základní vyberte kótu nejblíže objektu, vyberte ostatní a stiskněte dvakrát Enter: `Auto` je rozmístí po dvojnásobku výšky textu. Nebo zadejte vzdálenost, kterou chcete, například `8`.
+
+### Jaký je výchozí rozestup kót v AutoCADu?
+
+`Auto` příkazu KÓTMEZERA je dvojnásobek výšky textu kótovacího stylu. Příkaz [`KÓTYZÁKL`](/docs/commands/dimbaseline) místo toho používá pro každou přidanou kótu „Odsazení základny“ stylu, 3,75 v ISO-25.
+
+### Proč příkaz KÓTMEZERA neposune kótu?
+
+Rozmísťuje jen kóty rovnoběžné se základní: kóta pod jiným úhlem se započítá a zůstane na místě. Úhlové kóty se zatím nerozmísťují.
+
+## Související příkazy [#related]
+
+- [Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)](/docs/commands/dimlinear)
+- [Řetězové kótování v AutoCADu: příkaz KÓTYŘET (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Kótování od základny v AutoCADu: příkaz KÓTYZÁKL (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)](/docs/commands/dimstyle)

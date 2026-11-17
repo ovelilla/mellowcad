@@ -1,0 +1,72 @@
+---
+title: "Typ čáry v AutoCADu: příkaz TYPČ (LINETYPE)"
+description: "Jak načíst typ čáry v AutoCADu příkazem TYPČ (LINETYPE, zkratka TC): acadiso.lin, aktuální typ pro nové objekty, DleHlad a proč čárkovaná čára vypadá plná."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz TYPČ anglicky?","answer":"LINETYPE. V českém AutoCADu jsou jeho zkratky TC, DDLTYPE a DIATYPČ: zadejte jednu z nich a stiskněte Enter nebo mezerník. Anglické LT a LTYPE v české verzi nefungují, DDLTYPE ano; celý název TYPČ funguje také a _LINETYPE v AutoCADu v jakémkoli jazyce."},{"question":"Proč se čárkovaná čára zobrazuje jako plná?","answer":"Čára kratší než jedno opakování vzoru se kreslí plná, jako v AutoCADu: vzor CENTER je při výchozím měřítku dlouhý asi 51 jednotek. Zvětšete nebo zmenšete TČMĚŘ, aby vzor odpovídal výkresu. Zkontrolujte také, že typ čáry objektu, nebo jeho hladiny, když je DleHlad, není Continuous."},{"question":"Jak změnit typ čáry existujícího objektu?","answer":"Vyberte ho a zvolte typ čáry v řádku Typ čáry palety Vlastnosti, nebo ho zkopírujte z jiného objektu příkazem KOPIEVLAST. Příkaz TYPČ nastavuje jen typ čáry objektů nakreslených po něm."},{"question":"Jak změnit měřítko typu čáry v AutoCADu?","answer":"Zadejte TČMĚŘ a nový faktor: 2 prodlouží každou čárku na dvojnásobek, v celém výkresu."},{"question":"Jak načíst typ čáry v AutoCADu?","answer":"AutoCAD ho načítá ve Správci typů čar. Zde zadejte -TYPČ, zvolte Načti, zadejte název typu čáry, třeba HIDDEN2 nebo ACAD_ISO02W100, a stiskněte Enter, aby se prohledal acadiso.lin. naStav načte typ, který má acadiso.lin, a rovnou ho nastaví jako aktuální."}]
+---
+
+Příkaz TYPČ (LINETYPE) nastaví typ čáry, kterým se kreslí nové objekty. AutoCAD otevře Správce typů čar; MellowCAD ho zatím nemá, a tak příkaz TYPČ spustí verzi pro příkazový řádek, kterou má i AutoCAD, `-TYPČ`. Vypíše aktuální typ čáry, na začátku `DleHlad`, a po každé odpovědi se znovu ptá na volbu, dokud ho Enter neukončí. DleHlad znamená, že každý objekt přebírá typ čáry své hladiny; typ zadaný názvem je vlastním typem objektu. Celé spuštění je jeden krok, který vrátí `Z`, a když příkaz zadáte s apostrofem uvnitř jiného příkazu, jeho typ čáry platí pro to, co ten příkaz nakreslí dál.
+
+Výkres si nese vlastní typy čar, uložené s ním i v jeho DXF. Nový jich má šest: Continuous a z metrického souboru AutoCADu acadiso.lin DASHED, HIDDEN, CENTER, PHANTOM a DASHDOT; ostatní se načítají z acadiso.lin a soubor DXF přináší vlastní, i ISO a složené, jejichž text, třeba `GAS` u GAS_LINE, se kreslí podél čáry. Vzor se na každou čáru klade jako v AutoCADu: vystředěný po její délce, se stejnými čárkami na obou koncích, ve velikosti podle [`TČMĚŘ`](/docs/commands/ltscale) a podle vlastního měřítka typu čáry objektu, které nastavují [`ZMĚNAV`](/docs/commands/chprop) a paleta Vlastnosti a novým objektům dává CELTSCALE.
+
+- **Příkaz:** `TYPČ`
+- **Anglicky:** `LINETYPE`, zadávaný jako `_LINETYPE` v libovolném jazyce
+- **Aliasy:** `TC`, `DDLTYPE`, `DIATYPČ`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `TC` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="linetype" caption="Deska, jejíž otvor je nakreslen s aktuálním typem HIDDEN a obě osy s typem CENTER, pak TYPČ nastavený zpět na DleHlad." />
+
+## Možnosti [#options]
+
+### `?` [#list]
+
+Vypíše typy čar ve dvou sloupcích, název a popis. Na výzvě voleb se zeptá, který soubor vypsat, ve výchozím stavu acadiso.lin, nebo acad.lin, soubor AutoCADu v palcích, a vypíše jeho typy čar v pořadí souboru; na výzvě volby `naStav` ty, které jsou načtené ve výkresu a jejichž názvy odpovídají zadanému textu, při `*` všechny, seřazené podle názvu.
+
+### `Načti` (`N`) [#load]
+
+Zeptá se, které typy čar načíst, jeden název nebo několik oddělených čárkami, i se zástupnými znaky (`DASH*`), a pak, ve kterém souboru hledat: nejprve v acadiso.lin, potom v naposledy prohledaném. Každý nalezený se načte a vypíše, v pořadí souboru; na typ už načtený se nejprve zeptá a `Ano`, výchozí odpověď, ho načte znovu. Název, který soubor nemá, nebo jiný soubor než acadiso.lin a acad.lin oznámí.
+
+### `naStav` (`S`) [#set]
+
+Zeptá se na název typu čáry a nabídne aktuální; zadejte název načteného typu nebo `DLEHlad`. Typ, který má acadiso.lin, se nejprve načte, jako to dělá AutoCAD; jakýkoli jiný se nenajde, což oznámí stejně jako AutoCAD, a vrátí se výzva voleb. Enter ponechá aktuální.
+
+## Co zatím neumí [#missing]
+
+Správce typů čar a vytváření typů čar nebo jejich načítání z vlastního souboru. Tvary složených typů čar, jako je BATTING nebo ZIGZAG, kreslené jako mezery na jejich místě. DleBlok. PSLTSCALE a MSLTSCALE, protože tu není výkresový prostor. Soubor acadiso.lin AutoCADu v jednotlivých jazycích, z něhož španělský nebo německý AutoCAD načítá své názvy (TRAZOS, STRICHLINIE): volba `Načti` čte ve všech jazycích anglický, i když výkres vytvořený s těmito názvy se otevře s vlastními. PLINEGEN: nová křivka začíná vzor znovu v každém vrcholu, pokud to nezapne volba `tYpčgen` příkazu [`KEDIT`](/docs/commands/pedit).
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz TYPČ anglicky?
+
+LINETYPE. V českém AutoCADu jsou jeho zkratky `TC`, `DDLTYPE` a `DIATYPČ`: zadejte jednu z nich a stiskněte Enter nebo mezerník. Anglické `LT` a `LTYPE` v české verzi nefungují, `DDLTYPE` ano; celý název `TYPČ` funguje také a `_LINETYPE` v AutoCADu v jakémkoli jazyce.
+
+### Proč se čárkovaná čára zobrazuje jako plná?
+
+Čára kratší než jedno opakování vzoru se kreslí plná, jako v AutoCADu: vzor CENTER je při výchozím měřítku dlouhý asi 51 jednotek. Zvětšete nebo zmenšete [`TČMĚŘ`](/docs/commands/ltscale), aby vzor odpovídal výkresu. Zkontrolujte také, že typ čáry objektu, nebo jeho hladiny, když je DleHlad, není Continuous.
+
+### Jak změnit typ čáry existujícího objektu?
+
+Vyberte ho a zvolte typ čáry v řádku Typ čáry palety Vlastnosti, nebo ho zkopírujte z jiného objektu příkazem [`KOPIEVLAST`](/docs/commands/matchprop). Příkaz TYPČ nastavuje jen typ čáry objektů nakreslených po něm.
+
+### Jak změnit měřítko typu čáry v AutoCADu?
+
+Zadejte [`TČMĚŘ`](/docs/commands/ltscale) a nový faktor: 2 prodlouží každou čárku na dvojnásobek, v celém výkresu.
+
+### Jak načíst typ čáry v AutoCADu?
+
+AutoCAD ho načítá ve Správci typů čar. Zde zadejte `-TYPČ`, zvolte `Načti`, zadejte název typu čáry, třeba `HIDDEN2` nebo `ACAD_ISO02W100`, a stiskněte Enter, aby se prohledal acadiso.lin. `naStav` načte typ, který má acadiso.lin, a rovnou ho nastaví jako aktuální.
+
+## Související příkazy [#related]
+
+- [Měřítko typu čáry v AutoCADu: příkaz TČMĚŘ (LTSCALE)](/docs/commands/ltscale)
+- [Hladiny v AutoCADu: příkaz HLADINA (LAYER)](/docs/commands/layer)
+- [Tloušťka čáry v AutoCADu: příkaz TLČÁRY (LWEIGHT)](/docs/commands/lweight)
+- [Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)](/docs/commands/properties)

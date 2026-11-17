@@ -1,0 +1,57 @@
+---
+title: "Měřítko typu čáry v AutoCADu: příkaz TČMĚŘ (LTSCALE)"
+metaTitle: "Měřítko typu čáry v AutoCADu: TČMĚŘ (LTSCALE)"
+description: "Jak změnit měřítko typu čáry v AutoCADu příkazem TČMĚŘ (LTSCALE, zkratka TCM) pro celý výkres, aby čárkovaná čára ukázala čárky v každé velikosti."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz TČMĚŘ anglicky?","answer":"LTSCALE. V českém AutoCADu je jeho zkratka TCM: zadejte ji a stiskněte Enter nebo mezerník. Anglické LTS v české verzi nefunguje; celý název TČMĚŘ funguje také a _LTSCALE v AutoCADu v jakémkoli jazyce."},{"question":"Proč se čárkovaná čára zobrazuje jako plná?","answer":"Její vzor neodpovídá výkresu při aktuálním měřítku. Čára kratší než jedno opakování vzoru se kreslí plná; dlouhá čára při malém měřítku nahustí čárky tak blízko k sobě, že vypadá plná. U velkého výkresu TČMĚŘ zvětšete, u malého zmenšete, dokud se čárky neukážou."},{"question":"Jaké měřítko TČMĚŘ nastavit?","answer":"Měřítko výkresu: ve výkresu v milimetrech čteném v měřítku 1:50 50. Pro výkres ve velikosti papíru 1."},{"question":"Jaký je rozdíl mezi TČMĚŘ a samotným typem čáry?","answer":"Typ čáry, nastavený příkazem TYPČ nebo hladinou, je vzor: čárky, tečky a mezery. TČMĚŘ určuje, jak dlouhý se ten vzor kreslí – stejný faktor pro všechny objekty výkresu."}]
+---
+
+Příkaz TČMĚŘ (LTSCALE) nastaví globální faktor měřítka typu čáry: jak dlouhé jsou čárky a mezery každého přerušovaného typu čáry ve výkresu. Zeptá se na nový faktor a nabídne aktuální, v novém výkresu `1.0000`: 2 prodlouží každou čárku na dvojnásobek, 0,5 ji zkrátí na polovinu. Faktor musí být větší než 0, jinak vypíše `Hodnota musí být kladná a nenulová.` a zeptá se znovu; `1/2` a `1e3` čte jako čísla. Změna překreslí celý výkres se zprávou `Regeneruji model.`, jak ji píše AutoCAD 2027, a uloží se s výkresem; je to krok, který vrátí `Z`. Když příkaz zadáte s apostrofem uvnitř jiného příkazu, `'TČMĚŘ`, výkres se překreslí, až ten příkaz skončí.
+
+Typy čar jsou vzory navržené pro výkres ve velikosti papíru: ve výkresu širokém 4 metry, v milimetrech, se vzor CENTER, dlouhý asi 51 jednotek, zopakuje zhruba 80krát, příliš jemně, aby byl vidět, a čára kratší než jeden vzor se kreslí plná. Správné měřítko je obvykle měřítko samotného výkresu: 20 pro výkres čtený v měřítku 1:20, 50 pro 1:50.
+
+- **Příkaz:** `TČMĚŘ`
+- **Anglicky:** `LTSCALE`, zadávaný jako `_LTSCALE` v libovolném jazyce
+- **Aliasy:** `TCM`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `TCM` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="ltscaleBefore" caption="Deska dlouhá 4 metry, její otvor nakreslený typem HIDDEN a osy typem CENTER, při výchozím měřítku typu čáry 1: čárky jsou příliš drobné, aby byly vidět." />
+
+<Session name="ltscale" caption="Tatáž deska po TČMĚŘ 20: čárky otvoru a os nakreslené 20krát delší." />
+
+## Co zatím neumí [#missing]
+
+Správce typů čar, jehož Globální měřítko je TČMĚŘ a Měřítko aktuálního objektu CELTSCALE. PSLTSCALE a MSLTSCALE, protože tu není výkresový prostor. Tvary složených typů čar, jako je BATTING, kreslené jako jejich mezery.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz TČMĚŘ anglicky?
+
+LTSCALE. V českém AutoCADu je jeho zkratka `TCM`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `LTS` v české verzi nefunguje; celý název `TČMĚŘ` funguje také a `_LTSCALE` v AutoCADu v jakémkoli jazyce.
+
+### Proč se čárkovaná čára zobrazuje jako plná?
+
+Její vzor neodpovídá výkresu při aktuálním měřítku. Čára kratší než jedno opakování vzoru se kreslí plná; dlouhá čára při malém měřítku nahustí čárky tak blízko k sobě, že vypadá plná. U velkého výkresu TČMĚŘ zvětšete, u malého zmenšete, dokud se čárky neukážou.
+
+### Jaké měřítko TČMĚŘ nastavit?
+
+Měřítko výkresu: ve výkresu v milimetrech čteném v měřítku 1:50 `50`. Pro výkres ve velikosti papíru 1.
+
+### Jaký je rozdíl mezi TČMĚŘ a samotným typem čáry?
+
+Typ čáry, nastavený příkazem [`TYPČ`](/docs/commands/linetype) nebo hladinou, je vzor: čárky, tečky a mezery. TČMĚŘ určuje, jak dlouhý se ten vzor kreslí – stejný faktor pro všechny objekty výkresu.
+
+## Související příkazy [#related]
+
+- [Typ čáry v AutoCADu: příkaz TYPČ (LINETYPE)](/docs/commands/linetype)
+- [Hladiny v AutoCADu: příkaz HLADINA (LAYER)](/docs/commands/layer)
+- [Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)](/docs/commands/properties)
+- [Tloušťka čáry v AutoCADu: příkaz TLČÁRY (LWEIGHT)](/docs/commands/lweight)

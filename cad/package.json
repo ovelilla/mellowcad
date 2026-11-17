@@ -72,6 +72,10 @@
       "types": "./dist/locales/pl.d.ts",
       "default": "./dist/locales/pl.js"
     },
+    "./locales/cs": {
+      "types": "./dist/locales/cs.d.ts",
+      "default": "./dist/locales/cs.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

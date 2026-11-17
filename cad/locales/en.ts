@@ -1545,7 +1545,11 @@ export const en: EngineCatalog = {
         "Centre": "Centre"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Polyline"
+        "convert to Polyline": "Polyline",
+        "Edit vertex": "Edit",
+        "Reverse": "REverse",
+        "eXit": "EXit",
+        "Open": "Open"
       },
       "peditOption": {
         "eXit": "EXit"

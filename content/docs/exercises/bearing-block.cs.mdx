@@ -1,0 +1,66 @@
+---
+title: "Cvičení v AutoCADu 3D: ložiskové těleso"
+metaTitle: "Cvičení 3D v AutoCADu: ložiskové těleso s otvory"
+description: "Vymodelujte ložiskové těleso v AutoCADu 3D: vytáhněte, sjednoťte a odečtěte otvor a dva otvory pro šrouby jako válce. Krok za krokem, 3D tělesa zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Vymodelujte toto ložiskové těleso v milimetrech: základna 100 × 60 s rohy o poloměru 10, tloušťka 12; uprostřed nálitek o průměru 40 a výšce 40; středový otvor o průměru 20 skrz nálitek a dva otvory pro šrouby o průměru 10 skrz základnu, s roztečí 76. Základna a nálitek se vytáhnou ze svých obrysů a sjednotí do jednoho tělesa; otvory jsou válce od něj odečtené.
+
+- **Cvičení:** Pokročilý · Strojírenství · 3D těleso
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`KRUŽNICE`](/docs/commands/circle), [`VYTÁHNI`](/docs/commands/extrude), [`SJEDNOCENÍ`](/docs/commands/union), [`VÁLEC`](/docs/commands/cylinder), [`KOPIE`](/docs/commands/copy), [`ROZDÍL`](/docs/commands/subtract), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=bearing-block), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/bearing-block" caption="Ložiskové těleso v půdorysu, 100 × 60, s kótami nálitku, středového otvoru a otvorů pro šrouby." />
+
+<Session name="exercises/bearing-block/model" caption="Ložiskové těleso jako 3D těleso, pohled od jihovýchodu ve vizuálním stylu Koncepční." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete půdorys [#plan]
+
+V hladině Obrys příkaz [`OBD`](/docs/commands/rectang) s možností `zAoblení` `10`, od `0,0` do `100,60`, a kružnice v jeho středu, `50,30`, s možností `Průměr` `40`.
+
+<Session name="exercises/bearing-block/plan" caption="1. Nakreslete půdorys" />
+
+### 2. Vytáhněte základnu a nálitek [#extrude]
+
+Příkaz [`VYTÁHNI`](/docs/commands/extrude): obrys do výšky `12`, potom kružnici do výšky `40`. Vzniknou dvě tělesa.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Vytáhněte základnu a nálitek" />
+
+### 3. Sjednoťte je [#union]
+
+Příkaz [`SJEDNOCENÍ`](/docs/commands/union): vyberte obě a stiskněte Enter. Tvoří jedno těleso.
+
+<Session name="exercises/bearing-block/union" caption="3. Sjednoťte je" />
+
+### 4. Nakreslete válce [#holes]
+
+Středový otvor a otvor pro šroub jako válce, příkazem [`VÁLEC`](/docs/commands/cylinder): středový otvor v bodě `50,30`, možnost `Průměr` `20` a výška `40`; otvor pro šroub v bodě `12,30`, průměr `10` a výška `12`. Potom příkaz [`KOPIE`](/docs/commands/copy) zkopíruje otvor od `12,30` do bodu o `76,0` dál.
+
+<Session name="exercises/bearing-block/holes" caption="4. Nakreslete válce" />
+
+### 5. Odečtěte je [#subtract]
+
+Příkaz [`ROZDÍL`](/docs/commands/subtract): vyberte těleso a stiskněte Enter, potom tři válce a Enter. Otvory procházejí skrz.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Odečtěte je" />
+
+### 6. Natočte pohled [#view]
+
+Příkaz `-POHLED` a možnost `JViso`, příkaz [`AKTUÁLNÍVS`](/docs/commands/vscurrent) a možnost `Koncepční`, potom příkaz [`ZOOM`](/docs/commands/zoom) s možností `Maximálně` a `0.8x`, aby se těleso vešlo na obrazovku.
+
+<Session name="exercises/bearing-block/view" caption="6. Natočte pohled" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket): Začátečník · Strojírenství · 2D
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket): Začátečník · Strojírenství · 2D
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs): Začátečník · Architektura · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

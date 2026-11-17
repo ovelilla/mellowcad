@@ -1,0 +1,72 @@
+---
+title: "Příkaz ÚSEČKA (LINE) v AutoCADu"
+description: "Jak nakreslit úsečku v AutoCADu příkazem ÚSEČKA (LINE, zkratka U), výzva po výzvě: body určené nebo zadané, Zpět, Uzavřít a navázání. Vyzkoušejte online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ÚSEČKA anglicky?","answer":"LINE. V českém AutoCADu je jeho zkratka U: zadejte ji a stiskněte Enter nebo mezerník. Pozor: v anglickém AutoCADu U vrací krok zpět, v českém kreslí úsečku a zpět vrací Z; anglické L v české verzi nefunguje. Celý název ÚSEČKA funguje také a _LINE v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit úsečku dané délky pod úhlem?","answer":"Zadejte první bod a další zadejte jako délku a úhel: @100<30 nakreslí 100 pod úhlem 30°. Nebo zapněte polární trasování, veďte kurzor po jeho vodicí čáře pod tímto úhlem a zadejte jen délku."},{"question":"Jak navázat na naposledy nakreslenou úsečku?","answer":"Spusťte příkaz ÚSEČKA a u prvního bodu stiskněte Enter: začne od konce poslední úsečky, křivky nebo oblouku. Od oblouku pokračuje úsečka tečně k němu a příkaz se ptá jen na její délku. Když není na co navázat, vypíše „Žádná úsečka nebo oblouk pro pokračování.“."},{"question":"Proč se moje čára skládá ze samostatných kusů?","answer":"Každý segment, který příkaz ÚSEČKA nakreslí, je samostatná úsečka, jako v AutoCADu. Chcete-li jeden objekt, kreslete příkazem KŘIVKA, nebo úsečky dodatečně spojte příkazem SPOJ."}]
+---
+
+Příkaz ÚSEČKA (LINE) kreslí přímé segmenty, každý jako samostatný objekt: zadejte první bod, pak každý další, dokud nestisknete Enter. Bod lze ukázat, uchopit na objektu nebo zadat. Stejně jako v AutoCADu se zapnutým dynamickým zadáváním se bod zadaný po prvním měří od posledního, takže `80,0` nakreslí 80 ve směru X a historie ho zapíše jako `@80,0`; samotné číslo je vzdálenost ve směru kurzoru a `<30` zamkne další bod na úhel 30°. Enter nebo pravé tlačítko u prvního bodu naváže na konec poslední úsečky, křivky nebo oblouku, od oblouku tečně a s dotazem jen na délku. Ať nakreslí segmentů kolik chce, jedno `Z` vrátí celý příkaz.
+
+- **Příkaz:** `ÚSEČKA`
+- **Anglicky:** `LINE`, zadávaný jako `_LINE` v libovolném jazyce
+- **Aliasy:** `U`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `U` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="line" caption="Trojúhelník: první bod zadaný, další dva od posledního bodu, pak Uzavřít." />
+
+## Možnosti [#options]
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední segment a znovu se ptá od předchozího bodu. Když nezbude žádný segment, vypíše `Všechny segmenty již byly odstraněny.` a znovu se zeptá na první bod.
+
+### `Uzavři` (`U`) [#close]
+
+Nabízí se od druhého segmentu: nakreslí poslední segment zpět do prvního bodu a příkaz ukončí, takže tvar uzavře.
+
+## Co zatím neumí [#missing]
+
+Uchopení Tečna nebo Kolmo zadané u prvního bodu čeká na další bod (odložené uchopení), jako v AutoCADu, ale jen nad úsečkami, kružnicemi a oblouky, ne nad segmentem křivky, elipsou nebo spline, a dvě odložená uchopení Kolmo se neřeší.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l--cs-úsečka--u)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ÚSEČKA anglicky?
+
+LINE. V českém AutoCADu je jeho zkratka `U`: zadejte ji a stiskněte Enter nebo mezerník. Pozor: v anglickém AutoCADu `U` vrací krok zpět, v českém kreslí úsečku a zpět vrací `Z`; anglické `L` v české verzi nefunguje. Celý název `ÚSEČKA` funguje také a `_LINE` v AutoCADu v jakémkoli jazyce.
+
+### Jak nakreslit úsečku dané délky pod úhlem?
+
+Zadejte první bod a další zadejte jako délku a úhel: `@100<30` nakreslí 100 pod úhlem 30°. Nebo zapněte polární trasování, veďte kurzor po jeho vodicí čáře pod tímto úhlem a zadejte jen délku.
+
+### Jak navázat na naposledy nakreslenou úsečku?
+
+Spusťte příkaz ÚSEČKA a u prvního bodu stiskněte Enter: začne od konce poslední úsečky, křivky nebo oblouku. Od oblouku pokračuje úsečka tečně k němu a příkaz se ptá jen na její délku. Když není na co navázat, vypíše `Žádná úsečka nebo oblouk pro pokračování.`.
+
+### Proč se moje čára skládá ze samostatných kusů?
+
+Každý segment, který příkaz ÚSEČKA nakreslí, je samostatná úsečka, jako v AutoCADu. Chcete-li jeden objekt, kreslete příkazem [`KŘIVKA`](/docs/commands/pline), nebo úsečky dodatečně spojte příkazem [`SPOJ`](/docs/commands/join).
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket)
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket)
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs)
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft)
+- [Cvičení v AutoCADu: stupňovitý hranol v izometrii](/docs/exercises/isometric-block)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+## Související příkazy [#related]
+
+- [Křivka v AutoCADu: příkaz KŘIVKA (PLINE)](/docs/commands/pline)
+- [Ekvidistanta v AutoCADu: příkaz EKVID (OFFSET)](/docs/commands/offset)
+- [Příkaz OŘEŽ (TRIM) v AutoCADu](/docs/commands/trim)
+- [Příkaz SPOJ (JOIN) v AutoCADu](/docs/commands/join)

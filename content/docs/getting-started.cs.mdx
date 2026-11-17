@@ -1,0 +1,61 @@
+---
+title: Začínáme
+metaTitle: "Technické kreslení online: váš první výkres"
+description: "Váš první výkres v MellowCAD: příkazový řádek, výzvy a možnosti, pomůcky pro přesné kreslení, vrácení zpět a ukládání."
+type: gettingStarted
+sourceHash: "527b2d24b274"
+---
+
+MellowCAD funguje jako AutoCAD: zadáte příkaz, odpovíte na jeho výzvy a výkres vzniká. Pokud už v AutoCADu pracujete, stačí vám [seznam příkazů](/docs/commands) a [rozdíly](/docs/differences); tato stránka je na prvních deset minut.
+
+## Otevřete editor [#open]
+
+[Otevřete editor](/cs/draw) v prohlížeči na počítači. Nic se neinstaluje a nezakládá se žádný účet. Výkres se během práce ukládá v tomto prohlížeči a najdete ho tam i příště, až editor znovu otevřete.
+
+## Zadejte příkaz [#command]
+
+Pište přímo na výkres, ať je kurzor kdekoli: písmena se objeví v příkazovém řádku dole, který nabídne příkazy, jež jimi začínají. Enter nebo mezerník příkaz spustí. Příkaz <Command id="LINE" /> kreslí úsečky, stejně jako jeho kratší zkratka; všechny zkratky najdete na [stránce příkazů](/docs/commands). Názvy jsou z české verze AutoCADu; funguje i anglický název s podtržítkem na začátku, jako v AutoCADu (`_LINE`).
+
+## Odpovídejte na výzvy [#prompts]
+
+Příkaz se ptá vždy na jednu věc, v příkazovém řádku a vedle kurzoru. Bod je kliknutí do výkresu, nebo dvě souřadnice zadané jako `x,y`. Po prvním bodu se zadané souřadnice měří od posledního bodu, tak jak je měří dynamické zadávání AutoCADu, a historie je zapisuje se znakem `@`; `#x,y` se naopak měří od počátku. Samotná zadaná vzdálenost se odměří ve směru kurzoru.
+
+<Session name="firstLine" />
+
+## Zvolte možnost [#options]
+
+Možnosti, které výzva nabízí, jsou v hranatých závorkách, každá se svými velkými písmeny: zadejte tato písmena a stiskněte Enter. Hodnota v lomených závorkách je výchozí a Enter ji přijme.
+
+<Session name="circleDiameter" />
+
+## Ukončit, opakovat, zrušit [#end]
+
+Enter nebo mezerník ukončí příkaz, který se ptá dál, jako je <Command id="LINE" />, a když žádný příkaz neběží, zopakuje poslední. Kliknutí pravým tlačítkem myši otevře nabídku se stejnými volbami. Esc příkaz zruší. Všechny klávesy jsou na [stránce klávesových zkratek](/docs/shortcuts).
+
+## Kreslete přesně [#precision]
+
+Uchopení objektu přitáhne kurzor přesně do význačných bodů nakresleného: konců, středů úseček, středů kružnic. `F3` ho zapíná a vypíná, `F8` režim Orto a `F10` polární trasování, stejně jako jejich tlačítka ve stavovém řádku.
+
+<Session name="endpointSnap" />
+
+## Upravte nakreslené [#modify]
+
+Příkaz úprav se ptá na objekty, se kterými má pracovat, nebo nejdříve na hodnotu, jako příkaz <Command id="OFFSET" />: vzdálenost, objekt a pak stranu, na kterou se má kopie umístit.
+
+<Session name="offsetRectangle" />
+
+## Zpět a znovu [#undo]
+
+Příkaz <Command id="U" /> nebo `Ctrl+Z` vrátí zpět celý poslední příkaz a `Ctrl+Y` ho obnoví. Uvnitř příkazu, který to nabízí, vrátí jeho vlastní možnost Zpět jeden krok, například jeden segment příkazu <Command id="LINE" />.
+
+## Uložte [#save]
+
+Výkres se během práce ukládá v tomto prohlížeči. Příkaz <Command id="QSAVE" /> nebo `Ctrl+S` ho stáhne jako soubor ve vlastním verzovaném formátu MellowCAD a příkaz <Command id="OPEN" /> nebo `Ctrl+O` takový soubor otevře, nebo [soubor DXF](/docs/open-dxf), který příkaz <Command id="SAVEAS" /> znovu [uloží jako DXF](/docs/edit-dxf); [ukládání není úplně jako v AutoCADu](/docs/differences#saving).
+
+## Co dál [#next]
+
+- [Cvičení](/docs/exercises): výkresy k procvičení, každý vyřešený krok za krokem a otevíraný v editoru i se svým výkresem.
+- [Souřadnice](/docs/coordinates): všechny způsoby, jak zadat bod, a úsečka pod úhlem.
+- [Příkazy](/docs/commands): všechny příkazy, jejich zkratky a první výzva každého z nich.
+- [Klávesové zkratky](/docs/shortcuts): klávesy, na které editor reaguje.
+- [Rozdíly oproti AutoCADu](/docs/differences): kde MellowCAD funguje jinak a proč.

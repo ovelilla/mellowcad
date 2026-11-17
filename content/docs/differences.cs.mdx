@@ -1,0 +1,45 @@
+---
+title: Rozdíly oproti AutoCADu
+metaTitle: "Rozdíly oproti AutoCADu a jejich důvody"
+description: "Kde MellowCAD funguje jinak než AutoCAD a proč: co si prohlížeč nechává pro sebe a co tu neexistuje."
+type: concept
+sourceHash: "0aafe6ab8ce7"
+---
+
+MellowCAD se řídí AutoCADem 2027: stejné příkazy a zkratky, stejné pořadí výzev, stejná písmena možností a výchozí hodnoty. Odchyluje se od něj jen tam, kde to vynucuje prohlížeč, nebo kde tu neexistuje funkce, které se chování týká. U každého rozdílu níže je uvedeno, co dělá AutoCAD, co místo toho dělá MellowCAD a proč. Co ještě chybí jednotlivému příkazu, najdete v odkazu z jeho položky na [stránce příkazů](/docs/commands).
+
+## Jeden výkres najednou [#one-drawing]
+
+AutoCAD otevře nový výkres na vlastní kartě a předchozí nechá otevřený. MellowCAD drží jeden výkres: příkazy <Command id="NEW" /> a <Command id="OPEN" /> ho nahradí a po příkazu <Command id="NEW" /> vrátí jediný příkaz <Command id="U" /> ten předchozí.
+
+## Uložení stáhne soubor [#saving]
+
+MellowCAD ukládá výkres během práce v tomto prohlížeči, jen na tomto zařízení. Příkaz <Command id="QSAVE" /> hned stáhne soubor ve vlastním verzovaném formátu MellowCAD, jako u výkresu, který už má název: nic tu název výkresu neuchovává. Příkazy <Command id="SAVEAS" /> a <Command id="SAVE" /> otevřou okno „Uložit výkres jako“ s názvem souboru a typy souborů, mezi nimi DXF, ale bez složek: prohlížeč uloží soubor tam, kam ukládá všechna stažení.
+
+## Klávesy, které si nechává prohlížeč [#browser-keys]
+
+Stránka nikdy nedostane `Ctrl+W`, které zavře kartu, ani `Ctrl+N`, které otevře okno. Přepínání výběrů, v AutoCADu `Ctrl+W`, je tu na klávese `F4`; AutoCAD má `F4` pro 3D uchopení objektu, které MellowCAD zatím nemá. Nový výkres se vytvoří příkazem <Command id="NEW" />, zadaným z klávesnice.
+
+## Dynamické zadávání je vždy zapnuté [#dynamic-input]
+
+Dynamické zadávání nelze vypnout, takže jeho klávesa, `F12`, zůstává prohlížeči.
+
+## Jen modelový prostor [#model-space]
+
+Nejsou tu rozvržení ani tisk: obrazovka je jediné místo, kde je výkres vidět. Proto se tloušťky čar zobrazují od začátku (`LWDISPLAY` zapnutá, kdežto AutoCAD začíná s vypnutou) a `MODEL` ve stavovém řádku je popisek, ne přepínač na rozvržení.
+
+## Verze některých dialogů v příkazovém řádku [#dialogs]
+
+Tam, kde AutoCAD otevře dialog, který tu neexistuje, klade příkaz své otázky v příkazovém řádku, jako jeho verze s pomlčkou: <Command id="COLOR" /> spustí <Command id="-COLOR" />, <Command id="LWEIGHT" /> spustí <Command id="-LWEIGHT" /> a <Command id="LINETYPE" /> spustí <Command id="-LINETYPE" />. Příkazy <Command id="DIMSTYLE" /> a <Command id="STYLE" /> otevřou paletu „Styly“ s kótovacími nebo textovými styly.
+
+## Šest typů čar v každém výkresu [#linetypes]
+
+Nový výkres AutoCADu obsahuje jediný, plný typ čáry a ostatní se načítají ze souboru, když jeden z nich vyberete ve Správci typů čar nebo v položce „Další...“ rozevíracího seznamu. Ani jedno tu neexistuje, takže každý výkres obsahuje šest – Continuous, DASHED, HIDDEN, CENTER, PHANTOM a DASHDOT –, aby rozevírací seznamy měly co nabídnout; možnost Načti příkazu <Command id="LINETYPE" /> načte ostatní ze souboru acadiso.lin.
+
+## Souřadnice ve stavovém řádku [#coordinates]
+
+AutoCAD od roku 2015 skrývá souřadnice kurzoru ve stavovém řádku. MellowCAD je ukazuje, protože jinak polohu kurzoru nijak nezobrazuje; skrýt je lze v nabídce „Přizpůsobení“ stavového řádku.
+
+## Arabština používá příkazy anglického AutoCADu [#arabic]
+
+Arabský AutoCAD neexistuje a kdo kreslí v arabštině, pracuje v anglickém. Proto v arabštině mluví rozhraní arabsky a příkazový řádek jako anglický AutoCAD: stejné názvy, zkratky, výzvy a písmena možností. Zkratka s `Ctrl` funguje při jakémkoli rozložení klávesnice, jako v programu pro počítač: `Ctrl+Z` vrací zpět, i když arabské rozložení píše písmeno.

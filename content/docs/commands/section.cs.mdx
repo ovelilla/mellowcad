@@ -1,0 +1,84 @@
+---
+title: "Příkaz PRŮŘEZ (SECTION) v AutoCADu"
+description: "Jak příkaz PRŮŘEZ (SECTION, zkratka PRU) v AutoCADu vytvoří oblast tam, kde rovina protíná 3D tělesa: 3body, Objekt, Zosa, Pohled, XY, YZ, ZX."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak v AutoCADu udělat řez 3D tělesem?","answer":"Spusťte PRŮŘEZ, vyberte těleso a stiskněte Enter, pak určete rovinu: ZX a bod uprostřed ho proříznou zepředu dozadu, XY a bod v určité výšce vodorovně. Oblast leží uvnitř tělesa: vysuňte ji příkazem POSUN, abyste ji viděli."},{"question":"Jaký je rozdíl mezi PRŮŘEZ a ODŘÍZNI?","answer":"ODŘÍZNI rozřízne těleso na dvě části a ponechá jednu nebo obě. PRŮŘEZ ponechá těleso celé a nakreslí oblast tam, kde ho rovina protíná."},{"question":"Jak se jmenuje příkaz PRŮŘEZ anglicky?","answer":"SECTION. V české verzi AutoCADu zadejte PRŮŘEZ nebo zkratku PRU a stiskněte Enter nebo mezerník; zkratka SEC z anglické verze v české nefunguje. _SECTION funguje v AutoCADu v každém jazyce."},{"question":"Proč PRŮŘEZ hlásí, že rovina neprotíná těleso?","answer":"Rovina ho míjí: zkontrolujte, jak jste ji zadali. XY, YZ a ZX jsou roviny systému USS, takže bod ve špatné výšce nebo na špatné straně umístí rovinu mimo těleso."}]
+---
+
+Příkaz PRŮŘEZ (SECTION) vytvoří průřez 3D těles: oblast v místě, kde rovina protíná každé z nich, a tělesa zůstanou beze změny. Ptá se na tělesa, dokud nestisknete Enter: jako v AutoCADu 2027 se sada vybraná předem zahodí a příkaz se zeptá znovu, co není těleso, se přeskočí a u sady bez tělesa vypíše `Nebyl proveden výběr těles, povrchů nebo sítí.`. Pak rovina: ve výchozím nastavení na ní zadáte tři body a možnosti ji určí jinak, jako u příkazu [`ODŘÍZNI`](/docs/commands/slice).
+
+Každé těleso, které rovina protne, dostane svou oblast, ležící v této rovině: kvádr s průchozím otvorem dá obrys s mezerou po otvoru, válec proříznutý podél osy obdélník. Rovina ležící na ploše tělesa dá tuto plochu. U tělesa, které rovina mine, vypíše `Rovina řezu neprotíná vybrané těleso.`. Oblasti dostanou aktuální hladinu a vlastnosti, ne vlastnosti tělesa; [`POSUN`](/docs/commands/move) jednu vysune, abyste ji viděli, [`PLOCHA`](/docs/commands/area) a [`HMOTV`](/docs/commands/massprop) ji změří a [`VYTÁHNI`](/docs/commands/extrude) z ní udělá těleso. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+
+- **Příkaz:** `PRŮŘEZ`
+- **Anglicky:** `SECTION`, zadávaný jako `_SECTION` v libovolném jazyce
+- **Aliasy:** `PRU`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `PRU` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="section" caption="Kvádr s průchozím otvorem proříznutý rovinou ZX středem otvoru: PRŮŘEZ vytvoří profil, vysunutý dopředu, dva obdélníky s mezerou po otvoru." />
+
+## Možnosti [#options]
+
+### `Objekt` (`O`) [#object]
+
+Převezme rovinu objektu, který vyberete: kružnice, elipsy, oblouku, 2D spline nebo 2D křivky.
+
+### `Zosa` (`Z`) [#zaxis]
+
+Zeptá se na bod v rovině a pak na bod na její ose Z, přímce k ní kolmé.
+
+### `Pohled` (`P`) [#view]
+
+Rovina rovnoběžná s obrazovkou, procházející zadaným bodem.
+
+### `XY` [#xy]
+
+Rovina XY systému USS, procházející zadaným bodem: bod v určité výšce tam vytvoří vodorovný průřez. Enter převezme počátek USS.
+
+### `YZ` [#yz]
+
+Rovina YZ systému USS, procházející zadaným bodem; Enter převezme počátek USS.
+
+### `ZX` [#zx]
+
+Rovina ZX systému USS, procházející zadaným bodem; Enter převezme počátek USS. Průřez v ukázce určuje tato rovina středem otvoru.
+
+### `3body` (`3`) [#3points]
+
+Tři body v rovině, která pak může být skloněná libovolně. Je to výchozí možnost první výzvy, takže bod zadaný v ní je prvním ze tří.
+
+## Co zatím neumí [#missing]
+
+Povrchy a sítě, které MellowCAD nemá. Rovinná 3D křivka jako objekt určující rovinu, kterou AutoCAD přijme. Řezy, pro které MellowCAD zatím nemá přesný tvar, jako u příkazu [`ODŘÍZNI`](/docs/commands/slice): skončí zprávou, že jedna booleovská operace selhala. Příkaz SECTIONPLANE a živé řezy, které pás karet AutoCADu nabízí místo příkazu PRŮŘEZ: zde se PRŮŘEZ zadává z klávesnice.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao--fr-coupe--cou--it-sezione--sez--de-querschnitt--qu--ru-сечение--сеч--pl-przekrój--pkr--cs-průřez--pru)
+
+## Otázky [#questions]
+
+### Jak v AutoCADu udělat řez 3D tělesem?
+
+Spusťte PRŮŘEZ, vyberte těleso a stiskněte Enter, pak určete rovinu: `ZX` a bod uprostřed ho proříznou zepředu dozadu, `XY` a bod v určité výšce vodorovně. Oblast leží uvnitř tělesa: vysuňte ji příkazem [`POSUN`](/docs/commands/move), abyste ji viděli.
+
+### Jaký je rozdíl mezi PRŮŘEZ a ODŘÍZNI?
+
+[`ODŘÍZNI`](/docs/commands/slice) rozřízne těleso na dvě části a ponechá jednu nebo obě. PRŮŘEZ ponechá těleso celé a nakreslí oblast tam, kde ho rovina protíná.
+
+### Jak se jmenuje příkaz PRŮŘEZ anglicky?
+
+SECTION. V české verzi AutoCADu zadejte `PRŮŘEZ` nebo zkratku `PRU` a stiskněte Enter nebo mezerník; zkratka `SEC` z anglické verze v české nefunguje. `_SECTION` funguje v AutoCADu v každém jazyce.
+
+### Proč PRŮŘEZ hlásí, že rovina neprotíná těleso?
+
+Rovina ho míjí: zkontrolujte, jak jste ji zadali. `XY`, `YZ` a `ZX` jsou roviny systému USS, takže bod ve špatné výšce nebo na špatné straně umístí rovinu mimo těleso.
+
+## Související příkazy [#related]
+
+- [Příkaz ODŘÍZNI (SLICE) v AutoCADu](/docs/commands/slice)
+- [Příkaz OBLAST (REGION) v AutoCADu](/docs/commands/region)
+- [Příkaz ROZDÍL (SUBTRACT) v AutoCADu](/docs/commands/subtract)
+- [Příkaz HMOTV (MASSPROP) v AutoCADu](/docs/commands/massprop)

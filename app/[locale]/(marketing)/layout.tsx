@@ -43,31 +43,34 @@ const fontMono = Geist_Mono({
 // one page whose font stack names it keep it to Arabic.
 const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
 
-// Polish's letters alone, cut from Inter's and Geist Mono's Latin Extended
-// files (assets/fonts/README.md), before them on a Polish page (lib/fonts.ts).
+// Polish's and Czech's letters alone, cut from Inter's and Geist Mono's Latin
+// Extended files (assets/fonts/README.md), before them on those pages
+// (lib/fonts.ts).
 // The range is a literal: next/font reads its options statically.
-const fontPolishSans = localFont({
-  src: "../../../assets/fonts/inter-polish-wght.woff2",
+const fontLettersSans = localFont({
+  src: "../../../assets/fonts/inter-letters-wght.woff2",
   weight: "100 900",
   preload: false,
   adjustFontFallback: false,
   declarations: [
     {
       prop: "unicode-range",
-      value: "U+0104-0107, U+0118-0119, U+0141-0144, U+015A-015B, U+0179-017C",
+      value:
+        "U+0104-0107, U+010C-010F, U+0118-011B, U+0141-0144, U+0147-0148, U+0158-015B, U+0160-0161, U+0164-0165, U+016E-016F, U+0179-017E",
     },
   ],
 })
 
-const fontPolishMono = localFont({
-  src: "../../../assets/fonts/geist-mono-polish-wght.woff2",
+const fontLettersMono = localFont({
+  src: "../../../assets/fonts/geist-mono-letters-wght.woff2",
   weight: "100 900",
   preload: false,
   adjustFontFallback: false,
   declarations: [
     {
       prop: "unicode-range",
-      value: "U+0104-0107, U+0118-0119, U+0141-0144, U+015A-015B, U+0179-017C",
+      value:
+        "U+0104-0107, U+010C-010F, U+0118-011B, U+0141-0144, U+0147-0148, U+0158-015B, U+0160-0161, U+0164-0165, U+016E-016F, U+0179-017E",
     },
   ],
 })
@@ -120,7 +123,7 @@ export default async function MarketingLayout({
         sans: inter,
         mono: fontMono,
         arabic: fontArabic,
-        "latin-ext": { sans: fontPolishSans, mono: fontPolishMono },
+        "latin-ext": { sans: fontLettersSans, mono: fontLettersMono },
       })}
     >
       <head>

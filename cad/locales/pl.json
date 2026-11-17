@@ -1590,7 +1590,11 @@
         "Centre": "Centrum"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "Konwertuj"
+        "convert to Polyline": "Konwertuj",
+        "Edit vertex": "Edytuj",
+        "Reverse": "ODWróć",
+        "eXit": "konIec",
+        "Open": "Otwórz"
       },
       "peditOption": {
         "eXit": "konIec"
@@ -2845,8 +2849,8 @@
       "listPolylineStartingWidth": "  szerokość początkowa {width}",
       "listPolylineEndingWidth": "  szerokość końcowa {width}",
       "listVertexEndingWidth": "  szerokość końcowa {width}",
-      "listBulge": "             wypukłość      {bulge}",
-      "listVertexBulge": "             wypukłość      {bulge}",
+      "listBulge": "             wypukłość {bulge}",
+      "listVertexBulge": "         wypukłość {bulge}",
       "listLwCenter": "            środek  X={x}  Y={y}  Z={z}",
       "listVertexCenter": "            środek X={x}  Y={y}  Z={z}",
       "listPolylineStartAngle": "       kąt początkowy {angle}",

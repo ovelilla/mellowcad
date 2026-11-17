@@ -1,0 +1,82 @@
+---
+title: "Příkaz VZD (DIST) v AutoCADu"
+description: "Jak v AutoCADu změřit vzdálenost příkazem VZD (DIST, zkratka VZ): mezi dvěma body, s úhly a přírůstky X, Y a Z, nebo délku řady bodů. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz VZD anglicky a jakou má zkratku?","answer":"DIST. V české verzi AutoCADu je jeho zkratka VZ: zadejte ji a stiskněte Enter nebo mezerník. Anglická zkratka DI v české verzi nefunguje; _DIST funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu změřit vzdálenost?","answer":"Zadejte VZ a pak vyberte dva body, s uchopením objektu, abyste trefili koncové body nebo středy objektů. Vzdálenost se vypíše na příkazovém řádku spolu s úhlem a přírůstky."},{"question":"Jak změřit celkovou délku několika úseků?","answer":"U druhého bodu zvolte Více a vybírejte dál: u každého bodu se zobrazí dosavadní vzdálenost a Enter vypíše součet."},{"question":"Jak změřit vzdálenost ve 3D?","answer":"Zadejte body i s jejich souřadnicí Z nebo je uchopte na objektech v jejich výšce: příkaz VZD změří skutečnou vzdálenost v prostoru a vypíše úhel od roviny XY a přírůstek Z."},{"question":"Proč příkaz VZD ukazuje méně desetinných míst, než potřebuji?","answer":"Vypisuje délky s přesností výkresu, zde dvě místa v novém výkresu. Nastavte víc, až osm, příkazem JEDNOTKY."}]
+---
+
+Příkaz VZD (DIST) měří vzdálenost mezi dvěma body. Vyberte (i s uchopením objektu) nebo zadejte první a druhý bod a příkaz vypíše na příkazovém řádku vzdálenost, úhel v rovině XY a úhel od ní a přírůstky X, Y a Z, a pak skončí. Každý bod se měří tam, kde leží, i se svou souřadnicí Z, takže vzdálenost je skutečná vzdálenost v prostoru. Enter u prvního bodu začne od naposledy zadaného bodu a u druhého změří vzdálenost zpět k prvnímu. Čísla mají přesnost výkresu a úhly AUPREC.
+
+- **Příkaz:** `VZD`
+- **Anglicky:** `DIST`, zadávaný jako `_DIST` v libovolném jazyce
+- **Aliasy:** `VZ`
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `VZ` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dist" caption="VZD po úhlopříčce desky 100 × 60: vzdálenost, úhel v rovině XY a přírůstky." />
+
+## Možnosti [#options]
+
+### `Více bodů` (`V`) [#multiple]
+
+`Více` u druhé výzvy: řada bodů místo jednoho úseku; dosavadní vzdálenost se vypíše před každým dalším bodem a zobrazí se nad kurzorem, až do Enter nebo možnosti `Celkem`.
+
+### `Oblouk` (`O`) [#arc]
+
+Měří místo toho po obloucích, s možnostmi oblouku příkazu KŘIVKA: `úHel`, `Střed`, `Uzavři`, `Vektor`, `úsEčka`, `Poloměr`, `Druhý`, `Zpět`. Délka každého oblouku se přičte k řadě.
+
+### `Uzavři` (`U`) [#close]
+
+Vrátí se k prvnímu bodu, přičte tento poslední úsek, vypíše součet a skončí.
+
+### `Délka` (`D`) [#length]
+
+Přidá úsek zadané délky ve směru posledního.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední bod řady.
+
+### `Celkem` (`C`) [#total]
+
+Vypíše součet řady a skončí; Enter udělá totéž.
+
+## Co zatím neumí [#missing]
+
+Příkaz MĚŘITGEOM, nástroje Měřit na pásu karet, které kladou otázky příkazu VZD ve smyčce s možnostmi Poloměr, Úhel, Plocha, Objem a Rychlé: zde tlačítko Vzdálenost na pásu karet spustí příkaz VZD. U možnosti `Střed` možnosti Oblouk se středový úhel čte ve stupních, kde AutoCAD 2027 čte číslo jako vzdálenost ve směru kurzoru.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab--ru-дист--ди--pl-odleg--odl--cs-vzd--vz)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz VZD anglicky a jakou má zkratku?
+
+DIST. V české verzi AutoCADu je jeho zkratka `VZ`: zadejte ji a stiskněte Enter nebo mezerník. Anglická zkratka `DI` v české verzi nefunguje; `_DIST` funguje v AutoCADu v každém jazyce.
+
+### Jak v AutoCADu změřit vzdálenost?
+
+Zadejte `VZ` a pak vyberte dva body, s uchopením objektu, abyste trefili koncové body nebo středy objektů. Vzdálenost se vypíše na příkazovém řádku spolu s úhlem a přírůstky.
+
+### Jak změřit celkovou délku několika úseků?
+
+U druhého bodu zvolte `Více` a vybírejte dál: u každého bodu se zobrazí dosavadní vzdálenost a Enter vypíše součet.
+
+### Jak změřit vzdálenost ve 3D?
+
+Zadejte body i s jejich souřadnicí Z nebo je uchopte na objektech v jejich výšce: příkaz VZD změří skutečnou vzdálenost v prostoru a vypíše úhel od roviny XY a přírůstek Z.
+
+### Proč příkaz VZD ukazuje méně desetinných míst, než potřebuji?
+
+Vypisuje délky s přesností výkresu, zde dvě místa v novém výkresu. Nastavte víc, až osm, příkazem [`JEDNOTKY`](/docs/commands/units).
+
+## Související příkazy [#related]
+
+- [Výpočet plochy v AutoCADu: příkaz PLOCHA (AREA)](/docs/commands/area)
+- [Souřadnice bodu v AutoCADu: příkaz ID](/docs/commands/id)
+- [Příkaz VÝPIS (LIST) v AutoCADu](/docs/commands/list)
+- [Jednotky v AutoCADu: příkaz JEDNOTKY (UNITS)](/docs/commands/units)

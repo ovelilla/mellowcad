@@ -1,0 +1,64 @@
+---
+title: "Cvičení v AutoCADu: osazený hřídel"
+metaTitle: "Cvičení v AutoCADu 2D: osazený hřídel"
+description: "Nakreslete osazený hřídel v AutoCADu: polovina obrysu jako křivka, zkosená, zrcadlená podle osy, a délky jako řetězové kóty. Krok za krokem, zdarma."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete tento osazený hřídel v bočním pohledu, v milimetrech: délka 150, průměry 30, 40 a 30 na délkách 40, 60 a 50, oba konce zkosené 2 × 2. Polovinu nad osou nakreslete jako jednu křivku, zkoste ji a zrcadlete; potom hrany viditelné napříč hřídelem, osu a délky. Průměry jsou uvedené zde, v zadání.
+
+- **Cvičení:** Mírně pokročilý · Strojírenství · 2D
+- **Příkazy:** [`KŘIVKA`](/docs/commands/pline), [`ZKOS`](/docs/commands/chamfer), [`ZRCADLI`](/docs/commands/mirror), [`ÚSEČKA`](/docs/commands/line), [`KÓTYPŘÍM`](/docs/commands/dimlinear), [`KÓTYŘET`](/docs/commands/dimcontinue)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=shaft), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/shaft" caption="Osazený hřídel v bočním pohledu, délka 150, délky okótované řetězově." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete horní polovinu [#half]
+
+V hladině Obrys jedna křivka příkazem [`KŘIVKA`](/docs/commands/pline) od `0,0`: nahoru `0,15`, podél `40,0`, nahoru `0,5`, podél `60,0`, dolů `0,-5`, podél `50,0` a dolů `0,-15`, zpět k ose. Enter příkaz ukončí.
+
+<Session name="exercises/shaft/half" caption="1. Nakreslete horní polovinu" />
+
+### 2. Zkoste konce [#chamfers]
+
+Příkaz [`ZKOS`](/docs/commands/chamfer), potom možnost `Hrana`: `2`, a Enter přijme `2` i pro druhou vzdálenost. Možnost `NKrát` zkosí jeden roh za druhým bez nového spuštění příkazu: vyberte dva segmenty v rohu každého konce.
+
+<Session name="exercises/shaft/chamfers" caption="2. Zkoste konce" />
+
+### 3. Zrcadlete polovinu [#mirror]
+
+Příkaz [`ZRCADLI`](/docs/commands/mirror): vyberte křivku, stiskněte Enter, potom osu zrcadlení od `0,0` do `150,0`, tedy osu hřídele, a Enter, kterým originál ponecháte.
+
+<Session name="exercises/shaft/mirror" caption="3. Zrcadlete polovinu" />
+
+### 4. Nakreslete hrany [#edges]
+
+Příkazem [`ÚSEČKA`](/docs/commands/line) hrany viditelné napříč hřídelem, každou o `0,30` nahoru od spodního okraje: od `2,-15` a `148,-15` u zkosení a od `40,-15` a `100,-15` u osazení.
+
+<Session name="exercises/shaft/edges" caption="4. Nakreslete hrany" />
+
+### 5. Nakreslete osu [#axis]
+
+V hladině Osy osa: úsečka od `-8,0` do bodu o `166,0` dál.
+
+<Session name="exercises/shaft/axis" caption="5. Nakreslete osu" />
+
+### 6. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYPŘÍM`](/docs/commands/dimlinear) pro první délku, 40, s kótou umístěnou dole. Příkaz [`KÓTYŘET`](/docs/commands/dimcontinue) pokračuje řetězem od její druhé vynášecí čáry: `#100,-20`, potom `#150,-15`, zadané od počátku souřadnic se znakem #, a dvakrát Enter pro ukončení. Poslední příkaz [`KÓTYPŘÍM`](/docs/commands/dimlinear) udá celkovou délku, 150, ještě níže.
+
+<Session name="exercises/shaft/dimensions" caption="6. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: stupňovitý hranol v izometrii](/docs/exercises/isometric-block): Mírně pokročilý · Strojírenství · Izometrie
+- [Cvičení v AutoCADu 3D: řemenice](/docs/exercises/pulley): Mírně pokročilý · Strojírenství · 3D těleso
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link): Pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

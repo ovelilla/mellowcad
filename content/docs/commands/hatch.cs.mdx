@@ -1,0 +1,75 @@
+---
+title: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
+metaTitle: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
+description: "Jak v AutoCADu šrafovat příkazem ŠRAFY (HATCH), výzvu po výzvě: bod uvnitř nebo hraniční objekty, vzor, měřítko, úhel, ostrůvky. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ŠRAFY anglicky a jakou má zkratku?","answer":"HATCH. V české verzi AutoCADu jsou jeho zkratky HS a SF: zadejte jednu z nich a stiskněte Enter nebo mezerník. Anglické H a BH v české verzi nefungují; _HATCH funguje v AutoCADu v každém jazyce. Bez karty Vytváření šraf se příkaz ptá na příkazovém řádku, stejně jako -HS (-ŠRAFY)."},{"question":"Proč šrafování v AutoCADu nefunguje?","answer":"Nejčastěji proto, že oblast není uzavřená: příkaz vypíše „Nenalezena platná hranice šrafování.“ a stačí i nejmenší mezera, protože nic ji nepřemostí. Uzavřete obrys a vyberte znovu. Oblast uzavřená elipsou nebo spline se zatím nenajde a objekty ve vypnuté hladině se neberou v úvahu."},{"question":"Jaké jsou šrafovací vzory a dají se stáhnout další?","answer":"Výběr z acadiso.pat, metrického souboru vzorů AutoCADu: SOLID, ANGLE, ANSI31 až ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL a ZIGZAG. ? v možnosti vLastnosti je vypíše. Vlastní ani stažený soubor vzorů zatím nelze načíst, ale šrafy ze souboru DXF se otevřou se vzorem, který obsahují, ať je jakýkoli, tak jak je kreslí AutoCAD."},{"question":"Jak v AutoCADu změnit měřítko šrafy?","answer":"Před výběrem, v možnosti vLastnosti: měřítko následuje po názvu vzoru. U už vytvořené šrafy ji vyberte a přepište „Měřítko“ v paletě Vlastnosti, nebo jí dejte vzor, měřítko a úhel jiné šrafy příkazem KOPIEVLAST. Tak malé měřítko, že by vzor potřeboval příliš mnoho čar, vyvolá „Rozteč šrafů je příliš hustá nebo je velikost teček příliš malá.“ a šrafa nevznikne."},{"question":"Jak zjistit plochu šrafy?","answer":"Vyberte ji a přečtěte „Plochu“ ve skupině „Geometrie“ palety Vlastnosti, bez ostrůvků; při několika vybraných šrafách je sečte „Kumulativní oblast“. Nebo spusťte příkaz PLOCHA, zvolte OBjekt a vyberte šrafu."}]
+---
+
+Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výplní. Vyberte bod uvnitř oblasti a příkaz najde její hranici v objektech kolem ní a to, co leží uvnitř, ponechá prázdné jako ostrůvek – kružnici v obdélníku, text; nebo vyberte objekty, které oblast ohraničují. Vyberte tolik oblastí, kolik chcete: Enter nebo Esc z nich všech vytvoří jednu šrafu, v aktuální hladině, pod její hranicí. Celý příkaz je jeden krok, který lze vrátit zpět.
+
+Příkaz ŠRAFY v AutoCADu nastavuje vzor na kontextové kartě Vytváření šraf nebo v dialogu, které MellowCAD nemá: zde se na příkazovém řádku ptá na to, na co se ptá příkaz `-ŠRAFY`, vzor v možnosti `vLastnosti`. Oba příkazy se liší jen klávesou Esc, která v příkazu `-ŠRAFY` oblasti zahodí. Každá šrafa začíná se vzorem, měřítkem a úhlem, které dostala poslední: v novém výkresu ANGLE, v měřítku 1 a pod úhlem 0.
+
+- **Příkaz:** `ŠRAFY`
+- **Anglicky:** `HATCH`, zadávaný jako `_HATCH` v libovolném jazyce
+- **Aliasy:** `HS`, `SF`, `HŠRAFY`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `HS` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="hatch" caption="Obdélník s kružnicí uvnitř, vyšrafovaný vzorem ANSI31 z jednoho bodu uvnitř: kružnice zůstane prázdná jako ostrůvek." />
+
+## Možnosti [#options]
+
+### `vLastnosti` (`L`) [#properties]
+
+Zeptá se na název vzoru, velkými i malými písmeny, a nabídne aktuální: `Barva` oblast plně vyplní a `?` vypíše seznam vzorů s jejich popisy a vrátí se k bodu. U vzoru se pak zeptá na měřítko – číslo větší než 0, nebo dva body, mezi nimiž se měří – a na úhel, zadaný nebo dvěma body. Další šrafa si ponechá všechny tři.
+
+<Session name="hatchPatterns" caption="SOLID a jedenáct vzorů z acadiso.pat, každý vyšrafovaný ve čtverci o straně 30 v měřítku 1, AR-CONC a AR-SAND v měřítku 0,08 a 0,1." />
+
+### `Vybrat objekty` (`V`) [#select-objects]
+
+Místo bodu uvnitř vyberte objekty, které oblast ohraničují; Enter se vrátí k bodu. Objekt, který žádnou oblast neuzavírá, se vynechá; když žádný z nich oblast neohraničuje, Enter vypíše `Nemohu vyšrafovat hranici.` a nic nevytvoří. Oblast vytvořená příkazem [`OBLAST`](/docs/commands/region) dá svůj obrys a její otvory ostrůvky.
+
+### `Zpět` (`Z`) [#undo]
+
+Ve výzvě uvedena není, ale přijme se tam: vrátí oblasti naposledy vybraného bodu a zeptá se znovu, přičemž vybrané objekty ponechá. Vypíše `Žádná hranice pro Zpět.`, když už není žádný bod k vrácení.
+
+## Co zatím neumí [#missing]
+
+Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly ostrůvků Normální a Ignorovat, gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat, které přinášejí i s jejich čarami jen šrafy ze souboru DXF. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, popisná šrafa, barva, hladina a průhlednost. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlená šrafa si vždy ponechá úhel svého vzoru. Nabídky uzlů šrafy.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ŠRAFY anglicky a jakou má zkratku?
+
+HATCH. V české verzi AutoCADu jsou jeho zkratky `HS` a `SF`: zadejte jednu z nich a stiskněte Enter nebo mezerník. Anglické `H` a `BH` v české verzi nefungují; `_HATCH` funguje v AutoCADu v každém jazyce. Bez karty Vytváření šraf se příkaz ptá na příkazovém řádku, stejně jako `-HS` (`-ŠRAFY`).
+
+### Proč šrafování v AutoCADu nefunguje?
+
+Nejčastěji proto, že oblast není uzavřená: příkaz vypíše `Nenalezena platná hranice šrafování.` a stačí i nejmenší mezera, protože nic ji nepřemostí. Uzavřete obrys a vyberte znovu. Oblast uzavřená elipsou nebo spline se zatím nenajde a objekty ve vypnuté hladině se neberou v úvahu.
+
+### Jaké jsou šrafovací vzory a dají se stáhnout další?
+
+Výběr z acadiso.pat, metrického souboru vzorů AutoCADu: SOLID, ANGLE, ANSI31 až ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL a ZIGZAG. `?` v možnosti `vLastnosti` je vypíše. Vlastní ani stažený soubor vzorů zatím nelze načíst, ale šrafy ze souboru DXF se otevřou se vzorem, který obsahují, ať je jakýkoli, tak jak je kreslí AutoCAD.
+
+### Jak v AutoCADu změnit měřítko šrafy?
+
+Před výběrem, v možnosti `vLastnosti`: měřítko následuje po názvu vzoru. U už vytvořené šrafy ji vyberte a přepište „Měřítko“ v paletě Vlastnosti, nebo jí dejte vzor, měřítko a úhel jiné šrafy příkazem [`KOPIEVLAST`](/docs/commands/matchprop). Tak malé měřítko, že by vzor potřeboval příliš mnoho čar, vyvolá `Rozteč šrafů je příliš hustá nebo je velikost teček příliš malá.` a šrafa nevznikne.
+
+### Jak zjistit plochu šrafy?
+
+Vyberte ji a přečtěte „Plochu“ ve skupině „Geometrie“ palety Vlastnosti, bez ostrůvků; při několika vybraných šrafách je sečte „Kumulativní oblast“. Nebo spusťte příkaz [`PLOCHA`](/docs/commands/area), zvolte `OBjekt` a vyberte šrafu.
+
+## Související příkazy [#related]
+
+- [Výpočet plochy v AutoCADu: příkaz PLOCHA (AREA)](/docs/commands/area)
+- [Příkaz OBLAST (REGION) v AutoCADu](/docs/commands/region)
+- [Kopírování vlastností v AutoCADu: příkaz KOPIEVLAST (MATCHPROP)](/docs/commands/matchprop)
+- [Příkaz ROZLOŽ (EXPLODE) v AutoCADu](/docs/commands/explode)

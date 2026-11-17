@@ -89,7 +89,7 @@ What each command does, with its prompts and options, is in the user's
 | Import                            | What                                                                                      |
 | --------------------------------- | ----------------------------------------------------------------------------------------- |
 | `@mellowcad/engine`               | The engine; English is built in                                                           |
-| `@mellowcad/engine/locales/<tag>` | One language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it`, `de`, `ru`, `pl` |
+| `@mellowcad/engine/locales/<tag>` | One language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`), `fr`, `it`, `de`, `ru`, `pl`, `cs` |
 
 No other path is public. The package has no import-time side effects and ships one module per
 source file, so a bundler keeps only what a page uses, and a language costs nothing until it is

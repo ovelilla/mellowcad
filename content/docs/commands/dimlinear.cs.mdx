@@ -1,0 +1,88 @@
+---
+title: "Kótování v AutoCADu: příkaz KÓTYPŘÍM (DIMLINEAR)"
+metaTitle: "Kótování v AutoCADu: příkaz KÓTYPŘÍM"
+description: "Jak v AutoCADu kótovat příkazem KÓTYPŘÍM (DIMLINEAR, zkratka KPM): dva body nebo objekt, pak kótovací čára, vodorovná nebo svislá. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz pro lineární kótu anglicky a jakou má zkratku?","answer":"Anglicky DIMLINEAR, v české verzi AutoCADu KÓTYPŘÍM: zadejte KPM nebo KOTYPM a stiskněte Enter nebo mezerník. Funguje i celý název a _DIMLINEAR v AutoCADu v každém jazyce; anglické DLI a DIMLIN v české verzi nefungují."},{"question":"Jaké jsou příkazy pro kótování v AutoCADu?","answer":"KÓTYPŘÍM pro vodorovné a svislé vzdálenosti, KÓTYSROVNEJ pro vzdálenost podél šikmé hrany, KÓTYRÁDIUS a KÓTYPRŮM pro oblouky a kružnice, KÓTYÚHEL pro úhly, KÓTYŘET a KÓTYZÁKL pro řetězy kót, KÓTMEZERA pro vyrovnání jejich rozestupů a KÓTYSTYL pro jejich vzhled. Příkaz KÓTY z AutoCADu, který vytvoří jakýkoli druh kóty z jedné výzvy, a RKÓTY, který okótuje mnoho objektů najednou, v MellowCAD zatím nejsou."},{"question":"Proč kóta nesleduje objekt, když ho změním?","answer":"Kóty v MellowCAD zatím nejsou asociativní, jak říká „Byla vytvořena neasociativní kóta.“: kóta si ponechá body, které dostala. Protáhněte je společně: zachyťte posouvaný konec i počátek kóty, který na něm leží, jedním oknem křížení příkazu PROTÁHNI a hodnota se přepočítá; nebo přetáhněte uzel počátku na nové místo."},{"question":"Jak změnit velikost textu a šipek kóty?","answer":"V kótovacím stylu, jako v AutoCADu: příkaz KÓTYSTYL (KSL) otevře kótovací styly, zde v paletě Styly, v AutoCADu ve Správci kótovacího stylu. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu."}]
+---
+
+Příkaz KÓTYPŘÍM (DIMLINEAR) měří vzdálenost mezi dvěma body podél X nebo podél Y a kreslí ji jako kótu: dvě vynášecí čáry, kótovací čáru se šipkami a naměřenou hodnotu nad ní. Zadáte počátek první a druhé vynášecí čáry, pak umístění kótovací čáry, a to umístění určí směr, jako v AutoCADu: nad dvěma body nebo pod nimi měří vodorovně, vedle nich svisle. Můžete také u první výzvy stisknout Enter a vybrat úsečku, oblouk, segment křivky nebo kružnici: počátky jsou pak jeho dva konce, u kružnice její průměr. Příkazový řádek pak vypíše naměřenou hodnotu a příkaz skončí.
+
+Kóta se kreslí v aktuálním kótovacím stylu, v novém výkresu ISO-25: desetinná čárka a žádné koncové nuly, jak to píšou metrické výkresy AutoCADu. Příkazy `KÓTYHORIZ`, `KÓTYVERT` a `KÓTYOTOČ`, dostupné jen z klávesnice, jsou příkaz KÓTYPŘÍM omezený na jeden směr.
+
+- **Příkaz:** `KÓTYPŘÍM`
+- **Anglicky:** `DIMLINEAR`, zadávaný jako `_DIMLINEAR` v libovolném jazyce
+- **Aliasy:** `KPM`, `KOTYPM`
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KPM` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="dimlinear" caption="Obdélník okótovaný dvakrát: horní hrana jejími dvěma rohy, pravá hrana přes Enter a výběr hrany." />
+
+## Možnosti [#options]
+
+### `Text` (`T`) [#text]
+
+Zeptá se na text, který se má napsat místo naměřené hodnoty, a tu nabídne jako výchozí: Enter ji ponechá. V zadaném textu zastupuje `<>` naměřenou hodnotu, takže `<> mm` ji napíše i s jednotkou.
+
+### `úheL` (`L`) [#angle]
+
+Zeptá se na úhel textu, který se pak nakreslí pod tímto úhlem místo podél kótovací čáry. 0 ho vrátí podél čáry.
+
+### `Horizontální` (`H`) [#horizontal]
+
+Měří podél X, ať kótovací čáru umístíte kamkoli, a ta zůstane vodorovná; výzva pak nabízí jen `Text` a `úheL`.
+
+### `Vertikální` (`V`) [#vertical]
+
+Měří podél Y, ať kótovací čáru umístíte kamkoli, a ta zůstane svislá.
+
+### `Otočená` (`O`) [#rotated]
+
+Zeptá se na úhel kótovací čáry, výchozí `0`, a měří vzdálenost mezi počátky v tomto směru. Na šikmé hraně dá její vlastní úhel její délku, jako příkaz [`KÓTYSROVNEJ`](/docs/commands/dimaligned).
+
+## Co zatím neumí [#missing]
+
+Mtext: text kóty je jeden řádek, nastavený možností `Text` na příkazovém řádku, nikdy v textovém editoru. S úhlem nastaveným možností `úheL` AutoCAD text vystředí na kótovací čáře; zde zůstane nad ní, stejně jako bez úhlu. Kóta není asociativní: nesleduje objekt, který měří.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin--ru-рзмлинейный--рли--pl-wymliniowy--wl--wymlin--cs-kótypřím--kpm--kotypm)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz pro lineární kótu anglicky a jakou má zkratku?
+
+Anglicky DIMLINEAR, v české verzi AutoCADu KÓTYPŘÍM: zadejte `KPM` nebo `KOTYPM` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMLINEAR` v AutoCADu v každém jazyce; anglické `DLI` a `DIMLIN` v české verzi nefungují.
+
+### Jaké jsou příkazy pro kótování v AutoCADu?
+
+`KÓTYPŘÍM` pro vodorovné a svislé vzdálenosti, [`KÓTYSROVNEJ`](/docs/commands/dimaligned) pro vzdálenost podél šikmé hrany, [`KÓTYRÁDIUS`](/docs/commands/dimradius) a [`KÓTYPRŮM`](/docs/commands/dimdiameter) pro oblouky a kružnice, [`KÓTYÚHEL`](/docs/commands/dimangular) pro úhly, [`KÓTYŘET`](/docs/commands/dimcontinue) a [`KÓTYZÁKL`](/docs/commands/dimbaseline) pro řetězy kót, [`KÓTMEZERA`](/docs/commands/dimspace) pro vyrovnání jejich rozestupů a [`KÓTYSTYL`](/docs/commands/dimstyle) pro jejich vzhled. Příkaz KÓTY z AutoCADu, který vytvoří jakýkoli druh kóty z jedné výzvy, a RKÓTY, který okótuje mnoho objektů najednou, v MellowCAD zatím nejsou.
+
+### Proč kóta nesleduje objekt, když ho změním?
+
+Kóty v MellowCAD zatím nejsou asociativní, jak říká `Byla vytvořena neasociativní kóta.`: kóta si ponechá body, které dostala. Protáhněte je společně: zachyťte posouvaný konec i počátek kóty, který na něm leží, jedním oknem křížení příkazu [`PROTÁHNI`](/docs/commands/stretch) a hodnota se přepočítá; nebo přetáhněte uzel počátku na nové místo.
+
+### Jak změnit velikost textu a šipek kóty?
+
+V kótovacím stylu, jako v AutoCADu: příkaz [`KÓTYSTYL`](/docs/commands/dimstyle) (`KSL`) otevře kótovací styly, zde v paletě Styly, v AutoCADu ve Správci kótovacího stylu. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: těsnění](/docs/exercises/gasket)
+- [Cvičení v AutoCADu: úhelník tvaru L](/docs/exercises/l-bracket)
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs)
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange)
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table)
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft)
+- [Cvičení v AutoCADu: táhlo s tečnami](/docs/exercises/link)
+
+## Související příkazy [#related]
+
+- [Kótování v AutoCADu: šikmá kóta, příkaz KÓTYSROVNEJ (DIMALIGNED)](/docs/commands/dimaligned)
+- [Řetězové kótování v AutoCADu: příkaz KÓTYŘET (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Kótování od základny v AutoCADu: příkaz KÓTYZÁKL (DIMBASELINE)](/docs/commands/dimbaseline)
+- [Kóta poloměru v AutoCADu: příkaz KÓTYRÁDIUS (DIMRADIUS)](/docs/commands/dimradius)
+- [Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)](/docs/commands/dimstyle)

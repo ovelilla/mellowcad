@@ -1,0 +1,86 @@
+---
+title: "Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)"
+metaTitle: "Obdélníkové pole v AutoCADu: OBDPOLE"
+description: "Jak vytvořit obdélníkové pole v AutoCADu příkazem OBDPOLE (ARRAYRECT): sloupce, řádky a úrovně, rozteč mezi nimi, asociativita. Zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak vytvořit obdélníkové pole v AutoCADu?","answer":"Zadejte OBDPOLE, které nemá zkratku, nebo PO, tedy POLE, a na jeho otázku stiskněte Enter, protože obdélníkové pole je výchozí. Vyberte objekty a stiskněte Enter: pole se hned nakreslí, připravené k úpravám."},{"question":"Jak nastavit vzdálenost mezi řádky a sloupci pole?","answer":"Zvolte ROzteč a zadejte vzdálenost mezi sloupci, potom mezi řádky; záporná jde doleva nebo dolů. S možností Jednotková zadají obě najednou dva rohy. Nebo přetáhněte šipky u druhého sloupce a druhého řádku."},{"question":"Jak udělat z kopií pole samostatné objekty?","answer":"Než stisknete Enter, zvolte ASociativní a odpovězte Ne: každá kopie je samostatný objekt. Asociativní pole lze na položky rozložit i později příkazem ROZLOŽ."},{"question":"Jak vytvořit 3D pole v AutoCADu?","answer":"Zvolte úrovNě: řádky a sloupce se zkopírují nahoru podél osy Z USS, v tolika úrovních, kolik zadáte, a v zadané vzdálenosti. Možnost řáDky se ptá i na přírůstek výšky, který zvedne každý řádek oproti předchozímu."}]
+---
+
+Příkaz OBDPOLE (ARRAYRECT) kopíruje výběr do sloupců a řádků, a pokud chcete, i do úrovní, jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, a hned ho ukáže: 4 sloupce podél osy X USS a 3 řádky podél její osy Y, ve vzdálenosti jeden a půl násobku velikosti výběru. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu: klikněte na jednu z jeho šipek a potom klikněte tam, kam má jít, nebo zadejte číslo, a nastavíte tak počet nebo rozteč. Esc na této výzvě pole také vytvoří. Vybrané objekty se stanou jeho první položkou.
+
+- **Příkaz:** `OBDPOLE`
+- **Anglicky:** `ARRAYRECT`, zadávaný jako `_ARRAYRECT` v libovolném jazyce
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `OBDPOLE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="arrayrect" caption="Čtverec a jeho kružnice v 5 sloupcích a 3 řádcích, s roztečí 16 a 14: nejprve počet, potom rozteč." />
+
+## Možnosti [#options]
+
+### `ASociativní` (`AS`) [#associative]
+
+`Ano`, výchozí, vytvoří jeden objekt pole: později ho mění jeho uzly a paleta Vlastnosti a [`ROZLOŽ`](/docs/commands/explode) ho rozloží na položky. `Ne` vytvoří samostatné kopie vedle vybraných objektů. Odpověď platí po celou relaci, i pro příkazy POLÁRPOLE a KŘIVPOLE.
+
+### `Počet` (`P`) [#count]
+
+Počet sloupců, potom řádků, každý od 1 do 32767.
+
+### `ROzteč` (`RO`) [#spacing]
+
+Vzdálenost mezi sloupci, potom mezi řádky, záporná doleva nebo dolů. Nebo `Jednotková`: dva rohy obdélníku, jehož strany jsou obě vzdálenosti.
+
+### `Sloupce` (`S`) [#columns]
+
+Počet sloupců a vzdálenost mezi nimi.
+
+### `řáDky` (`D`) [#rows]
+
+Počet řádků, vzdálenost mezi nimi a přírůstek výšky každého řádku oproti předchozímu.
+
+### `úrovNě` (`N`) [#levels]
+
+Kopie naskládané podél osy Z USS: počet úrovní, potom vzdálenost mezi nimi, nebo s možností `Celkem` vzdálenost od první úrovně k poslední.
+
+### `kOnec` (`O`) [#exit]
+
+Vytvoří pole a ukončí příkaz, stejně jako Enter.
+
+## Co zatím neumí [#missing]
+
+Základní bod; Celkem u vzdáleností mezi sloupci a mezi řádky (Úrovně ji mají); Výraz, který váže hodnotu na parametry výkresu. Příkazy EDITPOLE a ZAVŘIPOLE (ARRAYEDIT, ARRAYCLOSE), které upravují zdroj pole nebo nahrazují jeho položky. Nabídky uzlů pole (počet sloupců, celková rozteč sloupců, úhel osy…) a Ctrl k přepínání mezi nimi, takže celkovou rozteč ani úhel osy nelze uzlem nastavit; uzel také nevypisuje své řádky na příkazový řádek. Hodnoty Základní X a Základní Y v paletě nelze znovu zadat.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost--cs-obdpole)
+
+## Otázky [#questions]
+
+### Jak vytvořit obdélníkové pole v AutoCADu?
+
+Zadejte `OBDPOLE`, které nemá zkratku, nebo `PO`, tedy [`POLE`](/docs/commands/array), a na jeho otázku stiskněte Enter, protože obdélníkové pole je výchozí. Vyberte objekty a stiskněte Enter: pole se hned nakreslí, připravené k úpravám.
+
+### Jak nastavit vzdálenost mezi řádky a sloupci pole?
+
+Zvolte `ROzteč` a zadejte vzdálenost mezi sloupci, potom mezi řádky; záporná jde doleva nebo dolů. S možností `Jednotková` zadají obě najednou dva rohy. Nebo přetáhněte šipky u druhého sloupce a druhého řádku.
+
+### Jak udělat z kopií pole samostatné objekty?
+
+Než stisknete Enter, zvolte `ASociativní` a odpovězte `Ne`: každá kopie je samostatný objekt. Asociativní pole lze na položky rozložit i později příkazem [`ROZLOŽ`](/docs/commands/explode).
+
+### Jak vytvořit 3D pole v AutoCADu?
+
+Zvolte `úrovNě`: řádky a sloupce se zkopírují nahoru podél osy Z USS, v tolika úrovních, kolik zadáte, a v zadané vzdálenosti. Možnost `řáDky` se ptá i na přírůstek výšky, který zvedne každý řádek oproti předchozímu.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: schodiště v půdorysu](/docs/exercises/stairs)
+
+## Související příkazy [#related]
+
+- [Příkaz POLE (ARRAY) v AutoCADu](/docs/commands/array)
+- [Polární pole v AutoCADu: příkaz POLÁRPOLE (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Křivkové pole v AutoCADu: příkaz KŘIVPOLE (ARRAYPATH)](/docs/commands/arraypath)
+- [Příkaz KOPIE (COPY) v AutoCADu](/docs/commands/copy)

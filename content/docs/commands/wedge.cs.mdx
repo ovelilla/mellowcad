@@ -1,0 +1,72 @@
+---
+title: "Příkaz KLÍN (WEDGE) v AutoCADu"
+description: "Jak v AutoCADu nakreslit 3D klín příkazem KLÍN (WEDGE, zkratka KL), krok za krokem: dva rohy a výška, Střed, Krychle, Délka a 2Body."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz KLÍN anglicky?","answer":"WEDGE. V české verzi AutoCADu zadejte KLÍN nebo zkratku KL a stiskněte Enter nebo mezerník; zkratka WE z anglické verze v české nefunguje. _WEDGE funguje v AutoCADu v každém jazyce. Pak zadejte první roh, druhý roh a výšku: 0,0, 60,40 a 25 nakreslí klín z ukázky."},{"question":"Kterým směrem klín klesá?","answer":"Dolů od strany prvního rohu, podél osy X systému USS. Chcete-li ho obrátit, zadejte druhý roh s menším X, což ho otočí o 180°, nebo ho otočte dodatečně příkazem OTOČ."},{"question":"Jak v AutoCADu nakreslit trojboký hranol?","answer":"Klín jím je: pravoúhlý trojúhelník na každém konci, protažený po celé šířce. Jakýkoli jiný trojúhelník nakreslete jako uzavřenou křivku příkazem KŘIVKA a vysuňte ho příkazem VYTÁHNI."},{"question":"Jak nakreslit klín ze středu?","answer":"Zvolte Střed a zadejte středový bod, pak roh, Krychle nebo Délka: klín je vystředěný v bodě, i ve výšce."}]
+---
+
+Příkaz KLÍN (WEDGE) nakreslí 3D těleso ve tvaru klínu: kvádr, jehož horní plocha klesá od jednoho konce ke druhému. Ptá se na totéž co [`KVÁDR`](/docs/commands/box): první roh, druhý roh a pak výšku. Vysoký konec je u prvního rohu a sklon klesá podél osy X systému USS směrem ke straně druhého rohu; druhý roh s menším X klín obrátí. Výška se měří podél osy Z systému USS, záporná dolů. Délka, šířka a výška jsou výchozí hodnoty příkazu [`KVÁDR`](/docs/commands/box), které převezme Enter. Klín vznikne v aktuální hladině a Zpět ho odstraní v jednom kroku.
+
+[`VÝPIS`](/docs/commands/list) ukáže jeho polohu, délku, šířku, výšku a natočení a v paletě Vlastnosti je lze zapsat. Jeho uzly jsou stejné jako u příkazu [`KVÁDR`](/docs/commands/box). Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCADu, který zahrnuje jen tělesa, a zatím částečně; [`ROZLOŽ`](/docs/commands/explode) z něj udělá samostatnou oblast pro každou plochu.
+
+- **Příkaz:** `KLÍN`
+- **Anglicky:** `WEDGE`, zadávaný jako `_WEDGE` v libovolném jazyce
+- **Aliasy:** `KL`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KL` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="wedge" caption="Klín 60 na 40 na 25 ze dvou rohů a výšky, se sklonem od strany prvního rohu, viděný od jihovýchodu ve vizuálním stylu Skrytý." />
+
+## Možnosti [#options]
+
+### `Střed` (`S`) [#center]
+
+U první výzvy: zeptá se na střed a pak na roh, `Krychle` nebo `Délka`. Klín je vystředěný v bodě, i ve výšce, a jeho vysoký konec leží naproti zadanému rohu.
+
+### `Krychle` (`K`) [#cube]
+
+U druhého rohu: zeptá se na délku a vytvoří klín se všemi stranami této délky. Na rozdíl od příkazu [`KVÁDR`](/docs/commands/box) vede klín podél osy X systému USS, při záporné hodnotě dozadu.
+
+### `Délka` (`D`) [#length]
+
+U druhého rohu: zeptá se na délku, podél osy X systému USS, a pak na šířku, podél jeho osy Y; záporná hodnota vede dozadu. Bod určí jen svou vzdálenost, nikdy směr.
+
+### `2Body` (`2B`) [#2point]
+
+U výšky: zeptá se na dva body a výška je vzdálenost mezi nimi.
+
+## Co zatím neumí [#missing]
+
+To, co chybí příkazu [`KVÁDR`](/docs/commands/box): posun, otočení, změna měřítka a zrcadlení z aktivního uzlu, vlastní 3D příkazy, tečkované kóty při zadávání rohu a vizuální styly, které chybějí příkazu [`AKTUÁLNÍVS`](/docs/commands/vscurrent). V půdorysu najde uchopení Koncový bod pod vysokým koncem roh horní plochy, zatímco AutoCAD najde roh základny.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke--ru-клин--кл--pl-klin--kl--cs-klín--kl)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz KLÍN anglicky?
+
+WEDGE. V české verzi AutoCADu zadejte `KLÍN` nebo zkratku `KL` a stiskněte Enter nebo mezerník; zkratka `WE` z anglické verze v české nefunguje. `_WEDGE` funguje v AutoCADu v každém jazyce. Pak zadejte první roh, druhý roh a výšku: `0,0`, `60,40` a `25` nakreslí klín z ukázky.
+
+### Kterým směrem klín klesá?
+
+Dolů od strany prvního rohu, podél osy X systému USS. Chcete-li ho obrátit, zadejte druhý roh s menším X, což ho otočí o 180°, nebo ho otočte dodatečně příkazem [`OTOČ`](/docs/commands/rotate).
+
+### Jak v AutoCADu nakreslit trojboký hranol?
+
+Klín jím je: pravoúhlý trojúhelník na každém konci, protažený po celé šířce. Jakýkoli jiný trojúhelník nakreslete jako uzavřenou křivku příkazem [`KŘIVKA`](/docs/commands/pline) a vysuňte ho příkazem [`VYTÁHNI`](/docs/commands/extrude).
+
+### Jak nakreslit klín ze středu?
+
+Zvolte `Střed` a zadejte středový bod, pak roh, `Krychle` nebo `Délka`: klín je vystředěný v bodě, i ve výšce.
+
+## Související příkazy [#related]
+
+- [Kvádr v AutoCADu: příkaz KVÁDR (BOX)](/docs/commands/box)
+- [Jehlan v AutoCADu: příkaz JEHLAN (PYRAMID)](/docs/commands/pyramid)
+- [Příkaz VYTÁHNI (EXTRUDE) v AutoCADu](/docs/commands/extrude)
+- [Příkaz SJEDNOCENÍ (UNION) v AutoCADu](/docs/commands/union)

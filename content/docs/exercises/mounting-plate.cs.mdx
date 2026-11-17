@@ -1,0 +1,60 @@
+---
+title: "Cvičení v AutoCADu 3D: montážní deska"
+metaTitle: "Cvičení v AutoCADu 3D pro začátečníky: deska"
+description: "Vymodelujte montážní desku v AutoCADu 3D: oblasti, odečtení otvorů a jedno vytažení vytvoří těleso. Krok za krokem, 3D cvičení zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Vymodelujte montážní desku tloušťky 10, v milimetrech: obrys 100 × 60 s rohy o poloměru 8 a čtyři otvory o průměru 10, jejichž středy leží 15 od okrajů. Začíná se v rovině. Obrys a kružnice se stanou oblastmi, otvory se odečtou, dokud je deska ještě plochá, a jedno vytažení z ní udělá těleso i s otvory.
+
+- **Cvičení:** Začátečník · Strojírenství · 3D těleso
+- **Příkazy:** [`OBD`](/docs/commands/rectang), [`KRUŽNICE`](/docs/commands/circle), [`KOPIE`](/docs/commands/copy), [`OBLAST`](/docs/commands/region), [`ROZDÍL`](/docs/commands/subtract), [`-POHLED`](/docs/commands#-view), [`AKTUÁLNÍVS`](/docs/commands/vscurrent), [`VYTÁHNI`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=mounting-plate), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/mounting-plate" caption="Obrys desky, 100 × 60, se čtyřmi otvory a kótami." />
+
+<Session name="exercises/mounting-plate/model" caption="Deska jako těleso tloušťky 10, pohled od jihovýchodu s odstraněnými skrytými čarami." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete profil [#profile]
+
+V hladině Obrys příkaz [`OBD`](/docs/commands/rectang) s možností `zAoblení` `8`, od `0,0` do `100,60`. Potom kružnice v bodě `15,15` s možností `Průměr` `10` a příkaz [`KOPIE`](/docs/commands/copy), který ji zkopíruje od jejího středu do `70,0`, `70,30` a `0,30`.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Nakreslete profil" />
+
+### 2. Vytvořte oblasti [#region]
+
+Příkaz [`OBLAST`](/docs/commands/region) změní uzavřené objekty v oblasti: vyberte obrys a čtyři kružnice, potom Enter. Pět smyček, pět oblastí.
+
+<Session name="exercises/mounting-plate/region" caption="2. Vytvořte oblasti" />
+
+### 3. Odečtěte otvory [#subtract]
+
+Příkaz [`ROZDÍL`](/docs/commands/subtract): vyberte oblast desky a stiskněte Enter, potom oblasti čtyř kružnic a Enter. Zbude jedna oblast se čtyřmi otvory.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Odečtěte otvory" />
+
+### 4. Natočte pohled [#view]
+
+Příkaz `-POHLED` a možnost `JViso` ukážou desku od jihovýchodu a shora; příkaz [`AKTUÁLNÍVS`](/docs/commands/vscurrent) a možnost `Skryté` skryjí to, co zakrývají plochy. Pohled lze natočit i kliknutím na ViewCube.
+
+<Session name="exercises/mounting-plate/view" caption="4. Natočte pohled" />
+
+### 5. Vytáhněte oblast [#extrude]
+
+Příkaz [`VYTÁHNI`](/docs/commands/extrude): vyberte oblast, stiskněte Enter a zadejte výšku, `10`. Deska je těleso, i s otvory. Příkaz [`ZOOM`](/docs/commands/zoom) s možností `Maximálně` ji přizpůsobí obrazovce a měřítko `0.8x` kolem ní ponechá místo.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Vytáhněte oblast" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: příruba](/docs/exercises/flange): Mírně pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu: kulatý stůl a židle](/docs/exercises/round-table): Mírně pokročilý · Architektura · 2D
+- [Cvičení v AutoCADu: pozemek](/docs/exercises/plot-of-land): Mírně pokročilý · Stavebnictví · 2D
+- [Cvičení v AutoCADu](/docs/exercises)

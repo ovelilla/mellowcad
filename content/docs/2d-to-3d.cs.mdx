@@ -1,0 +1,42 @@
+---
+title: Od 2D k 3D v AutoCADu
+metaTitle: "3D modelování v AutoCADu: od 2D výkresu k tělesu"
+description: "Jak z 2D výkresu udělat 3D těleso v AutoCADu: vytáhněte nebo orotujte uzavřený profil, sjednoťte a odečtěte. 3D tělesa online zdarma, zatím částečně."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+V AutoCADu těleso obvykle začíná jako 2D výkres: uzavřený profil, nakreslený jako každý půdorys, pak vytažený do výšky nebo orotovaný kolem osy a sjednocený s jinými tělesy nebo jimi oříznutý. 3D tělesa v MellowCAD se vytvářejí stejně, stejnými příkazy. Jsou zatím částečná: ještě chybí tažení, šablonování, sítě i rendering. Každá část ukazuje, co nakreslí jádro MellowCAD, i s historií tak, jak ji zadáte.
+
+## Nakreslete uzavřený profil [#profile]
+
+Těleso potřebuje uzavřený profil: uzavřenou křivku, obdélník, kružnici nebo oblast. Úsečky, které na sebe navazují konci, jsou stále samostatné objekty: příkaz <Command id="JOIN" /> z nich vytvoří jednu křivku, nebo příkaz <Command id="REGION" /> oblast. Kreslete profil v půdorysu, kde se jeho body zadávají nejsnáze.
+
+## Vytáhněte ho [#extrude]
+
+Příkaz <Command id="EXTRUDE" />: vyberte profil, stiskněte Enter a zadejte výšku. Při pohledu shora vypadá těleso přesně jako jeho profil: abyste ho viděli, otočte pohled příkazem <Command id="VIEW" /> nebo nástrojem ViewCube a způsob zobrazení zvolte příkazem <Command id="VSCURRENT" />.
+
+<Session name="solidExtrude" caption="Profil tvaru L jako jedna uzavřená křivka, vytažený o 30, pohled od jihovýchodu." />
+
+## Tlačte a táhněte oblast [#presspull]
+
+Příkaz <Command id="PRESSPULL" /> nepotřebuje profil: klikněte dovnitř libovolné uzavřené oblasti, i ohraničené samostatnými úsečkami, a zadejte výšku. Kliknutím na plochu tělesa tuto plochu zatlačí nebo vytáhne.
+
+<Session name="presspull" caption="Uzavřená oblast, tlačená a tažená zevnitř: stane se z ní těleso." />
+
+## Orotujte ho [#revolve]
+
+Příkaz <Command id="REVOLVE" /> otočí profil kolem osy: vyberte profil, zadejte osu dvěma body, objektem nebo osou X, Y či Z, a pak úhel, ve výchozím nastavení celou otáčku.
+
+<Session name="revolve" caption="Poloviční řez orotovaný kolem osy Y." />
+
+## Sjednoťte a odečtěte tělesa [#booleans]
+
+Příkaz <Command id="UNION" /> vytvoří z několika těles jedno, příkaz <Command id="SUBTRACT" /> odečte jedno nebo více od jiného a příkaz <Command id="INTERSECT" /> ponechá jejich společnou část. Díra je válec odečtený od tělesa, kterým prochází.
+
+<Session name="subtract" caption="Válec odečtený od kvádru: díra skrz." />
+
+## Co dál [#next]
+
+- 3D [cvičení](/docs/exercises): [montážní deska](/docs/exercises/mounting-plate) z oblastí a jednoho vytažení, [řemenice](/docs/exercises/pulley) orotovaná ze svého řezu a [ložiskové těleso](/docs/exercises/bearing-block) sjednocené a provrtané.
+- Příkaz <Command id="3DORBIT" /> otáčí pohled myší a příkaz <Command id="VSCURRENT" /> stínuje plochy.

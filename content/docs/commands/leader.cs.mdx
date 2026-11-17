@@ -1,0 +1,74 @@
+---
+title: "Odkazová čára v AutoCADu: příkaz ODKAZ (LEADER)"
+description: "Jak nakreslit odkaz s textem v AutoCADu příkazem ODKAZ (LEADER, zkratka ODK): šipka, kotvička, volby formátu a rozdíl oproti příkazu MODKAZ (MLEADER)."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ODKAZ anglicky?","answer":"LEADER. V českém AutoCADu je jeho zkratka ODK: zadejte ji a stiskněte Enter nebo mezerník. Anglické LEAD v české verzi nefunguje; celý název ODKAZ funguje také a _LEADER v AutoCADu v jakémkoli jazyce."},{"question":"Jaký je rozdíl mezi příkazy ODKAZ a MODKAZ (MLEADER)?","answer":"ODKAZ je starší příkaz: odkazová čára a samostatný text, který čára sleduje. MODKAZ, který AutoCAD dnes doporučuje, vytvoří jeden objekt multiodkazu s vlastními styly a několika odkazovými čarami k jedné poznámce. MellowCAD má příkaz ODKAZ; otevírá a ukládá odkazy souboru DXF a jeho multiodkazy vynechává."},{"question":"Jak vytvořit odkaz s textem?","answer":"Spusťte příkaz ODKAZ, určete bod, na který má šipka ukazovat, pak místo pro text, stiskněte Enter a zadejte text po řádcích. Enter na prázdném řádku ho dokončí. Enter na prvním řádku místo toho nabídne jiné poznámky, mezi nimi textový editor."},{"question":"Jak změnit velikost šipky odkazu?","answer":"Vyberte odkaz a změňte Velikost šipky v paletě Vlastnosti, což platí jen pro tento odkaz; nebo změňte velikost šipky v kótovacím stylu, kterou sledují všechny odkazy s tímto stylem. Délka kotvičky se také řídí velikostí šipky."},{"question":"Proč odkaz nemá šipku?","answer":"Buď ji vynechala volba Nic ve volbě Formát, nebo je první segment kratší než dvojnásobek velikosti šipky, kdy šipku nekreslí ani AutoCAD. Určete druhý bod dál od prvního nebo nastavte menší velikost šipky."}]
+---
+
+Příkaz ODKAZ (LEADER) nakreslí čáru od šipky k poznámce. Určete počáteční bod, kde bude šipka, a pak tolik dalších bodů, kolik chcete; od druhého bodu nabízí výzva `Poznámka`, kterou vybere i Enter, `Formát` a `Zpět`. Enter u prvních dvou bodů příkaz ukončí a nic nenakreslí. Potom zadávejte poznámku po řádcích, po každém Enter, a Enter na prázdném řádku ji dokončí: odkaz a jeho text, víceřádkový text, vzniknou společně jako jeden krok, v aktuální hladině, s aktuální barvou, typem čáry a tloušťkou čáry.
+
+Výšku textu, jeho mezeru od čáry a jeho umístění určuje aktuální kótovací styl: za koncem odkazu, nebo před ním, když odkaz přichází zprava, a nad poslední čarou, která pokračuje pod textem. Když poslední segment stoupá o víc než 15° od vodorovné, přidá příkaz ODKAZ kotvičku: krátkou vodorovnou čáru dlouhou jako šipka, která končí v určeném bodě. Šipka je plná uzavřená a kreslí se, jen když je první segment aspoň dvakrát delší než ona.
+
+Odkaz sleduje svůj text: posuňte, otočte nebo změňte měřítko textu a konec odkazu se posune s ním, kotvička se vypočítá znovu; vymažte text a odkaz zůstane, bez kotvičky. Odkaz a text zkopírované společně zůstanou dvojicí. Uzly odkazu jsou v jeho bodech; paleta Vlastnosti ukazuje jeho typ, velikost šipky, odsazení a polohu textu a jeho měřítko.
+
+- **Příkaz:** `ODKAZ`
+- **Anglicky:** `LEADER`, zadávaný jako `_LEADER` v libovolném jazyce
+- **Aliasy:** `ODK`
+- **Panel:** [Poznámka](/docs/commands#annotate)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ODK` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="leader" caption="Otvor a jeho popis: ODKAZ od obvodu kružnice, dva body, pak dva řádky textu; poslední segment stoupá, takže ho s textem spojí kotvička." />
+
+## Možnosti [#options]
+
+### `Poznámka` (`P`) [#annotation]
+
+Ptá se na text, po řádcích. Enter na prvním řádku se místo toho zeptá na jiný druh poznámky: `Mtext` (výchozí) otevře textový editor na konci odkazu, kde Enter zalomí řádek a Ctrl+Enter nebo kliknutí mimo editor ho ukončí; `Kopie` umístí na konec kopii vybraného víceřádkového textu, jednořádkového textu nebo reference bloku a cokoli jiného odmítne zprávou `Vyberte mtext, text, referenci bloku nebo objekt tolerance.`; `Nic` nakreslí jen samotný odkaz.
+
+### `Formát` (`F`) [#format]
+
+Nastaví, jak se odkaz kreslí, a vrátí se k bodům: `Spline` z něj udělá hladký spline procházející body, `Přímá` opět přímé segmenty, `šipKa` vrátí šipku a `Nic` ji vynechá. Enter ponechá formát beze změny.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední bod a zeptá se na něj znovu. U druhého bodu není co vracet a oznámí to `Neplatný vstup.`.
+
+## Co zatím neumí [#missing]
+
+Poznámky Tolerance a Blok: MellowCAD nemá objekt geometrické tolerance a blok se z příkazu ODKAZ nevkládá, takže výzva voleb nabízí jen `Kopie`, `Nic` a `Mtext`. Jiné šipky než plná uzavřená a vlastní barva a tloušťka čáry odkazu z kótovacího stylu. RODKAZ (QLEADER) a MODKAZ (MLEADER), rychlý odkaz a multiodkaz, tu zatím nejsou: multiodkazy ze souboru DXF se při otevření vynechají.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#leader--lead--es-directriz--direc--pt-br-linhacham--lcham--lead--fr-lrepere--it-direttrice--de-führung--ru-выноска--pl-lodnies--lo--lodn--cs-odkaz--odk)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ODKAZ anglicky?
+
+LEADER. V českém AutoCADu je jeho zkratka `ODK`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `LEAD` v české verzi nefunguje; celý název `ODKAZ` funguje také a `_LEADER` v AutoCADu v jakémkoli jazyce.
+
+### Jaký je rozdíl mezi příkazy ODKAZ a MODKAZ (MLEADER)?
+
+ODKAZ je starší příkaz: odkazová čára a samostatný text, který čára sleduje. MODKAZ, který AutoCAD dnes doporučuje, vytvoří jeden objekt multiodkazu s vlastními styly a několika odkazovými čarami k jedné poznámce. MellowCAD má příkaz ODKAZ; otevírá a ukládá odkazy souboru DXF a jeho multiodkazy vynechává.
+
+### Jak vytvořit odkaz s textem?
+
+Spusťte příkaz ODKAZ, určete bod, na který má šipka ukazovat, pak místo pro text, stiskněte Enter a zadejte text po řádcích. Enter na prázdném řádku ho dokončí. Enter na prvním řádku místo toho nabídne jiné poznámky, mezi nimi textový editor.
+
+### Jak změnit velikost šipky odkazu?
+
+Vyberte odkaz a změňte Velikost šipky v paletě Vlastnosti, což platí jen pro tento odkaz; nebo změňte velikost šipky v kótovacím stylu, kterou sledují všechny odkazy s tímto stylem. Délka kotvičky se také řídí velikostí šipky.
+
+### Proč odkaz nemá šipku?
+
+Buď ji vynechala volba `Nic` ve volbě `Formát`, nebo je první segment kratší než dvojnásobek velikosti šipky, kdy šipku nekreslí ani AutoCAD. Určete druhý bod dál od prvního nebo nastavte menší velikost šipky.
+
+## Související příkazy [#related]
+
+- [Víceřádkový text v AutoCADu: příkaz MTEXT](/docs/commands/mtext)
+- [Kótovací styl v AutoCADu: příkaz KÓTYSTYL (DIMSTYLE)](/docs/commands/dimstyle)
+- [Kóta poloměru v AutoCADu: příkaz KÓTYRÁDIUS (DIMRADIUS)](/docs/commands/dimradius)
+- [Příkaz TEXT v AutoCADu: jednořádkový text](/docs/commands/text)

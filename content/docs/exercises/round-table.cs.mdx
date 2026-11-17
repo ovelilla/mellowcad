@@ -1,0 +1,52 @@
+---
+title: "Cvičení v AutoCADu: kulatý stůl a židle"
+metaTitle: "Cvičení v AutoCADu: kulatý stůl a šest židlí"
+description: "Nakreslete v AutoCADu kulatý stůl se šesti židlemi: jednu židli, potom polární pole kolem středu stolu a kóty. Krok za krokem, zdarma online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Nakreslete kulatý stůl o průměru 120 se šesti židlemi, v centimetrech: každá židle je sedák 44 × 40 s rohy zaoblenými poloměrem 4 a opěradlo hluboké 8, přední hrana sedáku leží 8 od okraje stolu. Nakreslete jednu židli nad stolem a všech šest rozmístí polární pole. Měřítko kót výkresu je nastavené pro centimetry.
+
+- **Cvičení:** Mírně pokročilý · Architektura · 2D
+- **Příkazy:** [`KRUŽNICE`](/docs/commands/circle), [`OBD`](/docs/commands/rectang), [`POLÁRPOLE`](/docs/commands/arraypolar), [`KÓTYPRŮM`](/docs/commands/dimdiameter), [`KÓTYPŘÍM`](/docs/commands/dimlinear)
+- **V editoru:** [Otevřete ho s výkresem](/cs/draw?drawing=round-table), okótovaným vedle místa, kde nakreslíte svůj
+
+## Výkres [#drawing]
+
+<Session name="exercises/round-table" caption="Kulatý stůl o průměru 120 se šesti židlemi, v půdorysu, okótovaný v centimetrech." />
+
+## Krok za krokem [#steps]
+
+Jádro nakreslí každý krok a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností. Po prvním bodu příkazu se zadaný bod měří od posledního, jak ho měří dynamické zadávání, a historie ho zapíše se @; \# měří od počátku.
+
+### 1. Nakreslete stůl [#table]
+
+V hladině Obrys příkaz [`KRUŽNICE`](/docs/commands/circle) v bodě `0,0`, možnost `Průměr`, `120`.
+
+<Session name="exercises/round-table/table" caption="1. Nakreslete stůl" />
+
+### 2. Nakreslete židli [#chair]
+
+Sedák, nad stolem: příkaz [`OBD`](/docs/commands/rectang) s možností `zAoblení` `4`, od `-22,68` do bodu o `44,40` dál. Potom opěradlo, s poloměrem zaoblení vráceným na `0`, od `-22,108` do bodu o `44,8` dál. Příkaz [`OBD`](/docs/commands/rectang) si poloměr zaoblení pamatuje, dokud ho nezměníte.
+
+<Session name="exercises/round-table/chair" caption="2. Nakreslete židli" />
+
+### 3. Vytvořte pole židlí [#array]
+
+Příkaz [`POLÁRPOLE`](/docs/commands/arraypolar): vyberte sedák a opěradlo, stiskněte Enter, zadejte střed stolu, `0,0`, a potom možnost `Položky`, `6`. Každá židle se při rozmístění natočí, takže všech šest je obráceno ke stolu.
+
+<Session name="exercises/round-table/array" caption="3. Vytvořte pole židlí" />
+
+### 4. Okótujte výkres [#dimensions]
+
+V hladině Kóty příkaz [`KÓTYPRŮM`](/docs/commands/dimdiameter) na stole, s kótou umístěnou uvnitř, a příkaz [`KÓTYPŘÍM`](/docs/commands/dimlinear) pro šířku horní židle, 44, a její hloubku s opěradlem, 48.
+
+<Session name="exercises/round-table/dimensions" caption="4. Okótujte výkres" />
+
+## Další cvičení [#more]
+
+- [Cvičení v AutoCADu: pozemek](/docs/exercises/plot-of-land): Mírně pokročilý · Stavebnictví · 2D
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft): Mírně pokročilý · Strojírenství · 2D
+- [Cvičení v AutoCADu: stupňovitý hranol v izometrii](/docs/exercises/isometric-block): Mírně pokročilý · Strojírenství · Izometrie
+- [Cvičení v AutoCADu](/docs/exercises)

@@ -131,14 +131,14 @@ export function visualPieces(line: string): string[] {
 const ARABIC_FAMILY = "Inter, Readex Pro"
 
 /**
- * Inter and Geist Mono, each with its Cyrillic subset and Polish's letters
+ * Inter and Geist Mono, each with its Cyrillic subset and the Polish and Czech letters
  * behind it. WHY a family of its own: Satori takes a glyph a face lacks from
  * the families the text names, not from another face of the same name, and
  * next/og fetched a regular Noto for the Cyrillic instead (the Russian card's
  * thin letters).
  */
-const SANS_FAMILY = "Inter, Inter Cyrillic, Inter Polish"
-const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Polish"
+const SANS_FAMILY = "Inter, Inter Cyrillic, Inter Letters"
+const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Letters"
 
 /**
  * How wide a word of a right-to-left script is set, shaped: its letters
@@ -199,20 +199,20 @@ export async function ogImage({
     model,
     inter,
     interCyrillic,
-    interPolish,
+    interLetters,
     mono,
     monoCyrillic,
-    monoPolish,
+    monoLetters,
     arabic,
   ] = await Promise.all([
     flange(),
     solid(),
     font("inter-latin-600-normal.woff"),
     font("inter-cyrillic-600-normal.woff"),
-    font("inter-polish-600-normal.woff"),
+    font("inter-letters-600-normal.woff"),
     font("geist-mono-latin-400-normal.woff"),
     font("geist-mono-cyrillic-400-normal.woff"),
-    font("geist-mono-polish-400-normal.woff"),
+    font("geist-mono-letters-400-normal.woff"),
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
     // Arabic subset as soon as a word meets a character the subset lacks.
     rtl ? font("readex-pro-600.ttf") : undefined,
@@ -412,8 +412,8 @@ export async function ogImage({
           style: "normal",
         },
         {
-          name: "Inter Polish",
-          data: interPolish,
+          name: "Inter Letters",
+          data: interLetters,
           weight: 600,
           style: "normal",
         },
@@ -425,8 +425,8 @@ export async function ogImage({
           style: "normal",
         },
         {
-          name: "Geist Mono Polish",
-          data: monoPolish,
+          name: "Geist Mono Letters",
+          data: monoLetters,
           weight: 400,
           style: "normal",
         },

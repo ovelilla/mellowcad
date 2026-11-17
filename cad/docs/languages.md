@@ -1,6 +1,6 @@
 # Languages
 
-The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian, German, Russian and Polish, and a host can reword
+The engine speaks English, Spanish, Arabic, Brazilian Portuguese, French, Italian, German, Russian, Polish and Czech, and a host can reword
 any of it or add a language of its own. A language is passed to the engine, never registered globally, so
 one page can run two engines in two languages.
 
@@ -24,6 +24,7 @@ As in AutoCAD's language packs, a language has two parts:
 | German               | `de`             | German AutoCAD's: `LINIE`, `STUTZEN`, `[Schließen/Zurück]`                                |
 | Russian              | `ru`             | Russian AutoCAD's: `ОТРЕЗОК`, `ОБРЕЗАТЬ`, `[Замкнуть/Отменить]`                           |
 | Polish               | `pl`             | Polish AutoCAD's: `LINIA`, `ODSUŃ`, `[Zamknij/Cofaj]`                                     |
+| Czech                | `cs`             | Czech AutoCAD's: `ÚSEČKA`, `EKVID`, `[Uzavři/Zpět]`                                       |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as

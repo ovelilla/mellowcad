@@ -2260,7 +2260,11 @@ export const ru: EngineLocale = {
         "Centre": "Центр"
       },
       "splineditOptionClosed": {
-        "convert to Polyline": "ПОлилиния"
+        "convert to Polyline": "ПОлилиния",
+        "Edit vertex": "Вершина",
+        "Reverse": "оБратить",
+        "eXit": "вЫход",
+        "Open": "Разомкнуть"
       },
       "peditOption": {
         "eXit": "выХод"

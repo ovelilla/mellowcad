@@ -1,0 +1,481 @@
+// Generated from cs.json by `npm run locales`. Do not edit.
+import type { EditorLocale } from "./types"
+
+export const cs: EditorLocale = {
+  "tag": "cs",
+  "messages": {
+    "Workspace": {
+      "canvas": "Kreslicí plocha CAD"
+    },
+    "Keys": {
+      "save": "Ctrl+S",
+      "open": "Ctrl+O",
+      "undo": "Ctrl+Z",
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Shift+C",
+      "paste": "Ctrl+V"
+    },
+    "TopBar": {
+      "menu": "Nabídka aplikace",
+      "new": "Nový",
+      "open": "Otevřít",
+      "save": "Uložit",
+      "saveAs": "Uložit jako",
+      "units": "Kreslicí jednotky…",
+      "language": "Jazyk",
+      "feedback": "Odeslat zpětnou vazbu",
+      "saving": "Probíhá ukládání…",
+      "saved": "Uloženo",
+      "savedHint": "Uloženo v tomto zařízení",
+      "undo": "Zpět",
+      "redo": "Znova",
+      "commandLine": "Příkazový řádek",
+      "layer": "Hladina",
+      "color": "Barva objektu",
+      "lineweight": "Tloušťka čáry",
+      "linetype": "Typ čáry"
+    },
+    "NavigationBar": {
+      "label": "Panel navigace",
+      "zoom": "Zoom",
+      "extents": "Zoom maximálně",
+      "window": "Zoom okno",
+      "previous": "Zoom předchozí",
+      "in": "Přiblížit",
+      "out": "Oddálit"
+    },
+    "Viewport": {
+      "view": [
+        "Ovládací prvky pro pohled: ",
+        [
+          "name"
+        ]
+      ]
+    },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Na výchozí pohled",
+      "parallel": "Rovnoběžně",
+      "setHome": "Nastavit aktuální pohled jako výchozí",
+      "rollClockwise": "Otočit ve směru hodinových ručiček",
+      "rollCounterclockwise": "Otočit proti směru hodinových ručiček",
+      "wcs": "GSS",
+      "unnamed": "Bez názvu",
+      "newUcs": "Nový USS",
+      "adjacent": {
+        "up": "Zobrazit plochu nahoře",
+        "down": "Zobrazit plochu dole",
+        "left": "Zobrazit plochu vlevo",
+        "right": "Zobrazit plochu vpravo"
+      }
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "Kružnice",
+        "arc": "Oblouk",
+        "ellipse": "Elipsa",
+        "spline": "Spline",
+        "rectangle": "Obdélník",
+        "trim": "Oříznout",
+        "fillet": "Zaoblit",
+        "filletedge": "Zaoblit hranu",
+        "solideditextrude": "Vytáhnout plochy",
+        "break": "Přerušit",
+        "pedit": "Upravit křivku",
+        "array": "Pole",
+        "text": "Text",
+        "dimension": "Kóta",
+        "dimchain": "Pokračovat",
+        "attributes": "Atributy",
+        "measure": "Odměřit",
+        "union": "Úprava těles",
+        "box": "Modelování",
+        "extrude": "Vytáhnout",
+        "point": "Body"
+      },
+      "sections": {
+        "draw": "Kreslit",
+        "modify": "Modifikace",
+        "annotation": "Poznámka",
+        "block": "Blok",
+        "utilities": "Pomůcky"
+      }
+    },
+    "CommandLine": {
+      "label": "Příkazový řádek",
+      "placeholder": "Zadejte příkaz (ÚSEČKA, OR, KO…)",
+      "history": "Historie příkazů"
+    },
+    "DynamicInput": {
+      "locked": "uzamknuto"
+    },
+    "StatusBar": {
+      "coordinates": "Souřadnice",
+      "model": "MODEL",
+      "modelSpace": "Modelový prostor",
+      "grid": "Rastr",
+      "objectSnap": "Uchopení objektů",
+      "objectSnapSettings": "Nastavení uchopení objektů",
+      "snapMode": "Režim kroku",
+      "snapSettings": "Nastavení kroku",
+      "snap": "Krok",
+      "gridSnap": "Krok mřížky",
+      "polarSnap": "Polární krok",
+      "snapX": "Krok X",
+      "snapXSpacing": "X rozteč kroku",
+      "snapY": "Krok Y",
+      "snapYSpacing": "Y rozteč kroku",
+      "polarDistance": "Polární vzdálenost",
+      "polarSnapDistance": "Vzdálenost polárního kroku",
+      "ortho": "Režim Orto",
+      "polarTracking": "Polární trasování",
+      "polarTrackingAngle": "Úhel polárního trasování",
+      "polarAngle": "Polární úhel",
+      "objectSnapTracking": "Trasování uchopení objektů",
+      "selectionCycling": "Přepínání výběrů",
+      "selectionCyclingSettings": "Nastavení přepínání výběrů",
+      "selectionList": "Zobrazit okno se seznamem výběrů pro přepínání",
+      "showLineweight": "Zobrazit tloušťku čar",
+      "units": "Jednotky",
+      "cleanScreen": "Vyčistit obrazovku",
+      "customization": "Přizpůsobení"
+    },
+    "Units": {
+      "title": "Kreslicí jednotky",
+      "length": "Délka",
+      "type": "Typ",
+      "precision": "Přesnost",
+      "decimal": "Desítkový",
+      "insertionScale": "Měřítko pro vložení",
+      "insertedContent": "Jednotky pro měřítko vloženého obsahu:",
+      "millimeters": "Milimetry",
+      "centimeters": "Centimetry",
+      "meters": "Metry",
+      "sampleOutput": "Příklad výstupu",
+      "ok": "OK",
+      "cancel": "Storno"
+    },
+    "SaveAs": {
+      "title": "Uložit výkres jako",
+      "fileName": "Název souboru:",
+      "fileType": "Soubory typu:",
+      "tools": "Nástroje",
+      "options": "Možnosti…",
+      "save": "Uložit",
+      "cancel": "Storno",
+      "drawing": "Výkres MellowCAD (*.ecad.json)",
+      "dxf2018": "AutoCAD 2018 DXF (*.dxf)",
+      "dxf2013": "AutoCAD 2013/LT2013 DXF (*.dxf)",
+      "dxf2010": "AutoCAD 2010/LT2010 DXF (*.dxf)",
+      "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
+      "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
+      "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "optionsTitle": "Možnosti Ulož jako",
+      "dxfOptions": "Možnosti DXF",
+      "format": "Formát",
+      "ascii": "ASCII",
+      "binary": "BINÁRNĚ",
+      "selectObjects": "Vybrat objekty",
+      "preview": "Ukládat obrázek s náhledem",
+      "precision": "Počet desetinných míst (0 až 16)",
+      "ok": "OK"
+    },
+    "SnapOverride": {
+      "from": "Odbodu",
+      "pointFilters": "Filtry bodů",
+      "none": "Nic"
+    },
+    "SelectionCycling": {
+      "title": "Výběr",
+      "none": "Žádný"
+    },
+    "ShortcutMenu": {
+      "label": "Místní nabídka",
+      "repeat": [
+        "Opakovat ",
+        [
+          "command"
+        ]
+      ],
+      "clipboard": "Schránka",
+      "copyBase": "Kopírovat s referenčním bodem",
+      "paste": "Vlož",
+      "undo": "Zpět",
+      "redo": "Znova",
+      "copySelection": "Kopírovat výběr",
+      "deselectAll": "Vyjmout vše",
+      "properties": "Vlastnosti",
+      "enter": "Vložit",
+      "cancel": "Storno",
+      "snapOverrides": "Přepsání uchopení objektů",
+      "dimensionStyle": "Kótovací styl"
+    },
+    "Layers": {
+      "title": "Hladiny",
+      "new": "Nová hladina",
+      "setCurrentLabel": [
+        "Nastavit hladinu ",
+        [
+          "name"
+        ],
+        " jako aktuální"
+      ],
+      "current": "Aktuální hladina",
+      "setCurrent": "Nastavit aktuální",
+      "colorLabel": [
+        "Barva hladiny ",
+        [
+          "name"
+        ]
+      ],
+      "color": "Barva hladiny",
+      "linetypeLabel": [
+        "Typ čáry hladiny ",
+        [
+          "name"
+        ]
+      ],
+      "lineweightLabel": [
+        "Tloušťka čáry hladiny ",
+        [
+          "name"
+        ]
+      ],
+      "on": "Zapnuto",
+      "off": "Vypnuto",
+      "unlocked": "Odemknuto",
+      "locked": "Uzamknuto",
+      "deleteLabel": [
+        "Vymazat hladinu ",
+        [
+          "name"
+        ]
+      ],
+      "delete": "Vymazat hladinu",
+      "rename": "Hladinu přejmenujete dalším kliknutím na název vybrané hladiny",
+      "renameLabel": [
+        "Přejmenovat hladinu ",
+        [
+          "name"
+        ]
+      ],
+      "list": "Seznam hladin",
+      "nextColumns": "Další sloupce",
+      "previousColumns": "Předchozí sloupce",
+      "dialog": {
+        "close": "Zavřít",
+        "notDeleted": {
+          "title": "Hladina – nevymazána",
+          "instruction": "Vybraná hladina nebyla vymazána.",
+          "content": "Nelze vymazat následující hladiny:",
+          "base": "Hladiny 0 a Defpoints",
+          "current": "Aktuální hladina",
+          "inUse": "Hladiny obsahující objekty",
+          "xref": "Hladiny závislé na xrefech"
+        },
+        "currentOff": {
+          "title": "Hladina – aktuální hladina vypnuta",
+          "instruction": "Aktuální hladina bude vypnuta. Co chcete udělat?",
+          "turnOff": "Vypnout aktuální hladinu",
+          "turnOffNote": "Objekty, které od této chvíle vytvoříte, se ve výkresu nezobrazí, dokud hladinu znovu nezapnete.",
+          "keepOn": "Ponechat aktuální hladinu zapnutou"
+        },
+        "nameInUse": {
+          "title": "Hladina – název již existuje",
+          "instruction": [
+            "Název ",
+            [
+              "name"
+            ],
+            " se již používá."
+          ],
+          "content": "Zadejte jiný název."
+        },
+        "invalidName": {
+          "title": "Hladina",
+          "instruction": "Neplatné znaky v názvu hladiny.",
+          "content": "Následující znaky nejsou v názvech hladin platné:"
+        },
+        "cannotRename": {
+          "title": "Hladina – přejmenování",
+          "instruction": "Vybranou hladinu nelze přejmenovat.",
+          "content": "Následující hladiny nelze přejmenovat:",
+          "base": "Hladina 0",
+          "xref": "Hladiny závislé na xrefech"
+        }
+      },
+      "columns": {
+        "status": "Stav",
+        "name": "Název",
+        "on": "Zap",
+        "lock": "Zamknout",
+        "color": "Barva",
+        "linetype": "Typ čáry",
+        "lineweight": "Tloušťka čáry",
+        "objects": "Objekty"
+      }
+    },
+    "Styles": {
+      "title": "Styly",
+      "dimension": "Kóta",
+      "text": "Text",
+      "current": [
+        "Aktuální: ",
+        [
+          "value",
+          [
+            "name"
+          ]
+        ]
+      ],
+      "new": "Nový",
+      "setCurrent": [
+        "Nastavit ",
+        [
+          "name"
+        ],
+        " jako aktuální"
+      ],
+      "rename": [
+        "Přejmenovat ",
+        [
+          "name"
+        ]
+      ],
+      "delete": [
+        "Vymazat ",
+        [
+          "name"
+        ]
+      ],
+      "lines": "Čáry",
+      "baselineSpacing": "Odsazení základny",
+      "extendBeyond": "Přesah za kót.čarami",
+      "offsetFromOrigin": "Odsazení od počátku",
+      "symbolsAndArrows": "Symboly a šipky",
+      "arrowSize": "Velikost šipky",
+      "centerMark": "Velikost středové značky",
+      "textGroup": "Text",
+      "textHeight": "Výška textu",
+      "offsetFromDimLine": "Odsazení od kótovací čáry",
+      "fit": "Přizpůsobit",
+      "overallScale": "Použít celkové měřítko",
+      "drawDimLineBetween": "Mezi vynášecí čáry kreslit kótovací čáru",
+      "primaryUnits": "Primární jednotky",
+      "precision": "Přesnost",
+      "angularPrecision": "Přesnost úhlů",
+      "decimalSeparator": "Desetinný oddělovač",
+      "comma": "',' (čárka)",
+      "period": "'.' (tečka)",
+      "space": "' ' (mezera)",
+      "suppressTrailingZeros": "Potlačit koncové nuly",
+      "yes": "Ano",
+      "no": "Ne",
+      "size": "Velikost",
+      "height": "Výška",
+      "heightHint": "Při výšce 0 zůstává výška volná, takže se na ni příkaz TEXT pokaždé zeptá."
+    },
+    "Blocks": {
+      "title": "Bloky",
+      "filter": "Filtr (povoleno ? a *)",
+      "filterLabel": "Filtrovat bloky",
+      "empty": "Nejsou definovány žádné bloky. Něco nakreslete a spusťte příkaz BLOK.",
+      "noMatch": "Filtru neodpovídá žádný blok.",
+      "references": [
+        [
+          "name"
+        ],
+        " – ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " ve výkresu"
+            ],
+            "few": [
+              0,
+              " ve výkresu"
+            ],
+            "many": [
+              0,
+              " ve výkresu"
+            ],
+            "other": [
+              0,
+              " ve výkresu"
+            ]
+          }
+        ]
+      ]
+    },
+    "Properties": {
+      "noSelection": "Žádný výběr",
+      "general": "Obecné",
+      "color": "Barva",
+      "colorLabel": "Barva vybraných objektů",
+      "layer": "Hladina",
+      "layerLabel": "Hladina vybraných objektů",
+      "linetype": "Typ čáry",
+      "linetypeLabel": "Typ čáry vybraných objektů",
+      "lineweight": "Tloušťka čáry",
+      "lineweightLabel": "Tloušťka čáry vybraných objektů",
+      "textStyle": "Styl textu",
+      "textStyleLabel": "Styl textu vybraných objektů",
+      "dimStyle": "Kótovací styl",
+      "dimStyleLabel": "Kótovací styl vybraných objektů",
+      "varies": "*RŮZNÉ*",
+      "customColor": "Vlastní barva",
+      "title": "Vlastnosti",
+      "objectType": "Typ objektu",
+      "currentLayerLabel": "Aktuální hladina",
+      "currentColorLabel": "Aktuální barva",
+      "currentLinetypeLabel": "Aktuální typ čáry",
+      "currentLineweightLabel": "Aktuální tloušťka čáry",
+      "lockedObjects": {
+        "title": "Vlastnosti – uzamčené objekty",
+        "instruction": "Jeden nebo více vybraných objektů je uzamčeno a nelze je aktualizovat.",
+        "content": [
+          "Počet objektů odstraněných z výběrové množiny: ",
+          [
+            "count",
+            4
+          ]
+        ],
+        "close": "Zavřít"
+      }
+    },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Víceřádkový text – Neuložené změny",
+        "instruction": "Chcete uložit změny textu?",
+        "yes": "Ano",
+        "no": "Ne",
+        "cancel": "Storno"
+      }
+    },
+    "Palette": {
+      "label": "Palety",
+      "fold": "Sbalit palety",
+      "unfold": "Zobrazit palety",
+      "resize": "Šířka palety"
+    },
+    "PointStyle": {
+      "title": "Typ bodu",
+      "figures": "Obrázky zobrazení bodů",
+      "pointSize": "Velikost bodu:",
+      "relative": "Velikost vzhledem k obrazovce",
+      "absolute": "Velikost v absolutních jednotkách",
+      "percent": "%",
+      "units": "Jednotky",
+      "invalid": "Neplatné zadání.",
+      "ok": "OK",
+      "cancel": "Storno"
+    }
+  }
+}

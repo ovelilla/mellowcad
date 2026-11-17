@@ -1,0 +1,86 @@
+---
+title: "Atributy bloku v AutoCADu: příkaz ATRDEF (ATTDEF)"
+metaTitle: "Atributy bloku v AutoCADu: příkaz ATRDEF"
+description: "Jak definovat atribut bloku v AutoCADu příkazem ATRDEF (ATTDEF, zkratka AT): režimy, název, výzva a implicitní hodnota, potom umístění textu."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ATRDEF anglicky a jakou má zkratku?","answer":"Anglicky ATTDEF, v českém AutoCADu ATRDEF: zadejte AT a stiskněte Enter nebo mezerník; funguje i DIATRDEF. Anglické ATT v českém AutoCADu nefunguje. -ATRDEF je forma pro příkazový řádek, kterou zde spouští i ATRDEF. _ATTDEF funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak vytvořit blok s atributy v AutoCADu?","answer":"Nakreslete symbol, potom spusťte ATRDEF pro každý atribut a umístěte jeho text tam, kde se má hodnota zobrazit. Spusťte BLOK, určete základní bod a vyberte symbol i atributy, v pořadí, v jakém se na ně má VLOŽ ptát. Každé vložení bloku příkazem VLOŽ se pak zeptá na hodnotu každého atributu a nabídne jeho implicitní hodnotu."},{"question":"Jaký je rozdíl mezi názvem, výzvou a implicitní hodnotou atributu?","answer":"Název atribut pojmenovává, jako identifikátor: ten ukazuje definice a jím EATREDIT označuje pole. Výzva je otázka, kterou se VLOŽ ptá na hodnotu. Implicitní hodnota je nabízená hodnota, kterou přijme Enter."},{"question":"Jak upravit definici atributu?","answer":"Poklepejte na ni, než se stane součástí bloku: TEXTEDIT otevře její název, výzvu a implicitní hodnotu. Jakmile je v bloku, hodnoty každé reference se upravují příkazem ATREDIT nebo EATREDIT."}]
+---
+
+Příkaz ATRDEF (ATTDEF) definuje atribut: název, výzvu a implicitní hodnotu, umístěné ve výkresu jako řádek textu. Vyberte ho spolu s ostatními objekty, když vytváříte blok příkazem [`BLOK`](/docs/commands/block), a každá reference tohoto bloku pro něj bude mít vlastní hodnotu: číslo dveří, kód dílu, název místnosti. Do té doby definice ukazuje svůj název.
+
+ATRDEF v AutoCADu otevře dialog Definice atributu, který MellowCAD nemá: zde se ATRDEF ptá na příkazovém řádku na to, na co se ptá `-ATRDEF`, stejně jako konzole AutoCADu. Vypíše aktuální režimy a ptá se, který změnit, dokud Enter nepokračuje dál. Potom název: bez mezer, protože mezera ho ukončí, a malá písmena se změní na velká; samotný Enter vypíše `Název nemůže zůstat prázdný.`. Potom výzva, kterou se [`VLOŽ`](/docs/commands/insert) na hodnotu zeptá, přičemž Enter převezme název, a implicitní hodnota. Nakonec umístění textu, s otázkami příkazu [`TEXT`](/docs/commands/text): počáteční bod, výška a otočení. Výška a zarovnání jsou společné s příkazem TEXT, oběma směry. Enter na výzvu k počátečnímu bodu umístí definici o řádek níž pod naposledy definovanou, s její výškou, otočením, stylem a zarovnáním, takže se atributy bloku řadí jeden pod druhý.
+
+- **Příkaz:** `ATRDEF`
+- **Anglicky:** `ATTDEF`, zadávaný jako `_ATTDEF` v libovolném jazyce
+- **Aliasy:** `AT`, `DDATTDEF`, `DIATRDEF`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `AT` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="attdef" caption="Označení dveří: atribut NUM vystředěný v kružnici, jeho výzvou je sám název a implicitní hodnotou 1, připravený ke vložení do bloku." />
+
+## Možnosti [#options]
+
+### `Neviditelný` (`N`) [#invisible]
+
+Hodnota se na referencích nezobrazí, dokud ji nezapne [`ATRDISP`](/docs/commands/attdisp). Každý režim je přepínač: jeho volba ho přepne mezi `A` a `N`, znovu vypíše režimy a zeptá se ještě jednou. Režimy zůstanou nastavené pro další ATRDEF.
+
+### `Konstantní` (`K`) [#constant]
+
+Každá reference má stejnou hodnotu, na kterou se ATRDEF ptá místo výzvy a implicitní hodnoty; VLOŽ se na ni nikdy nezeptá.
+
+### `Ověřovaný` (`O`) [#verify]
+
+VLOŽ se na hodnotu zeptá podruhé, aby ji ověřil, až se jednou zeptá na všechny hodnoty.
+
+### `Přednastavený` (`P`) [#preset]
+
+VLOŽ se na hodnotu neptá: každá reference převezme implicitní hodnotu.
+
+### `Uzamknout polohu` (`U`) [#lock-position]
+
+Na začátku zapnuto: atribut zůstane tam, kam ho blok umístí.
+
+### `Upravit` (`U`) [#justify]
+
+Ptá se, jak je text zarovnán ke svému bodu, stejně jako TEXT: `VLevo`, `Centr`, `Vpravo`, `Střed` nebo jeden z devíti bodů: nahoře, uprostřed nebo dole a vlevo, na středu nebo vpravo. Výzva k počátečnímu bodu se potom ptá na zvolený bod: střed uprostřed vystředí hodnotu v označení.
+
+### `písMo` (`M`) [#style]
+
+Ptá se na textový styl, který se stane aktuálním; `?` vypíše styly výkresu.
+
+## Co zatím neumí [#missing]
+
+Dialog Definice atributu: ATRDEF se ptá na příkazovém řádku. Režimy Poznámky a Více řádků, které AutoCAD 2027 uvádí za Uzamknutou pozicí, a řádky víceřádkového atributu. Pole, zarovnání Zarovnat a Přizpůsobit a otázka možnosti Styl, které styly po `?` vypsat.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef--cs-atrdef--at--ddattdef--diatrdef---atrdef---at)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ATRDEF anglicky a jakou má zkratku?
+
+Anglicky ATTDEF, v českém AutoCADu ATRDEF: zadejte `AT` a stiskněte Enter nebo mezerník; funguje i `DIATRDEF`. Anglické `ATT` v českém AutoCADu nefunguje. `-ATRDEF` je forma pro příkazový řádek, kterou zde spouští i ATRDEF. `_ATTDEF` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak vytvořit blok s atributy v AutoCADu?
+
+Nakreslete symbol, potom spusťte ATRDEF pro každý atribut a umístěte jeho text tam, kde se má hodnota zobrazit. Spusťte [`BLOK`](/docs/commands/block), určete základní bod a vyberte symbol i atributy, v pořadí, v jakém se na ně má VLOŽ ptát. Každé vložení bloku příkazem [`VLOŽ`](/docs/commands/insert) se pak zeptá na hodnotu každého atributu a nabídne jeho implicitní hodnotu.
+
+### Jaký je rozdíl mezi názvem, výzvou a implicitní hodnotou atributu?
+
+Název atribut pojmenovává, jako identifikátor: ten ukazuje definice a jím [`EATREDIT`](/docs/commands/eattedit) označuje pole. Výzva je otázka, kterou se VLOŽ ptá na hodnotu. Implicitní hodnota je nabízená hodnota, kterou přijme Enter.
+
+### Jak upravit definici atributu?
+
+Poklepejte na ni, než se stane součástí bloku: [`TEXTEDIT`](/docs/commands/textedit) otevře její název, výzvu a implicitní hodnotu. Jakmile je v bloku, hodnoty každé reference se upravují příkazem [`ATREDIT`](/docs/commands/attedit) nebo [`EATREDIT`](/docs/commands/eattedit).
+
+## Související příkazy [#related]
+
+- [Bloky v AutoCADu: příkaz BLOK (BLOCK)](/docs/commands/block)
+- [Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)](/docs/commands/insert)
+- [Úprava atributů v AutoCADu: příkaz ATREDIT (ATTEDIT)](/docs/commands/attedit)
+- [Příkaz ATRDISP (ATTDISP) v AutoCADu: zobrazení atributů](/docs/commands/attdisp)
+- [Příkaz EATREDIT (EATTEDIT) v AutoCADu](/docs/commands/eattedit)

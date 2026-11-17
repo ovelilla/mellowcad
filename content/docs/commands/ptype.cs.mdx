@@ -1,0 +1,55 @@
+---
+title: "Styl bodu v AutoCADu: příkaz BTYP (PTYPE)"
+description: "Jak změnit styl bodu v AutoCADu příkazem BTYP (PTYPE): dialog Styl bodu, dvacet tvarů, velikost bodu, PDMODE a PDSIZE a proč body nejsou vidět. Vyzkoušejte."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Co je DDPTYPE v AutoCADu?","answer":"Zkratka příkazu PTYPE v anglickém AutoCADu: oba otevírají dialog Styl bodu. V českém AutoCADu se příkaz jmenuje BTYP a _PTYPE funguje v AutoCADu v jakémkoli jazyce."},{"question":"Proč nejsou vidět moje body?","answer":"Výchozí styl bodu je tečka široká jeden pixel, kterou skryje čára vedená přes ni, a PDMODE 1 nekreslí vůbec nic. Otevřete BTYP a zvolte křížek nebo tvar v kružnici, nebo zadejte PDMODE a 3. S velikostí vzhledem k obrazovce zůstanou vidět při jakémkoli zoomu."},{"question":"Jak změnit velikost bodů?","answer":"V příkazu BTYP zadejte Velikost bodu: procento obrazovky s volbou Velikost vzhledem k obrazovce, takže bod si při zoomování drží velikost, nebo jednotky výkresu s volbou Velikost v absolutních jednotkách, takže roste a zmenšuje se s výkresem. Nebo zadejte PDSIZE: záporná hodnota je procento."},{"question":"Může mít jeden bod vlastní styl?","answer":"Ne: v AutoCADu ani zde, styl bodu patří výkresu a řídí se jím každý bodový objekt. Chcete-li místa označit různě, vložte do nich blok; DĚLÚ a DĚLM mohou místo bodů umístit blok."}]
+---
+
+Příkaz BTYP (PTYPE) otevře dialog Styl bodu, který nastavuje, jak se kreslí každý bodový objekt výkresu: ty, které kreslí `BOD`, i ty, které zanechávají [`DĚLÚ`](/docs/commands/divide) a [`DĚLM`](/docs/commands/measure). V anglickém AutoCADu je jeho zkratkou `DDPTYPE`; v českém se příkaz jmenuje BTYP. Styl patří výkresu, ne bodu: změňte ho a změní se všechny body najednou; ukládá se s výkresem. Tlačítko je vedle ID bodu mezi nástroji Pomůcky; když příkaz zadáte s apostrofem, `'BTYP`, otevře se uvnitř běžícího příkazu.
+
+Dialog ukazuje dvacet tvarů ve čtyřech řadách po pěti, s vybraným aktuálním: tečka, nic, plus, křížek a krátká čárka, pak každý z nich v kružnici, ve čtverci a v obojím. Pod nimi Velikost bodu a to, jak se čte: Velikost vzhledem k obrazovce, procento výšky pohledu, nebo Velikost v absolutních jednotkách, jednotky výkresu. Výchozí je 5 % vzhledem k obrazovce. OK zapíše volbu jako jeden krok, který vrátí `Z`; Storno nebo Esc nic nezmění. Velikost, která není číslo nebo je menší než 0, se odmítne (Neplatný vstup.) a dialog zůstane otevřený.
+
+Dialog zapisuje dvě proměnné, které lze zadat i na příkazovém řádku: PDMODE, tvar (0 až 4, plus 32 pro kružnici, 64 pro čtverec, 96 pro obojí: 35 je křížek v kružnici), a PDSIZE, velikost (kladné číslo jsou jednotky výkresu, záporné procento obrazovky, 0 je 5 %).
+
+- **Příkaz:** `BTYP`
+- **Anglicky:** `PTYPE`, zadávaný jako `_PTYPE` v libovolném jazyce
+- **Panel:** [Dotazy a pohled](/docs/commands#inquiry)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `BTYP` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="ptype" caption="BTYP otevře dialog Styl bodu; jeho OK zapíše PDMODE a PDSIZE, zde zadané jako 35 a 8, pak tři body nakreslené uvnitř desky." />
+
+## Co zatím neumí [#missing]
+
+Tlačítko Nápověda v dialogu. Bod s velikostí vzhledem k obrazovce si tuto velikost na obrazovce drží i při zoomování, kdežto AutoCAD jen do příští regenerace výkresu.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ptype--ddptype-pdmode-pdsize--es-tipopunto--ddptype--pt-br-tipop--tip--ddptype--tipopd--fr-typept--ddptype--it-tipop--ddptype--de-ptyp--ru-типточки--диалтточ--pl-ptype--cs-btyp)
+
+## Otázky [#questions]
+
+### Co je DDPTYPE v AutoCADu?
+
+Zkratka příkazu PTYPE v anglickém AutoCADu: oba otevírají dialog Styl bodu. V českém AutoCADu se příkaz jmenuje BTYP a `_PTYPE` funguje v AutoCADu v jakémkoli jazyce.
+
+### Proč nejsou vidět moje body?
+
+Výchozí styl bodu je tečka široká jeden pixel, kterou skryje čára vedená přes ni, a PDMODE 1 nekreslí vůbec nic. Otevřete BTYP a zvolte křížek nebo tvar v kružnici, nebo zadejte PDMODE a `3`. S velikostí vzhledem k obrazovce zůstanou vidět při jakémkoli zoomu.
+
+### Jak změnit velikost bodů?
+
+V příkazu BTYP zadejte Velikost bodu: procento obrazovky s volbou Velikost vzhledem k obrazovce, takže bod si při zoomování drží velikost, nebo jednotky výkresu s volbou Velikost v absolutních jednotkách, takže roste a zmenšuje se s výkresem. Nebo zadejte PDSIZE: záporná hodnota je procento.
+
+### Může mít jeden bod vlastní styl?
+
+Ne: v AutoCADu ani zde, styl bodu patří výkresu a řídí se jím každý bodový objekt. Chcete-li místa označit různě, vložte do nich blok; [`DĚLÚ`](/docs/commands/divide) a [`DĚLM`](/docs/commands/measure) mohou místo bodů umístit blok.
+
+## Související příkazy [#related]
+
+- [BOD (POINT)](/docs/commands#point): Více bodů
+- [Příkaz DĚLÚ (DIVIDE) v AutoCADu](/docs/commands/divide)
+- [Příkaz DĚLM (MEASURE) v AutoCADu](/docs/commands/measure)
+- [Uchopení objektu v AutoCADu: příkaz -UCHOP (-OSNAP)](/docs/commands/-osnap)

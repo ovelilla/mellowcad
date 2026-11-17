@@ -1,0 +1,89 @@
+---
+title: "Příkaz VÁLEC (CYLINDER) v AutoCADu"
+metaTitle: "Válec v AutoCADu 3D: příkaz VÁLEC, VAL"
+description: "Jak nakreslit 3D válec v AutoCADu příkazem VÁLEC (CYLINDER, zkratka VAL): základna, poloměr, výška, 3B, 2B, Ttr, Eliptický, koncový bod osy. Zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz VÁLEC anglicky a jakou má zkratku?","answer":"Anglicky CYLINDER, v českém AutoCADu VÁLEC: zadejte VAL, stiskněte Enter nebo mezerník a pak zadejte střed základny, poloměr a výšku: 0,0, 20 a 40 nakreslí válec z ukázky. Anglické CYL v českém AutoCADu nefunguje; _CYLINDER funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak v AutoCADu nakreslit vodorovný válec?","answer":"U výšky vyberte Osy a zadejte druhý konec osy: od základny v 0,0,0 položí bod 60,0,0 válec podél X."},{"question":"Jak vytvořit dutý válec nebo trubku?","answer":"Nakreslete dva válce ze stejného středu, vnitřní užší, a pak spusťte ROZDÍL: vyberte vnější, Enter, vnitřní, Enter."},{"question":"Proč válec vypadá jako kružnice?","answer":"Díváte se na něj shora, v půdorysu. Otočte pohled: roh krychle ViewCube, -POHLED a JViso, nebo 3DORBIT."}]
+---
+
+Příkaz VÁLEC (CYLINDER) kreslí válec jako 3D těleso: zadejte střed jeho základny, pak poloměr, pak výšku. Základna leží v rovině XY souřadného systému USS, ve výšce Z středu, a výška stoupá podél jeho osy Z; záporná jde dolů a bod ji udává svou vzdáleností od základny, jako u příkazu [`KVÁDR`](/docs/commands/box). Poloměr a výška se nabízejí jako výchozí hodnoty, které přijme Enter, sdílené s ostatními základními tělesy a příkazem [`VYTÁHNI`](/docs/commands/extrude). Válec leží v aktuální hladině a krok zpět ho odstraní najednou.
+
+Válec si ponechává své rozměry: [`VÝPIS`](/docs/commands/list) ukáže jeho polohu, normálu, poloměr a výšku a paleta Vlastnosti dovolí poloměr a výšku přepsat. Jeho uzly ho posouvají, nastavují jeho výšku a v každé čtvrtině základny jeho poloměr. Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCADu, který tvoří jen 3D tělesa, zatím částečně.
+
+- **Příkaz:** `VÁLEC`
+- **Anglicky:** `CYLINDER`, zadávaný jako `_CYLINDER` v libovolném jazyce
+- **Aliasy:** `VAL`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `VAL` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="cylinder" caption="Válec o poloměru 20 a výšce 40, ze středu základny, při pohledu od jihovýchodu ve vizuálním stylu Skrytý." />
+
+## Možnosti [#options]
+
+### `3B` [#3p]
+
+U středu základny: zeptá se na tři body a základna je kružnice jimi procházející, v jejich rovině. Tři body v rovině XY souřadného systému USS dají válec, který stále stoupá podél Z.
+
+### `2B` [#2p]
+
+U středu základny: zeptá se na oba konce průměru základny; druhý se čte v rovině prvního.
+
+### `Ttr` (`T`) [#ttr]
+
+U středu základny: vyberte dvě úsečky, kružnice nebo oblouky, s uchopením Tečna, a zadejte poloměr: základna se dotkne obou, co nejblíže vybraným bodům, v jejich výšce.
+
+### `Eliptický` (`E`) [#elliptical]
+
+U středu základny: základna je elipsa. Zadejte oba konce její první osy, pak konec druhé; nebo vyberte `Střed` a zadejte její střed, polovinu délky první osy a pak konec druhé osy.
+
+### `Průměr` (`P`) [#diameter]
+
+U poloměru: zeptá se místo něj na průměr a nabídne dvojnásobek posledního poloměru.
+
+### `2Body` (`2B`) [#2point]
+
+U výšky: zeptá se na dva body a výška je vzdálenost mezi nimi.
+
+### `koncový bod Osy` (`O`) [#axis]
+
+U výšky: zeptá se na druhý konec osy. Válec vede ze středu základny do tohoto bodu v libovolném směru, se základnou kolmou k ose.
+
+## Co zatím neumí [#missing]
+
+[`ROZLOŽ`](/docs/commands/explode) válce, který AutoCAD rozloží na obě podstavy a plochu: MellowCAD plochy nemá, a tak ohlásí, že ho rozložit nemohl. Posun, Otočení, Měřítko a Zrcadlení z aktivního uzlu a výška tažená za základnu. Tečkované kóty, které AutoCAD kreslí, když zadáváte poloměr, body elipsy a osu. Změna kruhového válce na eliptický zadáním v paletě Vlastnosti. Obrysy, které kreslí `DISPSILH` v AutoCADu. V půdorysu, kde horní kružnice zakrývá kružnici základny, najde uchopení Nejbližší kružnici základny, kde AutoCAD najde horní. Vizuální styly, které [`AKTUÁLNÍVS`](/docs/commands/vscurrent) nemá kromě stylů 2D drátový model, Skrytý a Koncepční.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz VÁLEC anglicky a jakou má zkratku?
+
+Anglicky CYLINDER, v českém AutoCADu VÁLEC: zadejte `VAL`, stiskněte Enter nebo mezerník a pak zadejte střed základny, poloměr a výšku: `0,0`, `20` a `40` nakreslí válec z ukázky. Anglické `CYL` v českém AutoCADu nefunguje; `_CYLINDER` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak v AutoCADu nakreslit vodorovný válec?
+
+U výšky vyberte `Osy` a zadejte druhý konec osy: od základny v `0,0,0` položí bod `60,0,0` válec podél X.
+
+### Jak vytvořit dutý válec nebo trubku?
+
+Nakreslete dva válce ze stejného středu, vnitřní užší, a pak spusťte [`ROZDÍL`](/docs/commands/subtract): vyberte vnější, Enter, vnitřní, Enter.
+
+### Proč válec vypadá jako kružnice?
+
+Díváte se na něj shora, v půdorysu. Otočte pohled: roh krychle ViewCube, `-POHLED` a `JViso`, nebo [`3DORBIT`](/docs/commands/3dorbit).
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu 3D: ložiskové těleso](/docs/exercises/bearing-block)
+
+## Související příkazy [#related]
+
+- [Příkaz KUŽEL (CONE) v AutoCADu](/docs/commands/cone)
+- [Kvádr v AutoCADu: příkaz KVÁDR (BOX)](/docs/commands/box)
+- [Příkaz ROZDÍL (SUBTRACT) v AutoCADu](/docs/commands/subtract)
+- [Příkaz VYTÁHNI (EXTRUDE) v AutoCADu](/docs/commands/extrude)

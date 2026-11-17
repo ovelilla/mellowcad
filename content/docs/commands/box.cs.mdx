@@ -1,0 +1,72 @@
+---
+title: "Kvádr v AutoCADu: příkaz KVÁDR (BOX)"
+metaTitle: "Kvádr v AutoCADu 3D: příkaz KVÁDR (BOX)"
+description: "Jak nakreslit 3D kvádr v AutoCADu příkazem KVÁDR (BOX): dva rohy a výška, Střed, Krychle, Délka a 2Body. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak nakreslit 3D kvádr v AutoCADu?","answer":"Spusťte příkaz KVÁDR, zadejte jeden roh, potom protější roh, potom výšku: 0,0, 60,40 a 25 nakreslí kvádr z ukázky. Délka a šířka místo protějšího rohu natočí kvádr pod libovolným úhlem."},{"question":"Proč kvádr vypadá jako obdélník?","answer":"Díváte se na něj shora, v půdorysu. Otočte pohled: roh krychle ViewCube, -POHLED a JViso, nebo 3DORBIT. AKTUÁLNÍVS s možností Skryté skryje hrany za ním."},{"question":"Jak nakreslit krychli v AutoCADu?","answer":"Zadejte první roh, potom zvolte Krychle a zadejte délku strany."},{"question":"Jak nakreslit kvádr od středu?","answer":"Zvolte Střed a zadejte středový bod, potom roh, Krychle nebo Délka: kvádr je vystředěn v bodě, i na výšku."}]
+---
+
+Příkaz KVÁDR (BOX) nakreslí kvádr jako 3D těleso se stranami podél os USS: zadejte první roh, druhý roh a potom výšku. Výška roste podél osy Z USS, záporná jde dolů a bod ji určí svou vzdáleností od rohu; roh zadaný v jiné výšce Z než první nastaví výšku bez otázky. Poslední výška a poslední délka a šířka krychle nebo možnosti Délka se nabízejí jako výchozí hodnoty, které přijme Enter, společné s ostatními základními tělesy a příkazem [`VYTÁHNI`](/docs/commands/extrude). Kvádr leží v aktuální hladině a jedním krokem zpět ho odstraníte.
+
+Kvádr si pamatuje své rozměry: [`VÝPIS`](/docs/commands/list) ukáže jeho polohu, délku, šířku, výšku a otočení a paleta Vlastnosti umožní zadat první čtyři. Jeho uzly ho posouvají, protahují a mimo půdorys nastavují jeho výšku. Je to 3D těleso pro [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCAD, které tvoří jen 3D tělesa, zatím částečně.
+
+- **Příkaz:** `KVÁDR`
+- **Anglicky:** `BOX`, zadávaný jako `_BOX` v libovolném jazyce
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KVÁDR` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="box" caption="Kvádr 60 × 40 × 25, ze dvou rohů a výšky, při pohledu od jihovýchodu ve vizuálním stylu Skrytý." />
+
+## Možnosti [#options]
+
+### `Střed` (`S`) [#center]
+
+Na první výzvu: zeptá se na střed, potom na roh, `Krychle` nebo `Délka`. Kvádr je vystředěn v bodě, i na výšku.
+
+### `Krychle` (`K`) [#cube]
+
+Na výzvu k druhému rohu: zeptá se na délku, zadanou nebo ukázanou, a vytvoří krychli se všemi stranami této délky. Zadaná délka míří ke kurzoru, záporná od něj.
+
+### `Délka` (`D`) [#length]
+
+Na výzvu k druhému rohu: zeptá se na délku, potom na šířku. Délka míří ke kurzoru, takže kvádr může ležet pod úhlem; šířka jde na stranu, na které je kurzor.
+
+### `2Body` (`2B`) [#2point]
+
+Na výzvu k výšce: zeptá se na dva body a výška je vzdálenost mezi nimi.
+
+## Co zatím neumí [#missing]
+
+Posun, Otočit, Měřítko a Zrcadlit z aktivního uzlu, mezi kterými AutoCAD přepíná klávesou Enter. Vlastní 3D příkazy – 3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO, ZRCADLI3D, OTOČ3D, SROVNEJ, 3DSROVNEJ – s jejich gizmy a posouvání jeho ploch, hran a vrcholů jednotlivě. Dynamický USS. Tečkované kóty, které AutoCAD kreslí, když zadáváte roh, délku a šířku. Příkazy [`ZAOBLI`](/docs/commands/fillet) a [`ZKOS`](/docs/commands/chamfer) na jeho hranách, což dělají [`ZAOBLIHRANU`](/docs/commands/filletedge) a [`ZKOSHRANU`](/docs/commands/chamferedge). Záznam a zobrazení historie tělesa a řádek Materiál. Vizuální styly, které [`AKTUÁLNÍVS`](/docs/commands/vscurrent) nemá kromě 2D drátového modelu, Skrytého a Koncepčního.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader--ru-ящик--pl-kostka--cs-kvádr)
+
+## Otázky [#questions]
+
+### Jak nakreslit 3D kvádr v AutoCADu?
+
+Spusťte příkaz KVÁDR, zadejte jeden roh, potom protější roh, potom výšku: `0,0`, `60,40` a `25` nakreslí kvádr z ukázky. `Délka` a šířka místo protějšího rohu natočí kvádr pod libovolným úhlem.
+
+### Proč kvádr vypadá jako obdélník?
+
+Díváte se na něj shora, v půdorysu. Otočte pohled: roh krychle ViewCube, `-POHLED` a `JViso`, nebo [`3DORBIT`](/docs/commands/3dorbit). [`AKTUÁLNÍVS`](/docs/commands/vscurrent) s možností `Skryté` skryje hrany za ním.
+
+### Jak nakreslit krychli v AutoCADu?
+
+Zadejte první roh, potom zvolte `Krychle` a zadejte délku strany.
+
+### Jak nakreslit kvádr od středu?
+
+Zvolte `Střed` a zadejte středový bod, potom roh, `Krychle` nebo `Délka`: kvádr je vystředěn v bodě, i na výšku.
+
+## Související příkazy [#related]
+
+- [Příkaz KLÍN (WEDGE) v AutoCADu](/docs/commands/wedge)
+- [Příkaz VÁLEC (CYLINDER) v AutoCADu](/docs/commands/cylinder)
+- [Příkaz VYTÁHNI (EXTRUDE) v AutoCADu](/docs/commands/extrude)
+- [Příkaz SJEDNOCENÍ (UNION) v AutoCADu](/docs/commands/union)

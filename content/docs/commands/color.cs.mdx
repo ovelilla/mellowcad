@@ -1,0 +1,94 @@
+---
+title: "Příkaz BARVA (COLOR) v AutoCADu"
+metaTitle: "Barva objektů v AutoCADu: BARVA a DleHlad"
+description: "Jak nastavit barvu nových objektů v AutoCADu příkazem BARVA (COLOR, zkratka BAR): DleHlad, barva indexu názvem nebo číslem, nebo barva RGB. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz BARVA anglicky a jakou má zkratku?","answer":"Anglicky COLOR, v českém AutoCADu BARVA: zadejte BAR a stiskněte Enter nebo mezerník; funguje i DIABARVA. Anglické COL v českém AutoCADu nefunguje; celý název funguje také a _COLOR v AutoCADu v jakémkoli jazyce."},{"question":"Jak změnit barvu objektu v AutoCADu?","answer":"Vyberte ho a zvolte barvu v seznamu barev na horním panelu nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem KOPIEVLAST. BARVA nastaví jen barvu objektů nakreslených po ní."},{"question":"Co znamená DleHlad v AutoCADu?","answer":"Že objekt přebírá barvu své hladiny, takže změna barvy hladiny ve Správci vlastností hladin změní každý objekt DleHlad v této hladině. Je to výchozí hodnota, díky které jsou barvy výkresu uspořádané podle hladin: HLADINA."},{"question":"Jak používat barvy RGB v AutoCADu?","answer":"Zvolte Truecolor a zadejte tři hodnoty oddělené čárkami, například 0,128,255."}]
+---
+
+Příkaz BARVA (COLOR) nastaví barvu, kterou se kreslí nové objekty. AutoCAD otevře dialog Vybrat barvu; MellowCAD ho zatím nemá, takže BARVA spustí verzi pro příkazový řádek, kterou má i AutoCAD, `-BARVA`. Zeptá se na implicitní barvu objektu a nabídne aktuální, v novém výkresu `DLEHLAD`: DleHlad znamená, že každý objekt přebírá barvu své hladiny, a barva zvolená místo toho je vlastní barvou objektu. Zadejte číslo nebo název barvy indexu, nebo zvolte `Truecolor`. Enter ponechá aktuální barvu a změna je krok, který `Z` vrátí zpět.
+
+Slovo, které nedokáže přečíst, vypíše `nalezeno 1`, a 0, záporné číslo nebo číslo nad 255 `Neplatné číslo barvy.`; výzva se zopakuje. Zadaný s apostrofem uvnitř příkazu, `'BARVA`, způsobí, že každý objekt nakreslený po něm převezme novou barvu: každý segment příkazu [`ÚSEČKA`](/docs/commands/line) převezme barvu aktuální v okamžiku, kdy začíná. BARVA nastaví jen to, co vznikne potom; již nakreslené objekty změní paleta Vlastnosti nebo seznam barev na horním panelu.
+
+- **Příkaz:** `BARVA`
+- **Anglicky:** `COLOR`, zadávaný jako `_COLOR` v libovolném jazyce
+- **Aliasy:** `BAR`, `DDCOLOR`, `DIABARVA`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `BAR` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="color" caption="Deska nakreslená DleHlad, její otvor červeně, její vývrt v barvě Truecolor 0,128,255, pak BARVA nastavená zpět na DleHlad." />
+
+## Možnosti [#options]
+
+### `Truecolor` (`T`) [#truecolor]
+
+Zeptá se na barvu jako tři hodnoty od 0 do 255, červenou, zelenou a modrou, oddělené čárkami bez mezery: `0,128,255` je středně modrá. Barva, která je zároveň barvou indexu, `255,0,0`, se uloží jako tato barva indexu.
+
+### `DLEHlad` (`DLEH`) [#bylayer]
+
+Nové objekty přebírají barvu své hladiny, jako na začátku.
+
+### `čErvená` (`E`) [#red]
+
+Barva indexu 1, lze ji zadat i jako `1`.
+
+### `žLutá` (`L`) [#yellow]
+
+Barva indexu 2, lze ji zadat i jako `2`.
+
+### `Zelená` (`Z`) [#green]
+
+Barva indexu 3, lze ji zadat i jako `3`.
+
+### `Svmodrá` (`S`) [#cyan]
+
+Barva indexu 4, lze ji zadat i jako `4`.
+
+### `Modrá` (`M`) [#blue]
+
+Barva indexu 5, lze ji zadat i jako `5`.
+
+### `Fialová` (`F`) [#magenta]
+
+Barva indexu 6, lze ji zadat i jako `6`.
+
+### `Bílá` (`B`) [#white]
+
+Barva indexu 7, lze ji zadat i jako `7`: bílá na tmavém pozadí a černá na světlém.
+
+## Co zatím neumí [#missing]
+
+Dialog Vybrat barvu, knihy barev a zápis HSL. Barvy indexu 8 až 255: přijímají se jen 1 až 7. DleBlok. Barva Truecolor shodná s barvou indexu se uloží jako tato barva indexu, zatímco AutoCAD zachová RGB. Průhlednost (CETRANSPARENCY) a výchozí hodnoty pro jednotlivé typy HPCOLOR, HPLAYER, DIMLAYER a TEXTLAYER.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color--pt-br-cor--c--colour--cordiag---cor--fr-couleur--cl--coul--ddcolor---couleur--it-colore--co--ddcolor---colore--de-farbe--far--fe--ddcolor---farbe--ru-цвет--цв--диалцвет---цвет--pl-kolor--kol--odkolor---kolor--cs-barva--bar--ddcolor--diabarva---barva)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz BARVA anglicky a jakou má zkratku?
+
+Anglicky COLOR, v českém AutoCADu BARVA: zadejte `BAR` a stiskněte Enter nebo mezerník; funguje i `DIABARVA`. Anglické `COL` v českém AutoCADu nefunguje; celý název funguje také a `_COLOR` v AutoCADu v jakémkoli jazyce.
+
+### Jak změnit barvu objektu v AutoCADu?
+
+Vyberte ho a zvolte barvu v seznamu barev na horním panelu nebo v řádku Barva palety Vlastnosti: změní se v jednom kroku. Nebo zkopírujte barvu jiného objektu příkazem [`KOPIEVLAST`](/docs/commands/matchprop). BARVA nastaví jen barvu objektů nakreslených po ní.
+
+### Co znamená DleHlad v AutoCADu?
+
+Že objekt přebírá barvu své hladiny, takže změna barvy hladiny ve Správci vlastností hladin změní každý objekt DleHlad v této hladině. Je to výchozí hodnota, díky které jsou barvy výkresu uspořádané podle hladin: [`HLADINA`](/docs/commands/layer).
+
+### Jak používat barvy RGB v AutoCADu?
+
+Zvolte `Truecolor` a zadejte tři hodnoty oddělené čárkami, například `0,128,255`.
+
+## Související příkazy [#related]
+
+- [Hladiny v AutoCADu: příkaz HLADINA (LAYER)](/docs/commands/layer)
+- [Paleta Vlastnosti v AutoCADu: příkaz VLASTNOSTI (PROPERTIES)](/docs/commands/properties)
+- [Kopírování vlastností v AutoCADu: příkaz KOPIEVLAST (MATCHPROP)](/docs/commands/matchprop)
+- [Typ čáry v AutoCADu: příkaz TYPČ (LINETYPE)](/docs/commands/linetype)
+- [Tloušťka čáry v AutoCADu: příkaz TLČÁRY (LWEIGHT)](/docs/commands/lweight)

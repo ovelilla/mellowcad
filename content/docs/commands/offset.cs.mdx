@@ -1,0 +1,78 @@
+---
+title: "Ekvidistanta v AutoCADu: příkaz EKVID (OFFSET)"
+description: "Jak vytvořit ekvidistantu v AutoCADu příkazem EKVID (OFFSET, zkratka E): vzdálenost nebo bod, vymazání a hladina, jeden objekt najednou. Vyzkoušejte online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz EKVID anglicky?","answer":"OFFSET. V českém AutoCADu je jeho zkratka E: zadejte ji a stiskněte Enter nebo mezerník. Anglické O v české verzi spouští příkaz OBLOUK; celý název EKVID funguje také a _OFFSET v AutoCADu v jakémkoli jazyce."},{"question":"Proč nemohu vytvořit ekvidistantu objektu?","answer":"Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou „Nelze vytvořit ekvidistantu k tomuto objektu.“, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v zamknuté hladině nelze vybrat a 3D křivka se přeskočí."},{"question":"Jak vytvořit několik ekvidistant téže úsečky?","answer":"Vyberte úsečku a pak na výzvě ke straně zadejte písmeno volby Násobně: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii."},{"question":"Jak umístit ekvidistanty do aktuální hladiny?","answer":"Na první výzvě zvolte Hladina, pak Aktuální. Od té chvíle jde každá kopie do aktuální hladiny, dokud znovu nezvolíte Zdroj."}]
+---
+
+Příkaz EKVID (OFFSET) nakreslí kopii objektu rovnoběžnou s ním, ve vzdálenosti, kterou zadáte, nebo procházející bodem, který určíte: z úsečky vznikne rovnoběžná úsečka, z kružnice nebo oblouku soustředná, z křivky obrys uvnitř nebo vně ní, z elipsy nebo spline spline, který ji sleduje. Stejně jako v AutoCADu bere jeden objekt najednou: vzdálenost zadáte jednou, pak vyberete objekt a stranu, na kterou má kopie přijít, kolikrát chcete. Enter příkaz ukončí.
+
+- **Příkaz:** `EKVID`
+- **Anglicky:** `OFFSET`, zadávaný jako `_OFFSET` v libovolném jazyce
+- **Aliasy:** `E`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `E` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="offset" caption="Obdélník s ekvidistantou 6 uvnitř a kružnice s ekvidistantou 6 vně: u každého vybraný objekt, pak strana." />
+
+## Možnosti [#options]
+
+### `Bodem` (`B`) [#through]
+
+Místo vzdálenosti prochází každá kopie bodem, který ukážete nebo zadáte. Je to výchozí volba první výzvy, takže ji tam Enter vybere, dokud nebyla zadána vzdálenost; od té chvíle Enter opakuje poslední vzdálenost, v tomto výkresu.
+
+### `Vymazat` (`V`) [#erase]
+
+Zeptá se, zda každý zdrojový objekt po vytvoření ekvidistanty vymazat, `Ano` nebo `Ne` (výchozí). S `Ano` nahradí kopie objekt. Volba platí do konce relace a příští EKVID ji uvede na svém prvním řádku.
+
+### `Hladina` (`H`) [#layer]
+
+Zeptá se, kam kopie přijdou: do aktuální hladiny (`Aktuální`), nebo do hladiny zdrojového objektu (`Zdroj`, výchozí). Také platí do konce relace.
+
+### `Konec` (`K`) [#exit]
+
+Ukončí příkaz, stejně jako Enter na výzvě k výběru objektu.
+
+### `Násobně` (`N`) [#multiple]
+
+Na výzvě ke straně: vytváří další ekvidistanty téhož objektu bez nového výběru, každou kopii o jednu vzdálenost dál od předchozí, až do Enter nebo `Konec`.
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí poslední kopii, ať vznikla z kteréhokoli objektu, a znovu se zeptá na objekt. Když už žádnou kopii vrátit nelze, oznámí to.
+
+## Co zatím neumí [#missing]
+
+OFFSETGAPTYPE 1 a 2: rohy ekvidistanty křivky se vždy uzavírají jako při 0, prodloužením segmentů až k jejich průsečíku. Ekvidistanta spline nebo elipsy je v toleranci AutoCADu, ale její uzly leží tam, kam je umístí MellowCAD, ne AutoCAD. `Bodem` u spline ukazuje ve svém popisku X a Y, ne vzdálenost.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs--ru-подобие--под--pl-odsuń--od--cs-ekvid--e)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz EKVID anglicky?
+
+OFFSET. V českém AutoCADu je jeho zkratka `E`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `O` v české verzi spouští příkaz OBLOUK; celý název `EKVID` funguje také a `_OFFSET` v AutoCADu v jakémkoli jazyce.
+
+### Proč nemohu vytvořit ekvidistantu objektu?
+
+Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou `Nelze vytvořit ekvidistantu k tomuto objektu.`, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v zamknuté hladině nelze vybrat a 3D křivka se přeskočí.
+
+### Jak vytvořit několik ekvidistant téže úsečky?
+
+Vyberte úsečku a pak na výzvě ke straně zadejte písmeno volby `Násobně`: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii.
+
+### Jak umístit ekvidistanty do aktuální hladiny?
+
+Na první výzvě zvolte `Hladina`, pak `Aktuální`. Od té chvíle jde každá kopie do aktuální hladiny, dokud znovu nezvolíte `Zdroj`.
+
+## Související příkazy [#related]
+
+- [Příkaz OŘEŽ (TRIM) v AutoCADu](/docs/commands/trim)
+- [Příkaz PRODLUŽ (EXTEND) v AutoCADu](/docs/commands/extend)
+- [Příkaz ZAOBLI (FILLET) v AutoCADu](/docs/commands/fillet)
+- [Příkaz KOPIE (COPY) v AutoCADu](/docs/commands/copy)

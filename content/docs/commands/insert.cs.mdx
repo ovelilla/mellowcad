@@ -1,0 +1,69 @@
+---
+title: "Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)"
+metaTitle: "Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)"
+description: "Jak v AutoCADu vložit blok příkazem VLOŽ (INSERT, zkratka VL): paleta Bloky, nebo -VLOŽ na příkazovém řádku, s měřítkem, natočením a atributy."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz VLOŽ anglicky a jakou má zkratku?","answer":"INSERT. V české verzi AutoCADu je jeho zkratka VL: zadejte ji a stiskněte Enter nebo mezerník a otevře se paleta Bloky, stejně jako v AutoCADu 2027. -VL je příkaz -VLOŽ, který se ptá na příkazovém řádku. Anglická zkratka I v české verzi nefunguje; _INSERT funguje v AutoCADu v každém jazyce."},{"question":"Jak vložit blok z příkazového řádku?","answer":"Zadejte -VL a název bloku, pak vyberte bod vložení a odpovězte na otázky na měřítko a natočení; Enter ponechá každou výchozí hodnotu. ? u názvu vypíše seznam existujících bloků."},{"question":"Jak vložit blok v jiném měřítku?","answer":"Po bodu vložení zadejte měřítko X a u měřítka Y stiskněte Enter, aby byla stejná; nebo před bodem zvolte Měřítko a zadejte jedno měřítko pro obě osy. Záporné měřítko blok zrcadlí."},{"question":"Jak v AutoCADu vložit blok z jiného výkresu?","answer":"Ne z jeho souboru: příkaz VLOŽ umístí jen bloky definované ve výkresu. Zkopírujte místo toho jeho referenci (Ctrl+C), otevřete výkres, do kterého ji chcete, a vložte ji (Ctrl+V): její blok přijde s ní, pokud už ten výkres nemá blok téhož názvu, jehož definice se zachová."}]
+---
+
+Příkaz VLOŽ (INSERT) umístí blok definovaný ve výkresu jako referenci: další jeho kopii, s vlastním bodem, měřítkem a natočením, kreslenou z jediné definice, kterou vytvořil příkaz [`BLOK`](/docs/commands/block). Stejně jako příkaz VLOŽ v AutoCADu 2027 otevře paletu Bloky, která ukazuje bloky výkresu; klikněte na jeden a příkazový řádek se zeptá na jeho bod vložení, s blokem taženým pod kurzorem, a pak na měřítko a natočení. Paleta zůstane otevřená, takže vkládání bloku za blokem je jedno kliknutí na každý.
+
+Příkaz `-VLOŽ` se na všechno ptá na příkazovém řádku: na název bloku (Enter přijme nabídnutý: naposledy vložený blok, jinak naposledy definovaný), bod vložení, pak měřítko X, měřítko Y (Enter přijme měřítko X) a úhel natočení. Záporné měřítko blok zrcadlí a nestejná měřítka ho roztáhnou: kružnice v něm se nakreslí jako elipsa. Blok s atributy se pak zeptá na každou hodnotu její výzvou a nabídne výchozí hodnotu. Objekty bloku v hladině 0 přeberou hladinu reference, ostatní si ponechají svou. Každé vložení je jeden krok, který lze vrátit zpět.
+
+- **Příkaz:** `VLOŽ`
+- **Anglicky:** `INSERT`, zadávaný jako `_INSERT` v libovolném jazyce
+- **Aliasy:** `VL`, `VLOŽURL`
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `VL` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="insert" caption="Židle převedená na blok, pak dvakrát vložená ke stolu: otočená o 180 po zadání bodu, pak o 90 možností Otoč před ním." />
+
+## Možnosti [#options]
+
+### `?` [#list]
+
+U názvu bloku: vypíše seznam bloků ve výkresu, jako příkaz [`BLOK`](/docs/commands/block), a skončí.
+
+### `Měřítko` (`M`) [#scale]
+
+U bodu vložení: zeptá se na jedno měřítko pro obě osy a pak znovu na bod, s blokem taženým v této velikosti. Po zadání bodu se na měřítka X a Y už neptá.
+
+### `Otoč` (`O`) [#rotate]
+
+U bodu vložení: zeptá se na úhel, zadaný nebo mezi dvěma body, a pak znovu na bod, s blokem taženým už natočený. Po zadání bodu se na natočení už neptá.
+
+## Co zatím neumí [#missing]
+
+Vložení jiného souboru výkresu: vložit lze jen bloky definované ve výkresu a název, který výkres neobsahuje, se odmítne. U bodu vložení možnosti Refbod, X, Y, Z, Rozložit a Opakovat; u měřítka X možnosti Obdélník a XYZ a bod vybraný jako protější roh. Při nestejných měřítkách X a Y se text nebo atribut nakreslí ve velikosti X místo roztažení a oblouk křivky zůstane obloukem; záporné X nenapíše text pozpátku. ATTDIA 1, dialog Upravit atributy při vkládání, a ATTREQ 0. Vlastnosti Popisný, Jednotka bloku a Faktor jednotky v paletě Vlastnosti. DleBlok: objekt uvnitř bloku nemůže převzít vlastní barvu, typ čáry ani tloušťku čáry reference, jako v AutoCADu objekt nakreslený jako DleBlok.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in--pt-br-inserir--i--inserirurl--inserird--inserir---i--fr-inserer--i--inserurl--inserer---i--it-inser--in--inserurl--inser---in--de-einfüge--ein--urleinfügen--einfüge---e--ru-вставить--в--урлвставь--диалвст--вставить---в--pl-wstaw--w--wstawurl--odwstaw--wstaw---w--cs-vlož--vl--vložurl--vlož---vl)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz VLOŽ anglicky a jakou má zkratku?
+
+INSERT. V české verzi AutoCADu je jeho zkratka `VL`: zadejte ji a stiskněte Enter nebo mezerník a otevře se paleta Bloky, stejně jako v AutoCADu 2027. `-VL` je příkaz `-VLOŽ`, který se ptá na příkazovém řádku. Anglická zkratka `I` v české verzi nefunguje; `_INSERT` funguje v AutoCADu v každém jazyce.
+
+### Jak vložit blok z příkazového řádku?
+
+Zadejte `-VL` a název bloku, pak vyberte bod vložení a odpovězte na otázky na měřítko a natočení; Enter ponechá každou výchozí hodnotu. `?` u názvu vypíše seznam existujících bloků.
+
+### Jak vložit blok v jiném měřítku?
+
+Po bodu vložení zadejte měřítko X a u měřítka Y stiskněte Enter, aby byla stejná; nebo před bodem zvolte `Měřítko` a zadejte jedno měřítko pro obě osy. Záporné měřítko blok zrcadlí.
+
+### Jak v AutoCADu vložit blok z jiného výkresu?
+
+Ne z jeho souboru: příkaz VLOŽ umístí jen bloky definované ve výkresu. Zkopírujte místo toho jeho referenci (Ctrl+C), otevřete výkres, do kterého ji chcete, a vložte ji (Ctrl+V): její blok přijde s ní, pokud už ten výkres nemá blok téhož názvu, jehož definice se zachová.
+
+## Související příkazy [#related]
+
+- [Bloky v AutoCADu: příkaz BLOK (BLOCK)](/docs/commands/block)
+- [PALETABLOKY (BLOCKSPALETTE)](/docs/commands#blockspalette): Zobrazí paletu Bloky
+- [Úprava atributů v AutoCADu: příkaz ATREDIT (ATTEDIT)](/docs/commands/attedit)
+- [Příkaz ROZLOŽ (EXPLODE) v AutoCADu](/docs/commands/explode)

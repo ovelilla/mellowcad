@@ -1,0 +1,43 @@
+---
+title: "Bloky v AutoCADu: příkaz BLOK (BLOCK)"
+metaTitle: "Jak vytvořit blok v AutoCADu: příkaz BLOK"
+description: "Jak vytvořit blok v AutoCADu příkazem BLOK (BLOCK, zkratka B): název, základní bod a objekty, nová definice bloku, atributy. Vyzkoušejte zdarma online."
+figure: "Židle, obdélník a úsečka, z nichž vznikne blok B1: jeho název, základní bod uprostřed přední hrany, oba objekty vybrané."
+sourceHash: "ca24f209008c"
+---
+
+Příkaz BLOK (BLOCK) uloží sadu objektů ve výkresu pod názvem, aby ji příkaz <Command id="INSERT" /> mohl vkládat, kolikrát chcete, přičemž každá kopie je referencí na tuto jedinou definici. Zeptá se na název, potom na základní bod pro vložení – bod, podle kterého se umísťuje každá reference – a potom na objekty. Enter ukončí výběr a definuje blok a vybrané objekty se na svém místě stanou referencí na něj. Celý příkaz je jeden krok, který lze vrátit zpět.
+
+BLOK v AutoCADu otevře dialog Definice bloku, který MellowCAD nemá: zde se BLOK ptá na příkazovém řádku na to, na co se ptá <Command id="-BLOCK" />, stejně jako konzole AutoCADu. Název může obsahovat mezery a až 255 znaků, ale žádný ze znaků `< > / \ " : ; ? * | , =` ani obrácený apostrof: samotný Enter nebo takový název vypíše <Message id="invalidNewBlockName" /> a zeptá se znovu. Název, který výkres už má, bez ohledu na velikost písmen, vede k otázce, zda tento blok předefinovat: <Keyword id="Yes" /> nebo <Keyword id="No" /> (výchozí, ukončí příkaz).
+
+## Options
+
+### ?
+
+Vypíše bloky výkresu: zeptá se, které vypsat, ve výchozím stavu `*` pro všechny, nebo název se zástupnými znaky, vypíše odpovídající názvy a počet bloků každého druhu a skončí. Anonymní bloky, například bloky pole, se započítají, ale nikdy se nevypíšou jménem.
+
+## Missing
+
+Dialog Definice bloku AutoCADu: BLOK se ptá na příkazovém řádku. U základního bodu možnosti Poznámky a Režim (Zachovat, Odstranit): objekty se vždy převedou na referenci. ATTREQ 0, které vynechá okno hodnot atributů, a ATTSYNC, ATTREDEF, BATTMAN a BATTORDER: předefinovaný blok ponechá atributy svých referencí beze změny, stejně jako AutoCAD. DleBlok: objekt uvnitř bloku nemůže převzít barvu, typ čáry ani tloušťku čáry reference, jako to v AutoCADu dělá objekt nakreslený jako DleBlok. V otočeném USS AutoCAD 2027 převáděné objekty posune; zde záměrně zůstanou, kde byly.
+
+## Questions
+
+### Jak se jmenuje příkaz BLOK anglicky a jakou má zkratku?
+
+Anglicky BLOCK, v českém AutoCADu BLOK: zadejte `B` a stiskněte Enter nebo mezerník. V AutoCADu to otevře dialog Definice bloku; zde se ptá na příkazovém řádku, stejně jako `-B` (<Command id="-BLOCK" />). `_BLOCK` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak vytvořit blok v AutoCADu?
+
+Zadejte `B` a název, potom určete základní bod – roh nebo střed hrany, na které bude blok stát – a vyberte objekty. Enter definuje blok a převede objekty na referenci na něj. Použije se i výběr provedený před příkazem, po základním bodě.
+
+### Jak předefinovat blok v AutoCADu?
+
+Spusťte BLOK s názvem bloku a odpovězte <Keyword id="Yes" />, potom zadejte základní bod a vyberte nové objekty: každá reference bloku ukáže novou definici. Objekty nesmějí obsahovat referenci na tentýž blok; taková sada je odmítnuta a příkaz skončí.
+
+### Jak vytvořit blok s atributy?
+
+Nejprve definujte atributy příkazem <Command id="ATTDEF" />, potom je vyberte spolu s ostatními objekty: do bloku se dostanou v pořadí, v jakém je vyberete. Reference, která je nahradí, otevře okno s polem pro každý atribut, popsaným jeho výzvou a vyplněným jeho implicitní hodnotou: Enter hodnoty použije, Esc ponechá implicitní.
+
+### Jak rozložit blok v AutoCADu?
+
+<Command id="EXPLODE" /> převede referenci zpět na objekty, které zobrazuje, vždy o jednu úroveň vnoření, každý na jeho vlastní hladině a v jeho vlastní barvě. Atributy se vrátí jako své definice; hodnoty se ztratí.

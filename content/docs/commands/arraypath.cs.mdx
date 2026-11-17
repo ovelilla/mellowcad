@@ -1,0 +1,74 @@
+---
+title: "Křivkové pole v AutoCADu: příkaz KŘIVPOLE (ARRAYPATH)"
+metaTitle: "Křivkové pole v AutoCADu: KŘIVPOLE"
+description: "Jak vytvořit křivkové pole v AutoCADu příkazem KŘIVPOLE (ARRAYPATH): trajektorie, Měření nebo Rozdělit, položky a jejich zarovnání. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak rozmístit objekty podél křivky v AutoCADu?","answer":"Zadejte KŘIVPOLE, vyberte objekty, stiskněte Enter a vyberte trajektorii blízko konce, od kterého má pole začínat; nebo zadejte PO, tedy POLE, a po objektech zvolte Křivkové. Potom nastavte rozteč nebo počet položek a stisknutím Enter pole vytvořte."},{"question":"Proč křivkové pole nesleduje trajektorii?","answer":"Zde si pole ponechá trajektorii takovou, jaká byla při jeho vytvoření: když trajektorii později posunete nebo protáhnete, pole zůstane, jak je, kdežto asociativní křivkové pole v AutoCADu by ji sledovalo. Ani vymazání trajektorie pole neodstraní. Pokud se položky s trajektorií nenatáčejí, zvolte zaroVnat a odpovězte Ano."},{"question":"Jak změnit směr křivkového pole?","answer":"Vyberte trajektorii blízko jejího druhého konce: otevřená trajektorie začíná u konce bližšího místu výběru. Kružnice vždy běží proti směru hodinových ručiček od svého úhlu 0."},{"question":"Jak rozmístit položky rovnoměrně po celé trajektorii?","answer":"Zvolte způsoB, potom Rozdělit, potom Položky a zadejte jejich počet: rozloží se rovnoměrně, první a poslední na koncích otevřené trajektorie."}]
+---
+
+Příkaz KŘIVPOLE (ARRAYPATH) kopíruje výběr podél trajektorie – úsečky, oblouku, kružnice nebo křivky – jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, zeptá se na trajektorii a pole hned ukáže: položky ve vzdálenosti jeden a půl násobku velikosti výběru, tolik, kolik se jich na trajektorii vejde, každá natočená tak, jak se trajektorie stáčí. Otevřená trajektorie začíná u konce bližšího místu, kde jste ji vybrali, kružnice proti směru hodinových ručiček od svého úhlu 0. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu. Vybrané objekty zůstanou na místě jako jeho první položka.
+
+- **Příkaz:** `KŘIVPOLE`
+- **Anglicky:** `ARRAYPATH`, zadávaný jako `_ARRAYPATH` v libovolném jazyce
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `KŘIVPOLE` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="arraypath" caption="Malý čtverec na začátku oblouku, rozmístěný podél něj: Rozdělit, 7 položek, každá natočená podle oblouku." />
+
+## Možnosti [#options]
+
+### `ASociativní` (`AS`) [#associative]
+
+`Ano`, výchozí, vytvoří jeden objekt pole, který později mění jeho uzly a paleta Vlastnosti; `Ne` vytvoří samostatné kopie vedle vybraných objektů. Odpověď platí po celou relaci, i pro příkazy OBDPOLE a POLÁRPOLE.
+
+### `způsoB` (`B`) [#method]
+
+`Měření`, výchozí, rozmístí položky v zadané vzdálenosti, tolik, kolik se jich vejde; `Rozdělit` rozloží zadaný počet položek rovnoměrně po celé trajektorii, po jedné na každém konci otevřené trajektorie.
+
+### `Položky` (`P`) [#items]
+
+Při způsobu Rozdělit počet položek. Při způsobu Měření vzdálenost mezi nimi a potom jejich počet, nejvýše tolik, kolik se jich vejde, což příkaz oznámí; `Vyplnění` vezme všechny.
+
+### `zaroVnat položky` (`V`) [#align-items]
+
+`Ano`, výchozí, natočí každou položku tak, jak se trajektorie stáčí od svého začátku; `Ne` ji jen posune.
+
+### `kOnec` (`O`) [#exit]
+
+Vytvoří pole a ukončí příkaz, stejně jako Enter.
+
+## Co zatím neumí [#missing]
+
+Pole nesleduje svou trajektorii: když trajektorii později upravíte, pole si ponechá tu, na které vzniklo. Trajektorií zatím nemohou být křivky spline, elipsy ani 3D křivky, ani trajektorie mimo rovinu USS. Nejsou k dispozici možnosti Základní bod, Směr tečny, Řádky, Úrovně, Směr Z a Výraz, ani skupina na výzvu k trajektorii, a uzly pole nemají nabídky.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett--de-reihepfad--ru-массивтраект--pl-ścieżkaszyk--cs-křivpole)
+
+## Otázky [#questions]
+
+### Jak rozmístit objekty podél křivky v AutoCADu?
+
+Zadejte `KŘIVPOLE`, vyberte objekty, stiskněte Enter a vyberte trajektorii blízko konce, od kterého má pole začínat; nebo zadejte `PO`, tedy [`POLE`](/docs/commands/array), a po objektech zvolte `Křivkové`. Potom nastavte rozteč nebo počet položek a stisknutím Enter pole vytvořte.
+
+### Proč křivkové pole nesleduje trajektorii?
+
+Zde si pole ponechá trajektorii takovou, jaká byla při jeho vytvoření: když trajektorii později posunete nebo protáhnete, pole zůstane, jak je, kdežto asociativní křivkové pole v AutoCADu by ji sledovalo. Ani vymazání trajektorie pole neodstraní. Pokud se položky s trajektorií nenatáčejí, zvolte `zaroVnat` a odpovězte `Ano`.
+
+### Jak změnit směr křivkového pole?
+
+Vyberte trajektorii blízko jejího druhého konce: otevřená trajektorie začíná u konce bližšího místu výběru. Kružnice vždy běží proti směru hodinových ručiček od svého úhlu 0.
+
+### Jak rozmístit položky rovnoměrně po celé trajektorii?
+
+Zvolte `způsoB`, potom `Rozdělit`, potom `Položky` a zadejte jejich počet: rozloží se rovnoměrně, první a poslední na koncích otevřené trajektorie.
+
+## Související příkazy [#related]
+
+- [Příkaz POLE (ARRAY) v AutoCADu](/docs/commands/array)
+- [Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)](/docs/commands/arrayrect)
+- [Polární pole v AutoCADu: příkaz POLÁRPOLE (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Křivka v AutoCADu: příkaz KŘIVKA (PLINE)](/docs/commands/pline)

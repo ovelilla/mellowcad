@@ -1,0 +1,79 @@
+---
+title: "Zkosení v AutoCADu: příkaz ZKOS (CHAMFER)"
+metaTitle: "Zkosení v AutoCADu: příkaz ZKOS (CHAMFER)"
+description: "Jak zkosit roh v AutoCADu příkazem ZKOS (CHAMFER, zkratka ZK): dvě vzdálenosti, dvě úsečky nebo rohy křivky, NKrát, Shift. Vyzkoušejte zdarma online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz ZKOS anglicky a jakou má zkratku?","answer":"Anglicky CHAMFER, v českém AutoCADu ZKOS: zadejte ZK a stiskněte Enter nebo mezerník. Anglické CHA v českém AutoCADu nefunguje; _CHAMFER funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak udělat zkosení 45 stupňů v AutoCADu?","answer":"Zvolte Hrana, zadejte vzdálenost a u druhé stiskněte Enter: na pravoúhlém rohu vytvoří dvě stejné vzdálenosti zkosení pod úhlem 45 stupňů."},{"question":"Jaký je rozdíl mezi příkazy ZKOS a ZAOBLI?","answer":"ZKOS spojí dvě úsečky přímým zkosením, ZAOBLI obloukem tečným k oběma. Oba příkazy úsečky oříznou nebo prodlouží a oba vytvoří ostrý roh při vzdálenosti nebo poloměru 0 nebo s podrženou klávesou Shift u druhé úsečky."},{"question":"Proč zkosení v AutoCADu nefunguje?","answer":"Příkaz uvede důvod: „Vzdálenost zkosení je příliš velký(á)“, když vzdálenost přesahuje konec úsečky, „Úsečky jsou rovnoběžné“ u rovnoběžných úseček a „Zkosení vyžaduje 2 úsečky (nejsou obloukovými segmenty).“ u oblouku nebo kružnice. Když jsou obě vzdálenosti 0, vytvoří roh, ne zkosení."},{"question":"Jak zkosit všechny rohy obdélníku?","answer":"Obdélník je křivka: zvolte křiVka, vyberte ho a každý roh se zkosí aktuálními vzdálenostmi."}]
+---
+
+Příkaz ZKOS (CHAMFER) seřízne roh mezi dvěma úsečkami přímým zkosením. Vyberte první úsečku, pak druhou: každá se ořízne nebo prodlouží ke zkosení, první o první vzdálenost a druhá o druhou, a zkosení je spojí. Funguje na dvou úsečkách, na dvou přímých segmentech křivky nebo na úsečce a křivce, které spojí do jedné křivky. Jako v AutoCADu první řádek uvádí aktuální vzdálenosti, uložené ve výkresu; obě rovné 0, výchozí hodnota, vytvoří ostrý roh, ve kterém se úsečky setkají. Zatímco vybíráte druhou úsečku, roh, který by vznikl, se zobrazuje přes úsečky.
+
+- **Příkaz:** `ZKOS`
+- **Anglicky:** `CHAMFER`, zadávaný jako `_CHAMFER` v libovolném jazyce
+- **Aliasy:** `ZK`
+- **Panel:** [Modifikace](/docs/commands#modify)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `ZK` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="chamfer" caption="Čtyři úsečky, pak vzdálenost 10 pro obě a NKrát: dva rohy zkosené, dva ponechané ostré." />
+
+## Možnosti [#options]
+
+### `Zpět` (`Z`) [#undo]
+
+Vrátí zpět poslední zkosení tohoto spuštění a s ním i změnu vzdáleností.
+
+### `křiVka` (`V`) [#polyline]
+
+Zeptá se na 2D křivku a zkosí každý její roh, pak uvede, kolik úseček bylo zkoseno a proč některé zkoseny nebyly.
+
+### `Hrana` (`H`) [#distance]
+
+Zeptá se na první a druhou vzdálenost zkosení. Druhá nabízí první, takže Enter v tomto místě vytvoří rovnoměrné zkosení, na pravoúhlém rohu pod úhlem 45 stupňů.
+
+### `NKrát` (`NK`) [#multiple]
+
+Po každém zkosení se znovu ptá na první úsečku, dokud nestisknete Enter nebo Esc.
+
+## Co zatím neumí [#missing]
+
+Možnosti úhEl (zkosení zadané jednou vzdáleností a úhlem), Metoda a Ořež: ZKOS vždy pracuje se dvěma vzdálenostmi a úsečky vždy ořízne. V AutoCADu zkosení přebírá měřítko typu čáry druhé úsečky, zde ne.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm--de-fase--fa--ru-фаска--фас--pl-fazuj--fa--cs-zkos--zk)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz ZKOS anglicky a jakou má zkratku?
+
+Anglicky CHAMFER, v českém AutoCADu ZKOS: zadejte `ZK` a stiskněte Enter nebo mezerník. Anglické `CHA` v českém AutoCADu nefunguje; `_CHAMFER` funguje v AutoCADu v jakémkoli jazyce.
+
+### Jak udělat zkosení 45 stupňů v AutoCADu?
+
+Zvolte `Hrana`, zadejte vzdálenost a u druhé stiskněte Enter: na pravoúhlém rohu vytvoří dvě stejné vzdálenosti zkosení pod úhlem 45 stupňů.
+
+### Jaký je rozdíl mezi příkazy ZKOS a ZAOBLI?
+
+ZKOS spojí dvě úsečky přímým zkosením, [`ZAOBLI`](/docs/commands/fillet) obloukem tečným k oběma. Oba příkazy úsečky oříznou nebo prodlouží a oba vytvoří ostrý roh při vzdálenosti nebo poloměru 0 nebo s podrženou klávesou Shift u druhé úsečky.
+
+### Proč zkosení v AutoCADu nefunguje?
+
+Příkaz uvede důvod: `Vzdálenost zkosení je příliš velký(á)`, když vzdálenost přesahuje konec úsečky, `Úsečky jsou rovnoběžné` u rovnoběžných úseček a `Zkosení vyžaduje 2 úsečky (nejsou obloukovými segmenty).` u oblouku nebo kružnice. Když jsou obě vzdálenosti 0, vytvoří roh, ne zkosení.
+
+### Jak zkosit všechny rohy obdélníku?
+
+Obdélník je křivka: zvolte `křiVka`, vyberte ho a každý roh se zkosí aktuálními vzdálenostmi.
+
+## Procvičte si ho [#practice]
+
+- [Cvičení v AutoCADu: osazený hřídel](/docs/exercises/shaft)
+
+## Související příkazy [#related]
+
+- [Příkaz ZAOBLI (FILLET) v AutoCADu](/docs/commands/fillet)
+- [Příkaz OŘEŽ (TRIM) v AutoCADu](/docs/commands/trim)
+- [Příkaz PRODLUŽ (EXTEND) v AutoCADu](/docs/commands/extend)
+- [Zkosení hrany tělesa v AutoCADu: příkaz ZKOSHRANU (CHAMFEREDGE)](/docs/commands/chamferedge)
