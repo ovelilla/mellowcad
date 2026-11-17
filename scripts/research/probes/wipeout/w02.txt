@@ -1,0 +1,96 @@
+(princ (getvar "WIPEOUTFRAME"))
+_COLOR
+1
+_LINE
+-20,25
+120,25
+
+_COLOR
+_BYLAYER
+_WIPEOUT
+0,0
+100,0
+100,50
+0,50
+
+_LINE
+50,-20
+50,70
+
+_RECTANG
+200,0
+300,50
+_WIPEOUT
+_P
+250,0
+_Y
+QAFLAGS
+2
+_LIST
+_L
+
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Hi-Res (1600.00 x 1280.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+acad.ctb
+_N
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\wipe-frame1.png
+_N
+_Y
+_WIPEOUT
+_F
+_OFF
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Hi-Res (1600.00 x 1280.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+acad.ctb
+_N
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\wipe-frame0.png
+_N
+_Y
+(princ (getvar "WIPEOUTFRAME"))
+_WIPEOUT
+_F
+_D
+(princ (getvar "WIPEOUTFRAME"))
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Hi-Res (1600.00 x 1280.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+acad.ctb
+_N
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\wipe-frame2.png
+_N
+_Y

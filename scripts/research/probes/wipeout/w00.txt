@@ -1,0 +1,21 @@
+_LINE
+-10,25
+110,25
+
+_WIPEOUT
+FOO
+0,0
+100,0
+100,50
+_U
+100,50
+0,50
+
+(entget (entlast))
+(getvar "WIPEOUTFRAME")
+_WIPEOUT
+_F
+?
+
+_WIPEOUT
+_P

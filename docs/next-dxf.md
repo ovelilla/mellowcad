@@ -340,7 +340,19 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       máscara y WIPEOUTFRAME), IMAGE (1 y 1: la referencia de imagen, que como la de un dibujo no
       tiene su fichero en el navegador), TABLE (1 de otros), MULTILEADER (1 y 2), y XLINE, RAY,
       MINSERT, los colores índice y las sustituciones DSTYLE de cada cota; quedan para la próxima
-      sesión de esta fase.
+      sesión de esta fase. De WIPEOUT, investigado ya en la consola (sondas `wipeout/w00`–`w04`,
+      en los nueve idiomas): el objeto es una imagen de un píxel (DXF 10 su esquina, 11 y 12 los
+      vectores U y V, 13 su tamaño, 71 2 y 14/24 el contorno en píxeles, el punto
+      `P + (x + 0,5)·U + (0,5 − y)·V`) y el modo de marco va en el objeto WIPEOUTVARIABLES (70);
+      tapa lo dibujado antes y queda bajo lo dibujado después, y su marco se ve y se traza con
+      WIPEOUTFRAME 1, el inicial. WIPEOUT pregunta `Specify first point or [Frames/Polyline]
+      <Polyline>:`, `Specify next point:`, `… or [Undo]:`, `… or [Close/Undo]:` (puntos 2D),
+      Polyline `Select a closed polyline:` (una abierta se ignora sin decir nada) y `Erase
+      polyline? [Yes/No] <No>:`, Frames `Enter mode [ON/OFF/Display but not plot] <ON>:`; LIST
+      `Number of boundary points: 4` y `at point, X=…,  Y=…,  Z=…`. Sus palabras no están en
+      acadres: salen de cada consola (es `Marcos/Polilínea`, de `Rahmen/Polylinie`, ru
+      `Контуры/Полилиния`), y `_U` no deshace en las consolas española, portuguesa, francesa y
+      rusa.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

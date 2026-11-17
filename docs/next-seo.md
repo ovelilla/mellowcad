@@ -18,9 +18,9 @@
 > `/cs`, L8) hecho el 17/11, sin publicar; por decisión del dueño la visibilidad va antes que
 > cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca
 > en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
-> hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, hecho el 17/11, sin publicar;
-> los degradados y el punto 7) y otro idioma (el húngaro, el siguiente), alternando, además de lo
-> que queda de §7.
+> hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los degradados y 3DFACE,
+> del punto 7, hechos el 17/11, sin publicar; lo que queda del punto 7: WIPEOUT, IMAGE, TABLE…) y
+> otro idioma (el húngaro, el siguiente), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -968,4 +968,16 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: los degradados y el punto 7), y después
   otro idioma (el húngaro: `hu-HU` está en la misma lista de paquetes, y su ő ű, también de Latin
   Extended-A, entran en la cara de las letras).
+- DXF, fase 4 (sesión del 17/11/2026, sin publicar; `docs/next-dxf.md`, puntos 6b y 7): los
+  degradados de los sombreados (los 144 de 6 muestras: dibujados como los traza AutoCAD, medidos
+  píxel a píxel en sus trazados, guardados por DXFOUT desde 2004 y en 2000 como el suyo), de paso
+  los objetos invisibles de un DXF (60 1, los estados ocultos de los bloques dinámicos, 13.793 en
+  43 muestras) sin abrir, y 3DFACE con la cara 3D (las 30 de 8 muestras y 1 de otro programa).
+  Muestras sin nada fuera, de 135 a 148 de 154; ficheros de otros, de 572 a 573 de 577. Las
+  páginas «abrir DXF online», en los diez idiomas, ya no cuentan los degradados ni las caras 3D
+  entre lo que queda fuera. La portada no cambia (ni sus mensajes ni lo que carga). **Sin
+  publicar**: el push, IndexNow y la cola de §7 esperan al dueño; la tanda de indexación del 17/11
+  no tocaba en toda la sesión (cuota hasta las 19:51 UTC), ni la activación de
+  `docs/next-session-cleanup.md` (desde el 18/11). **Siguiente**, por orden del dueño: el húngaro
+  (L8), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE, MULTILEADER…).
 - 10 Medición: la primera, un mes después del push de 01–02.

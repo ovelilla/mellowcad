@@ -1,0 +1,15 @@
+_LINE
+-10,25
+110,25
+
+_WIPEOUT
+0,0
+100,0
+100,50
+0,50
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\wipe.dxf
+_V
+2018
+16
