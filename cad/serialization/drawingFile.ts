@@ -76,6 +76,7 @@ import {
   DEFAULT_HATCH_SCALE,
   HatchPatternLine,
 } from "../domain/hatchPatterns"
+import { HatchGradient, isHatchGradientName } from "../domain/hatchGradients"
 import {
   createDefaultTextStyle,
   DEFAULT_TEXT_HEIGHT,
@@ -152,7 +153,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 55
+export const DRAWING_FILE_VERSION = 56
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -625,6 +626,19 @@ function cloneEntityShape(entity: Entity): Entity {
         patternScale: entity.patternScale,
         patternAngle: entity.patternAngle,
         origin: { x: entity.origin.x, y: entity.origin.y },
+        ...(entity.gradient
+          ? {
+              gradient: {
+                name: entity.gradient.name,
+                colors: [entity.gradient.colors[0], entity.gradient.colors[1]],
+                ...(entity.gradient.tint !== undefined
+                  ? { tint: entity.gradient.tint }
+                  : {}),
+                angle: entity.gradient.angle,
+                centered: entity.gradient.centered,
+              },
+            }
+          : {}),
       }
     case "insert":
       return {
@@ -1731,6 +1745,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
           ? raw.patternAngle
           : DEFAULT_HATCH_ANGLE,
         origin: parseVec2(raw.origin) ?? { x: 0, y: 0 },
+        // From 56: a DXF's gradient.
+        ...gradientOf(raw.gradient),
       }
     }
     case "insert": {
@@ -2469,6 +2485,30 @@ function parsePathPiece(value: unknown): ArrayPathPiece | null {
 }
 
 /** Boundary loops. Two vertices are enough when they carry arc bulges. */
+/** A hatch's gradient, none kept unless it names one and two colours. */
+function gradientOf(value: unknown): { gradient?: HatchGradient } {
+  if (!isRecord(value) || typeof value.name !== "string") return {}
+  if (!isHatchGradientName(value.name)) return {}
+  const colors = Array.isArray(value.colors)
+    ? value.colors.map((c) =>
+        typeof c === "string" ? normalizeColor(c) : null
+      )
+    : []
+  const [first, second] = colors
+  if (colors.length !== 2 || !first || !second) return {}
+  return {
+    gradient: {
+      name: value.name,
+      colors: [first, second],
+      ...(isFiniteNumber(value.tint)
+        ? { tint: Math.min(Math.max(value.tint, 0), 1) }
+        : {}),
+      angle: isFiniteNumber(value.angle) ? value.angle : 0,
+      centered: value.centered !== false,
+    },
+  }
+}
+
 /** A hatch's own pattern lines, none kept if none is well formed. */
 function patternLinesOf(value: unknown): {
   patternLines?: HatchPatternLine[]

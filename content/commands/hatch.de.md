@@ -2,7 +2,7 @@
 title: "Befehl SCHRAFF (HATCH) in AutoCAD"
 description: "Wie SCHRAFF (HATCH, Alias SCH, GS) in AutoCAD eine Fläche schraffiert, Schritt für Schritt: Punkt oder Objekte, Muster, Maßstab, Winkel, Inseln. Zum Testen."
 figure: "Ein Rechteck mit einem Kreis darin, mit ANSI31 von einem Punkt innerhalb schraffiert: Der Kreis bleibt frei, eine Insel."
-sourceHash: "edf4b860d8cb"
+sourceHash: "adab8ef70a51"
 ---
 
 SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Rückgängig-Schritt.
@@ -27,7 +27,7 @@ An der Eingabeaufforderung nicht aufgeführt, aber dort angenommen: Es nimmt die
 
 ## Missing
 
-Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren, Verläufe, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat, die nur die Schraffuren einer DXF mit ihren Linien mitbringen. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz. SCHRAFFEDIT (HATCHEDIT) und der Schraffureditor, den in AutoCAD ein Doppelklick öffnet. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
+Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren. Abstufungen, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat werden hier nicht erstellt: Nur die Schraffuren einer DXF bringen sie mit, Abstufungen in ihren Farben und Muster mit ihren Linien. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz. SCHRAFFEDIT (HATCHEDIT) und der Schraffureditor, den in AutoCAD ein Doppelklick öffnet. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
 
 ## Questions
 

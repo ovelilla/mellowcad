@@ -39,6 +39,8 @@ import {
   isTilted,
   planeAxes,
   hatchGeometry,
+  hatchGradientFill,
+  GradientFill,
   insertFlatGeometry,
   ellipseLengthTable,
   ellipsePointAt,
@@ -101,6 +103,7 @@ import {
 import {
   Scene,
   ScenePrimitive,
+  SceneGradient,
   CameraTransform,
   StrokeStyle,
   TextAlign,
@@ -1441,13 +1444,17 @@ function hatchPrimitives(
   if (geometry.rings.length === 0) return []
   if (geometry.solid) {
     const [first, ...rest] = geometry.rings
+    const gradient = hatchGradientFill(hatch)
     return [
       {
         kind: "path",
         points: first.map((p) => camera.worldToScreen(p)),
         closed: true,
         subpaths: rest.map((ring) => ring.map((p) => camera.worldToScreen(p))),
-        fill: stroke.color,
+        // A gradient is drawn in its own colours, whatever the object's
+        // (gradient/g03: blue and yellow on a hatch of colour ByLayer).
+        fill: gradient ? gradient.stops[0].color : stroke.color,
+        ...(gradient && { gradient: screenGradient(camera, gradient) }),
       },
     ]
   }
@@ -1463,6 +1470,26 @@ function hatchPrimitives(
       : camera.worldToScreen(b)
     return { kind: "segment" as const, a: from, b: to, stroke: solid }
   })
+}
+
+/**
+ * A gradient's frame taken to the screen through the camera, an affine map of
+ * the hatch's plane in every view, so three points carry it.
+ */
+function screenGradient(
+  camera: CameraTransform,
+  fill: GradientFill
+): SceneGradient {
+  const origin = camera.worldToScreen(fill.origin)
+  const toward = (axis: Vec2) =>
+    V.sub(camera.worldToScreen(V.add(fill.origin, axis)), origin)
+  return {
+    kind: fill.kind,
+    origin,
+    axisX: toward(fill.axisX),
+    axisY: toward(fill.axisY),
+    stops: fill.stops,
+  }
 }
 
 /**

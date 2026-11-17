@@ -79,12 +79,20 @@ function hatchKeepingLines(
  * becomes the `_U` source's); one it cannot leaves the target's pattern,
  * drawn as before, with the source's scale and angle (p07; Autodesk's
  * "Cannot use match properties on custom hatch pattern": the destination
- * "reverts previous pattern").
+ * "reverts previous pattern"). A gradient goes whole, either way
+ * (gradient/g14: a SPHERICAL source makes an ANSI31 target its gradient, an
+ * ANSI37 source makes a gradient target ANSI37).
  */
 export function hatchMatchingPattern(
   source: HatchEntity,
   target: HatchEntity
 ): HatchEntity {
+  if (source.gradient) {
+    const { patternType, patternLines, ...rest } = target
+    void patternType
+    void patternLines
+    return { ...rest, patternId: source.patternId, gradient: source.gradient }
+  }
   const readable =
     source.patternType === "user" ||
     isSolidHatchPattern(source.patternId) ||
@@ -92,9 +100,10 @@ export function hatchMatchingPattern(
   if (!readable) {
     return hatchKeepingLines(target, source.patternScale, source.patternAngle)
   }
-  const { patternType, patternLines, ...rest } = target
+  const { patternType, patternLines, gradient, ...rest } = target
   void patternType
   void patternLines
+  void gradient
   return {
     ...rest,
     patternId: source.patternId,

@@ -122,7 +122,12 @@ registry's for its name, as AutoCAD draws a hatch from the lines it holds (hatch
 AutoCAD has not, a `_U`, plotted alike): HOUND, GRASS, INSUL, P1, `_USER`, `U` and `_U` of 11 of
 AutoCAD's samples (37 hatches that drew no pattern) and acad.pat's inch lines of AR-CONC, STEEL,
 LINE, ANSI31 and others in metric drawings (408 hatches drawn 25.4 times too sparse before): 445
-hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, POINT with its thickness, plane and
+hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, a
+hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
+one colour's tint, 452 and 462; its angle, 460, and shift, 461, any but 0 read not centred), drawn
+as AutoCAD draws it (HATCH's entry; gradient/g16, AutoCAD's own file: the nine names, two off
+centre, one colour), and the 144 of 6 of AutoCAD's samples (the Annotation blocks' arrows and
+tags), one of a name AutoCAD has not left out as a HATCH, POINT with its thickness, plane and
 DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files), SOLID
 with its four corners in their order, thickness and plane, a fourth left out the third (f001's, and
 the 2,831 of 67 of AutoCAD's samples, mostly the arrowheads and fills of old blocks, and 8 of 2 other
@@ -159,6 +164,9 @@ line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as Au
 its DXF type (`5 objects not opened: 1 XLINE, 1 RAY, …`), a layout's apart (`1 object in a
 layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
+an invisible object (60 1) is not opened, and not counted, WHY: AutoCAD draws and selects none,
+and they are the hidden states of a dynamic block's visibility parameter, which the model has
+not (13,793 of 43 of AutoCAD's samples: drawn, they piled up over the state shown);
 tolerant where AutoCAD's reader is strict: an unknown group code or entity, a missing subclass
 marker, an EOF missing after the last section or a malformed object discard the whole drawing
 there (`Undefined group code 77 for object on line 22.`, t-*), and RECOVER does not take them
@@ -187,8 +195,9 @@ Bind, Path…), the External References palette that AutoCAD 2027 opens on a dra
 cannot find (the console runs EXTERNALREFERENCES, p01; the desktop's task dialog *One or more
 reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's balloon and the
 xref's own clipping (XCLIP); a complex linetype's shapes (BATTING, ZIGZAG:
-the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a gradient
-hatch's fill (its 144 hatches of 6 samples are left out); the index colours as such,
+the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
+DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
+and reads the hatch back as a SOLID, g15: here a SOLID too); the index colours as such,
 each dimension's style overrides (xdata DSTYLE), a text style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
@@ -221,7 +230,12 @@ clamped, f004), a dimension with its `*D` block drawn as the model draws it, an 
 reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN (its
 own lines too, its type in 76 and a User-defined one's Double in 77, as AutoCAD wrote hatchpat/p00:
 the console opens MYPAT and `_U` in the six versions, ASCII and binary, with no AUDIT error and
-plots them as it plots its own file), a
+plots them as it plots its own file), a gradient from 2004 as AutoCAD writes one (450 to 470,
+each colour's nearest index beside its true colour, g02, g16) and in 2000, which has none, as
+its DXFOUT 2000 does (a SOLID with each colour's index as `GradientColor1ACI` and
+`GradientColor2ACI` xdata, their APPID records registered, g15): the console opens g16's drawing
+in the six versions, ASCII and binary, with no AUDIT error, reads 2004 on back as its gradients
+and plots them as its own file (g17), a
 point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
 2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to

@@ -611,6 +611,11 @@ export const pl: EngineLocale = {
         "originY": "Y początku",
         "associative": "Zespolone",
         "islandDetectionStyle": "Styl wykrywania wysp",
+        "gradientName": "Nazwa gradientu",
+        "color1": "Kolor 1",
+        "color2": "Kolor 2",
+        "gradientAngle": "Kąt gradientu",
+        "centered": "Wyśrodkowany",
         "cumulativeArea": "Obszar łączny",
         "name": "Nazwa",
         "tag": "Oznaczenie",
@@ -720,6 +725,16 @@ export const pl: EngineLocale = {
         "predefined": "Wstępnie zdefiniowany",
         "userDefined": "Użytkownika",
         "customPattern": "Niestandardowy",
+        "gradient": "Gradient",
+        "gradientLinear": "Liniowy",
+        "gradientCylinder": "Walcowy",
+        "gradientInvCylinder": "Odwrócony walcowy",
+        "gradientSpherical": "Sferyczny",
+        "gradientHemispherical": "Półkulisty",
+        "gradientCurved": "Zakrzywiony",
+        "gradientInvSpherical": "Odwrócony sferyczny",
+        "gradientInvHemispherical": "Odwrócony półkulisty",
+        "gradientInvCurved": "Odwrócony zakrzywiony",
         "outer": "Skrajny",
         "extrusion": "Wyciągnięcie",
         "revolve": "Przekręć",
@@ -7232,6 +7247,15 @@ export const pl: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "Gradientowe",
+      "listHatchGradientAngle": [
+        "                 Kąt gradientu ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Gradient wyśrodkowany",
+      "listHatchGradientNotCentered": "                 Gradient niewyśrodkowany",
       "listHatchNotAssociative": "                 Niezespolone",
       "listHatchArea": [
         "                 Obszar      ",

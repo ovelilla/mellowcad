@@ -567,6 +567,11 @@ export const de: EngineLocale = {
         "originY": "Ursprung Y",
         "associative": "Assoziativ",
         "islandDetectionStyle": "Inselerkennungsstil",
+        "gradientName": "Abstufungsname",
+        "color1": "Farbe 1",
+        "color2": "Farbe 2",
+        "gradientAngle": "Abstufungswinkel",
+        "centered": "Zentriert",
         "cumulativeArea": "Kumulativer Bereich",
         "name": "Name",
         "tag": "Bezeichnung",
@@ -676,6 +681,16 @@ export const de: EngineLocale = {
         "predefined": "Vordefiniert",
         "userDefined": "Benutzerdefiniert",
         "customPattern": "Benutzerspezifisch",
+        "gradient": "Abstufung",
+        "gradientLinear": "Linear",
+        "gradientCylinder": "Zylindrisch",
+        "gradientInvCylinder": "Umgekehrt zylindrisch",
+        "gradientSpherical": "Kugelförmig",
+        "gradientHemispherical": "Halbkugelförmig",
+        "gradientCurved": "Gekrümmt",
+        "gradientInvSpherical": "Umgekehrt kugelförmig",
+        "gradientInvHemispherical": "Umgekehrt halbkugelförmig",
+        "gradientInvCurved": "Umgekehrt gekrümmt",
         "outer": "Außen",
         "extrusion": "Extrusion",
         "revolve": "Rotation",
@@ -7131,6 +7146,15 @@ export const de: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "ABSTUF",
+      "listHatchGradientAngle": [
+        "                 Abstufungswinkel ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Abstufung zentriert",
+      "listHatchGradientNotCentered": "                 Abstufung nicht zentriert",
       "listHatchNotAssociative": "                 Nicht assoziativ",
       "listHatchArea": [
         "                 Fläche      ",

@@ -21,8 +21,10 @@ two presenters touch a rendering API: `CanvasScenePresenter`, which the editor p
   wrapper would hide a dimension's parts from all of them.
 - **No clipping and no patterned fill** in the list: work out _what_ is drawn in world coordinates
   in `domain/` (a hatch's pattern arrives as segments already clipped to its boundary) and let the
-  scene carry only styled shapes. The one concession is `path.subpaths`, filled even-odd, because a
-  solid fill and a line pattern must agree about which side of a nested loop is inside.
+  scene carry only styled shapes. The concessions are `path.subpaths`, filled even-odd, because a
+  solid fill and a line pattern must agree about which side of a nested loop is inside, and
+  `path.gradient`, a gradient hatch's colour stops in an affine frame (`hatchGradientFill`), which
+  each presenter fills with its own linear or radial gradient: per-pixel colour has no shape.
 - **Derived geometry is computed in world coordinates, never at paint time in screen ones.** That
   is what lets the domain cache a hatch's clipped pattern per immutable entity (`hatchGeometry`):
   the result cannot depend on the camera, so panning and zooming stay free and the builder stays a

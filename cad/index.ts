@@ -139,6 +139,7 @@ export type {
 export type {
   Scene,
   ScenePrimitive,
+  SceneGradient,
   StrokeStyle,
   CameraTransform,
   TextAlign,
@@ -180,6 +181,7 @@ export type {
   HatchPatternLine,
   HatchPatternType,
 } from "./domain/hatchPatterns"
+export type { HatchGradient, HatchGradientName } from "./domain/hatchGradients"
 export {
   LINEWEIGHTS,
   LINEWEIGHT_BYLAYER,

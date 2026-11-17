@@ -40,6 +40,7 @@ import {
 } from "../../domain/dimensions"
 import { DimStyle } from "../../domain/dimStyles"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
+import type { HatchGradient } from "../../domain/hatchGradients"
 import { hatchLines } from "../../domain/hatchPatternEdits"
 import { DEFAULT_LINEWEIGHT } from "../../domain/lineweights"
 import { aciIndex } from "./dxfColors"
@@ -889,6 +890,44 @@ function hatch(ctx: DxfWriteContext, e: HatchEntity, owner: string): void {
     }
   }
   out.int(98, 0)
+  if (e.gradient) gradient(ctx, e.gradient)
   out.str(1001, "ACAD")
   out.point(1010, e.origin.x, e.origin.y, 0, true)
 }
+
+/**
+ * A hatch's gradient as AutoCAD writes it (gradient/g02, the samples): from
+ * 2004 its 450 to 470, each colour's nearest index (63) beside its true
+ * colour (421); in 2000, which has no gradients, a SOLID hatch whose two
+ * colours are xdata by index (DXFOUT 2000 of g03's drawing, g15).
+ */
+function gradient(ctx: DxfWriteContext, g: HatchGradient): void {
+  const { out } = ctx
+  const rgb = g.colors.map((c) => parseInt(c.slice(1), 16))
+  if (ctx.version < 1018) {
+    GRADIENT_COLOR_APPS.forEach((app, i) => {
+      out.str(1001, app)
+      out.int(1070, aciIndex(rgb[i]).index)
+    })
+    return
+  }
+  out.int(450, 1)
+  out.int(451, 0)
+  out.exact(460, g.angle)
+  out.exact(461, g.centered ? 0 : 1)
+  out.int(452, g.tint === undefined ? 0 : 1)
+  out.exact(462, g.tint ?? 1)
+  out.int(453, 2)
+  rgb.forEach((value, i) => {
+    out.exact(463, i)
+    out.int(63, aciIndex(value).index)
+    out.int(421, value)
+  })
+  out.str(470, g.name)
+}
+
+/** The applications of a 2000 DXF's gradient colours, registered in its APPID table. */
+export const GRADIENT_COLOR_APPS = [
+  "GradientColor1ACI",
+  "GradientColor2ACI",
+] as const

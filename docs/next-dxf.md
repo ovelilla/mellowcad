@@ -13,9 +13,10 @@
 > y el punto 5 (las referencias externas), hecho el 16/11 y publicado el 17/11, que llevó las muestras
 > sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho el 17/11 y
 > sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
-> (`docs/next-seo.md`, L8), hecho el 17/11 y sin publicar; siguiente, por orden del dueño, lo que
-> quede de esta fase (los degradados, el punto 7…), y después otro idioma (el húngaro),
-> alternando, una sesión cada vez.
+> (`docs/next-seo.md`, L8), hecho el 17/11 y sin publicar; y los degradados (el punto 6b), hechos
+> el 17/11 y sin publicar, que llevaron las muestras sin nada fuera de 135 a 141 de 154;
+> siguiente, por orden del dueño, lo que quede de esta fase (el punto 7…), y después otro idioma
+> (el húngaro), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -287,11 +288,37 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       líneas de acadiso.pat donde el fichero trae las de acad.pat, en pulgadas, 25,4 veces más
       juntas (ANSI31, STEEL, AR-CONC… en dibujos métricos): 445 de 27 muestras, y 18 ANSI31 de 2
       ficheros de otros. Las muestras sin nada fuera siguen en 135 (el patrón nunca se contó como
-      fuera). Los degradados son otro relleno (450, colores, sin líneas): quedan fuera, como punto
-      propio. Se anotan: las filas Espaciado y Doble de la paleta y su Escala de uno definido por
+      fuera). Los degradados son otro relleno (450, colores, sin líneas): el punto 6b. Se anotan: las filas Espaciado y Doble de la paleta y su Escala de uno definido por
       el usuario (sin escritorio), y que un patrón de acadiso.pat que no traemos (HOUND) conserva
       sus líneas al cambiar de escala, donde AutoCAD lo lee otra vez. Lo que hace y le falta, en
       `docs/coverage/draw.md` (HATCH), `clipboard-and-files.md` (DXFIN, DXFOUT) e `inquiry.md`.
+   6b. **Los degradados**: 6 muestras, 144 sombreados (las flechas y etiquetas de los bloques de
+      anotación). **Hechos** (17/11/2026, sin publicar): el sombreado guarda su degradado (los nueve
+      nombres de AutoCAD, dos colores o uno con su tinte, el ángulo y Centrado; fichero versión 56)
+      y se dibuja como lo traza AutoCAD, medido píxel a píxel en sus trazados (sondas
+      `gradient/g03`–`g06`): sobre la extensión del contorno, mezclado en RGB, el coseno de un cuarto
+      de vuelta muestreado en cuartos; LINEAR, CYLINDER y CURVED a lo largo de la extensión girada,
+      SPHERICAL y HEMISPHERICAL sobre el cuadrado del lado mayor sin girar; cada nombre centrado, en
+      un rectángulo ancho, alto, girado y en un círculo, a menos de 0,015 del rango de color, y
+      nuestro dibujo del fichero de AutoCAD con doce (g16) a 0,012 de su trazado. La escena lleva el
+      degradado como marco afín y paradas de color (`SceneGradient`), que canvas y SVG pintan con
+      sus degradados. ROTATE y MIRROR no cambian su ángulo, una referencia de bloque lo gira con el
+      bloque y EXPLODE de ella deja el del bloque (g08–g10); EXPLODE del sombreado dice `Cannot
+      explode HATCH`, MATCHPROP lo copia entero (g14), LIST lo dice en los nueve idiomas de sus
+      consolas (g11, g13) y la paleta muestra sus filas (ax26res 322–329, sin escritorio:
+      **no verificadas**). DXFOUT lo escribe como AutoCAD desde 2004 y, en 2000, como el suyo: un
+      SOLID con los colores en xdata (g15); la consola abre los 12 ficheros sin un error de AUDIT, los
+      lee como sus degradados y los traza como el suyo (g17). De paso, un objeto invisible (60 1)
+      no se abre: son los estados ocultos de los bloques dinámicos, 13.793 en 43 muestras, que se
+      dibujaban amontonados sobre el visible (las flechas de los bloques de anotación). El corpus:
+      abren los 144 degradados; muestras sin nada fuera, de 135 a 141 de 154; ficheros de otros,
+      572 de 577, como antes (ninguno tiene degradados). Se anotan: crearlos con -HATCH (su opción
+      Gradient, con los nombres de degradado traducidos en cada idioma y el tinte de un color, que
+      AutoCAD deriva con un redondeo propio) y la pestaña de HATCH; CURVED sin centrar en una caja
+      ancha, por una regla no hallada; la paleta en el escritorio. Lo que hace y le falta, en
+      `docs/coverage/draw.md` (HATCH), `clipboard-and-files.md` (DXFIN, DXFOUT), `modify.md`
+      (EXPLODE, MATCHPROP) e `inquiry.md` (LIST); las páginas «abrir DXF online» ya no los cuentan
+      entre lo que queda fuera.
    7. 3DFACE (8 muestras), WIPEOUT (3), IMAGE (1, y 1 de otros), TABLE (las de las muestras están
       en presentaciones; 1 de otros), y sin ningún caso medido XLINE, RAY, MINSERT como tal, los
       colores índice como tales y las sustituciones de estilo de cada cota (XDATA `DSTYLE`).

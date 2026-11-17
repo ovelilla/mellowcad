@@ -1,0 +1,76 @@
+(arxload "acmatch.crx")
+_RECTANG
+0,0
+100,50
+_RECTANG
+200,0
+300,50
+_RECTANG
+400,0
+500,50
+_ZOOM
+_E
+_-HATCH
+_P
+_G
+GR_SPHER
+30
+_N
+50,25
+
+(setq g (entlast))
+_-HATCH
+_P
+ANSI31
+2
+15
+250,25
+
+(setq p (entlast))
+_-HATCH
+_P
+_G
+GR_LINEAR
+0
+_Y
+450,25
+
+(setq q (entlast))
+_MATCHPROP
+!g
+!p
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (2 70 450 452 460 461 462 63 421 470 52 41))))) (entget p)))
+_-HATCH
+_P
+ANSI37
+3
+45
+250,25
+
+(setq r (entlast))
+_MATCHPROP
+!r
+!q
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (2 70 450 452 460 461 462 63 421 470 52 41))))) (entget q)))
+FILLMODE
+0
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Hi-Res (1600.00 x 1280.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+acad.ctb
+_N
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\fill0.png
+_N
+_Y

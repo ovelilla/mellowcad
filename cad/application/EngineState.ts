@@ -105,6 +105,7 @@ import {
   LayerId,
 } from "../domain/layers"
 import { EntityColor, STANDARD_COLORS } from "../domain/colors"
+import type { HatchGradientName } from "../domain/hatchGradients"
 import { Linetype, LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
@@ -827,6 +828,19 @@ export function commonStyleId(
   }
   return shared
 }
+
+/** The palette's Gradient name of each gradient (ax26res 329). */
+const GRADIENT_VALUES = {
+  LINEAR: "gradientLinear",
+  CYLINDER: "gradientCylinder",
+  INVCYLINDER: "gradientInvCylinder",
+  SPHERICAL: "gradientSpherical",
+  HEMISPHERICAL: "gradientHemispherical",
+  CURVED: "gradientCurved",
+  INVSPHERICAL: "gradientInvSpherical",
+  INVHEMISPHERICAL: "gradientInvHemispherical",
+  INVCURVED: "gradientInvCurved",
+} as const satisfies Record<HatchGradientName, string>
 
 /** The rollover tooltip of `entity`, worded in the interface language. */
 export function buildRolloverUi(
@@ -1803,6 +1817,54 @@ function singleEntityInfo(
       const no = text.propertyValue("no")
       const surface = objectArea(entity)?.area ?? 0
       const origin = at(entity.origin)
+      const geometry = group("geometry", [
+        planeRow("elevation", "elevation"),
+        row("area", area(surface)),
+        // One hatch: its own area (AutoCAD's sums a selection's).
+        row("cumulativeArea", area(surface)),
+      ])
+      const { gradient } = entity
+      if (gradient) {
+        // WHY these rows, read-only, in this order: ax26res's own (322–329,
+        // 1419), in the order of its ids; the palette of a gradient is
+        // unverified (no desktop pass), as is how it shows a colour that is
+        // no named one (here `r,g,b`).
+        const names = text.names()
+        const colorText = (color: string) => {
+          const standard = STANDARD_COLORS.find((each) => each.value === color)
+          if (standard) return names.colors[standard.id]
+          return [1, 3, 5]
+            .map((i) => parseInt(color.slice(i, i + 2), 16))
+            .join(",")
+        }
+        return {
+          title: title("hatch"),
+          count: 1,
+          groups: [
+            group("pattern", [
+              row("type", text.propertyValue("gradient")),
+              row(
+                "gradientName",
+                text.propertyValue(GRADIENT_VALUES[gradient.name])
+              ),
+              row("color1", colorText(gradient.colors[0])),
+              row("color2", colorText(gradient.colors[1])),
+              row(
+                "gradientAngle",
+                degrees(normalizeDegrees((gradient.angle * 180) / Math.PI))
+              ),
+              row(
+                "centered",
+                text.propertyValue(gradient.centered ? "yes" : "no")
+              ),
+              row("annotative", no),
+              row("associative", no),
+              row("islandDetectionStyle", text.propertyValue("outer")),
+            ]),
+            geometry,
+          ],
+        }
+      }
       return {
         title: title("hatch"),
         count: 1,
@@ -1839,12 +1901,7 @@ function singleEntityInfo(
             row("associative", no),
             row("islandDetectionStyle", text.propertyValue("outer")),
           ]),
-          group("geometry", [
-            planeRow("elevation", "elevation"),
-            row("area", area(surface)),
-            // One hatch: its own area (AutoCAD's sums a selection's).
-            row("cumulativeArea", area(surface)),
-          ]),
+          geometry,
         ],
       }
     }

@@ -1,0 +1,9 @@
+_-HATCH
+_P
+FOO
+_P
+_G
+?
+_G
+FOO
+

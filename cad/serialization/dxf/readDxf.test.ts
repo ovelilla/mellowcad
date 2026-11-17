@@ -1008,3 +1008,104 @@ describe("parseDxf: a leader facing -Z with its text facing +Z (leader/p25)", ()
     })
   })
 })
+
+describe("parseDxf: AutoCAD 2027's gradients (gradient/g16)", () => {
+  // The nine names centred at 0°, LINEAR and SPHERICAL at 30° not centred,
+  // and a one-colour RGB 200,100,50 CURVED at tint 0.25 and 45°, each in a
+  // 100 × 50 rectangle, as AutoCAD's DXFOUT wrote them.
+  const { drawing, report } = parseDxf(fixture("gradients-2018"))
+  const hatches = drawing.entities.filter(
+    (e): e is HatchEntity => e.type === "hatch"
+  )
+
+  it("opens every gradient, none left out", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(hatches).toHaveLength(12)
+    for (const hatch of hatches) expect(hatch.patternId).toBe("SOLID")
+  })
+
+  it("keeps each name, colour pair, angle and shift as written", () => {
+    expect(hatches.map((h) => h.gradient?.name).sort()).toEqual(
+      [
+        "LINEAR",
+        "CYLINDER",
+        "INVCYLINDER",
+        "SPHERICAL",
+        "HEMISPHERICAL",
+        "CURVED",
+        "INVSPHERICAL",
+        "INVHEMISPHERICAL",
+        "INVCURVED",
+        "LINEAR",
+        "SPHERICAL",
+        "CURVED",
+      ].sort()
+    )
+    const shifted = hatches.filter((h) => h.gradient && !h.gradient.centered)
+    expect(shifted.map((h) => h.gradient?.name).sort()).toEqual([
+      "LINEAR",
+      "SPHERICAL",
+    ])
+    for (const h of shifted) {
+      expect(h.gradient?.angle).toBeCloseTo(Math.PI / 6, 6)
+      expect(h.gradient?.colors).toEqual(["#0000ff", "#ffff00"])
+    }
+  })
+
+  it("keeps a one-colour gradient's tint and the shade AutoCAD wrote", () => {
+    const one = hatches.find((h) => h.gradient?.tint !== undefined)
+    expect(one?.gradient).toMatchObject({
+      name: "CURVED",
+      tint: 0.25,
+      centered: true,
+    })
+    expect(one?.gradient?.colors[0]).toBe("#c86432")
+    expect(one?.gradient?.angle).toBeCloseTo(Math.PI / 4, 6)
+  })
+})
+
+describe("parseDxf: an invisible object (60 1)", () => {
+  it("opens none, as AutoCAD draws none, and counts nothing left out", () => {
+    const text = [
+      "0",
+      "SECTION",
+      "2",
+      "ENTITIES",
+      "0",
+      "LINE",
+      "8",
+      "0",
+      "60",
+      "1",
+      "10",
+      "0",
+      "20",
+      "0",
+      "11",
+      "1",
+      "21",
+      "0",
+      "0",
+      "LINE",
+      "8",
+      "0",
+      "10",
+      "0",
+      "20",
+      "0",
+      "11",
+      "2",
+      "21",
+      "0",
+      "0",
+      "ENDSEC",
+      "0",
+      "EOF",
+    ].join("\n")
+    const { drawing, report } = parseDxf(text)
+    expect(drawing.entities).toHaveLength(1)
+    expect((drawing.entities[0] as LineEntity).end.x).toBe(2)
+    expect(report.leftOut.size).toBe(0)
+    expect(report.unreadable).toBe(0)
+  })
+})

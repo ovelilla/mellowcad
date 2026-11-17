@@ -1145,7 +1145,22 @@ class Report {
     // letter for User-defined with its spacing, and `U` or `_USER`, of the
     // same type, by name with a scale (probes hatchpat/p06, p06u, p06U).
     const user = hatch.patternId === "_U"
-    if (user) this.say("listHatchUserPattern")
+    if (hatch.gradient) {
+      // Its angle as the hatch's (gradient/g11, g13: `Gradient Angle     13`
+      // for 12.5 at AUPREC 0), and each language's own pattern word.
+      this.say("listHatchPattern", {
+        pattern: this.ctx.text.message("listHatchGradientPattern"),
+      })
+      this.say("listHatchAnnotative")
+      this.say("listHatchGradientAngle", {
+        angle: this.a6(this.ucsAngle(hatch, hatch.gradient.angle)),
+      })
+      this.say(
+        hatch.gradient.centered
+          ? "listHatchGradientCentered"
+          : "listHatchGradientNotCentered"
+      )
+    } else if (user) this.say("listHatchUserPattern")
     else this.say("listHatchPattern", { pattern: hatch.patternId })
     if (hatch.patternId !== "SOLID") {
       this.say("listHatchAnnotative")

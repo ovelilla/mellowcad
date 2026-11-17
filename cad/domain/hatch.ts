@@ -2,6 +2,7 @@ import { Vec2, V } from "../geometry/Vec2"
 import { polarPoint } from "../geometry/primitives"
 import { Linear2, applyLinear, inverseLinear } from "../geometry/linear"
 import { HatchPatternLine, isSolidHatchPattern } from "./hatchPatterns"
+import { GradientFill, gradientFill } from "./hatchGradients"
 import { hatchLines } from "./hatchPatternEdits"
 import { HatchLoop, HatchEntity, Entity } from "./entityTypes"
 import { PolylineSegmentGeometry, segmentGeometries } from "./polylines"
@@ -208,6 +209,36 @@ function generateHatchGeometry(hatch: HatchEntity): HatchGeometry {
     lines = lines.map(([a, b]) => [out(a), out(b)])
   }
   return { rings, solid, lines, truncated }
+}
+
+/**
+ * What a gradient hatch draws, in its plane, or null for any other hatch or
+ * one that bounds no area. Inside a block reference ({@link
+ * HatchEntity.patternFrame}) the fill is the block's own, laid out on its
+ * loops there and drawn through the reference's map, as AutoCAD turns,
+ * reflects and stretches it with the rest of the block (gradient/g09, g10).
+ */
+export function hatchGradientFill(hatch: HatchEntity): GradientFill | null {
+  if (!hatch.gradient) return null
+  const rings = hatchGeometry(hatch).rings
+  const frame = hatch.patternFrame
+  if (!frame) return gradientFill(hatch.gradient, rings)
+  const inverse = inverseLinear(frame)
+  if (!inverse) return null
+  // WHY about the world's origin, not HPORIGIN: a gradient is laid on its
+  // extents, so the translation the rings carry comes back out unchanged.
+  const fill = gradientFill(
+    hatch.gradient,
+    rings.map((ring) => ring.map((p) => applyLinear(inverse, p)))
+  )
+  return (
+    fill && {
+      ...fill,
+      origin: applyLinear(frame, fill.origin),
+      axisX: applyLinear(frame, fill.axisX),
+      axisY: applyLinear(frame, fill.axisY),
+    }
+  )
 }
 
 /** A boundary loop as a closed ring of points, arcs chopped into chords. */

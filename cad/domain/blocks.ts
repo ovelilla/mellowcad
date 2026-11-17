@@ -255,8 +255,14 @@ function placeInReference(
   // WHY the similarity path whenever it applies: it keeps every uniform
   // reference to the bit (the landing's snapshots), and is the one that knows
   // MIRRTEXT's readable text.
+  // A gradient a reference shows turns with it (gradient/g10), where every
+  // other transform leaves its angle: drawn through the reference's map.
+  const shownGradient =
+    pattern === "shown" && placed.type === "hatch" && !!placed.gradient
   const linear =
-    scale !== Math.abs(scaleY) || (reflects && placed.type === "hatch")
+    scale !== Math.abs(scaleY) ||
+    (reflects && placed.type === "hatch") ||
+    shownGradient
       ? linearInReference(placed, insert, pattern)
       : null
   placed = linear ?? similarInReference(placed, scaleX, scaleY, insert.rotation)

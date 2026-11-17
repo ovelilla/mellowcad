@@ -3,7 +3,7 @@ title: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
 metaTitle: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
 description: "Jak v AutoCADu šrafovat příkazem ŠRAFY (HATCH), výzvu po výzvě: bod uvnitř nebo hraniční objekty, vzor, měřítko, úhel, ostrovy. Vyzkoušejte zdarma online."
 figure: "Obdélník s kružnicí uvnitř, vyšrafovaný vzorem ANSI31 z jednoho bodu uvnitř: kružnice zůstane prázdná jako ostrov."
-sourceHash: "edf4b860d8cb"
+sourceHash: "adab8ef70a51"
 ---
 
 Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výplní. Vyberte bod uvnitř oblasti a příkaz najde její hranici v objektech kolem ní a to, co leží uvnitř, ponechá prázdné jako ostrov – kružnici v obdélníku, text; nebo vyberte objekty, které oblast ohraničují. Vyberte tolik oblastí, kolik chcete: Enter nebo Esc z nich všech vytvoří jedny šrafy, v aktuální hladině, pod jejich hranicí. Celý příkaz je jeden krok, který lze vrátit zpět.
@@ -28,7 +28,7 @@ Ve výzvě uvedena není, ale přijme se tam: vrátí oblasti naposledy vybrané
 
 ## Missing
 
-Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly šrafování Normální a Ignorovat, gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat, které přinášejí i s jejich čarami jen šrafy ze souboru DXF. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, Poznámky, barva, hladina a průhlednost. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlené šrafy si vždy ponechají úhel svého vzoru. Nabídky uzlů šraf.
+Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly šrafování Normální a Ignorovat. Gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat se zde nevytvářejí: přinášejí je jen šrafy ze souboru DXF, gradienty v jejich barvách a vzory i s jejich čarami. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, Poznámky, barva, hladina a průhlednost. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlené šrafy si vždy ponechají úhel svého vzoru. Nabídky uzlů šraf.
 
 ## Questions
 

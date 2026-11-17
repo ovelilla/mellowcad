@@ -212,8 +212,10 @@ export {
   hatchLoopSegments,
   MAX_HATCH_LINES,
   hatchGeometry,
+  hatchGradientFill,
   pointInsideHatch,
 } from "./hatch"
+export type { GradientFill, GradientStop } from "./hatchGradients"
 
 export type { TextBox, TextOptions } from "./text"
 export {

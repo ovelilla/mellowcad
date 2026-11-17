@@ -1,0 +1,5 @@
+---
+"@mellowcad/engine": minor
+---
+
+A hatch's gradient fill, as AutoCAD 2027 draws one: `HatchEntity` gains `gradient` (`HatchGradient`: one of the nine names of `HatchGradientName`, Color 1 and Color 2, a one-colour gradient's tint, the angle and Centered), drawn in its own colours over the boundary's extents; a path of the scene carries it as `gradient` (`SceneGradient`, an affine frame and colour stops), which both presenters fill with their own gradients. A DXF opens and saves it (from 2004 its 450–470 groups, in 2000 a SOLID with its colours in xdata, as AutoCAD writes it), LIST and the palette show it, MATCHPROP copies it, a block reference turns it with the block and EXPLODE leaves it. Drawing file version 56. A DXF's invisible objects (60 1), the hidden states of a dynamic block, are no longer opened. New catalog keys: `commands.messages.listHatchGradientPattern`, `listHatchGradientAngle`, `listHatchGradientCentered`, `listHatchGradientNotCentered`, `interface.property.row.gradientName`, `color1`, `color2`, `gradientAngle`, `centered`, and `interface.property.value.gradient` with the nine names' `gradientLinear` to `gradientInvCurved`.

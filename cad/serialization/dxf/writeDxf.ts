@@ -37,6 +37,7 @@ import { DxfOut } from "./dxfOut"
 import { aciIndex } from "./dxfColors"
 import {
   DxfWriteContext,
+  GRADIENT_COLOR_APPS,
   color,
   layerLineweight,
   writeEntity,
@@ -376,10 +377,23 @@ export function writeDxf(
   table(out, "UCS", T.ucs, 0)
   out.str(0, "ENDTAB")
 
-  table(out, "APPID", T.appids, 1)
+  // A 2000 file's gradients are xdata of applications of their own (g15).
+  const gradientApps =
+    version < 1018 &&
+    [modelEntities, ...drawing.blocks.map((b) => b.entities)].some((list) =>
+      list.some((e) => e.type === "hatch" && e.gradient)
+    )
+      ? GRADIENT_COLOR_APPS
+      : []
+  table(out, "APPID", T.appids, 1 + gradientApps.length)
   record(out, "APPID", T.acad, T.appids, "AcDbRegAppTableRecord")
   out.str(2, "ACAD")
   out.int(70, 0)
+  for (const app of gradientApps) {
+    record(out, "APPID", handle(), T.appids, "AcDbRegAppTableRecord")
+    out.str(2, app)
+    out.int(70, 0)
+  }
   out.str(0, "ENDTAB")
 
   // DIMTXSTY: the model's dimensions write in Standard.

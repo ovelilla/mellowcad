@@ -63,8 +63,8 @@ describe("what the model has no object for", () => {
     expect([...parsed.report.leftOut]).toEqual([["POLYLINE", 2]])
   })
 
-  it("counts a gradient as a HATCH left out", () => {
-    const parsed = read(record("HATCH", [450, 1], [91, 0]))
+  it("counts a gradient of a name AutoCAD has not as a HATCH left out", () => {
+    const parsed = read(record("HATCH", [450, 1], [91, 0], [470, "RADIAL"]))
     expect([...parsed.report.leftOut]).toEqual([["HATCH", 1]])
   })
 
@@ -645,6 +645,89 @@ describe("each object's groups", () => {
     const [ansi, mine] = parsed.drawing.entities as HatchEntity[]
     expect(ansi.origin).toEqual({ x: 1, y: 2 })
     expect(mine).toMatchObject({ patternId: "MINE", origin: { x: 3, y: 4 } })
+  })
+
+  const triangle: Group[] = [
+    [91, 1],
+    [92, 2],
+    [72, 0],
+    [73, 1],
+    [93, 3],
+    ...at(10, 0, 0),
+    ...at(10, 1, 0),
+    ...at(10, 1, 1),
+    [97, 0],
+  ]
+
+  it("reads a gradient: its name, colours, tint, angle and shift", () => {
+    // As gradient/g07 wrote a one-colour red at tint 0.25, here inverted,
+    // turned and not centred.
+    const hatch = only<HatchEntity>(
+      read(
+        record(
+          "HATCH",
+          [2, "SOLID"],
+          [70, 1],
+          ...triangle,
+          [98, 0],
+          [450, 1],
+          [451, 0],
+          [460, 0.5],
+          [461, 1],
+          [452, 1],
+          [462, 0.25],
+          [453, 2],
+          [463, 0],
+          [63, 1],
+          [421, 16711680],
+          [463, 1],
+          [63, 16],
+          [421, 8388608],
+          [470, "invcylinder"],
+          [1001, "ACAD"],
+          [1010, 0],
+          [1020, 0]
+        )
+      )
+    )
+    expect(hatch.patternId).toBe("SOLID")
+    expect(hatch.gradient).toEqual({
+      name: "INVCYLINDER",
+      colors: ["#ff0000", "#800000"],
+      tint: 0.25,
+      angle: 0.5,
+      centered: false,
+    })
+  })
+
+  it("takes a gradient colour by its index without a true colour, and LINEAR with no name", () => {
+    const hatch = only<HatchEntity>(
+      read(
+        record(
+          "HATCH",
+          [70, 1],
+          ...triangle,
+          [450, 1],
+          [453, 2],
+          [463, 0],
+          [63, 5],
+          [463, 1],
+          [63, 2]
+        )
+      )
+    )
+    expect(hatch.gradient).toEqual({
+      name: "LINEAR",
+      colors: ["#0000ff", "#ffff00"],
+      angle: 0,
+      centered: true,
+    })
+  })
+
+  it("counts a gradient with no loop as unreadable", () => {
+    const parsed = read(record("HATCH", [450, 1], [91, 0], [470, "LINEAR"]))
+    expect(parsed.report.unreadable).toBe(1)
+    expect(parsed.drawing.entities).toHaveLength(0)
   })
 })
 

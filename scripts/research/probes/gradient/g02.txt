@@ -1,0 +1,19 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_P
+_G
+GR_SPHER
+30
+_N
+50,25
+
+QAFLAGS
+2
+_LIST
+_L
+
+(entget (entlast))

@@ -70,6 +70,7 @@ import {
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
 import { DimStyleId } from "../../domain/dimStyles"
 import { aciColor, trueColor } from "./dxfColors"
+import { HatchGradient, isHatchGradientName } from "../../domain/hatchGradients"
 import { DxfRecord } from "./dxfSections"
 import { GroupCursor, finite, int, num, point, str } from "./dxfValues"
 
@@ -1139,13 +1140,27 @@ function rayPoint(
 
 /**
  * A HATCH: its loops as the model's rings of vertices and bulges, its
- * pattern by name (a fill when 70 says so), scale, angle and origin. A
- * gradient (450) has no fill here and is left out.
+ * pattern by name (a fill when 70 says so), scale, angle and origin, or its
+ * gradient (450 1); one of a gradient this model lacks is left out.
  */
 function hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
-  if (int(r, 450) === 1) {
+  const gradient = int(r, 450) === 1 ? hatchGradient(r) : undefined
+  if (gradient === null) {
     ctx.leftOut("HATCH")
     return []
+  }
+  if (gradient) {
+    const loops = hatchLoops(r, ctx)
+    if (loops.length === 0) {
+      ctx.unreadable()
+      return []
+    }
+    // AutoCAD stores a gradient on SOLID (2, 70 1: gradient/g02).
+    const entity = createHatch(loops, {
+      patternId: SOLID_HATCH_PATTERN_ID,
+      gradient,
+    })
+    return [common(onPlane(entity, r, point(r, 10)?.z ?? 0), r, ctx)]
   }
   const loops = hatchLoops(r, ctx)
   if (loops.length === 0) {
@@ -1180,6 +1195,54 @@ function hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
     origin,
   })
   return [common(onPlane(entity, r, point(r, 10)?.z ?? 0), r, ctx)]
+}
+
+/**
+ * A HATCH's gradient, from 450 on (gradient/g02, the samples' Annotation
+ * blocks): 460 its angle in radians, 461 its shift (0 centred), 452 one
+ * colour with 462 its tint, then each colour's 463, 63 and 421 (the true
+ * colour, read before the index one), and 470 its name. Null for a name
+ * this model lacks.
+ */
+function hatchGradient(r: DxfRecord): HatchGradient | null {
+  const cursor = new GroupCursor(r, r.codes.indexOf(450))
+  let angle = 0
+  let shift = 0
+  let oneColor = false
+  let tint = 1
+  let name = "LINEAR"
+  const colors: EntityColor[] = []
+  let index: EntityColor | null = null
+  const flush = () => {
+    if (index) colors.push(index)
+    index = null
+  }
+  for (; !cursor.done(); cursor.next()) {
+    const code = cursor.code()
+    if (code === 1001) break
+    if (code === 460) angle = cursor.number()
+    else if (code === 461) shift = cursor.number()
+    else if (code === 452) oneColor = cursor.number() === 1
+    else if (code === 462) tint = cursor.number()
+    else if (code === 470) name = cursor.value().trim().toUpperCase()
+    else if (code === 463) flush()
+    else if (code === 63) index = aciColor(cursor.number())
+    else if (code === 421) {
+      index = trueColor(cursor.number()) ?? index
+      flush()
+    }
+  }
+  flush()
+  // No 470 reads as LINEAR, GFNAME's first.
+  if (!isHatchGradientName(name)) return null
+  const first = colors[0] ?? "#0000ff"
+  return {
+    name,
+    colors: [first, colors[1] ?? first],
+    ...(oneColor ? { tint: Math.min(Math.max(tint, 0), 1) } : {}),
+    angle: normalizeAngle(angle),
+    centered: shift === 0,
+  }
 }
 
 /**

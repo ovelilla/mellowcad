@@ -1,0 +1,7 @@
+QAFLAGS
+2
+(setq s (ssget "_X" (list (cons 0 "HATCH"))))
+_LIST
+(ssname s 0)
+(ssname s 9)
+

@@ -2,7 +2,7 @@
 title: "Comando TRATTEGGIO (HATCH) in AutoCAD"
 description: "Il tratteggio in AutoCAD in italiano con TRATTEGGIO (HATCH, alias PTR, RE), richiesta per richiesta: punto interno o oggetti, modello, scala, angolo, isole."
 figure: "Un rettangolo con un cerchio dentro, tratteggiato con ANSI31 da un punto interno: il cerchio resta libero, un'isola."
-sourceHash: "edf4b860d8cb"
+sourceHash: "adab8ef70a51"
 ---
 
 TRATTEGGIO (HATCH in inglese) riempie un'area chiusa con un modello di linee, oppure pieno. Seleziona un punto all'interno dell'area e trova il contorno negli oggetti attorno, lasciando libero ciò che sta all'interno come un'isola, un cerchio in un rettangolo, un testo; oppure seleziona gli oggetti che la delimitano. Seleziona quante aree vuoi: Invio, o Esc, ne fa un solo tratteggio, sul layer corrente, dietro il suo contorno. L'intero comando è un solo passo che Annulla ripristina.
@@ -27,7 +27,7 @@ Non elencata alla richiesta, ma accettata lì: annulla le aree dell'ultimo punto
 
 ## Missing
 
-Ellissi e spline come contorni: un'area che chiudono non viene trovata, e una regione con un bordo di quel tipo viene lasciata fuori. Tolleranza di spazio (HPGAPTOL): un'area deve essere chiusa con esattezza. Tratteggi associativi, gli stili di isole Normale e Ignora, sfumature, modelli definiti dall'utente e il resto dei modelli di acadiso.pat, che solo i tratteggi di un DXF portano, con le loro linee. Le altre opzioni di -TRATTEGGIO: disegnare un contorno, rimuovere contorni, Avanzate, ordine di visualizzazione, origine, annotativo, colore, layer e trasparenza. MODIFICATRATT e l'editor dei tratteggi, che in AutoCAD si apre con un doppio clic. MIRRHATCH 1: un tratteggio riflesso mantiene sempre l'angolo del suo modello. I menu dei grip di un tratteggio.
+Ellissi e spline come contorni: un'area che chiudono non viene trovata, e una regione con un bordo di quel tipo viene lasciata fuori. Tolleranza di spazio (HPGAPTOL): un'area deve essere chiusa con esattezza. Tratteggi associativi, gli stili di isole Normale e Ignora. Sfumature, modelli definiti dall'utente e il resto dei modelli di acadiso.pat non si creano qui: solo i tratteggi di un DXF li portano, le sfumature nei loro colori e i modelli con le loro linee. Le altre opzioni di -TRATTEGGIO: disegnare un contorno, rimuovere contorni, Avanzate, ordine di visualizzazione, origine, annotativo, colore, layer e trasparenza. MODIFICATRATT e l'editor dei tratteggi, che in AutoCAD si apre con un doppio clic. MIRRHATCH 1: un tratteggio riflesso mantiene sempre l'angolo del suo modello. I menu dei grip di un tratteggio.
 
 ## Questions
 

@@ -611,6 +611,11 @@ export const ru: EngineLocale = {
         "originY": "Исходная точка Y",
         "associative": "Ассоциативный",
         "islandDetectionStyle": "Стиль решения островков",
+        "gradientName": "Имя градиента",
+        "color1": "Цвет 1",
+        "color2": "Цвет 2",
+        "gradientAngle": "Угол градиента",
+        "centered": "Центрированный",
         "cumulativeArea": "Вычисление свойств",
         "name": "Имя",
         "tag": "Тег",
@@ -720,6 +725,16 @@ export const ru: EngineLocale = {
         "predefined": "Стандартный",
         "userDefined": "Из линий",
         "customPattern": "Пользовательский",
+        "gradient": "Градиент",
+        "gradientLinear": "Линейный",
+        "gradientCylinder": "Цилиндрический",
+        "gradientInvCylinder": "Инверсно-цилиндрический",
+        "gradientSpherical": "Сферический",
+        "gradientHemispherical": "Полусферический",
+        "gradientCurved": "Криволинейный",
+        "gradientInvSpherical": "Инверсно-сферический",
+        "gradientInvHemispherical": "Инверсно-полусферический",
+        "gradientInvCurved": "Инверсно-криволинейный",
         "outer": "Внешний",
         "extrusion": "Выдавливание",
         "revolve": "Вращать",
@@ -7583,6 +7598,15 @@ export const ru: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "ГРАДИЕНТ",
+      "listHatchGradientAngle": [
+        "                 Угол градиента ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Центрированный градиент",
+      "listHatchGradientNotCentered": "                 Не центрированный градиент",
       "listHatchNotAssociative": "                 Неассоциативная",
       "listHatchArea": [
         "                 Площадь      ",

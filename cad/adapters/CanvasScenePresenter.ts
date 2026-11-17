@@ -1,4 +1,9 @@
-import { Scene, ScenePrimitive, StrokeStyle } from "../scene/types"
+import {
+  Scene,
+  SceneGradient,
+  ScenePrimitive,
+  StrokeStyle,
+} from "../scene/types"
 import { DRAWING_FONT } from "../scene/theme"
 import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 import { clipSegment } from "./clipSegment"
@@ -143,7 +148,8 @@ export class CanvasScenePresenter {
           for (let i = 1; i < sub.length; i++) ctx.lineTo(sub[i].x, sub[i].y)
           ctx.closePath()
         }
-        if (p.fill) {
+        if (p.gradient) this.fillGradient(ctx, p.gradient, p.fill)
+        else if (p.fill) {
           ctx.fillStyle = p.fill
           ctx.fill("evenodd")
         }
@@ -210,6 +216,39 @@ export class CanvasScenePresenter {
         : FALLBACK_CAP_RATIO
     this.capHeights.set(family, ratio)
     return ratio
+  }
+
+  /**
+   * Fills the current path with `gradient`. WHY the frame set after the path
+   * is built: a path keeps the transform it was drawn under, while a gradient
+   * is read under the one current when it fills, so the unit gradient lands
+   * on the screen through the frame and the path stays where it is.
+   */
+  private fillGradient(
+    ctx: CanvasRenderingContext2D,
+    gradient: SceneGradient,
+    fallback: string | undefined
+  ): void {
+    const { origin: o, axisX: a, axisY: b } = gradient
+    if (!(Math.abs(a.x * b.y - a.y * b.x) > 1e-9)) {
+      if (fallback) {
+        ctx.fillStyle = fallback
+        ctx.fill("evenodd")
+      }
+      return
+    }
+    ctx.save()
+    ctx.transform(a.x, a.y, b.x, b.y, o.x, o.y)
+    const style =
+      gradient.kind === "linear"
+        ? ctx.createLinearGradient(0, 0, 1, 0)
+        : ctx.createRadialGradient(0, 0, 0, 0, 0, 1)
+    for (const stop of gradient.stops) {
+      style.addColorStop(stop.offset, stop.color)
+    }
+    ctx.fillStyle = style
+    ctx.fill("evenodd")
+    ctx.restore()
   }
 
   private applyStroke(

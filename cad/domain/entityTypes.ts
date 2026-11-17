@@ -15,6 +15,7 @@ import {
   HatchPatternLine,
   HatchPatternType,
 } from "./hatchPatterns"
+import type { HatchGradient } from "./hatchGradients"
 
 /**
  * Entities are the CAD domain model: real geometry in world coordinates, never
@@ -624,6 +625,11 @@ export interface HatchEntity extends BaseEntity {
   readonly patternAngle: number
   /** Where pattern generation starts (HPORIGIN); the UCS origin by default. */
   readonly origin: Vec2
+  /**
+   * Set on a gradient fill (DXF 450 1), which is drawn in place of the
+   * pattern: {@link patternId} is then SOLID, as AutoCAD stores it.
+   */
+  readonly gradient?: HatchGradient
   /**
    * The linear map (`[a, b, c, d]`: x' = a·x + c·y, y' = b·x + d·y) laid over
    * the pattern about {@link origin}: what a reference that reflects or

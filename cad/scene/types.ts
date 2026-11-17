@@ -94,6 +94,11 @@ export type ScenePrimitive =
       readonly stroke?: StrokeStyle
       /** Solid fill for a closed path, e.g. a dimension arrowhead. */
       readonly fill?: string
+      /**
+       * A gradient hatch's fill, drawn in place of {@link fill} (which keeps
+       * its first colour for a reader that only knows solid fills).
+       */
+      readonly gradient?: SceneGradient
     }
   | {
       readonly kind: "label"
@@ -132,6 +137,21 @@ export type ScenePrimitive =
       /** Font family; the presenter supplies a default. */
       readonly font?: string
     }
+
+/**
+ * A colour gradient in *screen* space: the unit space of the canvas's and
+ * SVG's own gradients — `linear` from x 0 to 1, `radial` from the origin out
+ * to the unit circle, its last colour beyond — mapped onto the screen by
+ * `[axisX, axisY, origin]`, the affine frame the canvas's `transform(a, b, c,
+ * d, e, f)` takes. Colours run straight in RGB between the stops.
+ */
+export interface SceneGradient {
+  readonly kind: "linear" | "radial"
+  readonly origin: Vec2
+  readonly axisX: Vec2
+  readonly axisY: Vec2
+  readonly stops: readonly { readonly offset: number; readonly color: string }[]
+}
 
 /** Horizontal alignment of a `text` primitive around its point. */
 export type TextAlign = "left" | "center" | "right"

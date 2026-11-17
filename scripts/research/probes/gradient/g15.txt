@@ -1,0 +1,5 @@
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\out\g2000.dxf
+_V
+2000
+16

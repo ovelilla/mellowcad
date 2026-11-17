@@ -10,6 +10,7 @@ import {
   HatchPatternLine,
   HatchPatternType,
 } from "./hatchPatterns"
+import type { HatchGradient } from "./hatchGradients"
 import {
   ArrayParameters,
   EntityId,
@@ -176,6 +177,7 @@ export interface HatchOptions {
   readonly patternScale?: number
   readonly patternAngle?: number
   readonly origin?: Vec2
+  readonly gradient?: HatchGradient
   readonly layerId?: LayerId
   readonly id?: EntityId
 }
@@ -197,6 +199,14 @@ export function createHatch(
     patternScale: options.patternScale ?? DEFAULT_HATCH_SCALE,
     patternAngle: options.patternAngle ?? DEFAULT_HATCH_ANGLE,
     origin: options.origin ? { ...options.origin } : { x: 0, y: 0 },
+    ...(options.gradient
+      ? {
+          gradient: {
+            ...options.gradient,
+            colors: [options.gradient.colors[0], options.gradient.colors[1]],
+          },
+        }
+      : {}),
   }
 }
 

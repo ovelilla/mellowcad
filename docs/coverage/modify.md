@@ -1238,7 +1238,7 @@ end whatever the attachment, wrapped lines included (p255–p257). A pattern hat
 lines clipped to its boundary, on its layer with its colour and lineweight, each with linetype
 `Continuous` set (p259: 33 LINEs for ANSI31 over 100 × 50; p263). `Select objects:` takes whole
 objects (its refusal lists no `SUbobject/Object`, erase/p02, p138). A spline, an ellipse or
-elliptical arc and a SOLID hatch pass the count and are refused by name once the set is closed,
+elliptical arc and a SOLID or gradient hatch (gradient/g08) pass the count and are refused by name once the set is closed,
 each one: `Cannot explode SPLINE`, `Cannot explode ELLIPSE`, `Cannot explode HATCH` (es
 `No se puede descomponer …`; spline/p319, p324; pieces/p260, p261, p265). Anything else (lines,
 circles, arcs, texts, attribute definitions, dimensions) is refused as it is found, under each
@@ -2141,8 +2141,9 @@ the style, height and rotation, TEXT to TEXT also the justification about the de
 (a Left text at 70,20 made MC keeps its alignment point at 70,20), an MTEXT's attachment and a
 TEXT's justification from an MTEXT kept (desktop text/d08; MTEXT to MTEXT and a justified TEXT
 destination **unverified**), the dimension style between dimensions, a hatch's pattern, scale and angle, not its origin (desktop hatch/d07: the destination's
-pattern base, DXF 43/44, stays 0,0). The
-cursor is the pick box with AutoCAD's paintbrush at its upper right at the destination prompt
+pattern base, DXF 43/44, stays 0,0), and a gradient whole, either way (gradient/g14: a
+SPHERICAL source makes an ANSI31 destination its gradient, an ANSI37 one makes a gradient ANSI37).
+The cursor is the pick box with AutoCAD's paintbrush at its upper right at the destination prompt
 (d07-1, d07-4; the crosshair's arms stay, as at every `Select objects:`, drafting-aids.md)
 
 **Missing:** `[Settings]` and the Property Settings dialog (acmatchRes 13's option; the prompt

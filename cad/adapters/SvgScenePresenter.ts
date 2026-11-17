@@ -1,4 +1,9 @@
-import { Scene, ScenePrimitive, StrokeStyle } from "../scene/types"
+import {
+  Scene,
+  SceneGradient,
+  ScenePrimitive,
+  StrokeStyle,
+} from "../scene/types"
 import { DRAWING_FONT, THEME } from "../scene/theme"
 import { clipSegment } from "./clipSegment"
 import { dashPhase, drawnDash } from "./dashPattern"
@@ -220,18 +225,25 @@ export class SvgScenePresenter {
         for (const sub of p.subpaths ?? []) {
           if (sub.length >= 2) d += this.polyline(sub) + "Z"
         }
-        return this.tag("path", {
+        const gradient = p.gradient && this.gradient(p.gradient)
+        const fill = gradient
+          ? `url(#${gradient.id})`
+          : p.fill
+            ? this.color(p.fill)
+            : "none"
+        const element = this.tag("path", {
           d,
-          fill: p.fill ? this.color(p.fill) : "none",
+          fill,
           // The canvas fills every path even-odd, which is what makes a
           // nested loop a hole; nonzero would fill it in.
-          ...(p.fill && { "fill-rule": "evenodd" }),
+          ...(fill !== "none" && { "fill-rule": "evenodd" }),
           ...(p.stroke && {
             ...this.stroke(p.stroke),
             "stroke-linejoin": "round",
           }),
           ...extra,
         })
+        return gradient ? `<g>${gradient.defs}${element}</g>` : element
       }
 
       case "label":
@@ -376,6 +388,41 @@ export class SvgScenePresenter {
     return this.palette(color)
   }
 
+  /**
+   * A gradient's `<defs>`, its id drawn from its content: two figures of one
+   * page that hold the same fill share one definition, and a snapshot stays
+   * the same from one build to the next.
+   */
+  private gradient(
+    gradient: SceneGradient
+  ): { readonly id: string; readonly defs: string } | null {
+    const { origin: o, axisX: a, axisY: b } = gradient
+    if (!(Math.abs(a.x * b.y - a.y * b.x) > 1e-9)) return null
+    const stops = gradient.stops
+      .map((stop) =>
+        this.tag("stop", {
+          // An offset is a fraction, whatever the coordinates' precision.
+          offset: Math.round(stop.offset * 1e4) / 1e4,
+          "stop-color": this.color(stop.color),
+        })
+      )
+      .join("")
+    const shape: Record<string, number> =
+      gradient.kind === "linear"
+        ? { x1: 0, y1: 0, x2: 1, y2: 0 }
+        : { cx: 0, cy: 0, r: 1, fx: 0, fy: 0 }
+    const matrix = [a.x, a.y, b.x, b.y, o.x, o.y].map((v) => this.n(v))
+    const body = `${attrs({
+      ...shape,
+      gradientUnits: "userSpaceOnUse",
+      gradientTransform: `matrix(${matrix.join(" ")})`,
+    })}>${stops}`
+    const name =
+      gradient.kind === "linear" ? "linearGradient" : "radialGradient"
+    const id = `gradient-${contentHash(name + body)}`
+    return { id, defs: `<defs><${name} id="${id}" ${body}</${name}></defs>` }
+  }
+
   /** Rounded to the configured precision, with no `-0`. */
   private n(value: number): number {
     const rounded = Math.round(value * this.factor) / this.factor
@@ -471,6 +518,15 @@ function attrs(attributes: Readonly<Record<string, string | number>>): string {
   return Object.entries(attributes)
     .map(([name, value]) => `${name}="${escapeAttribute(String(value))}"`)
     .join(" ")
+}
+
+/** FNV-1a over the UTF-16 units, in base 36: an id, not a digest. */
+function contentHash(text: string): string {
+  let hash = 0x811c9dc5
+  for (let i = 0; i < text.length; i++) {
+    hash = Math.imul(hash ^ text.charCodeAt(i), 0x01000193)
+  }
+  return (hash >>> 0).toString(36)
 }
 
 function escapeText(text: string): string {

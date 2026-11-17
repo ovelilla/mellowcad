@@ -567,6 +567,11 @@ export const fr: EngineLocale = {
         "originY": "Origine Y",
         "associative": "Associatif",
         "islandDetectionStyle": "Style de détection des îlots",
+        "gradientName": "Nom de gradient",
+        "color1": "Couleur 1",
+        "color2": "Couleur 2",
+        "gradientAngle": "Angle de dégradé",
+        "centered": "Centré",
         "cumulativeArea": "Aire cumulée",
         "name": "Nom",
         "tag": "Etiquette",
@@ -676,6 +681,16 @@ export const fr: EngineLocale = {
         "predefined": "Prédéfini",
         "userDefined": "Utilisateur",
         "customPattern": "Personnalisées",
+        "gradient": "Gradient",
+        "gradientLinear": "Linéaire",
+        "gradientCylinder": "Cylindrique",
+        "gradientInvCylinder": "Cylindrique inversé",
+        "gradientSpherical": "Sphérique",
+        "gradientHemispherical": "Hémisphérique",
+        "gradientCurved": "Courbe",
+        "gradientInvSpherical": "Spérique inversé",
+        "gradientInvHemispherical": "Hémisphérique inversé",
+        "gradientInvCurved": "Courbe inversé",
         "outer": "Extérieur",
         "extrusion": "Extrusion",
         "revolve": "Révolution",
@@ -7130,6 +7145,15 @@ export const fr: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "GRADIENT",
+      "listHatchGradientAngle": [
+        "                 Angle de dégradé ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Gradient centré",
+      "listHatchGradientNotCentered": "                 Gradient non centré",
       "listHatchNotAssociative": "                 Non associatif",
       "listHatchArea": [
         "                 Aire      ",

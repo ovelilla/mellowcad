@@ -398,6 +398,11 @@ declare const source: {
         "originY": string
         "associative": string
         "islandDetectionStyle": string
+        "gradientName": string
+        "color1": string
+        "color2": string
+        "gradientAngle": string
+        "centered": string
         "cumulativeArea": string
         "name": string
         "tag": string
@@ -507,6 +512,16 @@ declare const source: {
         "predefined": string
         "userDefined": string
         "customPattern": string
+        "gradient": string
+        "gradientLinear": string
+        "gradientCylinder": string
+        "gradientInvCylinder": string
+        "gradientSpherical": string
+        "gradientHemispherical": string
+        "gradientCurved": string
+        "gradientInvSpherical": string
+        "gradientInvHemispherical": string
+        "gradientInvCurved": string
         "outer": string
         "extrusion": string
         "revolve": string
@@ -2943,6 +2958,10 @@ declare const source: {
       "listHatchUserPattern": string
       "listHatchUserSpacing": string
       "listHatchAngle": string
+      "listHatchGradientPattern": string
+      "listHatchGradientAngle": string
+      "listHatchGradientCentered": string
+      "listHatchGradientNotCentered": string
       "listHatchNotAssociative": string
       "listHatchArea": string
       "listHatchOrigin": string

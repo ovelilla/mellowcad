@@ -238,6 +238,41 @@ describe("markup", () => {
     expect(attribute(svg, "fill-rule")).toBe("evenodd")
   })
 
+  it("fills a gradient hatch through its frame, its id drawn from its content", () => {
+    const gradient = {
+      kind: "radial" as const,
+      origin: p(5, 5),
+      axisX: p(4, 0),
+      axisY: p(0, -2),
+      stops: [
+        { offset: 0, color: "#ffff00" },
+        { offset: 0.25, color: "#f6f609" },
+        { offset: 1, color: "#0000ff" },
+      ],
+    }
+    const path: ScenePrimitive = {
+      kind: "path",
+      points: [p(0, 0), p(10, 0), p(10, 10)],
+      closed: true,
+      fill: "#ffff00",
+      gradient,
+    }
+    const svg = new SvgScenePresenter().elements([path])
+    const id = /<radialGradient id="(gradient-[0-9a-z]+)"/.exec(svg)?.[1]
+    expect(id).toBeDefined()
+    expect(svg).toContain('gradientTransform="matrix(4 0 0 -2 5 5)"')
+    expect(svg).toContain('<stop offset="0.25" stop-color="#f6f609"/>')
+    expect(attribute(svg, "fill")).toBe(`url(#${id})`)
+    expect(attribute(svg, "fill-rule")).toBe("evenodd")
+    // The same fill twice names the same definition.
+    expect(new SvgScenePresenter().elements([path])).toBe(svg)
+    // A frame that flattens the plane falls back to the plain fill.
+    const flat = new SvgScenePresenter().elements([
+      { ...path, gradient: { ...gradient, axisY: p(8, 0) } },
+    ])
+    expect(attribute(flat, "fill")).toBe("#ffff00")
+  })
+
   it("rounds coordinates to one decimal and never writes -0", () => {
     const svg = new SvgScenePresenter().elements([
       { kind: "segment", a: p(-0.01, 1.2345), b: p(9.96, -0.04), stroke },

@@ -1,0 +1,147 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_P
+_G
+_S
+1
+0
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+0.25
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+0.5
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+0.75
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+1
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+2
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+1
+-1
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+_ERASE
+_L
+
+_-HATCH
+_P
+_G
+_S
+_T
+200,100,50
+0.3
+_P
+_G
+GR_LINEAR
+0
+_Y
+50,25
+
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (452 453 462 63 421 470 2))))) (entget (entlast))))
+(getvar "GFCLR1")
+(getvar "GFCLR2")
+(getvar "GFCLRLUM")
+(getvar "GFCLRSTATE")
+(getvar "GFNAME")
+(getvar "GFANG")
+(getvar "GFSHIFT")
+(getvar "HPNAME")

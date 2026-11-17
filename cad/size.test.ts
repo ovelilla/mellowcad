@@ -23,9 +23,9 @@ const ISLAND_MAX_BYTES = 1 * KB
  * The engine a page drawing with `CadEngine` loads, gzipped: a ceiling at its
  * size when the package was cut, raised only on purpose: to 456 KB for
  * -LAYER (2026-11-15), to 457 KB for a hatch's own pattern lines
- * (2026-11-17).
+ * (2026-11-17), to 460 KB for gradient fills (2026-11-17).
  */
-const ENGINE_MAX_GZIP_BYTES = 457 * KB
+const ENGINE_MAX_GZIP_BYTES = 460 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

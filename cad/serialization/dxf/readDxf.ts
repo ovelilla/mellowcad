@@ -161,6 +161,12 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     const byHandle = new Map<string, Entity>()
     const pending: { index: number; handle: string }[] = []
     for (const record of records) {
+      // WHY an invisible object (60 1) is not opened, silently: AutoCAD draws
+      // and selects none, and they are the hidden states of a dynamic block's
+      // visibility parameter (13,793 of 43 of its samples: an arrow's other
+      // turns, a tag's other shapes, the Annotation blocks' gradients), which
+      // this model has not; drawn, they pile up over the state shown.
+      if (int(record, 60) === 1) continue
       const made = dxfEntities(record, ctx)
       const handle = str(record, 5)?.trim().toUpperCase()
       if (

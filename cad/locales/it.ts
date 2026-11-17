@@ -567,6 +567,11 @@ export const it: EngineLocale = {
         "originY": "Origine Y",
         "associative": "Associativo",
         "islandDetectionStyle": "Stile individuazione isole",
+        "gradientName": "Nome sfumatura",
+        "color1": "Colore 1",
+        "color2": "Colore 2",
+        "gradientAngle": "Angolo sfumatura",
+        "centered": "Centrato",
         "cumulativeArea": "Area cumulativa",
         "name": "Nome",
         "tag": "Etichetta",
@@ -676,6 +681,16 @@ export const it: EngineLocale = {
         "predefined": "Predefinito",
         "userDefined": "Definito dall'utente",
         "customPattern": "Personalizzato",
+        "gradient": "Sfumatura",
+        "gradientLinear": "Lineare",
+        "gradientCylinder": "Cilindrica",
+        "gradientInvCylinder": "Cilindrica invertita",
+        "gradientSpherical": "Sferica",
+        "gradientHemispherical": "Emisferica",
+        "gradientCurved": "Curva",
+        "gradientInvSpherical": "Sferica invertita",
+        "gradientInvHemispherical": "Emisferica invertita",
+        "gradientInvCurved": "Curva invertita",
         "outer": "Esterno",
         "extrusion": "Estrusione",
         "revolve": "Rivoluzione",
@@ -7117,6 +7132,15 @@ export const it: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "SFUMATURA",
+      "listHatchGradientAngle": [
+        "                 Angolo sfumatura ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Sfumatura centrata",
+      "listHatchGradientNotCentered": "                 Sfumatura non centrata",
       "listHatchNotAssociative": "                  Non associativo",
       "listHatchArea": [
         "                 Area      ",

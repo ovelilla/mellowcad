@@ -567,6 +567,11 @@ export const es: EngineLocale = {
         "originY": "Origen Y",
         "associative": "Asociativo",
         "islandDetectionStyle": "Estilo de detección de islas",
+        "gradientName": "Nombre de degradado",
+        "color1": "Color 1",
+        "color2": "Color 2",
+        "gradientAngle": "Ángulo de degradado",
+        "centered": "Centrado",
         "cumulativeArea": "Área acumulada",
         "name": "Nombre",
         "tag": "Identificador",
@@ -676,6 +681,16 @@ export const es: EngineLocale = {
         "predefined": "Predefinido",
         "userDefined": "Definido por el usuario",
         "customPattern": "Personalizado",
+        "gradient": "Degradado",
+        "gradientLinear": "Lineal",
+        "gradientCylinder": "Cilíndrica",
+        "gradientInvCylinder": "Cilíndrica invertida",
+        "gradientSpherical": "Esférica",
+        "gradientHemispherical": "Hemisférica",
+        "gradientCurved": "Curva",
+        "gradientInvSpherical": "Esférica invertida",
+        "gradientInvHemispherical": "Hemisférica invertida",
+        "gradientInvCurved": "Curva invertida",
         "outer": "Exterior",
         "extrusion": "Extrusión",
         "revolve": "Revolución",
@@ -7110,6 +7125,15 @@ export const es: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "DEGRADADO",
+      "listHatchGradientAngle": [
+        "                 Ángulo del degradado ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 Degradado centrado",
+      "listHatchGradientNotCentered": "                 Degradado no centrado",
       "listHatchNotAssociative": "                 No asociativo",
       "listHatchArea": [
         "                 Área      ",

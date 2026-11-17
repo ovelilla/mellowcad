@@ -1078,7 +1078,27 @@ cannot read again leaves the target's pattern drawn as it was with the source's 
 (p07, Autodesk's "Cannot use match properties on custom hatch pattern"), from a User-defined one
 makes the target it (p08); LIST names `_U` alone as its language's letter with `Hatch spacing for
 user pattern` (de `Schraffurmuster B`, ru `П`; `U` and `_USER` by name with a scale: p06, p06u,
-p06U). WHY a pattern of acadiso.pat this build does not ship (HOUND, GRASS, INSUL) keeps its lines
+p06U). **A gradient** (from a DXF, `docs/coverage/clipboard-and-files.md`): the nine of AutoCAD
+2027 (LINEAR, CYLINDER, SPHERICAL, HEMISPHERICAL, CURVED and their INV, Color 2 and Color 1
+swapped), two colours or one with its tint, its angle and Centered, drawn as AutoCAD plots it
+(probes gradient/g03–g06: each over its boundary's extents, the colours blended in RGB, a curved
+one by the cosine of a quarter turn sampled at quarters; LINEAR, CYLINDER and CURVED across the
+extents turned by the angle, SPHERICAL and HEMISPHERICAL on the square of the unturned extents'
+longer side; within 0.015 of the colour range of AutoCAD's plot of each name centred in a wide, a
+tall, a turned rectangle and a circle, and our drawing of g16's twelve within 0.012 of its plot),
+in its own colours whatever the object's, nothing with FILL off (g14), picked as an area like
+SOLID; its angle is the hatch's own, which ROTATE and MIRROR leave (g08: the turned hatch plotted
+at the angle it had), while a block reference turns, reflects and stretches it with its block
+and EXPLODE of the reference leaves the block's angle (g09, g10); EXPLODE refuses one, `Cannot
+explode HATCH` (g08); MATCHPROP copies it whole, and from a pattern makes it that pattern (g14);
+LIST says `Hatch pattern GRADIENT`, `Gradient Angle` and `Gradient Centered` or `Not Centered` in
+each console's words (g11, g13: es `DEGRADADO`, de `ABSTUF`, pl `Gradientowe`); the palette's
+Type `Gradient`, Gradient name, Color 1, Color 2, Gradient Angle and Centered (ax26res 322–329,
+1419), read-only, their order and a true colour's `r,g,b` **unverified** (no desktop pass); the
+drawing file keeps it (version 56). Not centred, LINEAR and CYLINDER turn at 5/16 of the way and
+SPHERICAL's, HEMISPHERICAL's and CURVED's centre moves (fits of g04 and g06, rms under 0.02),
+CURVED's in a wide box by a rule not found (0.07 off there; none of the 144 gradients of
+AutoCAD's samples is off centre). WHY a pattern of acadiso.pat this build does not ship (HOUND, GRASS, INSUL) keeps its lines
 at a new Scale or Angle, where AutoCAD reads it again from acadiso.pat: there is nothing here to
 read it from. A drawing saved before file
 
@@ -1101,7 +1121,15 @@ ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to lis
 pages (HATCH-D32), the console HATCH's own prompt (`Pick internal point or [Select objects/remove
 Boundaries]:`, p200) and the ribbon's (`[Select objects/Draw/Undo/seTtings]`, d01), BHATCH and
 -BHATCH as commands of their own (typed whole they echo nothing more, and `-BH` echoes `-BHATCH`,
-p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
+p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), making a gradient: -HATCH's Properties
+lists `[?/Solid/User defined/Gradient]` (g00), whose Gradient asks `Enter a gradient name or
+[?/Single color/Two color] <GR_LINEAR>:` (the names `GR_LINEAR` to `GR_INVCUR`, each language's
+own: it `GR_LINEARE`, pl `GR_LINIOWY`; `?` lists them; Single color asks the colour and `Specify a
+shade or tint value (0-1)`, Two color both colours, each `New gradient color [Truecolor/COlorbook]`,
+and each goes back to the internal point), then `Specify an angle for the gradient <0>:` and
+`Center the gradient [Yes/No] <Yes>:` (g00–g02, g05, g07), with GFNAME, GFANG, GFSHIFT, GFCLR1,
+GFCLR2, GFCLRLUM and GFCLRSTATE, and a tint's shade, which AutoCAD derives a little off a straight
+blend (g07: 0.3 of RGB 200,100,50 is 122,61,31), user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
 annotative; the object: acadiso.pat's other ~60 patterns (drawn only as a DXF brings them); a
 User-defined hatch's Spacing and Double rows and what the palette's Scale does to one
 (**unverified**: no desktop pass); what EXPLODE makes of a dot

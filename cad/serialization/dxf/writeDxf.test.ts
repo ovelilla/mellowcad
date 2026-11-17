@@ -20,6 +20,7 @@ import {
   withNormal,
   withThickness,
 } from "../../domain/entities"
+import type { Entity } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { linetypeNamed } from "../../domain/linetypes"
 import { ACADISO_LIN } from "../../domain/linetypeLibrary"
@@ -213,6 +214,39 @@ describe("writeDxf", () => {
       }
     }
   }
+
+  // gradient/g16's drawing: AutoCAD 2027's console opened each version,
+  // ASCII and binary, with no AUDIT error, read 2004 on as its gradients
+  // and plotted them as it plots its own file.
+  it("writes gradients from 2004, read back the same, and 2000's as AutoCAD does", () => {
+    const drawing = parseDxf(fixture("gradients-2018")).drawing
+    const gradients = (entities: readonly Entity[]) =>
+      entities.flatMap((e) => (e.type === "hatch" ? [e.gradient] : []))
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes } = writeDxf(drawing, { version, binary, precision: 16 })
+        const back = parseDxf(bytes).drawing
+        if (version !== "2000") {
+          expect(shape(gradients(back.entities))).toEqual(
+            shape(gradients(drawing.entities))
+          )
+          continue
+        }
+        // g15: 2000 has no gradients; AutoCAD's DXFOUT writes each a SOLID
+        // hatch with its colours by index in two applications' xdata, which
+        // it reads back as a plain SOLID.
+        expect(gradients(back.entities).every((g) => g === undefined)).toBe(
+          true
+        )
+        if (binary) continue
+        const text = new TextDecoder().decode(bytes).replace(/\r/g, "")
+        expect(text).toContain("1001\nGradientColor1ACI\n1070\n     5\n")
+        expect(text).toMatch(
+          /AcDbRegAppTableRecord\n {2}2\nGradientColor2ACI\n/
+        )
+      }
+    }
+  })
 
   // xref/p04: AutoCAD's DXFOUT of a drawing whose xref it could not find,
   // the BLOCK empty with flag 4 and its path, the reference kept.
@@ -492,6 +526,7 @@ describe("writeDxf", () => {
       "linetypes-2018",
       "xref-2018",
       "hatchpat-2018",
+      "gradients-2018",
     ]) {
       const drawing =
         name === "points-2018"

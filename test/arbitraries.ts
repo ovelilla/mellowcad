@@ -42,6 +42,7 @@ import {
 } from "../cad/domain/entities"
 import { arrayPathOfPieces } from "../cad/domain/arrays"
 import { DEFAULT_HATCH_PATTERN_ID } from "../cad/domain/hatchPatterns"
+import { HATCH_GRADIENT_NAMES } from "../cad/domain/hatchGradients"
 import { DEFAULT_LAYER_ID } from "../cad/domain/layers"
 import { DEFAULT_TEXT_STYLE_ID } from "../cad/domain/textStyles"
 import { DEFAULT_DIM_STYLE_ID } from "../cad/domain/dimStyles"
@@ -643,24 +644,45 @@ export const dimensionEntity: fc.Arbitrary<DimensionEntity> = fc
     )
   )
 
+const hexColor = fc
+  .integer({ min: 0, max: 0xffffff })
+  .map((v) => `#${v.toString(16).padStart(6, "0")}`)
+
+/** A gradient fill, or none: a hatch round-trips either way. */
+const hatchGradient = fc.option(
+  fc.record(
+    {
+      name: fc.constantFrom(...HATCH_GRADIENT_NAMES),
+      colors: fc.tuple(hexColor, hexColor),
+      tint: fc.double({ min: 0, max: 1, noNaN: true }),
+      angle,
+      centered: fc.boolean(),
+    },
+    { requiredKeys: ["name", "colors", "angle", "centered"] }
+  ),
+  { nil: undefined }
+)
+
 export const hatchEntity: fc.Arbitrary<HatchEntity> = fc
   .tuple(
     fc.array(point, { minLength: 3, maxLength: 6 }),
     fc.array(bulge, { minLength: 3, maxLength: 6 }),
     positiveLength,
     angle,
-    point
+    point,
+    hatchGradient
   )
-  .map(([vertices, bulges, patternScale, patternAngle, origin]) =>
+  .map(([vertices, bulges, patternScale, patternAngle, origin, gradient]) =>
     withId<HatchEntity>(
       {
         type: "hatch",
         layerId: DEFAULT_LAYER_ID,
         loops: [{ vertices, bulges }],
-        patternId: DEFAULT_HATCH_PATTERN_ID,
+        patternId: gradient ? "SOLID" : DEFAULT_HATCH_PATTERN_ID,
         patternScale,
         patternAngle,
         origin,
+        ...(gradient ? { gradient } : {}),
       },
       "hatch"
     )

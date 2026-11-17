@@ -3,7 +3,7 @@ title: "Sombreado en AutoCAD: SOMBREA (HATCH)"
 metaTitle: "Sombreado en AutoCAD: comando SOMBREA (HATCH)"
 description: "Cómo funciona SOMBREA (HATCH, alias SB) de AutoCAD en español: punto interno u objetos, patrón, escala, ángulo e islas. Pruébalo gratis online."
 figure: "Un rectángulo con un círculo dentro, sombreado con ANSI31 desde un punto interno: el círculo queda libre, como isla."
-sourceHash: "edf4b860d8cb"
+sourceHash: "adab8ef70a51"
 ---
 
 SOMBREA (HATCH en inglés) rellena un área cerrada con un patrón de líneas, o sólido. Precisa un punto dentro del área y encuentra el contorno en los objetos que la rodean, dejando libre como isla lo que hay dentro —un círculo en un rectángulo, un texto—; o designa los objetos que la delimitan. Señala tantas áreas como quieras: Intro, o Esc, hace un solo sombreado de todas, en la capa actual y detrás de su contorno. Todo el comando es un paso que Deshacer revierte.
@@ -28,7 +28,7 @@ No aparece en la solicitud, pero se acepta en ella: deshace las áreas del últi
 
 ## Missing
 
-Elipses y splines como contorno: un área que cierran no se encuentra, y una región con una arista así se deja fuera. Tolerancia de huecos (HPGAPTOL): el área tiene que estar cerrada del todo. Sombreados asociativos, los estilos de isla Normal e Ignorar, degradados, patrones definidos por el usuario y el resto de patrones de acadiso.pat, que solo traen, con sus líneas, los sombreados de un DXF. Las demás opciones de <Command id="-HATCH" />: dibujar un contorno, eliminar contornos, opciones avanzadas, orden de dibujo, origen, anotativo, color, capa y transparencia. La edición de sombreados (`_HATCHEDIT`) y su ficha contextual, que en AutoCAD abre un doble clic. MIRRHATCH 1: un sombreado reflejado con simetría conserva siempre el ángulo de su patrón. Los menús de los pinzamientos de un sombreado.
+Elipses y splines como contorno: un área que cierran no se encuentra, y una región con una arista así se deja fuera. Tolerancia de huecos (HPGAPTOL): el área tiene que estar cerrada del todo. Sombreados asociativos, los estilos de isla Normal e Ignorar. Los degradados, los patrones definidos por el usuario y el resto de patrones de acadiso.pat no se crean aquí: solo los traen los sombreados de un DXF, los degradados en sus colores y los patrones con sus líneas. Las demás opciones de <Command id="-HATCH" />: dibujar un contorno, eliminar contornos, opciones avanzadas, orden de dibujo, origen, anotativo, color, capa y transparencia. La edición de sombreados (`_HATCHEDIT`) y su ficha contextual, que en AutoCAD abre un doble clic. MIRRHATCH 1: un sombreado reflejado con simetría conserva siempre el ángulo de su patrón. Los menús de los pinzamientos de un sombreado.
 
 ## Questions
 

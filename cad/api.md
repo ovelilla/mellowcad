@@ -1835,6 +1835,25 @@ export interface Scene {
     readonly lang?: string;
 }
 
+export type { SceneGradient }
+/**
+ * A colour gradient in *screen* space: the unit space of the canvas's and
+ * SVG's own gradients — `linear` from x 0 to 1, `radial` from the origin out
+ * to the unit circle, its last colour beyond — mapped onto the screen by
+ * `[axisX, axisY, origin]`, the affine frame the canvas's `transform(a, b, c,
+ * d, e, f)` takes. Colours run straight in RGB between the stops.
+ */
+export interface SceneGradient {
+    readonly kind: "linear" | "radial";
+    readonly origin: Vec2;
+    readonly axisX: Vec2;
+    readonly axisY: Vec2;
+    readonly stops: readonly {
+        readonly offset: number;
+        readonly color: string;
+    }[];
+}
+
 export type { ScenePrimitive }
 export type ScenePrimitive = {
     readonly kind: "segment";
@@ -1904,6 +1923,11 @@ export type ScenePrimitive = {
     readonly stroke?: StrokeStyle;
     /** Solid fill for a closed path, e.g. a dimension arrowhead. */
     readonly fill?: string;
+    /**
+     * A gradient hatch's fill, drawn in place of {@link fill} (which keeps
+     * its first colour for a reader that only knows solid fills).
+     */
+    readonly gradient?: SceneGradient;
 } | {
     readonly kind: "label";
     readonly at: Vec2;
@@ -2454,6 +2478,43 @@ export { HATCH_PATTERNS }
  * In the file's order, which `?` lists them in (p221).
  */
 export declare const HATCH_PATTERNS: readonly HatchPatternDef[];
+
+export type { HatchGradient }
+/**
+ * A hatch's gradient fill (DXF 450 1), which takes the place of its pattern:
+ * the hatch is a SOLID one whose colour runs from {@link colors}' first to
+ * its second over the boundary's extents.
+ */
+export interface HatchGradient {
+    readonly name: HatchGradientName;
+    /**
+     * Color 1 and Color 2 (DXF 63/421). A one-colour gradient's second is its
+     * shade or tint of the first, kept as AutoCAD writes it (gradient/g07: tint
+     * 0 black, 0.5 the colour itself, 1 white).
+     */
+    readonly colors: readonly [
+        EntityColor,
+        EntityColor
+    ];
+    /** Set on a one-colour gradient (DXF 452 1): its shade or tint, 0 to 1 (462). */
+    readonly tint?: number;
+    /**
+     * GFANG (DXF 460), radians CCW from the hatch's own X axis. No transform of
+     * the hatch changes it (gradient/g08: ROTATE and MIRROR keep it, and the
+     * plot draws the turned hatch's fill at the angle it had); a block
+     * reference draws it turned with the rest of its block (g10).
+     */
+    readonly angle: number;
+    /**
+     * GFSHIFT 0 (DXF 461 0): symmetrical. Off, "the gradient fill is shifted up
+     * and to the left, creating the illusion of a light source to the left of
+     * the object" (the Gradient tab's help).
+     */
+    readonly centered: boolean;
+}
+
+export type { HatchGradientName }
+export type HatchGradientName = (typeof HATCH_GRADIENT_NAMES)[number];
 
 export type { HatchPatternDef }
 export interface HatchPatternDef {
@@ -3652,6 +3713,11 @@ export interface HatchEntity extends BaseEntity {
     /** Where pattern generation starts (HPORIGIN); the UCS origin by default. */
     readonly origin: Vec2;
     /**
+     * Set on a gradient fill (DXF 450 1), which is drawn in place of the
+     * pattern: {@link patternId} is then SOLID, as AutoCAD stores it.
+     */
+    readonly gradient?: HatchGradient;
+    /**
      * The linear map (`[a, b, c, d]`: x' = a·x + c·y, y' = b·x + d·y) laid over
      * the pattern about {@link origin}: what a reference that reflects or
      * stretches its block shows of a hatch inside it (probe blocks/p230). Set
@@ -4351,6 +4417,24 @@ interface BaseEntity {
      */
     readonly normal?: Vec3;
 }
+
+// domain/hatchGradients.ts
+/**
+ * AutoCAD's nine gradient fills, by the name a drawing stores (DXF 470), in
+ * GFNAME's order (1 to 9), which is the order of -HATCH's `?` listing and of
+ * the palette's Gradient name (ax26res 329).
+ */
+export declare const HATCH_GRADIENT_NAMES: readonly [
+    "LINEAR",
+    "CYLINDER",
+    "INVCYLINDER",
+    "SPHERICAL",
+    "HEMISPHERICAL",
+    "CURVED",
+    "INVSPHERICAL",
+    "INVHEMISPHERICAL",
+    "INVCURVED"
+];
 
 // domain/linetypes.ts
 /** A drawing's linetypes by name, as the scene and the queries look one up. */

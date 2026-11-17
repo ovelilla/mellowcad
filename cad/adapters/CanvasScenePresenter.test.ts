@@ -39,6 +39,88 @@ function strokedSegments(primitives: ScenePrimitive[]) {
 
 const stroke = { color: "#fff", width: 1 }
 
+describe("CanvasScenePresenter's gradients", () => {
+  it("fills a gradient hatch under its frame, set after the path is built", () => {
+    const calls: string[] = []
+    const gradient = {
+      addColorStop(offset: number, color: string) {
+        calls.push(`stop ${offset} ${color}`)
+      },
+    }
+    const ctx = {
+      fillStyle: "" as unknown,
+      setTransform() {},
+      clearRect() {},
+      fillRect() {},
+      beginPath() {
+        calls.push("begin")
+      },
+      moveTo() {},
+      lineTo() {},
+      closePath() {},
+      save() {
+        calls.push("save")
+      },
+      restore() {
+        calls.push("restore")
+      },
+      transform(...m: number[]) {
+        calls.push(`transform ${m.join(" ")}`)
+      },
+      createLinearGradient(...a: number[]) {
+        calls.push(`linear ${a.join(" ")}`)
+        return gradient
+      },
+      createRadialGradient() {
+        calls.push("radial")
+        return gradient
+      },
+      fill(rule: string) {
+        calls.push(
+          `fill ${rule} ${ctx.fillStyle === gradient ? "gradient" : String(ctx.fillStyle)}`
+        )
+      },
+    }
+    new CanvasScenePresenter().draw(
+      ctx as unknown as CanvasRenderingContext2D,
+      {
+        width: 20,
+        height: 20,
+        background: "#000",
+        primitives: [
+          {
+            kind: "path",
+            points: [p(0, 0), p(10, 0), p(10, 10)],
+            closed: true,
+            fill: "#0000ff",
+            gradient: {
+              kind: "linear",
+              origin: p(1, 2),
+              axisX: p(10, 0),
+              axisY: p(0, -5),
+              stops: [
+                { offset: 0, color: "#0000ff" },
+                { offset: 1, color: "#ffff00" },
+              ],
+            },
+          },
+        ],
+      },
+      1
+    )
+    expect(calls).toEqual([
+      "begin",
+      "save",
+      "transform 10 0 0 -5 1 2",
+      "linear 0 0 1 0",
+      "stop 0 #0000ff",
+      "stop 1 #ffff00",
+      "fill evenodd gradient",
+      "restore",
+    ])
+  })
+})
+
 describe("CanvasScenePresenter", () => {
   it("clips a guide to the frame, keeping its dashes where they were", () => {
     // A guide a hair off the axis: Chrome culls the off-screen dashes only

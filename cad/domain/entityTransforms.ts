@@ -108,6 +108,7 @@ function hatchLike(
     patternScale: overrides.patternScale ?? hatch.patternScale,
     patternAngle: overrides.patternAngle ?? hatch.patternAngle,
     origin: overrides.origin ?? hatch.origin,
+    gradient: hatch.gradient,
     layerId: hatch.layerId,
   })
 }

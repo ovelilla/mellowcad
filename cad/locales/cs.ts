@@ -611,6 +611,11 @@ export const cs: EngineLocale = {
         "originY": "Počátek Y",
         "associative": "Asociativní",
         "islandDetectionStyle": "Způsob detekce ostrůvků",
+        "gradientName": "Název gradientu",
+        "color1": "Barva 1",
+        "color2": "Barva 2",
+        "gradientAngle": "Úhel gradientu",
+        "centered": "Středově",
         "cumulativeArea": "Kumulativní oblast",
         "name": "Název",
         "tag": "Štítek",
@@ -720,6 +725,16 @@ export const cs: EngineLocale = {
         "predefined": "Předdefinovaný",
         "userDefined": "Uživatelsky definovaný",
         "customPattern": "Vlastní",
+        "gradient": "Gradient",
+        "gradientLinear": "Lineární",
+        "gradientCylinder": "Válcový",
+        "gradientInvCylinder": "Inverzní válcový",
+        "gradientSpherical": "Kulový",
+        "gradientHemispherical": "Půlkulový",
+        "gradientCurved": "Křivkový",
+        "gradientInvSpherical": "Inverzní kulový",
+        "gradientInvHemispherical": "Inverzní půlkulový",
+        "gradientInvCurved": "Inverzní křivkový",
         "outer": "Vnější",
         "extrusion": "Vytažení",
         "revolve": "Otočení",
@@ -7230,6 +7245,15 @@ export const cs: EngineLocale = {
           "angle"
         ]
       ],
+      "listHatchGradientPattern": "GRADIENT",
+      "listHatchGradientAngle": [
+        "                 -úhel gradientu ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchGradientCentered": "                 gradient vycentrován",
+      "listHatchGradientNotCentered": "                 gradient nevycentrován",
       "listHatchNotAssociative": "                 Neasociativní",
       "listHatchArea": [
         "                 Plocha      ",
