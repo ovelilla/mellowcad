@@ -14,10 +14,10 @@
 > dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) y el ruso (`live` en `/ru`, L8)
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
-> de L5, y el polaco (`live` en `/pl`, L8) hecho el 17/11 y sin publicar; por decisión del dueño
+> de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11; por decisión del dueño
 > la visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño
 > (12/11/2026), una sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF
-> (`docs/next-dxf.md`: las referencias externas, hechas el 16/11 y sin publicar; el patrón de
+> (`docs/next-dxf.md`: las referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de
 > cada sombreado…) y otro idioma (el checo), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
@@ -419,6 +419,11 @@ el dueño dio a las sesiones el 6/11).
    `/fr/docs/edit-dxf`, `/ar/docs/getting-started`…) y dos errores (`/de/docs/open-dxf`,
    `/es/docs/2d-to-3d`, que la tanda siguiente vuelve a intentar), hasta la cuota: 915 en la cola,
    de 1.023 en el sitemap.
+   **17/11 (sesión del polaco):** el polaco, publicado (`395f2f04`, con las referencias externas
+   del DXF y la entrega 2 del MCP, que esperaban en `main`). Sus 126 URLs entran por
+   `gsc-prioritize.mjs`, que ahora reconoce su prefijo y pesa `/pl` a 0,14 (Polonia, 40 en el
+   índice de la auditoría: el 0,4 del italiano × 40/113; sin el prefijo las tomaba por inglesas):
+   1.041 en la cola, `/pl` la tercera. IndexNow, las 1.149 del sitemap (200).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -907,7 +912,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   fechas, el de Bing en §2.2) tiene ya un MCP de comandos de AutoCAD. Un lanzamiento del MCP iría detrás del
   calendario de L5, que no se mueve. **Siguiente**, sin cambios: lo que quede de la fase 4 del
   DXF (`docs/next-dxf.md`), y después otro idioma.
-- Polaco (L8): hecho el 17/11/2026, sin publicar (`71cf4bfb`, `04deda37` y el commit que lo pasa a
+- Polaco (L8): hecho y publicado el 17/11/2026 (`71cf4bfb`, `04deda37` y el commit que lo pasa a
   `live`; `docs/plans/pl-language.md`, `docs/i18n/pl.md`). El paquete de idioma instalado en el
   AutoCAD del dueño y la 2027.1 otra vez; el lenguaje de comandos de la consola polaca (434
   sondas: LINIA, ODSUŃ, UTNIJ; `U` es `C`, `O` es OKRĄG y `U` es ŁUK; FROM es `OD`, el alias de
@@ -926,10 +931,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   `/pt-br` 255.135 → 255.316, `/ar` 278.414 → 278.668, `/fr` 255.821 → 255.901 (99 bytes bajo
   250 KiB: el siguiente cambio de la portada francesa tiene que medirse), `/it` 254.957 →
   254.940, `/de` 255.228 → 255.499, `/ru` 288.763 → 288.889, `/pl` 265.037 → 265.093 (bajo los 275
-  KiB de una escritura con su fuente). Al publicarlo, con permiso del dueño: el push, IndexNow,
-  la cola de §7 rehecha con `/pl` (`gsc-prioritize.mjs` aún no conoce el prefijo: Polonia vale
-  40 en el índice de la auditoría, el 0,4 del italiano × 40/113 ≈ 0,14), las fichas de
-  AlternativeTo y SaaSHub. La tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota
+  KiB de una escritura con su fuente). Publicado el 17/11 con el permiso del dueño: el push,
+  IndexNow y la cola de §7 rehecha con `/pl` (§7, 17/11); quedan las fichas de AlternativeTo y
+  SaaSHub, del dueño. La tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota
   hasta las 19:51 UTC). **Siguiente idioma propuesto: el checo** (localizado, `cs-CZ`; su paquete
   está en la misma lista que el polaco, y su latin-ext se suma a la cara de las letras), alternando
   con lo que quede de la fase 4 del DXF.

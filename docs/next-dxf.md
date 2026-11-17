@@ -10,7 +10,7 @@
 > hecho y publicado el 13/11, que las llevó a 121; el alemán (`docs/next-seo.md`, L8), hecho y
 > publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
 > hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
-> y el punto 5 (las referencias externas), hecho el 16/11 y sin publicar, que llevó las muestras
+> y el punto 5 (las referencias externas), hecho el 16/11 y publicado el 17/11, que llevó las muestras
 > sin nada fuera de 121 a 135 de 154; siguiente, por orden del dueño, otro idioma, y después lo
 > que quede de esta fase (el patrón de cada sombreado…), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
@@ -242,7 +242,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       guiones. Lo que hace y le falta, en `docs/coverage/properties.md` (Linetypes, CHPROP, la
       paleta), `modify.md` (PURGE) y `clipboard-and-files.md` (DXFIN, DXFOUT).
    5. **Las referencias externas**: 16 muestras (los planos de los conjuntos de planos tienen su
-      modelo en referencias). **Hecho** (16/11/2026, sin publicar): una referencia externa se abre
+      modelo en referencias). **Hecho** (16/11/2026, publicado el 17/11): una referencia externa se abre
       como la abre AutoCAD 2027 cuando no encuentra su dibujo junto al fichero, que en el
       navegador es siempre (una página solo lee el fichero que se le da: WHY en la entrada de
       DXFIN). Dice sus dos líneas al abrir (`Resolve Xref "part": <ruta>`, `"part.dwg" cannot be

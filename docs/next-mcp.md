@@ -1,7 +1,7 @@
 # Un MCP de MellowCAD — brief
 
 > **Estado:** acordado por el dueño el 15/11/2026, tal cual, en el orden de §6; hechas las piezas 1.1
-> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026: la entrega 1 está en producción por decisión del dueño, probada como conector en Claude (en ChatGPT su cuenta de empresa no lo permite), sin anunciar, y con el cortafuegos puesto; antes de anunciarla, la función pasa a Cloudflare (§7). La entrega 2 (el visor en el chat) está hecha y en `main` el 15/11/2026, sin desplegar: espera el sí del dueño para el push y su prueba en Claude (§6, punto 2). Cuándo empieza lo siguiente frente a lo que queda de la
+> (-LAYER), 1.2 (`CadDriver.keyIn`), 1.3 (DXF sin cuadro), 1.4 (`/draw#run=`) y 1.5 (la ruta `/mcp`, salvo su página de documentación, que pasa a la entrega 3), el 15/11/2026: la entrega 1 está en producción por decisión del dueño, probada como conector en Claude (en ChatGPT su cuenta de empresa no lo permite), sin anunciar, y con el cortafuegos puesto; antes de anunciarla, la función pasa a Cloudflare (§7). La entrega 2 (el visor en el chat) está hecha el 15/11/2026 y desplegada el 17/11 con el push del polaco, por el sí del dueño: espera su prueba en Claude (§6, punto 2). Cuándo empieza lo siguiente frente a lo que queda de la
 > fase 4 del DXF (`docs/next-seo.md`) lo dice él al abrir la sesión. Publicar en npm, desplegar,
 > el registro de MCP, los directorios y el push siguen esperando su sí. Cada sesión corre con el
 > modelo de §6.1 y al cerrar recomienda el de la siguiente. Se borra cuando cada entrega de §6
