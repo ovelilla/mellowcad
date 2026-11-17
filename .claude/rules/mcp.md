@@ -69,6 +69,13 @@ an abuser reaches. Three custom rules, Hobby's all, applied without a deploy:
    switch for an attack from many addresses, which a limit per IP does not stop, that leaves
    Claude and ChatGPT working.
 
+**Behind Cloudflare (18/11/2026, `cloudflare.md`) these see Cloudflare's addresses**: they guard
+only calls to Vercel's own address, and `mcp-providers-only` enabled would block everyone. The
+working copies are Cloudflare's, in `scripts/cloudflare/zone.ts`: `mcp_rate` (10 in 10 s, Free's
+only period), skipped by the `mcp_providers` list, which `--apply` syncs from OpenAI's file, and
+the switches `mcp_off` and `mcp_providers_only`, disabled. To flip one, its `enabled` there and
+`npm run cloudflare -- --apply`.
+
 What none of them bounds: one answer's memory (a large ARRAYRECT passed 2 GB before the cut,
 which would end the instance and the requests it shares), and abuse sent through the providers.
 On Hobby only moving the function off the team's plan removes that (`docs/next-mcp.md`, §7).

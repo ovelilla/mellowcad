@@ -3,7 +3,7 @@
 > **Estado:** vigilancia diaria y push congelado por decisión del dueño (18/11/2026): la primera
 > sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en §3, y ninguna sesión
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
-> Cloudflare (§5) está aprobado y pendiente de que el dueño inicie sesión en Cloudflare.
+> Cloudflare (§5) funciona desde el 18/11 a las 00:40.
 
 ## 1. El problema
 
@@ -50,21 +50,14 @@ siguiente. Entonces un push al día como mucho (skill `finish-feature`), y el si
 
 ## 5. La caché de Cloudflare delante de Vercel
 
-El DNS de mellowcad.com ya está en Cloudflare. El plan, aprobado por el dueño el 18/11:
+Hecho el 18/11/2026: mellowcad.com y www pasan por Cloudflare, que guarda las páginas una semana y
+las purga en cada despliegue a producción; el firewall de `/mcp` pasó también a Cloudflare, porque
+detrás del proxy Vercel ya no ve la IP del cliente. Cómo está montado, el token y qué no se guarda:
+la regla `.claude/rules/cloudflare.md`; la zona como código, `scripts/cloudflare/zone.ts`.
 
-- El registro del dominio, **con proxy**; SSL/TLS en **Full (strict)**.
-- Una regla de caché para el sitio: se guarda en caché con **Edge TTL de 4 horas, ignorando la
-  cabecera de origen** (Vercel manda `max-age=0, must-revalidate`); la del navegador, la de
-  origen. Quedan fuera las peticiones del router de Next (cabecera `RSC` o parámetro `_rsc`:
-  Cloudflare no respeta `Vary`, y una petición con `RSC` dejaría el payload del router en caché
-  para la URL de la página), `/mcp`, `/api/` y `/_vercel/` (las mediciones de Vercel).
-- **Smart Tiered Cache** activado: una sola petición a Vercel por URL y TTL, no una por centro de
-  datos.
-- Tras cada push, **Purge Everything** en Cloudflare, o las páginas cambiadas tardan hasta 4 h en
-  verse.
-
-El token de Cloudflare del entorno es de otra zona: hace falta que el dueño inicie sesión en
-Cloudflare en ese Chrome.
+Qué mirar en la lectura diaria, además de §2: que las lecturas de ISR caen, y en Cloudflare
+(mellowcad.com → Caching) qué parte sirve la caché. En enero, que Vercel renovó sus certificados a
+través del proxy (vencen el 27/01/2027).
 
 ## 6. A medio plazo
 

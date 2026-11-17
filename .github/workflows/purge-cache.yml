@@ -1,0 +1,49 @@
+name: Purge Cloudflare
+
+# Cloudflare keeps the site's pages for a week (scripts/cloudflare/zone.ts),
+# and a page from the previous deployment names scripts the new one no longer
+# serves: after each production deploy, empty the cache. Vercel reports the
+# deployment to GitHub, which runs this on its status.
+on: deployment_status
+
+permissions: {}
+
+concurrency:
+  group: purge-cache
+  cancel-in-progress: true
+
+jobs:
+  purge:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # WHY wait for the commit: "success" can come before the domain points
+      # at the new deployment, and a purge before that refills the cache with
+      # the old pages. The page names its commit in its report links
+      # (buildVersion, lib/facts.ts: `version=0.3.0%2B<commit>`); a query of
+      # its own per try misses Cloudflare's cache and reaches Vercel.
+      - name: Wait for the domain to serve the deployment
+        env:
+          SHA: ${{ github.event.deployment.sha }}
+        run: |
+          short="${SHA:0:7}"
+          for try in $(seq 1 60); do
+            if curl -fsS "https://mellowcad.com/?deploy=${short}-${try}" | grep -q "%2B${short}"; then
+              echo "serving ${short}"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "mellowcad.com never served ${short}" >&2
+          exit 1
+
+      - name: Purge everything
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
+          ZONE: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        run: |
+          curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/purge_cache" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
