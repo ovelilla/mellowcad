@@ -12,9 +12,10 @@
 > hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
 > y el punto 5 (las referencias externas), hecho el 16/11 y publicado el 17/11, que llevó las muestras
 > sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho el 17/11 y
-> sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; siguiente, por orden del
-> dueño, otro idioma (el checo), y después lo que quede de esta fase (los degradados, el punto
-> 7…), alternando, una sesión cada vez.
+> sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
+> (`docs/next-seo.md`, L8), hecho el 17/11 y sin publicar; siguiente, por orden del dueño, lo que
+> quede de esta fase (los degradados, el punto 7…), y después otro idioma (el húngaro),
+> alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
