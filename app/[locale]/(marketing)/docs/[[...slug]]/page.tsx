@@ -112,7 +112,7 @@ function DocsLink({
       {children}
     </a>
   ) : (
-    <Link href={href} className={className}>
+    <Link prefetch={false} href={href} className={className}>
       {children}
     </Link>
   )
@@ -218,7 +218,7 @@ async function DocsIndex({ locale }: { locale: AppLocale }) {
             if (!page) return null
             return (
               <li key={slug}>
-                <Link
+                <Link prefetch={false}
                   href={page.url}
                   className="flex h-full flex-col gap-2 rounded-lg border border-border bg-bg-raised p-5 hover:border-fg-subtle"
                 >
@@ -380,7 +380,7 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {previous && (
-            <Link
+            <Link prefetch={false}
               href={previous.url}
               className="flex flex-col gap-1 rounded-lg border border-border p-4 hover:bg-bg-raised"
             >
@@ -389,7 +389,7 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
             </Link>
           )}
           {next && (
-            <Link
+            <Link prefetch={false}
               href={next.url}
               className="flex flex-col items-end gap-1 rounded-lg border border-border p-4 text-end hover:bg-bg-raised sm:col-start-2"
             >
@@ -456,7 +456,7 @@ export default async function DocsPageRoute({
           <DocsMobileNav labels={{ menu: t("menu"), close: t("closeMenu") }}>
             {nav}
           </DocsMobileNav>
-          <Link href={localePath(locale, DOCS_PATH)} className="hidden text-sm text-fg-muted hover:text-fg lg:inline">
+          <Link prefetch={false} href={localePath(locale, DOCS_PATH)} className="hidden text-sm text-fg-muted hover:text-fg lg:inline">
             {t("label")}
           </Link>
         </div>

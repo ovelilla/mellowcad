@@ -33,6 +33,7 @@ export async function NotFoundMessage({ locale }: { locale: AppLocale }) {
       </p>
       <p className="flex flex-wrap gap-3">
         <Link
+          prefetch={false}
           href={localePath(locale, "/")}
           className="inline-flex h-11 items-center rounded-md border border-border px-5 font-medium"
         >

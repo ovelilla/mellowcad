@@ -34,8 +34,8 @@ The landing and the editor are two **root layouts** under the `[locale]` root pa
 `app/[locale]/(marketing)/layout.tsx` owns `<html>`, `marketing.css`, the header, the footer and the
 metadata base; `app/[locale]/(app)/layout.tsx` owns the editor and `globals.css`. Crossing between
 them is a full page load, so a link to the editor is a plain `<a href={paths.editor}>`, never
-`next/link`: its router prefetch would pull the editor's payload into the landing. Links _within_
-the landing use `Link`; to the docs, `prefetch={false}` (`docs.md`). Every href is the page's
+`next/link`. Links _within_ the site use `Link`, always `prefetch={false}` (ESLint): on Hobby an
+uncached prefetch is an ISR read, and a docs page fired 20 to 90. Every href is the page's
 language's (`sitePaths()`, `localePath()`; `i18n.md`); a client island gets it as a prop. Copy,
 claims and tone: `i18n.md`.
 

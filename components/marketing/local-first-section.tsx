@@ -58,7 +58,11 @@ export async function LocalFirstSection() {
       <div className="grid items-center gap-8 lg:grid-cols-12">
         <p className="rounded-md border border-border bg-bg-raised p-4 text-sm text-fg-muted lg:col-span-7">
           {t("formats")} {t("warning")}{" "}
-          <Link href={paths.privacy} className="underline-link">
+          <Link
+            prefetch={false}
+            href={paths.privacy}
+            className="underline-link"
+          >
             {t("privacyLink")}
           </Link>
         </p>

@@ -181,9 +181,7 @@ claims follow `i18n.md`.
   advises under one. Measure a long page on a production build after changing how code or a
   generated page renders.
 - **The docs' islands never reach the landing**: their Base UI dialogs are ~22 KB Brotli, and a
-  prefetched `/docs` loads its chunks into `/` (measured +27 KB on the first load). The landing
-  links the docs with `Link prefetch={false}`, and so does the sidebar: in view, its links
-  prefetched every page (402 KB on a desktop).
+  prefetched `/docs` loads its chunks into `/` (+27 KB): no `Link` prefetches (`marketing.md`).
 
 ## For agents
 

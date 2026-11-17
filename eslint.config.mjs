@@ -91,6 +91,17 @@ const eslintConfig = defineConfig([
           message:
             "A label a person reads comes from a catalog (.claude/rules/i18n.md, No literals).",
         },
+        {
+          // WHY: on Hobby, every prefetch the CDN has not cached is read from
+          // ISR storage, and a docs page in view of a person or a rendering
+          // crawler fired 20 to 90 of them: the 30-day ISR reads and Fast
+          // Origin Transfer neared their caps (17/11/2026), past which Vercel
+          // stops serving them for 30 days.
+          selector:
+            "JSXOpeningElement[name.name='Link']:not(:has(JSXAttribute[name.name='prefetch'] > JSXExpressionContainer > Literal[value=false]))",
+          message:
+            "Every Link is prefetch={false}, without exception (.claude/rules/marketing.md).",
+        },
       ],
     },
   },

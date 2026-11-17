@@ -96,7 +96,7 @@ export function docsMdxComponents(
     a: ({ href = "", children }: ComponentProps<"a">) => {
       if (href === DOCS_PATH || href.startsWith(`${DOCS_PATH}/`)) {
         return (
-          <Link href={localePath(locale, href)} className="underline-link">
+          <Link prefetch={false} href={localePath(locale, href)} className="underline-link">
             {children}
           </Link>
         )
