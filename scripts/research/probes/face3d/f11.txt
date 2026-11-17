@@ -1,0 +1,30 @@
+_3DFACE
+_I
+0,0
+100,0
+100,50
+0,50
+
+_ZOOM
+_E
+_MIRROR
+_L
+
+0,0
+0,10
+_Y
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 12 13 70))))) (entget (entlast))))
+_3DFACE
+0,100
+100,100
+_I
+100,150
+
+
+_MIRROR
+_L
+
+0,0
+10,0
+_Y
+(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 12 13 70))))) (entget (entlast))))

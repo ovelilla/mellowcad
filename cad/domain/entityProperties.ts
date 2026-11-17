@@ -1,3 +1,4 @@
+import type { Vec3 } from "../geometry/Vec3"
 import { withLinetypeScale } from "./entityOverrides"
 import { withSolid2dCorner } from "./solids2d"
 import { withLeaderOverride, withLeaderVertex } from "./leaders"
@@ -257,6 +258,23 @@ export function applyEntityProperty(
       return applyPolylineProperty(entity, property, value, vertex)
     case "polyline3d":
       return applyPolyline3dProperty(entity, property, value, vertex)
+    case "face3d": {
+      // A corner's coordinate, as a 3D polyline's vertex takes one; the
+      // palette's Edge rows are read-only here.
+      const at = entity.corners[vertex]
+      const axis =
+        property === "vertexX"
+          ? "x"
+          : property === "vertexY"
+            ? "y"
+            : property === "vertexZ"
+              ? "z"
+              : null
+      if (!at || !axis) return null
+      const corners = [...entity.corners] as [Vec3, Vec3, Vec3, Vec3]
+      corners[vertex] = { ...at, [axis]: value }
+      return { ...entity, corners }
+    }
     case "spline": {
       // The palette's current fit point or control point, in the spline's
       // own coordinates; the rest is SPLINEDIT's, which is not built.

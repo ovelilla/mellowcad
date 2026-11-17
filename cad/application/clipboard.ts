@@ -90,6 +90,7 @@ export function clipboardSnapshot(
         case "solid3d":
         case "point":
         case "solid2d":
+        case "face3d":
           break
         default: {
           const unhandled: never = entity

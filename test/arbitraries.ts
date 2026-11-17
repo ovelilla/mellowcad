@@ -31,6 +31,7 @@ import {
   type MTextEntity,
   type PolylineEntity,
   type Polyline3dEntity,
+  type Face3dEntity,
   type RegionEntity,
   type Solid3dEntity,
   type SolidPrimitive,
@@ -451,6 +452,24 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
     return kind === "curve"
       ? polylineFitted(entity, tangents)
       : (polylineSplined(entity, kind, perSpan, tangents) ?? entity)
+  })
+
+export const face3dEntity: fc.Arbitrary<Face3dEntity> = fc
+  .tuple(
+    fc.array(fc.tuple(point, zValue), { minLength: 4, maxLength: 4 }),
+    fc.integer({ min: 0, max: 15 })
+  )
+  .map(([points, invisibleEdges]) => {
+    const [a, b, c, d] = points.map(([p, z]) => ({ ...p, z }))
+    return withId<Face3dEntity>(
+      {
+        type: "face3d",
+        layerId: DEFAULT_LAYER_ID,
+        corners: [a, b, c, d],
+        ...(invisibleEdges ? { invisibleEdges } : {}),
+      },
+      "face3d"
+    )
   })
 
 export const polyline3dEntity: fc.Arbitrary<Polyline3dEntity> = fc
@@ -1198,7 +1217,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       sweptSolidEntity,
       pointEntity,
       solid2dEntity,
-      leaderEntity
+      leaderEntity,
+      face3dEntity
     ),
     zValue,
     zValue,
@@ -1228,7 +1248,13 @@ export const entity: fc.Arbitrary<Entity> = fc
     // TypeScript cannot check on optional ones; a flat drawing alone would
     // never notice one dropped. A 3D polyline or a solid has none: its
     // vertices hold Z.
-    if (flat.type === "polyline3d" || flat.type === "solid3d") return flat
+    if (
+      flat.type === "polyline3d" ||
+      flat.type === "face3d" ||
+      flat.type === "solid3d"
+    ) {
+      return flat
+    }
     let placed: Entity = withElevation(flat, elevation)
     if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
     if (hasThickness(placed)) placed = withThickness(placed, thickness)

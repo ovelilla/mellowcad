@@ -21,6 +21,9 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Close",
     "Undo"
   ],
+  "3DFACE": [
+    "Invisible"
+  ],
   "3DPOLY": [
     "Close",
     "Undo"

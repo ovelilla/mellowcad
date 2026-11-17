@@ -22,6 +22,7 @@ export type {
   FitArcs,
   Polyline3dEntity,
   Polyline3dFit,
+  Face3dEntity,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -120,6 +121,7 @@ export {
   createArc,
   createPolyline,
   createPolyline3d,
+  createFace3d,
   createHatch,
   createInsert,
   insertReflects,
@@ -204,6 +206,12 @@ export {
   splineKnotParameterization,
   splineWithoutFitData,
 } from "./splines"
+
+export {
+  closestPointOnFace3d,
+  face3dEdges,
+  isFace3dEdgeVisible,
+} from "./faces3d"
 
 export type { HatchGeometry } from "./hatch"
 export {

@@ -1,0 +1,12 @@
+E = "(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 12 13 70 62 39))))) (entget (entlast))))"
+out = ["_3DFACE", "0,0,0", "100,0,0", "_I", "100,50,10", "0,50", "200,0", "_I", "200,60", "", E,
+       "(princ (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 12 13 70))))) (entget (entnext (entnext (handent \"0\"))))))",
+       "QAFLAGS", "2", "_LIST", "_L", "",
+       "_EXPLODE", "_L", "",
+       "(princ (cdr (assoc 0 (entget (entlast)))))",
+       "_3DFACE", "0,200", "50,200", "",
+       "(princ (cdr (assoc 0 (entget (entlast)))))",
+       "_3DFACE", "0,300", "50,300", "50,350", "", E,
+       "_-LAYER", "_N", "X", "",
+       ]
+print("\n".join(out))

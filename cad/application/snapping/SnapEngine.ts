@@ -26,6 +26,7 @@ import {
   lineStartZ,
   planeAxes,
   polyline3dSegments,
+  face3dEdges,
   entityShape,
   solid2dEdges,
   leaderPathEntity,
@@ -158,6 +159,16 @@ function snapEntities(
         // (leader/p11). The arrowhead and the line under the text are not
         // snapped (unverified).
         entities.push(leaderPathEntity(piece))
+        continue
+      }
+      if (piece.type === "face3d") {
+        // Its visible edges, lines of its id: an invisible one has no
+        // Midpoint or Nearest (face3d/f04).
+        for (const [a, b] of face3dEdges(piece)) {
+          entities.push(
+            carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+          )
+        }
         continue
       }
       if (piece.type !== "polyline3d") {

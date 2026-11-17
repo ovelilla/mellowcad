@@ -137,6 +137,7 @@ export const pl: EngineLocale = {
       "measuresegments": "Zmierz",
       "ptype": "Styl punktu",
       "solid": "Obszar",
+      "face3d": "Powierzchnia 3D",
       "leader": "Linia odniesienia"
     },
     "description": {
@@ -426,6 +427,18 @@ export const pl: EngineLocale = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Powierzchnia 3D",
+            "few": "Powierzchnie 3D",
+            "many": "Powierzchni 3D",
+            "other": "Powierzchni 3D"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -611,6 +624,10 @@ export const pl: EngineLocale = {
         "originY": "Y początku",
         "associative": "Zespolone",
         "islandDetectionStyle": "Styl wykrywania wysp",
+        "edge1": "Krawędź 1",
+        "edge2": "Krawędź 2",
+        "edge3": "Krawędź 3",
+        "edge4": "Krawędź 4",
         "gradientName": "Nazwa gradientu",
         "color1": "Kolor 1",
         "color2": "Kolor 2",
@@ -725,6 +742,8 @@ export const pl: EngineLocale = {
         "predefined": "Wstępnie zdefiniowany",
         "userDefined": "Użytkownika",
         "customPattern": "Niestandardowy",
+        "edgeVisible": "Widoczna",
+        "edgeHidden": "Ukryta",
         "gradient": "Gradient",
         "gradientLinear": "Liniowy",
         "gradientCylinder": "Walcowy",
@@ -779,6 +798,10 @@ export const pl: EngineLocale = {
       "PLINE": [
         "PLINIA",
         "PL"
+      ],
+      "3DFACE": [
+        "3WPOW",
+        "3PO"
       ],
       "3DPOLY": [
         "3WPLINIA",
@@ -1389,6 +1412,9 @@ export const pl: EngineLocale = {
       "LINE": {
         "Close": "Zamknij",
         "Undo": "Cofaj"
+      },
+      "3DFACE": {
+        "Invisible": "Niewidoczny"
       },
       "3DPOLY": {
         "Close": "Zamknij",
@@ -3072,6 +3098,12 @@ export const pl: EngineLocale = {
       "solidSecondPoint": "Określ drugi punkt",
       "solidThirdPoint": "Określ trzeci punkt",
       "solidFourthPointOr": "Określ czwarty punkt",
+      "face3dFirstPoint": "Określ pierwszy punkt lub",
+      "face3dSecondPoint": "Określ drugi punkt lub",
+      "face3dThirdPoint": "Określ trzeci punkt lub",
+      "face3dFourthPoint": "Określ czwarty punkt lub",
+      "exitFace3d": "wyjdź",
+      "createThreeSidedFace": "utwórz powierzchnię trzystronną",
       "exitSolid": "wyjdź",
       "leaderStartPoint": "Określ punkt początkowy linii odniesienia",
       "leaderNextPoint": "Określ kolejny punkt",
@@ -6134,6 +6166,7 @@ export const pl: EngineLocale = {
             "solid3d": "3DSOLID",
             "solid2d": "SOLID",
             "leader": "LEADER",
+            "face3d": "POWIERZCHNIA 3D",
             "other": "SZYK"
           }
         ]
@@ -6232,6 +6265,62 @@ export const pl: EngineLocale = {
       ],
       "listSolidAnd": [
         "                 i punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFirst": [
+        "          pierwszy punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dSecond": [
+        "             drugi punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dThird": [
+        "            trzeci punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFourth": [
+        "           czwarty punkt, X=",
         [
           "x"
         ],

@@ -346,6 +346,9 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
     case "solid3d":
     case "point":
     case "leader":
+    // WHY none: AutoCAD makes a region of a 3D face (face3d/f07, `1 loop
+    // extracted.`), unbuilt here.
+    case "face3d":
       return null
     default: {
       const unhandled: never = entity

@@ -14,9 +14,10 @@
 > sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho el 17/11 y
 > sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
 > (`docs/next-seo.md`, L8), hecho el 17/11 y sin publicar; y los degradados (el punto 6b), hechos
-> el 17/11 y sin publicar, que llevaron las muestras sin nada fuera de 135 a 141 de 154;
-> siguiente, por orden del dueño, lo que quede de esta fase (el punto 7…), y después otro idioma
-> (el húngaro), alternando, una sesión cada vez.
+> el 17/11 y sin publicar, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
+> punto 7 3DFACE, hecho el 17/11 y sin publicar, que las llevó a 148; siguiente, por orden del
+> dueño, lo que quede del punto 7 (WIPEOUT, IMAGE, TABLE…), y después otro idioma (el húngaro),
+> alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -322,6 +323,24 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    7. 3DFACE (8 muestras), WIPEOUT (3), IMAGE (1, y 1 de otros), TABLE (las de las muestras están
       en presentaciones; 1 de otros), y sin ningún caso medido XLINE, RAY, MINSERT como tal, los
       colores índice como tales y las sustituciones de estilo de cada cota (XDATA `DSTYLE`).
+      **3DFACE hecho** (17/11/2026, sin publicar): la cara 3D (cuatro esquinas en el SCU con su Z,
+      un triángulo repite la tercera, y sus aristas ocultas, DXF 70; fichero versión 57) y 3DFACE
+      con su Invisible, en los nueve idiomas de consola (sondas `face3d/f00`–`f13`; tablas
+      20611–20615; nombres de la ayuda y de cada acad.pgp: es 3DCARA, pt-BR y fr FACE3D, pl 3WPOW).
+      Se dibuja, designa y engancha por sus aristas visibles, continua sea cual sea su tipo de
+      línea (f09: la DASHED se traza continua); MIRROR invierte sus esquinas y su primera arista
+      pasa a ser la tercera (f10, f11); STRETCH mueve las esquinas atrapadas con su Z; EXPLODE,
+      OFFSET, BREAK, FILLET, CHAMFER, EXTEND, DIVIDE y AREA la rechazan con las palabras de AutoCAD
+      (f07, f12, f13); LIST en cada idioma (f03); pinzamientos por esquina y paleta (ax26res 18–24,
+      49, 279; sin escritorio: **no verificados**). DXF en los dos sentidos: la consola abre los 12
+      ficheros sin un error de AUDIT y los traza como el suyo. El corpus: abren las 30 de 8 muestras
+      y la de otro programa; muestras sin nada fuera, de 141 a 148 de 154; ficheros de otros, de 572
+      a 573. Se anotan: su cara en un estilo sombreado u oculto, la región de REGION, EDGE, PFACE y
+      las mallas. **Queda del punto 7**, por orden: WIPEOUT (3 muestras, 11 objetos: su contorno, su
+      máscara y WIPEOUTFRAME), IMAGE (1 y 1: la referencia de imagen, que como la de un dibujo no
+      tiene su fichero en el navegador), TABLE (1 de otros), MULTILEADER (1 y 2), y XLINE, RAY,
+      MINSERT, los colores índice y las sustituciones DSTYLE de cada cota; quedan para la próxima
+      sesión de esta fase.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

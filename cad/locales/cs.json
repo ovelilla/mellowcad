@@ -133,6 +133,7 @@
       "measuresegments": "Dělit v měřítku",
       "ptype": "Styl bodu",
       "solid": "2D těleso",
+      "face3d": "3D plocha",
       "leader": "Odkaz"
     },
     "description": {
@@ -235,6 +236,7 @@
       "region": "{count, plural, one {Oblast} few {Oblasti} many {Oblasti} other {Oblasti}}",
       "point": "{count, plural, one {Bod} few {Body} many {Body} other {Body}}",
       "solid2d": "{count, plural, one {Deska} few {Desky} many {Desky} other {Desky}}",
+      "face3d": "{count, plural, one {3D plocha} few {3D plochy} many {3D plochy} other {3D plochy}}",
       "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}"
     },
     "array": {
@@ -371,6 +373,10 @@
         "originY": "Počátek Y",
         "associative": "Asociativní",
         "islandDetectionStyle": "Způsob detekce ostrůvků",
+        "edge1": "Hrana 1",
+        "edge2": "Hrana 2",
+        "edge3": "Hrana 3",
+        "edge4": "Hrana 4",
         "gradientName": "Název gradientu",
         "color1": "Barva 1",
         "color2": "Barva 2",
@@ -485,6 +491,8 @@
         "predefined": "Předdefinovaný",
         "userDefined": "Uživatelsky definovaný",
         "customPattern": "Vlastní",
+        "edgeVisible": "Viditelná",
+        "edgeHidden": "Skrytá",
         "gradient": "Gradient",
         "gradientLinear": "Lineární",
         "gradientCylinder": "Válcový",
@@ -534,6 +542,7 @@
     "names": {
       "LINE": ["ÚSEČKA", "U"],
       "PLINE": ["KŘIVKA", "K"],
+      "3DFACE": ["3DPLOCHA", "3L"],
       "3DPOLY": ["3DKŘIVKA", "3K"],
       "CIRCLE": ["KRUŽNICE", "KR"],
       "CIRCLED": ["KRUŽNICEP"],
@@ -711,6 +720,7 @@
         "Close": "Uzavři",
         "Undo": "Zpět"
       },
+      "3DFACE": { "Invisible": "Neviditelný" },
       "3DPOLY": {
         "Close": "Uzavři",
         "Undo": "Zpět"
@@ -2308,6 +2318,12 @@
       "solidSecondPoint": "Určete druhý bod",
       "solidThirdPoint": "Určete třetí bod",
       "solidFourthPointOr": "Zadejte čtvrtý bod nebo",
+      "face3dFirstPoint": "Zadejte první bod nebo",
+      "face3dSecondPoint": "Určete druhý bod nebo",
+      "face3dThirdPoint": "Určete třetí bod nebo",
+      "face3dFourthPoint": "Určete čtvrtý bod nebo",
+      "exitFace3d": "konec",
+      "createThreeSidedFace": "vytvoř trojstrannou plochu",
       "exitSolid": "konec",
       "leaderStartPoint": "Zadejte počáteční bod pozice",
       "leaderNextPoint": "Zadejte další bod",
@@ -2805,7 +2821,7 @@
       "notAFitPoint": "Není bod vyhlazení.",
       "notAControlVertex": "Není řídicí vrchol.",
       "allAdditionsUndone": "Všechna doplnění byla vrácena zpět.",
-      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} other {POLE}}",
+      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} other {POLE}}",
       "listObject": "                  {name}   Hladina: \"{layer}\"",
       "listSpace": "                             Prostor: Modelový prostor",
       "listColor": "                   Barva: {color}    Typ čáry: \"{linetype}\"",
@@ -2816,6 +2832,10 @@
       "listLineTo": "                na bod, X={x}  Y={y}  Z={z}",
       "listSolidFrom": "                 z bod, X={x}  Y={y}  Z={z}",
       "listSolidAnd": "                 a bod, X={x}  Y={y}  Z={z}",
+      "listFace3dFirst": "             první bod, X={x}  Y={y}  Z={z}",
+      "listFace3dSecond": "             druhý bod, X={x}  Y={y}  Z={z}",
+      "listFace3dThird": "             třetí bod, X={x}  Y={y}  Z={z}",
+      "listFace3dFourth": "            čtvrtý bod, X={x}  Y={y}  Z={z}",
       "listSolidTo": "                na bod, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {In Aktuální USS, } other {}}Délka ={length},  Úhel v rovině XY = {angle}",
       "listLine3d": "                  3D Délka  ={length},  Úhel od roviny XY = {angle}",

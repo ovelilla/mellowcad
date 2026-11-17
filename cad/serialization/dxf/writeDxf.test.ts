@@ -248,6 +248,25 @@ describe("writeDxf", () => {
     }
   })
 
+  it("writes 3D faces, read back the same", () => {
+    const drawing = parseDxf(fixture("faces-2018")).drawing
+    const faces = (entities: readonly Entity[]) =>
+      entities.filter((e) => e.type === "face3d")
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        expect(shape(faces(parseDxf(bytes).drawing.entities))).toEqual(
+          shape(faces(drawing.entities))
+        )
+      }
+    }
+  })
+
   // xref/p04: AutoCAD's DXFOUT of a drawing whose xref it could not find,
   // the BLOCK empty with flag 4 and its path, the reference kept.
   it("writes an external reference as AutoCAD keeps one it cannot find", () => {
@@ -527,6 +546,7 @@ describe("writeDxf", () => {
       "xref-2018",
       "hatchpat-2018",
       "gradients-2018",
+      "faces-2018",
     ]) {
       const drawing =
         name === "points-2018"

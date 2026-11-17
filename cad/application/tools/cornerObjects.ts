@@ -152,6 +152,9 @@ export function typeRefusal(
     // Picked first (region/e06); second, the same words assumed (unprobed).
     case "region":
       return again(any)
+    // Picked first (face3d/f13); second, the same words assumed (unprobed).
+    case "face3d":
+      return again(any)
     case "mtext":
     case "hatch":
       return second
@@ -528,6 +531,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "insert":
     case "point":
     case "solid2d":
+    case "face3d":
     case "leader":
     case "region":
     case "solid3d":

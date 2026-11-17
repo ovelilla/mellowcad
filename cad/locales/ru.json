@@ -133,6 +133,7 @@
       "measuresegments": "Разметить",
       "ptype": "Отображение точек",
       "solid": "2D-фигура",
+      "face3d": "3D-грань",
       "leader": "Выноска"
     },
     "description": {
@@ -235,6 +236,7 @@
       "region": "{count, plural, one {Область} few {Области} many {Области} other {Области}}",
       "point": "{count, plural, one {Точка} few {Точки} many {Точки} other {Точки}}",
       "solid2d": "{count, plural, one {Тело} few {Тела} many {Тела} other {Тела}}",
+      "face3d": "{count, plural, one {3D-грань} few {3D-грани} many {3D-грани} other {3D-грани}}",
       "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}"
     },
     "array": {
@@ -371,6 +373,10 @@
         "originY": "Исходная точка Y",
         "associative": "Ассоциативный",
         "islandDetectionStyle": "Стиль решения островков",
+        "edge1": "Кромка 1",
+        "edge2": "Кромка 2",
+        "edge3": "Кромка 3",
+        "edge4": "Кромка 4",
         "gradientName": "Имя градиента",
         "color1": "Цвет 1",
         "color2": "Цвет 2",
@@ -485,6 +491,8 @@
         "predefined": "Стандартный",
         "userDefined": "Из линий",
         "customPattern": "Пользовательский",
+        "edgeVisible": "Видимый",
+        "edgeHidden": "Скрытый",
         "gradient": "Градиент",
         "gradientLinear": "Линейный",
         "gradientCylinder": "Цилиндрический",
@@ -534,6 +542,7 @@
     "names": {
       "LINE": ["ОТРЕЗОК", "ОТ"],
       "PLINE": ["ПЛИНИЯ", "ПЛ"],
+      "3DFACE": ["3DГРАНЬ", "3Г", "3-ГРАНЬ"],
       "3DPOLY": ["3DПЛИНИЯ", "3П", "3-ПЛИНИЯ"],
       "CIRCLE": ["КРУГ", "К"],
       "CIRCLED": ["КРУГД"],
@@ -711,6 +720,7 @@
         "Close": "Замкнуть",
         "Undo": "оТменить"
       },
+      "3DFACE": { "Invisible": "Невидимая" },
       "3DPOLY": {
         "Close": "Замкнуть",
         "Undo": "Отменить"
@@ -2308,6 +2318,12 @@
       "solidSecondPoint": "Вторая точка",
       "solidThirdPoint": "Третья точка",
       "solidFourthPointOr": "Четвертая точка или",
+      "face3dFirstPoint": "Первая точка или",
+      "face3dSecondPoint": "Вторая точка или",
+      "face3dThirdPoint": "Третья точка или",
+      "face3dFourthPoint": "Четвертая точка или",
+      "exitFace3d": "выход",
+      "createThreeSidedFace": "создать треугольную грань",
       "exitSolid": "выход",
       "leaderStartPoint": "Начальная точка выноски",
       "leaderNextPoint": "Следующая точка",
@@ -2803,7 +2819,7 @@
       "notAFitPoint": "Не определяющая точка.",
       "notAControlVertex": "Не является управляющей вершиной.",
       "allAdditionsUndone": "Все добавления отменены.",
-      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} other {МАССИВ}}",
+      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} other {МАССИВ}}",
       "listObject": "                  {name} Слой: \"{layer}\"",
       "listSpace": "                           Пространство: Пространство модели",
       "listColor": "                   Цвет: {color}    Тип линий: \"{linetype}\"",
@@ -2814,6 +2830,10 @@
       "listLineTo": "                до точки, X={x}  Y={y}  Z={z}",
       "listSolidFrom": "                от точки, X={x}  Y={y}  Z={z}",
       "listSolidAnd": "                 и точка, X={x}  Y={y}  Z={z}",
+      "listFace3dFirst": "            первая точка, X={x}  Y={y}  Z={z}",
+      "listFace3dSecond": "            вторая точка, X={x}  Y={y}  Z={z}",
+      "listFace3dThird": "            третья точка, X={x}  Y={y}  Z={z}",
+      "listFace3dFourth": "         четвертая точка, X={x}  Y={y}  Z={z}",
       "listSolidTo": "                до точки, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {В текущей ПСК, } other {}}Длина ={length}, Угол в плоскости XY = {angle}",
       "listLine3d": "                  3D Длина  ={length}, Угол от плоскости XY = {angle}",

@@ -4,6 +4,7 @@ PLINE ["PL"] "Polyline"
 3DPOLY ["3P"] "3D Polyline"
 POINT ["PO"] "Multiple Points"
 SOLID ["SO"] "2D Solid"
+3DFACE ["3F"] "3D Face"
 LEADER ["LEAD"] "Leader"
 DIVIDE ["DIV"] "Divide"
 MEASURE ["ME"] "Measure"
@@ -175,6 +176,7 @@ splinecv "Spline CV" -
 polyline3d "3D Polyline" 3P
 point "Multiple Points" PO
 solid "2D Solid" SO
+face3d "3D Face" 3F
 leader "Leader" LEAD
 divide "Divide" DIV
 measuresegments "Measure" ME
@@ -8558,6 +8560,68 @@ Specify next point or
   prompt| Specify third point:
 > pick
   properties: Solid (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
+
+## 3DFACE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> 3DFACE
+  prompt: 3DFACE Specify first point or [Invisible]:
+  asks: "Specify first point or"
+  tip: Specify first point or
+  dyn: "X,Y"=""||*
+  options: [I] Invisible
+  command| 3F 3DFACE
+> first
+  prompt: 3DFACE Specify second point or [Invisible]:
+  asks: "Specify second point or"
+  tip: Specify second point or
+  prompt| Specify first point or [Invisible]: 0,0
+> Enter refused
+  prompt| Specify second point or [Invisible]:
+  error| Point or option keyword required.
+> Invisible
+  prompt| Specify second point or [Invisible]: I
+> second
+  prompt: 3DFACE Specify third point or [Invisible] <exit>:
+  asks: "Specify third point or"
+  tip: Specify third point or
+  prompt| Specify second point or [Invisible]: @10,0
+> third
+  prompt: 3DFACE Specify fourth point or [Invisible] <create three-sided face>:
+  asks: "Specify fourth point or"
+  tip: Specify fourth point or
+  prompt| Specify third point or [Invisible] <exit>: @10,5,2
+> fourth
+  prompt: 3DFACE Specify third point or [Invisible] <exit>:
+  asks: "Specify third point or"
+  tip: Specify third point or
+  prompt| Specify fourth point or [Invisible] <create three-sided face>: @0,5
+> third again
+  prompt: 3DFACE Specify fourth point or [Invisible] <create three-sided face>:
+  asks: "Specify fourth point or"
+  tip: Specify fourth point or
+  prompt| Specify third point or [Invisible] <exit>: @20,0
+> triangle
+  prompt: 3DFACE Specify third point or [Invisible] <exit>:
+  asks: "Specify third point or"
+  tip: Specify third point or
+  prompt| Specify fourth point or [Invisible] <create three-sided face>:
+> exit
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify third point or [Invisible] <exit>:
+> pick
+  properties: 3D Face (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=10.00~, Vertex Y=5.00~, Vertex Z=2.00~, Edge 1=Visible, Edge 2=Visible, Edge 3=Visible, Edge 4=Visible]
 
 ## LEADER
 > start

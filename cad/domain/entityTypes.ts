@@ -44,6 +44,7 @@ export type EntityType =
   | "point"
   | "solid2d"
   | "leader"
+  | "face3d"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -133,6 +134,20 @@ export interface PointEntity extends BaseEntity, Thick {
 export interface Solid2dEntity extends BaseEntity, Thick {
   readonly type: "solid2d"
   readonly corners: readonly [Vec2, Vec2, Vec2, Vec2]
+}
+
+/**
+ * A 3D face (DXF 3DFACE, AutoCAD's 3DFACE): three or four corners in space,
+ * each with its own Z in the WCS, as a 3D polyline's vertices are, and no
+ * plane of its own; a triangle repeats its third corner as its fourth.
+ * {@link invisibleEdges} is DXF 70: bit `i` hides the edge from corner `i`
+ * to the next, which is then neither drawn, picked nor snapped to
+ * (face3d/f04, f09).
+ */
+export interface Face3dEntity extends BaseEntity {
+  readonly type: "face3d"
+  readonly corners: readonly [Vec3, Vec3, Vec3, Vec3]
+  readonly invisibleEdges?: number
 }
 
 export interface CircleEntity extends BaseEntity, Thick {
@@ -1027,6 +1042,7 @@ export type Entity =
   | PointEntity
   | Solid2dEntity
   | LeaderEntity
+  | Face3dEntity
 
 export interface Bounds {
   readonly min: Vec2

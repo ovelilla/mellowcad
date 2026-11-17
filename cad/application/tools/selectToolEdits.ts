@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, planar, sub3 } from "../../geometry/Vec3"
+import { Vec3, planar, sub3, zOf } from "../../geometry/Vec3"
 import {
   arcFrom3Points,
   ellipseParamFromAngle,
@@ -90,6 +90,18 @@ export function withVertexAt(
     // it and records its offset from the text (leader/p14).
     if (!entity.vertices[index]) return null
     return withLeaderVertex(entity, index, { x: point.x, y: point.y })
+  }
+  if (entity.type === "face3d") {
+    // A corner goes to the point, its Z too, as a 3D polyline's vertex does,
+    // and every corner on it with it.
+    const at = entity.corners[index]
+    if (!at) return null
+    const to = { x: point.x, y: point.y, z: zOf(point) }
+    const same = (c: Vec3) => V.equals(c, at) && c.z === at.z
+    const [a, b, c, d] = entity.corners.map((corner) =>
+      same(corner) ? to : corner
+    )
+    return { ...entity, corners: [a, b, c, d] }
   }
   if (entity.type === "solid2d") {
     // A corner goes to the point in its plane, as a polyline's vertex does,

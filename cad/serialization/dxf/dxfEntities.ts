@@ -29,6 +29,7 @@ import {
   createCircle,
   createPoint,
   createSolid2d,
+  createFace3d,
   PointEntity,
   withXAxisAngle,
   createDimension,
@@ -126,6 +127,8 @@ export function dxfEntities(
       return made(pointObject(record, ctx))
     case "SOLID":
       return made(solid(record, ctx))
+    case "3DFACE":
+      return made(face3d(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -292,6 +295,20 @@ function solid(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
     r,
     ctx
   )
+}
+
+/**
+ * A 3DFACE: its corners in the WCS (10–13, a triangle's fourth its third, a
+ * missing one taken so too) and its hidden edges (70), as AutoCAD writes it
+ * (face3d/f09). No plane and no thickness: its corners hold their Z.
+ */
+function face3d(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const a = point(r, 10)
+  const b = point(r, 11)
+  const c = point(r, 12)
+  if (!a || !b || !c) return null
+  const d = point(r, 13) ?? c
+  return common(createFace3d([a, b, c, d], int(r, 70) ?? 0), r, ctx)
 }
 
 /** DXF writes a point in the WCS (point/p04), the model in the OCS of its 210. */

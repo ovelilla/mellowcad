@@ -137,6 +137,7 @@ export const it: EngineLocale = {
       "measuresegments": "Misura",
       "ptype": "Stile punto",
       "solid": "Solido 2D",
+      "face3d": "Faccia 3D",
       "leader": "Direttrice"
     },
     "description": {
@@ -392,6 +393,16 @@ export const it: EngineLocale = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Faccia 3D",
+            "other": "Facce 3D"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -567,6 +578,10 @@ export const it: EngineLocale = {
         "originY": "Origine Y",
         "associative": "Associativo",
         "islandDetectionStyle": "Stile individuazione isole",
+        "edge1": "Spigolo 1",
+        "edge2": "Spigolo 2",
+        "edge3": "Spigolo 3",
+        "edge4": "Spigolo 4",
         "gradientName": "Nome sfumatura",
         "color1": "Colore 1",
         "color2": "Colore 2",
@@ -681,6 +696,8 @@ export const it: EngineLocale = {
         "predefined": "Predefinito",
         "userDefined": "Definito dall'utente",
         "customPattern": "Personalizzato",
+        "edgeVisible": "Visibile",
+        "edgeHidden": "Nascosto",
         "gradient": "Sfumatura",
         "gradientLinear": "Lineare",
         "gradientCylinder": "Cilindrica",
@@ -735,6 +752,10 @@ export const it: EngineLocale = {
       "PLINE": [
         "PLINEA",
         "PL"
+      ],
+      "3DFACE": [
+        "3DFACCIA",
+        "3F"
       ],
       "3DPOLY": [
         "3DPOLI",
@@ -1355,6 +1376,9 @@ export const it: EngineLocale = {
       "LINE": {
         "Close": "Chiudi",
         "Undo": "Annulla"
+      },
+      "3DFACE": {
+        "Invisible": "Invisibile"
       },
       "3DPOLY": {
         "Close": "Chiudi",
@@ -3038,6 +3062,12 @@ export const it: EngineLocale = {
       "solidSecondPoint": "Specificare secondo punto",
       "solidThirdPoint": "Specificare terzo punto",
       "solidFourthPointOr": "Specificare quarto punto o",
+      "face3dFirstPoint": "Specificare primo punto o",
+      "face3dSecondPoint": "Specificare secondo punto o",
+      "face3dThirdPoint": "Specificare terzo punto o",
+      "face3dFourthPoint": "Specificare quarto punto o",
+      "exitFace3d": "Esci",
+      "createThreeSidedFace": "Crea faccia a tre lati",
       "exitSolid": "Esci",
       "leaderStartPoint": "Specificare il punto iniziale della direttrice",
       "leaderNextPoint": "Specificare il punto successivo",
@@ -6019,6 +6049,7 @@ export const it: EngineLocale = {
             "solid3d": "3DSOLID",
             "solid2d": "SOLIDO",
             "leader": "LEADER",
+            "face3d": "FACCIA 3D",
             "other": "SERIE"
           }
         ]
@@ -6117,6 +6148,62 @@ export const it: EngineLocale = {
       ],
       "listSolidAnd": [
         "                 e punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFirst": [
+        "             primo punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dSecond": [
+        "           secondo punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dThird": [
+        "             terzo punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFourth": [
+        "            quarto punto, X=",
         [
           "x"
         ],

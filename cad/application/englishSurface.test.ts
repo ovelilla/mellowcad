@@ -2419,6 +2419,20 @@ describe("the engine's English surface", () => {
         .do("exit", (c) => c.enter())
         .do("pick", (c) => c.click(at(5, 2)))
     )
+    walk("3DFACE", createHarness(), (s) =>
+      s
+        .do("3DFACE", (c) => c.command("3F"))
+        .do("first", (c) => c.type("0,0").enter())
+        .do("Enter refused", (c) => c.enter())
+        .do("Invisible", (c) => c.type("I").enter())
+        .do("second", (c) => c.type("10,0").enter())
+        .do("third", (c) => c.type("10,5,2").enter())
+        .do("fourth", (c) => c.type("0,5").enter())
+        .do("third again", (c) => c.type("20,0").enter())
+        .do("triangle", (c) => c.enter())
+        .do("exit", (c) => c.enter())
+        .do("pick", (c) => c.click(at(5, 5)))
+    )
     walk("LEADER", createHarness(), (s) =>
       s
         .do("LEADER", (c) => c.command("LEAD"))

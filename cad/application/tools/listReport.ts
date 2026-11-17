@@ -23,6 +23,7 @@ import type {
   InsertEntity,
   LineEntity,
   Solid2dEntity,
+  Face3dEntity,
   LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -117,6 +118,7 @@ type ObjectName =
   | "solid3d"
   | "solid2d"
   | "leader"
+  | "face3d"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -206,6 +208,9 @@ class Report {
         break
       case "solid2d":
         this.solid2d(entity)
+        break
+      case "face3d":
+        this.face3d(entity)
         break
       case "leader":
         this.leader(entity)
@@ -351,6 +356,19 @@ class Report {
     this.say("listSolidTo", this.xyz(c))
     this.say("listSolidAnd", this.xyz(d))
     this.sayExtrusion(solid)
+  }
+
+  /**
+   * As each console lists it (face3d/f03): its four corners in the UCS, a
+   * triangle's fourth its third, and nothing of its hidden edges.
+   */
+  private face3d(face: Face3dEntity): void {
+    this.header("face3d", face)
+    const [a, b, c, d] = face.corners.map((p) => this.ucsPoint(p))
+    this.say("listFace3dFirst", this.xyz(a))
+    this.say("listFace3dSecond", this.xyz(b))
+    this.say("listFace3dThird", this.xyz(c))
+    this.say("listFace3dFourth", this.xyz(d))
   }
 
   /**

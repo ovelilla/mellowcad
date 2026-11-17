@@ -23,6 +23,7 @@ import { loopReversed } from "../geometry/planarRegions"
 import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
 import { mapLeader } from "./leaders"
+import { face3dReflected } from "./faces3d"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -102,6 +103,12 @@ export function linearEntity(
         ...entity,
         vertices: entity.vertices.map((v) => ({ ...at(v), z: v.z })),
       }
+    case "face3d": {
+      // Its Z too; a reflecting map reverses its corners, as MIRROR does.
+      const [a, b, c, d] = entity.corners.map((v) => ({ ...at(v), z: v.z }))
+      const placed = { ...entity, corners: [a, b, c, d] as const }
+      return flips ? face3dReflected(placed) : placed
+    }
     case "dimension":
       return {
         ...entity,

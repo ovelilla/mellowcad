@@ -47,6 +47,7 @@ import {
 } from "./polylines"
 import { polylineOutline } from "./polylineOutline"
 import { polyline3dSegments } from "./polylines3d"
+import { face3dEdges } from "./faces3d"
 import { entityShape } from "./polylineFits"
 import { planar } from "../geometry/Vec3"
 import { closedSurfaceReach } from "../geometry/solids"
@@ -221,6 +222,21 @@ export function closestOnEntity(
         }
         if (candidate.distance < best.distance) best = candidate
       })
+      return best
+    }
+    case "face3d": {
+      // By its visible edges, in plan (face3d/f04: inside it selects nothing).
+      let best: ClosestResult = {
+        point: planar(entity.corners[0]),
+        distance: Infinity,
+        t: 0,
+      }
+      for (const [a, b] of face3dEdges(entity)) {
+        const candidate = closestPointOnSegment(a, b, point)
+        if (candidate.distance < best.distance) {
+          best = { ...candidate, point: planar(candidate.point) }
+        }
+      }
       return best
     }
     case "polyline3d": {
@@ -479,9 +495,11 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
       }
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
     }
+    case "face3d":
     case "polyline3d": {
-      const xs = entity.vertices.map((v) => v.x)
-      const ys = entity.vertices.map((v) => v.y)
+      const points = entity.type === "face3d" ? entity.corners : entity.vertices
+      const xs = points.map((v) => v.x)
+      const ys = points.map((v) => v.y)
       return {
         min: { x: Math.min(...xs), y: Math.min(...ys) },
         max: { x: Math.max(...xs), y: Math.max(...ys) },
@@ -773,6 +791,15 @@ export function entityCrossesRect(
           ) {
             return true
           }
+        }
+      }
+      return false
+    }
+    case "face3d": {
+      for (const [a, b] of face3dEdges(entity)) {
+        if (pointInRect(a, min, max) || pointInRect(b, min, max)) return true
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(a, b, e1, e2)) return true
         }
       }
       return false

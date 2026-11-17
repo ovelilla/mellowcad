@@ -2378,7 +2378,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity;
 
 export type { EntityColor }
 /**
@@ -2461,7 +2461,7 @@ export type EntityProperty =
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3491,6 +3491,26 @@ export interface Solid2dEntity extends BaseEntity, Thick {
         Vec2,
         Vec2
     ];
+}
+
+// domain/entityTypes.ts
+/**
+ * A 3D face (DXF 3DFACE, AutoCAD's 3DFACE): three or four corners in space,
+ * each with its own Z in the WCS, as a 3D polyline's vertices are, and no
+ * plane of its own; a triangle repeats its third corner as its fourth.
+ * {@link invisibleEdges} is DXF 70: bit `i` hides the edge from corner `i`
+ * to the next, which is then neither drawn, picked nor snapped to
+ * (face3d/f04, f09).
+ */
+export interface Face3dEntity extends BaseEntity {
+    readonly type: "face3d";
+    readonly corners: readonly [
+        Vec3,
+        Vec3,
+        Vec3,
+        Vec3
+    ];
+    readonly invisibleEdges?: number;
 }
 
 // domain/entityTypes.ts

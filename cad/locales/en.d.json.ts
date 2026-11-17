@@ -134,6 +134,7 @@ declare const source: {
       "measuresegments": string
       "ptype": string
       "solid": string
+      "face3d": string
       "leader": string
     }
     "description": {
@@ -262,6 +263,7 @@ declare const source: {
       "region": string
       "point": string
       "solid2d": string
+      "face3d": string
       "leader": string
     }
     "array": {
@@ -398,6 +400,10 @@ declare const source: {
         "originY": string
         "associative": string
         "islandDetectionStyle": string
+        "edge1": string
+        "edge2": string
+        "edge3": string
+        "edge4": string
         "gradientName": string
         "color1": string
         "color2": string
@@ -512,6 +518,8 @@ declare const source: {
         "predefined": string
         "userDefined": string
         "customPattern": string
+        "edgeVisible": string
+        "edgeHidden": string
         "gradient": string
         "gradientLinear": string
         "gradientCylinder": string
@@ -561,6 +569,7 @@ declare const source: {
     "names": {
       "LINE": string[]
       "PLINE": string[]
+      "3DFACE": string[]
       "3DPOLY": string[]
       "CIRCLE": string[]
       "CIRCLED": string[]
@@ -737,6 +746,9 @@ declare const source: {
       "LINE": {
         "Close": string
         "Undo": string
+      }
+      "3DFACE": {
+        "Invisible": string
       }
       "3DPOLY": {
         "Close": string
@@ -2335,6 +2347,12 @@ declare const source: {
       "solidSecondPoint": string
       "solidThirdPoint": string
       "solidFourthPointOr": string
+      "face3dFirstPoint": string
+      "face3dSecondPoint": string
+      "face3dThirdPoint": string
+      "face3dFourthPoint": string
+      "exitFace3d": string
+      "createThreeSidedFace": string
       "exitSolid": string
       "leaderStartPoint": string
       "leaderNextPoint": string
@@ -2843,6 +2861,10 @@ declare const source: {
       "listLineTo": string
       "listSolidFrom": string
       "listSolidAnd": string
+      "listFace3dFirst": string
+      "listFace3dSecond": string
+      "listFace3dThird": string
+      "listFace3dFourth": string
       "listSolidTo": string
       "listLineLength": string
       "listLine3d": string

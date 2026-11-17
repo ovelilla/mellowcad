@@ -137,6 +137,7 @@ export const ru: EngineLocale = {
       "measuresegments": "Разметить",
       "ptype": "Отображение точек",
       "solid": "2D-фигура",
+      "face3d": "3D-грань",
       "leader": "Выноска"
     },
     "description": {
@@ -426,6 +427,18 @@ export const ru: EngineLocale = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "3D-грань",
+            "few": "3D-грани",
+            "many": "3D-грани",
+            "other": "3D-грани"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -611,6 +624,10 @@ export const ru: EngineLocale = {
         "originY": "Исходная точка Y",
         "associative": "Ассоциативный",
         "islandDetectionStyle": "Стиль решения островков",
+        "edge1": "Кромка 1",
+        "edge2": "Кромка 2",
+        "edge3": "Кромка 3",
+        "edge4": "Кромка 4",
         "gradientName": "Имя градиента",
         "color1": "Цвет 1",
         "color2": "Цвет 2",
@@ -725,6 +742,8 @@ export const ru: EngineLocale = {
         "predefined": "Стандартный",
         "userDefined": "Из линий",
         "customPattern": "Пользовательский",
+        "edgeVisible": "Видимый",
+        "edgeHidden": "Скрытый",
         "gradient": "Градиент",
         "gradientLinear": "Линейный",
         "gradientCylinder": "Цилиндрический",
@@ -779,6 +798,11 @@ export const ru: EngineLocale = {
       "PLINE": [
         "ПЛИНИЯ",
         "ПЛ"
+      ],
+      "3DFACE": [
+        "3DГРАНЬ",
+        "3Г",
+        "3-ГРАНЬ"
       ],
       "3DPOLY": [
         "3DПЛИНИЯ",
@@ -1380,6 +1404,9 @@ export const ru: EngineLocale = {
       "LINE": {
         "Close": "Замкнуть",
         "Undo": "оТменить"
+      },
+      "3DFACE": {
+        "Invisible": "Невидимая"
       },
       "3DPOLY": {
         "Close": "Замкнуть",
@@ -3063,6 +3090,12 @@ export const ru: EngineLocale = {
       "solidSecondPoint": "Вторая точка",
       "solidThirdPoint": "Третья точка",
       "solidFourthPointOr": "Четвертая точка или",
+      "face3dFirstPoint": "Первая точка или",
+      "face3dSecondPoint": "Вторая точка или",
+      "face3dThirdPoint": "Третья точка или",
+      "face3dFourthPoint": "Четвертая точка или",
+      "exitFace3d": "выход",
+      "createThreeSidedFace": "создать треугольную грань",
       "exitSolid": "выход",
       "leaderStartPoint": "Начальная точка выноски",
       "leaderNextPoint": "Следующая точка",
@@ -6485,6 +6518,7 @@ export const ru: EngineLocale = {
             "solid3d": "3DSOLID",
             "solid2d": "SOLID",
             "leader": "LEADER",
+            "face3d": "3D-ГРАНЬ",
             "other": "МАССИВ"
           }
         ]
@@ -6583,6 +6617,62 @@ export const ru: EngineLocale = {
       ],
       "listSolidAnd": [
         "                 и точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFirst": [
+        "            первая точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dSecond": [
+        "            вторая точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dThird": [
+        "            третья точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFourth": [
+        "         четвертая точка, X=",
         [
           "x"
         ],

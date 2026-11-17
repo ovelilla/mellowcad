@@ -1,0 +1,17 @@
+_3DFACE
+_I
+0,0
+100,0
+100,50
+0,50
+
+_ZOOM
+_E
+(osnap (list 50 1 0) "_mid")
+(osnap (list 100 26 0) "_mid")
+(osnap (list 99 1 0) "_end")
+(osnap (list 50 30 0) "_nea")
+(osnap (list 50 1 0) "_nea")
+(sslength (ssget (list 50 0 0)))
+(ssget (list 50 25 0))
+(ssget (list 100 25 0))

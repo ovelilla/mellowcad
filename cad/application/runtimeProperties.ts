@@ -319,6 +319,24 @@ function applyInUcs(
     return replacePolyline3dVertex(entity, vertex, target)
   }
   if (
+    entity.type === "face3d" &&
+    (property === "vertexX" || property === "vertexY" || property === "vertexZ")
+  ) {
+    // Its corner is a point in space, as a 3D polyline's vertex is.
+    const at = entity.corners[vertex]
+    if (!at) return null
+    const axis =
+      property === "vertexX" ? "x" : property === "vertexY" ? "y" : "z"
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, at),
+      [axis]: value,
+    })
+    const [a, b, c, d] = entity.corners.map((corner, i) =>
+      i === vertex ? target : corner
+    )
+    return { ...entity, corners: [a, b, c, d] }
+  }
+  if (
     entity.type === "spline" &&
     (property === "vertexX" || property === "vertexY" || property === "vertexZ")
   ) {

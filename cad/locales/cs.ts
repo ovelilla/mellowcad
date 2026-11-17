@@ -137,6 +137,7 @@ export const cs: EngineLocale = {
       "measuresegments": "Dělit v měřítku",
       "ptype": "Styl bodu",
       "solid": "2D těleso",
+      "face3d": "3D plocha",
       "leader": "Odkaz"
     },
     "description": {
@@ -426,6 +427,18 @@ export const cs: EngineLocale = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "3D plocha",
+            "few": "3D plochy",
+            "many": "3D plochy",
+            "other": "3D plochy"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -611,6 +624,10 @@ export const cs: EngineLocale = {
         "originY": "Počátek Y",
         "associative": "Asociativní",
         "islandDetectionStyle": "Způsob detekce ostrůvků",
+        "edge1": "Hrana 1",
+        "edge2": "Hrana 2",
+        "edge3": "Hrana 3",
+        "edge4": "Hrana 4",
         "gradientName": "Název gradientu",
         "color1": "Barva 1",
         "color2": "Barva 2",
@@ -725,6 +742,8 @@ export const cs: EngineLocale = {
         "predefined": "Předdefinovaný",
         "userDefined": "Uživatelsky definovaný",
         "customPattern": "Vlastní",
+        "edgeVisible": "Viditelná",
+        "edgeHidden": "Skrytá",
         "gradient": "Gradient",
         "gradientLinear": "Lineární",
         "gradientCylinder": "Válcový",
@@ -779,6 +798,10 @@ export const cs: EngineLocale = {
       "PLINE": [
         "KŘIVKA",
         "K"
+      ],
+      "3DFACE": [
+        "3DPLOCHA",
+        "3L"
       ],
       "3DPOLY": [
         "3DKŘIVKA",
@@ -1400,6 +1423,9 @@ export const cs: EngineLocale = {
       "LINE": {
         "Close": "Uzavři",
         "Undo": "Zpět"
+      },
+      "3DFACE": {
+        "Invisible": "Neviditelný"
       },
       "3DPOLY": {
         "Close": "Uzavři",
@@ -3083,6 +3109,12 @@ export const cs: EngineLocale = {
       "solidSecondPoint": "Určete druhý bod",
       "solidThirdPoint": "Určete třetí bod",
       "solidFourthPointOr": "Zadejte čtvrtý bod nebo",
+      "face3dFirstPoint": "Zadejte první bod nebo",
+      "face3dSecondPoint": "Určete druhý bod nebo",
+      "face3dThirdPoint": "Určete třetí bod nebo",
+      "face3dFourthPoint": "Určete čtvrtý bod nebo",
+      "exitFace3d": "konec",
+      "createThreeSidedFace": "vytvoř trojstrannou plochu",
       "exitSolid": "konec",
       "leaderStartPoint": "Zadejte počáteční bod pozice",
       "leaderNextPoint": "Zadejte další bod",
@@ -6132,6 +6164,7 @@ export const cs: EngineLocale = {
             "solid3d": "3DSOLID",
             "solid2d": "SOLID",
             "leader": "LEADER",
+            "face3d": "3D PLOCHA",
             "other": "POLE"
           }
         ]
@@ -6230,6 +6263,62 @@ export const cs: EngineLocale = {
       ],
       "listSolidAnd": [
         "                 a bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFirst": [
+        "             první bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dSecond": [
+        "             druhý bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dThird": [
+        "             třetí bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFourth": [
+        "            čtvrtý bod, X=",
         [
           "x"
         ],

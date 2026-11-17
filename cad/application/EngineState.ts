@@ -43,6 +43,7 @@ import {
   polylineArea,
   polylineLength,
   polyline3dLength,
+  isFace3dEdgeVisible,
   polylineSegments,
   polylineConstantWidth,
   polylineWidth,
@@ -1541,6 +1542,37 @@ function singleEntityInfo(
                 ],
               },
             },
+          ]),
+        ],
+      }
+    }
+    case "face3d": {
+      // ax26res's rows (18, 20–24, 49): the current corner, its point in the
+      // UCS, and each edge Visible or Hidden, read-only here; their order and
+      // group unverified (no desktop pass).
+      const current = Math.min(vertex, 3)
+      const point = worldPointToUcs(settings.ucs, entity.corners[current])
+      const edge = (i: number) =>
+        text.propertyValue(
+          isFace3dEdgeVisible(entity, i) ? "edgeVisible" : "edgeHidden"
+        )
+      return {
+        title: title("face3d"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", point.x),
+            coordRow("vertexY", "vertexY", point.y),
+            coordRow("vertexZ", "vertexZ", point.z),
+            row("edge1", edge(0)),
+            row("edge2", edge(1)),
+            row("edge3", edge(2)),
+            row("edge4", edge(3)),
           ]),
         ],
       }

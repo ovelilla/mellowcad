@@ -332,6 +332,23 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           world: entity.position,
         })
         break
+      case "face3d":
+        // One at each corner, at its Z, coincident ones (a triangle's last
+        // two) under one, as a 2D solid's (unverified: no desktop pass).
+        entity.corners.forEach((corner, index) => {
+          if (
+            entity.corners
+              .slice(0, index)
+              .some((c) => V.equals(c, corner) && c.z === corner.z)
+          )
+            return
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: corner,
+          })
+        })
+        break
       case "solid2d":
         // One at each corner (solid2d/p08, desktop d01), corners on one
         // point (a triangle's last two) under one grip, which moves them

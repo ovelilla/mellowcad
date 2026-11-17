@@ -41,6 +41,8 @@ import {
   hatchGeometry,
   hatchGradientFill,
   GradientFill,
+  face3dEdges,
+  Face3dEntity,
   insertFlatGeometry,
   ellipseLengthTable,
   ellipsePointAt,
@@ -829,6 +831,8 @@ export function entityScenePrimitive(
     return linePrimitives(camera, entity, stroke, options)
   if (entity.type === "polyline3d")
     return polyline3dPrimitives(camera, entity, stroke, options)
+  if (entity.type === "face3d")
+    return face3dPrimitives(camera, entity, stroke, options)
   if (entity.type === "spline") {
     // Its points hold their Z, so it is drawn through them, not its plane.
     const axes = planeAxes(entity)
@@ -907,6 +911,24 @@ function polyline3dPrimitives(
   options: EntityDrawOptions
 ): ScenePrimitive[] {
   return polyline3dSegments(poly).flatMap(([a, b]) =>
+    lineSegments(
+      camera,
+      camera.worldToScreen(a),
+      camera.worldToScreen(b),
+      stroke,
+      options
+    )
+  )
+}
+
+/** A 3D face's visible edges, each at its corners' Z (face3d/f09). */
+function face3dPrimitives(
+  camera: CameraTransform,
+  face: Face3dEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  return face3dEdges(face).flatMap(([a, b]) =>
     lineSegments(
       camera,
       camera.worldToScreen(a),
@@ -1198,6 +1220,8 @@ function planarShapes(
       )
     case "polyline3d":
       return polyline3dPrimitives(camera, entity, stroke, options)
+    case "face3d":
+      return face3dPrimitives(camera, entity, stroke, options)
     case "solid2d": {
       // Filled only with FILLMODE on and seen square on; else its outline,
       // corners 1, 2, 4, 3 (solid2d/d02).
@@ -2237,7 +2261,8 @@ function pushEntities(
     entity: Entity,
     layer: Layer | undefined
   ): LinetypeTextLook | undefined => {
-    if (entity.type === "polyline3d") return undefined
+    if (entity.type === "polyline3d" || entity.type === "face3d")
+      return undefined
     const linetype = (look.linetypes ?? builtInLinetype)(
       entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
     )
@@ -2356,9 +2381,10 @@ export function entityStroke(
   // current zoom).
   const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
   // WHY: AutoCAD draws a 3D polyline continuous whatever linetype it keeps
-  // (3dpoly/p118, p122, p123); a fitted one is the same object.
+  // (3dpoly/p118, p122, p123); a fitted one is the same object. So it does a
+  // 3D face (face3d/f09: a DASHED one plotted continuous).
   const dash =
-    entity.type === "polyline3d"
+    entity.type === "polyline3d" || entity.type === "face3d"
       ? undefined
       : dashFor(
           (look.linetypes ?? builtInLinetype)(linetypeId)?.pattern ?? [],

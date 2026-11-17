@@ -837,6 +837,48 @@ entry)
 **Missing:** the thickness' top corners as grips and snaps (**unverified**: MPGRIPS lists them,
 p08). HATCH and BOUNDARY do not see it as a boundary, as AutoCAD's do not (p17)
 
+### `3DFACE` / `3F` · es `3DCARA` / `3C` · pt-BR `FACE3D` / `F3` · fr `FACE3D` / `3F` · it `3DFACCIA` / `3F` · de `3DFLÄCHE` / `3F` · ru `3DГРАНЬ` / `3Г` / `3-ГРАНЬ` · pl `3WPOW` / `3PO` · cs `3DPLOCHA` / `3L`
+
+**Implemented:** the 3D face — a model type of its own (DXF 3DFACE: four corners in the WCS, each
+with its Z, a triangle's fourth its third, and its hidden edges, DXF 70) — and 3DFACE as AutoCAD
+2027's console asks it (probes face3d/f00–f08; tables 20611–20615, the names from the help and
+each acad.pgp): `Specify first point or [Invisible]:`, `Specify second point or [Invisible]:`,
+`Specify third point or [Invisible] <exit>:`, `Specify fourth point or [Invisible] <create
+three-sided face>:` (es `Precise primer punto o [Invisible]` … `<crear cara con tres lados>`, de
+`Ersten Punkt angeben oder [Unsichtbar]`, in each language from its console, f02). The fourth
+point makes a face, Enter there a triangle; either way the command goes on at the third point,
+the next face starting from the last one's third and fourth corners (f00, f01); Enter at the first
+or the third point ends it, at the second `Point or option keyword required.` (f05). Invisible
+before a point hides the edge that starts there, typed twice it stays hidden; the next face's
+first edge, the shared one, keeps its hiding, the one from the fourth corner does not pass on, and
+a triangle's last edge hides with its third (f01, f06, f08: 70 4, 9, 10, 13, 0). Each point keeps
+its own Z; a rubber band runs from the last point; each face wears the current properties; not
+transparent. Drawn by its visible edges, continuous whatever its linetype (f09: a DASHED one plots
+continuous, as a 3D polyline does), and picked, snapped (Endpoint, Midpoint, Nearest…) and
+crossed by them: an invisible edge has no Midpoint or Nearest and selects nothing, nor does a
+click inside (f04). MOVE, COPY, ROTATE and SCALE move its corners, Z kept or scaled; MIRROR
+reflects them in the reverse order, its first edge becoming its third (f10, f11); STRETCH moves the
+corners its window catches with their Z (f10); a block reference places it, reversed when it
+reflects. EXPLODE `1 was not able to be exploded.` (f01), OFFSET `Cannot offset that object.`,
+BREAK `Object can't be broken`, FILLET `Fillet requires 2 lines, arcs, or circles.`, CHAMFER
+`Chamfer requires 2 lines.`, EXTEND `Cannot EXTEND this object.`, DIVIDE `Cannot divide that
+object.`, AREA `Selected object does not have an area` (f07, f12, f13). A grip at each corner, at
+its Z, coincident ones as one, which moves it with its Z; the Properties palette's Current Vertex,
+Vertex X, Y and Z (read in the UCS) and Edge 1 to 4 `Visible` or `Hidden` (ax26res 18, 20–24, 49:
+es `Arista 1`, `Visible`/`Oculta`), its type `3D Face` (279). LIST writes its four corners as each
+console does (`first point, X=…`; es `primer punto`, de `erste Punkt`, fr `1er point`: f03).
+Typed only: acad.cuix's ID_3dface is on no ribbon panel, only the menu bar's Draw > Modeling >
+Meshes. Saved from drawing file version 57; a DXF opens and saves it (clipboard-and-files.md).
+
+**Deviations:** the grips, the palette's rows and their order are **unverified** on the desktop
+(no pass); a grip dragged and the rubber band show in the current colour (**unverified**)
+
+**Missing:** a shaded or hidden view's face (a 3D face is filled and hides what is behind it off
+2D Wireframe: here only its edges, in every visual style); REGION's region of it (`1 loop
+extracted.`, f07); the palette's Edge rows as choices; UCS OBject's frame from it (origin at its
+first corner, X along its first edge, Y towards its fourth: here as a 3D polyline's,
+**unverified**); EDGE, which hides or shows an edge of one; PFACE and the meshes
+
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE` · it `TESTO` / `T` / `TD` / `TESTODIN` / `-TESTO` · de `TEXT` / `DT` / `DTEXT` / `-TEXT` · ru `ТЕКСТ` / `ДТ` / `ДТЕКСТ` / `-ТЕКСТ` · pl `TEKST` / `DT` / `DTEKST` / `-TEKST` · cs `TEXT` / `DT` / `DTEXT` / `-TEXT`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console

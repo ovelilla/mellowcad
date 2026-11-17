@@ -93,6 +93,17 @@ const FROM_SCRATCH: ReadonlyArray<
         .click(p(40, 90))
         .enter(),
   ],
+  [
+    "3DFACE",
+    (c) =>
+      c
+        .command("3DFACE")
+        .click(p(0, 50))
+        .click(p(40, 50))
+        .click(p(40, 90))
+        .click(p(0, 90))
+        .enter(),
+  ],
   // leader/p01: the leader and its text, both in the current properties.
   [
     "LEADER",

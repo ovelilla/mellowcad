@@ -1,5 +1,15 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, WORLD_Z, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
+import {
+  Vec3,
+  WORLD_Z,
+  add3,
+  cross3,
+  dot3,
+  scale3,
+  sub3,
+  withZ,
+  zOf,
+} from "../geometry/Vec3"
 import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
 import { sameHeightBulge } from "../geometry/bulgeArcs"
 import { Linear2, composeLinear, rotationLinear } from "../geometry/linear"
@@ -24,6 +34,7 @@ import {
   LineEntity,
   PolylineWidth,
   Polyline3dEntity,
+  Face3dEntity,
   SplineEntity,
   Entity,
   RegionEntity,
@@ -71,6 +82,7 @@ import { carryOverrides } from "./entityOverrides"
 import { mappedFit, polylineRefitted } from "./polylineFits"
 import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
+import { face3dReflected } from "./faces3d"
 import { leaderGripIndices, mapLeader, stretchLeaderVertices } from "./leaders"
 import {
   entityAxes,
@@ -331,6 +343,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
         ...entity,
         vertices: entity.vertices.map((v) => ({ ...V.add(v, delta), z: v.z })),
       }
+    case "face3d":
+      return planarCorners(entity, (v) => V.add(v, delta))
     case "text":
     case "mtext":
     case "attdef":
@@ -442,6 +456,16 @@ export function stretchEntity(
             : v
         ),
       }
+    case "face3d":
+      // So does each caught corner (face3d/f10: 10,0,5 lifts two by 5).
+      return entity.type === "face3d"
+        ? {
+            ...planar,
+            corners: mapCorners(planar.corners, (v, i) =>
+              inFrame(entity.corners[i]) ? { ...v, z: v.z + dz } : v
+            ),
+          }
+        : planar
     case "circle":
     case "ellipse":
     case "text":
@@ -495,6 +519,8 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     case "polyline":
     case "polyline3d":
       return entity.vertices
+    case "face3d":
+      return entity.corners
     case "spline":
       return entity.points
     case "dimension": {
@@ -556,6 +582,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "region":
     case "solid2d":
     case "leader":
+    case "face3d":
       return stretchVertices(entity)
     default: {
       const unhandled: never = entity
@@ -617,6 +644,13 @@ function stretchPlanar(
       return {
         ...entity,
         vertices: entity.vertices.map((v) =>
+          inFrame(v) ? { ...V.add(v, delta), z: v.z } : v
+        ),
+      }
+    case "face3d":
+      return {
+        ...entity,
+        corners: mapCorners(entity.corners, (v) =>
           inFrame(v) ? { ...V.add(v, delta), z: v.z } : v
         ),
       }
@@ -729,7 +763,7 @@ function dimensionLinePoint(dim: DimensionEntity): Vec2 | null {
  * `delta`, on the same layer — the building block of the COPY command.
  */
 export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
-  if (isTilted(entity) || entity.type === "solid3d")
+  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
     return freshCopy(translateEntity(entity, delta))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -890,6 +924,8 @@ function rotateFlat(
       return mapSplinePoints(entity, (p) => rotatePoint(p, pivot, radians))
     case "polyline3d":
       return planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
+    case "face3d":
+      return planarCorners(entity, (v) => rotatePoint(v, pivot, radians))
     case "polyline":
       return {
         ...entity,
@@ -967,7 +1003,11 @@ export function rotateEntityCopy(
   pivot: Vec2,
   radians: number
 ): Entity {
-  if (isTilted(entity) || entity.type === "solid3d") {
+  if (
+    isTilted(entity) ||
+    entity.type === "solid3d" ||
+    entity.type === "face3d"
+  ) {
     return freshCopy(rotateEntity(entity, pivot, radians))
   }
   const copy: Entity = (() => {
@@ -1160,6 +1200,8 @@ function scalePlanar(
       return mapSplinePoints(entity, (p) => scalePoint(p, base, factor))
     case "polyline3d":
       return planarVertices3d(entity, (v) => scalePoint(v, base, factor))
+    case "face3d":
+      return planarCorners(entity, (v) => scalePoint(v, base, factor))
     case "polyline":
       return {
         ...entity,
@@ -1235,7 +1277,7 @@ export function scaleEntityCopy(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
-  if (isTilted(entity) || entity.type === "solid3d")
+  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
     return freshCopy(scaleEntity(entity, base, factor))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -1421,6 +1463,8 @@ function mirrorFlat(
       return mapSplinePoints(entity, (p) => mirrorPoint(p, a, b))
     case "polyline3d":
       return planarVertices3d(entity, (v) => mirrorPoint(v, a, b))
+    case "face3d":
+      return face3dReflected(planarCorners(entity, (v) => mirrorPoint(v, a, b)))
     case "polyline":
       return {
         ...entity,
@@ -1631,7 +1675,7 @@ function mirrorAngle(angle: number, a: Vec2, b: Vec2): number {
  * through `a`,`b`, on the same layer — MIRROR when the source is kept.
  */
 export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
-  if (isTilted(entity) || entity.type === "solid3d")
+  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
     return freshCopy(mirrorEntity(entity, a, b))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -1862,6 +1906,11 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
       vertices: entity.vertices.map((v) => apply(v)),
     }
   }
+  if (entity.type === "face3d") {
+    const { x, y, z } = map.rotation
+    const moved = { ...entity, corners: mapCorners(entity.corners, apply) }
+    return dot3(cross3(x, y), z) < 0 ? face3dReflected(moved) : moved
+  }
   const from = entityAxes(entity)
   const to = arbitraryAxis(normal) ?? from
   const alongX = worldToAxes(to, axesToWorld(map.rotation, from.x))
@@ -1897,6 +1946,7 @@ export function entityInOcs(entity: Entity, normal: Vec3): Entity {
   if (
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
+    entity.type !== "face3d" &&
     entity.type !== "solid3d" &&
     facesAlong(entity, axes.z)
   ) {
@@ -1916,6 +1966,7 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
   if (
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
+    entity.type !== "face3d" &&
     entity.type !== "solid3d" &&
     !isTilted(entity)
   ) {
@@ -1926,6 +1977,29 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
     scale: 1,
     translation: NO_SHIFT,
   })
+}
+
+/** A 3D face with each corner's plan mapped, its Z kept. */
+function planarCorners(
+  face: Face3dEntity,
+  map: (point: Vec2) => Vec2
+): Face3dEntity {
+  return {
+    ...face,
+    corners: mapCorners(face.corners, (v) => ({ ...map(v), z: v.z })),
+  }
+}
+
+function mapCorners(
+  corners: Face3dEntity["corners"],
+  map: (corner: Vec3, index: number) => Vec3
+): Face3dEntity["corners"] {
+  return [
+    map(corners[0], 0),
+    map(corners[1], 1),
+    map(corners[2], 2),
+    map(corners[3], 3),
+  ]
 }
 
 /** A 3D polyline whose vertices `map` moves in plan, each keeping its Z. */

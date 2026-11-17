@@ -18,6 +18,7 @@ import {
   EllipseEntity,
   Entity,
   HatchEntity,
+  Face3dEntity,
   InsertEntity,
   LeaderEntity,
   LineEntity,
@@ -157,6 +158,8 @@ export function writeEntity(
       return pointObject(ctx, entity, owner)
     case "solid2d":
       return solid(ctx, entity, owner)
+    case "face3d":
+      return face3d(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -224,6 +227,17 @@ function solid(ctx: DxfWriteContext, e: Solid2dEntity, owner: string): void {
   e.corners.forEach((corner, i) => out.point(10 + i, corner.x, corner.y, z))
   thickness(ctx, e)
   writeNormal(ctx, e)
+}
+
+/** A 3D face as AutoCAD writes it (face3d/f09): its WCS corners, 70 only for hidden edges. */
+function face3d(ctx: DxfWriteContext, e: Face3dEntity, owner: string): void {
+  const { out } = ctx
+  head(ctx, "3DFACE", e, owner)
+  out.str(100, "AcDbFace")
+  e.corners.forEach((corner, i) =>
+    out.point(10 + i, corner.x, corner.y, corner.z)
+  )
+  if (e.invisibleEdges) out.int(70, e.invisibleEdges)
 }
 
 /** A point is the WCS's in a DXF, as AutoCAD writes it (point/p04). */

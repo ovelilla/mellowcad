@@ -14,6 +14,7 @@ import {
   ArcEntity,
   CircleEntity,
   Entity,
+  Face3dEntity,
   LineEntity,
   PointEntity,
   PolylineEntity,
@@ -21,6 +22,7 @@ import {
   SplineEntity,
 } from "./entityTypes"
 import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
+import { closestPointOnFace3d } from "./faces3d"
 import { isLevelSpline, splineZAt } from "./splines"
 import { brepAnchor, brepMapped, unsigned0 } from "../geometry/solids"
 
@@ -163,6 +165,7 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
  */
 export function entityElevation(entity: Entity): number {
   if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
+  if (entity.type === "face3d") return entity.corners[0].z
   if (entity.type === "solid3d") return brepAnchor(entity.brep).z
   if (entity.type === "spline") return entity.points[0]?.z ?? 0
   return entity.elevation ?? 0
@@ -203,7 +206,11 @@ function withField<T extends Entity>(
 
 /** A spline's points hold their Z: they rise or fall together, its start to `z`. */
 export function withElevation<T extends Entity>(entity: T, z: number): T {
-  if (entity.type === "spline" || entity.type === "solid3d") {
+  if (
+    entity.type === "spline" ||
+    entity.type === "solid3d" ||
+    entity.type === "face3d"
+  ) {
     return shiftEntityZ(entity, z - entityElevation(entity))
   }
   return withField(entity, "elevation", z)
@@ -237,6 +244,12 @@ export function shiftEntityZ<T extends Entity>(entity: T, dz: number): T {
       vertices: entity.vertices.map((v) => ({ ...v, z: v.z + dz })),
     }
   }
+  if (entity.type === "face3d") {
+    return {
+      ...entity,
+      corners: mapCorners(entity.corners, (v) => ({ ...v, z: v.z + dz })),
+    }
+  }
   if (entity.type === "spline") {
     return {
       ...entity,
@@ -259,6 +272,15 @@ export function scaleEntityZ<T extends Entity>(
     return {
       ...entity,
       vertices: entity.vertices.map((v) => ({
+        ...v,
+        z: baseZ + (v.z - baseZ) * factor,
+      })),
+    }
+  }
+  if (entity.type === "face3d") {
+    return {
+      ...entity,
+      corners: mapCorners(entity.corners, (v) => ({
         ...v,
         z: baseZ + (v.z - baseZ) * factor,
       })),
@@ -307,10 +329,13 @@ function scaleSplineZ(
  * points always are.
  */
 export function carryPlane<T extends Entity>(source: Entity, target: T): T {
-  // A 3D polyline or a solid has no plane to give, nor one to take: its points hold their Z.
+  // A 3D polyline, a 3D face or a solid has no plane to give, nor one to
+  // take: its points hold their Z.
   if (
     source.type === "polyline3d" ||
     target.type === "polyline3d" ||
+    source.type === "face3d" ||
+    target.type === "face3d" ||
     source.type === "solid3d" ||
     target.type === "solid3d"
   ) {
@@ -367,6 +392,7 @@ export function entityZAt(entity: Entity, point: Vec2): number {
   if (entity.type === "polyline3d") {
     return closestPointOnPolyline3d(entity, point).z
   }
+  if (entity.type === "face3d") return closestPointOnFace3d(entity, point).z
   if (entity.type === "spline") return splineZAt(entity, point)
   if (entity.type !== "line" || !entity.deltaZ) return entityElevation(entity)
   const dx = entity.end.x - entity.start.x
@@ -406,6 +432,11 @@ const PLANE_TOLERANCE = 1e-9
 /** Whether the object lies in one plane parallel to the XY plane: a line must not rise. */
 export function isLevel(entity: Entity): boolean {
   if (entity.type === "polyline3d") return isLevelPolyline3d(entity)
+  if (entity.type === "face3d") {
+    return entity.corners.every(
+      (c) => Math.abs(c.z - entity.corners[0].z) <= PLANE_TOLERANCE
+    )
+  }
   if (entity.type === "solid3d") return false
   if (entity.type === "spline") return isLevelSpline(entity)
   return (
@@ -447,9 +478,11 @@ export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
         on({ ...entity.end, z: lineEndZ(entity) })
       : entity.type === "polyline3d"
         ? entity.vertices.every(on)
-        : isLevel(entity) &&
-          facesAlong(entity, normal) &&
-          Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
+        : entity.type === "face3d"
+          ? entity.corners.every(on)
+          : isLevel(entity) &&
+            facesAlong(entity, normal) &&
+            Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
   return lies(a) && lies(b)
 }
 
@@ -540,3 +573,11 @@ export function splineOnItsPlane(spline: SplineEntity): SplineEntity {
 
 /** How far off a plane, in units of the spline's size, its points may lie and still be in it. */
 const SPLINE_PLANE_TOLERANCE = 1e-10
+
+/** A 3D face's corners, each mapped. */
+function mapCorners(
+  corners: Face3dEntity["corners"],
+  map: (corner: Vec3) => Vec3
+): Face3dEntity["corners"] {
+  return [map(corners[0]), map(corners[1]), map(corners[2]), map(corners[3])]
+}

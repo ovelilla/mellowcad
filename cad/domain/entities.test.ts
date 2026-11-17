@@ -822,6 +822,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
     case "polyline3d":
       // A fitted one's curve's: a Spline's frame lies off it.
       return [...entityShape(entity).vertices]
+    case "face3d":
+      return [...entity.corners]
     case "text":
     case "mtext":
     case "attdef":

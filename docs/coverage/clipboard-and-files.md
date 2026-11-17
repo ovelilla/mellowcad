@@ -122,7 +122,9 @@ registry's for its name, as AutoCAD draws a hatch from the lines it holds (hatch
 AutoCAD has not, a `_U`, plotted alike): HOUND, GRASS, INSUL, P1, `_USER`, `U` and `_U` of 11 of
 AutoCAD's samples (37 hatches that drew no pattern) and acad.pat's inch lines of AR-CONC, STEEL,
 LINE, ANSI31 and others in metric drawings (408 hatches drawn 25.4 times too sparse before): 445
-hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, a
+hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, 3DFACE
+with its WCS corners and hidden edges (face3d/f09, AutoCAD's own file; the 30 of 8 of AutoCAD's
+samples, the labels' backgrounds of its blocks, and 1 of another program's file), a
 hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
 one colour's tint, 452 and 462; its angle, 460, and shift, 461, any but 0 read not centred), drawn
 as AutoCAD draws it (HATCH's entry; gradient/g16, AutoCAD's own file: the nine names, two off
@@ -188,7 +190,7 @@ load (the browser gives no path, and asking for each file would be a gesture of 
 keeps the command language it was opened in, AutoCAD's following its own
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
-3DFACE, XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
+XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
 TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
@@ -238,7 +240,9 @@ its DXFOUT 2000 does (a SOLID with each colour's index as `GradientColor1ACI` an
 in the six versions, ASCII and binary, with no AUDIT error, reads 2004 on back as its gradients
 and plots them as its own file (g17), a
 point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
-2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a leader as AutoCAD's
+2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a 3D face's WCS corners
+and, only when an edge is hidden, its 70 (face3d/f09: the console opens the 12 files of its drawing
+with no AUDIT error and plots them as its own), a leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
 its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given
 together (leader/p22), an external reference as AutoCAD's DXFOUT keeps one it could not find: its

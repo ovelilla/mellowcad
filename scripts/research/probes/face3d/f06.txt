@@ -1,0 +1,19 @@
+_3DFACE
+0,0
+_I
+_I
+100,0
+100,50
+_I
+0,50
+
+(cdr (assoc 70 (entget (entlast))))
+_3DFACE
+_I
+0,100
+100,100
+_I
+100,150
+
+
+(cdr (assoc 70 (entget (entlast))))

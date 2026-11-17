@@ -11,6 +11,7 @@ import type {
   EllipseEntity,
   Entity,
   HatchEntity,
+  Face3dEntity,
   InsertEntity,
   LineEntity,
   MTextEntity,
@@ -1107,5 +1108,41 @@ describe("parseDxf: an invisible object (60 1)", () => {
     expect((drawing.entities[0] as LineEntity).end.x).toBe(2)
     expect(report.leftOut.size).toBe(0)
     expect(report.unreadable).toBe(0)
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's 3D faces (face3d/f09)", () => {
+  // A flat quad, a triangle, a chained pair with hidden edges, a tilted quad
+  // and a red DASHED one, as AutoCAD's DXFOUT wrote them.
+  const { drawing, report } = parseDxf(fixture("faces-2018"))
+  const faces = drawing.entities.filter(
+    (e): e is Face3dEntity => e.type === "face3d"
+  )
+  const xyz = (f: Face3dEntity) => f.corners.map((c) => [c.x, c.y, c.z])
+
+  it("opens every face, none left out", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(faces).toHaveLength(6)
+  })
+
+  it("keeps the corners in the WCS, a triangle's fourth its third", () => {
+    expect(xyz(faces[1])).toEqual([
+      [150, 0, 0],
+      [250, 0, 0],
+      [200, 50, 0],
+      [200, 50, 0],
+    ])
+    expect(xyz(faces[4])).toEqual([
+      [300, 0, 0],
+      [400, 0, 0],
+      [400, 50, 40],
+      [300, 50, 40],
+    ])
+  })
+
+  it("keeps the hidden edges (70) and the object's colour and linetype", () => {
+    expect(faces.map((f) => f.invisibleEdges ?? 0)).toEqual([0, 0, 4, 9, 0, 0])
+    expect(faces[5]).toMatchObject({ color: "#ff0000", linetypeScale: 2 })
+    expect(faces[5].linetype).toBeDefined()
   })
 })

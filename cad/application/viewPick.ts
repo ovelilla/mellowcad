@@ -157,6 +157,7 @@ export function screenDistanceToEntity(
   if (
     entity.type === "line" ||
     entity.type === "polyline3d" ||
+    entity.type === "face3d" ||
     entity.type === "solid3d" ||
     (entity.type === "spline" && !isLevel(entity))
   ) {

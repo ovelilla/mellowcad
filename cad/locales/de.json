@@ -133,6 +133,7 @@
       "measuresegments": "Messen",
       "ptype": "Punktstil",
       "solid": "2D-Volumenkörper",
+      "face3d": "3D-Fläche",
       "leader": "Führung"
     },
     "description": {
@@ -235,6 +236,7 @@
       "region": "{count, plural, one {Region} other {Regionen}}",
       "point": "{count, plural, one {Punkt} other {Punkte}}",
       "solid2d": "{count, plural, one {Körper} other {Körper}}",
+      "face3d": "{count, plural, one {3D-Fläche} other {3D-Flächen}}",
       "leader": "{count, plural, one {Führung} other {Führungen}}"
     },
     "array": {
@@ -371,6 +373,10 @@
         "originY": "Ursprung Y",
         "associative": "Assoziativ",
         "islandDetectionStyle": "Inselerkennungsstil",
+        "edge1": "Kante 1",
+        "edge2": "Kante 2",
+        "edge3": "Kante 3",
+        "edge4": "Kante 4",
         "gradientName": "Abstufungsname",
         "color1": "Farbe 1",
         "color2": "Farbe 2",
@@ -485,6 +491,8 @@
         "predefined": "Vordefiniert",
         "userDefined": "Benutzerdefiniert",
         "customPattern": "Benutzerspezifisch",
+        "edgeVisible": "Sichtbar",
+        "edgeHidden": "Verdeckt",
         "gradient": "Abstufung",
         "gradientLinear": "Linear",
         "gradientCylinder": "Zylindrisch",
@@ -534,6 +542,7 @@
     "names": {
       "LINE": ["LINIE", "L"],
       "PLINE": ["PLINIE", "PL"],
+      "3DFACE": ["3DFLÄCHE", "3F"],
       "3DPOLY": ["3DPOLY", "3DP"],
       "CIRCLE": ["KREIS", "K"],
       "CIRCLED": ["KREISD"],
@@ -718,6 +727,7 @@
         "Close": "Schließen",
         "Undo": "Zurück"
       },
+      "3DFACE": { "Invisible": "Unsichtbar" },
       "3DPOLY": {
         "Close": "Schließen",
         "Undo": "Zurück"
@@ -2313,6 +2323,12 @@
       "solidSecondPoint": "Zweiten Punkt angeben",
       "solidThirdPoint": "Dritten Punkt angeben",
       "solidFourthPointOr": "Vierten Punkt angeben oder",
+      "face3dFirstPoint": "Ersten Punkt angeben oder",
+      "face3dSecondPoint": "Zweiten Punkt angeben oder",
+      "face3dThirdPoint": "Dritten Punkt angeben oder",
+      "face3dFourthPoint": "Vierten Punkt angeben oder",
+      "exitFace3d": "beenden",
+      "createThreeSidedFace": "dreiseitige Fläche erstellen",
       "exitSolid": "beenden",
       "leaderStartPoint": "Anfangspunkt der Führungslinie angeben",
       "leaderNextPoint": "Nächsten Punkt angeben",
@@ -2832,7 +2848,7 @@
       "notAFitPoint": "Kein Anpassungspunkt.",
       "notAControlVertex": "Kein Kontrollscheitelpunkt.",
       "allAdditionsUndone": "Alle Hinzufügungen wurden rückgängig gemacht.",
-      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} other {REIHE}}",
+      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} other {REIHE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Bereich: Modellbereich",
       "listColor": "                   Farbe: {color}    Linientyp: \"{linetype}\"",
@@ -2843,6 +2859,10 @@
       "listLineTo": "              nach Punkt, X={x}  Y={y}  Z={z}",
       "listSolidFrom": "               von Punkt, X={x}  Y={y}  Z={z}",
       "listSolidAnd": "               und Punkt, X={x}  Y={y}  Z={z}",
+      "listFace3dFirst": "             erste Punkt, X={x}  Y={y}  Z={z}",
+      "listFace3dSecond": "            zweite Punkt, X={x}  Y={y}  Z={z}",
+      "listFace3dThird": "            dritte Punkt, X={x}  Y={y}  Z={z}",
+      "listFace3dFourth": "            vierte Punkt, X={x}  Y={y}  Z={z}",
       "listSolidTo": "              nach Punkt, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {Im aktuellen BKS, } other {}}Länge ={length},  Winkel in XY-Ebene = {angle}",
       "listLine3d": "                  3D-Länge  ={length},  Winkel aus XY-Ebene = {angle}",

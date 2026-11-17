@@ -137,6 +137,7 @@ export const en: EngineCatalog = {
       "measuresegments": "Measure",
       "ptype": "Point Style",
       "solid": "2D Solid",
+      "face3d": "3D Face",
       "leader": "Leader"
     },
     "description": {
@@ -395,6 +396,16 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "3D Face",
+            "other": "3D Faces"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -570,6 +581,10 @@ export const en: EngineCatalog = {
         "originY": "Origin Y",
         "associative": "Associative",
         "islandDetectionStyle": "Island detection style",
+        "edge1": "Edge 1",
+        "edge2": "Edge 2",
+        "edge3": "Edge 3",
+        "edge4": "Edge 4",
         "gradientName": "Gradient name",
         "color1": "Color 1",
         "color2": "Color 2",
@@ -684,6 +699,8 @@ export const en: EngineCatalog = {
         "predefined": "Predefined",
         "userDefined": "User-defined",
         "customPattern": "Custom",
+        "edgeVisible": "Visible",
+        "edgeHidden": "Hidden",
         "gradient": "Gradient",
         "gradientLinear": "Linear",
         "gradientCylinder": "Cylindrical",
@@ -738,6 +755,10 @@ export const en: EngineCatalog = {
       "PLINE": [
         "PLINE",
         "PL"
+      ],
+      "3DFACE": [
+        "3DFACE",
+        "3F"
       ],
       "3DPOLY": [
         "3DPOLY",
@@ -2348,6 +2369,12 @@ export const en: EngineCatalog = {
       "solidSecondPoint": "Specify second point",
       "solidThirdPoint": "Specify third point",
       "solidFourthPointOr": "Specify fourth point or",
+      "face3dFirstPoint": "Specify first point or",
+      "face3dSecondPoint": "Specify second point or",
+      "face3dThirdPoint": "Specify third point or",
+      "face3dFourthPoint": "Specify fourth point or",
+      "exitFace3d": "exit",
+      "createThreeSidedFace": "create three-sided face",
       "exitSolid": "exit",
       "leaderStartPoint": "Specify leader start point",
       "leaderNextPoint": "Specify next point",
@@ -5322,6 +5349,7 @@ export const en: EngineCatalog = {
             "solid3d": "3DSOLID",
             "solid2d": "SOLID",
             "leader": "LEADER",
+            "face3d": "3D FACE",
             "other": "ARRAY"
           }
         ]
@@ -5420,6 +5448,62 @@ export const en: EngineCatalog = {
       ],
       "listSolidAnd": [
         "               and point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFirst": [
+        "             first point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dSecond": [
+        "            second point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dThird": [
+        "             third point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listFace3dFourth": [
+        "            fourth point, X=",
         [
           "x"
         ],

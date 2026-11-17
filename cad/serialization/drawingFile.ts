@@ -153,7 +153,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 56
+export const DRAWING_FILE_VERSION = 57
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -532,6 +532,20 @@ function cloneEntityShape(entity: Entity): Entity {
         closed: entity.closed,
         ...(entity.fit ? { fit: { ...entity.fit } } : {}),
       }
+    case "face3d": {
+      const [a, b, c, d] = entity.corners
+      const at = (v: Vec3): Vec3 => ({ x: v.x, y: v.y, z: v.z })
+      return {
+        id: entity.id,
+        type: "face3d",
+        layerId: entity.layerId,
+        ...overrides,
+        corners: [at(a), at(b), at(c), at(d)],
+        ...(entity.invisibleEdges
+          ? { invisibleEdges: entity.invisibleEdges }
+          : {}),
+      }
+    }
     case "text":
       return {
         id: entity.id,
@@ -1612,6 +1626,23 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
           ? { linetypeGeneration: true as const }
           : {}),
         ...parsedFit(raw.fit, vertices.length, closed),
+      }
+    }
+    case "face3d": {
+      // Since 57; four corners with their Z, or nothing.
+      if (!Array.isArray(raw.corners) || raw.corners.length !== 4) return null
+      const [a, b, c, d] = raw.corners.map(parseVec3)
+      if (!a || !b || !c || !d) return null
+      const bits = raw.invisibleEdges
+      return {
+        id,
+        type: "face3d",
+        layerId,
+        ...overrides,
+        corners: [a, b, c, d],
+        ...(typeof bits === "number" && Number.isInteger(bits) && bits & 15
+          ? { invisibleEdges: bits & 15 }
+          : {}),
       }
     }
     case "polyline3d": {

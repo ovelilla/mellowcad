@@ -137,6 +137,7 @@ export const ar: EngineLocale = {
       "measuresegments": "قياس",
       "ptype": "نمط النقطة",
       "solid": "مجسم ثنائي الأبعاد",
+      "face3d": "وجه ثلاثي الأبعاد",
       "leader": "خط إشارة"
     },
     "description": {
@@ -409,6 +410,17 @@ export const ar: EngineLocale = {
           }
         ]
       ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "وجه ثلاثي الأبعاد",
+            "two": "وجهان ثلاثيا الأبعاد",
+            "other": "أوجه ثلاثية الأبعاد"
+          }
+        ]
+      ],
       "leader": [
         [
           "count",
@@ -592,6 +604,10 @@ export const ar: EngineLocale = {
         "originY": "نقطة الأصل Y",
         "associative": "ترابطي",
         "islandDetectionStyle": "نمط اكتشاف الجزر",
+        "edge1": "الحافة 1",
+        "edge2": "الحافة 2",
+        "edge3": "الحافة 3",
+        "edge4": "الحافة 4",
         "gradientName": "اسم التدرج",
         "color1": "اللون 1",
         "color2": "اللون 2",
@@ -706,6 +722,8 @@ export const ar: EngineLocale = {
         "predefined": "معرّف مسبقًا",
         "userDefined": "معرّف من قِبل المستخدم",
         "customPattern": "مخصص",
+        "edgeVisible": "مرئية",
+        "edgeHidden": "مخفية",
         "gradient": "تدرج",
         "gradientLinear": "خطي",
         "gradientCylinder": "أسطواني",

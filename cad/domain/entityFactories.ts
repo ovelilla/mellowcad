@@ -22,6 +22,7 @@ import {
   PolylineEntity,
   PolylineWidth,
   Polyline3dEntity,
+  Face3dEntity,
   HatchLoop,
   HatchEntity,
   BlockId,
@@ -154,6 +155,27 @@ export function createPolyline(
 }
 
 /** A 2D point is at Z 0: the tool gives each its Z (ELEVATION, 3dpoly/p04). */
+/**
+ * A 3D face of four corners in the WCS, each keeping its Z (a 2D point lies
+ * at Z 0); a triangle's fourth is its third. `invisibleEdges` is DXF 70's
+ * bits, stored only when some edge is hidden.
+ */
+export function createFace3d(
+  corners: readonly [Vec2 | Vec3, Vec2 | Vec3, Vec2 | Vec3, Vec2 | Vec3],
+  invisibleEdges = 0,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): Face3dEntity {
+  const at = (p: Vec2 | Vec3): Vec3 => ({ x: p.x, y: p.y, z: zOf(p) })
+  return {
+    id,
+    type: "face3d",
+    layerId,
+    corners: [at(corners[0]), at(corners[1]), at(corners[2]), at(corners[3])],
+    ...(invisibleEdges & 15 ? { invisibleEdges: invisibleEdges & 15 } : {}),
+  }
+}
+
 export function createPolyline3d(
   vertices: readonly (Vec2 | Vec3)[],
   closed: boolean = false,

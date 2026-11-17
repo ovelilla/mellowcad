@@ -5359,7 +5359,7 @@ export class CadRuntime extends Observable {
         ? entity.vertices.length
         : entity?.type === "spline"
           ? splineDataPoints(entity).length
-          : entity?.type === "solid2d"
+          : entity?.type === "solid2d" || entity?.type === "face3d"
             ? entity.corners.length
             : 0
     if (value === null) return false
