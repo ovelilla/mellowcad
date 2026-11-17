@@ -1,11 +1,8 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { polarPoint } from "../geometry/primitives"
 import { Linear2, applyLinear, inverseLinear } from "../geometry/linear"
-import {
-  HatchPatternLine,
-  hatchPatternLines,
-  isSolidHatchPattern,
-} from "./hatchPatterns"
+import { HatchPatternLine, isSolidHatchPattern } from "./hatchPatterns"
+import { hatchLines } from "./hatchPatternEdits"
 import { HatchLoop, HatchEntity, Entity } from "./entityTypes"
 import { PolylineSegmentGeometry, segmentGeometries } from "./polylines"
 import { rotatePoint } from "./entityTransforms"
@@ -202,7 +199,7 @@ function generateHatchGeometry(hatch: HatchEntity): HatchGeometry {
     : rings
   let lines: [Vec2, Vec2][] = []
   let truncated = false
-  for (const line of hatchPatternLines(hatch.patternId)) {
+  for (const line of hatchLines(hatch)) {
     if (truncated) break
     truncated = pushPatternFamily(lines, hatch, line, clipped)
   }

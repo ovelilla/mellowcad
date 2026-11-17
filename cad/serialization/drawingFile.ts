@@ -74,6 +74,7 @@ import {
   DEFAULT_HATCH_ANGLE,
   DEFAULT_HATCH_PATTERN_ID,
   DEFAULT_HATCH_SCALE,
+  HatchPatternLine,
 } from "../domain/hatchPatterns"
 import {
   createDefaultTextStyle,
@@ -151,7 +152,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 54
+export const DRAWING_FILE_VERSION = 55
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -609,6 +610,18 @@ function cloneEntityShape(entity: Entity): Entity {
           ...(loop.bulges ? { bulges: loop.bulges.slice() } : {}),
         })),
         patternId: entity.patternId,
+        ...(entity.patternType ? { patternType: entity.patternType } : {}),
+        ...(entity.patternLines
+          ? {
+              patternLines: entity.patternLines.map((l) => ({
+                angle: l.angle,
+                origin: { x: l.origin.x, y: l.origin.y },
+                deltaX: l.deltaX,
+                deltaY: l.deltaY,
+                dashes: l.dashes.slice(),
+              })),
+            }
+          : {}),
         patternScale: entity.patternScale,
         patternAngle: entity.patternAngle,
         origin: { x: entity.origin.x, y: entity.origin.y },
@@ -1708,6 +1721,11 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...overrides,
         loops,
         patternId,
+        // From 55: the type and lines a DXF's pattern brought.
+        ...(raw.patternType === "user" || raw.patternType === "custom"
+          ? { patternType: raw.patternType }
+          : {}),
+        ...patternLinesOf(raw.patternLines),
         patternScale: hatchScaleOf(patternId, raw.patternScale, version),
         patternAngle: isFiniteNumber(raw.patternAngle)
           ? raw.patternAngle
@@ -2451,6 +2469,38 @@ function parsePathPiece(value: unknown): ArrayPathPiece | null {
 }
 
 /** Boundary loops. Two vertices are enough when they carry arc bulges. */
+/** A hatch's own pattern lines, none kept if none is well formed. */
+function patternLinesOf(value: unknown): {
+  patternLines?: HatchPatternLine[]
+} {
+  const lines = Array.isArray(value) ? parsePatternLines(value) : []
+  return lines.length > 0 ? { patternLines: lines } : {}
+}
+
+/** A hatch's own pattern lines; a malformed one is skipped. */
+function parsePatternLines(value: unknown[]): HatchPatternLine[] {
+  const lines: HatchPatternLine[] = []
+  for (const raw of value) {
+    if (!isRecord(raw)) continue
+    const origin = parseVec2(raw.origin)
+    const { angle, deltaX, deltaY } = raw
+    if (
+      !origin ||
+      !isFiniteNumber(angle) ||
+      !isFiniteNumber(deltaX) ||
+      !isFiniteNumber(deltaY) ||
+      deltaY === 0
+    ) {
+      continue
+    }
+    const dashes = Array.isArray(raw.dashes)
+      ? raw.dashes.filter(isFiniteNumber)
+      : []
+    lines.push({ angle, origin, deltaX, deltaY, dashes })
+  }
+  return lines
+}
+
 function parseHatchLoops(value: unknown): HatchLoop[] {
   if (!Array.isArray(value)) return []
   const loops: HatchLoop[] = []

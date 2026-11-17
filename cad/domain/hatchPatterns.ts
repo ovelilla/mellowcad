@@ -27,6 +27,12 @@ import { Vec2 } from "../geometry/Vec2"
 
 export type HatchPatternId = string
 
+/**
+ * AutoCAD's pattern types beside Predefined (DXF 76: 0 User-defined, 1
+ * Predefined, 2 Custom), the palette's Type (ax26res 84).
+ */
+export type HatchPatternType = "user" | "custom"
+
 /** One descriptor line of a pattern: an infinite family of parallel lines. */
 export interface HatchPatternLine {
   /** Direction of the family, radians CCW from +X (`.pat` states degrees). */
@@ -396,6 +402,70 @@ export function hatchPatternLines(
   id: HatchPatternId
 ): readonly HatchPatternLine[] {
   return BY_ID.get(id)?.lines ?? []
+}
+
+/**
+ * A User-defined pattern's lines in pattern units: lines at 0° one unit
+ * apart, crossed at 90° when Double, which its angle turns and its spacing,
+ * the hatch's scale, spreads (probe hatchpat/p00: `_U` at 30°, spacing 5,
+ * Double, written as lines at 30° and 120° 5 apart).
+ */
+export function userHatchPatternLines(double: boolean): HatchPatternLine[] {
+  const lines = [family(0, 0, 0, 0, 1)]
+  return double ? [...lines, family(90, 0, 0, 0, 1)] : lines
+}
+
+/** Whether two patterns' lines are one, to a relative 1e-9 a DXF's digits keep. */
+export function samePatternLines(
+  a: readonly HatchPatternLine[],
+  b: readonly HatchPatternLine[]
+): boolean {
+  const near = (x: number, y: number) =>
+    Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x), Math.abs(y))
+  const turn = 2 * Math.PI
+  return (
+    a.length === b.length &&
+    a.every((l, i) => {
+      const m = b[i]
+      const angle = (((l.angle - m.angle) % turn) + turn) % turn
+      return (
+        (near(angle, 0) || near(angle, turn)) &&
+        near(l.origin.x, m.origin.x) &&
+        near(l.origin.y, m.origin.y) &&
+        near(l.deltaX, m.deltaX) &&
+        near(l.deltaY, m.deltaY) &&
+        l.dashes.length === m.dashes.length &&
+        l.dashes.every((d, k) => near(d, m.dashes[k]))
+      )
+    })
+  )
+}
+
+/**
+ * Lines drawn at one scale and angle written for another, so they draw the
+ * same: what a hatch keeps when its scale or angle changes and its pattern
+ * cannot be read again (hatchpat/p02, p05, p07).
+ */
+export function reexpressedPatternLines(
+  lines: readonly HatchPatternLine[],
+  from: { readonly scale: number; readonly angle: number },
+  to: { readonly scale: number; readonly angle: number }
+): HatchPatternLine[] {
+  const k = from.scale / to.scale
+  const turn = from.angle - to.angle
+  const cos = Math.cos(turn)
+  const sin = Math.sin(turn)
+  return lines.map((l) => ({
+    angle: l.angle + turn,
+    origin: {
+      x: k * (cos * l.origin.x - sin * l.origin.y),
+      y: k * (sin * l.origin.x + cos * l.origin.y),
+    },
+    // Along and across the line, which turns with it.
+    deltaX: l.deltaX * k,
+    deltaY: l.deltaY * k,
+    dashes: l.dashes.map((d) => d * k),
+  }))
 }
 
 export function isSolidHatchPattern(id: HatchPatternId): boolean {

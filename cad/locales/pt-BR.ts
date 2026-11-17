@@ -674,6 +674,8 @@ export const ptBR: EngineLocale = {
         "historyNone": "Nenhum",
         "measure": "Medir",
         "predefined": "Predefinido",
+        "userDefined": "Definido pelo usuário",
+        "customPattern": "Personalizado",
         "outer": "Externa",
         "extrusion": "Extrusão",
         "revolve": "Revolução",
@@ -7094,13 +7096,20 @@ export const ptBR: EngineLocale = {
       ],
       "listHatchAnnotative": "                 Anotativo: Não",
       "listHatchScale": [
-        "                 Escala de hachura    ",
+        "                 Escala de hachura ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Padrão de hachura U",
+      "listHatchUserSpacing": [
+        "                 Espaçamento da hachura para o padrão de usuário ",
         [
           "scale"
         ]
       ],
       "listHatchAngle": [
-        "                 Ângulo de hachura    ",
+        "                 Ângulo de hachura",
         [
           "angle"
         ]

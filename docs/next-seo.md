@@ -18,7 +18,8 @@
 > la visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño
 > (12/11/2026), una sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF
 > (`docs/next-dxf.md`: las referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de
-> cada sombreado…) y otro idioma (el checo), alternando, además de lo que queda de §7.
+> cada sombreado, hecho el 17/11, sin publicar; los degradados…) y otro idioma (el checo, el
+> siguiente), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.

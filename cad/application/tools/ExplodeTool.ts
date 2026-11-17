@@ -20,10 +20,8 @@ import {
   isXref,
   leaderLook,
 } from "../../domain/entities"
-import {
-  hatchPatternLines,
-  isSolidHatchPattern,
-} from "../../domain/hatchPatterns"
+import { isSolidHatchPattern } from "../../domain/hatchPatterns"
+import { hatchLines } from "../../domain/hatchPatternEdits"
 import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { createRegion, regionEdgeEntity } from "../../domain/regions"
@@ -57,10 +55,11 @@ function cannotExplode(entity: Entity): string | null {
     case "ellipse":
       return "ELLIPSE"
     case "hatch":
-      // WHY a pattern this build does not ship is named too: its lines cannot
+      // WHY a pattern with no lines here is named too (a name this build
+      // does not ship, read from a file that held none): its lines cannot
       // be made, and keeping the hatch beats erasing it.
       return isSolidHatchPattern(entity.patternId) ||
-        hatchPatternLines(entity.patternId).length === 0
+        hatchLines(entity).length === 0
         ? "HATCH"
         : null
     default:

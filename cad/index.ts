@@ -178,6 +178,7 @@ export type {
   HatchPatternId,
   HatchPatternDef,
   HatchPatternLine,
+  HatchPatternType,
 } from "./domain/hatchPatterns"
 export {
   LINEWEIGHTS,

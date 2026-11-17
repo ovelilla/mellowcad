@@ -161,7 +161,9 @@ points (a linear one's where its line meets the second extension line; an angula
 a third of the way round, p415), the text angle, the text position `default` or `user specified`
 (a radial one's always), `default text` or `dimension text modifier: …`, the style, a radial
 one's `DIMUPT On` override as the console writes it (p416, p439), `Annotative: No` (p414). HATCH:
-pattern, `Annotative: No`, scale and angle (not SOLID's), `Not associative`, area, origin (p417).
+pattern, `Annotative: No`, scale and angle (not SOLID's), `Not associative`, area, origin (p417);
+a hatch named `_U` (User-defined, from a DXF) as its language's letter and `Hatch spacing for user
+pattern`, `U` or `_USER` by name with a scale (hatchpat/p06, p06u, p06U, in each console).
 BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,
 p437), `InsUnits:` the drawing's unit, `Unit conversion: 1.0000`, `Scale uniformly: No`,
 `Allow exploding: Yes`, then each ATTRIBUTE as the reference shows it (its Y scale the height,

@@ -103,6 +103,8 @@ function hatchLike(
 ): HatchEntity {
   return createHatch(loops, {
     patternId: hatch.patternId,
+    patternType: hatch.patternType,
+    patternLines: hatch.patternLines,
     patternScale: overrides.patternScale ?? hatch.patternScale,
     patternAngle: overrides.patternAngle ?? hatch.patternAngle,
     origin: overrides.origin ?? hatch.origin,

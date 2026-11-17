@@ -2,7 +2,7 @@
 title: "Befehl SCHRAFF (HATCH) in AutoCAD"
 description: "Wie SCHRAFF (HATCH, Alias SCH, GS) in AutoCAD eine Fläche schraffiert, Schritt für Schritt: Punkt oder Objekte, Muster, Maßstab, Winkel, Inseln. Zum Testen."
 figure: "Ein Rechteck mit einem Kreis darin, mit ANSI31 von einem Punkt innerhalb schraffiert: Der Kreis bleibt frei, eine Insel."
-sourceHash: "d3ed16b85a19"
+sourceHash: "edf4b860d8cb"
 ---
 
 SCHRAFF (HATCH) füllt eine geschlossene Fläche mit einem Linienmuster oder voll. Wählen Sie einen Punkt innerhalb der Fläche, und der Befehl findet die Begrenzung in den Objekten ringsum und lässt frei, was darin liegt, als Insel: einen Kreis in einem Rechteck, einen Text; oder wählen Sie die Objekte, die sie begrenzen. Wählen Sie beliebig viele Flächen: Die Eingabetaste oder Esc macht aus allen eine Schraffur, auf dem aktuellen Layer, hinter ihrer Begrenzung. Der ganze Befehl ist ein Rückgängig-Schritt.
@@ -27,7 +27,7 @@ An der Eingabeaufforderung nicht aufgeführt, aber dort angenommen: Es nimmt die
 
 ## Missing
 
-Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren, Verläufe, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz. SCHRAFFEDIT (HATCHEDIT) und der Schraffureditor, den in AutoCAD ein Doppelklick öffnet. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
+Ellipsen und Splines als Begrenzung: Eine Fläche, die sie schließen, wird nicht gefunden, und eine Region mit einer solchen Kante wird ausgelassen. Lückentoleranz (HPGAPTOL): Eine Fläche muss genau geschlossen sein. Assoziative Schraffuren, die Inselerkennungsstile Normal und Ignorieren, Verläufe, benutzerdefinierte Muster und die übrigen Muster von acadiso.pat, die nur die Schraffuren einer DXF mit ihren Linien mitbringen. Die weiteren Optionen von -HATCH: Begrenzung zeichnen, Begrenzungen entfernen, Erweitert, Zeichnungsreihenfolge, Ursprung, Annotativ, Farbe, Layer und Transparenz. SCHRAFFEDIT (HATCHEDIT) und der Schraffureditor, den in AutoCAD ein Doppelklick öffnet. MIRRHATCH 1: Eine gespiegelte Schraffur behält immer den Winkel ihres Musters. Die Menüs der Griffe einer Schraffur.
 
 ## Questions
 
@@ -41,7 +41,7 @@ Meistens, weil die Fläche nicht geschlossen ist: Er meldet <Message id="hatchNo
 
 ### Welche Schraffurmuster gibt es, und kann ich weitere herunterladen?
 
-Eine Auswahl aus acadiso.pat, AutoCADs metrischer Musterdatei: SOLID, ANGLE, ANSI31 bis ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL und ZIGZAG. <Keyword id="?" /> unter <Keyword id="Properties" /> listet sie auf. Eine eigene oder heruntergeladene Musterdatei lässt sich noch nicht laden.
+Eine Auswahl aus acadiso.pat, AutoCADs metrischer Musterdatei: SOLID, ANGLE, ANSI31 bis ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL und ZIGZAG. <Keyword id="?" /> unter <Keyword id="Properties" /> listet sie auf. Eine eigene oder heruntergeladene Musterdatei lässt sich noch nicht laden, aber die Schraffuren einer DXF öffnen sich mit dem Muster, das sie enthalten, welches es auch sei, so wie AutoCAD sie zeichnet.
 
 ### Wie ändert man den Maßstab einer Schraffur?
 

@@ -674,6 +674,8 @@ export const fr: EngineLocale = {
         "historyNone": "Aucun",
         "measure": "Mesurer",
         "predefined": "Prédéfini",
+        "userDefined": "Utilisateur",
+        "customPattern": "Personnalisées",
         "outer": "Extérieur",
         "extrusion": "Extrusion",
         "revolve": "Révolution",
@@ -7107,6 +7109,13 @@ export const fr: EngineLocale = {
       "listHatchAnnotative": "                 Annotatif: Non",
       "listHatchScale": [
         "                 Echelle de hachures ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Motif de hachures U",
+      "listHatchUserSpacing": [
+        "                 Espace entre hachures pour motif ",
         [
           "scale"
         ]

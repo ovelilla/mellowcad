@@ -1808,7 +1808,17 @@ function singleEntityInfo(
         count: 1,
         groups: [
           group("pattern", [
-            row("type", text.propertyValue("predefined")),
+            // ax26res 84: User-defined, Predefined, Custom.
+            row(
+              "type",
+              text.propertyValue(
+                entity.patternType === "user"
+                  ? "userDefined"
+                  : entity.patternType === "custom"
+                    ? "customPattern"
+                    : "predefined"
+              )
+            ),
             // The pattern name is a picker in AutoCAD's palette, not a number,
             // so it stays read-only until there is one here.
             row("patternName", text.hatchPattern(entity.patternId)),
@@ -1818,7 +1828,12 @@ function singleEntityInfo(
               "patternAngle",
               normalizeDegrees((entity.patternAngle * 180) / Math.PI)
             ),
-            coordRow("scale", "patternScale", entity.patternScale),
+            // WHY read-only for a User-defined one: its lines are set by the
+            // Spacing and Double rows, not built here, and what the palette
+            // does with its Scale is unverified (no desktop pass).
+            entity.patternType === "user"
+              ? row("scale", coord(entity.patternScale))
+              : coordRow("scale", "patternScale", entity.patternScale),
             coordRow("originX", "originX", origin.x),
             coordRow("originY", "originY", origin.y),
             row("associative", no),

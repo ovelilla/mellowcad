@@ -677,6 +677,8 @@ export const en: EngineCatalog = {
         "historyNone": "None",
         "measure": "Measure",
         "predefined": "Predefined",
+        "userDefined": "User-defined",
+        "customPattern": "Custom",
         "outer": "Outer",
         "extrusion": "Extrusion",
         "revolve": "Revolve",
@@ -6397,6 +6399,13 @@ export const en: EngineCatalog = {
       "listHatchAnnotative": "                 Annotative: No",
       "listHatchScale": [
         "                 Hatch scale ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Hatch pattern U",
+      "listHatchUserSpacing": [
+        "                 Hatch spacing for user pattern ",
         [
           "scale"
         ]

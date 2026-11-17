@@ -2,7 +2,7 @@
 title: "Commande HACHURES (HATCH) dans AutoCAD"
 description: "Hachures dans AutoCAD en français avec HACHURES (HATCH, alias H), invite par invite : point interne ou objets, motif, échelle, angle, îlots. Essayez-le."
 figure: "Un rectangle avec un cercle dedans, hachuré en ANSI31 depuis un point intérieur : le cercle reste libre, un îlot."
-sourceHash: "d3ed16b85a19"
+sourceHash: "edf4b860d8cb"
 ---
 
 HACHURES (HATCH) remplit une zone fermée d'un motif de lignes, ou d'un remplissage plein. Cliquez un point dans la zone : la commande trouve le contour dans les objets qui l'entourent, et laisse libre ce qui se trouve à l'intérieur comme un îlot (un cercle dans un rectangle, un texte) ; ou sélectionnez les objets qui la délimitent. Cliquez dans autant de zones que vous voulez : Entrée, ou Echap, en fait un seul objet de hachures, sur le calque courant, derrière son contour. La commande entière est une seule étape, qu'Annuler défait.
@@ -27,7 +27,7 @@ Absente de la liste de l'invite, mais acceptée : elle annule les zones du dern
 
 ## Missing
 
-Les ellipses et les splines comme contours : une zone qu'elles ferment n'est pas trouvée, et une région avec une telle arête est écartée. La tolérance d'espaces (HPGAPTOL) : une zone doit être exactement fermée. Les hachures associatives, les styles d'îlots Normal et Ignorer, les gradients, les motifs définis par l'utilisateur et le reste des motifs d'acadiso.pat. Les autres options de <Command id="-HATCH" /> : dessiner un contour, supprimer des contours, options avancées, ordre de tracé, origine, annotatif, couleur, calque et transparence. EDITHACH (HATCHEDIT) et l'onglet contextuel Editeur de hachures, qu'un double-clic ouvre dans AutoCAD. MIRRHATCH 1 : des hachures symétriques gardent toujours l'angle de leur motif. Les menus des poignées des hachures.
+Les ellipses et les splines comme contours : une zone qu'elles ferment n'est pas trouvée, et une région avec une telle arête est écartée. La tolérance d'espaces (HPGAPTOL) : une zone doit être exactement fermée. Les hachures associatives, les styles d'îlots Normal et Ignorer, les gradients, les motifs définis par l'utilisateur et le reste des motifs d'acadiso.pat, que seules les hachures d'un DXF apportent, avec leurs lignes. Les autres options de <Command id="-HATCH" /> : dessiner un contour, supprimer des contours, options avancées, ordre de tracé, origine, annotatif, couleur, calque et transparence. EDITHACH (HATCHEDIT) et l'onglet contextuel Editeur de hachures, qu'un double-clic ouvre dans AutoCAD. MIRRHATCH 1 : des hachures symétriques gardent toujours l'angle de leur motif. Les menus des poignées des hachures.
 
 ## Questions
 
@@ -41,7 +41,7 @@ Le plus souvent parce que la zone n'est pas fermée : HACHURES dit <Message id=
 
 ### Quels motifs de hachures existent, et peut-on en télécharger d'autres ?
 
-Une sélection d'acadiso.pat, le fichier de motifs métrique d'AutoCAD : SOLID, ANGLE, ANSI31 à ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL et ZIGZAG. <Keyword id="?" /> sous <Keyword id="Properties" /> les liste. Un fichier de motifs à vous ou téléchargé ne peut pas encore être chargé.
+Une sélection d'acadiso.pat, le fichier de motifs métrique d'AutoCAD : SOLID, ANGLE, ANSI31 à ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL et ZIGZAG. <Keyword id="?" /> sous <Keyword id="Properties" /> les liste. Un fichier de motifs à vous ou téléchargé ne peut pas encore être chargé, mais les hachures d'un DXF s'ouvrent avec le motif qu'elles contiennent, quel qu'il soit, comme AutoCAD les dessine.
 
 ### Comment changer l'échelle des hachures ?
 

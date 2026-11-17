@@ -3,7 +3,7 @@ title: "Kreskowanie w AutoCADzie: polecenie KRESKUJ (HATCH)"
 metaTitle: "Kreskowanie w AutoCADzie: polecenie KRESKUJ"
 description: "Jak kreskować w AutoCADzie poleceniem KRESKUJ (HATCH), monit po monicie: punkt wewnątrz lub obiekty obwiedni, wzór, skala, kąt, wyspy. Wypróbuj za darmo online."
 figure: "Prostokąt z okręgiem w środku, zakreskowany wzorem ANSI31 z jednego punktu wewnątrz: okrąg zostaje pusty jako wyspa."
-sourceHash: "d3ed16b85a19"
+sourceHash: "edf4b860d8cb"
 ---
 
 Polecenie KRESKUJ (HATCH) wypełnia zamknięty obszar wzorem linii albo jednolicie. Wskaż punkt wewnątrz obszaru, a polecenie znajdzie jego obwiednię w otaczających go obiektach, pozostawiając puste to, co leży w środku, jako wyspę – okrąg w prostokącie, tekst; albo wybierz obiekty, które go ograniczają. Wskaż tyle obszarów, ile chcesz: Enter lub Esc tworzy z nich wszystkich jedno kreskowanie, na bieżącej warstwie, pod swoją obwiednią. Całe polecenie to jeden krok cofania.
@@ -28,7 +28,7 @@ Nie ma jej na liście przy monicie, ale jest tam przyjmowana: cofa obszary ostat
 
 ## Missing
 
-Elipsy i splajny jako obwiednie: obszar, który zamykają, nie jest znajdowany, a region z taką krawędzią jest pomijany. Tolerancja przerwy (HPGAPTOL): obszar musi być dokładnie zamknięty. Kreskowania skojarzone, style wysp Normalny i Ignoruj, gradienty, wzory użytkownika i reszta wzorów z acadiso.pat. Pozostałe opcje polecenia -KRESKUJ: rysowanie obwiedni, usuwanie obwiedni, Zaawansowane, porządek wyświetlania, początek, opisowe, kolor, warstwa i przezroczystość. Polecenie EDKRESK i Edytor kreskowania, które w AutoCADzie otwiera dwukrotne kliknięcie. MIRRHATCH 1: odbite kreskowanie zawsze zachowuje kąt swojego wzoru. Menu uchwytów kreskowania.
+Elipsy i splajny jako obwiednie: obszar, który zamykają, nie jest znajdowany, a region z taką krawędzią jest pomijany. Tolerancja przerwy (HPGAPTOL): obszar musi być dokładnie zamknięty. Kreskowania skojarzone, style wysp Normalny i Ignoruj, gradienty, wzory użytkownika i reszta wzorów z acadiso.pat, które przynoszą wraz z liniami tylko kreskowania z pliku DXF. Pozostałe opcje polecenia -KRESKUJ: rysowanie obwiedni, usuwanie obwiedni, Zaawansowane, porządek wyświetlania, początek, opisowe, kolor, warstwa i przezroczystość. Polecenie EDKRESK i Edytor kreskowania, które w AutoCADzie otwiera dwukrotne kliknięcie. MIRRHATCH 1: odbite kreskowanie zawsze zachowuje kąt swojego wzoru. Menu uchwytów kreskowania.
 
 ## Questions
 
@@ -42,7 +42,7 @@ Najczęściej obszar nie jest zamknięty: polecenie mówi <Message id="hatchNoBo
 
 ### Jakie są wzory kreskowania i czy można pobrać inne?
 
-Wybór z acadiso.pat, metrycznego pliku wzorów AutoCADa: SOLID, ANGLE, od ANSI31 do ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL i ZIGZAG. <Keyword id="?" /> w opcji <Keyword id="Properties" /> wyświetla ich listę. Własnego ani pobranego pliku wzorów nie można jeszcze wczytać.
+Wybór z acadiso.pat, metrycznego pliku wzorów AutoCADa: SOLID, ANGLE, od ANSI31 do ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL i ZIGZAG. <Keyword id="?" /> w opcji <Keyword id="Properties" /> wyświetla ich listę. Własnego ani pobranego pliku wzorów nie można jeszcze wczytać, ale kreskowania z pliku DXF otwierają się z wzorem, który zawierają, jakikolwiek by był, tak jak rysuje je AutoCAD.
 
 ### Jak zmienić skalę kreskowania w AutoCADzie?
 

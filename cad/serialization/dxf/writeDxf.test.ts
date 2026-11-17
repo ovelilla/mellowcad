@@ -491,6 +491,7 @@ describe("writeDxf", () => {
       "leaders-2018",
       "linetypes-2018",
       "xref-2018",
+      "hatchpat-2018",
     ]) {
       const drawing =
         name === "points-2018"

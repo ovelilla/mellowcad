@@ -53,9 +53,12 @@ import { EntityColor } from "../../domain/colors"
 import {
   DEFAULT_HATCH_ANGLE,
   DEFAULT_HATCH_SCALE,
+  HatchPatternLine,
   SOLID_HATCH_PATTERN_ID,
   hatchPattern,
   resolveHatchPatternId,
+  samePatternLines,
+  userHatchPatternLines,
 } from "../../domain/hatchPatterns"
 import { LayerId } from "../../domain/layers"
 import { LinetypeId } from "../../domain/linetypes"
@@ -1154,19 +1157,89 @@ function hatch(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
   // Outer), as -HATCH takes it (its help page), and AutoCAD 2027 writes old
   // hatches so in five of its sample drawings; the islands are the loops here.
   const name = (str(r, 2)?.trim() ?? "").replace(/,_?[NOI]$/i, "")
+  const type = solid ? 1 : (int(r, 76) ?? 1)
+  // A name it does not know AutoCAD reads in capitals (hatchpat/p06l: `u`
+  // lists as `U`).
   const patternId = solid
     ? SOLID_HATCH_PATTERN_ID
-    : (resolveHatchPatternId(name) ?? name)
-  const scale = num(r, 41)
-  const angle = (num(r, 52) ?? 0) * DEG
+    : (resolveHatchPatternId(name) ?? name.toUpperCase())
+  const read = num(r, 41)
+  // A User-defined pattern's 41 is its spacing (p00: `_U` spaced 5 writes 5).
+  const scale = read !== undefined && read > 0 ? read : DEFAULT_HATCH_SCALE
+  const angle = normalizeAngle((num(r, 52) ?? 0) * DEG)
+  const origin = hatchOrigin(r, patternId, scale, angle)
+  const patternType = type === 0 ? "user" : type === 2 ? "custom" : undefined
   const entity = createHatch(loops, {
     patternId,
-    patternScale:
-      scale !== undefined && scale > 0 ? scale : DEFAULT_HATCH_SCALE,
-    patternAngle: angle ? normalizeAngle(angle) : DEFAULT_HATCH_ANGLE,
-    origin: hatchOrigin(r, patternId, scale ?? 1, angle),
+    ...(patternType ? { patternType } : {}),
+    ...(solid
+      ? {}
+      : hatchOwnLines(r, patternId, patternType, origin, scale, angle)),
+    patternScale: scale,
+    patternAngle: angle || DEFAULT_HATCH_ANGLE,
+    origin,
   })
   return [common(onPlane(entity, r, point(r, 10)?.z ?? 0), r, ctx)]
+}
+
+/**
+ * The pattern lines a HATCH carries (78, then each line's 53, 43–46, 79 and
+ * 49s: drawn, turned and scaled), taken back to pattern units about its
+ * origin, and kept on it unless they are the registry's for its name, as
+ * AutoCAD draws a hatch from the lines it holds (hatchpat/p05): HOUND or
+ * GRASS, which this build does not ship, a User-defined `_U`, a program's
+ * own pattern, and acad.pat's inch ANSI31 of a metric drawing, 25.4 times
+ * denser than acadiso.pat's (291 hatches of 10 of AutoCAD's samples).
+ */
+function hatchOwnLines(
+  r: DxfRecord,
+  patternId: string,
+  patternType: "user" | "custom" | undefined,
+  origin: Vec2,
+  scale: number,
+  angle: number
+): { patternLines?: HatchPatternLine[] } {
+  const lines: HatchPatternLine[] = []
+  const start = r.codes.indexOf(78)
+  if (start >= 0) {
+    const cursor = new GroupCursor(r, start)
+    const count = cursor.take(78) ?? 0
+    for (let i = 0; i < count && !cursor.done(); i++) {
+      const lineAngle = cursor.seek(53)
+      if (lineAngle === undefined) break
+      const at = lineAngle * DEG
+      const base = { x: cursor.take(43) ?? 0, y: cursor.take(44) ?? 0 }
+      const offset = { x: cursor.take(45) ?? 0, y: cursor.take(46) ?? 0 }
+      const dashCount = cursor.take(79) ?? 0
+      const dashes: number[] = []
+      for (let k = 0; k < dashCount; k++) {
+        const dash = cursor.take(49)
+        if (dash === undefined) break
+        dashes.push(dash / scale)
+      }
+      const delta = V.scale(rotate(offset, -at), 1 / scale)
+      if (Math.abs(delta.y) < 1e-12) continue
+      lines.push({
+        angle: normalizeAngle(at - angle),
+        origin: V.scale(rotate(V.sub(base, origin), -angle), 1 / scale),
+        deltaX: delta.x,
+        deltaY: delta.y,
+        dashes,
+      })
+    }
+  }
+  if (patternType === "user") {
+    // None written: the spacing and Double (77) say them.
+    return {
+      patternLines:
+        lines.length > 0 ? lines : userHatchPatternLines(int(r, 77) === 1),
+    }
+  }
+  const registry = hatchPattern(patternId)?.lines
+  if (lines.length === 0 || (registry && samePatternLines(lines, registry))) {
+    return {}
+  }
+  return { patternLines: lines }
 }
 
 /**

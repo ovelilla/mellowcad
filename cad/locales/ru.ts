@@ -718,6 +718,8 @@ export const ru: EngineLocale = {
         "historyNone": "Нет",
         "measure": "Разметить",
         "predefined": "Стандартный",
+        "userDefined": "Из линий",
+        "customPattern": "Пользовательский",
         "outer": "Внешний",
         "extrusion": "Выдавливание",
         "revolve": "Вращать",
@@ -7560,6 +7562,13 @@ export const ru: EngineLocale = {
       "listHatchAnnotative": "                 Аннотативный: Нет",
       "listHatchScale": [
         "                 Масштаб штриховки ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Образец штриховки П",
+      "listHatchUserSpacing": [
+        "                 Интервал штриховки для пользовательского образца ",
         [
           "scale"
         ]

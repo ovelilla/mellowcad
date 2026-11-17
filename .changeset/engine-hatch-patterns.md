@@ -1,0 +1,5 @@
+---
+"@mellowcad/engine": minor
+---
+
+A hatch carries its own pattern, as AutoCAD 2027 draws one: `HatchEntity` gains `patternType` (`HatchPatternType`: `user` or `custom`, absent for Predefined) and `patternLines`, the lines a DXF brought in pattern units, drawn in place of the registry's where they differ — a pattern this build does not ship (HOUND, GRASS, a program's own), a User-defined `_U` whose scale is its spacing, acad.pat's inch lines of a metric drawing. A new Scale or Angle in the palette reads the pattern again as -HATCHEDIT does, MATCHPROP from a pattern AutoCAD cannot find leaves the target's, EXPLODE makes its lines, and DXFOUT writes them with their type and Double. Drawing file version 55. LIST names a `_U` hatch as AutoCAD does; the German, Polish and Brazilian Portuguese hatch scale and angle lines lose the spaces their consoles do not print. New catalog keys: `commands.messages.listHatchUserPattern`, `listHatchUserSpacing`, `interface.property.value.userDefined` and `customPattern`.

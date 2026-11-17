@@ -1,0 +1,16 @@
+(progn (foreach p (entget (entlast)) (if (member (car p) (list 2 76 52 41 77 78 53 43 44 45 46 49)) (prin1 p))) (princ))
+_SCALE
+_L
+
+0,0
+2
+(progn (foreach p (entget (entlast)) (if (member (car p) (list 2 76 52 41 77 78 53 43 44 45 46 49)) (prin1 p))) (princ))
+_ROTATE
+_L
+
+0,0
+30
+(progn (foreach p (entget (entlast)) (if (member (car p) (list 2 76 52 41 77 78 53 43 44 45 46 49)) (prin1 p))) (princ))
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadhp\o.dwg

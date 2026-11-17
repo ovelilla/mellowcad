@@ -674,6 +674,8 @@ export const de: EngineLocale = {
         "historyNone": "Keine",
         "measure": "Messen",
         "predefined": "Vordefiniert",
+        "userDefined": "Benutzerdefiniert",
+        "customPattern": "Benutzerspezifisch",
         "outer": "Außen",
         "extrusion": "Extrusion",
         "revolve": "Rotation",
@@ -7107,13 +7109,20 @@ export const de: EngineLocale = {
       ],
       "listHatchAnnotative": "                 Beschriftung: Nein",
       "listHatchScale": [
-        "                 Schraffurskalierung    ",
+        "                 Schraffurskalierung ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Schraffurmuster B",
+      "listHatchUserSpacing": [
+        "                 Schraffurabstand für Benutzermuster ",
         [
           "scale"
         ]
       ],
       "listHatchAngle": [
-        "                 Schraffurwinkel     ",
+        "                 Schraffurwinkel ",
         [
           "angle"
         ]

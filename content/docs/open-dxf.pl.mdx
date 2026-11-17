@@ -3,7 +3,7 @@ title: Otwórz plik DXF online
 metaTitle: "Otwórz plik DXF online: darmowy podgląd DXF"
 description: "Otwórz plik DXF za darmo w przeglądarce, bez wysyłania: AutoCAD R12 do 2018, tekstowy lub binarny, z warstwami, tekstem, wymiarami, kreskowaniem i blokami."
 type: howTo
-sourceHash: "cbd3a09725be"
+sourceHash: "01c6b918a0d5"
 faq:
   - question: "Jak otworzyć plik DXF bez AutoCADa?"
     answer: "Wybierz go lub upuść u góry tej strony: MellowCAD otworzy go w swoim edytorze, w przeglądarce, bez instalacji i bez konta. W edytorze plik otwierają też polecenia OTWÓRZ (Ctrl+O) i DXFWE."
@@ -25,7 +25,7 @@ MellowCAD otwiera pliki DXF w przeglądarce i wyświetla je w swoim edytorze, gd
 
 - **DXF AutoCADa od R12 do 2018** – najnowszego formatu DXF, jaki zapisuje AutoCAD – tekstowy (ASCII) lub binarny, utworzony w AutoCADzie lub w innym programie. Tekst zachowuje swoje znaki: do wersji 2004 w stronie kodowej podanej w pliku, od 2007 w UTF-8.
 - **Linie, łuki, okręgi, elipsy i polilinie**, z ich szerokościami i wygładzeniem łukami lub splajnem, polilinie 3D i splajny, a także punkty, rysowane w [stylu punktów](/docs/commands/ptype) rysunku, oraz bryły 2D, wypełnione zgodnie ze zmienną FILLMODE.
-- **Tekst jednowierszowy i wielowierszowy**, linie odniesienia z tekstem, bloki z atrybutami, wymiary liniowe, wyrównane, kątowe, promienia i średnicy oraz kreskowania.
+- **Tekst jednowierszowy i wielowierszowy**, linie odniesienia z tekstem, bloki z atrybutami, wymiary liniowe, wyrównane, kątowe, promienia i średnicy oraz kreskowania, każde z liniami wzoru, które zawiera, tak jak rysuje je AutoCAD: także wzór użytkownika lub wzór innego programu.
 - **Warstwa każdego obiektu**, kolor, rodzaj linii i jego skala, szerokość linii, grubość i poziom, a także warstwy włączone, wyłączone lub zablokowane; zamrożona warstwa otwiera się jako wyłączona.
 - **Rodzaje linii rysunku**, rysowane z kreskami, kropkami i przerwami w skali rodzaju linii rysunku, oraz tekst złożonych rodzajów linii, takich jak GAS_LINE.
 - **Style tekstu i wymiarowania rysunku** oraz jego jednostki, gdy są to milimetry, centymetry lub metry.
@@ -45,7 +45,6 @@ To, co jest w układach, liczy się osobno, ponieważ układów jeszcze nie ma: 
 Niektóre rzeczy się otwierają, ale nie całkiem w takiej postaci, w jakiej były:
 
 - Kształty złożonych rodzajów linii, takich jak BATTING czy ZIGZAG, nie są rysowane, tylko kreski i przerwy wokół nich.
-- Wzór kreskowania, którego nie ma wśród [wzorów z `acadiso.pat`, które rysuje MellowCAD](/docs/commands/hatch), zachowuje swoją nazwę, ale rysowana jest tylko jego obwiednia.
 - Kolor podany indeksem otwiera się jako kolor RGB, a JakBlok jako JakWarstwa.
 - Rysunek w calach lub stopach zachowuje swoje liczby, odczytane jako milimetry.
 - Tekst jest rysowany według miar czcionki Arial, niezależnie od czcionki podanej w jego stylu, bez współczynnika szerokości i kąta pochylenia.

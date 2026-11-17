@@ -1,0 +1,11 @@
+(arxload "acmatch.crx")
+_ZOOM
+_E
+_MATCHPROP
+250.825,23.571
+8,10
+
+(progn (foreach p (entget (handent "2E2")) (if (member (car p) (list 2 76 52 41 77 78 53 43 44 45 46 49)) (prin1 p))) (princ))
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadhp\o8.dwg

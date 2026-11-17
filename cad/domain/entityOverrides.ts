@@ -5,6 +5,7 @@ import { Lineweight } from "./lineweights"
 import { TextStyleId } from "./textStyles"
 import { DimStyleId } from "./dimStyles"
 import { Entity } from "./entityTypes"
+import { hatchMatchingPattern } from "./hatchPatternEdits"
 import {
   alongSource,
   carryPlane,
@@ -340,12 +341,7 @@ function matchSpecialProperties(source: Entity, target: Entity): Entity {
     return assignDimStyle(target, source.styleId)
   }
   if (source.type === "hatch" && target.type === "hatch") {
-    return {
-      ...target,
-      patternId: source.patternId,
-      patternScale: source.patternScale,
-      patternAngle: source.patternAngle,
-    }
+    return hatchMatchingPattern(source, target)
   }
   return target
 }

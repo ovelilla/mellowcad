@@ -4,7 +4,7 @@ metaTitle: "HATCH in AutoCAD: patterns, options and alias"
 description: "How AutoCAD's HATCH (H) fills an area, prompt by prompt: a point inside or its objects, the pattern, its scale and angle, islands. Try it free in your browser."
 figure: "A rectangle with a circle in it, hatched with ANSI31 from one point inside: the circle is left clear, an island."
 related: ["AREA", "REGION", "MATCHPROP", "EXPLODE"]
-coverage: "fd014551a8a0"
+coverage: "27b559bed853"
 ---
 
 HATCH fills a closed area with a pattern of lines, or solid. Pick a point inside the area and it finds the boundary in the objects around it, leaving clear what lies inside as an island — a circle in a rectangle, a text; or select the objects that bound it. Pick as many areas as you like: Enter, or Escape, makes one hatch of them all, on the current layer, behind its boundary. The whole command is one step that Undo takes back.
@@ -29,7 +29,7 @@ Not listed at the prompt, but taken there: it takes back the areas of the last p
 
 ## Missing
 
-Ellipses and splines as boundaries: an area they close is not found, and a region with such an edge is left out. Gap tolerance (HPGAPTOL): an area must be closed exactly. Associative hatches, the Normal and Ignore island styles, gradients, user-defined patterns and the rest of acadiso.pat's patterns. -HATCH's other options: drawing a boundary, removing boundaries, Advanced, draw order, origin, annotative, colour, layer and transparency. HATCHEDIT and the Hatch Editor, which a double-click opens in AutoCAD. MIRRHATCH 1: a mirrored hatch always keeps its pattern's angle. The menus of a hatch's grips.
+Ellipses and splines as boundaries: an area they close is not found, and a region with such an edge is left out. Gap tolerance (HPGAPTOL): an area must be closed exactly. Associative hatches, the Normal and Ignore island styles, gradients, user-defined patterns and the rest of acadiso.pat's patterns, which only a DXF's hatches bring, with their lines. -HATCH's other options: drawing a boundary, removing boundaries, Advanced, draw order, origin, annotative, colour, layer and transparency. HATCHEDIT and the Hatch Editor, which a double-click opens in AutoCAD. MIRRHATCH 1: a mirrored hatch always keeps its pattern's angle. The menus of a hatch's grips.
 
 ## Questions
 
@@ -43,7 +43,7 @@ Mostly because the area is not closed: it says <Message id="hatchNoBoundary" />,
 
 ### Which hatch patterns are there, and can I download more?
 
-A selection of acadiso.pat, AutoCAD's metric pattern file: SOLID, ANGLE, ANSI31 to ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL and ZIGZAG. <Keyword id="?" /> under <Keyword id="Properties" /> lists them. A pattern file of your own or downloaded cannot be loaded yet.
+A selection of acadiso.pat, AutoCAD's metric pattern file: SOLID, ANGLE, ANSI31 to ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL and ZIGZAG. <Keyword id="?" /> under <Keyword id="Properties" /> lists them. A pattern file of your own or downloaded cannot be loaded yet, but a DXF's hatches open with the pattern they hold, whatever it is, as AutoCAD draws them.
 
 ### How do I change the scale of a hatch?
 

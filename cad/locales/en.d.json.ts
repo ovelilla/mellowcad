@@ -505,6 +505,8 @@ declare const source: {
         "historyNone": string
         "measure": string
         "predefined": string
+        "userDefined": string
+        "customPattern": string
         "outer": string
         "extrusion": string
         "revolve": string
@@ -2934,6 +2936,8 @@ declare const source: {
       "listHatchPattern": string
       "listHatchAnnotative": string
       "listHatchScale": string
+      "listHatchUserPattern": string
+      "listHatchUserSpacing": string
       "listHatchAngle": string
       "listHatchNotAssociative": string
       "listHatchArea": string

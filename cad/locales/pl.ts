@@ -718,6 +718,8 @@ export const pl: EngineLocale = {
         "historyNone": "Brak",
         "measure": "Zmierz",
         "predefined": "Wstępnie zdefiniowany",
+        "userDefined": "Użytkownika",
+        "customPattern": "Niestandardowy",
         "outer": "Skrajny",
         "extrusion": "Wyciągnięcie",
         "revolve": "Przekręć",
@@ -7208,13 +7210,20 @@ export const pl: EngineLocale = {
       ],
       "listHatchAnnotative": "                 Opisowy: Nie",
       "listHatchScale": [
-        "                 Skala kreskowania    ",
+        "                 Skala kreskowania ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Wzór kreskowania U",
+      "listHatchUserSpacing": [
+        "                 Odstęp linii dla wzoru użytkownika ",
         [
           "scale"
         ]
       ],
       "listHatchAngle": [
-        "                 Kąt obrotu     ",
+        "                 Kąt obrotu ",
         [
           "angle"
         ]

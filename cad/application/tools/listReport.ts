@@ -1141,10 +1141,17 @@ class Report {
 
   private hatch(hatch: HatchEntity): void {
     this.header("hatch", hatch)
-    this.say("listHatchPattern", { pattern: hatch.patternId })
+    // WHY by the name `_U` alone: AutoCAD lists that one as its language's
+    // letter for User-defined with its spacing, and `U` or `_USER`, of the
+    // same type, by name with a scale (probes hatchpat/p06, p06u, p06U).
+    const user = hatch.patternId === "_U"
+    if (user) this.say("listHatchUserPattern")
+    else this.say("listHatchPattern", { pattern: hatch.patternId })
     if (hatch.patternId !== "SOLID") {
       this.say("listHatchAnnotative")
-      this.say("listHatchScale", { scale: this.n9(hatch.patternScale) })
+      const scale = this.n9(hatch.patternScale)
+      if (user) this.say("listHatchUserSpacing", { scale })
+      else this.say("listHatchScale", { scale })
       this.say("listHatchAngle", {
         angle: this.a6(this.ucsAngle(hatch, hatch.patternAngle)),
       })

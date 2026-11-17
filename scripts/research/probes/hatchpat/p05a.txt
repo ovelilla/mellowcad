@@ -1,0 +1,22 @@
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mcadhp\p05a.png
+_N
+_Y
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadhp\p05a.dwg

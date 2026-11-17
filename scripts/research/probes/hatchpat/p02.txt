@@ -1,0 +1,14 @@
+QAFLAGS
+2
+_-HATCHEDIT
+_L
+
+
+MYPAT
+
+3
+
+(progn (foreach p (entget (entlast)) (if (member (car p) (list 2 76 52 41 77 78 53 43 44 45 46 49)) (prin1 p))) (princ))
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadhp\o.dwg

@@ -11,8 +11,10 @@
 > publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
 > hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
 > y el punto 5 (las referencias externas), hecho el 16/11 y publicado el 17/11, que llevó las muestras
-> sin nada fuera de 121 a 135 de 154; siguiente, por orden del dueño, otro idioma, y después lo
-> que quede de esta fase (el patrón de cada sombreado…), alternando, una sesión cada vez.
+> sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho el 17/11 y
+> sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; siguiente, por orden del
+> dueño, otro idioma (el checo), y después lo que quede de esta fase (los degradados, el punto
+> 7…), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -269,7 +271,26 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    6. **El patrón de cada sombreado**: un DXF trae las líneas de cualquier patrón (53, 43–46, 79,
       49), y dibujarlas del fichero cubre los que no están entre los 24 (HOUND, GRASS, INSUL), los
       definidos por el usuario (`_USER`, `U`: 9 muestras) y los propios de cada programa. Los
-      degradados (6 muestras, 144 sombreados), aparte.
+      degradados (6 muestras, 144 sombreados), aparte. **Hecho** (17/11/2026, sin publicar): un
+      sombreado guarda las líneas de su patrón cuando no son las del registro (el tipo, 76, y las
+      líneas, 78…49, pasadas a unidades del patrón) y se dibuja con ellas, como AutoCAD dibuja el
+      que tiene (consola, sondas `hatchpat/`: un MYPAT personalizado que AutoCAD no tiene y un `_U`
+      se trazan igual que los suyos); una Escala o un Ángulo nuevos lo leen otra vez como
+      -HATCHEDIT (el que AutoCAD no encuentra conserva lo dibujado, p02, p05; uno de acadiso.pat
+      vuelve al registro, p04; uno definido por el usuario se rehace de su intervalo), MATCHPROP
+      como el de AutoCAD (p07, p08), EXPLODE lo convierte en líneas, LIST nombra `_U` con la letra
+      de cada idioma y su intervalo (p06u), la paleta dice su Tipo (ax26res 84) y DXFOUT lo
+      escribe con 76 y 77: la consola abre los 12 ficheros sin un error de AUDIT y los traza como
+      el suyo. El corpus: los 37 sombreados de 11 muestras que no dibujaban su patrón (HOUND,
+      GRASS, INSUL, P1, `_USER`, `U`, `_U`) lo dibujan, y con ellos 408 que se dibujaban con las
+      líneas de acadiso.pat donde el fichero trae las de acad.pat, en pulgadas, 25,4 veces más
+      juntas (ANSI31, STEEL, AR-CONC… en dibujos métricos): 445 de 27 muestras, y 18 ANSI31 de 2
+      ficheros de otros. Las muestras sin nada fuera siguen en 135 (el patrón nunca se contó como
+      fuera). Los degradados son otro relleno (450, colores, sin líneas): quedan fuera, como punto
+      propio. Se anotan: las filas Espaciado y Doble de la paleta y su Escala de uno definido por
+      el usuario (sin escritorio), y que un patrón de acadiso.pat que no traemos (HOUND) conserva
+      sus líneas al cambiar de escala, donde AutoCAD lo lee otra vez. Lo que hace y le falta, en
+      `docs/coverage/draw.md` (HATCH), `clipboard-and-files.md` (DXFIN, DXFOUT) e `inquiry.md`.
    7. 3DFACE (8 muestras), WIPEOUT (3), IMAGE (1, y 1 de otros), TABLE (las de las muestras están
       en presentaciones; 1 de otros), y sin ningún caso medido XLINE, RAY, MINSERT como tal, los
       colores índice como tales y las sustituciones de estilo de cada cota (XDATA `DSTYLE`).

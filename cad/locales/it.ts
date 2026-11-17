@@ -674,6 +674,8 @@ export const it: EngineLocale = {
         "historyNone": "Nessuna",
         "measure": "Misura",
         "predefined": "Predefinito",
+        "userDefined": "Definito dall'utente",
+        "customPattern": "Personalizzato",
         "outer": "Esterno",
         "extrusion": "Estrusione",
         "revolve": "Rivoluzione",
@@ -7094,6 +7096,13 @@ export const it: EngineLocale = {
       "listHatchAnnotative": "                 Annotativa: No",
       "listHatchScale": [
         "                 Scala di tratteggio ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                  Modelli di tratteggio U",
+      "listHatchUserSpacing": [
+        "                 Spaziatura di tratteggio per il modello dell'utente ",
         [
           "scale"
         ]

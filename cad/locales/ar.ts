@@ -699,6 +699,8 @@ export const ar: EngineLocale = {
         "historyNone": "بلا",
         "measure": "قياس",
         "predefined": "معرّف مسبقًا",
+        "userDefined": "معرّف من قِبل المستخدم",
+        "customPattern": "مخصص",
         "outer": "خارجي",
         "extrusion": "بثق",
         "revolve": "دوران",

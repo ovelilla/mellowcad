@@ -449,6 +449,8 @@
   "interface.property.value.historyNone": "None",
   "interface.property.value.measure": "Measure",
   "interface.property.value.predefined": "Predefined",
+  "interface.property.value.userDefined": "User-defined",
+  "interface.property.value.customPattern": "Custom",
   "interface.property.value.outer": "Outer",
   "interface.property.value.extrusion": "Extrusion",
   "interface.property.value.revolve": "Revolve",

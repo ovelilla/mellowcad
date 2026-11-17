@@ -39,7 +39,8 @@ import {
   dimensionMeasurement,
 } from "../../domain/dimensions"
 import { DimStyle } from "../../domain/dimStyles"
-import { hatchPattern, isSolidHatchPattern } from "../../domain/hatchPatterns"
+import { isSolidHatchPattern } from "../../domain/hatchPatterns"
+import { hatchLines } from "../../domain/hatchPatternEdits"
 import { DEFAULT_LINEWEIGHT } from "../../domain/lineweights"
 import { aciIndex } from "./dxfColors"
 import { DxfOut } from "./dxfOut"
@@ -831,9 +832,10 @@ export function dimensionPoints(
 }
 
 /**
- * A HATCH: each loop a polyline boundary, the pattern by name with its
- * lines as AutoCAD writes them (turned and scaled, f001's ANSI31), and the
- * origin in its ACAD xdata, where the reader takes HPORIGIN from.
+ * A HATCH: each loop a polyline boundary, the pattern by name and type with
+ * the lines it draws as AutoCAD writes them (turned and scaled, f001's
+ * ANSI31; a User-defined one's 41 its spacing and 77 its Double, hatchpat/p00),
+ * and the origin in its ACAD xdata, where the reader takes HPORIGIN from.
  */
 function hatch(ctx: DxfWriteContext, e: HatchEntity, owner: string): void {
   const { out } = ctx
@@ -860,12 +862,12 @@ function hatch(ctx: DxfWriteContext, e: HatchEntity, owner: string): void {
     out.int(97, 0)
   }
   out.int(75, 0)
-  out.int(76, 1)
-  const lines = solid ? [] : (hatchPattern(e.patternId)?.lines ?? [])
+  out.int(76, e.patternType === "user" ? 0 : e.patternType === "custom" ? 2 : 1)
+  const lines = solid ? [] : hatchLines(e)
   if (!solid) {
     out.real(52, e.patternAngle * DEG)
     out.real(41, e.patternScale)
-    out.int(77, 0)
+    out.int(77, e.patternType === "user" && lines.length > 1 ? 1 : 0)
     out.int(78, lines.length)
     for (const l of lines) {
       const angle = e.patternAngle + l.angle

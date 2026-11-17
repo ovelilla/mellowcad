@@ -7,6 +7,8 @@ import {
   DEFAULT_HATCH_PATTERN_ID,
   DEFAULT_HATCH_SCALE,
   HatchPatternId,
+  HatchPatternLine,
+  HatchPatternType,
 } from "./hatchPatterns"
 import {
   ArrayParameters,
@@ -169,6 +171,8 @@ export function createPolyline3d(
 /** The optional settings of a hatch; enough of them to want a bag. */
 export interface HatchOptions {
   readonly patternId?: HatchPatternId
+  readonly patternType?: HatchPatternType
+  readonly patternLines?: readonly HatchPatternLine[]
   readonly patternScale?: number
   readonly patternAngle?: number
   readonly origin?: Vec2
@@ -186,10 +190,18 @@ export function createHatch(
     layerId: options.layerId ?? DEFAULT_LAYER_ID,
     loops: loops.map(cloneHatchLoop),
     patternId: options.patternId ?? DEFAULT_HATCH_PATTERN_ID,
+    ...(options.patternType ? { patternType: options.patternType } : {}),
+    ...(options.patternLines
+      ? { patternLines: options.patternLines.map(clonePatternLine) }
+      : {}),
     patternScale: options.patternScale ?? DEFAULT_HATCH_SCALE,
     patternAngle: options.patternAngle ?? DEFAULT_HATCH_ANGLE,
     origin: options.origin ? { ...options.origin } : { x: 0, y: 0 },
   }
+}
+
+function clonePatternLine(line: HatchPatternLine): HatchPatternLine {
+  return { ...line, origin: { ...line.origin }, dashes: line.dashes.slice() }
 }
 
 function cloneHatchLoop(loop: HatchLoop): HatchLoop {

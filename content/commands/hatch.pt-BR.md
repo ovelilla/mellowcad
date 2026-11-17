@@ -2,7 +2,7 @@
 title: "Hachura no AutoCAD: comando HACHURA (HATCH)"
 description: "Como funciona o HATCH do AutoCAD em português, HACHURA (alias HC): ponto interno ou objetos, padrão, escala, ângulo e ilhas. Experimente grátis online."
 figure: "Um retângulo com um círculo dentro, hachurado com ANSI31 a partir de um ponto interno: o círculo fica livre, como ilha."
-sourceHash: "d3ed16b85a19"
+sourceHash: "edf4b860d8cb"
 ---
 
 O HATCH, HACHURA no AutoCAD em português, preenche uma área fechada com um padrão de linhas, ou sólido. Indique um ponto dentro da área e ele encontra o limite nos objetos ao redor, deixando livre como ilha o que está dentro — um círculo num retângulo, um texto —; ou selecione os objetos que a limitam. Indique quantas áreas quiser: Enter, ou Esc, faz uma só hachura de todas, na camada atual e atrás do seu limite. O comando inteiro é um passo que o Desfazer reverte.
@@ -27,7 +27,7 @@ Não aparece no prompt, mas é aceito nele: desfaz as áreas do último ponto in
 
 ## Missing
 
-Elipses e splines como limite: uma área que elas fecham não é encontrada, e uma região com uma aresta assim fica de fora. Tolerância de lacunas (HPGAPTOL): a área tem que estar totalmente fechada. Hachuras associativas, os estilos de ilha Normal e Ignorar, gradientes, padrões definidos pelo usuário e o resto dos padrões do acadiso.pat. As outras opções do <Command id="-HATCH" />: desenhar um limite, remover limites, opções avançadas, ordem de desenho, origem, anotativo, cor, camada e transparência. A edição de hachuras (`_HATCHEDIT`) e a sua guia contextual, que no AutoCAD um clique duplo abre. MIRRHATCH 1: uma hachura espelhada sempre mantém o ângulo do seu padrão. Os menus dos grips de uma hachura.
+Elipses e splines como limite: uma área que elas fecham não é encontrada, e uma região com uma aresta assim fica de fora. Tolerância de lacunas (HPGAPTOL): a área tem que estar totalmente fechada. Hachuras associativas, os estilos de ilha Normal e Ignorar, gradientes, padrões definidos pelo usuário e o resto dos padrões do acadiso.pat, que só as hachuras de um DXF trazem, com as suas linhas. As outras opções do <Command id="-HATCH" />: desenhar um limite, remover limites, opções avançadas, ordem de desenho, origem, anotativo, cor, camada e transparência. A edição de hachuras (`_HATCHEDIT`) e a sua guia contextual, que no AutoCAD um clique duplo abre. MIRRHATCH 1: uma hachura espelhada sempre mantém o ângulo do seu padrão. Os menus dos grips de uma hachura.
 
 ## Questions
 
@@ -41,7 +41,7 @@ Quase sempre porque a área não está fechada: ela mostra <Message id="hatchNoB
 
 ### Quais padrões de hachura existem, e posso baixar outros?
 
-Uma seleção do acadiso.pat, o arquivo de padrões métrico do AutoCAD: SOLID, ANGLE, de ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL e ZIGZAG. <Keyword id="?" /> em <Keyword id="Properties" /> os lista. Ainda não é possível carregar um arquivo de padrões próprio ou baixado.
+Uma seleção do acadiso.pat, o arquivo de padrões métrico do AutoCAD: SOLID, ANGLE, de ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL e ZIGZAG. <Keyword id="?" /> em <Keyword id="Properties" /> os lista. Ainda não é possível carregar um arquivo de padrões próprio ou baixado, mas as hachuras de um DXF abrem com o padrão que trazem, seja qual for, como o AutoCAD as desenha.
 
 ### Como mudar a escala da hachura?
 

@@ -115,7 +115,14 @@ knots and weights (a closed one, which AutoCAD writes on open knots, as that cur
 ATTDEF, INSERT with its attributes taken into the block's coordinates, the linear, aligned,
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
 text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
-without the style code AutoCAD may write after it (`ANSI31,_O`), POINT with its thickness, plane and
+without the style code AutoCAD may write after it (`ANSI31,_O`), an unknown one in capitals as
+AutoCAD reads it (hatchpat/p06l), its type (76: Predefined, User-defined, Custom) and its pattern
+lines (78, 53, 43–46, 79, 49) taken back to pattern units and drawn wherever they are not the
+registry's for its name, as AutoCAD draws a hatch from the lines it holds (hatchpat/p05: a MYPAT
+AutoCAD has not, a `_U`, plotted alike): HOUND, GRASS, INSUL, P1, `_USER`, `U` and `_U` of 11 of
+AutoCAD's samples (37 hatches that drew no pattern) and acad.pat's inch lines of AR-CONC, STEEL,
+LINE, ANSI31 and others in metric drawings (408 hatches drawn 25.4 times too sparse before): 445
+hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, POINT with its thickness, plane and
 DXF 50 (f001's, the 101 of 20 of AutoCAD's samples and 49 of 18 other programs' files), SOLID
 with its four corners in their order, thickness and plane, a fourth left out the third (f001's, and
 the 2,831 of 67 of AutoCAD's samples, mostly the arrowheads and fills of old blocks, and 8 of 2 other
@@ -179,10 +186,9 @@ in them; of an external reference, its drawing (above), XREF and -XREF (Attach, 
 Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
 cannot find (the console runs EXTERNALREFERENCES, p01; the desktop's task dialog *One or more
 reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's balloon and the
-xref's own clipping (XCLIP); a gradient hatch; a complex linetype's shapes (BATTING, ZIGZAG:
-the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a drawing's
-own hatch patterns (one outside the 24, or user-defined, keeps its name
-and draws no fill), the index colours as such,
+xref's own clipping (XCLIP); a complex linetype's shapes (BATTING, ZIGZAG:
+the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a gradient
+hatch's fill (its 144 hatches of 6 samples are left out); the index colours as such,
 each dimension's style overrides (xdata DSTYLE), a text style's font, width and obliquing (text is
 measured with Arial's metrics), TEXT's `%%c`, `%%d` and `%%p` drawn as their characters (as TEXT
 lacks them typed); named UCSs and views, the drawing opened at its saved view; DXFIN's FILEDIA 0
@@ -212,7 +218,10 @@ scale (48), the active viewport framing the drawing, and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
-reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN, a
+reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN (its
+own lines too, its type in 76 and a User-defined one's Double in 77, as AutoCAD wrote hatchpat/p00:
+the console opens MYPAT and `_U` in the six versions, ASCII and binary, with no AUDIT error and
+plots them as it plots its own file), a
 point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
 2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to

@@ -1064,7 +1064,24 @@ Annotative (`No`), Angle, Scale, Origin X, Origin Y (editable, read in the UCS),
 the Spanish labels `Nombre de patrón`, `Origen X`, `Área acumulativa`… are glossary words,
 **unverified** on the desktop); pattern lines drawn continuous in the object's colour and
 lineweight whatever its linetype (p340); nothing drawn with FILL off, SOLID or pattern (p341);
-MATCHPROP copies name, angle and scale and leaves the origin (d07); a drawing saved before file
+MATCHPROP copies name, angle and scale and leaves the origin (d07); **a pattern the hatch carries**
+(from a DXF, `docs/coverage/clipboard-and-files.md`): its own lines, drawn in place of the
+registry's as AutoCAD draws a hatch from the definition it holds (hatchpat/p05) — a pattern AutoCAD
+has not (MYPAT, Custom), a User-defined one (`_U`, its scale the spacing, Double its 90° family) or
+acad.pat's inch lines of a registry name —, which MOVE, COPY, ROTATE, SCALE and MIRROR carry
+(p03), EXPLODE makes lines and the drawing file keeps (version 55); the palette's Type
+`User-defined` or `Custom` (ax26res 84) and its Scale read-only for a User-defined one; a new
+Scale or Angle as -HATCHEDIT's (p02, p04, p05): a User-defined one made again from spacing, angle
+and Double, a registry name generated again from acadiso.pat (an inch ANSI31 at 3 spaced 3.175 ×
+3), any other drawing as it did, only the settings changing; MATCHPROP from a pattern AutoCAD
+cannot read again leaves the target's pattern drawn as it was with the source's scale and angle
+(p07, Autodesk's "Cannot use match properties on custom hatch pattern"), from a User-defined one
+makes the target it (p08); LIST names `_U` alone as its language's letter with `Hatch spacing for
+user pattern` (de `Schraffurmuster B`, ru `П`; `U` and `_USER` by name with a scale: p06, p06u,
+p06U). WHY a pattern of acadiso.pat this build does not ship (HOUND, GRASS, INSUL) keeps its lines
+at a new Scale or Angle, where AutoCAD reads it again from acadiso.pat: there is nothing here to
+read it from. A drawing saved before file
+
 version 32 reads an ANSI31 hatch at its scale over 25.4, as it was drawn with acad.pat's imperial
 definition; the es too-dense message is the console's `Intervalo de sombreado demasiado denso o
 trazo demasiado pequeño.` (p305 es). WHY a safety cap of 100 000 pattern segments
@@ -1085,7 +1102,9 @@ pages (HATCH-D32), the console HATCH's own prompt (`Pick internal point or [Sele
 Boundaries]:`, p200) and the ribbon's (`[Select objects/Draw/Undo/seTtings]`, d01), BHATCH and
 -BHATCH as commands of their own (typed whole they echo nothing more, and `-BH` echoes `-BHATCH`,
 p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
-annotative; the object: acadiso.pat's other ~60 patterns; what EXPLODE makes of a dot
+annotative; the object: acadiso.pat's other ~60 patterns (drawn only as a DXF brings them); a
+User-defined hatch's Spacing and Double rows and what the palette's Scale does to one
+(**unverified**: no desktop pass); what EXPLODE makes of a dot
 (**unverified**: here a zero-length LINE); MIRRHATCH 1; the angle as typed in a turned UCS (DXF
 52: AutoCAD keeps the angle typed, here its world angle is stored and shown, p369, p330) and
 HPORIGIN's readout after a MOVE (the palette's Origin stays 0,0 there, d05-1; here it moves with

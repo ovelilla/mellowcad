@@ -62,6 +62,7 @@ import {
 import { splineDataPoints, splineWithPoint } from "./splines"
 import { insertReflects } from "./entityFactories"
 import { replacePolyline3dVertex } from "./polylines3d"
+import { hatchWithPatternSettings } from "./hatchPatternEdits"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -238,10 +239,12 @@ export function applyEntityProperty(
       // The pattern's angle, scale and origin are AutoCAD's editable hatch
       // rows; the boundary is geometry the palette has no way to retype.
       if (property === "patternScale") {
-        return value > 0 ? { ...entity, patternScale: value } : null
+        return value > 0
+          ? hatchWithPatternSettings(entity, { scale: value })
+          : null
       }
       if (property === "patternAngle") {
-        return { ...entity, patternAngle: toRadians(value) }
+        return hatchWithPatternSettings(entity, { angle: toRadians(value) })
       }
       if (property === "originX") {
         return { ...entity, origin: { x: value, y: entity.origin.y } }

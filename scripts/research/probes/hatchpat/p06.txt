@@ -1,0 +1,8 @@
+QAFLAGS
+2
+_LIST
+_L
+
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcadhp\o6.dwg

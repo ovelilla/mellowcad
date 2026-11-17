@@ -674,6 +674,8 @@ export const es: EngineLocale = {
         "historyNone": "Ninguno",
         "measure": "Medir",
         "predefined": "Predefinido",
+        "userDefined": "Definido por el usuario",
+        "customPattern": "Personalizado",
         "outer": "Exterior",
         "extrusion": "Extrusión",
         "revolve": "Revolución",
@@ -7087,6 +7089,13 @@ export const es: EngineLocale = {
       "listHatchAnnotative": "                 Anotativo: no",
       "listHatchScale": [
         "                 Escala de sombreado ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchUserPattern": "                 Patrón de sombreado U",
+      "listHatchUserSpacing": [
+        "                 Intervalo del sombreado para patrón de usuario ",
         [
           "scale"
         ]

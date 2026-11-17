@@ -10,7 +10,11 @@ import { LinetypeId } from "./linetypes"
 import { Lineweight } from "./lineweights"
 import { TextStyleId } from "./textStyles"
 import { DimStyleId } from "./dimStyles"
-import { HatchPatternId } from "./hatchPatterns"
+import {
+  HatchPatternId,
+  HatchPatternLine,
+  HatchPatternType,
+} from "./hatchPatterns"
 
 /**
  * Entities are the CAD domain model: real geometry in world coordinates, never
@@ -599,6 +603,21 @@ export interface HatchEntity extends BaseEntity {
   readonly loops: readonly HatchLoop[]
   /** Pattern name (HPNAME); `SOLID` means a solid fill. */
   readonly patternId: HatchPatternId
+  /**
+   * AutoCAD's pattern type (DXF 76): absent is Predefined, its lines the
+   * registry's by name; `user` a User-defined one (`_U`), whose scale is its
+   * line spacing; `custom` one from a `.pat` of its own.
+   */
+  readonly patternType?: HatchPatternType
+  /**
+   * The pattern's lines as the hatch carries them, in pattern units about
+   * {@link origin} before {@link patternScale} and {@link patternAngle}: set
+   * where they are not the registry's for {@link patternId} (a pattern this
+   * build does not ship, a user-defined one, acad.pat's inch lines of a
+   * DXF), and drawn in their place, as AutoCAD draws a hatch from the
+   * definition it holds, not from its `.pat` (probe hatchpat/p05).
+   */
+  readonly patternLines?: readonly HatchPatternLine[]
   /** HPSCALE: multiplies every length in the pattern definition. */
   readonly patternScale: number
   /** HPANG: rotates the whole pattern, radians CCW from +X. */
