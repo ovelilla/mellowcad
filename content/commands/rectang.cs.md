@@ -5,7 +5,7 @@ figure: "Dva obdélníky ze dvou rohů, druhý zadaný relativně k prvnímu: je
 sourceHash: "a5d4e90c06aa"
 ---
 
-Příkaz OBD (RECTANG), také OBDÉLNÍK, nakreslí obdélník ze dvou protilehlých rohů, ukázaných nebo zadaných: `0,0` a pak `100,50`, při dynamickém zadávání relativně k prvnímu, vytvoří obdélník 100 × 50. Je to jedna uzavřená křivka se čtyřmi vrcholy, v aktuální hladině. Volby první výzvy nastavují, jak se budou kreslit další obdélníky, a každá si hodnotu ponechá do konce relace: příští OBD uvede platné volby na svém prvním řádku. Volba šířky dá každé straně šířku křivky. Zatímco umisťujete druhý roh, obdélník sleduje kurzor; se zapnutým dynamickým zadáváním můžete zadat jeho délku, Tab a šířku.
+Příkaz OBD (RECTANG), také OBDÉLNÍK, nakreslí obdélník ze dvou protilehlých rohů, ukázaných nebo zadaných: `0,0` a pak `100,50`, při dynamickém zadávání relativně k prvnímu, vytvoří obdélník 100 × 50. Je to jedna uzavřená křivka se čtyřmi vrcholy, v aktuální hladině. Možnosti první výzvy nastavují, jak se budou kreslit další obdélníky, a každá si hodnotu ponechá do konce relace: příští spuštění příkazu OBD uvede platné hodnoty na svém prvním řádku. Možnost Šířka dá každé straně šířku křivky. Zatímco umisťujete druhý roh, obdélník sleduje kurzor; se zapnutým dynamickým zadáváním můžete zadat jeho délku, Tab a šířku.
 
 ## Options
 
@@ -27,19 +27,19 @@ Zeptá se na tloušťku: obdélník ve 3D pohledu stojí tak vysoko, jako by byl
 
 ### Area
 
-U druhého rohu: zeptá se na plochu, pak zda zadat <Keyword id="Length" />, nebo <Keyword id="Width" />, a pak tuto stranu. Druhá strana se dopočítá, včetně rohů, a obdélník se vytvoří hned.
+Ve výzvě k druhému rohu: zeptá se na plochu, pak zda zadat <Keyword id="Length" />, nebo <Keyword id="Width" />, a pak tuto stranu. Druhá strana se dopočítá, včetně rohů, a obdélník se vytvoří hned.
 
 ### Dimensions
 
-U druhého rohu: zeptá se na délku a šířku, pak na bod, který určí, kterým směrem od prvního rohu obdélník leží.
+Ve výzvě k druhému rohu: zeptá se na délku a šířku, pak na bod, který určí, kterým směrem od prvního rohu obdélník leží.
 
 ### Rotation
 
-U druhého rohu: zeptá se na úhel natočení obdélníku, zadaný číslem nebo bodem od prvního rohu, nebo dvěma body volbou <Keyword id="Pick" />. Úhel se pamatuje do konce relace.
+Ve výzvě k druhému rohu: zeptá se na úhel natočení obdélníku, zadaný číslem nebo bodem od prvního rohu, nebo dvěma body možností <Keyword id="Pick" />. Úhel se pamatuje do konce relace.
 
 ## Missing
 
-Délka nebo šířka 0 u volby <Keyword id="Area" />, která zde nenakreslí nic a v AutoCADu nakreslí zlomenou křivku. Po odmítnuté odpovědi na výzvě natočení položí MellowCAD celou výzvu znovu, kdežto AutoCAD už nic nevypíše.
+Délka nebo šířka 0 u možnosti <Keyword id="Area" />, která zde nenakreslí nic a v AutoCADu nakreslí zlomenou křivku. Po odmítnuté odpovědi ve výzvě k natočení položí MellowCAD celou výzvu znovu, kdežto AutoCAD už nic nevypíše.
 
 ## Questions
 
@@ -53,12 +53,12 @@ Zadejte první roh, pak druhý relativně k němu: `100,50` se zapnutým dynamic
 
 ### Jak nakreslit obdélník se zaoblenými rohy?
 
-Na první výzvě zvolte <Keyword id="Fillet" />, zadejte poloměr a pak oba rohy.
+V první výzvě zvolte <Keyword id="Fillet" />, zadejte poloměr a pak oba rohy.
 
 ### Proč má můj obdélník zaoblené nebo zkosené rohy?
 
-Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i obdélník nakreslený po nich: jeho první řádek to uvádí. Zvolte <Keyword id="Fillet" /> a zadejte `0`, abyste znovu kreslili ostré rohy.
+Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i každý další obdélník: jeho první řádek to uvádí. Zvolte <Keyword id="Fillet" /> a zadejte `0`, abyste znovu kreslili ostré rohy.
 
 ### Je obdélník v AutoCADu křivka?
 
-Ano: jedna uzavřená křivka. <Command id="EXPLODE" /> ji rozloží na čtyři úsečky a <Command id="OFFSET" /> z ní vytvoří ekvidistantu celé.
+Ano: jedna uzavřená křivka. <Command id="EXPLODE" /> ji rozloží na čtyři úsečky a <Command id="OFFSET" /> vytvoří ekvidistantu celé křivky.

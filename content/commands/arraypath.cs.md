@@ -6,7 +6,7 @@ figure: "Malý čtverec na začátku oblouku, rozmístěný podél něj: Rozděl
 sourceHash: "d0d77418d682"
 ---
 
-Příkaz KŘIVPOLE (ARRAYPATH) kopíruje výběr podél trajektorie – úsečky, oblouku, kružnice nebo křivky – jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, zeptá se na trajektorii a pole hned ukáže: položky ve vzdálenosti jeden a půl násobku velikosti výběru, tolik, kolik se jich na trajektorii vejde, každá natočená tak, jak se trajektorie stáčí. Otevřená trajektorie začíná u konce bližšího místu, kde jste ji vybrali, kružnice proti směru hodinových ručiček od svého úhlu 0. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu. Vybrané objekty zůstanou na místě jako jeho první položka.
+Příkaz KŘIVPOLE (ARRAYPATH) kopíruje výběr podél trajektorie – úsečky, oblouku, kružnice nebo křivky – jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, zeptá se na trajektorii a pole hned ukáže: položky ve vzdálenosti jedenapůlnásobku velikosti výběru, tolik, kolik se jich na trajektorii vejde, každá natočená tak, jak se trajektorie stáčí. Otevřená trajektorie začíná u konce bližšího místu, kde jste ji vybrali, kružnice proti směru hodinových ručiček od svého úhlu 0. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu. Vybrané objekty zůstanou na místě jako jeho první položka.
 
 ## Options
 

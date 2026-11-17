@@ -19,7 +19,7 @@ ERASE. V české verzi AutoCADu jsou jeho zkratky `V` a `DELETE`: zadejte jednu 
 
 ### Jak vymazat všechno ve výkresu?
 
-Spusťte příkaz VYMAŽ, u výzvy `Vyberte objekty:` zadejte `VŠE` a pak stiskněte Enter. Objekty v zamknuté hladině se vynechají a výzva výběru uvede, kolik jich bylo.
+Spusťte příkaz VYMAŽ, u výzvy `Vyberte objekty:` zadejte `VŠE` a pak stiskněte Enter. Objekty v uzamknuté hladině se vynechají a výzva výběru uvede, kolik jich bylo.
 
 ### Jak vrátit, co jsem vymazal?
 

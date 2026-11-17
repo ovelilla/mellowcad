@@ -3,12 +3,12 @@ title: "Příkaz TEXTEDIT v AutoCADu"
 description: "Jak příkaz TEXTEDIT (zkratka ED) v AutoCADu upravuje text, víceřádkový text a definice atributů, jeden po druhém, se Zpět a Režim. Vyzkoušejte zdarma."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz TEXTEDIT česky?","answer":"Také TEXTEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte ED a stiskněte Enter nebo mezerník; fungují i TED a DIAEDIT, česká obdoba staršího DDEDIT. _TEXTEDIT funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu upravit text?","answer":"Poklepejte na něj, nebo zadejte ED a vyberte ho; přepište ho a stiskněte Enter. TEXTEDIT se pak ptá na další text k úpravě, dokud nestisknete Esc. Jeho výška a natočení jsou řádky palety Vlastnosti a jeho styl řádek Styl."},{"question":"Jak upravit několik textů po sobě?","answer":"Nechte TEXTEDIT v režimu NÁsobně, výchozím: po každém textu se zeptá na další. Režim a Jeden zařídí, že skončí po jednom, jako při poklepání."},{"question":"Proč poklepání text neupraví?","answer":"Text může ležet v zamknuté hladině: odemkněte hladinu ve Správci vlastností hladin. Text kóty TEXTEDIT zatím neupravuje a hodnoty atributů bloku otevře EATREDIT."}]
+faq: [{"question":"Jak se jmenuje příkaz TEXTEDIT česky?","answer":"Také TEXTEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte ED a stiskněte Enter nebo mezerník; fungují i TED a DIAEDIT, česká obdoba staršího DDEDIT. _TEXTEDIT funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu upravit text?","answer":"Poklepejte na něj, nebo zadejte ED a vyberte ho; přepište ho a stiskněte Enter. Příkaz TEXTEDIT se pak ptá na další text k úpravě, dokud nestisknete Esc. Jeho výška a natočení jsou řádky palety Vlastnosti a jeho styl řádek Styl."},{"question":"Jak upravit několik textů po sobě?","answer":"Nechte příkaz TEXTEDIT v režimu NÁsobně, výchozím: po každém textu se zeptá na další. Režim a Jeden zařídí, že skončí po jednom, jako při poklepání."},{"question":"Proč poklepání text neupraví?","answer":"Text může ležet v uzamknuté hladině: odemkněte hladinu ve Správci vlastností hladin. Text kóty příkaz TEXTEDIT zatím neupravuje a hodnoty atributů bloku otevře EATREDIT."}]
 ---
 
-Příkaz TEXTEDIT upravuje poznámkové objekty: uvede aktuální režim úprav, na začátku `NÁsobně`, a vyzve k výběru objektu. Jednořádkový text se otevře k přepsání tam, kde je, víceřádkový text v editoru příkazu [`MTEXT`](/docs/commands/mtext) a definice atributu jako její identifikátor, výzva a výchozí hodnota. V režimu `NÁsobně` se příkaz pak ptá na další objekt, dokud ho Esc nebo Enter neukončí, a celé spuštění je jeden krok, který vrátí `Z`. Poklepání na text nebo definici atributu spustí TEXTEDIT a na víceřádkovém textu otevře editor pro tento jeden objekt.
+Příkaz TEXTEDIT upravuje poznámkové objekty: uvede aktuální režim úprav, na začátku `NÁsobně`, a vyzve k výběru objektu. Jednořádkový text se otevře k přepsání tam, kde je, víceřádkový text v editoru příkazu [`MTEXT`](/docs/commands/mtext) a definice atributu jako její štítek, výzva a výchozí hodnota. V režimu `NÁsobně` se příkaz pak ptá na další objekt, dokud ho Esc nebo Enter neukončí, a celé spuštění je jeden krok, který vrátí `Z`. Poklepání na text nebo definici atributu spustí příkaz TEXTEDIT a na víceřádkovém textu otevře editor pro tento jeden objekt.
 
-Esc v editoru jednořádkového textu zahodí tuto úpravu a zeptá se na další objekt; druhé stisknutí Esc příkaz ukončí. U objektu v zamknuté hladině příkaz vypíše `Objekt je v uzamknuté hladině.` a zeptá se znovu a výběr čehokoli jiného otázku zopakuje beze zprávy. Jeden text vybraný před spuštěním příkazu se otevře hned.
+Esc v editoru jednořádkového textu zahodí tuto úpravu a zeptá se na další objekt; druhé stisknutí Esc příkaz ukončí. U objektu v uzamknuté hladině příkaz vypíše `Objekt je v uzamknuté hladině.` a zeptá se znovu a výběr čehokoli jiného otázku zopakuje beze zprávy. Jeden text vybraný před spuštěním příkazu se otevře hned.
 
 - **Příkaz:** `TEXTEDIT`
 - **Aliasy:** `TED`, `DIAEDIT`, `ED`
@@ -33,7 +33,7 @@ Zeptá se na režim úprav: `Jeden` ukončí příkaz po jednom objektu, `NÁsob
 
 ## Co zatím neumí [#missing]
 
-Text kóty: TEXTEDIT neupravuje text kóty, který určuje možnost Text příkazu [`KÓTYPŘÍM`](/docs/commands/dimlinear) při jejím umisťování. Úprava obsahu textu v paletě Vlastnosti. Zapsaný MTEDIT a -MTEDIT. Když je editor otevřený, příkazový řádek ukazuje `TEXTEDIT:`, zatímco AutoCAD upravuje na místě a na nic se neptá.
+Text kóty: příkaz TEXTEDIT neupravuje text kóty, který určuje možnost Text příkazu [`KÓTYPŘÍM`](/docs/commands/dimlinear) při jejím umisťování. Úprava obsahu textu v paletě Vlastnosti. Příkaz MTEDIT zadaný z klávesnice a -MTEDIT. Když je editor otevřený, příkazový řádek ukazuje `TEXTEDIT:`, zatímco AutoCAD upravuje na místě a na nic se neptá.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit--pt-br-editartexto--tedit--ddedit--ed--fr-modiftexte--ed--ddedit--mo--it-modtesto--mod--ddedit--mt--de-textbearb--tbearb--ddedit--tbear--ru-текстред--тр--диалред--ред--pl-edtekst--edt--odtekst--et--cs-textedit--ted--diaedit--ed)
 
@@ -45,15 +45,15 @@ Také TEXTEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte `ED` a
 
 ### Jak v AutoCADu upravit text?
 
-Poklepejte na něj, nebo zadejte `ED` a vyberte ho; přepište ho a stiskněte Enter. TEXTEDIT se pak ptá na další text k úpravě, dokud nestisknete Esc. Jeho výška a natočení jsou řádky palety Vlastnosti a jeho styl řádek Styl.
+Poklepejte na něj, nebo zadejte `ED` a vyberte ho; přepište ho a stiskněte Enter. Příkaz TEXTEDIT se pak ptá na další text k úpravě, dokud nestisknete Esc. Jeho výška a natočení jsou řádky palety Vlastnosti a jeho styl řádek Styl.
 
 ### Jak upravit několik textů po sobě?
 
-Nechte TEXTEDIT v režimu `NÁsobně`, výchozím: po každém textu se zeptá na další. `Režim` a `Jeden` zařídí, že skončí po jednom, jako při poklepání.
+Nechte příkaz TEXTEDIT v režimu `NÁsobně`, výchozím: po každém textu se zeptá na další. `Režim` a `Jeden` zařídí, že skončí po jednom, jako při poklepání.
 
 ### Proč poklepání text neupraví?
 
-Text může ležet v zamknuté hladině: odemkněte hladinu ve Správci vlastností hladin. Text kóty TEXTEDIT zatím neupravuje a hodnoty atributů bloku otevře [`EATREDIT`](/docs/commands/eattedit).
+Text může ležet v uzamknuté hladině: odemkněte hladinu ve Správci vlastností hladin. Text kóty příkaz TEXTEDIT zatím neupravuje a hodnoty atributů bloku otevře [`EATREDIT`](/docs/commands/eattedit).
 
 ## Související příkazy [#related]
 

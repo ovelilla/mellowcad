@@ -4,10 +4,10 @@ metaTitle: "Pole objektů v AutoCADu: příkaz POLE (ARRAY)"
 description: "Jak vytvořit pole v AutoCADu příkazem POLE (ARRAY, zkratka PO): obdélníkové, polární a křivkové, upravované živě před vytvořením. Vyzkoušejte zdarma online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz POLE anglicky a jakou má zkratku?","answer":"Anglicky ARRAY, v českém AutoCADu POLE: zadejte PO a stiskněte Enter nebo mezerník. Anglické AR v českém AutoCADu nefunguje; _ARRAY funguje v AutoCADu v jakémkoli jazyce. OBDPOLE, POLÁRPOLE a KŘIVPOLE zkratku nemají a zadané celé přeskočí otázku na typ."},{"question":"Jak v AutoCADu vytvořit kruhové pole?","answer":"Vyberte Polární nebo spusťte POLÁRPOLE a vyberte středový bod: výběr se zkopíruje kolem něj, zpočátku v 6 položkách. Počet změňte možností Položky a úhel, který vyplňují, nastavte možností Vyplnění."},{"question":"Jak rozložit pole v AutoCADu?","answer":"Vyberte ho a spusťte ROZLOŽ: pole se rozpadne na objekty svých položek, každý objekt ve své hladině. Chcete-li volné kopie hned od začátku, odpovězte Ne na ASociativní, než stisknete Enter."},{"question":"Jak změnit pole po jeho vytvoření?","answer":"Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řady a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není."}]
+faq: [{"question":"Jak se jmenuje příkaz POLE anglicky a jakou má zkratku?","answer":"Anglicky ARRAY, v českém AutoCADu POLE: zadejte PO a stiskněte Enter nebo mezerník. Anglické AR v českém AutoCADu nefunguje; _ARRAY funguje v AutoCADu v jakémkoli jazyce. OBDPOLE, POLÁRPOLE a KŘIVPOLE zkratku nemají a zadané celé přeskočí otázku na typ."},{"question":"Jak v AutoCADu vytvořit kruhové pole?","answer":"Vyberte Polární nebo spusťte POLÁRPOLE a vyberte středový bod: výběr se zkopíruje kolem něj, zpočátku v 6 položkách. Počet změňte možností Položky a úhel, který vyplňují, nastavte možností Vyplnění."},{"question":"Jak rozložit pole v AutoCADu?","answer":"Vyberte ho a spusťte ROZLOŽ: pole se rozpadne na objekty svých položek, každý objekt ve své hladině. Chcete-li volné kopie hned od začátku, odpovězte Ne na ASociativní, než stisknete Enter."},{"question":"Jak změnit pole po jeho vytvoření?","answer":"Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řádky a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není."}]
 ---
 
-Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řadách, kolem středu nebo podél trajektorie. Zeptá se na objekty, pak na typ pole, přičemž Enter vybere obdélníkové, a předá výběr příkazu [`OBDPOLE`](/docs/commands/arrayrect), [`POLÁRPOLE`](/docs/commands/arraypolar) nebo [`KŘIVPOLE`](/docs/commands/arraypath), který pokračuje, aniž by se znovu ptal na objekty. Každý z nich pole hned ukáže a upravuje ho živě, svými možnostmi a uzly, dokud ho Enter nevytvoří: jeden objekt pole, nebo volné kopie, pokud jste zvolili, že nemá být asociativní. Celý příkaz je jeden krok zpět a Enter na příkazovém řádku příkaz POLE zopakuje.
+Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řádcích, kolem středu nebo podél trajektorie. Zeptá se na objekty, pak na typ pole, přičemž Enter vybere obdélníkové, a předá výběr příkazu [`OBDPOLE`](/docs/commands/arrayrect), [`POLÁRPOLE`](/docs/commands/arraypolar) nebo [`KŘIVPOLE`](/docs/commands/arraypath), který pokračuje, aniž by se znovu ptal na objekty. Každý z nich pole hned ukáže a upravuje ho živě, svými možnostmi a uzly, dokud ho Enter nevytvoří: jeden objekt pole, nebo volné kopie, pokud jste zvolili, že nemá být asociativní. Celý příkaz je jeden krok zpět a Enter na příkazovém řádku příkaz POLE zopakuje.
 
 - **Příkaz:** `POLE`
 - **Anglicky:** `ARRAY`, zadávaný jako `_ARRAY` v libovolném jazyce
@@ -19,13 +19,13 @@ Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řadách, k
 
 Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
 
-<Session name="array" caption="Čtverec a jeho kružnice v poli s výchozími hodnotami: Enter pro obdélníkové pole, 4 sloupce a 3 řady." />
+<Session name="array" caption="Čtverec a jeho kružnice v poli s výchozími hodnotami: Enter pro obdélníkové pole, 4 sloupce a 3 řádky." />
 
 ## Možnosti [#options]
 
 ### `Obdélníkové` (`O`) [#rectangular]
 
-Sloupce a řady a podle potřeby úrovně skládané podél Z: [`OBDPOLE`](/docs/commands/arrayrect). Začíná se 4 sloupci a 3 řadami, s roztečí jedenapůlkrát větší než velikost výběru.
+Sloupce a řádky a podle potřeby úrovně skládané podél Z: [`OBDPOLE`](/docs/commands/arrayrect). Začíná se 4 sloupci a 3 řádky, s roztečí jedenapůlkrát větší než velikost výběru.
 
 ### `Křivkové` (`K`) [#path]
 
@@ -33,7 +33,7 @@ Podél úsečky, oblouku, kružnice nebo křivky: [`KŘIVPOLE`](/docs/commands/a
 
 ### `Polární` (`P`) [#polar]
 
-Kolem středového bodu: [`POLÁRPOLE`](/docs/commands/arraypolar). Zeptá se na střed a začíná se 6 položkami na celé otočce.
+Kolem středového bodu: [`POLÁRPOLE`](/docs/commands/arraypolar). Zeptá se na střed a začíná se 6 položkami na plném kruhu.
 
 ## Co zatím neumí [#missing]
 
@@ -57,7 +57,7 @@ Vyberte ho a spusťte [`ROZLOŽ`](/docs/commands/explode): pole se rozpadne na o
 
 ### Jak změnit pole po jeho vytvoření?
 
-Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řady a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není.
+Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řádky a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není.
 
 ## Související příkazy [#related]
 

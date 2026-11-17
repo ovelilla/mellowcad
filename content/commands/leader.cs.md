@@ -1,6 +1,6 @@
 ---
 title: "Odkazová čára v AutoCADu: příkaz ODKAZ (LEADER)"
-description: "Jak nakreslit odkaz s textem v AutoCADu příkazem ODKAZ (LEADER, zkratka ODK): šipka, kotvička, volby formátu a rozdíl oproti příkazu MODKAZ (MLEADER)."
+description: "Jak nakreslit odkaz s textem v AutoCADu příkazem ODKAZ (LEADER, zkratka ODK): šipka, kotvička, možnosti formátu a rozdíl oproti příkazu MODKAZ (MLEADER)."
 figure: "Otvor a jeho popis: ODKAZ od obvodu kružnice, dva body, pak dva řádky textu; poslední segment stoupá, takže ho s textem spojí kotvička."
 sourceHash: "1bf39ac320fd"
 ---
@@ -27,7 +27,7 @@ Vrátí poslední bod a zeptá se na něj znovu. U druhého bodu není co vracet
 
 ## Missing
 
-Poznámky Tolerance a Blok: MellowCAD nemá objekt geometrické tolerance a blok se z příkazu ODKAZ nevkládá, takže výzva voleb nabízí jen <Keyword id="Copy" />, <Keyword id="None" /> a <Keyword id="Mtext" />. Jiné šipky než plná uzavřená a vlastní barva a tloušťka čáry odkazu z kótovacího stylu. RODKAZ (QLEADER) a MODKAZ (MLEADER), rychlý odkaz a multiodkaz, tu zatím nejsou: multiodkazy ze souboru DXF se při otevření vynechají.
+Poznámky Tolerance a Blok: MellowCAD nemá objekt geometrické tolerance a blok se z příkazu ODKAZ nevkládá, takže výzva možností nabízí jen <Keyword id="Copy" />, <Keyword id="None" /> a <Keyword id="Mtext" />. Jiné šipky než plná uzavřená a vlastní barva a tloušťka čáry odkazu z kótovacího stylu. RODKAZ (QLEADER) a MODKAZ (MLEADER), rychlý odkaz a multiodkaz, tu zatím nejsou: multiodkazy ze souboru DXF se při otevření vynechají.
 
 ## Questions
 
@@ -49,4 +49,4 @@ Vyberte odkaz a změňte Velikost šipky v paletě Vlastnosti, což platí jen p
 
 ### Proč odkaz nemá šipku?
 
-Buď ji vynechala volba <Keyword id="None" /> ve volbě <Keyword id="Format" />, nebo je první segment kratší než dvojnásobek velikosti šipky, kdy šipku nekreslí ani AutoCAD. Určete druhý bod dál od prvního nebo nastavte menší velikost šipky.
+Buď ji vynechala možnost <Keyword id="None" /> v možnosti <Keyword id="Format" />, nebo je první segment kratší než dvojnásobek velikosti šipky, kdy šipku nekreslí ani AutoCAD. Určete druhý bod dál od prvního nebo nastavte menší velikost šipky.

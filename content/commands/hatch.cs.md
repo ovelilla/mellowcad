@@ -1,26 +1,26 @@
 ---
 title: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
 metaTitle: "Šrafování v AutoCADu: příkaz ŠRAFY (HATCH)"
-description: "Jak v AutoCADu šrafovat příkazem ŠRAFY (HATCH), výzvu po výzvě: bod uvnitř nebo hraniční objekty, vzor, měřítko, úhel, ostrůvky. Vyzkoušejte zdarma online."
-figure: "Obdélník s kružnicí uvnitř, vyšrafovaný vzorem ANSI31 z jednoho bodu uvnitř: kružnice zůstane prázdná jako ostrůvek."
+description: "Jak v AutoCADu šrafovat příkazem ŠRAFY (HATCH), výzvu po výzvě: bod uvnitř nebo hraniční objekty, vzor, měřítko, úhel, ostrovy. Vyzkoušejte zdarma online."
+figure: "Obdélník s kružnicí uvnitř, vyšrafovaný vzorem ANSI31 z jednoho bodu uvnitř: kružnice zůstane prázdná jako ostrov."
 sourceHash: "edf4b860d8cb"
 ---
 
-Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výplní. Vyberte bod uvnitř oblasti a příkaz najde její hranici v objektech kolem ní a to, co leží uvnitř, ponechá prázdné jako ostrůvek – kružnici v obdélníku, text; nebo vyberte objekty, které oblast ohraničují. Vyberte tolik oblastí, kolik chcete: Enter nebo Esc z nich všech vytvoří jednu šrafu, v aktuální hladině, pod její hranicí. Celý příkaz je jeden krok, který lze vrátit zpět.
+Příkaz ŠRAFY (HATCH) vyplní uzavřenou oblast vzorem čar nebo plnou výplní. Vyberte bod uvnitř oblasti a příkaz najde její hranici v objektech kolem ní a to, co leží uvnitř, ponechá prázdné jako ostrov – kružnici v obdélníku, text; nebo vyberte objekty, které oblast ohraničují. Vyberte tolik oblastí, kolik chcete: Enter nebo Esc z nich všech vytvoří jedny šrafy, v aktuální hladině, pod jejich hranicí. Celý příkaz je jeden krok, který lze vrátit zpět.
 
-Příkaz ŠRAFY v AutoCADu nastavuje vzor na kontextové kartě Vytváření šraf nebo v dialogu, které MellowCAD nemá: zde se na příkazovém řádku ptá na to, na co se ptá příkaz <Command id="-HATCH" />, vzor v možnosti <Keyword id="Properties" />. Oba příkazy se liší jen klávesou Esc, která v příkazu <Command id="-HATCH" /> oblasti zahodí. Každá šrafa začíná se vzorem, měřítkem a úhlem, které dostala poslední: v novém výkresu ANGLE, v měřítku 1 a pod úhlem 0.
+Příkaz ŠRAFY v AutoCADu nastavuje vzor na kontextové kartě Vytváření šraf nebo v dialogu, které MellowCAD nemá: zde se na příkazovém řádku ptá na to, na co se ptá příkaz <Command id="-HATCH" />, vzor v možnosti <Keyword id="Properties" />. Oba příkazy se liší jen klávesou Esc, která v příkazu <Command id="-HATCH" /> oblasti zahodí. Každé šrafy začínají se vzorem, měřítkem a úhlem, které dostaly poslední: v novém výkresu ANGLE, v měřítku 1 a pod úhlem 0.
 
 ## Options
 
 ### Properties
 
-Zeptá se na název vzoru, velkými i malými písmeny, a nabídne aktuální: <Keyword id="Solid" /> oblast plně vyplní a <Keyword id="?" /> vypíše seznam vzorů s jejich popisy a vrátí se k bodu. U vzoru se pak zeptá na měřítko – číslo větší než 0, nebo dva body, mezi nimiž se měří – a na úhel, zadaný nebo dvěma body. Další šrafa si ponechá všechny tři.
+Zeptá se na název vzoru, velkými i malými písmeny, a nabídne aktuální: <Keyword id="Solid" /> oblast plně vyplní a <Keyword id="?" /> vypíše seznam vzorů s jejich popisy a vrátí se k bodu. U vzoru se pak zeptá na měřítko – číslo větší než 0, nebo dva body, mezi nimiž se měří – a na úhel, zadaný nebo dvěma body. Další šrafy si ponechají všechny tři.
 
 <Session name="hatchPatterns" caption="SOLID a jedenáct vzorů z acadiso.pat, každý vyšrafovaný ve čtverci o straně 30 v měřítku 1, AR-CONC a AR-SAND v měřítku 0,08 a 0,1." />
 
 ### Select objects
 
-Místo bodu uvnitř vyberte objekty, které oblast ohraničují; Enter se vrátí k bodu. Objekt, který žádnou oblast neuzavírá, se vynechá; když žádný z nich oblast neohraničuje, Enter vypíše <Message id="unableToHatchBoundary" /> a nic nevytvoří. Oblast vytvořená příkazem <Command id="REGION" /> dá svůj obrys a její otvory ostrůvky.
+Místo bodu uvnitř vyberte objekty, které oblast ohraničují; Enter se vrátí k bodu. Objekt, který žádnou oblast neuzavírá, se vynechá; když žádný z nich oblast neohraničuje, Enter vypíše <Message id="unableToHatchBoundary" /> a nic nevytvoří. Oblast vytvořená příkazem <Command id="REGION" /> dá svůj obrys a její otvory ostrovy.
 
 ### Undo
 
@@ -28,7 +28,7 @@ Ve výzvě uvedena není, ale přijme se tam: vrátí oblasti naposledy vybrané
 
 ## Missing
 
-Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly ostrůvků Normální a Ignorovat, gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat, které přinášejí i s jejich čarami jen šrafy ze souboru DXF. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, popisná šrafa, barva, hladina a průhlednost. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlená šrafa si vždy ponechá úhel svého vzoru. Nabídky uzlů šrafy.
+Elipsy a spline jako hranice: oblast, kterou uzavírají, se nenajde a oblast vytvořená příkazem OBLAST s takovou hranou se vynechá. Tolerance mezer (HPGAPTOL): oblast musí být přesně uzavřená. Asociativní šrafy, styly šrafování Normální a Ignorovat, gradienty, uživatelsky definované vzory a ostatní vzory z acadiso.pat, které přinášejí i s jejich čarami jen šrafy ze souboru DXF. Ostatní možnosti příkazu -ŠRAFY: nakreslení hranice, odebrání hranic, Pokročilé, pořadí kreslení, počátek, Poznámky, barva, hladina a průhlednost. Příkaz ŠRAFEDIT a Editor šraf, které v AutoCADu otevře dvojklik. MIRRHATCH 1: zrcadlené šrafy si vždy ponechají úhel svého vzoru. Nabídky uzlů šraf.
 
 ## Questions
 
@@ -44,10 +44,10 @@ Nejčastěji proto, že oblast není uzavřená: příkaz vypíše <Message id="
 
 Výběr z acadiso.pat, metrického souboru vzorů AutoCADu: SOLID, ANGLE, ANSI31 až ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL a ZIGZAG. <Keyword id="?" /> v možnosti <Keyword id="Properties" /> je vypíše. Vlastní ani stažený soubor vzorů zatím nelze načíst, ale šrafy ze souboru DXF se otevřou se vzorem, který obsahují, ať je jakýkoli, tak jak je kreslí AutoCAD.
 
-### Jak v AutoCADu změnit měřítko šrafy?
+### Jak v AutoCADu změnit měřítko šraf?
 
-Před výběrem, v možnosti <Keyword id="Properties" />: měřítko následuje po názvu vzoru. U už vytvořené šrafy ji vyberte a přepište „Měřítko“ v paletě Vlastnosti, nebo jí dejte vzor, měřítko a úhel jiné šrafy příkazem <Command id="MATCHPROP" />. Tak malé měřítko, že by vzor potřeboval příliš mnoho čar, vyvolá <Message id="hatchTooDense" /> a šrafa nevznikne.
+Před výběrem, v možnosti <Keyword id="Properties" />: měřítko následuje po názvu vzoru. Už vytvořené šrafy vyberte a přepište „Měřítko“ v paletě Vlastnosti, nebo jim dejte vzor, měřítko a úhel jiných šraf příkazem <Command id="MATCHPROP" />. Tak malé měřítko, že by vzor potřeboval příliš mnoho čar, vyvolá <Message id="hatchTooDense" /> a šrafy nevzniknou.
 
-### Jak zjistit plochu šrafy?
+### Jak zjistit plochu šraf?
 
-Vyberte ji a přečtěte „Plochu“ ve skupině „Geometrie“ palety Vlastnosti, bez ostrůvků; při několika vybraných šrafách je sečte „Kumulativní oblast“. Nebo spusťte příkaz <Command id="AREA" />, zvolte <Keyword command="AREA" id="Object" /> a vyberte šrafu.
+Vyberte je a přečtěte hodnotu „Plocha“ ve skupině „Geometrie“ palety Vlastnosti, bez ostrovů; při několika vybraných šrafách je sečte „Kumulativní oblast“. Nebo spusťte příkaz <Command id="AREA" />, zvolte <Keyword command="AREA" id="Object" /> a vyberte šrafy.

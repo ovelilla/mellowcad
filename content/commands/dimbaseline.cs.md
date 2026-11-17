@@ -38,6 +38,6 @@ Je to „Odsazení základny“ kótovacího stylu: příkaz <Command id="DIMSTY
 
 Stiskněte Enter u první výzvy nebo zvolte <Keyword id="Select" /> a vyberte kótu blízko vynášecí čáry, od které se má měřit: od ní začne každá nová kóta.
 
-### Jaký je rozdíl mezi KÓTYZÁKL a KÓTYŘET?
+### Jaký je rozdíl mezi příkazy KÓTYZÁKL a KÓTYŘET?
 
 Příkaz KÓTYZÁKL měří každou kótu od téže vynášecí čáry, každou na čáře položené dál. Příkaz <Command id="DIMCONTINUE" /> je řadí za sebou na jednu čáru, každou od místa, kde předchozí skončila.

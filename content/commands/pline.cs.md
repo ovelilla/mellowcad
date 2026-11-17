@@ -1,17 +1,17 @@
 ---
 title: "Křivka v AutoCADu: příkaz KŘIVKA (PLINE)"
-description: "Jak nakreslit křivku (polyline) v AutoCADu příkazem KŘIVKA (PLINE, zkratka K): úsečky a oblouky v jednom objektu, šířka a polovina šířky, délka a uzavření."
+description: "Jak nakreslit křivku (polyline) v AutoCADu příkazem KŘIVKA (PLINE, zkratka K): úsečky a oblouky v jednom objektu, Tloušťka a Polotloušťka, Délka a Uzavři."
 figure: "Úsečka, tečný oblouk a úsečka zpět, pak hrot široký 10 zužující se do 0: jedna křivka."
 sourceHash: "216b83656483"
 ---
 
-Příkaz KŘIVKA (PLINE) kreslí křivku (polyline): jeden objekt z přímých segmentů a oblouků navazujících konec na konec, každý se šířkou. Po počátečním bodu vypíše aktuální šířku; pak každý bod přidá segment, dokud příkaz neukončí Enter nebo <Keyword id="Close" />. Stejně jako v AutoCADu začíná úsečkami: <Keyword id="Arc" /> přepne na oblouky, každý tečný k předchozímu segmentu, a <Keyword id="Line" /> přepne zpět. Enter u počátečního bodu naváže na konec naposledy nakreslené úsečky, oblouku nebo křivky.
+Příkaz KŘIVKA (PLINE) kreslí křivku (polyline): jeden objekt z přímých segmentů a oblouků navazujících konec na konec, každý se šířkou. Po počátečním bodu vypíše aktuální šířku; pak každý bod přidá segment, dokud příkaz neukončí Enter nebo <Keyword id="Close" />. Stejně jako v AutoCADu začíná úsečkami: <Keyword id="Arc" /> přepne na oblouky, každý tečný k předchozímu segmentu, a <Keyword id="Line" /> přepne zpět. Enter místo počátečního bodu naváže na konec naposledy nakreslené úsečky, oblouku nebo křivky.
 
 ## Options
 
 ### Arc
 
-Režim oblouků: každý koncový bod nakreslí oblouk tečný k poslednímu segmentu, nebo, jako první segment, ve směru, kterým končí naposledy nakreslená úsečka, oblouk nebo křivka. Podržením Ctrl směr přepnete. Volby níže tvarují další oblouk.
+Režim oblouků: každý koncový bod nakreslí oblouk tečný k poslednímu segmentu, nebo, jako první segment, ve směru, kterým končí naposledy nakreslená úsečka, oblouk nebo křivka. Podržením Ctrl směr přepnete. Možnosti níže určují tvar dalšího oblouku.
 
 ### Close
 
@@ -59,7 +59,7 @@ Režim oblouků: bod, kterým oblouk prochází, pak jeho koncový bod: oblouk t
 
 ## Missing
 
-PLINEGEN: nová křivka klade typ čáry segment po segmentu, jako při PLINEGEN 0 (volba <Keyword command="PEDIT" id="Ltype gen" /> příkazu <Command id="PEDIT" /> ho zapne pro jednu křivku). Přerušovaný typ čáry na širokém segmentu se kreslí plný. Náhled širokého segmentu se nekreslí tlumenějším odstínem a výzva oblouku je na jednom řádku, kde ji AutoCAD láme na dva.
+PLINEGEN: nová křivka klade typ čáry segment po segmentu, jako při PLINEGEN 0 (možnost <Keyword command="PEDIT" id="Ltype gen" /> příkazu <Command id="PEDIT" /> ho zapne pro jednu křivku). Přerušovaný typ čáry na širokém segmentu se kreslí plný. Náhled širokého segmentu se nekreslí tlumenějším odstínem a výzva oblouku je na jednom řádku, kde ji AutoCAD láme na dva.
 
 ## Questions
 
@@ -69,7 +69,7 @@ PLINE. V českém AutoCADu je jeho zkratka `K`: zadejte ji a stiskněte Enter ne
 
 ### Jak nakreslit křivku s oblouky?
 
-Zvolte <Keyword id="Arc" />: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do <Keyword id="Line" />. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte <Command id="PEDIT" /> a jeho volbu <Keyword command="PEDIT" id="Fit" /> nebo <Keyword command="PEDIT" id="Spline" />.
+Zvolte <Keyword id="Arc" />: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do <Keyword id="Line" />. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte <Command id="PEDIT" /> a jeho možnost <Keyword command="PEDIT" id="Fit" /> nebo <Keyword command="PEDIT" id="Spline" />.
 
 ### Proč se moje křivka kreslí silná?
 
@@ -77,7 +77,7 @@ Zvolte <Keyword id="Arc" />: každý bod pak ukončí oblouk tečný k předchoz
 
 ### Jak spojit úsečky do křivky?
 
-Spusťte <Command id="JOIN" /> a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetěz se stane jednou křivkou. Nebo spusťte <Command id="PEDIT" /> na úsečce, odpovězte <Keyword command="PEDIT" id="Yes" />, aby se převedla na křivku, a zbytek přidejte volbou <Keyword command="PEDIT" id="Join" />.
+Spusťte <Command id="JOIN" /> a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetězec se stane jednou křivkou. Nebo spusťte <Command id="PEDIT" /> na úsečce, odpovězte <Keyword command="PEDIT" id="Yes" />, aby se převedla na křivku, a zbytek přidejte volbou <Keyword command="PEDIT" id="Join" />.
 
 ### Jak zjistit plochu nebo délku křivky?
 

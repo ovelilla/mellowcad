@@ -3,12 +3,12 @@ title: "Příkaz OBJEDIT (SOLIDEDIT) v AutoCADu"
 description: "Jak příkaz OBJEDIT (SOLIDEDIT) v AutoCADu upravuje plochy 3D tělesa krok za krokem: Vysunutí, Posun, Rotace, ekviD, zEšikmení, vYmazat a Kopie."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak v AutoCADu upravit 3D těleso?","answer":"Spusťte OBJEDIT, zvolte Plocha a pak úpravu: Vysunutí nebo Posun plochy, aby bylo těleso vyšší, vYmazat, aby se zaplnil otvor, zEšikmení, aby se zkosil bok. Vyberte plochy, stiskněte Enter a odpovězte na výzvy možnosti. Chcete-li plochu rychle vytlačit nebo vtlačit, přetáhněte ji příkazem TLAČTÁHNI."},{"question":"Jak vysunout plochu 3D tělesa?","answer":"OBJEDIT, Plocha, Vysunutí, vyberte plochu a stiskněte Enter, pak výšku a úhel zúžení: 15 a 15 z ukázky vytvoří na horní ploše kvádru komolý jehlan."},{"question":"Jak v AutoCADu odstranit otvor z tělesa?","answer":"OBJEDIT, Plocha, vYmazat, vyberte stěnu otvoru a stiskněte Enter: otvor se zaplní. Stejně se odstraní zaoblení nebo zkosení."},{"question":"Jaký je rozdíl mezi OBJEDIT a TLAČTÁHNI?","answer":"TLAČTÁHNI posune jednu plochu přetažením nebo o vzdálenost, kolmo k ní. OBJEDIT umí totéž a víc: zešikmuje, otáčí, odsazuje, maže a kopíruje plochy, několik najednou."}]
+faq: [{"question":"Jak v AutoCADu upravit 3D těleso?","answer":"Spusťte příkaz OBJEDIT, zvolte Plocha a pak úpravu: Vysunutí nebo Posun plochy, aby bylo těleso vyšší, vYmazat, aby se zaplnil otvor, zEšikmení, aby se zkosil bok. Vyberte plochy, stiskněte Enter a odpovězte na výzvy možnosti. Chcete-li plochu rychle vytlačit nebo vtlačit, přetáhněte ji příkazem TLAČTÁHNI."},{"question":"Jak vysunout plochu 3D tělesa?","answer":"OBJEDIT, Plocha, Vysunutí, vyberte plochu a stiskněte Enter, pak zadejte výšku a úhel zúžení: 15 a 15 z ukázky vytvoří na horní ploše kvádru komolý jehlan."},{"question":"Jak v AutoCADu odstranit otvor z tělesa?","answer":"OBJEDIT, Plocha, vYmazat, vyberte stěnu otvoru a stiskněte Enter: otvor se zaplní. Stejně se odstraní zaoblení nebo zkosení."},{"question":"Jaký je rozdíl mezi příkazy OBJEDIT a TLAČTÁHNI?","answer":"TLAČTÁHNI posune jednu plochu přetažením nebo o vzdálenost, kolmo k ní. Příkaz OBJEDIT umí totéž a víc: zešikmuje, otáčí, odsazuje, maže a kopíruje plochy, několik najednou."}]
 ---
 
 Příkaz OBJEDIT (SOLIDEDIT) upravuje 3D těleso pomocí jeho ploch. Nejprve oznámí, zda se každá úprava kontroluje, a pak se zeptá, co upravit: `Plocha`, pak možnost pro plochy, pak plochy a pak to, co možnost potřebuje. Každá úprava se provede hned a možnosti pro plochy se nabídnou znovu, takže jedno spuštění může provést několik úprav; `kOnec` nebo Enter opustí možnosti pro plochy a pak příkaz. Sousední plochy upravovanou plochu následují: posuňte horní plochu kvádru nahoru a jeho boky se prodlouží, aby se s ní setkaly.
 
-Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádrem. Celé spuštění je jeden krok, který lze vrátit zpět, a jeho možnost `Zpět` vrací úpravy uvnitř něj jednu po druhé. Enter u výzvy `Příkaz:` ho spustí znovu od první otázky. Tlačítko ploch na panelu Úprava těles spouští každou možnost pro plochy přímo. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádrem. Celé spuštění je jeden krok, který lze vrátit zpět, a jeho možnost `Zpět` vrací úpravy uvnitř něj jednu po druhé. Enter ve výzvě `Příkaz:` ho spustí znovu od první otázky. Tlačítko ploch na panelu Úprava těles spouští každou možnost pro plochy přímo. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 - **Příkaz:** `OBJEDIT`
 - **Anglicky:** `SOLIDEDIT`, zadávaný jako `_SOLIDEDIT` v libovolném jazyce
@@ -29,7 +29,7 @@ Možnosti pro plochy. Každá se ptá na plochy, dokud nestisknete Enter: kliknu
 
 ### `Vysunutí` (`V`) [#extrude]
 
-Zeptá se na výšku a úhel zúžení: každá plocha vyroste v hranol přidaný k tělesu, nebo při záporné výšce od něj odečtený, který se při kladném úhlu směrem nahoru zužuje. Enter u výšky převezme poslední výšku, kterou použila základní tělesa nebo [`VYTÁHNI`](/docs/commands/extrude).
+Zeptá se na výšku a úhel zúžení: každá plocha vyroste v hranol přidaný k tělesu, nebo při záporné výšce od něj odečtený, který se při kladném úhlu směrem nahoru zužuje. Enter u výšky převezme poslední výšku, kterou použily příkazy základních těles nebo příkaz [`VYTÁHNI`](/docs/commands/extrude).
 
 ### `Posun` (`P`) [#move]
 
@@ -41,7 +41,7 @@ Zeptá se na osu, dvěma body nebo podél os `Xosa`, `Yosa` nebo `Zosa` systému
 
 ### `ekviD` (`D`) [#offset]
 
-Zeptá se na vzdálenost: plocha se posune ven podél své normály, nebo při záporné hodnotě dovnitř, a sousední plochy s sebou potáhne; zakřivené plochy kolem své osy. Odsazení dovnitř o polovinu nejdelší strany kvádru opsaného tělesu se odmítne se zprávou, jak daleko lze jít.
+Zeptá se na vzdálenost: plocha se posune ven podél své normály, nebo při záporné hodnotě dovnitř, a sousední plochy s sebou potáhne; zakřivené plochy také kolem své osy. Odsazení dovnitř o polovinu nejdelší strany kvádru opsaného tělesu se odmítne se zprávou, jak daleko lze jít.
 
 ### `zEšikmení` (`E`) [#taper]
 
@@ -73,19 +73,19 @@ Opustí možnosti pro plochy a vrátí se k první otázce, a tatáž možnost v
 
 ### Jak v AutoCADu upravit 3D těleso?
 
-Spusťte OBJEDIT, zvolte `Plocha` a pak úpravu: `Vysunutí` nebo `Posun` plochy, aby bylo těleso vyšší, `vYmazat`, aby se zaplnil otvor, `zEšikmení`, aby se zkosil bok. Vyberte plochy, stiskněte Enter a odpovězte na výzvy možnosti. Chcete-li plochu rychle vytlačit nebo vtlačit, přetáhněte ji příkazem [`TLAČTÁHNI`](/docs/commands/presspull).
+Spusťte příkaz OBJEDIT, zvolte `Plocha` a pak úpravu: `Vysunutí` nebo `Posun` plochy, aby bylo těleso vyšší, `vYmazat`, aby se zaplnil otvor, `zEšikmení`, aby se zkosil bok. Vyberte plochy, stiskněte Enter a odpovězte na výzvy možnosti. Chcete-li plochu rychle vytlačit nebo vtlačit, přetáhněte ji příkazem [`TLAČTÁHNI`](/docs/commands/presspull).
 
 ### Jak vysunout plochu 3D tělesa?
 
-OBJEDIT, `Plocha`, `Vysunutí`, vyberte plochu a stiskněte Enter, pak výšku a úhel zúžení: `15` a `15` z ukázky vytvoří na horní ploše kvádru komolý jehlan.
+OBJEDIT, `Plocha`, `Vysunutí`, vyberte plochu a stiskněte Enter, pak zadejte výšku a úhel zúžení: `15` a `15` z ukázky vytvoří na horní ploše kvádru komolý jehlan.
 
 ### Jak v AutoCADu odstranit otvor z tělesa?
 
 OBJEDIT, `Plocha`, `vYmazat`, vyberte stěnu otvoru a stiskněte Enter: otvor se zaplní. Stejně se odstraní zaoblení nebo zkosení.
 
-### Jaký je rozdíl mezi OBJEDIT a TLAČTÁHNI?
+### Jaký je rozdíl mezi příkazy OBJEDIT a TLAČTÁHNI?
 
-[`TLAČTÁHNI`](/docs/commands/presspull) posune jednu plochu přetažením nebo o vzdálenost, kolmo k ní. OBJEDIT umí totéž a víc: zešikmuje, otáčí, odsazuje, maže a kopíruje plochy, několik najednou.
+[`TLAČTÁHNI`](/docs/commands/presspull) posune jednu plochu přetažením nebo o vzdálenost, kolmo k ní. Příkaz OBJEDIT umí totéž a víc: zešikmuje, otáčí, odsazuje, maže a kopíruje plochy, několik najednou.
 
 ## Související příkazy [#related]
 

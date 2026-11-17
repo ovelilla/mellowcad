@@ -3,10 +3,10 @@ title: "Zrcadlení v AutoCADu: příkaz ZRCADLI (MIRROR)"
 description: "Jak zrcadlit objekty v AutoCADu příkazem ZRCADLI (MIRROR, zkratka ZI): dva body osy zrcadlení, ponechání nebo vymazání zdroje, čitelný text. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz ZRCADLI anglicky?","answer":"MIRROR. V českém AutoCADu je jeho zkratka ZI: zadejte ji a stiskněte Enter nebo mezerník. Anglické MI v české verzi nefunguje; celý název ZRCADLI funguje také a _MIRROR v AutoCADu v jakémkoli jazyce."},{"question":"Jak zrcadlit, aby se text nečetl pozpátku?","answer":"Nemusíte dělat nic: jako v AutoCADu s MIRRTEXT na 0 se zrcadlený text dál čte normálně a stojí tam, kam padne zrcadlový obraz jeho rámečku."},{"question":"Jak zrcadlit a smazat originál?","answer":"Odpovězte Ano, když se příkaz ZRCADLI zeptá, zda vymazat zdrojové objekty."},{"question":"Jak zrcadlit vodorovně nebo svisle?","answer":"Zapněte režim ORTO (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní."}]
+faq: [{"question":"Jak se jmenuje příkaz ZRCADLI anglicky?","answer":"MIRROR. V českém AutoCADu je jeho zkratka ZI: zadejte ji a stiskněte Enter nebo mezerník. Anglické MI v české verzi nefunguje; celý název ZRCADLI funguje také a _MIRROR v AutoCADu v jakémkoli jazyce."},{"question":"Jak zrcadlit, aby se text nečetl pozpátku?","answer":"Nemusíte dělat nic: jako v AutoCADu s MIRRTEXT na 0 se zrcadlený text dál čte normálně a stojí tam, kam padne zrcadlový obraz jeho rámečku."},{"question":"Jak zrcadlit a smazat originál?","answer":"Odpovězte Ano, když se příkaz ZRCADLI zeptá, zda vymazat zdrojové objekty."},{"question":"Jak zrcadlit vodorovně nebo svisle?","answer":"Zapněte režim Orto (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní."}]
 ---
 
-Příkaz ZRCADLI (MIRROR) zrcadlí vybrané objekty podle přímky: vyberte je, zadejte první a druhý bod osy zrcadlení a pak určete, zda vymazat zdrojové objekty. Zrcadlový obraz je kopie a s výchozí odpovědí, `Ne`, originály zůstanou: tak se kreslí souměrný díl po polovinách. Oba body se berou v rovině XY USS, takže osa nakreslená se zapnutým režimem ORTO zrcadlí přímo napříč, vodorovně nebo svisle. Stejně jako v AutoCADu s MIRRTEXT na 0, výchozí hodnotě, se text v zrcadlovém obrazu dál čte zleva doprava a šrafy si ponechají úhel svého vzoru. Celé spuštění je jeden krok, který vrátí `Z`.
+Příkaz ZRCADLI (MIRROR) zrcadlí vybrané objekty podle přímky: vyberte je, zadejte první a druhý bod osy zrcadlení a pak určete, zda vymazat zdrojové objekty. Zrcadlový obraz je kopie a s výchozí odpovědí, `Ne`, originály zůstanou: tak se kreslí souměrný díl po polovinách. Oba body se berou v rovině XY USS, takže osa nakreslená se zapnutým režimem Orto zrcadlí přímo napříč, vodorovně nebo svisle. Stejně jako v AutoCADu s MIRRTEXT na 0, výchozí hodnotě, se text v zrcadlovém obrazu dál čte zleva doprava a šrafy si ponechají úhel svého vzoru. Celé spuštění je jeden krok, který vrátí `Z`.
 
 - **Příkaz:** `ZRCADLI`
 - **Anglicky:** `MIRROR`, zadávaný jako `_MIRROR` v libovolném jazyce
@@ -28,7 +28,7 @@ Vymaže zdrojové objekty, takže zůstane jen zrcadlový obraz: převrácení n
 
 ### `Ne` (`N`) [#no]
 
-Výchozí volba: ponechá zdrojové objekty vedle jejich zrcadlového obrazu.
+Výchozí odpověď: ponechá zdrojové objekty vedle jejich zrcadlového obrazu.
 
 ## Co zatím neumí [#missing]
 
@@ -52,7 +52,7 @@ Odpovězte `Ano`, když se příkaz ZRCADLI zeptá, zda vymazat zdrojové objekt
 
 ### Jak zrcadlit vodorovně nebo svisle?
 
-Zapněte režim ORTO (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní.
+Zapněte režim Orto (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní.
 
 ## Procvičte si ho [#practice]
 

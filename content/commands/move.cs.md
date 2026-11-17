@@ -5,17 +5,17 @@ figure: "Kružnice posunutá o 50 doprava: vybraná, její střed jako základn�
 sourceHash: "753ca38448bf"
 ---
 
-Příkaz POSUN (MOVE) přesune vybrané objekty z jednoho místa na jiné: vyberte je, zadejte základní bod a pak druhý bod a posunou se o vzdálenost a ve směru od prvního ke druhému. Nic jiného se na nich nezmění. Stejně jako v AutoCADu posune objekty vybrané před příkazem, bod lze ukázat, uchopit na objektu nebo zadat a při volbě druhého bodu sleduje výběr kurzor, s čárou od základního bodu. Posunutí je jeden krok, který vrátí <Command id="U" />.
+Příkaz POSUN (MOVE) přesune vybrané objekty z jednoho místa na jiné: vyberte je, zadejte základní bod a pak druhý bod a posunou se o vzdálenost a ve směru od prvního ke druhému. Nic jiného se na nich nezmění. Stejně jako v AutoCADu posune objekty vybrané před příkazem, bod lze ukázat, uchopit na objektu nebo zadat a při volbě druhého bodu výběr sleduje kurzor, s čárou od základního bodu. Posunutí je jeden krok, který vrátí <Command id="U" />.
 
 ## Options
 
 ### Displacement
 
-Volí se na výzvě k základnímu bodu, nebo tamtéž klávesou Enter, protože je to její výchozí volba: zeptá se na posunutí jako vektor, `10,5` posune o 10 ve směru X a o 5 ve směru Y, a nabídne poslední, které příkaz POSUN v tomto výkresu použil. U druhého bodu udělá Enter totéž se základním bodem: jeho souřadnice jsou posunutím.
+Volí se ve výzvě k základnímu bodu, nebo tamtéž klávesou Enter, protože je to její výchozí možnost: zeptá se na posunutí jako vektor, `10,5` posune o 10 ve směru X a o 5 ve směru Y, a jako výchozí nabídne poslední posunutí, které příkaz POSUN v tomto výkresu použil. U druhého bodu udělá Enter totéž se základním bodem: jeho souřadnice jsou posunutím.
 
 ## Missing
 
-Dva z režimů výběru AutoCADu na výzvě k výběru objektů, Skupina a Několik, a výběr ploch, hran nebo vrcholů tělesa s klávesou Ctrl pro změnu jeho tvaru. Zatímco výběr sleduje kurzor, má barvu každého objektu, ale ne jeho typ ani tloušťku čáry, a objekty reference bloku mají všechny barvu reference.
+Dva z režimů výběru AutoCADu ve výzvě k výběru objektů, Skupina a Násobně, a výběr ploch, hran nebo vrcholů tělesa s klávesou Ctrl pro změnu jeho tvaru. Zatímco výběr sleduje kurzor, má barvu každého objektu, ale ne jeho typ ani tloušťku čáry, a objekty reference bloku mají všechny barvu reference.
 
 ## Questions
 
@@ -25,7 +25,7 @@ MOVE. V českém AutoCADu je jeho zkratka `POS`: zadejte ji a stiskněte Enter n
 
 ### Jak posunout objekt o zadanou vzdálenost?
 
-Zadejte základní bod a pak posunutí napište jako druhý bod: `50,0` posune o 50 ve směru X. Se zapnutým dynamickým zadáváním, jak je na začátku, je bod po prvním relativní k němu, takže ho historie zapíše jako `@50,0`. Nebo ukažte kurzorem směr, s režimem ORTO nebo polárním trasováním, a zadejte jen vzdálenost.
+Zadejte základní bod a pak posunutí napište jako druhý bod: `50,0` posune o 50 ve směru X. Se zapnutým dynamickým zadáváním, jak je na začátku, je bod po prvním relativní k němu, takže ho historie zapíše jako `@50,0`. Nebo ukažte kurzorem směr, s režimem Orto nebo polárním trasováním, a zadejte jen vzdálenost.
 
 ### Jak posunout objekty nahoru ve 3D?
 

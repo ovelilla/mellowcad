@@ -27,7 +27,7 @@ Po každém zaoblení se znovu zeptá na první objekt, takže zaoblujete roh za
 
 ## Missing
 
-<Keyword id="Trim" />: objekty se k oblouku vždy oříznou nebo prodlouží, jako při TRIMMODE 1, výchozím nastavení AutoCADu; možnost Neořezávat není k dispozici. Oblouk nepřebírá měřítko typu čáry druhého objektu, protože zde žádný objekt nemá vlastní. Před kliknutím ukazuje popisek výzvu, ne důvod, proč dvojici nelze zaoblit, a žádný zámek neoznačí objekt v zamknuté hladině. Několik vzácných dvojic elips nebo spline skončí jinak: uzavřený spline s úsečkou při poloměru 0, oblouk, který se jen dotkne ekvidistanty elipsy, a taková dvojice v nakloněné rovině.
+<Keyword id="Trim" />: objekty se k oblouku vždy oříznou nebo prodlouží, jako při TRIMMODE 1, výchozím nastavení AutoCADu; možnost Neořež není k dispozici. Oblouk nepřebírá měřítko typu čáry druhého objektu, protože zde žádný objekt nemá vlastní. Před kliknutím ukazuje popisek výzvu, ne důvod, proč dvojici nelze zaoblit, a žádný zámek neoznačí objekt v uzamknuté hladině. Několik vzácných dvojic elips nebo spline skončí jinak: uzavřený spline s úsečkou při poloměru 0, oblouk, který se jen dotkne ekvidistanty elipsy, a taková dvojice v nakloněné rovině.
 
 ## Questions
 
@@ -45,7 +45,7 @@ Vytvoří ostrý roh: každá úsečka se ořízne nebo prodlouží, až se setk
 
 ### Proč zaoblení nefunguje?
 
-Příkaz to řekne na příkazovém řádku. <Message id="filletRadiusTooLarge" /> znamená, že se oblouk mezi úsečky nevejde; <Message id="segmentsNotConsecutive" />, že jsou dva segmenty jedné křivky od sebe příliš daleko; text, bloky, kóty a šrafy se odmítnou, o objektech v různých výškách příkaz řekne, že nejsou koplanární, a objekt v zamknuté hladině se nepřijme.
+Příkaz to řekne na příkazovém řádku. <Message id="filletRadiusTooLarge" /> znamená, že se oblouk mezi úsečky nevejde; <Message id="segmentsNotConsecutive" />, že jsou dva segmenty jedné křivky od sebe příliš daleko; text, bloky, kóty a šrafy se odmítnou, o objektech v různých výškách příkaz řekne, že nejsou koplanární, a objekt v uzamknuté hladině se nepřijme.
 
 ### Jak zaoblit hrany 3D tělesa?
 

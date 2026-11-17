@@ -186,8 +186,11 @@
    «Русский», the commands sentence's ПОДОБИЕ — takes the system's face. WHY:
    next/font declares Inter's and Geist Mono's Cyrillic by unicode-range, so
    one Cyrillic letter fetched both on every landing (31.6 KB of its first
-   load). Arabic's name needs no rule: its face exists only on its pages. */
-html:not(:lang(ru)) :lang(ru) {
+   load). Arabic's name needs no rule: its face exists only on its pages.
+   «Čeština», in the language links, the same: its Č is in Inter's Latin
+   Extended file (85 KB); Czech's EKVID, in the commands sentence, has none. */
+html:not(:lang(ru)) :lang(ru),
+html:not(:lang(cs)) a:lang(cs) {
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -200,17 +203,6 @@ html:not(:lang(ru)) .font-mono:lang(ru) {
    Polish page replaces with its letters' face (lib/fonts.ts). «Polski», in the
    language links, has no such letter and keeps Inter. */
 html:not(:lang(pl)) .font-mono:lang(pl) {
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-}
-
-/* And Czech elsewhere: «Čeština», in the language links, has a Č in Inter's
-   Latin Extended file (85 KB). A Polish page keeps its letters' face, which
-   holds Czech's too. */
-html:not(:lang(cs)):not(:lang(pl)) :lang(cs) {
-  font-family: ui-sans-serif, system-ui, sans-serif;
-}
-
-html:not(:lang(cs)):not(:lang(pl)) .font-mono:lang(cs) {
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 

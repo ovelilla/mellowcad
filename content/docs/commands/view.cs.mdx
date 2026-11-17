@@ -3,12 +3,12 @@ title: "Příkaz POHLED (VIEW) v AutoCADu"
 description: "Jak v AutoCADu otočit pohled příkazem POHLED (VIEW, -POHLED): šest pravoúhlých pohledů a čtyři izometrické a USS, který nastaví každý pravoúhlý."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak v AutoCADu získat izometrický pohled?","answer":"Zadejte -POHLED, pak JZiso pro jihozápadní izometrii; JViso, SViso a SZiso dají zbylé tři rohy. Nebo zvolte JZ Iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. AKTUÁLNÍVS s možností Skryté skryje hrany vzadu."},{"question":"Jakým příkazem získat pohled shora?","answer":"-POHLED, pak Horní, který také nastaví USS na osy globálního systému. PŮDORYS místo toho ukáže shora aktuální USS a ponechá ho beze změny."},{"question":"Proč se po pohledu zepředu změnil USS?","answer":"Pravoúhlý pohled natočí USS čelem k vám, aby to, co kreslíte, leželo na obrazovce. USS a Enter se vrátí ke globálnímu systému; Z vrátí pohled spolu s jeho USS."},{"question":"Je izometrický pohled totéž co izometrický výkres?","answer":"Ne. Izometrický pohled se dívá na 3D model od rohu. Izometrický výkres je 2D, kreslený v izometrických rovinách s izometrickým stylem příkazu KROK, který MellowCAD zatím nemá."},{"question":"Kde je Správce zobrazení?","answer":"POHLED spustí -POHLED v příkazovém řádku: Správce zobrazení zde není a pojmenované pohledy (ULož, oBnov) zatím také ne."}]
+faq: [{"question":"Jak v AutoCADu získat izometrický pohled?","answer":"Zadejte -POHLED, pak JZiso pro jihozápadní izometrii; JViso, SViso a SZiso dají zbylé tři rohy. Nebo zvolte JZ iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. AKTUÁLNÍVS s možností Skryté skryje hrany vzadu."},{"question":"Jakým příkazem získat pohled shora?","answer":"-POHLED, pak Horní, který také nastaví USS na osy globálního systému. PŮDORYS místo toho ukáže shora aktuální USS a ponechá ho beze změny."},{"question":"Proč se po pohledu zepředu změnil USS?","answer":"Pravoúhlý pohled natočí USS čelem k vám, aby to, co kreslíte, leželo na obrazovce. USS a Enter se vrátí ke globálnímu systému; Z vrátí pohled spolu s jeho USS."},{"question":"Je izometrický pohled totéž co izometrický výkres?","answer":"Ne. Izometrický pohled se dívá na 3D model od rohu. Izometrický výkres je 2D, kreslený v izometrických rovinách s izometrickým stylem příkazu KROK, který MellowCAD zatím nemá."},{"question":"Kde je Správce zobrazení?","answer":"POHLED spustí -POHLED v příkazovém řádku: Správce zobrazení zde není a pojmenované pohledy (ULož, oBnov) zatím také ne."}]
 ---
 
-Příkaz POHLED (VIEW) nastaví pohled na jeden z deseti předdefinovaných pohledů AutoCADu: šest pravoúhlých, které se dívají přímo na jednu stranu modelu, a čtyři izometrické, které se dívají shora od rohu. Ve výkresu se nic neposune. POHLED spustí `-POHLED`, verzi pro příkazový řádek: jeho první výzva vypisuje možnost `oRto`, která se pak zeptá na stranu, ale přijme i rovnou název pohledu, tak jak ho zadávají nabídky AutoCADu: `-POHLED`, pak `JZiso`. Každý pohled zobrazí celý výkres a vypíše `Regeneruji model.`.
+Příkaz POHLED (VIEW) nastaví pohled na jeden z deseti předdefinovaných pohledů AutoCADu: šest pravoúhlých, které se dívají přímo na jednu stranu modelu, a čtyři izometrické, které se dívají shora od rohu. Ve výkresu se nic neposune. POHLED spustí `-POHLED`, verzi pro příkazový řádek: jeho první výzva vypisuje možnost `oRto`, která se pak zeptá na stranu, a výzva přijme i rovnou název pohledu, tak jak ho zadávají nabídky AutoCADu: `-POHLED`, pak `JZiso`. Každý pohled zobrazí celý výkres a vypíše `Regeneruji model.`.
 
-Ovládací prvek pohledu v levém horním rohu výkresu vypisuje stejných deset pohledů a spouští `-POHLED`, a na tyto pohledy natáčejí i stěny a rohy krychle ViewCube, které USS ponechají beze změny. Každé spuštění příkazu POHLED je jeden krok, který lze vrátit zpět, takže `Z` vrátí pohled i s USS, který nastavil. Zadaný s apostrofem uvnitř jiného příkazu odmítne se zprávou `** Vyžaduje regeneraci, nemůže být transparentní.`. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Ovládací prvek pohledu v levém horním rohu výkresu vypisuje stejných deset pohledů a spouští `-POHLED`, a na tyto pohledy natáčejí i stěny a rohy krychle ViewCube, které USS ponechají beze změny. Každé spuštění příkazu POHLED je jeden krok, který lze vrátit zpět, takže `Z` vrátí pohled i s USS, který nastavil. Zadaný s apostrofem uvnitř jiného příkazu odmítne se zprávou `** Vyžaduje regeneraci, nemůže být transparentní.`. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 - **Příkaz:** `POHLED`
 - **Anglicky:** `VIEW`, zadávaný jako `_VIEW` v libovolném jazyce
@@ -20,7 +20,7 @@ Ovládací prvek pohledu v levém horním rohu výkresu vypisuje stejných deset
 
 Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
 
-<Session name="view" caption="Kvádr se stupněm nakreslený v půdorysu: -POHLED a JZ Iso, a je vidět od jihozápadu a shora, ve vizuálním stylu Skrytý." />
+<Session name="view" caption="Kvádr se stupněm nakreslený v půdorysu: -POHLED a JZ iso, a je vidět od jihozápadu a shora, ve vizuálním stylu Skrytý." />
 
 ## Možnosti [#options]
 
@@ -48,7 +48,7 @@ Severozápadní izometrie: dívá se shora od rohu vzadu vlevo a vidí zadní st
 
 ## Co zatím neumí [#missing]
 
-Pojmenované pohledy: `oRto` je jediná možnost, kterou první výzva vypisuje, zatímco v AutoCADu jsou na seznamu i `?`, odsTraň, oBnov, ULož, Nastavení a Okno, a název zapsaný na tomto místě se odmítne. Správce zobrazení, který POHLED otevře v AutoCADu. Když není nic nakreslené, pohled ponechá zvětšení, zatímco AutoCAD zobrazí meze výkresu. UCSORTHO a UCSBASE jako proměnné: pravoúhlý pohled vždy zarovná USS, od os globálního systému. Zarovnaný USS v seznamu `Předchozí` příkazu [`USS`](/docs/commands/ucs).
+Pojmenované pohledy: `oRto` je jediná možnost, kterou první výzva vypisuje, zatímco v AutoCADu jsou na seznamu i `?`, odsTraň, oBnov, ULož, Nastavení a Okno, a název zapsaný na tomto místě se odmítne. Správce zobrazení, který v AutoCADu otevře příkaz POHLED. Když není nic nakreslené, pohled ponechá zvětšení, zatímco AutoCAD zobrazí meze výkresu. UCSORTHO a UCSBASE jako proměnné: pravoúhlý pohled vždy zarovná USS, od os globálního systému. Zarovnaný USS v seznamu `Předchozí` příkazu [`USS`](/docs/commands/ucs).
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview--it--vista---v--vista--v--ddview--de--ausschnt---as--ausschnt--as--ddview--ru--вид--вид--диалвид--pl--widok---wid--widok--wid--odwidok--cs--pohled---ph--pohled--ph--diapohled)
 
@@ -56,7 +56,7 @@ Pojmenované pohledy: `oRto` je jediná možnost, kterou první výzva vypisuje,
 
 ### Jak v AutoCADu získat izometrický pohled?
 
-Zadejte `-POHLED`, pak `JZiso` pro jihozápadní izometrii; `JViso`, `SViso` a `SZiso` dají zbylé tři rohy. Nebo zvolte JZ Iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. [`AKTUÁLNÍVS`](/docs/commands/vscurrent) s možností `Skryté` skryje hrany vzadu.
+Zadejte `-POHLED`, pak `JZiso` pro jihozápadní izometrii; `JViso`, `SViso` a `SZiso` dají zbylé tři rohy. Nebo zvolte JZ iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. [`AKTUÁLNÍVS`](/docs/commands/vscurrent) s možností `Skryté` skryje hrany vzadu.
 
 ### Jakým příkazem získat pohled shora?
 

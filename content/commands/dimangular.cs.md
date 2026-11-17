@@ -6,7 +6,7 @@ figure: "Dvě úsečky svírající úhel 30 stupňů: vybraná každá z nich, 
 sourceHash: "30943abd60f6"
 ---
 
-Příkaz KÓTYÚHEL (DIMANGULAR) kótuje úhel a jeho kótovací čarou je oblouk. Co vyberete jako první, rozhodne o zbytku, jako v AutoCADu: úsečka si řekne o druhou úsečku (mohou to být i dva segmenty jedné křivky); oblouk se měří od konce ke konci kolem svého středu; kružnice od bodu, ve kterém jste ji vybrali, k druhému bodu, který zadáte; a Enter místo výběru se zeptá na vrchol úhlu, pak na jeho dva koncové body. Pak umístěte oblouk: jeho poloha určí měřený úhel. Mezi dvěma úsečkami je to ten ze čtyř výsečí, ve kterém oblouk leží; jinak samotný úhel nebo, za jeho rameny, úhel větší než 180°, který ho doplňuje do 360°. Příkazový řádek vypíše hodnotu ve stupních a příkaz skončí.
+Příkaz KÓTYÚHEL (DIMANGULAR) kótuje úhel a jeho kótovací čarou je oblouk. Co vyberete jako první, rozhodne o zbytku, jako v AutoCADu: úsečka si řekne o druhou úsečku (mohou to být i dva segmenty jedné křivky); oblouk se měří od konce ke konci kolem svého středu; kružnice od bodu, ve kterém jste ji vybrali, k druhému bodu, který zadáte; a Enter místo výběru se zeptá na vrchol úhlu, pak na jeho dva koncové body. Pak umístěte oblouk: jeho poloha určí měřený úhel. Mezi dvěma úsečkami je to úhel té ze čtyř výsečí, ve které oblouk leží; jinak samotný úhel nebo, za jeho rameny, úhel větší než 180°, který ho doplňuje do 360°. Příkazový řádek vypíše hodnotu ve stupních a příkaz skončí.
 
 ## Options
 
@@ -42,4 +42,4 @@ Dvě rovnoběžné úsečky nebo tatáž úsečka vybraná dvakrát úhel netvo�
 
 ### Jak změnit počet desetinných míst úhlové kóty?
 
-V kótovacím stylu: <Command id="DIMSTYLE" /> (`KSL`) ho otevře v paletě Styly, kde je nastaví Přesnost úhlových kót v části Primární jednotky, 0 v ISO-25. Řídí se jí každá úhlová kóta v tomto stylu.
+V kótovacím stylu: <Command id="DIMSTYLE" /> (`KSL`) ho otevře v paletě Styly, kde je nastaví Přesnost úhlů v části Primární jednotky, 0 v ISO-25. Řídí se jí každá úhlová kóta v tomto stylu.

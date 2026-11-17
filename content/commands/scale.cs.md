@@ -17,7 +17,7 @@ Změní měřítko kopie a objekty ponechá beze změny: vypíše <Message id="s
 
 ### Reference
 
-Zeptá se na referenční délku, zapsanou nebo určenou dvěma body, a pak na délku, kterou má mít: měřítko je nová délka dělená referenční. Novou délku zapíšete, nebo ji určíte bodem, jehož vzdálenost od základního bodu ji udává; <Keyword id="Points" /> se místo toho zeptá na dva body a změří vzdálenost mezi nimi. Obě délky nabízejí naposledy zadané, v novém výkresu 1.
+Zeptá se na referenční délku, zapsanou nebo určenou dvěma body, a pak na délku, kterou má mít: měřítko je nová délka dělená referenční. Novou délku zapíšete, nebo ji určíte bodem, jehož vzdálenost od základního bodu ji udává; <Keyword id="Points" /> se místo toho zeptá na dva body a změří vzdálenost mezi nimi. Obě výzvy nabízejí naposledy zadanou délku, v novém výkresu 1.
 
 ## Missing
 
@@ -31,11 +31,11 @@ SCALE. V české verzi AutoCADu zadejte `MĚŘÍTKO` nebo zkratku `ME` a stiskn�
 
 ### Jak v AutoCADu změnit měřítko pomocí reference?
 
-U měřítka zvolte <Keyword id="Reference" />, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru.
+Ve výzvě k zadání měřítka zvolte <Keyword id="Reference" />, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru.
 
 ### Jak změnit měřítko objektu a zachovat originál?
 
-U měřítka zvolte <Keyword id="Copy" />: měřítko se změní u kopie a originál zůstane na místě.
+Ve výzvě k zadání měřítka zvolte <Keyword id="Copy" />: měřítko se změní u kopie a originál zůstane na místě.
 
 ### Jak změnit měřítko typu čáry?
 

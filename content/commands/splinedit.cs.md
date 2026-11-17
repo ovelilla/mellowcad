@@ -5,13 +5,13 @@ figure: "Spline pěti body vyhlazení uzavřená příkazem SPLINEDIT: hladká s
 sourceHash: "bedcaab2fac3"
 ---
 
-Příkaz SPLINEDIT upravuje spline. Určete ji u výzvy `Vyberte spline:`, nebo ji vyberte před spuštěním příkazu; poklepání na spline na ní také spustí SPLINEDIT. U každého jiného objektu příkaz vypíše <Message id="objectNotSpline" /> a zeptá se znovu; křivka vyhlazená možností <Keyword command="PEDIT" id="Spline" /> příkazu <Command id="PEDIT" /> se beze slova změní ve spline se stejným průběhem. Pak se příkaz ptá na možnost znovu a znovu, každou použije hned, dokud nezvolíte <Keyword id="eXit" /> nebo nestisknete Enter. Spline ukazuje uzly svých bodů vyhlazení a při úpravě vrcholů své řídicí vrcholy a rámeček. Celá úprava je jeden krok, který vrátí <Command id="U" />. Zapsaný `'ZOOM` funguje u každé jeho výzvy.
+Příkaz SPLINEDIT upravuje spline. Určete ji ve výzvě `Vyberte spline:`, nebo ji vyberte před spuštěním příkazu; poklepání na spline na ní také spustí příkaz SPLINEDIT. U každého jiného objektu příkaz vypíše <Message id="objectNotSpline" /> a zeptá se znovu; křivka vyhlazená možností <Keyword command="PEDIT" id="Spline" /> příkazu <Command id="PEDIT" /> se beze slova změní ve spline se stejným průběhem. Pak se příkaz ptá na možnost znovu a znovu, každou použije hned, dokud nezvolíte <Keyword id="eXit" /> nebo nestisknete Enter. Spline ukazuje uzly svých bodů vyhlazení a při úpravě vrcholů své řídicí vrcholy a rámeček. Celá úprava je jeden krok, který vrátí <Command id="U" />. Zapsaný `'ZOOM` funguje u každé jeho výzvy.
 
 ## Options
 
 ### Close
 
-Uzavře spline hladce: spline s body vyhlazení jejími body vyhlazení, spline s řídicími vrcholy na jejích vrcholech. U uzavřené spline je touto možností <Keyword id="Open" /> a <Keyword id="Join" /> se nenabízí.
+Uzavře spline hladce: spline s body vyhlazení přes své body vyhlazení, spline s řídicími vrcholy na jejích vrcholech. U uzavřené spline je touto možností <Keyword id="Open" /> a <Keyword id="Join" /> se nenabízí.
 
 ### Join
 
@@ -43,7 +43,7 @@ Ukončí příkaz, jako Enter.
 
 ## Missing
 
-Bod zalomení (Kink), který vytvoří ostrý roh v bodě vyhlazení nebo ve vrcholu; TOLerance, která spline znovu proloží v rámci tolerance; Tečny uzavřené spline. <Keyword id="convert to Polyline" /> vytvoří ze spline s body vyhlazení mnohem víc vrcholů než AutoCAD, nikdy oblouky, a spline vždy nahradí. Skupina u výzvy `Vyberte spline:`. Značka `+`, kterou AutoCAD kreslí na aktuálním bodě, když body procházíte.
+Bod zalomení (Kink), který vytvoří ostrý roh v bodě vyhlazení nebo ve vrcholu; TOLerance, která spline znovu proloží v rámci tolerance; Tečny uzavřené spline. <Keyword id="convert to Polyline" /> vytvoří ze spline s body vyhlazení mnohem víc vrcholů než AutoCAD, nikdy oblouky, a spline vždy nahradí. Skupina ve výzvě `Vyberte spline:`. Značka `+`, kterou AutoCAD kreslí na aktuálním bodě, když body procházíte.
 
 ## Questions
 
@@ -53,7 +53,7 @@ Také SPLINEDIT: česká verze AutoCADu jeho název nepřekládá. Zadejte `SPLI
 
 ### Jak převést spline na křivku?
 
-Spusťte SPLINEDIT, vyberte spline a zvolte <Keyword id="convert to Polyline" />; přesnost 10 dá hladkou křivku. <Command id="PEDIT" /> u spline převod také nabídne.
+Spusťte příkaz SPLINEDIT, vyberte spline a zvolte <Keyword id="convert to Polyline" />; přesnost 10 dá hladkou křivku. Příkaz <Command id="PEDIT" /> u spline převod také nabídne.
 
 ### Jak v AutoCADu přidat nebo posunout body spline?
 

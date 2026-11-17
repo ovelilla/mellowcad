@@ -1,14 +1,14 @@
 ---
 title: "Jehlan v AutoCADu: příkaz JEHLAN (PYRAMID)"
-description: "Jak nakreslit 3D jehlan v AutoCADu příkazem JEHLAN (PYRAMID, zkratka JE): strany, podstava, výška, hrana, vepsaný a horní poloměr komolého jehlanu. Vyzkoušejte."
+description: "Jak nakreslit 3D jehlan v AutoCADu příkazem JEHLAN (PYRAMID, zkratka JE): strany, podstava, výška, hrana, vepsaná podstava, horní poloměr komolého jehlanu."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz JEHLAN anglicky?","answer":"PYRAMID. V českém AutoCADu je jeho zkratka JE: zadejte ji a stiskněte Enter nebo mezerník, pak zadejte střed podstavy, poloměr a výšku. Anglické PYR v české verzi nefunguje; _PYRAMID funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit šestiboký jehlan?","answer":"Před středem podstavy zvolte Strany a zadejte 6, pak zadejte střed, poloměr a výšku: 0,0, 25 a 40 nakreslí jehlan z ukázky. Příští JEHLAN si šest stran ponechá."},{"question":"Jak nakreslit jehlan se zadanou stranou podstavy?","answer":"Zvolte Hrana a zadejte oba konce jedné strany: strana od 0,0 do 50,0 vytvoří čtvercovou podstavu 50 s výchozími 4 stranami."},{"question":"Jak nakreslit komolý jehlan?","answer":"U výšky zvolte Horní, zadejte horní poloměr a pak výšku. Jehlan skončí menším mnohoúhelníkem se stejným počtem stran jako podstava."}]
+faq: [{"question":"Jak se jmenuje příkaz JEHLAN anglicky?","answer":"PYRAMID. V českém AutoCADu je jeho zkratka JE: zadejte ji a stiskněte Enter nebo mezerník, pak zadejte střed podstavy, poloměr a výšku. Anglické PYR v české verzi nefunguje; _PYRAMID funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit šestiboký jehlan?","answer":"Před středem podstavy zvolte Strany a zadejte 6, pak zadejte střed, poloměr a výšku: 0,0, 25 a 40 nakreslí jehlan z ukázky. Příští spuštění příkazu JEHLAN si šest stran ponechá."},{"question":"Jak nakreslit jehlan se zadanou stranou podstavy?","answer":"Zvolte Hrana a zadejte oba konce jedné strany: strana od 0,0 do 50,0 vytvoří čtvercovou podstavu 50 s výchozími 4 stranami."},{"question":"Jak nakreslit komolý jehlan?","answer":"Ve výzvě k výšce zvolte Horní, zadejte horní poloměr a pak výšku. Jehlan skončí menším mnohoúhelníkem se stejným počtem stran jako podstava."}]
 ---
 
-Příkaz JEHLAN (PYRAMID) nakreslí 3D těleso jehlanu: jeho první řádek uvede, kolik stran má podstava a jak se čte její poloměr, pak se zeptá na střed podstavy, poloměr a výšku. Podstava je pravidelný mnohoúhelník, jaký kreslí [`POLYGON`](/docs/commands/polygon), na začátku čtyřstranný: zadaný poloměr ji natočí ke kurzoru, bod k sobě. Výška stoupá podél osy Z USS, záporná jde dolů, a bod ji určí svou vzdáleností od podstavy. Počet stran a způsob čtení poloměru se pamatují pro příští JEHLAN; poloměr a výška jsou společné výchozí hodnoty primitiv. Jehlan leží v aktuální hladině a `Z` ho vrátí v jednom kroku.
+Příkaz JEHLAN (PYRAMID) nakreslí 3D těleso jehlanu: jeho první řádek uvede, kolik stran má podstava a jak se čte její poloměr, pak se zeptá na střed podstavy, poloměr a výšku. Podstava je pravidelný mnohoúhelník, jaký kreslí [`POLYGON`](/docs/commands/polygon), na začátku čtyřstranný: zadaný poloměr ji natočí ke kurzoru, bod k sobě. Výška stoupá podél osy Z USS, záporná jde dolů, a bod ji určí svou vzdáleností od podstavy. Počet stran a způsob čtení poloměru se pamatují pro příští spuštění příkazu JEHLAN; poloměr a výška jsou společné výchozí hodnoty primitiv. Jehlan leží v aktuální hladině a `Z` ho vrátí v jednom kroku.
 
-[`VÝPIS`](/docs/commands/list) ukáže jeho polohu, oba poloměry, podstavy i vrcholu, výšku, natočení a počet stran a v paletě Vlastnosti lze zadat poloměry, strany a výšku. Jeho uzly ho posouvají, nastavují jeho výšku a mění velikost podstavy z rohu nebo ze středu strany. Je to 3D těleso pro [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCAD, které tvoří jen 3D tělesa, zatím částečně; [`ROZLOŽ`](/docs/commands/explode) ho rozloží na oblast pro každou plochu.
+[`VÝPIS`](/docs/commands/list) ukáže jeho polohu, poloměr podstavy i horní poloměr, výšku, natočení a počet stran a v paletě Vlastnosti lze zadat poloměry, strany a výšku. Jeho uzly ho posouvají, nastavují jeho výšku a mění velikost podstavy z rohu nebo ze středu strany. Je to 3D těleso pro [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCAD: jen 3D tělesa, zatím částečně; [`ROZLOŽ`](/docs/commands/explode) ho rozloží na oblast pro každou plochu.
 
 - **Příkaz:** `JEHLAN`
 - **Anglicky:** `PYRAMID`, zadávaný jako `_PYRAMID` v libovolném jazyce
@@ -26,31 +26,31 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Hrana` (`H`) [#edge]
 
-U středu podstavy: zeptá se na oba konce jedné strany podstavy, která se nakreslí nalevo od této strany.
+Ve výzvě ke středu podstavy: zeptá se na oba konce jedné strany podstavy, která se nakreslí nalevo od této strany.
 
 ### `Strany` (`S`) [#sides]
 
-U středu podstavy: zeptá se na počet stran, 3 až 32, a pak znovu na střed.
+Ve výzvě ke středu podstavy: zeptá se na počet stran, 3 až 32, a pak znovu na střed.
 
 ### `Vepsaná` (`V`) [#inscribed]
 
-U poloměru: čte poloměr k rohu podstavy, mnohoúhelník vepsaný do této kružnice, a zeptá se na něj znovu.
+Ve výzvě k poloměru: čte poloměr k rohu podstavy, mnohoúhelník vepsaný do této kružnice, a zeptá se na něj znovu.
 
 ### `Opsaná` (`O`) [#circumscribed]
 
-U poloměru, když byla zvolena volba `Vepsaná`: čte poloměr ke středu strany, mnohoúhelník opsaný této kružnici, jako na začátku, a zeptá se na něj znovu.
+Ve výzvě k poloměru, když byla zvolena možnost `Vepsaná`: čte poloměr ke středu strany, mnohoúhelník opsaný této kružnici, jako na začátku, a zeptá se na něj znovu.
 
 ### `2Body` (`2B`) [#2point]
 
-U výšky: zeptá se na dva body a výška je vzdálenost mezi nimi.
+Ve výzvě k výšce: zeptá se na dva body a výška je vzdálenost mezi nimi.
 
 ### `koncový bod Osy` (`O`) [#axis]
 
-U výšky: zeptá se na vrchol. Jehlan vede od středu podstavy k tomuto bodu v libovolném směru, s podstavou kolmou k ose.
+Ve výzvě k výšce: zeptá se na vrchol. Jehlan vede od středu podstavy k tomuto bodu v libovolném směru, s podstavou kolmou k ose.
 
 ### `Horní poloměr` (`H`) [#top]
 
-U výšky: zeptá se na horní poloměr, čtený jako poloměr podstavy, a pak znovu na výšku. Jehlan skončí menším mnohoúhelníkem místo bodu, komolým jehlanem; horní podstava stejně velká jako dolní vytvoří hranol.
+Ve výzvě k výšce: zeptá se na horní poloměr, čtený jako poloměr podstavy, a pak znovu na výšku. Jehlan skončí menším mnohoúhelníkem místo bodu, komolým jehlanem; horní podstava stejně velká jako dolní vytvoří hranol.
 
 ## Co zatím neumí [#missing]
 
@@ -66,7 +66,7 @@ PYRAMID. V českém AutoCADu je jeho zkratka `JE`: zadejte ji a stiskněte Enter
 
 ### Jak nakreslit šestiboký jehlan?
 
-Před středem podstavy zvolte `Strany` a zadejte `6`, pak zadejte střed, poloměr a výšku: `0,0`, `25` a `40` nakreslí jehlan z ukázky. Příští JEHLAN si šest stran ponechá.
+Před středem podstavy zvolte `Strany` a zadejte `6`, pak zadejte střed, poloměr a výšku: `0,0`, `25` a `40` nakreslí jehlan z ukázky. Příští spuštění příkazu JEHLAN si šest stran ponechá.
 
 ### Jak nakreslit jehlan se zadanou stranou podstavy?
 
@@ -74,7 +74,7 @@ Zvolte `Hrana` a zadejte oba konce jedné strany: strana od `0,0` do `50,0` vytv
 
 ### Jak nakreslit komolý jehlan?
 
-U výšky zvolte `Horní`, zadejte horní poloměr a pak výšku. Jehlan skončí menším mnohoúhelníkem se stejným počtem stran jako podstava.
+Ve výzvě k výšce zvolte `Horní`, zadejte horní poloměr a pak výšku. Jehlan skončí menším mnohoúhelníkem se stejným počtem stran jako podstava.
 
 ## Související příkazy [#related]
 

@@ -52,4 +52,4 @@ Kóty v MellowCAD zatím nejsou asociativní, jak říká <Message id="nonAssoci
 
 ### Jak změnit velikost textu a šipek kóty?
 
-V kótovacím stylu, jako v AutoCADu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře kótovací styly, zde v paletě Styly, v AutoCADu ve Správci kótovacího stylu. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu.
+V kótovacím stylu, jako v AutoCADu: příkaz <Command id="DIMSTYLE" /> (`KSL`) otevře kótovací styly, zde v paletě Styly, v AutoCADu ve Správci kótovacích stylů. Nastavíte tam výšku textu, velikost šipky, celkové měřítko a desetinná místa aktuálního stylu a řídí se jimi každá kóta v tomto stylu.

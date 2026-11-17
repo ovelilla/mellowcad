@@ -5,7 +5,7 @@ figure: "Tři úsečky spojené do jedné křivky, ze které pak příkaz EKVID 
 sourceHash: "c4f26ede4174"
 ---
 
-Příkaz SPOJ (JOIN) vytvoří z několika objektů jeden. Vyberte je, kolik chcete, a stiskněte Enter: úsečky a oblouky, které na sebe navazují koncovými body, se stanou jednou křivkou, připojenou ke křivce, pokud je mezi nimi; úsečky na jedné přímce se stanou jednou úsečkou, i přes mezeru; oblouky jedné kružnice se stanou jedním obloukem, a když se uzavřou, příkaz SPOJ se zeptá, zda z nich vytvořit kružnici, ve výchozím stavu <Keyword id="Yes" />, nebo je ponechat jako oblouk volbou <Keyword id="No" />. Eliptické oblouky jedné elipsy se stanou jedním obloukem a spline nebo eliptický oblouk mezi navazujícími objekty vytvoří spline. Potom vypíše, co vytvořil a kolik objektů vynechal. Křivka se připojuje jen svými konci a uzavřená křivka nespojí nic. Celé spojení vrátí jeden krok zpět.
+Příkaz SPOJ (JOIN) vytvoří z několika objektů jeden. Vyberte je, kolik chcete, a stiskněte Enter: úsečky a oblouky, které na sebe navazují koncovými body, se stanou jednou křivkou, připojenou ke křivce, pokud je mezi nimi; úsečky na jedné přímce se stanou jednou úsečkou, i přes mezeru; oblouky jedné kružnice se stanou jedním obloukem, a když se uzavřou, příkaz SPOJ se zeptá, zda z nich vytvořit kružnici, ve výchozím stavu <Keyword id="Yes" />, nebo je ponechat jako oblouk možností <Keyword id="No" />. Eliptické oblouky jedné elipsy se stanou jedním obloukem a spline nebo eliptický oblouk mezi navazujícími objekty vytvoří spline. Potom vypíše, co vytvořil a kolik objektů vynechal. Křivka se připojuje jen svými konci a uzavřená křivka nespojí nic. Celé spojení vrátí jeden krok zpět.
 
 ## Options
 

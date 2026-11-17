@@ -14,12 +14,13 @@
 > dibujo (el punto 4 de la fase 4 del DXF, la tabla LTYPE) y el ruso (`live` en `/ru`, L8)
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
-> de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11; por decisión del dueño
-> la visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño
-> (12/11/2026), una sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF
-> (`docs/next-dxf.md`: las referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de
-> cada sombreado, hecho el 17/11, sin publicar; los degradados…) y otro idioma (el checo, el
-> siguiente), alternando, además de lo que queda de §7.
+> de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
+> `/cs`, L8) hecho el 17/11, sin publicar; por decisión del dueño la visibilidad va antes que
+> cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca
+> en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
+> hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, hecho el 17/11, sin publicar;
+> los degradados y el punto 7) y otro idioma (el húngaro, el siguiente), alternando, además de lo
+> que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -283,7 +284,8 @@ UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesió
 `docs/plans/de-language.md`) y **ruso** (localizado; Rusia, con Ucrania, Kazajistán y
 Bielorrusia buscando en ruso; Yandex tiene el 72 % de sus búsquedas; hecho el 13/11,
 `docs/plans/ru-language.md`) y **polaco** (localizado; Polonia, 40 en el índice de la auditoría;
-hecho el 17/11, `docs/plans/pl-language.md`). Después, checo, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
+hecho el 17/11, `docs/plans/pl-language.md`) y **checo** (localizado; Chequia; hecho el 17/11,
+`docs/plans/cs-language.md`). Después, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
@@ -938,4 +940,32 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   hasta las 19:51 UTC). **Siguiente idioma propuesto: el checo** (localizado, `cs-CZ`; su paquete
   está en la misma lista que el polaco, y su latin-ext se suma a la cara de las letras), alternando
   con lo que quede de la fase 4 del DXF.
+- Checo (L8): hecho el 17/11/2026, sin publicar (`cf27f512`, `a6e1a4d6` y el commit que lo pasa
+  a `live`; `docs/plans/cs-language.md`, `docs/i18n/cs.md`). El paquete de idioma instalado en el
+  AutoCAD del dueño, con su permiso, y la 2027.1 otra vez; el lenguaje de comandos de la consola
+  checa (433 sondas: ÚSEČKA, EKVID, OŘEŽ; `U` es ÚSEČKA y `Z` deshace; FROM es `ODBODU`, que en
+  `Příkaz:` no choca con nada; RECTANG es `OBD`, con `OBDÉLNÍK`, el título de la ayuda), los
+  conmutadores, la lectura polar y el ViewCube vistos en el escritorio («<Uchop ano>», «Polárně:
+  2.2178 < +Z», SHORA, S, V, J, Z), y el sitio con lo que se busca en checo («CAD online zdarma s
+  příkazy AutoCADu», «Příkazy AutoCADu česky a anglicky», «Příkaz EKVID (OFFSET) v AutoCADu»,
+  «cvičení», «v AutoCADu»). Lo que no encajó, corregido en el sistema: la cara de las letras gana
+  las 18 checas (Inter 7.680 bytes, Geist Mono 5.136) y se llama `*-letters-*`; el menú de
+  SPLINEDIT de una spline cerrada declara otras palabras que el de una abierta
+  (`promptKeywords.splineditOptionClosed` en todos los idiomas, y `locales.test.ts` lo lee por su
+  id); el polaco imprimía dos veces el relleno de LIST en `listBulge`. Sin nativo, la relectura de
+  un modelo (unas 440 correcciones). **La primera carga de cada portada**, Brotli q11, con el
+  checo en borrador y `live`: `/` 253.853 → 253.753, `/es` 255.131 → 255.151, `/pt-br` 255.342 →
+  255.393, `/ar` 278.700 → 278.725, `/fr` 256.046 → 255.937, `/it` 255.122 → 255.206, `/de`
+  255.475 → 255.522, `/ru` 288.915 → 289.132, `/pl` 269.009 → 269.034, `/cs` 268.978 → 268.870
+  (bajo los 275 KiB de una escritura con su fuente). `/fr` pasaba 46 bytes de 250 KiB ya con el
+  checo en borrador, con esta medida (cada respuesta hasta la red en reposo, Brotli q11), y 67 en
+  `live`: el rango de la cara de las letras en uno (`U+0104-017E`) y «Čeština» en la regla del
+  ruso lo dejan 63 bytes por debajo; el siguiente cambio de la portada francesa tiene que medirse.
+  **Sin publicar**: el push, IndexNow, la cola de §7 (que `gsc-prioritize.mjs` rehaga con `/cs`,
+  pesado como el polaco por Chequia) y las fichas de AlternativeTo y SaaSHub esperan al dueño. La
+  tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota hasta las 19:51 UTC), ni la
+  activación de `docs/next-session-cleanup.md` (desde el 18/11). **Siguiente**, por orden del dueño:
+  lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: los degradados y el punto 7), y después
+  otro idioma (el húngaro: `hu-HU` está en la misma lista de paquetes, y su ő ű, también de Latin
+  Extended-A, entran en la cara de las letras).
 - 10 Medición: la primera, un mes después del push de 01–02.

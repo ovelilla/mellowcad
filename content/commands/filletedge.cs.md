@@ -7,7 +7,7 @@ sourceHash: "403a055efb24"
 
 Příkaz ZAOBLIHRANU (FILLETEDGE) zaoblí hrany 3D tělesa. Uvede aktuální poloměr a pak se ptá na hrany, až do Enter: kliknutí vezme hranu pod kurzorem, zvýrazněnou, když nad ní kurzor přejde, a zadaný bod vezme hranu, která jím prochází. Jak hrany přibývají, kreslí se těleso tak, jak bude vypadat, se zaobleními na místě. Enter hrany spočítá a vyzve vás, abyste znovu stiskli Enter pro potvrzení, nebo změnili poloměr; tento Enter zaoblení vytvoří. Jen hrany jednoho tělesa: hrana jiného vyvolá <Message id="filletMultipleBodies" />, hrana vybraná dvakrát <Message id="edgeAlreadyPicked" />.
 
-Přímá hrana mezi dvěma rovinnými plochami se stane čtvrtinou válce a kruhová hrana otvoru nebo okraje čtvrtinou anuloidu; zaoblení, která se setkají v rohu, se spojí, tři z nich kusem koule. Poloměr se uloží ve výkresu a příště se nabídne znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Přímá hrana mezi dvěma rovinnými plochami se stane čtvrtinou válce a kruhová hrana otvoru nebo okraje čtvrtinou anuloidu; zaoblení, která se setkají v rohu, se spojí, tři z nich kusem koule. Poloměr se uloží ve výkresu a příště se nabídne znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. MellowCAD umí ve 3D jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -35,7 +35,7 @@ Spusťte příkaz ZAOBLIHRANU, zvolte <Keyword id="Radius" /> a zadejte ho, vybe
 
 ### Jak zaoblit všechny hrany plochy?
 
-Zvolte <Keyword id="Loop" /> a vyberte hranu plochy, pak <Keyword id="Accept" />, nebo <Keyword id="Next" />, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, je <Keyword id="Chain" /> vezme všechny.
+Zvolte <Keyword id="Loop" /> a vyberte hranu plochy, pak <Keyword id="Accept" />, nebo <Keyword id="Next" />, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, vezme je všechny možnost <Keyword id="Chain" />.
 
 ### Proč příkaz ZAOBLI nefunguje na 3D tělese?
 

@@ -5,17 +5,17 @@ figure: "Tři úsečky navazující koncovými body: KEDIT převede první na k�
 sourceHash: "bdc0bf10ac09"
 ---
 
-Příkaz KEDIT (PEDIT) upravuje křivku. Vyberte ji na výzvě `Vyberte křivku nebo [NÁsobně]:`, nebo ji vyberte před příkazem; KEDIT spustí na křivce i poklepání. Vyberete-li místo toho úsečku, oblouk nebo spline, vypíše <Message id="objectNotPolyline" /> a zeptá se, zda ho převést na křivku, ve výchozím stavu ano: nová křivka zaujme jeho místo a převezme jeho vlastnosti. Pak se znovu a znovu ptá na volbu a každou hned použije, dokud ho Enter neukončí. 3D křivka dostane kratší seznam, bez šířky, proložení a generování typu čáry, a její volba spline je <Keyword id="Spline curve" />. Esc ponechá, co bylo uděláno; celá úprava je jeden krok, který vrátí <Command id="U" />.
+Příkaz KEDIT (PEDIT) upravuje křivku. Vyberte ji ve výzvě `Vyberte křivku nebo [NÁsobně]:`, nebo ji vyberte před příkazem; KEDIT spustí na křivce i poklepání. Vyberete-li místo toho úsečku, oblouk nebo spline, vypíše <Message id="objectNotPolyline" /> a zeptá se, zda ho převést na křivku, ve výchozím stavu ano: nová křivka zaujme jeho místo a převezme jeho vlastnosti. Pak se znovu a znovu ptá na možnost a každou hned použije, dokud ho Enter neukončí. 3D křivka dostane kratší seznam, bez šířky, proložení a generování typu čáry, a její možnost spline je <Keyword id="Spline curve" />. Esc ponechá, co bylo uděláno; celá úprava je jeden krok, který vrátí <Command id="U" />.
 
 ## Options
 
 ### Multiple
 
-Upraví několik křivek najednou: vyberte je, určete, zda převést úsečky, oblouky a spliny mezi nimi, a každá volba se pak použije na všechny. Její připojení se ptá na vzdálenost tolerance a na <Keyword id="Jointype" />: <Keyword id="Extend" /> ořízne nebo prodlouží koncové segmenty, aby se setkaly, <Keyword id="Add" /> přemostí mezeru novým segmentem, <Keyword id="Both" /> prodlouží, kde může, a přidá, kde nemůže.
+Upraví několik křivek najednou: vyberte je, určete, zda převést úsečky, oblouky a spliny mezi nimi, a každá možnost se pak použije na všechny. Její připojení se ptá na vzdálenost tolerance a na <Keyword id="Jointype" />: <Keyword id="Extend" /> ořízne nebo prodlouží koncové segmenty, aby se setkaly, <Keyword id="Add" /> přemostí mezeru novým segmentem, <Keyword id="Both" /> prodlouží, kde může, a přidá, kde nemůže.
 
 ### Close
 
-Uzavře křivku segmentem z posledního vrcholu do prvního, obloukem, je-li poslední segment oblouk. U uzavřené křivky je tu volba <Keyword id="Open" />, která tento segment odebere.
+Uzavře křivku segmentem z posledního vrcholu do prvního, obloukem, je-li poslední segment oblouk. U uzavřené křivky je tu možnost <Keyword id="Open" />, která tento segment odebere.
 
 ### Join
 
@@ -35,7 +35,7 @@ Nakreslí hladkou křivku z oblouků procházející všemi vrcholy, tečných v
 
 ### Spline
 
-Proloží křivkou B-spline, kterou vrcholy ohraničují, místo aby jimi procházela: kvadratickou nebo kubickou podle SPLINETYPE a tak jemnou, jak určuje SPLINESEGS. U 3D křivky je to <Keyword id="Spline curve" />. Volba <Keyword command="SPLINE" id="Object" /> příkazu <Command id="SPLINE" /> takovou křivku převede na skutečný spline.
+Proloží křivkou B-spline, kterou vrcholy ohraničují, místo aby jimi procházela: kvadratickou nebo kubickou podle SPLINETYPE a tak jemnou, jak určuje SPLINESEGS. U 3D křivky je to <Keyword id="Spline curve" />. Možnost <Keyword command="SPLINE" id="Object" /> příkazu <Command id="SPLINE" /> takovou křivku převede na skutečný spline.
 
 ### Decurve
 
@@ -51,17 +51,17 @@ Obrátí křivku: její vrcholy opačným směrem, oblouky a šířky s nimi.
 
 ### Undo
 
-Vrátí poslední volbu tohoto spuštění a ptá se dál.
+Vrátí poslední možnost tohoto spuštění a ptá se dál.
 
 ## Missing
 
-PEDITACCEPT: výběr úsečky, oblouku nebo spline se před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Volba <Keyword id="Multiple" />, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. Nejsou tu sítě, které by šlo upravovat.
+PEDITACCEPT: po výběru úsečky, oblouku nebo spline se příkaz před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Možnost <Keyword id="Multiple" />, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. Nejsou tu sítě, které by šlo upravovat.
 
 ## Questions
 
 ### Jak se jmenuje příkaz KEDIT anglicky?
 
-PEDIT. V českém AutoCADu je jeho zkratka `KE`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `PE` v české verzi spouští jiný příkaz; celý název `KEDIT` funguje také a `_PEDIT` v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku.
+PEDIT. V českém AutoCADu je jeho zkratka `KE`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `PE` v české verzi spouští jiný příkaz, PŘEDVRENDR; celý název `KEDIT` funguje také a `_PEDIT` v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku.
 
 ### Jak spojit úsečky do křivky?
 
@@ -69,7 +69,7 @@ Spusťte příkaz KEDIT, vyberte jednu z úseček a stiskněte Enter, aby se př
 
 ### Proč KEDIT na můj objekt nefunguje?
 
-Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v zamknuté hladině odpoví <Message id="objectOnLockedLayer" />. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte <Keyword id="Multiple" /> a vzdálenost tolerance.
+Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v uzamknuté hladině odpoví <Message id="objectOnLockedLayer" />. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte <Keyword id="Multiple" /> a vzdálenost tolerance.
 
 ### Jak změnit šířku křivky?
 

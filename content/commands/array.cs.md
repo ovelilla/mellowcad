@@ -2,17 +2,17 @@
 title: "Příkaz POLE (ARRAY) v AutoCADu"
 metaTitle: "Pole objektů v AutoCADu: příkaz POLE (ARRAY)"
 description: "Jak vytvořit pole v AutoCADu příkazem POLE (ARRAY, zkratka PO): obdélníkové, polární a křivkové, upravované živě před vytvořením. Vyzkoušejte zdarma online."
-figure: "Čtverec a jeho kružnice v poli s výchozími hodnotami: Enter pro obdélníkové pole, 4 sloupce a 3 řady."
+figure: "Čtverec a jeho kružnice v poli s výchozími hodnotami: Enter pro obdélníkové pole, 4 sloupce a 3 řádky."
 sourceHash: "5e0a412c9f13"
 ---
 
-Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řadách, kolem středu nebo podél trajektorie. Zeptá se na objekty, pak na typ pole, přičemž Enter vybere obdélníkové, a předá výběr příkazu <Command id="ARRAYRECT" />, <Command id="ARRAYPOLAR" /> nebo <Command id="ARRAYPATH" />, který pokračuje, aniž by se znovu ptal na objekty. Každý z nich pole hned ukáže a upravuje ho živě, svými možnostmi a uzly, dokud ho Enter nevytvoří: jeden objekt pole, nebo volné kopie, pokud jste zvolili, že nemá být asociativní. Celý příkaz je jeden krok zpět a Enter na příkazovém řádku příkaz POLE zopakuje.
+Příkaz POLE (ARRAY) kopíruje výběr podle vzoru: ve sloupcích a řádcích, kolem středu nebo podél trajektorie. Zeptá se na objekty, pak na typ pole, přičemž Enter vybere obdélníkové, a předá výběr příkazu <Command id="ARRAYRECT" />, <Command id="ARRAYPOLAR" /> nebo <Command id="ARRAYPATH" />, který pokračuje, aniž by se znovu ptal na objekty. Každý z nich pole hned ukáže a upravuje ho živě, svými možnostmi a uzly, dokud ho Enter nevytvoří: jeden objekt pole, nebo volné kopie, pokud jste zvolili, že nemá být asociativní. Celý příkaz je jeden krok zpět a Enter na příkazovém řádku příkaz POLE zopakuje.
 
 ## Options
 
 ### Rectangular
 
-Sloupce a řady a podle potřeby úrovně skládané podél Z: <Command id="ARRAYRECT" />. Začíná se 4 sloupci a 3 řadami, s roztečí jedenapůlkrát větší než velikost výběru.
+Sloupce a řádky a podle potřeby úrovně skládané podél Z: <Command id="ARRAYRECT" />. Začíná se 4 sloupci a 3 řádky, s roztečí jedenapůlkrát větší než velikost výběru.
 
 ### PAth
 
@@ -20,7 +20,7 @@ Podél úsečky, oblouku, kružnice nebo křivky: <Command id="ARRAYPATH" />. Ze
 
 ### POlar
 
-Kolem středového bodu: <Command id="ARRAYPOLAR" />. Zeptá se na střed a začíná se 6 položkami na celé otočce.
+Kolem středového bodu: <Command id="ARRAYPOLAR" />. Zeptá se na střed a začíná se 6 položkami na plném kruhu.
 
 ## Missing
 
@@ -42,4 +42,4 @@ Vyberte ho a spusťte <Command id="EXPLODE" />: pole se rozpadne na objekty svý
 
 ### Jak změnit pole po jeho vytvoření?
 
-Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řady a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není.
+Vyberte ho. Mění ho jeho uzly: čtverec v základním bodě ho posouvá, šipky nastavují počty a rozteče a číslo zadané, když je šipka počtu aktivní, je nový počet. Paleta Vlastnosti uvádí jeho sloupce, řádky a rozteče, nebo položky a úhly, k přepsání. Příkaz EDITPOLE tu zatím není.

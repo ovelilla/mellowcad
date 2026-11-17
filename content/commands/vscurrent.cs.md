@@ -8,13 +8,13 @@ sourceHash: "ddb8f2338e68"
 
 Příkaz AKTUÁLNÍVS (VSCURRENT) nastaví vizuální styl: to, jak pohled kreslí 3D tělesa. Zeptá se na styl a nabídne aktuální jako výchozí, takže Enter ho ponechá. <Keyword id="2dwireframe" /> kreslí každou hranu, i ty vzadu; <Keyword id="Hidden" /> skryje to, co zakrývají plochy; <Keyword id="Conceptual" /> plochy vybarví, se stínováním. Styl patří pohledu a ukládá se do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. Uvnitř jiného příkazu ho použít nelze.
 
-To, co není těleso (úsečky, kružnice, oblasti, text), se kreslí jako ve stylu 2D drátový model bez ohledu na styl, ve vlastních barvách. Ve stylech Skrytý a Koncepční vybere kliknutí těleso, jehož plocha je pod kurzorem nejblíž k vám, nikdy těleso za plochou, která ho zakrývá, a uchopení objektu dál najde každou hranu. Hrany tělesa v zamknuté hladině se kreslí bledší. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+To, co není těleso (úsečky, kružnice, oblasti, text), se kreslí jako ve stylu 2D drátový model bez ohledu na styl, ve vlastních barvách. Ve stylech Skrytý a Koncepční vybere kliknutí těleso, jehož plocha je pod kurzorem nejblíž k vám, nikdy těleso za plochou, která ho zakrývá, a uchopení objektů dál najde každou hranu. Hrany tělesa v uzamknuté hladině se kreslí bledší. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 ## Options
 
 ### 2dwireframe
 
-Každá hrana každého tělesa, i vzadu, spolu s čarami, které ukazují jeho zakřivené plochy; výchozí styl nového výkresu. Při návratu k němu z jiného stylu vypíše AKTUÁLNÍVS <Message id="regeneratingModel" />.
+Každá hrana každého tělesa, i vzadu, spolu s čarami, které ukazují jeho zakřivené plochy; výchozí styl nového výkresu. Při návratu k němu z jiného stylu vypíše příkaz AKTUÁLNÍVS <Message id="regeneratingModel" />.
 
 ### Hidden
 
@@ -32,11 +32,11 @@ Ostatní styly AutoCADu – Drátový model, Realistický, Stínovaný, Stínova
 
 ### Jak v AutoCADu změnit vizuální styl?
 
-Spusťte AKTUÁLNÍVS (nebo zkratku `VC`; anglická `VS` v české verzi spouští SVLOŽSPEC) a zvolte styl: <Keyword id="Hidden" /> pro skrytí hran vzadu, <Keyword id="Conceptual" /> pro vystínování ploch. Mění jen pohled, ne objekty.
+Spusťte příkaz AKTUÁLNÍVS (nebo zkratku `VC`; anglická `VS` v české verzi spouští příkaz SVLOŽSPEC) a zvolte styl: <Keyword id="Hidden" /> pro skrytí hran vzadu, <Keyword id="Conceptual" /> pro vystínování ploch. Mění jen pohled, ne objekty.
 
 ### Jak se vrátit k 2D drátovému modelu?
 
-Spusťte AKTUÁLNÍVS a zvolte <Keyword id="2dwireframe" />.
+Spusťte příkaz AKTUÁLNÍVS a zvolte <Keyword id="2dwireframe" />, písmeno `2`.
 
 ### Jaký je rozdíl mezi stylem Skrytý a Koncepční?
 

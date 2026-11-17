@@ -20,7 +20,7 @@ Znovu od `0,0` levý bok: `40<150`, `40<90`, `20<330`, `20<270` a `20<330`. Ente
 
 ### Nakreslete horní plochy [#top]
 
-Zbytek začíná v rozích, které už jsou nakreslené: zadejte `_END`, uchopení objektu Koncový pro jeden bod, a vyberte roh. Od pravého horního rohu přední strany: `20<150`, `20<90`, `20<150` a `60<210`. Potom dvě úsečky `60<210`, od paty čela stupně a od jeho horní hrany.
+Zbytek začíná v rozích, které už jsou nakreslené: zadejte `_END`, uchopení objektů Koncový pro jeden bod, a vyberte roh. Od pravého horního rohu přední strany: `20<150`, `20<90`, `20<150` a `60<210`. Potom dvě úsečky `60<210`, od paty čela stupně a od jeho horní hrany.
 
 ### Okótujte výkres [#dimensions]
 

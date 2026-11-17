@@ -45,13 +45,13 @@ Soubor se stáhne, jako všechno, co se tu ukládá ([ukládání není úplně 
 
 ## Co DXF obsahuje [#holds]
 
-Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: úsečky, oblouky, kružnice, elipsy, křivky s jejich šířkami a vyhlazením, 3D křivky, spliny, jednořádkový a víceřádkový text, bloky s atributy, kóty, šrafy s jejich vzorem, body, 2D desky a pole jako blok jejich prvků. S nimi hladiny (zapnuté, vypnuté, zamknuté) s jejich barvou, typem čáry a tloušťkou čáry, typy čar výkresu, i složité, a měřítko typu čáry každého objektu, textové a kótovací styly, bloky a jednotky a nastavení výkresu. Text si zachová své znaky: do verze 2004 v kódové stránce Windows, kterou používá AutoCAD, s řídicími sekvencemi pro ostatní, a od 2007 v UTF-8.
+Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: úsečky, oblouky, kružnice, elipsy, křivky s jejich šířkami a vyhlazením, 3D křivky, spliny, jednořádkový a víceřádkový text, bloky s atributy, kóty, šrafy s jejich vzorem, body, 2D desky a pole jako blok jejich prvků. S nimi hladiny (zapnuté, vypnuté, uzamknuté) s jejich barvou, typem čáry a tloušťkou čáry, typy čar výkresu, i složité, a měřítko typu čáry každého objektu, textové a kótovací styly, bloky a jednotky a nastavení výkresu. Text si zachová své znaky: do verze 2004 v kódové stránce Windows, kterou používá AutoCAD, s řídicími sekvencemi pro ostatní, a od 2007 v UTF-8.
 
 ## Co se nevrátí [#lost]
 
-- **Co se neotevřelo, se neuloží.** Co v MellowCAD zatím nemá svůj objekt – multiodkazy, tabulky, zakrytí a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
+- **Co se neotevřelo, se neuloží.** Pro co MellowCAD zatím nemá objekt – multiodkazy, tabulky, zakrytí a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
 - **3D tělesa a oblasti se nezapisují**: příkazový řádek vypíše, kolik jich vynechal.
-- Vlastní potlačení stylu kóty a parametry pole se nezapisují: AutoCAD otevře kótu s nastavením jejího stylu a pole jako blok jeho prvků.
+- Vlastní potlačení stylu u kóty a parametry pole se nezapisují: AutoCAD otevře kótu s nastavením jejího stylu a pole jako blok jeho prvků.
 - Není tu náhled miniatury, zatím žádný typ DXF AutoCAD R12/LT2 a žádný DWG.
 
 ## Vytvořte DXF od nuly [#new]

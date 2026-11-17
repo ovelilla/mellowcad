@@ -76,7 +76,7 @@
     "boardLabel": "Polecenia i ich aliasy, pogrupowane jak na wstążce",
     "also": "Także: {aliases}",
     "linked": "Podkreślone polecenie ma własną stronę, z monitami i opcjami.",
-    "languages": "<pl>{polish}</pl> to <en>{english}</en> w angielskim AutoCADzie, <es>{spanish}</es> w hiszpańskim, <pt>{portuguese}</pt> w brazylijskim portugalskim, <fr>{french}</fr> we francuskim, <de>{german}</de> w niemieckim i <ru>{russian}</ru> w rosyjskim, a globalna nazwa <all>{global}</all> działa w każdym języku.",
+    "languages": "<pl>{polish}</pl> to <en>{english}</en> w angielskim AutoCADzie, <es>{spanish}</es> w hiszpańskim, <pt>{portuguese}</pt> w brazylijskim portugalskim, <fr>{french}</fr> we francuskim, <de>{german}</de> w niemieckim, <ru>{russian}</ru> w rosyjskim i <cs>{czech}</cs> w czeskim, a globalna nazwa <all>{global}</all> działa w każdym języku.",
     "transcriptTitle": "Jedno polecenie ODSUŃ, od początku do końca",
     "transcriptCaption": "Odtworzone przez silnik podczas budowania tej strony. Ta sama kolejność i te same litery opcji co w AutoCADzie."
   },

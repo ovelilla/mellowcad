@@ -11,11 +11,11 @@ Příkaz EKVID (OFFSET) nakreslí kopii objektu rovnoběžnou s ním, ve vzdále
 
 ### Through
 
-Místo vzdálenosti prochází každá kopie bodem, který ukážete nebo zadáte. Je to výchozí volba první výzvy, takže ji tam Enter vybere, dokud nebyla zadána vzdálenost; od té chvíle Enter opakuje poslední vzdálenost, v tomto výkresu.
+Místo vzdálenosti prochází každá kopie bodem, který ukážete nebo zadáte. Je to výchozí možnost první výzvy, takže ji tam Enter vybere, dokud nebyla zadána vzdálenost; od té chvíle Enter opakuje poslední vzdálenost, v tomto výkresu.
 
 ### Erase
 
-Zeptá se, zda každý zdrojový objekt po vytvoření ekvidistanty vymazat, <Keyword id="Yes" /> nebo <Keyword id="No" /> (výchozí). S <Keyword id="Yes" /> nahradí kopie objekt. Volba platí do konce relace a příští EKVID ji uvede na svém prvním řádku.
+Zeptá se, zda každý zdrojový objekt po vytvoření ekvidistanty vymazat, <Keyword id="Yes" /> nebo <Keyword id="No" /> (výchozí). S odpovědí <Keyword id="Yes" /> kopie nahradí objekt. Volba platí do konce relace a příští EKVID ji uvede na svém prvním řádku.
 
 ### Layer
 
@@ -23,11 +23,11 @@ Zeptá se, kam kopie přijdou: do aktuální hladiny (<Keyword id="Current" />),
 
 ### Exit
 
-Ukončí příkaz, stejně jako Enter na výzvě k výběru objektu.
+Ukončí příkaz, stejně jako Enter ve výzvě k výběru objektu.
 
 ### Multiple
 
-Na výzvě ke straně: vytváří další ekvidistanty téhož objektu bez nového výběru, každou kopii o jednu vzdálenost dál od předchozí, až do Enter nebo <Keyword id="Exit" />.
+Ve výzvě ke straně: vytváří další ekvidistanty téhož objektu bez nového výběru, každou kopii o jednu vzdálenost dál od předchozí, až do Enter nebo <Keyword id="Exit" />.
 
 ### Undo
 
@@ -45,11 +45,11 @@ OFFSET. V českém AutoCADu je jeho zkratka `E`: zadejte ji a stiskněte Enter n
 
 ### Proč nemohu vytvořit ekvidistantu objektu?
 
-Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou <Message id="cannotOffsetObject" />, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v zamknuté hladině nelze vybrat a 3D křivka se přeskočí.
+Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou <Message id="cannotOffsetObject" />, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v uzamknuté hladině nelze vybrat a 3D křivka se přeskočí.
 
 ### Jak vytvořit několik ekvidistant téže úsečky?
 
-Vyberte úsečku a pak na výzvě ke straně zadejte písmeno volby <Keyword id="Multiple" />: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii.
+Vyberte úsečku a pak ve výzvě ke straně zadejte písmeno možnosti <Keyword id="Multiple" />: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii.
 
 ### Jak umístit ekvidistanty do aktuální hladiny?
 

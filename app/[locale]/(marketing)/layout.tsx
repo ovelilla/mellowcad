@@ -46,7 +46,9 @@ const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
 // Polish's and Czech's letters alone, cut from Inter's and Geist Mono's Latin
 // Extended files (assets/fonts/README.md), before them on those pages
 // (lib/fonts.ts).
-// The range is a literal: next/font reads its options statically.
+// The range is a literal: next/font reads its options statically. One range
+// for Latin Extended-A: only a Polish or Czech page names the face, and a
+// letter it lacks there falls through to Inter.
 const fontLettersSans = localFont({
   src: "../../../assets/fonts/inter-letters-wght.woff2",
   weight: "100 900",
@@ -55,8 +57,7 @@ const fontLettersSans = localFont({
   declarations: [
     {
       prop: "unicode-range",
-      value:
-        "U+0104-0107, U+010C-010F, U+0118-011B, U+0141-0144, U+0147-0148, U+0158-015B, U+0160-0161, U+0164-0165, U+016E-016F, U+0179-017E",
+      value: "U+0104-017E",
     },
   ],
 })
@@ -69,8 +70,7 @@ const fontLettersMono = localFont({
   declarations: [
     {
       prop: "unicode-range",
-      value:
-        "U+0104-0107, U+010C-010F, U+0118-011B, U+0141-0144, U+0147-0148, U+0158-015B, U+0160-0161, U+0164-0165, U+016E-016F, U+0179-017E",
+      value: "U+0104-017E",
     },
   ],
 })

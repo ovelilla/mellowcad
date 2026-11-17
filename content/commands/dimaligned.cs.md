@@ -6,7 +6,7 @@ figure: "Šikmá strana trojúhelníku okótovaná podél své délky: její dva
 sourceHash: "243f7657ed7d"
 ---
 
-Příkaz KÓTYSROVNEJ (DIMALIGNED) měří skutečnou vzdálenost mezi dvěma body: jeho kótovací čára vede rovnoběžně s přímkou skrz ně, pod jakýmkoli úhlem, kdežto <Command id="DIMLINEAR" /> měří jen podél X nebo Y. Jeho výzvy jsou ty příkazu <Command id="DIMLINEAR" />: počátek první a druhé vynášecí čáry, nebo Enter a výběr úsečky, oblouku nebo segmentu křivky, jejichž konce se stanou těmito počátky, pak umístění kótovací čáry, na kteroukoli stranu. Vybraná kružnice dá svůj průměr procházející vybraným bodem. Příkazový řádek vypíše naměřenou hodnotu a příkaz skončí.
+Příkaz KÓTYSROVNEJ (DIMALIGNED) měří skutečnou vzdálenost mezi dvěma body: jeho kótovací čára vede rovnoběžně s přímkou skrz ně, pod jakýmkoli úhlem, kdežto <Command id="DIMLINEAR" /> měří jen podél X nebo Y. Jeho výzvy jsou stejné jako u příkazu <Command id="DIMLINEAR" />: počátek první a druhé vynášecí čáry, nebo Enter a výběr úsečky, oblouku nebo segmentu křivky, jejichž konce se stanou těmito počátky, pak umístění kótovací čáry, na kteroukoli stranu. Vybraná kružnice dá svůj průměr procházející vybraným bodem. Příkazový řádek vypíše naměřenou hodnotu a příkaz skončí.
 
 ## Options
 
@@ -28,7 +28,7 @@ Mtext: text kóty je jeden řádek, nastavený možností <Keyword id="Text" /> 
 
 Anglicky DIMALIGNED, v českém AutoCADu KÓTYSROVNEJ: zadejte `KSO` nebo `KOTYSO` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMALIGNED` v AutoCADu v jakémkoli jazyce; anglické `DAL` a `DIMALI` v českém AutoCADu nefungují.
 
-### Jaký je rozdíl mezi KÓTYPŘÍM a KÓTYSROVNEJ?
+### Jaký je rozdíl mezi příkazy KÓTYPŘÍM a KÓTYSROVNEJ?
 
 Na šikmé hraně dá <Command id="DIMLINEAR" /> její šířku nebo výšku, protože jeho kótovací čára je vodorovná nebo svislá; KÓTYSROVNEJ dá její délku, s čarou rovnoběžnou s hranou. Na hraně podél X nebo Y dají oba stejné číslo.
 

@@ -32,7 +32,7 @@ Vypíše plochu a obvod zadaných rohů a skončí.
 
 ## Missing
 
-MĚŘITGEOM, nástroje Odměřit na pásu karet, s možnostmi Poloměr, Úhel, Objem a Rychle: tady tlačítka Vzdálenost a Plocha na pásu karet spouštějí VZD a PLOCHA. Možnosti Oblouk a Délka u dalšího bodu příkazu PLOCHA. Rohy mimo rovinu aktuálního USS se měří v půdorysu, kde je AutoCAD měří ve 3D, a hlášení AutoCADu `Objekt není rovnoběžný s USS.` u objektu skloněného vůči USS se nezobrazí.
+MĚŘITGEOM, nástroje Měřit na pásu karet, s možnostmi Poloměr, Úhel, Objem a Rychlé: tady tlačítka Vzdálenost a Plocha na pásu karet spouštějí VZD a PLOCHA. Možnosti Oblouk a Délka u dalšího bodu příkazu PLOCHA. Rohy mimo rovinu aktuálního USS se měří v půdorysu, kde je AutoCAD měří ve 3D, a hlášení AutoCADu `Objekt není rovnoběžný s USS.` u objektu skloněného vůči USS se nezobrazí.
 
 ## Questions
 

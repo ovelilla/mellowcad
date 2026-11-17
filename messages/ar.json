@@ -76,7 +76,7 @@
     "boardLabel": "الأوامر واختصاراتها، مجمّعة كما في الشريط",
     "also": "وأيضًا: {aliases}",
     "linked": "للأمر المسطَّر صفحة خاصة به، بمطالباته وخياراته.",
-    "languages": "<en>{english}</en> هو <es>{spanish}</es> في أوتوكاد الإسباني و<pt>{portuguese}</pt> في البرتغالي البرازيلي و<fr>{french}</fr> في الفرنسي و<de>{german}</de> في الألماني و<ru>{russian}</ru> في الروسي و<pl>{polish}</pl> في البولندي، والاسم العالمي <all>{global}</all> يعمل بكل اللغات.",
+    "languages": "<en>{english}</en> هو <es>{spanish}</es> في أوتوكاد الإسباني و<pt>{portuguese}</pt> في البرتغالي البرازيلي و<fr>{french}</fr> في الفرنسي و<de>{german}</de> في الألماني و<ru>{russian}</ru> في الروسي و<pl>{polish}</pl> في البولندي و<cs>{czech}</cs> في التشيكي، والاسم العالمي <all>{global}</all> يعمل بكل اللغات.",
     "transcriptTitle": "أمر ⁨OFFSET⁩ واحد من بدايته إلى نهايته",
     "transcriptCaption": "أعاد المحرك تشغيله عند بناء هذه الصفحة. الترتيب نفسه وحروف الخيارات نفسها كما في أوتوكاد."
   },

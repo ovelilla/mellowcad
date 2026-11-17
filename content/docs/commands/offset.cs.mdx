@@ -3,7 +3,7 @@ title: "Ekvidistanta v AutoCADu: příkaz EKVID (OFFSET)"
 description: "Jak vytvořit ekvidistantu v AutoCADu příkazem EKVID (OFFSET, zkratka E): vzdálenost nebo bod, vymazání a hladina, jeden objekt najednou. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz EKVID anglicky?","answer":"OFFSET. V českém AutoCADu je jeho zkratka E: zadejte ji a stiskněte Enter nebo mezerník. Anglické O v české verzi spouští příkaz OBLOUK; celý název EKVID funguje také a _OFFSET v AutoCADu v jakémkoli jazyce."},{"question":"Proč nemohu vytvořit ekvidistantu objektu?","answer":"Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou „Nelze vytvořit ekvidistantu k tomuto objektu.“, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v zamknuté hladině nelze vybrat a 3D křivka se přeskočí."},{"question":"Jak vytvořit několik ekvidistant téže úsečky?","answer":"Vyberte úsečku a pak na výzvě ke straně zadejte písmeno volby Násobně: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii."},{"question":"Jak umístit ekvidistanty do aktuální hladiny?","answer":"Na první výzvě zvolte Hladina, pak Aktuální. Od té chvíle jde každá kopie do aktuální hladiny, dokud znovu nezvolíte Zdroj."}]
+faq: [{"question":"Jak se jmenuje příkaz EKVID anglicky?","answer":"OFFSET. V českém AutoCADu je jeho zkratka E: zadejte ji a stiskněte Enter nebo mezerník. Anglické O v české verzi spouští příkaz OBLOUK; celý název EKVID funguje také a _OFFSET v AutoCADu v jakémkoli jazyce."},{"question":"Proč nemohu vytvořit ekvidistantu objektu?","answer":"Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou „Nelze vytvořit ekvidistantu k tomuto objektu.“, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v uzamknuté hladině nelze vybrat a 3D křivka se přeskočí."},{"question":"Jak vytvořit několik ekvidistant téže úsečky?","answer":"Vyberte úsečku a pak ve výzvě ke straně zadejte písmeno možnosti Násobně: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii."},{"question":"Jak umístit ekvidistanty do aktuální hladiny?","answer":"Na první výzvě zvolte Hladina, pak Aktuální. Od té chvíle jde každá kopie do aktuální hladiny, dokud znovu nezvolíte Zdroj."}]
 ---
 
 Příkaz EKVID (OFFSET) nakreslí kopii objektu rovnoběžnou s ním, ve vzdálenosti, kterou zadáte, nebo procházející bodem, který určíte: z úsečky vznikne rovnoběžná úsečka, z kružnice nebo oblouku soustředná, z křivky obrys uvnitř nebo vně ní, z elipsy nebo spline spline, který ji sleduje. Stejně jako v AutoCADu bere jeden objekt najednou: vzdálenost zadáte jednou, pak vyberete objekt a stranu, na kterou má kopie přijít, kolikrát chcete. Enter příkaz ukončí.
@@ -24,11 +24,11 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Bodem` (`B`) [#through]
 
-Místo vzdálenosti prochází každá kopie bodem, který ukážete nebo zadáte. Je to výchozí volba první výzvy, takže ji tam Enter vybere, dokud nebyla zadána vzdálenost; od té chvíle Enter opakuje poslední vzdálenost, v tomto výkresu.
+Místo vzdálenosti prochází každá kopie bodem, který ukážete nebo zadáte. Je to výchozí možnost první výzvy, takže ji tam Enter vybere, dokud nebyla zadána vzdálenost; od té chvíle Enter opakuje poslední vzdálenost, v tomto výkresu.
 
 ### `Vymazat` (`V`) [#erase]
 
-Zeptá se, zda každý zdrojový objekt po vytvoření ekvidistanty vymazat, `Ano` nebo `Ne` (výchozí). S `Ano` nahradí kopie objekt. Volba platí do konce relace a příští EKVID ji uvede na svém prvním řádku.
+Zeptá se, zda každý zdrojový objekt po vytvoření ekvidistanty vymazat, `Ano` nebo `Ne` (výchozí). S odpovědí `Ano` kopie nahradí objekt. Volba platí do konce relace a příští EKVID ji uvede na svém prvním řádku.
 
 ### `Hladina` (`H`) [#layer]
 
@@ -36,11 +36,11 @@ Zeptá se, kam kopie přijdou: do aktuální hladiny (`Aktuální`), nebo do hla
 
 ### `Konec` (`K`) [#exit]
 
-Ukončí příkaz, stejně jako Enter na výzvě k výběru objektu.
+Ukončí příkaz, stejně jako Enter ve výzvě k výběru objektu.
 
 ### `Násobně` (`N`) [#multiple]
 
-Na výzvě ke straně: vytváří další ekvidistanty téhož objektu bez nového výběru, každou kopii o jednu vzdálenost dál od předchozí, až do Enter nebo `Konec`.
+Ve výzvě ke straně: vytváří další ekvidistanty téhož objektu bez nového výběru, každou kopii o jednu vzdálenost dál od předchozí, až do Enter nebo `Konec`.
 
 ### `Zpět` (`Z`) [#undo]
 
@@ -60,11 +60,11 @@ OFFSET. V českém AutoCADu je jeho zkratka `E`: zadejte ji a stiskněte Enter n
 
 ### Proč nemohu vytvořit ekvidistantu objektu?
 
-Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou `Nelze vytvořit ekvidistantu k tomuto objektu.`, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v zamknuté hladině nelze vybrat a 3D křivka se přeskočí.
+Příkaz EKVID pracuje s úsečkami, oblouky, kružnicemi, 2D křivkami, elipsami a spliny. Text, víceřádkový text, reference bloků, kóty a šrafy odmítne zprávou `Nelze vytvořit ekvidistantu k tomuto objektu.`, stejně jako když by vzdálenost zmenšila kružnici, oblouk nebo křivku na nic. Objekt v uzamknuté hladině nelze vybrat a 3D křivka se přeskočí.
 
 ### Jak vytvořit několik ekvidistant téže úsečky?
 
-Vyberte úsečku a pak na výzvě ke straně zadejte písmeno volby `Násobně`: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii.
+Vyberte úsečku a pak ve výzvě ke straně zadejte písmeno možnosti `Násobně`: každé kliknutí na tu stranu přidá další kopii, každou o vzdálenost dál než předchozí. Nebo ponechte výchozí režim a pokaždé vyberte nejnovější kopii.
 
 ### Jak umístit ekvidistanty do aktuální hladiny?
 

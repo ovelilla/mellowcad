@@ -1,12 +1,12 @@
 ---
 title: "Křivka v AutoCADu: příkaz KŘIVKA (PLINE)"
-description: "Jak nakreslit křivku (polyline) v AutoCADu příkazem KŘIVKA (PLINE, zkratka K): úsečky a oblouky v jednom objektu, šířka a polovina šířky, délka a uzavření."
+description: "Jak nakreslit křivku (polyline) v AutoCADu příkazem KŘIVKA (PLINE, zkratka K): úsečky a oblouky v jednom objektu, Tloušťka a Polotloušťka, Délka a Uzavři."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz KŘIVKA anglicky?","answer":"PLINE. V českém AutoCADu je jeho zkratka K: zadejte ji a stiskněte Enter nebo mezerník. Anglické PL v české verzi spouští příkaz PLOCHA; celý název KŘIVKA funguje také a _PLINE v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit křivku s oblouky?","answer":"Zvolte Oblouk: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do úsEčka. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte KEDIT a jeho volbu Interpolace nebo Spline."},{"question":"Proč se moje křivka kreslí silná?","answer":"Šířka zadaná v dřívějším příkazu KŘIVKA se pamatuje a další křivka s ní začíná, jak říká řádek po jejím počátečním bodu. Zvolte Tloušťka a dvakrát zadejte 0, abyste kreslili zase tence. S vypnutým VYPLNĚNÍ se široké křivky zobrazují jako obrysy."},{"question":"Jak spojit úsečky do křivky?","answer":"Spusťte SPOJ a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetěz se stane jednou křivkou. Nebo spusťte KEDIT na úsečce, odpovězte Ano, aby se převedla na křivku, a zbytek přidejte volbou Připoj."},{"question":"Jak zjistit plochu nebo délku křivky?","answer":"Spusťte PLOCHA, stiskněte Enter pro OBjekt a vyberte křivku: uzavřená vypíše svou plochu a obvod, otevřená svou délku."}]
+faq: [{"question":"Jak se jmenuje příkaz KŘIVKA anglicky?","answer":"PLINE. V českém AutoCADu je jeho zkratka K: zadejte ji a stiskněte Enter nebo mezerník. Anglické PL v české verzi spouští příkaz PLOCHA; celý název KŘIVKA funguje také a _PLINE v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit křivku s oblouky?","answer":"Zvolte Oblouk: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do úsEčka. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte KEDIT a jeho možnost Interpolace nebo Spline."},{"question":"Proč se moje křivka kreslí silná?","answer":"Šířka zadaná v dřívějším příkazu KŘIVKA se pamatuje a další křivka s ní začíná, jak říká řádek po jejím počátečním bodu. Zvolte Tloušťka a dvakrát zadejte 0, abyste kreslili zase tence. S vypnutým VYPLNĚNÍ se široké křivky zobrazují jako obrysy."},{"question":"Jak spojit úsečky do křivky?","answer":"Spusťte SPOJ a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetězec se stane jednou křivkou. Nebo spusťte KEDIT na úsečce, odpovězte Ano, aby se převedla na křivku, a zbytek přidejte volbou Připoj."},{"question":"Jak zjistit plochu nebo délku křivky?","answer":"Spusťte PLOCHA, stiskněte Enter pro OBjekt a vyberte křivku: uzavřená vypíše svou plochu a obvod, otevřená svou délku."}]
 ---
 
-Příkaz KŘIVKA (PLINE) kreslí křivku (polyline): jeden objekt z přímých segmentů a oblouků navazujících konec na konec, každý se šířkou. Po počátečním bodu vypíše aktuální šířku; pak každý bod přidá segment, dokud příkaz neukončí Enter nebo `Uzavři`. Stejně jako v AutoCADu začíná úsečkami: `Oblouk` přepne na oblouky, každý tečný k předchozímu segmentu, a `úsEčka` přepne zpět. Enter u počátečního bodu naváže na konec naposledy nakreslené úsečky, oblouku nebo křivky.
+Příkaz KŘIVKA (PLINE) kreslí křivku (polyline): jeden objekt z přímých segmentů a oblouků navazujících konec na konec, každý se šířkou. Po počátečním bodu vypíše aktuální šířku; pak každý bod přidá segment, dokud příkaz neukončí Enter nebo `Uzavři`. Stejně jako v AutoCADu začíná úsečkami: `Oblouk` přepne na oblouky, každý tečný k předchozímu segmentu, a `úsEčka` přepne zpět. Enter místo počátečního bodu naváže na konec naposledy nakreslené úsečky, oblouku nebo křivky.
 
 - **Příkaz:** `KŘIVKA`
 - **Anglicky:** `PLINE`, zadávaný jako `_PLINE` v libovolném jazyce
@@ -24,7 +24,7 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Oblouk` (`O`) [#arc]
 
-Režim oblouků: každý koncový bod nakreslí oblouk tečný k poslednímu segmentu, nebo, jako první segment, ve směru, kterým končí naposledy nakreslená úsečka, oblouk nebo křivka. Podržením Ctrl směr přepnete. Volby níže tvarují další oblouk.
+Režim oblouků: každý koncový bod nakreslí oblouk tečný k poslednímu segmentu, nebo, jako první segment, ve směru, kterým končí naposledy nakreslená úsečka, oblouk nebo křivka. Podržením Ctrl směr přepnete. Možnosti níže určují tvar dalšího oblouku.
 
 ### `Uzavři` (`U`) [#close]
 
@@ -72,7 +72,7 @@ Režim oblouků: bod, kterým oblouk prochází, pak jeho koncový bod: oblouk t
 
 ## Co zatím neumí [#missing]
 
-PLINEGEN: nová křivka klade typ čáry segment po segmentu, jako při PLINEGEN 0 (volba `tYpčgen` příkazu [`KEDIT`](/docs/commands/pedit) ho zapne pro jednu křivku). Přerušovaný typ čáry na širokém segmentu se kreslí plný. Náhled širokého segmentu se nekreslí tlumenějším odstínem a výzva oblouku je na jednom řádku, kde ji AutoCAD láme na dva.
+PLINEGEN: nová křivka klade typ čáry segment po segmentu, jako při PLINEGEN 0 (možnost `tYpčgen` příkazu [`KEDIT`](/docs/commands/pedit) ho zapne pro jednu křivku). Přerušovaný typ čáry na širokém segmentu se kreslí plný. Náhled širokého segmentu se nekreslí tlumenějším odstínem a výzva oblouku je na jednom řádku, kde ji AutoCAD láme na dva.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl--fr-polyligne--po--polylign--it-plinea--pl--de-plinie--pl--ru-плиния--пл--pl-plinia--pl--cs-křivka--k)
 
@@ -84,7 +84,7 @@ PLINE. V českém AutoCADu je jeho zkratka `K`: zadejte ji a stiskněte Enter ne
 
 ### Jak nakreslit křivku s oblouky?
 
-Zvolte `Oblouk`: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do `úsEčka`. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte [`KEDIT`](/docs/commands/pedit) a jeho volbu `Interpolace` nebo `Spline`.
+Zvolte `Oblouk`: každý bod pak ukončí oblouk tečný k předchozímu segmentu, až do `úsEčka`. Chcete-li vyhladit už nakreslenou křivku přes její vrcholy, použijte [`KEDIT`](/docs/commands/pedit) a jeho možnost `Interpolace` nebo `Spline`.
 
 ### Proč se moje křivka kreslí silná?
 
@@ -92,7 +92,7 @@ Zvolte `Oblouk`: každý bod pak ukončí oblouk tečný k předchozímu segment
 
 ### Jak spojit úsečky do křivky?
 
-Spusťte [`SPOJ`](/docs/commands/join) a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetěz se stane jednou křivkou. Nebo spusťte [`KEDIT`](/docs/commands/pedit) na úsečce, odpovězte `Ano`, aby se převedla na křivku, a zbytek přidejte volbou `Připoj`.
+Spusťte [`SPOJ`](/docs/commands/join) a vyberte úsečky, oblouky a křivky, které navazují koncovými body: každý řetězec se stane jednou křivkou. Nebo spusťte [`KEDIT`](/docs/commands/pedit) na úsečce, odpovězte `Ano`, aby se převedla na křivku, a zbytek přidejte volbou `Připoj`.
 
 ### Jak zjistit plochu nebo délku křivky?
 

@@ -1,13 +1,13 @@
 ---
 title: "Příkaz POHLED (VIEW) v AutoCADu"
 description: "Jak v AutoCADu otočit pohled příkazem POHLED (VIEW, -POHLED): šest pravoúhlých pohledů a čtyři izometrické a USS, který nastaví každý pravoúhlý."
-figure: "Kvádr se stupněm nakreslený v půdorysu: -POHLED a JZ Iso, a je vidět od jihozápadu a shora, ve vizuálním stylu Skrytý."
+figure: "Kvádr se stupněm nakreslený v půdorysu: -POHLED a JZ iso, a je vidět od jihozápadu a shora, ve vizuálním stylu Skrytý."
 sourceHash: "261c8657f5f7"
 ---
 
-Příkaz POHLED (VIEW) nastaví pohled na jeden z deseti předdefinovaných pohledů AutoCADu: šest pravoúhlých, které se dívají přímo na jednu stranu modelu, a čtyři izometrické, které se dívají shora od rohu. Ve výkresu se nic neposune. POHLED spustí <Command id="-VIEW" />, verzi pro příkazový řádek: jeho první výzva vypisuje možnost <Keyword id="Orthographic" />, která se pak zeptá na stranu, ale přijme i rovnou název pohledu, tak jak ho zadávají nabídky AutoCADu: <Command id="-VIEW" />, pak <Keyword id="SWiso" />. Každý pohled zobrazí celý výkres a vypíše <Message id="regeneratingModel" />.
+Příkaz POHLED (VIEW) nastaví pohled na jeden z deseti předdefinovaných pohledů AutoCADu: šest pravoúhlých, které se dívají přímo na jednu stranu modelu, a čtyři izometrické, které se dívají shora od rohu. Ve výkresu se nic neposune. POHLED spustí <Command id="-VIEW" />, verzi pro příkazový řádek: jeho první výzva vypisuje možnost <Keyword id="Orthographic" />, která se pak zeptá na stranu, a výzva přijme i rovnou název pohledu, tak jak ho zadávají nabídky AutoCADu: <Command id="-VIEW" />, pak <Keyword id="SWiso" />. Každý pohled zobrazí celý výkres a vypíše <Message id="regeneratingModel" />.
 
-Ovládací prvek pohledu v levém horním rohu výkresu vypisuje stejných deset pohledů a spouští <Command id="-VIEW" />, a na tyto pohledy natáčejí i stěny a rohy krychle ViewCube, které USS ponechají beze změny. Každé spuštění příkazu POHLED je jeden krok, který lze vrátit zpět, takže <Command id="U" /> vrátí pohled i s USS, který nastavil. Zadaný s apostrofem uvnitř jiného příkazu odmítne se zprávou <Message id="requiresRegen" />. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Ovládací prvek pohledu v levém horním rohu výkresu vypisuje stejných deset pohledů a spouští <Command id="-VIEW" />, a na tyto pohledy natáčejí i stěny a rohy krychle ViewCube, které USS ponechají beze změny. Každé spuštění příkazu POHLED je jeden krok, který lze vrátit zpět, takže <Command id="U" /> vrátí pohled i s USS, který nastavil. Zadaný s apostrofem uvnitř jiného příkazu odmítne se zprávou <Message id="requiresRegen" />. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -35,13 +35,13 @@ Severozápadní izometrie: dívá se shora od rohu vzadu vlevo a vidí zadní st
 
 ## Missing
 
-Pojmenované pohledy: <Keyword id="Orthographic" /> je jediná možnost, kterou první výzva vypisuje, zatímco v AutoCADu jsou na seznamu i `?`, odsTraň, oBnov, ULož, Nastavení a Okno, a název zapsaný na tomto místě se odmítne. Správce zobrazení, který POHLED otevře v AutoCADu. Když není nic nakreslené, pohled ponechá zvětšení, zatímco AutoCAD zobrazí meze výkresu. UCSORTHO a UCSBASE jako proměnné: pravoúhlý pohled vždy zarovná USS, od os globálního systému. Zarovnaný USS v seznamu <Keyword command="UCS" id="Previous" /> příkazu <Command id="UCS" />.
+Pojmenované pohledy: <Keyword id="Orthographic" /> je jediná možnost, kterou první výzva vypisuje, zatímco v AutoCADu jsou na seznamu i `?`, odsTraň, oBnov, ULož, Nastavení a Okno, a název zapsaný na tomto místě se odmítne. Správce zobrazení, který v AutoCADu otevře příkaz POHLED. Když není nic nakreslené, pohled ponechá zvětšení, zatímco AutoCAD zobrazí meze výkresu. UCSORTHO a UCSBASE jako proměnné: pravoúhlý pohled vždy zarovná USS, od os globálního systému. Zarovnaný USS v seznamu <Keyword command="UCS" id="Previous" /> příkazu <Command id="UCS" />.
 
 ## Questions
 
 ### Jak v AutoCADu získat izometrický pohled?
 
-Zadejte <Command id="-VIEW" />, pak <Keyword id="SWiso" /> pro jihozápadní izometrii; <Keyword id="SEiso" />, <Keyword id="NEiso" /> a <Keyword id="NWiso" /> dají zbylé tři rohy. Nebo zvolte JZ Iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. <Command id="VSCURRENT" /> s možností <Keyword command="VSCURRENT" id="Hidden" /> skryje hrany vzadu.
+Zadejte <Command id="-VIEW" />, pak <Keyword id="SWiso" /> pro jihozápadní izometrii; <Keyword id="SEiso" />, <Keyword id="NEiso" /> a <Keyword id="NWiso" /> dají zbylé tři rohy. Nebo zvolte JZ iso v ovládacím prvku pohledu vlevo nahoře, nebo klikněte na horní roh krychle ViewCube. <Command id="VSCURRENT" /> s možností <Keyword command="VSCURRENT" id="Hidden" /> skryje hrany vzadu.
 
 ### Jakým příkazem získat pohled shora?
 

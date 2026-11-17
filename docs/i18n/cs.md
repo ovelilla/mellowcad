@@ -1,8 +1,8 @@
 # Czech (`cs`)
 
-> **Command language:** `localized`, Czech AutoCAD's. **Status:** `draft` since 17/11/2026, at
-> `/cs`. **Review:** none by a native speaker (the owner knows none). The plan and its commits:
-> `docs/plans/cs-language.md`.
+> **Command language:** `localized`, Czech AutoCAD's. **Status:** `live` since 17/11/2026, at
+> `/cs`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
+> Autodesk did not write ("Review"). The plan and its commits: `docs/plans/cs-language.md`.
 
 The words are Autodesk's own Czech localization of AutoCAD, never a translation of ours, as the
 other localized languages' are. One Czech, as AutoCAD has one (`cs-CZ`).
@@ -251,3 +251,57 @@ Czech QWERTZ: Z and Y swap places; the number row types `+ ě š č ř ž ý á 
 Shift or the keypad; `ů` and `ú` keys of their own; `ˇ` and `´` dead keys (Ď, Ť, Ň and the
 capitals with háček); `@` AltGr+V, `<` and `>` AltGr+, and AltGr+. Ctrl shortcuts are read by
 their physical key (`shortcutKey`).
+
+Checked in Chrome before going live (17/11/2026, keys sent through CDP as the layout sends them on
+Windows, the letter in `key` and `text`, the physical key in `code`): `ořež` typed on the drawing
+(ř and ž from `Digit5` and `Digit6`) runs OŘEŽ and asks `Vyberte objekt k oříznutí nebo s
+klávesou Shift k prodloužení nebo [řEzací hrany/Křížení/Režim/Vymazat]:`; `10,0` typed with Shift
+on the number row answers ÚSEČKA's first point; the dead háček then `d` reaches the command line as
+`Ď`. AltGr in a field (`@` is AltGr+V) stays to be seen on a real Windows keyboard, as Polish's
+and German's.
+
+## Going live
+
+On 17/11/2026, from production builds in a clean worktree (every page `○` or `●` but
+`/api/search` and `/mcp`; 126 Czech URLs in the sitemap, 1,275 in all):
+
+- **The landing's first load**, Brotli q11, in bytes, Czech a draft (`a6e1a4d6`) and live: `/`
+  253,853 → 253,753, `/es` 255,131 → 255,151, `/pt-br` 255,342 → 255,393, `/ar` 278,700 →
+  278,725, `/fr` 256,046 → 255,937 (63 under 250 KiB), `/it` 255,122 → 255,206, `/de` 255,475 →
+  255,522, `/ru` 288,915 → 289,132, `/pl` 269,009 → 269,034; `/cs` 268,978 → 268,870, under the
+  275 KiB of a script's font: the letters' two faces (7,684 and 5,140), never Google's Latin
+  Extended files. No other landing fetches a letters' face.
+- **`/fr` was 46 bytes over 250 KiB with Czech a draft**, by this measure (every response until
+  the network is idle, each body Brotli q11), and 67 over once live: the letters' face declares
+  one range, `U+0104-017E`, where it listed ten (only a Polish or Czech page names the face, and a
+  letter it lacks there falls through to Inter), and «Čeština» shares Russian's rule, on the
+  links alone (`a:lang(cs)`), where Czech had two of its own. The next change to the French
+  landing has to be measured.
+- **Naming Czech** in every landing's commands sentence (`<cs>{czech}</cs>`: EKVID beside ODSUŃ
+  and ПОДОБИЕ), in Geist Mono, as EKVID has no letter outside latin.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): nothing wraps or
+  overflows; the H1's en dash keeps to the word before it (a no-break space), as Czech typography
+  wants.
+
+## Review
+
+No native reader: the owner knows none. What Autodesk did not write was read again by a model on
+17/11/2026, four agents against the English, Autodesk's tables and the Czech catalogs:
+
+- **The site and the editor**, some 40 edits: «uchopení objektů», as the status bar writes it,
+  where ten keys had «objektu»; «přímá kóta» (DIMLINEAR is KÓTYPŘÍM); calques undone («ptá se ve
+  stejném pořadí jako AutoCAD», «Co kde zůstává»); in the editor only our own labels. The landing's
+  figure keeps «Tečná», the snap marker's word (acadres 78), where the Object Snap tab writes
+  «Tečna».
+- **The "Use" pages and exercises**, 31 edits: «souřadnicové kóty» for ordinate dimensions,
+  «stupňovitý hranol v izometrii» as the exercise is named, «uchopení Koncový», «uzamknuté».
+- **The command pages**, some 370 edits: «možnost» for an option where «volba» crept in, «ve
+  výzvě», F3's echo `<Uchop ano>`, running snaps «průběžné», the Node snap «Uzel», Fence
+  «Napříč», hatch islands «ostrovy», MellowCAD never inflected, a name always after «příkaz», and
+  every alias answer checked against `acad_cs.pgp` (`E` runs EKVID, `EX` EXTERNÍREFERENCE, `3P`
+  3DPOLE).
+- **Left, for a native reader if one is found**: «šrafy» (Autodesk's) against «šrafa»,
+  «základna» against «podstava» for a cone, «kotvička» against «rameno» for LEADER's hook,
+  «trasovací čáry» for alignment paths, «Kutilové» for Makers, «přechodové výplně» against
+  «gradientní», the exercises' «osazený hřídel», «táhlo», «nálitek», and the drawings' `4x <>`
+  and `<> max` for THRU and TYP.

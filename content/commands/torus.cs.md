@@ -5,9 +5,9 @@ figure: "Anuloid o poloměru 30 kolem roury o poloměru 8, viděný od jihových
 sourceHash: "a19600f3e357"
 ---
 
-Příkaz ANULOID (TORUS) nakreslí 3D těleso ve tvaru prstence, pneumatiky: zadejte střed, pak poloměr anuloidu, od středu do osy roury, a pak poloměr roury. Prstenec leží v rovině XY systému USS, ve výšce Z středu. Bod určený u výzvy k zadání poloměru roury se měří od bodu prstence, toho, ve kterém byl zadán poloměr anuloidu. Poloměr anuloidu je společná výchozí hodnota základních těles a poloměr roury má vlastní výchozí hodnotu, kterou převezme Enter. Anuloid vznikne v aktuální hladině a Zpět ho odstraní v jednom kroku.
+Příkaz ANULOID (TORUS) nakreslí 3D těleso ve tvaru prstence, pneumatiky: zadejte střed, pak poloměr anuloidu, od středu do osy roury, a pak poloměr roury. Prstenec leží v rovině XY systému USS, ve výšce Z středu. Bod určený ve výzvě k zadání poloměru roury se měří od bodu prstence, toho, ve kterém byl zadán poloměr anuloidu. Poloměr anuloidu je společná výchozí hodnota základních těles a poloměr roury má vlastní výchozí hodnotu, kterou převezme Enter. Anuloid vznikne v aktuální hladině a Zpět ho odstraní v jednom kroku.
 
-Záporný poloměr anuloidu se širší rourou dá těleso ve tvaru míče na ragby, se špičatými konci; prstenec užší než roura dá jablko. Ve stylech 2D drátový model a Skrytý se kreslí čarami kolem roury a kolem prstence, v počtu podle `ISOLINES`. <Command id="LIST" /> ukáže jeho polohu, normálu, poloměr anuloidu a poloměr roury a v paletě Vlastnosti lze zapsat oba poloměry. Jeho uzly ho posouvají a nastavují poloměr anuloidu i poloměr roury. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCADu, který zahrnuje jen tělesa, a zatím částečně.
+Záporný poloměr anuloidu se širší rourou dá těleso ve tvaru míče na ragby, se špičatými konci; prstenec užší než roura dá jablko. Ve stylech 2D drátový model a Skrytý se kreslí čarami kolem roury a kolem prstence, v počtu podle `ISOLINES`. <Command id="LIST" /> ukáže jeho polohu, normálu, poloměr anuloidu a poloměr roury a v paletě Vlastnosti lze zapsat oba poloměry. Jeho uzly ho posouvají a nastavují poloměr anuloidu i poloměr roury. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCAD, který zahrnuje jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -21,7 +21,7 @@ U středu: zeptá se na dva konce průměru prstence.
 
 ### Ttr
 
-U středu: vyberte dvě úsečky, kružnice nebo oblouky s uchopením Tečná a zadejte poloměr: prstenec se dotýká obou, v jejich výšce.
+U středu: vyberte dvě úsečky, kružnice nebo oblouky s uchopením Tečna a zadejte poloměr: prstenec se dotýká obou, v jejich výšce.
 
 ### Diameter
 

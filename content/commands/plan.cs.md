@@ -14,11 +14,11 @@ Nic ve výkresu se nepohne a USS zůstane, jak byl: příkaz PŮDORYS jen otoč�
 
 ### Current ucs
 
-Půdorys aktuálního USS, výchozí volba. Když <Command id="UCS" /> otočil USS o 30 stupňů kolem Z, výkres se zobrazí otočený o 30 stupňů ve směru hodinových ručiček, aby osa X USS mířila doprava; po USS na šikmé ploše se dívá kolmo na tuto plochu.
+Půdorys aktuálního USS, výchozí možnost. Když <Command id="UCS" /> otočil USS o 30 stupňů kolem Z, výkres se zobrazí otočený o 30 stupňů ve směru hodinových ručiček, aby osa X USS mířila doprava; po USS na šikmé ploše se dívá kolmo na tuto plochu.
 
 ### Ucs
 
-Půdorys USS uloženého volbou <Keyword command="UCS" id="NAmed" /> příkazu <Command id="UCS" />, jehož název zadáte. U názvu, který uložený není, vypíše, že takový USS nemůže najít, a zeptá se znovu; <Keyword id="?" /> vypíše uložené, jako příkaz USS, a také se zeptá znovu. Aktuální USS se nezmění.
+Půdorys USS uloženého možností <Keyword command="UCS" id="NAmed" /> příkazu <Command id="UCS" />, jehož název zadáte. U názvu, který uložený není, vypíše, že takový USS nemůže najít, a zeptá se znovu; <Keyword id="?" /> vypíše uložené, jako příkaz USS, a také se zeptá znovu. Aktuální USS se nezmění.
 
 ### World
 
@@ -36,11 +36,11 @@ Zadejte `PŮDORYS` a dvakrát stiskněte Enter: druhý Enter vybere <Keyword id=
 
 ### Jaký příkaz dá půdorys USS?
 
-PŮDORYS s volbou <Keyword id="Current ucs" />: dívá se shora na aktuální USS, s jeho osou X doprava. Nejprve otočte USS příkazem <Command id="UCS" />, pak spusťte PŮDORYS, dvakrát stiskněte Enter a na otočeném půdorysu kreslíte, jako by byl rovně.
+PŮDORYS s možností <Keyword id="Current ucs" />: dívá se shora na aktuální USS, s jeho osou X doprava. Nejprve otočte USS příkazem <Command id="UCS" />, pak spusťte PŮDORYS, dvakrát stiskněte Enter a na otočeném půdorysu kreslíte, jako by byl rovně.
 
 ### Proč je můj výkres v půdorysném pohledu otočený?
 
-Pohled je půdorysem otočeného USS. Spusťte příkaz PŮDORYS a zvolte <Keyword id="World" />, abyste výkres opět viděli s globální osou X doprava; <Command id="UCS" /> a Enter vrátí na globální i USS.
+Pohled je půdorysem otočeného USS. Spusťte příkaz PŮDORYS a zvolte <Keyword id="World" />, abyste výkres opět viděli s globální osou X doprava; <Command id="UCS" /> a Enter vrátí na globální i samotný USS.
 
 ### Mění příkaz PŮDORYS USS?
 

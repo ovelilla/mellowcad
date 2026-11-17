@@ -1,15 +1,15 @@
 ---
 title: "Uchopení objektu v AutoCADu: příkaz -UCHOP (-OSNAP)"
 metaTitle: "Uchopení objektu v AutoCADu: -UCHOP a F3"
-description: "Uchopení objektu v AutoCADu: -UCHOP (-OSNAP) nastaví stálé režimy, F3 je zapne a vypne a KON, POL nebo Shift + pravé tlačítko vynutí jeden. Vyzkoušejte zdarma."
+description: "Uchopení objektů v AutoCADu: -UCHOP (-OSNAP) nastaví průběžné režimy, F3 je zapne a vypne a KON, POL nebo Shift + pravé tlačítko vynutí jeden. Zdarma online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Co dělá příkaz UCHOP (OSNAP) v AutoCADu?","answer":"V AutoCADu příkaz UCHOP (UC; anglicky OSNAP, OS) otevře dialog Nastavení kreslení na kartě Uchopení objektu, kde se volí stálé režimy. MellowCAD takový dialog nemá: zadejte -UCHOP nebo -UC a seznam režimů, nebo je zaškrtněte v nabídce tlačítka Uchopení objektu na stavovém řádku."},{"question":"Jak zapnout uchopení objektu v AutoCADu?","answer":"F3 zapíná a vypíná uchopení objektu, jako v AutoCADu; totéž dělá tlačítko Uchopení objektu na stavovém řádku. Shift + pravé tlačítko myši na výzvu k zadání bodu otevře nabídku jednorázových uchopení."},{"question":"Proč v AutoCADu nefunguje uchopení objektu?","answer":"Mohla ho vypnout klávesa F3: ukáže to jeho tlačítko na stavovém řádku. Nebo režim nepatří mezi stálé: nastavte ho příkazem -UCHOP nebo v nabídce tlačítka. Kurzor se musí k bodu přiblížit zhruba na 10 pixelů a u středu být nad samotnou kružnicí nebo obloukem. Uchopení funguje jen tehdy, když příkaz žádá o bod."},{"question":"Jak uchopit bod jen jednou?","answer":"Na výzvu k zadání bodu zadejte velká písmena režimu, například KON nebo TAN, nebo ho vyberte z nabídky Shift + pravé tlačítko. Platí jen pro tento bod, ať tento režim patří mezi stálé, nebo ne."},{"question":"Zůstává nastavení uchopení objektu uložené?","answer":"Do opětovného načtení stránky; pak jsou to znovu Koncový bod, Střed, Průsečík a Protažení. AutoCAD je ve výkresu také neukládá."}]
+faq: [{"question":"Co dělá příkaz UCHOP (OSNAP) v AutoCADu?","answer":"V AutoCADu příkaz UCHOP (UC; anglicky OSNAP, OS) otevře dialog Nastavení kreslení na kartě Uchopení objektu, kde se volí průběžné režimy. MellowCAD takový dialog nemá: zadejte -UCHOP nebo -UC a seznam režimů, nebo je zaškrtněte v nabídce tlačítka Uchopení objektů na stavovém řádku."},{"question":"Jak zapnout uchopení objektu v AutoCADu?","answer":"F3 zapíná a vypíná uchopení objektu, jako v AutoCADu; totéž dělá tlačítko Uchopení objektů na stavovém řádku. Shift + pravé tlačítko myši na výzvu k zadání bodu otevře nabídku jednorázových uchopení."},{"question":"Proč v AutoCADu nefunguje uchopení objektu?","answer":"Mohla ho vypnout klávesa F3: ukáže to jeho tlačítko na stavovém řádku. Nebo režim nepatří mezi průběžné: nastavte ho příkazem -UCHOP nebo v nabídce tlačítka. Kurzor se musí k bodu přiblížit zhruba na 10 pixelů a u středu být nad samotnou kružnicí nebo obloukem. Uchopení funguje jen tehdy, když příkaz žádá o bod."},{"question":"Jak uchopit bod jen jednou?","answer":"Na výzvu k zadání bodu zadejte velká písmena režimu, například KON nebo TAN, nebo ho vyberte z nabídky Shift + pravé tlačítko. Platí jen pro tento bod, ať tento režim patří mezi průběžné, nebo ne."},{"question":"Zůstává nastavení uchopení objektu uložené?","answer":"Do opětovného načtení stránky; pak jsou to znovu Koncový bod, Střed, Průsečík a Protažení. AutoCAD je ve výkresu také neukládá."}]
 ---
 
-Uchopení objektu umístí vybraný bod přesně do bodu objektu: do koncového bodu, do poloviny, do středu. Je-li uchopení objektu zapnuté, kurzor u takového bodu ukáže jeho zelenou značku a v místní nápovědě jeho název; kliknutí pak padne do tohoto bodu, ne tam, kde je kurzor. Stálé režimy uchopení platí při každé výzvě k zadání bodu: zpočátku Koncový bod, Střed, Průsečík a Protažení, jako v AutoCADu. F3 zapíná a vypíná uchopení objektu a vypíše `<Uchopení objektů ano>` nebo `<Uchopení objektů ne>`; totéž dělá tlačítko Uchopení objektu na stavovém řádku, jehož nabídka má pro každý režim zaškrtávací políčko. Je-li pod kurzorem několik bodů uchopení, vyhraje nejbližší a klávesa Tab prochází ostatní. Režim Orto, polární trasování ani krok uchopený bod nikdy neposunou.
+Uchopení objektu umístí vybraný bod přesně do bodu objektu: do koncového bodu, do poloviny, do středu. Je-li uchopení objektu zapnuté, kurzor u takového bodu ukáže jeho zelenou značku a v místní nápovědě jeho název; kliknutí pak padne do tohoto bodu, ne tam, kde je kurzor. Průběžné režimy uchopení platí při každé výzvě k zadání bodu: zpočátku Koncový bod, Střed, Průsečík a Protažení, jako v AutoCADu. F3 zapíná a vypíná uchopení objektu a vypíše `<Uchop ano>` nebo `<Uchop ne>`; totéž dělá tlačítko Uchopení objektů na stavovém řádku, jehož nabídka má pro každý režim zaškrtávací políčko. Je-li pod kurzorem několik bodů uchopení, vyhraje nejbližší a klávesa Tab prochází ostatní. Režim Orto, polární trasování ani krok uchopený bod nikdy neposunou.
 
-Příkaz -UCHOP (-OSNAP) nastaví stálé režimy na příkazovém řádku. Vypíše režimy, které právě platí, a pak požádá o seznam režimů: každý velkými písmeny svého názvu, oddělené čárkami, jako `KON,POL,STŘ`, nebo `_END,_MID` v AutoCADu v jakémkoli jazyce. Seznam nahradí stálou sadu a zapne uchopení objektu; `NIC`, `Ne` nebo samotný Enter ji vyprázdní. Na režim, který nezná, odpoví `Neplatný režim UCHOP.` a zeptá se znovu. Zadaný s apostrofem, `'-UCHOP`, funguje uvnitř jiného příkazu. Stálé režimy platí do opětovného načtení stránky, pak jsou to znovu čtyři režimy AutoCADu: jako v AutoCADu je výkres neukládá.
+Příkaz -UCHOP (-OSNAP) nastaví průběžné režimy na příkazovém řádku. Vypíše režimy, které právě platí, a pak požádá o seznam režimů: každý velkými písmeny svého názvu, oddělené čárkami, jako `KON,POL,STŘ`, nebo `_END,_MID` v AutoCADu v jakémkoli jazyce. Seznam nahradí průběžnou sadu a zapne uchopení objektu; `NIC`, `Ne` nebo samotný Enter ji vyprázdní. Na režim, který nezná, odpoví `Neplatný režim UCHOP.` a zeptá se znovu. Zadaný s apostrofem, `'-UCHOP`, funguje uvnitř jiného příkazu. Průběžné režimy platí do opětovného načtení stránky, pak jsou to znovu čtyři režimy AutoCADu: jako v AutoCADu je výkres neukládá.
 
 Pro jediný bod je můžete potlačit: na výzvu k zadání bodu zadejte velká písmena režimu, `POL` nebo `_MID`, nebo podržte Shift, klikněte pravým tlačítkem a vyberte režim z nabídky. Hledá se pak jen tento režim, ať platí cokoli, a jen pro tento bod; nenajde-li nic, bod odmítne a výzva se opakuje. Zadaný velkými písmeny vypne `NIC` uchopení pro jeden bod. Tatáž nabídka nabízí `ODBODU`: základní bod, pak odsazení od něj, takže `@10,0` je 10 vpravo od něj.
 
@@ -23,7 +23,7 @@ Pro jediný bod je můžete potlačit: na výzvu k zadání bodu zadejte velká 
 
 Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
 
-<Session name="-osnap" caption="-UCHOP nastaví stálé režimy Polovina a Střed; ÚSEČKA pak vede z poloviny hrany do středu kružnice a horní hrana ukazuje značku Polovina." />
+<Session name="-osnap" caption="-UCHOP nastaví průběžné režimy Polovina a Střed; ÚSEČKA pak vede z poloviny hrany do středu kružnice a horní hrana ukazuje značku Polovina." />
 
 ## Možnosti [#options]
 
@@ -41,7 +41,7 @@ Střed kružnice, oblouku nebo obloukového segmentu křivky. Přejeďte kurzore
 
 ### `BOD` [#node]
 
-Bodový objekt, jaké vytvářejí `BOD`, [`DĚLÚ`](/docs/commands/divide) a [`DĚLM`](/docs/commands/measure), ať mu [`BTYP`](/docs/commands/ptype) dá jakýkoli tvar. Zpočátku nepatří mezi stálé režimy. Kružnice s křížkem.
+Bodový objekt, jaké vytvářejí `BOD`, [`DĚLÚ`](/docs/commands/divide) a [`DĚLM`](/docs/commands/measure), ať mu [`BTYP`](/docs/commands/ptype) dá jakýkoli tvar. Zpočátku nepatří mezi průběžné režimy. Kružnice s křížkem.
 
 ### `KVAdrant` (`KVA`) [#quadrant]
 
@@ -81,15 +81,15 @@ Podržte kurzor chvíli nad úsečkou a pak se pohybujte od posledního bodu v j
 
 ### `NIC` [#none]
 
-Žádné stálé režimy: uchopení objektu nic nenajde, dokud znovu nenastavíte režim.
+Žádné průběžné režimy: uchopení objektu nic nenajde, dokud znovu nenastavíte režim.
 
 ### `Ne` (`N`) [#off]
 
-Totéž co `NIC`: stálá sada se vyprázdní.
+Totéž co `NIC`: průběžná sada se vyprázdní.
 
 ## Co zatím neumí [#missing]
 
-Dialog Nastavení kreslení, který v AutoCADu otevírají UCHOP a UC: tady jsou to neznámé příkazy a režimy nastavuje nabídka stavového řádku. Geometrický střed, jako režim i v nabídkách. Bod na definičních bodech kóty a na počátku jejího textu: tady najde jen bodové objekty. Polovina mezi 2 body, dočasný bod trasování a klávesy držené pro jednorázové uchopení (Shift + A, Shift + Q…). Průsečík, Kolmo a Tečna na elipsách, Kolmo a Tečna na křivkách spline a Protažení od konce obloukového segmentu křivky nebo se vzdáleností a úhlem v místní nápovědě. Kolmo nebo Tečna, které čekají na druhý bod na začátku jiného příkazu než [`ÚSEČKA`](/docs/commands/line) a [`KRUŽNICE`](/docs/commands/circle). Nastavení terče a značky, KURZOR a AUTOSNAP.
+Dialog Nastavení kreslení, který v AutoCADu otevírají UCHOP a UC: tady jsou to neznámé příkazy a režimy nastavuje nabídka stavového řádku. Geometrický střed, jako režim i v nabídkách. Uzel na definičních bodech kóty a na počátku jejího textu: tady najde jen bodové objekty. Polovina mezi 2 body, dočasný bod trasování a klávesy držené pro jednorázové uchopení (Shift + A, Shift + Q…). Průsečík, Kolmo a Tečna na elipsách, Kolmo a Tečna na křivkách spline a Protažení od konce obloukového segmentu křivky nebo se vzdáleností a úhlem v místní nápovědě. Kolmo nebo Tečna, které čekají na druhý bod na začátku jiného příkazu než [`ÚSEČKA`](/docs/commands/line) a [`KRUŽNICE`](/docs/commands/circle). Nastavení terče a značky, KURZOR a AUTOSNAP.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os--de--ofang---of--ru--привязка---при--pl--obiekt---o--cs--uchop---uc)
 
@@ -97,19 +97,19 @@ Dialog Nastavení kreslení, který v AutoCADu otevírají UCHOP a UC: tady jsou
 
 ### Co dělá příkaz UCHOP (OSNAP) v AutoCADu?
 
-V AutoCADu příkaz UCHOP (`UC`; anglicky OSNAP, `OS`) otevře dialog Nastavení kreslení na kartě Uchopení objektu, kde se volí stálé režimy. MellowCAD takový dialog nemá: zadejte `-UCHOP` nebo `-UC` a seznam režimů, nebo je zaškrtněte v nabídce tlačítka Uchopení objektu na stavovém řádku.
+V AutoCADu příkaz UCHOP (`UC`; anglicky OSNAP, `OS`) otevře dialog Nastavení kreslení na kartě Uchopení objektu, kde se volí průběžné režimy. MellowCAD takový dialog nemá: zadejte `-UCHOP` nebo `-UC` a seznam režimů, nebo je zaškrtněte v nabídce tlačítka Uchopení objektů na stavovém řádku.
 
 ### Jak zapnout uchopení objektu v AutoCADu?
 
-F3 zapíná a vypíná uchopení objektu, jako v AutoCADu; totéž dělá tlačítko Uchopení objektu na stavovém řádku. Shift + pravé tlačítko myši na výzvu k zadání bodu otevře nabídku jednorázových uchopení.
+F3 zapíná a vypíná uchopení objektu, jako v AutoCADu; totéž dělá tlačítko Uchopení objektů na stavovém řádku. Shift + pravé tlačítko myši na výzvu k zadání bodu otevře nabídku jednorázových uchopení.
 
 ### Proč v AutoCADu nefunguje uchopení objektu?
 
-Mohla ho vypnout klávesa F3: ukáže to jeho tlačítko na stavovém řádku. Nebo režim nepatří mezi stálé: nastavte ho příkazem `-UCHOP` nebo v nabídce tlačítka. Kurzor se musí k bodu přiblížit zhruba na 10 pixelů a u středu být nad samotnou kružnicí nebo obloukem. Uchopení funguje jen tehdy, když příkaz žádá o bod.
+Mohla ho vypnout klávesa F3: ukáže to jeho tlačítko na stavovém řádku. Nebo režim nepatří mezi průběžné: nastavte ho příkazem `-UCHOP` nebo v nabídce tlačítka. Kurzor se musí k bodu přiblížit zhruba na 10 pixelů a u středu být nad samotnou kružnicí nebo obloukem. Uchopení funguje jen tehdy, když příkaz žádá o bod.
 
 ### Jak uchopit bod jen jednou?
 
-Na výzvu k zadání bodu zadejte velká písmena režimu, například `KON` nebo `TAN`, nebo ho vyberte z nabídky Shift + pravé tlačítko. Platí jen pro tento bod, ať tento režim patří mezi stálé, nebo ne.
+Na výzvu k zadání bodu zadejte velká písmena režimu, například `KON` nebo `TAN`, nebo ho vyberte z nabídky Shift + pravé tlačítko. Platí jen pro tento bod, ať tento režim patří mezi průběžné, nebo ne.
 
 ### Zůstává nastavení uchopení objektu uložené?
 

@@ -30,7 +30,7 @@ Kóta není asociativní: řetěz nesleduje objekty, které měří. Na úhlovou
 
 Anglicky DIMCONTINUE, v české verzi AutoCADu KÓTYŘET: zadejte `KRE` nebo `KOTYRE` a stiskněte Enter nebo mezerník. Funguje i celý název a `_DIMCONTINUE` v AutoCADu v každém jazyce; anglická zkratka `DCO` v české verzi nefunguje.
 
-### Jaký je rozdíl mezi KÓTYŘET a KÓTYZÁKL?
+### Jaký je rozdíl mezi příkazy KÓTYŘET a KÓTYZÁKL?
 
 Příkaz KÓTYŘET řadí kóty za sebou na jednu čáru, každou od místa, kde předchozí skončila. Příkaz <Command id="DIMBASELINE" /> je všechny měří od téže vynášecí čáry, každou na čáře položené dál.
 

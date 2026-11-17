@@ -8,7 +8,7 @@ sourceHash: "4a8ee28ecc53"
 
 Příkaz ATREDIT (ATTEDIT) mění hodnoty atributů jedné reference bloku. Vyzve vás k výběru reference a potom otevře okno s polem pro každý z jejích atributů, popsaným výzvou atributu a vyplněným jeho hodnotou, jako dialog Upravit atributy v AutoCADu. Přepište hodnoty, klávesou Tab přecházejte z pole do pole, a Enter, v AutoCADu OK, je použije v jednom kroku, který <Command id="U" /> vrátí zpět; Esc, jeho Storno, nic nezmění.
 
-Výběr vezme objekt pod kurzorem. Cokoli jiného než reference bloku je odmítnuto, stejně jako reference, jejíž blok nemá atributy, a otázka se zopakuje; výběr do prázdna se zeptá znovu bez hlášení. Definice bloku se nezmění, ani jeho ostatní reference: každá má vlastní hodnoty. <Command id="EATTEDIT" /> upravuje tytéž hodnoty v okně popsaném názvy atributů a spustí ho poklepání na referenci s atributy.
+Výběr vezme objekt pod výběrovým čtverečkem. Cokoli jiného než reference bloku je odmítnuto, stejně jako reference, jejíž blok nemá atributy, a otázka se zopakuje; výběr do prázdna se zeptá znovu bez hlášení. Definice bloku se nezmění, ani jeho ostatní reference: každá má vlastní hodnoty. <Command id="EATTEDIT" /> upravuje tytéž hodnoty v okně popsaném názvy atributů a spustí ho poklepání na referenci s atributy.
 
 ## Missing
 

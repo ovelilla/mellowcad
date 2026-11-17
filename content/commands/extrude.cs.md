@@ -7,7 +7,7 @@ sourceHash: "53bfe3dd1e9c"
 
 Příkaz VYTÁHNI (EXTRUDE) mění uzavřené 2D profily v 3D tělesa, každý vytažený kolmo ze své roviny do zadané výšky. Vyberte profily – kružnice, elipsy, uzavřené křivky nebo spline, oblasti – a stiskněte Enter, pak zadejte výšku nebo ji ukažte bodem; poslední výška je výchozí při dalším spuštění. Každý profil se stane samostatným tělesem v aktuální hladině a vymaže se, jak ve výchozím nastavení určuje DELOBJ. Celý příkaz je jeden krok, který lze vrátit zpět.
 
-3D v MellowCADu jsou jen tělesa, a zatím částečně: otevřený profil, ze kterého AutoCAD vytvoří povrch, dostane <Message id="sweepRefusedType" /> a odebere se z výběru.
+MellowCAD umí ve 3D jen 3D tělesa, zatím částečně: otevřený profil, ze kterého AutoCAD vytvoří povrch, dostane <Message id="sweepRefusedType" /> a odebere se z výběru.
 
 ## Options
 
@@ -39,11 +39,11 @@ Trajektorie, tažení po trajektorii. Režim povrchu a otevřené profily, ze kt
 
 ### Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?
 
-EXTRUDE. V české verzi AutoCADu je jeho zkratka `VYT`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `EXT` spouští v české verzi jiný příkaz; `_EXTRUDE` funguje v AutoCADu v každém jazyce.
+EXTRUDE. V české verzi AutoCADu je jeho zkratka `VYT`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `EXT` spouští v české verzi příkaz EXTRDATA; `_EXTRUDE` funguje v AutoCADu v každém jazyce.
 
 ### Jak z 2D výkresu udělat 3D?
 
-Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled kostkou ViewCube nebo příkazem <Command id="-VIEW" /> a možností <Keyword command="VIEW" id="SEiso" />, abyste ho viděli ve 3D.
+Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled krychlí ViewCube nebo příkazem <Command id="-VIEW" /> a možností <Keyword command="VIEW" id="SEiso" />, abyste ho viděli ve 3D.
 
 ### Proč příkaz VYTÁHNI nevytvoří těleso?
 

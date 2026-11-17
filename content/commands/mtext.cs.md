@@ -7,7 +7,7 @@ sourceHash: "a53001f9674d"
 
 Příkaz MTEXT píše víceřádkový text: jeden objekt s odstavci, které se zalamují na šířku. Ukážete první roh a protější roh a rámeček mezi nimi určí šířku; pak píšete v editoru zobrazeném přímo na místě, kde Enter začne nový odstavec a Ctrl+Enter nebo kliknutí mimo rámeček text uloží. Esc, když je něco napsáno, se zeptá, zda text uložit, jako dialog AutoCADu o neuložených změnách. Pro řádky, z nichž každý je samostatným objektem, použijte <Command id="TEXT" />.
 
-První řádek vypíše aktuální styl a výšku. Každá volba se nabízí na výzvě k protějšímu rohu a vrací se k ní, takže jedno spuštění nastaví výšku, zarovnání a další, než se rámeček uzavře. Slova se zalomí tam, kde by řádek přesáhl šířku, a slovo delší než šířka ji přesáhne. Výšku sdílí s příkazem <Command id="TEXT" /> a ukládá se ve výkresu; zarovnání, natočení a řádkování začínají při každém spuštění od výchozích hodnot. <Command id="-MTEXT" /> se ptá stejně, pak převezme text z příkazového řádku, po řádcích.
+První řádek vypíše aktuální styl a výšku. Každá možnost se nabízí ve výzvě k protějšímu rohu a vrací se k ní, takže jedno spuštění nastaví výšku, zarovnání a další, než se rámeček uzavře. Slova se zalomí tam, kde by řádek přesáhl šířku, a slovo delší než šířka ji přesáhne. Výška je společná s příkazem <Command id="TEXT" /> a ukládá se ve výkresu; zarovnání, natočení a řádkování začínají při každém spuštění od výchozích hodnot. <Command id="-MTEXT" /> se ptá stejně, pak převezme text z příkazového řádku, po řádcích.
 
 ## Options
 
@@ -37,7 +37,7 @@ Místo protějšího rohu se zeptá na šířku, číslem nebo jako vzdálenost 
 
 ## Missing
 
-Sloupce, které AutoCAD 2027 nabízí na výzvě k protějšímu rohu, nabízeny nejsou. Formátování uvnitř textu, například výška, písmo nebo barva slova, zlomky nebo podtržení, se nekreslí ani nepoužije a editor nemá pravítko, tabulátory, odsazení, seznamy ani kartu Textový editor na pásu karet, ani kurzor ve výkresu. Chybí maska pozadí a rámeček textu, definovaná výška, poznámkové měřítko a uchopení Bod na jeho rozích a kliknutí dovnitř jeho rámečku ho vybere i mimo písmena, kde AutoCAD nevybere nic.
+Sloupce, které AutoCAD 2027 nabízí ve výzvě k protějšímu rohu, nabízeny nejsou. Formátování uvnitř textu, například výška, písmo nebo barva slova, zlomky nebo podtržení, se nekreslí ani nepoužije a editor nemá pravítko, tabulátory, odsazení, seznamy ani kartu Textový editor na pásu karet, ani textový kurzor ve výkresu. Chybí maska pozadí a rámeček textu, definovaná výška, poznámkové měřítko ani uchopení Uzel na jeho rozích; kliknutí dovnitř jeho rámečku ho vybere i mimo písmena, kde AutoCAD nevybere nic.
 
 ## Questions
 

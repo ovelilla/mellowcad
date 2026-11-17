@@ -1,17 +1,17 @@
 ---
 title: "Příkaz ZNOVA (REDO) v AutoCADu: obnovení vrácených změn"
 metaTitle: "Příkaz ZNOVA (REDO) v AutoCADu"
-description: "Jak funguje příkaz ZNOVA (REDO) v AutoCADu: obnoví to, co vzalo poslední Z nebo ZPĚT, hned po něm; NZNOVA a Ctrl+Y obnovují krok po kroku. Vyzkoušejte online."
+description: "Jak funguje příkaz ZNOVA (REDO) v AutoCADu: obnoví to, co vrátil poslední Z nebo ZPĚT, hned po něm; NZNOVA a Ctrl+Y obnovují krok po kroku. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz ZNOVA anglicky?","answer":"REDO. Zkratku nemá: zadejte ZNOVA, nebo _REDO v AutoCADu v jakémkoli jazyce. Nejrychleji funguje Ctrl+Y, které obnoví jeden krok (NZNOVA 1)."},{"question":"Proč ZNOVA nefunguje?","answer":"Příkaz ZNOVA obrací jen Z nebo ZPĚT těsně před ním. Po jakémkoli jiném příkazu není co obnovit, i když nic nezměnil: vraťte a hned obnovte."},{"question":"Jaký je rozdíl mezi příkazy ZNOVA a NZNOVA?","answer":"ZNOVA obnoví celé poslední vrácení, a jen hned po něm. NZNOVA obnoví zadaný počet vrácených kroků, jeden po druhém, nebo všechny, a funguje i po ZNOVA."},{"question":"Jak zopakovat poslední příkaz v AutoCADu?","answer":"Na výzvě Příkaz stiskněte Enter nebo mezerník: poslední příkaz se spustí znovu. ZNOVA příkaz neopakuje; obrací vrácení."}]
+faq: [{"question":"Jak se jmenuje příkaz ZNOVA anglicky?","answer":"REDO. Zkratku nemá: zadejte ZNOVA, nebo _REDO v AutoCADu v jakémkoli jazyce. Nejrychleji funguje Ctrl+Y, které obnoví jeden krok (NZNOVA 1)."},{"question":"Proč příkaz ZNOVA nefunguje?","answer":"Příkaz ZNOVA obrací jen Z nebo ZPĚT těsně před ním. Po jakémkoli jiném příkazu není co obnovit, i když nic nezměnil: vraťte a hned obnovte."},{"question":"Jaký je rozdíl mezi příkazy ZNOVA a NZNOVA?","answer":"Příkaz ZNOVA obnoví celé poslední vrácení, a jen hned po něm. NZNOVA obnoví zadaný počet vrácených kroků, jeden po druhém, nebo všechny, a funguje i po příkazu ZNOVA."},{"question":"Jak zopakovat poslední příkaz v AutoCADu?","answer":"Ve výzvě Příkaz stiskněte Enter nebo mezerník: poslední příkaz se spustí znovu. Příkaz ZNOVA neopakuje jiné příkazy; obrací vrácení."}]
 ---
 
-Příkaz ZNOVA (REDO) obrátí poslední `Z` nebo [`ZPĚT`](/docs/commands/undo): co vrátily, se znovu nakreslí, všechno, takže po ZPĚT pěti příkazů ZNOVA obnoví všech pět. Přitom vypisuje názvy příkazů a pak `Vše již bylo provedeno Znova`, jakmile už nic obnovit nelze. Na nic se neptá a nemá žádné volby.
+Příkaz ZNOVA (REDO) obrátí poslední `Z` nebo [`ZPĚT`](/docs/commands/undo): co vrátil, se znovu nakreslí, všechno, takže po vrácení pěti příkazů příkazem ZPĚT příkaz ZNOVA obnoví všech pět. Přitom vypisuje názvy příkazů a pak `Vše již bylo provedeno Znova`, jakmile už nic obnovit nelze. Na nic se neptá a nemá žádné možnosti.
 
-Funguje jen hned po vrácení. Kdekoli jinde vypíše `ZNOVA musí následovat bezprostředně po příkazu Z nebo ZPĚT.`, a jakmile proběhne jiný příkaz, i takový, který nic nemění, jako VÝPIS nebo ZOOM, `Není co provést Znova`. Když je vracení vypnuté volbou `Řízení` › `Nic` příkazu ZPĚT, ZNOVA oznámí, že je vypnutý.
+Funguje jen hned po vrácení. Kdekoli jinde vypíše `ZNOVA musí následovat bezprostředně po příkazu Z nebo ZPĚT.`, a jakmile proběhne jiný příkaz, i takový, který nic nemění, jako VÝPIS nebo ZOOM, `Není co provést Znova`. Když je vracení vypnuté možností `Řízení` › `Nic` příkazu ZPĚT, ZNOVA oznámí, že je vyřazen.
 
-`NZNOVA` obnovuje krok po kroku: zeptá se na počet akcí, nebo `Vše` či `posLední`, a obnoví tolik kroků, které vrácení vzala, ať mezitím proběhlo cokoli z Z, ZPĚT a ZNOVA; `posLední` je celé poslední vrácení, jednou (`Poslední operace ZPĚT již byla obnovena ZNOVA.`). Ctrl+Y a položka Znovu v místní nabídce spustí NZNOVA s 1 a zruší právě běžící příkaz.
+`NZNOVA` obnovuje krok po kroku: zeptá se na počet akcí, nebo `Vše` či `posLední`, a obnoví tolik kroků, které vrácení vzala, ať mezitím proběhly jakékoli příkazy Z, ZPĚT a ZNOVA; `posLední` je celé poslední vrácení, jednou (`Poslední operace ZPĚT již byla obnovena ZNOVA.`). Ctrl+Y a položka Znovu v místní nabídce spustí příkaz NZNOVA s hodnotou 1 a zruší právě běžící příkaz.
 
 - **Příkaz:** `ZNOVA`
 - **Anglicky:** `REDO`, zadávaný jako `_REDO` v libovolném jazyce
@@ -26,7 +26,7 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ## Co zatím neumí [#missing]
 
-Ctrl+Shift+Z také obnovuje, potichu, ačkoli AutoCAD na tuto zkratku nic nepřiřazuje. Tlačítka Zpět a Znovu na horní liště nic nezapisují do historie, kdežto panel nástrojů Rychlý přístup AutoCADu zapisuje vlastní řádky.
+Ctrl+Shift+Z také obnovuje, potichu, ačkoli AutoCAD této zkratce nic nepřiřazuje. Tlačítka Zpět a Znovu na horní liště nic nezapisují do historie, kdežto panel nástrojů Rychlý přístup AutoCADu zapisuje vlastní řádky.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
 
@@ -36,17 +36,17 @@ Ctrl+Shift+Z také obnovuje, potichu, ačkoli AutoCAD na tuto zkratku nic nepři
 
 REDO. Zkratku nemá: zadejte `ZNOVA`, nebo `_REDO` v AutoCADu v jakémkoli jazyce. Nejrychleji funguje Ctrl+Y, které obnoví jeden krok (NZNOVA 1).
 
-### Proč ZNOVA nefunguje?
+### Proč příkaz ZNOVA nefunguje?
 
 Příkaz ZNOVA obrací jen Z nebo ZPĚT těsně před ním. Po jakémkoli jiném příkazu není co obnovit, i když nic nezměnil: vraťte a hned obnovte.
 
 ### Jaký je rozdíl mezi příkazy ZNOVA a NZNOVA?
 
-ZNOVA obnoví celé poslední vrácení, a jen hned po něm. `NZNOVA` obnoví zadaný počet vrácených kroků, jeden po druhém, nebo všechny, a funguje i po ZNOVA.
+Příkaz ZNOVA obnoví celé poslední vrácení, a jen hned po něm. `NZNOVA` obnoví zadaný počet vrácených kroků, jeden po druhém, nebo všechny, a funguje i po příkazu ZNOVA.
 
 ### Jak zopakovat poslední příkaz v AutoCADu?
 
-Na výzvě Příkaz stiskněte Enter nebo mezerník: poslední příkaz se spustí znovu. ZNOVA příkaz neopakuje; obrací vrácení.
+Ve výzvě Příkaz stiskněte Enter nebo mezerník: poslední příkaz se spustí znovu. Příkaz ZNOVA neopakuje jiné příkazy; obrací vrácení.
 
 ## Související příkazy [#related]
 

@@ -250,12 +250,12 @@ export const cs: EditorLocale = {
       "unlocked": "Odemknuto",
       "locked": "Uzamknuto",
       "deleteLabel": [
-        "Vymazat hladinu ",
+        "Odstranit hladinu ",
         [
           "name"
         ]
       ],
-      "delete": "Vymazat hladinu",
+      "delete": "Odstranit hladinu",
       "rename": "Hladinu přejmenujete dalším kliknutím na název vybrané hladiny",
       "renameLabel": [
         "Přejmenovat hladinu ",
@@ -269,9 +269,9 @@ export const cs: EditorLocale = {
       "dialog": {
         "close": "Zavřít",
         "notDeleted": {
-          "title": "Hladina – nevymazána",
-          "instruction": "Vybraná hladina nebyla vymazána.",
-          "content": "Nelze vymazat následující hladiny:",
+          "title": "Hladina – neodstraněna",
+          "instruction": "Vybraná hladina nebyla odstraněna.",
+          "content": "Nelze odstranit následující hladiny:",
           "base": "Hladiny 0 a Defpoints",
           "current": "Aktuální hladina",
           "inUse": "Hladiny obsahující objekty",
@@ -347,7 +347,7 @@ export const cs: EditorLocale = {
         ]
       ],
       "delete": [
-        "Vymazat ",
+        "Odstranit ",
         [
           "name"
         ]
@@ -452,7 +452,7 @@ export const cs: EditorLocale = {
     },
     "MText": {
       "unsavedChanges": {
-        "title": "Víceřádkový text – Neuložené změny",
+        "title": "Víceřádkový text – neuložené změny",
         "instruction": "Chcete uložit změny textu?",
         "yes": "Ano",
         "no": "Ne",

@@ -3,12 +3,12 @@ title: "Příkaz ZAOBLIHRANU (FILLETEDGE) v AutoCADu"
 description: "Jak v AutoCADu zaoblit hrany 3D tělesa příkazem ZAOBLIHRANU (FILLETEDGE): hrany, řetěz, smyčka, poloměr a šipkový uzel. Vyzkoušejte zdarma online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak v AutoCADu zaoblit hranu 3D tělesa?","answer":"Spusťte příkaz ZAOBLIHRANU, zvolte Poloměr a zadejte ho, vyberte hrany a pak dvakrát stiskněte Enter: jednou pro ukončení výběru, podruhé pro potvrzení. V ukázce 8 zaoblí dvě hrany kvádru."},{"question":"Jak zaoblit všechny hrany plochy?","answer":"Zvolte Smyčka a vyberte hranu plochy, pak Akceptovat, nebo Další, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, je řeTěz vezme všechny."},{"question":"Proč příkaz ZAOBLI nefunguje na 3D tělese?","answer":"Příkaz ZAOBLI v AutoCADu hranu tělesa také zaoblí, ale v MellowCAD zatím ne: použijte příkaz ZAOBLIHRANU a pro zkosení příkaz ZKOSHRANU."},{"question":"Jak změnit poloměr zaoblení?","answer":"Zvolte Poloměr před výběrem nebo u výzvy k potvrzení, nebo přetáhněte šipkový uzel uprostřed prvního zaoblení. Poslední poloměr se příště nabídne znovu."}]
+faq: [{"question":"Jak v AutoCADu zaoblit hranu 3D tělesa?","answer":"Spusťte příkaz ZAOBLIHRANU, zvolte Poloměr a zadejte ho, vyberte hrany a pak dvakrát stiskněte Enter: jednou pro ukončení výběru, podruhé pro potvrzení. V ukázce 8 zaoblí dvě hrany kvádru."},{"question":"Jak zaoblit všechny hrany plochy?","answer":"Zvolte Smyčka a vyberte hranu plochy, pak Akceptovat, nebo Další, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, vezme je všechny možnost řeTěz."},{"question":"Proč příkaz ZAOBLI nefunguje na 3D tělese?","answer":"Příkaz ZAOBLI v AutoCADu hranu tělesa také zaoblí, ale v MellowCAD zatím ne: použijte příkaz ZAOBLIHRANU a pro zkosení příkaz ZKOSHRANU."},{"question":"Jak změnit poloměr zaoblení?","answer":"Zvolte Poloměr před výběrem nebo u výzvy k potvrzení, nebo přetáhněte šipkový uzel uprostřed prvního zaoblení. Poslední poloměr se příště nabídne znovu."}]
 ---
 
 Příkaz ZAOBLIHRANU (FILLETEDGE) zaoblí hrany 3D tělesa. Uvede aktuální poloměr a pak se ptá na hrany, až do Enter: kliknutí vezme hranu pod kurzorem, zvýrazněnou, když nad ní kurzor přejde, a zadaný bod vezme hranu, která jím prochází. Jak hrany přibývají, kreslí se těleso tak, jak bude vypadat, se zaobleními na místě. Enter hrany spočítá a vyzve vás, abyste znovu stiskli Enter pro potvrzení, nebo změnili poloměr; tento Enter zaoblení vytvoří. Jen hrany jednoho tělesa: hrana jiného vyvolá `Nelze zaoblit více těles.`, hrana vybraná dvakrát `Hrana již byla vybrána.`.
 
-Přímá hrana mezi dvěma rovinnými plochami se stane čtvrtinou válce a kruhová hrana otvoru nebo okraje čtvrtinou anuloidu; zaoblení, která se setkají v rohu, se spojí, tři z nich kusem koule. Poloměr se uloží ve výkresu a příště se nabídne znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Přímá hrana mezi dvěma rovinnými plochami se stane čtvrtinou válce a kruhová hrana otvoru nebo okraje čtvrtinou anuloidu; zaoblení, která se setkají v rohu, se spojí, tři z nich kusem koule. Poloměr se uloží ve výkresu a příště se nabídne znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. MellowCAD umí ve 3D jen 3D tělesa, zatím částečně.
 
 - **Příkaz:** `ZAOBLIHRANU`
 - **Anglicky:** `FILLETEDGE`, zadávaný jako `_FILLETEDGE` v libovolném jazyce
@@ -49,7 +49,7 @@ Spusťte příkaz ZAOBLIHRANU, zvolte `Poloměr` a zadejte ho, vyberte hrany a p
 
 ### Jak zaoblit všechny hrany plochy?
 
-Zvolte `Smyčka` a vyberte hranu plochy, pak `Akceptovat`, nebo `Další`, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, je `řeTěz` vezme všechny.
+Zvolte `Smyčka` a vyberte hranu plochy, pak `Akceptovat`, nebo `Další`, pokud zobrazená smyčka patří druhé ploše. Pro hrany, které už plynule přecházejí jedna v druhou, jako kolem horní plochy zaobleného kvádru, vezme je všechny možnost `řeTěz`.
 
 ### Proč příkaz ZAOBLI nefunguje na 3D tělese?
 

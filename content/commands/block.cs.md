@@ -40,4 +40,4 @@ Nejprve definujte atributy příkazem <Command id="ATTDEF" />, potom je vyberte 
 
 ### Jak rozložit blok v AutoCADu?
 
-<Command id="EXPLODE" /> převede referenci zpět na objekty, které zobrazuje, vždy o jednu úroveň vnoření, každý na jeho vlastní hladině a v jeho vlastní barvě. Atributy se vrátí jako své definice; hodnoty se ztratí.
+<Command id="EXPLODE" /> převede referenci zpět na objekty, které zobrazuje, vždy o jednu úroveň vnoření, každý ve své vlastní hladině a ve své vlastní barvě. Atributy se vrátí jako své definice; hodnoty se ztratí.

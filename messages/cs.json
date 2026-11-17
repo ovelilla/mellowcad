@@ -4,9 +4,9 @@
     "titleTemplate": "%s · MellowCAD",
     "description": "CAD online zdarma, který funguje jako AutoCAD: příkazy česky i anglicky, 2D kreslení a 3D tělesa, zatím částečně. Bez instalace a bez registrace.",
     "drawTitle": "Kreslit",
-    "drawDescription": "CAD zdarma v kartě prohlížeče: 2D kreslení a 3D tělesa, zatím částečně, s příkazy, uchopením objektu a klávesami, které uživatelé AutoCADu znají.",
+    "drawDescription": "CAD zdarma v kartě prohlížeče: 2D kreslení a 3D tělesa, zatím částečně, s příkazy, uchopením objektů a klávesami, které uživatelé AutoCADu už znají.",
     "ogAlt": "Příruba nakreslená v MellowCAD a její 3D těleso, s nápisem: CAD online zdarma s příkazy AutoCADu. Zadejte U. Stiskněte Enter. Kreslete.",
-    "appDescription": "CAD zdarma v prohlížeči s příkazy, aliasy a uchopením objektu z AutoCADu: 2D kreslení a 3D tělesa, zatím částečně.",
+    "appDescription": "CAD zdarma v prohlížeči s příkazy, aliasy a uchopením objektů z AutoCADu: 2D kreslení a 3D tělesa, zatím částečně.",
     "browserRequirements": "Vyžaduje JavaScript a\u00a0moderní prohlížeč na počítači."
   },
   "Common": {
@@ -32,7 +32,7 @@
   "Hero": {
     "pill": "Zdarma · Bez registrace · Bez instalace",
     "title": "Technické kreslení online zdarma\u00a0– s\u00a0příkazy AutoCADu",
-    "lead": "<brand>MellowCAD</brand> běží v prohlížeči: 2D kreslení a 3D tělesa, zatím částečně. Zadejte {examples}: ptá se v pořadí AutoCADu, se stejnými písmeny možností.",
+    "lead": "<brand>MellowCAD</brand> běží v prohlížeči: 2D kreslení a 3D tělesa, zatím částečně. Zadejte {examples}: ptá se ve stejném pořadí jako AutoCAD, se stejnými písmeny možností.",
     "alias": "{alias} ({command})",
     "secondaryCta": "Všechny příkazy ({commands, number})",
     "solids": "Novinka: 3D tělesa, zatím částečně",
@@ -40,7 +40,7 @@
     "continue": "{count, plural, one {Pokračovat v kreslení · # objekt} few {Pokračovat v kreslení · # objekty} many {Pokračovat v kreslení · # objektu} other {Pokračovat v kreslení · # objektů}}",
     "mobileNote": "Nejlépe na počítači s\u00a0klávesnicí a\u00a0myší.",
     "drawingTitle": "Příruba nakreslená v\u00a0MellowCAD a\u00a0pak vymodelovaná jako 3D těleso",
-    "drawingDescription": "Pohled zepředu na přírubu se středovým otvorem a šesti otvory pro šrouby na roztečné kružnici nakreslené osovou čarou a vedle něj řez A–A šrafovaný vzorem ANSI31, s kótou průměru a kótou tloušťky. Potom se pohled přepne na „JZ izometrický“: výkres leží naplocho a příruba před ním stojí jako 3D těleso, s odstraněnými skrytými čarami.",
+    "drawingDescription": "Pohled zepředu na přírubu se středovým otvorem a šesti otvory pro šrouby na roztečné kružnici nakreslené osovou čarou a vedle něj řez A–A šrafovaný vzorem ANSI31, s kótou průměru a kótou tloušťky. Potom se pohled přepne na „JZ iso“: výkres leží naplocho a příruba před ním stojí jako 3D těleso, s odstraněnými skrytými čarami.",
     "caption": "Každý výkres na této stránce byl nakreslen v\u00a0MellowCAD.",
     "transcriptSummary": "Zobrazit záznam příkazů",
     "transcriptLabel": "Příkazy, kterými byla nakreslena příruba a\u00a0vymodelováno její těleso",
@@ -53,7 +53,7 @@
     "tryHint": "Enter otevře editor."
   },
   "SendToDesktop": {
-    "action": "Poslat do mého počítače",
+    "action": "Poslat na můj počítač",
     "copied": "Odkaz zkopírován",
     "shareTitle": "MellowCAD — CAD online zdarma s\u00a0příkazy AutoCADu",
     "shareText": "Otevřete to na počítači a\u00a0začněte kreslit."
@@ -62,7 +62,7 @@
     "label": "MellowCAD v\u00a0číslech",
     "commands": "{count, plural, one {# příkaz AutoCADu} few {# příkazy AutoCADu} many {# příkazu AutoCADu} other {# příkazů AutoCADu}}",
     "aliases": "{count, plural, one {# alias} few {# aliasy} many {# aliasu} other {# aliasů}}",
-    "snaps": "{count, plural, one {# režim uchopení objektu} few {# režimy uchopení objektu} many {# režimu uchopení objektu} other {# režimů uchopení objektu}}",
+    "snaps": "{count, plural, one {# režim uchopení objektů} few {# režimy uchopení objektů} many {# režimu uchopení objektů} other {# režimů uchopení objektů}}",
     "languages": "{count, plural, one {# jazyk} few {# jazyky} many {# jazyka} other {# jazyků}}",
     "tests": "{count, plural, one {Více než # automatický test} few {Více než # automatické testy} many {Více než # automatického testu} other {Více než # automatických testů}}",
     "source": "Otevřený zdrojový kód, licence MIT"
@@ -76,7 +76,7 @@
     "boardLabel": "Příkazy a\u00a0jejich aliasy, seskupené jako na pásu karet",
     "also": "Také: {aliases}",
     "linked": "Podtržený příkaz má vlastní stránku s\u00a0výzvami a\u00a0možnostmi.",
-    "languages": "EKVID je <en>{english}</en> v anglickém AutoCADu, <es>{spanish}</es> ve španělském, <pt>{portuguese}</pt> v brazilském portugalském, <fr>{french}</fr> ve francouzském, <de>{german}</de> v německém, <ru>{russian}</ru> v ruském a <pl>{polish}</pl> v polském; globální název <all>{global}</all> funguje v každém jazyce.",
+    "languages": "<cs>{czech}</cs> je <en>{english}</en> v anglickém AutoCADu, <es>{spanish}</es> ve španělském, <pt>{portuguese}</pt> v portugalském (Brazílie), <fr>{french}</fr> ve francouzském, <de>{german}</de> v německém, <ru>{russian}</ru> v ruském a <pl>{polish}</pl> v polském; globální název <all>{global}</all> funguje v každém jazyce.",
     "transcriptTitle": "Jeden příkaz EKVID, od začátku do konce",
     "transcriptCaption": "Přehráno jádrem při sestavení této stránky. Stejné pořadí a stejná písmena možností jako v AutoCADu."
   },
@@ -90,10 +90,10 @@
   },
   "Precision": {
     "label": "02 · 2D kreslení",
-    "title": "Přesné 2D kreslení: uchopení objektu, trasování a\u00a0polární úhly.",
-    "lead": "Uchopení objektu, trasování a polární úhly se chovají tak, jak čekají vaše ruce, a souřadnice se zadávají jako v AutoCADu, přímo u kurzoru: @100<30 pro relativní polární, #120,80 pro absolutní.",
-    "osnapTitle": "Uchopení objektu",
-    "osnapBody": "{count, plural, one {# režim} few {# režimy} many {# režimu} other {# režimů}} uchopení objektu se značkami a popisky AutoCADu. Shift+pravé tlačítko myši vynutí jeden režim pro další výběr bodu – zde „Tečná“.",
+    "title": "Přesné 2D kreslení: uchopení objektů, trasování a\u00a0polární úhly.",
+    "lead": "Uchopení objektů, trasování a polární úhly se chovají tak, jak čekají vaše ruce, a souřadnice se zadávají jako v AutoCADu, přímo u kurzoru: @100<30 pro relativní polární, #120,80 pro absolutní.",
+    "osnapTitle": "Uchopení objektů",
+    "osnapBody": "{count, plural, one {# režim} few {# režimy} many {# režimu} other {# režimů}} uchopení objektů se značkami a popisky AutoCADu. Shift+pravé tlačítko myši vynutí jeden režim pro další výběr bodu – zde „Tečná“.",
     "otrackTitle": "Trasování uchopení objektů",
     "otrackBody": "Podržte kurzor na dvou bodech, abyste je zachytili, a pak sledujte jejich trasovací čáry až tam, kde se protínají.",
     "polarTitle": "Polární trasování a\u00a0Orto",
@@ -114,14 +114,14 @@
     "annotateBody": "Jednořádkový a\u00a0víceřádkový text a\u00a0sedm druhů kót, s\u00a0jejich styly.",
     "organizeBody": "Hladiny, {linetypes, plural, one {# typ čáry} few {# typy čar} many {# typu čáry} other {# typů čar}}, {lineweights, plural, one {# tloušťka čáry} few {# tloušťky čar} many {# tloušťky čáry} other {# tlouštěk čar}} a barvy, DleHlad; bloky s atributy.",
     "drawAlt": "Deska s\u00a0drážkou: křivka se dvěma obloukovými konci a\u00a0dvěma otvory.",
-    "modifyAlt": "Čtyři soustředné obrysy, každý ekvidistantou předchozího.",
-    "annotateAlt": "Odstupňovaný profil okótovaný lineární kótou, dvakrát řetězenou.",
-    "organizeAlt": "Obdélník s\u00a0drážkou ze skrytých čar a\u00a0s osou, každá na vlastní hladině."
+    "modifyAlt": "Čtyři soustředné obrysy, každý jako ekvidistanta předchozího.",
+    "annotateAlt": "Odstupňovaný profil okótovaný přímou kótou, dvakrát řetězenou.",
+    "organizeAlt": "Obdélník s\u00a0drážkou ze skrytých čar a\u00a0s osou, každý prvek na vlastní hladině."
   },
   "Solids": {
     "label": "03 · 3D tělesa",
     "title": "3D tělesa v\u00a0prohlížeči – novinka, zatím částečně.",
-    "lead": "Tělesa vytvářená a upravovaná přímo, bez historie: základní tělesa, vytažení a rotace, sjednocení, rozdíl a průnik, odříznutí a zaoblené hrany, zobrazená z ViewCube nebo ve 3D orbitu.",
+    "lead": "Tělesa vytvářená a upravovaná přímo, bez historie modelování: základní tělesa, vytažení a rotace, sjednocení, rozdíl a průnik, odříznutí a zaoblené hrany, zobrazená z ViewCube nebo ve 3D orbitu.",
     "extrudeTitle": "Nakreslete profil a\u00a0pak ho vytáhněte nebo orotujte",
     "booleansTitle": "Sjednocení, rozdíl a\u00a0průnik těles",
     "stylesTitle": "Jedno těleso, tři vizuální styly",
@@ -170,14 +170,14 @@
   "Status": {
     "label": "06 · Stav",
     "title": "Upřímně o\u00a0tom, co tu je – a\u00a0co zatím ne.",
-    "lead": "MellowCAD je nezávislý open-source projekt v\u00a0aktivním vývoji. Takto si teď stojí.",
+    "lead": "MellowCAD je nezávislý open-source projekt v\u00a0aktivním vývoji. Tady je, jak si teď stojí.",
     "todayTitle": "Funguje už dnes",
     "today1": "{commands, plural, one {# příkaz AutoCADu} few {# příkazy AutoCADu} many {# příkazu AutoCADu} other {# příkazů AutoCADu}} a {aliases, plural, one {# alias} few {# aliasy} many {# aliasu} other {# aliasů}}",
-    "today2": "{snaps, plural, one {# režim} few {# režimy} many {# režimu} other {# režimů}} uchopení objektu, trasování uchopení objektů, polární trasování a Orto",
+    "today2": "{snaps, plural, one {# režim} few {# režimy} many {# režimu} other {# režimů}} uchopení objektů, trasování uchopení objektů, polární trasování a Orto",
     "today3": "Hladiny, typy čar, {lineweights, plural, one {# tloušťka čáry} few {# tloušťky čar} many {# tloušťky čáry} other {# tlouštěk čar}} a barvy",
     "today4": "Kóty, text, šrafy a\u00a0bloky s\u00a0atributy",
     "today5": "Automatické ukládání, uložení a\u00a0otevření, otevírání a\u00a0ukládání DXF a\u00a0schránka",
-    "today6": "3D tělesa, zatím částečně: základní tělesa, vytažení a rotace, sjednocení, rozdíl a průnik, odříznutí a řezy a stínované pohledy",
+    "today6": "3D tělesa, zatím částečně: základní tělesa, vytažení a rotace, sjednocení, rozdíl a průnik, odříznutí, řezy a stínované pohledy",
     "notYetTitle": "Zatím ne",
     "notYet1": "Soubory DWG",
     "notYet2": "Tisk a\u00a0PDF",
@@ -201,7 +201,7 @@
     "q4": "Opravdu funguje jako AutoCAD?",
     "a4": "To je zadání: příkazy, aliasy, pořadí výzev, písmena možností a výchozí hodnoty odpovídají aktuálnímu AutoCADu. Některé příkazy jsou zatím neúplné a plán vývoje přesně uvádí, které možnosti chybějí.",
     "q5": "Lze otevírat a\u00a0ukládat soubory DWG nebo DXF, nebo tisknout?",
-    "a5": "MellowCAD <dxf>otevírá soubory DXF</dxf> z AutoCADu R12 až 2018, textové i binární: úsečky, oblouky, kružnice, elipsy, křivky, spliny, text, kóty, odkazy, šrafy, body a bloky, na jejich hladinách. Co pro to zatím nemá objekt (multiodkazy, tabulky, rozvržení, 3D tělesa), vynechá a při otevření souboru vypíše. <edit>Ukládá i DXF</edit>, AutoCAD 2000 až 2018. Soubory DWG zatím neumí a tisk ani export do PDF zatím nejsou.",
+    "a5": "MellowCAD <dxf>otevírá soubory DXF</dxf> z AutoCADu R12 až 2018, textové i binární: úsečky, oblouky, kružnice, elipsy, křivky, spliny, text, kóty, odkazy, šrafy, body a bloky, na jejich hladinách. Objekty, které zatím nezná (multiodkazy, tabulky, rozvržení, 3D tělesa), vynechá a při otevření souboru vypíše. <edit>Ukládá i DXF</edit>, AutoCAD 2000 až 2018. Soubory DWG zatím neumí a tisk ani export do PDF zatím nemá.",
     "q6": "Kde se ukládají moje výkresy?",
     "a6": "Ve vašem zařízení. MellowCAD ukládá automaticky v prohlížeči a vaše výkresy nikdy nikam nenahrává. Vymazáním dat webu zmizí automaticky uložený výkres, proto si stiskem Ctrl+S uložte soubor.",
     "q7": "Je MellowCAD spojený se společností Autodesk?",
@@ -243,7 +243,7 @@
     "metaTitle": "Ochrana soukromí",
     "metaDescription": "Co MellowCAD uchovává ve vašem prohlížeči, co měří, kdo tato data zpracovává a na jakém základě a jaká máte práva.",
     "label": "Soukromí",
-    "title": "Co zůstává kde.",
+    "title": "Co kde zůstává.",
     "lead": "MellowCAD nemá účty a to, co nakreslíte v jeho editoru, se nikdy nedostane na server. Tady je vše, co uchovává, vše, co měří, a kdo to zpracovává.",
     "storedTitle": "Ve vašem prohlížeči",
     "stored1": "Váš výkres, automaticky ukládaný do místního úložiště prohlížeče během práce. Nikdy neopustí zařízení.",
@@ -281,11 +281,11 @@
     "navLabel": "Dokumentace",
     "breadcrumb": "Drobečková navigace",
     "metaTitle": "Dokumentace",
-    "metaDescription": "Jak kreslit v MellowCAD a jak s ním stavět: každý příkaz a zkratka, rozdíly oproti AutoCADu a jádro, jeho napojení na React a editor.",
+    "metaDescription": "Jak kreslit v MellowCAD a jak s ním vyvíjet: každý příkaz a zkratka, rozdíly oproti AutoCADu a jádro, jeho napojení na React a editor.",
     "label": "Dokumentace",
     "title": "Dokumentace",
-    "lead": "Jak kreslit v\u00a0MellowCAD a\u00a0jak stavět s\u00a0jeho balíčky.",
-    "buildTitle": "Stavějte s\u00a0MellowCAD",
+    "lead": "Jak kreslit v\u00a0MellowCAD a\u00a0jak vyvíjet s\u00a0jeho balíčky.",
+    "buildTitle": "Vyvíjejte s\u00a0MellowCAD",
     "buildLead": "Jádro, jeho napojení na React a celý editor, pro ty, kdo je vkládají do vlastní aplikace. Anglicky.",
     "guide": "Průvodce",
     "api": "Referenční příručka API",
@@ -388,7 +388,7 @@
       "enter": "Provede, co je zadáno. Když není nic zadáno, přijme výchozí hodnotu výzvy nebo ukončí příkaz, a když žádný příkaz neběží, zopakuje poslední.",
       "escape": "Zruší běžící příkaz; první Esc vymaže rozepsaný text.",
       "recall": "Když žádný příkaz neběží, vyvolá dříve zadané příkazy.",
-      "complete": "Doplní rozepsaný název příkazu; u výzvy k zadání bodu postupně přepíná režimy uchopení objektu pod kurzorem.",
+      "complete": "Doplní rozepsaný název příkazu; u výzvy k zadání bodu postupně přepíná režimy uchopení objektů pod kurzorem.",
       "cycle": "Postupně přepíná překrývající se objekty pod kurzorem, když přepínání výběrů ukazuje svůj odznak."
     },
     "keys": {
@@ -404,7 +404,7 @@
     "sessions": {
       "firstLine": "Obdélník ze čtyř úseček zadaných bod po bodu; poslední ho uzavře.",
       "circleDiameter": "Kružnice ze středu a\u00a0průměru, zadaného po volbě možnosti.",
-      "endpointSnap": "U\u00a0rohu ukáže uchopení objektu svou značku a\u00a0pojmenuje bod, který použije.",
+      "endpointSnap": "U\u00a0rohu ukáže uchopení objektů svou značku a\u00a0pojmenuje bod, který použije.",
       "offsetRectangle": "Obdélník a\u00a0jeho ekvidistanta, strana určená uvnitř."
     },
     "types": {

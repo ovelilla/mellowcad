@@ -6,7 +6,7 @@ figure: "ZMĚNAV na úsečce přes otvor desky: barva 1 a typ čáry CENTER, osa
 sourceHash: "4ba30c3c6070"
 ---
 
-Příkaz ZMĚNAV (CHPROP) mění vlastnosti vybraných objektů na příkazovém řádku: řádky oddílu Obecné palety Vlastnosti, kladené jako výzvy. Vyberte objekty, nebo je vyberte před příkazem, a pak zvolte vlastnost, kterou chcete změnit; po každé se zeptá na další, dokud příkaz neukončí Enter. Výzva každé vlastnosti nabízí jako výchozí hodnotu sady, <Message id="varies" /> tam, kde se objekty liší, a Enter v tomto místě ponechá každému objektu jeho vlastní. Co nastavíte, se použije při ukončení příkazu, takže Esc ponechá všechny objekty beze změny. Objekty v uzamčené hladině se spočítají a vynechají, každý s hlášením <Message id="objectOnLockedLayer" />. Celé spuštění je jeden krok, který <Command id="U" /> vrátí zpět.
+Příkaz ZMĚNAV (CHPROP) mění vlastnosti vybraných objektů na příkazovém řádku: řádky oddílu Obecné palety Vlastnosti, kladené jako výzvy. Vyberte objekty, nebo je vyberte před příkazem, a pak zvolte vlastnost, kterou chcete změnit; po každé se zeptá na další, dokud příkaz neukončí Enter. Výzva každé vlastnosti nabízí jako výchozí hodnotu sady, <Message id="varies" /> tam, kde se objekty liší, a Enter v tomto místě ponechá každému objektu jeho vlastní. Co nastavíte, se použije při ukončení příkazu, takže Esc ponechá všechny objekty beze změny. Objekty v uzamknuté hladině se spočítají a vynechají, každý s hlášením <Message id="objectOnLockedLayer" />. Celé spuštění je jeden krok, který <Command id="U" /> vrátí zpět.
 
 ## Options
 

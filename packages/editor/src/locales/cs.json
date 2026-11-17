@@ -213,8 +213,8 @@
     "off": "Vypnuto",
     "unlocked": "Odemknuto",
     "locked": "Uzamknuto",
-    "deleteLabel": "Vymazat hladinu {name}",
-    "delete": "Vymazat hladinu",
+    "deleteLabel": "Odstranit hladinu {name}",
+    "delete": "Odstranit hladinu",
     "rename": "Hladinu přejmenujete dalším kliknutím na název vybrané hladiny",
     "renameLabel": "Přejmenovat hladinu {name}",
     "list": "Seznam hladin",
@@ -223,9 +223,9 @@
     "dialog": {
       "close": "Zavřít",
       "notDeleted": {
-        "title": "Hladina – nevymazána",
-        "instruction": "Vybraná hladina nebyla vymazána.",
-        "content": "Nelze vymazat následující hladiny:",
+        "title": "Hladina – neodstraněna",
+        "instruction": "Vybraná hladina nebyla odstraněna.",
+        "content": "Nelze odstranit následující hladiny:",
         "base": "Hladiny 0 a Defpoints",
         "current": "Aktuální hladina",
         "inUse": "Hladiny obsahující objekty",
@@ -275,7 +275,7 @@
     "new": "Nový",
     "setCurrent": "Nastavit {name} jako aktuální",
     "rename": "Přejmenovat {name}",
-    "delete": "Vymazat {name}",
+    "delete": "Odstranit {name}",
     "lines": "Čáry",
     "baselineSpacing": "Odsazení základny",
     "extendBeyond": "Přesah za kót.čarami",
@@ -343,7 +343,7 @@
   },
   "MText": {
     "unsavedChanges": {
-      "title": "Víceřádkový text – Neuložené změny",
+      "title": "Víceřádkový text – neuložené změny",
       "instruction": "Chcete uložit změny textu?",
       "yes": "Ano",
       "no": "Ne",

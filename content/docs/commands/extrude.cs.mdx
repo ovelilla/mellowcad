@@ -3,12 +3,12 @@ title: "Příkaz VYTÁHNI (EXTRUDE) v AutoCADu"
 description: "Jak v AutoCADu vytáhnout 2D profil do 3D tělesa příkazem VYTÁHNI (EXTRUDE, zkratka VYT): výška, směr, úhel zešikmení. Vyzkoušejte zdarma online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?","answer":"EXTRUDE. V české verzi AutoCADu je jeho zkratka VYT: zadejte ji a stiskněte Enter nebo mezerník. Anglické EXT spouští v české verzi jiný příkaz; _EXTRUDE funguje v AutoCADu v každém jazyce."},{"question":"Jak z 2D výkresu udělat 3D?","answer":"Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled kostkou ViewCube nebo příkazem -POHLED a možností JViso, abyste ho viděli ve 3D."},{"question":"Proč příkaz VYTÁHNI nevytvoří těleso?","answer":"Profil je otevřený nebo protíná sám sebe. Úsečka, oblouk nebo otevřená křivka vytvoří v AutoCADu povrch a MellowCAD povrchy zatím nemá: příkaz VYTÁHNI vypíše „Nelze táhnout nebo vysunout objekt tohoto typu.“ a odebere je z výběru; profil, který protíná sám sebe, dostane „Nelze táhnout nebo vysunout křivku, která protíná sebe samu.“ a také se odebere. Spojte kusy příkazem SPOJ, vytvořte z nich oblast příkazem OBLAST nebo do nich klikněte příkazem TLAČTÁHNI."},{"question":"Jak vytáhnout tvar s otvorem?","answer":"Udělejte z něj jednu oblast: příkaz OBLAST na obrys a otvor, pak příkazem ROZDÍL odečtěte oblast otvoru od oblasti obrysu. Vytáhněte tuto oblast a otvor projde tělesem. Nebo spusťte příkaz TLAČTÁHNI a klikněte mezi obrys a otvor."},{"question":"Jak vytáhnout po trajektorii?","answer":"Zatím nelze: Trajektorie je v seznamu, ale odmítne se, a příkaz TAŽENÍ zatím není. Směr vytáhne podél přímky mezi dvěma body."}]
+faq: [{"question":"Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?","answer":"EXTRUDE. V české verzi AutoCADu je jeho zkratka VYT: zadejte ji a stiskněte Enter nebo mezerník. Anglické EXT spouští v české verzi příkaz EXTRDATA; _EXTRUDE funguje v AutoCADu v každém jazyce."},{"question":"Jak z 2D výkresu udělat 3D?","answer":"Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled krychlí ViewCube nebo příkazem -POHLED a možností JViso, abyste ho viděli ve 3D."},{"question":"Proč příkaz VYTÁHNI nevytvoří těleso?","answer":"Profil je otevřený nebo protíná sám sebe. Úsečka, oblouk nebo otevřená křivka vytvoří v AutoCADu povrch a MellowCAD povrchy zatím nemá: příkaz VYTÁHNI vypíše „Nelze táhnout nebo vysunout objekt tohoto typu.“ a odebere je z výběru; profil, který protíná sám sebe, dostane „Nelze táhnout nebo vysunout křivku, která protíná sebe samu.“ a také se odebere. Spojte kusy příkazem SPOJ, vytvořte z nich oblast příkazem OBLAST nebo do nich klikněte příkazem TLAČTÁHNI."},{"question":"Jak vytáhnout tvar s otvorem?","answer":"Udělejte z něj jednu oblast: příkaz OBLAST na obrys a otvor, pak příkazem ROZDÍL odečtěte oblast otvoru od oblasti obrysu. Vytáhněte tuto oblast a otvor projde tělesem. Nebo spusťte příkaz TLAČTÁHNI a klikněte mezi obrys a otvor."},{"question":"Jak vytáhnout po trajektorii?","answer":"Zatím nelze: Trajektorie je v seznamu, ale odmítne se, a příkaz TAŽENÍ zatím není. Směr vytáhne podél přímky mezi dvěma body."}]
 ---
 
 Příkaz VYTÁHNI (EXTRUDE) mění uzavřené 2D profily v 3D tělesa, každý vytažený kolmo ze své roviny do zadané výšky. Vyberte profily – kružnice, elipsy, uzavřené křivky nebo spline, oblasti – a stiskněte Enter, pak zadejte výšku nebo ji ukažte bodem; poslední výška je výchozí při dalším spuštění. Každý profil se stane samostatným tělesem v aktuální hladině a vymaže se, jak ve výchozím nastavení určuje DELOBJ. Celý příkaz je jeden krok, který lze vrátit zpět.
 
-3D v MellowCADu jsou jen tělesa, a zatím částečně: otevřený profil, ze kterého AutoCAD vytvoří povrch, dostane `Nelze táhnout nebo vysunout objekt tohoto typu.` a odebere se z výběru.
+MellowCAD umí ve 3D jen 3D tělesa, zatím částečně: otevřený profil, ze kterého AutoCAD vytvoří povrch, dostane `Nelze táhnout nebo vysunout objekt tohoto typu.` a odebere se z výběru.
 
 - **Příkaz:** `VYTÁHNI`
 - **Anglicky:** `EXTRUDE`, zadávaný jako `_EXTRUDE` v libovolném jazyce
@@ -54,11 +54,11 @@ Trajektorie, tažení po trajektorii. Režim povrchu a otevřené profily, ze kt
 
 ### Jak se jmenuje příkaz VYTÁHNI anglicky a jakou má zkratku?
 
-EXTRUDE. V české verzi AutoCADu je jeho zkratka `VYT`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `EXT` spouští v české verzi jiný příkaz; `_EXTRUDE` funguje v AutoCADu v každém jazyce.
+EXTRUDE. V české verzi AutoCADu je jeho zkratka `VYT`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `EXT` spouští v české verzi příkaz EXTRDATA; `_EXTRUDE` funguje v AutoCADu v každém jazyce.
 
 ### Jak z 2D výkresu udělat 3D?
 
-Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled kostkou ViewCube nebo příkazem `-POHLED` a možností `JViso`, abyste ho viděli ve 3D.
+Nakreslete obrys jako jeden uzavřený objekt – uzavřenou křivku, kružnici nebo oblast –, spusťte příkaz VYTÁHNI, vyberte ho, stiskněte Enter a zadejte výšku. Shora vypadá těleso jako jeho obrys: otočte pohled krychlí ViewCube nebo příkazem `-POHLED` a možností `JViso`, abyste ho viděli ve 3D.
 
 ### Proč příkaz VYTÁHNI nevytvoří těleso?
 

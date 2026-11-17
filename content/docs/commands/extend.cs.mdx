@@ -3,7 +3,7 @@ title: "Příkaz PRODLUŽ (EXTEND) v AutoCADu"
 description: "Jak v AutoCADu prodloužit úsečku příkazem PRODLUŽ (EXTEND, zkratka PD): rychlý a standardní režim, hraniční hrany, napříč, křížení, Hrana a Shift pro oříznutí."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz PRODLUŽ anglicky a jakou má zkratku?","answer":"EXTEND. V české verzi AutoCADu je jeho zkratka PD: zadejte ji a stiskněte Enter nebo mezerník. Anglické EX spouští v české verzi příkaz EXTERNÍREFERENCE; _EXTEND funguje v AutoCADu v každém jazyce."},{"question":"Proč příkaz PRODLUŽ hlásí, že není žádná hrana?","answer":"Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí „V tomto směru není žádná hrana.“, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak „Trajektorie se neprotíná s ohraničující hranou.“; křivka nebo spline hlásí „Objekt neprotíná hranu.“. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte Hrana a Prodluž, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafu prodloužit vůbec nelze: „Tento objekt nelze prodloužit.“"},{"question":"Jak prodloužit několik úseček najednou?","answer":"Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato hranice výběru překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte Křížení a nakreslete okno přes konce, které chcete prodloužit."},{"question":"Jak ořezávat příkazem PRODLUŽ?","answer":"Vybírejte s podrženou klávesou Shift: kus se ořízne k nejbližším průsečíkům, jako by to udělal příkaz OŘEŽ, a objekt, který nic nekříží, se odstraní. Další výběr bez klávesy Shift zase prodlužuje."}]
+faq: [{"question":"Jak se jmenuje příkaz PRODLUŽ anglicky a jakou má zkratku?","answer":"EXTEND. V české verzi AutoCADu je jeho zkratka PD: zadejte ji a stiskněte Enter nebo mezerník. Anglické EX spouští v české verzi příkaz EXTERNÍREFERENCE; _EXTEND funguje v AutoCADu v každém jazyce."},{"question":"Proč příkaz PRODLUŽ hlásí, že není žádná hrana?","answer":"Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí „V tomto směru není žádná hrana.“, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak „Trajektorie se neprotíná s ohraničující hranou.“; křivka nebo spline hlásí „Objekt neprotíná hranu.“. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte Hrana a Prodluž, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafy prodloužit vůbec nelze: „Tento objekt nelze prodloužit.“"},{"question":"Jak prodloužit několik úseček najednou?","answer":"Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato čára napříč překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte Křížení a nakreslete okno přes konce, které chcete prodloužit."},{"question":"Jak ořezávat příkazem PRODLUŽ?","answer":"Vybírejte s podrženou klávesou Shift: kus se ořízne k nejbližším průsečíkům, jako by to udělal příkaz OŘEŽ, a objekt, který nic nekříží, se odstraní. Další výběr bez klávesy Shift zase prodlužuje."}]
 ---
 
 Příkaz PRODLUŽ (EXTEND) prodlužuje objekt, dokud nenarazí na jiný: vyberete ho blízko konce, který má růst, a ten konec pokračuje k nejbližší hraně, která mu leží v cestě. Prodlužuje úsečky, oblouky, eliptické oblouky, otevřené křivky (podél jejich koncového segmentu, přímého nebo po jeho oblouku), 3D křivky a otevřené spline. Začíná v rychlém režimu, jako v AutoCADu: hranicí je každý objekt. Výběr s podrženou klávesou Shift místo prodloužení ořezává, jako příkaz [`OŘEŽ`](/docs/commands/trim). Každý výběr je jeden krok, který lze vrátit zpět; Enter příkaz ukončí.
@@ -28,7 +28,7 @@ Určí, které objekty budou hranicemi: vyberte je, nebo stiskněte Enter a vezm
 
 ### `Napříč` (`N`) [#fence]
 
-Zeptá se na body hranice výběru, kolik chcete, až do Enter: každý objekt, který překříží, se prodlouží od konce bližšího místu křížení, v jednom kroku. Standardní režim tuto možnost uvádí; rychlý režim ji také přijme.
+Zeptá se na body čáry napříč, kolik chcete, až do Enter: každý objekt, který překříží, se prodlouží od konce bližšího místu křížení, v jednom kroku. Standardní režim tuto možnost uvádí; rychlý režim ji také přijme.
 
 ### `Křížení` (`K`) [#crossing]
 
@@ -44,11 +44,11 @@ Jen ve standardním režimu. S možností `Prodluž` se objekt zastaví i tam, k
 
 ### `Zpět` (`Z`) [#undo]
 
-Objeví se v seznamu, jakmile výzva dostala odpověď – výběr, hranici výběru, okno: vrátí poslední prodloužení, a když už není co vracet, řekne to.
+Objeví se v seznamu, jakmile výzva dostala odpověď – výběr, čáru napříč, okno: vrátí poslední prodloužení, a když už není co vracet, řekne to.
 
 ## Co zatím neumí [#missing]
 
-Promítání: možnost promítání AutoCADu (Žádné, USS, Pohled) není k dispozici a vše se počítá v průmětu do roviny XY systému USS, což je výchozí nastavení AutoCADu, USS. Hranici výběru zatím nelze táhnout kurzorem, jen zadat bod po bodu. Režim a volba v možnosti `Hrana` platí do konce relace, kde je AutoCAD uchovává mezi relacemi. Objekt pod úhlem k USS, kromě spline, není hranicí ani se neprodlouží a křivka vyhlazená možností `Interpolace` příkazu [`KEDIT`](/docs/commands/pedit) se odmítne, kde AutoCAD prodlouží její poslední oblouk.
+Promítnutí: volba projekce AutoCADu (Nic, Uss, Pohled) není k dispozici a vše se počítá v průmětu do roviny XY systému USS, což je výchozí nastavení AutoCADu, Uss. Čáru napříč zatím nelze táhnout kurzorem, jen zadat bod po bodu. Režim a volba v možnosti `Hrana` platí do konce relace, kde je AutoCAD uchovává mezi relacemi. Objekt pod úhlem k USS, kromě spline, není hranicí ani se neprodlouží a křivka vyhlazená možností `Interpolace` příkazu [`KEDIT`](/docs/commands/pedit) se odmítne, kde AutoCAD prodlouží její poslední oblouk.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd)
 
@@ -60,11 +60,11 @@ EXTEND. V české verzi AutoCADu je jeho zkratka `PD`: zadejte ji a stiskněte E
 
 ### Proč příkaz PRODLUŽ hlásí, že není žádná hrana?
 
-Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí `V tomto směru není žádná hrana.`, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak `Trajektorie se neprotíná s ohraničující hranou.`; křivka nebo spline hlásí `Objekt neprotíná hranu.`. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte `Hrana` a `Prodluž`, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafu prodloužit vůbec nelze: `Tento objekt nelze prodloužit.`
+Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí `V tomto směru není žádná hrana.`, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak `Trajektorie se neprotíná s ohraničující hranou.`; křivka nebo spline hlásí `Objekt neprotíná hranu.`. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte `Hrana` a `Prodluž`, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafy prodloužit vůbec nelze: `Tento objekt nelze prodloužit.`
 
 ### Jak prodloužit několik úseček najednou?
 
-Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato hranice výběru překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte `Křížení` a nakreslete okno přes konce, které chcete prodloužit.
+Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato čára napříč překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte `Křížení` a nakreslete okno přes konce, které chcete prodloužit.
 
 ### Jak ořezávat příkazem PRODLUŽ?
 

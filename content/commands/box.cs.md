@@ -30,7 +30,7 @@ Na výzvu k výšce: zeptá se na dva body a výška je vzdálenost mezi nimi.
 
 ## Missing
 
-Posun, Otočit, Měřítko a Zrcadlit z aktivního uzlu, mezi kterými AutoCAD přepíná klávesou Enter. Vlastní 3D příkazy – 3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO, ZRCADLI3D, OTOČ3D, SROVNEJ, 3DSROVNEJ – s jejich gizmy a posouvání jeho ploch, hran a vrcholů jednotlivě. Dynamický USS. Tečkované kóty, které AutoCAD kreslí, když zadáváte roh, délku a šířku. Příkazy <Command id="FILLET" /> a <Command id="CHAMFER" /> na jeho hranách, což dělají <Command id="FILLETEDGE" /> a <Command id="CHAMFEREDGE" />. Záznam a zobrazení historie tělesa a řádek Materiál. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě 2D drátového modelu, Skrytého a Koncepčního.
+Režimy POSUN, OTOČ, MĚŘÍTKO a ZRCADLI z aktivního uzlu, mezi kterými AutoCAD přepíná klávesou Enter. Vlastní 3D příkazy – 3DPOSUN, 3DOTOČ, 3DMĚŘÍTKO, ZRCADLI3D, OTOČ3D, SROVNEJ, 3DSROVNEJ – s jejich gizmy a posouvání jeho ploch, hran a vrcholů jednotlivě. Dynamický USS. Tečkované kóty, které AutoCAD kreslí, když zadáváte roh, délku a šířku. Příkazy <Command id="FILLET" /> a <Command id="CHAMFER" /> na jeho hranách, což dělají <Command id="FILLETEDGE" /> a <Command id="CHAMFEREDGE" />. Záznam a zobrazení historie tělesa a řádek Materiál. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě 2D drátového modelu, Skrytého a Koncepčního.
 
 ## Questions
 

@@ -15,7 +15,7 @@ Určí, které objekty budou hranicemi: vyberte je, nebo stiskněte Enter a vezm
 
 ### Fence
 
-Zeptá se na body hranice výběru, kolik chcete, až do Enter: každý objekt, který překříží, se prodlouží od konce bližšího místu křížení, v jednom kroku. Standardní režim tuto možnost uvádí; rychlý režim ji také přijme.
+Zeptá se na body čáry napříč, kolik chcete, až do Enter: každý objekt, který překříží, se prodlouží od konce bližšího místu křížení, v jednom kroku. Standardní režim tuto možnost uvádí; rychlý režim ji také přijme.
 
 ### Crossing
 
@@ -31,11 +31,11 @@ Jen ve standardním režimu. S možností <Keyword id="Extend" /> se objekt zast
 
 ### Undo
 
-Objeví se v seznamu, jakmile výzva dostala odpověď – výběr, hranici výběru, okno: vrátí poslední prodloužení, a když už není co vracet, řekne to.
+Objeví se v seznamu, jakmile výzva dostala odpověď – výběr, čáru napříč, okno: vrátí poslední prodloužení, a když už není co vracet, řekne to.
 
 ## Missing
 
-Promítání: možnost promítání AutoCADu (Žádné, USS, Pohled) není k dispozici a vše se počítá v průmětu do roviny XY systému USS, což je výchozí nastavení AutoCADu, USS. Hranici výběru zatím nelze táhnout kurzorem, jen zadat bod po bodu. Režim a volba v možnosti <Keyword id="Edge" /> platí do konce relace, kde je AutoCAD uchovává mezi relacemi. Objekt pod úhlem k USS, kromě spline, není hranicí ani se neprodlouží a křivka vyhlazená možností <Keyword command="PEDIT" id="Fit" /> příkazu <Command id="PEDIT" /> se odmítne, kde AutoCAD prodlouží její poslední oblouk.
+Promítnutí: volba projekce AutoCADu (Nic, Uss, Pohled) není k dispozici a vše se počítá v průmětu do roviny XY systému USS, což je výchozí nastavení AutoCADu, Uss. Čáru napříč zatím nelze táhnout kurzorem, jen zadat bod po bodu. Režim a volba v možnosti <Keyword id="Edge" /> platí do konce relace, kde je AutoCAD uchovává mezi relacemi. Objekt pod úhlem k USS, kromě spline, není hranicí ani se neprodlouží a křivka vyhlazená možností <Keyword command="PEDIT" id="Fit" /> příkazu <Command id="PEDIT" /> se odmítne, kde AutoCAD prodlouží její poslední oblouk.
 
 ## Questions
 
@@ -45,11 +45,11 @@ EXTEND. V české verzi AutoCADu je jeho zkratka `PD`: zadejte ji a stiskněte E
 
 ### Proč příkaz PRODLUŽ hlásí, že není žádná hrana?
 
-Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí <Message id="noEdgeInThatDirection" />, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak <Message id="pathDoesNotIntersectBoundingEdge" />; křivka nebo spline hlásí <Message id="objectDoesNotIntersectEdge" />. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte <Keyword id="Edge" /> a <Keyword id="Extend" />, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafu prodloužit vůbec nelze: <Message id="cannotExtendObject" />
+Protože přes dráhu, kterou by ten konec sledoval, nic neleží. Úsečka hlásí <Message id="noEdgeInThatDirection" />, když by její druhý konec hranu zasáhl, a úsečka nebo oblouk jinak <Message id="pathDoesNotIntersectBoundingEdge" />; křivka nebo spline hlásí <Message id="objectDoesNotIntersectEdge" />. Vyberte blíž druhému konci, nebo ve standardním režimu zvolte <Keyword id="Edge" /> a <Keyword id="Extend" />, aby se hranice, která nedosahuje, počítala, jako by pokračovala dál. Kružnici, uzavřenou křivku, celou elipsu, text ani šrafy prodloužit vůbec nelze: <Message id="cannotExtendObject" />
 
 ### Jak prodloužit několik úseček najednou?
 
-Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato hranice výběru překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte <Keyword id="Crossing" /> a nakreslete okno přes konce, které chcete prodloužit.
+Klikněte do prázdného místa a zadejte druhý bod: každý objekt, který tato čára napříč překříží, se prodlouží od bližšího konce, v jednom kroku. Nebo zvolte <Keyword id="Crossing" /> a nakreslete okno přes konce, které chcete prodloužit.
 
 ### Jak ořezávat příkazem PRODLUŽ?
 

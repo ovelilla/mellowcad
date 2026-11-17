@@ -7,7 +7,7 @@ sourceHash: "7a22ff19d409"
 
 Příkaz ČISTI (PURGE) odstraní to, co výkres definuje, ale nepoužívá; zde jsou to bloky a typy čar. V AutoCADu příkaz ČISTI otevře dialog Vyčistit; MellowCAD ho nemá, a tak se příkaz ČISTI ptá na příkazovém řádku na to, na co se ptá <Command id="-PURGE" />, jako to dělá konzole AutoCADu. Vypíše nastavení Vnořené položky a Osamocená data, obě vypnutá, a zeptá se, jaký typ nepoužitých objektů vyčistit, s nabídkou <Keyword id="Blocks" /> a <Keyword id="LTypes" />; Enter tam příkaz ukončí.
 
-Blok se používá, dokud ho umisťuje reference ve výkresu nebo ho obsahuje definice používaného bloku, v jakékoli hloubce. Vymazání poslední reference bloku ponechá jeho definici ve výkresu, kde ho <Command id="INSERT" /> může znovu umístit: odstraní ji až příkaz ČISTI. Blok obsažený v ponechaném bloku se nikdy neodstraní a řetěz bloků, které obsahují jen sebe navzájem, zmizí v jednom spuštění. Když není co odstranit, vypíše <Message id="noUnreferencedBlocks" />. Každé spuštění je jeden krok, který vrátí <Command id="U" />.
+Blok se používá, dokud ho umisťuje reference ve výkresu nebo ho obsahuje definice používaného bloku, v jakékoli hloubce. Vymazání poslední reference bloku ponechá jeho definici ve výkresu, kde ho <Command id="INSERT" /> může znovu umístit: odstraní ji až příkaz ČISTI. Blok obsažený v ponechaném bloku se nikdy neodstraní a řetězec bloků, které obsahují jen sebe navzájem, zmizí v jednom spuštění. Když není co odstranit, vypíše <Message id="noUnreferencedBlocks" />. Každé spuštění je jeden krok, který vrátí <Command id="U" />.
 
 ## Options
 
@@ -17,7 +17,7 @@ Zeptá se na názvy k vyčištění, ve výchozím stavu `*` pro všechny nepou�
 
 ### LTypes
 
-Zeptá se na názvy a na ověření každého, stejně jako <Keyword id="Blocks" />, a odstraní typy čar, které nic nepoužívá. Continuous, aktuální typ čáry a typ, který používá hladina nebo objekt, i uvnitř bloku, vždy zůstanou; když není co odstranit, vypíše <Message id="noUnreferencedLinetypes" />. Volba <Keyword command="LINETYPE" id="Load" /> příkazu <Command id="LINETYPE" /> typ čáry vrátí.
+Zeptá se na názvy a na ověření každého, stejně jako <Keyword id="Blocks" />, a odstraní typy čar, které nic nepoužívá. Continuous, aktuální typ čáry a typ, který používá hladina nebo objekt, i uvnitř bloku, vždy zůstanou; když není co odstranit, vypíše <Message id="noUnreferencedLinetypes" />. Možnost <Keyword command="LINETYPE" id="Load" /> příkazu <Command id="LINETYPE" /> typ čáry vrátí.
 
 ## Missing
 
@@ -39,4 +39,4 @@ Protože se používá: umisťuje ho reference ve výkresu nebo ho obsahuje pou�
 
 ### Jak vyčistit hladiny?
 
-V AutoCADu typem Hladiny příkazu ČISTI. Zde zatím ne, příkaz ČISTI čistí bloky a typy čar; prázdnou hladinu místo toho odstraňte ve Správci vlastností hladin.
+V AutoCADu typem Hladiny příkazu ČISTI. Zde zatím ne: příkaz ČISTI tu čistí bloky a typy čar; prázdnou hladinu místo toho odstraňte ve Správci vlastností hladin.

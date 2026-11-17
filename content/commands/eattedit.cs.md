@@ -11,7 +11,7 @@ Dvojklik na referenci s atributy spustí příkaz EATREDIT, jako v AutoCADu: př
 
 ## Missing
 
-Karta Možnosti textu editoru (styl, zarovnání, výška, natočení, poměr šířky a další nastavení textu každého atributu) a jeho karta Vlastnosti (hladina, typ čáry, barva, tloušťka čáry) a také jeho tlačítko „Vybrat blok“. Příkaz ATTIPEDIT, který upravuje jeden atribut na místě, a jeho Ctrl+dvojklik. Vlastní uzel odemknutého atributu na referenci a řádky atributů v paletě Vlastnosti. `-ATREDIT`.
+Karta Možnosti textu editoru (styl, zarovnání, výška, natočení, poměr šířky a další nastavení textu každého atributu) a jeho karta Vlastnosti (hladina, typ čáry, barva, tloušťka čáry) a také jeho tlačítko „Vybrat blok“. Příkaz ATRPEDIT (ATTIPEDIT), který upravuje jeden atribut na místě, a jeho Ctrl+dvojklik. Vlastní uzel odemknutého atributu na referenci a řádky atributů v paletě Vlastnosti. `-ATREDIT`.
 
 ## Questions
 
@@ -27,6 +27,6 @@ Poklepejte na blok, zadejte novou hodnotu do pole atributu a stiskněte Enter. K
 
 Příkaz EATREDIT se otevře pro referenci, jejíž blok obsahuje atributy, a blok vytvořený bez nich žádné nemá: definujte je příkazem <Command id="ATTDEF" /> a při vytváření bloku je vyberte spolu s ostatními objekty. Pokud hodnota atributu není vidět, zkontrolujte příkaz <Command id="ATTDISP" />, který může skrýt neviditelné atributy nebo všechny.
 
-### Jaký je rozdíl mezi EATREDIT (EATTEDIT) a ATREDIT (ATTEDIT)?
+### Jaký je rozdíl mezi příkazy EATREDIT (EATTEDIT) a ATREDIT (ATTEDIT)?
 
 Oba upravují tytéž hodnoty. Příkaz EATREDIT označí každé pole štítkem, jako karta Atribut Rozšířeného editoru atributů; příkaz <Command id="ATTEDIT" /> výzvou, jako dialog Upravit atributy. V AutoCADu příkaz EATREDIT upravuje i možnosti textu a vlastnosti každého atributu.

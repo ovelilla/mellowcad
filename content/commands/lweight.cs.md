@@ -2,7 +2,7 @@
 title: "Tloušťka čáry v AutoCADu: příkaz TLČÁRY (LWEIGHT)"
 metaTitle: "Tloušťka čáry v AutoCADu: TLČÁRY (LWEIGHT)"
 description: "Jak nastavit tloušťku čáry v AutoCADu příkazem TLČÁRY (LWEIGHT, zkratka TLČ): tloušťka nových objektů v mm, 24 standardních hodnot, DleHlad a zobrazení."
-figure: "Deska obkreslená tloušťkou 0,70 mm, pak pro otvor zadáno 0.1, zaokrouhlené na 0,09 mm: obě tloušťky, jak je ukazuje obrazovka."
+figure: "Obrys desky v tloušťce 0,70 mm, pak pro otvor zadáno 0.1, zaokrouhleno na 0,09 mm: obě tloušťky, jak je ukazuje obrazovka."
 sourceHash: "154784b2b402"
 ---
 

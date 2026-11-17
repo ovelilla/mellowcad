@@ -3,7 +3,7 @@ title: "Změna měřítka v AutoCADu: příkaz MĚŘÍTKO (SCALE)"
 description: "Jak v AutoCADu změnit měřítko objektů příkazem MĚŘÍTKO (SCALE, zkratka ME): základní bod, měřítko, Kopie a Reference ke známé délce."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz MĚŘÍTKO anglicky?","answer":"SCALE. V české verzi AutoCADu zadejte MĚŘÍTKO nebo zkratku ME a stiskněte Enter nebo mezerník; zkratka SC z anglické verze v české nefunguje. _SCALE funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu změnit měřítko pomocí reference?","answer":"U měřítka zvolte Reference, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru."},{"question":"Jak změnit měřítko objektu a zachovat originál?","answer":"U měřítka zvolte Kopie: měřítko se změní u kopie a originál zůstane na místě."},{"question":"Jak změnit měřítko typu čáry?","answer":"Ne příkazem MĚŘÍTKO, který mění velikost objektů: TČMĚŘ určuje, jak dlouhé se kreslí čárky a mezery každého typu čáry."},{"question":"Jak nastavit měřítko tisku nebo rozvržení?","answer":"MellowCAD nemá rozvržení, výřezy ani tisk: kreslíte ve skutečné velikosti v modelovém prostoru a příkaz MĚŘÍTKO mění velikost samotných objektů, ne to, jak by se vytiskly."}]
+faq: [{"question":"Jak se jmenuje příkaz MĚŘÍTKO anglicky?","answer":"SCALE. V české verzi AutoCADu zadejte MĚŘÍTKO nebo zkratku ME a stiskněte Enter nebo mezerník; zkratka SC z anglické verze v české nefunguje. _SCALE funguje v AutoCADu v každém jazyce."},{"question":"Jak v AutoCADu změnit měřítko pomocí reference?","answer":"Ve výzvě k zadání měřítka zvolte Reference, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru."},{"question":"Jak změnit měřítko objektu a zachovat originál?","answer":"Ve výzvě k zadání měřítka zvolte Kopie: měřítko se změní u kopie a originál zůstane na místě."},{"question":"Jak změnit měřítko typu čáry?","answer":"Ne příkazem MĚŘÍTKO, který mění velikost objektů: TČMĚŘ určuje, jak dlouhé se kreslí čárky a mezery každého typu čáry."},{"question":"Jak nastavit měřítko tisku nebo rozvržení?","answer":"MellowCAD nemá rozvržení, výřezy ani tisk: kreslíte ve skutečné velikosti v modelovém prostoru a příkaz MĚŘÍTKO mění velikost samotných objektů, ne to, jak by se vytiskly."}]
 ---
 
 Příkaz MĚŘÍTKO (SCALE) zvětší nebo zmenší vybrané objekty vzhledem k základnímu bodu, který zůstane na místě: měřítko 2 je zdvojnásobí, 0,5 zmenší na polovinu, stejně ve všech směrech. Vyberte objekty, určete základní bod a pak zadejte měřítko, nebo pohněte kurzorem a klikněte: objekty ho sledují. Enter na tomto místě, bez zapsané hodnoty, použije naposledy zadané měřítko. Každé spuštění je jeden krok, který lze vrátit zpět.
@@ -30,7 +30,7 @@ Změní měřítko kopie a objekty ponechá beze změny: vypíše `Změna veliko
 
 ### `Reference` (`R`) [#reference]
 
-Zeptá se na referenční délku, zapsanou nebo určenou dvěma body, a pak na délku, kterou má mít: měřítko je nová délka dělená referenční. Novou délku zapíšete, nebo ji určíte bodem, jehož vzdálenost od základního bodu ji udává; `Body` se místo toho zeptá na dva body a změří vzdálenost mezi nimi. Obě délky nabízejí naposledy zadané, v novém výkresu 1.
+Zeptá se na referenční délku, zapsanou nebo určenou dvěma body, a pak na délku, kterou má mít: měřítko je nová délka dělená referenční. Novou délku zapíšete, nebo ji určíte bodem, jehož vzdálenost od základního bodu ji udává; `Body` se místo toho zeptá na dva body a změří vzdálenost mezi nimi. Obě výzvy nabízejí naposledy zadanou délku, v novém výkresu 1.
 
 ## Co zatím neumí [#missing]
 
@@ -46,11 +46,11 @@ SCALE. V české verzi AutoCADu zadejte `MĚŘÍTKO` nebo zkratku `ME` a stiskn�
 
 ### Jak v AutoCADu změnit měřítko pomocí reference?
 
-U měřítka zvolte `Reference`, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru.
+Ve výzvě k zadání měřítka zvolte `Reference`, určete dva konce hrany, jejíž délku znáte, a pak zadejte délku, kterou má mít. Všechno vybrané se změní v poměru nové délky ke staré, takže výkres ve špatné velikosti opravíte podle jediného známého rozměru.
 
 ### Jak změnit měřítko objektu a zachovat originál?
 
-U měřítka zvolte `Kopie`: měřítko se změní u kopie a originál zůstane na místě.
+Ve výzvě k zadání měřítka zvolte `Kopie`: měřítko se změní u kopie a originál zůstane na místě.
 
 ### Jak změnit měřítko typu čáry?
 

@@ -3,10 +3,10 @@ title: "Obdélník v AutoCADu: příkaz OBD (RECTANG)"
 description: "Jak nakreslit obdélník v AutoCADu příkazem OBD nebo OBDÉLNÍK (RECTANG): dva rohy, rozměry, plocha a natočení, zaoblené nebo zkosené rohy. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz OBD anglicky?","answer":"RECTANG. V českém AutoCADu zadejte OBD nebo OBDÉLNÍK, pak Enter nebo mezerník. Anglické REC v české verzi nefunguje; _RECTANG funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit obdélník s přesnými rozměry?","answer":"Zadejte první roh, pak druhý relativně k němu: 100,50 se zapnutým dynamickým zadáváním, jak je na začátku, nebo @100,50 bez něj vytvoří obdélník dlouhý 100 a široký 50. Nebo zvolte Rozměry a zadejte obě strany."},{"question":"Jak nakreslit obdélník se zaoblenými rohy?","answer":"Na první výzvě zvolte zAoblení, zadejte poloměr a pak oba rohy."},{"question":"Proč má můj obdélník zaoblené nebo zkosené rohy?","answer":"Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i obdélník nakreslený po nich: jeho první řádek to uvádí. Zvolte zAoblení a zadejte 0, abyste znovu kreslili ostré rohy."},{"question":"Je obdélník v AutoCADu křivka?","answer":"Ano: jedna uzavřená křivka. ROZLOŽ ji rozloží na čtyři úsečky a EKVID z ní vytvoří ekvidistantu celé."}]
+faq: [{"question":"Jak se jmenuje příkaz OBD anglicky?","answer":"RECTANG. V českém AutoCADu zadejte OBD nebo OBDÉLNÍK, pak Enter nebo mezerník. Anglické REC v české verzi nefunguje; _RECTANG funguje v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit obdélník s přesnými rozměry?","answer":"Zadejte první roh, pak druhý relativně k němu: 100,50 se zapnutým dynamickým zadáváním, jak je na začátku, nebo @100,50 bez něj vytvoří obdélník dlouhý 100 a široký 50. Nebo zvolte Rozměry a zadejte obě strany."},{"question":"Jak nakreslit obdélník se zaoblenými rohy?","answer":"V první výzvě zvolte zAoblení, zadejte poloměr a pak oba rohy."},{"question":"Proč má můj obdélník zaoblené nebo zkosené rohy?","answer":"Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i každý další obdélník: jeho první řádek to uvádí. Zvolte zAoblení a zadejte 0, abyste znovu kreslili ostré rohy."},{"question":"Je obdélník v AutoCADu křivka?","answer":"Ano: jedna uzavřená křivka. ROZLOŽ ji rozloží na čtyři úsečky a EKVID vytvoří ekvidistantu celé křivky."}]
 ---
 
-Příkaz OBD (RECTANG), také OBDÉLNÍK, nakreslí obdélník ze dvou protilehlých rohů, ukázaných nebo zadaných: `0,0` a pak `100,50`, při dynamickém zadávání relativně k prvnímu, vytvoří obdélník 100 × 50. Je to jedna uzavřená křivka se čtyřmi vrcholy, v aktuální hladině. Volby první výzvy nastavují, jak se budou kreslit další obdélníky, a každá si hodnotu ponechá do konce relace: příští OBD uvede platné volby na svém prvním řádku. Volba šířky dá každé straně šířku křivky. Zatímco umisťujete druhý roh, obdélník sleduje kurzor; se zapnutým dynamickým zadáváním můžete zadat jeho délku, Tab a šířku.
+Příkaz OBD (RECTANG), také OBDÉLNÍK, nakreslí obdélník ze dvou protilehlých rohů, ukázaných nebo zadaných: `0,0` a pak `100,50`, při dynamickém zadávání relativně k prvnímu, vytvoří obdélník 100 × 50. Je to jedna uzavřená křivka se čtyřmi vrcholy, v aktuální hladině. Možnosti první výzvy nastavují, jak se budou kreslit další obdélníky, a každá si hodnotu ponechá do konce relace: příští spuštění příkazu OBD uvede platné hodnoty na svém prvním řádku. Možnost Šířka dá každé straně šířku křivky. Zatímco umisťujete druhý roh, obdélník sleduje kurzor; se zapnutým dynamickým zadáváním můžete zadat jeho délku, Tab a šířku.
 
 - **Příkaz:** `OBD`
 - **Anglicky:** `RECTANG`, zadávaný jako `_RECTANG` v libovolném jazyce
@@ -40,19 +40,19 @@ Zeptá se na tloušťku: obdélník ve 3D pohledu stojí tak vysoko, jako by byl
 
 ### `Oblast` (`O`) [#area]
 
-U druhého rohu: zeptá se na plochu, pak zda zadat `Délka`, nebo `Šířka`, a pak tuto stranu. Druhá strana se dopočítá, včetně rohů, a obdélník se vytvoří hned.
+Ve výzvě k druhému rohu: zeptá se na plochu, pak zda zadat `Délka`, nebo `Šířka`, a pak tuto stranu. Druhá strana se dopočítá, včetně rohů, a obdélník se vytvoří hned.
 
 ### `Rozměry` (`R`) [#dimensions]
 
-U druhého rohu: zeptá se na délku a šířku, pak na bod, který určí, kterým směrem od prvního rohu obdélník leží.
+Ve výzvě k druhému rohu: zeptá se na délku a šířku, pak na bod, který určí, kterým směrem od prvního rohu obdélník leží.
 
 ### `oTočení` (`T`) [#rotation]
 
-U druhého rohu: zeptá se na úhel natočení obdélníku, zadaný číslem nebo bodem od prvního rohu, nebo dvěma body volbou `VYbrat`. Úhel se pamatuje do konce relace.
+Ve výzvě k druhému rohu: zeptá se na úhel natočení obdélníku, zadaný číslem nebo bodem od prvního rohu, nebo dvěma body možností `VYbrat`. Úhel se pamatuje do konce relace.
 
 ## Co zatím neumí [#missing]
 
-Délka nebo šířka 0 u volby `Oblast`, která zde nenakreslí nic a v AutoCADu nakreslí zlomenou křivku. Po odmítnuté odpovědi na výzvě natočení položí MellowCAD celou výzvu znovu, kdežto AutoCAD už nic nevypíše.
+Délka nebo šířka 0 u možnosti `Oblast`, která zde nenakreslí nic a v AutoCADu nakreslí zlomenou křivku. Po odmítnuté odpovědi ve výzvě k natočení položí MellowCAD celou výzvu znovu, kdežto AutoCAD už nic nevypíše.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret--fr-rectangle--rec--rectang--it-rettangolo--rt--rettang--de-rechteck--re--ru-прямоугольник--прямоуг--пря--pl-prostok--pro--prostokąt--cs-obd--obdélník)
 
@@ -68,15 +68,15 @@ Zadejte první roh, pak druhý relativně k němu: `100,50` se zapnutým dynamic
 
 ### Jak nakreslit obdélník se zaoblenými rohy?
 
-Na první výzvě zvolte `zAoblení`, zadejte poloměr a pak oba rohy.
+V první výzvě zvolte `zAoblení`, zadejte poloměr a pak oba rohy.
 
 ### Proč má můj obdélník zaoblené nebo zkosené rohy?
 
-Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i obdélník nakreslený po nich: jeho první řádek to uvádí. Zvolte `zAoblení` a zadejte `0`, abyste znovu kreslili ostré rohy.
+Příkaz OBD si zaoblení i zkosení pamatuje do konce relace, takže je má i každý další obdélník: jeho první řádek to uvádí. Zvolte `zAoblení` a zadejte `0`, abyste znovu kreslili ostré rohy.
 
 ### Je obdélník v AutoCADu křivka?
 
-Ano: jedna uzavřená křivka. [`ROZLOŽ`](/docs/commands/explode) ji rozloží na čtyři úsečky a [`EKVID`](/docs/commands/offset) z ní vytvoří ekvidistantu celé.
+Ano: jedna uzavřená křivka. [`ROZLOŽ`](/docs/commands/explode) ji rozloží na čtyři úsečky a [`EKVID`](/docs/commands/offset) vytvoří ekvidistantu celé křivky.
 
 ## Procvičte si ho [#practice]
 

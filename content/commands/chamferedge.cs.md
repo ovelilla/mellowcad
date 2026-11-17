@@ -8,7 +8,7 @@ sourceHash: "43b1908ad4b3"
 
 Příkaz ZKOSHRANU (CHAMFEREDGE) zkosí hrany 3D tělesa. Uvede dvě aktuální vzdálenosti, pak se zeptá na hranu a po první na další na téže ploše, dokud nestisknete Enter: kliknutí vezme hranu pod kurzorem, zadaný bod hranu, která jím prochází. Hrana, která nemá s předchozími společnou plochu, vypíše <Message id="edgesOneFace" />, hrana jiného tělesa <Message id="chamferMultipleBodies" />. Jak hrany přibývají, těleso se kreslí tak, jak bude vypadat. Enter pak požádá o další Enter, kterým zkosení potvrdíte, nebo o změnu vzdáleností pro toto zkosení; tento Enter ho vytvoří.
 
-První vzdálenost vede podél plochy, kterou mají hrany společnou; u samostatné hrany podél plochy, kterou zvolí AutoCAD: přední u horní přední hrany kvádru a horní u okraje válce. Přímá hrana mezi dvěma rovinnými plochami se stane rovinným pásem, kruhová hrana otvoru nebo okraje pásem kužele a zkosení, která se setkají v rohu, se spojí v čáře. Vzdálenosti se při dalším použití nabídnou znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
+První vzdálenost vede podél plochy, kterou mají hrany společnou; u samostatné hrany podél plochy, kterou zvolí AutoCAD: přední u horní přední hrany kvádru a horní u okraje válce. Přímá hrana mezi dvěma rovinnými plochami se stane rovinným pásem, kruhová hrana otvoru nebo okraje pásem kužele a zkosení, která se setkají v rohu, se spojí v čáře. Vzdálenosti se při dalším použití nabídnou znovu. Těleso si ponechá hladinu a vlastnosti, ale ztratí to, z čeho vzniklo: kvádr už není kvádr. Celý příkaz je jeden krok zpět. MellowCAD umí ve 3D jen 3D tělesa, zatím částečně.
 
 ## Options
 

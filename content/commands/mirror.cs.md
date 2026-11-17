@@ -5,7 +5,7 @@ figure: "Uzavřený obrys zrcadlený podle svislé osy zrcadlení, zdroj ponech�
 sourceHash: "fd4b7540311a"
 ---
 
-Příkaz ZRCADLI (MIRROR) zrcadlí vybrané objekty podle přímky: vyberte je, zadejte první a druhý bod osy zrcadlení a pak určete, zda vymazat zdrojové objekty. Zrcadlový obraz je kopie a s výchozí odpovědí, <Keyword id="No" />, originály zůstanou: tak se kreslí souměrný díl po polovinách. Oba body se berou v rovině XY USS, takže osa nakreslená se zapnutým režimem ORTO zrcadlí přímo napříč, vodorovně nebo svisle. Stejně jako v AutoCADu s MIRRTEXT na 0, výchozí hodnotě, se text v zrcadlovém obrazu dál čte zleva doprava a šrafy si ponechají úhel svého vzoru. Celé spuštění je jeden krok, který vrátí <Command id="U" />.
+Příkaz ZRCADLI (MIRROR) zrcadlí vybrané objekty podle přímky: vyberte je, zadejte první a druhý bod osy zrcadlení a pak určete, zda vymazat zdrojové objekty. Zrcadlový obraz je kopie a s výchozí odpovědí, <Keyword id="No" />, originály zůstanou: tak se kreslí souměrný díl po polovinách. Oba body se berou v rovině XY USS, takže osa nakreslená se zapnutým režimem Orto zrcadlí přímo napříč, vodorovně nebo svisle. Stejně jako v AutoCADu s MIRRTEXT na 0, výchozí hodnotě, se text v zrcadlovém obrazu dál čte zleva doprava a šrafy si ponechají úhel svého vzoru. Celé spuštění je jeden krok, který vrátí <Command id="U" />.
 
 ## Options
 
@@ -15,7 +15,7 @@ Vymaže zdrojové objekty, takže zůstane jen zrcadlový obraz: převrácení n
 
 ### No
 
-Výchozí volba: ponechá zdrojové objekty vedle jejich zrcadlového obrazu.
+Výchozí odpověď: ponechá zdrojové objekty vedle jejich zrcadlového obrazu.
 
 ## Missing
 
@@ -37,4 +37,4 @@ Odpovězte <Keyword id="Yes" />, když se příkaz ZRCADLI zeptá, zda vymazat z
 
 ### Jak zrcadlit vodorovně nebo svisle?
 
-Zapněte režim ORTO (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní.
+Zapněte režim Orto (F8) a zadejte dva body osy zrcadlení podél osy, podle které chcete zrcadlit: svislá osa prohodí levou a pravou stranu, vodorovná horní a dolní.

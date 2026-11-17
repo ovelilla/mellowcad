@@ -5,7 +5,7 @@ figure: "PP tažený doprava a dolů, pak Enter: deska se v pohledu posune, jej�
 sourceHash: "0ca3050831f3"
 ---
 
-Příkaz PP (PAN) posouvá pohled; nic ve výkresu se nepohne. Začne zprávou <Message id="panExit" /> a na nic dalšího se neptá: kurzor se změní v ruku a tažení levým tlačítkem posouvá pohled s ním, kolikrát chcete, dokud příkaz neukončí Enter nebo Esc. Bez příkazu PP posouvá pohled kdykoli tažení se stisknutým kolečkem myši, i uprostřed příkazu. Každé PP je krok vrácení, spojený s okolními ZOOM a PP, takže <Command id="U" /> vrátí pohled. Když příkaz zadáte s apostrofem, `'PP` nebo `'P`, funguje uvnitř jiného příkazu, který po něm pokračuje.
+Příkaz PP (PAN) posouvá pohled; nic ve výkresu se nepohne. Začne zprávou <Message id="panExit" /> a na nic dalšího se neptá: kurzor se změní v ruku a tažení levým tlačítkem posouvá pohled s ním, kolikrát chcete, dokud příkaz neukončí Enter nebo Esc. Bez příkazu PP posouvá pohled kdykoli tažení se stisknutým kolečkem myši, i uprostřed příkazu. Každé spuštění příkazu PP je krok vrácení, spojený s okolními příkazy ZOOM a PP, takže <Command id="U" /> vrátí pohled. Když příkaz zadáte s apostrofem, `'PP` nebo `'P`, funguje uvnitř jiného příkazu, který po něm pokračuje.
 
 <Command id="-PAN" /> posouvá místo toho o dva body: základní bod a druhý bod, pohled se posune o vzdálenost mezi nimi; nebo posunutí zadané na první výzvě, třeba `50,0`, a Enter na druhé. Je také transparentní a je samostatným krokem vrácení.
 
@@ -17,7 +17,7 @@ Místní nabídka, kterou AutoCAD ukáže po kliknutí pravým tlačítkem běhe
 
 ### Jak se jmenuje příkaz PP anglicky?
 
-PAN. V českém AutoCADu je jeho zkratka `P`, stejná jako v anglickém: zadejte ji a stiskněte Enter nebo mezerník. Nebo žádný příkaz: podržte stisknuté kolečko myši a táhněte. Celý název `PP` funguje také a `_PAN` v AutoCADu v jakémkoli jazyce.
+PAN. V českém AutoCADu je jeho zkratka `P`, stejná jako v anglickém AutoCADu: zadejte ji a stiskněte Enter nebo mezerník. Nebo žádný příkaz: podržte stisknuté kolečko myši a táhněte. Celý název `PP` funguje také a `_PAN` v AutoCADu v jakémkoli jazyce.
 
 ### Jak posouvat pohled myší v AutoCADu?
 
@@ -25,7 +25,7 @@ Podržte stisknuté kolečko myši a táhněte: pohled sleduje kurzor. Otáčen�
 
 ### Jak posunout pohled během kreslení?
 
-Táhněte se stisknutým kolečkem, nebo na výzvě příkazu zadejte `'P`: příkaz počká, než pohled posunete, a pak se znovu zeptá tam, kde byl.
+Táhněte se stisknutým kolečkem, nebo ve výzvě příkazu zadejte `'P`: příkaz počká, než pohled posunete, a pak se znovu zeptá tam, kde byl.
 
 ### Jak posunout pohled o přesnou vzdálenost?
 

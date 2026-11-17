@@ -7,7 +7,7 @@ sourceHash: "be43813a7dee"
 
 Příkaz SJEDNOCENÍ (UNION) spojí dvě nebo více 3D těles do jednoho tělesa, nebo dvě nebo více oblastí ležících v jedné rovině do jedné oblasti: společná část se počítá jednou a hrany uvnitř zmizí. Ptá se na libovolný počet objektů a Enter je sjednotí. Jako v AutoCADu 2027 se sada vybraná předem zahodí a příkaz se zeptá znovu, a co není těleso ani oblast, se přeskočí. Tělesa a oblasti se sjednocují zvlášť: všechna tělesa do jednoho, oblasti rovinu po rovině.
 
-Objekt vybraný jako první se stane výsledkem, se svou hladinou a barvou, a ostatní se vymažou; při výběru oknem, křížovým oknem nebo možností VŠE je to nejnovější z nich. Výsledek je složené těleso: už to není kvádr ani válec a nemá historii (<Command id="LIST" /> u něj žádnou historii neuvede), a když je vybrané, ukáže jeden uzel, který ho posouvá celé. Tělesa, která se nedotýkají, se stanou jedním objektem o dvou částech. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCADu je zatím částečné: tělesa existují, povrchy a sítě ne.
+Objekt vybraný jako první se stane výsledkem, se svou hladinou a barvou, a ostatní se vymažou; při výběru oknem, křížovým oknem nebo možností VŠE je to nejnovější z nich. Výsledek je složené těleso: už to není kvádr ani válec a nemá historii (<Command id="LIST" /> u něj uvede `Historie = Žádný`), a když je vybrané, ukáže jeden uzel, který ho posouvá celé. Tělesa, která se nedotýkají, se stanou jedním objektem o dvou částech. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCAD je zatím částečné: tělesa existují, povrchy a sítě ne.
 
 ## Missing
 
@@ -19,9 +19,9 @@ Povrchy, které zde nejsou. Zakřivené plochy, které se protínají podél kř
 
 UNION. V české verzi AutoCADu zadejte `SJEDNOCENÍ` nebo zkratku `SJE` a stiskněte Enter nebo mezerník; zkratka `UNI` z anglické verze v české nefunguje. `_UNION` funguje v AutoCADu v každém jazyce.
 
-### Proč SJEDNOCENÍ nefunguje?
+### Proč příkaz SJEDNOCENÍ nefunguje?
 
-Potřebuje dvě tělesa nebo dvě oblasti ve stejné rovině: s menším počtem vypíše <Message id="booleanNeedsTwo" /> a nic nezmění. Úsečky, oblouky a křivky nejsou oblasti, ani uzavřené: nejprve z nich vytvořte oblasti příkazem <Command id="REGION" />. Objekty vybrané před příkazem SJEDNOCENÍ se zahodí, jako v AutoCADu 2027: vyberte je u jeho výzvy. Když oznámí, že jedna booleovská operace selhala, tělesa se stýkají způsobem, který MellowCAD zatím neumí spočítat, a zůstanou beze změny.
+Potřebuje dvě tělesa nebo dvě oblasti ve stejné rovině: s menším počtem vypíše <Message id="booleanNeedsTwo" /> a nic nezmění. Úsečky, oblouky a křivky nejsou oblasti, ani uzavřené: nejprve z nich vytvořte oblasti příkazem <Command id="REGION" />. Objekty vybrané před příkazem SJEDNOCENÍ se zahodí, jako v AutoCADu 2027: vyberte je ve výzvě příkazu. Když oznámí, že jedna booleovská operace selhala, tělesa se stýkají způsobem, který MellowCAD zatím neumí spočítat, a zůstanou beze změny.
 
 ### Jak vrátit příkaz SJEDNOCENÍ?
 

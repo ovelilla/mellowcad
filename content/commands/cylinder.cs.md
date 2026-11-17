@@ -8,7 +8,7 @@ sourceHash: "ce397d8dcb5d"
 
 Příkaz VÁLEC (CYLINDER) kreslí válec jako 3D těleso: zadejte střed jeho základny, pak poloměr, pak výšku. Základna leží v rovině XY souřadného systému USS, ve výšce Z středu, a výška stoupá podél jeho osy Z; záporná jde dolů a bod ji udává svou vzdáleností od základny, jako u příkazu <Command id="BOX" />. Poloměr a výška se nabízejí jako výchozí hodnoty, které přijme Enter, sdílené s ostatními základními tělesy a příkazem <Command id="EXTRUDE" />. Válec leží v aktuální hladině a krok zpět ho odstraní najednou.
 
-Válec si ponechává své rozměry: <Command id="LIST" /> ukáže jeho polohu, normálu, poloměr a výšku a paleta Vlastnosti dovolí poloměr a výšku přepsat. Jeho uzly ho posouvají, nastavují jeho výšku a v každé čtvrtině základny jeho poloměr. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCADu, který tvoří jen 3D tělesa, zatím částečně.
+Válec si ponechává své rozměry: <Command id="LIST" /> ukáže jeho polohu, normálu, poloměr a výšku a paleta Vlastnosti dovolí poloměr a výšku přepsat. Jeho uzly ho posouvají, nastavují jeho výšku a v každé čtvrtině základny jeho poloměr. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCAD, které tvoří jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -42,7 +42,7 @@ U výšky: zeptá se na druhý konec osy. Válec vede ze středu základny do to
 
 ## Missing
 
-<Command id="EXPLODE" /> válce, který AutoCAD rozloží na obě podstavy a plochu: MellowCAD plochy nemá, a tak ohlásí, že ho rozložit nemohl. Posun, Otočení, Měřítko a Zrcadlení z aktivního uzlu a výška tažená za základnu. Tečkované kóty, které AutoCAD kreslí, když zadáváte poloměr, body elipsy a osu. Změna kruhového válce na eliptický zadáním v paletě Vlastnosti. Obrysy, které kreslí `DISPSILH` v AutoCADu. V půdorysu, kde horní kružnice zakrývá kružnici základny, najde uchopení Nejbližší kružnici základny, kde AutoCAD najde horní. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě stylů 2D drátový model, Skrytý a Koncepční.
+<Command id="EXPLODE" /> válce, který AutoCAD rozloží na obě základny a povrch: MellowCAD povrchy nemá, a tak ohlásí, že ho rozložit nemohl. Režimy POSUN, OTOČ, MĚŘÍTKO a ZRCADLI z aktivního uzlu a výška tažená za základnu. Tečkované kóty, které AutoCAD kreslí, když zadáváte poloměr, body elipsy a osu. Změna kruhového válce na eliptický zadáním v paletě Vlastnosti. Obrysy, které kreslí `DISPSILH` v AutoCADu. V půdorysu, kde horní kružnice zakrývá kružnici základny, najde uchopení Nejbližší kružnici základny, kde AutoCAD najde horní. Vizuální styly, které <Command id="VSCURRENT" /> nemá kromě stylů 2D drátový model, Skrytý a Koncepční.
 
 ## Questions
 

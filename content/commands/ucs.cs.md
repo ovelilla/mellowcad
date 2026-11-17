@@ -6,9 +6,9 @@ figure: "Kvádr viděný od jihovýchodu: USS přesune počátek na jeho horní 
 sourceHash: "8ac3b844fe16"
 ---
 
-Příkaz USS (UCS) nastaví uživatelský souřadnicový systém: počátek a osy X a Y kdekoli v prostoru, takže jeho rovina XY může být skloněná. Zapsané souřadnice se v něm čtou a to, co kreslíte, leží v jeho rovině XY: po přesunu počátku na horní plochu kvádru leží kružnice se středem v `30,20` na horní ploše. Nejprve uvede název aktuálního USS – `*GLOBÁLNÍ*`, `*BEZ NÁZVU*` nebo název, pod kterým byl uložen – a pak se zeptá na nový počátek nebo možnost; Enter na tomto místě se vrátí ke globálnímu systému. Bod je počátkem, se svou souřadnicí Z, a bod bez Z leží v aktuální výšce. Pak se zeptá na bod na kladné ose X a bod v rovině XY, čtené v aktuálním USS: Enter u kteréhokoli z nich ponechá osy beze změny. Jeden bod USS posune, tři ho natočí libovolně.
+Příkaz USS (UCS) nastaví uživatelský souřadnicový systém: počátek a osy X a Y kdekoli v prostoru, takže jeho rovina XY může být skloněná. Zapsané souřadnice se v něm čtou a to, co kreslíte, leží v jeho rovině XY: po přesunu počátku na horní plochu kvádru leží kružnice se středem v `30,20` na horní ploše. Nejprve uvede název aktuálního USS – `*GLOBÁLNÍ*`, `*BEZ NÁZVU*` nebo název, pod kterým byl uložen – a pak se zeptá na nový počátek nebo možnost; Enter na tomto místě se vrátí ke globálnímu systému. Bod je počátkem, se svou souřadnicí Z, a bod bez Z leží v aktuální výšce. Pak se zeptá na bod na kladné ose X a bod v rovině XY, čtené v aktuálním USS: Enter v kterékoli z těchto výzev ponechá osy beze změny. Jeden bod USS posune, tři ho natočí libovolně.
 
-Příkazy pak pracují v rovině XY systému USS: <Command id="LINE" /> a <Command id="CIRCLE" /> kreslí na ni a <Command id="BOX" /> a <Command id="EXTRUDE" /> z ní vytvářejí tělesa podél její osy Z. Každý objekt si při změně USS ponechá vlastní rovinu a <Command id="PLAN" /> ukáže aktuální USS přímo shora. USS se ukládá do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Příkazy pak pracují v rovině XY systému USS: <Command id="LINE" /> a <Command id="CIRCLE" /> kreslí na ni a <Command id="BOX" /> a <Command id="EXTRUDE" /> z ní vytvářejí tělesa ve směru osy Z systému USS. Každý objekt si při změně USS ponechá vlastní rovinu a <Command id="PLAN" /> ukáže aktuální USS přímo shora. USS se ukládá do výkresu a každé spuštění je jeden krok, který lze vrátit zpět. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -22,7 +22,7 @@ Uložené systémy USS, podle názvu. <Keyword id="Save" /> uloží aktuální a
 
 ### OBject
 
-Zarovná USS s objektem, který vyberete: úsečkou, kružnicí, obloukem, elipsou, křivkou, spline, textem, víceřádkovým textem, definicí atributu nebo referencí bloku. Počátek a osa X se umístí tam, kam je pro daný druh objektu umístí AutoCAD, a osa Z je vlastní normála objektu, takže USS leží v rovině objektu. Vybrat lze i objekt v zamknuté hladině. U šraf příkaz vypíše <Message id="ucsNoCoordinateSystem" /> a skončí, aniž by USS změnil.
+Zarovná USS s objektem, který vyberete: úsečkou, kružnicí, obloukem, elipsou, křivkou, spline, textem, víceřádkovým textem, definicí atributu nebo referencí bloku. Počátek a osa X se umístí tam, kam je pro daný druh objektu umístí AutoCAD, a osa Z je vlastní normála objektu, takže USS leží v rovině objektu. Vybrat lze i objekt v uzamknuté hladině. U šraf příkaz vypíše <Message id="ucsNoCoordinateSystem" /> a skončí, aniž by USS změnil.
 
 ### Previous
 

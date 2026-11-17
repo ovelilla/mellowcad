@@ -3,12 +3,12 @@ title: "Příkaz KOULE (SPHERE) v AutoCADu"
 description: "Jak v AutoCADu nakreslit 3D kouli příkazem KOULE (SPHERE): střed a poloměr, Průměr, 3B, 2B a Ttr, a proč se koule zobrazí čarami. Vyzkoušejte zdarma."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak v AutoCADu udělat kouli?","answer":"Spusťte KOULE, zadejte střed a pak poloměr: 0,0,0 a 25 nakreslí kouli z ukázky. Otočte pohled, abyste ji viděli prostorově: rohem krychle ViewCube nebo příkazem -POHLED s možností JViso."},{"question":"Proč koule vypadá jako kružnice s čarami?","answer":"Styly 2D drátový model a Skrytý kreslí kouli jako její poledníky a rovnoběžky; v půdorysu jsou to kružnice a čáry, které jí procházejí. AKTUÁLNÍVS s možností Koncepční ji vystínuje a ISOLINES určuje, kolik čar ukáže."},{"question":"Jak v AutoCADu udělat polokouli?","answer":"Nakreslete kouli a pak ji rozřízněte středem příkazem ODŘÍZNI: tři body v rovině nebo XY a střed, a nakonec strana, kterou chcete ponechat."},{"question":"Jak nakreslit kouli o daném průměru?","answer":"U poloměru zvolte Průměr a zadejte průměr. Kouli určí také dva konce průměru zadané v možnosti 2B."}]
+faq: [{"question":"Jak v AutoCADu udělat kouli?","answer":"Spusťte příkaz KOULE, zadejte střed a pak poloměr: 0,0,0 a 25 nakreslí kouli z ukázky. Otočte pohled, abyste ji viděli prostorově: rohem krychle ViewCube nebo příkazem -POHLED s možností JViso."},{"question":"Proč koule vypadá jako kružnice s čarami?","answer":"Styly 2D drátový model a Skrytý kreslí kouli jako její poledníky a rovnoběžky; v půdorysu jsou to kružnice a čáry, které jí procházejí. Příkaz AKTUÁLNÍVS s možností Koncepční ji vystínuje a ISOLINES určuje, kolik čar ukáže."},{"question":"Jak v AutoCADu udělat polokouli?","answer":"Nakreslete kouli a pak ji rozřízněte středem příkazem ODŘÍZNI: tři body v rovině nebo XY a střed, a nakonec určete stranu, kterou chcete ponechat."},{"question":"Jak nakreslit kouli o daném průměru?","answer":"U poloměru zvolte Průměr a zadejte průměr. Kouli určí také dva konce průměru zadané v možnosti 2B."}]
 ---
 
 Příkaz KOULE (SPHERE) nakreslí 3D těleso ve tvaru koule: zadejte střed a pak poloměr. Poloměr určený myší se odečte v rovině procházející středem a poslední poloměr, společný s příkazy [`VÁLEC`](/docs/commands/cylinder), [`KUŽEL`](/docs/commands/cone) a dalšími základními tělesy, se nabídne jako výchozí hodnota, kterou převezme Enter. Koule leží v aktuální hladině a Zpět ji odstraní v jednom kroku.
 
-Ve vizuálních stylech 2D drátový model a Skrytý se kreslí čarami: poledníky a rovnoběžkami, v počtu podle `ISOLINES`, a uchopení objektu na ní najde jen střed. [`VÝPIS`](/docs/commands/list) ukáže její polohu a poloměr a v paletě Vlastnosti lze zapsat poloměr nebo průměr. Její uzly ji posouvají a uzly v kvadrantech rovníku mění poloměr. Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCADu, který zahrnuje jen tělesa, a zatím částečně.
+Ve vizuálních stylech 2D drátový model a Skrytý se kreslí čarami: poledníky a rovnoběžkami, v počtu podle `ISOLINES`, a uchopení objektu na ní najde jen střed. [`VÝPIS`](/docs/commands/list) ukáže její polohu a poloměr a v paletě Vlastnosti lze zapsat poloměr nebo průměr. Její uzly ji posouvají a uzly v kvadrantech rovníku mění poloměr. Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a další 3D příkazy MellowCAD, jehož 3D zahrnuje jen 3D tělesa, zatím částečně.
 
 - **Příkaz:** `KOULE`
 - **Anglicky:** `SPHERE`, zadávaný jako `_SPHERE` v libovolném jazyce
@@ -33,7 +33,7 @@ U středu: zeptá se na dva konce průměru, kdekoli v prostoru.
 
 ### `Ttr` (`T`) [#ttr]
 
-U středu: vyberte dvě úsečky, kružnice nebo oblouky s uchopením Tečná a zadejte poloměr: střed leží na kružnici o tomto poloměru, která se dotýká obou, v jejich výšce.
+U středu: vyberte dvě úsečky, kružnice nebo oblouky s uchopením Tečna a zadejte poloměr: střed leží na kružnici o tomto poloměru, která se dotýká obou, v jejich výšce.
 
 ### `Průměr` (`P`) [#diameter]
 
@@ -49,15 +49,15 @@ U poloměru: zeptá se místo toho na průměr a nabídne dvojnásobek poslední
 
 ### Jak v AutoCADu udělat kouli?
 
-Spusťte KOULE, zadejte střed a pak poloměr: `0,0,0` a `25` nakreslí kouli z ukázky. Otočte pohled, abyste ji viděli prostorově: rohem krychle ViewCube nebo příkazem `-POHLED` s možností `JViso`.
+Spusťte příkaz KOULE, zadejte střed a pak poloměr: `0,0,0` a `25` nakreslí kouli z ukázky. Otočte pohled, abyste ji viděli prostorově: rohem krychle ViewCube nebo příkazem `-POHLED` s možností `JViso`.
 
 ### Proč koule vypadá jako kružnice s čarami?
 
-Styly 2D drátový model a Skrytý kreslí kouli jako její poledníky a rovnoběžky; v půdorysu jsou to kružnice a čáry, které jí procházejí. [`AKTUÁLNÍVS`](/docs/commands/vscurrent) s možností `Koncepční` ji vystínuje a `ISOLINES` určuje, kolik čar ukáže.
+Styly 2D drátový model a Skrytý kreslí kouli jako její poledníky a rovnoběžky; v půdorysu jsou to kružnice a čáry, které jí procházejí. Příkaz [`AKTUÁLNÍVS`](/docs/commands/vscurrent) s možností `Koncepční` ji vystínuje a `ISOLINES` určuje, kolik čar ukáže.
 
 ### Jak v AutoCADu udělat polokouli?
 
-Nakreslete kouli a pak ji rozřízněte středem příkazem [`ODŘÍZNI`](/docs/commands/slice): tři body v rovině nebo `XY` a střed, a nakonec strana, kterou chcete ponechat.
+Nakreslete kouli a pak ji rozřízněte středem příkazem [`ODŘÍZNI`](/docs/commands/slice): tři body v rovině nebo `XY` a střed, a nakonec určete stranu, kterou chcete ponechat.
 
 ### Jak nakreslit kouli o daném průměru?
 

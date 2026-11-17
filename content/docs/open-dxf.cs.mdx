@@ -14,7 +14,7 @@ faq:
   - question: "Mohu své změny uložit jako soubor DXF?"
     answer: "Ano. Příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF uloží výkres jako DXF AutoCADu 2000 až 2018, textový nebo binární, který AutoCAD otevře. 3D tělesa a oblasti se vynechají a příkazový řádek to oznámí."
   - question: "Proč některé objekty chybí?"
-    answer: "Co v MellowCAD zatím nemá svůj objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou."
+    answer: "Pro co MellowCAD zatím nemá objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou."
 ---
 
 <OpenDxf />
@@ -23,10 +23,10 @@ MellowCAD otevírá soubory DXF v prohlížeči a kreslí je ve svém editoru, k
 
 ## Co se otevře [#opens]
 
-- **DXF z AutoCADu R12 až 2018**, nejnovějšího formátu DXF, který AutoCAD zapisuje, textový (ASCII) nebo binární, vytvořený v AutoCADu nebo v jiném programu. Text si zachová své znaky: do verze 2004 v kódové stránce, kterou soubor uvádí, od 2007 v UTF-8.
+- **DXF z AutoCADu R12 až 2018**, což je nejnovější formát DXF, který AutoCAD zapisuje, textový (ASCII) nebo binární, vytvořený v AutoCADu nebo v jiném programu. Text si zachová své znaky: do verze 2004 v kódové stránce, kterou soubor uvádí, od 2007 v UTF-8.
 - **Úsečky, oblouky, kružnice, elipsy a křivky**, s jejich šířkami a vyhlazením oblouky nebo splinem, 3D křivky a spliny, body, kreslené [stylem bodu](/docs/commands/ptype) výkresu, a 2D desky, vyplněné podle proměnné FILLMODE.
-- **Jednořádkový a víceřádkový text**, odkazy s textem, bloky s atributy, přímé, zarovnané, úhlové kóty, kóty poloměru a průměru a šrafy, každé s čarami vzoru, které obsahuje, tak jak je kreslí AutoCAD: i uživatelský vzor nebo vzor jiného programu.
-- **Hladina každého objektu**, barva, typ čáry a jeho měřítko, tloušťka čáry, tloušťka a zdvih, a hladiny zapnuté, vypnuté nebo zamknuté; zmrazená hladina se otevře jako vypnutá.
+- **Jednořádkový a víceřádkový text**, odkazy s textem, bloky s atributy, přímé, zarovnané, úhlové kóty, kóty poloměru a průměru a šrafy, každá s čarami vzoru, které obsahuje, tak jak je kreslí AutoCAD: i uživatelský vzor nebo vzor jiného programu.
+- **Hladina každého objektu**, barva, typ čáry a jeho měřítko, tloušťka čáry, tloušťka a zdvih, a hladiny zapnuté, vypnuté nebo uzamknuté; zmrazená hladina se otevře jako vypnutá.
 - **Typy čar výkresu**, kreslené s čárkami, tečkami a mezerami v měřítku typu čáry výkresu, a text složitých typů čar, jako je GAS_LINE.
 - **Textové a kótovací styly výkresu** a jeho jednotky, pokud jsou to milimetry, centimetry nebo metry.
 
@@ -38,7 +38,7 @@ Když DXF obsahuje něco, pro co MellowCAD zatím nemá objekt, otevře zbytek a
 - přímky a polopřímky, multičáry;
 - multiodkazy a tolerance, tabulky, zakrytí a obrázky;
 - 3D tělesa, oblasti a povrchy;
-- přechodové výplně a staniční kóty a kóty délky oblouku.
+- přechodové výplně, souřadnicové kóty a kóty délky oblouku.
 
 Co je v rozvržení, se počítá zvlášť, protože rozvržení tu zatím nejsou: výkres, jehož objekty jsou všechny v rozvrženích, se otevře prázdný.
 
@@ -78,4 +78,4 @@ Ano. Příkaz <Command id="SAVEAS" /> (`Ctrl+Shift+S`) nebo <Command id="DXFOUT"
 
 ### Proč některé objekty chybí? [#missing]
 
-Co v MellowCAD zatím nemá svůj objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou.
+Pro co MellowCAD zatím nemá objekt, například multiodkazy, tabulky nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou.

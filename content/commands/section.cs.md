@@ -7,7 +7,7 @@ sourceHash: "f1c01b76c810"
 
 Příkaz PRŮŘEZ (SECTION) vytvoří průřez 3D těles: oblast v místě, kde rovina protíná každé z nich, a tělesa zůstanou beze změny. Ptá se na tělesa, dokud nestisknete Enter: jako v AutoCADu 2027 se sada vybraná předem zahodí a příkaz se zeptá znovu, co není těleso, se přeskočí a u sady bez tělesa vypíše <Message id="noSolidsSelected" />. Pak rovina: ve výchozím nastavení na ní zadáte tři body a možnosti ji určí jinak, jako u příkazu <Command id="SLICE" />.
 
-Každé těleso, které rovina protne, dostane svou oblast, ležící v této rovině: kvádr s průchozím otvorem dá obrys s mezerou po otvoru, válec proříznutý podél osy obdélník. Rovina ležící na ploše tělesa dá tuto plochu. U tělesa, které rovina mine, vypíše <Message id="sectionMissedOne" />. Oblasti dostanou aktuální hladinu a vlastnosti, ne vlastnosti tělesa; <Command id="MOVE" /> jednu vysune, abyste ji viděli, <Command id="AREA" /> a <Command id="MASSPROP" /> ji změří a <Command id="EXTRUDE" /> z ní udělá těleso. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCADu jsou jen tělesa, a zatím částečně.
+Každé těleso, které rovina protne, dostane svou oblast, ležící v této rovině: kvádr s průchozím otvorem dá obrys s mezerou po otvoru, válec proříznutý podél osy obdélník. Rovina ležící na ploše tělesa dá tuto plochu. U tělesa, které rovina mine, vypíše <Message id="sectionMissedOne" />. Oblasti dostanou aktuální hladinu a vlastnosti, ne vlastnosti tělesa; příkaz <Command id="MOVE" /> jednu vysune, abyste ji viděli, příkazy <Command id="AREA" /> a <Command id="MASSPROP" /> ji změří a příkaz <Command id="EXTRUDE" /> z ní udělá těleso. Celý příkaz je jeden krok, který lze vrátit zpět. 3D v MellowCAD jsou jen 3D tělesa, zatím částečně.
 
 ## Options
 
@@ -41,15 +41,15 @@ Tři body v rovině, která pak může být skloněná libovolně. Je to výchoz
 
 ## Missing
 
-Povrchy a sítě, které MellowCAD nemá. Rovinná 3D křivka jako objekt určující rovinu, kterou AutoCAD přijme. Řezy, pro které MellowCAD zatím nemá přesný tvar, jako u příkazu <Command id="SLICE" />: skončí zprávou, že jedna booleovská operace selhala. Příkaz SECTIONPLANE a živé řezy, které pás karet AutoCADu nabízí místo příkazu PRŮŘEZ: zde se PRŮŘEZ zadává z klávesnice.
+Povrchy a sítě, které MellowCAD nemá. Rovinná 3D křivka jako objekt určující rovinu, kterou AutoCAD přijímá. Řezy, pro které MellowCAD zatím nemá přesný tvar, jako u příkazu <Command id="SLICE" />: skončí zprávou, že jedna booleovská operace selhala. Příkaz SECTIONPLANE a živé řezy, které pás karet AutoCADu nabízí místo příkazu PRŮŘEZ: zde se PRŮŘEZ zadává z klávesnice.
 
 ## Questions
 
 ### Jak v AutoCADu udělat řez 3D tělesem?
 
-Spusťte PRŮŘEZ, vyberte těleso a stiskněte Enter, pak určete rovinu: <Keyword id="ZX" /> a bod uprostřed ho proříznou zepředu dozadu, <Keyword id="XY" /> a bod v určité výšce vodorovně. Oblast leží uvnitř tělesa: vysuňte ji příkazem <Command id="MOVE" />, abyste ji viděli.
+Spusťte příkaz PRŮŘEZ, vyberte těleso a stiskněte Enter, pak určete rovinu: <Keyword id="ZX" /> a bod uprostřed ho proříznou zepředu dozadu, <Keyword id="XY" /> a bod v určité výšce vodorovně. Oblast leží uvnitř tělesa: vysuňte ji příkazem <Command id="MOVE" />, abyste ji viděli.
 
-### Jaký je rozdíl mezi PRŮŘEZ a ODŘÍZNI?
+### Jaký je rozdíl mezi příkazy PRŮŘEZ a ODŘÍZNI?
 
 <Command id="SLICE" /> rozřízne těleso na dvě části a ponechá jednu nebo obě. PRŮŘEZ ponechá těleso celé a nakreslí oblast tam, kde ho rovina protíná.
 
@@ -57,6 +57,6 @@ Spusťte PRŮŘEZ, vyberte těleso a stiskněte Enter, pak určete rovinu: <Keyw
 
 SECTION. V české verzi AutoCADu zadejte `PRŮŘEZ` nebo zkratku `PRU` a stiskněte Enter nebo mezerník; zkratka `SEC` z anglické verze v české nefunguje. `_SECTION` funguje v AutoCADu v každém jazyce.
 
-### Proč PRŮŘEZ hlásí, že rovina neprotíná těleso?
+### Proč příkaz PRŮŘEZ hlásí, že rovina neprotíná těleso?
 
 Rovina ho míjí: zkontrolujte, jak jste ji zadali. <Keyword id="XY" />, <Keyword id="YZ" /> a <Keyword id="ZX" /> jsou roviny systému USS, takže bod ve špatné výšce nebo na špatné straně umístí rovinu mimo těleso.

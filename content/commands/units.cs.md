@@ -7,7 +7,7 @@ sourceHash: "1fd1973c3ebf"
 
 Příkaz JEDNOTKY (UNITS) otevře dialog Výkresové jednotky, který určuje, jak výkres zapisuje délky a čemu odpovídá jedna výkresová jednotka. Jako v AutoCADu je dialog modální: příkaz trvá, dokud dialog nezavře OK nebo Storno, změna potvrzená tlačítkem OK je jeden krok, který vrátí <Command id="U" />, a Storno nebo Esc nic nezmění. Zadaný s apostrofem, `'JEDNOTKY`, se otevře uvnitř běžícího příkazu, který po zavření dialogu pokračuje. Otevřou ho také jednotky na stavovém řádku a položka Výkresové jednotky v nabídce aplikace.
 
-Typ délky je Desítkové a její Přesnost, od 0 do 8 desetinných míst, určuje zápis každé délky: souřadnic, vzdáleností, ploch, výchozích hodnot nabízených ve výzvách. Nový výkres zde začíná na dvou místech, zatímco metrická šablona AutoCADu začíná na čtyřech. Měřítko pro vložení určuje, čím je výkresová jednotka: milimetrem, centimetrem nebo metrem; ukazuje to stavový řádek a dynamické zadání. Příklad výstupu ukáže bod se zvolenou přesností.
+Typ délky je Desítkový a její Přesnost, od 0 do 8 desetinných míst, určuje zápis každé délky: souřadnic, vzdáleností, ploch, výchozích hodnot nabízených ve výzvách. Nový výkres zde začíná na dvou místech, zatímco metrická šablona AutoCADu začíná na čtyřech. Měřítko pro vložení určuje, čím je výkresová jednotka: milimetrem, centimetrem nebo metrem; ukazuje to stavový řádek a dynamické zadání. Příklad výstupu ukáže bod se zvolenou přesností.
 
 ## Missing
 
@@ -27,7 +27,7 @@ Spusťte příkaz JEDNOTKY a v poli Měřítko pro vložení zvolte Milimetry, C
 
 V dialogu příkazu JEDNOTKY zvolte Přesnost, od `0` do `0.00000000`. Mění zápis délek, nikdy geometrii: úsečka nakreslená s délkou 10,125 zůstane dlouhá 10,125 při jakékoli přesnosti.
 
-### Proč kóty nemají přesnost nastavenou v JEDNOTKY?
+### Proč kóty nemají přesnost nastavenou v příkazu JEDNOTKY?
 
 Kóta zapisuje svou hodnotu s přesností vlastního kótovacího stylu, ne výkresu. Změňte ji v <Command id="DIMSTYLE" />, na kartě Primární jednotky.
 

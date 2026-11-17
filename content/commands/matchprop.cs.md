@@ -6,13 +6,13 @@ figure: "Deska a její otvor, svislá osa, červená a s typem čáry Center ve 
 sourceHash: "603d5ab849b1"
 ---
 
-Příkaz KOPIEVLAST (MATCHPROP) zkopíruje vlastnosti jednoho objektu na jiné: je to štětec Kopírovat vlastnosti z AutoCADu. Vyberte zdrojový objekt, nebo ho vyberte před příkazem; přijme i objekt v zamknuté hladině. Pak vypíše, které vlastnosti kopíruje, aktuální aktivní nastavení a jejich seznam, a zeptá se na cílové objekty: každý výběr kliknutím nebo oknem je hned přetře, dokud příkaz neukončí Enter. Cílový objekt v zamknuté hladině zůstane, jak je, se zprávou <Message id="matchpropLockedDestination" />. Kurzor nese štětec AutoCADu a celé spuštění je jeden krok, který vrátí <Command id="U" />. Když příkaz zadáte s apostrofem, `'KOPIEVLAST`, běží uvnitř jiného příkazu.
+Příkaz KOPIEVLAST (MATCHPROP) zkopíruje vlastnosti jednoho objektu na jiné: je to štětec Kopírovat vlastnosti z AutoCADu. Vyberte zdrojový objekt, nebo ho vyberte před příkazem; přijme i objekt v uzamknuté hladině. Pak vypíše, které vlastnosti kopíruje, `Aktuální aktivní nastavení:` a jejich seznam, a zeptá se na cílové objekty: každý výběr kliknutím nebo oknem je hned přetře, dokud příkaz neukončí Enter. Cílový objekt v uzamknuté hladině zůstane, jak je, se zprávou <Message id="matchpropLockedDestination" />. Kurzor nese štětec AutoCADu a celé spuštění je jeden krok, který vrátí <Command id="U" />. Když příkaz zadáte s apostrofem, `'KOPIEVLAST`, běží uvnitř jiného příkazu.
 
 Kopíruje to, co ve výchozím stavu zapíná dialog Nastavení vlastností: hladinu, barvu a tloušťku čáry; typ čáry, kromě šraf, víceřádkového textu a definic atributů; tloušťku; mezi texty styl, výšku a natočení, a z jednoho jednořádkového textu na jiný i zarovnání; mezi kótami kótovací styl; mezi šrafami vzor, měřítko a úhel, ale ne počátek.
 
 ## Missing
 
-Volba Nastavení a její dialog Nastavení vlastností: každá vlastnost, kterou zná, se kopíruje vždy a první výzva volbu Nastavení nenabízí. Měřítko typu čáry, průhlednost a styl vykreslování, které objekty zde nemají; šířky křivky, faktor šířky a úhel sklonu textu a poznámkové vlastnosti. Náhled změny pod kurzorem, který ukazuje AutoCAD.
+Možnost Nastavení a její dialog Nastavení vlastností: každá vlastnost, kterou zná, se kopíruje vždy a první výzva možnost Nastavení nenabízí. Měřítko typu čáry, průhlednost a styl vykreslování, které objekty zde nemají; šířky křivky, faktor šířky a úhel sklonu textu a poznámkové vlastnosti. Náhled změny pod kurzorem, který ukazuje AutoCAD.
 
 ## Questions
 
@@ -26,7 +26,7 @@ Spusťte příkaz KOPIEVLAST, vyberte úsečku, jejíž vlastnosti chcete přen�
 
 ### Proč Kopírovat vlastnosti nefunguje?
 
-Cílový objekt v zamknuté hladině se nezmění: nejprve hladinu odemkněte. Vlastnost se kopíruje jen mezi objekty, které ji mají: kótovací styl jen na kóty, textový styl jen na texty, vzor jen na šrafy. A typ čáry se na šrafy ani na víceřádkový text nekopíruje, jako v AutoCADu.
+Cílový objekt v uzamknuté hladině se nezmění: nejprve hladinu odemkněte. Vlastnost se kopíruje jen mezi objekty, které ji mají: kótovací styl jen na kóty, textový styl jen na texty, vzor jen na šrafy. A typ čáry se na šrafy ani na víceřádkový text nekopíruje, jako v AutoCADu.
 
 ### Jak přenést vlastnosti kóty nebo šraf?
 

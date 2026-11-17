@@ -5,11 +5,11 @@ figure: "Obdélník, jedna křivka, rozložený na čtyři úsečky, z nichž je
 sourceHash: "479cf1cd58d9"
 ---
 
-Příkaz ROZLOŽ (EXPLODE) rozloží složený objekt na objekty, ze kterých se skládá. Vyberte objekty a stiskněte Enter: křivka se změní v úsečky a oblouky podél své střednice, reference bloku v objekty svého bloku, o jednu úroveň níž, víceřádkový text v jeden text na každý zobrazený řádek a šrafa vzorem v čáry svého vzoru. Každý kus si ponechá hladinu a vlastnosti objektu; kusy bloku si ponechají své vlastní. Křivka se šířkou o šířku přijde a příkaz ROZLOŽ to oznámí. Úsečky, kružnice, oblouky, jednořádkový text a kóty rozložit nelze: odmítnou se už při výběru, a spline, elipsa a plná šrafa při uzavření výběru. Rozložení je jeden krok, který lze vrátit zpět.
+Příkaz ROZLOŽ (EXPLODE) rozloží složený objekt na objekty, ze kterých se skládá. Vyberte objekty a stiskněte Enter: křivka se změní v úsečky a oblouky podél své střednice, reference bloku v objekty svého bloku, o jednu úroveň níž, víceřádkový text v jeden text na každý zobrazený řádek a šrafy se vzorem v čáry svého vzoru. Každý kus si ponechá hladinu a vlastnosti objektu; kusy bloku si ponechají své vlastní. Křivka se šířkou o šířku přijde a příkaz ROZLOŽ to oznámí. Úsečky, kružnice, oblouky, jednořádkový text a kóty rozložit nelze: odmítnou se už při výběru, a spline, elipsa a plné šrafy při uzavření výběru. Rozložení je jeden krok, který lze vrátit zpět.
 
 ## Missing
 
-Kóty, které AutoCAD rozloží na čáry, šipky a text a MellowCAD je odmítne. Šrafa se vzorem, který zde není, se odmítne jako plná a rozložený víceřádkový text stojí tam, kam ho umístí naše písmo, o vlásek vedle místa, kam ho klade AutoCAD.
+Kóty, které AutoCAD rozloží na čáry, šipky a text a MellowCAD je odmítne. Šrafy se vzorem, který zde není, se odmítnou jako plné a rozložený víceřádkový text stojí tam, kam ho umístí naše písmo, o vlásek vedle místa, kam ho klade AutoCAD.
 
 ## Questions
 
@@ -27,4 +27,4 @@ Víceřádkový text ano: každý řádek se stane jednořádkovým textem. Jedn
 
 ### Jak v AutoCADu rozložit blok?
 
-Vyberte referenci bloku a stiskněte Enter: změní se v objekty svého bloku, tam, kde je reference kreslila. Blok vnořený v něm zůstane blokem: rozložte ho ještě jednou. Atributy se vrátí jako jejich definice, bez hodnot.
+Vyberte referenci bloku a stiskněte Enter: změní se v objekty svého bloku, tam, kde je reference kreslila. Blok vnořený v něm zůstane blokem: rozložte ho ještě jednou. Atributy se vrátí jako své definice, bez hodnot.

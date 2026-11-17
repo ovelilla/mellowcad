@@ -22,7 +22,7 @@ Vrátí poslední vrchol a pokračuje od předchozího. Když nezbude žádný s
 
 ## Missing
 
-Vyhlazená 3D křivka má v paletě Vlastnosti v řádku Vyhlazení hodnotu Žádné, kde AutoCAD uvádí kvadratickou nebo kubickou, a nelze ji tam změnit. Nemůže být hranicí šraf ani trajektorií příkazu KŘIVPOLE a paleta nemá řádek Materiál. Dynamické zadávání se ptá na počáteční bod v jednom poli, se Z zadaným za druhou čárkou, kde AutoCAD ukazuje pole X, Y a Z. Nabídky uzlů po najetí kurzorem: Protáhni, Přidat vrchol, Odstranit vrchol a další.
+Vyhlazená 3D křivka má v paletě Vlastnosti v řádku Vyhlazení hodnotu Žádné, kde AutoCAD uvádí kvadratickou nebo kubickou, a nelze ji tam změnit. Nemůže být hranicí šraf ani trajektorií příkazu KŘIVPOLE a paleta nemá řádek Materiál. Dynamické zadávání se ptá na počáteční bod v jednom poli, se Z zadaným za druhou čárkou, kde AutoCAD ukazuje pole X, Y a Z. Nabídky uzlů po najetí kurzorem: Protáhnout, Přidat vrchol, Odstranit vrchol a další.
 
 ## Questions
 

@@ -5,7 +5,7 @@ figure: "Deska, jejíž otvor je nakreslen s aktuálním typem HIDDEN a obě osy
 sourceHash: "d15530a865c1"
 ---
 
-Příkaz TYPČ (LINETYPE) nastaví typ čáry, kterým se kreslí nové objekty. AutoCAD otevře Správce typů čar; MellowCAD ho zatím nemá, a tak příkaz TYPČ spustí verzi pro příkazový řádek, kterou má i AutoCAD, <Command id="-LINETYPE" />. Vypíše aktuální typ čáry, na začátku `DleHlad`, a po každé odpovědi se znovu ptá na volbu, dokud ho Enter neukončí. DleHlad znamená, že každý objekt přebírá typ čáry své hladiny; typ zadaný názvem je vlastním typem objektu. Celé spuštění je jeden krok, který vrátí <Command id="U" />, a když příkaz zadáte s apostrofem uvnitř jiného příkazu, jeho typ čáry platí pro to, co ten příkaz nakreslí dál.
+Příkaz TYPČ (LINETYPE) nastaví typ čáry, kterým se kreslí nové objekty. AutoCAD otevře Správce typů čar; MellowCAD ho zatím nemá, a tak příkaz TYPČ spustí verzi pro příkazový řádek, kterou má i AutoCAD, <Command id="-LINETYPE" />. Vypíše aktuální typ čáry, na začátku `DleHlad`, a po každé odpovědi se znovu ptá na možnost, dokud ho Enter neukončí. DleHlad znamená, že každý objekt přebírá typ čáry své hladiny; typ zadaný názvem je vlastním typem objektu. Celé spuštění je jeden krok, který vrátí <Command id="U" />, a když příkaz zadáte s apostrofem uvnitř jiného příkazu, jeho typ čáry platí pro to, co ten příkaz nakreslí dál.
 
 Výkres si nese vlastní typy čar, uložené s ním i v jeho DXF. Nový jich má šest: Continuous a z metrického souboru AutoCADu acadiso.lin DASHED, HIDDEN, CENTER, PHANTOM a DASHDOT; ostatní se načítají z acadiso.lin a soubor DXF přináší vlastní, i ISO a složené, jejichž text, třeba `GAS` u GAS_LINE, se kreslí podél čáry. Vzor se na každou čáru klade jako v AutoCADu: vystředěný po její délce, se stejnými čárkami na obou koncích, ve velikosti podle <Command id="LTSCALE" /> a podle vlastního měřítka typu čáry objektu, které nastavují <Command id="CHPROP" /> a paleta Vlastnosti a novým objektům dává CELTSCALE.
 
@@ -13,7 +13,7 @@ Výkres si nese vlastní typy čar, uložené s ním i v jeho DXF. Nový jich m�
 
 ### ?
 
-Vypíše typy čar ve dvou sloupcích, název a popis. Na výzvě voleb se zeptá, který soubor vypsat, ve výchozím stavu acadiso.lin, nebo acad.lin, soubor AutoCADu v palcích, a vypíše jeho typy čar v pořadí souboru; na výzvě volby <Keyword id="Set" /> ty, které jsou načtené ve výkresu a jejichž názvy odpovídají zadanému textu, při `*` všechny, seřazené podle názvu.
+Vypíše typy čar ve dvou sloupcích, název a popis. U výzvy k zadání možnosti se zeptá, který soubor vypsat, ve výchozím stavu acadiso.lin, nebo acad.lin, soubor AutoCADu v palcích, a vypíše jeho typy čar v pořadí souboru; u výzvy možnosti <Keyword id="Set" /> ty, které jsou načtené ve výkresu a jejichž názvy odpovídají zadanému textu, při `*` všechny, seřazené podle názvu.
 
 ### Load
 
@@ -21,11 +21,11 @@ Zeptá se, které typy čar načíst, jeden název nebo několik oddělených č
 
 ### Set
 
-Zeptá se na název typu čáry a nabídne aktuální; zadejte název načteného typu nebo <Keyword id="BYLayer" />. Typ, který má acadiso.lin, se nejprve načte, jako to dělá AutoCAD; jakýkoli jiný se nenajde, což oznámí stejně jako AutoCAD, a vrátí se výzva voleb. Enter ponechá aktuální.
+Zeptá se na název typu čáry a nabídne aktuální; zadejte název načteného typu nebo <Keyword id="BYLayer" />. Typ, který má acadiso.lin, se nejprve načte, jako to dělá AutoCAD; jakýkoli jiný se nenajde, což oznámí stejně jako AutoCAD, a vrátí se výzva k zadání možnosti. Enter ponechá aktuální.
 
 ## Missing
 
-Správce typů čar a vytváření typů čar nebo jejich načítání z vlastního souboru. Tvary složených typů čar, jako je BATTING nebo ZIGZAG, kreslené jako mezery na jejich místě. DleBlok. PSLTSCALE a MSLTSCALE, protože tu není výkresový prostor. Soubor acadiso.lin AutoCADu v jednotlivých jazycích, z něhož španělský nebo německý AutoCAD načítá své názvy (TRAZOS, STRICHLINIE): volba <Keyword id="Load" /> čte ve všech jazycích anglický, i když výkres vytvořený s těmito názvy se otevře s vlastními. PLINEGEN: nová křivka začíná vzor znovu v každém vrcholu, pokud to nezapne volba <Keyword command="PEDIT" id="Ltype gen" /> příkazu <Command id="PEDIT" />.
+Správce typů čar a vytváření typů čar nebo jejich načítání z vlastního souboru. Tvary složených typů čar, jako je BATTING nebo ZIGZAG, kreslené jako mezery na jejich místě. DleBlok. PSLTSCALE a MSLTSCALE, protože tu není výkresový prostor. Soubor acadiso.lin AutoCADu v jednotlivých jazycích, z něhož španělský nebo německý AutoCAD načítá své názvy (TRAZOS, STRICHLINIE): možnost <Keyword id="Load" /> čte ve všech jazycích anglický, i když výkres vytvořený s těmito názvy se otevře s vlastními. PLINEGEN: nová křivka začíná vzor znovu v každém vrcholu, pokud to nezapne možnost <Keyword command="PEDIT" id="Ltype gen" /> příkazu <Command id="PEDIT" />.
 
 ## Questions
 

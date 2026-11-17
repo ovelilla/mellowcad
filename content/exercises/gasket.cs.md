@@ -6,13 +6,13 @@ figure: "Těsnění 120 × 80 s kótami."
 sourceHash: "dc5c0e2b45b8"
 ---
 
-Nakreslete toto těsnění v milimetrech: deska 120 × 80 s rohy zaoblenými poloměrem 10, uprostřed středový otvor o průměru 40 a čtyři otvory o průměru 10, jejichž středy leží 12 od okrajů, k tomu osy středového otvoru a kóty. Vše se zadává z klávesnice: první bod příkazu leží tam, kam ho zadáte, a každý další se měří od předchozího. Obrys, osy a kóty jsou každé ve vlastní hladině.
+Nakreslete toto těsnění v milimetrech: deska 120 × 80 s rohy zaoblenými poloměrem 10, uprostřed středový otvor o průměru 40 a čtyři otvory o průměru 10, jejichž středy leží 12 od okrajů, k tomu osy středového otvoru a kóty. Vše se zadává z klávesnice: první bod příkazu leží tam, kam ho zadáte, a každý další se měří od předchozího. Obrys, osy a kóty se kreslí do samostatných hladin.
 
 ## Steps
 
 ### Nakreslete obrys [#outline]
 
-Nastavte hladinu Obrys jako aktuální v seznamu hladin. Příkaz <Command id="RECTANG" /> nakreslí desku najednou: zvolte možnost <Keyword command="RECTANG" id="Fillet" /> a zadejte poloměr, `10`, potom první roh, `0,0`, a druhý roh, `120,80`, měřený od prvního.
+Nastavte hladinu Obrys jako aktuální v rozevíracím seznamu hladin. Příkaz <Command id="RECTANG" /> nakreslí desku najednou: zvolte možnost <Keyword command="RECTANG" id="Fillet" /> a zadejte poloměr, `10`, potom první roh, `0,0`, a druhý roh, `120,80`, měřený od prvního.
 
 ### Nakreslete středový otvor [#bore]
 

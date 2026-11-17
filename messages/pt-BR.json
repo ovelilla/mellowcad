@@ -76,7 +76,7 @@
     "boardLabel": "Comandos e seus aliases, agrupados como na faixa de opções",
     "also": "Também: {aliases}",
     "linked": "Um comando sublinhado tem página própria, com seus prompts e opções.",
-    "languages": "<pt>{portuguese}</pt> é <en>{english}</en> no AutoCAD em inglês, <es>{spanish}</es> no AutoCAD em espanhol, <fr>{french}</fr> no AutoCAD em francês, <de>{german}</de> no AutoCAD em alemão, <ru>{russian}</ru> no AutoCAD em russo e <pl>{polish}</pl> no AutoCAD em polonês, e o nome global <all>{global}</all> funciona em todos os idiomas.",
+    "languages": "<pt>{portuguese}</pt> é <en>{english}</en> no AutoCAD em inglês, <es>{spanish}</es> no AutoCAD em espanhol, <fr>{french}</fr> no AutoCAD em francês, <de>{german}</de> no AutoCAD em alemão, <ru>{russian}</ru> no AutoCAD em russo, <pl>{polish}</pl> no AutoCAD em polonês e <cs>{czech}</cs> no AutoCAD em tcheco, e o nome global <all>{global}</all> funciona em todos os idiomas.",
     "transcriptTitle": "Um DESLOCAMENTO, do início ao fim",
     "transcriptCaption": "Reproduzido pelo motor quando esta página foi gerada. A mesma ordem e as mesmas letras de opção do AutoCAD."
   },

@@ -1,11 +1,11 @@
 ---
 title: "Příkaz ÚSEČKA (LINE) v AutoCADu"
-description: "Jak nakreslit úsečku v AutoCADu příkazem ÚSEČKA (LINE, zkratka U), výzva po výzvě: body určené nebo zadané, Zpět, Uzavřít a navázání. Vyzkoušejte online."
-figure: "Trojúhelník: první bod zadaný, další dva od posledního bodu, pak Uzavřít."
+description: "Jak nakreslit úsečku v AutoCADu příkazem ÚSEČKA (LINE, zkratka U), výzva po výzvě: body určené nebo zadané, Zpět, Uzavři a navázání. Vyzkoušejte online."
+figure: "Trojúhelník: první bod zadaný, další dva od posledního bodu, pak Uzavři."
 sourceHash: "5065fc1817a1"
 ---
 
-Příkaz ÚSEČKA (LINE) kreslí přímé segmenty, každý jako samostatný objekt: zadejte první bod, pak každý další, dokud nestisknete Enter. Bod lze ukázat, uchopit na objektu nebo zadat. Stejně jako v AutoCADu se zapnutým dynamickým zadáváním se bod zadaný po prvním měří od posledního, takže `80,0` nakreslí 80 ve směru X a historie ho zapíše jako `@80,0`; samotné číslo je vzdálenost ve směru kurzoru a `<30` zamkne další bod na úhel 30°. Enter nebo pravé tlačítko u prvního bodu naváže na konec poslední úsečky, křivky nebo oblouku, od oblouku tečně a s dotazem jen na délku. Ať nakreslí segmentů kolik chce, jedno <Command id="U" /> vrátí celý příkaz.
+Příkaz ÚSEČKA (LINE) kreslí přímé segmenty, každý jako samostatný objekt: zadejte první bod, pak každý další, dokud nestisknete Enter. Bod lze ukázat, uchopit na objektu nebo zadat. Stejně jako v AutoCADu se zapnutým dynamickým zadáváním se bod zadaný po prvním měří od posledního, takže `80,0` nakreslí 80 ve směru X a historie ho zapíše jako `@80,0`; samotné číslo je vzdálenost ve směru kurzoru a `<30` zamkne další bod na úhel 30°. Enter nebo pravé tlačítko u prvního bodu naváže na konec poslední úsečky, křivky nebo oblouku, od oblouku tečně a s dotazem jen na délku. Bez ohledu na počet nakreslených segmentů vrátí jedno <Command id="U" /> celý příkaz.
 
 ## Options
 

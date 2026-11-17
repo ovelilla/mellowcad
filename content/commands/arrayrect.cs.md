@@ -6,7 +6,7 @@ figure: "Čtverec a jeho kružnice v 5 sloupcích a 3 řádcích, s roztečí 16
 sourceHash: "c8c8d747d0c9"
 ---
 
-Příkaz OBDPOLE (ARRAYRECT) kopíruje výběr do sloupců a řádků, a pokud chcete, i do úrovní, jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, a hned ho ukáže: 4 sloupce podél osy X USS a 3 řádky podél její osy Y, ve vzdálenosti jeden a půl násobku velikosti výběru. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu: klikněte na jednu z jeho šipek a potom klikněte tam, kam má jít, nebo zadejte číslo, a nastavíte tak počet nebo rozteč. Esc na této výzvě pole také vytvoří. Vybrané objekty se stanou jeho první položkou.
+Příkaz OBDPOLE (ARRAYRECT) kopíruje výběr do sloupců a řádků, a pokud chcete, i do úrovní, jako jeden objekt pole. Zeptá se na objekty, oznámí typ a to, zda je pole asociativní, a hned ho ukáže: 4 sloupce podél osy X USS a 3 řádky podél její osy Y, ve vzdálenosti jedenapůlnásobku velikosti výběru. Potom jedna výzva upravuje pole živě, dokud ho Enter nevytvoří, a to možnostmi nebo uzly náhledu, jako v AutoCADu: klikněte na jednu z jeho šipek a potom klikněte tam, kam má jít, nebo zadejte číslo, a nastavíte tak počet nebo rozteč. Esc na této výzvě pole také vytvoří. Vybrané objekty se stanou jeho první položkou.
 
 ## Options
 

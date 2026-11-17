@@ -3,12 +3,12 @@ title: "Příkaz ZPĚT (UNDO) v AutoCADu"
 description: "Jak funguje příkaz ZPĚT (UNDO) v AutoCADu: počet kroků zpět, Označ a Zpátky, Začátek a Konec, Řízení, a čím se liší od Z a Ctrl+Z."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz ZPĚT anglicky?","answer":"UNDO. Nemá zkratku: zadejte ZPĚT celý, chcete-li zadat počet kroků nebo možnost, nebo _UNDO v AutoCADu v každém jazyce. Jeden krok zpět je Ctrl+Z nebo Z a Enter; U z anglické verze je v české zkratka příkazu ÚSEČKA (LINE)."},{"question":"Jaký je rozdíl mezi Z a ZPĚT?","answer":"Z vrátí poslední příkaz a na nic se neptá. ZPĚT se ptá, kolik vrátit, a má ozNač a Zpátky pro návrat k označenému místu, zaČátek a kOnec, aby se z několika příkazů stal jeden krok, a Řízení pro omezení nebo vypnutí vracení."},{"question":"Jak v AutoCADu vrátit několik příkazů najednou?","answer":"Zadejte ZPĚT a počet příkazů, například 5. Nebo zvolte ozNač před řadou příkazů, kterou možná budete chtít zahodit, a Zpátky pro návrat k ní."},{"question":"Proč ZPĚT nefunguje?","answer":"Vracení bylo vypnuto možností Řízení › Nic: Z to oznámí a ZPĚT se ptá na Řízení. Odpovězte Vše a vracení se znovu zapne. Kroky provedené předtím jsou pryč."},{"question":"Jak v AutoCADu obnovit vrácené změny?","answer":"ZNOVA hned po Z nebo ZPĚT vrátí všechno najednou. Ctrl+Y obnovuje po jednom kroku."}]
+faq: [{"question":"Jak se jmenuje příkaz ZPĚT anglicky?","answer":"UNDO. Nemá zkratku: zadejte ZPĚT celý, chcete-li zadat počet kroků nebo možnost, nebo _UNDO v AutoCADu v každém jazyce. Jeden krok zpět je Ctrl+Z nebo Z a Enter; U z anglické verze je v české zkratka příkazu ÚSEČKA (LINE)."},{"question":"Jaký je rozdíl mezi příkazy Z a ZPĚT?","answer":"Z vrátí poslední příkaz a na nic se neptá. ZPĚT se ptá, kolik vrátit, a má ozNač a Zpátky pro návrat k označenému místu, zaČátek a kOnec, aby se z několika příkazů stal jeden krok, a Řízení pro omezení nebo vypnutí vracení."},{"question":"Jak v AutoCADu vrátit několik příkazů najednou?","answer":"Zadejte ZPĚT a počet příkazů, například 5. Nebo zvolte ozNač před řadou příkazů, kterou možná budete chtít zahodit, a Zpátky pro návrat k ní."},{"question":"Proč příkaz ZPĚT nefunguje?","answer":"Vracení bylo vypnuto možností Řízení › Nic: Z to oznámí a ZPĚT se ptá na Řízení. Odpovězte Vše a vracení se znovu zapne. Kroky provedené předtím jsou pryč."},{"question":"Jak v AutoCADu obnovit vrácené změny?","answer":"ZNOVA hned po příkazu Z nebo ZPĚT obnoví všechno najednou. Ctrl+Y obnovuje po jednom kroku."}]
 ---
 
-Příkaz ZPĚT (UNDO) vrací příkazy. Krok je celý příkaz: všechno, co nakreslil jeden příkaz ÚSEČKA, zmizí najednou, bez ohledu na počet segmentů, stejně jako to, co příkaz nastavil, například TČMĚŘ. ZPĚT vypíše svá aktuální nastavení a pak se zeptá na počet operací, které se mají vrátit, nebo na možnost; Enter vrátí jednu. Názvy vrácených příkazů vypíše na jeden řádek, `KRUŽNICE ÚSEČKA`, a když dojde na začátek, `Vše bylo vráceno zpět`; potom `Není co vracet zpět`. Příkaz, který nic nezměnil, jako ID nebo VÝPIS, je také krok, stejně jako to, co s pohledem udělaly ZOOM a PP.
+Příkaz ZPĚT (UNDO) vrací příkazy. Krok je celý příkaz: všechno, co nakreslil jeden příkaz ÚSEČKA, zmizí najednou, bez ohledu na počet segmentů, stejně jako to, co příkaz nastavil, například TČMĚŘ. ZPĚT vypíše svá aktuální nastavení a pak se zeptá na počet operací, které se mají vrátit, nebo na možnost; Enter vrátí jednu. Názvy vrácených příkazů vypíše na jeden řádek, `KRUŽNICE ÚSEČKA`, a když dojde na začátek, `Vše bylo vráceno zpět`; potom `Není co vracet zpět`. Příkaz, který nic nezměnil, jako ID nebo VÝPIS, je také krok, stejně jako to, co s pohledem udělaly příkazy ZOOM a PP.
 
-`Z` je zkrácená forma: jeden krok zpět, bez otázky. Ctrl+Z u výzvy `Příkaz:` spustí příkaz Z; uvnitř příkazu je to jeho vlastní možnost Zpět, jak ji zapisuje makro AutoCADu: ÚSEČKA vrátí poslední segment a pokračuje. [`ZNOVA`](/docs/commands/redo), hned potom, vrátí to, co vzal poslední Z nebo ZPĚT.
+`Z` je zkrácená forma: jeden krok zpět, bez otázky. Ctrl+Z ve výzvě `Příkaz:` spustí příkaz Z; uvnitř příkazu je to jeho vlastní možnost Zpět, jak ji zapisuje makro AutoCADu: ÚSEČKA vrátí poslední segment a pokračuje. [`ZNOVA`](/docs/commands/redo), hned potom, obnoví to, co vrátil poslední příkaz Z nebo ZPĚT.
 
 - **Příkaz:** `ZPĚT`
 - **Anglicky:** `UNDO`, zadávaný jako `_UNDO` v libovolném jazyce
@@ -27,11 +27,11 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Auto` (`A`) [#auto]
 
-Zeptá se `ANO` nebo `NE` a nabídne aktuální nastavení, které pak ukazuje řádek nastavení. V AutoCADu spojí do jednoho kroku příkazy, které spustí jedna položka nabídky; zde žádná nabídka nespouští víc než jeden, takže zde nic nespojuje.
+Zeptá se na `ANO` nebo `NE` a nabídne aktuální nastavení, které pak ukazuje řádek nastavení. V AutoCADu spojí do jednoho kroku příkazy, které spustí jedna položka nabídky; zde žádná nabídka nespouští víc než jeden, takže zde nic nespojuje.
 
 ### `Řízení` (`Ř`) [#control]
 
-Zeptá se, v jakém rozsahu vracení zachovat, ve výchozím nastavení `Vše`. `Nic` zahodí všechny uchované kroky a vracení vypne: Z pak vypíše `Příkaz Z vyřazen. Použijte příkaz ZPĚT pro jeho zapnutí` a ZPĚT se hned zeptá na `Řízení`. `Jeden` uchová jen poslední krok a ZPĚT se pak ptá na 1 nebo `Řízení`. `Vše` zapne úplné vracení znovu. `Kombinace` určuje, zda jsou po sobě jdoucí ZOOM a PP jeden krok, a `Hladina`, zda jsou jím po sobě jdoucí úpravy ve Správci vlastností hladin, v obou případech ve výchozím nastavení Ano. Nastavení patří výkresu, ale neukládají se s ním: nový nebo otevřený výkres začíná s `Vše`, `Kombinace` Ano a `Hladina` Ano.
+Zeptá se, v jakém rozsahu vracení zachovat, ve výchozím nastavení `Vše`. `Nic` zahodí všechny uchované kroky a vracení vypne: Z pak vypíše `Příkaz Z vyřazen. Použijte příkaz ZPĚT pro jeho zapnutí` a ZPĚT se hned zeptá na `Řízení`. `Jeden` uchová jen poslední krok a ZPĚT se pak ptá na 1 nebo `Řízení`. `Vše` zapne úplné vracení znovu. `Kombinace` určuje, zda jsou po sobě jdoucí příkazy ZOOM a PP jeden krok, a `Hladina`, zda jsou jím po sobě jdoucí úpravy ve Správci vlastností hladin, v obou případech ve výchozím nastavení Ano. Nastavení patří výkresu, ale neukládají se s ním: nový nebo otevřený výkres začíná s `Vše`, `Kombinace` Ano a `Hladina` Ano.
 
 ### `zaČátek` (`Č`) [#begin]
 
@@ -61,7 +61,7 @@ Vrátí všechny kroky až k poslední značce, i se značkou. Bez značky se ze
 
 UNDO. Nemá zkratku: zadejte `ZPĚT` celý, chcete-li zadat počet kroků nebo možnost, nebo `_UNDO` v AutoCADu v každém jazyce. Jeden krok zpět je Ctrl+Z nebo `Z` a Enter; `U` z anglické verze je v české zkratka příkazu ÚSEČKA (LINE).
 
-### Jaký je rozdíl mezi Z a ZPĚT?
+### Jaký je rozdíl mezi příkazy Z a ZPĚT?
 
 `Z` vrátí poslední příkaz a na nic se neptá. ZPĚT se ptá, kolik vrátit, a má `ozNač` a `Zpátky` pro návrat k označenému místu, `zaČátek` a `kOnec`, aby se z několika příkazů stal jeden krok, a `Řízení` pro omezení nebo vypnutí vracení.
 
@@ -69,13 +69,13 @@ UNDO. Nemá zkratku: zadejte `ZPĚT` celý, chcete-li zadat počet kroků nebo m
 
 Zadejte `ZPĚT` a počet příkazů, například `5`. Nebo zvolte `ozNač` před řadou příkazů, kterou možná budete chtít zahodit, a `Zpátky` pro návrat k ní.
 
-### Proč ZPĚT nefunguje?
+### Proč příkaz ZPĚT nefunguje?
 
 Vracení bylo vypnuto možností `Řízení` › `Nic`: Z to oznámí a ZPĚT se ptá na `Řízení`. Odpovězte `Vše` a vracení se znovu zapne. Kroky provedené předtím jsou pryč.
 
 ### Jak v AutoCADu obnovit vrácené změny?
 
-[`ZNOVA`](/docs/commands/redo) hned po Z nebo ZPĚT vrátí všechno najednou. Ctrl+Y obnovuje po jednom kroku.
+[`ZNOVA`](/docs/commands/redo) hned po příkazu Z nebo ZPĚT obnoví všechno najednou. Ctrl+Y obnovuje po jednom kroku.
 
 ## Související příkazy [#related]
 

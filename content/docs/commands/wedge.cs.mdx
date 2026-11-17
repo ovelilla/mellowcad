@@ -8,7 +8,7 @@ faq: [{"question":"Jak se jmenuje příkaz KLÍN anglicky?","answer":"WEDGE. V �
 
 Příkaz KLÍN (WEDGE) nakreslí 3D těleso ve tvaru klínu: kvádr, jehož horní plocha klesá od jednoho konce ke druhému. Ptá se na totéž co [`KVÁDR`](/docs/commands/box): první roh, druhý roh a pak výšku. Vysoký konec je u prvního rohu a sklon klesá podél osy X systému USS směrem ke straně druhého rohu; druhý roh s menším X klín obrátí. Výška se měří podél osy Z systému USS, záporná dolů. Délka, šířka a výška jsou výchozí hodnoty příkazu [`KVÁDR`](/docs/commands/box), které převezme Enter. Klín vznikne v aktuální hladině a Zpět ho odstraní v jednom kroku.
 
-[`VÝPIS`](/docs/commands/list) ukáže jeho polohu, délku, šířku, výšku a natočení a v paletě Vlastnosti je lze zapsat. Jeho uzly jsou stejné jako u příkazu [`KVÁDR`](/docs/commands/box). Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCADu, který zahrnuje jen tělesa, a zatím částečně; [`ROZLOŽ`](/docs/commands/explode) z něj udělá samostatnou oblast pro každou plochu.
+[`VÝPIS`](/docs/commands/list) ukáže jeho polohu, délku, šířku, výšku a natočení a v paletě Vlastnosti je lze zapsat. Jeho uzly jsou stejné jako u příkazu [`KVÁDR`](/docs/commands/box). Je to 3D těleso pro příkazy [`SJEDNOCENÍ`](/docs/commands/union), [`ROZDÍL`](/docs/commands/subtract) a zbytek 3D v MellowCAD, který zahrnuje jen 3D tělesa, zatím částečně; [`ROZLOŽ`](/docs/commands/explode) z něj udělá samostatnou oblast pro každou plochu.
 
 - **Příkaz:** `KLÍN`
 - **Anglicky:** `WEDGE`, zadávaný jako `_WEDGE` v libovolném jazyce
@@ -26,7 +26,7 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Střed` (`S`) [#center]
 
-U první výzvy: zeptá se na střed a pak na roh, `Krychle` nebo `Délka`. Klín je vystředěný v bodě, i ve výšce, a jeho vysoký konec leží naproti zadanému rohu.
+V první výzvě: zeptá se na střed a pak na roh, `Krychle` nebo `Délka`. Klín je vystředěný v bodě, i ve výšce, a jeho vysoký konec leží naproti zadanému rohu.
 
 ### `Krychle` (`K`) [#cube]
 

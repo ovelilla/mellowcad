@@ -8,7 +8,7 @@ sourceHash: "66fc1859c8fd"
 
 Příkaz 3DORBIT otáčí pohled kolem výkresu, zatímco táhnete myší; ve výkresu se nic neposune ani nezmění. Tažení do strany otáčí kameru kolem osy Z globálního souřadného systému, tažení nahoru a dolů ji zvedá nebo snižuje, kolem středu výkresu pod středem obrazovky, v rovnoběžném promítání. Na začátku příkaz řekne, jak ho ukončit: dokud běží, můžete jen otáčet pohled a Enter nebo Esc ho ukončí, ať jste táhli, nebo ne.
 
-Podržení Shiftu a kolečka myši otáčí pohled odkudkoli, i uvnitř jiného příkazu, a příkaz spouští také tlačítko Orbit na panelu navigace. Zadaný s apostrofem, `'3DORBIT`, funguje uvnitř jiného příkazu, který pak pokračuje. Každé tažení je krok pro možnost <Keyword command="ZOOM" id="Previous" /> příkazu <Command id="ZOOM" /> a celý příkaz je jeden krok, takže <Command id="U" /> vrátí pohled zpět. Chcete-li vidět tělesa jako tělesa, ne jako drátový model, použijte <Command id="VSCURRENT" />; 3D v MellowCADu jsou jen 3D tělesa, zatím částečně.
+Podržení Shiftu a kolečka myši otáčí pohled odkudkoli, i uvnitř jiného příkazu, a příkaz spouští také tlačítko Orbit na panelu navigace. Zadaný s apostrofem, `'3DORBIT`, funguje uvnitř jiného příkazu, který pak pokračuje. Každé tažení je krok pro možnost <Keyword command="ZOOM" id="Previous" /> příkazu <Command id="ZOOM" /> a celý příkaz je jeden krok, takže <Command id="U" /> vrátí pohled zpět. Chcete-li vidět tělesa jako tělesa, ne jako drátový model, použijte <Command id="VSCURRENT" />; MellowCAD umí ve 3D jen 3D tělesa, zatím částečně.
 
 ## Missing
 

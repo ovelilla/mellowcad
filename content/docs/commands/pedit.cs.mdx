@@ -3,10 +3,10 @@ title: "Úprava křivky v AutoCADu: příkaz KEDIT (PEDIT)"
 description: "Jak upravit křivku v AutoCADu příkazem KEDIT (PEDIT, zkratka KE): úsečky na křivku, připojení, šířka, proložení a spline, úprava vrcholů. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz KEDIT anglicky?","answer":"PEDIT. V českém AutoCADu je jeho zkratka KE: zadejte ji a stiskněte Enter nebo mezerník. Anglické PE v české verzi spouští jiný příkaz; celý název KEDIT funguje také a _PEDIT v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku."},{"question":"Jak spojit úsečky do křivky?","answer":"Spusťte příkaz KEDIT, vyberte jednu z úseček a stiskněte Enter, aby se převedla na křivku, pak zvolte Připoj a vyberte ostatní: ty, které navazují koncovými body, se stanou jednou křivkou. SPOJ udělá totéž v jednom kroku."},{"question":"Proč KEDIT na můj objekt nefunguje?","answer":"Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v zamknuté hladině odpoví „Objekt je v uzamknuté hladině.“. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte NÁsobně a vzdálenost tolerance."},{"question":"Jak změnit šířku křivky?","answer":"Zvolte šířKa a zadejte šířku: dostanou ji všechny segmenty. Pro jeden segment použijte Editace, posuňte se na vrchol, kde začíná, a zvolte jeho šířKa."},{"question":"Jak křivku zakřivit?","answer":"Interpolace proloží oblouky všemi vrcholy; Spline vytvoří hladší křivku, kterou vrcholy ohraničují. KOstra ji opět narovná."}]
+faq: [{"question":"Jak se jmenuje příkaz KEDIT anglicky?","answer":"PEDIT. V českém AutoCADu je jeho zkratka KE: zadejte ji a stiskněte Enter nebo mezerník. Anglické PE v české verzi spouští jiný příkaz, PŘEDVRENDR; celý název KEDIT funguje také a _PEDIT v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku."},{"question":"Jak spojit úsečky do křivky?","answer":"Spusťte příkaz KEDIT, vyberte jednu z úseček a stiskněte Enter, aby se převedla na křivku, pak zvolte Připoj a vyberte ostatní: ty, které navazují koncovými body, se stanou jednou křivkou. SPOJ udělá totéž v jednom kroku."},{"question":"Proč KEDIT na můj objekt nefunguje?","answer":"Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v uzamknuté hladině odpoví „Objekt je v uzamknuté hladině.“. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte NÁsobně a vzdálenost tolerance."},{"question":"Jak změnit šířku křivky?","answer":"Zvolte šířKa a zadejte šířku: dostanou ji všechny segmenty. Pro jeden segment použijte Editace, posuňte se na vrchol, kde začíná, a zvolte jeho šířKa."},{"question":"Jak křivku zakřivit?","answer":"Interpolace proloží oblouky všemi vrcholy; Spline vytvoří hladší křivku, kterou vrcholy ohraničují. KOstra ji opět narovná."}]
 ---
 
-Příkaz KEDIT (PEDIT) upravuje křivku. Vyberte ji na výzvě `Vyberte křivku nebo [NÁsobně]:`, nebo ji vyberte před příkazem; KEDIT spustí na křivce i poklepání. Vyberete-li místo toho úsečku, oblouk nebo spline, vypíše `Vybraný objekt není křivka` a zeptá se, zda ho převést na křivku, ve výchozím stavu ano: nová křivka zaujme jeho místo a převezme jeho vlastnosti. Pak se znovu a znovu ptá na volbu a každou hned použije, dokud ho Enter neukončí. 3D křivka dostane kratší seznam, bez šířky, proložení a generování typu čáry, a její volba spline je `Spline`. Esc ponechá, co bylo uděláno; celá úprava je jeden krok, který vrátí `Z`.
+Příkaz KEDIT (PEDIT) upravuje křivku. Vyberte ji ve výzvě `Vyberte křivku nebo [NÁsobně]:`, nebo ji vyberte před příkazem; KEDIT spustí na křivce i poklepání. Vyberete-li místo toho úsečku, oblouk nebo spline, vypíše `Vybraný objekt není křivka` a zeptá se, zda ho převést na křivku, ve výchozím stavu ano: nová křivka zaujme jeho místo a převezme jeho vlastnosti. Pak se znovu a znovu ptá na možnost a každou hned použije, dokud ho Enter neukončí. 3D křivka dostane kratší seznam, bez šířky, proložení a generování typu čáry, a její možnost spline je `Spline`. Esc ponechá, co bylo uděláno; celá úprava je jeden krok, který vrátí `Z`.
 
 - **Příkaz:** `KEDIT`
 - **Anglicky:** `PEDIT`, zadávaný jako `_PEDIT` v libovolném jazyce
@@ -24,11 +24,11 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `NÁsobně` (`NÁ`) [#multiple]
 
-Upraví několik křivek najednou: vyberte je, určete, zda převést úsečky, oblouky a spliny mezi nimi, a každá volba se pak použije na všechny. Její připojení se ptá na vzdálenost tolerance a na `Typ`: `Prodloužit` ořízne nebo prodlouží koncové segmenty, aby se setkaly, `přiDat` přemostí mezeru novým segmentem, `Oba` prodlouží, kde může, a přidá, kde nemůže.
+Upraví několik křivek najednou: vyberte je, určete, zda převést úsečky, oblouky a spliny mezi nimi, a každá možnost se pak použije na všechny. Její připojení se ptá na vzdálenost tolerance a na `Typ`: `Prodloužit` ořízne nebo prodlouží koncové segmenty, aby se setkaly, `přiDat` přemostí mezeru novým segmentem, `Oba` prodlouží, kde může, a přidá, kde nemůže.
 
 ### `Uzavři` (`U`) [#close]
 
-Uzavře křivku segmentem z posledního vrcholu do prvního, obloukem, je-li poslední segment oblouk. U uzavřené křivky je tu volba `Otevři`, která tento segment odebere.
+Uzavře křivku segmentem z posledního vrcholu do prvního, obloukem, je-li poslední segment oblouk. U uzavřené křivky je tu možnost `Otevři`, která tento segment odebere.
 
 ### `Připoj` (`P`) [#join]
 
@@ -48,7 +48,7 @@ Nakreslí hladkou křivku z oblouků procházející všemi vrcholy, tečných v
 
 ### `Spline` (`S`) [#spline]
 
-Proloží křivkou B-spline, kterou vrcholy ohraničují, místo aby jimi procházela: kvadratickou nebo kubickou podle SPLINETYPE a tak jemnou, jak určuje SPLINESEGS. U 3D křivky je to `Spline`. Volba `Objekt` příkazu [`SPLINE`](/docs/commands/spline) takovou křivku převede na skutečný spline.
+Proloží křivkou B-spline, kterou vrcholy ohraničují, místo aby jimi procházela: kvadratickou nebo kubickou podle SPLINETYPE a tak jemnou, jak určuje SPLINESEGS. U 3D křivky je to `Spline`. Možnost `Objekt` příkazu [`SPLINE`](/docs/commands/spline) takovou křivku převede na skutečný spline.
 
 ### `KOstra` (`KO`) [#decurve]
 
@@ -64,11 +64,11 @@ Obrátí křivku: její vrcholy opačným směrem, oblouky a šířky s nimi.
 
 ### `Zpět` (`Z`) [#undo]
 
-Vrátí poslední volbu tohoto spuštění a ptá se dál.
+Vrátí poslední možnost tohoto spuštění a ptá se dál.
 
 ## Co zatím neumí [#missing]
 
-PEDITACCEPT: výběr úsečky, oblouku nebo spline se před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Volba `NÁsobně`, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. Nejsou tu sítě, které by šlo upravovat.
+PEDITACCEPT: po výběru úsečky, oblouku nebo spline se příkaz před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Možnost `NÁsobně`, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. Nejsou tu sítě, které by šlo upravovat.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep--de-pedit--pe--ru-полред--прд--pl-edplin--edp--cs-kedit--ke)
 
@@ -76,7 +76,7 @@ PEDITACCEPT: výběr úsečky, oblouku nebo spline se před převodem vždy zept
 
 ### Jak se jmenuje příkaz KEDIT anglicky?
 
-PEDIT. V českém AutoCADu je jeho zkratka `KE`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `PE` v české verzi spouští jiný příkaz; celý název `KEDIT` funguje také a `_PEDIT` v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku.
+PEDIT. V českém AutoCADu je jeho zkratka `KE`: zadejte ji a stiskněte Enter nebo mezerník. Anglické `PE` v české verzi spouští jiný příkaz, PŘEDVRENDR; celý název `KEDIT` funguje také a `_PEDIT` v AutoCADu v jakémkoli jazyce. Příkaz spustí i poklepání na křivku.
 
 ### Jak spojit úsečky do křivky?
 
@@ -84,7 +84,7 @@ Spusťte příkaz KEDIT, vyberte jednu z úseček a stiskněte Enter, aby se př
 
 ### Proč KEDIT na můj objekt nefunguje?
 
-Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v zamknuté hladině odpoví `Objekt je v uzamknuté hladině.`. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte `NÁsobně` a vzdálenost tolerance.
+Příkaz KEDIT upravuje křivky a nabízí převod úseček, oblouků a spline; cokoli jiného, text, kružnici, blok, odmítne a zeptá se znovu. Na objekt v uzamknuté hladině odpoví `Objekt je v uzamknuté hladině.`. Připojení přidá jen objekty, jejichž konce přesně navazují na konce křivky: pro mezery použijte `NÁsobně` a vzdálenost tolerance.
 
 ### Jak změnit šířku křivky?
 

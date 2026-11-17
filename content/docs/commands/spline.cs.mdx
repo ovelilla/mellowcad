@@ -3,10 +3,10 @@ title: "Příkaz SPLINE v AutoCADu"
 description: "Jak funguje příkaz SPLINE (zkratka SPL) v AutoCADu: křivka body vyhlazení nebo řídicími vrcholy, uzly, stupeň, tečny a Uzavři. Vyzkoušejte zdarma."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jak se jmenuje příkaz SPLINE česky?","answer":"Také SPLINE: česká verze AutoCADu jeho název nepřekládá. Zadejte SPLINE nebo zkratku SPL a stiskněte Enter nebo mezerník; zkratka SPL je stejná jako v anglické verzi. _SPLINE funguje v AutoCADu v každém jazyce."},{"question":"Jaký je rozdíl mezi spline s body vyhlazení a s řídicími vrcholy?","answer":"Spline s body vyhlazení prochází body, na které kliknete, což se hodí pro křivku, která se jich musí dotknout. Spline s řídicími vrcholy tvarují její řídicí vrcholy, ke kterým se jen přibližuje, což se hodí pro plynulý, hladký tvar. Způsob zvolíte možností Způsob v první výzvě."},{"question":"Jak v AutoCADu převést spline na křivku?","answer":"Spusťte KEDIT a vyberte spline: příkaz vypíše „Vybraný objekt není křivka“ a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu."},{"question":"Jak převést křivku na spline?","answer":"Vyhlaďte křivku možností Spline příkazu KEDIT, pak spusťte SPLINE a zvolte Objekt: z křivky se stane spline se stejným průběhem."},{"question":"Lze v AutoCADu rozložit spline?","answer":"Ne: ROZLOŽ spline odmítne, stejně jako AutoCAD. Chcete-li ji rozdělit na části, nejprve ji příkazem KEDIT převeďte na křivku a tu pak rozložte na úsečky."}]
+faq: [{"question":"Jak se jmenuje příkaz SPLINE česky?","answer":"Také SPLINE: česká verze AutoCADu jeho název nepřekládá. Zadejte SPLINE nebo zkratku SPL a stiskněte Enter nebo mezerník; zkratka SPL je stejná jako v anglické verzi. _SPLINE funguje v AutoCADu v každém jazyce."},{"question":"Jaký je rozdíl mezi spline s body vyhlazení a s řídicími vrcholy?","answer":"Spline s body vyhlazení prochází body, na které kliknete, což se hodí pro křivku, která se jich musí dotknout. Spline s řídicími vrcholy tvarují její řídicí vrcholy, ke kterým se jen přibližuje, což se hodí pro plynulý, hladký tvar. Způsob zvolíte možností Způsob v první výzvě."},{"question":"Jak v AutoCADu převést spline na křivku?","answer":"Spusťte příkaz KEDIT a vyberte spline: příkaz vypíše „Vybraný objekt není křivka“ a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu."},{"question":"Jak převést křivku na spline?","answer":"Vyhlaďte křivku možností Spline příkazu KEDIT, pak spusťte příkaz SPLINE a zvolte Objekt: z křivky se stane spline se stejným průběhem."},{"question":"Lze v AutoCADu rozložit spline?","answer":"Ne: ROZLOŽ spline odmítne, stejně jako AutoCAD. Chcete-li ji rozdělit na části, nejprve ji příkazem KEDIT převeďte na křivku a tu pak rozložte na úsečky."}]
 ---
 
-Příkaz SPLINE nakreslí hladkou křivku jedním ze dvou způsobů: body, které zadáte (`vyHlazení`, výchozí), nebo přitahovanou k řídicím vrcholům, které umístíte (`řV`). Na začátku vypíše svá nastavení, `Způsob=Vyhlazení   Úhly=Tětiva`, a pak se zeptá na první bod; Enter na tomto místě se odmítne, jako v AutoCADu. Každý další bod spline ohne, její náhled sleduje kurzor a Enter ji ukončí. Body lze určit myší, uchopením nebo zapsat, zapsaná délka se odměří ve směru kurzoru a bod si zachová svou souřadnici Z, takže spline může stoupat v prostoru. Esc spline zahodí; celá spline je jeden krok, který vrátí `Z`. Tlačítka Interpolace spline a Řídicí vrcholy křivky spline na pásu karet spouštějí SPLINE s už zvoleným způsobem.
+Příkaz SPLINE nakreslí hladkou křivku jedním ze dvou způsobů: procházející body, které zadáte (`vyHlazení`, výchozí), nebo přitahovanou k řídicím vrcholům, které umístíte (`řV`). Na začátku vypíše svá nastavení, `Způsob=Vyhlazení   Úhly=Tětiva`, a pak se zeptá na první bod; Enter na tomto místě se odmítne, jako v AutoCADu. Každý další bod spline ohne, její náhled sleduje kurzor a Enter ji ukončí. Body lze určit myší nebo uchopením, nebo je zapsat, zapsaná délka se odměří ve směru kurzoru a bod si zachová svou souřadnici Z, takže spline může stoupat v prostoru. Esc spline zahodí; celá spline je jeden krok, který vrátí `Z`. Tlačítka Interpolace spline a Řídicí vrcholy křivky spline na pásu karet spouštějí příkaz SPLINE s už zvoleným způsobem.
 
 - **Příkaz:** `SPLINE`
 - **Aliasy:** `SPL`
@@ -27,7 +27,7 @@ Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v 
 
 ### `Uzly` (`U`) [#knots]
 
-Jak spline s body vyhlazení rozloží své body podél křivky: `Tětiva` (výchozí, podle vzdálenosti mezi nimi), `Odmocnina` z této vzdálenosti nebo `Rovnoměrná`, všechny rozestupy stejné. Stejnými body dá každá z těchto možností trochu jinou křivku.
+Jak spline s body vyhlazení rozloží své body podél křivky: `Tětiva` (výchozí, podle vzdálenosti mezi nimi), `Odmocnina` z této vzdálenosti nebo `Rovnoměrná`, všechny rozestupy stejné. Stejnými body proloží každá z těchto možností trochu jinou křivku.
 
 ### `Stupeň` (`S`) [#degree]
 
@@ -55,7 +55,7 @@ Od třetího bodu: spojí konec se začátkem v jednu hladkou smyčku, bez rohu,
 
 ## Co zatím neumí [#missing]
 
-Tolerance vyhlazení: spline s body vyhlazení vždy prochází přesně svými body a možnost toLerance se nenabízí. Během kreslení spline zatím není objektem, ke kterému lze uchopovat nebo trasovat, jako v AutoCADu. `Objekt` vždy vymaže křivku (DELOBJ). Hotová spline nemá ZOBRAZŘV (CVSHOW) ani SKRYJŘV (CVHIDE) ani nabídky uzlů pro přidání a odebrání bodu, paleta Vlastnosti upravuje její body, ale ne způsob, stupeň, uzly, váhy ani uzavření, a uchopení Geometrický střed, Kolmo a Tečná ji nenajdou. ŠRAFY nenajdou spline jako hranici a PROLNI (BLEND) zatím neexistuje.
+Tolerance vyhlazení: spline s body vyhlazení vždy prochází přesně svými body a možnost toLerance se nenabízí. Během kreslení spline zatím není objektem, ke kterému lze uchopovat nebo trasovat, jako v AutoCADu. `Objekt` vždy vymaže křivku (DELOBJ). Hotová spline nemá ZOBRAZŘV (CVSHOW) ani SKRYJŘV (CVHIDE) ani nabídky uzlů pro přidání a odebrání bodu, paleta Vlastnosti upravuje její body, ale ne způsob, stupeň, uzly, váhy ani uzavření, a uchopení Geometrický střed, Kolmo a Tečna ji nenajdou. Příkaz ŠRAFY nenajde spline jako hranici a příkaz PROLNI (BLEND) zatím neexistuje.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl--ru-сплайн--спл--pl-splajn--spl--cs-spline--spl)
 
@@ -71,11 +71,11 @@ Spline s body vyhlazení prochází body, na které kliknete, což se hodí pro 
 
 ### Jak v AutoCADu převést spline na křivku?
 
-Spusťte [`KEDIT`](/docs/commands/pedit) a vyberte spline: příkaz vypíše `Vybraný objekt není křivka` a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu.
+Spusťte příkaz [`KEDIT`](/docs/commands/pedit) a vyberte spline: příkaz vypíše `Vybraný objekt není křivka` a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu.
 
 ### Jak převést křivku na spline?
 
-Vyhlaďte křivku možností `Spline` příkazu [`KEDIT`](/docs/commands/pedit), pak spusťte SPLINE a zvolte `Objekt`: z křivky se stane spline se stejným průběhem.
+Vyhlaďte křivku možností `Spline` příkazu [`KEDIT`](/docs/commands/pedit), pak spusťte příkaz SPLINE a zvolte `Objekt`: z křivky se stane spline se stejným průběhem.
 
 ### Lze v AutoCADu rozložit spline?
 

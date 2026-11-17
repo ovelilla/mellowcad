@@ -24,4 +24,4 @@ Dvě kružnice příkazem <Command id="CIRCLE" />, každá s možností <Keyword
 
 ### Okótujte výkres [#dimensions]
 
-V hladině Kóty příkaz <Command id="DIMLINEAR" /> od `0,0` k otvoru ve vodorovném rameni, `80,10`, s kótou umístěnou dole: 80. Příkaz <Command id="DIMBASELINE" /> pokračuje od stejné první vynášecí čáry: zadejte pravý konec, `#100,0`, kde # měří od počátku souřadnic, a potom dvakrát Enter pro ukončení. Stejně podél levé strany, k hornímu otvoru a potom k horní hraně, `#0,80`. Příkaz <Command id="DIMRADIUS" /> na zaoblení a <Command id="DIMDIAMETER" /> na každém otvoru výkres dokončí.
+V hladině Kóty příkaz <Command id="DIMLINEAR" /> od `0,0` k otvoru ve vodorovném rameni, `80,10`, s kótou umístěnou dole: 80. Příkaz <Command id="DIMBASELINE" /> pokračuje od stejné první vynášecí čáry: zadejte pravý konec, `#100,0`, kde # měří od počátku souřadnic, a potom dvakrát Enter pro ukončení. Stejně podél levé strany, k hornímu otvoru a potom k horní hraně, `#0,80`. Příkazy <Command id="DIMRADIUS" /> na zaoblení a <Command id="DIMDIAMETER" /> na každém otvoru výkres dokončí.

@@ -34,7 +34,7 @@ Vyberte úsečku, zvolte <Keyword id="First point" /> a pak zadejte první a dru
 
 ### Proč nelze přerušit blok nebo text?
 
-PŘERUŠ přerušuje úsečky, oblouky, kružnice, křivky, elipsy a spliny. Reference bloku vypíše <Message id="cannotBreakBlock" />, text, kóta nebo šrafa <Message id="objectCannotBeBroken" />; chcete-li přerušit části bloku, nejprve ho rozložte příkazem <Command id="EXPLODE" />.
+PŘERUŠ přerušuje úsečky, oblouky, kružnice, křivky, elipsy a spliny. Reference bloku vypíše <Message id="cannotBreakBlock" />, text, kóta nebo šrafy <Message id="objectCannotBeBroken" />; chcete-li přerušit části bloku, nejprve ho rozložte příkazem <Command id="EXPLODE" />.
 
 ### Kterým směrem PŘERUŠ řeže kružnici?
 

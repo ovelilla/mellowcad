@@ -22,11 +22,11 @@ U bodu vložení: zeptá se na jedno měřítko pro obě osy a pak znovu na bod,
 
 ### Rotate
 
-U bodu vložení: zeptá se na úhel, zadaný nebo mezi dvěma body, a pak znovu na bod, s blokem taženým už natočený. Po zadání bodu se na natočení už neptá.
+U bodu vložení: zeptá se na úhel, zadaný nebo mezi dvěma body, a pak znovu na bod, s blokem taženým už natočeným. Po zadání bodu se na natočení už neptá.
 
 ## Missing
 
-Vložení jiného souboru výkresu: vložit lze jen bloky definované ve výkresu a název, který výkres neobsahuje, se odmítne. U bodu vložení možnosti Refbod, X, Y, Z, Rozložit a Opakovat; u měřítka X možnosti Obdélník a XYZ a bod vybraný jako protější roh. Při nestejných měřítkách X a Y se text nebo atribut nakreslí ve velikosti X místo roztažení a oblouk křivky zůstane obloukem; záporné X nenapíše text pozpátku. ATTDIA 1, dialog Upravit atributy při vkládání, a ATTREQ 0. Vlastnosti Popisný, Jednotka bloku a Faktor jednotky v paletě Vlastnosti. DleBlok: objekt uvnitř bloku nemůže převzít vlastní barvu, typ čáry ani tloušťku čáry reference, jako v AutoCADu objekt nakreslený jako DleBlok.
+Vložení jiného souboru výkresu: vložit lze jen bloky definované ve výkresu a název, který výkres neobsahuje, se odmítne. U bodu vložení možnosti Refbod, X, Y, Z, Rozložit a Opakovat; u měřítka X možnosti Obdélník a XYZ a bod vybraný jako protější roh. Při nestejných měřítkách X a Y se text nebo atribut nakreslí ve velikosti X místo roztažení a oblouk křivky zůstane obloukem; záporné X nenapíše text pozpátku. ATTDIA 1, dialog Upravit atributy při vkládání, a ATTREQ 0. Vlastnosti Poznámky, Jednotka bloku a Faktor jednotky v paletě Vlastnosti. DleBlok: objekt uvnitř bloku nemůže převzít vlastní barvu, typ čáry ani tloušťku čáry reference, jako v AutoCADu objekt nakreslený jako DleBlok.
 
 ## Questions
 

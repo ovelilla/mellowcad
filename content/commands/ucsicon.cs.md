@@ -7,7 +7,7 @@ sourceHash: "c431e70eda01"
 
 Příkaz USSI (UCSICON) zobrazí nebo skryje ikonu USS, ramena X a Y, která ukazují, kde je aktuální USS a kam směřuje, a určí, kde ikona leží: v počátku USS, nebo v levém dolním rohu výkresu. Jeho jediná výzva nabídne aktuální stav jako výchozí, takže Enter ho ponechá. Nastavení se ukládá do výkresu a každé spuštění příkazu USSI je jeden krok, který lze vrátit zpět.
 
-Ikona má 3D styl, jako v AutoCADu 2027: rameno pro X a rameno pro Y, s písmenem na každém konci, a čtverec v počátku, dokud je USS globální. Mimo pohled shora ukazuje rameno Z, kam směřuje osa Z systému USS, a rameno viděné ve směru své osy se vynechá. Ve stylu 2D drátový model je ikona bílá; ve stylech Skrytý a Koncepční je její osa X červená, Y zelená a Z modrá. Zadaný s apostrofem nastaví `'USSI` místo toho proměnnou UCSICON, i uvnitř jiného příkazu: od 0 do 3, kde 1 ikonu zobrazí a 2 ji umístí do počátku.
+Ikona má 3D styl, jako v AutoCADu 2027: rameno pro X a rameno pro Y, s písmenem na každém konci, a čtverec v počátku, dokud je USS globální. Mimo pohled shora ukazuje rameno Z, kam směřuje osa Z systému USS, a rameno viděné ve směru své osy se vynechá. Ve stylu 2D drátový model je ikona bílá; ve stylech Skrytý a Koncepční je její osa X červená, Y zelená a Z modrá. Zadaný s apostrofem, `'USSI`, nastaví místo toho proměnnou UCSICON, i uvnitř jiného příkazu: od 0 do 3, kde 1 ikonu zobrazí a 2 ji umístí do počátku.
 
 ## Options
 

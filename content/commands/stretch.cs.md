@@ -11,7 +11,7 @@ Příkaz PROTÁHNI (STRETCH) posune část výkresu zachycenou křížovým okne
 
 ### Displacement
 
-Volí se u výzvy k zadání základního bodu, nebo klávesou Enter, protože je tam výchozí: zeptá se na posunutí jako vektor, `40,0` protáhne o 40 podél X. U druhého bodu udělá Enter totéž se základním bodem: jeho souřadnice jsou posunutím.
+Volí se ve výzvě k zadání základního bodu, nebo klávesou Enter, protože je tam výchozí: zeptá se na posunutí jako vektor, `40,0` protáhne o 40 podél X. U druhého bodu udělá Enter totéž se základním bodem: jeho souřadnice jsou posunutím.
 
 ## Missing
 
@@ -23,9 +23,9 @@ Eliptický oblouk s jedním koncem v okně, který AutoCAD přetvaruje: zde se p
 
 STRETCH. V české verzi AutoCADu zadejte `PROTÁHNI` nebo zkratku `PT` a stiskněte Enter nebo mezerník; zkratka `S` z anglické verze spouští v české příkaz SKUPINA (GROUP). `_STRETCH` funguje v AutoCADu v každém jazyce.
 
-### Proč PROTÁHNI objekty jen posune?
+### Proč příkaz PROTÁHNI objekty jen posune?
 
-Protože celý objekt leží uvnitř okna, nebo jste ho vybrali jednotlivě: takové objekty PROTÁHNI posune celé. Táhněte křížové okno zprava doleva jen přes ty konce, které chcete posunout.
+Protože celý objekt leží uvnitř okna, nebo jste ho vybrali jednotlivě: takové objekty příkaz PROTÁHNI posune celé. Táhněte křížové okno zprava doleva jen přes ty konce, které chcete posunout.
 
 ### Jak v AutoCADu protáhnout o přesnou vzdálenost?
 

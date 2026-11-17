@@ -5,7 +5,7 @@ figure: "Spline s pěti body vyhlazení a pod ní spline s pěti řídicími vrc
 sourceHash: "1056b5067125"
 ---
 
-Příkaz SPLINE nakreslí hladkou křivku jedním ze dvou způsobů: body, které zadáte (<Keyword id="Fit" />, výchozí), nebo přitahovanou k řídicím vrcholům, které umístíte (<Keyword id="CV" />). Na začátku vypíše svá nastavení, `Způsob=Vyhlazení   Úhly=Tětiva`, a pak se zeptá na první bod; Enter na tomto místě se odmítne, jako v AutoCADu. Každý další bod spline ohne, její náhled sleduje kurzor a Enter ji ukončí. Body lze určit myší, uchopením nebo zapsat, zapsaná délka se odměří ve směru kurzoru a bod si zachová svou souřadnici Z, takže spline může stoupat v prostoru. Esc spline zahodí; celá spline je jeden krok, který vrátí <Command id="U" />. Tlačítka Interpolace spline a Řídicí vrcholy křivky spline na pásu karet spouštějí SPLINE s už zvoleným způsobem.
+Příkaz SPLINE nakreslí hladkou křivku jedním ze dvou způsobů: procházející body, které zadáte (<Keyword id="Fit" />, výchozí), nebo přitahovanou k řídicím vrcholům, které umístíte (<Keyword id="CV" />). Na začátku vypíše svá nastavení, `Způsob=Vyhlazení   Úhly=Tětiva`, a pak se zeptá na první bod; Enter na tomto místě se odmítne, jako v AutoCADu. Každý další bod spline ohne, její náhled sleduje kurzor a Enter ji ukončí. Body lze určit myší nebo uchopením, nebo je zapsat, zapsaná délka se odměří ve směru kurzoru a bod si zachová svou souřadnici Z, takže spline může stoupat v prostoru. Esc spline zahodí; celá spline je jeden krok, který vrátí <Command id="U" />. Tlačítka Interpolace spline a Řídicí vrcholy křivky spline na pásu karet spouštějí příkaz SPLINE s už zvoleným způsobem.
 
 ## Options
 
@@ -15,7 +15,7 @@ Příkaz SPLINE nakreslí hladkou křivku jedním ze dvou způsobů: body, kter�
 
 ### Knots
 
-Jak spline s body vyhlazení rozloží své body podél křivky: <Keyword id="Chord" /> (výchozí, podle vzdálenosti mezi nimi), <Keyword id="Square root" /> z této vzdálenosti nebo <Keyword id="Uniform" />, všechny rozestupy stejné. Stejnými body dá každá z těchto možností trochu jinou křivku.
+Jak spline s body vyhlazení rozloží své body podél křivky: <Keyword id="Chord" /> (výchozí, podle vzdálenosti mezi nimi), <Keyword id="Square root" /> z této vzdálenosti nebo <Keyword id="Uniform" />, všechny rozestupy stejné. Stejnými body proloží každá z těchto možností trochu jinou křivku.
 
 ### Degree
 
@@ -43,7 +43,7 @@ Od třetího bodu: spojí konec se začátkem v jednu hladkou smyčku, bez rohu,
 
 ## Missing
 
-Tolerance vyhlazení: spline s body vyhlazení vždy prochází přesně svými body a možnost toLerance se nenabízí. Během kreslení spline zatím není objektem, ke kterému lze uchopovat nebo trasovat, jako v AutoCADu. <Keyword id="Object" /> vždy vymaže křivku (DELOBJ). Hotová spline nemá ZOBRAZŘV (CVSHOW) ani SKRYJŘV (CVHIDE) ani nabídky uzlů pro přidání a odebrání bodu, paleta Vlastnosti upravuje její body, ale ne způsob, stupeň, uzly, váhy ani uzavření, a uchopení Geometrický střed, Kolmo a Tečná ji nenajdou. ŠRAFY nenajdou spline jako hranici a PROLNI (BLEND) zatím neexistuje.
+Tolerance vyhlazení: spline s body vyhlazení vždy prochází přesně svými body a možnost toLerance se nenabízí. Během kreslení spline zatím není objektem, ke kterému lze uchopovat nebo trasovat, jako v AutoCADu. <Keyword id="Object" /> vždy vymaže křivku (DELOBJ). Hotová spline nemá ZOBRAZŘV (CVSHOW) ani SKRYJŘV (CVHIDE) ani nabídky uzlů pro přidání a odebrání bodu, paleta Vlastnosti upravuje její body, ale ne způsob, stupeň, uzly, váhy ani uzavření, a uchopení Geometrický střed, Kolmo a Tečna ji nenajdou. Příkaz ŠRAFY nenajde spline jako hranici a příkaz PROLNI (BLEND) zatím neexistuje.
 
 ## Questions
 
@@ -57,11 +57,11 @@ Spline s body vyhlazení prochází body, na které kliknete, což se hodí pro 
 
 ### Jak v AutoCADu převést spline na křivku?
 
-Spusťte <Command id="PEDIT" /> a vyberte spline: příkaz vypíše <Message id="objectNotPolyline" /> a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu.
+Spusťte příkaz <Command id="PEDIT" /> a vyberte spline: příkaz vypíše <Message id="objectNotPolyline" /> a nabídne převod, pak se zeptá na přesnost od 0 do 99, výchozí 10. Křivka sleduje spline krátkými přímými segmenty, a to ve větším počtu než v AutoCADu.
 
 ### Jak převést křivku na spline?
 
-Vyhlaďte křivku možností <Keyword command="PEDIT" id="Spline" /> příkazu <Command id="PEDIT" />, pak spusťte SPLINE a zvolte <Keyword id="Object" />: z křivky se stane spline se stejným průběhem.
+Vyhlaďte křivku možností <Keyword command="PEDIT" id="Spline" /> příkazu <Command id="PEDIT" />, pak spusťte příkaz SPLINE a zvolte <Keyword id="Object" />: z křivky se stane spline se stejným průběhem.
 
 ### Lze v AutoCADu rozložit spline?
 

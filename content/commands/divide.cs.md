@@ -27,11 +27,11 @@ DIVIDE. V české verzi AutoCADu je jeho zkratka `DU`: zadejte ji a stiskněte E
 
 ### Proč příkaz DĚLÚ nefunguje?
 
-Nejspíš funguje: body tam jsou, nakreslené jako tečky na čáře. Otevřete příkaz <Command id="PTYPE" /> a zvolte křížek nebo kroužek, nebo zadejte PDMODE a `3`: každý bod ve výkresu se hned změní. Chcete-li je vybrat, použijte uchopení Bod, `BOD`.
+Nejspíš funguje: body tam jsou, nakreslené jako tečky na čáře. Otevřete příkaz <Command id="PTYPE" /> a zvolte křížek nebo kroužek, nebo zadejte PDMODE a `3`: každý bod ve výkresu se hned změní. Chcete-li je vybrat, použijte uchopení Uzel, `BOD`.
 
 ### Jak v AutoCADu rozdělit úsečku na stejné díly?
 
-Spusťte příkaz DĚLÚ, vyberte úsečku a zadejte počet dílů, `5` pro pět. Čtyři body mezi díly jsou místa, kam uchopovat: najde je uchopení Bod.
+Spusťte příkaz DĚLÚ, vyberte úsečku a zadejte počet dílů, `5` pro pět. Čtyři body mezi díly jsou místa, kam uchopovat: najde je uchopení Uzel.
 
 ### Jak rozdělit kružnici na stejné díly?
 
@@ -39,4 +39,4 @@ Stejně: vyberte kružnici a zadejte počet dílů. Uzavřený objekt dostane to
 
 ### Jak rozdělit úsečku na samostatné kusy?
 
-Příkaz DĚLÚ místa jen vyznačí. Chcete-li úsečku v nich přerušit, použijte příkaz <Command id="BREAK" /> nebo <Command id="BREAKATPOINT" /> v každém bodě, s uchopením Bod.
+Příkaz DĚLÚ místa jen vyznačí. Chcete-li úsečku v nich přerušit, použijte příkaz <Command id="BREAK" /> nebo <Command id="BREAKATPOINT" /> v každém bodě, s uchopením Uzel.

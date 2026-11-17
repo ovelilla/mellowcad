@@ -7,13 +7,13 @@ sourceHash: "06fba2eeb7be"
 
 Příkaz KLÍN (WEDGE) nakreslí 3D těleso ve tvaru klínu: kvádr, jehož horní plocha klesá od jednoho konce ke druhému. Ptá se na totéž co <Command id="BOX" />: první roh, druhý roh a pak výšku. Vysoký konec je u prvního rohu a sklon klesá podél osy X systému USS směrem ke straně druhého rohu; druhý roh s menším X klín obrátí. Výška se měří podél osy Z systému USS, záporná dolů. Délka, šířka a výška jsou výchozí hodnoty příkazu <Command id="BOX" />, které převezme Enter. Klín vznikne v aktuální hladině a Zpět ho odstraní v jednom kroku.
 
-<Command id="LIST" /> ukáže jeho polohu, délku, šířku, výšku a natočení a v paletě Vlastnosti je lze zapsat. Jeho uzly jsou stejné jako u příkazu <Command id="BOX" />. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCADu, který zahrnuje jen tělesa, a zatím částečně; <Command id="EXPLODE" /> z něj udělá samostatnou oblast pro každou plochu.
+<Command id="LIST" /> ukáže jeho polohu, délku, šířku, výšku a natočení a v paletě Vlastnosti je lze zapsat. Jeho uzly jsou stejné jako u příkazu <Command id="BOX" />. Je to 3D těleso pro příkazy <Command id="UNION" />, <Command id="SUBTRACT" /> a zbytek 3D v MellowCAD, který zahrnuje jen 3D tělesa, zatím částečně; <Command id="EXPLODE" /> z něj udělá samostatnou oblast pro každou plochu.
 
 ## Options
 
 ### Center
 
-U první výzvy: zeptá se na střed a pak na roh, <Keyword id="Cube" /> nebo <Keyword id="Length" />. Klín je vystředěný v bodě, i ve výšce, a jeho vysoký konec leží naproti zadanému rohu.
+V první výzvě: zeptá se na střed a pak na roh, <Keyword id="Cube" /> nebo <Keyword id="Length" />. Klín je vystředěný v bodě, i ve výšce, a jeho vysoký konec leží naproti zadanému rohu.
 
 ### Cube
 

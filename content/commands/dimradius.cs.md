@@ -34,7 +34,7 @@ Vyberte zaoblení: je to oblouk nebo obloukový segment křivky, jako rohy, kter
 
 ### Proč nemůžu vybrat objekt, který chci okótovat?
 
-Příkaz KÓTYRÁDIUS přijme kružnici, oblouk nebo obloukový segment křivky, i v zamknuté hladině. Jakýkoli jiný objekt, i elipsa, vyvolá <Message id="notCircleOrArc" /> a otázka se zopakuje; křivku uvnitř reference bloku zatím vybrat nelze.
+Příkaz KÓTYRÁDIUS přijme kružnici, oblouk nebo obloukový segment křivky, i v uzamknuté hladině. Jakýkoli jiný objekt, i elipsa, vyvolá <Message id="notCircleOrArc" /> a otázka se zopakuje; křivku uvnitř reference bloku zatím vybrat nelze.
 
 ### Jak přidat ke kótě poloměru poznámku?
 

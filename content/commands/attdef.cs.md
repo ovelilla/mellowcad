@@ -56,7 +56,7 @@ Nakreslete symbol, potom spusťte ATRDEF pro každý atribut a umístěte jeho t
 
 ### Jaký je rozdíl mezi názvem, výzvou a implicitní hodnotou atributu?
 
-Název atribut pojmenovává, jako identifikátor: ten ukazuje definice a jím <Command id="EATTEDIT" /> označuje pole. Výzva je otázka, kterou se VLOŽ ptá na hodnotu. Implicitní hodnota je nabízená hodnota, kterou přijme Enter.
+Název (štítek) atribut pojmenovává: ten ukazuje definice a jím <Command id="EATTEDIT" /> označuje pole. Výzva je otázka, kterou se VLOŽ ptá na hodnotu. Implicitní hodnota je nabízená hodnota, kterou přijme Enter.
 
 ### Jak upravit definici atributu?
 

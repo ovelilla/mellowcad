@@ -3,10 +3,10 @@ title: "Mnohoúhelník v AutoCADu: příkaz POLYGON"
 description: "Jak nakreslit pravidelný mnohoúhelník v AutoCADu příkazem POLYGON (zkratka POL): počet stran, střed, vepsaný nebo opsaný, nebo podle strany. Vyzkoušejte online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Jaká je zkratka příkazu POLYGON v AutoCADu?","answer":"POL, stejně jako v anglickém AutoCADu, pak Enter nebo mezerník. Celý název POLYGON funguje také a _POLYGON v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit šestiúhelník v AutoCADu?","answer":"Spusťte příkaz POLYGON, zadejte 6 jako počet stran, určete střed, zvolte Vepsaný nebo Opsaný a zadejte poloměr. Opsaný šestiúhelník měří mezi protilehlými stranami dvojnásobek zadaného poloměru."},{"question":"Jaký je rozdíl mezi vepsaným a opsaným mnohoúhelníkem?","answer":"S volbou Vepsaný se rohy mnohoúhelníku dotýkají kružnice, takže se do ní vejde. S volbou Opsaný se kružnice dotýkají jeho strany, takže kružnice se vejde do něj. Při stejném poloměru je opsaný mnohoúhelník větší."},{"question":"Jak nakreslit mnohoúhelník se zadanou délkou strany?","answer":"Zvolte Strana a zadejte oba konce jedné strany: 0,0, pak délku zadanou relativně k němu, třeba 40,0. Ostatní strany následují proti směru hodinových ručiček."}]
+faq: [{"question":"Jaká je zkratka příkazu POLYGON v AutoCADu?","answer":"POL, stejně jako v anglickém AutoCADu, pak Enter nebo mezerník. Celý název POLYGON funguje také a _POLYGON v AutoCADu v jakémkoli jazyce."},{"question":"Jak nakreslit šestiúhelník v AutoCADu?","answer":"Spusťte příkaz POLYGON, zadejte 6 jako počet stran, určete střed, zvolte Vepsaný nebo Opsaný a zadejte poloměr. Opsaný šestiúhelník měří mezi protilehlými stranami dvojnásobek zadaného poloměru."},{"question":"Jaký je rozdíl mezi vepsaným a opsaným mnohoúhelníkem?","answer":"S možností Vepsaný se rohy mnohoúhelníku dotýkají kružnice, takže se do ní vejde. S možností Opsaný se jeho strany dotýkají kružnice, takže se kružnice vejde do něj. Při stejném poloměru je opsaný mnohoúhelník větší."},{"question":"Jak nakreslit mnohoúhelník se zadanou délkou strany?","answer":"Zvolte Strana a zadejte oba konce jedné strany: 0,0, pak délku zadanou relativně k němu, třeba 40,0. Ostatní strany následují proti směru hodinových ručiček."}]
 ---
 
-Příkaz POLYGON nakreslí pravidelný mnohoúhelník, se všemi stranami a úhly stejnými, jako jednu uzavřenou křivku. Zeptá se na počet stran, od 3 do 1024, pak na střed a na to, zda je mnohoúhelník vepsaný do kružnice, nebo jí opsaný, a pak na poloměr této kružnice. Nebo se sestrojí na jedné své straně volbou `Strana`. Počet stran a volba vepsaný či opsaný jsou výchozími hodnotami příštího příkazu POLYGON v tomto výkresu. Poloměr zadaný číslem nakreslí spodní stranu vodorovně; poloměr zadaný bodem, ukázaným nebo napsaným, určí velikost i natočení mnohoúhelníku. Zatímco zadáváte poloměr, mnohoúhelník sleduje kurzor, s jantarovou čárkovanou čarou od středu.
+Příkaz POLYGON nakreslí pravidelný mnohoúhelník, se všemi stranami a úhly stejnými, jako jednu uzavřenou křivku. Zeptá se na počet stran, od 3 do 1024, pak na střed a na to, zda je mnohoúhelník vepsaný do kružnice, nebo jí opsaný, a pak na poloměr této kružnice. Nebo se sestrojí na jedné své straně možností `Strana`. Počet stran a volba vepsaný či opsaný jsou výchozími hodnotami příštího příkazu POLYGON v tomto výkresu. Poloměr zadaný číslem nakreslí spodní stranu vodorovně; poloměr zadaný bodem, ukázaným nebo napsaným, určí velikost i natočení mnohoúhelníku. Zatímco zadáváte poloměr, mnohoúhelník sleduje kurzor, s jantarovou čárkovanou čarou od středu.
 
 - **Příkaz:** `POLYGON`
 - **Aliasy:** `POL`
@@ -27,7 +27,7 @@ Místo středu: zadejte oba konce jedné strany a mnohoúhelník se od ní sestr
 
 ### `Vepsaný v kružnici` (`V`) [#inscribed]
 
-Vrcholy leží na kružnici: poloměr vede od středu k vrcholu. Výchozí volba.
+Vrcholy leží na kružnici: poloměr vede od středu k vrcholu. Výchozí možnost.
 
 ### `Opsaný kolem kružnice` (`O`) [#circumscribed]
 
@@ -35,7 +35,7 @@ Strany se dotýkají kružnice svými středy: poloměr vede od středu ke stře
 
 ## Co zatím neumí [#missing]
 
-Natočený krok: poloměr zadaný číslem vždy nakreslí spodní stranu vodorovně s USS, kdežto AutoCAD ji natočí o úhel kroku, SNAPANG.
+Natočený krok: poloměr zadaný číslem vždy nakreslí spodní stranu vodorovně v USS, kdežto AutoCAD ji natočí o úhel kroku, SNAPANG.
 
 [Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg--it-poligono--pg--de-polygon--pg--ru-мн-угол--мн--pl-wielobok--wbo--cs-polygon--pol)
 
@@ -51,7 +51,7 @@ Spusťte příkaz POLYGON, zadejte `6` jako počet stran, určete střed, zvolte
 
 ### Jaký je rozdíl mezi vepsaným a opsaným mnohoúhelníkem?
 
-S volbou `Vepsaný` se rohy mnohoúhelníku dotýkají kružnice, takže se do ní vejde. S volbou `Opsaný` se kružnice dotýkají jeho strany, takže kružnice se vejde do něj. Při stejném poloměru je opsaný mnohoúhelník větší.
+S možností `Vepsaný` se rohy mnohoúhelníku dotýkají kružnice, takže se do ní vejde. S možností `Opsaný` se jeho strany dotýkají kružnice, takže se kružnice vejde do něj. Při stejném poloměru je opsaný mnohoúhelník větší.
 
 ### Jak nakreslit mnohoúhelník se zadanou délkou strany?
 
