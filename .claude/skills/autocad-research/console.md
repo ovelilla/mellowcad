@@ -14,7 +14,7 @@ its header says what each flag does. Set `ACCORE` to use another install. A run 
   user's real profile instead, where whatever the probe sets persists: restore it.
 - **Encoding**: the console reads its input as Windows-1252 and the runner converts the probe;
   `/utf8` makes it write UTF-8 (by default it writes UTF-16). A probe 1252 cannot hold
-  (Cyrillic, Polish's ą ł ń) goes as a script (`/s`, UTF-8 with a BOM), which loads no `acad.pgp` (an alias is
+  (Cyrillic, Polish's ą ł ń, Czech's č ř ů; its š ž are 1252's) goes as a script (`/s`, UTF-8 with a BOM), which loads no `acad.pgp` (an alias is
   unknown) and stops at the first refused answer: one refusal per probe, last.
 - **Languages**: Spanish by default, the install's; any other installed pack by its culture,
   `runacc.sh probe.txt en-US` (the packs installed: SKILL.md). The same underscore-form probe runs

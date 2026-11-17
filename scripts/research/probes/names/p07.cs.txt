@@ -1,0 +1,48 @@
+_-OSNAP
+KON
+(getvar "OSMODE")
+_-OSNAP
+STŘ
+(getvar "OSMODE")
+_-OSNAP
+GST
+(getvar "OSMODE")
+_-OSNAP
+REF
+(getvar "OSMODE")
+_-OSNAP
+PRŮ
+(getvar "OSMODE")
+_-OSNAP
+POL
+(getvar "OSMODE")
+_-OSNAP
+NEJ
+(getvar "OSMODE")
+_-OSNAP
+BOD
+(getvar "OSMODE")
+_-OSNAP
+KOL
+(getvar "OSMODE")
+_-OSNAP
+KVA
+(getvar "OSMODE")
+_-OSNAP
+TAN
+(getvar "OSMODE")
+_-OSNAP
+ZDÁ
+(getvar "OSMODE")
+_-OSNAP
+PRO
+(getvar "OSMODE")
+_-OSNAP
+ROV
+(getvar "OSMODE")
+_-OSNAP
+NIC
+(getvar "OSMODE")
+_-OSNAP
+KON,STŘ,PRŮ,PRO
+(getvar "OSMODE")

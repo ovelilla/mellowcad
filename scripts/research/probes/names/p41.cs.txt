@@ -1,0 +1,8 @@
+_LINE
+0,0
+10,0
+
+VYMAŽ
+_L
+
+(sslength (ssget "_X"))

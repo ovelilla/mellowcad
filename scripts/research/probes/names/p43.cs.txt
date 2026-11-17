@@ -1,0 +1,10 @@
+OBDÉLNÍK
+0,0
+10,10
+OBD
+20,0
+30,10
+(sslength (ssget "_X"))
+(getcname "OBDÉLNÍK")
+(getcname "OBD")
+(getcname "_RECTANG")
