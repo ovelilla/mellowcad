@@ -790,6 +790,13 @@ export interface EntityDrawOptions {
   readonly linetype?: boolean
   /** The texts of the object's complex linetype, drawn with its dashes. */
   readonly linetypeText?: LinetypeTextLook
+  /**
+   * What the drawing does to a colour the object holds of its own, a
+   * gradient's: kept, or faded as its stroke is (an erase preview, a locked
+   * layer). Absent, the object is drawn in its stroke's colour alone — a
+   * highlight, a ghost — as a SOLID hatch is.
+   */
+  readonly ownColor?: (color: string) => string
 }
 
 /** A complex linetype with texts, as an object wears it. */
@@ -1444,7 +1451,12 @@ function hatchPrimitives(
   if (geometry.rings.length === 0) return []
   if (geometry.solid) {
     const [first, ...rest] = geometry.rings
-    const gradient = hatchGradientFill(hatch)
+    const own = options.ownColor
+    const fill = own ? hatchGradientFill(hatch) : null
+    const gradient = fill && {
+      ...fill,
+      stops: fill.stops.map((stop) => ({ ...stop, color: own!(stop.color) })),
+    }
     return [
       {
         kind: "path",
@@ -2298,6 +2310,12 @@ function pushEntities(
       isolines,
       points,
       solidLines,
+      // A gradient's own colours fade as the stroke does.
+      ownColor: isFaded
+        ? (color: string) => fadedColor(color)
+        : locked
+          ? (color: string) => fadedColor(color, LOCKED_LAYER_OPACITY)
+          : (color: string) => color,
       linetype: true,
       linetypeText: textLook(entity, layer),
       dimStyle:
@@ -2398,7 +2416,7 @@ export function selectionGlow(
     camera,
     entity,
     { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
-    { ...options, linetype: false }
+    { ...options, linetype: false, ownColor: undefined }
   )
 }
 

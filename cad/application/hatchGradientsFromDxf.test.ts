@@ -15,6 +15,7 @@ import { documentSnapshot } from "./runtimeFiles"
 import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
 import type { ScenePrimitive } from "../scene/types"
+import { THEME } from "../scene/theme"
 
 // AutoCAD 2027's DXFOUT of gradient/g16: twelve 100 × 50 rectangles, the
 // i-th at ((i mod 4)·120, −⌊i/4⌋·70), hatched with the nine names centred
@@ -87,6 +88,27 @@ describe("a DXF's gradients, drawn", () => {
     )
     expect(colors.has("#0000ff")).toBe(true)
     expect(colors.has("#ffff00")).toBe(true)
+  })
+
+  it("glows as a SOLID hatch when selected, and fades with ERASE's preview", async () => {
+    const cad = await opened()
+    cad.zoomToFit()
+    const id = nth(cad, 0).id
+    cad.select(id)
+    const glows = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "path" && q.fill === THEME.selected)
+    expect(glows).toHaveLength(1)
+    expect(glows[0]).not.toHaveProperty("gradient")
+    expect(gradientPaths(cad)).toHaveLength(12)
+    // ERASE with the hatch picked: its stops faded, as its stroke would be.
+    cad.escape()
+    typed(cad, "_ERASE")
+    cad.click(p(50, 25))
+    const faded = gradientPaths(cad).filter((q) =>
+      q.gradient.stops.every((s) => s.color.startsWith("rgba("))
+    )
+    expect(faded).toHaveLength(1)
   })
 
   it("draws none with FILL off (g14)", async () => {

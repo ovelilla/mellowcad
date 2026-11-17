@@ -1724,10 +1724,14 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       const loops = parseHatchLoops(raw.loops)
       if (loops.length === 0) return null
       // Before 32 a hatch without a name was the default then, ANSI31.
-      const patternId = parseId(
-        raw.patternId,
-        version < 32 ? "ANSI31" : DEFAULT_HATCH_PATTERN_ID
-      )
+      // From 56: a DXF's gradient, which is always on SOLID, as AutoCAD keeps it.
+      const gradient = gradientOf(raw.gradient)
+      const patternId = gradient.gradient
+        ? "SOLID"
+        : parseId(
+            raw.patternId,
+            version < 32 ? "ANSI31" : DEFAULT_HATCH_PATTERN_ID
+          )
       return {
         id,
         type: "hatch",
@@ -1736,17 +1740,17 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         loops,
         patternId,
         // From 55: the type and lines a DXF's pattern brought.
-        ...(raw.patternType === "user" || raw.patternType === "custom"
+        ...(!gradient.gradient &&
+        (raw.patternType === "user" || raw.patternType === "custom")
           ? { patternType: raw.patternType }
           : {}),
-        ...patternLinesOf(raw.patternLines),
+        ...(gradient.gradient ? {} : patternLinesOf(raw.patternLines)),
         patternScale: hatchScaleOf(patternId, raw.patternScale, version),
         patternAngle: isFiniteNumber(raw.patternAngle)
           ? raw.patternAngle
           : DEFAULT_HATCH_ANGLE,
         origin: parseVec2(raw.origin) ?? { x: 0, y: 0 },
-        // From 56: a DXF's gradient.
-        ...gradientOf(raw.gradient),
+        ...gradient,
       }
     }
     case "insert": {

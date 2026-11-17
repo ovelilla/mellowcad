@@ -166,7 +166,8 @@ layout not opened.`), an object too malformed to make too (`1 object could not b
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
 an invisible object (60 1) is not opened, and not counted, WHY: AutoCAD draws and selects none,
 and they are the hidden states of a dynamic block's visibility parameter, which the model has
-not (13,793 of 43 of AutoCAD's samples: drawn, they piled up over the state shown);
+not (13,793 of 43 of AutoCAD's samples: drawn, they piled up over the state shown); an object
+HIDEOBJECTS hid, if a drawing saves it so (**unverified**), is lost with them;
 tolerant where AutoCAD's reader is strict: an unknown group code or entity, a missing subclass
 marker, an EOF missing after the last section or a malformed object discard the whole drawing
 there (`Undefined group code 77 for object on line 22.`, t-*), and RECOVER does not take them

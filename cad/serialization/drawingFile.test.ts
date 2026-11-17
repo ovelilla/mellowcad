@@ -1741,6 +1741,69 @@ describe("hatches", () => {
     expect(parsed.entities[0]).toEqual(hatch)
   })
 
+  it("reads a gradient on SOLID, and drops one it cannot read", () => {
+    const loop = {
+      vertices: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 1 },
+      ],
+    }
+    const gradient = {
+      name: "SPHERICAL",
+      colors: ["#0000FF", "#ff0"],
+      tint: 3,
+      angle: "sideways",
+      centered: false,
+    }
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        entities: [
+          {
+            id: "h1",
+            type: "hatch",
+            loops: [loop],
+            patternId: "ANSI31",
+            patternType: "custom",
+            patternLines: [
+              { angle: 0, origin: { x: 0, y: 0 }, deltaX: 0, deltaY: 1 },
+            ],
+            gradient,
+          },
+          {
+            id: "h2",
+            type: "hatch",
+            loops: [loop],
+            gradient: { ...gradient, name: "RADIAL" },
+          },
+          {
+            id: "h3",
+            type: "hatch",
+            loops: [loop],
+            gradient: { ...gradient, colors: ["#0000ff"] },
+          },
+        ],
+      })
+    )
+    const [read, unknown, oneColour] = parsed.entities
+    expect(read).toMatchObject({
+      patternId: "SOLID",
+      gradient: {
+        name: "SPHERICAL",
+        colors: ["#0000ff", "#ffff00"],
+        tint: 1,
+        angle: 0,
+        centered: false,
+      },
+    })
+    expect(read).not.toHaveProperty("patternType")
+    expect(read).not.toHaveProperty("patternLines")
+    expect(unknown).not.toHaveProperty("gradient")
+    expect(oneColour).not.toHaveProperty("gradient")
+  })
+
   it("drops a hatch with no usable boundary", () => {
     const parsed = parseDrawingFile(
       JSON.stringify({

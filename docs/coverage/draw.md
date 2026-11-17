@@ -1098,7 +1098,8 @@ Type `Gradient`, Gradient name, Color 1, Color 2, Gradient Angle and Centered (a
 drawing file keeps it (version 56). Not centred, LINEAR and CYLINDER turn at 5/16 of the way and
 SPHERICAL's, HEMISPHERICAL's and CURVED's centre moves (fits of g04 and g06, rms under 0.02),
 CURVED's in a wide box by a rule not found (0.07 off there; none of the 144 gradients of
-AutoCAD's samples is off centre). WHY a pattern of acadiso.pat this build does not ship (HOUND, GRASS, INSUL) keeps its lines
+AutoCAD's samples is off centre); a gradient hatch tilted off its block's plane keeps its angle in
+a turned or reflected reference. WHY a pattern of acadiso.pat this build does not ship (HOUND, GRASS, INSUL) keeps its lines
 at a new Scale or Angle, where AutoCAD reads it again from acadiso.pat: there is nothing here to
 read it from. A drawing saved before file
 
