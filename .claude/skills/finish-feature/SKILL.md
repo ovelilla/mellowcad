@@ -63,3 +63,5 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
      `git worktree remove .claude/worktrees/<name>` and `git branch -d worktree-<name>`. A merge
      that refuses (the owner's uncommitted edit on a file you changed) waits: say so.
 8. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
+   Pushes are batched, one or two a day: each deploy empties the CDN's cache, and until it
+   refills every page is read from ISR storage, near Hobby's 30-day cap (17/11/2026).

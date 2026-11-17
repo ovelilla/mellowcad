@@ -191,7 +191,7 @@ reports, for the same promise.
   _is_ `<` and the escape does nothing: the home's site, app and publisher (its `sameAs`, the
   repository and the engine's npm page; its `softwareVersion`, the engine's), and each docs page's
   `BreadcrumbList`, the same steps it draws above the article. No invented ratings, ever.
-- `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
+- `robots.ts` allows all but two training crawlers (its `WHY`), `/draw` included (it must be fetchable for its `noindex` to be
   read). `sitemap.ts` lists indexable pages once per live language with their `hreflang` and
   `CONTENT_UPDATED` — bump it with the copy; a docs page, the day of its files' last commit
   (`lastCommitDay`), left out where a shallow clone cannot know it.
