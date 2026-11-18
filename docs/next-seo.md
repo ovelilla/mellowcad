@@ -15,11 +15,11 @@
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
-> `/cs`, L8) hecho el 17/11, sin publicar; por decisión del dueño la visibilidad va antes que
+> `/cs`, L8) hecho y publicado el 17/11; por decisión del dueño la visibilidad va antes que
 > cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca
 > en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
 > hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los degradados y 3DFACE,
-> del punto 7, hechos el 17/11, sin publicar; lo que queda del punto 7: WIPEOUT, IMAGE, TABLE…) y
+> del punto 7, hechos y publicados el 17/11; lo que queda del punto 7: WIPEOUT, IMAGE, TABLE…) y
 > otro idioma (el húngaro, el siguiente), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
@@ -942,7 +942,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   hasta las 19:51 UTC). **Siguiente idioma propuesto: el checo** (localizado, `cs-CZ`; su paquete
   está en la misma lista que el polaco, y su latin-ext se suma a la cara de las letras), alternando
   con lo que quede de la fase 4 del DXF.
-- Checo (L8): hecho el 17/11/2026, sin publicar (`cf27f512`, `a6e1a4d6` y el commit que lo pasa
+- Checo (L8): hecho y publicado el 17/11/2026 (`cf27f512`, `a6e1a4d6` y el commit que lo pasa
   a `live`; `docs/plans/cs-language.md`, `docs/i18n/cs.md`). El paquete de idioma instalado en el
   AutoCAD del dueño, con su permiso, y la 2027.1 otra vez; el lenguaje de comandos de la consola
   checa (433 sondas: ÚSEČKA, EKVID, OŘEŽ; `U` es ÚSEČKA y `Z` deshace; FROM es `ODBODU`, que en
@@ -963,22 +963,23 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   checo en borrador, con esta medida (cada respuesta hasta la red en reposo, Brotli q11), y 67 en
   `live`: el rango de la cara de las letras en uno (`U+0104-017E`) y «Čeština» en la regla del
   ruso lo dejan 63 bytes por debajo; el siguiente cambio de la portada francesa tiene que medirse.
-  **Sin publicar**: el push, IndexNow, la cola de §7 (que `gsc-prioritize.mjs` rehaga con `/cs`,
-  pesado como el polaco por Chequia) y las fichas de AlternativeTo y SaaSHub esperan al dueño. La
+  Publicado el 17/11 por el dueño (el push de las 18:37, hasta `315c66cd`, con la fase 4 del DXF
+  de ese día); la cola de §7, rehecha con `/cs` el 18/11 (§7); IndexNow y las fichas de
+  AlternativeTo y SaaSHub, del dueño. La
   tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota hasta las 19:51 UTC), ni la
   activación del cierre de conversaciones terminadas (hecha el 19/11). **Siguiente**, por orden del dueño:
   lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: los degradados y el punto 7), y después
   otro idioma (el húngaro: `hu-HU` está en la misma lista de paquetes, y su ő ű, también de Latin
   Extended-A, entran en la cara de las letras).
-- DXF, fase 4 (sesión del 17/11/2026, sin publicar; `docs/next-dxf.md`, puntos 6b y 7): los
+- DXF, fase 4 (sesión del 17/11/2026, publicada ese día; `docs/next-dxf.md`, puntos 6b y 7): los
   degradados de los sombreados (los 144 de 6 muestras: dibujados como los traza AutoCAD, medidos
   píxel a píxel en sus trazados, guardados por DXFOUT desde 2004 y en 2000 como el suyo), de paso
   los objetos invisibles de un DXF (60 1, los estados ocultos de los bloques dinámicos, 13.793 en
   43 muestras) sin abrir, y 3DFACE con la cara 3D (las 30 de 8 muestras y 1 de otro programa).
   Muestras sin nada fuera, de 135 a 148 de 154; ficheros de otros, de 572 a 573 de 577. Las
   páginas «abrir DXF online», en los diez idiomas, ya no cuentan los degradados ni las caras 3D
-  entre lo que queda fuera. La portada no cambia (ni sus mensajes ni lo que carga). **Sin
-  publicar**: el push, IndexNow y la cola de §7 esperan al dueño; la tanda de indexación del 17/11
+  entre lo que queda fuera. La portada no cambia (ni sus mensajes ni lo que carga). Publicado el
+  17/11 por el dueño, con el checo (el push de las 18:37, hasta `315c66cd`); la tanda de indexación del 17/11
   no tocaba en toda la sesión (cuota hasta las 19:51 UTC), ni la activación de
   cierre de conversaciones terminadas (hecha el 19/11). **Siguiente**, por orden del dueño: el húngaro
   (L8), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE, MULTILEADER…).

@@ -11,11 +11,11 @@
 > publicado el 13/11, y el punto 4 de la fase 4 (los tipos de línea del dibujo, su tabla LTYPE),
 > hecho y publicado el 13/11, y el ruso (`docs/next-seo.md`, L8), hecho y publicado el 13/11;
 > y el punto 5 (las referencias externas), hecho el 16/11 y publicado el 17/11, que llevó las muestras
-> sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho el 17/11 y
-> sin publicar, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
-> (`docs/next-seo.md`, L8), hecho el 17/11 y sin publicar; y los degradados (el punto 6b), hechos
-> el 17/11 y sin publicar, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
-> punto 7 3DFACE, hecho el 17/11 y sin publicar, que las llevó a 148; siguiente, por orden del
+> sin nada fuera de 121 a 135 de 154, y el punto 6 (el patrón de cada sombreado), hecho y
+> publicado el 17/11, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
+> (`docs/next-seo.md`, L8), hecho y publicado el 17/11; y los degradados (el punto 6b), hechos
+> y publicados el 17/11, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
+> punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148; siguiente, por orden del
 > dueño, lo que quede del punto 7 (WIPEOUT, IMAGE, TABLE…), y después otro idioma (el húngaro),
 > alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
@@ -274,7 +274,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    6. **El patrón de cada sombreado**: un DXF trae las líneas de cualquier patrón (53, 43–46, 79,
       49), y dibujarlas del fichero cubre los que no están entre los 24 (HOUND, GRASS, INSUL), los
       definidos por el usuario (`_USER`, `U`: 9 muestras) y los propios de cada programa. Los
-      degradados (6 muestras, 144 sombreados), aparte. **Hecho** (17/11/2026, sin publicar): un
+      degradados (6 muestras, 144 sombreados), aparte. **Hecho y publicado** (17/11/2026): un
       sombreado guarda las líneas de su patrón cuando no son las del registro (el tipo, 76, y las
       líneas, 78…49, pasadas a unidades del patrón) y se dibuja con ellas, como AutoCAD dibuja el
       que tiene (consola, sondas `hatchpat/`: un MYPAT personalizado que AutoCAD no tiene y un `_U`
@@ -294,7 +294,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       sus líneas al cambiar de escala, donde AutoCAD lo lee otra vez. Lo que hace y le falta, en
       `docs/coverage/draw.md` (HATCH), `clipboard-and-files.md` (DXFIN, DXFOUT) e `inquiry.md`.
    6b. **Los degradados**: 6 muestras, 144 sombreados (las flechas y etiquetas de los bloques de
-      anotación). **Hechos** (17/11/2026, sin publicar): el sombreado guarda su degradado (los nueve
+      anotación). **Hechos y publicados** (17/11/2026): el sombreado guarda su degradado (los nueve
       nombres de AutoCAD, dos colores o uno con su tinte, el ángulo y Centrado; fichero versión 56)
       y se dibuja como lo traza AutoCAD, medido píxel a píxel en sus trazados (sondas
       `gradient/g03`–`g06`): sobre la extensión del contorno, mezclado en RGB, el coseno de un cuarto
@@ -323,7 +323,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
    7. 3DFACE (8 muestras), WIPEOUT (3), IMAGE (1, y 1 de otros), TABLE (las de las muestras están
       en presentaciones; 1 de otros), y sin ningún caso medido XLINE, RAY, MINSERT como tal, los
       colores índice como tales y las sustituciones de estilo de cada cota (XDATA `DSTYLE`).
-      **3DFACE hecho** (17/11/2026, sin publicar): la cara 3D (cuatro esquinas en el SCU con su Z,
+      **3DFACE hecho y publicado** (17/11/2026): la cara 3D (cuatro esquinas en el SCU con su Z,
       un triángulo repite la tercera, y sus aristas ocultas, DXF 70; fichero versión 57) y 3DFACE
       con su Invisible, en los nueve idiomas de consola (sondas `face3d/f00`–`f13`; tablas
       20611–20615; nombres de la ayuda y de cada acad.pgp: es 3DCARA, pt-BR y fr FACE3D, pl 3WPOW).

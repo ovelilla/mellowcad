@@ -2,7 +2,7 @@
 
 > **Estado:** en pausa: la visibilidad va antes por decisión del dueño del 5/11/2026; sin acordar,
 > nada empezado, salvo el MCP del motor (§2), que una sesión intercalada el 15/11/2026 investigó,
-> prototipó y midió: su brief es `docs/next-mcp.md`, también sin acordar y sin publicar. El plan
+> prototipó y midió: su brief es `docs/next-mcp.md`, acordado el 15/11, con su entrega 1 en producción. El plan
 > de la visibilidad es `docs/next-seo.md`, y lo siguiente en él, lo que queda de la fase 4 del DXF
 > (`docs/next-dxf.md`). Los tres paquetes están en npm desde el 2026-10-31 (motor 0.2.0, react y
 > editor 0.1.0). Se borra cuando cada idea esté hecha o descartada.
