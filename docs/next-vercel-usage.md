@@ -38,6 +38,16 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | --- | --- | --- | --- | --- |
 | 17/11 23:20 | 698.764 | ~76K | 5,34 GB | antes de las medidas |
 | 18/11 00:24 | 702.458 | ~125K | — | recién desplegadas las medidas |
+| 19/11 00:40 | 779.111 | 18/11 aún incompleto | 5,97 GB | primer día con Cloudflare: abajo |
+
+El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
+se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR
+y 1,7K peticiones al almacén** (antes 74K y unas 7,4K), y 2,7K peticiones al CDN de Vercel (antes
+17K). Los robots de IA, 216 (antes 3,5K): `meta-externalagent` y `GPTBot` ya no aparecen. Cloudflare,
+en sus primeras 25 h: 10,8K peticiones, el 22 % servido de su caché, del 2 % de la primera hora al
+35–60 % de las últimas, porque aún se está llenando (792 rutas distintas de la documentación en
+12 h, cada una con su primer fallo). A ~56K al día el millón llegaría hacia el 22–23/11: la lectura
+del 20/11 dice si la caché, ya llena, lo baja de ~20K.
 
 ## 4. Cuándo se levanta el congelado
 
