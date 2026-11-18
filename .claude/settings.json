@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/reap.mjs\" --once --dry-run --trigger session-start --quiet",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/reap.mjs\" --once --trigger session-start --quiet",
             "timeout": 15
           }
         ]

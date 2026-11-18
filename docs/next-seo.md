@@ -964,7 +964,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   **Sin publicar**: el push, IndexNow, la cola de §7 (que `gsc-prioritize.mjs` rehaga con `/cs`,
   pesado como el polaco por Chequia) y las fichas de AlternativeTo y SaaSHub esperan al dueño. La
   tanda de indexación del 17/11 no tocaba al empezar la sesión (cuota hasta las 19:51 UTC), ni la
-  activación de `docs/next-session-cleanup.md` (desde el 18/11). **Siguiente**, por orden del dueño:
+  activación del cierre de conversaciones terminadas (hecha el 19/11). **Siguiente**, por orden del dueño:
   lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: los degradados y el punto 7), y después
   otro idioma (el húngaro: `hu-HU` está en la misma lista de paquetes, y su ő ű, también de Latin
   Extended-A, entran en la cara de las letras).
@@ -978,6 +978,6 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   entre lo que queda fuera. La portada no cambia (ni sus mensajes ni lo que carga). **Sin
   publicar**: el push, IndexNow y la cola de §7 esperan al dueño; la tanda de indexación del 17/11
   no tocaba en toda la sesión (cuota hasta las 19:51 UTC), ni la activación de
-  `docs/next-session-cleanup.md` (desde el 18/11). **Siguiente**, por orden del dueño: el húngaro
+  cierre de conversaciones terminadas (hecha el 19/11). **Siguiente**, por orden del dueño: el húngaro
   (L8), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE, MULTILEADER…).
 - 10 Medición: la primera, un mes después del push de 01–02.
