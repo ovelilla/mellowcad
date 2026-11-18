@@ -427,6 +427,11 @@ el dueño dio a las sesiones el 6/11).
    `gsc-prioritize.mjs`, que ahora reconoce su prefijo y pesa `/pl` a 0,14 (Polonia, 40 en el
    índice de la auditoría: el 0,4 del italiano × 40/113; sin el prefijo las tomaba por inglesas):
    1.041 en la cola, `/pl` la tercera. IndexNow, las 1.149 del sitemap (200).
+   **18/11, 22:53 UTC (sesión del húngaro):** `gsc-prioritize.mjs` reconoce `/cs` y `/hu` y los
+   pesa a 0,05 y 0,03 (Chequia 14 y Hungría 8 en el índice de la auditoría: el 0,4 del italiano ×
+   14/113 y × 8/113); sin ello tomaba las 126 URLs checas por inglesas. La tanda del día, 11
+   pedidas (`/pl`, `/pl/docs/commands`, `/de/docs/open-dxf`, `/docs/coordinates`…) hasta la cuota:
+   1.155 en la cola, de 1.275 en el sitemap.
    **19/11, 23:40 UTC del 18/11:** la cola, rehecha con el checo publicado: 1.155 de 1.275 en el
    sitemap; la tanda no pidió ninguna, la cuota de Google cortó en la primera.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
