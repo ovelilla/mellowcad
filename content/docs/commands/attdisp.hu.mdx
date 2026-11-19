@@ -1,0 +1,60 @@
+---
+title: "Attribútumok megjelenítése az AutoCAD-ben: ATTLÁTH (ATTDISP) parancs"
+metaTitle: "Attribútumok láthatósága: ATTLÁTH (ATTDISP)"
+description: "Attribútumok láthatósága az AutoCAD-ben az ATTLÁTH (ATTDISP) paranccsal: Normál, Be a láthatatlanokkal is, Ki mindet elrejti. A rajzba mentődik. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet megjeleníteni a láthatatlan attribútumokat az AutoCAD-ben?","answer":"Írja be az ATTLÁTH parancsot, és válassza a Be opciót: minden attribútum megjelenik, a láthatatlanok is. A Normál opció ismét elrejti őket."},{"question":"Miért nem látszanak a blokk attribútumai?","answer":"Lehet, hogy az ATTLÁTH beállítása Ki, ami minden attribútumot elrejt, vagy Normál, és az attribútumokat láthatatlannak definiálták. Válassza a Be opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi a beállítás."},{"question":"Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?","answer":"Definiálja őket láthatatlannak: az ATTDEF parancs Láthatatlan módjával, mielőtt a blokkot létrehozza. Az ATTLÁTH parancs Ki opciója egyszerre minden attribútumot elrejt, az egész rajzban."}]
+---
+
+Az ATTLÁTH (ATTDISP) parancs azt állítja be, mely attribútumokat mutatják a rajz blokkreferenciái. Bekéri a beállítást, az aktuálisat felkínálva, új rajzban a Normál beállítást; minden más szóra kiírja, hogy a kulcsszó érvénytelen, és újra kérdez, az Enter pedig megtartja az aktuálisat. A módosítás az egész rajzot újrarajzolja – `Modell regenerálása.`, ahogy az AutoCAD 2027 írja –, ATTMODE néven a rajzba mentődik, és egy lépés, amelyet a `T` parancs visszavon. Egy parancson belül aposztróffal beírva ott is lefut.
+
+Csak azt változtatja meg, mi látszik: a láthatatlan attribútum megtartja az értékét, a rejtett pedig továbbra is szerkeszthető az [`ATTEDIT`](/docs/commands/attedit) vagy a [`BATTEDIT`](/docs/commands/eattedit) paranccsal.
+
+- **Parancs:** `ATTLÁTH`
+- **Angolul:** `ATTDISP`, bármely nyelven `_ATTDISP` formában beírva
+- **Panel:** [Rendszerezés](/docs/commands#organize)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ATTLÁTH`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="attdisp" caption="Két íróasztal, amelyek cikkszáma láthatatlan attribútum: az ATTLÁTH Be mindegyik asztal alatt megjeleníti őket, a látható számok mellett." />
+
+## Opciók [#options]
+
+### `Normál` (`N`) [#normal]
+
+Minden attribútumot úgy mutat, ahogy definiálták: a láthatókat, de nem azokat, amelyeket az [`ATTDEF`](/docs/commands/attdef) parancs `Láthatatlan` módjával definiáltak.
+
+### `Be` (`B`) [#on]
+
+Minden attribútumot megjelenít, a láthatatlanokat is.
+
+### `Ki` (`K`) [#off]
+
+Minden attribútumot elrejt, a láthatókat is.
+
+## Kérdések [#questions]
+
+### Hogyan lehet megjeleníteni a láthatatlan attribútumokat az AutoCAD-ben?
+
+Írja be az `ATTLÁTH` parancsot, és válassza a `Be` opciót: minden attribútum megjelenik, a láthatatlanok is. A `Normál` opció ismét elrejti őket.
+
+### Miért nem látszanak a blokk attribútumai?
+
+Lehet, hogy az `ATTLÁTH` beállítása `Ki`, ami minden attribútumot elrejt, vagy `Normál`, és az attribútumokat láthatatlannak definiálták. Válassza a `Be` opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi a beállítás.
+
+### Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?
+
+Definiálja őket láthatatlannak: az [`ATTDEF`](/docs/commands/attdef) parancs `Láthatatlan` módjával, mielőtt a blokkot létrehozza. Az ATTLÁTH parancs `Ki` opciója egyszerre minden attribútumot elrejt, az egész rajzban.
+
+## Kapcsolódó parancsok [#related]
+
+- [Blokkattribútumok az AutoCAD-ben: ATTDEF parancs](/docs/commands/attdef)
+- [Attribútumok szerkesztése az AutoCAD-ben: ATTEDIT parancs](/docs/commands/attedit)
+- [AutoCAD BATTEDIT (EATTEDIT) parancs](/docs/commands/eattedit)
+- [Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs](/docs/commands/block)
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt--de-attzeig--ru-атэкр--pl-atrwid--cs-atrdisp--hu-attláth)

@@ -1,0 +1,60 @@
+---
+title: "AutoCAD TOLHÚZ (PRESSPULL) parancs"
+metaTitle: "AutoCAD TOLHÚZ (PRESSPULL): lapok és területek"
+description: "Az AutoCAD TOLHÚZ (PRESSPULL) parancsa benyomja vagy kihúzza, amire kattint: zárt objektumot, objektumok közti területet, 3D szilárdtest lapját. Ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi a különbség a TOLHÚZ és a KIHÚZ (EXTRUDE) parancs között?","answer":"A KIHÚZ kiválasztott zárt objektumokkal dolgozik, a DELOBJ szerint törli őket, és irányt, kúposságot és kifejezést is kínál. A TOLHÚZ kattintásokkal dolgozik – egy zárt objektumra, több objektum belsejében lévő területre vagy egy szilárdtest lapjára, amelyet hozzáad a szilárdtesthez vagy kivág belőle –, és megtartja az objektumokat. Objektumból mindkettő ugyanazt a szilárdtestet készíti."},{"question":"Hogyan lehet kihúzni egy szilárdtest lapját?","answer":"Futtassa a TOLHÚZ parancsot, kattintson a lapra, és adja meg a távolságot: a pozitív kihúzza, és a szilárdtest nő, a negatív benyomja. Ha kattintás közben lenyomva tartja a Ctrl billentyűt, a lapot ehelyett párhuzamosan eltolja. Egyelőre csak sík lapokkal működik."},{"question":"Miért nem működik a TOLHÚZ?","answer":"Zárt dologra kell kattintani. A TOLHÚZ az első promptnál beírt számra vagy pontra, a nyitott objektumra vagy ívelt lapra mért kattintásra „Kattintson egy felületre, ívre vagy a körülhatárolt területen belülre” üzenettel válaszol, és újra kérdez. Kattintson egy zárt objektumra, egy felülnézetben objektumok által körülzárt terület belsejébe, vagy egy szilárdtest sík lapjára."},{"question":"Van rövidítése a TOLHÚZ parancsnak?","answer":"Nincs rövidítése: írja be, hogy TOLHÚZ, vagy az AutoCAD bármely nyelvi változatában _PRESSPULL. A Ctrl+Shift+E, az AutoCAD billentyűparancsa hozzá, még nincs megvalósítva."}]
+---
+
+A TOLHÚZ (PRESSPULL) parancs kihúzza, amire kattint: egy zárt objektumot, egy területet, amelyet a kattintás helye körül objektumok zárnak be, vagy egy 3D szilárdtest sík lapját. Kattintson, majd írja be a magasságot, vagy mozgassa a kurzort, és kattintson: a pozitív magasság kihúz, a negatív benyom. A zárt objektumból vagy a területből új szilárdtest lesz, ugyanaz, amelyet a [`KIHÚZ`](/docs/commands/extrude) készítene, és az objektumok megmaradnak; a terület szigetei lyukak lesznek benne, ahogy a mintában. A lap a hasábját hozzáadja a szilárdtestéhez, vagy kivonja belőle: a téglatest kihúzott teteje magasabbá teszi a testet. A prompt a következő kattintáshoz újra megjelenik, amíg meg nem nyomja az Enter billentyűt, és a teljes futás egyetlen lépés, amelyet a Vissza visszavon.
+
+Ha lenyomva tartja a Ctrl billentyűt, kiemelődik az a lap, amelyet a kattintás megfogna; a Ctrl+kattintás ehelyett párhuzamosan eltolja a lapot, a szomszédos lapjai pedig vele mozdulnak, hogy találkozzanak vele, így a ferde oldal megtartja a lejtését. Ahogy az AutoCAD-ben, a TOLHÚZ kattintásokkal dolgozik: az első promptnál beírt számra vagy pontra `Kattintson egy felületre, ívre vagy a körülhatárolt területen belülre` a válasz, és a prompt újra megjelenik.
+
+- **Parancs:** `TOLHÚZ`
+- **Angolul:** `PRESSPULL`, bármely nyelven `_PRESSPULL` formában beírva
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TOLHÚZ`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="presspull" caption="Egy téglalap és egy kör közötti terület 8-cal lefelé nyomva: furatos alaplap délkeletről nézve, Takartvonalas vizuális stílusban." />
+
+## Opciók [#options]
+
+### `Több` (`T`) [#multiple]
+
+A magasság vagy az eltolási távolság promptjánál: kattintson tovább, hogy újabbakat adjon hozzá – zárt objektumokat és területeket, vagy egyetlen szilárdtest lapjait –, majd nyomja meg az Enter billentyűt, és egyetlen magasság érvényes mindegyikre. Az objektum vagy terület után kattintott lapot kiszűri.
+
+## Amit még nem tud [#missing]
+
+Az ívelt lap, amelyet az AutoCAD szintén eltol: itt a kattintás nem talál lapot. Az olyan eltolás, amelynek szomszédos lapjai kúpok, gömbök vagy tóruszok, vagy síkok és ívelt lapok vegyesen, vagy amely egy lapot átnyomna a vele szemközti lapon: a szilárdtest változatlan marad. Az IMPRINT és az IMPLIEDFACE által a lapon létrehozott területek, és a Ctrl+Shift+E. A nyitott objektum, amelyet az AutoCAD felületté húz ki: felületek még nincsenek. Húzás közben az előnézet a lap hasábját vagy az új szilárdtestet mutatja, nem a szilárdtestet úgy, ahogy lesz, és a lap csak a Ctrl billentyűvel emelődik ki. Az FKR síkján kívül körülhatárolt terület nincs kipróbálva.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#presspull--es-presionartirar--pulsartirar--pt-br-pressionarpuxar--fr-apptirer--it-premtrasc--de-klickziehen--ru-выдавгрань--pl-naciśnijciąg--cs-tlačtáhni--hu-tolhúz)
+
+## Kérdések [#questions]
+
+### Mi a különbség a TOLHÚZ és a KIHÚZ (EXTRUDE) parancs között?
+
+A [`KIHÚZ`](/docs/commands/extrude) kiválasztott zárt objektumokkal dolgozik, a DELOBJ szerint törli őket, és irányt, kúposságot és kifejezést is kínál. A TOLHÚZ kattintásokkal dolgozik – egy zárt objektumra, több objektum belsejében lévő területre vagy egy szilárdtest lapjára, amelyet hozzáad a szilárdtesthez vagy kivág belőle –, és megtartja az objektumokat. Objektumból mindkettő ugyanazt a szilárdtestet készíti.
+
+### Hogyan lehet kihúzni egy szilárdtest lapját?
+
+Futtassa a TOLHÚZ parancsot, kattintson a lapra, és adja meg a távolságot: a pozitív kihúzza, és a szilárdtest nő, a negatív benyomja. Ha kattintás közben lenyomva tartja a Ctrl billentyűt, a lapot ehelyett párhuzamosan eltolja. Egyelőre csak sík lapokkal működik.
+
+### Miért nem működik a TOLHÚZ?
+
+Zárt dologra kell kattintani. A TOLHÚZ az első promptnál beírt számra vagy pontra, a nyitott objektumra vagy ívelt lapra mért kattintásra `Kattintson egy felületre, ívre vagy a körülhatárolt területen belülre` üzenettel válaszol, és újra kérdez. Kattintson egy zárt objektumra, egy felülnézetben objektumok által körülzárt terület belsejébe, vagy egy szilárdtest sík lapjára.
+
+### Van rövidítése a TOLHÚZ parancsnak?
+
+Nincs rövidítése: írja be, hogy `TOLHÚZ`, vagy az AutoCAD bármely nyelvi változatában `_PRESSPULL`. A Ctrl+Shift+E, az AutoCAD billentyűparancsa hozzá, még nincs megvalósítva.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD KIHÚZ (EXTRUDE) parancs](/docs/commands/extrude)
+- [AutoCAD SZTESTSZERKESZT (SOLIDEDIT) parancs](/docs/commands/solidedit)
+- [Lemez az AutoCAD-ben: LEMEZ (REGION) parancs](/docs/commands/region)
+- [Téglatest az AutoCAD-ben: TTEST (BOX) parancs](/docs/commands/box)

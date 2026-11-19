@@ -28,6 +28,7 @@
     "src/locales/de.ts",
     "src/locales/ru.ts",
     "src/locales/pl.ts",
-    "src/locales/cs.ts"
+    "src/locales/cs.ts",
+    "src/locales/hu.ts"
   ]
 }

@@ -1,0 +1,46 @@
+---
+title: "AutoCAD gyakorló feladat: telek"
+metaTitle: "AutoCAD gyakorló feladat: telek területe"
+description: "Telek rajzolása AutoCAD-ben az oldalai hosszából és szögéből polárkoordinátákkal, majd a terület lemérése és a méretezés. Ingyen, lépésről lépésre, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a telket méterben, az oldalai hosszából és irányából: 40 m 0°-os, 30 m 80°-os, 35 m 155°-os és 25 m 230°-os irányban, majd vissza a kezdőpontig. Mérje le a területét és a kerületét, és méretezze minden oldalát, valamint a második sarkánál lévő szöget. A polárkoordináták – hossz és szög – minden oldalt az előző végétől rajzolnak meg. A rajz méretléptéke méterre van beállítva.
+
+- **Feladat:** Középhaladó · Építőmérnöki · 2D
+- **Parancsok:** [`VLÁNC`](/docs/commands/pline), [`TERÜLET`](/docs/commands/area), [`MÉRETILLESZT`](/docs/commands/dimaligned), [`MÉRETSZÖG`](/docs/commands/dimangular)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=plot-of-land), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/plot-of-land" caption="Ötoldalú telek méterben, minden oldala és egy szöge méretezve." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a határvonalat [#boundary]
+
+A Körvonal fólián a [`VLÁNC`](/docs/commands/pline) parancs a `0,0` ponttól, majd minden oldal a hosszával és a szögével: `40<0`, `30<80`, `35<155` és `25<230`, mindegyik az utolsó ponttól mérve. A `Bezárás` opció megrajzolja az ötödik oldalt, és bezárja a határvonalat: egyetlen objektum, amelyet a [`TERÜLET`](/docs/commands/area) parancs le tud mérni.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. Rajzolja meg a határvonalat" />
+
+### 2. Mérje le a területét [#area]
+
+A [`TERÜLET`](/docs/commands/area) parancs, majd az `Objektum` opció, és válassza ki a határvonalat: a parancssor kiírja a területét négyzetméterben és a kerületét.
+
+<Session name="exercises/plot-of-land/area" caption="2. Mérje le a területét" />
+
+### 3. Méretezze [#dimensions]
+
+A Méretek fólián a [`MÉRETILLESZT`](/docs/commands/dimaligned) parancs, és Enter az első kérdésére: ekkor objektumot kér, és egy oldalra mutatva azt az oldalt méretezi, vele párhuzamosan. Mindegyik méretet a telken kívül helyezze el. A [`MÉRETSZÖG`](/docs/commands/dimangular) parancs a `40,0` pontban találkozó két oldalon megadja a köztük lévő szöget, 100°-ot.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: lépcsős tengely](/docs/exercises/shaft): Középhaladó · Gépészet · 2D
+- [AutoCAD izometrikus gyakorló feladat: lépcsős hasáb](/docs/exercises/isometric-block): Középhaladó · Gépészet · Izometrikus
+- [AutoCAD 3D gyakorló feladat: szíjtárcsa](/docs/exercises/pulley): Középhaladó · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladatok](/docs/exercises)

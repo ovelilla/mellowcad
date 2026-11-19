@@ -1,0 +1,56 @@
+---
+title: "AutoCAD billentyűparancsok"
+metaTitle: "AutoCAD billentyűparancsok: F és Ctrl billentyűk"
+description: "A billentyűk, amelyekre a MellowCAD reagál: rajzolási segédeszközök, szerkesztés és fájlok, az ablak és a parancssor."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+---
+
+A billentyűk, amelyekre a MellowCAD reagál – azok, amelyek egy AutoCAD felhasználó ujjaiban már benne vannak. Minden parancs úgy szerepel, ahogy beírná; álneveik a parancsok oldalán találhatók.
+
+## Rajzolási segédeszközök [#aids]
+
+| Billentyű | Mit csinál | Parancs |
+| --- | --- | --- |
+| `F1` | Új lapon megnyitja a futó parancs súgóját, ha pedig nem fut parancs, ezt a dokumentációt. |  |
+| `F2` | Parancselőzmények |  |
+| `F3` | Tárgyraszter |  |
+| `F4` | Ciklikus kiválasztás |  |
+| `F7` | Háló |  |
+| `F8`, `Ctrl+L` | Orto mód |  |
+| `F9` | Raszter mód |  |
+| `F10` | Poláris követés |  |
+| `F11` | Tárgyraszterkövetés |  |
+
+## Szerkesztés és fájlok [#editing]
+
+| Billentyű | Mit csinál | Parancs |
+| --- | --- | --- |
+| `Ctrl+Z` | Az utolsó művelet visszavonása | `T` |
+| `Ctrl+Y`, `Ctrl+Shift+Z` | Többszörös előre | `TELŐRE` |
+| `Ctrl+C` | Másolás | `VGMÁSOL` |
+| `Ctrl+Shift+C` | Másolás bázisponttal | `ALAPMÁSOL` |
+| `Ctrl+X` | Kivágás | `VGVÁG` |
+| `Ctrl+V` | Objektumok beillesztése a vágólapról az aktuális rajzba | `VGBEILL` |
+| `Ctrl+A` | Kijelöli az összes objektumot |  |
+| `Ctrl+S` | Aktuális rajz mentése | `GYMENT` |
+| `Ctrl+Shift+S` | Aktuális rajz mentése másként | `MENTMINT` |
+| `Ctrl+O` | Létező rajzfájl megnyitása | `MEGNYIT` |
+
+## Ablak [#window]
+
+| Billentyű | Mit csinál | Parancs |
+| --- | --- | --- |
+| `Ctrl+1` | A kijelölt objektumok tulajdonságainak megjelenítése | `TULAJDONSÁGOK` / `TULAJDONSÁGOKBEZÁR` |
+| `Ctrl+0` | Az eszköztárak és a paletták eltávolítása a képernyőről | `TISZTAKÉPERNYŐBE` / `TISZTAKÉPERNYŐKI` |
+| `Ctrl+9` | Parancssor |  |
+
+## Parancssor [#commandline]
+
+| Billentyű | Mit csinál | Parancs |
+| --- | --- | --- |
+| `Enter`, `Szóköz` | Végrehajtja a beírtakat. Ha nincs beírva semmi, elfogadja a prompt alapértékét vagy befejezi a parancsot, ha pedig nem fut parancs, megismétli az utolsót. |  |
+| `Esc` | Megszakítja a futó parancsot; az első Esc a félig beírt szöveget törli. |  |
+| `↑`, `↓` | Ha nem fut parancs, visszahozza a korábban beírt parancsokat. |  |
+| `Tab` | Kiegészíti a beírás alatt álló parancsnevet; pontot kérő promptnál végiglépked a kurzor alatti tárgyraszterpontokon. |  |
+| `Shift+Szóköz` | Végiglépked a kurzor alatti, egymást átfedő objektumokon, amíg a ciklikus kiválasztás jelzése látszik. |  |

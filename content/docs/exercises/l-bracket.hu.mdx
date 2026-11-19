@@ -1,0 +1,52 @@
+---
+title: "AutoCAD gyakorló feladat: L alakú konzol"
+metaTitle: "AutoCAD gyakorló feladat kezdőknek: L-konzol"
+description: "L alakú konzol rajzolása AutoCAD-ben relatív koordinátákkal: körvonal, lekerekítés, két furat, bázisvonalas méretek, lépésről lépésre. Gyakorolja ingyen."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a konzolt milliméterben: 100 hosszú, 20 magas talppal és 30 széles, 80 magas függőleges szárral, a belső sarok 10 sugárral lekerekítve, a talpban egy 8-as, a szárban egy 10-es furattal, mindkettő a saját szára közepén. A körvonal egyetlen [`VONAL`](/docs/commands/line) parancs, minden pontot úgy írva be, hogy mennyit halad az előzőtől, és a méretei mind a bal alsó sarokból indulnak.
+
+- **Feladat:** Kezdő · Gépészet · 2D
+- **Parancsok:** [`VONAL`](/docs/commands/line), [`LEKEREKÍT`](/docs/commands/fillet), [`KÖR`](/docs/commands/circle), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETBVONAL`](/docs/commands/dimbaseline), [`MÉRETSUGÁR`](/docs/commands/dimradius), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=l-bracket), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/l-bracket" caption="Az L alakú konzol, 100 × 80, a bal alsó sarkától méretezve." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a körvonalat [#outline]
+
+A Körvonal fólián a [`VONAL`](/docs/commands/line) parancs a `0,0` ponttól, majd minden pont lépésként az előzőtől: `100,0`, `0,20`, `-70,0`, `0,60` és `-30,0`. A `Bezár` opció megrajzolja az utolsó oldalt vissza a kezdőpontig, és befejezi a parancsot.
+
+<Session name="exercises/l-bracket/outline" caption="1. Rajzolja meg a körvonalat" />
+
+### 2. Kerekítse le a belső sarkot [#fillet]
+
+A [`LEKEREKÍT`](/docs/commands/fillet) parancs: válassza a `Sugár` opciót, írja be: `10`, majd válassza ki a belső saroknál találkozó két vonalat, a talp tetejét és a szár oldalát.
+
+<Session name="exercises/l-bracket/fillet" caption="2. Kerekítse le a belső sarkot" />
+
+### 3. Rajzolja meg a furatokat [#holes]
+
+Két kör a [`KÖR`](/docs/commands/circle) paranccsal, mindkettő az `Átmérő` opcióval: `8` a `80,10` pontban, a talpban, és `10` a `15,65` pontban, a szárban.
+
+<Session name="exercises/l-bracket/holes" caption="3. Rajzolja meg a furatokat" />
+
+### 4. Méretezze [#dimensions]
+
+A Méretek fólián a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs a `0,0` ponttól a talp furatáig, `80,10`, alul elhelyezve: 80. A [`MÉRETBVONAL`](/docs/commands/dimbaseline) parancs ugyanattól az első segédvonaltól folytatja: írja be a jobb oldali végpontot, `#100,0`, ahol a # az origótól mér, majd kétszer Enter a befejezéshez. Ugyanígy a bal oldalon felfelé, a felső furatig, majd a tetejéig, `#0,80`. A [`MÉRETSUGÁR`](/docs/commands/dimradius) parancs a lekerekítésen és a [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) parancs mindkét furaton befejezi a méretezést.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs): Kezdő · Építészet · 2D
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate): Kezdő · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange): Középhaladó · Gépészet · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

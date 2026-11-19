@@ -1,0 +1,55 @@
+---
+title: "Vágólapra másolás az AutoCAD-ben: VGMÁSOL (COPYCLIP) parancs"
+metaTitle: "Vágólapra másolás az AutoCAD-ben: Ctrl+C"
+description: "A VGMÁSOL (COPYCLIP, Ctrl+C) az AutoCAD-ben a VGVÁG, az ALAPMÁSOL és a VGBEILL paranccsal: objektumok másolása a vágólapra és beillesztésük egy pontban."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi a különbség a MÁSOL és a VGMÁSOL parancs között?","answer":"A MÁSOL parancs ugyanabban a rajzban helyez el másolatokat, egy bázisponttól egy második pontig. A VGMÁSOL a vágólapra teszi az objektumokat, hogy a VGBEILL paranccsal beillessze őket ebbe vagy egy másik rajzba."},{"question":"Hogyan lehet bázisponttal másolni?","answer":"Nyomja meg a Ctrl+Shift+C billentyűkombinációt, vagy írja be az ALAPMÁSOL parancsot, adja meg a bázispontot, és jelölje ki az objektumokat. A Ctrl+V ezután ennél a pontnál fogva helyezi el őket."},{"question":"Hogyan lehet objektumokat egyik rajzból a másikba másolni?","answer":"Jelölje ki őket, nyomja meg a Ctrl+C billentyűkombinációt, nyissa meg a másik rajzot, nyomja meg a Ctrl+V billentyűkombinációt, majd adja meg a beszúrási pontot. A fóliáik, stílusaik és blokkjaik is velük jönnek."},{"question":"Miért nem működik a beillesztés?","answer":"Lehet, hogy a böngésző megkérdezi, olvashatja-e az oldal a vágólapot: engedélyezze. Ha megtagadja, a VGBEILL azt illeszti be, amit utoljára ugyanazon az oldalon másolt. Ha semmit sem másolt, semmit sem illeszt be."}]
+---
+
+A VGMÁSOL (COPYCLIP) parancs a kijelölt objektumokat a vágólapra másolja, az általuk használt fóliákkal, stílusokkal és blokkokkal együtt; a rajz nem változik, a parancs előtt kijelölt objektumok pedig kijelölve maradnak. A Ctrl+C futtatja, megszakítva az éppen futó parancsot. A `VGBEILL`, Ctrl+V, ezután beszúrási pontot kér: az objektumok követik a kurzort, és a befoglaló téglalapjuk bal alsó sarkánál fogva a pontra kerülnek, az aktuális FKR-ben, egyetlen lépésben, amelyet a `T` parancs visszavon. Beillesztheti ugyanabba a rajzba vagy egy másikba: a vágólap a rendszeré, így egy másik lapon megnyitott rajz is olvashatja, ha a böngésző engedi, hogy az oldal olvassa a vágólapot. Ha egy beillesztett fólia, stílus vagy blokk neve megegyezik a rajzban már meglévőével, a rajz sajátja marad érvényben.
+
+A `VGVÁG`, Ctrl+X, átmásolja az objektumokat, és törli őket, ahogy a RADÍR. Az `ALAPMÁSOL`, Ctrl+Shift+C, előbb egy bázispontot kér, a VGBEILL pedig ezután a sarkuk helyett ennél a pontnál fogva helyezi el az objektumokat, így pontosan oda kerülnek, ahová szánja őket. A Ctrl+A a rajz összes objektumát kijelöli.
+
+- **Parancs:** `VGMÁSOL`
+- **Angolul:** `COPYCLIP`, bármely nyelven `_COPYCLIP` formában beírva
+- **Panel:** [Fájlok és vágólap](/docs/commands#files)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VGMÁSOL`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="copyclip" caption="Egy lemez furatának VGMÁSOL parancsa, majd VGBEILL a 65,20 pontban: a másolat a bal alsó sarkánál fogva oda kerül, második furatként." />
+
+## Amit még nem tud [#missing]
+
+A BLOKKBEILL és az ALAPKIVÁG, így a Ctrl+Shift+V és a Ctrl+Shift+X sem, ezeket a böngésző kezeli, ahogy a Ctrl+Shift+A billentyűt is. A BEILLORIG, a VGIRBEILL, az objektumok áthúzása ablakok között, és a más programból beillesztett szöveg bekezdéses szövegként. A VGBEILL pontjánál a BEILL parancs rejtett opciói, így a beillesztés közben a tartalom nem méretezhető át, nem forgatható el és nem vethető szét.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp--pt-br-copiacorte--recortat--copiabase--colarat--fr-copierpress--couperpress--copierbase--collerpress--it-copiaclip--tagliaclip--copiapuntob--incollaclip--de-copyclip--ausschneiden--kopiebasisp--clipeinfüg--ru-кбуфер--вбуфер--бткопировать--встбуфер--pl-kopiuj_s--wytnij--kopiujbaza--wklej--cs-skopie--vyjmis--skopieref--svlož--hu-vgmásol--vgvág--alapmásol--vgbeill)
+
+## Kérdések [#questions]
+
+### Mi a különbség a MÁSOL és a VGMÁSOL parancs között?
+
+A [`MÁSOL`](/docs/commands/copy) parancs ugyanabban a rajzban helyez el másolatokat, egy bázisponttól egy második pontig. A VGMÁSOL a vágólapra teszi az objektumokat, hogy a VGBEILL paranccsal beillessze őket ebbe vagy egy másik rajzba.
+
+### Hogyan lehet bázisponttal másolni?
+
+Nyomja meg a Ctrl+Shift+C billentyűkombinációt, vagy írja be az `ALAPMÁSOL` parancsot, adja meg a bázispontot, és jelölje ki az objektumokat. A Ctrl+V ezután ennél a pontnál fogva helyezi el őket.
+
+### Hogyan lehet objektumokat egyik rajzból a másikba másolni?
+
+Jelölje ki őket, nyomja meg a Ctrl+C billentyűkombinációt, nyissa meg a másik rajzot, nyomja meg a Ctrl+V billentyűkombinációt, majd adja meg a beszúrási pontot. A fóliáik, stílusaik és blokkjaik is velük jönnek.
+
+### Miért nem működik a beillesztés?
+
+Lehet, hogy a böngésző megkérdezi, olvashatja-e az oldal a vágólapot: engedélyezze. Ha megtagadja, a VGBEILL azt illeszti be, amit utoljára ugyanazon az oldalon másolt. Ha semmit sem másolt, semmit sem illeszt be.
+
+## Kapcsolódó parancsok [#related]
+
+- [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)
+- [VGBEILL (PASTECLIP)](/docs/commands#pasteclip): Objektumok beillesztése a vágólapról az aktuális rajzba
+- [ALAPMÁSOL (COPYBASE)](/docs/commands#copybase): Másolás bázisponttal
+- [VGVÁG (CUTCLIP)](/docs/commands#cutclip): Kivágás
+- [Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs](/docs/commands/insert)

@@ -1,0 +1,43 @@
+---
+title: "Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs"
+metaTitle: "Blokk létrehozása az AutoCAD-ben: BLOKK parancs"
+description: "Blokk létrehozása az AutoCAD-ben a BLOKK (BLOCK, B) paranccsal, promptról promptra: név, bázispont és objektumok; egy blokk újradefiniálása, attribútumok."
+figure: "Egy szék, egy téglalap és egy vonal, amelyből a B1 blokk lesz: a neve, a bázispont az elülső éle felezőpontjában, és mindkét objektum kijelölve."
+sourceHash: "ca24f209008c"
+---
+
+A BLOKK (BLOCK) parancs objektumok egy csoportját egy név alatt tárolja a rajzban, hogy a <Command id="INSERT" /> parancs akárhányszor újra elhelyezhesse, és minden példány erre az egy definícióra mutató referencia legyen. Bekéri a nevet, majd a beszúrási bázispontot – azt a pontot, amelynél fogva minden referencia elhelyezkedik –, végül az objektumokat. Az Enter lezárja a kijelölést, és definiálja a blokkot, a kijelölt objektumokból pedig a helyükön egy rá mutató referencia lesz. A teljes parancs egyetlen lépés, amelyet a Vissza visszavon.
+
+Az AutoCAD BLOKK parancsa a Blokkdefiníció párbeszédpanelt nyitja meg, amely a MellowCAD-ben nincs: itt a BLOKK a parancssorban azt kérdezi, amit a <Command id="-BLOCK" />, ahogy az AutoCAD konzolja. A név tartalmazhat szóközt, és legfeljebb 255 karakteres lehet, de nem lehet benne `< > / \ " : ; ? * | , =` és fordított aposztróf sem: a magában álló Enter vagy egy ilyen név üzenete <Message id="invalidNewBlockName" />, és újra kérdez. A rajzban már meglévő név – kis- és nagybetűtől függetlenül – esetén megkérdezi, hogy újradefiniálja-e azt a blokkot: <Keyword id="Yes" /> vagy <Keyword id="No" /> (ez az alapértelmezés, és befejezi a parancsot).
+
+## Options
+
+### ?
+
+Felsorolja a rajz blokkjait: bekéri, melyeket listázza – alapértelmezés szerint `*` mindet, vagy egy helyettesítő karakteres nevet –, kiírja az illeszkedő neveket és fajtánként a darabszámot, majd befejezi a parancsot. A névtelen blokkokat, például egy kiosztásét, megszámolja, de sosem nevezi meg.
+
+## Missing
+
+Az AutoCAD Blokkdefiníció párbeszédpanelje: a BLOKK a parancssorban kérdez. A bázispontnál a Feliratozási és a Mód opció (Megtartás, Törlés): az objektumokból mindig referencia lesz. Az ATTREQ 0, amely kihagyja az attribútumértékek ablakát, valamint az ATTSYNC, az ATTREDEF, a BATTKEZ és a BATTORDER: az újradefiniált blokk a referenciái attribútumait úgy hagyja, ahogy voltak, ahogy az AutoCAD is. A Blokk szerint: a blokkon belüli objektum nem veheti fel a referencia saját színét, vonaltípusát vagy vonalvastagságát, ahogy az AutoCAD-ben a Blokk szerint rajzolt objektum. Elforgatott FKR-ben az AutoCAD 2027 elmozdítja az átalakított objektumokat; itt szándékosan a helyükön maradnak.
+
+## Questions
+
+### Mi az AutoCAD BLOKK parancs angolul, és mi a rövidítése?
+
+Angolul BLOCK, a magyar AutoCAD-ben BLOKK: írja be a `B` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az AutoCAD-ben a Blokkdefiníció párbeszédpanelt nyitja meg; itt a parancssorban kérdez, ahogy a `-B` (<Command id="-BLOCK" />). A `_BLOCK` az AutoCAD bármely nyelvén működik.
+
+### Hogyan lehet blokkot létrehozni az AutoCAD-ben?
+
+Írja be a `B` rövidítést és egy nevet, majd adja meg a bázispontot – egy sarkot vagy annak az élnek a felezőpontját, amelyen a blokk ülni fog –, és jelölje ki az objektumokat. Az Enter definiálja a blokkot, és az objektumokat egy rá mutató referenciává alakítja. A parancs előtt kijelölt objektumokat is felhasználja, a bázispont után.
+
+### Hogyan lehet újradefiniálni egy blokkot?
+
+Futtassa a BLOKK parancsot a blokk nevével, és válaszoljon így: <Keyword id="Yes" />, majd adjon meg egy bázispontot, és jelölje ki az új objektumokat: a blokk minden referenciája az új definíciót mutatja. Az objektumok között nem lehet magának a blokknak a referenciája; egy ilyen készletet elutasít, és a parancs befejeződik.
+
+### Hogyan lehet attribútumos blokkot készíteni?
+
+Előbb definiálja az attribútumokat az <Command id="ATTDEF" /> paranccsal, majd jelölje ki őket a többi objektummal együtt: abban a sorrendben kerülnek a blokkba, ahogy kijelöli őket. Az őket felváltó referencia egy ablakot nyit meg minden attribútumhoz egy mezővel, amelynek felirata a promptja, tartalma az alapértelmezése: az Enter alkalmazza az értékeket, az Esc megtartja az alapértelmezéseket.
+
+### Hogyan lehet szétvetni egy blokkot?
+
+A <Command id="EXPLODE" /> parancs a referenciát visszaalakítja azokká az objektumokká, amelyeket mutat, egyszerre egy beágyazási szintet bontva, mindegyiket a saját fóliáján és a saját színével. Az attribútumokból ismét definíciók lesznek; az értékek elvesznek.

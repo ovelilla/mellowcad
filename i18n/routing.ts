@@ -11,7 +11,19 @@ const PREFIXES: Readonly<Record<string, `/${string}`>> = { "pt-BR": "/pt-br" }
  * the sitemap and the metadata all read this.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "ar", "pt-BR", "fr", "it", "de", "ru", "pl", "cs"],
+  locales: [
+    "en",
+    "es",
+    "ar",
+    "pt-BR",
+    "fr",
+    "it",
+    "de",
+    "ru",
+    "pl",
+    "cs",
+    "hu",
+  ],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
   // No negotiation by Accept-Language: Google advises against it and its
@@ -69,6 +81,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   ru: "ltr",
   pl: "ltr",
   cs: "ltr",
+  hu: "ltr",
 }
 
 /**
@@ -87,6 +100,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   ru: "live",
   pl: "live",
   cs: "live",
+  hu: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -113,13 +127,14 @@ export const COMMAND_LANGUAGE: Readonly<
   ru: "localized",
   pl: "localized",
   cs: "localized",
+  hu: "localized",
 }
 
 /**
  * The script each language is written in. Inter and Geist Mono draw latin
  * and Cyrillic (`INTER_SCRIPTS`); any other needs a face they lack, which
  * `scriptFontVariables` then requires by type. `latin-ext` is latin with
- * letters of Latin Extended-A (Polish ą ł ń ś ż, Czech č ě ř š ů ž): Inter
+ * letters of Latin Extended-A (Polish ą ł ń ś ż, Czech č ě ř š ů ž, Hungarian ő ű): Inter
  * has them, but in one file of every such letter, 85 KB such a page would fetch by its
  * `unicode-range`; a face of the language's letters alone goes before Inter
  * instead (docs/i18n/pl.md, "Script and font").
@@ -137,6 +152,7 @@ export const SCRIPT: Readonly<
   ru: "cyrillic",
   pl: "latin-ext",
   cs: "latin-ext",
+  hu: "latin-ext",
 }
 
 /**
@@ -167,6 +183,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   ru: "Русский",
   pl: "Polski",
   cs: "Čeština",
+  hu: "Magyar",
 }
 
 /** Open Graph wants language and territory. */
@@ -181,4 +198,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   ru: "ru_RU",
   pl: "pl_PL",
   cs: "cs_CZ",
+  hu: "hu_HU",
 }

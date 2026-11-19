@@ -1,0 +1,57 @@
+---
+title: "Vonaltípuslépték az AutoCAD-ben: VTLÉPTÉK (LTSCALE) parancs"
+metaTitle: "Vonaltípuslépték AutoCAD-ben: VTLÉPTÉK (LTSCALE)"
+description: "Az AutoCAD VTLÉPTÉK (LTSCALE, rövidítése VTL) parancsa az egész rajz vonaltípuslépték-tényezőjét állítja be, hogy a szaggatott vonal minden méretben látsszon."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD VTLÉPTÉK parancs angolul?","answer":"LTSCALE. A magyar AutoCAD-ben a rövidítése VTL: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol LTS rövidítés a magyar változatban nem működik; a teljes VTLÉPTÉK név igen, a _LTSCALE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Miért látszik folytonosnak a szaggatott vonal?","answer":"A mintája az aktuális léptéknél nem illik a rajzhoz. Az egy mintaismétlésnél rövidebb vonal folytonosnak rajzolódik; a hosszú vonal kis léptéknél olyan sűrűn hozza a vonalkáit, hogy folytonosnak tűnik. Nagy rajznál növelje, kicsinél csökkentse a VTLÉPTÉK értékét, amíg a szaggatás meg nem jelenik."},{"question":"Milyen VTLÉPTÉK értéket érdemes használni?","answer":"A rajz léptékét: egy milliméterben készült, 1:50-es léptékben olvasandó rajzban 50-et. Papírméretű rajzhoz 1-et."},{"question":"Mi a különbség a VTLÉPTÉK és maga a vonaltípus között?","answer":"A vonaltípus, amelyet a VTÍPUS paranccsal vagy a fóliával állít be, a minta: vonalkák, pontok és hézagok. A VTLÉPTÉK azt adja meg, milyen hosszúra rajzolódik ez a minta, a rajz minden objektumára ugyanazzal a tényezővel."}]
+---
+
+A VTLÉPTÉK (LTSCALE) parancs a globális vonaltípuslépték-tényezőt állítja be: azt, hogy milyen hosszúak a rajzban minden szaggatott vonaltípus vonalkái és hézagai. Bekéri az új tényezőt, és felajánlja az aktuálisat, új rajzban `1.0000`-t: 2 esetén minden vonalka kétszer olyan hosszú lesz, 0,5 esetén feleakkora. A tényezőnek 0-nál nagyobbnak kell lennie, különben `Az érték legyen pozitív és nem nulla.` üzenetet ír ki, és újra kérdez; az `1/2` és az `1e3` számként érvényes. A változtatás az egész rajzot újrarajzolja, az AutoCAD 2027 szavaival `Modell regenerálása.`, és a rajzzal együtt mentődik; olyan lépés, amelyet a `T` visszavon. Ha egy másik parancs közben aposztróffal írja be, `'VTLÉPTÉK`, a rajz annak a parancsnak a végén rajzolódik újra.
+
+A vonaltípusok papírméretű rajzhoz készült minták: egy 4 méter széles, milliméterben készült rajzban a CENTER mintája, amely nagyjából 51 egység hosszú, mintegy 80-szor ismétlődik, túl sűrűn ahhoz, hogy látsszon, az egy mintánál rövidebb vonal pedig folytonosnak rajzolódik. A megfelelő lépték általában maga a rajz léptéke: 20 az 1:20-as, 50 az 1:50-es léptékben olvasandó rajzhoz.
+
+- **Parancs:** `VTLÉPTÉK`
+- **Angolul:** `LTSCALE`, bármely nyelven `_LTSCALE` formában beírva
+- **Álnevek:** `VTL`
+- **Panel:** [Rendszerezés](/docs/commands#organize)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VTL`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="ltscaleBefore" caption="Egy 4 méter hosszú alaplap, a furata HIDDEN, a tengelyei CENTER vonaltípussal, az alapértelmezett 1-es vonaltípusléptékkel: a szaggatások túl aprók ahhoz, hogy látsszanak." />
+
+<Session name="ltscale" caption="Ugyanez az alaplap a VTLÉPTÉK 20 után: a furat és a tengelyek szaggatásai 20-szor hosszabbak." />
+
+## Amit még nem tud [#missing]
+
+A Vonaltípus-kezelő, amelynek Globális léptéktényezője a VTLÉPTÉK, Aktuális objektum léptéke pedig a CELTSCALE. A PSLTSCALE és az MSLTSCALE, mivel nincs papírtér. Az összetett vonaltípusok, például a BATTING alakzatai, amelyek helyén hézag rajzolódik.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc--hu-vtlépték--vtl--vtípus--vt--dpvtípus---vtípus---vt)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD VTLÉPTÉK parancs angolul?
+
+LTSCALE. A magyar AutoCAD-ben a rövidítése `VTL`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `LTS` rövidítés a magyar változatban nem működik; a teljes `VTLÉPTÉK` név igen, a `_LTSCALE` pedig az AutoCAD bármely nyelvi változatában.
+
+### Miért látszik folytonosnak a szaggatott vonal?
+
+A mintája az aktuális léptéknél nem illik a rajzhoz. Az egy mintaismétlésnél rövidebb vonal folytonosnak rajzolódik; a hosszú vonal kis léptéknél olyan sűrűn hozza a vonalkáit, hogy folytonosnak tűnik. Nagy rajznál növelje, kicsinél csökkentse a VTLÉPTÉK értékét, amíg a szaggatás meg nem jelenik.
+
+### Milyen VTLÉPTÉK értéket érdemes használni?
+
+A rajz léptékét: egy milliméterben készült, 1:50-es léptékben olvasandó rajzban `50`-et. Papírméretű rajzhoz 1-et.
+
+### Mi a különbség a VTLÉPTÉK és maga a vonaltípus között?
+
+A vonaltípus, amelyet a [`VTÍPUS`](/docs/commands/linetype) paranccsal vagy a fóliával állít be, a minta: vonalkák, pontok és hézagok. A VTLÉPTÉK azt adja meg, milyen hosszúra rajzolódik ez a minta, a rajz minden objektumára ugyanazzal a tényezővel.
+
+## Kapcsolódó parancsok [#related]
+
+- [Vonaltípus az AutoCAD-ben: VTÍPUS (LINETYPE) parancs](/docs/commands/linetype)
+- [Fóliák az AutoCAD-ben: FÓLIA (LAYER) parancs](/docs/commands/layer)
+- [Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) parancs](/docs/commands/properties)
+- [Vonalvastagság az AutoCAD-ben: VVAST (LWEIGHT) parancs](/docs/commands/lweight)

@@ -1,0 +1,75 @@
+---
+title: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH) parancs"
+metaTitle: "Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH)"
+description: "Sraffozás az AutoCAD SRAFFOZ (HATCH, SF) parancsával: belső pont vagy határoló objektumok, minta, lépték, szög, szigetek. Próbálja ki ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD SRAFFOZ parancs angolul?","answer":"HATCH. A magyar AutoCAD-ben a rövidítése SF vagy SR: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. Sraffozás létrehozása szalaglap híján a parancssorban kérdez, ahogy a -SF (-SRAFFOZ). Az angol H a magyar változatban a HÁLÓÉL parancsot indítja; a _HATCH az AutoCAD bármely nyelvi változatában működik."},{"question":"Miért nem működik a sraffozás?","answer":"Többnyire azért, mert a terület nem zárt: a válasz „Érvényes sraffozási határvonal nem található.”, és ehhez a legkisebb rés is elég, mert semmi sem hidalja át. Zárja le a körvonalat, és válasszon újra. Az ellipszis vagy spline által lezárt területet a parancs még nem találja meg, a kikapcsolt fólián lévő objektumokat pedig nem látja."},{"question":"Milyen sraffozási minták vannak, és lehet-e továbbiakat letölteni?","answer":"Az acadiso.pat, az AutoCAD metrikus mintafájljának egy válogatása: SOLID, ANGLE, ANSI31–ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL és ZIGZAG. A Tulajdonságok opció alatti ? felsorolja őket. Saját vagy letöltött mintafájl még nem tölthető be, de a DXF-ek sraffozásai azzal a mintával nyílnak meg, amelyet tartalmaznak, bármi legyen is az, ahogy az AutoCAD rajzolja őket."},{"question":"Hogyan lehet módosítani a sraffozás léptékét?","answer":"Kiválasztás előtt, a Tulajdonságok opció alatt: a lépték a minta neve után következik. Elkészülte után jelölje ki a sraffozást, és írja át a Lépték értékét a Tulajdonságok palettán, vagy adja át neki egy másik sraffozás mintáját, léptékét és szögét a TULMÁSOL paranccsal. Ha a lépték olyan kicsi, hogy a mintához túl sok vonal kellene, a válasz „A sraffozás túl sűrű, vagy a vonalak mérete túl kicsi.”, és nem készül sraffozás."},{"question":"Hogyan lehet megtudni egy sraffozás területét?","answer":"Jelölje ki, és olvassa le a Tulajdonságok paletta Geometria csoportjában a Terület értékét, a szigetek nélkül; több kijelölt sraffozásnál az Összesített terület adja össze őket. Vagy indítsa el a TERÜLET parancsot, válassza az Objektum opciót, és válassza ki a sraffozást."}]
+---
+
+A SRAFFOZ (HATCH) parancs zárt területet tölt ki vonalakból álló mintával vagy tömören. Válasszon egy pontot a területen belül, és a parancs megkeresi a határvonalat a körülötte lévő objektumokban, szigetként üresen hagyva, ami benne van – egy kört a téglalapban, egy szöveget –; vagy jelölje ki a területet határoló objektumokat. Tetszőleges számú területet választhat: az Enter vagy az Esc mindegyikből egyetlen sraffozást készít, az aktuális fólián, a határvonala mögött. A teljes parancs egyetlen lépés, amely a Vissza paranccsal visszavonható.
+
+Az AutoCAD SRAFFOZ parancsa a mintát a Sraffozás létrehozása szalaglapon vagy egy párbeszédpanelen állítja be, ezek azonban a MellowCAD-ben nincsenek meg: itt a parancssorban azt kérdezi, amit a `-SRAFFOZ` parancs, a mintát a `Tulajdonságok` opció alatt. A kettő csak az Esc billentyűben különbözik, amely a `-SRAFFOZ` parancsban elveti a területeket. Minden sraffozás azzal a mintával, léptékkel és szöggel indul, amelyet az előző kapott: új rajzban ez az ANGLE, 1-es léptékkel és 0 szöggel.
+
+- **Parancs:** `SRAFFOZ`
+- **Angolul:** `HATCH`, bármely nyelven `_HATCH` formában beírva
+- **Álnevek:** `SF`, `SR`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SF`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="hatch" caption="Egy téglalap benne egy körrel, egyetlen belső pontból ANSI31 mintával sraffozva: a kör üresen marad, sziget lesz." />
+
+## Opciók [#options]
+
+### `Tulajdonságok` (`T`) [#properties]
+
+A minta nevét kéri, kis- vagy nagybetűvel, és az aktuálisat kínálja fel: a `Tömör` kitölti a területet, a `?` pedig felsorolja a mintákat a leírásukkal, majd visszatér a ponthoz. Minta esetén ezután a léptéket kéri – 0-nál nagyobb számot, vagy két pont távolságát –, majd a szöget, beírva vagy két ponttal. A következő sraffozás mindhármat megtartja.
+
+<Session name="hatchPatterns" caption="A SOLID és az acadiso.pat tizenegy mintája, mindegyik egy 30 oldalhosszúságú négyzetben sraffozva 1-es léptékkel, az AR-CONC és az AR-SAND 0,08-as és 0,1-es léptékkel." />
+
+### `objektumok kiJelölése` (`J`) [#select-objects]
+
+Belső pont helyett a területet határoló objektumokat kell kijelölni; az Enter visszatér a ponthoz. Az az objektum, amely nem zár körül területet, kimarad; ha egyik sem határol területet, az Enter a `A határvonal nem sraffozható.` üzenetet adja, és nem készít semmit. A lemez a körvonalát adja, a lyukait szigetként.
+
+### `Vissza` (`V`) [#undo]
+
+A prompt nem sorolja fel, de elfogadja: visszavonja az utoljára kiválasztott pont területeit, és újra kérdez, a kijelölt objektumokat meghagyva. Ha már nincs visszavonható pont, a válasza `Nincs Visszavonható határvonal.`.
+
+## Amit még nem tud [#missing]
+
+Ellipszisek és spline-ok mint határvonalak: az általuk közrezárt terület nem található meg, és az ilyen élű lemez kimarad. Hézagtűrés (HPGAPTOL): a területnek pontosan zártnak kell lennie. Asszociatív sraffozások, a Normál és a Belső (Ignore) szigetstílus. Színátmenetek, felhasználói minták és az acadiso.pat többi mintája itt nem hozható létre: csak egy DXF sraffozásai hozzák magukkal őket, a színátmeneteket a színeikkel, a mintákat a vonalaikkal. A -SRAFFOZ többi opciója: határvonal rajzolása, határvonalak eltávolítása, További beállítások, megjelenítési sorrend, kezdőpont, feliratozási, szín, fólia és átlátszóság. A SRAFFEDIT (HATCHEDIT) parancs és a Sraffozásszerkesztő, amelyet az AutoCAD-ben dupla kattintás nyit meg. A MIRRHATCH 1: a tükrözött sraffozás mindig megtartja a minta szögét. A sraffozás fogóinak menüi.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD SRAFFOZ parancs angolul?
+
+HATCH. A magyar AutoCAD-ben a rövidítése `SF` vagy `SR`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. Sraffozás létrehozása szalaglap híján a parancssorban kérdez, ahogy a `-SF` (`-SRAFFOZ`). Az angol `H` a magyar változatban a HÁLÓÉL parancsot indítja; a `_HATCH` az AutoCAD bármely nyelvi változatában működik.
+
+### Miért nem működik a sraffozás?
+
+Többnyire azért, mert a terület nem zárt: a válasz `Érvényes sraffozási határvonal nem található.`, és ehhez a legkisebb rés is elég, mert semmi sem hidalja át. Zárja le a körvonalat, és válasszon újra. Az ellipszis vagy spline által lezárt területet a parancs még nem találja meg, a kikapcsolt fólián lévő objektumokat pedig nem látja.
+
+### Milyen sraffozási minták vannak, és lehet-e továbbiakat letölteni?
+
+Az acadiso.pat, az AutoCAD metrikus mintafájljának egy válogatása: SOLID, ANGLE, ANSI31–ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL és ZIGZAG. A `Tulajdonságok` opció alatti `?` felsorolja őket. Saját vagy letöltött mintafájl még nem tölthető be, de a DXF-ek sraffozásai azzal a mintával nyílnak meg, amelyet tartalmaznak, bármi legyen is az, ahogy az AutoCAD rajzolja őket.
+
+### Hogyan lehet módosítani a sraffozás léptékét?
+
+Kiválasztás előtt, a `Tulajdonságok` opció alatt: a lépték a minta neve után következik. Elkészülte után jelölje ki a sraffozást, és írja át a Lépték értékét a Tulajdonságok palettán, vagy adja át neki egy másik sraffozás mintáját, léptékét és szögét a [`TULMÁSOL`](/docs/commands/matchprop) paranccsal. Ha a lépték olyan kicsi, hogy a mintához túl sok vonal kellene, a válasz `A sraffozás túl sűrű, vagy a vonalak mérete túl kicsi.`, és nem készül sraffozás.
+
+### Hogyan lehet megtudni egy sraffozás területét?
+
+Jelölje ki, és olvassa le a Tulajdonságok paletta Geometria csoportjában a Terület értékét, a szigetek nélkül; több kijelölt sraffozásnál az Összesített terület adja össze őket. Vagy indítsa el a [`TERÜLET`](/docs/commands/area) parancsot, válassza az `Objektum` opciót, és válassza ki a sraffozást.
+
+## Kapcsolódó parancsok [#related]
+
+- [Terület számítása az AutoCAD-ben: TERÜLET (AREA) parancs](/docs/commands/area)
+- [Lemez az AutoCAD-ben: LEMEZ (REGION) parancs](/docs/commands/region)
+- [Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL (MATCHPROP) parancs](/docs/commands/matchprop)
+- [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)

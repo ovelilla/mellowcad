@@ -1,0 +1,44 @@
+---
+title: Koordináták az AutoCAD-ben
+metaTitle: "Koordináta-megadás az AutoCAD-ben"
+description: "Pontok megadása az AutoCAD-ben: abszolút, relatív és polár koordináták, adott hosszú és szögű vonal, poláris követés. Gyakorolja ingyen, online."
+type: howTo
+sourceHash: "357757f5ae4d"
+---
+
+Minden pontot, amelyet egy parancs kér, meg lehet mutatni a rajzon, vagy be lehet írni. Beírva a pont két szám, X és Y, vesszővel elválasztva, és hogy honnan méri a program, az attól függ, hogyan írja be őket: az origótól, az utolsó ponttól, vagy hosszként és szögként tőle. A MellowCAD úgy értelmezi őket, mint az AutoCAD bekapcsolt dinamikus adatbevitellel, ami az alapbeállítása. Minden szakasz egy alakzatot rajzol, és megmutatja az előzményeit.
+
+## Abszolút koordináták [#absolute]
+
+Az origótól, a `0,0` ponttól mérve. Egy parancs első kért pontját így értelmezi a program: a `20,10` 20 egység X, 10 egység Y irányban. Utána a dinamikus adatbevitel a beírt pontot az utolsótól méri, ezért az origótól mért pont elé `#` kerül: `#120,10`.
+
+<Session name="coordinatesAbsolute" caption="Háromszög, minden csúcsa az origótól mérve." />
+
+## Relatív koordináták [#relative]
+
+Az utolsó ponttól mérve: mennyit kell haladni X, majd Y irányban. Egy parancs első pontja után a beírt pont ezt jelenti, és az előzmények `@` jellel az elején írják ki, ahogy a parancssor értelmezi: a `100,0` 100 egységgel jobbra van az utolsó ponttól, a `-50,70` 50-nel vissza és 70-nel feljebb. Ha maga írja elé a `@` jelet, a pont bárhol relatív, ahol beírja.
+
+<Session name="coordinatesRelative" caption="Ugyanaz a háromszög, minden csúcsa az előzőtől mérve." />
+
+## Polárkoordináták [#polar]
+
+Hossz és szög, az utolsó ponttól mérve: a `100<0` 100 egységet halad X irányban, a `60<120` 60-at 120°-os szögben. A szögeket az X tengelytől, az óramutató járásával ellentétesen méri a program: a 90° felfelé, a 180° balra, a 270°, azaz a -90° lefelé mutat. Az előzmények ezeket is `@` jellel írják ki.
+
+<Session name="coordinatesPolar" caption="Három oldal, mindegyik hosszként és szögként az előző végétől." />
+
+## Adott szögű vonal [#angle]
+
+Adott hosszú és adott szögű vonal rajzolásához írja be a végpontját polárkoordinátákkal: `100<30`. Vagy rögzítse előbb a szöget: írja be a `<30` értéket, nyomja meg az Enter billentyűt, és a következő pont ebben az irányban marad, a kurzor felőli oldalon; ezután írja be a hosszt: `100`.
+
+<Session name="coordinatesAngle" caption="30°-ra rögzített vonal, majd a hossza, 100." />
+
+## Poláris követés [#tracking]
+
+Bekapcsolt poláris követésnél – az `F10` billentyűvel vagy az állapotsoron lévő gombjával – a kurzor segédvonalat mutat a szög minden többszörösénél, amelyet a gomb menüjében lehet beállítani, és a beírt hosszt a program a segédvonal mentén méri fel. Az eszköztipp kiírja, milyen messze és milyen szögben van a kurzor.
+
+<Session name="coordinatesTracking" caption="Poláris követés 30°-onként: a segédvonal, a kurzornál a távolság és a szög." />
+
+## Hogyan tovább [#next]
+
+- [Gyakorló feladatok](/docs/exercises), amelyeket elejétől végéig billentyűzetről kell beírni: [egy L alakú konzol](/docs/exercises/l-bracket) relatív, [egy telek](/docs/exercises/plot-of-land) polárkoordinátákkal, és [egy lépcsős hasáb izometrikus ábrázolásban](/docs/exercises/isometric-block) az izometrikus szögek mentén.
+- A <Command id="LINE" /> parancs saját oldala, és az [Első lépések](/docs/getting-started) a parancssor első lépéseihez.

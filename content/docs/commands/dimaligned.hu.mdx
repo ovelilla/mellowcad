@@ -1,0 +1,68 @@
+---
+title: "Méretezés az AutoCAD-ben: illesztett méret, MÉRETILLESZT (DIMALIGNED) parancs"
+metaTitle: "Méretezés: illesztett méret, MÉRETILLESZT"
+description: "Ferde él méretezése az AutoCAD-ben a MÉRETILLESZT (DIMALIGNED, MIL) paranccsal: két kezdőpont vagy egy objektum, majd egy velük párhuzamos méretvonal."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MÉRETILLESZT parancs angolul, és mi a rövidítése?","answer":"Angolul DIMALIGNED, a magyar AutoCAD-ben MÉRETILLESZT: írja be az MIL vagy az MILL rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol DAL és DIMALI a magyar AutoCAD-ben nem működik; a _DIMALIGNED az AutoCAD bármely nyelvén igen."},{"question":"Mi a különbség a MÉRETHOSSZ és a MÉRETILLESZT parancs között?","answer":"Ferde élen a MÉRETHOSSZ parancs a szélességét vagy a magasságát adja, mert a méretvonala vízszintes vagy függőleges; a MÉRETILLESZT a hosszát, az éllel párhuzamos vonallal. X vagy Y irányú élen mindkettő ugyanazt a számot adja."},{"question":"Hogyan lehet ferde vonalat méretezni az AutoCAD-ben?","answer":"A MÉRETILLESZT paranccsal: az első promptnál nyomja meg az Enter billentyűt, válassza ki a vonalat, és helyezze el a méretet a kívánt oldalon. Vagy jelölje ki a két végpontját Végpont tárgyraszterrel, hogy a kezdőpontok pontosak legyenek."},{"question":"Hogyan lehet saját szöveget írni egy méretre?","answer":"Elhelyezés előtt válassza a Szöveg opciót, és írja be a szöveget: a <> a mért értéket jelenti, így a „<> mm” a mért értéket és utána a mértékegységét írja ki, az üres Enter pedig csak a mért értéket tartja meg. Elhelyezés után a Tulajdonságok paletta Szöveg felülírása sora módosítja."}]
+---
+
+A MÉRETILLESZT (DIMALIGNED) parancs két pont valódi távolságát méri: a méretvonala a rajtuk átmenő egyenessel párhuzamos, bármilyen szögben, míg a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs csak X vagy Y irányban mér. A promptjai a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancséi: az első és a második segédvonal kezdőpontja, vagy az Enter és egy vonal, ív vagy vonalláncszakasz kijelölése a két végpontjáért, majd a méretvonal helye, bármelyik oldalon. A kijelölt kör a kijelölési ponton átmenő átmérőjét adja. A parancssor kiírja a mért értéket, és a parancs befejeződik.
+
+- **Parancs:** `MÉRETILLESZT`
+- **Angolul:** `DIMALIGNED`, bármely nyelven `_DIMALIGNED` formában beírva
+- **Álnevek:** `MIL`, `MILL`
+- **Panel:** [Feliratozás](/docs/commands#annotate)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MIL`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="dimaligned" caption="Egy háromszög ferde oldala a hossza mentén méretezve: a két végpontja, majd a méretvonal helye." />
+
+## Opciók [#options]
+
+### `Szöveg` (`S`) [#text]
+
+Bekéri a mért érték helyett kiírandó szöveget, alapértelmezésként a mért értéket kínálva fel: az Enter megtartja. A beírt szövegben a `<>` a mért értéket jelenti.
+
+### `Dőlésszög` (`D`) [#angle]
+
+Bekéri a szöveg szögét, és a szöveg a méretvonal mentén helyett ebben a szögben rajzolódik. A 0 visszaállítja a vonal mentén.
+
+## Amit még nem tud [#missing]
+
+A Bszöveg: a méret szövege egysoros, a parancssorban a `Szöveg` opcióval állítható be, sosem a szövegszerkesztőben. A `Dőlésszög` opcióval megadott szögnél az AutoCAD a méretvonalra középre teszi a szöveget; itt fölötte marad, ahogy szög nélkül. A méret nem asszociatív: nem követi a mért objektumot.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota--it-dimallineata--dal--de-bemausg--bma--ru-рзмпарал--рпа--pl-wymnormalny--wn--wymno--cs-kótysrovnej--kso--kotyso--hu-méretilleszt--mil--mill)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MÉRETILLESZT parancs angolul, és mi a rövidítése?
+
+Angolul DIMALIGNED, a magyar AutoCAD-ben MÉRETILLESZT: írja be az `MIL` vagy az `MILL` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `DAL` és `DIMALI` a magyar AutoCAD-ben nem működik; a `_DIMALIGNED` az AutoCAD bármely nyelvén igen.
+
+### Mi a különbség a MÉRETHOSSZ és a MÉRETILLESZT parancs között?
+
+Ferde élen a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs a szélességét vagy a magasságát adja, mert a méretvonala vízszintes vagy függőleges; a MÉRETILLESZT a hosszát, az éllel párhuzamos vonallal. X vagy Y irányú élen mindkettő ugyanazt a számot adja.
+
+### Hogyan lehet ferde vonalat méretezni az AutoCAD-ben?
+
+A MÉRETILLESZT paranccsal: az első promptnál nyomja meg az Enter billentyűt, válassza ki a vonalat, és helyezze el a méretet a kívánt oldalon. Vagy jelölje ki a két végpontját Végpont tárgyraszterrel, hogy a kezdőpontok pontosak legyenek.
+
+### Hogyan lehet saját szöveget írni egy méretre?
+
+Elhelyezés előtt válassza a `Szöveg` opciót, és írja be a szöveget: a `<>` a mért értéket jelenti, így a `<> mm` a mért értéket és utána a mértékegységét írja ki, az üres Enter pedig csak a mért értéket tartja meg. Elhelyezés után a Tulajdonságok paletta Szöveg felülírása sora módosítja.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: telek](/docs/exercises/plot-of-land)
+- [AutoCAD izometrikus gyakorló feladat: lépcsős hasáb](/docs/exercises/isometric-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs](/docs/commands/dimlinear)
+- [Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG (DIMANGULAR) parancs](/docs/commands/dimangular)
+- [Láncméretezés az AutoCAD-ben: MÉRETFOLYTAT (DIMCONTINUE) parancs](/docs/commands/dimcontinue)
+- [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)

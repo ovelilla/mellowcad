@@ -1,0 +1,86 @@
+---
+title: "Visszavonás az AutoCAD-ben: VISSZA (UNDO) parancs"
+metaTitle: "Visszavonás az AutoCAD-ben: VISSZA (UNDO)"
+description: "Így működik az AutoCAD VISSZA (UNDO) parancsa: lépések vissza, Jel és Hátra, Kezdet és Vége, Vezérlés, és miben más, mint a T és a Ctrl+Z. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD VISSZA parancs angolul?","answer":"UNDO. Nincs rövidítése: a lépések számához vagy az opcióihoz írja be teljes nevén, VISSZA, vagy az AutoCAD bármely nyelvi változatában _UNDO. Egy lépés visszavonása a Ctrl+Z, vagy a T és az Enter; az angol változat U parancsa a magyarban T."},{"question":"Mi a különbség a T és a VISSZA parancs között?","answer":"A T parancs visszavonja az utolsó parancsot, és semmit sem kérdez. A VISSZA parancs megkérdezi, hányat vonjon vissza, és van Jel és Hátra opciója, hogy egy megjelölt pontig lépjen vissza, Kezdet és Vége opciója, hogy több parancsból egy lépés legyen, valamint Vezérlés opciója a visszavonás korlátozására vagy kikapcsolására."},{"question":"Hogyan lehet egyszerre több parancsot visszavonni?","answer":"Írja be a VISSZA nevet és a parancsok számát, például 5. Vagy válassza a Jel opciót egy olyan sorozat előtt, amelyet esetleg el szeretne vetni, és a Hátra opcióval térjen vissza hozzá."},{"question":"Miért nem működik a VISSZA parancs?","answer":"A visszavonás a Vezérlés opció Semmi beállításával ki lett kapcsolva: a T parancs ezt jelzi, a VISSZA parancs pedig a Vezérlés opciót kéri. Válaszoljon a Mind opcióval a visszakapcsoláshoz. Az előtte tett lépések elvesztek."},{"question":"Hogyan lehet visszaállítani a visszavont műveletet?","answer":"Az ELŐRE parancs közvetlenül a T vagy a VISSZA után az egészet visszaállítja. A Ctrl+Y lépésenként hajtja végre újra."}]
+---
+
+A VISSZA (UNDO) parancs parancsokat von vissza. Egy lépés egy teljes parancs: mindaz, amit egy VONAL parancs rajzolt, egyszerre tűnik el, akárhány szakasza volt, és ugyanígy az is, amit egy parancs beállított, például a VTLÉPTÉK. A VISSZA parancs kiírja az aktuális beállításait, majd a visszavonandó műveletek számát vagy egy opciót kér; az Enter egyet von vissza. A visszavont parancsok nevét egy sorba írja ki, `KÖR VONAL`, és amikor elfogynak, ezt: `Minden szerkesztés érvénytelenítve`; ezután ezt: `Nincs visszavonható parancs`. Az a parancs is lépés, amely semmit sem változtatott, például a KOORD vagy a LISTA, és az is, amit a ZOOM és a TOL a nézettel tett.
+
+A `T` a rövid forma: egy lépés vissza, kérdés nélkül. A `Parancs:` kérdésnél a Ctrl+Z a T parancsot futtatja; egy parancson belül az adott parancs saját Vissza opciója, ahogy az AutoCAD makrója begépeli: a VONAL visszavonja az utolsó szakaszát, és folytatja. Az [`ELŐRE`](/docs/commands/redo) parancs közvetlenül utána visszaállítja azt, amit az utolsó T vagy VISSZA parancs visszavont.
+
+- **Parancs:** `VISSZA`
+- **Angolul:** `UNDO`, bármely nyelven `_UNDO` formában beírva
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VISSZA`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="undoBefore" caption="Lemez két furattal és egy rajta átmenő vonallal, négy paranccsal rajzolva: TÉGL, kétszer KÖR és VONAL." />
+
+<Session name="undo" caption="VISSZA 2: az utolsó két parancs visszavonva, a vonal és a második furat, a lemezen az első furat megmarad." />
+
+## Opciók [#options]
+
+### `Auto` (`A`) [#auto]
+
+`Be` vagy `Ki` választ kér, az aktuális beállítást ajánlva fel, amelyet aztán a beállítások sora mutat. Az AutoCAD-ben egyetlen lépéssé fogja össze azokat a parancsokat, amelyeket egy menüelem futtat; itt egyetlen menü sem futtat egynél több parancsot, így itt semmit sem fog össze.
+
+### `VEzérlés` (`VE`) [#control]
+
+Azt kérdezi, mennyi visszavonást őrizzen meg, alapértelmezés szerint `Mind`. A `Semmi` eldobja az összes megőrzött lépést, és kikapcsolja a visszavonást: a T parancs ekkor ezt írja ki: `V parancs letiltva. Bekapcsolásához használja a VISSZA parancsot`, a VISSZA parancs pedig azonnal a Vezérlés opciót kéri. Az `Egy` csak az utolsó lépést őrzi meg, és a VISSZA parancs ezután 1-et vagy a Vezérlés opciót kéri. A Mind visszakapcsolja a teljes visszavonást. Az `eGyesít` azt adja meg, hogy az egymást követő ZOOM és TOL parancsok egy lépést alkotnak-e, a `fóLia` pedig azt, hogy a Fóliatulajdonság-kezelőben egymás után végzett szerkesztések egy lépést alkotnak-e; mindkettő alapértelmezése az Igen. A beállítások a rajzéi, de nem mentődnek vele: az új vagy megnyitott rajz a Mind, az Egyesít Igen és a Fólia Igen beállítással indul.
+
+### `Kezdet` (`K`) [#begin]
+
+Csoportot nyit: a `Vége` opcióig futtatott parancsok egy lépést alkotnak, amelyet a T parancs egészben von vissza, és velük együtt `CSOPORT` néven ír ki. Amíg egy csoport nyitva van, a T, a megadott szám és a Hátra a csoport elején megáll. Nyitott csoportnál a Kezdet előbb lezárja azt.
+
+### `Vége` (`V`) [#end]
+
+Lezárja a Kezdet opcióval nyitott csoportot.
+
+### `Jel` (`J`) [#mark]
+
+Jelet hagy a lépések között. A Hátra, a T és a megadott szám ennél megáll, ezzel az üzenettel: `Vissza jelet talált`.
+
+### `Hátra` (`H`) [#back]
+
+Minden lépést visszavon az utolsó jelig, és vele együtt a jelet is. Ha nincs jel, megkérdezi, hogy mindent visszavonjon-e, alapértelmezés szerint Igen.
+
+## Amit még nem tud [#missing]
+
+Az Auto semmit sem fog össze, mert itt egyetlen menü sem futtat egynél több parancsot. Az Egyesít és a Fólia beállítás a böngésző munkamenetének végéig marad meg, míg az AutoCAD az egyik munkamenetből a másikba is megőrzi őket. A felső sáv Vissza és Előre gombja semmit sem ír az előzményekbe, míg az AutoCAD gyorselérési eszköztára a sajátját beírja. A Ctrl+Shift+Z szó nélkül szintén újra végrehajt, pedig az AutoCAD-ben semmi sincs hozzárendelve.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD VISSZA parancs angolul?
+
+UNDO. Nincs rövidítése: a lépések számához vagy az opcióihoz írja be teljes nevén, `VISSZA`, vagy az AutoCAD bármely nyelvi változatában `_UNDO`. Egy lépés visszavonása a Ctrl+Z, vagy a `T` és az Enter; az angol változat `U` parancsa a magyarban T.
+
+### Mi a különbség a T és a VISSZA parancs között?
+
+A `T` parancs visszavonja az utolsó parancsot, és semmit sem kérdez. A VISSZA parancs megkérdezi, hányat vonjon vissza, és van Jel és Hátra opciója, hogy egy megjelölt pontig lépjen vissza, Kezdet és Vége opciója, hogy több parancsból egy lépés legyen, valamint Vezérlés opciója a visszavonás korlátozására vagy kikapcsolására.
+
+### Hogyan lehet egyszerre több parancsot visszavonni?
+
+Írja be a `VISSZA` nevet és a parancsok számát, például `5`. Vagy válassza a `Jel` opciót egy olyan sorozat előtt, amelyet esetleg el szeretne vetni, és a `Hátra` opcióval térjen vissza hozzá.
+
+### Miért nem működik a VISSZA parancs?
+
+A visszavonás a Vezérlés opció `Semmi` beállításával ki lett kapcsolva: a T parancs ezt jelzi, a VISSZA parancs pedig a Vezérlés opciót kéri. Válaszoljon a `Mind` opcióval a visszakapcsoláshoz. Az előtte tett lépések elvesztek.
+
+### Hogyan lehet visszaállítani a visszavont műveletet?
+
+Az [`ELŐRE`](/docs/commands/redo) parancs közvetlenül a T vagy a VISSZA után az egészet visszaállítja. A Ctrl+Y lépésenként hajtja végre újra.
+
+## Kapcsolódó parancsok [#related]
+
+- [T (U)](/docs/commands#u): Az utolsó művelet visszavonása
+- [AutoCAD ELŐRE (REDO) parancs: a visszavonás visszavonása](/docs/commands/redo)
+- [TELŐRE (MREDO)](/docs/commands#mredo): Többszörös előre
+- [AutoCAD RADÍR (ERASE) parancs](/docs/commands/erase)

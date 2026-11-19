@@ -1,0 +1,123 @@
+---
+title: "Tárgyraszter az AutoCAD-ben: -TRASZTER (-OSNAP) parancs"
+metaTitle: "Tárgyraszter az AutoCAD-ben: -TRASZTER és F3"
+description: "Tárgyraszter az AutoCAD-ben: a -TRASZTER (-OSNAP) beállítja a futó módokat, az F3 kapcsolja őket, a VÉG, a FEL vagy a Shift + jobb kattintás egyet kényszerít."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD TRASZTER (OSNAP) parancsa?","answer":"Az AutoCAD-ben a TRASZTER (TR; angolul OSNAP, OS) a Rajzbeállítások párbeszédpanel Tárgyraszter lapját nyitja meg, ahol a futó tárgyraszterek választhatók ki. A MellowCAD-nek nincs ilyen párbeszédpanelje: írja be a -TRASZTER vagy a -TR parancsot és a módok listáját, vagy jelölje be őket az állapotsor Tárgyraszter gombjának menüjében."},{"question":"Hogyan lehet bekapcsolni a tárgyrasztert az AutoCAD-ben?","answer":"Az F3 be- és kikapcsolja a tárgyrasztert, ahogy az AutoCAD-ben; ugyanezt teszi az állapotsor Tárgyraszter gombja. Pontot kérő promptnál a Shift + jobb kattintás megnyitja az egyetlen pontra szóló tárgyraszterek menüjét."},{"question":"Miért nem működik a tárgyraszter az AutoCAD-ben?","answer":"Lehet, hogy az F3 kikapcsolta: ezt az állapotsor gombja mutatja. Vagy a mód nincs a futók között: állítsa be a -TRASZTER paranccsal vagy a gomb menüjében. A kurzornak nagyjából 10 képpontnyira meg kell közelítenie a pontot, középpontnál pedig magán a körön vagy íven kell lennie. A tárgyraszter csak akkor működik, amikor egy parancs pontot kér."},{"question":"Hogyan lehet csak egyszer raszterezni egy pontra?","answer":"Pontot kérő promptnál írja be a mód nagybetűit, például VÉG vagy ÉRI, vagy válassza ki a Shift + jobb kattintásra megjelenő menüből. Csak arra az egy pontra érvényes, akár fut ez a mód, akár nem."},{"question":"Megmaradnak a tárgyraszter beállításai?","answer":"Az oldal újratöltéséig; utána ismét a Végpont, a Középpont, a Metszéspont és a Meghosszabbítás érvényes. Az AutoCAD sem tárolja őket a rajzban."}]
+---
+
+A tárgyraszter egy kijelölt pontot pontosan egy objektum valamely pontjára tesz: a végére, a felezőpontjára, a középpontjára. Bekapcsolt tárgyraszternél a kurzor egy ilyen pont közelében megjeleníti a pont zöld jelölőjét, eszköztippben pedig a nevét; a kattintás ekkor erre a pontra kerül, nem oda, ahol a kurzor áll. A futó tárgyraszterek azok a módok, amelyek minden pontot kérő promptnál működnek: kezdetben a Végpont, a Középpont, a Metszéspont és a Meghosszabbítás, ahogy az AutoCAD-ben. Az F3 be- és kikapcsolja a tárgyrasztert, és kiírja: `<Traszter be>` vagy `<Traszter ki>`; ugyanezt teszi az állapotsor Tárgyraszter gombja, amelynek menüjében minden módhoz jelölőnégyzet tartozik. Ha a kurzor alatt több raszterpont is van, a legközelebbi nyer, a Tab billentyű pedig végiglépked a többin. Az Orto mód, a poláris követés és a Raszter mód soha nem mozdít el egy raszterezett pontot.
+
+A -TRASZTER (-OSNAP) parancs a parancssorban állítja be a futó tárgyrasztereket. Kiírja az éppen futó módokat, majd a módok listáját kéri: mindegyiket a neve nagybetűivel, vesszővel elválasztva, például `VÉG,FEL,KÖZ`, vagy `_END,_MID` alakban, ami az AutoCAD bármely nyelvén működik. A lista lecseréli a futó készletet, és bekapcsolja a tárgyrasztert; a `SEMmi`, a `KI` vagy egy magában álló Enter kiüríti. Ismeretlen módra a válasz `Érvénytelen tárgyraszter mód.`, és a kérdés megismétlődik. Aposztróffal beírva, `'-TRASZTER` alakban, egy másik parancson belül is működik. A futó tárgyraszterek az oldal újratöltéséig maradnak érvényben, utána ismét az AutoCAD négy módja lép életbe: ahogy az AutoCAD-ben, a rajz nem tárolja őket.
+
+Egyetlen pontra felül is bírálhatók: pontot kérő promptnál írja be egy mód nagybetűit, `FEL` vagy `_MID`, vagy tartsa lenyomva a Shift billentyűt, kattintson a jobb gombbal, és válassza ki a módot a menüből. Ekkor csak ez az egy mód keres, bármi fut is, és csak erre az egy pontra; ha nem talál semmit, a pontot elutasítja, és újra kérdez. Nagybetűivel beírva a `SEMmi` egyetlen pontra kikapcsolja a tárgyrasztert. Ugyanez a menü kínálja a `PONTTÓL` parancsot is: egy bázispont, majd attól egy eltolás, így a `@10,0` a bázisponttól 10 egységgel jobbra van.
+
+- **Parancs:** `-TRASZTER`
+- **Angolul:** `-OSNAP`, bármely nyelven `_-OSNAP` formában beírva
+- **Álnevek:** `-TR`
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `-TR`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="-osnap" caption="A -TRASZTER futó módnak a Felezőpontot és a Középpontot állítja be; a VONAL ezután egy él felezőpontjából a kör középpontjába húz, a felső élen pedig a Felezőpont jelölője látszik." />
+
+## Opciók [#options]
+
+### `VÉGpont` (`VÉG`) [#endpoint]
+
+Egy vonal, ív, vonalláncszakasz, elliptikus ív vagy spline legközelebbi vége: egy téglalap sarkai, egy sokszög csúcsai. A jelölője négyzet.
+
+### `FELezőpont` (`FEL`) [#midpoint]
+
+Egy vonal, ív, vonalláncszakasz, elliptikus ív vagy spline hosszának fele. Háromszög.
+
+### `KÖZéppont` (`KÖZ`) [#center]
+
+Egy kör, ív vagy vonalláncív középpontja. Magát a görbét érintse a kurzorral: a középpontban nincs mit megfogni. Kör.
+
+### `PONt` (`PON`) [#node]
+
+Pontobjektum, amilyet a `PONT`, a [`FELOSZT`](/docs/commands/divide) és a [`BEOSZTÁS`](/docs/commands/measure) parancs hoz létre, bármilyen alakot ad is neki a [`PTÍPUS`](/docs/commands/ptype) parancs. Kezdetben nincs a futó tárgyraszterek között. Kör kereszttel.
+
+### `KÖRnegyed` (`KÖR`) [#quadrant]
+
+Egy kör vagy ív 0°-os, 90°-os, 180°-os és 270°-os pontjai az FKR X és Y tengelye mentén, valamint egy ellipszis tengelyeinek végpontjai. Rombusz.
+
+### `METszéspont` (`MET`) [#intersection]
+
+Ahol két objektum metszi egymást, vagy ahol egy poláris követési vonal metsz egy objektumot. Kereszt.
+
+### `MEGhosszabbítás` (`MEG`) [#extension]
+
+Egy vonal, ív vagy egyenes vonalláncszakasz végén túl: érintse a kurzorral a végpontot, majd távolodjon az objektum vonala mentén. A végponttól szaggatott vonal jelenik meg, és a beírt távolságot ezen méri. Pluszjel.
+
+### `ILLesztés` (`ILL`) [#insertion]
+
+Az a pont, amelyhez egy szöveg, egy attribútumdefiníció vagy egy blokkreferencia illeszkedik.
+
+### `MERőleges` (`MER`) [#perpendicular]
+
+Az utolsó pontból egy vonalra – a végpontjain túl is –, körre, ívre vagy vonalláncszakaszra bocsátott merőleges talppontja. A [`VONAL`](/docs/commands/line) parancs első pontjánál megvárja a következő pontot: a vonal merőlegesen indul ki az objektumból. Derékszög.
+
+### `ÉRIntő` (`ÉRI`) [#tangent]
+
+Egy kör vagy ív azon pontja, ahol az utolsó pontból húzott vonal érinti. A [`VONAL`](/docs/commands/line) parancs első pontjánál megvárja a következő pontot: a vonal érintőlegesen indul ki a görbéből. Kör vonallal.
+
+### `SZOmszédos` (`SZO`) [#nearest]
+
+Az objektum kurzorhoz legközelebbi pontja. Homokóra.
+
+### `LÁTszmet` (`LÁT`) [#apparent]
+
+Látszólagos metszéspont: ahol két objektum a nézetben metszi egymást, bár különböző magasságban vannak; ahol valóban találkoznak, ott ez a metszéspontjuk.
+
+### `PÁRhuzamos` (`PÁR`) [#parallel]
+
+Tartsa a kurzort egy pillanatig egy vonal fölött, majd mozogjon az utolsó pontból a vonal irányában: a következő pontot a vonallal párhuzamos segédvonal tartja.
+
+### `SEMmi` (`SEM`) [#none]
+
+Nincs futó tárgyraszter: a tárgyraszter nem talál semmit, amíg újra be nem állít egy módot.
+
+### `KI` [#off]
+
+Ugyanaz, mint a `SEMmi`: a futó készlet kiürül.
+
+## Amit még nem tud [#missing]
+
+A Rajzbeállítások párbeszédpanel, amelyet az AutoCAD-ben a TRASZTER és a TR nyit meg: itt ezek ismeretlen parancsok, a módokat az állapotsor menüje állítja be. A Geometriai középpont, módként és a menükben. A Pont mód a méret definíciós pontjain és a méretszöveg kezdőpontján: itt csak pontobjektumokat talál. A két pont közötti felezőpont, az ideiglenes követési pont és az egyetlen pontra lenyomva tartott billentyűk (Shift + A, Shift + Q…). A Metszéspont, a Merőleges és az Érintő ellipszisen, a Merőleges és az Érintő spline-on, a Meghosszabbítás egy vonalláncív végétől, illetve távolsággal és szöggel az eszköztippben. A Merőleges vagy az Érintő, amely a másik pontra vár, a [`VONAL`](/docs/commands/line) és a [`KÖR`](/docs/commands/circle) parancson kívül más parancs elején. A céldoboz és a jelölő beállításai, a CÉLDOBOZ és az AUTOSNAP.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent---ref--pt-br--osnap---os--fr--accrobj---ac--it--osnap---os--de--ofang---of--ru--привязка---при--pl--obiekt---o--cs--uchop---uc--hu--traszter---tr)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD TRASZTER (OSNAP) parancsa?
+
+Az AutoCAD-ben a TRASZTER (`TR`; angolul OSNAP, `OS`) a Rajzbeállítások párbeszédpanel Tárgyraszter lapját nyitja meg, ahol a futó tárgyraszterek választhatók ki. A MellowCAD-nek nincs ilyen párbeszédpanelje: írja be a `-TRASZTER` vagy a `-TR` parancsot és a módok listáját, vagy jelölje be őket az állapotsor Tárgyraszter gombjának menüjében.
+
+### Hogyan lehet bekapcsolni a tárgyrasztert az AutoCAD-ben?
+
+Az F3 be- és kikapcsolja a tárgyrasztert, ahogy az AutoCAD-ben; ugyanezt teszi az állapotsor Tárgyraszter gombja. Pontot kérő promptnál a Shift + jobb kattintás megnyitja az egyetlen pontra szóló tárgyraszterek menüjét.
+
+### Miért nem működik a tárgyraszter az AutoCAD-ben?
+
+Lehet, hogy az F3 kikapcsolta: ezt az állapotsor gombja mutatja. Vagy a mód nincs a futók között: állítsa be a `-TRASZTER` paranccsal vagy a gomb menüjében. A kurzornak nagyjából 10 képpontnyira meg kell közelítenie a pontot, középpontnál pedig magán a körön vagy íven kell lennie. A tárgyraszter csak akkor működik, amikor egy parancs pontot kér.
+
+### Hogyan lehet csak egyszer raszterezni egy pontra?
+
+Pontot kérő promptnál írja be a mód nagybetűit, például `VÉG` vagy `ÉRI`, vagy válassza ki a Shift + jobb kattintásra megjelenő menüből. Csak arra az egy pontra érvényes, akár fut ez a mód, akár nem.
+
+### Megmaradnak a tárgyraszter beállításai?
+
+Az oldal újratöltéséig; utána ismét a Végpont, a Középpont, a Metszéspont és a Meghosszabbítás érvényes. Az AutoCAD sem tárolja őket a rajzban.
+
+## Kapcsolódó parancsok [#related]
+
+- [Raszter mód az AutoCAD-ben: RASZTER (SNAP) parancs](/docs/commands/snap)
+- [PONTTÓL (FROM)](/docs/commands#from): Pontkijelölés egy ideiglenes referenciapontban
+- [AutoCAD VONAL (LINE) parancs](/docs/commands/line)
+- [Pont koordinátái az AutoCAD-ben: KOORD (ID) parancs](/docs/commands/id)

@@ -1,0 +1,63 @@
+---
+title: "Vonal megtörése az AutoCAD-ben: MEGTÖR (BREAK) parancs"
+metaTitle: "Megtörés az AutoCAD-ben: MEGTÖR (BREAK) parancs"
+description: "Vonal megtörése az AutoCAD-ben a MEGTÖR (BREAK, MG) paranccsal: a kijelölés az első pont, majd a második, vagy az Első pont opció; megtörés egy pontban."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MEGTÖR parancs angolul, és mi a rövidítése?","answer":"Angolul BREAK, a magyar AutoCAD-ben MEGTÖR: írja be az MG rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol BR a magyar AutoCAD-ben nem működik; a _BREAK az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet egy vonalat egy pontban megtörni?","answer":"Futtassa a MEGTÖRÉSPONTBAN parancsot, jelölje ki a vonalat, és adja meg a pontot: két vonal lesz belőle, amelyek ott találkoznak. A MEGTÖR parancsban ugyanezt éri el, ha a második töréspontnál @ jelet ír be."},{"question":"Hogyan lehet egy vonalat két pont között megtörni?","answer":"Jelölje ki a vonalat, válassza az Első opciót, majd adja meg az első és a második pontot: a köztük lévő rész eltűnik. Vagy jelölje ki a vonalat az első pontnál, és csak a másodikat adja meg."},{"question":"Miért nem lehet megtörni egy blokkot vagy egy szöveget?","answer":"A MEGTÖR vonalakat, íveket, köröket, vonalláncokat, ellipsziseket és spline-okat tör meg. Blokkreferenciára az üzenet „Blokk nem törhető meg”, szövegre, méretre vagy sraffozásra „Az objektum nem törhető meg”; a darabjai megtöréséhez előbb vesse szét a blokkot a SZÉTVET paranccsal."},{"question":"Merre vágja a MEGTÖR a kört?","answer":"Az óramutató járásával ellentétesen, az első ponttól a másodikig, ahogy az AutoCAD-ben. Fordított sorrendben adja meg a pontokat, ha a másik részt szeretné megtartani."}]
+---
+
+A MEGTÖR (BREAK) parancs rést vág egy objektumba, vagy kettévágja. Jelölje ki az objektumot: ahogy az AutoCAD-ben, a kijelölés helye az első töréspont, így a következő prompt már csak a másodikat kéri, és a kettő közötti rész eltűnik. Egy vonal, ív, nyitott vonallánc, elliptikus ív vagy spline elveszíti a pontok közötti részt, és két objektum lesz belőle; egy kör vagy ellipszis az első ponttól a másodikig az óramutató járásával ellentétesen futó részét veszíti el, egy zárt vonallánc pedig a csúcspontjai sorrendjében a kettő közötti részt: mindegyikből egyetlen nyitott objektum lesz. Az objektumon kívüli pontot a legközelebbi pontjára veszi, a végén túli pedig az adott végig vág. Amíg a második pontot adja meg, az objektumon látszik az a rész, amelyet a MEGTÖR megtartana. A megtörés egyetlen lépés, amelyet a Vissza visszavon.
+
+- **Parancs:** `MEGTÖR`
+- **Angolul:** `BREAK`, bármely nyelven `_BREAK` formában beírva
+- **Álnevek:** `MG`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MG`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="break" caption="Egy vonal, amelyet az Első pont opcióval megadott két pont között tör meg, és egy kör, amelyet a kijelölés helyétől az óramutató járásával ellentétesen egy második pontig tör meg." />
+
+## Opciók [#options]
+
+### `Első pont` (`E`) [#first-point]
+
+A második töréspontnál: adja meg újra az első töréspontot, majd a másodikat, ha a rés nem ott kezdődik, ahol az objektumot kijelölte.
+
+## Amit még nem tud [#missing]
+
+Az FKR-rel nem egy síkban fekvő ív, kör vagy ellipszis, amelyet az AutoCAD megtör, a MellowCAD pedig nem talál meg. A [`TÜKRÖZ`](/docs/commands/mirror) paranccsal megfordított teljes ellipszis, amelyet az AutoCAD fordított irányban tör meg.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#break--br--breakatpoint--es-parte--p--partirenpunto--pt-br-quebrar--qu--quebraremponto--fr-coupure--cu--coupureaupoint--it-spezza--sz--spezzaalpunto--de-bruch--br--anpunktbrech--ru-разорвать--ра--разорватьвточке--pl-przerwij--prz--przerwijwpunkcie--cs-přeruš--pr--přerušvbodě--hu-megtör--mg--megtöréspontban)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MEGTÖR parancs angolul, és mi a rövidítése?
+
+Angolul BREAK, a magyar AutoCAD-ben MEGTÖR: írja be az `MG` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `BR` a magyar AutoCAD-ben nem működik; a `_BREAK` az AutoCAD bármely nyelvén igen.
+
+### Hogyan lehet egy vonalat egy pontban megtörni?
+
+Futtassa a `MEGTÖRÉSPONTBAN` parancsot, jelölje ki a vonalat, és adja meg a pontot: két vonal lesz belőle, amelyek ott találkoznak. A MEGTÖR parancsban ugyanezt éri el, ha a második töréspontnál `@` jelet ír be.
+
+### Hogyan lehet egy vonalat két pont között megtörni?
+
+Jelölje ki a vonalat, válassza az `Első` opciót, majd adja meg az első és a második pontot: a köztük lévő rész eltűnik. Vagy jelölje ki a vonalat az első pontnál, és csak a másodikat adja meg.
+
+### Miért nem lehet megtörni egy blokkot vagy egy szöveget?
+
+A MEGTÖR vonalakat, íveket, köröket, vonalláncokat, ellipsziseket és spline-okat tör meg. Blokkreferenciára az üzenet `Blokk nem törhető meg`, szövegre, méretre vagy sraffozásra `Az objektum nem törhető meg`; a darabjai megtöréséhez előbb vesse szét a blokkot a [`SZÉTVET`](/docs/commands/explode) paranccsal.
+
+### Merre vágja a MEGTÖR a kört?
+
+Az óramutató járásával ellentétesen, az első ponttól a másodikig, ahogy az AutoCAD-ben. Fordított sorrendben adja meg a pontokat, ha a másik részt szeretné megtartani.
+
+## Kapcsolódó parancsok [#related]
+
+- [MEGTÖRÉSPONTBAN (BREAKATPOINT)](/docs/commands#breakatpoint): Megtörés egy pontban
+- [AutoCAD METSZ (TRIM) parancs](/docs/commands/trim)
+- [AutoCAD EGYBEFŰZ (JOIN) parancs](/docs/commands/join)
+- [AutoCAD RADÍR (ERASE) parancs](/docs/commands/erase)

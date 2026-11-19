@@ -1,0 +1,81 @@
+---
+title: "Kör rajzolása az AutoCAD-ben: KÖR (CIRCLE) parancs"
+metaTitle: "Kör az AutoCAD-ben: KÖR (CIRCLE) parancs, 2P, 3P"
+description: "Kör rajzolása az AutoCAD-ben a KÖR (CIRCLE, K) paranccsal, promptról promptra: középpont és sugár vagy átmérő, 2P, 3P és Éés, két objektumot érintő kör."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD KÖR parancs angolul, és mi a rövidítése?","answer":"Angolul CIRCLE, a magyar AutoCAD-ben KÖR: írja be a K rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol C a magyar AutoCAD-ben a CSOPORT parancsot indítja; a _CIRCLE az AutoCAD bármely nyelvén működik."},{"question":"Hogyan lehet két vonalat érintő kört rajzolni?","answer":"Válassza az Éés opciót, jelölje ki az első, majd a második vonalat ott, ahol a körnek érintenie kell őket, és írja be a sugarat."},{"question":"Hogyan lehet három objektumot érintő kört rajzolni?","answer":"Válassza a 3P opciót, és mindhárom pont előtt írja be az ÉRI vagy a _TAN tárgyrasztert, mindegyik objektumot ott kijelölve, ahol a körnek érintenie kell."},{"question":"Hogyan lehet átmérővel kört rajzolni?","answer":"Adja meg a középpontot, majd válassza az Átmérő opciót, és írja be az átmérőt. Vagy válassza a 2P opciót, és adja meg az átmérő két végpontját."}]
+---
+
+A KÖR (CIRCLE) parancs kört rajzol a középpontjából és a sugarából – beírva vagy a kör egy pontjával megadva –, vagy az első promptja által felkínált többi mód egyikével. A sugárnál adott Enter megismétli az utolsó kör méretét, amelyet a rajz megőriz. Amíg a sugarat adja meg, a középponttól a kurzorig borostyánszínű szaggatott vonal fut, átmérő megadásakor a körön túl is, ahogy az AutoCAD rajzolja. A kör az első pontja síkjában fekszik, az aktuális szinten, ha a pontnak nincs saját Z koordinátája.
+
+- **Parancs:** `KÖR`
+- **Angolul:** `CIRCLE`, bármely nyelven `_CIRCLE` formában beírva
+- **Álnevek:** `K`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `K`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="circle" caption="Három kör: középpont és sugár, egy átmérő két végpontja (2P), középpont és Átmérő." />
+
+## Opciók [#options]
+
+### `3P` [#3p]
+
+Három ponton át. Ha mindegyiknél Érintő tárgyrasztert ír be – `ÉRI` vagy `_TAN` –, ez az AutoCAD Érintő, érintő, érintő módja: a kör három objektumot érint.
+
+### `2P` [#2p]
+
+Egy átmérő két végpontjából.
+
+### `Éés (érintő érintő sugár)` (`É`) [#ttr]
+
+Két objektumot érint, adott sugárral: válassza ki mindegyik vonalat, kört vagy ívet ott, ahol a körnek érintenie kell, majd adja meg a sugarat. Az illeszkedő körök közül azt rajzolja meg, amely a kijelölési pontokhoz legközelebb érint; ha egyik sem illeszkedik, az üzenet `A kör nem szerkeszthető meg.`.
+
+### `Átmérő` (`Á`) [#diameter]
+
+A sugár promptjánál: helyette az átmérőt adja meg, beírva vagy pontként.
+
+## Amit még nem tud [#missing]
+
+Az Éés vonalláncszakaszon, amelyet az AutoCAD elfogad, a MellowCAD pedig elutasít; az eszközpaletta Érintő, érintő, érintő eleme (a beírás, a 3P három Érintő tárgyraszterrel, működik); a Gyorstulajdonságok egy körre duplán kattintva.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c--pt-br-circulo--ci--fr-cercle--c--it-cerchio--c--de-kreis--k--ru-круг--к--pl-okrąg--o--cs-kružnice--kr--hu-kör--k)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD KÖR parancs angolul, és mi a rövidítése?
+
+Angolul CIRCLE, a magyar AutoCAD-ben KÖR: írja be a `K` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `C` a magyar AutoCAD-ben a CSOPORT parancsot indítja; a `_CIRCLE` az AutoCAD bármely nyelvén működik.
+
+### Hogyan lehet két vonalat érintő kört rajzolni?
+
+Válassza az `Éés` opciót, jelölje ki az első, majd a második vonalat ott, ahol a körnek érintenie kell őket, és írja be a sugarat.
+
+### Hogyan lehet három objektumot érintő kört rajzolni?
+
+Válassza a `3P` opciót, és mindhárom pont előtt írja be az `ÉRI` vagy a `_TAN` tárgyrasztert, mindegyik objektumot ott kijelölve, ahol a körnek érintenie kell.
+
+### Hogyan lehet átmérővel kört rajzolni?
+
+Adja meg a középpontot, majd válassza az `Átmérő` opciót, és írja be az átmérőt. Vagy válassza a `2P` opciót, és adja meg az átmérő két végpontját.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket)
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket)
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange)
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table)
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link)
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [Ív rajzolása az AutoCAD-ben: ÍV (ARC) parancs](/docs/commands/arc)
+- [AutoCAD ELLIPSZ (ELLIPSE) parancs](/docs/commands/ellipse)
+- [AutoCAD PÁRH (OFFSET) parancs](/docs/commands/offset)
+- [Sugárméret az AutoCAD-ben: MÉRETSUGÁR (DIMRADIUS) parancs](/docs/commands/dimradius)

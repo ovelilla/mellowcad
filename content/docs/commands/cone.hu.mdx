@@ -1,0 +1,88 @@
+---
+title: "Kúp az AutoCAD-ben: KÚP (CONE) parancs"
+metaTitle: "Kúp és csonkakúp az AutoCAD-ben: KÚP (CONE)"
+description: "3D kúp vagy csonkakúp rajzolása az AutoCAD-ben a KÚP (CONE) paranccsal, promptról promptra: alap, sugár, magasság, Felső sugár, Elliptikus és tengely végpontja."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet kúpot rajzolni az AutoCAD-ben?","answer":"Futtassa a KÚP parancsot, adja meg az alap középpontját, a sugarat és a magasságot: a 0,0, a 20 és a 40 a munkamenet kúpját rajzolja meg. A megtekintéséhez fordítsa el a nézetet a ViewCube egyik sarkával, vagy a -NÉZET parancs DKizo opciójával."},{"question":"Hogyan lehet csonkakúpot rajzolni?","answer":"A magasságnál válassza a Felső opciót, írja be a felső sugarat, majd a magasságot. A kúp egy ilyen sugarú körben végződik."},{"question":"Hogyan lehet fordított kúpot rajzolni?","answer":"Írjon be negatív magasságot: a kúp az alapjától lefelé mutat. Vagy válassza a Tengely opciót, és adja meg a csúcsot oda, ahová kerülnie kell."},{"question":"Lehet a kúp alapja ellipszis?","answer":"Igen: az alap középpontjánál válassza az Elliptikus opciót, és adja meg a tengelyeit. A felső sugár a tetejét ugyanilyen, kisebb ellipszissé teszi."}]
+---
+
+A KÚP (CONE) parancs 3D szilárdtest kúpot rajzol: adja meg az alapja középpontját, majd a sugarat, végül a magasságot, és a kúp egy pontba keskenyedik. Azt kérdezi, amit a [`HENGER`](/docs/commands/cylinder) parancs, a magasságnál a `Felső` opcióval a csonka kúphoz. Az alap az FKR XY síkjában, a középpont Z magasságában fekszik, a magasság pedig a Z tengely mentén emelkedik; a negatív lefelé fordítja, egy pont pedig az alaptól mért távolságával adja meg. A sugarat és a magasságot alapértelmezésként kínálja fel, amelyet az Enter elfogad; ezeken a többi alaptesttel osztozik. A kúp az aktuális fólián jön létre, és a Vissza egyetlen lépésben visszavonja.
+
+A [`LISTA`](/docs/commands/list) parancs kiírja a helyzetét, normálisát, alapsugarát, felső sugarát és magasságát, a Tulajdonságok palettán pedig beírhatók. A fogói mozgatják, beállítják a magasságát, az alap minden negyedénél az alapsugarát, és a felső sugarát. A csúcsa végpontként raszterezhető. 3D szilárdtest az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára; a MellowCAD 3D-ben csak szilárdtesteket kezel, egyelőre részben.
+
+- **Parancs:** `KÚP`
+- **Angolul:** `CONE`, bármely nyelven `_CONE` formában beírva
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KÚP`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="cone" caption="Egy 20-as sugarú és 40 magas kúp az alapja középpontjából, délkelet felől nézve, Takartvonalas látványstílusban." />
+
+## Opciók [#options]
+
+### `3P` [#3p]
+
+Az alap középpontjánál: három pontot kér be, és az alap a rajtuk átmenő kör, a síkjukban.
+
+### `2P` [#2p]
+
+Az alap középpontjánál: az alap átmérőjének két végpontját kéri be.
+
+### `Éés` (`É`) [#ttr]
+
+Az alap középpontjánál: válasszon ki két vonalat, kört vagy ívet Érintő tárgyraszterrel, és adjon meg egy sugarat: az alap mindkettőt érinti.
+
+### `Elliptikus` (`E`) [#elliptical]
+
+Az alap középpontjánál: az alap ellipszis, amelyet az első tengelye két végpontja és a második tengely végpontja ad meg, vagy a `Középpont` opcióval a középpontjából. A felső sugár ugyanezt az ellipszist kicsinyíti.
+
+### `Átmérő` (`Á`) [#diameter]
+
+A sugárnál: helyette az átmérőt kéri be, az utolsó sugár kétszeresét felkínálva.
+
+### `2Pont` (`2P`) [#2point]
+
+A magasságnál: két pontot kér be, és a magasság a köztük lévő távolság.
+
+### `Tengely végpont` (`T`) [#axis]
+
+A magasságnál: a csúcsot kéri be. A kúp az alap középpontjától ehhez a ponthoz fut, bármilyen irányban, az alapja merőleges a tengelyre.
+
+### `Felső sugár` (`F`) [#top]
+
+A magasságnál: bekéri a felső sugarat, majd ismét a magasságot. A kúp pont helyett körben végződik, csonkakúp lesz; az alappal azonos szélességű teteje egy henger palástját adja, a szélesebb felfelé szélesedő kúpot. Az utolsó kúp felső sugarát kínálja fel, kezdetben 0-t.
+
+## Amit még nem tud [#missing]
+
+A kúp [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amelyet az AutoCAD az alapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Kerek kúp átírása elliptikussá a Tulajdonságok palettán. Ha az `ISOLINES` értéke 0, a pont, amelyet az AutoCAD a csúcsra rajzol. Valamint a [`HENGER`](/docs/commands/cylinder) parancs hiányai: az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, a sugár megadása közben rajzolt pontozott méretek, és azok a látványstílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból hiányoznak.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cone--es-cono--pt-br-cone--fr-cone--it-cono--de-kegel--ru-конус--pl-stożek--cs-kužel--hu-kúp)
+
+## Kérdések [#questions]
+
+### Hogyan lehet kúpot rajzolni az AutoCAD-ben?
+
+Futtassa a KÚP parancsot, adja meg az alap középpontját, a sugarat és a magasságot: a `0,0`, a `20` és a `40` a munkamenet kúpját rajzolja meg. A megtekintéséhez fordítsa el a nézetet a ViewCube egyik sarkával, vagy a `-NÉZET` parancs `DKizo` opciójával.
+
+### Hogyan lehet csonkakúpot rajzolni?
+
+A magasságnál válassza a `Felső` opciót, írja be a felső sugarat, majd a magasságot. A kúp egy ilyen sugarú körben végződik.
+
+### Hogyan lehet fordított kúpot rajzolni?
+
+Írjon be negatív magasságot: a kúp az alapjától lefelé mutat. Vagy válassza a `Tengely` opciót, és adja meg a csúcsot oda, ahová kerülnie kell.
+
+### Lehet a kúp alapja ellipszis?
+
+Igen: az alap középpontjánál válassza az `Elliptikus` opciót, és adja meg a tengelyeit. A felső sugár a tetejét ugyanilyen, kisebb ellipszissé teszi.
+
+## Kapcsolódó parancsok [#related]
+
+- [Henger az AutoCAD-ben: HENGER (CYLINDER) parancs](/docs/commands/cylinder)
+- [Gúla az AutoCAD-ben: GÚLA (PYRAMID) parancs](/docs/commands/pyramid)
+- [AutoCAD MEGFORGAT (REVOLVE) parancs: forgástest](/docs/commands/revolve)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)

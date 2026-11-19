@@ -8,6 +8,7 @@ import de from "@/messages/de.json"
 import ru from "@/messages/ru.json"
 import pl from "@/messages/pl.json"
 import cs from "@/messages/cs.json"
+import hu from "@/messages/hu.json"
 import ptBR from "@/messages/pt-BR.json"
 
 import { DIAGRAMS, type FigureSpec } from "./figures"
@@ -26,6 +27,7 @@ const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
   ru,
   pl,
   cs,
+  hu,
 }
 
 /** The diagrams as a language's messages word them, keyed `name.locale`. */

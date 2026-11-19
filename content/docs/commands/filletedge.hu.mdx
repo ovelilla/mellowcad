@@ -1,0 +1,68 @@
+---
+title: "AutoCAD ÉLLEKEREKÍT (FILLETEDGE) parancs"
+metaTitle: "Élek lekerekítése: ÉLLEKEREKÍT (FILLETEDGE)"
+description: "3D szilárdtest éleinek lekerekítése az AutoCAD ÉLLEKEREKÍT (FILLETEDGE) parancsával: élek, Lánc, Hurok, Sugár és a nyíl alakú fogó. Próbálja ki ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet egy 3D szilárdtest élét lekerekíteni az AutoCAD-ben?","answer":"Indítsa el az ÉLLEKEREKÍT parancsot, válassza a Sugár opciót, és írja be a sugarat, válassza ki az éleket, majd nyomja meg kétszer az Enter billentyűt: egyszer a kiválasztás befejezéséhez, egyszer az elfogadáshoz. A bemutatóban a 8 egy téglatest két élét kerekíti le."},{"question":"Hogyan lehet egy lap összes élét lekerekíteni?","answer":"Válassza a Hurok opciót, és válassza ki a lap egyik élét, majd az Elfogadás opciót, vagy a Következő opciót, ha a megjelenített hurok a másik lapé. Az egymásba simán átmenő éleknél, például egy lekerekített téglatest tetején, a Lánc opció mindet kiválasztja."},{"question":"Miért nem működik a LEKEREKÍT parancs 3D szilárdtesten?","answer":"Az AutoCAD LEKEREKÍT parancsa a szilárdtest élét is lekerekíti, a MellowCAD-é viszont még nem: használja az ÉLLEKEREKÍT parancsot, letöréshez pedig az ÉLLETÖR parancsot."},{"question":"Hogyan lehet módosítani a lekerekítés sugarát?","answer":"Válassza a Sugár opciót a kiválasztás előtt vagy az elfogadást kérő promptnál, vagy húzza az első lekerekítés közepén lévő nyíl alakú fogót. Az utolsó sugarat legközelebb ismét felkínálja."}]
+---
+
+Az ÉLLEKEREKÍT (FILLETEDGE) parancs egy 3D szilárdtest éleit kerekíti le. Kiírja az aktuális sugarat, majd éleket kér az Enter billentyűig: a kattintás a kurzor alatti élt választja ki, amely kiemelve jelenik meg, amikor a kurzor áthalad rajta, a beírt pont pedig azt az élt, amelyen átmegy. Az élek kiválasztása közben a szilárdtest úgy jelenik meg, ahogy majd lesz, a lekerekítésekkel együtt. Az Enter megszámolja az éleket, és kéri, hogy az elfogadáshoz nyomja meg ismét az Enter billentyűt, vagy módosítsa a sugarat; ez az Enter hozza létre a lekerekítéseket. Csak egyetlen szilárdtest élei választhatók: egy másikéra a válasz `Több test nem kerekíthető le egyszerre.`, a kétszer kiválasztott élre `Az él már ki lett választva.`.
+
+Két sík lap közötti egyenes élből negyedhenger lesz, egy furat vagy perem kör alakú éléből negyedtórusz; a sarokban találkozó lekerekítések összekapcsolódnak, hármuk egy gömbdarabbal. A sugár a rajzban mentődik, és legközelebb ismét felkínálja. A szilárdtest megtartja a fóliáját és a tulajdonságait, de elveszíti, amiből létrejött: a téglatest többé nem téglatest. A teljes parancs egyetlen visszavonási lépés. A MellowCAD-ben a 3D egyelőre csak szilárdtesteket jelent, és csak részben érhető el.
+
+- **Parancs:** `ÉLLEKEREKÍT`
+- **Angolul:** `FILLETEDGE`, bármely nyelven `_FILLETEDGE` formában beírva
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ÉLLEKEREKÍT`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="filletedge" caption="Délkeletről nézett téglatest: az ÉLLEKEREKÍT 8-as sugárral lekerekíti a jobb oldali két függőleges élét." />
+
+## Opciók [#options]
+
+### `Lánc` (`L`) [#chain]
+
+A kiválasztott élt és minden hozzá érintőlegesen csatlakozó élt kiválasztja, egymás után: például egy olyan téglatest tetején körbefutó nyolc élt, amelynek függőleges élei már le vannak kerekítve. Ha egyik sem érintőleges, a válasz `Nem találhatók szomszédos, érintőlegesen találkozó élek a láncban.`, és csak a kiválasztott élt veszi. Az `Él` opció visszavált az egyes élekre.
+
+### `Hurok` (`H`) [#loop]
+
+Egy lap körül futó összes élt kiválasztja: válasszon ki egy élt, majd fogadja el a megjelenített hurkot az `Elfogadás` opcióval, vagy válassza a `Következő` opciót annak a másik lapnak a hurkához, amelyhez az él tartozik.
+
+### `Sugár` (`S`) [#radius]
+
+A sugarat kéri, beírva vagy két pont távolságaként; 0 vagy kisebb érték esetén a válasz `A sugár túl kicsi. *Érvénytelen*`. A `KIfejezés` opció képletként fogadja el. Az elfogadást kérő promptnál a megjelenített lekerekítések sugarát módosítja. Az első lekerekítés közepén lévő nyíl alakú fogóval húzással is beállítható: kattintson rá, mozgassa, kattintson; a `Kilépés` vagy az Esc változatlanul hagyja.
+
+## Amit még nem tud [#missing]
+
+Két különböző sugarú lekerekítés találkozása, és az ívelt lapon végződő lekerekítés. A mellette lévő lapnál szélesebb lekerekítés, amelyet az AutoCAD átgördít a következő élen: itt modellezési hibával meghiúsul. Az ívelt lap melletti egyenes él, a hengere tengelyétől eltérő kör alakú él, valamint a gömb, a tórusz, a kihúzott és a megforgatott szilárdtest bármely éle, amelyek ugyanígy meghiúsulnak. Néhány sarok, ahol a lekerekítések eltérő dőlésű éleken találkoznak. A nyíl alakú fogó az elsőn kívül bármely más élen, és a tőle a kurzorig húzódó vonal. A szilárdtest élének kiválasztása a [`LEKEREKÍT`](/docs/commands/fillet) paranccsal, amit az AutoCAD szintén lehetővé tesz. A lekerekítés hálóként való megjelenítése kiválasztás közben, és a felületek.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord--fr-areteraccord--it-raccordaspigolo--de-abrundkante--ru-сопряжениекромки--pl-zaokrąglkraw--cs-zaoblihranu--hu-éllekerekít)
+
+## Kérdések [#questions]
+
+### Hogyan lehet egy 3D szilárdtest élét lekerekíteni az AutoCAD-ben?
+
+Indítsa el az ÉLLEKEREKÍT parancsot, válassza a `Sugár` opciót, és írja be a sugarat, válassza ki az éleket, majd nyomja meg kétszer az Enter billentyűt: egyszer a kiválasztás befejezéséhez, egyszer az elfogadáshoz. A bemutatóban a `8` egy téglatest két élét kerekíti le.
+
+### Hogyan lehet egy lap összes élét lekerekíteni?
+
+Válassza a `Hurok` opciót, és válassza ki a lap egyik élét, majd az `Elfogadás` opciót, vagy a `Következő` opciót, ha a megjelenített hurok a másik lapé. Az egymásba simán átmenő éleknél, például egy lekerekített téglatest tetején, a `Lánc` opció mindet kiválasztja.
+
+### Miért nem működik a LEKEREKÍT parancs 3D szilárdtesten?
+
+Az AutoCAD [`LEKEREKÍT`](/docs/commands/fillet) parancsa a szilárdtest élét is lekerekíti, a MellowCAD-é viszont még nem: használja az ÉLLEKEREKÍT parancsot, letöréshez pedig az [`ÉLLETÖR`](/docs/commands/chamferedge) parancsot.
+
+### Hogyan lehet módosítani a lekerekítés sugarát?
+
+Válassza a `Sugár` opciót a kiválasztás előtt vagy az elfogadást kérő promptnál, vagy húzza az első lekerekítés közepén lévő nyíl alakú fogót. Az utolsó sugarat legközelebb ismét felkínálja.
+
+## Kapcsolódó parancsok [#related]
+
+- [Szilárdtest élének letörése az AutoCAD-ben: ÉLLETÖR (CHAMFEREDGE) parancs](/docs/commands/chamferedge)
+- [Lekerekítés az AutoCAD-ben: LEKEREKÍT (FILLET) parancs](/docs/commands/fillet)
+- [AutoCAD SZTESTSZERKESZT (SOLIDEDIT) parancs](/docs/commands/solidedit)
+- [Téglatest az AutoCAD-ben: TTEST (BOX) parancs](/docs/commands/box)

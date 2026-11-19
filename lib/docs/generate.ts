@@ -325,6 +325,7 @@ const LABEL_END: Record<AppLocale, string> = {
   ru: ":",
   pl: ":",
   cs: ":",
+  hu: ":",
 }
 
 /** A list item's bold label, ended as its language ends one. */
@@ -349,6 +350,8 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   pl: ["\u201e", "\u201d"],
   // Czech quotes low, then high: „…“, as German (docs/i18n/cs.md).
   cs: ["\u201e", "\u201c"],
+  // Hungarian quotes low, then high on the right: „…”, as Polish (docs/i18n/hu.md).
+  hu: ["\u201e", "\u201d"],
 }
 
 /**

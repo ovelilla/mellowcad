@@ -1,0 +1,71 @@
+---
+title: "Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG (DIMANGULAR) parancs"
+metaTitle: "Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG"
+description: "Szög méretezése az AutoCAD-ben a MÉRETSZÖG (DIMANGULAR, MSZ) paranccsal: két vonal, egy ív, egy kör vagy három pont, majd a méretív helye. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MÉRETSZÖG parancs angolul, és mi a rövidítése?","answer":"Angolul DIMANGULAR, a magyar AutoCAD-ben MÉRETSZÖG: írja be az MSZ vagy az MSZOG rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol DAN és DIMANG a magyar AutoCAD-ben nem működik; a _DIMANGULAR az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet 180 foknál nagyobb szöget méretezni?","answer":"Az első promptnál nyomja meg az Enter billentyűt, adja meg a csúcspontot és a két szárvégpontot, majd az ívet a közöttük lévő szögön kívül helyezze el: a kiegészítő szöget méri, vagyis 360°-ból a másikat levonva. Ív és kör esetén ugyanígy működik. Két vonal között a szög mindig 180°-nál kisebb."},{"question":"Hogyan lehet egy ív szögét méretezni?","answer":"Az első promptnál jelölje ki az ívet: a középpontja a csúcspont, a végpontjai a segédvonalak kezdőpontjai, így a következő kérdés már a méret helye."},{"question":"Miért írja a MÉRETSZÖG, hogy a vonalak párhuzamosak?","answer":"Két párhuzamos vonal, vagy kétszer kijelölt ugyanaz a vonal, nem zár be szöget: „A vonalak párhuzamosak.”, és a parancs befejeződik."},{"question":"Hogyan lehet módosítani egy szögméret tizedesjegyeit?","answer":"A méretstílusban: a MÉRETSTÍLUS (D) a Stílusok palettán nyitja meg, ahol az Elsődleges mértékegységek szögméreteinek pontossága állítja be, ISO-25-ben 0. Az adott stílusú összes szögméret követi."}]
+---
+
+A MÉRETSZÖG (DIMANGULAR) parancs egy szöget méretez, méretvonalként egy ívvel. Ahogy az AutoCAD-ben, az első kijelölés dönti el a folytatást: egy vonal után egy második vonalat kér – egy vonallánc két szakasza is megfelel –; az ívet végponttól végpontig, a középpontja körül méri; a kört a kijelölési ponttól egy megadandó második pontig; az Enter pedig ehelyett a szög csúcspontját, majd a két szárvégpontját kéri. Ezután helyezze el az ívet: a helye dönti el, melyik szöget méri. Két vonal között a négy szögtartományuk közül azt, amelyikben elhelyezi; egyébként a szöget, vagy a szárain túl a 180°-nál nagyobb kiegészítő szöget. A parancssor fokban kiírja a mért értéket, és a parancs befejeződik.
+
+- **Parancs:** `MÉRETSZÖG`
+- **Angolul:** `DIMANGULAR`, bármely nyelven `_DIMANGULAR` formában beírva
+- **Álnevek:** `MSZ`, `MSZOG`
+- **Panel:** [Feliratozás](/docs/commands#annotate)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MSZ`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="dimangular" caption="Két vonal, amelyek 30 fokban találkoznak: mindkét vonal kijelölve, majd a méretív elhelyezve közöttük." />
+
+## Opciók [#options]
+
+### `SZöveg` (`SZ`) [#text]
+
+Bekéri a mért érték helyett kiírandó szöveget, alapértelmezésként a mért értéket kínálva fel: az Enter megtartja. A beírt szövegben a `<>` a mért értéket jelenti.
+
+### `Dőlésszög` (`D`) [#angle]
+
+Bekéri a szöveg szögét, és a szöveg a méretív mentén helyett ebben a szögben rajzolódik. A 0 visszaállítja az ív mentén.
+
+## Amit még nem tud [#missing]
+
+A Bszöveg: a méret szövege egysoros, a parancssorban a `SZöveg` opcióval állítható be. A Síknegyed opció, amely a méretet egy szögtartományhoz rögzíti, hogy a szövege azon kívülre kerülhessen. A tizedes foktól eltérő szögegységek (DIMAUNIT). Szögméretet nem lehet láncolni vagy elrendezni: a [`MÉRETFOLYTAT`](/docs/commands/dimcontinue), a [`MÉRETBVONAL`](/docs/commands/dimbaseline) és a [`MÉRETKÖZ`](/docs/commands/dimspace) parancs csak hossz- és illesztett méretet fogad el. Blokkreferencián belüli vonal vagy ív nem jelölhető ki. Két vonal között a méret azokat a pontokat őrzi meg, ahol az íve metszette őket, nem a vonalakat: ha később elmozdítja, az íve onnan húzza a segédvonalait, míg az AutoCAD újra a vonalakhoz méri. A méret nem asszociatív: nem követi a mért objektumokat.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimangular--dimang--dan--es-acoangular--acoang--pt-br-cotaang--cang--dimang--fr-cotang--can--it-dimangolo--dan--de-bemwinkel--bmwin--ru-рзмугловой--руг--pl-wymkątowy--wk--wymk--cs-kótyúhel--kuh--kotyuh--hu-méretszög--msz--mszog)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MÉRETSZÖG parancs angolul, és mi a rövidítése?
+
+Angolul DIMANGULAR, a magyar AutoCAD-ben MÉRETSZÖG: írja be az `MSZ` vagy az `MSZOG` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `DAN` és `DIMANG` a magyar AutoCAD-ben nem működik; a `_DIMANGULAR` az AutoCAD bármely nyelvén igen.
+
+### Hogyan lehet 180 foknál nagyobb szöget méretezni?
+
+Az első promptnál nyomja meg az Enter billentyűt, adja meg a csúcspontot és a két szárvégpontot, majd az ívet a közöttük lévő szögön kívül helyezze el: a kiegészítő szöget méri, vagyis 360°-ból a másikat levonva. Ív és kör esetén ugyanígy működik. Két vonal között a szög mindig 180°-nál kisebb.
+
+### Hogyan lehet egy ív szögét méretezni?
+
+Az első promptnál jelölje ki az ívet: a középpontja a csúcspont, a végpontjai a segédvonalak kezdőpontjai, így a következő kérdés már a méret helye.
+
+### Miért írja a MÉRETSZÖG, hogy a vonalak párhuzamosak?
+
+Két párhuzamos vonal, vagy kétszer kijelölt ugyanaz a vonal, nem zár be szöget: `A vonalak párhuzamosak.`, és a parancs befejeződik.
+
+### Hogyan lehet módosítani egy szögméret tizedesjegyeit?
+
+A méretstílusban: a [`MÉRETSTÍLUS`](/docs/commands/dimstyle) (`D`) a Stílusok palettán nyitja meg, ahol az Elsődleges mértékegységek szögméreteinek pontossága állítja be, ISO-25-ben 0. Az adott stílusú összes szögméret követi.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: telek](/docs/exercises/plot-of-land)
+
+## Kapcsolódó parancsok [#related]
+
+- [Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs](/docs/commands/dimlinear)
+- [Méretezés az AutoCAD-ben: illesztett méret, MÉRETILLESZT (DIMALIGNED) parancs](/docs/commands/dimaligned)
+- [Sugárméret az AutoCAD-ben: MÉRETSUGÁR (DIMRADIUS) parancs](/docs/commands/dimradius)
+- [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)

@@ -1,0 +1,480 @@
+// Generated from hu.json by `npm run locales`. Do not edit.
+import type { EditorLocale } from "./types"
+
+export const hu: EditorLocale = {
+  "tag": "hu",
+  "messages": {
+    "Workspace": {
+      "canvas": "CAD-rajzterület"
+    },
+    "Keys": {
+      "save": "Ctrl+S",
+      "open": "Ctrl+O",
+      "undo": "Ctrl+Z",
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Shift+C",
+      "paste": "Ctrl+V"
+    },
+    "TopBar": {
+      "menu": "Alkalmazásmenü",
+      "new": "Új",
+      "open": "Megnyitás",
+      "save": "Mentés",
+      "saveAs": "Mentés másként",
+      "units": "Rajzi mértékegységek…",
+      "language": "Nyelv",
+      "feedback": "Visszajelzés küldése",
+      "saving": "Mentés…",
+      "saved": "Mentve",
+      "savedHint": "Mentve ezen az eszközön",
+      "undo": "Vissza",
+      "redo": "Előre",
+      "commandLine": "Parancssor",
+      "layer": "Fólia",
+      "color": "Objektum színe",
+      "lineweight": "Vonalvastagság",
+      "linetype": "Vonaltípus"
+    },
+    "NavigationBar": {
+      "label": "Navigációs sáv",
+      "zoom": "Zoom",
+      "extents": "Zoom – Terjedelem",
+      "window": "Zoom – Ablak",
+      "previous": "Zoom – Előző",
+      "in": "Nagyítás",
+      "out": "Kicsinyítés"
+    },
+    "Viewport": {
+      "view": [
+        "Nézetvezérlők: ",
+        [
+          "name"
+        ]
+      ]
+    },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Kezdőlap",
+      "parallel": "Párhuzamos",
+      "setHome": "Jelenlegi nézet beállítása kezdőnézetként",
+      "rollClockwise": "Elforgatás az óramutató járásával megegyező irányban",
+      "rollCounterclockwise": "Elforgatás az óramutató járásával ellentétes irányban",
+      "wcs": "VKR",
+      "unnamed": "Névtelen",
+      "newUcs": "Új FKR",
+      "adjacent": {
+        "up": "A felette lévő lap megtekintése",
+        "down": "Az alatta lévő lap megtekintése",
+        "left": "A tőle balra lévő lap megtekintése",
+        "right": "A tőle jobbra lévő lap megtekintése"
+      }
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "Kör",
+        "arc": "Ív",
+        "ellipse": "Ellipszis",
+        "spline": "Spline",
+        "rectangle": "Téglalap",
+        "trim": "Metszés",
+        "fillet": "Lekerekítés",
+        "filletedge": "Él lekerekítése",
+        "solideditextrude": "Lapok kihúzása",
+        "break": "Megtörés",
+        "pedit": "Vonallánc módosítása",
+        "array": "Kiosztás",
+        "text": "Szöveg",
+        "dimension": "Méretezés",
+        "dimchain": "Folytatás",
+        "attributes": "Attribútumok",
+        "measure": "Mérés",
+        "union": "Szilárdtest szerkesztése",
+        "box": "Modellezés",
+        "extrude": "Kihúzás",
+        "point": "Pontok"
+      },
+      "sections": {
+        "draw": "Rajz",
+        "modify": "Módosítás",
+        "annotation": "Feliratozás",
+        "block": "Blokk",
+        "utilities": "Segédprogramok"
+      }
+    },
+    "CommandLine": {
+      "label": "Parancssor",
+      "placeholder": "Írjon be egy parancsot (VONAL, ME, M…)",
+      "history": "Parancselőzmények"
+    },
+    "DynamicInput": {
+      "locked": "zárolt"
+    },
+    "StatusBar": {
+      "coordinates": "Koordináták",
+      "model": "MODELL",
+      "modelSpace": "Modelltér",
+      "grid": "Háló",
+      "objectSnap": "Tárgyraszter",
+      "objectSnapSettings": "Tárgyraszter-beállítások",
+      "snapMode": "Raszter mód",
+      "snapSettings": "Raszterbeállítások",
+      "snap": "Raszter",
+      "gridSnap": "Háló raszter",
+      "polarSnap": "Poláris raszter",
+      "snapX": "Raszter X",
+      "snapXSpacing": "Raszterkiosztás X irányban",
+      "snapY": "Raszter Y",
+      "snapYSpacing": "Raszterkiosztás Y irányban",
+      "polarDistance": "Poláris távolság",
+      "polarSnapDistance": "Poláris rasztertávolság",
+      "ortho": "Orto mód",
+      "polarTracking": "Poláris követés",
+      "polarTrackingAngle": "Poláris követés szöge",
+      "polarAngle": "Poláris szög",
+      "objectSnapTracking": "Tárgyraszterkövetés",
+      "selectionCycling": "Ciklikus kiválasztás",
+      "selectionCyclingSettings": "Ciklikus kiválasztás beállításai",
+      "selectionList": "Ciklikus kijelölési listamező megjelenítése",
+      "showLineweight": "Vonalvastagság megjelenítése",
+      "units": "Mértékegységek",
+      "cleanScreen": "Tiszta képernyő",
+      "customization": "Testreszabás"
+    },
+    "Units": {
+      "title": "Rajzi mértékegységek",
+      "length": "Hosszúság",
+      "type": "Típus",
+      "precision": "Pontosság",
+      "decimal": "Tizedes",
+      "insertionScale": "Beszúrási lépték",
+      "insertedContent": "Tartalom rajzba illesztésekor a lépték mértékegysége:",
+      "millimeters": "Milliméter",
+      "centimeters": "Centiméter",
+      "meters": "Méter",
+      "sampleOutput": "Minta",
+      "ok": "OK",
+      "cancel": "Mégse"
+    },
+    "SaveAs": {
+      "title": "Rajz mentése másként",
+      "fileName": "Fájlnév:",
+      "fileType": "Fájltípus:",
+      "tools": "Eszközök",
+      "options": "Opciók…",
+      "save": "Mentés",
+      "cancel": "Mégse",
+      "drawing": "MellowCAD-rajz (*.ecad.json)",
+      "dxf2018": "AutoCAD 2018 DXF (*.dxf)",
+      "dxf2013": "AutoCAD 2013/LT2013 DXF (*.dxf)",
+      "dxf2010": "AutoCAD 2010/LT2010 DXF (*.dxf)",
+      "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
+      "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
+      "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "optionsTitle": "Mentés másként opciók",
+      "dxfOptions": "DXF opciók",
+      "format": "Formátum",
+      "ascii": "ASCII",
+      "binary": "BINÁRIS",
+      "selectObjects": "Objektumok kiválasztása",
+      "preview": "Miniatűr előnézeti kép mentése",
+      "precision": "Tizedes pontosság (0 - 16)",
+      "ok": "OK"
+    },
+    "SnapOverride": {
+      "from": "Ponttól",
+      "pointFilters": "Pontszűrők",
+      "none": "Semmi"
+    },
+    "SelectionCycling": {
+      "title": "Kijelölés",
+      "none": "Nincs"
+    },
+    "ShortcutMenu": {
+      "label": "Helyi menü",
+      "repeat": [
+        "Ismétlés: ",
+        [
+          "command"
+        ]
+      ],
+      "clipboard": "Vágólap",
+      "copyBase": "Másolás bázisponttal",
+      "paste": "Beillesztés",
+      "undo": "Vissza",
+      "redo": "Előre",
+      "copySelection": "Kijelölés másolása",
+      "deselectAll": "Kijelölés megszüntetése",
+      "properties": "Tulajdonságok",
+      "enter": "Enter",
+      "cancel": "Megszakítás",
+      "snapOverrides": "Traszter-felülírások",
+      "dimensionStyle": "Méretstílus"
+    },
+    "Layers": {
+      "title": "Fóliák",
+      "new": "Új fólia",
+      "setCurrentLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia aktuálissá tétele"
+      ],
+      "current": "Aktuális fólia",
+      "setCurrent": "Aktuálissá tétel",
+      "colorLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia színe"
+      ],
+      "color": "Fólia színe",
+      "linetypeLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia vonaltípusa"
+      ],
+      "lineweightLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia vonalvastagsága"
+      ],
+      "on": "Be",
+      "off": "Ki",
+      "unlocked": "Felszabadított",
+      "locked": "Zárolt",
+      "deleteLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia törlése"
+      ],
+      "delete": "Fólia törlése",
+      "rename": "A fólia átnevezéséhez kattintson ismét a kijelölt fólia nevére",
+      "renameLabel": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " fólia átnevezése"
+      ],
+      "list": "Fóliák listája",
+      "nextColumns": "Következő oszlopok",
+      "previousColumns": "Előző oszlopok",
+      "dialog": {
+        "close": "Bezárás",
+        "notDeleted": {
+          "title": "Fólia - Nem törölhető",
+          "instruction": "A kiválasztott fólia törlése nem történt meg.",
+          "content": "A következő fóliák nem törölhetők:",
+          "base": "A 0 és a Defpoints fólia",
+          "current": "Az aktuális fólia",
+          "inUse": "Objektumokat tartalmazó fóliák",
+          "xref": "Xref eredetű fóliák"
+        },
+        "currentOff": {
+          "title": "Fólia - Aktuális fólia kikapcsolva",
+          "instruction": "Az aktuális fóliát a program kikapcsolja. Mit kíván tenni?",
+          "turnOff": "Az aktuális fólia kikapcsolása",
+          "turnOffNote": "Az ezután létrehozott objektumok nem jelennek meg a rajzon, amíg vissza nem kapcsolja a fóliát.",
+          "keepOn": "Az aktuális fólia maradjon bekapcsolva"
+        },
+        "nameInUse": {
+          "title": "Fólia - A név már foglalt",
+          "instruction": [
+            "A(z) ",
+            [
+              "name"
+            ],
+            " név már használatban van."
+          ],
+          "content": "Adjon meg egy másik nevet."
+        },
+        "invalidName": {
+          "title": "Fólia",
+          "instruction": "Érvénytelen karakterek szerepelnek a fólianévben.",
+          "content": "A következő karakterek nem szerepelhetnek fólianévben:"
+        },
+        "cannotRename": {
+          "title": "Fólia - Átnevezés",
+          "instruction": "A kiválasztott fólia nem nevezhető át.",
+          "content": "A következő fóliák nem nevezhetők át:",
+          "base": "A 0 fólia",
+          "xref": "Xref eredetű fóliák"
+        }
+      },
+      "columns": {
+        "status": "Állapot",
+        "name": "Név",
+        "on": "Be",
+        "lock": "Zárolás",
+        "color": "Szín",
+        "linetype": "Vonaltípus",
+        "lineweight": "Vonalvastagság",
+        "objects": "Objektumok"
+      }
+    },
+    "Styles": {
+      "title": "Stílusok",
+      "dimension": "Méretezés",
+      "text": "Szöveg",
+      "current": [
+        "Aktuális: ",
+        [
+          "value",
+          [
+            "name"
+          ]
+        ]
+      ],
+      "new": "Új",
+      "setCurrent": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " aktuálissá tétele"
+      ],
+      "rename": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " átnevezése"
+      ],
+      "delete": [
+        "A(z) ",
+        [
+          "name"
+        ],
+        " törlése"
+      ],
+      "lines": "Vonalak",
+      "baselineSpacing": "Méretvonalak távolsága",
+      "extendBeyond": "Túlnyúlás a méretvonalakon",
+      "offsetFromOrigin": "Eltolás a kezdőponttól",
+      "symbolsAndArrows": "Jelek és nyilak",
+      "arrowSize": "Nyílfej mérete",
+      "centerMark": "Középjel mérete",
+      "textGroup": "Szöveg",
+      "textHeight": "Szöveg magassága",
+      "offsetFromDimLine": "Eltolás a méretvonaltól",
+      "fit": "Illesztés",
+      "overallScale": "Globális lépték használata",
+      "drawDimLineBetween": "Méretvonal a segédvonalak között",
+      "primaryUnits": "Elsődleges mértékegységek",
+      "precision": "Pontosság",
+      "angularPrecision": "Szög pontosság",
+      "decimalSeparator": "Tizedesjel",
+      "comma": "',' (Vessző)",
+      "period": "'.' (Pont)",
+      "space": "' ' (Szóköz)",
+      "suppressTrailingZeros": "Számvégi nullák elhagyása",
+      "yes": "Igen",
+      "no": "Nem",
+      "size": "Méret",
+      "height": "Magasság",
+      "heightHint": "Ha a magasság 0, nincs rögzítve, így a SZÖVEG parancs minden alkalommal bekéri."
+    },
+    "Blocks": {
+      "title": "Blokkok",
+      "filter": "Szűrő (? és * használható)",
+      "filterLabel": "Blokkok szűrése",
+      "empty": "Nincs definiált blokk. Rajzoljon valamit, majd adja ki a BLOKK parancsot.",
+      "noMatch": "Egy blokk sem felel meg a szűrőnek.",
+      "references": [
+        [
+          "name"
+        ],
+        " – ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " a rajzban"
+            ],
+            "other": [
+              0,
+              " a rajzban"
+            ]
+          }
+        ]
+      ]
+    },
+    "Properties": {
+      "noSelection": "Nincs kiválasztás",
+      "general": "Általános",
+      "color": "Szín",
+      "colorLabel": "A kijelölt objektumok színe",
+      "layer": "Fólia",
+      "layerLabel": "A kijelölt objektumok fóliája",
+      "linetype": "Vonaltípus",
+      "linetypeLabel": "A kijelölt objektumok vonaltípusa",
+      "lineweight": "Vonalvastagság",
+      "lineweightLabel": "A kijelölt objektumok vonalvastagsága",
+      "textStyle": "Szövegstílus",
+      "textStyleLabel": "A kijelölt objektumok szövegstílusa",
+      "dimStyle": "Méretstílus",
+      "dimStyleLabel": "A kijelölt objektumok méretstílusa",
+      "varies": "*ELTÉRŐ*",
+      "customColor": "Felhasználói szín",
+      "title": "Tulajdonságok",
+      "objectType": "Objektumtípus",
+      "currentLayerLabel": "Aktuális fólia",
+      "currentColorLabel": "Aktuális szín",
+      "currentLinetypeLabel": "Aktuális vonaltípus",
+      "currentLineweightLabel": "Aktuális vonalvastagság",
+      "lockedObjects": {
+        "title": "Tulajdonságok - Zárolt objektumok",
+        "instruction": "Egy vagy több kijelölt objektum zárolt, ezért nem frissíthető.",
+        "content": [
+          "A kiválasztási halmazból eltávolított objektumok száma: ",
+          [
+            "count",
+            4
+          ]
+        ],
+        "close": "Bezárás"
+      }
+    },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Bekezdéses szöveg – Nem mentett változtatások",
+        "instruction": "Menti a szöveg módosításait?",
+        "yes": "Igen",
+        "no": "Nem",
+        "cancel": "Mégse"
+      }
+    },
+    "Palette": {
+      "label": "Paletták",
+      "fold": "Paletták összecsukása",
+      "unfold": "Paletták megjelenítése",
+      "resize": "Paletta szélessége"
+    },
+    "PointStyle": {
+      "title": "Pont stílusa",
+      "figures": "Pontmegjelenítési képek",
+      "pointSize": "Pontméret:",
+      "relative": "Méretbeállítás a képernyőhöz viszonyítva",
+      "absolute": "Méretbeállítás abszolút egységekben",
+      "percent": "%",
+      "units": "Mértegys",
+      "invalid": "Érvénytelen bevitel.",
+      "ok": "OK",
+      "cancel": "Mégse"
+    }
+  }
+}

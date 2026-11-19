@@ -1,0 +1,58 @@
+---
+title: "AutoCAD gyakorló feladat: tömítés"
+metaTitle: "AutoCAD gyakorló feladat kezdőknek: tömítés"
+description: "Tömítés rajzolása AutoCAD-ben: lekerekített lap, központi furat, egyből másolt négy furat, középvonalak és méretek, lépésről lépésre. Gyakorolja ingyen, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a tömítést milliméterben: 120 × 80-as lap 10 sugárral lekerekített sarkokkal, a közepén 40-es központi furat és négy 10-es furat, amelyek középpontja 12-re van a szélektől, a központi furat középvonalaival és a méretekkel. Mindent billentyűzetről ír be: egy parancs első pontja oda kerül, ahová beírja, minden további pontot pedig a program az előzőtől mér. A körvonal, a középvonalak és a méretek külön-külön fóliára kerülnek.
+
+- **Feladat:** Kezdő · Gépészet · 2D
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`MÁSOL`](/docs/commands/copy), [`VONAL`](/docs/commands/line), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=gasket), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/gasket" caption="A 120 × 80-as tömítés méretezve." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a körvonalat [#outline]
+
+Tegye a Körvonal fóliát aktuálissá a Fóliavezérlés listában. A [`TÉGL`](/docs/commands/rectang) parancs egyetlen lépésben megrajzolja a lapot: válassza a `leKerekít` opciót, és írja be a sugarat, `10`, majd az első sarkot, `0,0`, és a másik sarkot, `120,80`, az elsőtől mérve.
+
+<Session name="exercises/gasket/outline" caption="1. Rajzolja meg a körvonalat" />
+
+### 2. Rajzolja meg a központi furatot [#bore]
+
+A [`KÖR`](/docs/commands/circle) parancs a lap közepén, a `60,40` pontban: válassza az `Átmérő` opciót, és írja be: `40`.
+
+<Session name="exercises/gasket/bore" caption="2. Rajzolja meg a központi furatot" />
+
+### 3. Másolja a furatokat [#holes]
+
+Rajzoljon meg egy furatot, egy kört a `12,12` pontban az `Átmérő` opcióval, `10` átmérővel, majd másolja a [`MÁSOL`](/docs/commands/copy) paranccsal: válassza ki a kört, nyomja meg az Enter billentyűt, bázispontnak adja meg a középpontját, `12,12`, és írja be, hová kerüljenek onnan a másolatok: `96,0`, majd `96,56`, majd `0,56`. Az Enter befejezi a másolást.
+
+<Session name="exercises/gasket/holes" caption="3. Másolja a furatokat" />
+
+### 4. Rajzolja meg a középvonalakat [#centreLines]
+
+Tegye aktuálissá a Középvonalak fóliát. A [`VONAL`](/docs/commands/line) paranccsal rajzolt két vonal a központi furat középpontjában metszi egymást, és 6-tal túlnyúlik a furat szélén: a `60,14` ponttól `0,52` értékkel felfelé; a `34,40` ponttól `52,0` értékkel vízszintesen. Mindkettőt az Enter fejezi be.
+
+<Session name="exercises/gasket/centreLines" caption="4. Rajzolja meg a középvonalakat" />
+
+### 5. Méretezze [#dimensions]
+
+Tegye aktuálissá a Méretek fóliát. A [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs két pontot kér, majd a méretvonal helyét: a hosszt a `0,10` ponttól `120,0` értékkel tovább, alul elhelyezve; a magasságot a jobb oldalon; a furatok távolságát, 96 és 56. A kérdéseire beírt pont nem érint objektumot, ezért ezek a méretek mind nem asszociatívként jönnek létre, és ezt a parancssor jelzi is. A [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) parancs egy kijelölt kör átmérőjét helyezi el: először a központi furatét, aztán az egyik furatét.
+
+<Session name="exercises/gasket/dimensions" caption="5. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket): Kezdő · Gépészet · 2D
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs): Kezdő · Építészet · 2D
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate): Kezdő · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladatok](/docs/exercises)

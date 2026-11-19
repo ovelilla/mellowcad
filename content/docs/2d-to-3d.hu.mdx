@@ -1,0 +1,42 @@
+---
+title: 2D-ből 3D az AutoCAD-ben
+metaTitle: "3D modellezés AutoCAD-ben: 2D rajzból 3D test"
+description: "2D rajzból 3D szilárdtest az AutoCAD-ben: zárt profil kihúzása, tolás-húzása és megforgatása, egyesítés és kivonás. 3D szilárdtestek ingyen, egyelőre részben."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+Az AutoCAD-ben a szilárdtest általában 2D rajzként kezdődik: egy zárt profil, amelyet úgy rajzol meg, mint bármely alaprajzot, aztán magasságra kihúzza vagy egy tengely körül megforgatja, és más szilárdtestekkel egyesíti vagy kivonja belőlük. A MellowCAD 3D szilárdtestjei ugyanígy, ugyanazokkal a parancsokkal készülnek. Egyelőre csak részben készültek el: söprés, pásztázás, hálók és renderelés még nincs. Minden szakasz egy olyan munkamenetet mutat, amelyet a MellowCAD motorja rajzol meg, az előzményekkel együtt, ahogy beírná őket.
+
+## Rajzoljon zárt profilt [#profile]
+
+A szilárdtesthez zárt profil kell: zárt vonallánc, téglalap, kör vagy lemez. A végeiknél összeérő vonalak attól még különálló objektumok: az <Command id="JOIN" /> parancs egyetlen vonalláncot, a <Command id="REGION" /> parancs lemezt készít belőlük. A profilt felülnézetben rajzolja meg, ott a legkönnyebb beírni a pontjait.
+
+## Húzza ki [#extrude]
+
+A <Command id="EXTRUDE" /> parancs: válassza ki a profilt, nyomja meg az Enter billentyűt, és írja be a magasságot. Felülről nézve a szilárdtest pontosan olyan, mint a profilja: hogy lássa, fordítsa el a nézetet a <Command id="VIEW" /> paranccsal vagy a ViewCube segítségével, a megjelenítés módját pedig az <Command id="VSCURRENT" /> paranccsal válassza meg.
+
+<Session name="solidExtrude" caption="L alakú profil egyetlen zárt vonalláncként, 30-cal kihúzva, délkeletről nézve." />
+
+## Tolja-húzza a területet [#presspull]
+
+A <Command id="PRESSPULL" /> parancsnak nem kell profil: kattintson bármely zárt terület belsejébe, akár különálló vonalak határolják is, és írja be a magasságot. Ha egy szilárdtest lapjára kattint, azt a lapot tolja be vagy húzza ki.
+
+<Session name="presspull" caption="Egy zárt terület, belülről tolva-húzva: szilárdtest lesz belőle." />
+
+## Forgassa meg [#revolve]
+
+A <Command id="REVOLVE" /> parancs egy tengely körül forgatja meg a profilt: válassza ki a profilt, adja meg a tengelyt két ponttal, egy objektummal vagy az X, Y, illetve Z tengellyel, majd a szöget, amely alapértelmezés szerint egy teljes fordulat.
+
+<Session name="revolve" caption="Egy félmetszet az Y tengely körül megforgatva." />
+
+## Egyesítse és vonja ki a szilárdtesteket [#booleans]
+
+Az <Command id="UNION" /> parancs több szilárdtestből egyet készít, a <Command id="SUBTRACT" /> parancs egyet vagy többet kivon egy másikból, a <Command id="INTERSECT" /> parancs pedig a közös részüket tartja meg. A furat egy henger, amelyet kivonnak abból a szilárdtestből, amelyen áthalad.
+
+<Session name="subtract" caption="Egy téglatestből kivont henger: átmenő furat." />
+
+## Hogyan tovább [#next]
+
+- A 3D [gyakorló feladatok](/docs/exercises): [egy szerelőlap](/docs/exercises/mounting-plate) lemezekből és egyetlen kihúzással, [egy szíjtárcsa](/docs/exercises/pulley) a metszetéből megforgatva és [egy csapágybak](/docs/exercises/bearing-block) egyesítve és kifúrva.
+- A <Command id="3DORBIT" /> parancs az egérrel forgatja a nézetet, az <Command id="VSCURRENT" /> parancs pedig árnyalja a lapokat.

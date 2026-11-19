@@ -1,0 +1,73 @@
+---
+title: "AutoCAD VONAL (LINE) parancs"
+metaTitle: "Vonal rajzolása az AutoCAD-ben: VONAL (LINE)"
+description: "Az AutoCAD VONAL (LINE, VO) parancsa promptról promptra: kijelölt vagy beírt pontok, Vissza és Bezárás, Enter az utolsó vonal folytatásához. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD VONAL parancs angolul?","answer":"LINE. A magyar AutoCAD-ben a rövidítése VO: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a _LINE is; az angol L a magyar változatban a LÁTVÁNYSTÍLUSOK parancsot indítja."},{"question":"Hogyan lehet adott szögű és hosszúságú vonalat rajzolni?","answer":"Adja meg az első pontot, majd a következőt hosszal és szöggel írja be: a @100<30 100 egység hosszú, 30°-os vonalat rajzol. Vagy kapcsolja be a poláris követést, kövesse a segédvonalát az adott szögben, és csak a hosszt írja be."},{"question":"Hogyan lehet az utoljára rajzolt vonalat folytatni?","answer":"Indítsa el a VONAL parancsot, és az első pontnál nyomja meg az Enter billentyűt: az utolsó vonal, vonallánc vagy ív végétől indul. Ívből a vonal érintőlegesen folytatódik, és a VONAL csak a hosszát kéri. Ha nincs mit folytatni, a válasz „Nincs folytatható vonal vagy ív.”."},{"question":"Miért különálló darabokból áll a vonalam?","answer":"A VONAL parancs minden szakasza önálló vonal, ahogy az AutoCAD-ben. Egyetlen objektumhoz rajzoljon a VLÁNC paranccsal, vagy fűzze össze utólag a vonalakat az EGYBEFŰZ paranccsal."}]
+---
+
+A VONAL (LINE) parancs egyenes szakaszokat rajzol, mindegyiket önálló objektumként: adja meg az első pontot, majd minden következő pontot, az Enter billentyűig. A pontot kattintással, tárgyraszterrel vagy beírással lehet megadni. Ahogy az AutoCAD-ben bekapcsolt dinamikus bevitel mellett, az első után beírt pontot a parancs az előzőtől méri, így a `80,0` 80 egységet rajzol X irányban, az előzmények pedig `@80,0` alakban írják ki; egy önálló szám a kurzor irányában mért távolság, a `<30` pedig 30°-ra rögzíti a következő pontot. Az első pontnál az Enter vagy a jobb kattintás az utolsó vonal, vonallánc vagy ív végétől folytatja, ív esetén érintőlegesen, és csak a hosszt kéri. Akárhány szakaszt rajzol is, egyetlen `T` az egész parancsot visszavonja.
+
+- **Parancs:** `VONAL`
+- **Angolul:** `LINE`, bármely nyelven `_LINE` formában beírva
+- **Álnevek:** `VO`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VO`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="line" caption="Egy háromszög: az első pontja beírva, a következő kettő az előző ponttól, majd Bezárás." />
+
+## Opciók [#options]
+
+### `Vissza` (`V`) [#undo]
+
+Visszavonja az utolsó szakaszt, és az előző ponttól kérdez újra. Ha már nem maradt szakasz, a válasza `Minden szakasz törölve lett.`, és újra az első pontot kéri.
+
+### `Bezár` (`B`) [#close]
+
+A második szakasztól kezdve érhető el: megrajzolja az utolsó szakaszt vissza az első pontig, és befejezi a parancsot, bezárva az alakzatot.
+
+## Amit még nem tud [#missing]
+
+Az első pontnál beírt Érintő vagy Merőleges a következő pontra vár (halasztott tárgyraszter), ahogy az AutoCAD-ben, de csak vonalak, körök és ívek fölött, vonallánc-szakasz, ellipszis vagy spline fölött nem, és két halasztott Merőlegest nem old meg.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l--cs-úsečka--u--hu-vonal--vo)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD VONAL parancs angolul?
+
+LINE. A magyar AutoCAD-ben a rövidítése `VO`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LINE` is; az angol `L` a magyar változatban a LÁTVÁNYSTÍLUSOK parancsot indítja.
+
+### Hogyan lehet adott szögű és hosszúságú vonalat rajzolni?
+
+Adja meg az első pontot, majd a következőt hosszal és szöggel írja be: a `@100<30` 100 egység hosszú, 30°-os vonalat rajzol. Vagy kapcsolja be a poláris követést, kövesse a segédvonalát az adott szögben, és csak a hosszt írja be.
+
+### Hogyan lehet az utoljára rajzolt vonalat folytatni?
+
+Indítsa el a VONAL parancsot, és az első pontnál nyomja meg az Enter billentyűt: az utolsó vonal, vonallánc vagy ív végétől indul. Ívből a vonal érintőlegesen folytatódik, és a VONAL csak a hosszát kéri. Ha nincs mit folytatni, a válasz `Nincs folytatható vonal vagy ív.`.
+
+### Miért különálló darabokból áll a vonalam?
+
+A VONAL parancs minden szakasza önálló vonal, ahogy az AutoCAD-ben. Egyetlen objektumhoz rajzoljon a [`VLÁNC`](/docs/commands/pline) paranccsal, vagy fűzze össze utólag a vonalakat az [`EGYBEFŰZ`](/docs/commands/join) paranccsal.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket)
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket)
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs)
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange)
+- [AutoCAD gyakorló feladat: lépcsős tengely](/docs/exercises/shaft)
+- [AutoCAD izometrikus gyakorló feladat: lépcsős hasáb](/docs/exercises/isometric-block)
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link)
+
+## Kapcsolódó parancsok [#related]
+
+- [Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs](/docs/commands/pline)
+- [AutoCAD PÁRH (OFFSET) parancs](/docs/commands/offset)
+- [AutoCAD METSZ (TRIM) parancs](/docs/commands/trim)
+- [AutoCAD EGYBEFŰZ (JOIN) parancs](/docs/commands/join)

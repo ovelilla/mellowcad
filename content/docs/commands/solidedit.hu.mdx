@@ -1,0 +1,95 @@
+---
+title: "AutoCAD SZTESTSZERKESZT (SOLIDEDIT) parancs"
+description: "Így szerkeszti az AutoCAD SZTESTSZERKESZT (SOLIDEDIT) parancsa a 3D szilárdtest lapjait: Kihúz, Mozgat, Forgat, Eltol, Szűkít, Töröl, Másol. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet 3D testet szerkeszteni az AutoCAD-ben?","answer":"Indítsa el a SZTESTSZERKESZT parancsot, válassza a Lap opciót, majd azt, amit tenni szeretne: a Kihúz vagy a Mozgat opcióval magasabbá teheti a testet, a Töröl opcióval betömhet egy furatot, a sZűkít opcióval megdöntheti az egyik oldalát. Jelölje ki a lapokat, nyomja meg az Enter billentyűt, és válaszoljon az opció kérdéseire. Gyors toláshoz vagy húzáshoz a TOLHÚZ parancs is mozgat lapot."},{"question":"Hogyan lehet kihúzni egy 3D szilárdtest lapját?","answer":"SZTESTSZERKESZT, Lap, Kihúz, jelölje ki a lapot, és nyomja meg az Enter billentyűt, majd adja meg a magasságot és a szűkítési szöget: a munkamenet 15 és 15 értéke csonka gúlát emel a téglatest tetejére."},{"question":"Hogyan lehet eltüntetni egy furatot a szilárdtestből?","answer":"SZTESTSZERKESZT, Lap, Töröl, jelölje ki a furat falát, és nyomja meg az Enter billentyűt: a furat betömődik. Ugyanígy tüntethető el egy lekerekítés vagy letörés is."},{"question":"Mi a különbség a SZTESTSZERKESZT és a TOLHÚZ parancs között?","answer":"A TOLHÚZ parancs egyetlen lapot mozgat önmagára merőlegesen, húzással vagy megadott távolsággal. A SZTESTSZERKESZT parancs ezt és még többet tud: lapokat szűkít, forgat, eltol, töröl és másol, akár többet egyszerre."}]
+---
+
+A SZTESTSZERKESZT (SOLIDEDIT) parancs a lapjain keresztül szerkeszti a 3D szilárdtestet. Először kiírja, hogy a program ellenőrzi-e az egyes szerkesztéseket, majd megkérdezi, mit szerkesszen: `Lap`, ezután a lapszerkesztési opciót, aztán a lapokat, végül azt, amire az opciónak szüksége van. Minden szerkesztés azonnal megtörténik, és a lapszerkesztési opciók újra megjelennek, így egy futtatással több szerkesztés is elvégezhető; a `kiLépés` vagy az Enter előbb a lapszerkesztési opciókból lép ki, majd a parancsból. A szomszédos lapok követik a szerkesztett lapot: ha egy téglatest felső lapját feljebb mozgatja, az oldallapjai megnyúlnak, hogy találkozzanak vele.
+
+A szilárdtest megtartja a fóliáját és a tulajdonságait, de elveszíti azt, amiből készült: a téglatest többé nem téglatest. Az egész futtatás egyetlen visszavonási lépés, és a parancs `Vissza` opciója a futtatáson belül egyenként vonja vissza a szerkesztéseket. A `Parancs:` kérdésnél megnyomott Enter az első kérdéstől kezdve újra elindítja. A szalag Szilárdtestszerkesztés panelének lapgombjai közvetlenül indítják az egyes lapszerkesztési opciókat. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+
+- **Parancs:** `SZTESTSZERKESZT`
+- **Angolul:** `SOLIDEDIT`, bármely nyelven `_SOLIDEDIT` formában beírva
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SZTESTSZERKESZT`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="solidedit" caption="Téglatest felső lapja 15 egységgel felfelé kihúzva, 15 fokos szűkítéssel, a SZTESTSZERKESZT paranccsal: csonka gúla a téglatesten, délkeletről nézve." />
+
+## Opciók [#options]
+
+### `Lap` (`L`) [#face]
+
+A lapszerkesztési opciók. Mindegyik lapokat kér, amíg meg nem nyomja az Enter billentyűt: egy kattintás vagy egy begépelt pont az alatta lévő, Önhöz legközelebbi lapot veszi, vagy az ott lévő él két lapját, egy már kijelölt lap helyett pedig a mögötte lévőt. Ha már van kijelölt lap, az `MIND` a szilárdtest összes lapját kijelöli; az `Eltávolít` ehelyett kivesz lapokat a halmazból, a `Vissza` pedig visszavonja az utolsó kijelölést. Ha a kattintás alatt nincs semmi, ez az üzenet jelenik meg: `Szilárdtest nem található.`. Egyszerre csak egy szilárdtest lapjai jelölhetők ki.
+
+### `Kihúz` (`K`) [#extrude]
+
+Magasságot és szűkítési szöget kér: minden lapból hasáb nő, amely hozzáadódik a szilárdtesthez, vagy negatív magasságnál kivonódik belőle, és pozitív szögnél felfelé haladva keskenyedik. A magasságnál az Enter azt az utolsó magasságot veszi, amelyet az alaptestek vagy a [`KIHÚZ`](/docs/commands/extrude) parancs használt.
+
+### `Mozgat` (`M`) [#move]
+
+Bázispontot és második pontot kér: a sík lap a normálisa mentén annyit mozdul, amennyit ez a távolság a normálisra vetítve kiad, és viszi magával a szomszédait. A második pontnál az Enter a bázispontot veszi elmozdulásnak.
+
+### `Forgat` (`F`) [#rotate]
+
+Tengelyt kér, két ponttal vagy az FKR `Xtengely`, `Ytengely` vagy `Ztengely` opciójával, vagy a képernyőre merőlegeset a `Nézet` opcióval, majd egy szöget: a lap a jobbkéz-szabály szerint elfordul a tengely körül.
+
+### `Eltol` (`E`) [#offset]
+
+Távolságot kér: a lap a normálisa mentén kifelé mozdul, negatív értéknél befelé, és viszi magával a szomszédait; a hengeres és más ívelt lapok a tengelyük körül tolódnak el. Ha a befelé tolás eléri a szilárdtestet befoglaló téglatest legnagyobb oldalának felét, a parancs elutasítja, és megadja, meddig lehet menni.
+
+### `sZűkít` (`Z`) [#taper]
+
+Bázispontot, a szűkítés tengelyének egy pontját és egy szöget kér: a lap ott dől meg, ahol a bázisponton átmenő sík metszi, pozitív szögnél a tengely mentén befelé.
+
+### `Töröl` (`T`) [#delete]
+
+Eltávolítja egy furat falát, és ezzel bezárja a furatot, vagy egy lekerekítés vagy letörés sávját, és visszaadja az élt, amelynek a helyére került.
+
+### `másOl` (`O`) [#copy]
+
+Minden sík lapból lemezt készít, a helyén vagy két ponttal elmozdítva, az aktuális fólián és az aktuális tulajdonságokkal.
+
+### `Vissza` (`V`) [#undo]
+
+A lapszerkesztési opcióknál visszavonja a futtatás utolsó szerkesztését; ha már nincs mit visszavonni, ez jelenik meg: `A parancsok hatása a legelső lépésig érvénytelenítve lett.`.
+
+### `kiLépés` (`L`) [#exit]
+
+A lapszerkesztési opciókból visszalép az első kérdéshez, ott pedig kilép a parancsból; az Enter ugyanezt teszi.
+
+## Amit még nem tud [#missing]
+
+Az `Él` és a `Test`, valamint a lapok `szíN` és `Anyag` opciója: ezek megjelennek, de a parancs elutasítja őket, ahogy a kihúzás `Útvonal` opcióját, a forgatás objektummal megadott tengelyét és a `Referencia` szögét is. A Metsző, a Felfűz és az MPoligon kijelölés a lapokhoz. Ívelt lap mozgatása, forgatása, szűkítése vagy másolása, ívelt lap eltolása más szomszédok között, olyan lap törlése, amely nem furat fala és nem sáv, valamint az olyan szerkesztés, amely annyira megváltoztatja a szilárdtest alakját, hogy egy lap felemészt egy másikat. Szerkesztés szűkítéssel kihúzott lap mellett. A túl messzire kifelé mutató eltolás, amelyet az AutoCAD szó nélkül elvet, a MellowCAD viszont elvégez. Előnézet a távolság vagy a szög megadása közben.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#solidedit--es-editsolido--pt-br-editarsolido--fr-editsolide--it-modifsolidi--de-volkörperbearb--ru-редтел--pl-edbryła--cs-objedit--hu-sztestszerkeszt)
+
+## Kérdések [#questions]
+
+### Hogyan lehet 3D testet szerkeszteni az AutoCAD-ben?
+
+Indítsa el a SZTESTSZERKESZT parancsot, válassza a `Lap` opciót, majd azt, amit tenni szeretne: a `Kihúz` vagy a `Mozgat` opcióval magasabbá teheti a testet, a `Töröl` opcióval betömhet egy furatot, a `sZűkít` opcióval megdöntheti az egyik oldalát. Jelölje ki a lapokat, nyomja meg az Enter billentyűt, és válaszoljon az opció kérdéseire. Gyors toláshoz vagy húzáshoz a [`TOLHÚZ`](/docs/commands/presspull) parancs is mozgat lapot.
+
+### Hogyan lehet kihúzni egy 3D szilárdtest lapját?
+
+SZTESTSZERKESZT, `Lap`, `Kihúz`, jelölje ki a lapot, és nyomja meg az Enter billentyűt, majd adja meg a magasságot és a szűkítési szöget: a munkamenet `15` és `15` értéke csonka gúlát emel a téglatest tetejére.
+
+### Hogyan lehet eltüntetni egy furatot a szilárdtestből?
+
+SZTESTSZERKESZT, `Lap`, `Töröl`, jelölje ki a furat falát, és nyomja meg az Enter billentyűt: a furat betömődik. Ugyanígy tüntethető el egy lekerekítés vagy letörés is.
+
+### Mi a különbség a SZTESTSZERKESZT és a TOLHÚZ parancs között?
+
+A [`TOLHÚZ`](/docs/commands/presspull) parancs egyetlen lapot mozgat önmagára merőlegesen, húzással vagy megadott távolsággal. A SZTESTSZERKESZT parancs ezt és még többet tud: lapokat szűkít, forgat, eltol, töröl és másol, akár többet egyszerre.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD TOLHÚZ (PRESSPULL) parancs](/docs/commands/presspull)
+- [AutoCAD ÉLLEKEREKÍT (FILLETEDGE) parancs](/docs/commands/filletedge)
+- [AutoCAD KIHÚZ (EXTRUDE) parancs](/docs/commands/extrude)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)

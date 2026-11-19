@@ -1,0 +1,45 @@
+---
+title: Eltérések az AutoCAD-től
+metaTitle: "Eltérések az AutoCAD-től, és az okaik"
+description: "Hol működik a MellowCAD másképp, mint az AutoCAD, és miért: amit a böngésző magának tart meg, és ami itt nem létezik."
+type: concept
+sourceHash: "0aafe6ab8ce7"
+---
+
+A MellowCAD az AutoCAD 2027-et követi: ugyanazok a parancsok és parancsálnevek, ugyanaz a kérdések sorrendje, ugyanazok az opcióbetűk és alapértelmezett értékek. Csak ott tér el tőle, ahol a böngésző kényszeríti, vagy ahol az a funkció, amelyhez a viselkedés tartozik, itt nem létezik. Az alábbi eltérések mindegyike leírja, mit tesz az AutoCAD, mit tesz helyette a MellowCAD, és miért. Hogy egy-egy parancsból mi hiányzik még, azt a [parancsok oldalán](/docs/commands) a parancs bejegyzéséből nyíló hivatkozás mutatja meg.
+
+## Egyszerre egy rajz [#one-drawing]
+
+Az AutoCAD az új rajzot saját fülön nyitja meg, és a régit is nyitva hagyja. A MellowCAD egyetlen rajzot tart nyitva: az <Command id="NEW" /> és a <Command id="OPEN" /> parancs lecseréli, és az <Command id="NEW" /> parancs után egyetlen <Command id="U" /> parancs visszahozza az előzőt.
+
+## A mentés fájlt tölt le [#saving]
+
+A MellowCAD munka közben ebben a böngészőben tárolja a rajzot, csak ezen az eszközön. A <Command id="QSAVE" /> parancs azonnal letölt egy fájlt a MellowCAD saját, verziózott formátumában, ahogy egy már elnevezett rajznál: itt semmi sem őrzi meg a rajz nevét. A <Command id="SAVEAS" /> és a <Command id="SAVE" /> parancs a Rajz mentése másként párbeszédpanelt nyitja meg, a fájlnévvel és a fájltípusokkal, köztük a DXF-fel, de mappák nélkül: a böngésző oda teszi a fájlt, ahová minden letöltést.
+
+## Billentyűk, amelyeket a böngésző megtart [#browser-keys]
+
+Egy weboldal soha nem kapja meg a `Ctrl+W` billentyűkombinációt, amely bezárja a lapot, sem a `Ctrl+N` kombinációt, amely új ablakot nyit. A ciklikus kiválasztás, amely az AutoCAD-ben a `Ctrl+W`, itt az `F4` billentyű; az AutoCAD az `F4` billentyűt a 3D tárgyraszterre használja, amely a MellowCAD-ben még nincs. Új rajzot az <Command id="NEW" /> parancs beírásával lehet kezdeni.
+
+## A dinamikus adatbevitel mindig be van kapcsolva [#dynamic-input]
+
+A dinamikus adatbevitelt nem lehet kikapcsolni, ezért a billentyűje, az `F12`, a böngészőé marad.
+
+## Csak modelltér [#model-space]
+
+Nincsenek elrendezések és nincs kirajzolás: a képernyő az egyetlen hely, ahol a rajz látható. Ezért a vonalvastagságok kezdettől fogva látszanak (az `LWDISPLAY` be van kapcsolva, míg az AutoCAD kikapcsolva indul), és az állapotsoron a `MODELL` csak felirat, nem kapcsoló egy elrendezésre.
+
+## Egyes párbeszédpanelek parancssori változata [#dialogs]
+
+Ahol az AutoCAD olyan párbeszédpanelt nyit meg, amely itt nem létezik, a parancs a parancssorban teszi fel a kérdéseit, ahogy a kötőjeles változata: a <Command id="COLOR" /> parancs a <Command id="-COLOR" />, a <Command id="LWEIGHT" /> a <Command id="-LWEIGHT" />, a <Command id="LINETYPE" /> pedig a <Command id="-LINETYPE" /> parancsot futtatja. A <Command id="DIMSTYLE" /> és a <Command id="STYLE" /> parancs a Stílusok palettát nyitja meg a méret-, illetve a szövegstílusokkal.
+
+## Hat vonaltípus minden rajzban [#linetypes]
+
+Egy új AutoCAD-rajzban egyetlen, folytonos vonaltípus van, a többit fájlból tölti be a program, amikor a Vonaltípus-kezelőben vagy egy legördülő lista Egyéb… elemével kiválaszt egyet. Egyik sem létezik itt, ezért minden rajzban hat van – Continuous, DASHED, HIDDEN, CENTER, PHANTOM és DASHDOT –, hogy a legördülő listák felkínálhassák őket; a <Command id="LINETYPE" /> parancs Tölt opciója az acadiso.lin fájlból tölti be a többit.
+
+## Koordináták az állapotsoron [#coordinates]
+
+Az AutoCAD 2015 óta elrejti az állapotsoron a kurzor koordinátáit. A MellowCAD megjeleníti őket, mert a kurzor helyzetét másként nem mutatja; az állapotsor Testreszabás menüjében el lehet rejteni őket.
+
+## Az arab nyelv az angol AutoCAD parancsait használja [#arabic]
+
+Arab nyelvű AutoCAD nincs, és aki arabul rajzol, az angolban dolgozik. Ezért arabul a felület arabul beszél, a parancssor pedig úgy, mint az angol AutoCAD: ugyanazok a nevek, parancsálnevek, kérdések és opcióbetűk. A `Ctrl` billentyűparancsok bármilyen billentyűzetkiosztással működnek, ahogy egy asztali programban: a `Ctrl+Z` akkor is visszavon, ha az arab kiosztás betűt ír.

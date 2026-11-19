@@ -1,0 +1,33 @@
+---
+title: "Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) parancs"
+metaTitle: "Tulajdonságok paletta AutoCAD-ben (PROPERTIES)"
+description: "Az AutoCAD Tulajdonságok palettája (TULAJDONSÁGOK, Ctrl+1): Általános és Geometria sorok, *ELTÉRŐ*, egyszerre egy objektumtípus, aktuális beállítások."
+figure: "Egy kör kiválasztva a Parancs promptnál, a fogói látszanak, majd TULAJDONSÁGOK: a paletta a rajz mellett nyílik meg a kör soraival."
+sourceHash: "14d097ac5b0b"
+---
+
+A TULAJDONSÁGOK (PROPERTIES) parancs megnyitja a Tulajdonságok palettát. Ahogy az AutoCAD-ben, ez paletta, nem párbeszédpanel: nyitva marad a rajz mellett, itt a palettapanel egyik lapjaként, miközben kijelöl és rajzol, amíg a <Command id="PROPERTIESCLOSE" /> be nem zárja. A Ctrl+1 megjeleníti és elrejti, aposztróffal beírva, `'TULAJDONSÁGOK`, pedig egy futó parancson belül is megnyílik. Széles ablakban kezdettől nyitva van.
+
+Ha vannak kiválasztott objektumok, a tulajdonságaikat mutatja, és egy tulajdonságot úgy módosíthat, hogy a sorában új értéket ír be vagy választ. Elöl az Általános csoport áll, az AutoCAD sorrendjében: Szín, Fólia, Vonaltípus, Vonalvastagság és Vastagság, `*ELTÉRŐ*` értékkel, ahol a kiválasztott objektumok eltérnek. Alatta az egyes típusok saját sorai: a vonal kezdő- és végpontja, hossza és szöge; a kör középpontja, sugara, átmérője, kerülete és területe; az ívé, az ellipszisé, a vonallánc csúcspontjai és szélességei, a spline pontjai, a szövegé, a blokkreferenciáé. A koordináták az aktuális FKR-ben értendők, a csak tájékoztató sorok, például a vonal Hossza, szürkék. A felső legördülő lista felsorolja az összes objektumot és minden típust a darabszámával: válasszon egyet, hogy csak azt a típust lássa és szerkessze. Ha nincs semmi kiválasztva, az Általános csoport az aktuális fóliát, színt, vonaltípust és vonalvastagságot mutatja, amelyeket ott állíthat be az új objektumokhoz. Minden módosítás egyetlen lépés, amelyet a <Command id="U" /> visszavon.
+
+## Missing
+
+Az Általános csoport vonaltípus-léptéke egyszerre több objektumra, illetve kiválasztás nélkül az új objektumokra (CELTSCALE); a nyomtatási stílus, az átlátszóság, a hiperhivatkozás és az anyag. Egyszerre több azonos típusú objektum geometriai sorai, a szöveg tartalma és az attribútumértékek itt nem szerkeszthetők. A Gyors kijelölés, a PICKADD kapcsoló, az automatikus elrejtés, valamint a paletta rögzítése és lebegtetése.
+
+## Questions
+
+### Mi az AutoCAD TULAJDONSÁGOK parancs angolul?
+
+PROPERTIES. A leggyorsabb a Ctrl+1, amely újra el is rejti a palettát. Beírva: `TUL`, `TVA` vagy `MD`, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `PR` és `CH` a magyar változatban nem működik, az `MO` pedig a MOZGAT parancsot indítja; a teljes `TULAJDONSÁGOK` név működik, a `_PROPERTIES` pedig az AutoCAD bármely nyelvi változatában.
+
+### Eltűnt a Tulajdonságok paletta: hogyan lehet visszahozni?
+
+Nyomja meg a Ctrl+1 billentyűkombinációt, vagy írja be: `TUL`. A paletta újra megjelenik, a rajz melletti palettapanel egyik lapjaként. Ha a Ctrl+1-et akkor nyomja meg, amikor a paletta látszik, elrejti, és többnyire így is tűnik el.
+
+### Hogyan lehet egyszerre több objektum tulajdonságait módosítani?
+
+Válassza ki mindet, majd módosítsa a sort: minden kiválasztott objektum megkapja az új értéket. Az a sor, amelyben az értékek eltérnek, `*ELTÉRŐ*` értéket mutat, amíg be nem állítja. Ha közülük például csak a köröket akarja módosítani, válassza ki ezt a típust a felső legördülő listában.
+
+### Mi a különbség a TULAJDONSÁGOK és a TULMÁSOL (MATCHPROP) parancs között?
+
+A TULAJDONSÁGOK a kiválasztott objektumok értékeit mutatja és állítja be. A <Command id="MATCHPROP" /> egy objektumról másol át értékeket másokra, érték beírása nélkül.

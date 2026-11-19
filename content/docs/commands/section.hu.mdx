@@ -1,0 +1,85 @@
+---
+title: "Metszet az AutoCAD-ben: KMETSZET (SECTION) parancs"
+metaTitle: "Metszet az AutoCAD-ben: KMETSZET (SECTION)"
+description: "Az AutoCAD KMETSZET (SECTION, rövidítése KM) parancsa lemezt készít, ahol egy sík a 3D szilárdtesteket metszi: 3pont, Objektum, ZTeng, Nézet, XY, YZ, ZX."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet metszetet készíteni egy 3D szilárdtestből az AutoCAD-ben?","answer":"Futtassa a KMETSZET parancsot, válassza ki a szilárdtestet, nyomja meg az Enter billentyűt, majd adja meg a síkot: a ZX és egy középen lévő pont elölről hátrafelé metszi el, az XY és egy adott magasságú pont vízszintesen. A lemez a szilárdtesten belül fekszik: vigye ki a MOZGAT paranccsal, hogy lássa."},{"question":"Mi a különbség a KMETSZET és a SZEL (SLICE) parancs között?","answer":"A SZEL kettévágja a szilárdtestet, és az egyik részét vagy mindkettőt megtartja. A KMETSZET épen hagyja a szilárdtestet, és lemezt rajzol oda, ahol a sík metszi."},{"question":"Mi az AutoCAD KMETSZET parancs angolul?","answer":"SECTION. A magyar AutoCAD-ben a rövidítése KM: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol SEC a magyar változatban nem működik; a _SECTION az AutoCAD bármely nyelvi változatában igen."},{"question":"Miért írja a KMETSZET, hogy a sík nem metszi a szilárdtestet?","answer":"A sík elkerüli: ellenőrizze, hogyan adta meg. Az XY, az YZ és a ZX az FKR síkjai, így egy rossz magasságban vagy rossz oldalon lévő pont a szilárdtesten kívülre teszi a síkot."}]
+---
+
+A KMETSZET (SECTION) parancs 3D szilárdtestek keresztmetszetét készíti el: egy lemezt ott, ahol egy sík az egyes testeket metszi, a szilárdtestek pedig változatlanok maradnak. Az Enterig bekéri a szilárdtesteket: ahogy az AutoCAD 2027-ben, a parancs előtt kiválasztott halmazt elveti, és újra kéri, ami nem szilárdtest, azt átugorja, a szilárdtest nélküli halmazra pedig `Nincs kijelölve szilárdtest, felület vagy háló.` a válasz. Ezután következik a sík: alapértelmezés szerint három pontját adja meg, az opciók pedig más módon határozzák meg, ahogy a [`SZEL`](/docs/commands/slice) parancsnál.
+
+Minden szilárdtest, amelyet a sík metsz, megkapja a saját lemezét, amely a síkban fekszik: az átmenő furatos hasáb a körvonalát adja a furat helyén lévő réssel, a tengelye mentén elmetszett henger egy téglalapot. A szilárdtest egyik lapjára eső sík azt a lapot adja. Arra a testre, amelyet a sík elkerül, `A metszősík nem metszi a kiválasztott szilárdtestet.` a válasz. A lemezek az aktuális fóliát és tulajdonságokat kapják, nem a szilárdtestét; a [`MOZGAT`](/docs/commands/move) kiviszi, hogy látszódjon, a [`TERÜLET`](/docs/commands/area) és a [`FIZJELL`](/docs/commands/massprop) megméri, a [`KIHÚZ`](/docs/commands/extrude) pedig szilárdtestté alakítja. A teljes parancs egyetlen visszavonási lépés. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
+
+- **Parancs:** `KMETSZET`
+- **Angolul:** `SECTION`, bármely nyelven `_SECTION` formában beírva
+- **Álnevek:** `KM`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KM`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="section" caption="Egy átmenő furatos hasáb, amelyet a ZX sík a furat középpontján át metsz: a KMETSZET elkészíti a profilt, előre kihúzva, két téglalap a furat helyén lévő réssel." />
+
+## Opciók [#options]
+
+### `Objektum` (`O`) [#object]
+
+Egy kijelölt objektum síkját veszi: kört, ellipszist, ívet, 2D spline-t vagy 2D vonalláncot.
+
+### `ZTeng` (`ZT`) [#zaxis]
+
+Bekér egy pontot a síkon, majd egy pontot a Z tengelyén, a rá merőleges egyenesen.
+
+### `Nézet` (`N`) [#view]
+
+A képernyővel párhuzamos sík, egy megadott ponton át.
+
+### `XY` [#xy]
+
+Az FKR XY síkja, egy megadott ponton át: egy adott magasságban lévő pont ott ad vízszintes metszetet. Az Enter az FKR origóját veszi.
+
+### `YZ` [#yz]
+
+Az FKR YZ síkja, egy megadott ponton át; az Enter az FKR origóját veszi.
+
+### `ZX` [#zx]
+
+Az FKR ZX síkja, egy megadott ponton át; az Enter az FKR origóját veszi. A minta metszete ez a sík a furat középpontján át.
+
+### `3pont` (`3`) [#3points]
+
+Három pont a síkon, amely így bármilyen irányban megdőlhet. Ez az első prompt alapértéke, így az ott megadott pont a három közül az első.
+
+## Amit még nem tud [#missing]
+
+A felületek és a hálók, amelyek a MellowCAD-ben nincsenek. A síkbeli 3D vonallánc mint a sík objektuma, amelyet az AutoCAD elfogad. Azok a metszések, amelyeknek pontos alakja a MellowCAD-ben még nincs, ahogy a [`SZEL`](/docs/commands/slice) parancsnál, és amelyekre azt írja, hogy egy logikai művelet nem sikerült. A SECTIONPLANE és az élő metszés, amelyet az AutoCAD szalagja a KMETSZET helyett kínál: itt a KMETSZET parancsot be kell gépelni.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao--fr-coupe--cou--it-sezione--sez--de-querschnitt--qu--ru-сечение--сеч--pl-przekrój--pkr--cs-průřez--pru--hu-kmetszet--km)
+
+## Kérdések [#questions]
+
+### Hogyan lehet metszetet készíteni egy 3D szilárdtestből az AutoCAD-ben?
+
+Futtassa a KMETSZET parancsot, válassza ki a szilárdtestet, nyomja meg az Enter billentyűt, majd adja meg a síkot: a `ZX` és egy középen lévő pont elölről hátrafelé metszi el, az `XY` és egy adott magasságú pont vízszintesen. A lemez a szilárdtesten belül fekszik: vigye ki a [`MOZGAT`](/docs/commands/move) paranccsal, hogy lássa.
+
+### Mi a különbség a KMETSZET és a SZEL (SLICE) parancs között?
+
+A [`SZEL`](/docs/commands/slice) kettévágja a szilárdtestet, és az egyik részét vagy mindkettőt megtartja. A KMETSZET épen hagyja a szilárdtestet, és lemezt rajzol oda, ahol a sík metszi.
+
+### Mi az AutoCAD KMETSZET parancs angolul?
+
+SECTION. A magyar AutoCAD-ben a rövidítése `KM`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `SEC` a magyar változatban nem működik; a `_SECTION` az AutoCAD bármely nyelvi változatában igen.
+
+### Miért írja a KMETSZET, hogy a sík nem metszi a szilárdtestet?
+
+A sík elkerüli: ellenőrizze, hogyan adta meg. Az `XY`, az `YZ` és a `ZX` az FKR síkjai, így egy rossz magasságban vagy rossz oldalon lévő pont a szilárdtesten kívülre teszi a síkot.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD SZEL (SLICE) parancs](/docs/commands/slice)
+- [Lemez az AutoCAD-ben: LEMEZ (REGION) parancs](/docs/commands/region)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)
+- [AutoCAD FIZJELL (MASSPROP) parancs](/docs/commands/massprop)

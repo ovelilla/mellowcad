@@ -24,8 +24,11 @@ describe("scriptFontVariables", () => {
     "latin-ext": { sans: interLetters, mono: monoLetters },
   }
 
-  it("puts the letters' faces before Inter and Geist Mono on a Polish or Czech page", () => {
+  it("puts the letters' faces before Inter and Geist Mono on a Polish, Czech or Hungarian page", () => {
     expect(scriptFontVariables("cs", fonts)).toEqual(
+      scriptFontVariables("pl", fonts)
+    )
+    expect(scriptFontVariables("hu", fonts)).toEqual(
       scriptFontVariables("pl", fonts)
     )
     expect(scriptFontVariables("pl", fonts)).toEqual({

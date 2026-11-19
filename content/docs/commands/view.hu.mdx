@@ -1,0 +1,84 @@
+---
+title: "AutoCAD NÉZET (VIEW) parancs"
+metaTitle: "AutoCAD NÉZET (VIEW): izometrikus és felülnézet"
+description: "Így fordít az AutoCAD NÉZET (VIEW, -NÉZET) parancsa a hat ortografikus és a négy izometrikus nézetre, és milyen FKR-t állít be az ortografikus. Próbálja ki!"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet izometrikus nézetet beállítani az AutoCAD-ben?","answer":"Írja be a -NÉZET parancsot, majd a délnyugati izometrikus nézethez a DNyizo opciót; a DKizo, az ÉKizo és az ÉNyizo a másik három sarkot adja. Vagy válassza a DNy-i izometrikus nézetet a bal felső nézetvezérlőben, vagy kattintson a ViewCube egyik felső sarkára. Az LSAKTUÁLIS parancs Takartvonalas opciója elrejti a hátsó éleket."},{"question":"Melyik paranccsal lehet felülnézetet beállítani?","answer":"-NÉZET, majd fElül, amely az FKR-t is a világ tengelyeire állítja. Az NNÉZET parancs ezzel szemben az aktuális FKR-re néz le, és azt változatlanul hagyja."},{"question":"Miért változott meg az FKR az elölnézet után?","answer":"Az ortografikus nézet az FKR-t Ön felé fordítja, hogy amit rajzol, a képernyő síkjában feküdjön. Az FKR parancs és az Enter visszavisz a Világhoz; a T parancs a nézetet és az FKR-jét együtt vonja vissza."},{"question":"Ugyanaz az izometrikus nézet, mint az izometrikus rajz?","answer":"Nem. Az izometrikus nézet egy sarokból néz egy 3D modellre. Az izometrikus rajz 2D, és az izometrikus síkokon készül a RASZTER parancs izometrikus stílusával, amely a MellowCAD-ben még nincs meg."},{"question":"Hol van a Nézetkezelő?","answer":"A NÉZET parancs a parancssorban a -NÉZET parancsot futtatja: Nézetkezelő nincs, és az elnevezett nézetek (Mentés, Visszaállítás) itt még nem érhetők el."}]
+---
+
+A NÉZET (VIEW) parancs az AutoCAD tíz előre beállított nézetének egyikére fordítja a nézetet: hat ortografikusra, amely egyenesen a modell egyik oldalára néz, és négy izometrikusra, amely egy sarokból néz le. A rajzban semmi sem mozdul el. A NÉZET parancs a `-NÉZET` parancsot, a parancssori változatot futtatja: első kérdése felsorolja az `Ortografikus` opciót, amely aztán az oldalt kéri, de egy nézet nevét is rögtön elfogadja, ahogy az AutoCAD menüi megadják: `-NÉZET`, majd `DNyizo`. Minden nézet a teljes rajzot mutatja, és ezt írja ki: `Modell regenerálása.`.
+
+A rajzterület bal felső sarkában lévő nézetvezérlő ugyanezt a tíz nézetet sorolja fel, és a `-NÉZET` parancsot futtatja, a ViewCube lapjai és sarkai pedig szintén ezekre fordítanak, az FKR-t változatlanul hagyva. Minden NÉZET parancs egy visszavonási lépés, így a `T` parancs a nézetet az általa beállított FKR-rel együtt vonja vissza. Aposztróffal egy másik parancson belül begépelve ezzel az üzenettel utasítja el: `** Regenerálás szükséges, a parancs nem lehet transzparens.`. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+
+- **Parancs:** `NÉZET`
+- **Angolul:** `VIEW`, bármely nyelven `_VIEW` formában beírva
+- **Álnevek:** `N`, `DPNÉZET`
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `N`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="view" caption="Felülnézetben rajzolt lépcsős tömb: -NÉZET és DNy-i izometrikus, és délnyugatról, felülről látszik, Takartvonalas látványstílusban." />
+
+## Opciók [#options]
+
+### `Ortografikus` (`O`) [#orthographic]
+
+Azt az oldalt kéri, amelyre nézni szeretne, alapértelmezés szerint a `fElül` nézetet, így ott az Enter a felülnézetet adja: `fElül`, `ALul`, `eLöl`, `Hátul`, `Bal` vagy `Jobb`. Mindegyik álló helyzetű: a felülnézetben az X jobbra, az Y felfelé mutat, az elölnézetben az X jobbra, a Z felfelé, az alulnézetben, alulról nézve, az X balra. Az első kérdésnél begépelve mindegyik oldal az opció nélkül is működik.
+
+Mindegyik az FKR-t is Ön felé fordítja, a világ tengelyeiből kiindulva, bármilyen volt is az FKR, az origót a `0,0,0` pontba téve, ahogy az [`FKR`](/docs/commands/ucs) parancs ortografikus opciója: az elölnézet után az XY sík az elülső oldal, így amit rajzol, az laposan fekszik a képernyőn, és az FKR neve `*ELÖL*`. A felülnézet után a világ tengelyei érvényesek, a neve `*FELÜL*`.
+
+### `DNyizo` (`DN`) [#swiso]
+
+Délnyugati izometrikus: elölről és balról, a sarokból néz le, és az elülső oldalt, a bal oldalt és a tetejét mutatja. Az FKR változatlan marad. Ez a munkamenet nézete.
+
+### `DKizo` (`DK`) [#seiso]
+
+Délkeleti izometrikus: elölről és jobbról, a sarokból néz le, és az elülső oldalt, a jobb oldalt és a tetejét mutatja. Az FKR változatlan marad.
+
+### `ÉKizo` (`ÉK`) [#neiso]
+
+Északkeleti izometrikus: hátulról és jobbról, a sarokból néz le, és a hátsó oldalt, a jobb oldalt és a tetejét mutatja. Az FKR változatlan marad.
+
+### `ÉNyizo` (`ÉN`) [#nwiso]
+
+Északnyugati izometrikus: hátulról és balról, a sarokból néz le, és a hátsó oldalt, a bal oldalt és a tetejét mutatja. Az FKR változatlan marad.
+
+## Amit még nem tud [#missing]
+
+Az elnevezett nézetek: az első kérdés csak az `Ortografikus` opciót sorolja fel, míg az AutoCAD-é a `?`, a Töröl, a Visszaállít, az elMent, a Beállítások és az ABlak opciót is, és az ott begépelt nevet a parancs elutasítja. A Nézetkezelő, amelyet az AutoCAD-ben a NÉZET parancs nyit meg. Üres rajznál a nézet megtartja a nagyítást, míg az AutoCAD a rajzhatárokat mutatja. Az UCSORTHO és az UCSBASE változó: az ortografikus nézet mindig a világ tengelyeiből igazítja az FKR-t. Az igazított FKR az [`FKR`](/docs/commands/ucs) parancs `eLŐző` listájában.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview--it--vista---v--vista--v--ddview--de--ausschnt---as--ausschnt--as--ddview--ru--вид--вид--диалвид--pl--widok---wid--widok--wid--odwidok--cs--pohled---ph--pohled--ph--diapohled--hu--nézet---n--nézet--n--dpnézet)
+
+## Kérdések [#questions]
+
+### Hogyan lehet izometrikus nézetet beállítani az AutoCAD-ben?
+
+Írja be a `-NÉZET` parancsot, majd a délnyugati izometrikus nézethez a `DNyizo` opciót; a `DKizo`, az `ÉKizo` és az `ÉNyizo` a másik három sarkot adja. Vagy válassza a DNy-i izometrikus nézetet a bal felső nézetvezérlőben, vagy kattintson a ViewCube egyik felső sarkára. Az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancs `Takartvonalas` opciója elrejti a hátsó éleket.
+
+### Melyik paranccsal lehet felülnézetet beállítani?
+
+`-NÉZET`, majd `fElül`, amely az FKR-t is a világ tengelyeire állítja. Az [`NNÉZET`](/docs/commands/plan) parancs ezzel szemben az aktuális FKR-re néz le, és azt változatlanul hagyja.
+
+### Miért változott meg az FKR az elölnézet után?
+
+Az ortografikus nézet az FKR-t Ön felé fordítja, hogy amit rajzol, a képernyő síkjában feküdjön. Az [`FKR`](/docs/commands/ucs) parancs és az Enter visszavisz a Világhoz; a `T` parancs a nézetet és az FKR-jét együtt vonja vissza.
+
+### Ugyanaz az izometrikus nézet, mint az izometrikus rajz?
+
+Nem. Az izometrikus nézet egy sarokból néz egy 3D modellre. Az izometrikus rajz 2D, és az izometrikus síkokon készül a RASZTER parancs izometrikus stílusával, amely a MellowCAD-ben még nincs meg.
+
+### Hol van a Nézetkezelő?
+
+A NÉZET parancs a parancssorban a `-NÉZET` parancsot futtatja: Nézetkezelő nincs, és az elnevezett nézetek (Mentés, Visszaállítás) itt még nem érhetők el.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD NNÉZET (PLAN) parancs: normálnézet az FKR-re](/docs/commands/plan)
+- [3D keringés az AutoCAD-ben: 3DKERINGÉS (3DORBIT) parancs](/docs/commands/3dorbit)
+- [AutoCAD FKR (UCS) parancs: felhasználói koordináta-rendszer](/docs/commands/ucs)
+- [Látványstílusok az AutoCAD-ben: LSAKTUÁLIS (VSCURRENT) parancs](/docs/commands/vscurrent)
+- [AutoCAD ZOOM parancs](/docs/commands/zoom)

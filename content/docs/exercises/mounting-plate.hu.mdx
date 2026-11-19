@@ -1,0 +1,60 @@
+---
+title: "AutoCAD 3D gyakorló feladat: szerelőlap"
+metaTitle: "AutoCAD 3D feladat kezdőknek: szerelőlap"
+description: "Szerelőlap modellezése AutoCAD 3D-ben: lemezek, a furatok kivonása és egyetlen kihúzás adja a szilárdtestet, lépésről lépésre. Gyakorolja a 3D-t ingyen, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modellezzen egy 10 vastag szerelőlapot milliméterben: a körvonala 100 × 60, 8 sugarú sarkokkal, és négy 10-es furat, amelyek középpontja 15-re van a szélektől. Síkban kezdődik. A körvonalból és a körökből lemezek lesznek, a furatokat még a sík lapból vonja ki, és egyetlen kihúzás teszi szilárdtestté, a furataival együtt.
+
+- **Feladat:** Kezdő · Gépészet · 3D szilárdtest
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`MÁSOL`](/docs/commands/copy), [`LEMEZ`](/docs/commands/region), [`KIVON`](/docs/commands/subtract), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`KIHÚZ`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=mounting-plate), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/mounting-plate" caption="A lap körvonala, 100 × 60, négy furattal, méretezve." />
+
+<Session name="exercises/mounting-plate/model" caption="A lap 10 vastag szilárdtestként, délkeletről nézve, takart vonalak nélkül." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a profilt [#profile]
+
+A Körvonal fólián a [`TÉGL`](/docs/commands/rectang) parancs a `leKerekít` opcióval, `8` sugárral, a `0,0` ponttól a `100,60` pontig. Ezután egy kör a `15,15` pontban az `Átmérő` opcióval, `10` átmérővel, és a [`MÁSOL`](/docs/commands/copy) paranccsal másolja a középpontjától a `70,0`, a `70,30` és a `0,30` pontba.
+
+<Session name="exercises/mounting-plate/profile" caption="1. Rajzolja meg a profilt" />
+
+### 2. Hozzon létre lemezeket [#region]
+
+A [`LEMEZ`](/docs/commands/region) parancs a zárt objektumokat lemezzé alakítja: válassza ki a körvonalat és a négy kört, majd Enter. Öt hurok, öt lemez.
+
+<Session name="exercises/mounting-plate/region" caption="2. Hozzon létre lemezeket" />
+
+### 3. Vonja ki a furatokat [#subtract]
+
+A [`KIVON`](/docs/commands/subtract) parancs: válassza ki a lap lemezét, és nyomja meg az Enter billentyűt, majd a négy kör lemezét, és Enter. Egyetlen lemez marad, benne négy furattal.
+
+<Session name="exercises/mounting-plate/subtract" caption="3. Vonja ki a furatokat" />
+
+### 4. Fordítsa el a nézetet [#view]
+
+A `-NÉZET` parancs és a `DKizo` opció délkeletről és felülről mutatja; az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancs és a `Takartvonalas` opció elrejti, amit a lapok eltakarnak. A ViewCube is elfordítja a nézetet egy kattintással.
+
+<Session name="exercises/mounting-plate/view" caption="4. Fordítsa el a nézetet" />
+
+### 5. Húzza ki [#extrude]
+
+A [`KIHÚZ`](/docs/commands/extrude) parancs: válassza ki a lemezt, nyomja meg az Enter billentyűt, és írja be a magasságot, `10`. A lap szilárdtest lett, a furataival együtt. A [`ZOOM`](/docs/commands/zoom) parancs `Terjedelem` opciója kitölti vele a képet, a `0.8x` lépték pedig helyet hagy körülötte.
+
+<Session name="exercises/mounting-plate/extrude" caption="5. Húzza ki" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange): Középhaladó · Gépészet · 2D
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table): Középhaladó · Építészet · 2D
+- [AutoCAD gyakorló feladat: telek](/docs/exercises/plot-of-land): Középhaladó · Építőmérnöki · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

@@ -1,0 +1,67 @@
+---
+title: "Sokszög az AutoCAD-ben: POLIGON (POLYGON) parancs"
+metaTitle: "Sokszög az AutoCAD-ben: POLIGON (POLYGON)"
+description: "Szabályos sokszög az AutoCAD POLIGON (POLYGON, rövidítése POL) parancsával: oldalszám, középpont, beleírt vagy kör köré írt, vagy egy éle alapján. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD POLIGON parancs angolul?","answer":"POLYGON. A rövidítése a magyar AutoCAD-ben is POL, akárcsak az angolban: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes POLIGON név is működik, a _POLYGON pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet hatszöget rajzolni az AutoCAD-ben?","answer":"Futtassa a POLIGON parancsot, oldalszámként írja be a 6-ot, adja meg a középpontot, válassza a Beleírt vagy a Kör opciót, és írja be a sugarat. A kör köré írt hatszög laptávolsága a beírt sugár kétszerese."},{"question":"Mi a különbség a beleírt és a kör köré írt sokszög között?","answer":"A Beleírt opcióval a sokszög csúcsai érintik a kört, így a sokszög a körön belül fér el. A Kör opcióval az oldalai érintik a kört, így a kör fér el a sokszögön belül. Azonos sugárnál a kör köré írt sokszög a nagyobb."},{"question":"Hogyan lehet adott oldalhosszúságú sokszöget rajzolni?","answer":"Válassza az Él opciót, és adja meg az egyik oldal két végpontját: 0,0, majd a hosszt hozzá képest relatívan beírva, például 40,0. A többi oldal az óramutató járásával ellentétesen következik."}]
+---
+
+A POLIGON (POLYGON) parancs szabályos sokszöget rajzol, amelynek minden oldala és szöge egyenlő, egyetlen zárt vonalláncként. Bekéri az oldalak számát 3 és 1024 között, aztán a középpontot, és azt, hogy a sokszög egy körbe írt vagy egy kör köré írt legyen, végül ennek a körnek a sugarát. Vagy az egyik oldalára építi fel az Él opcióval. Az oldalak száma és a beleírt vagy kör köré írt választás a következő POLIGON parancs alapértéke lesz az adott rajzban. A számként beírt sugár vízszintes alsó éllel rajzolja meg; a pontként megadott, mutatott vagy beírt sugár a sokszög méretét és elfordulását is meghatározza. Amíg a sugarat adja meg, a sokszög a kurzort követi, egy borostyánsárga szaggatott vonallal a középponttól.
+
+- **Parancs:** `POLIGON`
+- **Angolul:** `POLYGON`, bármely nyelven `_POLYGON` formában beírva
+- **Álnevek:** `POL`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `POL`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="polygon" caption="Két 30 sugarú kör, az egyikbe írt és a másik köré írt hatszög, valamint egy éle alapján rajzolt ötszög." />
+
+## Opciók [#options]
+
+### `Él` (`É`) [#edge]
+
+Középpont helyett: adja meg az egyik oldal két végpontját, és a sokszög az óramutató járásával ellentétesen épül fel belőle.
+
+### `Beleírt` (`B`) [#inscribed]
+
+A csúcspontok a körön fekszenek: a sugár a középponttól egy csúcspontig tart. Ez az alapérték.
+
+### `Kör köré írt` (`K`) [#circumscribed]
+
+Az oldalak a felezőpontjukban érintik a kört: a sugár a középponttól egy oldal közepéig tart.
+
+## Amit még nem tud [#missing]
+
+Az elforgatott raszter: a számként beírt sugár mindig az FKR-rel vízszintes alsó éllel rajzol, ahol az AutoCAD a raszterszöggel (SNAPANG) elfordítja.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg--it-poligono--pg--de-polygon--pg--ru-мн-угол--мн--pl-wielobok--wbo--cs-polygon--pol--hu-poligon--pol)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD POLIGON parancs angolul?
+
+POLYGON. A rövidítése a magyar AutoCAD-ben is `POL`, akárcsak az angolban: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes `POLIGON` név is működik, a `_POLYGON` pedig az AutoCAD bármely nyelvi változatában.
+
+### Hogyan lehet hatszöget rajzolni az AutoCAD-ben?
+
+Futtassa a POLIGON parancsot, oldalszámként írja be a `6`-ot, adja meg a középpontot, válassza a `Beleírt` vagy a `Kör` opciót, és írja be a sugarat. A kör köré írt hatszög laptávolsága a beírt sugár kétszerese.
+
+### Mi a különbség a beleírt és a kör köré írt sokszög között?
+
+A `Beleírt` opcióval a sokszög csúcsai érintik a kört, így a sokszög a körön belül fér el. A `Kör` opcióval az oldalai érintik a kört, így a kör fér el a sokszögön belül. Azonos sugárnál a kör köré írt sokszög a nagyobb.
+
+### Hogyan lehet adott oldalhosszúságú sokszöget rajzolni?
+
+Válassza az `Él` opciót, és adja meg az egyik oldal két végpontját: `0,0`, majd a hosszt hozzá képest relatívan beírva, például `40,0`. A többi oldal az óramutató járásával ellentétesen következik.
+
+## Kapcsolódó parancsok [#related]
+
+- [Téglalap az AutoCAD-ben: TÉGL (RECTANG) parancs](/docs/commands/rectang)
+- [Kör rajzolása az AutoCAD-ben: KÖR (CIRCLE) parancs](/docs/commands/circle)
+- [Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs](/docs/commands/pline)
+- [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)

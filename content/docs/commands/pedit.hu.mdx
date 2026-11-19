@@ -1,0 +1,103 @@
+---
+title: "Vonallánc szerkesztése az AutoCAD-ben: VLEDIT (PEDIT) parancs"
+metaTitle: "AutoCAD VLEDIT (PEDIT): vonallánc szerkesztése"
+description: "Az AutoCAD VLEDIT (PEDIT, rövidítése VE) parancsa: vonalakból vonallánc, Egyesít, széLesség, görbe és spline, csúcspont szerkesztése, Több. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD VLEDIT parancs angolul?","answer":"PEDIT. A magyar AutoCAD-ben a rövidítése VE: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol PE a magyar változatban nem működik; a teljes VLEDIT név igen, a _PEDIT pedig az AutoCAD bármely nyelvi változatában. A vonalláncra duplán kattintva is elindul."},{"question":"Hogyan lehet vonalakat vonallánccá egyesíteni?","answer":"Futtassa a VLEDIT parancsot, válassza ki az egyik vonalat, nyomja meg az Enter billentyűt, hogy vonallánccá alakuljon, majd válassza az Egyesít opciót, és jelölje ki a többit: amelyek végpontjukkal csatlakoznak, egyetlen vonallánccá válnak. Az EGYBEFŰZ parancs egy lépésben teszi ugyanezt."},{"question":"Miért nem működik a VLEDIT az objektumon?","answer":"A VLEDIT vonalláncokat szerkeszt, a vonalakat, íveket és spline-okat pedig felajánlja átalakításra; minden mást, szöveget, kört, blokkot elutasít, és újra kérdez. Zárolt fólián lévő objektumra „Az objektum lezárt fólián van.” a válasz. Az Egyesít csak olyan objektumokat fűz hozzá, amelyeknek a vége pontosan a vonallánc végére esik: résekhez használja a Több opciót egy keresési távolsággal."},{"question":"Hogyan lehet módosítani a vonallánc szélességét?","answer":"Válassza a széLesség opciót, és írja be a szélességet: minden szakasz ezt kapja. Egyetlen szakaszhoz használja a SZerkeszt opciót, lépjen arra a csúcspontra, ahol a szakasz kezdődik, és válassza a széLesség opcióját."},{"question":"Hogyan lehet egy vonalláncot görbévé tenni?","answer":"A Görbe íveket vezet át minden csúcsponton; a Spline simább görbét készít, amelyet a csúcspontjai kereteznek. A Kisimít újra kiegyenesíti."}]
+---
+
+A VLEDIT (PEDIT) parancs egy vonalláncot szerkeszt. Válasszon ki egyet a `Válasszon vonalláncot vagy [Több]:` promptnál, vagy jelölje ki a parancs előtt; a vonalláncra duplán kattintva is a VLEDIT fut le rajta. Ha helyette vonalat, ívet vagy spline-t választ, `A választott objektum nem vonallánc` üzenetet ír ki, és megkérdezi, hogy vonallánccá alakítsa-e, alapértelmezés szerint Igen: az új vonallánc a helyére lép, és átveszi a tulajdonságait. Ezután újra meg újra opciót kér, és mindegyiket azonnal alkalmazza, amíg az Enter be nem fejezi. A 3D vonallánc rövidebb listát kap, szélesség, görbeillesztés és vonaltípus-generálás nélkül, a spline opciója pedig a `SPline-görbe`. Az Esc megtartja az addig elvégzetteket; a teljes szerkesztés egyetlen lépés, amelyet a `T` visszavon.
+
+- **Parancs:** `VLEDIT`
+- **Angolul:** `PEDIT`, bármely nyelven `_PEDIT` formában beírva
+- **Álnevek:** `VE`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VE`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="pedit" caption="Három, végpontjaival egymáshoz csatlakozó vonal: a VLEDIT az elsőt vonallánccá alakítja, hozzáfűzi a másik kettőt, és 2-es szélességet ad neki." />
+
+## Opciók [#options]
+
+### `Több` (`T`) [#multiple]
+
+Egyszerre több vonalláncot szerkeszt: válassza ki őket, adja meg, hogy a köztük lévő vonalakat, íveket és spline-okat átalakítsa-e, majd minden opció mindegyikre érvényes. Az Egyesít opciója keresési távolságot és `Egyesítés` értéket kér: a `Kiterjesztés` úgy vágja le vagy hosszabbítja meg a végszakaszokat, hogy találkozzanak, a `Hozzáadás` új szakasszal hidalja át a rést, a `Mindkettő` meghosszabbít, ahol tud, és hozzáad, ahol nem.
+
+### `Bezárás` (`B`) [#close]
+
+Bezárja a vonalláncot egy, az utolsó csúcspontjától az elsőig tartó szakasszal, amely ív, ha az utolsó szakasz ív. Zárt vonalláncnál az opció a `Megnyitás`, amely ezt a szakaszt eltávolítja.
+
+### `Egyesít` (`E`) [#join]
+
+Hozzáfűzi azokat a vonalakat, íveket és nyitott vonalláncokat, amelyek végpontjukkal a vonallánc végeihez csatlakoznak, és kiírja, hány szakaszt fűzött hozzá. Zárt vonallánchoz nem lehet hozzáfűzni: `Zárt vonallánccal egyesítés nem végezhető`.
+
+### `széLesség` (`L`) [#width]
+
+Egyetlen szélesség minden szakaszra, beírva vagy két ponttal mérve; a 0 megszünteti a szélességet.
+
+### `SZerkeszt csúcspontot` (`SZ`) [#edit-vertex]
+
+X jelet tesz az első csúcspontra, és megkérdezi, mi történjen ott: a `köVetkező` és az `Előző` lépteti az X-et, a `MOzgat` elmozdítja a csúcspontot, a `Beszúr` újat szúr be utána, a `MEgtör` és az `egYenesít` megjegyzi a csúcspontot, Ön egy másikra lépteti az X-et, és a `Rajta` a kettő között megtöri a vonalláncot, vagy egyetlen egyenes szakasszá alakítja, ami közöttük van, a `széLesség` a következő szakasz kezdő- és végszélességét állítja be, az `Érintő` irányt ad a csúcspontnak egy későbbi görbeillesztéshez, a `Kilépés` pedig visszalép.
+
+### `Görbe` (`G`) [#fit]
+
+Ívekből álló sima görbét rajzol minden csúcsponton át, a találkozásuknál érintő ívekkel, ahogy az AutoCAD görbeillesztése rakja le őket. A csúcspontok megmaradnak, és a szerkesztésük átformálja a görbét.
+
+### `Spline` (`S`) [#spline]
+
+B-spline görbét illeszt a vonalláncra, amelyet a csúcspontjai kereteznek, és nem halad át rajtuk: másod- vagy harmadfokút a SPLINETYPE szerint, a SPLINESEGS szerinti finomsággal. A 3D vonalláncnál ez a `SPline-görbe`. A SPLINE parancs Objektum opciója az ilyen vonalláncot valódi spline-ná alakítja.
+
+### `Kisimít` (`K`) [#decurve]
+
+Eltávolítja a görbeillesztést vagy a spline-görbét: a csúcspontok között újra egyenes szakaszok vannak.
+
+### `VTípus gen` (`VT`) [#ltype-gen]
+
+A `Be` a vonaltípust egyetlen mintában fekteti végig az egész vonalláncon, így a rövid szakaszokból álló szaggatott vonallánc is szaggatottnak látszik; a `Ki`, az alapérték, minden csúcspontnál újrakezdi a mintát.
+
+### `megFOrdít` (`FO`) [#reverse]
+
+Megfordítja a vonalláncot: a csúcspontjai fordított sorrendbe kerülnek, az ívek és a szélességek velük együtt.
+
+### `VIssza` (`VI`) [#undo]
+
+Visszavonja ennek a futásnak az utolsó opcióját, és tovább kérdez.
+
+## Amit még nem tud [#missing]
+
+PEDITACCEPT: a vonal, ív vagy spline kiválasztásakor átalakítás előtt mindig rákérdez. PLINECONVERTMODE: a spline egyenes szakaszokból álló vonalláncra alakul, sokkal több szakaszból, mint amennyit az AutoCAD készít, és soha nem ívekből. A görbeillesztett vonallánc a Tulajdonságok palettán egyszerű vonalláncként jelenik meg, az AutoCAD 2D vonallánc címe és Görbe/Simítás sora nélkül. Ha a Több opcióval csak 3D vonalláncokat választ ki, a 3D promptot kapja, ahol az AutoCAD a 2D promptot kérdezi. Szerkeszthető hálók nincsenek.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#pedit--pe--es-editpol--pe--pt-br-editarp--edp--fr-pedit--pe--it-editpl--ep--de-pedit--pe--ru-полред--прд--pl-edplin--edp--cs-kedit--ke--hu-vledit--ve)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD VLEDIT parancs angolul?
+
+PEDIT. A magyar AutoCAD-ben a rövidítése `VE`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `PE` a magyar változatban nem működik; a teljes `VLEDIT` név igen, a `_PEDIT` pedig az AutoCAD bármely nyelvi változatában. A vonalláncra duplán kattintva is elindul.
+
+### Hogyan lehet vonalakat vonallánccá egyesíteni?
+
+Futtassa a VLEDIT parancsot, válassza ki az egyik vonalat, nyomja meg az Enter billentyűt, hogy vonallánccá alakuljon, majd válassza az `Egyesít` opciót, és jelölje ki a többit: amelyek végpontjukkal csatlakoznak, egyetlen vonallánccá válnak. Az [`EGYBEFŰZ`](/docs/commands/join) parancs egy lépésben teszi ugyanezt.
+
+### Miért nem működik a VLEDIT az objektumon?
+
+A VLEDIT vonalláncokat szerkeszt, a vonalakat, íveket és spline-okat pedig felajánlja átalakításra; minden mást, szöveget, kört, blokkot elutasít, és újra kérdez. Zárolt fólián lévő objektumra `Az objektum lezárt fólián van.` a válasz. Az Egyesít csak olyan objektumokat fűz hozzá, amelyeknek a vége pontosan a vonallánc végére esik: résekhez használja a `Több` opciót egy keresési távolsággal.
+
+### Hogyan lehet módosítani a vonallánc szélességét?
+
+Válassza a `széLesség` opciót, és írja be a szélességet: minden szakasz ezt kapja. Egyetlen szakaszhoz használja a `SZerkeszt` opciót, lépjen arra a csúcspontra, ahol a szakasz kezdődik, és válassza a `széLesség` opcióját.
+
+### Hogyan lehet egy vonalláncot görbévé tenni?
+
+A `Görbe` íveket vezet át minden csúcsponton; a `Spline` simább görbét készít, amelyet a csúcspontjai kereteznek. A `Kisimít` újra kiegyenesíti.
+
+## Kapcsolódó parancsok [#related]
+
+- [Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs](/docs/commands/pline)
+- [AutoCAD EGYBEFŰZ (JOIN) parancs](/docs/commands/join)
+- [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)
+- [AutoCAD SPLINE parancs](/docs/commands/spline)

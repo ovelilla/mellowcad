@@ -1,0 +1,58 @@
+---
+title: "AutoCAD gyakorló feladat: összekötő kar érintőkkel"
+metaTitle: "AutoCAD haladó gyakorló feladat: összekötő kar"
+description: "Összekötő kar AutoCAD-ben: két agy, mindkettőt érintő vonalakkal összekötve az Érintő tárgyraszterrel, a köztük lévő ívek levágva, és a méretek. Ingyen, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt az összekötő kart milliméterben: két agy egymástól 90 távolságra, 20 és 12 sugárral, 10 és 6 sugarú furattal, mindkettőt érintő vonalakkal összekötve, a vonalak közötti íveket levágva. Az érintő vonalak mindkét végükön az Érintő tárgyrasztert használják; a [`METSZ`](/docs/commands/trim) parancs ezután mindkét agy körét ívvé alakítja.
+
+- **Feladat:** Haladó · Gépészet · 2D
+- **Parancsok:** [`KÖR`](/docs/commands/circle), [`VONAL`](/docs/commands/line), [`METSZ`](/docs/commands/trim), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETSUGÁR`](/docs/commands/dimradius), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=link), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/link" caption="Összekötő kar két, egymástól 90-re lévő aggyal, érintő vonalakkal összekötve, méretezve." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg az agyakat [#bosses]
+
+A Körvonal fólián négy kör a [`KÖR`](/docs/commands/circle) paranccsal, mindegyik a sugarával megadva: `20` és `10` a `0,0` pontban, `12` és `6` a `90,0` pontban.
+
+<Session name="exercises/link/bosses" caption="1. Rajzolja meg az agyakat" />
+
+### 2. Rajzolja meg az érintő vonalakat [#tangents]
+
+A [`VONAL`](/docs/commands/line) parancs, majd írja be a `_TAN` értéket, az Érintő tárgyrasztert egyetlen pontra, és mutasson a nagy körre a teteje közelében; ismét `_TAN`, és mutasson a kicsire a teteje közelében. A vonal mindkettőt érinti. Ugyanígy alul is.
+
+<Session name="exercises/link/tangents" caption="2. Rajzolja meg az érintő vonalakat" />
+
+### 3. Vágja le az íveket [#trim]
+
+A [`METSZ`](/docs/commands/trim) parancs: mutasson mindkét agyra a két vonal között, azon az oldalon, amely a másik agy felé néz. A belső ívek eltűnnek, és mindkét kör ívvé válik.
+
+<Session name="exercises/link/trim" caption="3. Vágja le az íveket" />
+
+### 4. Rajzolja meg a középvonalakat [#centreLines]
+
+A Középvonalak fólián a mindkét középponton átmenő tengelyvonal, és mindkét agyon egy-egy keresztirányú vonal.
+
+<Session name="exercises/link/centreLines" caption="4. Rajzolja meg a középvonalakat" />
+
+### 5. Méretezze [#dimensions]
+
+A Méretek fólián a középpontok távolsága a [`MÉRETHOSSZ`](/docs/commands/dimlinear), az agyak sugara a [`MÉRETSUGÁR`](/docs/commands/dimradius), a furataik a [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) paranccsal.
+
+<Session name="exercises/link/dimensions" caption="5. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block): Haladó · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket): Kezdő · Gépészet · 2D
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket): Kezdő · Gépészet · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

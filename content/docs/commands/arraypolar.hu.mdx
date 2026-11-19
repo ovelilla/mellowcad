@@ -1,0 +1,83 @@
+---
+title: "Poláris kiosztás az AutoCAD-ben: KIOSZTPOLÁRIS (ARRAYPOLAR) parancs"
+metaTitle: "Poláris kiosztás az AutoCAD-ben: KIOSZTPOLÁRIS"
+description: "Poláris (körkörös) kiosztás az AutoCAD-ben a KIOSZTPOLÁRIS (ARRAYPOLAR) paranccsal: a középpont, az elemek, a bezárt vagy a kitöltött szög, az elemek forgatása."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet poláris kiosztást készíteni az AutoCAD-ben?","answer":"Írja be a KIOSZTPOLÁRIS parancsot, jelölje ki az objektumokat, nyomja meg az Enter billentyűt, és adja meg a középpontot; vagy írja be a KI rövidítést a KIOSZT parancshoz, és az objektumok után válassza a Poláris opciót. Ezután az Elem opcióval állítsa be a darabszámot, és az Enter megnyomásával hozza létre."},{"question":"Hogyan lehet objektumokat egy körív mentén kiosztani?","answer":"Válassza a kItöltése opciót, és írja be a szöget: a 180 fél körön rakja ki az elemeket az óramutató járásával ellentétesen, a -180 azzal megegyezően. Az elemek száma nem változik, az első és az utolsó a szög két végére kerül."},{"question":"Hogyan lehet megakadályozni, hogy az elemek elforduljanak?","answer":"Válassza a Forgat opciót, és válaszoljon így: Nem. Minden elem elfordulás nélkül mozdul el a középpont körül."},{"question":"Hogyan lehet módosítani egy poláris kiosztás sugarát?","answer":"Jelölje ki a kiosztást, és húzza a bázispontban lévő négyzet alakú fogóját a középpont felé vagy attól távolabb: a középponttól mért távolság lesz az új sugár. Vagy írja át a Sugár értékét a Tulajdonságok palettán."}]
+---
+
+A KIOSZTPOLÁRIS (ARRAYPOLAR) parancs egy középpont körül másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, bekéri a középpontot, és azonnal megmutatja a kiosztást: 6 elem egy teljes körön, mindegyik elfordulva, ahogy körbehalad. Ezután egyetlen prompt élőben szerkeszti az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben. A kijelölt objektumok lesznek az első elem.
+
+- **Parancs:** `KIOSZTPOLÁRIS`
+- **Angolul:** `ARRAYPOLAR`, bármely nyelven `_ARRAYPOLAR` formában beírva
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KIOSZTPOLÁRIS`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="arraypolar" caption="Egy karima furata a karima középpontja körül kiosztva: 8 elem egy teljes körön." />
+
+## Opciók [#options]
+
+### `Asszociatív` (`A`) [#associative]
+
+Az `Igen`, az alapértelmezés, egyetlen kiosztásobjektumot hoz létre, amelyet később a fogói és a Tulajdonságok paletta módosít; a `Nem` különálló másolatokat készít a kijelölt objektumok mellé. A válasz a munkamenet végéig megmarad, a KIOSZTNÉGYSZ és a KIOSZTÚTVONAL parancsban is.
+
+### `Elem` (`E`) [#items]
+
+Az elemek száma, 1 és 32 767 között; a kitöltött szög nem változik.
+
+### `bezárt SZög` (`SZ`) [#angle-between]
+
+Az egyik elemtől a következőig mért szög. A kitöltött szög az elemszámnak megfelelő számú ilyen lépésből áll össze, az irány megmarad, és teljes kör, amint eléri a 360°-ot.
+
+### `szög kItöltése` (`I`) [#fill-angle]
+
+Az elemek által kitöltött szög, pozitív értékkel az óramutató járásával ellentétesen, negatívval megegyezően; az elemek száma nem változik. Teljes körön két elem között a teljes kör darabszámmal osztott része van; kisebb szögnél az utolsó elem a szög végére kerül.
+
+### `Forgat` (`F`) [#rotate-items]
+
+Az `Igen`, az alapértelmezés, minden elemet elforgat, ahogy a középpont körül halad; a `Nem` csak eltolja, így minden elem úgy áll, mint az első.
+
+### `KIlépés` (`KI`) [#exit]
+
+Létrehozza a kiosztást, és befejezi a parancsot, ahogy az Enter.
+
+## Amit még nem tud [#missing]
+
+A Bázispont; a Forgástengely, egy térbeli tengely körüli kiosztáshoz; a Sorok és a Szintek, az elemek gyűrűihez és a Z mentén egymásra rakott másolatokhoz; a Kifejezés, amely egy értéket a rajz paramétereihez köt. A kiosztás fogóinak menüi (Sugár nyújtása, Elemszám, Kitöltött szög…) és a köztük váltó Ctrl.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar--fr-reseaupolaire--it-seriepolare--de-reihekreis--ru-массивкруг--pl-szykbiegun--cs-polárpole--hu-kiosztpoláris)
+
+## Kérdések [#questions]
+
+### Hogyan lehet poláris kiosztást készíteni az AutoCAD-ben?
+
+Írja be a `KIOSZTPOLÁRIS` parancsot, jelölje ki az objektumokat, nyomja meg az Enter billentyűt, és adja meg a középpontot; vagy írja be a `KI` rövidítést a [`KIOSZT`](/docs/commands/array) parancshoz, és az objektumok után válassza a `Poláris` opciót. Ezután az `Elem` opcióval állítsa be a darabszámot, és az Enter megnyomásával hozza létre.
+
+### Hogyan lehet objektumokat egy körív mentén kiosztani?
+
+Válassza a `kItöltése` opciót, és írja be a szöget: a 180 fél körön rakja ki az elemeket az óramutató járásával ellentétesen, a -180 azzal megegyezően. Az elemek száma nem változik, az első és az utolsó a szög két végére kerül.
+
+### Hogyan lehet megakadályozni, hogy az elemek elforduljanak?
+
+Válassza a `Forgat` opciót, és válaszoljon így: `Nem`. Minden elem elfordulás nélkül mozdul el a középpont körül.
+
+### Hogyan lehet módosítani egy poláris kiosztás sugarát?
+
+Jelölje ki a kiosztást, és húzza a bázispontban lévő négyzet alakú fogóját a középpont felé vagy attól távolabb: a középponttól mért távolság lesz az új sugár. Vagy írja át a Sugár értékét a Tulajdonságok palettán.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange)
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table)
+
+## Kapcsolódó parancsok [#related]
+
+- [Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs](/docs/commands/array)
+- [Négyszögletes kiosztás az AutoCAD-ben: KIOSZTNÉGYSZ (ARRAYRECT) parancs](/docs/commands/arrayrect)
+- [Útvonal menti kiosztás az AutoCAD-ben: KIOSZTÚTVONAL (ARRAYPATH) parancs](/docs/commands/arraypath)
+- [Forgatás az AutoCAD-ben: FORGAT (ROTATE) parancs](/docs/commands/rotate)

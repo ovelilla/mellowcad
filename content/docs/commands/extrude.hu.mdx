@@ -1,0 +1,86 @@
+---
+title: "AutoCAD KIHÚZ (EXTRUDE) parancs"
+metaTitle: "Kihúzás az AutoCAD-ben: KIHÚZ (EXTRUDE)"
+description: "2D profilból 3D szilárdtest az AutoCAD KIHÚZ (EXTRUDE, KH) parancsával, promptról promptra: magasság, Irány, szűkítési szög. Próbálja ki ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD KIHÚZ parancs angolul?","answer":"EXTRUDE. A magyar AutoCAD-ben a rövidítése KH: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az _EXTRUDE is; az angol EXT a magyar változatban nem működik."},{"question":"Hogyan lehet egy 2D rajzból 3D-t készíteni?","answer":"Rajzolja meg a körvonalat egyetlen zárt objektumként – zárt vonalláncként, körként vagy lemezként –, indítsa el a KIHÚZ parancsot, jelölje ki az objektumot, nyomja meg az Enter billentyűt, és írja be a magasságot. Felülről a szilárdtest a körvonalának látszik: fordítsa el a nézetet a ViewCube-bal, vagy a -NÉZET paranccsal és a DKizo opcióval, hogy 3D-ben lássa."},{"question":"Miért nem készít szilárdtestet a KIHÚZ parancs?","answer":"A profil nyitott, vagy önmagát metszi. A vonalból, az ívből vagy a nyitott vonalláncból az AutoCAD-ben felület lesz, a MellowCAD-ben pedig ilyen még nincs: a KIHÚZ a „Ilyen típusú objektumot nem lehet söpörni vagy kihúzni.” üzenetet adja, és eltávolítja őket a kijelölésből; az önmagát metsző profil a „Önmagát metsző görbét nem lehet söpörni vagy kihúzni.” üzenetet kapja, és szintén kikerül. Fűzze össze a darabokat az EGYBEFŰZ paranccsal, készítsen belőlük lemezt a LEMEZ paranccsal, vagy kattintson beléjük a TOLHÚZ paranccsal."},{"question":"Hogyan lehet egy lyukas alakzatot kihúzni?","answer":"Készítsen belőle egyetlen lemezt: a LEMEZ paranccsal a körvonalból és a lyukból, majd a KIVON paranccsal vonja ki a lyuk lemezét a körvonaléból. Húzza ki ezt a lemezt, és a lyuk végigfut a szilárdtesten. Vagy indítsa el a TOLHÚZ parancsot, és kattintson a körvonal és a lyuk közé."},{"question":"Hogyan lehet útvonal mentén kihúzni?","answer":"Egyelőre sehogy: az úTVonal opció megjelenik, de a parancs elutasítja, a SÖPÖR (SWEEP) parancs pedig nincs megvalósítva. Az Irány opció két pont közötti egyenes mentén húz ki."}]
+---
+
+A KIHÚZ (EXTRUDE) parancs zárt 2D profilokból 3D szilárdtesteket készít: mindegyiket egyenesen kihúzza a síkjából a megadott magasságig. Jelölje ki a profilokat – köröket, ellipsziseket, zárt vonalláncokat vagy spline-okat, lemezeket –, nyomja meg az Enter billentyűt, majd írja be a magasságot, vagy mutassa meg egy ponttal; az utolsó magasság lesz a következő futtatás alapértelmezése. Minden profilból külön szilárdtest lesz, az aktuális fólián, maga a profil pedig törlődik, ahogy a DELOBJ alapértelmezése előírja. A teljes parancs egyetlen lépés, amely a Vissza paranccsal visszavonható.
+
+A MellowCAD-ben a 3D egyelőre csak szilárdtesteket jelent, és csak részben érhető el: a nyitott profil, amelyből az AutoCAD felületet készít, a `Ilyen típusú objektumot nem lehet söpörni vagy kihúzni.` üzenetet kapja, és kikerül a kijelölésből.
+
+- **Parancs:** `KIHÚZ`
+- **Angolul:** `EXTRUDE`, bármely nyelven `_EXTRUDE` formában beírva
+- **Álnevek:** `KH`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KH`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="extrude" caption="Egy zárt, L alakú vonallánc 20-szal szilárdtestté kihúzva, majd délkeletről nézve, Takartvonalas látványstílusban." />
+
+## Opciók [#options]
+
+### `MÓd` (`MÓ`) [#mode]
+
+`SZilárdtest` vagy `Felület` módot kér. A `SZilárdtest` az alapértelmezés, és csak ez létezik: felületobjektumok híján a `Felület` módot a parancs elutasítja.
+
+### `Irány` (`I`) [#direction]
+
+Magasság helyett két pont adja meg az irányt és a hosszt: a profilok ennek a vonalnak a mentén húzódnak ki, ferdén, ha a vonal ferde. A profil síkjában fekvő irányra a válasz `A kihúzás iránya párhuzamos a söprési görbe síkjával.`, és a parancs véget ér.
+
+### `úTVonal` (`TV`) [#path]
+
+A prompt felsorolja, ahogy az AutoCAD-ben, de nincs megvalósítva: a kiválasztását a parancs elutasítja, és újra a magasságot kéri.
+
+### `SZűkítési szög` (`S`) [#taper]
+
+−90 és 90 fok közötti szöget kér, majd ismét a magasságot: a pozitív szög felfelé szűkíti a szilárdtestet, a negatív bővíti. Az a kör, amely a magasság elérése előtt összezárul, pontban végződik, kúp lesz belőle; az a profil, amelyre a szűkítés nem alkalmazható, nem hoz létre semmit.
+
+### `KIfejezés` (`KI`) [#expression]
+
+A magasság kifejezésként: a `2*3` értéke 6. Egyelőre csak aritmetika.
+
+## Amit még nem tud [#missing]
+
+Az Útvonal, vagyis a pálya menti söprés. A Felület mód és a nyitott profilok, amelyekből az AutoCAD felületet készít: felületobjektumok még nincsenek. A szilárdtestek lapjai és az objektumokon belül kattintással talált területek, amelyeket a [`TOLHÚZ`](/docs/commands/presspull) parancs elfogad. Szűkítés ellipszisen, spline-on, vagy a következő szakasszal sarokban találkozó íven. A Kifejezés paraméterei és függvényei. Az ívelt oldalú kihúzott szilárdtest [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amely az AutoCAD-ben felületeket és lemezeket ad. A fogói, valamint a magassága és a szűkítési szöge a Tulajdonságok palettán szerkesztve.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu--de-extrusion--ex--ru-выдавить--выд--pl-wyciągnij--wyc--cs-vytáhni--vyt--hu-kihúz--kh)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD KIHÚZ parancs angolul?
+
+EXTRUDE. A magyar AutoCAD-ben a rövidítése `KH`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTRUDE` is; az angol `EXT` a magyar változatban nem működik.
+
+### Hogyan lehet egy 2D rajzból 3D-t készíteni?
+
+Rajzolja meg a körvonalat egyetlen zárt objektumként – zárt vonalláncként, körként vagy lemezként –, indítsa el a KIHÚZ parancsot, jelölje ki az objektumot, nyomja meg az Enter billentyűt, és írja be a magasságot. Felülről a szilárdtest a körvonalának látszik: fordítsa el a nézetet a ViewCube-bal, vagy a `-NÉZET` paranccsal és a `DKizo` opcióval, hogy 3D-ben lássa.
+
+### Miért nem készít szilárdtestet a KIHÚZ parancs?
+
+A profil nyitott, vagy önmagát metszi. A vonalból, az ívből vagy a nyitott vonalláncból az AutoCAD-ben felület lesz, a MellowCAD-ben pedig ilyen még nincs: a KIHÚZ a `Ilyen típusú objektumot nem lehet söpörni vagy kihúzni.` üzenetet adja, és eltávolítja őket a kijelölésből; az önmagát metsző profil a `Önmagát metsző görbét nem lehet söpörni vagy kihúzni.` üzenetet kapja, és szintén kikerül. Fűzze össze a darabokat az [`EGYBEFŰZ`](/docs/commands/join) paranccsal, készítsen belőlük lemezt a [`LEMEZ`](/docs/commands/region) paranccsal, vagy kattintson beléjük a [`TOLHÚZ`](/docs/commands/presspull) paranccsal.
+
+### Hogyan lehet egy lyukas alakzatot kihúzni?
+
+Készítsen belőle egyetlen lemezt: a [`LEMEZ`](/docs/commands/region) paranccsal a körvonalból és a lyukból, majd a [`KIVON`](/docs/commands/subtract) paranccsal vonja ki a lyuk lemezét a körvonaléból. Húzza ki ezt a lemezt, és a lyuk végigfut a szilárdtesten. Vagy indítsa el a [`TOLHÚZ`](/docs/commands/presspull) parancsot, és kattintson a körvonal és a lyuk közé.
+
+### Hogyan lehet útvonal mentén kihúzni?
+
+Egyelőre sehogy: az `úTVonal` opció megjelenik, de a parancs elutasítja, a SÖPÖR (SWEEP) parancs pedig nincs megvalósítva. Az `Irány` opció két pont közötti egyenes mentén húz ki.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD TOLHÚZ (PRESSPULL) parancs](/docs/commands/presspull)
+- [AutoCAD MEGFORGAT (REVOLVE) parancs: forgástest](/docs/commands/revolve)
+- [Lemez az AutoCAD-ben: LEMEZ (REGION) parancs](/docs/commands/region)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)

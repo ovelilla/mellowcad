@@ -1,0 +1,79 @@
+---
+title: "AutoCAD PÁRH (OFFSET) parancs"
+metaTitle: "AutoCAD PÁRH (OFFSET) parancs: opciók, rövidítés"
+description: "Az AutoCAD PÁRH (OFFSET, rövidítése P) parancsa promptról promptra: távolság vagy Kijelölt pont, Töröl és Fólia, egyszerre egy objektum. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD PÁRH parancs angolul?","answer":"OFFSET. A magyar AutoCAD-ben a rövidítése P: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol O a magyar változatban nem működik; a teljes PÁRH név igen, a _OFFSET pedig az AutoCAD bármely nyelvi változatában."},{"question":"Miért nem lehet egy objektumról párhuzamost rajzolni?","answer":"A PÁRH parancs vonalakról, ívekről, körökről, 2D vonalláncokról, ellipszisekről és spline-okról rajzol párhuzamost. Szöveget, bekezdéses szöveget, blokkreferenciát, méretet és sraffozást „Ezzel az objektummal nem szerkeszthető párhuzamos.” üzenettel elutasít, és akkor is, ha a távolság semmivé zsugorítaná a kört, az ívet vagy a vonalláncot. Zárolt fólián lévő objektumot nem lehet kiválasztani, a 3D vonalláncot pedig átugorja."},{"question":"Hogyan lehet ugyanabból a vonalból több párhuzamost készíteni?","answer":"Válassza ki a vonalat, majd az oldalpromptnál írja be a Többször opció betűjét: az adott oldalra mutató minden kattintás újabb másolatot készít, mindegyiket egy távolsággal az előzőn túl. Vagy maradjon az alapértelmezésnél, és mindig a legújabb másolatot válassza ki."},{"question":"Hogyan lehet a párhuzamos másolatokat az aktuális fóliára tenni?","answer":"Az első promptnál válassza a Fólia opciót, majd az Aktuális értéket. Ettől kezdve minden másolat az aktuális fóliára kerül, amíg újra a Forrásobjektum értéket nem választja."}]
+---
+
+A PÁRH (OFFSET) parancs egy objektummal párhuzamos másolatot rajzol, beírt távolságra vagy egy megadott ponton át: vonalból párhuzamos vonal lesz, körből vagy ívből koncentrikus kör vagy ív, vonalláncból a belsejében vagy kívül futó körvonal, ellipszisből vagy spline-ból egy azt követő spline. Ahogy az AutoCAD-ben, egyszerre egy objektummal dolgozik: a távolságot egyszer adja meg, majd kiválaszt egy objektumot és az oldalt, ahová a másolat kerül, ahányszor csak akarja. Az Enter befejezi a parancsot.
+
+- **Parancs:** `PÁRH`
+- **Angolul:** `OFFSET`, bármely nyelven `_OFFSET` formában beírva
+- **Álnevek:** `P`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `P`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="offset" caption="Egy téglalap 6-os távolságú párhuzamosa befelé és egy köré kifelé: mindkettőnél előbb az objektum, aztán az oldal kiválasztása." />
+
+## Opciók [#options]
+
+### `Kijelölt` (`K`) [#through]
+
+Távolság helyett minden másolat egy megadott vagy beírt ponton halad át. Ez az első prompt alapértéke, így ott az Enter ezt választja, amíg távolságot nem adott meg; attól kezdve az Enter az utolsó távolságot ismétli, az adott rajzban.
+
+### `Töröl` (`T`) [#erase]
+
+Megkérdezi, hogy a párhuzamos másolat elkészülte után törölje-e a forrásobjektumot: `Igen` vagy `Nem` (az alapérték). `Igen` esetén a másolat a forrásobjektum helyébe lép. A választás a munkamenet végéig megmarad, és a következő PÁRH parancs az első sorában jelzi.
+
+### `Fólia` (`F`) [#layer]
+
+Megkérdezi, hová kerüljenek a másolatok: az aktuális fóliára (`Aktuális`), vagy a forrásobjektum fóliájára (`Forrásobjektum`, az alapérték). Ez is a munkamenet végéig megmarad.
+
+### `Kilépés` (`K`) [#exit]
+
+Befejezi a parancsot, ahogy az objektumpromptnál az Enter is.
+
+### `Többször` (`T`) [#multiple]
+
+Az oldalpromptnál: ugyanabból az objektumból újabb párhuzamosokat készít anélkül, hogy újra ki kellene választani, mindegyiket egy távolsággal az előző másolaton túl, amíg az Enter vagy a `Kilépés` le nem zárja.
+
+### `VIssza` (`VI`) [#undo]
+
+Visszavonja az utolsó másolatot, akármelyik objektumból készült, és újra objektumot kér. Ha már nincs visszavonható másolat, ezt jelzi.
+
+## Amit még nem tud [#missing]
+
+Az OFFSETGAPTYPE 1 és 2 értéke: a vonallánc párhuzamosának sarkai mindig úgy záródnak, mint 0 esetén, a szakaszok metszésükig meghosszabbítva. A spline vagy az ellipszis párhuzamosa az AutoCAD tűrésén belül van, de a csomópontjai oda esnek, ahová a MellowCAD teszi őket, nem oda, ahová az AutoCAD. Spline esetén a `Kijelölt` az elemleírásban X-et és Y-t mutat, nem a távolságot.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs--ru-подобие--под--pl-odsuń--od--cs-ekvid--e--hu-párh--p)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD PÁRH parancs angolul?
+
+OFFSET. A magyar AutoCAD-ben a rövidítése `P`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `O` a magyar változatban nem működik; a teljes `PÁRH` név igen, a `_OFFSET` pedig az AutoCAD bármely nyelvi változatában.
+
+### Miért nem lehet egy objektumról párhuzamost rajzolni?
+
+A PÁRH parancs vonalakról, ívekről, körökről, 2D vonalláncokról, ellipszisekről és spline-okról rajzol párhuzamost. Szöveget, bekezdéses szöveget, blokkreferenciát, méretet és sraffozást `Ezzel az objektummal nem szerkeszthető párhuzamos.` üzenettel elutasít, és akkor is, ha a távolság semmivé zsugorítaná a kört, az ívet vagy a vonalláncot. Zárolt fólián lévő objektumot nem lehet kiválasztani, a 3D vonalláncot pedig átugorja.
+
+### Hogyan lehet ugyanabból a vonalból több párhuzamost készíteni?
+
+Válassza ki a vonalat, majd az oldalpromptnál írja be a `Többször` opció betűjét: az adott oldalra mutató minden kattintás újabb másolatot készít, mindegyiket egy távolsággal az előzőn túl. Vagy maradjon az alapértelmezésnél, és mindig a legújabb másolatot válassza ki.
+
+### Hogyan lehet a párhuzamos másolatokat az aktuális fóliára tenni?
+
+Az első promptnál válassza a `Fólia` opciót, majd az `Aktuális` értéket. Ettől kezdve minden másolat az aktuális fóliára kerül, amíg újra a `Forrásobjektum` értéket nem választja.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD METSZ (TRIM) parancs](/docs/commands/trim)
+- [AutoCAD ELÉR (EXTEND) parancs](/docs/commands/extend)
+- [Lekerekítés az AutoCAD-ben: LEKEREKÍT (FILLET) parancs](/docs/commands/fillet)
+- [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)

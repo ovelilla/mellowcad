@@ -1,0 +1,58 @@
+---
+title: "AutoCAD gyakorló feladat: karima"
+metaTitle: "AutoCAD gyakorló feladat: karima reteszhoronnyal"
+description: "Karima rajzolása AutoCAD-ben: furat bevágott reteszhoronnyal, nyolc furat poláris kiosztásban, középvonalak és átmérők, lépésről lépésre. Ingyen, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a karimát milliméterben: 140 átmérő, 60-as központi furat 16 széles reteszhoronnyal, amelynek a teteje 36-ra van a középponttól, nyolc 14-es furat egy 110-es osztókörön, és a középvonalak. A reteszhorony egy téglalap, amelyet a központi furatba vág be; a furatok egyetlen kör és egy poláris kiosztás.
+
+- **Feladat:** Középhaladó · Gépészet · 2D
+- **Parancsok:** [`KÖR`](/docs/commands/circle), [`TÉGL`](/docs/commands/rectang), [`METSZ`](/docs/commands/trim), [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar), [`VONAL`](/docs/commands/line), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter), [`MÉRETHOSSZ`](/docs/commands/dimlinear)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=flange), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/flange" caption="A 140 átmérőjű karima a reteszhoronnyal, a nyolc furattal és az átmérőkkel." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a köröket [#circles]
+
+A Körvonal fólián két kör a `0,0` pontban, mindkettő az `Átmérő` opcióval: `140` és `60`.
+
+<Session name="exercises/flange/circles" caption="1. Rajzolja meg a köröket" />
+
+### 2. Vágja be a reteszhornyot [#keyway]
+
+A [`TÉGL`](/docs/commands/rectang) paranccsal rajzoljon téglalapot a `-8,20` ponttól `16,16` értékkel tovább: ez metszi a központi furatot. A [`METSZ`](/docs/commands/trim) parancs ott vágja el az objektumot, ahol más objektumok metszik: válassza ki a furat ívét a téglalap oldalai között, majd a téglalap alsó oldalát a furaton belül. Ami megmarad, az a reteszhorony: a két oldala és a teteje.
+
+<Session name="exercises/flange/keyway" caption="2. Vágja be a reteszhornyot" />
+
+### 3. Ossza ki a furatokat [#holes]
+
+Egy furat az osztókörön: kör az `55<22.5` pontban, az origótól 55 távolságra, 22,5°-os szögben, az `Átmérő` opcióval, `14` átmérővel. A [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar) parancs: válassza ki, nyomja meg az Enter billentyűt, és adja meg a középpontot, `0,0`; az `Asszociatív` és a `Nem` opció nyolc különálló kört hagy, amelyeket egy méret ki tud jelölni, az `Elem` opció pedig `8` értékkel a teljes kör mentén osztja el őket. Ezután a Középvonalak fólián az osztókör a `0,0` pontban, `110` átmérővel.
+
+<Session name="exercises/flange/holes" caption="3. Ossza ki a furatokat" />
+
+### 4. Rajzolja meg a középvonalakat [#centreLines]
+
+Továbbra is a Középvonalak fólián két vonal a [`VONAL`](/docs/commands/line) paranccsal a középponton át, 156 hosszan: a `-78,0` ponttól `156,0` értékkel vízszintesen; a `0,-78` ponttól `0,156` értékkel felfelé.
+
+<Session name="exercises/flange/centreLines" caption="4. Rajzolja meg a középvonalakat" />
+
+### 5. Méretezze [#dimensions]
+
+A Méretek fólián a [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) paranccsal a központi furatra, egy furatra, az osztókörre és a körvonalra, mindegyiket ott kijelölve, ahol még nem keresztezi méret, majd a [`MÉRETHOSSZ`](/docs/commands/dimlinear) paranccsal a reteszhorony tetején keresztül: 16.
+
+<Session name="exercises/flange/dimensions" caption="5. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table): Középhaladó · Építészet · 2D
+- [AutoCAD gyakorló feladat: telek](/docs/exercises/plot-of-land): Középhaladó · Építőmérnöki · 2D
+- [AutoCAD gyakorló feladat: lépcsős tengely](/docs/exercises/shaft): Középhaladó · Gépészet · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

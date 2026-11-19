@@ -1,0 +1,85 @@
+---
+title: DXF-fájl szerkesztése online
+metaTitle: "Ingyenes online DXF szerkesztő, telepítés nélkül"
+description: "Szerkesszen DXF-fájlt ingyen a böngészőben az AutoCAD parancsaival, és mentse újra DXF-ként, AutoCAD 2000–2018. Nincs telepítés, nincs feltöltés."
+type: howTo
+sourceHash: "5eb0b5897414"
+faq:
+  - question: "Hogyan szerkeszthetek DXF-fájlt online?"
+    answer: "Válassza ki, vagy húzza az oldal tetejére: megnyílik a MellowCAD szerkesztőjében, a böngészőben. Módosítsa az AutoCAD parancsaival, majd a MENTMINT (Ctrl+Shift+S) vagy a DXFKI parancs újra DXF-fájlként menti."
+  - question: "Ingyenes? Kell hozzá fiók?"
+    answer: "Ingyenes, fiók és telepítés nélkül. A fájlt a saját számítógépe olvassa be, és soha nem töltődik fel."
+  - question: "Milyen DXF-verziókba menthetek?"
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004 és 2000, szöveges (ASCII) vagy bináris formátumban. R12-be még nem, és DWG-be sem."
+  - question: "Megnyitja az AutoCAD a mentett DXF-et?"
+    answer: "Igen. Minden objektumfajtát, amelyet a MellowCAD kiír, minden verzióban, szöveges és bináris formátumban is megnyitott az AutoCAD 2027, és a HLISTA (AUDIT) parancsa nem talált hibát."
+  - question: "Elvész valami mentéskor?"
+    answer: "Ami nem nyílt meg, az a mentett fájlban sincs benne: a többszörös mutatók, a táblázatok és a többi objektum, amelyet a parancssor a fájl megnyitásakor megszámolt. A 3D szilárdtesteket és a lemezeket sem írja ki, és a parancssor felsorolja őket. Őrizze meg az eredeti fájlt."
+  - question: "Készíthetek új DXF-fájlt a semmiből?"
+    answer: "Igen. Nyissa meg a szerkesztőt, rajzoljon, és mentse a MENTMINT paranccsal, DXF fájltípust választva."
+---
+
+<OpenDxf />
+
+A MellowCAD a böngészőben szerkeszti a DXF-fájlokat, az AutoCAD parancsaival, kérdéseivel és opcióival, a saját nyelvén beírva, és újra DXF-ként menti őket az AutoCAD és minden olyan program számára, amely olvassa őket. A fájlt a saját számítógépe olvassa be: semmi sem töltődik fel, nincs mit telepíteni, és fiókot sem kell létrehozni.
+
+## Szerkesztés [#edit]
+
+Válasszon ki vagy húzzon ide fent egy DXF-et, és megnyílik a szerkesztőben, vagy nyissa meg ott a <Command id="OPEN" /> (`Ctrl+O`) vagy a <Command id="DXFIN" /> paranccsal. Ezután ugyanolyan rajz, mint bármely más:
+
+- **Módosítsa** a <Command id="MOVE" />, a <Command id="COPY" />, a <Command id="ROTATE" />, a <Command id="SCALE" />, a <Command id="STRETCH" />, a <Command id="TRIM" />, az <Command id="EXTEND" />, a <Command id="OFFSET" /> vagy a <Command id="ERASE" /> paranccsal, és rajzoljon rá.
+- **Javítsa a szövegeit és a fóliáit** a <Command id="TEXTEDIT" />, a <Command id="LAYER" />, a <Command id="PROPERTIES" /> és a <Command id="MATCHPROP" /> paranccsal.
+- **Mérje le** a <Command id="DIST" /> és a <Command id="AREA" /> paranccsal.
+
+[Hogy mi nyílik meg és mi marad ki](/docs/open-dxf#opens), azt a DXF megnyitásáról szóló oldal írja le. Munka közben a rajz ebben a böngészőben marad.
+
+## Mentés DXF-ként [#save]
+
+A <Command id="SAVEAS" /> (`Ctrl+Shift+S`), a <Command id="SAVE" /> és a <Command id="DXFOUT" /> parancs a Rajz mentése másként párbeszédpanelt nyitja meg, ahogy az AutoCAD-ben: egy fájlnév, és egy fájltípus az AutoCAD 2018, 2013, 2010, 2007, 2004 és 2000 DXF közül (a <Command id="DXFOUT" /> parancs az AutoCAD 2018 DXF típussal nyitja meg). Az Eszközök ▸ Beállítások… a Mentés másként opciók párbeszédpanel DXF opciók lapját nyitja meg:
+
+- **Formátum**: ASCII, a szöveg, amelyet a legtöbb program olvas, vagy BINÁRIS.
+- **Objektumok kijelölése**: a párbeszédpanel bezárása után a parancs objektumok kijelölését kéri, és a fájl csak azokat tartalmazza.
+- **Tizedes pontosság (0 és 16 között)**: 16 alatt a parancssor figyelmeztet, ahogy az AutoCAD-ben, és a koordinátákat, a szögeket és a szövegmagasságokat ennyi tizedesjegyre kerekíti.
+
+A fájl letöltődik, mint minden, amit itt ment ([a mentés nem egészen olyan, mint az AutoCAD-ben](/docs/differences#saving)). A `Ctrl+S` ezzel szemben a MellowCAD saját, verziózott formátumában menti a rajzot: DXF-et a <Command id="SAVEAS" /> paranccsal kap.
+
+## Mit tartalmaz a DXF [#holds]
+
+Minden objektumot, amely a MellowCAD-ben létezik, úgy kiírva, ahogy az AutoCAD írja ki: vonalakat, íveket, köröket, ellipsziseket, vonalláncokat a szélességükkel és az illesztésükkel, 3D vonalláncokat, spline-okat, egysoros és bekezdéses szöveget, blokkokat az attribútumaikkal, méreteket, sraffozásokat a mintázatukkal, pontokat, 2D tömör objektumokat, és a kiosztásokat az elemeikből álló blokkként. Velük együtt a fóliákat (be- és kikapcsolt, zárolt) a színükkel, vonaltípusukkal és vonalvastagságukkal, a rajz vonaltípusait, az összetetteket is, és minden objektum vonaltípus-léptékét, a szöveg- és méretstílusokat, a blokkokat, valamint a rajz mértékegységét és beállításait. A szöveg megtartja a karaktereit: 2004-ig az AutoCAD által használt Windows-kódlapon, a többi karakter escape-kóddal, 2007-től UTF-8-ban.
+
+## Mi nem kerül vissza [#lost]
+
+- **Ami nem nyílt meg, azt nem menti.** Amihez a MellowCAD-ben még nincs objektumtípus – a többszörös mutatók, a táblázatok, a kitakarások és [a lista többi eleme](/docs/open-dxf#left-out) –, azt a parancssor a fájl megnyitásakor megszámolja, és a mentett fájlban nincs benne. Őrizze meg az eredetit.
+- **A 3D szilárdtesteket és a lemezeket nem írja ki**: a parancssor kiírja, hány maradt ki.
+- A méret saját stílusfelülírásait és a kiosztás paramétereit nem írja ki: az AutoCAD a méretet a stílusa beállításaival, a kiosztást pedig az elemeiből álló blokkként nyitja meg.
+- Nincs miniatűr előnézeti kép, még nincs AutoCAD R12/LT2 DXF fájltípus, és nincs DWG.
+
+## Új DXF a semmiből [#new]
+
+Ha nincs kiinduló fájl, [nyissa meg a szerkesztőt](/hu/draw), rajzolja meg, és mentse a <Command id="SAVEAS" /> paranccsal, DXF fájltípussal. Az [Első lépések](/docs/getting-started) oldal segít az indulásban.
+
+## Kérdések [#questions]
+
+### Hogyan szerkeszthetek DXF-fájlt online? [#how]
+
+Válassza ki, vagy húzza az oldal tetejére: megnyílik a MellowCAD szerkesztőjében, a böngészőben. Módosítsa az AutoCAD parancsaival, majd a <Command id="SAVEAS" /> (`Ctrl+Shift+S`) vagy a <Command id="DXFOUT" /> parancs újra DXF-fájlként menti.
+
+### Ingyenes? Kell hozzá fiók? [#free]
+
+Ingyenes, fiók és telepítés nélkül. A fájlt a saját számítógépe olvassa be, és soha nem töltődik fel.
+
+### Milyen DXF-verziókba menthetek? [#versions]
+
+AutoCAD 2018, 2013, 2010, 2007, 2004 és 2000, szöveges (ASCII) vagy bináris formátumban. R12-be még nem, és DWG-be sem.
+
+### Megnyitja az AutoCAD a mentett DXF-et? [#autocad]
+
+Igen. Minden objektumfajtát, amelyet a MellowCAD kiír, minden verzióban, szöveges és bináris formátumban is megnyitott az AutoCAD 2027, és a HLISTA (AUDIT) parancsa nem talált hibát.
+
+### Elvész valami mentéskor? [#lost-on-save]
+
+Ami nem nyílt meg, az a mentett fájlban sincs benne: a többszörös mutatók, a táblázatok és a többi objektum, amelyet a parancssor a fájl megnyitásakor megszámolt. A 3D szilárdtesteket és a lemezeket sem írja ki, és a parancssor felsorolja őket. Őrizze meg az eredeti fájlt.
+
+### Készíthetek új DXF-fájlt a semmiből? [#from-scratch]
+
+Igen. [Nyissa meg a szerkesztőt](/hu/draw), rajzoljon, és mentse a <Command id="SAVEAS" /> paranccsal, DXF fájltípust választva.

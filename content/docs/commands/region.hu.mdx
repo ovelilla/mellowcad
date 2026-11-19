@@ -1,0 +1,60 @@
+---
+title: "Lemez az AutoCAD-ben: LEMEZ (REGION) parancs"
+metaTitle: "Lemez az AutoCAD-ben: LEMEZ (REGION) parancs"
+description: "Az AutoCAD LEMEZ (REGION, rövidítése LEM) parancsa zárt alakzatokból lemezt készít: milyen hurkokat talál, miért nem készít egyet sem, és mire jó a lemez."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD LEMEZ parancs angolul, és hogyan kell használni?","answer":"REGION. A magyar AutoCAD-ben a rövidítése LEM (az angol REG itt nem működik), a _REGION pedig az AutoCAD bármely nyelvi változatában fut. Futtassa a parancsot, válassza ki a zárt alakzatokat vagy azokat a vonalakat, amelyek végpontjaikkal zárt alakzatot alkotnak, és nyomja meg az Enter billentyűt. A mintában a négy vonal és egy kör köré húzott ablak két lemezt készít, a parancssor pedig két kiemelt hurkot és két létrehozott lemezt számol."},{"question":"Miért nem hoz létre lemezt a LEMEZ parancs?","answer":"Az alakzat nem zárt végpontról végpontra. Az egymást metsző vagy egymásig nem érő vonalak semmit sem zárnak be: a LEMEZ a nyitott objektumokat csak a végpontjaiknál fűzi láncba, és egy hajszálnyi rés is elég ahhoz, hogy a láncot elvesse. Az önmagát metsző hurkot, például egy csokornyakkendő alakút, elutasítja, és az önmetszések között számolja. Kösse össze a végeket a LEKEREKÍT paranccsal 0 sugárral, vagy vágja le a METSZ paranccsal, ami túlnyúlik, és próbálja újra."},{"question":"Hogyan lehet lyukas lemezt készíteni?","answer":"Készítsen lemezt a körvonalból és egyet a lyukból, majd futtassa a KIVON parancsot: válassza ki a körvonalat, Enter, a lyukat, Enter. Az eredmény egyetlen lemez, amelyet a KIHÚZ átmenő lyukas szilárdtestté alakít."},{"question":"Hogyan lehet megtudni egy lemez területét?","answer":"Válassza ki, és olvassa le a Terület értékét a Tulajdonságok palettán, vagy futtassa a TERÜLET parancsot, válassza az Objektum opciót, és jelölje ki a lemezt. A FIZJELL ehhez hozzáadja a kerületet, a súlypontot és a tehetetlenségi nyomatékokat."}]
+---
+
+A LEMEZ (REGION) parancs zárt alakzatokból lemezt készít: vastagság nélküli sík területet, amelyet a hurkai határolnak. Válassza ki az objektumokat, és nyomja meg az Enter billentyűt; minden hurokból, amelyet alkotnak, lemez lesz. A zárt objektum önmagában egy hurok: a kör, az ellipszis, a zárt vonallánc vagy spline. A nyitottakat – vonalakat, íveket, ellipszisíveket, nyitott vonalláncokat és spline-okat – végpontjaiknál fűzi láncba, soha nem ott, ahol metszik egymást, a záródásig nem érő láncot pedig elveti. A parancssor ezután kiírja, hány hurkot talált, hányat utasított el és miért, és hány lemezt hozott létre; üres kiválasztásnál az Enterre `Semmit sem talált.` a válasz.
+
+A lemezbe bekerült objektumokat törli, a többit megtartja, a lemezek pedig az aktuális fóliát és tulajdonságokat kapják, nem az objektumokét. A másik hurkon belüli hurok saját lemezt ad, nem lyukat a másikban: a [`KIVON`](/docs/commands/subtract) vonja ki az egyiket a másikból. A lemez az éleiként rajzolódik, és azokra lehet tárgyraszterrel illeszkedni; a Tulajdonságok paletta mutatja a területét és a kerületét, amelyet a [`TERÜLET`](/docs/commands/area), a [`LISTA`](/docs/commands/list) és a [`FIZJELL`](/docs/commands/massprop) is megmér. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a [`KÖZÖSRÉSZ`](/docs/commands/intersect) egy síkban fekvő lemezeket kombinál, a [`KIHÚZ`](/docs/commands/extrude), a [`MEGFORGAT`](/docs/commands/revolve) és a [`TOLHÚZ`](/docs/commands/presspull) 3D szilárdtestté alakítja őket, a [`SZÉTVET`](/docs/commands/explode) pedig visszaadja a vonalaikat, íveiket és köreiket. A teljes parancs egyetlen visszavonási lépés.
+
+- **Parancs:** `LEMEZ`
+- **Angolul:** `REGION`, bármely nyelven `_REGION` formában beírva
+- **Álnevek:** `LEM`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `LEM`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="region" caption="Négy, végpontjaival zárt alakzatot alkotó vonal és bennük egy kör: a LEMEZ, mindkettő köré húzott ablakkal, két lemezt készít, és törli az objektumokat." />
+
+## Amit még nem tud [#missing]
+
+Az AutoCAD `DELOBJ` változója: a lemezbe bekerült objektumokat itt mindig törli. A HVONAL (BOUNDARY), amely egy pont körüli területből is készíthet lemezt, valamint a lemez sraffozás határvonalából. A lemez szerkesztése a fogóival: megjelennek, de a húzásuk semmit sem változtat. Az élei vágó- vagy határélként a [`METSZ`](/docs/commands/trim) és az [`ELÉR`](/docs/commands/extend) Gyors módjában, valamint az ellipszis- vagy spline-élű lemez [`SRAFFOZ`](/docs/commands/hatch) sraffozása. A lemezek és felületek kombinálása, mert felületek a MellowCAD-ben nincsenek, és a Tulajdonságok paletta Anyag sora.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg--it-regione--reg--de-region--rio--ru-область--обл--pl-region--reg--cs-oblast--obl--hu-lemez--lem)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD LEMEZ parancs angolul, és hogyan kell használni?
+
+REGION. A magyar AutoCAD-ben a rövidítése `LEM` (az angol `REG` itt nem működik), a `_REGION` pedig az AutoCAD bármely nyelvi változatában fut. Futtassa a parancsot, válassza ki a zárt alakzatokat vagy azokat a vonalakat, amelyek végpontjaikkal zárt alakzatot alkotnak, és nyomja meg az Enter billentyűt. A mintában a négy vonal és egy kör köré húzott ablak két lemezt készít, a parancssor pedig két kiemelt hurkot és két létrehozott lemezt számol.
+
+### Miért nem hoz létre lemezt a LEMEZ parancs?
+
+Az alakzat nem zárt végpontról végpontra. Az egymást metsző vagy egymásig nem érő vonalak semmit sem zárnak be: a LEMEZ a nyitott objektumokat csak a végpontjaiknál fűzi láncba, és egy hajszálnyi rés is elég ahhoz, hogy a láncot elvesse. Az önmagát metsző hurkot, például egy csokornyakkendő alakút, elutasítja, és az önmetszések között számolja. Kösse össze a végeket a [`LEKEREKÍT`](/docs/commands/fillet) paranccsal 0 sugárral, vagy vágja le a [`METSZ`](/docs/commands/trim) paranccsal, ami túlnyúlik, és próbálja újra.
+
+### Hogyan lehet lyukas lemezt készíteni?
+
+Készítsen lemezt a körvonalból és egyet a lyukból, majd futtassa a [`KIVON`](/docs/commands/subtract) parancsot: válassza ki a körvonalat, Enter, a lyukat, Enter. Az eredmény egyetlen lemez, amelyet a [`KIHÚZ`](/docs/commands/extrude) átmenő lyukas szilárdtestté alakít.
+
+### Hogyan lehet megtudni egy lemez területét?
+
+Válassza ki, és olvassa le a Terület értékét a Tulajdonságok palettán, vagy futtassa a [`TERÜLET`](/docs/commands/area) parancsot, válassza az `Objektum` opciót, és jelölje ki a lemezt. A [`FIZJELL`](/docs/commands/massprop) ehhez hozzáadja a kerületet, a súlypontot és a tehetetlenségi nyomatékokat.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)
+- [AutoCAD EGYESÍT (UNION) parancs](/docs/commands/union)
+- [AutoCAD KIHÚZ (EXTRUDE) parancs](/docs/commands/extrude)
+- [Terület számítása az AutoCAD-ben: TERÜLET (AREA) parancs](/docs/commands/area)
+- [AutoCAD FIZJELL (MASSPROP) parancs](/docs/commands/massprop)

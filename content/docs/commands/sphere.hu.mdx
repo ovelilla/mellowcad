@@ -1,0 +1,71 @@
+---
+title: "AutoCAD GÖMB (SPHERE) parancs"
+description: "Így rajzol 3D gömb szilárdtestet az AutoCAD GÖMB (SPHERE) parancsa: középpont és sugár, Átmérő, 3P, 2P és Éés, és miért látszik vonalakként. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet gömböt rajzolni az AutoCAD-ben?","answer":"Indítsa el a GÖMB parancsot, adja meg a középpontot, majd a sugarat: a 0,0,0 és a 25 megrajzolja a munkamenet gömbjét. Ahhoz, hogy kereknek lássa, fordítsa el a nézetet a ViewCube egyik sarkával, vagy a -NÉZET paranccsal és a DKizo opcióval."},{"question":"Miért néz ki a gömb vonalakkal áthúzott körnek?","answer":"A 2D drótváz és a Takartvonalas stílus a gömböt a hosszúsági és szélességi köreivel rajzolja; felülnézetben ezek egy kört és rajta átmenő vonalakat adnak. Az LSAKTUÁLIS parancs Látványtervi opciója árnyalja, a vonalak számát pedig az ISOLINES adja meg."},{"question":"Hogyan lehet félgömböt készíteni?","answer":"Rajzolja meg a gömböt, majd vágja el a középpontján át a SZEL paranccsal: három ponttal a síkon, vagy az XY opcióval és a középponttal, majd adja meg a megtartandó oldalt."},{"question":"Hogyan lehet gömböt rajzolni az átmérőjével?","answer":"A sugárnál válassza az Átmérő opciót, és gépelje be az átmérőt. A 2P opcióval egy átmérő két végpontja is elhelyezi."}]
+---
+
+A GÖMB (SPHERE) parancs 3D gömb szilárdtestet rajzol: adja meg a középpontot, majd a sugarat. Az egérrel megadott sugarat a középponton átmenő síkon méri, az utolsó sugarat pedig alapértelmezésként ajánlja fel, amelyet az Enter elfogad; ezt az értéket a [`HENGER`](/docs/commands/cylinder), a [`KÚP`](/docs/commands/cone) és a többi alaptest parancsa is használja. A gömb az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
+
+2D drótváz és Takartvonalas látványstílusban vonalakként jelenik meg: hosszúsági és szélességi körökként, annyival, amennyit az `ISOLINES` előír, és rajta a tárgyraszter csak a középpontjához köt. A [`LISTA`](/docs/commands/list) parancs megmutatja a helyzetét és a sugarát, a Tulajdonságok palettán pedig begépelhető a sugara vagy az átmérője. A fogói mozgatják, az egyenlítő negyedeinél lévők pedig a sugarát állítják. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+
+- **Parancs:** `GÖMB`
+- **Angolul:** `SPHERE`, bármely nyelven `_SPHERE` formában beírva
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `GÖMB`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="sphere" caption="25 sugarú gömb a középpontjából rajzolva, délkeletről nézve, Koncepcionális látványstílusban." />
+
+## Opciók [#options]
+
+### `3P` [#3p]
+
+A középpontnál: három pontot kér, és a gömb középpontja az ezeken átmenő kör középpontja lesz, sugara a kör sugara.
+
+### `2P` [#2p]
+
+A középpontnál: egy átmérő két végpontját kéri, a tér bármely pontján.
+
+### `Éés` (`É`) [#ttr]
+
+A középpontnál: Érintő tárgyraszterrel jelöljön ki két vonalat, kört vagy ívet, és adjon meg egy sugarat: a gömb középpontja annak az adott sugarú körnek a középpontja lesz, amely mindkettőt érinti, az ő magasságukban.
+
+### `Átmérő` (`Á`) [#diameter]
+
+A sugárnál: helyette az átmérőt kéri, és az utolsó sugár kétszeresét ajánlja fel.
+
+## Amit még nem tud [#missing]
+
+A gömb [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amelyből az AutoCAD felületet készít: a MellowCAD-ben nincsenek felületek, ezért azt írja ki, hogy nem tudta szétvetni. Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, valamint a saját 3D parancsaik (3DMOZGAT, 3DFORGAT, 3DLÉPTÉK). A körvonal, amelyet az AutoCAD `DISPSILH` változója rajzol. Azok a látványstílusok, amelyek a 2D drótváz, a Takartvonalas és a Koncepcionális mellett az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból még hiányoznak.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera--de-kugel--ru-шар--pl-sfera--cs-koule--hu-gömb)
+
+## Kérdések [#questions]
+
+### Hogyan lehet gömböt rajzolni az AutoCAD-ben?
+
+Indítsa el a GÖMB parancsot, adja meg a középpontot, majd a sugarat: a `0,0,0` és a `25` megrajzolja a munkamenet gömbjét. Ahhoz, hogy kereknek lássa, fordítsa el a nézetet a ViewCube egyik sarkával, vagy a `-NÉZET` paranccsal és a `DKizo` opcióval.
+
+### Miért néz ki a gömb vonalakkal áthúzott körnek?
+
+A 2D drótváz és a Takartvonalas stílus a gömböt a hosszúsági és szélességi köreivel rajzolja; felülnézetben ezek egy kört és rajta átmenő vonalakat adnak. Az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancs `Látványtervi` opciója árnyalja, a vonalak számát pedig az `ISOLINES` adja meg.
+
+### Hogyan lehet félgömböt készíteni?
+
+Rajzolja meg a gömböt, majd vágja el a középpontján át a [`SZEL`](/docs/commands/slice) paranccsal: három ponttal a síkon, vagy az `XY` opcióval és a középponttal, majd adja meg a megtartandó oldalt.
+
+### Hogyan lehet gömböt rajzolni az átmérőjével?
+
+A sugárnál válassza az `Átmérő` opciót, és gépelje be az átmérőt. A `2P` opcióval egy átmérő két végpontja is elhelyezi.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD TÓRUSZ (TORUS) parancs](/docs/commands/torus)
+- [Henger az AutoCAD-ben: HENGER (CYLINDER) parancs](/docs/commands/cylinder)
+- [AutoCAD SZEL (SLICE) parancs](/docs/commands/slice)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)

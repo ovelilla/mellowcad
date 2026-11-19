@@ -1,0 +1,73 @@
+---
+title: "Másolás az AutoCAD-ben: MÁSOL (COPY) parancs"
+metaTitle: "Másolás az AutoCAD-ben: MÁSOL (COPY) parancs"
+description: "Másolás az AutoCAD-ben a MÁSOL (COPY, M) paranccsal: egy bázispont, majd tetszőleges számú másolat a Vissza és a Kilépés opcióval, vagy egy elmozdulással."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MÁSOL parancs angolul, és mi a rövidítése?","answer":"Angolul COPY, a magyar AutoCAD-ben MÁSOL: írja be az M vagy az MÁ rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol CO és CP a magyar AutoCAD-ben nem működik; a _COPY az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet egyszerre több másolatot készíteni?","answer":"Helyezze el őket egymás után: minden megadott pont egy újabb másolat ugyanabból a bázispontból, amíg meg nem nyomja az Enter billentyűt. Sorokba, oszlopokba vagy egy középpont köré a KIOSZT parancs egy lépésben készíti el őket."},{"question":"Hogyan lehet egy objektumot adott távolságra másolni?","answer":"Adja meg a bázispontot, majd a második pontot távolságként írja be: a 30,0 X irányban 30-cal arrébb másolja, mert a dinamikus bevitel az első utáni pontot ahhoz képest olvassa. Vagy mutasson a kurzorral a kívánt irányba Orto móddal vagy poláris követéssel, és csak a távolságot írja be."},{"question":"Miért nincs Kiosztás opció a MÁSOL parancsban?","answer":"A MellowCAD-ben még nem érhető el. Egyenletesen elosztott másolatsorhoz a KIOSZTNÉGYSZ parancs egyetlen sorral ugyanezt készíti el, és egyetlen, szerkeszthető kiosztásként tartja meg őket."}]
+---
+
+A MÁSOL (COPY) parancs másolatokat helyez el a kijelölt objektumokról: jelölje ki őket, adjon meg egy bázispontot, majd minden másolathoz egy második pontot. Ahogy az AutoCAD-ben, ahol a másolási mód alapértelmezés szerint Többször, mindig újabb másolatot kér, amíg meg nem nyomja az Enter billentyűt, vagy a Kilépés opciót nem választja, és minden másolatot ugyanabból a bázispontból mér. A másolatok megtartják az objektumok fóliáját, színét és minden más tulajdonságát. A parancs előtt kijelölt objektumokat másolja, és amíg egy másolatot elhelyez, a készlet követi a kurzort.
+
+- **Parancs:** `MÁSOL`
+- **Angolul:** `COPY`, bármely nyelven `_COPY` formában beírva
+- **Álnevek:** `M`, `MÁ`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `M`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="copy" caption="Egy kör háromszor másolva X irányban ugyanabból a bázispontból, majd Enter." />
+
+## Opciók [#options]
+
+### `Elmozdulás` (`E`) [#displacement]
+
+A bázispont promptjánál választva vagy ott az Enter billentyűvel: egyetlen elmozdulást kér be vektorként – a `30,0` egy másolatot tesz X irányban 30-cal arrébb –, majd befejezi a parancsot. Az alapértéke az, amelyet a MÁSOL abban a rajzban utoljára használt.
+
+### `Kilépés` (`K`) [#exit]
+
+Befejezi a parancsot, ahogy az Enter is, ha már elhelyezett egy másolatot.
+
+### `VIssza` (`VI`) [#undo]
+
+Visszavonja az utoljára elhelyezett másolatot. Az első visszavonásakor az üzenet `A parancsok hatása a legelső lépésig érvénytelenítve lett.`, és ismét a második pontot kéri.
+
+## Amit még nem tud [#missing]
+
+A COPYMODE Egyszer módja (egy másolat, majd vége) nem érhető el: a MÁSOL mindig Többször módban fut, így a bázispont promptja csak az `Elmozdulás` opciót sorolja fel. A második pont Kiosztás opciója, az AutoCAD egyenletesen elosztott másolatsora, szintén nem érhető el.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp--de-kopieren--ko--cp--ru-копировать--кп--pl-kopiuj--k--cs-kopie--ko--hu-másol--m--má)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MÁSOL parancs angolul, és mi a rövidítése?
+
+Angolul COPY, a magyar AutoCAD-ben MÁSOL: írja be az `M` vagy az `MÁ` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `CO` és `CP` a magyar AutoCAD-ben nem működik; a `_COPY` az AutoCAD bármely nyelvén igen.
+
+### Hogyan lehet egyszerre több másolatot készíteni?
+
+Helyezze el őket egymás után: minden megadott pont egy újabb másolat ugyanabból a bázispontból, amíg meg nem nyomja az Enter billentyűt. Sorokba, oszlopokba vagy egy középpont köré a [`KIOSZT`](/docs/commands/array) parancs egy lépésben készíti el őket.
+
+### Hogyan lehet egy objektumot adott távolságra másolni?
+
+Adja meg a bázispontot, majd a második pontot távolságként írja be: a `30,0` X irányban 30-cal arrébb másolja, mert a dinamikus bevitel az első utáni pontot ahhoz képest olvassa. Vagy mutasson a kurzorral a kívánt irányba Orto móddal vagy poláris követéssel, és csak a távolságot írja be.
+
+### Miért nincs Kiosztás opció a MÁSOL parancsban?
+
+A MellowCAD-ben még nem érhető el. Egyenletesen elosztott másolatsorhoz a [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect) parancs egyetlen sorral ugyanezt készíti el, és egyetlen, szerkeszthető kiosztásként tartja meg őket.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket)
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [Mozgatás az AutoCAD-ben: MOZGAT (MOVE) parancs](/docs/commands/move)
+- [Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs](/docs/commands/array)
+- [AutoCAD PÁRH (OFFSET) parancs](/docs/commands/offset)
+- [Tükrözés az AutoCAD-ben: TÜKRÖZ (MIRROR) parancs](/docs/commands/mirror)

@@ -1,0 +1,55 @@
+---
+title: "3D keringés az AutoCAD-ben: 3DKERINGÉS (3DORBIT) parancs"
+metaTitle: "3D keringés az AutoCAD-ben: 3DKERINGÉS, 3DO"
+description: "3D keringés az AutoCAD-ben a 3DKERINGÉS (3DORBIT; 3DO, KERING) paranccsal: húzással, Shifttel és a görgővel, a kilépés és vissza felülnézetbe. Ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi a 3D keringés rövidítése az AutoCAD-ben?","answer":"3DO, 3DK vagy KERING, majd Enter vagy Szóköz; angolul a parancs 3DORBIT, és a _3DORBIT az AutoCAD bármely nyelvén működik. Gépelés nélkül: tartsa lenyomva a Shift billentyűt és a görgőgombot, és húzza az egeret."},{"question":"Hogyan lehet egérrel keringeni az AutoCAD-ben?","answer":"Tartsa lenyomva a Shift billentyűt, nyomja le a görgőgombot, és húzza az egeret: oldalra húzva a modell körbefordul, fel-le húzva magasabbról vagy alacsonyabbról látja. Engedje el, és visszatér abba a parancsba, amelyben volt."},{"question":"Hogyan lehet kilépni a 3D keringésből?","answer":"Nyomja meg az Enter vagy az Esc billentyűt. A nézet ott marad, ahol hagyta."},{"question":"Hogyan lehet keringés után visszatérni felülnézetbe?","answer":"Futtassa az NNÉZET parancsot, és nyomja meg az Enter billentyűt, vagy a -NÉZET parancsot a fElül opcióval, vagy kattintson a ViewCube tetejére. A ZOOM parancs Előző opciója húzásonként lép vissza."}]
+---
+
+A 3DKERINGÉS (3DORBIT) parancs húzás közben körbeforgatja a nézetet a rajz körül; a rajzban semmi sem mozdul és semmi sem változik. Az oldalirányú húzás a világ Z tengelye körül forgatja a kamerát, a fel-le húzás emeli vagy süllyeszti, mindezt a képernyő közepe alatt lévő rajzrész körül, párhuzamos vetítésben. Indításkor kiírja, hogyan lehet kilépni belőle: amíg fut, csak keringeni lehet, és az Enter vagy az Esc befejezi, akár volt húzás, akár nem.
+
+A Shift és a görgőgomb lenyomva tartásával bárhonnan lehet keringeni, akár egy másik parancson belül is, és a navigációs sáv Keringés gombja is elindítja. Aposztróffal beírva, `'3DKERINGÉS` alakban, egy másik parancson belül is működik, és az a parancs utána folytatódik. Minden húzás egy lépés a [`ZOOM`](/docs/commands/zoom) parancs `Előző` opciója számára, a teljes futás pedig egyetlen visszavonási lépés, így a `T` parancs visszaállítja a nézetet. Ha a szilárdtesteket testként, nem drótvázként szeretné látni, használja az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsot; a MellowCAD 3D-ben csak szilárdtesteket kezel, egyelőre részben.
+
+- **Parancs:** `3DKERINGÉS`
+- **Angolul:** `3DORBIT`, bármely nyelven `_3DORBIT` formában beírva
+- **Álnevek:** `3DK`, `3DO`, `KERING`
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `3DK`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="3dorbit" caption="Egy téglatest először felülnézetben: 3DKERINGÉS, húzás oldalra és lefelé, majd Enter, és a téglatest felülről, az elülső sarka felől látszik." />
+
+## Amit még nem tud [#missing]
+
+A jobb gombos helyi menü a vetítési módokkal, a látványstílusokkal és a többi navigációs móddal. Keringés csak a kijelölt objektumok körül. A perspektíva. A 3DSZKERINGÉS, a 3DFKERINGÉS és az AutoCAD többi 3D navigációs parancsa.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do--or--cs-3dorbit--3do--orbit--hu-3dkeringés--3dk--3do--kering)
+
+## Kérdések [#questions]
+
+### Mi a 3D keringés rövidítése az AutoCAD-ben?
+
+`3DO`, `3DK` vagy `KERING`, majd Enter vagy Szóköz; angolul a parancs 3DORBIT, és a `_3DORBIT` az AutoCAD bármely nyelvén működik. Gépelés nélkül: tartsa lenyomva a Shift billentyűt és a görgőgombot, és húzza az egeret.
+
+### Hogyan lehet egérrel keringeni az AutoCAD-ben?
+
+Tartsa lenyomva a Shift billentyűt, nyomja le a görgőgombot, és húzza az egeret: oldalra húzva a modell körbefordul, fel-le húzva magasabbról vagy alacsonyabbról látja. Engedje el, és visszatér abba a parancsba, amelyben volt.
+
+### Hogyan lehet kilépni a 3D keringésből?
+
+Nyomja meg az Enter vagy az Esc billentyűt. A nézet ott marad, ahol hagyta.
+
+### Hogyan lehet keringés után visszatérni felülnézetbe?
+
+Futtassa az [`NNÉZET`](/docs/commands/plan) parancsot, és nyomja meg az Enter billentyűt, vagy a `-NÉZET` parancsot a `fElül` opcióval, vagy kattintson a ViewCube tetejére. A [`ZOOM`](/docs/commands/zoom) parancs `Előző` opciója húzásonként lép vissza.
+
+## Kapcsolódó parancsok [#related]
+
+- [Látványstílusok az AutoCAD-ben: LSAKTUÁLIS (VSCURRENT) parancs](/docs/commands/vscurrent)
+- [AutoCAD NÉZET (VIEW) parancs](/docs/commands/view)
+- [AutoCAD NNÉZET (PLAN) parancs: normálnézet az FKR-re](/docs/commands/plan)
+- [AutoCAD ZOOM parancs](/docs/commands/zoom)

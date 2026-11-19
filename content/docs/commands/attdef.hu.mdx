@@ -1,0 +1,85 @@
+---
+title: "Blokkattribútumok az AutoCAD-ben: ATTDEF parancs"
+metaTitle: "Blokkattribútumok az AutoCAD-ben: ATTDEF"
+description: "Blokkattribútum definiálása az AutoCAD-ben az ATTDEF (ATT) paranccsal: a módok, a címke, a prompt és az alapértelmezett érték, majd a szöveg helye. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az ATTDEF parancs rövidítése az AutoCAD-ben?","answer":"ATT, majd Enter vagy Szóköz; a DPATTDEF is működik. A -ATT a -ATTDEF parancs, a parancssori változat, amelyet itt az ATTDEF is futtat. A parancs neve a magyar AutoCAD-ben is ATTDEF, az _ATTDEF pedig az AutoCAD bármely nyelvén működik."},{"question":"Hogyan lehet attribútumos blokkot létrehozni az AutoCAD-ben?","answer":"Rajzolja meg a szimbólumot, majd minden attribútumhoz futtassa az ATTDEF parancsot, és helyezze a szövegét oda, ahol az értéknek látszania kell. Futtassa a BLOKK parancsot, adjon meg egy bázispontot, és jelölje ki a szimbólumot és az attribútumokat abban a sorrendben, ahogy a BEILL parancsnak kérdeznie kell őket. Ezután a BEILL parancs a blokk minden beillesztésekor minden attribútumhoz bekér egy értéket, az alapértelmezést felkínálva."},{"question":"Mi a különbség a címke, a prompt és az alapértelmezett érték között?","answer":"A címke az attribútum neve, azonosítóként: ezt mutatja a definíció, és ez a felirata a mezőnek a BATTEDIT parancsban. A prompt az a kérdés, amellyel a BEILL parancs az értékét kéri. Az alapértelmezés a felkínált érték, amelyet az Enter elfogad."},{"question":"Hogyan lehet szerkeszteni egy attribútumdefiníciót?","answer":"Kattintson rá duplán, mielőtt blokkba kerül: a SZÖVSZERK parancs megnyitja a címkéjét, a promptját és az alapértelmezett értékét. Blokkba kerülése után az egyes referenciák értékeit az ATTEDIT vagy a BATTEDIT paranccsal lehet szerkeszteni."}]
+---
+
+Az ATTDEF parancs attribútumot definiál: egy címkét, egy promptot és egy alapértelmezett értéket, egysoros szövegként a rajzba helyezve. Amikor a [`BLOKK`](/docs/commands/block) paranccsal blokkot készít, jelölje ki a többi objektummal együtt, és a blokk minden referenciája saját értéket tárol hozzá: egy ajtó számát, egy alkatrész kódját, egy helyiség nevét. Addig a definíció a címkéjét mutatja.
+
+Az AutoCAD ATTDEF parancsa az Attribútum definiálása párbeszédpanelt nyitja meg, amely a MellowCAD-ben nincs: itt az ATTDEF a parancssorban azt kérdezi, amit a `-ATTDEF`, ahogy az AutoCAD konzolja. Kiírja az aktuális módokat, és bekéri, melyiket módosítsa, amíg az Enter tovább nem lép. Ezután a címke következik: szóköz nélkül, mert a szóköz lezárja, a kisbetűkből pedig nagybetűk lesznek; a magában álló Enter üzenete `A címke nem lehet üres`. Utána a prompt, amellyel a [`BEILL`](/docs/commands/insert) parancs az értéket kérni fogja – az Enter a címkét veszi át –, majd az alapértelmezett érték. Végül a szöveg helye, a [`SZÖVEG`](/docs/commands/text) parancs kérdéseivel: kezdőpont, magasság és elforgatás. A magasság és az igazítás a SZÖVEG paranccsal közös, mindkét irányban. A kezdőpontnál adott Enter a definíciót az utoljára definiált alá teszi egy sorral, annak magasságával, elforgatásával, stílusával és igazításával, így egy blokk attribútumai egymás alá sorakoznak.
+
+- **Parancs:** `ATTDEF`
+- **Álnevek:** `ATT`, `DPATTDEF`
+- **Panel:** [Rendszerezés](/docs/commands#organize)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ATT`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="attdef" caption="Egy ajtójelölő: a NUM attribútum egy kör közepén, a promptja maga a címke, az alapértelmezett értéke 1, készen arra, hogy blokkba kerüljön." />
+
+## Opciók [#options]
+
+### `Láthatatlan` (`L`) [#invisible]
+
+Az érték nem látszik a referenciákon, amíg az [`ATTLÁTH`](/docs/commands/attdisp) parancs be nem kapcsolja. Mindegyik mód kapcsoló: kiválasztása átváltja `I` és `N` között, újra kiírja a módokat, és ismét kérdez. A módok a következő ATTDEF parancsra is beállítva maradnak.
+
+### `Konstans` (`K`) [#constant]
+
+Minden referencia ugyanazt az értéket tárolja, amelyet az ATTDEF a prompt és az alapértelmezés helyett kér be; a BEILL parancs sosem kérdez rá.
+
+### `Ellenőrző` (`E`) [#verify]
+
+A BEILL parancs másodszor is bekéri az értéket, ellenőrzésképpen, miután minden értéket egyszer már bekért.
+
+### `Beállító` (`B`) [#preset]
+
+A BEILL parancs nem kéri be az értéket: minden referencia az alapértelmezést kapja.
+
+### `hely Rögzítése` (`R`) [#lock-position]
+
+Kezdetben be van kapcsolva: az attribútum ott marad, ahová a blokk teszi.
+
+### `Igazít` (`I`) [#justify]
+
+Bekéri, a szöveg melyik pontjához igazodjon, ahogy a SZÖVEG parancs: `Bal`, `Felező`, `Jobb`, `Közép`, vagy a kilenc pont egyike felül, középen és alul, balra, középre és jobbra. A kezdőpont promptja ezután az általa megnevezett pontot kéri: a középső közép egy jelölő közepére igazítja az értéket.
+
+### `Stílus` (`S`) [#style]
+
+Bekéri a használandó szövegstílust, amely aktuálissá válik; a `?` felsorolja a rajz stílusait.
+
+## Amit még nem tud [#missing]
+
+Az Attribútum definiálása párbeszédpanel: az ATTDEF a parancssorban kérdez. A Feliratozási és a Többsoros mód, amelyet az AutoCAD 2027 a Hely rögzítése után sorol fel, és a többsoros attribútum sorai. A mezők, az Illeszt és a Beilleszt igazítás, valamint az, hogy a Stílus opció `?` válasza rákérdezzen, mely stílusokat listázza.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef--cs-atrdef--at--ddattdef--diatrdef---atrdef---at--hu-attdef--att--dpattdef---attdef---att)
+
+## Kérdések [#questions]
+
+### Mi az ATTDEF parancs rövidítése az AutoCAD-ben?
+
+`ATT`, majd Enter vagy Szóköz; a `DPATTDEF` is működik. A `-ATT` a `-ATTDEF` parancs, a parancssori változat, amelyet itt az ATTDEF is futtat. A parancs neve a magyar AutoCAD-ben is ATTDEF, az `_ATTDEF` pedig az AutoCAD bármely nyelvén működik.
+
+### Hogyan lehet attribútumos blokkot létrehozni az AutoCAD-ben?
+
+Rajzolja meg a szimbólumot, majd minden attribútumhoz futtassa az ATTDEF parancsot, és helyezze a szövegét oda, ahol az értéknek látszania kell. Futtassa a [`BLOKK`](/docs/commands/block) parancsot, adjon meg egy bázispontot, és jelölje ki a szimbólumot és az attribútumokat abban a sorrendben, ahogy a BEILL parancsnak kérdeznie kell őket. Ezután a [`BEILL`](/docs/commands/insert) parancs a blokk minden beillesztésekor minden attribútumhoz bekér egy értéket, az alapértelmezést felkínálva.
+
+### Mi a különbség a címke, a prompt és az alapértelmezett érték között?
+
+A címke az attribútum neve, azonosítóként: ezt mutatja a definíció, és ez a felirata a mezőnek a [`BATTEDIT`](/docs/commands/eattedit) parancsban. A prompt az a kérdés, amellyel a BEILL parancs az értékét kéri. Az alapértelmezés a felkínált érték, amelyet az Enter elfogad.
+
+### Hogyan lehet szerkeszteni egy attribútumdefiníciót?
+
+Kattintson rá duplán, mielőtt blokkba kerül: a [`SZÖVSZERK`](/docs/commands/textedit) parancs megnyitja a címkéjét, a promptját és az alapértelmezett értékét. Blokkba kerülése után az egyes referenciák értékeit az [`ATTEDIT`](/docs/commands/attedit) vagy a [`BATTEDIT`](/docs/commands/eattedit) paranccsal lehet szerkeszteni.
+
+## Kapcsolódó parancsok [#related]
+
+- [Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs](/docs/commands/block)
+- [Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs](/docs/commands/insert)
+- [Attribútumok szerkesztése az AutoCAD-ben: ATTEDIT parancs](/docs/commands/attedit)
+- [Attribútumok megjelenítése az AutoCAD-ben: ATTLÁTH (ATTDISP) parancs](/docs/commands/attdisp)
+- [AutoCAD BATTEDIT (EATTEDIT) parancs](/docs/commands/eattedit)

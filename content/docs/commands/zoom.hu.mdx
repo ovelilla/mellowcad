@@ -1,0 +1,86 @@
+---
+title: "AutoCAD ZOOM parancs"
+description: "Így működik az AutoCAD ZOOM (Z) parancsa: Terjedelem, Ablak, Előző, Arány nX-szel, Objektum és Mind, az egérgörgő, nagyítás parancs közben. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD ZOOM parancs magyarul?","answer":"A magyar AutoCAD-ben is ZOOM a neve. Írja be a ZOOM nevet vagy a Z rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; a _ZOOM az AutoCAD bármely nyelvi változatában működik. A Z, majd a T a ZOOM Terjedelem."},{"question":"Hogyan lehet a teljes rajzot megjeleníteni?","answer":"Terjedelem: írja be a Z betűt, Enter, T, Enter. Vagy kattintson duplán az egérgörgő gombjára."},{"question":"Mit jelent az AutoCAD-ben a ZOOM XP?","answer":"Az nXP egy elrendezés nézetablakát a papírtérhez viszonyított léptékre nagyítja: az 1/50XP a modellt 1:50 léptékben mutatja a lapon. A MellowCAD-ben nincsenek elrendezések, ezért az XP X-ként értendő."},{"question":"Hogyan lehet egy objektumra nagyítani az AutoCAD-ben?","answer":"Válassza az Objektum opciót, és jelölje ki az objektumot, vagy előbb jelölje ki, majd futtassa a ZOOM Objektum parancsot: a nézet az objektumot mutatja."},{"question":"Hogyan lehet visszatérni az előző nézethez?","answer":"Előző, újra és újra az azt megelőző nézetekhez, legfeljebb 20-ig."}]
+---
+
+A ZOOM parancs nagyítja vagy kicsinyíti a nézetet; a rajzban semmi sem mozdul el, és semminek sem változik a mérete. Első kérdése sarokpontot fogad el, amely ablakot kezd, léptéktényezőt vagy egy opciót. Aposztróffal begépelve (`'ZOOM` vagy `'Z`) egy másik parancson belül is működik, és az a parancs utána folytatódik. Az egérgörgő a kurzor körül nagyít és kicsinyít, a görgőgombra duplán kattintva pedig ZOOM Terjedelem lesz. Minden ZOOM egy visszavonási lépés, az egymást követők egyetlen lépés, így a `T` parancs a nézetet is visszaállítja.
+
+- **Parancs:** `ZOOM`
+- **Álnevek:** `Z`
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `Z`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="zoom" caption="Lemez kis furattal a sarka közelében: ZOOM Terjedelem, majd ablak a furat köré, amely ezután kitölti a nézetet." />
+
+## Opciók [#options]
+
+### `Mind` (`M`) [#all]
+
+Mindent mutat, amit megrajzolt, ahogy a `Terjedelem` is.
+
+### `Terjedelem` (`T`) [#extents]
+
+Mindent mutat, amit megrajzolt, akkorára nagyítva, amekkorát az ablak megenged. Ha nincs semmi megrajzolva, ezt írja ki: `Modell regenerálása.`, másik parancson belül begépelve pedig ezzel az üzenettel utasítja el: `** Regenerálás szükséges, a parancs nem lehet transzparens.`, ahogy az AutoCAD is.
+
+### `Előző` (`E`) [#previous]
+
+Visszatér az előző nézethez, legfeljebb 20 nézetet visszalépve. Ha már nincs előző: `Nincs előzőleg mentett nézet.`.
+
+### `aRány` (`R`) [#scale]
+
+Tényező: a `2X` kétszer közelebbre nagyít, mint az aktuális nézet, a `0.5X` feleannyira közelre, az X nélküli `2` pedig a ZOOM Mind nézet léptékének kétszeresére. Az `nXP`, a papírtér tényezője, `nX`-ként értendő: itt csak modelltér van. Az első kérdésnél begépelt tényező ugyanezt teszi az opció kiválasztása nélkül.
+
+### `Ablak` (`A`) [#window]
+
+Két kattintással vagy húzással megadott sarokpont: a nézet ezt a téglalapot mutatja. Az első kérdésnél kattintott sarokpont ugyanezt teszi.
+
+### `Objektum` (`O`) [#object]
+
+A kijelölt objektumokat mutatja, vagy azokat, amelyeket a ZOOM előtt jelölt ki.
+
+## Amit még nem tud [#missing]
+
+A Valósidejű: az első kérdésnél az Enter befejezi a ZOOM parancsot, míg az AutoCAD-ben egérrel való nagyítást indít; itt ezt a görgő végzi. A Dinamikus, a Közép, valamint a rejtett Bal és Vmax opció.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z--pt-br-zoom--z--fr-zoom--z--it-zoom--z--de-zoom--zo--ru-показать--по--pl-zoom--z--cs-zoom--zo--hu-zoom--z)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD ZOOM parancs magyarul?
+
+A magyar AutoCAD-ben is ZOOM a neve. Írja be a `ZOOM` nevet vagy a `Z` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; a `_ZOOM` az AutoCAD bármely nyelvi változatában működik. A `Z`, majd a `T` a ZOOM Terjedelem.
+
+### Hogyan lehet a teljes rajzot megjeleníteni?
+
+`Terjedelem`: írja be a `Z` betűt, Enter, `T`, Enter. Vagy kattintson duplán az egérgörgő gombjára.
+
+### Mit jelent az AutoCAD-ben a ZOOM XP?
+
+Az `nXP` egy elrendezés nézetablakát a papírtérhez viszonyított léptékre nagyítja: az `1/50XP` a modellt 1:50 léptékben mutatja a lapon. A MellowCAD-ben nincsenek elrendezések, ezért az `XP` `X`-ként értendő.
+
+### Hogyan lehet egy objektumra nagyítani az AutoCAD-ben?
+
+Válassza az `Objektum` opciót, és jelölje ki az objektumot, vagy előbb jelölje ki, majd futtassa a ZOOM Objektum parancsot: a nézet az objektumot mutatja.
+
+### Hogyan lehet visszatérni az előző nézethez?
+
+`Előző`, újra és újra az azt megelőző nézetekhez, legfeljebb 20-ig.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+- [AutoCAD 3D gyakorló feladat: szíjtárcsa](/docs/exercises/pulley)
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD TOL (PAN) parancs: a nézet eltolása](/docs/commands/pan)
+- [AutoCAD NÉZET (VIEW) parancs](/docs/commands/view)
+- [REGEN](/docs/commands#regen): Regenerálás

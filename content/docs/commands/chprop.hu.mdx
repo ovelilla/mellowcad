@@ -1,0 +1,78 @@
+---
+title: "Tulajdonságok módosítása az AutoCAD-ben: TVÁLT (CHPROP) parancs"
+metaTitle: "Tulajdonságok módosítása: TVÁLT (CHPROP)"
+description: "Tulajdonságok módosítása az AutoCAD-ben a TVÁLT (CHPROP) paranccsal: szín, fólia, vonaltípus és léptéke, vonalvastagság vagy vastagság a parancssorban."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Van rövidítése a TVÁLT parancsnak az AutoCAD-ben?","answer":"Nincs rövidítése: írja be a TVÁLT parancsot (angolul CHPROP), vagy a _CHPROP alakot, amely az AutoCAD bármely nyelvén működik. A Parancs: promptnál adott Enter megismétli."},{"question":"Mi a különbség a TVÁLT és a TULAJDONSÁGOK parancs között?","answer":"Ugyanazokat a tulajdonságokat módosítják. A TULAJDONSÁGOK parancs egy palettán mutatja őket, az egyes objektumok geometriájával együtt; a TVÁLT a parancssorban kérdez rájuk, így a keze a billentyűzeten maradhat."},{"question":"Hogyan lehet a parancssorból módosítani az objektumok színét?","answer":"Írja be a TVÁLT parancsot, jelölje ki az objektumokat, nyomja meg az Enter billentyűt, válassza a SZín opciót, és írja be a színt, például 1 a vöröshöz. A befejezéshez nyomja meg ismét az Enter billentyűt."},{"question":"Hogyan lehet több objektumot áttenni egy másik fóliára?","answer":"Futtassa a TVÁLT parancsot, jelölje ki őket, válassza a Fólia opciót, és írja be a fólia nevét. A fóliának léteznie kell: előbb hozza létre a FÓLIA paranccsal."}]
+---
+
+A TVÁLT (CHPROP) parancs a kijelölt objektumok tulajdonságait módosítja a parancssorban: a Tulajdonságok paletta Általános sorait kérdezi promptokként. Jelölje ki az objektumokat – vagy jelölje ki őket a parancs előtt –, majd válassza ki a módosítandó tulajdonságot; mindegyik után újra kérdez, amíg az Enter be nem fejezi. Minden tulajdonság promptja a készlet értékét kínálja fel alapértelmezésként, ahol az objektumok eltérnek, ott ezt: `eltérő`, és ott az Enter minden objektumnak meghagyja a sajátját. A beállítottakat a parancs a végén alkalmazza, így az Esc minden objektumot változatlanul hagy. A zárolt fólián lévő objektumokat megszámolja és kihagyja, mindegyikre kiírva: `Az objektum lezárt fólián van.`. A teljes futás egyetlen lépés, amelyet a `T` parancs visszavon.
+
+- **Parancs:** `TVÁLT`
+- **Angolul:** `CHPROP`, bármely nyelven `_CHPROP` formában beírva
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TVÁLT`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="chprop" caption="TVÁLT egy lemez furatán átmenő vonalon: 1-es szín és CENTER vonaltípus, tengelyvonal azon a fólián, amelyen volt." />
+
+## Opciók [#options]
+
+### `SZín` (`SZ`) [#color]
+
+Egy színszám 1 és 255 között, egy név, például `vörös`, a `FÓLIA`, vagy a `Truecolor` és utána `vörös,zöld,kék` alakban az értékei, ahogy a [`SZÍN`](/docs/commands/color) parancs elfogadja őket; amit a SZÍN elutasít, azt itt is elutasítja, és újra kérdez.
+
+### `Fólia` (`F`) [#layer]
+
+Egy fólia neve, kis- és nagybetűtől függetlenül. Ha a név nem lehet fólianév, az üzenet `Érvénytelen fólia név.`, ha nincs a rajzban, azt írja ki, hogy nem található; mindkét esetben újra kérdez. A TVÁLT nem hoz létre fóliát.
+
+### `vonalTípus` (`T`) [#ltype]
+
+Egy vonaltípus neve, kis- és nagybetűtől függetlenül, vagy a `FÓLIA`. A rajzba még be nem töltött vonaltípust az acad.lin fájlból, az AutoCAD hüvelykes fájljából tölti be, ahogy az AutoCAD is, még metrikus rajzban is; az ebből a fájlból is hiányzó névre kiírja, hogy nem található, és visszatér a tulajdonság promptjához.
+
+### `vtLépték` (`L`) [#ltscale]
+
+Az objektumok saját vonaltípus-léptéke, amely csak rájuk szorozza meg a [`VTLÉPTÉK`](/docs/commands/ltscale) parancs léptékét: távolság, beírva vagy két ponttal megmérve; a negatív értéket abszolút értékként veszi, a 0 üzenete `Az érték legyen nem nulla.`, és újra kérdez.
+
+### `vonalVastagság` (`V`) [#lweight]
+
+Vonalvastagság milliméterben, a legközelebbi szabványos értékre kerekítve, ahogy a [`VVAST`](/docs/commands/lweight) parancs kerekíti, vagy a `FÓLIA`; a `?` felsorolja őket.
+
+### `vastagsáG` (`G`) [#thickness]
+
+Távolság, beírva vagy két ponttal megmérve, negatív és nulla is. A készlet vonalaira, köreire, íveire és vonalláncaira állítja be, mindegyik saját normálisa mentén; minden más típusra a végén kiírja, hogy a vastagságát nem tudja módosítani.
+
+## Amit még nem tud [#missing]
+
+Az átlátszóság, az Anyag és a Feliratozási tulajdonság, amelyek itt az objektumoknak nincsenek, így a prompt fel sem sorolja őket. A Blokk szerint a Szín, a Vonaltípus és a Vonalvastagság opciónál, valamint a Vonalvastagság Alapértelmezés értéke. Az indexszínnel egyező True Color színt indexszínként olvassa vissza: a `255,0,0` értéket `1 (vörös)` alakban kínálja fel. A színkatalógusok. A szövegek és attribútumdefiníciók vastagsága, amelyet változatlanul hagy. A VÁLT parancs, amelynek Tulajdonságok opciója ugyanezt a promptot kérdezi, a Szint opcióval együtt.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr--ru-свойства--pl-zmcechy--cs-změnav--hu-tvált)
+
+## Kérdések [#questions]
+
+### Van rövidítése a TVÁLT parancsnak az AutoCAD-ben?
+
+Nincs rövidítése: írja be a `TVÁLT` parancsot (angolul CHPROP), vagy a `_CHPROP` alakot, amely az AutoCAD bármely nyelvén működik. A Parancs: promptnál adott Enter megismétli.
+
+### Mi a különbség a TVÁLT és a TULAJDONSÁGOK parancs között?
+
+Ugyanazokat a tulajdonságokat módosítják. A [`TULAJDONSÁGOK`](/docs/commands/properties) parancs egy palettán mutatja őket, az egyes objektumok geometriájával együtt; a TVÁLT a parancssorban kérdez rájuk, így a keze a billentyűzeten maradhat.
+
+### Hogyan lehet a parancssorból módosítani az objektumok színét?
+
+Írja be a `TVÁLT` parancsot, jelölje ki az objektumokat, nyomja meg az Enter billentyűt, válassza a `SZín` opciót, és írja be a színt, például `1` a vöröshöz. A befejezéshez nyomja meg ismét az Enter billentyűt.
+
+### Hogyan lehet több objektumot áttenni egy másik fóliára?
+
+Futtassa a TVÁLT parancsot, jelölje ki őket, válassza a `Fólia` opciót, és írja be a fólia nevét. A fóliának léteznie kell: előbb hozza létre a [`FÓLIA`](/docs/commands/layer) paranccsal.
+
+## Kapcsolódó parancsok [#related]
+
+- [Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) parancs](/docs/commands/properties)
+- [Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL (MATCHPROP) parancs](/docs/commands/matchprop)
+- [Objektumszín az AutoCAD-ben: SZÍN (COLOR) parancs](/docs/commands/color)
+- [Fóliák az AutoCAD-ben: FÓLIA (LAYER) parancs](/docs/commands/layer)

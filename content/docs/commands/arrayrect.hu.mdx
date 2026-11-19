@@ -1,0 +1,86 @@
+---
+title: "Négyszögletes kiosztás az AutoCAD-ben: KIOSZTNÉGYSZ (ARRAYRECT) parancs"
+metaTitle: "Négyszögletes kiosztás: KIOSZTNÉGYSZ parancs"
+description: "Négyszögletes kiosztás az AutoCAD-ben a KIOSZTNÉGYSZ (ARRAYRECT) paranccsal: oszlopok, sorok és szintek, a köztük lévő távolság, asszociatív vagy sem."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet négyszögletes kiosztást indítani az AutoCAD-ben?","answer":"Írja be a KIOSZTNÉGYSZ parancsot, amelynek nincs rövidítése, vagy a KI rövidítést a KIOSZT parancshoz, és a kérdésénél nyomja meg az Enter billentyűt, mert a négyszögletes az alapértelmezés. Jelölje ki az objektumokat, és nyomja meg az Enter billentyűt: a kiosztás azonnal megjelenik, szerkesztésre készen."},{"question":"Hogyan lehet beállítani a sorok és az oszlopok közötti távolságot?","answer":"Válassza az OSZTásköz opciót, és írja be az oszlopok, majd a sorok közötti távolságot; a negatív érték balra vagy lefelé visz. Az Egységcella opcióval két sarok egyszerre adja meg mindkettőt. Vagy húzza a második oszlopnál és sornál lévő nyilakat."},{"question":"Hogyan lehet a másolatokból különálló objektumokat készíteni?","answer":"Az Enter megnyomása előtt válassza az Asszociatív opciót, és válaszoljon így: Nem. Minden másolat önálló objektum lesz. Egy asszociatív kiosztás később is elemeire bontható a SZÉTVET paranccsal."},{"question":"Hogyan lehet 3D kiosztást készíteni?","answer":"Válassza a SZintek opciót: a sorok és az oszlopok az FKR Z tengelye mentén felfelé másolódnak, annyi szintben, ahányat megad, a megadott távolságra egymástól. A SOrok opció szintkülönbséget is kér, amely minden sort megemel az előzőhöz képest."}]
+---
+
+A KIOSZTNÉGYSZ (ARRAYRECT) parancs oszlopokba és sorokba, ha kívánja, szintekbe is másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, és azonnal megmutatja: 4 oszlop az FKR X tengelye és 3 sor az Y tengelye mentén, a kijelölés méretének másfélszeresére egymástól. Ezután egyetlen prompt élőben szerkeszti az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben: egy darabszám vagy egy távolság beállításához kattintson az egyik nyílra, majd kattintson oda, ahová kerülnie kell, vagy írjon be egy számot. Az Esc itt szintén létrehozza a kiosztást. A kijelölt objektumok lesznek az első elem.
+
+- **Parancs:** `KIOSZTNÉGYSZ`
+- **Angolul:** `ARRAYRECT`, bármely nyelven `_ARRAYRECT` formában beírva
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KIOSZTNÉGYSZ`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="arrayrect" caption="Egy négyzet és a köre 5 oszlopban és 3 sorban, 16 és 14 távolságra: előbb a darabszám, majd az osztásköz." />
+
+## Opciók [#options]
+
+### `Asszociatív` (`A`) [#associative]
+
+Az `Igen`, az alapértelmezés, egyetlen kiosztásobjektumot hoz létre: később a fogói és a Tulajdonságok paletta módosítja, a [`SZÉTVET`](/docs/commands/explode) parancs pedig az elemeire bontja. A `Nem` különálló másolatokat készít a kijelölt objektumok mellé. A válasz a munkamenet végéig megmarad, a KIOSZTPOLÁRIS és a KIOSZTÚTVONAL parancsban is.
+
+### `Darabszám` (`D`) [#count]
+
+Az oszlopok, majd a sorok száma, mindkettő 1 és 32 767 között.
+
+### `OSZTásköz` (`OSZT`) [#spacing]
+
+Az oszlopok, majd a sorok közötti távolság; negatív értékkel balra vagy lefelé. Vagy az `Egységcella`: egy téglalap két sarka, amelynek oldalai adják mindkét távolságot.
+
+### `OSZLopok` (`OSZL`) [#columns]
+
+Az oszlopok száma és a köztük lévő távolság.
+
+### `SOrok` (`SO`) [#rows]
+
+A sorok száma, a köztük lévő távolság, és egy szintkülönbség, amennyivel minden sor magasabban van az előzőnél.
+
+### `SZintek` (`SZ`) [#levels]
+
+Az FKR Z tengelye mentén egymásra rakott másolatok: a szintek száma, majd a köztük lévő távolság, vagy az `Összesen` opcióval az első és az utolsó szint közötti távolság.
+
+### `KIlépés` (`KI`) [#exit]
+
+Létrehozza a kiosztást, és befejezi a parancsot, ahogy az Enter.
+
+## Amit még nem tud [#missing]
+
+A Bázispont; az Összesen opció az oszlopok és a sorok közötti távolságnál (a Szintek opciónál megvan); a Kifejezés, amely egy értéket a rajz paramétereihez köt. A KIOSZTSZERKESZT és a KIOSZTBEZÁR, amelyek a kiosztás forrását szerkesztik, illetve elemeit cserélik le. A kiosztás fogóinak menüi (Oszlopok száma, Teljes oszloptávolság, Tengely szöge…) és a köztük váltó Ctrl, így fogóval sem teljes távolság, sem tengelyszög nem állítható be; a fogó a parancssorba sem írja ki a sorait. A paletta Bázis X és Bázis Y értéke nem írható át.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost--cs-obdpole--hu-kiosztnégysz)
+
+## Kérdések [#questions]
+
+### Hogyan lehet négyszögletes kiosztást indítani az AutoCAD-ben?
+
+Írja be a `KIOSZTNÉGYSZ` parancsot, amelynek nincs rövidítése, vagy a `KI` rövidítést a [`KIOSZT`](/docs/commands/array) parancshoz, és a kérdésénél nyomja meg az Enter billentyűt, mert a négyszögletes az alapértelmezés. Jelölje ki az objektumokat, és nyomja meg az Enter billentyűt: a kiosztás azonnal megjelenik, szerkesztésre készen.
+
+### Hogyan lehet beállítani a sorok és az oszlopok közötti távolságot?
+
+Válassza az `OSZTásköz` opciót, és írja be az oszlopok, majd a sorok közötti távolságot; a negatív érték balra vagy lefelé visz. Az `Egységcella` opcióval két sarok egyszerre adja meg mindkettőt. Vagy húzza a második oszlopnál és sornál lévő nyilakat.
+
+### Hogyan lehet a másolatokból különálló objektumokat készíteni?
+
+Az Enter megnyomása előtt válassza az `Asszociatív` opciót, és válaszoljon így: `Nem`. Minden másolat önálló objektum lesz. Egy asszociatív kiosztás később is elemeire bontható a [`SZÉTVET`](/docs/commands/explode) paranccsal.
+
+### Hogyan lehet 3D kiosztást készíteni?
+
+Válassza a `SZintek` opciót: a sorok és az oszlopok az FKR Z tengelye mentén felfelé másolódnak, annyi szintben, ahányat megad, a megadott távolságra egymástól. A `SOrok` opció szintkülönbséget is kér, amely minden sort megemel az előzőhöz képest.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs)
+
+## Kapcsolódó parancsok [#related]
+
+- [Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs](/docs/commands/array)
+- [Poláris kiosztás az AutoCAD-ben: KIOSZTPOLÁRIS (ARRAYPOLAR) parancs](/docs/commands/arraypolar)
+- [Útvonal menti kiosztás az AutoCAD-ben: KIOSZTÚTVONAL (ARRAYPATH) parancs](/docs/commands/arraypath)
+- [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)

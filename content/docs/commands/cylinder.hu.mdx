@@ -1,0 +1,89 @@
+---
+title: "Henger az AutoCAD-ben: HENGER (CYLINDER) parancs"
+metaTitle: "3D henger az AutoCAD-ben: HENGER (CYLINDER)"
+description: "3D henger rajzolása az AutoCAD-ben a HENGER (CYLINDER, HEN) paranccsal, promptról promptra: alap, sugár, magasság, 3P, 2P, Éés, Elliptikus és tengely végpontja."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD HENGER parancs angolul, és mi a rövidítése?","answer":"Angolul CYLINDER, a magyar AutoCAD-ben HENGER: írja be a HEN rövidítést, és nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az alap középpontját, a sugarat és a magasságot: a 0,0, a 20 és a 40 a munkamenet hengerét rajzolja meg. Az angol CYL a magyar AutoCAD-ben nem működik; a _CYLINDER az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet vízszintes hengert rajzolni?","answer":"A magasságnál válassza a Tengely opciót, és adja meg a tengely másik végpontját: a 0,0,0 pontban lévő alapból a 60,0,0 pont az X tengely mentén fekteti le a hengert."},{"question":"Hogyan lehet üreges hengert vagy csövet készíteni?","answer":"Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a KIVON parancsot: válassza ki a külsőt, Enter, a belsőt, Enter."},{"question":"Miért néz ki a hengerem körnek?","answer":"Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a -NÉZET parancs DKizo opciójával vagy a 3DKERINGÉS paranccsal."}]
+---
+
+A HENGER (CYLINDER) parancs 3D szilárdtest hengert rajzol: adja meg az alapja középpontját, majd a sugarat, végül a magasságot. Az alap az FKR XY síkjában, a középpont Z magasságában fekszik, a magasság pedig a Z tengely mentén emelkedik; a negatív lefelé mutat, egy pont pedig az alaptól mért távolságával adja meg, ahogy a [`TTEST`](/docs/commands/box) parancsnál. A sugarat és a magasságot alapértelmezésként kínálja fel, amelyet az Enter elfogad; ezeken a többi alaptesttel és a [`KIHÚZ`](/docs/commands/extrude) paranccsal osztozik. A henger az aktuális fólián jön létre, és a Vissza egyetlen lépésben visszavonja.
+
+A henger megőrzi a méreteit: a [`LISTA`](/docs/commands/list) parancs kiírja a helyzetét, normálisát, sugarát és magasságát, a Tulajdonságok palettán pedig a sugár és a magasság beírható. A fogói mozgatják, beállítják a magasságát, és az alap minden negyedénél a sugarát. 3D szilárdtest az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára; a MellowCAD 3D-ben csak szilárdtesteket kezel, egyelőre részben.
+
+- **Parancs:** `HENGER`
+- **Angolul:** `CYLINDER`, bármely nyelven `_CYLINDER` formában beírva
+- **Álnevek:** `HEN`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `HEN`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="cylinder" caption="Egy 20-as sugarú és 40 magas henger az alapja középpontjából, délkelet felől nézve, Takartvonalas látványstílusban." />
+
+## Opciók [#options]
+
+### `3P` [#3p]
+
+Az alap középpontjánál: három pontot kér be, és az alap a rajtuk átmenő kör, a síkjukban. Az FKR XY síkjára eső három pontnál a henger továbbra is a Z mentén emelkedik.
+
+### `2P` [#2p]
+
+Az alap középpontjánál: az alap átmérőjének két végpontját kéri be; a másodikat az első síkjában olvassa.
+
+### `Éés` (`É`) [#ttr]
+
+Az alap középpontjánál: válasszon ki két vonalat, kört vagy ívet Érintő tárgyraszterrel, és adjon meg egy sugarat: az alap mindkettőt érinti, a kijelölési pontokhoz legközelebb, azok magasságában.
+
+### `Elliptikus` (`E`) [#elliptical]
+
+Az alap középpontjánál: az alap ellipszis. Adja meg az első tengelye két végpontját, majd a második tengely végpontját; vagy válassza a `Középpont` opciót, és adja meg a középpontját, az első tengely felét, majd a második tengely végpontját.
+
+### `Átmérő` (`Á`) [#diameter]
+
+A sugárnál: helyette az átmérőt kéri be, az utolsó sugár kétszeresét felkínálva.
+
+### `2Pont` (`2P`) [#2point]
+
+A magasságnál: két pontot kér be, és a magasság a köztük lévő távolság.
+
+### `Tengely végpont` (`T`) [#axis]
+
+A magasságnál: a tengely másik végpontját kéri be. A henger az alap középpontjától ehhez a ponthoz fut, bármilyen irányban, az alapja merőleges a tengelyre.
+
+## Amit még nem tud [#missing]
+
+A henger [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amelyet az AutoCAD a két véglapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, valamint az alapon túlra húzott magasság. A pontozott méretek, amelyeket az AutoCAD a sugár, az ellipszis pontjai és a tengely megadása közben rajzol. Kerek henger átírása elliptikussá a Tulajdonságok palettán. A kontúrvonalak, amelyeket az AutoCAD `DISPSILH` változója rajzol. Felülnézetben, ahol a felső kör eltakarja az alapét, a Szomszédos tárgyraszter az alap körét találja meg, ahol az AutoCAD a felsőét. Azok a látványstílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból a 2D drótváz, a Takartvonalas és a Koncepcionális mellett hiányoznak.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val--hu-henger--hen)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD HENGER parancs angolul, és mi a rövidítése?
+
+Angolul CYLINDER, a magyar AutoCAD-ben HENGER: írja be a `HEN` rövidítést, és nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az alap középpontját, a sugarat és a magasságot: a `0,0`, a `20` és a `40` a munkamenet hengerét rajzolja meg. Az angol `CYL` a magyar AutoCAD-ben nem működik; a `_CYLINDER` az AutoCAD bármely nyelvén igen.
+
+### Hogyan lehet vízszintes hengert rajzolni?
+
+A magasságnál válassza a `Tengely` opciót, és adja meg a tengely másik végpontját: a `0,0,0` pontban lévő alapból a `60,0,0` pont az X tengely mentén fekteti le a hengert.
+
+### Hogyan lehet üreges hengert vagy csövet készíteni?
+
+Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a [`KIVON`](/docs/commands/subtract) parancsot: válassza ki a külsőt, Enter, a belsőt, Enter.
+
+### Miért néz ki a hengerem körnek?
+
+Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a `-NÉZET` parancs `DKizo` opciójával vagy a [`3DKERINGÉS`](/docs/commands/3dorbit) paranccsal.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Kapcsolódó parancsok [#related]
+
+- [Kúp az AutoCAD-ben: KÚP (CONE) parancs](/docs/commands/cone)
+- [Téglatest az AutoCAD-ben: TTEST (BOX) parancs](/docs/commands/box)
+- [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)
+- [AutoCAD KIHÚZ (EXTRUDE) parancs](/docs/commands/extrude)

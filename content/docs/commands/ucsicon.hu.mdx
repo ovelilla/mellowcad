@@ -1,0 +1,70 @@
+---
+title: "AutoCAD FKRIKON (UCSICON) parancs"
+description: "Így jeleníti meg vagy rejti el az AutoCAD FKRIKON (UCSICON) parancsa az FKR ikont, és teszi az origóba vagy a sarokba: Be, Ki, Nincs, Origó. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet kikapcsolni az FKR ikont az AutoCAD-ben?","answer":"Írja be az FKRIKON nevet, nyomja meg az Enter billentyűt, majd válassza a Ki opciót. A Be opció visszahozza."},{"question":"Hogyan lehet az FKR ikont az origóba helyezni?","answer":"FKRIKON, majd Origó: az ikon az FKR origójába kerül. Ha a sarokban marad, az origó a képernyőn kívül vagy túl közel van a széléhez: toljon vagy kicsinyítsen a nézeten. A Nincs opció a sarokban tartja."},{"question":"Mit jelent a négyzet az FKR ikonon?","answer":"Azt, hogy az FKR a világ koordináta-rendszer. Mozgassa vagy forgassa el az FKR-t az FKR paranccsal, és a négyzet eltűnik; az FKR parancs és az Enter visszaállítja a világot, és vele a négyzetet is."},{"question":"Hogyan lehet megváltoztatni az FKR ikon stílusát, méretét vagy színét?","answer":"Az AutoCAD-ben az FKRIKON parancs Tulajdonságok opciójával, az FKR ikon párbeszédpanelen. A MellowCAD-ben ez még nincs meg: az ikon úgy jelenik meg, ahogy az AutoCAD 2027 alapértelmezés szerint rajzolja, 3D stílusban."}]
+---
+
+Az FKRIKON (UCSICON) parancs megjeleníti vagy elrejti az FKR ikont, azt az X és Y szárat, amely megmutatja, hol van az aktuális FKR, és merre néz, és beállítja, hol álljon: az FKR origójában vagy a rajz bal alsó sarkában. Egyetlen kérdése alapértelmezésként az aktuális állapotot kínálja fel, így az Enter megtartja. A beállítás a rajzzal együtt mentődik, és minden FKRIKON parancs egy visszavonási lépés.
+
+Az ikon az AutoCAD 2027 3D ikonja: egy szár az X, egy az Y tengelynek, mindegyik végén egy betű, és az origóban egy négyzet, amíg az FKR a világé. Felülnézeten kívül egy Z szár mutatja, merre néz az FKR Z tengelye, a pontosan szemből látott szár pedig elmarad. 2D drótváz látványstílusban fehér; Takartvonalas és Koncepcionális stílusban az X piros, az Y zöld, a Z kék. Aposztróffal begépelve (`'FKRIKON`) ehelyett az UCSICON változót állítja be, akár egy másik parancson belül is: 0-tól 3-ig, ahol az 1 megjeleníti az ikont, a 2 pedig az origóba teszi.
+
+- **Parancs:** `FKRIKON`
+- **Angolul:** `UCSICON`, bármely nyelven `_UCSICON` formában beírva
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `FKRIKON`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="ucsicon" caption="Az FKRIKON Nincs opciója a sarokba küldi az ikont; az FKR a blokk lépcsőjére helyezi az origót, és az Origó opció oda rajzolja az ikont, X tengelye piros, Y zöld, Z kék." />
+
+## Opciók [#options]
+
+### `Be` (`B`) [#on]
+
+Megjeleníti az ikont.
+
+### `Ki` (`K`) [#off]
+
+Elrejti az ikont. Az FKR ettől még megvan, és amit rajzol, az továbbra is benne fekszik.
+
+### `Nincs` (`N`) [#noorigin]
+
+Az ikont a rajz bal alsó sarkában tartja, bárhol legyen is az origó.
+
+### `Origó` (`O`) [#origin]
+
+Az ikont az FKR origójába rajzolja, ez az alapértelmezés. Ha az origó a képernyőn kívül esik, vagy olyan közel van a széléhez, hogy az ikon nem férne el, az ikon a bal alsó sarokba kerül, amíg az origó vissza nem kerül a látótérbe.
+
+## Amit még nem tud [#missing]
+
+A Mind opció, amely az AutoCAD-ben minden nézetablakra alkalmazza a beállítást (itt csak egy van); a Választható opció, vagyis az ikon fogói; és a Tulajdonságok opció, az FKR ikon párbeszédpanel a 2D stílussal, a mérettel, a vonalvastagsággal és a színekkel.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucsicon--es-simbscp--pt-br-iconeucs--fr-iconescu--it-iconaucs--de-bksymbol--ru-знакпск--pl-luwsymb--cs-ussi--hu-fkrikon)
+
+## Kérdések [#questions]
+
+### Hogyan lehet kikapcsolni az FKR ikont az AutoCAD-ben?
+
+Írja be az `FKRIKON` nevet, nyomja meg az Enter billentyűt, majd válassza a `Ki` opciót. A `Be` opció visszahozza.
+
+### Hogyan lehet az FKR ikont az origóba helyezni?
+
+FKRIKON, majd `Origó`: az ikon az FKR origójába kerül. Ha a sarokban marad, az origó a képernyőn kívül vagy túl közel van a széléhez: toljon vagy kicsinyítsen a nézeten. A `Nincs` opció a sarokban tartja.
+
+### Mit jelent a négyzet az FKR ikonon?
+
+Azt, hogy az FKR a világ koordináta-rendszer. Mozgassa vagy forgassa el az FKR-t az [`FKR`](/docs/commands/ucs) paranccsal, és a négyzet eltűnik; az [`FKR`](/docs/commands/ucs) parancs és az Enter visszaállítja a világot, és vele a négyzetet is.
+
+### Hogyan lehet megváltoztatni az FKR ikon stílusát, méretét vagy színét?
+
+Az AutoCAD-ben az FKRIKON parancs Tulajdonságok opciójával, az FKR ikon párbeszédpanelen. A MellowCAD-ben ez még nincs meg: az ikon úgy jelenik meg, ahogy az AutoCAD 2027 alapértelmezés szerint rajzolja, 3D stílusban.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD FKR (UCS) parancs: felhasználói koordináta-rendszer](/docs/commands/ucs)
+- [AutoCAD NNÉZET (PLAN) parancs: normálnézet az FKR-re](/docs/commands/plan)
+- [AutoCAD NÉZET (VIEW) parancs](/docs/commands/view)

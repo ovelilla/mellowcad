@@ -16,7 +16,7 @@ progress is on the branch `worktree-hu-language`.
 | Block | State |
 | --- | --- |
 | Research and plan | Done 19/11/2026: this plan; `runacc.sh` knows the Hungarian console's banner; the Hungarian names probes |
-| Draft (phases 1–5) | Next |
+| Draft (phases 1–5) | Done 19/11/2026: `hu` a `draft` at `/hu`; its words, sources and what stays unverified are `docs/i18n/hu.md` |
 | Live (phase 6) | — |
 
 ## 0. Research (18–19/11/2026)

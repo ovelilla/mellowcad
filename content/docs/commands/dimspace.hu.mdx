@@ -1,0 +1,61 @@
+---
+title: "AutoCAD MÉRETKÖZ (DIMSPACE) parancs"
+description: "Méretek igazítása az AutoCAD MÉRETKÖZ (DIMSPACE) parancsával: egyenlő távolság a méretek között, 0 az egy vonalba rendezéshez, és Auto a szövegmagasság alapján."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hogyan lehet méreteket egy vonalba igazítani az AutoCAD-ben?","answer":"Indítsa el a MÉRETKÖZ parancsot, válassza ki azt a méretet, amelyhez a többinek igazodnia kell, jelölje ki őket, nyomja meg az Enter billentyűt, és írja be: 0. Minden méretvonal a bázisméret vonalára kerül."},{"question":"Hogyan lehet egyenlővé tenni a méretek közötti távolságot?","answer":"Indítsa el a MÉRETKÖZ parancsot, bázisként válassza ki az objektumhoz legközelebbi méretet, jelölje ki a többit, és nyomja meg kétszer az Enter billentyűt: az Auto opció a szövegmagasság kétszeresére helyezi el őket. Vagy írja be a kívánt távolságot, például 8."},{"question":"Mekkora az alapértelmezett méretköz az AutoCAD-ben?","answer":"A MÉRETKÖZ parancs Auto opciója a méretstílus szövegmagasságának kétszerese. A MÉRETBVONAL parancs ehelyett a stílus Méretvonalak távolsága beállítását használja minden hozzáadott méretnél, ami az ISO-25 stílusban 3,75."},{"question":"Miért nem mozgat el egy méretet a MÉRETKÖZ parancs?","answer":"Csak a bázissal párhuzamos méreteket rendezi el: a más szögben állót beszámítja, de a helyén hagyja. A szögméreteket még nem rendezi el."}]
+---
+
+A MÉRETKÖZ (DIMSPACE) parancs a párhuzamos hossz- és illesztett méretek közötti távolságot állítja be. Először a bázisméretet kell kiválasztani, amely a helyén marad, majd az elhelyezendő méreteket; az Enter lezárja a kijelölést, és a parancs a térközt kéri. Ezután minden méret méretvonala elmozdul a bázistól elfelé, abban a sorrendben, ahogy a méretek fekszenek, mindegyik ekkora távolságra az előzőtől. A 0 térköz mindet a bázis vonalára rendezi: így a rajzoláskor lépcsőzetesen elhelyezett lánc egyetlen sorként olvasható. Csak a méretvonalak helyét változtatja meg, egyetlen lépésben, amelyet a `T` parancs visszavon.
+
+A bázist ki lehet választani kattintással, pont beírásával vagy az Utolsó kijelölési opcióval; ha nem méret, a válasz `A kijelölt objektum nem méret.`, és a parancs újra kérdez. A parancs előtt kijelölt objektumok lesznek az elhelyezendő méretek. A bázissal szöget bezáró méretet a parancs beszámítja, de a helyén hagyja, a negatív térközt pedig a `Érvénytelen a megadott térköz, az érték nem lehet negatív.` üzenettel elutasítja.
+
+- **Parancs:** `MÉRETKÖZ`
+- **Angolul:** `DIMSPACE`, bármely nyelven `_DIMSPACE` formában beírva
+- **Panel:** [Feliratozás](/docs/commands#annotate)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MÉRETKÖZ`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="dimspaceBefore" caption="Egy lemez felső éle háromtagú lánccal méretezve, mindegyik méret a saját magasságában, ahogy megrajzolták őket." />
+
+<Session name="dimspace" caption="MÉRETKÖZ az első mérettől, a másik kettő kijelölve, a térköz 0: a lánc egy vonalba rendezve." />
+
+## Opciók [#options]
+
+### `Auto` (`A`) [#auto]
+
+Az alapértelmezés, Enter: a térköz a bázisméret méretstílusában megadott szövegmagasság kétszerese, a stílus teljes léptékével szorozva, így a méretek sora elfér a saját szövegével.
+
+## Amit még nem tud [#missing]
+
+A szögméretek, amelyeket a MÉRETKÖZ parancs még nem rendez el. Az AutoCAD csak ott mozgat el egy méretet, ahol szükséges; itt minden kijelölt méret új helyet kap.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym--cs-kótmezera--hu-méretköz)
+
+## Kérdések [#questions]
+
+### Hogyan lehet méreteket egy vonalba igazítani az AutoCAD-ben?
+
+Indítsa el a MÉRETKÖZ parancsot, válassza ki azt a méretet, amelyhez a többinek igazodnia kell, jelölje ki őket, nyomja meg az Enter billentyűt, és írja be: `0`. Minden méretvonal a bázisméret vonalára kerül.
+
+### Hogyan lehet egyenlővé tenni a méretek közötti távolságot?
+
+Indítsa el a MÉRETKÖZ parancsot, bázisként válassza ki az objektumhoz legközelebbi méretet, jelölje ki a többit, és nyomja meg kétszer az Enter billentyűt: az `Auto` opció a szövegmagasság kétszeresére helyezi el őket. Vagy írja be a kívánt távolságot, például `8`.
+
+### Mekkora az alapértelmezett méretköz az AutoCAD-ben?
+
+A MÉRETKÖZ parancs `Auto` opciója a méretstílus szövegmagasságának kétszerese. A [`MÉRETBVONAL`](/docs/commands/dimbaseline) parancs ehelyett a stílus Méretvonalak távolsága beállítását használja minden hozzáadott méretnél, ami az ISO-25 stílusban 3,75.
+
+### Miért nem mozgat el egy méretet a MÉRETKÖZ parancs?
+
+Csak a bázissal párhuzamos méreteket rendezi el: a más szögben állót beszámítja, de a helyén hagyja. A szögméreteket még nem rendezi el.
+
+## Kapcsolódó parancsok [#related]
+
+- [Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs](/docs/commands/dimlinear)
+- [Láncméretezés az AutoCAD-ben: MÉRETFOLYTAT (DIMCONTINUE) parancs](/docs/commands/dimcontinue)
+- [Bázisvonalas méretezés az AutoCAD-ben: MÉRETBVONAL (DIMBASELINE) parancs](/docs/commands/dimbaseline)
+- [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)

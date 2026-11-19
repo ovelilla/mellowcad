@@ -76,6 +76,10 @@
       "types": "./dist/locales/cs.d.ts",
       "default": "./dist/locales/cs.js"
     },
+    "./locales/hu": {
+      "types": "./dist/locales/hu.d.ts",
+      "default": "./dist/locales/hu.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

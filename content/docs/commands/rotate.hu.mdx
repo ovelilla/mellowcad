@@ -1,0 +1,67 @@
+---
+title: "Forgatás az AutoCAD-ben: FORGAT (ROTATE) parancs"
+metaTitle: "Forgatás az AutoCAD-ben: FORGAT (ROTATE)"
+description: "Forgatás az AutoCAD FORGAT (ROTATE, rövidítése FOR) parancsával promptról promptra: bázispont és szög, Másol az eredeti megtartásához, Referencia. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD FORGAT parancs angolul?","answer":"ROTATE. A magyar AutoCAD-ben a rövidítése FOR: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol RO a magyar változatban az XPLODE parancsot indítja; a teljes FORGAT név működik, a _ROTATE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet egy objektumot egy másikhoz igazítva elforgatni?","answer":"Válassza a Referencia opciót, jelöljön ki két pontot az objektum éle mentén, majd válassza a Pontok opciót, és jelöljön ki két pontot azon a vonalon, amelyhez igazodnia kell."},{"question":"Hogyan lehet egy objektumot úgy elforgatni, hogy az eredeti megmaradjon?","answer":"A szög megadása előtt válassza a Másol opciót: a másolat elfordul, az eredeti a helyén marad."},{"question":"Miért rossz irányba forgat a FORGAT?","answer":"A pozitív szög az óramutató járásával ellentétesen forgat, ahogy az első sorban az ANGDIR is jelzi. Az óramutató járásával megegyező forgatáshoz írjon be negatív szöget, például -30."}]
+---
+
+A FORGAT (ROTATE) parancs egy bázispont körül forgatja el a kiválasztott objektumokat: válassza ki őket, adja meg a bázispontot, majd a szöget – beírva, vagy egy ponttal, amelynek a bázisponttól mért iránya adja a szöget. Az első sora kiírja, melyik irány a pozitív, alapértelmezés szerint az óramutató járásával ellentétes (ANGDIR), és hol van a 0 (ANGBASE). A szögnél az Enter az utolsó elforgatást ismétli, új rajzban 0-t. Az objektumok egy, az FKR Z tengelyével párhuzamos, a bázisponton átmenő tengely körül fordulnak el, így 3D-ben megtartják a magasságukat. Az elforgatás egyetlen lépés, amelyet a Vissza visszavon.
+
+- **Parancs:** `FORGAT`
+- **Angolul:** `ROTATE`, bármely nyelven `_ROTATE` formában beírva
+- **Álnevek:** `FOR`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `FOR`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="rotate" caption="Egy téglalap 30°-kal elforgatva a sarka körül a Másol opcióval, az eredeti megmarad." />
+
+## Opciók [#options]
+
+### `Másol` (`M`) [#copy]
+
+Egy másolatot forgat el, az objektumokat pedig a helyükön hagyja, és ezt írja ki: `Kiválasztott objektumok másolatának elforgatása.`. A prompt ezután újra a szöget kéri.
+
+### `Referencia` (`R`) [#reference]
+
+Egy meglévő szögből forgat a kívántba: bekéri a referenciaszöget (beírva, vagy két ponttal, amelyek kimérik), majd az új szöget, és a különbséggel forgat. Egy ferde él vízszintessé tételéhez jelölje ki referenciaként a két végpontját, és írja be a 0-t.
+
+### `Pontok` (`P`) [#points]
+
+A Referencia új szögénél: az új szög két kijelölt pont közötti egyenes szöge, így az objektumok egy már megrajzolt élhez igazodnak.
+
+## Amit még nem tud [#missing]
+
+Amíg a szöget adja meg, az elforgatott kiválasztás minden objektum saját színével követi a kurzort, a vonaltípusával és a vonalvastagságával azonban nem.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh--ru-повернуть--пов--pl-obróć--ob--cs-otoč--ot--hu-forgat--for)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD FORGAT parancs angolul?
+
+ROTATE. A magyar AutoCAD-ben a rövidítése `FOR`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `RO` a magyar változatban az XPLODE parancsot indítja; a teljes `FORGAT` név működik, a `_ROTATE` pedig az AutoCAD bármely nyelvi változatában.
+
+### Hogyan lehet egy objektumot egy másikhoz igazítva elforgatni?
+
+Válassza a `Referencia` opciót, jelöljön ki két pontot az objektum éle mentén, majd válassza a `Pontok` opciót, és jelöljön ki két pontot azon a vonalon, amelyhez igazodnia kell.
+
+### Hogyan lehet egy objektumot úgy elforgatni, hogy az eredeti megmaradjon?
+
+A szög megadása előtt válassza a `Másol` opciót: a másolat elfordul, az eredeti a helyén marad.
+
+### Miért rossz irányba forgat a FORGAT?
+
+A pozitív szög az óramutató járásával ellentétesen forgat, ahogy az első sorban az ANGDIR is jelzi. Az óramutató járásával megegyező forgatáshoz írjon be negatív szöget, például `-30`.
+
+## Kapcsolódó parancsok [#related]
+
+- [Mozgatás az AutoCAD-ben: MOZGAT (MOVE) parancs](/docs/commands/move)
+- [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)
+- [Tükrözés az AutoCAD-ben: TÜKRÖZ (MIRROR) parancs](/docs/commands/mirror)
+- [Lépték az AutoCAD-ben: LÉPTÉK (SCALE) parancs](/docs/commands/scale)

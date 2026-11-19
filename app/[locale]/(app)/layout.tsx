@@ -76,10 +76,10 @@ const fontMono = Geist_Mono({
 // one page whose font stack names it keep it to Arabic.
 const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
 
-// Polish's and Czech's letters alone, before Inter and Geist Mono on their
+// Polish's, Czech's and Hungarian's letters alone, before Inter and Geist Mono on their
 // pages (lib/fonts.ts, assets/fonts/README.md). The range is a literal: next/font
-// reads its options statically. One range for Latin Extended-A: only a Polish
-// or Czech page names the face, and a letter it lacks there falls through to
+// reads its options statically. One range for Latin Extended-A: only a Polish,
+// Czech or Hungarian page names the face, and a letter it lacks there falls through to
 // Inter.
 const fontLettersSans = localFont({
   src: "../../../assets/fonts/inter-letters-wght.woff2",

@@ -1,0 +1,69 @@
+---
+title: "Bázisvonalas méretezés az AutoCAD-ben: MÉRETBVONAL (DIMBASELINE) parancs"
+metaTitle: "Bázisvonalas méretezés: MÉRETBVONAL parancs"
+description: "Méretezés egy bázisvonalról az AutoCAD-ben a MÉRETBVONAL (DIMBASELINE, MBA) paranccsal: a következő kezdőpontok, a távolság, a Kijelöl és a Vissza. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MÉRETBVONAL parancs angolul, és mi a rövidítése?","answer":"Angolul DIMBASELINE, a magyar AutoCAD-ben MÉRETBVONAL: írja be az MBA vagy az MBAZIS rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol DBA a magyar AutoCAD-ben nem működik; a _DIMBASELINE az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet módosítani a bázisvonalas méretek távolságát?","answer":"A méretstílus Méretvonalak távolsága beállítása adja meg: a MÉRETSTÍLUS (D) a Stílusok palettán nyitja meg a stílusokat, ahol a Vonal csoportban található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a MÉRETKÖZ parancs újra, egyenletesen elrendezi őket."},{"question":"Hogyan lehet egy másik méretből indulni?","answer":"Az első promptnál nyomja meg az Enter billentyűt, vagy válassza a Kijelöl opciót, és jelölje ki a méretet annak a segédvonalnak a közelében, amelytől mérni kell: minden új méret onnan indul."},{"question":"Mi a különbség a MÉRETBVONAL és a MÉRETFOLYTAT parancs között?","answer":"A MÉRETBVONAL minden méretet ugyanattól a segédvonaltól mér, mindegyiket egy kijjebb lévő vonalon. A MÉRETFOLYTAT parancs egy vonalon, egymás után rakja őket, mindegyiket ott kezdve, ahol az előző véget ért."}]
+---
+
+A MÉRETBVONAL (DIMBASELINE) parancs olyan méreteket rajzol, amelyek mind ugyanattól a segédvonaltól, a bázistól mérnek: mindegyik az utolsó méret első segédvonalától a következő megadott pontig tart, a méretvonala egy lépéssel kijjebb. Az utolsó hossz- vagy illesztett méretből indul, amely a rajz megnyitása óta készült, így többnyire a [`MÉRETHOSSZ`](/docs/commands/dimlinear) vagy a [`MÉRETILLESZT`](/docs/commands/dimaligned) parancsot követi; ha nincs ilyen, megkérdezi, melyikből induljon. A parancssor minden mért értéket kiír, ahogy elkészül. A kezdőpont promptjánál az Enter a `Kijelöl` opciót választja, a Kijelöl promptjánál pedig az Enter befejezi a parancsot, ahogy az Esc.
+
+A lépés az aktuális méretstílusban beállított Méretvonalak távolsága, ISO-25-ben 3,75, szorozva a bázis teljes léptékével. Ahogy az AutoCAD-ben, minden új méret a bázisa irányában mér, és átveszi a bázis méretstílusát és fóliáját, az aktuális színnel, vonaltípussal és vonalvastagsággal.
+
+- **Parancs:** `MÉRETBVONAL`
+- **Angolul:** `DIMBASELINE`, bármely nyelven `_DIMBASELINE` formában beírva
+- **Álnevek:** `MBA`, `MBAZIS`
+- **Panel:** [Feliratozás](/docs/commands#annotate)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MBA`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="dimbaseline" caption="Egy lépcsős profil 30-as mérete a bal élétől, majd 70 és 100 ugyanattól az éltől, mindegyik egy vonallal kijjebb." />
+
+## Opciók [#options]
+
+### `Kijelöl` (`K`) [#select]
+
+Bekéri a bázisméretet: jelöljön ki egy hossz- vagy illesztett méretet annak a segédvonalnak a közelében, amelytől mérni kell. Egy oda beírt pont is kijelöl. A sugár- vagy átmérőméretet elutasítja: `Asszociatív hossz-, koordináta- vagy szögméret kijelölése szükséges.`, és újra kérdez.
+
+### `Vissza` (`V`) [#undo]
+
+Visszavonja az utoljára készült méretet, és az előzőtől folytatja, ahányszor csak van mit. Ha már egy sem maradt, a válasza `A parancsok hatása a legelső lépésig érvénytelenítve lett.`, és a prompt marad.
+
+## Amit még nem tud [#missing]
+
+A méret nem asszociatív: a méretek nem követik a mért objektumokat. Szögméret nem lehet bázis: az AutoCAD elfogadja az utoljára készültet vagy a kijelöltet; itt az utoljára készült után a parancs méretet kér, a kijelöltet pedig elutasítja, ahogy egy sugárméretet. Koordinátaméretek még nincsenek.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline--pt-br-cotalinbase--clb--dimbase--fr-cotlign--cotl--it-dimlbase--dba--de-bembasisl--bmb--basislinie--ru-рзмбазовый--рба--pl-wymbaza--wb--wymba--cs-kótyzákl--kza--kotyza--hu-méretbvonal--mba--mbazis)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MÉRETBVONAL parancs angolul, és mi a rövidítése?
+
+Angolul DIMBASELINE, a magyar AutoCAD-ben MÉRETBVONAL: írja be az `MBA` vagy az `MBAZIS` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `DBA` a magyar AutoCAD-ben nem működik; a `_DIMBASELINE` az AutoCAD bármely nyelvén igen.
+
+### Hogyan lehet módosítani a bázisvonalas méretek távolságát?
+
+A méretstílus Méretvonalak távolsága beállítása adja meg: a [`MÉRETSTÍLUS`](/docs/commands/dimstyle) (`D`) a Stílusok palettán nyitja meg a stílusokat, ahol a Vonal csoportban található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a [`MÉRETKÖZ`](/docs/commands/dimspace) parancs újra, egyenletesen elrendezi őket.
+
+### Hogyan lehet egy másik méretből indulni?
+
+Az első promptnál nyomja meg az Enter billentyűt, vagy válassza a `Kijelöl` opciót, és jelölje ki a méretet annak a segédvonalnak a közelében, amelytől mérni kell: minden új méret onnan indul.
+
+### Mi a különbség a MÉRETBVONAL és a MÉRETFOLYTAT parancs között?
+
+A MÉRETBVONAL minden méretet ugyanattól a segédvonaltól mér, mindegyiket egy kijjebb lévő vonalon. A [`MÉRETFOLYTAT`](/docs/commands/dimcontinue) parancs egy vonalon, egymás után rakja őket, mindegyiket ott kezdve, ahol az előző véget ért.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket)
+
+## Kapcsolódó parancsok [#related]
+
+- [Láncméretezés az AutoCAD-ben: MÉRETFOLYTAT (DIMCONTINUE) parancs](/docs/commands/dimcontinue)
+- [Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs](/docs/commands/dimlinear)
+- [AutoCAD MÉRETKÖZ (DIMSPACE) parancs](/docs/commands/dimspace)
+- [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)

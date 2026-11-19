@@ -25,6 +25,7 @@ const catalogs: Record<AppLocale, () => Promise<{ default: object }>> = {
   ru: () => import("@/messages/ru.json"),
   pl: () => import("@/messages/pl.json"),
   cs: () => import("@/messages/cs.json"),
+  hu: () => import("@/messages/hu.json"),
 }
 
 export function mergeMessages(base: Tree, override: Tree): Tree {

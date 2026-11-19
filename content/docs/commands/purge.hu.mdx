@@ -1,0 +1,65 @@
+---
+title: "AutoCAD TISZTÍT (PURGE) parancs: nem használt blokkok törlése"
+metaTitle: "AutoCAD TISZTÍT (PURGE): nem használt blokkok"
+description: "Az AutoCAD TISZTÍT (PURGE, rövidítése TT) parancsa törli a nem használt blokkokat és vonaltípusokat, név szerint vagy egyszerre, ellenőrzéssel vagy anélkül."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD TISZTÍT parancs angolul?","answer":"PURGE. A magyar AutoCAD-ben a rövidítése TT: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A -TT a -TISZTÍT, a parancssori változat, amelyet itt a TISZTÍT is futtat. Az angol PU a magyar változatban nem működik; a _PURGE az AutoCAD bármely nyelvi változatában igen."},{"question":"Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?","answer":"Írja be: TT, válassza a Blokk opciót, nyomja meg az Enter billentyűt minden névhez, és válaszoljon Nem értékkel, hogy mindet egyenkénti rákérdezés nélkül törölje."},{"question":"Miért nem lehet egy blokkot kitisztítani?","answer":"Mert használatban van: egy referencia elhelyezi a rajzban, vagy egy használatban lévő blokk tartalmazza, akár több szinten át beágyazva. Törölje a referenciáit, vagy bontsa szét az őt tartalmazó blokkokat, és a TISZTÍT már törölheti."},{"question":"Hogyan lehet kitisztítani a fóliákat?","answer":"Az AutoCAD-ben a TISZTÍT parancs Fóliák típusával. Itt ez még nincs meg, a TISZTÍT itt blokkokat és vonaltípusokat tisztít; egy üres fóliát helyette a Fóliatulajdonság-kezelőben törölhet."}]
+---
+
+A TISZTÍT (PURGE) parancs eltávolítja azt, amit a rajz definiál, de nem használ; itt ezek a blokkok és a vonaltípusok. Az AutoCAD TISZTÍT parancsa a Tisztítás párbeszédpanelt nyitja meg; a MellowCAD-ben ilyen nincs, ezért a TISZTÍT a parancssorban azt kérdezi, amit a `-TISZTÍT`, ahogy az AutoCAD konzolja is. Kiírja a beágyazott elemek és az elárvult adatok beállítását, mindkettő ki van kapcsolva, és megkérdezi, milyen típusú, használaton kívüli objektumokat tisztítson, a `Blokk` és a `VTípus` lehetőséget kínálva; ott az Enter befejezi a parancsot.
+
+Egy blokk addig van használatban, amíg egy referencia elhelyezi a rajzban, vagy egy használatban lévő blokk definíciója tartalmazza, bármilyen mélyen. Egy blokk utolsó referenciájának törlése után a definíciója a rajzban marad, ahol a [`BEILL`](/docs/commands/insert) újra elhelyezheti: a TISZTÍT az, ami törli. A megtartott blokkban lévő blokkot soha nem törli, az olyan blokkláncot pedig, amelynek tagjai csak egymást tartalmazzák, egyetlen futással eltávolítja. Ha nincs mit törölni, `Nem találhatók hivatkozás nélküli blokk.` üzenetet ír ki. Minden futás egyetlen lépés, amelyet a `T` visszavon.
+
+- **Parancs:** `TISZTÍT`
+- **Angolul:** `PURGE`, bármely nyelven `_PURGE` formában beírva
+- **Álnevek:** `TT`
+- **Panel:** [Rendszerezés](/docs/commands#organize)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TT`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="purge" caption="Két blokk, a falra helyezett TAG és a BOX, amelynek egyetlen referenciáját törölték: a TISZTÍT, minden név, ellenőrzés nélkül, csak a BOX blokkot törli." />
+
+## Opciók [#options]
+
+### `Blokk` (`B`) [#blocks]
+
+Bekéri a tisztítandó neveket, alapértelmezés szerint `*` minden nem használt blokkhoz, vagy helyettesítő karakteres neveket vesszővel elválasztva. Ezután megkérdezi, hogy ellenőrizze-e az egyes neveket: az `Igen`, az alapérték, minden blokkra rákérdez a törlés előtt, a `Nem` mindet törli, és kiírja mindegyik nevét és a számukat.
+
+### `VTípus` (`VT`) [#ltypes]
+
+Bekéri a neveket, és hogy ellenőrizze-e őket egyenként, ahogy a `Blokk`, majd törli a semmi által nem használt vonaltípusokat. A Continuous, az aktuális vonaltípus és az, amelyet egy fólia vagy egy objektum használ, akár egy blokkon belül is, mindig megmarad; ha nincs mit törölni, `Nem találhatók hivatkozás nélküli vonaltípusok.` üzenetet ír ki. A [`VTÍPUS`](/docs/commands/linetype) Betöltés gombja visszahozza.
+
+## Amit még nem tud [#missing]
+
+A Tisztítás párbeszédpanel és minden más típus: fóliák, szöveg- és méretstílusok, csoportok, anyagok, többszörösmutató-, táblázat- és látványstílusok, regisztrált alkalmazások, nulla hosszúságú geometria, üres szövegobjektumok, elárvult adatok és az összes egyszerre. A beágyazott elemek és az elárvult adatok beállítása nem módosítható.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig--ru-очистить--оч--удали--очистить--pl-usuń--us--usuń--cs-čisti--ci--čisti--hu-tisztít--tt--tisztít---tt)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD TISZTÍT parancs angolul?
+
+PURGE. A magyar AutoCAD-ben a rövidítése `TT`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A `-TT` a `-TISZTÍT`, a parancssori változat, amelyet itt a TISZTÍT is futtat. Az angol `PU` a magyar változatban nem működik; a `_PURGE` az AutoCAD bármely nyelvi változatában igen.
+
+### Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?
+
+Írja be: `TT`, válassza a `Blokk` opciót, nyomja meg az Enter billentyűt minden névhez, és válaszoljon `Nem` értékkel, hogy mindet egyenkénti rákérdezés nélkül törölje.
+
+### Miért nem lehet egy blokkot kitisztítani?
+
+Mert használatban van: egy referencia elhelyezi a rajzban, vagy egy használatban lévő blokk tartalmazza, akár több szinten át beágyazva. Törölje a referenciáit, vagy bontsa szét az őt tartalmazó blokkokat, és a TISZTÍT már törölheti.
+
+### Hogyan lehet kitisztítani a fóliákat?
+
+Az AutoCAD-ben a TISZTÍT parancs Fóliák típusával. Itt ez még nincs meg, a TISZTÍT itt blokkokat és vonaltípusokat tisztít; egy üres fóliát helyette a Fóliatulajdonság-kezelőben törölhet.
+
+## Kapcsolódó parancsok [#related]
+
+- [Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs](/docs/commands/block)
+- [Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs](/docs/commands/insert)
+- [AutoCAD RADÍR (ERASE) parancs](/docs/commands/erase)
+- [BLOKKPALETTA (BLOCKSPALETTE)](/docs/commands#blockspalette): A Blokkok paletta megnyitása

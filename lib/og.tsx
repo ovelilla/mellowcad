@@ -131,7 +131,7 @@ export function visualPieces(line: string): string[] {
 const ARABIC_FAMILY = "Inter, Readex Pro"
 
 /**
- * Inter and Geist Mono, each with its Cyrillic subset and the Polish and Czech letters
+ * Inter and Geist Mono, each with its Cyrillic subset and the Polish, Czech and Hungarian letters
  * behind it. WHY a family of its own: Satori takes a glyph a face lacks from
  * the families the text names, not from another face of the same name, and
  * next/og fetched a regular Noto for the Cyrillic instead (the Russian card's

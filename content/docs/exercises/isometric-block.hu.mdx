@@ -1,0 +1,52 @@
+---
+title: "AutoCAD izometrikus gyakorló feladat: lépcsős hasáb"
+metaTitle: "AutoCAD izometrikus rajz: gyakorló feladat"
+description: "Lépcsős hasáb izometrikusan AutoCAD-ben a VONAL (LINE) paranccsal és polárkoordinátákkal a 30°-os, 90°-os és 150°-os tengely mentén, méretezve. Ingyen, online."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a lépcsős hasábot izometrikus ábrázolásban, milliméterben: 60 hosszú, 40 mély és 40 magas, az elején egy 20 mély és 20 magas lépcsővel. Minden él valamelyik izometrikus tengely mentén fut: a hosszúság 30° és 210°, a mélység 150° és 330°, a magasság 90° és 270° irányában. A MellowCAD még nem ismeri az AutoCAD izometrikus rajzolását, sem az izometrikus rasztert, sem az izoköröket, ezért az élek polárkoordinátákkal, hosszal és szöggel beírt vonalak.
+
+- **Feladat:** Középhaladó · Gépészet · Izometrikus
+- **Parancsok:** [`VONAL`](/docs/commands/line), [`MÉRETILLESZT`](/docs/commands/dimaligned)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=isometric-block), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/isometric-block" caption="Lépcsős hasáb izometrikusan: 60 hosszú, 40 mély és 40 magas, a méretei az élei mentén." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a lépcső elejét [#front]
+
+A Körvonal fólián a [`VONAL`](/docs/commands/line) parancs a `0,0` ponttól, az alsó elülső saroktól: `60<30`, `20<90`, `60<210`, majd a `Bezár` opció.
+
+<Session name="exercises/isometric-block/front" caption="1. Rajzolja meg a lépcső elejét" />
+
+### 2. Rajzolja meg az oldalát [#side]
+
+Ismét a `0,0` ponttól a bal oldal: `40<150`, `40<90`, `20<330`, `20<270` és `20<330`. Az Enter a lépcső elülső élén fejezi be a vonalat.
+
+<Session name="exercises/isometric-block/side" caption="2. Rajzolja meg az oldalát" />
+
+### 3. Rajzolja meg a tetejét [#top]
+
+A többi már megrajzolt sarkokban kezdődik: írja be a `_END` értéket, a Végpont tárgyrasztert egyetlen pontra, és mutasson a sarokra. Az elülső lap jobb felső sarkától: `20<150`, `20<90`, `20<150` és `60<210`. Ezután két `60<210` vonal, a lépcső homloklapjának aljától és tetejétől.
+
+<Session name="exercises/isometric-block/top" caption="3. Rajzolja meg a tetejét" />
+
+### 4. Méretezze [#dimensions]
+
+A Méretek fólián a [`MÉRETILLESZT`](/docs/commands/dimaligned) paranccsal az élek mentén, mindegyik méretet a saját éle mellé helyezve: alul 60 és 40, a bal oldalon felfelé 40, a jobb oldalon felfelé 20.
+
+<Session name="exercises/isometric-block/dimensions" caption="4. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD 3D gyakorló feladat: szíjtárcsa](/docs/exercises/pulley): Középhaladó · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link): Haladó · Gépészet · 2D
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block): Haladó · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladatok](/docs/exercises)

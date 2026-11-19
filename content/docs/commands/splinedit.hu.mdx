@@ -1,0 +1,89 @@
+---
+title: "AutoCAD SPLINEDIT parancs"
+description: "Így működik az AutoCAD SPLINEDIT (SPE) parancsa: bezárás, egyesítés, illesztési adatok, csomópontok, vonallánccá konvertálás és megfordítás. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD SPLINEDIT parancs magyarul?","answer":"A magyar AutoCAD-ben is SPLINEDIT a neve. Írja be a SPLINEDIT nevet vagy az SPE rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. A _SPLINEDIT az AutoCAD bármely nyelvi változatában működik. A spline-ra duplán kattintva is elindul."},{"question":"Hogyan lehet a spline-t vonallánccá alakítani?","answer":"Indítsa el a SPLINEDIT parancsot, jelölje ki a spline-t, és válassza a vonaLLánccá opciót; 10-es pontossággal sima vonalláncot kap. A VLEDIT parancs is felajánlja a spline átalakítását."},{"question":"Hogyan lehet pontokat hozzáadni a spline-hoz vagy mozgatni rajta?","answer":"Válassza az Illesztés opciót, ha azokon a pontokon dolgozna, amelyeken a spline átmegy, majd a Hozzáadás vagy a Mozgatás opciót. Válassza a SZerkeszt opciót, ha a spline-t keretező vezérlő csomópontokon dolgozna."},{"question":"Hogyan lehet bezárni a spline-t?","answer":"Válassza a Bezárás opciót: a spline simán, sarok nélkül záródik ott, ahol önmagához ér. A Megnyitás opció újra kinyitja."},{"question":"Hogyan lehet két spline-t egyesíteni?","answer":"Válassza az EGyesít opciót, és jelölje ki azt a spline-t, amelynek a vége ennek a végéhez ér, vagy használja az EGYBEFŰZ parancsot."}]
+---
+
+A SPLINEDIT parancs spline-t szerkeszt. Jelölje ki a `Válasszon spline objektumot:` kérdésnél, vagy még a parancs előtt; a spline-ra duplán kattintva is a SPLINEDIT parancs indul. Minden más objektumra ez a válasz: `A kiválasztott objektum nem spline.`, és a parancs újra kérdez; a VLEDIT parancs Spline opciójával illesztett vonalláncot szó nélkül ugyanilyen görbéjű spline-ná alakítja. Ezután újra és újra opciót kér, és mindegyiket azonnal végrehajtja, amíg a `Kilépés` opciót nem választja, vagy meg nem nyomja az Enter billentyűt. A spline megmutatja az illesztési pontjai fogóit, a csúcspontok szerkesztése közben pedig a vezérlő csomópontjait és a vezérlőkeretét. Az egész szerkesztés egyetlen lépés, amelyet a `T` parancs visszavon. Bármelyik kérdésénél működik a begépelt `'ZOOM`.
+
+- **Parancs:** `SPLINEDIT`
+- **Álnevek:** `SPE`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SPE`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="splinedit" caption="Öt illesztési ponton átmenő spline, a SPLINEDIT paranccsal bezárva: sima hurok, amely mindegyiken átmegy." />
+
+## Opciók [#options]
+
+### `Bezárás` (`B`) [#close]
+
+Simán bezárja a spline-t: az illesztett spline-t az illesztési pontjain át, a vezérlő csomópontos spline-t a csomópontjain. Bezárt spline esetén az opció neve `Megnyitás`, és az Egyesít opció nem jelenik meg.
+
+### `EGyesít` (`EG`) [#join]
+
+A végeihez csatlakozó nyitott görbéket hozzáfűzi, az EGYBEFŰZ parancs spline-ra vonatkozó szabályai szerint, és kiírja, hányat fűzött hozzá.
+
+### `ILleszt adatokat` (`I`) [#fit-data]
+
+Azokat a pontokat szerkeszti, amelyeken a spline átmegy. A vezérlő csomópontos spline-nak nincsenek ilyen pontjai, ezért előbb illesztési pontokat kap a görbéjén. Opciói: a `Hozzáadás` kijelöl egy illesztési pontot, és utána újakat ad hozzá, újra és újra (nyitott spline első pontjánál `Hátra` vagy `Előre`); a `Törlés` illesztési pontokat töröl, legfeljebb kettőig, bezárt spline esetén háromig (`Ezen túl nem törölhető semmi.`); a `Mozgatás` a `köVetkező` és a `Előző` opcióval vagy a `Pont` opcióval lépked az illesztési pontok között, és az aktuálisat a megadott pontba mozgatja; a `TIsztít` eldobja az illesztési adatokat, és vezérlő csomópontos spline marad; a `Érintők` a kezdő és a záró irányt állítja be, vagy a `Rendszer` értéket; a `Bezárás` és a `Kilépés` ugyanaz, mint az első kérdésnél. Ha a kijelölt pont nem illesztési pont, ez jelenik meg: `Ez nem illesztési pont.`.
+
+### `SZerkeszt csomópontot` (`SZ`) [#edit-vertex]
+
+A vezérlő csomópontokat szerkeszti; az illesztett spline az első szerkesztésnél elveszíti az illesztési adatait. A `Hozzáadás` csomópontot tesz a spline-on kijelölt pontba; a `Törlés` töröl egyet, legfeljebb kettőig, bezárt spline esetén háromig; a `Növelés` növeli a rendet, legfeljebb 26-ig, csökkenteni soha nem lehet; a `Mozgatás` csomópontokat mozgat, úgy lépkedve, mint az illesztési adatok Mozgat opciója; a `Súly` egy csomópont súlyát állítja be, ezen üzenet után: `A spline nem racionális. Át lesz alakítva ilyen típusúra.`, így a görbe közelebb húzódik hozzá, vagy távolabb kerül tőle. Ha a kijelölt pont nem csomópont, ez jelenik meg: `Nem vezérlő csomópont.`.
+
+### `konvertálás vonaLLánccá` (`LL`) [#convert-to-polyline]
+
+0 és 99 közötti pontosságot kér, alapértelmezés szerint 10-et, és a spline-t egyenes szakaszokból álló vonallánccal helyettesíti: minél nagyobb a pontosság, annál több szakasszal. Ha a spline nem fekszik síkban, az XY síkkal párhuzamosan, 3D vonallánc lesz belőle. Ezzel a parancs befejeződik. A pontosság a munkamenet végéig megmarad, és a VLEDIT parancs konverziója is ezt használja.
+
+### `megFOrdít` (`FO`) [#reverse]
+
+Megfordítja a spline-t, az első pontja lesz az utolsó: `A spline iránya megfordítva.`.
+
+### `Vissza` (`V`) [#undo]
+
+Visszavonja az utolsó opciót, egy teljes illesztésiadat- vagy csomópontszerkesztést egyszerre. Ha már nincs mit visszavonni: `A parancsok hatása a legelső lépésig érvénytelenítve lett.`.
+
+### `Kilépés` (`K`) [#exit]
+
+Befejezi a parancsot, ahogy az Enter is.
+
+## Amit még nem tud [#missing]
+
+A Csomó opció, amely éles sarkot tesz egy illesztési pontba vagy csomópontba; a Tűrés opció, amely tűrésen belül újra illeszti a spline-t; bezárt spline Érintők opciója. A vonallánccá konvertálás illesztett spline-ból sokkal több csúcspontot készít, mint az AutoCAD, ívet soha, és mindig lecseréli a spline-t. A Csoport opció a `Válasszon spline objektumot:` kérdésnél. A `+` jel, amelyet az AutoCAD az aktuális pontra rajzol, miközben a pontok között lépked.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl--fr-editspline--esi--it-editspline--esi--de-splineedit--sie--ru-редсплайн--рсп--pl-edsplajn--spe--cs-splinedit--spe--hu-splinedit--spe)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD SPLINEDIT parancs magyarul?
+
+A magyar AutoCAD-ben is SPLINEDIT a neve. Írja be a `SPLINEDIT` nevet vagy az `SPE` rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. A `_SPLINEDIT` az AutoCAD bármely nyelvi változatában működik. A spline-ra duplán kattintva is elindul.
+
+### Hogyan lehet a spline-t vonallánccá alakítani?
+
+Indítsa el a SPLINEDIT parancsot, jelölje ki a spline-t, és válassza a `vonaLLánccá` opciót; 10-es pontossággal sima vonalláncot kap. A [`VLEDIT`](/docs/commands/pedit) parancs is felajánlja a spline átalakítását.
+
+### Hogyan lehet pontokat hozzáadni a spline-hoz vagy mozgatni rajta?
+
+Válassza az `Illesztés` opciót, ha azokon a pontokon dolgozna, amelyeken a spline átmegy, majd a `Hozzáadás` vagy a `Mozgatás` opciót. Válassza a `SZerkeszt` opciót, ha a spline-t keretező vezérlő csomópontokon dolgozna.
+
+### Hogyan lehet bezárni a spline-t?
+
+Válassza a `Bezárás` opciót: a spline simán, sarok nélkül záródik ott, ahol önmagához ér. A `Megnyitás` opció újra kinyitja.
+
+### Hogyan lehet két spline-t egyesíteni?
+
+Válassza az `EGyesít` opciót, és jelölje ki azt a spline-t, amelynek a vége ennek a végéhez ér, vagy használja az [`EGYBEFŰZ`](/docs/commands/join) parancsot.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD SPLINE parancs](/docs/commands/spline)
+- [Vonallánc szerkesztése az AutoCAD-ben: VLEDIT (PEDIT) parancs](/docs/commands/pedit)
+- [AutoCAD EGYBEFŰZ (JOIN) parancs](/docs/commands/join)
+- [AutoCAD LISTA (LIST) parancs](/docs/commands/list)

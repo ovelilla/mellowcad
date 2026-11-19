@@ -1,0 +1,81 @@
+---
+title: DXF-fájl megnyitása online
+metaTitle: "DXF fájl megnyitása online, ingyen"
+description: "Nyisson meg DXF-fájlt ingyen, online, feltöltés nélkül: AutoCAD R12–2018, ASCII vagy bináris, fóliákkal, szövegekkel, méretekkel, sraffozásokkal, blokkokkal."
+type: howTo
+sourceHash: "f49a2dbe8450"
+faq:
+  - question: "Hogyan nyithatok meg DXF-fájlt AutoCAD nélkül?"
+    answer: "Válassza ki, vagy húzza az oldal tetejére: a MellowCAD megnyitja a szerkesztőjében, a böngészőben, telepítés és fiók nélkül. A szerkesztőben a MEGNYIT (Ctrl+O) és a DXFBE parancs is megnyitja."
+  - question: "Feltöltődik a DXF-fájlom valahová?"
+    answer: "Nem. A böngésző olvassa be a fájlt, és ezen az eszközön adja át a szerkesztőnek; soha nem kerül szerverre."
+  - question: "Megnyithatok DWG-fájlt?"
+    answer: "Egyelőre nem. Mentse el DXF-ként abban a programban, amelyben készült (az AutoCAD-ben a MENTMINT paranccsal, DXF fájltípussal), és azt nyissa meg."
+  - question: "Elmenthetem a módosításaimat DXF-fájlként?"
+    answer: "Igen. A MENTMINT (Ctrl+Shift+S) vagy a DXFKI parancs AutoCAD 2000–2018 formátumú, szöveges vagy bináris DXF-ként menti a rajzot, amelyet az AutoCAD megnyit. A 3D szilárdtestek és a lemezek kimaradnak, és ezt a parancssor jelzi."
+  - question: "Miért hiányzik néhány objektum?"
+    answer: "Amihez a MellowCAD-ben még nincs objektumtípus, például a többszörös mutatók, a táblázatok vagy a 3D szilárdtestek, az kimarad, és a parancssor a fájl megnyitásakor kiírja, hogy az egyes típusokból hány maradt ki. Az elrendezésekben lévőket külön számolja: elrendezések még nincsenek."
+---
+
+<OpenDxf />
+
+A MellowCAD a böngészőben nyitja meg a DXF-fájlokat, és a szerkesztőjében rajzolja meg őket, ahol körülnézhet a rajzon, lemérheti és módosíthatja az AutoCAD parancsaival, a saját nyelvén beírva. A fájlt a saját számítógépe olvassa be: semmi sem töltődik fel, nincs mit telepíteni, és fiókot sem kell létrehozni.
+
+## Mi nyílik meg [#opens]
+
+- **DXF az AutoCAD R12-től 2018-ig**, ez az AutoCAD által írt legújabb DXF-formátum, szöveges (ASCII) vagy bináris, akár az AutoCAD, akár más program készítette. A szöveg megtartja a karaktereit: 2004-ig a fájlban megnevezett kódlap szerint, 2007-től UTF-8-ban.
+- **Vonalak, ívek, körök, ellipszisek és vonalláncok** a szélességükkel, ív- és spline-illesztett formájukkal, 3D vonalláncok és spline-ok, valamint pontok a rajz [pontstílusával](/docs/commands/ptype) megrajzolva, 2D tömör objektumok a FILLMODE szerint kitöltve, és 3D lapok.
+- **Egysoros és bekezdéses szöveg**, mutatók a szövegükkel, blokkok az attribútumaikkal, lineáris, illesztett, szög-, sugár- és átmérőméretek, valamint sraffozások, mindegyik a benne tárolt mintázatvonalakkal, ahogy az AutoCAD rajzolja: felhasználói minta vagy más program mintája is.
+- **Minden objektum fóliája**, színe, vonaltípusa és annak léptéke, vonalvastagsága, vastagsága és szintje, valamint a be-, kikapcsolt vagy zárolt fóliák; a fagyasztott fólia kikapcsolva nyílik meg.
+- **A rajz vonaltípusai** a vonalkáikkal, pontjaikkal és hézagaikkal, a rajz vonaltípus-léptékében, és az összetett vonaltípusok szövege, például a GAS_LINE vonaltípusé.
+- **A rajz szöveg- és méretstílusai**, és a mértékegysége, ha az milliméter, centiméter vagy méter.
+
+## Mi marad ki [#left-out]
+
+Ha a DXF olyasmit tartalmaz, amihez a MellowCAD-ben még nincs objektumtípus, a program megnyitja a többit, és a parancssorban kiírja, hogy az egyes típusokból hány objektum maradt ki. Jelenleg ezek:
+
+- a TRACE objektumok és a hálók;
+- a szerkesztővonalak és a sugarak, a többszörösvonalak;
+- a többszörös mutatók és a tűrések, a táblázatok, a kitakarások és a képek;
+- a 3D szilárdtestek, a lemezek és a felületek;
+- a koordinátaméretek és az ívhossz méretek.
+
+Az elrendezésekben lévő objektumokat külön számolja, mert elrendezések még nincsenek: az a rajz, amelynek minden objektuma az elrendezésein van, üresen nyílik meg.
+
+Néhány dolog megnyílik, de nem egészen olyan, mint volt:
+
+- Az összetett vonaltípusok, például a BATTING vagy a ZIGZAG alakzatai nem jelennek meg, csak a körülöttük lévő vonalkák és hézagok.
+- Az indexszel megadott szín RGB-színként nyílik meg, a Blokk szerint pedig Fólia szerintként.
+- A hüvelykben vagy lábban készült rajz megtartja a számait, de milliméterként értelmezve.
+- A szöveg az Arial betűtípus méreteivel jelenik meg, bármilyen betűtípust nevez is meg a stílusa, szélességi tényező és dőlésszög nélkül.
+- A külső referencia megtartja a helyét és az elérési útját, és úgy jelenik meg, ahogy az AutoCAD rajzolja azt a referenciát, amelynek a rajzát nem találja: `Xref` és az elérési út a beszúrási pontjában. Egy oldal csak a kapott fájlt olvassa be, a mellette lévő rajzokat soha; ha újra DXF-ként menti, a referencia megmarad.
+
+## Megnyitás a szerkesztőben [#editor]
+
+A szerkesztőben a DXF úgy nyílik meg, mint egy rajz: a <Command id="OPEN" /> parancs (`Ctrl+O`) rajzokat és DXF-fájlokat kínál fel, ahogy az AutoCAD Fájl kiválasztása párbeszédpanele, a <Command id="DXFIN" /> parancs pedig csak DXF-fájlokat. Az erről az oldalról vagy a <Command id="OPEN" /> paranccsal megnyitott fájl a szerkesztőben lévő rajz helyére kerül, ezért előbb mentse a sajátját a `Ctrl+S` billentyűkkel: [egyszerre egy rajz](/docs/differences#one-drawing) lehet nyitva.
+
+## Módosítás és megőrzés [#keep]
+
+Megnyitás után a DXF ugyanolyan rajz, mint bármely más: mérje le a <Command id="DIST" /> és a <Command id="AREA" /> paranccsal, módosítsa a <Command id="MOVE" />, a <Command id="TRIM" /> vagy a <Command id="OFFSET" /> paranccsal, és rajzoljon rá. Munka közben ebben a böngészőben marad, a `Ctrl+S` pedig a MellowCAD saját, verziózott formátumában menti fájlba. A <Command id="SAVEAS" /> (`Ctrl+Shift+S`) és a <Command id="DXFOUT" /> parancs újra DXF-ként menti, AutoCAD 2000–2018 formátumban, szövegesen vagy binárisan: [a DXF online szerkesztéséről szóló oldal](/docs/edit-dxf) leírja, hogyan, és mit őriz meg a fájl. DWG-fájlok még nincsenek.
+
+## Kérdések [#questions]
+
+### Hogyan nyithatok meg DXF-fájlt AutoCAD nélkül? [#without-autocad]
+
+Válassza ki, vagy húzza az oldal tetejére: a MellowCAD megnyitja a szerkesztőjében, a böngészőben, telepítés és fiók nélkül. A szerkesztőben a <Command id="OPEN" /> (`Ctrl+O`) és a <Command id="DXFIN" /> parancs is megnyitja.
+
+### Feltöltődik a DXF-fájlom valahová? [#uploaded]
+
+Nem. A böngésző olvassa be a fájlt, és ezen az eszközön adja át a szerkesztőnek; soha nem kerül szerverre.
+
+### Megnyithatok DWG-fájlt? [#dwg]
+
+Egyelőre nem. Mentse el DXF-ként abban a programban, amelyben készült (az AutoCAD-ben a <Command id="SAVEAS" /> paranccsal, DXF fájltípussal), és azt nyissa meg.
+
+### Elmenthetem a módosításaimat DXF-fájlként? [#save-dxf]
+
+Igen. A <Command id="SAVEAS" /> (`Ctrl+Shift+S`) vagy a <Command id="DXFOUT" /> parancs AutoCAD 2000–2018 formátumú, szöveges vagy bináris DXF-ként menti a rajzot, amelyet az AutoCAD megnyit. A 3D szilárdtestek és a lemezek kimaradnak, és ezt a parancssor jelzi. Bővebben [a DXF online szerkesztéséről szóló oldalon](/docs/edit-dxf).
+
+### Miért hiányzik néhány objektum? [#missing]
+
+Amihez a MellowCAD-ben még nincs objektumtípus, például a többszörös mutatók, a táblázatok vagy a 3D szilárdtestek, az kimarad, és a parancssor a fájl megnyitásakor kiírja, hogy az egyes típusokból hány maradt ki. Az elrendezésekben lévőket külön számolja: elrendezések még nincsenek.

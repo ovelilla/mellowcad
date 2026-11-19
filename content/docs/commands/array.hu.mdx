@@ -1,0 +1,68 @@
+---
+title: "Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs"
+metaTitle: "Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs"
+description: "Kiosztás az AutoCAD-ben a KIOSZT (ARRAY, KI) paranccsal: négyszögletes, poláris és útvonal menti kiosztás, élőben szerkesztve létrehozás előtt. Próbálja ki."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD KIOSZT parancs angolul, és mi a rövidítése?","answer":"Angolul ARRAY, a magyar AutoCAD-ben KIOSZT: írja be a KI rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol AR a magyar AutoCAD-ben az ÁRNYAL parancsot indítja; az _ARRAY az AutoCAD bármely nyelvén működik. A KIOSZTNÉGYSZ, a KIOSZTPOLÁRIS és a KIOSZTÚTVONAL parancsnak nincs rövidítése, és teljes nevükkel beírva kihagyják a típusra vonatkozó kérdést."},{"question":"Hogyan lehet körkörös kiosztást készíteni?","answer":"Válassza a Poláris opciót, vagy indítsa el a KIOSZTPOLÁRIS parancsot, és adja meg a középpontot: a kijelölés körbe másolódik, kezdetben 6 elemben. A darabszámot az Elem opcióval módosíthatja, a kitöltött szöget pedig a kItöltése opcióval állíthatja be."},{"question":"Hogyan lehet szétvetni egy kiosztást?","answer":"Jelölje ki, és futtassa a SZÉTVET parancsot: a kiosztásból az elemei objektumai lesznek, mindegyik a saját fóliáján. Ha eleve különálló másolatokat szeretne, az Enter megnyomása előtt az Asszociatív kérdésre válaszoljon így: Nem."},{"question":"Hogyan lehet módosítani egy kiosztást a létrehozása után?","answer":"Jelölje ki. A fogói módosítják: a bázispontban lévő négyzet mozgatja, a nyilak a darabszámot és a távolságot állítják, és ha egy darabszám-nyíl aktív, a beírt szám lesz a darabszám. A Tulajdonságok paletta felsorolja az oszlopait, sorait és távolságait, vagy az elemeit és szögeit, hogy átírhassa őket. A KIOSZTSZERKESZT parancs még nincs meg."}]
+---
+
+A KIOSZT (ARRAY) parancs mintázatba másolja a kijelölést: oszlopokba és sorokba, egy középpont köré vagy egy útvonal mentén. Bekéri az objektumokat, majd a kiosztás típusát – az Enter négyszögletest választ –, és a kijelölést átadja a [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect), a [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar) vagy a [`KIOSZTÚTVONAL`](/docs/commands/arraypath) parancsnak, amelyek az objektumok újbóli bekérése nélkül folytatják. Mindegyik azonnal megmutatja a kiosztást, és élőben szerkeszti az opcióival és a fogóival, amíg az Enter létre nem hozza: egyetlen kiosztásobjektumot, vagy különálló másolatokat, ha azt adta meg, hogy ne legyen asszociatív. A teljes futás egyetlen visszavonási lépés, és a Parancs: promptnál adott Enter megismétli a KIOSZT parancsot.
+
+- **Parancs:** `KIOSZT`
+- **Angolul:** `ARRAY`, bármely nyelven `_ARRAY` formában beírva
+- **Álnevek:** `KI`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `KI`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="array" caption="Egy négyzet és a köre kiosztva az alapértékekkel: Enter a négyszögletes kiosztáshoz, 4 oszlop és 3 sor." />
+
+## Opciók [#options]
+
+### `Négyszögletes` (`N`) [#rectangular]
+
+Oszlopok és sorok, és ha kívánja, Z mentén egymásra rakott szintek: [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect). 4 oszloppal és 3 sorral indul, a kijelölés méretének másfélszeresére egymástól.
+
+### `Útvonal` (`Ú`) [#path]
+
+Egy vonal, ív, kör vagy vonallánc mentén: [`KIOSZTÚTVONAL`](/docs/commands/arraypath). Bekéri az útvonalgörbét, majd végigrakja rajta az elemeket, mindegyiket úgy elforgatva, ahogy az útvonal fordul.
+
+### `Poláris` (`P`) [#polar]
+
+Egy középpont körül: [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar). Bekéri a középpontot, és 6 elemmel indul egy teljes körön.
+
+## Amit még nem tud [#missing]
+
+A felkínált típus mindig a Négyszögletes: az ARRAYTYPE változót, amely az AutoCAD-ben az alapértelmezést állítja be, nem olvassa.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma--fr-reseau--re--it-serie--sr--de-reihe--rh--ru-массив--мс--pl-szyk--sz--cs-pole--po--hu-kioszt--ki)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD KIOSZT parancs angolul, és mi a rövidítése?
+
+Angolul ARRAY, a magyar AutoCAD-ben KIOSZT: írja be a `KI` rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `AR` a magyar AutoCAD-ben az ÁRNYAL parancsot indítja; az `_ARRAY` az AutoCAD bármely nyelvén működik. A [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect), a [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar) és a [`KIOSZTÚTVONAL`](/docs/commands/arraypath) parancsnak nincs rövidítése, és teljes nevükkel beírva kihagyják a típusra vonatkozó kérdést.
+
+### Hogyan lehet körkörös kiosztást készíteni?
+
+Válassza a `Poláris` opciót, vagy indítsa el a [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar) parancsot, és adja meg a középpontot: a kijelölés körbe másolódik, kezdetben 6 elemben. A darabszámot az `Elem` opcióval módosíthatja, a kitöltött szöget pedig a `kItöltése` opcióval állíthatja be.
+
+### Hogyan lehet szétvetni egy kiosztást?
+
+Jelölje ki, és futtassa a [`SZÉTVET`](/docs/commands/explode) parancsot: a kiosztásból az elemei objektumai lesznek, mindegyik a saját fóliáján. Ha eleve különálló másolatokat szeretne, az Enter megnyomása előtt az `Asszociatív` kérdésre válaszoljon így: `Nem`.
+
+### Hogyan lehet módosítani egy kiosztást a létrehozása után?
+
+Jelölje ki. A fogói módosítják: a bázispontban lévő négyzet mozgatja, a nyilak a darabszámot és a távolságot állítják, és ha egy darabszám-nyíl aktív, a beírt szám lesz a darabszám. A Tulajdonságok paletta felsorolja az oszlopait, sorait és távolságait, vagy az elemeit és szögeit, hogy átírhassa őket. A KIOSZTSZERKESZT parancs még nincs meg.
+
+## Kapcsolódó parancsok [#related]
+
+- [Négyszögletes kiosztás az AutoCAD-ben: KIOSZTNÉGYSZ (ARRAYRECT) parancs](/docs/commands/arrayrect)
+- [Poláris kiosztás az AutoCAD-ben: KIOSZTPOLÁRIS (ARRAYPOLAR) parancs](/docs/commands/arraypolar)
+- [Útvonal menti kiosztás az AutoCAD-ben: KIOSZTÚTVONAL (ARRAYPATH) parancs](/docs/commands/arraypath)
+- [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)
+- [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)

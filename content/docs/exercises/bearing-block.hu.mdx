@@ -1,0 +1,66 @@
+---
+title: "AutoCAD 3D gyakorló feladat: csapágybak"
+metaTitle: "AutoCAD 3D haladó gyakorló feladat: csapágybak"
+description: "Csapágybak modellezése AutoCAD 3D-ben: kihúzás, egyesítés, majd a furat és két csavarfurat kivonása hengerként, lépésről lépésre. 3D szilárdtestek ingyen."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Modellezze ezt a csapágybakot milliméterben: 100 × 60-as, 12 vastag alaplap 10 sugarú sarkokkal; a közepén 40 átmérőjű, 40 magas agy; az agyon át 20-as furat, az alaplapon át két 10-es csavarfurat, egymástól 76 távolságra. Az alaplapot és az agyat a körvonalukból húzza ki, és egyetlen szilárdtestté egyesíti; a furatok belőle kivont hengerek.
+
+- **Feladat:** Haladó · Gépészet · 3D szilárdtest
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`KIHÚZ`](/docs/commands/extrude), [`EGYESÍT`](/docs/commands/union), [`HENGER`](/docs/commands/cylinder), [`MÁSOL`](/docs/commands/copy), [`KIVON`](/docs/commands/subtract), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=bearing-block), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/bearing-block" caption="A csapágybak felülnézetben, 100 × 60, az agy, a furat és a csavarfuratok méretezve." />
+
+<Session name="exercises/bearing-block/model" caption="A csapágybak szilárdtestként, délkeletről nézve, Látványtervi látványstílusban." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a felülnézetet [#plan]
+
+A Körvonal fólián a [`TÉGL`](/docs/commands/rectang) parancs a `leKerekít` opcióval, `10` sugárral, a `0,0` ponttól a `100,60` pontig, és egy kör a közepén, az `50,30` pontban, az `Átmérő` opcióval, `40` átmérővel.
+
+<Session name="exercises/bearing-block/plan" caption="1. Rajzolja meg a felülnézetet" />
+
+### 2. Húzza ki az alaplapot és az agyat [#extrude]
+
+A [`KIHÚZ`](/docs/commands/extrude) paranccsal húzza ki a körvonalat `12`, majd a kört `40` magasra: két szilárdtest lesz belőlük.
+
+<Session name="exercises/bearing-block/extrude" caption="2. Húzza ki az alaplapot és az agyat" />
+
+### 3. Egyesítse őket [#union]
+
+Az [`EGYESÍT`](/docs/commands/union) parancs: válassza ki mindkettőt, és nyomja meg az Enter billentyűt. Egyetlen szilárdtest lesz belőlük.
+
+<Session name="exercises/bearing-block/union" caption="3. Egyesítse őket" />
+
+### 4. Rajzolja meg a hengereket [#holes]
+
+A furatot és egy csavarfuratot hengerként rajzolja meg a [`HENGER`](/docs/commands/cylinder) paranccsal: a furatot az `50,30` pontban, az `Átmérő` opcióval `20` átmérővel és `40` magasan; egy csavarfuratot a `12,30` pontban, `10` átmérővel és `12` magasan. Ezután a [`MÁSOL`](/docs/commands/copy) paranccsal másolja a csavarfuratot a `12,30` pontból `76,0` értékkel tovább.
+
+<Session name="exercises/bearing-block/holes" caption="4. Rajzolja meg a hengereket" />
+
+### 5. Vonja ki őket [#subtract]
+
+A [`KIVON`](/docs/commands/subtract) parancs: válassza ki a testet, és nyomja meg az Enter billentyűt, majd a három hengert, és ismét Enter. A furatok átmennek a testen.
+
+<Session name="exercises/bearing-block/subtract" caption="5. Vonja ki őket" />
+
+### 6. Fordítsa el a nézetet [#view]
+
+A `-NÉZET` parancs és a `DKizo` opció, az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancs és a `Látványtervi` opció, majd a [`ZOOM`](/docs/commands/zoom) parancs `Terjedelem` opciója és `0.8x`, hogy a test kitöltse a képet.
+
+<Session name="exercises/bearing-block/view" caption="6. Fordítsa el a nézetet" />
+
+## További feladatok [#more]
+
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket): Kezdő · Gépészet · 2D
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket): Kezdő · Gépészet · 2D
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs): Kezdő · Építészet · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

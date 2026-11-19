@@ -1,0 +1,64 @@
+---
+title: "AutoCAD gyakorló feladat: lépcsős tengely"
+metaTitle: "AutoCAD gépész gyakorló feladat: lépcsős tengely"
+description: "Lépcsős tengely AutoCAD-ben: a fele vonalláncként, letörve, a középvonalra tükrözve, a hosszak láncméretezéssel. Ingyen, lépésről lépésre."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+Rajzolja meg ezt a lépcsős tengelyt oldalnézetben, milliméterben: 150 hosszú, 30, 40 és 30 átmérővel 40, 60 és 50 hosszon, mindkét végén 2 × 2-es letöréssel. A középvonal fölötti felét egyetlen vonalláncként rajzolja meg, törje le és tükrözze; ezután a tengelyen keresztben látható éleket, a középvonalat és a hosszakat. Az átmérők az itt megadottak.
+
+- **Feladat:** Középhaladó · Gépészet · 2D
+- **Parancsok:** [`VLÁNC`](/docs/commands/pline), [`LETÖR`](/docs/commands/chamfer), [`TÜKRÖZ`](/docs/commands/mirror), [`VONAL`](/docs/commands/line), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETFOLYTAT`](/docs/commands/dimcontinue)
+- **A szerkesztőben:** [Nyissa meg a rajzával együtt](/hu/draw?drawing=shaft), méretezve, amellett a terület mellett, ahol a sajátját rajzolja
+
+## A rajz [#drawing]
+
+<Session name="exercises/shaft" caption="Lépcsős tengely oldalnézetben, 150 hosszú, a hosszai láncméretezéssel." />
+
+## Lépésről lépésre [#steps]
+
+A motor minden lépést megrajzol, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Egy parancs első pontja után a beírt pontot a program az előzőtől méri, ahogy a dinamikus adatbevitel is, és az előzményekben @ jellel szerepel; a \# az origótól mér.
+
+### 1. Rajzolja meg a felső felét [#half]
+
+A Körvonal fólián egyetlen vonallánc a [`VLÁNC`](/docs/commands/pline) paranccsal a `0,0` ponttól: fel `0,15`, vízszintesen `40,0`, fel `0,5`, vízszintesen `60,0`, le `0,-5`, vízszintesen `50,0` és le `0,-15`, vissza a középvonalig. Az Enter befejezi.
+
+<Session name="exercises/shaft/half" caption="1. Rajzolja meg a felső felét" />
+
+### 2. Törje le a végeket [#chamfers]
+
+A [`LETÖR`](/docs/commands/chamfer) parancs, majd a `Távolság` opció: `2`, és az Enter a második távolságra is elfogadja a `2` értéket. A `töBbszörös` opcióval egymás után több sarkot letörhet újraindítás nélkül: válassza ki a két szakaszt mindkét vég sarkánál.
+
+<Session name="exercises/shaft/chamfers" caption="2. Törje le a végeket" />
+
+### 3. Tükrözze [#mirror]
+
+A [`TÜKRÖZ`](/docs/commands/mirror) parancs: válassza ki a vonalláncot, nyomja meg az Enter billentyűt, majd adja meg a tükrözés tengelyét a `0,0` ponttól a `150,0` pontig – ez a középvonal –, és az Enter megtartja az eredetit.
+
+<Session name="exercises/shaft/mirror" caption="3. Tükrözze" />
+
+### 4. Rajzolja meg az éleket [#edges]
+
+A [`VONAL`](/docs/commands/line) paranccsal a tengelyen keresztben látható élek, mindegyik `0,30` értékkel felfelé az aljától: a `2,-15` és a `148,-15` ponttól a letöréseknél, a `40,-15` és a `100,-15` ponttól a vállaknál.
+
+<Session name="exercises/shaft/edges" caption="4. Rajzolja meg az éleket" />
+
+### 5. Rajzolja meg a középvonalat [#axis]
+
+A Középvonalak fólián a középvonal: egy vonal a `-8,0` ponttól `166,0` értékkel tovább.
+
+<Session name="exercises/shaft/axis" caption="5. Rajzolja meg a középvonalat" />
+
+### 6. Méretezze [#dimensions]
+
+A Méretek fólián a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs az első hosszra, 40, alul elhelyezve. A [`MÉRETFOLYTAT`](/docs/commands/dimcontinue) parancs a második segédvonalától folytatja: `#100,-20`, majd `#150,-15`, az origótól mérve, # jellel beírva, és kétszer Enter a befejezéshez. Egy utolsó [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs a teljes hosszt adja meg, 150, még lejjebb.
+
+<Session name="exercises/shaft/dimensions" caption="6. Méretezze" />
+
+## További feladatok [#more]
+
+- [AutoCAD izometrikus gyakorló feladat: lépcsős hasáb](/docs/exercises/isometric-block): Középhaladó · Gépészet · Izometrikus
+- [AutoCAD 3D gyakorló feladat: szíjtárcsa](/docs/exercises/pulley): Középhaladó · Gépészet · 3D szilárdtest
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link): Haladó · Gépészet · 2D
+- [AutoCAD gyakorló feladatok](/docs/exercises)

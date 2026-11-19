@@ -1,0 +1,61 @@
+---
+title: Első lépések
+metaTitle: "Műszaki rajz online: az első rajz elkészítése"
+description: "Az első rajz a MellowCAD-ben: a parancssor, a kérdések és az opciók, a pontos rajzolás segédeszközei, a visszavonás és a mentés."
+type: gettingStarted
+sourceHash: "527b2d24b274"
+---
+
+A MellowCAD úgy működik, mint az AutoCAD: beír egy parancsot, válaszol a kérdéseire, és a rajz elkészül. Ha már dolgozik AutoCAD-del, elég [a parancsok listája](/docs/commands) és [az eltérések](/docs/differences); ez az oldal az első tíz percre szól.
+
+## Nyissa meg a szerkesztőt [#open]
+
+[Nyissa meg a szerkesztőt](/hu/draw) egy asztali gép böngészőjében. Nincs mit telepíteni, és fiókot sem kell létrehozni. A rajz munka közben ebben a böngészőben marad, és a következő megnyitáskor is ott találja.
+
+## Írjon be egy parancsot [#command]
+
+Gépeljen közvetlenül a rajzon, bárhol áll is a kurzor: a betűk a lenti parancssorba kerülnek, amely felajánlja az így kezdődő parancsokat. Az Enter vagy a szóköz elindítja a parancsot. A <Command id="LINE" /> parancs vonalakat rajzol, és ugyanezt teszi a rövidebb parancsálneve is; minden parancsálnév megtalálható [a parancsok oldalán](/docs/commands). A nevek a magyar AutoCAD nevei; az angol név is működik, ha aláhúzásjel előzi meg, ahogy az AutoCAD-ben (`_LINE`).
+
+## Válaszoljon a kérdésekre [#prompts]
+
+A parancs egyszerre egy dolgot kérdez, a parancssorban és a kurzor mellett. Egy pont egy kattintás a rajzon, vagy két koordináta `x,y` alakban beírva. Az első pont után a beírt koordinátákat a program az utolsó ponttól méri, ahogy az AutoCAD dinamikus adatbevitele, és az előzmények `@` jellel írják ki őket; a `#x,y` ezzel szemben az origótól mér. Az önmagában beírt távolságot a kurzor irányában méri fel.
+
+<Session name="firstLine" />
+
+## Válasszon opciót [#options]
+
+A kérdés által felkínált opciók szögletes zárójelben állnak, mindegyik a maga nagybetűivel: írja be ezeket a betűket, és nyomja meg az Enter billentyűt. A csúcsos zárójelben álló érték az alapértelmezett, és az Enter elfogadja.
+
+<Session name="circleDiameter" />
+
+## Befejezés, ismétlés, megszakítás [#end]
+
+Az Enter vagy a szóköz befejezi a tovább kérdező parancsot, például a <Command id="LINE" /> parancsot, ha pedig nem fut parancs, megismétli az utolsót. A jobb gombos kattintás menüt nyit ugyanezekkel a lehetőségekkel. Az Esc megszakítja a parancsot. Minden billentyű megtalálható [a billentyűparancsok oldalán](/docs/shortcuts).
+
+## Rajzoljon pontosan [#precision]
+
+A tárgyraszter a kurzort a már megrajzolt objektumok pontos pontjaira viszi: végpontokra, felezőpontokra, középpontokra. Az `F3` be- és kikapcsolja, az `F8` az Orto módot, az `F10` a poláris követést, ahogy az állapotsoron lévő gombjaik is.
+
+<Session name="endpointSnap" />
+
+## Módosítsa a rajzot [#modify]
+
+A módosító parancs bekéri azokat az objektumokat, amelyeken dolgozik, vagy előbb egy értéket, mint a <Command id="OFFSET" /> parancs: a távolságot, az objektumot, majd azt az oldalt, ahová a másolat kerül.
+
+<Session name="offsetRectangle" />
+
+## Visszavonás és ismétlés [#undo]
+
+A <Command id="U" /> parancs vagy a `Ctrl+Z` visszavonja az utolsó parancsot, egészében, a `Ctrl+Y` pedig újra végrehajtja. Az ezt felkínáló parancson belül a parancs saját Vissza opciója egy lépést von vissza, például a <Command id="LINE" /> parancs egy szakaszát.
+
+## Mentés [#save]
+
+A rajz munka közben ebben a böngészőben marad. A <Command id="QSAVE" /> parancs vagy a `Ctrl+S` letölti fájlként, a MellowCAD saját, verziózott formátumában, a <Command id="OPEN" /> parancs vagy a `Ctrl+O` pedig megnyit egy ilyen fájlt, vagy [egy DXF-fájlt](/docs/open-dxf), amelyet a <Command id="SAVEAS" /> parancs újra [DXF-ként ment](/docs/edit-dxf); [a mentés nem egészen olyan, mint az AutoCAD-ben](/docs/differences#saving).
+
+## Hogyan tovább [#next]
+
+- [Gyakorló feladatok](/docs/exercises): rajzok gyakorláshoz, mindegyik lépésről lépésre megoldva, és a saját rajzával nyílik meg a szerkesztőben.
+- [Koordináták](/docs/coordinates): a pont beírásának minden módja, és egy adott szögű vonal.
+- [Parancsok](/docs/commands): minden parancs, a parancsálnevei és az első kérdése.
+- [Billentyűparancsok](/docs/shortcuts): a billentyűk, amelyekre a szerkesztő reagál.
+- [Eltérések az AutoCAD-től](/docs/differences): hol működik másképp, és miért.

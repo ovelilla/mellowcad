@@ -1,0 +1,55 @@
+---
+title: "Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL (MATCHPROP) parancs"
+metaTitle: "Tulajdonságok másolása AutoCAD-ben: TULMÁSOL"
+description: "Tulajdonságok másolása az AutoCAD TULMÁSOL (MATCHPROP, rövidítése TUM) parancsával: fólia, szín, vonaltípus, vonalvastagság és stílusok. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD TULMÁSOL parancs angolul?","answer":"MATCHPROP. A magyar AutoCAD-ben a rövidítése TUM és FESTŐ: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol MA és PAINTER a magyar változatban nem működik; a teljes TULMÁSOL név igen, a _MATCHPROP pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet egy vonal tulajdonságait átmásolni egy másikra?","answer":"Futtassa a TULMÁSOL parancsot, válassza ki azt a vonalat, amelynek tulajdonságait át akarja vinni, majd azokat a vonalakat, amelyek megkapják őket, és nyomja meg az Enter billentyűt. Ezek a forrás fóliájára kerülnek, annak színével, vonaltípusával és vonalvastagságával."},{"question":"Miért nem működik a tulajdonságok másolása?","answer":"A zárolt fólián lévő célobjektum nem változik: előbb oldja fel a fólia zárolását. Egy tulajdonság csak olyan objektumok között másolódik, amelyeknek van ilyen: méretstílus csak méretre, szövegstílus csak szövegre, minta csak sraffozásra. Vonaltípust pedig nem másol sraffozásra és bekezdéses szövegre, ahogy az AutoCAD sem."},{"question":"Hogyan lehet átvinni egy méret vagy egy sraffozás tulajdonságait?","answer":"Válasszon egy méretet forrásnak és más méreteket célnak: megkapják a méretstílusát, a fóliájával és a színével együtt. A sraffozás a mintáját, a léptékét és a szögét adja át más sraffozásoknak, és mindegyik megtartja a saját origóját."}]
+---
+
+A TULMÁSOL (MATCHPROP) parancs egy objektum tulajdonságait másolja át más objektumokra: ez az AutoCAD Tulajdonságmásolás ecsetje. Válassza ki a forrásobjektumot, vagy jelölje ki a parancs előtt; zárolt fólián lévő objektumot is elfogad. Ezután kiírja, mely tulajdonságokat másolja, az aktuális beállítások listáját, és bekéri a célobjektumokat: minden rámutatás vagy ablak azonnal átfesti őket, amíg az Enter be nem fejezi a parancsot. A zárolt fólián lévő célobjektum változatlan marad, `A célobjektum lezárt fólián található. Az objektum nem módosítható.` üzenettel. A kurzoron az AutoCAD ecsete látszik, és a teljes futás egyetlen lépés, amelyet a `T` visszavon. Aposztróffal beírva, `'TULMÁSOL`, egy másik parancson belül fut.
+
+Azt másolja, amit a Tulajdonságmásolás beállításai párbeszédpanel alapértelmezésként bejelöl: a fóliát, a színt és a vonalvastagságot; a vonaltípust, kivéve sraffozásra, bekezdéses szövegre és attribútumdefinícióra; a vastagságot; szövegek között a stílust, a magasságot és az elforgatást, egysoros szövegről egysoros szövegre az igazítást is; méretek között a méretstílust; sraffozások között a mintát, a léptéket és a szöget, az origót viszont nem.
+
+- **Parancs:** `TULMÁSOL`
+- **Angolul:** `MATCHPROP`, bármely nyelven `_MATCHPROP` formában beírva
+- **Álnevek:** `TUM`, `FESTŐ`
+- **Panel:** [Módosítás](/docs/commands#modify)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TUM`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="matchprop" caption="Egy alaplap és a furata, egy függőleges tengely pirosan és Center vonaltípussal a saját fóliáján, valamint egy vízszintes vonal a 0 fólián, amelyet a TULMÁSOL ugyanilyen tengellyé alakít." />
+
+## Amit még nem tud [#missing]
+
+A Beállítások opció és a hozzá tartozó Tulajdonságmásolás beállításai párbeszédpanel: minden ismert tulajdonságot mindig másol, és az első prompt nem kínálja fel a Beállítások opciót. A vonaltípus-lépték, az átlátszóság és a nyomtatási stílus, amelyek itt nincsenek meg az objektumokon; a vonallánc szélességei, a szöveg szélességi tényezője és dőlésszöge, valamint a feliratozási tulajdonságok. Az AutoCAD előnézete, amely a kurzor alatt mutatja a változást.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop--pt-br-propig--pi--pintor--fr-corresprop--cor--copierprop--it-corrisprop--crp--copiaprop--de-eiganpass--ru-копироватьсв--кпс--кисть--pl-uzgwłaściwości--uzg--malarz--cs-kopievlast--kv--formát--painter--hu-tulmásol--tum--festő)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD TULMÁSOL parancs angolul?
+
+MATCHPROP. A magyar AutoCAD-ben a rövidítése `TUM` és `FESTŐ`: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `MA` és `PAINTER` a magyar változatban nem működik; a teljes `TULMÁSOL` név igen, a `_MATCHPROP` pedig az AutoCAD bármely nyelvi változatában.
+
+### Hogyan lehet egy vonal tulajdonságait átmásolni egy másikra?
+
+Futtassa a TULMÁSOL parancsot, válassza ki azt a vonalat, amelynek tulajdonságait át akarja vinni, majd azokat a vonalakat, amelyek megkapják őket, és nyomja meg az Enter billentyűt. Ezek a forrás fóliájára kerülnek, annak színével, vonaltípusával és vonalvastagságával.
+
+### Miért nem működik a tulajdonságok másolása?
+
+A zárolt fólián lévő célobjektum nem változik: előbb oldja fel a fólia zárolását. Egy tulajdonság csak olyan objektumok között másolódik, amelyeknek van ilyen: méretstílus csak méretre, szövegstílus csak szövegre, minta csak sraffozásra. Vonaltípust pedig nem másol sraffozásra és bekezdéses szövegre, ahogy az AutoCAD sem.
+
+### Hogyan lehet átvinni egy méret vagy egy sraffozás tulajdonságait?
+
+Válasszon egy méretet forrásnak és más méreteket célnak: megkapják a méretstílusát, a fóliájával és a színével együtt. A sraffozás a mintáját, a léptékét és a szögét adja át más sraffozásoknak, és mindegyik megtartja a saját origóját.
+
+## Kapcsolódó parancsok [#related]
+
+- [Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) parancs](/docs/commands/properties)
+- [Fóliák az AutoCAD-ben: FÓLIA (LAYER) parancs](/docs/commands/layer)
+- [Vonaltípus az AutoCAD-ben: VTÍPUS (LINETYPE) parancs](/docs/commands/linetype)
+- [Vonalvastagság az AutoCAD-ben: VVAST (LWEIGHT) parancs](/docs/commands/lweight)

@@ -1,0 +1,65 @@
+---
+title: "AutoCAD BEOSZTÁS (MEASURE) parancs"
+metaTitle: "AutoCAD BEOSZTÁS (MEASURE): pontok adott hosszon"
+description: "Az AutoCAD BEOSZTÁS (MEASURE, rövidítése BEO) parancsa: pontok vagy blokkok adott hosszanként vonalon, íven, körön vagy vonalláncon, a közelebbi végtől."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD BEOSZTÁS parancs angolul?","answer":"MEASURE. A magyar AutoCAD-ben a rövidítése BEO: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol ME a magyar változatban a METSZ parancsot indítja; a teljes BEOSZTÁS név működik, a _MEASURE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Mér-e távolságot a BEOSZTÁS parancs?","answer":"Nem: a megadott hosszanként pontokat helyez el. Két pont távolságához használja a TÁVS parancsot; egy objektum hosszához a LISTA vagy a TERÜLET parancsot."},{"question":"Melyik végtől indul a BEOSZTÁS parancs?","answer":"Attól a végtől, amely közelebb esik ahhoz a ponthoz, ahol az objektumot kiválasztotta. Annak a végnek a közelében válassza ki, ahonnan az első hosszt mérni szeretné."},{"question":"Miért nem látszanak a BEOSZTÁS által létrehozott pontok?","answer":"Pontként rajzolódnak, ez az alapértelmezett pontstílus. Nyissa meg a PTÍPUS parancsot, és válasszon keresztet vagy kört, vagy állítsa a PDMODE értékét 3-ra: minden pont egyszerre megváltozik."},{"question":"Mi a különbség a BEOSZTÁS és a FELOSZT (DIVIDE) parancs között?","answer":"A FELOSZT adott számú egyenlő részre osztja az objektumot; a BEOSZTÁS adott hosszanként lépked végig rajta, és a maradékot a túlsó végen hagyja."}]
+---
+
+A BEOSZTÁS (MEASURE) parancs adott hosszanként jelöl meg egy objektumot. Válasszon ki egy vonalat, ívet, kört, ellipszist, ellipszisívet, vonalláncot, 3D vonalláncot vagy spline-t, majd adja meg a hosszt, beírva vagy két ponttal: a BEOSZTÁS az objektum mentén minden ilyen hossznál elhelyez egy pont objektumot, ameddig csak elfér, és befejeződik. Távolságot nem mér, és az objektumot sem vágja el. Attól a végtől indul, amely közelebb esik a kiválasztás helyéhez, ezért annak a végnek a közelében válassza ki, ahonnan mérni szeretne; a maradék a másik végre jut, és ha a hossz egész számszor fér el az objektumon, a túlsó végre is kerül pont. A kör a 0°-os pontjánál kezdődik, és az óramutató járásával ellentétesen halad, bárhol választja is ki; a zárt vonallánc az első csúcspontjánál kezdődik.
+
+A pontok a rajz pontstílusa szerint rajzolódnak, alapértelmezés szerint pontként: előbb állítson be jól látható alakot a [`PTÍPUS`](/docs/commands/ptype) paranccsal vagy a PDMODE változóval. A pontok az objektumon fekszenek, az aktuális fólián, az aktuális színnel, vonaltípussal és vonalvastagsággal; a teljes futás egyetlen lépés, amelyet a `T` visszavon, és a pontok alkotják az Előző kiválasztási halmazt. Az objektumnál hosszabb hossz `Az objektum nem olyan hosszú.` üzenetet kap, a túl rövid, amely 32767-nél több pontot adna, `Az objektum túl hosszú.` üzenetet, és egyik sem hoz létre semmit. Bármely más objektumra `Az objektum nem osztható be.` a válasz. A BEOSZTÁS parancsot a Rajz eszközök Pontok legördülő listája is elindítja.
+
+- **Parancs:** `BEOSZTÁS`
+- **Angolul:** `MEASURE`, bármely nyelven `_MEASURE` formában beírva
+- **Álnevek:** `BEO`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `BEO`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="measure" caption="Egy 190 hosszú vonallánc 15-önként beosztva attól a végtől, amelynek közelében kiválasztották: tizenkét pont, az utolsó 10-zel a túlsó vég előtt." />
+
+## Opciók [#options]
+
+### `Blokk` (`B`) [#block]
+
+Pontok helyett egy, a rajzban már meglévő blokk referenciái: adja meg a nevét, aztán hogy mindegyiket az objektumhoz igazítsa-e, `Igen` (az alapérték) vagy `Nem`, végül a hosszt. Igazítva minden referencia az objektummal együtt fordul a helyén, egy vonal mentén vagy egy ív érintőjeként, akármelyik végtől indul a beosztás; igazítás nélkül mindegyik az FKR X tengelyének irányában marad. Az olyan nevet, amelyhez nem tartozik blokk, elutasítja, és újra kéri a nevet.
+
+## Amit még nem tud [#missing]
+
+Hogy merre halad a közepén túl kiválasztott zárt vonallánc: itt az első csúcspontjától visszafelé osztja be, ahogy az AutoCAD a zárt ellipszist vagy spline-t, de az AutoCAD saját vonalláncán ezt még nem ellenőriztük. A kör pontjai mindig az FKR X tengelyének irányától indulnak, míg az AutoCAD a raszterszögtől (SNAPANG) indítja őket, ami a MellowCAD-ben nincs meg.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#measure--me--es-gradua--gd--pt-br-medida--me--fr-mesurer--me--it-misura--mis--de-messen--me--ru-разметить--рм--pl-zmierz--zmi--cs-dělm--dm--hu-beosztás--beo)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD BEOSZTÁS parancs angolul?
+
+MEASURE. A magyar AutoCAD-ben a rövidítése `BEO`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `ME` a magyar változatban a METSZ parancsot indítja; a teljes `BEOSZTÁS` név működik, a `_MEASURE` pedig az AutoCAD bármely nyelvi változatában.
+
+### Mér-e távolságot a BEOSZTÁS parancs?
+
+Nem: a megadott hosszanként pontokat helyez el. Két pont távolságához használja a [`TÁVS`](/docs/commands/dist) parancsot; egy objektum hosszához a [`LISTA`](/docs/commands/list) vagy a [`TERÜLET`](/docs/commands/area) parancsot.
+
+### Melyik végtől indul a BEOSZTÁS parancs?
+
+Attól a végtől, amely közelebb esik ahhoz a ponthoz, ahol az objektumot kiválasztotta. Annak a végnek a közelében válassza ki, ahonnan az első hosszt mérni szeretné.
+
+### Miért nem látszanak a BEOSZTÁS által létrehozott pontok?
+
+Pontként rajzolódnak, ez az alapértelmezett pontstílus. Nyissa meg a [`PTÍPUS`](/docs/commands/ptype) parancsot, és válasszon keresztet vagy kört, vagy állítsa a PDMODE értékét `3`-ra: minden pont egyszerre megváltozik.
+
+### Mi a különbség a BEOSZTÁS és a FELOSZT (DIVIDE) parancs között?
+
+A [`FELOSZT`](/docs/commands/divide) adott számú egyenlő részre osztja az objektumot; a BEOSZTÁS adott hosszanként lépked végig rajta, és a maradékot a túlsó végen hagyja.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD FELOSZT (DIVIDE) parancs](/docs/commands/divide)
+- [Pontstílus az AutoCAD-ben: PTÍPUS (PTYPE) parancs](/docs/commands/ptype)
+- [PONT (POINT)](/docs/commands#point): Több pont
+- [AutoCAD TÁVS (DIST) parancs](/docs/commands/dist)

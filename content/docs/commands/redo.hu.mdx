@@ -1,0 +1,55 @@
+---
+title: "AutoCAD ELŐRE (REDO) parancs: a visszavonás visszavonása"
+metaTitle: "AutoCAD ELŐRE (REDO) parancs: Ctrl+Y, TELŐRE"
+description: "Az AutoCAD ELŐRE (REDO) parancsa visszaállítja, amit az utolsó T vagy VISSZA visszavont, közvetlenül utána; a TELŐRE és a Ctrl+Y lépésenként. Ingyen, online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD ELŐRE parancs billentyűparancsa?","answer":"A Ctrl+Y, amely egy lépést állít vissza (TELŐRE 1). Magának az ELŐRE parancsnak nincs rövidítése: írja be, hogy ELŐRE, vagy az AutoCAD bármely nyelvi változatában _REDO."},{"question":"Miért nem működik az ELŐRE?","answer":"Az ELŐRE csak a közvetlenül előtte futó T vagy VISSZA hatását fordítja vissza. Bármely más parancs után nincs mit visszaállítani, még ha az semmit sem változtatott is: vonja vissza, majd rögtön állítsa vissza."},{"question":"Mi a különbség az ELŐRE és a TELŐRE (MREDO) parancs között?","answer":"Az ELŐRE az utolsó visszavonás egészét állítja vissza, és csak közvetlenül utána. A TELŐRE a visszavont lépések közül adott számút állít vissza, egyenként, vagy mindet, és egy ELŐRE után is működik."},{"question":"Hogyan lehet megismételni az utolsó parancsot az AutoCAD-ben?","answer":"Nyomja meg az Enter vagy a Szóköz billentyűt a Parancs promptnál: az utolsó parancs újra elindul. Az ELŐRE nem ismétel meg parancsot; egy visszavonást fordít vissza."}]
+---
+
+Az ELŐRE (REDO) parancs az utolsó `T` vagy [`VISSZA`](/docs/commands/undo) hatását fordítja vissza: amit az visszavont, az újra megjelenik, mégpedig egészében, így egy öt parancsot visszavonó VISSZA után az ELŐRE mind az ötöt visszaállítja. Közben kiírja a parancsok nevét, majd `Minden visszavont parancs megismételve` üzenetet, ha már nincs mit visszaállítani. Semmit sem kérdez, és nincsenek opciói.
+
+Csak közvetlenül a visszavonás után működik. Máskor `Az ELŐRE parancsnak rögtön követnie kell a V vagy VISSZA parancsot.` az üzenete, és ha közben egy másik parancs futott, akár olyan is, amely semmit sem változtat, mint a LISTA vagy a ZOOM, akkor `Nincs ismételhető visszavonás`. Ha a visszavonás ki van kapcsolva a VISSZA parancs VEzérlés opciójának Semmi értékével, az ELŐRE jelzi, hogy le van tiltva.
+
+A `TELŐRE` lépésenként állít vissza: bekéri a műveletek számát, vagy a `Mind` vagy a `Utolsó` opciót, és ennyit állít vissza a visszavonások által visszavett lépésekből, akármilyen T, VISSZA és ELŐRE futott is azóta; az Utolsó az utolsó visszavonás egészét állítja vissza, egyszer (`Az utolsó VISSZA utasítással visszavont parancsot már megismételte.`). A Ctrl+Y és a helyi menü Előre parancsa 1-gyel futtatja a TELŐRE parancsot, és megszakítja a futó parancsot.
+
+- **Parancs:** `ELŐRE`
+- **Angolul:** `REDO`, bármely nyelven `_REDO` formában beírva
+- **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ELŐRE`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="redo" caption="Egy alaplapba rajzolt furat, a T paranccsal visszavonva és az ELŐRE paranccsal visszaállítva." />
+
+## Amit még nem tud [#missing]
+
+A Ctrl+Shift+Z is visszaállít, szó nélkül, bár az AutoCAD semmit sem rendel hozzá. A felső sáv Vissza és Előre gombja semmit sem ír az előzményekbe, míg az AutoCAD Gyorselérési eszköztára a sajátját kiírja.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD ELŐRE parancs billentyűparancsa?
+
+A Ctrl+Y, amely egy lépést állít vissza (TELŐRE 1). Magának az ELŐRE parancsnak nincs rövidítése: írja be, hogy `ELŐRE`, vagy az AutoCAD bármely nyelvi változatában `_REDO`.
+
+### Miért nem működik az ELŐRE?
+
+Az ELŐRE csak a közvetlenül előtte futó T vagy VISSZA hatását fordítja vissza. Bármely más parancs után nincs mit visszaállítani, még ha az semmit sem változtatott is: vonja vissza, majd rögtön állítsa vissza.
+
+### Mi a különbség az ELŐRE és a TELŐRE (MREDO) parancs között?
+
+Az ELŐRE az utolsó visszavonás egészét állítja vissza, és csak közvetlenül utána. A `TELŐRE` a visszavont lépések közül adott számút állít vissza, egyenként, vagy mindet, és egy ELŐRE után is működik.
+
+### Hogyan lehet megismételni az utolsó parancsot az AutoCAD-ben?
+
+Nyomja meg az Enter vagy a Szóköz billentyűt a Parancs promptnál: az utolsó parancs újra elindul. Az ELŐRE nem ismétel meg parancsot; egy visszavonást fordít vissza.
+
+## Kapcsolódó parancsok [#related]
+
+- [Visszavonás az AutoCAD-ben: VISSZA (UNDO) parancs](/docs/commands/undo)
+- [T (U)](/docs/commands#u): Az utolsó művelet visszavonása
+- [TELŐRE (MREDO)](/docs/commands#mredo): Többszörös előre

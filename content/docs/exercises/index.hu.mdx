@@ -1,0 +1,166 @@
+---
+title: "AutoCAD gyakorló feladatok"
+metaTitle: "AutoCAD gyakorló feladatok megoldással, ingyen"
+description: "AutoCAD gyakorló feladatok kezdőknek és haladóknak, 2D-ben, izometrikusan és 3D-ben, lépésről lépésre megoldva, rajzukkal egy ingyenes online szerkesztőben."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Hol találok AutoCAD gyakorló feladatokat?","answer":"Itt: minden feladathoz tartozik egy méretezett rajz, a gyakorolt parancsok és a lépésről lépésre bemutatott megoldás, és egy ingyenes, az AutoCAD-hez hasonlóan működő szerkesztőben nyílik meg, a böngészőben. Kezdje a kezdőknek szólókkal; minden parancsuk elvezet ahhoz, amit a parancs csinál, és az opciókhoz, amelyeket kér."},{"question":"Gyakorolhatom az AutoCAD-et online, ingyen?","answer":"Igen. A MellowCAD a böngészőben fut, ingyenesen és fiók nélkül: az AutoCAD parancsait és álneveit írja be, a saját nyelve neveivel, és a promptjaira ugyanabban a sorrendben, ugyanazokkal az opcióbetűkkel válaszol. Nem az AutoCAD: DXF-fájlokat megnyit és ment, DWG-t viszont még nem, és 3D szilárdtestei egyelőre részlegesek."},{"question":"Vannak a feladatoknak megoldásai?","answer":"Minden feladat lépésről lépésre meg van oldva a rajza alatt. A motor minden lépést megrajzol, és kiírja a parancssor előzményeit, így sorról sorra összevetheti velük a sajátját."},{"question":"Kinyomtathatom a feladatokat, vagy menthetem őket PDF-ként?","answer":"Igen. A feladat oldala önállóan nyomtatható, sötét vonalakkal fehér alapon, előbb a rajz, utána a lépések, és a böngésző nyomtatási párbeszédpanele PDF-ként is mentheti."}]
+---
+
+Rajzok az AutoCAD gyakorlásához, az első tömítéstől a 3D szilárdtestekig, mindegyik a méreteivel, a gyakorolt parancsokkal és a lépésről lépésre bemutatott megoldással. A motor minden lépést megrajzol, és úgy írja ki a parancssor előzményeit, ahogy Ön beírja majd őket: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Nyisson meg egyet a szerkesztőben, és a feladat rajza ott lesz amellett a terület mellett, ahol a sajátját rajzolja, a böngészőben, telepítés és fiók létrehozása nélkül.
+
+## Kezdő [#beginner]
+
+### AutoCAD gyakorló feladat: tömítés [#gasket]
+
+<Session name="exercises/gasket" caption="A 120 × 80-as tömítés méretezve." />
+
+Tömítés rajzolása AutoCAD-ben: lekerekített lap, központi furat, egyből másolt négy furat, középvonalak és méretek, lépésről lépésre. Gyakorolja ingyen, online.
+
+- **Feladat:** Kezdő · Gépészet · 2D
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`MÁSOL`](/docs/commands/copy), [`VONAL`](/docs/commands/line), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket)
+
+### AutoCAD gyakorló feladat: L alakú konzol [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="Az L alakú konzol, 100 × 80, a bal alsó sarkától méretezve." />
+
+L alakú konzol rajzolása AutoCAD-ben relatív koordinátákkal: körvonal, lekerekítés, két furat, bázisvonalas méretek, lépésről lépésre. Gyakorolja ingyen.
+
+- **Feladat:** Kezdő · Gépészet · 2D
+- **Parancsok:** [`VONAL`](/docs/commands/line), [`LEKEREKÍT`](/docs/commands/fillet), [`KÖR`](/docs/commands/circle), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETBVONAL`](/docs/commands/dimbaseline), [`MÉRETSUGÁR`](/docs/commands/dimradius), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket)
+
+### AutoCAD gyakorló feladat: lépcső alaprajzban [#stairs]
+
+<Session name="exercises/stairs" caption="Egyenes lépcsőkar alaprajzban, 280 × 100 centiméter, a felmenet irányába mutató nyíllal." />
+
+Egyenes lépcső alaprajza AutoCAD-ben: tíz fellépő egy vonalból és négyszögletes kiosztással, a felmenetet jelző nyíl és a méretek. Ingyen, lépésről lépésre.
+
+- **Feladat:** Kezdő · Építészet · 2D
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`VONAL`](/docs/commands/line), [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect), [`VLÁNC`](/docs/commands/pline), [`MÉRETHOSSZ`](/docs/commands/dimlinear)
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs)
+
+### AutoCAD 3D gyakorló feladat: szerelőlap [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="A lap körvonala, 100 × 60, négy furattal, méretezve." />
+
+Szerelőlap modellezése AutoCAD 3D-ben: lemezek, a furatok kivonása és egyetlen kihúzás adja a szilárdtestet, lépésről lépésre. Gyakorolja a 3D-t ingyen, online.
+
+- **Feladat:** Kezdő · Gépészet · 3D szilárdtest
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`MÁSOL`](/docs/commands/copy), [`LEMEZ`](/docs/commands/region), [`KIVON`](/docs/commands/subtract), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`KIHÚZ`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D gyakorló feladat: szerelőlap](/docs/exercises/mounting-plate)
+
+## Középhaladó [#intermediate]
+
+### AutoCAD gyakorló feladat: karima [#flange]
+
+<Session name="exercises/flange" caption="A 140 átmérőjű karima a reteszhoronnyal, a nyolc furattal és az átmérőkkel." />
+
+Karima rajzolása AutoCAD-ben: furat bevágott reteszhoronnyal, nyolc furat poláris kiosztásban, középvonalak és átmérők, lépésről lépésre. Ingyen, online.
+
+- **Feladat:** Középhaladó · Gépészet · 2D
+- **Parancsok:** [`KÖR`](/docs/commands/circle), [`TÉGL`](/docs/commands/rectang), [`METSZ`](/docs/commands/trim), [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar), [`VONAL`](/docs/commands/line), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter), [`MÉRETHOSSZ`](/docs/commands/dimlinear)
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange)
+
+### AutoCAD gyakorló feladat: kerek asztal székekkel [#round-table]
+
+<Session name="exercises/round-table" caption="120-as kerek asztal hat székkel, alaprajzban, centiméterben méretezve." />
+
+Kerek asztal hat székkel AutoCAD-ben: egy szék, majd poláris kiosztás az asztal középpontja körül, és a méretek, lépésről lépésre. Ingyen, online.
+
+- **Feladat:** Középhaladó · Építészet · 2D
+- **Parancsok:** [`KÖR`](/docs/commands/circle), [`TÉGL`](/docs/commands/rectang), [`KIOSZTPOLÁRIS`](/docs/commands/arraypolar), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter), [`MÉRETHOSSZ`](/docs/commands/dimlinear)
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table)
+
+### AutoCAD gyakorló feladat: telek [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="Ötoldalú telek méterben, minden oldala és egy szöge méretezve." />
+
+Telek rajzolása AutoCAD-ben az oldalai hosszából és szögéből polárkoordinátákkal, majd a terület lemérése és a méretezés. Ingyen, lépésről lépésre, online.
+
+- **Feladat:** Középhaladó · Építőmérnöki · 2D
+- **Parancsok:** [`VLÁNC`](/docs/commands/pline), [`TERÜLET`](/docs/commands/area), [`MÉRETILLESZT`](/docs/commands/dimaligned), [`MÉRETSZÖG`](/docs/commands/dimangular)
+- [AutoCAD gyakorló feladat: telek](/docs/exercises/plot-of-land)
+
+### AutoCAD gyakorló feladat: lépcsős tengely [#shaft]
+
+<Session name="exercises/shaft" caption="Lépcsős tengely oldalnézetben, 150 hosszú, a hosszai láncméretezéssel." />
+
+Lépcsős tengely AutoCAD-ben: a fele vonalláncként, letörve, a középvonalra tükrözve, a hosszak láncméretezéssel. Ingyen, lépésről lépésre.
+
+- **Feladat:** Középhaladó · Gépészet · 2D
+- **Parancsok:** [`VLÁNC`](/docs/commands/pline), [`LETÖR`](/docs/commands/chamfer), [`TÜKRÖZ`](/docs/commands/mirror), [`VONAL`](/docs/commands/line), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETFOLYTAT`](/docs/commands/dimcontinue)
+- [AutoCAD gyakorló feladat: lépcsős tengely](/docs/exercises/shaft)
+
+### AutoCAD izometrikus gyakorló feladat: lépcsős hasáb [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="Lépcsős hasáb izometrikusan: 60 hosszú, 40 mély és 40 magas, a méretei az élei mentén." />
+
+Lépcsős hasáb izometrikusan AutoCAD-ben a VONAL (LINE) paranccsal és polárkoordinátákkal a 30°-os, 90°-os és 150°-os tengely mentén, méretezve. Ingyen, online.
+
+- **Feladat:** Középhaladó · Gépészet · Izometrikus
+- **Parancsok:** [`VONAL`](/docs/commands/line), [`MÉRETILLESZT`](/docs/commands/dimaligned)
+- [AutoCAD izometrikus gyakorló feladat: lépcsős hasáb](/docs/exercises/isometric-block)
+
+### AutoCAD 3D gyakorló feladat: szíjtárcsa [#pulley]
+
+<Session name="exercises/pulley" caption="A szíjtárcsa félmetszete a tengelye mellett, a tengelytől mért távolságok méretezve." />
+
+Szíjtárcsa modellezése AutoCAD 3D-ben: a félmetszete zárt vonalláncként, az Y tengely körül szilárdtestté forgatva, lépésről lépésre. 3D gyakorlás ingyen.
+
+- **Feladat:** Középhaladó · Gépészet · 3D szilárdtest
+- **Parancsok:** [`VLÁNC`](/docs/commands/pline), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`MEGFORGAT`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D gyakorló feladat: szíjtárcsa](/docs/exercises/pulley)
+
+## Haladó [#advanced]
+
+### AutoCAD gyakorló feladat: összekötő kar érintőkkel [#link]
+
+<Session name="exercises/link" caption="Összekötő kar két, egymástól 90-re lévő aggyal, érintő vonalakkal összekötve, méretezve." />
+
+Összekötő kar AutoCAD-ben: két agy, mindkettőt érintő vonalakkal összekötve az Érintő tárgyraszterrel, a köztük lévő ívek levágva, és a méretek. Ingyen, online.
+
+- **Feladat:** Haladó · Gépészet · 2D
+- **Parancsok:** [`KÖR`](/docs/commands/circle), [`VONAL`](/docs/commands/line), [`METSZ`](/docs/commands/trim), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETSUGÁR`](/docs/commands/dimradius), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link)
+
+### AutoCAD 3D gyakorló feladat: csapágybak [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="A csapágybak felülnézetben, 100 × 60, az agy, a furat és a csavarfuratok méretezve." />
+
+Csapágybak modellezése AutoCAD 3D-ben: kihúzás, egyesítés, majd a furat és két csavarfurat kivonása hengerként, lépésről lépésre. 3D szilárdtestek ingyen.
+
+- **Feladat:** Haladó · Gépészet · 3D szilárdtest
+- **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`KIHÚZ`](/docs/commands/extrude), [`EGYESÍT`](/docs/commands/union), [`HENGER`](/docs/commands/cylinder), [`MÁSOL`](/docs/commands/copy), [`KIVON`](/docs/commands/subtract), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D gyakorló feladat: csapágybak](/docs/exercises/bearing-block)
+
+## Útmutatók lépésről lépésre [#guides]
+
+A feladatok készségei egyenként: pontok megadása, egy ház alaprajza, 2D rajzból készített szilárdtest. Minden útmutató megmutatja minden lépés rajzát és előzményeit.
+
+- [Koordináták az AutoCAD-ben](/docs/coordinates): Pontok megadása az AutoCAD-ben: abszolút, relatív és polár koordináták, adott hosszú és szögű vonal, poláris követés. Gyakorolja ingyen, online.
+- [Alaprajz rajzolása az AutoCAD-ben](/docs/floor-plan): Egy ház alaprajza az AutoCAD-ben: falak a PÁRH (OFFSET) paranccsal, belső fal, METSZ (TRIM) paranccsal vágott nyílások, ajtók, ablakok és méretek.
+- [2D-ből 3D az AutoCAD-ben](/docs/2d-to-3d): 2D rajzból 3D szilárdtest az AutoCAD-ben: zárt profil kihúzása, tolás-húzása és megforgatása, egyesítés és kivonás. 3D szilárdtestek ingyen, egyelőre részben.
+
+## Hogyan működnek a feladatok [#how]
+
+A feladat a szerkesztőben a rajzával együtt nyílik meg, méretezve, az origótól balra: a sajátját a 0,0 ponttól rajzolja, ahogy a megoldás is. Amit rajzol, azt ez a böngésző csak az adott feladathoz őrzi meg. A rajz, amelyen dolgozott, úgy marad, ahogy volt, és a magában megnyitott szerkesztő visszahozza. Ha újra akarja kezdeni a feladatot, futtassa az ÚJ parancsot, majd nyissa meg a feladatot az oldaláról. Minden oldal önállóan nyomtatható, előbb a rajz, utána a lépések, és a böngésző nyomtatási párbeszédpanele PDF-ként is mentheti.
+
+## Kérdések [#questions]
+
+### Hol találok AutoCAD gyakorló feladatokat?
+
+Itt: minden feladathoz tartozik egy méretezett rajz, a gyakorolt parancsok és a lépésről lépésre bemutatott megoldás, és egy ingyenes, az AutoCAD-hez hasonlóan működő szerkesztőben nyílik meg, a böngészőben. Kezdje a kezdőknek szólókkal; minden parancsuk elvezet ahhoz, amit a parancs csinál, és az opciókhoz, amelyeket kér.
+
+### Gyakorolhatom az AutoCAD-et online, ingyen?
+
+Igen. A MellowCAD a böngészőben fut, ingyenesen és fiók nélkül: az AutoCAD parancsait és álneveit írja be, a saját nyelve neveivel, és a promptjaira ugyanabban a sorrendben, ugyanazokkal az opcióbetűkkel válaszol. Nem az AutoCAD: DXF-fájlokat megnyit és ment, DWG-t viszont még nem, és 3D szilárdtestei egyelőre részlegesek.
+
+### Vannak a feladatoknak megoldásai?
+
+Minden feladat lépésről lépésre meg van oldva a rajza alatt. A motor minden lépést megrajzol, és kiírja a parancssor előzményeit, így sorról sorra összevetheti velük a sajátját.
+
+### Kinyomtathatom a feladatokat, vagy menthetem őket PDF-ként?
+
+Igen. A feladat oldala önállóan nyomtatható, sötét vonalakkal fehér alapon, előbb a rajz, utána a lépések, és a böngésző nyomtatási párbeszédpanele PDF-ként is mentheti.

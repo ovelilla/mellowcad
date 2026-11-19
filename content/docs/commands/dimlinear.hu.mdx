@@ -1,0 +1,88 @@
+---
+title: "Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs"
+metaTitle: "Méretezés az AutoCAD-ben: MÉRETHOSSZ parancs"
+description: "Méretezés az AutoCAD MÉRETHOSSZ (DIMLINEAR, MHO) parancsával: két kezdőpont vagy egy objektum, majd a vízszintes vagy függőleges méretvonal. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD MÉRETHOSSZ parancs angolul?","answer":"DIMLINEAR. A magyar AutoCAD-ben a rövidítése MHO vagy MHOSZ: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a _DIMLINEAR is; az angol DLI és DIMLIN a magyar változatban nem működik."},{"question":"Melyek az AutoCAD méretezési parancsai?","answer":"MÉRETHOSSZ a vízszintes és függőleges távolságokhoz, MÉRETILLESZT a ferde él menti távolsághoz, MÉRETSUGÁR és MÉRETÁTMÉRŐ az ívekhez és körökhöz, MÉRETSZÖG a szögekhez, MÉRETFOLYTAT és MÉRETBVONAL a láncokhoz, MÉRETKÖZ a köztük lévő távolság kiegyenlítéséhez és MÉRETSTÍLUS a megjelenésükhöz. Az AutoCAD MÉRET parancsa, amely egyetlen promptból bármilyen méretet létrehoz, és a GYMÉRET, amely egyszerre sok objektumot méretez, a MellowCAD-ben még nem érhető el."},{"question":"Miért nem követi a méret az objektumot, amikor módosítom?","answer":"A MellowCAD méretei még nem asszociatívak, ahogy a „Nem-asszociatív méret létrehozva.” üzenet is jelzi: a méret megtartja a kapott pontokat. Nyújtsa őket együtt: egyetlen NYÚJT metsző ablakkal fogja be a mozgatott végpontot és a méret ott lévő kezdőpontját, és a mért érték újraszámolódik; vagy húzza a kezdőpont fogóját az új helyére."},{"question":"Hogyan lehet módosítani a méretszöveg és a nyilak méretét?","answer":"A méretstílusban, ahogy az AutoCAD-ben: a MÉRETSTÍLUS (D) parancs megnyitja a méretstílusokat, itt a Stílusok palettán, az AutoCAD-ben a Méretstílus-kezelőben. Itt állítható be az aktuális stílus szövegmagassága, nyílmérete, teljes léptéke és tizedesjegyei, és az adott stílusú összes méret ezeket követi."}]
+---
+
+A MÉRETHOSSZ (DIMLINEAR) parancs két pont távolságát méri az X vagy az Y tengely mentén, és méretként rajzolja meg: két segédvonal, egy méretvonal a nyílfejeivel és fölötte a mért érték. Meg kell adni az első és a második segédvonal kezdőpontját, majd a méretvonal helyét, és ahogy az AutoCAD-ben, az elhelyezés határozza meg az irányt: a két pont fölött vagy alatt vízszintesen mér, mellettük függőlegesen. Az első promptnál nyomja meg inkább az Enter billentyűt, és válasszon ki egy vonalat, ívet, vonalláncszakaszt vagy kört: a két végpontja, illetve a kör átmérője adja a kezdőpontokat. Ezután a parancssor kiírja a mért értéket, és a parancs véget ér.
+
+A méret az aktuális méretstílusban készül, új rajzban ez az ISO-25: tizedesvessző és záró nullák nélkül, ahogy az AutoCAD metrikus rajzai írják. A csak begépelve elérhető `MÉRETVÍZSZ`, `MÉRETFÜGG` és `MÉRETELFORGATOTT` parancs nem más, mint egyetlen irányhoz kötött MÉRETHOSSZ parancs.
+
+- **Parancs:** `MÉRETHOSSZ`
+- **Angolul:** `DIMLINEAR`, bármely nyelven `_DIMLINEAR` formában beírva
+- **Álnevek:** `MHO`, `MHOSZ`
+- **Panel:** [Feliratozás](/docs/commands#annotate)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `MHO`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="dimlinear" caption="Kétszer méretezett téglalap: a felső éle a két sarkával, a jobb éle Enterrel és az élre kattintva." />
+
+## Opciók [#options]
+
+### `sZöveg` (`Z`) [#text]
+
+A mért érték helyett írandó szöveget kéri, és alapértelmezésként a mért értéket kínálja fel: az Enter megtartja. A beírt szövegben a `<>` a mért értéket jelenti, így a `<> mm` a mértékegységével együtt írja ki.
+
+### `Dőlésszög` (`D`) [#angle]
+
+A szöveg szögét kéri: a szöveg ezután a méretvonal iránya helyett ebben a szögben jelenik meg. A 0 ismét a vonal mentén helyezi el.
+
+### `Vízszintes` (`V`) [#horizontal]
+
+Az X tengely mentén mér, bárhová helyezi is a méretvonalat, amely vízszintes marad; a prompt ezután csak a `sZöveg` és a `Dőlésszög` opciót kínálja.
+
+### `FÜggőleges` (`FÜ`) [#vertical]
+
+Az Y tengely mentén mér, bárhová helyezi is a méretvonalat, amely függőleges marad.
+
+### `FOrgat` (`FO`) [#rotated]
+
+A méretvonal szögét kéri, alapértelmezés szerint `0`, és a kezdőpontok távolságát ebben az irányban méri. Ferde élnél az él saját szöge adja a hosszát, ahogy a [`MÉRETILLESZT`](/docs/commands/dimaligned) parancs.
+
+## Amit még nem tud [#missing]
+
+Bekezdéses szöveg: a méret szövege egyetlen sor, amelyet a parancssorban a `sZöveg` opcióval lehet megadni, soha nem a szövegszerkesztőben. A `Dőlésszög` opcióval megadott szögnél az AutoCAD a méretvonalra középre igazítja a szöveget; itt a vonal fölött marad, ahogy szög nélkül is. A méret nem asszociatív: nem követi a mért objektumot.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin--ru-рзмлинейный--рли--pl-wymliniowy--wl--wymlin--cs-kótypřím--kpm--kotypm--hu-mérethossz--mho--mhosz)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD MÉRETHOSSZ parancs angolul?
+
+DIMLINEAR. A magyar AutoCAD-ben a rövidítése `MHO` vagy `MHOSZ`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMLINEAR` is; az angol `DLI` és `DIMLIN` a magyar változatban nem működik.
+
+### Melyek az AutoCAD méretezési parancsai?
+
+`MÉRETHOSSZ` a vízszintes és függőleges távolságokhoz, [`MÉRETILLESZT`](/docs/commands/dimaligned) a ferde él menti távolsághoz, [`MÉRETSUGÁR`](/docs/commands/dimradius) és [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) az ívekhez és körökhöz, [`MÉRETSZÖG`](/docs/commands/dimangular) a szögekhez, [`MÉRETFOLYTAT`](/docs/commands/dimcontinue) és [`MÉRETBVONAL`](/docs/commands/dimbaseline) a láncokhoz, [`MÉRETKÖZ`](/docs/commands/dimspace) a köztük lévő távolság kiegyenlítéséhez és [`MÉRETSTÍLUS`](/docs/commands/dimstyle) a megjelenésükhöz. Az AutoCAD MÉRET parancsa, amely egyetlen promptból bármilyen méretet létrehoz, és a GYMÉRET, amely egyszerre sok objektumot méretez, a MellowCAD-ben még nem érhető el.
+
+### Miért nem követi a méret az objektumot, amikor módosítom?
+
+A MellowCAD méretei még nem asszociatívak, ahogy a `Nem-asszociatív méret létrehozva.` üzenet is jelzi: a méret megtartja a kapott pontokat. Nyújtsa őket együtt: egyetlen [`NYÚJT`](/docs/commands/stretch) metsző ablakkal fogja be a mozgatott végpontot és a méret ott lévő kezdőpontját, és a mért érték újraszámolódik; vagy húzza a kezdőpont fogóját az új helyére.
+
+### Hogyan lehet módosítani a méretszöveg és a nyilak méretét?
+
+A méretstílusban, ahogy az AutoCAD-ben: a [`MÉRETSTÍLUS`](/docs/commands/dimstyle) (`D`) parancs megnyitja a méretstílusokat, itt a Stílusok palettán, az AutoCAD-ben a Méretstílus-kezelőben. Itt állítható be az aktuális stílus szövegmagassága, nyílmérete, teljes léptéke és tizedesjegyei, és az adott stílusú összes méret ezeket követi.
+
+## Gyakorolja [#practice]
+
+- [AutoCAD gyakorló feladat: tömítés](/docs/exercises/gasket)
+- [AutoCAD gyakorló feladat: L alakú konzol](/docs/exercises/l-bracket)
+- [AutoCAD gyakorló feladat: lépcső alaprajzban](/docs/exercises/stairs)
+- [AutoCAD gyakorló feladat: karima](/docs/exercises/flange)
+- [AutoCAD gyakorló feladat: kerek asztal székekkel](/docs/exercises/round-table)
+- [AutoCAD gyakorló feladat: lépcsős tengely](/docs/exercises/shaft)
+- [AutoCAD gyakorló feladat: összekötő kar érintőkkel](/docs/exercises/link)
+
+## Kapcsolódó parancsok [#related]
+
+- [Méretezés az AutoCAD-ben: illesztett méret, MÉRETILLESZT (DIMALIGNED) parancs](/docs/commands/dimaligned)
+- [Láncméretezés az AutoCAD-ben: MÉRETFOLYTAT (DIMCONTINUE) parancs](/docs/commands/dimcontinue)
+- [Bázisvonalas méretezés az AutoCAD-ben: MÉRETBVONAL (DIMBASELINE) parancs](/docs/commands/dimbaseline)
+- [Sugárméret az AutoCAD-ben: MÉRETSUGÁR (DIMRADIUS) parancs](/docs/commands/dimradius)
+- [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)

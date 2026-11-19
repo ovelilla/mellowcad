@@ -1,0 +1,43 @@
+---
+title: "Szilárdtest élének letörése az AutoCAD-ben: ÉLLETÖR (CHAMFEREDGE) parancs"
+metaTitle: "3D él letörése az AutoCAD-ben: ÉLLETÖR parancs"
+description: "3D szilárdtest éleinek letörése az AutoCAD-ben az ÉLLETÖR (CHAMFEREDGE) paranccsal: egy lap élei, Hurok, Távolság1 és Távolság2. Próbálja ki ingyen, online."
+figure: "Egy téglatest délkelet felől: az ÉLLETÖR mindkét 6-os távolsággal letöri az elülső sarkánál lévő két felső élt, amelyek egy vonalban találkoznak."
+sourceHash: "43b1908ad4b3"
+---
+
+Az ÉLLETÖR (CHAMFEREDGE) parancs egy 3D szilárdtest éleit töri le. Kiírja a két aktuális távolságot, majd bekér egy élt, az első után pedig további éleket ugyanazon a lapon, amíg az Enter meg nem állítja: a kattintás a kurzor alatti élt veszi, a beírt pont azt az élt, amelyen a pont átmegy. Ha egy él nem osztozik lapon az előzőekkel, az üzenet <Message id="edgesOneFace" />, ha másik szilárdtesté, <Message id="chamferMultipleBodies" />. Ahogy az éleket kiválasztja, a szilárdtest úgy rajzolódik ki, ahogy lesz. Ezután az Enter arra kéri, hogy az elfogadáshoz nyomja meg ismét az Enter billentyűt, vagy módosítsa a távolságokat erre a letörésre; ez az Enter hozza létre.
+
+Az első távolság az élek közös lapja mentén fut; egyetlen élnél azon a lapon, amelyet az AutoCAD választ: egy téglatest felső elülső élénél az elülső lapon, egy henger peremélénél a felsőn. Két sík lap közötti egyenes élből sík sáv lesz, egy furat vagy perem kerek éléből kúppalást-sáv, egy sarokban találkozó letörések pedig egy vonalban kapcsolódnak. A távolságokat a parancs legközelebb ismét felkínálja. A szilárdtest megtartja a fóliáját és a tulajdonságait, de elveszíti azt, ami létrehozta: a téglatest többé nem téglatest. A teljes parancs egyetlen visszavonási lépés. A MellowCAD 3D-ben csak szilárdtesteket kezel, egyelőre részben.
+
+## Options
+
+### Loop
+
+Egy lap körüli összes élt veszi: válasszon ki egy élt, majd fogadja el a megjelenő hurkot az <Keyword id="Accept" /> opcióval, vagy a <Keyword id="Next" /> opcióval válassza annak a másik lapnak a hurkát, amelyhez az él tartozik. Az <Keyword id="Edge" /> opció visszatér az egyes élekhez.
+
+### Distance
+
+Bekéri az első, majd a második távolságot, mindkettőt beírva vagy két pont távolságaként; a 0 vagy annál kisebb érték üzenete <Message id="distanceTooSmall" />. A <Keyword id="Expression" /> képletként veszi az értéket. Az elfogadási promptnál az alapfelület és a másik felület távolságát kéri be, csak erre a letörésre.
+
+## Missing
+
+Az a sarok, ahol három letört él találkozik. Görbült lap melletti egyenes él, a hengere tengelyétől eltérő kerek él, valamint gömb, tórusz, kihúzott vagy megforgatott szilárdtest bármely éle: ezek itt modellezési hibával meghiúsulnak. Az a két nyíl alakú fogó, amelyet az AutoCAD az elfogadási promptnál mutat, távolságonként egyet. A <Command id="CHAMFER" /> parancs, amely egy szilárdtest élét választja ki, amit az AutoCAD szintén megenged. A kiválasztás közben hálóként rajzolt letörés, és a felületek.
+
+## Questions
+
+### Hogyan lehet egy 3D szilárdtest élét letörni az AutoCAD-ben?
+
+Futtassa az ÉLLETÖR parancsot, válassza a <Keyword id="Distance" /> opciót, és adja meg mindkét távolságot, válassza ki egy lap éleit, majd nyomja meg kétszer az Enter billentyűt: egyszer a kiválasztás befejezéséhez, egyszer az elfogadáshoz. A munkamenet `6` és `6` értéke egy téglatest két felső élét töri le.
+
+### Miért írja az ÉLLETÖR, hogy az éleknek egy laphoz kell tartozniuk?
+
+Egy letörés élei közös lapon osztoznak: az első távolság ezen fut. Egy másik lap éleit egy második futtatással törje le.
+
+### Miért nem működik a LETÖR egy 3D szilárdtesten?
+
+Az AutoCAD <Command id="CHAMFER" /> parancsa egy szilárdtest élét is letöri, a MellowCAD-é viszont még nem: használja az ÉLLETÖR parancsot, egy él lekerekítéséhez pedig az <Command id="FILLETEDGE" /> parancsot.
+
+### Hogyan lehet egy furat élét letörni?
+
+Válassza ki a kerek élét ott, ahol a sík laphoz csatlakozik: a letörés a furat körüli kúppalást-sáv lesz.
