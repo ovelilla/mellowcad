@@ -753,6 +753,25 @@ export class CadDocument extends Observable implements DocumentReader {
         ),
       }
     }
+    if (onLayer.type === "mleader") {
+      const content =
+        onLayer.content?.kind === "mtext"
+          ? {
+              content: {
+                ...onLayer.content,
+                styleId: this.resolveTextStyleId(onLayer.content.styleId),
+              },
+            }
+          : {}
+      return {
+        ...onLayer,
+        ...content,
+        style: {
+          ...onLayer.style,
+          textStyleId: this.resolveTextStyleId(onLayer.style.textStyleId),
+        },
+      }
+    }
     if (onLayer.type === "insert" && onLayer.attributes) {
       return {
         ...onLayer,
@@ -944,6 +963,11 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
         [entity.style.data, entity.style.title, entity.style.header].some(
           (row) => row.textStyleId === id
         ) || entity.cells.some((cell) => cell.textStyleId === id)
+      )
+    case "mleader":
+      return (
+        entity.style.textStyleId === id ||
+        (entity.content?.kind === "mtext" && entity.content.styleId === id)
       )
     case "line":
     case "circle":

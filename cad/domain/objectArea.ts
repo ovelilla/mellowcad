@@ -109,6 +109,7 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
       return null
     default: {
       const unhandled: never = entity

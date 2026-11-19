@@ -487,6 +487,18 @@ export const pl: EngineLocale = {
             "other": "Tabeli"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Wielolinia odniesienia",
+            "few": "Wielolinie odniesienia",
+            "many": "Wielolinii odniesienia",
+            "other": "Wielolinii odniesienia"
+          }
+        ]
       ]
     },
     "array": {
@@ -6233,6 +6245,7 @@ export const pl: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "SZYK"
           }
         ]
@@ -8651,7 +8664,67 @@ export const pl: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Typ linii odniesienia:        ProstaLiniaOdniesienia",
+            "spline": "Typ linii odniesienia:        LiniaOdniesieniaWPostaciSplajnu",
+            "other": "Typ linii odniesienia:        NiewidocznaLiniaOdniesienia"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Typ linii odniesienia:        ZawartośćTekstuWielowierszowego",
+            "block": "Typ linii odniesienia:        ZawartośćBloku",
+            "other": "Typ linii odniesienia:        BrakZawartości"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Linia łącząca:                ",
+        [
+          "on",
+          1,
+          {
+            "true": "WŁĄCZONA",
+            "other": "WYŁĄCZONA"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Numer linii odniesienia:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Wierzchołek:                  X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Styl wielolinii odniesienia:  ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Opisowy:                      NIE"
     },
     "feedback": {
       "snap": {

@@ -174,7 +174,11 @@ clip, as an image AutoCAD cannot find lists them (image/i07, i12, lr1, lr2, c1, 
 console: de `bei Punkt,` and cs `X =   10.0000,  Y =` against the wipeout's); Russian's `Масштаб`
 gives the scale where its console gives the frame's width (DXFIN's deviations); ACAD_TABLE:
 its position, normal and horizontal direction in the WCS, each `%f` whatever LUPREC, its number
-of columns and rows and its table style (table/t08, in each console); a
+of columns and rows and its table style (table/t08, in each console); MULTILEADER: its
+leader type, content type and landing (its dogleg), each leader line numbered with its vertices
+and its branch's landing, its style and `Annotative: NO` (mleader/m10, m12, m14, in each
+console: Polish lists its content type under `Typ linii odniesienia:` and Hungarian a multileader
+of no content under `Mutató típusa:`, as theirs do); a
 gradient as `Hatch pattern GRADIENT` (es `DEGRADADO`), `Annotative: No`, `Gradient Angle` at AUPREC
 and `Gradient Centered` or `Gradient Not Centered` (gradient/g11, g13, in each console).
 BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,

@@ -25,9 +25,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * -LAYER (2026-11-15), to 457 KB for a hatch's own pattern lines
  * (2026-11-17), to 460 KB for gradient fills, to 462 KB for 3DFACE and
  * the 3D face (2026-11-17), to 465 KB for WIPEOUT and the wipeout, to
- * 469 KB for a DXF's images and to 475 KB for its tables (2026-11-19).
+ * 469 KB for a DXF's images, to 475 KB for its tables and to 481 KB for its
+ * multileaders (2026-11-19).
  */
-const ENGINE_MAX_GZIP_BYTES = 475 * KB
+const ENGINE_MAX_GZIP_BYTES = 481 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

@@ -56,7 +56,7 @@ us to walk again, whereas a command costs the same before or after it.
    plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
    types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
    (POINT done, with PDMODE, PDSIZE, PTYPE, DIVIDE, MEASURE and the Node snap; SOLID done; LEADER
-   done; then MLEADER and QLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
+   done; a DXF's multileaders done; then the MLEADER command and QLEADER, XLINE and RAY, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
    The brief is `docs/next-dxf.md`.
 
 TRIM, EXTEND and JOIN of 3D

@@ -32,6 +32,15 @@ export type {
   TableOverrides,
   TableRowStyle,
   TableStyleData,
+  MLeaderEntity,
+  MLeaderBranch,
+  MLeaderColor,
+  MLeaderContent,
+  MLeaderText,
+  MLeaderBlockContent,
+  MLeaderKept,
+  MLeaderPath,
+  MLeaderStyleData,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -262,6 +271,17 @@ export {
   tableUp,
   tableWidth,
 } from "./tables"
+
+export {
+  STANDARD_MLEADER_STYLE,
+  createMLeader,
+  mapMLeader,
+  mleaderDoglegEnd,
+  mleaderExploded,
+  mleaderGeometry,
+  mleaderStretched,
+  mleaderStretchPoints,
+} from "./multileaders"
 
 export type { HatchGeometry } from "./hatch"
 export {

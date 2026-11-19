@@ -9,6 +9,8 @@ import {
   bsplinePoint,
   fitParameters,
 } from "../../geometry/nurbs"
+export { unicode } from "./dxfValues"
+import { DxfMLeaderContext, dxfMLeader } from "./dxfMLeader"
 import {
   AttributeModes,
   BlockAttribute,
@@ -81,7 +83,7 @@ import { DimStyleId } from "../../domain/dimStyles"
 import { aciColor, trueColor } from "./dxfColors"
 import { HatchGradient, isHatchGradientName } from "../../domain/hatchGradients"
 import { DxfRecord } from "./dxfSections"
-import { GroupCursor, finite, int, num, point, str } from "./dxfValues"
+import { GroupCursor, finite, int, num, point, str, unicode } from "./dxfValues"
 
 const DEG = Math.PI / 180
 
@@ -99,7 +101,7 @@ export interface DxfBlockTarget {
 }
 
 /** What converting an entity needs from the rest of the file, and where it reports. */
-export interface DxfEntityContext {
+export interface DxfEntityContext extends DxfMLeaderContext {
   /** The layer of that name, made when the file's table lacks it (as AutoCAD does: t-ent-only). */
   layer(name: string | undefined): LayerId
   /** The linetype an object names; `undefined` for ByLayer. */
@@ -156,6 +158,10 @@ export function dxfEntities(
       return made(image(record, ctx))
     case "ACAD_TABLE":
       return made(table(record, ctx))
+    case "MULTILEADER": {
+      const mleader = dxfMLeader(record, ctx)
+      return made(mleader && common(mleader, record, ctx))
+    }
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -1938,16 +1944,4 @@ function splineEdge(
     bulges: points.map(() => 0),
     end: planar(bsplinePoint(curve, end)),
   }
-}
-
-/**
- * The characters AutoCAD escapes as `\U+XXXX` in a DXF up to 2004 (x014's
- * `alpha \U+03B1 end`), and that any version may hold. A doubled backslash
- * is MTEXT's literal one, so what follows it is no escape.
- */
-export function unicode(value: string): string {
-  if (!value.includes("\\")) return value
-  return value.replace(/\\\\|\\U\+([0-9A-Fa-f]{4})/g, (match, code?: string) =>
-    code ? String.fromCharCode(Number.parseInt(code, 16)) : match
-  )
 }

@@ -72,6 +72,13 @@ import {
   TableCell,
   TableRowStyle,
   TableStyleData,
+  MLeaderBranch,
+  MLeaderColor,
+  MLeaderContent,
+  MLeaderStyleData,
+  STANDARD_MLEADER_STYLE,
+  mleaderDoglegEnd,
+  clampLineSpacingFactor,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -156,7 +163,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 60
+export const DRAWING_FILE_VERSION = 61
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -324,10 +331,14 @@ function savedBlocks(
     placed.add(id)
     visit(byId.get(id)?.entities ?? [])
   }
-  // A table's block cells place theirs as a reference does.
+  // A table's block cells and a multileader's block place theirs as a
+  // reference does.
   const visit = (list: readonly Entity[]): void => {
     for (const entity of list) {
       if (entity.type === "insert") place(entity.blockId)
+      if (entity.type === "mleader" && entity.content?.kind === "block") {
+        place(entity.content.blockId)
+      }
       if (entity.type === "table") {
         for (const cell of entity.cells)
           if (cell.block) place(cell.block.blockId)
@@ -720,6 +731,38 @@ function cloneEntityShape(entity: Entity): Entity {
         ...overrides,
         vertices: entity.vertices.map((p) => ({ x: p.x, y: p.y })),
       }
+    case "mleader": {
+      const xy = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
+      const content = entity.content
+      return {
+        id: entity.id,
+        type: "mleader",
+        layerId: entity.layerId,
+        ...overrides,
+        branches: entity.branches.map((branch) => ({
+          landing: xy(branch.landing),
+          direction: xy(branch.direction),
+          doglegLength: branch.doglegLength,
+          lines: branch.lines.map((line) => line.map(xy)),
+        })),
+        path: entity.path,
+        dogleg: entity.dogleg,
+        arrowSize: entity.arrowSize,
+        landingGap: entity.landingGap,
+        ...(content?.kind === "mtext"
+          ? { content: { ...content, position: xy(content.position) } }
+          : content?.kind === "block"
+            ? { content: { ...content, position: xy(content.position) } }
+            : {}),
+        ...(entity.lineColor ? { lineColor: entity.lineColor } : {}),
+        style: { ...entity.style },
+        kept: {
+          ...entity.kept,
+          base: xy(entity.kept.base),
+          planeOrigin: xy(entity.kept.planeOrigin),
+        },
+      }
+    }
     case "table":
       return {
         id: entity.id,
@@ -1993,6 +2036,50 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         layerId,
         ...overrides,
         vertices: vertices as Vec2[],
+      }
+    }
+    case "mleader": {
+      // Since 61.
+      if (!Array.isArray(raw.branches)) return null
+      const branches: MLeaderBranch[] = []
+      for (const item of raw.branches) {
+        const branch = parseMLeaderBranch(item)
+        if (branch) branches.push(branch)
+      }
+      const path = MLEADER_PATHS.find((p) => p === raw.path)
+      const style = parseMLeaderStyle(raw.style)
+      if (!path || !style) return null
+      const size = (value: unknown, fallback: number) =>
+        isFiniteNumber(value) && value >= 0 ? value : fallback
+      const content = parseMLeaderContent(raw.content)
+      const first = branches[0]
+      const base = first ? mleaderDoglegEnd(first) : { x: 0, y: 0 }
+      const kept = isRecord(raw.kept) ? raw.kept : {}
+      const lineColor = parseMLeaderColor(raw.lineColor)
+      return {
+        id,
+        type: "mleader",
+        layerId,
+        ...overrides,
+        branches,
+        path,
+        dogleg: raw.dogleg !== false,
+        arrowSize: size(raw.arrowSize, style.arrowSize),
+        landingGap: size(raw.landingGap, style.landingGap),
+        ...(content ? { content } : {}),
+        ...(lineColor ? { lineColor } : {}),
+        style,
+        kept: {
+          base: parseVec2(kept.base) ?? base,
+          planeOrigin: parseVec2(kept.planeOrigin) ?? base,
+          scale: isFiniteNumber(kept.scale) && kept.scale > 0 ? kept.scale : 1,
+          overrideFlags: Number.isInteger(kept.overrideFlags)
+            ? (kept.overrideFlags as number)
+            : 0,
+          doglegLength: size(kept.doglegLength, style.doglegLength),
+          arrowSize: size(kept.arrowSize, style.arrowSize),
+          landing: kept.landing !== false,
+        },
       }
     }
     case "table": {
@@ -3288,6 +3375,112 @@ function parseAttachment(value: unknown): MTextAttachment | undefined {
     (MTEXT_ATTACHMENTS as readonly string[]).includes(value)
     ? (value as MTextAttachment)
     : undefined
+}
+
+const MLEADER_PATHS = ["none", "straight", "spline"] as const
+
+function parseMLeaderColor(value: unknown): MLeaderColor | undefined {
+  return value === "ByBlock" ||
+    (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value))
+    ? value
+    : undefined
+}
+
+/** A branch whose landing and direction read; its lines' unreadable points dropped. */
+function parseMLeaderBranch(raw: unknown): MLeaderBranch | null {
+  if (!isRecord(raw)) return null
+  const landing = parseVec2(raw.landing)
+  const direction = parseVec2(raw.direction)
+  if (!landing || !direction) return null
+  const length = Math.hypot(direction.x, direction.y)
+  if (!(length > 0)) return null
+  const lines = Array.isArray(raw.lines)
+    ? raw.lines.flatMap((line) => {
+        if (!Array.isArray(line)) return []
+        const points = line.map(parseVec2).filter((p): p is Vec2 => p !== null)
+        return points.length > 0 ? [points] : []
+      })
+    : []
+  return {
+    landing,
+    // As written when it is a unit already, so a file reads back the same.
+    direction:
+      Math.abs(length - 1) < 1e-9
+        ? direction
+        : { x: direction.x / length, y: direction.y / length },
+    doglegLength:
+      isFiniteNumber(raw.doglegLength) && raw.doglegLength >= 0
+        ? raw.doglegLength
+        : 0,
+    lines,
+  }
+}
+
+function parseMLeaderContent(raw: unknown): MLeaderContent | undefined {
+  if (!isRecord(raw)) return undefined
+  const position = parseVec2(raw.position)
+  if (!position) return undefined
+  const angle = isFiniteNumber(raw.rotation) ? raw.rotation : 0
+  if (raw.kind === "block") {
+    if (typeof raw.blockId !== "string") return undefined
+    const factor = (value: unknown) =>
+      isFiniteNumber(value) && value !== 0 ? value : 1
+    return {
+      kind: "block",
+      blockId: raw.blockId,
+      position,
+      scaleX: factor(raw.scaleX),
+      scaleY: factor(raw.scaleY),
+      rotation: angle,
+    }
+  }
+  if (raw.kind !== "mtext" || typeof raw.contents !== "string") return undefined
+  if (!isFiniteNumber(raw.height) || raw.height <= 0) return undefined
+  return {
+    kind: "mtext",
+    position,
+    contents: raw.contents,
+    height: raw.height,
+    width: isFiniteNumber(raw.width) && raw.width >= 0 ? raw.width : 0,
+    rotation: angle,
+    attachment: parseAttachment(raw.attachment) ?? "tl",
+    lineSpacingStyle:
+      raw.lineSpacingStyle === "exactly" ? "exactly" : "atLeast",
+    lineSpacingFactor: clampLineSpacingFactor(
+      isFiniteNumber(raw.lineSpacingFactor) ? raw.lineSpacingFactor : 1
+    ),
+    styleId:
+      typeof raw.styleId === "string" ? raw.styleId : DEFAULT_TEXT_STYLE_ID,
+  }
+}
+
+/** A style by its name, what else it says that does not read as the Standard's. */
+function parseMLeaderStyle(raw: unknown): MLeaderStyleData | null {
+  if (!isRecord(raw) || typeof raw.name !== "string") return null
+  const base = STANDARD_MLEADER_STYLE
+  const size = (value: unknown, fallback: number) =>
+    isFiniteNumber(value) && value >= 0 ? value : fallback
+  const flag = (value: unknown, fallback: boolean) =>
+    typeof value === "boolean" ? value : fallback
+  return {
+    name: raw.name,
+    content:
+      raw.content === "none" || raw.content === "block" ? raw.content : "mtext",
+    path: MLEADER_PATHS.find((p) => p === raw.path) ?? base.path,
+    landing: flag(raw.landing, base.landing),
+    landingGap: size(raw.landingGap, base.landingGap),
+    dogleg: flag(raw.dogleg, base.dogleg),
+    doglegLength: size(raw.doglegLength, base.doglegLength),
+    arrowSize: size(raw.arrowSize, base.arrowSize),
+    textStyleId:
+      typeof raw.textStyleId === "string" ? raw.textStyleId : base.textStyleId,
+    textHeight:
+      isFiniteNumber(raw.textHeight) && raw.textHeight > 0
+        ? raw.textHeight
+        : base.textHeight,
+    scale: isFiniteNumber(raw.scale) && raw.scale > 0 ? raw.scale : base.scale,
+    annotative: flag(raw.annotative, base.annotative),
+  }
 }
 
 function parseTableRowStyle(raw: unknown): TableRowStyle | null {

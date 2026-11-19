@@ -1,0 +1,19 @@
+_MLEADER
+_T
+HELLO
+10,10
+40,30
+(setq ml (entlast))
+(entget ml)
+_ZOOM
+_E
+QAFLAGS
+2
+_LIST
+_L
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\mleader\m00.dxf
+_V
+2018
+16

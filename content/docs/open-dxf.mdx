@@ -13,7 +13,7 @@ faq:
   - question: "Can I save my changes as a DXF file?"
     answer: "Yes. SAVEAS (Ctrl+Shift+S) or DXFOUT saves the drawing as a DXF of AutoCAD 2000 to 2018, text or binary, which AutoCAD opens. 3D solids and regions are left out, and the command line says so."
   - question: "Why are some objects missing?"
-    answer: "What MellowCAD has no object for yet, such as multileaders, tolerances or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet."
+    answer: "What MellowCAD has no object for yet, such as multilines, tolerances or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet."
 ---
 
 <OpenDxf />
@@ -35,7 +35,7 @@ When a DXF holds something MellowCAD has no object for yet, it opens the rest an
 
 - traces and meshes;
 - construction lines and rays, multilines;
-- multileaders and tolerances;
+- tolerances;
 - 3D solids, regions and surfaces;
 - ordinate and arc length dimensions.
 
@@ -50,6 +50,7 @@ Some things open, but not quite as they were:
 - An external reference keeps its place and its path, drawn as AutoCAD draws one whose drawing it cannot find: `Xref` and the path at its insertion point. A page reads only the file it is given, never the drawings beside it; saved as DXF again, the reference is kept.
 - An image keeps its place, its size and its file's path, drawn as AutoCAD draws one whose file it cannot find: its frame, as IMAGEFRAME shows it, and the path across it. Saved as DXF again, the image is kept.
 - A table keeps its rows, columns, cells and style, drawn from them as AutoCAD draws one: each cell's text at its alignment, a block in a cell fitted to it. Saved as DXF again, the table is kept.
+- A multileader keeps its leaders, its text or block and its style, drawn from them as AutoCAD draws one: each leader with its arrowhead and its landing. Saved as DXF again, the multileader is kept.
 
 ## Open it in the editor [#editor]
 
@@ -79,4 +80,4 @@ Yes. <Command id="SAVEAS" /> (`Ctrl+Shift+S`) or <Command id="DXFOUT" /> saves t
 
 ### Why are some objects missing? [#missing]
 
-What MellowCAD has no object for yet, such as multileaders, tolerances or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet.
+What MellowCAD has no object for yet, such as multilines, tolerances or 3D solids, is left out, and the command line says how many of each type as the file opens. What is in a layout is counted apart: there are no layouts yet.

@@ -1196,7 +1196,11 @@ p331). A 3D polyline's caught vertices move, each taking the displacement's Z (3
 image drags one corner, the last caught of its bottom left, top left, top right and bottom right,
 the one across staying: it scales by the larger of the ratios the corner moved gives along its
 width and its height, never stretched, nor moved whole with all four caught, and stays where
-neither grows (image/s1–s11). A table stays as it was, caught in part or whole (table/t05).
+neither grows (image/s1–s11). A table stays as it was, caught in part or whole (table/t05). A
+multileader moves its leader lines' vertices caught; a landing caught alone moves along its
+dogleg, which grows to keep its end; a dogleg's end alone moves along it, the dogleg growing, its
+text or block with it; both, or all its points, by the displacement; its text is no point of its
+own (mleader/m06, m07).
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
@@ -1255,7 +1259,7 @@ everything was refused too, says `None found.` (es `No hallada.`, table 20841; p
 preselection is counted and sifted the same way after the echo; with nothing left it asks
 `Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
-pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); a wipeout a line per edge, the closing one last, with its layer and properties, and nothing said (wipeout/w08, w10); an image its frame's four lines, up from its insertion corner, across, down and back, its path gone and nothing said (image/i06a); a table its cells' MTEXTs, its block cells' references and its grid's lines, each on its layer and in its properties, and a grey line of no length at its corner, nothing said (table/t06, t06b); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); a wipeout a line per edge, the closing one last, with its layer and properties, and nothing said (wipeout/w08, w10); an image its frame's four lines, up from its insertion corner, across, down and back, its path gone and nothing said (image/i06a); a table its cells' MTEXTs, its block cells' references and its grid's lines, each on its layer and in its properties, and a grey line of no length at its corner, nothing said (table/t06, t06b); a multileader its MTEXT or block reference, each dogleg a line, each leader line a polyline or a spline and each arrowhead a 2D solid, in its order (mleader/m03, m12); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
 cannot be exploded: `1 was an external reference.` (es `1 era una referencia externa.`, table
 25137–25138; xref/p08, p17)
 

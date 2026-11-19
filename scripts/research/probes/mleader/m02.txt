@@ -1,0 +1,26 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_-MTEXT
+40,30
+_J
+_ML
+@30,0
+HELLO
+
+_MLEADER
+_C
+_M
+_L
+10,10
+(setq ml (entlast))
+(entget ml)
+(entget (cdr (assoc 340 (entget ml))))
+_ZOOM
+_E
+_LIST
+_L
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\mleader\m02.dxf
+_V
+2018
+16

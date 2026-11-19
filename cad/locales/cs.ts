@@ -487,6 +487,18 @@ export const cs: EngineLocale = {
             "other": "Tabulek"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Multiodkaz",
+            "few": "Multiodkazy",
+            "many": "Multiodkazu",
+            "other": "Multiodkazů"
+          }
+        ]
       ]
     },
     "array": {
@@ -6231,6 +6243,7 @@ export const cs: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "POLE"
           }
         ]
@@ -8775,7 +8788,67 @@ export const cs: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Typ odkazu:        Přímý odkaz",
+            "spline": "Typ odkazu:        Odkaz se spline",
+            "other": "Typ odkazu:        Neviditelný odkaz"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Typ obsahu:       Obsah víceřádkového textu",
+            "block": "Typ obsahu:       Obsah bloku",
+            "other": "Typ obsahu:       Žádný obsah"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Prodloužení čáry:      ",
+        [
+          "on",
+          1,
+          {
+            "true": "ZAP",
+            "other": "VYP"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Číslo odkazu:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Vrchol:            X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Styl multiodkazů:  ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "S poznámkou:      NE"
     },
     "feedback": {
       "snap": {

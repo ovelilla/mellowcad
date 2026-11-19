@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Linha de chamada} other {Linhas de chamada}}",
       "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}",
       "image": "{count, plural, one {Imagem raster} other {Imagens raster}}",
-      "table": "{count, plural, one {Tabela} other {Tabelas}}"
+      "table": "{count, plural, one {Tabela} other {Tabelas}}",
+      "mleader": "{count, plural, one {Linha de chamada múltipla} other {Linhas de chamada múltiplas}}"
     },
     "array": {
       "rectangular": "Matriz (Retangular)",
@@ -2840,7 +2841,7 @@
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
       "allAdditionsUndone": "Todas as adições foram desfeitas.",
-      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {MATRIZ}}",
       "listObject": "                  {name}  Camada: \"{layer}\"",
       "listSpace": "                            Espaço: Espaço do modelo",
       "listColor": "                   Cor: {color}    Tipo de linha: \"{linetype}\"",
@@ -3172,7 +3173,14 @@
       "listTableDirection": "Dir horizontal :  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Número de colunas:  {count}",
       "listTableRows": "Número de linhas:     {count}",
-      "listTableStyle": "Estilo da tabela:        {name}"
+      "listTableStyle": "Estilo da tabela:        {name}",
+      "listMLeaderType": "{type, select, straight {Tipo de linha de chamada:       Linha de chamada reta} spline {Tipo de linha de chamada:       Linha de chamada de spline} other {Tipo de linha de chamada:       Linha de chamada invisível}}",
+      "listMLeaderContent": "{content, select, mtext {Tipo de conteúdo:       Conteúdo de TextoM} block {Tipo de conteúdo:       Conteúdo de bloco} other {Tipo de conteúdo:       Nenhum conteúdo}}",
+      "listMLeaderLanding": "Segmento de conexão:            {on, select, true {Ativado} other {Desativado}}",
+      "listMLeaderNumber": "Número da linha de chamada:      {number}",
+      "listMLeaderVertex": "Vértice:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Estilo de linha de chamada múltipla:  {name}",
+      "listMLeaderAnnotative": "Anotativo:         NÃO"
     },
     "feedback": {
       "snap": {

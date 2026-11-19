@@ -224,6 +224,7 @@
   "interface.entity.wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
   "interface.entity.image": "{count, plural, one {Raster Image} other {Raster Images}}",
   "interface.entity.table": "{count, plural, one {Table} other {Tables}}",
+  "interface.entity.mleader": "{count, plural, one {Multileader} other {Multileaders}}",
   "interface.array.rectangular": "Array (Rectangular)",
   "interface.array.polar": "Array (Polar)",
   "interface.array.path": "Array (Path)",

@@ -322,9 +322,10 @@ not offered, so the prompt lists `[Copy/None/Mtext]` where AutoCAD's lists
 draws the closed filled one), DIMCLRD and DIMLWD, the box of a negative DIMGAP, a leader's
 overrides of the other dimension variables; DIVIDE and MEASURE along it (they take it in AutoCAD,
 p15); the grips' hover menus; annotative scaling. QLEADER (`LE`: `Specify first leader point, or
-[Settings] <Settings>:`, AcDimRes 8200–8203, and its Leader Settings dialog) and MLEADER (a
-MULTILEADER object with its own MLEADERSTYLE table: 1 of the 154 samples and 4 objects in 2 other
-programs' files) are not built: a DXF's MULTILEADER is left out.
+[Settings] <Settings>:`, AcDimRes 8200–8203, and its Leader Settings dialog) and MLEADER (`Specify
+leader arrowhead location or [pre enter Text/leader Landing first/Content first/Options]
+<Options>:`, AcDimRes 1201–1261, probes mleader/m00–m03) are not built; a DXF's MULTILEADER opens,
+is drawn and edited as AutoCAD's and saves back (DXFIN's entry, clipboard-and-files.md).
 
 ### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA` · pt-BR `ESTILOCOTA` / `EC` / `DIMSTY` · fr `COTSTYLE` / `CST` / `CSTY` / `DDIM` · it `DIMSTILE` / `D` / `DST` / `DDIM` · de `BEMSTIL` · ru `РЗМСТИЛЬ` / `РСТ` / `ДИАЛРАЗМ` · pl `WYMSTYL` / `WST` / `WYMST` / `ODWYM` · cs `KÓTYSTYL` / `KSL` / `KOTYSL` / `DIAKÓTY` · hu `MÉRETSTÍLUS` / `D` / `MSTIL` / `MST` / `DPMÉRET`
 

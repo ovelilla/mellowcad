@@ -2051,6 +2051,8 @@ function singleEntityInfo(
       return { title: title("image"), count: 1, groups: [] }
     case "table":
       return { title: title("table"), count: 1, groups: [] }
+    case "mleader":
+      return { title: title("mleader"), count: 1, groups: [] }
     case "point": {
       // Geometry is its Position, Thickness under General (unverified on the
       // desktop: the palette as a circle's, circle/d10).

@@ -125,15 +125,17 @@ file named as the drawing with `.mpr`: a `FileTransport` of your own receives it
 ### DXF
 
 OPEN opens a DXF as well as a drawing of the engine's, and DXFIN a DXF alone: ASCII or binary,
-from AutoCAD R12 to 2018. What the engine has no object for (a multileader, a 3D
-solid, a layout's objects) is left out and counted on the command line. An external reference
+from AutoCAD R12 to 2018. What the engine has no object for (a 3D solid, a
+layout's objects) is left out and counted on the command line. An external reference
 opens as AutoCAD opens one whose drawing it cannot find, which in a page is always: its two lines
 on the command line, the reference kept and drawn as `Xref <path>`, and written back by DXFOUT
 with its path. A raster image (`ImageEntity`) opens the same way, as one whose file AutoCAD
 cannot find: its frame, as `DocumentSettings.imageFrame` (IMAGEFRAME) shows it, with its file's
 path written across it, and written back by DXFOUT with its definition. A table (`TableEntity`)
 opens with its cells and its style, drawn from them as AutoCAD redraws one, and is written back
-with its style and the block of what it draws. `openDrawingFromFile(["dxf"])` is
+with its style and the block of what it draws. A multileader (`MLeaderEntity`) opens with its
+leaders, its text or block and its style, drawn from them as AutoCAD draws one, and is written
+back with its style. `openDrawingFromFile(["dxf"])` is
 DXFIN from a button. A `FileTransport` of your own gets the kinds a pick offers in `open`'s
 `request` and returns the file's name and bytes; one that returns the text, as before, still
 opens a drawing and an ASCII DXF in UTF-8. A file your page already holds — dropped on it, or

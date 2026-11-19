@@ -1,3 +1,4 @@
+import { mleaderGeometry } from "./multileaders"
 import { regionArea, regionGripPoints, regionPerimeter } from "./regions"
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
@@ -832,6 +833,9 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...imageCorners(entity)]
     case "table":
       return [...tableCorners(entity)]
+    case "mleader":
+      // What it draws: its line vertices with no path drawn are none.
+      return mleaderGeometry(entity).flatMap(characteristicPoints)
     case "text":
     case "mtext":
     case "attdef":

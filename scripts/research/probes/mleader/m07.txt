@@ -1,0 +1,83 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_ZOOM
+_W
+-500,-800
+800,100
+_COPY
+(handent "2DF")
+
+0,0
+0,-500
+
+(setq A (entlast))
+_STRETCH
+_C
+39,-470
+41,-469
+
+0,0
+5,5
+(entget A)
+_COPY
+(handent "2DF")
+
+0,0
+0,-600
+
+(setq B (entlast))
+_STRETCH
+_C
+37,-571
+39,-570
+
+0,0
+5,5
+(entget B)
+_COPY
+(handent "2DF")
+
+0,0
+0,-700
+
+(setq C (entlast))
+_STRETCH
+_C
+0,-700
+100,-650
+
+0,0
+5,5
+(entget C)
+_COPY
+(handent "2DF")
+
+0,0
+0,-400
+
+(setq D (entlast))
+_STRETCH
+_C
+29,-371
+60,-365
+
+0,0
+5,5
+(entget D)
+_MIRROR
+(handent "2E1")
+
+0,0
+0,10
+_N
+(entget (entlast))
+_MIRROR
+(handent "2E1")
+
+0,0
+10,10
+_N
+(entget (entlast))
+_EXPLODE
+_L
+
+(dumpfrom (entnext (handent "2E5")))

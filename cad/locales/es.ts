@@ -443,6 +443,16 @@ export const es: EngineLocale = {
             "other": "Tablas"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Directriz múltiple",
+            "other": "Directrices múltiples"
+          }
+        ]
       ]
     },
     "array": {
@@ -6103,6 +6113,7 @@ export const es: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "MATRIZ"
           }
         ]
@@ -8534,7 +8545,67 @@ export const es: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Tipo de directriz:       DirectrizRecta",
+            "spline": "Tipo de directriz:       DirectrizSpline",
+            "other": "Tipo de directriz:       DirectrizInvisible"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Tipo de contenido:       ContenidoTextoM",
+            "block": "Tipo de contenido:       ContenidoBloque",
+            "other": "Tipo de contenido:       SinContenido"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Segmento de conexión:    ",
+        [
+          "on",
+          1,
+          {
+            "true": "ACT",
+            "other": "DES"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Número de directriz:     ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Vértice:                 X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Estilo de directriz múltiple: ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Anotativo:               NO"
     },
     "feedback": {
       "snap": {

@@ -269,6 +269,7 @@ declare const source: {
       "wipeout": string
       "image": string
       "table": string
+      "mleader": string
     }
     "array": {
       "rectangular": string
@@ -3211,6 +3212,13 @@ declare const source: {
       "listTableColumns": string
       "listTableRows": string
       "listTableStyle": string
+      "listMLeaderType": string
+      "listMLeaderContent": string
+      "listMLeaderLanding": string
+      "listMLeaderNumber": string
+      "listMLeaderVertex": string
+      "listMLeaderStyle": string
+      "listMLeaderAnnotative": string
     }
     "feedback": {
       "snap": {

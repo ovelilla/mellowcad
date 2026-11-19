@@ -262,7 +262,8 @@
       "leader": "{count, plural, one {Leader} other {Leaders}}",
       "wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
       "image": "{count, plural, one {Raster Image} other {Raster Images}}",
-      "table": "{count, plural, one {Table} other {Tables}}"
+      "table": "{count, plural, one {Table} other {Tables}}",
+      "mleader": "{count, plural, one {Multileader} other {Multileaders}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -2719,7 +2720,7 @@
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
       "allAdditionsUndone": "All the additions are undone.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -3051,7 +3052,14 @@
       "listTableDirection": "Horizontal Dir:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Number of columns:  {count}",
       "listTableRows": "Number of rows:     {count}",
-      "listTableStyle": "Table Style:        {name}"
+      "listTableStyle": "Table Style:        {name}",
+      "listMLeaderType": "{type, select, straight {Leader Type:        StraightLeader} spline {Leader Type:        SplineLeader} other {Leader Type:        InVisibleLeader}}",
+      "listMLeaderContent": "{content, select, mtext {Content Type:       MTextContent} block {Content Type:       BlockContent} other {Content Type:       NoneContent}}",
+      "listMLeaderLanding": "Landing:            {on, select, true {ON} other {OFF}}",
+      "listMLeaderNumber": "Leader Number:      {number}",
+      "listMLeaderVertex": "Vertex:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Multileader style:  {name}",
+      "listMLeaderAnnotative": "Annotative:         NO"
     },
     "feedback": {
       "snap": {

@@ -22,6 +22,8 @@ import {
   entityElevation,
   insertFlatGeometry,
   tableGeometry,
+  mleaderGeometry,
+  mleaderStretchPoints,
   lineEndZ,
   isLevel,
   lineStartZ,
@@ -106,6 +108,26 @@ function snapEntities(
   const entities: Entity[] = []
   const solidPoints: SolidSnapPoint[] = []
   for (const entity of [...document.getEntities(), ...beingDrawn]) {
+    if (entity.type === "mleader") {
+      // Its leader lines' vertices, landings and doglegs' ends are its
+      // Endpoints, and its block's objects snap as a reference's; its lines
+      // give no Midpoint, Nearest or Perpendicular (mleader/m08, m09).
+      if (document.isEntityVisible(entity)) {
+        for (const point of mleaderStretchPoints(entity)) {
+          solidPoints.push({
+            type: SnapType.Endpoint,
+            point: entityPointToWorld(entity, point),
+            id: entity.id,
+          })
+        }
+      }
+      for (const piece of mleaderGeometry(entity)) {
+        if (piece.type === "insert") {
+          entities.push(...insertFlatGeometry(piece, blocks))
+        }
+      }
+      continue
+    }
     // A table as what it draws, its block cells' objects too (table/t07).
     const drawn =
       entity.type === "insert"

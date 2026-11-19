@@ -3,7 +3,7 @@ title: Abrir arquivo DXF online
 metaTitle: "Abrir arquivo DXF online: visualizador grátis"
 description: "Abra um arquivo DXF grátis no navegador, sem enviá-lo: do AutoCAD R12 ao 2018, de texto ou binário, com suas camadas, textos, cotas, hachuras e blocos."
 type: howTo
-sourceHash: "c91e0f8690ac"
+sourceHash: "d0c802844506"
 faq:
   - question: "Como abrir um arquivo DXF sem o AutoCAD?"
     answer: "Escolha-o ou solte-o no alto desta página: o MellowCAD o abre no editor, no seu navegador, sem instalar nada e sem cadastro. No editor, o ABRIR (Ctrl+O) e o IMPDXF também abrem um."
@@ -14,7 +14,7 @@ faq:
   - question: "Posso salvar as minhas alterações em DXF?"
     answer: "Sim. SALVARCOMO (Ctrl+Shift+S) ou EXPDXF salvam o desenho como DXF do AutoCAD 2000 ao 2018, de texto ou binário, que o AutoCAD abre. Os sólidos 3D e as regiões ficam de fora, e a linha de comando avisa."
   - question: "Por que faltam alguns objetos?"
-    answer: "O que o MellowCAD ainda não tem, como linhas de chamada múltipla, tolerâncias ou sólidos 3D, fica de fora, e a linha de comando diz quantos de cada tipo ao abrir o arquivo. O que está em um layout é contado à parte: ainda não há layouts."
+    answer: "O que o MellowCAD ainda não tem, como multilinhas, tolerâncias ou sólidos 3D, fica de fora, e a linha de comando diz quantos de cada tipo ao abrir o arquivo. O que está em um layout é contado à parte: ainda não há layouts."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Quando um DXF tem algo para o qual o MellowCAD ainda não tem objeto, ele abre o
 
 - traços e malhas;
 - linhas de construção e raios, multilinhas;
-- linhas de chamada múltipla e tolerâncias;
+- tolerâncias;
 - sólidos 3D, regiões e superfícies;
 - cotas de ordenada e de comprimento de arco.
 
@@ -51,6 +51,7 @@ Algumas coisas abrem, mas não exatamente como eram:
 - Uma referência externa mantém o seu lugar e o seu caminho, e é desenhada como o AutoCAD desenha uma cujo desenho não encontra: `Refex` e o caminho no seu ponto de inserção. Uma página lê apenas o arquivo que recebe, nunca os desenhos ao lado dele; salvo de novo como DXF, a referência é mantida.
 - Uma imagem mantém o seu lugar, o seu tamanho e o caminho do seu arquivo, e é desenhada como o AutoCAD desenha uma cujo arquivo não encontra: o seu contorno, conforme IMAGEFRAME, e o caminho escrito dentro dele. Salva de novo como DXF, a imagem é mantida.
 - Uma tabela mantém as suas linhas, colunas, células e estilo, e é desenhada a partir deles como o AutoCAD a desenha: o texto de cada célula no seu alinhamento e o bloco de uma célula ajustado a ela. Salva de novo como DXF, a tabela é mantida.
+- Uma linha de chamada múltipla mantém as suas linhas de chamada, o seu texto ou bloco e o seu estilo, e é desenhada a partir deles como o AutoCAD a desenha: cada linha de chamada com a sua seta e o seu segmento de conexão. Salva de novo como DXF, a linha de chamada múltipla é mantida.
 
 ## Abra no editor [#editor]
 
@@ -80,4 +81,4 @@ Sim. <Command id="SAVEAS" /> (`Ctrl+Shift+S`) ou <Command id="DXFOUT" /> salvam 
 
 ### Por que faltam alguns objetos? [#missing]
 
-O que o MellowCAD ainda não tem, como linhas de chamada múltipla, tolerâncias ou sólidos 3D, fica de fora, e a linha de comando diz quantos de cada tipo ao abrir o arquivo. O que está em um layout é contado à parte: ainda não há layouts.
+O que o MellowCAD ainda não tem, como multilinhas, tolerâncias ou sólidos 3D, fica de fora, e a linha de comando diz quantos de cada tipo ao abrir o arquivo. O que está em um layout é contado à parte: ainda não há layouts.

@@ -84,6 +84,12 @@ import { withXAxisAngle } from "./points"
 import { mapWipeoutVertices } from "./wipeouts"
 import { imageCorners, imageStretched, mapImage } from "./images"
 import { mapTable } from "./tables"
+import {
+  mapMLeader,
+  mleaderStretched,
+  mleaderStretchPoints,
+  readsRightward,
+} from "./multileaders"
 import { mapSolid2dCorners } from "./solids2d"
 import { face3dReflected } from "./faces3d"
 import { leaderGripIndices, mapLeader, stretchLeaderVertices } from "./leaders"
@@ -376,6 +382,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
       return mapImage(entity, (p) => V.add(p, delta))
     case "table":
       return mapTable(entity, (p) => V.add(p, delta))
+    case "mleader":
+      return mapMLeader(entity, (p) => V.add(p, delta))
     case "leader":
       // Its offsets from its annotation stay: MOVE records none (leader/p08).
       return mapLeader(
@@ -431,6 +439,13 @@ export function stretchEntity(
     // WHY as it was: AutoCAD's STRETCH leaves a table, caught in part or
     // whole (table/t05); its grips resize it, which are not here.
     return entity
+  }
+  if (entity.type === "mleader" && !isTilted(entity)) {
+    // Caught whole it moves whole, its plane with it (mleader/m07).
+    if (mleaderStretchPoints(entity).every(inFrame)) {
+      return translateEntity(entity, delta)
+    }
+    return mleaderStretched(entity, inFrame, { x: delta.x, y: delta.y })
   }
   if (entity.type === "image" && !isTilted(entity)) {
     // One corner drags, the one across stays, even with all four caught
@@ -503,6 +518,7 @@ export function stretchEntity(
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
       return planar
   }
@@ -568,6 +584,8 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
       return imageCorners(entity)
     case "table":
       return []
+    case "mleader":
+      return mleaderStretchPoints(entity)
     case "leader":
       // A hook's start goes with the end (leader/p14).
       return leaderGripIndices(entity).map((i) => entity.vertices[i])
@@ -613,6 +631,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
     case "face3d":
       return stretchVertices(entity)
@@ -745,6 +764,8 @@ function stretchPlanar(
       return imageStretched(entity, inFrame, delta)
     case "table":
       return entity
+    case "mleader":
+      return mleaderStretched(entity, inFrame, { x: delta.x, y: delta.y })
     case "leader":
       return stretchLeaderVertices(entity, (i) =>
         inFrame(entity.vertices[i]) ? delta : null
@@ -883,6 +904,7 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
       case "wipeout":
       case "image":
       case "table":
+      case "mleader":
       case "leader":
         return freshCopy(translatePlanar(entity, delta))
       case "region":
@@ -1031,6 +1053,8 @@ function rotateFlat(
       return mapImage(entity, (p) => rotatePoint(p, pivot, radians))
     case "table":
       return mapTable(entity, (p) => rotatePoint(p, pivot, radians))
+    case "mleader":
+      return mapMLeader(entity, (p) => rotatePoint(p, pivot, radians))
     case "leader":
       return mapLeader(
         entity,
@@ -1163,6 +1187,7 @@ export function rotateEntityCopy(
       case "wipeout":
       case "image":
       case "table":
+      case "mleader":
       case "leader":
         return freshCopy(rotateFlat(entity, pivot, radians))
     }
@@ -1314,6 +1339,8 @@ function scalePlanar(
       return mapImage(entity, (p) => scalePoint(p, base, factor))
     case "table":
       return mapTable(entity, (p) => scalePoint(p, base, factor))
+    case "mleader":
+      return mapMLeader(entity, (p) => scalePoint(p, base, factor))
     case "leader":
       return mapLeader(
         entity,
@@ -1431,6 +1458,7 @@ export function scaleEntityCopy(
       case "wipeout":
       case "image":
       case "table":
+      case "mleader":
       case "leader":
         return freshCopy(scalePlanar(entity, base, factor))
     }
@@ -1594,6 +1622,9 @@ function mirrorFlat(
     case "table":
       // Unreflected, its text read as before (table/t02).
       return mapTable(entity, (p) => mirrorPoint(p, a, b))
+    case "mleader":
+      // Its text turned back to read and laid by its landing (mleader/m06).
+      return mapMLeader(entity, (p) => mirrorPoint(p, a, b))
     case "leader":
       // Its horizontal is its text's direction, which MIRRTEXT 0 keeps
       // reading (leader/p14: 211 stays 1,0,0 and the side flips).
@@ -1629,25 +1660,6 @@ function mirroredInsert(
     rotation: mirrorAngle(insert.rotation, a, b) + Math.PI,
     scaleX: -insert.scaleX,
   }
-}
-
-/**
- * Below it a reading direction's x counts as none: above the noise of a few
- * angle sums (a text at 90° has an x of 6e-17), far below a real tilt. Not
- * 1e-9, which a direction reflected a hair off the vertical lands on, so its
- * side flipped between one mirror and the next.
- */
-const READING_EPSILON = 1e-12
-
-/**
- * Whether a direction reads rightward: its angle, normalised, lies in
- * (−90°, 90°], straight up included and straight down not. The half-plane is
- * antipodal — a direction and its opposite always fall on different sides —
- * which is what makes two mirrors the identity.
- */
-function readsRightward(angle: number): boolean {
-  const x = Math.cos(angle)
-  return Math.abs(x) < READING_EPSILON ? Math.sin(angle) > 0 : x > 0
 }
 
 /**
@@ -1851,6 +1863,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
       case "wipeout":
       case "image":
       case "table":
+      case "mleader":
       case "leader":
         return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }

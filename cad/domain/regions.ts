@@ -352,6 +352,7 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
       return null
     default: {
       const unhandled: never = entity

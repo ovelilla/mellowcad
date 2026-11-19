@@ -102,3 +102,15 @@ export class GroupCursor {
     return { x, y, z }
   }
 }
+
+/**
+ * The characters AutoCAD escapes as `\U+XXXX` in a DXF up to 2004 (x014's
+ * `alpha \U+03B1 end`), and that any version may hold. A doubled backslash
+ * is MTEXT's literal one, so what follows it is no escape.
+ */
+export function unicode(value: string): string {
+  if (!value.includes("\\")) return value
+  return value.replace(/\\\\|\\U\+([0-9A-Fa-f]{4})/g, (match, code?: string) =>
+    code ? String.fromCharCode(Number.parseInt(code, 16)) : match
+  )
+}

@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Mutató} other {Mutató}}",
       "wipeout": "{count, plural, one {Kitakarás} other {Kitakarás}}",
       "image": "{count, plural, one {Raszterkép} other {Raszterkép}}",
-      "table": "{count, plural, one {Táblázat} other {Táblázat}}"
+      "table": "{count, plural, one {Táblázat} other {Táblázat}}",
+      "mleader": "{count, plural, one {Többszörös mutató} other {Többszörös mutató}}"
     },
     "array": {
       "rectangular": "Kiosztás (négyszögletes)",
@@ -2851,7 +2852,7 @@
       "notAFitPoint": "Ez nem illesztési pont.",
       "notAControlVertex": "Nem vezérlő csomópont.",
       "allAdditionsUndone": "Minden módosítás visszaállítva.",
-      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {KIOSZT}}",
+      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {KIOSZT}}",
       "listObject": "                  {name}  Fólia: \"{layer}\"",
       "listSpace": "                            Tér: Modelltér",
       "listColor": "                   Szín: {color}    Vonaltípus: \"{linetype}\"",
@@ -3183,7 +3184,14 @@
       "listTableDirection": "Vízszintes irány:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Oszlopok száma:  {count}",
       "listTableRows": "Sorok száma:  {count}",
-      "listTableStyle": "Táblázatstílus:    {name}"
+      "listTableStyle": "Táblázatstílus:    {name}",
+      "listMLeaderType": "{type, select, straight {Mutató típusa:        EgyenesMutató} spline {Mutató típusa:        SplineMutató} other {Mutató típusa:       LáthatatlanMutató}}",
+      "listMLeaderContent": "{content, select, mtext {Tartalom típusa:      BszövegTartalom} block {Tartalom típusa:       BlokkTartalom} other {Mutató típusa:       NIncsTartalom}}",
+      "listMLeaderLanding": "Vízszintes mutatóvég:            {on, select, true {BE} other {KI}}",
+      "listMLeaderNumber": "Mutató száma:      {number}",
+      "listMLeaderVertex": "Csúcspont:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Többszörösmutató-stílus:  {name}",
+      "listMLeaderAnnotative": "Feliratozási:         NEM"
     },
     "feedback": {
       "snap": {

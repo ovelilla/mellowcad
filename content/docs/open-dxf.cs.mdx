@@ -3,7 +3,7 @@ title: Otevřít DXF online
 metaTitle: "Otevřít DXF online: prohlížeč DXF zdarma"
 description: "Otevřete soubor DXF zdarma v prohlížeči, bez nahrávání: AutoCAD R12 až 2018, textový nebo binární, s hladinami, texty, kótami, šrafami a bloky."
 type: howTo
-sourceHash: "c91e0f8690ac"
+sourceHash: "d0c802844506"
 faq:
   - question: "Jak otevřít soubor DXF bez AutoCADu?"
     answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: MellowCAD ho otevře ve svém editoru, v prohlížeči, bez instalace a bez účtu. V editoru soubor otevřou také příkazy OTEVŘI (Ctrl+O) a ČTIDXF."
@@ -14,7 +14,7 @@ faq:
   - question: "Mohu své změny uložit jako soubor DXF?"
     answer: "Ano. Příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF uloží výkres jako DXF AutoCADu 2000 až 2018, textový nebo binární, který AutoCAD otevře. 3D tělesa a oblasti se vynechají a příkazový řádek to oznámí."
   - question: "Proč některé objekty chybí?"
-    answer: "Pro co MellowCAD zatím nemá objekt, například multiodkazy, tolerance nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou."
+    answer: "Pro co MellowCAD zatím nemá objekt, například multičáry, tolerance nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Když DXF obsahuje něco, pro co MellowCAD zatím nemá objekt, otevře zbytek a
 
 - stopy (TRACE) a sítě;
 - přímky a polopřímky, multičáry;
-- multiodkazy a tolerance;
+- tolerance;
 - 3D tělesa, oblasti a povrchy;
 - souřadnicové kóty a kóty délky oblouku.
 
@@ -51,6 +51,7 @@ Některé věci se otevřou, ale ne úplně tak, jak byly:
 - Externí reference si zachová své umístění a cestu a kreslí se tak, jak AutoCAD kreslí referenci, jejíž výkres nemůže najít: `Xref` a cesta v jejím bodu vložení. Stránka čte jen soubor, který dostane, nikdy výkresy vedle něj; při novém uložení jako DXF se reference zachová.
 - Obrázek si zachová své umístění, velikost a cestu ke svému souboru a kreslí se tak, jak AutoCAD kreslí obrázek, jehož soubor nemůže najít: jeho rámeček podle IMAGEFRAME a cesta napsaná uvnitř. Při novém uložení jako DXF se obrázek zachová.
 - Tabulka si zachová své řádky, sloupce, buňky a styl a kreslí se z nich tak, jak ji kreslí AutoCAD: text každé buňky podle jejího zarovnání, blok v buňce přizpůsobený buňce. Po opětovném uložení jako DXF se tabulka zachová.
+- Multiodkaz si zachová své odkazové čáry, text nebo blok a styl a kreslí se z nich tak, jak ho kreslí AutoCAD: každá odkazová čára se šipkou a prodloužením čáry. Po opětovném uložení jako DXF se multiodkaz zachová.
 
 ## Otevřete ho v editoru [#editor]
 
@@ -80,4 +81,4 @@ Ano. Příkaz <Command id="SAVEAS" /> (`Ctrl+Shift+S`) nebo <Command id="DXFOUT"
 
 ### Proč některé objekty chybí? [#missing]
 
-Pro co MellowCAD zatím nemá objekt, například multiodkazy, tolerance nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou.
+Pro co MellowCAD zatím nemá objekt, například multičáry, tolerance nebo 3D tělesa, se vynechá a příkazový řádek při otevírání souboru vypíše, kolik objektů kterého typu vynechal. Co je v rozvržení, se počítá zvlášť: rozvržení tu zatím nejsou.

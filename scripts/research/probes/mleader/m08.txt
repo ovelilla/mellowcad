@@ -1,0 +1,66 @@
+(setvar "OSMODE" 0)
+_ZOOM
+_W
+0,0
+60,40
+(osnap (quote (10.3 10.2)) "_end")
+(osnap (quote (13 12.9)) "_end")
+(osnap (quote (29.5 29.2)) "_end")
+(osnap (quote (37.5 29.2)) "_end")
+(osnap (quote (34 29.3)) "_mid")
+(osnap (quote (20 19.6)) "_mid")
+(osnap (quote (12.6 13.0)) "_mid")
+(osnap (quote (41 30)) "_ins")
+(osnap (quote (41 30)) "_end")
+(osnap (quote (41 30)) "_nea")
+(osnap (quote (41 30)) "_nod")
+(osnap (quote (37.5 29.2)) "_ins")
+(osnap (quote (20 19.6)) "_nea")
+(osnap (quote (20 19.6)) "_per")
+(osnap (quote (12.7 12.7)) "_nea")
+(osnap (quote (29.5 29.2)) "_int")
+_ZOOM
+_W
+190,0
+250,40
+(osnap (quote (231.2 30.1)) "_ins")
+(osnap (quote (231.2 32.9)) "_cen")
+(osnap (quote (231.2 32.9)) "_qua")
+(osnap (quote (231.2 32.9)) "_nea")
+_ZOOM
+_W
+0,0
+60,40
+_BREAK
+20,19.629
+22,21.55
+_DIVIDE
+20,19.629
+3
+_TRIM
+
+20,19.629
+
+_LENGTHEN
+20,19.629
+
+_FILLET
+20,19.629
+
+_JOIN
+20,19.629
+
+_AREA
+_O
+20,19.629
+_OFFSET
+1
+20,19.629
+
+_EXTEND
+
+20,19.629
+
+_CHAMFER
+20,19.629
+

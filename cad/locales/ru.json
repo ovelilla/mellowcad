@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}",
       "wipeout": "{count, plural, one {Маскировка} few {Маскировки} many {Маскировок} other {Маскировки}}",
       "image": "{count, plural, one {Растровое изображение} few {Растровых изображения} many {Растровых изображений} other {Растрового изображения}}",
-      "table": "{count, plural, one {Таблица} few {Таблицы} many {Таблиц} other {Таблицы}}"
+      "table": "{count, plural, one {Таблица} few {Таблицы} many {Таблиц} other {Таблицы}}",
+      "mleader": "{count, plural, one {Мультивыноска} few {Мультивыноски} many {Мультивыносок} other {Мультивыноски}}"
     },
     "array": {
       "rectangular": "Массив (прямоугольный)",
@@ -2847,7 +2848,7 @@
       "notAFitPoint": "Не определяющая точка.",
       "notAControlVertex": "Не является управляющей вершиной.",
       "allAdditionsUndone": "Все добавления отменены.",
-      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {МАССИВ}}",
+      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {МАССИВ}}",
       "listObject": "                  {name} Слой: \"{layer}\"",
       "listSpace": "                           Пространство: Пространство модели",
       "listColor": "                   Цвет: {color}    Тип линий: \"{linetype}\"",
@@ -3179,7 +3180,14 @@
       "listTableDirection": "Направление по горизонтали:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Число столбцов:  {count}",
       "listTableRows": "Число строк:     {count}",
-      "listTableStyle": "Стиль таблицы:     {name}"
+      "listTableStyle": "Стиль таблицы:     {name}",
+      "listMLeaderType": "{type, select, straight {Тип выноски:        прямая выноска} spline {Тип выноски:        выноска-сплайн} other {Тип выноски:        скрытая выноска}}",
+      "listMLeaderContent": "{content, select, mtext {Тип содержимого:       Содержимое Мтекста} block {Тип содержимого:       содержимое блока} other {Тип содержимого:       без содержимого}}",
+      "listMLeaderLanding": "Полка:            {on, select, true {Вкл} other {Откл}}",
+      "listMLeaderNumber": "Количество выносок:      {number}",
+      "listMLeaderVertex": "Вершина:              X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Стиль мультивыносок: {name}",
+      "listMLeaderAnnotative": "Аннотативный:         НЕТ"
     },
     "feedback": {
       "snap": {

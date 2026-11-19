@@ -443,6 +443,16 @@ export const ptBR: EngineLocale = {
             "other": "Tabelas"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Linha de chamada múltipla",
+            "other": "Linhas de chamada múltiplas"
+          }
+        ]
       ]
     },
     "array": {
@@ -6111,6 +6121,7 @@ export const ptBR: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "MATRIZ"
           }
         ]
@@ -8552,7 +8563,67 @@ export const ptBR: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Tipo de linha de chamada:       Linha de chamada reta",
+            "spline": "Tipo de linha de chamada:       Linha de chamada de spline",
+            "other": "Tipo de linha de chamada:       Linha de chamada invisível"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Tipo de conteúdo:       Conteúdo de TextoM",
+            "block": "Tipo de conteúdo:       Conteúdo de bloco",
+            "other": "Tipo de conteúdo:       Nenhum conteúdo"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Segmento de conexão:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "Ativado",
+            "other": "Desativado"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Número da linha de chamada:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Vértice:             X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Estilo de linha de chamada múltipla:  ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Anotativo:         NÃO"
     },
     "feedback": {
       "snap": {

@@ -3,7 +3,7 @@ title: Ouvrir un fichier DXF en ligne
 metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
 description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
 type: howTo
-sourceHash: "c91e0f8690ac"
+sourceHash: "d0c802844506"
 faq:
   - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
@@ -14,7 +14,7 @@ faq:
   - question: "Puis-je enregistrer mes modifications en DXF ?"
     answer: "Oui. SAUVENOM (Ctrl+Maj+S) ou SAUVEDXF enregistre le dessin en DXF d'AutoCAD 2000 à 2018, texte ou binaire, qu'AutoCAD ouvre. Les solides 3D et les régions sont laissés de côté, et la ligne de commande le signale."
   - question: "Pourquoi certains objets manquent-ils ?"
-    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère multiples, les tolérances ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
+    answer: "Ce pour quoi MellowCAD n'a pas encore d'objet, comme les multilignes, les tolérances ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Quand un DXF contient quelque chose pour quoi MellowCAD n'a pas encore d'objet, 
 
 - les traces et les maillages ;
 - les lignes de construction et les demi-droites, les multilignes ;
-- les lignes de repère multiples et les tolérances ;
+- les tolérances ;
 - les solides 3D, les régions et les surfaces ;
 - les cotes superposées et de longueur d'arc.
 
@@ -51,6 +51,7 @@ Certaines choses s'ouvrent, mais pas tout à fait comme elles étaient :
 - Une référence externe garde sa place et son chemin, et se dessine comme AutoCAD dessine celle dont il ne trouve pas le dessin : `Xréf` et le chemin à son point d'insertion. Une page ne lit que le fichier qu'on lui donne, jamais les dessins qui l'accompagnent ; enregistrée de nouveau en DXF, la référence est conservée.
 - Une image garde sa place, sa taille et le chemin de son fichier, et se dessine comme AutoCAD dessine celle dont il ne trouve pas le fichier : son cadre, selon IMAGEFRAME, et le chemin écrit à l'intérieur. Enregistrée de nouveau en DXF, l'image est conservée.
 - Un tableau garde ses rangées, ses colonnes, ses cellules et son style, et il est dessiné à partir d'eux comme AutoCAD le dessine : le texte de chaque cellule selon son alignement, le bloc d'une cellule ajusté à celle-ci. Enregistré de nouveau en DXF, le tableau est conservé.
+- Une ligne de repère multiple garde ses lignes de repère, son texte ou son bloc et son style, et elle est dessinée à partir d'eux comme AutoCAD la dessine : chaque ligne de repère avec sa flèche et sa ligne de guidage. Enregistrée de nouveau en DXF, la ligne de repère multiple est conservée.
 
 ## Ouvrez-le dans l'éditeur [#editor]
 
@@ -80,4 +81,4 @@ Oui. <Command id="SAVEAS" /> (`Ctrl+Maj+S`) ou <Command id="DXFOUT" /> enregistr
 
 ### Pourquoi certains objets manquent-ils ? [#missing]
 
-Ce pour quoi MellowCAD n'a pas encore d'objet, comme les lignes de repère multiples, les tolérances ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.
+Ce pour quoi MellowCAD n'a pas encore d'objet, comme les multilignes, les tolérances ou les solides 3D, est laissé de côté, et la ligne de commande indique combien il y en a de chaque type à l'ouverture du fichier. Ce qui se trouve dans une présentation est compté à part : il n'y a pas encore de présentations.

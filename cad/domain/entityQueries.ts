@@ -32,6 +32,7 @@ import {
 import { insertFlatGeometry } from "./blocks"
 import { createInsert } from "./entityFactories"
 import { tableGeometryWith } from "./tables"
+import { mleaderGeometry } from "./multileaders"
 import { attributeDefinitionText } from "./attributes"
 import {
   hatchGeometry,
@@ -400,6 +401,18 @@ export function closestOnEntity(
       }
       return best
     }
+    case "mleader": {
+      let best: ClosestResult = {
+        point: entity.kept.base,
+        distance: Infinity,
+        t: 0,
+      }
+      for (const piece of mleaderGeometry(entity)) {
+        const candidate = closestOnEntity(piece, point, blocks)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return best
+    }
     case "point":
       // WHY by its place alone: what the figure shows is a display of
       // PDMODE, not the object (unverified on the desktop).
@@ -610,6 +623,13 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
         entitiesBounds(tableGeometry(entity, blocks), blocks) ?? {
           min: entity.position,
           max: entity.position,
+        }
+      )
+    case "mleader":
+      return (
+        entitiesBounds(mleaderGeometry(entity), blocks) ?? {
+          min: entity.kept.base,
+          max: entity.kept.base,
         }
       )
     case "solid2d":
@@ -942,6 +962,10 @@ export function entityCrossesRect(
       return entityCrossesRect(leaderPathEntity(entity), min, max)
     case "table":
       return tableGeometry(entity, blocks).some((piece) =>
+        entityCrossesRect(piece, min, max, blocks)
+      )
+    case "mleader":
+      return mleaderGeometry(entity).some((piece) =>
         entityCrossesRect(piece, min, max, blocks)
       )
     case "solid2d": {

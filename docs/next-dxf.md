@@ -19,8 +19,9 @@
 > publicar: el push está congelado), que las llevó a 151, después del húngaro (`docs/next-seo.md`,
 > L8), hecho el 19/11, e IMAGE, hecho el 19/11 (sin publicar), que las llevó a 152 y los ficheros
 > de otros a 574, y la tabla (ACAD_TABLE), hecha el 19/11 (sin publicar), que llevó los ficheros
-> de otros a 575; siguiente, por orden del dueño, lo que quede del punto 7 (MULTILEADER, XLINE…),
-> y después otro idioma, alternando, una sesión cada vez.
+> de otros a 575, y MULTILEADER, hecho el 19/11 (sin publicar, sin el comando MLEADER), que llevó
+> las muestras a 153 y los ficheros de otros a 577 de 577; siguiente, por orden del dueño, otro
+> idioma, y después lo que quede del punto 7 (XLINE, RAY…), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -391,11 +392,43 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       presentaciones); ficheros de otros, de 574 a 575 de 577. Se anotan: TABLE y -TABLE (sus
       solicitudes, sondeadas en t00), TABLEDIT y la edición de celdas, filas y columnas (sus
       pinzamientos), TABLESTYLE, los colores, rellenos, bordes y giro de cada celda, campos,
-      fórmulas y vínculos de datos, la paleta (sin escritorio: **no verificada**). **Queda del
-      punto 7**, por orden: MULTILEADER (1 muestra y 2 ficheros, 4 objetos), y XLINE, RAY,
-      MINSERT, los colores índice y las sustituciones DSTYLE de cada cota; quedan para la próxima
-      sesión de esta fase. Lo que queda fuera del corpus tras la tabla: 1 MULTILEADER y una malla
-      (POLYLINE de caras) en las muestras; 4 MULTILEADER en los de otros.
+      fórmulas y vínculos de datos, la paleta (sin escritorio: **no verificada**). **MULTILEADER
+      hecho** (19/11/2026, sin publicar): la directriz múltiple (`MLeaderEntity`, fichero versión
+      61) como la abre AutoCAD 2027, que la dibuja de sus datos de contexto, no de los del objeto
+      ni de su estilo (sondas `mleader/m00`–`m15`, variantes `v1`–`v23` de un DXF suyo): el texto
+      donde dice 12, cada rama con su rellano y la longitud de su segmento de conexión, la flecha
+      cerrada rellena 1:6 de 140, solo si el primer tramo mide al menos el doble (v15), el spline
+      que acaba a lo largo del rellano, la directriz que sigue hasta su final con el rellano
+      desactivado (v6, v7); las mismas piezas que EXPLODE de AutoCAD en los cinco de m12 (tres
+      directrices a dos lados, sin contenido, un bloque, un spline, dos líneas). El color de las
+      líneas (91: 0xC1 PorBloque, 0xC2 verdadero, 0xC3 índice, v18, v21); el del texto, el del
+      objeto, pues ni 90 ni 92 cambian lo que dibuja AutoCAD (v19, v20); un texto en columnas
+      dinámicas (173 2) se lee de ancho 1, como AutoCAD lee su propio DXF, y cada palabra salta de
+      línea (v13, v14). Designada por lo que dibuja; END en vértices, rellanos y finales de
+      rellano, INS en el texto, el bloque como una referencia, ni MID, NEA ni PER en las
+      directrices (m08, m09); pinzamientos en esos puntos que arrastran como STRETCH (**no
+      verificados**). MOVE, COPY, ROTATE; SCALE escala sus tamaños del contexto, no el 41 y el 42
+      del objeto (m05); MIRROR refleja los puntos y coloca el texto de nuevo junto a su rellano,
+      legible, Superior izquierda vuelta Superior derecha si da la vuelta (m06), y el bloque como
+      una referencia (m07); STRETCH mueve vértices, rellano a lo largo del segmento de conexión y
+      su final con el contenido, nunca por el texto (m06, m07); EXPLODE en MTEXT o referencia,
+      línea, polilínea o spline y sólido 2D (m03, m12); OFFSET, AREA, BREAK, DIVIDE, EXTEND, FILLET y
+      CHAMFER la rechazan con las palabras de AutoCAD (m08, m09); LIST en las diez consolas (m10,
+      m12, m14); su nombre de la paleta, ax26res 731, en cada idioma. DXF en los dos sentidos,
+      de 2000 a 2018 (270 y 271–273 desde 2010, 295 desde 2013, antes la versión en xdata
+      ACAD_MLEADERVER: m11), con un MLEADERSTYLE por estilo y ACAD_MLEADERSTYLE: la consola abre
+      los 12 ficheros sin un error de AUDIT y explota los cinco de cada uno en las mismas 24
+      piezas que los suyos (`same.sh`). El corpus: abren el de las muestras (en un bloque de
+      Mechanical - Text and Tables) y los 4 de dxf-parser (ficheros que AutoCAD rechaza, m01);
+      muestras sin nada fuera, de 152 a 153 de 154 (queda la malla de VBA_Tower); ficheros de
+      otros, de 575 a 577 de 577. Se anotan: el comando MLEADER (sus solicitudes, AcDimRes
+      1201–1261, sondeadas; su texto abre el editor en sitio, que la consola no maneja),
+      MLEADEREDIT, MLEADERALIGN, MLEADERCOLLECT, MLEADERSTYLE, los menús de sus pinzamientos,
+      otras flechas, los atributos de un bloque, el marco y el fondo del texto, la escala
+      anotativa, la paleta (sin escritorio). **Queda del punto 7**, por orden: XLINE, RAY, MINSERT,
+      los colores índice y las sustituciones DSTYLE de cada cota (ninguno con un caso medido en el
+      corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de las
+      muestras.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

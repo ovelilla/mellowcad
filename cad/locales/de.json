@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Führung} other {Führungen}}",
       "wipeout": "{count, plural, one {Abdeckung} other {Abdeckungen}}",
       "image": "{count, plural, one {Pixelbild} other {Pixelbilder}}",
-      "table": "{count, plural, one {Tabelle} other {Tabellen}}"
+      "table": "{count, plural, one {Tabelle} other {Tabellen}}",
+      "mleader": "{count, plural, one {Multi-Führungslinie} other {Multi-Führungslinien}}"
     },
     "array": {
       "rectangular": "Anordnung (Rechteckig)",
@@ -2876,7 +2877,7 @@
       "notAFitPoint": "Kein Anpassungspunkt.",
       "notAControlVertex": "Kein Kontrollscheitelpunkt.",
       "allAdditionsUndone": "Alle Hinzufügungen wurden rückgängig gemacht.",
-      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {REIHE}}",
+      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {REIHE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Bereich: Modellbereich",
       "listColor": "                   Farbe: {color}    Linientyp: \"{linetype}\"",
@@ -3208,7 +3209,14 @@
       "listTableDirection": "Horizontale Richt.:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Spaltenanzahl:  {count}",
       "listTableRows": "Zeilenanzahl:     {count}",
-      "listTableStyle": "Tabellenstil:     {name}"
+      "listTableStyle": "Tabellenstil:     {name}",
+      "listMLeaderType": "{type, select, straight {Führungslinientyp:        Gerade Führungslinie} spline {Führungslinientyp:        Spline-Führungslinie} other {Führungslinientyp:        Unsichtbare Führungslinie}}",
+      "listMLeaderContent": "{content, select, mtext {Inhaltstyp:       MText-Inhalt} block {Inhaltstyp:       Blockinhalt} other {Inhaltstyp:       Kein Inhalt}}",
+      "listMLeaderLanding": "Verlängerung:            {on, select, true {EIN} other {AUS}}",
+      "listMLeaderNumber": "Anzahl der Führungslinien:      {number}",
+      "listMLeaderVertex": "Kontrollpunkt:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Multi-Führungslinien-Stil: {name}",
+      "listMLeaderAnnotative": "Beschriftung:         NEIN"
     },
     "feedback": {
       "snap": {

@@ -443,6 +443,16 @@ export const hu: EngineLocale = {
             "other": "Táblázat"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Többszörös mutató",
+            "other": "Többszörös mutató"
+          }
+        ]
       ]
     },
     "array": {
@@ -6099,6 +6109,7 @@ export const hu: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "KIOSZT"
           }
         ]
@@ -8518,7 +8529,67 @@ export const hu: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Mutató típusa:        EgyenesMutató",
+            "spline": "Mutató típusa:        SplineMutató",
+            "other": "Mutató típusa:       LáthatatlanMutató"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Tartalom típusa:      BszövegTartalom",
+            "block": "Tartalom típusa:       BlokkTartalom",
+            "other": "Mutató típusa:       NIncsTartalom"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Vízszintes mutatóvég:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "BE",
+            "other": "KI"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Mutató száma:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Csúcspont:             X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Többszörösmutató-stílus:  ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Feliratozási:         NEM"
     },
     "feedback": {
       "snap": {

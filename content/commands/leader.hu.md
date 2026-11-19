@@ -3,7 +3,7 @@ title: "AutoCAD MUTATÓ (LEADER) parancs"
 metaTitle: "Mutatóvonal az AutoCAD-ben: MUTATÓ (LEADER)"
 description: "Az AutoCAD MUTATÓ (LEADER, MUT) parancsa: mutatóvonal a nyílfejtől a szövegig, a talpvonal, a formátum opciói, és miben más, mint a TMUTATÓ. Próbálja ki ingyen."
 figure: "Egy furat és a megjegyzése: MUTATÓ a kör kerületétől, két pont, majd két sor szöveg; az utolsó szakasz emelkedik, ezért talpvonal köti a szöveghez."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 A MUTATÓ (LEADER) parancs egy nyílfejtől egy megjegyzésig húzódó vonalat rajzol. Adja meg a kezdőpontot, ahová a nyílfej kerül, majd tetszőleges számú pontot; a második ponttól kezdve a prompt felkínálja a <Keyword id="Annotation" /> opciót, amelyet az Enter is kiválaszt, valamint a <Keyword id="Format" /> és a <Keyword id="Undo" /> opciót. Az első két pontnál az Enter befejezi a parancsot, és nem rajzol semmit. Ezután írja be a megjegyzést soronként, mindegyik után Enterrel, és egy üres sorban nyomott Enterrel fejezze be: a mutató és a szövege, egy bekezdéses szöveg, együtt, egyetlen lépésben jön létre, az aktuális fólián, az aktuális színnel, vonaltípussal és vonalvastagsággal.
@@ -28,7 +28,7 @@ Visszavonja az utolsó pontot, és újra kéri. A második pontnál nincs mit vi
 
 ## Missing
 
-A Tűrés és a Blokk feliratozás: a MellowCAD-ben nincs alaktűrés-objektum, és blokk nem illeszthető be a MUTATÓ parancsból, ezért az opciók promptja a Másol, a Nincs és a Bszöveg opciót sorolja fel. A zárt, kitöltött nyíltól eltérő nyílfejek, és a mutató saját vonalszíne és vonalvastagsága a méretstílusból. A GYMUTATÓ (QLEADER) és a TMUTATÓ (MLEADER), a gyorsmutató és a többszörös mutató még nincs meg: egy DXF többszörös mutatói megnyitáskor kimaradnak.
+A Tűrés és a Blokk feliratozás: a MellowCAD-ben nincs alaktűrés-objektum, és blokk nem illeszthető be a MUTATÓ parancsból, ezért az opciók promptja a Másol, a Nincs és a Bszöveg opciót sorolja fel. A zárt, kitöltött nyíltól eltérő nyílfejek, és a mutató saját vonalszíne és vonalvastagsága a méretstílusból. A GYMUTATÓ (QLEADER) és a TMUTATÓ (MLEADER), a gyorsmutató és a többszörös mutató még nincs meg: egy DXF többszörös mutatói megnyílnak, és újra menthetők, de egyetlen parancs sem hoz létre ilyet, és nem szerkeszti a mutatóvonalait.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. A magyar AutoCAD-ben a rövidítése `MUT`: írja be, majd nyomja meg az
 
 ### Mi a különbség a MUTATÓ és a TMUTATÓ parancs között?
 
-A MUTATÓ a régebbi parancs: egy mutatóvonal és egy különálló szöveg, amelyet a vonal követ. A TMUTATÓ (MLEADER), amelyet az AutoCAD ma javasol, egyetlen többszörös mutató objektumot készít, saját stílusokkal és akár több mutatóvonallal egy megjegyzéshez. A MellowCAD-ben a MUTATÓ van meg; megnyitja és menti a DXF-fájlok mutatóit, a többszörös mutatókat pedig kihagyja.
+A MUTATÓ a régebbi parancs: egy mutatóvonal és egy különálló szöveg, amelyet a vonal követ. A TMUTATÓ (MLEADER), amelyet az AutoCAD ma javasol, egyetlen többszörös mutató objektumot készít, saját stílusokkal és akár több mutatóvonallal egy megjegyzéshez. A MellowCAD-ben a MUTATÓ van meg; a DXF-fájlok mutatóit és többszörös mutatóit is megnyitja és menti, de TMUTATÓ parancs nincs, amellyel többszörös mutatót lehetne létrehozni vagy szerkeszteni.
 
 ### Hogyan lehet szöveges mutatót készíteni?
 

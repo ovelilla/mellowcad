@@ -93,6 +93,19 @@ export function clipboardSnapshot(
           }
           break
         }
+        case "mleader": {
+          keepTextStyle(entity.style.textStyleId)
+          const content = entity.content
+          if (content?.kind === "mtext") keepTextStyle(content.styleId)
+          const block =
+            content?.kind === "block" && document.getBlock(content.blockId)
+          if (!block || blocks.has(block.id) || depth >= MAX_BLOCK_NESTING) {
+            break
+          }
+          blocks.set(block.id, block)
+          visit(block.entities, depth + 1)
+          break
+        }
         case "line":
         case "circle":
         case "arc":
@@ -327,6 +340,12 @@ function withBlockRenamed(
               : cell
           }),
         }
+      : entity
+  }
+  if (entity.type === "mleader" && entity.content?.kind === "block") {
+    const name = renamed.get(entity.content.blockId)
+    return name
+      ? { ...entity, content: { ...entity.content, blockId: name } }
       : entity
   }
   const name = entity.type === "insert" ? renamed.get(entity.blockId) : null

@@ -27,6 +27,7 @@ import type {
   WipeoutEntity,
   ImageEntity,
   TableEntity,
+  MLeaderEntity,
   LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -130,6 +131,7 @@ type ObjectName =
   | "wipeout"
   | "image"
   | "table"
+  | "mleader"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -231,6 +233,9 @@ class Report {
         break
       case "table":
         this.table(entity)
+        break
+      case "mleader":
+        this.mleader(entity)
         break
       case "leader":
         this.leader(entity)
@@ -388,6 +393,31 @@ class Report {
     for (const vertex of wipeout.vertices) {
       this.say("listWipeoutPoint", this.xyz(this.at(wipeout, vertex)))
     }
+  }
+
+  /**
+   * As each console lists it (mleader/m10, m12, m14): its path, content and
+   * dogleg (291: Landing), each leader line numbered with its vertices and
+   * its branch's landing, its style. Annotative is not modelled: NO.
+   */
+  private mleader(mleader: MLeaderEntity): void {
+    this.header("mleader", mleader)
+    this.say("listMLeaderType", { type: mleader.path })
+    this.say("listMLeaderContent", {
+      content: mleader.content?.kind ?? "none",
+    })
+    this.say("listMLeaderLanding", { on: String(mleader.dogleg) })
+    let number = 0
+    for (const branch of mleader.branches) {
+      for (const line of branch.lines) {
+        this.say("listMLeaderNumber", { number: number++ })
+        for (const vertex of [...line, branch.landing]) {
+          this.say("listMLeaderVertex", this.xyz(this.at(mleader, vertex)))
+        }
+      }
+    }
+    this.say("listMLeaderStyle", { name: mleader.style.name })
+    this.say("listMLeaderAnnotative")
   }
 
   /**

@@ -21,6 +21,7 @@ import {
   Entity,
 } from "./entityTypes"
 import { assignEntityLayer } from "./entityOverrides"
+import { mleaderGeometry } from "./multileaders"
 import {
   translateEntity,
   rotateEntity,
@@ -131,11 +132,15 @@ export function blocksInUse(
     used.add(id)
     pending.push(id)
   }
-  // A table's block cells use theirs as a reference does.
+  // A table's block cells and a multileader's block use theirs as a
+  // reference does.
   const reach = (entity: Entity) => {
     if (entity.type === "insert") mark(entity.blockId)
     if (entity.type === "table") {
       for (const cell of entity.cells) if (cell.block) mark(cell.block.blockId)
+    }
+    if (entity.type === "mleader" && entity.content?.kind === "block") {
+      mark(entity.content.blockId)
     }
   }
   for (const entity of entities) reach(entity)
@@ -491,6 +496,16 @@ export function insertFlatGeometry(
   )) {
     if (entity.type === "insert") {
       out.push(...insertFlatGeometry(entity, blocks, display, depth + 1))
+    } else if (entity.type === "mleader") {
+      // As what it draws, its block one level deeper: a block holding a
+      // multileader whose content is that block would otherwise nest forever.
+      for (const piece of mleaderGeometry(entity)) {
+        out.push(
+          ...(piece.type === "insert"
+            ? insertFlatGeometry(piece, blocks, display, depth + 1)
+            : [piece])
+        )
+      }
     } else {
       out.push(entity)
     }

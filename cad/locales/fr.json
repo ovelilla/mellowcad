@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Ligne de repère} other {Lignes de repère}}",
       "wipeout": "{count, plural, one {Masque} other {Masques}}",
       "image": "{count, plural, one {Image raster} other {Images raster}}",
-      "table": "{count, plural, one {Tableau} other {Tableaux}}"
+      "table": "{count, plural, one {Tableau} other {Tableaux}}",
+      "mleader": "{count, plural, one {Ligne de repère multiple} other {Lignes de repère multiples}}"
     },
     "array": {
       "rectangular": "Réseau (Rectangulaire)",
@@ -2845,7 +2846,7 @@
       "notAFitPoint": "Point incorrect.",
       "notAControlVertex": "Ce n'est pas un sommet de contrôle.",
       "allAdditionsUndone": "Tous les ajouts sont annulés.",
-      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {RESEAU}}",
+      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {RESEAU}}",
       "listObject": "                  {name}  Calque: \"{layer}\"",
       "listSpace": "                            Espace: Espace objet",
       "listColor": "                   Couleur: {color}    Type de ligne: \"{linetype}\"",
@@ -3177,7 +3178,14 @@
       "listTableDirection": "Dir. horizontale:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Nombre de colonnes:  {count}",
       "listTableRows": "Nombre de rangées:     {count}",
-      "listTableStyle": "Style de tableau:     {name}"
+      "listTableStyle": "Style de tableau:     {name}",
+      "listMLeaderType": "{type, select, straight {Type de la ligne de repère:        Droite} spline {Type de la ligne de repère:        Spline} other {Type de la ligne de repère:        Invisible}}",
+      "listMLeaderContent": "{content, select, mtext {Type du contenu:       Texte multiple} block {Type du contenu:       Bloc} other {Type du contenu:       Aucun}}",
+      "listMLeaderLanding": "Ligne de guidage:           {on, select, true {Active} other {Inactive}}",
+      "listMLeaderNumber": "Numéro de la ligne de repère:      {number}",
+      "listMLeaderVertex": "Sommet:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Style de la ligne de repère multiple:  {name}",
+      "listMLeaderAnnotative": "Annotatif:        NON"
     },
     "feedback": {
       "snap": {

@@ -11,6 +11,8 @@ import {
   MTEXT_ATTACHMENTS,
   TableEntity,
   TableStyleData,
+  MLeaderEntity,
+  MLeaderStyleData,
   XrefSource,
   createInsert,
   entitiesBounds,
@@ -244,6 +246,34 @@ export function writeDxf(
     })
   }
   const tableStyleDictionary = allTables.length > 0 ? handle() : null
+
+  // The multileaders' styles, one MLEADERSTYLE per style as each keeps it,
+  // and ACAD_MLEADERSTYLE, which names them (mleader/m02).
+  const allMLeaders = [
+    ...modelEntities,
+    ...drawing.blocks.flatMap((b) => b.entities),
+  ].filter((e): e is MLeaderEntity => e.type === "mleader")
+  const mleaderStyles = new Map<
+    string,
+    { handle: string; style: MLeaderStyleData; mleaders: string[] }
+  >()
+  const mleaderStyleKey = (style: MLeaderStyleData) => JSON.stringify(style)
+  const mleaderStyleNames = new Set<string>()
+  for (const e of allMLeaders) {
+    const k = mleaderStyleKey(e.style)
+    if (mleaderStyles.has(k)) continue
+    let name = e.style.name
+    for (let n = 2; mleaderStyleNames.has(name.toUpperCase()); n++) {
+      name = `${e.style.name}${n}`
+    }
+    mleaderStyleNames.add(name.toUpperCase())
+    mleaderStyles.set(k, {
+      handle: handle(),
+      style: { ...e.style, name },
+      mleaders: [],
+    })
+  }
+  const mleaderStyleDictionary = allMLeaders.length > 0 ? handle() : null
   const tableBlocks = new Map<TableEntity, { name: string; record: string }>()
   let tableCount = 0
   const nextTableName = () => {
@@ -325,6 +355,18 @@ export function writeDxf(
       style.tables.push(own)
       return style.handle
     },
+    textStyleHandle: (id) =>
+      styleHandles.get(
+        (textStyles.get(id)?.name ?? DEFAULT_TEXT_STYLE_ID).toUpperCase()
+      ) ??
+      styleHandles.get(DEFAULT_TEXT_STYLE_ID.toUpperCase()) ??
+      "0",
+    mleaderStyle: (mleader, own) => {
+      const style = mleaderStyles.get(mleaderStyleKey(mleader.style))
+      if (!style) return "0"
+      style.mleaders.push(own)
+      return style.handle
+    },
     blockRecord: (id) =>
       written.find(
         (b) =>
@@ -396,7 +438,12 @@ export function writeDxf(
   const wipeoutVariables =
     wipeouts > 0 || drawing.settings.wipeoutFrame !== 1 ? handle() : null
   const out = body
-  if (wipeoutVariables || imageObjects || allTables.length > 0) {
+  if (
+    wipeoutVariables ||
+    imageObjects ||
+    allTables.length > 0 ||
+    allMLeaders.length > 0
+  ) {
     out.str(0, "SECTION")
     out.str(2, "CLASSES")
     const dxfClass = (
@@ -474,6 +521,25 @@ export function writeDxf(
         "ObjectDBX Classes",
         1025,
         allTables.length,
+        true
+      )
+    }
+    if (allMLeaders.length > 0) {
+      // As a new AutoCAD drawing lists them (mleader/m02).
+      dxfClass(
+        "MLEADERSTYLE",
+        "AcDbMLeaderStyle",
+        "ACDB_MLEADERSTYLE_CLASS",
+        4095,
+        mleaderStyles.size,
+        false
+      )
+      dxfClass(
+        "MULTILEADER",
+        "AcDbMLeader",
+        "ACDB_MLEADER_CLASS",
+        1025,
+        allMLeaders.length,
         true
       )
     }
@@ -600,11 +666,16 @@ export function writeDxf(
     )
       ? GRADIENT_COLOR_APPS
       : []
-  table(out, "APPID", T.appids, 1 + gradientApps.length)
+  // A multileader's version is xdata before 2010 (mleader/m11).
+  const apps = [
+    ...gradientApps,
+    ...(allMLeaders.length > 0 ? ["ACAD_MLEADERVER"] : []),
+  ]
+  table(out, "APPID", T.appids, 1 + apps.length)
   record(out, "APPID", T.acad, T.appids, "AcDbRegAppTableRecord")
   out.str(2, "ACAD")
   out.int(70, 0)
-  for (const app of gradientApps) {
+  for (const app of apps) {
     record(out, "APPID", handle(), T.appids, "AcDbRegAppTableRecord")
     out.str(2, app)
     out.int(70, 0)
@@ -697,6 +768,10 @@ export function writeDxf(
   }
   out.str(3, "ACAD_PLOTSTYLENAME")
   out.str(350, T.plotStyles)
+  if (mleaderStyleDictionary) {
+    out.str(3, "ACAD_MLEADERSTYLE")
+    out.str(350, mleaderStyleDictionary)
+  }
   if (tableStyleDictionary) {
     out.str(3, "ACAD_TABLESTYLE")
     out.str(350, tableStyleDictionary)
@@ -797,6 +872,28 @@ export function writeDxf(
         tables,
         style,
         (id) => textStyles.get(id)?.name ?? "Standard"
+      )
+    }
+  }
+  if (mleaderStyleDictionary) {
+    owned("DICTIONARY", mleaderStyleDictionary)
+    out.str(100, "AcDbDictionary")
+    out.int(281, 1)
+    for (const { handle: own, style } of mleaderStyles.values()) {
+      out.str(3, style.name)
+      out.str(350, own)
+    }
+    for (const { handle: own, style, mleaders } of mleaderStyles.values()) {
+      mleaderStyleObject(
+        out,
+        version,
+        own,
+        mleaderStyleDictionary,
+        mleaders,
+        style,
+        styleHandles.get(
+          (textStyles.get(style.textStyleId)?.name ?? "Standard").toUpperCase()
+        ) ?? standardStyle
       )
     }
   }
@@ -1099,6 +1196,80 @@ function tableBlock(
         )
       }
     },
+  }
+}
+
+/**
+ * A MLEADERSTYLE as AutoCAD 2027 writes its Standard (mleader/m02, m11):
+ * what the style keeps, the rest the Standard's. 179, 271–273 from 2010,
+ * 298 from 2013; before 2010 its version is xdata.
+ */
+function mleaderStyleObject(
+  out: DxfOut,
+  version: number,
+  own: string,
+  dictionary: string,
+  mleaders: readonly string[],
+  style: MLeaderStyleData,
+  textStyle: string
+): void {
+  out.str(0, "MLEADERSTYLE")
+  out.str(5, own)
+  out.str(102, "{ACAD_REACTORS")
+  out.str(330, dictionary)
+  for (const mleader of mleaders) out.str(330, mleader)
+  out.str(102, "}")
+  out.str(330, dictionary)
+  out.str(100, "AcDbMLeaderStyle")
+  if (version >= 1024) out.int(179, 2)
+  out.int(170, ["none", "block", "mtext"].indexOf(style.content))
+  out.int(171, 1)
+  out.int(172, 0)
+  out.int(90, 2)
+  out.real(40, 0)
+  out.real(41, 0)
+  out.int(173, ["none", "straight", "spline"].indexOf(style.path))
+  out.int(91, -1056964608)
+  out.str(340, "14")
+  out.int(92, -2)
+  out.int(290, style.landing ? 1 : 0)
+  out.real(42, style.landingGap)
+  out.int(291, style.dogleg ? 1 : 0)
+  out.real(43, style.doglegLength)
+  out.str(3, style.name)
+  out.real(44, style.arrowSize)
+  out.str(300, "")
+  out.str(342, textStyle)
+  out.int(174, 1)
+  out.int(178, 1)
+  out.int(175, 1)
+  out.int(176, 0)
+  out.int(93, -1056964608)
+  out.real(45, style.textHeight)
+  out.int(292, 0)
+  out.int(297, 0)
+  out.real(46, 4)
+  out.int(94, -1056964608)
+  out.real(47, 1)
+  out.real(49, 1)
+  out.real(140, 1)
+  out.int(293, 1)
+  out.real(141, 0)
+  out.int(294, 1)
+  out.int(177, 0)
+  out.real(142, style.scale)
+  out.int(295, 0)
+  out.int(296, style.annotative ? 1 : 0)
+  out.real(143, 3.75)
+  if (version >= 1024) {
+    out.int(271, 0)
+    out.int(272, 9)
+    out.int(273, 9)
+  }
+  if (version >= 1027) out.int(298, 0)
+  if (version < 1024) {
+    out.str(1001, "ACAD_MLEADERVER")
+    out.int(1070, 2)
   }
 }
 

@@ -37,8 +37,9 @@ export interface DxfFile {
  * WIPEOUTFRAME's; the images' (image/i08), each IMAGEDEF, IMAGEFRAME's
  * RASTERVARIABLES and ACAD_IMAGE_DICT, which names them, found through the
  * root dictionary; the tables' (table/t00), each TABLESTYLE and
- * ACAD_TABLESTYLE, which names them, found so too. Every other object is
- * skipped.
+ * ACAD_TABLESTYLE, which names them, found so too; the multileaders'
+ * (mleader/m02), each MLEADERSTYLE and ACAD_MLEADERSTYLE. Every other object
+ * is skipped.
  */
 const OBJECTS_READ: ReadonlySet<string> = new Set([
   "WIPEOUTVARIABLES",
@@ -46,6 +47,7 @@ const OBJECTS_READ: ReadonlySet<string> = new Set([
   "IMAGEDEF",
   "RASTERVARIABLES",
   "TABLESTYLE",
+  "MLEADERSTYLE",
 ])
 
 /**
@@ -170,6 +172,7 @@ class GroupReader {
 function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
   let imageDictionary: string | undefined
   let tableStyleDictionary: string | undefined
+  let mleaderStyleDictionary: string | undefined
   while (!reader.at("ENDSEC")) {
     reader.expectMore()
     if (reader.code() === 0 && OBJECTS_READ.has(reader.value().trim())) {
@@ -197,13 +200,24 @@ function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
           .trim()
           .toUpperCase()
       }
+      const mleaderStyles = dictionary.codes.findIndex(
+        (code, i) =>
+          code === 3 && dictionary.values[i].trim() === "ACAD_MLEADERSTYLE"
+      )
+      if (mleaderStyles >= 0 && dictionary.codes[mleaderStyles + 1] === 350) {
+        mleaderStyleDictionary = dictionary.values[mleaderStyles + 1]
+          .trim()
+          .toUpperCase()
+      }
       const handle = dictionary.values[dictionary.codes.indexOf(5)]
         ?.trim()
         .toUpperCase()
       if (
         names.some((name) => name.trim() === "WIPEOUTFRAME") ||
         (handle !== undefined &&
-          (handle === imageDictionary || handle === tableStyleDictionary))
+          (handle === imageDictionary ||
+            handle === tableStyleDictionary ||
+            handle === mleaderStyleDictionary))
       ) {
         objects.push(dictionary)
       }

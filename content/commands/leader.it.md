@@ -3,7 +3,7 @@ title: "Comando DIRETTRICE (LEADER) in AutoCAD"
 metaTitle: "Direttrice in AutoCAD: DIRETTRICE (LEADER)"
 description: "Come funziona DIRETTRICE (LEADER) di AutoCAD in italiano: una linea dalla freccia al testo, la linea di aggancio e la differenza con MLEADER. Provalo."
 figure: "Un foro e la sua nota: DIRETTRICE dal bordo del cerchio, due punti, poi due righe di testo; l'ultimo tratto sale, quindi una linea di aggancio lo unisce al testo."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 DIRETTRICE (LEADER) traccia una linea da una freccia a una nota. Specifica il punto iniziale, dove va la freccia, poi tutti i punti che vuoi; dal secondo in poi la richiesta offre <Keyword id="Annotation" />, che anche Invio sceglie, <Keyword id="Format" /> e <Keyword id="Undo" />. Invio ai primi due punti termina il comando senza tracciare niente. Poi digita la nota riga per riga, Invio dopo ognuna, e Invio su una riga vuota per finire: la direttrice e il suo testo, un testo multilinea, si creano insieme in un solo passo, sul layer corrente con il colore, il tipo di linea e lo spessore di linea correnti.
@@ -28,7 +28,7 @@ Annulla l'ultimo punto e lo chiede di nuovo. Al secondo punto non c'è niente da
 
 ## Missing
 
-Le annotazioni Tolleranza e Blocco: MellowCAD non ha un oggetto tolleranza geometrica, e un blocco non si inserisce da DIRETTRICE, quindi la richiesta delle opzioni offre Copia, Nessuna e testoM. Le frecce diverse da quella chiusa piena, e il colore e lo spessore di linea propri della direttrice dati dallo stile di quota. DIRRAPID (QLEADER) e MLEADER, la direttrice rapida e quella multipla, non ci sono ancora: le direttrici multiple di un DXF restano fuori all'apertura.
+Le annotazioni Tolleranza e Blocco: MellowCAD non ha un oggetto tolleranza geometrica, e un blocco non si inserisce da DIRETTRICE, quindi la richiesta delle opzioni offre Copia, Nessuna e testoM. Le frecce diverse da quella chiusa piena, e il colore e lo spessore di linea propri della direttrice dati dallo stile di quota. DIRRAPID (QLEADER) e MLEADER, la direttrice rapida e quella multipla, non ci sono ancora: le direttrici multiple di un DXF si aprono e vengono salvate di nuovo, ma nessun comando ne crea una né ne modifica le direttrici.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. In AutoCAD in italiano è DIRETTRICE, senza alias: digita DIRETTRICE e p
 
 ### Che differenza c'è tra DIRETTRICE e MLEADER?
 
-DIRETTRICE è il comando di prima: una linea di direttrice e un testo a parte che la linea segue. MLEADER, che oggi AutoCAD consiglia, crea un unico oggetto direttrice multipla, con stili propri e più linee verso la stessa nota. MellowCAD ha DIRETTRICE; apre e salva le direttrici di un file DXF, e lascia fuori le sue direttrici multiple.
+DIRETTRICE è il comando di prima: una linea di direttrice e un testo a parte che la linea segue. MLEADER, che oggi AutoCAD consiglia, crea un unico oggetto direttrice multipla, con stili propri e più linee verso la stessa nota. MellowCAD ha DIRETTRICE; apre e salva sia le direttrici sia le direttrici multiple di un file DXF, ma non ha MLEADER per crearne o modificarne una.
 
 ### Come faccio una direttrice con il testo?
 

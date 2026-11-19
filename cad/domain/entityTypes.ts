@@ -48,6 +48,7 @@ export type EntityType =
   | "wipeout"
   | "image"
   | "table"
+  | "mleader"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -247,6 +248,138 @@ export interface TableEntity extends BaseEntity {
    * SCALE leaves it (t00, t02): its cell margins and its rows' text heights.
    */
   readonly overrides?: TableOverrides
+}
+
+/**
+ * A multileader (DXF MULTILEADER, AutoCAD's MLEADER): leaders that end on a
+ * landing, each with its dogleg, and the MTEXT or block they point to. It
+ * is drawn from these, its context data, as AutoCAD draws one it opens:
+ * the text where 12 puts it, the landing, each branch's dogleg length, the
+ * arrowhead's size 140 and the text's height 41, whatever the object's own
+ * 41 and 42 or its style say (mleader/v1–v12). What it draws is derived
+ * (`mleaderGeometry`): the pieces EXPLODE leaves (m03).
+ *
+ * Its points are in the OCS of its normal at its elevation, as a leader's.
+ */
+export interface MLeaderEntity extends BaseEntity {
+  readonly type: "mleader"
+  /** Its LEADER{} branches, each with its own landing and leader lines. */
+  readonly branches: readonly MLeaderBranch[]
+  /** DXF 170: how its leader lines run; `none` draws none. */
+  readonly path: MLeaderPath
+  /**
+   * DXF 291: the dogleg drawn from each landing. Off, a straight leader
+   * runs on to where it would end, as a spline always does (mleader/v6, v7).
+   */
+  readonly dogleg: boolean
+  /** Context 140: the closed filled arrowhead's length. */
+  readonly arrowSize: number
+  /** Context 145: from the dogleg's end to its content. */
+  readonly landingGap: number
+  readonly content?: MLeaderContent
+  /** DXF 91: its leader lines' colour; absent, ByLayer. */
+  readonly lineColor?: MLeaderColor
+  readonly style: MLeaderStyleData
+  /** What it holds and does not draw by, kept to be written back. */
+  readonly kept: MLeaderKept
+}
+
+export type MLeaderPath = "none" | "straight" | "spline"
+
+/**
+ * A colour as a multileader holds its parts': ByLayer (absent), ByBlock
+ * (the object's own) or one of its own.
+ */
+export type MLeaderColor = "ByBlock" | EntityColor
+
+/**
+ * One LEADER{} of its context: its landing (10), the unit direction of its
+ * dogleg (11) and the dogleg's length (40), and its leader lines
+ * (LEADER_LINE{}), each its vertices from the arrowhead's tip towards the
+ * landing, the landing left out.
+ */
+export interface MLeaderBranch {
+  readonly landing: Vec2
+  readonly direction: Vec2
+  readonly doglegLength: number
+  readonly lines: readonly (readonly Vec2[])[]
+}
+
+export type MLeaderContent = MLeaderText | MLeaderBlockContent
+
+/**
+ * Its MTEXT (context 290 1): an MTEXT's fields, at 12 by its 171. It wears
+ * the object's colour: neither its context's 90 nor the object's 92 changes
+ * what AutoCAD draws (mleader/v19, v20).
+ */
+export interface MLeaderText {
+  readonly kind: "mtext"
+  readonly position: Vec2
+  readonly contents: string
+  readonly height: number
+  readonly width: number
+  readonly rotation: number
+  readonly attachment: MTextAttachment
+  readonly lineSpacingStyle: LineSpacingStyle
+  readonly lineSpacingFactor: number
+  readonly styleId: TextStyleId
+}
+
+/** Its block (context 296 1), placed as a reference by 15, 16 and 46. */
+export interface MLeaderBlockContent {
+  readonly kind: "block"
+  readonly blockId: BlockId
+  readonly position: Vec2
+  readonly scaleX: number
+  readonly scaleY: number
+  readonly rotation: number
+}
+
+/**
+ * See {@link MLeaderEntity.kept}: its context's base point (10) and plane
+ * origin (110), which AutoCAD works out again as it edits one, and values
+ * of the object's own that AutoCAD draws nothing by.
+ */
+export interface MLeaderKept {
+  readonly base: Vec2
+  readonly planeOrigin: Vec2
+  /** Context 40 and the object's 45: its overall scale. */
+  readonly scale: number
+  /** The object's 90: which of its values override its style's. */
+  readonly overrideFlags: number
+  /** The object's 41 and 42, which SCALE leaves as they are (mleader/m05). */
+  readonly doglegLength: number
+  readonly arrowSize: number
+  /** The object's 290. */
+  readonly landing: boolean
+}
+
+/**
+ * The multileader style it names (DXF MLEADERSTYLE), kept with it as a
+ * table's style is: nothing here creates, edits or picks one (no
+ * MLEADERSTYLE), and DXFOUT writes one per name, what is not here as
+ * AutoCAD 2027's Standard says it (mleader/m02).
+ */
+export interface MLeaderStyleData {
+  readonly name: string
+  /** 170: what a new one holds. */
+  readonly content: "none" | "block" | "mtext"
+  /** 173 */
+  readonly path: MLeaderPath
+  /** 290, 42, 291 and 43. */
+  readonly landing: boolean
+  readonly landingGap: number
+  readonly dogleg: boolean
+  readonly doglegLength: number
+  /** 44 */
+  readonly arrowSize: number
+  /** 342 and 45. */
+  readonly textStyleId: TextStyleId
+  readonly textHeight: number
+  /** 142 */
+  readonly scale: number
+  /** 296 */
+  readonly annotative: boolean
 }
 
 /**
@@ -1217,6 +1350,7 @@ export type Entity =
   | WipeoutEntity
   | ImageEntity
   | TableEntity
+  | MLeaderEntity
 
 export interface Bounds {
   readonly min: Vec2

@@ -465,6 +465,17 @@ export const ar: EngineLocale = {
             "other": "جداول"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "خط إشارة متعدد",
+            "two": "خطا إشارة متعددان",
+            "other": "خطوط إشارة متعددة"
+          }
+        ]
       ]
     },
     "array": {

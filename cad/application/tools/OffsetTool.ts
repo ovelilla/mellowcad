@@ -958,6 +958,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
     case "region":
     case "solid3d":
@@ -996,6 +997,7 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "region":
     case "solid3d":
       return "refused"
@@ -1095,6 +1097,7 @@ function computeOffset(
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
     case "region":
     case "solid3d":
@@ -1198,6 +1201,7 @@ function computeThrough(picked: Entity, point: Vec2): OffsetResult {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
     case "region":
     case "solid3d":

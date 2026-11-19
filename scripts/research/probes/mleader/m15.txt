@@ -1,0 +1,6 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (princ))
+(setq S (entlast))
+_EXPLODE
+(ssget "_X" (list (cons 0 "MULTILEADER")))
+
+(dumpfrom (entnext S))

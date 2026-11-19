@@ -2,7 +2,7 @@
 title: "Odkazová čára v AutoCADu: příkaz ODKAZ (LEADER)"
 description: "Jak nakreslit odkaz s textem v AutoCADu příkazem ODKAZ (LEADER, zkratka ODK): šipka, kotvička, možnosti formátu a rozdíl oproti příkazu MODKAZ (MLEADER)."
 figure: "Otvor a jeho popis: ODKAZ od obvodu kružnice, dva body, pak dva řádky textu; poslední segment stoupá, takže ho s textem spojí kotvička."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 Příkaz ODKAZ (LEADER) nakreslí čáru od šipky k poznámce. Určete počáteční bod, kde bude šipka, a pak tolik dalších bodů, kolik chcete; od druhého bodu nabízí výzva <Keyword id="Annotation" />, kterou vybere i Enter, <Keyword id="Format" /> a <Keyword id="Undo" />. Enter u prvních dvou bodů příkaz ukončí a nic nenakreslí. Potom zadávejte poznámku po řádcích, po každém Enter, a Enter na prázdném řádku ji dokončí: odkaz a jeho text, víceřádkový text, vzniknou společně jako jeden krok, v aktuální hladině, s aktuální barvou, typem čáry a tloušťkou čáry.
@@ -27,7 +27,7 @@ Vrátí poslední bod a zeptá se na něj znovu. U druhého bodu není co vracet
 
 ## Missing
 
-Poznámky Tolerance a Blok: MellowCAD nemá objekt geometrické tolerance a blok se z příkazu ODKAZ nevkládá, takže výzva možností nabízí jen <Keyword id="Copy" />, <Keyword id="None" /> a <Keyword id="Mtext" />. Jiné šipky než plná uzavřená a vlastní barva a tloušťka čáry odkazu z kótovacího stylu. RODKAZ (QLEADER) a MODKAZ (MLEADER), rychlý odkaz a multiodkaz, tu zatím nejsou: multiodkazy ze souboru DXF se při otevření vynechají.
+Poznámky Tolerance a Blok: MellowCAD nemá objekt geometrické tolerance a blok se z příkazu ODKAZ nevkládá, takže výzva možností nabízí jen <Keyword id="Copy" />, <Keyword id="None" /> a <Keyword id="Mtext" />. Jiné šipky než plná uzavřená a vlastní barva a tloušťka čáry odkazu z kótovacího stylu. RODKAZ (QLEADER) a MODKAZ (MLEADER), rychlý odkaz a multiodkaz, tu zatím nejsou: multiodkazy ze souboru DXF se otevřou a znovu uloží, ale žádný příkaz multiodkaz nevytvoří ani neupraví jeho odkazové čáry.
 
 ## Questions
 
@@ -37,7 +37,7 @@ LEADER. V českém AutoCADu je jeho zkratka `ODK`: zadejte ji a stiskněte Enter
 
 ### Jaký je rozdíl mezi příkazy ODKAZ a MODKAZ (MLEADER)?
 
-ODKAZ je starší příkaz: odkazová čára a samostatný text, který čára sleduje. MODKAZ, který AutoCAD dnes doporučuje, vytvoří jeden objekt multiodkazu s vlastními styly a několika odkazovými čarami k jedné poznámce. MellowCAD má příkaz ODKAZ; otevírá a ukládá odkazy souboru DXF a jeho multiodkazy vynechává.
+ODKAZ je starší příkaz: odkazová čára a samostatný text, který čára sleduje. MODKAZ, který AutoCAD dnes doporučuje, vytvoří jeden objekt multiodkazu s vlastními styly a několika odkazovými čarami k jedné poznámce. MellowCAD má příkaz ODKAZ; otevírá a ukládá odkazy i multiodkazy souboru DXF, ale nemá příkaz MODKAZ, kterým by se multiodkaz vytvořil nebo upravil.
 
 ### Jak vytvořit odkaz s textem?
 

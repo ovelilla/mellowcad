@@ -3,7 +3,7 @@ title: "Directriz en AutoCAD: comando DIRECTRIZ (LEADER)"
 metaTitle: "Directriz en AutoCAD: DIRECTRIZ (LEADER)"
 description: "Cómo funciona DIRECTRIZ (LEADER, alias DIREC) de AutoCAD en español: una línea de la flecha a su texto, la línea de conexión y el formato. Pruébalo gratis."
 figure: "Un agujero y su nota: DIRECTRIZ desde el borde del círculo, dos puntos y luego dos líneas de texto; el último tramo sube, así que una línea de conexión lo une al texto."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 DIRECTRIZ (LEADER en inglés) dibuja una línea de una flecha a una nota. Precisa el punto inicial, donde va la flecha, y después tantos puntos como quieras; desde el segundo la solicitud ofrece <Keyword id="Annotation" />, que también toma Intro, <Keyword id="Format" /> y <Keyword id="Undo" />. Intro en los dos primeros puntos termina el comando sin dibujar nada. Después escribe la nota línea a línea, Intro tras cada una, e Intro en una línea vacía para acabar: la directriz y su texto, un texto de líneas múltiples, se crean juntos en un solo paso, en la capa actual con el color, el tipo de línea y el grosor de línea actuales.
@@ -28,7 +28,7 @@ Deshace el último punto y vuelve a pedirlo. En el segundo punto no hay nada que
 
 ## Missing
 
-Las anotaciones Tolerancia y Bloque: MellowCAD no tiene objeto de tolerancia geométrica, y un bloque no se inserta desde DIRECTRIZ, así que la solicitud de opciones ofrece Copiar, Ninguna y textoM. Las flechas distintas de la cerrada rellena, y el color y el grosor de línea propios de la directriz que da el estilo de cota. DIRECTRIZR (QLEADER) y DIRECTRIZM (MLEADER), la directriz rápida y la directriz múltiple, aún no están: las directrices múltiples de un DXF se quedan fuera al abrirlo.
+Las anotaciones Tolerancia y Bloque: MellowCAD no tiene objeto de tolerancia geométrica, y un bloque no se inserta desde DIRECTRIZ, así que la solicitud de opciones ofrece Copiar, Ninguna y textoM. Las flechas distintas de la cerrada rellena, y el color y el grosor de línea propios de la directriz que da el estilo de cota. DIRECTRIZR (QLEADER) y DIRECTRIZM (MLEADER), la directriz rápida y la directriz múltiple, aún no están: las directrices múltiples de un DXF se abren y se guardan de nuevo, pero ningún comando crea una ni edita sus directrices.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. En AutoCAD en español es DIRECTRIZ, con el alias `DIREC`; escribe uno d
 
 ### ¿Qué diferencia hay entre DIRECTRIZ y DIRECTRIZM?
 
-DIRECTRIZ es el comando antiguo: una línea de directriz y un texto aparte que la línea sigue. DIRECTRIZM (MLEADER), el que AutoCAD recomienda ahora, crea un único objeto de directriz múltiple, con estilos propios y varias líneas hacia una misma nota. MellowCAD tiene DIRECTRIZ; abre y guarda las directrices de un archivo DXF, y deja fuera sus directrices múltiples.
+DIRECTRIZ es el comando antiguo: una línea de directriz y un texto aparte que la línea sigue. DIRECTRIZM (MLEADER), el que AutoCAD recomienda ahora, crea un único objeto de directriz múltiple, con estilos propios y varias líneas hacia una misma nota. MellowCAD tiene DIRECTRIZ; abre y guarda tanto las directrices como las directrices múltiples de un archivo DXF, pero no tiene DIRECTRIZM para crear o editar una.
 
 ### ¿Cómo hago una directriz con texto?
 

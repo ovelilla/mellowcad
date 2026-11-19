@@ -45,6 +45,7 @@ import {
   Face3dEntity,
   insertFlatGeometry,
   tableGeometry,
+  mleaderGeometry,
   ellipseLengthTable,
   ellipsePointAt,
   isFullEllipse,
@@ -1372,6 +1373,10 @@ function planarShapes(
       return tableGeometry(entity, options.blocks).flatMap((piece) =>
         entityScenePrimitive(camera, piece, stroke, options)
       )
+    case "mleader":
+      return mleaderGeometry(entity).flatMap((piece) =>
+        entityScenePrimitive(camera, piece, stroke, options)
+      )
     case "insert":
       // A ghost or rollover draws the whole reference in one colour; the real
       // scene resolves each nested object's own appearance (see pushEntities).
@@ -2418,9 +2423,14 @@ function pushEntities(
       }
       return
     }
-    if (entity.type === "table") {
-      // Its pieces wear its appearance but its end marker, grey (table/t06b).
-      for (const piece of tableGeometry(entity, blocks)) {
+    if (entity.type === "table" || entity.type === "mleader") {
+      // Its pieces wear its appearance but a table's end marker, grey
+      // (table/t06b), and a multileader's parts their own colours.
+      const pieces =
+        entity.type === "table"
+          ? tableGeometry(entity, blocks)
+          : mleaderGeometry(entity)
+      for (const piece of pieces) {
         if (piece.type === "insert") {
           for (const nested of insertFlatGeometry(
             piece,

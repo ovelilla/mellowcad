@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Direttrice} other {Direttrici}}",
       "wipeout": "{count, plural, one {Entità coprente} other {Entità coprenti}}",
       "image": "{count, plural, one {Immagine raster} other {Immagini raster}}",
-      "table": "{count, plural, one {Tabella} other {Tabelle}}"
+      "table": "{count, plural, one {Tabella} other {Tabelle}}",
+      "mleader": "{count, plural, one {Multidirettrice} other {Multidirettrici}}"
     },
     "array": {
       "rectangular": "Serie (rettangolare)",
@@ -2853,7 +2854,7 @@
       "notAFitPoint": "Non è un punto di adattamento.",
       "notAControlVertex": "Non è un vertice di controllo.",
       "allAdditionsUndone": "Tutte le aggiunte sono state annullate.",
-      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {SERIE}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {SERIE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Spazio: Spazio modello",
       "listColor": "                   Colore: {color}    Tipo di linea: \"{linetype}\"",
@@ -3185,7 +3186,14 @@
       "listTableDirection": "Dir orizzontale:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Numero colonne:   {count}",
       "listTableRows": "Numero righe:     {count}",
-      "listTableStyle": "Stile tabella:        {name}"
+      "listTableStyle": "Stile tabella:        {name}",
+      "listMLeaderType": "{type, select, straight {Tipo di direttrice:        StraightLeader} spline {Tipo di direttrice:        SplineLeader} other {Tipo di direttrice:        InVisibleLeader}}",
+      "listMLeaderContent": "{content, select, mtext {Tipo di contenuto:       MTextContent} block {Tipo di contenuto:       BlockContent} other {Tipo di contenuto:       NoneContent}}",
+      "listMLeaderLanding": "Linea di collegamento:            {on, select, true {ON} other {OFF}}",
+      "listMLeaderNumber": "Numero direttrice:      {number}",
+      "listMLeaderVertex": "Vertice:             X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Stile multidirettrice: {name}",
+      "listMLeaderAnnotative": "Annotativo:         NO"
     },
     "feedback": {
       "snap": {

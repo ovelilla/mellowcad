@@ -560,6 +560,7 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
       // Asked again (solid2d/p11).
       return "objectCannotBeBroken"
     case "leader":
@@ -704,6 +705,7 @@ function computeBreak(
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
       return null
   }

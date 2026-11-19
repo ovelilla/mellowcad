@@ -241,7 +241,8 @@
       "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}",
       "wipeout": "{count, plural, one {Překrytí} few {Překrytí} many {Překrytí} other {Překrytí}}",
       "image": "{count, plural, one {Rastrový obrázek} few {Rastrové obrázky} many {Rastrového obrázku} other {Rastrových obrázků}}",
-      "table": "{count, plural, one {Tabulka} few {Tabulky} many {Tabulky} other {Tabulek}}"
+      "table": "{count, plural, one {Tabulka} few {Tabulky} many {Tabulky} other {Tabulek}}",
+      "mleader": "{count, plural, one {Multiodkaz} few {Multiodkazy} many {Multiodkazu} other {Multiodkazů}}"
     },
     "array": {
       "rectangular": "Pole (obdélníkové)",
@@ -2849,7 +2850,7 @@
       "notAFitPoint": "Není bod vyhlazení.",
       "notAControlVertex": "Není řídicí vrchol.",
       "allAdditionsUndone": "Všechna doplnění byla vrácena zpět.",
-      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {POLE}}",
+      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {POLE}}",
       "listObject": "                  {name}   Hladina: \"{layer}\"",
       "listSpace": "                             Prostor: Modelový prostor",
       "listColor": "                   Barva: {color}    Typ čáry: \"{linetype}\"",
@@ -3181,7 +3182,14 @@
       "listTableDirection": "Horizontální směr:  X= {x}, Y= {y}, Z= {z}",
       "listTableColumns": "Počet sloupců:  {count}",
       "listTableRows": "Počet řádků:     {count}",
-      "listTableStyle": "Styl tabulky:     {name}"
+      "listTableStyle": "Styl tabulky:     {name}",
+      "listMLeaderType": "{type, select, straight {Typ odkazu:        Přímý odkaz} spline {Typ odkazu:        Odkaz se spline} other {Typ odkazu:        Neviditelný odkaz}}",
+      "listMLeaderContent": "{content, select, mtext {Typ obsahu:       Obsah víceřádkového textu} block {Typ obsahu:       Obsah bloku} other {Typ obsahu:       Žádný obsah}}",
+      "listMLeaderLanding": "Prodloužení čáry:      {on, select, true {ZAP} other {VYP}}",
+      "listMLeaderNumber": "Číslo odkazu:      {number}",
+      "listMLeaderVertex": "Vrchol:            X = {x}, Y = {y}, Z = {z}",
+      "listMLeaderStyle": "Styl multiodkazů:  {name}",
+      "listMLeaderAnnotative": "S poznámkou:      NE"
     },
     "feedback": {
       "snap": {

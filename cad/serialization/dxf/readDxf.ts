@@ -4,6 +4,7 @@ import {
   Entity,
   MTEXT_ATTACHMENTS,
   STANDARD_TABLE_STYLE,
+  STANDARD_MLEADER_STYLE,
   TableRowStyle,
   TableStyleData,
   createBlockDefinition,
@@ -23,6 +24,7 @@ import {
   dxfEntities,
   inPaperSpace,
 } from "./dxfEntities"
+import { dxfMLeaderStyles } from "./dxfMLeader"
 import {
   DxfLayers,
   dxfDimStyleTextAbove,
@@ -315,6 +317,16 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   const imageFrame = dxfImageFrame(dxf.objects)
   const images = dxfImageDefinitions(dxf.objects)
   const tableStyles = dxfTableStyles(dxf.objects, (name) => textStyles.id(name))
+  const styleNames = new Map(
+    table("STYLE").flatMap((record) => {
+      const handle = str(record, 5)?.trim().toUpperCase()
+      const name = str(record, 2)?.trim()
+      return handle && name ? [[handle, name] as const] : []
+    })
+  )
+  const textStyleByHandle = (handle: string | undefined) =>
+    textStyles.id(handle ? styleNames.get(handle.toUpperCase()) : undefined)
+  const mleaderStyles = dxfMLeaderStyles(dxf.objects, textStyleByHandle)
   const blockRecords = new Map(
     table("BLOCK_RECORD").flatMap((record) => {
       const handle = str(record, 5)?.trim().toUpperCase()
@@ -355,6 +367,17 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
       },
     blockRecord: (handle) =>
       blockRecords.get(handle.trim().toUpperCase()) ?? null,
+    textStyleByHandle,
+    mleaderStyle: (handle) =>
+      (handle && mleaderStyles.get(handle.toUpperCase())) || {
+        ...STANDARD_MLEADER_STYLE,
+        textStyleId: textStyles.id("Standard"),
+      },
+    blockByRecord: (handle) => {
+      const name = blockRecords.get(handle.trim().toUpperCase())
+      const target = name ? targets.get(name.toUpperCase()) : undefined
+      return target && target !== "dependent" ? target.id : null
+    },
     splineSegments: settings.splineSegments,
     hatchSplineFitData: version >= 1024,
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),

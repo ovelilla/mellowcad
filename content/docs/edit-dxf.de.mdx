@@ -3,7 +3,7 @@ title: DXF-Datei online bearbeiten
 metaTitle: "DXF-Datei bearbeiten (online, kostenlos)"
 description: "DXF-Datei kostenlos im Browser mit den Befehlen von AutoCAD bearbeiten und wieder als DXF speichern, AutoCAD 2000 bis 2018. Ohne Installation, ohne Upload."
 type: howTo
-sourceHash: "5dab7f86d4bb"
+sourceHash: "3b96ee37d43c"
 faq:
   - question: "Wie bearbeite ich eine DXF-Datei online?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: Sie öffnet sich im Editor von MellowCAD, in Ihrem Browser. Ändern Sie sie mit den Befehlen von AutoCAD, dann speichert SICHALS (Strg+Umschalt+S) oder DXFOUT sie wieder als DXF-Datei."
@@ -14,7 +14,7 @@ faq:
   - question: "Öffnet AutoCAD das DXF, das ich speichere?"
     answer: "Ja. Jede Art von Objekt, die MellowCAD schreibt, in jeder Version, als Text und binär, wurde von AutoCAD 2027 geöffnet, ohne dass sein AUDIT einen Fehler fand."
   - question: "Geht beim Speichern etwas verloren?"
-    answer: "Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Toleranzen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei."
+    answer: "Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Mehrfachlinien, Toleranzen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei."
   - question: "Kann ich eine neue DXF-Datei von Grund auf erstellen?"
     answer: "Ja. Öffnen Sie den Editor, zeichnen Sie und speichern Sie mit SICHALS, indem Sie einen DXF-Dateityp wählen."
 ---
@@ -49,7 +49,7 @@ MellowCAD schreibt jedes seiner Objekte so, wie AutoCAD es schreibt: Linien, Bö
 
 ## Was nicht zurückkommt [#lost]
 
-- **Was sich nicht geöffnet hat, wird nicht gespeichert.** Wofür MellowCAD noch kein Objekt hat — Multi-Führungslinien, Toleranzen und [der Rest dieser Liste](/docs/open-dxf#left-out) — wird beim Öffnen der Datei in der Befehlszeile gezählt und steht nicht in der Datei, die Sie speichern. Behalten Sie das Original.
+- **Was sich nicht geöffnet hat, wird nicht gespeichert.** Wofür MellowCAD noch kein Objekt hat — Mehrfachlinien, Toleranzen und [der Rest dieser Liste](/docs/open-dxf#left-out) — wird beim Öffnen der Datei in der Befehlszeile gezählt und steht nicht in der Datei, die Sie speichern. Behalten Sie das Original.
 - **3D-Volumenkörper und Regionen werden nicht geschrieben**: Die Befehlszeile nennt, wie viele ausgelassen wurden.
 - Die eigenen Stilüberschreibungen einer Bemaßung und die Parameter einer Reihe werden nicht geschrieben: AutoCAD öffnet die Bemaßung mit den Einstellungen ihres Stils und die Reihe als Block ihrer Elemente.
 - Es gibt keine Miniaturvorschau, noch keinen DXF-Typ AutoCAD R12/LT2 und keine DWG-Dateien.
@@ -78,7 +78,7 @@ Ja. Jede Art von Objekt, die MellowCAD schreibt, in jeder Version, als Text und 
 
 ### Geht beim Speichern etwas verloren? [#lost-on-save]
 
-Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Multi-Führungslinien, Toleranzen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei.
+Was sich nicht geöffnet hat, steht nicht in der Datei, die Sie speichern: Mehrfachlinien, Toleranzen und die anderen Objekte, die die Befehlszeile beim Öffnen der Datei gezählt hat. Auch 3D-Volumenkörper und Regionen werden nicht geschrieben, und die Befehlszeile führt sie auf. Behalten Sie Ihre Originaldatei.
 
 ### Kann ich eine neue DXF-Datei von Grund auf erstellen? [#from-scratch]
 

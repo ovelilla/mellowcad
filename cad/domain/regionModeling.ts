@@ -310,6 +310,7 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
       return null
     default: {
       const unhandled: never = entity

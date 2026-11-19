@@ -720,6 +720,7 @@ describe("round trip", () => {
       wipeout: true,
       image: true,
       table: true,
+      mleader: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

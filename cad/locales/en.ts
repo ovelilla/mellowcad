@@ -446,6 +446,16 @@ export const en: EngineCatalog = {
             "other": "Tables"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Multileader",
+            "other": "Multileaders"
+          }
+        ]
       ]
     },
     "array": {
@@ -5399,6 +5409,7 @@ export const en: EngineCatalog = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "ARRAY"
           }
         ]
@@ -7818,7 +7829,67 @@ export const en: EngineCatalog = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Leader Type:        StraightLeader",
+            "spline": "Leader Type:        SplineLeader",
+            "other": "Leader Type:        InVisibleLeader"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Content Type:       MTextContent",
+            "block": "Content Type:       BlockContent",
+            "other": "Content Type:       NoneContent"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Landing:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "ON",
+            "other": "OFF"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Leader Number:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Vertex:             X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Multileader style:  ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Annotative:         NO"
     },
     "feedback": {
       "snap": {

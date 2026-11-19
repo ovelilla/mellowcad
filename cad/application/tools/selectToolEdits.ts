@@ -45,6 +45,8 @@ import {
   withWipeoutVertex,
   imageCornerDragged,
   withLeaderVertex,
+  mleaderStretched,
+  mleaderStretchPoints,
 } from "../../domain/entities"
 import type {
   BlockLookup,
@@ -92,6 +94,14 @@ export function withVertexAt(
     // it and records its offset from the text (leader/p14).
     if (!entity.vertices[index]) return null
     return withLeaderVertex(entity, index, { x: point.x, y: point.y })
+  }
+  if (entity.type === "mleader") {
+    const at = mleaderStretchPoints(entity)[index]
+    if (!at) return null
+    return mleaderStretched(entity, (_, i) => i === index, {
+      x: point.x - at.x,
+      y: point.y - at.y,
+    })
   }
   if (entity.type === "face3d") {
     // A corner goes to the point, its Z too, as a 3D polyline's vertex does,

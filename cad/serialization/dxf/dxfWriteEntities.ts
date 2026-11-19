@@ -24,6 +24,8 @@ import {
   TableEntity,
   InsertEntity,
   LeaderEntity,
+  MLeaderEntity,
+  MLeaderColor,
   LineEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -88,6 +90,10 @@ export interface DxfWriteContext {
   tableStyle(table: TableEntity, own: string): string
   /** The handle of a block's BLOCK_RECORD. */
   blockRecord(id: string): string
+  /** The handle of a text style's STYLE record. */
+  textStyleHandle(id: string): string
+  /** The MLEADERSTYLE a multileader names, by handle, which lists the one written as `own`. */
+  mleaderStyle(mleader: MLeaderEntity, own: string): string
   /** The IMAGEDEF an image shows, by handle. */
   imageDefinition(image: ImageEntity): string
   /** A new IMAGEDEF_REACTOR for the image written with handle `own`. */
@@ -187,6 +193,8 @@ export function writeEntity(
       return image(ctx, entity, owner)
     case "table":
       return table(ctx, entity, owner)
+    case "mleader":
+      return mleader(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -219,6 +227,191 @@ export function writeEntity(
       return ctx.leftOut("REGION")
     case "solid3d":
       return ctx.leftOut("3DSOLID")
+  }
+}
+
+/** An AcCmColor as a multileader writes its parts' (mleader/v18, v21). */
+function mleaderColorValue(color: MLeaderColor | undefined): number {
+  if (color === undefined) return -1073741824
+  if (color === "ByBlock") return -1056964608
+  const rgb = Number.parseInt(color.slice(1), 16)
+  const { index, exact } = aciIndex(rgb)
+  return exact ? 0xc3000000 | index | 0 : 0xc2000000 | rgb | 0
+}
+
+/**
+ * A MULTILEADER as AutoCAD 2027's DXFOUT writes one (mleader/m02, m11): its
+ * context, its branches and their leader lines, its MTEXT with no columns
+ * (173 0: AutoCAD reads a dynamic one's width as 1, v13, v14) or its block,
+ * then its own values. 270 and 271–273 from 2010 and 295 from 2013; before
+ * 2010 the version is xdata (ACAD_MLEADERVER).
+ */
+function mleader(ctx: DxfWriteContext, e: MLeaderEntity, owner: string): void {
+  const { out, version } = ctx
+  const own = ctx.entityHandle(e)
+  head(ctx, "MULTILEADER", e, owner, own)
+  // A block the drawing has not is no content (a reader drops it so).
+  const content =
+    e.content?.kind === "block" && !ctx.block(e.content.blockId)
+      ? undefined
+      : e.content
+  out.str(100, "AcDbMLeader")
+  if (version >= 1024) out.int(270, 2)
+  const frame = axes(e)
+  const z = e.elevation ?? 0
+  const world = (p: Vec2): Vec3 =>
+    frame ? axesToWorld(frame, { ...p, z }) : { ...p, z }
+  const vector = (v: Vec2): Vec3 =>
+    frame ? axesToWorld(frame, { ...v, z: 0 }) : { ...v, z: 0 }
+  const normal = e.normal ?? { x: 0, y: 0, z: 1 }
+  const at = (code: number, p: Vec3) => out.point(code, p.x, p.y, p.z)
+  out.str(300, "CONTEXT_DATA{")
+  out.real(40, e.kept.scale)
+  at(10, world(e.kept.base))
+  out.real(41, content?.kind === "mtext" ? content.height : e.style.textHeight)
+  out.real(140, e.arrowSize)
+  out.real(145, e.landingGap)
+  out.int(174, 1)
+  out.int(175, 1)
+  const column = content?.kind === "mtext" ? content.attachment[1] : "l"
+  out.int(176, column === "l" ? 0 : column === "c" ? 1 : 2)
+  out.int(177, 0)
+  out.int(290, content?.kind === "mtext" ? 1 : 0)
+  if (content?.kind === "mtext") {
+    out.str(304, content.contents)
+    at(11, normal)
+    out.str(340, ctx.textStyleHandle(content.styleId))
+    at(12, world(content.position))
+    at(
+      13,
+      vector({ x: Math.cos(content.rotation), y: Math.sin(content.rotation) })
+    )
+    out.real(42, content.rotation)
+    out.real(43, content.width)
+    out.real(44, 0)
+    out.real(45, content.lineSpacingFactor)
+    out.int(170, content.lineSpacingStyle === "exactly" ? 2 : 1)
+    out.int(90, -1073741824)
+    out.int(171, MTEXT_ATTACHMENTS.indexOf(content.attachment) + 1)
+    out.int(172, 5)
+    out.int(91, -1073741824)
+    out.real(141, 0)
+    out.int(92, 0)
+    out.int(291, 0)
+    out.int(292, 0)
+    out.int(173, 0)
+    out.int(293, 0)
+    out.real(142, 0)
+    out.real(143, 0)
+    out.int(294, 0)
+    out.int(295, 0)
+  }
+  out.int(296, content?.kind === "block" ? 1 : 0)
+  if (content?.kind === "block") {
+    out.str(341, ctx.blockRecord(content.blockId))
+    at(14, normal)
+    at(15, world(content.position))
+    out.point(16, content.scaleX, content.scaleY, 1)
+    out.real(46, content.rotation)
+    out.int(93, -1073741824)
+    const cos = Math.cos(content.rotation)
+    const sin = Math.sin(content.rotation)
+    const p = world(content.position)
+    const u = vector({ x: cos * content.scaleX, y: sin * content.scaleX })
+    const v = vector({ x: -sin * content.scaleY, y: cos * content.scaleY })
+    const w = { x: normal.x, y: normal.y, z: normal.z }
+    for (const value of [
+      u.x,
+      v.x,
+      w.x,
+      p.x,
+      u.y,
+      v.y,
+      w.y,
+      p.y,
+      u.z,
+      v.z,
+      w.z,
+      p.z,
+      0,
+      0,
+      0,
+      1,
+    ]) {
+      out.real(47, value)
+    }
+  }
+  at(110, world(e.kept.planeOrigin))
+  at(111, vector({ x: 1, y: 0 }))
+  at(112, vector({ x: 0, y: 1 }))
+  out.int(297, 0)
+  let index = 0
+  e.branches.forEach((branch, k) => {
+    out.str(302, "LEADER{")
+    out.int(290, 1)
+    out.int(291, 1)
+    at(10, world(branch.landing))
+    at(11, vector(branch.direction))
+    out.int(90, k)
+    out.real(40, branch.doglegLength)
+    for (const line of branch.lines) {
+      out.str(304, "LEADER_LINE{")
+      for (const vertex of line) at(10, world(vertex))
+      out.int(91, index++)
+      out.str(305, "}")
+    }
+    if (version >= 1024) out.int(271, 0)
+    out.str(303, "}")
+  })
+  if (version >= 1024) {
+    out.int(272, 9)
+    out.int(273, 9)
+  }
+  out.str(301, "}")
+  out.str(340, ctx.mleaderStyle(e, own))
+  out.int(90, e.kept.overrideFlags)
+  out.int(170, ["none", "straight", "spline"].indexOf(e.path))
+  out.int(91, mleaderColorValue(e.lineColor))
+  out.str(341, "14")
+  out.int(171, -2)
+  out.int(290, e.kept.landing ? 1 : 0)
+  out.int(291, e.dogleg ? 1 : 0)
+  out.real(41, e.kept.doglegLength)
+  out.real(42, e.kept.arrowSize)
+  out.int(172, content?.kind === "mtext" ? 2 : content ? 1 : 0)
+  out.str(
+    343,
+    ctx.textStyleHandle(
+      content?.kind === "mtext" ? content.styleId : e.style.textStyleId
+    )
+  )
+  out.int(173, 1)
+  out.int(95, 1)
+  out.int(174, 1)
+  out.int(175, 0)
+  out.int(92, -1073741824)
+  out.int(292, 0)
+  if (content?.kind === "block") {
+    out.str(344, ctx.blockRecord(content.blockId))
+  }
+  out.int(93, -1056964608)
+  out.point(10, 1, 1, 1)
+  out.real(43, 0)
+  out.int(176, 0)
+  out.int(293, 0)
+  out.int(294, 0)
+  out.int(178, 0)
+  out.int(179, 1)
+  out.real(45, e.kept.scale)
+  if (version >= 1024) {
+    out.int(271, 0)
+    out.int(272, 9)
+    out.int(273, 9)
+  }
+  if (version >= 1027) out.int(295, 0)
+  if (version < 1024) {
+    out.str(1001, "ACAD_MLEADERVER")
+    out.int(1070, 2)
   }
 }
 

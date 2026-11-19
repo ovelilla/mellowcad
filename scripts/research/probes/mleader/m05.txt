@@ -1,0 +1,63 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+(setq H (handent "2DF"))
+_COPY
+(ssadd H)
+
+0,0
+0,-100
+
+(setq R (entlast))
+_ROTATE
+(ssadd R)
+
+0,-100
+30
+(entget R)
+_COPY
+(ssadd H)
+
+0,0
+0,-200
+
+(setq K (entlast))
+_SCALE
+(ssadd K)
+
+0,-200
+2
+(entget K)
+_COPY
+(ssadd H)
+
+0,0
+0,-300
+
+(setq M (entlast))
+_MIRROR
+(ssadd M)
+
+0,-300
+0,-200
+_Y
+(entget (entlast))
+(setq M2 (handent "2E3"))
+_MIRROR
+(ssadd M2)
+
+300,-300
+300,-200
+_N
+(entget (entlast))
+_COPY
+(ssadd H)
+
+0,0
+0,-400
+
+(setq N (entlast))
+_MOVE
+(ssadd N)
+
+0,0
+5,5
+(entget N)

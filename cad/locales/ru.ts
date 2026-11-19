@@ -487,6 +487,18 @@ export const ru: EngineLocale = {
             "other": "Таблицы"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Мультивыноска",
+            "few": "Мультивыноски",
+            "many": "Мультивыносок",
+            "other": "Мультивыноски"
+          }
+        ]
       ]
     },
     "array": {
@@ -6585,6 +6597,7 @@ export const ru: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "МАССИВ"
           }
         ]
@@ -9147,7 +9160,67 @@ export const ru: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Тип выноски:        прямая выноска",
+            "spline": "Тип выноски:        выноска-сплайн",
+            "other": "Тип выноски:        скрытая выноска"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Тип содержимого:       Содержимое Мтекста",
+            "block": "Тип содержимого:       содержимое блока",
+            "other": "Тип содержимого:       без содержимого"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Полка:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "Вкл",
+            "other": "Откл"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Количество выносок:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Вершина:              X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Стиль мультивыносок: ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Аннотативный:         НЕТ"
     },
     "feedback": {
       "snap": {

@@ -36,7 +36,9 @@ change or copy objects owes the same call, or a moved text leaves its leader beh
 
 A type that is drawn as other objects (a reference, a region, a solid) answers each query through
 them (`insertFlatGeometry`, `regionLevelEdgeEntities`, `solidEdgeEntities`), and a command that takes "the edge picked" reads
-it as that object (`regionEdgeAt`).
+it as that object (`regionEdgeAt`). One whose pieces hold a block (a multileader's content) is
+flattened inside a reference by `insertFlatGeometry`, its block a level deeper: a block holding
+it with itself as content otherwise nests past `MAX_BLOCK_NESTING` (a table's cells still do).
 
 Then the parts that are no switch at all:
 

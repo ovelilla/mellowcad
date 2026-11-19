@@ -4,7 +4,7 @@ metaTitle: "LEADER in AutoCAD: a leader line with text"
 description: "How AutoCAD's LEADER (LEAD) works: a leader line from an arrowhead to its text, the hook, the format options, and how it differs from MLEADER. Try it free."
 figure: "A hole and its note: LEADER from the circle's rim, two points, then two lines of text; the last segment rises, so a hook joins it to the text."
 related: ["MTEXT", "DIMSTYLE", "DIMRADIUS", "TEXT"]
-coverage: "837b7e68ba6b"
+coverage: "73754c8de950"
 ---
 
 LEADER draws a line from an arrowhead to a note. Pick the start point, where the arrowhead goes, then as many points as you want; from the second on the prompt offers <Keyword id="Annotation" />, which Enter also takes, <Keyword id="Format" /> and <Keyword id="Undo" />. Enter at the first two points ends the command and draws nothing. Then type the note a line at a time, Enter after each, and Enter on an empty line to finish: the leader and its text, a multiline text, are made together as one step, on the current layer with the current colour, linetype and lineweight.
@@ -29,7 +29,7 @@ Takes back the last point and asks for it again. At the second point there is no
 
 ## Missing
 
-The Tolerance and Block annotations: MellowCAD has no geometric tolerance object, and a block is not inserted from inside LEADER, so the option prompt lists Copy, None and Mtext. The arrowheads other than the closed filled one, and the leader's own line colour and lineweight from the dimension style. QLEADER and MLEADER, the quick leader and the multileader, are not there yet: a DXF's multileaders are left out when it opens.
+The Tolerance and Block annotations: MellowCAD has no geometric tolerance object, and a block is not inserted from inside LEADER, so the option prompt lists Copy, None and Mtext. The arrowheads other than the closed filled one, and the leader's own line colour and lineweight from the dimension style. QLEADER and MLEADER, the quick leader and the multileader, are not there yet: a DXF's multileaders open and are saved again, but no command makes one or edits its leaders.
 
 ## Questions
 
@@ -39,7 +39,7 @@ The Tolerance and Block annotations: MellowCAD has no geometric tolerance object
 
 ### What is the difference between LEADER and MLEADER?
 
-LEADER is the older command: a leader line and a separate text the line follows. MLEADER, which AutoCAD now recommends, makes one multileader object, with its own styles and several leader lines to one note. MellowCAD has LEADER; it opens and saves the leaders of a DXF file, and leaves its multileaders out.
+LEADER is the older command: a leader line and a separate text the line follows. MLEADER, which AutoCAD now recommends, makes one multileader object, with its own styles and several leader lines to one note. MellowCAD has LEADER; it opens and saves both the leaders and the multileaders of a DXF file, but has no MLEADER to make or edit one.
 
 ### How do I make a leader with text?
 

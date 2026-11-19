@@ -22,6 +22,8 @@ import {
   wipeoutEdges,
   imageEdges,
   tableExploded,
+  mleaderExploded,
+  mleaderGeometry,
   tableGeometry,
 } from "../../domain/entities"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
@@ -49,6 +51,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "wipeout",
   "image",
   "table",
+  "mleader",
 ])
 
 /**
@@ -264,6 +267,15 @@ export class ExplodeTool extends SelectionActionTool {
         for (const [a, b] of wipeoutEdges(entity)) {
           pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
         }
+        continue
+      }
+      if (entity.type === "mleader") {
+        // Its MTEXT or block reference, each dogleg a line, each leader line
+        // a polyline or spline and its arrowhead a 2D solid (mleader/m03, m12).
+        removedIds.push(entity.id)
+        pieces.push(
+          ...mleaderExploded(entity, mleaderGeometry(entity), nextEntityId)
+        )
         continue
       }
       if (entity.type === "table") {

@@ -3,7 +3,7 @@ title: "Linia odniesienia w AutoCADzie: polecenie LODNIES (LEADER)"
 metaTitle: "Linia odniesienia w AutoCADzie: LODNIES (LEADER)"
 description: "Jak narysować linię odniesienia z tekstem w AutoCADzie poleceniem LODNIES (LEADER, skrót LO): grot, półka, opcje formatu i różnice wobec WIELOLODN (MLEADER)."
 figure: "Otwór i jego opis: LODNIES od krawędzi okręgu, dwa punkty, potem dwa wiersze tekstu; ostatni segment się wznosi, więc łączy go z tekstem półka."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 Polecenie LODNIES (LEADER) rysuje linię od grotu strzałki do opisu. Wskaż punkt początkowy, tam, gdzie ma być grot, a potem tyle punktów, ile chcesz; od drugiego monit proponuje <Keyword id="Annotation" />, którą wybiera też Enter, <Keyword id="Format" /> i <Keyword id="Undo" />. Enter przy pierwszych dwóch punktach kończy polecenie i nic nie rysuje. Następnie wpisz opis wiersz po wierszu, po każdym Enter, i Enter w pustym wierszu, aby zakończyć: linia odniesienia i jej tekst, tekst wielowierszowy, powstają razem jako jeden krok, na bieżącej warstwie, z bieżącym kolorem, rodzajem linii i szerokością linii.
@@ -28,7 +28,7 @@ Cofa ostatni punkt i pyta o niego ponownie. Przy drugim punkcie nie ma czego cof
 
 ## Missing
 
-Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko <Keyword id="Copy" />, <Keyword id="None" /> i <Keyword id="Mtext" />. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia SLODNIES (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF są pomijane przy otwieraniu.
+Opisy Tolerancja i Blok: MellowCAD nie ma obiektu tolerancji geometrycznej, a blok nie jest wstawiany z wnętrza polecenia LODNIES, więc monit opcji wymienia tylko <Keyword id="Copy" />, <Keyword id="None" /> i <Keyword id="Mtext" />. Groty inne niż zamknięty wypełniony oraz własny kolor i szerokość linii odniesienia ze stylu wymiarowania. Szybkiej linii odniesienia SLODNIES (QLEADER) i wielolinii odniesienia WIELOLODN (MLEADER) jeszcze nie ma: wielolinie odniesienia z pliku DXF otwierają się i są zapisywane z powrotem, ale żadne polecenie nie tworzy nowej ani nie edytuje jej linii odniesienia.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. W polskim AutoCADzie jego skróty to `LO` i `LODN`: wpisz jeden z nich i
 
 ### Czym się różni LODNIES od WIELOLODN (MLEADER)?
 
-LODNIES to starsze polecenie: linia odniesienia i osobny tekst, za którym ta linia podąża. WIELOLODN, które AutoCAD dziś zaleca, tworzy jeden obiekt wielolinii odniesienia, z własnymi stylami i kilkoma liniami do jednego opisu. MellowCAD ma polecenie LODNIES; otwiera i zapisuje linie odniesienia pliku DXF, a jego wielolinie odniesienia pomija.
+LODNIES to starsze polecenie: linia odniesienia i osobny tekst, za którym ta linia podąża. WIELOLODN, które AutoCAD dziś zaleca, tworzy jeden obiekt wielolinii odniesienia, z własnymi stylami i kilkoma liniami do jednego opisu. MellowCAD ma polecenie LODNIES; otwiera i zapisuje zarówno linie odniesienia, jak i wielolinie odniesienia pliku DXF, ale nie ma polecenia WIELOLODN, którym można by je tworzyć lub edytować.
 
 ### Jak zrobić linię odniesienia z tekstem w AutoCADzie?
 

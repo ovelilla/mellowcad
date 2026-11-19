@@ -3,7 +3,7 @@ title: "Commande LREPERE (LEADER) dans AutoCAD"
 metaTitle: "Ligne de repère dans AutoCAD : LREPERE (LEADER)"
 description: "Tracer une ligne de repère avec LREPERE (LEADER) d'AutoCAD en français : de la flèche au texte, l'attache, le format, et la différence avec MLEADER. Essayez-la."
 figure: "Un trou et sa note : LREPERE depuis le bord du cercle, deux points, puis deux lignes de texte ; le dernier segment monte, donc une attache le relie au texte."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 LREPERE (LEADER) trace une ligne d'une flèche jusqu'à une note. Indiquez le point de départ, où se trouve la flèche, puis autant de points que vous voulez ; à partir du deuxième, l'invite propose <Keyword id="Annotation" />, qu'Entrée choisit aussi, <Keyword id="Format" /> et <Keyword id="Undo" />. Entrée aux deux premiers points termine la commande sans rien tracer. Tapez ensuite la note ligne par ligne, Entrée après chacune, et Entrée sur une ligne vide pour finir : la ligne de repère et son texte, un texte multiligne, sont créés ensemble en une seule étape, sur le calque courant avec la couleur, le type de ligne et l'épaisseur de ligne courants.
@@ -28,7 +28,7 @@ Annule le dernier point et le redemande. Au deuxième point il n'y a rien à ann
 
 ## Missing
 
-Les annotations Tolérance et Bloc : MellowCAD n'a pas d'objet de tolérance géométrique, et un bloc ne s'insère pas depuis LREPERE, donc l'invite des options propose Copier, Aucun(e) et textMult. Les flèches autres que la flèche pleine fermée, et la couleur et l'épaisseur de ligne propres à la ligne de repère que donne le style de cote. LREPERERAP (QLEADER) et MLEADER, la ligne de repère rapide et la ligne de repère multiple, ne sont pas encore là : les lignes de repère multiples d'un DXF sont laissées de côté à l'ouverture.
+Les annotations Tolérance et Bloc : MellowCAD n'a pas d'objet de tolérance géométrique, et un bloc ne s'insère pas depuis LREPERE, donc l'invite des options propose Copier, Aucun(e) et textMult. Les flèches autres que la flèche pleine fermée, et la couleur et l'épaisseur de ligne propres à la ligne de repère que donne le style de cote. LREPERERAP (QLEADER) et MLEADER, la ligne de repère rapide et la ligne de repère multiple, ne sont pas encore là : les lignes de repère multiples d'un DXF s'ouvrent et sont enregistrées de nouveau, mais aucune commande ne permet d'en créer une ni d'en modifier les lignes de repère.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. Dans AutoCAD en français, c'est LREPERE, sans alias : tapez LREPERE et
 
 ### Quelle différence entre LREPERE et MLEADER ?
 
-LREPERE est l'ancienne commande : une ligne de repère et un texte à part que la ligne suit. MLEADER, qu'AutoCAD recommande aujourd'hui, crée un seul objet ligne de repère multiple, avec ses propres styles et plusieurs lignes vers une même note. MellowCAD a LREPERE ; il ouvre et enregistre les lignes de repère d'un fichier DXF, et laisse de côté ses lignes de repère multiples.
+LREPERE est l'ancienne commande : une ligne de repère et un texte à part que la ligne suit. MLEADER, qu'AutoCAD recommande aujourd'hui, crée un seul objet ligne de repère multiple, avec ses propres styles et plusieurs lignes vers une même note. MellowCAD a LREPERE ; il ouvre et enregistre les lignes de repère comme les lignes de repère multiples d'un fichier DXF, mais n'a pas MLEADER pour en créer ou en modifier une.
 
 ### Comment faire une ligne de repère avec du texte ?
 

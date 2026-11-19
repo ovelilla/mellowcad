@@ -21,7 +21,8 @@
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
-> hechos el 19/11, sin publicar; lo que queda del punto 7: MULTILEADER, XLINE…, el siguiente) y otro idioma (el japonés, `global`, después), alternando,
+> hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; lo que queda del
+> punto 7, XLINE, RAY…, después del idioma) y otro idioma (el japonés, `global`, el siguiente), alternando,
 > además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
@@ -1032,4 +1033,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   estilo, se dibujan como AutoCAD las dibuja y se vuelven a guardar; la portada no cambia.
   **Siguiente**, por orden del dueño: lo que queda del punto 7 (MULTILEADER, XLINE…) y otro idioma
   (el japonés, `global`), alternando.
+- DXF, punto 7 de la fase 4 (MULTILEADER): hecho el 19/11/2026, sin publicar (`docs/next-dxf.md`).
+  Las páginas «abrir DXF online» y «editar DXF online», en los once idiomas, ya no cuentan las
+  directrices múltiples entre lo que queda fuera: se abren con sus directrices, su texto o
+  bloque y su estilo, se dibujan como AutoCAD las dibuja y se vuelven a guardar; la nota de
+  LEADER dice que se abren y guardan, sin el comando MLEADER; la portada no cambia.
+  **Siguiente**, por orden del dueño: otro idioma (el japonés, `global`), y después lo que queda
+  del punto 7 (XLINE, RAY…), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

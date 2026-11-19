@@ -26,6 +26,8 @@ import {
   type MTextAttachment,
   type TableCell,
   type TableEntity,
+  type MLeaderEntity,
+  createMLeader,
   type LeaderEntity,
   type DimensionEntity,
   type EllipseEntity,
@@ -353,6 +355,81 @@ export const tableEntity: fc.Arbitrary<TableEntity> = fc
           : {}),
       },
       "table"
+    )
+  })
+
+/**
+ * A multileader: one or two branches of one or two leader lines, straight,
+ * a spline or none, its dogleg on or off, an MTEXT, a block or nothing.
+ */
+export const mleaderEntity: fc.Arbitrary<MLeaderEntity> = fc
+  .record({
+    landing: point,
+    angle: fc.double({ min: 0, max: 6, noNaN: true }),
+    tips: fc.array(fc.array(point, { minLength: 1, maxLength: 3 }), {
+      minLength: 1,
+      maxLength: 2,
+    }),
+    two: fc.boolean(),
+    path: fc.constantFrom(
+      "straight" as const,
+      "spline" as const,
+      "none" as const
+    ),
+    dogleg: fc.boolean(),
+    content: fc.constantFrom("mtext", "block", "none"),
+    turned: fc.double({ min: 0, max: 6, noNaN: true }),
+  })
+  .map(({ landing, angle, tips, two, path, dogleg, content, turned }) => {
+    const direction = { x: Math.cos(angle), y: Math.sin(angle) }
+    const branch = (sign: number) => ({
+      landing,
+      // + 0: a -0 would not survive JSON.
+      direction: { x: direction.x * sign + 0, y: direction.y * sign + 0 },
+      doglegLength: 8,
+      lines: tips,
+    })
+    const at = {
+      x: landing.x + direction.x * 10,
+      y: landing.y + direction.y * 10,
+    }
+    return withId<MLeaderEntity>(
+      {
+        ...createMLeader(two ? [branch(1), branch(-1)] : [branch(1)], {
+          id: "",
+          layerId: DEFAULT_LAYER_ID,
+          path,
+          dogleg,
+          ...(content === "mtext"
+            ? {
+                content: {
+                  kind: "mtext" as const,
+                  position: at,
+                  contents: "A\\PB",
+                  height: 2.5,
+                  width: 0,
+                  rotation: turned,
+                  attachment: "tl" as const,
+                  lineSpacingStyle: "atLeast" as const,
+                  lineSpacingFactor: 1,
+                  styleId: DEFAULT_TEXT_STYLE_ID,
+                },
+              }
+            : content === "block"
+              ? {
+                  content: {
+                    kind: "block" as const,
+                    blockId: "B1",
+                    position: at,
+                    scaleX: -1,
+                    scaleY: 2,
+                    rotation: turned,
+                  },
+                }
+              : {}),
+        }),
+      },
+      "mleader"
     )
   })
 
@@ -1373,7 +1450,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       face3dEntity,
       wipeoutEntity,
       imageEntity,
-      tableEntity
+      tableEntity,
+      mleaderEntity
     ),
     zValue,
     zValue,

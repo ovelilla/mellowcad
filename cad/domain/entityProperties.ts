@@ -310,11 +310,12 @@ export function applyEntityProperty(
     case "leader":
       return applyLeaderProperty(entity, property, value, vertex)
     // WHY no row: which geometry rows AutoCAD's palette gives a wipeout or
-    // an image or a table is unverified (no desktop pass), so they show their
+    // an image, a table or a multileader is unverified (no desktop pass), so they show their
     // general ones alone.
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
       return null
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).

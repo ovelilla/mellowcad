@@ -24,6 +24,7 @@ import {
   textInsertionPoint,
   leaderGripIndices,
   imageCorners,
+  mleaderStretchPoints,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -380,6 +381,18 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           entityId: id,
           role: { kind: "move" },
           world: entity.position,
+        })
+        break
+      case "mleader":
+        // WHY at the points STRETCH moves, each dragged as STRETCH moves it
+        // alone (mleader/m06, m07): its grips' own menus (Add Leader,
+        // Lengthen) are unverified on the desktop.
+        mleaderStretchPoints(entity).forEach((point, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: point,
+          })
         })
         break
       case "solid2d":

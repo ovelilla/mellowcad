@@ -357,6 +357,12 @@ export const insertionProvider: SnapProvider = {
           notable(SnapType.Insertion, entity, entity.position, touch)
         )
       }
+      if (entity.type === "mleader" && entity.content?.kind === "mtext") {
+        // Its text's; none at its block (mleader/m08).
+        candidates.push(
+          notable(SnapType.Insertion, entity, entity.content.position, touch)
+        )
+      }
       if (entity.type === "table") {
         // Its cells' texts and blocks (table/t07); its own corner as a
         // reference's, unverified.

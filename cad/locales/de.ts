@@ -443,6 +443,16 @@ export const de: EngineLocale = {
             "other": "Tabellen"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Multi-Führungslinie",
+            "other": "Multi-Führungslinien"
+          }
+        ]
       ]
     },
     "array": {
@@ -6124,6 +6134,7 @@ export const de: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "REIHE"
           }
         ]
@@ -8536,7 +8547,67 @@ export const de: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Führungslinientyp:        Gerade Führungslinie",
+            "spline": "Führungslinientyp:        Spline-Führungslinie",
+            "other": "Führungslinientyp:        Unsichtbare Führungslinie"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Inhaltstyp:       MText-Inhalt",
+            "block": "Inhaltstyp:       Blockinhalt",
+            "other": "Inhaltstyp:       Kein Inhalt"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Verlängerung:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "EIN",
+            "other": "AUS"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Anzahl der Führungslinien:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Kontrollpunkt:             X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Multi-Führungslinien-Stil: ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Beschriftung:         NEIN"
     },
     "feedback": {
       "snap": {

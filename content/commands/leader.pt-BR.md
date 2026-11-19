@@ -3,7 +3,7 @@ title: "Linha de chamada no AutoCAD: comando LINHACHAM (LEADER)"
 metaTitle: "Linha de chamada no AutoCAD: LEADER (LINHACHAM)"
 description: "Como funciona o LEADER do AutoCAD em português, LINHACHAM (alias LCHAM): uma linha da seta ao texto, a linha no gancho e o formato. Experimente grátis."
 figure: "Um furo e a sua nota: LINHACHAM a partir da borda do círculo, dois pontos e depois duas linhas de texto; o último trecho sobe, então uma linha no gancho o liga ao texto."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 O LEADER, LINHACHAM no AutoCAD em português, desenha uma linha de uma seta até uma nota. Especifique o ponto inicial, onde fica a seta, e depois quantos pontos quiser; a partir do segundo o prompt oferece <Keyword id="Annotation" />, que o Enter também escolhe, <Keyword id="Format" /> e <Keyword id="Undo" />. Enter nos dois primeiros pontos encerra o comando sem desenhar nada. Depois digite a nota linha a linha, Enter após cada uma, e Enter numa linha vazia para terminar: a linha de chamada e o seu texto, um texto multilinha, são criados juntos num só passo, na camada atual com a cor, o tipo de linha e a espessura de linha atuais.
@@ -28,7 +28,7 @@ Desfaz o último ponto e o pede de novo. No segundo ponto não há nada a desfaz
 
 ## Missing
 
-As anotações Tolerância e Bloco: o MellowCAD não tem objeto de tolerância geométrica, e um bloco não é inserido de dentro do LINHACHAM, então o prompt de opções oferece Cópia, Nenhum e textoM. As setas que não são a preenchida fechada, e a cor e a espessura de linha próprias da linha de chamada vindas do estilo de cota. O QLEADER e o MLEADER, a linha de chamada rápida e a múltipla, ainda não estão: as linhas de chamada múltipla de um DXF ficam de fora ao abri-lo.
+As anotações Tolerância e Bloco: o MellowCAD não tem objeto de tolerância geométrica, e um bloco não é inserido de dentro do LINHACHAM, então o prompt de opções oferece Cópia, Nenhum e textoM. As setas que não são a preenchida fechada, e a cor e a espessura de linha próprias da linha de chamada vindas do estilo de cota. O QLEADER e o MLEADER, a linha de chamada rápida e a múltipla, ainda não estão: as linhas de chamada múltipla de um DXF abrem e são salvas de novo, mas nenhum comando cria uma nem edita as suas linhas de chamada.
 
 ## Questions
 
@@ -38,7 +38,7 @@ LEADER. No AutoCAD em português é LINHACHAM, com os atalhos `LCHAM` e `LEAD`; 
 
 ### Qual a diferença entre LEADER e MLEADER?
 
-O LEADER é o comando antigo: uma linha de chamada e um texto à parte que a linha segue. O MLEADER, que o AutoCAD recomenda hoje, cria um único objeto de linha de chamada múltipla, com estilos próprios e várias linhas para uma mesma nota. O MellowCAD tem o LEADER; ele abre e salva as linhas de chamada de um arquivo DXF, e deixa de fora as múltiplas.
+O LEADER é o comando antigo: uma linha de chamada e um texto à parte que a linha segue. O MLEADER, que o AutoCAD recomenda hoje, cria um único objeto de linha de chamada múltipla, com estilos próprios e várias linhas para uma mesma nota. O MellowCAD tem o LEADER; ele abre e salva tanto as linhas de chamada quanto as linhas de chamada múltipla de um arquivo DXF, mas não tem o MLEADER para criar ou editar uma.
 
 ### Como faço uma linha de chamada com texto?
 

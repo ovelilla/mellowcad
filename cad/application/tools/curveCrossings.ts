@@ -162,6 +162,7 @@ export function implicitEdges(o: Entity): ImplicitEdge[] {
     case "wipeout":
     case "image":
     case "table":
+    case "mleader":
     case "leader":
     case "region":
     case "solid3d":

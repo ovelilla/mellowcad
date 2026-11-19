@@ -443,6 +443,16 @@ export const it: EngineLocale = {
             "other": "Tabelle"
           }
         ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "one": "Multidirettrice",
+            "other": "Multidirettrici"
+          }
+        ]
       ]
     },
     "array": {
@@ -6110,6 +6120,7 @@ export const it: EngineLocale = {
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
             "table": "ACAD_TABLE",
+            "mleader": "MULTILEADER",
             "other": "SERIE"
           }
         ]
@@ -8531,7 +8542,67 @@ export const it: EngineLocale = {
         [
           "name"
         ]
-      ]
+      ],
+      "listMLeaderType": [
+        [
+          "type",
+          1,
+          {
+            "straight": "Tipo di direttrice:        StraightLeader",
+            "spline": "Tipo di direttrice:        SplineLeader",
+            "other": "Tipo di direttrice:        InVisibleLeader"
+          }
+        ]
+      ],
+      "listMLeaderContent": [
+        [
+          "content",
+          1,
+          {
+            "mtext": "Tipo di contenuto:       MTextContent",
+            "block": "Tipo di contenuto:       BlockContent",
+            "other": "Tipo di contenuto:       NoneContent"
+          }
+        ]
+      ],
+      "listMLeaderLanding": [
+        "Linea di collegamento:            ",
+        [
+          "on",
+          1,
+          {
+            "true": "ON",
+            "other": "OFF"
+          }
+        ]
+      ],
+      "listMLeaderNumber": [
+        "Numero direttrice:      ",
+        [
+          "number"
+        ]
+      ],
+      "listMLeaderVertex": [
+        "Vertice:             X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listMLeaderStyle": [
+        "Stile multidirettrice: ",
+        [
+          "name"
+        ]
+      ],
+      "listMLeaderAnnotative": "Annotativo:         NO"
     },
     "feedback": {
       "snap": {

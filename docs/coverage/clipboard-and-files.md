@@ -174,7 +174,41 @@ grey line of no length at its corner, saying nothing (t06, t06b); OFFSET, AREA, 
 TRIM, FILLET and CHAMFER refuse it with AutoCAD's words (`… (not Table objects).`, acadres 33496;
 t04, t04b, t04c); LIST as each of the ten consoles writes it (t08: its corner, normal and direction,
 each `%f` whatever LUPREC, its columns, rows and style); its Properties are its general rows
-(**unverified**); the 1 of other programs' files (ezdxf's, with a block cell and merged cells), a
+(**unverified**); the 1 of other programs' files (ezdxf's, with a block cell and merged cells),
+MULTILEADER as AutoCAD 2027 opens one (probes mleader/m00–m15, v1–v23): its context's branches
+(LEADER{: its landing, 10, its dogleg's direction, 11, and length, 40) and their leader lines
+(LEADER_LINE{: their vertices from the arrowhead's tip), its MTEXT (290 1: 304 with its braces and
+words read apart, 340, 12, 13, 41, 43, 45, 170, 171; one in dynamic columns, 173 2, read one unit
+wide as AutoCAD reads its own, so each word wraps: v13, v14) or block (296 1: 341, 15, 16, 46),
+the arrowhead's size (140) and landing gap (145), its path (170), leader lines' colour (91: an
+AcCmColor, 0xC1 ByBlock, 0xC2 a true colour, 0xC3 an index: v18, v21) and dogleg (291), its
+style (340: MLEADERSTYLE named by ACAD_MLEADERSTYLE, kept with it), in a plane other than +Z its
+OCS's (111 × 112); drawn from these as AutoCAD draws one it opens, whatever the object's own 41
+and 42 or its style say (v1–v12): its MTEXT or block, each branch's dogleg from its landing, each
+leader line from its arrowhead's base through its vertices to the landing (with the dogleg off
+on to where it would end, as a spline always runs: v6, v7), a spline the fit spline through the
+same points, along its first segment and ending along the dogleg, and the closed filled
+arrowhead 1:6 of 140, drawn when the first segment is at least twice it (v15); the same pieces
+as AutoCAD's EXPLODE of each of m12's five (three leaders on two sides, none, a block, a spline,
+two lines of text); picked through them; END at its leader lines' vertices, landings and
+doglegs' ends and INS at its text (m08), its block's objects as a reference's (CEN, QUA, NEA),
+no MID, NEA or PER along its leaders (m08, m09); a grip at each of those points, dragged as
+STRETCH moves it alone (**unverified** on the desktop); MOVE, COPY and ROTATE carry it, SCALE
+scales its arrowhead, landing gap, doglegs, text height and width and block, its own 41 and 42
+left (m05); MIRROR reflects its points and lays its text back by its first landing reading as
+before (MIRRTEXT 0's half-plane), Top Left turned Top Right where it turns round (m06: about
+y = 0 the text stays above its landing, about y = x it reads upward), a block reflected as a
+reference is (m07); STRETCH moves a caught vertex, a landing caught alone along its dogleg, which
+grows to keep its end, a dogleg's end along it with the content, both together and whole by
+the displacement, and never by its text (m06, m07), a dogleg never shorter than none (one end
+dragged past the other stops at it: **unprobed**); EXPLODE leaves its MTEXT or reference, each
+dogleg a LINE, each leader line a polyline or spline and each arrowhead a 2D solid (m03, m12);
+OFFSET, AREA, BREAK, DIVIDE, EXTEND, FILLET and CHAMFER refuse it with AutoCAD's words (m08, m09);
+LIST as each of the ten consoles writes it (m10, m12, m14: its type, content, landing, each
+leader numbered with its vertices and landing, its style, `Annotative: NO`); its Properties are
+its general rows, the palette's title ax26res 731 (Multileader) in each language (**unverified**);
+the 1 of AutoCAD's samples (in a block of Mechanical - Text and Tables) and the 4 of 2 other
+programs' files (dxf-parser's, whose files AutoCAD refuses: m01), a
 hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
 one colour's tint, 452 and 462; its angle, 460, and shift, 461, any but 0 read not centred), drawn
 as AutoCAD draws it (HATCH's entry; gradient/g16, AutoCAD's own file: the nine names, two off
@@ -244,15 +278,19 @@ outlines; its own corners are no intersection (AutoCAD's INT finds them, i02); R
 its scale under `Масштаб`, where its console gives the frame's width (i07), WHY: a translation takes
 English's arguments; a table keeps its style with it, not in a table of the drawing, WHY: nothing
 here makes, edits or picks a table style, so the drawing's table would hold only what its tables
-name (DXFOUT writes one TABLESTYLE per name); a cell's colours, fill, borders and rotation (145,
+name (DXFOUT writes one TABLESTYLE per name), and so does a multileader its MLEADERSTYLE; a
+multileader's text and block wear the object's colour, as neither the context's 90 nor the
+object's 92 changes what AutoCAD draws (v19, v20), and its leader lines' linetype and lineweight
+are the object's (AutoCAD's ByBlock, as its style writes them); its LIST says `Annotative: NO`
+whatever it is, and leaves out AutoCAD's `Handle =` and `Material:` lines; no INT at its landing,
+where AutoCAD's finds one (m08); a cell's colours, fill, borders and rotation (145,
 kept and written back) are not drawn, nor its data type and format but the flag AutoCAD writes
 with no value (0x40000, kept); a table flowing up (TABLESTYLE 70 1) is drawn up from its corner,
 and a tilted one's direction (11) read in the WCS, its corner (10) in its OCS as a reference's
 (**unverified**: no such table probed)
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
-XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
-TOLERANCE, MLINE, meshes, the ordinate
+XLINE, RAY, TOLERANCE, MLINE, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
 Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
@@ -265,7 +303,14 @@ IMAGEFRAME 2 (nothing is plotted here); of a table, TABLE and -TABLE (Auto, from
 Style, Layer, Width, Height: table/t00), TABLEDIT and the editing of its cells, its rows and
 columns (its grips but the corner's, the ribbon's Table Cell tab), TABLESTYLE, TABLEEXPORT,
 fields and formulas, data links, a table broken into fragments, a cell's colours, fill, borders
-and rotation drawn, a table as an edge TRIM and EXTEND cut or reach to (unprobed); a complex linetype's shapes (BATTING, ZIGZAG:
+and rotation drawn, a table as an edge TRIM and EXTEND cut or reach to (unprobed); of a
+multileader, MLEADER (`Specify leader arrowhead location or [pre enter Text/leader Landing
+first/Content first/Options] <Options>:`, AcDimRes 1201–1261, m00, m02, m03), MLEADEREDIT
+(1301–1354, m12), MLEADERALIGN, MLEADERCOLLECT, MLEADERSTYLE, its grips' menus (Add Leader,
+Lengthen, 42419–42424), its other arrowheads (none in the corpus: one is drawn and written back
+closed filled), a block's attribute values (not read, so not written back), its text's frame and
+background, its annotative scales, TRIM taking it (unprobed), and one nested in a block snapped
+as itself (it snaps as the pieces it draws, Nearest along its leaders included); a complex linetype's shapes (BATTING, ZIGZAG:
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
 DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
 and reads the hatch back as a SOLID, g15: here a SOLID too); the index colours as such,
@@ -333,7 +378,16 @@ ACAD_TABLE classes (t00; the console opens the 12 files of t10's drawing with no
 finds its 6 tables, and redraws from ours the very pieces we draw, 214 of them; what it writes
 back reads as the tables it wrote, but the scale it stores for a fitted block cell, which it
 does not draw by, t11; a cell's text longer than 250 characters written whole in its
-CELL_VALUE, **unverified**), a
+CELL_VALUE, **unverified**), a multileader as AutoCAD's DXFOUT writes one (mleader/m02, m11): its
+context, branches and leader lines, its MTEXT with no columns (173 0, so AutoCAD reads its width)
+or its block with its matrix (47; a block the drawing no longer has, no content), its own
+scale, override flags, landing and 41 and 42 as it read them, its leader lines' linetype and
+lineweight ByBlock and its text's and block's colours as AutoCAD's Standard writes them, 270 and
+271–273 from 2010
+and 295 from 2013, before 2010 its version as xdata (ACAD_MLEADERVER, its APPID); a MLEADERSTYLE
+per style (a second of one name numbered) with ACAD_MLEADERSTYLE in the root dictionary and the
+two classes (the console opens the 12 files of m12's drawing with no AUDIT error and explodes
+the 5 multileaders of each into the very 24 pieces it explodes its own into: `same.sh`), a
 leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
 its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given

@@ -2,7 +2,7 @@
 title: "Befehl FÜHRUNG (LEADER) in AutoCAD"
 description: "Wie FÜHRUNG (LEADER) in AutoCAD funktioniert: eine Führungslinie von der Pfeilspitze zum Text, der Haken, die Formatoptionen und der Unterschied zu MLEADER."
 figure: "Eine Bohrung und ihre Anmerkung: FÜHRUNG vom Rand des Kreises, zwei Punkte, dann zwei Textzeilen; das letzte Segment steigt an, deshalb verbindet ein Haken es mit dem Text."
-sourceHash: "1bf39ac320fd"
+sourceHash: "3e9e26bfe826"
 ---
 
 FÜHRUNG (LEADER) zeichnet eine Linie von einer Pfeilspitze zu einer Anmerkung. Wählen Sie den Startpunkt, an dem die Pfeilspitze sitzt, dann beliebig viele weitere Punkte; ab dem zweiten bietet die Eingabeaufforderung <Keyword id="Annotation" /> an, was auch die Eingabetaste wählt, sowie <Keyword id="Format" /> und <Keyword id="Undo" />. Die Eingabetaste bei den ersten beiden Punkten beendet den Befehl, ohne etwas zu zeichnen. Danach geben Sie die Anmerkung Zeile für Zeile ein, mit der Eingabetaste nach jeder, und beenden sie mit der Eingabetaste auf einer leeren Zeile: Die Führungslinie und ihr Text, ein mehrzeiliger Text, entstehen zusammen in einem Schritt, auf dem aktuellen Layer mit der aktuellen Farbe, dem aktuellen Linientyp und der aktuellen Linienstärke.
@@ -27,7 +27,7 @@ Nimmt den letzten Punkt zurück und fragt erneut danach. Beim zweiten Punkt gibt
 
 ## Missing
 
-Die Anmerkungen Toleranz und Block: MellowCAD hat kein Objekt für Form- und Lagetoleranzen, und ein Block wird nicht aus FÜHRUNG heraus eingefügt, daher listet die Optionen-Eingabeaufforderung nur Kopieren, Keine und MText. Andere Pfeilspitzen als die geschlossene, gefüllte, und die eigene Linienfarbe und Linienstärke der Führungslinie aus dem Bemaßungsstil. QLEADER und MLEADER, die Schnellführung und die Multi-Führungslinie, gibt es noch nicht: Die Multi-Führungslinien einer DXF-Datei werden beim Öffnen weggelassen.
+Die Anmerkungen Toleranz und Block: MellowCAD hat kein Objekt für Form- und Lagetoleranzen, und ein Block wird nicht aus FÜHRUNG heraus eingefügt, daher listet die Optionen-Eingabeaufforderung nur Kopieren, Keine und MText. Andere Pfeilspitzen als die geschlossene, gefüllte, und die eigene Linienfarbe und Linienstärke der Führungslinie aus dem Bemaßungsstil. QLEADER und MLEADER, die Schnellführung und die Multi-Führungslinie, gibt es noch nicht: Die Multi-Führungslinien einer DXF-Datei werden geöffnet und wieder gespeichert, aber kein Befehl erstellt eine oder bearbeitet ihre Führungslinien.
 
 ## Questions
 
@@ -37,7 +37,7 @@ FÜHRUNG, englisch LEADER. Geben Sie `FÜHRUNG` ein, dann die Eingabetaste oder 
 
 ### Was ist der Unterschied zwischen FÜHRUNG (LEADER) und MLEADER?
 
-FÜHRUNG ist der ältere Befehl: eine Führungslinie und ein eigener Text, dem die Linie folgt. MLEADER, das AutoCAD heute empfiehlt, erzeugt ein einziges Multi-Führungslinienobjekt mit eigenen Stilen und mehreren Führungslinien zu einer Anmerkung. MellowCAD hat FÜHRUNG; es öffnet und speichert die Führungslinien einer DXF-Datei und lässt deren Multi-Führungslinien weg.
+FÜHRUNG ist der ältere Befehl: eine Führungslinie und ein eigener Text, dem die Linie folgt. MLEADER, das AutoCAD heute empfiehlt, erzeugt ein einziges Multi-Führungslinienobjekt mit eigenen Stilen und mehreren Führungslinien zu einer Anmerkung. MellowCAD hat FÜHRUNG; es öffnet und speichert sowohl die Führungslinien als auch die Multi-Führungslinien einer DXF-Datei, hat aber kein MLEADER, um eine zu erstellen oder zu bearbeiten.
 
 ### Wie erstellt man eine Führungslinie mit Text?
 

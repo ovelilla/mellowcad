@@ -309,6 +309,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "wipeout":
       case "image":
       case "table":
+      case "mleader":
         break
       default: {
         const unhandled: never = entity

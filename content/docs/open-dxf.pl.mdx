@@ -3,7 +3,7 @@ title: Otwórz plik DXF online
 metaTitle: "Otwórz plik DXF online: darmowy podgląd DXF"
 description: "Otwórz plik DXF za darmo w przeglądarce, bez wysyłania: AutoCAD R12 do 2018, tekstowy lub binarny, z warstwami, tekstem, wymiarami, kreskowaniem i blokami."
 type: howTo
-sourceHash: "c91e0f8690ac"
+sourceHash: "d0c802844506"
 faq:
   - question: "Jak otworzyć plik DXF bez AutoCADa?"
     answer: "Wybierz go lub upuść u góry tej strony: MellowCAD otworzy go w swoim edytorze, w przeglądarce, bez instalacji i bez konta. W edytorze plik otwierają też polecenia OTWÓRZ (Ctrl+O) i DXFWE."
@@ -14,7 +14,7 @@ faq:
   - question: "Czy mogę zapisać zmiany jako plik DXF?"
     answer: "Tak. Polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisuje rysunek jako DXF AutoCADa od 2000 do 2018, tekstowy lub binarny, który AutoCAD otwiera. Bryły 3D i regiony są pomijane, a wiersz polecenia o tym informuje."
   - question: "Dlaczego brakuje niektórych obiektów?"
-    answer: "To, dla czego MellowCAD nie ma jeszcze obiektu, na przykład multilinie odniesienia, tolerancje czy bryły 3D, jest pomijane, a wiersz polecenia przy otwieraniu pliku podaje, ile obiektów każdego typu pominięto. To, co jest w układach, liczy się osobno: układów jeszcze nie ma."
+    answer: "To, dla czego MellowCAD nie ma jeszcze obiektu, na przykład multilinie, tolerancje czy bryły 3D, jest pomijane, a wiersz polecenia przy otwieraniu pliku podaje, ile obiektów każdego typu pominięto. To, co jest w układach, liczy się osobno: układów jeszcze nie ma."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Gdy DXF zawiera coś, dla czego MellowCAD nie ma jeszcze obiektu, otwiera reszt�
 
 - ślady (TRACE) i siatki;
 - linie konstrukcyjne i półproste, multilinie;
-- multilinie odniesienia i tolerancje;
+- tolerancje;
 - bryły 3D, regiony i powierzchnie;
 - wymiary współrzędnych i długości łuku.
 
@@ -51,6 +51,7 @@ Niektóre rzeczy się otwierają, ale nie całkiem w takiej postaci, w jakiej by
 - Odnośnik zewnętrzny zachowuje swoje położenie i ścieżkę i jest rysowany tak, jak AutoCAD rysuje odnośnik, którego rysunku nie może znaleźć: `Odnośnik zewnętrzny` i ścieżka w jego punkcie wstawienia. Strona odczytuje tylko przekazany jej plik, nigdy rysunków obok niego; po ponownym zapisie jako DXF odnośnik zostaje zachowany.
 - Obraz zachowuje swoje położenie, rozmiar i ścieżkę do swojego pliku i jest rysowany tak, jak AutoCAD rysuje obraz, którego pliku nie może znaleźć: jego ramka, zgodnie z IMAGEFRAME, i ścieżka zapisana wewnątrz. Po ponownym zapisie jako DXF obraz zostaje zachowany.
 - Tabela zachowuje swoje wiersze, kolumny, komórki i styl i jest z nich rysowana tak, jak rysuje ją AutoCAD: tekst każdej komórki według jej wyrównania, blok w komórce dopasowany do komórki. Po ponownym zapisaniu jako DXF tabela zostaje zachowana.
+- Wielolinia odniesienia zachowuje swoje linie odniesienia, tekst lub blok i styl i jest z nich rysowana tak, jak rysuje ją AutoCAD: każda linia odniesienia z grotem i linią łączącą. Po ponownym zapisaniu jako DXF wielolinia odniesienia zostaje zachowana.
 
 ## Otwórz go w edytorze [#editor]
 
@@ -80,4 +81,4 @@ Tak. Polecenie <Command id="SAVEAS" /> (`Ctrl+Shift+S`) lub <Command id="DXFOUT"
 
 ### Dlaczego brakuje niektórych obiektów? [#missing]
 
-To, dla czego MellowCAD nie ma jeszcze obiektu, na przykład multilinie odniesienia, tolerancje czy bryły 3D, jest pomijane, a wiersz polecenia przy otwieraniu pliku podaje, ile obiektów każdego typu pominięto. To, co jest w układach, liczy się osobno: układów jeszcze nie ma.
+To, dla czego MellowCAD nie ma jeszcze obiektu, na przykład multilinie, tolerancje czy bryły 3D, jest pomijane, a wiersz polecenia przy otwieraniu pliku podaje, ile obiektów każdego typu pominięto. To, co jest w układach, liczy się osobno: układów jeszcze nie ma.

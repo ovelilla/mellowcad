@@ -671,6 +671,7 @@ describe("writeDxf", () => {
       "wipeouts-2018",
       "images-2018",
       "tables-2018",
+      "mleaders-2018",
     ]) {
       const drawing =
         name === "points-2018"

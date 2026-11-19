@@ -1,0 +1,12 @@
+(progn (defun dumpfrom (e) (while e (print (entget e)) (setq e (entnext e))) (princ)) (setvar "QAFLAGS" 2) (setvar "OSMODE" 0) (princ))
+_AUDIT
+_N
+(dumpfrom (entnext))
+_LIST
+_ALL
+
+(setq S (entlast))
+_EXPLODE
+_ALL
+
+(dumpfrom (entnext S))
