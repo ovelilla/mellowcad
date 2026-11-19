@@ -3,7 +3,7 @@ title: DXF-fájl megnyitása online
 metaTitle: "DXF-fájl megnyitása online, ingyen"
 description: "Nyisson meg DXF-fájlt ingyen, online, feltöltés nélkül: AutoCAD R12–2018, ASCII vagy bináris, fóliákkal, szövegekkel, méretekkel, sraffozásokkal, blokkokkal."
 type: howTo
-sourceHash: "83dd0b7996e3"
+sourceHash: "a0eb0a40694b"
 faq:
   - question: "Hogyan nyithatok meg DXF-fájlt AutoCAD nélkül?"
     answer: "Válassza ki, vagy húzza az oldal tetejére: a MellowCAD megnyitja a szerkesztőjében, a böngészőben, telepítés és fiók nélkül. A szerkesztőben a MEGNYIT (Ctrl+O) és a DXFBE parancs is megnyitja."
@@ -36,7 +36,7 @@ Ha a DXF olyasmit tartalmaz, amihez a MellowCAD-ben még nincs objektumtípus, a
 
 - a TRACE objektumok és a hálók;
 - a szerkesztővonalak és a sugarak, a többszörösvonalak;
-- a többszörös mutatók és a tűrések, a táblázatok és a képek;
+- a többszörös mutatók, a tűrések és a táblázatok;
 - a 3D szilárdtestek, a lemezek és a felületek;
 - a koordinátaméretek és az ívhosszméretek.
 
@@ -49,6 +49,7 @@ Néhány dolog megnyílik, de nem egészen olyan, mint volt:
 - A hüvelykben vagy lábban készült rajz megtartja a számait, amelyeket a program milliméterként értelmez.
 - A szöveg az Arial betűtípus méreteivel jelenik meg, bármilyen betűtípust nevez is meg a stílusa, szélességi tényező és dőlésszög nélkül.
 - A külső referencia megtartja a helyét és az elérési útját, és úgy jelenik meg, ahogy az AutoCAD rajzolja azt a referenciát, amelynek a rajzát nem találja: `Xref` és az elérési út a beszúrási pontjában. Egy weboldal csak a neki átadott fájlt olvashatja be, a mellette lévő rajzokat soha; ha újra DXF-ként menti, a referencia megmarad.
+- A kép megtartja a helyét, a méretét és a fájlja elérési útját, és úgy jelenik meg, ahogy az AutoCAD azt a képet rajzolja, amelynek a fájlját nem találja: a kerete az IMAGEFRAME szerint, benne pedig az elérési út. Ha újra DXF-ként menti, a kép megmarad.
 
 ## Megnyitás a szerkesztőben [#editor]
 

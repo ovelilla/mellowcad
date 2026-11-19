@@ -1,0 +1,20 @@
+_-IMAGE
+FOO
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\pic.bmp
+10,20
+3
+0
+(entget (entlast))
+(entget (cdr (assoc 340 (entget (entlast)))))
+(getvar "IMAGEFRAME")
+QAFLAGS
+2
+_LIST
+_L
+
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\i00.dxf
+_V
+2018
+16

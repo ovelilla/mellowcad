@@ -20,7 +20,7 @@ import {
   withNormal,
   withThickness,
 } from "../../domain/entities"
-import type { Entity } from "../../domain/entities"
+import type { Entity, ImageEntity } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { linetypeNamed } from "../../domain/linetypes"
 import { ACADISO_LIN } from "../../domain/linetypeLibrary"
@@ -267,6 +267,67 @@ describe("writeDxf", () => {
         expect(back.settings.wipeoutFrame).toBe(2)
       }
     }
+  })
+
+  it("writes images and IMAGEFRAME, read back the same", () => {
+    const drawing = parseDxf(fixture("images-2018")).drawing
+    const images = (entities: readonly Entity[]) =>
+      entities.filter((e) => e.type === "image")
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        const back = parseDxf(bytes).drawing
+        expect(shape(images(back.entities))).toEqual(
+          shape(images(drawing.entities))
+        )
+        expect(back.settings.imageFrame).toBe(2)
+      }
+    }
+  })
+
+  it("keeps an image's clip turned off, and names two definitions apart", () => {
+    const [read] = parseDxf(fixture("images-2018")).drawing.entities.filter(
+      (e): e is ImageEntity => e.type === "image" && e.clip !== undefined
+    )
+    const off: ImageEntity = { ...read, clip: { ...read.clip!, off: true } }
+    const other: ImageEntity = {
+      ...read,
+      id: "other",
+      image: { ...read.image, path: "D:\\elsewhere\\pic.bmp" },
+    }
+    const drawing = snapshotOf([off, other])
+    const { bytes } = writeDxf(drawing, {
+      version: "2018",
+      binary: false,
+      precision: 16,
+    })
+    const text = new TextDecoder().decode(bytes).replace(/\r/g, "")
+    expect(text).toMatch(/\n {2}3\npic\n350\n/)
+    expect(text).toMatch(/\n {2}3\npic2\n350\n/)
+    const back = parseDxf(bytes).drawing.entities as ImageEntity[]
+    expect(back[0].clip?.off).toBe(true)
+    expect(back[1].clip?.off).toBeUndefined()
+    expect(back.map((e) => e.image.name)).toEqual(["pic", "pic2"])
+  })
+
+  it("writes IMAGEFRAME 0 with no image, as RASTERVARIABLES' 70", () => {
+    const drawing = snapshotOf([lineOf(p(0, 0), p(10, 0))])
+    const off = {
+      ...drawing,
+      settings: { ...drawing.settings, imageFrame: 0 as const },
+    }
+    const text = new TextDecoder().decode(
+      writeDxf(off, { version: "2018", binary: false, precision: 16 }).bytes
+    )
+    expect(text.replace(/\r/g, "")).toMatch(
+      /AcDbRasterVariables\n 90\n {8}0\n 70\n {5}0\n/
+    )
+    expect(parseDxf(text).drawing.settings.imageFrame).toBe(0)
   })
 
   it("writes 3D faces, read back the same", () => {
@@ -569,6 +630,7 @@ describe("writeDxf", () => {
       "gradients-2018",
       "faces-2018",
       "wipeouts-2018",
+      "images-2018",
     ]) {
       const drawing =
         name === "points-2018"

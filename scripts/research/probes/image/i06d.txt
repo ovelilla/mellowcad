@@ -1,0 +1,14 @@
+_ZOOM
+_E
+_STRETCH
+_C
+9,19
+11,21
+
+0,0
+5,5
+QAFLAGS
+2
+_LIST
+_L
+

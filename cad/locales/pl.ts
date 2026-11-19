@@ -463,6 +463,18 @@ export const pl: EngineLocale = {
             "other": "Przykrycia"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Obraz rastrowy",
+            "few": "Obrazy rastrowe",
+            "many": "Obrazów rastrowych",
+            "other": "Obrazu rastrowego"
+          }
+        ]
       ]
     },
     "array": {
@@ -6205,6 +6217,7 @@ export const pl: EngineLocale = {
             "leader": "LEADER",
             "face3d": "POWIERZCHNIA 3D",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "SZYK"
           }
         ]
@@ -8427,6 +8440,139 @@ export const pl: EngineLocale = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Obraz:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Punkt wstawienia:        X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Skala:                   ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Kąt obrotu:              ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Jasność:                 ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Kontrast:                ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Przygaszenie:          ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Pokaż obraz:             ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Tak",
+            "other": "Nie"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Pokaż nieprostopadłe:    ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Tak",
+            "other": "Nie"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Przezroczystość tła:     ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Tak",
+            "other": "Nie"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Przycinanie:             ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Tak",
+            "other": "Nie"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Typ obwiedni tnącej:     ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Wielobok",
+            "other": "Prostokąt"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       od punktu, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Kierunek wzrostu grubości względem LUW:\n                         X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

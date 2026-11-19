@@ -107,6 +107,7 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "leader":
     case "face3d":
     case "wipeout":
+    case "image":
       return null
     default: {
       const unhandled: never = entity

@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Deska} few {Desky} many {Desky} other {Desky}}",
       "face3d": "{count, plural, one {3D plocha} few {3D plochy} many {3D plochy} other {3D plochy}}",
       "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}",
-      "wipeout": "{count, plural, one {Překrytí} few {Překrytí} many {Překrytí} other {Překrytí}}"
+      "wipeout": "{count, plural, one {Překrytí} few {Překrytí} many {Překrytí} other {Překrytí}}",
+      "image": "{count, plural, one {Rastrový obrázek} few {Rastrové obrázky} many {Rastrového obrázku} other {Rastrových obrázků}}"
     },
     "array": {
       "rectangular": "Pole (obdélníkové)",
@@ -2845,7 +2846,7 @@
       "notAFitPoint": "Není bod vyhlazení.",
       "notAControlVertex": "Není řídicí vrchol.",
       "allAdditionsUndone": "Všechna doplnění byla vrácena zpět.",
-      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} other {POLE}}",
+      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} image {IMAGE} other {POLE}}",
       "listObject": "                  {name}   Hladina: \"{layer}\"",
       "listSpace": "                             Prostor: Modelový prostor",
       "listColor": "                   Barva: {color}    Typ čáry: \"{linetype}\"",
@@ -3157,7 +3158,21 @@
       "listLeaderAnnotative": "        Poznámky: Ne",
       "wipeoutPolylineNotClosed": "Křivka musí být uzavřená a složená jen z úsečkových segmentů.",
       "listWipeoutPoints": "Počet bodů hranice: {count}",
-      "listWipeoutPoint": "       v bodě, X = {x}, Y = {y}, Z = {z}"
+      "listWipeoutPoint": "       v bodě, X = {x}, Y = {y}, Z = {z}",
+      "listImageName": "Obrázek:                   {name}",
+      "listImageInsertion": "Vložení:               X={x},  Y={y},  Z={z}",
+      "listImageScale": "Měřítko:                   {scale}",
+      "listImageRotation": "Úhel otočení:          {angle}",
+      "listImageBrightness": "Jas:                         {value}",
+      "listImageContrast": "Kontrast:                 {value}",
+      "listImageFade": "Útlum:                   {value}",
+      "listImageShown": "Zobrazit obrázek:      {shown, select, yes {Ano} other {Ne}}",
+      "listImageNonOrtho": "Zobrazit nepravoúhlé:  {shown, select, yes {Ano} other {Ne}}",
+      "listImageTransparency": "Průhlednost pozadí:            {on, select, yes {Ano} other {Ne}}",
+      "listImageClipping": "Oříznutí:                {on, select, yes {Ano} other {Ne}}",
+      "listImageClipType": "Typ hranice oříznutí:    {polygonal, select, yes {Polygon} other {Obdélník}}",
+      "listImagePoint": "       v bodě, X = {x},  Y = {y},  Z = {z}",
+      "listImageExtrusion": "Směr vytažení vzhzledem k UCS:\n                   X ={x}    Y ={y}    Z = {z}"
     },
     "feedback": {
       "snap": {

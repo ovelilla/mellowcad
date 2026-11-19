@@ -1,0 +1,12 @@
+IMAGEFRAME
+2
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\i08-2018.dxf
+_V
+2018
+16
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\i08-2000.dxf
+_V
+2000
+16

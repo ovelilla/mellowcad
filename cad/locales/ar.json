@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {مجسم ثنائي الأبعاد} two {مجسمان ثنائيا الأبعاد} other {مجسمات ثنائية الأبعاد}}",
       "face3d": "{count, plural, one {وجه ثلاثي الأبعاد} two {وجهان ثلاثيا الأبعاد} other {أوجه ثلاثية الأبعاد}}",
       "leader": "{count, plural, one {خط إشارة} two {خطا إشارة} other {خطوط إشارة}}",
-      "wipeout": "{count, plural, one {قناع} two {قناعان} other {أقنعة}}"
+      "wipeout": "{count, plural, one {قناع} two {قناعان} other {أقنعة}}",
+      "image": "{count, plural, one {صورة نقطية} two {صورتان نقطيتان} other {صور نقطية}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",

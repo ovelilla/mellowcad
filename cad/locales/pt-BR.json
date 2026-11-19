@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Sólido} other {Sólidos}}",
       "face3d": "{count, plural, one {Face 3D} other {Faces 3D}}",
       "leader": "{count, plural, one {Linha de chamada} other {Linhas de chamada}}",
-      "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}"
+      "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}",
+      "image": "{count, plural, one {Imagem raster} other {Imagens raster}}"
     },
     "array": {
       "rectangular": "Matriz (Retangular)",
@@ -2836,7 +2837,7 @@
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
       "allAdditionsUndone": "Todas as adições foram desfeitas.",
-      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} wipeout {WIPEOUT} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} wipeout {WIPEOUT} image {IMAGE} other {MATRIZ}}",
       "listObject": "                  {name}  Camada: \"{layer}\"",
       "listSpace": "                            Espaço: Espaço do modelo",
       "listColor": "                   Cor: {color}    Tipo de linha: \"{linetype}\"",
@@ -3148,7 +3149,21 @@
       "listLeaderAnnotative": "        Anotativo: Não",
       "wipeoutPolylineNotClosed": "A polilinha deve estar fechada e ser formada apenas por segmentos de linha.",
       "listWipeoutPoints": "Número de pontos de limite: {count}",
-      "listWipeoutPoint": "       no ponto, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       no ponto, X={x},  Y={y},  Z={z}",
+      "listImageName": "Imagem:             {name}",
+      "listImageInsertion": "Inserção:         X={x},  Y={y},  Z={z}",
+      "listImageScale": "Escala:             {scale}",
+      "listImageRotation": "Ângulo de rotação:    {angle}",
+      "listImageBrightness": "Brilho:        {value}",
+      "listImageContrast": "Contraste:          {value}",
+      "listImageFade": "Esmaecimento:              {value}",
+      "listImageShown": "Mostrar imagem:        {shown, select, yes {Sim} other {Não}}",
+      "listImageNonOrtho": "Mostrar não ortogonal:    {shown, select, yes {Sim} other {Não}}",
+      "listImageTransparency": "Transparência do plano de fundo:      {on, select, yes {Ativado} other {Desativado}}",
+      "listImageClipping": "Corte:          {on, select, yes {Ativado} other {Desativado}}",
+      "listImageClipType": "Objeto limite de corte: {polygonal, select, yes {Poligonal} other {Retangular}}",
+      "listImagePoint": "       no ponto, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Direção de extrusão em relação ao UCS:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

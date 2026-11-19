@@ -1,0 +1,7 @@
+IMAGEFRAME
+0
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\i09-f0.dxf
+_V
+2018
+16

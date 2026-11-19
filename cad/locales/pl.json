@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Bryła} few {Bryły} many {Brył} other {Bryły}}",
       "face3d": "{count, plural, one {Powierzchnia 3D} few {Powierzchnie 3D} many {Powierzchni 3D} other {Powierzchni 3D}}",
       "leader": "{count, plural, one {Linia odniesienia} few {Linie odniesienia} many {Linii odniesienia} other {Linii odniesienia}}",
-      "wipeout": "{count, plural, one {Przykrycie} few {Przykrycia} many {Przykryć} other {Przykrycia}}"
+      "wipeout": "{count, plural, one {Przykrycie} few {Przykrycia} many {Przykryć} other {Przykrycia}}",
+      "image": "{count, plural, one {Obraz rastrowy} few {Obrazy rastrowe} many {Obrazów rastrowych} other {Obrazu rastrowego}}"
     },
     "array": {
       "rectangular": "Szyk (Prostokątny)",
@@ -2845,7 +2846,7 @@
       "notAFitPoint": "Nie jest punktem dopasowania.",
       "notAControlVertex": "Nie jest wierzchołkiem sterującym.",
       "allAdditionsUndone": "Wszystkie dodatkowe punkty zostały cofnięte.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} other {SZYK}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} image {IMAGE} other {SZYK}}",
       "listObject": "                  {name}    Warstwa: \"{layer}\"",
       "listSpace": "                              Obszar: Obszar modelu",
       "listColor": "                   Kolor: {color}    Rodzaj linii: \"{linetype}\"",
@@ -3157,7 +3158,21 @@
       "listLeaderAnnotative": "        Opisowy: Nie",
       "wipeoutPolylineNotClosed": "Polilinia musi być zamknięta i składać się wyłącznie z segmentów linii.",
       "listWipeoutPoints": "Liczba punktów obwiedni: {count}",
-      "listWipeoutPoint": "       od punktu, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       od punktu, X={x},  Y={y},  Z={z}",
+      "listImageName": "Obraz:                   {name}",
+      "listImageInsertion": "Punkt wstawienia:        X = {x}, Y = {y}, Z = {z}",
+      "listImageScale": "Skala:                   {scale}",
+      "listImageRotation": "Kąt obrotu:              {angle}",
+      "listImageBrightness": "Jasność:                 {value}",
+      "listImageContrast": "Kontrast:                {value}",
+      "listImageFade": "Przygaszenie:          {value}",
+      "listImageShown": "Pokaż obraz:             {shown, select, yes {Tak} other {Nie}}",
+      "listImageNonOrtho": "Pokaż nieprostopadłe:    {shown, select, yes {Tak} other {Nie}}",
+      "listImageTransparency": "Przezroczystość tła:     {on, select, yes {Tak} other {Nie}}",
+      "listImageClipping": "Przycinanie:             {on, select, yes {Tak} other {Nie}}",
+      "listImageClipType": "Typ obwiedni tnącej:     {polygonal, select, yes {Wielobok} other {Prostokąt}}",
+      "listImagePoint": "       od punktu, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Kierunek wzrostu grubości względem LUW:\n                         X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

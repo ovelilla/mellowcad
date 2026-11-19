@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Solido} other {Solidi}}",
       "face3d": "{count, plural, one {Faccia 3D} other {Facce 3D}}",
       "leader": "{count, plural, one {Direttrice} other {Direttrici}}",
-      "wipeout": "{count, plural, one {Entità coprente} other {Entità coprenti}}"
+      "wipeout": "{count, plural, one {Entità coprente} other {Entità coprenti}}",
+      "image": "{count, plural, one {Immagine raster} other {Immagini raster}}"
     },
     "array": {
       "rectangular": "Serie (rettangolare)",
@@ -2849,7 +2850,7 @@
       "notAFitPoint": "Non è un punto di adattamento.",
       "notAControlVertex": "Non è un vertice di controllo.",
       "allAdditionsUndone": "Tutte le aggiunte sono state annullate.",
-      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} other {SERIE}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} other {SERIE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Spazio: Spazio modello",
       "listColor": "                   Colore: {color}    Tipo di linea: \"{linetype}\"",
@@ -3161,7 +3162,21 @@
       "listLeaderAnnotative": "        Annotativa: No",
       "wipeoutPolylineNotClosed": "La polilinea deve essere chiusa e composta esclusivamente da segmenti di linea.",
       "listWipeoutPoints": "Numero di punti di contorno: {count}",
-      "listWipeoutPoint": "       al punto, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       al punto, X={x},  Y={y},  Z={z}",
+      "listImageName": "Immagine:                   {name}",
+      "listImageInsertion": "Inserimento:              X={x},  Y={y},  Z={z}",
+      "listImageScale": "Scala:                    {scale}",
+      "listImageRotation": "Angolo di rotazione:      {angle}",
+      "listImageBrightness": "Luminosità:              {value}",
+      "listImageContrast": "Contrasto:                {value}",
+      "listImageFade": "Sfumatura:                    {value}",
+      "listImageShown": "Mostra immagine:              {shown, select, yes {Sì} other {No}}",
+      "listImageNonOrtho": "Mostra non ortogonale:          {shown, select, yes {Sì} other {No}}",
+      "listImageTransparency": "Trasparenza sfondo: {on, select, yes {On} other {Off}}",
+      "listImageClipping": "Ritaglio:                       {on, select, yes {On} other {Off}}",
+      "listImageClipType": "Tipo contorno di ritaglio:      {polygonal, select, yes {Poligonale} other {Rettangolare}}",
+      "listImagePoint": "       al punto, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Direzione di estrusione relativa al sistema UCS:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

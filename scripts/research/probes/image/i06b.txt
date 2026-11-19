@@ -1,0 +1,8 @@
+_ZOOM
+_E
+_OFFSET
+1
+10,30
+5,30
+
+(progn (setq s (ssget "_X") i 0 r "") (if s (repeat (sslength s) (setq r (strcat r " " (cdr (assoc 0 (entget (ssname s i)))))) (setq i (1+ i)))) (princ (strcat "\nOBJECTS:" r)) (princ))

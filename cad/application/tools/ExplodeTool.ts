@@ -20,6 +20,7 @@ import {
   isXref,
   leaderLook,
   wipeoutEdges,
+  imageEdges,
 } from "../../domain/entities"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
 import { hatchLines } from "../../domain/hatchPatternEdits"
@@ -44,6 +45,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "solid3d",
   "leader",
   "wipeout",
+  "image",
 ])
 
 /**
@@ -257,6 +259,16 @@ export class ExplodeTool extends SelectionActionTool {
         // last, with its layer and properties (wipeout/w08, w10).
         removedIds.push(entity.id)
         for (const [a, b] of wipeoutEdges(entity)) {
+          pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
+        }
+        continue
+      }
+      if (entity.type === "image") {
+        // Its frame's four lines, up from its insertion corner, across, down
+        // and back, whatever its clip, saying nothing; its path goes
+        // (image/i06a, the clipped one's plot).
+        removedIds.push(entity.id)
+        for (const [a, b] of imageEdges(entity)) {
           pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
         }
         continue

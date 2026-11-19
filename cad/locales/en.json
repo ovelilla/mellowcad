@@ -260,7 +260,8 @@
       "solid2d": "{count, plural, one {Solid} other {Solids}}",
       "face3d": "{count, plural, one {3D Face} other {3D Faces}}",
       "leader": "{count, plural, one {Leader} other {Leaders}}",
-      "wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}"
+      "wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
+      "image": "{count, plural, one {Raster Image} other {Raster Images}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -2715,7 +2716,7 @@
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
       "allAdditionsUndone": "All the additions are undone.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -3027,7 +3028,21 @@
       "listLeaderAnnotative": "        Annotative: No",
       "wipeoutPolylineNotClosed": "The polyline must be closed and made up of only line segments.",
       "listWipeoutPoints": "Number of boundary points: {count}",
-      "listWipeoutPoint": "       at point, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       at point, X={x},  Y={y},  Z={z}",
+      "listImageName": "Image:                   {name}",
+      "listImageInsertion": "Insertion:               X={x},  Y={y},  Z={z}",
+      "listImageScale": "Scale:                   {scale}",
+      "listImageRotation": "Rotation angle:          {angle}",
+      "listImageBrightness": "Brightness:              {value}",
+      "listImageContrast": "Contrast:                {value}",
+      "listImageFade": "Fade:                    {value}",
+      "listImageShown": "Show image:              {shown, select, yes {Yes} other {No}}",
+      "listImageNonOrtho": "Show non-ortho:          {shown, select, yes {Yes} other {No}}",
+      "listImageTransparency": "Background Transparency: {on, select, yes {On} other {Off}}",
+      "listImageClipping": "Clipping:                {on, select, yes {On} other {Off}}",
+      "listImageClipType": "Clip boundary type:      {polygonal, select, yes {Polygonal} other {Rectangular}}",
+      "listImagePoint": "       at point, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Extrusion direction relative to UCS:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

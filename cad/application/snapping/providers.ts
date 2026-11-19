@@ -348,7 +348,9 @@ export const insertionProvider: SnapProvider = {
         entity.type === "text" ||
         entity.type === "mtext" ||
         entity.type === "attdef" ||
-        entity.type === "insert"
+        entity.type === "insert" ||
+        // An image's lower-left corner (image/i02).
+        entity.type === "image"
       ) {
         candidates.push(
           notable(SnapType.Insertion, entity, entity.position, touch)

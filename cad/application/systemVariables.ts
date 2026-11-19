@@ -562,6 +562,20 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     ),
     regenerates: true,
   },
+  // Saved in the drawing; set, the model regenerates (image/i02).
+  {
+    ...integer(
+      "IMAGEFRAME",
+      0,
+      2,
+      (settings) => settings.imageFrame,
+      (value) =>
+        value === 0 || value === 1 || value === 2
+          ? patch({ imageFrame: value })
+          : null
+    ),
+    regenerates: true,
+  },
   heldInteger("ARRAYASSOCIATIVITY", 0, 1),
   {
     type: "integer",

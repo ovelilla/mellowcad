@@ -423,6 +423,16 @@ export const fr: EngineLocale = {
             "other": "Masques"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Image raster",
+            "other": "Images raster"
+          }
+        ]
       ]
     },
     "array": {
@@ -6100,6 +6110,7 @@ export const fr: EngineLocale = {
             "leader": "LEADER",
             "face3d": "FACE3D",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "RESEAU"
           }
         ]
@@ -8325,6 +8336,139 @@ export const fr: EngineLocale = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Image:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Insertion:               X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Echelle:                 ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Angle de rotation:       ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Luminosité:              ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Contraste:               ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Estompe:                    ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Afficher l'image:              ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Oui",
+            "other": "Non"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Afficher non-ortho:          ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Oui",
+            "other": "Non"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Transparence d'arrière-plan: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Actif",
+            "other": "Inactif"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Délimitation:                    ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Actif",
+            "other": "Inactif"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Type de contour de délimitation: ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Polygonal",
+            "other": "Rectangulaire"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       au niveau du point, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Direction de l'extrusion par rapport au SCU:\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

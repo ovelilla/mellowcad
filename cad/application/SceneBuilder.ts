@@ -53,6 +53,9 @@ import {
   mtextToWorld,
   isWidePolyline,
   solid2dOutline,
+  imageCorners,
+  imageLabel,
+  type ImageLabel,
   leaderGeometry,
   leaderLook,
   leaderPathEntity,
@@ -220,6 +223,8 @@ export interface SceneInput {
   readonly fillMode?: boolean
   /** WIPEOUTFRAME: whether a wipeout's frame shows (0 hides it); 1 when absent. */
   readonly wipeoutFrame?: number
+  /** IMAGEFRAME: whether an image's frame shows (0 hides it); 1 when absent. */
+  readonly imageFrame?: number
   /** ISOLINES: a solid's curved faces' isolines; a new drawing's 4 when absent. */
   readonly isolines?: number
   /** PDMODE: the figure points show; a dot when absent. */
@@ -319,7 +324,8 @@ export function buildScene(input: SceneInput): Scene {
     input.visualStyle ?? "2dWireframe",
     input.viewDirection ?? { x: 0, y: 0, z: 1 },
     input.viewUp ?? { x: 0, y: 1, z: 0 },
-    input.wipeoutFrame ?? 1
+    input.wipeoutFrame ?? 1,
+    input.imageFrame ?? 1
   )
   if (input.ucsIcon) {
     pushUcsIcon(
@@ -784,6 +790,8 @@ export interface EntityDrawOptions {
    * frame unless 0. Absent, as a ghost or a highlight is drawn: its frame alone.
    */
   readonly wipeoutFrame?: number
+  /** IMAGEFRAME, for an image: its frame unless 0; shown when absent. */
+  readonly imageFrame?: number
   /** ISOLINES, for a solid's curved faces; a new drawing's 4 when absent. */
   readonly isolines?: number
   /** PDMODE and the size PDSIZE gives at this view (`pointSize`); a dot when absent. */
@@ -1248,6 +1256,23 @@ function planarShapes(
         },
       ]
     }
+    case "image": {
+      // As AutoCAD draws one whose file it cannot find: its frame, as
+      // IMAGEFRAME shows it, and the path across it, in its colour, masking
+      // nothing (image/i01, the colour plot).
+      const out: ScenePrimitive[] = []
+      if ((options.imageFrame ?? 1) !== 0) {
+        out.push({
+          kind: "path",
+          points: imageCorners(entity).map((p) => camera.worldToScreen(p)),
+          closed: true,
+          stroke,
+        })
+      }
+      const label = imageLabel(entity)
+      if (label) out.push(imageLabelPrimitive(camera, label, stroke.color))
+      return out
+    }
     case "solid2d": {
       // Filled only with FILLMODE on and seen square on; else its outline,
       // corners 1, 2, 4, 3 (solid2d/d02).
@@ -1663,6 +1688,36 @@ function textPrimitive(
       down.y / pixels,
     ],
     align,
+    color,
+  }
+}
+
+/**
+ * An image's path in the image's plane: along its `u` and up its `v`, which
+ * MIRROR leaves turning the other way, so it reads mirrored (image/i06e).
+ */
+function imageLabelPrimitive(
+  camera: CameraTransform,
+  label: ImageLabel,
+  color: string
+): ScenePrimitive {
+  const at = camera.worldToScreen(label.at)
+  const along = V.sub(camera.worldToScreen(V.add(label.at, label.along)), at)
+  const down = V.sub(camera.worldToScreen(V.sub(label.at, label.up)), at)
+  const pixels = camera.worldToScreenDistance(1)
+  return {
+    kind: "text",
+    at,
+    text: label.text,
+    height: Math.max(label.height * pixels, 0.01),
+    rotation: 0,
+    matrix: [
+      along.x / pixels,
+      along.y / pixels,
+      down.x / pixels,
+      down.y / pixels,
+    ],
+    align: "center",
     color,
   }
 }
@@ -2232,7 +2287,8 @@ function pushEntities(
   visualStyle: VisualStyle,
   viewDirection: Vec3,
   viewUp: Vec3,
-  wipeoutFrame: number
+  wipeoutFrame: number,
+  imageFrame: number
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
@@ -2363,6 +2419,7 @@ function pushEntities(
       points,
       solidLines,
       wipeoutFrame,
+      imageFrame,
       // A gradient's own colours fade as the stroke does.
       ownColor: isFaded
         ? (color: string) => fadedColor(color)
@@ -2471,12 +2528,14 @@ export function selectionGlow(
     entity,
     { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
     // A wipeout's glow is its frame, shown whatever WIPEOUTFRAME, as AutoCAD
-    // shows it on a selected one (its help's WIPEOUTFRAME page).
+    // shows it on a selected one (its help's WIPEOUTFRAME page); an image's
+    // too (unverified: no desktop pass).
     {
       ...options,
       linetype: false,
       ownColor: undefined,
       wipeoutFrame: undefined,
+      imageFrame: undefined,
     }
   )
 }

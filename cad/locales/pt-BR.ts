@@ -423,6 +423,16 @@ export const ptBR: EngineLocale = {
             "other": "Coberturas"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Imagem raster",
+            "other": "Imagens raster"
+          }
+        ]
       ]
     },
     "array": {
@@ -6087,6 +6097,7 @@ export const ptBR: EngineLocale = {
             "leader": "LEADER",
             "face3d": "FACE 3D",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "MATRIZ"
           }
         ]
@@ -8332,6 +8343,139 @@ export const ptBR: EngineLocale = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Imagem:             ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Inserção:         X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Escala:             ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Ângulo de rotação:    ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Brilho:        ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Contraste:          ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Esmaecimento:              ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Mostrar imagem:        ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Sim",
+            "other": "Não"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Mostrar não ortogonal:    ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Sim",
+            "other": "Não"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Transparência do plano de fundo:      ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ativado",
+            "other": "Desativado"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Corte:          ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ativado",
+            "other": "Desativado"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Objeto limite de corte: ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Poligonal",
+            "other": "Retangular"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       no ponto, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Direção de extrusão em relação ao UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

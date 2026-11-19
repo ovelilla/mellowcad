@@ -27,18 +27,22 @@ export interface DxfFile {
   readonly tables: ReadonlyMap<string, readonly DxfRecord[]>
   readonly blocks: readonly DxfBlock[]
   readonly entities: readonly DxfRecord[]
-  /** The objects of OBJECTS the reader uses: WIPEOUTVARIABLES, WIPEOUTFRAME's. */
+  /** The objects of OBJECTS the reader uses: WIPEOUTFRAME's, the images'. */
   readonly objects: readonly DxfRecord[]
 }
 
 /**
- * The OBJECTS records kept, WIPEOUTFRAME's (wipeout/w15, w16): its
+ * The OBJECTS records kept: WIPEOUTFRAME's (wipeout/w15, w16), its
  * WIPEOUTVARIABLES object, the drawing variables and the dictionary naming
- * WIPEOUTFRAME's; every other object is skipped.
+ * WIPEOUTFRAME's; the images' (image/i08), each IMAGEDEF, IMAGEFRAME's
+ * RASTERVARIABLES and ACAD_IMAGE_DICT, which names them, found through the
+ * root dictionary. Every other object is skipped.
  */
 const OBJECTS_READ: ReadonlySet<string> = new Set([
   "WIPEOUTVARIABLES",
   "DICTIONARYVAR",
+  "IMAGEDEF",
+  "RASTERVARIABLES",
 ])
 
 /**
@@ -161,6 +165,7 @@ class GroupReader {
 }
 
 function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
+  let imageDictionary: string | undefined
   while (!reader.at("ENDSEC")) {
     reader.expectMore()
     if (reader.code() === 0 && OBJECTS_READ.has(reader.value().trim())) {
@@ -172,7 +177,19 @@ function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
       const names = dictionary.values.filter(
         (_, i) => dictionary.codes[i] === 3
       )
-      if (names.some((name) => name.trim() === "WIPEOUTFRAME")) {
+      const at = dictionary.codes.findIndex(
+        (code, i) =>
+          code === 3 && dictionary.values[i].trim() === "ACAD_IMAGE_DICT"
+      )
+      if (at >= 0 && dictionary.codes[at + 1] === 350) {
+        imageDictionary = dictionary.values[at + 1].trim().toUpperCase()
+      }
+      const handle = dictionary.values[dictionary.codes.indexOf(5)]
+      if (
+        names.some((name) => name.trim() === "WIPEOUTFRAME") ||
+        (imageDictionary !== undefined &&
+          handle?.trim().toUpperCase() === imageDictionary)
+      ) {
         objects.push(dictionary)
       }
       continue

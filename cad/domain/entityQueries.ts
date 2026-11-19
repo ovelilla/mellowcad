@@ -1,5 +1,6 @@
 import { pointInsideSolid2d, solid2dEdges } from "./solids2d"
 import { pointInsideWipeout, wipeoutEdges } from "./wipeouts"
+import { imageCorners, imagePickEdges, pointOnImageLabel } from "./images"
 import { leaderPathEntity } from "./leaders"
 import { regionLevelEdgeEntities } from "./regions"
 import { solidEdgeEntities } from "./solids"
@@ -369,6 +370,19 @@ export function closestOnEntity(
       }
       return pointInsideWipeout(entity, point) ? { ...best, distance: 0 } : best
     }
+    case "image": {
+      // By its frame, shown or not, and its path; not inside (image/i04).
+      let best: ClosestResult = {
+        point: entity.position,
+        distance: Infinity,
+        t: 0,
+      }
+      for (const [a, b] of imagePickEdges(entity)) {
+        const candidate = closestPointOnSegment(a, b, point)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return pointOnImageLabel(entity, point) ? { ...best, distance: 0 } : best
+    }
     case "leader":
       return closestOnEntity(leaderPathEntity(entity), point)
     case "point":
@@ -577,9 +591,15 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
     case "leader":
       return entityBounds(leaderPathEntity(entity))
     case "solid2d":
-    case "wipeout": {
+    case "wipeout":
+    case "image": {
+      // An image's is its frame's, its path inside it (image/i01's EXTMAX).
       const points =
-        entity.type === "solid2d" ? entity.corners : entity.vertices
+        entity.type === "solid2d"
+          ? entity.corners
+          : entity.type === "wipeout"
+            ? entity.vertices
+            : imageCorners(entity)
       const xs = points.map((p) => p.x)
       const ys = points.map((p) => p.y)
       return {
@@ -916,6 +936,15 @@ export function entityCrossesRect(
         }
       }
       return pointInsideWipeout(entity, V.midpoint(min, max))
+    }
+    case "image": {
+      for (const [a, b] of imagePickEdges(entity)) {
+        if (pointInRect(a, min, max)) return true
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(a, b, e1, e2)) return true
+        }
+      }
+      return pointOnImageLabel(entity, V.midpoint(min, max))
     }
     case "region":
       return regionLevelEdgeEntities(entity).some((edge) =>

@@ -43,6 +43,7 @@ import {
   replacePolyline3dVertex,
   mapSolid2dCorners,
   withWipeoutVertex,
+  imageCornerDragged,
   withLeaderVertex,
 } from "../../domain/entities"
 import type {
@@ -116,6 +117,11 @@ export function withVertexAt(
   if (entity.type === "wipeout") {
     if (!entity.vertices[index]) return null
     return withWipeoutVertex(entity, index, point)
+  }
+  if (entity.type === "image") {
+    // As STRETCH drags a corner: the one across stays (image/s1–s10).
+    if (index < 0 || index > 3) return null
+    return imageCornerDragged(entity, index, point)
   }
   if (entity.type === "hatch") {
     return withLoopEdited(entity, index, (loop, at) =>

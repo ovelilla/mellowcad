@@ -95,6 +95,7 @@ import {
   withElevation,
   withThickness,
   entityShape,
+  imageCorners,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
 import { SOLID_HATCH_PATTERN_ID } from "./hatchPatterns"
@@ -826,6 +827,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entity.corners]
     case "wipeout":
       return [...entity.vertices]
+    case "image":
+      return [...imageCorners(entity)]
     case "text":
     case "mtext":
     case "attdef":
@@ -1081,8 +1084,10 @@ describe("Z", () => {
   })
 
   it("stretching an object with every point caught moves it whole, Z included", () => {
+    // An image drags its last corner caught even then (image/s6).
+    const moved = entityArb.filter((entity) => entity.type !== "image")
     fc.assert(
-      fc.property(entityArb, point, zValue, (entity, delta, dz) => {
+      fc.property(moved, point, zValue, (entity, delta, dz) => {
         const displacement = { ...delta, z: dz }
         expectSameShape(
           stretchEntity(entity, displacement, () => true),

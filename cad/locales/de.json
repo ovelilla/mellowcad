@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Körper} other {Körper}}",
       "face3d": "{count, plural, one {3D-Fläche} other {3D-Flächen}}",
       "leader": "{count, plural, one {Führung} other {Führungen}}",
-      "wipeout": "{count, plural, one {Abdeckung} other {Abdeckungen}}"
+      "wipeout": "{count, plural, one {Abdeckung} other {Abdeckungen}}",
+      "image": "{count, plural, one {Pixelbild} other {Pixelbilder}}"
     },
     "array": {
       "rectangular": "Anordnung (Rechteckig)",
@@ -2872,7 +2873,7 @@
       "notAFitPoint": "Kein Anpassungspunkt.",
       "notAControlVertex": "Kein Kontrollscheitelpunkt.",
       "allAdditionsUndone": "Alle Hinzufügungen wurden rückgängig gemacht.",
-      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} other {REIHE}}",
+      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} image {IMAGE} other {REIHE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Bereich: Modellbereich",
       "listColor": "                   Farbe: {color}    Linientyp: \"{linetype}\"",
@@ -3184,7 +3185,21 @@
       "listLeaderAnnotative": "        Beschriftung: Nein",
       "wipeoutPolylineNotClosed": "Die Polylinie muss geschlossen sein und darf nur aus Liniensegmenten bestehen.",
       "listWipeoutPoints": "Anzahl der Umgrenzungspunkte: {count}",
-      "listWipeoutPoint": "       bei Punkt  X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       bei Punkt  X={x},  Y={y},  Z={z}",
+      "listImageName": "Bild:                   {name}",
+      "listImageInsertion": "Einfügepunkt:              X={x},  Y={y},  Z={z}",
+      "listImageScale": "Maßstab:                   {scale}",
+      "listImageRotation": "Drehwinkel:                {angle}",
+      "listImageBrightness": "Helligkeit:             {value}",
+      "listImageContrast": "Kontrast:                  {value}",
+      "listImageFade": "Fading:                    {value}",
+      "listImageShown": "Bild anzeigen:              {shown, select, yes {Ja} other {Nein}}",
+      "listImageNonOrtho": "Nicht-Ortho anzeigen:          {shown, select, yes {Ja} other {Nein}}",
+      "listImageTransparency": "Hintergrund-Transparenz: {on, select, yes {Ein} other {Aus}}",
+      "listImageClipping": "Zuschneiden:                {on, select, yes {Ein} other {Aus}}",
+      "listImageClipType": "Zuschneide-Umgrenzungstyp:  {polygonal, select, yes {Polygonal} other {Rechteckig}}",
+      "listImagePoint": "       bei Punkt, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Hochzugsrichtung relativ zum BKS:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

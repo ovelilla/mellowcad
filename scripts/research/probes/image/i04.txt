@@ -1,0 +1,18 @@
+_ZOOM
+_E
+(princ (osnap '(15 25) "_cen"))
+(princ (osnap '(20 29.5) "_cen"))
+(princ (osnap '(31.164 30.582) "_mid"))
+(princ (osnap '(31.164 30.582) "_end"))
+(princ (osnap '(31.164 30.582) "_nea"))
+(princ (osnap '(20 29.5) "_nea"))
+(princ (osnap '(20 29.5) "_ins"))
+(princ (osnap '(52 41) "_end"))
+(princ (osnap '(52 21) "_end"))
+(princ (osnap '(52 30) "_mid"))
+(princ (osnap '(10 31) "_per"))
+(princ (if (ssget '(20 29.5)) "PICK-TEXT yes" "PICK-TEXT no"))
+(princ (if (ssget '(40 25)) "PICK-INSIDE2 yes" "PICK-INSIDE2 no"))
+(princ (if (ssget "_W" '(9 19) '(53 42)) "WIN yes" "WIN no"))
+(princ (if (ssget "_C" '(20 22) '(25 26)) "CROSS-INSIDE yes" "CROSS-INSIDE no"))
+(princ (if (ssget "_C" '(20 29) '(25 30)) "CROSS-TEXT yes" "CROSS-TEXT no"))

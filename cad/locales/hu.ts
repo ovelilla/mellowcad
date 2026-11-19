@@ -423,6 +423,16 @@ export const hu: EngineLocale = {
             "other": "Kitakarás"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Raszterkép",
+            "other": "Raszterkép"
+          }
+        ]
       ]
     },
     "array": {
@@ -6075,6 +6085,7 @@ export const hu: EngineLocale = {
             "leader": "LEADER",
             "face3d": "3D FACE",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "KIOSZT"
           }
         ]
@@ -8300,6 +8311,140 @@ export const hu: EngineLocale = {
           "z"
         ],
         " pontnál"
+      ],
+      "listImageName": [
+        "Kép:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Beszúrási pont:               X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Lépték:                   ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Elforgatási szög:          ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Fényesség:              ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Kontraszt:                ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Halványítás:                    ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Kép megjelenítése:              ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Igen",
+            "other": "Nem"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Nem ortogonális megjelenítés:          ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Igen",
+            "other": "Nem"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Háttér átlátszósága: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Be",
+            "other": "Ki"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Vágás:                ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Be",
+            "other": "Ki"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Vágási határvonal típusa:      ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Poligon",
+            "other": "Négyszög"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       az X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ],
+        " pontnál"
+      ],
+      "listImageExtrusion": [
+        "Kihúzási irány az FKR-hez képest::\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {

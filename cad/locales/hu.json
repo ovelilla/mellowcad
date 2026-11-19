@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Szilárdtest} other {Szilárdtest}}",
       "face3d": "{count, plural, one {3D lap} other {3D lap}}",
       "leader": "{count, plural, one {Mutató} other {Mutató}}",
-      "wipeout": "{count, plural, one {Kitakarás} other {Kitakarás}}"
+      "wipeout": "{count, plural, one {Kitakarás} other {Kitakarás}}",
+      "image": "{count, plural, one {Raszterkép} other {Raszterkép}}"
     },
     "array": {
       "rectangular": "Kiosztás (négyszögletes)",
@@ -2847,7 +2848,7 @@
       "notAFitPoint": "Ez nem illesztési pont.",
       "notAControlVertex": "Nem vezérlő csomópont.",
       "allAdditionsUndone": "Minden módosítás visszaállítva.",
-      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} other {KIOSZT}}",
+      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} other {KIOSZT}}",
       "listObject": "                  {name}  Fólia: \"{layer}\"",
       "listSpace": "                            Tér: Modelltér",
       "listColor": "                   Szín: {color}    Vonaltípus: \"{linetype}\"",
@@ -3159,7 +3160,21 @@
       "listLeaderAnnotative": "        Feliratozási: Nem",
       "wipeoutPolylineNotClosed": "A vonalláncnak zártnak kell lennie, és csak vonalszakaszokból állhat.",
       "listWipeoutPoints": "Határpontok száma: {count}",
-      "listWipeoutPoint": "       az X={x},  Y={y},  Z={z} pontnál"
+      "listWipeoutPoint": "       az X={x},  Y={y},  Z={z} pontnál",
+      "listImageName": "Kép:                   {name}",
+      "listImageInsertion": "Beszúrási pont:               X={x},  Y={y},  Z={z}",
+      "listImageScale": "Lépték:                   {scale}",
+      "listImageRotation": "Elforgatási szög:          {angle}",
+      "listImageBrightness": "Fényesség:              {value}",
+      "listImageContrast": "Kontraszt:                {value}",
+      "listImageFade": "Halványítás:                    {value}",
+      "listImageShown": "Kép megjelenítése:              {shown, select, yes {Igen} other {Nem}}",
+      "listImageNonOrtho": "Nem ortogonális megjelenítés:          {shown, select, yes {Igen} other {Nem}}",
+      "listImageTransparency": "Háttér átlátszósága: {on, select, yes {Be} other {Ki}}",
+      "listImageClipping": "Vágás:                {on, select, yes {Be} other {Ki}}",
+      "listImageClipType": "Vágási határvonal típusa:      {polygonal, select, yes {Poligon} other {Négyszög}}",
+      "listImagePoint": "       az X={x},  Y={y},  Z={z} pontnál",
+      "listImageExtrusion": "Kihúzási irány az FKR-hez képest::\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

@@ -23,6 +23,7 @@ import { loopReversed } from "../geometry/planarRegions"
 import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
 import { mapWipeoutVertices } from "./wipeouts"
+import { mapImage } from "./images"
 import { mapLeader } from "./leaders"
 import { face3dReflected } from "./faces3d"
 
@@ -136,6 +137,8 @@ export function linearEntity(
       return mapSolid2dCorners(entity, at)
     case "wipeout":
       return mapWipeoutVertices(entity, at)
+    case "image":
+      return mapImage(entity, at)
     case "leader":
       return mapLeader(entity, at, at, (angle) => mappedAngle(map, angle))
     case "region": {

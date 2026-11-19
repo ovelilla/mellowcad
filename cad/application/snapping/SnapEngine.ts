@@ -30,6 +30,8 @@ import {
   entityShape,
   solid2dEdges,
   wipeoutEdges,
+  imageCentre,
+  imageEdges,
   leaderPathEntity,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
@@ -162,6 +164,26 @@ function snapEntities(
           entities.push(
             carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
           )
+        }
+        continue
+      }
+      if (piece.type === "image") {
+        // Its frame's edges, lines of its id, the frame shown or not: ends,
+        // middles, nearest and perpendicular points; its frame's middle as
+        // CEN from anywhere on it, its insertion corner as INS (image/i02,
+        // i04). Nothing on its path, and its own corners are no crossing
+        // here, where AutoCAD's INT finds them (i02).
+        const edges = imageEdges(piece).map(([a, b]) =>
+          carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+        )
+        entities.push(...edges)
+        if (document.isEntityVisible(piece)) {
+          solidPoints.push({
+            type: SnapType.Center,
+            point: entityPointToWorld(piece, imageCentre(piece)),
+            id: piece.id,
+            wires: edges,
+          })
         }
         continue
       }

@@ -128,7 +128,28 @@ samples, the labels' backgrounds of its blocks, and 1 of another program's file)
 one-pixel image clipped to its boundary turned into its vertices (10–13, 14/24, a rectangle's 71
 1 or a polygon's 71 2; its plane U×V's; wipeout/w15, AutoCAD's own file: the 11 of 3 of AutoCAD's
 samples, the masks behind a civil plan's labels), and WIPEOUTFRAME from its drawing variable
-(AcDbVariableDictionary's DICTIONARYVAR) or, in an older drawing, WIPEOUTVARIABLES' 70 (w16), a
+(AcDbVariableDictionary's DICTIONARYVAR) or, in an older drawing, WIPEOUTVARIABLES' 70 (w16),
+IMAGE as AutoCAD 2027 opens one whose file it cannot find (image/i01: it says nothing but run
+EXTERNALREFERENCES): its corner, its pixel's sides and its definition's size (10–12, 340; IMAGEDEF's
+10, 20 framing it, as AutoCAD frames one, v3), named by ACAD_IMAGE_DICT or else by its file, its
+path (IMAGEDEF 1) and pixel size (11, 281), its display, brightness, contrast, fade and clip boundary
+kept to be written back (70, 281–283, 71, 14/24, and 280, the clip on or off), its plane U×V's, a mirrored one in plan in the
+WCS; drawn as its frame, shown, hidden or shown and not plotted as IMAGEFRAME says (RASTERVARIABLES'
+70: 1 shown, 2 not plotted, i08, i09), with its path across it, as tall as the frame's width over
+its characters, centred, its baseline 0.64 of that height below the middle, along U and up V,
+never stretched and mirrored with it, in its colour, masking nothing, its clip not applied
+(image/i01, v1–v6, r1, r2, c1, c2, the colour and mirror plots; our drawing of i01 and of
+VBA_Map2Globe beside AutoCAD's plots); picked by its frame, shown or not, and its path, never
+inside it; END, MID, NEA and PER on its frame, CEN its middle, INS its insertion corner
+(i02, i04); a grip at each corner (**unverified**: no desktop pass); MOVE, COPY, ROTATE, SCALE and
+MIRROR map it (MIRROR leaves its normal down: i06e); STRETCH drags one corner, the last caught of
+the bottom left, top left, top right and bottom right, the one across staying, scaled by the larger
+of the ratios along its width and its height, never moved whole (s1–s11); EXPLODE leaves its
+frame's four lines, saying nothing (i06a); OFFSET, AREA, BREAK, DIVIDE and TRIM refuse it with
+AutoCAD's words (i07, i15); LIST as each of the ten consoles writes it (i07, i12: its name,
+insertion, scale in its image's pixel size, turn or, mirrored, its extrusion, display, and its
+whole frame's corners); its Properties are its general rows (**unverified**); the 1 of AutoCAD's
+samples (VBA_Map2Globe's world map) and LibreCAD's part (its definition named by its file), a
 hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
 one colour's tint, 452 and 462; its angle, 460, and shift, 461, any but 0 read not centred), drawn
 as AutoCAD draws it (HATCH's entry; gradient/g16, AutoCAD's own file: the nine names, two off
@@ -188,20 +209,28 @@ at their first point with their height and rotation, WHY: the model has neither;
 dimension takes its text's middle (11) for the point picked, WHY: AutoCAD keeps that point only in
 the text's place; a hatch's elliptical and spline edges are laid as straight runs, WHY: a loop here
 is vertices and bulges; units other than mm, cm and m keep their numbers, in millimetres, WHY: the
-model has only those three; an external reference is always not found, WHY: a page reads only the
-file it is handed, never the folder beside it, so the drawing a reference names is never there to
-load (the browser gives no path, and asking for each file would be a gesture of our own); its label
-keeps the command language it was opened in, AutoCAD's following its own
+model has only those three; an external reference and an image are always not found, WHY: a page
+reads only the file it is handed, never the folder beside it, so the drawing or the image a
+reference names is never there to load (the browser gives no path, and asking for each file would
+be a gesture of our own); the xref's label keeps the command language it was opened in, AutoCAD's
+following its own; an image's path is picked by its box, where AutoCAD finds its letters' strokes
+(a pick between two letters takes nothing, image/i04), WHY: the engine measures text and draws no
+outlines; its own corners are no intersection (AutoCAD's INT finds them, i02); Russian LIST gives
+its scale under `Масштаб`, where its console gives the frame's width (i07), WHY: a translation takes
+English's arguments
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
 XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
-TOLERANCE, TABLE, MLINE, IMAGE, WIPEOUT, meshes, the ordinate
+TOLERANCE, TABLE, MLINE, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
 Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
 cannot find (the console runs EXTERNALREFERENCES, p01; the desktop's task dialog *One or more
 reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's balloon and the
-xref's own clipping (XCLIP); a complex linetype's shapes (BATTING, ZIGZAG:
+xref's own clipping (XCLIP); of an image, its pixels (its file), IMAGE (the External References
+palette), -IMAGE (Attach, Detach, Path, Reload, Unload, `?`: image/i00, i01), IMAGEATTACH,
+IMAGECLIP, IMAGEADJUST, IMAGEQUALITY, TRANSPARENCY and the frame left out of a plot with
+IMAGEFRAME 2 (nothing is plotted here); a complex linetype's shapes (BATTING, ZIGZAG:
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
 DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
 and reads the hatch back as a SOLID, g15: here a SOLID too); the index colours as such,
@@ -251,7 +280,15 @@ image on the square of its boundary's larger side clipped to its vertices, its W
 WIPEOUTVARIABLES classes in CLASSES (91 from 2004), 290 from 2010, and WIPEOUTFRAME as
 WIPEOUTVARIABLES' 70 (0 for OFF, 1 for the rest) and, Display but not plot, as its drawing
 variable (wipeout/w01, w14–w16: the console opens the 12 files of w15's drawing with no AUDIT
-error, finds its 6 wipeouts, reads WIPEOUTFRAME 2 back from 2004 on and plots them as its own), a
+error, finds its 6 wipeouts, reads WIPEOUTFRAME 2 back from 2004 on and plots them as its own), an
+image as AutoCAD's DXFOUT writes one it cannot find: its IMAGEDEF (one per name and path, 280 1; a second of one name, pasted or named by its file, numbered: pic2),
+an IMAGEDEF_REACTOR for each image, ACAD_IMAGE_DICT and ACAD_IMAGE_VARS in the root dictionary,
+RASTERVARIABLES with IMAGEFRAME (0, 1 or 3), the four classes (91 from 2004), 290 from 2010 and a
+clip boundary of its own, or else its whole frame's two corners; a polygon closed back on its
+first vertex, as AutoCAD's console fails to open one left open (image/i08, i13, i14: the console
+opens the 12 files of i13's drawing with no AUDIT error, finds its 6 images and 2 definitions,
+reads them and IMAGEFRAME 2 back as its own, and, the image files beside the paths, loads and
+plots them as its own file), a
 leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
 its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given

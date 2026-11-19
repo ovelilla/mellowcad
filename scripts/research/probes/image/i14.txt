@@ -1,0 +1,5 @@
+(princ (strcat "IMAGEFRAME=" (itoa (getvar "IMAGEFRAME"))))
+_-IMAGE
+?
+*
+(progn (setq s (ssget "_X" '((0 . "IMAGE"))) i 0) (repeat (sslength s) (setq e (entget (ssname s i))) (princ (list (cdr (assoc 8 e)) (cdr (assoc 62 e)) (cdr (assoc 6 e)) (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 12 e)) (cdr (assoc 13 e)) (cdr (assoc 70 e)) (cdr (assoc 71 e)) (vl-remove-if-not '(lambda (x) (= (car x) 14)) e))) (terpri) (setq i (1+ i))) (princ))

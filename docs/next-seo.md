@@ -20,8 +20,8 @@
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
-> degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, hecho el 19/11, sin
-> publicar; lo que queda del punto 7: IMAGE, TABLE, MULTILEADER…, el siguiente) y otro idioma (el japonés, `global`, después), alternando,
+> degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT e IMAGE, hechos el
+> 19/11, sin publicar; lo que queda del punto 7: TABLE, MULTILEADER…, el siguiente) y otro idioma (el japonés, `global`, después), alternando,
 > además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
@@ -1021,4 +1021,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   entre lo que se abre y ya no entre lo que queda fuera; el índice de comandos tiene WIPEOUT en
   cada idioma; la portada no cambia. **Siguiente**, por orden del dueño: lo que queda del punto 7
   (IMAGE, TABLE, MULTILEADER…) y otro idioma (el japonés, `global`), alternando.
+- DXF, punto 7 de la fase 4 (IMAGE): hecho el 19/11/2026, sin publicar (`docs/next-dxf.md`). Las
+  páginas «abrir DXF online» y «editar DXF online», en los once idiomas, ya no cuentan las imágenes
+  entre lo que queda fuera: se abren como AutoCAD abre una cuyo fichero no encuentra (su marco y
+  su ruta) y se vuelven a guardar; la portada no cambia. **Siguiente**, por orden del dueño: lo que
+  queda del punto 7 (TABLE, MULTILEADER…) y otro idioma (el japonés, `global`), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

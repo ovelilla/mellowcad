@@ -222,6 +222,7 @@
   "interface.entity.face3d": "{count, plural, one {3D Face} other {3D Faces}}",
   "interface.entity.leader": "{count, plural, one {Leader} other {Leaders}}",
   "interface.entity.wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
+  "interface.entity.image": "{count, plural, one {Raster Image} other {Raster Images}}",
   "interface.array.rectangular": "Array (Rectangular)",
   "interface.array.polar": "Array (Polar)",
   "interface.array.path": "Array (Path)",

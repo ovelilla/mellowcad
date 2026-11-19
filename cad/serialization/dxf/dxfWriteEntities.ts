@@ -20,6 +20,7 @@ import {
   HatchEntity,
   Face3dEntity,
   WipeoutEntity,
+  ImageEntity,
   InsertEntity,
   LeaderEntity,
   LineEntity,
@@ -77,6 +78,10 @@ export interface DxfWriteContext {
   arrayBlock(insert: InsertEntity): string | null
   /** Counts an object the file cannot hold, by its DXF type. */
   leftOut(type: string): void
+  /** The IMAGEDEF an image shows, by handle. */
+  imageDefinition(image: ImageEntity): string
+  /** A new IMAGEDEF_REACTOR for the image written with handle `own`. */
+  imageReactor(image: ImageEntity, own: string): string
 }
 
 /** The groups every object opens with, the owner its block's record. */
@@ -163,6 +168,8 @@ export function writeEntity(
       return face3d(ctx, entity, owner)
     case "wipeout":
       return wipeout(ctx, entity, owner)
+    case "image":
+      return image(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -282,6 +289,59 @@ function wipeout(ctx: DxfWriteContext, e: WipeoutEntity, owner: string): void {
   for (const p of [...e.vertices, e.vertices[0]]) {
     out.real(14, (p.x - min.x) / side - 0.5)
     out.real(24, 0.5 - (p.y - min.y) / side)
+  }
+}
+
+/**
+ * An image as AutoCAD's DXFOUT writes one it cannot find (image/i08): its
+ * corner and pixel's sides in the WCS (10, 11, 12), its size in pixels,
+ * X and Y alone (13), its definition (340) and reactor (360), its display,
+ * 290 from 2010, and its clip boundary in pixels (14, 24): its whole
+ * frame's two corners when it kept none, a polygon closed back on its first
+ * vertex (AutoCAD's console fails to open one left open).
+ */
+function image(ctx: DxfWriteContext, e: ImageEntity, owner: string): void {
+  const { out } = ctx
+  const a = axes(e)
+  const z = e.elevation ?? 0
+  const world = (p: Vec3): Vec3 => (a ? axesToWorld(a, p) : p)
+  const origin = world({ ...e.position, z })
+  const side = (w: Vec2): Vec3 => {
+    const tip = world({ x: e.position.x + w.x, y: e.position.y + w.y, z })
+    return { x: tip.x - origin.x, y: tip.y - origin.y, z: tip.z - origin.z }
+  }
+  const u = side(e.u)
+  const v = side(e.v)
+  const own = ctx.entityHandle(e)
+  head(ctx, "IMAGE", e, owner, own)
+  out.str(100, "AcDbRasterImage")
+  out.int(90, 0)
+  out.point(10, origin.x, origin.y, origin.z)
+  out.point(11, u.x, u.y, u.z)
+  out.point(12, v.x, v.y, v.z)
+  out.point(13, e.width, e.height)
+  out.str(340, ctx.imageDefinition(e))
+  out.int(70, e.display ?? 7)
+  out.int(280, e.clip && !e.clip.off ? 1 : 0)
+  out.int(281, e.brightness ?? 50)
+  out.int(282, e.contrast ?? 50)
+  out.int(283, e.fade ?? 0)
+  if (ctx.version >= 1024) out.int(290, 0)
+  out.str(360, ctx.imageReactor(e, own))
+  const clip = e.clip
+  const points = clip
+    ? clip.polygonal
+      ? [...clip.points, clip.points[0]]
+      : clip.points
+    : [
+        { x: -0.5, y: -0.5 },
+        { x: e.width - 0.5, y: e.height - 0.5 },
+      ]
+  out.int(71, clip?.polygonal ? 2 : 1)
+  out.int(91, points.length)
+  for (const p of points) {
+    out.real(14, p.x)
+    out.real(24, p.y)
   }
 }
 

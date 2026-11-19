@@ -1,0 +1,34 @@
+(vl-file-copy "C:\\Users\\oveli\\AppData\\Local\\Temp\\mcaddxf\\img\\pic.bmp" "C:\\Users\\oveli\\AppData\\Local\\Temp\\mcaddxf\\img\\p02.bmp")
+_-IMAGE
+_A
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\img\p02.bmp
+10,20
+3
+0
+(vl-file-delete "C:\\Users\\oveli\\AppData\\Local\\Temp\\mcaddxf\\img\\p02.bmp")
+_-IMAGE
+_R
+p02
+_ZOOM
+_E
+(princ (if (ssget '(31.164 30.582)) "PICK-CENTRE yes" "PICK-CENTRE no"))
+(princ (if (ssget '(15 25)) "PICK-EMPTY yes" "PICK-EMPTY no"))
+(princ (if (ssget '(10 30)) "PICK-EDGE yes" "PICK-EDGE no"))
+(princ (osnap '(10.2 20.3) "_end"))
+(princ (osnap '(31 20.2) "_mid"))
+(princ (osnap '(31 20.2) "_nea"))
+(princ (osnap '(31.164 30.582) "_cen"))
+(princ (osnap '(31.164 30.582) "_gcen"))
+(princ (osnap '(10.2 20.3) "_int"))
+(princ (osnap '(10.2 20.3) "_node"))
+(princ (osnap '(10.2 20.3) "_ins"))
+IMAGEFRAME
+0
+(princ (if (ssget '(31.164 30.582)) "F0-PICK-CENTRE yes" "F0-PICK-CENTRE no"))
+(princ (if (ssget '(10 30)) "F0-PICK-EDGE yes" "F0-PICK-EDGE no"))
+(princ (if (ssget "_C" '(9 19) '(11 21)) "F0-CROSS yes" "F0-CROSS no"))
+(princ (osnap '(10.2 20.3) "_end"))
+IMAGEFRAME
+2
+(princ (if (ssget '(10 30)) "F2-PICK-EDGE yes" "F2-PICK-EDGE no"))
+(princ (osnap '(10.2 20.3) "_end"))

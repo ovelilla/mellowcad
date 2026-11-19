@@ -2378,7 +2378,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity;
 
 export type { EntityColor }
 /**
@@ -2461,7 +2461,7 @@ export type EntityProperty =
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3889,6 +3889,51 @@ export interface PyramidPrimitive {
 
 // domain/entityTypes.ts
 /**
+ * A raster image (DXF IMAGE, AutoCAD's -IMAGE Attach) as AutoCAD opens one
+ * whose file it cannot find, which a page always is: it reads only the file
+ * it is given, never the folder beside it. It shows its frame, as
+ * IMAGEFRAME says, and its file's path across it (image/i01), and keeps
+ * what the file said of it, so DXFOUT writes it back.
+ *
+ * Its pixels are `width` by `height`: the frame runs from `position` (its
+ * lower-left corner, DXF 10) along `width·u` and `height·v`. `u` and `v` are
+ * one pixel's sides (DXF 11, 12) in the OCS of its normal, at its
+ * elevation; MIRROR leaves them turning clockwise, as AutoCAD's normal then
+ * points down (image/i06e).
+ */
+export interface ImageEntity extends BaseEntity {
+    readonly type: "image";
+    readonly position: Vec2;
+    readonly u: Vec2;
+    readonly v: Vec2;
+    readonly width: number;
+    readonly height: number;
+    readonly image: ImageReference;
+    /**
+     * DXF 70: 1 shows it, 2 also when not square to the view, 4 clips it, 8
+     * makes its background transparent. Absent is 7.
+     */
+    readonly display?: number;
+    /** DXF 281–283, absent being AutoCAD's 50, 50 and 0. */
+    readonly brightness?: number;
+    readonly contrast?: number;
+    readonly fade?: number;
+    /**
+     * Its clip boundary as DXF 14 keeps it, in pixels from the top-left
+     * pixel's centre: a rectangle's two corners or a polygon's vertices.
+     * AutoCAD applies none to an image it cannot find, nor lists it
+     * (image/i01, c1, c2): it is kept to be written back, `off` when IMAGECLIP
+     * turned it off (DXF 280 0).
+     */
+    readonly clip?: {
+        readonly polygonal: boolean;
+        readonly points: readonly Vec2[];
+        readonly off?: true;
+    };
+}
+
+// domain/entityTypes.ts
+/**
  * A single line of text (AutoCAD's TEXT / DTEXT object). `position` is the
  * justification point the text hangs off — which for left-justified text is
  * also its insertion point — and `height` is the capital-letter height in
@@ -4166,6 +4211,19 @@ export interface LeaderOverrides {
      * above.
      */
     readonly textAbove?: boolean;
+}
+
+// domain/entityTypes.ts
+/**
+ * The image an image object shows (DXF IMAGEDEF): the name it is listed by,
+ * its file's path as saved (1), and the size of one of its pixels in
+ * `units` (11, 281), by which LIST gives its scale.
+ */
+export interface ImageReference {
+    readonly name: string;
+    readonly path: string;
+    readonly pixelSize?: number;
+    readonly units?: number;
 }
 
 // domain/entityTypes.ts
@@ -4605,6 +4663,11 @@ export interface DocumentSettings {
      * hidden (0), or shown and not plotted (2); saved in the drawing.
      */
     readonly wipeoutFrame: 0 | 1 | 2;
+    /**
+     * IMAGEFRAME: an image's frame shown and plotted (1, a new drawing's),
+     * hidden (0), or shown and not plotted (2); saved in the drawing.
+     */
+    readonly imageFrame: 0 | 1 | 2;
     /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
     readonly filletRadius3d: number;
     /** CHAMFERA: CHAMFER's first distance. */

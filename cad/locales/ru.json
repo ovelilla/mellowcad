@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Тело} few {Тела} many {Тела} other {Тела}}",
       "face3d": "{count, plural, one {3D-грань} few {3D-грани} many {3D-грани} other {3D-грани}}",
       "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}",
-      "wipeout": "{count, plural, one {Маскировка} few {Маскировки} many {Маскировок} other {Маскировки}}"
+      "wipeout": "{count, plural, one {Маскировка} few {Маскировки} many {Маскировок} other {Маскировки}}",
+      "image": "{count, plural, one {Растровое изображение} few {Растровых изображения} many {Растровых изображений} other {Растрового изображения}}"
     },
     "array": {
       "rectangular": "Массив (прямоугольный)",
@@ -2843,7 +2844,7 @@
       "notAFitPoint": "Не определяющая точка.",
       "notAControlVertex": "Не является управляющей вершиной.",
       "allAdditionsUndone": "Все добавления отменены.",
-      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} other {МАССИВ}}",
+      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} image {IMAGE} other {МАССИВ}}",
       "listObject": "                  {name} Слой: \"{layer}\"",
       "listSpace": "                           Пространство: Пространство модели",
       "listColor": "                   Цвет: {color}    Тип линий: \"{linetype}\"",
@@ -3155,7 +3156,21 @@
       "listLeaderAnnotative": "        Аннотативный: Нет",
       "wipeoutPolylineNotClosed": "Полилиния должна быть замкнутой и состоять только из прямолинейных сегментов.",
       "listWipeoutPoints": "Число точек контура: {count}",
-      "listWipeoutPoint": "       в точке, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       в точке, X={x},  Y={y},  Z={z}",
+      "listImageName": "Изображение:                   {name}",
+      "listImageInsertion": "Вставка:                       X={x},  Y={y},  Z={z}",
+      "listImageScale": "Масштаб:                       {scale}",
+      "listImageRotation": "Угол поворота:                 {angle}",
+      "listImageBrightness": "Яркость:                       {value}",
+      "listImageContrast": "Контрастность:                 {value}",
+      "listImageFade": "Слияние с фоном:               {value}",
+      "listImageShown": "Показывать изображение:        {shown, select, yes {Да} other {Нет}}",
+      "listImageNonOrtho": "Показывать неортогональные:    {shown, select, yes {Да} other {Нет}}",
+      "listImageTransparency": "Прозрачность:                  {on, select, yes {Вкл} other {Откл}}",
+      "listImageClipping": "Подрезка:                      {on, select, yes {Вкл} other {Откл}}",
+      "listImageClipType": "Тип контура подрезки:          {polygonal, select, yes {Многоугольный} other {Прямоугольный}}",
+      "listImagePoint": "       в точке, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Направление выдавливания относительно ПСК:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

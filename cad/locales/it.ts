@@ -423,6 +423,16 @@ export const it: EngineLocale = {
             "other": "Entità coprenti"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Immagine raster",
+            "other": "Immagini raster"
+          }
+        ]
       ]
     },
     "array": {
@@ -6086,6 +6096,7 @@ export const it: EngineLocale = {
             "leader": "LEADER",
             "face3d": "FACCIA 3D",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "SERIE"
           }
         ]
@@ -8311,6 +8322,139 @@ export const it: EngineLocale = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Immagine:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Inserimento:              X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Scala:                    ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Angolo di rotazione:      ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Luminosità:              ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Contrasto:                ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Sfumatura:                    ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Mostra immagine:              ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Sì",
+            "other": "No"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Mostra non ortogonale:          ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Sì",
+            "other": "No"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Trasparenza sfondo: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Ritaglio:                       ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Tipo contorno di ritaglio:      ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Poligonale",
+            "other": "Rettangolare"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       al punto, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Direzione di estrusione relativa al sistema UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

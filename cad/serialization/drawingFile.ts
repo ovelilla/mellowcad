@@ -153,7 +153,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 58
+export const DRAWING_FILE_VERSION = 59
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -237,6 +237,7 @@ type SavedCommandSetting =
   | "pointMode"
   | "pointSize"
   | "wipeoutFrame"
+  | "imageFrame"
   | "filletRadius3d"
   | "chamferDistance1"
   | "chamferDistance2"
@@ -708,6 +709,43 @@ function cloneEntityShape(entity: Entity): Entity {
         ...overrides,
         vertices: entity.vertices.map((p) => ({ x: p.x, y: p.y })),
       }
+    case "image":
+      return {
+        id: entity.id,
+        type: "image",
+        layerId: entity.layerId,
+        ...overrides,
+        position: { x: entity.position.x, y: entity.position.y },
+        u: { x: entity.u.x, y: entity.u.y },
+        v: { x: entity.v.x, y: entity.v.y },
+        width: entity.width,
+        height: entity.height,
+        image: {
+          name: entity.image.name,
+          path: entity.image.path,
+          ...(entity.image.pixelSize !== undefined
+            ? { pixelSize: entity.image.pixelSize }
+            : {}),
+          ...(entity.image.units !== undefined
+            ? { units: entity.image.units }
+            : {}),
+        },
+        ...(entity.display !== undefined ? { display: entity.display } : {}),
+        ...(entity.brightness !== undefined
+          ? { brightness: entity.brightness }
+          : {}),
+        ...(entity.contrast !== undefined ? { contrast: entity.contrast } : {}),
+        ...(entity.fade !== undefined ? { fade: entity.fade } : {}),
+        ...(entity.clip
+          ? {
+              clip: {
+                polygonal: entity.clip.polygonal,
+                points: entity.clip.points.map((p) => ({ x: p.x, y: p.y })),
+                ...(entity.clip.off ? { off: true } : {}),
+              },
+            }
+          : {}),
+      }
     case "solid2d": {
       const [a, b, c, d] = entity.corners
       const at = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
@@ -1126,6 +1164,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     pointMode,
     pointSize,
     wipeoutFrame,
+    imageFrame,
     filletRadius3d,
     chamferDistance1,
     chamferDistance2,
@@ -1184,6 +1223,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(pointMode ? { pointMode } : {}),
     ...(pointSize ? { pointSize } : {}),
     ...(wipeoutFrame !== 1 ? { wipeoutFrame } : {}),
+    ...(imageFrame !== 1 ? { imageFrame } : {}),
     ...(filletRadius3d !== 1 ? { filletRadius3d } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
@@ -1334,6 +1374,9 @@ function parseSettings(value: unknown): DocumentSettings {
       value.wipeoutFrame === 0 || value.wipeoutFrame === 2
         ? value.wipeoutFrame
         : 1,
+    // A drawing from before 59 has no images: acadiso's.
+    imageFrame:
+      value.imageFrame === 0 || value.imageFrame === 2 ? value.imageFrame : 1,
     // A drawing from before 49 has acadiso's.
     filletRadius3d:
       isFiniteNumber(value.filletRadius3d) && value.filletRadius3d > 0
@@ -1888,6 +1931,64 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         layerId,
         ...overrides,
         vertices: vertices as Vec2[],
+      }
+    }
+    case "image": {
+      // Since 59: an image whose file the page never has (its path).
+      const position = parseVec2(raw.position)
+      const u = parseVec2(raw.u)
+      const v = parseVec2(raw.v)
+      const reference = isRecord(raw.image) ? raw.image : null
+      if (!position || !u || !v || !reference) return null
+      if (!isFiniteNumber(raw.width) || !isFiniteNumber(raw.height)) return null
+      if (raw.width <= 0 || raw.height <= 0) return null
+      if (typeof reference.name !== "string") return null
+      if (typeof reference.path !== "string") return null
+      const byte = (value: unknown) =>
+        isFiniteNumber(value) && value >= 0 && value <= 100 ? value : undefined
+      const brightness = byte(raw.brightness)
+      const contrast = byte(raw.contrast)
+      const fade = byte(raw.fade)
+      const clip = isRecord(raw.clip) ? raw.clip : null
+      const clipPoints =
+        clip && Array.isArray(clip.points) ? clip.points.map(parseVec2) : []
+      return {
+        id,
+        type: "image",
+        layerId,
+        ...overrides,
+        position,
+        u,
+        v,
+        width: raw.width,
+        height: raw.height,
+        image: {
+          name: reference.name,
+          path: reference.path,
+          ...(isFiniteNumber(reference.pixelSize) && reference.pixelSize > 0
+            ? { pixelSize: reference.pixelSize }
+            : {}),
+          ...(Number.isInteger(reference.units)
+            ? { units: reference.units as number }
+            : {}),
+        },
+        ...(Number.isInteger(raw.display)
+          ? { display: raw.display as number }
+          : {}),
+        ...(brightness !== undefined ? { brightness } : {}),
+        ...(contrast !== undefined ? { contrast } : {}),
+        ...(fade !== undefined ? { fade } : {}),
+        ...(clip &&
+        clipPoints.length >= 2 &&
+        clipPoints.every((p) => p !== null)
+          ? {
+              clip: {
+                polygonal: clip.polygonal === true,
+                points: clipPoints as Vec2[],
+                ...(clip.off === true ? { off: true as const } : {}),
+              },
+            }
+          : {}),
       }
     }
     case "solid2d": {

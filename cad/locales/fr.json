@@ -239,7 +239,8 @@
       "solid2d": "{count, plural, one {Solide} other {Solides}}",
       "face3d": "{count, plural, one {Face 3D} other {Faces 3D}}",
       "leader": "{count, plural, one {Ligne de repère} other {Lignes de repère}}",
-      "wipeout": "{count, plural, one {Masque} other {Masques}}"
+      "wipeout": "{count, plural, one {Masque} other {Masques}}",
+      "image": "{count, plural, one {Image raster} other {Images raster}}"
     },
     "array": {
       "rectangular": "Réseau (Rectangulaire)",
@@ -2841,7 +2842,7 @@
       "notAFitPoint": "Point incorrect.",
       "notAControlVertex": "Ce n'est pas un sommet de contrôle.",
       "allAdditionsUndone": "Tous les ajouts sont annulés.",
-      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} wipeout {WIPEOUT} other {RESEAU}}",
+      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} wipeout {WIPEOUT} image {IMAGE} other {RESEAU}}",
       "listObject": "                  {name}  Calque: \"{layer}\"",
       "listSpace": "                            Espace: Espace objet",
       "listColor": "                   Couleur: {color}    Type de ligne: \"{linetype}\"",
@@ -3153,7 +3154,21 @@
       "listLeaderAnnotative": "        Annotatif: Non",
       "wipeoutPolylineNotClosed": "La polyligne doit être fermée et uniquement composée de segments de ligne.",
       "listWipeoutPoints": "Nombre de points du contour: {count}",
-      "listWipeoutPoint": "       au niveau du point, X={x},  Y={y},  Z={z}"
+      "listWipeoutPoint": "       au niveau du point, X={x},  Y={y},  Z={z}",
+      "listImageName": "Image:                   {name}",
+      "listImageInsertion": "Insertion:               X={x},  Y={y},  Z={z}",
+      "listImageScale": "Echelle:                 {scale}",
+      "listImageRotation": "Angle de rotation:       {angle}",
+      "listImageBrightness": "Luminosité:              {value}",
+      "listImageContrast": "Contraste:               {value}",
+      "listImageFade": "Estompe:                    {value}",
+      "listImageShown": "Afficher l'image:              {shown, select, yes {Oui} other {Non}}",
+      "listImageNonOrtho": "Afficher non-ortho:          {shown, select, yes {Oui} other {Non}}",
+      "listImageTransparency": "Transparence d'arrière-plan: {on, select, yes {Actif} other {Inactif}}",
+      "listImageClipping": "Délimitation:                    {on, select, yes {Actif} other {Inactif}}",
+      "listImageClipType": "Type de contour de délimitation: {polygonal, select, yes {Polygonal} other {Rectangulaire}}",
+      "listImagePoint": "       au niveau du point, X={x},  Y={y},  Z={z}",
+      "listImageExtrusion": "Direction de l'extrusion par rapport au SCU:\n                   X={x}    Y={y}    Z= {z}"
     },
     "feedback": {
       "snap": {

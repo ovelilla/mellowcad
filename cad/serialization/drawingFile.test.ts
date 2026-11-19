@@ -261,6 +261,7 @@ describe("round trip", () => {
       pointMode: 35,
       pointSize: -7,
       wipeoutFrame: 2 as const,
+      imageFrame: 0 as const,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
@@ -717,6 +718,7 @@ describe("round trip", () => {
       leader: true,
       face3d: true,
       wipeout: true,
+      image: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

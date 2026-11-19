@@ -17,8 +17,9 @@
 > y publicados el 17/11, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
 > punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148, y WIPEOUT, hecho el 19/11 (sin
 > publicar: el push está congelado), que las llevó a 151, después del húngaro (`docs/next-seo.md`,
-> L8), hecho el 19/11; siguiente, por orden del dueño, lo que quede del punto 7 (IMAGE, TABLE,
-> MULTILEADER…), y después otro idioma, alternando, una sesión cada vez.
+> L8), hecho el 19/11, e IMAGE, hecho el 19/11 (sin publicar), que las llevó a 152 y los ficheros
+> de otros a 574; siguiente, por orden del dueño, lo que quede del punto 7 (TABLE, MULTILEADER…),
+> y después otro idioma, alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -350,11 +351,32 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros de w15 sin un error de AUDIT, lee WIPEOUTFRAME 2 desde 2004 y los traza como el suyo.
       El corpus: abren las 11 de 3 muestras; muestras sin nada fuera, de 148 a 151 de 154; ficheros
       de otros, 573 de 577, como antes. Se anotan: FRAME, DRAWORDER, TEXTMASK, las filas de la paleta
-      y los pinzamientos (sin escritorio: **no verificados**). **Queda del punto 7**, por orden:
-      IMAGE (1 muestra y 1 de otros: la referencia de imagen, que como la de un dibujo no tiene su
-      fichero en el navegador), TABLE (1 de otros, ACAD_TABLE), MULTILEADER (1 y 2 ficheros, 4
-      objetos), y XLINE, RAY, MINSERT, los colores índice y las sustituciones DSTYLE de cada cota;
-      quedan para la próxima sesión de esta fase.
+      y los pinzamientos (sin escritorio: **no verificados**). **IMAGE hecho** (19/11/2026, sin
+      publicar): la imagen ráster (`ImageEntity`, fichero versión 59) como la abre AutoCAD 2027
+      cuando no encuentra su fichero, que en el navegador es siempre (sondas `image/i00`–`i15`,
+      `s1`–`s11`, variantes de un DXF suyo): su marco según IMAGEFRAME (variable del dibujo,
+      RASTERVARIABLES 70 de bits: 2 es 3) y la ruta escrita dentro, de altura el ancho del marco
+      entre sus caracteres, centrada y con la base 0,64 alturas bajo el centro, a lo largo de U y
+      hacia V, reflejada con MIRROR, sin tapar nada y sin aplicar su recorte; designada por el
+      marco y la ruta, nunca por dentro; END, MID, NEA y PER en el marco, CEN en su centro, INS en
+      su esquina; STRETCH arrastra una sola esquina (la última atrapada de inf-izq, sup-izq,
+      sup-der, inf-der) con la opuesta fija y escala por el mayor de los dos cocientes, nunca la
+      mueve entera; EXPLODE deja las cuatro líneas del marco; OFFSET, AREA, BREAK, DIVIDE y TRIM la
+      rechazan con las palabras de AutoCAD; LIST como en cada una de las diez consolas (sus
+      palabras no están en acadres; el ruso escribe el ancho bajo «Масштаб», que aquí da la
+      escala: anotado). DXF en los dos sentidos: IMAGEDEF con su nombre de ACAD_IMAGE_DICT o de su
+      fichero, un IMAGEDEF_REACTOR por imagen y las cuatro clases; la consola abre los 12 ficheros
+      del dibujo de i13 (seis imágenes: copia, reflejada, roja DASHED de otro fichero, recortada en
+      triángulo, inclinada) sin un error de AUDIT, los lee como suyos con IMAGEFRAME 2 y, con los
+      ficheros al lado, los carga y traza como el suyo. El corpus: abren la de VBA_Map2Globe y la
+      de LibreCAD; muestras sin nada fuera, de 151 a 152 de 154; ficheros de otros, de 573 a 574 de
+      577. Se anotan: los píxeles, IMAGE (la paleta), -IMAGE, IMAGEATTACH, IMAGECLIP, IMAGEADJUST,
+      IMAGEQUALITY, TRANSPARENCY, la paleta y los pinzamientos (sin escritorio: **no
+      verificados**). **Queda del punto 7**, por orden: TABLE (1 de otros, ACAD_TABLE),
+      MULTILEADER (1 muestra y 2 ficheros, 4 objetos), y XLINE, RAY, MINSERT, los colores índice y
+      las sustituciones DSTYLE de cada cota; quedan para la próxima sesión de esta fase. Lo que
+      queda fuera del corpus tras IMAGE: 1 MULTILEADER y una malla (POLYLINE de caras) en las
+      muestras; 4 MULTILEADER y 1 ACAD_TABLE en los de otros.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

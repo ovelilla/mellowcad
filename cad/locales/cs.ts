@@ -463,6 +463,18 @@ export const cs: EngineLocale = {
             "other": "Překrytí"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Rastrový obrázek",
+            "few": "Rastrové obrázky",
+            "many": "Rastrového obrázku",
+            "other": "Rastrových obrázků"
+          }
+        ]
       ]
     },
     "array": {
@@ -6203,6 +6215,7 @@ export const cs: EngineLocale = {
             "leader": "LEADER",
             "face3d": "3D PLOCHA",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "POLE"
           }
         ]
@@ -8551,6 +8564,139 @@ export const cs: EngineLocale = {
           "y"
         ],
         ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Obrázek:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Vložení:               X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Měřítko:                   ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Úhel otočení:          ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Jas:                         ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Kontrast:                 ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Útlum:                   ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Zobrazit obrázek:      ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Ano",
+            "other": "Ne"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Zobrazit nepravoúhlé:  ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Ano",
+            "other": "Ne"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Průhlednost pozadí:            ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ano",
+            "other": "Ne"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Oříznutí:                ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Ano",
+            "other": "Ne"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Typ hranice oříznutí:    ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Polygon",
+            "other": "Obdélník"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       v bodě, X = ",
+        [
+          "x"
+        ],
+        ",  Y = ",
+        [
+          "y"
+        ],
+        ",  Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Směr vytažení vzhzledem k UCS:\n                   X =",
+        [
+          "x"
+        ],
+        "    Y =",
+        [
+          "y"
+        ],
+        "    Z = ",
         [
           "z"
         ]

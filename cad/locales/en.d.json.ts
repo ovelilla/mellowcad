@@ -267,6 +267,7 @@ declare const source: {
       "face3d": string
       "leader": string
       "wipeout": string
+      "image": string
     }
     "array": {
       "rectangular": string
@@ -3187,6 +3188,20 @@ declare const source: {
       "wipeoutPolylineNotClosed": string
       "listWipeoutPoints": string
       "listWipeoutPoint": string
+      "listImageName": string
+      "listImageInsertion": string
+      "listImageScale": string
+      "listImageRotation": string
+      "listImageBrightness": string
+      "listImageContrast": string
+      "listImageFade": string
+      "listImageShown": string
+      "listImageNonOrtho": string
+      "listImageTransparency": string
+      "listImageClipping": string
+      "listImageClipType": string
+      "listImagePoint": string
+      "listImageExtrusion": string
     }
     "feedback": {
       "snap": {

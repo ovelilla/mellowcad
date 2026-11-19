@@ -22,6 +22,7 @@ import {
   type PointEntity,
   type Solid2dEntity,
   type WipeoutEntity,
+  type ImageEntity,
   type LeaderEntity,
   type DimensionEntity,
   type EllipseEntity,
@@ -214,6 +215,60 @@ export const wipeoutEntity: fc.Arbitrary<WipeoutEntity> = fc
       "wipeout"
     )
   )
+
+/**
+ * An image: a turned, scaled frame of 1 to 400 pixels a side, mirrored a
+ * third of the time, with a path or none, and what DXF keeps or not.
+ */
+export const imageEntity: fc.Arbitrary<ImageEntity> = fc
+  .record({
+    position: point,
+    angle: fc.double({ min: 0, max: 6, noNaN: true }),
+    pixel: fc.double({ min: 0.01, max: 10, noNaN: true }),
+    mirrored: fc.boolean(),
+    width: fc.integer({ min: 1, max: 400 }),
+    height: fc.integer({ min: 1, max: 400 }),
+    path: fc.constantFrom("", "pic.bmp", "C:\\maps\\WorldMap.TIF"),
+    kept: fc.boolean(),
+  })
+  .map(({ position, angle, pixel, mirrored, width, height, path, kept }) => {
+    const c = Math.cos(angle) * pixel
+    const s = Math.sin(angle) * pixel
+    return withId<ImageEntity>(
+      {
+        type: "image",
+        layerId: DEFAULT_LAYER_ID,
+        position,
+        u: { x: c, y: s },
+        // 0 − s, never −0, which a file reads back as 0.
+        v: mirrored ? { x: s, y: 0 - c } : { x: 0 - s, y: c },
+        width,
+        height,
+        image: {
+          name: "pic",
+          path,
+          ...(kept ? { pixelSize: 0.352734, units: 2 } : {}),
+        },
+        ...(kept
+          ? {
+              display: 15,
+              brightness: 60,
+              contrast: 40,
+              fade: 10,
+              clip: {
+                polygonal: true,
+                points: [
+                  { x: -0.5, y: -0.5 },
+                  { x: width - 0.5, y: -0.5 },
+                  { x: -0.5, y: height - 0.5 },
+                ],
+              },
+            }
+          : {}),
+      },
+      "image"
+    )
+  })
 
 /**
  * A leader: two to five vertices, straight or a spline, with or without an
@@ -1230,7 +1285,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       solid2dEntity,
       leaderEntity,
       face3dEntity,
-      wipeoutEntity
+      wipeoutEntity,
+      imageEntity
     ),
     zValue,
     zValue,

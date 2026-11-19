@@ -3,7 +3,7 @@ title: Otevřít DXF online
 metaTitle: "Otevřít DXF online: prohlížeč DXF zdarma"
 description: "Otevřete soubor DXF zdarma v prohlížeči, bez nahrávání: AutoCAD R12 až 2018, textový nebo binární, s hladinami, texty, kótami, šrafami a bloky."
 type: howTo
-sourceHash: "83dd0b7996e3"
+sourceHash: "a0eb0a40694b"
 faq:
   - question: "Jak otevřít soubor DXF bez AutoCADu?"
     answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: MellowCAD ho otevře ve svém editoru, v prohlížeči, bez instalace a bez účtu. V editoru soubor otevřou také příkazy OTEVŘI (Ctrl+O) a ČTIDXF."
@@ -36,7 +36,7 @@ Když DXF obsahuje něco, pro co MellowCAD zatím nemá objekt, otevře zbytek a
 
 - stopy (TRACE) a sítě;
 - přímky a polopřímky, multičáry;
-- multiodkazy a tolerance, tabulky a obrázky;
+- multiodkazy, tolerance a tabulky;
 - 3D tělesa, oblasti a povrchy;
 - souřadnicové kóty a kóty délky oblouku.
 
@@ -49,6 +49,7 @@ Některé věci se otevřou, ale ne úplně tak, jak byly:
 - Výkres v palcích nebo stopách si zachová svá čísla, čtená jako milimetry.
 - Text se kreslí s mírami písma Arial, ať jeho styl uvádí jakékoli písmo, bez faktoru šířky a úhlu sklonu.
 - Externí reference si zachová své umístění a cestu a kreslí se tak, jak AutoCAD kreslí referenci, jejíž výkres nemůže najít: `Xref` a cesta v jejím bodu vložení. Stránka čte jen soubor, který dostane, nikdy výkresy vedle něj; při novém uložení jako DXF se reference zachová.
+- Obrázek si zachová své umístění, velikost a cestu ke svému souboru a kreslí se tak, jak AutoCAD kreslí obrázek, jehož soubor nemůže najít: jeho rámeček podle IMAGEFRAME a cesta napsaná uvnitř. Při novém uložení jako DXF se obrázek zachová.
 
 ## Otevřete ho v editoru [#editor]
 

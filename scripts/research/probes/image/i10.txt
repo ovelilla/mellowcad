@@ -1,0 +1,1 @@
+(princ (strcat "IMAGEFRAME=" (itoa (getvar "IMAGEFRAME"))))

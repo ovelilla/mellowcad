@@ -25,6 +25,7 @@ import type {
   Solid2dEntity,
   Face3dEntity,
   WipeoutEntity,
+  ImageEntity,
   LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -33,7 +34,12 @@ import type {
   TextEntity,
   TextJustify,
 } from "../../domain/entityTypes"
-import { entitiesBounds, leaderHorizontal } from "../../domain/entities"
+import {
+  entitiesBounds,
+  imageCorners,
+  imageScale,
+  leaderHorizontal,
+} from "../../domain/entities"
 import { entityAxes, entityPointToWorld } from "../../domain/elevation"
 import {
   ellipseEndPoint,
@@ -121,6 +127,7 @@ type ObjectName =
   | "leader"
   | "face3d"
   | "wipeout"
+  | "image"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -216,6 +223,9 @@ class Report {
         break
       case "wipeout":
         this.wipeout(entity)
+        break
+      case "image":
+        this.image(entity)
         break
       case "leader":
         this.leader(entity)
@@ -372,6 +382,56 @@ class Report {
     this.say("listWipeoutPoints", { count: wipeout.vertices.length })
     for (const vertex of wipeout.vertices) {
       this.say("listWipeoutPoint", this.xyz(this.at(wipeout, vertex)))
+    }
+  }
+
+  /**
+   * As each console lists it (image/i07, i12, lr1, lr2): its name, its
+   * insertion corner, its pixel's width in its image's pixel size, its turn
+   * or, facing away (MIRROR), the extrusion in its place, its display, and
+   * its frame's corners: an image AutoCAD cannot find lists its whole frame
+   * whatever its clip (c1, c2).
+   *
+   * WHY Russian prints the scale where its console prints the frame's width
+   * (`Масштаб: 42.3280`, i07): a translation takes English's arguments.
+   */
+  private image(image: ImageEntity): void {
+    this.header("image", image)
+    const display = image.display ?? 7
+    const yes = (on: boolean) => (on ? "yes" : "no")
+    this.say("listImageName", { name: image.image.name })
+    this.say("listImageInsertion", this.xyz(this.at(image, image.position)))
+    this.say("listImageScale", { scale: this.length(imageScale(image)) })
+    const up = image.normal ?? UP
+    const facing =
+      image.u.x * image.v.y - image.u.y * image.v.x < 0
+        ? { x: -up.x, y: -up.y, z: -up.z }
+        : up
+    const normal = worldDirectionToUcs(this.settings.ucs, facing)
+    if (
+      Math.abs(normal.x) > TILT ||
+      Math.abs(normal.y) > TILT ||
+      normal.z < 0
+    ) {
+      this.say("listImageExtrusion", this.xyz(normal))
+    } else {
+      const turn = this.ucsAngle(image, Math.atan2(image.u.y, image.u.x))
+      this.say("listImageRotation", { angle: this.angle(turn) })
+    }
+    this.say("listImageBrightness", { value: String(image.brightness ?? 50) })
+    this.say("listImageContrast", { value: String(image.contrast ?? 50) })
+    this.say("listImageFade", { value: String(image.fade ?? 0) })
+    this.say("listImageShown", { shown: yes((display & 1) !== 0) })
+    this.say("listImageNonOrtho", { shown: yes((display & 2) !== 0) })
+    this.say("listImageTransparency", { on: yes((display & 8) !== 0) })
+    this.say("listImageClipping", { on: yes((display & 4) !== 0) })
+    this.say("listImageClipType", {
+      polygonal: yes(image.clip?.polygonal === true),
+    })
+    const corners = imageCorners(image)
+    this.say("listWipeoutPoints", { count: corners.length })
+    for (const corner of corners) {
+      this.say("listImagePoint", this.xyz(this.at(image, corner)))
     }
   }
 

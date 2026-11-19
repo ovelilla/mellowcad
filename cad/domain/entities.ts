@@ -24,6 +24,8 @@ export type {
   Polyline3dFit,
   Face3dEntity,
   WipeoutEntity,
+  ImageEntity,
+  ImageReference,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -124,6 +126,7 @@ export {
   createPolyline3d,
   createFace3d,
   createWipeout,
+  createImage,
   createHatch,
   createInsert,
   insertReflects,
@@ -222,6 +225,19 @@ export {
   wipeoutOutlinePolyline,
   withWipeoutVertex,
 } from "./wipeouts"
+
+export type { ImageLabel } from "./images"
+export {
+  imageCentre,
+  imageCornerDragged,
+  imageCorners,
+  imageEdges,
+  imageLabel,
+  imageLabelBox,
+  imageScale,
+  imageStretched,
+  mapImage,
+} from "./images"
 
 export type { HatchGeometry } from "./hatch"
 export {

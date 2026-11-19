@@ -3,7 +3,7 @@ title: Ouvrir un fichier DXF en ligne
 metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
 description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
 type: howTo
-sourceHash: "83dd0b7996e3"
+sourceHash: "a0eb0a40694b"
 faq:
   - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
@@ -36,7 +36,7 @@ Quand un DXF contient quelque chose pour quoi MellowCAD n'a pas encore d'objet, 
 
 - les traces et les maillages ;
 - les lignes de construction et les demi-droites, les multilignes ;
-- les lignes de repère multiples et les tolérances, les tableaux et les images ;
+- les lignes de repère multiples, les tolérances et les tableaux ;
 - les solides 3D, les régions et les surfaces ;
 - les cotes superposées et de longueur d'arc.
 
@@ -49,6 +49,7 @@ Certaines choses s'ouvrent, mais pas tout à fait comme elles étaient :
 - Un dessin en pouces ou en pieds garde ses nombres, lus comme des millimètres.
 - Le texte est dessiné avec les mesures d'Arial, quelle que soit la police que nomme son style, sans son facteur de largeur ni son angle d'inclinaison.
 - Une référence externe garde sa place et son chemin, et se dessine comme AutoCAD dessine celle dont il ne trouve pas le dessin : `Xréf` et le chemin à son point d'insertion. Une page ne lit que le fichier qu'on lui donne, jamais les dessins qui l'accompagnent ; enregistrée de nouveau en DXF, la référence est conservée.
+- Une image garde sa place, sa taille et le chemin de son fichier, et se dessine comme AutoCAD dessine celle dont il ne trouve pas le fichier : son cadre, selon IMAGEFRAME, et le chemin écrit à l'intérieur. Enregistrée de nouveau en DXF, l'image est conservée.
 
 ## Ouvrez-le dans l'éditeur [#editor]
 

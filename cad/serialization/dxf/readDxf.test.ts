@@ -22,6 +22,7 @@ import type {
   SplineEntity,
   TextEntity,
   WipeoutEntity,
+  ImageEntity,
 } from "../../domain/entities"
 import { DxfReadError, ParsedDxf, parseDxf } from "./readDxf"
 import { unicode } from "./dxfEntities"
@@ -1165,6 +1166,138 @@ describe("parseDxf: AutoCAD 2027's wipeouts (wipeout/w15)", () => {
     expect(wipeouts[3].linetype).toBeDefined()
     expect(wipeouts[4].elevation).toBe(7)
     expect(wipeouts[5].normal).toBeDefined()
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's images (image/i13)", () => {
+  // Two 40×20 BMPs' and one 20×40 one's images, as AutoCAD's DXFOUT wrote
+  // them: pic at 0,0 by 3, a copy at 100,0, one mirrored about X 160, a
+  // red DASHED tall one at 300,0 by 2, pic by 1.5 clipped to a triangle, and
+  // one drawn in a UCS turned 90° about X, with IMAGEFRAME 2 (the paths made
+  // C:\maps\…).
+  const { drawing, report } = parseDxf(fixture("images-2018"))
+  const images = drawing.entities.filter(
+    (e): e is ImageEntity => e.type === "image"
+  )
+  const round = (v: number) => Math.round(v * 1e6) / 1e6
+  const at = (i: ImageEntity) => [round(i.position.x), round(i.position.y)]
+
+  it("opens every image, none left out, and IMAGEFRAME", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(report.unreadable).toBe(0)
+    expect(images).toHaveLength(6)
+    expect(drawing.settings.imageFrame).toBe(2)
+  })
+
+  it("names each by its definition, with its path and pixel size", () => {
+    expect(images[0].image).toEqual({
+      name: "pic",
+      path: "C:\\maps\\pic.bmp",
+      pixelSize: 0.3527336860670194,
+      units: 2,
+    })
+    expect(images[3].image.name).toBe("tall")
+    expect([images[3].width, images[3].height]).toEqual([20, 40])
+  })
+
+  it("keeps the corner and the pixel's sides, a mirrored one's turning back", () => {
+    expect(at(images[0])).toEqual([0, 0])
+    expect(round(images[0].u.x)).toBe(1.058201)
+    expect(at(images[2])).toEqual([220, 0])
+    expect(round(images[2].u.x)).toBe(-1.058201)
+    expect(round(images[2].v.y)).toBe(1.058201)
+  })
+
+  it("keeps a polygonal clip, its closing vertex dropped, and no whole one", () => {
+    expect(images[0].clip).toBeUndefined()
+    expect(images[4].clip?.polygonal).toBe(true)
+    expect(images[4].clip?.points.map((q) => [round(q.x), round(q.y)])).toEqual(
+      [
+        [8.95, 10.05],
+        [39.5, 10.05],
+        [27.85, -0.5],
+      ]
+    )
+  })
+
+  it("keeps its plane, colour and linetype", () => {
+    expect(images[3]).toMatchObject({ color: "#ff0000" })
+    expect(images[3].linetype).toBeDefined()
+    expect(images[5].normal).toBeDefined()
+  })
+
+  // The LibreCAD part (other programs') has no ACAD_IMAGE_DICT name in reach
+  // of its definition: named after its file, as -IMAGE Attach names one.
+  it("names a definition no dictionary names after its file", () => {
+    const file = dxf(
+      "0",
+      "SECTION",
+      "2",
+      "ENTITIES",
+      "0",
+      "IMAGE",
+      "5",
+      "107",
+      "8",
+      "0",
+      "10",
+      "1",
+      "20",
+      "2",
+      "30",
+      "0",
+      "11",
+      "2",
+      "21",
+      "0",
+      "31",
+      "0",
+      "12",
+      "0",
+      "22",
+      "2",
+      "32",
+      "0",
+      "13",
+      "8",
+      "23",
+      "4",
+      "340",
+      "105",
+      "70",
+      "1",
+      "0",
+      "ENDSEC",
+      "0",
+      "SECTION",
+      "2",
+      "OBJECTS",
+      "0",
+      "IMAGEDEF",
+      "5",
+      "105",
+      "1",
+      "I:\\SHARED\\COLEG.BMP",
+      "10",
+      "8",
+      "20",
+      "4",
+      "11",
+      "1",
+      "21",
+      "1",
+      "0",
+      "ENDSEC",
+      "0",
+      "EOF"
+    )
+    const [image] = parseDxf(file).drawing.entities as ImageEntity[]
+    expect(image.image).toMatchObject({
+      name: "COLEG",
+      path: "I:\\SHARED\\COLEG.BMP",
+    })
+    expect(image.display).toBe(1)
+    expect(image.clip).toBeUndefined()
   })
 })
 

@@ -1,0 +1,15 @@
+_ZOOM
+_E
+_ROTATE
+_L
+
+10,20
+30
+_STRETCH
+_C
+9,19
+11,21
+
+0,0
+5,0
+(progn (setq e (entget (entlast))) (princ (list (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 12 e)))) (princ))

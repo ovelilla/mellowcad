@@ -931,6 +931,7 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
     case "leader":
     case "face3d":
     case "wipeout":
+    case "image":
       return false
     default: {
       const unhandled: never = entity

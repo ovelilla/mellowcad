@@ -82,6 +82,7 @@ import { carryOverrides } from "./entityOverrides"
 import { mappedFit, polylineRefitted } from "./polylineFits"
 import { withXAxisAngle } from "./points"
 import { mapWipeoutVertices } from "./wipeouts"
+import { imageCorners, imageStretched, mapImage } from "./images"
 import { mapSolid2dCorners } from "./solids2d"
 import { face3dReflected } from "./faces3d"
 import { leaderGripIndices, mapLeader, stretchLeaderVertices } from "./leaders"
@@ -370,6 +371,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
       return mapSolid2dCorners(entity, (p) => V.add(p, delta))
     case "wipeout":
       return mapWipeoutVertices(entity, (p) => V.add(p, delta))
+    case "image":
+      return mapImage(entity, (p) => V.add(p, delta))
     case "leader":
       // Its offsets from its annotation stay: MOVE records none (leader/p08).
       return mapLeader(
@@ -420,6 +423,11 @@ export function stretchEntity(
       .some(inFrame)
       ? translateEntity(entity, delta)
       : entity
+  }
+  if (entity.type === "image" && !isTilted(entity)) {
+    // One corner drags, the one across stays, even with all four caught
+    // (image/s6): never moved whole. Its plane keeps its Z.
+    return imageStretched(entity, inFrame, delta)
   }
   const dz = zOf(delta)
   const vertices = stretchVertices(entity)
@@ -485,6 +493,7 @@ export function stretchEntity(
     case "region":
     case "solid2d":
     case "wipeout":
+    case "image":
     case "leader":
       return planar
   }
@@ -546,6 +555,8 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     case "wipeout":
       // Each vertex caught moves alone (wipeout/w09).
       return entity.vertices
+    case "image":
+      return imageCorners(entity)
     case "leader":
       // A hook's start goes with the end (leader/p14).
       return leaderGripIndices(entity).map((i) => entity.vertices[i])
@@ -589,6 +600,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "region":
     case "solid2d":
     case "wipeout":
+    case "image":
     case "leader":
     case "face3d":
       return stretchVertices(entity)
@@ -717,6 +729,8 @@ function stretchPlanar(
       return mapSolid2dCorners(entity, shift)
     case "wipeout":
       return mapWipeoutVertices(entity, shift)
+    case "image":
+      return imageStretched(entity, inFrame, delta)
     case "leader":
       return stretchLeaderVertices(entity, (i) =>
         inFrame(entity.vertices[i]) ? delta : null
@@ -853,6 +867,7 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
         )
       case "solid2d":
       case "wipeout":
+      case "image":
       case "leader":
         return freshCopy(translatePlanar(entity, delta))
       case "region":
@@ -997,6 +1012,8 @@ function rotateFlat(
       return mapSolid2dCorners(entity, (p) => rotatePoint(p, pivot, radians))
     case "wipeout":
       return mapWipeoutVertices(entity, (p) => rotatePoint(p, pivot, radians))
+    case "image":
+      return mapImage(entity, (p) => rotatePoint(p, pivot, radians))
     case "leader":
       return mapLeader(
         entity,
@@ -1127,6 +1144,7 @@ export function rotateEntityCopy(
       case "point":
       case "solid2d":
       case "wipeout":
+      case "image":
       case "leader":
         return freshCopy(rotateFlat(entity, pivot, radians))
     }
@@ -1274,6 +1292,8 @@ function scalePlanar(
       return mapSolid2dCorners(entity, (p) => scalePoint(p, base, factor))
     case "wipeout":
       return mapWipeoutVertices(entity, (p) => scalePoint(p, base, factor))
+    case "image":
+      return mapImage(entity, (p) => scalePoint(p, base, factor))
     case "leader":
       return mapLeader(
         entity,
@@ -1389,6 +1409,7 @@ export function scaleEntityCopy(
       case "point":
       case "solid2d":
       case "wipeout":
+      case "image":
       case "leader":
         return freshCopy(scalePlanar(entity, base, factor))
     }
@@ -1546,6 +1567,9 @@ function mirrorFlat(
       return mapSolid2dCorners(entity, (p) => mirrorPoint(p, a, b))
     case "wipeout":
       return mapWipeoutVertices(entity, (p) => mirrorPoint(p, a, b))
+    case "image":
+      // Its pixel's sides turn clockwise, its path reads mirrored (image/i06e).
+      return mapImage(entity, (p) => mirrorPoint(p, a, b))
     case "leader":
       // Its horizontal is its text's direction, which MIRRTEXT 0 keeps
       // reading (leader/p14: 211 stays 1,0,0 and the side flips).
@@ -1801,6 +1825,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
       case "point":
       case "solid2d":
       case "wipeout":
+      case "image":
       case "leader":
         return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }

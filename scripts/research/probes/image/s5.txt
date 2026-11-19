@@ -1,0 +1,10 @@
+_ZOOM
+_E
+_STRETCH
+_C
+51,19
+53,21
+
+0,0
+-3,4
+(progn (setq e (entget (entlast))) (princ (list (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 12 e)))) (princ))

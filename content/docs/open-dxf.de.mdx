@@ -3,7 +3,7 @@ title: DXF-Datei online öffnen
 metaTitle: "DXF-Datei online öffnen: kostenloser DXF-Viewer"
 description: "DXF-Datei kostenlos im Browser öffnen, ohne Upload: AutoCAD R12 bis 2018, Text oder binär, mit Layern, Texten, Bemaßungen, Schraffuren und Blöcken."
 type: howTo
-sourceHash: "83dd0b7996e3"
+sourceHash: "a0eb0a40694b"
 faq:
   - question: "Wie öffne ich eine DXF-Datei ohne AutoCAD?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: MellowCAD öffnet sie in seinem Editor, in Ihrem Browser, ohne Installation und ohne Konto. Im Editor öffnen auch ÖFFNEN (Strg+O) und DXFIN eine."
@@ -36,7 +36,7 @@ Enthält ein DXF etwas, wofür MellowCAD noch kein Objekt hat, öffnet es den Re
 
 - Spuren und Netze;
 - Konstruktionslinien und Strahlen, Mehrfachlinien;
-- Multi-Führungslinien und Toleranzen, Tabellen und Bilder;
+- Multi-Führungslinien, Toleranzen und Tabellen;
 - 3D-Volumenkörper, Regionen und Flächen;
 - Ordinat- und Bogenlängenbemaßungen.
 
@@ -49,6 +49,7 @@ Manches öffnet sich, aber nicht ganz so, wie es war:
 - Eine Zeichnung in Zoll oder Fuß behält ihre Zahlen, gelesen als Millimeter.
 - Text wird mit den Maßen von Arial gezeichnet, gleich welche Schriftart sein Stil nennt, ohne seinen Breitenfaktor und seine Schrägstellung.
 - Eine externe Referenz behält ihre Lage und ihren Pfad und wird so gezeichnet, wie AutoCAD eine zeichnet, deren Zeichnung es nicht findet: `XRef` und der Pfad an ihrem Einfügepunkt. Eine Seite liest nur die Datei, die sie erhält, nie die Zeichnungen daneben; erneut als DXF gespeichert, bleibt die Referenz erhalten.
+- Ein Bild behält seine Lage, seine Größe und den Pfad seiner Datei und wird so gezeichnet, wie AutoCAD eines zeichnet, dessen Datei es nicht findet: sein Rahmen, wie IMAGEFRAME ihn zeigt, und der Pfad darin. Erneut als DXF gespeichert, bleibt das Bild erhalten.
 
 ## Im Editor öffnen [#editor]
 

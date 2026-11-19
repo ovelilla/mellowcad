@@ -23,6 +23,7 @@ import {
   polylineSegmentGeometries,
   textInsertionPoint,
   leaderGripIndices,
+  imageCorners,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -357,6 +358,17 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             entityId: id,
             role: { kind: "vertex", index },
             world: vertex,
+          })
+        })
+        break
+      case "image":
+        // WHY one at each corner of its frame, dragged as STRETCH drags it:
+        // unverified (no desktop pass); STRETCH takes a corner (image/s1–s10).
+        imageCorners(entity).forEach((corner, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: corner,
           })
         })
         break

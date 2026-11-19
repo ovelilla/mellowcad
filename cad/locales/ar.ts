@@ -443,6 +443,17 @@ export const ar: EngineLocale = {
             "other": "أقنعة"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "صورة نقطية",
+            "two": "صورتان نقطيتان",
+            "other": "صور نقطية"
+          }
+        ]
       ]
     },
     "array": {

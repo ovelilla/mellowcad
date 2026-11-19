@@ -308,6 +308,7 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     // extracted.`), unbuilt here.
     case "face3d":
     case "wipeout":
+    case "image":
       return null
     default: {
       const unhandled: never = entity

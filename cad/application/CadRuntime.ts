@@ -6659,6 +6659,7 @@ export class CadRuntime extends Observable {
       pointMode: settings.pointMode,
       pointSize: settings.pointSize,
       wipeoutFrame: settings.wipeoutFrame,
+      imageFrame: settings.imageFrame,
       visualStyle: settings.visualStyle,
       viewDirection: this.viewport.direction,
       viewUp: this.viewport.up,

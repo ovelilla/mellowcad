@@ -15,6 +15,7 @@ import { DxfBlock, DxfRecord, dxfSections } from "./dxfSections"
 import {
   DxfBlockTarget,
   DxfEntityContext,
+  type DxfImageDefinition,
   dxfEntities,
   inPaperSpace,
 } from "./dxfEntities"
@@ -37,7 +38,13 @@ export { DxfReadError, looksLikeDxf } from "./dxfFormat"
  * rest, which is all an older drawing holds (wipeout/w15, w16).
  */
 function dxfWipeoutFrame(objects: readonly DxfRecord[]): number | undefined {
-  const dictionary = objects.find((o) => o.type === "DICTIONARY")
+  const dictionary = objects.find(
+    (o) =>
+      o.type === "DICTIONARY" &&
+      o.codes.some(
+        (code, i) => code === 3 && o.values[i].trim() === "WIPEOUTFRAME"
+      )
+  )
   if (dictionary) {
     const at = dictionary.codes.findIndex(
       (code, i) => code === 3 && dictionary.values[i].trim() === "WIPEOUTFRAME"
@@ -55,6 +62,60 @@ function dxfWipeoutFrame(objects: readonly DxfRecord[]): number | undefined {
   }
   const variables = objects.find((o) => o.type === "WIPEOUTVARIABLES")
   return variables ? int(variables, 70) : undefined
+}
+
+/**
+ * IMAGEFRAME, which is no header variable either: the RASTERVARIABLES
+ * object's 70, whose 1 shows the frame and 2 keeps it off the plot, so
+ * IMAGEFRAME 2 is 3 (image/i08, i09; 2 alone reads as 1, fr2).
+ */
+function dxfImageFrame(objects: readonly DxfRecord[]): 0 | 1 | 2 | undefined {
+  const variables = objects.find((o) => o.type === "RASTERVARIABLES")
+  const flags = variables ? int(variables, 70) : undefined
+  if (flags === undefined) return undefined
+  return (flags & 1) === 0 ? 0 : flags & 2 ? 2 : 1
+}
+
+/**
+ * Each image definition by its handle: its name from ACAD_IMAGE_DICT, else
+ * its file's (as -IMAGE Attach names one), its path, its size in pixels and
+ * one pixel's (10, 20, 11, 281: image/i08), which AutoCAD frames an image
+ * it cannot find by (fr v3: the definition's size wins over the IMAGE's 13).
+ */
+function dxfImageDefinitions(
+  objects: readonly DxfRecord[]
+): Map<string, DxfImageDefinition> {
+  const names = new Map<string, string>()
+  for (const dictionary of objects) {
+    if (dictionary.type !== "DICTIONARY") continue
+    dictionary.codes.forEach((code, i) => {
+      if (code !== 3 || dictionary.codes[i + 1] !== 350) return
+      const handle = dictionary.values[i + 1].trim().toUpperCase()
+      names.set(handle, dictionary.values[i].trim())
+    })
+  }
+  const definitions = new Map<string, DxfImageDefinition>()
+  for (const record of objects) {
+    if (record.type !== "IMAGEDEF") continue
+    const handle = str(record, 5)?.trim().toUpperCase()
+    if (!handle) continue
+    const path = str(record, 1)?.trim() ?? ""
+    const file = path.split(/[\\/]/).pop() ?? ""
+    const size = point(record, 10)
+    const pixel = point(record, 11)
+    definitions.set(handle, {
+      reference: {
+        name: names.get(handle) ?? file.replace(/\.[^.]*$/, ""),
+        path,
+        ...(pixel && pixel.x > 0 ? { pixelSize: pixel.x } : {}),
+        ...(int(record, 281) !== undefined ? { units: int(record, 281) } : {}),
+      },
+      ...(size && size.x > 0 && size.y > 0
+        ? { width: size.x, height: size.y }
+        : {}),
+    })
+  }
+  return definitions
 }
 
 /** What opening a DXF left out, which the command line says (`docs/next-dxf.md`). */
@@ -160,11 +221,14 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     (v) => str(v, 2)?.trim().toUpperCase() === "*ACTIVE"
   )
   const wipeoutFrame = dxfWipeoutFrame(dxf.objects)
+  const imageFrame = dxfImageFrame(dxf.objects)
+  const images = dxfImageDefinitions(dxf.objects)
   const settings = {
     ...dxfSettings(dxf.header, active, linetype),
     ...(wipeoutFrame === 0 || wipeoutFrame === 1 || wipeoutFrame === 2
       ? { wipeoutFrame: wipeoutFrame as 0 | 1 | 2 }
       : {}),
+    ...(imageFrame !== undefined ? { imageFrame } : {}),
   }
   const ctx: DxfEntityContext = {
     layer: (name) => layers.id(name),
@@ -173,6 +237,7 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     dimStyle: (name) => dimStyles.id(name),
     dimStyleTextAbove,
     block: (name) => targets.get(name.toUpperCase()) ?? null,
+    image: (handle) => images.get(handle.trim().toUpperCase()) ?? null,
     splineSegments: settings.splineSegments,
     hatchSplineFitData: version >= 1024,
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),

@@ -7,6 +7,7 @@ import {
   DimensionEntity,
   Entity,
   InsertEntity,
+  ImageEntity,
   XrefSource,
   createInsert,
   entitiesBounds,
@@ -167,6 +168,47 @@ export function writeDxf(
   const styleOf = (id: string): DimStyle =>
     dimStyles.get(id) ?? DEFAULT_DIM_STYLE
 
+  // The images' definitions, one per name and path as -IMAGE attaches one
+  // (image/i08), in the order first shown, and each image's reactor.
+  const allImages = [
+    ...modelEntities,
+    ...drawing.blocks.flatMap((b) => b.entities),
+  ].filter((e): e is ImageEntity => e.type === "image")
+  const imageDefinitions = new Map<
+    string,
+    { handle: string; name: string; image: ImageEntity; reactors: string[] }
+  >()
+  const imageKey = (e: ImageEntity) => `${e.image.name}\u0000${e.image.path}`
+  // A dictionary's names are unique: two definitions of one name (pasted from
+  // another drawing, or named by their files) take a number after the second.
+  const imageNames = new Set<string>()
+  const imageName = (name: string) => {
+    let unique = name
+    for (let n = 2; imageNames.has(unique.toUpperCase()); n++)
+      unique = `${name}${n}`
+    imageNames.add(unique.toUpperCase())
+    return unique
+  }
+  for (const e of allImages) {
+    if (!imageDefinitions.has(imageKey(e))) {
+      imageDefinitions.set(imageKey(e), {
+        handle: handle(),
+        name: imageName(e.image.name),
+        image: e,
+        reactors: [],
+      })
+    }
+  }
+  const imageDefinitionOf = (e: ImageEntity) =>
+    imageDefinitions.get(imageKey(e))!
+  const imageReactors: { handle: string; image: string }[] = []
+  // ACAD_IMAGE_DICT and IMAGEFRAME's RASTERVARIABLES, where the drawing has
+  // an image or its IMAGEFRAME is not a new drawing's.
+  const imageObjects =
+    allImages.length > 0 || drawing.settings.imageFrame !== 1
+      ? { dictionary: handle(), variables: handle() }
+      : null
+
   // A leader and the annotation it points at, when both are written in one
   // space: each needs the other's handle (340, ACAD_REACTORS). Keyed by the
   // space and the id, as two blocks can hold objects of one id (a pasted
@@ -231,6 +273,13 @@ export function writeDxf(
     dimensionBlock: (dimension) => dimensionBlocks.get(dimension) ?? "",
     arrayBlock: (insert) => arrayBlocks.get(insert) ?? null,
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),
+    imageDefinition: (image) => imageDefinitionOf(image).handle,
+    imageReactor: (image, own) => {
+      const reactor = handle()
+      imageDefinitionOf(image).reactors.push(reactor)
+      imageReactors.push({ handle: reactor, image: own })
+      return reactor
+    },
   }
 
   const plan = (entities: readonly Entity[]): void => {
@@ -284,7 +333,7 @@ export function writeDxf(
   const wipeoutVariables =
     wipeouts > 0 || drawing.settings.wipeoutFrame !== 1 ? handle() : null
   const out = body
-  if (wipeoutVariables) {
+  if (wipeoutVariables || imageObjects) {
     out.str(0, "SECTION")
     out.str(2, "CLASSES")
     const dxfClass = (
@@ -304,6 +353,38 @@ export function writeDxf(
       out.int(280, 0)
       out.int(281, entity ? 1 : 0)
     }
+    if (imageObjects) {
+      // As AutoCAD writes them (image/i08).
+      if (allImages.length > 0) {
+        dxfClass(
+          "IMAGEDEF",
+          "AcDbRasterImageDef",
+          "ISM",
+          0,
+          imageDefinitions.size,
+          false
+        )
+      }
+      dxfClass("RASTERVARIABLES", "AcDbRasterVariables", "ISM", 0, 1, false)
+      if (allImages.length > 0) {
+        dxfClass(
+          "IMAGEDEF_REACTOR",
+          "AcDbRasterImageDefReactor",
+          "ISM",
+          1,
+          allImages.length,
+          false
+        )
+        dxfClass(
+          "IMAGE",
+          "AcDbRasterImage",
+          "ISM",
+          2175,
+          allImages.length,
+          true
+        )
+      }
+    }
     if (wipeouts > 0) {
       dxfClass(
         "WIPEOUT",
@@ -314,14 +395,16 @@ export function writeDxf(
         true
       )
     }
-    dxfClass(
-      "WIPEOUTVARIABLES",
-      "AcDbWipeoutVariables",
-      '"WipeOut|Product Desc:     WipeOut Dbx Application|Company:          Autodesk, Inc.|WEB Address:      www.autodesk.com"',
-      0,
-      1,
-      false
-    )
+    if (wipeoutVariables) {
+      dxfClass(
+        "WIPEOUTVARIABLES",
+        "AcDbWipeoutVariables",
+        '"WipeOut|Product Desc:     WipeOut Dbx Application|Company:          Autodesk, Inc.|WEB Address:      www.autodesk.com"',
+        0,
+        1,
+        false
+      )
+    }
     out.str(0, "ENDSEC")
   }
 
@@ -524,6 +607,12 @@ export function writeDxf(
   out.int(281, 1)
   out.str(3, "ACAD_GROUP")
   out.str(350, T.groups)
+  if (imageObjects) {
+    out.str(3, "ACAD_IMAGE_DICT")
+    out.str(350, imageObjects.dictionary)
+    out.str(3, "ACAD_IMAGE_VARS")
+    out.str(350, imageObjects.variables)
+  }
   out.str(3, "ACAD_PLOTSTYLENAME")
   out.str(350, T.plotStyles)
   if (wipeoutVariables) {
@@ -564,6 +653,47 @@ export function writeDxf(
   out.str(330, T.plotStyles)
   out.str(102, "}")
   out.str(330, T.plotStyles)
+  if (imageObjects) {
+    owned("DICTIONARY", imageObjects.dictionary)
+    out.str(100, "AcDbDictionary")
+    out.int(281, 1)
+    for (const definition of imageDefinitions.values()) {
+      out.str(3, definition.name)
+      out.str(350, definition.handle)
+    }
+    // IMAGEFRAME 0, 1 or 2 as 0, 1 or 3 (image/i08, i09).
+    owned("RASTERVARIABLES", imageObjects.variables)
+    out.str(100, "AcDbRasterVariables")
+    out.int(90, 0)
+    out.int(70, [0, 1, 3][drawing.settings.imageFrame])
+    out.int(71, 1)
+    out.int(72, 1)
+    for (const { handle: own, image, reactors } of imageDefinitions.values()) {
+      out.str(0, "IMAGEDEF")
+      out.str(5, own)
+      out.str(102, "{ACAD_REACTORS")
+      out.str(330, imageObjects.dictionary)
+      for (const reactor of reactors) out.str(330, reactor)
+      out.str(102, "}")
+      out.str(330, imageObjects.dictionary)
+      out.str(100, "AcDbRasterImageDef")
+      out.int(90, 0)
+      out.str(1, image.image.path)
+      out.point(10, image.width, image.height)
+      const pixel = image.image.pixelSize ?? 1
+      out.point(11, pixel, pixel)
+      out.int(280, 1)
+      out.int(281, image.image.units ?? 0)
+    }
+    for (const reactor of imageReactors) {
+      out.str(0, "IMAGEDEF_REACTOR")
+      out.str(5, reactor.handle)
+      out.str(330, reactor.image)
+      out.str(100, "AcDbRasterImageDefReactor")
+      out.int(90, 2)
+      out.str(330, reactor.image)
+    }
+  }
   if (wipeoutVariables) {
     // 0 for OFF, 1 for the rest, as AutoCAD 2027 writes it (w16).
     owned("WIPEOUTVARIABLES", wipeoutVariables)

@@ -463,6 +463,18 @@ export const ru: EngineLocale = {
             "other": "Маскировки"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Растровое изображение",
+            "few": "Растровых изображения",
+            "many": "Растровых изображений",
+            "other": "Растрового изображения"
+          }
+        ]
       ]
     },
     "array": {
@@ -6557,6 +6569,7 @@ export const ru: EngineLocale = {
             "leader": "LEADER",
             "face3d": "3D-ГРАНЬ",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "МАССИВ"
           }
         ]
@@ -8923,6 +8936,139 @@ export const ru: EngineLocale = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Изображение:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Вставка:                       X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Масштаб:                       ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Угол поворота:                 ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Яркость:                       ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Контрастность:                 ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Слияние с фоном:               ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Показывать изображение:        ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Да",
+            "other": "Нет"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Показывать неортогональные:    ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Да",
+            "other": "Нет"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Прозрачность:                  ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Вкл",
+            "other": "Откл"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Подрезка:                      ",
+        [
+          "on",
+          1,
+          {
+            "yes": "Вкл",
+            "other": "Откл"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Тип контура подрезки:          ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Многоугольный",
+            "other": "Прямоугольный"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       в точке, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Направление выдавливания относительно ПСК:\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

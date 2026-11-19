@@ -166,7 +166,13 @@ a hatch named `_U` (User-defined, from a DXF) as its language's letter and `Hatc
 pattern`, `U` or `_USER` by name with a scale (hatchpat/p06, p06u, p06U, in each console); 3D
 FACE: its four corners in the UCS (`first point` … `fourth point`, face3d/f03, in each console);
 WIPEOUT: `Number of boundary points: 4` and each vertex in the UCS (`at point, X=…,  Y=…,  Z=…`;
-es `en el punto`, de `bei Punkt`, hu `az X=… pontnál`: wipeout/w03, w12, in each console); a
+es `en el punto`, de `bei Punkt`, hu `az X=… pontnál`: wipeout/w03, w12, in each console); IMAGE:
+its name, insertion, scale (its pixel in its image's pixel size), rotation angle or, mirrored, its
+extrusion direction, brightness, contrast, fade, `Show image`, `Show non-ortho`, `Background
+Transparency`, `Clipping`, `Clip boundary type` and its whole frame's four corners, whatever its
+clip, as an image AutoCAD cannot find lists them (image/i07, i12, lr1, lr2, c1, c2, in each
+console: de `bei Punkt,` and cs `X =   10.0000,  Y =` against the wipeout's); Russian's `Масштаб`
+gives the scale where its console gives the frame's width (DXFIN's deviations); a
 gradient as `Hatch pattern GRADIENT` (es `DEGRADADO`), `Annotative: No`, `Gradient Angle` at AUPREC
 and `Gradient Centered` or `Gradient Not Centered` (gradient/g11, g13, in each console).
 BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,

@@ -426,6 +426,16 @@ export const en: EngineCatalog = {
             "other": "Wipeouts"
           }
         ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "one": "Raster Image",
+            "other": "Raster Images"
+          }
+        ]
       ]
     },
     "array": {
@@ -5375,6 +5385,7 @@ export const en: EngineCatalog = {
             "leader": "LEADER",
             "face3d": "3D FACE",
             "wipeout": "WIPEOUT",
+            "image": "IMAGE",
             "other": "ARRAY"
           }
         ]
@@ -7598,6 +7609,139 @@ export const en: EngineCatalog = {
           "y"
         ],
         ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageName": [
+        "Image:                   ",
+        [
+          "name"
+        ]
+      ],
+      "listImageInsertion": [
+        "Insertion:               X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageScale": [
+        "Scale:                   ",
+        [
+          "scale"
+        ]
+      ],
+      "listImageRotation": [
+        "Rotation angle:          ",
+        [
+          "angle"
+        ]
+      ],
+      "listImageBrightness": [
+        "Brightness:              ",
+        [
+          "value"
+        ]
+      ],
+      "listImageContrast": [
+        "Contrast:                ",
+        [
+          "value"
+        ]
+      ],
+      "listImageFade": [
+        "Fade:                    ",
+        [
+          "value"
+        ]
+      ],
+      "listImageShown": [
+        "Show image:              ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Yes",
+            "other": "No"
+          }
+        ]
+      ],
+      "listImageNonOrtho": [
+        "Show non-ortho:          ",
+        [
+          "shown",
+          1,
+          {
+            "yes": "Yes",
+            "other": "No"
+          }
+        ]
+      ],
+      "listImageTransparency": [
+        "Background Transparency: ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listImageClipping": [
+        "Clipping:                ",
+        [
+          "on",
+          1,
+          {
+            "yes": "On",
+            "other": "Off"
+          }
+        ]
+      ],
+      "listImageClipType": [
+        "Clip boundary type:      ",
+        [
+          "polygonal",
+          1,
+          {
+            "yes": "Polygonal",
+            "other": "Rectangular"
+          }
+        ]
+      ],
+      "listImagePoint": [
+        "       at point, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listImageExtrusion": [
+        "Extrusion direction relative to UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "    Y=",
+        [
+          "y"
+        ],
+        "    Z= ",
         [
           "z"
         ]

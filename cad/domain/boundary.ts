@@ -307,6 +307,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "leader":
       case "face3d":
       case "wipeout":
+      case "image":
         break
       default: {
         const unhandled: never = entity

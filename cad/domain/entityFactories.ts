@@ -20,6 +20,8 @@ import {
   PointEntity,
   Solid2dEntity,
   WipeoutEntity,
+  ImageEntity,
+  ImageReference,
   PolylineEntity,
   PolylineWidth,
   Polyline3dEntity,
@@ -92,6 +94,34 @@ export function createWipeout(
     vertices: vertices.map((p) => ({ x: p.x, y: p.y })),
   }
   return withElevation(wipeout, vertices.length > 0 ? zOf(vertices[0]) : 0)
+}
+
+/**
+ * An image of `width` by `height` pixels whose lower-left corner is
+ * `position`, one pixel's sides `u` and `v`, in the plane of the corner's Z.
+ */
+export function createImage(
+  position: Vec2 | Vec3,
+  u: Vec2,
+  v: Vec2,
+  width: number,
+  height: number,
+  image: ImageReference,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): ImageEntity {
+  const made: ImageEntity = {
+    id,
+    type: "image",
+    layerId,
+    position: { x: position.x, y: position.y },
+    u: { x: u.x, y: u.y },
+    v: { x: v.x, y: v.y },
+    width,
+    height,
+    image,
+  }
+  return withElevation(made, zOf(position))
 }
 
 /**

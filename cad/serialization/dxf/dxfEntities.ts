@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, cross3, normalize3, planar } from "../../geometry/Vec3"
+import { Vec3, add3, cross3, normalize3, planar } from "../../geometry/Vec3"
 import { arbitraryAxis, worldToAxes } from "../../geometry/ocs"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
@@ -31,6 +31,9 @@ import {
   createSolid2d,
   createFace3d,
   createWipeout,
+  createImage,
+  ImageEntity,
+  ImageReference,
   PointEntity,
   withXAxisAngle,
   createDimension,
@@ -79,6 +82,13 @@ import { GroupCursor, finite, int, num, point, str } from "./dxfValues"
 const DEG = Math.PI / 180
 
 /** A block a reference can be made to: its id and where its base point is. */
+/** An IMAGEDEF: what its images show, and its size in pixels if it says. */
+export interface DxfImageDefinition {
+  readonly reference: ImageReference
+  readonly width?: number
+  readonly height?: number
+}
+
 export interface DxfBlockTarget {
   readonly id: BlockId
   readonly basePoint: Vec2
@@ -96,6 +106,8 @@ export interface DxfEntityContext {
   dimStyleTextAbove(name: string | undefined): boolean
   /** The block a reference names, `"dependent"` for an xref nested in one, `null` for none. */
   block(name: string): DxfBlockTarget | "dependent" | null
+  /** The image definition (IMAGEDEF) of that handle, `null` for none. */
+  image(handle: string): DxfImageDefinition | null
   /** SPLINESEGS, for a spline-fit polyline whose vertices do not say it. */
   readonly splineSegments: number
   /** Whether spline hatch edges carry their fit data (2010 on). */
@@ -132,6 +144,8 @@ export function dxfEntities(
       return made(face3d(record, ctx))
     case "WIPEOUT":
       return made(wipeout(record, ctx))
+    case "IMAGE":
+      return made(image(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -373,6 +387,99 @@ function wipeout(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   const made = createWipeout(local.map((p) => ({ x: p.x, y: p.y })))
   const placed = withElevation(made, local[0].z)
   return common(toOcs ? withNormal(placed, n) : placed, r, ctx)
+}
+
+/**
+ * An IMAGE, as AutoCAD opens one whose file it cannot find (image/i01): its
+ * corner (10), one pixel's sides (11, 12) and its definition (340), whose
+ * size frames it; the display (70), brightness, contrast and fade
+ * (281–283) and clip boundary (71, 14 and 24, a polygon's closing vertex
+ * dropped) kept to be written back. Its plane is U×V's.
+ */
+function image(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const origin = point(r, 10)
+  const u = point(r, 11)
+  const v = point(r, 12)
+  const definition = ctx.image(str(r, 340) ?? "")
+  if (!origin || !u || !v || !definition) return null
+  const size = point(r, 13)
+  const width = definition.width ?? size?.x ?? 0
+  const height = definition.height ?? size?.y ?? 0
+  if (!(width > 0) || !(height > 0)) return null
+  const n = normalize3(cross3(u, v))
+  if (!n) return null
+  // A mirrored one in plan (U×V down, image/i06e) stays in the WCS, its
+  // sides turning clockwise, as MIRROR leaves one here.
+  const level = Math.abs(n.x) < 1e-12 && Math.abs(n.y) < 1e-12
+  const toOcs = level ? null : ocsOf(n)
+  const at = toOcs ? toOcs(origin) : origin
+  const side = (w: Vec3) => {
+    if (!toOcs) return { x: w.x, y: w.y }
+    const tip = toOcs(add3(origin, w))
+    return { x: tip.x - at.x, y: tip.y - at.y }
+  }
+  const xs: number[] = []
+  const ys: number[] = []
+  r.codes.forEach((code, i) => {
+    if (code === 14) xs.push(Number(r.values[i]))
+    if (code === 24) ys.push(Number(r.values[i]))
+  })
+  let clip = xs.map((x, i) => ({ x, y: ys[i] ?? NaN }))
+  const polygonal = int(r, 71) === 2
+  if (
+    polygonal &&
+    clip.length > 1 &&
+    clip[0].x === clip[clip.length - 1].x &&
+    clip[0].y === clip[clip.length - 1].y
+  ) {
+    clip = clip.slice(0, -1)
+  }
+  // The whole frame's two corners, unclipped (280 0), are what AutoCAD
+  // writes of an image with no clip of its own (image/i00, i08): nothing to
+  // keep.
+  const clipped = int(r, 280) === 1
+  const whole =
+    !clipped &&
+    !polygonal &&
+    clip.length === 2 &&
+    clip[0].x === -0.5 &&
+    clip[0].y === -0.5 &&
+    clip[1].x === width - 0.5 &&
+    clip[1].y === height - 0.5
+  const keepClip =
+    !whole &&
+    clip.length >= 2 &&
+    clip.every((c) => Number.isFinite(c.x) && Number.isFinite(c.y))
+  const display = int(r, 70)
+  const byte = (code: number, fallback: number) => {
+    const value = int(r, code)
+    return value !== undefined &&
+      value !== fallback &&
+      value >= 0 &&
+      value <= 100
+      ? value
+      : undefined
+  }
+  const brightness = byte(281, 50)
+  const contrast = byte(282, 50)
+  const fade = byte(283, 0)
+  const made: ImageEntity = {
+    ...createImage(at, side(u), side(v), width, height, definition.reference),
+    ...(display !== undefined && display !== 7 ? { display } : {}),
+    ...(brightness !== undefined ? { brightness } : {}),
+    ...(contrast !== undefined ? { contrast } : {}),
+    ...(fade !== undefined ? { fade } : {}),
+    ...(keepClip
+      ? {
+          clip: {
+            polygonal,
+            points: clip,
+            ...(clipped ? {} : { off: true as const }),
+          },
+        }
+      : {}),
+  }
+  return common(toOcs ? withNormal(made, n) : made, r, ctx)
 }
 
 /** DXF writes a point in the WCS (point/p04), the model in the OCS of its 210. */

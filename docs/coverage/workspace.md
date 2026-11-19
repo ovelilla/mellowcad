@@ -99,7 +99,7 @@ refused. Inside a command its change is part of the command's step, which the co
 back. The variables: AUPREC (0 to 8, 0 in a new drawing, every angle written at its places — a
 prompt's `<90>`, DIST's `Angle in XY Plane = 45`, ROTATE's `ANGBASE=0`, the tooltip's and the
 Properties palette's), LUPREC, LWDISPLAY, ATTMODE (regenerating), ELEVATION, THICKNESS,
-NAVVCUBEDISPLAY (0–3), FILLMODE, WIPEOUTFRAME (0–2, regenerating), PLINEWID, FILLETRAD, CHAMFERA, CHAMFERB (none negative), TEXTSIZE
+NAVVCUBEDISPLAY (0–3), FILLMODE, WIPEOUTFRAME (0–2, regenerating), IMAGEFRAME (0–2, regenerating; image/i02), PLINEWID, FILLETRAD, CHAMFERA, CHAMFERB (none negative), TEXTSIZE
 (a negative taken as its size, 0 refused), ORTHOMODE, SNAPMODE (0–2), SNAPUNIT (both above 0),
 GRIDMODE, INSUNITS (0–24), ISOLINES (0–2047, 4 in a new drawing, saved with it; solid/v01–v03:
 `Requires an integer between 0 and 2047.`), CECOLOR (a number, 256 ByLayer, a name in English or the command

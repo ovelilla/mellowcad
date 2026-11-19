@@ -3,7 +3,7 @@ title: Otwórz plik DXF online
 metaTitle: "Otwórz plik DXF online: darmowy podgląd DXF"
 description: "Otwórz plik DXF za darmo w przeglądarce, bez wysyłania: AutoCAD R12 do 2018, tekstowy lub binarny, z warstwami, tekstem, wymiarami, kreskowaniem i blokami."
 type: howTo
-sourceHash: "83dd0b7996e3"
+sourceHash: "a0eb0a40694b"
 faq:
   - question: "Jak otworzyć plik DXF bez AutoCADa?"
     answer: "Wybierz go lub upuść u góry tej strony: MellowCAD otworzy go w swoim edytorze, w przeglądarce, bez instalacji i bez konta. W edytorze plik otwierają też polecenia OTWÓRZ (Ctrl+O) i DXFWE."
@@ -36,7 +36,7 @@ Gdy DXF zawiera coś, dla czego MellowCAD nie ma jeszcze obiektu, otwiera reszt�
 
 - ślady (TRACE) i siatki;
 - linie konstrukcyjne i półproste, multilinie;
-- multilinie odniesienia i tolerancje, tabele i obrazy;
+- multilinie odniesienia, tolerancje i tabele;
 - bryły 3D, regiony i powierzchnie;
 - wymiary współrzędnych i długości łuku.
 
@@ -49,6 +49,7 @@ Niektóre rzeczy się otwierają, ale nie całkiem w takiej postaci, w jakiej by
 - Rysunek w calach lub stopach zachowuje swoje liczby, odczytane jako milimetry.
 - Tekst jest rysowany według miar czcionki Arial, niezależnie od czcionki podanej w jego stylu, bez współczynnika szerokości i kąta pochylenia.
 - Odnośnik zewnętrzny zachowuje swoje położenie i ścieżkę i jest rysowany tak, jak AutoCAD rysuje odnośnik, którego rysunku nie może znaleźć: `Odnośnik zewnętrzny` i ścieżka w jego punkcie wstawienia. Strona odczytuje tylko przekazany jej plik, nigdy rysunków obok niego; po ponownym zapisie jako DXF odnośnik zostaje zachowany.
+- Obraz zachowuje swoje położenie, rozmiar i ścieżkę do swojego pliku i jest rysowany tak, jak AutoCAD rysuje obraz, którego pliku nie może znaleźć: jego ramka, zgodnie z IMAGEFRAME, i ścieżka zapisana wewnątrz. Po ponownym zapisie jako DXF obraz zostaje zachowany.
 
 ## Otwórz go w edytorze [#editor]
 
