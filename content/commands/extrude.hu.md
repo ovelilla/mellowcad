@@ -40,7 +40,7 @@ Az Útvonal, vagyis a pálya menti söprés. A Felület mód és a nyitott profi
 
 ### Mi az AutoCAD KIHÚZ parancs angolul?
 
-EXTRUDE. A magyar AutoCAD-ben a rövidítése `KH`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTRUDE` is; az angol `EXT` a magyar változatban nem működik.
+EXTRUDE. A magyar AutoCAD-ben a rövidítése `KH`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTRUDE` is; az angol `EXT` a magyar változatban nem működik.
 
 ### Hogyan lehet egy 2D rajzból 3D-t készíteni?
 

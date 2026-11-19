@@ -34,7 +34,7 @@ A Tűrés és a Blokk feliratozás: a MellowCAD-ben nincs alaktűrés-objektum, 
 
 ### Mi az AutoCAD MUTATÓ parancs angolul?
 
-LEADER. A magyar AutoCAD-ben a rövidítése `MUT`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LEADER` is; az angol `LEAD` a magyar változatban nem működik.
+LEADER. A magyar AutoCAD-ben a rövidítése `MUT`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LEADER` is; az angol `LEAD` a magyar változatban nem működik.
 
 ### Mi a különbség a MUTATÓ és a TMUTATÓ parancs között?
 

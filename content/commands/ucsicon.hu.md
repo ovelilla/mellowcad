@@ -5,9 +5,9 @@ figure: "Az FKRIKON Nincs opciója a sarokba küldi az ikont; az FKR a blokk lé
 sourceHash: "c431e70eda01"
 ---
 
-Az FKRIKON (UCSICON) parancs megjeleníti vagy elrejti az FKR ikont, azt az X és Y szárat, amely megmutatja, hol van az aktuális FKR, és merre néz, és beállítja, hol álljon: az FKR origójában vagy a rajz bal alsó sarkában. Egyetlen kérdése alapértelmezésként az aktuális állapotot kínálja fel, így az Enter megtartja. A beállítás a rajzzal együtt mentődik, és minden FKRIKON parancs egy visszavonási lépés.
+Az FKRIKON (UCSICON) parancs megjeleníti vagy elrejti az FKR ikont, azt az X és Y szárat, amely megmutatja, hol van az aktuális FKR, és merre néz, és beállítja, hol álljon: az FKR origójában vagy a rajz bal alsó sarkában. Egyetlen promptja alapértelmezésként az aktuális állapotot kínálja fel, így az Enter megtartja. A beállítás a rajzzal együtt mentődik, és minden FKRIKON parancs egy visszavonási lépés.
 
-Az ikon az AutoCAD 2027 3D ikonja: egy szár az X, egy az Y tengelynek, mindegyik végén egy betű, és az origóban egy négyzet, amíg az FKR a világé. Felülnézeten kívül egy Z szár mutatja, merre néz az FKR Z tengelye, a pontosan szemből látott szár pedig elmarad. 2D drótváz látványstílusban fehér; Takartvonalas és Koncepcionális stílusban az X piros, az Y zöld, a Z kék. Aposztróffal begépelve (`'FKRIKON`) ehelyett az UCSICON változót állítja be, akár egy másik parancson belül is: 0-tól 3-ig, ahol az 1 megjeleníti az ikont, a 2 pedig az origóba teszi.
+Az ikon az AutoCAD 2027 3D ikonja: egy szár az X, egy az Y tengelynek, mindegyik végén egy betű, és az origóban egy négyzet, amíg az FKR a világé. Felülnézeten kívül egy Z szár mutatja, merre néz az FKR Z tengelye, a pontosan szemből látott szár pedig elmarad. 2D drótváz látványstílusban fehér; Takartvonalas és Látványtervi látványstílusban az X piros, az Y zöld, a Z kék. Aposztróffal begépelve (`'FKRIKON`) ehelyett az UCSICON változót állítja be, akár egy másik parancson belül is: 0-tól 3-ig, ahol az 1 megjeleníti az ikont, a 2 pedig az origóba teszi.
 
 ## Options
 
@@ -25,7 +25,7 @@ Az ikont a rajz bal alsó sarkában tartja, bárhol legyen is az origó.
 
 ### ORigin
 
-Az ikont az FKR origójába rajzolja, ez az alapértelmezés. Ha az origó a képernyőn kívül esik, vagy olyan közel van a széléhez, hogy az ikon nem férne el, az ikon a bal alsó sarokba kerül, amíg az origó vissza nem kerül a látótérbe.
+Az ikont az FKR origójába rajzolja, ez az alapérték. Ha az origó a képernyőn kívül esik, vagy olyan közel van a széléhez, hogy az ikon nem férne el, az ikon a bal alsó sarokba kerül, amíg az origó vissza nem kerül a látótérbe.
 
 ## Missing
 

@@ -12,7 +12,7 @@ A KIOSZT (ARRAY) parancs mintázatba másolja a kijelölést: oszlopokba és sor
 
 ### Rectangular
 
-Oszlopok és sorok, és ha kívánja, Z mentén egymásra rakott szintek: <Command id="ARRAYRECT" />. 4 oszloppal és 3 sorral indul, a kijelölés méretének másfélszeresére egymástól.
+Oszlopok és sorok, és ha kívánja, Z mentén egymásra rakott szintek: <Command id="ARRAYRECT" />. 4 oszloppal és 3 sorral indul, egymástól a kijelölés méretének másfélszerese távolságra.
 
 ### PAth
 
@@ -38,8 +38,8 @@ Válassza a <Keyword id="POlar" /> opciót, vagy indítsa el a <Command id="ARRA
 
 ### Hogyan lehet szétvetni egy kiosztást?
 
-Jelölje ki, és futtassa a <Command id="EXPLODE" /> parancsot: a kiosztásból az elemei objektumai lesznek, mindegyik a saját fóliáján. Ha eleve különálló másolatokat szeretne, az Enter megnyomása előtt az <Keyword command="ARRAYRECT" id="ASsociative" /> kérdésre válaszoljon így: <Keyword command="ARRAYRECT" id="No" />.
+Jelölje ki, és futtassa a <Command id="EXPLODE" /> parancsot: a kiosztás az elemeit alkotó objektumokra bomlik, mindegyik a saját fóliáján. Ha eleve különálló másolatokat szeretne, az Enter megnyomása előtt az <Keyword command="ARRAYRECT" id="ASsociative" /> kérdésre válaszoljon így: <Keyword command="ARRAYRECT" id="No" />.
 
 ### Hogyan lehet módosítani egy kiosztást a létrehozása után?
 
-Jelölje ki. A fogói módosítják: a bázispontban lévő négyzet mozgatja, a nyilak a darabszámot és a távolságot állítják, és ha egy darabszám-nyíl aktív, a beírt szám lesz a darabszám. A Tulajdonságok paletta felsorolja az oszlopait, sorait és távolságait, vagy az elemeit és szögeit, hogy átírhassa őket. A KIOSZTSZERKESZT parancs még nincs meg.
+Jelölje ki. A fogói módosítják: a bázispontban lévő négyzet mozgatja, a nyilak a darabszámot és a távolságot állítják, és ha egy darabszám-nyíl aktív, a beírt szám lesz a darabszám. A Tulajdonságok paletta felsorolja az oszlopait, sorait és távolságait, vagy az elemeit és szögeit, hogy átírhassa őket. A KIOSZTSZERKESZT parancs még nem érhető el.

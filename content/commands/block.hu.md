@@ -28,7 +28,7 @@ Angolul BLOCK, a magyar AutoCAD-ben BLOKK: írja be a `B` rövidítést, majd ny
 
 ### Hogyan lehet blokkot létrehozni az AutoCAD-ben?
 
-Írja be a `B` rövidítést és egy nevet, majd adja meg a bázispontot – egy sarkot vagy annak az élnek a felezőpontját, amelyen a blokk ülni fog –, és jelölje ki az objektumokat. Az Enter definiálja a blokkot, és az objektumokat egy rá mutató referenciává alakítja. A parancs előtt kijelölt objektumokat is felhasználja, a bázispont után.
+Írja be a `B` rövidítést és egy nevet, majd adja meg a bázispontot – egy sarkot vagy annak az élnek a felezőpontját, amelyen a blokk állni fog –, és jelölje ki az objektumokat. Az Enter definiálja a blokkot, és az objektumokat egy rá mutató referenciává alakítja. A parancs előtt kijelölt objektumokat is felhasználja, a bázispont után.
 
 ### Hogyan lehet újradefiniálni egy blokkot?
 

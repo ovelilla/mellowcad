@@ -18,7 +18,7 @@ Bekéri a tisztítandó neveket, alapértelmezés szerint `*` minden nem haszná
 
 ### LTypes
 
-Bekéri a neveket, és hogy ellenőrizze-e őket egyenként, ahogy a <Keyword id="Blocks" />, majd törli a semmi által nem használt vonaltípusokat. A Continuous, az aktuális vonaltípus és az, amelyet egy fólia vagy egy objektum használ, akár egy blokkon belül is, mindig megmarad; ha nincs mit törölni, <Message id="noUnreferencedLinetypes" /> üzenetet ír ki. A <Command id="LINETYPE" /> Betöltés gombja visszahozza.
+Bekéri a neveket, és hogy ellenőrizze-e őket egyenként, ahogy a <Keyword id="Blocks" />, majd törli a sehol nem használt vonaltípusokat. A Continuous, az aktuális vonaltípus és az, amelyet egy fólia vagy egy objektum használ, akár egy blokkon belül is, mindig megmarad; ha nincs mit törölni, <Message id="noUnreferencedLinetypes" /> üzenetet ír ki. A <Command id="LINETYPE" /> Betöltés gombja visszahozza.
 
 ## Missing
 
@@ -32,7 +32,7 @@ PURGE. A magyar AutoCAD-ben a rövidítése `TT`: írja be, majd nyomja meg az E
 
 ### Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?
 
-Írja be: `TT`, válassza a <Keyword id="Blocks" /> opciót, nyomja meg az Enter billentyűt minden névhez, és válaszoljon <Keyword id="No" /> értékkel, hogy mindet egyenkénti rákérdezés nélkül törölje.
+Írja be: `TT`, válassza a <Keyword id="Blocks" /> opciót, nyomja meg az Enter billentyűt minden névhez, és válassza a <Keyword id="No" /> opciót, hogy mindet egyenkénti rákérdezés nélkül törölje.
 
 ### Miért nem lehet egy blokkot kitisztítani?
 

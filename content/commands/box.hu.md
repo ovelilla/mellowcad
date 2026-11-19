@@ -30,7 +30,7 @@ A magasságnál: két pontot kér be, és a magasság a köztük lévő távols�
 
 ## Missing
 
-A Mozgatás, a Forgatás, a Lépték és a Tükrözés aktív fogóból, amelyek között az AutoCAD az Enter billentyűvel vált. A saját 3D parancsai – 3DMOZGAT, 3DFORGAT, 3DLÉPTÉK, TÜKRÖZ3D, FORGAT3D, ILLESZT, 3DILLESZT – a manipulátoraikkal, valamint lapjainak, éleinek és csúcspontjainak egyenkénti mozgatása. A dinamikus FKR. A pontozott méretek, amelyeket az AutoCAD a sarok, a hossz és a szélesség megadása közben rajzol. Élei lekerekítése és letörése a <Command id="FILLET" /> és a <Command id="CHAMFER" /> paranccsal; ezt az <Command id="FILLETEDGE" /> és az <Command id="CHAMFEREDGE" /> parancs végzi el. A szilárdtest-előzmények rögzítése és megjelenítése, és az Anyag sor. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Koncepcionális mellett hiányoznak.
+A Mozgatás, a Forgatás, a Lépték és a Tükrözés aktív fogóból, amelyek között az AutoCAD az Enter billentyűvel vált. A saját 3D parancsai – 3DMOZGAT, 3DFORGAT, 3DLÉPTÉK, TÜKRÖZ3D, FORGAT3D, ILLESZT, 3DILLESZT – a manipulátoraikkal, valamint lapjainak, éleinek és csúcspontjainak egyenkénti mozgatása. A dinamikus FKR. A pontozott méretek, amelyeket az AutoCAD a sarok, a hossz és a szélesség megadása közben rajzol. Élei lekerekítése és letörése a <Command id="FILLET" /> és a <Command id="CHAMFER" /> paranccsal; ezt az <Command id="FILLETEDGE" /> és az <Command id="CHAMFEREDGE" /> parancs végzi el. A szilárdtest-előzmények rögzítése és megjelenítése, és az Anyag sor. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Látványtervi mellett hiányoznak.
 
 ## Questions
 
@@ -38,7 +38,7 @@ A Mozgatás, a Forgatás, a Lépték és a Tükrözés aktív fogóból, amelyek
 
 Futtassa a TTEST parancsot, adjon meg egy sarkot, majd a szemközti sarkot, végül a magasságot: a `0,0`, a `60,40` és a `25` a munkamenet téglatestét rajzolja meg. Ha a szemközti sarok helyett a <Keyword id="Length" /> opciót és egy szélességet ad meg, a téglatest bármilyen szögbe fordítható.
 
-### Miért néz ki a téglatestem téglalapnak?
+### Miért látszik téglalapnak a téglatest?
 
 Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a <Command id="-VIEW" /> parancs <Keyword command="VIEW" id="SEiso" /> opciójával vagy a <Command id="3DORBIT" /> paranccsal. Az <Command id="VSCURRENT" /> parancs <Keyword command="VSCURRENT" id="Hidden" /> opciója elrejti a mögötte lévő éleket.
 

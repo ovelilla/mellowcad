@@ -24,11 +24,11 @@ A távolság helyett: az a szög, amellyel az ellipszis az első tengelye körü
 
 ### Parameter
 
-Íven a kezdő szög vagy a végszög helyett: a szög azon a körön, amelyből az ellipszis származik, vagyis az AutoCAD paramétere. A <Keyword id="Angle" /> visszavált szögekre.
+Ívnél a kezdő szög vagy a végszög helyett: a szög azon a körön, amelyből az ellipszis származik, vagyis az AutoCAD paramétere. A <Keyword id="Angle" /> visszavált szögekre.
 
 ### Included angle
 
-Íven a végszög helyett: mekkora szöget fog át a kezdettől. Az Enter 180-at fogad el, vagyis fél ellipszist.
+Ívnél a végszög helyett: mekkora szöget fog át a kezdettől. Az Enter 180-at fogad el, vagyis fél ellipszist.
 
 ## Missing
 
@@ -38,7 +38,7 @@ Az Izometrikus kör, amelyet az AutoCAD csak izometrikus raszterstílus mellett 
 
 ### Mi az AutoCAD ELLIPSZ parancs angolul?
 
-ELLIPSE. A magyar AutoCAD-ben a rövidítése `ELL`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_ELLIPSE` is; az angol `EL` a magyar változatban az ELÉR parancsot indítja.
+ELLIPSE. A magyar AutoCAD-ben a rövidítése `ELL`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_ELLIPSE` is; az angol `EL` a magyar változatban az ELÉR parancsot indítja.
 
 ### Hogyan lehet fél ellipszist rajzolni az AutoCAD-ben?
 

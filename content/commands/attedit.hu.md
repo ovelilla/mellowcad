@@ -6,13 +6,13 @@ figure: "Három ajtójelölő, a NUM attribútumos blokk referenciái: az ATTEDI
 sourceHash: "4a8ee28ecc53"
 ---
 
-Az ATTEDIT parancs egyetlen blokkreferencia attribútumértékeit módosítja. Bekéri a referenciát, majd egy ablakot nyit meg, benne minden attribútumához egy mezővel, amelynek felirata az attribútum promptja, tartalma pedig az értéke, ahogy az AutoCAD Attribútumok szerkesztése párbeszédpanelje. Írja át az értékeket – a Tab billentyű mezőről mezőre lép –, és az Enter, az AutoCAD OK gombja, egyetlen lépésben alkalmazza őket, amelyet a <Command id="U" /> parancs visszavon; az Esc, a Mégse gombja, semmit sem változtat.
+Az ATTEDIT parancs egyetlen blokkreferencia attribútumértékeit módosítja. Bekéri a referenciát, majd egy ablakot nyit meg, benne minden attribútumához egy mezővel, amelynek felirata az attribútum promptja, tartalma pedig az értéke, ahogy az AutoCAD Attribútumok módosítása párbeszédpanelje. Írja át az értékeket – a Tab billentyű mezőről mezőre lép –, és az Enter, az AutoCAD OK gombja, egyetlen lépésben alkalmazza őket, amelyet a <Command id="U" /> parancs visszavon; az Esc, a Mégse gombja, semmit sem változtat.
 
-A kijelölés a kijelölődoboz alatti objektumot veszi. Bármit, ami nem blokkreferencia, elutasít, és azt a referenciát is, amelynek a blokkjában nincs attribútum, majd újra kérdez; az üres helyre mutató kijelölés után szó nélkül kérdez újra. A blokk definíciója nem változik, és a többi referenciája sem: mindegyik saját értékeket tárol. A <Command id="EATTEDIT" /> parancs ugyanezeket az értékeket egy címke szerint feliratozott ablakban szerkeszti, és egy attribútumos referenciára duplán kattintva ez indul el.
+A kattintás a kijelölődoboz alatti objektumot választja ki. Bármit, ami nem blokkreferencia, elutasít, és azt a referenciát is, amelynek a blokkjában nincs attribútum, majd újra kérdez; az üres helyre mutató kijelölés után szó nélkül kérdez újra. A blokk definíciója nem változik, és a többi referenciája sem: mindegyik saját értékeket tárol. A <Command id="EATTEDIT" /> parancs ugyanezeket az értékeket egy címke szerint feliratozott ablakban szerkeszti, és egy attribútumos referenciára duplán kattintva ez indul el.
 
 ## Missing
 
-A `-ATTEDIT`, a parancssori változat, amely egyenként vagy globálisan szerkeszti az attribútumokat, és a `-ATE` és az `ATTE` rövidítése. Az Attribútumok szerkesztése párbeszédpanel Előző és Következő gombja – azokhoz a blokkokhoz, amelyeknek több attribútumuk van, mint amennyi egy oldalra fér – és a Blokknév sora. Az ATTIPEDIT, amely egy attribútumot a helyén szerkeszt, és a hozzá tartozó Ctrl + dupla kattintás. A nem rögzített attribútum saját fogója a referencián, és a Tulajdonságok paletta attribútumsorai.
+A `-ATTEDIT`, a parancssori változat, amely egyenként vagy globálisan szerkeszti az attribútumokat, valamint a `-ATE` és az `ATTE` rövidítése. Az Attribútumok módosítása párbeszédpanel Előző és Következő gombja – azokhoz a blokkokhoz, amelyeknek több attribútumuk van, mint amennyi egy oldalra fér – és a Blokknév sora. Az ATTIPEDIT, amely egy attribútumot a helyén szerkeszt, és a hozzá tartozó Ctrl + dupla kattintás. A nem rögzített helyzetű attribútum saját fogója a referencián, és a Tulajdonságok paletta attribútumsorai.
 
 ## Questions
 
@@ -30,4 +30,4 @@ Mert a kiválasztott referencia blokkjában nincs attribútum: az ATTEDIT olyan 
 
 ### Mi a különbség az ATTEDIT és a BATTEDIT (EATTEDIT) parancs között?
 
-Mindkettő egyetlen referencia értékeit szerkeszti. Az ATTEDIT ablaka minden mezőt az attribútum promptjával feliratoz, ahogy az AutoCAD Attribútumok szerkesztése párbeszédpanelje; a <Command id="EATTEDIT" /> parancsé, a Bővített attribútumszerkesztőé, a címkéjével. Az AutoCAD-ben a BATTEDIT ablakában lapok is vannak az egyes attribútumok szövegbeállításaihoz és tulajdonságaihoz.
+Mindkettő egyetlen referencia értékeit szerkeszti. Az ATTEDIT ablaka minden mezőt az attribútum promptjával feliratoz, ahogy az AutoCAD Attribútumok módosítása párbeszédpanelje; a <Command id="EATTEDIT" /> parancsé, a Bővített attribútumszerkesztőé, a címkéjével. Az AutoCAD-ben a BATTEDIT ablakában lapok is vannak az egyes attribútumok szövegbeállításaihoz és tulajdonságaihoz.

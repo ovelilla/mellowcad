@@ -42,7 +42,7 @@ A GEOMMÉR (MEASUREGEOM) parancs, a szalag Mérés eszközei, amelyek a TÁVS pa
 
 ### Mi az AutoCAD TÁVS parancs angolul?
 
-DIST. A magyar AutoCAD-ben a rövidítése `TÁ`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIST` is; az angol `DI` a magyar változatban nem működik.
+DIST. A magyar AutoCAD-ben a rövidítése `TÁ`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIST` is; az angol `DI` a magyar változatban nem működik.
 
 ### Hogyan lehet távolságot mérni az AutoCAD-ben?
 

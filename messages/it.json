@@ -76,7 +76,7 @@
     "boardLabel": "I comandi e i loro alias, raggruppati come sulla barra multifunzione",
     "also": "Anche: {aliases}",
     "linked": "Un comando sottolineato ha una pagina propria, con richieste e opzioni.",
-    "languages": "<en>{english}</en> è <es>{spanish}</es> in AutoCAD spagnolo, <pt>{portuguese}</pt> in portoghese brasiliano, <fr>{french}</fr> in francese, <de>{german}</de> in tedesco, <ru>{russian}</ru> in russo, <pl>{polish}</pl> in polacco e <cs>{czech}</cs> in ceco, e il nome globale <all>{global}</all> vale in ogni lingua.",
+    "languages": "<en>{english}</en> è <es>{spanish}</es> in AutoCAD spagnolo, <pt>{portuguese}</pt> in portoghese brasiliano, <fr>{french}</fr> in francese, <de>{german}</de> in tedesco, <ru>{russian}</ru> in russo, <pl>{polish}</pl> in polacco, <cs>{czech}</cs> in ceco e <hu>{hungarian}</hu> in ungherese, e il nome globale <all>{global}</all> vale in ogni lingua.",
     "transcriptTitle": "Un OFFSET, dall'inizio alla fine",
     "transcriptCaption": "Riprodotto dal motore alla creazione di questa pagina. Stesso ordine e stesse lettere d'opzione di AutoCAD."
   },

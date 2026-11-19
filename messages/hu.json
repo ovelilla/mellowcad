@@ -6,7 +6,7 @@
     "drawTitle": "Rajzolás",
     "drawDescription": "Ingyenes CAD egy böngészőlapon: 2D rajz és 3D szilárdtestek, egyelőre részben, az AutoCAD-ből ismert parancsokkal, tárgyraszterrel és billentyűkkel.",
     "ogAlt": "A MellowCAD-ben megrajzolt karima és 3D szilárdteste, a felirattal: Ingyenes online CAD program AutoCAD parancsokkal. Írja be: VO. Nyomja meg az Enter billentyűt. Rajzoljon.",
-    "appDescription": "Ingyenes CAD a böngészőben, az AutoCAD parancsaival, álneveivel és tárgyraszterével: 2D rajzolás és 3D szilárdtestek, egyelőre részben.",
+    "appDescription": "Ingyenes CAD a böngészőben, az AutoCAD parancsaival, rövidítéseivel és tárgyraszterével: 2D rajzolás és 3D szilárdtestek, egyelőre részben.",
     "browserRequirements": "JavaScriptet és modern asztali böngészőt igényel."
   },
   "Common": {
@@ -27,7 +27,7 @@
     "closeMenu": "Menü bezárása",
     "navLabel": "Fő navigáció",
     "language": "Nyelv",
-    "cta": "Kezdjen rajzolni"
+    "cta": "Rajzolás"
   },
   "Hero": {
     "pill": "Ingyenes · Regisztráció nélkül · Telepítés nélkül",
@@ -38,12 +38,12 @@
     "solids": "Újdonság: 3D szilárdtestek, egyelőre részben",
     "tagline": "Írja be: VO. Nyomja meg az Enter billentyűt. Rajzoljon.",
     "continue": "{count, plural, one {Rajzolás folytatása · # objektum} other {Rajzolás folytatása · # objektum}}",
-    "mobileNote": "Számítógépen, billentyűzettel és egérrel a legjobb.",
+    "mobileNote": "Számítógépen, billentyűzettel és egérrel használható a legjobban.",
     "drawingTitle": "A MellowCAD-ben megrajzolt, majd 3D szilárdtestként modellezett karima",
     "drawingDescription": "Egy karima elölnézete központi furattal és hat csavarfurattal egy középvonallal rajzolt osztókörön, mellette az ANSI31 mintával sraffozott A–A metszet, egy átmérő- és egy vastagságmérettel. Ezután a nézet „DNy-i izometrikus” nézetre vált: a rajz síkban fekszik, előtte pedig a karima áll 3D szilárdtestként, a takart vonalak eltávolításával.",
     "caption": "Ezen az oldalon minden rajz a MellowCAD-ben készült.",
     "transcriptSummary": "Parancselőzmények megjelenítése",
-    "transcriptLabel": "A parancsok, amelyek megrajzolták a karimát és modellezték a szilárdtestét",
+    "transcriptLabel": "A karimát megrajzoló és szilárdtestként modellező parancsok",
     "pause": "A rajzolás szüneteltetése",
     "play": "A rajzolás folytatása",
     "replay": "A rajzolás újrajátszása",
@@ -61,7 +61,7 @@
   "Proof": {
     "label": "A MellowCAD számokban",
     "commands": "{count, number} AutoCAD parancs",
-    "aliases": "{count, number} álnév",
+    "aliases": "{count, number} rövidítés",
     "snaps": "{count, number} tárgyraszter mód",
     "languages": "{count, number} nyelv",
     "tests": "Több mint {count, number} automatikus teszt",
@@ -69,14 +69,14 @@
   },
   "Commands": {
     "label": "01 · AutoCAD parancsok",
-    "title": "AutoCAD parancsok magyarul és angolul, az álnevekkel együtt.",
-    "lead": "Minden parancs elindul az AutoCAD-beli nevére és álneveire, és ugyanabban a sorrendben kérdez, ugyanazokkal az opcióbetűkkel. Magyarul, spanyolul, brazíliai portugálul, franciául, olaszul, németül, oroszul, lengyelül és csehül is – azokkal a nevekkel, amelyeket az AutoCAD adott nyelvű változatai használnak.",
-    "count": "{commands, number} AutoCAD parancs, {aliases, number} álnév",
-    "reference": "Az összes parancs, álneveikkel és promptjaikkal",
-    "boardLabel": "A parancsok és álneveik, a szalag szerint csoportosítva",
+    "title": "AutoCAD parancsok magyarul és angolul, a rövidítésekkel együtt.",
+    "lead": "Minden parancs elindul az AutoCAD-beli nevére és rövidítéseire, és ugyanabban a sorrendben kérdez, ugyanazokkal az opcióbetűkkel. Magyarul, spanyolul, brazíliai portugálul, franciául, olaszul, németül, oroszul, lengyelül és csehül is – azokkal a nevekkel, amelyeket az AutoCAD adott nyelvű változatai használnak.",
+    "count": "{commands, number} AutoCAD parancs, {aliases, number} rövidítés",
+    "reference": "Az összes parancs, a rövidítéseikkel és promptjaikkal",
+    "boardLabel": "A parancsok és rövidítéseik, a szalag szerint csoportosítva",
     "also": "Továbbá: {aliases}",
     "linked": "Az aláhúzott parancsnak saját oldala van, a promptjaival és opcióival.",
-    "languages": "Az angol <en>{english}</en> parancs neve a spanyol AutoCAD-ben <es>{spanish}</es>, a brazíliai portugálban <pt>{portuguese}</pt>, a franciában <fr>{french}</fr>, a németben <de>{german}</de>, az oroszban <ru>{russian}</ru>, a lengyelben <pl>{polish}</pl>, a csehben <cs>{czech}</cs>, a globális <all>{global}</all> név pedig minden nyelven működik.",
+    "languages": "A <hu>{hungarian}</hu> parancs neve az angol AutoCAD-ben <en>{english}</en>, a spanyolban <es>{spanish}</es>, a brazíliai portugálban <pt>{portuguese}</pt>, a franciában <fr>{french}</fr>, a németben <de>{german}</de>, az oroszban <ru>{russian}</ru>, a lengyelben <pl>{polish}</pl>, a csehben <cs>{czech}</cs>; a globális <all>{global}</all> név pedig minden nyelven működik.",
     "transcriptTitle": "Egy PÁRH parancs az elejétől a végéig",
     "transcriptCaption": "Az oldal készítésekor a motor játszotta le. Ugyanaz a sorrend és ugyanazok az opcióbetűk, mint az AutoCAD-ben."
   },
@@ -93,7 +93,7 @@
     "title": "Pontos 2D rajzolás tárgyraszterrel, követéssel és poláris szögekkel.",
     "lead": "A tárgyraszter, a követés és a poláris szögek úgy működnek, ahogy a keze megszokta, a koordinátákat pedig az AutoCAD módján, közvetlenül a kurzornál lehet beírni: @100<30 a relatív poláris, #120,80 az abszolút megadáshoz.",
     "osnapTitle": "Tárgyraszter",
-    "osnapBody": "{count, number} tárgyraszter mód az AutoCAD jelölőivel és elemleírásaival. A Shift+jobb kattintás a következő pontmegadásra egyet kikényszerít – itt az Érintő módot.",
+    "osnapBody": "{count, number} tárgyraszter mód az AutoCAD jelölőivel és elemleírásaival. Shift+jobb kattintással a következő pontmegadásra egy módot kényszeríthet ki – itt az Érintő módot.",
     "otrackTitle": "Tárgyraszterkövetés",
     "otrackBody": "Időzzön a kurzorral két ponton, hogy a program rögzítse őket, majd kövesse az igazítási vonalaikat a metszéspontjukig.",
     "polarTitle": "Poláris követés és Orto mód",
@@ -111,7 +111,7 @@
   "Toolset": {
     "drawBody": "Vonalak, vonalláncok, körök, ívek, ellipszisek, spline-ok, téglalapok, sokszögek és sraffozások.",
     "modifyBody": "Mozgatás, másolás, forgatás, léptékezés, tükrözés és nyújtás; párhuzamos eltolás, metszés, meghosszabbítás, lekerekítés, letörés és kiosztás.",
-    "annotateBody": "Egysoros és többsoros szöveg, valamint hétféle méretezés, a stílusaikkal együtt.",
+    "annotateBody": "Egysoros és többsoros szöveg, valamint hétféle méret, a stílusaikkal együtt.",
     "organizeBody": "Fóliák, {linetypes, number} vonaltípus, {lineweights, number} vonalvastagság és színek, Fólia szerint is; blokkok attribútumokkal.",
     "drawAlt": "Hornyos lap: két ívvel záródó vonallánc két furattal.",
     "modifyAlt": "Négy koncentrikus kontúr, mindegyik az előző párhuzamos eltolása.",
@@ -123,11 +123,11 @@
     "title": "3D szilárdtestek a böngészőben – újdonság, egyelőre részben.",
     "lead": "Közvetlenül létrehozott és szerkesztett szilárdtestek, előzményfa nélkül: primitívek, kihúzások és megforgatások, logikai műveletek, szelések és lekerekített élek, a ViewCube segítségével vagy keringéssel nézve.",
     "extrudeTitle": "Rajzoljon profilt, majd húzza ki vagy forgassa meg",
-    "booleansTitle": "Szilárdtestek egyesítése, kivonása és közös része",
+    "booleansTitle": "Szilárdtestek egyesítése, kivonása és közös részük képzése",
     "stylesTitle": "Egy szilárdtest, három látványstílus",
     "wireframeAlt": "L alakú szilárdtest „2D drótváz” stílusban: minden él látszik, a takartak is.",
     "hiddenAlt": "Ugyanaz a szilárdtest „Takartvonalas” stílusban: csak a látható élek.",
-    "conceptualAlt": "Ugyanaz a szilárdtest „Koncepcionális” stílusban: lapjai a fény felé melegen, attól elfelé hidegen árnyaltak, éleik rájuk rajzolva.",
+    "conceptualAlt": "Ugyanaz a szilárdtest „Látványtervi” stílusban: lapjai a fény felé melegen, attól elfelé hidegen árnyaltak, éleik rájuk rajzolva.",
     "todayTitle": "Már működik",
     "notYetTitle": "Még nincs",
     "notYet": "Söprés és pásztázás, hálók és renderelés, valamint szilárdtestek mozgatása és forgatása 3D-ben."
@@ -138,12 +138,12 @@
     "freeTitle": "Ingyenes, fiók nélkül",
     "freeBody": "Nem kell regisztrálni, és nem kell fizetni: nyissa meg az oldalt, és rajzoljon.",
     "autosaveTitle": "Automatikus mentés a böngészőben",
-    "autosaveBody": "Minden módosítás már rajzolás közben mentődik ezen az eszközön. Zárja be a lapot: a rajz ott lesz, amikor visszatér.",
+    "autosaveBody": "A program már rajzolás közben ment minden módosítást ezen az eszközön. Zárja be a lapot: a rajz ott lesz, amikor visszatér.",
     "fileTitle": "Fájl, amikor szüksége van rá",
     "fileBody": "A Ctrl+S a MellowCAD saját, verziózott formátumában menti fájlba a rajzot. A Ctrl+O bármely számítógépen újra megnyitja, és <dxf>DXF-fájlokat is megnyit</dxf>.",
     "privateTitle": "Nincs feltöltés",
     "privateBody": "A rajzai soha nem kerülnek el sehová. A statisztika sütik nélkül számolja az oldalmegtekintéseket.",
-    "formats": "DXF: megnyitja és menti. DWG: még nem. A rajzok a MellowCAD saját, verziózott formátumában mentődnek.",
+    "formats": "DXF: megnyitja és menti. DWG: még nem. A rajzokat a MellowCAD saját, verziózott formátumában menti.",
     "warning": "A webhely adatainak törlése az automatikus mentést is törli. Fájl megőrzéséhez nyomja meg a Ctrl+S billentyűkombinációt.",
     "diagramAlt": "Az Ön eszközén belül a szerkesztő automatikusan a böngészőbe ment, fájlba ment és fájlt nyit meg; semmi sem hagyja el az eszközt.",
     "diagramEditor": "SZERKESZTŐ",
@@ -159,7 +159,7 @@
     "studentsTitle": "Diákok",
     "studentsBody": "Gyakorolja a tanfolyama AutoCAD parancsait a saját nyelvén, bármely számítógépen, telepítés és licencigénylés nélkül.",
     "draftersTitle": "Műszaki rajzolók",
-    "draftersBody": "Nézze meg, hogyan viselkedik egy parancs, vagy vázoljon fel egy alkatrészt távol a munkahelyétől, a már begyakorolt álnevekkel.",
+    "draftersBody": "Nézze meg, hogyan viselkedik egy parancs, vagy vázoljon fel egy alkatrészt távol a munkahelyétől, a már begyakorolt rövidítésekkel.",
     "teachersTitle": "Oktatók",
     "teachersBody": "Minden diák ugyanazokat a parancsokat kapja ugyanabban a sorrendben, a gépteremben és otthon is, és semmit sem kell telepíteni.",
     "makersTitle": "Barkácsolók",
@@ -172,7 +172,7 @@
     "title": "Őszintén arról, mi van már – és mi nincs még.",
     "lead": "A MellowCAD független, nyílt forráskódú projekt, aktív fejlesztés alatt. Itt tart most.",
     "todayTitle": "Már működik",
-    "today1": "{commands, number} AutoCAD parancs és {aliases, number} álnév",
+    "today1": "{commands, number} AutoCAD parancs és {aliases, number} rövidítés",
     "today2": "{snaps, number} tárgyraszter mód, tárgyraszterkövetés, poláris követés és Orto mód",
     "today3": "Fóliák, vonaltípusok, {lineweights, number} vonalvastagság és színek",
     "today4": "Méretek, szövegek, sraffozások és attribútumos blokkok",
@@ -199,8 +199,8 @@
     "q3": "Kell bármit telepíteni?",
     "a3": "Nem. Modern asztali böngészőben fut – Chrome, Edge, Firefox vagy Safari. Nyissa meg a mellowcad.com/hu/draw címet, és írjon be egy parancsot.",
     "q4": "Tényleg úgy működik, mint az AutoCAD?",
-    "a4": "Ez a követelmény: a parancsok, az álnevek, a promptok sorrendje, az opcióbetűk és az alapértékek a jelenlegi AutoCAD-et követik. Néhány parancs még részleges, és az ütemterv pontosan felsorolja, mely opciók hiányoznak.",
-    "q5": "Meg lehet nyitni vagy menteni DWG vagy DXF-fájlokat, és lehet nyomtatni?",
+    "a4": "Ez a követelmény: a parancsok, a rövidítések, a promptok sorrendje, az opcióbetűk és az alapértékek a jelenlegi AutoCAD-et követik. Néhány parancs még részleges, és az ütemterv pontosan felsorolja, mely opciók hiányoznak.",
+    "q5": "Meg lehet nyitni vagy menteni DWG- vagy DXF-fájlokat, és lehet nyomtatni?",
     "a5": "A MellowCAD <dxf>megnyitja a DXF-fájlokat</dxf> az AutoCAD R12-től a 2018-as verzióig, szöveges és bináris formában is: vonalakat, íveket, köröket, ellipsziseket, vonalláncokat, spline-okat, szövegeket, méreteket, mutatókat, sraffozásokat, pontokat és blokkokat, a fóliáikon. Amihez még nincs objektuma – többszörös mutatók, táblázatok, elrendezések, 3D szilárdtestek –, azt kihagyja, és a fájl megnyitásakor felsorolja. <edit>DXF-be is ment</edit>, AutoCAD 2000-től 2018-ig. DWG-fájlokat még nem kezel, és nyomtatás vagy PDF-export sincs még.",
     "q6": "Hol tárolódnak a rajzaim?",
     "a6": "Az Ön eszközén. A MellowCAD automatikusan a böngészőbe ment, és soha nem tölti fel a rajzait. A webhely adatainak törlése az automatikus mentést is törli, ezért fájl megőrzéséhez nyomja meg a Ctrl+S billentyűkombinációt.",
@@ -209,11 +209,11 @@
     "q8": "Működik táblagépen vagy telefonon?",
     "a8": "Megnyílik, de billentyűzetre és egérre készült, ahogy az AutoCAD is. Használjon számítógépet.",
     "q9": "Mely parancsok támogatottak?",
-    "a9": "{commands, number} parancs, köztük a VONAL, VLÁNC, KÖR, ÍV, ELLIPSZ, SRAFFOZ, PÁRH, METSZ, LEKEREKÍT és KIOSZT, a méretezés, a blokkok és a fóliák. A <reference>parancsok listája</reference> mindegyiket felsorolja, álneveivel és első promptjával.",
+    "a9": "{commands, number} parancs, köztük a VONAL, VLÁNC, KÖR, ÍV, ELLIPSZ, SRAFFOZ, PÁRH, METSZ, LEKEREKÍT és KIOSZT, a méretezés, a blokkok és a fóliák. A <reference>parancsok listája</reference> mindegyiket felsorolja, a rövidítéseivel és az első promptjával.",
     "q10": "Támogatja a 3D-t?",
     "a10": "Részben. 3D szilárdtesteket hoz létre – primitíveket, kihúzásokat és megforgatásokat, egyesítéseket, kivonásokat és közös részeket, szeléseket és keresztmetszeteket, lekerekített és letört éleket, szerkesztett lapokat –, kiszámítja fizikai jellemzőiket, és keringtetve, a ViewCube segítségével és árnyalt látványstílusokban mutatja őket. Söprés, pásztázás, hálók és renderelés még nincs.",
     "q11": "Gyakorolhatok vele az AutoCAD órára?",
-    "a11": "Igen, ami a parancsokat illeti: nevük és álneveik, promptjaik sorrendje és opcióik az AutoCAD-et követik, magyarul, angolul, spanyolul, brazíliai portugálul, franciául, olaszul, németül, oroszul, lengyelül vagy csehül, a <exercises>gyakorló feladatok</exercises> pedig rajzokat adnak a munkához, mindegyiket lépésről lépésre megoldva. DWG-fájlokat még nem tud megnyitni vagy menteni, így a DWG-ben vagy PDF-ben beadandó munkákhoz továbbra is másik program kell."
+    "a11": "Igen, ami a parancsokat illeti: nevük és rövidítéseik, promptjaik sorrendje és opcióik az AutoCAD-et követik, magyarul, angolul, spanyolul, brazíliai portugálul, franciául, olaszul, németül, oroszul, lengyelül vagy csehül, a <exercises>gyakorló feladatok</exercises> pedig rajzokat adnak a munkához, mindegyiket lépésről lépésre megoldva. DWG-fájlokat még nem tud megnyitni vagy menteni, így a DWG-ben vagy PDF-ben beadandó munkákhoz továbbra is másik program kell."
   },
   "FinalCta": {
     "title": "A rajzasztala egy billentyűleütésnyire van."
@@ -254,14 +254,14 @@
     "assistant2": "A szerver sem a szkriptet, sem a rajzot nem tárolja: minden kérést megrajzol, majd elfelejt. A hivatkozás a # jel után hordozza a szkriptet, ezt a részt a böngésző soha nem küldi el szerverre, és a szerkesztő az Ön eszközén írja be.",
     "assistant3": "Amit az asszisztensnek mond, azt a szolgáltatója kezeli, a saját feltételei szerint. A MellowCAD csak az asszisztens által írt szkripteket kapja meg.",
     "analyticsTitle": "Mit mér a webhely",
-    "analytics1": "A Vercel Web Analytics az oldalmegtekintéseket számolja: az oldalt, a hivatkozó oldalt, az Ön országát és városát, valamint böngészőjét, rendszerét és eszköze típusát. Sütiket nem helyez el; a látogatást a kérés hash-értéke alapján ismeri fel, amelyet 24 óra után elvet, a statisztikák pedig anonimek.",
+    "analytics1": "A Vercel Web Analytics az oldalmegtekintéseket számolja: az oldalt, a hivatkozó oldalt, az Ön országát és városát, valamint böngészőjét, rendszerét és eszköze típusát. Sütiket nem helyez el; a látogatást a kérés hash-értéke alapján ismeri fel, amelyet 24 óra után elvet, a statisztika pedig anonim.",
     "analytics2": "A Vercel Speed Insights azt méri, milyen gyorsan töltődnek be és reagálnak az oldalak, az oldallal, az Ön böngészőjével, rendszerével, eszköze típusával, hálózati sebességével és országával együtt – szintén anonim módon.",
     "analytics3": "Egyik sem látja a rajzait, és egyiket sem használják reklámra, profilalkotásra vagy automatizált döntéshozatalra.",
     "handledTitle": "Ki kezeli, és miért",
     "handled1": "A MellowCAD {name} független projektje; ő ezen adatok kezelője, elérhetősége: <email>{address}</email>.",
     "handled2": "A webhely működtetése, valamint használatának és sebességének mérése egy ingyenes szolgáltatás megfelelő működtetéséhez fűződő jogos érdeken alapul, és anonim statisztikákra korlátozódik (GDPR 6. cikk (1) bekezdés f) pont).",
     "handled3": "A webhelyet a Vercel Inc. tárolja, és mindkét mérést ő végzi. Mint minden tárhelyszolgáltató, az oldalak kiszolgálásához kezeli az Ön IP-címét. Székhelye az Egyesült Államokban van, és az EU–USA adatvédelmi keretrendszer (EU–U.S. Data Privacy Framework) alapján tanúsított.",
-    "handled4": "Ha ír, az üzenete a Cloudflare-en keresztül jut el a Google-hoz, az e-mail-szolgáltatóhoz; a Cloudflare másolat megtartása nélkül továbbítja. Csak a válaszadásra szolgál, és csak addig őrződik meg, ameddig a levelezés megkívánja. Mindkét vállalat székhelye az Egyesült Államokban van, és az EU–USA adatvédelmi keretrendszer alapján tanúsított.",
+    "handled4": "Ha ír, az üzenete a Cloudflare-en keresztül jut el a Google-hoz, az e-mail-szolgáltatóhoz; a Cloudflare másolat megtartása nélkül továbbítja. Csak a válaszadásra szolgál, és csak addig marad meg, ameddig a levelezés megkívánja. Mindkét vállalat székhelye az Egyesült Államokban van, és az EU–USA adatvédelmi keretrendszer alapján tanúsított.",
     "rightsTitle": "Az Ön jogai",
     "rights1": "Kérheti az Önre vonatkozó adatokhoz való hozzáférést, azok helyesbítését vagy törlését, kezelésük korlátozását, tiltakozhat a kezelésük ellen, vagy kérheti, hogy másolatot kapjon róluk: írjon a fenti címre.",
     "rights2": "Panaszt is tehet egy adatvédelmi hatóságnál – az EU-ban annál, ahol él vagy dolgozik.",
@@ -294,13 +294,13 @@
     "englishOnly": "Ez a szakasz csak angolul érhető el.",
     "inEnglish": "Angolul",
     "onThisPage": "Ezen az oldalon",
-    "menu": "Dokumentáció menü",
+    "menu": "A dokumentáció menüje",
     "closeMenu": "A dokumentáció menüjének bezárása",
     "search": "Keresés",
     "searchTitle": "Keresés a dokumentációban",
     "searchPlaceholder": "Keresés a dokumentációban",
     "searchEmpty": "Nincs találat erre: „{query}”.",
-    "searchFailed": "A keresés nem válaszolt. Próbálja újra egy kicsit később.",
+    "searchFailed": "A kereső nem válaszolt. Próbálja újra egy kicsit később.",
     "searching": "Keresés…",
     "close": "Bezárás",
     "copy": "Másolás",
@@ -315,32 +315,32 @@
       "commands": {
         "title": "AutoCAD parancsok listája magyarul és angolul",
         "metaTitle": "AutoCAD parancsok listája magyarul és angolul",
-        "description": "AutoCAD parancsok magyarul és angolul, a szalag paneljei szerint: név és álnevek, az első prompt, a fő parancsoknál pedig egy oldal minden opcióval.",
-        "lead": "Minden parancs úgy, ahogy a parancssorba beírja, a szalagnak azon a paneljén, ahol keresné. Az első prompt magától a motortól származik: ugyanaz a sorrend és ugyanazok az opcióbetűk, amelyeket futtatáskor látni fog. A saját oldallal rendelkező parancs oda hivatkozik: az opciói, egy a motor által rajzolt munkamenet, és amit még nem tud."
+        "description": "AutoCAD parancsok magyarul és angolul, a szalag paneljei szerint: név és rövidítések, az első prompt, a fő parancsoknál pedig egy oldal minden opcióval.",
+        "lead": "Minden parancs úgy, ahogy a parancssorba beírja, a szalagnak azon a paneljén, ahol keresné. Az első prompt magától a motortól származik: ugyanaz a sorrend és ugyanazok az opcióbetűk, amelyeket futtatáskor látni fog. Ha egy parancsnak saját oldala van, a neve oda vezet: az opciói, egy, a motor által rajzolt munkamenet és az, amit még nem tud."
       },
       "shortcuts": {
         "title": "AutoCAD billentyűparancsok",
         "metaTitle": "AutoCAD billentyűparancsok: F és Ctrl billentyűk",
         "description": "A billentyűk, amelyekre a MellowCAD reagál: rajzolási segédeszközök, szerkesztés és fájlok, az ablak és a parancssor.",
-        "lead": "A billentyűk, amelyekre a MellowCAD reagál – azok, amelyek egy AutoCAD felhasználó ujjaiban már benne vannak. Minden parancs úgy szerepel, ahogy beírná; álneveik a parancsok oldalán találhatók."
+        "lead": "A billentyűk, amelyekre a MellowCAD reagál – azok, amelyek egy AutoCAD-felhasználó ujjaiban már benne vannak. Minden parancs úgy szerepel, ahogy beírná; a rövidítései a parancsok oldalán találhatók."
       },
       "exercises": {
         "title": "AutoCAD gyakorló feladatok",
         "metaTitle": "AutoCAD gyakorló feladatok megoldással, ingyen",
         "description": "AutoCAD gyakorló feladatok kezdőknek és haladóknak, 2D-ben, izometrikusan és 3D-ben, lépésről lépésre megoldva, rajzukkal egy ingyenes online szerkesztőben.",
-        "lead": "Rajzok az AutoCAD gyakorlásához, az első tömítéstől a 3D szilárdtestekig, mindegyik a méreteivel, a gyakorolt parancsokkal és a lépésről lépésre bemutatott megoldással. A motor minden lépést megrajzol, és úgy írja ki a parancssor előzményeit, ahogy Ön beírja majd őket: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Nyisson meg egyet a szerkesztőben, és a feladat rajza ott lesz amellett a terület mellett, ahol a sajátját rajzolja, a böngészőben, telepítés és fiók létrehozása nélkül.",
+        "lead": "Rajzok az AutoCAD gyakorlásához, az első tömítéstől a 3D szilárdtestekig, mindegyik a méreteivel, a gyakorolt parancsokkal és a lépésről lépésre bemutatott megoldással. A motor minden lépést megrajzol, és úgy írja ki a parancssor előzményeit, ahogy Ön beírja majd őket: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel. Nyisson meg egyet a szerkesztőben, és a feladat rajza ott lesz a terület mellett, ahol a sajátját rajzolja, a böngészőben, telepítés és fiók létrehozása nélkül.",
         "guidesTitle": "Útmutatók lépésről lépésre",
         "guides": "A feladatok készségei egyenként: pontok megadása, egy ház alaprajza, 2D rajzból készített szilárdtest. Minden útmutató megmutatja minden lépés rajzát és előzményeit.",
         "howTitle": "Hogyan működnek a feladatok",
-        "how": "A feladat a szerkesztőben a rajzával együtt nyílik meg, méretezve, az origótól balra: a sajátját a 0,0 ponttól rajzolja, ahogy a megoldás is. Amit rajzol, azt ez a böngésző csak az adott feladathoz őrzi meg. A rajz, amelyen dolgozott, úgy marad, ahogy volt, és a magában megnyitott szerkesztő visszahozza. Ha újra akarja kezdeni a feladatot, futtassa az ÚJ parancsot, majd nyissa meg a feladatot az oldaláról. Minden oldal önállóan nyomtatható, előbb a rajz, utána a lépések, és a böngésző nyomtatási párbeszédpanele PDF-ként is mentheti.",
+        "how": "A feladat a szerkesztőben a rajzával együtt nyílik meg, méretezve, az origótól balra: a sajátját a 0,0 ponttól rajzolja, ahogy a megoldás is. Amit rajzol, azt ez a böngésző csak az adott feladathoz őrzi meg. A rajz, amelyen dolgozott, úgy marad, ahogy volt, és ha a szerkesztőt önmagában nyitja meg, azt kapja vissza. Ha újra akarja kezdeni a feladatot, futtassa az ÚJ parancsot, majd nyissa meg a feladatot az oldaláról. Minden oldal önállóan nyomtatható, előbb a rajz, utána a lépések, és a böngésző nyomtatási párbeszédpanele PDF-ként is mentheti.",
         "questions": {
           "where": {
             "question": "Hol találok AutoCAD gyakorló feladatokat?",
-            "answer": "Itt: minden feladathoz tartozik egy méretezett rajz, a gyakorolt parancsok és a lépésről lépésre bemutatott megoldás, és egy ingyenes, az AutoCAD-hez hasonlóan működő szerkesztőben nyílik meg, a böngészőben. Kezdje a kezdőknek szólókkal; minden parancsuk elvezet ahhoz, amit a parancs csinál, és az opciókhoz, amelyeket kér."
+            "answer": "Itt: minden feladathoz tartozik egy méretezett rajz, a gyakorolt parancsok és a lépésről lépésre bemutatott megoldás, és egy ingyenes, az AutoCAD-hez hasonlóan működő szerkesztőben nyílik meg, a böngészőben. Kezdje a kezdő szintűekkel; minden bennük használt parancs elvezet a leírásához: mit csinál, és milyen opciókat kér."
           },
           "online": {
             "question": "Gyakorolhatom az AutoCAD-et online, ingyen?",
-            "answer": "Igen. A MellowCAD a böngészőben fut, ingyenesen és fiók nélkül: az AutoCAD parancsait és álneveit írja be, a saját nyelve neveivel, és a promptjaira ugyanabban a sorrendben, ugyanazokkal az opcióbetűkkel válaszol. Nem az AutoCAD: DXF-fájlokat megnyit és ment, DWG-t viszont még nem, és 3D szilárdtestei egyelőre részlegesek."
+            "answer": "Igen. A MellowCAD a böngészőben fut, ingyenesen és fiók nélkül: az AutoCAD parancsait és rövidítéseit írja be, a saját nyelvén használt nevükkel, és a promptjaira ugyanabban a sorrendben, ugyanazokkal az opcióbetűkkel válaszol. Nem az AutoCAD: DXF-fájlokat megnyit és ment, DWG-t viszont még nem, és 3D szilárdtestei egyelőre részlegesek."
           },
           "solutions": {
             "question": "Vannak a feladatoknak megoldásai?",
@@ -354,7 +354,7 @@
       }
     },
     "reference": {
-      "aliases": "Álnevek",
+      "aliases": "Rövidítések",
       "firstPrompt": "Első prompt",
       "coverage": "Mit tud és mi hiányzik még belőle, részletesen (angolul)"
     },
@@ -403,9 +403,9 @@
     },
     "sessions": {
       "firstLine": "Négy szakaszból álló téglalap, pontról pontra beírva; az utolsó szakasz zárja be.",
-      "circleDiameter": "Kör a középpontjából és az átmérőjéből, amelyet az opció kiválasztása után kell beírni.",
+      "circleDiameter": "Kör középponttal és átmérővel; az átmérőt az opció kiválasztása után kell beírni.",
       "endpointSnap": "Egy sarok közelében a tárgyraszter megjeleníti a jelölőjét, és megnevezi a pontot, amelyet felvesz.",
-      "offsetRectangle": "Egy téglalap és párhuzamosan eltolt másolata, a belső oldalra kijelölve."
+      "offsetRectangle": "Egy téglalap és a belső oldala felé párhuzamosan eltolt másolata."
     },
     "types": {
       "gettingStarted": "Első lépések",

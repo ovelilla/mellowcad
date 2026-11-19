@@ -16,7 +16,7 @@ A méretek, amelyeket az AutoCAD vonalakra, nyílfejekre és szövegre vet szét
 
 ### Mi az AutoCAD SZÉTVET parancs angolul?
 
-EXPLODE. A magyar AutoCAD-ben a rövidítése `SZV`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXPLODE` is; az angol `X` a magyar változatban nem működik.
+EXPLODE. A magyar AutoCAD-ben a rövidítése `SZV`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXPLODE` is; az angol `X` a magyar változatban nem működik.
 
 ### Hogyan lehet visszavonni a szétvetést az AutoCAD-ben?
 

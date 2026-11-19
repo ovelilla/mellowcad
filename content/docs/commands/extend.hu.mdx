@@ -1,17 +1,17 @@
 ---
 title: "AutoCAD ELÉR (EXTEND) parancs"
 metaTitle: "Hosszabbítás az AutoCAD-ben: ELÉR (EXTEND)"
-description: "Az AutoCAD ELÉR (EXTEND, EL) parancsa: Gyors és Szabványos mód, határolóélek, felfűzés, metsző ablak, Él, és Shift a metszéshez. Próbálja ki ingyen, online."
+description: "Az AutoCAD ELÉR (EXTEND, EL) parancsa: Gyors és Szabványos mód, határolóélek, felfűzés, metszőablak, Él, és Shift a metszéshez. Próbálja ki ingyen, online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD ELÉR parancs angolul?","answer":"EXTEND. A magyar AutoCAD-ben a rövidítése EL: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az _EXTEND is; az angol EX a magyar változatban nem működik."},{"question":"Miért írja ki az ELÉR parancs, hogy nincs él?","answer":"Mert semmi sem esik keresztbe azon az úton, amelyet a vég követne. A vonal a „Ebben az irányban nincs él.” üzenetet adja, ha a másik vége érne el egy élt, egyébként a vonal vagy az ív a „Az útvonal nem metszi a határolóélt.” üzenetet; a vonallánc vagy a spline a „Az objektum nem metsz vágóélt.” üzenetet. Válassza ki a másik végéhez közelebb, vagy Szabványos módban válassza az éL és a Hosszabbít opciót, hogy a rövidebb határolóél úgy számítson, mintha tovább folytatódna. A kör, a zárt vonallánc, a teljes ellipszis, a szöveg és a sraffozás egyáltalán nem hosszabbítható meg: „Az objektumra nem alkalmazható az ELÉR parancs.”"},{"question":"Hogyan lehet egyszerre több vonalat meghosszabbítani?","answer":"Kattintson egy üres helyre, majd adjon meg egy második pontot: minden objektum, amelyet ez a felfűzés metsz, a közelebbi végénél hosszabbodik meg, egyetlen lépésben. Vagy válassza a Metsző opciót, és húzzon ablakot a meghosszabbítandó végek fölé."},{"question":"Hogyan lehet metszeni az ELÉR paranccsal?","answer":"Kiválasztáskor tartsa lenyomva a Shift billentyűt: a darab a legközelebbi metszéspontokig levágódik, ahogy a METSZ parancs tenné, a semmivel sem metszett objektum pedig törlődik. A következő, Shift nélküli kiválasztás ismét hosszabbít."}]
+faq: [{"question":"Mi az AutoCAD ELÉR parancs angolul?","answer":"EXTEND. A magyar AutoCAD-ben a rövidítése EL: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az _EXTEND is; az angol EX a magyar változatban nem működik."},{"question":"Miért írja ki az ELÉR parancs, hogy nincs él?","answer":"Mert semmi sem esik keresztbe azon az úton, amelyet a vég követne. A vonal a „Ebben az irányban nincs él.” üzenetet adja, ha a másik vége érne el egy élt, egyébként a vonal vagy az ív a „Az útvonal nem metszi a határolóélt.” üzenetet; a vonallánc vagy a spline a „Az objektum nem metsz vágóélt.” üzenetet. Válassza ki a másik végéhez közelebb, vagy Szabványos módban válassza az éL és a Hosszabbít opciót, hogy a rövidebb határolóél úgy számítson, mintha tovább folytatódna. A kör, a zárt vonallánc, a teljes ellipszis, a szöveg és a sraffozás egyáltalán nem hosszabbítható meg: „Az objektumra nem alkalmazható az ELÉR parancs.”"},{"question":"Hogyan lehet egyszerre több vonalat meghosszabbítani?","answer":"Kattintson egy üres helyre, majd adjon meg egy második pontot: minden objektum, amelyet ez a felfűzés metsz, a közelebbi végénél hosszabbodik meg, egyetlen lépésben. Vagy válassza a Metsző opciót, és húzzon ablakot a meghosszabbítandó végek fölé."},{"question":"Hogyan lehet metszeni az ELÉR paranccsal?","answer":"Kiválasztáskor tartsa lenyomva a Shift billentyűt: a darab a legközelebbi metszéspontokig levágódik, ahogy a METSZ parancs tenné, a semmivel sem metszett objektum pedig törlődik. A következő, Shift nélküli kiválasztás ismét hosszabbít."}]
 ---
 
 Az ELÉR (EXTEND) parancs addig hosszabbít meg egy objektumot, amíg egy másikat el nem ér: válassza ki a meghosszabbítandó vége közelében, és az a vége az útjába eső legközelebbi élig nyúlik. Meghosszabbít vonalakat, íveket, elliptikus íveket, nyitott vonalláncokat (a végső szakaszuk mentén, egyenesen vagy annak íve mentén), 3D vonalláncokat és nyitott spline-okat. Gyors módban indul, ahogy az AutoCAD-é: minden objektum határolóél. Ha kiválasztáskor lenyomva tartja a Shift billentyűt, metszés történik helyette, ahogy a [`METSZ`](/docs/commands/trim) parancsnál. Minden kiválasztás egyetlen lépés, amely a Vissza paranccsal visszavonható; az Enter befejezi a parancsot.
 
 - **Parancs:** `ELÉR`
 - **Angolul:** `EXTEND`, bármely nyelven `_EXTEND` formában beírva
-- **Álnevek:** `EL`
+- **Rövidítések:** `EL`
 - **Panel:** [Módosítás](/docs/commands#modify)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `EL`, és nyomja meg az Enter billentyűt.
 
@@ -57,7 +57,7 @@ Vetítés: az AutoCAD vetítési opciója (Nincs, Fkr, Nézet) nem érhető el, 
 
 ### Mi az AutoCAD ELÉR parancs angolul?
 
-EXTEND. A magyar AutoCAD-ben a rövidítése `EL`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTEND` is; az angol `EX` a magyar változatban nem működik.
+EXTEND. A magyar AutoCAD-ben a rövidítése `EL`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTEND` is; az angol `EX` a magyar változatban nem működik.
 
 ### Miért írja ki az ELÉR parancs, hogy nincs él?
 

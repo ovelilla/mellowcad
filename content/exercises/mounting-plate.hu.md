@@ -7,7 +7,7 @@ model: "A lap 10 vastag szilárdtestként, délkeletről nézve, takart vonalak 
 sourceHash: "87b8f906b0fd"
 ---
 
-Modellezzen egy 10 vastag szerelőlapot milliméterben: a körvonala 100 × 60, 8 sugarú sarkokkal, és négy 10-es furat, amelyek középpontja 15-re van a szélektől. Síkban kezdődik. A körvonalból és a körökből lemezek lesznek, a furatokat még a sík lapból vonja ki, és egyetlen kihúzás teszi szilárdtestté, a furataival együtt.
+Modellezzen egy 10 vastag szerelőlapot milliméterben: a körvonala 100 × 60, 8 sugarú sarkokkal, és négy 10-es furat, amelyek középpontja 15-re van a szélektől. A munka síkban kezdődik. A körvonalból és a körökből lemezek lesznek, a furatokat még a sík lapból vonja ki, és egyetlen kihúzás teszi szilárdtestté, a furataival együtt.
 
 ## Steps
 
@@ -17,11 +17,11 @@ A Körvonal fólián a <Command id="RECTANG" /> parancs a <Keyword command="RECT
 
 ### Hozzon létre lemezeket [#region]
 
-A <Command id="REGION" /> parancs a zárt objektumokat lemezzé alakítja: válassza ki a körvonalat és a négy kört, majd Enter. Öt hurok, öt lemez.
+A <Command id="REGION" /> parancs a zárt objektumokat lemezzé alakítja: válassza ki a körvonalat és a négy kört, majd nyomja meg az Enter billentyűt. Öt hurok, öt lemez.
 
 ### Vonja ki a furatokat [#subtract]
 
-A <Command id="SUBTRACT" /> parancs: válassza ki a lap lemezét, és nyomja meg az Enter billentyűt, majd a négy kör lemezét, és Enter. Egyetlen lemez marad, benne négy furattal.
+A <Command id="SUBTRACT" /> parancs: válassza ki a lap lemezét, és nyomja meg az Enter billentyűt, majd a négy kör lemezét, és ismét nyomja meg az Enter billentyűt. Egyetlen lemez marad, benne négy furattal.
 
 ### Fordítsa el a nézetet [#view]
 

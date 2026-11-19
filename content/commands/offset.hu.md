@@ -2,7 +2,7 @@
 title: "AutoCAD PÁRH (OFFSET) parancs"
 metaTitle: "AutoCAD PÁRH (OFFSET) parancs: opciók, rövidítés"
 description: "Az AutoCAD PÁRH (OFFSET, rövidítése P) parancsa promptról promptra: távolság vagy Kijelölt pont, Töröl és Fólia, egyszerre egy objektum. Próbálja ki ingyen."
-figure: "Egy téglalap 6-os távolságú párhuzamosa befelé és egy köré kifelé: mindkettőnél előbb az objektum, aztán az oldal kiválasztása."
+figure: "Egy téglalap párhuzamosa 6 egységgel befelé és egy kör párhuzamosa 6 egységgel kifelé: mindkettőnél előbb az objektum, aztán az oldal kiválasztása."
 sourceHash: "b495af1e1410"
 ---
 

@@ -11,7 +11,6 @@ export function Glyph({
   return (
     <svg
       viewBox={glyph.viewBox}
-      direction="ltr"
       aria-hidden="true"
       className={className}
       dangerouslySetInnerHTML={{ __html: glyph.markup }}

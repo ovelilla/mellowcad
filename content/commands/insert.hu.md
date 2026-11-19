@@ -26,13 +26,13 @@ A beszúrási pontnál: a szöget kéri, beírva vagy két pont között, majd �
 
 ## Missing
 
-Másik rajzfájl beillesztése: csak a rajzban definiált blokkok illeszthetők be, és az olyan nevet, amely nincs a rajzban, a parancs elutasítja. A beszúrási pontnál az Alappont, az X, Y, Z, valamint a szétvetés és az ismétlés (Explode, Repeat); az X léptéknél a Sarok és az XYZ, valamint az ellenkező sarokpont kijelölése. Eltérő X és Y tényező mellett a szöveg vagy az attribútum az X méretében jelenik meg, nem megnyújtva, a vonallánc íve pedig ív marad; a negatív X nem fordítja meg a szöveget. Az ATTDIA 1, vagyis az Attribútumok módosítása párbeszédpanel beillesztéskor, és az ATTREQ 0. A Tulajdonságok paletta Feliratozási, Blokk mértékegysége és Mértékegység-tényező sora. Blokk szerint: a blokkon belüli objektum nem veheti át a referencia saját színét, vonaltípusát vagy vonalvastagságát, ahogy az AutoCAD-ben a BLOKK beállítással rajzolt objektum.
+Másik rajzfájl beillesztése: csak a rajzban definiált blokkok illeszthetők be, és az olyan nevet, amely nincs a rajzban, a parancs elutasítja. A beszúrási pontnál a Bázispont, az X, az Y, a Z, a Szétvet és az Ismét opció; az X léptéknél a Sarok és az XYZ, valamint az ellenkező sarokpont kijelölése. Eltérő X és Y tényező mellett a szöveg vagy az attribútum az X méretében jelenik meg, nem megnyújtva, a vonallánc íve pedig ív marad; a negatív X nem fordítja meg a szöveget. Az ATTDIA 1, vagyis az Attribútumok módosítása párbeszédpanel beillesztéskor, és az ATTREQ 0. A Tulajdonságok paletta Feliratozási, Blokk mértékegysége és Mértékegység-tényező sora. A Blokk szerint: a blokkon belüli objektum nem veheti át a referencia saját színét, vonaltípusát vagy vonalvastagságát, ahogy az AutoCAD-ben a Blokk szerint rajzolt objektum.
 
 ## Questions
 
 ### Mi az AutoCAD BEILL parancs angolul?
 
-INSERT. A magyar AutoCAD-ben a rövidítése `BE`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt, és megnyílik a Blokkok paletta, ahogy az AutoCAD 2027-ben. A `-BE` a <Command id="-INSERT" /> parancs, amely a parancssorban kérdez. Az angol `I` a magyar változatban az ÍV parancsot indítja; az `_INSERT` az AutoCAD bármely nyelvi változatában működik.
+INSERT. A magyar AutoCAD-ben a rövidítése `BE`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt, és megnyílik a Blokkok paletta, ahogy az AutoCAD 2027-ben. A `-BE` a <Command id="-INSERT" /> parancs, amely a parancssorban kérdez. Az angol `I` a magyar változatban az ÍV parancsot indítja; az `_INSERT` az AutoCAD bármely nyelvi változatában működik.
 
 ### Hogyan lehet blokkot beilleszteni a parancssorból?
 

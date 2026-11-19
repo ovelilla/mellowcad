@@ -6,7 +6,7 @@ figure: "A -TRASZTER futó módnak a Felezőpontot és a Középpontot állítja
 sourceHash: "627cd26c12df"
 ---
 
-A tárgyraszter egy kijelölt pontot pontosan egy objektum valamely pontjára tesz: a végére, a felezőpontjára, a középpontjára. Bekapcsolt tárgyraszternél a kurzor egy ilyen pont közelében megjeleníti a pont zöld jelölőjét, eszköztippben pedig a nevét; a kattintás ekkor erre a pontra kerül, nem oda, ahol a kurzor áll. A futó tárgyraszterek azok a módok, amelyek minden pontot kérő promptnál működnek: kezdetben a Végpont, a Középpont, a Metszéspont és a Meghosszabbítás, ahogy az AutoCAD-ben. Az F3 be- és kikapcsolja a tárgyrasztert, és kiírja: `<Traszter be>` vagy `<Traszter ki>`; ugyanezt teszi az állapotsor Tárgyraszter gombja, amelynek menüjében minden módhoz jelölőnégyzet tartozik. Ha a kurzor alatt több raszterpont is van, a legközelebbi nyer, a Tab billentyű pedig végiglépked a többin. Az Orto mód, a poláris követés és a Raszter mód soha nem mozdít el egy raszterezett pontot.
+A tárgyraszter egy kijelölt pontot pontosan egy objektum valamely pontjára tesz: a végére, a felezőpontjára, a középpontjára. Bekapcsolt tárgyraszternél a kurzor egy ilyen pont közelében megjeleníti a pont zöld jelölőjét, eszköztippben pedig a nevét; a kattintás ekkor erre a pontra kerül, nem oda, ahol a kurzor áll. A futó tárgyraszterek azok a módok, amelyek minden pontot kérő promptnál működnek: kezdetben a Végpont, a Középpont, a Metszéspont és a Meghosszabbítás, ahogy az AutoCAD-ben. Az F3 be- és kikapcsolja a tárgyrasztert, és kiírja: `<Traszter Be>` vagy `<Traszter Ki>`; ugyanezt teszi az állapotsor Tárgyraszter gombja, amelynek menüjében minden módhoz jelölőnégyzet tartozik. Ha a kurzor alatt több raszterpont is van, a legközelebbi nyer, a Tab billentyű pedig végiglépked a többin. Az Orto mód, a poláris követés és a Raszter mód soha nem mozdítja el a tárgyraszterrel fogott pontot.
 
 A -TRASZTER (-OSNAP) parancs a parancssorban állítja be a futó tárgyrasztereket. Kiírja az éppen futó módokat, majd a módok listáját kéri: mindegyiket a neve nagybetűivel, vesszővel elválasztva, például `VÉG,FEL,KÖZ`, vagy `_END,_MID` alakban, ami az AutoCAD bármely nyelvén működik. A lista lecseréli a futó készletet, és bekapcsolja a tárgyrasztert; a <Keyword id="NONe" />, a <Keyword id="OFF" /> vagy egy magában álló Enter kiüríti. Ismeretlen módra a válasz <Message id="invalidOsnapModes" />, és a kérdés megismétlődik. Aposztróffal beírva, `'-TRASZTER` alakban, egy másik parancson belül is működik. A futó tárgyraszterek az oldal újratöltéséig maradnak érvényben, utána ismét az AutoCAD négy módja lép életbe: ahogy az AutoCAD-ben, a rajz nem tárolja őket.
 
@@ -92,7 +92,7 @@ Az F3 be- és kikapcsolja a tárgyrasztert, ahogy az AutoCAD-ben; ugyanezt teszi
 
 Lehet, hogy az F3 kikapcsolta: ezt az állapotsor gombja mutatja. Vagy a mód nincs a futók között: állítsa be a `-TRASZTER` paranccsal vagy a gomb menüjében. A kurzornak nagyjából 10 képpontnyira meg kell közelítenie a pontot, középpontnál pedig magán a körön vagy íven kell lennie. A tárgyraszter csak akkor működik, amikor egy parancs pontot kér.
 
-### Hogyan lehet csak egyszer raszterezni egy pontra?
+### Hogyan lehet a tárgyrasztert csak egyetlen pontra használni?
 
 Pontot kérő promptnál írja be a mód nagybetűit, például `VÉG` vagy `ÉRI`, vagy válassza ki a Shift + jobb kattintásra megjelenő menüből. Csak arra az egy pontra érvényes, akár fut ez a mód, akár nem.
 

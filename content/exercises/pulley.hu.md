@@ -21,4 +21,4 @@ A <Command id="-VIEW" /> parancs és a <Keyword command="VIEW" id="SEiso" /> opc
 
 ### Forgassa meg [#revolve]
 
-A <Command id="REVOLVE" /> parancs: válassza ki a metszetet, és nyomja meg az Enter billentyűt, majd az <Keyword command="REVOLVE" id="Y" /> opció: az Y tengely a szíjtárcsa tengelye. Az Enter elfogadja az alapértelmezett szöget, a teljes fordulatot. A <Command id="ZOOM" /> parancs <Keyword command="ZOOM" id="Extents" /> opciója kitölti vele a képet, a `0.8x` lépték pedig helyet hagy körülötte.
+A <Command id="REVOLVE" /> parancs: válassza ki a metszetet, és nyomja meg az Enter billentyűt, majd válassza az <Keyword command="REVOLVE" id="Y" /> opciót: az Y tengely a szíjtárcsa tengelye. Az Enter elfogadja az alapértelmezett szöget, a teljes fordulatot. A <Command id="ZOOM" /> parancs <Keyword command="ZOOM" id="Extents" /> opciója kitölti vele a képet, a `0.8x` lépték pedig helyet hagy körülötte.

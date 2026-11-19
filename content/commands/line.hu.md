@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD VONAL (LINE) parancs"
 metaTitle: "Vonal rajzolása az AutoCAD-ben: VONAL (LINE)"
-description: "Az AutoCAD VONAL (LINE, VO) parancsa promptról promptra: kijelölt vagy beírt pontok, Vissza és Bezárás, Enter az utolsó vonal folytatásához. Próbálja ki ingyen."
+description: "Az AutoCAD VONAL (LINE, VO) parancsa promptról promptra: kattintott vagy beírt pontok, Vissza és Bezárás, Enter az utolsó vonal folytatásához. Próbálja ki."
 figure: "Egy háromszög: az első pontja beírva, a következő kettő az előző ponttól, majd Bezárás."
 sourceHash: "5065fc1817a1"
 ---
@@ -26,7 +26,7 @@ Az első pontnál beírt Érintő vagy Merőleges a következő pontra vár (hal
 
 ### Mi az AutoCAD VONAL parancs angolul?
 
-LINE. A magyar AutoCAD-ben a rövidítése `VO`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LINE` is; az angol `L` a magyar változatban a LÁTVÁNYSTÍLUSOK parancsot indítja.
+LINE. A magyar AutoCAD-ben a rövidítése `VO`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LINE` is; az angol `L` a magyar változatban a LÁTVÁNYSTÍLUSOK parancsot indítja.
 
 ### Hogyan lehet adott szögű és hosszúságú vonalat rajzolni?
 

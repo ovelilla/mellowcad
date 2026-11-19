@@ -6,7 +6,7 @@ figure: "Négy vonal, majd 15-ös Sugár és Többszörös: két sarok lekerekí
 sourceHash: "f97d737f74a9"
 ---
 
-A LEKEREKÍT (FILLET) parancs két objektum közötti sarkot kerekít le a megadott sugarú ívvel, és mindkét objektumot levágja vagy meghosszabbítja az ívig. Első sora kiírja az üzemmódot és az aktuális sugarat; ezután ki kell választani az első, majd a második objektumot, mindegyiket a megtartandó oldalán, és a parancs véget ér. Vonalakkal, ívekkel, körökkel, ellipszisekkel, spline-okkal és 2D vonalláncok szakaszaival dolgozik. A két vonalnak nem kell találkoznia: ahogy az AutoCAD-ben, a parancs meghosszabbítja őket az ívig. 0 sugárnál, vagy ha a második kiválasztáskor lenyomva tartja a Shift billentyűt, ív helyett éles sarkot készít.
+A LEKEREKÍT (FILLET) parancs két objektum közötti sarkot kerekít le a megadott sugarú ívvel, és mindkét objektumot levágja vagy meghosszabbítja az ívig. Első sora kiírja az üzemmódot és az aktuális sugarat; ezután válassza ki az első, majd a második objektumot, mindegyiket a megtartandó oldalán, és a parancs véget ér. Vonalakkal, ívekkel, körökkel, ellipszisekkel, spline-okkal és 2D vonalláncok szakaszaival dolgozik. A két vonalnak nem kell találkoznia: ahogy az AutoCAD-ben, a parancs meghosszabbítja őket az ívig. 0 sugárnál, vagy ha a második kiválasztáskor lenyomva tartja a Shift billentyűt, ív helyett éles sarkot készít.
 
 ## Options
 
@@ -28,13 +28,13 @@ Minden lekerekítés után újra az első objektumot kéri, így sarkot sarok ut
 
 ## Missing
 
-Metszés: az objektumok mindig az ívig vágódnak le vagy hosszabbodnak meg, ahogy a TRIMMODE 1 beállításnál, ami az AutoCAD alapértelmezése; a Nemmetsz beállítás nem érhető el. Az ív nem veszi át a második objektum vonaltípus-léptékét, mivel itt egyetlen objektumnak sincs sajátja. Kattintás előtt az elemleírás a promptot mutatja, nem azt, hogy egy pár miért nem kerekíthető le, és lakat sem jelöli a zárolt fólián lévő objektumot. Néhány ritka ellipszis- vagy spline-pár másképp végződik: zárt spline vonallal 0 sugárnál, az ellipszis párhuzamosát csak érintő ív, és egy ilyen pár ferde síkban.
+Metszés: az objektumok mindig az ívig vágódnak le vagy hosszabbodnak meg, ahogy a TRIMMODE 1 beállításnál, ami az AutoCAD alapértelmezése; a Nemmetsz beállítás nem érhető el. Az ív nem veszi át a második objektum vonaltípus-léptékét, mivel itt egyetlen objektumnak sincs sajátja. Kattintás előtt az eszköztipp a promptot mutatja, nem azt, hogy egy pár miért nem kerekíthető le, és lakat sem jelöli a zárolt fólián lévő objektumot. Néhány ritka ellipszis- vagy spline-pár másképp végződik: zárt spline vonallal 0 sugárnál, az ellipszis párhuzamosát csak érintő ív, és egy ilyen pár ferde síkban.
 
 ## Questions
 
 ### Mi az AutoCAD LEKEREKÍT parancs angolul?
 
-FILLET. A magyar AutoCAD-ben a rövidítése `LK`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_FILLET` is; az angol `F` a magyar változatban a FRISSÍT parancsot indítja.
+FILLET. A magyar AutoCAD-ben a rövidítése `LK`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_FILLET` is; az angol `F` a magyar változatban a FRISSÍT parancsot indítja.
 
 ### Hogyan lehet két vonalat lekerekíteni?
 

@@ -4,7 +4,7 @@ metaTitle: "Attribútumok láthatósága: ATTLÁTH (ATTDISP)"
 description: "Attribútumok láthatósága az AutoCAD-ben az ATTLÁTH (ATTDISP) paranccsal: Normál, Be a láthatatlanokkal is, Ki mindet elrejti. A rajzba mentődik. Próbálja ki."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Hogyan lehet megjeleníteni a láthatatlan attribútumokat az AutoCAD-ben?","answer":"Írja be az ATTLÁTH parancsot, és válassza a Be opciót: minden attribútum megjelenik, a láthatatlanok is. A Normál opció ismét elrejti őket."},{"question":"Miért nem látszanak a blokk attribútumai?","answer":"Lehet, hogy az ATTLÁTH beállítása Ki, ami minden attribútumot elrejt, vagy Normál, és az attribútumokat láthatatlannak definiálták. Válassza a Be opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi a beállítás."},{"question":"Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?","answer":"Definiálja őket láthatatlannak: az ATTDEF parancs Láthatatlan módjával, mielőtt a blokkot létrehozza. Az ATTLÁTH parancs Ki opciója egyszerre minden attribútumot elrejt, az egész rajzban."}]
+faq: [{"question":"Hogyan lehet megjeleníteni a láthatatlan attribútumokat az AutoCAD-ben?","answer":"Írja be az ATTLÁTH parancsot, és válassza a Be opciót: minden attribútum megjelenik, a láthatatlanok is. A Normál opció ismét elrejti őket."},{"question":"Miért nem látszanak a blokk attribútumai?","answer":"Lehet, hogy az ATTLÁTH beállítása Ki, ami minden attribútumot elrejt, vagy Normál, és az attribútumokat láthatatlannak definiálták. Válassza a Be opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi legyen is a beállítás."},{"question":"Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?","answer":"Definiálja őket láthatatlannak: az ATTDEF parancs Láthatatlan módjával, mielőtt a blokkot létrehozza. Az ATTLÁTH parancs Ki opciója egyszerre minden attribútumot elrejt, az egész rajzban."}]
 ---
 
 Az ATTLÁTH (ATTDISP) parancs azt állítja be, mely attribútumokat mutatják a rajz blokkreferenciái. Bekéri a beállítást, az aktuálisat felkínálva, új rajzban a Normál beállítást; minden más szóra kiírja, hogy a kulcsszó érvénytelen, és újra kérdez, az Enter pedig megtartja az aktuálisat. A módosítás az egész rajzot újrarajzolja – `Modell regenerálása.`, ahogy az AutoCAD 2027 írja –, ATTMODE néven a rajzba mentődik, és egy lépés, amelyet a `T` parancs visszavon. Egy parancson belül aposztróffal beírva ott is lefut.
@@ -44,7 +44,7 @@ Minden attribútumot elrejt, a láthatókat is.
 
 ### Miért nem látszanak a blokk attribútumai?
 
-Lehet, hogy az `ATTLÁTH` beállítása `Ki`, ami minden attribútumot elrejt, vagy `Normál`, és az attribútumokat láthatatlannak definiálták. Válassza a `Be` opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi a beállítás.
+Lehet, hogy az `ATTLÁTH` beállítása `Ki`, ami minden attribútumot elrejt, vagy `Normál`, és az attribútumokat láthatatlannak definiálták. Válassza a `Be` opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi legyen is a beállítás.
 
 ### Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?
 

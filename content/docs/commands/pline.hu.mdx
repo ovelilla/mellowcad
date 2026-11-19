@@ -1,17 +1,17 @@
 ---
 title: "Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs"
 metaTitle: "Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs"
-description: "Vonallánc rajzolása az AutoCAD VLÁNC (PLINE, rövidítése VL) parancsával: vonalak és ívek egy objektumban, széLesség és Félszélesség, Hossz, Bezárás és Vissza."
+description: "Vonallánc rajzolása az AutoCAD VLÁNC (PLINE, rövidítése VL) parancsával: vonalak és ívek egy objektumban, Szélesség és Félszélesség, Hossz, Bezárás és Vissza."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD VLÁNC parancs angolul?","answer":"PLINE. A magyar AutoCAD-ben a rövidítése VL: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol PL a magyar változatban nem működik; a teljes VLÁNC név igen, a _PLINE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet íves vonalláncot rajzolni?","answer":"Válassza az Ív opciót: ettől kezdve minden pont egy, az előző szakaszt érintő ívet zár le, amíg a voNal opciót nem választja. Egy már megrajzolt vonallánc csúcspontjain át húzott simításhoz használja a VLEDIT parancsot és annak Görbe vagy Spline opcióját."},{"question":"Miért rajzolódik vastagon a vonallánc?","answer":"Egy korábbi VLÁNC parancsban megadott szélesség megmarad, és a következő vonallánc azzal indul, ahogy a kezdőpont utáni sor ki is írja. Válassza a széLesség opciót, és adjon meg kétszer 0-t, hogy újra vékonyan rajzoljon. Kikapcsolt KITÖLT mellett a széles vonalláncok körvonalként jelennek meg."},{"question":"Hogyan lehet vonalakat vonallánccá egyesíteni?","answer":"Futtassa az EGYBEFŰZ parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a VLEDIT parancsot egy vonalon, válaszoljon Igen értékkel, hogy vonallánccá alakítsa, és fűzze hozzá a többit az Egyesít opcióval."},{"question":"Hogyan lehet megtudni egy vonallánc területét vagy hosszát?","answer":"Futtassa a TERÜLET parancsot, nyomja meg az Enter billentyűt az Objektum opcióhoz, és válassza ki a vonalláncot: a zárt vonallánc a területét és a kerületét, a nyitott a hosszát adja meg."}]
+faq: [{"question":"Mi az AutoCAD VLÁNC parancs angolul?","answer":"PLINE. A magyar AutoCAD-ben a rövidítése VL: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol PL a magyar változatban nem működik; a teljes VLÁNC név igen, a _PLINE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet íves vonalláncot rajzolni?","answer":"Válassza az Ív opciót: ettől kezdve minden pont egy, az előző szakaszt érintő ívet zár le, amíg a voNal opciót nem választja. Egy már megrajzolt vonallánc csúcspontjain át húzott simításhoz használja a VLEDIT parancsot és annak Görbe vagy Spline opcióját."},{"question":"Miért rajzolódik vastagon a vonallánc?","answer":"Egy korábbi VLÁNC parancsban megadott szélesség megmarad, és a következő vonallánc azzal indul, ahogy a kezdőpont utáni sor ki is írja. Válassza a széLesség opciót, és adjon meg kétszer 0-t, hogy újra vékonyan rajzoljon. Kikapcsolt KITÖLT mellett a széles vonalláncok körvonalként jelennek meg."},{"question":"Hogyan lehet vonalakat vonallánccá egyesíteni?","answer":"Futtassa az EGYBEFŰZ parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a VLEDIT parancsot egy vonalon, válassza az Igen opciót, hogy vonallánccá alakítsa, és fűzze hozzá a többit az Egyesít opcióval."},{"question":"Hogyan lehet megtudni egy vonallánc területét vagy hosszát?","answer":"Futtassa a TERÜLET parancsot, nyomja meg az Enter billentyűt az Objektum opcióhoz, és válassza ki a vonalláncot: a zárt vonallánc a területét és a kerületét, a nyitott a hosszát adja meg."}]
 ---
 
 A VLÁNC (PLINE) parancs vonalláncot rajzol: egyetlen objektumot, amely végpontjaikkal egymáshoz csatlakozó egyenes szakaszokból és ívekből áll, mindegyik a saját szélességével. A kezdőpont után kiírja az aktuális szélességet; ezután minden pont egy szakaszt ad hozzá, amíg az Enter vagy a `Bezárás` be nem fejezi. Ahogy az AutoCAD-ben, vonalakkal kezd: az `Ív` ívekre vált, amelyek mindegyike érinti az előtte lévő szakaszt, a `voNal` pedig visszavált. A kezdőpontnál az Enter az utoljára rajzolt vonal, ív vagy vonallánc végétől folytatja.
 
 - **Parancs:** `VLÁNC`
 - **Angolul:** `PLINE`, bármely nyelven `_PLINE` formában beírva
-- **Álnevek:** `VL`
+- **Rövidítések:** `VL`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VL`, és nyomja meg az Enter billentyűt.
 
@@ -73,7 +73,7 @@ A kezdő-, majd a végszélesség, mindkettő beírva vagy az utolsó csúcspont
 
 ## Amit még nem tud [#missing]
 
-PLINEGEN: az új vonallánc szakaszonként rakja le a vonaltípusát, mint PLINEGEN 0 esetén (a VLEDIT VTípus gen opciója egy-egy vonalláncra bekapcsolja). A széles szakaszon a szaggatott vonaltípus folytonosnak rajzolódik. A széles szakasz előnézete nem halványabb árnyalattal jelenik meg, és az ívprompt egy sorba íródik, ahol az AutoCAD kettőbe tördeli.
+PLINEGEN: az új vonallánc szakaszonként rakja le a vonaltípusát, mint PLINEGEN 0 esetén (a VLEDIT VTípus gen opciója egy-egy vonalláncra bekapcsolja). A széles szakaszon a szaggatott vonaltípus folytonosnak rajzolódik. A széles szakasz előnézete nem halványabb árnyalattal jelenik meg, és az ívprompt egy sorba íródik, míg az AutoCAD kettőbe tördeli.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl--fr-polyligne--po--polylign--it-plinea--pl--de-plinie--pl--ru-плиния--пл--pl-plinia--pl--cs-křivka--k--hu-vlánc--vl)
 
@@ -93,7 +93,7 @@ Egy korábbi VLÁNC parancsban megadott szélesség megmarad, és a következő 
 
 ### Hogyan lehet vonalakat vonallánccá egyesíteni?
 
-Futtassa az [`EGYBEFŰZ`](/docs/commands/join) parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a [`VLEDIT`](/docs/commands/pedit) parancsot egy vonalon, válaszoljon `Igen` értékkel, hogy vonallánccá alakítsa, és fűzze hozzá a többit az `Egyesít` opcióval.
+Futtassa az [`EGYBEFŰZ`](/docs/commands/join) parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a [`VLEDIT`](/docs/commands/pedit) parancsot egy vonalon, válassza az `Igen` opciót, hogy vonallánccá alakítsa, és fűzze hozzá a többit az `Egyesít` opcióval.
 
 ### Hogyan lehet megtudni egy vonallánc területét vagy hosszát?
 

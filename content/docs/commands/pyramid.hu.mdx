@@ -7,13 +7,13 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Mi az AutoCAD GÚLA parancs angolul?","answer":"PYRAMID. A magyar AutoCAD-ben a rövidítése GÚ: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az alap középpontját, a sugarat és a magasságot. Az angol PYR a magyar változatban nem működik; a _PYRAMID az AutoCAD bármely nyelvi változatában igen."},{"question":"Hogyan lehet hatoldalú gúlát rajzolni?","answer":"Az alap középpontja előtt válassza az Oldalak opciót, és írja be: 6, majd adja meg a középpontot, a sugarat és a magasságot: a 0,0, a 25 és a 40 a mintában látható gúlát rajzolja meg. A következő GÚLA parancs megtartja a hat oldalt."},{"question":"Hogyan lehet adott alapélű gúlát rajzolni?","answer":"Válassza az Él opciót, és adja meg az egyik oldal két végpontját: a 0,0-tól 50,0-ig tartó oldal 50-es négyzet alapot ad, az alapértelmezett 4 oldallal."},{"question":"Hogyan lehet csonka gúlát rajzolni?","answer":"A magasságnál válassza a Felső opciót, írja be a felső sugarat, majd a magasságot. A gúla egy kisebb sokszögben végződik, amelynek ugyanannyi oldala van, mint az alapnak."}]
 ---
 
-A GÚLA (PYRAMID) parancs 3D szilárdtest gúlát rajzol: az első sora kiírja, hány oldala van az alapnak, és hogyan érti a sugarát, majd bekéri az alap középpontját, a sugarat és a magasságot. Az alap szabályos sokszög, ahogy a [`POLIGON`](/docs/commands/polygon) rajzolja, kezdetben 4 oldalú: a beírt sugár a kurzor felé, a pontként megadott a pont felé fordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé halad, a pontként megadott pedig az alaptól mért távolságával adja meg. Az oldalak számát és a sugár értelmezését a következő GÚLA parancsra is megőrzi; a sugár és a magasság a testprimitívek közös alapértéke. A gúla az aktuális fóliára kerül, és a Vissza egy lépésben visszavonja.
+A GÚLA (PYRAMID) parancs 3D szilárdtest gúlát rajzol: az első sora kiírja, hány oldala van az alapnak, és hogyan érti a sugarát, majd bekéri az alap középpontját, a sugarat és a magasságot. Az alap szabályos sokszög, ahogy a [`POLIGON`](/docs/commands/polygon) rajzolja, kezdetben 4 oldalú: a beírt sugár a kurzor felé, a pontként megadott a pont felé fordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé halad, a pontként megadott pedig az alaptól mért távolságával adja meg. Az oldalak számát és a sugár értelmezését a következő GÚLA parancsra is megőrzi; a sugár és a magasság az alaptestek közös alapértéke. A gúla az aktuális fóliára kerül, és egy lépésben visszavonható.
 
-A [`LISTA`](/docs/commands/list) kiírja a helyzetét, az alap és a tető sugarát, a magasságát, az elforgatását és az oldalak számát, a Tulajdonságok palettán pedig beírható a két sugár, az oldalak száma és a magasság. A fogóival mozgatható, állítható a magassága, és az alap mérete egy sarokból vagy egy oldal közepéről változtatható. 3D szilárdtest az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D eszköze számára, amely csak szilárdtestekből áll, és egyelőre részleges; a [`SZÉTVET`](/docs/commands/explode) laponként egy-egy lemezzé bontja.
+A [`LISTA`](/docs/commands/list) kiírja a helyzetét, az alap és a tető sugarát, a magasságát, az elforgatását és az oldalak számát, a Tulajdonságok palettán pedig beírható a két sugár, az oldalak száma és a magasság. A fogóival mozgatható, állítható a magassága, és az alap mérete egy sarokból vagy egy oldal közepéről változtatható. 3D szilárdtest az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D eszköze számára (a MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges); a [`SZÉTVET`](/docs/commands/explode) laponként egy-egy lemezzé bontja.
 
 - **Parancs:** `GÚLA`
 - **Angolul:** `PYRAMID`, bármely nyelven `_PYRAMID` formában beírva
-- **Álnevek:** `GÚ`
+- **Rövidítések:** `GÚ`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `GÚ`, és nyomja meg az Enter billentyűt.
 
@@ -21,7 +21,7 @@ A [`LISTA`](/docs/commands/list) kiírja a helyzetét, az alap és a tető sugar
 
 A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
 
-<Session name="pyramid" caption="Hatoldalú gúla, az alapja 25 az egyes oldalak közepéig, 40 magas, délkeletről nézve, Takartvonalas vizuális stílusban." />
+<Session name="pyramid" caption="Hatoldalú gúla, az alapja 25 az egyes oldalak közepéig, 40 magas, délkeletről nézve, Takartvonalas látványstílusban." />
 
 ## Opciók [#options]
 
@@ -55,7 +55,7 @@ A magasságnál: bekéri a felső sugarat, amelyet az alapéhoz hasonlóan érte
 
 ## Amit még nem tud [#missing]
 
-Ami a [`TTEST`](/docs/commands/box) parancsból is hiányzik: a Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, a saját 3D parancsai, és azok a vizuális stílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból hiányoznak. A típusa, beleírt vagy kör köré írt, beírva a Tulajdonságok palettán. A pontozott méretek, amelyeket az AutoCAD a sugár és az él megadása közben rajzol.
+Ami a [`TTEST`](/docs/commands/box) parancsból is hiányzik: a Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, a saját 3D parancsai, és azok a látványstílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból hiányoznak. A típusa, beleírt vagy kör köré írt, beírva a Tulajdonságok palettán. A pontozott méretek, amelyeket az AutoCAD a sugár és az él megadása közben rajzol.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pyramid--pyr--es-piramide--pir--pt-br-piramide--pir--fr-pyramide--pyr--it-piramide--pir--de-pyramide--pyr--ru-пирамида--пи--pl-ostrosłup--ost--cs-jehlan--je--hu-gúla--gú)
 

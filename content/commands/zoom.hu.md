@@ -1,11 +1,11 @@
 ---
 title: "AutoCAD ZOOM parancs"
 description: "Így működik az AutoCAD ZOOM (Z) parancsa: Terjedelem, Ablak, Előző, Arány nX-szel, Objektum és Mind, az egérgörgő, nagyítás parancs közben. Próbálja ki ingyen."
-figure: "Lemez kis furattal a sarka közelében: ZOOM Terjedelem, majd ablak a furat köré, amely ezután kitölti a nézetet."
+figure: "Alaplap kis furattal a sarka közelében: ZOOM Terjedelem, majd ablak a furat köré, amely ezután kitölti a nézetet."
 sourceHash: "cd72af4956e4"
 ---
 
-A ZOOM parancs nagyítja vagy kicsinyíti a nézetet; a rajzban semmi sem mozdul el, és semminek sem változik a mérete. Első kérdése sarokpontot fogad el, amely ablakot kezd, léptéktényezőt vagy egy opciót. Aposztróffal begépelve (`'ZOOM` vagy `'Z`) egy másik parancson belül is működik, és az a parancs utána folytatódik. Az egérgörgő a kurzor körül nagyít és kicsinyít, a görgőgombra duplán kattintva pedig ZOOM Terjedelem lesz. Minden ZOOM egy visszavonási lépés, az egymást követők egyetlen lépés, így a <Command id="U" /> parancs a nézetet is visszaállítja.
+A ZOOM parancs nagyítja vagy kicsinyíti a nézetet; a rajzban semmi sem mozdul el, és semminek sem változik a mérete. Első promptja sarokpontot fogad el, amely ablakot kezd, léptéktényezőt vagy egy opciót. Aposztróffal begépelve (`'ZOOM` vagy `'Z`) egy másik parancson belül is működik, és az a parancs utána folytatódik. Az egérgörgő a kurzor körül nagyít és kicsinyít, a görgőgombra duplán kattintva pedig ZOOM Terjedelem lesz. Minden ZOOM egy visszavonási lépés, az egymást követők egyetlen lépés, így a <Command id="U" /> parancs a nézetet is visszaállítja.
 
 ## Options
 
@@ -23,11 +23,11 @@ Visszatér az előző nézethez, legfeljebb 20 nézetet visszalépve. Ha már ni
 
 ### Scale
 
-Tényező: a `2X` kétszer közelebbre nagyít, mint az aktuális nézet, a `0.5X` feleannyira közelre, az X nélküli `2` pedig a ZOOM Mind nézet léptékének kétszeresére. Az `nXP`, a papírtér tényezője, `nX`-ként értendő: itt csak modelltér van. Az első kérdésnél begépelt tényező ugyanezt teszi az opció kiválasztása nélkül.
+Tényező: a `2X` a kétszeresére nagyítja az aktuális nézetet, a `0.5X` a felére kicsinyíti, az X nélküli `2` pedig a ZOOM Mind nézet léptékének kétszeresére. Az `nXP`, a papírtér tényezője, `nX`-ként értendő: itt csak modelltér van. Az első promptnál begépelt tényező ugyanezt teszi az opció kiválasztása nélkül.
 
 ### Window
 
-Két kattintással vagy húzással megadott sarokpont: a nézet ezt a téglalapot mutatja. Az első kérdésnél kattintott sarokpont ugyanezt teszi.
+Két kattintással vagy húzással megadott sarokpont: a nézet ezt a téglalapot mutatja. Az első promptnál kattintott sarokpont ugyanezt teszi.
 
 ### Object
 
@@ -35,13 +35,13 @@ A kijelölt objektumokat mutatja, vagy azokat, amelyeket a ZOOM előtt jelölt k
 
 ## Missing
 
-A Valósidejű: az első kérdésnél az Enter befejezi a ZOOM parancsot, míg az AutoCAD-ben egérrel való nagyítást indít; itt ezt a görgő végzi. A Dinamikus, a Közép, valamint a rejtett Bal és Vmax opció.
+A Valósidejű: az első promptnál az Enter befejezi a ZOOM parancsot, míg az AutoCAD-ben egérrel való nagyítást indít; itt ezt a görgő végzi. A Dinamikus, a Közép, valamint a rejtett Bal és Vmax opció.
 
 ## Questions
 
 ### Mi az AutoCAD ZOOM parancs magyarul?
 
-A magyar AutoCAD-ben is ZOOM a neve. Írja be a `ZOOM` nevet vagy a `Z` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; a `_ZOOM` az AutoCAD bármely nyelvi változatában működik. A `Z`, majd a `T` a ZOOM Terjedelem.
+A magyar AutoCAD-ben is ZOOM a neve, és a rövidítése is `Z`, akárcsak az angolban: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. A `_ZOOM` az AutoCAD bármely nyelvi változatában működik. A `Z`, majd a `T` a ZOOM Terjedelem.
 
 ### Hogyan lehet a teljes rajzot megjeleníteni?
 

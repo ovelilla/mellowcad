@@ -6,7 +6,7 @@ figure: "120-as kerek asztal hat székkel, alaprajzban, centiméterben méretezv
 sourceHash: "1e307bf5e17a"
 ---
 
-Rajzoljon egy 120 átmérőjű kerek asztalt hat székkel, centiméterben: minden szék egy 44 × 40-es ülőlap 4 sugárral lekerekített sarkokkal és egy 8 mély háttámla, az ülőlap eleje 8-ra az asztal szélétől. Rajzoljon meg egy széket az asztal fölött, és mind a hatot egy poláris kiosztás helyezi el. A rajz méretléptéke centiméterre van beállítva.
+Rajzoljon egy 120 átmérőjű kerek asztalt hat székkel, centiméterben: minden szék egy 44 × 40-es ülőlap 4 sugárral lekerekített sarkokkal és egy 8 mély háttámla, az ülőlap eleje 8-ra az asztal szélétől. Rajzoljon meg egy széket az asztal fölött, a hat széket pedig helyezze el egy poláris kiosztással. A rajz méretléptéke centiméterre van beállítva.
 
 ## Steps
 

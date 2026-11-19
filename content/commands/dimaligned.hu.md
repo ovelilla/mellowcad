@@ -16,11 +16,11 @@ Bekéri a mért érték helyett kiírandó szöveget, alapértelmezésként a m�
 
 ### Angle
 
-Bekéri a szöveg szögét, és a szöveg a méretvonal mentén helyett ebben a szögben rajzolódik. A 0 visszaállítja a vonal mentén.
+Bekéri a szöveg szögét, és a szöveg ezután nem a méretvonal mentén, hanem ebben a szögben rajzolódik. A 0 ismét a méretvonal mentére állítja.
 
 ## Missing
 
-A Bszöveg: a méret szövege egysoros, a parancssorban a <Keyword id="Text" /> opcióval állítható be, sosem a szövegszerkesztőben. A <Keyword id="Angle" /> opcióval megadott szögnél az AutoCAD a méretvonalra középre teszi a szöveget; itt fölötte marad, ahogy szög nélkül. A méret nem asszociatív: nem követi a mért objektumot.
+A Bszöveg opció: a méret szövege egysoros, a parancssorban a <Keyword id="Text" /> opcióval állítható be, sosem a szövegszerkesztőben. A <Keyword id="Angle" /> opcióval megadott szögnél az AutoCAD a méretvonalra középre teszi a szöveget; itt fölötte marad, ahogy szög nélkül. A méret nem asszociatív: nem követi a mért objektumot.
 
 ## Questions
 
@@ -38,4 +38,4 @@ A MÉRETILLESZT paranccsal: az első promptnál nyomja meg az Enter billentyűt,
 
 ### Hogyan lehet saját szöveget írni egy méretre?
 
-Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be a szöveget: a `<>` a mért értéket jelenti, így a `<> mm` a mért értéket és utána a mértékegységét írja ki, az üres Enter pedig csak a mért értéket tartja meg. Elhelyezés után a Tulajdonságok paletta Szöveg felülírása sora módosítja.
+Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be a szöveget: a `<>` a mért értéket jelenti, így a `<> mm` a mért értéket és utána a mértékegységét írja ki, az üres Enter pedig csak a mért értéket tartja meg. Elhelyezés után a Tulajdonságok paletta Méretszöveg felülírás sora módosítja.

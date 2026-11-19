@@ -15,12 +15,14 @@
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
-> `/cs`, L8) hecho y publicado el 17/11; por decisión del dueño la visibilidad va antes que
-> cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una sesión cada vez, nunca
-> en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las referencias externas,
-> hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los degradados y 3DFACE,
-> del punto 7, hechos y publicados el 17/11; lo que queda del punto 7: WIPEOUT, IMAGE, TABLE…) y
-> otro idioma (el húngaro, el siguiente), alternando, además de lo que queda de §7.
+> `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, sin
+> publicar (el push está congelado: `docs/next-vercel-usage.md` §4); por decisión del dueño la
+> visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
+> sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
+> referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
+> degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; lo que queda del punto 7:
+> WIPEOUT, IMAGE, TABLE…, el siguiente) y otro idioma (el japonés, `global`, después), alternando,
+> además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -285,7 +287,8 @@ UE; KulmanLab es n.º 1 allí para «cad online gratis»; hecho el 12/11, sesió
 Bielorrusia buscando en ruso; Yandex tiene el 72 % de sus búsquedas; hecho el 13/11,
 `docs/plans/ru-language.md`) y **polaco** (localizado; Polonia, 40 en el índice de la auditoría;
 hecho el 17/11, `docs/plans/pl-language.md`) y **checo** (localizado; Chequia; hecho el 17/11,
-`docs/plans/cs-language.md`). Después, húngaro, y japonés, coreano y chino (AutoCAD conserva allí los
+`docs/plans/cs-language.md`) y **húngaro** (localizado; Hungría, 8 en el índice de la auditoría;
+hecho el 19/11, `docs/plans/hu-language.md`). Después, japonés, coreano y chino (AutoCAD conserva allí los
 nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
@@ -985,7 +988,32 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   páginas «abrir DXF online», en los diez idiomas, ya no cuentan los degradados ni las caras 3D
   entre lo que queda fuera. La portada no cambia (ni sus mensajes ni lo que carga). Publicado el
   17/11 por el dueño, con el checo (el push de las 18:37, hasta `315c66cd`); la tanda de indexación del 17/11
-  no tocaba en toda la sesión (cuota hasta las 19:51 UTC), ni la activación de
-  cierre de conversaciones terminadas (hecha el 19/11). **Siguiente**, por orden del dueño: el húngaro
-  (L8), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE, MULTILEADER…).
+  no tocaba en toda la sesión (cuota hasta las 19:51 UTC), ni la activación del cierre de
+  conversaciones terminadas (desde el 18/11; hecha el 19/11). **Siguiente**, por orden del dueño:
+  el húngaro (L8, hecho el 19/11), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE,
+  MULTILEADER…).
+- Húngaro (L8): hecho el 19/11/2026, sin publicar (`580b4d03`, `209f1f08` y el commit que lo pasa
+  a `live`; `docs/plans/hu-language.md`, `docs/i18n/hu.md`). El paquete de idioma instalado en el
+  AutoCAD del dueño, con su permiso, y la 2027.1 otra vez; el lenguaje de comandos de la consola
+  húngara (454 sondas: VONAL, PÁRH, METSZ; `P` es PÁRH, `T` deshace aunque el `acad.pgp` se la dé
+  a TOL; FROM es `PONTTÓL`; RECTANG es `TÉGL`, con `TÉGLALAP`; las palabras de -OSNAP leídas bit a
+  bit de OSMODE: VÉG, FEL, KÖZ…), los conmutadores, la lectura polar y el ViewCube vistos en el
+  escritorio («<Raszter Be>», «Poláris: 6.3230 < +Z», FELÜL, É, K, D, NY), y el sitio con lo que
+  se busca en húngaro («Ingyenes online CAD program AutoCAD parancsokkal», «AutoCAD parancsok
+  listája magyarul és angolul», «AutoCAD PÁRH (OFFSET) parancs», «gyakorló feladat»,
+  «AutoCAD-ben»). Lo que no encajó, corregido en el sistema: la cara de las letras gana ő ű Ő Ű;
+  `/fr` ya pasaba 28 bytes de 250 KiB con el húngaro en borrador y 262 en `live` (cada idioma
+  `live` suma unos 230 bytes a cada portada): fuera `og:locale:alternate` (nombra los idiomas de
+  *esta* URL; aquí cada idioma tiene la suya, que da `hreflang`) y `direction="ltr"` de cada SVG,
+  ahora una regla de `marketing.css` para las páginas de derecha a izquierda; el botón de la
+  cabecera, «Rajzolás». Sin nativo, la relectura de un modelo. **La primera carga de cada
+  portada**, Brotli q11, con el húngaro en borrador y `live`: `/` 253.842 → 253.802, `/es` 255.023
+  → 255.026, `/pt-br` 255.506 → 255.379, `/ar` 278.776 → 278.707, `/fr` 256.028 → 255.879 (121
+  bytes bajo 250 KiB), `/it` 255.243 → 255.145, `/de` 255.602 → 255.491, `/ru` 289.084 → 288.971,
+  `/pl` 270.020 → 269.877, `/cs` 269.750 → 269.680, `/hu` 270.398 → 270.357. **Sin publicar**: el
+  push espera a que `docs/next-vercel-usage.md` §4 levante el congelado y al permiso del dueño;
+  después IndexNow, y las fichas de AlternativeTo y SaaSHub, del dueño; la cola de §7 ya pesa
+  `/hu` (0,03) y entrará sola cuando el sitemap la publique. **Siguiente**, por orden del dueño:
+  lo que queda del punto 7 de la fase 4 del DXF (WIPEOUT, IMAGE, TABLE, MULTILEADER…), y después
+  otro idioma (el japonés, `global`).
 - 10 Medición: la primera, un mes después del push de 01–02.

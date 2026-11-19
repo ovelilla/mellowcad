@@ -42,7 +42,7 @@ Válassza a <Keyword id="Distance" /> opciót, írja be a távolságot, és a m�
 
 ### Mi a különbség a LETÖR és a LEKEREKÍT parancs között?
 
-A LETÖR két vonalat egyenes ferde éllel köt össze, a <Command id="FILLET" /> parancs mindkettőhöz érintő ívvel. Mindkettő hozzávágja vagy meghosszabbítja a vonalakat, és mindkettő hegyes sarkot készít 0 értéknél, vagy ha a második vonal kiválasztásakor lenyomva tartja a Shift billentyűt.
+A LETÖR két vonalat egyenes ferde éllel köt össze, a <Command id="FILLET" /> parancs mindkettőhöz érintő ívvel. Mindkettő hozzá vágja vagy meghosszabbítja a vonalakat, és mindkettő hegyes sarkot készít 0 értéknél, vagy ha a második vonal kiválasztásakor lenyomva tartja a Shift billentyűt.
 
 ### Miért nem működik a LETÖR?
 

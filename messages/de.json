@@ -76,7 +76,7 @@
     "boardLabel": "Befehle und ihre Aliasnamen, gruppiert wie in der Multifunktionsleiste",
     "also": "Auch: {aliases}",
     "linked": "Ein unterstrichener Befehl hat eine eigene Seite, mit Eingabeaufforderungen und Optionen.",
-    "languages": "<de>{german}</de> heißt im englischen AutoCAD <en>{english}</en>, im spanischen <es>{spanish}</es>, im brasilianisch-portugiesischen <pt>{portuguese}</pt>, im französischen <fr>{french}</fr>, im russischen <ru>{russian}</ru>, im polnischen <pl>{polish}</pl> und im tschechischen <cs>{czech}</cs>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
+    "languages": "<de>{german}</de> heißt im englischen AutoCAD <en>{english}</en>, im spanischen <es>{spanish}</es>, im brasilianisch-portugiesischen <pt>{portuguese}</pt>, im französischen <fr>{french}</fr>, im russischen <ru>{russian}</ru>, im polnischen <pl>{polish}</pl>, im tschechischen <cs>{czech}</cs> und im ungarischen <hu>{hungarian}</hu>; der globale Name <all>{global}</all> gilt in jeder Sprache.",
     "transcriptTitle": "Ein VERSETZ, von Anfang bis Ende",
     "transcriptCaption": "Von der Engine beim Erstellen dieser Seite wiedergegeben. Gleiche Reihenfolge, gleiche Optionsbuchstaben wie AutoCAD."
   },

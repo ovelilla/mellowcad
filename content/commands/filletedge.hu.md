@@ -32,7 +32,7 @@ Két különböző sugarú lekerekítés találkozása, és az ívelt lapon vég
 
 ### Hogyan lehet egy 3D szilárdtest élét lekerekíteni az AutoCAD-ben?
 
-Indítsa el az ÉLLEKEREKÍT parancsot, válassza a <Keyword id="Radius" /> opciót, és írja be a sugarat, válassza ki az éleket, majd nyomja meg kétszer az Enter billentyűt: egyszer a kiválasztás befejezéséhez, egyszer az elfogadáshoz. A bemutatóban a `8` egy téglatest két élét kerekíti le.
+Indítsa el az ÉLLEKEREKÍT parancsot, válassza a <Keyword id="Radius" /> opciót, és írja be a sugarat, válassza ki az éleket, majd nyomja meg kétszer az Enter billentyűt: egyszer a kiválasztás befejezéséhez, egyszer az elfogadáshoz. A munkamenetben a `8` egy téglatest két élét kerekíti le.
 
 ### Hogyan lehet egy lap összes élét lekerekíteni?
 

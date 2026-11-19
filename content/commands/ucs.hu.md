@@ -8,7 +8,7 @@ sourceHash: "8ac3b844fe16"
 
 Az FKR (UCS) parancs a felhasználói koordináta-rendszert állítja be: egy origót és X, Y tengelyt a tér bármely pontján, így az XY síkja meg is dőlhet. A begépelt koordinátákat ebben értelmezi a program, és amit rajzol, az az XY síkjában fekszik: ha az origót egy téglatest tetejére helyezi, a `30,20` középpontú kör a tetején lesz. Először kiírja az aktuális FKR nevét – `*VILÁG*`, `*NÉVTELEN*` vagy azt a nevet, amelyen elmentették –, majd az új origót vagy egy opciót kér; ott az Enter visszatér a Világhoz. A megadott pont lesz az origó, a Z koordinátájával együtt, a Z nélküli pont pedig az aktuális szintmagasságon fekszik. Ezután egy pontot kér a pozitív X tengelyen és egy pontot az XY síkon, az aktuális FKR-ben értelmezve: bármelyiknél az Enter változatlanul hagyja a tengelyeket. Egy pont eltolja az FKR-t, három bármilyen irányba elfordítja.
 
-A parancsok ezután az FKR XY síkjában dolgoznak: a <Command id="LINE" /> és a <Command id="CIRCLE" /> rá rajzol, a <Command id="BOX" /> és a <Command id="EXTRUDE" /> pedig belőle emelkedik a Z tengelye mentén. Minden objektum megtartja a saját síkját, amikor az FKR megváltozik, és az <Command id="PLAN" /> parancs egyenesen felülről néz az aktuális FKR-re. Az FKR a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+A parancsok ezután az FKR XY síkjában dolgoznak: a <Command id="LINE" /> és a <Command id="CIRCLE" /> rá rajzol, a <Command id="BOX" /> és a <Command id="EXTRUDE" /> pedig belőle emelkedik a Z tengelye mentén. Minden objektum megtartja a saját síkját, amikor az FKR megváltozik, és az <Command id="PLAN" /> parancs egyenesen felülről néz az aktuális FKR-re. Az FKR a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 ## Options
 
@@ -18,11 +18,11 @@ A parancsok ezután az FKR XY síkjában dolgoznak: a <Command id="LINE" /> és 
 
 ### NAmed
 
-A név szerint mentett FKR-ek. A <Keyword id="Save" /> az aktuálisat menti, és <Keyword id="Yes" /> vagy <Keyword id="No" /> választ kér, mielőtt egy már mentett nevet felülírna; a <Keyword id="Restore" /> egy mentettet tesz aktuálissá, a neve kis- és nagybetűtől függetlenül gépelhető be; a <Keyword id="Delete" /> neveket vesz, vesszővel elválasztva és helyettesítő karakterekkel; a <Keyword id="?" /> kilistázza őket, mindegyiket az origójával és a tengelyeivel. A név tartalmazhat szóközt, de nem tartalmazhatja a `<>/\":;|,=*?` karaktereket és a fordított aposztrófot: <Message id="invalidUcsName" />.
+A név szerint mentett FKR-ek. A <Keyword id="Save" /> az aktuálisat menti, és <Keyword id="Yes" /> vagy <Keyword id="No" /> választ kér, mielőtt egy már mentett nevet felülírna; a <Keyword id="Restore" /> egy mentettet tesz aktuálissá, a neve kis- és nagybetűtől függetlenül gépelhető be; a <Keyword id="Delete" /> neveket fogad el, vesszővel elválasztva és helyettesítő karakterekkel; a <Keyword id="?" /> kilistázza őket, mindegyiket az origójával és a tengelyeivel. A név tartalmazhat szóközt, de nem tartalmazhatja a `<>/\":;|,=*?` karaktereket és a fordított aposztrófot: <Message id="invalidUcsName" />.
 
 ### OBject
 
-Az FKR-t a kijelölt objektumhoz igazítja: vonalhoz, körhöz, ívhez, ellipszishez, vonallánchoz, spline-hoz, szöveghez, bekezdéses szöveghez, attribútumdefinícióhoz vagy blokkreferenciához. Az origó és az X tengely oda kerül, ahová az AutoCAD az adott fajtánál teszi, a Z pedig az objektum saját normálisa, így az FKR az objektum síkjában fekszik. A zárt fólián lévő objektum is kijelölhető. A sraffozásra ez a válasz: <Message id="ucsNoCoordinateSystem" />, és az FKR parancs befejeződik, az FKR pedig olyan marad, amilyen volt.
+Az FKR-t a kijelölt objektumhoz igazítja: vonalhoz, körhöz, ívhez, ellipszishez, vonallánchoz, spline-hoz, szöveghez, bekezdéses szöveghez, attribútumdefinícióhoz vagy blokkreferenciához. Az origó és az X tengely oda kerül, ahová az AutoCAD az adott fajtánál teszi, a Z pedig az objektum saját normálisa, így az FKR az objektum síkjában fekszik. A zárolt fólián lévő objektum is kijelölhető. A sraffozásra ez a válasz: <Message id="ucsNoCoordinateSystem" />, és az FKR parancs befejeződik, az FKR pedig olyan marad, amilyen volt.
 
 ### Previous
 
@@ -34,7 +34,7 @@ Az XY síkot merőlegesre fordítja a nézési irányra, az X tengelyt a képern
 
 ### World
 
-Vissza a világ koordináta-rendszerhez, amely soha nem mozdul. Ez az első kérdés alapértelmezése, ezért ott az Enter ezt választja, és a szintmagasságot is visszaállítja 0-ra.
+Vissza a világ koordináta-rendszerhez, amely soha nem mozdul. Ez az első prompt alapértéke, ezért ott az Enter ezt választja, és a szintmagasságot is visszaállítja 0-ra.
 
 ### X
 
@@ -54,13 +54,13 @@ Az FKR-t a Z tengelye körül forgatja, ahogy az <Keyword id="X" /> az X körül
 
 ## Missing
 
-A <Keyword id="Face" />, amely az FKR-t egy szilárdtest lapjához igazítja: kér egy lapot, de még nem talál. Az alKalmaz és a MEtszet opció, amelyek az első kérdésnél megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az <Command id="PLAN" /> parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW, az UCSVP és a dinamikus FKR. Az <Keyword id="OBject" /> opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál (A folytatáshoz nyomja meg az ENTER billentyűt).
+A <Keyword id="Face" />, amely az FKR-t egy szilárdtest lapjához igazítja: kér egy lapot, de még nem talál. Az alKalmaz és a MEtszet opció, amelyek az első promptnál megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az <Command id="PLAN" /> parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW, az UCSVP és a dinamikus FKR. Az <Keyword id="OBject" /> opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál: `A folytatáshoz nyomja meg az ENTER billentyűt:`.
 
 ## Questions
 
-### Hogyan lehet visszaállítani az FKR-t Világra az AutoCAD-ben?
+### Hogyan lehet visszaállítani az FKR-t a világ koordináta-rendszerre az AutoCAD-ben?
 
-Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a <Keyword id="World" /> az alapértelmezés. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az <Command id="PLAN" /> parancsot, és válassza a <Keyword command="PLAN" id="World" /> opciót.
+Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a <Keyword id="World" /> az alapérték. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az <Command id="PLAN" /> parancsot, és válassza a <Keyword command="PLAN" id="World" /> opciót.
 
 ### Hogyan lehet elforgatni az FKR-t?
 
@@ -72,4 +72,4 @@ A világ koordináta-rendszer (VKR) soha nem mozdul; a felhasználói koordinát
 
 ### Hogyan lehet egy 3D szilárdtest lapjára rajzolni?
 
-Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a munkamenetben. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik.
+Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a mintában. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik.

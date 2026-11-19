@@ -150,7 +150,6 @@ export async function HeroSheet() {
             <svg
               viewBox={`0 0 ${plot.width} ${plot.height}`}
               aria-hidden="true"
-              direction="ltr"
               className="turn-in absolute inset-0 block h-auto w-full"
               style={turn}
               dangerouslySetInnerHTML={{ __html: turned.markup }}

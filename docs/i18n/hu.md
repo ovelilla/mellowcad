@@ -1,8 +1,8 @@
 # Hungarian (`hu`)
 
-> **Command language:** `localized`, Hungarian AutoCAD's. **Status:** `draft` since 19/11/2026,
-> at `/hu`. **Review:** none by a native speaker (the owner knows none). The plan and its
-> commits: `docs/plans/hu-language.md`.
+> **Command language:** `localized`, Hungarian AutoCAD's. **Status:** `live` since 19/11/2026, at
+> `/hu`. **Review:** none by a native speaker (the owner knows none); a model's reread of what
+> Autodesk did not write ("Review"). The plan and its commits: `docs/plans/hu-language.md`.
 
 The words are Autodesk's own Hungarian localization of AutoCAD, never a translation of ours, as the
 other localized languages' are. One Hungarian, as AutoCAD has one (`hu-HU`).
@@ -86,14 +86,15 @@ BLOCKSPALETTE BLOKKPALETTA, LAYERCLOSE FÓLIABEZÁR, BREAKATPOINT MEGTÖRÉSPONT
 file: VONAL (`VO`), VLÁNC (`VL`), KÖR (`K`), ÍV (`I`), PÁRH (`P`), METSZ (`ME`), ELÉR (`EL`),
 MOZGAT (`MO`), MÁSOL (`M`), RADÍR (`R`), FORGAT (`FOR`), LÉPTÉK (`LE`), TÜKRÖZ (`TU`), NYÚJT
 (`NY`), LEKEREKÍT (`LK`), LETÖR (`LT`), SZÉTVET (`SZV`), SRAFFOZ (`SF`, `SR`), FÓLIA (`FO`), TOL
-(`T`), BSZÖVEG (`BS`, `SZ`), TÉGL (`TE`, `TÉGLALAP`).
+(none that works), BSZÖVEG (`BS`, `SZ`), TÉGL (`TE`, `TÉGLALAP`).
 
-- **Many letters mean another command than in English**: `P` PÁRH (PAN), `T` TOL (MTEXT), `R`
+- **Many letters mean another command than in English**: `P` PÁRH (PAN), `T` undoes (MTEXT), `R`
   RADÍR (REDRAW), `M` MÁSOL (MOVE), `L` LÁTVÁNYSTÍLUSOK (LINE), `C` CSOPORT (CIRCLE), `I` ÍV
   (INSERT), `ME` METSZ (MEASURE), `EL` ELÉR (ELLIPSE), `LT` LETÖR (LINETYPE), `MT` MTÉR (MSPACE,
   where English's is MTEXT). LINE has no one-letter alias: `VO`. As in Hungarian AutoCAD.
 - **U is `T`** (`getcname`), and the name beats `acad.pgp`'s `T` (TOL): `T` after a LINE undoes it,
-  in the console and on the desktop (names/d01).
+  in the console and on the desktop (names/d01). TOL keeps no alias in the engine, as none reaches
+  it in Hungarian AutoCAD.
 - **FROM is `PONTTÓL`** at a point prompt (names/p03: `<Eltolás>:`), the HUN help's «PONTTÓL
   (parancsmódosító)»; at `Parancs:` it is nothing (names/p42).
 - **RECTANG is `TÉGL`** (`getcname`); `TÉGLALAP` (`acad.pgp`'s `TE`) is the local name of
@@ -265,3 +266,64 @@ percentile +67%), **prompts +24%** (median +23%), the longest prompts of any loc
 Hungarian QWERTZ: Z and Y swap places; the digits on the number row without Shift, `0` left of
 `1`, `ö ü ó` after `9`; `ő ú é á ű` keys of their own; `@` AltGr+V. Ctrl shortcuts are read by
 their physical key (`shortcutKey`).
+
+Checked in Chrome before going live (19/11/2026, keys sent through CDP as the layout sends them on
+Windows, the letter in `key` and `text`, the physical key in `code`): `párh` typed on the drawing
+(á from `Quote`) runs PÁRH and asks `Adja meg a párhuzamos távolságot vagy [Kijelölt/Töröl/Fólia]
+<Kijelölt>:`; `vo` then `10,0`, its `0` from the key under Esc (`Backquote`), answers VONAL's first
+point; `ELŐRE`, its ő from `BracketLeft`, runs REDO. AltGr in a field (`@` is AltGr+V) stays to be
+seen on a real Windows keyboard, as Czech's and Polish's.
+
+## Going live
+
+On 19/11/2026, from production builds of this worktree (every page `○` or `●` but `/api/search`
+and `/mcp`):
+
+- **The landing's first load**, Brotli q11 of every response until the network is idle, in bytes,
+  Hungarian a draft (`209f1f08`) and live: `/` 253,842 → 253,802, `/es` 255,023 → 255,026,
+  `/pt-br` 255,506 → 255,379, `/ar` 278,776 → 278,707, `/fr` 256,028 → 255,879 (121 under 250
+  KiB), `/it` 255,243 → 255,145, `/de` 255,602 → 255,491, `/ru` 289,084 → 288,971, `/pl` 270,020
+  → 269,877, `/cs` 269,750 → 269,680; `/hu` 270,398 → 270,357, under the 275 KiB of a script's
+  font: the letters' two faces (8,184 and 5,484), never Google's Latin Extended files.
+- **`/fr` was 28 bytes over 250 KiB already with Hungarian a draft**, by this measure, and 262
+  over once live: each live language adds some 230 bytes to every landing (three lists of
+  language links, an hreflang link, an `og:locale:alternate` in the HTML and in the payload, and
+  the commands sentence). Two cuts for every page: **`og:locale:alternate` is gone** (it names the
+  locales this URL serves, and Facebook scrapes it again with `?fb_locale=`; here each language
+  has a URL of its own, which hreflang gives: some 250 bytes), and **an SVG keeps left to right
+  on a right-to-left page by one rule of `marketing.css`** instead of `direction="ltr"` written on
+  each of the landing's hundred drawings twice (some 100; on `/ar` every SVG and its text still
+  computes `ltr`). The next change to the French landing has to be measured.
+- **Naming Hungarian** in every landing's commands sentence (`<hu>{hungarian}</hu>`: PÁRH beside
+  EKVID and ODSUŃ), in Geist Mono, as PÁRH has no letter outside Latin-1; every translation of it
+  marked reviewed.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): the header's «Kezdjen
+  rajzolni» broke over two lines, now «Rajzolás», as German's «Zeichnen» and Czech's «Kreslit»;
+  nothing else wraps or overflows (the page is 360 wide; only the hero's transcript runs past its
+  own clipped box, as in every language).
+
+## Review
+
+No native reader: the owner knows none. What Autodesk did not write was read again by a model on
+19/11/2026, four agents against the English, Autodesk's tables and the Hungarian catalogs:
+
+- **The site and the editor**, some 40 edits: «rövidítés» for an alias everywhere (the column
+  header, the counts), Conceptual as the catalog's `Látványtervi`, calques undone («Shift+jobb
+  kattintással a következő pontmegadásra egy módot kényszeríthet ki»), compounds («DWG- vagy
+  DXF-fájlokat», «AutoCAD-felhasználó», «Szögpontosság»); in the editor only our own labels.
+- **The "Use" pages and exercises**, some 90 edits: «prompt» where «kérdés» crept in,
+  «Fóliatulajdonság-kezelő», «méretsegédvonal», «tükrözési vonal», a sense inverted in 2d-to-3d
+  («kivonja belőlük» for "cut by them"), the stairs' «lépcsőfok», the frames' «káva».
+- **The command pages**, some 320 edits: every alias answer checked against `acad_hu.pgp` (PAN has
+  no working alias: its `T` is U's name, which undoes; `TR` runs TRASZTER; TEXT's `DS`), the
+  engine's lines quoted as it prints them (`<Raszter Be>`, `<Traszter Be>`, `Előzmények = Egyik
+  sem`), «Látványtervi», «Fólia szerint», «zárolt fólián», «transzparens parancs», the reflex
+  angle «konkáv szög» where «kiegészítő szög» said supplementary, the polite imperative where an
+  impersonal «ki kell választani» crept in, a and az before what each component renders.
+- **Left, for a native reader if one is found**: «Ház alaprajz készítése» (the search's words;
+  «alaprajzának» would be the grammar's), «eszköztipp» for a tooltip, «kijelölődoboz», «talpvonal»
+  for LEADER's hook, «aktív fogó», the pulley's «tárcsa» beside «szíjtárcsa», «homloklap», «F és
+  Ctrl billentyűk» against «F- és Ctrl-billentyűk» (the title's 60 characters), «az MIL» or «a
+  MIL» before an alias, «Dinamikus adatbevitel» (the table's) against «dinamikus bevitel», and
+  the dialog names no resource was read for («Tulajdonságmásolás beállításai», «Stílusok
+  paletta», «Szilárdtestszerkesztés»).

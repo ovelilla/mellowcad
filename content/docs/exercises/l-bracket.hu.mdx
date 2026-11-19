@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Rajzolja meg ezt a konzolt milliméterben: 100 hosszú, 20 magas talppal és 30 széles, 80 magas függőleges szárral, a belső sarok 10 sugárral lekerekítve, a talpban egy 8-as, a szárban egy 10-es furattal, mindkettő a saját szára közepén. A körvonal egyetlen [`VONAL`](/docs/commands/line) parancs, minden pontot úgy írva be, hogy mennyit halad az előzőtől, és a méretei mind a bal alsó sarokból indulnak.
+Rajzolja meg ezt a konzolt milliméterben: 100 hosszú, 20 magas talppal és 30 széles, 80 magas függőleges szárral, a belső sarok 10 sugárral lekerekítve, a talpban egy 8-as, a szárban egy 10-es furattal, mindkettő a talp, illetve a szár közepén. A körvonalat egyetlen [`VONAL`](/docs/commands/line) paranccsal rajzolja meg, minden pontot az előzőhöz képesti elmozdulásként beírva, és a méretei mind a bal alsó sarokból indulnak.
 
 - **Feladat:** Kezdő · Gépészet · 2D
 - **Parancsok:** [`VONAL`](/docs/commands/line), [`LEKEREKÍT`](/docs/commands/fillet), [`KÖR`](/docs/commands/circle), [`MÉRETHOSSZ`](/docs/commands/dimlinear), [`MÉRETBVONAL`](/docs/commands/dimbaseline), [`MÉRETSUGÁR`](/docs/commands/dimradius), [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter)
@@ -40,7 +40,7 @@ Két kör a [`KÖR`](/docs/commands/circle) paranccsal, mindkettő az `Átmérő
 
 ### 4. Méretezze [#dimensions]
 
-A Méretek fólián a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs a `0,0` ponttól a talp furatáig, `80,10`, alul elhelyezve: 80. A [`MÉRETBVONAL`](/docs/commands/dimbaseline) parancs ugyanattól az első segédvonaltól folytatja: írja be a jobb oldali végpontot, `#100,0`, ahol a # az origótól mér, majd kétszer Enter a befejezéshez. Ugyanígy a bal oldalon felfelé, a felső furatig, majd a tetejéig, `#0,80`. A [`MÉRETSUGÁR`](/docs/commands/dimradius) parancs a lekerekítésen és a [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) parancs mindkét furaton befejezi a méretezést.
+A Méretek fólián a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs a `0,0` ponttól a talp furatáig, `80,10`, alul elhelyezve: 80. A [`MÉRETBVONAL`](/docs/commands/dimbaseline) parancs ugyanattól az első méretsegédvonaltól folytatja: írja be a jobb oldali végpontot, `#100,0`, ahol a # az origótól mér, majd a befejezéshez nyomja meg kétszer az Enter billentyűt. Ugyanígy a bal oldalon felfelé, a felső furatig, majd a tetejéig, `#0,80`. A [`MÉRETSUGÁR`](/docs/commands/dimradius) parancs a lekerekítésen és a [`MÉRETÁTMÉRŐ`](/docs/commands/dimdiameter) parancs mindkét furaton befejezi a méretezést.
 
 <Session name="exercises/l-bracket/dimensions" caption="4. Méretezze" />
 

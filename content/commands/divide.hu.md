@@ -6,7 +6,7 @@ figure: "PDMODE 3, hogy a pontok keresztként látsszanak, majd egy 5 részre os
 sourceHash: "6f3c52078466"
 ---
 
-A FELOSZT (DIVIDE) parancs egyenlő részekre osztva megjelöl egy objektumot. Válasszon ki egy vonalat, ívet, kört, ellipszist, elliptikus ívet, vonalláncot, 3D vonalláncot vagy spline-t, rákattintva vagy egy rajta lévő pontot beírva, majd adja meg a szakaszok számát 2 és 32767 között: a FELOSZT minden osztóhelyre egy pontobjektumot tesz, és véget ér. Az objektumot nem vágja el, az egyben marad. Egy 5 részre osztott nyitott objektum 4 pontot kap, a kezdőpontjától számítva; egy zárt 5-öt, köztük a kezdőpontját: a kör a 0°-os pontjától, az óramutató járásával ellentétesen, a zárt vonallánc az első csúcspontjától. A pontok az objektumon, annak magasságában fekszenek, az aktuális fólián, az aktuális színnel, vonaltípussal és vonalvastagsággal.
+A FELOSZT (DIVIDE) parancs egyenlő részekre osztva megjelöl egy objektumot. Válasszon ki egy vonalat, ívet, kört, ellipszist, elliptikus ívet, vonalláncot, 3D vonalláncot vagy spline-t, rákattintva vagy egy rajta lévő pontot beírva, majd adja meg a szakaszok számát 2 és 32 767 között: a FELOSZT minden osztóhelyre egy pontobjektumot tesz, és véget ér. Az objektumot nem vágja el, az egyben marad. Egy 5 részre osztott nyitott objektum 4 pontot kap, a kezdőpontjától számítva; egy zárt 5-öt, köztük a kezdőpontját: a kör a 0°-os pontjától, az óramutató járásával ellentétesen, a zárt vonallánc az első csúcspontjától. A pontok az objektumon, annak magasságában fekszenek, az aktuális fólián, az aktuális színnel, vonaltípussal és vonalvastagsággal.
 
 A pontok a rajz pontstílusa szerint jelennek meg, és az alapértelmezés egy pötty, amely elbújik a vonal alatt: előbb állítson be jól látható alakot a <Command id="PTYPE" /> paranccsal vagy a PDMODE változóval. A teljes felosztás egyetlen lépés, amelyet a <Command id="U" /> parancs visszavon, a pontjai pedig az Előző kijelölést alkotják, így azonnal törölhetők vagy mozgathatók. Bármely más objektumra, például szövegre vagy blokkreferenciára a válasz <Message id="cannotDivideObject" />, és a parancs véget ér. A FELOSZT parancs a Rajz eszközök Pontok legördülő listájából is indítható.
 
@@ -24,11 +24,11 @@ A csavarvonal, amelyet a MellowCAD még nem tud rajzolni. Az FKR síkjában nem 
 
 ### Mi az AutoCAD FELOSZT parancs angolul?
 
-DIVIDE. A magyar AutoCAD-ben a rövidítése `FE`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIVIDE` is; az angol `DIV` a magyar változatban nem működik.
+DIVIDE. A magyar AutoCAD-ben a rövidítése `FE`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIVIDE` is; az angol `DIV` a magyar változatban nem működik.
 
 ### Miért nem működik a FELOSZT parancs?
 
-Valószínűleg működik: a pontok ott vannak, pöttyökként a vonalon. Nyissa meg a <Command id="PTYPE" /> parancsot, és válasszon keresztet vagy kört, vagy írja be a PDMODE változót és a `3` értéket: a rajz összes pontja egyszerre megváltozik. A kiválasztásukhoz használja a Pont tárgyrasztert.
+Valószínűleg működik: a pontok ott vannak, pöttyökként a vonalon. Nyissa meg a <Command id="PTYPE" /> (`DPPTÍPUS`) parancsot, és válasszon keresztet vagy kört, vagy írja be a PDMODE változót és a `3` értéket: a rajz összes pontja egyszerre megváltozik. A kiválasztásukhoz használja a Pont tárgyrasztert (`PON`).
 
 ### Hogyan lehet egy vonalat egyenlő részekre osztani?
 

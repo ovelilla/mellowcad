@@ -5,15 +5,15 @@ figure: "60 × 40 × 25-ös ék két sarokpontból és magasságból, a teteje a
 sourceHash: "06fba2eeb7be"
 ---
 
-Az ÉK (WEDGE) parancs 3D ék szilárdtestet rajzol: olyan téglatestet, amelynek a teteje az egyik végétől a másikig lejt. Ugyanazt kérdezi, mint a <Command id="BOX" /> parancs: az első sarokpontot, a másik sarokpontot, majd a magasságot. A magas vég az első sarokpontnál van, és a lejtő az FKR X tengelye mentén a másik sarokpont oldala felé esik; a kisebb X koordinátájú sarokpont megfordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé mutat. A hossz, a szélesség és a magasság a <Command id="BOX" /> parancs alapértelmezései, amelyeket az Enter elfogad. Az ék az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
+Az ÉK (WEDGE) parancs 3D ék szilárdtestet rajzol: olyan téglatestet, amelynek a teteje az egyik végétől a másikig lejt. Ugyanazt kérdezi, mint a <Command id="BOX" /> parancs: az első sarokpontot, a másik sarokpontot, majd a magasságot. A magas vég az első sarokpontnál van, és a lejtő az FKR X tengelye mentén a másik sarokpont oldala felé esik; a kisebb X koordinátájú sarokpont megfordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé mutat. A hossz, a szélesség és a magasság a <Command id="BOX" /> parancs alapértékei, amelyeket az Enter elfogad. Az ék az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
 
-A <Command id="LIST" /> parancs megmutatja a helyzetét, hosszát, szélességét, magasságát és elforgatását, a Tulajdonságok palettán pedig ezek begépelhetők. A fogói ugyanazok, mint a <Command id="BOX" /> parancsé. Az <Command id="UNION" />, a <Command id="SUBTRACT" /> és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges. A <Command id="EXPLODE" /> parancs lapjaiból egy-egy lemezt készít.
+A <Command id="LIST" /> parancs megmutatja a helyzetét, hosszát, szélességét, magasságát és elforgatását, a Tulajdonságok palettán pedig ezek begépelhetők. A fogói ugyanazok, mint a <Command id="BOX" /> parancsé. Az <Command id="UNION" />, a <Command id="SUBTRACT" /> és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges. A <Command id="EXPLODE" /> parancs laponként egy-egy lemezzé bontja.
 
 ## Options
 
 ### Center
 
-Az első kérdésnél: a középpontot kéri, majd egy sarokpontot, vagy a <Keyword id="Cube" />, illetve a <Keyword id="Length" /> opciót. Az ék középpontja a megadott pontba kerül, magasságban is, a magas vége pedig a megadott sarokponttal szemben lesz.
+Az első promptnál: a középpontot kéri, majd egy sarokpontot, vagy a <Keyword id="Cube" />, illetve a <Keyword id="Length" /> opciót. Az ék középpontja a megadott pontba kerül, magasságban is, a magas vége pedig a megadott sarokponttal szemben lesz.
 
 ### Cube
 
@@ -35,7 +35,7 @@ Ugyanaz, ami a <Command id="BOX" /> parancsból hiányzik: Mozgatás, Forgatás,
 
 ### Mi az AutoCAD ÉK parancs angolul?
 
-WEDGE. A magyar AutoCAD-ben írja be az `ÉK` nevet vagy az `EK` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a `0,0`, a `60,40` és a `25` megrajzolja a munkamenet ékét. Az angol változat `WE` rövidítése a magyarban nem működik, a `_WEDGE` viszont az AutoCAD bármely nyelvi változatában igen.
+WEDGE. A magyar AutoCAD-ben a rövidítése `EK`: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a `0,0`, a `60,40` és a `25` megrajzolja a mintában látható éket. Az angol `WE` a magyar változatban nem működik; a teljes `ÉK` név igen, a `_WEDGE` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Merre lejt az ék?
 

@@ -4,14 +4,14 @@ metaTitle: "Távolság mérése az AutoCAD-ben: TÁVS (DIST)"
 description: "Távolság mérése az AutoCAD TÁVS (DIST, TÁ) parancsával: két pont távolsága a szögekkel és az X, Y, Z különbséggel, vagy pontsorozat hossza. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD TÁVS parancs angolul?","answer":"DIST. A magyar AutoCAD-ben a rövidítése TÁ: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a _DIST is; az angol DI a magyar változatban nem működik."},{"question":"Hogyan lehet távolságot mérni az AutoCAD-ben?","answer":"Írja be: TÁ, majd adja meg a két pontot, tárgyraszterrel, hogy pontosan az objektumok végpontjaira vagy középpontjaira essenek. A távolság a szöggel és a koordináta-különbségekkel együtt a parancssorba íródik ki."},{"question":"Hogyan lehet több szakasz teljes hosszát megmérni?","answer":"A második pontnál válassza a Több opciót, és adja meg a további pontokat: minden pontnál látszik az addigi távolság, az Enter pedig kiírja a teljes hosszt."},{"question":"Hogyan lehet 3D-ben távolságot mérni?","answer":"Adja meg a pontokat a Z koordinátájukkal együtt, vagy használjon tárgyrasztert az objektumokon, azok magasságában: a TÁVS parancs a valódi térbeli távolságot méri, és kiírja az XY síkkal bezárt szöget és a Z irányú különbséget."},{"question":"Miért mutat a TÁVS parancs kevesebb tizedesjegyet a szükségesnél?","answer":"A hosszakat a rajz pontosságával írja ki, ami itt új rajzban két tizedesjegy. A MÉRTEGYS parancsban többet is beállíthat, legfeljebb nyolcat."}]
+faq: [{"question":"Mi az AutoCAD TÁVS parancs angolul?","answer":"DIST. A magyar AutoCAD-ben a rövidítése TÁ: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a _DIST is; az angol DI a magyar változatban nem működik."},{"question":"Hogyan lehet távolságot mérni az AutoCAD-ben?","answer":"Írja be: TÁ, majd adja meg a két pontot, tárgyraszterrel, hogy pontosan az objektumok végpontjaira vagy középpontjaira essenek. A távolság a szöggel és a koordináta-különbségekkel együtt a parancssorba íródik ki."},{"question":"Hogyan lehet több szakasz teljes hosszát megmérni?","answer":"A második pontnál válassza a Több opciót, és adja meg a további pontokat: minden pontnál látszik az addigi távolság, az Enter pedig kiírja a teljes hosszt."},{"question":"Hogyan lehet 3D-ben távolságot mérni?","answer":"Adja meg a pontokat a Z koordinátájukkal együtt, vagy használjon tárgyrasztert az objektumokon, azok magasságában: a TÁVS parancs a valódi térbeli távolságot méri, és kiírja az XY síkkal bezárt szöget és a Z irányú különbséget."},{"question":"Miért mutat a TÁVS parancs kevesebb tizedesjegyet a szükségesnél?","answer":"A hosszakat a rajz pontosságával írja ki, ami itt új rajzban két tizedesjegy. A MÉRTEGYS parancsban többet is beállíthat, legfeljebb nyolcat."}]
 ---
 
 A TÁVS (DIST) parancs két pont távolságát méri. Kattintással, tárgyraszterrel vagy beírással adja meg az első és a második pontot, és a parancs kiírja a parancssorba a távolságot, az XY síkbeli szöget és az XY síkkal bezárt szöget, valamint az X, Y és Z irányú különbséget, majd véget ér. Minden pontot ott mér, ahol van, a Z koordinátájával együtt, így a távolság a valódi térbeli távolság. Az első pontnál az Enter az utoljára megadott pontból indul, a másodiknál pedig visszamér az elsőhöz. A számok a rajz pontosságát követik, a szögek az AUPREC változóét.
 
 - **Parancs:** `TÁVS`
 - **Angolul:** `DIST`, bármely nyelven `_DIST` formában beírva
-- **Álnevek:** `TÁ`
+- **Rövidítések:** `TÁ`
 - **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TÁ`, és nyomja meg az Enter billentyűt.
 
@@ -57,7 +57,7 @@ A GEOMMÉR (MEASUREGEOM) parancs, a szalag Mérés eszközei, amelyek a TÁVS pa
 
 ### Mi az AutoCAD TÁVS parancs angolul?
 
-DIST. A magyar AutoCAD-ben a rövidítése `TÁ`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIST` is; az angol `DI` a magyar változatban nem működik.
+DIST. A magyar AutoCAD-ben a rövidítése `TÁ`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIST` is; az angol `DI` a magyar változatban nem működik.
 
 ### Hogyan lehet távolságot mérni az AutoCAD-ben?
 

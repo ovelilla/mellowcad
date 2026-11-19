@@ -4,16 +4,16 @@ metaTitle: "3D vonallánc az AutoCAD-ben: 3DVLÁNC (3DPOLY)"
 description: "3D vonallánc az AutoCAD-ben a 3DVLÁNC (3DPOLY, 3V) paranccsal: egyenes szakaszok, minden pont saját Z-vel, Bezárás, Vissza, eltérés a VLÁNC parancstól."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD 3DVLÁNC parancs angolul, és mi a rövidítése?","answer":"Angolul 3DPOLY, a magyar AutoCAD-ben 3DVLÁNC: írja be a 3V rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol 3P a magyar AutoCAD-ben nem működik; a _3DPOLY az AutoCAD bármely nyelvén igen."},{"question":"Mi a különbség a VLÁNC és a 3DVLÁNC parancs között?","answer":"A VLÁNC egyetlen síkban fekszik, és lehetnek ívei és szélességei. A 3D vonalláncnak csak egyenes szakaszai vannak, de minden csúcspontja más magasságban lehet: csővezeték, egy út tengelyvonala, egy kábel."},{"question":"Hogyan lehet 3D vonalláncot rajzolni különböző magasságokban?","answer":"Minden pontot a Z koordinátájával együtt írjon be, x,y,z alakban, vagy raszterezzen a kívánt magasságban lévő objektumokra. Dinamikus bevitelnél az első utáni pont relatív: a 60,0,15 az előző ponttól 60-nal megy X irányban és 15-tel feljebb."},{"question":"Hogyan lehet egy 3D vonalláncot simává tenni?","answer":"Szerkessze a VLEDIT paranccsal, és válassza a Spline-görbe opciót: a csúcspontok által keretezett sima görbét kap. A Kisimít opció ismét egyenesekké alakítja."}]
+faq: [{"question":"Mi az AutoCAD 3DVLÁNC parancs angolul, és mi a rövidítése?","answer":"Angolul 3DPOLY, a magyar AutoCAD-ben 3DVLÁNC: írja be a 3V rövidítést, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol 3P a magyar AutoCAD-ben nem működik; a _3DPOLY az AutoCAD bármely nyelvén igen."},{"question":"Mi a különbség a VLÁNC és a 3DVLÁNC parancs között?","answer":"A VLÁNC egyetlen síkban fekszik, és lehetnek ívei és szélességei. A 3D vonalláncnak csak egyenes szakaszai vannak, de minden csúcspontja más magasságban lehet: csővezeték, egy út tengelyvonala, egy kábel."},{"question":"Hogyan lehet 3D vonalláncot rajzolni különböző magasságokban?","answer":"Minden pontot a Z koordinátájával együtt írjon be, x,y,z alakban, vagy fogja meg tárgyraszterrel a kívánt magasságban lévő objektumokat. Dinamikus bevitelnél az első utáni pont relatív: a 60,0,15 az előző ponttól 60-nal megy X irányban és 15-tel feljebb."},{"question":"Hogyan lehet egy 3D vonalláncot simává tenni?","answer":"Szerkessze a VLEDIT paranccsal, és válassza a Spline-görbe opciót: a csúcspontok által keretezett sima görbét kap. A Kisimít opció ismét egyenesekké alakítja."}]
 ---
 
-A 3DVLÁNC (3DPOLY) parancs 3D vonalláncot rajzol: egyenes szakaszokat olyan pontokon át, amelyeknek mind saját Z koordinátájuk van, egyetlen objektumként. Adja meg a kezdőpontot, majd minden szakasz végpontját, amíg az Enter be nem fejezi; még egy magában álló kezdőpont is megmarad, egycsúcsú vonalláncként. A kezdőpontnál az Enter billentyűt a parancs elutasítja: `Érvénytelen pont.`, mert nincs Folytatás opció, amely a VONAL parancsnak van. A Z-vel beírt pont megtartja azt, például `30,0,15`; a Z nélkül beírt vagy kattintással megadott pont a munkasík szintjén fekszik, egy objektumra raszterezett pont pedig az objektum ottani Z értékét veszi fel. A pontokat az aktuális FKR-ben olvassa.
+A 3DVLÁNC (3DPOLY) parancs 3D vonalláncot rajzol: egyenes szakaszokat olyan pontokon át, amelyeknek mind saját Z koordinátájuk van, egyetlen objektumként. Adja meg a kezdőpontot, majd minden szakasz végpontját, amíg az Enter be nem fejezi; még egy magában álló kezdőpont is megmarad, egycsúcsú vonalláncként. A kezdőpontnál az Enter billentyűt a parancs elutasítja: `Érvénytelen pont.`, mert nincs Folytatás opció, amely a VONAL parancsnak van. A Z-vel beírt pont megtartja azt, például `30,0,15`; a Z nélkül beírt vagy kattintással megadott pont a munkasík szintjén fekszik, a tárgyraszterrel egy objektumon fogott pont pedig az objektum ottani Z értékét veszi fel. A pontokat az aktuális FKR-ben olvassa.
 
 A [`VLÁNC`](/docs/commands/pline) paranccsal szemben nincs síkja, ívei, szélességei és vastagsága, és bármilyen vonaltípusa van, folytonos vonallal rajzolódik, bár a vonaltípusát megtartja. A teljes vonallánc egyetlen lépés, amelyet a `T` parancs visszavon; az Esc megtartja, amit már megrajzolt. A VLEDIT parancs rövidebb opciólistával szerkeszti, a Spline-görbe opciója pedig sima görbét illeszt rá.
 
 - **Parancs:** `3DVLÁNC`
 - **Angolul:** `3DPOLY`, bármely nyelven `_3DPOLY` formában beírva
-- **Álnevek:** `3V`
+- **Rövidítések:** `3V`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `3V`, és nyomja meg az Enter billentyűt.
 
@@ -35,7 +35,7 @@ Visszavonja az utolsó csúcspontot, és az azt megelőzőtől folytatja. Ha má
 
 ## Amit még nem tud [#missing]
 
-A görbével illesztett 3D vonallánc a Tulajdonságok paletta Illesztés/simítás sorában Nincs értéket mutat, ahol az AutoCAD Másodfokút vagy Harmadfokút ír, és ott nem is módosítható. Nem lehet sraffozás határa, sem a KIOSZTÚTVONAL útvonala, és a palettán nincs Anyag sora. A dinamikus bevitel a kezdőpontot egyetlen mezőben kéri, a Z-t egy második vessző után kell beírni, ahol az AutoCAD X, Y és Z mezőt mutat. A fogók rámutatáskor megjelenő menüi: Nyújtás, Töréspont hozzáadása, Töréspont eltávolítása és a többi.
+A görbével illesztett 3D vonallánc a Tulajdonságok paletta Illeszt/Simít sorában Nincs értéket mutat, ahol az AutoCAD Másodfokút vagy Harmadfokút ír, és ott nem is módosítható. Nem lehet sraffozás határa, sem a KIOSZTÚTVONAL útvonala, és a palettán nincs Anyag sora. A dinamikus bevitel a kezdőpontot egyetlen mezőben kéri, a Z-t egy második vessző után kell beírni, ahol az AutoCAD X, Y és Z mezőt mutat. A fogók rámutatáskor megjelenő menüi: Nyújtás, Töréspont hozzáadása, Töréspont eltávolítása és a többi.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dpoly--3p--es-3dpol--3p--pt-br-poli3d--p3--fr-poly3d--3p--it-3dpoli--3p--de-3dpoly--3dp--ru-3dплиния--3п--3-плиния--pl-3wplinia--3p--cs-3dkřivka--3k--hu-3dvlánc--3v)
 
@@ -51,7 +51,7 @@ A [`VLÁNC`](/docs/commands/pline) egyetlen síkban fekszik, és lehetnek ívei 
 
 ### Hogyan lehet 3D vonalláncot rajzolni különböző magasságokban?
 
-Minden pontot a Z koordinátájával együtt írjon be, `x,y,z` alakban, vagy raszterezzen a kívánt magasságban lévő objektumokra. Dinamikus bevitelnél az első utáni pont relatív: a `60,0,15` az előző ponttól 60-nal megy X irányban és 15-tel feljebb.
+Minden pontot a Z koordinátájával együtt írjon be, `x,y,z` alakban, vagy fogja meg tárgyraszterrel a kívánt magasságban lévő objektumokat. Dinamikus bevitelnél az első utáni pont relatív: a `60,0,15` az előző ponttól 60-nal megy X irányban és 15-tel feljebb.
 
 ### Hogyan lehet egy 3D vonalláncot simává tenni?
 

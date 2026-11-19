@@ -6,9 +6,9 @@ figure: "Kétszer méretezett téglalap: a felső éle a két sarkával, a jobb 
 sourceHash: "e48a0a6f18c9"
 ---
 
-A MÉRETHOSSZ (DIMLINEAR) parancs két pont távolságát méri az X vagy az Y tengely mentén, és méretként rajzolja meg: két segédvonal, egy méretvonal a nyílfejeivel és fölötte a mért érték. Meg kell adni az első és a második segédvonal kezdőpontját, majd a méretvonal helyét, és ahogy az AutoCAD-ben, az elhelyezés határozza meg az irányt: a két pont fölött vagy alatt vízszintesen mér, mellettük függőlegesen. Az első promptnál nyomja meg inkább az Enter billentyűt, és válasszon ki egy vonalat, ívet, vonalláncszakaszt vagy kört: a két végpontja, illetve a kör átmérője adja a kezdőpontokat. Ezután a parancssor kiírja a mért értéket, és a parancs véget ér.
+A MÉRETHOSSZ (DIMLINEAR) parancs két pont távolságát méri az X vagy az Y tengely mentén, és méretként rajzolja meg: két segédvonal, egy méretvonal a nyílfejeivel és fölötte a mért érték. Adja meg az első és a második segédvonal kezdőpontját, majd a méretvonal helyét; ahogy az AutoCAD-ben, az elhelyezés határozza meg az irányt: a két pont fölött vagy alatt vízszintesen mér, mellettük függőlegesen. Ehelyett az első promptnál nyomja meg az Enter billentyűt, és válasszon ki egy vonalat, ívet, vonalláncszakaszt vagy kört: a két végpontja, illetve a kör átmérője adja a kezdőpontokat. Ezután a parancssor kiírja a mért értéket, és a parancs véget ér.
 
-A méret az aktuális méretstílusban készül, új rajzban ez az ISO-25: tizedesvessző és záró nullák nélkül, ahogy az AutoCAD metrikus rajzai írják. A csak begépelve elérhető <Command id="DIMHORIZONTAL" />, <Command id="DIMVERTICAL" /> és <Command id="DIMROTATED" /> parancs nem más, mint egyetlen irányhoz kötött MÉRETHOSSZ parancs.
+A méret az aktuális méretstílusban készül, új rajzban ez az ISO-25: tizedesvesszővel, záró nullák nélkül, ahogy az AutoCAD metrikus rajzai írják. A csak begépelve elérhető <Command id="DIMHORIZONTAL" />, <Command id="DIMVERTICAL" /> és <Command id="DIMROTATED" /> parancs nem más, mint egyetlen irányhoz kötött MÉRETHOSSZ parancs.
 
 ## Options
 
@@ -34,13 +34,13 @@ A méretvonal szögét kéri, alapértelmezés szerint `0`, és a kezdőpontok t
 
 ## Missing
 
-Bekezdéses szöveg: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. A <Keyword id="Angle" /> opcióval megadott szögnél az AutoCAD a méretvonalra középre igazítja a szöveget; itt a vonal fölött marad, ahogy szög nélkül is. A méret nem asszociatív: nem követi a mért objektumot.
+A Bszöveg opció: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. A <Keyword id="Angle" /> opcióval megadott szögnél az AutoCAD a méretvonalra középre igazítja a szöveget; itt a vonal fölött marad, ahogy szög nélkül is. A méret nem asszociatív: nem követi a mért objektumot.
 
 ## Questions
 
 ### Mi az AutoCAD MÉRETHOSSZ parancs angolul?
 
-DIMLINEAR. A magyar AutoCAD-ben a rövidítése `MHO` vagy `MHOSZ`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMLINEAR` is; az angol `DLI` és `DIMLIN` a magyar változatban nem működik.
+DIMLINEAR. A magyar AutoCAD-ben a rövidítése `MHO` vagy `MHOSZ`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMLINEAR` is; az angol `DLI` és `DIMLIN` a magyar változatban nem működik.
 
 ### Melyek az AutoCAD méretezési parancsai?
 
@@ -48,7 +48,7 @@ DIMLINEAR. A magyar AutoCAD-ben a rövidítése `MHO` vagy `MHOSZ`: írja be, ma
 
 ### Miért nem követi a méret az objektumot, amikor módosítom?
 
-A MellowCAD méretei még nem asszociatívak, ahogy a <Message id="nonAssociativeDimension" /> üzenet is jelzi: a méret megtartja a kapott pontokat. Nyújtsa őket együtt: egyetlen <Command id="STRETCH" /> metsző ablakkal fogja be a mozgatott végpontot és a méret ott lévő kezdőpontját, és a mért érték újraszámolódik; vagy húzza a kezdőpont fogóját az új helyére.
+A MellowCAD méretei még nem asszociatívak, ahogy a <Message id="nonAssociativeDimension" /> üzenet is jelzi: a méret megtartja a kapott pontokat. Nyújtsa őket együtt: egyetlen <Command id="STRETCH" /> metszőablakkal fogja be a mozgatott végpontot és a méret ott lévő kezdőpontját, és a mért érték újraszámolódik; vagy húzza a kezdőpont fogóját az új helyére.
 
 ### Hogyan lehet módosítani a méretszöveg és a nyilak méretét?
 

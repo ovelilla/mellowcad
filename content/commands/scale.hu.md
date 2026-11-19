@@ -6,7 +6,7 @@ figure: "Egy alaplap és a furata egy másolaton léptékezve a Referencia opci�
 sourceHash: "005829bf17ad"
 ---
 
-A LÉPTÉK (SCALE) parancs egy helyben maradó bázispont körül nagyítja vagy kicsinyíti a kiválasztott objektumokat: a 2-es tényező megkétszerezi, a 0,5-ös a felére csökkenti őket, minden irányban egyformán. Válassza ki az objektumokat, jelölje ki a bázispontot, majd írja be a tényezőt, vagy mozgassa a kurzort, és kattintson: az objektumok követik. Ha ott semmit sem ír be, az Enter a legutóbb használt tényezővel léptékez. Minden futás egyetlen lépés, amelyet a Vissza visszavon.
+A LÉPTÉK (SCALE) parancs egy helyben maradó bázispont körül nagyítja vagy kicsinyíti a kiválasztott objektumokat: a 2-es tényező megkétszerezi, a 0,5-ös a felére csökkenti őket, minden irányban egyformán. Válassza ki az objektumokat, jelölje ki a bázispontot, majd írja be a tényezőt, vagy mozgassa a kurzort, és kattintson: az objektumok követik. Ha ott semmit sem ír be, az Enter a legutóbb használt tényezővel léptékez. Minden futás egyetlen lépésként vonható vissza.
 
 Mindent úgy léptékez, ahogy az AutoCAD: a sraffozás mintája a határvonalával együtt nő, a méret az új hosszát méri, a sík fölötti objektum pedig Z irányban is léptékeződik a bázispont körül.
 
@@ -14,7 +14,7 @@ Mindent úgy léptékez, ahogy az AutoCAD: a sraffozás mintája a határvonalá
 
 ### Copy
 
-Egy másolatot léptékez, az objektumokat pedig változatlanul hagyja: kiírja ezt: <Message id="scalingCopy" />, és újra bekéri a tényezőt, a <Keyword id="Copy" /> opciót továbbra is felkínálva.
+Egy másolatot léptékez, az objektumokat pedig változatlanul hagyja; kiírja: <Message id="scalingCopy" />, és újra bekéri a tényezőt, a <Keyword id="Copy" /> opciót továbbra is felkínálva.
 
 ### Reference
 
@@ -22,7 +22,7 @@ Bekér egy referenciahosszt, beírva vagy két kijelölt ponttal, majd azt a hos
 
 ## Missing
 
-A <Keyword id="Points" /> első vagy második pontjánál az Enter léptékezés nélkül befejezi a parancsot, ahol az AutoCAD a kurzor ottani értékével léptékez. A nagyon kicsi tényezőt szó nélkül alkalmazza, ahol az AutoCAD jelzi, hogy figyelmen kívül hagyja. A húzott objektumok úgy rajzolódnak, ahogy a <Command id="MOVE" /> húzza őket, csak a színükkel.
+A <Keyword id="Points" /> első vagy második pontjánál az Enter léptékezés nélkül befejezi a parancsot, míg az AutoCAD a kurzor ottani értékével léptékez. A nagyon kicsi tényezőt szó nélkül alkalmazza, míg az AutoCAD jelzi, hogy figyelmen kívül hagyja. A húzott objektumok úgy rajzolódnak, ahogy a <Command id="MOVE" /> húzza őket, csak a színükkel.
 
 ## Questions
 

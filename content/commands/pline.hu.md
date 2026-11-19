@@ -1,7 +1,7 @@
 ---
 title: "Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs"
 metaTitle: "Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs"
-description: "Vonallánc rajzolása az AutoCAD VLÁNC (PLINE, rövidítése VL) parancsával: vonalak és ívek egy objektumban, széLesség és Félszélesség, Hossz, Bezárás és Vissza."
+description: "Vonallánc rajzolása az AutoCAD VLÁNC (PLINE, rövidítése VL) parancsával: vonalak és ívek egy objektumban, Szélesség és Félszélesség, Hossz, Bezárás és Vissza."
 figure: "Egy vonal, egy érintő ív és egy vonal vissza, majd egy 10 széles, 0-ra elvékonyodó hegy: egyetlen vonallánc."
 sourceHash: "216b83656483"
 ---
@@ -60,7 +60,7 @@ A kezdő-, majd a végszélesség, mindkettő beírva vagy az utolsó csúcspont
 
 ## Missing
 
-PLINEGEN: az új vonallánc szakaszonként rakja le a vonaltípusát, mint PLINEGEN 0 esetén (a VLEDIT VTípus gen opciója egy-egy vonalláncra bekapcsolja). A széles szakaszon a szaggatott vonaltípus folytonosnak rajzolódik. A széles szakasz előnézete nem halványabb árnyalattal jelenik meg, és az ívprompt egy sorba íródik, ahol az AutoCAD kettőbe tördeli.
+PLINEGEN: az új vonallánc szakaszonként rakja le a vonaltípusát, mint PLINEGEN 0 esetén (a VLEDIT VTípus gen opciója egy-egy vonalláncra bekapcsolja). A széles szakaszon a szaggatott vonaltípus folytonosnak rajzolódik. A széles szakasz előnézete nem halványabb árnyalattal jelenik meg, és az ívprompt egy sorba íródik, míg az AutoCAD kettőbe tördeli.
 
 ## Questions
 
@@ -78,7 +78,7 @@ Egy korábbi VLÁNC parancsban megadott szélesség megmarad, és a következő 
 
 ### Hogyan lehet vonalakat vonallánccá egyesíteni?
 
-Futtassa az <Command id="JOIN" /> parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a <Command id="PEDIT" /> parancsot egy vonalon, válaszoljon <Keyword command="PEDIT" id="Yes" /> értékkel, hogy vonallánccá alakítsa, és fűzze hozzá a többit az <Keyword command="PEDIT" id="Join" /> opcióval.
+Futtassa az <Command id="JOIN" /> parancsot, és válasszon ki végpontjaikkal egymáshoz csatlakozó vonalakat, íveket és vonalláncokat: minden lánc egyetlen vonallánccá válik. Vagy futtassa a <Command id="PEDIT" /> parancsot egy vonalon, válassza az <Keyword command="PEDIT" id="Yes" /> opciót, hogy vonallánccá alakítsa, és fűzze hozzá a többit az <Keyword command="PEDIT" id="Join" /> opcióval.
 
 ### Hogyan lehet megtudni egy vonallánc területét vagy hosszát?
 

@@ -3,13 +3,13 @@ title: "AutoCAD SPLINE parancs"
 description: "Így működik az AutoCAD SPLINE (SPL) parancsa: görbe illesztési pontokon át vagy vezérlő csomópontokkal, csomópontok, fok, érintők, bezárás. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD SPLINE parancs magyarul?","answer":"A magyar AutoCAD-ben is SPLINE a neve. Írja be a SPLINE nevet vagy az SPL rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. A _SPLINE az AutoCAD bármely nyelvi változatában működik."},{"question":"Mi a különbség az Illesztés és a VCS között?","answer":"Az illesztett spline átmegy a kattintott pontokon, ezért akkor jó, ha a görbének érintenie kell őket. A VCS spline alakját a vezérlő csomópontjai adják, amelyeket csak megközelít, ezért szép, sima formához való. A választás az első kérdésnél a móDszer opcióval történik."},{"question":"Hogyan lehet a spline-t vonallánccá alakítani?","answer":"Indítsa el a VLEDIT parancsot, és jelölje ki a spline-t: ezt írja ki: „A választott objektum nem vonallánc”, és felajánlja az átalakítást, majd 0 és 99 közötti pontosságot kér, alapértelmezés szerint 10-et. A vonallánc rövid egyenes szakaszokkal követi a spline-t, többel, mint amennyit az AutoCAD készít."},{"question":"Hogyan lehet a vonalláncot spline-ná alakítani?","answer":"Illessze a vonalláncot a VLEDIT parancs Spline opciójával, majd indítsa el a SPLINE parancsot, és válassza az Objektum opciót: a vonalláncból ugyanilyen görbéjű spline lesz."},{"question":"Szétvethető a spline az AutoCAD-ben?","answer":"Nem: a SZÉTVET parancs nem fogadja el a spline-t, ahogy az AutoCAD sem. Ha darabokra bontaná, előbb alakítsa vonallánccá a VLEDIT paranccsal, majd azt vesse szét vonalakra."}]
+faq: [{"question":"Mi az AutoCAD SPLINE parancs magyarul?","answer":"A magyar AutoCAD-ben is SPLINE a neve, és a rövidítése is SPL, akárcsak az angolban: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. A _SPLINE az AutoCAD bármely nyelvi változatában működik."},{"question":"Mi a különbség az Illesztés és a VCS között?","answer":"Az illesztett spline átmegy a kattintott pontokon, ezért akkor jó, ha a görbének érintenie kell őket. A VCS spline alakját a vezérlő csomópontjai adják, amelyeket csak megközelít, ezért szép, sima formához való. A választás az első promptnál a móDszer opcióval történik."},{"question":"Hogyan lehet a spline-t vonallánccá alakítani?","answer":"Indítsa el a VLEDIT parancsot, és jelölje ki a spline-t: ezt írja ki: „A választott objektum nem vonallánc”, és felajánlja az átalakítást, majd 0 és 99 közötti pontosságot kér, alapértelmezés szerint 10-et. A vonallánc rövid egyenes szakaszokkal követi a spline-t, többel, mint amennyit az AutoCAD készít."},{"question":"Hogyan lehet a vonalláncot spline-ná alakítani?","answer":"Illessze a vonalláncot a VLEDIT parancs Spline opciójával, majd indítsa el a SPLINE parancsot, és válassza az Objektum opciót: a vonalláncból ugyanilyen görbéjű spline lesz."},{"question":"Szétvethető-e a spline az AutoCAD-ben?","answer":"Nem: a SZÉTVET parancs nem fogadja el a spline-t, ahogy az AutoCAD sem. Ha darabokra bontaná, előbb alakítsa vonallánccá a VLEDIT paranccsal, majd azt vesse szét vonalakra."}]
 ---
 
-A SPLINE parancs sima görbét rajzol, kétféleképpen: a megadott pontokon át (`Illesztés`, ez az alapértelmezés), vagy az elhelyezett vezérlő csomópontok felé húzva (`VCS`). Indításkor kiírja a beállításait, `Módszer=Illesztés   Csomópontok=Húr`, majd az első pontot kéri; ott az Enter billentyűt nem fogadja el, ahogy az AutoCAD sem. Minden további pont hajlít a görbén, az előnézet követi a kurzort, az Enter pedig befejezi. A pontok megadhatók kattintással, tárgyraszterrel vagy begépelve, a begépelt hossz a kurzor irányában mérődik, és a pont megtartja a Z koordinátáját, így a spline a térben emelkedhet is. Az Esc eldobja a görbét; az egész spline egyetlen lépés, amelyet a `T` parancs visszavon. A szalag Spline illesztés és Spline VCS gombja úgy indítja a SPLINE parancsot, hogy a módszer már ki van választva.
+A SPLINE parancs sima görbét rajzol, kétféleképpen: a megadott pontokon át (`Illesztés`, ez az alapérték), vagy az elhelyezett vezérlő csomópontok felé húzva (`VCS`). Indításkor kiírja a beállításait, `Módszer=Illesztés   Csomópontok=Húr`, majd az első pontot kéri; ott az Enter billentyűt nem fogadja el, ahogy az AutoCAD sem. Minden további pont hajlít a görbén, az előnézet követi a kurzort, az Enter pedig befejezi. A pontok megadhatók kattintással, tárgyraszterrel vagy begépelve, a begépelt hossz a kurzor irányában mérődik, és a pont megtartja a Z koordinátáját, így a spline a térben emelkedhet is. Az Esc eldobja a görbét; az egész spline egyetlen lépés, amelyet a `T` parancs visszavon. A szalag Spline illesztés és Spline VCS gombja úgy indítja a SPLINE parancsot, hogy a módszer már ki van választva.
 
 - **Parancs:** `SPLINE`
-- **Álnevek:** `SPL`
+- **Rövidítések:** `SPL`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SPL`, és nyomja meg az Enter billentyűt.
 
@@ -27,11 +27,11 @@ A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a p
 
 ### `cSomópontok` (`S`) [#knots]
 
-Azt adja meg, hogyan osztja el az illesztett spline a pontjait a görbe mentén: `Húr` (az alapértelmezés, a pontok távolsága szerint), `Négyzetgyök` (a távolság négyzetgyöke szerint) vagy `Egyenletes` (mind egyforma). Ugyanazokon a pontokon át mindegyik kissé más görbét ad.
+Azt adja meg, hogyan osztja el az illesztett spline a pontjait a görbe mentén: `Húr` (az alapérték, a pontok távolsága szerint), `Négyzetgyök` (a távolság négyzetgyöke szerint) vagy `Egyenletes` (mind egyforma). Ugyanazokon a pontokon át mindegyik kissé más görbét ad.
 
 ### `Fok` (`F`) [#degree]
 
-A VCS spline foka, 1-től (egyenes szakaszok a csomópontok között) 10-ig; a 3, az alapértelmezés, harmadfokú görbe. Ha kevesebb a csomópont, mint amennyit a fok megkíván, a görbe a lehető legmagasabb fokot kapja.
+A VCS spline foka, 1-től (egyenes szakaszok a csomópontok között) 10-ig; a 3, az alapérték, harmadfokú görbe. Ha kevesebb a csomópont, mint amennyit a fok megkíván, a görbe a lehető legmagasabb fokot kapja.
 
 ### `Objektum` (`O`) [#object]
 
@@ -55,7 +55,7 @@ A harmadik ponttól kezdve: a végét sima hurokban, sarok nélkül visszaköti 
 
 ## Amit még nem tud [#missing]
 
-Az illesztési tűrés: az illesztett spline mindig pontosan átmegy a pontjain, a Tűrés opció nem jelenik meg. Rajzolás közben a spline-hoz még nem lehet tárgyraszterrel kötni vagy követni, ahogy az AutoCAD-ben. Az Objektum opció mindig törli a vonalláncot (DELOBJ). Az elkészült spline-on nincs VPMEGJELENÍT és VPELREJT, és nincsenek fogómenük pont hozzáadására vagy eltávolítására; a Tulajdonságok paletta a pontjait szerkeszti, de a módszerét, fokát, csomópontjait, súlyait és bezártságát nem; a Gköz, a Mer és az Éri tárgyraszter nem köt hozzá. A SRAFFOZ parancs nem találja meg a spline-t határként, és a SIMÍT (BLEND) parancs még nem létezik.
+Az illesztési tűrés: az illesztett spline mindig pontosan átmegy a pontjain, a Tűréshatár opció nem jelenik meg. Rajzolás közben a spline-hoz még nem lehet tárgyraszterrel kötni vagy követni, ahogy az AutoCAD-ben. Az Objektum opció mindig törli a vonalláncot (DELOBJ). Az elkészült spline-on nincs VPMEGJELENÍT és VPELREJT, és nincsenek fogómenük pont hozzáadására vagy eltávolítására; a Tulajdonságok paletta a pontjait szerkeszti, de a módszerét, fokát, csomópontjait, súlyait és bezártságát nem; a Gköz, a Mer és az Éri tárgyraszter nem köt hozzá. A SRAFFOZ parancs nem találja meg a spline-t határként, és a SIMÍT (BLEND) parancs még nem létezik.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl--ru-сплайн--спл--pl-splajn--spl--cs-spline--spl--hu-spline--spl)
 
@@ -63,11 +63,11 @@ Az illesztési tűrés: az illesztett spline mindig pontosan átmegy a pontjain,
 
 ### Mi az AutoCAD SPLINE parancs magyarul?
 
-A magyar AutoCAD-ben is SPLINE a neve. Írja be a `SPLINE` nevet vagy az `SPL` rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. A `_SPLINE` az AutoCAD bármely nyelvi változatában működik.
+A magyar AutoCAD-ben is SPLINE a neve, és a rövidítése is `SPL`, akárcsak az angolban: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. A `_SPLINE` az AutoCAD bármely nyelvi változatában működik.
 
 ### Mi a különbség az Illesztés és a VCS között?
 
-Az illesztett spline átmegy a kattintott pontokon, ezért akkor jó, ha a görbének érintenie kell őket. A VCS spline alakját a vezérlő csomópontjai adják, amelyeket csak megközelít, ezért szép, sima formához való. A választás az első kérdésnél a `móDszer` opcióval történik.
+Az illesztett spline átmegy a kattintott pontokon, ezért akkor jó, ha a görbének érintenie kell őket. A VCS spline alakját a vezérlő csomópontjai adják, amelyeket csak megközelít, ezért szép, sima formához való. A választás az első promptnál a `móDszer` opcióval történik.
 
 ### Hogyan lehet a spline-t vonallánccá alakítani?
 
@@ -77,7 +77,7 @@ Indítsa el a [`VLEDIT`](/docs/commands/pedit) parancsot, és jelölje ki a spli
 
 Illessze a vonalláncot a [`VLEDIT`](/docs/commands/pedit) parancs Spline opciójával, majd indítsa el a SPLINE parancsot, és válassza az `Objektum` opciót: a vonalláncból ugyanilyen görbéjű spline lesz.
 
-### Szétvethető a spline az AutoCAD-ben?
+### Szétvethető-e a spline az AutoCAD-ben?
 
 Nem: a [`SZÉTVET`](/docs/commands/explode) parancs nem fogadja el a spline-t, ahogy az AutoCAD sem. Ha darabokra bontaná, előbb alakítsa vonallánccá a [`VLEDIT`](/docs/commands/pedit) paranccsal, majd azt vesse szét vonalakra.
 

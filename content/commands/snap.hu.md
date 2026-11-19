@@ -6,7 +6,7 @@ figure: "RASZTER 10 bekapcsolt hálóval, majd VONAL a pontok mellé kattintva: 
 sourceHash: "a1089484f2f1"
 ---
 
-A raszter mód pontrácshoz köti a kurzort: minden kattintás a rács legközelebbi pontjára kerül, így 10-es kiosztásnál a 13,7 helyre kattintva a pont 10,10 lesz. A rács az aktuális FKR-é, az origójából indul a tengelyei mentén. Az F9 billentyű be- és kikapcsolja a raszter módot, és kiírja: `<Raszter be>` vagy `<Raszter ki>`; ugyanezt teszi az állapotsoron lévő gombja is. Csak a kattintással megadott pontokat kerekíti: a begépelt koordinátát úgy veszi, ahogy beírták, és a tárgyraszter elsőbbséget élvez a ráccsal szemben. A háló (F7) saját rácsot rajzol, és akkor is mutatja, ha a raszter mód ki van kapcsolva.
+A raszter mód pontrácshoz köti a kurzort: minden kattintás a rács legközelebbi pontjára kerül, így 10-es kiosztásnál a 13,7 helyre kattintva a pont 10,10 lesz. A rács az aktuális FKR-é, az origójából indul a tengelyei mentén. Az F9 billentyű be- és kikapcsolja a raszter módot, és kiírja: `<Raszter Be>` vagy `<Raszter Ki>`; ugyanezt teszi az állapotsoron lévő gombja is. Csak a kattintással megadott pontokat kerekíti: a begépelt koordinátát úgy veszi, ahogy beírták, és a tárgyraszter elsőbbséget élvez a ráccsal szemben. A háló (F7) saját rácsot rajzol, és akkor is mutatja, ha a raszter mód ki van kapcsolva.
 
 A RASZTER (SNAP) parancs a kiosztást állítja be: írja be, vagy adjon meg két pontot ilyen távolságra egymástól, és a raszter mód ezzel a kiosztással X és Y irányban is bekapcsol. Az Enter változtatás nélkül kapcsolja be. A 0 vagy annál kisebb kiosztást ezzel az üzenettel utasítja vissza: <Message id="positiveNonzero" />. Aposztróffal begépelve (`'RASZTER`) egy másik parancson belül is működik. A raszter mód és a kiosztása a rajzzal együtt mentődik, és a <Command id="U" /> parancs visszavonja a RASZTER parancs beállítását.
 
@@ -24,17 +24,17 @@ Kikapcsolja a raszter módot; a kiosztás megmarad.
 
 ### Aspect
 
-Először a vízszintes, majd a függőleges kiosztást kéri, és bekapcsolja a raszter módot: a rács így nem négyzetes, hanem magasabb vagy szélesebb. A kérdés alapértelmezése ezután az <Keyword id="Aspect" /> opció, így az Enter újra ezeket kérdezi.
+Először a vízszintes, majd a függőleges kiosztást kéri, és bekapcsolja a raszter módot: a rács így nem négyzetes, hanem magasabb vagy szélesebb. A prompt alapértéke ezután az <Keyword id="Aspect" /> opció, így az Enter újra ezeket kérdezi.
 
 ## Missing
 
-A kérdésnél a Stílus opció (izometrikus raszter) és a Típus opció (háló vagy poláris): a típust az állapotsor menüje választja. A Korábbi opció, a rejtett elforgatás (SNAPANG) és a SNAPBASE. A negatív POLARDIST érték, amelynek az AutoCAD poláris rasztere az abszolút értékét veszi: −10 esetén 10-es lépésekben halad.
+A promptnál a Stílus opció (izometrikus raszter) és a Típus opció (háló vagy poláris): a típust az állapotsor menüje választja. A Korábbi opció, a rejtett elforgatás (SNAPANG) és a SNAPBASE. A negatív POLARDIST érték, amelynek az AutoCAD poláris rasztere az abszolút értékét veszi: −10 esetén 10-es lépésekben halad.
 
 ## Questions
 
 ### Mi az AutoCAD RASZTER parancs angolul?
 
-SNAP. Az F9 billentyű be- és kikapcsolja a raszter módot. A kiosztás beállításához írja be a `RASZTER` nevet vagy az `RA` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; az angol változat `SN` rövidítése a magyarban nem működik. A `_SNAP` az AutoCAD bármely nyelvi változatában működik.
+SNAP. Az F9 billentyű be- és kikapcsolja a raszter módot. A kiosztás beállításához a parancs rövidítése a magyar AutoCAD-ben `RA`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `SN` a magyar változatban nem működik; a teljes `RASZTER` név igen, a `_SNAP` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Mi a különbség a raszter és a tárgyraszter között?
 

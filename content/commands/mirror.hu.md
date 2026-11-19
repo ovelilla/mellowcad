@@ -6,7 +6,7 @@ figure: "Egy zárt körvonal függőleges tükrözési vonalra tükrözve, a for
 sourceHash: "fd4b7540311a"
 ---
 
-A TÜKRÖZ (MIRROR) parancs egy egyenesre tükrözi a kiválasztott objektumokat: válassza ki őket, adja meg a tükrözési vonal első és második pontját, majd döntse el, hogy törli-e a forrásobjektumokat. A tükörkép másolat, és az alapértelmezett Nem válasszal az eredetiek megmaradnak: így rajzolható meg egy szimmetrikus alkatrész a feléből. A két pontot az FKR síkjában veszi, így a bekapcsolt Orto móddal rajzolt tükrözési vonal egyenesen, vízszintesen vagy függőlegesen tükröz. Ahogy az AutoCAD-ben a MIRRTEXT alapértelmezett 0 értékénél, a szöveg a tükörképben is balról jobbra olvasható marad, a sraffozás pedig megtartja a mintája szögét. A futás egyetlen lépés, amelyet a Vissza visszavon.
+A TÜKRÖZ (MIRROR) parancs egy egyenesre tükrözi a kiválasztott objektumokat: válassza ki őket, adja meg a tükrözési vonal első és második pontját, majd döntse el, hogy törli-e a forrásobjektumokat. A tükörkép másolat, és az alapértelmezett Nem válasszal az eredetiek megmaradnak: így rajzolható meg egy szimmetrikus alkatrész a feléből. A két pontot az FKR síkjában veszi, így a bekapcsolt Orto móddal rajzolt tükrözési vonal egyenesen, vízszintesen vagy függőlegesen tükröz. Ahogy az AutoCAD-ben a MIRRTEXT alapértelmezett 0 értékénél, a szöveg a tükörképben is balról jobbra olvasható marad, a sraffozás pedig megtartja a mintája szögét. A futás egyetlen lépésként vonható vissza.
 
 ## Options
 
@@ -34,7 +34,7 @@ Semmit sem kell tennie: ahogy az AutoCAD-ben a MIRRTEXT 0 értékénél, a tükr
 
 ### Hogyan lehet tükrözni és közben törölni az eredetit?
 
-Válaszoljon <Keyword id="Yes" /> értékkel, amikor a TÜKRÖZ parancs megkérdezi, hogy törölje-e a forrásobjektumokat.
+Válassza az <Keyword id="Yes" /> opciót, amikor a TÜKRÖZ parancs megkérdezi, hogy törölje-e a forrásobjektumokat.
 
 ### Hogyan lehet vízszintesen vagy függőlegesen tükrözni?
 

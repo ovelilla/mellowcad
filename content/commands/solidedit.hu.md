@@ -7,13 +7,13 @@ sourceHash: "775cdc271d4f"
 
 A SZTESTSZERKESZT (SOLIDEDIT) parancs a lapjain keresztül szerkeszti a 3D szilárdtestet. Először kiírja, hogy a program ellenőrzi-e az egyes szerkesztéseket, majd megkérdezi, mit szerkesszen: <Keyword id="Face" />, ezután a lapszerkesztési opciót, aztán a lapokat, végül azt, amire az opciónak szüksége van. Minden szerkesztés azonnal megtörténik, és a lapszerkesztési opciók újra megjelennek, így egy futtatással több szerkesztés is elvégezhető; a <Keyword id="eXit" /> vagy az Enter előbb a lapszerkesztési opciókból lép ki, majd a parancsból. A szomszédos lapok követik a szerkesztett lapot: ha egy téglatest felső lapját feljebb mozgatja, az oldallapjai megnyúlnak, hogy találkozzanak vele.
 
-A szilárdtest megtartja a fóliáját és a tulajdonságait, de elveszíti azt, amiből készült: a téglatest többé nem téglatest. Az egész futtatás egyetlen visszavonási lépés, és a parancs <Keyword id="Undo" /> opciója a futtatáson belül egyenként vonja vissza a szerkesztéseket. A `Parancs:` kérdésnél megnyomott Enter az első kérdéstől kezdve újra elindítja. A szalag Szilárdtestszerkesztés panelének lapgombjai közvetlenül indítják az egyes lapszerkesztési opciókat. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+A szilárdtest megtartja a fóliáját és a tulajdonságait, de elveszíti azt, amiből készült: a téglatest többé nem téglatest. Az egész futtatás egyetlen visszavonási lépés, és a parancs <Keyword id="Undo" /> opciója a futtatáson belül egyenként vonja vissza a szerkesztéseket. A `Parancs:` promptnál megnyomott Enter az első kérdéstől kezdve újra elindítja. A szalag Szilárdtestszerkesztés panelének lapgombjai közvetlenül indítják az egyes lapszerkesztési opciókat. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 ## Options
 
 ### Face
 
-A lapszerkesztési opciók. Mindegyik lapokat kér, amíg meg nem nyomja az Enter billentyűt: egy kattintás vagy egy begépelt pont az alatta lévő, Önhöz legközelebbi lapot veszi, vagy az ott lévő él két lapját, egy már kijelölt lap helyett pedig a mögötte lévőt. Ha már van kijelölt lap, az <Keyword id="ALL" /> a szilárdtest összes lapját kijelöli; az <Keyword id="Remove" /> ehelyett kivesz lapokat a halmazból, a <Keyword id="Undo" /> pedig visszavonja az utolsó kijelölést. Ha a kattintás alatt nincs semmi, ez az üzenet jelenik meg: <Message id="noSolidsDetected" />. Egyszerre csak egy szilárdtest lapjai jelölhetők ki.
+A lapszerkesztési opciók. Mindegyik lapokat kér, amíg meg nem nyomja az Enter billentyűt: egy kattintás vagy egy begépelt pont az alatta lévő, a nézőhöz legközelebbi lapot veszi, vagy az ott lévő él két lapját, egy már kijelölt lap helyett pedig a mögötte lévőt. Ha már van kijelölt lap, a <Keyword id="ALL" /> a szilárdtest összes lapját kijelöli; az <Keyword id="Remove" /> ehelyett kivesz lapokat a halmazból, a <Keyword id="Undo" /> pedig visszavonja az utolsó kijelölést. Ha a kattintás alatt nincs semmi, ez az üzenet jelenik meg: <Message id="noSolidsDetected" />. Egyszerre csak egy szilárdtest lapjai jelölhetők ki.
 
 ### Extrude
 
@@ -59,11 +59,11 @@ Az <Keyword id="Edge" /> és a <Keyword id="Body" />, valamint a lapok <Keyword 
 
 ### Hogyan lehet 3D testet szerkeszteni az AutoCAD-ben?
 
-Indítsa el a SZTESTSZERKESZT parancsot, válassza a <Keyword id="Face" /> opciót, majd azt, amit tenni szeretne: a <Keyword id="Extrude" /> vagy a <Keyword id="Move" /> opcióval magasabbá teheti a testet, a <Keyword id="Delete" /> opcióval betömhet egy furatot, a <Keyword id="Taper" /> opcióval megdöntheti az egyik oldalát. Jelölje ki a lapokat, nyomja meg az Enter billentyűt, és válaszoljon az opció kérdéseire. Gyors toláshoz vagy húzáshoz a <Command id="PRESSPULL" /> parancs is mozgat lapot.
+Indítsa el a SZTESTSZERKESZT parancsot, válassza a <Keyword id="Face" /> opciót, majd azt, amit tenni szeretne: a <Keyword id="Extrude" /> vagy a <Keyword id="Move" /> opcióval magasabbá teheti a testet, a <Keyword id="Delete" /> opcióval betömhet egy furatot, a <Keyword id="Taper" /> opcióval megdöntheti az egyik oldalát. Jelölje ki a lapokat, nyomja meg az Enter billentyűt, és válaszoljon az opció promptjaira. Gyors toláshoz vagy húzáshoz a <Command id="PRESSPULL" /> parancs is mozgat lapot.
 
 ### Hogyan lehet kihúzni egy 3D szilárdtest lapját?
 
-SZTESTSZERKESZT, <Keyword id="Face" />, <Keyword id="Extrude" />, jelölje ki a lapot, és nyomja meg az Enter billentyűt, majd adja meg a magasságot és a szűkítési szöget: a munkamenet `15` és `15` értéke csonka gúlát emel a téglatest tetejére.
+SZTESTSZERKESZT, <Keyword id="Face" />, <Keyword id="Extrude" />, jelölje ki a lapot, és nyomja meg az Enter billentyűt, majd adja meg a magasságot és a szűkítési szöget: a mintában szereplő `15` és `15` csonka gúlát emel a téglatest tetejére.
 
 ### Hogyan lehet eltüntetni egy furatot a szilárdtestből?
 

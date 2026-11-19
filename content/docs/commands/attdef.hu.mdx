@@ -12,7 +12,7 @@ Az ATTDEF parancs attribútumot definiál: egy címkét, egy promptot és egy al
 Az AutoCAD ATTDEF parancsa az Attribútum definiálása párbeszédpanelt nyitja meg, amely a MellowCAD-ben nincs: itt az ATTDEF a parancssorban azt kérdezi, amit a `-ATTDEF`, ahogy az AutoCAD konzolja. Kiírja az aktuális módokat, és bekéri, melyiket módosítsa, amíg az Enter tovább nem lép. Ezután a címke következik: szóköz nélkül, mert a szóköz lezárja, a kisbetűkből pedig nagybetűk lesznek; a magában álló Enter üzenete `A címke nem lehet üres`. Utána a prompt, amellyel a [`BEILL`](/docs/commands/insert) parancs az értéket kérni fogja – az Enter a címkét veszi át –, majd az alapértelmezett érték. Végül a szöveg helye, a [`SZÖVEG`](/docs/commands/text) parancs kérdéseivel: kezdőpont, magasság és elforgatás. A magasság és az igazítás a SZÖVEG paranccsal közös, mindkét irányban. A kezdőpontnál adott Enter a definíciót az utoljára definiált alá teszi egy sorral, annak magasságával, elforgatásával, stílusával és igazításával, így egy blokk attribútumai egymás alá sorakoznak.
 
 - **Parancs:** `ATTDEF`
-- **Álnevek:** `ATT`, `DPATTDEF`
+- **Rövidítések:** `ATT`, `DPATTDEF`
 - **Panel:** [Rendszerezés](/docs/commands#organize)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ATT`, és nyomja meg az Enter billentyűt.
 

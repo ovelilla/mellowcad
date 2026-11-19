@@ -1,18 +1,18 @@
 ---
 title: "AutoCAD SZEL (SLICE) parancs"
-description: "Így működik az AutoCAD SZEL (SLICE, SL) parancsa: szilárdtestek, sík két ponttal, 3 ponttal, objektummal vagy az FKR-rel, majd a megtartott oldal. Próbálja ki!"
+description: "Az AutoCAD SZEL (SLICE, rövidítése SL) parancsa: szilárdtestek, sík két ponttal, 3 ponttal, objektummal vagy az FKR-rel, majd a megtartott oldal. Próbálja ki!"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD SZEL parancs angolul?","answer":"SLICE. A magyar AutoCAD-ben írja be a SZEL nevet vagy az SL rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. Az aláhúzásjeles angol név, a _SLICE, az AutoCAD bármely nyelvi változatában működik."},{"question":"Hogyan lehet 3D testet elvágni az AutoCAD-ben?","answer":"Jelölje ki a szilárdtestet, és nyomja meg az Enter billentyűt. Adjon meg két pontot, amelyen a vágás átmegy: a sík függőlegesen áll rajtuk át. Ezután adjon meg egy pontot a megtartandó oldalon, vagy nyomja meg az Enter billentyűt, hogy mindkét fél megmaradjon, és az egyiket tolja odébb a MOZGAT paranccsal. Ferde vágáshoz válassza a 3pont opciót, és adjon meg három pontot a síkon."},{"question":"Elvágja a SZEL parancs a vonalakat vagy a 2D objektumokat?","answer":"Nem: a SZEL parancs 3D szilárdtesteket vág, a vonalakat, lemezeket és blokkokat kihagyja; ha a halmazban csak ilyenek vannak, a parancs befejeződik. 2D objektumok vágására a METSZ vagy a MEGTÖR parancsot használja. Az AutoCAD-ben a SZEL parancs felületeket és hálókat is vág, ezek azonban a MellowCAD-ben még nincsenek meg."},{"question":"Miért írja a SZEL parancs, hogy a szelősík nem metszi a szilárdtestet?","answer":"Mert a sík elkerüli, vagy csak egy lapján, egy éle mentén vagy egy csúcsában érinti: az ilyen szilárdtest egészben marad. Ellenőrizze, hogyan adta meg a síkot. Két ponttal megadva függőleges, így a szilárdtest felső lapján felvett két pont függőlegesen vágja el, nem vízszintesen; vízszintes vágáshoz válassza az XY opciót, és adjon meg egy pontot a vágás magasságában."}]
+faq: [{"question":"Mi az AutoCAD SZEL parancs angolul?","answer":"SLICE. A magyar AutoCAD-ben a rövidítése SL, akárcsak az angolban: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes SZEL név is működik, a _SLICE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet 3D testet elvágni az AutoCAD-ben?","answer":"Jelölje ki a szilárdtestet, és nyomja meg az Enter billentyűt. Adjon meg két pontot, amelyen a vágás átmegy: a sík függőlegesen áll rajtuk át. Ezután adjon meg egy pontot a megtartandó oldalon, vagy nyomja meg az Enter billentyűt, hogy mindkét fél megmaradjon, és az egyiket tolja odébb a MOZGAT paranccsal. Ferde vágáshoz válassza a 3pont opciót, és adjon meg három pontot a síkon."},{"question":"Elvágja-e a SZEL parancs a vonalakat vagy a 2D objektumokat?","answer":"Nem: a SZEL parancs 3D szilárdtesteket vág, a vonalakat, lemezeket és blokkokat kihagyja; ha a halmazban csak ilyenek vannak, a parancs befejeződik. 2D objektumok vágására a METSZ vagy a MEGTÖR parancsot használja. Az AutoCAD-ben a SZEL parancs felületeket és hálókat is vág, ezek azonban a MellowCAD-ben még nincsenek meg."},{"question":"Miért írja a SZEL parancs, hogy a szelősík nem metszi a szilárdtestet?","answer":"Mert a sík elkerüli, vagy csak egy lapján, egy éle mentén vagy egy csúcsában érinti: az ilyen szilárdtest egészben marad. Ellenőrizze, hogyan adta meg a síkot. Két ponttal megadva függőleges, így a szilárdtest felső lapján felvett két pont függőlegesen vágja el, nem vízszintesen; vízszintes vágáshoz válassza az XY opciót, és adjon meg egy pontot a vágás magasságában."}]
 ---
 
 A SZEL (SLICE) parancs síkkal elvágja a 3D szilárdtesteket, és megtartja a sík egyik oldalán lévő részt, vagy mindkét részt két külön szilárdtestként. Először a szelni kívánt szilárdtesteket kéri, amíg meg nem nyomja az Enter billentyűt: ahogy az AutoCAD 2027-ben, az előre kijelölt halmazt elveti, és újra rákérdez, ami pedig nem szilárdtest, azt kihagyja. Ezután jön a sík: alapértelmezés szerint két pontot kell megadni, és a sík függőlegesen áll rajtuk át, merőlegesen az FKR XY síkjára; az opciókkal másképp is megadható. Végül a megtartandó oldal egy pontja következik, vagy az Enter, amely mindkét részt megtartja.
 
-A halmaz minden szilárdtestét ugyanaz a sík vágja el. Amelyiket a sík elkerüli, vagy csak egy lapján, egy éle mentén vagy egy csúcsában érinti, az változatlan marad, és a SZEL parancs ezt jelzi is. Az elvágott szilárdtest már nem téglatest vagy henger, és nincs története. Az egész parancs egyetlen visszavonási lépés. A MellowCAD 3D-s része egyelőre részleges: szilárdtestek vannak, felületek és hálók még nincsenek.
+A halmaz minden szilárdtestét ugyanaz a sík vágja el. Amelyiket a sík elkerüli, vagy csak egy lapján, egy éle mentén vagy egy csúcsában érinti, az változatlan marad, és a SZEL parancs ezt jelzi is. Az elvágott szilárdtest már nem téglatest vagy henger, és nincsenek előzményei. Az egész parancs egyetlen visszavonási lépés. A MellowCAD 3D-je egyelőre részleges: szilárdtestek vannak, felületek és hálók még nincsenek.
 
 - **Parancs:** `SZEL`
 - **Angolul:** `SLICE`, bármely nyelven `_SLICE` formában beírva
-- **Álnevek:** `SL`
+- **Rövidítések:** `SL`
 - **Panel:** [Módosítás](/docs/commands#modify)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SL`, és nyomja meg az Enter billentyűt.
 
@@ -54,11 +54,11 @@ Az FKR ZX síkja a megadott ponton át; az Enter az FKR origóját veszi.
 
 ### `3pont` (`3`) [#3points]
 
-Három pont a síkon, amely így tetszőleges irányba dőlhet. Ez az első kérdés alapértelmezése, ezért ott az Enter ezt választja. A második pontnak különböznie kell az elsőtől, a harmadik pedig nem eshet a kettőn átmenő egyenesre.
+Három pont a síkon, amely így tetszőleges irányba dőlhet. Ez az első prompt alapértéke, ezért ott az Enter ezt választja. A második pontnak különböznie kell az elsőtől, a harmadik pedig nem eshet a kettőn átmenő egyenesre.
 
 ### `miNdkét oldal megtartása` (`N`) [#both]
 
-Az oldalt kérő kérdésnél jelenik meg, és ott ez az alapértelmezés, így az Enter ezt választja: mindkét rész megmarad. Az egyiket az eredeti szilárdtest tartja meg, a másikból új szilárdtest lesz ugyanazzal a fóliával, színnel, vonaltípussal és vonalvastagsággal, nem az aktuálisakkal. Ha ehelyett egy pontot ad meg, a parancs azt az oldalt tartja meg, amelyen a pont van, a másikat eldobja; a síkra eső pontot nem fogadja el.
+Az oldalt kérő promptnál jelenik meg, és ott ez az alapérték, így az Enter ezt választja: mindkét rész megmarad. Az egyiket az eredeti szilárdtest tartja meg, a másikból új szilárdtest lesz ugyanazzal a fóliával, színnel, vonaltípussal és vonalvastagsággal, nem az aktuálisakkal. Ha ehelyett egy pontot ad meg, a parancs azt az oldalt tartja meg, amelyen a pont van, a másikat eldobja; a síkra eső pontot nem fogadja el.
 
 ## Amit még nem tud [#missing]
 
@@ -70,13 +70,13 @@ A felületek, vágósíkként és szelendő objektumként is, valamint a hálók
 
 ### Mi az AutoCAD SZEL parancs angolul?
 
-SLICE. A magyar AutoCAD-ben írja be a `SZEL` nevet vagy az `SL` rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt. Az aláhúzásjeles angol név, a `_SLICE`, az AutoCAD bármely nyelvi változatában működik.
+SLICE. A magyar AutoCAD-ben a rövidítése `SL`, akárcsak az angolban: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes `SZEL` név is működik, a `_SLICE` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Hogyan lehet 3D testet elvágni az AutoCAD-ben?
 
 Jelölje ki a szilárdtestet, és nyomja meg az Enter billentyűt. Adjon meg két pontot, amelyen a vágás átmegy: a sík függőlegesen áll rajtuk át. Ezután adjon meg egy pontot a megtartandó oldalon, vagy nyomja meg az Enter billentyűt, hogy mindkét fél megmaradjon, és az egyiket tolja odébb a [`MOZGAT`](/docs/commands/move) paranccsal. Ferde vágáshoz válassza a `3pont` opciót, és adjon meg három pontot a síkon.
 
-### Elvágja a SZEL parancs a vonalakat vagy a 2D objektumokat?
+### Elvágja-e a SZEL parancs a vonalakat vagy a 2D objektumokat?
 
 Nem: a SZEL parancs 3D szilárdtesteket vág, a vonalakat, lemezeket és blokkokat kihagyja; ha a halmazban csak ilyenek vannak, a parancs befejeződik. 2D objektumok vágására a [`METSZ`](/docs/commands/trim) vagy a [`MEGTÖR`](/docs/commands/break) parancsot használja. Az AutoCAD-ben a SZEL parancs felületeket és hálókat is vág, ezek azonban a MellowCAD-ben még nincsenek meg.
 

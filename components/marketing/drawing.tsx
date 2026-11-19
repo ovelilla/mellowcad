@@ -24,10 +24,10 @@ export function Drawing({
   className?: string
 }) {
   return (
-    // A drawing never mirrors: its text is anchored left to right too.
+    // A drawing never mirrors: marketing.css keeps an SVG left to right on a
+    // right-to-left page, and the engine anchors each text so.
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      direction="ltr"
       role="img"
       className={cn("block h-auto w-full", className)}
       dangerouslySetInnerHTML={{

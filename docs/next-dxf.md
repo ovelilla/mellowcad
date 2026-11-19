@@ -16,8 +16,9 @@
 > (`docs/next-seo.md`, L8), hecho y publicado el 17/11; y los degradados (el punto 6b), hechos
 > y publicados el 17/11, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
 > punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148; siguiente, por orden del
-> dueño, lo que quede del punto 7 (WIPEOUT, IMAGE, TABLE…), y después otro idioma (el húngaro),
-> alternando, una sesión cada vez.
+> dueño, lo que quede del punto 7 (WIPEOUT, IMAGE, TABLE…), después de que el húngaro
+> (`docs/next-seo.md`, L8) se hiciera el 19/11, y después otro idioma, alternando, una sesión cada
+> vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo

@@ -6,7 +6,7 @@ figure: "Egy kör 50-nel jobbra mozgatva: kiválasztva, a középpontja a bázis
 sourceHash: "753ca38448bf"
 ---
 
-A MOZGAT (MOVE) parancs a kiválasztott objektumokat egyik helyről a másikra viszi: válassza ki őket, adjon meg egy bázispontot, majd egy második pontot, és az objektumok az elsőtől a másodikig mért távolsággal és irányban elmozdulnak. Más nem változik rajtuk. Ahogy az AutoCAD-ben, a parancs előtt kiválasztott objektumokat mozgatja, a pontot meg lehet mutatni, tárgyraszterrel megfogni vagy beírni, és amíg a második pontot választja, a kiválasztás a kurzort követi, egy vonallal a bázisponttól. A mozgatás egyetlen lépés, amelyet a Vissza visszavon.
+A MOZGAT (MOVE) parancs a kiválasztott objektumokat egyik helyről a másikra viszi: válassza ki őket, adjon meg egy bázispontot, majd egy második pontot, és az objektumok az elsőtől a másodikig mért távolsággal és irányban elmozdulnak. Más nem változik rajtuk. Ahogy az AutoCAD-ben, a parancs előtt kiválasztott objektumokat mozgatja, a pontot meg lehet mutatni, tárgyraszterrel megfogni vagy beírni, és amíg a második pontot választja, a kiválasztás a kurzort követi, egy vonallal a bázisponttól. A mozgatás egyetlen lépésként vonható vissza.
 
 ## Options
 
@@ -26,11 +26,11 @@ MOVE. A magyar AutoCAD-ben a rövidítése `MO`: írja be, majd nyomja meg az En
 
 ### Hogyan lehet egy objektumot adott távolsággal elmozgatni?
 
-Adja meg a bázispontot, majd második pontként írja be az elmozdulást: az `50,0` 50-nel mozgat X irányban. Bekapcsolt dinamikus bevitelnél, ahogy a program indul, az első utáni pont ahhoz képest relatív, ezért az előzmények `@50,0` formában írják. Vagy mutasson a kurzorral a kívánt irányba, Orto móddal vagy poláris követéssel, és csak a távolságot írja be.
+Adja meg a bázispontot, majd második pontként írja be az elmozdulást: az `50,0` 50-nel mozgat X irányban. Bekapcsolt dinamikus bevitelnél (induláskor be van kapcsolva) az első utáni pont ahhoz képest relatív, ezért az előzmények `@50,0` formában írják. Vagy mutasson a kurzorral a kívánt irányba, Orto móddal vagy poláris követéssel, és csak a távolságot írja be.
 
 ### Hogyan lehet objektumokat felfelé mozgatni 3D-ben?
 
-Adjon Z értéket az elmozdulásnak: a második pontként vagy <Keyword id="Displacement" /> értékként megadott `0,0,5` 5-tel emeli meg a kiválasztást. A Z nélkül beírt pont az aktuális szinten fekszik.
+Adjon Z értéket az elmozdulásnak: a második pontként vagy az <Keyword id="Displacement" /> opciónál megadott `0,0,5` 5-tel emeli meg a kiválasztást. A Z nélkül beírt pont az aktuális szinten fekszik.
 
 ### Mi a különbség a MOZGAT és a NYÚJT (STRETCH) parancs között?
 

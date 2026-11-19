@@ -4,7 +4,7 @@ metaTitle: "AutoCAD TISZTÍT (PURGE): nem használt blokkok"
 description: "Az AutoCAD TISZTÍT (PURGE, rövidítése TT) parancsa törli a nem használt blokkokat és vonaltípusokat, név szerint vagy egyszerre, ellenőrzéssel vagy anélkül."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD TISZTÍT parancs angolul?","answer":"PURGE. A magyar AutoCAD-ben a rövidítése TT: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A -TT a -TISZTÍT, a parancssori változat, amelyet itt a TISZTÍT is futtat. Az angol PU a magyar változatban nem működik; a _PURGE az AutoCAD bármely nyelvi változatában igen."},{"question":"Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?","answer":"Írja be: TT, válassza a Blokk opciót, nyomja meg az Enter billentyűt minden névhez, és válaszoljon Nem értékkel, hogy mindet egyenkénti rákérdezés nélkül törölje."},{"question":"Miért nem lehet egy blokkot kitisztítani?","answer":"Mert használatban van: egy referencia elhelyezi a rajzban, vagy egy használatban lévő blokk tartalmazza, akár több szinten át beágyazva. Törölje a referenciáit, vagy bontsa szét az őt tartalmazó blokkokat, és a TISZTÍT már törölheti."},{"question":"Hogyan lehet kitisztítani a fóliákat?","answer":"Az AutoCAD-ben a TISZTÍT parancs Fóliák típusával. Itt ez még nincs meg, a TISZTÍT itt blokkokat és vonaltípusokat tisztít; egy üres fóliát helyette a Fóliatulajdonság-kezelőben törölhet."}]
+faq: [{"question":"Mi az AutoCAD TISZTÍT parancs angolul?","answer":"PURGE. A magyar AutoCAD-ben a rövidítése TT: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A -TT a -TISZTÍT, a parancssori változat, amelyet itt a TISZTÍT is futtat. Az angol PU a magyar változatban nem működik; a _PURGE az AutoCAD bármely nyelvi változatában igen."},{"question":"Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?","answer":"Írja be: TT, válassza a Blokk opciót, nyomja meg az Enter billentyűt minden névhez, és válassza a Nem opciót, hogy mindet egyenkénti rákérdezés nélkül törölje."},{"question":"Miért nem lehet egy blokkot kitisztítani?","answer":"Mert használatban van: egy referencia elhelyezi a rajzban, vagy egy használatban lévő blokk tartalmazza, akár több szinten át beágyazva. Törölje a referenciáit, vagy bontsa szét az őt tartalmazó blokkokat, és a TISZTÍT már törölheti."},{"question":"Hogyan lehet kitisztítani a fóliákat?","answer":"Az AutoCAD-ben a TISZTÍT parancs Fóliák típusával. Itt ez még nincs meg, a TISZTÍT itt blokkokat és vonaltípusokat tisztít; egy üres fóliát helyette a Fóliatulajdonság-kezelőben törölhet."}]
 ---
 
 A TISZTÍT (PURGE) parancs eltávolítja azt, amit a rajz definiál, de nem használ; itt ezek a blokkok és a vonaltípusok. Az AutoCAD TISZTÍT parancsa a Tisztítás párbeszédpanelt nyitja meg; a MellowCAD-ben ilyen nincs, ezért a TISZTÍT a parancssorban azt kérdezi, amit a `-TISZTÍT`, ahogy az AutoCAD konzolja is. Kiírja a beágyazott elemek és az elárvult adatok beállítását, mindkettő ki van kapcsolva, és megkérdezi, milyen típusú, használaton kívüli objektumokat tisztítson, a `Blokk` és a `VTípus` lehetőséget kínálva; ott az Enter befejezi a parancsot.
@@ -13,7 +13,7 @@ Egy blokk addig van használatban, amíg egy referencia elhelyezi a rajzban, vag
 
 - **Parancs:** `TISZTÍT`
 - **Angolul:** `PURGE`, bármely nyelven `_PURGE` formában beírva
-- **Álnevek:** `TT`
+- **Rövidítések:** `TT`
 - **Panel:** [Rendszerezés](/docs/commands#organize)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TT`, és nyomja meg az Enter billentyűt.
 
@@ -31,7 +31,7 @@ Bekéri a tisztítandó neveket, alapértelmezés szerint `*` minden nem haszná
 
 ### `VTípus` (`VT`) [#ltypes]
 
-Bekéri a neveket, és hogy ellenőrizze-e őket egyenként, ahogy a `Blokk`, majd törli a semmi által nem használt vonaltípusokat. A Continuous, az aktuális vonaltípus és az, amelyet egy fólia vagy egy objektum használ, akár egy blokkon belül is, mindig megmarad; ha nincs mit törölni, `Nem találhatók hivatkozás nélküli vonaltípusok.` üzenetet ír ki. A [`VTÍPUS`](/docs/commands/linetype) Betöltés gombja visszahozza.
+Bekéri a neveket, és hogy ellenőrizze-e őket egyenként, ahogy a `Blokk`, majd törli a sehol nem használt vonaltípusokat. A Continuous, az aktuális vonaltípus és az, amelyet egy fólia vagy egy objektum használ, akár egy blokkon belül is, mindig megmarad; ha nincs mit törölni, `Nem találhatók hivatkozás nélküli vonaltípusok.` üzenetet ír ki. A [`VTÍPUS`](/docs/commands/linetype) Betöltés gombja visszahozza.
 
 ## Amit még nem tud [#missing]
 
@@ -47,7 +47,7 @@ PURGE. A magyar AutoCAD-ben a rövidítése `TT`: írja be, majd nyomja meg az E
 
 ### Hogyan lehet törölni a nem használt blokkokat az AutoCAD-ben?
 
-Írja be: `TT`, válassza a `Blokk` opciót, nyomja meg az Enter billentyűt minden névhez, és válaszoljon `Nem` értékkel, hogy mindet egyenkénti rákérdezés nélkül törölje.
+Írja be: `TT`, válassza a `Blokk` opciót, nyomja meg az Enter billentyűt minden névhez, és válassza a `Nem` opciót, hogy mindet egyenkénti rákérdezés nélkül törölje.
 
 ### Miért nem lehet egy blokkot kitisztítani?
 

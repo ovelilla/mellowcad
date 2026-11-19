@@ -20,7 +20,7 @@ Az elemek száma, 1 és 32 767 között; a kitöltött szög nem változik.
 
 ### Angle between
 
-Az egyik elemtől a következőig mért szög. A kitöltött szög az elemszámnak megfelelő számú ilyen lépésből áll össze, az irány megmarad, és teljes kör, amint eléri a 360°-ot.
+Az egyik elemtől a következőig mért szög. A kitöltött szög az elemszámnak megfelelő számú ilyen lépésből áll össze, az irány megmarad, és teljes körré válik, amint eléri a 360°-ot.
 
 ### Fill angle
 

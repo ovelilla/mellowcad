@@ -224,8 +224,9 @@ reports, for the same promise.
   widen the column past a phone's viewport.
 - Motion is CSS only, inside `prefers-reduced-motion: no-preference`; with reduced motion everything
   is in its final state. Anything that moves for more than five seconds can be paused.
-- **Right to left** (`ui.md`): the composition mirrors, the drawings do not. `Drawing` and `Glyph`
-  are `direction="ltr"`, their text tagged with the command language (`drawingMarkup(…, lang)` from
+- **Right to left** (`ui.md`): the composition mirrors, the drawings do not. An SVG of a
+  right-to-left page is `direction: ltr` by one rule of `marketing.css` (an attribute on each cost
+  every landing bytes), their text tagged with the command language (`drawingMarkup(…, lang)` from
   `recording.scene.lang`); the hero sheet, `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and
   so is everything in the command language — transcripts, the hero's command line, the 404's line,
   the final call's `Command:` and the command board's key caps (`-MTEXT` read `MTEXT-`

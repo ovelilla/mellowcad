@@ -40,7 +40,7 @@ A másik sarokpontnál: bekéri a téglalap elforgatási szögét, beírva vagy 
 
 ## Missing
 
-A <Keyword id="Area" /> opcióban megadott 0 hosszúság vagy szélesség, amely itt semmit sem rajzol, az AutoCAD-ben pedig hibás vonalláncot rajzol. A Forgatás promptjánál elutasított válasz után a MellowCAD újra teljes egészében kiírja a promptot, ahol az AutoCAD már semmit sem ír.
+A <Keyword id="Area" /> opcióban megadott 0 hosszúság vagy szélesség, amely itt semmit sem rajzol, az AutoCAD-ben pedig hibás vonalláncot rajzol. A Forgatás promptjánál elutasított válasz után a MellowCAD újra teljes egészében kiírja a promptot, míg az AutoCAD már semmit sem ír.
 
 ## Questions
 
@@ -50,7 +50,7 @@ RECTANG. A magyar AutoCAD-ben a rövidítése `TE`, és a `TÉGLALAP` is működ
 
 ### Hogyan lehet pontos méretű téglalapot rajzolni?
 
-Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél, ahogy a program indul, `100,50`, nélküle `@100,50`, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a <Keyword id="Dimensions" /> opciót, és írja be a két oldalt.
+Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél (induláskor be van kapcsolva) `100,50`, nélküle `@100,50`, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a <Keyword id="Dimensions" /> opciót, és írja be a két oldalt.
 
 ### Hogyan lehet lekerekített sarkú téglalapot rajzolni?
 

@@ -1,10 +1,10 @@
 ---
 title: "Vonalvastagság az AutoCAD-ben: VVAST (LWEIGHT) parancs"
-metaTitle: "Vonalvastagság AutoCAD-ben: VVAST (LWEIGHT)"
+metaTitle: "Vonalvastagság az AutoCAD-ben: VVAST (LWEIGHT)"
 description: "Az AutoCAD VVAST (LWEIGHT, rövidítése VV) parancsa: az új objektumok vonalvastagsága mm-ben, a 24 szabványos érték, a FÓLIA és a megjelenítés. Próbálja ki."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD VVAST parancs angolul?","answer":"LWEIGHT. A magyar AutoCAD-ben a rövidítése VV, és a VONALVASTAGSÁG is: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol LW és LINEWEIGHT a magyar változatban nem működik; a teljes VVAST név igen, a _LWEIGHT pedig az AutoCAD bármely nyelvi változatában."},{"question":"Miért nem látszik a vonalvastagság az AutoCAD-ben?","answer":"Az AutoCAD-ben a vonalvastagságok csak akkor jelennek meg a képernyőn, ha az állapotsor Vonalvastagság gombja be van kapcsolva (LWDISPLAY 1); kezdetben ki van kapcsolva. Itt kezdettől be van kapcsolva. A vékony vonalvastagságok mind a képernyő legvékonyabb vonalával rajzolódnak, így a különbség a vastagabbaknál látszik; a FÓLIA vonalvastagságú objektum pedig a fóliája vonalvastagságát kapja."},{"question":"Hogyan lehet módosítani egy meglévő objektum vonalvastagságát?","answer":"Válassza ki, és állítsa be a vonalvastagságot a Tulajdonságok paletta Vonalvastagság sorában, vagy ha az objektum FÓLIA vonalvastagságú, módosítsa a fóliája vonalvastagságát a Fóliatulajdonság-kezelőben. A VVAST parancs csak az utána rajzolt objektumok vonalvastagságát állítja be."},{"question":"Milyen vonalvastagságok vannak az AutoCAD-ben?","answer":"24 rögzített érték milliméterben: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 és 2,11. Ha mást ír be, például 0.45-öt, a VVAST parancs a legközelebbit veszi, egyenlő távolságnál a vékonyabbat."}]
+faq: [{"question":"Mi az AutoCAD VVAST parancs angolul?","answer":"LWEIGHT. A magyar AutoCAD-ben a rövidítése VV, és a VONALVASTAGSÁG is: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol LW és LINEWEIGHT a magyar változatban nem működik; a teljes VVAST név igen, a _LWEIGHT pedig az AutoCAD bármely nyelvi változatában."},{"question":"Miért nem látszik a vonalvastagság az AutoCAD-ben?","answer":"Az AutoCAD-ben a vonalvastagságok csak akkor jelennek meg a képernyőn, ha az állapotsor Vonalvastagság gombja be van kapcsolva (LWDISPLAY 1); kezdetben ki van kapcsolva. Itt kezdettől be van kapcsolva. A vékony vonalvastagságok mind a képernyő legvékonyabb vonalával rajzolódnak, így a különbség a vastagabbaknál látszik; a Fólia szerinti vonalvastagságú objektum pedig a fóliája vonalvastagságát kapja."},{"question":"Hogyan lehet módosítani egy meglévő objektum vonalvastagságát?","answer":"Válassza ki, és állítsa be a vonalvastagságot a Tulajdonságok paletta Vonalvastagság sorában, vagy ha az objektum vonalvastagsága Fólia szerint van beállítva, módosítsa a fóliája vonalvastagságát a Fóliatulajdonság-kezelőben. A VVAST parancs csak az utána rajzolt objektumok vonalvastagságát állítja be."},{"question":"Milyen vonalvastagságok vannak az AutoCAD-ben?","answer":"24 rögzített érték milliméterben: 0,00; 0,05; 0,09; 0,13; 0,15; 0,18; 0,20; 0,25; 0,30; 0,35; 0,40; 0,50; 0,53; 0,60; 0,70; 0,80; 0,90; 1,00; 1,06; 1,20; 1,40; 1,58; 2,00 és 2,11. Ha mást ír be, például 0.45-öt, a VVAST parancs a legközelebbit veszi, egyenlő távolságnál a vékonyabbat."}]
 ---
 
 A VVAST (LWEIGHT) parancs azt a vonalvastagságot állítja be milliméterben, amellyel az új objektumok rajzolódnak. Az AutoCAD a Vonalvastagság - beállítások párbeszédpanelt nyitja meg; a MellowCAD-ben ez még nincs meg, ezért a VVAST az AutoCAD-ben is meglévő parancssori változatot futtatja, a `-VVAST` parancsot. Kiírja az aktuális vonalvastagságot, kezdetben `FÓLIA`, és újat kér: az AutoCAD 24 szabványos értékének egyikét, 0,00 és 2,11 mm között. Bármely más értéket a legközelebbi szabványos értékre állít, és ezt jelzi is, a negatívat pedig `Érvénytelen vonalvastagság.` üzenettel elutasítja. Az Enter megtartja az aktuális vonalvastagságot. Minden változtatás olyan lépés, amelyet a `T` visszavon.
@@ -13,7 +13,7 @@ A vonalvastagságok itt kezdettől látszanak a képernyőn: az AutoCAD csak akk
 
 - **Parancs:** `VVAST`
 - **Angolul:** `LWEIGHT`, bármely nyelven `_LWEIGHT` formában beírva
-- **Álnevek:** `VONALVASTAGSÁG`, `VV`
+- **Rövidítések:** `VONALVASTAGSÁG`, `VV`
 - **Panel:** [Rendszerezés](/docs/commands#organize)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `VV`, és nyomja meg az Enter billentyűt.
 
@@ -27,7 +27,7 @@ A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a p
 
 ### `?` [#list]
 
-Kilistázza az elfogadott értékeket, a FÓLIA értéket és a 24 szabványos vonalvastagságot, majd újra kérdez.
+Kilistázza az elfogadott értékeket, a Fólia szerint értéket és a 24 szabványos vonalvastagságot, majd újra kérdez.
 
 ### `Fólia` (`F`) [#bylayer]
 
@@ -35,7 +35,7 @@ Az új objektumok a fóliájuk vonalvastagságát kapják, ahogy kezdetben is.
 
 ## Amit még nem tud [#missing]
 
-A BLOKK és az ALAPÉRTELMEZETT érték (LWDEFAULT), a hüvelykben megadott vonalvastagság, a Vonalvastagság - beállítások párbeszédpanel és a legördülő lista Vonalvastagság - beállítások… eleme.
+A Blokk szerint és az Alapértelmezett érték (LWDEFAULT), a hüvelykben megadott vonalvastagság, a Vonalvastagság - beállítások párbeszédpanel és a legördülő lista Vonalvastagság - beállítások… eleme.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne--it-spesslin--sli--spesslinea--lineweight---spesslin--de-lstärke--linienstärke--lst---lstärke--ru-веслин--вли---веслин--pl-szerlin--sl---szerlin--cs-tlčáry--tlč---tlčáry--hu-vvast--vonalvastagság--vv---vvast)
 
@@ -47,11 +47,11 @@ LWEIGHT. A magyar AutoCAD-ben a rövidítése `VV`, és a `VONALVASTAGSÁG` is: 
 
 ### Miért nem látszik a vonalvastagság az AutoCAD-ben?
 
-Az AutoCAD-ben a vonalvastagságok csak akkor jelennek meg a képernyőn, ha az állapotsor Vonalvastagság gombja be van kapcsolva (LWDISPLAY 1); kezdetben ki van kapcsolva. Itt kezdettől be van kapcsolva. A vékony vonalvastagságok mind a képernyő legvékonyabb vonalával rajzolódnak, így a különbség a vastagabbaknál látszik; a FÓLIA vonalvastagságú objektum pedig a fóliája vonalvastagságát kapja.
+Az AutoCAD-ben a vonalvastagságok csak akkor jelennek meg a képernyőn, ha az állapotsor Vonalvastagság gombja be van kapcsolva (LWDISPLAY 1); kezdetben ki van kapcsolva. Itt kezdettől be van kapcsolva. A vékony vonalvastagságok mind a képernyő legvékonyabb vonalával rajzolódnak, így a különbség a vastagabbaknál látszik; a Fólia szerinti vonalvastagságú objektum pedig a fóliája vonalvastagságát kapja.
 
 ### Hogyan lehet módosítani egy meglévő objektum vonalvastagságát?
 
-Válassza ki, és állítsa be a vonalvastagságot a Tulajdonságok paletta Vonalvastagság sorában, vagy ha az objektum FÓLIA vonalvastagságú, módosítsa a fóliája vonalvastagságát a Fóliatulajdonság-kezelőben. A VVAST parancs csak az utána rajzolt objektumok vonalvastagságát állítja be.
+Válassza ki, és állítsa be a vonalvastagságot a Tulajdonságok paletta Vonalvastagság sorában, vagy ha az objektum vonalvastagsága Fólia szerint van beállítva, módosítsa a fóliája vonalvastagságát a Fóliatulajdonság-kezelőben. A VVAST parancs csak az utána rajzolt objektumok vonalvastagságát állítja be.
 
 ### Milyen vonalvastagságok vannak az AutoCAD-ben?
 

@@ -22,7 +22,7 @@ Az AutoCAD saját lépése arra az esetre, ha egyetlen, egyedül kiválasztott v
 
 ### Mi az AutoCAD EGYBEFŰZ parancs angolul?
 
-JOIN. A magyar AutoCAD-ben nincs rövidítése: írja be a teljes nevét, majd nyomja meg az Enter billentyűt vagy a szóközt. A `_JOIN` az AutoCAD bármely nyelvi változatában működik; az angol `J` a magyar változatban nem működik.
+JOIN. A magyar AutoCAD-ben nincs rövidítése: írja be a teljes nevét, majd nyomja meg az Enter vagy a Szóköz billentyűt. A `_JOIN` az AutoCAD bármely nyelvi változatában működik; az angol `J` a magyar változatban nem működik.
 
 ### Hogyan lehet vonalakat vonallánccá fűzni az AutoCAD-ben?
 

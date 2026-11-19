@@ -6,11 +6,11 @@ figure: "A PTÍPUS megnyitja a Pont stílusa párbeszédpanelt; az OK gombja be�
 sourceHash: "02cea384a2a9"
 ---
 
-A PTÍPUS (PTYPE) parancs megnyitja a Pont stílusa párbeszédpanelt, amely a rajz összes pont objektumának megjelenését állítja be: azokét, amelyeket a <Command id="POINT" /> rajzol, és azokét, amelyeket a <Command id="DIVIDE" /> és a <Command id="MEASURE" /> hagy maga után. A magyar AutoCAD-ben a rövidítése `DPPTÍPUS`, az angolban `DDPTYPE`. A stílus a rajzhoz tartozik, nem egy-egy ponthoz: ha módosítja, egyszerre mindegyik megváltozik, és a rajzzal együtt mentődik. A gombja a Segédeszközök között, a KOORD (ID) mellett található; aposztróffal beírva, `'PTÍPUS`, egy futó parancson belül is megnyílik.
+A PTÍPUS (PTYPE) parancs megnyitja a Pont stílusa párbeszédpanelt, amely a rajz összes pontobjektumának megjelenését állítja be: azokét, amelyeket a <Command id="POINT" /> rajzol, és azokét, amelyeket a <Command id="DIVIDE" /> és a <Command id="MEASURE" /> hagy maga után. A magyar AutoCAD-ben a rövidítése `DPPTÍPUS`, az angolban `DDPTYPE`. A stílus a rajzhoz tartozik, nem egy-egy ponthoz: ha módosítja, egyszerre mindegyik megváltozik, és a rajzzal együtt mentődik. A gombja a Segédeszközök között, a KOORD (ID) mellett található; aposztróffal beírva, `'PTÍPUS`, egy futó parancson belül is megnyílik.
 
-A párbeszédpanel húsz alakot mutat négy ötös sorban, az aktuális kijelölve: pont, semmi, plusz jel, kereszt és egy rövid függőleges vonalka, majd mindegyik körben, négyzetben, illetve mindkettőben. Alattuk a Pontméret, és hogy hogyan kell érteni: Méretbeállítás a képernyőhöz viszonyítva, a nézet magasságának százalékában, vagy Méretbeállítás abszolút egységekben, rajzegységben. Az alapérték 5 % a képernyőhöz viszonyítva. Az OK egyetlen lépésként írja be a választást, amelyet a <Command id="U" /> visszavon; a Mégse vagy az Esc semmit sem változtat. A nem számként megadott vagy 0-nál kisebb méretet elutasítja (Érvénytelen bemenet.), és a párbeszédpanel nyitva marad.
+A párbeszédpanel húsz alakot mutat négy ötös sorban, az aktuális kijelölve: pont, semmi, plusz jel, kereszt és egy rövid függőleges vonalka, majd mindegyik körben, négyzetben, illetve mindkettőben. Alattuk a Pontméret, és hogy hogyan kell érteni: Méretbeállítás a képernyőhöz viszonyítva, a nézet magasságának százalékában, vagy Méretbeállítás abszolút egységekben, rajzegységben. Az alapérték 5% a képernyőhöz viszonyítva. Az OK egyetlen lépésként írja be a választást, amelyet a <Command id="U" /> visszavon; a Mégse vagy az Esc semmit sem változtat. A nem számként megadott vagy 0-nál kisebb méretet elutasítja (Érvénytelen bemenet.), és a párbeszédpanel nyitva marad.
 
-Amit a párbeszédpanel beír, az két változó, amelyek a parancssorba is beírhatók: a PDMODE, az alak (0–4, plusz 32 a körért, 64 a négyzetért, 96 mindkettőért: a 35 körbe írt kereszt), és a PDSIZE, a méret (a pozitív szám rajzegység, a negatív a képernyő százaléka, a 0 pedig 5 %).
+Amit a párbeszédpanel beír, az két változó, amelyek a parancssorba is beírhatók: a PDMODE, az alak (0–4, plusz 32 a körért, 64 a négyzetért, 96 mindkettőért: a 35 körbe írt kereszt), és a PDSIZE, a méret (a pozitív szám rajzegység, a negatív a képernyő százaléka, a 0 pedig 5%).
 
 ## Missing
 
@@ -32,4 +32,4 @@ A PTÍPUS párbeszédpanelen írja be a Pontméret értékét: a képernyő szá
 
 ### Kaphat-e egyetlen pont saját stílust?
 
-Nem: az AutoCAD-ben és itt is a pontstílus a rajzé, és minden pont objektum ezt követi. Ha a helyeket eltérően akarja jelölni, szúrjon be oda egy blokkot; a <Command id="DIVIDE" /> és a <Command id="MEASURE" /> pontok helyett blokkot is el tud helyezni.
+Nem: az AutoCAD-ben és itt is a pontstílus a rajzé, és minden pontobjektum ezt követi. Ha a helyeket eltérően akarja jelölni, szúrjon be oda egy blokkot; a <Command id="DIVIDE" /> és a <Command id="MEASURE" /> pontok helyett blokkot is el tud helyezni.

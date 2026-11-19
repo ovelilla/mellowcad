@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ELÉR (EXTEND) parancs"
 metaTitle: "Hosszabbítás az AutoCAD-ben: ELÉR (EXTEND)"
-description: "Az AutoCAD ELÉR (EXTEND, EL) parancsa: Gyors és Szabványos mód, határolóélek, felfűzés, metsző ablak, Él, és Shift a metszéshez. Próbálja ki ingyen, online."
+description: "Az AutoCAD ELÉR (EXTEND, EL) parancsa: Gyors és Szabványos mód, határolóélek, felfűzés, metszőablak, Él, és Shift a metszéshez. Próbálja ki ingyen, online."
 figure: "Két vonal meghosszabbítva az útjukba eső vonalig: mindegyik egyszer kiválasztva a meghosszabbodó vége közelében, Gyors módban."
 sourceHash: "b2c0044f8e87"
 ---
@@ -42,7 +42,7 @@ Vetítés: az AutoCAD vetítési opciója (Nincs, Fkr, Nézet) nem érhető el, 
 
 ### Mi az AutoCAD ELÉR parancs angolul?
 
-EXTEND. A magyar AutoCAD-ben a rövidítése `EL`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTEND` is; az angol `EX` a magyar változatban nem működik.
+EXTEND. A magyar AutoCAD-ben a rövidítése `EL`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_EXTEND` is; az angol `EX` a magyar változatban nem működik.
 
 ### Miért írja ki az ELÉR parancs, hogy nincs él?
 

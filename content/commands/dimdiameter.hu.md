@@ -20,13 +20,13 @@ A szöveg szögét kéri: a szöveg ezután ebben a szögben jelenik meg, a köz
 
 ## Missing
 
-Bekezdéses szöveg: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. A jel Ø-ként jelenik meg, ahol az AutoCAD ∅-t ír: a rajz betűtípusában nincs ∅. Íven a nyílfejek a végpontjai között maradnak, ahol az AutoCAD ívsegédvonalat rajzol. Ahogy a <Command id="DIMRADIUS" /> parancsnál, blokkreferencián belüli görbe nem választható ki, a stílus középvonalai nem jelennek meg, és a görbén kívüli szövegre vonatkozó beállításai nem érhetők el. A méret nem asszociatív: nem követi a mért görbét.
+A Bszöveg opció: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. A jel Ø-ként jelenik meg, ahol az AutoCAD ∅-t ír: a rajz betűtípusában nincs ∅. Íven a nyílfejek a végpontjai között maradnak, ahol az AutoCAD ívsegédvonalat rajzol. Ahogy a <Command id="DIMRADIUS" /> parancsnál, blokkreferencián belüli görbe nem választható ki, a stílus középvonalai nem jelennek meg, és a görbén kívüli szövegre vonatkozó beállításai nem érhetők el. A méret nem asszociatív: nem követi a mért görbét.
 
 ## Questions
 
 ### Mi az AutoCAD MÉRETÁTMÉRŐ parancs angolul?
 
-DIMDIAMETER. A magyar AutoCAD-ben a rövidítése `MAT` vagy `MATM`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMDIAMETER` is; az angol `DDI` és `DIMDIA` a magyar változatban nem működik.
+DIMDIAMETER. A magyar AutoCAD-ben a rövidítése `MAT` vagy `MATM`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMDIAMETER` is; az angol `DDI` és `DIMDIA` a magyar változatban nem működik.
 
 ### Hogyan lehet egy kis furatot méretezni?
 
@@ -38,4 +38,4 @@ Igen: ív vagy vonallánc ívszakasza ugyanúgy, mint kör, és az ív körének
 
 ### Hogyan lehet a furatok számát vagy megjegyzést írni egy átmérőméretbe?
 
-Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be: `4x <>`; a `<>` a mért érték a jelével. Elhelyezett méretnél a Tulajdonságok paletta Szöveg felülírása sora módosítja.
+Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be: `4x <>`; a `<>` a mért érték a jelével. Elhelyezett méretnél a Tulajdonságok paletta Méretszöveg felülírás sora módosítja.

@@ -20,7 +20,7 @@ A <Command id="RECTANG" /> paranccsal rajzoljon téglalapot a `-8,20` ponttól `
 
 ### Ossza ki a furatokat [#holes]
 
-Egy furat az osztókörön: kör az `55<22.5` pontban, az origótól 55 távolságra, 22,5°-os szögben, az <Keyword command="CIRCLE" id="Diameter" /> opcióval, `14` átmérővel. A <Command id="ARRAYPOLAR" /> parancs: válassza ki, nyomja meg az Enter billentyűt, és adja meg a középpontot, `0,0`; az <Keyword command="ARRAYPOLAR" id="ASsociative" /> és a <Keyword command="ARRAYPOLAR" id="No" /> opció nyolc különálló kört hagy, amelyeket egy méret ki tud jelölni, az <Keyword command="ARRAYPOLAR" id="Items" /> opció pedig `8` értékkel a teljes kör mentén osztja el őket. Ezután a Középvonalak fólián az osztókör a `0,0` pontban, `110` átmérővel.
+Egy furat az osztókörön: kör az `55<22.5` pontban, az origótól 55 távolságra, 22,5°-os szögben, az <Keyword command="CIRCLE" id="Diameter" /> opcióval, `14` átmérővel. A <Command id="ARRAYPOLAR" /> parancs: válassza ki, nyomja meg az Enter billentyűt, és adja meg a középpontot, `0,0`; az <Keyword command="ARRAYPOLAR" id="ASsociative" /> és a <Keyword command="ARRAYPOLAR" id="No" /> opció nyolc különálló kört hagy, amelyek méretezéskor egyenként kijelölhetők, az <Keyword command="ARRAYPOLAR" id="Items" /> opció pedig `8` értékkel a teljes kör mentén osztja el őket. Ezután a Középvonalak fólián az osztókör a `0,0` pontban, `110` átmérővel.
 
 ### Rajzolja meg a középvonalakat [#centreLines]
 

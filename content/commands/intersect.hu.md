@@ -1,14 +1,14 @@
 ---
 title: "AutoCAD KÖZÖSRÉSZ (INTERSECT) parancs"
 metaTitle: "AutoCAD KÖZÖSRÉSZ: szilárdtestek közös része"
-description: "Az AutoCAD KÖZÖSRÉSZ (INTERSECT, KO) parancsa: két vagy több 3D szilárdtestből vagy egy síkbeli lemezekből csak a közös rész marad, a többi törlődik."
+description: "Az AutoCAD KÖZÖSRÉSZ (INTERSECT, KO) parancsa: két vagy több 3D szilárdtestből vagy egy síkban fekvő lemezekből csak a közös rész marad, a többi törlődik."
 figure: "Egy téglatest és egy belé nyúló gömb közös része: hat sík lappal határolt gömb, délkeletről nézve."
 sourceHash: "c8ea61c0525d"
 ---
 
 A KÖZÖSRÉSZ (INTERSECT) parancs csak azt tartja meg, ami két vagy több 3D szilárdtestben, illetve két vagy több egy síkban fekvő lemezben közös, a többit törli: egy téglatestből és egy belé nyúló gömbből sík lapokkal határolt gömb marad. Az Enter billentyűig kér objektumokat, ahogy az <Command id="UNION" /> parancs, és átugorja, ami sem szilárdtest, sem lemez. Ahogy az AutoCAD 2027-ben, a parancs előtt kijelölt objektumokat elveti, és újra kéri őket. A szilárdtesteket és a lemezeket külön dolgozza fel, a lemezeket síkonként.
 
-Az elsőként kiválasztott objektum lesz az eredmény, a fóliájával és a színével, a többi törlődik; ablakkal, metsző ablakkal vagy a MIND opcióval kijelölve a legújabb közülük. Az eredmény összetett szilárdtest, többé nem téglatest vagy gömb, és nincs előzménye. Ha az objektumokban nincs semmi közös, a válasz <Message id="nullSolid" /> vagy <Message id="nullRegion" />, és mindet törli, ahogy az AutoCAD is. A teljes parancs egyetlen visszavonási lépés. A MellowCAD-ben a 3D egyelőre csak részben érhető el: szilárdtestek vannak, felületek és hálók nincsenek.
+Az elsőként kiválasztott objektum lesz az eredmény, a fóliájával és a színével, a többi törlődik; ablakkal, metszőablakkal vagy a MIND opcióval kijelölve a legújabb közülük. Az eredmény összetett szilárdtest, többé nem téglatest vagy gömb, és nincs előzménye. Ha az objektumokban nincs semmi közös, a válasz <Message id="nullSolid" /> vagy <Message id="nullRegion" />, és mindet törli, ahogy az AutoCAD is. A teljes parancs egyetlen visszavonási lépés. A MellowCAD-ben a 3D egyelőre csak részben érhető el: szilárdtestek vannak, felületek és hálók nincsenek.
 
 ## Missing
 
@@ -18,7 +18,7 @@ A felületek, amelyek itt nem léteznek. Olyan görbe lapok, amelyek egy olyan g
 
 ### Mi az AutoCAD KÖZÖSRÉSZ parancs angolul?
 
-INTERSECT. A magyar AutoCAD-ben a rövidítése `KO`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_INTERSECT` is; az angol `IN` a magyar változatban nem működik.
+INTERSECT. A magyar AutoCAD-ben a rövidítése `KO`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig az `_INTERSECT` is; az angol `IN` a magyar változatban nem működik.
 
 ### Mi a különbség az EGYESÍT, a KIVON és a KÖZÖSRÉSZ parancs között?
 

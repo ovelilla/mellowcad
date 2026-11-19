@@ -1,12 +1,12 @@
 ---
 title: "Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL (MATCHPROP) parancs"
-metaTitle: "Tulajdonságok másolása AutoCAD-ben: TULMÁSOL"
+metaTitle: "Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL"
 description: "Tulajdonságok másolása az AutoCAD TULMÁSOL (MATCHPROP, rövidítése TUM) parancsával: fólia, szín, vonaltípus, vonalvastagság és stílusok. Próbálja ki ingyen."
 figure: "Egy alaplap és a furata, egy függőleges tengely pirosan és Center vonaltípussal a saját fóliáján, valamint egy vízszintes vonal a 0 fólián, amelyet a TULMÁSOL ugyanilyen tengellyé alakít."
 sourceHash: "603d5ab849b1"
 ---
 
-A TULMÁSOL (MATCHPROP) parancs egy objektum tulajdonságait másolja át más objektumokra: ez az AutoCAD Tulajdonságmásolás ecsetje. Válassza ki a forrásobjektumot, vagy jelölje ki a parancs előtt; zárolt fólián lévő objektumot is elfogad. Ezután kiírja, mely tulajdonságokat másolja, az aktuális beállítások listáját, és bekéri a célobjektumokat: minden rámutatás vagy ablak azonnal átfesti őket, amíg az Enter be nem fejezi a parancsot. A zárolt fólián lévő célobjektum változatlan marad, <Message id="matchpropLockedDestination" /> üzenettel. A kurzoron az AutoCAD ecsete látszik, és a teljes futás egyetlen lépés, amelyet a <Command id="U" /> visszavon. Aposztróffal beírva, `'TULMÁSOL`, egy másik parancson belül fut.
+A TULMÁSOL (MATCHPROP) parancs egy objektum tulajdonságait másolja át más objektumokra: ez az AutoCAD Tulajdonságmásolás ecsetje. Válassza ki a forrásobjektumot, vagy jelölje ki a parancs előtt; zárolt fólián lévő objektumot is elfogad. Ezután kiírja, mely tulajdonságokat másolja, `Aktuális aktív beállítások:` és a lista, majd bekéri a célobjektumokat: minden kijelölés vagy ablak azonnal átfesti őket, amíg az Enter be nem fejezi a parancsot. A zárolt fólián lévő célobjektum változatlan marad, <Message id="matchpropLockedDestination" /> üzenettel. A kurzoron az AutoCAD ecsete látszik, és a teljes futás egyetlen lépés, amelyet a <Command id="U" /> visszavon. Aposztróffal beírva, `'TULMÁSOL`, egy másik parancson belül fut.
 
 Azt másolja, amit a Tulajdonságmásolás beállításai párbeszédpanel alapértelmezésként bejelöl: a fóliát, a színt és a vonalvastagságot; a vonaltípust, kivéve sraffozásra, bekezdéses szövegre és attribútumdefinícióra; a vastagságot; szövegek között a stílust, a magasságot és az elforgatást, egysoros szövegről egysoros szövegre az igazítást is; méretek között a méretstílust; sraffozások között a mintát, a léptéket és a szöget, az origót viszont nem.
 

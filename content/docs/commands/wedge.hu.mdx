@@ -3,16 +3,16 @@ title: "AutoCAD ÉK (WEDGE) parancs"
 description: "Így rajzol 3D ék szilárdtestet az AutoCAD ÉK (WEDGE, EK) parancsa: két sarokpont és magasság, Középpont, Kocka, Hossz és 2Pont. Próbálja ki ingyen, online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD ÉK parancs angolul?","answer":"WEDGE. A magyar AutoCAD-ben írja be az ÉK nevet vagy az EK rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a 0,0, a 60,40 és a 25 megrajzolja a munkamenet ékét. Az angol változat WE rövidítése a magyarban nem működik, a _WEDGE viszont az AutoCAD bármely nyelvi változatában igen."},{"question":"Merre lejt az ék?","answer":"Az első sarokpont felőli végtől lefelé, az FKR X tengelye mentén. A megfordításához adja meg a másik sarokpontot kisebb X koordinátával, ez 180°-kal fordítja el, vagy utólag forgassa el a FORGAT paranccsal."},{"question":"Hogyan lehet háromszög alapú hasábot rajzolni?","answer":"Az ék maga is az: mindkét végén egy derékszögű háromszög, amely a szélesség mentén húzódik végig. Bármilyen más háromszöghöz rajzolja meg zártan a VLÁNC paranccsal, és húzza ki a KIHÚZ paranccsal."},{"question":"Hogyan lehet éket rajzolni a középpontjából?","answer":"Válassza a Középpont opciót, és adja meg a középpontot, majd egy sarokpontot, vagy a Kocka, illetve a Hossz opciót: az ék középpontja a megadott pontba kerül, magasságban is."}]
+faq: [{"question":"Mi az AutoCAD ÉK parancs angolul?","answer":"WEDGE. A magyar AutoCAD-ben a rövidítése EK: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a 0,0, a 60,40 és a 25 megrajzolja a mintában látható éket. Az angol WE a magyar változatban nem működik; a teljes ÉK név igen, a _WEDGE pedig az AutoCAD bármely nyelvi változatában."},{"question":"Merre lejt az ék?","answer":"Az első sarokpont felőli végtől lefelé, az FKR X tengelye mentén. A megfordításához adja meg a másik sarokpontot kisebb X koordinátával, ez 180°-kal fordítja el, vagy utólag forgassa el a FORGAT paranccsal."},{"question":"Hogyan lehet háromszög alapú hasábot rajzolni?","answer":"Az ék maga is az: mindkét végén egy derékszögű háromszög, amely a szélesség mentén húzódik végig. Bármilyen más háromszöghöz rajzolja meg zártan a VLÁNC paranccsal, és húzza ki a KIHÚZ paranccsal."},{"question":"Hogyan lehet éket rajzolni a középpontjából?","answer":"Válassza a Középpont opciót, és adja meg a középpontot, majd egy sarokpontot, vagy a Kocka, illetve a Hossz opciót: az ék középpontja a megadott pontba kerül, magasságban is."}]
 ---
 
-Az ÉK (WEDGE) parancs 3D ék szilárdtestet rajzol: olyan téglatestet, amelynek a teteje az egyik végétől a másikig lejt. Ugyanazt kérdezi, mint a [`TTEST`](/docs/commands/box) parancs: az első sarokpontot, a másik sarokpontot, majd a magasságot. A magas vég az első sarokpontnál van, és a lejtő az FKR X tengelye mentén a másik sarokpont oldala felé esik; a kisebb X koordinátájú sarokpont megfordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé mutat. A hossz, a szélesség és a magasság a [`TTEST`](/docs/commands/box) parancs alapértelmezései, amelyeket az Enter elfogad. Az ék az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
+Az ÉK (WEDGE) parancs 3D ék szilárdtestet rajzol: olyan téglatestet, amelynek a teteje az egyik végétől a másikig lejt. Ugyanazt kérdezi, mint a [`TTEST`](/docs/commands/box) parancs: az első sarokpontot, a másik sarokpontot, majd a magasságot. A magas vég az első sarokpontnál van, és a lejtő az FKR X tengelye mentén a másik sarokpont oldala felé esik; a kisebb X koordinátájú sarokpont megfordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé mutat. A hossz, a szélesség és a magasság a [`TTEST`](/docs/commands/box) parancs alapértékei, amelyeket az Enter elfogad. Az ék az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
 
-A [`LISTA`](/docs/commands/list) parancs megmutatja a helyzetét, hosszát, szélességét, magasságát és elforgatását, a Tulajdonságok palettán pedig ezek begépelhetők. A fogói ugyanazok, mint a [`TTEST`](/docs/commands/box) parancsé. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges. A [`SZÉTVET`](/docs/commands/explode) parancs lapjaiból egy-egy lemezt készít.
+A [`LISTA`](/docs/commands/list) parancs megmutatja a helyzetét, hosszát, szélességét, magasságát és elforgatását, a Tulajdonságok palettán pedig ezek begépelhetők. A fogói ugyanazok, mint a [`TTEST`](/docs/commands/box) parancsé. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges. A [`SZÉTVET`](/docs/commands/explode) parancs laponként egy-egy lemezzé bontja.
 
 - **Parancs:** `ÉK`
 - **Angolul:** `WEDGE`, bármely nyelven `_WEDGE` formában beírva
-- **Álnevek:** `EK`
+- **Rövidítések:** `EK`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ÉK`, és nyomja meg az Enter billentyűt.
 
@@ -26,7 +26,7 @@ A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a p
 
 ### `Középpont` (`K`) [#center]
 
-Az első kérdésnél: a középpontot kéri, majd egy sarokpontot, vagy a `Kocka`, illetve a `Hossz` opciót. Az ék középpontja a megadott pontba kerül, magasságban is, a magas vége pedig a megadott sarokponttal szemben lesz.
+Az első promptnál: a középpontot kéri, majd egy sarokpontot, vagy a `Kocka`, illetve a `Hossz` opciót. Az ék középpontja a megadott pontba kerül, magasságban is, a magas vége pedig a megadott sarokponttal szemben lesz.
 
 ### `Kocka` (`K`) [#cube]
 
@@ -50,7 +50,7 @@ Ugyanaz, ami a [`TTEST`](/docs/commands/box) parancsból hiányzik: Mozgatás, F
 
 ### Mi az AutoCAD ÉK parancs angolul?
 
-WEDGE. A magyar AutoCAD-ben írja be az `ÉK` nevet vagy az `EK` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a `0,0`, a `60,40` és a `25` megrajzolja a munkamenet ékét. Az angol változat `WE` rövidítése a magyarban nem működik, a `_WEDGE` viszont az AutoCAD bármely nyelvi változatában igen.
+WEDGE. A magyar AutoCAD-ben a rövidítése `EK`: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az első sarokpontot, a másik sarokpontot és a magasságot: a `0,0`, a `60,40` és a `25` megrajzolja a mintában látható éket. Az angol `WE` a magyar változatban nem működik; a teljes `ÉK` név igen, a `_WEDGE` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Merre lejt az ék?
 

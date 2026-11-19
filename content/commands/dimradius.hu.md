@@ -20,13 +20,13 @@ A szöveg szögét kéri: a szöveg ezután ebben a szögben jelenik meg, a köz
 
 ## Missing
 
-Bekezdéses szöveg: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. Íven a nyílfej a végpontjai között marad, ahol az AutoCAD a végpontokon túl elhelyezett mérethez ívsegédvonalat rajzol. Blokkreferencián belüli görbe nem választható ki. A stílus középvonalai (negatív középjelméret) nem jelennek meg, és a görbén kívüli szövegre vonatkozó beállításai nem érhetők el: a szöveg mindig a vonal mentén fut, vízszintes szakasz nélkül, ahogy az ISO-25 rajzolja. A méret nem asszociatív: nem követi a mért görbét.
+A Bszöveg opció: a méret szövege egyetlen sor, amelyet a parancssorban a <Keyword id="Text" /> opcióval lehet megadni, soha nem a szövegszerkesztőben. Íven a nyílfej a végpontjai között marad, ahol az AutoCAD a végpontokon túl elhelyezett mérethez ívsegédvonalat rajzol. Blokkreferencián belüli görbe nem választható ki. A stílus középvonalai (negatív középjelméret) nem jelennek meg, és a görbén kívüli szövegre vonatkozó beállításai nem érhetők el: a szöveg mindig a vonal mentén fut, vízszintes szakasz nélkül, ahogy az ISO-25 rajzolja. A méret nem asszociatív: nem követi a mért görbét.
 
 ## Questions
 
 ### Mi az AutoCAD MÉRETSUGÁR parancs angolul?
 
-DIMRADIUS. A magyar AutoCAD-ben a rövidítése `MSU` vagy `MSUG`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMRADIUS` is; az angol `DRA` és `DIMRAD` a magyar változatban nem működik.
+DIMRADIUS. A magyar AutoCAD-ben a rövidítése `MSU` vagy `MSUG`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMRADIUS` is; az angol `DRA` és `DIMRAD` a magyar változatban nem működik.
 
 ### Hogyan lehet egy lekerekítést vagy lekerekített sarkot méretezni?
 
@@ -38,4 +38,4 @@ A MÉRETSUGÁR parancs kört, ívet vagy vonallánc ívszakaszát fogad el, zár
 
 ### Hogyan lehet megjegyzést írni egy sugárméretbe?
 
-Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be: `<> max`; a `<>` a mért érték az R betűvel, így a méret szövege `R10 max` lesz. Elhelyezett méretnél a Tulajdonságok paletta Szöveg felülírása sora módosítja.
+Elhelyezés előtt válassza a <Keyword id="Text" /> opciót, és írja be: `<> max`; a `<>` a mért érték az R betűvel, így a méret szövege `R10 max` lesz. Elhelyezett méretnél a Tulajdonságok paletta Méretszöveg felülírás sora módosítja.

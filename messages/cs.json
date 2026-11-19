@@ -76,7 +76,7 @@
     "boardLabel": "Příkazy a\u00a0jejich aliasy, seskupené jako na pásu karet",
     "also": "Také: {aliases}",
     "linked": "Podtržený příkaz má vlastní stránku s\u00a0výzvami a\u00a0možnostmi.",
-    "languages": "<cs>{czech}</cs> je <en>{english}</en> v anglickém AutoCADu, <es>{spanish}</es> ve španělském, <pt>{portuguese}</pt> v portugalském (Brazílie), <fr>{french}</fr> ve francouzském, <de>{german}</de> v německém, <ru>{russian}</ru> v ruském a <pl>{polish}</pl> v polském; globální název <all>{global}</all> funguje v každém jazyce.",
+    "languages": "<cs>{czech}</cs> je <en>{english}</en> v anglickém AutoCADu, <es>{spanish}</es> ve španělském, <pt>{portuguese}</pt> v portugalském (Brazílie), <fr>{french}</fr> ve francouzském, <de>{german}</de> v německém, <ru>{russian}</ru> v ruském, <pl>{polish}</pl> v polském a <hu>{hungarian}</hu> v maďarském; globální název <all>{global}</all> funguje v každém jazyce.",
     "transcriptTitle": "Jeden příkaz EKVID, od začátku do konce",
     "transcriptCaption": "Přehráno jádrem při sestavení této stránky. Stejné pořadí a stejná písmena možností jako v AutoCADu."
   },

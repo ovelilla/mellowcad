@@ -32,7 +32,7 @@ Minden attribútumot elrejt, a láthatókat is.
 
 ### Miért nem látszanak a blokk attribútumai?
 
-Lehet, hogy az <Command id="ATTDISP" /> beállítása <Keyword id="OFF" />, ami minden attribútumot elrejt, vagy <Keyword id="Normal" />, és az attribútumokat láthatatlannak definiálták. Válassza a <Keyword id="ON" /> opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi a beállítás.
+Lehet, hogy az <Command id="ATTDISP" /> beállítása <Keyword id="OFF" />, ami minden attribútumot elrejt, vagy <Keyword id="Normal" />, és az attribútumokat láthatatlannak definiálták. Válassza a <Keyword id="ON" /> opciót, hogy mindet lássa. Az a referencia, amelynek a blokkjában nincs attribútum, semmit sem mutat, bármi legyen is a beállítás.
 
 ### Hogyan lehet elrejteni az attribútumértékeket az AutoCAD-ben?
 

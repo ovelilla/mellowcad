@@ -4,14 +4,14 @@ metaTitle: "Téglalap az AutoCAD-ben: TÉGL (RECTANG) parancs"
 description: "Téglalap az AutoCAD TÉGL vagy TÉGLALAP (RECTANG) parancsával: két sarokpont, méretek, terület és forgatás, lekerekített vagy letört sarkok. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD TÉGL parancs angolul?","answer":"RECTANG. A magyar AutoCAD-ben a rövidítése TE, és a TÉGLALAP is működik: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol REC és RECTANGLE a magyar változatban nem működik; a teljes TÉGL név igen, a _RECTANG pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet pontos méretű téglalapot rajzolni?","answer":"Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél, ahogy a program indul, 100,50, nélküle @100,50, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a Méretek opciót, és írja be a két oldalt."},{"question":"Hogyan lehet lekerekített sarkú téglalapot rajzolni?","answer":"Az első promptnál válassza a leKerekít opciót, írja be a sugarat, majd adja meg a két sarokpontot."},{"question":"Miért lekerekített vagy letört sarkú a téglalapom?","answer":"A TÉGL parancs a munkamenet végéig megőrzi a lekerekítést és a letörést, így az utána rajzolt téglalapra is érvényes: az első sora ezt ki is írja. Válassza a leKerekít opciót, és írja be a 0 értéket, hogy újra egyszerű sarkokat rajzoljon."},{"question":"Vonallánc-e a téglalap az AutoCAD-ben?","answer":"Igen: egyetlen zárt vonallánc. A SZÉTVET négy vonalra bontja, a PÁRH pedig egészben rajzol vele párhuzamost."}]
+faq: [{"question":"Mi az AutoCAD TÉGL parancs angolul?","answer":"RECTANG. A magyar AutoCAD-ben a rövidítése TE, és a TÉGLALAP is működik: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol REC és RECTANGLE a magyar változatban nem működik; a teljes TÉGL név igen, a _RECTANG pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet pontos méretű téglalapot rajzolni?","answer":"Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél (induláskor be van kapcsolva) 100,50, nélküle @100,50, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a Méretek opciót, és írja be a két oldalt."},{"question":"Hogyan lehet lekerekített sarkú téglalapot rajzolni?","answer":"Az első promptnál válassza a leKerekít opciót, írja be a sugarat, majd adja meg a két sarokpontot."},{"question":"Miért lekerekített vagy letört sarkú a téglalapom?","answer":"A TÉGL parancs a munkamenet végéig megőrzi a lekerekítést és a letörést, így az utána rajzolt téglalapra is érvényes: az első sora ezt ki is írja. Válassza a leKerekít opciót, és írja be a 0 értéket, hogy újra egyszerű sarkokat rajzoljon."},{"question":"Vonallánc-e a téglalap az AutoCAD-ben?","answer":"Igen: egyetlen zárt vonallánc. A SZÉTVET négy vonalra bontja, a PÁRH pedig egészben rajzol vele párhuzamost."}]
 ---
 
 A TÉGL (RECTANG) parancs két átellenes sarokpontból rajzol téglalapot, amelyeket megmutat vagy beír: a `0,0`, majd a dinamikus bevitelnél az elsőhöz képest relatív `100,50` egy 100 × 50-es téglalapot ad. Ez egyetlen, négy csúcspontú zárt vonallánc, az aktuális fólián. Az első prompt opciói azt állítják be, hogyan rajzolódnak a következő téglalapok, és mindegyik a munkamenet végéig megtartja az értékét: a következő TÉGL parancs az első sorában kiírja az érvényben lévőket. A szélesség opciója minden oldalnak vonalláncszélességet ad. Amíg a másik sarokpontot helyezi el, a téglalap a kurzort követi; bekapcsolt dinamikus bevitelnél beírhatja a hosszát, majd a Tab billentyű után a szélességét.
 
 - **Parancs:** `TÉGL`
 - **Angolul:** `RECTANG`, bármely nyelven `_RECTANG` formában beírva
-- **Álnevek:** `TE`, `TÉGLALAP`
+- **Rövidítések:** `TE`, `TÉGLALAP`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TE`, és nyomja meg az Enter billentyűt.
 
@@ -53,7 +53,7 @@ A másik sarokpontnál: bekéri a téglalap elforgatási szögét, beírva vagy 
 
 ## Amit még nem tud [#missing]
 
-A `Terület` opcióban megadott 0 hosszúság vagy szélesség, amely itt semmit sem rajzol, az AutoCAD-ben pedig hibás vonalláncot rajzol. A Forgatás promptjánál elutasított válasz után a MellowCAD újra teljes egészében kiírja a promptot, ahol az AutoCAD már semmit sem ír.
+A `Terület` opcióban megadott 0 hosszúság vagy szélesség, amely itt semmit sem rajzol, az AutoCAD-ben pedig hibás vonalláncot rajzol. A Forgatás promptjánál elutasított válasz után a MellowCAD újra teljes egészében kiírja a promptot, míg az AutoCAD már semmit sem ír.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret--fr-rectangle--rec--rectang--it-rettangolo--rt--rettang--de-rechteck--re--ru-прямоугольник--прямоуг--пря--pl-prostok--pro--prostokąt--cs-obd--obdélník--hu-tégl--te--téglalap)
 
@@ -65,7 +65,7 @@ RECTANG. A magyar AutoCAD-ben a rövidítése `TE`, és a `TÉGLALAP` is működ
 
 ### Hogyan lehet pontos méretű téglalapot rajzolni?
 
-Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél, ahogy a program indul, `100,50`, nélküle `@100,50`, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a `Méretek` opciót, és írja be a két oldalt.
+Adja meg az első sarokpontot, majd írja be a másikat ahhoz képest relatívan: bekapcsolt dinamikus bevitelnél (induláskor be van kapcsolva) `100,50`, nélküle `@100,50`, és a téglalap 100 hosszú és 50 széles lesz. Vagy válassza a `Méretek` opciót, és írja be a két oldalt.
 
 ### Hogyan lehet lekerekített sarkú téglalapot rajzolni?
 

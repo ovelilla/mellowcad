@@ -3,16 +3,16 @@ title: "AutoCAD TÓRUSZ (TORUS) parancs"
 description: "Így rajzol 3D gyűrű szilárdtestet az AutoCAD TÓRUSZ (TORUS, TOR) parancsa: középpont, a gyűrű sugara, a cső sugara, Átmérő, 3P, 2P és Éés. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD TÓRUSZ parancs angolul?","answer":"TORUS. A magyar AutoCAD-ben írja be a TÓRUSZ nevet vagy a TOR rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt, majd adja meg a középpontot, a gyűrű és a cső sugarát: a 0,0,0, a 30 és a 8 megrajzolja a munkamenet tóruszát. A _TORUS az AutoCAD bármely nyelvi változatában működik."},{"question":"Mi a különbség a sugár és a cső sugara között?","answer":"A sugár a tórusz középpontjától a cső közepéig tart; a cső sugara magáé a csőé. Az a tórusz, amelynek a külső átmérője 76, a csöve pedig 16 vastag, 30 sugarú, a cső sugara pedig 8."},{"question":"Hogyan lehet rögbilabda alakú tóruszt rajzolni?","answer":"Adjon meg negatív sugarat, majd ennek nagyságánál nagyobb csősugarat: a -5 és a 8 mindkét végén csúcsos, zárt alakzatot ad. Ha a cső sugara nem nagyobb ennél, a parancs elutasítja, és újra kérdez."},{"question":"Miért néz ki a tórusz két körnek?","answer":"Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a -NÉZET paranccsal és a DKizo opcióval, vagy a 3DKERINGÉS paranccsal. Az LSAKTUÁLIS parancs Látványtervi opciója árnyalja."}]
+faq: [{"question":"Mi az AutoCAD TÓRUSZ parancs angolul?","answer":"TORUS. A magyar AutoCAD-ben a rövidítése TOR, akárcsak az angolban: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg a középpontot, a gyűrű és a cső sugarát: a 0,0,0, a 30 és a 8 megrajzolja a mintában látható tóruszt. A teljes TÓRUSZ név is működik, a _TORUS pedig az AutoCAD bármely nyelvi változatában."},{"question":"Mi a különbség a sugár és a cső sugara között?","answer":"A sugár a tórusz középpontjától a cső közepéig tart; a cső sugara magáé a csőé. Az a tórusz, amelynek a külső átmérője 76, a csöve pedig 16 vastag, 30 sugarú, a cső sugara pedig 8."},{"question":"Hogyan lehet rögbilabda alakú tóruszt rajzolni?","answer":"Adjon meg negatív sugarat, majd ennek nagyságánál nagyobb csősugarat: a -5 és a 8 mindkét végén csúcsos, zárt alakzatot ad. Ha a cső sugara nem nagyobb ennél, a parancs elutasítja, és újra kérdez."},{"question":"Miért néz ki a tórusz két körnek?","answer":"Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a -NÉZET paranccsal és a DKizo opcióval, vagy a 3DKERINGÉS paranccsal. Az LSAKTUÁLIS parancs Látványtervi opciója árnyalja."}]
 ---
 
-A TÓRUSZ (TORUS) parancs 3D gyűrű szilárdtestet, fánkot rajzol: adja meg a középpontot, majd a gyűrű sugarát a középponttól a cső közepéig, végül a cső sugarát. A gyűrű az FKR XY síkjában fekszik, a középpont Z magasságában. A csőnél megadott pontot a gyűrű azon pontjától méri, amelynél a sugarat megadta. A gyűrű sugara az alaptestek közös alapértelmezése, a cső sugarának saját alapértelmezése van, amelyet az Enter elfogad. A tórusz az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
+A TÓRUSZ (TORUS) parancs 3D gyűrű szilárdtestet, fánkot rajzol: adja meg a középpontot, majd a gyűrű sugarát a középponttól a cső közepéig, végül a cső sugarát. A gyűrű az FKR XY síkjában fekszik, a középpont Z magasságában. A csőnél megadott pontot a gyűrű azon pontjától méri, amelynél a sugarat megadta. A gyűrű sugara az alaptestek közös alapértéke, a cső sugarának saját alapértéke van, amelyet az Enter elfogad. A tórusz az aktuális fóliára kerül, és a visszavonás egy lépésben eltávolítja.
 
-A negatív gyűrűsugár szélesebb csővel rögbilabdához hasonló, csúcsos végű testet ad; a csőnél keskenyebb gyűrű almát. 2D drótváz és Takartvonalas látványstílusban vonalakként jelenik meg a cső és a gyűrű körül, annyival, amennyit az `ISOLINES` előír. A [`LISTA`](/docs/commands/list) parancs megmutatja a helyzetét, a normálisát, a tórusz sugarát és a cső sugarát, a Tulajdonságok palettán pedig mindkettő begépelhető. A fogói mozgatják, illetve a gyűrű és a cső sugarát állítják. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+A negatív gyűrűsugár szélesebb csővel rögbilabdához hasonló, csúcsos végű testet ad; a csőnél keskenyebb gyűrű almát. 2D drótváz és Takartvonalas látványstílusban vonalakként jelenik meg a cső és a gyűrű körül, annyival, amennyit az `ISOLINES` előír. A [`LISTA`](/docs/commands/list) parancs megmutatja a helyzetét, a normálisát, a tórusz sugarát és a cső sugarát, a Tulajdonságok palettán pedig mindkettő begépelhető. A fogói mozgatják, illetve a gyűrű és a cső sugarát állítják. Az [`EGYESÍT`](/docs/commands/union), a [`KIVON`](/docs/commands/subtract) és a MellowCAD többi 3D-s parancsa számára 3D szilárdtest; a MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 - **Parancs:** `TÓRUSZ`
 - **Angolul:** `TORUS`, bármely nyelven `_TORUS` formában beírva
-- **Álnevek:** `TOR`
+- **Rövidítések:** `TOR`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TOR`, és nyomja meg az Enter billentyűt.
 
@@ -20,7 +20,7 @@ A negatív gyűrűsugár szélesebb csővel rögbilabdához hasonló, csúcsos v
 
 A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
 
-<Session name="torus" caption="30 sugarú tórusz 8 sugarú cső körül, délkeletről nézve, Koncepcionális látványstílusban." />
+<Session name="torus" caption="30 sugarú tórusz 8 sugarú cső körül, délkeletről nézve, Látványtervi látványstílusban." />
 
 ## Opciók [#options]
 
@@ -34,11 +34,11 @@ A középpontnál: a gyűrű egy átmérőjének két végpontját kéri.
 
 ### `Éés` (`É`) [#ttr]
 
-A középpontnál: Érintő tárgyraszterrel jelöljön ki két vonalat, kört vagy ívet, és adjon meg egy sugarat: a gyűrű mindkettőt érinti, az ő magasságukban.
+A középpontnál: Érintő tárgyraszterrel jelöljön ki két vonalat, kört vagy ívet, és adjon meg egy sugarat: a gyűrű mindkettőt érinti, a magasságukban.
 
 ### `Átmérő` (`Á`) [#diameter]
 
-A gyűrű sugaránál: helyette a tórusz átmérőjét kéri. A csőnél: a cső átmérőjét kéri. Mindkettő a saját alapértelmezésének kétszeresét ajánlja fel.
+A gyűrű sugaránál: helyette a tórusz átmérőjét kéri. A csőnél: a cső átmérőjét kéri. Mindkettő a saját alapértékének kétszeresét ajánlja fel.
 
 ### `2Pont` (`2P`) [#2point]
 
@@ -54,7 +54,7 @@ A tórusz [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetés
 
 ### Mi az AutoCAD TÓRUSZ parancs angolul?
 
-TORUS. A magyar AutoCAD-ben írja be a `TÓRUSZ` nevet vagy a `TOR` rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt, majd adja meg a középpontot, a gyűrű és a cső sugarát: a `0,0,0`, a `30` és a `8` megrajzolja a munkamenet tóruszát. A `_TORUS` az AutoCAD bármely nyelvi változatában működik.
+TORUS. A magyar AutoCAD-ben a rövidítése `TOR`, akárcsak az angolban: írja be, nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg a középpontot, a gyűrű és a cső sugarát: a `0,0,0`, a `30` és a `8` megrajzolja a mintában látható tóruszt. A teljes `TÓRUSZ` név is működik, a `_TORUS` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Mi a különbség a sugár és a cső sugara között?
 

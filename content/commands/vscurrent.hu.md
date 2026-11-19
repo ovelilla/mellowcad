@@ -1,20 +1,20 @@
 ---
 title: "Látványstílusok az AutoCAD-ben: LSAKTUÁLIS (VSCURRENT) parancs"
 metaTitle: "Látványstílusok az AutoCAD-ben: LSAKTUÁLIS"
-description: "Így állítja be az AutoCAD LSAKTUÁLIS (VSCURRENT, LSA) parancsa a látványstílust: 2D drótváz, Takartvonalas, Koncepcionális, vissza a drótvázhoz. Próbálja ki!"
-figure: "Átmenő furatos tömb délkeletről nézve: az LSAKTUÁLIS Koncepcionális stílusa árnyalja a lapjait, és rájuk rajzolja az éleit."
+description: "Így állítja be az AutoCAD LSAKTUÁLIS (VSCURRENT, LSA) parancsa a látványstílust: 2D drótváz, Takartvonalas, Látványtervi, vissza a drótvázhoz. Próbálja ki!"
+figure: "Átmenő furatos tömb délkeletről nézve: az LSAKTUÁLIS Látványtervi stílusa árnyalja a lapjait, és rájuk rajzolja az éleit."
 sourceHash: "ddb8f2338e68"
 ---
 
 Az LSAKTUÁLIS (VSCURRENT) parancs a látványstílust állítja be: azt, hogyan rajzolja a nézet a 3D szilárdtesteket. Stílust kér, alapértelmezésként az aktuálisat kínálva fel, így az Enter megtartja. A <Keyword id="2dwireframe" /> minden élt megrajzol, a hátsókat is; a <Keyword id="Hidden" /> elrejti, amit lapok takarnak; a <Keyword id="Conceptual" /> kiszínezi és árnyalja a lapokat. A stílus a nézethez tartozik, a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. Másik parancson belül nem használható.
 
-Ami nem szilárdtest – vonal, kör, lemez, szöveg –, az a stílustól függetlenül úgy jelenik meg, mint 2D drótvázban, a saját színeivel. Takartvonalas és Koncepcionális stílusban a kattintás azt a szilárdtestet jelöli ki, amelynek a lapja a kurzor alatt Önhöz a legközelebb van, soha nem azt, amelyet egy lap eltakar, a tárgyraszter pedig továbbra is minden élt megtalál. A zárt fólián lévő szilárdtest élei halványabban jelennek meg. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+Ami nem szilárdtest – vonal, kör, lemez, szöveg –, az a stílustól függetlenül úgy jelenik meg, mint 2D drótvázban, a saját színeivel. Takartvonalas és Látványtervi stílusban a kattintás azt a szilárdtestet jelöli ki, amelynek a lapja a kurzor alatt a nézőhöz a legközelebb van, soha nem azt, amelyet egy lap eltakar, a tárgyraszter pedig továbbra is minden élt megtalál. A zárolt fólián lévő szilárdtest élei halványabban jelennek meg. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 ## Options
 
 ### 2dwireframe
 
-Minden szilárdtest minden éle, a hátsókat is beleértve, az ívelt lapjait jelző vonalakkal együtt; új rajzban ez az alapértelmezés. Ha más stílusból tér vissza hozzá, az LSAKTUÁLIS parancs ezt írja ki: <Message id="regeneratingModel" />.
+Minden szilárdtest minden éle, a hátsókat is beleértve, az ívelt lapjait jelző vonalakkal együtt; új rajzban ez az alapérték. Ha más stílusból tér vissza hozzá, az LSAKTUÁLIS parancs ezt írja ki: <Message id="regeneratingModel" />.
 
 ### Hidden
 
@@ -22,11 +22,11 @@ Minden szilárdtest élei és ívelt lapjainak körvonalai ott, ahol egyetlen sz
 
 ### Conceptual
 
-Az Ön felé néző lapok az objektum színére festve, a fénytől elforduló oldalon hideg kékbe hajolva – a fény a nézőpontját követi –, rajtuk pedig a Takartvonalas stílus élei egy színnel, az objektum színétől függetlenül. Itt és a Takartvonalas stílusban a felülnézetből látott henger vagy kúp csak a körét mutatja, ahogy az AutoCAD-ben.
+A néző felé forduló lapok az objektum színére festve, a fénytől elforduló oldalon hideg kékbe hajolva – a fény a nézőpontot követi –, rajtuk pedig a Takartvonalas stílus élei egy színnel, az objektum színétől függetlenül. Itt és a Takartvonalas stílusban a felülnézetből látott henger vagy kúp csak a körét mutatja, ahogy az AutoCAD-ben.
 
 ## Missing
 
-Az AutoCAD többi stílusa – Drótváz, Valósághű, Árnyalt, Árnyalt, élekkel, Szürkeárnyalatos, Vázlatos és Röntgen –, valamint stílus megadása a nevével, vagy a stílusok kilistázása a `?` jellel: a kérdés csak a három elkészült stílust sorolja fel, és minden más választ elutasít.
+Az AutoCAD többi stílusa – Drótváz, Valósághű, Árnyalt, Árnyalt, élekkel, Szürkeárnyalatos, Vázlatos és Röntgen –, valamint stílus megadása a nevével, vagy a stílusok kilistázása a `?` jellel: a prompt csak a három elkészült stílust sorolja fel, és minden más választ elutasít.
 
 ## Questions
 
@@ -38,9 +38,9 @@ Indítsa el az LSAKTUÁLIS parancsot (vagy az `LSA` rövidítést), és válassz
 
 Indítsa el az LSAKTUÁLIS parancsot, és válassza a <Keyword id="2dwireframe" /> opciót, a betűje `2`.
 
-### Mi a különbség a Takartvonalas és a Koncepcionális stílus között?
+### Mi a különbség a Takartvonalas és a Látványtervi stílus között?
 
-Mindkettő elrejti, amit lapok takarnak. A Takartvonalas csak éleket rajzol a háttérre, vonalas rajzként; a Koncepcionális a lapokat is kifesti, a fény szerint árnyalva, rajtuk ugyanazokkal az élekkel.
+Mindkettő elrejti, amit lapok takarnak. A Takartvonalas csak éleket rajzol a háttérre, vonalas rajzként; a Látványtervi a lapokat is kifesti, a fény szerint árnyalva, rajtuk ugyanazokkal az élekkel.
 
 ### Miért látszanak még vonalak a szilárdtesten át?
 

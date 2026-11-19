@@ -6,7 +6,7 @@ figure: "Egy kis négyzet egy ív elején, az ív mentén kiosztva: Felosztás, 
 sourceHash: "d0d77418d682"
 ---
 
-A KIOSZTÚTVONAL (ARRAYPATH) parancs egy útvonal – vonal, ív, kör vagy vonallánc – mentén másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, bekéri az útvonalgörbét, és azonnal megmutatja a kiosztást: az elemek a kijelölés méretének másfélszeresére vannak egymástól, annyi, amennyi elfér az útvonalon, és mindegyik úgy fordul, ahogy az útvonal. A nyitott útvonal a kijelöléshez közelebbi végétől indul, a kör a 0°-os szögétől az óramutató járásával ellentétesen. Ezután egyetlen prompt élőben szerkeszti a kiosztást az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben. A kijelölt objektumok a helyükön maradnak, a kiosztás első elemeként.
+A KIOSZTÚTVONAL (ARRAYPATH) parancs egy útvonal – vonal, ív, kör vagy vonallánc – mentén másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, bekéri az útvonalgörbét, és azonnal megmutatja a kiosztást: az elemek egymástól a kijelölés méretének másfélszerese távolságra vannak, annyi, amennyi elfér az útvonalon, és mindegyik úgy fordul, ahogy az útvonal. A nyitott útvonal a kattintáshoz közelebbi végétől indul, a kör a 0°-os szögétől az óramutató járásával ellentétesen. Ezután egyetlen prompt élőben szerkeszti a kiosztást az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben. A kijelölt objektumok a helyükön maradnak, a kiosztás első elemeként.
 
 ## Options
 
@@ -46,7 +46,7 @@ Itt a kiosztás az útvonalat olyannak őrzi meg, amilyen a létrehozásakor vol
 
 ### Hogyan lehet megfordítani egy útvonal menti kiosztás irányát?
 
-Válassza ki az útvonalat a másik végének közelében: a nyitott útvonal a kijelöléshez közelebbi végétől indul. A kör mindig a 0°-os szögétől, az óramutató járásával ellentétesen halad.
+Válassza ki az útvonalat a másik végének közelében: a nyitott útvonal a kattintáshoz közelebbi végétől indul. A kör mindig a 0°-os szögétől, az óramutató járásával ellentétesen halad.
 
 ### Hogyan lehet az elemeket egyenletesen elosztani a teljes útvonalon?
 

@@ -8,11 +8,11 @@ sourceHash: "3517c89fd5da"
 
 A BATTEDIT (EATTEDIT) parancs egyetlen blokkreferenciához nyitja meg az AutoCAD Bővített attribútumszerkesztőjét: blokk kiválasztását kéri, majd minden attribútumához megjelenít egy mezőt, a címkéjével feliratozva és az értékével kitöltve, ahogy a szerkesztő Attribútum lapja sorolja fel őket. Írja át az értékeket – a Tab billentyű mezőről mezőre lép –, és az Enter egyetlen lépésben alkalmazza őket, amelyet a <Command id="U" /> parancs visszavon; az Esc semmit sem módosít.
 
-Ha duplán kattint egy attribútumokat tartalmazó referenciára, az a BATTEDIT parancsot futtatja, ahogy az AutoCAD-ben: a parancssor kiírja a parancsot, válaszként a dupla kattintás pontjával, és a párbeszédpanel azonnal megnyílik. A kiválasztás a kurzor alatti objektumot veszi: minden mást, ami nem blokkreferencia, a parancs elutasít, ahogy az attribútumok nélküli blokkot is, és újra kérdez. Csak a kiválasztott referencia változik; a blokk definíciója és a többi referenciája megtartja az értékeit.
+Ha duplán kattint egy attribútumokat tartalmazó referenciára, az a BATTEDIT parancsot futtatja, ahogy az AutoCAD-ben: a parancssor kiírja a parancsot, válaszként a dupla kattintás pontjával, és a párbeszédpanel azonnal megnyílik. A kattintás a kijelölődoboz alatti objektumot választja ki: minden mást, ami nem blokkreferencia, a parancs elutasít, ahogy az attribútumok nélküli blokkot is, és újra kérdez. Csak a kiválasztott referencia változik; a blokk definíciója és a többi referenciája megtartja az értékeit.
 
 ## Missing
 
-A szerkesztő Szövegbeállítások lapja (az egyes attribútumok szövegének stílusa, igazítása, magassága, forgatása, szélességi tényezője és a többi) és Tulajdonságok lapja (fólia, vonaltípus, szín, vonalvastagság), valamint a Blokk kiválasztása gomb. Az ATTEDITHELYBEN (ATTIPEDIT) parancs, amely egyetlen attribútumot a helyén szerkeszt, és a hozzá tartozó Ctrl + dupla kattintás. A nem zárolt attribútum saját fogója a referencián, és a Tulajdonságok paletta attribútumsorai. A `-ATTEDIT` parancs.
+A szerkesztő Szövegbeállítások lapja (az egyes attribútumok szövegének stílusa, igazítása, magassága, forgatása, szélességi tényezője és a többi) és Tulajdonságok lapja (fólia, vonaltípus, szín, vonalvastagság), valamint a Blokk kiválasztása gomb. Az ATTIPEDIT parancs, amely egyetlen attribútumot a helyén szerkeszt, és a hozzá tartozó Ctrl + dupla kattintás. A nem rögzített helyzetű attribútum saját fogója a referencián, és a Tulajdonságok paletta attribútumsorai. A `-ATTEDIT` parancs.
 
 ## Questions
 

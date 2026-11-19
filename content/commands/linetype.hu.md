@@ -1,12 +1,12 @@
 ---
 title: "Vonaltípus az AutoCAD-ben: VTÍPUS (LINETYPE) parancs"
 metaTitle: "Vonaltípus az AutoCAD-ben: VTÍPUS (LINETYPE)"
-description: "Vonaltípus betöltése az AutoCAD VTÍPUS (LINETYPE, VT) parancsával: acadiso.lin, aktuális típus az új objektumokhoz, FÓLIA, és miért folytonos a szaggatott."
-figure: "Egy lemez, amelynek furata aktuális HIDDEN, két tengelye CENTER vonaltípussal készült, majd a VTÍPUS visszaállítva FÓLIA értékre."
+description: "Vonaltípus az AutoCAD VTÍPUS (LINETYPE, VT) parancsával: acadiso.lin, aktuális típus az új objektumokhoz, Fólia szerint, és miért folytonos a szaggatott vonal."
+figure: "Egy lemez, amelynek furatát aktuális HIDDEN, két tengelyét aktuális CENTER vonaltípussal rajzolták, majd a VTÍPUS visszaállítva Fólia értékre."
 sourceHash: "d15530a865c1"
 ---
 
-A VTÍPUS (LINETYPE) parancs azt a vonaltípust állítja be, amellyel az új objektumok rajzolódnak. Az AutoCAD megnyitja a Vonaltípus-kezelőt; a MellowCAD-ben ez még nincs meg, ezért a VTÍPUS az AutoCAD-ben is meglévő parancssori változatot, a <Command id="-LINETYPE" /> parancsot futtatja. Kiírja az aktuális vonaltípust, kezdetben `FÓLIA`, és minden válasz után újra opciót kér, amíg az Enter be nem fejezi. A FÓLIA (Fólia szerint) azt jelenti, hogy minden objektum a fóliája vonaltípusát kapja; a név szerint megadott vonaltípus az objektum sajátja. A teljes futtatás egyetlen lépés, amelyet a <Command id="U" /> parancs visszavon, és ha aposztróffal, egy parancson belül írják be, a vonaltípusa arra vonatkozik, amit az a parancs ezután rajzol.
+A VTÍPUS (LINETYPE) parancs azt a vonaltípust állítja be, amellyel az új objektumok rajzolódnak. Az AutoCAD megnyitja a Vonaltípus-kezelőt; a MellowCAD-ben ez még nincs meg, ezért a VTÍPUS az AutoCAD-ben is meglévő parancssori változatot, a <Command id="-LINETYPE" /> parancsot futtatja. Kiírja az aktuális vonaltípust, kezdetben `Fólia`, és minden válasz után újra opciót kér, amíg az Enter be nem fejezi. A Fólia (Fólia szerint) azt jelenti, hogy minden objektum a fóliája vonaltípusát kapja; a név szerint megadott vonaltípus az objektum sajátja. A teljes futtatás egyetlen lépés, amelyet a <Command id="U" /> parancs visszavon, és ha aposztróffal, egy parancson belül írják be, a vonaltípusa arra vonatkozik, amit az a parancs ezután rajzol.
 
 A rajz saját vonaltípusokat tartalmaz, amelyek vele és a DXF-fájljában együtt mentődnek. Az új rajzban hat van: a Continuous, valamint az AutoCAD acadiso.lin metrikus fájljából a DASHED, a HIDDEN, a CENTER, a PHANTOM és a DASHDOT; a többi az acadiso.lin fájlból tölthető be, a DXF pedig a sajátjait hozza magával, az ISO és az összetett vonaltípusokat is, amelyek szövege – például a GAS_LINE `GAS` felirata – a vonal mentén rajzolódik ki. A minta minden vonalra úgy kerül, ahogy az AutoCAD helyezi el: a hossza mentén középre igazítva, mindkét végén egyforma szakaszokkal, a <Command id="LTSCALE" /> értékével és az objektum saját vonaltípus-léptékével méretezve, amelyet a <Command id="CHPROP" /> parancs és a Tulajdonságok paletta állít be, az új objektumoknak pedig a CELTSCALE ad.
 
@@ -32,11 +32,11 @@ A Vonaltípus-kezelő, valamint vonaltípusok létrehozása vagy betöltése saj
 
 ### Mi az AutoCAD VTÍPUS parancs angolul?
 
-LINETYPE. A magyar AutoCAD-ben a rövidítése `VT`, és a `DPVTÍPUS` is az: írja be valamelyiket, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LINETYPE` is; az angol `LT` a magyar változatban a LETÖR parancsot indítja.
+LINETYPE. A magyar AutoCAD-ben a rövidítése `VT`, és a `DPVTÍPUS` is az: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_LINETYPE` is; az angol `LT` a magyar változatban a LETÖR parancsot indítja.
 
 ### Miért látszik folytonosnak a szaggatott vonalam?
 
-A mintája egy ismétlődésénél rövidebb vonal folytonosnak rajzolódik, ahogy az AutoCAD-ben: a CENTER mintája alapértelmezett léptéknél körülbelül 51 egység hosszú. Növelje vagy csökkentse a <Command id="LTSCALE" /> értékét, hogy a minta illeszkedjen a rajzhoz. Ellenőrizze azt is, hogy az objektum vonaltípusa – vagy FÓLIA beállításnál a fóliájáé – ne Continuous legyen.
+A mintája egy ismétlődésénél rövidebb vonal folytonosnak rajzolódik, ahogy az AutoCAD-ben: a CENTER mintája alapértelmezett léptéknél körülbelül 51 egység hosszú. Növelje vagy csökkentse a <Command id="LTSCALE" /> értékét, hogy a minta illeszkedjen a rajzhoz. Ellenőrizze azt is, hogy az objektum vonaltípusa – vagy Fólia szerinti vonaltípusnál a fóliájáé – ne Continuous legyen.
 
 ### Hogyan lehet módosítani egy meglévő objektum vonaltípusát?
 

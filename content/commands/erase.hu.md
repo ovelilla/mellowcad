@@ -6,7 +6,7 @@ figure: "Egy téglalap és két átlója: az egyik átló kiválasztva, majd Ent
 sourceHash: "2de33971060a"
 ---
 
-A RADÍR (ERASE) parancs eltávolítja a rajzból a kijelölt objektumokat. Jelölje ki őket a `Válasszon objektumokat:` promptnál, rájuk kattintva vagy az AutoCAD bármely kijelölési módjával, köztük ablakkal vagy metsző ablakkal, majd nyomja meg az Enter billentyűt vagy a szóközt: az objektumok eltűnnek, és a parancs többet nem ír ki. Az Esc semmit sem töröl, csak befejezi a parancsot. Ahogy az AutoCAD-ben, a parancs előtt kijelölt objektumok azonnal törlődnek, és a Delete billentyű kijelölt objektumok esetén a RADÍR parancsot futtatja rajtuk. Kijelölés közben a kurzor alatti és a már kiválasztott objektumok halványan jelennek meg, ahogy az AutoCAD is előre mutatja, mit fog törölni. A teljes törlés egyetlen lépés, amely a Vissza paranccsal visszavonható.
+A RADÍR (ERASE) parancs eltávolítja a rajzból a kijelölt objektumokat. Jelölje ki őket a `Válasszon objektumokat:` promptnál, rájuk kattintva vagy az AutoCAD bármely kijelölési módjával, köztük ablakkal vagy metszőablakkal, majd nyomja meg az Enter vagy a Szóköz billentyűt: az objektumok eltűnnek, és a parancs többet nem ír ki. Az Esc semmit sem töröl, csak befejezi a parancsot. Ahogy az AutoCAD-ben, a parancs előtt kijelölt objektumok azonnal törlődnek, és a Delete billentyű kijelölt objektumok esetén a RADÍR parancsot futtatja rajtuk. Kijelölés közben a kurzor alatti és a már kiválasztott objektumok halványan jelennek meg, ahogy az AutoCAD is előre mutatja, mit fog törölni. A teljes törlés egyetlen lépés, amely a Vissza paranccsal visszavonható.
 
 ## Missing
 
@@ -16,7 +16,7 @@ A HOPP (OOPS) parancs, amely az AutoCAD-ben visszahozza a RADÍR paranccsal utol
 
 ### Mi az AutoCAD RADÍR parancs angolul?
 
-ERASE. A magyar AutoCAD-ben a rövidítése `R`, és a `DELETE` is az: írja be valamelyiket, majd nyomja meg az Enter billentyűt vagy a szóközt. Az angol `E` a magyar változatban nem működik; az `_ERASE` az AutoCAD bármely nyelvi változatában működik. Az objektumokat a `Parancs:` promptnál is kijelölheti, majd megnyomhatja a Delete billentyűt.
+ERASE. A magyar AutoCAD-ben a rövidítése `R`, és a `DELETE` is az: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `E` a magyar változatban nem működik; az `_ERASE` az AutoCAD bármely nyelvi változatában működik. Az objektumokat a `Parancs:` promptnál is kijelölheti, majd megnyomhatja a Delete billentyűt.
 
 ### Hogyan lehet mindent törölni a rajzban?
 

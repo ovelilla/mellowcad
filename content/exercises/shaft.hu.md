@@ -6,7 +6,7 @@ figure: "Lépcsős tengely oldalnézetben, 150 hosszú, a hosszai láncméretez�
 sourceHash: "8c649e73bc55"
 ---
 
-Rajzolja meg ezt a lépcsős tengelyt oldalnézetben, milliméterben: 150 hosszú, 30, 40 és 30 átmérővel 40, 60 és 50 hosszon, mindkét végén 2 × 2-es letöréssel. A középvonal fölötti felét egyetlen vonalláncként rajzolja meg, törje le és tükrözze; ezután a tengelyen keresztben látható éleket, a középvonalat és a hosszakat. Az átmérők az itt megadottak.
+Rajzolja meg ezt a lépcsős tengelyt oldalnézetben, milliméterben: 150 hosszú, 30, 40 és 30 átmérővel 40, 60 és 50 hosszon, mindkét végén 2 × 2-es letöréssel. A középvonal fölötti felét egyetlen vonalláncként rajzolja meg, törje le és tükrözze; ezután rajzolja meg a tengelyen keresztben látható éleket és a középvonalat, és méretezze a hosszakat. Az átmérők az itt megadottak.
 
 ## Steps
 
@@ -20,7 +20,7 @@ A <Command id="CHAMFER" /> parancs, majd a <Keyword command="CHAMFER" id="Distan
 
 ### Tükrözze [#mirror]
 
-A <Command id="MIRROR" /> parancs: válassza ki a vonalláncot, nyomja meg az Enter billentyűt, majd adja meg a tükrözés tengelyét a `0,0` ponttól a `150,0` pontig – ez a középvonal –, és az Enter megtartja az eredetit.
+A <Command id="MIRROR" /> parancs: válassza ki a vonalláncot, nyomja meg az Enter billentyűt, majd adja meg a tükrözési vonalat a `0,0` ponttól a `150,0` pontig – ez a középvonal –, végül az Enter billentyűvel tartsa meg az eredetit.
 
 ### Rajzolja meg az éleket [#edges]
 
@@ -32,4 +32,4 @@ A Középvonalak fólián a középvonal: egy vonal a `-8,0` ponttól `166,0` é
 
 ### Méretezze [#dimensions]
 
-A Méretek fólián a <Command id="DIMLINEAR" /> parancs az első hosszra, 40, alul elhelyezve. A <Command id="DIMCONTINUE" /> parancs a második segédvonalától folytatja: `#100,-20`, majd `#150,-15`, az origótól mérve, # jellel beírva, és kétszer Enter a befejezéshez. Egy utolsó <Command id="DIMLINEAR" /> parancs a teljes hosszt adja meg, 150, még lejjebb.
+A Méretek fólián a <Command id="DIMLINEAR" /> parancs az első hosszra, 40, alul elhelyezve. A <Command id="DIMCONTINUE" /> parancs a második méretsegédvonalától folytatja: `#100,-20`, majd `#150,-15`, az origótól mérve, # jellel beírva, a befejezéshez pedig nyomja meg kétszer az Enter billentyűt. Egy utolsó <Command id="DIMLINEAR" /> parancs a teljes hosszt adja meg, 150, még lejjebb.

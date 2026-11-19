@@ -29,12 +29,7 @@ export function HeroViewCube({
   const ring = `rotate(${n(compass.rotation)} ${n(compass.center.x)} ${n(compass.center.y)})`
   return (
     // The cube is geometry: it never mirrors.
-    <svg
-      viewBox="0 0 1 1"
-      aria-hidden="true"
-      direction="ltr"
-      className={className}
-    >
+    <svg viewBox="0 0 1 1" aria-hidden="true" className={className}>
       <ellipse
         cx={n(compass.center.x)}
         cy={n(compass.center.y)}

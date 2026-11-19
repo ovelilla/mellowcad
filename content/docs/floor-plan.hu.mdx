@@ -6,11 +6,11 @@ type: howTo
 sourceHash: "41b2bdb216d4"
 ---
 
-Az alaprajz a ház körülbelül másfél méter magasan elvágva és felülről nézve: minden fal két vonal, köztük a fal vastagsága, a falakban a nyílások, a nyitott helyzetben rajzolt ajtók a nyitási ívükkel, az ablakok és a méretek. Ez az útmutató egy kétszobás, 8 × 6 méteres házat rajzol centiméterben: egy egység egy centiméter, így a külső falak 20, a belső fal 10 vastag. Minden lépés megmutatja a rajzát és a parancssor előzményeit úgy, ahogy beírná őket. [Nyissa meg a szerkesztőt](/hu/draw) az oldal mellett, és kövesse lépésről lépésre.
+Az alaprajz a körülbelül másfél méter magasan elmetszett, felülről nézett ház: minden fal két vonal, köztük a fal vastagsága, a falakban a nyílások, a nyitott helyzetben rajzolt ajtók a nyitási ívükkel, az ablakok és a méretek. Ez az útmutató egy kétszobás, 8 × 6 méteres házat rajzol centiméterben: egy egység egy centiméter, így a külső falak 20, a belső fal 10 vastag. Minden lépés megmutatja a rajzát és a parancssor előzményeit úgy, ahogy beírná őket. [Nyissa meg a szerkesztőt](/hu/draw) az oldal mellett, és kövesse lépésről lépésre.
 
 ## Hozza létre a fóliákat [#layers]
 
-Minden objektumfajta saját fóliára kerül, saját színnel, hogy bármelyiket ki lehessen kapcsolni: Falak, Ajtók, Ablakok és Méretek. Hozza létre őket a fóliák palettáján, a <Command id="LAYER" /> paranccsal, és minden lépés előtt tegye aktuálissá a megfelelőt a Fóliavezérlés listában. Hogy a méretek egy ház léptékében is olvashatók legyenek, állítsa be a méretstílus általános léptékét a <Command id="DIMSTYLE" /> paranccsal: itt 12-re, így a méretszöveg 30 magas.
+Minden objektumfajta saját fóliára kerül, saját színnel, hogy bármelyiket ki lehessen kapcsolni: Falak, Ajtók, Ablakok és Méretek. Hozza létre őket a Fóliatulajdonság-kezelőben (<Command id="LAYER" /> parancs), és minden lépés előtt tegye aktuálissá a megfelelőt a Fóliavezérlés listában. Hogy a méretek egy ház léptékében is olvashatók legyenek, állítsa be a méretstílus teljes léptékét a <Command id="DIMSTYLE" /> paranccsal: itt 12-re, így a méretszöveg 30 magas.
 
 ## Rajzolja meg a külső falakat [#walls]
 
@@ -26,30 +26,30 @@ Egy vonal a <Command id="LINE" /> paranccsal az `500,20` ponttól `0,560` érté
 
 ## Vágja ki a nyílásokat [#openings]
 
-A nyílást két, a falon keresztben húzott vonal, a nyílás két oldala határolja. Rajzolja meg őket a <Command id="LINE" /> paranccsal, majd a <Command id="TRIM" /> paranccsal vágja ki köztük a fal vonalait, mindegyiket egy kattintással: a 90 széles bejáratot a `100,0` ponttól; a 80 széles belső ajtót az `500,200` ponttól; a 120 széles ablakokat a felső falban a `200,580`, a jobb oldaliban a `780,250` ponttól.
+A nyílást a falon keresztben húzott két vonal, a nyílás két kávája határolja. Rajzolja meg őket a <Command id="LINE" /> paranccsal, majd a <Command id="TRIM" /> paranccsal vágja ki köztük a fal vonalait, mindegyiket egy kattintással: a 90 széles bejáratot a `100,0` ponttól; a 80 széles belső ajtót az `500,200` ponttól; a 120 széles ablakokat a felső falban a `200,580`, a jobb oldaliban a `780,250` ponttól.
 
-<Session name="floorPlanOpenings" caption="Négy nyílás: mindegyiknek két oldala, köztük a fal vonalai kivágva." />
+<Session name="floorPlanOpenings" caption="Négy nyílás: mindegyiknek két kávája, köztük a fal vonalai kivágva." />
 
 ## Rajzolja meg az ajtókat [#doors]
 
-Az Ajtók fólián minden ajtó az ajtólapjából áll, amelyet nyitott helyzetben a <Command id="LINE" /> paranccsal rajzol meg, és a nyitási ívéből, amelyet az <Command id="ARC" /> paranccsal: válassza a Középpont opciót, majd adja meg a zsanért középpontként, aztán az ív kezdő- és végpontját. Mindkét végpont már megrajzolt pont, a nyílás oldalának sarka és az ajtólap vége: írja be a `_END` értéket, a Végpont tárgyrasztert egyetlen pontra, és mutasson rá mindkettőre.
+Az Ajtók fólián minden ajtó az ajtólapjából áll, amelyet nyitott helyzetben a <Command id="LINE" /> paranccsal rajzol meg, és a nyitási ívéből, amelyet az <Command id="ARC" /> paranccsal: válassza a Középpont opciót, majd adja meg a zsanért középpontként, aztán az ív kezdő- és végpontját. Mindkét végpont már megrajzolt pont, a káva sarka és az ajtólap vége: mindkettőnél írja be a `_END` értéket – ez a Végpont tárgyraszter egyetlen pontra –, és kattintson a pontra.
 
 <Session name="floorPlanDoors" caption="Minden ajtó: 90°-ra kinyitott ajtólap és a nyitási íve." />
 
 ## Rajzolja meg az ablakokat [#windows]
 
-Az Ablakok fólián egy-egy <Command id="RECTANG" /> parancs tölti ki a nyílásokat oldaltól oldalig, a közepükön átmenő vonal pedig az üveget jelöli.
+Az Ablakok fólián egy-egy <Command id="RECTANG" /> parancs tölti ki a nyílásokat kávától káváig, a közepükön átmenő vonal pedig az üveget jelöli.
 
-<Session name="floorPlanWindows" caption="Az ablakok: egy téglalap minden nyílásban és egy vonal az üvegnek." />
+<Session name="floorPlanWindows" caption="Az ablakok: minden nyílásban egy téglalap és egy vonal az üveg helyén." />
 
 ## Méretezze az alaprajzot [#dimensions]
 
-A Méretek fólián a <Command id="DIMLINEAR" /> paranccsal méretezze a külső méreteket, majd belülről a szobákat: az első szoba szélességét a <Command id="DIMLINEAR" />, a belső falat és a második szobát a <Command id="DIMCONTINUE" /> paranccsal, az origótól mért, `#` jellel beírt pontokkal.
+A Méretek fólián a <Command id="DIMLINEAR" /> paranccsal vegye fel a külső méreteket, majd belülről a szobákat: az első szoba szélességét a <Command id="DIMLINEAR" /> paranccsal, a belső falat és a második szobát a <Command id="DIMCONTINUE" /> paranccsal, az origótól mért, `#` jellel beírt pontokkal.
 
 <Session name="floorPlanDimensions" caption="A méretezett alaprajz: kívül 800 × 600, belül a szobák." />
 
 ## Hogyan tovább [#next]
 
-- Nevezze el a szobákat a <Command id="TEXT" /> paranccsal, és sraffozza be a falakat a <Command id="HATCH" /> paranccsal: mutasson egy pontra a két vonaluk között.
+- Nevezze el a szobákat a <Command id="TEXT" /> paranccsal, és sraffozza be a falakat a <Command id="HATCH" /> paranccsal: kattintson egy pontra a két vonaluk között.
 - Gyakoroljon a [gyakorló feladatokkal](/docs/exercises): az [egyenes lépcső alaprajza](/docs/exercises/stairs) és [a kerek asztal székekkel](/docs/exercises/round-table) szintén centiméterben készül.
 - [Koordináták](/docs/coordinates): a pont beírásának minden módja.

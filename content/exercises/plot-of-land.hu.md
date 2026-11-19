@@ -20,4 +20,4 @@ A <Command id="AREA" /> parancs, majd az <Keyword command="AREA" id="Object" /> 
 
 ### Méretezze [#dimensions]
 
-A Méretek fólián a <Command id="DIMALIGNED" /> parancs, és Enter az első kérdésére: ekkor objektumot kér, és egy oldalra mutatva azt az oldalt méretezi, vele párhuzamosan. Mindegyik méretet a telken kívül helyezze el. A <Command id="DIMANGULAR" /> parancs a `40,0` pontban találkozó két oldalon megadja a köztük lévő szöget, 100°-ot.
+A Méretek fólián indítsa el a <Command id="DIMALIGNED" /> parancsot, és az első promptjára nyomja meg az Enter billentyűt: ekkor objektumot kér, és egy oldalra kattintva azt az oldalt méretezi, vele párhuzamosan. Mindegyik méretet a telken kívül helyezze el. A <Command id="DIMANGULAR" /> parancs a `40,0` pontban találkozó két oldalon megadja a köztük lévő szöget, 100°-ot.

@@ -3,14 +3,14 @@ title: "AutoCAD METSZ (TRIM) parancs"
 description: "Így vág le vonalat az AutoCAD METSZ (TRIM, ME) parancsa: Gyors és Szabványos mód, vágóélek, Felfűz és Metsző, Shift a meghosszabbításhoz. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD METSZ parancs angolul?","answer":"TRIM. A magyar AutoCAD-ben írja be a METSZ nevet vagy az ME rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; az angol változat TR rövidítése a magyarban a -TRASZTER parancsot indítja. A _TRIM az AutoCAD bármely nyelvi változatában működik."},{"question":"Miért törli a METSZ parancs az egész vonalat?","answer":"Mert Gyors módban van, amely az AutoCAD 2021-es verziója óta az alapértelmezés: az olyan objektum kijelölése, amelyet egyik él sem keresztez, törli az objektumot. Válassza a móD, majd a Szabványos opciót, hogy a METSZ parancs az ilyen objektumot meghagyja, és jelezze ezt."},{"question":"Hogyan lehet egyszerre sok vonalat levágni?","answer":"Kattintson egy üres helyre, és adjon meg egy második pontot: minden objektum, amelyet ez a felfűző vonal keresztez, egyetlen lépésben elvágódik. Vagy válassza a Metsző opciót, és húzzon ablakot az eltávolítandó darabok fölé."},{"question":"Hogyan lehet vonalat meghosszabbítani a METSZ paranccsal?","answer":"Tartsa lenyomva a Shift billentyűt, és jelölje ki a vonalat a meghosszabbítandó vége közelében: a legközelebbi élig nyúlik meg, ahogy az ELÉR paranccsal, a következő, Shift nélküli kijelölés pedig ismét vág."}]
+faq: [{"question":"Mi az AutoCAD METSZ parancs angolul?","answer":"TRIM. A magyar AutoCAD-ben a rövidítése ME: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol TR a magyar változatban a TRASZTER parancsot indítja; a teljes METSZ név működik, a _TRIM pedig az AutoCAD bármely nyelvi változatában."},{"question":"Miért törli a METSZ parancs az egész vonalat?","answer":"Mert Gyors módban van, amely az AutoCAD 2021-es verziója óta az alapértelmezett mód: az olyan objektum kijelölése, amelyet egyik él sem keresztez, törli az objektumot. Válassza a móD, majd a Szabványos opciót, hogy a METSZ parancs az ilyen objektumot meghagyja, és jelezze ezt."},{"question":"Hogyan lehet egyszerre sok vonalat levágni?","answer":"Kattintson egy üres helyre, és adjon meg egy második pontot: minden objektum, amelyet ez a felfűző vonal keresztez, egyetlen lépésben elvágódik. Vagy válassza a Metsző opciót, és húzzon ablakot az eltávolítandó darabok fölé."},{"question":"Hogyan lehet vonalat meghosszabbítani a METSZ paranccsal?","answer":"Tartsa lenyomva a Shift billentyűt, és jelölje ki a vonalat a meghosszabbítandó vége közelében: a legközelebbi élig nyúlik meg, ahogy az ELÉR paranccsal, a következő, Shift nélküli kijelölés pedig ismét vág."}]
 ---
 
-A METSZ (TRIM) parancs visszavágja az objektumot odáig, ahol más objektumok keresztezik: jelölje ki az eltávolítandó darabot, és az mindkét oldalon a legközelebbi metszéspontig eltűnik. `Gyors` módban indul, ahogy az AutoCAD-ben: minden objektum vágóél, a semmi által nem keresztezett objektumot pedig egészben törli. Ha a kijelöléskor lenyomva tartja a Shift billentyűt, az objektumot ehelyett a legközelebbi élig meghosszabbítja, ahogy az [`ELÉR`](/docs/commands/extend) parancs. Minden kijelölés egy lépés, amelyet a `VIssza` visszavon; az Enter befejezi a parancsot.
+A METSZ (TRIM) parancs visszavágja az objektumot odáig, ahol más objektumok keresztezik: jelölje ki az eltávolítandó darabot, és az mindkét oldalon a legközelebbi metszéspontig eltűnik. `Gyors` módban indul, ahogy az AutoCAD-ben: minden objektum vágóél, az olyan objektumot pedig, amelyet semmi sem keresztez, egészben törli. Ha a kijelöléskor lenyomva tartja a Shift billentyűt, az objektumot ehelyett a legközelebbi élig meghosszabbítja, ahogy az [`ELÉR`](/docs/commands/extend) parancs. Minden kijelölés egyetlen lépésként vonható vissza; az Enter befejezi a parancsot.
 
 - **Parancs:** `METSZ`
 - **Angolul:** `TRIM`, bármely nyelven `_TRIM` formában beírva
-- **Álnevek:** `ME`
+- **Rövidítések:** `ME`
 - **Panel:** [Módosítás](/docs/commands#modify)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `ME`, és nyomja meg az Enter billentyűt.
 
@@ -40,7 +40,7 @@ Vált a `Gyors` és a `Szabványos` mód között. `Szabványos` módban a METSZ
 
 ### `éL` (`L`) [#edge]
 
-Csak `Szabványos` módban. A `Hosszabbít` beállítással az él ott is vág, ahol meghosszabbítva keresztezné az objektumot – a vonal mindkét irányban, az ív a köre mentén; a `Nemhosszabbít` az alapértelmezés.
+Csak `Szabványos` módban. A `Hosszabbít` beállítással az él ott is vág, ahol meghosszabbítva keresztezné az objektumot – a vonal mindkét irányban, az ív a köre mentén; a `Nemhosszabbít` az alapérték.
 
 ### `Töröl` (`T`) [#erase]
 
@@ -48,11 +48,11 @@ Objektumokat töröl a parancsból való kilépés nélkül: jelölje ki őket, 
 
 ### `VIssza` (`VI`) [#undo]
 
-Akkor jelenik meg, amikor a kérdés már kapott választ – egy kijelölést, egy felfűző vonalat, egy ablakot: visszavonja az utolsó vágást, és ha már nincs mit visszavonni, ezt jelzi.
+Akkor jelenik meg, amikor a prompt már kapott választ – egy kijelölést, egy felfűző vonalat, egy ablakot: visszavonja az utolsó vágást, és ha már nincs mit visszavonni, ezt jelzi.
 
 ## Amit még nem tud [#missing]
 
-Vetítés: az AutoCAD vetítési opciója (Nincs, Fkr, Nézet) nem érhető el, és minden számítás az FKR XY síkjára vetítve történik, ami az AutoCAD alapértelmezésének, az Fkr-nek felel meg. A felfűző vonal még nem húzható a kurzorral, csak pontonként adható meg. A metszési mód és az `éL` beállítása a munkamenet végéig marad meg, míg az AutoCAD az egyik munkamenetből a másikba is megőrzi őket. Az FKR-hez képest ferde objektum a spline-t kivéve nem vág, és nem is vágható.
+Vetítés: az AutoCAD vetítési opciója (Nincs, Fkr, Nézet) nem érhető el, és minden számítás az FKR XY síkjára vetítve történik, ami az AutoCAD alapértékének, az Fkr-nek felel meg. A felfűző vonal még nem húzható a kurzorral, csak pontonként adható meg. A metszési mód és az `éL` beállítása a munkamenet végéig marad meg, míg az AutoCAD az egyik munkamenetből a másikba is megőrzi őket. Az FKR-hez képest ferde objektum a spline-t kivéve nem vág, és nem is vágható.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
 
@@ -60,11 +60,11 @@ Vetítés: az AutoCAD vetítési opciója (Nincs, Fkr, Nézet) nem érhető el, 
 
 ### Mi az AutoCAD METSZ parancs angolul?
 
-TRIM. A magyar AutoCAD-ben írja be a `METSZ` nevet vagy az `ME` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; az angol változat `TR` rövidítése a magyarban a -TRASZTER parancsot indítja. A `_TRIM` az AutoCAD bármely nyelvi változatában működik.
+TRIM. A magyar AutoCAD-ben a rövidítése `ME`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `TR` a magyar változatban a TRASZTER parancsot indítja; a teljes `METSZ` név működik, a `_TRIM` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Miért törli a METSZ parancs az egész vonalat?
 
-Mert Gyors módban van, amely az AutoCAD 2021-es verziója óta az alapértelmezés: az olyan objektum kijelölése, amelyet egyik él sem keresztez, törli az objektumot. Válassza a `móD`, majd a `Szabványos` opciót, hogy a METSZ parancs az ilyen objektumot meghagyja, és jelezze ezt.
+Mert Gyors módban van, amely az AutoCAD 2021-es verziója óta az alapértelmezett mód: az olyan objektum kijelölése, amelyet egyik él sem keresztez, törli az objektumot. Válassza a `móD`, majd a `Szabványos` opciót, hogy a METSZ parancs az ilyen objektumot meghagyja, és jelezze ezt.
 
 ### Hogyan lehet egyszerre sok vonalat levágni?
 

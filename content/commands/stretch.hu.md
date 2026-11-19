@@ -11,7 +11,7 @@ A NYÚJT (STRETCH) parancs elmozdítja a rajznak azt a részét, amelyet a metsz
 
 ### Displacement
 
-A bázispontot kérő kérdésnél választható, vagy ott az Enter billentyűvel, mert ez az alapértelmezés: az elmozdulást vektorként kéri, a `40,0` 40 egységgel nyújt az X tengely mentén. A második pontnál az Enter ugyanezt teszi a bázisponttal: annak a koordinátái adják az elmozdulást.
+A bázispont promptjánál választható, vagy ott az Enter billentyűvel, mert ez az alapérték: az elmozdulást vektorként kéri, a `40,0` 40 egységgel nyújt az X tengely mentén. A második pontnál az Enter ugyanezt teszi a bázisponttal: annak a koordinátái adják az elmozdulást.
 
 ## Missing
 
@@ -21,7 +21,7 @@ Az olyan elliptikus ív, amelynek egyik vége az ablakban van, és amelyet az Au
 
 ### Mi az AutoCAD NYÚJT parancs angolul?
 
-STRETCH. A magyar AutoCAD-ben írja be a `NYÚJT` nevet vagy az `NY` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt. Az angol változat `S` rövidítése a magyarban a SZÍN parancsot indítja. A `_STRETCH` az AutoCAD bármely nyelvi változatában működik.
+STRETCH. A magyar AutoCAD-ben a rövidítése `NY`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `S` a magyar változatban a SZÍN parancsot indítja; a teljes `NYÚJT` név működik, a `_STRETCH` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Miért csak mozgatja az objektumokat a NYÚJT parancs?
 
@@ -31,6 +31,6 @@ Mert az objektum teljes egészében az ablakon belül van, vagy egyenként jelö
 
 Adja meg a bázispontot, majd gépelje be az elmozdulást: bekapcsolt dinamikus bevitel mellett a `40,0` a bázisponthoz képest értendő, és 40 egységgel nyújt az X tengely mentén. Vagy mutasson a kurzorral a kívánt irányba Orto móddal vagy poláris követéssel, és csak a távolságot gépelje be.
 
-### Lehet blokkot nyújtani az AutoCAD-ben?
+### Lehet-e blokkot nyújtani az AutoCAD-ben?
 
 A blokkreferencia egészben mozdul el, ha a beillesztési pontja az ablakon belül van, és a helyén marad, ha nincs: a belseje nem nyúlik. Ha a részeit nyújtaná, előbb vesse szét a <Command id="EXPLODE" /> paranccsal.

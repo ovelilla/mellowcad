@@ -42,7 +42,7 @@ A magasságnál: a tengely másik végpontját kéri be. A henger az alap közé
 
 ## Missing
 
-A henger <Command id="EXPLODE" /> paranccsal történő szétvetése, amelyet az AutoCAD a két véglapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, valamint az alapon túlra húzott magasság. A pontozott méretek, amelyeket az AutoCAD a sugár, az ellipszis pontjai és a tengely megadása közben rajzol. Kerek henger átírása elliptikussá a Tulajdonságok palettán. A kontúrvonalak, amelyeket az AutoCAD `DISPSILH` változója rajzol. Felülnézetben, ahol a felső kör eltakarja az alapét, a Szomszédos tárgyraszter az alap körét találja meg, ahol az AutoCAD a felsőét. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Koncepcionális mellett hiányoznak.
+A henger <Command id="EXPLODE" /> paranccsal történő szétvetése, amelyet az AutoCAD a két véglapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, valamint az alapon túlra húzott magasság. A pontozott méretek, amelyeket az AutoCAD a sugár, az ellipszis pontjai és a tengely megadása közben rajzol. Kerek henger átírása elliptikussá a Tulajdonságok palettán. A kontúrvonalak, amelyeket az AutoCAD `DISPSILH` változója rajzol. Felülnézetben, ahol a felső kör eltakarja az alapét, a Szomszédos tárgyraszter az alap körét találja meg, ahol az AutoCAD a felsőét. Azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból a 2D drótváz, a Takartvonalas és a Látványtervi mellett hiányoznak.
 
 ## Questions
 
@@ -58,6 +58,6 @@ A magasságnál válassza a <Keyword id="Axis" /> opciót, és adja meg a tengel
 
 Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a <Command id="SUBTRACT" /> parancsot: válassza ki a külsőt, Enter, a belsőt, Enter.
 
-### Miért néz ki a hengerem körnek?
+### Miért látszik körnek a henger?
 
 Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a <Command id="-VIEW" /> parancs <Keyword command="VIEW" id="SEiso" /> opciójával vagy a <Command id="3DORBIT" /> paranccsal.

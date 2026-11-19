@@ -6,7 +6,7 @@ figure: "Egy 100 × 60-as lemez 18-as sugarú furattal: a TERÜLET hozzáadja a 
 sourceHash: "a8ad70c08b3a"
 ---
 
-A TERÜLET (AREA) parancs egy zárt alakzat területét és kerületét méri: vagy olyanét, amelyet a sarkaival rajzol körül, vagy egy kiválasztott objektumét. Adja meg az első sarkot, majd a többit: a másodiktól kezdve a kurzoron át zárt alakzat áttetsző zöld kitöltést kap, ahogy az AutoCAD árnyalja. Az Enter vagy a <Keyword id="Total" /> kiírja a parancssorba a `Terület = …, Kerület = …` sort, és befejezi a parancsot; a harmadik sarok előtt az Enter billentyűt elutasítja. A „területet Hozzáad” és a „területet kiVon” opcióval több alakzaton át vezet futó összeget. A számokat a rajz pontosságával írja ki, és az utoljára mért terület a `'TERÜLET` beírásával újra kiolvasható.
+A TERÜLET (AREA) parancs egy zárt alakzat területét és kerületét méri: vagy olyanét, amelyet a sarkaival rajzol körül, vagy egy kiválasztott objektumét. Adja meg az első sarkot, majd a többit: a másodiktól kezdve a kurzoron át lezárt alakzat áttetsző zöld kitöltést kap, ahogy az AutoCAD árnyalja. Az Enter vagy a <Keyword id="Total" /> kiírja a parancssorba a `Terület = …, Kerület = …` sort, és befejezi a parancsot; a harmadik sarok előtt az Enter billentyűt elutasítja. A „területet Hozzáad” és a „területet kiVon” opcióval több alakzaton át vezet futó összeget. A számokat a rajz pontosságával írja ki, és az utoljára mért terület a `'TERÜLET` beírásával újra kiolvasható.
 
 ## Options
 

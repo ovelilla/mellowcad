@@ -13,7 +13,7 @@ Modellezze ezt a csapágybakot milliméterben: 100 × 60-as, 12 vastag alaplap 1
 
 ### Rajzolja meg a felülnézetet [#plan]
 
-A Körvonal fólián a <Command id="RECTANG" /> parancs a <Keyword command="RECTANG" id="Fillet" /> opcióval, `10` sugárral, a `0,0` ponttól a `100,60` pontig, és egy kör a közepén, az `50,30` pontban, az <Keyword command="CIRCLE" id="Diameter" /> opcióval, `40` átmérővel.
+A Körvonal fólián rajzoljon téglalapot a <Command id="RECTANG" /> paranccsal a <Keyword command="RECTANG" id="Fillet" /> opcióval, `10` sugárral, a `0,0` ponttól a `100,60` pontig, és egy kört a közepén, az `50,30` pontban, az <Keyword command="CIRCLE" id="Diameter" /> opcióval, `40` átmérővel.
 
 ### Húzza ki az alaplapot és az agyat [#extrude]
 
@@ -25,11 +25,11 @@ Az <Command id="UNION" /> parancs: válassza ki mindkettőt, és nyomja meg az E
 
 ### Rajzolja meg a hengereket [#holes]
 
-A furatot és egy csavarfuratot hengerként rajzolja meg a <Command id="CYLINDER" /> paranccsal: a furatot az `50,30` pontban, az <Keyword command="CYLINDER" id="Diameter" /> opcióval `20` átmérővel és `40` magasan; egy csavarfuratot a `12,30` pontban, `10` átmérővel és `12` magasan. Ezután a <Command id="COPY" /> paranccsal másolja a csavarfuratot a `12,30` pontból `76,0` értékkel tovább.
+A furatot és egy csavarfuratot hengerként rajzolja meg a <Command id="CYLINDER" /> paranccsal: a furatot az `50,30` pontban, az <Keyword command="CYLINDER" id="Diameter" /> opcióval `20` átmérővel és `40` magassággal; egy csavarfuratot a `12,30` pontban, `10` átmérővel és `12` magassággal. Ezután a <Command id="COPY" /> paranccsal másolja a csavarfuratot a `12,30` pontból `76,0` értékkel tovább.
 
 ### Vonja ki őket [#subtract]
 
-A <Command id="SUBTRACT" /> parancs: válassza ki a testet, és nyomja meg az Enter billentyűt, majd a három hengert, és ismét Enter. A furatok átmennek a testen.
+A <Command id="SUBTRACT" /> parancs: válassza ki a testet, és nyomja meg az Enter billentyűt, majd a három hengert, és ismét nyomja meg az Enter billentyűt. A furatok átmennek a testen.
 
 ### Fordítsa el a nézetet [#view]
 

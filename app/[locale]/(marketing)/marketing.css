@@ -206,6 +206,15 @@ html:not(:lang(pl)) .font-mono:lang(pl) {
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 
+/* A drawing never mirrors: an SVG inherits the page's direction, and a
+   right-to-left one would anchor its text from the right. Here, not as each
+   SVG's direction="ltr": an attribute was written twice (the HTML and the
+   payload) for every one of the landing's hundred drawings, on every page,
+   where only Arabic's needs it (docs/i18n/hu.md, "Going live"). */
+[dir="rtl"] svg {
+  direction: ltr;
+}
+
 /* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
    breaks the joins of a cursive script, and the script has no capitals and no
    italics. Its marks reach far above and below the line, so running text

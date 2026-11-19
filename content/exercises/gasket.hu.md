@@ -1,12 +1,12 @@
 ---
 title: "AutoCAD gyakorló feladat: tömítés"
 metaTitle: "AutoCAD gyakorló feladat kezdőknek: tömítés"
-description: "Tömítés rajzolása AutoCAD-ben: lekerekített lap, központi furat, egyből másolt négy furat, középvonalak és méretek, lépésről lépésre. Gyakorolja ingyen, online."
+description: "Tömítés rajzolása AutoCAD-ben: lekerekített lap, központi furat, egy furatból másolt négy furat, középvonalak és méretek, lépésről lépésre. Ingyen, online."
 figure: "A 120 × 80-as tömítés méretezve."
 sourceHash: "dc5c0e2b45b8"
 ---
 
-Rajzolja meg ezt a tömítést milliméterben: 120 × 80-as lap 10 sugárral lekerekített sarkokkal, a közepén 40-es központi furat és négy 10-es furat, amelyek középpontja 12-re van a szélektől, a központi furat középvonalaival és a méretekkel. Mindent billentyűzetről ír be: egy parancs első pontja oda kerül, ahová beírja, minden további pontot pedig a program az előzőtől mér. A körvonal, a középvonalak és a méretek külön-külön fóliára kerülnek.
+Rajzolja meg ezt a tömítést milliméterben: 120 × 80-as lap 10 sugárral lekerekített sarkokkal, a közepén 40-es központi furat és négy 10-es furat, amelyek középpontja 12-re van a szélektől, a központi furat középvonalaival és a méretekkel. Mindent billentyűzetről kell beírni: egy parancs első pontja oda kerül, ahová beírja, minden további pontot pedig a program az előzőtől mér. A körvonal, a középvonalak és a méretek külön-külön fóliára kerülnek.
 
 ## Steps
 
@@ -28,4 +28,4 @@ Tegye aktuálissá a Középvonalak fóliát. A <Command id="LINE" /> paranccsal
 
 ### Méretezze [#dimensions]
 
-Tegye aktuálissá a Méretek fóliát. A <Command id="DIMLINEAR" /> parancs két pontot kér, majd a méretvonal helyét: a hosszt a `0,10` ponttól `120,0` értékkel tovább, alul elhelyezve; a magasságot a jobb oldalon; a furatok távolságát, 96 és 56. A kérdéseire beírt pont nem érint objektumot, ezért ezek a méretek mind nem asszociatívként jönnek létre, és ezt a parancssor jelzi is. A <Command id="DIMDIAMETER" /> parancs egy kijelölt kör átmérőjét helyezi el: először a központi furatét, aztán az egyik furatét.
+Tegye aktuálissá a Méretek fóliát. A <Command id="DIMLINEAR" /> parancs két pontot kér, majd a méretvonal helyét: a hosszt a `0,10` ponttól `120,0` értékkel tovább, alul elhelyezve; a magasságot a jobb oldalon; a furatok távolságát, 96 és 56. A promptjaira beírt pont nem érint objektumot, ezért ezek a méretek mind nem asszociatívként jönnek létre, és ezt a parancssor jelzi is. A <Command id="DIMDIAMETER" /> parancs egy kijelölt kör átmérőjét helyezi el: először a központi furatét, aztán az egyik furatét.

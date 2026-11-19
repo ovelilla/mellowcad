@@ -6,9 +6,9 @@ figure: "MÉRETKÖZ az első mérettől, a másik kettő kijelölve, a térköz 
 sourceHash: "7ec7c0eb9883"
 ---
 
-A MÉRETKÖZ (DIMSPACE) parancs a párhuzamos hossz- és illesztett méretek közötti távolságot állítja be. Először a bázisméretet kell kiválasztani, amely a helyén marad, majd az elhelyezendő méreteket; az Enter lezárja a kijelölést, és a parancs a térközt kéri. Ezután minden méret méretvonala elmozdul a bázistól elfelé, abban a sorrendben, ahogy a méretek fekszenek, mindegyik ekkora távolságra az előzőtől. A 0 térköz mindet a bázis vonalára rendezi: így a rajzoláskor lépcsőzetesen elhelyezett lánc egyetlen sorként olvasható. Csak a méretvonalak helyét változtatja meg, egyetlen lépésben, amelyet a <Command id="U" /> parancs visszavon.
+A MÉRETKÖZ (DIMSPACE) parancs a párhuzamos hossz- és illesztett méretek közötti távolságot állítja be. Válassza ki a bázisméretet, amely a helyén marad, majd az elhelyezendő méreteket; az Enter lezárja a kijelölést, és a parancs a térközt kéri. Ezután minden méret méretvonala elmozdul a bázistól elfelé, abban a sorrendben, ahogy a méretek fekszenek, mindegyik ekkora távolságra az előzőtől. A 0 térköz mindet a bázis vonalára rendezi: így a rajzoláskor lépcsőzetesen elhelyezett lánc egyetlen sorként olvasható. Csak a méretvonalak helyét változtatja meg, egyetlen lépésben, amelyet a <Command id="U" /> parancs visszavon.
 
-A bázist ki lehet választani kattintással, pont beírásával vagy az Utolsó kijelölési opcióval; ha nem méret, a válasz <Message id="selectedObjectNotDimension" />, és a parancs újra kérdez. A parancs előtt kijelölt objektumok lesznek az elhelyezendő méretek. A bázissal szöget bezáró méretet a parancs beszámítja, de a helyén hagyja, a negatív térközt pedig a <Message id="negativeSpacing" /> üzenettel elutasítja.
+A bázist ki lehet választani kattintással, pont beírásával vagy az `Utolsó` beírásával; ha nem méret, a válasz <Message id="selectedObjectNotDimension" />, és a parancs újra kérdez. A parancs előtt kijelölt objektumok lesznek az elhelyezendő méretek. A bázissal szöget bezáró méretet a parancs beszámítja, de a helyén hagyja, a negatív térközt pedig a <Message id="negativeSpacing" /> üzenettel elutasítja.
 
 ## Options
 

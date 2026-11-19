@@ -1,7 +1,7 @@
 ---
 title: "Vonallánc szerkesztése az AutoCAD-ben: VLEDIT (PEDIT) parancs"
 metaTitle: "AutoCAD VLEDIT (PEDIT): vonallánc szerkesztése"
-description: "Az AutoCAD VLEDIT (PEDIT, rövidítése VE) parancsa: vonalakból vonallánc, Egyesít, széLesség, görbe és spline, csúcspont szerkesztése, Több. Próbálja ki ingyen."
+description: "Az AutoCAD VLEDIT (PEDIT, rövidítése VE) parancsa: vonalakból vonallánc, Egyesít, Szélesség, Görbe és Spline, csúcspont szerkesztése, Több. Próbálja ki ingyen."
 figure: "Három, végpontjaival egymáshoz csatlakozó vonal: a VLEDIT az elsőt vonallánccá alakítja, hozzáfűzi a másik kettőt, és 2-es szélességet ad neki."
 sourceHash: "bdc0bf10ac09"
 ---
@@ -28,7 +28,7 @@ Egyetlen szélesség minden szakaszra, beírva vagy két ponttal mérve; a 0 meg
 
 ### Edit vertex
 
-X jelet tesz az első csúcspontra, és megkérdezi, mi történjen ott: a <Keyword id="Next" /> és az <Keyword id="Previous" /> lépteti az X-et, a <Keyword id="Move" /> elmozdítja a csúcspontot, a <Keyword id="Insert" /> újat szúr be utána, a <Keyword id="Break" /> és az <Keyword id="Straighten" /> megjegyzi a csúcspontot, Ön egy másikra lépteti az X-et, és a <Keyword id="Go" /> a kettő között megtöri a vonalláncot, vagy egyetlen egyenes szakasszá alakítja, ami közöttük van, a <Keyword id="Width" /> a következő szakasz kezdő- és végszélességét állítja be, az <Keyword id="Tangent" /> irányt ad a csúcspontnak egy későbbi görbeillesztéshez, a <Keyword id="eXit" /> pedig visszalép.
+X jelet tesz az első csúcspontra, és megkérdezi, mi történjen ott: a <Keyword id="Next" /> és az <Keyword id="Previous" /> lépteti az X-et, a <Keyword id="Move" /> elmozdítja a csúcspontot, a <Keyword id="Insert" /> újat szúr be utána, a <Keyword id="Break" /> és az <Keyword id="Straighten" /> megjegyzi a csúcspontot, majd miután az X-et egy másikra léptette, a <Keyword id="Go" /> a kettő között megtöri a vonalláncot, vagy egyetlen egyenes szakasszá alakítja, ami közöttük van, a <Keyword id="Width" /> a következő szakasz kezdő- és végszélességét állítja be, az <Keyword id="Tangent" /> irányt ad a csúcspontnak egy későbbi görbeillesztéshez, a <Keyword id="eXit" /> pedig visszalép.
 
 ### Fit
 
@@ -36,7 +36,7 @@ X jelet tesz az első csúcspontra, és megkérdezi, mi történjen ott: a <Keyw
 
 ### Spline
 
-B-spline görbét illeszt a vonalláncra, amelyet a csúcspontjai kereteznek, és nem halad át rajtuk: másod- vagy harmadfokút a SPLINETYPE szerint, a SPLINESEGS szerinti finomsággal. A 3D vonalláncnál ez a <Keyword id="Spline curve" />. A SPLINE parancs Objektum opciója az ilyen vonalláncot valódi spline-ná alakítja.
+B-spline görbét illeszt a vonalláncra; a görbét a csúcspontok keretezik, nem halad át rajtuk: másod- vagy harmadfokút a SPLINETYPE szerint, a SPLINESEGS szerinti finomsággal. A 3D vonalláncnál ez a <Keyword id="Spline curve" />. A SPLINE parancs Objektum opciója az ilyen vonalláncot valódi spline-ná alakítja.
 
 ### Decurve
 
@@ -56,7 +56,7 @@ Visszavonja ennek a futásnak az utolsó opcióját, és tovább kérdez.
 
 ## Missing
 
-PEDITACCEPT: a vonal, ív vagy spline kiválasztásakor átalakítás előtt mindig rákérdez. PLINECONVERTMODE: a spline egyenes szakaszokból álló vonalláncra alakul, sokkal több szakaszból, mint amennyit az AutoCAD készít, és soha nem ívekből. A görbeillesztett vonallánc a Tulajdonságok palettán egyszerű vonalláncként jelenik meg, az AutoCAD 2D vonallánc címe és Görbe/Simítás sora nélkül. Ha a Több opcióval csak 3D vonalláncokat választ ki, a 3D promptot kapja, ahol az AutoCAD a 2D promptot kérdezi. Szerkeszthető hálók nincsenek.
+PEDITACCEPT: a vonal, ív vagy spline kiválasztásakor átalakítás előtt mindig rákérdez. PLINECONVERTMODE: a spline egyenes szakaszokból álló vonalláncra alakul, sokkal több szakaszból, mint amennyit az AutoCAD készít, és soha nem ívekből. A görbeillesztett vonallánc a Tulajdonságok palettán egyszerű vonalláncként jelenik meg, az AutoCAD 2D vonallánc címe és Görbe/Simítás sora nélkül. Ha a Több opcióval csak 3D vonalláncokat választ ki, a 3D promptot kapja, míg az AutoCAD a 2D promptot kérdezi. Szerkeszthető hálók nincsenek.
 
 ## Questions
 

@@ -4,10 +4,10 @@ metaTitle: "AutoCAD NNÉZET (PLAN): normálnézet, felülnézet"
 description: "Vissza a normálnézetbe az AutoCAD NNÉZET (PLAN) parancsával: merőlegesen felülről az aktuális FKR-re, egy mentett FKR-re vagy a VKR-re. Próbálja ki ingyen."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Hogyan lehet visszatérni a normálnézetbe az AutoCAD-ben?","answer":"Írja be az NNÉZET parancsot (angolul _PLAN), és nyomja meg kétszer az Enter billentyűt: a második Enter az Aktuális opciót választja. Ha az FKR el van forgatva, és a világ normálnézetét szeretné, válassza helyette a vilÁg opciót."},{"question":"Melyik parancs adja az FKR normálnézetét?","answer":"Az NNÉZET az Aktuális opcióval: felülről néz az aktuális FKR-re, X tengelyével jobbra. Előbb forgassa el az FKR-t az FKR paranccsal, majd futtassa az NNÉZET parancsot, és nyomja meg kétszer az Enter billentyűt: az elforgatott alaprajzon úgy rajzolhat, mintha egyenes állású lenne."},{"question":"Miért van elforgatva a rajz normálnézetben?","answer":"A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a vilÁg opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az FKR és az Enter az FKR-t is visszaállítja Világra."},{"question":"Megváltoztatja-e az NNÉZET az FKR-t?","answer":"Nem. Csak a nézetet fordítja el; az FKR változatlan marad. A NÉZET merőleges vetületi nézetei azok, amelyek az FKR-t is elforgatják."}]
+faq: [{"question":"Hogyan lehet visszatérni a normálnézetbe az AutoCAD-ben?","answer":"Írja be az NNÉZET parancsot (angolul _PLAN), és nyomja meg kétszer az Enter billentyűt: a második Enter az Aktuális opciót választja. Ha az FKR el van forgatva, és a világ normálnézetét szeretné, válassza helyette a vilÁg opciót."},{"question":"Melyik parancs adja az FKR normálnézetét?","answer":"Az NNÉZET az Aktuális opcióval: felülről néz az aktuális FKR-re, X tengelyével jobbra. Előbb forgassa el az FKR-t az FKR paranccsal, majd futtassa az NNÉZET parancsot, és nyomja meg kétszer az Enter billentyűt: az elforgatott alaprajzon úgy rajzolhat, mintha egyenes állású lenne."},{"question":"Miért van elforgatva a rajz normálnézetben?","answer":"A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a vilÁg opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az FKR és az Enter az FKR-t is visszaállítja a világ koordináta-rendszerre."},{"question":"Megváltoztatja-e az NNÉZET az FKR-t?","answer":"Nem. Csak a nézetet fordítja el; az FKR változatlan marad. A NÉZET merőleges vetületi nézetei azok, amelyek az FKR-t is elforgatják."}]
 ---
 
-Az NNÉZET (PLAN) parancs merőlegesen felülről néz egy FKR XY síkjára, az X tengelyével jobbra mutatva: ez a normálnézet, ahogy rajzolt. Megkérdezi, melyik FKR-re – az aktuálisra, egy mentettre vagy a világéra –, és az Enter az aktuálisat választja. Ezután a teljes rajzot a nézetbe illeszti, és `Modell regenerálása.` üzenetet ír ki.
+Az NNÉZET (PLAN) parancs merőlegesen felülről néz egy FKR XY síkjára, az X tengelyével jobbra mutatva: ez a normálnézet, amelyben rajzolt. Megkérdezi, melyik FKR-re – az aktuálisra, egy mentettre vagy a világéra –, és az Enter az aktuálisat választja. Ezután a teljes rajzot a nézetbe illeszti, és `Modell regenerálása.` üzenetet ír ki.
 
 A rajzban semmi sem mozdul, és az FKR is változatlan marad: az NNÉZET csak a nézetet fordítja el. Egyetlen visszavonási lépés, így a `T` visszaállítja a nézetet, a [`ZOOM`](/docs/commands/zoom) `Előző` pedig az előző nézetre lép vissza. Ezzel lehet visszatérni a normálnézetbe a [`3DKERINGÉS`](/docs/commands/3dorbit) vagy egy izometrikus [`NÉZET`](/docs/commands/view) után. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
@@ -38,7 +38,7 @@ A világ koordináta-rendszer normálnézete: a rajz úgy, ahogy kezdetben volt,
 
 ## Amit még nem tud [#missing]
 
-Ha a rajz üres, az NNÉZET nem változtat a nagyításon, ahol az AutoCAD a rajzhatárokat illeszti a nézetbe.
+Ha a rajz üres, az NNÉZET nem változtat a nagyításon, míg az AutoCAD a rajzhatárokat illeszti a nézetbe.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta--fr-repere--it-piana--de-drsicht--ru-план--pl-plan--cs-půdorys--hu-nnézet)
 
@@ -54,7 +54,7 @@ Az NNÉZET az `Aktuális` opcióval: felülről néz az aktuális FKR-re, X teng
 
 ### Miért van elforgatva a rajz normálnézetben?
 
-A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a `vilÁg` opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az [`FKR`](/docs/commands/ucs) és az Enter az FKR-t is visszaállítja Világra.
+A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a `vilÁg` opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az [`FKR`](/docs/commands/ucs) és az Enter az FKR-t is visszaállítja a világ koordináta-rendszerre.
 
 ### Megváltoztatja-e az NNÉZET az FKR-t?
 

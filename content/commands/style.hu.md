@@ -8,7 +8,7 @@ sourceHash: "8c15a1a95e66"
 
 A STÍLUS (STYLE) parancs a rajz szövegstílusait kezeli: azt, amivel a szöveg íródik. Minden szövegnek, bekezdéses szövegnek és attribútumnak van stílusa, az újak pedig az aktuális stílust kapják, amely új rajzban a Standard. Az AutoCAD STÍLUS parancsa a Szövegstílus párbeszédpanelt nyitja meg; a MellowCAD-ben ilyen még nincs, ezért a STÍLUS parancs a Stílusok paletta szövegtáblázatát nyitja meg, ahol a <Command id="DIMSTYLE" /> parancs méretstílusai is vannak. Az előtte kijelölt halmazt elveti, ahogy a párbeszédpanel is, és aposztróffal egy parancson belül begépelve (`'STÍLUS`) úgy nyílik meg, hogy az a parancs nem fejeződik be.
 
-A táblázat felsorolja a stílusokat, és megjelöli az aktuálisat. Az Új a kijelölt stílus másolatát készíti el `style1`, `style2`… néven, az első szabad néven, és aktuálissá teszi. Az Aktuálissá tétel egy stílust tesz aktuálissá; a stílus neve átírható, a már használt nevet pedig, kis- és nagybetűtől függetlenül, elutasítja, ahogy az AutoCAD is. A Töröl eltávolít egy stílust, de a Standard stílust, az aktuális stílust és a használatban lévőt soha. A Magasság rögzített magasságot ad a stílusnak: a 0, az alapértelmezés, szabadon hagyja, így a <Command id="TEXT" /> parancs minden alkalommal rákérdez; beállított magasság esetén a SZÖVEG parancs nem kérdez. Minden változtatás egy lépés, amelyet a <Command id="U" /> parancs visszavon. Kijelölt szövegek esetén a Tulajdonságok paletta Stílus sora egy lépésben más stílust ad nekik.
+A táblázat felsorolja a stílusokat, és megjelöli az aktuálisat. Az Új a kijelölt stílus másolatát készíti el `style1`, `style2`… néven, az első szabad néven, és aktuálissá teszi. Az Aktuálissá tétel egy stílust tesz aktuálissá; a stílus neve átírható, a már használt nevet pedig, kis- és nagybetűtől függetlenül, elutasítja, ahogy az AutoCAD is. A Töröl eltávolít egy stílust, de a Standard stílust, az aktuális stílust és a használatban lévőt soha. A Magasság rögzített magasságot ad a stílusnak: a 0, az alapérték, szabadon hagyja, így a <Command id="TEXT" /> parancs minden alkalommal rákérdez; beállított magasság esetén a SZÖVEG parancs nem kérdez. Minden változtatás egy lépés, amelyet a <Command id="U" /> parancs visszavon. Kijelölt szövegek esetén a Tulajdonságok paletta Stílus sora egy lépésben más stílust ad nekik.
 
 ## Missing
 
@@ -18,7 +18,7 @@ A Szövegstílus párbeszédpanel és az előnézete: a STÍLUS parancs helyette
 
 ### Mi az AutoCAD STÍLUS parancs angolul?
 
-STYLE. A magyar AutoCAD-ben írja be a `STÍLUS` nevet vagy az `ST` rövidítést, amely az angol változatban is ugyanez, és nyomja meg az Enter billentyűt vagy a szóközt; a `DPSTÍLUS` is működik. A `_STYLE` az AutoCAD bármely nyelvi változatában működik.
+STYLE. A magyar AutoCAD-ben a rövidítése `ST`, akárcsak az angolban, és a `DPSTÍLUS` is működik: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes `STÍLUS` név is működik, a `_STYLE` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Hogyan lehet szövegstílust váltani az AutoCAD-ben?
 

@@ -2,11 +2,11 @@
 title: "AutoCAD TOLHÚZ (PRESSPULL) parancs"
 metaTitle: "AutoCAD TOLHÚZ (PRESSPULL): lapok és területek"
 description: "Az AutoCAD TOLHÚZ (PRESSPULL) parancsa benyomja vagy kihúzza, amire kattint: zárt objektumot, objektumok közti területet, 3D szilárdtest lapját. Ingyen, online."
-figure: "Egy téglalap és egy kör közötti terület 8-cal lefelé nyomva: furatos alaplap délkeletről nézve, Takartvonalas vizuális stílusban."
+figure: "Egy téglalap és egy kör közötti terület 8-cal lefelé nyomva: furatos alaplap délkeletről nézve, Takartvonalas látványstílusban."
 sourceHash: "b806d59060e1"
 ---
 
-A TOLHÚZ (PRESSPULL) parancs kihúzza, amire kattint: egy zárt objektumot, egy területet, amelyet a kattintás helye körül objektumok zárnak be, vagy egy 3D szilárdtest sík lapját. Kattintson, majd írja be a magasságot, vagy mozgassa a kurzort, és kattintson: a pozitív magasság kihúz, a negatív benyom. A zárt objektumból vagy a területből új szilárdtest lesz, ugyanaz, amelyet a <Command id="EXTRUDE" /> készítene, és az objektumok megmaradnak; a terület szigetei lyukak lesznek benne, ahogy a mintában. A lap a hasábját hozzáadja a szilárdtestéhez, vagy kivonja belőle: a téglatest kihúzott teteje magasabbá teszi a testet. A prompt a következő kattintáshoz újra megjelenik, amíg meg nem nyomja az Enter billentyűt, és a teljes futás egyetlen lépés, amelyet a Vissza visszavon.
+A TOLHÚZ (PRESSPULL) parancs kihúzza, amire kattint: egy zárt objektumot, egy területet, amelyet a kattintás helye körül objektumok zárnak be, vagy egy 3D szilárdtest sík lapját. Kattintson, majd írja be a magasságot, vagy mozgassa a kurzort, és kattintson: a pozitív magasság kihúz, a negatív benyom. A zárt objektumból vagy a területből új szilárdtest lesz, ugyanaz, amelyet a <Command id="EXTRUDE" /> készítene, és az objektumok megmaradnak; a terület szigetei lyukak lesznek benne, ahogy a mintában. A lap a hasábját hozzáadja a szilárdtestéhez, vagy kivonja belőle: a téglatest kihúzott teteje magasabbá teszi a testet. A prompt a következő kattintáshoz újra megjelenik, amíg meg nem nyomja az Enter billentyűt, és a teljes futás egyetlen lépésként vonható vissza.
 
 Ha lenyomva tartja a Ctrl billentyűt, kiemelődik az a lap, amelyet a kattintás megfogna; a Ctrl+kattintás ehelyett párhuzamosan eltolja a lapot, a szomszédos lapjai pedig vele mozdulnak, hogy találkozzanak vele, így a ferde oldal megtartja a lejtését. Ahogy az AutoCAD-ben, a TOLHÚZ kattintásokkal dolgozik: az első promptnál beírt számra vagy pontra <Message id="presspullClick" /> a válasz, és a prompt újra megjelenik.
 
@@ -24,7 +24,7 @@ Az ívelt lap, amelyet az AutoCAD szintén eltol: itt a kattintás nem talál la
 
 ### Mi a különbség a TOLHÚZ és a KIHÚZ (EXTRUDE) parancs között?
 
-A <Command id="EXTRUDE" /> kiválasztott zárt objektumokkal dolgozik, a DELOBJ szerint törli őket, és irányt, kúposságot és kifejezést is kínál. A TOLHÚZ kattintásokkal dolgozik – egy zárt objektumra, több objektum belsejében lévő területre vagy egy szilárdtest lapjára, amelyet hozzáad a szilárdtesthez vagy kivág belőle –, és megtartja az objektumokat. Objektumból mindkettő ugyanazt a szilárdtestet készíti.
+A <Command id="EXTRUDE" /> kiválasztott zárt objektumokkal dolgozik, a DELOBJ szerint törli őket, és irányt, szűkítési szöget és kifejezést is kínál. A TOLHÚZ kattintásokkal dolgozik – egy zárt objektumra, több objektum belsejében lévő területre vagy egy szilárdtest lapjára, amelyet hozzáad a szilárdtesthez vagy kivág belőle –, és megtartja az objektumokat. Objektumból mindkettő ugyanazt a szilárdtestet készíti.
 
 ### Hogyan lehet kihúzni egy szilárdtest lapját?
 
@@ -32,7 +32,7 @@ Futtassa a TOLHÚZ parancsot, kattintson a lapra, és adja meg a távolságot: a
 
 ### Miért nem működik a TOLHÚZ?
 
-Zárt dologra kell kattintani. A TOLHÚZ az első promptnál beírt számra vagy pontra, a nyitott objektumra vagy ívelt lapra mért kattintásra <Message id="presspullClick" /> üzenettel válaszol, és újra kérdez. Kattintson egy zárt objektumra, egy felülnézetben objektumok által körülzárt terület belsejébe, vagy egy szilárdtest sík lapjára.
+Zárt dologra kell kattintani. A TOLHÚZ az első promptnál beírt számra vagy pontra, a nyitott objektumra vagy ívelt lapra történő kattintásra <Message id="presspullClick" /> üzenettel válaszol, és újra kérdez. Kattintson egy zárt objektumra, egy felülnézetben objektumok által körülzárt terület belsejébe, vagy egy szilárdtest sík lapjára.
 
 ### Van rövidítése a TOLHÚZ parancsnak?
 

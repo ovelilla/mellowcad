@@ -4,7 +4,7 @@ metaTitle: "3D henger az AutoCAD-ben: HENGER (CYLINDER)"
 description: "3D henger rajzolása az AutoCAD-ben a HENGER (CYLINDER, HEN) paranccsal, promptról promptra: alap, sugár, magasság, 3P, 2P, Éés, Elliptikus és tengely végpontja."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD HENGER parancs angolul, és mi a rövidítése?","answer":"Angolul CYLINDER, a magyar AutoCAD-ben HENGER: írja be a HEN rövidítést, és nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az alap középpontját, a sugarat és a magasságot: a 0,0, a 20 és a 40 a munkamenet hengerét rajzolja meg. Az angol CYL a magyar AutoCAD-ben nem működik; a _CYLINDER az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet vízszintes hengert rajzolni?","answer":"A magasságnál válassza a Tengely opciót, és adja meg a tengely másik végpontját: a 0,0,0 pontban lévő alapból a 60,0,0 pont az X tengely mentén fekteti le a hengert."},{"question":"Hogyan lehet üreges hengert vagy csövet készíteni?","answer":"Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a KIVON parancsot: válassza ki a külsőt, Enter, a belsőt, Enter."},{"question":"Miért néz ki a hengerem körnek?","answer":"Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a -NÉZET parancs DKizo opciójával vagy a 3DKERINGÉS paranccsal."}]
+faq: [{"question":"Mi az AutoCAD HENGER parancs angolul, és mi a rövidítése?","answer":"Angolul CYLINDER, a magyar AutoCAD-ben HENGER: írja be a HEN rövidítést, és nyomja meg az Enter vagy a Szóköz billentyűt, majd adja meg az alap középpontját, a sugarat és a magasságot: a 0,0, a 20 és a 40 a munkamenet hengerét rajzolja meg. Az angol CYL a magyar AutoCAD-ben nem működik; a _CYLINDER az AutoCAD bármely nyelvén igen."},{"question":"Hogyan lehet vízszintes hengert rajzolni?","answer":"A magasságnál válassza a Tengely opciót, és adja meg a tengely másik végpontját: a 0,0,0 pontban lévő alapból a 60,0,0 pont az X tengely mentén fekteti le a hengert."},{"question":"Hogyan lehet üreges hengert vagy csövet készíteni?","answer":"Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a KIVON parancsot: válassza ki a külsőt, Enter, a belsőt, Enter."},{"question":"Miért látszik körnek a henger?","answer":"Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a -NÉZET parancs DKizo opciójával vagy a 3DKERINGÉS paranccsal."}]
 ---
 
 A HENGER (CYLINDER) parancs 3D szilárdtest hengert rajzol: adja meg az alapja középpontját, majd a sugarat, végül a magasságot. Az alap az FKR XY síkjában, a középpont Z magasságában fekszik, a magasság pedig a Z tengely mentén emelkedik; a negatív lefelé mutat, egy pont pedig az alaptól mért távolságával adja meg, ahogy a [`TTEST`](/docs/commands/box) parancsnál. A sugarat és a magasságot alapértelmezésként kínálja fel, amelyet az Enter elfogad; ezeken a többi alaptesttel és a [`KIHÚZ`](/docs/commands/extrude) paranccsal osztozik. A henger az aktuális fólián jön létre, és a Vissza egyetlen lépésben visszavonja.
@@ -13,7 +13,7 @@ A henger megőrzi a méreteit: a [`LISTA`](/docs/commands/list) parancs kiírja 
 
 - **Parancs:** `HENGER`
 - **Angolul:** `CYLINDER`, bármely nyelven `_CYLINDER` formában beírva
-- **Álnevek:** `HEN`
+- **Rövidítések:** `HEN`
 - **Panel:** [Rajz](/docs/commands#draw)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `HEN`, és nyomja meg az Enter billentyűt.
 
@@ -55,7 +55,7 @@ A magasságnál: a tengely másik végpontját kéri be. A henger az alap közé
 
 ## Amit még nem tud [#missing]
 
-A henger [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amelyet az AutoCAD a két véglapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, valamint az alapon túlra húzott magasság. A pontozott méretek, amelyeket az AutoCAD a sugár, az ellipszis pontjai és a tengely megadása közben rajzol. Kerek henger átírása elliptikussá a Tulajdonságok palettán. A kontúrvonalak, amelyeket az AutoCAD `DISPSILH` változója rajzol. Felülnézetben, ahol a felső kör eltakarja az alapét, a Szomszédos tárgyraszter az alap körét találja meg, ahol az AutoCAD a felsőét. Azok a látványstílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból a 2D drótváz, a Takartvonalas és a Koncepcionális mellett hiányoznak.
+A henger [`SZÉTVET`](/docs/commands/explode) paranccsal történő szétvetése, amelyet az AutoCAD a két véglapjára és egy felületre bont: a MellowCAD-ben nincsenek felületek, így kiírja, hogy nem tudta szétvetni. Az aktív fogó Mozgatás, Forgatás, Lépték és Tükrözés módja, valamint az alapon túlra húzott magasság. A pontozott méretek, amelyeket az AutoCAD a sugár, az ellipszis pontjai és a tengely megadása közben rajzol. Kerek henger átírása elliptikussá a Tulajdonságok palettán. A kontúrvonalak, amelyeket az AutoCAD `DISPSILH` változója rajzol. Felülnézetben, ahol a felső kör eltakarja az alapét, a Szomszédos tárgyraszter az alap körét találja meg, ahol az AutoCAD a felsőét. Azok a látványstílusok, amelyek az [`LSAKTUÁLIS`](/docs/commands/vscurrent) parancsból a 2D drótváz, a Takartvonalas és a Látványtervi mellett hiányoznak.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val--hu-henger--hen)
 
@@ -73,7 +73,7 @@ A magasságnál válassza a `Tengely` opciót, és adja meg a tengely másik vé
 
 Rajzoljon két hengert ugyanabból a középpontból, a belsőt keskenyebbre, majd futtassa a [`KIVON`](/docs/commands/subtract) parancsot: válassza ki a külsőt, Enter, a belsőt, Enter.
 
-### Miért néz ki a hengerem körnek?
+### Miért látszik körnek a henger?
 
 Felülről, felülnézetben látja. Fordítsa el a nézetet: a ViewCube egyik sarkával, a `-NÉZET` parancs `DKizo` opciójával vagy a [`3DKERINGÉS`](/docs/commands/3dorbit) paranccsal.
 

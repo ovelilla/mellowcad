@@ -2,11 +2,11 @@
 title: "AutoCAD MEGFORGAT (REVOLVE) parancs: forgástest"
 metaTitle: "AutoCAD MEGFORGAT (REVOLVE): forgástest 3D-ben"
 description: "Az AutoCAD MEGFORGAT (REVOLVE, rövidítése MFR) parancsa egy 2D profilt tengely körül 3D szilárdtestté forgat: tengely, Objektum, X, Y, Z. Próbálja ki ingyen."
-figure: "Egy karimás profil egy teljes fordulattal megforgatva az Y tengely körül: orsó, délkeletről nézve, Takartvonalas vizuális stílusban."
+figure: "Egy karimás profil egy teljes fordulattal megforgatva az Y tengely körül: orsó, délkeletről nézve, Takartvonalas látványstílusban."
 sourceHash: "dc0576311912"
 ---
 
-A MEGFORGAT (REVOLVE) parancs zárt 2D profilokat forgat meg egy tengely körül, és 3D szilárdtestet készít belőlük: a tengelyen fekvő élű téglalapból henger lesz, a tengely mellett fekvő körből gyűrű. Válassza ki a profilokat – köröket, ellipsziseket, zárt vonalláncokat vagy spline-okat, lemezeket –, és nyomja meg az Enter billentyűt; adja meg a tengelyt két ponttal vagy valamelyik opciójával, majd a szöget, ahol az Enter teljes fordulatot jelent. Minden profilból szilárdtest lesz az aktuális fólián, a profil pedig törlődik, ahogy a DELOBJ alapértéke előírja. A teljes parancs egyetlen lépés, amelyet a Vissza visszavon.
+A MEGFORGAT (REVOLVE) parancs zárt 2D profilokat forgat meg egy tengely körül, és 3D szilárdtestet készít belőlük: a tengelyen fekvő élű téglalapból henger lesz, a tengely mellett fekvő körből gyűrű. Válassza ki a profilokat – köröket, ellipsziseket, zárt vonalláncokat vagy spline-okat, lemezeket –, és nyomja meg az Enter billentyűt; adja meg a tengelyt két ponttal vagy valamelyik opciójával, majd a szöget, ahol az Enter teljes fordulatot jelent. Minden profilból szilárdtest lesz az aktuális fólián, a profil pedig törlődik, ahogy a DELOBJ alapértéke előírja. A teljes parancs egyetlen lépésként vonható vissza.
 
 A tengelynek a profil síkjában kell feküdnie, és a teljes profilnak az egyik oldalán, különben a parancs <Message id="revolveOneSide" /> üzenettel befejeződik, mielőtt a szöget kérné. A szög a jobbkéz-szabály szerint forgat a tengely körül, annak első pontjától a második felé; a negatív szög a másik irányba forgat. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges: a nyitott profilokat, amelyekből az AutoCAD felületet készít, elutasítja.
 
@@ -14,7 +14,7 @@ A tengelynek a profil síkjában kell feküdnie, és a teljes profilnak az egyik
 
 ### MOde
 
-A <Keyword id="SOlid" /> vagy a <Keyword id="SUrface" /> módot kéri, ahogy a <Command id="EXTRUDE" />: mivel felület objektumok még nincsenek, csak a <Keyword id="SOlid" />, az alapérték, fogadható el.
+A <Keyword id="SOlid" /> vagy a <Keyword id="SUrface" /> módot kéri, ahogy a <Command id="EXTRUDE" />: mivel felületobjektumok még nincsenek, csak a <Keyword id="SOlid" />, az alapérték, fogadható el.
 
 ### Object
 
@@ -46,7 +46,7 @@ A szög számtani kifejezésként, ahogy a <Command id="EXTRUDE" /> parancsban.
 
 ## Missing
 
-A profil síkján kívül eső tengely, amely körül az AutoCAD felületté forgatja a profilt: itt a MEGFORGAT <Message id="revolveUnable" /> üzenettel befejeződik. Az ellipszisív vagy a szilárdtest éle mint Objektum tengely. A Felület mód és a nyitott profilok, mivel felület objektumok még nincsenek. A kurzorral együtt forduló előnézet: amíg a szöget adja meg, a teljes fordulat látszik. A megforgatott szilárdtest szétvetése a <Command id="EXPLODE" /> paranccsal, amelyet az AutoCAD felületekre és lemezekre bont. A fogói, és a szögének szerkesztése a Tulajdonságok palettán.
+A profil síkján kívül eső tengely, amely körül az AutoCAD felületté forgatja a profilt: itt a MEGFORGAT <Message id="revolveUnable" /> üzenettel befejeződik. Az ellipszisív vagy a szilárdtest éle mint Objektum tengely. A Felület mód és a nyitott profilok, mivel felületobjektumok még nincsenek. A kurzorral együtt forduló előnézet: amíg a szöget adja meg, a teljes fordulat látszik. A megforgatott szilárdtest szétvetése a <Command id="EXPLODE" /> paranccsal: az AutoCAD felületekre és lemezekre bontja. A fogói, és a szögének szerkesztése a Tulajdonságok palettán.
 
 ## Questions
 
@@ -64,4 +64,4 @@ Leggyakrabban azért, mert a tengely keresztezi a profilt: a MEGFORGAT <Message 
 
 ### Hogyan lehet csak egy fordulat részével megforgatni?
 
-Írja be a szöget, például 90-et vagy 270-et a szögpromptnál. A <Keyword id="STart" /> későbbről indítja a forgatást, a <Keyword id="Reverse" /> pedig a másik irányba fordítja.
+A szögpromptnál írja be a szöget, például 90-et vagy 270-et. A <Keyword id="STart" /> elforgatott helyzetből indítja a forgatást, a <Keyword id="Reverse" /> pedig a másik irányba fordítja.

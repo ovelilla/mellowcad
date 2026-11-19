@@ -16,11 +16,11 @@ A Körvonal fólián négy kör a <Command id="CIRCLE" /> paranccsal, mindegyik 
 
 ### Rajzolja meg az érintő vonalakat [#tangents]
 
-A <Command id="LINE" /> parancs, majd írja be a `_TAN` értéket, az Érintő tárgyrasztert egyetlen pontra, és mutasson a nagy körre a teteje közelében; ismét `_TAN`, és mutasson a kicsire a teteje közelében. A vonal mindkettőt érinti. Ugyanígy alul is.
+A <Command id="LINE" /> parancs, majd írja be a `_TAN` értéket – ez az Érintő tárgyraszter egyetlen pontra –, és kattintson a nagy körre a teteje közelében; írja be ismét a `_TAN` értéket, és kattintson a kicsire a teteje közelében. A vonal mindkettőt érinti. Ugyanígy alul is.
 
 ### Vágja le az íveket [#trim]
 
-A <Command id="TRIM" /> parancs: mutasson mindkét agyra a két vonal között, azon az oldalon, amely a másik agy felé néz. A belső ívek eltűnnek, és mindkét kör ívvé válik.
+A <Command id="TRIM" /> parancs: kattintson mindkét agyra a két vonal között, azon az oldalon, amely a másik agy felé néz. A belső ívek eltűnnek, és mindkét kör ívvé válik.
 
 ### Rajzolja meg a középvonalakat [#centreLines]
 
@@ -28,4 +28,4 @@ A Középvonalak fólián a mindkét középponton átmenő tengelyvonal, és mi
 
 ### Méretezze [#dimensions]
 
-A Méretek fólián a középpontok távolsága a <Command id="DIMLINEAR" />, az agyak sugara a <Command id="DIMRADIUS" />, a furataik a <Command id="DIMDIAMETER" /> paranccsal.
+A Méretek fólián méretezze a középpontok távolságát a <Command id="DIMLINEAR" />, az agyak sugarát a <Command id="DIMRADIUS" />, a furataikat pedig a <Command id="DIMDIAMETER" /> paranccsal.

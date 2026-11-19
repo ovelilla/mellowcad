@@ -6,7 +6,7 @@ figure: "Lépcsős hasáb izometrikusan: 60 hosszú, 40 mély és 40 magas, a m�
 sourceHash: "c1039d3b5e97"
 ---
 
-Rajzolja meg ezt a lépcsős hasábot izometrikus ábrázolásban, milliméterben: 60 hosszú, 40 mély és 40 magas, az elején egy 20 mély és 20 magas lépcsővel. Minden él valamelyik izometrikus tengely mentén fut: a hosszúság 30° és 210°, a mélység 150° és 330°, a magasság 90° és 270° irányában. A MellowCAD még nem ismeri az AutoCAD izometrikus rajzolását, sem az izometrikus rasztert, sem az izoköröket, ezért az élek polárkoordinátákkal, hosszal és szöggel beírt vonalak.
+Rajzolja meg ezt a lépcsős hasábot izometrikus ábrázolásban, milliméterben: 60 hosszú, 40 mély és 40 magas, az elején egy 20 mély és 20 magas lépcsővel. Minden él valamelyik izometrikus tengely mentén fut: a hosszúság 30° és 210°, a mélység 150° és 330°, a magasság 90° és 270° irányában. A MellowCAD még nem ismeri az AutoCAD izometrikus rajzolását, sem az izometrikus rasztert, sem az izometrikus köröket, ezért az élek polárkoordinátákkal, hosszal és szöggel beírt vonalak.
 
 ## Steps
 
@@ -20,7 +20,7 @@ Ismét a `0,0` ponttól a bal oldal: `40<150`, `40<90`, `20<330`, `20<270` és `
 
 ### Rajzolja meg a tetejét [#top]
 
-A többi már megrajzolt sarkokban kezdődik: írja be a `_END` értéket, a Végpont tárgyrasztert egyetlen pontra, és mutasson a sarokra. Az elülső lap jobb felső sarkától: `20<150`, `20<90`, `20<150` és `60<210`. Ezután két `60<210` vonal, a lépcső homloklapjának aljától és tetejétől.
+A többi vonal már megrajzolt sarkokból indul: írja be a `_END` értéket – ez a Végpont tárgyraszter egyetlen pontra –, és kattintson a sarokra. Az elülső lap jobb felső sarkától: `20<150`, `20<90`, `20<150` és `60<210`. Ezután két `60<210` vonal, a lépcső homloklapjának aljától és tetejétől.
 
 ### Méretezze [#dimensions]
 

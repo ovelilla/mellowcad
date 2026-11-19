@@ -6,7 +6,7 @@ figure: "Egy négyzet és a köre 5 oszlopban és 3 sorban, 16 és 14 távolság
 sourceHash: "c8c8d747d0c9"
 ---
 
-A KIOSZTNÉGYSZ (ARRAYRECT) parancs oszlopokba és sorokba, ha kívánja, szintekbe is másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, és azonnal megmutatja: 4 oszlop az FKR X tengelye és 3 sor az Y tengelye mentén, a kijelölés méretének másfélszeresére egymástól. Ezután egyetlen prompt élőben szerkeszti az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben: egy darabszám vagy egy távolság beállításához kattintson az egyik nyílra, majd kattintson oda, ahová kerülnie kell, vagy írjon be egy számot. Az Esc itt szintén létrehozza a kiosztást. A kijelölt objektumok lesznek az első elem.
+A KIOSZTNÉGYSZ (ARRAYRECT) parancs oszlopokba és sorokba, ha kívánja, szintekbe is másolja a kijelölést, egyetlen kiosztásobjektumként. Bekéri az objektumokat, kiírja a típust és azt, hogy a kiosztás asszociatív-e, és azonnal megmutatja: 4 oszlop az FKR X tengelye és 3 sor az Y tengelye mentén, egymástól a kijelölés méretének másfélszerese távolságra. Ezután egyetlen prompt élőben szerkeszti az opcióival vagy az előnézet fogóival, amíg az Enter létre nem hozza, ahogy az AutoCAD-ben: egy darabszám vagy egy távolság beállításához kattintson az egyik nyílra, majd kattintson oda, ahová kerülnie kell, vagy írjon be egy számot. Az Esc itt szintén létrehozza a kiosztást. A kijelölt objektumok lesznek az első elem.
 
 ## Options
 
@@ -40,7 +40,7 @@ Létrehozza a kiosztást, és befejezi a parancsot, ahogy az Enter.
 
 ## Missing
 
-A Bázispont; az Összesen opció az oszlopok és a sorok közötti távolságnál (a Szintek opciónál megvan); a Kifejezés, amely egy értéket a rajz paramétereihez köt. A KIOSZTSZERKESZT és a KIOSZTBEZÁR, amelyek a kiosztás forrását szerkesztik, illetve elemeit cserélik le. A kiosztás fogóinak menüi (Oszlopok száma, Teljes oszloptávolság, Tengely szöge…) és a köztük váltó Ctrl, így fogóval sem teljes távolság, sem tengelyszög nem állítható be; a fogó a parancssorba sem írja ki a sorait. A paletta Bázis X és Bázis Y értéke nem írható át.
+A Bázispont; az Összesen opció az oszlopok és a sorok közötti távolságnál (a Szintek opciónál megvan); a Kifejezés, amely egy értéket a rajz paramétereihez köt. A KIOSZTSZERKESZT és a KIOSZTBEZÁR, amelyek a kiosztás forrását szerkesztik, illetve elemeit cserélik le. A kiosztás fogóinak menüi (Oszlopok száma, Teljes oszloptávolság, Tengely szöge…) és a köztük váltó Ctrl, így fogóval sem teljes távolság, sem tengelyszög nem állítható be, és a fogó a parancssorba sem ír ki semmit. A paletta Bázis X és Bázis Y értéke nem írható át.
 
 ## Questions
 

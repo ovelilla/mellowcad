@@ -28,7 +28,7 @@ A méret nem asszociatív: a lánc nem követi a mért objektumokat. Szögméret
 
 ### Mi az AutoCAD MÉRETFOLYTAT parancs angolul?
 
-DIMCONTINUE. A magyar AutoCAD-ben a rövidítése `MFO` vagy `MFOLY`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMCONTINUE` is; az angol `DCO` a magyar változatban nem működik.
+DIMCONTINUE. A magyar AutoCAD-ben a rövidítése `MFO` vagy `MFOLY`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes név is működik, az AutoCAD bármely nyelvi változatában pedig a `_DIMCONTINUE` is; az angol `DCO` a magyar változatban nem működik.
 
 ### Mi a különbség a MÉRETFOLYTAT és a MÉRETBVONAL parancs között?
 

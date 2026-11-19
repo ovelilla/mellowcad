@@ -32,7 +32,7 @@ Angolul DIMBASELINE, a magyar AutoCAD-ben MÉRETBVONAL: írja be az `MBA` vagy a
 
 ### Hogyan lehet módosítani a bázisvonalas méretek távolságát?
 
-A méretstílus Méretvonalak távolsága beállítása adja meg: a <Command id="DIMSTYLE" /> (`D`) a Stílusok palettán nyitja meg a stílusokat, ahol a Vonal csoportban található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a <Command id="DIMSPACE" /> parancs újra, egyenletesen elrendezi őket.
+A méretstílus Méretvonalak távolsága beállítása adja meg: a <Command id="DIMSTYLE" /> (`D`) a Stílusok palettán nyitja meg a stílusokat, ahol a Vonalak csoportban található, ahogy az AutoCAD-ben. A már megrajzolt méretek a helyükön maradnak; a <Command id="DIMSPACE" /> parancs újra, egyenletesen elrendezi őket.
 
 ### Hogyan lehet egy másik méretből indulni?
 

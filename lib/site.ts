@@ -61,7 +61,7 @@ export const INDEXNOW_KEY = "1eb5d0fec5dc99d5695b010f04667a07"
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
  */
-export const CONTENT_UPDATED = "2026-11-17"
+export const CONTENT_UPDATED = "2026-11-19"
 
 /**
  * When the privacy notice last changed: what it says it keeps, measures or

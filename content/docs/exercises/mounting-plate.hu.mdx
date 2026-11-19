@@ -6,7 +6,7 @@ type: "practice"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Modellezzen egy 10 vastag szerelőlapot milliméterben: a körvonala 100 × 60, 8 sugarú sarkokkal, és négy 10-es furat, amelyek középpontja 15-re van a szélektől. Síkban kezdődik. A körvonalból és a körökből lemezek lesznek, a furatokat még a sík lapból vonja ki, és egyetlen kihúzás teszi szilárdtestté, a furataival együtt.
+Modellezzen egy 10 vastag szerelőlapot milliméterben: a körvonala 100 × 60, 8 sugarú sarkokkal, és négy 10-es furat, amelyek középpontja 15-re van a szélektől. A munka síkban kezdődik. A körvonalból és a körökből lemezek lesznek, a furatokat még a sík lapból vonja ki, és egyetlen kihúzás teszi szilárdtestté, a furataival együtt.
 
 - **Feladat:** Kezdő · Gépészet · 3D szilárdtest
 - **Parancsok:** [`TÉGL`](/docs/commands/rectang), [`KÖR`](/docs/commands/circle), [`MÁSOL`](/docs/commands/copy), [`LEMEZ`](/docs/commands/region), [`KIVON`](/docs/commands/subtract), [`-NÉZET`](/docs/commands#-view), [`LSAKTUÁLIS`](/docs/commands/vscurrent), [`KIHÚZ`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
@@ -30,13 +30,13 @@ A Körvonal fólián a [`TÉGL`](/docs/commands/rectang) parancs a `leKerekít` 
 
 ### 2. Hozzon létre lemezeket [#region]
 
-A [`LEMEZ`](/docs/commands/region) parancs a zárt objektumokat lemezzé alakítja: válassza ki a körvonalat és a négy kört, majd Enter. Öt hurok, öt lemez.
+A [`LEMEZ`](/docs/commands/region) parancs a zárt objektumokat lemezzé alakítja: válassza ki a körvonalat és a négy kört, majd nyomja meg az Enter billentyűt. Öt hurok, öt lemez.
 
 <Session name="exercises/mounting-plate/region" caption="2. Hozzon létre lemezeket" />
 
 ### 3. Vonja ki a furatokat [#subtract]
 
-A [`KIVON`](/docs/commands/subtract) parancs: válassza ki a lap lemezét, és nyomja meg az Enter billentyűt, majd a négy kör lemezét, és Enter. Egyetlen lemez marad, benne négy furattal.
+A [`KIVON`](/docs/commands/subtract) parancs: válassza ki a lap lemezét, és nyomja meg az Enter billentyűt, majd a négy kör lemezét, és ismét nyomja meg az Enter billentyűt. Egyetlen lemez marad, benne négy furattal.
 
 <Session name="exercises/mounting-plate/subtract" caption="3. Vonja ki a furatokat" />
 

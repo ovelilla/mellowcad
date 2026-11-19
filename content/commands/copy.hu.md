@@ -6,7 +6,7 @@ figure: "Egy kör háromszor másolva X irányban ugyanabból a bázispontból, 
 sourceHash: "e74bbdabf97c"
 ---
 
-A MÁSOL (COPY) parancs másolatokat helyez el a kijelölt objektumokról: jelölje ki őket, adjon meg egy bázispontot, majd minden másolathoz egy második pontot. Ahogy az AutoCAD-ben, ahol a másolási mód alapértelmezés szerint Többször, mindig újabb másolatot kér, amíg meg nem nyomja az Enter billentyűt, vagy a Kilépés opciót nem választja, és minden másolatot ugyanabból a bázispontból mér. A másolatok megtartják az objektumok fóliáját, színét és minden más tulajdonságát. A parancs előtt kijelölt objektumokat másolja, és amíg egy másolatot elhelyez, a készlet követi a kurzort.
+A MÁSOL (COPY) parancs másolatokat helyez el a kijelölt objektumokról: jelölje ki őket, adjon meg egy bázispontot, majd minden másolathoz egy második pontot. Ahogy az AutoCAD-ben, ahol a másolási mód alapértelmezés szerint Többszörös, mindig újabb másolatot kér, amíg meg nem nyomja az Enter billentyűt, vagy a Kilépés opciót nem választja, és minden másolatot ugyanabból a bázispontból mér. A másolatok megtartják az objektumok fóliáját, színét és minden más tulajdonságát. A parancs előtt kijelölt objektumokat másolja, és amíg egy másolatot elhelyez, a készlet követi a kurzort.
 
 ## Options
 
@@ -24,7 +24,7 @@ Visszavonja az utoljára elhelyezett másolatot. Az első visszavonásakor az ü
 
 ## Missing
 
-A COPYMODE Egyszer módja (egy másolat, majd vége) nem érhető el: a MÁSOL mindig Többször módban fut, így a bázispont promptja csak az <Keyword id="Displacement" /> opciót sorolja fel. A második pont Kiosztás opciója, az AutoCAD egyenletesen elosztott másolatsora, szintén nem érhető el.
+A COPYMODE Egyszeres módja (egy másolat, majd vége) nem érhető el: a MÁSOL mindig Többszörös módban fut, így a bázispont promptja csak az <Keyword id="Displacement" /> opciót sorolja fel. A második pont Kiosztás opciója, az AutoCAD egyenletesen elosztott másolatsora, szintén nem érhető el.
 
 ## Questions
 

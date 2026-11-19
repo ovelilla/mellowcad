@@ -6,7 +6,7 @@ figure: "Egy vonal, amelyet az Első pont opcióval megadott két pont között 
 sourceHash: "f351112ef2fc"
 ---
 
-A MEGTÖR (BREAK) parancs rést vág egy objektumba, vagy kettévágja. Jelölje ki az objektumot: ahogy az AutoCAD-ben, a kijelölés helye az első töréspont, így a következő prompt már csak a másodikat kéri, és a kettő közötti rész eltűnik. Egy vonal, ív, nyitott vonallánc, elliptikus ív vagy spline elveszíti a pontok közötti részt, és két objektum lesz belőle; egy kör vagy ellipszis az első ponttól a másodikig az óramutató járásával ellentétesen futó részét veszíti el, egy zárt vonallánc pedig a csúcspontjai sorrendjében a kettő közötti részt: mindegyikből egyetlen nyitott objektum lesz. Az objektumon kívüli pontot a legközelebbi pontjára veszi, a végén túli pedig az adott végig vág. Amíg a második pontot adja meg, az objektumon látszik az a rész, amelyet a MEGTÖR megtartana. A megtörés egyetlen lépés, amelyet a Vissza visszavon.
+A MEGTÖR (BREAK) parancs rést vág egy objektumba, vagy kettévágja. Jelölje ki az objektumot: ahogy az AutoCAD-ben, a kijelölés helye az első töréspont, így a következő prompt már csak a másodikat kéri, és a kettő közötti rész eltűnik. Egy vonal, ív, nyitott vonallánc, elliptikus ív vagy spline elveszíti a pontok közötti részt, és két objektum lesz belőle; egy kör vagy ellipszis az első ponttól a másodikig az óramutató járásával ellentétesen futó részét veszíti el, egy zárt vonallánc pedig a csúcspontjai sorrendjében a kettő közötti részt: mindegyikből egyetlen nyitott objektum lesz. Az objektumon kívül megadott pont helyett az objektum legközelebbi pontját veszi, a végén túli pont pedig az adott végig vág. Amíg a második pontot adja meg, az objektumon látszik az a rész, amelyet a MEGTÖR megtartana. A megtörés egyetlen lépés, amelyet a Vissza visszavon.
 
 ## Options
 
@@ -16,7 +16,7 @@ A második töréspontnál: adja meg újra az első töréspontot, majd a másod
 
 ## Missing
 
-Az FKR-rel nem egy síkban fekvő ív, kör vagy ellipszis, amelyet az AutoCAD megtör, a MellowCAD pedig nem talál meg. A <Command id="MIRROR" /> paranccsal megfordított teljes ellipszis, amelyet az AutoCAD fordított irányban tör meg.
+Az FKR síkjával nem párhuzamos ív, kör vagy ellipszis, amelyet az AutoCAD megtör, a MellowCAD pedig nem talál meg. A <Command id="MIRROR" /> paranccsal megfordított teljes ellipszis, amelyet az AutoCAD fordított irányban tör meg.
 
 ## Questions
 

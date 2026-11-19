@@ -1,12 +1,12 @@
 ---
 title: "AutoCAD parancsok listája magyarul és angolul"
 metaTitle: "AutoCAD parancsok listája magyarul és angolul"
-description: "AutoCAD parancsok magyarul és angolul, a szalag paneljei szerint: név és álnevek, az első prompt, a fő parancsoknál pedig egy oldal minden opcióval."
+description: "AutoCAD parancsok magyarul és angolul, a szalag paneljei szerint: név és rövidítések, az első prompt, a fő parancsoknál pedig egy oldal minden opcióval."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 ---
 
-Minden parancs úgy, ahogy a parancssorba beírja, a szalagnak azon a paneljén, ahol keresné. Az első prompt magától a motortól származik: ugyanaz a sorrend és ugyanazok az opcióbetűk, amelyeket futtatáskor látni fog. A saját oldallal rendelkező parancs oda hivatkozik: az opciói, egy a motor által rajzolt munkamenet, és amit még nem tud.
+Minden parancs úgy, ahogy a parancssorba beírja, a szalagnak azon a paneljén, ahol keresné. Az első prompt magától a motortól származik: ugyanaz a sorrend és ugyanazok az opcióbetűk, amelyeket futtatáskor látni fog. Ha egy parancsnak saját oldala van, a neve oda vezet: az opciói, egy, a motor által rajzolt munkamenet és az, amit még nem tud.
 
 ## Rajz [#draw]
 
@@ -14,7 +14,7 @@ Minden parancs úgy, ahogy a parancssorba beírja, a szalagnak azon a paneljén,
 
 Vonal
 
-- **Álnevek:** `VO`
+- **Rövidítések:** `VO`
 - **Első prompt:** `Adja meg az első pontot:`
 - [AutoCAD VONAL (LINE) parancs](/docs/commands/line)
 
@@ -22,7 +22,7 @@ Vonal
 
 Vonallánc
 
-- **Álnevek:** `VL`
+- **Rövidítések:** `VL`
 - **Első prompt:** `Adja meg a kezdőpontot:`
 - [Vonallánc az AutoCAD-ben: VLÁNC (PLINE) parancs](/docs/commands/pline)
 
@@ -30,7 +30,7 @@ Vonallánc
 
 3D vonallánc
 
-- **Álnevek:** `3V`
+- **Rövidítések:** `3V`
 - **Első prompt:** `Adja meg a vonallánc kezdőpontját:`
 - [3D vonallánc az AutoCAD-ben: 3DVLÁNC (3DPOLY) parancs](/docs/commands/3dpoly)
 
@@ -38,7 +38,7 @@ Vonallánc
 
 Több pont
 
-- **Álnevek:** `PO`
+- **Rövidítések:** `PO`
 - **Első prompt:** `Adja meg a pontot:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#point--po--es-punto--pu--pt-br-ponto--po--fr-point--pt--it-punto--po--de-punkt--pu--ru-точка--то--pl-punkt--pu--cs-bod--bo--hu-pont--po)
 
@@ -46,7 +46,7 @@ Több pont
 
 2D tömör
 
-- **Álnevek:** `TO`
+- **Rövidítések:** `TO`
 - **Első prompt:** `Adja meg az első pontot:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#solid--so--es-solido--so--pt-br-sólido--fr-solide--so--it-polig--plg--de-solid--so--ru-фигура--фи--pl-obszar--obs--cs-deska--de--hu-tömör--to)
 
@@ -54,7 +54,7 @@ Több pont
 
 3D lap
 
-- **Álnevek:** `3L`
+- **Rövidítések:** `3L`
 - **Első prompt:** `Adja meg az első pontot vagy [Láthatatlan]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#3dface--3f--es-3dcara--3c--pt-br-face3d--f3--fr-face3d--3f--it-3dfaccia--3f--de-3dfläche--3f--ru-3dгрань--3г--3-грань--pl-3wpow--3po--cs-3dplocha--3l--hu-3dlap--3l)
 
@@ -62,7 +62,7 @@ Több pont
 
 Felosztás
 
-- **Álnevek:** `FE`
+- **Rövidítések:** `FE`
 - **Első prompt:** `Válasszon felosztani kívánt objektumot:`
 - [AutoCAD FELOSZT (DIVIDE) parancs](/docs/commands/divide)
 
@@ -70,7 +70,7 @@ Felosztás
 
 Beosztás
 
-- **Álnevek:** `BEO`
+- **Rövidítések:** `BEO`
 - **Első prompt:** `Válasszon beosztani kívánt objektumot:`
 - [AutoCAD BEOSZTÁS (MEASURE) parancs](/docs/commands/measure)
 
@@ -78,7 +78,7 @@ Beosztás
 
 Kör
 
-- **Álnevek:** `K`
+- **Rövidítések:** `K`
 - **Első prompt:** `Adja meg a kör középpontját vagy [3P/2P/Éés (érintő érintő sugár)]:`
 - [Kör rajzolása az AutoCAD-ben: KÖR (CIRCLE) parancs](/docs/commands/circle)
 
@@ -86,7 +86,7 @@ Kör
 
 Ív
 
-- **Álnevek:** `I`
+- **Rövidítések:** `I`
 - **Első prompt:** `Adja meg az ív kezdőpontját vagy [Középpont]:`
 - [Ív rajzolása az AutoCAD-ben: ÍV (ARC) parancs](/docs/commands/arc)
 
@@ -94,7 +94,7 @@ Kör
 
 Ellipszis
 
-- **Álnevek:** `ELL`
+- **Rövidítések:** `ELL`
 - **Első prompt:** `Adja meg az ellipszis tengelyének végpontját vagy [Ív/Középpont]:`
 - [AutoCAD ELLIPSZ (ELLIPSE) parancs](/docs/commands/ellipse)
 
@@ -102,7 +102,7 @@ Ellipszis
 
 Spline
 
-- **Álnevek:** `SPL`
+- **Rövidítések:** `SPL`
 - **Első prompt:** `Adja meg az első pontot, vagy [móDszer/cSomópontok/Objektum]:`
 - [AutoCAD SPLINE parancs](/docs/commands/spline)
 
@@ -110,7 +110,7 @@ Spline
 
 Téglalap
 
-- **Álnevek:** `TE`, `TÉGLALAP`
+- **Rövidítések:** `TE`, `TÉGLALAP`
 - **Első prompt:** `Adja meg az első sarokpontot vagy [leTör/SZInt/leKerekít/Vastagság/széLesség]:`
 - [Téglalap az AutoCAD-ben: TÉGL (RECTANG) parancs](/docs/commands/rectang)
 
@@ -118,7 +118,7 @@ Téglalap
 
 Sokszög
 
-- **Álnevek:** `POL`
+- **Rövidítések:** `POL`
 - **Első prompt:** `Adja meg az oldalak számát <4>:`
 - [Sokszög az AutoCAD-ben: POLIGON (POLYGON) parancs](/docs/commands/polygon)
 
@@ -126,7 +126,7 @@ Sokszög
 
 Sraffozás
 
-- **Álnevek:** `SF`, `SR`
+- **Rövidítések:** `SF`, `SR`
 - **Első prompt:** `Adjon meg belső pontot, vagy [Tulajdonságok/objektumok kiJelölése]:`
 - [Sraffozás az AutoCAD-ben: SRAFFOZ (HATCH) parancs](/docs/commands/hatch)
 
@@ -134,7 +134,7 @@ Sraffozás
 
 Lemez
 
-- **Álnevek:** `LEM`
+- **Rövidítések:** `LEM`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Lemez az AutoCAD-ben: LEMEZ (REGION) parancs](/docs/commands/region)
 
@@ -142,7 +142,7 @@ Lemez
 
 Kihúzás
 
-- **Álnevek:** `KH`
+- **Rövidítések:** `KH`
 - **Első prompt:** `Jelölje ki a kihúzandó objektumokat, vagy [MÓd]:`
 - [AutoCAD KIHÚZ (EXTRUDE) parancs](/docs/commands/extrude)
 
@@ -150,7 +150,7 @@ Kihúzás
 
 Megforgatás
 
-- **Álnevek:** `MFR`
+- **Rövidítések:** `MFR`
 - **Első prompt:** `Jelölje ki a megforgatandó objektumokat, vagy [MÓd]:`
 - [AutoCAD MEGFORGAT (REVOLVE) parancs: forgástest](/docs/commands/revolve)
 
@@ -165,7 +165,7 @@ Tolás-húzás
 
 Keresztmetszet
 
-- **Álnevek:** `KM`
+- **Rövidítések:** `KM`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Metszet az AutoCAD-ben: KMETSZET (SECTION) parancs](/docs/commands/section)
 
@@ -180,7 +180,7 @@ Téglatest
 
 Ék
 
-- **Álnevek:** `EK`
+- **Rövidítések:** `EK`
 - **Első prompt:** `Adja meg az első sarokpontot, vagy [Középpont]:`
 - [AutoCAD ÉK (WEDGE) parancs](/docs/commands/wedge)
 
@@ -188,7 +188,7 @@ Téglatest
 
 Henger
 
-- **Álnevek:** `HEN`
+- **Rövidítések:** `HEN`
 - **Első prompt:** `Adja meg az alap középpontját vagy [3P/2P/Éés/Elliptikus]:`
 - [Henger az AutoCAD-ben: HENGER (CYLINDER) parancs](/docs/commands/cylinder)
 
@@ -210,7 +210,7 @@ Gömb
 
 Tórusz
 
-- **Álnevek:** `TOR`
+- **Rövidítések:** `TOR`
 - **Első prompt:** `Adja meg a középpontot vagy [3P/2P/Éés]:`
 - [AutoCAD TÓRUSZ (TORUS) parancs](/docs/commands/torus)
 
@@ -218,7 +218,7 @@ Tórusz
 
 Gúla
 
-- **Álnevek:** `GÚ`
+- **Rövidítések:** `GÚ`
 - **Első prompt:** `Adja meg az alap középpontját vagy [Él/Oldalak]:`
 - [Gúla az AutoCAD-ben: GÚLA (PYRAMID) parancs](/docs/commands/pyramid)
 
@@ -226,7 +226,7 @@ Gúla
 
 Sraffozás
 
-- **Álnevek:** `-SF`
+- **Rövidítések:** `-SF`
 - **Első prompt:** `Adjon meg belső pontot, vagy [Tulajdonságok/objektumok kiJelölése]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
 
@@ -236,7 +236,7 @@ Sraffozás
 
 Eltolás
 
-- **Álnevek:** `P`
+- **Rövidítések:** `P`
 - **Első prompt:** `Adja meg a párhuzamos távolságot vagy [Kijelölt/Töröl/Fólia] <Kijelölt>:`
 - [AutoCAD PÁRH (OFFSET) parancs](/docs/commands/offset)
 
@@ -244,7 +244,7 @@ Eltolás
 
 Mozgatás
 
-- **Álnevek:** `MO`
+- **Rövidítések:** `MO`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Mozgatás az AutoCAD-ben: MOZGAT (MOVE) parancs](/docs/commands/move)
 
@@ -252,7 +252,7 @@ Mozgatás
 
 Másolás
 
-- **Álnevek:** `M`, `MÁ`
+- **Rövidítések:** `M`, `MÁ`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Másolás az AutoCAD-ben: MÁSOL (COPY) parancs](/docs/commands/copy)
 
@@ -260,7 +260,7 @@ Másolás
 
 Nyújtás
 
-- **Álnevek:** `NY`
+- **Rövidítések:** `NY`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD NYÚJT (STRETCH) parancs](/docs/commands/stretch)
 
@@ -268,7 +268,7 @@ Nyújtás
 
 Elforgatás
 
-- **Álnevek:** `FOR`
+- **Rövidítések:** `FOR`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Forgatás az AutoCAD-ben: FORGAT (ROTATE) parancs](/docs/commands/rotate)
 
@@ -276,7 +276,7 @@ Elforgatás
 
 Léptékezés
 
-- **Álnevek:** `LE`
+- **Rövidítések:** `LE`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Lépték az AutoCAD-ben: LÉPTÉK (SCALE) parancs](/docs/commands/scale)
 
@@ -284,7 +284,7 @@ Léptékezés
 
 Tükrözés
 
-- **Álnevek:** `TU`
+- **Rövidítések:** `TU`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Tükrözés az AutoCAD-ben: TÜKRÖZ (MIRROR) parancs](/docs/commands/mirror)
 
@@ -292,7 +292,7 @@ Tükrözés
 
 Kiosztás
 
-- **Álnevek:** `KI`
+- **Rövidítések:** `KI`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Kiosztás az AutoCAD-ben: KIOSZT (ARRAY) parancs](/docs/commands/array)
 
@@ -321,7 +321,7 @@ Poláris kiosztás
 
 Metszés
 
-- **Álnevek:** `ME`
+- **Rövidítések:** `ME`
 - **Első prompt:** `Válasszon metszeni kívánt objektumokat, vagy Shift+kiválasztás a hosszabbítani kívántakhoz, vagy [váGóélek/Metsző/móD/Töröl]:`
 - [AutoCAD METSZ (TRIM) parancs](/docs/commands/trim)
 
@@ -329,7 +329,7 @@ Metszés
 
 Meghosszabbítás
 
-- **Álnevek:** `EL`
+- **Rövidítések:** `EL`
 - **Első prompt:** `Válassza ki a hosszabbítani kívánt objektumokat, vagy Shift+kiválasztás a metszeni kívántakhoz, vagy [Határvonal élek/Metsző/móD]:`
 - [AutoCAD ELÉR (EXTEND) parancs](/docs/commands/extend)
 
@@ -337,7 +337,7 @@ Meghosszabbítás
 
 Lekerekítés
 
-- **Álnevek:** `LK`
+- **Rövidítések:** `LK`
 - **Első prompt:** `Válassza ki az első objektumot vagy [VIssza/Vonallánc/Sugár/töBbszörös]:`
 - [Lekerekítés az AutoCAD-ben: LEKEREKÍT (FILLET) parancs](/docs/commands/fillet)
 
@@ -345,7 +345,7 @@ Lekerekítés
 
 Letörés
 
-- **Álnevek:** `LT`
+- **Rövidítések:** `LT`
 - **Első prompt:** `Válassza ki az első vonalat vagy [VIssza/Vonallánc/Távolság/töBbszörös]:`
 - [Letörés az AutoCAD-ben: LETÖR (CHAMFER) parancs](/docs/commands/chamfer)
 
@@ -353,7 +353,7 @@ Letörés
 
 Törlés
 
-- **Álnevek:** `R`, `DELETE`
+- **Rövidítések:** `R`, `DELETE`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD RADÍR (ERASE) parancs](/docs/commands/erase)
 
@@ -361,7 +361,7 @@ Törlés
 
 Szétvetés
 
-- **Álnevek:** `SZV`
+- **Rövidítések:** `SZV`
 - **Első prompt:** `Válasszon objektumokat:`
 - [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)
 
@@ -376,7 +376,7 @@ Egyesítés
 
 Egyesítés
 
-- **Álnevek:** `EG`, `EGY`
+- **Rövidítések:** `EG`, `EGY`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD EGYESÍT (UNION) parancs](/docs/commands/union)
 
@@ -384,7 +384,7 @@ Egyesítés
 
 Kivonás
 
-- **Álnevek:** `KV`
+- **Rövidítések:** `KV`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD KIVON (SUBTRACT) parancs](/docs/commands/subtract)
 
@@ -392,7 +392,7 @@ Kivonás
 
 Közösrész
 
-- **Álnevek:** `KO`
+- **Rövidítések:** `KO`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD KÖZÖSRÉSZ (INTERSECT) parancs](/docs/commands/intersect)
 
@@ -400,7 +400,7 @@ Közösrész
 
 Kettészelés
 
-- **Álnevek:** `SL`
+- **Rövidítések:** `SL`
 - **Első prompt:** `Válassza ki a szelni kívánt objektumokat:`
 - [AutoCAD SZEL (SLICE) parancs](/docs/commands/slice)
 
@@ -429,7 +429,7 @@ Szilárdtest szerkesztése
 
 Megtörés
 
-- **Álnevek:** `MG`
+- **Rövidítések:** `MG`
 - **Első prompt:** `Válasszon objektumot:`
 - [Vonal megtörése az AutoCAD-ben: MEGTÖR (BREAK) parancs](/docs/commands/break)
 
@@ -444,7 +444,7 @@ Megtörés egy pontban
 
 Spline módosítása
 
-- **Álnevek:** `SPE`
+- **Rövidítések:** `SPE`
 - **Első prompt:** `Válasszon spline objektumot:`
 - [AutoCAD SPLINEDIT parancs](/docs/commands/splinedit)
 
@@ -452,7 +452,7 @@ Spline módosítása
 
 Vonallánc módosítása
 
-- **Álnevek:** `VE`
+- **Rövidítések:** `VE`
 - **Első prompt:** `Válasszon vonalláncot vagy [Több]:`
 - [Vonallánc szerkesztése az AutoCAD-ben: VLEDIT (PEDIT) parancs](/docs/commands/pedit)
 
@@ -460,7 +460,7 @@ Vonallánc módosítása
 
 Tulajdonságok másolása
 
-- **Álnevek:** `TUM`, `FESTŐ`
+- **Rövidítések:** `TUM`, `FESTŐ`
 - **Első prompt:** `Válassza ki a forrásobjektumot:`
 - [Tulajdonságok másolása az AutoCAD-ben: TULMÁSOL (MATCHPROP) parancs](/docs/commands/matchprop)
 
@@ -477,7 +477,7 @@ Tulajdonságok módosítása
 
 Mutató
 
-- **Álnevek:** `MUT`
+- **Rövidítések:** `MUT`
 - **Első prompt:** `Adja meg a mutató kezdőpontját:`
 - [AutoCAD MUTATÓ (LEADER) parancs](/docs/commands/leader)
 
@@ -492,7 +492,7 @@ Szöveg
 
 Bekezdéses szöveg
 
-- **Álnevek:** `BS`, `SZ`
+- **Rövidítések:** `BS`, `SZ`
 - **Első prompt:** `Adja meg az első sarokpontot:`
 - [Bekezdéses szöveg az AutoCAD-ben: BSZÖVEG (MTEXT) parancs](/docs/commands/mtext)
 
@@ -500,7 +500,7 @@ Bekezdéses szöveg
 
 Szöveg szerkesztése
 
-- **Álnevek:** `SZO`, `DPEDIT`, `SZERK`
+- **Rövidítések:** `SZO`, `DPEDIT`, `SZERK`
 - **Első prompt:** `Válasszon ki egy feliratozás objektumot, vagy [Vissza/Mód]:`
 - [AutoCAD SZÖVSZERK (TEXTEDIT) parancs](/docs/commands/textedit)
 
@@ -508,7 +508,7 @@ Szöveg szerkesztése
 
 Hosszirányú
 
-- **Álnevek:** `MHO`, `MHOSZ`
+- **Rövidítések:** `MHO`, `MHOSZ`
 - **Első prompt:** `Adja meg az első segédvonal kezdőpontját vagy <objektum kijelölése>:`
 - [Méretezés az AutoCAD-ben: MÉRETHOSSZ (DIMLINEAR) parancs](/docs/commands/dimlinear)
 
@@ -516,7 +516,7 @@ Hosszirányú
 
 Illesztett
 
-- **Álnevek:** `MIL`, `MILL`
+- **Rövidítések:** `MIL`, `MILL`
 - **Első prompt:** `Adja meg az első segédvonal kezdőpontját vagy <objektum kijelölése>:`
 - [Méretezés az AutoCAD-ben: illesztett méret, MÉRETILLESZT (DIMALIGNED) parancs](/docs/commands/dimaligned)
 
@@ -545,7 +545,7 @@ FORGAT
 
 Sugár
 
-- **Álnevek:** `MSU`, `MSUG`
+- **Rövidítések:** `MSU`, `MSUG`
 - **Első prompt:** `Válasszon ívet vagy kört:`
 - [Sugárméret az AutoCAD-ben: MÉRETSUGÁR (DIMRADIUS) parancs](/docs/commands/dimradius)
 
@@ -553,7 +553,7 @@ Sugár
 
 Átmérő
 
-- **Álnevek:** `MAT`, `MATM`
+- **Rövidítések:** `MAT`, `MATM`
 - **Első prompt:** `Válasszon ívet vagy kört:`
 - [Átmérőméret az AutoCAD-ben: MÉRETÁTMÉRŐ (DIMDIAMETER) parancs](/docs/commands/dimdiameter)
 
@@ -561,7 +561,7 @@ Sugár
 
 Szög
 
-- **Álnevek:** `MSZ`, `MSZOG`
+- **Rövidítések:** `MSZ`, `MSZOG`
 - **Első prompt:** `Válasszon ívet, kört, vonalat vagy <kontrollpont megadása>:`
 - [Méretezés az AutoCAD-ben: szögméret, MÉRETSZÖG (DIMANGULAR) parancs](/docs/commands/dimangular)
 
@@ -569,7 +569,7 @@ Szög
 
 Bázisvonalas
 
-- **Álnevek:** `MBA`, `MBAZIS`
+- **Rövidítések:** `MBA`, `MBAZIS`
 - **Első prompt:** `Válasszon bázisméretet:`
 - [Bázisvonalas méretezés az AutoCAD-ben: MÉRETBVONAL (DIMBASELINE) parancs](/docs/commands/dimbaseline)
 
@@ -577,7 +577,7 @@ Bázisvonalas
 
 Folytatás
 
-- **Álnevek:** `MFO`, `MFOLY`
+- **Rövidítések:** `MFO`, `MFOLY`
 - **Első prompt:** `Válasszon folytatni kívánt méretet:`
 - [Láncméretezés az AutoCAD-ben: MÉRETFOLYTAT (DIMCONTINUE) parancs](/docs/commands/dimcontinue)
 
@@ -606,7 +606,7 @@ Szöveg
 
 Bekezdéses szöveg
 
-- **Álnevek:** `-BS`, `-SZ`
+- **Rövidítések:** `-BS`, `-SZ`
 - **Első prompt:** `Adja meg az első sarokpontot:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t--fr-textmult--tt--tx---textmult---tx--it-testom--tsm--tstm--mtext---testom--de-mtext--mt--t---mtext---t--ru-мтекст--мт---мтекст---мт--pl-wtekst---wtekst---t---wt--cs-mtext--mt--t---mtext---t--hu-bszöveg--bs--sz---bszöveg---bs---sz)
 
@@ -614,14 +614,14 @@ Bekezdéses szöveg
 
 Méretstílusok létrehozása és módosítása
 
-- **Álnevek:** `D`, `MSTIL`, `MST`, `DPMÉRET`
+- **Rövidítések:** `D`, `MSTIL`, `MST`, `DPMÉRET`
 - [Méretstílus az AutoCAD-ben: MÉRETSTÍLUS (DIMSTYLE) parancs](/docs/commands/dimstyle)
 
 ### STÍLUS (STYLE) [#style]
 
 Szövegstílusok létrehozása, módosítása vagy megadása
 
-- **Álnevek:** `ST`, `DPSTÍLUS`
+- **Rövidítések:** `ST`, `DPSTÍLUS`
 - [Szövegstílus az AutoCAD-ben: STÍLUS (STYLE) parancs](/docs/commands/style)
 
 ## Rendszerezés [#organize]
@@ -630,7 +630,7 @@ Szövegstílusok létrehozása, módosítása vagy megadása
 
 Blokk létrehozása
 
-- **Álnevek:** `B`, `ACADBLOCKDIALOG`, `BKÉSZÍT`
+- **Rövidítések:** `B`, `ACADBLOCKDIALOG`, `BKÉSZÍT`
 - **Első prompt:** `Adja meg a blokk nevét vagy [?]:`
 - [Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs](/docs/commands/block)
 
@@ -638,14 +638,14 @@ Blokk létrehozása
 
 Blokk beszúrása a Blokkok palettáról
 
-- **Álnevek:** `BE`, `URLBEILL`
+- **Rövidítések:** `BE`, `URLBEILL`
 - [Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs](/docs/commands/insert)
 
 ### ATTEDIT [#attedit]
 
 Attribútumok szerkesztése
 
-- **Álnevek:** `ATE`
+- **Rövidítések:** `ATE`
 - **Első prompt:** `Válasszon blokkreferenciát:`
 - [Attribútumok szerkesztése az AutoCAD-ben: ATTEDIT parancs](/docs/commands/attedit)
 
@@ -653,7 +653,7 @@ Attribútumok szerkesztése
 
 Attribútumok definiálása
 
-- **Álnevek:** `ATT`, `DPATTDEF`
+- **Rövidítések:** `ATT`, `DPATTDEF`
 - **Első prompt:** `Adja meg a módosítani kívánt opciót [Láthatatlan/Konstans/Ellenőrző/Beállító/hely Rögzítése] <kész>:`
 - [Blokkattribútumok az AutoCAD-ben: ATTDEF parancs](/docs/commands/attdef)
 
@@ -668,7 +668,7 @@ Attribútumok megjelenítése
 
 Tisztítás
 
-- **Álnevek:** `TT`
+- **Rövidítések:** `TT`
 - **Első prompt:** `Adja meg a tisztítani kívánt, használaton kívüli objektumok típusát [Blokk/VTípus]:`
 - [AutoCAD TISZTÍT (PURGE) parancs: nem használt blokkok törlése](/docs/commands/purge)
 
@@ -676,7 +676,7 @@ Tisztítás
 
 Vonaltípuslépték
 
-- **Álnevek:** `VTL`
+- **Rövidítések:** `VTL`
 - **Első prompt:** `Adja meg a vonaltípus új léptéktényezőjét <1.0000>:`
 - [Vonaltípuslépték az AutoCAD-ben: VTLÉPTÉK (LTSCALE) parancs](/docs/commands/ltscale)
 
@@ -691,7 +691,7 @@ Szög pontosság
 
 Rendszerváltozók
 
-- **Álnevek:** `VAL`
+- **Rövidítések:** `VAL`
 - **Első prompt:** `Adja meg a változó nevét vagy [?]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#setvar--set--es-modivar--mv--pt-br-defvar--def--a-system-variable-typed-by-its-name-auprec--fr-modifvar--mdv--a-system-variable-typed-by-its-name-auprec--it-modivar--mdv--a-system-variable-typed-by-its-name-auprec--de-setvar--set--a-system-variable-typed-by-its-name-auprec--ru-устперем--уп--a-system-variable-typed-by-its-name-auprec--pl-zmsys--zms--a-system-variable-typed-by-its-name-auprec--cs-syspar--spa--a-system-variable-typed-by-its-name-auprec--hu-változók--val--a-system-variable-typed-by-its-name-auprec)
 
@@ -699,7 +699,7 @@ Rendszerváltozók
 
 Szín
 
-- **Álnevek:** `S`, `SZIN`, `DPSZÍN`
+- **Rövidítések:** `S`, `SZIN`, `DPSZÍN`
 - **Első prompt:** `Adja meg az alapértelmezés szerinti objektumszínt [Truecolor] <FÓLIA>:`
 - [Objektumszín az AutoCAD-ben: SZÍN (COLOR) parancs](/docs/commands/color)
 
@@ -707,7 +707,7 @@ Szín
 
 Vonaltípus
 
-- **Álnevek:** `VT`, `DPVTÍPUS`
+- **Rövidítések:** `VT`, `DPVTÍPUS`
 - **Első prompt:** `Válasszon az opciók közül [?/Tölt/Beállít]:`
 - [Vonaltípus az AutoCAD-ben: VTÍPUS (LINETYPE) parancs](/docs/commands/linetype)
 
@@ -715,7 +715,7 @@ Vonaltípus
 
 Fólia (parancssor)
 
-- **Álnevek:** `-FO`
+- **Rövidítések:** `-FO`
 - **Első prompt:** `Válasszon az opciók közül [?/KÉszít/beÁllít/úJ/ÁTnevez/BE/KI/Szín/VTípus/VVastagság/ZÁrol/FElold]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose---layer---la--es-capa--ca--layer--ddlmodes--cerrarcapa---capa---ca--pt-br-camada--ca--layer--ddlmodes--fecharcamada---camada---ca--fr-calque--layer--pl--ddlmodes--fermercalque---calque---pl--it-layer--la--ddlmodes--chiudilayer---layer---la--de-layer--la--ddlmodes--ddlmodi--layerschl---layer---la--ru-слой--сл--диалслой--слойзакрыть---слой---сл--pl-warstwa--wa--odwarstwa--warstwazamknij---warstwa---wa--cs-hladina--hl--ddlmodes--diahlad--hladzavři---hladina---hl--hu-fólia--fo--dpfmód--fóliabezár---fólia---fo)
 
@@ -723,7 +723,7 @@ Fólia (parancssor)
 
 Vonalvastagság
 
-- **Álnevek:** `VONALVASTAGSÁG`, `VV`
+- **Rövidítések:** `VONALVASTAGSÁG`, `VV`
 - **Első prompt:** `Adja meg az új objektumok alapértelmezés szerinti vonalvastagságát vagy [?]:`
 - [Vonalvastagság az AutoCAD-ben: VVAST (LWEIGHT) parancs](/docs/commands/lweight)
 
@@ -731,7 +731,7 @@ Vonalvastagság
 
 Attribútumok definiálása
 
-- **Álnevek:** `-ATT`
+- **Rövidítések:** `-ATT`
 - **Első prompt:** `Adja meg a módosítani kívánt opciót [Láthatatlan/Konstans/Ellenőrző/Beállító/hely Rögzítése] <kész>:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef--cs-atrdef--at--ddattdef--diatrdef---atrdef---at--hu-attdef--att--dpattdef---attdef---att)
 
@@ -739,7 +739,7 @@ Attribútumok definiálása
 
 Blokk létrehozása
 
-- **Álnevek:** `-B`
+- **Rövidítések:** `-B`
 - **Első prompt:** `Adja meg a blokk nevét vagy [?]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq--pt-br-bloco--cb--acadblockdialog--criarb--defb--bloco---cb--fr-bloc--b--acadblockdialog--_bmake--bmod--bloc---b--it-blocco--b--acadblockdialog--bmod--blocco---b--de-block--bl--acadblockdialog--bmake--bmod--block---bl--ru-блок--б--acadblockdialog--bmod--сблок--блок---б--pl-blok--b--bmod--odtblok--tblok--blok---b--cs-blok--b--acadblockdialog--bvytvoř--vytvořb--bmod--blok---b--hu-blokk--b--acadblockdialog--bkészít--blokk---b)
 
@@ -747,7 +747,7 @@ Blokk létrehozása
 
 Tisztítás
 
-- **Álnevek:** `-TT`
+- **Rövidítések:** `-TT`
 - **Első prompt:** `Adja meg a tisztítani kívánt, használaton kívüli objektumok típusát [Blokk/VTípus]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig--ru-очистить--оч--удали--очистить--pl-usuń--us--usuń--cs-čisti--ci--čisti--hu-tisztít--tt--tisztít---tt)
 
@@ -762,7 +762,7 @@ Szín
 
 Vonaltípus
 
-- **Álnevek:** `-VT`
+- **Rövidítések:** `-VT`
 - **Első prompt:** `Válasszon az opciók közül [?/Tölt/Beállít]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc--hu-vtlépték--vtl--vtípus--vt--dpvtípus---vtípus---vt)
 
@@ -790,7 +790,7 @@ A Blokkok paletta megnyitása
 
 Blokk beszúrása
 
-- **Álnevek:** `-BE`
+- **Rövidítések:** `-BE`
 - **Első prompt:** `Adja meg a blokk nevét vagy [?]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in--pt-br-inserir--i--inserirurl--inserird--inserir---i--fr-inserer--i--inserurl--inserer---i--it-inser--in--inserurl--inser---in--de-einfüge--ein--urleinfügen--einfüge---e--ru-вставить--в--урлвставь--диалвст--вставить---в--pl-wstaw--w--wstawurl--odwstaw--wstaw---w--cs-vlož--vl--vložurl--vlož---vl--hu-beill--be--urlbeill--beill---be)
 
@@ -798,7 +798,7 @@ Blokk beszúrása
 
 Fóliák és fóliatulajdonságok kezelése
 
-- **Álnevek:** `FO`, `DPFMÓD`
+- **Rövidítések:** `FO`, `DPFMÓD`
 - [Fóliák az AutoCAD-ben: FÓLIA (LAYER) parancs](/docs/commands/layer)
 
 ### FÓLIABEZÁR (LAYERCLOSE) [#layerclose]
@@ -811,14 +811,14 @@ A Fóliatulajdonság-kezelő bezárása
 
 A kijelölt objektumok tulajdonságainak megjelenítése
 
-- **Álnevek:** `TUL`, `TVA`, `MD`
+- **Rövidítések:** `TUL`, `TVA`, `MD`
 - [Tulajdonságok paletta az AutoCAD-ben: TULAJDONSÁGOK (PROPERTIES) parancs](/docs/commands/properties)
 
 ### TULAJDONSÁGOKBEZÁR (PROPERTIESCLOSE) [#propertiesclose]
 
 Bezárja a Tulajdonságok palettát
 
-- **Álnevek:** `TBZ`
+- **Rövidítések:** `TBZ`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop--pt-br-propriedades--alt--props--altpropd--modificard--fecharprop--fprop--fr-proprietes--prop--props--ddchprop--ddmodify--fermerproprietes--frprop--it-proprieta--pr--pro--prop--ch--ddchprop--ddmodify--chiudiprop--cpr--de-eigenschaften--eigschliess--ru-окносв--из--диалсвой--диализм--окносвзакр--осз--pl-właściwości--ce--właściwościzamknij--cz--cs-vlastnosti--vla--vlast--vt--zavřivl--vlzav--hu-tulajdonságok--tul--tva--md--tulajdonságokbezár--tbz)
 
 ## Lekérdezés és nézet [#inquiry]
@@ -827,14 +827,14 @@ Bezárja a Tulajdonságok palettát
 
 Pontstílus
 
-- **Álnevek:** `DPPTÍPUS`
+- **Rövidítések:** `DPPTÍPUS`
 - [Pontstílus az AutoCAD-ben: PTÍPUS (PTYPE) parancs](/docs/commands/ptype)
 
 ### TÁVS (DIST) [#dist]
 
 Mérés
 
-- **Álnevek:** `TÁ`
+- **Rövidítések:** `TÁ`
 - **Első prompt:** `Adja meg az első pontot:`
 - [AutoCAD TÁVS (DIST) parancs](/docs/commands/dist)
 
@@ -842,7 +842,7 @@ Mérés
 
 Terület
 
-- **Álnevek:** `TER`
+- **Rövidítések:** `TER`
 - **Első prompt:** `Adja meg az első sarokpontot, vagy [Objektum/területet Hozzáad/területet kiVon] <Objektum>:`
 - [Terület számítása az AutoCAD-ben: TERÜLET (AREA) parancs](/docs/commands/area)
 
@@ -857,7 +857,7 @@ Pont koordinátái
 
 Lista
 
-- **Álnevek:** `LI`, `LS`, `ANYAGLISTA`
+- **Rövidítések:** `LI`, `LS`, `ANYAGLISTA`
 - **Első prompt:** `Válasszon objektumokat:`
 - [AutoCAD LISTA (LIST) parancs](/docs/commands/list)
 
@@ -872,7 +872,7 @@ Lemez és fizikai jellemzők
 
 Zoom
 
-- **Álnevek:** `Z`
+- **Rövidítések:** `Z`
 - **Első prompt:** `Adja meg az ablak sarokpontját, a léptéktényezőt (nX vagy nXP) vagy [Mind/Terjedelem/Előző/aRány/Ablak/Objektum]:`
 - [AutoCAD ZOOM parancs](/docs/commands/zoom)
 
@@ -886,7 +886,7 @@ Eltolás
 
 Eltolás, Pont
 
-- **Álnevek:** `-T`
+- **Rövidítések:** `-T`
 - **Első prompt:** `Adja meg a bázispontot vagy az elmozdulást:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e--pt-br-pan--p---pan---p--fr-pan--p---pan---p--it-pan--p---pan---p--de-pan--p---pan---p--ru-пан---пан--pl-nfragm--nf---nfragm---nf--cs-pp--p---pp---p--hu-tol---tol---t)
 
@@ -894,7 +894,7 @@ Eltolás, Pont
 
 FKR
 
-- **Álnevek:** `DPFKR`
+- **Rövidítések:** `DPFKR`
 - **Első prompt:** `Adja meg az FKR origóját vagy [laP/NEve/OBjektum/eLŐző/Nézet/viLÁg/X/Y/Z/ZTeng] <viLÁg>:`
 - [AutoCAD FKR (UCS) parancs: felhasználói koordináta-rendszer](/docs/commands/ucs)
 
@@ -923,7 +923,7 @@ Szintmagasság
 
 Nézőpont
 
-- **Álnevek:** `DPNÉZŐPONT`, `NP`
+- **Rövidítések:** `DPNÉZŐPONT`, `NP`
 - **Első prompt:** `Adjon meg egy nézőpontot, vagy [Forgat]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-vpoint--vpoint---vp--vp--ddvpoint--es--ptovista---pv--ptovista--pv--ddvpoint--pt-br--pontov---vp--pontov--vp--fr--pointvue---pv--pointvue--ddvpoint--pv--it--pvista---pv--pvista--ddvpoint--pv--de--apunkt---ap--apunkt--ddvpoint--ap--ru--тзрения---тз--тзрения--диалтзрен--тз--pl--pktobs---po--pktobs--odpktobs--po--cs--oko---bp--oko--diaoko--bp--hu--nézőpont--nézőpont--dpnézőpont--np)
 
@@ -931,7 +931,7 @@ Nézőpont
 
 Előre beállított nézetek
 
-- **Álnevek:** `N`, `DPNÉZET`
+- **Rövidítések:** `N`, `DPNÉZET`
 - **Első prompt:** `Válasszon az opciók közül [Ortografikus]:`
 - [AutoCAD NÉZET (VIEW) parancs](/docs/commands/view)
 
@@ -939,14 +939,14 @@ Előre beállított nézetek
 
 3D keringés
 
-- **Álnevek:** `3DK`, `3DO`, `KERING`
+- **Rövidítések:** `3DK`, `3DO`, `KERING`
 - [3D keringés az AutoCAD-ben: 3DKERINGÉS (3DORBIT) parancs](/docs/commands/3dorbit)
 
 ### NAVVCUBE [#navvcube]
 
 ViewCube
 
-- **Álnevek:** `CUBE`
+- **Rövidítések:** `CUBE`
 - **Első prompt:** `Válasszon az opciók közül [BE/KI] <BE>:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#navvcube--cube--es-navvcube--cube--pt-br-cubonav--cube--fr-navvcube--cube--it-navcubo--cubo--de-navansichtsw--ru-наввкуб--куб--pl-navvcube--cube--cs-navvcube--cube--hu-navvcube--cube)
 
@@ -954,7 +954,7 @@ ViewCube
 
 Látványstílusok
 
-- **Álnevek:** `LSA`
+- **Rövidítések:** `LSA`
 - **Első prompt:** `Válasszon az opciók közül [2ddrótváz/Takartvonalas/Látványtervi] <2ddrótváz>:`
 - [Látványstílusok az AutoCAD-ben: LSAKTUÁLIS (VSCURRENT) parancs](/docs/commands/vscurrent)
 
@@ -962,14 +962,14 @@ Látványstílusok
 
 Regenerálás
 
-- **Álnevek:** `RE`
+- **Rövidítések:** `RE`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#regen--re--regenall--rea--es-regen--rg--regent--rgt--pt-br-regen--rg--regentudo--rgt--fr-regen--rg--regntout--rgt--it-rigen--rg--rigent--rgt--de-regen--rg--regenall--rga--ru-реген--рг--всереген--врг--pl-regen--re--regenw--rew--cs-regen--re--regenv--rev--hu-regen--re--mindreg--rm)
 
 ### MINDREG (REGENALL) [#regenall]
 
 Mindent regenerál
 
-- **Álnevek:** `RM`
+- **Rövidítések:** `RM`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#regen--re--regenall--rea--es-regen--rg--regent--rgt--pt-br-regen--rg--regentudo--rgt--fr-regen--rg--regntout--rgt--it-rigen--rg--rigent--rgt--de-regen--rg--regenall--rga--ru-реген--рг--всереген--врг--pl-regen--re--regenw--rew--cs-regen--re--regenv--rev--hu-regen--re--mindreg--rm)
 
 ### KITÖLT (FILL) [#fill]
@@ -997,7 +997,7 @@ Többszörös előre
 
 Tárgyrasztermódok
 
-- **Álnevek:** `-TR`
+- **Rövidítések:** `-TR`
 - **Első prompt:** `Adja meg a tárgyraszter módok listáját:`
 - [Tárgyraszter az AutoCAD-ben: -TRASZTER (-OSNAP) parancs](/docs/commands/-osnap)
 
@@ -1005,7 +1005,7 @@ Tárgyrasztermódok
 
 Raszter mód
 
-- **Álnevek:** `RA`
+- **Rövidítések:** `RA`
 - **Első prompt:** `Adja meg a raszterkiosztást vagy [BE/KI/Arány] <10.00>:`
 - [Raszter mód az AutoCAD-ben: RASZTER (SNAP) parancs](/docs/commands/snap)
 
@@ -1032,7 +1032,7 @@ Nézőpont
 
 Előre beállított nézetek
 
-- **Álnevek:** `-N`
+- **Rövidítések:** `-N`
 - **Első prompt:** `Válasszon az opciók közül [Ortografikus]:`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi--pt-br--vista---v--vista--v--vistadd--fr--vue---vu--vue--vu--ddview--it--vista---v--vista--v--ddview--de--ausschnt---as--ausschnt--as--ddview--ru--вид--вид--диалвид--pl--widok---wid--widok--wid--odwidok--cs--pohled---ph--pohled--ph--diapohled--hu--nézet---n--nézet--n--dpnézet)
 
@@ -1046,7 +1046,7 @@ Pontkijelölés egy ideiglenes referenciapontban
 
 A koordináták és a távolságok megjelenítési pontosságának és formátumának megadása
 
-- **Álnevek:** `MES`, `DPMÉRTEGYS`
+- **Rövidítések:** `MES`, `DPMÉRTEGYS`
 - [Mértékegységek az AutoCAD-ben: MÉRTEGYS (UNITS) parancs](/docs/commands/units)
 
 ### TISZTAKÉPERNYŐBE (CLEANSCREENON) [#cleanscreenon]
@@ -1106,7 +1106,7 @@ Aktuális rajz mentése
 
 Aktuális rajz mentése másként
 
-- **Álnevek:** `URLMENT`
+- **Rövidítések:** `URLMENT`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre--pt-br-salvarr--salvarcomo--salvar--salvarurl--abrir--abrirurl--openurl--fr-sauverap--sauvenom--sauvegrd--sauveurl--ouvrir--ouvrirurl--chrgdxf--it-salvavel--salvacome--salva--salvaurl--apri--apriurl--de-ksich--sichals--sichern--urlspeichern--öffnen--urlöffnen--ru-бсохранить--сохранитькак--сохранить--урлсохрани--открыть--урлоткрой--pl-szapisz--nzapisz--zapisz--zapiszurl--otwórz--otwórzurl--cs-rulož--uložjako--ulož--uložurl--otevři--otevřiurl--hu-gyment--mentmint--urlment--elment--megnyit--mny--urlmegnyit)
 
 ### ELMENT (SAVE) [#save]
@@ -1125,7 +1125,7 @@ A rajz mentése DXF-fájlként
 
 Létező rajzfájl megnyitása
 
-- **Álnevek:** `MNY`, `URLMEGNYIT`
+- **Rövidítések:** `MNY`, `URLMEGNYIT`
 - [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre--pt-br-salvarr--salvarcomo--salvar--salvarurl--abrir--abrirurl--openurl--fr-sauverap--sauvenom--sauvegrd--sauveurl--ouvrir--ouvrirurl--chrgdxf--it-salvavel--salvacome--salva--salvaurl--apri--apriurl--de-ksich--sichals--sichern--urlspeichern--öffnen--urlöffnen--ru-бсохранить--сохранитькак--сохранить--урлсохрани--открыть--урлоткрой--pl-szapisz--nzapisz--zapisz--zapiszurl--otwórz--otwórzurl--cs-rulož--uložjako--ulož--uložurl--otevři--otevřiurl--hu-gyment--mentmint--urlment--elment--megnyit--mny--urlmegnyit)
 
 ### DXFBE (DXFIN) [#dxfin]

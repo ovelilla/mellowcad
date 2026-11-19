@@ -6,13 +6,13 @@ figure: "LISTA egy alaplap furatáról: a kör fóliája, középpontja, sugara,
 sourceHash: "d0ebcf466ff5"
 ---
 
-A LISTA (LIST) parancs a parancssorba jelentést ír minden kiválasztott objektumról, az AutoCAD 2027 oszlopaiban és szavaival. Mindegyik a típusával, a fóliájával és a terével kezdődik, majd a színével, a vonaltípusával, a vonalvastagságával és a vastagságával, ha ezek nem FÓLIA értékűek, illetve nem nullák, aztán azzal, ami az adott típusnak van: a vonal végpontjai, hossza, szöge és delta értékei; a kör középpontja, sugara, kerülete és területe; az ív szögei és hossza; a vonallánc csúcspontjai, szélességei, területe és hossza; a spline vezérlőpontjai és illesztési pontjai; a szöveg stílusa, magassága és igazítása; a méret típusa, pontjai és stílusa; a sraffozás mintája, léptéke és területe; a blokkreferencia neve, beillesztési pontja, léptékei és attribútumai; a kiosztás sorai és elemei; a lemez területe, kerülete és befoglaló téglalapja.
+A LISTA (LIST) parancs a parancssorba jelentést ír minden kiválasztott objektumról, az AutoCAD 2027 oszlopaiban és szavaival. Mindegyik a típusával, a fóliájával és a terével kezdődik, majd a színével, a vonaltípusával, a vonalvastagságával és a vastagságával, ha ezek nem Fólia szerintiek, illetve nem nullák, aztán azzal, ami az adott típusnak van: a vonal végpontjai, hossza, szöge és delta értékei; a kör középpontja, sugara, kerülete és területe; az ív szögei és hossza; a vonallánc csúcspontjai, szélességei, területe és hossza; a spline vezérlőpontjai és illesztési pontjai; a szöveg stílusa, magassága és igazítása; a méret típusa, pontjai és stílusa; a sraffozás mintája, léptéke és területe; a blokkreferencia neve, beillesztési pontja, léptékei és attribútumai; a kiosztás sorai és elemei; a lemez területe, kerülete és befoglaló téglateste.
 
 A pontok az aktuális FKR-ben, a hosszak a rajz pontosságával, a szögek az AUPREC szerinti pontossággal jelennek meg. A parancs előtt kiválasztott objektumokat azonnal, prompt nélkül listázza, üres kiválasztásnál pedig az Enter szó nélkül befejezi a parancsot. Minden sor egyszerre jelenik meg: az AutoCAD szövegablaka minden képernyőnyi szöveg után megáll az `A folytatáshoz nyomja meg az ENTER billentyűt:` promptnál, itt viszont az előzmények görgethetők. Azonosító (`Handle`) sor nincs: az itteni objektumoknak nincs azonosítójuk.
 
 ## Missing
 
-A nyitott, ívekkel illesztett vonallánc területe: itt a húrjával lezárt görbe területe, az AutoCAD-é nagyobb. A spline hossza itt pontos, az AutoCAD-ben közelítő érték. A két vonalból készült <Command id="DIMANGULAR" /> méretet a három pontjával listázza, és egyetlen méret sem asszociatív a listában. Az AutoCAD szüneteltetése és szövegablaka. Ami az itteni objektumoknak nincs: BLOKK, ALAPÉRTELMEZETT vonalvastagság, saját vonaltípuslépték, átlátszóság és csoportok.
+A nyitott, ívekkel illesztett vonallánc területe: itt a húrjával lezárt görbe területe, az AutoCAD-é nagyobb. A spline hossza itt pontos, az AutoCAD-ben közelítő érték. A két vonalból készült <Command id="DIMANGULAR" /> méretet a három pontjával listázza, és egyetlen méret sem asszociatív a listában. Az AutoCAD szüneteltetése és szövegablaka. Ami az itteni objektumoknak nincs: a Blokk szerint beállítás, az Alapértelmezett vonalvastagság, saját vonaltípuslépték, átlátszóság és csoportok.
 
 ## Questions
 
@@ -22,7 +22,7 @@ LIST. A magyar AutoCAD-ben a rövidítése `LI` és `LS`, akárcsak az angolban,
 
 ### Mit mutat a LISTA parancs?
 
-Mindazt, amit az AutoCAD LISTA parancsa az objektumról közöl: a típusát, a fóliáját, a terét és a nem FÓLIA értékű tulajdonságait, majd a geometriáját, minden pontot és hosszt számként. Ha több objektumot választ ki, mindegyikről külön jelentés készül.
+Mindazt, amit az AutoCAD LISTA parancsa az objektumról közöl: a típusát, a fóliáját, a terét és a nem Fólia szerinti tulajdonságait, majd a geometriáját, minden pontot és hosszt számként. Ha több objektumot választ ki, mindegyikről külön jelentés készül.
 
 ### Hogyan lehet megtudni egy objektum hosszát vagy területét?
 

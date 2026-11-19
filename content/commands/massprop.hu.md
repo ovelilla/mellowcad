@@ -24,7 +24,7 @@ A számok utáni mértékegységek építészeti vagy mérnöki egységeknél (`
 
 ### Hogyan lehet megtudni egy 3D szilárdtest térfogatát az AutoCAD-ben?
 
-Futtassa a FIZJELL parancsot, válassza ki a szilárdtestet, és nyomja meg az Enter billentyűt: a Térfogat a jelentés második sora. A mintában szereplő 60 × 40 × 25-ös téglatest 60000-et ad. A fájlra vonatkozó kérdésnél nyomja meg az Enter billentyűt, és a parancs befejeződik.
+Futtassa a FIZJELL parancsot, válassza ki a szilárdtestet, és nyomja meg az Enter billentyűt: a Térfogat a jelentés második sora. A mintában szereplő 60 × 40 × 25-ös téglatest 60 000-et ad. A fájlra vonatkozó kérdésnél nyomja meg az Enter billentyűt, és a parancs befejeződik.
 
 ### Hogyan lehet megtalálni egy alakzat súlypontját?
 

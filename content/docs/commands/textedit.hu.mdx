@@ -3,16 +3,16 @@ title: "AutoCAD SZÖVSZERK (TEXTEDIT) parancs"
 description: "Így szerkeszt az AutoCAD SZÖVSZERK (TEXTEDIT) parancsa szöveget, bekezdéses szöveget és attribútumdefiníciót egymás után, Vissza és Mód opcióval. Próbálja ki!"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD SZÖVSZERK parancs angolul?","answer":"TEXTEDIT. A magyar AutoCAD-ben írja be a SZÖVSZERK nevet vagy a SZO rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; a SZERK és a DPEDIT is működik. Az angol változat ED rövidítése a magyarban nem működik. A _TEXTEDIT az AutoCAD bármely nyelvi változatában működik."},{"question":"Hogyan lehet szöveget szerkeszteni az AutoCAD-ben?","answer":"Kattintson rá duplán, vagy írja be a SZO rövidítést, és jelölje ki; írja át, és nyomja meg az Enter billentyűt. A SZÖVSZERK parancs ezután a következő szerkesztendő szöveget kéri, amíg meg nem nyomja az Esc billentyűt. A magassága és az elforgatása a Tulajdonságok paletta sorai között található, a stílusa a Stílus sorban."},{"question":"Hogyan lehet több szöveget egymás után szerkeszteni?","answer":"Hagyja a SZÖVSZERK parancsot Többszörös módban, ez az alapértelmezés: minden szöveg után a következőt kéri. A Mód és az Egyszeres opcióval egy szöveg után befejeződik, ahogy dupla kattintáskor is."},{"question":"Miért nem szerkeszthető a szöveg dupla kattintással?","answer":"Lehet, hogy a szöveg zárt fólián van: oldja fel a fóliát a Fóliatulajdonság-kezelőben. A méret szövegét a SZÖVSZERK parancs még nem szerkeszti, a blokk attribútumértékeire duplán kattintva pedig a BATTEDIT parancs nyílik meg."}]
+faq: [{"question":"Mi az AutoCAD SZÖVSZERK parancs angolul?","answer":"TEXTEDIT. A magyar AutoCAD-ben a rövidítése SZO, és a SZERK és a DPEDIT is működik: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol ED a magyar változatban nem működik; a teljes SZÖVSZERK név igen, a _TEXTEDIT pedig az AutoCAD bármely nyelvi változatában."},{"question":"Hogyan lehet szöveget szerkeszteni az AutoCAD-ben?","answer":"Kattintson rá duplán, vagy írja be a SZO rövidítést, és jelölje ki; írja át, és nyomja meg az Enter billentyűt. A SZÖVSZERK parancs ezután a következő szerkesztendő szöveget kéri, amíg meg nem nyomja az Esc billentyűt. A magassága és az elforgatása a Tulajdonságok paletta sorai között található, a stílusa a Stílus sorban."},{"question":"Hogyan lehet több szöveget egymás után szerkeszteni?","answer":"Hagyja a SZÖVSZERK parancsot Többszörös módban, ez az alapérték: minden szöveg után a következőt kéri. A Mód és az Egyszeres opcióval egy szöveg után befejeződik, ahogy dupla kattintáskor is."},{"question":"Miért nem szerkeszthető a szöveg dupla kattintással?","answer":"Lehet, hogy a szöveg zárolt fólián van: oldja fel a fólia zárolását a Fóliatulajdonság-kezelőben. A méret szövegét a SZÖVSZERK parancs még nem szerkeszti, a blokk attribútumértékeire duplán kattintva pedig a BATTEDIT parancs nyílik meg."}]
 ---
 
-A SZÖVSZERK (TEXTEDIT) parancs feliratobjektumokat szerkeszt: kiírja az aktuális szerkesztési módot, kezdetben a Többszöröst, és kéri, hogy jelöljön ki egy objektumot. Az egysoros szöveg a helyén nyílik meg átírásra, a bekezdéses szöveg a [`BSZÖVEG`](/docs/commands/mtext) parancs szerkesztőjében, az attribútumdefiníció pedig a címkéjével, a kérdésével és az alapértelmezett értékével. Többszörös módban ezután a következő objektumot kéri, amíg az Esc vagy az Enter be nem fejezi a parancsot, és az egész futtatás egyetlen lépés, amelyet a `T` parancs visszavon. A szövegre vagy attribútumdefinícióra duplán kattintva a SZÖVSZERK parancs indul, bekezdéses szövegre duplán kattintva pedig a szerkesztő nyílik meg erre az egy objektumra.
+A SZÖVSZERK (TEXTEDIT) parancs feliratozási objektumokat szerkeszt: kiírja az aktuális szerkesztési módot, kezdetben a Többszöröst, és kéri, hogy jelöljön ki egy objektumot. Az egysoros szöveg a helyén nyílik meg átírásra, a bekezdéses szöveg a [`BSZÖVEG`](/docs/commands/mtext) parancs szerkesztőjében, az attribútumdefiníció pedig a címkéjével, a promptjával és az alapértékével. Többszörös módban ezután a következő objektumot kéri, amíg az Esc vagy az Enter be nem fejezi a parancsot, és az egész futtatás egyetlen lépés, amelyet a `T` parancs visszavon. A szövegre vagy attribútumdefinícióra duplán kattintva a SZÖVSZERK parancs indul, bekezdéses szövegre duplán kattintva pedig a szerkesztő nyílik meg erre az egy objektumra.
 
-Az egysoros szöveg szerkesztőjében megnyomott Esc elveti az adott szerkesztést, és a következő objektumot kéri; a második Esc befejezi a parancsot. A zárt fólián lévő objektumra ez a válasz: `Az objektum lezárt fólián van.`, és a parancs újra kérdez; bármi másra kattintva szó nélkül újra kérdez. A parancs előtt kijelölt egyetlen szöveg azonnal megnyílik.
+Az egysoros szöveg szerkesztőjében megnyomott Esc elveti az adott szerkesztést, és a következő objektumot kéri; a második Esc befejezi a parancsot. A zárolt fólián lévő objektumra ez a válasz: `Az objektum lezárt fólián van.`, és a parancs újra kérdez; bármi másra kattintva szó nélkül újra kérdez. A parancs előtt kijelölt egyetlen szöveg azonnal megnyílik.
 
 - **Parancs:** `SZÖVSZERK`
 - **Angolul:** `TEXTEDIT`, bármely nyelven `_TEXTEDIT` formában beírva
-- **Álnevek:** `SZO`, `DPEDIT`, `SZERK`
+- **Rövidítések:** `SZO`, `DPEDIT`, `SZERK`
 - **Panel:** [Feliratozás](/docs/commands#annotate)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SZO`, és nyomja meg az Enter billentyűt.
 
@@ -26,7 +26,7 @@ A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a p
 
 ### `Vissza` (`V`) [#undo]
 
-Visszavonja a futtatás utolsó szerkesztését, és újra kérdez; ha már nincs mit visszavonni, kiírja, hogy a parancs teljesen visszavonásra került.
+Visszavonja a futtatás utolsó szerkesztését, és újra kérdez; ha már nincs mit visszavonni, kiírja, hogy a parancsot teljesen visszavonta.
 
 ### `Mód` (`M`) [#mode]
 
@@ -34,7 +34,7 @@ A szerkesztési módot kéri: az `Egyszeres` egy objektum után befejezi a paran
 
 ## Amit még nem tud [#missing]
 
-A méretszöveg: a SZÖVSZERK parancs nem szerkeszti a méret szövegét, amelyet a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs Szöveg opciója az elhelyezéskor állít be. A szöveg tartalmának szerkesztése a Tulajdonságok palettán. A begépelt BSZEDIT és a -BSZEDIT parancs. Amíg a szerkesztő nyitva van, a parancssoron `SZÖVSZERK:` áll, mert az AutoCAD helyben szerkeszt, és nem kérdez semmit.
+A méretszöveg: a SZÖVSZERK parancs nem szerkeszti a méret szövegét, amelyet a [`MÉRETHOSSZ`](/docs/commands/dimlinear) parancs Szöveg opciója az elhelyezéskor állít be. A szöveg tartalmának szerkesztése a Tulajdonságok palettán. A begépelt BSZEDIT és a -BSZEDIT parancs. Amíg a szerkesztő nyitva van, a parancssoron `SZÖVSZERK:` áll, míg az AutoCAD helyben szerkeszt, és semmit sem kérdez.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit--pt-br-editartexto--tedit--ddedit--ed--fr-modiftexte--ed--ddedit--mo--it-modtesto--mod--ddedit--mt--de-textbearb--tbearb--ddedit--tbear--ru-текстред--тр--диалред--ред--pl-edtekst--edt--odtekst--et--cs-textedit--ted--diaedit--ed--hu-szövszerk--szo--dpedit--szerk)
 
@@ -42,7 +42,7 @@ A méretszöveg: a SZÖVSZERK parancs nem szerkeszti a méret szövegét, amelye
 
 ### Mi az AutoCAD SZÖVSZERK parancs angolul?
 
-TEXTEDIT. A magyar AutoCAD-ben írja be a `SZÖVSZERK` nevet vagy a `SZO` rövidítést, és nyomja meg az Enter billentyűt vagy a szóközt; a `SZERK` és a `DPEDIT` is működik. Az angol változat `ED` rövidítése a magyarban nem működik. A `_TEXTEDIT` az AutoCAD bármely nyelvi változatában működik.
+TEXTEDIT. A magyar AutoCAD-ben a rövidítése `SZO`, és a `SZERK` és a `DPEDIT` is működik: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt. Az angol `ED` a magyar változatban nem működik; a teljes `SZÖVSZERK` név igen, a `_TEXTEDIT` pedig az AutoCAD bármely nyelvi változatában.
 
 ### Hogyan lehet szöveget szerkeszteni az AutoCAD-ben?
 
@@ -50,11 +50,11 @@ Kattintson rá duplán, vagy írja be a `SZO` rövidítést, és jelölje ki; í
 
 ### Hogyan lehet több szöveget egymás után szerkeszteni?
 
-Hagyja a SZÖVSZERK parancsot `Többszörös` módban, ez az alapértelmezés: minden szöveg után a következőt kéri. A `Mód` és az `Egyszeres` opcióval egy szöveg után befejeződik, ahogy dupla kattintáskor is.
+Hagyja a SZÖVSZERK parancsot `Többszörös` módban, ez az alapérték: minden szöveg után a következőt kéri. A `Mód` és az `Egyszeres` opcióval egy szöveg után befejeződik, ahogy dupla kattintáskor is.
 
 ### Miért nem szerkeszthető a szöveg dupla kattintással?
 
-Lehet, hogy a szöveg zárt fólián van: oldja fel a fóliát a Fóliatulajdonság-kezelőben. A méret szövegét a SZÖVSZERK parancs még nem szerkeszti, a blokk attribútumértékeire duplán kattintva pedig a [`BATTEDIT`](/docs/commands/eattedit) parancs nyílik meg.
+Lehet, hogy a szöveg zárolt fólián van: oldja fel a fólia zárolását a Fóliatulajdonság-kezelőben. A méret szövegét a SZÖVSZERK parancs még nem szerkeszti, a blokk attribútumértékeire duplán kattintva pedig a [`BATTEDIT`](/docs/commands/eattedit) parancs nyílik meg.
 
 ## Kapcsolódó parancsok [#related]
 

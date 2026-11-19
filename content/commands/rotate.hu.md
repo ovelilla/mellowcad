@@ -6,7 +6,7 @@ figure: "Egy téglalap 30°-kal elforgatva a sarka körül a Másol opcióval, a
 sourceHash: "0e5ae021e108"
 ---
 
-A FORGAT (ROTATE) parancs egy bázispont körül forgatja el a kiválasztott objektumokat: válassza ki őket, adja meg a bázispontot, majd a szöget – beírva, vagy egy ponttal, amelynek a bázisponttól mért iránya adja a szöget. Az első sora kiírja, melyik irány a pozitív, alapértelmezés szerint az óramutató járásával ellentétes (ANGDIR), és hol van a 0 (ANGBASE). A szögnél az Enter az utolsó elforgatást ismétli, új rajzban 0-t. Az objektumok egy, az FKR Z tengelyével párhuzamos, a bázisponton átmenő tengely körül fordulnak el, így 3D-ben megtartják a magasságukat. Az elforgatás egyetlen lépés, amelyet a Vissza visszavon.
+A FORGAT (ROTATE) parancs egy bázispont körül forgatja el a kiválasztott objektumokat: válassza ki őket, adja meg a bázispontot, majd a szöget – beírva, vagy egy ponttal, amelynek a bázisponttól mért iránya adja a szöget. Az első sora kiírja, melyik irány a pozitív, alapértelmezés szerint az óramutató járásával ellentétes (ANGDIR), és hol van a 0 (ANGBASE). A szögnél az Enter az utolsó elforgatást ismétli, új rajzban 0-t. Az objektumok egy, az FKR Z tengelyével párhuzamos, a bázisponton átmenő tengely körül fordulnak el, így 3D-ben megtartják a magasságukat. Az elforgatás egyetlen lépésként vonható vissza.
 
 ## Options
 

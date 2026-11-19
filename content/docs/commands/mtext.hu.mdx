@@ -4,7 +4,7 @@ metaTitle: "Bekezdéses szöveg AutoCAD-ben: BSZÖVEG (MTEXT)"
 description: "Az AutoCAD BSZÖVEG (MTEXT, rövidítése BS) parancsa: két sarokpont vagy szélesség, magasság, igazítás és sorköz, bekezdések egy objektumban. Próbálja ki online."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Mi az AutoCAD BSZÖVEG parancs angolul?","answer":"MTEXT. A magyar AutoCAD-ben a rövidítése BS és SZ: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt; a _MTEXT az AutoCAD bármely nyelvi változatában működik. Az angol T a magyar változatban a TOL parancsot indítja, az MT pedig az MTÉR parancsot. A -BSZÖVEG, -BS, ugyanezt kérdezi, és a szöveget a parancssorban veszi át."},{"question":"Hogyan lehet új sort kezdeni a bekezdéses szövegben?","answer":"Nyomja meg az Enter billentyűt: új bekezdést kezd. Egy bekezdésen belül a sorok maguktól törnek a keret szélességénél. A Ctrl+Enter vagy egy kattintás a kereten kívül bezárja a szerkesztőt, és megtartja a szöveget."},{"question":"Hogyan lehet módosítani a bekezdéses szöveg szélességét?","answer":"Válassza ki, és húzza el az oldalán lévő fogót: a szöveg a szélesség változásával újratördelődik, az igazítási pontja körül. A Tulajdonságok paletta definiált szélesség sora számmal teszi ugyanezt, a sorköz sorai pedig a sortávolságot módosítják."},{"question":"Hogyan lehet a BSZÖVEG szöveget egysoros szöveggé alakítani?","answer":"Bontsa szét a SZÉTVET paranccsal: minden sora egy-egy SZÖVEG objektummá válik, balra igazítva ott, ahol a sor állt, ahogy az AutoCAD-ben is. Ha inkább átírná, kattintson rá duplán, és írja át a szerkesztőjében."}]
+faq: [{"question":"Mi az AutoCAD BSZÖVEG parancs angolul?","answer":"MTEXT. A magyar AutoCAD-ben a rövidítése BS és SZ: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt; a _MTEXT az AutoCAD bármely nyelvi változatában működik. Az angol T a magyar változatban visszavon, mert a T az U parancs magyar neve; az MT pedig az MTÉR parancsot indítja. A -BSZÖVEG, -BS, ugyanezt kérdezi, és a szöveget a parancssorban veszi át."},{"question":"Hogyan lehet új sort kezdeni a bekezdéses szövegben?","answer":"Nyomja meg az Enter billentyűt: új bekezdést kezd. Egy bekezdésen belül a sorok maguktól törnek a keret szélességénél. A Ctrl+Enter vagy egy kattintás a kereten kívül bezárja a szerkesztőt, és megtartja a szöveget."},{"question":"Hogyan lehet módosítani a bekezdéses szöveg szélességét?","answer":"Válassza ki, és húzza el az oldalán lévő fogót: a szöveg a szélesség változásával újratördelődik, az igazítási pontja körül. A Tulajdonságok paletta Definiált szélesség sora számmal teszi ugyanezt, a sorköz sorai pedig a sortávolságot módosítják."},{"question":"Hogyan lehet a BSZÖVEG szöveget egysoros szöveggé alakítani?","answer":"Bontsa szét a SZÉTVET paranccsal: minden sora egy-egy SZÖVEG objektummá válik, balra igazítva ott, ahol a sor állt, ahogy az AutoCAD-ben is. Ha inkább átírná, kattintson rá duplán, és írja át a szerkesztőjében."}]
 ---
 
 A BSZÖVEG (MTEXT) parancs bekezdéses szöveget ír: egyetlen objektumot, amelynek bekezdései egy adott szélességre tördelődnek. Megad egy első sarokpontot és az átellenest, a köztük lévő keret pedig a szélességet adja meg; ezután a helyben megjelenő szerkesztőben gépel, ahol az Enter új bekezdést kezd, a Ctrl+Enter vagy egy kattintás a kereten kívül pedig megtartja a szöveget. Ha már beírt valamit, az Esc megkérdezi, hogy mentse-e, ahogy az AutoCAD Nem mentett változtatások párbeszédpanelje is. Ha minden sornak külön objektumnak kell lennie, használja a [`SZÖVEG`](/docs/commands/text) parancsot.
@@ -13,7 +13,7 @@ Az első sor kiírja az aktuális stílust és magasságot. Minden opciót az á
 
 - **Parancs:** `BSZÖVEG`
 - **Angolul:** `MTEXT`, bármely nyelven `_MTEXT` formában beírva
-- **Álnevek:** `BS`, `SZ`
+- **Rövidítések:** `BS`, `SZ`
 - **Panel:** [Feliratozás](/docs/commands#annotate)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `BS`, és nyomja meg az Enter billentyűt.
 
@@ -51,7 +51,7 @@ Az átellenes sarokpont helyett a szélességet kéri be, beírva vagy egy ponti
 
 ## Amit még nem tud [#missing]
 
-A hasábokat, amelyeket az AutoCAD 2027 az átellenes sarokpont promptjánál felsorol, nem kínálja fel. A szövegen belüli formázást, például egy szó magasságát, betűtípusát vagy színét, a törtalakú szöveget vagy az aláhúzást nem rajzolja meg és nem alkalmazza, a szerkesztőben pedig nincs vonalzó, tabulátor, behúzás, lista vagy Szövegszerkesztő szalaglap, sem kurzor a rajzon. Nincs háttérmaszk és szövegkeret, nincs definiált magasság, feliratozási léptékezés és a sarkain Pont tárgyraszter, és a keretén belüli kattintás akkor is kijelöli, ha nem a betűire esik, ahol az AutoCAD semmit sem jelöl ki.
+A hasábokat, amelyeket az AutoCAD 2027 az átellenes sarokpont promptjánál felsorol, nem kínálja fel. A szövegen belüli formázást, például egy szó magasságát, betűtípusát vagy színét, a törtalakú szöveget vagy az aláhúzást nem rajzolja meg és nem alkalmazza, a szerkesztőben pedig nincs vonalzó, tabulátor, behúzás, lista vagy Szövegszerkesztő szalaglap, sem kurzor a rajzon. Nincs háttérmaszk és szövegkeret, nincs definiált magasság, feliratozási léptékezés és a sarkain Pont tárgyraszter, és a keretén belüli kattintás akkor is kijelöli, ha nem a betűire esik, míg az AutoCAD ilyenkor semmit sem jelöl ki.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t--fr-textmult--tt--tx---textmult---tx--it-testom--tsm--tstm--mtext---testom--de-mtext--mt--t---mtext---t--ru-мтекст--мт---мтекст---мт--pl-wtekst---wtekst---t---wt--cs-mtext--mt--t---mtext---t--hu-bszöveg--bs--sz---bszöveg---bs---sz)
 
@@ -59,7 +59,7 @@ A hasábokat, amelyeket az AutoCAD 2027 az átellenes sarokpont promptjánál fe
 
 ### Mi az AutoCAD BSZÖVEG parancs angolul?
 
-MTEXT. A magyar AutoCAD-ben a rövidítése `BS` és `SZ`: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt; a `_MTEXT` az AutoCAD bármely nyelvi változatában működik. Az angol `T` a magyar változatban a TOL parancsot indítja, az `MT` pedig az MTÉR parancsot. A `-BSZÖVEG`, `-BS`, ugyanezt kérdezi, és a szöveget a parancssorban veszi át.
+MTEXT. A magyar AutoCAD-ben a rövidítése `BS` és `SZ`: írja be valamelyiket, majd nyomja meg az Enter vagy a Szóköz billentyűt; a `_MTEXT` az AutoCAD bármely nyelvi változatában működik. Az angol `T` a magyar változatban visszavon, mert a `T` az U parancs magyar neve; az `MT` pedig az MTÉR parancsot indítja. A `-BSZÖVEG`, `-BS`, ugyanezt kérdezi, és a szöveget a parancssorban veszi át.
 
 ### Hogyan lehet új sort kezdeni a bekezdéses szövegben?
 
@@ -67,7 +67,7 @@ Nyomja meg az Enter billentyűt: új bekezdést kezd. Egy bekezdésen belül a s
 
 ### Hogyan lehet módosítani a bekezdéses szöveg szélességét?
 
-Válassza ki, és húzza el az oldalán lévő fogót: a szöveg a szélesség változásával újratördelődik, az igazítási pontja körül. A Tulajdonságok paletta definiált szélesség sora számmal teszi ugyanezt, a sorköz sorai pedig a sortávolságot módosítják.
+Válassza ki, és húzza el az oldalán lévő fogót: a szöveg a szélesség változásával újratördelődik, az igazítási pontja körül. A Tulajdonságok paletta Definiált szélesség sora számmal teszi ugyanezt, a sorköz sorai pedig a sortávolságot módosítják.
 
 ### Hogyan lehet a BSZÖVEG szöveget egysoros szöveggé alakítani?
 

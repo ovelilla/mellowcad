@@ -24,7 +24,7 @@ Az oldalak a felezőpontjukban érintik a kört: a sugár a középponttól egy 
 
 ## Missing
 
-Az elforgatott raszter: a számként beírt sugár mindig az FKR-rel vízszintes alsó éllel rajzol, ahol az AutoCAD a raszterszöggel (SNAPANG) elfordítja.
+Az elforgatott raszter: a számként beírt sugár mindig az FKR-rel vízszintes alsó éllel rajzol, míg az AutoCAD a raszterszöggel (SNAPANG) elfordítja.
 
 ## Questions
 

@@ -2,13 +2,13 @@
 title: "Metszet az AutoCAD-ben: KMETSZET (SECTION) parancs"
 metaTitle: "Metszet az AutoCAD-ben: KMETSZET (SECTION)"
 description: "Az AutoCAD KMETSZET (SECTION, rövidítése KM) parancsa lemezt készít, ahol egy sík a 3D szilárdtesteket metszi: 3pont, Objektum, ZTeng, Nézet, XY, YZ, ZX."
-figure: "Egy átmenő furatos hasáb, amelyet a ZX sík a furat középpontján át metsz: a KMETSZET elkészíti a profilt, előre kihúzva, két téglalap a furat helyén lévő réssel."
+figure: "Egy átmenő furatos hasáb, amelyet a ZX sík a furat középpontján át metsz: a KMETSZET elkészíti a profilt, előre kimozgatva, két téglalap a furat helyén lévő réssel."
 sourceHash: "f1c01b76c810"
 ---
 
 A KMETSZET (SECTION) parancs 3D szilárdtestek keresztmetszetét készíti el: egy lemezt ott, ahol egy sík az egyes testeket metszi, a szilárdtestek pedig változatlanok maradnak. Az Enterig bekéri a szilárdtesteket: ahogy az AutoCAD 2027-ben, a parancs előtt kiválasztott halmazt elveti, és újra kéri, ami nem szilárdtest, azt átugorja, a szilárdtest nélküli halmazra pedig <Message id="noSolidsSelected" /> a válasz. Ezután következik a sík: alapértelmezés szerint három pontját adja meg, az opciók pedig más módon határozzák meg, ahogy a <Command id="SLICE" /> parancsnál.
 
-Minden szilárdtest, amelyet a sík metsz, megkapja a saját lemezét, amely a síkban fekszik: az átmenő furatos hasáb a körvonalát adja a furat helyén lévő réssel, a tengelye mentén elmetszett henger egy téglalapot. A szilárdtest egyik lapjára eső sík azt a lapot adja. Arra a testre, amelyet a sík elkerül, <Message id="sectionMissedOne" /> a válasz. A lemezek az aktuális fóliát és tulajdonságokat kapják, nem a szilárdtestét; a <Command id="MOVE" /> kiviszi, hogy látszódjon, a <Command id="AREA" /> és a <Command id="MASSPROP" /> megméri, a <Command id="EXTRUDE" /> pedig szilárdtestté alakítja. A teljes parancs egyetlen visszavonási lépés. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
+Minden szilárdtest, amelyet a sík metsz, megkapja a saját lemezét, amely a síkban fekszik: az átmenő furatos hasáb a körvonalát adja a furat helyén lévő réssel, a tengelye mentén elmetszett henger egy téglalapot. A szilárdtest egyik lapjára eső sík azt a lapot adja. Arra a testre, amelyet a sík elkerül, <Message id="sectionMissedOne" /> a válasz. A lemezek az aktuális fóliát és tulajdonságokat kapják, nem a szilárdtestét; a <Command id="MOVE" /> kiviszi, hogy látsszon, a <Command id="AREA" /> és a <Command id="MASSPROP" /> megméri, a <Command id="EXTRUDE" /> pedig szilárdtestté alakítja. A teljes parancs egyetlen visszavonási lépés. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 ## Options
 
@@ -42,7 +42,7 @@ Három pont a síkon, amely így bármilyen irányban megdőlhet. Ez az első pr
 
 ## Missing
 
-A felületek és a hálók, amelyek a MellowCAD-ben nincsenek. A síkbeli 3D vonallánc mint a sík objektuma, amelyet az AutoCAD elfogad. Azok a metszések, amelyeknek pontos alakja a MellowCAD-ben még nincs, ahogy a <Command id="SLICE" /> parancsnál, és amelyekre azt írja, hogy egy logikai művelet nem sikerült. A SECTIONPLANE és az élő metszés, amelyet az AutoCAD szalagja a KMETSZET helyett kínál: itt a KMETSZET parancsot be kell gépelni.
+A felületek és a hálók, amelyek a MellowCAD-ben nincsenek. A síkbeli 3D vonallánc mint a sík objektuma, amelyet az AutoCAD elfogad. Azok a metszések, amelyeknek pontos alakja a MellowCAD-ben még nincs, ahogy a <Command id="SLICE" /> parancsnál, és amelyekre azt írja, hogy egy logikai művelet nem sikerült. A METSZŐSÍK (SECTIONPLANE) és az élő metszet, amelyet az AutoCAD szalagja a KMETSZET helyett kínál: itt a KMETSZET parancsot be kell gépelni.
 
 ## Questions
 

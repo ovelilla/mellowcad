@@ -2,13 +2,13 @@
 title: "Gúla az AutoCAD-ben: GÚLA (PYRAMID) parancs"
 metaTitle: "Gúla az AutoCAD-ben: GÚLA (PYRAMID) parancs"
 description: "3D gúla az AutoCAD GÚLA (PYRAMID, rövidítése GÚ) parancsával promptról promptra: oldalak, alap, magasság, él, beleírt alap és csonka gúla felső sugara."
-figure: "Hatoldalú gúla, az alapja 25 az egyes oldalak közepéig, 40 magas, délkeletről nézve, Takartvonalas vizuális stílusban."
+figure: "Hatoldalú gúla, az alapja 25 az egyes oldalak közepéig, 40 magas, délkeletről nézve, Takartvonalas látványstílusban."
 sourceHash: "acbc5ffa71cb"
 ---
 
-A GÚLA (PYRAMID) parancs 3D szilárdtest gúlát rajzol: az első sora kiírja, hány oldala van az alapnak, és hogyan érti a sugarát, majd bekéri az alap középpontját, a sugarat és a magasságot. Az alap szabályos sokszög, ahogy a <Command id="POLYGON" /> rajzolja, kezdetben 4 oldalú: a beírt sugár a kurzor felé, a pontként megadott a pont felé fordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé halad, a pontként megadott pedig az alaptól mért távolságával adja meg. Az oldalak számát és a sugár értelmezését a következő GÚLA parancsra is megőrzi; a sugár és a magasság a testprimitívek közös alapértéke. A gúla az aktuális fóliára kerül, és a Vissza egy lépésben visszavonja.
+A GÚLA (PYRAMID) parancs 3D szilárdtest gúlát rajzol: az első sora kiírja, hány oldala van az alapnak, és hogyan érti a sugarát, majd bekéri az alap középpontját, a sugarat és a magasságot. Az alap szabályos sokszög, ahogy a <Command id="POLYGON" /> rajzolja, kezdetben 4 oldalú: a beírt sugár a kurzor felé, a pontként megadott a pont felé fordítja. A magasság az FKR Z tengelye mentén emelkedik, a negatív lefelé halad, a pontként megadott pedig az alaptól mért távolságával adja meg. Az oldalak számát és a sugár értelmezését a következő GÚLA parancsra is megőrzi; a sugár és a magasság az alaptestek közös alapértéke. A gúla az aktuális fóliára kerül, és egy lépésben visszavonható.
 
-A <Command id="LIST" /> kiírja a helyzetét, az alap és a tető sugarát, a magasságát, az elforgatását és az oldalak számát, a Tulajdonságok palettán pedig beírható a két sugár, az oldalak száma és a magasság. A fogóival mozgatható, állítható a magassága, és az alap mérete egy sarokból vagy egy oldal közepéről változtatható. 3D szilárdtest az <Command id="UNION" />, a <Command id="SUBTRACT" /> és a MellowCAD többi 3D eszköze számára, amely csak szilárdtestekből áll, és egyelőre részleges; a <Command id="EXPLODE" /> laponként egy-egy lemezzé bontja.
+A <Command id="LIST" /> kiírja a helyzetét, az alap és a tető sugarát, a magasságát, az elforgatását és az oldalak számát, a Tulajdonságok palettán pedig beírható a két sugár, az oldalak száma és a magasság. A fogóival mozgatható, állítható a magassága, és az alap mérete egy sarokból vagy egy oldal közepéről változtatható. 3D szilárdtest az <Command id="UNION" />, a <Command id="SUBTRACT" /> és a MellowCAD többi 3D eszköze számára (a MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges); a <Command id="EXPLODE" /> laponként egy-egy lemezzé bontja.
 
 ## Options
 
@@ -42,7 +42,7 @@ A magasságnál: bekéri a felső sugarat, amelyet az alapéhoz hasonlóan érte
 
 ## Missing
 
-Ami a <Command id="BOX" /> parancsból is hiányzik: a Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, a saját 3D parancsai, és azok a vizuális stílusok, amelyek az <Command id="VSCURRENT" /> parancsból hiányoznak. A típusa, beleírt vagy kör köré írt, beírva a Tulajdonságok palettán. A pontozott méretek, amelyeket az AutoCAD a sugár és az él megadása közben rajzol.
+Ami a <Command id="BOX" /> parancsból is hiányzik: a Mozgatás, Forgatás, Lépték és Tükrözés aktív fogóról, a saját 3D parancsai, és azok a látványstílusok, amelyek az <Command id="VSCURRENT" /> parancsból hiányoznak. A típusa, beleírt vagy kör köré írt, beírva a Tulajdonságok palettán. A pontozott méretek, amelyeket az AutoCAD a sugár és az él megadása közben rajzol.
 
 ## Questions
 

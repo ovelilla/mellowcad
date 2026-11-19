@@ -14,13 +14,13 @@ Az AutoCAD SRAFFOZ parancsa a mintát a Sraffozás létrehozása szalaglapon vag
 
 ### Properties
 
-A minta nevét kéri, kis- vagy nagybetűvel, és az aktuálisat kínálja fel: a <Keyword id="Solid" /> kitölti a területet, a <Keyword id="?" /> pedig felsorolja a mintákat a leírásukkal, majd visszatér a ponthoz. Minta esetén ezután a léptéket kéri – 0-nál nagyobb számot, vagy két pont távolságát –, majd a szöget, beírva vagy két ponttal. A következő sraffozás mindhármat megtartja.
+A minta nevét kéri, kis- és nagybetűtől függetlenül, és az aktuálisat kínálja fel: a <Keyword id="Solid" /> kitölti a területet, a <Keyword id="?" /> pedig felsorolja a mintákat a leírásukkal, majd visszatér a ponthoz. Minta esetén ezután a léptéket kéri – 0-nál nagyobb számot, vagy két pont távolságát –, majd a szöget, beírva vagy két ponttal. A következő sraffozás mindhármat megtartja.
 
 <Session name="hatchPatterns" caption="A SOLID és az acadiso.pat tizenegy mintája, mindegyik egy 30 oldalhosszúságú négyzetben sraffozva 1-es léptékkel, az AR-CONC és az AR-SAND 0,08-as és 0,1-es léptékkel." />
 
 ### Select objects
 
-Belső pont helyett a területet határoló objektumokat kell kijelölni; az Enter visszatér a ponthoz. Az az objektum, amely nem zár körül területet, kimarad; ha egyik sem határol területet, az Enter a <Message id="unableToHatchBoundary" /> üzenetet adja, és nem készít semmit. A lemez a körvonalát adja, a lyukait szigetként.
+Belső pont helyett jelölje ki a területet határoló objektumokat; az Enter visszatér a ponthoz. Az az objektum, amely nem zár körül területet, kimarad; ha egyik sem határol területet, az Enter a <Message id="unableToHatchBoundary" /> üzenetet adja, és nem készít semmit. A lemez a körvonalát adja, a lyukait szigetként.
 
 ### Undo
 
@@ -34,7 +34,7 @@ Ellipszisek és spline-ok mint határvonalak: az általuk közrezárt terület n
 
 ### Mi az AutoCAD SRAFFOZ parancs angolul?
 
-HATCH. A magyar AutoCAD-ben a rövidítése `SF` vagy `SR`: írja be, majd nyomja meg az Enter billentyűt vagy a szóközt. Sraffozás létrehozása szalaglap híján a parancssorban kérdez, ahogy a `-SF` (<Command id="-HATCH" />). Az angol `H` a magyar változatban a HÁLÓÉL parancsot indítja; a `_HATCH` az AutoCAD bármely nyelvi változatában működik.
+HATCH. A magyar AutoCAD-ben a rövidítése `SF` vagy `SR`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A Sraffozás létrehozása szalaglap híján a parancssorban kérdez, ahogy a `-SF` (<Command id="-HATCH" />). Az angol `H` a magyar változatban a HÁLÓÉL parancsot indítja; a `_HATCH` az AutoCAD bármely nyelvi változatában működik.
 
 ### Miért nem működik a sraffozás?
 
@@ -50,4 +50,4 @@ Kiválasztás előtt, a <Keyword id="Properties" /> opció alatt: a lépték a m
 
 ### Hogyan lehet megtudni egy sraffozás területét?
 
-Jelölje ki, és olvassa le a Tulajdonságok paletta Geometria csoportjában a Terület értékét, a szigetek nélkül; több kijelölt sraffozásnál az Összesített terület adja össze őket. Vagy indítsa el a <Command id="AREA" /> parancsot, válassza az <Keyword command="AREA" id="Object" /> opciót, és válassza ki a sraffozást.
+Jelölje ki, és olvassa le a Tulajdonságok paletta Geometria csoportjában a Terület értékét, a szigetek nélkül; több kijelölt sraffozásnál a Halmozott terület adja össze őket. Vagy indítsa el a <Command id="AREA" /> parancsot, válassza az <Keyword command="AREA" id="Object" /> opciót, és válassza ki a sraffozást.

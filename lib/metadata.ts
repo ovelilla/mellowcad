@@ -73,11 +73,10 @@ export async function pageMetadata({
       type: "website",
       siteName: SITE_NAME,
       locale: OG_LOCALE[locale],
-      ...(languages && {
-        alternateLocale: LIVE_LOCALES.filter((other) => other !== locale).map(
-          (other) => OG_LOCALE[other]
-        ),
-      }),
+      // WHY no og:locale:alternate: it names the locales *this URL* serves
+      // (Facebook scrapes it again with ?fb_locale=), and here each language
+      // has a URL of its own, which hreflang already gives; listing them cost
+      // every page some 250 bytes of its first load (docs/i18n/hu.md).
       url: localePath(locale, path),
       title,
       description,

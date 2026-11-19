@@ -4,16 +4,16 @@ metaTitle: "AutoCAD FKR (UCS): koordináta-rendszer"
 description: "Így mozgatja és forgatja az AutoCAD FKR (UCS) parancsa a felhasználói koordináta-rendszert: origó és 3 pont, Objektum, Nézet, X, Y, Z, ZTeng, Neve, Világ."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"Hogyan lehet visszaállítani az FKR-t Világra az AutoCAD-ben?","answer":"Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a viLÁg az alapértelmezés. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az NNÉZET parancsot, és válassza a vilÁg opciót."},{"question":"Hogyan lehet elforgatni az FKR-t?","answer":"Indítsa el az FKR parancsot, válassza a Z opciót, és gépelje be a szöget: a 30 az óramutató járásával ellentétesen 30 fokkal fordítja el az X és az Y tengelyt. Az X és az Y felbillenti az XY síkot, alapértelmezés szerint 90 fokkal."},{"question":"Mi a különbség az FKR és a VKR között?","answer":"A világ koordináta-rendszer (VKR) soha nem mozdul; a felhasználói koordináta-rendszer (FKR) az, amelyet mozgat és forgat. Kezdetben a kettő ugyanaz, és az FKR parancs azt írja ki, hogy az aktuális neve *VILÁG*. A begépelt koordinátákat a program az FKR-ben értelmezi, és amit rajzol, az az XY síkjában fekszik."},{"question":"Hogyan lehet egy 3D szilárdtest lapjára rajzolni?","answer":"Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a munkamenetben. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik."}]
+faq: [{"question":"Hogyan lehet visszaállítani az FKR-t a világ koordináta-rendszerre az AutoCAD-ben?","answer":"Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a viLÁg az alapérték. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az NNÉZET parancsot, és válassza a vilÁg opciót."},{"question":"Hogyan lehet elforgatni az FKR-t?","answer":"Indítsa el az FKR parancsot, válassza a Z opciót, és gépelje be a szöget: a 30 az óramutató járásával ellentétesen 30 fokkal fordítja el az X és az Y tengelyt. Az X és az Y felbillenti az XY síkot, alapértelmezés szerint 90 fokkal."},{"question":"Mi a különbség az FKR és a VKR között?","answer":"A világ koordináta-rendszer (VKR) soha nem mozdul; a felhasználói koordináta-rendszer (FKR) az, amelyet mozgat és forgat. Kezdetben a kettő ugyanaz, és az FKR parancs azt írja ki, hogy az aktuális neve *VILÁG*. A begépelt koordinátákat a program az FKR-ben értelmezi, és amit rajzol, az az XY síkjában fekszik."},{"question":"Hogyan lehet egy 3D szilárdtest lapjára rajzolni?","answer":"Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a mintában. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik."}]
 ---
 
 Az FKR (UCS) parancs a felhasználói koordináta-rendszert állítja be: egy origót és X, Y tengelyt a tér bármely pontján, így az XY síkja meg is dőlhet. A begépelt koordinátákat ebben értelmezi a program, és amit rajzol, az az XY síkjában fekszik: ha az origót egy téglatest tetejére helyezi, a `30,20` középpontú kör a tetején lesz. Először kiírja az aktuális FKR nevét – `*VILÁG*`, `*NÉVTELEN*` vagy azt a nevet, amelyen elmentették –, majd az új origót vagy egy opciót kér; ott az Enter visszatér a Világhoz. A megadott pont lesz az origó, a Z koordinátájával együtt, a Z nélküli pont pedig az aktuális szintmagasságon fekszik. Ezután egy pontot kér a pozitív X tengelyen és egy pontot az XY síkon, az aktuális FKR-ben értelmezve: bármelyiknél az Enter változatlanul hagyja a tengelyeket. Egy pont eltolja az FKR-t, három bármilyen irányba elfordítja.
 
-A parancsok ezután az FKR XY síkjában dolgoznak: a [`VONAL`](/docs/commands/line) és a [`KÖR`](/docs/commands/circle) rá rajzol, a [`TTEST`](/docs/commands/box) és a [`KIHÚZ`](/docs/commands/extrude) pedig belőle emelkedik a Z tengelye mentén. Minden objektum megtartja a saját síkját, amikor az FKR megváltozik, és az [`NNÉZET`](/docs/commands/plan) parancs egyenesen felülről néz az aktuális FKR-re. Az FKR a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. A MellowCAD 3D-s része csak szilárdtestekből áll, és egyelőre részleges.
+A parancsok ezután az FKR XY síkjában dolgoznak: a [`VONAL`](/docs/commands/line) és a [`KÖR`](/docs/commands/circle) rá rajzol, a [`TTEST`](/docs/commands/box) és a [`KIHÚZ`](/docs/commands/extrude) pedig belőle emelkedik a Z tengelye mentén. Minden objektum megtartja a saját síkját, amikor az FKR megváltozik, és az [`NNÉZET`](/docs/commands/plan) parancs egyenesen felülről néz az aktuális FKR-re. Az FKR a rajzzal együtt mentődik, és minden futtatás egyetlen visszavonási lépés. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
 - **Parancs:** `FKR`
 - **Angolul:** `UCS`, bármely nyelven `_UCS` formában beírva
-- **Álnevek:** `DPFKR`
+- **Rövidítések:** `DPFKR`
 - **Panel:** [Lekérdezés és nézet](/docs/commands#inquiry)
 - **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `FKR`, és nyomja meg az Enter billentyűt.
 
@@ -31,11 +31,11 @@ A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a p
 
 ### `NEve` (`NE`) [#named]
 
-A név szerint mentett FKR-ek. A `Ment` az aktuálisat menti, és `Igen` vagy `Nem` választ kér, mielőtt egy már mentett nevet felülírna; a `Visszaállít` egy mentettet tesz aktuálissá, a neve kis- és nagybetűtől függetlenül gépelhető be; a `tÖröl` neveket vesz, vesszővel elválasztva és helyettesítő karakterekkel; a `?` kilistázza őket, mindegyiket az origójával és a tengelyeivel. A név tartalmazhat szóközt, de nem tartalmazhatja a `<>/\":;|,=*?` karaktereket és a fordított aposztrófot: `Érvénytelen FKR név.`.
+A név szerint mentett FKR-ek. A `Ment` az aktuálisat menti, és `Igen` vagy `Nem` választ kér, mielőtt egy már mentett nevet felülírna; a `Visszaállít` egy mentettet tesz aktuálissá, a neve kis- és nagybetűtől függetlenül gépelhető be; a `tÖröl` neveket fogad el, vesszővel elválasztva és helyettesítő karakterekkel; a `?` kilistázza őket, mindegyiket az origójával és a tengelyeivel. A név tartalmazhat szóközt, de nem tartalmazhatja a `<>/\":;|,=*?` karaktereket és a fordított aposztrófot: `Érvénytelen FKR név.`.
 
 ### `OBjektum` (`OB`) [#object]
 
-Az FKR-t a kijelölt objektumhoz igazítja: vonalhoz, körhöz, ívhez, ellipszishez, vonallánchoz, spline-hoz, szöveghez, bekezdéses szöveghez, attribútumdefinícióhoz vagy blokkreferenciához. Az origó és az X tengely oda kerül, ahová az AutoCAD az adott fajtánál teszi, a Z pedig az objektum saját normálisa, így az FKR az objektum síkjában fekszik. A zárt fólián lévő objektum is kijelölhető. A sraffozásra ez a válasz: `Ez az objektum nem határoz meg koordináta-rendszert`, és az FKR parancs befejeződik, az FKR pedig olyan marad, amilyen volt.
+Az FKR-t a kijelölt objektumhoz igazítja: vonalhoz, körhöz, ívhez, ellipszishez, vonallánchoz, spline-hoz, szöveghez, bekezdéses szöveghez, attribútumdefinícióhoz vagy blokkreferenciához. Az origó és az X tengely oda kerül, ahová az AutoCAD az adott fajtánál teszi, a Z pedig az objektum saját normálisa, így az FKR az objektum síkjában fekszik. A zárolt fólián lévő objektum is kijelölhető. A sraffozásra ez a válasz: `Ez az objektum nem határoz meg koordináta-rendszert`, és az FKR parancs befejeződik, az FKR pedig olyan marad, amilyen volt.
 
 ### `eLŐző` (`LŐ`) [#previous]
 
@@ -47,7 +47,7 @@ Az XY síkot merőlegesre fordítja a nézési irányra, az X tengelyt a képern
 
 ### `viLÁg` (`LÁ`) [#world]
 
-Vissza a világ koordináta-rendszerhez, amely soha nem mozdul. Ez az első kérdés alapértelmezése, ezért ott az Enter ezt választja, és a szintmagasságot is visszaállítja 0-ra.
+Vissza a világ koordináta-rendszerhez, amely soha nem mozdul. Ez az első prompt alapértéke, ezért ott az Enter ezt választja, és a szintmagasságot is visszaállítja 0-ra.
 
 ### `X` [#x]
 
@@ -67,15 +67,15 @@ Az FKR-t a Z tengelye körül forgatja, ahogy az `X` az X körül: a 30 felülr�
 
 ## Amit még nem tud [#missing]
 
-A `laP`, amely az FKR-t egy szilárdtest lapjához igazítja: kér egy lapot, de még nem talál. Az alKalmaz és a MEtszet opció, amelyek az első kérdésnél megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az [`NNÉZET`](/docs/commands/plan) parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW, az UCSVP és a dinamikus FKR. Az `OBjektum` opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál (A folytatáshoz nyomja meg az ENTER billentyűt).
+A `laP`, amely az FKR-t egy szilárdtest lapjához igazítja: kér egy lapot, de még nem talál. Az alKalmaz és a MEtszet opció, amelyek az első promptnál megjelennek, de itt el vannak utasítva, mivel csak egy nézetablak van, és nincsenek metszetobjektumok. Az FKR párbeszédpanel (FKRKEZ), az ikon fogói és a helyi menüje, valamint az, hogy az ikon az elhelyezés közben mutassa az új FKR-t. A szálkereszt elfordulása az FKR-rel: a képernyőn függőleges marad, amíg az [`NNÉZET`](/docs/commands/plan) parancs a nézetet hozzá nem igazítja. Az UCSFOLLOW, az UCSVP és a dinamikus FKR. Az `OBjektum` opció méretre, és a Csoport a kijelölésénél. Az ortografikus FKR által megtartott mélység. A szünet hosszú listánál: `A folytatáshoz nyomja meg az ENTER billentyűt:`.
 
 [Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd--fr-scu--dducs--it-ucs--dducs--de-bks--dducs--ru-пск--диалпск--pl-luw--cs-uss--hu-fkr--dpfkr)
 
 ## Kérdések [#questions]
 
-### Hogyan lehet visszaállítani az FKR-t Világra az AutoCAD-ben?
+### Hogyan lehet visszaállítani az FKR-t a világ koordináta-rendszerre az AutoCAD-ben?
 
-Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a `viLÁg` az alapértelmezés. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az [`NNÉZET`](/docs/commands/plan) parancsot, és válassza a `vilÁg` opciót.
+Indítsa el az FKR parancsot, és nyomja meg az Enter billentyűt: a `viLÁg` az alapérték. Ha ismét egyenesen felülről szeretne nézni a rajzra, indítsa el az [`NNÉZET`](/docs/commands/plan) parancsot, és válassza a `vilÁg` opciót.
 
 ### Hogyan lehet elforgatni az FKR-t?
 
@@ -87,7 +87,7 @@ A világ koordináta-rendszer (VKR) soha nem mozdul; a felhasználói koordinát
 
 ### Hogyan lehet egy 3D szilárdtest lapjára rajzolni?
 
-Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a munkamenetben. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik.
+Helyezze rá az FKR-t. A téglatest tetejénél elég csak az origót áthelyezni: FKR, majd a tető egyik sarka, végül Enter, ahogy a mintában. Oldallaphoz adjon meg három pontot: az origót egy sarokban, az X tengelyhez egy pontot egy él mentén, és az Y-hoz még egyet a lapon. Ezután rajzoljon: amit rajzol, az a lapon fekszik.
 
 ## Kapcsolódó parancsok [#related]
 

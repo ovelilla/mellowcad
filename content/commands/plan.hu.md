@@ -6,7 +6,7 @@ figure: "A lépcsős test délnyugatról nézve, az FKR-je 30 fokkal elforgatva 
 sourceHash: "50d157803309"
 ---
 
-Az NNÉZET (PLAN) parancs merőlegesen felülről néz egy FKR XY síkjára, az X tengelyével jobbra mutatva: ez a normálnézet, ahogy rajzolt. Megkérdezi, melyik FKR-re – az aktuálisra, egy mentettre vagy a világéra –, és az Enter az aktuálisat választja. Ezután a teljes rajzot a nézetbe illeszti, és <Message id="regeneratingModel" /> üzenetet ír ki.
+Az NNÉZET (PLAN) parancs merőlegesen felülről néz egy FKR XY síkjára, az X tengelyével jobbra mutatva: ez a normálnézet, amelyben rajzolt. Megkérdezi, melyik FKR-re – az aktuálisra, egy mentettre vagy a világéra –, és az Enter az aktuálisat választja. Ezután a teljes rajzot a nézetbe illeszti, és <Message id="regeneratingModel" /> üzenetet ír ki.
 
 A rajzban semmi sem mozdul, és az FKR is változatlan marad: az NNÉZET csak a nézetet fordítja el. Egyetlen visszavonási lépés, így a <Command id="U" /> visszaállítja a nézetet, a <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" /> pedig az előző nézetre lép vissza. Ezzel lehet visszatérni a normálnézetbe a <Command id="3DORBIT" /> vagy egy izometrikus <Command id="VIEW" /> után. A MellowCAD 3D-je csak szilárdtestekből áll, és egyelőre részleges.
 
@@ -26,7 +26,7 @@ A világ koordináta-rendszer normálnézete: a rajz úgy, ahogy kezdetben volt,
 
 ## Missing
 
-Ha a rajz üres, az NNÉZET nem változtat a nagyításon, ahol az AutoCAD a rajzhatárokat illeszti a nézetbe.
+Ha a rajz üres, az NNÉZET nem változtat a nagyításon, míg az AutoCAD a rajzhatárokat illeszti a nézetbe.
 
 ## Questions
 
@@ -40,7 +40,7 @@ Az NNÉZET az <Keyword id="Current ucs" /> opcióval: felülről néz az aktuál
 
 ### Miért van elforgatva a rajz normálnézetben?
 
-A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a <Keyword id="World" /> opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az <Command id="UCS" /> és az Enter az FKR-t is visszaállítja Világra.
+A nézet egy elforgatott FKR normálnézete. Futtassa az NNÉZET parancsot, és válassza a <Keyword id="World" /> opciót, hogy a rajzot újra a világ X tengelyével jobbra lássa; az <Command id="UCS" /> és az Enter az FKR-t is visszaállítja a világ koordináta-rendszerre.
 
 ### Megváltoztatja-e az NNÉZET az FKR-t?
 
