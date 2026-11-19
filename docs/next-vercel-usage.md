@@ -39,6 +39,7 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | 17/11 23:20 | 698.764 | ~76K | 5,34 GB | antes de las medidas |
 | 18/11 00:24 | 702.458 | ~125K | — | recién desplegadas las medidas |
 | 19/11 00:40 | 779.111 | 18/11 aún incompleto | 5,97 GB | primer día con Cloudflare: abajo |
+| 19/11 11:10 | 789.877 | 18/11: ~76K | 6,05 GB | ventana hasta las 03:00: +10,8K en 11 h |
 
 El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
 se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR
@@ -48,6 +49,14 @@ en sus primeras 25 h: 10,8K peticiones, el 22 % servido de su caché, del 2 % de
 35–60 % de las últimas, porque aún se está llenando (792 rutas distintas de la documentación en
 12 h, cada una con su primer fallo). A ~56K al día el millón llegaría hacia el 22–23/11: la lectura
 del 20/11 dice si la caché, ya llena, lo baja de ~20K.
+
+El 19/11 a las 11:10, Observability (últimas 12 h): **15K unidades de lectura**, la mitad que las
+12 h anteriores (28K), y 1K peticiones al almacén, casi todas a rutas distintas (438 de 547 en la
+documentación): primeros fallos de la cola larga, no repeticiones. Cloudflare sirve ya el 35 % de
+lo que recibe (22 % el primer día). A ~30K al día el total aún sube, unos 25K al día netos con lo que
+sale de la ventana: no se levanta el congelado. El húngaro (`cdd8d646`, en `main` sin publicar)
+espera a que §4 se cumpla: sus páginas y la fecha nueva de las de comandos traerían otra oleada de
+rastreo.
 
 ## 4. Cuándo se levanta el congelado
 
