@@ -1,0 +1,10 @@
+_ZOOM
+_E
+(osnap (quote (800 139.6)) "_end")
+(osnap (quote (800 139.6)) "_mid")
+(osnap (quote (786.6 128.6)) "_int")
+(osnap (quote (800 139.6)) "_ins")
+(osnap (quote (800 139.6)) "_nea")
+(osnap (quote (766.5 134)) "_ins")
+(osnap (quote (766.5 134)) "_nod")
+(osnap (quote (800 139.6)) "_cen")

@@ -171,6 +171,11 @@ export function typeRefusal(
       return again(
         fillet ? "filletRequiresNotBlocks" : "chamferRequiresNotBlocks"
       )
+    // Picked first (table/t04, t04c); second, the same words assumed.
+    case "table":
+      return again(
+        fillet ? "filletRequiresNotTables" : "chamferRequiresNotTables"
+      )
     case "dimension":
       return again(
         fillet ? "filletRequiresNotDimensions" : "chamferRequiresNotDimensions"
@@ -536,6 +541,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "face3d":
     case "wipeout":
     case "image":
+    case "table":
     case "leader":
     case "region":
     case "solid3d":

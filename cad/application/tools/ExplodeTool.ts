@@ -21,6 +21,8 @@ import {
   leaderLook,
   wipeoutEdges,
   imageEdges,
+  tableExploded,
+  tableGeometry,
 } from "../../domain/entities"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
 import { hatchLines } from "../../domain/hatchPatternEdits"
@@ -46,6 +48,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "leader",
   "wipeout",
   "image",
+  "table",
 ])
 
 /**
@@ -261,6 +264,20 @@ export class ExplodeTool extends SelectionActionTool {
         for (const [a, b] of wipeoutEdges(entity)) {
           pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
         }
+        continue
+      }
+      if (entity.type === "table") {
+        // Its texts, its block cells' references and its grid's lines, in
+        // its layer and properties, and the grey line of no length at its
+        // corner, saying nothing (table/t06, t06b).
+        removedIds.push(entity.id)
+        pieces.push(
+          ...tableExploded(
+            entity,
+            tableGeometry(entity, ctx.blocks),
+            nextEntityId
+          )
+        )
         continue
       }
       if (entity.type === "image") {

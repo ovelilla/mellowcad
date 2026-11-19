@@ -26,6 +26,7 @@ import type {
   Face3dEntity,
   WipeoutEntity,
   ImageEntity,
+  TableEntity,
   LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -128,6 +129,7 @@ type ObjectName =
   | "face3d"
   | "wipeout"
   | "image"
+  | "table"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -226,6 +228,9 @@ class Report {
         break
       case "image":
         this.image(entity)
+        break
+      case "table":
+        this.table(entity)
         break
       case "leader":
         this.leader(entity)
@@ -383,6 +388,30 @@ class Report {
     for (const vertex of wipeout.vertices) {
       this.say("listWipeoutPoint", this.xyz(this.at(wipeout, vertex)))
     }
+  }
+
+  /**
+   * As each console lists it (table/t08): its corner, normal and direction
+   * in the WCS, each number `%f`, whatever LUPREC, its columns, rows and
+   * style.
+   */
+  private table(table: TableEntity): void {
+    this.header("table", table)
+    const f = (point: Vec3): MessageValues => ({
+      x: point.x.toFixed(6),
+      y: point.y.toFixed(6),
+      z: point.z.toFixed(6),
+    })
+    const along = { ...table.direction, z: 0 }
+    this.say("listTablePosition", f(entityPointToWorld(table, table.position)))
+    this.say("listTableNormal", f(table.normal ?? UP))
+    this.say(
+      "listTableDirection",
+      f(table.normal ? axesToWorld(entityAxes(table), along) : along)
+    )
+    this.say("listTableColumns", { count: table.columnWidths.length })
+    this.say("listTableRows", { count: table.rowHeights.length })
+    this.say("listTableStyle", { name: table.style.name })
   }
 
   /**

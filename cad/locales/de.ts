@@ -433,6 +433,16 @@ export const de: EngineLocale = {
             "other": "Pixelbilder"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Tabelle",
+            "other": "Tabellen"
+          }
+        ]
       ]
     },
     "array": {
@@ -5193,6 +5203,7 @@ export const de: EngineLocale = {
       "cannotFilletBetweenThese": "Kann zwischen diesen beiden Objekten nicht abrunden.",
       "filletRequiresObjects": "Abrunden benötigt 2 Linien, Bogen oder Kreise.",
       "filletRequiresNotBlocks": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Blockreferenzen).",
+      "filletRequiresNotTables": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Tabellen-Objekte).",
       "filletRequiresNotDimensions": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Bemaßungen).",
       "unableToFilletCurves": "Abrunden von Kurven nicht möglich.",
       "noValidCurveFillet": [
@@ -5204,6 +5215,7 @@ export const de: EngineLocale = {
       "entitiesNonCoplanar": "Diese Objekte sind nicht koplanar.",
       "chamferRequiresTwoLines": "Fase benötigt 2 Linien.",
       "chamferRequiresNotBlocks": "Fase benötigt 2 Linien (keine Blockreferenzen).",
+      "chamferRequiresNotTables": "Fase benötigt 2 Linien (keine Tabellen-Objekte).",
       "chamferRequiresNotDimensions": "Fase benötigt 2 Linien (keine Bemaßungen).",
       "cannotChamferBetween": "Kann nicht zwischen diesen beiden Objekten fasen.",
       "linesChamfered": [
@@ -6111,6 +6123,7 @@ export const de: EngineLocale = {
             "face3d": "3D-FLÄCHE",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "REIHE"
           }
         ]
@@ -8462,6 +8475,66 @@ export const de: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Position:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normal:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Horizontale Richt.:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Spaltenanzahl:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Zeilenanzahl:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Tabellenstil:     ",
+        [
+          "name"
         ]
       ]
     },

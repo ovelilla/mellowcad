@@ -475,6 +475,18 @@ export const ru: EngineLocale = {
             "other": "Растрового изображения"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Таблица",
+            "few": "Таблицы",
+            "many": "Таблиц",
+            "other": "Таблицы"
+          }
+        ]
       ]
     },
     "array": {
@@ -5387,6 +5399,7 @@ export const ru: EngineLocale = {
       "cannotFilletBetweenThese": "Невозможно выполнить сопряжение данных объектов.",
       "filletRequiresObjects": "Сопряжение строится между двумя отрезками, дугами или кругами.",
       "filletRequiresNotBlocks": "Сопряжение строится между двумя отрезками, дугами или кругами (не вхождения блоков).",
+      "filletRequiresNotTables": "Сопряжение строится между двумя отрезками, дугами или кругами (не таблицы).",
       "filletRequiresNotDimensions": "Сопряжение строится между двумя отрезками, дугами или кругами (не размеры).",
       "unableToFilletCurves": "Невозможно выполнить сопряжение кривых.",
       "noValidCurveFillet": [
@@ -5399,6 +5412,7 @@ export const ru: EngineLocale = {
       "entitiesNonCoplanar": "Исходные объекты не компланарны.",
       "chamferRequiresTwoLines": "Фаска строится между двумя отрезками.",
       "chamferRequiresNotBlocks": "Фаска строится между двумя отрезками (не вхождения блоков).",
+      "chamferRequiresNotTables": "Фаска строится между двумя отрезками (не таблицы).",
       "chamferRequiresNotDimensions": "Фаска строится между двумя отрезками (не размеры).",
       "cannotChamferBetween": "Не удается построить фаску для данных объектов",
       "linesChamfered": [
@@ -6570,6 +6584,7 @@ export const ru: EngineLocale = {
             "face3d": "3D-ГРАНЬ",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "МАССИВ"
           }
         ]
@@ -9071,6 +9086,66 @@ export const ru: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Расположение:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Нормаль:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Направление по горизонтали:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Число столбцов:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Число строк:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Стиль таблицы:     ",
+        [
+          "name"
         ]
       ]
     },

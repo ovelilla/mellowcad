@@ -18,7 +18,8 @@
 > punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148, y WIPEOUT, hecho el 19/11 (sin
 > publicar: el push está congelado), que las llevó a 151, después del húngaro (`docs/next-seo.md`,
 > L8), hecho el 19/11, e IMAGE, hecho el 19/11 (sin publicar), que las llevó a 152 y los ficheros
-> de otros a 574; siguiente, por orden del dueño, lo que quede del punto 7 (TABLE, MULTILEADER…),
+> de otros a 574, y la tabla (ACAD_TABLE), hecha el 19/11 (sin publicar), que llevó los ficheros
+> de otros a 575; siguiente, por orden del dueño, lo que quede del punto 7 (MULTILEADER, XLINE…),
 > y después otro idioma, alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -372,11 +373,29 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       de LibreCAD; muestras sin nada fuera, de 151 a 152 de 154; ficheros de otros, de 573 a 574 de
       577. Se anotan: los píxeles, IMAGE (la paleta), -IMAGE, IMAGEATTACH, IMAGECLIP, IMAGEADJUST,
       IMAGEQUALITY, TRANSPARENCY, la paleta y los pinzamientos (sin escritorio: **no
-      verificados**). **Queda del punto 7**, por orden: TABLE (1 de otros, ACAD_TABLE),
-      MULTILEADER (1 muestra y 2 ficheros, 4 objetos), y XLINE, RAY, MINSERT, los colores índice y
-      las sustituciones DSTYLE de cada cota; quedan para la próxima sesión de esta fase. Lo que
-      queda fuera del corpus tras IMAGE: 1 MULTILEADER y una malla (POLYLINE de caras) en las
-      muestras; 4 MULTILEADER y 1 ACAD_TABLE en los de otros.
+      verificados**). **La tabla hecha** (19/11/2026, sin publicar): la tabla (`TableEntity`,
+      fichero versión 60) como la abre AutoCAD 2027, que la redibuja de sus celdas y no de su
+      bloque `*T` (sondas `table/t00`–`t11`; t01: un bloque viejo o vacío se redibuja): el texto de
+      cada celda a su alineación dentro de los márgenes, el bloque de una celda ajustado a ella
+      (0,362067), la rejilla en tramos que cortan las combinadas; las mismas piezas que el bloque
+      de AutoCAD de cada una de las seis tablas de t10 (escalada, girada, reflejada, roja en otra
+      capa, vacía de -TABLE). Designada y enganchada por lo que dibuja (END, MID, INS, CEN: t07),
+      un pinzamiento en su esquina; SCALE escala sus datos como los escribe AutoCAD, MIRROR la
+      deja sin reflejar, STRETCH la deja (t05); EXPLODE en sus MTEXT, referencias y líneas y la
+      línea gris sin longitud de su esquina (t06, t06b); OFFSET, AREA, BREAK, DIVIDE, TRIM, FILLET
+      y CHAMFER la rechazan con las palabras de AutoCAD (acadres 33496); LIST en las diez
+      consolas (t08). DXF en los dos sentidos, de 2000 a 2018 (la celda antigua en 2000 y 2004,
+      CELL_VALUE desde 2007, t09), con un TABLESTYLE por nombre: la consola abre los 12 ficheros
+      sin un error de AUDIT y redibuja de los nuestros las mismas 214 piezas que dibujamos (t11).
+      El corpus: abre la de ezdxf; muestras, 152 de 154, como antes (sus tablas están en
+      presentaciones); ficheros de otros, de 574 a 575 de 577. Se anotan: TABLE y -TABLE (sus
+      solicitudes, sondeadas en t00), TABLEDIT y la edición de celdas, filas y columnas (sus
+      pinzamientos), TABLESTYLE, los colores, rellenos, bordes y giro de cada celda, campos,
+      fórmulas y vínculos de datos, la paleta (sin escritorio: **no verificada**). **Queda del
+      punto 7**, por orden: MULTILEADER (1 muestra y 2 ficheros, 4 objetos), y XLINE, RAY,
+      MINSERT, los colores índice y las sustituciones DSTYLE de cada cota; quedan para la próxima
+      sesión de esta fase. Lo que queda fuera del corpus tras la tabla: 1 MULTILEADER y una malla
+      (POLYLINE de caras) en las muestras; 4 MULTILEADER en los de otros.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

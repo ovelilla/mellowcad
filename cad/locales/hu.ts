@@ -433,6 +433,16 @@ export const hu: EngineLocale = {
             "other": "Raszterkép"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Táblázat",
+            "other": "Táblázat"
+          }
+        ]
       ]
     },
     "array": {
@@ -5168,6 +5178,7 @@ export const hu: EngineLocale = {
       "cannotFilletBetweenThese": "A két rajzelem között a lekerekítés nem hajtható végre.",
       "filletRequiresObjects": "A Lekerekítés 2 vonalra, ívre vagy körre van szükség.",
       "filletRequiresNotBlocks": "A Lekerekítés 2 vonalra, ívre vagy körre (nem blokkreferenciákra) van szükség.",
+      "filletRequiresNotTables": "A Lekerekítés 2 vonalra, ívre vagy körre (nem táblázat objektum) van szükség.",
       "filletRequiresNotDimensions": "A Lekerekítés 2 vonalra, ívre vagy körre (nem méretek) van szükség.",
       "unableToFilletCurves": "A görbék lekerekítése nem lehetséges.",
       "noValidCurveFillet": [
@@ -5179,6 +5190,7 @@ export const hu: EngineLocale = {
       "entitiesNonCoplanar": "A rajzelemek nem esnek egy síkba.",
       "chamferRequiresTwoLines": "A Letörés 2 vonalra van szükség.",
       "chamferRequiresNotBlocks": "A Letörés 2 vonalra (nem blokkreferenciákra) van szükség.",
+      "chamferRequiresNotTables": "A Letörés 2 vonalra (nem táblázat objektum) van szükség.",
       "chamferRequiresNotDimensions": "A Letörés 2 vonalra (nem méretek) van szükség.",
       "cannotChamferBetween": "E között a két rajzelem között nem hozható létre letörés.",
       "linesChamfered": [
@@ -6086,6 +6098,7 @@ export const hu: EngineLocale = {
             "face3d": "3D FACE",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "KIOSZT"
           }
         ]
@@ -8444,6 +8457,66 @@ export const hu: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Pozíció:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normális:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Vízszintes irány:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Oszlopok száma:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Sorok száma:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Táblázatstílus:    ",
+        [
+          "name"
         ]
       ]
     },

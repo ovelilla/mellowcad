@@ -47,6 +47,7 @@ export type EntityType =
   | "face3d"
   | "wipeout"
   | "image"
+  | "table"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -218,6 +219,106 @@ export interface ImageReference {
   readonly path: string
   readonly pixelSize?: number
   readonly units?: number
+}
+
+/**
+ * A table (DXF ACAD_TABLE, AutoCAD's TABLE): rows of cells under its style,
+ * its top-left corner at `position` (DXF 10), its rows along `direction` (11,
+ * a unit vector in the OCS of its normal) and down from it.
+ *
+ * What it draws is derived (`tableGeometry`), as AutoCAD rebuilds its block
+ * from these on opening a file (table/t01: a block left stale or empty is
+ * redrawn from them). SCALE scales these, never a factor (t00, t02); MIRROR
+ * leaves its text readable (t02).
+ */
+export interface TableEntity extends BaseEntity {
+  readonly type: "table"
+  readonly position: Vec2
+  readonly direction: Vec2
+  /** DXF 141, top to bottom. */
+  readonly rowHeights: readonly number[]
+  /** DXF 142, left to right. */
+  readonly columnWidths: readonly number[]
+  /** Row by row, `rowHeights.length × columnWidths.length` of them. */
+  readonly cells: readonly TableCell[]
+  readonly style: TableStyleData
+  /**
+   * What it sets over its style (DXF 93 with 40, 41 and the three 140s), as
+   * SCALE leaves it (t00, t02): its cell margins and its rows' text heights.
+   */
+  readonly overrides?: TableOverrides
+}
+
+/**
+ * The table style a table names (DXF TABLESTYLE), kept with the table.
+ *
+ * WHY with each table and not in a table of the drawing: nothing here
+ * creates, edits or picks a table style (no TABLESTYLE), so the drawing's
+ * table would only ever hold what its tables name; DXFOUT writes one
+ * TABLESTYLE per name, as an image's definition is kept with its image.
+ */
+export interface TableStyleData {
+  readonly name: string
+  /** DXF 40 and 41. */
+  readonly horizontalMargin: number
+  readonly verticalMargin: number
+  /** DXF 70 1: the rows run up from the insertion point. */
+  readonly flowsUp?: true
+  /** DXF 280 and 281. */
+  readonly titleSuppressed?: true
+  readonly headerSuppressed?: true
+  /** Its three runs, in the order DXF writes them: data, title, header. */
+  readonly data: TableRowStyle
+  readonly title: TableRowStyle
+  readonly header: TableRowStyle
+}
+
+/** What a table style gives one kind of row: DXF 7, 140 and 170. */
+export interface TableRowStyle {
+  readonly textStyleId: TextStyleId
+  readonly textHeight: number
+  readonly alignment: MTextAttachment
+}
+
+export interface TableOverrides {
+  readonly horizontalMargin?: number
+  readonly verticalMargin?: number
+  readonly textHeights?: {
+    readonly data: number
+    readonly title: number
+    readonly header: number
+  }
+}
+
+/**
+ * One cell (DXF 171 to the end of its value). A text cell shows `text`, an
+ * MTEXT contents string; a block cell (171 2) its `block`. The cell at a
+ * span's top left gives it (175, 176); the cells it covers are `merged`
+ * (173) and show nothing.
+ */
+export interface TableCell {
+  readonly text?: string
+  readonly block?: TableCellBlock
+  readonly span?: { readonly columns: number; readonly rows: number }
+  readonly merged?: true
+  /** Over its row's style: DXF 91's bits 1 (170), 16 (7) and 32 (140). */
+  readonly alignment?: MTextAttachment
+  readonly textStyleId?: TextStyleId
+  readonly textHeight?: number
+  /** DXF 145, kept and written back; not applied. */
+  readonly rotation?: number
+  /** DXF 91's bits it carries without a value of theirs (0x40000). */
+  readonly flags?: number
+}
+
+/**
+ * A block cell's block (DXF 340), at `scale` (144) or, `autoFit` (174), as
+ * large as fits inside the cell's margins (table/t03: 0.362067).
+ */
+export interface TableCellBlock {
+  readonly blockId: BlockId
+  readonly scale: number
+  readonly autoFit: boolean
 }
 
 export interface CircleEntity extends BaseEntity, Thick {
@@ -1115,6 +1216,7 @@ export type Entity =
   | Face3dEntity
   | WipeoutEntity
   | ImageEntity
+  | TableEntity
 
 export interface Bounds {
   readonly min: Vec2

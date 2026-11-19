@@ -1,0 +1,24 @@
+_ZOOM
+_E
+_-LAYER
+_M
+L1
+
+_-LAYER
+_SET
+0
+
+_CHPROP
+_ALL
+
+_LA
+L1
+_C
+1
+_LT
+Continuous
+
+_EXPLODE
+_ALL
+
+(progn (setq s (ssget "_P")) (setq i 0) (repeat (sslength s) (setq e (entget (ssname s i))) (print (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (0 8 62 6 370))))) e)) (setq i (1+ i))) (princ))

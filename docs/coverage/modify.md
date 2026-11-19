@@ -979,7 +979,8 @@ layer — of what it finds the newest unlocked is taken, and finding only locked
 (p274). A TEXT, an attribute definition, an MTEXT or a HATCH picked or found at the first prompt
 says `Fillet requires 2 lines, arcs, or circles.` (es `Empalme requiere 2 líneas, arcos o círculos.`),
 a block reference `Fillet requires 2 lines, arcs, or circles (not block references).` (es
-`… (no referencias a bloque).`), a dimension `… (not dimensions).` (es `… (no cotas).`), and the
+`… (no referencias a bloque).`), a table `… (not Table objects).` (es `… (no objetos de tabla).`,
+acadres 33496, table/t04c), a dimension `… (not dimensions).` (es `… (no cotas).`), and the
 prompt is asked again (p231–p235, p378, p381); at the second prompt the same, but an MTEXT or a HATCH
 says `Cannot fillet between these two entities.` (es `Imposible empalmar estos dos objetos.`, another
 string than the parallel pair's) and the command ends (p238, p239, p310–p312). An ELLIPSE, an
@@ -1113,7 +1114,8 @@ ends, or in Multiple the first prompt again; an ARC or a CIRCLE, at either promp
 `Chaflán requiere 2 líneas (no segmentos de arco).`, p167, p196–p198) and the same prompt is asked
 again; a TEXT, an attribute definition, an MTEXT or a HATCH at the first prompt says
 `Chamfer requires 2 lines.` (es `Chaflán requiere 2 líneas.`), a block reference
-`Chamfer requires 2 lines (not block references).` (es `… (no referencias a bloque).`), a dimension
+`Chamfer requires 2 lines (not block references).` (es `… (no referencias a bloque).`), a table
+`Chamfer requires 2 lines (not Table objects).` (es `… (no objetos de tabla).`, table/t04c), a dimension
 `Chamfer requires 2 lines (not dimensions).` (es `… (no cotas).`), the prompt asked again
 (p316–p318, p376, p377, p382), and at the second the same, but an MTEXT or a HATCH
 `Cannot chamfer between these two entities.` (es
@@ -1194,7 +1196,7 @@ p331). A 3D polyline's caught vertices move, each taking the displacement's Z (3
 image drags one corner, the last caught of its bottom left, top left, top right and bottom right,
 the one across staying: it scales by the larger of the ratios the corner moved gives along its
 width and its height, never stretched, nor moved whole with all four caught, and stays where
-neither grows (image/s1–s11).
+neither grows (image/s1–s11). A table stays as it was, caught in part or whole (table/t05).
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
@@ -1253,7 +1255,7 @@ everything was refused too, says `None found.` (es `No hallada.`, table 20841; p
 preselection is counted and sifted the same way after the echo; with nothing left it asks
 `Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
-pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); a wipeout a line per edge, the closing one last, with its layer and properties, and nothing said (wipeout/w08, w10); an image its frame's four lines, up from its insertion corner, across, down and back, its path gone and nothing said (image/i06a); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); a wipeout a line per edge, the closing one last, with its layer and properties, and nothing said (wipeout/w08, w10); an image its frame's four lines, up from its insertion corner, across, down and back, its path gone and nothing said (image/i06a); a table its cells' MTEXTs, its block cells' references and its grid's lines, each on its layer and in its properties, and a grey line of no length at its corner, nothing said (table/t06, t06b); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
 cannot be exploded: `1 was an external reference.` (es `1 era una referencia externa.`, table
 25137–25138; xref/p08, p17)
 

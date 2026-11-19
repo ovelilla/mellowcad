@@ -3,7 +3,7 @@ title: Edytor DXF online
 metaTitle: "Edytor DXF online: edycja i zapis plików DXF"
 description: "Edytuj plik DXF za darmo w przeglądarce poleceniami AutoCADa i zapisz go ponownie jako DXF, AutoCAD 2000 do 2018. Bez instalacji, nic nie jest wysyłane."
 type: howTo
-sourceHash: "e68e55a5ccc0"
+sourceHash: "5dab7f86d4bb"
 faq:
   - question: "Jak edytować plik DXF online?"
     answer: "Wybierz go lub upuść u góry tej strony: otworzy się w edytorze MellowCAD, w przeglądarce. Zmień go poleceniami AutoCADa, a potem polecenie NZAPISZ (Ctrl+Shift+S) lub DXFWY zapisze go ponownie jako plik DXF."
@@ -14,7 +14,7 @@ faq:
   - question: "Czy AutoCAD otworzy zapisany przeze mnie DXF?"
     answer: "Tak. Każdy rodzaj obiektu, który zapisuje MellowCAD, w każdej wersji, tekstowo i binarnie, został otwarty w AutoCADzie 2027, a jego polecenie TEST (AUDIT) nie znalazło błędów."
   - question: "Czy coś ginie przy zapisie?"
-    answer: "To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tabele i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik."
+    answer: "To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tolerancje i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik."
   - question: "Czy mogę utworzyć nowy plik DXF od zera?"
     answer: "Tak. Otwórz edytor, narysuj i zapisz poleceniem NZAPISZ, wybierając typ pliku DXF."
 ---
@@ -49,7 +49,7 @@ Każdy obiekt, jaki ma MellowCAD, zapisany tak, jak zapisuje go AutoCAD: linie, 
 
 ## Czego nie ma w zapisanym pliku [#lost]
 
-- **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie odniesienia, tabele i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
+- **To, co się nie otworzyło, nie jest zapisywane.** To, dla czego MellowCAD nie ma jeszcze obiektu – multilinie odniesienia, tolerancje i [reszta tej listy](/docs/open-dxf#left-out) – jest liczone w wierszu polecenia przy otwieraniu pliku i nie trafia do zapisywanego pliku. Zachowaj oryginał.
 - **Bryły 3D i regiony nie są zapisywane**: wiersz polecenia podaje, ile ich pominięto.
 - Własne nadpisania stylu wymiaru i parametry szyku nie są zapisywane: AutoCAD otwiera wymiar z ustawieniami jego stylu, a szyk jako blok jego elementów.
 - Nie ma miniatury podglądu, nie ma jeszcze typu DXF AutoCAD R12/LT2 i nie ma DWG.
@@ -78,7 +78,7 @@ Tak. Każdy rodzaj obiektu, który zapisuje MellowCAD, w każdej wersji, tekstow
 
 ### Czy coś ginie przy zapisie? [#lost-on-save]
 
-To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tabele i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik.
+To, co się nie otworzyło, nie trafia do zapisywanego pliku: multilinie odniesienia, tolerancje i inne obiekty, które wiersz polecenia policzył przy otwieraniu pliku. Bryły 3D i regiony też nie są zapisywane, a wiersz polecenia je wymienia. Zachowaj oryginalny plik.
 
 ### Czy mogę utworzyć nowy plik DXF od zera? [#from-scratch]
 

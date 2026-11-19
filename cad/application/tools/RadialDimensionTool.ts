@@ -456,6 +456,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
     case "face3d":
     case "wipeout":
     case "image":
+    case "table":
     case "leader":
       return null
     default: {

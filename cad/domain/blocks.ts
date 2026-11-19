@@ -126,10 +126,17 @@ export function blocksInUse(
 ): Set<BlockId> {
   const used = new Set<BlockId>()
   const pending: BlockId[] = []
+  const mark = (id: BlockId) => {
+    if (used.has(id)) return
+    used.add(id)
+    pending.push(id)
+  }
+  // A table's block cells use theirs as a reference does.
   const reach = (entity: Entity) => {
-    if (entity.type !== "insert" || used.has(entity.blockId)) return
-    used.add(entity.blockId)
-    pending.push(entity.blockId)
+    if (entity.type === "insert") mark(entity.blockId)
+    if (entity.type === "table") {
+      for (const cell of entity.cells) if (cell.block) mark(cell.block.blockId)
+    }
   }
   for (const entity of entities) reach(entity)
   for (let id = pending.pop(); id !== undefined; id = pending.pop()) {

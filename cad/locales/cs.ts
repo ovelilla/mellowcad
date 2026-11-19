@@ -475,6 +475,18 @@ export const cs: EngineLocale = {
             "other": "Rastrových obrázků"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Tabulka",
+            "few": "Tabulky",
+            "many": "Tabulky",
+            "other": "Tabulek"
+          }
+        ]
       ]
     },
     "array": {
@@ -5278,6 +5290,7 @@ export const cs: EngineLocale = {
       "cannotFilletBetweenThese": "Nelze zaoblit tyto dva objekty.",
       "filletRequiresObjects": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice.",
       "filletRequiresNotBlocks": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou bloky).",
+      "filletRequiresNotTables": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou objekty Tabulka).",
       "filletRequiresNotDimensions": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou rozměry).",
       "unableToFilletCurves": "Nelze zaoblit křivky.",
       "noValidCurveFillet": [
@@ -5289,6 +5302,7 @@ export const cs: EngineLocale = {
       "entitiesNonCoplanar": "Objekty nejsou koplanární.",
       "chamferRequiresTwoLines": "Zkosení vyžaduje 2 úsečky.",
       "chamferRequiresNotBlocks": "Zkosení vyžaduje 2 úsečky (nejsou bloky).",
+      "chamferRequiresNotTables": "Zkosení vyžaduje 2 úsečky (nejsou objekty Tabulka).",
       "chamferRequiresNotDimensions": "Zkosení vyžaduje 2 úsečky (nejsou rozměry).",
       "cannotChamferBetween": "Nelze zkosit tyto dva objekty.",
       "linesChamfered": [
@@ -6216,6 +6230,7 @@ export const cs: EngineLocale = {
             "face3d": "3D PLOCHA",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "POLE"
           }
         ]
@@ -8699,6 +8714,66 @@ export const cs: EngineLocale = {
         "    Z = ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Poloha:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normála:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Horizontální směr:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Počet sloupců:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Počet řádků:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Styl tabulky:     ",
+        [
+          "name"
         ]
       ]
     },

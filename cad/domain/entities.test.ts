@@ -96,6 +96,7 @@ import {
   withThickness,
   entityShape,
   imageCorners,
+  tableCorners,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
 import { SOLID_HATCH_PATTERN_ID } from "./hatchPatterns"
@@ -829,6 +830,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entity.vertices]
     case "image":
       return [...imageCorners(entity)]
+    case "table":
+      return [...tableCorners(entity)]
     case "text":
     case "mtext":
     case "attdef":
@@ -1085,7 +1088,10 @@ describe("Z", () => {
 
   it("stretching an object with every point caught moves it whole, Z included", () => {
     // An image drags its last corner caught even then (image/s6).
-    const moved = entityArb.filter((entity) => entity.type !== "image")
+    // A table stays as it was (table/t05).
+    const moved = entityArb.filter(
+      (entity) => entity.type !== "image" && entity.type !== "table"
+    )
     fc.assert(
       fc.property(moved, point, zValue, (entity, delta, dz) => {
         const displacement = { ...delta, z: dz }

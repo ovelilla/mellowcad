@@ -21,6 +21,7 @@ import {
   entityPointToWorld,
   entityElevation,
   insertFlatGeometry,
+  tableGeometry,
   lineEndZ,
   isLevel,
   lineStartZ,
@@ -105,8 +106,17 @@ function snapEntities(
   const entities: Entity[] = []
   const solidPoints: SolidSnapPoint[] = []
   for (const entity of [...document.getEntities(), ...beingDrawn]) {
+    // A table as what it draws, its block cells' objects too (table/t07).
     const drawn =
-      entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
+      entity.type === "insert"
+        ? insertFlatGeometry(entity, blocks)
+        : entity.type === "table"
+          ? tableGeometry(entity, blocks).flatMap((piece) =>
+              piece.type === "insert"
+                ? insertFlatGeometry(piece, blocks)
+                : [piece]
+            )
+          : [entity]
     for (const piece of drawn) {
       if (piece.type === "region") {
         // Its edges, as the objects they are: ends, middles, centres,

@@ -475,6 +475,18 @@ export const pl: EngineLocale = {
             "other": "Obrazu rastrowego"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Tabela",
+            "few": "Tabele",
+            "many": "Tabel",
+            "other": "Tabeli"
+          }
+        ]
       ]
     },
     "array": {
@@ -5296,6 +5308,7 @@ export const pl: EngineLocale = {
       "cannotFilletBetweenThese": "Nie można utworzyć zaokrąglenia między tymi dwoma obiektami.",
       "filletRequiresObjects": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów",
       "filletRequiresNotBlocks": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (nie mogą to być odniesienia do bloków)",
+      "filletRequiresNotTables": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (brak obiektów tabeli)",
       "filletRequiresNotDimensions": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (bez wymiarów)",
       "unableToFilletCurves": "Nie można zaokrąglić krzywych.",
       "noValidCurveFillet": [
@@ -5307,6 +5320,7 @@ export const pl: EngineLocale = {
       "entitiesNonCoplanar": "Elementy nie są współpłaszczyznowe.",
       "chamferRequiresTwoLines": "Fazowanie wymaga wskazania 2 linii",
       "chamferRequiresNotBlocks": "Fazowanie wymaga wskazania 2 linii (nie mogą to być odniesienia do bloków)",
+      "chamferRequiresNotTables": "Fazowanie wymaga wskazania 2 linii (brak obiektów tabeli)",
       "chamferRequiresNotDimensions": "Fazowanie wymaga wskazania 2 linii (bez wymiarów)",
       "cannotChamferBetween": "Nie można utworzyć fazy między tymi dwoma elementami.",
       "linesChamfered": [
@@ -6218,6 +6232,7 @@ export const pl: EngineLocale = {
             "face3d": "POWIERZCHNIA 3D",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "SZYK"
           }
         ]
@@ -8575,6 +8590,66 @@ export const pl: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Położenie:       X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normalna:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Kier. poziomy:   X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Liczba kolumn:      ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Liczba wierszy:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Styl tabeli:        ",
+        [
+          "name"
         ]
       ]
     },

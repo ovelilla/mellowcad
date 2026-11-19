@@ -3,7 +3,7 @@ title: DXF editor online
 metaTitle: "DXF editor online zdarma: úprava a uložení DXF"
 description: "Upravte soubor DXF zdarma v prohlížeči příkazy AutoCADu a uložte ho znovu jako DXF, AutoCAD 2000 až 2018. Bez instalace, nic se nenahrává."
 type: howTo
-sourceHash: "e68e55a5ccc0"
+sourceHash: "5dab7f86d4bb"
 faq:
   - question: "Jak upravit soubor DXF online?"
     answer: "Vyberte ho nebo ho přetáhněte do horní části této stránky: otevře se v editoru MellowCAD, v prohlížeči. Upravte ho příkazy AutoCADu a pak ho příkaz ULOŽJAKO (Ctrl+Shift+S) nebo PIŠDXF znovu uloží jako soubor DXF."
@@ -14,7 +14,7 @@ faq:
   - question: "Otevře AutoCAD DXF, který uložím?"
     answer: "Ano. Každý druh objektu, který MellowCAD zapisuje, v každé verzi, textově i binárně, otevřel AutoCAD 2027 a jeho příkaz DIAG (AUDIT) nenašel žádnou chybu."
   - question: "Ztratí se něco při uložení?"
-    answer: "Co se neotevřelo, v ukládaném souboru není: multiodkazy, tabulky a ostatní objekty, které příkazový řádek spočítal při otevírání souboru. Nezapisují se ani 3D tělesa a oblasti a příkazový řádek je vypíše. Původní soubor si ponechte."
+    answer: "Co se neotevřelo, v ukládaném souboru není: multiodkazy, tolerance a ostatní objekty, které příkazový řádek spočítal při otevírání souboru. Nezapisují se ani 3D tělesa a oblasti a příkazový řádek je vypíše. Původní soubor si ponechte."
   - question: "Mohu vytvořit nový soubor DXF od nuly?"
     answer: "Ano. Otevřete editor, kreslete a uložte příkazem ULOŽJAKO s typem souboru DXF."
 ---
@@ -49,7 +49,7 @@ Každý objekt, který MellowCAD má, zapsaný tak, jak ho zapisuje AutoCAD: ús
 
 ## Co se nevrátí [#lost]
 
-- **Co se neotevřelo, se neuloží.** Pro co MellowCAD zatím nemá objekt – multiodkazy, tabulky a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
+- **Co se neotevřelo, se neuloží.** Pro co MellowCAD zatím nemá objekt – multiodkazy, tolerance a [zbytek toho seznamu](/docs/open-dxf#left-out) –, se při otevírání souboru spočítá v příkazovém řádku a v ukládaném souboru není. Originál si ponechte.
 - **3D tělesa a oblasti se nezapisují**: příkazový řádek vypíše, kolik jich vynechal.
 - Vlastní potlačení stylu u kóty a parametry pole se nezapisují: AutoCAD otevře kótu s nastavením jejího stylu a pole jako blok jeho prvků.
 - Není tu náhled miniatury, zatím žádný typ DXF AutoCAD R12/LT2 a žádný DWG.
@@ -78,7 +78,7 @@ Ano. Každý druh objektu, který MellowCAD zapisuje, v každé verzi, textově 
 
 ### Ztratí se něco při uložení? [#lost-on-save]
 
-Co se neotevřelo, v ukládaném souboru není: multiodkazy, tabulky a ostatní objekty, které příkazový řádek spočítal při otevírání souboru. Nezapisují se ani 3D tělesa a oblasti a příkazový řádek je vypíše. Původní soubor si ponechte.
+Co se neotevřelo, v ukládaném souboru není: multiodkazy, tolerance a ostatní objekty, které příkazový řádek spočítal při otevírání souboru. Nezapisují se ani 3D tělesa a oblasti a příkazový řádek je vypíše. Původní soubor si ponechte.
 
 ### Mohu vytvořit nový soubor DXF od nuly? [#from-scratch]
 

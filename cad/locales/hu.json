@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {3D lap} other {3D lap}}",
       "leader": "{count, plural, one {Mutató} other {Mutató}}",
       "wipeout": "{count, plural, one {Kitakarás} other {Kitakarás}}",
-      "image": "{count, plural, one {Raszterkép} other {Raszterkép}}"
+      "image": "{count, plural, one {Raszterkép} other {Raszterkép}}",
+      "table": "{count, plural, one {Táblázat} other {Táblázat}}"
     },
     "array": {
       "rectangular": "Kiosztás (négyszögletes)",
@@ -2715,12 +2716,14 @@
       "cannotFilletBetweenThese": "A két rajzelem között a lekerekítés nem hajtható végre.",
       "filletRequiresObjects": "A Lekerekítés 2 vonalra, ívre vagy körre van szükség.",
       "filletRequiresNotBlocks": "A Lekerekítés 2 vonalra, ívre vagy körre (nem blokkreferenciákra) van szükség.",
+      "filletRequiresNotTables": "A Lekerekítés 2 vonalra, ívre vagy körre (nem táblázat objektum) van szükség.",
       "filletRequiresNotDimensions": "A Lekerekítés 2 vonalra, ívre vagy körre (nem méretek) van szükség.",
       "unableToFilletCurves": "A görbék lekerekítése nem lehetséges.",
       "noValidCurveFillet": "Nincs érvényes lekerekítés a következő sugárral: {radius}",
       "entitiesNonCoplanar": "A rajzelemek nem esnek egy síkba.",
       "chamferRequiresTwoLines": "A Letörés 2 vonalra van szükség.",
       "chamferRequiresNotBlocks": "A Letörés 2 vonalra (nem blokkreferenciákra) van szükség.",
+      "chamferRequiresNotTables": "A Letörés 2 vonalra (nem táblázat objektum) van szükség.",
       "chamferRequiresNotDimensions": "A Letörés 2 vonalra (nem méretek) van szükség.",
       "cannotChamferBetween": "E között a két rajzelem között nem hozható létre letörés.",
       "linesChamfered": "{count, plural, one {# vonal lett letörve} other {# vonal lett letörve}}",
@@ -2848,7 +2851,7 @@
       "notAFitPoint": "Ez nem illesztési pont.",
       "notAControlVertex": "Nem vezérlő csomópont.",
       "allAdditionsUndone": "Minden módosítás visszaállítva.",
-      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} other {KIOSZT}}",
+      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {KIOSZT}}",
       "listObject": "                  {name}  Fólia: \"{layer}\"",
       "listSpace": "                            Tér: Modelltér",
       "listColor": "                   Szín: {color}    Vonaltípus: \"{linetype}\"",
@@ -3174,7 +3177,13 @@
       "listImageClipping": "Vágás:                {on, select, yes {Be} other {Ki}}",
       "listImageClipType": "Vágási határvonal típusa:      {polygonal, select, yes {Poligon} other {Négyszög}}",
       "listImagePoint": "       az X={x},  Y={y},  Z={z} pontnál",
-      "listImageExtrusion": "Kihúzási irány az FKR-hez képest::\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Kihúzási irány az FKR-hez képest::\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Pozíció:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normális:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Vízszintes irány:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Oszlopok száma:  {count}",
+      "listTableRows": "Sorok száma:  {count}",
+      "listTableStyle": "Táblázatstílus:    {name}"
     },
     "feedback": {
       "snap": {

@@ -454,6 +454,17 @@ export const ar: EngineLocale = {
             "other": "صور نقطية"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "جدول",
+            "two": "جدولان",
+            "other": "جداول"
+          }
+        ]
       ]
     },
     "array": {

@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {3D-грань} few {3D-грани} many {3D-грани} other {3D-грани}}",
       "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}",
       "wipeout": "{count, plural, one {Маскировка} few {Маскировки} many {Маскировок} other {Маскировки}}",
-      "image": "{count, plural, one {Растровое изображение} few {Растровых изображения} many {Растровых изображений} other {Растрового изображения}}"
+      "image": "{count, plural, one {Растровое изображение} few {Растровых изображения} many {Растровых изображений} other {Растрового изображения}}",
+      "table": "{count, plural, one {Таблица} few {Таблицы} many {Таблиц} other {Таблицы}}"
     },
     "array": {
       "rectangular": "Массив (прямоугольный)",
@@ -2711,12 +2712,14 @@
       "cannotFilletBetweenThese": "Невозможно выполнить сопряжение данных объектов.",
       "filletRequiresObjects": "Сопряжение строится между двумя отрезками, дугами или кругами.",
       "filletRequiresNotBlocks": "Сопряжение строится между двумя отрезками, дугами или кругами (не вхождения блоков).",
+      "filletRequiresNotTables": "Сопряжение строится между двумя отрезками, дугами или кругами (не таблицы).",
       "filletRequiresNotDimensions": "Сопряжение строится между двумя отрезками, дугами или кругами (не размеры).",
       "unableToFilletCurves": "Невозможно выполнить сопряжение кривых.",
       "noValidCurveFillet": "Сопряжение с радиусом {radius} невозможно",
       "entitiesNonCoplanar": "Исходные объекты не компланарны.",
       "chamferRequiresTwoLines": "Фаска строится между двумя отрезками.",
       "chamferRequiresNotBlocks": "Фаска строится между двумя отрезками (не вхождения блоков).",
+      "chamferRequiresNotTables": "Фаска строится между двумя отрезками (не таблицы).",
       "chamferRequiresNotDimensions": "Фаска строится между двумя отрезками (не размеры).",
       "cannotChamferBetween": "Не удается построить фаску для данных объектов",
       "linesChamfered": "{count, plural, one {# отрезка(ов) были соединены фаской} few {# отрезка(ов) были соединены фаской} many {# отрезка(ов) были соединены фаской} other {# отрезка(ов) были соединены фаской}}",
@@ -2844,7 +2847,7 @@
       "notAFitPoint": "Не определяющая точка.",
       "notAControlVertex": "Не является управляющей вершиной.",
       "allAdditionsUndone": "Все добавления отменены.",
-      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} image {IMAGE} other {МАССИВ}}",
+      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {МАССИВ}}",
       "listObject": "                  {name} Слой: \"{layer}\"",
       "listSpace": "                           Пространство: Пространство модели",
       "listColor": "                   Цвет: {color}    Тип линий: \"{linetype}\"",
@@ -3170,7 +3173,13 @@
       "listImageClipping": "Подрезка:                      {on, select, yes {Вкл} other {Откл}}",
       "listImageClipType": "Тип контура подрезки:          {polygonal, select, yes {Многоугольный} other {Прямоугольный}}",
       "listImagePoint": "       в точке, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Направление выдавливания относительно ПСК:\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Направление выдавливания относительно ПСК:\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Расположение:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Нормаль:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Направление по горизонтали:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Число столбцов:  {count}",
+      "listTableRows": "Число строк:     {count}",
+      "listTableStyle": "Стиль таблицы:     {name}"
     },
     "feedback": {
       "snap": {

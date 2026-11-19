@@ -78,6 +78,21 @@ export function clipboardSnapshot(
           visit(block.entities, depth + 1)
           break
         }
+        case "table": {
+          const { data, title, header } = entity.style
+          for (const row of [data, title, header])
+            keepTextStyle(row.textStyleId)
+          for (const cell of entity.cells) {
+            if (cell.textStyleId) keepTextStyle(cell.textStyleId)
+            const block = cell.block && document.getBlock(cell.block.blockId)
+            if (!block || blocks.has(block.id) || depth >= MAX_BLOCK_NESTING) {
+              continue
+            }
+            blocks.set(block.id, block)
+            visit(block.entities, depth + 1)
+          }
+          break
+        }
         case "line":
         case "circle":
         case "arc":
@@ -299,6 +314,21 @@ function withBlockRenamed(
   entity: Entity,
   renamed: ReadonlyMap<BlockId, BlockId>
 ): Entity {
+  if (entity.type === "table") {
+    return entity.cells.some(
+      (cell) => cell.block && renamed.has(cell.block.blockId)
+    )
+      ? {
+          ...entity,
+          cells: entity.cells.map((cell) => {
+            const name = cell.block && renamed.get(cell.block.blockId)
+            return name && cell.block
+              ? { ...cell, block: { ...cell.block, blockId: name } }
+              : cell
+          }),
+        }
+      : entity
+  }
   const name = entity.type === "insert" ? renamed.get(entity.blockId) : null
   return name && entity.type === "insert"
     ? { ...entity, blockId: name }

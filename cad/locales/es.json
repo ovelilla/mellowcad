@@ -235,7 +235,8 @@
       "face3d": "{count, plural, one {Cara 3D} other {Caras 3D}}",
       "leader": "{count, plural, one {Directriz} other {Directrices}}",
       "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}",
-      "image": "{count, plural, one {Imagen ráster} other {Imágenes ráster}}"
+      "image": "{count, plural, one {Imagen ráster} other {Imágenes ráster}}",
+      "table": "{count, plural, one {Tabla} other {Tablas}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -2614,12 +2615,14 @@
       "cannotFilletBetweenThese": "Imposible empalmar estos dos objetos.",
       "filletRequiresObjects": "Empalme requiere 2 líneas, arcos o círculos.",
       "filletRequiresNotBlocks": "Empalme requiere 2 líneas, arcos o círculos (no referencias a bloque).",
+      "filletRequiresNotTables": "Empalme requiere 2 líneas, arcos o círculos (no objetos de tabla).",
       "filletRequiresNotDimensions": "Empalme requiere 2 líneas, arcos o círculos (no cotas).",
       "unableToFilletCurves": "No se pueden empalmar curvas.",
       "noValidCurveFillet": "Imposible hacer un empalme de radio {radius}",
       "entitiesNonCoplanar": "Los objetos no son coplanares.",
       "chamferRequiresTwoLines": "Chaflán requiere 2 líneas.",
       "chamferRequiresNotBlocks": "Chaflán requiere 2 líneas (no referencias a bloque).",
+      "chamferRequiresNotTables": "Chaflán requiere 2 líneas (no objetos de tabla).",
       "chamferRequiresNotDimensions": "Chaflán requiere 2 líneas (no cotas).",
       "cannotChamferBetween": "Imposible hacer un chaflán entre estas dos entidades.",
       "linesChamfered": "{count, plural, one {# línea resulta unida(s) con chaflán} other {# líneas resultan unida(s) con chaflán}}",
@@ -2747,7 +2750,7 @@
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
       "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
-      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} wipeout {WIPEOUT} image {IMAGE} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
       "listColor": "                   Color: {color}    Tipo de línea: \"{linetype}\"",
@@ -3073,7 +3076,13 @@
       "listImageClipping": "Delimitación:             {on, select, yes {Act} other {Des}}",
       "listImageClipType": "Tipo de contorno de delimitación: {polygonal, select, yes {Poligonal} other {Rectangular}}",
       "listImagePoint": "       en el punto, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Dirección de extrusión en relación al SCP:\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Dirección de extrusión en relación al SCP:\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Posición:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normal:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Dir. horizontal:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Número de columnas: {count}",
+      "listTableRows": "Número de filas: {count}",
+      "listTableStyle": "Estilo de tabla:        {name}"
     },
     "feedback": {
       "snap": {

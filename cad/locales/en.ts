@@ -436,6 +436,16 @@ export const en: EngineCatalog = {
             "other": "Raster Images"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Table",
+            "other": "Tables"
+          }
+        ]
       ]
     },
     "array": {
@@ -4468,6 +4478,7 @@ export const en: EngineCatalog = {
       "cannotFilletBetweenThese": "Cannot fillet between these two entities.",
       "filletRequiresObjects": "Fillet requires 2 lines, arcs, or circles.",
       "filletRequiresNotBlocks": "Fillet requires 2 lines, arcs, or circles (not block references).",
+      "filletRequiresNotTables": "Fillet requires 2 lines, arcs, or circles (not Table objects).",
       "filletRequiresNotDimensions": "Fillet requires 2 lines, arcs, or circles (not dimensions).",
       "unableToFilletCurves": "Unable to fillet curves.",
       "noValidCurveFillet": [
@@ -4479,6 +4490,7 @@ export const en: EngineCatalog = {
       "entitiesNonCoplanar": "The entities are non-coplanar.",
       "chamferRequiresTwoLines": "Chamfer requires 2 lines.",
       "chamferRequiresNotBlocks": "Chamfer requires 2 lines (not block references).",
+      "chamferRequiresNotTables": "Chamfer requires 2 lines (not Table objects).",
       "chamferRequiresNotDimensions": "Chamfer requires 2 lines (not dimensions).",
       "cannotChamferBetween": "Cannot chamfer between these two entities.",
       "linesChamfered": [
@@ -5386,6 +5398,7 @@ export const en: EngineCatalog = {
             "face3d": "3D FACE",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "ARRAY"
           }
         ]
@@ -7744,6 +7757,66 @@ export const en: EngineCatalog = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Position:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normal:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Horizontal Dir:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Number of columns:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Number of rows:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Table Style:        ",
+        [
+          "name"
         ]
       ]
     },

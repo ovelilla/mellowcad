@@ -52,6 +52,7 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
     case "wipeout":
       return { ...entity, layerId }
     case "image":
+    case "table":
       return { ...entity, layerId }
     case "text":
       return { ...entity, layerId }
@@ -107,6 +108,7 @@ export function assignEntityColor(
     case "wipeout":
       return { ...entity, color }
     case "image":
+    case "table":
       return { ...entity, color }
     case "text":
       return { ...entity, color }
@@ -161,6 +163,7 @@ export function assignEntityLinetype(
     case "wipeout":
       return { ...entity, linetype }
     case "image":
+    case "table":
       return { ...entity, linetype }
     case "text":
       return { ...entity, linetype }
@@ -215,6 +218,7 @@ export function assignEntityLineweight(
     case "wipeout":
       return { ...entity, lineweight }
     case "image":
+    case "table":
       return { ...entity, lineweight }
     case "text":
       return { ...entity, lineweight }

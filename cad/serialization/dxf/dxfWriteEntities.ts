@@ -21,6 +21,7 @@ import {
   Face3dEntity,
   WipeoutEntity,
   ImageEntity,
+  TableEntity,
   InsertEntity,
   LeaderEntity,
   LineEntity,
@@ -78,6 +79,15 @@ export interface DxfWriteContext {
   arrayBlock(insert: InsertEntity): string | null
   /** Counts an object the file cannot hold, by its DXF type. */
   leftOut(type: string): void
+  /** The `*T` block a table's graphics are written in, and its record's handle. */
+  tableBlock(table: TableEntity): {
+    readonly name: string
+    readonly record: string
+  }
+  /** The TABLESTYLE a table names, by handle, which lists the table written as `own`. */
+  tableStyle(table: TableEntity, own: string): string
+  /** The handle of a block's BLOCK_RECORD. */
+  blockRecord(id: string): string
   /** The IMAGEDEF an image shows, by handle. */
   imageDefinition(image: ImageEntity): string
   /** A new IMAGEDEF_REACTOR for the image written with handle `own`. */
@@ -120,6 +130,11 @@ function head(
  * (420), as AutoCAD writes a true colour.
  */
 export function color(out: DxfOut, value: string | undefined): void {
+  // A table's block's pieces (`tableBlock`), as AutoCAD's are (table/t03).
+  if (value === "ByBlock") {
+    out.int(62, 0)
+    return
+  }
   if (value === undefined || !value.startsWith("#")) return
   const rgb = Number.parseInt(value.slice(1), 16)
   const { index, exact } = aciIndex(rgb)
@@ -170,6 +185,8 @@ export function writeEntity(
       return wipeout(ctx, entity, owner)
     case "image":
       return image(ctx, entity, owner)
+    case "table":
+      return table(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -289,6 +306,111 @@ function wipeout(ctx: DxfWriteContext, e: WipeoutEntity, owner: string): void {
   for (const p of [...e.vertices, e.vertices[0]]) {
     out.real(14, (p.x - min.x) / side - 0.5)
     out.real(24, 0.5 - (p.y - min.y) / side)
+  }
+}
+
+/**
+ * An ACAD_TABLE as AutoCAD's DXFOUT writes one (table/t00, t02, t09): a
+ * reference to its `*T` block at its corner, its style (342) and block
+ * record (343), its direction in the WCS (11), its size, the table-wide
+ * overrides SCALE sets (93 with 40, 41 and the data, title and header text
+ * heights: t02), its rows' heights and columns' widths, then each cell:
+ * text or block, merged, fitted, its span, its override flags (91, 177
+ * before 2007) and the alignment, text style and height they give, its
+ * block (340, 144); from 2007 its value in a CELL_VALUE (empty, a string,
+ * a block: 93 7, 6, 1), before it the text alone (1), as 2000 and 2004
+ * write it. From 2010 the table's version (280 0) first.
+ */
+function table(ctx: DxfWriteContext, e: TableEntity, owner: string): void {
+  const { out } = ctx
+  const own = ctx.entityHandle(e)
+  const block = ctx.tableBlock(e)
+  const legacy = ctx.version < 1021
+  head(ctx, "ACAD_TABLE", e, owner, own)
+  out.str(100, "AcDbBlockReference")
+  out.str(2, block.name)
+  out.point(10, e.position.x, e.position.y, e.elevation ?? 0)
+  writeNormal(ctx, e)
+  out.str(100, "AcDbTable")
+  if (ctx.version >= 1024) out.int(280, 0)
+  out.str(342, ctx.tableStyle(e, own))
+  out.str(343, block.record)
+  const a = axes(e)
+  const along = { ...e.direction, z: 0 }
+  const d = a ? axesToWorld(a, along) : along
+  out.point(11, d.x, d.y, d.z)
+  out.int(90, 22)
+  out.int(91, e.rowHeights.length)
+  out.int(92, e.columnWidths.length)
+  const o = e.overrides
+  out.int(
+    93,
+    (o?.horizontalMargin !== undefined ? 0x8 : 0) |
+      (o?.verticalMargin !== undefined ? 0x10 : 0) |
+      (o?.textHeights ? 0x700000 : 0)
+  )
+  out.int(94, 0)
+  out.int(95, 0)
+  out.int(96, 0)
+  if (o?.horizontalMargin !== undefined) out.real(40, o.horizontalMargin)
+  if (o?.verticalMargin !== undefined) out.real(41, o.verticalMargin)
+  if (o?.textHeights) {
+    out.real(140, o.textHeights.data)
+    out.real(140, o.textHeights.title)
+    out.real(140, o.textHeights.header)
+  }
+  for (const h of e.rowHeights) out.real(141, h)
+  for (const w of e.columnWidths) out.real(142, w)
+  for (const cell of e.cells) {
+    const cellBlock = cell.block
+    const text = cellBlock ? "" : (cell.text ?? "")
+    out.int(171, cellBlock ? 2 : 1)
+    out.int(172, 0)
+    out.int(173, cell.merged ? 1 : 0)
+    out.int(174, cellBlock?.autoFit ? 1 : 0)
+    out.int(175, cell.merged ? 1 : (cell.span?.columns ?? 1))
+    out.int(176, cell.merged ? 1 : (cell.span?.rows ?? 1))
+    // A 2000 or 2004 file writes no data type (t09).
+    const kept = legacy ? 0 : (cell.flags ?? 0)
+    out.int(
+      legacy ? 177 : 91,
+      kept |
+        (cell.alignment ? 0x1 : 0) |
+        (cell.textStyleId ? 0x10 : 0) |
+        (cell.textHeight !== undefined ? 0x20 : 0)
+    )
+    out.int(178, 0)
+    out.real(145, cell.rotation ?? 0)
+    if (cellBlock) {
+      out.str(340, ctx.blockRecord(cellBlock.blockId))
+      out.real(144, cellBlock.scale)
+      out.int(179, 0)
+    }
+    if (cell.alignment) {
+      out.int(170, MTEXT_ATTACHMENTS.indexOf(cell.alignment) + 1)
+    }
+    if (cell.textStyleId) out.str(7, ctx.textStyleName(cell.textStyleId))
+    if (cell.textHeight !== undefined) out.real(140, cell.textHeight)
+    if (legacy) {
+      if (cellBlock) continue
+      const chars = [...text]
+      let at = 0
+      while (chars.length - at > 250) {
+        out.str(2, chars.slice(at, at + 250).join(""))
+        at += 250
+      }
+      out.str(1, chars.slice(at).join(""))
+      continue
+    }
+    out.int(92, 0)
+    out.str(301, "CELL_VALUE")
+    out.int(93, cellBlock ? 1 : text ? 6 : 7)
+    out.int(90, cellBlock || text ? 4 : 0)
+    if (text) out.str(1, text)
+    out.int(94, 0)
+    out.str(300, "")
+    out.str(302, text)
+    out.str(304, "ACVALUE_END")
   }
 }
 

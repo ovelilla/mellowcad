@@ -12,6 +12,7 @@ import {
   distanceToEntity,
   entityDrawOrder,
   Entity,
+  TableRowStyle,
   EntityId,
 } from "./entities"
 import { createDefaultLayer, DEFAULT_LAYER_ID, Layer, LayerId } from "./layers"
@@ -729,6 +730,29 @@ export class CadDocument extends Observable implements DocumentReader {
     ) {
       return assignDimStyle(onLayer, DEFAULT_DIM_STYLE_ID)
     }
+    if (onLayer.type === "table") {
+      const row = (style: TableRowStyle): TableRowStyle => ({
+        ...style,
+        textStyleId: this.resolveTextStyleId(style.textStyleId),
+      })
+      return {
+        ...onLayer,
+        style: {
+          ...onLayer.style,
+          data: row(onLayer.style.data),
+          title: row(onLayer.style.title),
+          header: row(onLayer.style.header),
+        },
+        cells: onLayer.cells.map((cell) =>
+          cell.textStyleId
+            ? {
+                ...cell,
+                textStyleId: this.resolveTextStyleId(cell.textStyleId),
+              }
+            : cell
+        ),
+      }
+    }
     if (onLayer.type === "insert" && onLayer.attributes) {
       return {
         ...onLayer,
@@ -915,6 +939,12 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
       return entity.styleId === id
     case "insert":
       return (entity.attributes ?? []).some((a) => a.styleId === id)
+    case "table":
+      return (
+        [entity.style.data, entity.style.title, entity.style.header].some(
+          (row) => row.textStyleId === id
+        ) || entity.cells.some((cell) => cell.textStyleId === id)
+      )
     case "line":
     case "circle":
     case "arc":

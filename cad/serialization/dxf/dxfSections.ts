@@ -27,7 +27,7 @@ export interface DxfFile {
   readonly tables: ReadonlyMap<string, readonly DxfRecord[]>
   readonly blocks: readonly DxfBlock[]
   readonly entities: readonly DxfRecord[]
-  /** The objects of OBJECTS the reader uses: WIPEOUTFRAME's, the images'. */
+  /** The objects of OBJECTS the reader uses: WIPEOUTFRAME's, the images', the tables'. */
   readonly objects: readonly DxfRecord[]
 }
 
@@ -36,13 +36,16 @@ export interface DxfFile {
  * WIPEOUTVARIABLES object, the drawing variables and the dictionary naming
  * WIPEOUTFRAME's; the images' (image/i08), each IMAGEDEF, IMAGEFRAME's
  * RASTERVARIABLES and ACAD_IMAGE_DICT, which names them, found through the
- * root dictionary. Every other object is skipped.
+ * root dictionary; the tables' (table/t00), each TABLESTYLE and
+ * ACAD_TABLESTYLE, which names them, found so too. Every other object is
+ * skipped.
  */
 const OBJECTS_READ: ReadonlySet<string> = new Set([
   "WIPEOUTVARIABLES",
   "DICTIONARYVAR",
   "IMAGEDEF",
   "RASTERVARIABLES",
+  "TABLESTYLE",
 ])
 
 /**
@@ -166,6 +169,7 @@ class GroupReader {
 
 function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
   let imageDictionary: string | undefined
+  let tableStyleDictionary: string | undefined
   while (!reader.at("ENDSEC")) {
     reader.expectMore()
     if (reader.code() === 0 && OBJECTS_READ.has(reader.value().trim())) {
@@ -184,11 +188,22 @@ function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
       if (at >= 0 && dictionary.codes[at + 1] === 350) {
         imageDictionary = dictionary.values[at + 1].trim().toUpperCase()
       }
+      const styles = dictionary.codes.findIndex(
+        (code, i) =>
+          code === 3 && dictionary.values[i].trim() === "ACAD_TABLESTYLE"
+      )
+      if (styles >= 0 && dictionary.codes[styles + 1] === 350) {
+        tableStyleDictionary = dictionary.values[styles + 1]
+          .trim()
+          .toUpperCase()
+      }
       const handle = dictionary.values[dictionary.codes.indexOf(5)]
+        ?.trim()
+        .toUpperCase()
       if (
         names.some((name) => name.trim() === "WIPEOUTFRAME") ||
-        (imageDictionary !== undefined &&
-          handle?.trim().toUpperCase() === imageDictionary)
+        (handle !== undefined &&
+          (handle === imageDictionary || handle === tableStyleDictionary))
       ) {
         objects.push(dictionary)
       }

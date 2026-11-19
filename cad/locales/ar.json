@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {وجه ثلاثي الأبعاد} two {وجهان ثلاثيا الأبعاد} other {أوجه ثلاثية الأبعاد}}",
       "leader": "{count, plural, one {خط إشارة} two {خطا إشارة} other {خطوط إشارة}}",
       "wipeout": "{count, plural, one {قناع} two {قناعان} other {أقنعة}}",
-      "image": "{count, plural, one {صورة نقطية} two {صورتان نقطيتان} other {صور نقطية}}"
+      "image": "{count, plural, one {صورة نقطية} two {صورتان نقطيتان} other {صور نقطية}}",
+      "table": "{count, plural, one {جدول} two {جدولان} other {جداول}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",

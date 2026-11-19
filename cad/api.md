@@ -2378,7 +2378,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity | TableEntity;
 
 export type { EntityColor }
 /**
@@ -2461,7 +2461,7 @@ export type EntityProperty =
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image" | "table";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3538,6 +3538,17 @@ export interface Polyline3dEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A block cell's block (DXF 340), at `scale` (144) or, `autoFit` (174), as
+ * large as fits inside the cell's margins (table/t03: 0.362067).
+ */
+export interface TableCellBlock {
+    readonly blockId: BlockId;
+    readonly scale: number;
+    readonly autoFit: boolean;
+}
+
+// domain/entityTypes.ts
+/**
  * A block reference (AutoCAD's INSERT object): one placement of a
  * {@link BlockDefinition}, positioned, scaled and rotated as a whole.
  *
@@ -4016,6 +4027,35 @@ export interface SplineEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A table (DXF ACAD_TABLE, AutoCAD's TABLE): rows of cells under its style,
+ * its top-left corner at `position` (DXF 10), its rows along `direction` (11,
+ * a unit vector in the OCS of its normal) and down from it.
+ *
+ * What it draws is derived (`tableGeometry`), as AutoCAD rebuilds its block
+ * from these on opening a file (table/t01: a block left stale or empty is
+ * redrawn from them). SCALE scales these, never a factor (t00, t02); MIRROR
+ * leaves its text readable (t02).
+ */
+export interface TableEntity extends BaseEntity {
+    readonly type: "table";
+    readonly position: Vec2;
+    readonly direction: Vec2;
+    /** DXF 141, top to bottom. */
+    readonly rowHeights: readonly number[];
+    /** DXF 142, left to right. */
+    readonly columnWidths: readonly number[];
+    /** Row by row, `rowHeights.length × columnWidths.length` of them. */
+    readonly cells: readonly TableCell[];
+    readonly style: TableStyleData;
+    /**
+     * What it sets over its style (DXF 93 with 40, 41 and the three 140s), as
+     * SCALE leaves it (t00, t02): its cell margins and its rows' text heights.
+     */
+    readonly overrides?: TableOverrides;
+}
+
+// domain/entityTypes.ts
+/**
  * A torus round `position`, square to `normal`: its tube `tubeRadius` round,
  * centred `radius` out (LIST's Torus radius), across the axis when negative
  * (a lemon, r03).
@@ -4174,6 +4214,31 @@ export interface BlockAttribute {
 
 // domain/entityTypes.ts
 /**
+ * One cell (DXF 171 to the end of its value). A text cell shows `text`, an
+ * MTEXT contents string; a block cell (171 2) its `block`. The cell at a
+ * span's top left gives it (175, 176); the cells it covers are `merged`
+ * (173) and show nothing.
+ */
+export interface TableCell {
+    readonly text?: string;
+    readonly block?: TableCellBlock;
+    readonly span?: {
+        readonly columns: number;
+        readonly rows: number;
+    };
+    readonly merged?: true;
+    /** Over its row's style: DXF 91's bits 1 (170), 16 (7) and 32 (140). */
+    readonly alignment?: MTextAttachment;
+    readonly textStyleId?: TextStyleId;
+    readonly textHeight?: number;
+    /** DXF 145, kept and written back; not applied. */
+    readonly rotation?: number;
+    /** DXF 91's bits it carries without a value of theirs (0x40000). */
+    readonly flags?: number;
+}
+
+// domain/entityTypes.ts
+/**
  * One closed ring of a hatch boundary, shaped exactly like a closed polyline:
  * an ordered list of vertices, implicitly closed, where a non-zero `bulges[i]`
  * turns the segment starting at vertex `i` into a circular arc (AutoCAD's
@@ -4235,6 +4300,31 @@ export interface ImageReference {
  */
 interface Thick {
     readonly thickness?: number;
+}
+
+// domain/entityTypes.ts
+/**
+ * The table style a table names (DXF TABLESTYLE), kept with the table.
+ *
+ * WHY with each table and not in a table of the drawing: nothing here
+ * creates, edits or picks a table style (no TABLESTYLE), so the drawing's
+ * table would only ever hold what its tables name; DXFOUT writes one
+ * TABLESTYLE per name, as an image's definition is kept with its image.
+ */
+export interface TableStyleData {
+    readonly name: string;
+    /** DXF 40 and 41. */
+    readonly horizontalMargin: number;
+    readonly verticalMargin: number;
+    /** DXF 70 1: the rows run up from the insertion point. */
+    readonly flowsUp?: true;
+    /** DXF 280 and 281. */
+    readonly titleSuppressed?: true;
+    readonly headerSuppressed?: true;
+    /** Its three runs, in the order DXF writes them: data, title, header. */
+    readonly data: TableRowStyle;
+    readonly title: TableRowStyle;
+    readonly header: TableRowStyle;
 }
 
 // domain/entityTypes.ts
@@ -4447,6 +4537,14 @@ export type ArrayPathPiece = {
 };
 
 // domain/entityTypes.ts
+/** What a table style gives one kind of row: DXF 7, 140 and 170. */
+export interface TableRowStyle {
+    readonly textStyleId: TextStyleId;
+    readonly textHeight: number;
+    readonly alignment: MTextAttachment;
+}
+
+// domain/entityTypes.ts
 /** Where an external reference's drawing is, as the file that holds it says. */
 export interface XrefSource {
     /** As saved (DXF group 1): absolute, relative (`.\Res\Wall Base.dwg`) or a bare name. */
@@ -4468,6 +4566,17 @@ export interface Solid3dEntity extends BaseEntity {
     readonly brep: Brep;
     readonly primitive?: SolidPrimitive;
     readonly sweep?: SolidSweep;
+}
+
+// domain/entityTypes.ts
+export interface TableOverrides {
+    readonly horizontalMargin?: number;
+    readonly verticalMargin?: number;
+    readonly textHeights?: {
+        readonly data: number;
+        readonly title: number;
+        readonly header: number;
+    };
 }
 
 // domain/entityTypes.ts

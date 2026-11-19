@@ -1,0 +1,47 @@
+_ZOOM
+_E
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))
+_STRETCH
+_C
+740,135
+750,145
+
+0,0
+5,3
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))
+_U
+_STRETCH
+_C
+940,45
+950,50
+
+0,0
+5,-3
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))
+_U
+_STRETCH
+_C
+700,30
+1000,200
+
+0,0
+5,-3
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))
+_U
+_STRETCH
+_C
+820,100
+835,130
+
+0,0
+5,-3
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))
+_U
+_STRETCH
+_C
+940,100
+950,145
+
+0,0
+5,-3
+(vl-remove-if-not (quote (lambda (p) (member (car p) (quote (10 11 141 142))))) (entget (entlast)))

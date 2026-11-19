@@ -631,6 +631,7 @@ export class DimensionTool implements Tool {
       case "face3d":
       case "wipeout":
       case "image":
+      case "table":
       case "leader":
         return { entity, origins: null }
       // WHY no refusal for a hatch: unprobed, so it says nothing was found,

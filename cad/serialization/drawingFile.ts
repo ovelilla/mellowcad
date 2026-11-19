@@ -69,6 +69,9 @@ import {
   SolidSweep,
   LeaderAnnotation,
   LeaderOverrides,
+  TableCell,
+  TableRowStyle,
+  TableStyleData,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -153,7 +156,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 59
+export const DRAWING_FILE_VERSION = 60
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -316,11 +319,19 @@ function savedBlocks(
 ): readonly BlockDefinition[] {
   const byId = new Map(blocks.map((block) => [block.id, block]))
   const placed = new Set<string>()
+  const place = (id: string): void => {
+    if (placed.has(id)) return
+    placed.add(id)
+    visit(byId.get(id)?.entities ?? [])
+  }
+  // A table's block cells place theirs as a reference does.
   const visit = (list: readonly Entity[]): void => {
     for (const entity of list) {
-      if (entity.type !== "insert" || placed.has(entity.blockId)) continue
-      placed.add(entity.blockId)
-      visit(byId.get(entity.blockId)?.entities ?? [])
+      if (entity.type === "insert") place(entity.blockId)
+      if (entity.type === "table") {
+        for (const cell of entity.cells)
+          if (cell.block) place(cell.block.blockId)
+      }
     }
   }
   visit(entities)
@@ -708,6 +719,57 @@ function cloneEntityShape(entity: Entity): Entity {
         layerId: entity.layerId,
         ...overrides,
         vertices: entity.vertices.map((p) => ({ x: p.x, y: p.y })),
+      }
+    case "table":
+      return {
+        id: entity.id,
+        type: "table",
+        layerId: entity.layerId,
+        ...overrides,
+        position: { x: entity.position.x, y: entity.position.y },
+        direction: { x: entity.direction.x, y: entity.direction.y },
+        rowHeights: [...entity.rowHeights],
+        columnWidths: [...entity.columnWidths],
+        // In the order the reader writes them, so a file reads back the same.
+        cells: entity.cells.map((cell) => ({
+          ...(cell.text !== undefined ? { text: cell.text } : {}),
+          ...(cell.block
+            ? {
+                block: {
+                  blockId: cell.block.blockId,
+                  scale: cell.block.scale,
+                  autoFit: cell.block.autoFit,
+                },
+              }
+            : {}),
+          ...(cell.span
+            ? { span: { columns: cell.span.columns, rows: cell.span.rows } }
+            : {}),
+          ...(cell.merged ? { merged: true as const } : {}),
+          ...(cell.alignment ? { alignment: cell.alignment } : {}),
+          ...(cell.textStyleId ? { textStyleId: cell.textStyleId } : {}),
+          ...(cell.textHeight !== undefined
+            ? { textHeight: cell.textHeight }
+            : {}),
+          ...(cell.rotation !== undefined ? { rotation: cell.rotation } : {}),
+          ...(cell.flags !== undefined ? { flags: cell.flags } : {}),
+        })),
+        style: {
+          ...entity.style,
+          data: { ...entity.style.data },
+          title: { ...entity.style.title },
+          header: { ...entity.style.header },
+        },
+        ...(entity.overrides
+          ? {
+              overrides: {
+                ...entity.overrides,
+                ...(entity.overrides.textHeights
+                  ? { textHeights: { ...entity.overrides.textHeights } }
+                  : {}),
+              },
+            }
+          : {}),
       }
     case "image":
       return {
@@ -1933,6 +1995,69 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         vertices: vertices as Vec2[],
       }
     }
+    case "table": {
+      // Since 60.
+      const position = parseVec2(raw.position)
+      const direction = parseVec2(raw.direction)
+      if (!position || !direction) return null
+      const length = Math.hypot(direction.x, direction.y)
+      if (!(length > 0)) return null
+      const sizes = (value: unknown) =>
+        Array.isArray(value) &&
+        value.length > 0 &&
+        value.every((n) => isFiniteNumber(n) && n > 0)
+          ? (value as number[])
+          : null
+      const rowHeights = sizes(raw.rowHeights)
+      const columnWidths = sizes(raw.columnWidths)
+      const style = parseTableStyle(raw.style)
+      if (!rowHeights || !columnWidths || !style) return null
+      const count = rowHeights.length * columnWidths.length
+      if (!Array.isArray(raw.cells) || raw.cells.length !== count) return null
+      const own = isRecord(raw.overrides) ? raw.overrides : null
+      const heights = own && isRecord(own.textHeights) ? own.textHeights : null
+      const positive = (value: unknown) =>
+        isFiniteNumber(value) && value > 0 ? value : undefined
+      const margin = (value: unknown) =>
+        isFiniteNumber(value) && value >= 0 ? value : undefined
+      const textHeights =
+        heights &&
+        positive(heights.data) &&
+        positive(heights.title) &&
+        positive(heights.header)
+          ? {
+              data: heights.data as number,
+              title: heights.title as number,
+              header: heights.header as number,
+            }
+          : undefined
+      const horizontalMargin = margin(own?.horizontalMargin)
+      const verticalMargin = margin(own?.verticalMargin)
+      const tableOverrides = {
+        ...(horizontalMargin !== undefined ? { horizontalMargin } : {}),
+        ...(verticalMargin !== undefined ? { verticalMargin } : {}),
+        ...(textHeights ? { textHeights } : {}),
+      }
+      return {
+        id,
+        type: "table",
+        layerId,
+        ...overrides,
+        position,
+        // As written when it is a unit already, so a file reads back the same.
+        direction:
+          Math.abs(length - 1) < 1e-9
+            ? direction
+            : { x: direction.x / length, y: direction.y / length },
+        rowHeights,
+        columnWidths,
+        cells: raw.cells.map(parseTableCell),
+        style,
+        ...(Object.keys(tableOverrides).length > 0
+          ? { overrides: tableOverrides }
+          : {}),
+      }
+    }
     case "image": {
       // Since 59: an image whose file the page never has (its path).
       const position = parseVec2(raw.position)
@@ -3156,6 +3281,86 @@ function parseWidths(
   return widths.some(([start, end]) => start > 0 || end > 0)
     ? widths
     : undefined
+}
+
+function parseAttachment(value: unknown): MTextAttachment | undefined {
+  return typeof value === "string" &&
+    (MTEXT_ATTACHMENTS as readonly string[]).includes(value)
+    ? (value as MTextAttachment)
+    : undefined
+}
+
+function parseTableRowStyle(raw: unknown): TableRowStyle | null {
+  if (!isRecord(raw)) return null
+  const alignment = parseAttachment(raw.alignment)
+  if (typeof raw.textStyleId !== "string" || !alignment) return null
+  if (!isFiniteNumber(raw.textHeight) || raw.textHeight <= 0) return null
+  return {
+    textStyleId: raw.textStyleId,
+    textHeight: raw.textHeight,
+    alignment,
+  }
+}
+
+function parseTableStyle(raw: unknown): TableStyleData | null {
+  if (!isRecord(raw) || typeof raw.name !== "string") return null
+  const data = parseTableRowStyle(raw.data)
+  const title = parseTableRowStyle(raw.title)
+  const header = parseTableRowStyle(raw.header)
+  if (!data || !title || !header) return null
+  const margin = (value: unknown) =>
+    isFiniteNumber(value) && value >= 0 ? value : 0
+  return {
+    name: raw.name,
+    horizontalMargin: margin(raw.horizontalMargin),
+    verticalMargin: margin(raw.verticalMargin),
+    ...(raw.flowsUp === true ? { flowsUp: true as const } : {}),
+    ...(raw.titleSuppressed === true ? { titleSuppressed: true as const } : {}),
+    ...(raw.headerSuppressed === true
+      ? { headerSuppressed: true as const }
+      : {}),
+    data,
+    title,
+    header,
+  }
+}
+
+/** A cell, whatever it holds that does not read dropped: an empty one at worst. */
+function parseTableCell(raw: unknown): TableCell {
+  if (!isRecord(raw)) return {}
+  const block = isRecord(raw.block) ? raw.block : null
+  const span = isRecord(raw.span) ? raw.span : null
+  const alignment = parseAttachment(raw.alignment)
+  const count = (value: unknown) =>
+    Number.isInteger(value) && (value as number) >= 1 ? (value as number) : 1
+  return {
+    ...(typeof raw.text === "string" ? { text: raw.text } : {}),
+    ...(block &&
+    typeof block.blockId === "string" &&
+    isFiniteNumber(block.scale) &&
+    block.scale > 0
+      ? {
+          block: {
+            blockId: block.blockId,
+            scale: block.scale,
+            autoFit: block.autoFit === true,
+          },
+        }
+      : {}),
+    ...(span && (count(span.columns) > 1 || count(span.rows) > 1)
+      ? { span: { columns: count(span.columns), rows: count(span.rows) } }
+      : {}),
+    ...(raw.merged === true ? { merged: true as const } : {}),
+    ...(alignment ? { alignment } : {}),
+    ...(typeof raw.textStyleId === "string"
+      ? { textStyleId: raw.textStyleId }
+      : {}),
+    ...(isFiniteNumber(raw.textHeight) && raw.textHeight > 0
+      ? { textHeight: raw.textHeight }
+      : {}),
+    ...(isFiniteNumber(raw.rotation) ? { rotation: raw.rotation } : {}),
+    ...(Number.isInteger(raw.flags) ? { flags: raw.flags as number } : {}),
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

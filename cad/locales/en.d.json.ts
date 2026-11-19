@@ -268,6 +268,7 @@ declare const source: {
       "leader": string
       "wipeout": string
       "image": string
+      "table": string
     }
     "array": {
       "rectangular": string
@@ -2742,12 +2743,14 @@ declare const source: {
       "cannotFilletBetweenThese": string
       "filletRequiresObjects": string
       "filletRequiresNotBlocks": string
+      "filletRequiresNotTables": string
       "filletRequiresNotDimensions": string
       "unableToFilletCurves": string
       "noValidCurveFillet": string
       "entitiesNonCoplanar": string
       "chamferRequiresTwoLines": string
       "chamferRequiresNotBlocks": string
+      "chamferRequiresNotTables": string
       "chamferRequiresNotDimensions": string
       "cannotChamferBetween": string
       "linesChamfered": string
@@ -3202,6 +3205,12 @@ declare const source: {
       "listImageClipType": string
       "listImagePoint": string
       "listImageExtrusion": string
+      "listTablePosition": string
+      "listTableNormal": string
+      "listTableDirection": string
+      "listTableColumns": string
+      "listTableRows": string
+      "listTableStyle": string
     }
     "feedback": {
       "snap": {

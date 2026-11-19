@@ -1,0 +1,6 @@
+_ZOOM
+_E
+_EXPLODE
+_ALL
+
+(progn (setq s (ssget "_P")) (setq i 0) (repeat (sslength s) (setq e (entget (ssname s i))) (print (vl-remove-if-not (quote (lambda (p) (member (car p) (quote (0 8 62 6 370 10 11 40 41 71 1 2 7 41 42 43 50))))) e)) (setq i (1+ i))) (princ))

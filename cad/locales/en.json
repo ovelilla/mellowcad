@@ -261,7 +261,8 @@
       "face3d": "{count, plural, one {3D Face} other {3D Faces}}",
       "leader": "{count, plural, one {Leader} other {Leaders}}",
       "wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
-      "image": "{count, plural, one {Raster Image} other {Raster Images}}"
+      "image": "{count, plural, one {Raster Image} other {Raster Images}}",
+      "table": "{count, plural, one {Table} other {Tables}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -2583,12 +2584,14 @@
       "cannotFilletBetweenThese": "Cannot fillet between these two entities.",
       "filletRequiresObjects": "Fillet requires 2 lines, arcs, or circles.",
       "filletRequiresNotBlocks": "Fillet requires 2 lines, arcs, or circles (not block references).",
+      "filletRequiresNotTables": "Fillet requires 2 lines, arcs, or circles (not Table objects).",
       "filletRequiresNotDimensions": "Fillet requires 2 lines, arcs, or circles (not dimensions).",
       "unableToFilletCurves": "Unable to fillet curves.",
       "noValidCurveFillet": "No valid fillet with radius {radius}",
       "entitiesNonCoplanar": "The entities are non-coplanar.",
       "chamferRequiresTwoLines": "Chamfer requires 2 lines.",
       "chamferRequiresNotBlocks": "Chamfer requires 2 lines (not block references).",
+      "chamferRequiresNotTables": "Chamfer requires 2 lines (not Table objects).",
       "chamferRequiresNotDimensions": "Chamfer requires 2 lines (not dimensions).",
       "cannotChamferBetween": "Cannot chamfer between these two entities.",
       "linesChamfered": "{count, plural, one {# line was chamfered} other {# lines were chamfered}}",
@@ -2716,7 +2719,7 @@
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
       "allAdditionsUndone": "All the additions are undone.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -3042,7 +3045,13 @@
       "listImageClipping": "Clipping:                {on, select, yes {On} other {Off}}",
       "listImageClipType": "Clip boundary type:      {polygonal, select, yes {Polygonal} other {Rectangular}}",
       "listImagePoint": "       at point, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Extrusion direction relative to UCS:\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Extrusion direction relative to UCS:\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Position:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normal:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Horizontal Dir:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Number of columns:  {count}",
+      "listTableRows": "Number of rows:     {count}",
+      "listTableStyle": "Table Style:        {name}"
     },
     "feedback": {
       "snap": {

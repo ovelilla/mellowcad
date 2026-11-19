@@ -95,6 +95,7 @@ export function continuePoint(
       case "face3d":
       case "wipeout":
       case "image":
+      case "table":
       case "leader":
         break
       default: {
@@ -161,6 +162,7 @@ export function lastDrawnDirection(
       case "face3d":
       case "wipeout":
       case "image":
+      case "table":
       case "leader":
         break
       default: {

@@ -24,6 +24,7 @@ import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
 import { mapWipeoutVertices } from "./wipeouts"
 import { mapImage } from "./images"
+import { mapTable } from "./tables"
 import { mapLeader } from "./leaders"
 import { face3dReflected } from "./faces3d"
 
@@ -139,6 +140,8 @@ export function linearEntity(
       return mapWipeoutVertices(entity, at)
     case "image":
       return mapImage(entity, at)
+    case "table":
+      return mapTable(entity, at)
     case "leader":
       return mapLeader(entity, at, at, (angle) => mappedAngle(map, angle))
     case "region": {

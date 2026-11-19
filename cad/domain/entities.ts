@@ -26,6 +26,12 @@ export type {
   WipeoutEntity,
   ImageEntity,
   ImageReference,
+  TableEntity,
+  TableCell,
+  TableCellBlock,
+  TableOverrides,
+  TableRowStyle,
+  TableStyleData,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -239,6 +245,24 @@ export {
   mapImage,
 } from "./images"
 
+export type { TableRowKind } from "./tables"
+export {
+  STANDARD_TABLE_STYLE,
+  mapTable,
+  tableCell,
+  tableColumnCount,
+  tableCorners,
+  tableExploded,
+  tableHeight,
+  tableMargins,
+  tableRowCount,
+  tableRowKind,
+  tableRowStyle,
+  tableScaled,
+  tableUp,
+  tableWidth,
+} from "./tables"
+
 export type { HatchGeometry } from "./hatch"
 export {
   hatchLoopFromEntity,
@@ -430,6 +454,7 @@ export {
   entityBounds,
   entityDrawOrder,
   entitiesBounds,
+  tableGeometry,
   entityWithinRect,
   entityCrossesRect,
   regionEdgeAt,

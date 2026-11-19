@@ -3,7 +3,7 @@ title: Aprire un file DXF online
 metaTitle: "Aprire file DXF online: visualizzatore gratis"
 description: "Apri gratis un file DXF nel browser, senza caricarlo: AutoCAD da R12 al 2018, testo o binario, con layer, testi, quote, tratteggi e blocchi."
 type: howTo
-sourceHash: "a0eb0a40694b"
+sourceHash: "c91e0f8690ac"
 faq:
   - question: "Come aprire un file DXF senza AutoCAD?"
     answer: "Sceglilo o trascinalo in cima a questa pagina: MellowCAD lo apre nel suo editor, nel tuo browser, senza installare nulla e senza account. Nell'editor, APRI (Ctrl+O) e DXFIN ne aprono uno."
@@ -14,7 +14,7 @@ faq:
   - question: "Posso salvare le mie modifiche come file DXF?"
     answer: "Sì. SALVACOME (Ctrl+Maiusc+S) o DXFOUT salva il disegno come DXF di AutoCAD dal 2000 al 2018, testo o binario, che AutoCAD apre. I solidi 3D e le regioni vengono lasciati fuori, e la riga di comando lo segnala."
   - question: "Perché mancano alcuni oggetti?"
-    answer: "Ciò per cui MellowCAD non ha ancora un oggetto, come direttrici multiple, tabelle o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout."
+    answer: "Ciò per cui MellowCAD non ha ancora un oggetto, come direttrici multiple, tolleranze o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Quando un DXF contiene qualcosa per cui MellowCAD non ha ancora un oggetto, apre
 
 - tracce e mesh;
 - linee di costruzione e semirette, multilinee;
-- direttrici multiple, tolleranze e tabelle;
+- direttrici multiple e tolleranze;
 - solidi 3D, regioni e superfici;
 - quote ordinate e di lunghezza d'arco.
 
@@ -50,6 +50,7 @@ Alcune cose si aprono, ma non del tutto com'erano:
 - Il testo viene disegnato con le misure di Arial, qualunque sia il font nominato dal suo stile, senza il suo fattore di larghezza né l'angolo obliquo.
 - Un riferimento esterno conserva la sua posizione e il suo percorso, e viene disegnato come AutoCAD disegna un riferimento di cui non trova il disegno: `Xrif` e il percorso nel suo punto di inserimento. Una pagina legge solo il file che riceve, mai i disegni che lo accompagnano; salvato di nuovo come DXF, il riferimento viene conservato.
 - Un'immagine conserva la sua posizione, le sue dimensioni e il percorso del suo file, e viene disegnata come AutoCAD disegna un'immagine di cui non trova il file: la sua cornice, secondo IMAGEFRAME, e il percorso scritto al suo interno. Salvata di nuovo come DXF, l'immagine viene conservata.
+- Una tabella conserva righe, colonne, celle e stile, e viene disegnata a partire da essi come la disegna AutoCAD: il testo di ogni cella secondo il suo allineamento, il blocco di una cella adattato alla cella. Salvata di nuovo come DXF, la tabella viene conservata.
 
 ## Aprilo nell'editor [#editor]
 
@@ -79,4 +80,4 @@ Sì. <Command id="SAVEAS" /> (`Ctrl+Maiusc+S`) o <Command id="DXFOUT" /> salva i
 
 ### Perché mancano alcuni oggetti? [#missing]
 
-Ciò per cui MellowCAD non ha ancora un oggetto, come direttrici multiple, tabelle o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout.
+Ciò per cui MellowCAD non ha ancora un oggetto, come direttrici multiple, tolleranze o solidi 3D, viene lasciato fuori, e all'apertura del file la riga di comando dice quanti ne sono, per ogni tipo. Ciò che si trova in un layout viene contato a parte: non ci sono ancora layout.

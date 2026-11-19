@@ -44,6 +44,7 @@ import {
   face3dEdges,
   Face3dEntity,
   insertFlatGeometry,
+  tableGeometry,
   ellipseLengthTable,
   ellipsePointAt,
   isFullEllipse,
@@ -1367,6 +1368,10 @@ function planarShapes(
       )
     case "hatch":
       return hatchPrimitives(camera, entity, stroke, options)
+    case "table":
+      return tableGeometry(entity, options.blocks).flatMap((piece) =>
+        entityScenePrimitive(camera, piece, stroke, options)
+      )
     case "insert":
       // A ghost or rollover draws the whole reference in one colour; the real
       // scene resolves each nested object's own appearance (see pushEntities).
@@ -2410,6 +2415,23 @@ function pushEntities(
         attributeDisplay
       )) {
         draw(nested, isSelected, isFaded, locked)
+      }
+      return
+    }
+    if (entity.type === "table") {
+      // Its pieces wear its appearance but its end marker, grey (table/t06b).
+      for (const piece of tableGeometry(entity, blocks)) {
+        if (piece.type === "insert") {
+          for (const nested of insertFlatGeometry(
+            piece,
+            blocks,
+            attributeDisplay
+          )) {
+            draw(nested, isSelected, isFaded, locked)
+          }
+        } else {
+          draw(piece, isSelected, isFaded, locked)
+        }
       }
       return
     }

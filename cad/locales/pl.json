@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {Powierzchnia 3D} few {Powierzchnie 3D} many {Powierzchni 3D} other {Powierzchni 3D}}",
       "leader": "{count, plural, one {Linia odniesienia} few {Linie odniesienia} many {Linii odniesienia} other {Linii odniesienia}}",
       "wipeout": "{count, plural, one {Przykrycie} few {Przykrycia} many {Przykryć} other {Przykrycia}}",
-      "image": "{count, plural, one {Obraz rastrowy} few {Obrazy rastrowe} many {Obrazów rastrowych} other {Obrazu rastrowego}}"
+      "image": "{count, plural, one {Obraz rastrowy} few {Obrazy rastrowe} many {Obrazów rastrowych} other {Obrazu rastrowego}}",
+      "table": "{count, plural, one {Tabela} few {Tabele} many {Tabel} other {Tabeli}}"
     },
     "array": {
       "rectangular": "Szyk (Prostokątny)",
@@ -2713,12 +2714,14 @@
       "cannotFilletBetweenThese": "Nie można utworzyć zaokrąglenia między tymi dwoma obiektami.",
       "filletRequiresObjects": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów",
       "filletRequiresNotBlocks": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (nie mogą to być odniesienia do bloków)",
+      "filletRequiresNotTables": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (brak obiektów tabeli)",
       "filletRequiresNotDimensions": "Zaokrąglanie wymaga wskazania 2 linii, łuków lub okręgów (bez wymiarów)",
       "unableToFilletCurves": "Nie można zaokrąglić krzywych.",
       "noValidCurveFillet": "Nie można zaokrąglić promieniem {radius}",
       "entitiesNonCoplanar": "Elementy nie są współpłaszczyznowe.",
       "chamferRequiresTwoLines": "Fazowanie wymaga wskazania 2 linii",
       "chamferRequiresNotBlocks": "Fazowanie wymaga wskazania 2 linii (nie mogą to być odniesienia do bloków)",
+      "chamferRequiresNotTables": "Fazowanie wymaga wskazania 2 linii (brak obiektów tabeli)",
       "chamferRequiresNotDimensions": "Fazowanie wymaga wskazania 2 linii (bez wymiarów)",
       "cannotChamferBetween": "Nie można utworzyć fazy między tymi dwoma elementami.",
       "linesChamfered": "{count, plural, one {# linia została sfazowana(e)} other {# linie zostały sfazowana(e)}}",
@@ -2846,7 +2849,7 @@
       "notAFitPoint": "Nie jest punktem dopasowania.",
       "notAControlVertex": "Nie jest wierzchołkiem sterującym.",
       "allAdditionsUndone": "Wszystkie dodatkowe punkty zostały cofnięte.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} image {IMAGE} other {SZYK}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {SZYK}}",
       "listObject": "                  {name}    Warstwa: \"{layer}\"",
       "listSpace": "                              Obszar: Obszar modelu",
       "listColor": "                   Kolor: {color}    Rodzaj linii: \"{linetype}\"",
@@ -3172,7 +3175,13 @@
       "listImageClipping": "Przycinanie:             {on, select, yes {Tak} other {Nie}}",
       "listImageClipType": "Typ obwiedni tnącej:     {polygonal, select, yes {Wielobok} other {Prostokąt}}",
       "listImagePoint": "       od punktu, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Kierunek wzrostu grubości względem LUW:\n                         X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Kierunek wzrostu grubości względem LUW:\n                         X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Położenie:       X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normalna:        X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Kier. poziomy:   X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Liczba kolumn:      {count}",
+      "listTableRows": "Liczba wierszy:     {count}",
+      "listTableStyle": "Styl tabeli:        {name}"
     },
     "feedback": {
       "snap": {

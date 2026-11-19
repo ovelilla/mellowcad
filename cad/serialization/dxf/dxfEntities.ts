@@ -34,6 +34,10 @@ import {
   createImage,
   ImageEntity,
   ImageReference,
+  TableCell,
+  TableEntity,
+  TableStyleData,
+  nextEntityId,
   PointEntity,
   withXAxisAngle,
   createDimension,
@@ -65,7 +69,7 @@ import {
   samePatternLines,
   userHatchPatternLines,
 } from "../../domain/hatchPatterns"
-import { LayerId } from "../../domain/layers"
+import { DEFAULT_LAYER_ID, LayerId } from "../../domain/layers"
 import { LinetypeId } from "../../domain/linetypes"
 import {
   DEFAULT_LINEWEIGHT,
@@ -108,6 +112,10 @@ export interface DxfEntityContext {
   block(name: string): DxfBlockTarget | "dependent" | null
   /** The image definition (IMAGEDEF) of that handle, `null` for none. */
   image(handle: string): DxfImageDefinition | null
+  /** The table style (TABLESTYLE) of that handle, AutoCAD's Standard for none. */
+  tableStyle(handle: string): TableStyleData
+  /** The name of the block whose BLOCK_RECORD has that handle, `null` for none. */
+  blockRecord(handle: string): string | null
   /** SPLINESEGS, for a spline-fit polyline whose vertices do not say it. */
   readonly splineSegments: number
   /** Whether spline hatch edges carry their fit data (2010 on). */
@@ -146,6 +154,8 @@ export function dxfEntities(
       return made(wipeout(record, ctx))
     case "IMAGE":
       return made(image(record, ctx))
+    case "ACAD_TABLE":
+      return made(table(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -387,6 +397,199 @@ function wipeout(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   const made = createWipeout(local.map((p) => ({ x: p.x, y: p.y })))
   const placed = withElevation(made, local[0].z)
   return common(toOcs ? withNormal(placed, n) : placed, r, ctx)
+}
+
+/**
+ * The bit AutoCAD sets on a text cell with its value's type (kDataType),
+ * written with no value of its own (table/t02): kept, as no other is.
+ */
+const CELL_DATA_TYPE = 0x40000
+
+/** The table-wide overrides (DXF 93) read: its margins and its rows' text heights. */
+const TABLE_MARGIN_H = 0x8
+const TABLE_MARGIN_V = 0x10
+const TABLE_TEXT_HEIGHTS = 0x700000
+
+/**
+ * An ACAD_TABLE (table/t00, t02, t09): its corner (10), direction (11),
+ * normal, style (342), rows' heights (141), columns' widths (142), the
+ * table-wide margins and text heights SCALE sets (93 with 40, 41 and three
+ * 140s, data, title and header: t02), and each cell from its 171 on: text
+ * or block (171), merged (173), fitted (174), its span (175, 176), its
+ * override flags (91, or 177 in a 2000 or 2004 file) with the alignment,
+ * text style and text height they give (170, 7, 140), its rotation (145),
+ * its block (340, 144) and its text: code 2's chunks then 1, inside its
+ * CELL_VALUE from 2007, after its flags before. Its block (343) is not
+ * read: AutoCAD draws a table from these (t01).
+ */
+function table(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const at = point(r, 10)
+  const along = point(r, 11) ?? { x: 1, y: 0, z: 0 }
+  if (!at) return null
+  const n = normal(r)
+  const toOcs = ocsOf(n)
+  // Its corner in the OCS of its normal, as a block reference's (10); its
+  // direction (11) in the WCS (unverified on a tilted table).
+  const position = at
+  const origin = { x: 0, y: 0, z: 0 }
+  const tip = toOcs ? toOcs(along) : along
+  const base = toOcs ? toOcs(origin) : origin
+  const dx = tip.x - base.x
+  const dy = tip.y - base.y
+  const length = Math.hypot(dx, dy)
+  if (!(length > 0)) return null
+  const start = r.codes.findIndex(
+    (code, i) => code === 100 && r.values[i].trim() === "AcDbTable"
+  )
+  const from = start < 0 ? 0 : start
+  const after = (code: number) => {
+    const i = r.codes.indexOf(code, from)
+    return i < 0 ? undefined : finite(r.values[i])
+  }
+  const rows = Math.trunc(after(91) ?? 0)
+  const columns = Math.trunc(after(92) ?? 0)
+  if (rows < 1 || columns < 1) return null
+  const heights: number[] = []
+  const widths: number[] = []
+  const firstCell = r.codes.indexOf(171, from)
+  const end = firstCell < 0 ? r.codes.length : firstCell
+  for (let i = from; i < end; i++) {
+    const value = finite(r.values[i])
+    if (value === undefined) continue
+    if (r.codes[i] === 141) heights.push(value)
+    if (r.codes[i] === 142) widths.push(value)
+  }
+  if (heights.length !== rows || widths.length !== columns) return null
+  if ([...heights, ...widths].some((v) => !(v > 0))) return null
+  // Table-wide overrides: between its flags (93) and its first row height.
+  const flagsAt = r.codes.indexOf(93, from)
+  const flags = flagsAt < 0 ? 0 : Math.trunc(finite(r.values[flagsAt]) ?? 0)
+  const firstRow = r.codes.indexOf(141, from)
+  const own: number[] = []
+  let margins: { horizontal?: number; vertical?: number } = {}
+  if (flagsAt >= 0 && firstRow > flagsAt) {
+    for (let i = flagsAt + 1; i < firstRow; i++) {
+      const value = finite(r.values[i])
+      if (value === undefined) continue
+      if (r.codes[i] === 40 && flags & TABLE_MARGIN_H) {
+        margins = { ...margins, horizontal: value }
+      }
+      if (r.codes[i] === 41 && flags & TABLE_MARGIN_V) {
+        margins = { ...margins, vertical: value }
+      }
+      if (r.codes[i] === 140) own.push(value)
+    }
+  }
+  const textHeights =
+    (flags & TABLE_TEXT_HEIGHTS) === TABLE_TEXT_HEIGHTS &&
+    own.length === 3 &&
+    own.every((h) => h > 0)
+      ? { data: own[0], title: own[1], header: own[2] }
+      : undefined
+  const overrides = {
+    ...(margins.horizontal !== undefined && margins.horizontal >= 0
+      ? { horizontalMargin: margins.horizontal }
+      : {}),
+    ...(margins.vertical !== undefined && margins.vertical >= 0
+      ? { verticalMargin: margins.vertical }
+      : {}),
+    ...(textHeights ? { textHeights } : {}),
+  }
+  const cells: TableCell[] = []
+  if (firstCell >= 0) {
+    let i = firstCell
+    while (i < r.codes.length && cells.length < rows * columns) {
+      let next = r.codes.indexOf(171, i + 1)
+      if (next < 0) next = r.codes.length
+      cells.push(tableCell(r, i, next, ctx))
+      i = next
+    }
+  }
+  while (cells.length < rows * columns) cells.push({})
+  const made: TableEntity = {
+    id: nextEntityId(),
+    type: "table",
+    layerId: DEFAULT_LAYER_ID,
+    position: { x: position.x, y: position.y },
+    direction: { x: dx / length, y: dy / length },
+    rowHeights: heights,
+    columnWidths: widths,
+    cells,
+    style: ctx.tableStyle(str(r, 342)?.trim() ?? ""),
+    ...(Object.keys(overrides).length > 0 ? { overrides } : {}),
+  }
+  const raised = withElevation(made, position.z)
+  return common(n ? withNormal(raised, n) : raised, r, ctx)
+}
+
+/** One cell, from its 171 at `start` up to `end`. */
+function tableCell(
+  r: DxfRecord,
+  start: number,
+  end: number,
+  ctx: DxfEntityContext
+): TableCell {
+  const valueAt = r.codes.indexOf(301, start)
+  const head = valueAt >= 0 && valueAt < end ? valueAt : end
+  const first = (code: number, from = start, to = head) => {
+    for (let i = from; i < to; i++) {
+      if (r.codes[i] === code) return r.values[i]
+    }
+    return undefined
+  }
+  const number = (code: number) => {
+    const value = first(code)
+    return value === undefined ? undefined : finite(value)
+  }
+  const kind = number(171)
+  const merged = number(173) === 1
+  const columns = Math.max(1, Math.trunc(number(175) ?? 1))
+  const rows = Math.max(1, Math.trunc(number(176) ?? 1))
+  const flags = Math.trunc(number(91) ?? number(177) ?? 0)
+  const alignment = number(170)
+  const style = first(7)
+  const height = number(140)
+  const rotation = number(145)
+  const valueEnd = r.codes.indexOf(304, head)
+  const stop = head < end && valueEnd >= 0 && valueEnd < end ? valueEnd : end
+  let text = ""
+  for (let i = head === end ? start : head; i < stop; i++) {
+    if (r.codes[i] === 2) text += r.values[i]
+    if (r.codes[i] === 1) {
+      text += r.values[i]
+      break
+    }
+  }
+  const blockName =
+    kind === 2 ? ctx.blockRecord(first(340)?.trim() ?? "") : null
+  const target = blockName ? ctx.block(blockName) : null
+  return {
+    ...(kind !== 2 && text.trimEnd() ? { text: unicode(text.trimEnd()) } : {}),
+    ...(target && target !== "dependent"
+      ? {
+          block: {
+            blockId: target.id,
+            scale: positive(number(144)) ?? 1,
+            autoFit: number(174) === 1,
+          },
+        }
+      : {}),
+    ...(!merged && (columns > 1 || rows > 1)
+      ? { span: { columns, rows } }
+      : {}),
+    ...(merged ? { merged: true as const } : {}),
+    ...(alignment !== undefined && MTEXT_ATTACHMENTS[alignment - 1]
+      ? { alignment: MTEXT_ATTACHMENTS[alignment - 1] }
+      : {}),
+    ...(style?.trim() ? { textStyleId: ctx.textStyle(style.trim()) } : {}),
+    ...(positive(height) !== undefined ? { textHeight: height } : {}),
+    ...(rotation ? { rotation } : {}),
+    ...(flags & CELL_DATA_TYPE ? { flags: CELL_DATA_TYPE } : {}),
+  }
+}
+
+function positive(value: number | undefined): number | undefined {
+  return value !== undefined && value > 0 ? value : undefined
 }
 
 /**

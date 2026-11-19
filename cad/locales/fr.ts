@@ -433,6 +433,16 @@ export const fr: EngineLocale = {
             "other": "Images raster"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Tableau",
+            "other": "Tableaux"
+          }
+        ]
       ]
     },
     "array": {
@@ -5178,6 +5188,7 @@ export const fr: EngineLocale = {
       "cannotFilletBetweenThese": "Impossible de raccorder ces deux objets.",
       "filletRequiresObjects": "Raccord nécessite deux lignes, arcs, ou cercles",
       "filletRequiresNotBlocks": "Raccord nécessite deux lignes, arcs, ou cercles (pas de référence de bloc)",
+      "filletRequiresNotTables": "Raccord nécessite deux lignes, arcs, ou cercles (aucun objet tableau)",
       "filletRequiresNotDimensions": "Raccord nécessite deux lignes, arcs, ou cercles (pas les cotes)",
       "unableToFilletCurves": "Impossible de raccorder les courbes.",
       "noValidCurveFillet": [
@@ -5189,6 +5200,7 @@ export const fr: EngineLocale = {
       "entitiesNonCoplanar": "Les objets sont gauches.",
       "chamferRequiresTwoLines": "Chanfrein nécessite deux lignes",
       "chamferRequiresNotBlocks": "Chanfrein nécessite deux lignes (pas de référence de bloc)",
+      "chamferRequiresNotTables": "Chanfrein nécessite deux lignes (aucun objet tableau)",
       "chamferRequiresNotDimensions": "Chanfrein nécessite deux lignes (pas les cotes)",
       "cannotChamferBetween": "Ne peut pas chanfreiner entre ces deux objets.",
       "linesChamfered": [
@@ -6111,6 +6123,7 @@ export const fr: EngineLocale = {
             "face3d": "FACE3D",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "RESEAU"
           }
         ]
@@ -8471,6 +8484,66 @@ export const fr: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Position:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normal:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Dir. horizontale:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Nombre de colonnes:  ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Nombre de rangées:     ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Style de tableau:     ",
+        [
+          "name"
         ]
       ]
     },

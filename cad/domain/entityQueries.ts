@@ -27,8 +27,11 @@ import {
   Bounds,
   RegionEntity,
   Solid3dEntity,
+  TableEntity,
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
+import { createInsert } from "./entityFactories"
+import { tableGeometryWith } from "./tables"
 import { attributeDefinitionText } from "./attributes"
 import {
   hatchGeometry,
@@ -385,6 +388,18 @@ export function closestOnEntity(
     }
     case "leader":
       return closestOnEntity(leaderPathEntity(entity), point)
+    case "table": {
+      let best: ClosestResult = {
+        point: entity.position,
+        distance: Infinity,
+        t: 0,
+      }
+      for (const piece of tableGeometry(entity, blocks)) {
+        const candidate = closestOnEntity(piece, point, blocks)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return best
+    }
     case "point":
       // WHY by its place alone: what the figure shows is a display of
       // PDMODE, not the object (unverified on the desktop).
@@ -590,6 +605,13 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
       return { min: entity.position, max: entity.position }
     case "leader":
       return entityBounds(leaderPathEntity(entity))
+    case "table":
+      return (
+        entitiesBounds(tableGeometry(entity, blocks), blocks) ?? {
+          min: entity.position,
+          max: entity.position,
+        }
+      )
     case "solid2d":
     case "wipeout":
     case "image": {
@@ -918,6 +940,10 @@ export function entityCrossesRect(
       return pointInRect(entity.position, min, max)
     case "leader":
       return entityCrossesRect(leaderPathEntity(entity), min, max)
+    case "table":
+      return tableGeometry(entity, blocks).some((piece) =>
+        entityCrossesRect(piece, min, max, blocks)
+      )
     case "solid2d": {
       if (entity.corners.some((v) => pointInRect(v, min, max))) return true
       for (const [a, b] of solid2dEdges(entity)) {
@@ -955,4 +981,47 @@ export function entityCrossesRect(
         entityCrossesRect(edge, min, max)
       )
   }
+}
+
+const TABLE_GEOMETRY = new WeakMap<
+  TableEntity,
+  {
+    readonly blocks: BlockLookup | undefined
+    readonly definitions: readonly unknown[]
+    readonly pieces: Entity[]
+  }
+>()
+
+/**
+ * Everything a table draws (`tableGeometryWith`), its block cells' blocks
+ * measured through `blocks`; without it they draw nothing. Kept per table,
+ * lookup and block cells' definitions (a block redefined redraws them, as
+ * the document's lookup outlives its blocks).
+ */
+export function tableGeometry(
+  table: TableEntity,
+  blocks?: BlockLookup
+): Entity[] {
+  const definitions = table.cells.flatMap((cell) =>
+    cell.block ? [blocks?.(cell.block.blockId)] : []
+  )
+  const cached = TABLE_GEOMETRY.get(table)
+  if (
+    cached &&
+    cached.blocks === blocks &&
+    cached.definitions.length === definitions.length &&
+    cached.definitions.every((d, i) => d === definitions[i])
+  ) {
+    return cached.pieces
+  }
+  const pieces = tableGeometryWith(table, (blockId) =>
+    blocks
+      ? entitiesBounds(
+          insertFlatGeometry(createInsert(blockId, { x: 0, y: 0 }), blocks),
+          blocks
+        )
+      : null
+  )
+  TABLE_GEOMETRY.set(table, { blocks, definitions, pieces })
+  return pieces
 }

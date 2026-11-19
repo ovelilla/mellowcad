@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {3D-Fläche} other {3D-Flächen}}",
       "leader": "{count, plural, one {Führung} other {Führungen}}",
       "wipeout": "{count, plural, one {Abdeckung} other {Abdeckungen}}",
-      "image": "{count, plural, one {Pixelbild} other {Pixelbilder}}"
+      "image": "{count, plural, one {Pixelbild} other {Pixelbilder}}",
+      "table": "{count, plural, one {Tabelle} other {Tabellen}}"
     },
     "array": {
       "rectangular": "Anordnung (Rechteckig)",
@@ -2740,12 +2741,14 @@
       "cannotFilletBetweenThese": "Kann zwischen diesen beiden Objekten nicht abrunden.",
       "filletRequiresObjects": "Abrunden benötigt 2 Linien, Bogen oder Kreise.",
       "filletRequiresNotBlocks": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Blockreferenzen).",
+      "filletRequiresNotTables": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Tabellen-Objekte).",
       "filletRequiresNotDimensions": "Abrunden benötigt 2 Linien, Bogen oder Kreise (keine Bemaßungen).",
       "unableToFilletCurves": "Abrunden von Kurven nicht möglich.",
       "noValidCurveFillet": "Abrunden ungültig mit Radius {radius}",
       "entitiesNonCoplanar": "Diese Objekte sind nicht koplanar.",
       "chamferRequiresTwoLines": "Fase benötigt 2 Linien.",
       "chamferRequiresNotBlocks": "Fase benötigt 2 Linien (keine Blockreferenzen).",
+      "chamferRequiresNotTables": "Fase benötigt 2 Linien (keine Tabellen-Objekte).",
       "chamferRequiresNotDimensions": "Fase benötigt 2 Linien (keine Bemaßungen).",
       "cannotChamferBetween": "Kann nicht zwischen diesen beiden Objekten fasen.",
       "linesChamfered": "{count, plural, one {# Linie wurde gefast} other {# Linien wurden gefast}}",
@@ -2873,7 +2876,7 @@
       "notAFitPoint": "Kein Anpassungspunkt.",
       "notAControlVertex": "Kein Kontrollscheitelpunkt.",
       "allAdditionsUndone": "Alle Hinzufügungen wurden rückgängig gemacht.",
-      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} image {IMAGE} other {REIHE}}",
+      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {REIHE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Bereich: Modellbereich",
       "listColor": "                   Farbe: {color}    Linientyp: \"{linetype}\"",
@@ -3199,7 +3202,13 @@
       "listImageClipping": "Zuschneiden:                {on, select, yes {Ein} other {Aus}}",
       "listImageClipType": "Zuschneide-Umgrenzungstyp:  {polygonal, select, yes {Polygonal} other {Rechteckig}}",
       "listImagePoint": "       bei Punkt, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Hochzugsrichtung relativ zum BKS:\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Hochzugsrichtung relativ zum BKS:\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Position:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normal:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Horizontale Richt.:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Spaltenanzahl:  {count}",
+      "listTableRows": "Zeilenanzahl:     {count}",
+      "listTableStyle": "Tabellenstil:     {name}"
     },
     "feedback": {
       "snap": {

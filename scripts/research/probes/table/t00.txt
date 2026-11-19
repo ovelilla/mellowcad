@@ -1,0 +1,42 @@
+_-TABLE
+3
+2
+10,20
+_DXFOUT
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\table\t00.dxf
+_V
+2018
+16
+(setq tb (entlast))
+(entget (cdr (assoc 343 (entget tb))))
+(setq e (entnext (cdr (assoc 360 (entget (cdr (assoc 343 (entget tb))))))))
+_ZOOM
+_E
+_SCALE
+_L
+
+10,20
+2
+(entget (entlast))
+_MIRROR
+_L
+
+0,0
+0,10
+_N
+(entget (entlast))
+_ROTATE
+_L
+
+0,0
+30
+(entget (entlast))
+_EXPLODE
+_L
+
+_LIST
+_P
+
+_SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mcaddxf\table\t00.dwg

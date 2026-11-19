@@ -433,6 +433,16 @@ export const es: EngineLocale = {
             "other": "Imágenes ráster"
           }
         ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "one": "Tabla",
+            "other": "Tablas"
+          }
+        ]
       ]
     },
     "array": {
@@ -5160,6 +5170,7 @@ export const es: EngineLocale = {
       "cannotFilletBetweenThese": "Imposible empalmar estos dos objetos.",
       "filletRequiresObjects": "Empalme requiere 2 líneas, arcos o círculos.",
       "filletRequiresNotBlocks": "Empalme requiere 2 líneas, arcos o círculos (no referencias a bloque).",
+      "filletRequiresNotTables": "Empalme requiere 2 líneas, arcos o círculos (no objetos de tabla).",
       "filletRequiresNotDimensions": "Empalme requiere 2 líneas, arcos o círculos (no cotas).",
       "unableToFilletCurves": "No se pueden empalmar curvas.",
       "noValidCurveFillet": [
@@ -5171,6 +5182,7 @@ export const es: EngineLocale = {
       "entitiesNonCoplanar": "Los objetos no son coplanares.",
       "chamferRequiresTwoLines": "Chaflán requiere 2 líneas.",
       "chamferRequiresNotBlocks": "Chaflán requiere 2 líneas (no referencias a bloque).",
+      "chamferRequiresNotTables": "Chaflán requiere 2 líneas (no objetos de tabla).",
       "chamferRequiresNotDimensions": "Chaflán requiere 2 líneas (no cotas).",
       "cannotChamferBetween": "Imposible hacer un chaflán entre estas dos entidades.",
       "linesChamfered": [
@@ -6090,6 +6102,7 @@ export const es: EngineLocale = {
             "face3d": "CARA 3D",
             "wipeout": "WIPEOUT",
             "image": "IMAGE",
+            "table": "ACAD_TABLE",
             "other": "MATRIZ"
           }
         ]
@@ -8460,6 +8473,66 @@ export const es: EngineLocale = {
         "    Z= ",
         [
           "z"
+        ]
+      ],
+      "listTablePosition": [
+        "Posición:        X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableNormal": [
+        "Normal:          X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableDirection": [
+        "Dir. horizontal:  X= ",
+        [
+          "x"
+        ],
+        ", Y= ",
+        [
+          "y"
+        ],
+        ", Z= ",
+        [
+          "z"
+        ]
+      ],
+      "listTableColumns": [
+        "Número de columnas: ",
+        [
+          "count"
+        ]
+      ],
+      "listTableRows": [
+        "Número de filas: ",
+        [
+          "count"
+        ]
+      ],
+      "listTableStyle": [
+        "Estilo de tabla:        ",
+        [
+          "name"
         ]
       ]
     },

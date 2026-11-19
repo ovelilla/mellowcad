@@ -8,9 +8,14 @@ import {
   Entity,
   InsertEntity,
   ImageEntity,
+  MTEXT_ATTACHMENTS,
+  TableEntity,
+  TableStyleData,
   XrefSource,
   createInsert,
   entitiesBounds,
+  tableExploded,
+  tableGeometry,
 } from "../../domain/entities"
 import { anonymousBlockName } from "../../domain/blocks"
 import {
@@ -209,6 +214,46 @@ export function writeDxf(
       ? { dictionary: handle(), variables: handle() }
       : null
 
+  // The tables' styles, one TABLESTYLE per name in the order first used, and
+  // ACAD_TABLESTYLE, which names them (table/t00); each table's *T block.
+  const allTables = [
+    ...modelEntities,
+    ...drawing.blocks.flatMap((b) => b.entities),
+  ].filter((e): e is TableEntity => e.type === "table")
+  // One per style as each table keeps it: two of one name and other values
+  // (pasted from another drawing) are both kept, the second numbered, as a
+  // dictionary's names are unique.
+  const tableStyles = new Map<
+    string,
+    { handle: string; style: TableStyleData; tables: string[] }
+  >()
+  const tableStyleKey = (style: TableStyleData) => JSON.stringify(style)
+  const tableStyleNames = new Set<string>()
+  for (const e of allTables) {
+    const k = tableStyleKey(e.style)
+    if (tableStyles.has(k)) continue
+    let name = e.style.name
+    for (let n = 2; tableStyleNames.has(name.toUpperCase()); n++) {
+      name = `${e.style.name}${n}`
+    }
+    tableStyleNames.add(name.toUpperCase())
+    tableStyles.set(k, {
+      handle: handle(),
+      style: { ...e.style, name },
+      tables: [],
+    })
+  }
+  const tableStyleDictionary = allTables.length > 0 ? handle() : null
+  const tableBlocks = new Map<TableEntity, { name: string; record: string }>()
+  let tableCount = 0
+  const nextTableName = () => {
+    let name: string
+    do name = `*T${++tableCount}`
+    while (takenNames.some((b) => b.name.toUpperCase() === name))
+    takenNames.push({ name })
+    return name
+  }
+
   // A leader and the annotation it points at, when both are written in one
   // space: each needs the other's handle (340, ACAD_REACTORS). Keyed by the
   // space and the id, as two blocks can hold objects of one id (a pasted
@@ -273,6 +318,19 @@ export function writeDxf(
     dimensionBlock: (dimension) => dimensionBlocks.get(dimension) ?? "",
     arrayBlock: (insert) => arrayBlocks.get(insert) ?? null,
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),
+    tableBlock: (table) => tableBlocks.get(table) ?? { name: "", record: "0" },
+    tableStyle: (table, own) => {
+      const style = tableStyles.get(tableStyleKey(table.style))
+      if (!style) return "0"
+      style.tables.push(own)
+      return style.handle
+    },
+    blockRecord: (id) =>
+      written.find(
+        (b) =>
+          b.name.toUpperCase() ===
+          (blocksById.get(id)?.name ?? id).toUpperCase()
+      )?.record ?? "0",
     imageDefinition: (image) => imageDefinitionOf(image).handle,
     imageReactor: (image, own) => {
       const reactor = handle()
@@ -294,6 +352,11 @@ export function writeDxf(
         arrayBlocks.set(entity, name)
         const source = blocksById.get(entity.blockId)
         written.push(arrayBlock(name, handle(), entity, source))
+      } else if (entity.type === "table") {
+        const name = nextTableName()
+        const record = handle()
+        tableBlocks.set(entity, { name, record })
+        written.push(tableBlock(name, record, entity, lookup))
       }
     }
   }
@@ -333,7 +396,7 @@ export function writeDxf(
   const wipeoutVariables =
     wipeouts > 0 || drawing.settings.wipeoutFrame !== 1 ? handle() : null
   const out = body
-  if (wipeoutVariables || imageObjects) {
+  if (wipeoutVariables || imageObjects || allTables.length > 0) {
     out.str(0, "SECTION")
     out.str(2, "CLASSES")
     const dxfClass = (
@@ -392,6 +455,25 @@ export function writeDxf(
         "WipeOut|Product Desc: Object Enabler for WipeOut entity | Company: Autodesk, Inc. | WEB Address: www.autodesk.com",
         2175,
         wipeouts,
+        true
+      )
+    }
+    if (allTables.length > 0) {
+      // As a new AutoCAD drawing lists them (table/t00).
+      dxfClass(
+        "TABLESTYLE",
+        "AcDbTableStyle",
+        "ObjectDBX Classes",
+        4095,
+        tableStyles.size,
+        false
+      )
+      dxfClass(
+        "ACAD_TABLE",
+        "AcDbTable",
+        "ObjectDBX Classes",
+        1025,
+        allTables.length,
         true
       )
     }
@@ -615,6 +697,10 @@ export function writeDxf(
   }
   out.str(3, "ACAD_PLOTSTYLENAME")
   out.str(350, T.plotStyles)
+  if (tableStyleDictionary) {
+    out.str(3, "ACAD_TABLESTYLE")
+    out.str(350, tableStyleDictionary)
+  }
   if (wipeoutVariables) {
     out.str(3, "ACAD_WIPEOUT_VARS")
     out.str(350, wipeoutVariables)
@@ -692,6 +778,26 @@ export function writeDxf(
       out.str(100, "AcDbRasterImageDefReactor")
       out.int(90, 2)
       out.str(330, reactor.image)
+    }
+  }
+  if (tableStyleDictionary) {
+    owned("DICTIONARY", tableStyleDictionary)
+    out.str(100, "AcDbDictionary")
+    out.int(281, 1)
+    for (const { handle: own, style } of tableStyles.values()) {
+      out.str(3, style.name)
+      out.str(350, own)
+    }
+    for (const { handle: own, style, tables } of tableStyles.values()) {
+      tableStyleObject(
+        out,
+        version,
+        own,
+        tableStyleDictionary,
+        tables,
+        style,
+        (id) => textStyles.get(id)?.name ?? "Standard"
+      )
     }
   }
   if (wipeoutVariables) {
@@ -943,6 +1049,110 @@ function blockEnd(
   if (paper) out.int(67, 1)
   out.str(8, "0")
   out.str(100, "AcDbBlockEnd")
+}
+
+/**
+ * A table's `*T` block, as AutoCAD's holds it (table/t03): what the model
+ * draws of it from its insertion point, its grid as LINEs, its texts and
+ * block cells, ByBlock, and the grey line of no length that ends it.
+ * AutoCAD draws its tables from their cells, not from this (t01); other
+ * programs draw this.
+ */
+function tableBlock(
+  name: string,
+  record: string,
+  table: TableEntity,
+  lookup: BlockLookup
+): WrittenBlock {
+  return {
+    name,
+    record,
+    basePoint: { x: 0, y: 0 },
+    baseZ: 0,
+    anonymous: true,
+    write: (ctx, owner) => {
+      const local: TableEntity = {
+        id: table.id,
+        type: "table",
+        layerId: DEFAULT_LAYER_ID,
+        position: { x: 0, y: 0 },
+        direction: table.direction,
+        rowHeights: table.rowHeights,
+        columnWidths: table.columnWidths,
+        cells: table.cells,
+        style: table.style,
+        ...(table.overrides ? { overrides: table.overrides } : {}),
+      }
+      let n = 0
+      const pieces = tableExploded(
+        local,
+        tableGeometry(local, lookup),
+        () => `${table.id}~${n++}`
+      )
+      for (const piece of pieces) {
+        writeEntity(
+          ctx,
+          piece.color === undefined
+            ? { ...piece, color: "ByBlock", linetype: "ByBlock" }
+            : piece,
+          owner
+        )
+      }
+    },
+  }
+}
+
+/**
+ * A TABLESTYLE as AutoCAD writes its Standard (table/t00, t09): its name as
+ * its description, flow, margins, title and header shown or not, and its
+ * three runs, data, title and header, each its text style, height and
+ * alignment with the colours and borders of AutoCAD's (ByBlock, shown);
+ * from 2007 each run's data type (512, a new Standard's) and format, from
+ * 2010 its version (280 0) first.
+ */
+function tableStyleObject(
+  out: DxfOut,
+  version: number,
+  own: string,
+  dictionary: string,
+  tables: readonly string[],
+  style: TableStyleData,
+  textStyleName: (id: string) => string
+): void {
+  out.str(0, "TABLESTYLE")
+  out.str(5, own)
+  out.str(102, "{ACAD_REACTORS")
+  out.str(330, dictionary)
+  for (const table of tables) out.str(330, table)
+  out.str(102, "}")
+  out.str(330, dictionary)
+  out.str(100, "AcDbTableStyle")
+  if (version >= 1024) out.int(280, 0)
+  out.str(3, style.name)
+  out.int(70, style.flowsUp ? 1 : 0)
+  out.int(71, 0)
+  out.real(40, style.horizontalMargin)
+  out.real(41, style.verticalMargin)
+  out.int(280, style.titleSuppressed ? 1 : 0)
+  out.int(281, style.headerSuppressed ? 1 : 0)
+  for (const run of [style.data, style.title, style.header]) {
+    out.str(7, textStyleName(run.textStyleId))
+    out.real(140, run.textHeight)
+    out.int(170, MTEXT_ATTACHMENTS.indexOf(run.alignment) + 1)
+    out.int(62, 0)
+    out.int(63, 7)
+    out.int(283, 0)
+    if (version >= 1021) {
+      out.int(90, 512)
+      out.int(91, 0)
+      out.str(1, "")
+    }
+    for (let edge = 0; edge < 6; edge++) {
+      out.int(274 + edge, -2)
+      out.int(284 + edge, 1)
+      out.int(64 + edge, 0)
+    }
+  }
 }
 
 /**

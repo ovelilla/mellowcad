@@ -3,7 +3,7 @@ title: DXF-Datei online öffnen
 metaTitle: "DXF-Datei online öffnen: kostenloser DXF-Viewer"
 description: "DXF-Datei kostenlos im Browser öffnen, ohne Upload: AutoCAD R12 bis 2018, Text oder binär, mit Layern, Texten, Bemaßungen, Schraffuren und Blöcken."
 type: howTo
-sourceHash: "a0eb0a40694b"
+sourceHash: "c91e0f8690ac"
 faq:
   - question: "Wie öffne ich eine DXF-Datei ohne AutoCAD?"
     answer: "Wählen Sie sie oben auf dieser Seite aus oder ziehen Sie sie dorthin: MellowCAD öffnet sie in seinem Editor, in Ihrem Browser, ohne Installation und ohne Konto. Im Editor öffnen auch ÖFFNEN (Strg+O) und DXFIN eine."
@@ -14,7 +14,7 @@ faq:
   - question: "Kann ich meine Änderungen als DXF-Datei speichern?"
     answer: "Ja. SICHALS (Strg+Umschalt+S) oder DXFOUT speichert die Zeichnung als DXF von AutoCAD 2000 bis 2018, Text oder binär, das AutoCAD öffnet. 3D-Volumenkörper und Regionen werden ausgelassen, und die Befehlszeile meldet es."
   - question: "Warum fehlen manche Objekte?"
-    answer: "Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht."
+    answer: "Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Toleranzen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht."
 ---
 
 <OpenDxf />
@@ -36,7 +36,7 @@ Enthält ein DXF etwas, wofür MellowCAD noch kein Objekt hat, öffnet es den Re
 
 - Spuren und Netze;
 - Konstruktionslinien und Strahlen, Mehrfachlinien;
-- Multi-Führungslinien, Toleranzen und Tabellen;
+- Multi-Führungslinien und Toleranzen;
 - 3D-Volumenkörper, Regionen und Flächen;
 - Ordinat- und Bogenlängenbemaßungen.
 
@@ -50,6 +50,7 @@ Manches öffnet sich, aber nicht ganz so, wie es war:
 - Text wird mit den Maßen von Arial gezeichnet, gleich welche Schriftart sein Stil nennt, ohne seinen Breitenfaktor und seine Schrägstellung.
 - Eine externe Referenz behält ihre Lage und ihren Pfad und wird so gezeichnet, wie AutoCAD eine zeichnet, deren Zeichnung es nicht findet: `XRef` und der Pfad an ihrem Einfügepunkt. Eine Seite liest nur die Datei, die sie erhält, nie die Zeichnungen daneben; erneut als DXF gespeichert, bleibt die Referenz erhalten.
 - Ein Bild behält seine Lage, seine Größe und den Pfad seiner Datei und wird so gezeichnet, wie AutoCAD eines zeichnet, dessen Datei es nicht findet: sein Rahmen, wie IMAGEFRAME ihn zeigt, und der Pfad darin. Erneut als DXF gespeichert, bleibt das Bild erhalten.
+- Eine Tabelle behält ihre Zeilen, Spalten, Zellen und ihren Stil und wird daraus gezeichnet, wie AutoCAD sie zeichnet: der Text jeder Zelle nach ihrer Ausrichtung, ein Block in einer Zelle in die Zelle eingepasst. Erneut als DXF gespeichert, bleibt die Tabelle erhalten.
 
 ## Im Editor öffnen [#editor]
 
@@ -79,4 +80,4 @@ Ja. <Command id="SAVEAS" /> (`Strg+Umschalt+S`) oder <Command id="DXFOUT" /> spe
 
 ### Warum fehlen manche Objekte? [#missing]
 
-Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Tabellen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht.
+Wofür MellowCAD noch kein Objekt hat, etwa Multi-Führungslinien, Toleranzen oder 3D-Volumenkörper, wird ausgelassen, und die Befehlszeile nennt beim Öffnen der Datei die Anzahl je Typ. Was in einem Layout liegt, wird gesondert gezählt: Layouts gibt es noch nicht.

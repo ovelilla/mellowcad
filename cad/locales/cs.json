@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {3D plocha} few {3D plochy} many {3D plochy} other {3D plochy}}",
       "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}",
       "wipeout": "{count, plural, one {Překrytí} few {Překrytí} many {Překrytí} other {Překrytí}}",
-      "image": "{count, plural, one {Rastrový obrázek} few {Rastrové obrázky} many {Rastrového obrázku} other {Rastrových obrázků}}"
+      "image": "{count, plural, one {Rastrový obrázek} few {Rastrové obrázky} many {Rastrového obrázku} other {Rastrových obrázků}}",
+      "table": "{count, plural, one {Tabulka} few {Tabulky} many {Tabulky} other {Tabulek}}"
     },
     "array": {
       "rectangular": "Pole (obdélníkové)",
@@ -2713,12 +2714,14 @@
       "cannotFilletBetweenThese": "Nelze zaoblit tyto dva objekty.",
       "filletRequiresObjects": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice.",
       "filletRequiresNotBlocks": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou bloky).",
+      "filletRequiresNotTables": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou objekty Tabulka).",
       "filletRequiresNotDimensions": "Zaoblení vyžaduje 2 úsečky, oblouky nebo kružnice (nejsou rozměry).",
       "unableToFilletCurves": "Nelze zaoblit křivky.",
       "noValidCurveFillet": "Nelze zaoblit s poloměrem {radius}",
       "entitiesNonCoplanar": "Objekty nejsou koplanární.",
       "chamferRequiresTwoLines": "Zkosení vyžaduje 2 úsečky.",
       "chamferRequiresNotBlocks": "Zkosení vyžaduje 2 úsečky (nejsou bloky).",
+      "chamferRequiresNotTables": "Zkosení vyžaduje 2 úsečky (nejsou objekty Tabulka).",
       "chamferRequiresNotDimensions": "Zkosení vyžaduje 2 úsečky (nejsou rozměry).",
       "cannotChamferBetween": "Nelze zkosit tyto dva objekty.",
       "linesChamfered": "{count, plural, one {# úseček bylo zkoseno} other {# úseček bylo zkoseno}}",
@@ -2846,7 +2849,7 @@
       "notAFitPoint": "Není bod vyhlazení.",
       "notAControlVertex": "Není řídicí vrchol.",
       "allAdditionsUndone": "Všechna doplnění byla vrácena zpět.",
-      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} image {IMAGE} other {POLE}}",
+      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {POLE}}",
       "listObject": "                  {name}   Hladina: \"{layer}\"",
       "listSpace": "                             Prostor: Modelový prostor",
       "listColor": "                   Barva: {color}    Typ čáry: \"{linetype}\"",
@@ -3172,7 +3175,13 @@
       "listImageClipping": "Oříznutí:                {on, select, yes {Ano} other {Ne}}",
       "listImageClipType": "Typ hranice oříznutí:    {polygonal, select, yes {Polygon} other {Obdélník}}",
       "listImagePoint": "       v bodě, X = {x},  Y = {y},  Z = {z}",
-      "listImageExtrusion": "Směr vytažení vzhzledem k UCS:\n                   X ={x}    Y ={y}    Z = {z}"
+      "listImageExtrusion": "Směr vytažení vzhzledem k UCS:\n                   X ={x}    Y ={y}    Z = {z}",
+      "listTablePosition": "Poloha:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normála:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Horizontální směr:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Počet sloupců:  {count}",
+      "listTableRows": "Počet řádků:     {count}",
+      "listTableStyle": "Styl tabulky:     {name}"
     },
     "feedback": {
       "snap": {

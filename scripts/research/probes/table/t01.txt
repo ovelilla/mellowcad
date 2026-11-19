@@ -1,0 +1,20 @@
+(defun blk (/ e n r) (setq r (cdr (assoc 343 (entget (setq tb (ssname (ssget "X" '((0 . "ACAD_TABLE"))) 0)))))) (setq e (entnext (cdr (assoc -2 (entget (cdr (assoc 2 (entget tb))) ))))) (setq n nil) (while e (setq n (cons (cdr (assoc 0 (entget e))) n)) (setq e (entnext e))) (reverse n))
+(blk)
+(entget (cdr (assoc -2 (tblsearch "BLOCK" (cdr (assoc 2 (entget tb)))))))
+(cdr (assoc 2 (entget tb)))
+_ZOOM
+_E
+(list (getvar "EXTMIN") (getvar "EXTMAX"))
+(vl-remove-if-not '(lambda (p) (member (car p) '(10 41 42 43 141 142))) (entget tb))
+_MOVE
+(ssname (ssget "X" '((0 . "ACAD_TABLE"))) 0)
+
+0,0
+0,0
+(blk)
+_ZOOM
+_E
+(list (getvar "EXTMIN") (getvar "EXTMAX"))
+(vl-remove-if-not '(lambda (p) (member (car p) '(10 41 42 43 141 142))) (entget tb))
+_AUDIT
+_N

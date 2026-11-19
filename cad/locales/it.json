@@ -240,7 +240,8 @@
       "face3d": "{count, plural, one {Faccia 3D} other {Facce 3D}}",
       "leader": "{count, plural, one {Direttrice} other {Direttrici}}",
       "wipeout": "{count, plural, one {Entità coprente} other {Entità coprenti}}",
-      "image": "{count, plural, one {Immagine raster} other {Immagini raster}}"
+      "image": "{count, plural, one {Immagine raster} other {Immagini raster}}",
+      "table": "{count, plural, one {Tabella} other {Tabelle}}"
     },
     "array": {
       "rectangular": "Serie (rettangolare)",
@@ -2717,12 +2718,14 @@
       "cannotFilletBetweenThese": "Impossibile raccordare questi due oggetti.",
       "filletRequiresObjects": "Raccordo richiede due linee, archi o cerchi",
       "filletRequiresNotBlocks": "Raccordo richiede due linee, archi o cerchi (non sono riferimenti di blocco)",
+      "filletRequiresNotTables": "Raccordo richiede due linee, archi o cerchi (nessun oggetto tabella)",
       "filletRequiresNotDimensions": "Raccordo richiede due linee, archi o cerchi (non le quote)",
       "unableToFilletCurves": "Impossibile raccordare le curve.",
       "noValidCurveFillet": "Raccordo con raggio {radius} non valido",
       "entitiesNonCoplanar": "Gli oggetti non sono complanari.",
       "chamferRequiresTwoLines": "Cima richiede due linee",
       "chamferRequiresNotBlocks": "Cima richiede due linee (non sono riferimenti di blocco)",
+      "chamferRequiresNotTables": "Cima richiede due linee (nessun oggetto tabella)",
       "chamferRequiresNotDimensions": "Cima richiede due linee (non le quote)",
       "cannotChamferBetween": "Impossibile eseguire la cimatura tra questi due oggetti.",
       "linesChamfered": "{count, plural, one {# linea cimata(e)} other {# linee cimata(e)}}",
@@ -2850,7 +2853,7 @@
       "notAFitPoint": "Non è un punto di adattamento.",
       "notAControlVertex": "Non è un vertice di controllo.",
       "allAdditionsUndone": "Tutte le aggiunte sono state annullate.",
-      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} other {SERIE}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} other {SERIE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Spazio: Spazio modello",
       "listColor": "                   Colore: {color}    Tipo di linea: \"{linetype}\"",
@@ -3176,7 +3179,13 @@
       "listImageClipping": "Ritaglio:                       {on, select, yes {On} other {Off}}",
       "listImageClipType": "Tipo contorno di ritaglio:      {polygonal, select, yes {Poligonale} other {Rettangolare}}",
       "listImagePoint": "       al punto, X={x},  Y={y},  Z={z}",
-      "listImageExtrusion": "Direzione di estrusione relativa al sistema UCS:\n                   X={x}    Y={y}    Z= {z}"
+      "listImageExtrusion": "Direzione di estrusione relativa al sistema UCS:\n                   X={x}    Y={y}    Z= {z}",
+      "listTablePosition": "Posizione:        X= {x}, Y= {y}, Z= {z}",
+      "listTableNormal": "Normale:          X= {x}, Y= {y}, Z= {z}",
+      "listTableDirection": "Dir orizzontale:  X= {x}, Y= {y}, Z= {z}",
+      "listTableColumns": "Numero colonne:   {count}",
+      "listTableRows": "Numero righe:     {count}",
+      "listTableStyle": "Stile tabella:        {name}"
     },
     "feedback": {
       "snap": {

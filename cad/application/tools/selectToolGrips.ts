@@ -372,6 +372,16 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         })
         break
+      case "table":
+        // WHY one, at its insertion point, moving it: AutoCAD's top-left grip
+        // moves a table; its others resize its rows and columns, which are
+        // not here (unverified on the desktop).
+        grips.push({
+          entityId: id,
+          role: { kind: "move" },
+          world: entity.position,
+        })
+        break
       case "solid2d":
         // One at each corner (solid2d/p08, desktop d01), corners on one
         // point (a triangle's last two) under one grip, which moves them

@@ -149,7 +149,32 @@ frame's four lines, saying nothing (i06a); OFFSET, AREA, BREAK, DIVIDE and TRIM 
 AutoCAD's words (i07, i15); LIST as each of the ten consoles writes it (i07, i12: its name,
 insertion, scale in its image's pixel size, turn or, mirrored, its extrusion, display, and its
 whole frame's corners); its Properties are its general rows (**unverified**); the 1 of AutoCAD's
-samples (VBA_Map2Globe's world map) and LibreCAD's part (its definition named by its file), a
+samples (VBA_Map2Globe's world map) and LibreCAD's part (its definition named by its file),
+ACAD_TABLE as AutoCAD 2027 opens one: its corner, direction and normal (10, 11, 210), its rows'
+heights and columns' widths (141, 142), its style (342: TABLESTYLE's margins, flow, title and
+header shown or not, and its data, title and header runs' text style, height and alignment, named
+by ACAD_TABLESTYLE), the overrides SCALE sets (93 with 40, 41 and three 140s) and each cell (171 on:
+text or block, merged, fitted, span, its overrides of alignment, text style and height, 91 or, in a
+2000 or 2004 file, 177, its block by its BLOCK_RECORD, 340, 144, its text, 2s and 1, in its
+CELL_VALUE from 2007), its `*T` block not read: AutoCAD draws a table from its cells, redrawing
+a block left stale or empty (table/t01); drawn as AutoCAD draws it, each text cell's MTEXT at its
+alignment inside the margins and as wide as the cell less both, a block cell's block placed so by
+its extents, fitted to the cell when 174 says (0.362067, t03), the grid's lines run across then
+down, broken where a span covers both sides, each wearing the table's layer and properties, the
+same pieces as AutoCAD's own block of each of t10's six tables (a copy scaled by 0.5, one turned,
+one mirrored, a red one on another layer, an empty -TABLE); picked and snapped through them (END
+and MID on each run of the grid, INS a cell's text, CEN inside a block cell: t07) and at its corner
+(INS, **unverified**); a grip at its corner that moves it; MOVE, COPY and ROTATE carry it, SCALE
+scales its rows, columns, margins and texts as AutoCAD writes them (each row kind's height on the
+table, each cell a span does not cover given its own, 41 left 1: t00, t02), MIRROR leaves it
+unreflected, its corner the image of its far one along its rows, its direction the opposite of
+its own's image (t02); STRETCH leaves it, caught in part or whole (t05); EXPLODE leaves its texts,
+its block cells' references and its grid's lines, on its layer, in its colour and linetype, and a
+grey line of no length at its corner, saying nothing (t06, t06b); OFFSET, AREA, BREAK, DIVIDE,
+TRIM, FILLET and CHAMFER refuse it with AutoCAD's words (`… (not Table objects).`, acadres 33496;
+t04, t04b, t04c); LIST as each of the ten consoles writes it (t08: its corner, normal and direction,
+each `%f` whatever LUPREC, its columns, rows and style); its Properties are its general rows
+(**unverified**); the 1 of other programs' files (ezdxf's, with a block cell and merged cells), a
 hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
 one colour's tint, 452 and 462; its angle, 460, and shift, 461, any but 0 read not centred), drawn
 as AutoCAD draws it (HATCH's entry; gradient/g16, AutoCAD's own file: the nine names, two off
@@ -217,11 +242,17 @@ following its own; an image's path is picked by its box, where AutoCAD finds its
 (a pick between two letters takes nothing, image/i04), WHY: the engine measures text and draws no
 outlines; its own corners are no intersection (AutoCAD's INT finds them, i02); Russian LIST gives
 its scale under `Масштаб`, where its console gives the frame's width (i07), WHY: a translation takes
-English's arguments
+English's arguments; a table keeps its style with it, not in a table of the drawing, WHY: nothing
+here makes, edits or picks a table style, so the drawing's table would hold only what its tables
+name (DXFOUT writes one TABLESTYLE per name); a cell's colours, fill, borders and rotation (145,
+kept and written back) are not drawn, nor its data type and format but the flag AutoCAD writes
+with no value (0x40000, kept); a table flowing up (TABLESTYLE 70 1) is drawn up from its corner,
+and a tilted one's direction (11) read in the WCS, its corner (10) in its OCS as a reference's
+(**unverified**: no such table probed)
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
 XLINE, RAY, MLEADER (1 of the 154 samples, 4 objects of 2 other programs' files),
-TOLERANCE, TABLE, MLINE, meshes, the ordinate
+TOLERANCE, MLINE, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
 Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
@@ -230,7 +261,11 @@ reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's ball
 xref's own clipping (XCLIP); of an image, its pixels (its file), IMAGE (the External References
 palette), -IMAGE (Attach, Detach, Path, Reload, Unload, `?`: image/i00, i01), IMAGEATTACH,
 IMAGECLIP, IMAGEADJUST, IMAGEQUALITY, TRANSPARENCY and the frame left out of a plot with
-IMAGEFRAME 2 (nothing is plotted here); a complex linetype's shapes (BATTING, ZIGZAG:
+IMAGEFRAME 2 (nothing is plotted here); of a table, TABLE and -TABLE (Auto, from Style, data Link,
+Style, Layer, Width, Height: table/t00), TABLEDIT and the editing of its cells, its rows and
+columns (its grips but the corner's, the ribbon's Table Cell tab), TABLESTYLE, TABLEEXPORT,
+fields and formulas, data links, a table broken into fragments, a cell's colours, fill, borders
+and rotation drawn, a table as an edge TRIM and EXTEND cut or reach to (unprobed); a complex linetype's shapes (BATTING, ZIGZAG:
 the gaps they stand in are drawn, the shapes need their SHX: 3 of the 154 samples); a 2000
 DXF's gradient colours (AutoCAD writes them as `GradientColor1ACI` and `GradientColor2ACI` xdata
 and reads the hatch back as a SOLID, g15: here a SOLID too); the index colours as such,
@@ -289,6 +324,16 @@ first vertex, as AutoCAD's console fails to open one left open (image/i08, i13, 
 opens the 12 files of i13's drawing with no AUDIT error, finds its 6 images and 2 definitions,
 reads them and IMAGEFRAME 2 back as its own, and, the image files beside the paths, loads and
 plots them as its own file), a
+table as AutoCAD's DXFOUT writes one: its cells (from 2007 each value in a CELL_VALUE, before it
+the text alone and 177 for 91, no data type: table/t09; from 2010 its version, 280), the overrides
+SCALE set, a reference to a `*T` block of what it draws (ByBlock, as AutoCAD's, t03), a
+TABLESTYLE per style (a second of one name numbered, Standard2) with ACAD_TABLESTYLE in the
+root dictionary, and the TABLESTYLE and
+ACAD_TABLE classes (t00; the console opens the 12 files of t10's drawing with no AUDIT error,
+finds its 6 tables, and redraws from ours the very pieces we draw, 214 of them; what it writes
+back reads as the tables it wrote, but the scale it stores for a fitted block cell, which it
+does not draw by, t11; a cell's text longer than 250 characters written whole in its
+CELL_VALUE, **unverified**), a
 leader as AutoCAD's
 DXFOUT writes it, its groups at their defaults left out, its overrides as DSTYLE xdata, its 340 to
 its text or block reference and theirs back to it (ACAD_REACTORS), each pair's handles given

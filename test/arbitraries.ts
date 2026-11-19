@@ -23,6 +23,9 @@ import {
   type Solid2dEntity,
   type WipeoutEntity,
   type ImageEntity,
+  type MTextAttachment,
+  type TableCell,
+  type TableEntity,
   type LeaderEntity,
   type DimensionEntity,
   type EllipseEntity,
@@ -267,6 +270,89 @@ export const imageEntity: fc.Arbitrary<ImageEntity> = fc
           : {}),
       },
       "image"
+    )
+  })
+
+/**
+ * A table: one to four rows and columns, turned, its first row's cells
+ * spanned into one a third of the time, a text, a block or nothing in each
+ * cell, with or without its own overrides.
+ */
+export const tableEntity: fc.Arbitrary<TableEntity> = fc
+  .record({
+    position: point,
+    angle: fc.double({ min: 0, max: 6, noNaN: true }),
+    rows: fc.array(fc.double({ min: 1, max: 30, noNaN: true }), {
+      minLength: 1,
+      maxLength: 4,
+    }),
+    columns: fc.array(fc.double({ min: 1, max: 60, noNaN: true }), {
+      minLength: 1,
+      maxLength: 4,
+    }),
+    spanned: fc.boolean(),
+    scaled: fc.boolean(),
+    contents: fc.array(fc.constantFrom("", "A", "10", "B1", "two\\Plines"), {
+      minLength: 16,
+      maxLength: 16,
+    }),
+  })
+  .map(({ position, angle, rows, columns, spanned, scaled, contents }) => {
+    const row = (textHeight: number, alignment: MTextAttachment) => ({
+      textStyleId: DEFAULT_TEXT_STYLE_ID,
+      textHeight,
+      alignment,
+    })
+    const cells: TableCell[] = []
+    for (let r = 0; r < rows.length; r++) {
+      for (let c = 0; c < columns.length; c++) {
+        const content = contents[(r * columns.length + c) % contents.length]
+        const covered = spanned && r === 0 && c > 0
+        cells.push(
+          covered
+            ? { merged: true }
+            : {
+                ...(spanned && r === 0 && c === 0 && columns.length > 1
+                  ? { span: { columns: columns.length, rows: 1 } }
+                  : {}),
+                ...(content === "B1"
+                  ? { block: { blockId: "B1", scale: 1, autoFit: true } }
+                  : content
+                    ? { text: content }
+                    : {}),
+                ...(scaled ? { textHeight: 9 } : {}),
+              }
+        )
+      }
+    }
+    return withId<TableEntity>(
+      {
+        type: "table",
+        layerId: DEFAULT_LAYER_ID,
+        position,
+        direction: { x: Math.cos(angle), y: Math.sin(angle) },
+        rowHeights: rows,
+        columnWidths: columns,
+        cells,
+        style: {
+          name: "Standard",
+          horizontalMargin: 1.5,
+          verticalMargin: 1.5,
+          data: row(4.5, "tc"),
+          title: row(6, "mc"),
+          header: row(4.5, "mc"),
+        },
+        ...(scaled
+          ? {
+              overrides: {
+                horizontalMargin: 3,
+                verticalMargin: 3,
+                textHeights: { data: 9, title: 12, header: 9 },
+              },
+            }
+          : {}),
+      },
+      "table"
     )
   })
 
@@ -1286,7 +1372,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       leaderEntity,
       face3dEntity,
       wipeoutEntity,
-      imageEntity
+      imageEntity,
+      tableEntity
     ),
     zValue,
     zValue,

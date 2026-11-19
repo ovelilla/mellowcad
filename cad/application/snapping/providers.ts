@@ -68,6 +68,7 @@ import {
   LineEntity,
   PolylineEntity,
   PolylineSegmentGeometry,
+  tableGeometry,
 } from "../../domain/entities"
 import {
   ConstructionGeometry,
@@ -355,6 +356,21 @@ export const insertionProvider: SnapProvider = {
         candidates.push(
           notable(SnapType.Insertion, entity, entity.position, touch)
         )
+      }
+      if (entity.type === "table") {
+        // Its cells' texts and blocks (table/t07); its own corner as a
+        // reference's, unverified.
+        candidates.push(
+          notable(SnapType.Insertion, entity, entity.position, touch)
+        )
+        for (const piece of tableGeometry(entity, document.blockLookup())) {
+          if (piece.type !== "mtext" && piece.type !== "insert") continue
+          candidates.push({
+            type: SnapType.Insertion,
+            point: on(piece, piece.position),
+            sourceIds: [entity.id],
+          })
+        }
       }
       if (entity.type === "insert") {
         const block = document.getBlock(entity.blockId)

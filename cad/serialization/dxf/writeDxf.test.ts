@@ -20,7 +20,7 @@ import {
   withNormal,
   withThickness,
 } from "../../domain/entities"
-import type { Entity, ImageEntity } from "../../domain/entities"
+import type { Entity, ImageEntity, TableEntity } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { linetypeNamed } from "../../domain/linetypes"
 import { ACADISO_LIN } from "../../domain/linetypeLibrary"
@@ -265,6 +265,45 @@ describe("writeDxf", () => {
           shape(wipeouts(drawing.entities))
         )
         expect(back.settings.wipeoutFrame).toBe(2)
+      }
+    }
+  })
+
+  // Text and block cells, spans, a scaled one's overrides, turned,
+  // mirrored, red on L1, an empty one (table/t10), in every version: from
+  // 2007 each value in a CELL_VALUE, before it the text alone (t09), with
+  // no data type flag.
+  it("writes tables, read back the same", () => {
+    const drawing = parseDxf(fixture("tables-2018")).drawing
+    const tables = (entities: readonly Entity[]) =>
+      entities.filter((e): e is TableEntity => e.type === "table")
+    expect(tables(drawing.entities)).toHaveLength(6)
+    for (const version of VERSIONS) {
+      const legacy = version === "2000" || version === "2004"
+      const kept = (entities: readonly Entity[]) =>
+        shape(
+          tables(entities).map((t) =>
+            legacy
+              ? {
+                  ...t,
+                  cells: t.cells.map((c) =>
+                    Object.fromEntries(
+                      Object.entries(c).filter(([key]) => key !== "flags")
+                    )
+                  ),
+                }
+              : t
+          )
+        )
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        const back = parseDxf(bytes).drawing
+        expect(kept(back.entities)).toEqual(kept(drawing.entities))
       }
     }
   })
@@ -631,6 +670,7 @@ describe("writeDxf", () => {
       "faces-2018",
       "wipeouts-2018",
       "images-2018",
+      "tables-2018",
     ]) {
       const drawing =
         name === "points-2018"

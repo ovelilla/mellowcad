@@ -2,6 +2,10 @@ import { Vec2 } from "../../geometry/Vec2"
 import {
   BlockDefinition,
   Entity,
+  MTEXT_ATTACHMENTS,
+  STANDARD_TABLE_STYLE,
+  TableRowStyle,
+  TableStyleData,
   createBlockDefinition,
   leaderLook,
   leaderInPlaneOf,
@@ -27,7 +31,8 @@ import {
   dxfTextStyles,
 } from "./dxfTables"
 import { dxfSettings } from "./dxfHeader"
-import { int, point, str } from "./dxfValues"
+import { finite, int, point, str } from "./dxfValues"
+import type { TextStyleId } from "../../domain/textStyles"
 
 export { DxfReadError, looksLikeDxf } from "./dxfFormat"
 
@@ -74,6 +79,91 @@ function dxfImageFrame(objects: readonly DxfRecord[]): 0 | 1 | 2 | undefined {
   const flags = variables ? int(variables, 70) : undefined
   if (flags === undefined) return undefined
   return (flags & 1) === 0 ? 0 : flags & 2 ? 2 : 1
+}
+
+/**
+ * Each table style by its handle (TABLESTYLE, table/t00): its name from
+ * ACAD_TABLESTYLE, else its description (3), its flow (70), margins (40,
+ * 41), title and header suppressed (the 280 and 281 after them), and its
+ * three runs, data, title and header, each from its text style (7) with its
+ * height (140) and alignment (170).
+ */
+function dxfTableStyles(
+  objects: readonly DxfRecord[],
+  textStyle: (name: string | undefined) => TextStyleId
+): Map<string, TableStyleData> {
+  const names = new Map<string, string>()
+  for (const dictionary of objects) {
+    if (dictionary.type !== "DICTIONARY") continue
+    dictionary.codes.forEach((code, i) => {
+      if (code !== 3 || dictionary.codes[i + 1] !== 350) return
+      const handle = dictionary.values[i + 1].trim().toUpperCase()
+      names.set(handle, dictionary.values[i].trim())
+    })
+  }
+  const styles = new Map<string, TableStyleData>()
+  for (const record of objects) {
+    if (record.type !== "TABLESTYLE") continue
+    const handle = str(record, 5)?.trim().toUpperCase()
+    if (!handle) continue
+    const start = Math.max(
+      0,
+      record.codes.findIndex(
+        (code, i) =>
+          code === 100 && record.values[i].trim() === "AcDbTableStyle"
+      )
+    )
+    const at = (code: number, from = start) => {
+      const i = record.codes.indexOf(code, from)
+      return i < 0 ? undefined : i
+    }
+    const value = (i: number | undefined) =>
+      i === undefined ? undefined : finite(record.values[i])
+    const marginAt = at(41)
+    const runs = record.codes
+      .map((code, i) => (code === 7 && i > start ? i : -1))
+      .filter((i) => i >= 0)
+    const base = STANDARD_TABLE_STYLE
+    const run = (k: number, fallback: TableRowStyle): TableRowStyle => {
+      const from = runs[k]
+      if (from === undefined) return fallback
+      const to = runs[k + 1] ?? record.codes.length
+      const inRun = (code: number) => {
+        const i = at(code, from)
+        return i !== undefined && i < to ? value(i) : undefined
+      }
+      const height = inRun(140)
+      const alignment = inRun(170)
+      return {
+        textStyleId: textStyle(record.values[from].trim() || undefined),
+        textHeight:
+          height !== undefined && height > 0 ? height : fallback.textHeight,
+        alignment:
+          (alignment !== undefined && MTEXT_ATTACHMENTS[alignment - 1]) ||
+          fallback.alignment,
+      }
+    }
+    const margin = (code: number, fallback: number) => {
+      const v = value(at(code))
+      return v !== undefined && v >= 0 ? v : fallback
+    }
+    const suppressed = (code: number) =>
+      marginAt !== undefined && value(at(code, marginAt)) === 1
+    const name =
+      names.get(handle) ?? (str(record, 3)?.trim() || STANDARD_TABLE_STYLE.name)
+    styles.set(handle, {
+      name,
+      horizontalMargin: margin(40, base.horizontalMargin),
+      verticalMargin: margin(41, base.verticalMargin),
+      ...(value(at(70)) === 1 ? { flowsUp: true as const } : {}),
+      ...(suppressed(280) ? { titleSuppressed: true as const } : {}),
+      ...(suppressed(281) ? { headerSuppressed: true as const } : {}),
+      data: run(0, base.data),
+      title: run(1, base.title),
+      header: run(2, base.header),
+    })
+  }
+  return styles
 }
 
 /**
@@ -189,8 +279,9 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     if (!name) continue
     const space = spaceBlock(name)
     if (space === "paper") inLayouts += countable(block.entities)
-    // A dimension's geometry block (*D): the model draws dimensions from their points.
-    if (space || /^\*D\d*$/i.test(name)) continue
+    // A dimension's geometry block (*D): the model draws dimensions from
+    // their points; a table's (*T), as AutoCAD does, from its cells (table/t01).
+    if (space || /^\*[DT]\d*$/i.test(name)) continue
     const flags = int(block.record, 70) ?? 0
     const key = name.toUpperCase()
     if (targets.has(key)) continue
@@ -223,6 +314,14 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   const wipeoutFrame = dxfWipeoutFrame(dxf.objects)
   const imageFrame = dxfImageFrame(dxf.objects)
   const images = dxfImageDefinitions(dxf.objects)
+  const tableStyles = dxfTableStyles(dxf.objects, (name) => textStyles.id(name))
+  const blockRecords = new Map(
+    table("BLOCK_RECORD").flatMap((record) => {
+      const handle = str(record, 5)?.trim().toUpperCase()
+      const name = str(record, 2)?.trim()
+      return handle && name ? [[handle, name] as const] : []
+    })
+  )
   const settings = {
     ...dxfSettings(dxf.header, active, linetype),
     ...(wipeoutFrame === 0 || wipeoutFrame === 1 || wipeoutFrame === 2
@@ -238,6 +337,24 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
     dimStyleTextAbove,
     block: (name) => targets.get(name.toUpperCase()) ?? null,
     image: (handle) => images.get(handle.trim().toUpperCase()) ?? null,
+    tableStyle: (handle) =>
+      tableStyles.get(handle.trim().toUpperCase()) ?? {
+        ...STANDARD_TABLE_STYLE,
+        data: {
+          ...STANDARD_TABLE_STYLE.data,
+          textStyleId: textStyles.id("Standard"),
+        },
+        title: {
+          ...STANDARD_TABLE_STYLE.title,
+          textStyleId: textStyles.id("Standard"),
+        },
+        header: {
+          ...STANDARD_TABLE_STYLE.header,
+          textStyleId: textStyles.id("Standard"),
+        },
+      },
+    blockRecord: (handle) =>
+      blockRecords.get(handle.trim().toUpperCase()) ?? null,
     splineSegments: settings.splineSegments,
     hatchSplineFitData: version >= 1024,
     leftOut: (type) => leftOut.set(type, (leftOut.get(type) ?? 0) + 1),
