@@ -2043,8 +2043,10 @@ function singleEntityInfo(
         ],
       }
     }
-    // WHY their general rows alone: which rows AutoCAD's palette gives a
-    // wipeout, an image or a table is unverified (no desktop pass).
+    // Their general rows alone: AutoCAD's palette has groups of their own
+    // (desktop objects/d08–d11: a wipeout's and an image's Image Adjust,
+    // Geometry and Misc, a table's Table, Geometry and Table Breaks, a
+    // multileader's Misc, Leaders and Text), not built here.
     case "wipeout":
       return { title: title("wipeout"), count: 1, groups: [] }
     case "image":

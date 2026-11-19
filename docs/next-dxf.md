@@ -352,8 +352,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       del dibujo (DICTIONARYVAR) y en el 70 de WIPEOUTVARIABLES (0 o 1); la consola abre los 12
       ficheros de w15 sin un error de AUDIT, lee WIPEOUTFRAME 2 desde 2004 y los traza como el suyo.
       El corpus: abren las 11 de 3 muestras; muestras sin nada fuera, de 148 a 151 de 154; ficheros
-      de otros, 573 de 577, como antes. Se anotan: FRAME, DRAWORDER, TEXTMASK, las filas de la paleta
-      y los pinzamientos (sin escritorio: **no verificados**). **IMAGE hecho** (19/11/2026, sin
+      de otros, 573 de 577, como antes. Se anotan: FRAME, DRAWORDER, TEXTMASK y las filas de la
+      paleta tras General (vistas en el escritorio: abajo). **IMAGE hecho** (19/11/2026, sin
       publicar): la imagen ráster (`ImageEntity`, fichero versión 59) como la abre AutoCAD 2027
       cuando no encuentra su fichero, que en el navegador es siempre (sondas `image/i00`–`i15`,
       `s1`–`s11`, variantes de un DXF suyo): su marco según IMAGEFRAME (variable del dibujo,
@@ -373,8 +373,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros al lado, los carga y traza como el suyo. El corpus: abren la de VBA_Map2Globe y la
       de LibreCAD; muestras sin nada fuera, de 151 a 152 de 154; ficheros de otros, de 573 a 574 de
       577. Se anotan: los píxeles, IMAGE (la paleta), -IMAGE, IMAGEATTACH, IMAGECLIP, IMAGEADJUST,
-      IMAGEQUALITY, TRANSPARENCY, la paleta y los pinzamientos (sin escritorio: **no
-      verificados**). **La tabla hecha** (19/11/2026, sin publicar): la tabla (`TableEntity`,
+      IMAGEQUALITY, TRANSPARENCY y las filas de la paleta tras General (vistas en el
+      escritorio: abajo). **La tabla hecha** (19/11/2026, sin publicar): la tabla (`TableEntity`,
       fichero versión 60) como la abre AutoCAD 2027, que la redibuja de sus celdas y no de su
       bloque `*T` (sondas `table/t00`–`t11`; t01: un bloque viejo o vacío se redibuja): el texto de
       cada celda a su alineación dentro de los márgenes, el bloque de una celda ajustado a ella
@@ -392,7 +392,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       presentaciones); ficheros de otros, de 574 a 575 de 577. Se anotan: TABLE y -TABLE (sus
       solicitudes, sondeadas en t00), TABLEDIT y la edición de celdas, filas y columnas (sus
       pinzamientos), TABLESTYLE, los colores, rellenos, bordes y giro de cada celda, campos,
-      fórmulas y vínculos de datos, la paleta (sin escritorio: **no verificada**). **MULTILEADER
+      fórmulas y vínculos de datos, las filas de la paleta tras General (vistas en el
+      escritorio: abajo). **MULTILEADER
       hecho** (19/11/2026, sin publicar): la directriz múltiple (`MLeaderEntity`, fichero versión
       61) como la abre AutoCAD 2027, que la dibuja de sus datos de contexto, no de los del objeto
       ni de su estilo (sondas `mleader/m00`–`m15`, variantes `v1`–`v23` de un DXF suyo): el texto
@@ -425,7 +426,14 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       1201–1261, sondeadas; su texto abre el editor en sitio, que la consola no maneja),
       MLEADEREDIT, MLEADERALIGN, MLEADERCOLLECT, MLEADERSTYLE, los menús de sus pinzamientos,
       otras flechas, los atributos de un bloque, el marco y el fondo del texto, la escala
-      anotativa, la paleta (sin escritorio). **Queda del punto 7**, por orden: XLINE, RAY, MINSERT,
+      anotativa, las filas de la paleta tras General. **En el escritorio** (19/11/2026, sonda
+      `objects/dsk.sh`, d01–d12): los pinzamientos del wipeout, la imagen y la tabla son los
+      nuestros (la tabla tiene además los de columnas, ancho, alto y división, anotados); los
+      del multileader, también, salvo dos: el rellano mueve con su pata y el texto (corregido) y
+      el final de la pata es una flecha (hecho); faltan los cuatro de las esquinas del texto y
+      sus menús. Las paletas tienen grupos propios tras General (Image Adjust, Geometry y Misc;
+      Table, Geometry y Table Breaks; Misc, Leaders y Text), anotados en la cobertura.
+      **Queda del punto 7**, por orden: XLINE, RAY, MINSERT,
       los colores índice y las sustituciones DSTYLE de cada cota (ninguno con un caso medido en el
       corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de las
       muestras.

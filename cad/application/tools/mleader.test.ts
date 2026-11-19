@@ -11,6 +11,7 @@ import {
   mleaderStretched,
   translateEntity,
 } from "../../domain/entities"
+import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 import { parseDxf } from "../../serialization/dxf/readDxf"
 import { writeDxf } from "../../serialization/dxf/writeDxf"
@@ -352,6 +353,24 @@ describe("a multileader, as AutoCAD 2027 draws it from its context", () => {
     const m = only(cad)
     expect(m.branches[0].doglegLength).toBeCloseTo(13)
     expect(m.content?.position).toBeCloseToPoint(p(45, 30.5307), 4)
+  })
+
+  it("drags its landing's grip with its dogleg and content", () => {
+    // desktop objects/d05: the landing's Stretch moves the three together,
+    // where STRETCH catching the landing alone slides it along the dogleg;
+    // its dogleg's end is an arrow along it (d04, d07).
+    const cad = withOne({ ...hello, branches: [hello.branches[0]] })
+    cad.zoomToFit()
+    cad.click(p(20, 19.629))
+    const arrows = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "path" && q.fill === THEME.grip)
+    expect(arrows).toHaveLength(1)
+    cad.click(p(30, 29.2594)).click(p(33, 33))
+    const m = only(cad)
+    expect(m.branches[0].landing).toBeCloseToPoint(p(33, 33), 4)
+    expect(m.branches[0].doglegLength).toBeCloseTo(8)
+    expect(m.content?.position).toBeCloseToPoint(p(43, 34.2713), 4)
   })
 
   it("keeps its dogleg's ends apart and its sizes through moves", () => {

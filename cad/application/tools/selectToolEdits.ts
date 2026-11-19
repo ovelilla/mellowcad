@@ -45,7 +45,7 @@ import {
   withWipeoutVertex,
   imageCornerDragged,
   withLeaderVertex,
-  mleaderStretched,
+  mleaderGripped,
   mleaderStretchPoints,
 } from "../../domain/entities"
 import type {
@@ -98,7 +98,7 @@ export function withVertexAt(
   if (entity.type === "mleader") {
     const at = mleaderStretchPoints(entity)[index]
     if (!at) return null
-    return mleaderStretched(entity, (_, i) => i === index, {
+    return mleaderGripped(entity, index, {
       x: point.x - at.x,
       y: point.y - at.y,
     })

@@ -916,8 +916,8 @@ saves it (clipboard-and-files.md).
 the next-point prompts' words with no global form (the traces of w12: es, pt-BR, it, ru, pl, cs,
 hu, and fr's `[Annuler]`) and refuse them (w04: es `_U` `Se requiere un punto 2D o una
 opción.`); off the plan
-its frame alone is drawn, no mask (**unverified**); a grip at each vertex, which moves it, and no
-geometry row in the Properties palette (**unverified**: no desktop pass); a rubber band in the
+its frame alone is drawn, no mask (**unverified**); a grip at each vertex, none at a side's middle
+(desktop objects/d01), which moves it (the drag **unverified**); a rubber band in the
 current colour (**unverified**); Enter at the third point taking the cursor's point is the
 console's and **unverified** on the desktop; with no plotting here, Display but not plot shows the
 frame as ON does; a closed polyline of two vertices refused as an open one is (**unverified**); one
@@ -926,7 +926,11 @@ made of a polyline takes CELTSCALE, not its linetype scale (**unverified**)
 **Missing:** FRAME, which sets the frames of images, underlays, clipped references and wipeouts
 together; DRAWORDER, which puts a wipeout over or under others (here what comes after covers it,
 as in a drawing never reordered, so a DXF's draw order, its SORTENTS table, is not read and a
-reordered wipeout may hide what it was put under); TEXTMASK and a text's own background mask; the palette's rows
+reordered wipeout may hide what it was put under); TEXTMASK and a text's own background mask; the
+palette's rows past General, titled Wipeout (desktop objects/d10): Image Adjust (Brightness 50,
+Contrast 50, Fade 0), Geometry (Position X, Y and Z, its image's origin, Rotation, Width and Height,
+the square of its larger side, Scale) and Misc (Show image, Show clipped, Background
+transparency)
 
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE` · it `TESTO` / `T` / `TD` / `TESTODIN` / `-TESTO` · de `TEXT` / `DT` / `DTEXT` / `-TEXT` · ru `ТЕКСТ` / `ДТ` / `ДТЕКСТ` / `-ТЕКСТ` · pl `TEKST` / `DT` / `DTEKST` / `-TEKST` · cs `TEXT` / `DT` / `DTEXT` / `-TEXT` · hu `SZÖVEG` / `-SZÖVEG`
 

@@ -141,14 +141,16 @@ never stretched and mirrored with it, in its colour, masking nothing, its clip n
 (image/i01, v1–v6, r1, r2, c1, c2, the colour and mirror plots; our drawing of i01 and of
 VBA_Map2Globe beside AutoCAD's plots); picked by its frame, shown or not, and its path, never
 inside it; END, MID, NEA and PER on its frame, CEN its middle, INS its insertion corner
-(i02, i04); a grip at each corner (**unverified**: no desktop pass); MOVE, COPY, ROTATE, SCALE and
+(i02, i04); a grip at each corner, none at a side's middle (desktop objects/d02; the drag
+**unverified**); MOVE, COPY, ROTATE, SCALE and
 MIRROR map it (MIRROR leaves its normal down: i06e); STRETCH drags one corner, the last caught of
 the bottom left, top left, top right and bottom right, the one across staying, scaled by the larger
 of the ratios along its width and its height, never moved whole (s1–s11); EXPLODE leaves its
 frame's four lines, saying nothing (i06a); OFFSET, AREA, BREAK, DIVIDE and TRIM refuse it with
 AutoCAD's words (i07, i15); LIST as each of the ten consoles writes it (i07, i12: its name,
 insertion, scale in its image's pixel size, turn or, mirrored, its extrusion, display, and its
-whole frame's corners); its Properties are its general rows (**unverified**); the 1 of AutoCAD's
+whole frame's corners); its Properties its general rows, titled Raster Image (desktop
+objects/d09); the 1 of AutoCAD's
 samples (VBA_Map2Globe's world map) and LibreCAD's part (its definition named by its file),
 ACAD_TABLE as AutoCAD 2027 opens one: its corner, direction and normal (10, 11, 210), its rows'
 heights and columns' widths (141, 142), its style (342: TABLESTYLE's margins, flow, title and
@@ -164,7 +166,8 @@ down, broken where a span covers both sides, each wearing the table's layer and 
 same pieces as AutoCAD's own block of each of t10's six tables (a copy scaled by 0.5, one turned,
 one mirrored, a red one on another layer, an empty -TABLE); picked and snapped through them (END
 and MID on each run of the grid, INS a cell's text, CEN inside a block cell: t07) and at its corner
-(INS, **unverified**); a grip at its corner that moves it; MOVE, COPY and ROTATE carry it, SCALE
+(INS, **unverified**); a grip at its corner that moves it (desktop objects/d03); MOVE, COPY and
+ROTATE carry it, SCALE
 scales its rows, columns, margins and texts as AutoCAD writes them (each row kind's height on the
 table, each cell a span does not cover given its own, 41 left 1: t00, t02), MIRROR leaves it
 unreflected, its corner the image of its far one along its rows, its direction the opposite of
@@ -173,8 +176,8 @@ its block cells' references and its grid's lines, on its layer, in its colour an
 grey line of no length at its corner, saying nothing (t06, t06b); OFFSET, AREA, BREAK, DIVIDE,
 TRIM, FILLET and CHAMFER refuse it with AutoCAD's words (`… (not Table objects).`, acadres 33496;
 t04, t04b, t04c); LIST as each of the ten consoles writes it (t08: its corner, normal and direction,
-each `%f` whatever LUPREC, its columns, rows and style); its Properties are its general rows
-(**unverified**); the 1 of other programs' files (ezdxf's, with a block cell and merged cells),
+each `%f` whatever LUPREC, its columns, rows and style); its Properties its general rows, titled
+Table (desktop objects/d11); the 1 of other programs' files (ezdxf's, with a block cell and merged cells),
 MULTILEADER as AutoCAD 2027 opens one (probes mleader/m00–m15, v1–v23): its context's branches
 (LEADER{: its landing, 10, its dogleg's direction, 11, and length, 40) and their leader lines
 (LEADER_LINE{: their vertices from the arrowhead's tip), its MTEXT (290 1: 304 with its braces and
@@ -192,8 +195,11 @@ arrowhead 1:6 of 140, drawn when the first segment is at least twice it (v15); t
 as AutoCAD's EXPLODE of each of m12's five (three leaders on two sides, none, a block, a spline,
 two lines of text); picked through them; END at its leader lines' vertices, landings and
 doglegs' ends and INS at its text (m08), its block's objects as a reference's (CEN, QUA, NEA),
-no MID, NEA or PER along its leaders (m08, m09); a grip at each of those points, dragged as
-STRETCH moves it alone (**unverified** on the desktop); MOVE, COPY and ROTATE carry it, SCALE
+no MID, NEA or PER along its leaders (m08, m09); its grips as AutoCAD's (desktop objects/d04–d07):
+a square at each leader line's vertex, dragged as STRETCH moves it, and at each landing, whose
+Stretch moves it with its dogleg and content by the drag, and an arrow along each dogleg at its
+end, which lengthens it, the content following (a second branch's landing moving its content
+**unprobed**); MOVE, COPY and ROTATE carry it, SCALE
 scales its arrowhead, landing gap, doglegs, text height and width and block, its own 41 and 42
 left (m05); MIRROR reflects its points and lays its text back by its first landing reading as
 before (MIRRTEXT 0's half-plane), Top Left turned Top Right where it turns round (m06: about
@@ -205,8 +211,8 @@ dragged past the other stops at it: **unprobed**); EXPLODE leaves its MTEXT or r
 dogleg a LINE, each leader line a polyline or spline and each arrowhead a 2D solid (m03, m12);
 OFFSET, AREA, BREAK, DIVIDE, EXTEND, FILLET and CHAMFER refuse it with AutoCAD's words (m08, m09);
 LIST as each of the ten consoles writes it (m10, m12, m14: its type, content, landing, each
-leader numbered with its vertices and landing, its style, `Annotative: NO`); its Properties are
-its general rows, the palette's title ax26res 731 (Multileader) in each language (**unverified**);
+leader numbered with its vertices and landing, its style, `Annotative: NO`); its Properties its
+general rows, titled ax26res 731 (Multileader, desktop objects/d08) in each language;
 the 1 of AutoCAD's samples (in a block of Mechanical - Text and Tables) and the 4 of 2 other
 programs' files (dxf-parser's, whose files AutoCAD refuses: m01), a
 hatch's gradient (450 1: its name, 470, in capitals; each colour's true colour, 421, or index, 63;
@@ -299,15 +305,28 @@ reference files could not be located or read*, AcTaskDialogs), XREFNOTIFY's ball
 xref's own clipping (XCLIP); of an image, its pixels (its file), IMAGE (the External References
 palette), -IMAGE (Attach, Detach, Path, Reload, Unload, `?`: image/i00, i01), IMAGEATTACH,
 IMAGECLIP, IMAGEADJUST, IMAGEQUALITY, TRANSPARENCY and the frame left out of a plot with
-IMAGEFRAME 2 (nothing is plotted here); of a table, TABLE and -TABLE (Auto, from Style, data Link,
+IMAGEFRAME 2 (nothing is plotted here), its palette's rows past General (desktop objects/d09:
+Image Adjust's Brightness, Contrast and Fade, Geometry's Position X, Y and Z, Rotation, Width,
+Height and Scale, Misc's Name and Saved Path greyed, Show image, Show clipped and Background
+transparency); of a table, TABLE and -TABLE (Auto, from Style, data Link,
 Style, Layer, Width, Height: table/t00), TABLEDIT and the editing of its cells, its rows and
-columns (its grips but the corner's, the ribbon's Table Cell tab), TABLESTYLE, TABLEEXPORT,
+columns (its grips but the corner's: a square at each column line, arrows for its width, height,
+both and its breaking, and the column letters and row numbers shown while selected, desktop
+objects/d03; the ribbon's Table Cell tab), its palette's rows past General (d11: Linetype scale
+greyed, 3D Visualization's Material, Table's style, rows and columns greyed, direction, width and
+height, Geometry's Position X, Y and Z, Table Breaks), TABLESTYLE, TABLEEXPORT,
 fields and formulas, data links, a table broken into fragments, a cell's colours, fill, borders
 and rotation drawn, a table as an edge TRIM and EXTEND cut or reach to (unprobed); of a
 multileader, MLEADER (`Specify leader arrowhead location or [pre enter Text/leader Landing
 first/Content first/Options] <Options>:`, AcDimRes 1201–1261, m00, m02, m03), MLEADEREDIT
-(1301–1354, m12), MLEADERALIGN, MLEADERCOLLECT, MLEADERSTYLE, its grips' menus (Add Leader,
-Lengthen, 42419–42424), its other arrowheads (none in the corpus: one is drawn and written back
+(1301–1354, m12), MLEADERALIGN, MLEADERCOLLECT, MLEADERSTYLE, its grips' menus (the landing's Stretch, Lengthen
+Landing, Add Leader; a vertex's Stretch, Add Vertex, Remove Leader: desktop objects/d05, d06;
+42419–42424), its text frame's four grips (d04, d12: the top left moves the content, the top
+right by the drag's Y, the bottom left by its X, the bottom right sizes the frame), its
+palette's rows past General (d08: Misc's Overall scale, Multileader style, Annotative; Leaders'
+type, colour, linetype, lineweight, Arrowhead and its size, Horizontal Landing, Landing distance,
+Leader extension; Text's Contents, style, Justify, Direction, Width, Height, Rotation, line
+spacing, Background mask, attachments, Landing gap, Text frame), its other arrowheads (none in the corpus: one is drawn and written back
 closed filled), a block's attribute values (not read, so not written back), its text's frame and
 background, its annotative scales, TRIM taking it (unprobed), and one nested in a block snapped
 as itself (it snaps as the pieces it draws, Nearest along its leaders included); a complex linetype's shapes (BATTING, ZIGZAG:

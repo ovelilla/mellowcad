@@ -24,6 +24,7 @@ import {
   textInsertionPoint,
   leaderGripIndices,
   imageCorners,
+  mleaderLandingIndices,
   mleaderStretchPoints,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
@@ -352,8 +353,8 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         break
       case "wipeout":
-        // WHY one at each vertex, as a closed polyline's: unverified (no
-        // desktop pass); STRETCH moves its vertices one by one (wipeout/w09).
+        // One at each vertex and none at a side's middle (desktop
+        // objects/d01); STRETCH moves its vertices one by one (wipeout/w09).
         entity.vertices.forEach((vertex, index) => {
           grips.push({
             entityId: id,
@@ -363,8 +364,8 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         break
       case "image":
-        // WHY one at each corner of its frame, dragged as STRETCH drags it:
-        // unverified (no desktop pass); STRETCH takes a corner (image/s1–s10).
+        // One at each corner of its frame (desktop objects/d02), dragged as
+        // STRETCH drags a corner (image/s1–s10; the drag unverified).
         imageCorners(entity).forEach((corner, index) => {
           grips.push({
             entityId: id,
@@ -374,27 +375,39 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         break
       case "table":
-        // WHY one, at its insertion point, moving it: AutoCAD's top-left grip
-        // moves a table; its others resize its rows and columns, which are
-        // not here (unverified on the desktop).
+        // One, at its insertion point, moving it: AutoCAD's top-left grip
+        // (desktop objects/d03); its column squares and its arrows (width,
+        // height, both, breaking) resize it, which is not here.
         grips.push({
           entityId: id,
           role: { kind: "move" },
           world: entity.position,
         })
         break
-      case "mleader":
-        // WHY at the points STRETCH moves, each dragged as STRETCH moves it
-        // alone (mleader/m06, m07): its grips' own menus (Add Leader,
-        // Lengthen) are unverified on the desktop.
+      case "mleader": {
+        // At the points STRETCH moves (desktop objects/d04): a square at
+        // each leader line's vertex and landing, an arrow along the dogleg
+        // at its end, dragged as `mleaderGripped` says. Its text's four
+        // corners' grips and the grips' menus are not here.
+        const ends = new Map(
+          mleaderLandingIndices(entity).map((at, i) => [at.end, i])
+        )
         mleaderStretchPoints(entity).forEach((point, index) => {
+          const branch = ends.get(index)
           grips.push({
             entityId: id,
             role: { kind: "vertex", index },
             world: point,
+            ...(branch !== undefined && entity.dogleg
+              ? {
+                  shape: "arrow" as const,
+                  along: entity.branches[branch]!.direction,
+                }
+              : {}),
           })
         })
         break
+      }
       case "solid2d":
         // One at each corner (solid2d/p08, desktop d01), corners on one
         // point (a triangle's last two) under one grip, which moves them

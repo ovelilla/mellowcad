@@ -279,6 +279,8 @@ export {
   mleaderDoglegEnd,
   mleaderExploded,
   mleaderGeometry,
+  mleaderGripped,
+  mleaderLandingIndices,
   mleaderStretched,
   mleaderStretchPoints,
 } from "./multileaders"

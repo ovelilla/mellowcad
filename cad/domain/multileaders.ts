@@ -287,6 +287,45 @@ export function mleaderStretched(
 }
 
 /**
+ * Which of `mleaderStretchPoints` are each branch's landing and its
+ * dogleg's end, by index.
+ */
+export function mleaderLandingIndices(
+  mleader: MLeaderEntity
+): { readonly landing: number; readonly end: number }[] {
+  let index = 0
+  return mleader.branches.map((branch) => {
+    index += branch.lines.reduce((count, line) => count + line.length, 0)
+    const landing = index
+    index += 2
+    return { landing, end: landing + 1 }
+  })
+}
+
+/**
+ * The multileader as its grip at `index` of `mleaderStretchPoints` leaves
+ * it dragged by `delta` (desktop objects/d05–d07): a leader line's vertex
+ * moves alone, a dogleg's end (an arrow) lengthens it as STRETCH does, the
+ * content following, and a landing's Stretch moves it with its dogleg and
+ * the content, where STRETCH catching the landing alone slides it along
+ * the dogleg.
+ */
+export function mleaderGripped(
+  mleader: MLeaderEntity,
+  index: number,
+  delta: Vec2
+): MLeaderEntity {
+  const landing = mleaderLandingIndices(mleader).some(
+    (at) => at.landing === index
+  )
+  return mleaderStretched(
+    mleader,
+    (_, i) => i === index || (landing && i === index + 1),
+    delta
+  )
+}
+
+/**
  * The multileader under the affine map `at`, as AutoCAD's MOVE, ROTATE,
  * SCALE and MIRROR leave it (mleader/m05, m06, m07): every point carried,
  * each dogleg's direction with them, and its sizes — the arrowhead, the
