@@ -71,9 +71,10 @@ feed | encode | sed 's/$/\r/' |
   tr -d '\r' |
   # The banner's last line, in each installed culture: it is in no string table. Russian's
   # («Утилиты меню AutoCAD загружены.») comes out as Windows-1251 bytes read as 1252; Polish and
-  # Czech («Nástroje nabídek aplikace AutoCAD načteny.») mix UTF-8 and Windows-1250.
+  # Czech («Nástroje nabídek aplikace AutoCAD načteny.») mix UTF-8 and Windows-1250; Hungarian
+  # («AutoCAD menü segédeszközök betöltve.») is UTF-8.
   awk -v t="$trace" '
-    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen|menu programu AutoCAD wczytano|dek aplikace AutoCAD na|ìåíþ AutoCAD/ { f = 1; if (!t) print; next }
+    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu|Utilitaires de menu|utilità dei menu di AutoCAD|Menü-Dienstprogramme geladen|menu programu AutoCAD wczytano|dek aplikace AutoCAD na|menü segédeszközök betöltve|ìåíþ AutoCAD/ { f = 1; if (!t) print; next }
     t && /SECURELOAD|NETLOAD|MellowProbe|MPTRACE|«MP (loaded|clm skipped|trace db)/ { next }
     f { print }' |
   grep -v "^$"

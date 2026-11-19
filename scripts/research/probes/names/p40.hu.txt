@@ -1,0 +1,6 @@
+_LINE
+SEM
+0,0
+10,0
+
+(sslength (ssget "_X"))

@@ -1,0 +1,11 @@
+TÉGLALAP
+0,0
+10,10
+TE
+20,0
+30,10
+(sslength (ssget "_X"))
+(getcname "TÉGLALAP")
+(getcname "TE")
+(getcname "_RECTANG")
+(getcname "_RECTANGLE")

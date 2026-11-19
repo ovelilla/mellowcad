@@ -1,0 +1,48 @@
+_-OSNAP
+VÉG
+(getvar "OSMODE")
+_-OSNAP
+KÖZ
+(getvar "OSMODE")
+_-OSNAP
+GKÖ
+(getvar "OSMODE")
+_-OSNAP
+ILL
+(getvar "OSMODE")
+_-OSNAP
+MET
+(getvar "OSMODE")
+_-OSNAP
+FEL
+(getvar "OSMODE")
+_-OSNAP
+SZO
+(getvar "OSMODE")
+_-OSNAP
+PON
+(getvar "OSMODE")
+_-OSNAP
+MER
+(getvar "OSMODE")
+_-OSNAP
+KÖR
+(getvar "OSMODE")
+_-OSNAP
+ÉRI
+(getvar "OSMODE")
+_-OSNAP
+LÁT
+(getvar "OSMODE")
+_-OSNAP
+MEG
+(getvar "OSMODE")
+_-OSNAP
+PÁR
+(getvar "OSMODE")
+_-OSNAP
+SEM
+(getvar "OSMODE")
+_-OSNAP
+VÉG,KÖZ,MET,MEG
+(getvar "OSMODE")

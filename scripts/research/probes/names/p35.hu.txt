@@ -1,0 +1,5 @@
+_LINE
+VÉG
+20,0
+
+(cdr (assoc 10 (entget (entlast))))

@@ -1,0 +1,5 @@
+_-OSNAP
+VÉG
+_-OSNAP
+KI
+(getvar "OSMODE")

@@ -1,0 +1,9 @@
+_ZOOM
+2x
+(getvar "VIEWSIZE")
+_ZOOM
+2xp
+(getvar "VIEWSIZE")
+_ZOOM
+2xa
+(getvar "VIEWSIZE")
