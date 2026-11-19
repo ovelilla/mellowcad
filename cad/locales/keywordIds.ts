@@ -850,5 +850,16 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Exit",
     "Copy",
     "Mtext"
+  ],
+  "WIPEOUT": [
+    "Frames",
+    "Polyline",
+    "Undo",
+    "Close",
+    "ON",
+    "OFF",
+    "Display",
+    "Yes",
+    "No"
   ]
 }

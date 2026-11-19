@@ -1674,6 +1674,7 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
       // No edge: TRIM and EXTEND find nothing to cut it with.
       return []
@@ -1913,6 +1914,7 @@ function trimRefusal(target: Entity): MessageId | null {
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
       return "cannotTrimObject"
     case "mtext":
@@ -2002,6 +2004,7 @@ function planTrim(
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
     case "region":
     case "solid3d":
@@ -2052,6 +2055,7 @@ function extendRefusal(target: Entity): MessageId | null {
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
       return "cannotExtendObject"
     case "mtext":
@@ -2104,6 +2108,7 @@ function planExtend(
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
     case "region":
     case "solid3d":
@@ -2378,6 +2383,7 @@ function circleEdgeCrossPoints(
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
       return []
   }

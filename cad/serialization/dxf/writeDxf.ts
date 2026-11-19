@@ -274,8 +274,58 @@ export function writeDxf(
     (l) => !sameLinetypeName(l.name, DEFAULT_LINETYPE_ID)
   )
 
-  // TABLES
+  // CLASSES: a wipeout's, and WIPEOUTFRAME's object, as AutoCAD writes
+  // them, the instance count (91) from 2004 (wipeout/w01, w14). Only where
+  // the drawing has one or its WIPEOUTFRAME is not a new drawing's.
+  const wipeouts = [
+    modelEntities,
+    ...drawing.blocks.map((b) => b.entities),
+  ].reduce((n, list) => n + list.filter((e) => e.type === "wipeout").length, 0)
+  const wipeoutVariables =
+    wipeouts > 0 || drawing.settings.wipeoutFrame !== 1 ? handle() : null
   const out = body
+  if (wipeoutVariables) {
+    out.str(0, "SECTION")
+    out.str(2, "CLASSES")
+    const dxfClass = (
+      name: string,
+      cpp: string,
+      app: string,
+      flags: number,
+      count: number,
+      entity: boolean
+    ) => {
+      out.str(0, "CLASS")
+      out.str(1, name)
+      out.str(2, cpp)
+      out.str(3, app)
+      out.int(90, flags)
+      if (version >= 1018) out.int(91, count)
+      out.int(280, 0)
+      out.int(281, entity ? 1 : 0)
+    }
+    if (wipeouts > 0) {
+      dxfClass(
+        "WIPEOUT",
+        "AcDbWipeout",
+        "WipeOut|Product Desc: Object Enabler for WipeOut entity | Company: Autodesk, Inc. | WEB Address: www.autodesk.com",
+        2175,
+        wipeouts,
+        true
+      )
+    }
+    dxfClass(
+      "WIPEOUTVARIABLES",
+      "AcDbWipeoutVariables",
+      '"WipeOut|Product Desc:     WipeOut Dbx Application|Company:          Autodesk, Inc.|WEB Address:      www.autodesk.com"',
+      0,
+      1,
+      false
+    )
+    out.str(0, "ENDSEC")
+  }
+
+  // TABLES
   out.str(0, "SECTION")
   out.str(2, "TABLES")
   table(out, "VPORT", T.vports, 1)
@@ -476,6 +526,20 @@ export function writeDxf(
   out.str(350, T.groups)
   out.str(3, "ACAD_PLOTSTYLENAME")
   out.str(350, T.plotStyles)
+  if (wipeoutVariables) {
+    out.str(3, "ACAD_WIPEOUT_VARS")
+    out.str(350, wipeoutVariables)
+  }
+  // WHY the drawing variables only for Display but not plot: 0 and 1 are
+  // WIPEOUTVARIABLES' own, which an older reader keeps.
+  const variables =
+    drawing.settings.wipeoutFrame === 2
+      ? { dictionary: handle(), frame: handle() }
+      : null
+  if (variables) {
+    out.str(3, "AcDbVariableDictionary")
+    out.str(350, variables.dictionary)
+  }
   const owned = (type: string, own: string) => {
     out.str(0, type)
     out.str(5, own)
@@ -500,6 +564,29 @@ export function writeDxf(
   out.str(330, T.plotStyles)
   out.str(102, "}")
   out.str(330, T.plotStyles)
+  if (wipeoutVariables) {
+    // 0 for OFF, 1 for the rest, as AutoCAD 2027 writes it (w16).
+    owned("WIPEOUTVARIABLES", wipeoutVariables)
+    out.str(100, "AcDbWipeoutVariables")
+    out.int(70, drawing.settings.wipeoutFrame === 0 ? 0 : 1)
+  }
+  if (variables) {
+    // Display but not plot, which only the drawing variable holds (w15).
+    owned("DICTIONARY", variables.dictionary)
+    out.str(100, "AcDbDictionary")
+    out.int(281, 1)
+    out.str(3, "WIPEOUTFRAME")
+    out.str(350, variables.frame)
+    out.str(0, "DICTIONARYVAR")
+    out.str(5, variables.frame)
+    out.str(102, "{ACAD_REACTORS")
+    out.str(330, variables.dictionary)
+    out.str(102, "}")
+    out.str(330, variables.dictionary)
+    out.str(100, "DictionaryVariables")
+    out.int(280, 0)
+    out.str(1, String(drawing.settings.wipeoutFrame))
+  }
   out.str(0, "ENDSEC")
   out.str(0, "EOF")
 

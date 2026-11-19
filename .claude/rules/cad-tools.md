@@ -107,8 +107,8 @@ default reads right (its JSDoc says which). Declare what the box cannot tell: a 
 pick (`"object"`), a 2D point (MIRROR's, ARC's and PLINE's later points, CIRCLE's 2P and 3P ones),
 a keyword prompt that keeps snaps on, a set of whole objects, STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
 (`"integer"`), and a command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
-lines; `keywords` by id; at a point prompt it refuses a Z and says `setsLastPoint()`, ARC's
-centre end). Type `FOO` there in AutoCAD's console before declaring one: the words differ
+lines; `keywords` by id; `point2d: true` refuses a Z and sets LASTPOINT: WIPEOUT's; else
+`setsLastPoint()`, ARC's centre end). Type `FOO` there in AutoCAD's console before declaring one: the words differ
 per input function, and per command at `Select objects:`.
 
 ## Answering, numbers and transparency

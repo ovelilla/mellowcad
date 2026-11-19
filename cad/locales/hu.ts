@@ -138,7 +138,8 @@ export const hu: EngineLocale = {
       "ptype": "Pontstílus",
       "solid": "2D tömör",
       "face3d": "3D lap",
-      "leader": "Mutató"
+      "leader": "Mutató",
+      "wipeout": "Kitakarás"
     },
     "description": {
       "U": "Az utolsó művelet visszavonása",
@@ -410,6 +411,16 @@ export const hu: EngineLocale = {
           {
             "one": "Mutató",
             "other": "Mutató"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Kitakarás",
+            "other": "Kitakarás"
           }
         ]
       ]
@@ -1353,6 +1364,9 @@ export const hu: EngineLocale = {
       "LEADER": [
         "MUTATÓ",
         "MUT"
+      ],
+      "WIPEOUT": [
+        "KITAKAR"
       ]
     },
     "keywords": {
@@ -2206,6 +2220,17 @@ export const hu: EngineLocale = {
         "Exit": "Kilépés",
         "Copy": "Másol",
         "Mtext": "Bszöveg"
+      },
+      "WIPEOUT": {
+        "Frames": "Keretek",
+        "Polyline": "Vonallánc",
+        "Undo": "Vissza",
+        "Close": "Bezár",
+        "ON": "BE",
+        "OFF": "KI",
+        "Display": "Megjelenítés",
+        "Yes": "Igen",
+        "No": "Nem"
       }
     },
     "promptKeywords": {
@@ -3078,7 +3103,17 @@ export const hu: EngineLocale = {
       "leaderOptions": "opciók",
       "leaderNextLine": "A feliratozás szövegének következő sora",
       "leaderAnnotationOption": "Válasszon a feliratozási opciók közül",
-      "leaderCopyObject": "Válassza ki a másolni kívánt objektumot"
+      "leaderCopyObject": "Válassza ki a másolni kívánt objektumot",
+      "wipeoutFirstPoint": "Adja meg az első pontot vagy",
+      "wipeoutSecondPoint": "Adja meg a következő pontot",
+      "wipeoutNextPointOr": "Adja meg a következő pontot vagy",
+      "wipeoutNextPointOrClose": "Adja meg a következő pontot",
+      "selectClosedPolyline": "Válasszon zárt vonalláncot",
+      "erasePolyline": "Törli a vonalláncot?",
+      "wipeoutFrameMode": "Adja meg a módot",
+      "wipeoutFramesOn": "BE",
+      "wipeoutFramesOff": "KI",
+      "wipeoutFramesDisplay": "Megjelenítés nyomtatás nélkül"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6039,6 +6074,7 @@ export const hu: EngineLocale = {
             "solid2d": "SOLID",
             "leader": "LEADER",
             "face3d": "3D FACE",
+            "wipeout": "WIPEOUT",
             "other": "KIOSZT"
           }
         ]
@@ -8242,7 +8278,29 @@ export const hu: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Feliratozási: Nem"
+      "listLeaderAnnotative": "        Feliratozási: Nem",
+      "wipeoutPolylineNotClosed": "A vonalláncnak zártnak kell lennie, és csak vonalszakaszokból állhat.",
+      "listWipeoutPoints": [
+        "Határpontok száma: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       az X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ],
+        " pontnál"
+      ]
     },
     "feedback": {
       "snap": {
@@ -8521,6 +8579,11 @@ export const hu: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Tengely objektum"
+      },
+      "WIPEOUT": {
+        "Close": "Zár",
+        "OFF": "KI",
+        "Display": "Megjelenítés nyomtatás nélkül"
       }
     },
     "promptKeywordLabels": {

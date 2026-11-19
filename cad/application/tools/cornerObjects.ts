@@ -154,6 +154,7 @@ export function typeRefusal(
       return again(any)
     // Picked first (face3d/f13); second, the same words assumed (unprobed).
     case "face3d":
+    case "wipeout":
       return again(any)
     case "mtext":
     case "hatch":
@@ -532,6 +533,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "point":
     case "solid2d":
     case "face3d":
+    case "wipeout":
     case "leader":
     case "region":
     case "solid3d":

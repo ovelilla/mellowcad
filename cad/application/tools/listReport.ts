@@ -24,6 +24,7 @@ import type {
   LineEntity,
   Solid2dEntity,
   Face3dEntity,
+  WipeoutEntity,
   LeaderEntity,
   MTextEntity,
   Polyline3dEntity,
@@ -119,6 +120,7 @@ type ObjectName =
   | "solid2d"
   | "leader"
   | "face3d"
+  | "wipeout"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -211,6 +213,9 @@ class Report {
         break
       case "face3d":
         this.face3d(entity)
+        break
+      case "wipeout":
+        this.wipeout(entity)
         break
       case "leader":
         this.leader(entity)
@@ -356,6 +361,18 @@ class Report {
     this.say("listSolidTo", this.xyz(c))
     this.say("listSolidAnd", this.xyz(d))
     this.sayExtrusion(solid)
+  }
+
+  /**
+   * As each console lists it (wipeout/w03, w12): its vertices in the UCS,
+   * counted, the closing one not repeated.
+   */
+  private wipeout(wipeout: WipeoutEntity): void {
+    this.header("wipeout", wipeout)
+    this.say("listWipeoutPoints", { count: wipeout.vertices.length })
+    for (const vertex of wipeout.vertices) {
+      this.say("listWipeoutPoint", this.xyz(this.at(wipeout, vertex)))
+    }
   }
 
   /**

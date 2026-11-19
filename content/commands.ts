@@ -134,6 +134,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "-TEXT": { group: "annotate" },
   MTEXT: { group: "annotate" },
   LEADER: { group: "annotate" },
+  WIPEOUT: { group: "annotate" },
   "-MTEXT": { group: "annotate" },
   TEXTEDIT: { group: "annotate" },
   DIMLINEAR: { group: "annotate" },

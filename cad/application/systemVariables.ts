@@ -548,6 +548,20 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     max: 63,
     read: (ctx) => ctx.inquiry().undoControl,
   },
+  // Saved in the drawing; set, the model regenerates (wipeout/w07).
+  {
+    ...integer(
+      "WIPEOUTFRAME",
+      0,
+      2,
+      (settings) => settings.wipeoutFrame,
+      (value) =>
+        value === 0 || value === 1 || value === 2
+          ? patch({ wipeoutFrame: value })
+          : null
+    ),
+    regenerates: true,
+  },
   heldInteger("ARRAYASSOCIATIVITY", 0, 1),
   {
     type: "integer",

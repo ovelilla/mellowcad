@@ -2419,6 +2419,22 @@ describe("the engine's English surface", () => {
         .do("exit", (c) => c.enter())
         .do("pick", (c) => c.click(at(5, 2)))
     )
+    walk("WIPEOUT", createHarness(), (s) =>
+      s
+        .do("WIPEOUT", (c) => c.command("WIPEOUT"))
+        .do("first", (c) => c.type("0,0").enter())
+        .do("Enter refused", (c) => c.enter())
+        .do("second", (c) => c.type("10,0").enter())
+        .do("third", (c) => c.type("10,5").enter())
+        .do("Undo", (c) => c.type("U").enter())
+        .do("third again", (c) => c.type("10,5").enter())
+        .do("fourth", (c) => c.type("0,5").enter())
+        .do("make", (c) => c.enter())
+        .do("Frames", (c) => c.command("WIPEOUT").type("F").enter())
+        .do("OFF", (c) => answer(c, "OFF"))
+        .do("Polyline", (c) => c.command("WIPEOUT").enter())
+        .do("pick", (c) => c.click(at(5, 0)))
+    )
     walk("3DFACE", createHarness(), (s) =>
       s
         .do("3DFACE", (c) => c.command("3F"))

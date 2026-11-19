@@ -1,0 +1,40 @@
+QAFLAGS
+2
+_PLINE
+0,0
+100,0
+_A
+100,50
+_L
+0,50
+_C
+_WIPEOUT
+_P
+_L
+_Y
+_LIST
+_L
+
+_RECTANG
+200,0
+300,50
+(setq r (entlast))
+_PLINE
+400,0
+500,0
+500,50
+
+(setq o (entlast))
+_CIRCLE
+600,0
+20
+_WIPEOUT
+_P
+_L
+!o
+!r
+
+_LIST
+_L
+
+(entget r)

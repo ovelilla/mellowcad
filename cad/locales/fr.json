@@ -134,7 +134,8 @@
       "ptype": "Style de points",
       "solid": "Solide 2D",
       "face3d": "Face 3D",
-      "leader": "Ligne de repère"
+      "leader": "Ligne de repère",
+      "wipeout": "Nettoyer"
     },
     "description": {
       "U": "Annule la dernière action",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Point} other {Points}}",
       "solid2d": "{count, plural, one {Solide} other {Solides}}",
       "face3d": "{count, plural, one {Face 3D} other {Faces 3D}}",
-      "leader": "{count, plural, one {Ligne de repère} other {Lignes de repère}}"
+      "leader": "{count, plural, one {Ligne de repère} other {Lignes de repère}}",
+      "wipeout": "{count, plural, one {Masque} other {Masques}}"
     },
     "array": {
       "rectangular": "Réseau (Rectangulaire)",
@@ -696,7 +698,8 @@
       "MEASURE": ["MESURER", "ME"],
       "PTYPE": ["TYPEPT", "DDPTYPE"],
       "SOLID": ["SOLIDE", "SO"],
-      "LEADER": ["LREPERE"]
+      "LEADER": ["LREPERE"],
+      "WIPEOUT": ["NETTOYER"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1547,6 +1550,17 @@
         "Exit": "Quitter",
         "Copy": "Copier",
         "Mtext": "textMult"
+      },
+      "WIPEOUT": {
+        "Frames": "Cadres",
+        "Polyline": "Polyligne",
+        "Undo": "Annuler",
+        "Close": "Fermer",
+        "ON": "ACtif",
+        "OFF": "INactif",
+        "Display": "Afficher",
+        "Yes": "Oui",
+        "No": "Non"
       }
     },
     "promptKeywords": {
@@ -2331,7 +2345,17 @@
       "leaderOptions": "options",
       "leaderNextLine": "Entrez la ligne suivante du texte annotation",
       "leaderAnnotationOption": "Entrez une option d'annotation",
-      "leaderCopyObject": "Sélectionnez un objet à copier"
+      "leaderCopyObject": "Sélectionnez un objet à copier",
+      "wipeoutFirstPoint": "Spécifiez le premier point ou",
+      "wipeoutSecondPoint": "Spécifiez le point suivant",
+      "wipeoutNextPointOr": "Spécifiez le point suivant ou",
+      "wipeoutNextPointOrClose": "Spécifiez le point suivant ou",
+      "selectClosedPolyline": "Sélectionnez une polyligne fermée",
+      "erasePolyline": "Effacer la polyligne?",
+      "wipeoutFrameMode": "Entrez le mode",
+      "wipeoutFramesOn": "ACtif",
+      "wipeoutFramesOff": "INactif",
+      "wipeoutFramesDisplay": "Afficher mais ne pas tracer"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2817,7 +2841,7 @@
       "notAFitPoint": "Point incorrect.",
       "notAControlVertex": "Ce n'est pas un sommet de contrôle.",
       "allAdditionsUndone": "Tous les ajouts sont annulés.",
-      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} other {RESEAU}}",
+      "listObjectName": "{name, select, line {LIGNE} circle {CERCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLIGNE} vertex {SOMMET} endSequence {SEQUENCE FIN} text {TEXT} mtext {MTEXT} attdef {DEFINITION DES ATTRIBUTS} attribute {ATTRIBUT} dimension {COTE} hatch {HATCH} insert {REFERENCE DE BLOC} region {REGION} solid3d {3DSOLID} solid2d {SOLIDE} leader {LEADER} face3d {FACE3D} wipeout {WIPEOUT} other {RESEAU}}",
       "listObject": "                  {name}  Calque: \"{layer}\"",
       "listSpace": "                            Espace: Espace objet",
       "listColor": "                   Couleur: {color}    Type de ligne: \"{linetype}\"",
@@ -3126,7 +3150,10 @@
       "listLeaderHook": "Attache de ligne de repère: {on, select, yes {Actif} other {Inactif}}",
       "listLeaderArrow": "Flèche:    {on, select, yes {Actif} other {Inactif}}",
       "listLeaderPath": "Type de chemin: {spline, select, yes {Spline} other {Droit}}",
-      "listLeaderAnnotative": "        Annotatif: Non"
+      "listLeaderAnnotative": "        Annotatif: Non",
+      "wipeoutPolylineNotClosed": "La polyligne doit être fermée et uniquement composée de segments de ligne.",
+      "listWipeoutPoints": "Nombre de points du contour: {count}",
+      "listWipeoutPoint": "       au niveau du point, X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3329,6 +3356,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "axe par Objet"
+      },
+      "WIPEOUT": {
+        "Close": "Fermer",
+        "OFF": "Inactif",
+        "Display": "Afficher mais pas tracer"
       }
     },
     "promptKeywordLabels": {

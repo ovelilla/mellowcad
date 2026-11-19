@@ -218,6 +218,8 @@ export interface SceneInput {
   readonly lwDisplay: boolean
   /** FILLMODE: wide polylines filled, or their outline only. On when absent. */
   readonly fillMode?: boolean
+  /** WIPEOUTFRAME: whether a wipeout's frame shows (0 hides it); 1 when absent. */
+  readonly wipeoutFrame?: number
   /** ISOLINES: a solid's curved faces' isolines; a new drawing's 4 when absent. */
   readonly isolines?: number
   /** PDMODE: the figure points show; a dot when absent. */
@@ -316,7 +318,8 @@ export function buildScene(input: SceneInput): Scene {
     },
     input.visualStyle ?? "2dWireframe",
     input.viewDirection ?? { x: 0, y: 0, z: 1 },
-    input.viewUp ?? { x: 0, y: 1, z: 0 }
+    input.viewUp ?? { x: 0, y: 1, z: 0 },
+    input.wipeoutFrame ?? 1
   )
   if (input.ucsIcon) {
     pushUcsIcon(
@@ -776,6 +779,11 @@ export interface EntityDrawOptions {
   readonly blocks?: BlockLookup
   /** FILLMODE, for a wide polyline; on when absent. */
   readonly fill?: boolean
+  /**
+   * WIPEOUTFRAME, for a wipeout drawn as the drawing's: its mask, and its
+   * frame unless 0. Absent, as a ghost or a highlight is drawn: its frame alone.
+   */
+  readonly wipeoutFrame?: number
   /** ISOLINES, for a solid's curved faces; a new drawing's 4 when absent. */
   readonly isolines?: number
   /** PDMODE and the size PDSIZE gives at this view (`pointSize`); a dot when absent. */
@@ -1222,6 +1230,24 @@ function planarShapes(
       return polyline3dPrimitives(camera, entity, stroke, options)
     case "face3d":
       return face3dPrimitives(camera, entity, stroke, options)
+    case "wipeout": {
+      // It masks what was drawn before it with the background and is
+      // covered by what comes after (wipeout/w02's plot), whatever
+      // FILLMODE; its frame shows with WIPEOUTFRAME 1 or 2, in its colour.
+      // WHY no mask off the plan: unverified, drawn as a 2D solid is.
+      const points = entity.vertices.map((p) => camera.worldToScreen(p))
+      const frame = options.wipeoutFrame ?? 1
+      const masks = options.wipeoutFrame !== undefined && camera.isPlan
+      return [
+        {
+          kind: "path",
+          points,
+          closed: true,
+          ...(masks && { fill: THEME.background }),
+          ...(frame !== 0 && { stroke }),
+        },
+      ]
+    }
     case "solid2d": {
       // Filled only with FILLMODE on and seen square on; else its outline,
       // corners 1, 2, 4, 3 (solid2d/d02).
@@ -2205,7 +2231,8 @@ function pushEntities(
   points: PointDisplay,
   visualStyle: VisualStyle,
   viewDirection: Vec3,
-  viewUp: Vec3
+  viewUp: Vec3,
+  wipeoutFrame: number
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
@@ -2335,6 +2362,7 @@ function pushEntities(
       isolines,
       points,
       solidLines,
+      wipeoutFrame,
       // A gradient's own colours fade as the stroke does.
       ownColor: isFaded
         ? (color: string) => fadedColor(color)
@@ -2442,7 +2470,14 @@ export function selectionGlow(
     camera,
     entity,
     { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
-    { ...options, linetype: false, ownColor: undefined }
+    // A wipeout's glow is its frame, shown whatever WIPEOUTFRAME, as AutoCAD
+    // shows it on a selected one (its help's WIPEOUTFRAME page).
+    {
+      ...options,
+      linetype: false,
+      ownColor: undefined,
+      wipeoutFrame: undefined,
+    }
   )
 }
 

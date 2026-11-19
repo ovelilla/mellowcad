@@ -259,6 +259,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   solid: "SOLID",
   face3d: "3DFACE",
   leader: "LEADER",
+  wipeout: "WIPEOUT",
   divide: "DIVIDE",
   measuresegments: "MEASURE",
   ptype: "PTYPE",

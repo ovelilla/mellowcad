@@ -81,6 +81,7 @@ import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
 import { mappedFit, polylineRefitted } from "./polylineFits"
 import { withXAxisAngle } from "./points"
+import { mapWipeoutVertices } from "./wipeouts"
 import { mapSolid2dCorners } from "./solids2d"
 import { face3dReflected } from "./faces3d"
 import { leaderGripIndices, mapLeader, stretchLeaderVertices } from "./leaders"
@@ -367,6 +368,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
       return { ...entity, position: V.add(entity.position, delta) }
     case "solid2d":
       return mapSolid2dCorners(entity, (p) => V.add(p, delta))
+    case "wipeout":
+      return mapWipeoutVertices(entity, (p) => V.add(p, delta))
     case "leader":
       // Its offsets from its annotation stay: MOVE records none (leader/p08).
       return mapLeader(
@@ -481,6 +484,7 @@ export function stretchEntity(
     case "hatch":
     case "region":
     case "solid2d":
+    case "wipeout":
     case "leader":
       return planar
   }
@@ -539,6 +543,9 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     case "solid2d":
       // Each corner caught moves alone (solid2d/p07).
       return entity.corners
+    case "wipeout":
+      // Each vertex caught moves alone (wipeout/w09).
+      return entity.vertices
     case "leader":
       // A hook's start goes with the end (leader/p14).
       return leaderGripIndices(entity).map((i) => entity.vertices[i])
@@ -581,6 +588,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "hatch":
     case "region":
     case "solid2d":
+    case "wipeout":
     case "leader":
     case "face3d":
       return stretchVertices(entity)
@@ -707,6 +715,8 @@ function stretchPlanar(
         : entity
     case "solid2d":
       return mapSolid2dCorners(entity, shift)
+    case "wipeout":
+      return mapWipeoutVertices(entity, shift)
     case "leader":
       return stretchLeaderVertices(entity, (i) =>
         inFrame(entity.vertices[i]) ? delta : null
@@ -842,6 +852,7 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
           entity.xAxisAngle
         )
       case "solid2d":
+      case "wipeout":
       case "leader":
         return freshCopy(translatePlanar(entity, delta))
       case "region":
@@ -984,6 +995,8 @@ function rotateFlat(
       )
     case "solid2d":
       return mapSolid2dCorners(entity, (p) => rotatePoint(p, pivot, radians))
+    case "wipeout":
+      return mapWipeoutVertices(entity, (p) => rotatePoint(p, pivot, radians))
     case "leader":
       return mapLeader(
         entity,
@@ -1113,6 +1126,7 @@ export function rotateEntityCopy(
         )
       case "point":
       case "solid2d":
+      case "wipeout":
       case "leader":
         return freshCopy(rotateFlat(entity, pivot, radians))
     }
@@ -1258,6 +1272,8 @@ function scalePlanar(
       return { ...entity, position: scalePoint(entity.position, base, factor) }
     case "solid2d":
       return mapSolid2dCorners(entity, (p) => scalePoint(p, base, factor))
+    case "wipeout":
+      return mapWipeoutVertices(entity, (p) => scalePoint(p, base, factor))
     case "leader":
       return mapLeader(
         entity,
@@ -1372,6 +1388,7 @@ export function scaleEntityCopy(
         })
       case "point":
       case "solid2d":
+      case "wipeout":
       case "leader":
         return freshCopy(scalePlanar(entity, base, factor))
     }
@@ -1527,6 +1544,8 @@ function mirrorFlat(
       )
     case "solid2d":
       return mapSolid2dCorners(entity, (p) => mirrorPoint(p, a, b))
+    case "wipeout":
+      return mapWipeoutVertices(entity, (p) => mirrorPoint(p, a, b))
     case "leader":
       // Its horizontal is its text's direction, which MIRRTEXT 0 keeps
       // reading (leader/p14: 211 stays 1,0,0 and the side flips).
@@ -1781,6 +1800,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
       }
       case "point":
       case "solid2d":
+      case "wipeout":
       case "leader":
         return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }

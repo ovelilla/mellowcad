@@ -138,7 +138,8 @@ export const ru: EngineLocale = {
       "ptype": "Отображение точек",
       "solid": "2D-фигура",
       "face3d": "3D-грань",
-      "leader": "Выноска"
+      "leader": "Выноска",
+      "wipeout": "Маскировка"
     },
     "description": {
       "U": "Отмена предыдущей операции",
@@ -448,6 +449,18 @@ export const ru: EngineLocale = {
             "few": "Выноски",
             "many": "Выноски",
             "other": "Выноски"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Маскировка",
+            "few": "Маскировки",
+            "many": "Маскировок",
+            "other": "Маскировки"
           }
         ]
       ]
@@ -1381,6 +1394,9 @@ export const ru: EngineLocale = {
       ],
       "LEADER": [
         "ВЫНОСКА"
+      ],
+      "WIPEOUT": [
+        "МАСКИРОВКА"
       ]
     },
     "keywords": {
@@ -2234,6 +2250,17 @@ export const ru: EngineLocale = {
         "Exit": "выХод",
         "Copy": "Копировать",
         "Mtext": "Мтекст"
+      },
+      "WIPEOUT": {
+        "Frames": "Контуры",
+        "Polyline": "Полилиния",
+        "Undo": "Отменить",
+        "Close": "Закрыть",
+        "ON": "Вкл",
+        "OFF": "Откл",
+        "Display": "оТображать",
+        "Yes": "Да",
+        "No": "Нет"
       }
     },
     "promptKeywords": {
@@ -3105,7 +3132,17 @@ export const ru: EngineLocale = {
       "leaderOptions": "параметры",
       "leaderNextLine": "Следующая строка текста надписи",
       "leaderAnnotationOption": "Задайте параметр для аннотативного текста",
-      "leaderCopyObject": "Выберите копируемый объект"
+      "leaderCopyObject": "Выберите копируемый объект",
+      "wipeoutFirstPoint": "Первая точка или",
+      "wipeoutSecondPoint": "Следующая точка",
+      "wipeoutNextPointOr": "Следующая точка или",
+      "wipeoutNextPointOrClose": "Следующая точка или",
+      "selectClosedPolyline": "Выберите замкнутую полилинию",
+      "erasePolyline": "Стереть полилинию?",
+      "wipeoutFrameMode": "Выберите режим",
+      "wipeoutFramesOn": "ВКЛ",
+      "wipeoutFramesOff": "ОТКЛ",
+      "wipeoutFramesDisplay": "Отображать без печати"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6519,6 +6556,7 @@ export const ru: EngineLocale = {
             "solid2d": "SOLID",
             "leader": "LEADER",
             "face3d": "3D-ГРАНЬ",
+            "wipeout": "WIPEOUT",
             "other": "МАССИВ"
           }
         ]
@@ -8867,7 +8905,28 @@ export const ru: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Аннотативный: Нет"
+      "listLeaderAnnotative": "        Аннотативный: Нет",
+      "wipeoutPolylineNotClosed": "Полилиния должна быть замкнутой и состоять только из прямолинейных сегментов.",
+      "listWipeoutPoints": [
+        "Число точек контура: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       в точке, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -9146,6 +9205,11 @@ export const ru: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Объект"
+      },
+      "WIPEOUT": {
+        "Close": "Замкнуть",
+        "OFF": "Откл",
+        "Display": "оТображать без печати"
       }
     },
     "promptKeywordLabels": {

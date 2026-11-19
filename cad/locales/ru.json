@@ -134,7 +134,8 @@
       "ptype": "Отображение точек",
       "solid": "2D-фигура",
       "face3d": "3D-грань",
-      "leader": "Выноска"
+      "leader": "Выноска",
+      "wipeout": "Маскировка"
     },
     "description": {
       "U": "Отмена предыдущей операции",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Точка} few {Точки} many {Точки} other {Точки}}",
       "solid2d": "{count, plural, one {Тело} few {Тела} many {Тела} other {Тела}}",
       "face3d": "{count, plural, one {3D-грань} few {3D-грани} many {3D-грани} other {3D-грани}}",
-      "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}"
+      "leader": "{count, plural, one {Выноска} few {Выноски} many {Выноски} other {Выноски}}",
+      "wipeout": "{count, plural, one {Маскировка} few {Маскировки} many {Маскировок} other {Маскировки}}"
     },
     "array": {
       "rectangular": "Массив (прямоугольный)",
@@ -696,7 +698,8 @@
       "MEASURE": ["РАЗМЕТИТЬ", "РМ"],
       "PTYPE": ["ТИПТОЧКИ", "ДИАЛТТОЧ"],
       "SOLID": ["ФИГУРА", "ФИ"],
-      "LEADER": ["ВЫНОСКА"]
+      "LEADER": ["ВЫНОСКА"],
+      "WIPEOUT": ["МАСКИРОВКА"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1547,6 +1550,17 @@
         "Exit": "выХод",
         "Copy": "Копировать",
         "Mtext": "Мтекст"
+      },
+      "WIPEOUT": {
+        "Frames": "Контуры",
+        "Polyline": "Полилиния",
+        "Undo": "Отменить",
+        "Close": "Закрыть",
+        "ON": "Вкл",
+        "OFF": "Откл",
+        "Display": "оТображать",
+        "Yes": "Да",
+        "No": "Нет"
       }
     },
     "promptKeywords": {
@@ -2333,7 +2347,17 @@
       "leaderOptions": "параметры",
       "leaderNextLine": "Следующая строка текста надписи",
       "leaderAnnotationOption": "Задайте параметр для аннотативного текста",
-      "leaderCopyObject": "Выберите копируемый объект"
+      "leaderCopyObject": "Выберите копируемый объект",
+      "wipeoutFirstPoint": "Первая точка или",
+      "wipeoutSecondPoint": "Следующая точка",
+      "wipeoutNextPointOr": "Следующая точка или",
+      "wipeoutNextPointOrClose": "Следующая точка или",
+      "selectClosedPolyline": "Выберите замкнутую полилинию",
+      "erasePolyline": "Стереть полилинию?",
+      "wipeoutFrameMode": "Выберите режим",
+      "wipeoutFramesOn": "ВКЛ",
+      "wipeoutFramesOff": "ОТКЛ",
+      "wipeoutFramesDisplay": "Отображать без печати"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2819,7 +2843,7 @@
       "notAFitPoint": "Не определяющая точка.",
       "notAControlVertex": "Не является управляющей вершиной.",
       "allAdditionsUndone": "Все добавления отменены.",
-      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} other {МАССИВ}}",
+      "listObjectName": "{name, select, line {ОТРЕЗОК} circle {КРУГ} arc {ДУГА} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {ПОЛИЛИНИЯ} vertex {ВЕРШИНА} endSequence {КОНЕЦ ПОСЛЕДОВАТЕЛЬНОСТИ} text {TEXT} mtext {MTEXT} attdef {ОПРЕДЕЛЕНИЕ АТРИБУТА} attribute {АТРИБУТ} dimension {РАЗМЕР} hatch {HATCH} insert {ВХОЖДЕНИЕ БЛОКА} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-ГРАНЬ} wipeout {WIPEOUT} other {МАССИВ}}",
       "listObject": "                  {name} Слой: \"{layer}\"",
       "listSpace": "                           Пространство: Пространство модели",
       "listColor": "                   Цвет: {color}    Тип линий: \"{linetype}\"",
@@ -3128,7 +3152,10 @@
       "listLeaderHook": "Полка: {on, select, yes {Вкл} other {Откл}}",
       "listLeaderArrow": "Стрелка:     {on, select, yes {Вкл} other {Откл}}",
       "listLeaderPath": "Тип выноски: {spline, select, yes {Сплайн} other {Прямая}}",
-      "listLeaderAnnotative": "        Аннотативный: Нет"
+      "listLeaderAnnotative": "        Аннотативный: Нет",
+      "wipeoutPolylineNotClosed": "Полилиния должна быть замкнутой и состоять только из прямолинейных сегментов.",
+      "listWipeoutPoints": "Число точек контура: {count}",
+      "listWipeoutPoint": "       в точке, X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3331,6 +3358,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "Объект"
+      },
+      "WIPEOUT": {
+        "Close": "Замкнуть",
+        "OFF": "Откл",
+        "Display": "оТображать без печати"
       }
     },
     "promptKeywordLabels": {

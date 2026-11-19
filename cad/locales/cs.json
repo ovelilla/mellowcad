@@ -134,7 +134,8 @@
       "ptype": "Styl bodu",
       "solid": "2D těleso",
       "face3d": "3D plocha",
-      "leader": "Odkaz"
+      "leader": "Odkaz",
+      "wipeout": "Překrytí"
     },
     "description": {
       "U": "Vrátí poslední akci",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Bod} few {Body} many {Body} other {Body}}",
       "solid2d": "{count, plural, one {Deska} few {Desky} many {Desky} other {Desky}}",
       "face3d": "{count, plural, one {3D plocha} few {3D plochy} many {3D plochy} other {3D plochy}}",
-      "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}"
+      "leader": "{count, plural, one {Pozice} few {Pozice} many {Pozice} other {Pozice}}",
+      "wipeout": "{count, plural, one {Překrytí} few {Překrytí} many {Překrytí} other {Překrytí}}"
     },
     "array": {
       "rectangular": "Pole (obdélníkové)",
@@ -696,7 +698,8 @@
       "MEASURE": ["DĚLM", "DM"],
       "PTYPE": ["BTYP"],
       "SOLID": ["DESKA", "DE"],
-      "LEADER": ["ODKAZ", "ODK"]
+      "LEADER": ["ODKAZ", "ODK"],
+      "WIPEOUT": ["PŘEKRÝT"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1547,6 +1550,17 @@
         "Exit": "kOnec",
         "Copy": "Kopie",
         "Mtext": "Mtext"
+      },
+      "WIPEOUT": {
+        "Frames": "Rámečky",
+        "Polyline": "Křivka",
+        "Undo": "Zpět",
+        "Close": "Uzavřít",
+        "ON": "Ano",
+        "OFF": "Ne",
+        "Display": "Zobrazit",
+        "Yes": "Ano",
+        "No": "Ne"
       }
     },
     "promptKeywords": {
@@ -2333,7 +2347,17 @@
       "leaderOptions": "možnosti",
       "leaderNextLine": "Zadejte další řádek textu poznámky",
       "leaderAnnotationOption": "Zadejte volbu poznámky",
-      "leaderCopyObject": "Vyberte kopírovaný objekt"
+      "leaderCopyObject": "Vyberte kopírovaný objekt",
+      "wipeoutFirstPoint": "Zadejte první bod nebo",
+      "wipeoutSecondPoint": "Zadejte další bod",
+      "wipeoutNextPointOr": "Zadejte další bod nebo",
+      "wipeoutNextPointOrClose": "Zadejte další bod nebo",
+      "selectClosedPolyline": "Vyberte uzavřenou křivku",
+      "erasePolyline": "Vymazat křivku?",
+      "wipeoutFrameMode": "Zadejte režim",
+      "wipeoutFramesOn": "ANO",
+      "wipeoutFramesOff": "NE",
+      "wipeoutFramesDisplay": "Zobrazit bez vykreslení"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2821,7 +2845,7 @@
       "notAFitPoint": "Není bod vyhlazení.",
       "notAControlVertex": "Není řídicí vrchol.",
       "allAdditionsUndone": "Všechna doplnění byla vrácena zpět.",
-      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} other {POLE}}",
+      "listObjectName": "{name, select, line {úsečka} circle {kružnice} arc {oblouk} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONEC SEKVENCE} text {TEXT} mtext {MTEXT} attdef {DEFINICE ATRIBUTU} attribute {ATRIBUT} dimension {DIMENSION} hatch {HATCH} insert {REFERENCE BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D PLOCHA} wipeout {WIPEOUT} other {POLE}}",
       "listObject": "                  {name}   Hladina: \"{layer}\"",
       "listSpace": "                             Prostor: Modelový prostor",
       "listColor": "                   Barva: {color}    Typ čáry: \"{linetype}\"",
@@ -3130,7 +3154,10 @@
       "listLeaderHook": "Kotvička:  {on, select, yes {Ano} other {Ne}}",
       "listLeaderArrow": "Šipka:     {on, select, yes {Ano} other {Ne}}",
       "listLeaderPath": "Typ čáry:  {spline, select, yes {Spline} other {Přímá}}",
-      "listLeaderAnnotative": "        Poznámky: Ne"
+      "listLeaderAnnotative": "        Poznámky: Ne",
+      "wipeoutPolylineNotClosed": "Křivka musí být uzavřená a složená jen z úsečkových segmentů.",
+      "listWipeoutPoints": "Počet bodů hranice: {count}",
+      "listWipeoutPoint": "       v bodě, X = {x}, Y = {y}, Z = {z}"
     },
     "feedback": {
       "snap": {
@@ -3335,6 +3362,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "Osa podle objektu"
+      },
+      "WIPEOUT": {
+        "Close": "Uzavři",
+        "OFF": "Ne",
+        "Display": "Zobrazit bez vykreslení"
       }
     },
     "promptKeywordLabels": {

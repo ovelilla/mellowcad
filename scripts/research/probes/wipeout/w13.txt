@@ -1,0 +1,36 @@
+_WIPEOUT
+0,0
+
+100,0
+_U
+_U
+100,0
+100,50
+_C
+(entget (entlast))
+_-LINETYPE
+_L
+HIDDEN
+acadiso.lin
+
+_RECTANG
+_E
+7
+200,0
+300,50
+_CHPROP
+_L
+
+_LT
+HIDDEN
+_LW
+0.5
+_C
+5
+
+_WIPEOUT
+
+_L
+_Y
+(entget (entlast))
+(entlast)

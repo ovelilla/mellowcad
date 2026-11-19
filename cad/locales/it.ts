@@ -138,7 +138,8 @@ export const it: EngineLocale = {
       "ptype": "Stile punto",
       "solid": "Solido 2D",
       "face3d": "Faccia 3D",
-      "leader": "Direttrice"
+      "leader": "Direttrice",
+      "wipeout": "Entità coprente"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -410,6 +411,16 @@ export const it: EngineLocale = {
           {
             "one": "Direttrice",
             "other": "Direttrici"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Entità coprente",
+            "other": "Entità coprenti"
           }
         ]
       ]
@@ -1353,6 +1364,9 @@ export const it: EngineLocale = {
       ],
       "LEADER": [
         "DIRETTRICE"
+      ],
+      "WIPEOUT": [
+        "ENTCOPR"
       ]
     },
     "keywords": {
@@ -2206,6 +2220,17 @@ export const it: EngineLocale = {
         "Exit": "Esci",
         "Copy": "Copia",
         "Mtext": "testoM"
+      },
+      "WIPEOUT": {
+        "Frames": "Cornici",
+        "Polyline": "Polilinea",
+        "Undo": "Annulla",
+        "Close": "Chiudi",
+        "ON": "ON",
+        "OFF": "OFF",
+        "Display": "Visualizzazione",
+        "Yes": "Sì",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -3077,7 +3102,17 @@ export const it: EngineLocale = {
       "leaderOptions": "OPzioni",
       "leaderNextLine": "Digitare la riga successiva del testo di annotazione",
       "leaderAnnotationOption": "Digitare un'opzione di annotazione",
-      "leaderCopyObject": "Selezionare un oggetto da copiare"
+      "leaderCopyObject": "Selezionare un oggetto da copiare",
+      "wipeoutFirstPoint": "Specificare il primo punto o",
+      "wipeoutSecondPoint": "Specificare punto successivo",
+      "wipeoutNextPointOr": "Specificare punto successivo o",
+      "wipeoutNextPointOrClose": "Specificare punto successivo o",
+      "selectClosedPolyline": "Selezionare una polilinea chiusa",
+      "erasePolyline": "Cancellare polilinea?",
+      "wipeoutFrameMode": "Digitare modalità",
+      "wipeoutFramesOn": "ON",
+      "wipeoutFramesOff": "OFF",
+      "wipeoutFramesDisplay": "Visualizza ma non stampare"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6050,6 +6085,7 @@ export const it: EngineLocale = {
             "solid2d": "SOLIDO",
             "leader": "LEADER",
             "face3d": "FACCIA 3D",
+            "wipeout": "WIPEOUT",
             "other": "SERIE"
           }
         ]
@@ -8257,7 +8293,28 @@ export const it: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Annotativa: No"
+      "listLeaderAnnotative": "        Annotativa: No",
+      "wipeoutPolylineNotClosed": "La polilinea deve essere chiusa e composta esclusivamente da segmenti di linea.",
+      "listWipeoutPoints": [
+        "Numero di punti di contorno: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       al punto, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -8536,6 +8593,11 @@ export const it: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Asse per oggetto"
+      },
+      "WIPEOUT": {
+        "Close": "Chiudi",
+        "OFF": "OFF",
+        "Display": "Visualizza ma non stampare"
       }
     },
     "promptKeywordLabels": {

@@ -136,6 +136,7 @@ declare const source: {
       "solid": string
       "face3d": string
       "leader": string
+      "wipeout": string
     }
     "description": {
       "U": string
@@ -265,6 +266,7 @@ declare const source: {
       "solid2d": string
       "face3d": string
       "leader": string
+      "wipeout": string
     }
     "array": {
       "rectangular": string
@@ -724,6 +726,7 @@ declare const source: {
       "PTYPE": string[]
       "SOLID": string[]
       "LEADER": string[]
+      "WIPEOUT": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1577,6 +1580,17 @@ declare const source: {
         "Copy": string
         "Mtext": string
       }
+      "WIPEOUT": {
+        "Frames": string
+        "Polyline": string
+        "Undo": string
+        "Close": string
+        "ON": string
+        "OFF": string
+        "Display": string
+        "Yes": string
+        "No": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2363,6 +2377,16 @@ declare const source: {
       "leaderNextLine": string
       "leaderAnnotationOption": string
       "leaderCopyObject": string
+      "wipeoutFirstPoint": string
+      "wipeoutSecondPoint": string
+      "wipeoutNextPointOr": string
+      "wipeoutNextPointOrClose": string
+      "selectClosedPolyline": string
+      "erasePolyline": string
+      "wipeoutFrameMode": string
+      "wipeoutFramesOn": string
+      "wipeoutFramesOff": string
+      "wipeoutFramesDisplay": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -3160,6 +3184,9 @@ declare const source: {
       "listLeaderArrow": string
       "listLeaderPath": string
       "listLeaderAnnotative": string
+      "wipeoutPolylineNotClosed": string
+      "listWipeoutPoints": string
+      "listWipeoutPoint": string
     }
     "feedback": {
       "snap": {
@@ -3364,6 +3391,11 @@ declare const source: {
       }
       "SOLIDEDIT": {
         "Axis": string
+      }
+      "WIPEOUT": {
+        "Close": string
+        "OFF": string
+        "Display": string
       }
     }
     "promptKeywordLabels": {

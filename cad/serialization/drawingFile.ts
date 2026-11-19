@@ -153,7 +153,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 57
+export const DRAWING_FILE_VERSION = 58
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -236,6 +236,7 @@ type SavedCommandSetting =
   | "visualStyle"
   | "pointMode"
   | "pointSize"
+  | "wipeoutFrame"
   | "filletRadius3d"
   | "chamferDistance1"
   | "chamferDistance2"
@@ -699,6 +700,14 @@ function cloneEntityShape(entity: Entity): Entity {
         position: { x: entity.position.x, y: entity.position.y },
         ...(entity.xAxisAngle ? { xAxisAngle: entity.xAxisAngle } : {}),
       }
+    case "wipeout":
+      return {
+        id: entity.id,
+        type: "wipeout",
+        layerId: entity.layerId,
+        ...overrides,
+        vertices: entity.vertices.map((p) => ({ x: p.x, y: p.y })),
+      }
     case "solid2d": {
       const [a, b, c, d] = entity.corners
       const at = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
@@ -1116,6 +1125,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     visualStyle,
     pointMode,
     pointSize,
+    wipeoutFrame,
     filletRadius3d,
     chamferDistance1,
     chamferDistance2,
@@ -1173,6 +1183,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(visualStyle !== "2dWireframe" ? { visualStyle } : {}),
     ...(pointMode ? { pointMode } : {}),
     ...(pointSize ? { pointSize } : {}),
+    ...(wipeoutFrame !== 1 ? { wipeoutFrame } : {}),
     ...(filletRadius3d !== 1 ? { filletRadius3d } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
@@ -1318,6 +1329,11 @@ function parseSettings(value: unknown): DocumentSettings {
         ? value.pointMode
         : 0,
     pointSize: isFiniteNumber(value.pointSize) ? value.pointSize : 0,
+    // A drawing from before 58 has no wipeouts: acadiso's.
+    wipeoutFrame:
+      value.wipeoutFrame === 0 || value.wipeoutFrame === 2
+        ? value.wipeoutFrame
+        : 1,
     // A drawing from before 49 has acadiso's.
     filletRadius3d:
       isFiniteNumber(value.filletRadius3d) && value.filletRadius3d > 0
@@ -1859,6 +1875,19 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...(isFiniteNumber(raw.xAxisAngle) && raw.xAxisAngle !== 0
           ? { xAxisAngle: raw.xAxisAngle }
           : {}),
+      }
+    }
+    case "wipeout": {
+      // Since 58; three vertices or more, or nothing.
+      if (!Array.isArray(raw.vertices)) return null
+      const vertices = raw.vertices.map(parseVec2)
+      if (vertices.length < 3 || vertices.some((v) => v === null)) return null
+      return {
+        id,
+        type: "wipeout",
+        layerId,
+        ...overrides,
+        vertices: vertices as Vec2[],
       }
     }
     case "solid2d": {

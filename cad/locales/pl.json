@@ -134,7 +134,8 @@
       "ptype": "Styl punktu",
       "solid": "Obszar",
       "face3d": "Powierzchnia 3D",
-      "leader": "Linia odniesienia"
+      "leader": "Linia odniesienia",
+      "wipeout": "Przykryj"
     },
     "description": {
       "U": "Cofa ostatnią czynność",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Punkt} few {Punkty} many {Punktów} other {Punktu}}",
       "solid2d": "{count, plural, one {Bryła} few {Bryły} many {Brył} other {Bryły}}",
       "face3d": "{count, plural, one {Powierzchnia 3D} few {Powierzchnie 3D} many {Powierzchni 3D} other {Powierzchni 3D}}",
-      "leader": "{count, plural, one {Linia odniesienia} few {Linie odniesienia} many {Linii odniesienia} other {Linii odniesienia}}"
+      "leader": "{count, plural, one {Linia odniesienia} few {Linie odniesienia} many {Linii odniesienia} other {Linii odniesienia}}",
+      "wipeout": "{count, plural, one {Przykrycie} few {Przykrycia} many {Przykryć} other {Przykrycia}}"
     },
     "array": {
       "rectangular": "Szyk (Prostokątny)",
@@ -696,7 +698,8 @@
       "MEASURE": ["ZMIERZ", "ZMI"],
       "PTYPE": ["PTYPE"],
       "SOLID": ["OBSZAR", "OBS"],
-      "LEADER": ["LODNIES", "LO", "LODN"]
+      "LEADER": ["LODNIES", "LO", "LODN"],
+      "WIPEOUT": ["PRZYKRYJ"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1547,6 +1550,17 @@
         "Exit": "Wyjdź",
         "Copy": "Kopiuj",
         "Mtext": "Wtekst"
+      },
+      "WIPEOUT": {
+        "Frames": "Ramki",
+        "Polyline": "Polilinia",
+        "Undo": "Cofaj",
+        "Close": "Zamknij",
+        "ON": "Tak",
+        "OFF": "Nie",
+        "Display": "Wyświetl",
+        "Yes": "Tak",
+        "No": "Nie"
       }
     },
     "promptKeywords": {
@@ -2333,7 +2347,17 @@
       "leaderOptions": "opcje",
       "leaderNextLine": "Podaj następną linię tekstu opisu",
       "leaderAnnotationOption": "Podaj opcję opisu",
-      "leaderCopyObject": "Wybierz obiekt do skopiowania"
+      "leaderCopyObject": "Wybierz obiekt do skopiowania",
+      "wipeoutFirstPoint": "Wskaż pierwszy punkt lub",
+      "wipeoutSecondPoint": "Określ kolejny punkt",
+      "wipeoutNextPointOr": "Określ następny punkt lub",
+      "wipeoutNextPointOrClose": "Określ następny punkt lub",
+      "selectClosedPolyline": "Wybierz zamkniętą polilinię",
+      "erasePolyline": "Czy usunąć polilinię?",
+      "wipeoutFrameMode": "Podaj tryb",
+      "wipeoutFramesOn": "Tak",
+      "wipeoutFramesOff": "Nie",
+      "wipeoutFramesDisplay": "Wyświetl bez kreślenia"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2821,7 +2845,7 @@
       "notAFitPoint": "Nie jest punktem dopasowania.",
       "notAControlVertex": "Nie jest wierzchołkiem sterującym.",
       "allAdditionsUndone": "Wszystkie dodatkowe punkty zostały cofnięte.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} other {SZYK}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} other {SZYK}}",
       "listObject": "                  {name}    Warstwa: \"{layer}\"",
       "listSpace": "                              Obszar: Obszar modelu",
       "listColor": "                   Kolor: {color}    Rodzaj linii: \"{linetype}\"",
@@ -3130,7 +3154,10 @@
       "listLeaderHook": "Linia zaczepienia: {on, select, yes {Tak} other {Nie}}",
       "listLeaderArrow": "Strzałka:          {on, select, yes {Tak} other {Nie}}",
       "listLeaderPath": "Typ ścieżki:       {spline, select, yes {Splajn} other {Linie}}",
-      "listLeaderAnnotative": "        Opisowy: Nie"
+      "listLeaderAnnotative": "        Opisowy: Nie",
+      "wipeoutPolylineNotClosed": "Polilinia musi być zamknięta i składać się wyłącznie z segmentów linii.",
+      "listWipeoutPoints": "Liczba punktów obwiedni: {count}",
+      "listWipeoutPoint": "       od punktu, X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3335,6 +3362,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "Oś przez obiekt"
+      },
+      "WIPEOUT": {
+        "Close": "Zamknij",
+        "OFF": "Nie",
+        "Display": "Wyświetl bez kreślenia"
       }
     },
     "promptKeywordLabels": {

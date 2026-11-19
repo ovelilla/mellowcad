@@ -349,6 +349,17 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         })
         break
+      case "wipeout":
+        // WHY one at each vertex, as a closed polyline's: unverified (no
+        // desktop pass); STRETCH moves its vertices one by one (wipeout/w09).
+        entity.vertices.forEach((vertex, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: vertex,
+          })
+        })
+        break
       case "solid2d":
         // One at each corner (solid2d/p08, desktop d01), corners on one
         // point (a triangle's last two) under one grip, which moves them

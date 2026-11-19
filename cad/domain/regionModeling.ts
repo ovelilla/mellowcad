@@ -307,6 +307,7 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     // WHY none: AutoCAD makes a region of a 3D face (face3d/f07, `1 loop
     // extracted.`), unbuilt here.
     case "face3d":
+    case "wipeout":
       return null
     default: {
       const unhandled: never = entity

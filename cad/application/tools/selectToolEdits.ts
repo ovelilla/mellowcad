@@ -42,6 +42,7 @@ import {
   rotatePoint,
   replacePolyline3dVertex,
   mapSolid2dCorners,
+  withWipeoutVertex,
   withLeaderVertex,
 } from "../../domain/entities"
 import type {
@@ -111,6 +112,10 @@ export function withVertexAt(
     return mapSolid2dCorners(entity, (corner) =>
       V.equals(corner, at) ? { x: point.x, y: point.y } : corner
     )
+  }
+  if (entity.type === "wipeout") {
+    if (!entity.vertices[index]) return null
+    return withWipeoutVertex(entity, index, point)
   }
   if (entity.type === "hatch") {
     return withLoopEdited(entity, index, (loop, at) =>

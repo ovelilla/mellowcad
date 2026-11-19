@@ -223,6 +223,12 @@ export type QuestionInput =
       readonly refusal: MessageId | readonly MessageId[]
       readonly values?: MessageValues
       /**
+       * A 2D point, refused in the command's own words: a Z is refused as
+       * at `"point2d"` (WIPEOUT's second point says `2D point or option
+       * keyword required.` and lists no keyword, wipeout/w05, w13).
+       */
+      readonly point2d?: true
+      /**
        * The keywords the refusal names as `{keywords}`, by id, in the command
        * language: as the prompt lists them (`cuTting edges`), or as they are
        * declared (`cuTting`) — TRIM's, whose console lists the prompt's words

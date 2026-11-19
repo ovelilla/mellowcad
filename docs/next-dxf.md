@@ -15,10 +15,10 @@
 > publicado el 17/11, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
 > (`docs/next-seo.md`, L8), hecho y publicado el 17/11; y los degradados (el punto 6b), hechos
 > y publicados el 17/11, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
-> punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148; siguiente, por orden del
-> dueño, lo que quede del punto 7 (WIPEOUT, IMAGE, TABLE…), después de que el húngaro
-> (`docs/next-seo.md`, L8) se hiciera el 19/11, y después otro idioma, alternando, una sesión cada
-> vez.
+> punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148, y WIPEOUT, hecho el 19/11 (sin
+> publicar: el push está congelado), que las llevó a 151, después del húngaro (`docs/next-seo.md`,
+> L8), hecho el 19/11; siguiente, por orden del dueño, lo que quede del punto 7 (IMAGE, TABLE,
+> MULTILEADER…), y después otro idioma, alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -337,23 +337,24 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros sin un error de AUDIT y los traza como el suyo. El corpus: abren las 30 de 8 muestras
       y la de otro programa; muestras sin nada fuera, de 141 a 148 de 154; ficheros de otros, de 572
       a 573. Se anotan: su cara en un estilo sombreado u oculto, la región de REGION, EDGE, PFACE y
-      las mallas. **Queda del punto 7**, por orden: WIPEOUT (3 muestras, 11 objetos: su contorno, su
-      máscara y WIPEOUTFRAME), IMAGE (1 y 1: la referencia de imagen, que como la de un dibujo no
-      tiene su fichero en el navegador), TABLE (1 de otros), MULTILEADER (1 y 2), y XLINE, RAY,
-      MINSERT, los colores índice y las sustituciones DSTYLE de cada cota; quedan para la próxima
-      sesión de esta fase. De WIPEOUT, investigado ya en la consola (sondas `wipeout/w00`–`w04`,
-      en los nueve idiomas): el objeto es una imagen de un píxel (DXF 10 su esquina, 11 y 12 los
-      vectores U y V, 13 su tamaño, 71 2 y 14/24 el contorno en píxeles, el punto
-      `P + (x + 0,5)·U + (0,5 − y)·V`) y el modo de marco va en el objeto WIPEOUTVARIABLES (70);
-      tapa lo dibujado antes y queda bajo lo dibujado después, y su marco se ve y se traza con
-      WIPEOUTFRAME 1, el inicial. WIPEOUT pregunta `Specify first point or [Frames/Polyline]
-      <Polyline>:`, `Specify next point:`, `… or [Undo]:`, `… or [Close/Undo]:` (puntos 2D),
-      Polyline `Select a closed polyline:` (una abierta se ignora sin decir nada) y `Erase
-      polyline? [Yes/No] <No>:`, Frames `Enter mode [ON/OFF/Display but not plot] <ON>:`; LIST
-      `Number of boundary points: 4` y `at point, X=…,  Y=…,  Z=…`. Sus palabras no están en
-      acadres: salen de cada consola (es `Marcos/Polilínea`, de `Rahmen/Polylinie`, ru
-      `Контуры/Полилиния`), y `_U` no deshace en las consolas española, portuguesa, francesa y
-      rusa.
+      las mallas. **WIPEOUT hecho** (19/11/2026, sin publicar: el push está congelado): la
+      cobertura (un polígono en su plano que tapa con el fondo lo dibujado antes y queda bajo lo
+      dibujado después, su marco según WIPEOUTFRAME, guardado en el dibujo, fichero versión 58) y
+      WIPEOUT con Marcos y Polilínea en los diez idiomas de consola (sondas `wipeout/w00`–`w16`; sus
+      palabras no están en acadres: salen de cada consola, y los nombres de la ayuda: es y pt-BR
+      COBERTURA, fr NETTOYER, it ENTCOPR, de ABDECKEN, ru МАСКИРОВКА, pl PRZYKRYJ, cs PŘEKRÝT, hu
+      KITAKAR); designada dentro y por su marco, referencias en su marco, pinzamientos por vértice,
+      MOVE…STRETCH, EXPLODE en líneas, LIST, y OFFSET, AREA, BREAK y DIVIDE la rechazan con las
+      palabras de AutoCAD. DXF en los dos sentidos: AutoCAD 2027 guarda WIPEOUTFRAME como variable
+      del dibujo (DICTIONARYVAR) y en el 70 de WIPEOUTVARIABLES (0 o 1); la consola abre los 12
+      ficheros de w15 sin un error de AUDIT, lee WIPEOUTFRAME 2 desde 2004 y los traza como el suyo.
+      El corpus: abren las 11 de 3 muestras; muestras sin nada fuera, de 148 a 151 de 154; ficheros
+      de otros, 573 de 577, como antes. Se anotan: FRAME, DRAWORDER, TEXTMASK, las filas de la paleta
+      y los pinzamientos (sin escritorio: **no verificados**). **Queda del punto 7**, por orden:
+      IMAGE (1 muestra y 1 de otros: la referencia de imagen, que como la de un dibujo no tiene su
+      fichero en el navegador), TABLE (1 de otros, ACAD_TABLE), MULTILEADER (1 y 2 ficheros, 4
+      objetos), y XLINE, RAY, MINSERT, los colores índice y las sustituciones DSTYLE de cada cota;
+      quedan para la próxima sesión de esta fase.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

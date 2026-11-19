@@ -134,7 +134,8 @@
       "ptype": "Tipo de punto",
       "solid": "Sólido 2D",
       "face3d": "Cara 3D",
-      "leader": "Directriz"
+      "leader": "Directriz",
+      "wipeout": "Cobertura"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -232,7 +233,8 @@
       "point": "{count, plural, one {Punto} other {Puntos}}",
       "solid2d": "{count, plural, one {Sólido} other {Sólidos}}",
       "face3d": "{count, plural, one {Cara 3D} other {Caras 3D}}",
-      "leader": "{count, plural, one {Directriz} other {Directrices}}"
+      "leader": "{count, plural, one {Directriz} other {Directrices}}",
+      "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -691,7 +693,8 @@
       "MEASURE": ["GRADUA", "GD"],
       "PTYPE": ["TIPOPUNTO", "DDPTYPE"],
       "SOLID": ["SOLIDO", "SO"],
-      "LEADER": ["DIRECTRIZ", "DIREC"]
+      "LEADER": ["DIRECTRIZ", "DIREC"],
+      "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1501,6 +1504,17 @@
         "Exit": "Salir",
         "Copy": "Copiar",
         "Mtext": "textoM"
+      },
+      "WIPEOUT": {
+        "Frames": "Marcos",
+        "Polyline": "Polilínea",
+        "Undo": "desHacer",
+        "Close": "Cerrar",
+        "ON": "ACT",
+        "OFF": "DES",
+        "Display": "Mostrar",
+        "Yes": "Sí",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -2236,7 +2250,17 @@
       "leaderOptions": "opciones",
       "leaderNextLine": "Indique línea siguiente de texto de anotación",
       "leaderAnnotationOption": "Indique opción de anotación",
-      "leaderCopyObject": "Designe un objeto a copiar"
+      "leaderCopyObject": "Designe un objeto a copiar",
+      "wipeoutFirstPoint": "Precise primer punto o",
+      "wipeoutSecondPoint": "Precise el punto siguiente",
+      "wipeoutNextPointOr": "Precise el punto siguiente o",
+      "wipeoutNextPointOrClose": "Precise el punto siguiente o",
+      "selectClosedPolyline": "Designe una polilínea cerrada",
+      "erasePolyline": "¿Borrar polilínea?",
+      "wipeoutFrameMode": "Indique modo",
+      "wipeoutFramesOn": "ACT",
+      "wipeoutFramesOff": "DES",
+      "wipeoutFramesDisplay": "Mostrar pero no trazar"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2722,7 +2746,7 @@
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
       "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
-      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} wipeout {WIPEOUT} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
       "listColor": "                   Color: {color}    Tipo de línea: \"{linetype}\"",
@@ -3031,7 +3055,10 @@
       "listLeaderHook": "Línea de conexión: {on, select, yes {ACT} other {DES}}",
       "listLeaderArrow": "Flecha:     {on, select, yes {ACT} other {DES}}",
       "listLeaderPath": "Tipo de trayectoria: {spline, select, yes {Spline} other {Recta}}",
-      "listLeaderAnnotative": "        Anotativo: no"
+      "listLeaderAnnotative": "        Anotativo: no",
+      "wipeoutPolylineNotClosed": "La polilínea debe estar cerrada y componerse sólo de segmentos de línea.",
+      "listWipeoutPoints": "Número de puntos de contorno: {count}",
+      "listWipeoutPoint": "       en el punto, X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3163,7 +3190,14 @@
       "EXTRUDE": { "Taper": "ángulo Inclinación" },
       "REVOLVE": { "STart": "ángulo Inicial" },
       "SLICE": { "Object": "Objeto plano", "Both": "mantener Ambos lados" },
-      "SOLIDEDIT": { "Axis": "Eje por objeto" }
+      "SOLIDEDIT": {
+        "Axis": "Eje por objeto"
+      },
+      "WIPEOUT": {
+        "Close": "Cerrar",
+        "OFF": "DES",
+        "Display": "Mostrar pero no trazar"
+      }
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ejEZ" },

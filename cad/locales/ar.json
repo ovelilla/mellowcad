@@ -134,7 +134,8 @@
       "ptype": "نمط النقطة",
       "solid": "مجسم ثنائي الأبعاد",
       "face3d": "وجه ثلاثي الأبعاد",
-      "leader": "خط إشارة"
+      "leader": "خط إشارة",
+      "wipeout": "قناع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {نقطة} two {نقطتان} other {نقاط}}",
       "solid2d": "{count, plural, one {مجسم ثنائي الأبعاد} two {مجسمان ثنائيا الأبعاد} other {مجسمات ثنائية الأبعاد}}",
       "face3d": "{count, plural, one {وجه ثلاثي الأبعاد} two {وجهان ثلاثيا الأبعاد} other {أوجه ثلاثية الأبعاد}}",
-      "leader": "{count, plural, one {خط إشارة} two {خطا إشارة} other {خطوط إشارة}}"
+      "leader": "{count, plural, one {خط إشارة} two {خطا إشارة} other {خطوط إشارة}}",
+      "wipeout": "{count, plural, one {قناع} two {قناعان} other {أقنعة}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",

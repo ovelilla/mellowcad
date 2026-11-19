@@ -134,7 +134,8 @@
       "ptype": "Punktstil",
       "solid": "2D-Volumenkörper",
       "face3d": "3D-Fläche",
-      "leader": "Führung"
+      "leader": "Führung",
+      "wipeout": "Abdeckung"
     },
     "description": {
       "U": "Macht den letzten Vorgang rückgängig",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Punkt} other {Punkte}}",
       "solid2d": "{count, plural, one {Körper} other {Körper}}",
       "face3d": "{count, plural, one {3D-Fläche} other {3D-Flächen}}",
-      "leader": "{count, plural, one {Führung} other {Führungen}}"
+      "leader": "{count, plural, one {Führung} other {Führungen}}",
+      "wipeout": "{count, plural, one {Abdeckung} other {Abdeckungen}}"
     },
     "array": {
       "rectangular": "Anordnung (Rechteckig)",
@@ -703,7 +705,8 @@
       "MEASURE": ["MESSEN", "ME"],
       "PTYPE": ["PTYP", "DDPTYP"],
       "SOLID": ["SOLID", "SO"],
-      "LEADER": ["FÜHRUNG"]
+      "LEADER": ["FÜHRUNG"],
+      "WIPEOUT": ["ABDECKEN"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1554,6 +1557,17 @@
         "Exit": "Exit",
         "Copy": "KOpieren",
         "Mtext": "Mtext"
+      },
+      "WIPEOUT": {
+        "Frames": "Rahmen",
+        "Polyline": "Polylinie",
+        "Undo": "Zurück",
+        "Close": "Schließen",
+        "ON": "Ein",
+        "OFF": "aUs",
+        "Display": "Anzeigen",
+        "Yes": "Ja",
+        "No": "Nein"
       }
     },
     "promptKeywords": {
@@ -2338,7 +2352,17 @@
       "leaderOptions": "Optionen",
       "leaderNextLine": "Nächste Zeile des Beschriftungs-Texts eingeben",
       "leaderAnnotationOption": "Option für Beschriftung eingeben",
-      "leaderCopyObject": "Zu kopierendes Objekt auswählen"
+      "leaderCopyObject": "Zu kopierendes Objekt auswählen",
+      "wipeoutFirstPoint": "Ersten Punkt wählen oder",
+      "wipeoutSecondPoint": "Nächsten Punkt angeben",
+      "wipeoutNextPointOr": "Nächsten Punkt angeben oder",
+      "wipeoutNextPointOrClose": "Nächsten Punkt angeben oder",
+      "selectClosedPolyline": "Geschlossene Polylinie auswählen",
+      "erasePolyline": "Polylinie löschen?",
+      "wipeoutFrameMode": "Modus eingeben",
+      "wipeoutFramesOn": "Ein",
+      "wipeoutFramesOff": "aUs",
+      "wipeoutFramesDisplay": "Anzeigen aber nicht plotten"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2848,7 +2872,7 @@
       "notAFitPoint": "Kein Anpassungspunkt.",
       "notAControlVertex": "Kein Kontrollscheitelpunkt.",
       "allAdditionsUndone": "Alle Hinzufügungen wurden rückgängig gemacht.",
-      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} other {REIHE}}",
+      "listObjectName": "{name, select, line {LINIE} circle {KREIS} arc {BOGEN} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINIE} vertex {KONTROLLPUNKT} endSequence {ENDE DER SEQUENZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTDEFINITION} attribute {ATTRIBUT} dimension {BEMASSUNG} hatch {HATCH} insert {BLOCKREFERENZ} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D-FLÄCHE} wipeout {WIPEOUT} other {REIHE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Bereich: Modellbereich",
       "listColor": "                   Farbe: {color}    Linientyp: \"{linetype}\"",
@@ -3157,7 +3181,10 @@
       "listLeaderHook": "Ansatzlinie: {on, select, yes {Ein} other {Aus}}",
       "listLeaderArrow": "Pfeil:     {on, select, yes {Ein} other {Aus}}",
       "listLeaderPath": "Pfadtyp: {spline, select, yes {Spline} other {Gerade}}",
-      "listLeaderAnnotative": "        Beschriftung: Nein"
+      "listLeaderAnnotative": "        Beschriftung: Nein",
+      "wipeoutPolylineNotClosed": "Die Polylinie muss geschlossen sein und darf nur aus Liniensegmenten bestehen.",
+      "listWipeoutPoints": "Anzahl der Umgrenzungspunkte: {count}",
+      "listWipeoutPoint": "       bei Punkt  X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3360,6 +3387,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "Achse von objekt"
+      },
+      "WIPEOUT": {
+        "Close": "Schließen",
+        "OFF": "aUs",
+        "Display": "Anzeigen aber nicht plotten"
       }
     },
     "promptKeywordLabels": {

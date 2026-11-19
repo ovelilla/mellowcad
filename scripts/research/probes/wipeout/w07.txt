@@ -1,0 +1,33 @@
+_WIPEOUT
+0,0
+100,0
+100,50
+0,50
+
+_ZOOM
+_E
+(setq w (entlast))
+(ssget '(50 0))
+(ssget '(50 25))
+(osnap '(99 1) "_end")
+(osnap '(50 1) "_mid")
+(osnap '(30 1) "_nea")
+(osnap '(1 25) "_per")
+(osnap '(50 25) "_gcen")
+(osnap '(98 2) "_int")
+_WIPEOUT
+_F
+_OFF
+(ssget '(50 0))
+(osnap '(99 1) "_end")
+(ssget "_C" '(40 -5) '(60 5))
+(ssget "_W" '(-5 -5) '(105 55))
+_WIPEOUT
+_F
+_D
+(ssget '(50 0))
+(osnap '(99 1) "_end")
+(getvar "WIPEOUTFRAME")
+WIPEOUTFRAME
+1
+(getvar "WIPEOUTFRAME")

@@ -104,6 +104,18 @@ const FROM_SCRATCH: ReadonlyArray<
         .click(p(0, 90))
         .enter(),
   ],
+  // By its points; from a polyline its colour and linetype are the
+  // polyline's (wipeout/w11, w13: wipeout.test.ts).
+  [
+    "WIPEOUT",
+    (c) =>
+      c
+        .command("WIPEOUT")
+        .click(p(0, 50))
+        .click(p(40, 50))
+        .click(p(40, 90))
+        .enter(),
+  ],
   // leader/p01: the leader and its text, both in the current properties.
   [
     "LEADER",

@@ -824,6 +824,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entityShape(entity).vertices]
     case "face3d":
       return [...entity.corners]
+    case "wipeout":
+      return [...entity.vertices]
     case "text":
     case "mtext":
     case "attdef":

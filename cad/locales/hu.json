@@ -134,7 +134,8 @@
       "ptype": "Pontstílus",
       "solid": "2D tömör",
       "face3d": "3D lap",
-      "leader": "Mutató"
+      "leader": "Mutató",
+      "wipeout": "Kitakarás"
     },
     "description": {
       "U": "Az utolsó művelet visszavonása",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Pont} other {Pont}}",
       "solid2d": "{count, plural, one {Szilárdtest} other {Szilárdtest}}",
       "face3d": "{count, plural, one {3D lap} other {3D lap}}",
-      "leader": "{count, plural, one {Mutató} other {Mutató}}"
+      "leader": "{count, plural, one {Mutató} other {Mutató}}",
+      "wipeout": "{count, plural, one {Kitakarás} other {Kitakarás}}"
     },
     "array": {
       "rectangular": "Kiosztás (négyszögletes)",
@@ -696,7 +698,8 @@
       "MEASURE": ["BEOSZTÁS", "BEO"],
       "PTYPE": ["PTÍPUS", "DPPTÍPUS"],
       "SOLID": ["TÖMÖR", "TO"],
-      "LEADER": ["MUTATÓ", "MUT"]
+      "LEADER": ["MUTATÓ", "MUT"],
+      "WIPEOUT": ["KITAKAR"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1549,6 +1552,17 @@
         "Exit": "Kilépés",
         "Copy": "Másol",
         "Mtext": "Bszöveg"
+      },
+      "WIPEOUT": {
+        "Frames": "Keretek",
+        "Polyline": "Vonallánc",
+        "Undo": "Vissza",
+        "Close": "Bezár",
+        "ON": "BE",
+        "OFF": "KI",
+        "Display": "Megjelenítés",
+        "Yes": "Igen",
+        "No": "Nem"
       }
     },
     "promptKeywords": {
@@ -2335,7 +2349,17 @@
       "leaderOptions": "opciók",
       "leaderNextLine": "A feliratozás szövegének következő sora",
       "leaderAnnotationOption": "Válasszon a feliratozási opciók közül",
-      "leaderCopyObject": "Válassza ki a másolni kívánt objektumot"
+      "leaderCopyObject": "Válassza ki a másolni kívánt objektumot",
+      "wipeoutFirstPoint": "Adja meg az első pontot vagy",
+      "wipeoutSecondPoint": "Adja meg a következő pontot",
+      "wipeoutNextPointOr": "Adja meg a következő pontot vagy",
+      "wipeoutNextPointOrClose": "Adja meg a következő pontot",
+      "selectClosedPolyline": "Válasszon zárt vonalláncot",
+      "erasePolyline": "Törli a vonalláncot?",
+      "wipeoutFrameMode": "Adja meg a módot",
+      "wipeoutFramesOn": "BE",
+      "wipeoutFramesOff": "KI",
+      "wipeoutFramesDisplay": "Megjelenítés nyomtatás nélkül"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2823,7 +2847,7 @@
       "notAFitPoint": "Ez nem illesztési pont.",
       "notAControlVertex": "Nem vezérlő csomópont.",
       "allAdditionsUndone": "Minden módosítás visszaállítva.",
-      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} other {KIOSZT}}",
+      "listObjectName": "{name, select, line {VONAL} circle {KÖR} arc {ÍV} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {VLÁNC} vertex {CSÚCSPONT} endSequence {LEZÁRÓ RÉSZ} text {TEXT} mtext {MTEXT} attdef {ATTRIBÚTUMDEFINÍCIÓ} attribute {ATTRIBÚTUM} dimension {MÉRET} hatch {HATCH} insert {BLOKK REFERENCIA} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} other {KIOSZT}}",
       "listObject": "                  {name}  Fólia: \"{layer}\"",
       "listSpace": "                            Tér: Modelltér",
       "listColor": "                   Szín: {color}    Vonaltípus: \"{linetype}\"",
@@ -3132,7 +3156,10 @@
       "listLeaderHook": "Hurokvonal:{on, select, yes {Be} other {Ki}}",
       "listLeaderArrow": "Nyíl:      {on, select, yes {Be} other {Ki}}",
       "listLeaderPath": "Útvonal típus: {spline, select, yes {Spline} other {Egyenes}}",
-      "listLeaderAnnotative": "        Feliratozási: Nem"
+      "listLeaderAnnotative": "        Feliratozási: Nem",
+      "wipeoutPolylineNotClosed": "A vonalláncnak zártnak kell lennie, és csak vonalszakaszokból állhat.",
+      "listWipeoutPoints": "Határpontok száma: {count}",
+      "listWipeoutPoint": "       az X={x},  Y={y},  Z={z} pontnál"
     },
     "feedback": {
       "snap": {
@@ -3337,6 +3364,11 @@
       },
       "SOLIDEDIT": {
         "Axis": "Tengely objektum"
+      },
+      "WIPEOUT": {
+        "Close": "Zár",
+        "OFF": "KI",
+        "Display": "Megjelenítés nyomtatás nélkül"
       }
     },
     "promptKeywordLabels": {

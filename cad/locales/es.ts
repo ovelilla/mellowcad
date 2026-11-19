@@ -138,7 +138,8 @@ export const es: EngineLocale = {
       "ptype": "Tipo de punto",
       "solid": "Sólido 2D",
       "face3d": "Cara 3D",
-      "leader": "Directriz"
+      "leader": "Directriz",
+      "wipeout": "Cobertura"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -410,6 +411,16 @@ export const es: EngineLocale = {
           {
             "one": "Directriz",
             "other": "Directrices"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Cobertura",
+            "other": "Coberturas"
           }
         ]
       ]
@@ -1345,6 +1356,9 @@ export const es: EngineLocale = {
       "LEADER": [
         "DIRECTRIZ",
         "DIREC"
+      ],
+      "WIPEOUT": [
+        "COBERTURA"
       ]
     },
     "keywords": {
@@ -2198,6 +2212,17 @@ export const es: EngineLocale = {
         "Exit": "Salir",
         "Copy": "Copiar",
         "Mtext": "textoM"
+      },
+      "WIPEOUT": {
+        "Frames": "Marcos",
+        "Polyline": "Polilínea",
+        "Undo": "desHacer",
+        "Close": "Cerrar",
+        "ON": "ACT",
+        "OFF": "DES",
+        "Display": "Mostrar",
+        "Yes": "Sí",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -3069,7 +3094,17 @@ export const es: EngineLocale = {
       "leaderOptions": "opciones",
       "leaderNextLine": "Indique línea siguiente de texto de anotación",
       "leaderAnnotationOption": "Indique opción de anotación",
-      "leaderCopyObject": "Designe un objeto a copiar"
+      "leaderCopyObject": "Designe un objeto a copiar",
+      "wipeoutFirstPoint": "Precise primer punto o",
+      "wipeoutSecondPoint": "Precise el punto siguiente",
+      "wipeoutNextPointOr": "Precise el punto siguiente o",
+      "wipeoutNextPointOrClose": "Precise el punto siguiente o",
+      "selectClosedPolyline": "Designe una polilínea cerrada",
+      "erasePolyline": "¿Borrar polilínea?",
+      "wipeoutFrameMode": "Indique modo",
+      "wipeoutFramesOn": "ACT",
+      "wipeoutFramesOff": "DES",
+      "wipeoutFramesDisplay": "Mostrar pero no trazar"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6043,6 +6078,7 @@ export const es: EngineLocale = {
             "solid2d": "SOLIDO",
             "leader": "LEADER",
             "face3d": "CARA 3D",
+            "wipeout": "WIPEOUT",
             "other": "MATRIZ"
           }
         ]
@@ -8260,7 +8296,28 @@ export const es: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Anotativo: no"
+      "listLeaderAnnotative": "        Anotativo: no",
+      "wipeoutPolylineNotClosed": "La polilínea debe estar cerrada y componerse sólo de segmentos de línea.",
+      "listWipeoutPoints": [
+        "Número de puntos de contorno: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       en el punto, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -8539,6 +8596,11 @@ export const es: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Eje por objeto"
+      },
+      "WIPEOUT": {
+        "Close": "Cerrar",
+        "OFF": "DES",
+        "Display": "Mostrar pero no trazar"
       }
     },
     "promptKeywordLabels": {

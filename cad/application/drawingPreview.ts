@@ -99,6 +99,7 @@ export function previewScene(
     fillMode: document.getSettings().fillMode,
     pointMode: document.getSettings().pointMode,
     pointSize: document.getSettings().pointSize,
+    wipeoutFrame: document.getSettings().wipeoutFrame,
     snap: null,
     snapLabel: "",
     acquiredTrackingPoints: [],

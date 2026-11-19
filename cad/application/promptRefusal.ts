@@ -150,6 +150,14 @@ const MEASURED_BY_POINTS: ReadonlySet<MessageId> = new Set<MessageId>([
 ])
 
 /** The input function behind the running command's question, as {@link promptRefusal} reads it. */
+/** Whether the question takes a 2D point: a Z typed is refused there. */
+export function takesPoint2d(input: QuestionInput | null): boolean {
+  return (
+    input === "point2d" ||
+    (typeof input === "object" && input !== null && input.point2d === true)
+  )
+}
+
 export function questionInput(
   asked: Pick<AskedQuestion, "tool" | "prompt" | "session">
 ): QuestionInput | null {

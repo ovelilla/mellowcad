@@ -15,6 +15,7 @@ import {
   isPointMode,
   splineDataPoints,
   solid2dOutlinePolyline,
+  wipeoutOutlinePolyline,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import { Solid3dEntity } from "../domain/entityTypes"
@@ -246,7 +247,7 @@ import {
   questionInstead,
   secondPointQuestion,
 } from "./runtimeMeasure"
-import { promptRefusal, questionInput } from "./promptRefusal"
+import { promptRefusal, questionInput, takesPoint2d } from "./promptRefusal"
 import {
   type FilterAxis,
   type PointFilter,
@@ -1916,8 +1917,8 @@ export class CadRuntime extends Observable {
       ? this.dynamicInput.getSession()
       : null
     const prompt = askedPrompt(this.activeTool)
-    return (
-      questionInput({ tool: this.activeTool, prompt, session }) === "point2d"
+    return takesPoint2d(
+      questionInput({ tool: this.activeTool, prompt, session })
     )
   }
 
@@ -2135,7 +2136,7 @@ export class CadRuntime extends Observable {
         ? this.dynamicInput.getSession()
         : null,
     })
-    return input === "point" || input === "point2d"
+    return input === "point" || takesPoint2d(input)
   }
 
   /**
@@ -4346,8 +4347,8 @@ export class CadRuntime extends Observable {
         ? this.dynamicInput.getSession()
         : null
     const prompt = askedPrompt(this.activeTool)
-    return (
-      questionInput({ tool: this.activeTool, prompt, session }) === "point2d"
+    return takesPoint2d(
+      questionInput({ tool: this.activeTool, prompt, session })
     )
   }
 
@@ -4850,12 +4851,15 @@ export class CadRuntime extends Observable {
       viewport.worldToScreenDistance(worldTolerance)
     )
     // A 2D solid is found by its edges alone where it is drawn as its
-    // outline: with FILLMODE off (solid2d/p10), off the plan, or tilted.
+    // outline: with FILLMODE off (solid2d/p10), off the plan, or tilted; a
+    // wipeout off the plan or tilted, where it masks nothing.
     const seen = (entity: Entity): Entity =>
       entity.type === "solid2d" &&
       (!fillMode || !viewport.isPlan || entity.normal)
         ? solid2dOutlinePolyline(entity)
-        : entity
+        : entity.type === "wipeout" && (!viewport.isPlan || entity.normal)
+          ? wipeoutOutlinePolyline(entity)
+          : entity
     if (viewport.isPlan) {
       const perUnit = viewport.worldToScreenDistance(1)
       return document.pickAllBy(
@@ -6654,6 +6658,7 @@ export class CadRuntime extends Observable {
       isolines: settings.isolines,
       pointMode: settings.pointMode,
       pointSize: settings.pointSize,
+      wipeoutFrame: settings.wipeoutFrame,
       visualStyle: settings.visualStyle,
       viewDirection: this.viewport.direction,
       viewUp: this.viewport.up,

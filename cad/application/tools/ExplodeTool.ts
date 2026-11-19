@@ -19,6 +19,7 @@ import {
   leaderGeometry,
   isXref,
   leaderLook,
+  wipeoutEdges,
 } from "../../domain/entities"
 import { isSolidHatchPattern } from "../../domain/hatchPatterns"
 import { hatchLines } from "../../domain/hatchPatternEdits"
@@ -42,6 +43,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "region",
   "solid3d",
   "leader",
+  "wipeout",
 ])
 
 /**
@@ -246,6 +248,15 @@ export class ExplodeTool extends SelectionActionTool {
         if (segments.length === 0) continue
         removedIds.push(entity.id)
         for (const [a, b] of segments) {
+          pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
+        }
+        continue
+      }
+      if (entity.type === "wipeout") {
+        // A line per edge in the order of its vertices, the closing one
+        // last, with its layer and properties (wipeout/w08, w10).
+        removedIds.push(entity.id)
+        for (const [a, b] of wipeoutEdges(entity)) {
           pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
         }
         continue

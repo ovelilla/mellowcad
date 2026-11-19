@@ -138,7 +138,8 @@ export const ar: EngineLocale = {
       "ptype": "نمط النقطة",
       "solid": "مجسم ثنائي الأبعاد",
       "face3d": "وجه ثلاثي الأبعاد",
-      "leader": "خط إشارة"
+      "leader": "خط إشارة",
+      "wipeout": "قناع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -429,6 +430,17 @@ export const ar: EngineLocale = {
             "one": "خط إشارة",
             "two": "خطا إشارة",
             "other": "خطوط إشارة"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "قناع",
+            "two": "قناعان",
+            "other": "أقنعة"
           }
         ]
       ]

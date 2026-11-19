@@ -164,7 +164,9 @@ one's `DIMUPT On` override as the console writes it (p416, p439), `Annotative: N
 pattern, `Annotative: No`, scale and angle (not SOLID's), `Not associative`, area, origin (p417);
 a hatch named `_U` (User-defined, from a DXF) as its language's letter and `Hatch spacing for user
 pattern`, `U` or `_USER` by name with a scale (hatchpat/p06, p06u, p06U, in each console); 3D
-FACE: its four corners in the UCS (`first point` … `fourth point`, face3d/f03, in each console); a
+FACE: its four corners in the UCS (`first point` … `fourth point`, face3d/f03, in each console);
+WIPEOUT: `Number of boundary points: 4` and each vertex in the UCS (`at point, X=…,  Y=…,  Z=…`;
+es `en el punto`, de `bei Punkt`, hu `az X=… pontnál`: wipeout/w03, w12, in each console); a
 gradient as `Hatch pattern GRADIENT` (es `DEGRADADO`), `Annotative: No`, `Gradient Angle` at AUPREC
 and `Gradient Centered` or `Gradient Not Centered` (gradient/g11, g13, in each console).
 BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,

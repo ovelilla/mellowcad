@@ -248,6 +248,27 @@ describe("writeDxf", () => {
     }
   })
 
+  it("writes wipeouts and WIPEOUTFRAME, read back the same", () => {
+    const drawing = parseDxf(fixture("wipeouts-2018")).drawing
+    const wipeouts = (entities: readonly Entity[]) =>
+      entities.filter((e) => e.type === "wipeout")
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        const back = parseDxf(bytes).drawing
+        expect(shape(wipeouts(back.entities))).toEqual(
+          shape(wipeouts(drawing.entities))
+        )
+        expect(back.settings.wipeoutFrame).toBe(2)
+      }
+    }
+  })
+
   it("writes 3D faces, read back the same", () => {
     const drawing = parseDxf(fixture("faces-2018")).drawing
     const faces = (entities: readonly Entity[]) =>
@@ -547,6 +568,7 @@ describe("writeDxf", () => {
       "hatchpat-2018",
       "gradients-2018",
       "faces-2018",
+      "wipeouts-2018",
     ]) {
       const drawing =
         name === "points-2018"

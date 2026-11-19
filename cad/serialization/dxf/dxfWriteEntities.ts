@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, scale3 } from "../../geometry/Vec3"
 import { Axes3, arbitraryAxis, axesToWorld } from "../../geometry/ocs"
 import {
   BSplineCurve,
@@ -19,6 +19,7 @@ import {
   Entity,
   HatchEntity,
   Face3dEntity,
+  WipeoutEntity,
   InsertEntity,
   LeaderEntity,
   LineEntity,
@@ -160,6 +161,8 @@ export function writeEntity(
       return solid(ctx, entity, owner)
     case "face3d":
       return face3d(ctx, entity, owner)
+    case "wipeout":
+      return wipeout(ctx, entity, owner)
     case "arc":
       return arc(ctx, entity, owner)
     case "ellipse":
@@ -238,6 +241,48 @@ function face3d(ctx: DxfWriteContext, e: Face3dEntity, owner: string): void {
     out.point(10 + i, corner.x, corner.y, corner.z)
   )
   if (e.invisibleEdges) out.int(70, e.invisibleEdges)
+}
+
+/**
+ * A wipeout as AutoCAD writes a new one (wipeout/w01, w14): a one-pixel
+ * image on the square of its boundary's larger side, from its lower left
+ * corner (10, 11, 12 in the WCS), clipped to its vertices in pixels, closed
+ * back to the first; 290 from 2010.
+ */
+function wipeout(ctx: DxfWriteContext, e: WipeoutEntity, owner: string): void {
+  const { out } = ctx
+  const xs = e.vertices.map((v) => v.x)
+  const ys = e.vertices.map((v) => v.y)
+  const min = { x: Math.min(...xs), y: Math.min(...ys) }
+  const side = Math.max(Math.max(...xs) - min.x, Math.max(...ys) - min.y) || 1
+  const a = axes(e)
+  const z = e.elevation ?? 0
+  const world = (p: Vec3): Vec3 => (a ? axesToWorld(a, p) : p)
+  const origin = world({ ...min, z })
+  const u = a ? scale3(a.x, side) : { x: side, y: 0, z: 0 }
+  const v = a ? scale3(a.y, side) : { x: 0, y: side, z: 0 }
+  head(ctx, "WIPEOUT", e, owner)
+  out.str(100, "AcDbWipeout")
+  out.int(90, 0)
+  out.point(10, origin.x, origin.y, origin.z)
+  out.point(11, u.x, u.y, u.z)
+  out.point(12, v.x, v.y, v.z)
+  // Its size in pixels, X and Y alone, as AutoCAD writes it (w15).
+  out.point(13, 1, 1)
+  out.str(340, "0")
+  out.int(70, 7)
+  out.int(280, 1)
+  out.int(281, 50)
+  out.int(282, 50)
+  out.int(283, 0)
+  if (ctx.version >= 1024) out.int(290, 0)
+  out.str(360, "0")
+  out.int(71, 2)
+  out.int(91, e.vertices.length + 1)
+  for (const p of [...e.vertices, e.vertices[0]]) {
+    out.real(14, (p.x - min.x) / side - 0.5)
+    out.real(24, 0.5 - (p.y - min.y) / side)
+  }
 }
 
 /** A point is the WCS's in a DXF, as AutoCAD writes it (point/p04). */

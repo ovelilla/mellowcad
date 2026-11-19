@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, planar } from "../../geometry/Vec3"
+import { Vec3, cross3, normalize3, planar } from "../../geometry/Vec3"
 import { arbitraryAxis, worldToAxes } from "../../geometry/ocs"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
@@ -30,6 +30,7 @@ import {
   createPoint,
   createSolid2d,
   createFace3d,
+  createWipeout,
   PointEntity,
   withXAxisAngle,
   createDimension,
@@ -129,6 +130,8 @@ export function dxfEntities(
       return made(solid(record, ctx))
     case "3DFACE":
       return made(face3d(record, ctx))
+    case "WIPEOUT":
+      return made(wipeout(record, ctx))
     case "ARC":
       return made(arc(record, ctx))
     case "ELLIPSE":
@@ -309,6 +312,67 @@ function face3d(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   if (!a || !b || !c) return null
   const d = point(r, 13) ?? c
   return common(createFace3d([a, b, c, d], int(r, 70) ?? 0), r, ctx)
+}
+
+/**
+ * A WIPEOUT: a one-pixel image (10 its corner, 11 and 12 its pixel's U and V
+ * vectors, 13 its size) clipped to a boundary in pixels, 14 and 24, a
+ * rectangle's two corners (71 1) or a polygon closing back on its first (71
+ * 2), each at `P + (x + ½)·U + (h − ½ − y)·V` (wipeout/w01, w08). No
+ * boundary is its whole image. Its plane is U×V's.
+ */
+function wipeout(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const origin = point(r, 10)
+  const u = point(r, 11)
+  const v = point(r, 12)
+  if (!origin || !u || !v) return null
+  const size = point(r, 13)
+  const width = size && size.x > 0 ? size.x : 1
+  const height = size && size.y > 0 ? size.y : 1
+  const xs: number[] = []
+  const ys: number[] = []
+  r.codes.forEach((code, i) => {
+    if (code === 14) xs.push(Number(r.values[i]))
+    if (code === 24) ys.push(Number(r.values[i]))
+  })
+  let clip = xs.map((x, i) => ({ x, y: ys[i] ?? NaN }))
+  if (clip.some((c) => !Number.isFinite(c.x) || !Number.isFinite(c.y))) {
+    return null
+  }
+  if (int(r, 71) === 1 && clip.length === 2) {
+    const [a, b] = clip
+    clip = [a, { x: b.x, y: a.y }, b, { x: a.x, y: b.y }]
+  } else if (clip.length === 0) {
+    clip = [
+      { x: -0.5, y: -0.5 },
+      { x: width - 0.5, y: -0.5 },
+      { x: width - 0.5, y: height - 0.5 },
+      { x: -0.5, y: height - 0.5 },
+    ]
+  } else if (
+    clip.length > 1 &&
+    clip[0].x === clip[clip.length - 1].x &&
+    clip[0].y === clip[clip.length - 1].y
+  ) {
+    clip = clip.slice(0, -1)
+  }
+  if (clip.length < 3) return null
+  const world = clip.map((c) => {
+    const s = c.x + 0.5
+    const t = height - 0.5 - c.y
+    return {
+      x: origin.x + s * u.x + t * v.x,
+      y: origin.y + s * u.y + t * v.y,
+      z: origin.z + s * u.z + t * v.z,
+    }
+  })
+  const n = normalize3(cross3(u, v))
+  if (!n) return null
+  const toOcs = ocsOf(n)
+  const local = toOcs ? world.map(toOcs) : world
+  const made = createWipeout(local.map((p) => ({ x: p.x, y: p.y })))
+  const placed = withElevation(made, local[0].z)
+  return common(toOcs ? withNormal(placed, n) : placed, r, ctx)
 }
 
 /** DXF writes a point in the WCS (point/p04), the model in the OCS of its 210. */

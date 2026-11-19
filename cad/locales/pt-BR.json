@@ -134,7 +134,8 @@
       "ptype": "Estilo de ponto",
       "solid": "Sólido 2D",
       "face3d": "Face 3D",
-      "leader": "Linha de chamada"
+      "leader": "Linha de chamada",
+      "wipeout": "Cobertura"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -237,7 +238,8 @@
       "point": "{count, plural, one {Ponto} other {Pontos}}",
       "solid2d": "{count, plural, one {Sólido} other {Sólidos}}",
       "face3d": "{count, plural, one {Face 3D} other {Faces 3D}}",
-      "leader": "{count, plural, one {Linha de chamada} other {Linhas de chamada}}"
+      "leader": "{count, plural, one {Linha de chamada} other {Linhas de chamada}}",
+      "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}"
     },
     "array": {
       "rectangular": "Matriz (Retangular)",
@@ -696,7 +698,8 @@
       "MEASURE": ["MEDIDA", "ME"],
       "PTYPE": ["TIPOP", "TIP", "DDPTYPE", "TIPOPD"],
       "SOLID": ["SÓLIDO"],
-      "LEADER": ["LINHACHAM", "LCHAM", "LEAD"]
+      "LEADER": ["LINHACHAM", "LCHAM", "LEAD"],
+      "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1542,6 +1545,17 @@
         "Exit": "Sair",
         "Copy": "Cópia",
         "Mtext": "textoM"
+      },
+      "WIPEOUT": {
+        "Frames": "Molduras",
+        "Polyline": "Polilinha",
+        "Undo": "Desfazer",
+        "Close": "Fechar",
+        "ON": "Ativado",
+        "OFF": "Desativado",
+        "Display": "Exibir",
+        "Yes": "Sim",
+        "No": "Não"
       }
     },
     "promptKeywords": {
@@ -2326,7 +2340,17 @@
       "leaderOptions": "opções",
       "leaderNextLine": "Inserir a próxima linha do texto de anotação",
       "leaderAnnotationOption": "Insira uma opção de anotação",
-      "leaderCopyObject": "Selecione um objeto a ser copiado"
+      "leaderCopyObject": "Selecione um objeto a ser copiado",
+      "wipeoutFirstPoint": "Especificar primeiro ponto ou",
+      "wipeoutSecondPoint": "Especificar próximo ponto",
+      "wipeoutNextPointOr": "Especificar próximo ponto ou",
+      "wipeoutNextPointOrClose": "Especificar próximo ponto ou",
+      "selectClosedPolyline": "Selecionar polilinha fechada",
+      "erasePolyline": "Apagar polilinha?",
+      "wipeoutFrameMode": "Inserir modo",
+      "wipeoutFramesOn": "Ativado",
+      "wipeoutFramesOff": "Desativado",
+      "wipeoutFramesDisplay": "Exibir mas não plotar"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2812,7 +2836,7 @@
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
       "allAdditionsUndone": "Todas as adições foram desfeitas.",
-      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} solid2d {SÓLIDO} leader {LEADER} face3d {FACE 3D} wipeout {WIPEOUT} other {MATRIZ}}",
       "listObject": "                  {name}  Camada: \"{layer}\"",
       "listSpace": "                            Espaço: Espaço do modelo",
       "listColor": "                   Cor: {color}    Tipo de linha: \"{linetype}\"",
@@ -3121,7 +3145,10 @@
       "listLeaderHook": "Linha no gancho: {on, select, yes {Ativado} other {Desativado}}",
       "listLeaderArrow": "Seta:            {on, select, yes {Ativado} other {Desativado}}",
       "listLeaderPath": "Tipo de caminho: {spline, select, yes {Spline} other {Direto}}",
-      "listLeaderAnnotative": "        Anotativo: Não"
+      "listLeaderAnnotative": "        Anotativo: Não",
+      "wipeoutPolylineNotClosed": "A polilinha deve estar fechada e ser formada apenas por segmentos de linha.",
+      "listWipeoutPoints": "Número de pontos de limite: {count}",
+      "listWipeoutPoint": "       no ponto, X={x},  Y={y},  Z={z}"
     },
     "feedback": {
       "snap": {
@@ -3300,7 +3327,14 @@
       "EXTRUDE": { "Taper": "ângulo de COnicidade" },
       "REVOLVE": { "STart": "ângulo INicial" },
       "SLICE": { "Object": "Objeto plano", "Both": "manter Ambos os lados" },
-      "SOLIDEDIT": { "Axis": "Eixo por objeto" }
+      "SOLIDEDIT": {
+        "Axis": "Eixo por objeto"
+      },
+      "WIPEOUT": {
+        "Close": "Fechar",
+        "OFF": "Desativado",
+        "Display": "Exibir mas não plotar"
+      }
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" },

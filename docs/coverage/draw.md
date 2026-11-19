@@ -879,6 +879,55 @@ extracted.`, f07); the palette's Edge rows as choices; UCS OBject's frame from i
 first corner, X along its first edge, Y towards its fourth: here as a 3D polyline's,
 **unverified**); EDGE, which hides or shows an edge of one; PFACE and the meshes
 
+### `WIPEOUT` · es `COBERTURA` · pt-BR `COBERTURA` · fr `NETTOYER` · it `ENTCOPR` · de `ABDECKEN` · ru `МАСКИРОВКА` · pl `PRZYKRYJ` · cs `PŘEKRÝT` · hu `KITAKAR`
+
+**Implemented:** the wipeout — a model type of its own (DXF WIPEOUT: a polygon of three or more
+vertices in its plane, closing back to the first) — that masks what is drawn before it with the
+background and is covered by what comes after (wipeout/w02's plots), its frame shown in its
+colour with WIPEOUTFRAME 1 (a new drawing's) or 2 and hidden with 0, the system variable saved
+in the drawing (regenerating), and WIPEOUT as AutoCAD 2027's consoles ask it in the ten languages
+(probes wipeout/w00–w13; the names from each language's help, no alias in any acad.pgp): `Specify
+first point or [Frames/Polyline] <Polyline>:`, `Specify next point:`, `Specify next point or
+[Undo]:` and from the third point `Specify next point or [Close/Undo]:` (es `Precise primer punto
+o [Marcos/Polilínea] <Polilínea>`, de `Ersten Punkt wählen oder [Rahmen/Polylinie]`, hu without
+`vagy` before `[Zár/Vissza]`: w12). Enter or Close from the third point makes it; Enter at the
+second `2D point or option keyword required.`, as a Z typed after the first point, whose Z is the
+plane's (w05, w13); at the third, the point under the cursor, as the console's Enter takes its
+cursor's (w05); Undo takes back the last point. Polyline (Enter's default) asks `Select a closed
+polyline:` with the selection modes its refusal lists; anything but a polyline is passed over in
+silence, an open one or one with an arc ends the command with `The polyline must be closed and
+made up of only line segments.` (w06), and a closed one asks `Erase polyline? [Yes/No] <No>:` and
+makes the wipeout through its vertices at its elevation, on the current layer in the polyline's
+colour and linetype and the current lineweight (w11, w13). Frames asks `Enter mode [ON/OFF/Display
+but not plot] <ON>:`, the current mode offered as each console words it (`<Display but not
+plot>`, fr `<Afficher mais ne pas tracer>`, ru `<ОТКЛ>`), and a mode changed says `Regenerating
+model.` twice (w02, w12). A wipeout drawn wears the current properties; not transparent. Picked
+anywhere it masks and by its frame, shown or not (w07; TRIM `Cannot TRIM this object.` from a pick
+inside it, w10); snapped at its frame's ends, middles, nearest and perpendicular points, no
+geometric centre nor its own corners as intersections (w07). MOVE, COPY, ROTATE, SCALE and MIRROR
+move its vertices; STRETCH the vertices its window catches (w09); EXPLODE leaves a line per edge
+(w08, w10); OFFSET `Cannot offset that object.`, AREA `Selected object does not have an area`,
+BREAK `Object can't be broken`, DIVIDE `Cannot divide that object.` (w10, w11). LIST writes its
+boundary points as each console does (w03, w12). In the ribbon's Annotate tab, Markup panel (the
+help), so in the palette's Annotation group. Saved from drawing file version 58; a DXF opens and
+saves it (clipboard-and-files.md).
+
+**Deviations:** `_U` and `_C` undo and close in every language, where most consoles declare
+the next-point prompts' words with no global form (the traces of w12: es, pt-BR, it, ru, pl, cs,
+hu, and fr's `[Annuler]`) and refuse them (w04: es `_U` `Se requiere un punto 2D o una
+opción.`); off the plan
+its frame alone is drawn, no mask (**unverified**); a grip at each vertex, which moves it, and no
+geometry row in the Properties palette (**unverified**: no desktop pass); a rubber band in the
+current colour (**unverified**); Enter at the third point taking the cursor's point is the
+console's and **unverified** on the desktop; with no plotting here, Display but not plot shows the
+frame as ON does; a closed polyline of two vertices refused as an open one is (**unverified**); one
+made of a polyline takes CELTSCALE, not its linetype scale (**unverified**)
+
+**Missing:** FRAME, which sets the frames of images, underlays, clipped references and wipeouts
+together; DRAWORDER, which puts a wipeout over or under others (here what comes after covers it,
+as in a drawing never reordered, so a DXF's draw order, its SORTENTS table, is not read and a
+reordered wipeout may hide what it was put under); TEXTMASK and a text's own background mask; the palette's rows
+
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO` · fr `TEXTE` / `T` / `TEXTDYN` / `-TEXTE` · it `TESTO` / `T` / `TD` / `TESTODIN` / `-TESTO` · de `TEXT` / `DT` / `DTEXT` / `-TEXT` · ru `ТЕКСТ` / `ДТ` / `ДТЕКСТ` / `-ТЕКСТ` · pl `TEKST` / `DT` / `DTEKST` / `-TEKST` · cs `TEXT` / `DT` / `DTEXT` / `-TEXT` · hu `SZÖVEG` / `-SZÖVEG`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console

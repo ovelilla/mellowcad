@@ -138,7 +138,8 @@ export const cs: EngineLocale = {
       "ptype": "Styl bodu",
       "solid": "2D těleso",
       "face3d": "3D plocha",
-      "leader": "Odkaz"
+      "leader": "Odkaz",
+      "wipeout": "Překrytí"
     },
     "description": {
       "U": "Vrátí poslední akci",
@@ -448,6 +449,18 @@ export const cs: EngineLocale = {
             "few": "Pozice",
             "many": "Pozice",
             "other": "Pozice"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Překrytí",
+            "few": "Překrytí",
+            "many": "Překrytí",
+            "other": "Překrytí"
           }
         ]
       ]
@@ -1400,6 +1413,9 @@ export const cs: EngineLocale = {
       "LEADER": [
         "ODKAZ",
         "ODK"
+      ],
+      "WIPEOUT": [
+        "PŘEKRÝT"
       ]
     },
     "keywords": {
@@ -2253,6 +2269,17 @@ export const cs: EngineLocale = {
         "Exit": "kOnec",
         "Copy": "Kopie",
         "Mtext": "Mtext"
+      },
+      "WIPEOUT": {
+        "Frames": "Rámečky",
+        "Polyline": "Křivka",
+        "Undo": "Zpět",
+        "Close": "Uzavřít",
+        "ON": "Ano",
+        "OFF": "Ne",
+        "Display": "Zobrazit",
+        "Yes": "Ano",
+        "No": "Ne"
       }
     },
     "promptKeywords": {
@@ -3124,7 +3151,17 @@ export const cs: EngineLocale = {
       "leaderOptions": "možnosti",
       "leaderNextLine": "Zadejte další řádek textu poznámky",
       "leaderAnnotationOption": "Zadejte volbu poznámky",
-      "leaderCopyObject": "Vyberte kopírovaný objekt"
+      "leaderCopyObject": "Vyberte kopírovaný objekt",
+      "wipeoutFirstPoint": "Zadejte první bod nebo",
+      "wipeoutSecondPoint": "Zadejte další bod",
+      "wipeoutNextPointOr": "Zadejte další bod nebo",
+      "wipeoutNextPointOrClose": "Zadejte další bod nebo",
+      "selectClosedPolyline": "Vyberte uzavřenou křivku",
+      "erasePolyline": "Vymazat křivku?",
+      "wipeoutFrameMode": "Zadejte režim",
+      "wipeoutFramesOn": "ANO",
+      "wipeoutFramesOff": "NE",
+      "wipeoutFramesDisplay": "Zobrazit bez vykreslení"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6165,6 +6202,7 @@ export const cs: EngineLocale = {
             "solid2d": "SOLID",
             "leader": "LEADER",
             "face3d": "3D PLOCHA",
+            "wipeout": "WIPEOUT",
             "other": "POLE"
           }
         ]
@@ -8495,7 +8533,28 @@ export const cs: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Poznámky: Ne"
+      "listLeaderAnnotative": "        Poznámky: Ne",
+      "wipeoutPolylineNotClosed": "Křivka musí být uzavřená a složená jen z úsečkových segmentů.",
+      "listWipeoutPoints": [
+        "Počet bodů hranice: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       v bodě, X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -8774,6 +8833,11 @@ export const cs: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Osa podle objektu"
+      },
+      "WIPEOUT": {
+        "Close": "Uzavři",
+        "OFF": "Ne",
+        "Display": "Zobrazit bez vykreslení"
       }
     },
     "promptKeywordLabels": {

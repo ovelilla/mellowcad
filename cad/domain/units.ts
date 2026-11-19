@@ -77,6 +77,11 @@ export interface DocumentSettings {
   readonly pointMode: number
   /** PDSIZE: its size, absolute when positive, else a percentage of the view's height (0 is 5). */
   readonly pointSize: number
+  /**
+   * WIPEOUTFRAME: a wipeout's frame shown and plotted (1, a new drawing's),
+   * hidden (0), or shown and not plotted (2); saved in the drawing.
+   */
+  readonly wipeoutFrame: 0 | 1 | 2
   /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
   readonly filletRadius3d: number
   /** CHAMFERA: CHAMFER's first distance. */
@@ -192,6 +197,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // Saved in the drawing, 0 and 0 in acadiso.dwt (point/p01).
   pointMode: 0,
   pointSize: 0,
+  wipeoutFrame: 1,
   // Saved in the drawing (filletedge/f01: 1 at first; an OPEN keeps it).
   filletRadius3d: 1,
   chamferDistance1: 0,

@@ -27,11 +27,23 @@ export interface DxfFile {
   readonly tables: ReadonlyMap<string, readonly DxfRecord[]>
   readonly blocks: readonly DxfBlock[]
   readonly entities: readonly DxfRecord[]
+  /** The objects of OBJECTS the reader uses: WIPEOUTVARIABLES, WIPEOUTFRAME's. */
+  readonly objects: readonly DxfRecord[]
 }
 
 /**
- * The sections of a DXF. Unknown sections, CLASSES, OBJECTS and the preview
- * are skipped; a file that ends before EOF but after a section's end is
+ * The OBJECTS records kept, WIPEOUTFRAME's (wipeout/w15, w16): its
+ * WIPEOUTVARIABLES object, the drawing variables and the dictionary naming
+ * WIPEOUTFRAME's; every other object is skipped.
+ */
+const OBJECTS_READ: ReadonlySet<string> = new Set([
+  "WIPEOUTVARIABLES",
+  "DICTIONARYVAR",
+])
+
+/**
+ * The sections of a DXF. Unknown sections, CLASSES, OBJECTS but
+ * {@link OBJECTS_READ} and the preview are skipped; a file that ends before EOF but after a section's end is
  * whole (programs leave the EOF out), one that ends inside a section is not.
  */
 export function dxfSections(groups: DxfGroups): DxfFile {
@@ -40,6 +52,7 @@ export function dxfSections(groups: DxfGroups): DxfFile {
   const tables = new Map<string, DxfRecord[]>()
   const blocks: DxfBlock[] = []
   const entities: DxfRecord[] = []
+  const objects: DxfRecord[] = []
   let sections = 0
   while (!reader.done()) {
     const code = reader.code()
@@ -73,13 +86,16 @@ export function dxfSections(groups: DxfGroups): DxfFile {
       case "ENTITIES":
         entities.push(...readEntities(reader))
         break
+      case "OBJECTS":
+        readObjects(reader, objects)
+        break
       default:
         reader.skipSection()
     }
   }
   // An empty file, or one of comments alone, is no drawing either.
   if (sections === 0) throw new DxfReadError("header", 1)
-  return { header, tables, blocks, entities }
+  return { header, tables, blocks, entities, objects }
 }
 
 class GroupReader {
@@ -142,6 +158,28 @@ class GroupReader {
     }
     this.skip()
   }
+}
+
+function readObjects(reader: GroupReader, objects: DxfRecord[]): void {
+  while (!reader.at("ENDSEC")) {
+    reader.expectMore()
+    if (reader.code() === 0 && OBJECTS_READ.has(reader.value().trim())) {
+      objects.push(reader.record())
+      continue
+    }
+    if (reader.code() === 0 && reader.value().trim() === "DICTIONARY") {
+      const dictionary = reader.record()
+      const names = dictionary.values.filter(
+        (_, i) => dictionary.codes[i] === 3
+      )
+      if (names.some((name) => name.trim() === "WIPEOUTFRAME")) {
+        objects.push(dictionary)
+      }
+      continue
+    }
+    reader.skip()
+  }
+  reader.skip()
 }
 
 function readHeader(reader: GroupReader, header: Map<string, DxfRecord>): void {

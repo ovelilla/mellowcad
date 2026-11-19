@@ -45,6 +45,7 @@ export type EntityType =
   | "solid2d"
   | "leader"
   | "face3d"
+  | "wipeout"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -148,6 +149,18 @@ export interface Face3dEntity extends BaseEntity {
   readonly type: "face3d"
   readonly corners: readonly [Vec3, Vec3, Vec3, Vec3]
   readonly invisibleEdges?: number
+}
+
+/**
+ * A wipeout (DXF WIPEOUT, AutoCAD's WIPEOUT): a polygon that masks what is
+ * drawn before it with the background, its frame shown as WIPEOUTFRAME says.
+ * Its vertices, three or more, in the OCS of its normal at its elevation,
+ * close back to the first; AutoCAD keeps them as a one-pixel image's clip
+ * boundary, which the DXF reader and writer turn (wipeout/w01).
+ */
+export interface WipeoutEntity extends BaseEntity {
+  readonly type: "wipeout"
+  readonly vertices: readonly Vec2[]
 }
 
 export interface CircleEntity extends BaseEntity, Thick {
@@ -1043,6 +1056,7 @@ export type Entity =
   | Solid2dEntity
   | LeaderEntity
   | Face3dEntity
+  | WipeoutEntity
 
 export interface Bounds {
   readonly min: Vec2

@@ -19,6 +19,7 @@ import {
   ArcEntity,
   PointEntity,
   Solid2dEntity,
+  WipeoutEntity,
   PolylineEntity,
   PolylineWidth,
   Polyline3dEntity,
@@ -72,6 +73,25 @@ export function createPoint(
       : {}),
   }
   return withElevation(point, zOf(position))
+}
+
+/**
+ * A wipeout through its vertices in the order given, closing back to the
+ * first, in the plane of the first one's Z: the later prompts take 2D points
+ * (`2D point or option keyword required.`, wipeout/w05).
+ */
+export function createWipeout(
+  vertices: readonly (Vec2 | Vec3)[],
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): WipeoutEntity {
+  const wipeout: WipeoutEntity = {
+    id,
+    type: "wipeout",
+    layerId,
+    vertices: vertices.map((p) => ({ x: p.x, y: p.y })),
+  }
+  return withElevation(wipeout, vertices.length > 0 ? zOf(vertices[0]) : 0)
 }
 
 /**

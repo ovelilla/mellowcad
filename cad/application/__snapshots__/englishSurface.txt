@@ -6,6 +6,7 @@ POINT ["PO"] "Multiple Points"
 SOLID ["SO"] "2D Solid"
 3DFACE ["3F"] "3D Face"
 LEADER ["LEAD"] "Leader"
+WIPEOUT [] "Wipeout"
 DIVIDE ["DIV"] "Divide"
 MEASURE ["ME"] "Measure"
 PTYPE ["DDPTYPE"] "Point Style"
@@ -178,6 +179,7 @@ point "Multiple Points" PO
 solid "2D Solid" SO
 face3d "3D Face" 3F
 leader "Leader" LEAD
+wipeout "Wipeout" WIPEOUT
 divide "Divide" DIV
 measuresegments "Measure" ME
 rectangle "Rectangle" REC
@@ -8560,6 +8562,86 @@ Specify next point or
   prompt| Specify third point:
 > pick
   properties: Solid (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
+
+## WIPEOUT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> WIPEOUT
+  prompt: WIPEOUT Specify first point or [Frames/Polyline] <Polyline>:
+  asks: "Specify first point or"
+  tip: Specify first point or
+  dyn: "X,Y"=""||*
+  options: [F] Frames, [P] Polyline
+  command| WIPEOUT
+> first
+  prompt: WIPEOUT Specify next point:
+  asks: "Specify next point"
+  tip: Specify next point:
+  options: -
+  prompt| Specify first point or [Frames/Polyline] <Polyline>: 0,0
+> Enter refused
+  prompt| Specify next point:
+  error| 2D point or option keyword required.
+> second
+  prompt: WIPEOUT Specify next point or [Undo]:
+  asks: "Specify next point or"
+  tip: Specify next point or
+  options: [U] Undo
+  prompt| Specify next point: @10,0
+> third
+  prompt: WIPEOUT Specify next point or [Close/Undo]:
+  options: [C] Close, [U] Undo
+  prompt| Specify next point or [Undo]: @10,5
+> Undo
+  prompt: WIPEOUT Specify next point or [Undo]:
+  options: [U] Undo
+  prompt| Specify next point or [Close/Undo]: U
+> third again
+  prompt: WIPEOUT Specify next point or [Close/Undo]:
+  options: [C] Close, [U] Undo
+  prompt| Specify next point or [Undo]: @10,5
+> fourth
+  prompt| Specify next point or [Close/Undo]: @0,5
+> make
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify next point or [Close/Undo]:
+> Frames
+  prompt: WIPEOUT Enter mode [ON/OFF/Display but not plot] <ON>:
+  asks: 
+  tip: Enter mode
+  dyn: 
+  options: [ON] ON, [OFF] OFF, [D] Display but not plot
+  command| WIPEOUT
+  prompt| Specify first point or [Frames/Polyline] <Polyline>: F
+> OFF
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter mode [ON/OFF/Display but not plot] <ON>: OFF
+  info| Regenerating model.
+  info| Regenerating model.
+> Polyline
+  prompt: WIPEOUT Select a closed polyline:
+  asks: 
+  tip: Select a closed polyline:
+  dyn: 
+  command| WIPEOUT
+  prompt| Specify first point or [Frames/Polyline] <Polyline>:
+> pick
+  prompt| Select a closed polyline:
 
 ## 3DFACE
 > start

@@ -138,7 +138,8 @@ export const de: EngineLocale = {
       "ptype": "Punktstil",
       "solid": "2D-Volumenkörper",
       "face3d": "3D-Fläche",
-      "leader": "Führung"
+      "leader": "Führung",
+      "wipeout": "Abdeckung"
     },
     "description": {
       "U": "Macht den letzten Vorgang rückgängig",
@@ -410,6 +411,16 @@ export const de: EngineLocale = {
           {
             "one": "Führung",
             "other": "Führungen"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Abdeckung",
+            "other": "Abdeckungen"
           }
         ]
       ]
@@ -1351,6 +1362,9 @@ export const de: EngineLocale = {
       ],
       "LEADER": [
         "FÜHRUNG"
+      ],
+      "WIPEOUT": [
+        "ABDECKEN"
       ]
     },
     "keywords": {
@@ -2204,6 +2218,17 @@ export const de: EngineLocale = {
         "Exit": "Exit",
         "Copy": "KOpieren",
         "Mtext": "Mtext"
+      },
+      "WIPEOUT": {
+        "Frames": "Rahmen",
+        "Polyline": "Polylinie",
+        "Undo": "Zurück",
+        "Close": "Schließen",
+        "ON": "Ein",
+        "OFF": "aUs",
+        "Display": "Anzeigen",
+        "Yes": "Ja",
+        "No": "Nein"
       }
     },
     "promptKeywords": {
@@ -3076,7 +3101,17 @@ export const de: EngineLocale = {
       "leaderOptions": "Optionen",
       "leaderNextLine": "Nächste Zeile des Beschriftungs-Texts eingeben",
       "leaderAnnotationOption": "Option für Beschriftung eingeben",
-      "leaderCopyObject": "Zu kopierendes Objekt auswählen"
+      "leaderCopyObject": "Zu kopierendes Objekt auswählen",
+      "wipeoutFirstPoint": "Ersten Punkt wählen oder",
+      "wipeoutSecondPoint": "Nächsten Punkt angeben",
+      "wipeoutNextPointOr": "Nächsten Punkt angeben oder",
+      "wipeoutNextPointOrClose": "Nächsten Punkt angeben oder",
+      "selectClosedPolyline": "Geschlossene Polylinie auswählen",
+      "erasePolyline": "Polylinie löschen?",
+      "wipeoutFrameMode": "Modus eingeben",
+      "wipeoutFramesOn": "Ein",
+      "wipeoutFramesOff": "aUs",
+      "wipeoutFramesDisplay": "Anzeigen aber nicht plotten"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6064,6 +6099,7 @@ export const de: EngineLocale = {
             "solid2d": "SOLID",
             "leader": "LEADER",
             "face3d": "3D-FLÄCHE",
+            "wipeout": "WIPEOUT",
             "other": "REIHE"
           }
         ]
@@ -8262,7 +8298,28 @@ export const de: EngineLocale = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Beschriftung: Nein"
+      "listLeaderAnnotative": "        Beschriftung: Nein",
+      "wipeoutPolylineNotClosed": "Die Polylinie muss geschlossen sein und darf nur aus Liniensegmenten bestehen.",
+      "listWipeoutPoints": [
+        "Anzahl der Umgrenzungspunkte: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       bei Punkt  X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -8541,6 +8598,11 @@ export const de: EngineLocale = {
       },
       "SOLIDEDIT": {
         "Axis": "Achse von objekt"
+      },
+      "WIPEOUT": {
+        "Close": "Schließen",
+        "OFF": "aUs",
+        "Display": "Anzeigen aber nicht plotten"
       }
     },
     "promptKeywordLabels": {

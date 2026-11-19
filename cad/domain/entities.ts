@@ -23,6 +23,7 @@ export type {
   Polyline3dEntity,
   Polyline3dFit,
   Face3dEntity,
+  WipeoutEntity,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -122,6 +123,7 @@ export {
   createPolyline,
   createPolyline3d,
   createFace3d,
+  createWipeout,
   createHatch,
   createInsert,
   insertReflects,
@@ -212,6 +214,14 @@ export {
   face3dEdges,
   isFace3dEdgeVisible,
 } from "./faces3d"
+
+export {
+  mapWipeoutVertices,
+  pointInsideWipeout,
+  wipeoutEdges,
+  wipeoutOutlinePolyline,
+  withWipeoutVertex,
+} from "./wipeouts"
 
 export type { HatchGeometry } from "./hatch"
 export {

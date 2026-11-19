@@ -1185,6 +1185,7 @@ export class SelectTool implements Tool {
       poly?.type !== "spline" &&
       poly?.type !== "hatch" &&
       poly?.type !== "solid2d" &&
+      poly?.type !== "wipeout" &&
       poly?.type !== "face3d"
     ) {
       return

@@ -29,6 +29,7 @@ import {
   face3dEdges,
   entityShape,
   solid2dEdges,
+  wipeoutEdges,
   leaderPathEntity,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
@@ -145,6 +146,18 @@ function snapEntities(
         // and perpendicular points and crossings; no centre (solid2d/p05,
         // p06). A triangle's edge of no length is left out.
         for (const [a, b] of solid2dEdges(piece)) {
+          if (V.equals(a, b)) continue
+          entities.push(
+            carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+          )
+        }
+        continue
+      }
+      if (piece.type === "wipeout") {
+        // Its frame's edges, lines of its id, the frame shown or not: ends,
+        // middles, nearest and perpendicular points; no geometric centre,
+        // nor its own corners as intersections (wipeout/w07).
+        for (const [a, b] of wipeoutEdges(piece)) {
           if (V.equals(a, b)) continue
           entities.push(
             carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))

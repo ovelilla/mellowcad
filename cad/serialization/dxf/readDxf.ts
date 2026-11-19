@@ -30,6 +30,33 @@ import { int, point, str } from "./dxfValues"
 
 export { DxfReadError, looksLikeDxf } from "./dxfFormat"
 
+/**
+ * WIPEOUTFRAME, which is no header variable: AutoCAD 2027 keeps it as the
+ * drawing variable of its name (a DICTIONARYVAR of AcDbVariableDictionary,
+ * 0 to 2) and as the WIPEOUTVARIABLES object's 70, 0 for OFF and 1 for the
+ * rest, which is all an older drawing holds (wipeout/w15, w16).
+ */
+function dxfWipeoutFrame(objects: readonly DxfRecord[]): number | undefined {
+  const dictionary = objects.find((o) => o.type === "DICTIONARY")
+  if (dictionary) {
+    const at = dictionary.codes.findIndex(
+      (code, i) => code === 3 && dictionary.values[i].trim() === "WIPEOUTFRAME"
+    )
+    const handle =
+      at >= 0 && dictionary.codes[at + 1] === 350
+        ? dictionary.values[at + 1].trim().toUpperCase()
+        : undefined
+    const variable = objects.find(
+      (o) =>
+        o.type === "DICTIONARYVAR" && str(o, 5)?.trim().toUpperCase() === handle
+    )
+    const value = variable ? Number(str(variable, 1)) : NaN
+    if (Number.isInteger(value)) return value
+  }
+  const variables = objects.find((o) => o.type === "WIPEOUTVARIABLES")
+  return variables ? int(variables, 70) : undefined
+}
+
 /** What opening a DXF left out, which the command line says (`docs/next-dxf.md`). */
 export interface DxfOpenReport {
   /** Objects of a type the model has none of, counted by their DXF type (`POINT`). */
@@ -132,7 +159,13 @@ export function parseDxf(file: Uint8Array | string): ParsedDxf {
   const active = viewports.find(
     (v) => str(v, 2)?.trim().toUpperCase() === "*ACTIVE"
   )
-  const settings = dxfSettings(dxf.header, active, linetype)
+  const wipeoutFrame = dxfWipeoutFrame(dxf.objects)
+  const settings = {
+    ...dxfSettings(dxf.header, active, linetype),
+    ...(wipeoutFrame === 0 || wipeoutFrame === 1 || wipeoutFrame === 2
+      ? { wipeoutFrame: wipeoutFrame as 0 | 1 | 2 }
+      : {}),
+  }
   const ctx: DxfEntityContext = {
     layer: (name) => layers.id(name),
     linetype,

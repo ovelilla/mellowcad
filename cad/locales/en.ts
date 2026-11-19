@@ -138,7 +138,8 @@ export const en: EngineCatalog = {
       "ptype": "Point Style",
       "solid": "2D Solid",
       "face3d": "3D Face",
-      "leader": "Leader"
+      "leader": "Leader",
+      "wipeout": "Wipeout"
     },
     "description": {
       "U": "Undo the last action",
@@ -413,6 +414,16 @@ export const en: EngineCatalog = {
           {
             "one": "Leader",
             "other": "Leaders"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "one": "Wipeout",
+            "other": "Wipeouts"
           }
         ]
       ]
@@ -1357,6 +1368,9 @@ export const en: EngineCatalog = {
       "LEADER": [
         "LEADER",
         "LEAD"
+      ],
+      "WIPEOUT": [
+        "WIPEOUT"
       ]
     },
     "keywords": {
@@ -2384,7 +2398,17 @@ export const en: EngineCatalog = {
       "leaderOptions": "options",
       "leaderNextLine": "Enter next line of annotation text",
       "leaderAnnotationOption": "Enter an annotation option",
-      "leaderCopyObject": "Select an object to copy"
+      "leaderCopyObject": "Select an object to copy",
+      "wipeoutFirstPoint": "Specify first point or",
+      "wipeoutSecondPoint": "Specify next point",
+      "wipeoutNextPointOr": "Specify next point or",
+      "wipeoutNextPointOrClose": "Specify next point or",
+      "selectClosedPolyline": "Select a closed polyline",
+      "erasePolyline": "Erase polyline?",
+      "wipeoutFrameMode": "Enter mode",
+      "wipeoutFramesOn": "ON",
+      "wipeoutFramesOff": "OFF",
+      "wipeoutFramesDisplay": "Display but not plot"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5350,6 +5374,7 @@ export const en: EngineCatalog = {
             "solid2d": "SOLID",
             "leader": "LEADER",
             "face3d": "3D FACE",
+            "wipeout": "WIPEOUT",
             "other": "ARRAY"
           }
         ]
@@ -7555,7 +7580,28 @@ export const en: EngineCatalog = {
           }
         ]
       ],
-      "listLeaderAnnotative": "        Annotative: No"
+      "listLeaderAnnotative": "        Annotative: No",
+      "wipeoutPolylineNotClosed": "The polyline must be closed and made up of only line segments.",
+      "listWipeoutPoints": [
+        "Number of boundary points: ",
+        [
+          "count"
+        ]
+      ],
+      "listWipeoutPoint": [
+        "       at point, X=",
+        [
+          "x"
+        ],
+        ",  Y=",
+        [
+          "y"
+        ],
+        ",  Z=",
+        [
+          "z"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -7834,6 +7880,11 @@ export const en: EngineCatalog = {
       },
       "SOLIDEDIT": {
         "Axis": "Axis by object"
+      },
+      "WIPEOUT": {
+        "Close": "Close",
+        "OFF": "OFF",
+        "Display": "Display but not plot"
       }
     },
     "promptKeywordLabels": {

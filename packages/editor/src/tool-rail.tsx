@@ -46,6 +46,7 @@ import {
   SquaresSubtract,
   SquaresUnite,
   SquarePen,
+  SquareDashed,
   Tag,
   TextCursorInput,
   TriangleRight,
@@ -139,6 +140,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   trim: Scissors,
   extend: ArrowRightToLine,
   erase: Eraser,
+  wipeout: SquareDashed,
   fillet: FilletIcon,
   chamfer: ChamferIcon,
   explode: Split,
@@ -356,6 +358,9 @@ const PALETTE: readonly PaletteSection[] = [
       flyout("dimchain", ["dimcontinue", "dimbaseline"]),
       "textedit",
       "dimspace",
+      // The Annotate tab's Markup panel (the help's "Annotate tab Markup
+      // panel Wipeout"), which this palette also stands for.
+      "wipeout",
     ],
   },
   {

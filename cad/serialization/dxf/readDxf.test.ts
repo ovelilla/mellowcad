@@ -21,6 +21,7 @@ import type {
   PolylineEntity,
   SplineEntity,
   TextEntity,
+  WipeoutEntity,
 } from "../../domain/entities"
 import { DxfReadError, ParsedDxf, parseDxf } from "./readDxf"
 import { unicode } from "./dxfEntities"
@@ -1108,6 +1109,62 @@ describe("parseDxf: an invisible object (60 1)", () => {
     expect((drawing.entities[0] as LineEntity).end.x).toBe(2)
     expect(report.leftOut.size).toBe(0)
     expect(report.unreadable).toBe(0)
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's wipeouts (wipeout/w15)", () => {
+  // A rectangle, a closed triangle, a rectangle turned 30° by ROTATE, a red
+  // DASHED pentagon, one of a polyline at elevation 7 and one drawn in a
+  // UCS turned about X, with WIPEOUTFRAME 2, as AutoCAD's DXFOUT wrote them.
+  const { drawing, report } = parseDxf(fixture("wipeouts-2018"))
+  const wipeouts = drawing.entities.filter(
+    (e): e is WipeoutEntity => e.type === "wipeout"
+  )
+  const xy = (w: WipeoutEntity) =>
+    w.vertices.map((v) => [
+      Math.round(v.x * 1e6) / 1e6,
+      Math.round(v.y * 1e6) / 1e6,
+    ])
+
+  it("opens every wipeout, none left out, and WIPEOUTFRAME", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(wipeouts).toHaveLength(6)
+    expect(drawing.settings.wipeoutFrame).toBe(2)
+  })
+
+  it("turns the clipped pixel into its vertices, the closing one dropped", () => {
+    expect(xy(wipeouts[0])).toEqual([
+      [0, 0],
+      [100, 0],
+      [100, 50],
+      [0, 50],
+    ])
+    expect(xy(wipeouts[1])).toEqual([
+      [150, 0],
+      [250, 0],
+      [200, 60],
+    ])
+    const turned = (x: number, y: number) => {
+      const c = Math.cos(Math.PI / 6)
+      const s = Math.sin(Math.PI / 6)
+      return [
+        Math.round((300 + x * c - y * s) * 1e6) / 1e6,
+        Math.round((x * s + y * c) * 1e6) / 1e6,
+      ]
+    }
+    expect(xy(wipeouts[2])).toEqual([
+      turned(0, 0),
+      turned(100, 0),
+      turned(100, 40),
+      turned(0, 40),
+    ])
+  })
+
+  it("keeps its plane, colour and linetype", () => {
+    expect(wipeouts[3]).toMatchObject({ color: "#ff0000" })
+    expect(wipeouts[3].linetype).toBeDefined()
+    expect(wipeouts[4].elevation).toBe(7)
+    expect(wipeouts[5].normal).toBeDefined()
   })
 })
 

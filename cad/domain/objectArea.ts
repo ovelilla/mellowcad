@@ -102,9 +102,11 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "insert":
     case "point":
     case "solid2d":
-    // "Selected object does not have an area" (leader/p11, face3d/f12).
+    // "Selected object does not have an area" (leader/p11, face3d/f12,
+    // wipeout/w10).
     case "leader":
     case "face3d":
+    case "wipeout":
       return null
     default: {
       const unhandled: never = entity

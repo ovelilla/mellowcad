@@ -21,6 +21,7 @@ import {
   type CircleEntity,
   type PointEntity,
   type Solid2dEntity,
+  type WipeoutEntity,
   type LeaderEntity,
   type DimensionEntity,
   type EllipseEntity,
@@ -201,6 +202,16 @@ export const solid2dEntity: fc.Arbitrary<Solid2dEntity> = fc
         corners: [a, b, c, triangle && other ? { x: c.x, y: c.y } : d],
       },
       "solid2d"
+    )
+  )
+
+/** A wipeout: three to six vertices, in its plane. */
+export const wipeoutEntity: fc.Arbitrary<WipeoutEntity> = fc
+  .array(point, { minLength: 3, maxLength: 6 })
+  .map((vertices) =>
+    withId<WipeoutEntity>(
+      { type: "wipeout", layerId: DEFAULT_LAYER_ID, vertices },
+      "wipeout"
     )
   )
 
@@ -1218,7 +1229,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       pointEntity,
       solid2dEntity,
       leaderEntity,
-      face3dEntity
+      face3dEntity,
+      wipeoutEntity
     ),
     zValue,
     zValue,

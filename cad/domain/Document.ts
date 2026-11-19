@@ -930,6 +930,7 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
     case "solid2d":
     case "leader":
     case "face3d":
+    case "wipeout":
       return false
     default: {
       const unhandled: never = entity

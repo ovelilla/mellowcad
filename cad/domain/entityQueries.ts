@@ -1,4 +1,5 @@
 import { pointInsideSolid2d, solid2dEdges } from "./solids2d"
+import { pointInsideWipeout, wipeoutEdges } from "./wipeouts"
 import { leaderPathEntity } from "./leaders"
 import { regionLevelEdgeEntities } from "./regions"
 import { solidEdgeEntities } from "./solids"
@@ -355,6 +356,19 @@ export function closestOnEntity(
       }
       return pointInsideSolid2d(entity, point) ? { ...best, distance: 0 } : best
     }
+    case "wipeout": {
+      // An area, picked anywhere it masks, its frame shown or not (wipeout/w07).
+      let best: ClosestResult = {
+        point: entity.vertices[0] ?? { x: 0, y: 0 },
+        distance: Infinity,
+        t: 0,
+      }
+      for (const [a, b] of wipeoutEdges(entity)) {
+        const candidate = closestPointOnSegment(a, b, point)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return pointInsideWipeout(entity, point) ? { ...best, distance: 0 } : best
+    }
     case "leader":
       return closestOnEntity(leaderPathEntity(entity), point)
     case "point":
@@ -562,9 +576,12 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
       return { min: entity.position, max: entity.position }
     case "leader":
       return entityBounds(leaderPathEntity(entity))
-    case "solid2d": {
-      const xs = entity.corners.map((p) => p.x)
-      const ys = entity.corners.map((p) => p.y)
+    case "solid2d":
+    case "wipeout": {
+      const points =
+        entity.type === "solid2d" ? entity.corners : entity.vertices
+      const xs = points.map((p) => p.x)
+      const ys = points.map((p) => p.y)
       return {
         min: { x: Math.min(...xs), y: Math.min(...ys) },
         max: { x: Math.max(...xs), y: Math.max(...ys) },
@@ -890,6 +907,15 @@ export function entityCrossesRect(
       }
       // A box drawn wholly inside what it fills (solid2d/p10).
       return pointInsideSolid2d(entity, V.midpoint(min, max))
+    }
+    case "wipeout": {
+      if (entity.vertices.some((v) => pointInRect(v, min, max))) return true
+      for (const [a, b] of wipeoutEdges(entity)) {
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(a, b, e1, e2)) return true
+        }
+      }
+      return pointInsideWipeout(entity, V.midpoint(min, max))
     }
     case "region":
       return regionLevelEdgeEntities(entity).some((edge) =>

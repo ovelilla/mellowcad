@@ -2043,6 +2043,10 @@ function singleEntityInfo(
         ],
       }
     }
+    // WHY its general rows alone: which rows AutoCAD's palette gives a
+    // wipeout is unverified (no desktop pass).
+    case "wipeout":
+      return { title: title("wipeout"), count: 1, groups: [] }
     case "point": {
       // Geometry is its Position, Thickness under General (unverified on the
       // desktop: the palette as a circle's, circle/d10).

@@ -71,6 +71,7 @@ import { PointTool } from "./tools/PointTool"
 import { SolidTool } from "./tools/SolidTool"
 import { Face3dTool } from "./tools/Face3dTool"
 import { LeaderTool } from "./tools/LeaderTool"
+import { WipeoutTool } from "./tools/WipeoutTool"
 import { DivideTool } from "./tools/DivideTool"
 import { ListTool } from "./tools/ListTool"
 import { MassPropTool } from "./tools/MassPropTool"
@@ -148,6 +149,7 @@ export function defaultTools(
     new SolidTool(),
     new Face3dTool(),
     new LeaderTool(),
+    new WipeoutTool(),
     new DivideTool("divide", "divide"),
     new DivideTool("measure", "measuresegments"),
     new RectangleTool(),

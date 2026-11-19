@@ -2378,7 +2378,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity;
 
 export type { EntityColor }
 /**
@@ -2461,7 +2461,7 @@ export type EntityProperty =
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3995,6 +3995,19 @@ export interface WedgePrimitive extends Omit<BoxPrimitive, "kind"> {
 
 // domain/entityTypes.ts
 /**
+ * A wipeout (DXF WIPEOUT, AutoCAD's WIPEOUT): a polygon that masks what is
+ * drawn before it with the background, its frame shown as WIPEOUTFRAME says.
+ * Its vertices, three or more, in the OCS of its normal at its elevation,
+ * close back to the first; AutoCAD keeps them as a one-pixel image's clip
+ * boundary, which the DXF reader and writer turn (wipeout/w01).
+ */
+export interface WipeoutEntity extends BaseEntity {
+    readonly type: "wipeout";
+    readonly vertices: readonly Vec2[];
+}
+
+// domain/entityTypes.ts
+/**
  * An attribute definition (AutoCAD's ATTDEF): a single line of text laid out
  * like a {@link TextEntity}, which a block definition turns into a question
  * asked at every insertion. Loose in the drawing it shows its {@link tag}.
@@ -4587,6 +4600,11 @@ export interface DocumentSettings {
     readonly pointMode: number;
     /** PDSIZE: its size, absolute when positive, else a percentage of the view's height (0 is 5). */
     readonly pointSize: number;
+    /**
+     * WIPEOUTFRAME: a wipeout's frame shown and plotted (1, a new drawing's),
+     * hidden (0), or shown and not plotted (2); saved in the drawing.
+     */
+    readonly wipeoutFrame: 0 | 1 | 2;
     /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
     readonly filletRadius3d: number;
     /** CHAMFERA: CHAMFER's first distance. */
