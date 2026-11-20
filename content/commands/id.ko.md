@@ -10,7 +10,7 @@ ID(ID 점) 명령은 점의 좌표를 표시합니다. `Specify point:`에서 �
 
 ## Questions
 
-### AutoCAD에서 ID 명령은 무엇을 하나요?
+### AutoCAD에서 ID 명령은 무엇을 합니까?
 
 점이 어디에 있는지, 즉 현재 UCS에서의 X, Y, Z를 알려 줍니다. 아무것도 그리거나 바꾸지 않습니다.
 

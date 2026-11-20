@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMDIAMETER(지름) 치수 명령"
 metaTitle: "오토캐드 지름 치수(DIMDIAMETER) 사용법과 단축키 DDI"
-description: "AutoCAD 지름 치수(DIMDIAMETER, DDI)로 원이나 호에 치수를 기입하는 방법을 프롬프트 순서대로 설명합니다: 선택한 다음 지름을 안쪽이나 바깥쪽에 놓습니다. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 지름 치수(DIMDIAMETER, DDI)로 원이나 호에 치수를 기입하는 방법을 프롬프트 순서대로 설명합니다: 선택한 다음 지름을 안쪽이나 바깥쪽에 놓습니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "큰 원은 안쪽에, 작은 원은 바깥쪽에 치수를 기입합니다. 각 원을 선택한 다음 문자를 놓습니다."
 sourceHash: "76537f5f9854"
 ---
@@ -34,7 +34,7 @@ DIMDIAMETER(지름) 명령은 원, 호, 폴리선 호 세그먼트의 지름에 
 
 ### DIMDIAMETER로 호에 치수를 기입할 수 있습니까?
 
-예. 호나 폴리선 호 세그먼트도 원처럼 받으며, 호가 속한 원의 지름을 표시합니다. 그 밖의 객체는 <Message id="notCircleOrArc" />를 표시하고 다시 묻습니다.
+네. 호나 폴리선 호 세그먼트도 원처럼 받으며, 호가 속한 원의 지름을 표시합니다. 그 밖의 객체는 <Message id="notCircleOrArc" /> 메시지를 표시하고 다시 묻습니다.
 
 ### 지름 치수에 THRU나 메모를 붙이려면 어떻게 합니까?
 

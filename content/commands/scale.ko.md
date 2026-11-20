@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD SCALE(축척) 명령"
 metaTitle: "캐드 스케일, 축척(SCALE) 사용법과 단축키 SC"
-description: "AutoCAD SCALE(축척, 캐드 스케일, SC)로 기준점을 중심으로 객체 크기를 바꾸는 방법을 프롬프트 순서대로: 축척 비율, 복사, 아는 길이로 맞추는 참조. 브라우저에서 무료로."
+description: "AutoCAD SCALE(축척, 캐드 스케일, SC)로 기준점을 중심으로 객체 크기를 바꾸는 방법을 프롬프트 순서대로 설명합니다: 축척 비율, 복사, 아는 길이로 맞추는 참조. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "판과 구멍을 구석점을 중심으로 참조 옵션으로 복사해 축척합니다. 길이 40인 변을 지정하고 60으로 만듭니다."
 sourceHash: "005829bf17ad"
 ---
@@ -14,7 +14,7 @@ SCALE(축척) 명령은 선택한 객체를 기준점을 중심으로 크게 하
 
 ### Copy
 
-객체는 그대로 두고 사본을 축척합니다. <Message id="scalingCopy" />라고 표시하고, <Keyword id="Copy" />가 나열된 채로 다시 축척 비율을 묻습니다.
+객체는 그대로 두고 사본을 축척합니다. <Message id="scalingCopy" />라는 메시지를 표시하고, <Keyword id="Copy" />가 나열된 채로 다시 축척 비율을 묻습니다.
 
 ### Reference
 

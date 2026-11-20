@@ -194,6 +194,7 @@
   letter-spacing: 0;
   font-style: normal;
   word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Readex Pro reaches 14 px above the baseline and 6 below at 12 px (lam-alef,

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMANGULAR(각도) 치수 명령"
 metaTitle: "오토캐드 각도 치수(DIMANGULAR) 사용법과 단축키 DAN"
-description: "AutoCAD 각도 치수(DIMANGULAR, DAN)로 각도를 재는 방법: 두 선, 호, 원, 세 점, 그리고 치수 호를 놓을 위치. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 각도 치수(DIMANGULAR, DAN)로 각도를 재는 방법: 두 선, 호, 원, 세 점, 그리고 치수 호를 놓을 위치. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "30도로 만나는 두 선입니다. 각 선을 선택한 다음 두 선 사이에 치수 호를 놓습니다."
 sourceHash: "30943abd60f6"
 ---
@@ -38,7 +38,7 @@ DIMANGULAR(각도) 명령은 호를 치수선으로 하여 각도에 치수를 �
 
 ### DIMANGULAR가 선이 평행하다고 하는 이유는 무엇입니까?
 
-평행한 두 선이나 두 번 선택한 같은 선은 각도를 만들지 않습니다. <Message id="dimLinesParallel" />를 표시하고 명령이 끝납니다.
+평행한 두 선이나 두 번 선택한 같은 선은 각도를 만들지 않습니다. <Message id="dimLinesParallel" /> 메시지를 표시하고 명령이 끝납니다.
 
 ### 각도 치수의 소수 자릿수를 바꾸려면 어떻게 합니까?
 

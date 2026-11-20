@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD EXTEND(연장) 명령"
 metaTitle: "AutoCAD 연장(EXTEND) 사용법과 단축키 EX"
-description: "AutoCAD 연장(EXTEND, EX), 캐드 익스텐드를 프롬프트 순서대로: 빠른 작업과 표준 모드, 경계 모서리, 울타리, 걸치기, 모서리, Shift 키로 자르기. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 연장(EXTEND, EX), 캐드 익스텐드를 프롬프트 순서대로 설명합니다: 빠른 작업과 표준 모드, 경계 모서리, 울타리, 걸치기, 모서리, Shift 키로 자르기. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "선 2개를 진행 방향을 가로지르는 선까지 늘립니다. 빠른 작업 모드에서 늘어날 끝 근처를 한 번씩 클릭합니다."
 sourceHash: "b2c0044f8e87"
 ---
@@ -36,7 +36,7 @@ Enter 키를 누를 때까지 원하는 만큼 선의 점을 묻습니다. 그 �
 
 ## Missing
 
-프로젝트가 없습니다. AutoCAD의 투영 옵션(없음, UCS, 뷰)을 제공하지 않으며, 모든 계산은 AutoCAD의 기본값인 UCS처럼 UCS의 XY 평면에 투영하여 합니다. 울타리는 아직 커서로 끌어 그릴 수 없고, 점을 하나씩 클릭해야 합니다. 모드와 모서리 선택은 세션 동안만 유지되며, AutoCAD는 다음 세션까지 유지합니다. UCS에 대해 기울어진 객체는 스플라인을 제외하고 경계도 되지 않고 연장되지도 않습니다. <Command id="PEDIT" />의 <Keyword command="PEDIT" id="Fit" />로 곡선화한 폴리선은 거부되며, AutoCAD는 그 마지막 호를 늘립니다.
+프로젝트가 없습니다. AutoCAD의 투영 옵션(없음, UCS, 뷰)을 제공하지 않으며, 모든 계산은 AutoCAD의 기본값인 UCS처럼 UCS의 XY 평면에 투영하여 합니다. 울타리는 아직 커서로 끌어 그릴 수 없고, 점을 하나씩 클릭해야 합니다. 모드와 모서리 선택은 세션 동안만 유지되며, AutoCAD는 다음 세션까지 유지합니다. UCS에 대해 기울어진 객체는 스플라인을 제외하고 경계도 되지 않고 연장되지도 않습니다. <Command id="PEDIT" />의 <Keyword command="PEDIT" id="Fit" /> 옵션으로 곡선화한 폴리선은 거부되며, AutoCAD는 그 마지막 호를 늘립니다.
 
 ## Questions
 
@@ -44,9 +44,9 @@ Enter 키를 누를 때까지 원하는 만큼 선의 점을 묻습니다. 그 �
 
 `EX`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 `_EXTEND`를 쓸 수 있습니다.
 
-### 캐드 연장이 안될 때, 모서리가 없다고 나오는 이유는?
+### 캐드 연장이 안 될 때, 모서리가 없다고 나오는 이유는?
 
-그 끝이 나아갈 경로를 가로지르는 객체가 없기 때문입니다. 선은 반대쪽 끝이 모서리에 닿을 때 <Message id="noEdgeInThatDirection" />, 그렇지 않으면 선과 호 모두 <Message id="pathDoesNotIntersectBoundingEdge" /> 메시지를 표시합니다. 폴리선이나 스플라인은 <Message id="objectDoesNotIntersectEdge" /> 메시지를 표시합니다. 반대쪽 끝 근처를 클릭하거나, 표준 모드에서 <Keyword id="Edge" />와 <Keyword id="Extend" />를 골라 닿지 않는 경계도 이어진 것처럼 셈하게 합니다. 원, 닫힌 폴리선, 전체 타원, 문자, 해치는 아예 연장할 수 없습니다: <Message id="cannotExtendObject" />
+그 끝이 나아갈 경로를 가로지르는 객체가 없기 때문입니다. 선은 반대쪽 끝이 모서리에 닿을 때 <Message id="noEdgeInThatDirection" /> 메시지를, 그렇지 않으면 선과 호 모두 <Message id="pathDoesNotIntersectBoundingEdge" /> 메시지를 표시합니다. 폴리선이나 스플라인은 <Message id="objectDoesNotIntersectEdge" /> 메시지를 표시합니다. 반대쪽 끝 근처를 클릭하거나, 표준 모드에서 <Keyword id="Edge" />와 <Keyword id="Extend" />를 골라 닿지 않는 경계도 이어진 것처럼 셈하게 합니다. 원, 닫힌 폴리선, 전체 타원, 문자, 해치는 아예 연장할 수 없습니다: <Message id="cannotExtendObject" />
 
 ### 여러 선을 한 번에 연장하려면?
 

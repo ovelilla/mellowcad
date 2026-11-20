@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD EXTRUDE(돌출) 명령"
 metaTitle: "캐드 돌출: 돌출(EXTRUDE) 사용법과 단축키 EXT"
-description: "AutoCAD 돌출(EXTRUDE, EXT)로 닫힌 2D 윤곽을 3D 솔리드로 만드는 방법을 프롬프트 순서대로: 높이, 방향, 테이퍼 각도. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 돌출(EXTRUDE, EXT)로 닫힌 2D 윤곽을 3D 솔리드로 만드는 방법을 프롬프트 순서대로 설명합니다: 높이, 방향, 테이퍼 각도. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "닫힌 L자형 폴리선을 20만큼 돌출하여 솔리드로 만든 다음, 숨김 비주얼 스타일로 남동쪽에서 봅니다."
 sourceHash: "53bfe3dd1e9c"
 ---
@@ -46,7 +46,7 @@ AutoCAD처럼 옵션 목록에는 나오지만 구현되어 있지 않습니다.
 
 윤곽을 닫힌 폴리선, 원, 영역 같은 닫힌 객체 하나로 그리고, EXTRUDE를 실행하여 선택한 다음 Enter 키를 누르고 높이를 입력합니다. 위에서 보면 솔리드는 윤곽과 똑같아 보이므로, ViewCube로 뷰를 돌리거나 <Command id="-VIEW" />와 <Keyword command="VIEW" id="SEiso" />로 3D로 봅니다.
 
-### 캐드 돌출이 안될 때, 솔리드가 만들어지지 않는 이유는?
+### 캐드 돌출이 안 될 때, 솔리드가 만들어지지 않는 이유는?
 
 윤곽이 열려 있거나 자기 자신과 교차합니다. 선, 호, 열린 폴리선은 AutoCAD에서 표면이 되는데, MellowCAD에는 아직 표면이 없습니다. EXTRUDE는 <Message id="sweepRefusedType" /> 메시지를 표시하고 선택에서 제거합니다. 자기 교차하는 윤곽은 <Message id="sweepSelfIntersecting" /> 메시지를 표시하고 역시 제거됩니다. <Command id="JOIN" />으로 조각을 결합하거나, <Command id="REGION" />으로 영역을 만들거나, <Command id="PRESSPULL" />로 그 안쪽을 클릭합니다.
 

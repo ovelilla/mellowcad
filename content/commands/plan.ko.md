@@ -1,14 +1,14 @@
 ---
 title: "AutoCAD PLAN(평면도) 명령"
 metaTitle: "AutoCAD 평면 뷰로 돌아가기: 평면도(PLAN)"
-description: "AutoCAD 평면도(PLAN)로 현재 UCS, 저장한 UCS, 표준 좌표계를 바로 위에서 내려다보는 방법과 평면 뷰로 돌아가는 방법. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 평면도(PLAN)로 현재 UCS, 저장한 UCS, 표준 좌표계를 바로 위에서 내려다보는 방법과 평면 뷰로 돌아가는 방법을 설명합니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "UCS를 Z축을 중심으로 30도 회전하고 남서쪽에서 본 계단형 블록. PLAN과 Enter 키로 그 UCS를 바로 위에서 보면 X축이 오른쪽을 향하므로 블록이 회전되어 보입니다."
 sourceHash: "50d157803309"
 ---
 
 PLAN(평면도) 명령은 UCS의 XY 평면을 바로 위에서, X축이 오른쪽을 향하도록 내려다봅니다. 그린 그대로의 평면 뷰입니다. 현재 UCS, 저장한 UCS, 표준 좌표계 중 어느 UCS인지 묻고, Enter 키를 누르면 현재 UCS입니다. 이어서 도면 전체가 화면에 들어오게 하고 <Message id="regeneratingModel" /> 메시지를 표시합니다.
 
-도면의 객체는 움직이지 않고 UCS도 그대로입니다. PLAN은 뷰만 돌립니다. 명령 취소 한 단계이므로 <Command id="U" />로 뷰를 되돌리며, <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" />로 이전 뷰로 돌아갈 수도 있습니다. <Command id="3DORBIT" />이나 등각 <Command id="VIEW" /> 다음에 평면으로 돌아오는 방법입니다. MellowCAD의 3D는 솔리드뿐이며 아직 일부만 지원합니다.
+도면의 객체는 움직이지 않고 UCS도 그대로입니다. PLAN은 뷰만 돌립니다. 명령 취소 한 단계이므로 <Command id="U" />로 뷰를 되돌리며, <Command id="ZOOM" /> <Keyword command="ZOOM" id="Previous" />로 이전 뷰로 돌아갈 수도 있습니다. <Command id="3DORBIT" />이나 등각투영 <Command id="VIEW" /> 다음에 평면으로 돌아오는 방법입니다. MellowCAD의 3D는 솔리드뿐이며 아직 일부만 지원합니다.
 
 ## Options
 
@@ -42,6 +42,6 @@ PLAN(평면도) 명령은 UCS의 XY 평면을 바로 위에서, X축이 오른�
 
 뷰가 회전된 UCS의 평면이기 때문입니다. PLAN을 실행하고 <Keyword id="World" />를 고르면 다시 표준 좌표계의 X가 오른쪽인 도면이 보입니다. <Command id="UCS" />에서 Enter 키를 눌러도 UCS가 표준(World)으로 돌아갑니다.
 
-### PLAN은 UCS를 바꾸나요?
+### PLAN은 UCS를 바꿉니까?
 
 아닙니다. 뷰만 돌리며 UCS는 그대로입니다. UCS까지 함께 돌리는 것은 <Command id="VIEW" />의 정투영 뷰입니다.

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD COPY(복사) 명령"
 metaTitle: "오토캐드 복사(COPY) 사용법과 단축키 CO, CP"
-description: "AutoCAD 복사(COPY, CO, CP), 캐드 카피를 프롬프트 순서대로 설명합니다: 기준점, 그리고 놓는 만큼의 복사본, 명령 취소와 종료, 또는 변위로 한 번 복사. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 복사(COPY, CO, CP), 캐드 카피를 프롬프트 순서대로 설명합니다: 기준점, 그리고 놓는 만큼의 복사본, 명령 취소와 종료, 또는 변위로 한 번 복사. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "기준점 하나에서 원을 X 방향으로 세 번 복사한 다음 Enter 키를 누릅니다."
 sourceHash: "e74bbdabf97c"
 ---
@@ -20,7 +20,7 @@ COPY(복사) 명령은 선택한 객체의 복사본을 놓습니다. 객체를 
 
 ### Undo
 
-마지막으로 놓은 복사본을 되돌립니다. 첫 번째 복사본을 되돌리면 <Message id="commandCompletelyUndone" />를 표시하고 두 번째 점을 다시 묻습니다.
+마지막으로 놓은 복사본을 되돌립니다. 첫 번째 복사본을 되돌리면 <Message id="commandCompletelyUndone" /> 메시지를 표시하고 두 번째 점을 다시 묻습니다.
 
 ## Missing
 

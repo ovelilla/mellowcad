@@ -1,8 +1,8 @@
 ---
 title: "AutoCAD UCSICON(UCS 아이콘) 명령"
 metaTitle: "오토캐드 UCS 아이콘(UCSICON) 켜기, 끄기, 원점"
-description: "AutoCAD UCSICON(UCS 아이콘)으로 UCS 아이콘을 표시하거나 숨기고 원점이나 구석에 두는 방법: ON, OFF, Noorigin, ORigin, 그리고 아이콘이 보여 주는 것. 브라우저에서 무료로."
-figure: "UCSICON Noorigin이 아이콘을 구석으로 보내고, UCS로 원점을 블록의 단으로 옮긴 다음, ORigin이 그곳에 아이콘을 그립니다. X는 빨간색, Y는 녹색, Z는 파란색입니다."
+description: "AutoCAD UCSICON(UCS 아이콘)으로 UCS 아이콘을 표시하거나 숨기고 원점이나 구석에 두는 방법을 설명합니다: 켜기, 끄기, 원점없음, 원점, 그리고 아이콘이 보여 주는 것. 브라우저에서 무료로 해 볼 수 있습니다."
+figure: "UCSICON의 원점없음 옵션이 아이콘을 구석으로 보내고, UCS로 원점을 블록의 단으로 옮긴 다음, 원점 옵션이 그곳에 아이콘을 그립니다. X는 빨간색, Y는 녹색, Z는 파란색입니다."
 sourceHash: "c431e70eda01"
 ---
 
@@ -30,7 +30,7 @@ UCSICON(UCS 아이콘) 명령은 UCS 아이콘을 표시하거나 숨기고, 아
 
 ## Missing
 
-AutoCAD에서 설정을 모든 뷰포트에 적용하는 All(여기에는 뷰포트가 하나뿐입니다), 아이콘의 그립인 Selectable, 그리고 2D 스타일, 크기, 선 폭, 색상이 있는 UCS 아이콘 대화상자인 Properties.
+AutoCAD에서 설정을 모든 뷰포트에 적용하는 전체(여기에는 뷰포트가 하나뿐입니다), 아이콘의 그립인 선택 가능, 그리고 2D 스타일, 크기, 선 폭, 색상이 있는 UCS 아이콘 대화상자인 특성.
 
 ## Questions
 
@@ -48,4 +48,4 @@ UCS가 표준 좌표계라는 뜻입니다. <Command id="UCS" />로 UCS를 옮�
 
 ### UCS 아이콘의 스타일, 크기, 색상은 어떻게 바꿉니까?
 
-AutoCAD에서는 UCSICON의 Properties, 즉 UCS 아이콘 대화상자에서 바꿉니다. MellowCAD에는 아직 없으며, 아이콘은 AutoCAD 2027이 기본으로 그리는 3D 스타일로 그려집니다.
+AutoCAD에서는 UCSICON의 특성, 즉 UCS 아이콘 대화상자에서 바꿉니다. MellowCAD에는 아직 없으며, 아이콘은 AutoCAD 2027이 기본으로 그리는 3D 스타일로 그려집니다.

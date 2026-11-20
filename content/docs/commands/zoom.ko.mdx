@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ZOOM(줌) 명령"
 metaTitle: "오토캐드 줌(ZOOM) 사용법과 단축키 Z"
-description: "AutoCAD ZOOM(줌, Z)의 사용법: 범위, 윈도우, 이전, nX 축척, 객체, 전체, 마우스 휠, 명령 실행 중 줌. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD ZOOM(줌, Z)의 사용법을 설명합니다: 범위, 윈도우, 이전, nX 축척, 객체, 전체, 마우스 휠, 명령 실행 중 줌. 브라우저에서 무료로 해 볼 수 있습니다."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"AutoCAD 줌(ZOOM)의 단축키는 무엇입니까?","answer":"Z를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 _ZOOM도 됩니다. Z 다음에 E는 ZOOM 범위입니다."},{"question":"도면 전체를 화면에 맞추려면 어떻게 합니까?","answer":"Extents입니다. Z, Enter 키, E, Enter 키를 차례로 입력합니다. 또는 마우스 휠 버튼을 두 번 클릭합니다."},{"question":"캐드에서 ZOOM XP는 무엇입니까?","answer":"nXP는 배치 뷰포트를 도면 공간에 대한 축척으로 줌을 합니다. 1/50XP는 용지에 모형을 1:50으로 보여 줍니다. MellowCAD에는 배치가 없으므로 XP를 X로 읽습니다."},{"question":"객체로 줌을 하려면 어떻게 합니까?","answer":"Object를 고르고 객체를 선택하거나, 객체를 먼저 선택한 다음 ZOOM 객체를 실행합니다. 뷰가 그 객체에 맞춰집니다."},{"question":"이전 뷰로 돌아가려면 어떻게 합니까?","answer":"Previous를 고릅니다. 반복하면 그 전의 뷰로, 20개 전까지 돌아갑니다."}]
@@ -16,7 +16,7 @@ ZOOM(줌) 명령은 뷰를 확대하거나 축소합니다. 도면의 객체는 
 
 ## 명령행에서 [#session]
 
-엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+엔진이 그리고, 그 명령 사용 내역을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
 
 <Session name="zoom" caption="구석 가까이에 작은 구멍이 있는 판: ZOOM 범위 다음에 구멍을 윈도우로 감싸면 구멍이 뷰를 채웁니다." />
 
@@ -28,7 +28,7 @@ ZOOM(줌) 명령은 뷰를 확대하거나 축소합니다. 도면의 객체는 
 
 ### `Extents` (`E`) [#extents]
 
-그린 것을 모두 창이 허락하는 만큼 크게 화면에 맞춥니다. 아무것도 그리지 않았으면 `Regenerating model.`라고 표시하고, 다른 명령 안에서 입력하면 AutoCAD처럼 `** Requires a regen, cannot be transparent.`로 거부합니다.
+그린 것을 모두 창이 허락하는 만큼 크게 화면에 맞춥니다. 아무것도 그리지 않았으면 `Regenerating model.`라는 메시지를 표시하고, 다른 명령 안에서 입력하면 AutoCAD처럼 `** Requires a regen, cannot be transparent.` 메시지로 거부합니다.
 
 ### `Previous` (`P`) [#previous]
 

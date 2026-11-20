@@ -33,5 +33,5 @@ cut it again from the same file with the new text.
 system's Korean face (docs/i18n/ko.md) and the card alone has one: Noto Sans KR (Google Fonts'
 `ofl/notosanskr/NotoSansKR[wght].ttf`, SIL OFL 1.1, `OFL-NotoSansKR.txt`) cut with `subset-font`
 2.9.0 to every character above U+024F of the Korean `Og.tagline`, `Og.drawTitle` and
-`Hero.tagline`, the weight axis pinned at 600, as WOFF: 3,124 bytes for 19 syllables.
+`Hero.tagline`, the weight axis pinned at 600, as WOFF: 3,048 bytes for 18 syllables.
 `lib/og.test.ts` fails when that copy gains one the cut lacks.

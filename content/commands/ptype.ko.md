@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PTYPE(점 스타일) 명령"
 metaTitle: "오토캐드 점 스타일(PTYPE) 사용법과 DDPTYPE"
-description: "AutoCAD PTYPE(DDPTYPE)의 사용법: 점 스타일 대화상자의 20가지 모양, 점 크기, PDMODE와 PDSIZE, 점이 보이지 않는 이유. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD PTYPE(DDPTYPE)의 사용법을 설명합니다: 점 스타일 대화상자의 20가지 모양, 점 크기, PDMODE와 PDSIZE, 점이 보이지 않는 이유. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "PTYPE로 점 스타일 대화상자를 엽니다. 확인을 누르면 PDMODE와 PDSIZE(여기서는 35와 8)가 기록되고, 판 안에 점 세 개를 그립니다."
 sourceHash: "02cea384a2a9"
 ---

@@ -1,12 +1,12 @@
 ---
 title: "AutoCAD SPLINEDIT(스플라인 편집) 명령"
 metaTitle: "오토캐드 스플라인 편집(SPLINEDIT)과 단축키 SPE"
-description: "AutoCAD SPLINEDIT(스플라인 편집, SPE)를 프롬프트 순서대로: 닫기, 결합, 맞춤 데이터, 정점 편집, 폴리선으로 변환, 반전. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD SPLINEDIT(스플라인 편집, SPE)를 프롬프트 순서대로 설명합니다: 닫기, 결합, 맞춤 데이터, 정점 편집, 폴리선으로 변환, 반전. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "다섯 맞춤점을 지나는 스플라인을 SPLINEDIT로 닫은 모습: 모든 점을 지나는 매끄러운 고리입니다."
 sourceHash: "bedcaab2fac3"
 ---
 
-SPLINEDIT(스플라인 편집) 명령은 스플라인을 편집합니다. `Select spline:`에서 스플라인을 선택하거나 명령 전에 선택해 둡니다. 스플라인을 두 번 클릭해도 SPLINEDIT가 실행됩니다. 그 밖의 객체에는 <Message id="objectNotSpline" />라고 표시하고 다시 묻습니다. PEDIT의 스플라인으로 맞춘 폴리선은 아무 표시 없이 같은 곡선의 스플라인으로 바뀝니다. 그런 다음 <Keyword id="eXit" />나 Enter 키를 누를 때까지 옵션을 거듭 묻고, 각 옵션은 바로 적용됩니다. 스플라인에는 맞춤점의 그립이 표시되고, 정점을 편집하는 동안에는 조정 정점과 그 프레임이 표시됩니다. 편집 전체가 <Command id="U" />로 되돌릴 수 있는 한 단계입니다. 어느 프롬프트에서든 `'ZOOM`을 입력할 수 있습니다.
+SPLINEDIT(스플라인 편집) 명령은 스플라인을 편집합니다. `Select spline:`에서 스플라인을 선택하거나 명령 전에 선택해 둡니다. 스플라인을 두 번 클릭해도 SPLINEDIT가 실행됩니다. 그 밖의 객체에는 <Message id="objectNotSpline" />라는 메시지를 표시하고 다시 묻습니다. PEDIT의 스플라인으로 맞춘 폴리선은 아무 표시 없이 같은 곡선의 스플라인으로 바뀝니다. 그런 다음 <Keyword id="eXit" />나 Enter 키를 누를 때까지 옵션을 거듭 묻고, 각 옵션은 바로 적용됩니다. 스플라인에는 맞춤점의 그립이 표시되고, 정점을 편집하는 동안에는 조정 정점과 그 프레임이 표시됩니다. 편집 전체가 <Command id="U" />로 되돌릴 수 있는 한 단계입니다. 어느 프롬프트에서든 `'ZOOM`을 입력할 수 있습니다.
 
 ## Options
 
@@ -20,11 +20,11 @@ SPLINEDIT(스플라인 편집) 명령은 스플라인을 편집합니다. `Selec
 
 ### Fit data
 
-스플라인이 지나는 점을 편집합니다. 맞춤점이 없는 CV 스플라인에는 먼저 곡선 위에 맞춤점을 줍니다. 옵션은 다음과 같습니다. <Keyword id="Add" />는 맞춤점 하나를 선택하고 그 뒤에 새 점을 거듭 추가합니다(열린 스플라인의 첫 번째 점에서는 <Keyword id="After" />나 <Keyword id="Before" />). <Keyword id="Delete" />는 맞춤점을 두 개(닫힌 스플라인은 세 개)가 남을 때까지 제거합니다(<Message id="cannotDeleteBeyond" />). <Keyword id="Move" />는 <Keyword id="Next" />와 <Keyword id="Previous" />, 또는 <Keyword id="Select point" />로 맞춤점을 옮겨 다니며 현재 점을 지정한 점으로 이동합니다. <Keyword id="Purge" />는 맞춤 데이터를 버리고 CV 스플라인으로 남깁니다. <Keyword id="Tangents" />는 시작과 끝의 방향을 설정하거나 <Keyword id="System default" />를 씁니다. <Keyword id="Close" />와 <Keyword id="eXit" />는 첫 프롬프트에서와 같습니다. 맞춤점이 아닌 곳을 선택하면 <Message id="notAFitPoint" />라고 표시합니다.
+스플라인이 지나는 점을 편집합니다. 맞춤점이 없는 CV 스플라인에는 먼저 곡선 위에 맞춤점을 줍니다. 옵션은 다음과 같습니다. <Keyword id="Add" />는 맞춤점 하나를 선택하고 그 뒤에 새 점을 거듭 추가합니다(열린 스플라인의 첫 번째 점에서는 <Keyword id="After" />나 <Keyword id="Before" />). <Keyword id="Delete" />는 맞춤점을 두 개(닫힌 스플라인은 세 개)가 남을 때까지 제거합니다(<Message id="cannotDeleteBeyond" />). <Keyword id="Move" />는 <Keyword id="Next" />와 <Keyword id="Previous" />, 또는 <Keyword id="Select point" />로 맞춤점을 옮겨 다니며 현재 점을 지정한 점으로 이동합니다. <Keyword id="Purge" />는 맞춤 데이터를 버리고 CV 스플라인으로 남깁니다. <Keyword id="Tangents" />는 시작과 끝의 방향을 설정하거나 <Keyword id="System default" />를 씁니다. <Keyword id="Close" />와 <Keyword id="eXit" />는 첫 프롬프트에서와 같습니다. 맞춤점이 아닌 곳을 선택하면 <Message id="notAFitPoint" />라는 메시지를 표시합니다.
 
 ### Edit vertex
 
-조정 정점을 편집합니다. 맞춤 스플라인은 첫 편집에서 맞춤 데이터를 잃습니다. <Keyword id="Add" />는 스플라인 위에서 지정한 점에 정점을 넣고, <Keyword id="Delete" />는 정점을 두 개(닫힌 스플라인은 세 개)가 남을 때까지 제거합니다. <Keyword id="Elevate order" />는 차수를 26까지 올리며, 내리지는 않습니다. <Keyword id="Move" />는 <Keyword id="Fit data" />의 <Keyword id="Move" />처럼 정점을 옮겨 다니며 이동합니다. <Keyword id="Weight" />는 <Message id="splineMadeRational" /> 다음에 정점의 가중치를 설정해 곡선이 정점에 더 가까워지거나 멀어지게 합니다. 정점이 아닌 곳을 선택하면 <Message id="notAControlVertex" />라고 표시합니다.
+조정 정점을 편집합니다. 맞춤 스플라인은 첫 편집에서 맞춤 데이터를 잃습니다. <Keyword id="Add" />는 스플라인 위에서 지정한 점에 정점을 넣고, <Keyword id="Delete" />는 정점을 두 개(닫힌 스플라인은 세 개)가 남을 때까지 제거합니다. <Keyword id="Elevate order" />는 차수를 26까지 올리며, 내리지는 않습니다. <Keyword id="Move" />는 <Keyword id="Fit data" />의 <Keyword id="Move" />처럼 정점을 옮겨 다니며 이동합니다. <Keyword id="Weight" />는 <Message id="splineMadeRational" /> 다음에 정점의 가중치를 설정해 곡선이 정점에 더 가까워지거나 멀어지게 합니다. 정점이 아닌 곳을 선택하면 <Message id="notAControlVertex" />라는 메시지를 표시합니다.
 
 ### convert to Polyline
 
@@ -44,7 +44,7 @@ Enter 키처럼 명령을 끝냅니다.
 
 ## Missing
 
-맞춤점이나 정점에 날카로운 구석을 만드는 Kink, 공차 안에서 스플라인을 다시 맞추는 toLerance, 닫힌 스플라인의 접선. <Keyword id="convert to Polyline" />은 맞춤 스플라인에서 AutoCAD보다 훨씬 많은 정점을 만들고, 호는 만들지 않으며, 항상 스플라인을 대체합니다. `Select spline:`에서의 그룹. 점을 옮겨 다니는 동안 AutoCAD가 현재 점에 그리는 `+`.
+맞춤점이나 정점에 날카로운 구석을 만드는 꼬임, 공차 안에서 스플라인을 다시 맞추는 공차, 닫힌 스플라인의 접선. <Keyword id="convert to Polyline" />은 맞춤 스플라인에서 AutoCAD보다 훨씬 많은 정점을 만들고, 호는 만들지 않으며, 항상 스플라인을 대체합니다. `Select spline:`에서의 그룹. 점을 옮겨 다니는 동안 AutoCAD가 현재 점에 그리는 `+`.
 
 ## Questions
 

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ZOOM(줌) 명령"
 metaTitle: "오토캐드 줌(ZOOM) 사용법과 단축키 Z"
-description: "AutoCAD ZOOM(줌, Z)의 사용법: 범위, 윈도우, 이전, nX 축척, 객체, 전체, 마우스 휠, 명령 실행 중 줌. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD ZOOM(줌, Z)의 사용법을 설명합니다: 범위, 윈도우, 이전, nX 축척, 객체, 전체, 마우스 휠, 명령 실행 중 줌. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "구석 가까이에 작은 구멍이 있는 판: ZOOM 범위 다음에 구멍을 윈도우로 감싸면 구멍이 뷰를 채웁니다."
 sourceHash: "cd72af4956e4"
 ---
@@ -16,7 +16,7 @@ ZOOM(줌) 명령은 뷰를 확대하거나 축소합니다. 도면의 객체는 
 
 ### Extents
 
-그린 것을 모두 창이 허락하는 만큼 크게 화면에 맞춥니다. 아무것도 그리지 않았으면 <Message id="regeneratingModel" />라고 표시하고, 다른 명령 안에서 입력하면 AutoCAD처럼 <Message id="requiresRegen" />로 거부합니다.
+그린 것을 모두 창이 허락하는 만큼 크게 화면에 맞춥니다. 아무것도 그리지 않았으면 <Message id="regeneratingModel" />라는 메시지를 표시하고, 다른 명령 안에서 입력하면 AutoCAD처럼 <Message id="requiresRegen" /> 메시지로 거부합니다.
 
 ### Previous
 

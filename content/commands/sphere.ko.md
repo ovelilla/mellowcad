@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD SPHERE(구) 명령"
 metaTitle: "오토캐드 구(SPHERE)로 3D 구 그리기"
-description: "AutoCAD SPHERE(구, 캐드 스피어)로 3D 솔리드 구를 그리는 방법을 프롬프트 순서대로: 중심과 반지름, 지름, 3P, 2P, Ttr, 그리고 선으로 보이는 이유. 브라우저에서 무료로."
+description: "AutoCAD SPHERE(구, 캐드 스피어)로 3D 솔리드 구를 그리는 방법을 프롬프트 순서대로 설명합니다: 중심과 반지름, 지름, 3P, 2P, Ttr, 그리고 선으로 보이는 이유. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "중심에서 반지름 25로 그린 구를 개념 비주얼 스타일로 남동쪽에서 봅니다."
 sourceHash: "a35a57352d16"
 ---

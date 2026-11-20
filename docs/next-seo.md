@@ -16,16 +16,17 @@
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
 > `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, y el
-> japonés (`live` en `/ja`, L8, `global`) hecho el 20/11, sin publicar (el push está congelado:
-> `docs/next-vercel-usage.md` §4); por decisión del dueño la
+> japonés (`live` en `/ja`, L8, `global`) hecho el 20/11, y el coreano (`live` en `/ko`, L8,
+> `global`) hecho el 20/11, sin publicar (el push está congelado: `docs/next-vercel-usage.md` §4);
+> por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
 > hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; XLINE y RAY, con sus
-> páginas, hechos el 20/11, sin publicar; lo que queda del punto 7, MINSERT…) y otro idioma (el
-> coreano o el chino, `global` como el japonés, el siguiente), alternando, además de lo que queda
-> de §7.
+> páginas, hechos el 20/11, sin publicar; lo que queda del punto 7, MINSERT…, el siguiente) y otro
+> idioma (el chino, `global` como el japonés y el coreano), alternando, además de lo que queda de
+> §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -293,8 +294,10 @@ hecho el 17/11, `docs/plans/pl-language.md`) y **checo** (localizado; Chequia; h
 `docs/plans/cs-language.md`) y **húngaro** (localizado; Hungría, 8 en el índice de la auditoría;
 hecho el 19/11, `docs/plans/hu-language.md`) y **japonés** (`global`: AutoCAD japonés conserva los
 nombres, alias y letras de opción ingleses y traduce solo las solicitudes, que `/ja/draw` muestra en
-inglés hasta copiarlas; hecho el 20/11, `docs/plans/ja-language.md`). Después, coreano y chino
-(como el japonés). Fuera del criterio pero con más demanda que varios de esos:
+inglés hasta copiarlas; hecho el 20/11, `docs/plans/ja-language.md`) y **coreano** (`global`, como
+el japonés, comprobado en el paquete coreano; Corea, 61 en el índice de la auditoría, con Naver
+como mitad de sus búsquedas; hecho el 20/11, `docs/plans/ko-language.md`). Después, el chino (como
+el japonés). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
 del dueño si quiere ampliar el criterio. Cada idioma nuevo, después de L3 y L4, para nacer con
@@ -448,6 +451,9 @@ el dueño dio a las sesiones el 6/11).
    sitemap. El japonés, sin publicar, entra cuando el sitemap publicado lo traiga:
    `gsc-prioritize.mjs` ya reconoce `/ja` y lo pesa a 0,24 (Japón, 68 en el índice de la
    auditoría: el 0,4 del italiano × 68/113).
+   **20/11 (sesión del coreano):** sin tanda (la cuota se renueva el 21/11 a las 11:13 UTC). El
+   coreano, sin publicar, entra igual que el japonés: `gsc-prioritize.mjs` reconoce `/ko` y lo pesa
+   a 0,22 (Corea, 61 en el índice de la auditoría, solo Google: 0,4 × 61/113).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -1069,4 +1075,19 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   auxiliares y los rayos entre lo que queda fuera; «editar DXF online» y la portada no cambian.
   **Siguiente**, por orden del dueño: otro idioma (el coreano o el chino, `global`), y después lo
   que queda del punto 7 (MINSERT…), alternando.
+- Coreano (L8): hecho el 20/11/2026, sin publicar (`docs/plans/ko-language.md`, `docs/i18n/ko.md`).
+  `global`, como pidió el dueño, comprobado antes en los archivos de Autodesk (el paquete abierto,
+  sin instalar): AutoCAD coreano conserva los nombres de comando, los alias y las letras de opción
+  ingleses y escribe sus solicitudes en coreano (`[명령 취소(U)]`), que `/ko/draw` muestra en inglés:
+  la página de diferencias lo dice en los trece idiomas. La interfaz con las palabras del AutoCAD
+  coreano por id; el sitio, las páginas «Use», las 103 notas y los 12 ejercicios escritos desde lo
+  que se busca en Corea en Google y Naver («무료 캐드», «캐드 웹», «오토캐드 명령어», «캐드 연습도면»,
+  «dxf 뷰어»; cada comando por su palabra de la cinta y por su nombre inglés en hangul: «캐드
+  오프셋», «오토캐드 간격띄우기»); las fuentes del sistema (ninguna web), la tarjeta con Noto Sans KR
+  recortada y `keep-all`. Una segunda lectura por un modelo, con cada palabra de opción cotejada
+  con las tablas; la de un hablante nativo, pendiente. Medido: ninguna portada pasa de su
+  presupuesto y `/fr` queda a unos 270 bytes, así que el chino necesitará el siguiente recorte.
+  Unas 130 URL nuevas (`/ko` y sus páginas) entran en la cola de §7 cuando el dueño publique, a
+  0,22. **Siguiente**, por orden del dueño: lo que queda del punto 7 del DXF (MINSERT…), y después
+  el chino (`global`), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

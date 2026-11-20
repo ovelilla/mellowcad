@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD 3DORBIT(3D 궤도) 명령"
 metaTitle: "오토캐드 3D 궤도(3DORBIT) 사용법과 단축키 3DO"
-description: "AutoCAD 3D 궤도(3DORBIT, 3DO, ORBIT)로 끌어서 뷰를 돌리는 방법, 끝내는 방법, Shift와 휠로 궤도를 도는 방법, 평면도로 돌아가는 방법. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 3D 궤도(3DORBIT, 3DO, ORBIT)로 끌어서 뷰를 돌리는 방법, 끝내는 방법, Shift와 휠로 궤도를 도는 방법, 평면도로 돌아가는 방법. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "처음에 평면도로 본 상자입니다. 3DORBIT을 실행하고 가로와 아래로 한 번 끈 다음 Enter 키를 누르면 상자를 앞쪽 모서리 위에서 보게 됩니다."
 sourceHash: "66fc1859c8fd"
 ---

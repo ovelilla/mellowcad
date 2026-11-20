@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD LINETYPE(선종류) 명령"
 metaTitle: "AutoCAD 선종류(LINETYPE) 로드와 단축키 LT"
-description: "AutoCAD 선종류(LINETYPE, LT) 사용법: acadiso.lin에서 선종류 로드, 새 객체의 현재 선종류, ByLayer, 점선이 실선으로 보이는 이유."
+description: "AutoCAD 선종류(LINETYPE, LT) 사용법을 설명합니다: acadiso.lin에서 선종류 로드, 새 객체의 현재 선종류, ByLayer, 점선이 실선으로 보이는 이유."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"AutoCAD 선종류 단축키는?","answer":"LT를 입력하고 Enter 키나 Space 키를 누릅니다. LTYPE과 DDLTYPE도 됩니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 _LINETYPE을 쓸 수 있습니다."},{"question":"캐드 점선이 실선으로 보일 때는?","answer":"AutoCAD와 마찬가지로 패턴 한 번의 반복보다 짧은 선은 실선으로 그려집니다. CENTER의 패턴은 기본 축척에서 약 51 단위입니다. LTSCALE을 올리거나 내려 패턴을 도면에 맞춥니다. 객체의 선종류, 또는 ByLayer라면 그 도면층의 선종류가 Continuous가 아닌지도 확인합니다."},{"question":"기존 객체의 선종류를 바꾸려면?","answer":"객체를 선택하고 특성 팔레트의 선종류 행에서 선종류를 고르거나, MATCHPROP으로 다른 객체에서 복사합니다. LINETYPE은 그 뒤에 그리는 객체의 선종류만 설정합니다."},{"question":"AutoCAD에서 선종류 축척을 바꾸려면?","answer":"LTSCALE과 새 비율을 입력합니다. 2이면 도면 전체의 모든 대시가 2배 길어집니다."},{"question":"AutoCAD에서 선종류를 로드하려면?","answer":"AutoCAD는 선종류 관리자에서 로드합니다. 여기서는 -LINETYPE을 입력하고 Load를 고른 다음, HIDDEN2나 ACAD_ISO02W100 같은 선종류 이름을 입력하고 Enter 키를 눌러 acadiso.lin에서 찾습니다. Set은 acadiso.lin에 있는 선종류를 현재로 설정하면서 로드합니다."}]
@@ -18,9 +18,9 @@ LINETYPE(선종류) 명령은 새 객체를 그릴 선종류를 설정합니다.
 
 ## 명령행에서 [#session]
 
-엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+엔진이 그리고, 그 명령 사용 내역을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
 
-<Session name="linetype" caption="HIDDEN을 현재로 하여 구멍을, CENTER로 두 축선을 그린 판. 마지막에 LINETYPE을 ByLayer로 되돌립니다." />
+<Session name="linetype" caption="HIDDEN을 현재로 하여 구멍을, CENTER로 두 중심선을 그린 판. 마지막에 LINETYPE을 ByLayer로 되돌립니다." />
 
 ## 옵션 [#options]
 
@@ -38,7 +38,7 @@ LINETYPE(선종류) 명령은 새 객체를 그릴 선종류를 설정합니다.
 
 ## 아직 지원하지 않는 것 [#missing]
 
-선종류 관리자가 없고, 선종류를 만들거나 직접 만든 파일에서 로드할 수 없습니다. BATTING이나 ZIGZAG 같은 복합 선종류의 모양은 그 자리의 틈으로 그려집니다. ByBlock이 없습니다. 도면 공간이 없으므로 PSLTSCALE과 MSLTSCALE도 없습니다. 언어별 AutoCAD의 acadiso.lin, 즉 스페인어나 독일어 AutoCAD가 로드하는 이름(TRAZOS, STRICHLINIE)이 없습니다. 로드는 모든 언어에서 영어 파일을 읽지만, 그런 선종류로 만든 도면은 자기 선종류를 가지고 열립니다. PLINEGEN이 없어, 새 폴리선은 PEDIT의 선종류 생성으로 켜지 않는 한 각 정점에서 패턴을 다시 시작합니다.
+선종류 관리자가 없고, 선종류를 만들거나 직접 만든 파일에서 로드할 수 없습니다. BATTING이나 ZIGZAG 같은 복합 선종류의 모양은 그 자리의 틈으로 그려집니다. ByBlock이 없습니다. 도면 공간이 없으므로 PSLTSCALE과 MSLTSCALE도 없습니다. 언어별 AutoCAD의 acadiso.lin, 즉 스페인어나 독일어 AutoCAD가 로드하는 이름(TRAZOS, STRICHLINIE)이 없습니다. 로드는 모든 언어에서 영어 파일을 읽지만, 그런 선종류로 만든 도면은 자기 선종류를 가지고 열립니다. PLINEGEN이 없어, 새 폴리선은 PEDIT의 선종류생성으로 켜지 않는 한 각 정점에서 패턴을 다시 시작합니다.
 
 [기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc--hu-vtlépték--vtl--vtípus--vt--dpvtípus---vtípus---vt)
 

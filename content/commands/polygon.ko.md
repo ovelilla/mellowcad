@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD POLYGON(폴리곤) 명령"
 metaTitle: "AutoCAD 폴리곤(POLYGON) 사용법: 내접과 외접"
-description: "AutoCAD 폴리곤(POLYGON, POL)으로 정다각형을 그리는 방법을 프롬프트 순서대로: 면의 수, 중심, 내접 또는 외접, 모서리. 육각형도. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 폴리곤(POLYGON, POL)으로 정다각형을 그리는 방법을 프롬프트 순서대로 설명합니다: 면의 수, 중심, 내접 또는 외접, 모서리. 육각형도 그립니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "반지름 30인 원 2개. 한쪽에 내접하는 육각형, 다른 쪽에 외접하는 육각형, 그리고 모서리로 그린 오각형."
 sourceHash: "90e1cc9a53c4"
 ---

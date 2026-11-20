@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD SPLINE(스플라인) 명령"
 metaTitle: "오토캐드 스플라인(SPLINE) 사용법과 단축키 SPL"
-description: "AutoCAD SPLINE(스플라인, SPL)을 프롬프트 순서대로: 맞춤점을 지나는 곡선과 조정 정점이 당기는 곡선, 매듭, 차수, 접선, 닫기. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD SPLINE(스플라인, SPL)을 프롬프트 순서대로 설명합니다: 맞춤점을 지나는 곡선과 조정 정점이 당기는 곡선, 매듭, 차수, 시작과 끝 접촉부, 닫기. 브라우저에서 무료로 해 볼 수 있습니다."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"AutoCAD 스플라인(SPLINE)의 단축키는 무엇입니까?","answer":"SPL을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 _SPLINE도 됩니다."},{"question":"맞춤(Fit)과 CV의 차이는 무엇입니까?","answer":"맞춤 스플라인은 클릭한 점을 지나므로, 점에 반드시 닿아야 하는 곡선에 맞습니다. CV 스플라인은 조정 정점으로 모양이 정해지고 정점에 다가가기만 하므로, 고르고 매끄러운 모양에 맞습니다. 첫 프롬프트에서 Method로 고릅니다."},{"question":"스플라인을 폴리선으로 바꾸려면 어떻게 합니까?","answer":"PEDIT를 실행하고 스플라인을 선택합니다. “Object selected is not a polyline”라고 표시하고 폴리선으로 바꿀지 물은 다음, 0부터 99까지(기본값 10)의 정밀도를 묻습니다. 폴리선은 짧은 직선 세그먼트로 스플라인을 따라가며, AutoCAD보다 세그먼트가 많습니다."},{"question":"폴리선을 스플라인으로 바꾸려면 어떻게 합니까?","answer":"PEDIT의 스플라인 옵션으로 폴리선을 맞춘 다음, SPLINE을 실행하고 Object를 고릅니다. 폴리선이 같은 곡선의 스플라인이 됩니다."},{"question":"AutoCAD에서 스플라인을 분해할 수 있습니까?","answer":"없습니다. AutoCAD와 마찬가지로 EXPLODE는 스플라인을 거부합니다. 조각으로 나누려면 먼저 PEDIT로 폴리선으로 바꾼 다음, 그 폴리선을 선으로 분해합니다."}]
+faq: [{"question":"AutoCAD 스플라인(SPLINE)의 단축키는 무엇입니까?","answer":"SPL을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 _SPLINE도 됩니다."},{"question":"맞춤(Fit)과 CV의 차이는 무엇입니까?","answer":"맞춤 스플라인은 클릭한 점을 지나므로, 점에 반드시 닿아야 하는 곡선에 맞습니다. CV 스플라인은 조정 정점으로 모양이 정해지고 정점에 다가가기만 하므로, 고르고 매끄러운 모양에 맞습니다. 첫 프롬프트에서 Method로 고릅니다."},{"question":"스플라인을 폴리선으로 바꾸려면 어떻게 합니까?","answer":"PEDIT를 실행하고 스플라인을 선택합니다. “Object selected is not a polyline”라는 메시지를 표시하고 폴리선으로 바꿀지 물은 다음, 0부터 99까지(기본값 10)의 정밀도를 묻습니다. 폴리선은 짧은 직선 세그먼트로 스플라인을 따라가며, AutoCAD보다 세그먼트가 많습니다."},{"question":"폴리선을 스플라인으로 바꾸려면 어떻게 합니까?","answer":"PEDIT의 스플라인 옵션으로 폴리선을 맞춘 다음, SPLINE을 실행하고 Object를 고릅니다. 폴리선이 같은 곡선의 스플라인이 됩니다."},{"question":"AutoCAD에서 스플라인을 분해할 수 있습니까?","answer":"없습니다. AutoCAD와 마찬가지로 EXPLODE는 스플라인을 거부합니다. 조각으로 나누려면 먼저 PEDIT로 폴리선으로 바꾼 다음, 그 폴리선을 선으로 분해합니다."}]
 ---
 
 SPLINE(스플라인) 명령은 부드러운 곡선을 두 가지 방법 중 하나로 그립니다. 지정한 점을 지나거나(맞춤, 기본값), 배치한 조정 정점 쪽으로 당겨집니다(CV). 먼저 `Method=Fit   Knots=Chord`처럼 설정을 알려 주고 첫 번째 점을 묻습니다. AutoCAD와 마찬가지로 여기서 Enter 키는 거부됩니다. 이후의 점마다 곡선이 휘며 미리보기가 커서를 따라오고, Enter 키로 끝납니다. 점은 클릭, 스냅, 입력으로 지정하며, 입력한 길이는 커서 방향으로 적용되고, 점은 Z 값을 유지하므로 스플라인은 공간에서 올라갈 수 있습니다. Esc 키는 곡선을 버립니다. 스플라인 전체가 `U`로 되돌릴 수 있는 한 단계입니다. 리본의 스플라인 맞춤과 스플라인 CV 버튼은 방법이 이미 정해진 SPLINE을 실행합니다.
@@ -16,7 +16,7 @@ SPLINE(스플라인) 명령은 부드러운 곡선을 두 가지 방법 중 하�
 
 ## 명령행에서 [#session]
 
-엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+엔진이 그리고, 그 명령 사용 내역을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
 
 <Session name="spline" caption="다섯 점을 지나는 맞춤 스플라인과, 그 아래 같은 위치의 다섯 정점으로 그린 CV 스플라인: 앞의 것은 점을 지나고, 뒤의 것은 점 쪽으로 당겨집니다." />
 
@@ -36,7 +36,7 @@ CV 스플라인의 차수로, 1(정점 사이의 직선)부터 10까지입니다
 
 ### `Object` (`O`) [#object]
 
-PEDIT의 스플라인 옵션으로 맞춘 2D 또는 3D 폴리선을 같은 곡선의 CV 스플라인으로 바꾸고 폴리선을 지우며, 이를 한 단계로 합니다. 그 밖의 객체는 `Only spline fitted polylines can be converted to splines.`로 거부됩니다.
+PEDIT의 스플라인 옵션으로 맞춘 2D 또는 3D 폴리선을 같은 곡선의 CV 스플라인으로 바꾸고 폴리선을 지우며, 이를 한 단계로 합니다. 그 밖의 객체는 `Only spline fitted polylines can be converted to splines.` 메시지로 거부됩니다.
 
 ### `start Tangency` (`T`) [#start-tangency]
 
@@ -56,7 +56,7 @@ PEDIT의 스플라인 옵션으로 맞춘 2D 또는 3D 폴리선을 같은 곡�
 
 ## 아직 지원하지 않는 것 [#missing]
 
-맞춤 공차: 맞춤 스플라인은 항상 점을 정확히 지나며 toLerance 옵션은 제시되지 않습니다. 그리는 동안의 스플라인은 AutoCAD와 달리 아직 스냅이나 추적의 대상이 아닙니다. `Object`는 항상 폴리선을 지웁니다(DELOBJ). 완성된 스플라인에서는 CVSHOW와 CVHIDE, 점을 추가하거나 제거하는 그립 메뉴가 없고, 특성 팔레트는 점은 편집하지만 방법, 차수, 매듭, 가중치, 닫기는 편집하지 않으며, 기하학적 중심, 직교, 접점 스냅이 스플라인에 작동하지 않습니다. HATCH는 스플라인을 경계로 찾지 못하며, BLEND는 아직 없습니다.
+맞춤 공차: 맞춤 스플라인은 항상 점을 정확히 지나며 공차 옵션은 제시되지 않습니다. 그리는 동안의 스플라인은 AutoCAD와 달리 아직 스냅이나 추적의 대상이 아닙니다. `Object`는 항상 폴리선을 지웁니다(DELOBJ). 완성된 스플라인에서는 CVSHOW와 CVHIDE, 점을 추가하거나 제거하는 그립 메뉴가 없고, 특성 팔레트는 점은 편집하지만 방법, 차수, 매듭, 가중치, 닫기는 편집하지 않으며, 기하학적 중심, 직교, 접점 스냅이 스플라인에 작동하지 않습니다. HATCH는 스플라인을 경계로 찾지 못하며, BLEND는 아직 없습니다.
 
 [기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl--ru-сплайн--спл--pl-splajn--spl--cs-spline--spl--hu-spline--spl)
 
@@ -72,7 +72,7 @@ PEDIT의 스플라인 옵션으로 맞춘 2D 또는 3D 폴리선을 같은 곡�
 
 ### 스플라인을 폴리선으로 바꾸려면 어떻게 합니까?
 
-[`PEDIT`](/docs/commands/pedit)를 실행하고 스플라인을 선택합니다. `Object selected is not a polyline`라고 표시하고 폴리선으로 바꿀지 물은 다음, 0부터 99까지(기본값 10)의 정밀도를 묻습니다. 폴리선은 짧은 직선 세그먼트로 스플라인을 따라가며, AutoCAD보다 세그먼트가 많습니다.
+[`PEDIT`](/docs/commands/pedit)를 실행하고 스플라인을 선택합니다. `Object selected is not a polyline`라는 메시지를 표시하고 폴리선으로 바꿀지 물은 다음, 0부터 99까지(기본값 10)의 정밀도를 묻습니다. 폴리선은 짧은 직선 세그먼트로 스플라인을 따라가며, AutoCAD보다 세그먼트가 많습니다.
 
 ### 폴리선을 스플라인으로 바꾸려면 어떻게 합니까?
 

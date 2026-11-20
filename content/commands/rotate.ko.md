@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ROTATE(회전) 명령"
 metaTitle: "오토캐드 회전(ROTATE) 사용법과 단축키 RO"
-description: "AutoCAD ROTATE(회전, 캐드 로테이트, RO)를 프롬프트 순서대로: 기준점과 각도, 원본을 남기는 복사, 원하는 각도로 맞추는 참조. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD ROTATE(회전, 캐드 로테이트, RO)를 프롬프트 순서대로 설명합니다: 기준점과 각도, 원본을 남기는 복사, 원하는 각도로 맞추는 참조. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "직사각형을 복사 옵션으로 구석점을 중심으로 30° 회전한 모습. 원본은 그대로 남습니다."
 sourceHash: "0e5ae021e108"
 ---
@@ -12,7 +12,7 @@ ROTATE(회전) 명령은 선택한 객체를 기준점을 중심으로 돌립니
 
 ### Copy
 
-객체는 그 자리에 두고 사본을 회전하며, <Message id="rotatingCopy" />라고 표시합니다. 그런 다음 다시 각도를 묻습니다.
+객체는 그 자리에 두고 사본을 회전하며, <Message id="rotatingCopy" />라는 메시지를 표시합니다. 그런 다음 다시 각도를 묻습니다.
 
 ### Reference
 

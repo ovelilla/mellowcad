@@ -243,8 +243,11 @@ html:not(:lang(pl)) .font-mono:lang(pl) {
   word-break: auto-phrase;
 }
 
-:lang(ko) {
+/* Inherited from the root, so a `break-*` utility below still wins; a word
+   too long for its line (CHAMFEREDGE(모서리 in a 360 px heading) breaks. */
+html:lang(ko) {
   word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 html:lang(ar) body,

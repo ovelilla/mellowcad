@@ -1,8 +1,8 @@
 ---
 title: "오토캐드 치수 기입: DIMLINEAR(선형) 명령"
 metaTitle: "오토캐드 치수 명령: 선형 치수(DIMLINEAR)와 단축키 DLI"
-description: "AutoCAD 선형 치수(DIMLINEAR, DLI)로 치수를 기입하는 방법을 프롬프트 순서대로 설명합니다: 두 원점이나 객체, 그리고 수평 또는 수직 치수선. 브라우저에서 무료로 사용해 보세요."
-figure: "직사각형에 치수를 두 번 기입합니다. 위쪽 모서리는 두 구석으로, 오른쪽 모서리는 Enter 키를 누르고 모서리를 선택하여 기입합니다."
+description: "AutoCAD 선형 치수(DIMLINEAR, DLI)로 치수를 기입하는 방법을 프롬프트 순서대로 설명합니다: 두 원점이나 객체, 그리고 수평 또는 수직 치수선. 브라우저에서 무료로 해 볼 수 있습니다."
+figure: "직사각형에 치수를 두 번 기입합니다. 위쪽 모서리는 두 구석점으로, 오른쪽 모서리는 Enter 키를 누르고 모서리를 선택하여 기입합니다."
 sourceHash: "e48a0a6f18c9"
 ---
 
@@ -34,7 +34,7 @@ DIMLINEAR(선형) 명령은 두 점 사이의 거리를 X나 Y 방향으로 재�
 
 ## Missing
 
-여러 줄 문자 옵션이 없습니다. 치수 문자는 한 줄이며, 문자 편집기가 아니라 명령행에서 <Keyword id="Text" /> 옵션으로 정합니다. <Keyword id="Angle" /> 옵션으로 각도를 정하면 AutoCAD는 문자를 치수선 위 가운데에 놓지만, 여기서는 각도가 없을 때와 같이 치수선 위쪽에 남습니다. 치수는 연관되지 않으므로, 잰 객체를 따라가지 않습니다.
+여러 줄 문자 옵션이 없습니다. 치수 문자는 한 줄이며, 문자 편집기가 아니라 명령행에서 <Keyword id="Text" /> 옵션으로 정합니다. <Keyword id="Angle" /> 옵션으로 각도를 정하면 AutoCAD는 문자를 치수선 한가운데에 맞춰 놓지만, 여기서는 각도가 없을 때와 같이 치수선 위에 놓입니다. 치수는 연관되지 않으므로, 잰 객체를 따라가지 않습니다.
 
 ## Questions
 
@@ -44,11 +44,11 @@ DIMLINEAR(선형) 명령은 두 점 사이의 거리를 X나 Y 방향으로 재�
 
 ### 오토캐드의 치수 명령에는 어떤 것이 있습니까?
 
-수평 거리와 수직 거리는 <Command id="DIMLINEAR" />, 기울어진 모서리를 따른 거리는 <Command id="DIMALIGNED" />, 호와 원은 <Command id="DIMRADIUS" />와 <Command id="DIMDIAMETER" />, 각도는 <Command id="DIMANGULAR" />, 체인은 <Command id="DIMCONTINUE" />와 <Command id="DIMBASELINE" />, 간격 맞추기는 <Command id="DIMSPACE" />, 모양은 <Command id="DIMSTYLE" /> 명령입니다. 하나의 프롬프트에서 어떤 종류든 만드는 AutoCAD의 DIM과 여러 객체에 한 번에 치수를 기입하는 QDIM은 MellowCAD에 아직 없습니다.
+수평 거리와 수직 거리는 <Command id="DIMLINEAR" />, 기울어진 모서리를 따른 거리는 <Command id="DIMALIGNED" />, 호와 원은 <Command id="DIMRADIUS" />와 <Command id="DIMDIAMETER" />, 각도는 <Command id="DIMANGULAR" />, 연속 치수와 기준선 치수는 <Command id="DIMCONTINUE" />와 <Command id="DIMBASELINE" />, 치수 간격 조정은 공간 조정(<Command id="DIMSPACE" />), 모양은 <Command id="DIMSTYLE" /> 명령입니다. 하나의 프롬프트에서 어떤 종류든 만드는 AutoCAD의 DIM과 여러 객체에 한 번에 치수를 기입하는 QDIM은 MellowCAD에 아직 없습니다.
 
 ### 객체를 바꿔도 치수가 따라가지 않는 이유는 무엇입니까?
 
-<Message id="nonAssociativeDimension" />가 말하듯 MellowCAD의 치수는 아직 연관되지 않습니다. 치수는 지정받은 점을 유지합니다. 함께 늘립니다. <Command id="STRETCH" /> 명령의 걸치기 윈도우 하나로 옮길 끝과 그곳의 치수 원점을 함께 잡으면 측정값이 다시 계산됩니다. 또는 원점의 그립을 새 위치로 끕니다.
+<Message id="nonAssociativeDimension" /> 메시지가 말하듯 MellowCAD의 치수는 아직 연관되지 않습니다. 치수는 지정받은 점을 유지합니다. 객체와 치수를 함께 신축하십시오. <Command id="STRETCH" /> 명령의 걸치기 윈도우 하나로 옮길 끝과 그곳의 치수 원점을 함께 잡으면 측정값이 다시 계산됩니다. 또는 원점의 그립을 새 위치로 끕니다.
 
 ### 치수 문자와 화살표의 크기를 바꾸려면 어떻게 합니까?
 

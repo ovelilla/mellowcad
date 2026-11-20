@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PAN(초점이동) 명령"
 metaTitle: "캐드 화면 이동: 초점이동(PAN)과 단축키 P"
-description: "AutoCAD 초점이동(PAN, P) 사용법: 손 모양 커서나 휠 버튼으로 뷰 끌기, 두 점으로 이동하는 -PAN, 다른 명령 도중의 PAN. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 초점이동(PAN, P) 사용법을 설명합니다: 손 모양 커서나 휠 버튼으로 뷰 끌기, 두 점으로 이동하는 -PAN, 다른 명령 도중의 PAN. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "PAN으로 오른쪽 아래로 끈 다음 Enter 키: 판이 뷰 안에서 미끄러지듯 움직이지만 좌표는 그대로입니다."
 sourceHash: "0ca3050831f3"
 ---

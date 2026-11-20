@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD SOLIDEDIT(솔리드 편집) 명령"
 metaTitle: "오토캐드 솔리드 편집(SOLIDEDIT)으로 면 편집하기"
-description: "AutoCAD SOLIDEDIT(솔리드 편집)로 3D 솔리드의 면을 편집하는 방법을 프롬프트 순서대로: 돌출, 이동, 회전, 간격띄우기, 테이퍼, 삭제, 복사. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD SOLIDEDIT(솔리드 편집)로 3D 솔리드의 면을 편집하는 방법을 프롬프트 순서대로 설명합니다: 돌출, 이동, 회전, 간격띄우기, 테이퍼, 삭제, 복사. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "SOLIDEDIT로 상자의 윗면을 위로 15, 테이퍼 15도로 돌출한 모습: 상자 위의 절두체를 남동쪽에서 봅니다."
 sourceHash: "775cdc271d4f"
 ---
@@ -14,7 +14,7 @@ SOLIDEDIT(솔리드 편집) 명령은 3D 솔리드를 면 단위로 편집합니
 
 ### Face
 
-면 옵션입니다. 각 옵션은 Enter 키를 누를 때까지 면을 묻습니다. 클릭하거나 점을 입력하면 그 아래에서 가장 가까운 면을, 또는 그곳 모서리의 두 면을 선택하며, 이미 선택한 면 위에서는 그 뒤의 면을 선택합니다. 면을 하나 선택한 뒤에는 <Keyword id="ALL" />로 그 솔리드의 모든 면을 선택합니다. <Keyword id="Remove" />는 대신 세트에서 면을 빼고, <Keyword id="Undo" />는 마지막 선택을 되돌립니다. 아무것도 없는 곳을 선택하면 <Message id="noSolidsDetected" />라고 표시합니다. 한 솔리드의 면만 선택할 수 있습니다.
+면 옵션입니다. 각 옵션은 Enter 키를 누를 때까지 면을 묻습니다. 클릭하거나 점을 입력하면 그 아래에서 가장 가까운 면을, 또는 그곳 모서리의 두 면을 선택하며, 이미 선택한 면 위에서는 그 뒤의 면을 선택합니다. 면을 하나 선택한 뒤에는 <Keyword id="ALL" />로 그 솔리드의 모든 면을 선택합니다. <Keyword id="Remove" />는 대신 세트에서 면을 빼고, <Keyword id="Undo" />는 마지막 선택을 되돌립니다. 아무것도 없는 곳을 선택하면 <Message id="noSolidsDetected" />라는 메시지를 표시합니다. 한 솔리드의 면만 선택할 수 있습니다.
 
 ### Extrude
 
@@ -46,7 +46,7 @@ SOLIDEDIT(솔리드 편집) 명령은 3D 솔리드를 면 단위로 편집합니
 
 ### Undo
 
-면 옵션에서 이번 실행의 마지막 편집을 되돌립니다. 되돌릴 것이 없으면 <Message id="commandCompletelyUndone" />라고 표시합니다.
+면 옵션에서 이번 실행의 마지막 편집을 되돌립니다. 되돌릴 것이 없으면 <Message id="commandCompletelyUndone" />라는 메시지를 표시합니다.
 
 ### eXit
 
@@ -54,7 +54,7 @@ SOLIDEDIT(솔리드 편집) 명령은 3D 솔리드를 면 단위로 편집합니
 
 ## Missing
 
-<Keyword id="Edge" />와 <Keyword id="Body" />, 그리고 면의 <Keyword id="coLor" />와 <Keyword id="mAterial" />: 제시되지만 거부되며, <Keyword id="Extrude" />의 <Keyword id="Path" />, <Keyword id="Rotate" />의 객체 축과 <Keyword id="Reference" /> 각도도 마찬가지입니다. 면을 선택하는 걸치기, 울타리, 걸치기 폴리곤. 곡면의 이동, 회전, 테이퍼, 복사, 다른 인접 면 사이에 있는 곡면의 간격띄우기, 구멍의 벽이나 띠가 아닌 면의 삭제, 그리고 한 면이 다른 면을 없앨 만큼 솔리드 모양을 바꾸는 편집. 테이퍼를 주어 돌출한 면 옆의 편집. 너무 바깥으로 나가 만들 수 없는 간격띄우기: AutoCAD는 아무 표시 없이 버리지만 MellowCAD는 만듭니다. 거리나 각도를 지정하는 동안의 미리보기.
+<Keyword id="Edge" />와 <Keyword id="Body" />, 그리고 면의 <Keyword id="coLor" />와 <Keyword id="mAterial" />: 제시되지만 거부되며, <Keyword id="Extrude" />의 <Keyword id="Path" />, <Keyword id="Rotate" />의 객체 축과 <Keyword id="Reference" /> 각도도 마찬가지입니다. 면을 선택하는 걸치기, 울타리, 걸침 폴리곤. 곡면의 이동, 회전, 테이퍼, 복사, 다른 인접 면 사이에 있는 곡면의 간격띄우기, 구멍의 벽이나 띠가 아닌 면의 삭제, 그리고 한 면이 다른 면을 없앨 만큼 솔리드 모양을 바꾸는 편집. 테이퍼를 주어 돌출한 면 옆의 편집. 너무 바깥으로 나가 만들 수 없는 간격띄우기: AutoCAD는 아무 표시 없이 버리지만 MellowCAD는 만듭니다. 거리나 각도를 지정하는 동안의 미리보기.
 
 ## Questions
 

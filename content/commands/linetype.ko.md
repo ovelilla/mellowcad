@@ -1,8 +1,8 @@
 ---
 title: "AutoCAD LINETYPE(선종류) 명령"
 metaTitle: "AutoCAD 선종류(LINETYPE) 로드와 단축키 LT"
-description: "AutoCAD 선종류(LINETYPE, LT) 사용법: acadiso.lin에서 선종류 로드, 새 객체의 현재 선종류, ByLayer, 점선이 실선으로 보이는 이유."
-figure: "HIDDEN을 현재로 하여 구멍을, CENTER로 두 축선을 그린 판. 마지막에 LINETYPE을 ByLayer로 되돌립니다."
+description: "AutoCAD 선종류(LINETYPE, LT) 사용법을 설명합니다: acadiso.lin에서 선종류 로드, 새 객체의 현재 선종류, ByLayer, 점선이 실선으로 보이는 이유."
+figure: "HIDDEN을 현재로 하여 구멍을, CENTER로 두 중심선을 그린 판. 마지막에 LINETYPE을 ByLayer로 되돌립니다."
 sourceHash: "d15530a865c1"
 ---
 
@@ -26,7 +26,7 @@ LINETYPE(선종류) 명령은 새 객체를 그릴 선종류를 설정합니다.
 
 ## Missing
 
-선종류 관리자가 없고, 선종류를 만들거나 직접 만든 파일에서 로드할 수 없습니다. BATTING이나 ZIGZAG 같은 복합 선종류의 모양은 그 자리의 틈으로 그려집니다. ByBlock이 없습니다. 도면 공간이 없으므로 PSLTSCALE과 MSLTSCALE도 없습니다. 언어별 AutoCAD의 acadiso.lin, 즉 스페인어나 독일어 AutoCAD가 로드하는 이름(TRAZOS, STRICHLINIE)이 없습니다. 로드는 모든 언어에서 영어 파일을 읽지만, 그런 선종류로 만든 도면은 자기 선종류를 가지고 열립니다. PLINEGEN이 없어, 새 폴리선은 PEDIT의 선종류 생성으로 켜지 않는 한 각 정점에서 패턴을 다시 시작합니다.
+선종류 관리자가 없고, 선종류를 만들거나 직접 만든 파일에서 로드할 수 없습니다. BATTING이나 ZIGZAG 같은 복합 선종류의 모양은 그 자리의 틈으로 그려집니다. ByBlock이 없습니다. 도면 공간이 없으므로 PSLTSCALE과 MSLTSCALE도 없습니다. 언어별 AutoCAD의 acadiso.lin, 즉 스페인어나 독일어 AutoCAD가 로드하는 이름(TRAZOS, STRICHLINIE)이 없습니다. 로드는 모든 언어에서 영어 파일을 읽지만, 그런 선종류로 만든 도면은 자기 선종류를 가지고 열립니다. PLINEGEN이 없어, 새 폴리선은 PEDIT의 선종류생성으로 켜지 않는 한 각 정점에서 패턴을 다시 시작합니다.
 
 ## Questions
 

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PROPERTIES(특성) 명령"
 metaTitle: "오토캐드 특성(PROPERTIES) 팔레트와 단축키 Ctrl+1"
-description: "AutoCAD PROPERTIES(특성) 팔레트(PR, Ctrl+1)의 사용법: 일반과 형상 행, *다양함*, 객체 유형별 표시, 현재 설정. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD PROPERTIES(특성) 팔레트(PR, Ctrl+1)의 사용법을 설명합니다: 일반과 형상 행, *다양함*, 객체 유형별 표시, 현재 설정. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "명령 프롬프트에서 원을 선택해 그립이 표시된 다음 PROPERTIES를 실행한 모습: 도면 옆에 팔레트가 열리고 원의 행이 표시됩니다."
 sourceHash: "14d097ac5b0b"
 ---

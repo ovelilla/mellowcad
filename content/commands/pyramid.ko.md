@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PYRAMID(피라미드) 명령"
 metaTitle: "오토캐드 피라미드(PYRAMID) 사용법과 단축키 PYR"
-description: "AutoCAD PYRAMID(피라미드, PYR)로 3D 솔리드 피라미드를 그리는 방법을 프롬프트 순서대로: 면 수, 밑면, 높이, 모서리, 내접, 절두체의 상단 반지름. 브라우저에서 무료로."
+description: "AutoCAD PYRAMID(피라미드, PYR)로 3D 솔리드 피라미드를 그리는 방법을 프롬프트 순서대로 설명합니다: 면 수, 밑면, 높이, 모서리, 내접, 절두체의 상단 반지름. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "밑면의 각 변 중간점까지 25, 높이 40인 육각 피라미드를 숨김 비주얼 스타일로 남동쪽에서 봅니다."
 sourceHash: "acbc5ffa71cb"
 ---

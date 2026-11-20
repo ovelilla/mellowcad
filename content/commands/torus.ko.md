@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD TORUS(토러스) 명령"
 metaTitle: "오토캐드 토러스(TORUS) 사용법과 단축키 TOR"
-description: "AutoCAD TORUS(토러스, TOR)로 3D 솔리드 고리를 그리는 방법을 프롬프트 순서대로: 중심, 고리의 반지름, 튜브의 반지름, 지름, 3P, 2P, Ttr. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD TORUS(토러스, TOR)로 3D 솔리드 고리를 그리는 방법을 프롬프트 순서대로 설명합니다: 중심, 고리의 반지름, 튜브의 반지름, 지름, 3P, 2P, Ttr. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "반지름 30, 튜브 반지름 8인 토러스를 개념 비주얼 스타일로 남동쪽에서 봅니다."
 sourceHash: "a19600f3e357"
 ---

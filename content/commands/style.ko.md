@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD STYLE(문자 스타일) 명령"
 metaTitle: "오토캐드 문자 스타일(STYLE) 설정과 단축키 ST"
-description: "AutoCAD STYLE(문자 스타일, ST)로 문자 스타일을 관리하는 방법: 새로 만들기, 이름 바꾸기, 삭제, 현재로 설정, 고정 높이, 그리고 TEXT와 MTEXT에 주는 영향. 브라우저에서 무료로."
+description: "AutoCAD STYLE(문자 스타일, ST)로 문자 스타일을 관리하는 방법을 설명합니다: 새로 만들기, 이름 바꾸기, 삭제, 현재로 설정, 고정 높이, 그리고 TEXT와 MTEXT에 주는 영향. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "명판: STYLE 다음에 TEXT를 실행하면 Style ?가 도면의 스타일(Arial의 Standard)을 나열하고, 그 스타일로 명판의 이름을 씁니다."
 sourceHash: "8c15a1a95e66"
 ---

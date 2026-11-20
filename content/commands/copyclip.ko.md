@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD COPYCLIP(클립 복사) 명령"
 metaTitle: "오토캐드 클립 복사(COPYCLIP) Ctrl+C와 붙여넣기"
-description: "AutoCAD 클립 복사(COPYCLIP, Ctrl+C)를 CUTCLIP, COPYBASE, PASTECLIP과 함께 쓰는 방법: 객체를 클립보드에 복사하고 한 점에 붙여넣습니다. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 클립 복사(COPYCLIP, Ctrl+C)를 CUTCLIP, COPYBASE, PASTECLIP과 함께 쓰는 방법: 객체를 클립보드에 복사하고 한 점에 붙여넣습니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "판의 구멍을 COPYCLIP으로 복사하고 PASTECLIP으로 65,20에 붙여넣습니다. 복사본이 왼쪽 아래 구석을 기준으로 놓여 두 번째 구멍이 됩니다."
 sourceHash: "f84c995e7c2b"
 ---
@@ -28,6 +28,6 @@ Ctrl+Shift+C를 누르거나 `COPYBASE`를 입력하고, 기준점을 지정한 
 
 객체를 선택하고 Ctrl+C를 누른 다음, 다른 도면을 열고 Ctrl+V를 누르고 삽입점을 지정합니다. 도면층, 스타일, 블록도 함께 옵니다.
 
-### 캐드 붙여넣기가 안될때는 어떻게 합니까?
+### 캐드 붙여넣기가 안 될 때는 어떻게 합니까?
 
 브라우저가 페이지의 클립보드 읽기를 허용할지 물을 수 있습니다. 허용합니다. 거부하면 PASTECLIP은 같은 페이지에서 마지막으로 복사한 것을 붙여넣습니다. 복사한 것이 없으면 아무것도 붙여넣지 않습니다.

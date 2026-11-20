@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CYLINDER(원통) 명령"
 metaTitle: "오토캐드 3D 원통(CYLINDER) 그리기와 단축키 CYL"
-description: "AutoCAD 원통(CYLINDER, CYL)으로 3D 솔리드 원통을 그리는 방법을 프롬프트 순서대로 설명합니다: 밑면, 반지름, 높이, 3P, 2P, Ttr, 타원형, 축 끝점. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 원통(CYLINDER, CYL)으로 3D 솔리드 원통을 그리는 방법을 프롬프트 순서대로 설명합니다: 밑면, 반지름, 높이, 3P, 2P, Ttr, 타원형, 축 끝점. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "밑면 중심에서 그린 반지름 20, 높이 40인 원통을 숨김 비주얼 스타일로 남동쪽에서 본 모습입니다."
 sourceHash: "ce397d8dcb5d"
 ---

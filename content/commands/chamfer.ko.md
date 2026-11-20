@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CHAMFER(모따기) 명령"
 metaTitle: "캐드 모따기(CHAMFER) 사용법과 단축키 CHA"
-description: "AutoCAD 모따기(CHAMFER, CHA), 캐드 챔퍼를 프롬프트 순서대로 설명합니다: 두 거리, 두 선이나 폴리선의 구석, 다중, Shift 키. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 모따기(CHAMFER, CHA), 캐드 챔퍼를 프롬프트 순서대로 설명합니다: 두 거리, 두 선이나 폴리선의 구석, 다중, Shift 키. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "선 네 개에서 거리 옵션으로 두 거리를 모두 10으로 하고 다중 옵션을 선택합니다. 두 구석은 잘리고 두 구석은 뾰족하게 남습니다."
 sourceHash: "e43c5b72ffc8"
 ---
@@ -44,9 +44,9 @@ CHAMFER(모따기) 명령은 두 선 사이의 구석을 직선 모따기로 자
 
 CHAMFER는 두 선을 직선 모따기로 잇고, <Command id="FILLET" /> 명령은 두 선에 접하는 호로 잇습니다. 둘 다 선을 그 모따기나 호까지 자르거나 연장하며, 둘 다 0일 때나 두 번째 선에서 Shift 키를 누르고 있을 때 뾰족한 구석을 만듭니다.
 
-### 캐드 모따기가 안될때는 어떻게 합니까?
+### 캐드 모따기가 안 될 때는 어떻게 합니까?
 
-CHAMFER가 이유를 알려 줍니다. 거리가 선의 끝을 넘으면 <Message id="chamferDistanceTooLarge" />, 평행한 선이면 <Message id="linesParallel" />, 호나 원이면 <Message id="chamferRequiresLines" />를 표시합니다. 두 거리가 모두 0이면 모따기가 아니라 구석을 만듭니다.
+CHAMFER가 이유를 알려 줍니다. 거리가 선의 끝을 넘으면 <Message id="chamferDistanceTooLarge" /> 메시지, 평행한 선이면 <Message id="linesParallel" /> 메시지, 호나 원이면 <Message id="chamferRequiresLines" /> 메시지를 표시합니다. 두 거리가 모두 0이면 모따기가 아니라 구석을 만듭니다.
 
 ### 직사각형의 모든 구석을 모따기하려면 어떻게 합니까?
 

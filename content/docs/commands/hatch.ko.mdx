@@ -1,13 +1,13 @@
 ---
 title: "AutoCAD HATCH(해치) 명령"
 metaTitle: "캐드 해치: 해치(HATCH) 사용법과 단축키 H"
-description: "AutoCAD 해치(HATCH, H), 캐드 해치를 프롬프트 순서대로: 내부 점 또는 객체 선택, 해치 패턴, 축척과 각도, 고립 영역. 브라우저에서 무료로 해 볼 수 있습니다."
+description: "AutoCAD 해치(HATCH, H), 캐드 해치를 프롬프트 순서대로 설명합니다: 내부 점 또는 객체 선택, 해치 패턴, 축척과 각도, 고립영역. 브라우저에서 무료로 해 볼 수 있습니다."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"AutoCAD 해치 단축키는?","answer":"H를 입력하고 Enter 키나 Space 키를 누릅니다. BH도 됩니다. 해치 작성 탭이 없으므로 -H(-HATCH)처럼 명령행에서 묻습니다. AutoCAD의 어느 언어 버전에서나 _HATCH를 쓸 수 있습니다."},{"question":"캐드 해치가 안될 때는?","answer":"대부분은 영역이 닫혀 있지 않기 때문입니다. “Valid hatch boundary not found.” 메시지가 표시되며, 틈을 메워 주는 기능이 없으므로 아주 작은 틈 하나로도 그렇게 됩니다. 윤곽을 닫고 다시 클릭합니다. 타원이나 스플라인으로 닫힌 영역은 아직 찾지 못하며, 꺼진 도면층의 객체는 보이지 않는 것으로 취급됩니다."},{"question":"어떤 해치 패턴이 있고, 더 내려받을 수 있나요?","answer":"AutoCAD의 미터법 패턴 파일인 acadiso.pat에서 고른 패턴이 있습니다: SOLID, ANGLE, ANSI31부터 ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL, ZIGZAG. Properties에서 ?를 입력하면 나열됩니다. 직접 만들거나 내려받은 패턴 파일은 아직 불러올 수 없지만, DXF의 해치는 어떤 패턴이든 그 패턴 그대로, AutoCAD가 그리는 대로 열립니다."},{"question":"해치 축척을 바꾸려면?","answer":"클릭하기 전에 Properties에서 바꿉니다. 축척은 패턴 이름 다음에 묻습니다. 만든 뒤에는 해치를 선택하고 특성 팔레트에서 축척을 다시 입력하거나, MATCHPROP으로 다른 해치의 패턴, 축척, 각도를 가져옵니다. 축척이 너무 작아 패턴에 선이 너무 많이 필요하면 “Hatch spacing too dense, or dash size too small.” 메시지가 표시되고 해치가 만들어지지 않습니다."},{"question":"해치의 면적을 구하려면?","answer":"해치를 선택하고 특성 팔레트의 형상 아래에서 면적을 읽습니다. 고립 영역은 빠진 값입니다. 여러 개를 선택하면 누적 영역이 그 합계입니다. 또는 AREA를 실행하고 Object를 고른 다음 해치를 클릭합니다."}]
+faq: [{"question":"AutoCAD 해치 단축키는?","answer":"H를 입력하고 Enter 키나 Space 키를 누릅니다. BH도 됩니다. 해치 작성 탭이 없으므로 -H(-HATCH)처럼 명령행에서 묻습니다. AutoCAD의 어느 언어 버전에서나 _HATCH를 쓸 수 있습니다."},{"question":"캐드 해치가 안 될 때는?","answer":"대부분은 영역이 닫혀 있지 않기 때문입니다. “Valid hatch boundary not found.” 메시지가 표시되며, 틈을 메워 주는 기능이 없으므로 아주 작은 틈 하나로도 그렇게 됩니다. 윤곽을 닫고 다시 클릭합니다. 타원이나 스플라인으로 닫힌 영역은 아직 찾지 못하며, 꺼진 도면층의 객체는 보이지 않는 것으로 취급됩니다."},{"question":"어떤 해치 패턴이 있고, 더 내려받을 수 있습니까?","answer":"AutoCAD의 미터법 패턴 파일인 acadiso.pat에서 고른 패턴이 있습니다: SOLID, ANGLE, ANSI31부터 ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL, ZIGZAG. Properties에서 ?를 입력하면 나열됩니다. 직접 만들거나 내려받은 패턴 파일은 아직 불러올 수 없지만, DXF의 해치는 어떤 패턴이든 그 패턴 그대로, AutoCAD가 그리는 대로 열립니다."},{"question":"해치 축척을 바꾸려면?","answer":"클릭하기 전에 Properties에서 바꿉니다. 축척은 패턴 이름 다음에 묻습니다. 만든 뒤에는 해치를 선택하고 특성 팔레트에서 축척을 다시 입력하거나, MATCHPROP으로 다른 해치의 패턴, 축척, 각도를 가져옵니다. 축척이 너무 작아 패턴에 선이 너무 많이 필요하면 “Hatch spacing too dense, or dash size too small.” 메시지가 표시되고 해치가 만들어지지 않습니다."},{"question":"해치의 면적을 구하려면?","answer":"해치를 선택하고 특성 팔레트의 형상 아래에서 면적을 읽습니다. 고립영역을 뺀 값입니다. 여러 개를 선택하면 누적 영역이 그 합계입니다. 또는 AREA를 실행하고 Object를 고른 다음 해치를 클릭합니다."}]
 ---
 
-HATCH(해치) 명령은 닫힌 영역을 선 패턴이나 솔리드로 채웁니다. 영역 안의 점을 클릭하면 주변 객체에서 경계를 찾고, 직사각형 안의 원이나 문자처럼 안에 있는 것은 고립 영역으로 비워 둡니다. 또는 영역을 둘러싸는 객체를 선택합니다. 원하는 만큼 영역을 클릭한 다음 Enter 키나 Esc 키를 누르면, 그 영역 전체가 해치 하나가 되어 현재 도면층에서 경계 뒤에 놓입니다. 명령 전체가 한 단계이므로 명령 취소로 되돌립니다.
+HATCH(해치) 명령은 닫힌 영역을 선 패턴이나 솔리드로 채웁니다. 영역 안의 점을 클릭하면 주변 객체에서 경계를 찾고, 직사각형 안의 원이나 문자처럼 안에 있는 것은 고립영역으로 비워 둡니다. 또는 영역을 둘러싸는 객체를 선택합니다. 원하는 만큼 영역을 클릭한 다음 Enter 키나 Esc 키를 누르면, 그 영역 전체가 해치 하나가 되어 현재 도면층에서 경계 뒤에 놓입니다. 명령 전체가 한 단계이므로 명령 취소로 되돌립니다.
 
 AutoCAD의 HATCH는 해치 작성 탭이나 대화상자에서 패턴을 설정하지만, MellowCAD에는 둘 다 없습니다. 여기서는 `-HATCH`가 묻는 것을 명령행에서 묻고, 패턴은 `Properties`에 있습니다. 둘의 차이는 Esc 키뿐이며, `-HATCH`에서 Esc 키를 누르면 영역이 버려집니다. 각 해치는 직전 해치에 지정한 패턴, 축척, 각도로 시작합니다. 새 도면에서는 ANGLE, 축척 1, 각도 0입니다.
 
@@ -18,9 +18,9 @@ AutoCAD의 HATCH는 해치 작성 탭이나 대화상자에서 패턴을 설정�
 
 ## 명령행에서 [#session]
 
-엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+엔진이 그리고, 그 명령 사용 내역을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
 
-<Session name="hatch" caption="원이 들어 있는 직사각형을 내부 점 하나로 ANSI31 해치. 원은 고립 영역으로 비어 있습니다." />
+<Session name="hatch" caption="원이 들어 있는 직사각형을 내부 점 하나로 ANSI31 해치. 원은 고립영역으로 비어 있습니다." />
 
 ## 옵션 [#options]
 
@@ -32,7 +32,7 @@ AutoCAD의 HATCH는 해치 작성 탭이나 대화상자에서 패턴을 설정�
 
 ### `Select objects` (`S`) [#select-objects]
 
-내부 점 대신, 영역을 둘러싸는 객체를 선택합니다. Enter 키를 누르면 점 프롬프트로 돌아갑니다. 영역을 닫지 않는 객체는 제외됩니다. 어느 객체도 영역을 둘러싸지 않으면 Enter 키를 눌렀을 때 `Unable to hatch the boundary.` 메시지가 표시되고 아무것도 만들지 않습니다. 영역(region)은 그 윤곽을 경계로, 구멍을 고립 영역으로 제공합니다.
+내부 점 대신, 영역을 둘러싸는 객체를 선택합니다. Enter 키를 누르면 점 프롬프트로 돌아갑니다. 영역을 닫지 않는 객체는 제외됩니다. 어느 객체도 영역을 둘러싸지 않으면 Enter 키를 눌렀을 때 `Unable to hatch the boundary.` 메시지가 표시되고 아무것도 만들지 않습니다. 영역(region)은 그 윤곽을 경계로, 구멍을 고립영역으로 제공합니다.
 
 ### `Undo` (`U`) [#undo]
 
@@ -40,7 +40,7 @@ AutoCAD의 HATCH는 해치 작성 탭이나 대화상자에서 패턴을 설정�
 
 ## 아직 지원하지 않는 것 [#missing]
 
-타원과 스플라인을 경계로 쓸 수 없습니다. 이들이 닫는 영역은 찾지 못하며, 이런 모서리가 있는 영역(region)은 제외됩니다. 차이 공차(HPGAPTOL)가 없으므로 영역은 정확히 닫혀 있어야 합니다. 연관 해치와 고립 영역 스타일인 정상과 무시가 없습니다. 그라데이션, 사용자 정의 패턴, acadiso.pat의 나머지 패턴은 여기서 만들 수 없습니다. DXF의 해치만 이들을 가져오며, 그라데이션은 그 색상으로, 패턴은 그 선으로 가져옵니다. -HATCH의 다른 옵션(경계 그리기, 경계 제거, 고급, 그리기 순서, 원점, 주석, 색상, 도면층, 투명도)이 없습니다. AutoCAD에서 더블클릭하면 열리는 HATCHEDIT와 해치 편집기도 없습니다. MIRRHATCH 1이 없어, 대칭한 해치는 항상 패턴의 각도를 유지합니다. 해치 그립의 메뉴도 없습니다.
+타원과 스플라인을 경계로 쓸 수 없습니다. 이들이 닫는 영역은 찾지 못하며, 이런 모서리가 있는 영역(region)은 제외됩니다. 차이 공차(HPGAPTOL)가 없으므로 영역은 정확히 닫혀 있어야 합니다. 연관 해치와 고립영역 스타일인 일반과 무시가 없습니다. 그라데이션, 사용자 정의 패턴, acadiso.pat의 나머지 패턴은 여기서 만들 수 없습니다. DXF의 해치만 이들을 가져오며, 그라데이션은 그 색상으로, 패턴은 그 선으로 가져옵니다. -HATCH의 다른 옵션(경계 그리기, 경계 제거, 고급, 그리기 순서, 원점, 주석, 해치 색상, 도면층, 투명도)이 없습니다. AutoCAD에서 더블클릭하면 열리는 HATCHEDIT와 해치 편집기도 없습니다. MIRRHATCH 1이 없어, 대칭한 해치는 항상 패턴의 각도를 유지합니다. 해치 그립의 메뉴도 없습니다.
 
 [기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
 
@@ -50,11 +50,11 @@ AutoCAD의 HATCH는 해치 작성 탭이나 대화상자에서 패턴을 설정�
 
 `H`를 입력하고 Enter 키나 Space 키를 누릅니다. `BH`도 됩니다. 해치 작성 탭이 없으므로 `-H`(`-HATCH`)처럼 명령행에서 묻습니다. AutoCAD의 어느 언어 버전에서나 `_HATCH`를 쓸 수 있습니다.
 
-### 캐드 해치가 안될 때는?
+### 캐드 해치가 안 될 때는?
 
 대부분은 영역이 닫혀 있지 않기 때문입니다. `Valid hatch boundary not found.` 메시지가 표시되며, 틈을 메워 주는 기능이 없으므로 아주 작은 틈 하나로도 그렇게 됩니다. 윤곽을 닫고 다시 클릭합니다. 타원이나 스플라인으로 닫힌 영역은 아직 찾지 못하며, 꺼진 도면층의 객체는 보이지 않는 것으로 취급됩니다.
 
-### 어떤 해치 패턴이 있고, 더 내려받을 수 있나요?
+### 어떤 해치 패턴이 있고, 더 내려받을 수 있습니까?
 
 AutoCAD의 미터법 패턴 파일인 acadiso.pat에서 고른 패턴이 있습니다: SOLID, ANGLE, ANSI31부터 ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL, ZIGZAG. `Properties`에서 `?`를 입력하면 나열됩니다. 직접 만들거나 내려받은 패턴 파일은 아직 불러올 수 없지만, DXF의 해치는 어떤 패턴이든 그 패턴 그대로, AutoCAD가 그리는 대로 열립니다.
 
@@ -64,7 +64,7 @@ AutoCAD의 미터법 패턴 파일인 acadiso.pat에서 고른 패턴이 있습�
 
 ### 해치의 면적을 구하려면?
 
-해치를 선택하고 특성 팔레트의 형상 아래에서 면적을 읽습니다. 고립 영역은 빠진 값입니다. 여러 개를 선택하면 누적 영역이 그 합계입니다. 또는 [`AREA`](/docs/commands/area)를 실행하고 `Object`를 고른 다음 해치를 클릭합니다.
+해치를 선택하고 특성 팔레트의 형상 아래에서 면적을 읽습니다. 고립영역을 뺀 값입니다. 여러 개를 선택하면 누적 영역이 그 합계입니다. 또는 [`AREA`](/docs/commands/area)를 실행하고 `Object`를 고른 다음 해치를 클릭합니다.
 
 ## 관련 명령 [#related]
 

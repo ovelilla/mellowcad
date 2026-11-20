@@ -1,6 +1,6 @@
 # Korean (`ko`)
 
-> **Command language:** `global`, English AutoCAD's. **Status:** `draft` since 20/11/2026.
+> **Command language:** `global`, English AutoCAD's. **Status:** `live` since 20/11/2026.
 > **Review:** none by a native speaker yet; a model's second reading (see "Review").
 
 `/ko/draw` is AutoCAD with its interface in Korean — the palettes, the ribbon's words, the menus,
@@ -297,6 +297,48 @@ commits on Enter. A command is typed in English mode (한/영): in Hangul mode a
 types jamo (`ㅣ` for L), in AutoCAD too (unverified on the desktop: the pack is not installed). On
 the drawing no IME composes (no editable target), so a command typed there is latin as typed.
 
+## Going live
+
+On 20/11/2026, from production builds (every page `○` or `●` but `/api/search` and `/mcp`):
+
+- **The landing's first load**, Brotli q11 of every response until the network is idle, in bytes,
+  `main` before Korean (`77a3a0b1`, Japanese live), Korean a draft (`33f9c2f4`) and live: `/`
+  253,481 → 253,477 → 253,521, `/es` 254,747 → 254,809 → 254,772, `/pt-br` 254,995 → 255,064 →
+  255,069, `/ar` 278,375 → 278,381 → 278,395, `/fr` 255,748 → 255,722 → 255,734 (266 under
+  250 KiB), `/it` 254,820 → 254,753 → 254,834, `/de` 255,117 → 255,149 → 255,150, `/ru` 288,698 →
+  288,634 → 288,735, `/pl` 269,484 → 269,621 → 269,598, `/cs` 269,422 → 269,512 → 269,422, `/hu`
+  269,852 → 269,917 → 269,875, `/ja` 255,612 → 255,724 → 255,647; `/ko` 255,445 → 255,390, under
+  the 250 KiB of a page with no script font. The same page measures alike run after run; between
+  builds a landing moves by up to 140 bytes either way, so Korean's cost is within that noise:
+  its `:lang(ko)` rules share Japanese's selectors where they match, and no cut was needed.
+- **The checks in Chrome**: `/ko` at 360 px, nothing wider than the viewport, the H1 breaking
+  between words (`keep-all`) in the system's Korean face; `/ko/draw` at 1280×720, no text clipped
+  in the bars, the palettes or any of the 37 drop-downs and menus; both cards; the docs' search
+  finding 간격띄우기, 자르기, 연습도면 and 좌표. **The IME**: with `LINE` in the command line, a
+  composing Enter (`isComposing`, `keyCode` 229) left it there, a Hangul syllable composed through
+  Chrome's IME (`Input.imeSetComposition`) went into the field, and a plain Enter ran LINE.
+- **A second reading of the code** found `keep-all`, set on every element in Korean, beating the
+  footer's `break-all`, and `CHAMFEREDGE(모서리` unbreakable at some 324 of a 328 px heading: the
+  rule is the root's, inherited (`html:lang(ko)`), with `overflow-wrap: break-word` behind it;
+  checked at 320 px, the long headings break and nothing scrolls sideways.
+
 ## Review
 
-**No native reader yet**: pending, as Arabic's and Japanese's.
+**No native reader yet**: pending, as Arabic's and Japanese's. Instead, on 20/11/2026, **a model's
+second reading**: an agent given the task and a sample, not this file's reasoning — the landing's,
+the editor's and the engine's catalogs, six command notes (OFFSET, TRIM, HATCH, LINE, LAYER,
+DIMLINEAR), three "Use" pages and two exercises, each beside its English — read as a Korean
+technical editor who uses Korean AutoCAD. It found five sentences whose meaning drifted
+(DIMLINEAR's text "above" where AutoCAD centres it on the line; LAYER's buttons read as layers),
+option words Korean AutoCAD contradicts (TRIM's 빠른 모드 and 자르기 모서리 for 빠른 작업 (13161)
+and 절단 모서리 (16430); HATCH's 정상 for 일반 (25777)), the command history named four ways, and
+patterns fixed in every file: 해요체 (사용해 보세요, …나요?) among 합니다체, descriptions with no
+predicate, a particle glued to a `<Message>` whose text shows in English, 안될 for 안 될. Every
+option word the notes name in Korean was then checked against its command's prompt in the tables
+(some 40 changed: FILLET's 승인 for 수락 (5631), ARRAYRECT's 전체 for 합계 (5634), UCSICON's
+words (40271)…); those without a table string (-PURGE's, UCS's SEction) stay **unverified**.
+
+Where a native reader should look first: the terms marked † above, the search titles and
+descriptions (written from the suggestions, never tested against a Korean searcher), the particles
+after latin words, the exercises' drafting words (KS usage), and the ViewCube's faces and compass,
+never seen on the desktop.

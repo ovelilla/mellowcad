@@ -1,15 +1,15 @@
 ---
 title: "AutoCAD SECTION(단면) 명령"
 metaTitle: "오토캐드 단면(SECTION)으로 3D 솔리드 단면 만들기"
-description: "AutoCAD SECTION(단면, 캐드 섹션, SEC)으로 평면이 3D 솔리드를 자르는 곳에 영역을 만드는 방법을 프롬프트 순서대로: 3점, 객체, Z축, 뷰, XY, YZ, ZX. 브라우저에서 무료로."
+description: "AutoCAD SECTION(단면, 캐드 섹션, SEC)으로 평면이 3D 솔리드를 자르는 곳에 영역을 만드는 방법을 프롬프트 순서대로 설명합니다: 3점, 객체, Z축, 뷰, XY, YZ, ZX. 브라우저에서 무료로 해 볼 수 있습니다."
 type: "reference"
 generated: "lib/docs/generate.test.ts"
 faq: [{"question":"오토캐드에서 3D 솔리드의 단면은 어떻게 만듭니까?","answer":"SECTION을 실행하고 솔리드를 선택한 다음 Enter 키를 누르고 평면을 지정합니다. ZX와 가운데를 지나는 점은 앞뒤로 자르고, XY와 높이가 있는 점은 수평으로 자릅니다. 영역은 솔리드 안에 있으므로 MOVE로 꺼내서 봅니다."},{"question":"SECTION과 SLICE의 차이는 무엇입니까?","answer":"SLICE는 솔리드를 둘로 자르고 한쪽 또는 양쪽을 남깁니다. SECTION은 솔리드를 그대로 두고 평면이 자르는 곳에 영역을 그립니다."},{"question":"AutoCAD 단면(SECTION)의 단축키는 무엇입니까?","answer":"SEC를 입력하고 Enter 키나 Space 키를 누릅니다."},{"question":"SECTION이 평면이 솔리드와 교차하지 않는다고 하는 이유는 무엇입니까?","answer":"평면이 솔리드를 비껴가기 때문입니다. 평면을 어떻게 지정했는지 확인하십시오. XY, YZ, ZX는 UCS의 평면이므로, 점의 높이나 위치가 틀리면 평면이 솔리드 바깥에 놓입니다."}]
 ---
 
-SECTION(단면) 명령은 3D 솔리드의 단면을 만듭니다. 평면이 각 솔리드를 자르는 곳에 영역을 만들고, 솔리드는 그대로 둡니다. Enter 키를 누를 때까지 솔리드를 묻습니다. AutoCAD 2027과 마찬가지로 명령 전에 선택한 세트는 버리고 다시 물으며, 솔리드가 아닌 것은 건너뛰고, 솔리드가 하나도 없는 세트에는 `No Solids, Surfaces or Meshes selected.`라고 표시합니다. 그다음 평면을 묻습니다. 기본적으로 평면 위의 세 점을 지정하며, [`SLICE`](/docs/commands/slice)에서처럼 옵션으로 다른 방법을 씁니다.
+SECTION(단면) 명령은 3D 솔리드의 단면을 만듭니다. 평면이 각 솔리드를 자르는 곳에 영역을 만들고, 솔리드는 그대로 둡니다. Enter 키를 누를 때까지 솔리드를 묻습니다. AutoCAD 2027과 마찬가지로 명령 전에 선택한 세트는 버리고 다시 물으며, 솔리드가 아닌 것은 건너뛰고, 솔리드가 하나도 없는 세트에는 `No Solids, Surfaces or Meshes selected.`라는 메시지를 표시합니다. 그다음 평면을 묻습니다. 기본적으로 평면 위의 세 점을 지정하며, [`SLICE`](/docs/commands/slice)에서처럼 옵션으로 다른 방법을 씁니다.
 
-평면이 자르는 솔리드마다 평면 위에 놓인 영역이 생깁니다. 구멍이 뚫린 블록은 구멍의 틈이 있는 외곽선이 되고, 축을 따라 자른 원통은 직사각형이 됩니다. 솔리드의 면에 놓인 평면은 그 면을 만듭니다. 평면이 비껴간 솔리드에는 `Sectioning plane does not intersect the selected solid.`라고 표시합니다. 영역은 솔리드가 아닌 현재 도면층과 특성을 갖습니다. [`MOVE`](/docs/commands/move)로 꺼내서 보고, [`AREA`](/docs/commands/area)와 [`MASSPROP`](/docs/commands/massprop)으로 측정하고, [`EXTRUDE`](/docs/commands/extrude)로 솔리드로 바꿉니다. 명령 전체가 명령 취소 한 단계입니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다.
+평면이 자르는 솔리드마다 평면 위에 놓인 영역이 생깁니다. 구멍이 뚫린 블록은 구멍의 틈이 있는 외곽선이 되고, 축을 따라 자른 원통은 직사각형이 됩니다. 솔리드의 면에 놓인 평면은 그 면을 만듭니다. 평면이 비껴간 솔리드에는 `Sectioning plane does not intersect the selected solid.`라는 메시지를 표시합니다. 영역은 솔리드가 아닌 현재 도면층과 특성을 갖습니다. [`MOVE`](/docs/commands/move)로 꺼내서 보고, [`AREA`](/docs/commands/area)와 [`MASSPROP`](/docs/commands/massprop)으로 측정하고, [`EXTRUDE`](/docs/commands/extrude)로 솔리드로 바꿉니다. 명령 전체가 명령 취소 한 단계입니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다.
 
 - **명령:** `SECTION`
 - **단축키:** `SEC`
@@ -18,7 +18,7 @@ SECTION(단면) 명령은 3D 솔리드의 단면을 만듭니다. 평면이 각 
 
 ## 명령행에서 [#session]
 
-엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+엔진이 그리고, 그 명령 사용 내역을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
 
 <Session name="section" caption="구멍이 뚫린 블록을 구멍 중심을 지나는 ZX 평면으로 자릅니다. SECTION이 만든 단면을 앞으로 꺼내면, 구멍의 틈을 사이에 둔 직사각형 두 개입니다." />
 

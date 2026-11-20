@@ -1,14 +1,14 @@
 ---
 title: "AutoCAD COLOR(색상) 명령"
 metaTitle: "오토캐드 색상(COLOR) 설정, ByLayer와 단축키 COL"
-description: "AutoCAD 색상(COLOR, COL)으로 새 객체의 색상을 정하는 방법: ByLayer, 이름이나 번호로 지정하는 인덱스 색상, RGB 트루 컬러. 브라우저에서 무료로 사용해 보세요."
-figure: "ByLayer로 그린 판, 빨간색 구멍, 트루 컬러 0,128,255로 그린 보어입니다. 마지막에 COLOR를 다시 ByLayer로 돌립니다."
+description: "AutoCAD 색상(COLOR, COL)으로 새 객체의 색상을 정하는 방법: ByLayer, 이름이나 번호로 지정하는 인덱스 색상, RGB 트루컬러. 브라우저에서 무료로 해 볼 수 있습니다."
+figure: "ByLayer로 그린 판, 빨간색 구멍, 트루컬러 0,128,255로 그린 보어입니다. 마지막에 COLOR를 다시 ByLayer로 돌립니다."
 sourceHash: "93793c2915da"
 ---
 
 COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 색상 선택 대화상자를 열지만 MellowCAD에는 아직 없으므로, COLOR는 AutoCAD에도 있는 명령행 버전인 <Command id="-COLOR" /> 명령을 실행합니다. 현재 색상을 제시하며 기본 객체 색상을 묻고, 새 도면에서는 `BYLAYER`입니다. ByLayer는 각 객체가 도면층의 색상을 따른다는 뜻이며, 대신 고른 색상은 객체 자체의 색상이 됩니다. 인덱스 색상의 번호나 이름을 입력하거나 <Keyword id="Truecolor" /> 옵션을 선택합니다. Enter 키는 현재 색상을 유지하며, 변경은 <Command id="U" /> 명령으로 되돌릴 수 있는 한 단계입니다.
 
-읽을 수 없는 단어는 <Message id="colorRequired" />를, 0, 음수, 255보다 큰 숫자는 <Message id="invalidColorNumber" />를 표시하고 다시 묻습니다. 명령 안에서 아포스트로피를 붙여 `'COLOR`로 입력하면 그 뒤에 그리는 객체마다 새 색상을 갖습니다. <Command id="LINE" /> 명령의 각 세그먼트는 시작할 때의 현재 색상을 갖습니다. COLOR는 다음에 그릴 객체만 정합니다. 이미 그린 객체는 특성 팔레트나 상단 막대의 색상 목록으로 바꿉니다.
+읽을 수 없는 단어는 <Message id="colorRequired" /> 메시지를, 0, 음수, 255보다 큰 숫자는 <Message id="invalidColorNumber" /> 메시지를 표시하고 다시 묻습니다. 명령 안에서 아포스트로피를 붙여 `'COLOR`로 입력하면 그 뒤에 그리는 객체마다 새 색상을 갖습니다. <Command id="LINE" /> 명령의 각 세그먼트는 시작할 때의 현재 색상을 갖습니다. COLOR는 다음에 그릴 객체만 정합니다. 이미 그린 객체는 특성 팔레트나 상단 막대의 색상 목록으로 바꿉니다.
 
 ## Options
 
@@ -50,7 +50,7 @@ COLOR(색상) 명령은 새 객체를 그릴 색상을 정합니다. AutoCAD는 
 
 ## Missing
 
-색상 선택 대화상자, 색상표, HSL 형식이 없습니다. 인덱스 색상 8부터 255까지는 받지 않고 1부터 7까지만 받습니다. ByBlock이 없습니다. 인덱스 색상과 같은 트루 컬러는 그 인덱스 색상으로 저장되며, AutoCAD는 RGB를 유지합니다. 투명도(CETRANSPARENCY)와 유형별 기본값인 HPCOLOR, HPLAYER, DIMLAYER, TEXTLAYER가 없습니다.
+색상 선택 대화상자, 색상표, HSL 형식이 없습니다. 인덱스 색상 8부터 255까지는 받지 않고 1부터 7까지만 받습니다. ByBlock이 없습니다. 인덱스 색상과 같은 트루컬러는 그 인덱스 색상으로 저장되며, AutoCAD는 RGB를 유지합니다. 투명도(CETRANSPARENCY)와 유형별 기본값인 HPCOLOR, HPLAYER, DIMLAYER, TEXTLAYER가 없습니다.
 
 ## Questions
 

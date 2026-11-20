@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD BREAK(끊기) 명령"
 metaTitle: "오토캐드 끊기(BREAK) 사용법과 단축키 BR"
-description: "AutoCAD 끊기(BREAK, BR), 캐드 브레이크를 프롬프트 순서대로 설명합니다: 선택한 점이 첫 번째 점, 두 번째 점, 첫 번째 점 옵션, 점에서 끊기. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 끊기(BREAK, BR), 캐드 브레이크를 프롬프트 순서대로 설명합니다: 선택한 점이 첫 번째 점, 두 번째 점, 첫 번째 점 옵션, 점에서 끊기. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "첫 번째 점 옵션으로 지정한 두 점 사이에서 끊은 선과, 선택한 점에서 두 번째 점까지 시계 반대 방향으로 끊은 원입니다."
 sourceHash: "f351112ef2fc"
 ---
@@ -34,7 +34,7 @@ UCS와 평행하게 놓이지 않은 호, 원, 타원은 AutoCAD에서는 끊어
 
 ### 블록이나 문자가 끊기지 않는 이유는 무엇입니까?
 
-BREAK는 선, 호, 원, 폴리선, 타원, 스플라인을 끊습니다. 블록 참조는 <Message id="cannotBreakBlock" />를, 문자, 치수, 해치는 <Message id="objectCannotBeBroken" />를 표시합니다. 블록의 일부를 끊으려면 먼저 <Command id="EXPLODE" /> 명령으로 분해합니다.
+BREAK는 선, 호, 원, 폴리선, 타원, 스플라인을 끊습니다. 블록 참조는 <Message id="cannotBreakBlock" /> 메시지를, 문자, 치수, 해치는 <Message id="objectCannotBeBroken" /> 메시지를 표시합니다. 블록의 일부를 끊으려면 먼저 <Command id="EXPLODE" /> 명령으로 분해합니다.
 
 ### BREAK는 원을 어느 방향으로 자릅니까?
 

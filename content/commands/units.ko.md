@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD UNITS(단위) 명령"
 metaTitle: "오토캐드 단위(UNITS) 설정, 정밀도와 단축키 UN"
-description: "AutoCAD UNITS(단위, UN)의 사용법: 도면 단위 대화상자, 소수점 0~8자리의 정밀도, 밀리미터, 센티미터, 미터의 삽입 축척. 브라우저에서 무료로 해 보십시오."
+description: "AutoCAD UNITS(단위, UN)의 사용법을 설명합니다: 도면 단위 대화상자, 소수점 0~8자리의 정밀도, 밀리미터, 센티미터, 미터의 삽입 축척. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "100×60 판 위에 UNITS를 연 다음, 반대쪽 구석점에서 ID를 실행합니다. 좌표가 도면의 정밀도인 소수점 두 자리로 표시됩니다."
 sourceHash: "1fd1973c3ebf"
 ---

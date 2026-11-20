@@ -22,9 +22,10 @@
 > de otros a 575, y MULTILEADER, hecho el 19/11 (sin publicar, sin el comando MLEADER), que llevó
 > las muestras a 153 y los ficheros de otros a 577 de 577; y, después del japonés (L8, 20/11), XLINE
 > y RAY con sus comandos y sus páginas, hechos el 20/11 (sin publicar), sin cambio en el corpus
-> (ninguno las tiene); siguiente, por orden del dueño, otro idioma (el coreano o el chino), y
-> después lo que quede del punto 7 (MINSERT, los colores índice, las sustituciones DSTYLE, la
-> malla), alternando, una sesión cada vez.
+> (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (sin publicar);
+> siguiente, por orden del dueño, lo que quede del punto 7 (MINSERT, los colores índice, las
+> sustituciones DSTYLE, la malla), y después otro idioma (el chino), alternando, una sesión cada
+> vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo

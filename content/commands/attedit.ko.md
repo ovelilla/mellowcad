@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ATTEDIT(속성 편집) 명령"
 metaTitle: "오토캐드 속성 편집(ATTEDIT) 사용법과 단축키 ATE"
-description: "AutoCAD 속성 편집(ATTEDIT, ATE)으로 블록 참조의 속성 값을 바꾸는 방법: 프롬프트마다 필드 하나, 명령 취소 한 단계. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 속성 편집(ATTEDIT, ATE)으로 블록 참조의 속성 값을 바꾸는 방법: 프롬프트마다 필드 하나, 명령 취소 한 단계. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "속성 NUM이 있는 블록의 참조인 문 번호 태그 세 개입니다. ATTEDIT로 2로 삽입한 마지막 태그를 선택하고, 상자에서 3으로 바꿉니다."
 sourceHash: "4a8ee28ecc53"
 ---

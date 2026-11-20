@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMBASELINE(기준선) 치수 명령"
 metaTitle: "오토캐드 기준선 치수(DIMBASELINE) 사용법과 단축키 DBA"
-description: "AutoCAD 기준선 치수(DIMBASELINE, DBA)로 한 기준선에서 치수를 쌓는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 간격, 선택, 명령 취소. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 기준선 치수(DIMBASELINE, DBA)로 한 기준선에서 치수를 쌓는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 간격, 선택, 명령 취소. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "계단 모양 윤곽의 왼쪽 모서리에서 30을 기입하고, 같은 모서리에서 70과 100을 한 줄씩 바깥쪽에 기입합니다."
 sourceHash: "cd7902f90b59"
 ---
@@ -14,11 +14,11 @@ DIMBASELINE(기준선) 명령은 모두 같은 치수보조선, 즉 기준선에
 
 ### Select
 
-기준 치수를 묻습니다. 잴 기준이 되는 치수보조선 가까이에서 선형 치수나 정렬 치수를 선택합니다. 거기서 점을 입력해도 선택됩니다. 반지름 치수나 지름 치수는 <Message id="associativeDimensionRequired" />로 거부되고 다시 묻습니다.
+기준 치수를 묻습니다. 잴 기준이 되는 치수보조선 가까이에서 선형 치수나 정렬 치수를 선택합니다. 거기서 점을 입력해도 선택됩니다. 반지름 치수나 지름 치수는 <Message id="associativeDimensionRequired" /> 메시지와 함께 거부되고 다시 묻습니다.
 
 ### Undo
 
-마지막으로 만든 치수를 되돌리고 그 앞의 치수에서 계속합니다. 만든 치수 수만큼 되돌릴 수 있습니다. 남은 치수가 없으면 <Message id="commandCompletelyUndone" />로 답하고 프롬프트가 그대로 남습니다.
+마지막으로 만든 치수를 되돌리고 그 앞의 치수에서 계속합니다. 만든 치수 수만큼 되돌릴 수 있습니다. 남은 치수가 없으면 <Message id="commandCompletelyUndone" /> 메시지로 답하고 프롬프트가 그대로 남습니다.
 
 ## Missing
 

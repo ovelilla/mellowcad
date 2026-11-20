@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ARRAY(배열) 명령"
 metaTitle: "캐드 어레이(ARRAY): 배열 사용법과 단축키 AR"
-description: "AutoCAD 배열(ARRAY, AR), 캐드 어레이를 프롬프트 순서대로 설명합니다: 직사각형, 원형, 경로 배열을 작성 전에 실시간으로 편집합니다. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 배열(ARRAY, AR), 캐드 어레이를 프롬프트 순서대로 설명합니다: 직사각형, 원형, 경로 배열을 작성 전에 실시간으로 편집합니다. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "정사각형과 그 안의 원을 기본값으로 배열합니다. Enter 키로 직사각형 배열, 4열 3행이 됩니다."
 sourceHash: "5e0a412c9f13"
 ---

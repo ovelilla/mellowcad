@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMCONTINUE(연속) 치수 명령"
 metaTitle: "오토캐드 연속 치수(DIMCONTINUE) 사용법과 단축키 DCO"
-description: "AutoCAD 연속 치수(DIMCONTINUE, DCO)로 마지막 치수에서 치수를 끝과 끝을 이어 기입하는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 선택, 명령 취소. 브라우저에서 무료로 사용해 보세요."
+description: "AutoCAD 연속 치수(DIMCONTINUE, DCO)로 마지막 치수에서 치수를 끝과 끝을 이어 기입하는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 선택, 명령 취소. 브라우저에서 무료로 해 볼 수 있습니다."
 figure: "계단 모양 윤곽에 30을 기입하고, 같은 치수선에서 40과 30을 이어 기입합니다. 원점 두 개를 지정한 다음 Enter 키를 두 번 누릅니다."
 sourceHash: "11fa474694fd"
 ---
@@ -14,11 +14,11 @@ AutoCAD와 같이 새 치수는 기준 치수의 방향을 따라 재며, 기준
 
 ### Select
 
-이어 갈 치수를 묻습니다. 이어 갈 치수보조선 가까이에서 선형 치수나 정렬 치수를 선택합니다. 거기서 점을 입력해도 선택됩니다. 반지름 치수나 지름 치수는 <Message id="associativeDimensionRequired" />로 거부되고 다시 묻습니다.
+이어 갈 치수를 묻습니다. 이어 갈 치수보조선 가까이에서 선형 치수나 정렬 치수를 선택합니다. 거기서 점을 입력해도 선택됩니다. 반지름 치수나 지름 치수는 <Message id="associativeDimensionRequired" /> 메시지와 함께 거부되고 다시 묻습니다.
 
 ### Undo
 
-체인의 마지막 치수를 되돌리고 그 앞의 치수에서 계속합니다. 만든 치수 수만큼 되돌릴 수 있습니다. 남은 치수가 없으면 <Message id="commandCompletelyUndone" />로 답하고 프롬프트가 그대로 남습니다.
+체인의 마지막 치수를 되돌리고 그 앞의 치수에서 계속합니다. 만든 치수 수만큼 되돌릴 수 있습니다. 남은 치수가 없으면 <Message id="commandCompletelyUndone" /> 메시지로 답하고 프롬프트가 그대로 남습니다.
 
 ## Missing
 
