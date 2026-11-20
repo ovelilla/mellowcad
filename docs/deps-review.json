@@ -1,28 +1,23 @@
 {
-  "lastReview": "2026-11-13",
+  "lastReview": "2026-11-20",
   "intervalDays": 7,
   "deferred": [
     {
       "name": "typescript",
       "version": "7.0.2",
-      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0, still so in 8.72.2: its TypeScript 7.1 native-parser support (typescript-eslint#12803) merged on 2026-11-10 but ships only in the 8.72.3 alphas, as projectService.EXPERIMENTAL_backend, so wait for a stable release whose peer range admits 7; and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
+      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0, still so in 8.73.0 (2026-11-16), the release that ships TypeScript 7.1's native-parser support as projectService.EXPERIMENTAL_backend: wait for a stable release whose peer range admits 7 (7.1 is in beta); and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
     },
     {
       "name": "@babel/core",
-      "version": "8.1.0",
-      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, still open on 2026-11-13; neither 8.1.0 nor 8.1.2, in quarantine, touches it), and the editor build runs it through @rolldown/plugin-babel"
+      "version": "8.1.2",
+      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, still open on 2026-11-20; neither 8.1.1 nor 8.1.2 touches it), and the editor build runs it through @rolldown/plugin-babel"
     }
   ],
   "acceptedAdvisories": [
     {
-      "id": "GHSA-gcqx-w48m-w2h4",
-      "reason": "deepmerge 4.3.1 has no fixed version; only the shadcn CLI and @shadcn/registry 0.2.1 use it, merging a registry item's theme we chose into our own config, in dev. Watch @shadcn/registry for a release without it",
-      "date": "2026-10-30"
-    },
-    {
       "id": "GHSA-g3hv-75wg-m249",
-      "reason": "minimatch <11.0.1 amplifies attacker-supplied glob patterns; only dev tooling has it (eslint 10.14, @eslint/config-array, typescript-eslint, the shadcn CLI through ts-morph), fed our own config, tsconfig and registry globs, and every one requires minimatch ^10, so only an overrides would fix it. Watch eslint, typescript-eslint and @ts-morph/common for a minimatch ^11 range",
-      "date": "2026-11-06"
+      "reason": "minimatch <11.0.1 amplifies attacker-supplied glob patterns; eslint 10.15 and typescript-eslint 8.73 moved to minimatch 11, so only the shadcn CLI keeps it (ts-morph 26, @ts-morph/common 0.27), dev tooling fed our own registry and tsconfig globs. Fixed in @ts-morph/common 0.29.1 (ts-morph 28), which shadcn's ^26 does not accept: watch shadcn for ts-morph 28",
+      "date": "2026-11-20"
     }
   ],
   "keptUnmaintained": [
