@@ -9,7 +9,7 @@ paths:
 
 # The MCP server (`/mcp`)
 
-> Verified against **mcp-handler 2.3.1**, **@modelcontextprotocol/server 2.4.0**.
+> Verified against **mcp-handler 2.4.0**, **@modelcontextprotocol/server 2.4.0**.
 
 Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
 
