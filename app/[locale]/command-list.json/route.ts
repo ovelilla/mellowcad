@@ -14,7 +14,8 @@ export function generateStaticParams() {
  * The commands the hero's command line suggests as the editor's autocomplete
  * does (`CommandTry`): each one's name in the command language, its aliases
  * and what it does. Not a page: the landing fetches it when that line is
- * first used, and no search engine should list it.
+ * first used, and no search engine should list it (`fileHeaders`, as a
+ * static file keeps no header of its own).
  */
 export async function GET(
   _request: Request,
@@ -25,5 +26,5 @@ export async function GET(
   const commands = autocadCommands(await loadEngineLocale(locale)).map(
     ({ name, aliases, description }) => ({ name, aliases, description })
   )
-  return Response.json(commands, { headers: { "X-Robots-Tag": "noindex" } })
+  return Response.json(commands)
 }

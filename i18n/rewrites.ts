@@ -1,12 +1,19 @@
 import type { NextConfig } from "next"
 
 import { DOCS_PACKAGES, DOCS_PATH } from "../lib/docs/packages"
-import { OG_IMAGE_PATH } from "../lib/site"
+import {
+  COMMAND_LIST_PATH,
+  DRAWINGS_PATH,
+  EDITOR_OG_IMAGE_PATH,
+  OG_IMAGE_PATH,
+  SITE_URL,
+} from "../lib/site"
 
 type Redirect = Awaited<
   ReturnType<NonNullable<NextConfig["redirects"]>>
 >[number]
 type Rewrite = { source: string; destination: string }
+type Header = Awaited<ReturnType<NonNullable<NextConfig["headers"]>>>[number]
 
 /**
  * The `as-needed` URL scheme without a proxy. The default locale's pages are
@@ -52,8 +59,7 @@ export function localeRedirects(routing: LocaleRouting): Redirect[] {
       permanent: true,
     },
     ...englishOnlyRedirects(routing),
-    // The share card moved to a route of its own inside `[locale]`.
-    { source: "/opengraph-image", destination: OG_IMAGE_PATH, permanent: true },
+    ...shareCardRedirects(routing),
     // Some clients ask for the touch icon by its old names without reading
     // the page's `<link rel="apple-touch-icon">`, which is `app/apple-icon.png`.
     {
@@ -95,9 +101,82 @@ function englishOnlyRedirects(routing: LocaleRouting): Redirect[] {
 }
 
 /**
+ * The share cards' old addresses, which the social networks keep in their
+ * caches: `/opengraph-image`, then `/og` and `/og/draw` in each language,
+ * before a static file needed the extension (`docs/next-static-export.md`).
+ */
+function shareCardRedirects(routing: LocaleRouting): Redirect[] {
+  const prefixed = segments(routing).filter(
+    (segment) => segment !== routing.defaultLocale
+  )
+  const cards = [
+    ["/og", OG_IMAGE_PATH],
+    ["/og/draw", EDITOR_OG_IMAGE_PATH],
+  ]
+  return [
+    { source: "/opengraph-image", destination: OG_IMAGE_PATH, permanent: true },
+    ...cards.map(([source, destination]) => ({
+      source,
+      destination,
+      permanent: true,
+    })),
+    ...(prefixed.length === 0
+      ? []
+      : cards.map(([source, destination]) => ({
+          source: `/:locale(${prefixed.join("|")})${source}`,
+          destination: `/:locale${destination}`,
+          permanent: true,
+        }))),
+  ]
+}
+
+/**
+ * The headers of what is served as a file. A route handler's own headers
+ * are lost once the site is exported (each is a file), so they are named
+ * here by the URL the reader asks for: a docs page's Markdown points to its
+ * HTML page as the one to index, and what only the site's own scripts fetch
+ * (the hero's command list, an exercise's drawing) is kept out of search.
+ */
+export function fileHeaders(routing: LocaleRouting): Header[] {
+  const prefixed = segments(routing).filter(
+    (segment) => segment !== routing.defaultLocale
+  )
+  const anyLocale =
+    prefixed.length === 0 ? "" : `/:locale(${prefixed.join("|")})?`
+  const noindex = [{ key: "X-Robots-Tag", value: "noindex" }]
+  return [
+    {
+      source: `${DOCS_PATH}/:slug+.md`,
+      headers: [
+        {
+          key: "Link",
+          value: `<${SITE_URL}${DOCS_PATH}/:slug+>; rel="canonical"`,
+        },
+      ],
+    },
+    ...(prefixed.length === 0
+      ? []
+      : [
+          {
+            source: `/:locale(${prefixed.join("|")})${DOCS_PATH}/:slug+.md`,
+            headers: [
+              {
+                key: "Link",
+                value: `<${SITE_URL}/:locale${DOCS_PATH}/:slug+>; rel="canonical"`,
+              },
+            ],
+          },
+        ]),
+    { source: `${anyLocale}${COMMAND_LIST_PATH}`, headers: noindex },
+    { source: `${anyLocale}${DRAWINGS_PATH}/:name`, headers: noindex },
+  ]
+}
+
+/**
  * `beforeFiles`: a docs page's Markdown is its URL with `.md`
  * (`/docs/engine.md`, `/es/docs/…md`), served by `[locale]/docs-md`, a route
- * handler, since a page cannot answer two formats.
+ * handler, since a page cannot answer two formats. Its last segment keeps
+ * the `.md` there too (the handler's `generateStaticParams`).
  */
 export function markdownRewrites(routing: LocaleRouting): Rewrite[] {
   const { defaultLocale } = routing
@@ -107,11 +186,11 @@ export function markdownRewrites(routing: LocaleRouting): Rewrite[] {
   return [
     {
       source: "/docs/:slug+.md",
-      destination: `/${defaultLocale}/docs-md/:slug+`,
+      destination: `/${defaultLocale}/docs-md/:slug+.md`,
     },
     {
       source: `/:locale(${prefixed.join("|")})/docs/:slug+.md`,
-      destination: "/:locale/docs-md/:slug+",
+      destination: "/:locale/docs-md/:slug+.md",
     },
   ]
 }

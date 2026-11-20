@@ -13,6 +13,9 @@ import { SITE_URL } from "@/lib/site"
  * 17/11/2026 they were a fifth of the CDN's requests, nearly all cache misses
  * read from ISR storage, while its 30-day reads neared Hobby's cap.
  */
+// Exported with the site, a metadata route has to say it is static.
+export const dynamic = "force-static"
+
 const TRAINING_CRAWLERS = ["meta-externalagent", "GPTBot"]
 
 export default function robots(): MetadataRoute.Robots {

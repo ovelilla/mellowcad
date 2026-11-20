@@ -4,6 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin"
 
 import { routing } from "./i18n/routing"
 import {
+  fileHeaders,
   localeFallbacks,
   localeRedirects,
   localeRewrites,
@@ -38,6 +39,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      ...fileHeaders(routing),
     ]
   },
   async redirects() {

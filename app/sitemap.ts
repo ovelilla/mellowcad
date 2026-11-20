@@ -13,6 +13,9 @@ import {
 import { languageAlternates } from "@/lib/metadata"
 import { CONTENT_UPDATED } from "@/lib/site"
 
+// Exported with the site, a metadata route has to say it is static.
+export const dynamic = "force-static"
+
 const PAGES = ["/", "/privacy", DOCS_PATH]
 
 /**

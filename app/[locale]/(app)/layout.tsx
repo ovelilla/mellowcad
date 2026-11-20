@@ -11,6 +11,7 @@ import { DIRECTION, OG_LOCALE, localeParams } from "@/i18n/routing"
 import { scriptFontVariables } from "@/lib/fonts"
 import {
   EDITOR_LAYOUT_STORAGE,
+  EDITOR_OG_IMAGE_PATH,
   EDITOR_PATH,
   SITE_NAME,
   SITE_URL,
@@ -33,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata")
   const og = await getTranslations("Og")
   const image = {
-    url: localePath(locale, "/og/draw"),
+    url: localePath(locale, EDITOR_OG_IMAGE_PATH),
     width: 1200,
     height: 630,
     type: "image/png",

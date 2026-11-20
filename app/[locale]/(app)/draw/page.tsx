@@ -37,7 +37,7 @@ export default async function Page() {
         Object.entries(EXERCISES).map(([name, { exercise }]) => [
           name,
           {
-            url: localePath(locale, `${DRAWINGS_PATH}/${name}`),
+            url: localePath(locale, `${DRAWINGS_PATH}/${name}.json`),
             view: startingView(exercise),
           },
         ])

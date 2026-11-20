@@ -20,7 +20,13 @@ describe("localePath", () => {
 
   it("builds the path next-intl's getPathname builds", () => {
     for (const locale of routing.locales) {
-      for (const href of ["/", "/draw", "/privacy", "/og", "/og/draw"]) {
+      for (const href of [
+        "/",
+        "/draw",
+        "/privacy",
+        "/og.png",
+        "/og/draw.png",
+      ]) {
         expect(localePath(locale, href), `${locale} ${href}`).toBe(
           getPathname({ locale, href })
         )

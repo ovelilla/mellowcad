@@ -9,7 +9,7 @@ export const SITE_NAME = "MellowCAD"
 
 export const EDITOR_PATH = "/draw"
 
-/** Where the drawings the editor opens by URL are served, one per name: `/drawings/gasket`. */
+/** Where the drawings the editor opens by URL are served, one per name: `/drawings/gasket.json`. */
 export const DRAWINGS_PATH = "/drawings"
 
 /**
@@ -17,7 +17,7 @@ export const DRAWINGS_PATH = "/drawings"
  * (`CommandTry`), fetched when that line is first used: in the page they
  * were 1.5 KiB of a first load at its budget (`i18n.md`).
  */
-export const COMMAND_LIST_PATH = "/command-list"
+export const COMMAND_LIST_PATH = "/command-list.json"
 
 /**
  * Where the editor keeps this device's layout (`CadEditor`'s
@@ -29,8 +29,15 @@ export const EDITOR_LAYOUT_STORAGE = {
   statusBar: "easycad:status-bar:v1",
 } as const
 
-/** The landing's share image in each language, `app/[locale]/og`. */
-export const OG_IMAGE_PATH = "/og"
+/**
+ * The landing's share image in each language, `app/[locale]/og.png`; the
+ * editor's is `/og/draw.png`. A static file takes its type from the extension
+ * (`docs/next-static-export.md`); the old `/og` and `/og/draw` redirect here.
+ */
+export const OG_IMAGE_PATH = "/og.png"
+
+/** The editor's share image in each language, `app/[locale]/og/draw.png`. */
+export const EDITOR_OG_IMAGE_PATH = "/og/draw.png"
 
 /** The contact address the landing publishes: footer, Status and the privacy notice. */
 export const CONTACT_EMAIL = "hello@mellowcad.com"

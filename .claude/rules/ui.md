@@ -45,7 +45,7 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
 (`lib/site.test.ts`).
 
 **`/draw?drawing=<name>` opens a drawing the site publishes** (an exercise's: the engine records
-it at build time, `/drawings/<name>` per language, `noindex`) through `CadEditor`'s `store`, never
+it at build time, `/drawings/<name>.json` per language, `noindex`) through `CadEditor`'s `store`, never
 the editor's code: `DrawEditor` (`components/draw-editor.tsx`) reads the query in the browser, as
 the page is static, and gives that drawing a store of its own, `mellowcad:drawing:<name>:v1`
 (FROZEN, `lib/opened-drawing.ts`), so the autosave of whoever was drawing is neither read nor

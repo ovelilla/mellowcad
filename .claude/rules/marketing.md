@@ -2,7 +2,7 @@
 description: The landing at / — its islands, figures, facts, Open Graph images, sitemap and the 404s
 paths:
   - "app/*/*marketing*/**"
-  - "app/*/og/**"
+  - "app/*/og*/**"
   - "app/*/manifest.webmanifest/**"
   - "app/global-not-found.tsx"
   - "app/robots.ts"
@@ -174,11 +174,14 @@ reports, for the same promise.
   family its language searches; `Og.tagline`, `Footer.tagline` and `SendToDesktop.shareTitle` say
   the H1, and `Hero.tagline` is the slogan. `i18n/messages.test.ts` holds the
   title to 60 characters with the brand, and the landing's and the editor's descriptions to 155.
-- **The OG images and manifests are named route handlers**: the language's `/og`
-  (`app/[locale]/og/route.tsx`), the editor's `/og/draw`, referenced by path (`OG_IMAGE_PATH`), and
-  `app/[locale]/manifest.webmanifest` per language, so each installs as its own app. A metadata
-  image file inside `[locale]` would give English an `/en/…` URL, and one in a route group gets a
-  hash structured data cannot cite. `/opengraph-image` redirects to `/og`.
+- **The OG images and manifests are named route handlers**: the language's `/og.png`
+  (`app/[locale]/og.png/route.tsx`), the editor's `/og/draw.png` (`OG_IMAGE_PATH`,
+  `EDITOR_OG_IMAGE_PATH`), and `app/[locale]/manifest.webmanifest` per language, so each installs
+  as its own app. **A route handler's last segment carries its extension** (`.png`, `.json`,
+  `.md`): exported, it is a file, typed by it, that would collide with a folder of the same name,
+  and its own headers are lost (`fileHeaders`). A metadata image file inside `[locale]` would give
+  English an `/en/…` URL, and one in a route group gets a hash structured data cannot cite.
+  `/opengraph-image`, `/og` and `/og/draw` redirect to the cards.
 - **A right-to-left card works around three faults of Satori** (`lib/og.tsx`, each with its `WHY`):
   it sets a line's words left to right, so `visualPieces` (bidi-js) hands them over in visual order,
   one sentence per line; it sizes an Arabic word as its isolated letters, so opentype.js gives each

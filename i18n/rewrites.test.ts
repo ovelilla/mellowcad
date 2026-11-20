@@ -1,9 +1,13 @@
 import { getPathMatch } from "next/dist/shared/lib/router/utils/path-match"
-import { prepareDestination } from "next/dist/shared/lib/router/utils/prepare-destination"
+import {
+  compileNonPath,
+  prepareDestination,
+} from "next/dist/shared/lib/router/utils/prepare-destination"
 import { describe, expect, it } from "vitest"
 
 import {
   type LocaleRouting,
+  fileHeaders,
   localeFallbacks,
   localeRedirects,
   localeRewrites,
@@ -46,7 +50,9 @@ describe("the locale URL scheme", () => {
     ["/", "route /en"],
     ["/draw", "route /en/draw"],
     ["/privacy", "route /en/privacy"],
-    ["/og", "route /en/og"],
+    ["/og.png", "route /en/og.png"],
+    ["/og/draw.png", "route /en/og/draw.png"],
+    ["/es/og.png", "route /es/og.png"],
     ["/manifest.webmanifest", "route /en/manifest.webmanifest"],
     ["/es", "route /es"],
     ["/es/draw", "route /es/draw"],
@@ -55,10 +61,16 @@ describe("the locale URL scheme", () => {
     // A language whose prefix is not its tag is served under the prefix.
     ["/pt-br", "route /pt-br"],
     ["/pt-br/draw", "route /pt-br/draw"],
-    ["/pt-br/docs/commands.md", "route /pt-br/docs-md/commands"],
+    ["/pt-br/docs/commands.md", "route /pt-br/docs-md/commands.md"],
     ["/en", "redirect /"],
     ["/en/draw", "redirect /draw"],
-    ["/opengraph-image", "redirect /og"],
+    // The share cards' old addresses, kept in the social networks' caches.
+    ["/opengraph-image", "redirect /og.png"],
+    ["/og", "redirect /og.png"],
+    ["/og/draw", "redirect /og/draw.png"],
+    ["/es/og", "redirect /es/og.png"],
+    ["/pt-br/og/draw", "redirect /pt-br/og/draw.png"],
+    ["/en/og", "redirect /og"],
     ["/apple-touch-icon.png", "redirect /apple-icon.png"],
     ["/apple-touch-icon-precomposed.png", "redirect /apple-icon.png"],
     // Unknown pages reach English's catch-all, which answers 404.
@@ -70,8 +82,8 @@ describe("the locale URL scheme", () => {
     // A docs page's Markdown, in its own language.
     ["/docs", "route /en/docs"],
     ["/docs/engine", "route /en/docs/engine"],
-    ["/docs/engine.md", "route /en/docs-md/engine"],
-    ["/docs/engine/api.md", "route /en/docs-md/engine/api"],
+    ["/docs/engine.md", "route /en/docs-md/engine.md"],
+    ["/docs/engine/api.md", "route /en/docs-md/engine/api.md"],
     ["/en/docs/engine.md", "redirect /docs/engine.md"],
     // "Build" is English only: one URL per page, whatever the prefix.
     ["/es/docs/engine", "redirect /docs/engine"],
@@ -82,7 +94,7 @@ describe("the locale URL scheme", () => {
     // "Use" is written in every language, and a word that merely starts
     // like a package's folder is no folder.
     ["/es/docs/commands", "route /es/docs/commands"],
-    ["/es/docs/commands.md", "route /es/docs-md/commands"],
+    ["/es/docs/commands.md", "route /es/docs-md/commands.md"],
     ["/es/docs/engineering", "route /es/docs/engineering"],
     ["/es/docs", "route /es/docs"],
     // Router requests, as Vercel rewrites them from the `RSC` header.
@@ -112,6 +124,62 @@ describe("the locale URL scheme", () => {
   })
 })
 
+describe("the headers of what is served as a file", () => {
+  /** Every header the request gets, its values filled in, as Next does. */
+  function headersOf(path: string, scheme: LocaleRouting = routing) {
+    const found: Record<string, string> = {}
+    for (const { source, headers } of fileHeaders(scheme)) {
+      const params = getPathMatch(source)(path)
+      if (!params) continue
+      for (const { key, value } of headers) {
+        found[key] = compileNonPath(value, params)
+      }
+    }
+    return found
+  }
+
+  it.each([
+    ["/docs/engine.md", "https://mellowcad.com/docs/engine"],
+    ["/docs/engine/api.md", "https://mellowcad.com/docs/engine/api"],
+    [
+      "/es/docs/commands/line.md",
+      "https://mellowcad.com/es/docs/commands/line",
+    ],
+    ["/pt-br/docs/commands.md", "https://mellowcad.com/pt-br/docs/commands"],
+  ])("points %s to its page as the canonical", (path, page) => {
+    expect(headersOf(path)).toEqual({ Link: `<${page}>; rel="canonical"` })
+  })
+
+  it.each([
+    "/command-list.json",
+    "/es/command-list.json",
+    "/pt-br/command-list.json",
+    "/drawings/gasket.json",
+    "/ar/drawings/gasket.json",
+  ])("keeps %s out of search", (path) => {
+    expect(headersOf(path)).toEqual({ "X-Robots-Tag": "noindex" })
+  })
+
+  it.each(["/", "/docs/engine", "/draw", "/xx/command-list.json", "/og.png"])(
+    "leaves %s alone",
+    (path) => {
+      expect(headersOf(path)).toEqual({})
+    }
+  )
+
+  it("reads the prefix, not the tag", () => {
+    const scheme: LocaleRouting = {
+      locales: ["en", "xx-YY"],
+      defaultLocale: "en",
+      localePrefix: { prefixes: { "xx-YY": "/zz" } },
+    }
+    expect(headersOf("/zz/command-list.json", scheme)).toEqual({
+      "X-Robots-Tag": "noindex",
+    })
+    expect(headersOf("/xx-YY/command-list.json", scheme)).toEqual({})
+  })
+})
+
 describe("a prefix that is not the tag", () => {
   // Made up, so the scheme is held to read prefixes whatever routing.ts holds.
   const scheme: LocaleRouting = {
@@ -123,7 +191,7 @@ describe("a prefix that is not the tag", () => {
   it.each([
     ["/zz", "route /zz"],
     ["/zz/draw", "route /zz/draw"],
-    ["/zz/docs/commands.md", "route /zz/docs-md/commands"],
+    ["/zz/docs/commands.md", "route /zz/docs-md/commands.md"],
     ["/zz/docs/engine/api", "redirect /docs/engine/api"],
     // The tag is no prefix: an English path, which answers 404.
     ["/xx-YY/draw", "route /en/xx-YY/draw"],
