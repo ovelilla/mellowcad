@@ -93,7 +93,7 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "dependencies": {
-    "icu-minify": "^4.14.9"
+    "icu-minify": "^4.15.2"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
