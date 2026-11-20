@@ -61,12 +61,13 @@ describe("Cloudflare's zone", () => {
 
   it("limits /mcp per address, and never Claude's or ChatGPT's", () => {
     const [rate] = RATE_RULES
-    expect(rate.expression).toBe(`http.request.uri.path eq "/mcp"`)
+    // The function answers by its own name too (`api/mcp.js`).
+    expect(rate.expression).toBe(`http.request.uri.path in {"/mcp" "/api/mcp"}`)
     expect(rate.ratelimit).toMatchObject({ requests_per_period: 10 })
     const skip = FIREWALL_RULES.find((rule) => rule.action === "skip")
     expect(skip).toMatchObject({
       enabled: true,
-      expression: `http.request.uri.path eq "/mcp" and ip.src in $${PROVIDERS_LIST}`,
+      expression: `http.request.uri.path in {"/mcp" "/api/mcp"} and ip.src in $${PROVIDERS_LIST}`,
       action_parameters: { phases: ["http_ratelimit"] },
     })
     // The switches exist, off.

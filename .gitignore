@@ -62,3 +62,6 @@ messages/*.d.json.ts
 
 # What the InstructionsLoaded hook logs (.claude/hooks/instructions-log.mjs)
 /.claude/logs/
+
+# The MCP function's bundle, made by `npm run build` (scripts/mcp/function.ts)
+/api/_handler.mjs

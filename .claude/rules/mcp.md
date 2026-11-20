@@ -1,7 +1,7 @@
 ---
 description: The MCP server at /mcp — stateless, one tool over the command line, its limits, its firewall and what it promises
 paths:
-  - "app/mcp/**"
+  - "api/mcp.js"
   - "lib/mcp/**"
   - "lib/command-script.ts"
   - "scripts/mcp/**"
@@ -11,7 +11,10 @@ paths:
 
 > Verified against **mcp-handler 2.4.0**, **@modelcontextprotocol/server 2.4.0**.
 
-Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
+Why it exists, what it measured and what comes next: `docs/next-mcp.md`. **A Vercel function
+outside Next** (the site is exported): `api/mcp.js` re-exports `lib/mcp/handler.ts`, bundled by
+`npm run build` (`scripts/mcp/function.ts`); `next dev` does not serve it, its tests call the
+handler. Its rules match `/api/mcp` too, or a call there skips them.
 
 - **Stateless, one tool** (`draw`): every call types its script on an empty drawing
   (`lib/mcp/draw.ts`, nothing of Vercel's in it, so it can move) and answers with the command
@@ -29,7 +32,7 @@ Why it exists, what it measured and what comes next: `docs/next-mcp.md`.
   batch** (the SDK takes 100 calls in one request, which no limit per call sees; neither Claude
   nor ChatGPT sends one), and **the cut**: one answer can run long
   (a 1000 × 1000 ARRAYRECT, a million objects in 3.3 s), so `draw` runs in a `node:vm` context
-  whose timeout ends it mid-answer (`MAX_CALL_MILLISECONDS`), the route's `maxDuration` behind it.
+  whose timeout ends it mid-answer (`MAX_CALL_MILLISECONDS`), the function's `maxDuration` behind it.
   Never a worker: it loads the engine per call. A cut drawing is never read again.
 - **The chat's view** (MCP Apps, `lib/mcp/viewer.ts`): one static page, `VIEWER_URI`, that a
   host may fetch before the call and cache by its URI, so a change it cannot read is a new URI.

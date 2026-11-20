@@ -47,7 +47,12 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: markdownRewrites(routing),
+      beforeFiles: [
+        // The MCP server is a Vercel function outside Next (`api/mcp.js`),
+        // which `next dev` does not serve: its tests call the handler.
+        { source: "/mcp", destination: "/api/mcp" },
+        ...markdownRewrites(routing),
+      ],
       afterFiles: localeRewrites(routing),
       fallback: localeFallbacks(routing),
     }

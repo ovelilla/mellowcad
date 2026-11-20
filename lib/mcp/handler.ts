@@ -17,15 +17,11 @@ import {
 import { SITE_NAME, SITE_URL } from "@/lib/site"
 
 // The MCP server (`docs/next-mcp.md`): stateless, one tool, nothing stored.
-// Its guards against a flood are the Vercel firewall's, set in the
-// dashboard (`.claude/rules/mcp.md`); here, what bounds one call.
-
-/**
- * A call is about 25 ms and is cut at `MAX_CALL_MILLISECONDS`; the
- * platform's end is behind it, for a request of several calls (a JSON-RPC
- * batch) or whatever the cut does not reach.
- */
-export const maxDuration = 5
+// Served as a Vercel function of its own (`api/mcp.js`), with nothing of
+// Next in it. Its guards against a flood are the firewalls'
+// (`.claude/rules/mcp.md`); here, what bounds one call. A call is about 25 ms
+// and is cut at `MAX_CALL_MILLISECONDS`; the function's `maxDuration`
+// (`vercel.json`) is behind it, for whatever the cut does not reach.
 
 /** A script is 10,000 characters at most; the JSON around it is small. */
 const MAX_BODY_BYTES = 64 * 1024

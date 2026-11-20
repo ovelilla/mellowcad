@@ -95,7 +95,11 @@ export const CLAUDE_EGRESS = ["160.79.104.0/21", "153.61.208.0/20"]
 export const CHATGPT_EGRESS = "https://openai.com/chatgpt-connectors.json"
 export const PROVIDERS_LIST = "mcp_providers"
 
-const MCP = `http.request.uri.path eq "/mcp"`
+/**
+ * The MCP server's addresses: `/mcp`, and the function it is rewritten to,
+ * which answers just the same when called by its own name (`api/mcp.js`).
+ */
+const MCP = `http.request.uri.path in {"/mcp" "/api/mcp"}`
 
 /**
  * Crawlers that never send a visitor: SEO tools' backlink indexes, training

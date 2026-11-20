@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
-    "build": "next build",
+    "build": "node scripts/mcp/function.ts && next build",
     "start": "next start",
     "prepare": "git config core.hooksPath .githooks || exit 0",
     "lint": "eslint",

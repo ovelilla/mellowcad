@@ -248,7 +248,7 @@ Cada una espera la palabra del dueño; lo que sale hacia fuera, su sí (§9).
       2000×1500 (`withViewSize`), y los quince encargos salen idénticos en cinco tamaños. Salió
       además un fallo del motor: LINE, PLINE y 3DPOLY rechazaban un punto tecleado con el ratón
       fuera del dibujo; arreglado.
-   5. **La ruta** (hecha el 15/11/2026): `/mcp` (`app/mcp/route.ts`), fuera de los idiomas, con
+   5. **La ruta** (hecha el 15/11/2026): `/mcp` (entonces una ruta de Next; hoy `lib/mcp/handler.ts`), fuera de los idiomas, con
       `mcp-handler` 2.3.1 (la cuarentena de npm dejó fuera la 2.4.0); el núcleo, sin nada de
       Vercel, en `lib/mcp/draw.ts`; sus topes, y las tres reglas del cortafuegos, escritas en
       `.claude/rules/mcp.md` para que el dueño las ponga en el panel (§7). El guion para ante un

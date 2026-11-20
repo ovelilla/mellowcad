@@ -184,7 +184,7 @@ Una función de Vercel en `api/`, junto al export, con el preset de Next:
   handler de hoy, sacado tal cual a `lib/mcp/` (no tiene nada de Next salvo `maxDuration`, que
   pasa a `functions` en `vercel.json`). El fichero generado empieza por `_` para que Vercel no
   haga de él otra función, y se ignora en git. Un rewrite lleva `/mcp` a `/api/mcp`.
-- `vercel build` produce `api/mcp.func` (nodejs26.x, `maxDuration` 5) con el bundle dentro: 2,31 MB
+- `vercel build` produce la función `mcp.func` (nodejs26.x, `maxDuration` 5) con el bundle dentro: 2,31 MB
   (629 KB en gzip). Llamado fuera de Next responde `tools/list` y `tools/call` con 200, unos 20 ms
   en caliente y 125 MB de memoria.
 - No va a Workers gratis (`node:vm`, 10 ms de CPU). El riesgo de Hobby no cambia: agotar el cupo

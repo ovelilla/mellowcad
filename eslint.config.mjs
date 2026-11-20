@@ -189,6 +189,8 @@ const eslintConfig = defineConfig([
     "research/**",
     // Agent worktrees: other branches, with their own .next, dist and coverage.
     ".claude/worktrees/**",
+    // The MCP function's bundle (scripts/mcp/function.ts), minified.
+    "api/_handler.mjs",
   ]),
 ])
 
