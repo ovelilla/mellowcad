@@ -105,6 +105,11 @@ export function CommandTry({
             setActive(0)
           }}
           onKeyDown={(event) => {
+            // An IME's keys are its own: its Enter confirms a conversion, its
+            // Escape drops it, its arrows pick a candidate. Inline rather than
+            // @mellowcad/react's isImeKey: the landing ships no package of the
+            // editor's (marketing.md). keyCode 229 is Safari's late Enter.
+            if (event.nativeEvent.isComposing || event.keyCode === 229) return
             if (event.key === "ArrowDown" && matches.length > 0) {
               event.preventDefault()
               setActive((active + 1) % matches.length)

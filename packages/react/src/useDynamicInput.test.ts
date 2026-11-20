@@ -58,6 +58,8 @@ function key(key: string, modifiers: Record<string, boolean> = {}) {
     altKey: false,
     metaKey: false,
     ...modifiers,
+    keyCode: 0,
+    nativeEvent: { isComposing: false },
     preventDefault: vi.fn(),
     currentTarget: element(),
   }
@@ -97,6 +99,18 @@ describe("useDynamicInput", () => {
     ])
     expect(undo.preventDefault).toHaveBeenCalled()
     expect(digit.preventDefault).not.toHaveBeenCalled()
+  })
+
+  it("leaves the keys an IME composes with to the IME", () => {
+    const engine = engineWith([length], "Enter", "Escape")
+    const { field } = render(engine)
+    const confirm = { ...key("Enter"), nativeEvent: { isComposing: true } }
+    // Safari's Enter after compositionend: not composing, keyCode 229.
+    const safari = { ...key("Enter"), keyCode: 229 }
+    field(length).onKeyDown(confirm as never)
+    field(length).onKeyDown(safari as never)
+    expect(engine.dynamicInputKey).not.toHaveBeenCalled()
+    expect(confirm.preventDefault).not.toHaveBeenCalled()
   })
 
   it("moves focus to the field a Tab made active, selected", () => {

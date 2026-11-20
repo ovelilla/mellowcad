@@ -3,6 +3,7 @@
 import { type ChangeEvent, type KeyboardEvent, useCallback } from "react"
 import type { CadEngine } from "@mellowcad/engine"
 
+import { isImeKey } from "./isImeKey"
 import { useEngineSelector } from "./useEditorState"
 
 /** What the command line's `<input>` is spread with. */
@@ -19,7 +20,8 @@ interface CommandLineInputProps {
  * The command line's field, wired to the engine's buffer: what is typed there
  * and on the drawing is the same text. Its keys are the engine's
  * (`commandLineKey`: Space as Enter, the arrows' history, Tab's completion),
- * and the browser's action is prevented for every key the engine takes.
+ * and the browser's action is prevented for every key the engine takes; a key
+ * an IME composes with never reaches it.
  */
 export function useCommandLineInput(engine: CadEngine): CommandLineInputProps {
   const value = useEngineSelector(engine, (state) => state.commandLine.buffer)
@@ -30,6 +32,9 @@ export function useCommandLineInput(engine: CadEngine): CommandLineInputProps {
   )
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
+      // A key an IME is composing with is the IME's: its Enter confirms a
+      // conversion, never the command line's text.
+      if (isImeKey(event)) return
       if (engine.commandLineKey(event.key)) event.preventDefault()
     },
     [engine]

@@ -8,7 +8,7 @@ import {
   type PropertyEdit,
   type PropertyRow,
 } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { type EditorState, isImeKey } from "@mellowcad/react"
 import {
   Select,
   SelectContent,
@@ -310,6 +310,7 @@ function PropertyInput({
       onFocus={(event) => event.currentTarget.select()}
       onBlur={commit}
       onKeyDown={(event) => {
+        if (isImeKey(event)) return
         if (event.key === "Enter") {
           event.preventDefault()
           commit()

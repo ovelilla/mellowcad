@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { isImeKey } from "@mellowcad/react"
 
 import { cn } from "./utils"
 
@@ -84,6 +85,8 @@ export function DecimalInput({
         props.onBlur?.(event)
       }}
       onKeyDown={(event) => {
+        // An IME's Enter confirms a conversion, its Escape drops it.
+        if (isImeKey(event)) return
         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
           event.preventDefault()
           stepBy(event.key === "ArrowUp" ? 1 : -1)

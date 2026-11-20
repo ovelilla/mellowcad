@@ -44,12 +44,23 @@ export type { EditorState }
 /** The engine's state as the editor's chrome renders it. */
 export type EditorState = Omit<EngineState, (typeof POINTER_KEYS)[number]>;
 
+export { isImeKey }
+/**
+ * Whether a key belongs to an input method's composition (Japanese, Chinese,
+ * Korean): its Enter confirms a conversion and its Escape drops it, so a field
+ * that answers Enter or Escape must leave it to the IME. WHY `keyCode` 229
+ * too: Safari sends the Enter that ends a composition after
+ * `compositionend`, with `isComposing` false and that code alone to tell it.
+ */
+export declare function isImeKey(event: KeyboardEvent): boolean;
+
 export { useCommandLineInput }
 /**
  * The command line's field, wired to the engine's buffer: what is typed there
  * and on the drawing is the same text. Its keys are the engine's
  * (`commandLineKey`: Space as Enter, the arrows' history, Tab's completion),
- * and the browser's action is prevented for every key the engine takes.
+ * and the browser's action is prevented for every key the engine takes; a key
+ * an IME composes with never reaches it.
  */
 export declare function useCommandLineInput(engine: CadEngine): CommandLineInputProps;
 

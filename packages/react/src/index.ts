@@ -4,6 +4,7 @@ export {
   useEditorState,
   useEngineSelector,
 } from "./useEditorState"
+export { isImeKey } from "./isImeKey"
 export { useCommandLineInput } from "./useCommandLineInput"
 export { useDynamicInput } from "./useDynamicInput"
 export { useViewCubeDrag } from "./useViewCubeDrag"

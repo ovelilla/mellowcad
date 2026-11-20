@@ -91,6 +91,8 @@ wiring that [Building a host](../../cad/docs/host.md#the-command-line) does by h
   drawing).
 - `useDynamicInput(engine)` gives the dynamic input's box its marker and each field its props: the
   keys the engine takes, focus after a Tab, and focus taken back where the engine allows it.
+- `isImeKey(event)` tells a key an input method composes with (Japanese, Chinese, Korean): both
+  hooks above leave it to the IME, and so must a field of your own that answers Enter or Escape.
 - `useViewCubeDrag(engine)` turns presses on a ViewCube into the engine's clicks and orbits: its
   `surface` ref captures the pointer, `press(target)` starts on a face, edge or corner.
 

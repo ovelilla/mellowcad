@@ -291,7 +291,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   `engine.commandLineKey`: Space as Enter, Tab's comma, Ctrl+Z's `_u`, the option list), as the
   drawing's never reach the runtime from a field: `useDynamicInput` prevents what was taken and,
   after a Tab, focuses the field now active. It reclaims focus only where `engine.mayTakeFocus`
-  allows (not while another field is being typed in).
+  allows (not while another field is being typed in). **A key an IME composes with is the
+  IME's** (`isImeKey`): every field that answers Enter or Escape returns on it first, or the Enter
+  that confirms a Japanese conversion commits the field.
 - **A dialog** only where AutoCAD has one (UNITS): engine state, opened by the command, applied as
   one undo step through the engine. No command palette (Ctrl+K): the command line is that. No
   product or meta copy in the editor: that is the landing's.

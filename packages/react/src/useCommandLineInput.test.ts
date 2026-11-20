@@ -13,8 +13,8 @@ function engineTaking(...taken: string[]) {
   }
 }
 
-function keyDown(key: string) {
-  return { key, preventDefault: vi.fn() }
+function keyDown(key: string, isComposing = false, keyCode = 0) {
+  return { key, keyCode, nativeEvent: { isComposing }, preventDefault: vi.fn() }
 }
 
 describe("useCommandLineInput", () => {
@@ -49,5 +49,20 @@ describe("useCommandLineInput", () => {
     expect(space.preventDefault).toHaveBeenCalled()
     expect(up.preventDefault).toHaveBeenCalled()
     expect(letter.preventDefault).not.toHaveBeenCalled()
+  })
+
+  it("leaves the keys an IME composes with to the IME", () => {
+    const engine = engineTaking("Enter", " ")
+    const field = renderHook(() =>
+      useCommandLineInput(engine as unknown as CadEngine)
+    )
+    const confirm = keyDown("Enter", true)
+    const convert = keyDown(" ", true)
+    // Safari's Enter after compositionend: not composing, keyCode 229.
+    const safari = keyDown("Enter", false, 229)
+    for (const event of [confirm, convert, safari])
+      field.onKeyDown(event as never)
+    expect(engine.commandLineKey).not.toHaveBeenCalled()
+    expect(convert.preventDefault).not.toHaveBeenCalled()
   })
 })

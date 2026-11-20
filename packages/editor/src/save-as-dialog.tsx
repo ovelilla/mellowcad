@@ -13,7 +13,7 @@ import {
   type SaveAsDialog as SaveAsDialogState,
   type SaveFileType,
 } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { type EditorState, isImeKey } from "@mellowcad/react"
 import { Button } from "./ui/button"
 import {
   Select,
@@ -244,8 +244,14 @@ function OptionsForm({
     <div
       role="group"
       onKeyDown={(event) => {
-        // Enter is OK's, but on a button that button's own (Cancel).
-        if (event.key !== "Enter" || event.target instanceof HTMLButtonElement)
+        // Enter is OK's, but on a button that button's own (Cancel), and an
+        // IME's Enter, which reaches here from the precision field, confirms
+        // its conversion.
+        if (
+          event.key !== "Enter" ||
+          event.target instanceof HTMLButtonElement ||
+          isImeKey(event)
+        )
           return
         event.preventDefault()
         onDone({ binary, selectObjects, precision })

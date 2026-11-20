@@ -6,7 +6,7 @@ import { Check, Plus, Trash2 } from "lucide-react"
 import { cn } from "./utils"
 import { Button } from "./ui/button"
 import { CadEngine, DimStyleInfo, TextStyleInfo } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { type EditorState, isImeKey } from "@mellowcad/react"
 
 import {
   Select,
@@ -412,6 +412,7 @@ function StyleRow({
             setDraft(null)
           }}
           onKeyDown={(event) => {
+            if (isImeKey(event)) return
             if (event.key === "Enter") event.currentTarget.blur()
             else if (event.key === "Escape") setDraft(null)
           }}

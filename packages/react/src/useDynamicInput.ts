@@ -14,6 +14,7 @@ import type {
   DynamicInputUi,
 } from "@mellowcad/engine"
 
+import { isImeKey } from "./isImeKey"
 import { useEngineSelector } from "./useEditorState"
 
 type FieldElement = HTMLInputElement | HTMLTextAreaElement
@@ -88,6 +89,8 @@ export function useDynamicInput(engine: CadEngine): {
       onChange: (event) =>
         engine.setDynamicInputText(event.target.value, field.id),
       onKeyDown: (event) => {
+        // The IME's Enter confirms a conversion, never the box's value.
+        if (isImeKey(event)) return
         const modifiers = {
           shiftKey: event.shiftKey,
           ctrlKey: event.ctrlKey || event.metaKey,
