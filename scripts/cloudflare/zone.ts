@@ -98,6 +98,35 @@ export const PROVIDERS_LIST = "mcp_providers"
 const MCP = `http.request.uri.path eq "/mcp"`
 
 /**
+ * Crawlers that never send a visitor: SEO tools' backlink indexes, training
+ * crawlers, scrapers. WHY at the edge and not only in `robots.txt`: each of
+ * their requests is a cache miss read from Vercel's ISR storage, the team's
+ * Hobby reads were past their million on 20/11/2026 (`docs/next-vercel-usage.md`),
+ * a block costs Vercel nothing, and robots.txt needs a deploy and a day to be
+ * reread. Search engines and the AI ones that cite their sources stay
+ * (Googlebot, bingbot, Applebot, YandexBot, OAI-SearchBot, Exa, Keenable…).
+ */
+export const UNWANTED_CRAWLERS = [
+  "semrushbot",
+  "ahrefsbot",
+  "mj12bot",
+  "dotbot",
+  "blexbot",
+  "dataforseobot",
+  "reflectionbot",
+  "amazonbot",
+  "bytespider",
+  "ccbot",
+  "gptbot",
+  "meta-externalagent",
+  "fontscanbot",
+  "kaupr",
+]
+
+export const crawlerExpression = (agents = UNWANTED_CRAWLERS) =>
+  `(${agents.map((agent) => `lower(http.user_agent) contains "${agent}"`).join(" or ")})`
+
+/**
  * WHY here and not in Vercel's firewall: behind Cloudflare, Vercel sees
  * Cloudflare's addresses (Verified Proxy Lite keeps no client IP), so its
  * per-IP limit on /mcp stopped counting anyone (measured 18/11/2026: 14 in a
@@ -126,6 +155,13 @@ export const FIREWALL_RULES: Rule[] = [
     expression: `${MCP} and ip.src in $${PROVIDERS_LIST}`,
     action: "skip",
     action_parameters: { phases: ["http_ratelimit"] },
+    enabled: true,
+  },
+  {
+    ref: "unwanted_crawlers",
+    description: "Crawlers that send no visitors, kept off Vercel's ISR reads",
+    expression: crawlerExpression(),
+    action: "block",
     enabled: true,
   },
 ]

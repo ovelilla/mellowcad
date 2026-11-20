@@ -5,6 +5,7 @@ import {
   CACHE_RULE,
   CLAUDE_EGRESS,
   FIREWALL_RULES,
+  UNWANTED_CRAWLERS,
   PHASES,
   PROVIDERS_LIST,
   RATE_RULES,
@@ -70,10 +71,30 @@ describe("Cloudflare's zone", () => {
     })
     // The switches exist, off.
     expect(
-      FIREWALL_RULES.filter((rule) => rule.action === "block").map(
-        (rule) => rule.enabled
-      )
+      FIREWALL_RULES.filter(
+        (rule) => rule.action === "block" && rule.expression.includes("/mcp")
+      ).map((rule) => rule.enabled)
     ).toEqual([false, false])
+  })
+
+  it("blocks the crawlers that send no visitors, never a search engine", () => {
+    const rule = FIREWALL_RULES.find((r) => r.ref === "unwanted_crawlers")
+    expect(rule).toMatchObject({ action: "block", enabled: true })
+    expect(rule?.expression).toContain(
+      `lower(http.user_agent) contains "semrushbot"`
+    )
+    for (const engine of [
+      "googlebot",
+      "bingbot",
+      "applebot",
+      "yandex",
+      "oai-searchbot",
+      "chatgpt-user",
+      "claude",
+    ])
+      expect(rule?.expression).not.toContain(engine)
+    // Lowercased, or `contains` on the lowered agent never matches.
+    expect(UNWANTED_CRAWLERS.every((a) => a === a.toLowerCase())).toBe(true)
   })
 
   it("lists the providers as Cloudflare stores them", () => {

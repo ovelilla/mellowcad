@@ -98,6 +98,10 @@ las purga en cada despliegue a producción; el firewall de `/mcp` pasó también
 detrás del proxy Vercel ya no ve la IP del cliente. Cómo está montado, el token y qué no se guarda:
 la regla `.claude/rules/cloudflare.md`; la zona como código, `scripts/cloudflare/zone.ts`.
 
+Desde el 20/11 a las 10:50, una regla del cortafuegos devuelve 403 a los rastreadores que no traen
+visitas (herramientas de SEO, rastreadores de entrenamiento, scrapers: `UNWANTED_CRAWLERS` en
+`scripts/cloudflare/zone.ts`), que eran cerca de un tercio de los fallos de caché (§3).
+
 Qué mirar en la lectura diaria, además de §2: que las lecturas de ISR caen, y en Cloudflare
 (mellowcad.com → Caching) qué parte sirve la caché. En enero, que Vercel renovó sus certificados a
 través del proxy (vencen el 27/01/2027).

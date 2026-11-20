@@ -30,5 +30,8 @@ dashboard: the next apply undoes it, or the code lies.
 - **Vercel sees Cloudflare's addresses**, never the client's (Verified Proxy Lite keeps none): its
   per-IP rules count nobody behind the proxy. `/mcp`'s limit and switches are Cloudflare's
   (`mcp.md`), checked by `test/cloudflare.test.ts`.
+- **Crawlers that send no visitors are blocked at the edge** (`UNWANTED_CRAWLERS`: SEO tools,
+  training crawlers, scrapers), by user agent, before they cost Vercel an ISR read; search engines
+  and the AI ones that cite stay. `robots.txt` (`app/robots.ts`) names only two, and needs a deploy.
 - From WSL, past a resolver that still caches Vercel's address:
   `curl --resolve mellowcad.com:443:188.114.97.5 …`; `cf-cache-status` says HIT, MISS or DYNAMIC.
