@@ -3,7 +3,8 @@
 > **Estado:** vigilancia diaria y push congelado por decisión del dueño (18/11/2026): la primera
 > sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en §3, y ninguna sesión
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
-> Cloudflare (§5) funciona desde el 18/11 a las 00:40.
+> Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
+> millón (§3): pasarse a Pro está pendiente del dueño.
 
 ## 1. El problema
 
@@ -40,6 +41,7 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | 18/11 00:24 | 702.458 | ~125K | — | recién desplegadas las medidas |
 | 19/11 00:40 | 779.111 | 18/11 aún incompleto | 5,97 GB | primer día con Cloudflare: abajo |
 | 19/11 11:10 | 789.877 | 18/11: ~76K | 6,05 GB | ventana hasta las 03:00: +10,8K en 11 h |
+| 20/11 10:40 | **1.005.030** | 19/11: ~50K | 7,9 GB | límite pasado; ventana hasta el 20/11 a las 02:00 |
 
 El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
 se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR
@@ -57,6 +59,28 @@ lo que recibe (22 % el primer día). A ~30K al día el total aún sube, unos 25K
 sale de la ventana: no se levanta el congelado. El húngaro (`cdd8d646`, en `main` sin publicar)
 espera a que §4 se cumpla: sus páginas y la fecha nueva de las de comandos traerían otra oleada de
 rastreo.
+
+El 20/11 a las 09:18 Vercel avisó del **100 % de las lecturas de ISR** (1.005.030 de 1.000.000 a las
+10:40), y el 19/11 a las 18:31 del 75 % de Fast Origin Transfer (7,9 de 10 GB el 20/11). Las barras
+diarias bajan (17/11 ~140K, 18/11 ~80K, 19/11 ~50K lecturas; Fast Origin Transfer, ~1 GB, ~0,6 y
+~0,4 GB), y Observability, en las últimas 12 h, 19K unidades de lectura y 1,2K peticiones al
+almacén (751 a la documentación, 566 rutas distintas): unas 38K al día, aún por encima de §4. Los
+días que salen de la ventana hasta el 30/10 suman 2–5K cada uno, así que el total no vuelve bajo
+el millón antes de mediados de diciembre, haga lo que haga la caché; Fast Origin Transfer, a
+~0,4 GB al día, llega a los 10 GB hacia el 25/11. A esa hora el sitio sigue sirviendo (Cloudflare y
+Vercel dan HIT).
+
+Cloudflare, en las mismas 12 h: 1.478 aciertos y 1.337 fallos (el 52 % de lo cacheable), y los
+fallos son la cola larga de rastreadores que leen cada página una vez: SemrushBot 173, Applebot
+155, Reflectionbot 109, Amazonbot 108, Googlebot ~130, FontScanBot 22, ExaSearchBot 19, YandexBot
+19, Kaupr 13, KeenableBot 13, MJ12bot 12. `mellowcad.vercel.app` responde 200 sin pasar por
+Cloudflare, pero no es la fuga: los fallos de Cloudflare cuadran con lo que ve Vercel. Ese día no
+se mandó el lote de indexación de Google (§7 de `docs/next-seo.md`): cada URL pedida es otro
+rastreo que falla la caché.
+
+Pro (20 $/mes, con 20 $ de crédito de uso al mes) no tiene límite de lecturas de ISR, sino precio:
+0,40–0,64 $ por millón de unidades, y Fast Origin Transfer a 0,06–0,43 $ el GB; el uso de este mes
+cabría en el crédito. Pasarse a Pro es decisión del dueño (gasto), pendiente el 20/11.
 
 ## 4. Cuándo se levanta el congelado
 
