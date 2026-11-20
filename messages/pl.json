@@ -201,7 +201,7 @@
     "q4": "Czy naprawdę działa jak AutoCAD?",
     "a4": "Takie jest założenie: polecenia, aliasy, kolejność monitów, litery opcji i wartości domyślne odpowiadają aktualnej wersji AutoCADa. Niektóre polecenia są jeszcze niepełne, a plan rozwoju wymienia dokładnie, których opcji brakuje.",
     "q5": "Czy można otwierać i zapisywać pliki DWG lub DXF albo drukować?",
-    "a5": "MellowCAD <dxf>otwiera pliki DXF</dxf> od AutoCADa R12 do 2018, tekstowe lub binarne: linie, łuki, okręgi, elipsy, polilinie, splajny, tekst, wymiary, linie odniesienia, kreskowania, punkty i bloki, na swoich warstwach. To, dla czego nie ma jeszcze obiektu – wielolinie odniesienia, tabele, arkusze, bryły 3D – jest pomijane i wymieniane przy otwieraniu pliku. <edit>Zapisuje też DXF</edit>, od AutoCADa 2000 do 2018. Plików DWG jeszcze nie obsługuje i nie ma jeszcze drukowania ani eksportu do PDF.",
+    "a5": "MellowCAD <dxf>otwiera pliki DXF</dxf> od AutoCADa R12 do 2018, tekstowe lub binarne: linie, łuki, okręgi, elipsy, polilinie, splajny, tekst, wymiary, linie odniesienia, wielolinie odniesienia, tabele, kreskowania, punkty i bloki, na swoich warstwach. To, dla czego nie ma jeszcze obiektu – arkusze, bryły 3D – jest pomijane i wymieniane przy otwieraniu pliku. <edit>Zapisuje też DXF</edit>, od AutoCADa 2000 do 2018. Plików DWG jeszcze nie obsługuje i nie ma jeszcze drukowania ani eksportu do PDF.",
     "q6": "Gdzie są przechowywane moje rysunki?",
     "a6": "Na twoim urządzeniu. MellowCAD zapisuje rysunek automatycznie w przeglądarce i nigdy nie wysyła twoich rysunków. Wyczyszczenie danych witryny usuwa autozapis, więc naciśnij Ctrl+S, aby zachować plik.",
     "q7": "Czy MellowCAD jest powiązany z firmą Autodesk?",

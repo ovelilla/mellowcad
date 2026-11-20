@@ -201,7 +201,7 @@
     "q4": "Funktioniert es wirklich wie AutoCAD?",
     "a4": "Das ist die Vorgabe: Befehle, Aliasnamen, Reihenfolge der Eingabeaufforderungen, Optionsbuchstaben und Vorgaben folgen dem aktuellen AutoCAD. Einige Befehle sind noch unvollständig, und die Roadmap nennt genau, welche Optionen fehlen.",
     "q5": "Kann ich DWG- oder DXF-Dateien öffnen, speichern oder drucken?",
-    "a5": "MellowCAD <dxf>öffnet DXF-Dateien</dxf>, von AutoCAD R12 bis 2018, Text oder binär: Linien, Bögen, Kreise, Ellipsen, Polylinien, Splines, Text, Bemaßungen, Führungslinien, Schraffuren, Punkte und Blöcke, auf ihren Layern. Wofür es noch kein Objekt hat — Multiführungslinien, Tabellen, Layouts, 3D-Volumenkörper — wird weggelassen und beim Öffnen aufgelistet. Es <edit>speichert auch DXF</edit>, AutoCAD 2000 bis 2018. DWG gibt es noch nicht, ebenso wenig Drucken oder PDF-Export.",
+    "a5": "MellowCAD <dxf>öffnet DXF-Dateien</dxf>, von AutoCAD R12 bis 2018, Text oder binär: Linien, Bögen, Kreise, Ellipsen, Polylinien, Splines, Text, Bemaßungen, Führungslinien, Multiführungslinien, Tabellen, Schraffuren, Punkte und Blöcke, auf ihren Layern. Wofür es noch kein Objekt hat — Layouts, 3D-Volumenkörper — wird weggelassen und beim Öffnen aufgelistet. Es <edit>speichert auch DXF</edit>, AutoCAD 2000 bis 2018. DWG gibt es noch nicht, ebenso wenig Drucken oder PDF-Export.",
     "q6": "Wo werden meine Zeichnungen gespeichert?",
     "a6": "Auf Ihrem Gerät. MellowCAD speichert automatisch im Browser und lädt Ihre Zeichnungen nie hoch. Das Löschen der Websitedaten löscht die Sicherung; drücken Sie Strg+S, um eine Datei zu behalten.",
     "q7": "Ist MellowCAD mit Autodesk verbunden?",
