@@ -1,0 +1,58 @@
+---
+title: "AutoCAD 練習問題：ガスケット"
+metaTitle: "AutoCAD 練習問題 初心者向け：ガスケット"
+description: "AutoCAD の初心者向け練習問題。角を丸めたプレート、中央の穴、1 つから複写する 4 つの穴、中心線と寸法を順に描きます。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次のガスケットを描きます(単位は mm)。120 × 80 のプレートで、角を半径 10 で丸めます。中央に直径 40 の穴、縁から 12 の位置を中心とする直径 10 の穴が 4 つあり、中央の穴の中心線と寸法も記入します。すべてキーボードで入力します。コマンドの最初の点は入力した位置そのもので、以降の各点は直前の点からの距離です。外形、中心線、寸法はそれぞれ専用の画層に描きます。
+
+- **練習問題：** 初級 · 機械 · 2D
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=gasket)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/gasket" caption="120 × 80 のガスケット、寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 外形を描く [#outline]
+
+[画層コントロール]で「外形線」を現在の画層にします。[`RECTANG`](/docs/commands/rectang)[長方形]コマンドでプレートを一度に描きます。`Fillet` を選んで半径 `10` を入力し、次に 1 つ目のコーナー `0,0`、もう一方のコーナー `120,80`(1 つ目のコーナーからの距離)を入力します。
+
+<Session name="exercises/gasket/outline" caption="1. 外形を描く" />
+
+### 2. 中央の穴を描く [#bore]
+
+[`CIRCLE`](/docs/commands/circle)[円]コマンドでプレートの中央 `60,40` を指定し、`Diameter` を選んで `40` と入力します。
+
+<Session name="exercises/gasket/bore" caption="2. 中央の穴を描く" />
+
+### 3. 穴を複写する [#holes]
+
+`12,12` に `Diameter` `10` の円を描いて穴を 1 つ作り、[`COPY`](/docs/commands/copy)[複写]コマンドで複写します。円を選択して[Enter]を押し、その中心 `12,12` を基点として指定してから、そこからの各コピーの位置を `96,0`、`96,56`、`0,56` の順に入力します。[Enter]で複写を終了します。
+
+<Session name="exercises/gasket/holes" caption="3. 穴を複写する" />
+
+### 4. 中心線を描く [#centreLines]
+
+「中心線」を現在の画層にします。[`LINE`](/docs/commands/line)[線分]コマンドで 2 本の線を描き、中央の穴の中心で交差させ、縁から 6 はみ出させます。縦の線は `60,14` から上へ `0,52`、横の線は `34,40` から右へ `52,0` で描きます。それぞれ[Enter]で終了します。
+
+<Session name="exercises/gasket/centreLines" caption="4. 中心線を描く" />
+
+### 5. 寸法を記入する [#dimensions]
+
+「寸法」を現在の画層にします。[`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンドは 2 点を指定し、次に寸法線の位置を指定します。長さは `0,10` から `120,0` 先までで下側に配置し、高さは右側に記入し、穴の間隔 96 と 56 も記入します。プロンプトで入力した点はオブジェクトに接しないため、これらはすべて非自動調整寸法として作成され、コマンド ラインにもそう表示されます。[`DIMDIAMETER`](/docs/commands/dimdiameter)[直径寸法記入]コマンドは円を選択して直径寸法を配置します。中央の穴、次に穴 1 つに記入します。
+
+<Session name="exercises/gasket/dimensions" caption="5. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate): 初級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題](/docs/exercises)

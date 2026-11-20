@@ -1,0 +1,60 @@
+---
+title: "AutoCAD 3D 練習問題：取付プレート"
+metaTitle: "AutoCAD 3D 練習問題 初心者向け：取付プレート"
+description: "AutoCAD 3D の初心者向け練習問題。リージョンを作成して穴を差し引き、1 回の押し出しで取付プレートのソリッドにします。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+厚さ 10 の取付プレートをモデリングします(単位は mm)。外形は 100 × 60 で角の半径は 8、縁から 15 の位置を中心とする直径 10 の穴が 4 つあります。最初は平面で作図します。外形と円をリージョンにし、平面のうちに穴を差し引いてから、1 回の押し出しで穴付きのソリッドにします。
+
+- **練習問題：** 初級 · 機械 · 3D ソリッド
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=mounting-plate)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/mounting-plate" caption="100 × 60 で穴が 4 つあるプレートの外形、寸法付き。" />
+
+<Session name="exercises/mounting-plate/model" caption="厚さ 10 のソリッドとしてのプレート。南東から見た、隠線処理の表示。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. プロファイルを描く [#profile]
+
+「外形線」画層で、[`RECTANG`](/docs/commands/rectang)[長方形]コマンドを `Fillet` `8` で使い、`0,0` から `100,60` まで描きます。次に `15,15` に `Diameter` `10` の円を描き、[`COPY`](/docs/commands/copy)[複写]コマンドでその中心から、それぞれ `70,0`、`70,30`、`0,30` 先へ複写します。
+
+<Session name="exercises/mounting-plate/profile" caption="1. プロファイルを描く" />
+
+### 2. リージョンを作成する [#region]
+
+[`REGION`](/docs/commands/region)[リージョン]コマンドは、閉じたオブジェクトをリージョンに変換します。外形と 4 つの円を選択し、[Enter]を押します。5 つのループから 5 つのリージョンができます。
+
+<Session name="exercises/mounting-plate/region" caption="2. リージョンを作成する" />
+
+### 3. 穴を差し引く [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)[差]コマンドでプレートのリージョンを選択し、[Enter]を押します。次に 4 つの円のリージョンを選択し、[Enter]を押します。穴が 4 つあいた 1 つのリージョンが残ります。
+
+<Session name="exercises/mounting-plate/subtract" caption="3. 穴を差し引く" />
+
+### 4. ビューを回転する [#view]
+
+`-VIEW` コマンドの `SEIso` で、南東の上方から見ます。[`VSCURRENT`](/docs/commands/vscurrent)[ビューポート表示スタイル]コマンドの `Hidden` で、面に隠れる部分を非表示にします。ViewCube をクリックしてもビューを回転できます。
+
+<Session name="exercises/mounting-plate/view" caption="4. ビューを回転する" />
+
+### 5. 押し出す [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude)[押し出し]コマンドでリージョンを選択し、[Enter]を押して高さ `10` を入力します。プレートは穴も含めてソリッドになります。[`ZOOM`](/docs/commands/zoom)[ズーム]コマンドの `Extents` で全体を表示し、尺度 `0.8x` で周囲に余白を残します。
+
+<Session name="exercises/mounting-plate/extrude" caption="5. 押し出す" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange): 中級 · 機械 · 2D
+- [AutoCAD 練習問題：丸テーブルと椅子](/docs/exercises/round-table): 中級 · 建築 · 2D
+- [AutoCAD 練習問題：敷地の区画](/docs/exercises/plot-of-land): 中級 · 土木 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

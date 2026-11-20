@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の REDO[やり直し]コマンド"
+metaTitle: "AutoCAD やり直し：REDO と Ctrl+Y、MREDO"
+description: "AutoCAD の REDO[やり直し]の使い方を解説します。直前の U や UNDO で元に戻した操作をその直後に復元します。MREDO と[Ctrl]+[Y]は 1 ステップずつやり直します。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD のやり直しのショートカット キーは?","answer":"[Ctrl]+[Y]で、1 ステップやり直します(MREDO 1)。REDO 自体には短縮コマンドがありません。REDO と入力するか、AutoCAD のどの言語版でも _REDO と入力します。"},{"question":"REDO が使えないのはなぜ?","answer":"REDO が取り消せるのは、直前の U か UNDO だけです。ほかのコマンドを実行した後は、そのコマンドが何も変更していなくても、やり直すものはありません。元に戻したら、すぐにやり直してください。"},{"question":"REDO と MREDO の違いは?","answer":"REDO は直前の元に戻す全体を、その直後にだけ復元します。MREDO は元に戻したステップを指定した数だけ 1 つずつ、またはすべてやり直し、REDO の後でも使えます。"},{"question":"AutoCAD で直前のコマンドを繰り返すには?","answer":"コマンド プロンプトで[Enter]または[Space]を押すと、直前のコマンドが再び始まります。REDO はコマンドを繰り返すのではなく、元に戻した操作を取り消します。"}]
+---
+
+REDO[やり直し]コマンドは、直前の `U` または [`UNDO`](/docs/commands/undo) を取り消します。元に戻したものがすべて再び作図されるため、5 つのコマンドを UNDO で戻した後に REDO を実行すると、5 つとも復元されます。その際にコマンド名を表示し、やり直すものがなくなると `Everything has been redone` と表示します。何も尋ねず、オプションもありません。
+
+元に戻した直後にだけ使えます。それ以外では `REDO must immediately follow the U or UNDO command.` と表示し、ほかのコマンドを実行した後は、LIST や ZOOM のように何も変更しないコマンドでも `Nothing to redo` と表示します。UNDO のコントロールの[なし]で元に戻すがオフになっているときは、REDO は無効だと表示します。
+
+`MREDO` は 1 ステップずつやり直します。操作の数、または `All` か `Last` を尋ね、その後に実行された U、UNDO、REDO にかかわらず、元に戻したステップをその数だけやり直します。最後は直前の元に戻す全体を 1 回だけやり直します(`The last UNDO operation has been already redone.`)。[Ctrl]+[Y]とショートカット メニューの[やり直し]は、実行中のコマンドをキャンセルして MREDO を 1 で実行します。
+
+- **コマンド：** `REDO`
+- **パネル：** [問い合わせとビュー](/docs/commands#inquiry)
+- **試す：** [エディタを開き](/ja/draw)、`REDO` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="redo" caption="プレートに作図した穴を U で元に戻し、REDO で復元します。" />
+
+## まだできないこと [#missing]
+
+[Ctrl]+[Shift]+[Z]でも何も表示せずにやり直しますが、AutoCAD ではこのキーに何も割り当てられていません。上部バーの[元に戻す]と[やり直し]のボタンは履歴に何も書き込みませんが、AutoCAD のクイック アクセス ツールバーは独自の内容を書き込みます。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+## よくある質問 [#questions]
+
+### AutoCAD のやり直しのショートカット キーは?
+
+[Ctrl]+[Y]で、1 ステップやり直します(MREDO 1)。REDO 自体には短縮コマンドがありません。`REDO` と入力するか、AutoCAD のどの言語版でも `_REDO` と入力します。
+
+### REDO が使えないのはなぜ?
+
+REDO が取り消せるのは、直前の U か UNDO だけです。ほかのコマンドを実行した後は、そのコマンドが何も変更していなくても、やり直すものはありません。元に戻したら、すぐにやり直してください。
+
+### REDO と MREDO の違いは?
+
+REDO は直前の元に戻す全体を、その直後にだけ復元します。`MREDO` は元に戻したステップを指定した数だけ 1 つずつ、またはすべてやり直し、REDO の後でも使えます。
+
+### AutoCAD で直前のコマンドを繰り返すには?
+
+コマンド プロンプトで[Enter]または[Space]を押すと、直前のコマンドが再び始まります。REDO はコマンドを繰り返すのではなく、元に戻した操作を取り消します。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の UNDO\[元に戻す\]コマンド](/docs/commands/undo)
+- [U](/docs/commands#u): 最後の操作を元に戻す
+- [MREDO](/docs/commands#mredo): 複数回やり直し

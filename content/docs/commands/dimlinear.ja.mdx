@@ -1,0 +1,87 @@
+---
+title: "AutoCAD の寸法記入：DIMLINEAR[長さ寸法記入]コマンド"
+metaTitle: "AutoCAD 寸法の記入方法：長さ寸法記入(DIMLINEAR)と DLI"
+description: "AutoCAD の寸法記入を、長さ寸法記入(DIMLINEAR、DLI)のプロンプトの順に説明します。2 つの起点またはオブジェクト、寸法線の位置で水平か垂直が決まります。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の長さ寸法記入の短縮コマンドは?","answer":"DLI または DIMLIN と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _DIMLINEAR が使えます。"},{"question":"AutoCAD の寸法コマンドの一覧は?","answer":"DIMLINEAR は水平・垂直の距離、DIMALIGNED は斜めの辺に沿った距離、DIMRADIUS と DIMDIAMETER は円弧と円、DIMANGULAR は角度、DIMCONTINUE と DIMBASELINE は寸法の連続記入、DIMSPACE は寸法線の間隔の調整、DIMSTYLE は寸法の外観に使います。1 つのプロンプトからあらゆる種類の寸法を記入する AutoCAD の DIM と、多数のオブジェクトに一度に寸法を記入する QDIM は、MellowCAD にはまだありません。"},{"question":"オブジェクトを変更しても寸法が追従しないのはなぜ?","answer":"MellowCAD の寸法はまだ自動調整寸法ではありません。「Non-associative dimension created.」 と表示されるとおり、寸法は指定された点を保持します。両方を一緒にストレッチしてください。移動する端点と、そこにある寸法の起点を 1 つの STRETCH の交差窓で囲むと、計測値が再計算されます。または、起点のグリップを新しい位置にドラッグします。"},{"question":"寸法値と矢印のサイズを変更するには?","answer":"AutoCAD と同様に、寸法スタイルで変更します。DIMSTYLE(D)を実行すると寸法スタイルが表示されます。AutoCAD では[寸法スタイル管理]ダイアログ ボックスですが、ここでは[スタイル]パレットです。現在のスタイルの文字の高さ、矢印のサイズ、全体の尺度、小数点以下の桁数をそこで設定すると、そのスタイルのすべての寸法が追従します。"}]
+---
+
+DIMLINEAR[長さ寸法記入]コマンドは、2 点間の X 方向または Y 方向の距離を測り、寸法として記入します。2 本の寸法補助線、矢印の付いた寸法線、その上の寸法値です。1 本目と 2 本目の寸法補助線の起点を指定し、次に寸法線の位置を指定します。AutoCAD と同様に、配置する位置で方向が決まります。2 点の上または下に置くと水平に、横に置くと垂直に測ります。最初のプロンプトで代わりに[Enter]を押すと、線分、円弧、ポリライン セグメント、円を選択でき、その両端、または円の直径が起点になります。その後、計測値がコマンド ラインに表示され、コマンドが終了します。
+
+寸法は現在の寸法スタイルで記入されます。新しい図面では ISO-25 で、AutoCAD のメートル単位の図面と同様に、小数点にはカンマを使い、末尾の 0 は省略されます。コマンド ラインで入力した場合のみ使える `DIMHORIZONTAL`、`DIMVERTICAL`、`DIMROTATED` は、方向を 1 つに固定した DIMLINEAR です。
+
+- **コマンド：** `DIMLINEAR`
+- **短縮コマンド：** `DIMLIN`, `DLI`
+- **パネル：** [注釈](/docs/commands#annotate)
+- **試す：** [エディタを開き](/ja/draw)、`DLI` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="dimlinear" caption="長方形に 2 つの寸法を記入。上辺は 2 つの角を指定し、右辺は[Enter]を押してから辺をクリック。" />
+
+## オプション [#options]
+
+### `Text` (`T`) [#text]
+
+計測値の代わりに記入する文字を尋ね、計測値を既定値として表示します。[Enter]を押すと計測値のままです。入力する文字の中で `<>` は計測値を表すので、`<> mm` と入力すると計測値の後に単位が記入されます。
+
+### `Angle` (`A`) [#angle]
+
+寸法値の角度を尋ねます。寸法値は寸法線に沿う代わりに、その角度で記入されます。0 を指定すると線に沿った向きに戻ります。
+
+### `Horizontal` (`H`) [#horizontal]
+
+寸法線をどこに配置しても X 方向に測り、寸法線は水平のままです。その後のプロンプトには `Text` と `Angle` だけが表示されます。
+
+### `Vertical` (`V`) [#vertical]
+
+寸法線をどこに配置しても Y 方向に測り、寸法線は垂直のままです。
+
+### `Rotated` (`R`) [#rotated]
+
+寸法線の角度を尋ね(既定値は `0`)、起点間の距離をその方向に沿って測ります。斜めの辺では、その辺の角度を指定すると、[`DIMALIGNED`](/docs/commands/dimaligned) と同様に辺の長さになります。
+
+## まだできないこと [#missing]
+
+Mtext(マルチ テキスト)オプションはありません。寸法値は 1 行で、コマンド ラインで `Text` を使って設定し、文字エディタでは編集できません。`Angle` で角度を指定すると、AutoCAD は寸法値を寸法線の中央に配置しますが、ここでは角度がない場合と同様に寸法線の上に配置されます。寸法は自動調整寸法ではないため、測っているオブジェクトに追従しません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin--fr-cotlin--li--cothor--cotrotation--cotvertical--it-dimlineare--dli--de-bemlinear--bmlin--ru-рзмлинейный--рли--pl-wymliniowy--wl--wymlin--cs-kótypřím--kpm--kotypm--hu-mérethossz--mho--mhosz)
+
+## よくある質問 [#questions]
+
+### AutoCAD の長さ寸法記入の短縮コマンドは?
+
+`DLI` または `DIMLIN` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_DIMLINEAR` が使えます。
+
+### AutoCAD の寸法コマンドの一覧は?
+
+`DIMLINEAR` は水平・垂直の距離、[`DIMALIGNED`](/docs/commands/dimaligned) は斜めの辺に沿った距離、[`DIMRADIUS`](/docs/commands/dimradius) と [`DIMDIAMETER`](/docs/commands/dimdiameter) は円弧と円、[`DIMANGULAR`](/docs/commands/dimangular) は角度、[`DIMCONTINUE`](/docs/commands/dimcontinue) と [`DIMBASELINE`](/docs/commands/dimbaseline) は寸法の連続記入、[`DIMSPACE`](/docs/commands/dimspace) は寸法線の間隔の調整、[`DIMSTYLE`](/docs/commands/dimstyle) は寸法の外観に使います。1 つのプロンプトからあらゆる種類の寸法を記入する AutoCAD の DIM と、多数のオブジェクトに一度に寸法を記入する QDIM は、MellowCAD にはまだありません。
+
+### オブジェクトを変更しても寸法が追従しないのはなぜ?
+
+MellowCAD の寸法はまだ自動調整寸法ではありません。`Non-associative dimension created.` と表示されるとおり、寸法は指定された点を保持します。両方を一緒にストレッチしてください。移動する端点と、そこにある寸法の起点を 1 つの [`STRETCH`](/docs/commands/stretch) の交差窓で囲むと、計測値が再計算されます。または、起点のグリップを新しい位置にドラッグします。
+
+### 寸法値と矢印のサイズを変更するには?
+
+AutoCAD と同様に、寸法スタイルで変更します。[`DIMSTYLE`](/docs/commands/dimstyle)(`D`)を実行すると寸法スタイルが表示されます。AutoCAD では[寸法スタイル管理]ダイアログ ボックスですが、ここでは[スタイル]パレットです。現在のスタイルの文字の高さ、矢印のサイズ、全体の尺度、小数点以下の桁数をそこで設定すると、そのスタイルのすべての寸法が追従します。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket)
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs)
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange)
+- [AutoCAD 練習問題：丸テーブルと椅子](/docs/exercises/round-table)
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft)
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の DIMALIGNED\[平行寸法記入\]コマンド](/docs/commands/dimaligned)
+- [AutoCAD の DIMCONTINUE\[直列寸法記入\]コマンド](/docs/commands/dimcontinue)
+- [AutoCAD の DIMBASELINE\[並列寸法記入\]コマンド](/docs/commands/dimbaseline)
+- [AutoCAD の DIMRADIUS\[半径寸法記入\]コマンド](/docs/commands/dimradius)
+- [AutoCAD の DIMSTYLE\[寸法スタイル管理\]コマンド](/docs/commands/dimstyle)

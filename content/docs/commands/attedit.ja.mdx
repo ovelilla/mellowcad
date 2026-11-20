@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の ATTEDIT[属性編集]コマンド"
+metaTitle: "AutoCAD 属性編集(ATTEDIT)の使い方と短縮コマンド ATE"
+description: "AutoCAD でブロック参照の属性値を変更する ATTEDIT(ATE)の使い方を解説します。プロンプトごとのフィールド、1 回で元に戻せる編集。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の属性編集の短縮コマンドは?","answer":"ATE と入力し、[Enter]または[Space]を押します。DDATTE も使えます。AutoCAD のどの言語版でも _ATTEDIT が使えます。"},{"question":"AutoCAD でブロックの属性を編集するには?","answer":"ATE を入力して参照を選択するか、参照をダブルクリックします(EATTEDIT が実行されます)。ボックスで値を変更し、[Enter]を押します。属性そのもの(名札、プロンプト、位置)を変更するには、定義を編集し、BLOCK でブロックを再定義します。"},{"question":"ATTEDIT で編集可能な属性がないと表示されるのはなぜ?","answer":"選択した参照のブロックに属性がないためです。ATTEDIT が編集するのは、属性を持つブロックの参照の値です。まだブロックに含めていない属性定義は、ダブルクリックして TEXTEDIT で編集します。"},{"question":"ATTEDIT と EATTEDIT の違いは?","answer":"どちらも 1 つの参照の値を編集します。ATTEDIT のボックスは、AutoCAD の[属性編集]ダイアログと同じく、各フィールドに属性のプロンプトをラベルとして付けます。EATTEDIT([拡張属性編集]ダイアログ)は名札をラベルにします。AutoCAD の EATTEDIT には、各属性の文字オプションとプロパティのタブもあります。"}]
+---
+
+ATTEDIT[属性編集]コマンドは、1 つのブロック参照の属性値を変更します。参照の選択を求め、AutoCAD の[属性編集]ダイアログと同じく、属性ごとのフィールドを持つボックスを開きます。各フィールドには属性のプロンプトがラベルとして付き、値が入っています。値を入力し直し([Tab]で次のフィールドへ移動します)、AutoCAD の[OK]にあたる[Enter]を押すと 1 ステップで適用され、`U` で取り消せます。[キャンセル]にあたる[Esc]では何も変更されません。
+
+ピック ボックスの下にあるオブジェクトが選択されます。ブロック参照以外のオブジェクトや、属性を持たないブロックの参照は受け付けられず、もう一度尋ねられます。何もない所をピックすると、メッセージなしでもう一度尋ねられます。ブロックの定義やほかの参照は変更されません。各参照はそれぞれ独自の値を持っています。[`EATTEDIT`](/docs/commands/eattedit) は名札をラベルにしたボックスで同じ値を編集し、属性付きの参照をダブルクリックすると EATTEDIT が実行されます。
+
+- **コマンド：** `ATTEDIT`
+- **短縮コマンド：** `ATE`, `DDATTE`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`ATE` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="attedit" caption="属性 NUM を持つブロックの参照である 3 つのドア番号札。ATTEDIT で 2 として挿入された最後の札を選び、ボックスで 3 に変更。" />
+
+## まだできないこと [#missing]
+
+属性を個別に、または一括で編集するコマンド ライン版の `-ATTEDIT` と、その短縮コマンド `-ATE` と `ATTE`。1 ページに収まらない数の属性を持つブロックのための、[属性編集]の[前へ]と[次へ]ボタン、および[ブロック名]の行。属性をその場で編集する ATTIPEDIT と、その[Ctrl]+ダブルクリック。参照上の、位置がロックされていない属性自体のグリップと、プロパティ パレットの属性の行。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit--hu-attedit--ate--battedit)
+
+## よくある質問 [#questions]
+
+### AutoCAD の属性編集の短縮コマンドは?
+
+`ATE` と入力し、[Enter]または[Space]を押します。`DDATTE` も使えます。AutoCAD のどの言語版でも `_ATTEDIT` が使えます。
+
+### AutoCAD でブロックの属性を編集するには?
+
+`ATE` を入力して参照を選択するか、参照をダブルクリックします([`EATTEDIT`](/docs/commands/eattedit) が実行されます)。ボックスで値を変更し、[Enter]を押します。属性そのもの(名札、プロンプト、位置)を変更するには、定義を編集し、[`BLOCK`](/docs/commands/block) でブロックを再定義します。
+
+### ATTEDIT で編集可能な属性がないと表示されるのはなぜ?
+
+選択した参照のブロックに属性がないためです。ATTEDIT が編集するのは、属性を持つブロックの参照の値です。まだブロックに含めていない属性定義は、ダブルクリックして [`TEXTEDIT`](/docs/commands/textedit) で編集します。
+
+### ATTEDIT と EATTEDIT の違いは?
+
+どちらも 1 つの参照の値を編集します。ATTEDIT のボックスは、AutoCAD の[属性編集]ダイアログと同じく、各フィールドに属性のプロンプトをラベルとして付けます。[`EATTEDIT`](/docs/commands/eattedit)([拡張属性編集]ダイアログ)は名札をラベルにします。AutoCAD の EATTEDIT には、各属性の文字オプションとプロパティのタブもあります。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の EATTEDIT\[拡張属性編集\]コマンド](/docs/commands/eattedit)
+- [AutoCAD の ATTDEF\[属性定義\]コマンド](/docs/commands/attdef)
+- [AutoCAD の INSERT\[ブロック挿入\]コマンド](/docs/commands/insert)
+- [AutoCAD の ATTDISP\[属性表示\]コマンド](/docs/commands/attdisp)

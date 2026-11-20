@@ -1,0 +1,72 @@
+---
+title: "AutoCAD の COPY[複写]コマンド"
+metaTitle: "AutoCAD 複写(COPY)の使い方と短縮コマンド CO"
+description: "AutoCAD の複写(COPY、CO、CP)の使い方をプロンプト順に解説します。基点を指定して必要な数だけ配置、Undo と Exit、または変位で 1 つ複写。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の複写の短縮コマンドは?","answer":"CO または CP と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _COPY が使えます。"},{"question":"一度に複数の複写を作成するには?","answer":"配置を続けます。指定した点ごとに同じ基点からの複写が 1 つずつ作成され、[Enter]で終了します。行、列、中心の周りに並べる複写は、ARRAY で一度に作成できます。"},{"question":"オブジェクトを指定した距離だけ複写するには?","answer":"基点を指定し、2 点目として距離を入力します。ダイナミック入力では 2 点目以降は前の点からの相対座標になるので、30,0 で X 方向に 30 の位置に複写されます。または、直交モードか極トラッキングで進む方向にカーソルを向け、距離だけを入力します。"},{"question":"COPY に配列(Array)オプションがないのはなぜ?","answer":"MellowCAD ではまだ用意されていません。等間隔に並んだ複写は、ARRAYRECT で行を 1 つにすれば同じものが作れ、編集できる 1 つの配列複写として保持されます。"}]
+---
+
+COPY[複写]コマンドは、選択したオブジェクトの複写を配置します。オブジェクトを選択し、基点を指定してから、複写ごとに 2 点目を指定します。複写モードの既定が「複数」である AutoCAD と同じく、[Enter]を押すか `Exit` を選ぶまで次の複写を尋ね続け、すべての複写は同じ基点から測られます。複写はオブジェクトの画層、色、そのほかすべてのプロパティを引き継ぎます。コマンドの前に選択したオブジェクトが複写の対象になり、複写を配置している間は選択したオブジェクトがカーソルに追従します。
+
+- **コマンド：** `COPY`
+- **短縮コマンド：** `CO`, `CP`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`CO` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="copy" caption="1 つの基点から X 方向に円を 3 回複写し、[Enter]で終了。" />
+
+## オプション [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+基点のプロンプトで選ぶか、そこで[Enter]を押します。1 回の移動をベクトルで尋ね(`30,0` で X 方向に 30 の位置に 1 つ複写)、終了します。既定値は、その図面で COPY が最後に使った変位です。
+
+### `Exit` (`E`) [#exit]
+
+コマンドを終了します。複写を配置した後の[Enter]と同じです。
+
+### `Undo` (`U`) [#undo]
+
+最後に配置した複写を取り消します。最初の複写を取り消すと `Command has been completely undone.` と表示され、もう一度 2 点目を尋ねます。
+
+## まだできないこと [#missing]
+
+COPYMODE の「単一」(1 回複写して終了)はありません。COPY は常に「複数」なので、基点のプロンプトには `Displacement` だけが表示されます。2 点目での配列(Array)、つまり AutoCAD の等間隔に並ぶ複写もありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp--de-kopieren--ko--cp--ru-копировать--кп--pl-kopiuj--k--cs-kopie--ko--hu-másol--m--má)
+
+## よくある質問 [#questions]
+
+### AutoCAD の複写の短縮コマンドは?
+
+`CO` または `CP` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_COPY` が使えます。
+
+### 一度に複数の複写を作成するには?
+
+配置を続けます。指定した点ごとに同じ基点からの複写が 1 つずつ作成され、[Enter]で終了します。行、列、中心の周りに並べる複写は、[`ARRAY`](/docs/commands/array) で一度に作成できます。
+
+### オブジェクトを指定した距離だけ複写するには?
+
+基点を指定し、2 点目として距離を入力します。ダイナミック入力では 2 点目以降は前の点からの相対座標になるので、`30,0` で X 方向に 30 の位置に複写されます。または、直交モードか極トラッキングで進む方向にカーソルを向け、距離だけを入力します。
+
+### COPY に配列(Array)オプションがないのはなぜ?
+
+MellowCAD ではまだ用意されていません。等間隔に並んだ複写は、[`ARRAYRECT`](/docs/commands/arrayrect) で行を 1 つにすれば同じものが作れ、編集できる 1 つの配列複写として保持されます。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket)
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の MOVE\[移動\]コマンド](/docs/commands/move)
+- [AutoCAD の ARRAY\[配列複写\]コマンド](/docs/commands/array)
+- [AutoCAD の OFFSET\[オフセット\]コマンド](/docs/commands/offset)
+- [AutoCAD の MIRROR\[鏡像\]コマンド](/docs/commands/mirror)

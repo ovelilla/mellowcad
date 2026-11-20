@@ -1,0 +1,46 @@
+---
+title: "AutoCAD 練習問題：敷地の区画"
+metaTitle: "AutoCAD 土木 練習問題：敷地の面積と辺長"
+description: "AutoCAD の土木練習問題。各辺の長さと角度から極座標で敷地を描き、面積を計測して寸法を記入します。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次の敷地を、各辺の長さと方向から描きます(単位は m)。0° 方向に 40、80° に 30、155° に 35、230° に 25 で、最後は始点に戻ります。面積と周長を計測し、各辺と 2 つ目のコーナーの角度に寸法を記入します。極座標(長さと角度)で、各辺を直前の辺の終点から描きます。この図面の寸法尺度はメートル用に設定されています。
+
+- **練習問題：** 中級 · 土木 · 2D
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=plot-of-land)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/plot-of-land" caption="5 辺の敷地(単位は m)。各辺と 1 つの角度の寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 境界を描く [#boundary]
+
+「外形線」画層で、[`PLINE`](/docs/commands/pline)[ポリライン]コマンドを `0,0` から始め、各辺を長さと角度で `40<0`、`30<80`、`35<155`、`25<230` と入力します。いずれも直前の点からの値です。`Close` で 5 つ目の辺を描いて境界を閉じます。これで 1 つのオブジェクトになり、[`AREA`](/docs/commands/area)[面積計算]コマンドで計測できます。
+
+<Session name="exercises/plot-of-land/boundary" caption="1. 境界を描く" />
+
+### 2. 面積を計測する [#area]
+
+[`AREA`](/docs/commands/area) コマンドで `Object` を選び、境界を選択します。コマンド ラインに面積(平方メートル)と周長が表示されます。
+
+<Session name="exercises/plot-of-land/area" caption="2. 面積を計測する" />
+
+### 3. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMALIGNED`](/docs/commands/dimaligned)[平行寸法記入]コマンドを実行し、最初のプロンプトで[Enter]を押します。するとオブジェクトの選択を求められ、辺を選択するとその辺に平行な寸法が記入されます。それぞれ敷地の外側に配置します。[`DIMANGULAR`](/docs/commands/dimangular)[角度寸法記入]コマンドで `40,0` で交わる 2 辺を選択すると、その間の角度 100° が記入されます。
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft): 中級 · 機械 · 2D
+- [AutoCAD 等角図の練習問題：段付きブロック](/docs/exercises/isometric-block): 中級 · 機械 · アイソメ
+- [AutoCAD 3D 練習問題：プーリ](/docs/exercises/pulley): 中級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題](/docs/exercises)

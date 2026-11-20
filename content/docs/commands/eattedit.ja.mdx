@@ -1,0 +1,53 @@
+---
+title: "AutoCAD の EATTEDIT[拡張属性編集]コマンド"
+metaTitle: "AutoCAD 属性の編集：拡張属性編集(EATTEDIT)"
+description: "AutoCAD の拡張属性編集(EATTEDIT)で、ブロックの属性値を[拡張属性編集]ダイアログで編集する方法と、ブロックのダブルクリックで開く理由を説明します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD で[拡張属性編集]ダイアログを開くには?","answer":"属性を持つブロック参照をダブルクリックするか、EATTEDIT と入力して参照をクリックします。_EATTEDIT は AutoCAD のどの言語版でも使えます。"},{"question":"AutoCAD で属性値を変更するには?","answer":"ブロックをダブルクリックし、属性のフィールドに新しい値を入力して[Enter]を押します。値は参照ごとに保持されるため、1 つを変更してもほかの参照はそのままです。"},{"question":"ダブルクリックでブロックの属性を編集できないのはなぜ?","answer":"EATTEDIT が開くのは、ブロックに属性がある参照だけです。属性なしで作成したブロックには属性がありません。ATTDEF で属性を定義し、ブロックを作成するときにほかのオブジェクトと一緒に選択してください。属性値が表示されない場合は ATTDISP を確認します。非表示の属性、またはすべての属性を非表示にできるコマンドです。"},{"question":"EATTEDIT と ATTEDIT の違いは?","answer":"同じ値を編集します。EATTEDIT は[拡張属性編集]ダイアログの[属性]タブと同様に各フィールドに名称(タグ)のラベルを付け、ATTEDIT は[属性編集]ダイアログ ボックスと同様にプロンプトのラベルを付けます。AutoCAD の EATTEDIT では、各属性の文字オプションとプロパティも編集できます。"}]
+---
+
+EATTEDIT[拡張属性編集]コマンドは、1 つのブロック参照について AutoCAD の[拡張属性編集]ダイアログ ボックスを開きます。ブロックの選択を求められ、選択すると、属性ごとに名称(タグ)のラベルと値の入ったフィールドが、ダイアログの[属性]タブと同じように表示されます。値を入力し直し([Tab]で次のフィールドへ移動)、[Enter]を押すと、`U` で取り消せる 1 つの操作として適用されます。[Esc]を押すと何も変更されません。
+
+属性を持つ参照をダブルクリックすると、AutoCAD と同様に EATTEDIT が実行されます。コマンド ラインには、ダブルクリックした点を応答としてコマンドが表示され、ダイアログ ボックスがすぐに開きます。選択はピックボックスの下のオブジェクトに対して行われます。ブロック参照以外のオブジェクトは拒否され、属性のないブロックも拒否されて、もう一度尋ねられます。変更されるのは選択した参照だけで、ブロック定義とほかの参照の値は変わりません。
+
+- **コマンド：** `EATTEDIT`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`EATTEDIT` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="eattedit" caption="属性 NUM と PART を持つブロックの参照である 2 つの机。EATTEDIT で 2 つ目を選択し、PART の値を B-200 に変更。" />
+
+## まだできないこと [#missing]
+
+ダイアログの[文字オプション]タブ(各属性の文字の文字スタイル、位置合わせ、高さ、回転角度、幅係数など)と[プロパティ]タブ(画層、線種、色、線の太さ)、および[ブロックを選択]ボタン。1 つの属性をその場で編集する ATTIPEDIT と、その[Ctrl]+ダブルクリック。参照上のロックされていない属性自体のグリップと、プロパティ パレットの属性の行。`-ATTEDIT`。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit--hu-attedit--ate--battedit)
+
+## よくある質問 [#questions]
+
+### AutoCAD で[拡張属性編集]ダイアログを開くには?
+
+属性を持つブロック参照をダブルクリックするか、`EATTEDIT` と入力して参照をクリックします。`_EATTEDIT` は AutoCAD のどの言語版でも使えます。
+
+### AutoCAD で属性値を変更するには?
+
+ブロックをダブルクリックし、属性のフィールドに新しい値を入力して[Enter]を押します。値は参照ごとに保持されるため、1 つを変更してもほかの参照はそのままです。
+
+### ダブルクリックでブロックの属性を編集できないのはなぜ?
+
+EATTEDIT が開くのは、ブロックに属性がある参照だけです。属性なしで作成したブロックには属性がありません。[`ATTDEF`](/docs/commands/attdef) で属性を定義し、ブロックを作成するときにほかのオブジェクトと一緒に選択してください。属性値が表示されない場合は [`ATTDISP`](/docs/commands/attdisp) を確認します。非表示の属性、またはすべての属性を非表示にできるコマンドです。
+
+### EATTEDIT と ATTEDIT の違いは?
+
+同じ値を編集します。EATTEDIT は[拡張属性編集]ダイアログの[属性]タブと同様に各フィールドに名称(タグ)のラベルを付け、[`ATTEDIT`](/docs/commands/attedit) は[属性編集]ダイアログ ボックスと同様にプロンプトのラベルを付けます。AutoCAD の EATTEDIT では、各属性の文字オプションとプロパティも編集できます。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の ATTEDIT\[属性編集\]コマンド](/docs/commands/attedit)
+- [AutoCAD の ATTDEF\[属性定義\]コマンド](/docs/commands/attdef)
+- [AutoCAD の ATTDISP\[属性表示\]コマンド](/docs/commands/attdisp)
+- [AutoCAD の INSERT\[ブロック挿入\]コマンド](/docs/commands/insert)

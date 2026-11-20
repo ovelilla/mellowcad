@@ -1,0 +1,77 @@
+---
+title: "AutoCAD の CHPROP[プロパティ変更]コマンド"
+metaTitle: "AutoCAD プロパティ変更(CHPROP)の使い方"
+description: "AutoCAD の CHPROP の使い方を解説します。オブジェクトを選択し、色、画層、線種と線種尺度、線の太さ、厚さをコマンド ラインで変更します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CHPROP の短縮コマンドはある?","answer":"短縮コマンドはありません。CHPROP を入力するか、AutoCAD のどの言語版でも _CHPROP を入力します。コマンド プロンプトで[Enter]を押すと繰り返されます。"},{"question":"CHPROP と PROPERTIES の違いは?","answer":"変更できるプロパティは同じです。PROPERTIES はパレットに各オブジェクトのジオメトリも含めて表示し、CHPROP はコマンド ラインで尋ねるので、キーボードから手を離さずに操作できます。"},{"question":"コマンド ラインでオブジェクトの色を変更するには?","answer":"CHPROP を入力し、オブジェクトを選択して[Enter]を押し、Color を選んで色を入力します(赤なら 1)。もう一度[Enter]を押して終了します。"},{"question":"複数のオブジェクトを別の画層に移動するには?","answer":"CHPROP を実行してオブジェクトを選択し、LAyer を選んで画層の名前を入力します。画層が存在している必要があるので、先に LAYER で作成しておきます。"}]
+---
+
+CHPROP[プロパティ変更]コマンドは、選択したオブジェクトのプロパティをコマンド ラインで変更します。プロパティ パレットの[一般]の行を、プロンプトで尋ねるものです。オブジェクトを選択するか、コマンドの前に選択しておき、変更するプロパティを選びます。1 つ変更するたびにもう一度尋ねられ、[Enter]で終了します。各プロパティのプロンプトでは選択したオブジェクトの値が既定値として提示され、オブジェクトごとに異なる場合は `varies` となり、そこで[Enter]を押すと各オブジェクトの値はそのままです。設定した内容はコマンドの終了時に適用されるので、[Esc]を押すとどのオブジェクトも元のままです。ロックされた画層上のオブジェクトは数えられて除外され、それぞれ `The object is on a locked layer.` と表示されます。実行全体が 1 ステップで、`U` で取り消せます。
+
+- **コマンド：** `CHPROP`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`CHPROP` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="chprop" caption="プレートの穴を横切る線分に CHPROP を実行し、色 1、線種 CENTER の中心線にしたところ。画層はそのままです。" />
+
+## オプション [#options]
+
+### `Color` (`C`) [#color]
+
+[`COLOR`](/docs/commands/color) と同じく、1 から 255 の色番号、`red` などの名前、`BYLAYER`、または `Truecolor` とその `Red,Green,Blue` を指定します。COLOR で受け付けないものはここでも受け付けられず、もう一度尋ねられます。
+
+### `LAyer` (`LA`) [#layer]
+
+画層の名前です(大文字と小文字は区別されません)。画層名として使えない名前では `Invalid layer name.`、図面にない名前では見つからない旨が表示され、どちらももう一度尋ねられます。CHPROP は画層を作成しません。
+
+### `LType` (`LT`) [#ltype]
+
+線種の名前(大文字と小文字は区別されません)または `ByLayer` です。図面にロードされていない線種は、AutoCAD と同じく、メートル単位の図面でも AutoCAD のインチ単位のファイル acad.lin からロードされます。そのファイルにもない名前では見つからない旨が表示され、プロパティのプロンプトに戻ります。
+
+### `ltScale` (`S`) [#ltscale]
+
+オブジェクト自体の線種尺度で、そのオブジェクトに限り [`LTSCALE`](/docs/commands/ltscale) の値に掛けられます。距離を入力するか 2 点で測ります。負の値はその絶対値として扱われ、0 では `Value must be nonzero.` と表示されてもう一度尋ねられます。
+
+### `LWeight` (`LW`) [#lweight]
+
+ミリメートル単位の線の太さで、[`LWEIGHT`](/docs/commands/lweight) と同じく最も近い標準の太さに丸められます。または `ByLayer` です。`?` で一覧を表示します。
+
+### `Thickness` (`T`) [#thickness]
+
+距離を入力するか 2 点で測ります。負の値や 0 も使えます。選択したオブジェクトのうち線分、円、円弧、ポリラインに、それぞれの法線方向に設定されます。それ以外の種類については、終了時に厚さを変更できない旨が表示されます。
+
+## まだできないこと [#missing]
+
+ここのオブジェクトにはない透過性(TRansparency)、マテリアル(Material)、異尺度対応(Annotative)。このため、プロンプトにも表示されません。Color、LType、LWeight での ByBlock と、LWeight の既定(Default)。インデックス カラーと同じトゥルー カラーはインデックス カラーとして読み戻されます(`255,0,0` は `1 (red)` として提示されます)。カラー ブック。文字と属性定義の厚さ(そのままになります)。プロパティ(Properties)で同じプロンプトに高度(Elev)を加えて尋ねる CHANGE。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#chprop--es-cambprop--pt-br-altprop--fr-chprop--it-caprop--de-eigändr--ru-свойства--pl-zmcechy--cs-změnav--hu-tvált)
+
+## よくある質問 [#questions]
+
+### CHPROP の短縮コマンドはある?
+
+短縮コマンドはありません。`CHPROP` を入力するか、AutoCAD のどの言語版でも `_CHPROP` を入力します。コマンド プロンプトで[Enter]を押すと繰り返されます。
+
+### CHPROP と PROPERTIES の違いは?
+
+変更できるプロパティは同じです。[`PROPERTIES`](/docs/commands/properties) はパレットに各オブジェクトのジオメトリも含めて表示し、CHPROP はコマンド ラインで尋ねるので、キーボードから手を離さずに操作できます。
+
+### コマンド ラインでオブジェクトの色を変更するには?
+
+`CHPROP` を入力し、オブジェクトを選択して[Enter]を押し、`Color` を選んで色を入力します(赤なら `1`)。もう一度[Enter]を押して終了します。
+
+### 複数のオブジェクトを別の画層に移動するには?
+
+CHPROP を実行してオブジェクトを選択し、`LAyer` を選んで画層の名前を入力します。画層が存在している必要があるので、先に [`LAYER`](/docs/commands/layer) で作成しておきます。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の PROPERTIES\[オブジェクト プロパティ管理\]コマンド](/docs/commands/properties)
+- [AutoCAD の MATCHPROP\[プロパティ コピー\]コマンド](/docs/commands/matchprop)
+- [AutoCAD の COLOR\[色設定\]コマンド](/docs/commands/color)
+- [AutoCAD の LAYER\[画層管理\]コマンド](/docs/commands/layer)

@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の 3DORBIT[3D オービット]コマンド"
+metaTitle: "AutoCAD 3D オービット(3DORBIT)の使い方と短縮コマンド 3DO"
+description: "AutoCAD の 3D オービット(3DORBIT、3DO、ORBIT)の使い方を解説します。ドラッグでのビューの回転、終了の仕方、[Shift]+ホイールでのオービット、平面図への戻し方。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の 3D オービットの短縮コマンドは?","answer":"3DO または ORBIT と入力し、[Enter]または[Space]を押します。何も入力せずに、[Shift]とホイール ボタンを押したままドラッグしてもオービットできます。"},{"question":"マウスでオービットするには?","answer":"[Shift]を押しながらホイール ボタンを押してドラッグします。横にドラッグするとモデルが回り、上下にドラッグすると高い位置や低い位置から見られます。ボタンを放すと、実行中だったコマンドに戻ります。"},{"question":"3D オービットを終了するには?","answer":"[Enter]または[Esc]を押します。ビューはそのまま残ります。"},{"question":"オービットの後で平面図に戻すには?","answer":"PLAN を実行して[Enter]を押すか、-VIEW で Top を選ぶか、ViewCube の上面をクリックします。ZOOM の Previous では、ドラッグ 1 回分ずつ戻ります。"}]
+---
+
+3DORBIT[3D オービット]コマンドは、ドラッグに合わせて図面の周りでビューを回転します。図面のオブジェクトは移動も変更もされません。横にドラッグするとカメラがワールドの Z 軸を中心に回り、上下にドラッグするとカメラが上下します。回転の中心は画面中央にある図面上の点で、投影は平行投影です。開始時に終了の仕方が表示されます。実行中はオービットしかできず、ドラッグしたかどうかに関係なく[Enter]または[Esc]で終了します。
+
+[Shift]とホイール ボタンを押したままにすると、ほかのコマンドの実行中でもどこからでもオービットでき、ナビゲーション バーの[オービット]ボタンでも実行できます。アポストロフィを付けて `'3DORBIT` と入力すると、ほかのコマンドの実行中にも使え、そのコマンドは終了後に続行されます。各ドラッグは [`ZOOM`](/docs/commands/zoom) の `Previous` の 1 ステップになり、実行全体が 1 回の元に戻す操作になるので、`U` でビューが戻ります。ソリッドをワイヤではなくソリッドとして表示するには、[`VSCURRENT`](/docs/commands/vscurrent) を使います。MellowCAD の 3D は 3D ソリッドのみで、まだ一部対応です。
+
+- **コマンド：** `3DORBIT`
+- **短縮コマンド：** `3DO`, `ORBIT`
+- **パネル：** [問い合わせとビュー](/docs/commands#inquiry)
+- **試す：** [エディタを開き](/ja/draw)、`3DO` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="3dorbit" caption="平面図で見ていた直方体。3DORBIT で横と下へドラッグして[Enter]を押すと、直方体を手前の角の上から見たビューになります。" />
+
+## まだできないこと [#missing]
+
+右クリック メニュー(投影法、表示スタイル、そのほかのナビゲーション モード)。選択したオブジェクトだけを中心にしたオービット。透視投影。3DFORBIT、3DCORBIT など、AutoCAD のそのほかの 3D ナビゲーション。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do--or--cs-3dorbit--3do--orbit--hu-3dkeringés--3dk--3do--kering)
+
+## よくある質問 [#questions]
+
+### AutoCAD の 3D オービットの短縮コマンドは?
+
+`3DO` または `ORBIT` と入力し、[Enter]または[Space]を押します。何も入力せずに、[Shift]とホイール ボタンを押したままドラッグしてもオービットできます。
+
+### マウスでオービットするには?
+
+[Shift]を押しながらホイール ボタンを押してドラッグします。横にドラッグするとモデルが回り、上下にドラッグすると高い位置や低い位置から見られます。ボタンを放すと、実行中だったコマンドに戻ります。
+
+### 3D オービットを終了するには?
+
+[Enter]または[Esc]を押します。ビューはそのまま残ります。
+
+### オービットの後で平面図に戻すには?
+
+[`PLAN`](/docs/commands/plan) を実行して[Enter]を押すか、`-VIEW` で `Top` を選ぶか、ViewCube の上面をクリックします。[`ZOOM`](/docs/commands/zoom) の `Previous` では、ドラッグ 1 回分ずつ戻ります。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の VSCURRENT\[ビューポート表示スタイル\]コマンド](/docs/commands/vscurrent)
+- [AutoCAD の VIEW\[ビュー管理\]コマンド](/docs/commands/view)
+- [AutoCAD の PLAN\[プラン ビュー\]コマンド](/docs/commands/plan)
+- [AutoCAD の ZOOM\[ズーム\]コマンド](/docs/commands/zoom)

@@ -48,4 +48,13 @@ describe("scriptFontVariables", () => {
         "'Geist Mono', 'Readex Pro', 'Readex Pro Fallback', 'Geist Mono Fallback'",
     })
   })
+
+  it("puts the system's Japanese faces behind Inter and Geist Mono, downloading none", () => {
+    const japanese =
+      '"Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, "Noto Sans CJK JP", "Noto Sans JP"'
+    expect(scriptFontVariables("ja", fonts)).toEqual({
+      "--font-sans": `'Inter', ${japanese}, 'Inter Fallback'`,
+      "--font-mono": `'Geist Mono', ${japanese}, 'Geist Mono Fallback'`,
+    })
+  })
 })

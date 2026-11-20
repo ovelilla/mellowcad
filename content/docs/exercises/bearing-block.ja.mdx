@@ -1,0 +1,66 @@
+---
+title: "AutoCAD 3D 練習問題：軸受ブロック"
+metaTitle: "AutoCAD 3D 練習問題(上級)：軸受ブロック"
+description: "AutoCAD 3D の機械系練習問題。軸受ブロックを押し出しと和で作成し、軸穴と 2 つのボルト穴を円柱の差で抜きます。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次の軸受ブロックをモデリングします(単位は mm)。ベースは 100 × 60、厚さ 12 で、角の半径は 10 です。中央に直径 40、高さ 40 のボスが立ちます。ボスを貫通する直径 20 の軸穴と、ベースを貫通する直径 10 のボルト穴が 2 つ(間隔 76)あります。ベースとボスは外形から押し出して 1 つのソリッドに結合し、軸穴とボルト穴は円柱を作成してそこから差し引きます。
+
+- **練習問題：** 上級 · 機械 · 3D ソリッド
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=bearing-block)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/bearing-block" caption="軸受ブロックの平面図。100 × 60、ボス、軸穴、ボルト穴の寸法付き。" />
+
+<Session name="exercises/bearing-block/model" caption="ソリッドとしての軸受ブロック。南東から見た、コンセプト表示スタイル。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 平面図を描く [#plan]
+
+「外形線」画層で、[`RECTANG`](/docs/commands/rectang)[長方形]コマンドを `Fillet` `10` で使い、`0,0` から `100,60` まで描きます。次に、その中心 `50,30` に、`Diameter` `40` の円を描きます。
+
+<Session name="exercises/bearing-block/plan" caption="1. 平面図を描く" />
+
+### 2. ベースとボスを押し出す [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude)[押し出し]コマンドで、外形を高さ `12`、円を高さ `40` に押し出します。2 つのソリッドになります。
+
+<Session name="exercises/bearing-block/extrude" caption="2. ベースとボスを押し出す" />
+
+### 3. 結合する [#union]
+
+[`UNION`](/docs/commands/union)[和]コマンドで両方を選択し、[Enter]を押します。1 つのソリッドになります。
+
+<Session name="exercises/bearing-block/union" caption="3. 結合する" />
+
+### 4. 円柱を描く [#holes]
+
+[`CYLINDER`](/docs/commands/cylinder)[円柱]コマンドで、軸穴とボルト穴 1 つを円柱として描きます。軸穴は `50,30` に `Diameter` `20`、高さ `40` で、ボルト穴は `12,30` に直径 `10`、高さ `12` で描きます。次に [`COPY`](/docs/commands/copy)[複写]コマンドで、ボルト穴を `12,30` から `76,0` 先へ複写します。
+
+<Session name="exercises/bearing-block/holes" caption="4. 円柱を描く" />
+
+### 5. 差し引く [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)[差]コマンドでブロックを選択し、[Enter]を押します。次に 3 つの円柱を選択し、[Enter]を押します。軸穴とボルト穴が貫通します。
+
+<Session name="exercises/bearing-block/subtract" caption="5. 差し引く" />
+
+### 6. ビューを回転する [#view]
+
+`-VIEW` コマンドの `SEIso`、[`VSCURRENT`](/docs/commands/vscurrent)[ビューポート表示スタイル]コマンドの `Conceptual` を選び、[`ZOOM`](/docs/commands/zoom)[ズーム]コマンドの `Extents` と `0.8x` でソリッドを画面に収めます。
+
+<Session name="exercises/bearing-block/view" caption="6. ビューを回転する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

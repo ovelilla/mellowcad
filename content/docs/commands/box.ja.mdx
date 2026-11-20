@@ -1,0 +1,71 @@
+---
+title: "AutoCAD の BOX[直方体]コマンド"
+metaTitle: "AutoCAD 直方体(BOX)の使い方とオプション"
+description: "AutoCAD で 3D ソリッドの直方体を作成する BOX の使い方をプロンプト順に解説します。2 つのコーナーと高さ、Center、Cube、Length、2Point。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD で 3D の直方体を作成するには?","answer":"BOX を実行し、1 つのコーナー、反対側のコーナー、高さを指定します。0,0、60,40、25 で、このセッションの直方体になります。反対側のコーナーの代わりに Length と幅を指定すると、直方体を任意の角度に向けられます。"},{"question":"直方体が長方形に見えるのはなぜ?","answer":"平面図で真上から見ているためです。ViewCube のコーナー、-VIEW の SEIso、または 3DORBIT でビューを回転します。VSCURRENT の Hidden で、背後のエッジが隠れます。"},{"question":"立方体を作成するには?","answer":"1 つ目のコーナーを指定し、Cube を選んで 1 辺の長さを入力します。"},{"question":"中心から直方体を作成するには?","answer":"Center を選んで中心点を指定し、次にコーナー、Cube、Length のいずれかを指定します。直方体は、高さ方向も含めてその点を中心に配置されます。"}]
+---
+
+BOX[直方体]コマンドは、各辺が UCS の軸に沿った 3D ソリッドの直方体を作成します。1 つ目のコーナー、もう一方のコーナー、高さの順に指定します。高さは UCS の Z 方向に上がり、負の値では下に向かいます。点で指定すると、コーナーからの距離が高さになります。もう一方のコーナーを 1 つ目と異なる Z で指定すると、高さは尋ねられずに決まります。前回の高さと、立方体または Length の前回の長さと幅は既定値として提示され、[Enter]で使えます。これらはほかのプリミティブや [`EXTRUDE`](/docs/commands/extrude) と共通です。直方体は現在の画層に作成され、元に戻す 1 回で取り消せます。
+
+直方体はサイズを保持します。[`LIST`](/docs/commands/list) で位置、長さ、幅、高さ、回転が表示され、プロパティ パレットで最初の 4 つを入力できます。グリップで移動とストレッチができ、平面図以外のビューでは高さも設定できます。[`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) など、MellowCAD の 3D の操作に使える 3D ソリッドです。MellowCAD の 3D は 3D ソリッドのみで、まだ一部対応です。
+
+- **コマンド：** `BOX`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`BOX` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="box" caption="2 つのコーナーと高さで作成した 60 × 40 × 25 の直方体を、南東から隠線処理の表示スタイルで見たところ。" />
+
+## オプション [#options]
+
+### `Center` (`C`) [#center]
+
+最初のプロンプトで使います。中心を尋ね、次にコーナー、`Cube`、`Length` のいずれかを尋ねます。直方体は、高さ方向も含めてその点を中心に配置されます。
+
+### `Cube` (`C`) [#cube]
+
+もう一方のコーナーで使います。長さを入力または指示で尋ね、すべての辺がその長さの立方体を作成します。入力した長さはカーソルの方向に、負の値は反対方向に伸びます。
+
+### `Length` (`L`) [#length]
+
+もう一方のコーナーで使います。長さ、次に幅を尋ねます。長さはカーソルの方向に伸びるので、直方体を斜めに配置できます。幅はカーソルのある側に伸びます。
+
+### `2Point` (`2P`) [#2point]
+
+高さで使います。2 点を尋ね、その間の距離が高さになります。
+
+## まだできないこと [#missing]
+
+ホット グリップからの移動、回転、尺度変更、鏡像(AutoCAD では[Enter]で切り替えます)。3DMOVE、3DROTATE、3DSCALE、MIRROR3D、ROTATE3D、ALIGN、3DALIGN といった 3D 専用のコマンドとそのギズモ、および面、エッジ、頂点を個別に移動する操作。ダイナミック UCS。コーナー、長さ、幅を指定している間に AutoCAD が表示する点線の寸法。エッジの [`FILLET`](/docs/commands/fillet) と [`CHAMFER`](/docs/commands/chamfer)([`FILLETEDGE`](/docs/commands/filletedge) と [`CHAMFEREDGE`](/docs/commands/chamferedge) で行えます)。ソリッドの履歴の[履歴を記録]と[履歴を表示]、および[マテリアル]の行。[`VSCURRENT`](/docs/commands/vscurrent) にない、2D ワイヤフレーム、隠線処理、コンセプト以外の表示スタイル。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader--ru-ящик--pl-kostka--cs-kvádr--hu-ttest)
+
+## よくある質問 [#questions]
+
+### AutoCAD で 3D の直方体を作成するには?
+
+BOX を実行し、1 つのコーナー、反対側のコーナー、高さを指定します。`0,0`、`60,40`、`25` で、このセッションの直方体になります。反対側のコーナーの代わりに `Length` と幅を指定すると、直方体を任意の角度に向けられます。
+
+### 直方体が長方形に見えるのはなぜ?
+
+平面図で真上から見ているためです。ViewCube のコーナー、`-VIEW` の `SEIso`、または [`3DORBIT`](/docs/commands/3dorbit) でビューを回転します。[`VSCURRENT`](/docs/commands/vscurrent) の `Hidden` で、背後のエッジが隠れます。
+
+### 立方体を作成するには?
+
+1 つ目のコーナーを指定し、`Cube` を選んで 1 辺の長さを入力します。
+
+### 中心から直方体を作成するには?
+
+`Center` を選んで中心点を指定し、次にコーナー、`Cube`、`Length` のいずれかを指定します。直方体は、高さ方向も含めてその点を中心に配置されます。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の WEDGE\[くさび\]コマンド](/docs/commands/wedge)
+- [AutoCAD の CYLINDER\[円柱\]コマンド](/docs/commands/cylinder)
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)

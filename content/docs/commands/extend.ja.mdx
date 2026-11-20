@@ -1,0 +1,78 @@
+---
+title: "AutoCAD の EXTEND[延長]コマンド"
+metaTitle: "AutoCAD 延長(EXTEND)の使い方：境界と短縮コマンド EX"
+description: "AutoCAD の延長(EXTEND、EX)の使い方をプロンプトの順に説明します。クイック モードと標準モード、境界エッジ、フェンス、交差、エッジ、[Shift]でトリム。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の延長の短縮コマンドは?","answer":"EX と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _EXTEND が使えます。"},{"question":"延長でエッジがないと表示されるのはなぜ?","answer":"その端が進む経路を横切るものが何もないためです。線分は、反対側の端ならエッジに届く場合は 「No edge in that direction.」、それ以外の場合は線分も円弧も 「Path does not intersect with the bounding edge.」 と表示します。ポリラインやスプラインでは 「Object does not intersect an edge.」 と表示されます。反対側の端の近くをクリックするか、標準モードで Edge と Extend を選択して、手前で終わっている境界を延長したものとして扱います。円、閉じたポリライン、楕円全体、文字、ハッチングは延長できず、「Cannot EXTEND this object.」 と表示されます。"},{"question":"複数の線分を一度に延長するには?","answer":"何もない場所をクリックし、2 点目をクリックします。そのフェンスが交差するすべてのオブジェクトが、近い側の端から 1 回の操作で延長されます。または Crossing を選択し、延長する端に窓をかけます。"},{"question":"延長コマンドでトリムするには?","answer":"[Shift]を押しながらクリックします。TRIM と同様に、その部分が最も近い交差位置まで切り取られ、何とも交差していないオブジェクトは削除されます。次に[Shift]を押さずにクリックすると、再び延長になります。"}]
+---
+
+EXTEND[延長]コマンドは、オブジェクトを別のオブジェクトに当たるまで延長します。延長したい端の近くでオブジェクトをクリックすると、その端が進む方向にある最も近いエッジまで延びます。線分、円弧、楕円弧、開いたポリライン(端のセグメントに沿って、直線ならまっすぐ、円弧ならその円弧に沿って)、3D ポリライン、開いたスプラインを延長できます。AutoCAD と同様にクイック モードで始まり、すべてのオブジェクトが境界になります。[Shift]を押しながらクリックすると、[`TRIM`](/docs/commands/trim) と同様に代わりにトリムします。クリックごとに 1 つの操作で、元に戻すで取り消せます。[Enter]でコマンドが終了します。
+
+- **コマンド：** `EXTEND`
+- **短縮コマンド：** `EX`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`EX` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="extend" caption="2 本の線分を、その先を横切る線分まで延長。クイック モードで、延長する端の近くをそれぞれ 1 回クリック。" />
+
+## オプション [#options]
+
+### `Boundary edges` (`B`) [#boundary]
+
+境界にするオブジェクトを選択します。[Enter]を押すと、すべてのオブジェクトが境界になります。それ以降はモードにかかわらず、コマンドが終了するまでそれらだけが境界になります。
+
+### `Fence` (`F`) [#fence]
+
+線の点を、[Enter]を押すまで必要なだけ指定します。その線が交差するすべてのオブジェクトが、フェンスが交差する位置に近い側の端から、1 回の操作で延長されます。標準モードではプロンプトに表示されますが、クイック モードでも使えます。
+
+### `Crossing` (`C`) [#crossing]
+
+窓の 2 つのコーナーを指定します。その輪郭が交差するすべてのオブジェクトが、1 回の操作で延長されます。
+
+### `mOde` (`O`) [#mode]
+
+`Quick` と `Standard` を切り替えます。標準モードでは、EXTEND は最初に境界エッジを尋ね([Enter]ですべてを選択)、フェンスとエッジをプロンプトに表示します。モードは EXTEND と TRIM で共通で、セッション中は保持されます。
+
+### `Edge` (`E`) [#edge]
+
+標準モードのみ。`Extend` を指定すると、境界を延長した位置(線分なら両方向、円弧ならその円周上)でもオブジェクトが止まるので、経路の手前で終わっている線分まで延長できます。既定値は `No extend` です。
+
+### `Undo` (`U`) [#undo]
+
+プロンプトに応答した後(クリック、フェンス、窓)に表示されます。最後の延長を取り消します。取り消すものがない場合は、そのことを表示します。
+
+## まだできないこと [#missing]
+
+AutoCAD の投影モードのオプション(なし、UCS、ビュー)はなく、すべて UCS の XY 平面上に投影して計算されます。これは AutoCAD の投影モードの既定値「UCS」と同じです。フェンスはまだカーソルでドラッグできず、点を 1 つずつクリックして指定します。モードとエッジの選択はセッション中だけ保持されますが、AutoCAD では次のセッションにも引き継がれます。UCS に対して傾いたオブジェクトは、スプラインを除き、境界にも延長の対象にもなりません。[`PEDIT`](/docs/commands/pedit) の `Fit` で曲線化したポリラインは拒否されますが、AutoCAD では最後の円弧が延長されます。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
+
+## よくある質問 [#questions]
+
+### AutoCAD の延長の短縮コマンドは?
+
+`EX` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_EXTEND` が使えます。
+
+### 延長でエッジがないと表示されるのはなぜ?
+
+その端が進む経路を横切るものが何もないためです。線分は、反対側の端ならエッジに届く場合は `No edge in that direction.`、それ以外の場合は線分も円弧も `Path does not intersect with the bounding edge.` と表示します。ポリラインやスプラインでは `Object does not intersect an edge.` と表示されます。反対側の端の近くをクリックするか、標準モードで `Edge` と `Extend` を選択して、手前で終わっている境界を延長したものとして扱います。円、閉じたポリライン、楕円全体、文字、ハッチングは延長できず、`Cannot EXTEND this object.` と表示されます。
+
+### 複数の線分を一度に延長するには?
+
+何もない場所をクリックし、2 点目をクリックします。そのフェンスが交差するすべてのオブジェクトが、近い側の端から 1 回の操作で延長されます。または `Crossing` を選択し、延長する端に窓をかけます。
+
+### 延長コマンドでトリムするには?
+
+[Shift]を押しながらクリックします。[`TRIM`](/docs/commands/trim) と同様に、その部分が最も近い交差位置まで切り取られ、何とも交差していないオブジェクトは削除されます。次に[Shift]を押さずにクリックすると、再び延長になります。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の TRIM\[トリム\]コマンド](/docs/commands/trim)
+- [AutoCAD の OFFSET\[オフセット\]コマンド](/docs/commands/offset)
+- [AutoCAD の FILLET\[フィレット\]コマンド](/docs/commands/fillet)
+- [AutoCAD の JOIN\[結合\]コマンド](/docs/commands/join)

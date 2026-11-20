@@ -1,0 +1,68 @@
+---
+title: "AutoCAD の DIMBASELINE[並列寸法記入]コマンド"
+metaTitle: "AutoCAD 並列寸法記入(DIMBASELINE)の使い方と DBA"
+description: "AutoCAD の並列寸法記入(DIMBASELINE、DBA)で、1 本の基準線から寸法を重ねて記入する方法をプロンプトの順に説明します。次の起点、間隔、基準寸法の選択。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の並列寸法記入の短縮コマンドは?","answer":"DBA と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _DIMBASELINE が使えます。"},{"question":"並列寸法の間隔を変更するには?","answer":"寸法スタイルの「並列寸法の寸法線間隔」で設定します。DIMSTYLE(D)を実行すると[スタイル]パレットに寸法スタイルが表示され、AutoCAD と同様に[寸法線]の下にあります。記入済みの寸法の位置は変わりません。DIMSPACE を使うと、均等な間隔に配置し直せます。"},{"question":"別の寸法を基準にするには?","answer":"最初のプロンプトで[Enter]を押すか Select を選択し、測り始める側の寸法補助線の近くで寸法をクリックします。新しい寸法はすべてそこから始まります。"},{"question":"並列寸法記入と直列寸法記入の違いは?","answer":"DIMBASELINE は、すべての寸法を同じ寸法補助線から測り、1 段ずつ外側の寸法線に配置します。DIMCONTINUE は、1 本の寸法線上に寸法を端から端へつなげ、各寸法は直前の寸法が終わった位置から始まります。"}]
+---
+
+DIMBASELINE[並列寸法記入]コマンドは、すべて同じ 1 本の寸法補助線、つまり基準から測る寸法を記入します。各寸法は直前の寸法の 1 本目の寸法補助線から次に指定する点までを測り、寸法線は 1 段ずつ外側に配置されます。図面を開いてから最後に作成した長さ寸法または平行寸法から始まるので、通常は [`DIMLINEAR`](/docs/commands/dimlinear) や [`DIMALIGNED`](/docs/commands/dimaligned) の後に使います。そのような寸法がない場合は、どの寸法から始めるかを尋ねます。寸法を作成するたびに、その計測値がコマンド ラインに表示されます。起点のプロンプトで[Enter]を押すと `Select` が選択され、そこで[Enter]を押すと、[Esc]と同様にコマンドが終了します。
+
+1 段の間隔は、現在の寸法スタイルの並列寸法の寸法線間隔(ISO-25 では 3.75)に、基準寸法の全体の尺度を掛けた値です。AutoCAD と同様に、新しい寸法はそれぞれ基準寸法の方向に沿って測り、基準寸法の寸法スタイルと画層を引き継ぎます。色、線種、線の太さは現在の設定になります。
+
+- **コマンド：** `DIMBASELINE`
+- **短縮コマンド：** `DBA`
+- **パネル：** [注釈](/docs/commands#annotate)
+- **試す：** [エディタを開き](/ja/draw)、`DBA` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="dimbaseline" caption="段付きの形状に左端から 30 の寸法を記入し、続いて同じ端から 70 と 100 を、それぞれ 1 段外側に記入。" />
+
+## オプション [#options]
+
+### `Select` (`S`) [#select]
+
+基準寸法を尋ねます。長さ寸法または平行寸法を、測り始める側の寸法補助線の近くでクリックします。点を入力しても選択できます。半径寸法や直径寸法は `Linear, ordinate, or angular associative dimension required.` と表示されて拒否され、もう一度尋ねられます。
+
+### `Undo` (`U`) [#undo]
+
+最後に作成した寸法を取り消し、その前の寸法から続けます。作成した数だけ繰り返せます。取り消す寸法がなくなると `Command has been completely undone.` と表示され、プロンプトはそのままです。
+
+## まだできないこと [#missing]
+
+寸法は自動調整寸法ではないため、測っているオブジェクトに追従しません。角度寸法は基準にできません。AutoCAD では最後に作成した角度寸法も選択した角度寸法も基準にできますが、ここでは最後に作成したものの場合はコマンドが寸法の選択を求め、選択した場合は半径寸法と同様に拒否されます。座標寸法はまだありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline--pt-br-cotalinbase--clb--dimbase--fr-cotlign--cotl--it-dimlbase--dba--de-bembasisl--bmb--basislinie--ru-рзмбазовый--рба--pl-wymbaza--wb--wymba--cs-kótyzákl--kza--kotyza--hu-méretbvonal--mba--mbazis)
+
+## よくある質問 [#questions]
+
+### AutoCAD の並列寸法記入の短縮コマンドは?
+
+`DBA` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_DIMBASELINE` が使えます。
+
+### 並列寸法の間隔を変更するには?
+
+寸法スタイルの「並列寸法の寸法線間隔」で設定します。[`DIMSTYLE`](/docs/commands/dimstyle)(`D`)を実行すると[スタイル]パレットに寸法スタイルが表示され、AutoCAD と同様に[寸法線]の下にあります。記入済みの寸法の位置は変わりません。[`DIMSPACE`](/docs/commands/dimspace) を使うと、均等な間隔に配置し直せます。
+
+### 別の寸法を基準にするには?
+
+最初のプロンプトで[Enter]を押すか `Select` を選択し、測り始める側の寸法補助線の近くで寸法をクリックします。新しい寸法はすべてそこから始まります。
+
+### 並列寸法記入と直列寸法記入の違いは?
+
+DIMBASELINE は、すべての寸法を同じ寸法補助線から測り、1 段ずつ外側の寸法線に配置します。[`DIMCONTINUE`](/docs/commands/dimcontinue) は、1 本の寸法線上に寸法を端から端へつなげ、各寸法は直前の寸法が終わった位置から始まります。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の DIMCONTINUE\[直列寸法記入\]コマンド](/docs/commands/dimcontinue)
+- [AutoCAD の寸法記入：DIMLINEAR\[長さ寸法記入\]コマンド](/docs/commands/dimlinear)
+- [AutoCAD の DIMSPACE\[寸法線間隔\]コマンド](/docs/commands/dimspace)
+- [AutoCAD の DIMSTYLE\[寸法スタイル管理\]コマンド](/docs/commands/dimstyle)

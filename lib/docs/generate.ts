@@ -326,6 +326,8 @@ const LABEL_END: Record<AppLocale, string> = {
   pl: ":",
   cs: ":",
   hu: ":",
+  // Japanese ends a label with a full-width colon (docs/i18n/ja.md).
+  ja: "\uff1a",
 }
 
 /** A list item's bold label, ended as its language ends one. */
@@ -352,6 +354,8 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   cs: ["\u201e", "\u201c"],
   // Hungarian quotes low, then high on the right: „…”, as Polish (docs/i18n/hu.md).
   hu: ["\u201e", "\u201d"],
+  // Japanese quotes in corner brackets: 「…」 (docs/i18n/ja.md).
+  ja: ["\u300c", "\u300d"],
 }
 
 /**

@@ -1,0 +1,58 @@
+---
+title: "AutoCAD 練習問題：フランジ"
+metaTitle: "AutoCAD 機械 練習図面：キー溝付きフランジ"
+description: "AutoCAD の機械系練習図面。軸穴にキー溝をトリムで切り込み、8 つの穴を円形状配列複写して、中心線と直径寸法を記入します。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次のフランジを描きます(単位は mm)。外径は 140 で、直径 60 の軸穴に幅 16 のキー溝(上端は中心から 36)があり、ピッチ円直径 110 の上に直径 14 の穴が 8 つあります。中心線も描きます。キー溝は軸穴に重ねた長方形をトリムして作り、穴は 1 つの円と円形状配列複写で作ります。
+
+- **練習問題：** 中級 · 機械 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=flange)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/flange" caption="外径 140 のフランジ。キー溝、8 つの穴、直径寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 円を描く [#circles]
+
+「外形線」画層で、`0,0` を中心に、それぞれ `Diameter` で `140` と `60` の円を 2 つ描きます。
+
+<Session name="exercises/flange/circles" caption="1. 円を描く" />
+
+### 2. キー溝を切る [#keyway]
+
+[`RECTANG`](/docs/commands/rectang)[長方形]コマンドで、`-8,20` から `16,16` 先まで描きます。長方形は軸穴と交差します。[`TRIM`](/docs/commands/trim)[トリム]コマンドは、ほかのオブジェクトと交差する位置でオブジェクトを切り取ります。長方形の両辺の間で軸穴の円弧を選択し、次に軸穴の内側で長方形の下辺を選択します。残ったものがキー溝、つまりその両側面と上端です。
+
+<Session name="exercises/flange/keyway" caption="2. キー溝を切る" />
+
+### 3. 穴を配列複写する [#holes]
+
+ピッチ円上に穴を 1 つ描きます。`55<22.5`(原点から 55、22.5° の位置)に、`Diameter` `14` の円を描きます。[`ARRAYPOLAR`](/docs/commands/arraypolar)[円形状配列複写]コマンドでその円を選択し、[Enter]を押して中心 `0,0` を指定します。`ASsociative` で `No` を選ぶと、寸法記入で選択できる 8 つの個別の円になり、`Items` で `8` を指定すると、円周全体に配置されます。次に「中心線」画層で、`0,0` にピッチ円を直径 `110` で描きます。
+
+<Session name="exercises/flange/holes" caption="3. 穴を配列複写する" />
+
+### 4. 中心線を描く [#centreLines]
+
+続けて「中心線」画層で、[`LINE`](/docs/commands/line)[線分]コマンドで中心を通る長さ 156 の線を 2 本描きます。横の線は `-78,0` から右へ `156,0`、縦の線は `0,-78` から上へ `0,156` で描きます。
+
+<Session name="exercises/flange/centreLines" caption="4. 中心線を描く" />
+
+### 5. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMDIAMETER`](/docs/commands/dimdiameter)[直径寸法記入]コマンドで軸穴、穴 1 つ、ピッチ円、外形に記入します。それぞれ、まだ寸法が交差していない位置で選択します。次に [`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンドで、キー溝の上端の幅 16 を記入します。
+
+<Session name="exercises/flange/dimensions" caption="5. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：丸テーブルと椅子](/docs/exercises/round-table): 中級 · 建築 · 2D
+- [AutoCAD 練習問題：敷地の区画](/docs/exercises/plot-of-land): 中級 · 土木 · 2D
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft): 中級 · 機械 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

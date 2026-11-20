@@ -1,0 +1,61 @@
+---
+title: "AutoCAD の DIMSPACE[寸法線間隔]コマンド"
+metaTitle: "AutoCAD 寸法線間隔(DIMSPACE)の使い方：寸法をそろえる"
+description: "AutoCAD の寸法線間隔(DIMSPACE)で寸法の間隔を均等にする方法、0 で 1 列にそろえる方法、文字の高さから決まる自動の間隔を説明します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD で寸法をそろえるには?","answer":"DIMSPACE を実行し、ほかの寸法をそろえる基準の寸法をクリックし、そろえる寸法を選択して[Enter]を押し、0 と入力します。すべての寸法線が基準寸法の線上に移動します。"},{"question":"寸法の間隔を均等にするには?","answer":"DIMSPACE を実行し、オブジェクトに最も近い寸法を基準として選択し、残りの寸法を選択して[Enter]を 2 回押します。Auto により、文字の高さの 2 倍の間隔になります。または、8 のように必要な距離を入力します。"},{"question":"AutoCAD の寸法線の間隔の既定値は?","answer":"DIMSPACE の Auto は、寸法スタイルの文字の高さの 2 倍です。DIMBASELINE は寸法を追加するたびに、代わりに寸法スタイルの並列寸法の寸法線間隔(ISO-25 では 3.75)を使います。"},{"question":"寸法線間隔で寸法が移動しないのはなぜ?","answer":"基準寸法に平行な寸法だけを調整するためです。角度の異なる寸法は数に含まれますが、そのまま残ります。角度寸法の間隔はまだ調整できません。"}]
+---
+
+DIMSPACE[寸法線間隔]コマンドは、平行な長さ寸法と平行寸法の間隔を調整します。動かさない基準寸法を選択し、次に間隔を調整する寸法を選択します。[Enter]で選択を終了すると、間隔を尋ねられます。各寸法の寸法線は、並んでいる順に基準寸法から離れる方向へ、1 つ前の寸法からその間隔の位置に移動します。間隔を 0 にすると、すべての寸法線が基準寸法の線上にそろいます。作図したときに高さがずれた直列寸法も 1 本の線にそろいます。変わるのは寸法線の位置だけで、`U` で 1 回で取り消せます。
+
+基準寸法は、クリックするか、点を入力するか、`Last` で指定します。寸法でないものを選択すると `Selected object is not a dimension.` と表示され、もう一度尋ねられます。コマンドの前に選択したセットが、間隔を調整するセットになります。基準寸法と角度の異なる寸法は数に含まれますがそのまま残り、負の間隔は `Invalid spacing value, spacing value cannot be negative.` と表示されて拒否されます。
+
+- **コマンド：** `DIMSPACE`
+- **パネル：** [注釈](/docs/commands#annotate)
+- **試す：** [エディタを開き](/ja/draw)、`DIMSPACE` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="dimspaceBefore" caption="プレートの上辺に 3 つの直列寸法。作図したときのまま、寸法ごとに高さが異なります。" />
+
+<Session name="dimspace" caption="最初の寸法を基準に DIMSPACE を実行し、残りの 2 つを選択して間隔を 0 にすると、直列寸法が 1 本の線にそろいます。" />
+
+## オプション [#options]
+
+### `Auto` (`A`) [#auto]
+
+既定値で、[Enter]で選択されます。基準寸法の寸法スタイルの文字の高さの 2 倍に全体の尺度を掛けた間隔で、重ねた寸法にそれぞれの寸法値が収まります。
+
+## まだできないこと [#missing]
+
+角度寸法の間隔は、DIMSPACE ではまだ調整できません。AutoCAD は必要な寸法だけを移動しますが、ここでは選択したすべての寸法の間隔を調整し直します。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym--cs-kótmezera--hu-méretköz)
+
+## よくある質問 [#questions]
+
+### AutoCAD で寸法をそろえるには?
+
+DIMSPACE を実行し、ほかの寸法をそろえる基準の寸法をクリックし、そろえる寸法を選択して[Enter]を押し、`0` と入力します。すべての寸法線が基準寸法の線上に移動します。
+
+### 寸法の間隔を均等にするには?
+
+DIMSPACE を実行し、オブジェクトに最も近い寸法を基準として選択し、残りの寸法を選択して[Enter]を 2 回押します。`Auto` により、文字の高さの 2 倍の間隔になります。または、`8` のように必要な距離を入力します。
+
+### AutoCAD の寸法線の間隔の既定値は?
+
+DIMSPACE の `Auto` は、寸法スタイルの文字の高さの 2 倍です。[`DIMBASELINE`](/docs/commands/dimbaseline) は寸法を追加するたびに、代わりに寸法スタイルの並列寸法の寸法線間隔(ISO-25 では 3.75)を使います。
+
+### 寸法線間隔で寸法が移動しないのはなぜ?
+
+基準寸法に平行な寸法だけを調整するためです。角度の異なる寸法は数に含まれますが、そのまま残ります。角度寸法の間隔はまだ調整できません。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の寸法記入：DIMLINEAR\[長さ寸法記入\]コマンド](/docs/commands/dimlinear)
+- [AutoCAD の DIMCONTINUE\[直列寸法記入\]コマンド](/docs/commands/dimcontinue)
+- [AutoCAD の DIMBASELINE\[並列寸法記入\]コマンド](/docs/commands/dimbaseline)
+- [AutoCAD の DIMSTYLE\[寸法スタイル管理\]コマンド](/docs/commands/dimstyle)

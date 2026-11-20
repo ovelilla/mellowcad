@@ -1,0 +1,68 @@
+---
+title: "AutoCAD の DIMCONTINUE[直列寸法記入]コマンド"
+metaTitle: "AutoCAD 直列寸法記入(DIMCONTINUE)の使い方と DCO"
+description: "AutoCAD の直列寸法記入(DIMCONTINUE、DCO)で、最後の寸法から寸法を端から端へつなげる方法をプロンプトの順に説明します。次の起点、寸法の選択、取り消し。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の直列寸法記入の短縮コマンドは?","answer":"DCO と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _DIMCONTINUE が使えます。"},{"question":"直列寸法記入と並列寸法記入の違いは?","answer":"DIMCONTINUE は、1 本の寸法線上に寸法を端から端へつなげ、各寸法は直前の寸法が終わった位置から始まります。DIMBASELINE は、すべての寸法を同じ寸法補助線から測り、1 段ずつ外側の寸法線に配置します。"},{"question":"最後の寸法ではない寸法から直列記入するには?","answer":"最初のプロンプトで[Enter]を押すか Select を選択し、続ける側の寸法補助線の近くで寸法をクリックします。そこから直列寸法が続きます。"},{"question":"直列寸法記入で寸法の選択を求められるのはなぜ?","answer":"続ける寸法がないためです。図面を開いてから長さ寸法も平行寸法も作成していない(図面を開いた直後の AutoCAD と同じです)か、最後に作成した寸法が角度寸法です。続ける元の寸法をクリックしてください。"}]
+---
+
+DIMCONTINUE[直列寸法記入]コマンドは、寸法を端から端へつなげて記入します。各寸法は直前の寸法の 2 本目の寸法補助線から始まり、次に指定する点までを同じ寸法線上で測ります。図面を開いてから最後に作成した長さ寸法または平行寸法を続けるので、通常は [`DIMLINEAR`](/docs/commands/dimlinear) や [`DIMALIGNED`](/docs/commands/dimaligned) の後に使います。そのような寸法がない場合は、どの寸法を続けるかを尋ねます。寸法を作成するたびに、その計測値がコマンド ラインに表示されます。起点のプロンプトで[Enter]を押すと `Select` が選択され、そこで[Enter]を押すと、[Esc]と同様にコマンドが終了します。
+
+AutoCAD と同様に、新しい寸法はそれぞれ基準寸法の方向に沿って測り、基準寸法の寸法スタイルと画層を引き継ぎます。色、線種、線の太さは現在の設定になります。
+
+- **コマンド：** `DIMCONTINUE`
+- **短縮コマンド：** `DCO`
+- **パネル：** [注釈](/docs/commands#annotate)
+- **試す：** [エディタを開き](/ja/draw)、`DCO` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="dimcontinue" caption="段付きの形状に 30 の寸法を記入し、同じ寸法線上に 40 と 30 を直列記入。起点を 2 つ指定してから[Enter]を 2 回。" />
+
+## オプション [#options]
+
+### `Select` (`S`) [#select]
+
+続ける元の寸法を尋ねます。長さ寸法または平行寸法を、続ける側の寸法補助線の近くでクリックします。点を入力しても選択できます。半径寸法や直径寸法は `Linear, ordinate, or angular associative dimension required.` と表示されて拒否され、もう一度尋ねられます。
+
+### `Undo` (`U`) [#undo]
+
+直列寸法の最後の寸法を取り消し、その前の寸法から続けます。作成した数だけ繰り返せます。取り消す寸法がなくなると `Command has been completely undone.` と表示され、プロンプトはそのままです。
+
+## まだできないこと [#missing]
+
+寸法は自動調整寸法ではないため、直列寸法は測っているオブジェクトに追従しません。角度寸法は直列記入できません。AutoCAD では最後に作成した角度寸法も選択した角度寸法も続けられますが、ここでは最後に作成したものの場合はコマンドが寸法の選択を求め、選択した場合は半径寸法と同様に拒否されます。座標寸法はまだありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont--pt-br-cotaserie--cse--dimcont--fr-cotcont--cotn--it-dimcontinua--dco--de-bemweiter--bmwt--ru-рзмцепь--рцп--pl-wymszereg--ws--wymsz--cs-kótyřet--kre--kotyre--hu-méretfolytat--mfo--mfoly)
+
+## よくある質問 [#questions]
+
+### AutoCAD の直列寸法記入の短縮コマンドは?
+
+`DCO` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_DIMCONTINUE` が使えます。
+
+### 直列寸法記入と並列寸法記入の違いは?
+
+DIMCONTINUE は、1 本の寸法線上に寸法を端から端へつなげ、各寸法は直前の寸法が終わった位置から始まります。[`DIMBASELINE`](/docs/commands/dimbaseline) は、すべての寸法を同じ寸法補助線から測り、1 段ずつ外側の寸法線に配置します。
+
+### 最後の寸法ではない寸法から直列記入するには?
+
+最初のプロンプトで[Enter]を押すか `Select` を選択し、続ける側の寸法補助線の近くで寸法をクリックします。そこから直列寸法が続きます。
+
+### 直列寸法記入で寸法の選択を求められるのはなぜ?
+
+続ける寸法がないためです。図面を開いてから長さ寸法も平行寸法も作成していない(図面を開いた直後の AutoCAD と同じです)か、最後に作成した寸法が角度寸法です。続ける元の寸法をクリックしてください。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の DIMBASELINE\[並列寸法記入\]コマンド](/docs/commands/dimbaseline)
+- [AutoCAD の寸法記入：DIMLINEAR\[長さ寸法記入\]コマンド](/docs/commands/dimlinear)
+- [AutoCAD の DIMSPACE\[寸法線間隔\]コマンド](/docs/commands/dimspace)
+- [AutoCAD の DIMALIGNED\[平行寸法記入\]コマンド](/docs/commands/dimaligned)

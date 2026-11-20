@@ -1,0 +1,72 @@
+---
+title: "AutoCAD の LINE[線分]コマンド"
+metaTitle: "AutoCAD 線分の使い方：LINE と短縮コマンド L"
+description: "AutoCAD の LINE[線分](L)の使い方をプロンプトごとに解説します。点の指定と座標入力、元に戻す、閉じる、[Enter]で最後の線分から続けて作図。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の線分の短縮コマンドは?","answer":"L と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _LINE が使えます。"},{"question":"角度と長さを指定して線分を作図するには?","answer":"1 点目を指定し、次の点を長さと角度で入力します。@100<30 で 30° の方向に長さ 100 の線分が作図されます。または極トラッキングをオンにし、その角度のガイドに沿って長さだけを入力します。"},{"question":"最後に作図した線分から続けて作図するには?","answer":"LINE を実行し、1 点目で[Enter]を押します。最後に作図した線分、ポリライン、円弧の終点から始まります。円弧からは接線方向に続き、LINE は長さだけを尋ねます。続ける対象がないときは 「No line or arc to continue.」 と表示されます。"},{"question":"線分がばらばらのオブジェクトになるのはなぜ?","answer":"AutoCAD と同じく、LINE で作図した各セグメントはそれぞれ独立した線分です。1 つのオブジェクトにするには PLINE で作図するか、作図後に JOIN で線分を結合します。"}]
+---
+
+LINE[線分]コマンドは直線のセグメントを作図し、各セグメントはそれぞれ独立したオブジェクトになります。1 点目を指定し、続けて次の点を指定していき、[Enter]で終了します。点はクリック、オブジェクト スナップ、入力のいずれでも指定できます。ダイナミック入力がオンの AutoCAD と同じく、2 点目以降に入力した点は直前の点からの相対座標になります。`80,0` と入力すると X 方向に 80 の線分が作図され、履歴には `@80,0` と記録されます。数値だけを入力するとカーソルの方向への距離になり、`<30` と入力すると次の点を 30° に固定します。1 点目で[Enter]を押すか右クリックすると、最後に作図した線分、ポリライン、円弧の終点から続けて作図します。円弧からは接線方向に続け、長さだけを尋ねます。何本のセグメントを作図しても、U を 1 回実行するとコマンド全体が元に戻ります。
+
+- **コマンド：** `LINE`
+- **短縮コマンド：** `L`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`L` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="line" caption="三角形。1 点目を入力し、次の 2 点を直前の点から指定して、最後に閉じます。" />
+
+## オプション [#options]
+
+### `Undo` (`U`) [#undo]
+
+最後のセグメントを取り消し、その前の点から再度尋ねます。セグメントが残っていないときは `All segments already undone.` と表示し、1 点目を再度尋ねます。
+
+### `Close` (`C`) [#close]
+
+2 本目のセグメントから表示されます。最後のセグメントを 1 点目まで作図してコマンドを終了し、図形を閉じます。
+
+## まだできないこと [#missing]
+
+1 点目で接線や垂線を入力すると、AutoCAD と同じく次の点を待ちます(遅延スナップ)が、対象は線分、円、円弧だけで、ポリラインのセグメント、楕円、スプラインには使えません。また、遅延垂線を 2 つ組み合わせた指定は解決されません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l--cs-úsečka--u--hu-vonal--vo)
+
+## よくある質問 [#questions]
+
+### AutoCAD の線分の短縮コマンドは?
+
+`L` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_LINE` が使えます。
+
+### 角度と長さを指定して線分を作図するには?
+
+1 点目を指定し、次の点を長さと角度で入力します。`@100<30` で 30° の方向に長さ 100 の線分が作図されます。または極トラッキングをオンにし、その角度のガイドに沿って長さだけを入力します。
+
+### 最後に作図した線分から続けて作図するには?
+
+LINE を実行し、1 点目で[Enter]を押します。最後に作図した線分、ポリライン、円弧の終点から始まります。円弧からは接線方向に続き、LINE は長さだけを尋ねます。続ける対象がないときは `No line or arc to continue.` と表示されます。
+
+### 線分がばらばらのオブジェクトになるのはなぜ?
+
+AutoCAD と同じく、LINE で作図した各セグメントはそれぞれ独立した線分です。1 つのオブジェクトにするには [`PLINE`](/docs/commands/pline) で作図するか、作図後に [`JOIN`](/docs/commands/join) で線分を結合します。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket)
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs)
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange)
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft)
+- [AutoCAD 等角図の練習問題：段付きブロック](/docs/exercises/isometric-block)
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の PLINE\[ポリライン\]コマンド](/docs/commands/pline)
+- [AutoCAD の OFFSET\[オフセット\]コマンド](/docs/commands/offset)
+- [AutoCAD の TRIM\[トリム\]コマンド](/docs/commands/trim)
+- [AutoCAD の JOIN\[結合\]コマンド](/docs/commands/join)

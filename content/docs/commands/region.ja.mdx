@@ -1,0 +1,59 @@
+---
+title: "AutoCAD の REGION[リージョン]コマンド"
+metaTitle: "AutoCAD リージョン(REGION)の使い方と短縮コマンド REG"
+description: "AutoCAD の REGION[リージョン](REG)で閉じた図形をリージョンに変換する方法、抽出されるループ、リージョンが作成できない理由と用途を解説。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の REGION コマンドの使い方は?","answer":"REGION(または REG)を実行し、閉じた図形、または端点どうしで閉じる線分を選択して[Enter]を押します。このセッションでは、4 本の線分と円を窓で囲むと 2 つのリージョンが作成され、コマンド ラインには抽出されたループが 2 つ、作成されたリージョンが 2 つと表示されます。"},{"question":"AutoCAD でリージョンが作成できないのはなぜ?","answer":"図形が端点どうしで閉じていないためです。交差している線分や、互いに届いていない線分では何も閉じません。REGION は開いたオブジェクトを端点でしかつながないため、ごくわずかな隙間でもつながりが除外されます。蝶ネクタイのように自己交差するループも除外され、自己交差として数えられます。半径 0 の FILLET で端点をつなぐか、はみ出した部分を TRIM してから、もう一度実行してください。"},{"question":"穴のあいたリージョンを作るには?","answer":"外形のリージョンと穴のリージョンを作成し、SUBTRACT を実行します。外形を選択して[Enter]、穴を選択して[Enter]を押します。結果は 1 つのリージョンになり、EXTRUDE で穴の貫通したソリッドにできます。"},{"question":"リージョンの面積を求めるには?","answer":"リージョンを選択してプロパティ パレットの[面積]を読むか、AREA を実行して Object を選び、リージョンを選択します。MASSPROP では、周長、図心、慣性モーメントもわかります。"}]
+---
+
+REGION[リージョン]コマンドは、閉じた図形をリージョンに変換します。リージョンは厚みのない平らな領域で、それぞれがループで囲まれています。オブジェクトを選択して[Enter]を押すと、それらが作るループがすべてリージョンになります。閉じたオブジェクトはそれ自体が 1 つのループです。円、楕円、閉じたポリライン、閉じたスプラインがこれにあたります。開いたオブジェクト(線分、円弧、楕円弧、開いたポリラインとスプライン)は端点どうしでつながれ、交差する位置ではつながれません。閉じないつながりは除外されます。その後コマンド ラインに、見つかったループの数、除外されたループの数とその理由、作成されたリージョンの数が表示されます。何も選択せずに[Enter]を押すと、`None found.` と表示されます。
+
+リージョンになったオブジェクトは削除され、それ以外は残ります。リージョンには元のオブジェクトのものではなく、現在の画層とプロパティが適用されます。別のループの内側にあるループは、穴ではなく独立したリージョンになります。一方から他方を除くには [`SUBTRACT`](/docs/commands/subtract) を使います。リージョンはエッジとして表示され、エッジにスナップします。プロパティ パレットには面積と周長が表示され、[`AREA`](/docs/commands/area)、[`LIST`](/docs/commands/list)、[`MASSPROP`](/docs/commands/massprop) でも計測できます。[`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract)、[`INTERSECT`](/docs/commands/intersect) は同じ平面上のリージョンを結合し、[`EXTRUDE`](/docs/commands/extrude)、[`REVOLVE`](/docs/commands/revolve)、[`PRESSPULL`](/docs/commands/presspull) はリージョンを 3D ソリッドにし、[`EXPLODE`](/docs/commands/explode) は線分、円弧、円に戻します。コマンド全体が 1 回の操作で元に戻せます。
+
+- **コマンド：** `REGION`
+- **短縮コマンド：** `REG`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`REG` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="region" caption="端点どうしで閉じた 4 本の線分と、その内側の円。両方を囲む窓で REGION を実行すると、2 つのリージョンが作成され、元のオブジェクトは削除されます。" />
+
+## まだできないこと [#missing]
+
+AutoCAD のシステム変数 `DELOBJ` はなく、リージョンになったオブジェクトは常に削除されます。点の周囲の領域からリージョンを作成できる BOUNDARY と、ハッチングの境界からのリージョン作成もありません。グリップによるリージョンの編集もできません。グリップは表示されますが、ドラッグしても何も変わりません。クイック モードの [`TRIM`](/docs/commands/trim) と [`EXTEND`](/docs/commands/extend) で、リージョンのエッジを切り取りエッジや境界エッジとして使うことはできず、楕円やスプラインのエッジを持つリージョンに [`HATCH`](/docs/commands/hatch) を使うこともできません。MellowCAD にはサーフェスがないため、リージョンとサーフェスの結合もできません。プロパティ パレットの[マテリアル]の行もありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg--it-regione--reg--de-region--rio--ru-область--обл--pl-region--reg--cs-oblast--obl--hu-lemez--lem)
+
+## よくある質問 [#questions]
+
+### AutoCAD の REGION コマンドの使い方は?
+
+REGION(または `REG`)を実行し、閉じた図形、または端点どうしで閉じる線分を選択して[Enter]を押します。このセッションでは、4 本の線分と円を窓で囲むと 2 つのリージョンが作成され、コマンド ラインには抽出されたループが 2 つ、作成されたリージョンが 2 つと表示されます。
+
+### AutoCAD でリージョンが作成できないのはなぜ?
+
+図形が端点どうしで閉じていないためです。交差している線分や、互いに届いていない線分では何も閉じません。REGION は開いたオブジェクトを端点でしかつながないため、ごくわずかな隙間でもつながりが除外されます。蝶ネクタイのように自己交差するループも除外され、自己交差として数えられます。半径 0 の [`FILLET`](/docs/commands/fillet) で端点をつなぐか、はみ出した部分を [`TRIM`](/docs/commands/trim) してから、もう一度実行してください。
+
+### 穴のあいたリージョンを作るには?
+
+外形のリージョンと穴のリージョンを作成し、[`SUBTRACT`](/docs/commands/subtract) を実行します。外形を選択して[Enter]、穴を選択して[Enter]を押します。結果は 1 つのリージョンになり、[`EXTRUDE`](/docs/commands/extrude) で穴の貫通したソリッドにできます。
+
+### リージョンの面積を求めるには?
+
+リージョンを選択してプロパティ パレットの[面積]を読むか、[`AREA`](/docs/commands/area) を実行して `Object` を選び、リージョンを選択します。[`MASSPROP`](/docs/commands/massprop) では、周長、図心、慣性モーメントもわかります。
+
+## 練習する [#practice]
+
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の SUBTRACT\[差\]コマンド](/docs/commands/subtract)
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)
+- [AutoCAD の AREA\[面積計算\]コマンド](/docs/commands/area)
+- [AutoCAD の MASSPROP\[マス プロパティ\]コマンド](/docs/commands/massprop)

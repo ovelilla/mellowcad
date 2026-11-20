@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の PROPERTIES[オブジェクト プロパティ管理]コマンド"
+metaTitle: "AutoCAD オブジェクト プロパティ管理(PROPERTIES)と Ctrl+1"
+description: "AutoCAD の PROPERTIES[オブジェクト プロパティ管理](PR、Ctrl+1)の使い方を解説します。[一般]と[ジオメトリ]の行、*各種*、オブジェクト タイプごとの表示、現在の設定。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD のプロパティ パレットの短縮コマンドは?","answer":"[Ctrl]+[1]で、もう一度押すとパレットが非表示になります。入力するなら PR、CH、MO のいずれかを入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _PROPERTIES が使えます。"},{"question":"プロパティ パレットが消えたときに表示するには?","answer":"[Ctrl]+[1]を押すか PR と入力すると、図面の横のパレット パネルのタブとして再び表示されます。表示中に[Ctrl]+[1]を押すと非表示になるため、多くの場合それが原因です。"},{"question":"複数のオブジェクトのプロパティをまとめて変更するには?","answer":"すべて選択してから行を変更すると、選択したすべてのオブジェクトに新しい値が適用されます。値が異なる行は、設定するまで *各種* と表示されます。その中の円だけを変更したいときなどは、上部のドロップダウンでそのタイプを選びます。"},{"question":"PROPERTIES と MATCHPROP の違いは?","answer":"PROPERTIES は選択したオブジェクトの値を表示し、設定します。MATCHPROP は値を入力せずに、1 つのオブジェクトからほかのオブジェクトに値をコピーします。"}]
+---
+
+PROPERTIES[オブジェクト プロパティ管理]コマンドはプロパティ パレットを開きます。AutoCAD と同じくダイアログではなくパレットで、選択や作図の間も図面の横に開いたままです。ここではパレット パネルのタブの 1 つとして表示され、`PROPERTIESCLOSE` で閉じます。[Ctrl]+[1]で表示、非表示を切り替え、アポストロフィを付けて `'PROPERTIES` と入力すると、実行中のコマンドの中で開きます。幅の広いウィンドウでは最初から開いています。
+
+オブジェクトを選択していると、そのプロパティが表示され、行に新しい値を入力するか選ぶと変更できます。最初は AutoCAD と同じ順序の[一般]で、色、画層、線種、線の太さ、厚さが並び、選択したオブジェクトで値が異なるところは `*各種*` と表示されます。その下にタイプごとの行があります。線分なら始点と終点、長さ、角度。円なら中心、半径、直径、円周、面積。円弧、楕円、ポリラインの頂点と幅、スプラインの点、文字、ブロック参照の行もあります。座標は現在の UCS で表示され、線分の長さのように表示だけの行はグレー表示です。上部のドロップダウンには「すべて」と、各タイプがその数とともに一覧表示されます。1 つ選ぶと、そのタイプだけを表示、編集できます。何も選択していないときは、[一般]に現在の画層、色、線種、線の太さが表示され、ここで新しいオブジェクト用に設定できます。編集はそれぞれ `U` で元に戻せる 1 ステップです。
+
+- **コマンド：** `PROPERTIES`
+- **短縮コマンド：** `PR`, `CH`, `MO`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`PR` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="properties" caption="コマンド プロンプトで円を選択するとグリップが表示され、続いて PROPERTIES を実行したところ。図面の横にパレットが開き、円の行が表示されます。" />
+
+## まだできないこと [#missing]
+
+複数のオブジェクトをまとめて、または何も選択していないときに新しいオブジェクト用に設定する[一般]の線種尺度(CELTSCALE)。印刷スタイル、透過性、ハイパーリンク、マテリアル。同じタイプの複数のオブジェクトのジオメトリの行、文字の内容、属性値はここでは編集できません。クイック選択、PICKADD の切り替え、自動的に隠す、パレットのドッキングとフローティング。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop--pt-br-propriedades--alt--props--altpropd--modificard--fecharprop--fprop--fr-proprietes--prop--props--ddchprop--ddmodify--fermerproprietes--frprop--it-proprieta--pr--pro--prop--ch--ddchprop--ddmodify--chiudiprop--cpr--de-eigenschaften--eigschliess--ru-окносв--из--диалсвой--диализм--окносвзакр--осз--pl-właściwości--ce--właściwościzamknij--cz--cs-vlastnosti--vla--vlast--vt--zavřivl--vlzav--hu-tulajdonságok--tul--tva--md--tulajdonságokbezár--tbz)
+
+## よくある質問 [#questions]
+
+### AutoCAD のプロパティ パレットの短縮コマンドは?
+
+[Ctrl]+[1]で、もう一度押すとパレットが非表示になります。入力するなら `PR`、`CH`、`MO` のいずれかを入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_PROPERTIES` が使えます。
+
+### プロパティ パレットが消えたときに表示するには?
+
+[Ctrl]+[1]を押すか `PR` と入力すると、図面の横のパレット パネルのタブとして再び表示されます。表示中に[Ctrl]+[1]を押すと非表示になるため、多くの場合それが原因です。
+
+### 複数のオブジェクトのプロパティをまとめて変更するには?
+
+すべて選択してから行を変更すると、選択したすべてのオブジェクトに新しい値が適用されます。値が異なる行は、設定するまで `*各種*` と表示されます。その中の円だけを変更したいときなどは、上部のドロップダウンでそのタイプを選びます。
+
+### PROPERTIES と MATCHPROP の違いは?
+
+PROPERTIES は選択したオブジェクトの値を表示し、設定します。[`MATCHPROP`](/docs/commands/matchprop) は値を入力せずに、1 つのオブジェクトからほかのオブジェクトに値をコピーします。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の MATCHPROP\[プロパティ コピー\]コマンド](/docs/commands/matchprop)
+- [AutoCAD の LAYER\[画層管理\]コマンド](/docs/commands/layer)
+- [AutoCAD の LIST\[オブジェクト情報\]コマンド](/docs/commands/list)
+- [AutoCAD の COLOR\[色設定\]コマンド](/docs/commands/color)

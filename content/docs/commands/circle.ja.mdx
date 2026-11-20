@@ -1,0 +1,80 @@
+---
+title: "AutoCAD の CIRCLE[円]コマンド"
+metaTitle: "AutoCAD 円(CIRCLE)の使い方と短縮コマンド C"
+description: "AutoCAD の円(CIRCLE、C)の描き方をプロンプト順に解説します。中心と半径または直径、2P、3P、Ttr、2 つのオブジェクトに接する円。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の円の短縮コマンドは?","answer":"C と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _CIRCLE が使えます。"},{"question":"2 本の線に接する円を描くには?","answer":"Ttr を選び、円が接する位置の近くで 1 本目、2 本目の線を選択して、半径を入力します。"},{"question":"3 つのオブジェクトに接する円を描くには?","answer":"3P を選び、3 つの点それぞれの前に _TAN を入力して、円が接する位置の近くで各オブジェクトを選択します。"},{"question":"直径を指定して円を描くには?","answer":"中心を指定し、Diameter を選んで直径を入力します。または 2P を選び、直径の両端を指定します。"}]
+---
+
+CIRCLE[円]コマンドは、中心と半径から円を描きます。半径は入力するか、円周上の点で指定します。最初のプロンプトに表示されるほかの方法でも描けます。半径のプロンプトで[Enter]を押すと、前回の円のサイズが使われます。この値は図面に保存されます。半径を指定している間、中心からカーソルまで琥珀色の破線が表示され、直径を指定するときは AutoCAD と同じく円周の先まで伸びます。円は最初の点の平面上にあり、点に Z がなければ現在の高度に置かれます。
+
+- **コマンド：** `CIRCLE`
+- **短縮コマンド：** `C`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`C` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="circle" caption="3 つの円。中心と半径、直径の両端(2P)、中心と直径(Diameter)で作図しています。" />
+
+## オプション [#options]
+
+### `3P` [#3p]
+
+3 点を通る円です。各点で接線スナップ `_TAN` を入力すると、AutoCAD の[接点、接点、接点]になり、3 つのオブジェクトに接する円を描きます。
+
+### `2P` [#2p]
+
+直径の両端の 2 点から描きます。
+
+### `Ttr (tan tan radius)` (`T`) [#ttr]
+
+2 つのオブジェクトに接し、指定した半径を持つ円です。円が接する位置の近くで線分、円、円弧をそれぞれ選択し、半径を指定します。条件に合う円のうち、選択した点に最も近い位置で接するものが描かれます。該当する円がない場合は `Circle does not exist.` と表示されます。
+
+### `Diameter` (`D`) [#diameter]
+
+半径のプロンプトで、代わりに直径を入力するか点で指定します。
+
+## まだできないこと [#missing]
+
+ポリライン セグメントへの Ttr(AutoCAD では使えますが、MellowCAD では受け付けません)。ツール パレットの[接点、接点、接点](3 つの接線スナップを付けた 3P として入力すれば使えます)。円をダブルクリックしたときのクイック プロパティ。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c--pt-br-circulo--ci--fr-cercle--c--it-cerchio--c--de-kreis--k--ru-круг--к--pl-okrąg--o--cs-kružnice--kr--hu-kör--k)
+
+## よくある質問 [#questions]
+
+### AutoCAD の円の短縮コマンドは?
+
+`C` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_CIRCLE` が使えます。
+
+### 2 本の線に接する円を描くには?
+
+`Ttr` を選び、円が接する位置の近くで 1 本目、2 本目の線を選択して、半径を入力します。
+
+### 3 つのオブジェクトに接する円を描くには?
+
+`3P` を選び、3 つの点それぞれの前に `_TAN` を入力して、円が接する位置の近くで各オブジェクトを選択します。
+
+### 直径を指定して円を描くには?
+
+中心を指定し、`Diameter` を選んで直径を入力します。または `2P` を選び、直径の両端を指定します。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket)
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange)
+- [AutoCAD 練習問題：丸テーブルと椅子](/docs/exercises/round-table)
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link)
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の ARC\[円弧\]コマンド](/docs/commands/arc)
+- [AutoCAD の ELLIPSE\[楕円\]コマンド](/docs/commands/ellipse)
+- [AutoCAD の OFFSET\[オフセット\]コマンド](/docs/commands/offset)
+- [AutoCAD の DIMRADIUS\[半径寸法記入\]コマンド](/docs/commands/dimradius)

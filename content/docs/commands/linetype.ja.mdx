@@ -1,0 +1,72 @@
+---
+title: "AutoCAD の LINETYPE[線種設定]コマンド"
+metaTitle: "AutoCAD 線種設定(LINETYPE、LT)の使い方とロード"
+description: "AutoCAD の LINETYPE[線種設定](LT)の使い方を解説します。acadiso.lin からの線種のロード、新しいオブジェクトの現在の線種、ByLayer、破線が実線で表示される理由。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の線種設定の短縮コマンドは?","answer":"LT と入力し、[Enter]または[Space]を押します。LTYPE と DDLTYPE も使えます。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _LINETYPE が使えます。"},{"question":"破線が実線で表示されるのはなぜ?","answer":"AutoCAD と同じく、パターン 1 回分より短い線は実線で作図されます。既定の尺度では CENTER のパターンの長さは約 51 単位です。LTSCALE を大きくするか小さくして、パターンを図面に合わせてください。また、オブジェクトの線種(ByLayer のときは画層の線種)が Continuous になっていないかも確認してください。"},{"question":"既存のオブジェクトの線種を変更するには?","answer":"オブジェクトを選択し、プロパティ パレットの[線種]の行で線種を選ぶか、MATCHPROP でほかのオブジェクトからコピーします。LINETYPE が設定するのは、その後に作図するオブジェクトの線種だけです。"},{"question":"AutoCAD で線種尺度を変更するには?","answer":"LTSCALE と新しい尺度を入力します。2 にすると図面全体のすべての破線が 2 倍の長さになります。"},{"question":"AutoCAD で線種をロードするには?","answer":"AutoCAD では線種管理でロードします。ここでは -LINETYPE と入力して Load を選び、HIDDEN2 や ACAD_ISO02W100 などの線種名を入力し、[Enter]を押して acadiso.lin を検索します。Set は、acadiso.lin にある線種をロードしてから現在の線種にします。"}]
+---
+
+LINETYPE[線種設定]コマンドは、新しいオブジェクトを作図する線種を設定します。AutoCAD では線種管理ダイアログが開きますが、MellowCAD にはまだないため、LINETYPE は AutoCAD にもあるコマンド ライン版の `-LINETYPE` を実行します。現在の線種(最初は `ByLayer`)を表示し、答えるたびにオプションを再度尋ね、[Enter]で終了します。ByLayer は各オブジェクトが画層の線種を使うことを意味し、線種名を指定するとそれがオブジェクト自身の線種になります。実行全体が 1 ステップで、`U` で元に戻せます。コマンドの実行中にアポストロフィを付けて入力すると、その線種はそのコマンドが次に作図するものに適用されます。
+
+図面は独自の線種を持ち、図面とその DXF に保存されます。新しい図面には、Continuous と、AutoCAD のメートル単位のファイル acadiso.lin の DASHED、HIDDEN、CENTER、PHANTOM、DASHDOT の 6 つの線種があります。そのほかは acadiso.lin からロードします。DXF は ISO 線種や複合線種も含めて独自の線種を持ち込み、GAS_LINE の `GAS` のような文字は線に沿って作図されます。パターンは AutoCAD と同じく各線の長さの中央にそろえ、両端の破線が等しくなるように配置されます。その長さは [`LTSCALE`](/docs/commands/ltscale) と、オブジェクト自身の線種尺度で決まります。オブジェクトの線種尺度は [`CHPROP`](/docs/commands/chprop) とプロパティ パレットで設定し、新しいオブジェクトには CELTSCALE が適用されます。
+
+- **コマンド：** `LINETYPE`
+- **短縮コマンド：** `LT`, `LTYPE`, `DDLTYPE`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`LT` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="linetype" caption="HIDDEN を現在の線種にして穴を、CENTER で 2 本の中心線を作図したプレート。最後に LINETYPE を ByLayer に戻します。" />
+
+## オプション [#options]
+
+### `?` [#list]
+
+線種を名前と説明の 2 列で一覧表示します。オプションのプロンプトでは、一覧表示するファイルを尋ねます。既定は acadiso.lin で、インチ単位の AutoCAD のファイル acad.lin も指定でき、ファイル内の順序で線種を一覧表示します。設定のプロンプトでは、図面にロードされている線種のうち入力した名前に一致するもの(`*` ですべて)を名前順に一覧表示します。
+
+### `Load` (`L`) [#load]
+
+ロードする線種を尋ねます。名前を 1 つ、またはカンマで区切って複数入力でき、ワイルドカード(`DASH*`)も使えます。続いて検索するファイルを尋ねます。最初は acadiso.lin で、その後は最後に検索したファイルです。見つかった線種はファイル内の順序でロードされ、表示されます。すでにロードされている線種は先に確認され、既定の `Yes` で再ロードします。ファイルにない名前や、acadiso.lin と acad.lin 以外のファイルは、その旨が表示されます。
+
+### `Set` (`S`) [#set]
+
+現在の線種を既定として、線種名を尋ねます。ロード済みの線種名か `BYLayer` を入力します。acadiso.lin にある線種は AutoCAD と同じく先にロードされます。それ以外は AutoCAD と同じ表示で見つからないと示され、オプションのプロンプトに戻ります。[Enter]を押すと現在の線種のままです。
+
+## まだできないこと [#missing]
+
+線種管理ダイアログ、線種の作成、独自のファイルからのロード。BATTING や ZIGZAG などの複合線種のシェイプは、その分の隙間として作図されます。ByBlock。ペーパー空間がないため、PSLTSCALE と MSLTSCALE。各言語版 AutoCAD の acadiso.lin(スペイン語版やドイツ語版の AutoCAD がロードする TRAZOS、STRICHLINIE などの名前)はなく、ロードはどの言語でも英語版のファイルを読みます。ただし、それらの線種で作成した図面は独自の線種を持ったまま開きます。PLINEGEN もありません。PEDIT の線種生成でオンにしない限り、新しいポリラインはパターンを頂点ごとにやり直します。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea--pt-br-escalatl--etl--tipolinha--tl--ddltype---tipolinha---tl--fr-echltp--ect--typeligne--tl--typel--ddltype---typeligne---tl---typel--it-scalatl--ct--tlinea--tl--tlin--ddltype---tlinea---tl---tlin--de-ltfaktor--lk--linientyp--lt--ltyp--ddltype---linientyp---lt---ltyp--ru-лмасштаб--лм--типлин--тл--диалтиплин---типлин---тл--pl-rlskala--rls--rodzlin--rl--odrodzlin---rodzlin---rl--cs-tčměř--tcm--typč--tc--ddltype--diatypč---typč---tc--hu-vtlépték--vtl--vtípus--vt--dpvtípus---vtípus---vt)
+
+## よくある質問 [#questions]
+
+### AutoCAD の線種設定の短縮コマンドは?
+
+`LT` と入力し、[Enter]または[Space]を押します。`LTYPE` と `DDLTYPE` も使えます。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_LINETYPE` が使えます。
+
+### 破線が実線で表示されるのはなぜ?
+
+AutoCAD と同じく、パターン 1 回分より短い線は実線で作図されます。既定の尺度では CENTER のパターンの長さは約 51 単位です。[`LTSCALE`](/docs/commands/ltscale) を大きくするか小さくして、パターンを図面に合わせてください。また、オブジェクトの線種(ByLayer のときは画層の線種)が Continuous になっていないかも確認してください。
+
+### 既存のオブジェクトの線種を変更するには?
+
+オブジェクトを選択し、プロパティ パレットの[線種]の行で線種を選ぶか、[`MATCHPROP`](/docs/commands/matchprop) でほかのオブジェクトからコピーします。LINETYPE が設定するのは、その後に作図するオブジェクトの線種だけです。
+
+### AutoCAD で線種尺度を変更するには?
+
+[`LTSCALE`](/docs/commands/ltscale) と新しい尺度を入力します。2 にすると図面全体のすべての破線が 2 倍の長さになります。
+
+### AutoCAD で線種をロードするには?
+
+AutoCAD では線種管理でロードします。ここでは `-LINETYPE` と入力して `Load` を選び、`HIDDEN2` や `ACAD_ISO02W100` などの線種名を入力し、[Enter]を押して acadiso.lin を検索します。`Set` は、acadiso.lin にある線種をロードしてから現在の線種にします。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の線種尺度：LTSCALE\[線種尺度\]コマンド](/docs/commands/ltscale)
+- [AutoCAD の LAYER\[画層管理\]コマンド](/docs/commands/layer)
+- [AutoCAD の LWEIGHT\[線の太さ\]コマンド](/docs/commands/lweight)
+- [AutoCAD の PROPERTIES\[オブジェクト プロパティ管理\]コマンド](/docs/commands/properties)

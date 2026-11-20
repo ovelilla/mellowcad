@@ -1,0 +1,59 @@
+---
+title: "AutoCAD の ATTDISP[属性表示]コマンド"
+metaTitle: "AutoCAD 属性表示(ATTDISP)で属性を表示・非表示"
+description: "AutoCAD でブロックの属性を表示・非表示にする ATTDISP の使い方を解説します。Normal、非表示属性も表示する ON、すべて隠す OFF。設定は図面に保存されます。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD で非表示の属性を表示するには?","answer":"ATTDISP を入力し、ON を選びます。非表示の属性も含め、すべての属性が表示されます。Normal で再び非表示になります。"},{"question":"ブロックの属性が表示されないのはなぜ?","answer":"ATTDISP が OFf になっていてすべての属性が隠れているか、Normal で属性が非表示として定義されている可能性があります。ON を選ぶとすべて表示されます。属性を持たないブロックの参照には、設定に関係なく何も表示されません。"},{"question":"AutoCAD で属性の値を非表示にするには?","answer":"非表示として定義します。ブロックを作成する前に、ATTDEF の Invisible モードを使います。ATTDISP の OFf では、図面全体のすべての属性が一度に隠れます。"}]
+---
+
+ATTDISP[属性表示]コマンドは、図面内のブロック参照にどの属性を表示するかを設定します。現在の設定(新しい図面では Normal)を提示して設定を尋ねます。それ以外の語を入力するとキーワードが無効である旨が表示されてもう一度尋ねられ、[Enter]で現在の設定のままになります。設定を変えると図面全体が再作図され(AutoCAD 2027 と同じく `Regenerating model.` と表示されます)、ATTMODE として図面に保存されます。この変更は `U` で取り消せる 1 ステップです。コマンドの実行中にアポストロフィを付けて入力すると、そのコマンドの中でも実行できます。
+
+変わるのは表示だけです。非表示の属性も値は保持され、隠れている属性も [`ATTEDIT`](/docs/commands/attedit) または [`EATTEDIT`](/docs/commands/eattedit) で編集できます。
+
+- **コマンド：** `ATTDISP`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`ATTDISP` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="attdisp" caption="部品番号が非表示属性になっている 2 つの机。ATTDISP ON で、表示されている番号の横、各机の下に部品番号が表示されます。" />
+
+## オプション [#options]
+
+### `Normal` (`N`) [#normal]
+
+各属性を定義どおりに表示します。表示属性は表示され、[`ATTDEF`](/docs/commands/attdef) の `Invisible` で定義した属性は表示されません。
+
+### `ON` [#on]
+
+非表示の属性も含め、すべての属性を表示します。
+
+### `OFF` (`OF`) [#off]
+
+表示属性も含め、すべての属性を非表示にします。
+
+## よくある質問 [#questions]
+
+### AutoCAD で非表示の属性を表示するには?
+
+`ATTDISP` を入力し、`ON` を選びます。非表示の属性も含め、すべての属性が表示されます。`Normal` で再び非表示になります。
+
+### ブロックの属性が表示されないのはなぜ?
+
+`ATTDISP` が `OFf` になっていてすべての属性が隠れているか、`Normal` で属性が非表示として定義されている可能性があります。`ON` を選ぶとすべて表示されます。属性を持たないブロックの参照には、設定に関係なく何も表示されません。
+
+### AutoCAD で属性の値を非表示にするには?
+
+非表示として定義します。ブロックを作成する前に、[`ATTDEF`](/docs/commands/attdef) の `Invisible` モードを使います。ATTDISP の `OFf` では、図面全体のすべての属性が一度に隠れます。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の ATTDEF\[属性定義\]コマンド](/docs/commands/attdef)
+- [AutoCAD の ATTEDIT\[属性編集\]コマンド](/docs/commands/attedit)
+- [AutoCAD の EATTEDIT\[拡張属性編集\]コマンド](/docs/commands/eattedit)
+- [AutoCAD の BLOCK\[ブロック登録\]コマンド](/docs/commands/block)
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt--de-attzeig--ru-атэкр--pl-atrwid--cs-atrdisp--hu-attláth)

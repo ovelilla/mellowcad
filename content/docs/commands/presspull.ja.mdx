@@ -1,0 +1,59 @@
+---
+title: "AutoCAD の PRESSPULL[境界引き伸ばし]コマンド"
+metaTitle: "AutoCAD 境界引き伸ばし：PRESSPULL の使い方"
+description: "AutoCAD の PRESSPULL[境界引き伸ばし]でクリックしたものを押し込み、引き出す方法をプロンプトごとに解説します。閉じたオブジェクト、囲まれた領域、ソリッドの面。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"PRESSPULL と EXTRUDE の違いは?","answer":"EXTRUDE は選択した閉じたオブジェクトを押し出し、DELOBJ に従ってそれを削除し、方向、テーパ角度、式を指定できます。PRESSPULL はクリックで操作し、閉じたオブジェクト、複数のオブジェクトに囲まれた領域、ソリッドの面(そのソリッドに加えるか削り取る)を対象とし、元のオブジェクトを残します。オブジェクトからは、どちらも同じソリッドを作成します。"},{"question":"ソリッドの面を押し出すには?","answer":"PRESSPULL を実行し、面をクリックして距離を指定します。正の値で面が引き出されてソリッドが大きくなり、負の値で押し込まれます。[Ctrl]を押しながらクリックすると、代わりに面をオフセットします。現在は平らな面だけが対象です。"},{"question":"PRESSPULL が使えないのはなぜ?","answer":"閉じたものをクリックする必要があります。PRESSPULL は、最初のプロンプトで入力した数値や点、開いたオブジェクトや曲面のクリックには 「Click a face, curve, or inside a bounded area」 と表示し、再度尋ねます。閉じたオブジェクト、平面上でオブジェクトに囲まれた領域の内側、ソリッドの平らな面のいずれかをクリックしてください。"},{"question":"PRESSPULL に短縮コマンドはある?","answer":"短縮コマンドはありません。PRESSPULL と入力するか、AutoCAD のどの言語版でも _PRESSPULL と入力します。AutoCAD のショートカット キー[Ctrl]+[Shift]+[E]はまだ実装されていません。"}]
+---
+
+PRESSPULL[境界引き伸ばし]コマンドは、クリックしたものを押し出します。閉じたオブジェクト、クリック位置をオブジェクトが囲む領域、3D ソリッドの平らな面のいずれかです。クリックしてから高さを入力するか、カーソルを動かしてクリックします。正の高さで引き出し、負の高さで押し込みます。閉じたオブジェクトや領域は、[`EXTRUDE`](/docs/commands/extrude) で作成するのと同じ新しいソリッドになり、元のオブジェクトは残ります。セッションのように、領域の中の島はソリッドの穴になります。面の場合は、その角柱をソリッドに加えるか、ソリッドから取り除きます。直方体の上面を引き出すと高くなります。[Enter]を押すまで次のクリックのためにプロンプトが戻り、実行全体が 1 ステップで、U で元に戻せます。
+
+[Ctrl]を押したままにすると、クリックで選ばれる面がハイライトされます。[Ctrl]+クリックでは、代わりにその面をオフセットし、隣接する面がそれに合わせて延びるため、傾斜した側面は傾斜を保ちます。AutoCAD と同じく PRESSPULL はクリックで操作します。最初のプロンプトで数値や点を入力すると `Click a face, curve, or inside a bounded area` と表示され、プロンプトを再度尋ねます。
+
+- **コマンド：** `PRESSPULL`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`PRESSPULL` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="presspull" caption="長方形と円の間の領域を下に 8 押し込みます。穴の開いたプレートを、表示スタイル[隠線]で南東から見たところ。" />
+
+## オプション [#options]
+
+### `Multiple` (`M`) [#multiple]
+
+高さのプロンプト、またはオフセット距離のプロンプトで選びます。続けてクリックして閉じたオブジェクトや領域、または 1 つのソリッドの面を追加し、[Enter]を押すと、1 つの高さがすべてに適用されます。オブジェクトや領域の後にクリックした面は除外されます。
+
+## まだできないこと [#missing]
+
+曲面。AutoCAD ではオフセットできますが、ここではクリックしても面が見つかりません。隣接する面が円錐、球、トーラスであるオフセット、平面と曲面が混在するオフセット、面が反対側の面を突き抜けるオフセットでは、ソリッドは元のままです。IMPRINT と IMPLIEDFACE が面に作る領域、および[Ctrl]+[Shift]+[E]。開いたオブジェクト。AutoCAD ではサーフェスに押し出しますが、まだサーフェスはありません。ドラッグ中のプレビューは、仕上がりのソリッドではなく、面の角柱か新しいソリッドを表示し、面がハイライトされるのは[Ctrl]を押したときだけです。UCS の平面外で囲まれた領域は未検証です。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#presspull--es-presionartirar--pulsartirar--pt-br-pressionarpuxar--fr-apptirer--it-premtrasc--de-klickziehen--ru-выдавгрань--pl-naciśnijciąg--cs-tlačtáhni--hu-tolhúz)
+
+## よくある質問 [#questions]
+
+### PRESSPULL と EXTRUDE の違いは?
+
+[`EXTRUDE`](/docs/commands/extrude) は選択した閉じたオブジェクトを押し出し、DELOBJ に従ってそれを削除し、方向、テーパ角度、式を指定できます。PRESSPULL はクリックで操作し、閉じたオブジェクト、複数のオブジェクトに囲まれた領域、ソリッドの面(そのソリッドに加えるか削り取る)を対象とし、元のオブジェクトを残します。オブジェクトからは、どちらも同じソリッドを作成します。
+
+### ソリッドの面を押し出すには?
+
+PRESSPULL を実行し、面をクリックして距離を指定します。正の値で面が引き出されてソリッドが大きくなり、負の値で押し込まれます。[Ctrl]を押しながらクリックすると、代わりに面をオフセットします。現在は平らな面だけが対象です。
+
+### PRESSPULL が使えないのはなぜ?
+
+閉じたものをクリックする必要があります。PRESSPULL は、最初のプロンプトで入力した数値や点、開いたオブジェクトや曲面のクリックには `Click a face, curve, or inside a bounded area` と表示し、再度尋ねます。閉じたオブジェクト、平面上でオブジェクトに囲まれた領域の内側、ソリッドの平らな面のいずれかをクリックしてください。
+
+### PRESSPULL に短縮コマンドはある?
+
+短縮コマンドはありません。PRESSPULL と入力するか、AutoCAD のどの言語版でも `_PRESSPULL` と入力します。AutoCAD のショートカット キー[Ctrl]+[Shift]+[E]はまだ実装されていません。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)
+- [AutoCAD の SOLIDEDIT\[ソリッド編集\]コマンド](/docs/commands/solidedit)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)
+- [AutoCAD の BOX\[直方体\]コマンド](/docs/commands/box)

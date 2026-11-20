@@ -1,0 +1,64 @@
+---
+title: "AutoCAD の MEASURE[メジャー]コマンド"
+metaTitle: "AutoCAD メジャーの使い方：MEASURE(ME)"
+description: "AutoCAD の MEASURE[メジャー](ME)の使い方を解説します。線分、円弧、円、ポリラインに沿って、選択した位置に近い端から一定間隔で点やブロックを配置します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD のメジャーの短縮コマンドは?","answer":"ME と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _MEASURE が使えます。"},{"question":"MEASURE で距離を測れる?","answer":"いいえ。MEASURE は指定した長さごとに点を配置します。2 点間の距離を調べるには DIST を、オブジェクトの長さには LIST か AREA を使います。"},{"question":"MEASURE はどちらの端から始まる?","answer":"オブジェクトを選択した位置に近いほうの端です。最初の長さを計測したい端の近くで選択してください。"},{"question":"MEASURE で作成した点が見えないのはなぜ?","answer":"既定の点スタイルの小さな点で作図されているためです。PTYPE を開いて十字や円を選ぶか、PDMODE を 3 に設定すると、すべての点がすぐに変わります。"},{"question":"MEASURE と DIVIDE の違いは?","answer":"DIVIDE はオブジェクトを指定した数に等分します。MEASURE は指定した長さごとに進み、余りは反対側の端に残ります。"}]
+---
+
+MEASURE[メジャー]コマンドは、オブジェクトに一定の長さごとに印を付けます。線分、円弧、円、楕円、楕円弧、ポリライン、3D ポリライン、スプラインを 1 つ選択し、長さを入力するか 2 点で指定します。MEASURE はオブジェクトに沿ってその長さごとに、収まる限り点オブジェクトを配置して終了します。距離を測るコマンドではなく、オブジェクトを切断もしません。選択した位置に近いほうの端から始まるため、計測を始めたい端の近くで選択します。余りは反対側の端に残り、長さでオブジェクトがちょうど割り切れるときは、反対側の端にも点が配置されます。円はどこで選択しても 0° の点から始まり、反時計回りに進みます。閉じたポリラインは最初の頂点から始まります。
+
+点は図面の点スタイルで作図され、既定では小さな点です。先に [`PTYPE`](/docs/commands/ptype) または PDMODE で見やすい形を設定してください。点はオブジェクト上に、現在の画層、色、線種、線の太さで作成されます。実行全体が `U` で元に戻せる 1 ステップで、作成した点が直前の選択セットになります。オブジェクトより長い長さでは `Object isn't that long.`、点が 32767 個を超えるほど短い長さでは `Object is too long.` と表示され、どちらも何も作成しません。それ以外のオブジェクトでは `Cannot measure that object.` と表示されます。作成ツールの[点]ドロップダウンからも MEASURE を開始できます。
+
+- **コマンド：** `MEASURE`
+- **短縮コマンド：** `ME`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`ME` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="measure" caption="長さ 190 のポリラインを、選択位置に近い端から 15 ごとに計測したところ。点は 12 個で、最後の点は反対側の端から 10 手前です。" />
+
+## オプション [#options]
+
+### `Block` (`B`) [#block]
+
+点の代わりに、図面にすでにあるブロックの参照を配置します。ブロック名を入力し、各参照をオブジェクトに合わせて回転させるか(`Yes`(既定)または `No`)を答え、長さを指定します。回転させる場合、各参照はその位置でオブジェクトに合わせて、線分に沿うか円弧の接線方向に向きます。計測をどちらの端から始めても同じです。回転させない場合は、すべて UCS の X 方向のままです。存在しないブロック名は拒否され、名前を再度尋ねます。
+
+## まだできないこと [#missing]
+
+閉じたポリラインを中間より先で選択したときの進む方向。ここでは、AutoCAD が閉じた楕円やスプラインを計測するのと同じく、最初の頂点から逆方向に計測しますが、AutoCAD のポリラインでの動作は確認していません。円の点は常に UCS の X 方向から始まりますが、AutoCAD ではスナップ角度 SNAPANG から始まります。MellowCAD には SNAPANG がありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#measure--me--es-gradua--gd--pt-br-medida--me--fr-mesurer--me--it-misura--mis--de-messen--me--ru-разметить--рм--pl-zmierz--zmi--cs-dělm--dm--hu-beosztás--beo)
+
+## よくある質問 [#questions]
+
+### AutoCAD のメジャーの短縮コマンドは?
+
+`ME` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_MEASURE` が使えます。
+
+### MEASURE で距離を測れる?
+
+いいえ。MEASURE は指定した長さごとに点を配置します。2 点間の距離を調べるには [`DIST`](/docs/commands/dist) を、オブジェクトの長さには [`LIST`](/docs/commands/list) か [`AREA`](/docs/commands/area) を使います。
+
+### MEASURE はどちらの端から始まる?
+
+オブジェクトを選択した位置に近いほうの端です。最初の長さを計測したい端の近くで選択してください。
+
+### MEASURE で作成した点が見えないのはなぜ?
+
+既定の点スタイルの小さな点で作図されているためです。[`PTYPE`](/docs/commands/ptype) を開いて十字や円を選ぶか、PDMODE を `3` に設定すると、すべての点がすぐに変わります。
+
+### MEASURE と DIVIDE の違いは?
+
+[`DIVIDE`](/docs/commands/divide) はオブジェクトを指定した数に等分します。MEASURE は指定した長さごとに進み、余りは反対側の端に残ります。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の DIVIDE\[ディバイダ\]コマンド](/docs/commands/divide)
+- [AutoCAD の PTYPE\[点スタイル管理\]コマンド](/docs/commands/ptype)
+- [POINT](/docs/commands#point): 複数点
+- [AutoCAD の DIST\[距離計算\]コマンド](/docs/commands/dist)

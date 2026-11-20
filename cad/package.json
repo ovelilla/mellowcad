@@ -80,6 +80,10 @@
       "types": "./dist/locales/hu.d.ts",
       "default": "./dist/locales/hu.js"
     },
+    "./locales/ja": {
+      "types": "./dist/locales/ja.d.ts",
+      "default": "./dist/locales/ja.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

@@ -1,0 +1,85 @@
+---
+title: "AutoCAD の EXTRUDE[押し出し]コマンド"
+metaTitle: "AutoCAD 押し出し(EXTRUDE、EXT)の使い方とテーパ角度"
+description: "AutoCAD の押し出し(EXTRUDE、EXT)で、閉じた 2D の形状を 3D ソリッドにする方法をプロンプトの順に説明します。高さ、方向、テーパ角度。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の押し出しの短縮コマンドは?","answer":"EXT と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _EXTRUDE が使えます。"},{"question":"2D の図形を押し出して 3D にするには?","answer":"輪郭を 1 つの閉じたオブジェクト(閉じたポリライン、円、リージョン)として作図し、EXTRUDE を実行して選択し、[Enter]を押して高さを入力します。真上から見るとソリッドは輪郭と同じに見えるので、ViewCube、または -VIEW の SEIso でビューを回転させると 3D で確認できます。"},{"question":"押し出してもソリッドにならないのはなぜ?","answer":"プロファイルが開いているか、自己交差しています。線分、円弧、開いたポリラインは AutoCAD ではサーフェスになりますが、MellowCAD にはまだサーフェスがありません。EXTRUDE は 「Cannot sweep or extrude an object of this type.」 と表示して選択から除外します。自己交差しているプロファイルも 「Cannot sweep or extrude a self-intersecting curve.」 と表示されて除外されます。JOIN で部分を結合するか、REGION でリージョンにするか、PRESSPULL で内側をクリックしてください。"},{"question":"穴のある形状を押し出すには?","answer":"1 つのリージョンにします。輪郭と穴に REGION を実行し、輪郭のリージョンから穴のリージョンを SUBTRACT で差し引きます。そのリージョンを押し出すと、穴がソリッドを貫通します。または PRESSPULL を実行し、輪郭と穴の間をクリックします。"},{"question":"パスに沿って押し出すには?","answer":"まだできません。Path はプロンプトに表示されますが拒否され、SWEEP も実装されていません。Direction を使うと、2 点間の直線に沿って押し出せます。"}]
+---
+
+EXTRUDE[押し出し]コマンドは、閉じた 2D のプロファイルを 3D ソリッドにします。各プロファイルは、指定した高さだけその平面からまっすぐに押し出されます。円、楕円、閉じたポリラインやスプライン、リージョンなどのプロファイルを選択して[Enter]を押し、高さを入力するか点で指定します。最後に指定した高さが次回の既定値になります。各プロファイルはそれぞれ別のソリッドになって現在の画層に作成され、DELOBJ の既定値に従って元のプロファイルは削除されます。コマンド全体が 1 つの操作で、元に戻す 1 回で取り消せます。
+
+MellowCAD の 3D はソリッドのみで、まだ部分的な対応です。AutoCAD ではサーフェスになる開いたプロファイルは、`Cannot sweep or extrude an object of this type.` と表示されて選択から除外されます。
+
+- **コマンド：** `EXTRUDE`
+- **短縮コマンド：** `EXT`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`EXT` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="extrude" caption="閉じた L 字形のポリラインを 20 押し出してソリッドにし、表示スタイル[隠線処理]で南東から表示。" />
+
+## オプション [#options]
+
+### `MOde` (`MO`) [#mode]
+
+`SOlid` か `SUrface` かを尋ねます。既定値は `SOlid` で、使えるのもこちらだけです。サーフェス オブジェクトはまだないため、`SUrface` は拒否されます。
+
+### `Direction` (`D`) [#direction]
+
+高さの代わりに、2 点で方向と長さを指定します。プロファイルはその線に沿って押し出され、線が傾いていれば斜めになります。プロファイルの平面上にある方向は `Extrude direction is parallel to plane of sweep curve.` と表示され、コマンドが終了します。
+
+### `Path` (`P`) [#path]
+
+AutoCAD と同様にプロンプトには表示されますが、実装されていません。選択すると拒否され、もう一度高さを尋ねられます。
+
+### `Taper angle` (`T`) [#taper]
+
+−90° から 90° の範囲の角度を尋ね、その後もう一度高さを尋ねます。正の角度ではソリッドは上に行くほど細くなり、負の角度では太くなります。高さに達する前に閉じてしまう円は点で終わり、円錐になります。テーパを適用できないプロファイルからは何も作成されません。
+
+### `Expression` (`E`) [#expression]
+
+高さを式で指定します。`2*3` は 6 です。今のところ四則演算のみです。
+
+## まだできないこと [#missing]
+
+Path(パスに沿ったスイープ)。SUrface モードと開いたプロファイル。AutoCAD ではサーフェスになりますが、サーフェス オブジェクトはまだありません。ソリッドの面と、オブジェクトの内側をクリックして見つかる領域。これらは [`PRESSPULL`](/docs/commands/presspull) で扱えます。楕円、スプライン、次のセグメントと角で接する円弧へのテーパ。Expression のパラメータと関数。側面が曲面の押し出しソリッドの [`EXPLODE`](/docs/commands/explode)(AutoCAD ではサーフェスとリージョンになります)。押し出しソリッドのグリップと、プロパティ パレットでの高さとテーパ角度の編集。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex--fr-extrusion--es--it-estrudi--eu--de-extrusion--ex--ru-выдавить--выд--pl-wyciągnij--wyc--cs-vytáhni--vyt--hu-kihúz--kh)
+
+## よくある質問 [#questions]
+
+### AutoCAD の押し出しの短縮コマンドは?
+
+`EXT` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_EXTRUDE` が使えます。
+
+### 2D の図形を押し出して 3D にするには?
+
+輪郭を 1 つの閉じたオブジェクト(閉じたポリライン、円、リージョン)として作図し、EXTRUDE を実行して選択し、[Enter]を押して高さを入力します。真上から見るとソリッドは輪郭と同じに見えるので、ViewCube、または `-VIEW` の `SEIso` でビューを回転させると 3D で確認できます。
+
+### 押し出してもソリッドにならないのはなぜ?
+
+プロファイルが開いているか、自己交差しています。線分、円弧、開いたポリラインは AutoCAD ではサーフェスになりますが、MellowCAD にはまだサーフェスがありません。EXTRUDE は `Cannot sweep or extrude an object of this type.` と表示して選択から除外します。自己交差しているプロファイルも `Cannot sweep or extrude a self-intersecting curve.` と表示されて除外されます。[`JOIN`](/docs/commands/join) で部分を結合するか、[`REGION`](/docs/commands/region) でリージョンにするか、[`PRESSPULL`](/docs/commands/presspull) で内側をクリックしてください。
+
+### 穴のある形状を押し出すには?
+
+1 つのリージョンにします。輪郭と穴に [`REGION`](/docs/commands/region) を実行し、輪郭のリージョンから穴のリージョンを [`SUBTRACT`](/docs/commands/subtract) で差し引きます。そのリージョンを押し出すと、穴がソリッドを貫通します。または [`PRESSPULL`](/docs/commands/presspull) を実行し、輪郭と穴の間をクリックします。
+
+### パスに沿って押し出すには?
+
+まだできません。`Path` はプロンプトに表示されますが拒否され、SWEEP も実装されていません。`Direction` を使うと、2 点間の直線に沿って押し出せます。
+
+## 練習する [#practice]
+
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の PRESSPULL\[境界引き伸ばし\]コマンド](/docs/commands/presspull)
+- [AutoCAD の REVOLVE\[回転ソリッド\]コマンド](/docs/commands/revolve)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)
+- [AutoCAD の SUBTRACT\[差\]コマンド](/docs/commands/subtract)

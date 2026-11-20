@@ -20,3 +20,11 @@ Czech's 18, 7,680 and 5,136, each cut reproduced byte for byte; docs/i18n/pl.md,
 and docs/i18n/hu.md, "Script and font"). The next language in Latin Extended-A adds
 its letters here, and the `unicode-range` of both layouts. The OFL allows the subset, and neither
 font reserves its name.
+
+**The Japanese cards' kana and kanji** (`noto-sans-jp-card-600.woff`): Satori draws no system face,
+and the pages take the system's Japanese one (docs/i18n/ja.md), so the card alone has a Japanese
+face: Noto Sans JP (Google Fonts' `ofl/notosansjp/NotoSansJP[wght].ttf`, SIL OFL 1.1,
+`OFL-NotoSansJP.txt`) cut with `subset-font` 2.9.0 to every character above U+024F of the Japanese
+`Og.tagline`, `Og.drawTitle` and `Hero.tagline`, the weight axis pinned at 600, as WOFF: 8,468
+bytes for 27 characters. `lib/og.test.ts` fails when that copy gains a character the cut lacks:
+cut it again from the same file with the new text.

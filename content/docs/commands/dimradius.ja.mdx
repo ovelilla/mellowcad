@@ -1,0 +1,67 @@
+---
+title: "AutoCAD の DIMRADIUS[半径寸法記入]コマンド"
+metaTitle: "AutoCAD 半径寸法記入(DIMRADIUS)の使い方と DRA"
+description: "AutoCAD の半径寸法記入(DIMRADIUS、DRA)で、円、円弧、フィレットに半径寸法を記入する方法。曲線を選択し、R 付きの寸法値を内側か外側に配置します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の半径寸法記入の短縮コマンドは?","answer":"DRA または DIMRAD と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _DIMRADIUS が使えます。"},{"question":"フィレットや丸い角に寸法を記入するには?","answer":"丸い部分をクリックします。フィレットは円弧、またはポリラインの円弧セグメントです。RECTANG の Fillet オプションで丸めた角も同じで、DIMRADIUS はどちらも選択できます。"},{"question":"寸法を記入するオブジェクトを選択できないのはなぜ?","answer":"DIMRADIUS で選択できるのは円、円弧、ポリラインの円弧セグメントで、ロックされた画層上のものも選択できます。楕円を含むそれ以外のオブジェクトでは 「Object selected is not a circle or arc.」 と表示され、もう一度尋ねられます。ブロック参照内の曲線はまだ選択できません。"},{"question":"半径寸法に TYP を追加するには?","answer":"配置する前に Text を選択し、「<> TYP」 と入力します。<> は R 付きの計測値なので、寸法は 「R10 TYP」 になります。配置した後は、プロパティ パレットの[寸法値の優先]で変更できます。"}]
+---
+
+DIMRADIUS[半径寸法記入]コマンドは、円、円弧、ポリラインの円弧セグメントの半径を記入します。曲線を選択するとすぐに計測値がコマンド ラインに表示され、寸法を配置するとコマンドが終了します。AutoCAD と同様に、寸法値は R の後に半径を記入したもので、半径方向の線上に置かれ、線は曲線上の 1 つの矢印で終わります。配置する位置によって、曲線の内側にも外側にもなります。外側では、ISO-25 の描き方どおり、線は曲線を越えて中心まで続きます。
+
+- **コマンド：** `DIMRADIUS`
+- **短縮コマンド：** `DIMRAD`, `DRA`
+- **パネル：** [注釈](/docs/commands#annotate)
+- **試す：** [エディタを開き](/ja/draw)、`DRA` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="dimradius" caption="プレートの丸い角には外側に、穴には内側に半径寸法を記入。それぞれ曲線を選択してから寸法値を配置。" />
+
+## オプション [#options]
+
+### `Text` (`T`) [#text]
+
+計測値の代わりに記入する文字を尋ね、計測値を既定値として表示します。[Enter]を押すと計測値のままです。入力する文字の中で `<>` は R 付きの計測値を表すので、半径 10 の場合、`<> TYP` と入力すると `R10 TYP` と記入されます。
+
+### `Angle` (`A`) [#angle]
+
+寸法値の角度を尋ねます。寸法値はその角度で、中央が寸法線上にくるように記入され、寸法線は寸法値のところで止まります。0 を指定すると線に沿った向きに戻ります。
+
+## まだできないこと [#missing]
+
+Mtext(マルチ テキスト)オプションはありません。寸法値は 1 行で、コマンド ラインで `Text` を使って設定し、文字エディタでは編集できません。円弧では矢印が円弧の両端の間にとどまりますが、AutoCAD は両端の外側に配置した寸法に対して円弧の寸法補助線を記入します。ブロック参照内の曲線は選択できません。寸法スタイルの中心線(負の値の中心マークのサイズ)は記入されず、寸法値を曲線の外側に置く設定はありません。ISO-25 の描き方どおり、寸法値は常に寸法線に沿い、水平な引出線はありません。寸法は自動調整寸法ではないため、測っている曲線に追従しません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad--fr-cotrayon--coty--it-dimraggio--dra--de-bemradius--bmrad--ru-рзмрадиус--рра--pl-wympromień--wr--wymr--cs-kótyrádius--kra--kotyra--hu-méretsugár--msu--msug)
+
+## よくある質問 [#questions]
+
+### AutoCAD の半径寸法記入の短縮コマンドは?
+
+`DRA` または `DIMRAD` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_DIMRADIUS` が使えます。
+
+### フィレットや丸い角に寸法を記入するには?
+
+丸い部分をクリックします。フィレットは円弧、またはポリラインの円弧セグメントです。[`RECTANG`](/docs/commands/rectang) の `Fillet` オプションで丸めた角も同じで、DIMRADIUS はどちらも選択できます。
+
+### 寸法を記入するオブジェクトを選択できないのはなぜ?
+
+DIMRADIUS で選択できるのは円、円弧、ポリラインの円弧セグメントで、ロックされた画層上のものも選択できます。楕円を含むそれ以外のオブジェクトでは `Object selected is not a circle or arc.` と表示され、もう一度尋ねられます。ブロック参照内の曲線はまだ選択できません。
+
+### 半径寸法に TYP を追加するには?
+
+配置する前に `Text` を選択し、`<> TYP` と入力します。`<>` は R 付きの計測値なので、寸法は `R10 TYP` になります。配置した後は、プロパティ パレットの[寸法値の優先]で変更できます。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の DIMDIAMETER\[直径寸法記入\]コマンド](/docs/commands/dimdiameter)
+- [AutoCAD の DIMANGULAR\[角度寸法記入\]コマンド](/docs/commands/dimangular)
+- [AutoCAD の寸法記入：DIMLINEAR\[長さ寸法記入\]コマンド](/docs/commands/dimlinear)
+- [AutoCAD の DIMSTYLE\[寸法スタイル管理\]コマンド](/docs/commands/dimstyle)

@@ -18,7 +18,7 @@ import {
   MARK_STROKE,
   MARK_VIEWBOX,
 } from "@/lib/brand"
-import { type AppLocale, DIRECTION } from "@/i18n/routing"
+import { type AppLocale, DIRECTION, SCRIPT } from "@/i18n/routing"
 
 export const OG_SIZE = { width: 1200, height: 630 }
 
@@ -141,6 +141,15 @@ const SANS_FAMILY = "Inter, Inter Cyrillic, Inter Letters"
 const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Letters"
 
 /**
+ * The Japanese card's kana and kanji, behind Inter and Geist Mono: Satori
+ * draws no system face, so Noto Sans JP 600 cut to the Japanese cards'
+ * characters (assets/fonts/README.md; `lib/og.test.ts` holds the cut to the
+ * copy).
+ */
+export const JAPANESE_CARD_FONT = "noto-sans-jp-card-600.woff"
+const JAPANESE_FAMILY = "Noto Sans JP"
+
+/**
  * How wide a word of a right-to-left script is set, shaped: its letters
  * joined, as Satori draws them.
  *
@@ -154,6 +163,23 @@ type ShapedWidth = (word: string) => number | undefined
 function shapedWidth(face: Font, fontSize: number): ShapedWidth {
   return (word) =>
     RTL_LETTER.test(word) ? face.getAdvanceWidth(word, fontSize) : undefined
+}
+
+/**
+ * The headline's lines, one sentence each. WHY the brackets: after an
+ * ideographic full stop ICU keeps the next sentence's opening bracket in the
+ * sentence before (「L と入力。[」「Enter]を押す。」), so the bracket goes on to the
+ * sentence it opens.
+ */
+export function cardSentences(title: string, locale: string): string[] {
+  const segments = [
+    ...new Intl.Segmenter(locale, { granularity: "sentence" }).segment(title),
+  ].map(({ segment }) => segment.trim())
+  return segments.map((segment, index) => {
+    const opened = /\p{Ps}+$/u.exec(segment)?.[0] ?? ""
+    const carried = /\p{Ps}+$/u.exec(segments[index - 1] ?? "")?.[0] ?? ""
+    return carried + segment.slice(0, segment.length - opened.length)
+  })
 }
 
 /** A line of the card in the page's direction, ordered for Satori if RTL. */
@@ -194,6 +220,11 @@ export async function ogImage({
   title: string
 }) {
   const rtl = DIRECTION[locale as AppLocale] === "rtl"
+  const japanese = SCRIPT[locale as AppLocale] === "japanese"
+  const sans = japanese ? `${SANS_FAMILY}, ${JAPANESE_FAMILY}` : SANS_FAMILY
+  const monoFamily = japanese
+    ? `${MONO_FAMILY}, ${JAPANESE_FAMILY}`
+    : MONO_FAMILY
   const [
     { src, texts },
     model,
@@ -204,6 +235,7 @@ export async function ogImage({
     monoCyrillic,
     monoLetters,
     arabic,
+    kanji,
   ] = await Promise.all([
     flange(),
     solid(),
@@ -216,11 +248,10 @@ export async function ogImage({
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
     // Arabic subset as soon as a word meets a character the subset lacks.
     rtl ? font("readex-pro-600.ttf") : undefined,
+    japanese ? font(JAPANESE_CARD_FONT) : undefined,
   ])
   const face = arabic && parse(arrayBufferOf(arabic))
-  const sentences = [
-    ...new Intl.Segmenter(locale, { granularity: "sentence" }).segment(title),
-  ].map(({ segment }) => segment.trim())
+  const sentences = cardSentences(title, locale)
 
   return new ImageResponse(
     <div
@@ -234,7 +265,7 @@ export async function ogImage({
         backgroundSize: "24px 24px",
         color: BRAND.ink,
         padding: 56,
-        fontFamily: SANS_FAMILY,
+        fontFamily: sans,
         // The composition mirrors; the drawing does not.
         ...(rtl && { flexDirection: "row-reverse" }),
       }}
@@ -296,9 +327,10 @@ export async function ogImage({
                     color: "#94a3b8",
                   }
                 : {
-                    fontFamily: MONO_FAMILY,
-                    fontSize: 20,
-                    letterSpacing: "0.14em",
+                    fontFamily: monoFamily,
+                    fontSize: japanese ? 18 : 20,
+                    // Kana take no tracking (docs/i18n/ja.md).
+                    letterSpacing: japanese ? 0 : "0.14em",
                     textTransform: "uppercase",
                     color: "#94a3b8",
                   }
@@ -319,6 +351,13 @@ export async function ogImage({
               ...(rtl && {
                 alignItems: "flex-end",
                 fontFamily: ARABIC_FAMILY,
+                lineHeight: 1.3,
+                letterSpacing: 0,
+              }),
+              // Full-width glyphs: a Japanese headline at Inter's size runs
+              // off its column, and tracking crowds kana.
+              ...(japanese && {
+                fontSize: 60,
                 lineHeight: 1.3,
                 letterSpacing: 0,
               }),
@@ -386,7 +425,7 @@ export async function ogImage({
                   top: text.at.y - baseline,
                   width,
                   height: size,
-                  fontFamily: MONO_FAMILY,
+                  fontFamily: monoFamily,
                   fontSize: size,
                   lineHeight: 1,
                   color: text.color,
@@ -418,6 +457,16 @@ export async function ogImage({
           style: "normal",
         },
         { name: "Geist Mono", data: mono, weight: 400, style: "normal" },
+        ...(kanji
+          ? [
+              {
+                name: JAPANESE_FAMILY,
+                data: kanji,
+                weight: 600 as const,
+                style: "normal" as const,
+              },
+            ]
+          : []),
         {
           name: "Geist Mono Cyrillic",
           data: monoCyrillic,

@@ -33,6 +33,11 @@ const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
       import("@mellowcad/engine/locales/cs").then((module) => module.cs),
     hu: () =>
       import("@mellowcad/engine/locales/hu").then((module) => module.hu),
+    // WHY interface only: Japanese AutoCAD keeps the global names, aliases
+    // and keyword letters and words only its prompts, which are not copied
+    // yet, so its command language is the global one (docs/i18n/ja.md).
+    ja: () =>
+      import("@mellowcad/engine/locales/ja").then((module) => module.ja),
   }
 
 export async function loadEngineLocale(

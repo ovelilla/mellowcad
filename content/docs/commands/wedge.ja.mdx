@@ -1,0 +1,72 @@
+---
+title: "AutoCAD の WEDGE[くさび]コマンド"
+metaTitle: "AutoCAD くさび(WEDGE)の使い方と短縮コマンド WE"
+description: "AutoCAD の WEDGE[くさび](WE)で 3D ソリッドのくさびを作成する手順を解説。2 つのコーナーと高さ、中心、立方体、長さ、2 点。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の WEDGE の短縮コマンドは?","answer":"WE です。入力して[Enter]または[Space]を押し、最初のコーナー、もう一方のコーナー、高さを指定します。0,0、60,40、25 で、このセッションのくさびになります。"},{"question":"くさびはどちら向きに傾斜しますか?","answer":"最初のコーナーの側から、UCS の X 方向に沿って下がります。向きを変えるには、X の小さい位置にもう一方のコーナーを指定して 180° 反転させるか、後から ROTATE で回転させます。"},{"question":"三角柱を作るには?","answer":"くさびが三角柱です。両端が直角三角形で、幅の方向に伸びています。ほかの三角形の場合は、PLINE で閉じた三角形を描き、EXTRUDE で押し出します。"},{"question":"中心からくさびを作るには?","answer":"Center を選んで中心点を指定し、次にコーナー、Cube、Length のいずれかを指定します。くさびは高さ方向も含めてその点を中心にします。"}]
+---
+
+WEDGE[くさび]コマンドは、3D ソリッドのくさびを作成します。上面が一方の端から他方の端へ下がる直方体です。[`BOX`](/docs/commands/box) と同じく、最初のコーナー、もう一方のコーナー、高さの順に尋ねます。高い側は最初のコーナーにあり、傾斜は UCS の X 方向に沿ってもう一方のコーナーの側へ下がります。X の小さい位置にコーナーを指定すると、向きが反転します。高さは UCS の Z 方向に立ち上がり、負の値では下に向かいます。長さ、幅、高さは [`BOX`](/docs/commands/box) と共通の既定値で、[Enter]で使われます。くさびは現在の画層に作成され、1 回の操作で元に戻せます。
+
+[`LIST`](/docs/commands/list) で位置、長さ、幅、高さ、回転がわかり、プロパティ パレットでそれらを入力できます。グリップは [`BOX`](/docs/commands/box) と同じです。[`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) など、MellowCAD の 3D で 3D ソリッドとして扱えます。MellowCAD の 3D はソリッドのみで、まだ部分的な対応です。[`EXPLODE`](/docs/commands/explode) では面ごとのリージョンになります。
+
+- **コマンド：** `WEDGE`
+- **短縮コマンド：** `WE`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`WE` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="wedge" caption="2 つのコーナーと高さで作成した 60 × 40 × 25 のくさび。傾斜は最初のコーナーの側から下がっています。南東から、隠線処理表示スタイルで見たところ。" />
+
+## オプション [#options]
+
+### `Center` (`C`) [#center]
+
+最初のプロンプトで、中心を尋ね、次にコーナー、`Cube`、`Length` のいずれかを尋ねます。くさびは高さ方向も含めてその点を中心とし、高い側は指定したコーナーの反対側になります。
+
+### `Cube` (`C`) [#cube]
+
+もう一方のコーナーのプロンプトで、長さを尋ね、すべての辺がその長さのくさびを作成します。[`BOX`](/docs/commands/box) とは異なり、UCS の X 方向に沿い、負の値では逆向きになります。
+
+### `Length` (`L`) [#length]
+
+もう一方のコーナーのプロンプトで、UCS の X 方向の長さ、次に Y 方向の幅を尋ねます。負の値では逆向きになります。点を指定した場合は距離だけが使われ、方向は使われません。
+
+### `2Point` (`2P`) [#2point]
+
+高さのプロンプトで、2 点を尋ねます。高さはその 2 点間の距離になります。
+
+## まだできないこと [#missing]
+
+[`BOX`](/docs/commands/box) と同じものがありません。ホット グリップからの移動、回転、尺度変更、鏡像、専用の 3D コマンド、コーナーを指定する間の点線の寸法、[`VSCURRENT`](/docs/commands/vscurrent) にない表示スタイルです。平面図では、高い側の下で端点スナップを使うと上面の角が検出されます。AutoCAD では底面の角が検出されます。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke--ru-клин--кл--pl-klin--kl--cs-klín--kl--hu-ék--ek)
+
+## よくある質問 [#questions]
+
+### AutoCAD の WEDGE の短縮コマンドは?
+
+`WE` です。入力して[Enter]または[Space]を押し、最初のコーナー、もう一方のコーナー、高さを指定します。`0,0`、`60,40`、`25` で、このセッションのくさびになります。
+
+### くさびはどちら向きに傾斜しますか?
+
+最初のコーナーの側から、UCS の X 方向に沿って下がります。向きを変えるには、X の小さい位置にもう一方のコーナーを指定して 180° 反転させるか、後から [`ROTATE`](/docs/commands/rotate) で回転させます。
+
+### 三角柱を作るには?
+
+くさびが三角柱です。両端が直角三角形で、幅の方向に伸びています。ほかの三角形の場合は、[`PLINE`](/docs/commands/pline) で閉じた三角形を描き、[`EXTRUDE`](/docs/commands/extrude) で押し出します。
+
+### 中心からくさびを作るには?
+
+`Center` を選んで中心点を指定し、次にコーナー、`Cube`、`Length` のいずれかを指定します。くさびは高さ方向も含めてその点を中心にします。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の BOX\[直方体\]コマンド](/docs/commands/box)
+- [AutoCAD の PYRAMID\[角錐\]コマンド](/docs/commands/pyramid)
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)

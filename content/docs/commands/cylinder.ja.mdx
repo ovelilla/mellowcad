@@ -1,0 +1,88 @@
+---
+title: "AutoCAD の CYLINDER[円柱]コマンド"
+metaTitle: "AutoCAD 円柱(CYLINDER)の使い方と短縮コマンド CYL"
+description: "AutoCAD で 3D ソリッドの円柱を作成する CYLINDER(CYL)の使い方をプロンプト順に解説します。底面、半径、高さ、3P、2P、Ttr、楕円、軸の端点。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の円柱の短縮コマンドは?","answer":"CYL です。入力して[Enter]または[Space]を押し、底面の中心、半径、高さを指定します。0,0、20、40 で、このセッションの円柱になります。"},{"question":"横向きの円柱を作成するには?","answer":"高さのプロンプトで Axis を選び、軸のもう一方の端点を指定します。底面が 0,0,0 なら、点 60,0,0 で円柱が X 方向に横たわります。"},{"question":"中空の円柱やパイプを作成するには?","answer":"同じ中心から、内側を細くした 2 つの円柱を作成し、SUBTRACT を実行します。外側の円柱を選択して[Enter]、内側の円柱を選択して[Enter]を押します。"},{"question":"円柱が円に見えるのはなぜ?","answer":"平面図で真上から見ているためです。ViewCube のコーナー、-VIEW の SEIso、または 3DORBIT でビューを回転します。"}]
+---
+
+CYLINDER[円柱]コマンドは、3D ソリッドの円柱を作成します。底面の中心、半径、高さの順に指定します。底面は中心の Z の位置で UCS の XY 平面上にあり、高さは UCS の Z 方向に上がります。負の値では下に向かい、点で指定すると、[`BOX`](/docs/commands/box) と同じく底面からの距離が高さになります。半径と高さは既定値として提示され、[Enter]で使えます。これらはほかのプリミティブや [`EXTRUDE`](/docs/commands/extrude) と共通です。円柱は現在の画層に作成され、元に戻す 1 回で取り消せます。
+
+円柱はサイズを保持します。[`LIST`](/docs/commands/list) で位置、法線、半径、高さが表示され、プロパティ パレットで半径と高さを入力できます。グリップで移動、高さの設定、底面の 4 分の 1 ごとの位置での半径の設定ができます。[`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) など、MellowCAD の 3D の操作に使える 3D ソリッドです。MellowCAD の 3D は 3D ソリッドのみで、まだ一部対応です。
+
+- **コマンド：** `CYLINDER`
+- **短縮コマンド：** `CYL`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`CYL` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="cylinder" caption="底面の中心から作成した半径 20、高さ 40 の円柱を、南東から隠線処理の表示スタイルで見たところ。" />
+
+## オプション [#options]
+
+### `3P` [#3p]
+
+底面の中心のプロンプトで使います。3 点を尋ね、その 3 点を通り、その平面上にある円が底面になります。3 点が UCS の XY 平面上にあれば、円柱は Z 方向に立ち上がります。
+
+### `2P` [#2p]
+
+底面の中心のプロンプトで使います。底面の直径の両端を尋ねます。2 点目は 1 点目の平面上で読み取られます。
+
+### `Ttr` (`T`) [#ttr]
+
+底面の中心のプロンプトで使います。接線スナップで線分、円、円弧を 2 つ選択し、半径を指定すると、選択した点に最も近い位置で、その高さで両方に接する底面になります。
+
+### `Elliptical` (`E`) [#elliptical]
+
+底面の中心のプロンプトで使います。底面は楕円になります。1 つ目の軸の両端、次に 2 つ目の軸の端点を指定します。または `Center` を選び、中心、1 つ目の軸の半分の長さ、2 つ目の軸の端点を指定します。
+
+### `Diameter` (`D`) [#diameter]
+
+半径のプロンプトで使います。代わりに直径を尋ね、前回の半径の 2 倍を提示します。
+
+### `2Point` (`2P`) [#2point]
+
+高さのプロンプトで使います。2 点を尋ね、その間の距離が高さになります。
+
+### `Axis endpoint` (`A`) [#axis]
+
+高さのプロンプトで使います。軸のもう一方の端点を尋ねます。円柱は底面の中心からその点まで任意の方向に伸び、底面は軸に垂直になります。
+
+## まだできないこと [#missing]
+
+円柱の [`EXPLODE`](/docs/commands/explode)。AutoCAD では 2 つの端面とサーフェスに分解されますが、MellowCAD にはサーフェスがないため、分解できない旨が表示されます。ホット グリップからの移動、回転、尺度変更、鏡像と、底面を越えてドラッグする高さ。半径、楕円の点、軸を指定している間に AutoCAD が表示する点線の寸法。プロパティ パレットで円形の円柱を楕円の円柱に変更する入力。AutoCAD の `DISPSILH` が描くシルエット。平面図で上面の円が底面の円に重なるとき、近接点スナップは底面の円を捉えますが、AutoCAD では上面の円を捉えます。[`VSCURRENT`](/docs/commands/vscurrent) にない、2D ワイヤフレーム、隠線処理、コンセプト以外の表示スタイル。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val--hu-henger--hen)
+
+## よくある質問 [#questions]
+
+### AutoCAD の円柱の短縮コマンドは?
+
+`CYL` です。入力して[Enter]または[Space]を押し、底面の中心、半径、高さを指定します。`0,0`、`20`、`40` で、このセッションの円柱になります。
+
+### 横向きの円柱を作成するには?
+
+高さのプロンプトで `Axis` を選び、軸のもう一方の端点を指定します。底面が `0,0,0` なら、点 `60,0,0` で円柱が X 方向に横たわります。
+
+### 中空の円柱やパイプを作成するには?
+
+同じ中心から、内側を細くした 2 つの円柱を作成し、[`SUBTRACT`](/docs/commands/subtract) を実行します。外側の円柱を選択して[Enter]、内側の円柱を選択して[Enter]を押します。
+
+### 円柱が円に見えるのはなぜ?
+
+平面図で真上から見ているためです。ViewCube のコーナー、`-VIEW` の `SEIso`、または [`3DORBIT`](/docs/commands/3dorbit) でビューを回転します。
+
+## 練習する [#practice]
+
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の CONE\[円錐\]コマンド](/docs/commands/cone)
+- [AutoCAD の BOX\[直方体\]コマンド](/docs/commands/box)
+- [AutoCAD の SUBTRACT\[差\]コマンド](/docs/commands/subtract)
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)

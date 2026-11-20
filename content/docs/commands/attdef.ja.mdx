@@ -1,0 +1,85 @@
+---
+title: "AutoCAD の ATTDEF[属性定義]コマンド"
+metaTitle: "AutoCAD 属性定義(ATTDEF)の使い方と短縮コマンド ATT"
+description: "AutoCAD でブロックの属性を定義する ATTDEF(ATT)の使い方を解説します。モード、名札、プロンプト、既定値、そして文字の配置。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の属性定義の短縮コマンドは?","answer":"ATT と入力し、[Enter]または[Space]を押します。DDATTDEF も使えます。-ATT はコマンド ライン版の -ATTDEF で、ここでは ATTDEF もこれと同じように動作します。AutoCAD のどの言語版でも _ATTDEF が使えます。"},{"question":"AutoCAD で属性付きブロックを作成するには?","answer":"記号を作図し、属性ごとに ATTDEF を実行して、値を表示したい位置に文字を配置します。BLOCK を実行し、基点を指定して、記号と属性を INSERT で尋ねたい順に選択します。以後、そのブロックを INSERT で挿入するたびに、各属性の値が既定値を示して尋ねられます。"},{"question":"名札、プロンプト、既定値の違いは?","answer":"名札は属性を識別する名前です。定義に表示され、EATTEDIT ではフィールドのラベルになります。プロンプトは、INSERT が値を尋ねるときの質問です。既定値は提示される値で、[Enter]でそのまま確定します。"},{"question":"属性定義を編集するには?","answer":"ブロックに含める前にダブルクリックすると、TEXTEDIT で名札、プロンプト、既定値が開きます。ブロックに含めた後は、各参照の値を ATTEDIT または EATTEDIT で編集します。"}]
+---
+
+ATTDEF[属性定義]コマンドは属性を定義します。属性は名札、プロンプト、既定値を持ち、1 行の文字として図面に配置されます。[`BLOCK`](/docs/commands/block) でブロックを作成するときにほかのオブジェクトと一緒に選択すると、そのブロックの各参照がそれぞれ独自の値を持ちます。ドアの番号、部品のコード、部屋の名前などです。ブロックに含めるまで、定義には名札が表示されます。
+
+AutoCAD の ATTDEF は[属性定義]ダイアログを開きますが、MellowCAD にはこのダイアログがありません。ここでは ATTDEF は、AutoCAD のコンソール版と同じく、`-ATTDEF` と同じことをコマンド ラインで尋ねます。現在のモードを表示して変更するモードを尋ね、[Enter]で次に進みます。次は名札です。スペースは使えず(スペースで入力が終わります)、小文字は大文字になります。[Enter]だけを押すと `Tag cannot be null` と表示されます。次に、[`INSERT`](/docs/commands/insert) が値を尋ねるときのプロンプト([Enter]で名札と同じ)、そして既定値を尋ねます。最後に文字の配置を、[`TEXT`](/docs/commands/text) と同じ質問(始点、高さ、回転角度)で尋ねます。高さと位置合わせは TEXT と共通で、どちらで設定しても反映されます。始点で[Enter]を押すと、直前に定義した属性の 1 行下に、その高さ、回転角度、スタイル、位置合わせで配置されるので、ブロックの属性を上から順に並べられます。
+
+- **コマンド：** `ATTDEF`
+- **短縮コマンド：** `ATT`, `DDATTDEF`
+- **パネル：** [整理](/docs/commands#organize)
+- **試す：** [エディタを開き](/ja/draw)、`ATT` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="attdef" caption="ドアの番号札。円の中央に属性 NUM を配置しています。プロンプトは名札と同じ、既定値は 1 で、ブロックに含める準備ができた状態です。" />
+
+## オプション [#options]
+
+### `Invisible` (`I`) [#invisible]
+
+参照に値が表示されなくなります。[`ATTDISP`](/docs/commands/attdisp) で表示をオンにするまで非表示です。各モードは切り替え式で、選ぶたびに `Y` と `N` が切り替わり、モードが再表示されてもう一度尋ねられます。モードは次の ATTDEF でもそのまま使われます。
+
+### `Constant` (`C`) [#constant]
+
+すべての参照が同じ値を持ちます。ATTDEF はプロンプトと既定値の代わりにその値を尋ね、INSERT では尋ねられません。
+
+### `Verify` (`V`) [#verify]
+
+INSERT がすべての値を 1 回ずつ尋ねた後、確認のためにその値をもう一度尋ねます。
+
+### `Preset` (`P`) [#preset]
+
+INSERT は値を尋ねず、各参照は既定値を取ります。
+
+### `Lock position` (`L`) [#lock-position]
+
+初期状態でオンです。属性はブロックが配置した位置に固定されます。
+
+### `Justify` (`J`) [#justify]
+
+TEXT と同じく、文字を点のどこに合わせるかを尋ねます。`Left`、`Center`、`Right`、`Middle`、または上・中・下と左・中央・右を組み合わせた 9 点のいずれかです。始点のプロンプトでは、その名前の点を尋ねられます。中央・中心にすると、値を札の中央に配置できます。
+
+### `Style` (`S`) [#style]
+
+使用する文字スタイルを尋ね、それが現在の文字スタイルになります。`?` で図面の文字スタイルを一覧表示します。
+
+## まだできないこと [#missing]
+
+[属性定義]ダイアログ(ATTDEF はコマンド ラインで尋ねます)。AutoCAD 2027 で[位置を固定]の後に表示される[異尺度対応]と[複数行]のモード、および複数行属性の各行。フィールド、[両端揃え]と[フィット]の位置合わせ、Style の `?` で一覧表示するスタイルを尋ねる操作。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef--cs-atrdef--at--ddattdef--diatrdef---atrdef---at--hu-attdef--att--dpattdef---attdef---att)
+
+## よくある質問 [#questions]
+
+### AutoCAD の属性定義の短縮コマンドは?
+
+`ATT` と入力し、[Enter]または[Space]を押します。`DDATTDEF` も使えます。`-ATT` はコマンド ライン版の `-ATTDEF` で、ここでは ATTDEF もこれと同じように動作します。AutoCAD のどの言語版でも `_ATTDEF` が使えます。
+
+### AutoCAD で属性付きブロックを作成するには?
+
+記号を作図し、属性ごとに ATTDEF を実行して、値を表示したい位置に文字を配置します。[`BLOCK`](/docs/commands/block) を実行し、基点を指定して、記号と属性を INSERT で尋ねたい順に選択します。以後、そのブロックを [`INSERT`](/docs/commands/insert) で挿入するたびに、各属性の値が既定値を示して尋ねられます。
+
+### 名札、プロンプト、既定値の違いは?
+
+名札は属性を識別する名前です。定義に表示され、[`EATTEDIT`](/docs/commands/eattedit) ではフィールドのラベルになります。プロンプトは、INSERT が値を尋ねるときの質問です。既定値は提示される値で、[Enter]でそのまま確定します。
+
+### 属性定義を編集するには?
+
+ブロックに含める前にダブルクリックすると、[`TEXTEDIT`](/docs/commands/textedit) で名札、プロンプト、既定値が開きます。ブロックに含めた後は、各参照の値を [`ATTEDIT`](/docs/commands/attedit) または [`EATTEDIT`](/docs/commands/eattedit) で編集します。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の BLOCK\[ブロック登録\]コマンド](/docs/commands/block)
+- [AutoCAD の INSERT\[ブロック挿入\]コマンド](/docs/commands/insert)
+- [AutoCAD の ATTEDIT\[属性編集\]コマンド](/docs/commands/attedit)
+- [AutoCAD の ATTDISP\[属性表示\]コマンド](/docs/commands/attdisp)
+- [AutoCAD の EATTEDIT\[拡張属性編集\]コマンド](/docs/commands/eattedit)

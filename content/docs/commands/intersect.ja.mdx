@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の INTERSECT[交差]コマンド"
+metaTitle: "AutoCAD 交差(INTERSECT、IN)：ソリッドの共通部分を残す"
+description: "AutoCAD の交差(INTERSECT、IN)の使い方。2 つ以上の 3D ソリッド、または同じ平面上のリージョンを、すべてに共通する部分だけにして残りを削除します。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の交差の短縮コマンドは?","answer":"IN と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _INTERSECT が使えます。"},{"question":"和、差、交差の違いは?","answer":"3 つとも、3D ソリッド、または同じ平面上のリージョンから 1 つのオブジェクトを作成します。UNION はいずれかが占めるすべての部分を残し、SUBTRACT は 1 つ目のセットから 2 つ目のセットを差し引いた部分を残し、INTERSECT はすべてに共通する部分だけを残します。いずれも 1 回の元に戻す操作で、使用したオブジェクトは削除されます。"},{"question":"AutoCAD で線分を交差させるには?","answer":"INTERSECT ではできません。INTERSECT はソリッドとリージョン用で、線分はスキップします。2 本の線分が交わる位置を見つけるには交点オブジェクト スナップでスナップし、線分どうしを接続するには半径 0 の FILLET、TRIM、EXTEND を使います。"},{"question":"交差でオブジェクトが削除されるのはなぜ?","answer":"共通部分がないためです。共通部分がない場合は 「Null solid created - deleted」(リージョンの場合は 「Null region created - deleted」)と表示され、AutoCAD と同様にオブジェクトが削除されます。U で元に戻せます。ソリッドとリージョン、または異なる平面上の 2 つのリージョンはまったく交差されず、「At least 2 solids, surfaces, or coplanar regions must be selected.」 と表示されて何も変更されません。"}]
+---
+
+INTERSECT[交差]コマンドは、2 つ以上の 3D ソリッド、または同じ平面上の 2 つ以上のリージョンに共通する部分だけを残し、残りを削除します。直方体とそれに重なる球からは、平らな面を持つ球が残ります。[`UNION`](/docs/commands/union) と同様に[Enter]を押すまでオブジェクトを尋ね、ソリッドでもリージョンでもないものはスキップします。AutoCAD 2027 と同様に、コマンドの前に選択したセットは解除され、もう一度尋ねられます。ソリッドとリージョンは別々に処理され、リージョンは平面ごとに処理されます。
+
+最初にクリックしたオブジェクトが結果になって画層と色を保持し、ほかのオブジェクトは削除されます。窓選択、交差選択、ALL の場合は、その中で最も新しいオブジェクトが結果になります。結果は複合ソリッドで、もう直方体や球ではなく、履歴もありません。オブジェクトに共通部分がない場合は、AutoCAD と同様に `Null solid created - deleted` または `Null region created - deleted` と表示され、すべて削除されます。コマンド全体が 1 回の元に戻す操作です。MellowCAD の 3D はまだ部分的な対応で、ソリッドはありますが、サーフェスとメッシュはありません。
+
+- **コマンド：** `INTERSECT`
+- **短縮コマンド：** `IN`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`IN` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="intersect" caption="直方体とそれに重なる球を交差したところ。共通部分は 6 つの平らな面を持つ球になります。南東から表示。" />
+
+## まだできないこと [#missing]
+
+サーフェス(ここには存在しません)。MellowCAD にまだ正確な表現がない曲線に沿って交わる曲面。たとえば、軸が一致も平行もしない円柱、円錐、球、トーラス(ただし、2 つの円柱どうしは交差できます)、軸上の平面またはソリッド以外と組み合わせた円錐、軸に直交も軸を通りもしない平面、または軸から外れたソリッドと組み合わせたトーラスや回転ソリッド、平面または同じ方向に押し出された面以外と組み合わせた押し出しソリッド。これらはブール演算の 1 つが失敗したというメッセージで拒否され、ソリッドは元のまま残ります。エッジに接するような切断、ほぼ同じ曲面上にあるが完全には一致しない面、切断とエッジの間のごく薄い隙間も同様です。直方体の面に沿って置かれた円柱は正しい体積で結合されますが、AutoCAD よりエッジと面が 1 つずつ少なくなります。ソリッドの履歴(SOLIDHIST、SHOWHISTORY)は保持されず、フェンスや前回で選択した場合にどのオブジェクトが残るかは未検証です。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#intersect--in--es-intersec--int--pt-br-intersec--int--fr-intersect--ir--it-intersezione--it--de-schnittmenge--sm--ru-пересечение--пер--pl-iloczyn--il--cs-průnik--pn--hu-közösrész--ko)
+
+## よくある質問 [#questions]
+
+### AutoCAD の交差の短縮コマンドは?
+
+`IN` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_INTERSECT` が使えます。
+
+### 和、差、交差の違いは?
+
+3 つとも、3D ソリッド、または同じ平面上のリージョンから 1 つのオブジェクトを作成します。[`UNION`](/docs/commands/union) はいずれかが占めるすべての部分を残し、[`SUBTRACT`](/docs/commands/subtract) は 1 つ目のセットから 2 つ目のセットを差し引いた部分を残し、INTERSECT はすべてに共通する部分だけを残します。いずれも 1 回の元に戻す操作で、使用したオブジェクトは削除されます。
+
+### AutoCAD で線分を交差させるには?
+
+INTERSECT ではできません。INTERSECT はソリッドとリージョン用で、線分はスキップします。2 本の線分が交わる位置を見つけるには交点オブジェクト スナップでスナップし、線分どうしを接続するには半径 0 の [`FILLET`](/docs/commands/fillet)、[`TRIM`](/docs/commands/trim)、[`EXTEND`](/docs/commands/extend) を使います。
+
+### 交差でオブジェクトが削除されるのはなぜ?
+
+共通部分がないためです。共通部分がない場合は `Null solid created - deleted`(リージョンの場合は `Null region created - deleted`)と表示され、AutoCAD と同様にオブジェクトが削除されます。`U` で元に戻せます。ソリッドとリージョン、または異なる平面上の 2 つのリージョンはまったく交差されず、`At least 2 solids, surfaces, or coplanar regions must be selected.` と表示されて何も変更されません。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)
+- [AutoCAD の SUBTRACT\[差\]コマンド](/docs/commands/subtract)
+- [AutoCAD の SLICE\[切断\]コマンド](/docs/commands/slice)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)

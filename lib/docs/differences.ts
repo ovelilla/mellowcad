@@ -137,6 +137,16 @@ export const DIFFERENCES: readonly {
       },
     ],
   },
+  {
+    id: "japanese",
+    sources: [
+      {
+        file: "docs/i18n/ja.md",
+        quote:
+          "**The prompts are English** where Japanese AutoCAD words them in Japanese",
+      },
+    ],
+  },
 ]
 
 /** The page whose sections these are. */

@@ -1,0 +1,67 @@
+---
+title: "AutoCAD の ARRAY[配列複写]コマンド"
+metaTitle: "AutoCAD 配列複写(ARRAY)の使い方と短縮コマンド AR"
+description: "AutoCAD の配列複写(ARRAY、AR)の使い方をプロンプト順に解説します。矩形状、円形状、パス配列複写を、作成前にその場で編集できます。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の配列複写の短縮コマンドは?","answer":"AR と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _ARRAY が使えます。ARRAYRECT、ARRAYPOLAR、ARRAYPATH には短縮コマンドがなく、コマンド名を入力すると種類の質問が省略されます。"},{"question":"円形状に配列複写するには?","answer":"POlar を選ぶか ARRAYPOLAR を実行し、中心点を指定します。選択したオブジェクトがその周りに複写され、最初は 6 個です。数は Items で変え、配置する角度は Fill で設定します。"},{"question":"配列複写を分解するには?","answer":"選択して EXPLODE を実行します。配列複写が項目のオブジェクトに分かれ、各オブジェクトはそれぞれの画層に置かれます。最初から個別の複写にするには、[Enter]を押す前に ASsociative に No と答えます。"},{"question":"作成後に配列複写を変更するには?","answer":"配列複写を選択します。グリップで変更でき、基点の正方形のグリップで移動、矢印で数と間隔を設定します。数の矢印がホットの間に数値を入力すると、それが数になります。プロパティ パレットには列、行、間隔、または項目と角度が表示され、入力し直せます。ARRAYEDIT はまだありません。"}]
+---
+
+ARRAY[配列複写]コマンドは、選択したオブジェクトをパターン状に複写します。列と行に、中心の周りに、またはパスに沿って並べます。オブジェクトを尋ね、次に配列複写の種類を尋ねます([Enter]で矩形状)。選択セットは [`ARRAYRECT`](/docs/commands/arrayrect)、[`ARRAYPOLAR`](/docs/commands/arraypolar)、[`ARRAYPATH`](/docs/commands/arraypath) に渡され、オブジェクトを再び尋ねずに続行します。いずれもすぐに配列複写を表示し、オプションとグリップでその場で編集でき、[Enter]で作成します。1 つの配列複写オブジェクトになるか、自動調整しないと指定した場合は個別の複写になります。実行全体が 1 回の元に戻す操作になり、コマンド プロンプトで[Enter]を押すと ARRAY が繰り返されます。
+
+- **コマンド：** `ARRAY`
+- **短縮コマンド：** `AR`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`AR` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="array" caption="正方形とその中の円を既定値で配列複写したところ。[Enter]で矩形状配列複写になり、4 列 3 行です。" />
+
+## オプション [#options]
+
+### `Rectangular` (`R`) [#rectangular]
+
+列と行、必要なら Z 方向に積み重ねたレベルに配置します。[`ARRAYRECT`](/docs/commands/arrayrect) と同じです。最初は 4 列 3 行で、間隔は選択セットのサイズの 1.5 倍です。
+
+### `PAth` (`PA`) [#path]
+
+線分、円弧、円、ポリラインに沿って配置します。[`ARRAYPATH`](/docs/commands/arraypath) と同じです。パス曲線を尋ね、項目をパスに沿って並べ、パスの向きに合わせて各項目を回転します。
+
+### `POlar` (`PO`) [#polar]
+
+中心点の周りに配置します。[`ARRAYPOLAR`](/docs/commands/arraypolar) と同じです。中心を尋ね、最初は 360° に 6 個の項目を配置します。
+
+## まだできないこと [#missing]
+
+提示される種類は常に矩形状です。AutoCAD の既定値を決めるシステム変数 ARRAYTYPE は読み取りません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma--fr-reseau--re--it-serie--sr--de-reihe--rh--ru-массив--мс--pl-szyk--sz--cs-pole--po--hu-kioszt--ki)
+
+## よくある質問 [#questions]
+
+### AutoCAD の配列複写の短縮コマンドは?
+
+`AR` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_ARRAY` が使えます。[`ARRAYRECT`](/docs/commands/arrayrect)、[`ARRAYPOLAR`](/docs/commands/arraypolar)、[`ARRAYPATH`](/docs/commands/arraypath) には短縮コマンドがなく、コマンド名を入力すると種類の質問が省略されます。
+
+### 円形状に配列複写するには?
+
+`POlar` を選ぶか [`ARRAYPOLAR`](/docs/commands/arraypolar) を実行し、中心点を指定します。選択したオブジェクトがその周りに複写され、最初は 6 個です。数は `Items` で変え、配置する角度は `Fill` で設定します。
+
+### 配列複写を分解するには?
+
+選択して [`EXPLODE`](/docs/commands/explode) を実行します。配列複写が項目のオブジェクトに分かれ、各オブジェクトはそれぞれの画層に置かれます。最初から個別の複写にするには、[Enter]を押す前に `ASsociative` に `No` と答えます。
+
+### 作成後に配列複写を変更するには?
+
+配列複写を選択します。グリップで変更でき、基点の正方形のグリップで移動、矢印で数と間隔を設定します。数の矢印がホットの間に数値を入力すると、それが数になります。プロパティ パレットには列、行、間隔、または項目と角度が表示され、入力し直せます。ARRAYEDIT はまだありません。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の ARRAYRECT\[矩形状配列複写\]コマンド](/docs/commands/arrayrect)
+- [AutoCAD の ARRAYPOLAR\[円形状配列複写\]コマンド](/docs/commands/arraypolar)
+- [AutoCAD の ARRAYPATH\[パス配列複写\]コマンド](/docs/commands/arraypath)
+- [AutoCAD の COPY\[複写\]コマンド](/docs/commands/copy)
+- [AutoCAD の EXPLODE\[分解\]コマンド](/docs/commands/explode)

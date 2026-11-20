@@ -180,6 +180,14 @@
   font-style: normal;
 }
 
+/* Japanese (docs/i18n/ja.md): no italic to fake and no tracking to crowd
+   kana; a line keeps its punctuation off its start. */
+:where([data-mellowcad-editor], [data-mellowcad-editor] *):lang(ja) {
+  letter-spacing: 0;
+  font-style: normal;
+  line-break: strict;
+}
+
 /* Readex Pro reaches 14 px above the baseline and 6 below at 12 px (lam-alef,
    yeh, jeem): a 16 px line would clip it wherever the text truncates. The
    command language's islands carry their own `lang` and keep 16. */

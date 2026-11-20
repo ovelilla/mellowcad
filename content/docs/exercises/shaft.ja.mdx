@@ -1,0 +1,64 @@
+---
+title: "AutoCAD 練習問題：段付き軸"
+metaTitle: "AutoCAD 機械 練習問題：段付き軸"
+description: "AutoCAD の機械系練習問題。段付き軸の半分の外形をポリラインで描いて面取りし、軸線で鏡像化して、長さを直列寸法で記入します。手順付きで、無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次の段付き軸を側面図で描きます(単位は mm)。全長 150 で、直径 30、40、30 の部分の長さはそれぞれ 40、60、50 です。両端は 2 × 2 で面取りします。軸線より上の半分を 1 本のポリラインで描き、面取りしてから鏡像化します。次に、軸を横切って見える稜線、軸線、長さの寸法を描きます。直径はここに示した値です。
+
+- **練習問題：** 中級 · 機械 · 2D
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=shaft)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/shaft" caption="側面図の段付き軸。全長 150、長さの直列寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 上半分を描く [#half]
+
+「外形線」画層で、[`PLINE`](/docs/commands/pline)[ポリライン]コマンドを 1 本、`0,0` から描きます。上へ `0,15`、横へ `40,0`、上へ `0,5`、横へ `60,0`、下へ `0,-5`、横へ `50,0`、下へ `0,-15` で軸線に戻ります。[Enter]で終了します。
+
+<Session name="exercises/shaft/half" caption="1. 上半分を描く" />
+
+### 2. 両端を面取りする [#chamfers]
+
+[`CHAMFER`](/docs/commands/chamfer)[面取り]コマンドで `Distance` を選び、`2` と入力します。2 つ目の距離も、[Enter]で `2` が使われます。`Multiple` を選ぶと、コマンドを再実行せずにコーナーを次々と面取りできます。各端のコーナーで 2 つのセグメントを選択します。
+
+<Session name="exercises/shaft/chamfers" caption="2. 両端を面取りする" />
+
+### 3. 鏡像化する [#mirror]
+
+[`MIRROR`](/docs/commands/mirror)[鏡像]コマンドでポリラインを選択し、[Enter]を押して、対称軸を `0,0` から `150,0`(軸線)まで指定し、[Enter]で元のオブジェクトを残します。
+
+<Session name="exercises/shaft/mirror" caption="3. 鏡像化する" />
+
+### 4. 稜線を描く [#edges]
+
+[`LINE`](/docs/commands/line)[線分]コマンドで、軸を横切って見える稜線を、それぞれ下端から上へ `0,30` で描きます。面取り部は `2,-15` と `148,-15` から、段部は `40,-15` と `100,-15` から描きます。
+
+<Session name="exercises/shaft/edges" caption="4. 稜線を描く" />
+
+### 5. 軸線を描く [#axis]
+
+「中心線」画層で、軸線を `-8,0` から `166,0` 先まで描きます。
+
+<Session name="exercises/shaft/axis" caption="5. 軸線を描く" />
+
+### 6. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンドで最初の長さ 40 を記入し、下側に配置します。[`DIMCONTINUE`](/docs/commands/dimcontinue)[直列寸法記入]コマンドは、その 2 本目の寸法補助線から続けて記入します。# を付けて原点から `#100,-20`、`#150,-15` と入力し、[Enter]を 2 回押して終了します。最後に [`DIMLINEAR`](/docs/commands/dimlinear) コマンドで、全長 150 をさらに下側に記入します。
+
+<Session name="exercises/shaft/dimensions" caption="6. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 等角図の練習問題：段付きブロック](/docs/exercises/isometric-block): 中級 · 機械 · アイソメ
+- [AutoCAD 3D 練習問題：プーリ](/docs/exercises/pulley): 中級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link): 上級 · 機械 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

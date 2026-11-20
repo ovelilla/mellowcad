@@ -253,6 +253,28 @@ html:lang(ar) body,
   font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.25rem);
 }
 
+/* Japanese (docs/i18n/ja.md, "Script and font"), unlayered as Arabic's: the
+   script has no italic, which the browser would fake by slanting the glyphs,
+   and the headlines' negative tracking crowds kana. A Japanese line may break
+   between any two characters: headlines break by phrase where Chrome can
+   (auto-phrase), and running text keeps its punctuation off a line's start
+   (strict). What speaks the command language carries its own `lang`. */
+:lang(ja) {
+  letter-spacing: 0;
+  font-style: normal;
+  line-break: strict;
+}
+
+html:lang(ja) body,
+.text-lead:lang(ja) {
+  line-height: 1.8;
+}
+
+:is(h1, h2, h3, .text-display, .text-hero, .text-h2, .text-h3):lang(ja) {
+  word-break: auto-phrase;
+  line-height: 1.4;
+}
+
 /* Geist Mono has no Arabic but does have a space, 0.6em wide: an Arabic
    label in a mono utility took its letters from Readex Pro and its spaces
    from the mono. Arabic text takes the sans stack; the values of an LTR

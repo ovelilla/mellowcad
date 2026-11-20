@@ -1,0 +1,68 @@
+---
+title: "AutoCAD の PLAN[プラン ビュー]コマンド"
+metaTitle: "AutoCAD 平面ビューに戻す：プラン ビュー(PLAN)の使い方"
+description: "AutoCAD の PLAN[プラン ビュー]で、現在の UCS、保存した UCS、WCS を真上から見る方法を解説します。現在の UCS、UCS 選択、WCS と、平面図に戻る方法。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD で平面ビューに戻すには?","answer":"PLAN と入力し、[Enter]を 2 回押します。2 回目の[Enter]で Current が選ばれます。UCS が回転していて WCS の平面ビューにしたいときは、代わりに World を選びます。"},{"question":"UCS に合わせた平面ビューにするコマンドは?","answer":"PLAN の Current です。X 軸を右に向けて現在の UCS を真上から見ます。先に UCS で UCS を回転してから PLAN を実行して[Enter]を 2 回押すと、回転した平面にまっすぐな向きで作図できます。"},{"question":"平面ビューで図面が回転して表示されるのはなぜ?","answer":"回転した UCS の平面ビューになっているためです。PLAN を実行して World を選ぶと、ワールドの X 軸が右を向く表示に戻ります。UCS で[Enter]を押しても UCS がワールドに戻ります。"},{"question":"PLAN で UCS は変わる?","answer":"いいえ。ビューを回転するだけで、UCS はそのままです。UCS も一緒に回転するのは、VIEW の正投影ビューです。"}]
+---
+
+PLAN[プラン ビュー]コマンドは、UCS の XY 平面を真上から、X 軸が右を向くように見ます。作図したとおりの平面ビューです。どの UCS(現在の UCS、保存した UCS、ワールド座標系)かを尋ね、[Enter]で現在の UCS を選びます。続いて図面全体を表示し、`Regenerating model.` と表示します。
+
+図面内のものは何も移動せず、UCS もそのままです。PLAN はビューを回転するだけです。元に戻す 1 ステップなので、`U` でビューを戻せ、[`ZOOM`](/docs/commands/zoom) の `Previous` で直前のビューに戻れます。[`3DORBIT`](/docs/commands/3dorbit) やアイソメトリックの [`VIEW`](/docs/commands/view) の後で平面図に戻る方法です。MellowCAD の 3D は 3D ソリッドだけで、まだ部分的な対応です。
+
+- **コマンド：** `PLAN`
+- **パネル：** [問い合わせとビュー](/docs/commands#inquiry)
+- **試す：** [エディタを開き](/ja/draw)、`PLAN` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="plan" caption="UCS を Z 軸まわりに 30° 回転し、南西から見た段付きブロック。PLAN と[Enter]でその UCS を真上から見ると、X 軸が右を向き、ブロックは回転して表示されます。" />
+
+## オプション [#options]
+
+### `Current ucs` (`C`) [#current-ucs]
+
+既定で、現在の UCS の平面ビューです。[`UCS`](/docs/commands/ucs) で UCS を Z 軸まわりに 30° 回転した後は、UCS の X 軸が右を向くように、図面が時計回りに 30° 回転して表示されます。傾斜した面に UCS を設定した後は、その面を正面から見ます。
+
+### `Ucs` (`U`) [#ucs]
+
+[`UCS`](/docs/commands/ucs) の `NAmed` で保存した UCS の平面ビューで、名前を入力して指定します。保存されていない名前では、その UCS が見つからないと表示して再度尋ねます。`?` は UCS と同じく保存した UCS を一覧表示し、こちらも再度尋ねます。現在の UCS は変わりません。
+
+### `World` (`W`) [#world]
+
+ワールド座標系の平面ビューです。現在の UCS がどうであっても、最初の状態(X が右、Y が上)で図面を表示し、UCS はそのままです。
+
+## まだできないこと [#missing]
+
+何も作図されていないとき、PLAN はズームをそのままにしますが、AutoCAD では図面範囲を表示します。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta--pt-br-planta--fr-repere--it-piana--de-drsicht--ru-план--pl-plan--cs-půdorys--hu-nnézet)
+
+## よくある質問 [#questions]
+
+### AutoCAD で平面ビューに戻すには?
+
+`PLAN` と入力し、[Enter]を 2 回押します。2 回目の[Enter]で `Current` が選ばれます。UCS が回転していて WCS の平面ビューにしたいときは、代わりに `World` を選びます。
+
+### UCS に合わせた平面ビューにするコマンドは?
+
+PLAN の `Current` です。X 軸を右に向けて現在の UCS を真上から見ます。先に [`UCS`](/docs/commands/ucs) で UCS を回転してから PLAN を実行して[Enter]を 2 回押すと、回転した平面にまっすぐな向きで作図できます。
+
+### 平面ビューで図面が回転して表示されるのはなぜ?
+
+回転した UCS の平面ビューになっているためです。PLAN を実行して `World` を選ぶと、ワールドの X 軸が右を向く表示に戻ります。[`UCS`](/docs/commands/ucs) で[Enter]を押しても UCS がワールドに戻ります。
+
+### PLAN で UCS は変わる?
+
+いいえ。ビューを回転するだけで、UCS はそのままです。UCS も一緒に回転するのは、[`VIEW`](/docs/commands/view) の正投影ビューです。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の UCS\[UCS 管理\]コマンド](/docs/commands/ucs)
+- [AutoCAD の VIEW\[ビュー管理\]コマンド](/docs/commands/view)
+- [AutoCAD の 3DORBIT\[3D オービット\]コマンド](/docs/commands/3dorbit)
+- [AutoCAD の ZOOM\[ズーム\]コマンド](/docs/commands/zoom)
+- [AutoCAD の UCSICON\[UCS アイコン管理\]コマンド](/docs/commands/ucsicon)

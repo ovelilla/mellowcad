@@ -5,6 +5,7 @@ import {
   INTER_SCRIPTS,
   SCRIPT,
   type ScriptNeedingFace,
+  SYSTEM_FACE_SCRIPTS,
 } from "@/i18n/routing"
 
 /** A `next/font` family list: the face, then its metric-matched fallback. */
@@ -46,6 +47,35 @@ export function lettersFontStack(
   return [lettersFace, ...families(primary)].join(", ")
 }
 
+/**
+ * Japanese's faces as each system names them: Apple's Hiragino, Windows' Yu
+ * Gothic UI and Meiryo, Android's and Linux's Noto CJK. WHY no web font: a
+ * Japanese face is split into some 120 `unicode-range` files and a page
+ * fetches dozens of them, far past the landing's budget; Japanese sites,
+ * Autodesk's own among them, take the system's (docs/i18n/ja.md).
+ */
+export const JAPANESE_SYSTEM_FACES = [
+  '"Hiragino Sans"',
+  '"Hiragino Kaku Gothic ProN"',
+  '"Yu Gothic UI"',
+  "Meiryo",
+  '"Noto Sans CJK JP"',
+  '"Noto Sans JP"',
+] as const
+
+/**
+ * The page's font with the system's faces of a script right behind it, before
+ * its fallback: the metric fallback is a local Arial, which has no kana, but
+ * a system left to choose draws Japanese in whatever face it likes best.
+ */
+export function systemFontStack(
+  primary: FontFamily,
+  faces: readonly string[]
+): string {
+  const [face, ...fallbacks] = families(primary)
+  return [face, ...faces, ...fallbacks].join(", ")
+}
+
 /** The faces of the scripts Inter and Geist Mono lack, or draw too heavily. */
 type ScriptFaces = {
   readonly arabic: FontFamily
@@ -66,6 +96,12 @@ export function scriptFontVariables(
 ): CSSProperties | undefined {
   const script = SCRIPT[locale]
   if (isInterScript(script)) return undefined
+  if (isSystemFaceScript(script)) {
+    return {
+      "--font-sans": systemFontStack(fonts.sans, JAPANESE_SYSTEM_FACES),
+      "--font-mono": systemFontStack(fonts.mono, JAPANESE_SYSTEM_FACES),
+    } as CSSProperties
+  }
   if (script === "latin-ext") {
     const letters = fonts["latin-ext"]
     return {
@@ -77,6 +113,12 @@ export function scriptFontVariables(
     "--font-sans": scriptFontStack(fonts.sans, fonts[script]),
     "--font-mono": scriptFontStack(fonts.mono, fonts[script]),
   } as CSSProperties
+}
+
+function isSystemFaceScript(
+  script: (typeof SCRIPT)[AppLocale]
+): script is (typeof SYSTEM_FACE_SCRIPTS)[number] {
+  return (SYSTEM_FACE_SCRIPTS as readonly string[]).includes(script)
 }
 
 function isInterScript(

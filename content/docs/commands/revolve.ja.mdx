@@ -1,0 +1,92 @@
+---
+title: "AutoCAD の REVOLVE[回転ソリッド]コマンド"
+metaTitle: "AutoCAD 回転ソリッド(REVOLVE)の使い方と短縮コマンド REV"
+description: "AutoCAD の REVOLVE[回転ソリッド](REV)で 2D の断面を軸の周りに回転させて 3D ソリッドを作る手順を、軸の指定、オブジェクト、X、Y、Z の順に解説。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の REVOLVE の短縮コマンドは?","answer":"REV と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _REVOLVE が使えます。"},{"question":"AutoCAD で断面を軸の周りに回転させて 3D にするには?","answer":"断面の半分を、軸の線の横に 1 つの閉じたオブジェクト(閉じたポリラインかリージョン)として描きます。REVOLVE を実行して断面を選択し、[Enter]を押します。もう一度[Enter]を押して Object を選び、軸の線を選択するか、軸の両端を指定します。最後に[Enter]で 1 回転させます。"},{"question":"AutoCAD の REVOLVE ができないのはなぜ?","answer":"多くの場合、軸が断面を横切っています。REVOLVE は 「The object should be on one side of the axis.」 と表示して終了します。軸を断面の辺上か、その外側に移動してください。軸上にある辺はかまいません。断面の平面に直交する軸では 「Axis of revolution is perpendicular to plane of revolve curve.」 と表示されます。MellowCAD にはまだサーフェスがないため、開いた断面は受け付けません。"},{"question":"1 回転ではなく一部だけ回転させるには?","answer":"角度のプロンプトで 90 や 270 などの角度を入力します。STart で回転の開始位置をずらし、Reverse で逆向きに回転させます。"}]
+---
+
+REVOLVE[回転ソリッド]コマンドは、閉じた 2D の断面を軸の周りに回転させて 3D ソリッドを作成します。1 辺が軸上にある長方形からは円柱が、軸の横にある円からはリングができます。断面(円、楕円、閉じたポリラインやスプライン、リージョン)を選択して[Enter]を押し、軸を 2 点またはオプションのいずれかで指定してから角度を指定します。[Enter]で 1 回転します。各断面は現在の画層のソリッドになり、DELOBJ の既定どおり削除されます。コマンド全体が 1 回の操作で元に戻せます。
+
+軸は断面と同じ平面上にあり、断面全体が軸の片側になければなりません。そうでないと、角度を尋ねる前に `The object should be on one side of the axis.` と表示されてコマンドが終了します。角度は軸の 1 点目から 2 点目への向きについて右手の法則で回転し、負の角度は逆向きに回転します。MellowCAD の 3D はソリッドのみで、まだ部分的な対応です。AutoCAD ではサーフェスになる開いた断面は受け付けません。
+
+- **コマンド：** `REVOLVE`
+- **短縮コマンド：** `REV`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`REV` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="revolve" caption="フランジ付きの断面を Y 軸の周りに 1 回転させた糸巻き。南東から、隠線処理表示スタイルで見たところ。" />
+
+## オプション [#options]
+
+### `MOde` (`MO`) [#mode]
+
+[`EXTRUDE`](/docs/commands/extrude) と同様に、`SOlid` か `SUrface` かを尋ねます。サーフェス オブジェクトがまだないため、既定の `SOlid` だけを受け付けます。
+
+### `Object` (`O`) [#object]
+
+軸のプロンプトの既定値なので、[Enter]で選択されます。線分、ポリライン、円弧、スプラインを選択すると、その両端を結ぶ直線が軸になり、クリックした位置に近い方の端点が始点になります。閉じたオブジェクトには端点がないため、`Cannot get axis direction from a closed curve or edge.` と表示されてコマンドが終了します。
+
+### `X` [#x]
+
+UCS の原点を通る X 軸です。
+
+### `Y` [#y]
+
+UCS の原点を通る Y 軸です。このセッションのように Y 軸の右側に描いた断面は、Y 軸に沿って横たわる部品になります。
+
+### `Z` [#z]
+
+UCS の原点を通る Z 軸です。UCS の XY 平面上の断面は Z 軸に直交するため、REVOLVE は `Axis of revolution is perpendicular to plane of revolve curve.` と表示して終了します。Z は立てて描いた断面に使います。
+
+### `STart angle` (`ST`) [#start]
+
+角度のプロンプトで、回転を始める角度を指定します。既定値は常に 0 です。断面をまずその角度まで回転させてから、角度を再び尋ねます。
+
+### `Reverse` (`R`) [#reverse]
+
+軸の向きを反転して角度を逆向きにし、角度を再び尋ねます。
+
+### `EXpression` (`EX`) [#expression]
+
+[`EXTRUDE`](/docs/commands/extrude) と同様に、角度を算術式で指定します。
+
+## まだできないこと [#missing]
+
+断面の平面上にない軸はサポートされません。AutoCAD ではこの場合、断面がサーフェスとして回転されますが、ここでは REVOLVE が `Unable to revolve the selected object.` と表示して終了します。楕円弧やソリッドのエッジをオブジェクトの軸にすることはできません。サーフェス オブジェクトがまだないため、SUrface モードと開いた断面もありません。角度を指定する間、プレビューはカーソルに合わせて回転せず、1 回転全体が表示されます。回転ソリッドの [`EXPLODE`](/docs/commands/explode)(AutoCAD ではサーフェスとリージョンになります)、グリップ、プロパティ パレットでの角度の編集もありません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#revolve--rev--es-revolucion--rv--pt-br-revolucao--rev--fr-revolution--rev--it-rivoluzione--riv--de-rotation--rot--ru-вращать--вщ--pl-przekręć--przk--cs-orotuj--ort--hu-megforgat--mfr)
+
+## よくある質問 [#questions]
+
+### AutoCAD の REVOLVE の短縮コマンドは?
+
+`REV` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_REVOLVE` が使えます。
+
+### AutoCAD で断面を軸の周りに回転させて 3D にするには?
+
+断面の半分を、軸の線の横に 1 つの閉じたオブジェクト(閉じたポリラインかリージョン)として描きます。REVOLVE を実行して断面を選択し、[Enter]を押します。もう一度[Enter]を押して `Object` を選び、軸の線を選択するか、軸の両端を指定します。最後に[Enter]で 1 回転させます。
+
+### AutoCAD の REVOLVE ができないのはなぜ?
+
+多くの場合、軸が断面を横切っています。REVOLVE は `The object should be on one side of the axis.` と表示して終了します。軸を断面の辺上か、その外側に移動してください。軸上にある辺はかまいません。断面の平面に直交する軸では `Axis of revolution is perpendicular to plane of revolve curve.` と表示されます。MellowCAD にはまだサーフェスがないため、開いた断面は受け付けません。
+
+### 1 回転ではなく一部だけ回転させるには?
+
+角度のプロンプトで 90 や 270 などの角度を入力します。`STart` で回転の開始位置をずらし、`Reverse` で逆向きに回転させます。
+
+## 練習する [#practice]
+
+- [AutoCAD 3D 練習問題：プーリ](/docs/exercises/pulley)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の EXTRUDE\[押し出し\]コマンド](/docs/commands/extrude)
+- [AutoCAD の PRESSPULL\[境界引き伸ばし\]コマンド](/docs/commands/presspull)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)

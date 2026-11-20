@@ -1,0 +1,48 @@
+---
+title: "AutoCAD 3D 練習問題：プーリ"
+metaTitle: "AutoCAD 3D 練習問題：回転でプーリを作る"
+description: "AutoCAD 3D の機械系練習問題。プーリの半断面を閉じたポリラインで描き、Y 軸を中心に回転してソリッドにします。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次のプーリを、半断面を軸の周りに回転させてモデリングします(単位は mm)。直径 20 の軸穴、長さ 30、直径 40 のハブ、厚さ 10 のウェブ、幅 24 で直径 90 から 110 までのリムがあり、リムはハブの中央に位置します。断面は Y 軸に沿った軸からの距離で描くため、各直径はその半分の値で描きます。
+
+- **練習問題：** 中級 · 機械 · 3D ソリッド
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=pulley)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/pulley" caption="軸の横に描いたプーリの半断面。軸からの距離の寸法付き。" />
+
+<Session name="exercises/pulley/model" caption="ソリッドとしてのプーリ。南東から見た、コンセプト表示スタイル。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 半断面を描く [#profile]
+
+「外形線」画層で、閉じた [`PLINE`](/docs/commands/pline)[ポリライン]を 1 本、`10,0` から描きます。以降の各点は直前の点からの距離で、`10,0`、`0,10`、`25,0`、`0,-7`、`10,0`、`0,24`、`-10,0`、`0,-7`、`-25,0`、`0,10`、`-10,0` と入力し、`Close` を選びます。
+
+<Session name="exercises/pulley/profile" caption="1. 半断面を描く" />
+
+### 2. ビューを回転する [#view]
+
+`-VIEW` コマンドの `SEIso` で、南東の上方から見ます。[`VSCURRENT`](/docs/commands/vscurrent)[ビューポート表示スタイル]コマンドの `Conceptual` で面に陰影が付き、旋削部品の形が最もよくわかります。
+
+<Session name="exercises/pulley/view" caption="2. ビューを回転する" />
+
+### 3. 回転する [#revolve]
+
+[`REVOLVE`](/docs/commands/revolve)[回転ソリッド]コマンドで断面を選択し、[Enter]を押して、`Y` を選びます。Y 軸がプーリの軸です。[Enter]で既定の角度(1 回転)を確定します。[`ZOOM`](/docs/commands/zoom)[ズーム]コマンドの `Extents` で全体を表示し、尺度 `0.8x` で周囲に余白を残します。
+
+<Session name="exercises/pulley/revolve" caption="3. 回転する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link): 上級 · 機械 · 2D
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block): 上級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

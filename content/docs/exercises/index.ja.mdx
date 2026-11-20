@@ -1,0 +1,166 @@
+---
+title: "AutoCAD 練習問題"
+metaTitle: "AutoCAD 練習図面・練習問題(無料、解答付き)"
+description: "初心者から使える AutoCAD の練習図面。2D、アイソメ、3D の問題を手順ごとに解説し、無料のオンライン エディタで図面付きで開けます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の練習問題はどこにありますか?","answer":"ここにあります。各練習問題には寸法付きの図面、練習するコマンド、手順ごとの解答があり、AutoCAD と同じように動く無料のエディタでブラウザから開けます。初級から始めてください。使うコマンドはそれぞれ、その機能と尋ねるオプションの解説につながっています。"},{"question":"AutoCAD を無料でオンライン練習できますか?","answer":"はい。MellowCAD はブラウザで動き、無料でアカウントも不要です。AutoCAD のコマンドと短縮コマンドを日本語版 AutoCAD と同じ英語の名前で入力し、同じ順序、同じオプションの文字でプロンプトに答えます。ただし AutoCAD ではありません。DXF ファイルは開いて保存できますが、DWG にはまだ対応しておらず、3D ソリッドも一部対応です。"},{"question":"練習問題に解答はありますか?","answer":"すべての練習問題に、図面の下に手順ごとの解答があります。エンジンが各手順を作図し、コマンド ラインの履歴を書き出すので、自分の履歴と 1 行ずつ比べられます。"},{"question":"練習問題を印刷したり PDF で保存したりできますか?","answer":"はい。練習問題のページは単独で、白地に濃い線で印刷され、図面が先、手順が後になります。ブラウザの印刷ダイアログで PDF として保存できます。"}]
+---
+
+AutoCAD を練習するための図面です。最初のガスケットから 3D ソリッドまで、それぞれに寸法、練習するコマンド、手順ごとの解答があります。エンジンが各手順を作図し、コマンド ラインの履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。エディタで開くと、その図面が自分で作図するスペースの隣に表示されます。ブラウザの中で動き、インストールもアカウントの作成も不要です。
+
+## 初級 [#beginner]
+
+### AutoCAD 練習問題：ガスケット [#gasket]
+
+<Session name="exercises/gasket" caption="120 × 80 のガスケット、寸法付き。" />
+
+AutoCAD の初心者向け練習問題。角を丸めたプレート、中央の穴、1 つから複写する 4 つの穴、中心線と寸法を順に描きます。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 初級 · 機械 · 2D
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket)
+
+### AutoCAD 練習問題：L 字ブラケット [#l-bracket]
+
+<Session name="exercises/l-bracket" caption="100 × 80 の L 字ブラケット。左下のコーナーからの寸法付き。" />
+
+AutoCAD の初心者向け練習問題。相対座標で L 字ブラケットの外形、フィレット、2 つの穴、並列寸法を描きます。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 初級 · 機械 · 2D
+- **コマンド：** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket)
+
+### AutoCAD 練習問題：階段の平面図 [#stairs]
+
+<Session name="exercises/stairs" caption="直階段の平面図。280 × 100 cm、昇り方向を示す矢印付き。" />
+
+AutoCAD の建築練習問題。直階段の平面図を、1 本の線と矩形状配列複写による 10 段の踏面、昇り方向の矢印、寸法で描きます。手順付きで、無料で練習できます。
+
+- **練習問題：** 初級 · 建築 · 2D
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`LINE`](/docs/commands/line), [`ARRAYRECT`](/docs/commands/arrayrect), [`PLINE`](/docs/commands/pline), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs)
+
+### AutoCAD 3D 練習問題：取付プレート [#mounting-plate]
+
+<Session name="exercises/mounting-plate" caption="100 × 60 で穴が 4 つあるプレートの外形、寸法付き。" />
+
+AutoCAD 3D の初心者向け練習問題。リージョンを作成して穴を差し引き、1 回の押し出しで取付プレートのソリッドにします。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 初級 · 機械 · 3D ソリッド
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+
+## 中級 [#intermediate]
+
+### AutoCAD 練習問題：フランジ [#flange]
+
+<Session name="exercises/flange" caption="外径 140 のフランジ。キー溝、8 つの穴、直径寸法付き。" />
+
+AutoCAD の機械系練習図面。軸穴にキー溝をトリムで切り込み、8 つの穴を円形状配列複写して、中心線と直径寸法を記入します。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 中級 · 機械 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange)
+
+### AutoCAD 練習問題：丸テーブルと椅子 [#round-table]
+
+<Session name="exercises/round-table" caption="平面図の直径 120 の丸テーブルと椅子 6 脚。cm 単位の寸法付き。" />
+
+AutoCAD の建築練習問題。丸テーブルと 6 脚の椅子を、椅子 1 脚とテーブル中心の円形状配列複写で描き、寸法を記入します。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 中級 · 建築 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- [AutoCAD 練習問題：丸テーブルと椅子](/docs/exercises/round-table)
+
+### AutoCAD 練習問題：敷地の区画 [#plot-of-land]
+
+<Session name="exercises/plot-of-land" caption="5 辺の敷地(単位は m)。各辺と 1 つの角度の寸法付き。" />
+
+AutoCAD の土木練習問題。各辺の長さと角度から極座標で敷地を描き、面積を計測して寸法を記入します。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 中級 · 土木 · 2D
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- [AutoCAD 練習問題：敷地の区画](/docs/exercises/plot-of-land)
+
+### AutoCAD 練習問題：段付き軸 [#shaft]
+
+<Session name="exercises/shaft" caption="側面図の段付き軸。全長 150、長さの直列寸法付き。" />
+
+AutoCAD の機械系練習問題。段付き軸の半分の外形をポリラインで描いて面取りし、軸線で鏡像化して、長さを直列寸法で記入します。手順付きで、無料で練習できます。
+
+- **練習問題：** 中級 · 機械 · 2D
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft)
+
+### AutoCAD 等角図の練習問題：段付きブロック [#isometric-block]
+
+<Session name="exercises/isometric-block" caption="等角図の段付きブロック。長さ 60、奥行き 40、高さ 40、各辺に沿った寸法付き。" />
+
+AutoCAD でアイソメ図(等角図)を描く練習問題。段付きブロックを LINE\[線分\]と極座標で 30°、90°、150° の軸に沿って描き、寸法を記入します。手順付きで無料です。
+
+- **練習問題：** 中級 · 機械 · アイソメ
+- **コマンド：** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- [AutoCAD 等角図の練習問題：段付きブロック](/docs/exercises/isometric-block)
+
+### AutoCAD 3D 練習問題：プーリ [#pulley]
+
+<Session name="exercises/pulley" caption="軸の横に描いたプーリの半断面。軸からの距離の寸法付き。" />
+
+AutoCAD 3D の機械系練習問題。プーリの半断面を閉じたポリラインで描き、Y 軸を中心に回転してソリッドにします。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 中級 · 機械 · 3D ソリッド
+- **コマンド：** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D 練習問題：プーリ](/docs/exercises/pulley)
+
+## 上級 [#advanced]
+
+### AutoCAD 練習問題：接線でつなぐリンク [#link]
+
+<Session name="exercises/link" caption="中心間 90 の 2 つのボスを接線で結んだリンク、寸法付き。" />
+
+AutoCAD の上級練習問題。2 つのボスを接線オブジェクト スナップで両方に接する線で結び、間の円弧をトリムして寸法を記入します。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 上級 · 機械 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link)
+
+### AutoCAD 3D 練習問題：軸受ブロック [#bearing-block]
+
+<Session name="exercises/bearing-block" caption="軸受ブロックの平面図。100 × 60、ボス、軸穴、ボルト穴の寸法付き。" />
+
+AutoCAD 3D の機械系練習問題。軸受ブロックを押し出しと和で作成し、軸穴と 2 つのボルト穴を円柱の差で抜きます。手順付きで、ブラウザで無料で練習できます。
+
+- **練習問題：** 上級 · 機械 · 3D ソリッド
+- **コマンド：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## ステップ バイ ステップ ガイド [#guides]
+
+練習問題で使う技能を 1 つずつ解説します。点の入力、住宅の間取り図、2D の図面からソリッドへ。各ガイドで、手順ごとの図面とその履歴を示します。
+
+- [AutoCAD の座標入力](/docs/coordinates): AutoCAD の座標入力の方法。絶対座標、相対座標、極座標での点の指定、長さと角度を指定した線分、極トラッキングを解説します。ブラウザで無料で練習できます。
+- [AutoCAD で間取り図を描く](/docs/floor-plan): AutoCAD での間取り図・平面図の書き方。OFFSET で外壁、内壁を作り、TRIM で開口部を切り、開閉軌跡付きのドア、窓、寸法までを順に描きます。
+- [AutoCAD で 2D から 3D へ](/docs/2d-to-3d): AutoCAD で 2D 図面を 3D ソリッドにする方法。閉じたプロファイルの押し出し、境界引き伸ばし、回転、和と差を解説します。ブラウザで無料の 3D ソリッド(一部対応)。
+
+## 練習問題の使い方 [#how]
+
+練習問題は、寸法付きの図面が原点の左側に置かれた状態でエディタに開きます。解答と同じく、0,0 から自分の図面を作図してください。作図したものは、その練習問題専用としてこのブラウザに保存されます。作業中だった図面はそのまま残り、エディタを単独で開くと元に戻ります。練習問題をやり直すには、NEW を実行してから、そのページから開き直します。各ページは単独で印刷でき、図面が先、手順が後に印刷されます。ブラウザの印刷ダイアログで PDF として保存できます。
+
+## よくある質問 [#questions]
+
+### AutoCAD の練習問題はどこにありますか?
+
+ここにあります。各練習問題には寸法付きの図面、練習するコマンド、手順ごとの解答があり、AutoCAD と同じように動く無料のエディタでブラウザから開けます。初級から始めてください。使うコマンドはそれぞれ、その機能と尋ねるオプションの解説につながっています。
+
+### AutoCAD を無料でオンライン練習できますか?
+
+はい。MellowCAD はブラウザで動き、無料でアカウントも不要です。AutoCAD のコマンドと短縮コマンドを日本語版 AutoCAD と同じ英語の名前で入力し、同じ順序、同じオプションの文字でプロンプトに答えます。ただし AutoCAD ではありません。DXF ファイルは開いて保存できますが、DWG にはまだ対応しておらず、3D ソリッドも一部対応です。
+
+### 練習問題に解答はありますか?
+
+すべての練習問題に、図面の下に手順ごとの解答があります。エンジンが各手順を作図し、コマンド ラインの履歴を書き出すので、自分の履歴と 1 行ずつ比べられます。
+
+### 練習問題を印刷したり PDF で保存したりできますか?
+
+はい。練習問題のページは単独で、白地に濃い線で印刷され、図面が先、手順が後になります。ブラウザの印刷ダイアログで PDF として保存できます。

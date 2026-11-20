@@ -1,0 +1,64 @@
+---
+title: "AutoCAD の SUBTRACT[差]コマンド"
+metaTitle: "AutoCAD 差(SUBTRACT)でソリッドとリージョンをくり抜く"
+description: "AutoCAD の SUBTRACT[差](SU)の使い方を解説。残すソリッドやリージョン、[Enter]、そこから差し引くもの。穴あけや面積の差し引きも。オンラインで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の SUBTRACT の短縮コマンドは?","answer":"SU と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _SUBTRACT が使えます。"},{"question":"AutoCAD でソリッドから別のソリッドを差し引くには?","answer":"差し引くソリッドを、もう一方と重なる位置に作成します。穴なら直方体を貫く円柱です。SUBTRACT を実行し、直方体を選択して[Enter]、円柱を選択して[Enter]を押します。直方体に穴が残り、円柱は消えます。最初に選択したものが残るため、順序が重要です。"},{"question":"AutoCAD の差(SUBTRACT)ができないのはなぜ?","answer":"多くの場合は順序です。残すものを 1 つ目の選択セットに、差し引くものを 2 つ目に入れます。1 つ目にソリッドもリージョンもない場合や、2 つ目に 1 つ目にないものが含まれていない場合は、「No solids, surfaces, or regions selected.」 と表示して終了します。リージョンからソリッドを、または別の平面のリージョンを差し引くなど、2 つ目のものを 1 つ目から差し引けない場合は、「At least two solids, surfaces, or coplanar regions must be selected.」 と表示して何も変更しません。線分やポリラインは、先にリージョンにする必要があります。ブール演算が 1 つ失敗したと表示される場合は、ソリッドの交わり方を MellowCAD がまだ計算できないため、そのまま残ります。"},{"question":"AutoCAD で面積を差し引くには?","answer":"2D の図形から別の図形をくり抜くには、両方を REGION でリージョンにし、外側から内側を SUBTRACT します。円を差し引いた正方形は、穴のあいた 1 つのリージョンになります。図面を変えずに面積を測るには、AREA の Subtract で合計から領域を差し引きます。"},{"question":"オブジェクトを削除せずに差し引くには?","answer":"SUBTRACT は、AutoCAD と同様に差し引いたものを削除します。残すには、先に同じ位置にコピーします。COPY でオブジェクトを選択して[Enter]、基点に 0,0 を指定し、もう一度[Enter]で 0,0 だけ移動した、つまり同じ位置にコピーします。SUBTRACT はその 2 つのうち 1 つを使います。"}]
+---
+
+SUBTRACT[差]コマンドは、3D ソリッドからほかのソリッドを、または同じ平面上のリージョンからリージョンを差し引きます。直方体から円柱を差し引くと貫通穴が残り、正方形から円を差し引くと穴のあいた正方形になります。質問は 2 回です。まず `Select solids, surfaces, and regions to subtract from ..` と表示し、[Enter]を押すまで残すオブジェクトを尋ねます。次に `Select solids, surfaces, and regions to subtract ..` と表示し、再び[Enter]を押すまで差し引くオブジェクトを尋ねます。AutoCAD 2027 と同様に、実行前に選択されていた選択セットは破棄されて改めて尋ねられます。
+
+1 つ目の選択セットのソリッドは 1 つのソリッドになり、2 つ目の選択セットのすべてのソリッドが、重なっているかどうかにかかわらず、そこから差し引かれて削除されます。リージョンは平面ごとに処理されます。1 つ目の選択セットのリージョンは平面ごとに結合され、同じ平面にある 2 つ目の選択セットのリージョンがそこから差し引かれて削除されます。1 つ目の選択セットのリージョンがない平面にあるリージョンはそのまま残ります。ソリッドの結果は複合ソリッドで、もう直方体や円柱ではなく、履歴もありません。何も残らない場合は `Null solid created - deleted` または `Null region created - deleted` と表示して削除します。コマンド全体が 1 回の操作で元に戻せます。MellowCAD の 3D はまだ部分的な対応で、ソリッドはありますが、サーフェスとメッシュはありません。
+
+- **コマンド：** `SUBTRACT`
+- **短縮コマンド：** `SU`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`SU` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="subtract" caption="SUBTRACT で直方体から円柱を差し引き、貫通穴をあけたところ。先に直方体、次に円柱を選択しています。" />
+
+## まだできないこと [#missing]
+
+サーフェスはここにはありません。MellowCAD がまだ厳密な形を持たない曲線で交わる曲面も扱えません。軸が一致も平行もしない円柱、円錐、球、トーラス(2 つの円柱は交差してもかまいません)、軸上の平面またはソリッド以外と組み合わせた円錐、軸に直交も軸を通りもしない平面や、軸から外れたソリッドと組み合わせたトーラスや回転ソリッド、平面または同じ方向に押し出された面以外と組み合わせた押し出しソリッドがこれにあたります。これらは受け付けられず、ソリッドはそのまま残ります。エッジに接するように交わる切断、ほぼ同じ面上にあるが完全には一致しない面、切断とエッジの間のごく薄い部分も同様です。SUBTRACT の後の前回選択は、前回の選択セットがないと表示されます。AutoCAD では削除されたオブジェクトが見つかりません。ソリッドの履歴(SOLIDHIST、SHOWHISTORY)は保持されません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su--fr-soustraction--su--it-sottrai--sot--de-differenz--di--ru-вычитание--выч--pl-różnica--roz--cs-rozdíl--rz--hu-kivon--kv)
+
+## よくある質問 [#questions]
+
+### AutoCAD の SUBTRACT の短縮コマンドは?
+
+`SU` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_SUBTRACT` が使えます。
+
+### AutoCAD でソリッドから別のソリッドを差し引くには?
+
+差し引くソリッドを、もう一方と重なる位置に作成します。穴なら直方体を貫く円柱です。SUBTRACT を実行し、直方体を選択して[Enter]、円柱を選択して[Enter]を押します。直方体に穴が残り、円柱は消えます。最初に選択したものが残るため、順序が重要です。
+
+### AutoCAD の差(SUBTRACT)ができないのはなぜ?
+
+多くの場合は順序です。残すものを 1 つ目の選択セットに、差し引くものを 2 つ目に入れます。1 つ目にソリッドもリージョンもない場合や、2 つ目に 1 つ目にないものが含まれていない場合は、`No solids, surfaces, or regions selected.` と表示して終了します。リージョンからソリッドを、または別の平面のリージョンを差し引くなど、2 つ目のものを 1 つ目から差し引けない場合は、`At least two solids, surfaces, or coplanar regions must be selected.` と表示して何も変更しません。線分やポリラインは、先にリージョンにする必要があります。ブール演算が 1 つ失敗したと表示される場合は、ソリッドの交わり方を MellowCAD がまだ計算できないため、そのまま残ります。
+
+### AutoCAD で面積を差し引くには?
+
+2D の図形から別の図形をくり抜くには、両方を [`REGION`](/docs/commands/region) でリージョンにし、外側から内側を SUBTRACT します。円を差し引いた正方形は、穴のあいた 1 つのリージョンになります。図面を変えずに面積を測るには、[`AREA`](/docs/commands/area) の `Subtract` で合計から領域を差し引きます。
+
+### オブジェクトを削除せずに差し引くには?
+
+SUBTRACT は、AutoCAD と同様に差し引いたものを削除します。残すには、先に同じ位置にコピーします。[`COPY`](/docs/commands/copy) でオブジェクトを選択して[Enter]、基点に 0,0 を指定し、もう一度[Enter]で 0,0 だけ移動した、つまり同じ位置にコピーします。SUBTRACT はその 2 つのうち 1 つを使います。
+
+## 練習する [#practice]
+
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate)
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の UNION\[和\]コマンド](/docs/commands/union)
+- [AutoCAD の INTERSECT\[交差\]コマンド](/docs/commands/intersect)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)
+- [AutoCAD の CYLINDER\[円柱\]コマンド](/docs/commands/cylinder)
+- [AutoCAD の SLICE\[切断\]コマンド](/docs/commands/slice)

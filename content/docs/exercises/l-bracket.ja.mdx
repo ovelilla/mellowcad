@@ -1,0 +1,52 @@
+---
+title: "AutoCAD 練習問題：L 字ブラケット"
+metaTitle: "AutoCAD 練習問題 初心者向け：L 字ブラケット"
+description: "AutoCAD の初心者向け練習問題。相対座標で L 字ブラケットの外形、フィレット、2 つの穴、並列寸法を描きます。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次のブラケットを描きます(単位は mm)。長さ 100、高さ 20 の底部と、幅 30、高さ 80 の立ち上がりからなり、内側のコーナーは半径 10 で丸めます。底部に直径 8、立ち上がりに直径 10 の穴があり、それぞれの部分の中央に位置します。外形は 1 回の [`LINE`](/docs/commands/line)[線分]コマンドで描き、各点は直前の点からの距離として入力します。寸法はすべて左下のコーナーから記入します。
+
+- **練習問題：** 初級 · 機械 · 2D
+- **コマンド：** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=l-bracket)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/l-bracket" caption="100 × 80 の L 字ブラケット。左下のコーナーからの寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 外形を描く [#outline]
+
+「外形線」画層で、[`LINE`](/docs/commands/line) コマンドを `0,0` から始め、以降の各点を直前の点からの距離で `100,0`、`0,20`、`-70,0`、`0,60`、`-30,0` と入力します。`Close` で最後の辺を始点まで描き、コマンドを終了します。
+
+<Session name="exercises/l-bracket/outline" caption="1. 外形を描く" />
+
+### 2. 内側のコーナーを丸める [#fillet]
+
+[`FILLET`](/docs/commands/fillet)[フィレット]コマンドで `Radius` を選び、`10` と入力して、内側のコーナーで交わる 2 本の線(底部の上辺と立ち上がりの側辺)を選択します。
+
+<Session name="exercises/l-bracket/fillet" caption="2. 内側のコーナーを丸める" />
+
+### 3. 穴を描く [#holes]
+
+[`CIRCLE`](/docs/commands/circle)[円]コマンドで、それぞれ `Diameter` を指定して 2 つの円を描きます。底部の `80,10` に `8`、立ち上がりの `15,65` に `10` です。
+
+<Session name="exercises/l-bracket/holes" caption="3. 穴を描く" />
+
+### 4. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンドで `0,0` から底部の穴 `80,10` までの寸法を記入し、下側に配置します(80)。[`DIMBASELINE`](/docs/commands/dimbaseline)[並列寸法記入]コマンドは、同じ 1 本目の寸法補助線から続けて記入します。右端 `#100,0` を入力し(# は原点からの位置を表します)、[Enter]を 2 回押して終了します。左側も同様に、上の穴まで、次に上端 `#0,80` まで記入します。最後に、フィレットに [`DIMRADIUS`](/docs/commands/dimradius)[半径寸法記入]コマンド、各穴に [`DIMDIAMETER`](/docs/commands/dimdiameter)[直径寸法記入]コマンドで記入して完成です。
+
+<Session name="exercises/l-bracket/dimensions" caption="4. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：階段の平面図](/docs/exercises/stairs): 初級 · 建築 · 2D
+- [AutoCAD 3D 練習問題：取付プレート](/docs/exercises/mounting-plate): 初級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題：フランジ](/docs/exercises/flange): 中級 · 機械 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

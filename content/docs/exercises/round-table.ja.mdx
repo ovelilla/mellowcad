@@ -1,0 +1,52 @@
+---
+title: "AutoCAD 練習問題：丸テーブルと椅子"
+metaTitle: "AutoCAD 建築 練習問題：丸テーブルと椅子 6 脚"
+description: "AutoCAD の建築練習問題。丸テーブルと 6 脚の椅子を、椅子 1 脚とテーブル中心の円形状配列複写で描き、寸法を記入します。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+直径 120 の丸テーブルと 6 脚の椅子を描きます(単位は cm)。各椅子は、44 × 40 で角を半径 4 で丸めた座面と、奥行き 8 の背もたれからなり、座面の前端はテーブルの縁から 8 離れています。テーブルの上側に椅子を 1 脚描き、円形状配列複写で 6 脚すべてを配置します。この図面の寸法尺度はセンチメートル用に設定されています。
+
+- **練習問題：** 中級 · 建築 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=round-table)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/round-table" caption="平面図の直径 120 の丸テーブルと椅子 6 脚。cm 単位の寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. テーブルを描く [#table]
+
+「外形線」画層で、[`CIRCLE`](/docs/commands/circle)[円]コマンドを `0,0` に `Diameter` `120` で描きます。
+
+<Session name="exercises/round-table/table" caption="1. テーブルを描く" />
+
+### 2. 椅子を描く [#chair]
+
+テーブルの上側に座面を描きます。[`RECTANG`](/docs/commands/rectang)[長方形]コマンドを `Fillet` `4` で使い、`-22,68` から `44,40` 先まで描きます。次に、フィレットを `0` に戻して、背もたれを `-22,108` から `44,8` 先まで描きます。[`RECTANG`](/docs/commands/rectang) コマンドは、変更するまでフィレットの半径を保持します。
+
+<Session name="exercises/round-table/chair" caption="2. 椅子を描く" />
+
+### 3. 椅子を配列複写する [#array]
+
+[`ARRAYPOLAR`](/docs/commands/arraypolar)[円形状配列複写]コマンドで座面と背もたれを選択し、[Enter]を押して、テーブルの中心 `0,0` を指定してから、`Items` で `6` を指定します。各椅子は配置時に回転するため、6 脚すべてがテーブルの方を向きます。
+
+<Session name="exercises/round-table/array" caption="3. 椅子を配列複写する" />
+
+### 4. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMDIAMETER`](/docs/commands/dimdiameter)[直径寸法記入]コマンドでテーブルの直径を内側に配置して記入し、[`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンドで上の椅子の幅 44 と、背もたれを含む奥行き 48 を記入します。
+
+<Session name="exercises/round-table/dimensions" caption="4. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 練習問題：敷地の区画](/docs/exercises/plot-of-land): 中級 · 土木 · 2D
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft): 中級 · 機械 · 2D
+- [AutoCAD 等角図の練習問題：段付きブロック](/docs/exercises/isometric-block): 中級 · 機械 · アイソメ
+- [AutoCAD 練習問題](/docs/exercises)

@@ -1,0 +1,58 @@
+---
+title: "AutoCAD 練習問題：接線でつなぐリンク"
+metaTitle: "AutoCAD 機械 練習問題(上級)：接線とリンク"
+description: "AutoCAD の上級練習問題。2 つのボスを接線オブジェクト スナップで両方に接する線で結び、間の円弧をトリムして寸法を記入します。手順付きで、ブラウザで無料で練習できます。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次のリンクを描きます(単位は mm)。中心間 90 の 2 つのボスで、半径は 20 と 12、穴の半径は 10 と 6 です。ボスは両方に接する線で結び、線の間の円弧は取り除きます。接線は両端で接線オブジェクト スナップを使って描きます。その後、[`TRIM`](/docs/commands/trim)[トリム]コマンドで各ボスの円を円弧にします。
+
+- **練習問題：** 上級 · 機械 · 2D
+- **コマンド：** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=link)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/link" caption="中心間 90 の 2 つのボスを接線で結んだリンク、寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. ボスを描く [#bosses]
+
+「外形線」画層で、[`CIRCLE`](/docs/commands/circle)[円]コマンドで 4 つの円をそれぞれ半径で描きます。`0,0` に `20` と `10`、`90,0` に `12` と `6` です。
+
+<Session name="exercises/link/bosses" caption="1. ボスを描く" />
+
+### 2. 接線を描く [#tangents]
+
+[`LINE`](/docs/commands/line)[線分]コマンドを実行し、`_TAN`(1 点だけに使う接線オブジェクト スナップ)を入力して、大きい円の上部付近を選択します。もう一度 `_TAN` を入力し、小さい円の上部付近を選択します。線分は両方の円に接します。下側も同様に描きます。
+
+<Session name="exercises/link/tangents" caption="2. 接線を描く" />
+
+### 3. 円弧をトリムする [#trim]
+
+[`TRIM`](/docs/commands/trim) コマンドで、各ボスの 2 本の線の間の、相手のボスに面した側を選択します。内側の円弧が消え、各円は円弧になります。
+
+<Session name="exercises/link/trim" caption="3. 円弧をトリムする" />
+
+### 4. 中心線を描く [#centreLines]
+
+「中心線」画層で、両方の中心を通る軸線と、各ボスを横切る線を描きます。
+
+<Session name="exercises/link/centreLines" caption="4. 中心線を描く" />
+
+### 5. 寸法を記入する [#dimensions]
+
+「寸法」画層で、中心間の距離を [`DIMLINEAR`](/docs/commands/dimlinear)[長さ寸法記入]コマンド、ボスの半径を [`DIMRADIUS`](/docs/commands/dimradius)[半径寸法記入]コマンド、穴を [`DIMDIAMETER`](/docs/commands/dimdiameter)[直径寸法記入]コマンドで記入します。
+
+<Session name="exercises/link/dimensions" caption="5. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block): 上級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題：ガスケット](/docs/exercises/gasket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題：L 字ブラケット](/docs/exercises/l-bracket): 初級 · 機械 · 2D
+- [AutoCAD 練習問題](/docs/exercises)

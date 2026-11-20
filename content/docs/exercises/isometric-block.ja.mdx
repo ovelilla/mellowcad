@@ -1,0 +1,52 @@
+---
+title: "AutoCAD 等角図の練習問題：段付きブロック"
+metaTitle: "AutoCAD アイソメ図 練習問題：段付きブロック"
+description: "AutoCAD でアイソメ図(等角図)を描く練習問題。段付きブロックを LINE[線分]と極座標で 30°、90°、150° の軸に沿って描き、寸法を記入します。手順付きで無料です。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+次の段付きブロックを等角図で描きます(単位は mm)。長さ 60、奥行き 40、高さ 40 で、前面に奥行き 20、高さ 20 の段があります。すべての辺は等角軸のいずれかに沿います。長さは 30° と 210°、奥行きは 150° と 330°、高さは 90° と 270° です。MellowCAD にはまだ AutoCAD のアイソメ作図(アイソメ スナップや等角円)がないため、辺は極座標(長さと角度)で入力した線分として描きます。
+
+- **練習問題：** 中級 · 機械 · アイソメ
+- **コマンド：** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- **エディタで：** [図面付きで開く](/ja/draw?drawing=isometric-block)。寸法付きの図面が、自分で作図する場所の隣に表示されます
+
+## 図面 [#drawing]
+
+<Session name="exercises/isometric-block" caption="等角図の段付きブロック。長さ 60、奥行き 40、高さ 40、各辺に沿った寸法付き。" />
+
+## 手順 [#steps]
+
+エンジンが各手順を作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。コマンドの最初の点の後は、ダイナミック入力と同じく、入力した点は直前の点から測られ、履歴には @ を付けて書かれます。\# を付けると原点から測ります。
+
+### 1. 段の前面を描く [#front]
+
+「外形線」画層で、[`LINE`](/docs/commands/line)[線分]コマンドを手前下のコーナー `0,0` から始め、`60<30`、`20<90`、`60<210` と入力して、`Close` を選びます。
+
+<Session name="exercises/isometric-block/front" caption="1. 段の前面を描く" />
+
+### 2. 側面を描く [#side]
+
+再び `0,0` から左側面を描きます。`40<150`、`40<90`、`20<330`、`20<270`、`20<330` と入力します。[Enter]を押すと、段の前縁で線分が終了します。
+
+<Session name="exercises/isometric-block/side" caption="2. 側面を描く" />
+
+### 3. 上面を描く [#top]
+
+残りは描画済みのコーナーから始めます。`_END`(1 点だけに使う端点オブジェクト スナップ)を入力して、コーナーを選択します。前面の右上のコーナーから `20<150`、`20<90`、`20<150`、`60<210` と描きます。次に、蹴上げの下端と上端から、`60<210` の線分を 2 本描きます。
+
+<Session name="exercises/isometric-block/top" caption="3. 上面を描く" />
+
+### 4. 寸法を記入する [#dimensions]
+
+「寸法」画層で、[`DIMALIGNED`](/docs/commands/dimaligned)[平行寸法記入]コマンドで各辺に沿って寸法を記入し、それぞれその辺の横に配置します。下側に 60 と 40、左側に高さ 40、右側に 20 です。
+
+<Session name="exercises/isometric-block/dimensions" caption="4. 寸法を記入する" />
+
+## ほかの練習問題 [#more]
+
+- [AutoCAD 3D 練習問題：プーリ](/docs/exercises/pulley): 中級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題：接線でつなぐリンク](/docs/exercises/link): 上級 · 機械 · 2D
+- [AutoCAD 3D 練習問題：軸受ブロック](/docs/exercises/bearing-block): 上級 · 機械 · 3D ソリッド
+- [AutoCAD 練習問題](/docs/exercises)

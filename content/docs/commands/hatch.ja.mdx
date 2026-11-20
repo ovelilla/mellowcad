@@ -1,0 +1,74 @@
+---
+title: "AutoCAD の HATCH[ハッチング]コマンド"
+metaTitle: "AutoCAD ハッチング(HATCH)の使い方：パターンと短縮コマンド H"
+description: "AutoCAD のハッチング(HATCH、H)で領域を埋める方法をプロンプトの順に説明します。内側の点またはオブジェクト、パターン、尺度と角度、島。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD のハッチングの短縮コマンドは?","answer":"H と入力し、[Enter]または[Space]を押します。BH も使えます。[ハッチング作成]タブがないため、-H(-HATCH)と同様にコマンド ラインで尋ねます。_HATCH は AutoCAD のどの言語版でも使えます。"},{"question":"ハッチングができないのはなぜ?","answer":"ほとんどの場合、領域が閉じていないためで、「Valid hatch boundary not found.」 と表示されます。隙間を埋める機能はないため、ごくわずかな隙間でも原因になります。輪郭を閉じてから、もう一度クリックしてください。楕円やスプラインで閉じた領域はまだ見つかりません。また、非表示の画層上のオブジェクトは認識されません。"},{"question":"どのハッチング パターンがあり、追加でダウンロードできますか?","answer":"AutoCAD のメートル単位のパターン ファイル acadiso.pat から選んだもので、SOLID、ANGLE、ANSI31 から ANSI38、AR-CONC、AR-SAND、BRICK、CROSS、DASH、DOTS、EARTH、HONEY、LINE、NET、NET3、SQUARE、STEEL、ZIGZAG です。Properties の ? で一覧表示されます。独自のパターン ファイルやダウンロードしたものはまだ読み込めませんが、DXF のハッチングは、どのようなパターンでも、含まれているパターンのまま AutoCAD と同様に開きます。"},{"question":"ハッチングの尺度を変更するには?","answer":"クリックする前に Properties で指定します。尺度はパターン名の次に尋ねられます。作成後は、ハッチングを選択してプロパティ パレットで[尺度]を入力し直すか、MATCHPROP で別のハッチングのパターン、尺度、角度を適用します。尺度が小さすぎてパターンに必要な線が多くなりすぎる場合は 「Hatch spacing too dense, or dash size too small.」 と表示され、ハッチングは作成されません。"},{"question":"ハッチングの面積を求めるには?","answer":"ハッチングを選択し、プロパティ パレットの[ジオメトリ]の[面積]を確認します。島は除かれています。複数を選択すると、[累積面積]で合計されます。または AREA を実行し、Object を選択してハッチングをクリックします。"}]
+---
+
+HATCH[ハッチング]コマンドは、閉じた領域を線のパターンまたは塗り潰しで埋めます。領域の内側の点をクリックすると、周囲のオブジェクトから境界を見つけ、内側にあるもの(長方形の中の円や文字など)を島として空けておきます。または、領域を囲むオブジェクトを選択します。領域はいくつでもクリックできます。[Enter]または[Esc]を押すと、それらすべてで 1 つのハッチングが、現在の画層に、境界の背面に作成されます。コマンド全体が 1 つの操作で、元に戻す 1 回で取り消せます。
+
+AutoCAD の HATCH は[ハッチング作成]タブまたはダイアログ ボックスでパターンを設定しますが、MellowCAD にはこれらがありません。ここでは `-HATCH` と同じ内容をコマンド ラインで尋ね、パターンは `Properties` で指定します。2 つの違いは[Esc]だけで、`-HATCH` では[Esc]で領域が破棄されます。各ハッチングは、前回のハッチングのパターン、尺度、角度で始まります。新しい図面では ANGLE、尺度 1、角度 0 です。
+
+- **コマンド：** `HATCH`
+- **短縮コマンド：** `H`, `BH`, `BHATCH`
+- **パネル：** [作成](/docs/commands#draw)
+- **試す：** [エディタを開き](/ja/draw)、`H` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="hatch" caption="円を含む長方形を、内側の 1 点から ANSI31 でハッチングしたところ。円は島として空いたままです。" />
+
+## オプション [#options]
+
+### `Properties` (`P`) [#properties]
+
+パターン名を尋ね(大文字と小文字は区別されません)、現在のパターンを既定値として表示します。`Solid` は領域を塗り潰し、`?` はパターンを説明とともに一覧表示してから点のプロンプトに戻ります。パターンの場合は、続いて尺度(0 より大きい数値、または 2 点で測った値)と、角度(入力するか 2 点で指定)を尋ねます。次のハッチングでも 3 つとも保持されます。
+
+<Session name="hatchPatterns" caption="SOLID と acadiso.pat の 11 個のパターン。それぞれ一辺 30 の正方形に尺度 1 でハッチング(AR-CONC と AR-SAND は 0.08 と 0.1)。" />
+
+### `Select objects` (`S`) [#select-objects]
+
+内側の点の代わりに、領域を囲むオブジェクトを選択します。[Enter]で点のプロンプトに戻ります。領域を閉じないオブジェクトは除外されます。どのオブジェクトも領域を囲まない場合は、[Enter]を押すと `Unable to hatch the boundary.` と表示され、何も作成されません。リージョンを選択すると、その輪郭が境界になり、穴は島になります。
+
+### `Undo` (`U`) [#undo]
+
+プロンプトには表示されませんが、入力できます。最後にクリックした点の領域を取り消してもう一度尋ね、選択したオブジェクトはそのまま残します。取り消す点がない場合は `No boundary to Undo.` と表示されます。
+
+## まだできないこと [#missing]
+
+境界としての楕円とスプラインには対応していません。これらで閉じた領域は見つからず、そのようなエッジを持つリージョンは除外されます。ギャップ許容値(HPGAPTOL)はなく、領域は完全に閉じている必要があります。自動調整ハッチングと、島の検出スタイルの[標準]と[無視]。グラデーション、ユーザ定義パターン、acadiso.pat のその他のパターンは、ここでは作成できません。DXF のハッチングでのみ読み込まれ、グラデーションはその色で、パターンはその線で表示されます。-HATCH のその他のオプション(境界の作図、境界の除去、詳細設定、表示順序、原点、異尺度対応、色、画層、透過性)。AutoCAD でダブルクリックすると開く HATCHEDIT と[ハッチング エディタ]。MIRRHATCH 1 はなく、鏡像化したハッチングは常にパターンの角度を保持します。ハッチングのグリップのメニュー。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h--fr-hachures--h--hachures---h--it-tratteggio--ptr--re--retino--tratteggio---re--de-schraff--gs--sch--schraff---sch--ru-штрих--штрих---ш--pl-kreskuj--kreskuj---kre--cs-šrafy--hs--sf--hšrafy--šrafy---hs---sf--hu-sraffoz--sf--sr--sraffoz---sf)
+
+## よくある質問 [#questions]
+
+### AutoCAD のハッチングの短縮コマンドは?
+
+`H` と入力し、[Enter]または[Space]を押します。`BH` も使えます。[ハッチング作成]タブがないため、`-H`(`-HATCH`)と同様にコマンド ラインで尋ねます。`_HATCH` は AutoCAD のどの言語版でも使えます。
+
+### ハッチングができないのはなぜ?
+
+ほとんどの場合、領域が閉じていないためで、`Valid hatch boundary not found.` と表示されます。隙間を埋める機能はないため、ごくわずかな隙間でも原因になります。輪郭を閉じてから、もう一度クリックしてください。楕円やスプラインで閉じた領域はまだ見つかりません。また、非表示の画層上のオブジェクトは認識されません。
+
+### どのハッチング パターンがあり、追加でダウンロードできますか?
+
+AutoCAD のメートル単位のパターン ファイル acadiso.pat から選んだもので、SOLID、ANGLE、ANSI31 から ANSI38、AR-CONC、AR-SAND、BRICK、CROSS、DASH、DOTS、EARTH、HONEY、LINE、NET、NET3、SQUARE、STEEL、ZIGZAG です。`Properties` の `?` で一覧表示されます。独自のパターン ファイルやダウンロードしたものはまだ読み込めませんが、DXF のハッチングは、どのようなパターンでも、含まれているパターンのまま AutoCAD と同様に開きます。
+
+### ハッチングの尺度を変更するには?
+
+クリックする前に `Properties` で指定します。尺度はパターン名の次に尋ねられます。作成後は、ハッチングを選択してプロパティ パレットで[尺度]を入力し直すか、[`MATCHPROP`](/docs/commands/matchprop) で別のハッチングのパターン、尺度、角度を適用します。尺度が小さすぎてパターンに必要な線が多くなりすぎる場合は `Hatch spacing too dense, or dash size too small.` と表示され、ハッチングは作成されません。
+
+### ハッチングの面積を求めるには?
+
+ハッチングを選択し、プロパティ パレットの[ジオメトリ]の[面積]を確認します。島は除かれています。複数を選択すると、[累積面積]で合計されます。または [`AREA`](/docs/commands/area) を実行し、`Object` を選択してハッチングをクリックします。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の AREA\[面積計算\]コマンド](/docs/commands/area)
+- [AutoCAD の REGION\[リージョン\]コマンド](/docs/commands/region)
+- [AutoCAD の MATCHPROP\[プロパティ コピー\]コマンド](/docs/commands/matchprop)
+- [AutoCAD の EXPLODE\[分解\]コマンド](/docs/commands/explode)

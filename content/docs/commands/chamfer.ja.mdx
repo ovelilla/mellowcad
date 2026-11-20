@@ -1,0 +1,78 @@
+---
+title: "AutoCAD の CHAMFER[面取り]コマンド"
+metaTitle: "AutoCAD 面取り(CHAMFER)の使い方と短縮コマンド CHA"
+description: "AutoCAD の面取り(CHAMFER、CHA)の使い方をプロンプト順に解説します。2 つの距離、2 本の線またはポリラインの角、Multiple、[Shift]。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD の面取りの短縮コマンドは?","answer":"CHA と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも _CHAMFER が使えます。"},{"question":"AutoCAD で 45° の面取りをするには?","answer":"Distance を選び、距離を入力して、2 つ目で[Enter]を押します。直角の角では、2 つの距離が等しいと 45° の斜面になります。"},{"question":"面取りとフィレットの違いは?","answer":"CHAMFER は 2 本の線を直線の斜面で結び、FILLET は両方に接する円弧で結びます。どちらも線をそこまでトリムまたは延長し、値が 0 のとき、または[Shift]を押したまま 2 本目の線を選択したときは尖った角になります。"},{"question":"面取りができないのはなぜ?","answer":"理由が表示されます。距離が線の端を越える場合は 「Chamfer distance is too large」、平行な線では 「Lines are parallel」、円弧や円では 「Chamfer requires 2 lines (not arc segments).」 です。距離が両方 0 の場合は、斜面ではなく角になります。"},{"question":"長方形のすべての角を面取りするには?","answer":"長方形はポリラインです。Polyline を選んで長方形を選択すると、すべての角が現在の距離で面取りされます。"}]
+---
+
+CHAMFER[面取り]コマンドは、2 本の線の間の角を直線の斜面で切り取ります。1 本目の線、次に 2 本目の線を選択します。それぞれの線は斜面までトリムまたは延長され(1 本目は 1 つ目の距離、2 本目は 2 つ目の距離)、斜面で結ばれます。2 本の線分、ポリラインの 2 つの直線セグメント、または線分とポリラインに使え、線分とポリラインの場合は 1 つのポリラインに結合されます。AutoCAD と同じく、最初の行に現在の距離が表示されます。距離は図面に保存され、既定の 0 と 0 では線が交わる尖った角になります。2 本目の線を選択している間、できあがる角が線の上に表示されます。
+
+- **コマンド：** `CHAMFER`
+- **短縮コマンド：** `CHA`
+- **パネル：** [修正](/docs/commands#modify)
+- **試す：** [エディタを開き](/ja/draw)、`CHA` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="chamfer" caption="4 本の線分に、距離を両方 10 にして Multiple で面取りしたところ。2 つの角を面取りし、2 つは尖ったままです。" />
+
+## オプション [#options]
+
+### `Undo` (`U`) [#undo]
+
+この実行での最後の面取りと、それに伴う距離の変更を取り消します。
+
+### `Polyline` (`P`) [#polyline]
+
+2D ポリラインを尋ね、そのすべての角を面取りし、面取りした線の数と、面取りできなかったものがあればその理由を表示します。
+
+### `Distance` (`D`) [#distance]
+
+1 つ目と 2 つ目の面取り距離を尋ねます。2 つ目では 1 つ目の値が提示されるので、そこで[Enter]を押すと均等な斜面になり、直角の角では 45° になります。
+
+### `Multiple` (`M`) [#multiple]
+
+面取りのたびに 1 本目の線を尋ね続け、[Enter]または[Esc]で終了します。
+
+## まだできないこと [#missing]
+
+1 つの距離と角度で斜面を設定する角度(Angle)、方式(Method)、トリム(Trim)。CHAMFER は常に 2 つの距離で動作し、常に線をトリムします。AutoCAD では斜面は 2 本目の線の線種尺度を取りますが、ここではそうなりません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch--pt-br-chanfro--cha--fr-chanfrein--cf--it-cima--cm--de-fase--fa--ru-фаска--фас--pl-fazuj--fa--cs-zkos--zk--hu-letör--lt)
+
+## よくある質問 [#questions]
+
+### AutoCAD の面取りの短縮コマンドは?
+
+`CHA` と入力し、[Enter]または[Space]を押します。コマンド名を入力しても実行でき、AutoCAD のどの言語版でも `_CHAMFER` が使えます。
+
+### AutoCAD で 45° の面取りをするには?
+
+`Distance` を選び、距離を入力して、2 つ目で[Enter]を押します。直角の角では、2 つの距離が等しいと 45° の斜面になります。
+
+### 面取りとフィレットの違いは?
+
+CHAMFER は 2 本の線を直線の斜面で結び、[`FILLET`](/docs/commands/fillet) は両方に接する円弧で結びます。どちらも線をそこまでトリムまたは延長し、値が 0 のとき、または[Shift]を押したまま 2 本目の線を選択したときは尖った角になります。
+
+### 面取りができないのはなぜ?
+
+理由が表示されます。距離が線の端を越える場合は `Chamfer distance is too large`、平行な線では `Lines are parallel`、円弧や円では `Chamfer requires 2 lines (not arc segments).` です。距離が両方 0 の場合は、斜面ではなく角になります。
+
+### 長方形のすべての角を面取りするには?
+
+長方形はポリラインです。`Polyline` を選んで長方形を選択すると、すべての角が現在の距離で面取りされます。
+
+## 練習する [#practice]
+
+- [AutoCAD 練習問題：段付き軸](/docs/exercises/shaft)
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の FILLET\[フィレット\]コマンド](/docs/commands/fillet)
+- [AutoCAD の TRIM\[トリム\]コマンド](/docs/commands/trim)
+- [AutoCAD の EXTEND\[延長\]コマンド](/docs/commands/extend)
+- [AutoCAD の CHAMFEREDGE\[面取りエッジ\]コマンド](/docs/commands/chamferedge)

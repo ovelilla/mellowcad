@@ -1,0 +1,54 @@
+---
+title: "AutoCAD の COPYCLIP[コピー]コマンド"
+metaTitle: "AutoCAD コピー(COPYCLIP)の使い方と Ctrl+C"
+description: "AutoCAD の COPYCLIP([Ctrl]+[C])と CUTCLIP、COPYBASE、PASTECLIP の使い方を解説します。オブジェクトをクリップボードにコピーし、点を指定して貼り付けます。ブラウザで無料で試せます。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"COPY と COPYCLIP の違いは?","answer":"COPY は同じ図面内で、基点から 2 点目へ複写を配置します。COPYCLIP はオブジェクトをクリップボードに置き、PASTECLIP でこの図面やほかの図面に貼り付けます。"},{"question":"基点を指定してコピーするには?","answer":"[Ctrl]+[Shift]+[C]を押すか COPYBASE を入力し、基点を指定してオブジェクトを選択します。その後、[Ctrl]+[V]でその点を基準に配置されます。"},{"question":"ある図面から別の図面にオブジェクトをコピーするには?","answer":"オブジェクトを選択して[Ctrl]+[C]を押し、別の図面を開いて[Ctrl]+[V]を押し、挿入点を指定します。画層、スタイル、ブロックも一緒にコピーされます。"},{"question":"貼り付けができないのはなぜ?","answer":"ブラウザが、ページにクリップボードの読み取りを許可するかどうか尋ねることがあります。許可してください。拒否した場合、PASTECLIP は同じページで最後にコピーしたものを貼り付けます。何もコピーしていなければ、何も貼り付けられません。"}]
+---
+
+COPYCLIP[コピー]コマンドは、選択したオブジェクトを、使用している画層、スタイル、ブロックとともにクリップボードにコピーします。図面は変更されず、コマンドの前に選択したオブジェクトは選択されたままです。[Ctrl]+[C]で実行でき、実行中のコマンドはキャンセルされます。`PASTECLIP`([Ctrl]+[V])は挿入点を尋ねます。オブジェクトはカーソルに追従し、範囲の左下隅が現在の UCS でその点に来るように配置されます。すべてが 1 ステップで、`U` で取り消せます。同じ図面にもほかの図面にも貼り付けられます。クリップボードはシステムのものなので、ブラウザがページにクリップボードの読み取りを許可していれば、別のタブの図面からも読み取れます。貼り付けた画層、スタイル、ブロックと同じ名前のものが図面に既にある場合は、図面側のものが使われます。
+
+`CUTCLIP`([Ctrl]+[X])は、オブジェクトをコピーしてから、ERASE と同じく削除します。`COPYBASE`([Ctrl]+[Shift]+[C])は先に基点を尋ね、PASTECLIP は左下隅ではなくその基点でオブジェクトを配置するので、意図した位置に正確に置けます。[Ctrl]+[A]で図面内のすべてのオブジェクトを選択します。
+
+- **コマンド：** `COPYCLIP`
+- **パネル：** [ファイルとクリップボード](/docs/commands#files)
+- **試す：** [エディタを開き](/ja/draw)、`COPYCLIP` と入力して\[Enter\]を押します。
+
+## コマンド ラインでは [#session]
+
+エンジンが作図し、その履歴を入力するとおりに書き出します。プロンプトは AutoCAD 2027 と同じ順序で、オプションの文字も同じです。
+
+<Session name="copyclip" caption="プレートの穴を COPYCLIP し、65,20 に PASTECLIP したところ。複写は左下隅を基準にそこに配置され、2 つ目の穴になります。" />
+
+## まだできないこと [#missing]
+
+PASTEBLOCK と CUTBASE、およびそれに伴う[Ctrl]+[Shift]+[V]と[Ctrl]+[Shift]+[X](これらはブラウザに任されています。[Ctrl]+[Shift]+[A]も同様です)。PASTEORIG、PASTESPEC、ウィンドウ間でのオブジェクトのドラッグ、ほかのプログラムの文字をマルチ テキストとして貼り付ける操作。PASTECLIP の点での隠れた INSERT オプション。このため、貼り付け時に尺度変更、回転、分解はできません。
+
+[機能と未対応の詳細(英語)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp--pt-br-copiacorte--recortat--copiabase--colarat--fr-copierpress--couperpress--copierbase--collerpress--it-copiaclip--tagliaclip--copiapuntob--incollaclip--de-copyclip--ausschneiden--kopiebasisp--clipeinfüg--ru-кбуфер--вбуфер--бткопировать--встбуфер--pl-kopiuj_s--wytnij--kopiujbaza--wklej--cs-skopie--vyjmis--skopieref--svlož--hu-vgmásol--vgvág--alapmásol--vgbeill)
+
+## よくある質問 [#questions]
+
+### COPY と COPYCLIP の違いは?
+
+[`COPY`](/docs/commands/copy) は同じ図面内で、基点から 2 点目へ複写を配置します。COPYCLIP はオブジェクトをクリップボードに置き、PASTECLIP でこの図面やほかの図面に貼り付けます。
+
+### 基点を指定してコピーするには?
+
+[Ctrl]+[Shift]+[C]を押すか `COPYBASE` を入力し、基点を指定してオブジェクトを選択します。その後、[Ctrl]+[V]でその点を基準に配置されます。
+
+### ある図面から別の図面にオブジェクトをコピーするには?
+
+オブジェクトを選択して[Ctrl]+[C]を押し、別の図面を開いて[Ctrl]+[V]を押し、挿入点を指定します。画層、スタイル、ブロックも一緒にコピーされます。
+
+### 貼り付けができないのはなぜ?
+
+ブラウザが、ページにクリップボードの読み取りを許可するかどうか尋ねることがあります。許可してください。拒否した場合、PASTECLIP は同じページで最後にコピーしたものを貼り付けます。何もコピーしていなければ、何も貼り付けられません。
+
+## 関連するコマンド [#related]
+
+- [AutoCAD の COPY\[複写\]コマンド](/docs/commands/copy)
+- [PASTECLIP](/docs/commands#pasteclip): クリップボードのオブジェクトを現在の図面に貼り付け
+- [COPYBASE](/docs/commands#copybase): 基点コピー
+- [CUTCLIP](/docs/commands#cutclip): 切り取り
+- [AutoCAD の INSERT\[ブロック挿入\]コマンド](/docs/commands/insert)
