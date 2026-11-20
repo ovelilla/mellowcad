@@ -1,0 +1,85 @@
+---
+title: "AutoCAD ARRAYRECT(직사각형 배열) 명령"
+metaTitle: "오토캐드 직사각형 배열(ARRAYRECT) 사용법"
+description: "AutoCAD 직사각형 배열(ARRAYRECT)을 프롬프트 순서대로 설명합니다: 열, 행, 레벨과 그 간격, 연관 여부. 캐드 어레이로 격자 복사를 합니다. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"직사각형 배열은 어떻게 시작합니까?","answer":"단축키가 없는 ARRAYRECT를 입력하거나, AR을 입력하여 ARRAY 명령을 실행하고 유형을 묻는 단계에서 Enter 키를 누릅니다. 직사각형이 기본값입니다. 객체를 선택하고 Enter 키를 누르면 배열이 바로 그려지고 편집할 수 있습니다."},{"question":"행과 열 사이의 거리는 어떻게 정합니까?","answer":"Spacing 옵션을 선택하고 열 사이의 거리, 이어서 행 사이의 거리를 입력합니다. 음수는 왼쪽이나 아래쪽으로 갑니다. Unit 옵션에서는 두 구석으로 두 거리를 한 번에 정합니다. 또는 두 번째 열과 행에 있는 화살표 그립을 끕니다."},{"question":"복사본을 별개의 객체로 만들려면 어떻게 합니까?","answer":"Enter 키를 누르기 전에 ASsociative 옵션을 선택하고 No로 답합니다. 각 복사본이 독립된 객체가 됩니다. 연관 배열은 나중에 EXPLODE 명령으로 항목들로 분해할 수 있습니다."},{"question":"3D 배열은 어떻게 만듭니까?","answer":"Levels 옵션을 선택합니다. 행과 열이 UCS의 Z 방향으로 지정한 레벨 수만큼, 지정한 거리 간격으로 위로 복사됩니다. Rows 옵션도 고도를 묻는데, 이 값은 각 행을 앞 행보다 높입니다."}]
+---
+
+ARRAYRECT(직사각형 배열) 명령은 선택한 객체를 열과 행으로, 원하면 레벨로도 복사하여 하나의 배열 객체로 만듭니다. 객체를 묻고, 유형과 연관 여부를 알리고, 배열을 바로 보여 줍니다. UCS의 X 방향으로 4열, Y 방향으로 3행이며, 간격은 선택한 객체 크기의 1.5배입니다. 그런 다음 AutoCAD와 같이 하나의 프롬프트에서 옵션이나 미리보기의 그립으로 배열을 실시간으로 편집하고, Enter 키로 작성합니다. 개수나 간격을 정하려면 화살표 그립 하나를 클릭하고, 놓을 곳을 클릭하거나 숫자를 입력합니다. 그 프롬프트에서 Esc 키를 눌러도 배열이 작성됩니다. 선택한 객체가 첫 번째 항목이 됩니다.
+
+- **명령:** `ARRAYRECT`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `ARRAYRECT` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="arrayrect" caption="정사각형과 그 안의 원을 5열 3행, 간격 16과 14로 배열합니다. 개수를 먼저 지정하고 이어서 간격을 지정합니다." />
+
+## 옵션 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+기본값인 `Yes` 옵션은 하나의 배열 객체를 만듭니다. 나중에 그립과 특성 팔레트로 바꿀 수 있고, [`EXPLODE`](/docs/commands/explode) 명령으로 항목들로 분해할 수 있습니다. `No` 옵션은 선택한 객체 옆에 별개의 복사본을 만듭니다. 답은 세션 동안 유지되며 ARRAYPOLAR와 ARRAYPATH에도 적용됩니다.
+
+### `COUnt` (`COU`) [#count]
+
+열의 개수, 이어서 행의 개수입니다. 각각 1부터 32767까지입니다.
+
+### `Spacing` (`S`) [#spacing]
+
+열 사이의 거리, 이어서 행 사이의 거리입니다. 음수는 왼쪽이나 아래쪽입니다. 또는 `Unit` 옵션으로 두 변이 각각의 거리인 직사각형의 두 구석을 지정합니다.
+
+### `COLumns` (`COL`) [#columns]
+
+열의 개수와 열 사이의 거리입니다.
+
+### `Rows` (`R`) [#rows]
+
+행의 개수, 행 사이의 거리, 각 행이 앞 행보다 올라가는 고도입니다.
+
+### `Levels` (`L`) [#levels]
+
+UCS의 Z 방향으로 쌓는 복사본입니다. 레벨의 개수를 묻고 이어서 레벨 사이의 거리를 묻습니다. `Total` 옵션으로는 첫 번째 레벨부터 마지막 레벨까지의 거리를 입력합니다.
+
+### `eXit` (`X`) [#exit]
+
+Enter 키와 같이 배열을 작성하고 명령을 끝냅니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+기준점이 없습니다. 열 사이와 행 사이 거리의 전체 옵션(레벨에는 있음)과, 값을 도면의 매개변수에 묶는 표현식이 없습니다. 배열의 원본을 편집하거나 항목을 대체하는 ARRAYEDIT와 ARRAYCLOSE가 없습니다. 배열 그립의 메뉴(열 개수, 전체 열 간격, 축 각도 등)와 그것을 순환하는 Ctrl 키가 없으므로, 그립으로 전체 간격이나 축 각도를 정할 수 없고, 그립이 명령행에 줄을 표시하지도 않습니다. 팔레트의 기준 X와 기준 Y는 다시 입력할 수 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost--cs-obdpole--hu-kiosztnégysz)
+
+## 자주 묻는 질문 [#questions]
+
+### 직사각형 배열은 어떻게 시작합니까?
+
+단축키가 없는 `ARRAYRECT`를 입력하거나, `AR`을 입력하여 [`ARRAY`](/docs/commands/array) 명령을 실행하고 유형을 묻는 단계에서 Enter 키를 누릅니다. 직사각형이 기본값입니다. 객체를 선택하고 Enter 키를 누르면 배열이 바로 그려지고 편집할 수 있습니다.
+
+### 행과 열 사이의 거리는 어떻게 정합니까?
+
+`Spacing` 옵션을 선택하고 열 사이의 거리, 이어서 행 사이의 거리를 입력합니다. 음수는 왼쪽이나 아래쪽으로 갑니다. `Unit` 옵션에서는 두 구석으로 두 거리를 한 번에 정합니다. 또는 두 번째 열과 행에 있는 화살표 그립을 끕니다.
+
+### 복사본을 별개의 객체로 만들려면 어떻게 합니까?
+
+Enter 키를 누르기 전에 `ASsociative` 옵션을 선택하고 `No`로 답합니다. 각 복사본이 독립된 객체가 됩니다. 연관 배열은 나중에 [`EXPLODE`](/docs/commands/explode) 명령으로 항목들로 분해할 수 있습니다.
+
+### 3D 배열은 어떻게 만듭니까?
+
+`Levels` 옵션을 선택합니다. 행과 열이 UCS의 Z 방향으로 지정한 레벨 수만큼, 지정한 거리 간격으로 위로 복사됩니다. `Rows` 옵션도 고도를 묻는데, 이 값은 각 행을 앞 행보다 높입니다.
+
+## 연습하기 [#practice]
+
+- [캐드 연습도면: 계단 평면도](/docs/exercises/stairs)
+
+## 관련 명령 [#related]
+
+- [AutoCAD ARRAY(배열) 명령](/docs/commands/array)
+- [AutoCAD ARRAYPOLAR(원형 배열) 명령](/docs/commands/arraypolar)
+- [AutoCAD ARRAYPATH(경로 배열) 명령](/docs/commands/arraypath)
+- [AutoCAD COPY(복사) 명령](/docs/commands/copy)

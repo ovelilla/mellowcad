@@ -1,0 +1,67 @@
+---
+title: "AutoCAD FILLETEDGE(모서리 모깎기) 명령"
+metaTitle: "AutoCAD 모서리 모깎기(FILLETEDGE): 3D 솔리드 필렛"
+description: "AutoCAD 모서리 모깎기(FILLETEDGE)로 3D 솔리드의 모서리를 둥글게 만드는 방법을 프롬프트 순서대로: 모서리, 체인, 루프, 반지름, 화살표 그립. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD에서 3D 솔리드의 모서리를 모깎기하려면?","answer":"FILLETEDGE를 실행하고 Radius를 골라 값을 입력한 다음, 모서리를 클릭하고 Enter 키를 두 번 누릅니다. 한 번은 선택을 끝내고, 한 번은 승인합니다. 이 페이지의 세션에서는 8로 상자의 모서리 2개를 둥글게 만듭니다."},{"question":"한 면의 모서리를 모두 모깎기하려면?","answer":"Loop를 고르고 그 면의 모서리를 클릭한 다음 Accept를 고릅니다. 표시된 루프가 다른 면의 것이면 Next를 고릅니다. 둥근 블록의 윗면처럼 이미 서로 매끄럽게 이어진 모서리라면 Chain으로 한꺼번에 선택합니다."},{"question":"3D 솔리드에서 FILLET이 안될 때는?","answer":"AutoCAD의 FILLET은 솔리드의 모서리도 둥글게 만들지만, MellowCAD의 FILLET은 아직 그렇게 하지 않습니다. FILLETEDGE를 쓰고, 모따기에는 CHAMFEREDGE를 씁니다."},{"question":"모깎기 반지름을 바꾸려면?","answer":"클릭하기 전이나 승인 프롬프트에서 Radius를 고르거나, 첫 번째 모깎기 가운데의 화살표 그립을 끕니다. 마지막 반지름이 다음에 다시 제시됩니다."}]
+---
+
+FILLETEDGE(모서리 모깎기) 명령은 3D 솔리드의 모서리를 둥글게 만듭니다. 현재 반지름을 표시한 다음 Enter 키를 누를 때까지 모서리를 묻습니다. 클릭하면 커서 아래의 모서리가 선택되며, 모서리는 커서가 지나갈 때 강조 표시됩니다. 점을 입력하면 그 점을 지나는 모서리가 선택됩니다. 모서리를 고를 때마다 솔리드가 모깎기된 결과대로 미리 그려집니다. Enter 키를 누르면 모서리 수를 세고, 승인하려면 Enter 키를 한 번 더 누르거나 반지름을 바꾸라고 묻습니다. 그 Enter 키로 모깎기가 만들어집니다. 모서리는 솔리드 하나의 것만 됩니다. 다른 솔리드의 모서리는 `Cannot fillet multiple bodies.`, 두 번 고른 모서리는 `Edge has already been picked.` 메시지가 표시됩니다.
+
+평평한 두 면 사이의 직선 모서리는 4분의 1 원통이 되고, 구멍이나 테두리의 둥근 모서리는 4분의 1 토러스가 됩니다. 한 구석에서 만나는 모깎기는 서로 이어지며, 세 개가 만나면 구의 일부로 이어집니다. 반지름은 도면에 저장되어 다음에 다시 제시됩니다. 솔리드는 도면층과 특성을 유지하지만 자신을 만든 정보는 잃습니다. 상자는 더 이상 상자가 아닙니다. 명령 전체가 명령 취소 한 단계입니다. MellowCAD의 3D는 솔리드뿐이며 아직 일부만 지원합니다.
+
+- **명령:** `FILLETEDGE`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `FILLETEDGE` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="filletedge" caption="남동쪽에서 본 상자. 반지름 8의 FILLETEDGE로 오른쪽의 수직 모서리 2개를 둥글게 만듭니다." />
+
+## 옵션 [#options]
+
+### `Chain` (`C`) [#chain]
+
+클릭한 모서리와 그에 접하는 모든 모서리를 차례로 선택합니다. 수직 모서리가 이미 둥근 블록이라면 윗면 둘레의 모서리 8개입니다. 접하는 모서리가 없으면 `No adjacent tangent edges found in chain.` 메시지를 표시하고 클릭한 모서리만 선택합니다. `Edge`로 모서리 하나씩 고르기로 돌아갑니다.
+
+### `Loop` (`L`) [#loop]
+
+한 면 둘레의 모든 모서리를 선택합니다. 모서리 하나를 클릭한 다음, 표시된 루프를 `Accept`하거나, 그 모서리가 속한 다른 면의 루프로 `Next`를 고릅니다.
+
+### `Radius` (`R`) [#radius]
+
+반지름을 입력하거나 두 점 사이의 거리로 지정합니다. 0 이하이면 `Radius too small. *Invalid*` 메시지가 표시됩니다. `Expression`은 반지름을 식으로 받습니다. 승인 프롬프트에서는 표시된 모깎기의 반지름을 바꿉니다. 첫 번째 모깎기 가운데의 화살표 그립을 끌어서도 설정합니다. 그립을 클릭하고, 움직이고, 다시 클릭합니다. `eXit`나 Esc 키를 누르면 그대로 둡니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+반지름이 다른 두 모깎기가 만나는 경우와, 곡면에서 끝나는 모깎기가 없습니다. 옆 면보다 넓은 모깎기는 AutoCAD가 다음 모서리 너머로 굴려 이어가지만, 여기서는 모델링 오류로 실패합니다. 곡면 옆의 직선 모서리, 원통의 축에서 벗어난 둥근 모서리, 구, 토러스, 돌출 솔리드, 회전 솔리드의 모든 모서리도 같은 방식으로 실패합니다. 기울기가 다른 모서리에서 모깎기가 만나는 일부 구석도 마찬가지입니다. 첫 번째가 아닌 모서리의 화살표 그립과, 그립에서 커서까지의 선이 없습니다. AutoCAD에서는 [`FILLET`](/docs/commands/fillet)으로 솔리드의 모서리를 고를 수도 있지만 여기서는 안 됩니다. 선택하는 동안 모깎기를 메시로 그리는 기능과 표면도 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord--fr-areteraccord--it-raccordaspigolo--de-abrundkante--ru-сопряжениекромки--pl-zaokrąglkraw--cs-zaoblihranu--hu-éllekerekít)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD에서 3D 솔리드의 모서리를 모깎기하려면?
+
+FILLETEDGE를 실행하고 `Radius`를 골라 값을 입력한 다음, 모서리를 클릭하고 Enter 키를 두 번 누릅니다. 한 번은 선택을 끝내고, 한 번은 승인합니다. 이 페이지의 세션에서는 `8`로 상자의 모서리 2개를 둥글게 만듭니다.
+
+### 한 면의 모서리를 모두 모깎기하려면?
+
+`Loop`를 고르고 그 면의 모서리를 클릭한 다음 `Accept`를 고릅니다. 표시된 루프가 다른 면의 것이면 `Next`를 고릅니다. 둥근 블록의 윗면처럼 이미 서로 매끄럽게 이어진 모서리라면 `Chain`으로 한꺼번에 선택합니다.
+
+### 3D 솔리드에서 FILLET이 안될 때는?
+
+AutoCAD의 [`FILLET`](/docs/commands/fillet)은 솔리드의 모서리도 둥글게 만들지만, MellowCAD의 FILLET은 아직 그렇게 하지 않습니다. FILLETEDGE를 쓰고, 모따기에는 [`CHAMFEREDGE`](/docs/commands/chamferedge)를 씁니다.
+
+### 모깎기 반지름을 바꾸려면?
+
+클릭하기 전이나 승인 프롬프트에서 `Radius`를 고르거나, 첫 번째 모깎기 가운데의 화살표 그립을 끕니다. 마지막 반지름이 다음에 다시 제시됩니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD CHAMFEREDGE(모서리 모따기) 명령](/docs/commands/chamferedge)
+- [AutoCAD FILLET(모깎기) 명령](/docs/commands/fillet)
+- [AutoCAD SOLIDEDIT(솔리드 편집) 명령](/docs/commands/solidedit)
+- [AutoCAD BOX(상자) 명령](/docs/commands/box)

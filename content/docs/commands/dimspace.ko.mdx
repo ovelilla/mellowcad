@@ -1,0 +1,61 @@
+---
+title: "AutoCAD DIMSPACE(공간 조정) 명령"
+metaTitle: "캐드 치수 정렬과 간격: 공간 조정(DIMSPACE)"
+description: "AutoCAD의 공간 조정(DIMSPACE)으로 치수 간격을 같게 맞추는 방법, 간격 0으로 한 줄에 정렬하는 방법, 문자 높이로 정해지는 자동 간격. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD에서 치수를 한 줄로 정렬하려면?","answer":"DIMSPACE를 실행하고, 다른 치수를 맞출 기준 치수를 클릭한 다음, 나머지 치수를 선택하고 Enter 키를 누른 후 0을 입력합니다. 모든 치수선이 기준 치수의 선 위로 이동합니다."},{"question":"치수 간격을 일정하게 맞추려면?","answer":"DIMSPACE를 실행하고 객체에 가장 가까운 치수를 기준으로 클릭한 다음, 나머지를 선택하고 Enter 키를 두 번 누릅니다. Auto는 문자 높이의 2배 간격으로 맞춥니다. 원하는 거리를 8처럼 직접 입력해도 됩니다."},{"question":"AutoCAD의 기본 치수 간격은 얼마인가요?","answer":"DIMSPACE의 Auto는 치수 스타일 문자 높이의 2배입니다. DIMBASELINE은 치수를 추가할 때마다 스타일의 기준선 간격을 사용하며, ISO-25에서는 3.75입니다."},{"question":"DIMSPACE로 치수가 이동하지 않는 이유는?","answer":"기준 치수와 평행한 치수만 간격을 조정합니다. 각도가 다른 치수는 개수에는 포함되지만 제자리에 남습니다. 각도 치수는 아직 간격을 조정하지 않습니다."}]
+---
+
+DIMSPACE(공간 조정) 명령은 평행한 선형 치수와 정렬 치수 사이의 간격을 조정합니다. 제자리에 남는 기준 치수를 선택한 다음 간격을 조정할 치수를 선택합니다. Enter 키를 누르면 선택이 끝나고 간격을 묻습니다. 그러면 각 치수의 치수선이 놓인 순서대로 기준에서 멀어지는 방향으로, 바로 앞 치수에서 그 간격만큼 떨어진 위치로 이동합니다. 간격을 0으로 하면 모든 치수선이 기준 치수의 선 위에 정렬됩니다. 그릴 때 높이가 어긋난 연속 치수도 한 줄로 읽힙니다. 바뀌는 것은 치수선의 위치뿐이며, 한 단계로 처리되므로 `U`로 한 번에 되돌립니다.
+
+기준 치수는 클릭하거나, 점을 입력하거나, `Last`로 지정합니다. 치수가 아닌 객체를 선택하면 `Selected object is not a dimension.` 메시지가 표시되고 다시 묻습니다. 명령 전에 선택한 세트가 간격을 조정할 세트가 됩니다. 기준과 각도가 다른 치수는 개수에는 포함되지만 그대로 남고, 음수 간격은 `Invalid spacing value, spacing value cannot be negative.` 메시지와 함께 거부됩니다.
+
+- **명령:** `DIMSPACE`
+- **패널:** [주석](/docs/commands#annotate)
+- **해 보기:** [편집기를 열고](/ko/draw) `DIMSPACE` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="dimspaceBefore" caption="판의 위쪽 모서리에 연속으로 작성한 치수 3개. 그린 그대로 치수마다 높이가 다릅니다." />
+
+<Session name="dimspace" caption="첫 번째 치수를 기준으로 DIMSPACE를 실행하고 나머지 2개를 선택한 다음 간격을 0으로 지정하면 연속 치수가 한 줄로 정렬됩니다." />
+
+## 옵션 [#options]
+
+### `Auto` (`A`) [#auto]
+
+기본값이며 Enter 키로 선택합니다. 기준 치수의 치수 스타일에 있는 문자 높이의 2배를 전체 축척으로 곱한 간격이므로, 쌓인 치수가 각자의 문자에 맞게 들어갑니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+각도 치수는 아직 DIMSPACE로 간격을 조정할 수 없습니다. AutoCAD는 필요한 치수만 이동하지만, 여기서는 선택한 모든 치수의 간격을 다시 조정합니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac--pt-br-espacocota--fr-espacecotes--it-spazioquote--de-bemplatz--ru-рзмсмещ--pl-przestrzwym--cs-kótmezera--hu-méretköz)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD에서 치수를 한 줄로 정렬하려면?
+
+DIMSPACE를 실행하고, 다른 치수를 맞출 기준 치수를 클릭한 다음, 나머지 치수를 선택하고 Enter 키를 누른 후 `0`을 입력합니다. 모든 치수선이 기준 치수의 선 위로 이동합니다.
+
+### 치수 간격을 일정하게 맞추려면?
+
+DIMSPACE를 실행하고 객체에 가장 가까운 치수를 기준으로 클릭한 다음, 나머지를 선택하고 Enter 키를 두 번 누릅니다. `Auto`는 문자 높이의 2배 간격으로 맞춥니다. 원하는 거리를 `8`처럼 직접 입력해도 됩니다.
+
+### AutoCAD의 기본 치수 간격은 얼마인가요?
+
+DIMSPACE의 `Auto`는 치수 스타일 문자 높이의 2배입니다. [`DIMBASELINE`](/docs/commands/dimbaseline)은 치수를 추가할 때마다 스타일의 기준선 간격을 사용하며, ISO-25에서는 3.75입니다.
+
+### DIMSPACE로 치수가 이동하지 않는 이유는?
+
+기준 치수와 평행한 치수만 간격을 조정합니다. 각도가 다른 치수는 개수에는 포함되지만 제자리에 남습니다. 각도 치수는 아직 간격을 조정하지 않습니다.
+
+## 관련 명령 [#related]
+
+- [오토캐드 치수 기입: DIMLINEAR(선형) 명령](/docs/commands/dimlinear)
+- [AutoCAD DIMCONTINUE(연속) 치수 명령](/docs/commands/dimcontinue)
+- [AutoCAD DIMBASELINE(기준선) 치수 명령](/docs/commands/dimbaseline)
+- [AutoCAD DIMSTYLE(치수 스타일) 명령](/docs/commands/dimstyle)

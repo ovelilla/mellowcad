@@ -1,0 +1,52 @@
+---
+title: "AutoCAD EXPLODE(분해) 명령"
+metaTitle: "캐드 익스플로드: 분해(EXPLODE)와 단축키 X"
+description: "AutoCAD 분해(EXPLODE, X), 캐드 익스플로드 사용법: 폴리선을 선과 호로, 블록을 구성 객체로, 문자를 줄 단위로, 해치를 선으로 분해합니다. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 분해 단축키는?","answer":"X를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 _EXPLODE를 쓸 수 있습니다."},{"question":"AutoCAD에서 분해를 되돌리려면?","answer":"바로 U를 입력하거나 Ctrl+Z를 누릅니다. 분해는 명령 취소 한 단계입니다. 나중에는 JOIN으로 끝과 끝이 만나는 선과 호를 다시 폴리선 하나로 만들고, BLOCK으로 객체를 다시 블록 하나로 만듭니다."},{"question":"AutoCAD에서 문자를 분해할 수 있나요?","answer":"여러 줄 문자는 됩니다. 각 줄이 단일 행 문자가 됩니다. 단일 행 문자는 이미 가장 작은 단위이므로 EXPLODE가 거부합니다."},{"question":"AutoCAD에서 블록을 분해하려면?","answer":"블록 참조를 선택하고 Enter 키를 누릅니다. 참조가 그리던 위치에 블록의 객체가 놓입니다. 안에 든 블록은 블록으로 남으므로 다시 분해합니다. 속성은 값 없이 속성 정의로 돌아옵니다."}]
+---
+
+EXPLODE(분해) 명령은 복합 객체를 그것을 이루는 객체로 나눕니다. 객체를 선택하고 Enter 키를 누릅니다. 폴리선은 중심선을 따라 선과 호가 되고, 블록 참조는 한 단계 아래인 블록의 객체가 되며, 여러 줄 문자는 화면에 보이는 줄마다 단일 행 문자 하나가 되고, 패턴 해치는 패턴의 선이 됩니다. 각 조각은 원래 객체의 도면층과 특성을 유지하며, 블록의 조각은 각자의 특성을 유지합니다. 폭이 있는 폴리선은 폭을 잃으며, EXPLODE가 이를 알려 줍니다. 선, 원, 호, 단일 행 문자, 치수는 분해할 수 없어 선택할 때 거부되고, 스플라인, 타원, 솔리드 해치는 선택을 마칠 때 거부됩니다. 분해는 한 단계이므로 명령 취소로 되돌립니다.
+
+- **명령:** `EXPLODE`
+- **단축키:** `X`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `X` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="explode" caption="폴리선 하나인 직사각형을 선 4개로 분해한 다음, 그중 하나만 지웁니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+치수가 없습니다. AutoCAD는 치수를 선, 화살촉, 문자로 분해하지만 MellowCAD는 거부합니다. 여기에 포함되지 않은 패턴의 해치는 솔리드 해치처럼 거부되며, 분해한 여러 줄 문자는 글꼴이 그리는 위치에 놓여 AutoCAD의 위치와 아주 조금 어긋납니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp--pt-br-explodir--x--fr-decomposer--de--decompos--it-esplodi--e--de-ursprung--ur--ru-расчленить--расч--pl-rozbij--r--cs-rozlož--x--hu-szétvet--szv)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 분해 단축키는?
+
+`X`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 `_EXPLODE`를 쓸 수 있습니다.
+
+### AutoCAD에서 분해를 되돌리려면?
+
+바로 `U`를 입력하거나 Ctrl+Z를 누릅니다. 분해는 명령 취소 한 단계입니다. 나중에는 [`JOIN`](/docs/commands/join)으로 끝과 끝이 만나는 선과 호를 다시 폴리선 하나로 만들고, [`BLOCK`](/docs/commands/block)으로 객체를 다시 블록 하나로 만듭니다.
+
+### AutoCAD에서 문자를 분해할 수 있나요?
+
+여러 줄 문자는 됩니다. 각 줄이 단일 행 문자가 됩니다. 단일 행 문자는 이미 가장 작은 단위이므로 EXPLODE가 거부합니다.
+
+### AutoCAD에서 블록을 분해하려면?
+
+블록 참조를 선택하고 Enter 키를 누릅니다. 참조가 그리던 위치에 블록의 객체가 놓입니다. 안에 든 블록은 블록으로 남으므로 다시 분해합니다. 속성은 값 없이 속성 정의로 돌아옵니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD JOIN(결합) 명령](/docs/commands/join)
+- [AutoCAD BLOCK(블록 작성) 명령](/docs/commands/block)
+- [AutoCAD PEDIT(폴리선 편집) 명령](/docs/commands/pedit)
+- [AutoCAD INSERT(블록 삽입) 명령](/docs/commands/insert)

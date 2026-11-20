@@ -1,0 +1,71 @@
+---
+title: "AutoCAD SPHERE(구) 명령"
+metaTitle: "오토캐드 구(SPHERE)로 3D 구 그리기"
+description: "AutoCAD SPHERE(구, 캐드 스피어)로 3D 솔리드 구를 그리는 방법을 프롬프트 순서대로: 중심과 반지름, 지름, 3P, 2P, Ttr, 그리고 선으로 보이는 이유. 브라우저에서 무료로."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드에서 구는 어떻게 만듭니까?","answer":"SPHERE를 실행하고 중심과 반지름을 지정합니다. 0,0,0과 25를 입력하면 세션의 구가 그려집니다. 둥근 모양을 보려면 ViewCube의 구석이나 -VIEW와 SEIso로 뷰를 돌립니다."},{"question":"구가 선이 그어진 원처럼 보이는 이유는 무엇입니까?","answer":"2D 와이어프레임과 숨김은 구를 경선과 위선으로 그리며, 평면도에서는 원과 그 안을 지나는 선으로 보입니다. VSCURRENT에서 Conceptual을 고르면 음영이 표시되고, ISOLINES로 선의 수를 정합니다."},{"question":"반구는 어떻게 만듭니까?","answer":"구를 그린 다음 SLICE로 중심을 지나게 자릅니다. 평면 위의 세 점이나 XY와 중심을 지정하고, 남길 쪽을 지정합니다."},{"question":"지름으로 구를 그리려면 어떻게 합니까?","answer":"반지름에서 Diameter를 고르고 지름을 입력합니다. 2P로 지름의 두 끝을 지정해도 됩니다."}]
+---
+
+SPHERE(구) 명령은 3D 솔리드 구를 그립니다. 중심을 지정한 다음 반지름을 지정합니다. 마우스로 지정한 반지름은 중심을 지나는 평면에서 읽으며, 마지막 반지름이 기본값으로 제시되어 Enter 키로 받습니다. 이 기본값은 [`CYLINDER`](/docs/commands/cylinder), [`CONE`](/docs/commands/cone)과 다른 기본체가 함께 씁니다. 구는 현재 도면층에 작성되며, 명령 취소 한 번으로 되돌릴 수 있습니다.
+
+2D 와이어프레임과 숨김에서는 `ISOLINES`가 정한 수만큼의 경선과 위선으로 그려지며, 중심 말고는 스냅되는 곳이 없습니다. [`LIST`](/docs/commands/list)는 위치와 반지름을 표시하고, 특성 팔레트에서 반지름이나 지름을 입력할 수 있습니다. 그립으로 구를 이동하고, 적도의 사분점마다 있는 그립으로 반지름을 정합니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract)와 MellowCAD의 나머지 3D 기능에서 3D 솔리드로 다뤄집니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다.
+
+- **명령:** `SPHERE`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `SPHERE` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="sphere" caption="중심에서 반지름 25로 그린 구를 개념 비주얼 스타일로 남동쪽에서 봅니다." />
+
+## 옵션 [#options]
+
+### `3P` [#3p]
+
+중심에서 선택합니다. 세 점을 묻고, 그 세 점을 지나는 원의 중심과 반지름으로 구를 만듭니다.
+
+### `2P` [#2p]
+
+중심에서 선택합니다. 공간 어디서든 지름의 두 끝을 묻습니다.
+
+### `Ttr` (`T`) [#ttr]
+
+중심에서 선택합니다. 접점 스냅으로 선, 원, 호 두 개를 선택하고 반지름을 지정합니다. 중심은 그 반지름으로 둘 다에 접하는 원 위, 두 객체의 높이에 놓입니다.
+
+### `Diameter` (`D`) [#diameter]
+
+반지름에서 선택합니다. 대신 지름을 물으며, 마지막 반지름의 두 배를 제시합니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD가 표면으로 바꾸는 구의 [`EXPLODE`](/docs/commands/explode): MellowCAD에는 표면이 없으므로 분해할 수 없다고 알려 줍니다. 핫 그립에서의 이동, 회전, 축척, 대칭, 그리고 3D 전용 명령(3DMOVE, 3DROTATE, 3DSCALE). AutoCAD의 `DISPSILH`가 그리는 윤곽선. 2D 와이어프레임, 숨김, 개념 외에 [`VSCURRENT`](/docs/commands/vscurrent)에 없는 비주얼 스타일.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera--de-kugel--ru-шар--pl-sfera--cs-koule--hu-gömb)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드에서 구는 어떻게 만듭니까?
+
+SPHERE를 실행하고 중심과 반지름을 지정합니다. `0,0,0`과 `25`를 입력하면 세션의 구가 그려집니다. 둥근 모양을 보려면 ViewCube의 구석이나 `-VIEW`와 `SEIso`로 뷰를 돌립니다.
+
+### 구가 선이 그어진 원처럼 보이는 이유는 무엇입니까?
+
+2D 와이어프레임과 숨김은 구를 경선과 위선으로 그리며, 평면도에서는 원과 그 안을 지나는 선으로 보입니다. [`VSCURRENT`](/docs/commands/vscurrent)에서 `Conceptual`을 고르면 음영이 표시되고, `ISOLINES`로 선의 수를 정합니다.
+
+### 반구는 어떻게 만듭니까?
+
+구를 그린 다음 [`SLICE`](/docs/commands/slice)로 중심을 지나게 자릅니다. 평면 위의 세 점이나 `XY`와 중심을 지정하고, 남길 쪽을 지정합니다.
+
+### 지름으로 구를 그리려면 어떻게 합니까?
+
+반지름에서 `Diameter`를 고르고 지름을 입력합니다. `2P`로 지름의 두 끝을 지정해도 됩니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD TORUS(토러스) 명령](/docs/commands/torus)
+- [AutoCAD CYLINDER(원통) 명령](/docs/commands/cylinder)
+- [AutoCAD SLICE(슬라이스) 명령](/docs/commands/slice)
+- [AutoCAD SUBTRACT(차집합) 명령](/docs/commands/subtract)

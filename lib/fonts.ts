@@ -64,9 +64,32 @@ export const JAPANESE_SYSTEM_FACES = [
 ] as const
 
 /**
+ * Korean's faces as each system names them: Apple SD Gothic Neo, Windows'
+ * Malgun Gothic, Android's and Linux's Noto CJK. WHY no web font: Japanese's
+ * reason, Google's Noto Sans KR is some 120 `unicode-range` files too
+ * (docs/i18n/ko.md, "Script and font").
+ */
+export const KOREAN_SYSTEM_FACES = [
+  '"Apple SD Gothic Neo"',
+  '"Malgun Gothic"',
+  '"Noto Sans CJK KR"',
+  '"Noto Sans KR"',
+] as const
+
+/** Each CJK script's system faces, in the order the systems are tried. */
+const SYSTEM_FACES: Record<
+  (typeof SYSTEM_FACE_SCRIPTS)[number],
+  readonly string[]
+> = {
+  japanese: JAPANESE_SYSTEM_FACES,
+  korean: KOREAN_SYSTEM_FACES,
+}
+
+/**
  * The page's font with the system's faces of a script right behind it, before
- * its fallback: the metric fallback is a local Arial, which has no kana, but
- * a system left to choose draws Japanese in whatever face it likes best.
+ * its fallback: the metric fallback is a local Arial, which has no kana or
+ * Hangul, but a system left to choose draws them in whatever face it likes
+ * best.
  */
 export function systemFontStack(
   primary: FontFamily,
@@ -98,8 +121,8 @@ export function scriptFontVariables(
   if (isInterScript(script)) return undefined
   if (isSystemFaceScript(script)) {
     return {
-      "--font-sans": systemFontStack(fonts.sans, JAPANESE_SYSTEM_FACES),
-      "--font-mono": systemFontStack(fonts.mono, JAPANESE_SYSTEM_FACES),
+      "--font-sans": systemFontStack(fonts.sans, SYSTEM_FACES[script]),
+      "--font-mono": systemFontStack(fonts.mono, SYSTEM_FACES[script]),
     } as CSSProperties
   }
   if (script === "latin-ext") {

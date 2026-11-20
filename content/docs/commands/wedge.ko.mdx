@@ -1,0 +1,72 @@
+---
+title: "AutoCAD WEDGE(쐐기) 명령"
+metaTitle: "오토캐드 쐐기(WEDGE) 사용법과 단축키 WE"
+description: "AutoCAD WEDGE(쐐기, WE)로 3D 솔리드 쐐기를 그리는 방법을 프롬프트 순서대로: 두 구석점과 높이, 중심, 정육면체, 길이, 2점. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 쐐기(WEDGE)의 단축키는 무엇입니까?","answer":"WE입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 첫 번째 구석점, 다른 구석점, 높이를 지정합니다. 0,0, 60,40, 25이면 세션의 쐐기가 그려집니다."},{"question":"쐐기는 어느 방향으로 기웁니까?","answer":"첫 번째 구석점 쪽 끝에서 UCS의 X를 따라 내려갑니다. 방향을 바꾸려면 다른 구석점을 더 작은 X에 지정해 180° 돌리거나, 나중에 ROTATE로 회전합니다."},{"question":"삼각기둥은 어떻게 그립니까?","answer":"쐐기가 바로 삼각기둥입니다. 양 끝의 직각삼각형을 폭 방향으로 이은 모양입니다. 다른 삼각형이라면 PLINE으로 닫힌 삼각형을 그리고 EXTRUDE로 돌출합니다."},{"question":"중심에서 쐐기를 그리려면 어떻게 합니까?","answer":"Center를 고르고 중심점을 지정한 다음, 구석점, Cube, Length 중 하나를 지정합니다. 쐐기는 높이 방향으로도 그 점을 중심으로 합니다."}]
+---
+
+WEDGE(쐐기) 명령은 3D 솔리드 쐐기를 그립니다. 윗면이 한쪽 끝에서 다른 쪽 끝으로 내려가는 상자입니다. [`BOX`](/docs/commands/box)와 같은 것을 묻습니다. 첫 번째 구석점, 다른 구석점, 높이입니다. 높은 쪽 끝은 첫 번째 구석점에 있고, 경사는 UCS의 X를 따라 다른 구석점 쪽으로 내려갑니다. 다른 구석점의 X가 더 작으면 방향이 반대가 됩니다. 높이는 UCS의 Z 방향으로 올라가고 음수이면 내려갑니다. 길이, 폭, 높이는 [`BOX`](/docs/commands/box)의 기본값이며 Enter 키로 받습니다. 쐐기는 현재 도면층에 작성되며, 명령 취소 한 번으로 되돌릴 수 있습니다.
+
+[`LIST`](/docs/commands/list)는 위치, 길이, 폭, 높이, 회전을 표시하고, 특성 팔레트에서 이 값들을 입력할 수 있습니다. 그립은 [`BOX`](/docs/commands/box)와 같습니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract)와 MellowCAD의 나머지 3D 기능에서 3D 솔리드로 다뤄집니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다. [`EXPLODE`](/docs/commands/explode)는 쐐기를 면마다 하나의 영역으로 바꿉니다.
+
+- **명령:** `WEDGE`
+- **단축키:** `WE`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `WE` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="wedge" caption="두 구석점과 높이로 그린 60×40×25 쐐기. 경사는 첫 번째 구석점 쪽 끝에서 내려가며, 숨김 비주얼 스타일로 남동쪽에서 봅니다." />
+
+## 옵션 [#options]
+
+### `Center` (`C`) [#center]
+
+첫 프롬프트에서 선택합니다. 중심을 묻고, 이어서 구석점, `Cube`, `Length` 중 하나를 묻습니다. 쐐기는 높이 방향으로도 그 점을 중심으로 하며, 높은 쪽 끝은 지정한 구석점의 반대쪽에 있습니다.
+
+### `Cube` (`C`) [#cube]
+
+다른 구석점에서 선택합니다. 길이를 묻고, 모든 변이 그 길이인 쐐기를 만듭니다. [`BOX`](/docs/commands/box)와 달리 UCS의 X를 따라 놓이며, 음수이면 반대 방향입니다.
+
+### `Length` (`L`) [#length]
+
+다른 구석점에서 선택합니다. UCS의 X를 따르는 길이와 Y를 따르는 폭을 묻습니다. 음수이면 반대 방향입니다. 점을 지정하면 거리만 쓰고 방향은 쓰지 않습니다.
+
+### `2Point` (`2P`) [#2point]
+
+높이에서 선택합니다. 두 점을 묻고, 그 사이의 거리가 높이가 됩니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+[`BOX`](/docs/commands/box)와 같은 것들: 핫 그립에서의 이동, 회전, 축척, 대칭, 3D 전용 명령, 구석점을 지정하는 동안의 점선 치수, 그리고 [`VSCURRENT`](/docs/commands/vscurrent)에 없는 비주얼 스타일. 평면도에서 높은 쪽 끝 아래의 끝점 스냅은 윗면의 구석을 찾지만, AutoCAD는 밑면의 구석을 찾습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke--ru-клин--кл--pl-klin--kl--cs-klín--kl--hu-ék--ek)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 쐐기(WEDGE)의 단축키는 무엇입니까?
+
+`WE`입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 첫 번째 구석점, 다른 구석점, 높이를 지정합니다. `0,0`, `60,40`, `25`이면 세션의 쐐기가 그려집니다.
+
+### 쐐기는 어느 방향으로 기웁니까?
+
+첫 번째 구석점 쪽 끝에서 UCS의 X를 따라 내려갑니다. 방향을 바꾸려면 다른 구석점을 더 작은 X에 지정해 180° 돌리거나, 나중에 [`ROTATE`](/docs/commands/rotate)로 회전합니다.
+
+### 삼각기둥은 어떻게 그립니까?
+
+쐐기가 바로 삼각기둥입니다. 양 끝의 직각삼각형을 폭 방향으로 이은 모양입니다. 다른 삼각형이라면 [`PLINE`](/docs/commands/pline)으로 닫힌 삼각형을 그리고 [`EXTRUDE`](/docs/commands/extrude)로 돌출합니다.
+
+### 중심에서 쐐기를 그리려면 어떻게 합니까?
+
+`Center`를 고르고 중심점을 지정한 다음, 구석점, `Cube`, `Length` 중 하나를 지정합니다. 쐐기는 높이 방향으로도 그 점을 중심으로 합니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD BOX(상자) 명령](/docs/commands/box)
+- [AutoCAD PYRAMID(피라미드) 명령](/docs/commands/pyramid)
+- [AutoCAD EXTRUDE(돌출) 명령](/docs/commands/extrude)
+- [AutoCAD UNION(합집합) 명령](/docs/commands/union)

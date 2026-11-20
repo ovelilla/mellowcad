@@ -1,0 +1,76 @@
+---
+title: "AutoCAD TORUS(토러스) 명령"
+metaTitle: "오토캐드 토러스(TORUS) 사용법과 단축키 TOR"
+description: "AutoCAD TORUS(토러스, TOR)로 3D 솔리드 고리를 그리는 방법을 프롬프트 순서대로: 중심, 고리의 반지름, 튜브의 반지름, 지름, 3P, 2P, Ttr. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 토러스(TORUS)의 단축키는 무엇입니까?","answer":"TOR입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 중심, 고리의 반지름, 튜브의 반지름을 지정합니다. 0,0,0, 30, 8이면 세션의 토러스가 그려집니다."},{"question":"반지름과 튜브 반지름의 차이는 무엇입니까?","answer":"반지름은 토러스의 중심에서 튜브의 가운데까지이고, 튜브 반지름은 튜브 자체의 반지름입니다. 바깥 지름이 76이고 튜브 굵기가 16인 토러스는 반지름 30, 튜브 반지름 8입니다."},{"question":"럭비공 모양의 토러스는 어떻게 그립니까?","answer":"음의 반지름을 지정한 다음, 그 크기보다 큰 튜브 반지름을 지정합니다. -5와 8이면 양 끝이 뾰족한 닫힌 모양이 됩니다. 튜브 반지름이 그 크기보다 크지 않으면 거부되고 다시 묻습니다."},{"question":"토러스가 원 두 개처럼 보이는 이유는 무엇입니까?","answer":"평면도에서 위에서 내려다보고 있기 때문입니다. ViewCube의 구석, -VIEW와 SEIso, 또는 3DORBIT으로 뷰를 돌립니다. VSCURRENT에서 Conceptual을 고르면 음영이 표시됩니다."}]
+---
+
+TORUS(토러스) 명령은 도넛 모양의 3D 솔리드 고리를 그립니다. 중심을 지정하고, 중심에서 튜브의 가운데까지인 고리의 반지름을 지정한 다음, 튜브의 반지름을 지정합니다. 고리는 UCS의 XY 평면에, 중심의 Z 높이에 놓입니다. 튜브 프롬프트에서 지정한 점은 고리의 반지름을 지정한 점에서 잽니다. 고리의 반지름은 기본체들이 함께 쓰는 기본값이고, 튜브의 반지름은 고유한 기본값이며 Enter 키로 받습니다. 토러스는 현재 도면층에 작성되며, 명령 취소 한 번으로 되돌릴 수 있습니다.
+
+고리의 반지름이 음수이고 튜브가 그보다 굵으면 양 끝이 뾰족한 럭비공 모양이 되고, 고리가 튜브보다 좁으면 사과 모양이 됩니다. 2D 와이어프레임과 숨김에서는 `ISOLINES`가 정한 수만큼 튜브와 고리를 도는 선으로 그려집니다. [`LIST`](/docs/commands/list)는 위치, 법선, 토러스 반지름, 튜브 반지름을 표시하고, 특성 팔레트에서 두 반지름을 입력할 수 있습니다. 그립으로 토러스를 이동하고, 고리의 반지름과 튜브의 반지름을 정합니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract)와 MellowCAD의 나머지 3D 기능에서 3D 솔리드로 다뤄집니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다.
+
+- **명령:** `TORUS`
+- **단축키:** `TOR`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `TOR` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="torus" caption="반지름 30, 튜브 반지름 8인 토러스를 개념 비주얼 스타일로 남동쪽에서 봅니다." />
+
+## 옵션 [#options]
+
+### `3P` [#3p]
+
+중심에서 선택합니다. 세 점을 묻고, 고리는 그 세 점의 평면에서 세 점을 지나는 원이 됩니다.
+
+### `2P` [#2p]
+
+중심에서 선택합니다. 고리 지름의 두 끝을 묻습니다.
+
+### `Ttr` (`T`) [#ttr]
+
+중심에서 선택합니다. 접점 스냅으로 선, 원, 호 두 개를 선택하고 반지름을 지정합니다. 고리는 두 객체의 높이에서 둘 다에 접합니다.
+
+### `Diameter` (`D`) [#diameter]
+
+고리의 반지름에서는 대신 토러스의 지름을 묻고, 튜브의 반지름에서는 튜브의 지름을 묻습니다. 각각 기본값의 두 배를 제시합니다.
+
+### `2Point` (`2P`) [#2point]
+
+튜브의 반지름에서 선택합니다. 두 점을 묻고, 그 사이의 거리가 튜브의 반지름이 됩니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD가 표면으로 바꾸는 토러스의 [`EXPLODE`](/docs/commands/explode): MellowCAD에는 표면이 없으므로 분해할 수 없다고 알려 줍니다. 핫 그립에서의 이동, 회전, 축척, 대칭, 그리고 AutoCAD의 `DISPSILH`가 그리는 윤곽선.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro--fr-tore--tor--it-toro--tor--de-torus--tor--ru-тор--pl-torus--tor--cs-anuloid--anu--hu-tórusz--tor)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 토러스(TORUS)의 단축키는 무엇입니까?
+
+`TOR`입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 중심, 고리의 반지름, 튜브의 반지름을 지정합니다. `0,0,0`, `30`, `8`이면 세션의 토러스가 그려집니다.
+
+### 반지름과 튜브 반지름의 차이는 무엇입니까?
+
+반지름은 토러스의 중심에서 튜브의 가운데까지이고, 튜브 반지름은 튜브 자체의 반지름입니다. 바깥 지름이 76이고 튜브 굵기가 16인 토러스는 반지름 30, 튜브 반지름 8입니다.
+
+### 럭비공 모양의 토러스는 어떻게 그립니까?
+
+음의 반지름을 지정한 다음, 그 크기보다 큰 튜브 반지름을 지정합니다. `-5`와 `8`이면 양 끝이 뾰족한 닫힌 모양이 됩니다. 튜브 반지름이 그 크기보다 크지 않으면 거부되고 다시 묻습니다.
+
+### 토러스가 원 두 개처럼 보이는 이유는 무엇입니까?
+
+평면도에서 위에서 내려다보고 있기 때문입니다. ViewCube의 구석, `-VIEW`와 `SEIso`, 또는 [`3DORBIT`](/docs/commands/3dorbit)으로 뷰를 돌립니다. [`VSCURRENT`](/docs/commands/vscurrent)에서 `Conceptual`을 고르면 음영이 표시됩니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD SPHERE(구) 명령](/docs/commands/sphere)
+- [AutoCAD CYLINDER(원통) 명령](/docs/commands/cylinder)
+- [AutoCAD REVOLVE(회전) 명령](/docs/commands/revolve)
+- [AutoCAD SUBTRACT(차집합) 명령](/docs/commands/subtract)

@@ -1,0 +1,73 @@
+---
+title: "AutoCAD SNAP(스냅) 명령"
+metaTitle: "오토캐드 스냅(SNAP) 모드와 간격 설정, F9"
+description: "AutoCAD SNAP(스냅, SN, F9)의 사용법: 설정한 간격의 격자점에 커서를 고정하는 스냅 모드, X와 Y를 따로 정하는 Aspect, 극좌표 스냅. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 스냅(SNAP)의 단축키는 무엇입니까?","answer":"F9 키가 스냅 모드를 켜고 끕니다. 간격을 설정하는 명령은 SN을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 _SNAP도 됩니다."},{"question":"SNAP과 OSNAP의 차이는 무엇입니까?","answer":"스냅 모드는 커서를 공간의 격자점으로 반올림합니다. 객체 스냅(F3)은 커서를 객체 위의 점, 즉 끝점, 중간점, 중심에 고정합니다. 둘은 함께 작동하며, 둘 다 점을 찾으면 객체 스냅이 우선합니다."},{"question":"캐드에서 커서가 뚝뚝 끊겨 움직이는 이유는 무엇입니까?","answer":"스냅 모드가 켜져 있기 때문입니다. F9 키나 상태 막대의 스냅 버튼을 눌러 끕니다. 더 촘촘하게 움직이게 하려면 SNAP으로 간격을 줄입니다."},{"question":"X와 Y의 스냅 간격을 다르게 설정하려면 어떻게 합니까?","answer":"SNAP을 실행하고 Aspect를 고른 다음, 수평 간격과 수직 간격을 차례로 지정합니다."},{"question":"등각 스냅이 있습니까?","answer":"아직 없습니다. 등각 투영 도면을 위해 격자를 돌리는 SNAP의 스타일 옵션은 제공되지 않습니다."}]
+---
+
+스냅 모드는 커서를 격자점에 고정합니다. 클릭할 때마다 가장 가까운 격자점에 놓이므로, 간격이 10이면 13,7을 클릭해도 10,10이 됩니다. 격자는 현재 UCS의 것으로, 원점에서 UCS의 축을 따라 놓입니다. F9 키는 스냅 모드를 켜고 끄며 `<Snap on>`이나 `<Snap off>`를 쓰고, 상태 막대의 버튼도 같은 일을 합니다. 클릭한 점만 반올림됩니다. 입력한 좌표는 입력한 그대로 쓰이고, 객체 스냅이 격자보다 우선합니다. 그리드(F7)는 따로 격자를 그리며, 스냅이 켜져 있든 꺼져 있든 표시됩니다.
+
+SNAP(스냅) 명령은 간격을 설정합니다. 간격을 입력하거나 그만큼 떨어진 두 점을 지정하면, X와 Y에 그 간격으로 스냅 모드가 켜집니다. Enter 키는 현재 간격 그대로 켭니다. 0 이하의 간격은 `Value must be positive and nonzero.`로 거부됩니다. 아포스트로피를 붙여 `'SNAP`으로 입력하면 다른 명령 안에서 작동합니다. 스냅 모드와 간격은 도면과 함께 저장되며, U로 SNAP을 되돌립니다.
+
+상태 막대의 스냅 메뉴에서는 대신 극좌표 스냅을 고릅니다. 극좌표 추적 경로를 따라 커서가 POLARDIST만큼, POLARDIST가 0이면 스냅의 X 간격만큼 움직입니다.
+
+- **명령:** `SNAP`
+- **단축키:** `SN`
+- **패널:** [조회 및 뷰](/docs/commands#inquiry)
+- **해 보기:** [편집기를 열고](/ko/draw) `SN` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="snap" caption="그리드를 켜고 SNAP 10을 설정한 다음 격자점에서 벗어난 곳을 클릭해 LINE을 그립니다. 모든 점과 커서가 격자점에 놓입니다." />
+
+## 옵션 [#options]
+
+### `ON` [#on]
+
+현재 간격으로 스냅 모드를 켭니다. Enter 키와 같습니다.
+
+### `OFF` (`OF`) [#off]
+
+스냅 모드를 끕니다. 간격은 유지됩니다.
+
+### `Aspect` (`A`) [#aspect]
+
+수평 간격과 수직 간격을 차례로 묻고 스냅 모드를 켭니다. 정사각형이 아니라 세로나 가로로 긴 격자가 됩니다. 이후 프롬프트의 기본값이 `Aspect`가 되므로, Enter 키를 누르면 다시 두 간격을 묻습니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+프롬프트의 스타일(등각 스냅)과 유형(그리드 또는 극좌표): 유형은 상태 막대의 메뉴에서 고릅니다. Legacy, 숨겨진 Rotate(SNAPANG), SNAPBASE. AutoCAD의 극좌표 스냅이 크기로 받는 음수 POLARDIST: −10이면 10씩 움직입니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--pt-br-snap--sn--snap-mode-f9--fr-resol--rl--snap-mode-f9--it-snap--sn--snap-mode-f9--de-fang--f--snap-mode-f9--ru-шаг--snap-mode-f9--pl-skok--sko--snap-mode-f9--cs-krok--snap-mode-f9--hu-raszter--ra--snap-mode-f9)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 스냅(SNAP)의 단축키는 무엇입니까?
+
+F9 키가 스냅 모드를 켜고 끕니다. 간격을 설정하는 명령은 `SN`을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 `_SNAP`도 됩니다.
+
+### SNAP과 OSNAP의 차이는 무엇입니까?
+
+스냅 모드는 커서를 공간의 격자점으로 반올림합니다. 객체 스냅(F3)은 커서를 객체 위의 점, 즉 끝점, 중간점, 중심에 고정합니다. 둘은 함께 작동하며, 둘 다 점을 찾으면 객체 스냅이 우선합니다.
+
+### 캐드에서 커서가 뚝뚝 끊겨 움직이는 이유는 무엇입니까?
+
+스냅 모드가 켜져 있기 때문입니다. F9 키나 상태 막대의 스냅 버튼을 눌러 끕니다. 더 촘촘하게 움직이게 하려면 SNAP으로 간격을 줄입니다.
+
+### X와 Y의 스냅 간격을 다르게 설정하려면 어떻게 합니까?
+
+SNAP을 실행하고 `Aspect`를 고른 다음, 수평 간격과 수직 간격을 차례로 지정합니다.
+
+### 등각 스냅이 있습니까?
+
+아직 없습니다. 등각 투영 도면을 위해 격자를 돌리는 SNAP의 스타일 옵션은 제공되지 않습니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD UCS(사용자 좌표계) 명령](/docs/commands/ucs)
+- [AutoCAD LINE(선) 명령](/docs/commands/line)
+- [FROM](/docs/commands#from): 한 명령 내에서 참조점으로부터 간격띄우기된 점을 찾습니다

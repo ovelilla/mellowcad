@@ -1,0 +1,85 @@
+---
+title: 온라인에서 DXF 파일 편집하기
+metaTitle: "무료 온라인 DXF 편집기: DXF 편집하고 저장하기"
+description: "브라우저에서 AutoCAD 명령으로 DXF 파일을 무료로 편집하고, AutoCAD 2000~2018 DXF로 다시 저장합니다. 설치도 업로드도 필요 없는 DXF 편집기입니다."
+type: howTo
+sourceHash: "3b96ee37d43c"
+faq:
+  - question: "온라인에서 DXF 파일을 편집하려면 어떻게 해야 합니까?"
+    answer: "이 페이지 위쪽에서 파일을 선택하거나 끌어다 놓으면 브라우저 안의 MellowCAD 편집기에서 열립니다. AutoCAD 명령으로 변경한 다음 SAVEAS(Ctrl+Shift+S)나 DXFOUT으로 다시 DXF 파일로 저장합니다."
+  - question: "무료입니까? 계정이 필요합니까?"
+    answer: "무료이며, 계정도 설치도 필요 없습니다. 파일은 사용자의 컴퓨터에서 읽히며 업로드되지 않습니다."
+  - question: "어떤 DXF 버전으로 저장할 수 있습니까?"
+    answer: "AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 DXF를 텍스트(ASCII) 또는 이진으로 저장할 수 있습니다. R12와 DWG는 아직 지원하지 않습니다."
+  - question: "저장한 DXF를 AutoCAD에서 열 수 있습니까?"
+    answer: "예. MellowCAD가 쓰는 모든 종류의 객체를 모든 버전에서 텍스트와 이진 모두 AutoCAD 2027로 열었고, AUDIT에서 오류가 발견되지 않았습니다."
+  - question: "저장하면 잃는 것이 있습니까?"
+    answer: "열리지 않은 것은 저장하는 파일에도 없습니다. 여러 줄(MLINE), 기하학적 공차 등 파일을 열 때 명령행이 센 객체입니다. 3D 솔리드와 영역도 쓰지 않으며, 명령행이 그 목록을 보여 줍니다. 원본 파일은 보관해 두십시오."
+  - question: "새 DXF 파일을 처음부터 만들 수 있습니까?"
+    answer: "예. 편집기를 열어 그린 다음, SAVEAS로 DXF 파일 유형을 선택해 저장합니다."
+---
+
+<OpenDxf />
+
+MellowCAD는 AutoCAD의 명령, 프롬프트, 옵션으로 브라우저에서 DXF 파일을 편집하고, AutoCAD와 DXF를 읽는 모든 프로그램에서 쓸 수 있도록 다시 DXF로 저장합니다. 입력하는 것은 한국어판 AutoCAD와 같습니다. 파일은 사용자의 컴퓨터에서 읽힙니다. 아무것도 업로드되지 않으며, 설치할 것도 만들 계정도 없습니다.
+
+## 편집하기 [#edit]
+
+위에서 DXF를 선택하거나 끌어다 놓으면 편집기에서 열립니다. 편집기에서 <Command id="OPEN" />(`Ctrl+O`)이나 <Command id="DXFIN" />으로 열 수도 있습니다. 열린 다음에는 다른 도면과 같습니다.
+
+- **변경하기**: <Command id="MOVE" />, <Command id="COPY" />, <Command id="ROTATE" />, <Command id="SCALE" />, <Command id="STRETCH" />, <Command id="TRIM" />, <Command id="EXTEND" />, <Command id="OFFSET" />, <Command id="ERASE" />로 변경하고, 그 위에 그립니다.
+- **문자와 도면층 고치기**: <Command id="TEXTEDIT" />, <Command id="LAYER" />, <Command id="PROPERTIES" />, <Command id="MATCHPROP" />을 사용합니다.
+- **측정하기**: <Command id="DIST" />와 <Command id="AREA" />를 사용합니다.
+
+[열리는 것과 빠지는 것](/docs/open-dxf#opens)은 DXF 파일 열기 페이지에 있습니다. 작업하는 동안 도면은 이 브라우저에 보관됩니다.
+
+## DXF로 저장하기 [#save]
+
+<Command id="SAVEAS" />(`Ctrl+Shift+S`), <Command id="SAVE" />, <Command id="DXFOUT" />은 AutoCAD처럼 다른 이름으로 도면 저장 대화상자를 엽니다. 파일 이름을 입력하고, AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 DXF 중에서 파일 유형을 고릅니다(<Command id="DXFOUT" />은 AutoCAD 2018 DXF가 선택된 상태로 열립니다). 도구 > 옵션...을 누르면 다른 이름으로 저장 옵션의 DXF 옵션이 열립니다.
+
+- **형식**: 대부분의 프로그램이 읽는 텍스트인 ASCII, 또는 이진.
+- **객체 선택**: 대화상자가 닫히면 명령이 객체를 선택하라고 요청하며, 파일에는 선택한 객체만 들어갑니다.
+- **정확성을 위한 소수 구분 기호 (0-16)**: 16보다 작으면 AutoCAD처럼 명령행에 경고가 표시되고, 좌표, 각도, 문자 크기가 그 자릿수로 반올림됩니다.
+
+파일은 여기서 저장하는 모든 것과 마찬가지로 다운로드됩니다([저장은 AutoCAD와 조금 다릅니다](/docs/differences#saving)). 반면 `Ctrl+S`는 버전 번호가 붙은 MellowCAD 고유 형식으로 저장합니다. DXF로 남기려면 <Command id="SAVEAS" />를 사용하십시오.
+
+## DXF에 담기는 것 [#holds]
+
+MellowCAD에 있는 모든 객체를 AutoCAD가 쓰는 방식대로 씁니다. 선, 호, 원, 타원, 폭과 곡선 맞춤이 있는 폴리선, 3D 폴리선, 스플라인, 단일 행 문자와 여러 줄 문자, 속성이 있는 블록, 치수, 패턴이 있는 해치, 점, 2D 솔리드, 그리고 항목들의 블록으로 쓰는 배열입니다. 이와 함께 색상, 선종류, 선가중치가 있는 도면층(켜기, 끄기, 잠금), 복합 선종류를 포함한 도면의 선종류, 각 객체의 선종류 축척, 문자 스타일과 치수 스타일, 블록, 도면의 단위와 설정도 저장됩니다. 문자는 원래 문자를 그대로 유지합니다. 2004까지는 AutoCAD가 쓰는 Windows 코드 페이지로 쓰고 나머지 문자는 이스케이프로 쓰며, 2007부터는 UTF-8로 씁니다.
+
+## 돌아오지 않는 것 [#lost]
+
+- **열리지 않은 것은 저장되지 않습니다.** MellowCAD에 아직 없는 객체(여러 줄(MLINE), 기하학적 공차, [그 목록의 나머지](/docs/open-dxf#left-out))는 파일을 열 때 명령행에서 세며, 저장하는 파일에는 없습니다. 원본을 보관해 두십시오.
+- **3D 솔리드와 영역은 쓰지 않습니다.** 빠진 개수가 명령행에 표시됩니다.
+- 치수 자체의 스타일 재지정과 배열의 매개변수는 쓰지 않습니다. AutoCAD는 치수를 그 스타일의 설정으로, 배열을 항목들의 블록으로 엽니다.
+- 썸네일 미리보기와 AutoCAD R12/LT2 DXF 파일 유형은 아직 없으며, DWG도 없습니다.
+
+## 처음부터 DXF 만들기 [#new]
+
+시작할 DXF 없이 DXF를 만들려면 [편집기를 열어](/ko/draw) 그린 다음, <Command id="SAVEAS" />로 DXF 파일 유형을 선택해 저장합니다. 처음이라면 [시작하기](/docs/getting-started)부터 보십시오.
+
+## 자주 묻는 질문 [#questions]
+
+### 온라인에서 DXF 파일을 편집하려면 어떻게 해야 합니까? [#how]
+
+이 페이지 위쪽에서 파일을 선택하거나 끌어다 놓으면 브라우저 안의 MellowCAD 편집기에서 열립니다. AutoCAD 명령으로 변경한 다음 <Command id="SAVEAS" />(`Ctrl+Shift+S`)나 <Command id="DXFOUT" />으로 다시 DXF 파일로 저장합니다.
+
+### 무료입니까? 계정이 필요합니까? [#free]
+
+무료이며, 계정도 설치도 필요 없습니다. 파일은 사용자의 컴퓨터에서 읽히며 업로드되지 않습니다.
+
+### 어떤 DXF 버전으로 저장할 수 있습니까? [#versions]
+
+AutoCAD 2018, 2013, 2010, 2007, 2004, 2000 DXF를 텍스트(ASCII) 또는 이진으로 저장할 수 있습니다. R12와 DWG는 아직 지원하지 않습니다.
+
+### 저장한 DXF를 AutoCAD에서 열 수 있습니까? [#autocad]
+
+예. MellowCAD가 쓰는 모든 종류의 객체를 모든 버전에서 텍스트와 이진 모두 AutoCAD 2027로 열었고, AUDIT에서 오류가 발견되지 않았습니다.
+
+### 저장하면 잃는 것이 있습니까? [#lost-on-save]
+
+열리지 않은 것은 저장하는 파일에도 없습니다. 여러 줄(MLINE), 기하학적 공차 등 파일을 열 때 명령행이 센 객체입니다. 3D 솔리드와 영역도 쓰지 않으며, 명령행이 그 목록을 보여 줍니다. 원본 파일은 보관해 두십시오.
+
+### 새 DXF 파일을 처음부터 만들 수 있습니까? [#from-scratch]
+
+예. [편집기를 열어](/ko/draw) 그린 다음, <Command id="SAVEAS" />로 DXF 파일 유형을 선택해 저장합니다.

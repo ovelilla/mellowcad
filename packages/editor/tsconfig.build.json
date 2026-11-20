@@ -30,6 +30,7 @@
     "src/locales/pl.ts",
     "src/locales/cs.ts",
     "src/locales/hu.ts",
-    "src/locales/ja.ts"
+    "src/locales/ja.ts",
+    "src/locales/ko.ts"
   ]
 }

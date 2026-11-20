@@ -1,0 +1,54 @@
+---
+title: "AutoCAD STYLE(문자 스타일) 명령"
+metaTitle: "오토캐드 문자 스타일(STYLE) 설정과 단축키 ST"
+description: "AutoCAD STYLE(문자 스타일, ST)로 문자 스타일을 관리하는 방법: 새로 만들기, 이름 바꾸기, 삭제, 현재로 설정, 고정 높이, 그리고 TEXT와 MTEXT에 주는 영향. 브라우저에서 무료로."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 문자 스타일(STYLE)의 단축키는 무엇입니까?","answer":"ST를 입력하고 Enter 키나 Space 키를 누릅니다. DDSTYLE도 됩니다. AutoCAD의 모든 언어 버전에서 _STYLE이 됩니다."},{"question":"캐드에서 문자 스타일은 어떻게 바꿉니까?","answer":"새로 쓸 문자는 STYLE이 여는 스타일 팔레트나 TEXT의 Style 옵션에서 스타일을 현재로 설정합니다. 이미 쓴 문자는 선택한 다음 특성 팔레트의 스타일 행에서 스타일을 고릅니다."},{"question":"문자 스타일의 글꼴은 어떻게 바꿉니까?","answer":"AutoCAD에서는 문자 스타일 대화상자의 글꼴 이름에서 바꿉니다. 여기서는 아직 안 됩니다. 모든 스타일이 Arial로 그려지며, 스타일끼리 다른 것은 이름과 높이뿐입니다."},{"question":"TEXT가 높이를 묻지 않는 이유는 무엇입니까?","answer":"현재 스타일에 고정 높이가 있기 때문입니다. 스타일 팔레트에서 그 높이를 0으로 설정하면 TEXT가 다시 높이를 묻고, 마지막으로 쓴 높이를 제시합니다."}]
+---
+
+STYLE(문자 스타일) 명령은 도면의 문자 스타일, 즉 문자를 쓰는 방식을 관리합니다. 모든 문자, 여러 줄 문자, 속성에는 스타일이 있으며, 새 문자는 현재 스타일을 씁니다. 새 도면에서는 Standard입니다. AutoCAD의 STYLE은 문자 스타일 대화상자를 열지만 MellowCAD에는 아직 그 대화상자가 없으므로, STYLE은 스타일 팔레트의 문자 표를 엽니다. [`DIMSTYLE`](/docs/commands/dimstyle)의 치수 스타일도 이 팔레트에 있습니다. 명령 전에 한 선택은 대화상자에서처럼 버려지며, 명령 안에서 아포스트로피를 붙여 `'STYLE`로 입력하면 그 명령을 끝내지 않고 열립니다.
+
+표에는 스타일이 나열되고 현재 스타일이 표시되어 있습니다. 새로 만들기는 선택한 스타일을 복사해 `style1`, `style2`처럼 비어 있는 첫 이름을 붙이고 현재 스타일로 만듭니다. 현재로 설정은 스타일을 현재 스타일로 만듭니다. 스타일 이름은 다시 입력할 수 있으며, 대소문자와 관계없이 이미 쓰이는 이름은 AutoCAD처럼 거부됩니다. 삭제는 스타일을 제거하지만 Standard, 현재 스타일, 사용 중인 스타일은 제거하지 않습니다. 높이는 스타일에 고정 높이를 줍니다. 기본값 0은 높이를 정하지 않으므로 [`TEXT`](/docs/commands/text)가 매번 높이를 묻고, 높이를 정하면 TEXT가 묻지 않습니다. 모든 변경이 `U`로 되돌릴 수 있는 한 단계입니다. 문자를 선택한 상태에서는 특성 팔레트의 스타일 행으로 다른 스타일을 한 단계에 줍니다.
+
+- **명령:** `STYLE`
+- **단축키:** `ST`, `DDSTYLE`
+- **패널:** [주석](/docs/commands#annotate)
+- **해 보기:** [편집기를 열고](/ko/draw) `ST` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="style" caption="명판: STYLE 다음에 TEXT를 실행하면 Style ?가 도면의 스타일(Arial의 Standard)을 나열하고, 그 스타일로 명판의 이름을 씁니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+문자 스타일 대화상자와 그 미리보기: STYLE은 대신 스타일 팔레트를 엽니다. 글꼴, 글꼴 스타일, 큰 글꼴, 폭 비율, 기울기 각도, 그리고 거꾸로, 반대로, 수직 효과: 모든 스타일이 Arial로, 똑바로, 폭 1로 그려집니다. 주석 스타일, 그리고 새 AutoCAD 도면에 Standard와 함께 들어 있는 Annotative 스타일. 모든 것을 명령행에서 묻는 `-STYLE`.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#style--st--ddstyle--es-estilo--est--estilodd--pt-br-estilo--et--ddstyle--fr-style--s--ddstyle--it-stile--st--ddstile--de-stil--sti--ddstyle--ru-стиль--ст--диалстиль--pl-styl--st--odstyl--cs-písmo--psm--diapísmo--hu-stílus--st--dpstílus)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 문자 스타일(STYLE)의 단축키는 무엇입니까?
+
+`ST`를 입력하고 Enter 키나 Space 키를 누릅니다. `DDSTYLE`도 됩니다. AutoCAD의 모든 언어 버전에서 `_STYLE`이 됩니다.
+
+### 캐드에서 문자 스타일은 어떻게 바꿉니까?
+
+새로 쓸 문자는 STYLE이 여는 스타일 팔레트나 [`TEXT`](/docs/commands/text)의 `Style` 옵션에서 스타일을 현재로 설정합니다. 이미 쓴 문자는 선택한 다음 특성 팔레트의 스타일 행에서 스타일을 고릅니다.
+
+### 문자 스타일의 글꼴은 어떻게 바꿉니까?
+
+AutoCAD에서는 문자 스타일 대화상자의 글꼴 이름에서 바꿉니다. 여기서는 아직 안 됩니다. 모든 스타일이 Arial로 그려지며, 스타일끼리 다른 것은 이름과 높이뿐입니다.
+
+### TEXT가 높이를 묻지 않는 이유는 무엇입니까?
+
+현재 스타일에 고정 높이가 있기 때문입니다. 스타일 팔레트에서 그 높이를 0으로 설정하면 [`TEXT`](/docs/commands/text)가 다시 높이를 묻고, 마지막으로 쓴 높이를 제시합니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD TEXT(단일 행 문자) 명령](/docs/commands/text)
+- [AutoCAD MTEXT(여러 줄 문자) 명령](/docs/commands/mtext)
+- [AutoCAD DIMSTYLE(치수 스타일) 명령](/docs/commands/dimstyle)
+- [AutoCAD TEXTEDIT(문자 편집) 명령](/docs/commands/textedit)

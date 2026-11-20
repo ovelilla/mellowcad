@@ -1,0 +1,74 @@
+---
+title: "AutoCAD VSCURRENT(비주얼 스타일) 명령"
+metaTitle: "오토캐드 비주얼 스타일(VSCURRENT) 변경과 단축키 VS"
+description: "AutoCAD VSCURRENT(비주얼 스타일, VS)로 2D 와이어프레임, 숨김, 개념 스타일을 설정하는 방법, 각 스타일이 그리는 것, 와이어프레임으로 돌아가는 방법. 브라우저에서 무료로."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드에서 비주얼 스타일은 어떻게 바꿉니까?","answer":"VSCURRENT(또는 VS)를 실행하고 스타일을 고릅니다. 뒤쪽 모서리를 숨기려면 Hidden, 면에 음영을 넣으려면 Conceptual을 고릅니다. 바뀌는 것은 뷰뿐이며 객체는 바뀌지 않습니다."},{"question":"2D 와이어프레임으로 돌아가려면 어떻게 합니까?","answer":"VSCURRENT를 실행하고 2dwireframe를 고릅니다. 옵션 문자는 2입니다."},{"question":"숨김과 개념의 차이는 무엇입니까?","answer":"둘 다 면에 가려진 것을 숨깁니다. 숨김은 배경 위에 모서리만 그려 선 도면처럼 보이고, 개념은 면도 빛에 따라 음영을 넣어 칠하고 그 위에 같은 모서리를 그립니다."},{"question":"솔리드를 통해 선이 계속 보이는 이유는 무엇입니까?","answer":"그 선은 솔리드의 일부가 아닙니다. 선, 원, 영역은 모든 스타일에서 2D 와이어프레임처럼 그려지므로, 상자 뒤의 선도 계속 보입니다. 2dwireframe에서는 솔리드 자체의 뒤쪽 모서리도 보이므로 Hidden을 고르십시오."}]
+---
+
+VSCURRENT(비주얼 스타일) 명령은 비주얼 스타일, 즉 뷰가 3D 솔리드를 그리는 방식을 설정합니다. 스타일을 묻고 현재 스타일을 기본값으로 제시하므로, Enter 키를 누르면 그대로 유지됩니다. `2dwireframe`는 뒤쪽 모서리까지 모든 모서리를 그리고, `Hidden`은 면에 가려진 것을 숨기며, `Conceptual`은 면에 음영을 넣어 칠합니다. 스타일은 뷰에 속하며 도면과 함께 저장되고, 실행 한 번이 명령 취소 한 단계입니다. 다른 명령 안에서는 쓸 수 없습니다.
+
+선, 원, 영역, 문자처럼 솔리드가 아닌 것은 스타일과 관계없이 자신의 색상으로 2D 와이어프레임처럼 그려집니다. 숨김과 개념에서 클릭하면 커서 아래에서 면이 가장 가까운 솔리드가 선택되며, 그 면에 가려진 솔리드는 선택되지 않습니다. 객체 스냅은 여전히 모든 모서리를 찾습니다. 잠긴 도면층의 솔리드는 모서리가 흐리게 그려집니다. MellowCAD의 3D는 솔리드만 다루며 아직 일부만 구현되어 있습니다.
+
+- **명령:** `VSCURRENT`
+- **단축키:** `VS`
+- **패널:** [조회 및 뷰](/docs/commands#inquiry)
+- **해 보기:** [편집기를 열고](/ko/draw) `VS` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="vscurrent" caption="구멍이 뚫린 블록을 남동쪽에서 본 모습: VSCURRENT 개념이 면에 음영을 넣고 그 위에 모서리를 그립니다." />
+
+## 옵션 [#options]
+
+### `2dwireframe` (`2`) [#2dwireframe]
+
+모든 솔리드의 모든 모서리를 뒤쪽 것까지 포함해 그리며, 곡면을 보여 주는 선도 그립니다. 새 도면의 기본값입니다. 다른 스타일에서 이 스타일로 돌아오면 VSCURRENT가 `Regenerating model.`라고 표시합니다.
+
+### `Hidden` (`H`) [#hidden]
+
+각 솔리드의 모서리와 곡면의 윤곽선을, 어떤 솔리드의 면에도 가려지지 않는 곳에서 객체의 색상으로 그립니다. 다른 솔리드 뒤에 있는 솔리드는 앞의 솔리드에 가려집니다. 2D 와이어프레임에서 곡면을 보여 주는 선은 그리지 않습니다.
+
+### `Conceptual` (`C`) [#conceptual]
+
+사용자 쪽을 향한 면을 객체의 색상으로 칠하며, 시점을 따라가는 빛의 반대쪽은 차가운 파란색으로 변합니다. 그 위에 숨김의 모서리를 객체의 색상과 관계없이 한 가지 색으로 그립니다. 여기서도 숨김에서도 AutoCAD와 마찬가지로 평면도에서 본 원통이나 원추는 원만 보입니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD의 다른 스타일인 와이어프레임, 사실적, 음영처리, 모서리로 음영처리됨, 회색 음영, 스케치, X-ray, 그리고 스타일에 이름 붙이기와 `?`로 나열하기: 프롬프트에는 구현된 세 스타일만 나열되며, 그 밖의 답은 거부됩니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva--fr-stylviscourant--sv--it-stileviscorrente--svc--de-vsaktuell--vsa--ru-теквизстиль--pl-bieżstylwiz--cs-aktuálnívs--vc--hu-lsaktuális--lsa)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드에서 비주얼 스타일은 어떻게 바꿉니까?
+
+VSCURRENT(또는 `VS`)를 실행하고 스타일을 고릅니다. 뒤쪽 모서리를 숨기려면 `Hidden`, 면에 음영을 넣으려면 `Conceptual`을 고릅니다. 바뀌는 것은 뷰뿐이며 객체는 바뀌지 않습니다.
+
+### 2D 와이어프레임으로 돌아가려면 어떻게 합니까?
+
+VSCURRENT를 실행하고 `2dwireframe`를 고릅니다. 옵션 문자는 `2`입니다.
+
+### 숨김과 개념의 차이는 무엇입니까?
+
+둘 다 면에 가려진 것을 숨깁니다. 숨김은 배경 위에 모서리만 그려 선 도면처럼 보이고, 개념은 면도 빛에 따라 음영을 넣어 칠하고 그 위에 같은 모서리를 그립니다.
+
+### 솔리드를 통해 선이 계속 보이는 이유는 무엇입니까?
+
+그 선은 솔리드의 일부가 아닙니다. 선, 원, 영역은 모든 스타일에서 2D 와이어프레임처럼 그려지므로, 상자 뒤의 선도 계속 보입니다. `2dwireframe`에서는 솔리드 자체의 뒤쪽 모서리도 보이므로 `Hidden`을 고르십시오.
+
+## 연습하기 [#practice]
+
+- [캐드 3D 연습도면: 마운팅 플레이트](/docs/exercises/mounting-plate)
+- [캐드 3D 연습도면: 풀리](/docs/exercises/pulley)
+- [캐드 3D 연습도면: 베어링 블록](/docs/exercises/bearing-block)
+
+## 관련 명령 [#related]
+
+- [AutoCAD 3DORBIT(3D 궤도) 명령](/docs/commands/3dorbit)
+- [AutoCAD BOX(상자) 명령](/docs/commands/box)
+- [AutoCAD VIEW(명명된 뷰) 명령](/docs/commands/view)
+- [AutoCAD UCS(사용자 좌표계) 명령](/docs/commands/ucs)

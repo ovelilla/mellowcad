@@ -1,0 +1,470 @@
+// Generated from ko.json by `npm run locales`. Do not edit.
+import type { EditorLocale } from "./types"
+
+export const ko: EditorLocale = {
+  "tag": "ko",
+  "messages": {
+    "Workspace": {
+      "canvas": "도면 영역"
+    },
+    "Keys": {
+      "save": "Ctrl+S",
+      "open": "Ctrl+O",
+      "undo": "Ctrl+Z",
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Shift+C",
+      "paste": "Ctrl+V"
+    },
+    "TopBar": {
+      "menu": "응용프로그램 메뉴",
+      "new": "새로 만들기",
+      "open": "열기",
+      "save": "저장",
+      "saveAs": "다른 이름으로 저장",
+      "units": "도면 단위…",
+      "language": "언어",
+      "feedback": "피드백 보내기",
+      "saving": "저장 중…",
+      "saved": "저장됨",
+      "savedHint": "이 장치에 저장됨",
+      "undo": "명령 취소",
+      "redo": "명령 복구",
+      "commandLine": "명령행",
+      "layer": "도면층",
+      "color": "객체 색상",
+      "lineweight": "선가중치",
+      "linetype": "선종류"
+    },
+    "NavigationBar": {
+      "label": "탐색 막대",
+      "zoom": "줌",
+      "extents": "줌 범위",
+      "window": "줌 윈도우",
+      "previous": "줌 이전",
+      "in": "줌 확대",
+      "out": "줌 축소"
+    },
+    "Viewport": {
+      "view": [
+        "뷰 조정: ",
+        [
+          "name"
+        ]
+      ]
+    },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "홈",
+      "parallel": "평행",
+      "setHome": "현재 뷰를 홈으로 설정",
+      "rollClockwise": "시계 방향으로 회전",
+      "rollCounterclockwise": "시계 반대 방향으로 회전",
+      "wcs": "WCS",
+      "unnamed": "미지정",
+      "newUcs": "새 UCS",
+      "adjacent": {
+        "up": "위쪽 면 보기",
+        "down": "아래쪽 면 보기",
+        "left": "왼쪽 면 보기",
+        "right": "오른쪽 면 보기"
+      }
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "원",
+        "arc": "호",
+        "ellipse": "타원",
+        "spline": "스플라인",
+        "rectangle": "직사각형",
+        "trim": "자르기",
+        "fillet": "모깎기",
+        "filletedge": "모서리 모깎기",
+        "solideditextrude": "면 돌출",
+        "break": "끊기",
+        "pedit": "폴리선 편집",
+        "array": "배열",
+        "text": "문자",
+        "dimension": "치수",
+        "dimchain": "연속",
+        "attributes": "속성",
+        "measure": "측정",
+        "union": "솔리드 편집",
+        "box": "모델링",
+        "extrude": "돌출",
+        "point": "점"
+      },
+      "sections": {
+        "draw": "그리기",
+        "modify": "수정",
+        "annotation": "주석",
+        "block": "블록",
+        "utilities": "유틸리티"
+      }
+    },
+    "CommandLine": {
+      "label": "명령행",
+      "placeholder": "명령 입력(LINE, TR, CO…)",
+      "history": "명령 사용 내역"
+    },
+    "DynamicInput": {
+      "locked": "잠금"
+    },
+    "StatusBar": {
+      "coordinates": "좌표",
+      "model": "모형",
+      "modelSpace": "모형 공간",
+      "grid": "그리드",
+      "objectSnap": "객체 스냅",
+      "objectSnapSettings": "객체 스냅 설정",
+      "snapMode": "스냅 모드",
+      "snapSettings": "스냅 설정",
+      "snap": "스냅",
+      "gridSnap": "그리드 스냅",
+      "polarSnap": "PolarSnap",
+      "snapX": "스냅 X",
+      "snapXSpacing": "스냅 X 간격두기",
+      "snapY": "스냅 Y",
+      "snapYSpacing": "스냅 Y 간격두기",
+      "polarDistance": "극좌표 방향 간격",
+      "polarSnapDistance": "극좌표 스냅 간격",
+      "ortho": "직교 모드",
+      "polarTracking": "극좌표 추적",
+      "polarTrackingAngle": "극좌표 추적 각도",
+      "polarAngle": "극좌표 각도",
+      "objectSnapTracking": "객체 스냅 추적",
+      "selectionCycling": "선택 순환",
+      "selectionCyclingSettings": "선택 순환 설정",
+      "selectionList": "선택 순환 리스트 상자 표시",
+      "showLineweight": "선가중치 표시",
+      "units": "단위",
+      "cleanScreen": "화면 정리",
+      "customization": "사용자화"
+    },
+    "Units": {
+      "title": "도면 단위",
+      "length": "길이",
+      "type": "유형",
+      "precision": "정밀도",
+      "decimal": "십진",
+      "insertionScale": "삽입 축척",
+      "insertedContent": "삽입된 컨텐츠를 축척할 단위:",
+      "millimeters": "밀리미터",
+      "centimeters": "센티미터",
+      "meters": "미터",
+      "sampleOutput": "샘플 출력",
+      "ok": "확인",
+      "cancel": "취소"
+    },
+    "SaveAs": {
+      "title": "다른 이름으로 도면 저장",
+      "fileName": "파일 이름:",
+      "fileType": "파일 유형:",
+      "tools": "도구",
+      "options": "옵션…",
+      "save": "저장",
+      "cancel": "취소",
+      "drawing": "MellowCAD 도면 (*.ecad.json)",
+      "dxf2018": "AutoCAD 2018 DXF (*.dxf)",
+      "dxf2013": "AutoCAD 2013/LT2013 DXF (*.dxf)",
+      "dxf2010": "AutoCAD 2010/LT2010 DXF (*.dxf)",
+      "dxf2007": "AutoCAD 2007/LT2007 DXF (*.dxf)",
+      "dxf2004": "AutoCAD 2004/LT2004 DXF (*.dxf)",
+      "dxf2000": "AutoCAD 2000/LT2000 DXF (*.dxf)",
+      "optionsTitle": "다른 이름으로 저장 옵션",
+      "dxfOptions": "DXF 옵션",
+      "format": "형식",
+      "ascii": "ASCII",
+      "binary": "이진",
+      "selectObjects": "객체 선택",
+      "preview": "썸네일 미리보기 이미지 저장",
+      "precision": "정확성을 위한 소수 구분 기호 (0-16)",
+      "ok": "확인"
+    },
+    "SnapOverride": {
+      "from": "시작점",
+      "pointFilters": "점 필터",
+      "none": "없음"
+    },
+    "SelectionCycling": {
+      "title": "선택",
+      "none": "없음"
+    },
+    "ShortcutMenu": {
+      "label": "바로 가기 메뉴",
+      "repeat": [
+        "반복 ",
+        [
+          "command"
+        ]
+      ],
+      "clipboard": "클립보드",
+      "copyBase": "기준점을 사용하여 복사",
+      "paste": "붙여넣기",
+      "undo": "명령 취소",
+      "redo": "명령 복구",
+      "copySelection": "선택 복사",
+      "deselectAll": "모두 선택해제",
+      "properties": "특성",
+      "enter": "입력",
+      "cancel": "취소",
+      "snapOverrides": "객체 스냅 재지정",
+      "dimensionStyle": "치수 스타일"
+    },
+    "Layers": {
+      "title": "도면층",
+      "new": "새 도면층",
+      "setCurrentLabel": [
+        [
+          "name"
+        ],
+        "을(를) 현재 도면층으로 설정"
+      ],
+      "current": "현재 도면층",
+      "setCurrent": "현재로 설정",
+      "colorLabel": [
+        [
+          "name"
+        ],
+        " 색상"
+      ],
+      "color": "도면층 색상",
+      "linetypeLabel": [
+        [
+          "name"
+        ],
+        " 선종류"
+      ],
+      "lineweightLabel": [
+        [
+          "name"
+        ],
+        " 선가중치"
+      ],
+      "on": "켜기",
+      "off": "끄기",
+      "unlocked": "잠금해제",
+      "locked": "잠금",
+      "deleteLabel": [
+        "도면층 ",
+        [
+          "name"
+        ],
+        " 삭제"
+      ],
+      "delete": "도면층 삭제",
+      "rename": "선택한 도면층의 이름을 다시 클릭하면 이름을 바꿀 수 있습니다",
+      "renameLabel": [
+        "도면층 ",
+        [
+          "name"
+        ],
+        " 이름바꾸기"
+      ],
+      "list": "도면층 리스트",
+      "nextColumns": "다음 열",
+      "previousColumns": "이전 열",
+      "dialog": {
+        "close": "닫기",
+        "notDeleted": {
+          "title": "도면층 - 삭제되지 않음",
+          "instruction": "선택된 도면층이 삭제되지 않았습니다.",
+          "content": "다음 도면층은 삭제할 수 없습니다.",
+          "base": "도면층 0 및 정의점",
+          "current": "현재 도면층",
+          "inUse": "객체가 포함된 도면층",
+          "xref": "외부 참조에 종속된 도면층"
+        },
+        "currentOff": {
+          "title": "도면층 - 현재 도면층 끄기",
+          "instruction": "현재 도면층을 끕니다. 어떻게 하시겠습니까?",
+          "turnOff": "현재 도면층 끄기",
+          "turnOffNote": "지금부터 작성하는 객체는 해당 도면층을 다시 켜기 전까지 도면에 표시되지 않습니다.",
+          "keepOn": "현재 도면층 켠 상태로 유지"
+        },
+        "nameInUse": {
+          "title": "도면층 - 이름이 이미 있음",
+          "instruction": [
+            "이름 ",
+            [
+              "name"
+            ],
+            "은(는) 이미 사용 중입니다."
+          ],
+          "content": "다른 이름을 입력해야 합니다."
+        },
+        "invalidName": {
+          "title": "도면층",
+          "instruction": "도면층 이름에 유효하지 않은 문자가 있습니다.",
+          "content": "다음 문자는 도면층 이름에 사용할 수 없습니다:"
+        },
+        "cannotRename": {
+          "title": "도면층 - 이름바꾸기",
+          "instruction": "선택한 도면층은 이름을 바꿀 수 없습니다.",
+          "content": "다음 도면층의 이름을 바꿀 수 없습니다.",
+          "base": "도면층 0",
+          "xref": "외부 참조에 종속된 도면층"
+        }
+      },
+      "columns": {
+        "status": "상태",
+        "name": "이름",
+        "on": "켜기",
+        "lock": "잠금",
+        "color": "색상",
+        "linetype": "선종류",
+        "lineweight": "선가중치",
+        "objects": "객체"
+      }
+    },
+    "Styles": {
+      "title": "스타일",
+      "dimension": "치수",
+      "text": "문자",
+      "current": [
+        "현재: ",
+        [
+          "value",
+          [
+            "name"
+          ]
+        ]
+      ],
+      "new": "새로 만들기",
+      "setCurrent": [
+        [
+          "name"
+        ],
+        "을(를) 현재로 설정"
+      ],
+      "rename": [
+        [
+          "name"
+        ],
+        " 이름바꾸기"
+      ],
+      "delete": [
+        [
+          "name"
+        ],
+        " 삭제"
+      ],
+      "lines": "선",
+      "baselineSpacing": "기준선 간격",
+      "extendBeyond": "치수선 너머로 연장",
+      "offsetFromOrigin": "원점에서 간격띄우기",
+      "symbolsAndArrows": "기호 및 화살표",
+      "arrowSize": "화살표 크기",
+      "centerMark": "중심 표식 크기",
+      "textGroup": "문자",
+      "textHeight": "문자 높이",
+      "offsetFromDimLine": "치수선에서 간격띄우기",
+      "fit": "맞춤",
+      "overallScale": "전체 축척 사용",
+      "drawDimLineBetween": "치수보조선 사이에 치수선 그리기",
+      "primaryUnits": "1차 단위",
+      "precision": "정밀도",
+      "angularPrecision": "각도 정밀도",
+      "decimalSeparator": "소수 구분 기호",
+      "comma": "',' (쉼표)",
+      "period": "'.' (마침표)",
+      "space": "' ' (공백)",
+      "suppressTrailingZeros": "후행 0 억제",
+      "yes": "예",
+      "no": "아니오",
+      "size": "크기",
+      "height": "높이",
+      "heightHint": "높이가 0이면 고정되지 않으므로 TEXT 명령이 매번 높이를 묻습니다."
+    },
+    "Blocks": {
+      "title": "블록",
+      "filter": "필터(? 및 * 사용 가능)",
+      "filterLabel": "블록 필터",
+      "empty": "정의된 블록이 없습니다. 객체를 그린 후 BLOCK을 실행하십시오.",
+      "noMatch": "필터와 일치하는 블록이 없습니다.",
+      "references": [
+        [
+          "name"
+        ],
+        " — ",
+        [
+          "count",
+          2,
+          {
+            "other": [
+              "도면에 ",
+              0,
+              "개"
+            ]
+          }
+        ]
+      ]
+    },
+    "Properties": {
+      "noSelection": "선택 요소가 없습니다",
+      "general": "일반",
+      "color": "색상",
+      "colorLabel": "선택한 객체의 색상",
+      "layer": "도면층",
+      "layerLabel": "선택한 객체의 도면층",
+      "linetype": "선종류",
+      "linetypeLabel": "선택한 객체의 선종류",
+      "lineweight": "선가중치",
+      "lineweightLabel": "선택한 객체의 선가중치",
+      "textStyle": "문자 스타일",
+      "textStyleLabel": "선택한 객체의 문자 스타일",
+      "dimStyle": "치수 스타일",
+      "dimStyleLabel": "선택한 객체의 치수 스타일",
+      "varies": "*다양함*",
+      "customColor": "사용자 색상",
+      "title": "특성",
+      "objectType": "객체 유형",
+      "currentLayerLabel": "현재 도면층",
+      "currentColorLabel": "현재 색상",
+      "currentLinetypeLabel": "현재 선종류",
+      "currentLineweightLabel": "현재 선가중치",
+      "lockedObjects": {
+        "title": "특성 - 잠긴 객체",
+        "instruction": "선택한 객체 중 하나 이상이 잠겨 있어 업데이트할 수 없습니다.",
+        "content": [
+          "선택 세트에서 제거된 객체 수: ",
+          [
+            "count",
+            4
+          ]
+        ],
+        "close": "닫기"
+      }
+    },
+    "MText": {
+      "unsavedChanges": {
+        "title": "여러 줄 문자 - 저장되지 않은 변경 사항",
+        "instruction": "문자 변경 사항을 저장하시겠습니까?",
+        "yes": "예",
+        "no": "아니요",
+        "cancel": "취소"
+      }
+    },
+    "Palette": {
+      "label": "팔레트",
+      "fold": "팔레트 접기",
+      "unfold": "팔레트 표시",
+      "resize": "팔레트 폭"
+    },
+    "PointStyle": {
+      "title": "점 스타일",
+      "figures": "점 표시 이미지",
+      "pointSize": "점 크기:",
+      "relative": "화면에 상대적인 크기 설정",
+      "absolute": "절대 단위로 크기 설정",
+      "percent": "%",
+      "units": "단위",
+      "invalid": "잘못된 입력 값입니다.",
+      "ok": "확인",
+      "cancel": "취소"
+    }
+  }
+}

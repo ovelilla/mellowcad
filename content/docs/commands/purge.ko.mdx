@@ -1,0 +1,64 @@
+---
+title: "AutoCAD PURGE(소거) 명령"
+metaTitle: "오토캐드 소거(PURGE) 사용법과 단축키 PU"
+description: "AutoCAD PURGE(소거, 캐드 퍼지, PU)로 쓰지 않는 블록과 선종류를 이름별로 또는 한 번에, 확인하며 또는 바로 삭제하는 방법. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 소거(PURGE)의 단축키는 무엇입니까?","answer":"PU를 입력하고 Enter 키나 Space 키를 누릅니다. -PU는 명령행 형식인 -PURGE이며, 여기서는 PURGE도 그것을 실행합니다. AutoCAD의 모든 언어 버전에서 _PURGE가 됩니다."},{"question":"캐드에서 사용하지 않는 블록을 한 번에 지우려면 어떻게 합니까?","answer":"PU를 입력하고 Blocks를 고른 다음, 모든 이름에 대해 Enter 키를 누르고 No로 답하면 하나하나 묻지 않고 모두 삭제합니다."},{"question":"블록이 소거 안될때는 왜 그렇습니까?","answer":"사용 중이기 때문입니다. 도면의 참조가 그 블록을 배치하고 있거나, 사용 중인 블록이 여러 단계 깊이로 그 블록을 포함하고 있을 수 있습니다. 참조를 지우거나 그 블록을 포함한 블록을 분해하면 PURGE로 소거할 수 있습니다."},{"question":"도면층은 어떻게 소거합니까?","answer":"AutoCAD에서는 PURGE의 도면층 유형으로 소거합니다. PURGE가 블록과 선종류만 소거하는 여기서는 아직 안 되므로, 대신 도면층 특성 관리자에서 빈 도면층을 삭제합니다."}]
+---
+
+PURGE(소거) 명령은 도면에 정의되어 있지만 사용되지 않는 것을 제거합니다. 여기서는 블록과 선종류가 대상입니다. AutoCAD의 PURGE는 소거 대화상자를 열지만 MellowCAD에는 그 대화상자가 없으므로, AutoCAD의 콘솔에서처럼 `-PURGE`가 묻는 것을 명령행에서 묻습니다. 먼저 중첩된 항목(Nested items)과 분리된 데이터(Orphaned data) 설정을 알려 주는데 둘 다 꺼져 있고, 어떤 유형의 사용되지 않는 객체를 소거할지 `Blocks`와 `LTypes` 중에서 묻습니다. 여기서 Enter 키를 누르면 명령이 끝납니다.
+
+블록은 도면의 참조가 그 블록을 배치하고 있거나, 사용 중인 블록의 정의가 그 블록을 포함하고 있으면, 아무리 깊이 중첩되어 있어도 사용 중입니다. 블록의 마지막 참조를 지워도 정의는 도면에 남아 있어 [`INSERT`](/docs/commands/insert)로 다시 배치할 수 있습니다. 그 정의를 삭제하는 것이 PURGE입니다. 남겨 두는 블록이 포함한 블록은 소거되지 않으며, 서로를 포함하기만 하는 블록의 연쇄는 한 번의 실행으로 모두 소거됩니다. 소거할 블록이 없으면 `No unreferenced blocks found.`라고 표시합니다. 실행 한 번이 `U`로 되돌릴 수 있는 한 단계입니다.
+
+- **명령:** `PURGE`
+- **단축키:** `PU`
+- **패널:** [구성](/docs/commands#organize)
+- **해 보기:** [편집기를 열고](/ko/draw) `PU` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="purge" caption="블록 두 개: 벽에 놓인 TAG와 하나뿐인 참조를 지운 BOX. PURGE에서 모든 이름을 확인 없이 소거하면 BOX만 삭제됩니다." />
+
+## 옵션 [#options]
+
+### `Blocks` (`B`) [#blocks]
+
+소거할 이름을 묻습니다. 기본값은 사용되지 않는 모든 블록인 `*`이며, 와일드카드를 쓴 이름을 쉼표로 구분해 입력할 수도 있습니다. 이어서 이름마다 확인할지 묻습니다. 기본값인 `Yes`는 삭제하기 전에 블록마다 묻고, `No`는 모두 삭제한 다음 각 이름과 개수를 알려 줍니다.
+
+### `LTypes` (`LT`) [#ltypes]
+
+`Blocks`와 같이 이름과 확인 여부를 묻고, 아무것도 사용하지 않는 선종류를 삭제합니다. Continuous, 현재 선종류, 그리고 도면층이나 객체(블록 안의 객체 포함)가 사용하는 선종류는 항상 남습니다. 소거할 선종류가 없으면 `No unreferenced linetypes found.`라고 표시합니다. [`LINETYPE`](/docs/commands/linetype)의 로드로 다시 가져올 수 있습니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+소거 대화상자와 그 밖의 모든 유형: 도면층, 문자 스타일과 치수 스타일, 그룹, 재료, 다중 지시선 스타일, 테이블 스타일, 비주얼 스타일, 등록된 응용프로그램, 길이가 0인 형상, 빈 문자 객체, 분리된 데이터, 그리고 모두. 중첩된 항목과 분리된 데이터 설정은 바꿀 수 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li--pt-br-eliminar--elm--eliminar---elm--fr-purger--ur--purger---pu--it-elimina--en--elimina---en--de-bereinig--bereinig--ru-очистить--оч--удали--очистить--pl-usuń--us--usuń--cs-čisti--ci--čisti--hu-tisztít--tt--tisztít---tt)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 소거(PURGE)의 단축키는 무엇입니까?
+
+`PU`를 입력하고 Enter 키나 Space 키를 누릅니다. `-PU`는 명령행 형식인 `-PURGE`이며, 여기서는 PURGE도 그것을 실행합니다. AutoCAD의 모든 언어 버전에서 `_PURGE`가 됩니다.
+
+### 캐드에서 사용하지 않는 블록을 한 번에 지우려면 어떻게 합니까?
+
+`PU`를 입력하고 `Blocks`를 고른 다음, 모든 이름에 대해 Enter 키를 누르고 `No`로 답하면 하나하나 묻지 않고 모두 삭제합니다.
+
+### 블록이 소거 안될때는 왜 그렇습니까?
+
+사용 중이기 때문입니다. 도면의 참조가 그 블록을 배치하고 있거나, 사용 중인 블록이 여러 단계 깊이로 그 블록을 포함하고 있을 수 있습니다. 참조를 지우거나 그 블록을 포함한 블록을 분해하면 PURGE로 소거할 수 있습니다.
+
+### 도면층은 어떻게 소거합니까?
+
+AutoCAD에서는 PURGE의 도면층 유형으로 소거합니다. PURGE가 블록과 선종류만 소거하는 여기서는 아직 안 되므로, 대신 도면층 특성 관리자에서 빈 도면층을 삭제합니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD BLOCK(블록 작성) 명령](/docs/commands/block)
+- [AutoCAD INSERT(블록 삽입) 명령](/docs/commands/insert)
+- [AutoCAD ERASE(지우기) 명령](/docs/commands/erase)
+- [BLOCKSPALETTE](/docs/commands#blockspalette): 블록 팔레트를 엽니다

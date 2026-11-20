@@ -38,6 +38,10 @@ const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
     // yet, so its command language is the global one (docs/i18n/ja.md).
     ja: () =>
       import("@mellowcad/engine/locales/ja").then((module) => module.ja),
+    // WHY interface only: Japanese's reason, Korean AutoCAD's too
+    // (docs/i18n/ko.md).
+    ko: () =>
+      import("@mellowcad/engine/locales/ko").then((module) => module.ko),
   }
 
 export async function loadEngineLocale(

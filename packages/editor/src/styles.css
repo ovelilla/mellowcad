@@ -188,6 +188,14 @@
   line-break: strict;
 }
 
+/* Korean (docs/i18n/ko.md): Japanese's, but a line breaks between words, as
+   Korean spaces them, never between two syllables of one. */
+:where([data-mellowcad-editor], [data-mellowcad-editor] *):lang(ko) {
+  letter-spacing: 0;
+  font-style: normal;
+  word-break: keep-all;
+}
+
 /* Readex Pro reaches 14 px above the baseline and 6 below at 12 px (lam-alef,
    yeh, jeem): a 16 px line would clip it wherever the text truncates. The
    command language's islands carry their own `lang` and keep 16. */

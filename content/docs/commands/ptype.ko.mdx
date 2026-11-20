@@ -1,0 +1,56 @@
+---
+title: "AutoCAD PTYPE(점 스타일) 명령"
+metaTitle: "오토캐드 점 스타일(PTYPE) 사용법과 DDPTYPE"
+description: "AutoCAD PTYPE(DDPTYPE)의 사용법: 점 스타일 대화상자의 20가지 모양, 점 크기, PDMODE와 PDSIZE, 점이 보이지 않는 이유. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD의 DDPTYPE은 무엇입니까?","answer":"PTYPE의 단축키(명령 별칭)입니다. AutoCAD의 모든 언어 버전에서 둘 다 점 스타일 대화상자를 엽니다."},{"question":"캐드에서 점이 안 보일 때는 어떻게 합니까?","answer":"기본 점 스타일은 폭 1픽셀의 작은 점이라 그 위를 지나는 선에 가려지며, PDMODE 1은 아무것도 그리지 않습니다. PTYPE을 열어 엑스나 원 안의 모양을 고르거나, PDMODE를 입력하고 3을 입력합니다. 화면에 상대적인 크기로 두면 어떤 줌에서도 보입니다."},{"question":"점 크기는 어떻게 바꿉니까?","answer":"PTYPE에서 점 크기를 입력합니다. 화면에 상대적인 크기 설정에서는 화면에 대한 백분율이라 줌을 해도 점 크기가 그대로이고, 절대 단위로 크기 설정에서는 도면 단위라 도면과 함께 커지고 작아집니다. 또는 PDSIZE를 입력합니다. 음수 값이 백분율입니다."},{"question":"점 하나에만 다른 스타일을 줄 수 있습니까?","answer":"없습니다. AutoCAD에서도 여기서도 점 스타일은 도면의 것이고, 모든 점 객체가 그것을 따릅니다. 위치마다 다르게 표시하려면 그 위치에 블록을 삽입합니다. DIVIDE와 MEASURE는 점 대신 블록을 배치할 수 있습니다."}]
+---
+
+PTYPE(점 스타일) 명령은 점 스타일 대화상자를 엽니다. 이 대화상자는 도면의 모든 점 객체, 즉 `POINT`로 그린 점과 [`DIVIDE`](/docs/commands/divide), [`MEASURE`](/docs/commands/measure)가 남긴 점이 표시되는 방식을 설정합니다. AutoCAD와 마찬가지로 `DDPTYPE`이 단축키입니다. 스타일은 점이 아니라 도면에 속합니다. 바꾸면 모든 점이 한 번에 바뀌고, 도면과 함께 저장됩니다. 버튼은 유틸리티 도구의 ID 점 옆에 있습니다. 아포스트로피를 붙여 `'PTYPE`으로 입력하면 실행 중인 명령 안에서 열립니다.
+
+대화상자에는 20가지 모양이 다섯 개씩 네 줄로 표시되고, 현재 모양이 선택되어 있습니다. 작은 점, 표시 없음, 더하기, 엑스, 짧은 세로선이 있고, 각각을 원 안에, 사각형 안에, 둘 다 안에 넣은 모양이 이어집니다. 그 아래에 점 크기와 그 해석 방식이 있습니다. 화면에 상대적인 크기 설정은 뷰 높이에 대한 백분율이고, 절대 단위로 크기 설정은 도면 단위입니다. 기본값은 화면에 상대적인 5 %입니다. 확인은 선택을 기록하며, `U`로 되돌릴 수 있는 한 단계입니다. 취소나 Esc 키는 아무것도 바꾸지 않습니다. 숫자가 아니거나 0보다 작은 크기는 거부되고(유효하지 않은 입력.) 대화상자는 열린 채로 남습니다.
+
+대화상자가 기록하는 것은 두 시스템 변수이며, 명령행에서 직접 입력할 수도 있습니다. PDMODE는 모양(0부터 4까지에 원은 32, 사각형은 64, 둘 다는 96을 더합니다. 35는 원 안의 엑스입니다), PDSIZE는 크기(양수는 도면 단위, 음수는 화면에 대한 백분율, 0은 5 %)입니다.
+
+- **명령:** `PTYPE`
+- **단축키:** `DDPTYPE`
+- **패널:** [조회 및 뷰](/docs/commands#inquiry)
+- **해 보기:** [편집기를 열고](/ko/draw) `PTYPE` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="ptype" caption="PTYPE로 점 스타일 대화상자를 엽니다. 확인을 누르면 PDMODE와 PDSIZE(여기서는 35와 8)가 기록되고, 판 안에 점 세 개를 그립니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+대화상자의 도움말 버튼. 화면에 상대적인 크기의 점은 줌을 해도 화면에서 그 크기를 유지하지만, AutoCAD는 다음에 도면을 재생성할 때까지만 유지합니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ptype--ddptype-pdmode-pdsize--es-tipopunto--ddptype--pt-br-tipop--tip--ddptype--tipopd--fr-typept--ddptype--it-tipop--ddptype--de-ptyp--ru-типточки--диалтточ--pl-ptype--cs-btyp--hu-ptípus--dpptípus)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD의 DDPTYPE은 무엇입니까?
+
+PTYPE의 단축키(명령 별칭)입니다. AutoCAD의 모든 언어 버전에서 둘 다 점 스타일 대화상자를 엽니다.
+
+### 캐드에서 점이 안 보일 때는 어떻게 합니까?
+
+기본 점 스타일은 폭 1픽셀의 작은 점이라 그 위를 지나는 선에 가려지며, PDMODE 1은 아무것도 그리지 않습니다. PTYPE을 열어 엑스나 원 안의 모양을 고르거나, PDMODE를 입력하고 `3`을 입력합니다. 화면에 상대적인 크기로 두면 어떤 줌에서도 보입니다.
+
+### 점 크기는 어떻게 바꿉니까?
+
+PTYPE에서 점 크기를 입력합니다. 화면에 상대적인 크기 설정에서는 화면에 대한 백분율이라 줌을 해도 점 크기가 그대로이고, 절대 단위로 크기 설정에서는 도면 단위라 도면과 함께 커지고 작아집니다. 또는 PDSIZE를 입력합니다. 음수 값이 백분율입니다.
+
+### 점 하나에만 다른 스타일을 줄 수 있습니까?
+
+없습니다. AutoCAD에서도 여기서도 점 스타일은 도면의 것이고, 모든 점 객체가 그것을 따릅니다. 위치마다 다르게 표시하려면 그 위치에 블록을 삽입합니다. [`DIVIDE`](/docs/commands/divide)와 [`MEASURE`](/docs/commands/measure)는 점 대신 블록을 배치할 수 있습니다.
+
+## 관련 명령 [#related]
+
+- [POINT](/docs/commands#point): 다중 점
+- [AutoCAD DIVIDE(등분할) 명령](/docs/commands/divide)
+- [AutoCAD MEASURE(길이 분할) 명령](/docs/commands/measure)
+- [AutoCAD -OSNAP(객체 스냅) 명령](/docs/commands/-osnap)

@@ -1,0 +1,82 @@
+---
+title: "AutoCAD DIST(거리) 명령"
+metaTitle: "캐드 거리 재기: 거리(DIST) 사용법과 단축키 DI"
+description: "AutoCAD 거리(DIST, DI) 사용법: 두 점 사이의 거리와 각도, X, Y, Z 증분, 여러 점을 이은 길이의 합계까지 측정합니다. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 거리 측정 단축키는?","answer":"DI를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 _DIST를 쓸 수 있습니다."},{"question":"AutoCAD에서 거리를 재려면?","answer":"DI를 입력하고 두 점을 클릭합니다. 객체 스냅을 쓰면 객체의 끝점이나 중심에 정확히 맞출 수 있습니다. 거리가 각도, 증분과 함께 명령 프롬프트에 표시됩니다."},{"question":"여러 선분의 전체 길이를 재려면?","answer":"두 번째 점에서 Multiple 점을 고르고 계속 클릭합니다. 점마다 그때까지의 거리가 표시되고, Enter 키를 누르면 합계가 표시됩니다."},{"question":"3D에서 거리를 재려면?","answer":"Z를 포함해 점을 입력하거나, 그 높이에 있는 객체에 스냅합니다. DIST는 공간에서의 실제 거리를 측정하고, XY 평면으로부터의 각도와 Z 증분을 표시합니다."},{"question":"DIST의 소수 자릿수가 부족할 때는?","answer":"길이는 도면의 정밀도로 표시되며, 여기서 새 도면은 소수 두 자리입니다. UNITS에서 최대 여덟 자리까지 늘릴 수 있습니다."}]
+---
+
+DIST(거리) 명령은 두 점 사이의 거리를 측정합니다. 첫 번째 점과 두 번째 점을 클릭하거나, 스냅하거나, 입력하면 명령 프롬프트에 거리, XY 평면에서의 각도와 XY 평면으로부터의 각도, X, Y, Z 증분을 표시하고 끝납니다. 각 점은 Z를 포함해 있는 그대로의 위치에서 측정하므로, 거리는 공간에서의 실제 거리입니다. 첫 번째 점에서 Enter 키를 누르면 마지막으로 지정한 점에서 시작하고, 두 번째 점에서 누르면 첫 번째 점까지 되돌아 측정합니다. 숫자는 도면의 정밀도를 따르고, 각도는 AUPREC을 따릅니다.
+
+- **명령:** `DIST`
+- **단축키:** `DI`
+- **패널:** [조회 및 뷰](/docs/commands#inquiry)
+- **해 보기:** [편집기를 열고](/ko/draw) `DI` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="dist" caption="100 x 60 판의 대각선을 따라 DIST: 거리, XY 평면에서의 각도, 증분." />
+
+## 옵션 [#options]
+
+### `Multiple points` (`M`) [#multiple]
+
+두 번째 프롬프트에서 고르는 `Multiple` 점입니다. 한 구간이 아니라 여러 점을 이어 측정합니다. Enter 키나 `Total`까지, 다음 점마다 그때까지의 거리를 표시하고 커서 위에도 보여 줍니다.
+
+### `Arc` (`A`) [#arc]
+
+호를 따라 측정하며, PLINE의 호 옵션을 사용합니다: `Angle`, `CEnter`, `Close`, `Direction`, `Line`, `Radius`, `Second pt`, `Undo`. 각 호의 길이가 합계에 더해집니다.
+
+### `Close` (`C`) [#close]
+
+첫 번째 점으로 돌아가 그 마지막 구간을 더하고, 합계를 표시한 다음 끝납니다.
+
+### `Length` (`L`) [#length]
+
+입력한 길이의 구간을 마지막 구간 방향으로 더합니다.
+
+### `Undo` (`U`) [#undo]
+
+마지막 점을 취소합니다.
+
+### `Total` (`T`) [#total]
+
+합계를 표시하고 끝납니다. Enter 키도 같습니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+리본의 측정 도구인 MEASUREGEOM이 없습니다. MEASUREGEOM은 반지름, 각도, 면적, 체적, 빠른 작업과 함께 DIST의 프롬프트를 반복해서 묻지만, 여기서는 리본의 거리 버튼이 DIST를 실행합니다. 호 옵션의 `CEnter`에서 사잇각은 도 단위로 읽지만, AutoCAD 2027은 이 자리의 숫자를 커서 방향의 거리로 읽습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab--ru-дист--ди--pl-odleg--odl--cs-vzd--vz--hu-távs--tá)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 거리 측정 단축키는?
+
+`DI`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 `_DIST`를 쓸 수 있습니다.
+
+### AutoCAD에서 거리를 재려면?
+
+`DI`를 입력하고 두 점을 클릭합니다. 객체 스냅을 쓰면 객체의 끝점이나 중심에 정확히 맞출 수 있습니다. 거리가 각도, 증분과 함께 명령 프롬프트에 표시됩니다.
+
+### 여러 선분의 전체 길이를 재려면?
+
+두 번째 점에서 `Multiple` 점을 고르고 계속 클릭합니다. 점마다 그때까지의 거리가 표시되고, Enter 키를 누르면 합계가 표시됩니다.
+
+### 3D에서 거리를 재려면?
+
+Z를 포함해 점을 입력하거나, 그 높이에 있는 객체에 스냅합니다. DIST는 공간에서의 실제 거리를 측정하고, XY 평면으로부터의 각도와 Z 증분을 표시합니다.
+
+### DIST의 소수 자릿수가 부족할 때는?
+
+길이는 도면의 정밀도로 표시되며, 여기서 새 도면은 소수 두 자리입니다. [`UNITS`](/docs/commands/units)에서 최대 여덟 자리까지 늘릴 수 있습니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD AREA(면적) 명령](/docs/commands/area)
+- [AutoCAD ID(ID 점) 명령](/docs/commands/id)
+- [AutoCAD LIST(리스트) 명령](/docs/commands/list)
+- [AutoCAD UNITS(단위) 명령](/docs/commands/units)

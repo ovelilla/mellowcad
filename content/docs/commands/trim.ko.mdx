@@ -1,0 +1,87 @@
+---
+title: "AutoCAD TRIM(자르기) 명령"
+metaTitle: "캐드 트림, 자르기(TRIM) 사용법과 단축키 TR"
+description: "AutoCAD TRIM(자르기, 캐드 트림, TR)을 프롬프트 순서대로: 빠른 모드와 표준 모드, 자르기 모서리, 울타리와 걸치기, Shift 키로 연장. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"캐드 트림(TRIM)의 단축키는 무엇입니까?","answer":"TR을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 _TRIM도 됩니다."},{"question":"트림하면 선이 통째로 지워지는 이유는 무엇입니까?","answer":"TRIM이 AutoCAD 2021 버전부터 기본값인 빠른 모드이기 때문입니다. 어떤 모서리와도 교차하지 않는 객체를 클릭하면 지워집니다. mOde를 고른 다음 Standard를 고르면 TRIM이 그런 객체를 지우지 않고 남긴 채 그렇다고 알려 줍니다."},{"question":"여러 선을 한 번에 자르려면 어떻게 합니까?","answer":"빈 곳을 클릭하고 두 번째 점을 클릭합니다. 그 울타리가 가로지르는 모든 객체가 한 단계로 잘립니다. 또는 Crossing을 고르고 없앨 부분 위에 윈도우를 그립니다."},{"question":"TRIM으로 선을 연장하려면 어떻게 합니까?","answer":"연장할 끝 가까이에서 Shift 키를 누른 채 선을 클릭합니다. EXTEND에서처럼 가장 가까운 모서리까지 늘어나며, Shift 키 없이 다음에 클릭하면 다시 자릅니다."}]
+---
+
+TRIM(자르기) 명령은 객체를 다른 객체와 교차하는 곳까지 잘라 냅니다. 없앨 부분을 클릭하면 양쪽의 가장 가까운 교차점까지 사라집니다. AutoCAD와 마찬가지로 빠른 모드로 시작하며, 모든 객체가 자르기 모서리가 되고 아무것과도 교차하지 않는 객체는 통째로 지워집니다. Shift 키를 누른 채 클릭하면 대신 [`EXTEND`](/docs/commands/extend)처럼 객체를 가장 가까운 모서리까지 연장합니다. 클릭 하나하나가 명령 취소로 되돌릴 수 있는 한 단계이며, Enter 키로 명령이 끝납니다.
+
+- **명령:** `TRIM`
+- **단축키:** `TR`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `TR` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="trim" caption="선을 가로지르는 두 선까지 잘라 낸 선: 빠른 모드에서 양 끝을 한 번씩 클릭했습니다." />
+
+## 옵션 [#options]
+
+### `cuTting edges` (`T`) [#cutting]
+
+자르기 모서리로 쓸 객체를 고릅니다. 객체를 선택하거나, Enter 키를 눌러 모든 객체를 씁니다. 그 뒤로는 모드와 관계없이 명령이 끝날 때까지 그 객체들만 자릅니다.
+
+### `Fence` (`F`) [#fence]
+
+Enter 키를 누를 때까지 선의 점을 원하는 만큼 묻습니다. 그 선이 가로지르는 모든 객체가 가로지르는 곳에서 한 단계로 잘립니다. 표준 모드에서 나열되며, 빠른 모드에서도 쓸 수 있고, 아무것도 없는 곳을 클릭하면 두 점 울타리가 저절로 시작됩니다.
+
+### `Crossing` (`C`) [#crossing]
+
+윈도우의 두 구석점을 묻습니다. 윈도우의 윤곽선이 가로지르는 모든 것이 한 단계로 잘립니다. 윈도우 안에 완전히 들어간 객체는 윤곽선이 가로지르지 않으므로 잘리지 않습니다.
+
+### `mOde` (`O`) [#mode]
+
+`Quick`과 `Standard`를 전환합니다. 표준 모드에서 TRIM은 먼저 자르기 모서리를 묻고(Enter 키는 전부 사용), 어떤 모서리와도 교차하지 않는 객체는 `Does not intersect with the cutting edge.`라고 표시하고 그대로 두며, 울타리와 모서리를 나열하고, 아무것도 없는 곳을 클릭하면 걸치기 윈도우가 시작됩니다. 모드는 TRIM과 EXTEND가 함께 쓰며, 세션 동안 유지됩니다.
+
+### `Edge` (`E`) [#edge]
+
+표준 모드 전용입니다. `Extend`에서는 모서리를 연장했을 때 교차하는 곳에서도 자릅니다. 선은 양쪽으로, 호는 그 원을 따라 연장됩니다. 기본값은 `No extend`입니다.
+
+### `eRase` (`R`) [#erase]
+
+명령을 끝내지 않고 객체를 지웁니다. 객체를 선택하고 Enter 키를 누르면 지워지며, 명령 취소로 되돌릴 수 있는 TRIM의 한 단계가 됩니다.
+
+### `Undo` (`U`) [#undo]
+
+프롬프트에 클릭, 울타리, 윈도우로 한 번 답한 뒤에 나열됩니다. 마지막 자르기를 되돌리며, 되돌릴 것이 없으면 그렇다고 알려 줍니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+Project: AutoCAD의 투영 옵션(None, Ucs, View)은 제공되지 않으며, 모든 계산은 AutoCAD의 기본값인 Ucs처럼 UCS의 XY 평면에 투영해 이루어집니다. 울타리는 아직 커서로 끌 수 없고 한 점씩 클릭해 지정합니다. 자르기 모드와 Edge의 선택은 세션 동안만 유지되지만, AutoCAD는 세션이 바뀌어도 유지합니다. UCS에 대해 기울어진 객체는 스플라인을 제외하면 자르기 모서리도 되지 않고 잘리지도 않습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
+
+## 자주 묻는 질문 [#questions]
+
+### 캐드 트림(TRIM)의 단축키는 무엇입니까?
+
+`TR`을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 모든 언어 버전에서 `_TRIM`도 됩니다.
+
+### 트림하면 선이 통째로 지워지는 이유는 무엇입니까?
+
+TRIM이 AutoCAD 2021 버전부터 기본값인 빠른 모드이기 때문입니다. 어떤 모서리와도 교차하지 않는 객체를 클릭하면 지워집니다. `mOde`를 고른 다음 `Standard`를 고르면 TRIM이 그런 객체를 지우지 않고 남긴 채 그렇다고 알려 줍니다.
+
+### 여러 선을 한 번에 자르려면 어떻게 합니까?
+
+빈 곳을 클릭하고 두 번째 점을 클릭합니다. 그 울타리가 가로지르는 모든 객체가 한 단계로 잘립니다. 또는 `Crossing`을 고르고 없앨 부분 위에 윈도우를 그립니다.
+
+### TRIM으로 선을 연장하려면 어떻게 합니까?
+
+연장할 끝 가까이에서 Shift 키를 누른 채 선을 클릭합니다. [`EXTEND`](/docs/commands/extend)에서처럼 가장 가까운 모서리까지 늘어나며, Shift 키 없이 다음에 클릭하면 다시 자릅니다.
+
+## 연습하기 [#practice]
+
+- [캐드 연습도면: 플랜지](/docs/exercises/flange)
+- [캐드 연습도면: 접선으로 잇는 링크](/docs/exercises/link)
+
+## 관련 명령 [#related]
+
+- [AutoCAD EXTEND(연장) 명령](/docs/commands/extend)
+- [AutoCAD OFFSET(간격띄우기) 명령](/docs/commands/offset)
+- [AutoCAD FILLET(모깎기) 명령](/docs/commands/fillet)
+- [AutoCAD BREAK(끊기) 명령](/docs/commands/break)

@@ -1,0 +1,66 @@
+---
+title: "캐드 3D 연습도면: 베어링 블록"
+metaTitle: "오토캐드 3D 연습 문제 (고급): 베어링 블록"
+description: "AutoCAD 3D 기계 연습도면. 베어링 블록을 돌출과 합집합으로 만들고, 축 구멍과 볼트 구멍 2개를 원통의 차집합으로 뚫습니다. 단계별 풀이가 있고 3D 솔리드를 무료로 연습할 수 있습니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+다음 베어링 블록을 모델링합니다(단위: mm). 바닥판은 100 × 60에 두께 12이고 모서리 반지름은 10입니다. 가운데에 지름 40, 높이 40의 보스가 서 있습니다. 보스를 관통하는 지름 20의 축 구멍과, 바닥판을 관통하는 지름 10의 볼트 구멍 2개(간격 76)가 있습니다. 바닥판과 보스는 외형에서 돌출해 하나의 솔리드로 합치고, 축 구멍과 볼트 구멍은 원통으로 만들어 빼냅니다.
+
+- **연습도면:** 고급 · 기계 · 3D 솔리드
+- **명령:** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=bearing-block). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/bearing-block" caption="베어링 블록의 평면도. 100 × 60, 보스, 축 구멍, 볼트 구멍 치수 포함." />
+
+<Session name="exercises/bearing-block/model" caption="솔리드 베어링 블록. 남동쪽에서 본 모습, 개념 비주얼 스타일." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 평면도 그리기 [#plan]
+
+“외형선” 도면층에서 [`RECTANG`](/docs/commands/rectang)(직사각형) 명령의 `Fillet` 옵션을 `10`으로 설정하고 `0,0`에서 `100,60`까지 그립니다. 이어서 그 중심 `50,30`에 `Diameter` `40`인 원을 그립니다.
+
+<Session name="exercises/bearing-block/plan" caption="1. 평면도 그리기" />
+
+### 2. 바닥판과 보스 돌출하기 [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude)(돌출) 명령으로 외형을 높이 `12`로, 원을 높이 `40`으로 돌출합니다. 솔리드 두 개가 됩니다.
+
+<Session name="exercises/bearing-block/extrude" caption="2. 바닥판과 보스 돌출하기" />
+
+### 3. 합치기 [#union]
+
+[`UNION`](/docs/commands/union)(합집합) 명령으로 두 솔리드를 선택하고 Enter 키를 누릅니다. 하나의 솔리드가 됩니다.
+
+<Session name="exercises/bearing-block/union" caption="3. 합치기" />
+
+### 4. 원통 그리기 [#holes]
+
+[`CYLINDER`](/docs/commands/cylinder)(원통) 명령으로 축 구멍과 볼트 구멍 하나를 원통으로 그립니다. 축 구멍은 `50,30`에 `Diameter` `20`, 높이 `40`이고, 볼트 구멍은 `12,30`에 지름 `10`, 높이 `12`입니다. 이어서 [`COPY`](/docs/commands/copy)(복사) 명령으로 볼트 구멍을 `12,30`에서 `76,0`만큼 떨어진 곳으로 복사합니다.
+
+<Session name="exercises/bearing-block/holes" caption="4. 원통 그리기" />
+
+### 5. 빼기 [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)(차집합) 명령으로 블록을 선택하고 Enter 키를 누른 다음, 원통 세 개를 선택하고 Enter 키를 누릅니다. 축 구멍과 볼트 구멍이 관통합니다.
+
+<Session name="exercises/bearing-block/subtract" caption="5. 빼기" />
+
+### 6. 뷰 돌리기 [#view]
+
+`-VIEW` 명령의 `SEIso` 옵션, [`VSCURRENT`](/docs/commands/vscurrent)(비주얼 스타일) 명령의 `Conceptual` 옵션을 선택한 다음, [`ZOOM`](/docs/commands/zoom)(줌) 명령의 `Extents` 옵션과 0.8x로 화면에 맞춥니다.
+
+<Session name="exercises/bearing-block/view" caption="6. 뷰 돌리기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 연습도면: 개스킷](/docs/exercises/gasket): 초급 · 기계 · 2D
+- [캐드 연습도면: L 브래킷](/docs/exercises/l-bracket): 초급 · 기계 · 2D
+- [캐드 연습도면: 계단 평면도](/docs/exercises/stairs): 초급 · 건축 · 2D
+- [AutoCAD 연습도면](/docs/exercises)

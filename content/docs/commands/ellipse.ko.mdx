@@ -1,0 +1,74 @@
+---
+title: "AutoCAD ELLIPSE(타원) 명령"
+metaTitle: "캐드 타원 그리기: 타원(ELLIPSE)과 단축키 EL"
+description: "AutoCAD 타원(ELLIPSE, EL)을 프롬프트 순서대로: 한 축과 다른 축의 절반, 중심에서 그리기, 회전, 타원형 호. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 타원 단축키는?","answer":"EL을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 _ELLIPSE를 쓸 수 있습니다."},{"question":"AutoCAD에서 반쪽 타원을 그리려면?","answer":"Arc를 고르고 축과 거리를 지정한 다음, 시작 각도 0, 끝 각도 180을 입력합니다. 또는 기본값이 180인 Included에서 Enter 키를 누릅니다."},{"question":"중심에서 타원을 그리려면?","answer":"Center를 고르고 중심을 지정한 다음, 한 축의 끝점, 중심에서 다른 축 끝점까지의 거리를 지정합니다. 이 둘이 타원의 두 반축입니다."},{"question":"AutoCAD에서 등각 원을 그리려면?","answer":"AutoCAD는 스냅 스타일을 등각으로 바꾼 다음 ELLIPSE의 등각원으로 그립니다. MellowCAD에는 아직 둘 다 없습니다."}]
+---
+
+ELLIPSE(타원) 명령은 한 축의 두 끝점을 지정한 다음, 그 중간점에서 다른 축 끝점까지의 거리, 즉 다른 축 길이의 절반을 지정하여 타원을 그립니다. 어느 축이 더 길어도 됩니다. AutoCAD와 같은 진짜 타원이며 폴리선이 아니므로, 중심, 사분점, 근처점 객체 스냅이 맞고, 그립으로 이동하거나 각 반축을 설정할 수 있습니다. 두 번째 끝점을 지정하는 동안 첫 번째 끝점에서 호박색 점선이 이어지고, 거리를 지정할 때는 타원이 커서를 따라갑니다. 타원은 현재 도면층에, 확정할 때의 현재 특성으로 작성됩니다.
+
+- **명령:** `ELLIPSE`
+- **단축키:** `EL`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `EL` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="ellipse" caption="한 축의 두 끝점으로 그린 타원, 중심으로 그린 타원, 0도에서 180도까지 그린 반쪽 타원형 호." />
+
+## 옵션 [#options]
+
+### `Arc` (`A`) [#arc]
+
+타원형 호를 그립니다. 타원과 같은 프롬프트 다음에 시작 각도와 끝 각도를 묻습니다. 각도는 처음 지정한 축의 끝점에서 시계 반대 방향으로 잽니다.
+
+### `Center` (`C`) [#center]
+
+중심에서 시작합니다. 이어서 한 축의 끝점, 다른 축까지의 거리를 지정합니다.
+
+### `Rotation` (`R`) [#rotation]
+
+거리 대신, 첫 번째 축을 중심으로 타원을 기울인 각도를 지정합니다. 그 각도에서 바라본 원과 같습니다. 0이면 원이 그려지며, 90도에서 0.6도 이내의 각도는 `*Invalid*` 메시지와 함께 거부됩니다.
+
+### `Parameter` (`P`) [#parameter]
+
+호에서 시작 각도나 끝 각도 대신, 타원을 만들어 내는 원 위의 각도인 AutoCAD의 매개변수를 지정합니다. `Angle`로 각도 입력으로 돌아갑니다.
+
+### `Included angle` (`I`) [#included-angle]
+
+호에서 끝 각도 대신, 시작점에서 얼마나 돌아갈지를 지정합니다. Enter 키를 누르면 타원의 절반인 180입니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+등각원이 없습니다. AutoCAD는 등각 스냅 스타일에서만 이 옵션을 제공하며, 그 스타일이 여기에는 없습니다. 타원을 폴리선으로 그리는 PELLIPSE 1도 없습니다. 타원에 해치나 치수를 작성할 수 없고, 교차점, 접점, 직교 객체 스냅도 타원에 맞지 않습니다. 타원형 호 끝의 화살표 그립은 여기서는 사각형으로 그려지며, 그립이 활성화된 동안 길이나 각도를 입력할 수 없습니다. 거리에서 Z가 있는 점은 평면에서 측정하지만, AutoCAD는 공간에서 측정합니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ellipse--el--es-elipse--el--pt-br-elipse--el--fr-ellipse--el--it-ellisse--el--de-ellipse--el--ru-эллипс--э--pl-elipsa--e--cs-elipsa--el--hu-ellipsz--ell)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 타원 단축키는?
+
+`EL`을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 `_ELLIPSE`를 쓸 수 있습니다.
+
+### AutoCAD에서 반쪽 타원을 그리려면?
+
+`Arc`를 고르고 축과 거리를 지정한 다음, 시작 각도 `0`, 끝 각도 `180`을 입력합니다. 또는 기본값이 180인 `Included`에서 Enter 키를 누릅니다.
+
+### 중심에서 타원을 그리려면?
+
+`Center`를 고르고 중심을 지정한 다음, 한 축의 끝점, 중심에서 다른 축 끝점까지의 거리를 지정합니다. 이 둘이 타원의 두 반축입니다.
+
+### AutoCAD에서 등각 원을 그리려면?
+
+AutoCAD는 스냅 스타일을 등각으로 바꾼 다음 ELLIPSE의 등각원으로 그립니다. MellowCAD에는 아직 둘 다 없습니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD CIRCLE(원) 명령](/docs/commands/circle)
+- [AutoCAD ARC(호) 명령](/docs/commands/arc)
+- [AutoCAD OFFSET(간격띄우기) 명령](/docs/commands/offset)
+- [AutoCAD BREAK(끊기) 명령](/docs/commands/break)

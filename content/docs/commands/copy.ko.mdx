@@ -1,0 +1,72 @@
+---
+title: "AutoCAD COPY(복사) 명령"
+metaTitle: "오토캐드 복사(COPY) 사용법과 단축키 CO, CP"
+description: "AutoCAD 복사(COPY, CO, CP), 캐드 카피를 프롬프트 순서대로 설명합니다: 기준점, 그리고 놓는 만큼의 복사본, 명령 취소와 종료, 또는 변위로 한 번 복사. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 복사 단축키는 무엇입니까?","answer":"CO 또는 CP를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _COPY도 됩니다."},{"question":"한 번에 여러 개를 복사하려면 어떻게 합니까?","answer":"계속 놓으면 됩니다. 지정하는 점마다 같은 기준점에서 복사본이 하나씩 더 놓이며, Enter 키로 끝납니다. 행, 열, 중심 둘레로 복사하려면 ARRAY 명령이 한 번에 만듭니다."},{"question":"객체를 정해진 거리만큼 복사하려면 어떻게 합니까?","answer":"기준점을 지정한 다음 두 번째 점을 거리로 입력합니다. 동적 입력은 첫 번째 이후의 점을 그 점에서 읽으므로 30,0은 X 방향으로 30만큼 복사합니다. 또는 직교 모드나 극좌표 추적으로 커서를 갈 방향에 두고 거리만 입력합니다."},{"question":"COPY에 배열 옵션이 없는 이유는 무엇입니까?","answer":"MellowCAD에는 아직 없습니다. 같은 간격으로 한 줄의 복사본을 만들려면 행이 하나인 ARRAYRECT 명령이 같은 결과를 만들며, 편집할 수 있는 하나의 배열로 유지합니다."}]
+---
+
+COPY(복사) 명령은 선택한 객체의 복사본을 놓습니다. 객체를 선택하고 기준점을 지정한 다음, 복사본마다 두 번째 점을 지정합니다. 복사 모드가 기본적으로 다중인 AutoCAD와 같이, Enter 키를 누르거나 종료 옵션을 선택할 때까지 계속 다음 점을 묻고, 모든 복사본은 같은 기준점에서 잽니다. 복사본은 객체의 도면층, 색상을 비롯한 모든 특성을 유지합니다. 명령 전에 선택한 객체가 복사 대상이 되며, 복사본을 놓는 동안 선택 세트가 커서를 따라옵니다.
+
+- **명령:** `COPY`
+- **단축키:** `CO`, `CP`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `CO` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="copy" caption="기준점 하나에서 원을 X 방향으로 세 번 복사한 다음 Enter 키를 누릅니다." />
+
+## 옵션 [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+기준점 프롬프트에서 선택하거나 거기서 Enter 키를 누릅니다. 이동 하나를 벡터로 묻고(`30,0`은 X 방향으로 30 떨어진 곳에 복사본 하나를 놓음) 끝납니다. 기본값은 그 도면에서 COPY가 마지막으로 사용한 값입니다.
+
+### `Exit` (`E`) [#exit]
+
+복사본을 하나 놓은 뒤의 Enter 키와 같이 명령을 끝냅니다.
+
+### `Undo` (`U`) [#undo]
+
+마지막으로 놓은 복사본을 되돌립니다. 첫 번째 복사본을 되돌리면 `Command has been completely undone.`를 표시하고 두 번째 점을 다시 묻습니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+COPYMODE의 단일(한 번 복사하고 끝냄)이 없습니다. COPY는 항상 다중이므로 기준점 프롬프트에는 `Displacement` 옵션만 나열됩니다. 두 번째 점에서 같은 간격으로 복사본을 한 줄로 놓는 AutoCAD의 배열 옵션도 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp--fr-copier--cp--it-copia--cp--de-kopieren--ko--cp--ru-копировать--кп--pl-kopiuj--k--cs-kopie--ko--hu-másol--m--má)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 복사 단축키는 무엇입니까?
+
+`CO` 또는 `CP`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 `_COPY`도 됩니다.
+
+### 한 번에 여러 개를 복사하려면 어떻게 합니까?
+
+계속 놓으면 됩니다. 지정하는 점마다 같은 기준점에서 복사본이 하나씩 더 놓이며, Enter 키로 끝납니다. 행, 열, 중심 둘레로 복사하려면 [`ARRAY`](/docs/commands/array) 명령이 한 번에 만듭니다.
+
+### 객체를 정해진 거리만큼 복사하려면 어떻게 합니까?
+
+기준점을 지정한 다음 두 번째 점을 거리로 입력합니다. 동적 입력은 첫 번째 이후의 점을 그 점에서 읽으므로 `30,0`은 X 방향으로 30만큼 복사합니다. 또는 직교 모드나 극좌표 추적으로 커서를 갈 방향에 두고 거리만 입력합니다.
+
+### COPY에 배열 옵션이 없는 이유는 무엇입니까?
+
+MellowCAD에는 아직 없습니다. 같은 간격으로 한 줄의 복사본을 만들려면 행이 하나인 [`ARRAYRECT`](/docs/commands/arrayrect) 명령이 같은 결과를 만들며, 편집할 수 있는 하나의 배열로 유지합니다.
+
+## 연습하기 [#practice]
+
+- [캐드 연습도면: 개스킷](/docs/exercises/gasket)
+- [캐드 3D 연습도면: 마운팅 플레이트](/docs/exercises/mounting-plate)
+- [캐드 3D 연습도면: 베어링 블록](/docs/exercises/bearing-block)
+
+## 관련 명령 [#related]
+
+- [AutoCAD MOVE(이동) 명령](/docs/commands/move)
+- [AutoCAD ARRAY(배열) 명령](/docs/commands/array)
+- [AutoCAD OFFSET(간격띄우기) 명령](/docs/commands/offset)
+- [AutoCAD MIRROR(대칭) 명령](/docs/commands/mirror)

@@ -1,0 +1,64 @@
+---
+title: "AutoCAD LWEIGHT(선가중치) 명령"
+metaTitle: "AutoCAD 선가중치(LWEIGHT) 설정과 단축키 LW"
+description: "AutoCAD 선가중치(LWEIGHT, LW) 사용법: 새 객체의 선가중치(mm), 24개의 표준 값, ByLayer, 화면의 선가중치 표시. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 선가중치 단축키는?","answer":"LW를 입력하고 Enter 키나 Space 키를 누릅니다. LINEWEIGHT도 단축키입니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 _LWEIGHT를 쓸 수 있습니다."},{"question":"AutoCAD에서 선가중치가 안 보일 때는?","answer":"AutoCAD에서는 상태 막대의 선가중치 버튼을 켜야(LWDISPLAY 1) 화면에 선가중치가 보이며, 처음에는 꺼져 있습니다. 여기서는 처음부터 켜져 있습니다. 얇은 선가중치는 모두 화면의 가장 얇은 선으로 그려지므로 차이는 두꺼운 쪽에서 보입니다. 선가중치가 ByLayer인 객체는 도면층의 선가중치를 따릅니다."},{"question":"기존 객체의 선가중치를 바꾸려면?","answer":"객체를 선택하고 특성 팔레트의 선가중치 행에서 고릅니다. 객체가 ByLayer이면 도면층 특성 관리자에서 도면층의 선가중치를 바꿉니다. LWEIGHT는 그 뒤에 그리는 객체의 선가중치만 설정합니다."},{"question":"AutoCAD에는 어떤 선가중치가 있나요?","answer":"밀리미터 단위의 고정 값 24개입니다: 0.00, 0.05, 0.09, 0.13, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.53, 0.60, 0.70, 0.80, 0.90, 1.00, 1.06, 1.20, 1.40, 1.58, 2.00, 2.11. 0.45처럼 다른 값을 입력하면 LWEIGHT는 가장 가까운 값을 고르며, 같은 거리면 더 얇은 쪽을 고릅니다."}]
+---
+
+LWEIGHT(선가중치) 명령은 새 객체를 그릴 선가중치를 밀리미터 단위로 설정합니다. AutoCAD는 선가중치 설정 대화상자를 열지만 MellowCAD에는 아직 없으므로, LWEIGHT는 AutoCAD에도 있는 명령행 형식 `-LWEIGHT`를 실행합니다. 현재 선가중치(처음에는 `BYLAYER`)를 표시하고 새 값을 묻습니다. 0.00에서 2.11 mm까지 AutoCAD의 표준 값 24개 중 하나입니다. 다른 값은 가장 가까운 표준 값으로 설정되며 그렇다고 알려 주고, 음수는 `Invalid lweight number.` 메시지와 함께 거부됩니다. Enter 키를 누르면 현재 선가중치를 유지합니다. 변경 하나하나가 `U`로 되돌릴 수 있는 한 단계입니다.
+
+여기서는 처음부터 화면에 선가중치가 표시됩니다. AutoCAD는 상태 막대의 선가중치 버튼(LWDISPLAY)을 켜야 표시하지만, MellowCAD에는 배치도 플롯도 없으므로 선가중치가 보일 수 있는 곳은 화면뿐입니다. 이 버튼으로 표시를 끄고 켭니다. 폭이 있는 폴리선은 평면에서 선가중치가 아니라 폭을 보여 줍니다.
+
+- **명령:** `LWEIGHT`
+- **단축키:** `LW`, `LINEWEIGHT`
+- **패널:** [구성](/docs/commands#organize)
+- **해 보기:** [편집기를 열고](/ko/draw) `LW` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="lweight" caption="판의 윤곽을 0.70 mm로 그린 다음, 구멍에 0.1을 입력하면 0.09 mm로 반올림됩니다. 화면에 보이는 두 굵기." />
+
+## 옵션 [#options]
+
+### `?` [#list]
+
+받을 수 있는 값, 즉 ByLayer와 표준 선가중치 24개를 나열하고 다시 묻습니다.
+
+### `BYLayer` (`BYL`) [#bylayer]
+
+처음처럼 새 객체가 자기 도면층의 선가중치를 따릅니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+ByBlock과 기본값(LWDEFAULT), 인치 단위의 선가중치, 선가중치 설정 대화상자, 드롭다운의 선가중치 설정… 항목이 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin--pt-br-esplinha--esl---esplinha--fr-epaissligne--epl--epligne---epaissligne--it-spesslin--sli--spesslinea--lineweight---spesslin--de-lstärke--linienstärke--lst---lstärke--ru-веслин--вли---веслин--pl-szerlin--sl---szerlin--cs-tlčáry--tlč---tlčáry--hu-vvast--vonalvastagság--vv---vvast)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 선가중치 단축키는?
+
+`LW`를 입력하고 Enter 키나 Space 키를 누릅니다. `LINEWEIGHT`도 단축키입니다. 전체 명령 이름을 입력해도 되고, AutoCAD의 어느 언어 버전에서나 `_LWEIGHT`를 쓸 수 있습니다.
+
+### AutoCAD에서 선가중치가 안 보일 때는?
+
+AutoCAD에서는 상태 막대의 선가중치 버튼을 켜야(LWDISPLAY 1) 화면에 선가중치가 보이며, 처음에는 꺼져 있습니다. 여기서는 처음부터 켜져 있습니다. 얇은 선가중치는 모두 화면의 가장 얇은 선으로 그려지므로 차이는 두꺼운 쪽에서 보입니다. 선가중치가 ByLayer인 객체는 도면층의 선가중치를 따릅니다.
+
+### 기존 객체의 선가중치를 바꾸려면?
+
+객체를 선택하고 특성 팔레트의 선가중치 행에서 고릅니다. 객체가 ByLayer이면 도면층 특성 관리자에서 도면층의 선가중치를 바꿉니다. LWEIGHT는 그 뒤에 그리는 객체의 선가중치만 설정합니다.
+
+### AutoCAD에는 어떤 선가중치가 있나요?
+
+밀리미터 단위의 고정 값 24개입니다: 0.00, 0.05, 0.09, 0.13, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50, 0.53, 0.60, 0.70, 0.80, 0.90, 1.00, 1.06, 1.20, 1.40, 1.58, 2.00, 2.11. 0.45처럼 다른 값을 입력하면 LWEIGHT는 가장 가까운 값을 고르며, 같은 거리면 더 얇은 쪽을 고릅니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD LINETYPE(선종류) 명령](/docs/commands/linetype)
+- [AutoCAD LAYER(도면층 특성) 명령](/docs/commands/layer)
+- [AutoCAD PROPERTIES(특성) 명령](/docs/commands/properties)
+- [AutoCAD PLINE(폴리선) 명령](/docs/commands/pline)

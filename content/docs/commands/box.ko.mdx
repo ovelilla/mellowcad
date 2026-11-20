@@ -1,0 +1,71 @@
+---
+title: "AutoCAD BOX(상자) 명령"
+metaTitle: "오토캐드 3D 상자(BOX) 그리기와 옵션"
+description: "AutoCAD 상자(BOX)로 3D 솔리드 상자를 그리는 방법을 프롬프트 순서대로 설명합니다: 두 구석과 높이, 중심, 정육면체, 길이, 2점. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드에서 3D 상자는 어떻게 그립니까?","answer":"BOX를 실행하고 한 구석, 반대쪽 구석, 높이를 차례로 지정합니다. 0,0, 60,40, 25를 입력하면 예제의 상자가 그려집니다. 반대쪽 구석 대신 Length 옵션과 폭을 지정하면 상자를 어떤 각도로든 돌릴 수 있습니다."},{"question":"상자가 직사각형으로 보이는 이유는 무엇입니까?","answer":"평면도, 즉 위에서 보고 있기 때문입니다. 뷰를 돌립니다. ViewCube의 구석을 클릭하거나, -VIEW 명령에서 SEIso 옵션을 선택하거나, 3DORBIT 명령을 사용합니다. VSCURRENT 명령의 Hidden 옵션은 뒤쪽 모서리를 숨깁니다."},{"question":"정육면체는 어떻게 그립니까?","answer":"첫 번째 구석을 지정한 다음 Cube 옵션을 선택하고 한 변의 길이를 입력합니다."},{"question":"중심에서 상자를 그리려면 어떻게 합니까?","answer":"Center 옵션을 선택하고 중심점을 지정한 다음, 구석이나 Cube, Length 옵션을 지정합니다. 상자는 높이 방향까지 포함하여 그 점을 중심으로 놓입니다."}]
+---
+
+BOX(상자) 명령은 변이 UCS의 축을 따르는 3D 솔리드 상자를 그립니다. 첫 번째 구석, 다른 구석, 높이를 차례로 지정합니다. 높이는 UCS의 Z 방향으로 올라가고 음수는 아래로 내려가며, 점으로 지정하면 구석에서의 거리가 높이가 됩니다. 다른 구석을 첫 번째와 다른 Z로 지정하면 묻지 않고 높이가 정해집니다. 마지막 높이와 정육면체나 길이의 마지막 길이와 폭은 Enter 키로 받아들이는 기본값으로 제시되며, 다른 기본체와 [`EXTRUDE`](/docs/commands/extrude) 명령과 공유됩니다. 상자는 현재 도면층에 놓이고, 명령 취소 한 단계로 되돌립니다.
+
+상자는 크기를 유지합니다. [`LIST`](/docs/commands/list) 명령은 위치, 길이, 폭, 높이, 회전을 표시하고, 특성 팔레트에서 앞의 네 가지를 입력할 수 있습니다. 그립으로 이동하고, 늘리고, 평면도가 아닌 뷰에서는 높이를 정합니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) 명령을 비롯한 MellowCAD의 3D에서 3D 솔리드로 다뤄지며, MellowCAD의 3D는 3D 솔리드뿐이고 아직 부분적입니다.
+
+- **명령:** `BOX`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `BOX` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="box" caption="두 구석과 높이로 그린 60 x 40 x 25 상자를 숨김 비주얼 스타일로 남동쪽에서 본 모습입니다." />
+
+## 옵션 [#options]
+
+### `Center` (`C`) [#center]
+
+첫 번째 프롬프트에서 선택합니다. 중심을 묻고, 이어서 구석이나 `Cube`, `Length` 옵션을 묻습니다. 상자는 높이 방향까지 포함하여 그 점을 중심으로 놓입니다.
+
+### `Cube` (`C`) [#cube]
+
+다른 구석에서 선택합니다. 입력하거나 화면에서 지정한 길이를 묻고, 모든 변이 그 길이인 정육면체를 만듭니다. 입력한 길이는 커서 쪽으로, 음수는 반대쪽으로 갑니다.
+
+### `Length` (`L`) [#length]
+
+다른 구석에서 선택합니다. 길이를 묻고 이어서 폭을 묻습니다. 길이는 커서 쪽으로 가므로 상자를 기울여 놓을 수 있고, 폭은 커서가 있는 쪽으로 갑니다.
+
+### `2Point` (`2P`) [#2point]
+
+높이에서 선택합니다. 두 점을 묻고, 그 사이의 거리가 높이가 됩니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD가 Enter 키로 순환하는 활성 그립의 이동, 회전, 축척, 대칭이 없습니다. 3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN 같은 고유한 3D 명령과 그 기즈모, 면, 모서리, 정점을 하나씩 이동하는 기능이 없습니다. 동적 UCS가 없습니다. 구석, 길이, 폭을 지정하는 동안 AutoCAD가 그리는 점선 치수가 없습니다. 모서리의 [`FILLET`](/docs/commands/fillet)과 [`CHAMFER`](/docs/commands/chamfer) 명령은 지원되지 않으며, [`FILLETEDGE`](/docs/commands/filletedge)와 [`CHAMFEREDGE`](/docs/commands/chamferedge) 명령이 그 일을 합니다. 솔리드 히스토리의 히스토리 기록과 히스토리 표시, 재료 행이 없습니다. [`VSCURRENT`](/docs/commands/vscurrent) 명령에는 2D 와이어프레임, 숨김, 개념 이외의 비주얼 스타일이 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa--fr-boite--it-parallelepipedo--de-quader--ru-ящик--pl-kostka--cs-kvádr--hu-ttest)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드에서 3D 상자는 어떻게 그립니까?
+
+BOX를 실행하고 한 구석, 반대쪽 구석, 높이를 차례로 지정합니다. `0,0`, `60,40`, `25`를 입력하면 예제의 상자가 그려집니다. 반대쪽 구석 대신 `Length` 옵션과 폭을 지정하면 상자를 어떤 각도로든 돌릴 수 있습니다.
+
+### 상자가 직사각형으로 보이는 이유는 무엇입니까?
+
+평면도, 즉 위에서 보고 있기 때문입니다. 뷰를 돌립니다. ViewCube의 구석을 클릭하거나, `-VIEW` 명령에서 `SEIso` 옵션을 선택하거나, [`3DORBIT`](/docs/commands/3dorbit) 명령을 사용합니다. [`VSCURRENT`](/docs/commands/vscurrent) 명령의 `Hidden` 옵션은 뒤쪽 모서리를 숨깁니다.
+
+### 정육면체는 어떻게 그립니까?
+
+첫 번째 구석을 지정한 다음 `Cube` 옵션을 선택하고 한 변의 길이를 입력합니다.
+
+### 중심에서 상자를 그리려면 어떻게 합니까?
+
+`Center` 옵션을 선택하고 중심점을 지정한 다음, 구석이나 `Cube`, `Length` 옵션을 지정합니다. 상자는 높이 방향까지 포함하여 그 점을 중심으로 놓입니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD WEDGE(쐐기) 명령](/docs/commands/wedge)
+- [AutoCAD CYLINDER(원통) 명령](/docs/commands/cylinder)
+- [AutoCAD EXTRUDE(돌출) 명령](/docs/commands/extrude)
+- [AutoCAD UNION(합집합) 명령](/docs/commands/union)

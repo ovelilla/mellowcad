@@ -24,6 +24,7 @@ export const routing = defineRouting({
     "cs",
     "hu",
     "ja",
+    "ko",
   ],
   defaultLocale: "en",
   localePrefix: { mode: "as-needed", prefixes: PREFIXES },
@@ -84,6 +85,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   cs: "ltr",
   hu: "ltr",
   ja: "ltr",
+  ko: "ltr",
 }
 
 /**
@@ -104,6 +106,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   cs: "live",
   hu: "live",
   ja: "live",
+  ko: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -117,7 +120,8 @@ export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
  * `global`: the global commands, for English, for a language Autodesk does
  * not ship (Arabic: docs/i18n/ar.md), and for one whose AutoCAD keeps the
  * global names, aliases and keyword letters and words only its prompts
- * (Japanese, until its prompts are copied: docs/i18n/ja.md). Checked by
+ * (Japanese and Korean, until their prompts are copied: docs/i18n/ja.md,
+ * docs/i18n/ko.md). Checked by
  * `languages.test.ts`.
  */
 export const COMMAND_LANGUAGE: Readonly<
@@ -135,6 +139,7 @@ export const COMMAND_LANGUAGE: Readonly<
   cs: "localized",
   hu: "localized",
   ja: "global",
+  ko: "global",
 }
 
 /**
@@ -144,11 +149,14 @@ export const COMMAND_LANGUAGE: Readonly<
  * letters of Latin Extended-A (Polish ą ł ń ś ż, Czech č ě ř š ů ž, Hungarian ő ű): Inter
  * has them, but in one file of every such letter, 85 KB such a page would fetch by its
  * `unicode-range`; a face of the language's letters alone goes before Inter
- * instead (docs/i18n/pl.md, "Script and font"). `japanese` takes the
- * system's face, never a web font (docs/i18n/ja.md, "Script and font").
+ * instead (docs/i18n/pl.md, "Script and font"). `japanese` and `korean` take
+ * the system's faces, never a web font (docs/i18n/ja.md, "Script and font").
  */
 export const SCRIPT: Readonly<
-  Record<AppLocale, "latin" | "latin-ext" | "cyrillic" | "arabic" | "japanese">
+  Record<
+    AppLocale,
+    "latin" | "latin-ext" | "cyrillic" | "arabic" | "japanese" | "korean"
+  >
 > = {
   en: "latin",
   es: "latin",
@@ -162,6 +170,7 @@ export const SCRIPT: Readonly<
   cs: "latin-ext",
   hu: "latin-ext",
   ja: "japanese",
+  ko: "korean",
 }
 
 /**
@@ -175,7 +184,7 @@ export const INTER_SCRIPTS = ["latin", "cyrillic"] as const
  * The scripts drawn by the system's own face, which no page downloads
  * (`systemFontStack`).
  */
-export const SYSTEM_FACE_SCRIPTS = ["japanese"] as const
+export const SYSTEM_FACE_SCRIPTS = ["japanese", "korean"] as const
 
 export type ScriptNeedingFace = Exclude<
   (typeof SCRIPT)[AppLocale],
@@ -200,6 +209,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   cs: "Čeština",
   hu: "Magyar",
   ja: "日本語",
+  ko: "한국어",
 }
 
 /** Open Graph wants language and territory. */
@@ -216,4 +226,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   cs: "cs_CZ",
   hu: "hu_HU",
   ja: "ja_JP",
+  ko: "ko_KR",
 }

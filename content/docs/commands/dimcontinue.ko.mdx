@@ -1,0 +1,68 @@
+---
+title: "AutoCAD DIMCONTINUE(연속) 치수 명령"
+metaTitle: "오토캐드 연속 치수(DIMCONTINUE) 사용법과 단축키 DCO"
+description: "AutoCAD 연속 치수(DIMCONTINUE, DCO)로 마지막 치수에서 치수를 끝과 끝을 이어 기입하는 방법을 프롬프트 순서대로 설명합니다: 다음 원점, 선택, 명령 취소. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 연속 치수 단축키는 무엇입니까?","answer":"DCO를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _DIMCONTINUE도 됩니다."},{"question":"연속 치수(DIMCONTINUE)와 기준선 치수(DIMBASELINE)의 차이는 무엇입니까?","answer":"DIMCONTINUE는 치수를 한 줄에 끝과 끝을 이어 놓으며, 각 치수는 앞 치수가 끝난 곳에서 시작합니다. DIMBASELINE 명령은 모든 치수를 같은 치수보조선에서 재며, 각 치수를 한 줄씩 바깥쪽에 놓습니다."},{"question":"마지막 치수가 아닌 치수에서 이어 가려면 어떻게 합니까?","answer":"첫 번째 프롬프트에서 Enter 키를 누르거나 Select 옵션을 선택하고, 이어 갈 치수보조선 가까이에서 치수를 선택합니다. 체인이 거기서부터 늘어납니다."},{"question":"DIMCONTINUE가 치수를 선택하라고 하는 이유는 무엇입니까?","answer":"이어 갈 치수가 없기 때문입니다. AutoCAD에서 도면을 연 직후와 같이 도면을 연 뒤에 선형 치수나 정렬 치수를 만들지 않았거나, 마지막으로 만든 치수가 각도 치수입니다. 이어 갈 치수를 선택합니다."}]
+---
+
+DIMCONTINUE(연속) 명령은 끝과 끝을 이은 치수의 체인을 그립니다. 각 치수는 앞 치수의 두 번째 치수보조선에서 시작하여 지정하는 다음 점까지 재며, 같은 치수선 위에 놓입니다. 도면을 연 뒤에 마지막으로 만든 선형 치수나 정렬 치수를 이어 가므로, 보통 [`DIMLINEAR`](/docs/commands/dimlinear)나 [`DIMALIGNED`](/docs/commands/dimaligned) 명령 다음에 씁니다. 그런 치수가 없으면 어느 치수를 이어 갈지 묻습니다. 치수를 만들 때마다 명령행에 측정값이 표시됩니다. 원점 프롬프트에서 Enter 키를 누르면 `Select` 옵션이 선택되고, 거기서 Enter 키를 누르면 Esc 키와 같이 명령이 끝납니다.
+
+AutoCAD와 같이 새 치수는 기준 치수의 방향을 따라 재며, 기준 치수의 치수 스타일과 도면층, 그리고 현재 색상, 선종류, 선가중치를 갖습니다.
+
+- **명령:** `DIMCONTINUE`
+- **단축키:** `DCO`
+- **패널:** [주석](/docs/commands#annotate)
+- **해 보기:** [편집기를 열고](/ko/draw) `DCO` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="dimcontinue" caption="계단 모양 윤곽에 30을 기입하고, 같은 치수선에서 40과 30을 이어 기입합니다. 원점 두 개를 지정한 다음 Enter 키를 두 번 누릅니다." />
+
+## 옵션 [#options]
+
+### `Select` (`S`) [#select]
+
+이어 갈 치수를 묻습니다. 이어 갈 치수보조선 가까이에서 선형 치수나 정렬 치수를 선택합니다. 거기서 점을 입력해도 선택됩니다. 반지름 치수나 지름 치수는 `Linear, ordinate, or angular associative dimension required.`로 거부되고 다시 묻습니다.
+
+### `Undo` (`U`) [#undo]
+
+체인의 마지막 치수를 되돌리고 그 앞의 치수에서 계속합니다. 만든 치수 수만큼 되돌릴 수 있습니다. 남은 치수가 없으면 `Command has been completely undone.`로 답하고 프롬프트가 그대로 남습니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+치수는 연관되지 않으므로, 체인이 잰 객체를 따라가지 않습니다. 각도 치수는 이어 갈 수 없습니다. AutoCAD는 마지막으로 만들었거나 선택한 각도 치수를 이어 가지만, 여기서는 마지막으로 만든 경우 명령이 치수를 묻고, 선택한 경우 반지름 치수처럼 거부됩니다. 세로좌표 치수는 아직 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont--pt-br-cotaserie--cse--dimcont--fr-cotcont--cotn--it-dimcontinua--dco--de-bemweiter--bmwt--ru-рзмцепь--рцп--pl-wymszereg--ws--wymsz--cs-kótyřet--kre--kotyre--hu-méretfolytat--mfo--mfoly)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 연속 치수 단축키는 무엇입니까?
+
+`DCO`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 `_DIMCONTINUE`도 됩니다.
+
+### 연속 치수(DIMCONTINUE)와 기준선 치수(DIMBASELINE)의 차이는 무엇입니까?
+
+DIMCONTINUE는 치수를 한 줄에 끝과 끝을 이어 놓으며, 각 치수는 앞 치수가 끝난 곳에서 시작합니다. [`DIMBASELINE`](/docs/commands/dimbaseline) 명령은 모든 치수를 같은 치수보조선에서 재며, 각 치수를 한 줄씩 바깥쪽에 놓습니다.
+
+### 마지막 치수가 아닌 치수에서 이어 가려면 어떻게 합니까?
+
+첫 번째 프롬프트에서 Enter 키를 누르거나 `Select` 옵션을 선택하고, 이어 갈 치수보조선 가까이에서 치수를 선택합니다. 체인이 거기서부터 늘어납니다.
+
+### DIMCONTINUE가 치수를 선택하라고 하는 이유는 무엇입니까?
+
+이어 갈 치수가 없기 때문입니다. AutoCAD에서 도면을 연 직후와 같이 도면을 연 뒤에 선형 치수나 정렬 치수를 만들지 않았거나, 마지막으로 만든 치수가 각도 치수입니다. 이어 갈 치수를 선택합니다.
+
+## 연습하기 [#practice]
+
+- [캐드 연습도면: 단붙이 축](/docs/exercises/shaft)
+
+## 관련 명령 [#related]
+
+- [AutoCAD DIMBASELINE(기준선) 치수 명령](/docs/commands/dimbaseline)
+- [오토캐드 치수 기입: DIMLINEAR(선형) 명령](/docs/commands/dimlinear)
+- [AutoCAD DIMSPACE(공간 조정) 명령](/docs/commands/dimspace)
+- [AutoCAD DIMALIGNED(정렬) 치수 명령](/docs/commands/dimaligned)

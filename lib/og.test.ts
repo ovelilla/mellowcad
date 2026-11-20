@@ -4,8 +4,9 @@ import { parse } from "opentype.js"
 import { describe, expect, it } from "vitest"
 
 import ja from "@/messages/ja.json"
+import ko from "@/messages/ko.json"
 
-import { JAPANESE_CARD_FONT, cardSentences, visualPieces } from "./og"
+import { CJK_CARD_FONTS, cardSentences, visualPieces } from "./og"
 
 const isolated = (text: string) =>
   String.fromCodePoint(0x2068) + text + String.fromCodePoint(0x2069)
@@ -62,13 +63,22 @@ describe("cardSentences", () => {
   })
 })
 
-describe("the Japanese card's face", () => {
-  it("has every character the Japanese cards set beyond Inter's latin", async () => {
-    const data = await readFile(join("assets/fonts", JAPANESE_CARD_FONT))
+describe.each([
+  { script: "japanese", messages: ja },
+  { script: "korean", messages: ko },
+] as const)("the $script card's face", ({ script, messages }) => {
+  it("has every character its cards set beyond Inter's latin", async () => {
+    const data = await readFile(
+      join("assets/fonts", CJK_CARD_FONTS[script].file)
+    )
     const face = parse(
       data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
     )
-    const card = [ja.Og.tagline, ja.Og.drawTitle, ja.Hero.tagline].join("")
+    const card = [
+      messages.Og.tagline,
+      messages.Og.drawTitle,
+      messages.Hero.tagline,
+    ].join("")
     const missing = [...new Set(card)].filter(
       (character) =>
         character.codePointAt(0)! > 0x24f &&

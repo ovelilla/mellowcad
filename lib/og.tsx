@@ -141,13 +141,15 @@ const SANS_FAMILY = "Inter, Inter Cyrillic, Inter Letters"
 const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Letters"
 
 /**
- * The Japanese card's kana and kanji, behind Inter and Geist Mono: Satori
- * draws no system face, so Noto Sans JP 600 cut to the Japanese cards'
- * characters (assets/fonts/README.md; `lib/og.test.ts` holds the cut to the
+ * A CJK card's characters, behind Inter and Geist Mono: Satori draws no
+ * system face, so Noto Sans JP or KR 600 cut to that language's cards'
+ * characters (assets/fonts/README.md; `lib/og.test.ts` holds each cut to its
  * copy).
  */
-export const JAPANESE_CARD_FONT = "noto-sans-jp-card-600.woff"
-const JAPANESE_FAMILY = "Noto Sans JP"
+export const CJK_CARD_FONTS = {
+  japanese: { file: "noto-sans-jp-card-600.woff", family: "Noto Sans JP" },
+  korean: { file: "noto-sans-kr-card-600.woff", family: "Noto Sans KR" },
+} as const
 
 /**
  * How wide a word of a right-to-left script is set, shaped: its letters
@@ -220,11 +222,13 @@ export async function ogImage({
   title: string
 }) {
   const rtl = DIRECTION[locale as AppLocale] === "rtl"
-  const japanese = SCRIPT[locale as AppLocale] === "japanese"
-  const sans = japanese ? `${SANS_FAMILY}, ${JAPANESE_FAMILY}` : SANS_FAMILY
-  const monoFamily = japanese
-    ? `${MONO_FAMILY}, ${JAPANESE_FAMILY}`
-    : MONO_FAMILY
+  const script = SCRIPT[locale as AppLocale]
+  const cjk =
+    script === "japanese" || script === "korean"
+      ? CJK_CARD_FONTS[script]
+      : undefined
+  const sans = cjk ? `${SANS_FAMILY}, ${cjk.family}` : SANS_FAMILY
+  const monoFamily = cjk ? `${MONO_FAMILY}, ${cjk.family}` : MONO_FAMILY
   const [
     { src, texts },
     model,
@@ -248,7 +252,7 @@ export async function ogImage({
     // A whole face, latin included: Satori's shaper fails on Readex Pro's
     // Arabic subset as soon as a word meets a character the subset lacks.
     rtl ? font("readex-pro-600.ttf") : undefined,
-    japanese ? font(JAPANESE_CARD_FONT) : undefined,
+    cjk ? font(cjk.file) : undefined,
   ])
   const face = arabic && parse(arrayBufferOf(arabic))
   const sentences = cardSentences(title, locale)
@@ -328,9 +332,9 @@ export async function ogImage({
                   }
                 : {
                     fontFamily: monoFamily,
-                    fontSize: japanese ? 18 : 20,
-                    // Kana take no tracking (docs/i18n/ja.md).
-                    letterSpacing: japanese ? 0 : "0.14em",
+                    fontSize: cjk ? 18 : 20,
+                    // Kana and Hangul take no tracking (docs/i18n/ja.md).
+                    letterSpacing: cjk ? 0 : "0.14em",
                     textTransform: "uppercase",
                     color: "#94a3b8",
                   }
@@ -354,9 +358,9 @@ export async function ogImage({
                 lineHeight: 1.3,
                 letterSpacing: 0,
               }),
-              // Full-width glyphs: a Japanese headline at Inter's size runs
-              // off its column, and tracking crowds kana.
-              ...(japanese && {
+              // Full-width glyphs: a Japanese or Korean headline at Inter's
+              // size runs off its column, and tracking crowds them.
+              ...(cjk && {
                 fontSize: 60,
                 lineHeight: 1.3,
                 letterSpacing: 0,
@@ -457,10 +461,10 @@ export async function ogImage({
           style: "normal",
         },
         { name: "Geist Mono", data: mono, weight: 400, style: "normal" },
-        ...(kanji
+        ...(kanji && cjk
           ? [
               {
-                name: JAPANESE_FAMILY,
+                name: cjk.family,
                 data: kanji,
                 weight: 600 as const,
                 style: "normal" as const,

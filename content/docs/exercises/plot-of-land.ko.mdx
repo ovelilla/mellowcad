@@ -1,0 +1,46 @@
+---
+title: "캐드 연습도면: 대지 경계"
+metaTitle: "캐드 토목 연습도면: 대지 면적과 변 길이"
+description: "AutoCAD 토목 연습도면. 변의 길이와 각도를 극좌표로 입력해 대지를 그리고, 면적을 잰 뒤 치수를 기입합니다. 단계별 풀이가 있고 브라우저에서 무료로 연습할 수 있습니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+변의 길이와 방향으로 다음 대지를 그립니다(단위: m). 0°로 40, 80°로 30, 155°로 35, 230°로 25를 그린 다음 시작점으로 돌아옵니다. 면적과 둘레를 재고, 각 변과 두 번째 꼭짓점의 각도에 치수를 기입합니다. 극좌표(길이와 각도)로 각 변을 앞 변의 끝에서 그립니다. 이 도면의 치수 축척은 미터 단위에 맞춰 설정되어 있습니다.
+
+- **연습도면:** 중급 · 토목 · 2D
+- **명령:** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=plot-of-land). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/plot-of-land" caption="다섯 변으로 된 대지(단위: m). 각 변의 치수와 각도 하나." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 경계 그리기 [#boundary]
+
+“외형선” 도면층에서 `0,0`부터 [`PLINE`](/docs/commands/pline)(폴리선) 명령으로 각 변을 길이와 각도로 입력합니다. `40<0`, `30<80`, `35<155`, `25<230`이고, 각각 바로 앞 점에서 잽니다. `Close` 옵션이 다섯 번째 변을 그리고 경계를 닫습니다. 하나의 객체이므로 [`AREA`](/docs/commands/area)(면적) 명령으로 잴 수 있습니다.
+
+<Session name="exercises/plot-of-land/boundary" caption="1. 경계 그리기" />
+
+### 2. 면적 재기 [#area]
+
+[`AREA`](/docs/commands/area) 명령에서 `Object` 옵션을 선택하고 경계를 선택합니다. 명령행에 면적(제곱미터)과 둘레가 표시됩니다.
+
+<Session name="exercises/plot-of-land/area" caption="2. 면적 재기" />
+
+### 3. 치수 기입하기 [#dimensions]
+
+“치수” 도면층에서 [`DIMALIGNED`](/docs/commands/dimaligned)(정렬) 명령을 시작하고 첫 프롬프트에서 Enter 키를 누릅니다. 그러면 객체를 묻는데, 변을 선택하면 그 변에 평행한 치수가 기입됩니다. 각 치수는 대지 바깥에 놓습니다. [`DIMANGULAR`](/docs/commands/dimangular)(각도) 명령으로 `40,0`에서 만나는 두 변을 선택하면 그 사이의 각도 100°가 기입됩니다.
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. 치수 기입하기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 연습도면: 단붙이 축](/docs/exercises/shaft): 중급 · 기계 · 2D
+- [캐드 등각투상도 연습도면: 단이 있는 블록](/docs/exercises/isometric-block): 중급 · 기계 · 등각투영
+- [캐드 3D 연습도면: 풀리](/docs/exercises/pulley): 중급 · 기계 · 3D 솔리드
+- [AutoCAD 연습도면](/docs/exercises)

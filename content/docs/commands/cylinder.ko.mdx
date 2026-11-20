@@ -1,0 +1,88 @@
+---
+title: "AutoCAD CYLINDER(원통) 명령"
+metaTitle: "오토캐드 3D 원통(CYLINDER) 그리기와 단축키 CYL"
+description: "AutoCAD 원통(CYLINDER, CYL)으로 3D 솔리드 원통을 그리는 방법을 프롬프트 순서대로 설명합니다: 밑면, 반지름, 높이, 3P, 2P, Ttr, 타원형, 축 끝점. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 원통 단축키는 무엇입니까?","answer":"CYL입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 밑면의 중심, 반지름, 높이를 지정합니다. 0,0, 20, 40을 입력하면 예제의 원통이 그려집니다."},{"question":"수평 원통은 어떻게 그립니까?","answer":"높이에서 Axis 옵션을 선택하고 축의 다른 끝점을 지정합니다. 밑면이 0,0,0이면 점 60,0,0이 원통을 X 방향으로 눕힙니다."},{"question":"속이 빈 원통이나 파이프는 어떻게 만듭니까?","answer":"같은 중심에서 원통 두 개를 안쪽 것을 더 가늘게 그린 다음 SUBTRACT 명령을 실행합니다. 바깥 원통을 선택하고 Enter 키, 안쪽 원통을 선택하고 Enter 키를 누릅니다."},{"question":"원통이 원으로 보이는 이유는 무엇입니까?","answer":"평면도, 즉 위에서 보고 있기 때문입니다. 뷰를 돌립니다. ViewCube의 구석을 클릭하거나, -VIEW 명령에서 SEIso 옵션을 선택하거나, 3DORBIT 명령을 사용합니다."}]
+---
+
+CYLINDER(원통) 명령은 3D 솔리드 원통을 그립니다. 밑면의 중심, 반지름, 높이를 차례로 지정합니다. 밑면은 중심의 Z 위치에서 UCS의 XY 평면에 놓이고, 높이는 UCS의 Z 방향으로 올라갑니다. 음수는 아래로 내려가고, 점으로 지정하면 [`BOX`](/docs/commands/box) 명령과 같이 밑면에서의 거리가 높이가 됩니다. 반지름과 높이는 Enter 키로 받아들이는 기본값으로 제시되며, 다른 기본체와 [`EXTRUDE`](/docs/commands/extrude) 명령과 공유됩니다. 원통은 현재 도면층에 놓이고, 명령 취소 한 단계로 되돌립니다.
+
+원통은 크기를 유지합니다. [`LIST`](/docs/commands/list) 명령은 위치, 법선, 반지름, 높이를 표시하고, 특성 팔레트에서 반지름과 높이를 입력할 수 있습니다. 그립으로 이동하고, 높이를 정하고, 밑면의 사분점마다 반지름을 정합니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract) 명령을 비롯한 MellowCAD의 3D에서 3D 솔리드로 다뤄지며, MellowCAD의 3D는 3D 솔리드뿐이고 아직 부분적입니다.
+
+- **명령:** `CYLINDER`
+- **단축키:** `CYL`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `CYL` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="cylinder" caption="밑면 중심에서 그린 반지름 20, 높이 40인 원통을 숨김 비주얼 스타일로 남동쪽에서 본 모습입니다." />
+
+## 옵션 [#options]
+
+### `3P` [#3p]
+
+밑면 중심에서 선택합니다. 세 점을 묻고, 밑면은 세 점이 놓인 평면에서 세 점을 지나는 원이 됩니다. 세 점이 UCS의 XY 평면에 있으면 원통은 그대로 Z 방향으로 올라갑니다.
+
+### `2P` [#2p]
+
+밑면 중심에서 선택합니다. 밑면 지름의 두 끝점을 물으며, 두 번째 점은 첫 번째 점의 평면에서 읽습니다.
+
+### `Ttr` (`T`) [#ttr]
+
+밑면 중심에서 선택합니다. 접점 스냅으로 선, 원, 호 두 개를 선택하고 반지름을 지정하면, 밑면이 선택한 점에 가장 가까운 곳에서 그 높이로 둘 모두에 접합니다.
+
+### `Elliptical` (`E`) [#elliptical]
+
+밑면 중심에서 선택합니다. 밑면이 타원이 됩니다. 첫 번째 축의 두 끝점과 두 번째 축의 끝점을 지정하거나, `Center` 옵션을 선택하고 중심, 첫 번째 축의 절반 길이, 두 번째 축의 끝점을 지정합니다.
+
+### `Diameter` (`D`) [#diameter]
+
+반지름에서 선택합니다. 대신 지름을 묻고, 마지막 반지름의 두 배를 제시합니다.
+
+### `2Point` (`2P`) [#2point]
+
+높이에서 선택합니다. 두 점을 묻고, 그 사이의 거리가 높이가 됩니다.
+
+### `Axis endpoint` (`A`) [#axis]
+
+높이에서 선택합니다. 축의 다른 끝점을 묻습니다. 원통은 밑면 중심에서 그 점까지 어느 방향으로든 놓이며, 밑면은 축에 직각입니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD는 원통을 [`EXPLODE`](/docs/commands/explode) 명령으로 양 끝면과 표면으로 바꾸지만, MellowCAD에는 표면이 없으므로 분해할 수 없다고 표시합니다. 활성 그립의 이동, 회전, 축척, 대칭과 밑면을 지나도록 끄는 높이가 없습니다. 반지름, 타원의 점, 축을 지정하는 동안 AutoCAD가 그리는 점선 치수가 없습니다. 특성 팔레트에서 둥근 원통을 타원형 원통으로 바꿔 입력할 수 없습니다. AutoCAD의 `DISPSILH`가 그리는 실루엣이 없습니다. 위쪽 원이 밑면의 원을 가리는 평면도에서 근처점 스냅은 밑면의 원을 찾으며, AutoCAD는 위쪽 원을 찾습니다. [`VSCURRENT`](/docs/commands/vscurrent) 명령에는 2D 와이어프레임, 숨김, 개념 이외의 비주얼 스타일이 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#cylinder--cyl--es-cilindro--cil--pt-br-cilindro--cil--fr-cylindre--cyl--it-cilindro--cil--de-zylinder--zyl--ru-цилиндр--ци--pl-walec--wal--cs-válec--val--hu-henger--hen)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 원통 단축키는 무엇입니까?
+
+`CYL`입니다. 입력하고 Enter 키나 Space 키를 누른 다음, 밑면의 중심, 반지름, 높이를 지정합니다. `0,0`, `20`, `40`을 입력하면 예제의 원통이 그려집니다.
+
+### 수평 원통은 어떻게 그립니까?
+
+높이에서 `Axis` 옵션을 선택하고 축의 다른 끝점을 지정합니다. 밑면이 `0,0,0`이면 점 `60,0,0`이 원통을 X 방향으로 눕힙니다.
+
+### 속이 빈 원통이나 파이프는 어떻게 만듭니까?
+
+같은 중심에서 원통 두 개를 안쪽 것을 더 가늘게 그린 다음 [`SUBTRACT`](/docs/commands/subtract) 명령을 실행합니다. 바깥 원통을 선택하고 Enter 키, 안쪽 원통을 선택하고 Enter 키를 누릅니다.
+
+### 원통이 원으로 보이는 이유는 무엇입니까?
+
+평면도, 즉 위에서 보고 있기 때문입니다. 뷰를 돌립니다. ViewCube의 구석을 클릭하거나, `-VIEW` 명령에서 `SEIso` 옵션을 선택하거나, [`3DORBIT`](/docs/commands/3dorbit) 명령을 사용합니다.
+
+## 연습하기 [#practice]
+
+- [캐드 3D 연습도면: 베어링 블록](/docs/exercises/bearing-block)
+
+## 관련 명령 [#related]
+
+- [AutoCAD CONE(원추) 명령](/docs/commands/cone)
+- [AutoCAD BOX(상자) 명령](/docs/commands/box)
+- [AutoCAD SUBTRACT(차집합) 명령](/docs/commands/subtract)
+- [AutoCAD EXTRUDE(돌출) 명령](/docs/commands/extrude)

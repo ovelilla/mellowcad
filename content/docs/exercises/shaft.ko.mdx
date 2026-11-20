@@ -1,0 +1,64 @@
+---
+title: "캐드 연습도면: 단붙이 축"
+metaTitle: "오토캐드 기계 연습도면: 단붙이 축"
+description: "AutoCAD 기계 연습도면. 단붙이 축의 위쪽 절반을 폴리선으로 그려 모따기하고 축선에 대해 대칭한 뒤, 길이를 직렬 치수로 기입합니다. 단계별 풀이가 있고 무료입니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+다음 단붙이 축을 측면도로 그립니다(단위: mm). 길이는 150이고, 길이 40, 60, 50 구간의 지름이 각각 30, 40, 30이며, 양 끝은 2 × 2로 모따기합니다. 축선 위쪽 절반을 폴리선 하나로 그리고, 모따기한 다음 대칭합니다. 그다음 축을 가로질러 보이는 모서리, 축선, 길이 치수를 그립니다. 지름은 여기 주어진 값입니다.
+
+- **연습도면:** 중급 · 기계 · 2D
+- **명령:** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=shaft). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/shaft" caption="측면도로 그린 길이 150의 단붙이 축, 길이는 직렬 치수로 기입." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 위쪽 절반 그리기 [#half]
+
+“외형선” 도면층에서 [`PLINE`](/docs/commands/pline)(폴리선) 명령으로 `0,0`부터 폴리선 하나를 그립니다. 위로 `0,15`, 옆으로 `40,0`, 위로 `0,5`, 옆으로 `60,0`, 아래로 `0,-5`, 옆으로 `50,0`, 아래로 `0,-15`를 입력해 축선으로 돌아옵니다. Enter 키로 끝냅니다.
+
+<Session name="exercises/shaft/half" caption="1. 위쪽 절반 그리기" />
+
+### 2. 양 끝 모따기 [#chamfers]
+
+[`CHAMFER`](/docs/commands/chamfer)(모따기) 명령에서 `Distance` 옵션을 선택하고 `2`를 입력합니다. 두 번째 거리도 Enter 키를 누르면 `2`가 됩니다. `Multiple` 옵션을 쓰면 명령을 다시 시작하지 않고 구석을 차례로 모따기할 수 있습니다. 양 끝의 구석에서 두 세그먼트를 선택합니다.
+
+<Session name="exercises/shaft/chamfers" caption="2. 양 끝 모따기" />
+
+### 3. 대칭하기 [#mirror]
+
+[`MIRROR`](/docs/commands/mirror)(대칭) 명령으로 폴리선을 선택하고 Enter 키를 누른 다음, 대칭선으로 `0,0`에서 `150,0`까지, 곧 축선을 지정합니다. Enter 키를 누르면 원본이 유지됩니다.
+
+<Session name="exercises/shaft/mirror" caption="3. 대칭하기" />
+
+### 4. 모서리 그리기 [#edges]
+
+[`LINE`](/docs/commands/line)(선) 명령으로 축을 가로질러 보이는 모서리를 그립니다. 각각 아래쪽에서 위로 `0,30`입니다. 모따기 위치의 `2,-15`와 `148,-15`, 턱 위치의 `40,-15`와 `100,-15`에서 시작합니다.
+
+<Session name="exercises/shaft/edges" caption="4. 모서리 그리기" />
+
+### 5. 축선 그리기 [#axis]
+
+“중심선” 도면층에서 축선을 그립니다. `-8,0`에서 `166,0`만큼 떨어진 점까지 선을 그립니다.
+
+<Session name="exercises/shaft/axis" caption="5. 축선 그리기" />
+
+### 6. 치수 기입하기 [#dimensions]
+
+“치수” 도면층에서 [`DIMLINEAR`](/docs/commands/dimlinear)(선형) 명령으로 첫 번째 길이 40을 아래에 기입합니다. [`DIMCONTINUE`](/docs/commands/dimcontinue)(연속) 명령은 그 두 번째 치수보조선에서 이어 갑니다. 원점에서 재는 #을 붙여 `#100,-20`, 이어서 `#150,-15`를 입력하고, Enter 키를 두 번 눌러 끝냅니다. 마지막으로 [`DIMLINEAR`](/docs/commands/dimlinear) 명령으로 전체 길이 150을 그보다 더 아래에 기입합니다.
+
+<Session name="exercises/shaft/dimensions" caption="6. 치수 기입하기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 등각투상도 연습도면: 단이 있는 블록](/docs/exercises/isometric-block): 중급 · 기계 · 등각투영
+- [캐드 3D 연습도면: 풀리](/docs/exercises/pulley): 중급 · 기계 · 3D 솔리드
+- [캐드 연습도면: 접선으로 잇는 링크](/docs/exercises/link): 고급 · 기계 · 2D
+- [AutoCAD 연습도면](/docs/exercises)

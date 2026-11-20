@@ -1,0 +1,54 @@
+---
+title: "AutoCAD 3DORBIT(3D 궤도) 명령"
+metaTitle: "오토캐드 3D 궤도(3DORBIT) 사용법과 단축키 3DO"
+description: "AutoCAD 3D 궤도(3DORBIT, 3DO, ORBIT)로 끌어서 뷰를 돌리는 방법, 끝내는 방법, Shift와 휠로 궤도를 도는 방법, 평면도로 돌아가는 방법. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 3D 궤도 단축키는 무엇입니까?","answer":"3DO 또는 ORBIT을 입력하고 Enter 키나 Space 키를 누릅니다. 아무것도 입력하지 않으려면 Shift 키와 휠 버튼을 누른 채 끕니다."},{"question":"마우스로 궤도를 돌려면 어떻게 합니까?","answer":"Shift 키를 누른 채 휠 버튼을 누르고 끕니다. 가로로 끌면 모형이 돌고, 위아래로 끌면 더 높거나 낮은 곳에서 봅니다. 놓으면 하던 명령으로 돌아갑니다."},{"question":"3D 궤도를 끝내려면 어떻게 합니까?","answer":"Enter 키나 Esc 키를 누릅니다. 뷰는 놓은 곳에 그대로 있습니다."},{"question":"궤도를 돈 뒤 평면도로 돌아가려면 어떻게 합니까?","answer":"PLAN 명령을 실행하고 Enter 키를 누르거나, -VIEW 명령에서 Top 옵션을 선택하거나, ViewCube의 위쪽을 클릭합니다. ZOOM 명령의 Previous 옵션은 끈 동작을 하나씩 되돌립니다."}]
+---
+
+3DORBIT(3D 궤도) 명령은 끄는 동안 도면 주위로 뷰를 돌립니다. 도면 안의 객체는 움직이거나 바뀌지 않습니다. 가로로 끌면 카메라가 표준 좌표계의 Z축을 중심으로 돌고, 위아래로 끌면 카메라가 올라가거나 내려갑니다. 회전 중심은 화면 중앙 아래에 있는 도면의 중간이며, 평행 투영으로 표시됩니다. 시작할 때 끝내는 방법을 알려 줍니다. 실행 중에는 궤도만 돌 수 있으며, 끌었든 끌지 않았든 Enter 키나 Esc 키로 끝납니다.
+
+Shift 키와 휠 버튼을 누른 채 끌면 어디서든, 다른 명령 안에서도 궤도를 돌 수 있고, 탐색 막대의 궤도 버튼으로도 실행됩니다. 아포스트로피를 붙여 `'3DORBIT`으로 입력하면 다른 명령 안에서 작동하고, 그 명령은 이어서 계속됩니다. 한 번 끌 때마다 [`ZOOM`](/docs/commands/zoom) 명령의 `Previous` 옵션이 되돌아갈 수 있는 한 단계가 되며, 실행 전체는 명령 취소 한 단계이므로 `U` 명령으로 뷰를 되돌립니다. 솔리드를 와이어가 아닌 솔리드로 보려면 [`VSCURRENT`](/docs/commands/vscurrent) 명령을 사용합니다. MellowCAD의 3D는 3D 솔리드뿐이며 아직 부분적입니다.
+
+- **명령:** `3DORBIT`
+- **단축키:** `3DO`, `ORBIT`
+- **패널:** [조회 및 뷰](/docs/commands#inquiry)
+- **해 보기:** [편집기를 열고](/ko/draw) `3DO` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="3dorbit" caption="처음에 평면도로 본 상자입니다. 3DORBIT을 실행하고 가로와 아래로 한 번 끈 다음 Enter 키를 누르면 상자를 앞쪽 모서리 위에서 보게 됩니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+투영, 비주얼 스타일, 다른 탐색 모드가 있는 오른쪽 클릭 메뉴가 없습니다. 선택한 객체만을 중심으로 궤도를 도는 기능이 없습니다. 투시도가 없습니다. 3DFORBIT, 3DCORBIT를 비롯한 AutoCAD의 나머지 3D 탐색이 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d--fr-orbite3d--3o--it-3dorbita--3do--orbit--de-3dorbit--ru-3dорбита--3о--орбита--3-орбита--pl-3dorbita--3do--or--cs-3dorbit--3do--orbit--hu-3dkeringés--3dk--3do--kering)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 3D 궤도 단축키는 무엇입니까?
+
+`3DO` 또는 `ORBIT`을 입력하고 Enter 키나 Space 키를 누릅니다. 아무것도 입력하지 않으려면 Shift 키와 휠 버튼을 누른 채 끕니다.
+
+### 마우스로 궤도를 돌려면 어떻게 합니까?
+
+Shift 키를 누른 채 휠 버튼을 누르고 끕니다. 가로로 끌면 모형이 돌고, 위아래로 끌면 더 높거나 낮은 곳에서 봅니다. 놓으면 하던 명령으로 돌아갑니다.
+
+### 3D 궤도를 끝내려면 어떻게 합니까?
+
+Enter 키나 Esc 키를 누릅니다. 뷰는 놓은 곳에 그대로 있습니다.
+
+### 궤도를 돈 뒤 평면도로 돌아가려면 어떻게 합니까?
+
+[`PLAN`](/docs/commands/plan) 명령을 실행하고 Enter 키를 누르거나, `-VIEW` 명령에서 `Top` 옵션을 선택하거나, ViewCube의 위쪽을 클릭합니다. [`ZOOM`](/docs/commands/zoom) 명령의 `Previous` 옵션은 끈 동작을 하나씩 되돌립니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD VSCURRENT(비주얼 스타일) 명령](/docs/commands/vscurrent)
+- [AutoCAD VIEW(명명된 뷰) 명령](/docs/commands/view)
+- [AutoCAD PLAN(평면도) 명령](/docs/commands/plan)
+- [AutoCAD ZOOM(줌) 명령](/docs/commands/zoom)

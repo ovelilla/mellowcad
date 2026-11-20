@@ -1,0 +1,42 @@
+---
+title: AutoCAD 2D에서 3D로
+metaTitle: "오토캐드 3D: 2D 도면에서 3D 솔리드로"
+description: "오토캐드 3D의 기본. 닫힌 프로파일을 돌출, 눌러 당기기, 회전하고 합집합과 차집합으로 2D 도면을 3D 솔리드로 만듭니다. 웹에서 무료로 쓰는 3D 솔리드(아직 일부)."
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+AutoCAD에서 솔리드는 보통 2D 도면에서 시작합니다. 평면도처럼 그린 닫힌 프로파일을 어떤 높이까지 돌출하거나 축을 중심으로 회전한 다음, 다른 솔리드와 합치거나 다른 솔리드로 잘라 냅니다. MellowCAD의 3D 솔리드도 같은 방법, 같은 명령으로 만듭니다. 다만 아직 일부만 지원하며, 스윕, 로프트, 메쉬, 렌더링은 아직 없습니다. 각 섹션은 엔진이 그린 세션과, 입력하는 그대로의 사용 내역을 보여 줍니다.
+
+## 닫힌 프로파일 그리기 [#profile]
+
+솔리드에는 닫힌 프로파일이 필요합니다. 닫힌 폴리선, 직사각형, 원 또는 영역입니다. 끝과 끝이 만나는 선도 여전히 별개의 객체입니다. <Command id="JOIN" />(결합) 명령은 이를 하나의 폴리선으로, <Command id="REGION" />(영역) 명령은 영역으로 만듭니다. 프로파일은 점을 입력하기 가장 쉬운 평면 뷰에서 그립니다.
+
+## 돌출하기 [#extrude]
+
+<Command id="EXTRUDE" />(돌출) 명령으로 프로파일을 선택하고 Enter 키를 누른 다음 높이를 입력합니다. 위에서 보면 솔리드는 프로파일과 똑같아 보입니다. <Command id="VIEW" />(명명된 뷰) 명령이나 ViewCube로 뷰를 돌려 확인하고, <Command id="VSCURRENT" />(비주얼 스타일) 명령으로 표시 방식을 선택합니다.
+
+<Session name="solidExtrude" caption="하나의 닫힌 폴리선으로 된 L자 프로파일을 30 돌출해 남동쪽에서 본 모습." />
+
+## 닫힌 영역 눌러 당기기 [#presspull]
+
+<Command id="PRESSPULL" />(눌러 당기기) 명령에는 프로파일이 필요 없습니다. 닫힌 영역의 안쪽을 클릭하고(별개의 선으로 둘러싸인 영역이어도 됩니다) 높이를 입력합니다. 솔리드의 면을 클릭하면 그 면을 밀어 넣거나 당겨 냅니다.
+
+<Session name="presspull" caption="닫힌 영역을 안쪽에서 눌러 당기면 솔리드가 됩니다." />
+
+## 회전하기 [#revolve]
+
+<Command id="REVOLVE" />(회전) 명령은 프로파일을 축을 중심으로 회전합니다. 프로파일을 선택하고, 두 점, 객체, 또는 X, Y, Z축으로 축을 지정한 다음 각도를 지정합니다. 기본값은 한 바퀴 전체입니다.
+
+<Session name="revolve" caption="Y축을 중심으로 회전한 반단면." />
+
+## 솔리드 합치기와 빼기 [#booleans]
+
+<Command id="UNION" />(합집합) 명령은 여러 솔리드를 하나로 만들고, <Command id="SUBTRACT" />(차집합) 명령은 한 솔리드에서 하나 이상의 솔리드를 빼며, <Command id="INTERSECT" />(교집합) 명령은 공통 부분을 남깁니다. 구멍은 관통하는 솔리드에서 원통을 빼서 만듭니다.
+
+<Session name="subtract" caption="상자에서 원통을 빼면 관통 구멍이 됩니다." />
+
+## 다음 단계 [#next]
+
+- 3D [연습 도면](/docs/exercises): 영역과 한 번의 돌출로 만드는 [마운팅 플레이트](/docs/exercises/mounting-plate), 단면을 회전해 만드는 [풀리](/docs/exercises/pulley), 합치고 구멍을 뚫는 [베어링 블록](/docs/exercises/bearing-block).
+- <Command id="3DORBIT" />(3D 궤도) 명령은 마우스로 뷰를 돌리고, <Command id="VSCURRENT" />는 면에 음영을 줍니다.

@@ -1,0 +1,62 @@
+---
+title: "AutoCAD BREAK(끊기) 명령"
+metaTitle: "오토캐드 끊기(BREAK) 사용법과 단축키 BR"
+description: "AutoCAD 끊기(BREAK, BR), 캐드 브레이크를 프롬프트 순서대로 설명합니다: 선택한 점이 첫 번째 점, 두 번째 점, 첫 번째 점 옵션, 점에서 끊기. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 끊기 단축키는 무엇입니까?","answer":"BR을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _BREAK도 됩니다."},{"question":"선을 한 점에서 끊으려면 어떻게 합니까?","answer":"BREAKATPOINT 명령을 실행하고 선을 선택한 다음 점을 지정합니다. 선이 그 점에서 만나는 두 선이 됩니다. BREAK에서는 두 번째 끊기점에서 @를 입력하면 같은 결과가 됩니다."},{"question":"두 점 사이에서 선을 끊으려면 어떻게 합니까?","answer":"선을 선택하고 First 옵션을 선택한 다음 첫 번째 점과 두 번째 점을 지정합니다. 두 점 사이의 부분이 제거됩니다. 또는 첫 번째 점에서 선을 선택하고 두 번째 점만 지정합니다."},{"question":"블록이나 문자가 끊기지 않는 이유는 무엇입니까?","answer":"BREAK는 선, 호, 원, 폴리선, 타원, 스플라인을 끊습니다. 블록 참조는 “Can't break a block”를, 문자, 치수, 해치는 “Object can't be broken”를 표시합니다. 블록의 일부를 끊으려면 먼저 EXPLODE 명령으로 분해합니다."},{"question":"BREAK는 원을 어느 방향으로 자릅니까?","answer":"AutoCAD와 같이 첫 번째 점에서 두 번째 점까지 시계 반대 방향으로 자릅니다. 다른 부분을 남기려면 두 점을 반대 순서로 지정합니다."}]
+---
+
+BREAK(끊기) 명령은 객체의 일부를 잘라 틈을 만들거나 객체를 둘로 나눕니다. 객체를 선택합니다. AutoCAD와 같이 객체를 선택한 점이 첫 번째 끊기점이므로, 다음 프롬프트는 두 번째 점만 묻고 두 점 사이의 부분이 제거됩니다. 선, 호, 열린 폴리선, 타원형 호, 스플라인은 두 점 사이의 부분을 잃고 두 객체가 됩니다. 원이나 타원은 첫 번째 점에서 두 번째 점까지 시계 반대 방향 부분을 잃고, 닫힌 폴리선은 정점 순서로 두 점 사이의 부분을 잃어, 각각 하나의 열린 객체가 됩니다. 객체 밖의 점은 객체 위의 가장 가까운 점으로 처리되고, 끝점을 지난 점은 그 끝점까지 자릅니다. 두 번째 점을 지정하는 동안 BREAK가 남길 부분이 객체 위에 표시됩니다. 끊기는 명령 취소로 되돌릴 수 있는 한 단계입니다.
+
+- **명령:** `BREAK`
+- **단축키:** `BR`
+- **패널:** [수정](/docs/commands#modify)
+- **해 보기:** [편집기를 열고](/ko/draw) `BR` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="break" caption="첫 번째 점 옵션으로 지정한 두 점 사이에서 끊은 선과, 선택한 점에서 두 번째 점까지 시계 반대 방향으로 끊은 원입니다." />
+
+## 옵션 [#options]
+
+### `First point` (`F`) [#first-point]
+
+두 번째 끊기점에서 선택합니다. 객체를 선택한 점이 틈의 시작이 아닐 때, 첫 번째 끊기점을 다시 지정하고 이어서 두 번째 점을 지정합니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+UCS와 평행하게 놓이지 않은 호, 원, 타원은 AutoCAD에서는 끊어지지만 MellowCAD에서는 찾지 못합니다. [`MIRROR`](/docs/commands/mirror) 명령으로 뒤집은 전체 타원은 AutoCAD에서 반대 방향으로 끊어지지만 여기서는 그렇지 않습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#break--br--breakatpoint--es-parte--p--partirenpunto--pt-br-quebrar--qu--quebraremponto--fr-coupure--cu--coupureaupoint--it-spezza--sz--spezzaalpunto--de-bruch--br--anpunktbrech--ru-разорвать--ра--разорватьвточке--pl-przerwij--prz--przerwijwpunkcie--cs-přeruš--pr--přerušvbodě--hu-megtör--mg--megtöréspontban)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 끊기 단축키는 무엇입니까?
+
+`BR`을 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 `_BREAK`도 됩니다.
+
+### 선을 한 점에서 끊으려면 어떻게 합니까?
+
+`BREAKATPOINT` 명령을 실행하고 선을 선택한 다음 점을 지정합니다. 선이 그 점에서 만나는 두 선이 됩니다. BREAK에서는 두 번째 끊기점에서 `@`를 입력하면 같은 결과가 됩니다.
+
+### 두 점 사이에서 선을 끊으려면 어떻게 합니까?
+
+선을 선택하고 `First` 옵션을 선택한 다음 첫 번째 점과 두 번째 점을 지정합니다. 두 점 사이의 부분이 제거됩니다. 또는 첫 번째 점에서 선을 선택하고 두 번째 점만 지정합니다.
+
+### 블록이나 문자가 끊기지 않는 이유는 무엇입니까?
+
+BREAK는 선, 호, 원, 폴리선, 타원, 스플라인을 끊습니다. 블록 참조는 `Can't break a block`를, 문자, 치수, 해치는 `Object can't be broken`를 표시합니다. 블록의 일부를 끊으려면 먼저 [`EXPLODE`](/docs/commands/explode) 명령으로 분해합니다.
+
+### BREAK는 원을 어느 방향으로 자릅니까?
+
+AutoCAD와 같이 첫 번째 점에서 두 번째 점까지 시계 반대 방향으로 자릅니다. 다른 부분을 남기려면 두 점을 반대 순서로 지정합니다.
+
+## 관련 명령 [#related]
+
+- [BREAKATPOINT](/docs/commands#breakatpoint): 점에서 끊기
+- [AutoCAD TRIM(자르기) 명령](/docs/commands/trim)
+- [AutoCAD JOIN(결합) 명령](/docs/commands/join)
+- [AutoCAD ERASE(지우기) 명령](/docs/commands/erase)

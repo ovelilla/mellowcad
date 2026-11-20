@@ -1,0 +1,59 @@
+---
+title: "AutoCAD REGION(영역) 명령"
+metaTitle: "오토캐드 영역(REGION) 사용법과 단축키 REG"
+description: "AutoCAD REGION(영역, 캐드 리전, REG)이 닫힌 모양을 영역으로 바꾸는 방법, 찾는 루프, 영역이 안 만들어지는 이유, 영역의 쓰임새. 브라우저에서 무료로 해 보십시오."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD 영역(REGION) 명령은 어떻게 사용합니까?","answer":"REGION(또는 REG)을 실행하고 닫힌 모양이나 끝과 끝이 이어져 닫히는 선들을 선택한 다음 Enter 키를 누릅니다. 세션처럼 선 네 개와 원을 윈도우로 감싸면 영역 두 개가 작성되고, 명령행은 루프 두 개 추출, 영역 두 개 작성으로 집계합니다."},{"question":"캐드에서 영역이 안 만들어지는 이유는 무엇입니까?","answer":"모양이 끝과 끝으로 닫혀 있지 않기 때문입니다. 서로 교차하거나 서로 닿기 전에 멈춘 선은 아무것도 닫지 않습니다. REGION은 열린 객체를 끝점으로만 잇기 때문에 머리카락만 한 틈으로도 연결이 버려집니다. 나비넥타이처럼 자기 자신과 교차하는 루프는 거부되고 자체 교차로 집계됩니다. 반지름 0의 FILLET으로 끝을 잇거나, 넘치는 부분을 TRIM으로 자른 다음 다시 시도하십시오."},{"question":"구멍이 있는 영역은 어떻게 만듭니까?","answer":"외곽선의 영역과 구멍의 영역을 하나씩 만든 다음 SUBTRACT를 실행합니다. 외곽선을 선택하고 Enter 키, 구멍을 선택하고 Enter 키를 누릅니다. 결과는 영역 하나이며, EXTRUDE로 구멍이 뚫린 솔리드로 바꿀 수 있습니다."},{"question":"영역의 면적은 어떻게 구합니까?","answer":"영역을 선택하고 특성 팔레트에서 면적을 읽거나, AREA를 실행해 Object를 고르고 영역을 선택합니다. MASSPROP은 둘레, 중심, 관성 모멘트도 알려 줍니다."}]
+---
+
+REGION(영역) 명령은 닫힌 모양을 영역으로 바꿉니다. 영역은 두께가 없는 평평한 면으로, 각각 자신의 루프로 둘러싸여 있습니다. 객체를 선택하고 Enter 키를 누르면 객체들이 이루는 루프마다 영역이 됩니다. 원, 타원, 닫힌 폴리선이나 스플라인처럼 닫힌 객체는 그 자체로 루프입니다. 선, 호, 타원형 호, 열린 폴리선과 스플라인 같은 열린 객체는 끝과 끝으로만 이어지며 교차하는 곳에서는 이어지지 않고, 닫히지 않는 연결은 버려집니다. 명령행은 찾은 루프, 거부한 루프와 그 이유, 작성한 영역의 수를 알려 줍니다. 아무것도 선택하지 않고 Enter 키를 누르면 `None found.`라고 표시합니다.
+
+영역이 된 객체는 지워지고 나머지는 남으며, 영역은 원래 객체가 아닌 현재 도면층과 특성을 갖습니다. 다른 루프 안의 루프는 구멍이 아니라 별도의 영역이 됩니다. 하나에서 다른 하나를 빼는 것은 [`SUBTRACT`](/docs/commands/subtract)입니다. 영역은 모서리로 그려지고 모서리에 스냅됩니다. 특성 팔레트에 면적과 둘레가 표시되며, [`AREA`](/docs/commands/area), [`LIST`](/docs/commands/list), [`MASSPROP`](/docs/commands/massprop)으로도 측정합니다. [`UNION`](/docs/commands/union), [`SUBTRACT`](/docs/commands/subtract), [`INTERSECT`](/docs/commands/intersect)는 한 평면의 영역을 조합하고, [`EXTRUDE`](/docs/commands/extrude), [`REVOLVE`](/docs/commands/revolve), [`PRESSPULL`](/docs/commands/presspull)은 영역을 3D 솔리드로 바꾸며, [`EXPLODE`](/docs/commands/explode)는 선, 호, 원으로 되돌립니다. 명령 전체가 명령 취소 한 단계입니다.
+
+- **명령:** `REGION`
+- **단축키:** `REG`
+- **패널:** [그리기](/docs/commands#draw)
+- **해 보기:** [편집기를 열고](/ko/draw) `REG` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="region" caption="끝과 끝이 이어져 닫힌 선 네 개와 그 안의 원: 둘을 윈도우로 감싸 REGION을 실행하면 영역 두 개가 작성되고 객체는 지워집니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+AutoCAD의 `DELOBJ`: 여기서는 영역이 된 객체가 항상 지워집니다. 점 주위의 영역으로 영역을 만들 수 있는 BOUNDARY, 그리고 해치 경계에서 영역 만들기. 그립으로 영역 편집: 그립은 표시되지만 끌어도 아무것도 바뀌지 않습니다. 빠른 모드의 [`TRIM`](/docs/commands/trim)과 [`EXTEND`](/docs/commands/extend)에서 영역의 모서리를 자르기 모서리나 경계 모서리로 쓰는 것, 그리고 타원형이나 스플라인 모서리가 있는 영역의 [`HATCH`](/docs/commands/hatch). MellowCAD에 없는 표면과 영역의 조합, 그리고 특성 팔레트의 재료 행.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#region--reg--es-region--reg--pt-br-regiao--reg--fr-region--reg--it-regione--reg--de-region--rio--ru-область--обл--pl-region--reg--cs-oblast--obl--hu-lemez--lem)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD 영역(REGION) 명령은 어떻게 사용합니까?
+
+REGION(또는 `REG`)을 실행하고 닫힌 모양이나 끝과 끝이 이어져 닫히는 선들을 선택한 다음 Enter 키를 누릅니다. 세션처럼 선 네 개와 원을 윈도우로 감싸면 영역 두 개가 작성되고, 명령행은 루프 두 개 추출, 영역 두 개 작성으로 집계합니다.
+
+### 캐드에서 영역이 안 만들어지는 이유는 무엇입니까?
+
+모양이 끝과 끝으로 닫혀 있지 않기 때문입니다. 서로 교차하거나 서로 닿기 전에 멈춘 선은 아무것도 닫지 않습니다. REGION은 열린 객체를 끝점으로만 잇기 때문에 머리카락만 한 틈으로도 연결이 버려집니다. 나비넥타이처럼 자기 자신과 교차하는 루프는 거부되고 자체 교차로 집계됩니다. 반지름 0의 [`FILLET`](/docs/commands/fillet)으로 끝을 잇거나, 넘치는 부분을 [`TRIM`](/docs/commands/trim)으로 자른 다음 다시 시도하십시오.
+
+### 구멍이 있는 영역은 어떻게 만듭니까?
+
+외곽선의 영역과 구멍의 영역을 하나씩 만든 다음 [`SUBTRACT`](/docs/commands/subtract)를 실행합니다. 외곽선을 선택하고 Enter 키, 구멍을 선택하고 Enter 키를 누릅니다. 결과는 영역 하나이며, [`EXTRUDE`](/docs/commands/extrude)로 구멍이 뚫린 솔리드로 바꿀 수 있습니다.
+
+### 영역의 면적은 어떻게 구합니까?
+
+영역을 선택하고 특성 팔레트에서 면적을 읽거나, [`AREA`](/docs/commands/area)를 실행해 `Object`를 고르고 영역을 선택합니다. [`MASSPROP`](/docs/commands/massprop)은 둘레, 중심, 관성 모멘트도 알려 줍니다.
+
+## 연습하기 [#practice]
+
+- [캐드 3D 연습도면: 마운팅 플레이트](/docs/exercises/mounting-plate)
+
+## 관련 명령 [#related]
+
+- [AutoCAD SUBTRACT(차집합) 명령](/docs/commands/subtract)
+- [AutoCAD UNION(합집합) 명령](/docs/commands/union)
+- [AutoCAD EXTRUDE(돌출) 명령](/docs/commands/extrude)
+- [AutoCAD AREA(면적) 명령](/docs/commands/area)
+- [AutoCAD MASSPROP(영역/질량 특성) 명령](/docs/commands/massprop)

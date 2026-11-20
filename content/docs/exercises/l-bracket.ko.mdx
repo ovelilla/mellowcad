@@ -1,0 +1,52 @@
+---
+title: "캐드 연습도면: L 브래킷"
+metaTitle: "오토캐드 초보 연습 문제: L 브래킷"
+description: "AutoCAD 초보 연습도면. 상대 좌표로 L 브래킷의 외형을 그리고 모깎기, 구멍 2개, 병렬 치수를 넣습니다. 단계별 풀이가 있고 브라우저에서 무료로 연습할 수 있습니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+다음 브래킷을 그립니다(단위: mm). 길이 100에 높이 20의 수평부, 폭 30에 높이 80의 수직부로 되어 있고, 안쪽 구석은 반지름 10으로 둥글립니다. 수평부에는 지름 8, 수직부에는 지름 10의 구멍이 각각 그 부분의 가운데에 있습니다. 외형은 [`LINE`](/docs/commands/line)(선) 명령 한 번으로 그리며, 각 점은 바로 앞 점에서 얼마나 가는지로 입력합니다. 치수는 모두 왼쪽 아래 구석에서 시작합니다.
+
+- **연습도면:** 초급 · 기계 · 2D
+- **명령:** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=l-bracket). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/l-bracket" caption="100 × 80의 L 브래킷, 왼쪽 아래 구석에서 치수 기입." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 외형 그리기 [#outline]
+
+“외형선” 도면층에서 `0,0`부터 [`LINE`](/docs/commands/line) 명령을 시작하고, 그다음 점은 모두 앞 점에서의 이동량으로 입력합니다. `100,0`, `0,20`, `-70,0`, `0,60`, `-30,0`입니다. `Close` 옵션은 시작점으로 돌아오는 마지막 변을 그리고 명령을 끝냅니다.
+
+<Session name="exercises/l-bracket/outline" caption="1. 외형 그리기" />
+
+### 2. 안쪽 구석 둥글리기 [#fillet]
+
+[`FILLET`](/docs/commands/fillet)(모깎기) 명령에서 `Radius` 옵션을 선택하고 `10`을 입력한 다음, 안쪽 구석에서 만나는 두 선, 곧 수평부의 윗면과 수직부의 옆면을 선택합니다.
+
+<Session name="exercises/l-bracket/fillet" caption="2. 안쪽 구석 둥글리기" />
+
+### 3. 구멍 그리기 [#holes]
+
+[`CIRCLE`](/docs/commands/circle)(원) 명령으로 원 두 개를 각각 `Diameter` 옵션으로 그립니다. 수평부의 `80,10`에 `8`, 수직부의 `15,65`에 `10`입니다.
+
+<Session name="exercises/l-bracket/holes" caption="3. 구멍 그리기" />
+
+### 4. 치수 기입하기 [#dimensions]
+
+“치수” 도면층에서 [`DIMLINEAR`](/docs/commands/dimlinear)(선형) 명령으로 `0,0`에서 수평부의 구멍 `80,10`까지 재어 아래에 놓습니다. 80입니다. [`DIMBASELINE`](/docs/commands/dimbaseline)(기준선) 명령은 같은 첫 번째 치수보조선에서 이어 갑니다. 오른쪽 끝 `#100,0`을 입력하고(#은 원점에서 잽니다), Enter 키를 두 번 눌러 끝냅니다. 왼쪽 변을 따라서도 같은 방법으로 위쪽 구멍까지, 그다음 맨 위 `#0,80`까지 기입합니다. [`DIMRADIUS`](/docs/commands/dimradius)(반지름) 명령으로 모깎기에, [`DIMDIAMETER`](/docs/commands/dimdiameter)(지름) 명령으로 각 구멍에 치수를 기입하면 완성입니다.
+
+<Session name="exercises/l-bracket/dimensions" caption="4. 치수 기입하기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 연습도면: 계단 평면도](/docs/exercises/stairs): 초급 · 건축 · 2D
+- [캐드 3D 연습도면: 마운팅 플레이트](/docs/exercises/mounting-plate): 초급 · 기계 · 3D 솔리드
+- [캐드 연습도면: 플랜지](/docs/exercises/flange): 중급 · 기계 · 2D
+- [AutoCAD 연습도면](/docs/exercises)

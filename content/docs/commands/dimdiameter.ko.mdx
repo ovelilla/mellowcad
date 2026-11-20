@@ -1,0 +1,70 @@
+---
+title: "AutoCAD DIMDIAMETER(지름) 치수 명령"
+metaTitle: "오토캐드 지름 치수(DIMDIAMETER) 사용법과 단축키 DDI"
+description: "AutoCAD 지름 치수(DIMDIAMETER, DDI)로 원이나 호에 치수를 기입하는 방법을 프롬프트 순서대로 설명합니다: 선택한 다음 지름을 안쪽이나 바깥쪽에 놓습니다. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 지름 치수 단축키는 무엇입니까?","answer":"DDI 또는 DIMDIA를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 _DIMDIAMETER도 됩니다."},{"question":"작은 구멍에 치수를 기입하려면 어떻게 합니까?","answer":"문자를 원 밖에 놓습니다. 그러면 치수선이 양쪽에 화살촉을 두고 구멍을 가로지르며, 문자는 구멍에서 떨어져 놓입니다. 안쪽에 놓으면 문자가 원 안에 들어갈 공간이 필요합니다."},{"question":"DIMDIAMETER로 호에 치수를 기입할 수 있습니까?","answer":"예. 호나 폴리선 호 세그먼트도 원처럼 받으며, 호가 속한 원의 지름을 표시합니다. 그 밖의 객체는 “Object selected is not a circle or arc.”를 표시하고 다시 묻습니다."},{"question":"지름 치수에 THRU나 메모를 붙이려면 어떻게 합니까?","answer":"치수를 놓기 전에 Text 옵션을 선택하고 “<> THRU”를 입력합니다. <>는 기호를 포함한 측정값입니다. 놓은 뒤에는 특성 팔레트의 문자 재지정으로 바꿉니다."}]
+---
+
+DIMDIAMETER(지름) 명령은 원, 호, 폴리선 호 세그먼트의 지름에 [`DIMRADIUS`](/docs/commands/dimradius) 명령과 같은 프롬프트로 치수를 기입합니다. 곡선을 선택하면 명령행에 측정값이 바로 표시되고, 치수를 놓으면 명령이 끝납니다. 문자는 지름 기호 뒤의 지름입니다. 원 안에 놓으면 문자에서 테두리의 화살촉까지 선 하나가 그려집니다. 원 밖에 놓으면 ISO-25처럼 선이 원을 테두리에서 테두리까지 가로지르고, 먼 쪽 화살촉은 짧은 연장 부분에서 안쪽을 가리킵니다.
+
+- **명령:** `DIMDIAMETER`
+- **단축키:** `DIMDIA`, `DDI`
+- **패널:** [주석](/docs/commands#annotate)
+- **해 보기:** [편집기를 열고](/ko/draw) `DDI` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="dimdiameter" caption="큰 원은 안쪽에, 작은 원은 바깥쪽에 치수를 기입합니다. 각 원을 선택한 다음 문자를 놓습니다." />
+
+## 옵션 [#options]
+
+### `Text` (`T`) [#text]
+
+측정값 대신 쓸 문자를 묻습니다. 측정값이 기본값으로 제시되므로 Enter 키는 측정값을 유지합니다. 입력하는 문자에서 `<>`는 기호를 포함한 측정값을 나타내므로, `<> THRU`는 지름 뒤에 THRU를 붙여 씁니다.
+
+### `Angle` (`A`) [#angle]
+
+문자의 각도를 묻습니다. 그러면 문자가 그 각도로, 가운데가 선 위에 오도록 그려지고, 선은 문자에서 멈춥니다. 0은 다시 선을 따르게 합니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+여러 줄 문자 옵션이 없습니다. 치수 문자는 한 줄이며, 문자 편집기가 아니라 명령행에서 `Text` 옵션으로 정합니다. 기호는 Ø로 그려지며, AutoCAD는 ∅로 씁니다. 도면 글꼴에 ∅가 없기 때문입니다. 호에서는 화살촉이 호의 양 끝 사이에 남으며, AutoCAD는 호 치수보조선을 그립니다. [`DIMRADIUS`](/docs/commands/dimradius) 명령과 같이 블록 참조 안의 곡선은 선택할 수 없고, 스타일의 중심선은 그려지지 않으며, 곡선 밖 문자에 대한 스타일 설정은 제공되지 않습니다. 치수는 연관되지 않으므로, 잰 곡선을 따라가지 않습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia--pt-br-cotadiametro--cdi--dimdia--fr-cotdia--cm--it-dimdiametro--ddi--de-bemdurchm--bmd--ru-рзмдиаметр--рди--pl-wymśrednica--wd--wymd--cs-kótyprům--kpr--kotypr--hu-méretátmérő--mat--matm)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 지름 치수 단축키는 무엇입니까?
+
+`DDI` 또는 `DIMDIA`를 입력하고 Enter 키나 Space 키를 누릅니다. 전체 명령 이름을 입력해도 되며, AutoCAD의 어느 언어 버전에서든 `_DIMDIAMETER`도 됩니다.
+
+### 작은 구멍에 치수를 기입하려면 어떻게 합니까?
+
+문자를 원 밖에 놓습니다. 그러면 치수선이 양쪽에 화살촉을 두고 구멍을 가로지르며, 문자는 구멍에서 떨어져 놓입니다. 안쪽에 놓으면 문자가 원 안에 들어갈 공간이 필요합니다.
+
+### DIMDIAMETER로 호에 치수를 기입할 수 있습니까?
+
+예. 호나 폴리선 호 세그먼트도 원처럼 받으며, 호가 속한 원의 지름을 표시합니다. 그 밖의 객체는 `Object selected is not a circle or arc.`를 표시하고 다시 묻습니다.
+
+### 지름 치수에 THRU나 메모를 붙이려면 어떻게 합니까?
+
+치수를 놓기 전에 `Text` 옵션을 선택하고 `<> THRU`를 입력합니다. `<>`는 기호를 포함한 측정값입니다. 놓은 뒤에는 특성 팔레트의 문자 재지정으로 바꿉니다.
+
+## 연습하기 [#practice]
+
+- [캐드 연습도면: 개스킷](/docs/exercises/gasket)
+- [캐드 연습도면: L 브래킷](/docs/exercises/l-bracket)
+- [캐드 연습도면: 플랜지](/docs/exercises/flange)
+- [캐드 연습도면: 원형 테이블과 의자](/docs/exercises/round-table)
+- [캐드 연습도면: 접선으로 잇는 링크](/docs/exercises/link)
+
+## 관련 명령 [#related]
+
+- [AutoCAD DIMRADIUS(반지름) 치수 명령](/docs/commands/dimradius)
+- [오토캐드 치수 기입: DIMLINEAR(선형) 명령](/docs/commands/dimlinear)
+- [AutoCAD DIMANGULAR(각도) 치수 명령](/docs/commands/dimangular)
+- [AutoCAD DIMSTYLE(치수 스타일) 명령](/docs/commands/dimstyle)

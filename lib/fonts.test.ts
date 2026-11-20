@@ -57,4 +57,13 @@ describe("scriptFontVariables", () => {
       "--font-mono": `'Geist Mono', ${japanese}, 'Geist Mono Fallback'`,
     })
   })
+
+  it("puts the system's Korean faces behind Inter and Geist Mono, downloading none", () => {
+    const korean =
+      '"Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", "Noto Sans KR"'
+    expect(scriptFontVariables("ko", fonts)).toEqual({
+      "--font-sans": `'Inter', ${korean}, 'Inter Fallback'`,
+      "--font-mono": `'Geist Mono', ${korean}, 'Geist Mono Fallback'`,
+    })
+  })
 })

@@ -1,0 +1,85 @@
+---
+title: "AutoCAD ATTDEF(속성 정의) 명령"
+metaTitle: "오토캐드 속성 정의(ATTDEF) 블록 속성과 단축키 ATT"
+description: "AutoCAD 속성 정의(ATTDEF, ATT)로 블록 속성을 정의하는 방법: 모드, 태그, 프롬프트, 기본값, 그리고 문자를 놓을 위치. 브라우저에서 무료로 사용해 보세요."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"오토캐드 속성 정의 단축키는 무엇입니까?","answer":"ATT를 입력하고 Enter 키나 Space 키를 누릅니다. DDATTDEF도 됩니다. -ATT는 명령행 버전인 -ATTDEF 명령이며, 여기서는 ATTDEF도 같은 방식으로 실행됩니다. AutoCAD의 어느 언어 버전에서든 _ATTDEF도 됩니다."},{"question":"오토캐드에서 속성이 있는 블록은 어떻게 만듭니까?","answer":"기호를 그린 다음 속성마다 ATTDEF를 실행하고, 값이 표시될 위치에 문자를 놓습니다. BLOCK 명령을 실행하고 기준점을 지정한 다음, 기호와 속성을 INSERT가 물을 순서대로 선택합니다. 그러면 그 블록을 INSERT 명령으로 삽입할 때마다 속성마다 기본값을 제시하며 값을 묻습니다."},{"question":"태그, 프롬프트, 기본값의 차이는 무엇입니까?","answer":"태그는 속성의 이름으로, 식별자 역할을 합니다. 정의가 표시하는 것이며, EATTEDIT 명령이 필드에 붙이는 이름입니다. 프롬프트는 INSERT가 값을 물을 때 쓰는 질문입니다. 기본값은 제시되는 값이며, Enter 키로 받아들입니다."},{"question":"속성 정의를 편집하려면 어떻게 합니까?","answer":"블록에 넣기 전에 두 번 클릭합니다. TEXTEDIT 명령이 태그, 프롬프트, 기본값을 엽니다. 블록에 넣은 뒤에는 각 참조의 값을 ATTEDIT 또는 EATTEDIT 명령으로 편집합니다."}]
+---
+
+ATTDEF(속성 정의) 명령은 속성을 정의합니다. 태그, 프롬프트, 기본값을 갖고 도면에 한 줄의 문자로 놓입니다. [`BLOCK`](/docs/commands/block) 명령으로 블록을 만들 때 다른 객체와 함께 선택하면, 그 블록의 참조마다 이 속성에 고유한 값을 갖습니다. 문 번호, 부품 코드, 실 이름 같은 값입니다. 블록에 들어가기 전까지 정의는 태그를 표시합니다.
+
+AutoCAD의 ATTDEF는 속성 정의 대화상자를 여는데, MellowCAD에는 이 대화상자가 없습니다. 여기서 ATTDEF는 AutoCAD 콘솔처럼 `-ATTDEF` 명령이 묻는 내용을 명령행에서 묻습니다. 현재 모드를 표시하고 바꿀 모드를 물으며, Enter 키를 누르면 다음으로 넘어갑니다. 이어서 태그를 묻습니다. 공백은 태그를 끝내므로 넣을 수 없고, 소문자는 대문자로 바뀝니다. Enter 키만 누르면 `Tag cannot be null`를 표시합니다. 다음으로 [`INSERT`](/docs/commands/insert) 명령이 값을 물을 때 쓸 프롬프트(Enter 키는 태그를 그대로 사용)와 기본값을 묻습니다. 마지막으로 문자를 놓을 위치를 [`TEXT`](/docs/commands/text) 명령과 같은 질문, 즉 시작점, 높이, 회전으로 묻습니다. 높이와 자리맞추기는 TEXT와 서로 공유됩니다. 시작점에서 Enter 키를 누르면 정의가 마지막으로 정의한 속성의 한 줄 아래에 같은 높이, 회전, 스타일, 자리맞추기로 놓이므로, 블록의 속성이 위아래로 차례로 쌓입니다.
+
+- **명령:** `ATTDEF`
+- **단축키:** `ATT`, `DDATTDEF`
+- **패널:** [구성](/docs/commands#organize)
+- **해 보기:** [편집기를 열고](/ko/draw) `ATT` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="attdef" caption="문 번호 태그입니다. 속성 NUM이 원 안 가운데에 놓이고, 프롬프트는 태그 그대로, 기본값은 1이며, 블록에 넣을 준비가 되어 있습니다." />
+
+## 옵션 [#options]
+
+### `Invisible` (`I`) [#invisible]
+
+참조에서 값이 표시되지 않습니다. [`ATTDISP`](/docs/commands/attdisp) 명령으로 켜면 표시됩니다. 각 모드는 스위치입니다. 선택하면 `Y`와 `N` 사이에서 바뀌고, 모드를 다시 표시하고 한 번 더 묻습니다. 모드는 다음 ATTDEF에도 그대로 유지됩니다.
+
+### `Constant` (`C`) [#constant]
+
+모든 참조가 같은 값을 갖습니다. ATTDEF는 프롬프트와 기본값 대신 이 값을 묻고, INSERT는 값을 묻지 않습니다.
+
+### `Verify` (`V`) [#verify]
+
+INSERT가 모든 값을 한 번씩 물은 다음, 이 값을 확인을 위해 한 번 더 묻습니다.
+
+### `Preset` (`P`) [#preset]
+
+INSERT가 값을 묻지 않고, 각 참조가 기본값을 갖습니다.
+
+### `Lock position` (`L`) [#lock-position]
+
+처음부터 켜져 있습니다. 속성이 블록이 놓은 위치에 그대로 있습니다.
+
+### `Justify` (`J`) [#justify]
+
+TEXT와 같이 문자가 점을 기준으로 어디에 걸리는지 묻습니다. `Left`, `Center`, `Right`, `Middle` 또는 위, 중간, 아래와 왼쪽, 중심, 오른쪽을 조합한 아홉 점 중 하나입니다. 그러면 시작점 프롬프트가 그 점을 묻습니다. 중간 중심을 고르면 태그 안에 값이 가운데 놓입니다.
+
+### `Style` (`S`) [#style]
+
+사용할 문자 스타일을 묻고, 그것이 현재 스타일이 됩니다. `?` 옵션은 도면의 스타일을 나열합니다.
+
+## 아직 지원하지 않는 것 [#missing]
+
+속성 정의 대화상자가 없습니다. ATTDEF는 명령행에서 묻습니다. AutoCAD 2027이 위치 잠금 다음에 나열하는 주석 모드와 여러 줄 모드, 그리고 여러 줄 속성의 줄이 없습니다. 필드, 정렬과 맞춤 자리맞추기, 그리고 나열할 스타일을 묻는 스타일의 `?`가 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at--pt-br-defatrib--da--defatr--defatribd---defatrib---da---defatr--fr-attdef--at--ddattdef---attdef---at--it-defatt--de--ddattdef---defatt---de--de-attdef--ad--ddattdef---attdef---att--ru-атопр--ат--диалатоп---атопр---ат--pl-atrdef--atr--odatrdef---atrdef--cs-atrdef--at--ddattdef--diatrdef---atrdef---at--hu-attdef--att--dpattdef---attdef---att)
+
+## 자주 묻는 질문 [#questions]
+
+### 오토캐드 속성 정의 단축키는 무엇입니까?
+
+`ATT`를 입력하고 Enter 키나 Space 키를 누릅니다. `DDATTDEF`도 됩니다. `-ATT`는 명령행 버전인 `-ATTDEF` 명령이며, 여기서는 ATTDEF도 같은 방식으로 실행됩니다. AutoCAD의 어느 언어 버전에서든 `_ATTDEF`도 됩니다.
+
+### 오토캐드에서 속성이 있는 블록은 어떻게 만듭니까?
+
+기호를 그린 다음 속성마다 ATTDEF를 실행하고, 값이 표시될 위치에 문자를 놓습니다. [`BLOCK`](/docs/commands/block) 명령을 실행하고 기준점을 지정한 다음, 기호와 속성을 INSERT가 물을 순서대로 선택합니다. 그러면 그 블록을 [`INSERT`](/docs/commands/insert) 명령으로 삽입할 때마다 속성마다 기본값을 제시하며 값을 묻습니다.
+
+### 태그, 프롬프트, 기본값의 차이는 무엇입니까?
+
+태그는 속성의 이름으로, 식별자 역할을 합니다. 정의가 표시하는 것이며, [`EATTEDIT`](/docs/commands/eattedit) 명령이 필드에 붙이는 이름입니다. 프롬프트는 INSERT가 값을 물을 때 쓰는 질문입니다. 기본값은 제시되는 값이며, Enter 키로 받아들입니다.
+
+### 속성 정의를 편집하려면 어떻게 합니까?
+
+블록에 넣기 전에 두 번 클릭합니다. [`TEXTEDIT`](/docs/commands/textedit) 명령이 태그, 프롬프트, 기본값을 엽니다. 블록에 넣은 뒤에는 각 참조의 값을 [`ATTEDIT`](/docs/commands/attedit) 또는 [`EATTEDIT`](/docs/commands/eattedit) 명령으로 편집합니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD BLOCK(블록 작성) 명령](/docs/commands/block)
+- [AutoCAD INSERT(블록 삽입) 명령](/docs/commands/insert)
+- [AutoCAD ATTEDIT(속성 편집) 명령](/docs/commands/attedit)
+- [AutoCAD ATTDISP(속성 화면표시) 명령](/docs/commands/attdisp)
+- [AutoCAD EATTEDIT(속성 편집) 명령](/docs/commands/eattedit)

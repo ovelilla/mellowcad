@@ -1,0 +1,48 @@
+---
+title: "캐드 3D 연습도면: 풀리"
+metaTitle: "오토캐드 3D 연습 문제: 회전으로 만드는 풀리"
+description: "AutoCAD 3D 연습도면. 풀리의 반단면을 닫힌 폴리선으로 그리고 Y축을 중심으로 회전시켜 솔리드로 만듭니다. 단계별 풀이가 있고 브라우저에서 3D 솔리드를 무료로 연습할 수 있습니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+반단면을 축을 중심으로 회전시켜 다음 풀리를 모델링합니다(단위: mm). 지름 20의 축 구멍, 길이 30에 바깥지름 40의 허브, 두께 10의 웨브, 그리고 지름 90에서 110까지인 폭 24의 림이 있고, 림은 허브의 가운데에 있습니다. 단면은 Y축을 따라 올라가는 회전축으로부터의 거리로 그리므로, 각 지름은 그 절반으로 그립니다.
+
+- **연습도면:** 중급 · 기계 · 3D 솔리드
+- **명령:** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=pulley). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/pulley" caption="축 옆에 그린 풀리의 반단면, 축으로부터의 거리 치수." />
+
+<Session name="exercises/pulley/model" caption="솔리드 풀리. 남동쪽에서 본 모습, 개념 비주얼 스타일." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 반단면 그리기 [#profile]
+
+“외형선” 도면층에서 [`PLINE`](/docs/commands/pline)(폴리선) 명령으로 `10,0`부터 닫힌 폴리선 하나를 그립니다. 그다음 점은 모두 앞 점에서의 이동량입니다. `10,0`, `0,10`, `25,0`, `0,-7`, `10,0`, `0,24`, `-10,0`, `0,-7`, `-25,0`, `0,10`, `-10,0`을 입력한 다음 `Close` 옵션을 선택합니다.
+
+<Session name="exercises/pulley/profile" caption="1. 반단면 그리기" />
+
+### 2. 뷰 돌리기 [#view]
+
+`-VIEW` 명령의 `SEIso` 옵션은 남동쪽 위에서 바라보게 하고, [`VSCURRENT`](/docs/commands/vscurrent)(비주얼 스타일) 명령의 `Conceptual` 옵션은 면에 음영을 넣습니다. 선반으로 깎은 회전체 부품은 이 스타일에서 가장 잘 보입니다.
+
+<Session name="exercises/pulley/view" caption="2. 뷰 돌리기" />
+
+### 3. 회전하기 [#revolve]
+
+[`REVOLVE`](/docs/commands/revolve)(회전) 명령으로 단면을 선택하고 Enter 키를 누른 다음 `Y` 옵션을 선택합니다. Y축이 풀리의 축입니다. Enter 키를 누르면 기본 각도인 한 바퀴 전체가 적용됩니다. [`ZOOM`](/docs/commands/zoom)(줌) 명령의 `Extents` 옵션으로 화면에 맞추고, 축척 0.8x로 주위에 여백을 둡니다.
+
+<Session name="exercises/pulley/revolve" caption="3. 회전하기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 연습도면: 접선으로 잇는 링크](/docs/exercises/link): 고급 · 기계 · 2D
+- [캐드 3D 연습도면: 베어링 블록](/docs/exercises/bearing-block): 고급 · 기계 · 3D 솔리드
+- [캐드 연습도면: 개스킷](/docs/exercises/gasket): 초급 · 기계 · 2D
+- [AutoCAD 연습도면](/docs/exercises)

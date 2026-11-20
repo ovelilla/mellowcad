@@ -1,0 +1,58 @@
+---
+title: "캐드 연습도면: 계단 평면도"
+metaTitle: "캐드 건축 연습도면: 계단 평면도"
+description: "AutoCAD 건축 연습도면. 직선 계단의 평면도를 선 하나와 직사각형 배열로 만든 디딤판 10단, 올라가는 방향 화살표, 치수로 그립니다. 단계별 풀이가 있고 무료입니다."
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+직선 계단의 평면도를 그립니다(단위: cm). 길이 280, 폭 100이고, 단너비 28의 디딤판 10단과 올라가는 방향을 나타내는 화살표가 있습니다. 이 도면의 치수 축척은 센티미터 단위 평면도에 맞춰 설정되어 있으므로, 치수가 이 크기에서 읽기 좋게 표시됩니다. 디딤판 모서리 하나를 그리고, 나머지는 직사각형 배열로 배치합니다.
+
+- **연습도면:** 초급 · 건축 · 2D
+- **명령:** [`RECTANG`](/docs/commands/rectang), [`LINE`](/docs/commands/line), [`ARRAYRECT`](/docs/commands/arrayrect), [`PLINE`](/docs/commands/pline), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **편집기에서:** [도면과 함께 열기](/ko/draw?drawing=stairs). 치수가 기입된 도면이 직접 그릴 자리 옆에 놓입니다
+
+## 도면 [#drawing]
+
+<Session name="exercises/stairs" caption="직선 계단의 평면도, 280 × 100 cm, 올라가는 방향을 가리키는 화살표." />
+
+## 단계별 풀이 [#steps]
+
+엔진이 각 단계를 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다. 명령의 첫 점 다음에 입력한 점은 동적 입력처럼 마지막 점에서부터 측정되며, 기록에는 앞에 @ 기호를 붙여 적습니다. \# 기호를 붙이면 원점에서부터 측정합니다.
+
+### 1. 외형 그리기 [#outline]
+
+“외형선” 도면층에서 [`RECTANG`](/docs/commands/rectang)(직사각형) 명령으로 `0,0`에서 `280,100`까지 그립니다. 계단의 외형입니다.
+
+<Session name="exercises/stairs/outline" caption="1. 외형 그리기" />
+
+### 2. 첫 번째 디딤판 그리기 [#tread]
+
+첫 번째 디딤판의 모서리를 [`LINE`](/docs/commands/line)(선) 명령으로 `28,0`에서 위로 `0,100`만큼 그리고, Enter 키를 누릅니다.
+
+<Session name="exercises/stairs/tread" caption="2. 첫 번째 디딤판 그리기" />
+
+### 3. 디딤판 배열하기 [#array]
+
+[`ARRAYRECT`](/docs/commands/arrayrect)(직사각형 배열) 명령으로 이 선을 계단을 따라 복사합니다. 선을 선택하고 Enter 키를 누른 다음, `COUnt` 옵션을 선택해 열 `9`, 행 `1`을 지정합니다. 이어서 `Spacing` 옵션에서 열 사이 `28`, 행 사이 `1`을 지정합니다. 행이 하나뿐이므로 행 간격은 아무 영향이 없습니다. `eXit` 옵션은 연관 배열로 유지하며, 나중에 그립으로 편집할 수 있습니다.
+
+<Session name="exercises/stairs/array" caption="3. 디딤판 배열하기" />
+
+### 4. 화살표 그리기 [#arrow]
+
+[`PLINE`](/docs/commands/pline)(폴리선) 명령으로 `14,50`에서 계단을 따라 `226,0`만큼 떨어진 점까지 그립니다. 이어서 `Width` 옵션에서 시작 폭 `10`, 끝 폭 `0`을 지정하고, 마지막 세그먼트를 `24,0`으로 그립니다. 이것이 화살촉입니다. Enter 키로 끝냅니다.
+
+<Session name="exercises/stairs/arrow" caption="4. 화살표 그리기" />
+
+### 5. 치수 기입하기 [#dimensions]
+
+“치수” 도면층에서 [`DIMLINEAR`](/docs/commands/dimlinear)(선형) 명령을 세 번 씁니다. 아래에 길이, 오른쪽에 폭, 위에 디딤판 한 단의 28을 기입합니다.
+
+<Session name="exercises/stairs/dimensions" caption="5. 치수 기입하기" />
+
+## 다른 연습도면 [#more]
+
+- [캐드 3D 연습도면: 마운팅 플레이트](/docs/exercises/mounting-plate): 초급 · 기계 · 3D 솔리드
+- [캐드 연습도면: 플랜지](/docs/exercises/flange): 중급 · 기계 · 2D
+- [캐드 연습도면: 원형 테이블과 의자](/docs/exercises/round-table): 중급 · 건축 · 2D
+- [AutoCAD 연습도면](/docs/exercises)

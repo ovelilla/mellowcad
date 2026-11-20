@@ -1,0 +1,53 @@
+---
+title: "AutoCAD EATTEDIT(속성 편집) 명령"
+metaTitle: "AutoCAD 블록 속성 편집: EATTEDIT 사용법"
+description: "AutoCAD EATTEDIT(속성 편집)로 고급 속성 편집기에서 블록의 속성 값을 바꾸는 방법과, 블록을 더블클릭하면 이 명령이 실행되는 이유. 브라우저에서 무료로 해 볼 수 있습니다."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"AutoCAD에서 고급 속성 편집기를 여는 방법은?","answer":"속성이 있는 블록 참조를 더블클릭하거나, EATTEDIT을 입력하고 블록을 클릭합니다. AutoCAD의 어느 언어 버전에서나 _EATTEDIT을 쓸 수 있습니다."},{"question":"AutoCAD에서 속성 값을 바꾸려면?","answer":"블록을 더블클릭하고, 속성 필드에 새 값을 입력한 다음 Enter 키를 누릅니다. 참조마다 값을 따로 가지므로, 하나를 바꿔도 나머지는 그대로입니다."},{"question":"블록을 더블클릭해도 속성 편집이 안될 때는?","answer":"EATTEDIT은 블록에 속성이 있는 참조에만 열리며, 속성 없이 만든 블록에는 속성이 없습니다. ATTDEF로 속성을 정의하고, 블록을 만들 때 다른 객체와 함께 선택합니다. 속성 값이 보이지 않으면 ATTDISP를 확인합니다. 이 명령은 숨김 속성이나 모든 속성을 숨길 수 있습니다."},{"question":"EATTEDIT과 ATTEDIT의 차이는?","answer":"편집하는 값은 같습니다. EATTEDIT은 고급 속성 편집기의 속성 탭처럼 각 필드를 태그로 표시하고, ATTEDIT은 속성 편집 대화상자처럼 프롬프트로 표시합니다. AutoCAD의 EATTEDIT은 각 속성의 문자 옵션과 특성도 편집합니다."}]
+---
+
+EATTEDIT(속성 편집) 명령은 블록 참조 하나에 대해 AutoCAD의 고급 속성 편집기를 엽니다. 블록을 선택하라고 묻고, 편집기의 속성 탭처럼 각 속성마다 태그를 이름으로 하고 값이 채워진 필드를 보여 줍니다. 값을 다시 입력하고 Tab 키로 필드 사이를 이동하며, Enter 키를 누르면 한 단계로 적용되어 `U`로 되돌릴 수 있습니다. Esc 키를 누르면 아무것도 바뀌지 않습니다.
+
+속성이 있는 참조를 더블클릭하면 AutoCAD처럼 EATTEDIT이 실행됩니다. 명령행에는 더블클릭한 점을 답으로 하여 명령이 기록되고, 상자가 바로 열립니다. 선택은 선택 상자 아래의 객체를 집습니다. 블록 참조가 아닌 객체와 속성이 없는 블록은 거부되고 다시 묻습니다. 바뀌는 것은 선택한 참조뿐이며, 블록 정의와 다른 참조는 각자의 값을 유지합니다.
+
+- **명령:** `EATTEDIT`
+- **패널:** [구성](/docs/commands#organize)
+- **해 보기:** [편집기를 열고](/ko/draw) `EATTEDIT` 입력 후 Enter 키를 누릅니다.
+
+## 명령행에서 [#session]
+
+엔진이 그리고, 그 기록을 입력하는 그대로 적습니다. 프롬프트는 AutoCAD 2027과 같은 순서, 같은 옵션 문자입니다.
+
+<Session name="eattedit" caption="속성 NUM과 PART가 있는 블록의 참조인 책상 2개. EATTEDIT로 두 번째 책상을 선택하면 PART 필드가 B-200이 됩니다." />
+
+## 아직 지원하지 않는 것 [#missing]
+
+편집기의 문자 옵션 탭(각 속성 문자의 스타일, 자리맞추기, 높이, 회전, 폭 비율 등)과 특성 탭(도면층, 선종류, 색상, 선가중치), 블록 선택 버튼이 없습니다. 속성 하나를 제자리에서 편집하는 ATTIPEDIT과 그 Ctrl+더블클릭도 없습니다. 참조에서 잠기지 않은 속성 자체의 그립과 특성 팔레트의 속성 행, `-ATTEDIT`도 없습니다.
+
+[기능과 아직 없는 기능 자세히 보기(영어)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit--hu-attedit--ate--battedit)
+
+## 자주 묻는 질문 [#questions]
+
+### AutoCAD에서 고급 속성 편집기를 여는 방법은?
+
+속성이 있는 블록 참조를 더블클릭하거나, `EATTEDIT`을 입력하고 블록을 클릭합니다. AutoCAD의 어느 언어 버전에서나 `_EATTEDIT`을 쓸 수 있습니다.
+
+### AutoCAD에서 속성 값을 바꾸려면?
+
+블록을 더블클릭하고, 속성 필드에 새 값을 입력한 다음 Enter 키를 누릅니다. 참조마다 값을 따로 가지므로, 하나를 바꿔도 나머지는 그대로입니다.
+
+### 블록을 더블클릭해도 속성 편집이 안될 때는?
+
+EATTEDIT은 블록에 속성이 있는 참조에만 열리며, 속성 없이 만든 블록에는 속성이 없습니다. [`ATTDEF`](/docs/commands/attdef)로 속성을 정의하고, 블록을 만들 때 다른 객체와 함께 선택합니다. 속성 값이 보이지 않으면 [`ATTDISP`](/docs/commands/attdisp)를 확인합니다. 이 명령은 숨김 속성이나 모든 속성을 숨길 수 있습니다.
+
+### EATTEDIT과 ATTEDIT의 차이는?
+
+편집하는 값은 같습니다. EATTEDIT은 고급 속성 편집기의 속성 탭처럼 각 필드를 태그로 표시하고, [`ATTEDIT`](/docs/commands/attedit)은 속성 편집 대화상자처럼 프롬프트로 표시합니다. AutoCAD의 EATTEDIT은 각 속성의 문자 옵션과 특성도 편집합니다.
+
+## 관련 명령 [#related]
+
+- [AutoCAD ATTEDIT(속성 편집) 명령](/docs/commands/attedit)
+- [AutoCAD ATTDEF(속성 정의) 명령](/docs/commands/attdef)
+- [AutoCAD ATTDISP(속성 화면표시) 명령](/docs/commands/attdisp)
+- [AutoCAD INSERT(블록 삽입) 명령](/docs/commands/insert)

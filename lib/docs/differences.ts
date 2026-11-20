@@ -147,6 +147,16 @@ export const DIFFERENCES: readonly {
       },
     ],
   },
+  {
+    id: "korean",
+    sources: [
+      {
+        file: "docs/i18n/ko.md",
+        quote:
+          "**The prompts are English** where Korean AutoCAD words them in Korean",
+      },
+    ],
+  },
 ]
 
 /** The page whose sections these are. */

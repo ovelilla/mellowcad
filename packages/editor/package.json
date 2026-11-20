@@ -83,6 +83,10 @@
       "types": "./dist/locales/ja.d.ts",
       "default": "./dist/locales/ja.js"
     },
+    "./locales/ko": {
+      "types": "./dist/locales/ko.d.ts",
+      "default": "./dist/locales/ko.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

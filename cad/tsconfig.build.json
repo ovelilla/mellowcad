@@ -29,6 +29,7 @@
     "locales/pl.ts",
     "locales/cs.ts",
     "locales/hu.ts",
-    "locales/ja.ts"
+    "locales/ja.ts",
+    "locales/ko.ts"
   ]
 }
