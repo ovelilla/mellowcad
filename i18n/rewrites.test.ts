@@ -154,6 +154,8 @@ describe("the headers of what is served as a file", () => {
     "/command-list.json",
     "/es/command-list.json",
     "/pt-br/command-list.json",
+    "/search-index.json",
+    "/ja/search-index.json",
     "/drawings/gasket.json",
     "/ar/drawings/gasket.json",
   ])("keeps %s out of search", (path) => {

@@ -98,10 +98,10 @@ the shared tree fights the dev server over `.next` (AGENTS.md).
   no other language's.
 - **A language's first load of the landing**, Brotli: `npx next start` in the worktree and the
   bytes the browser transferred (skill `browser-verify`), for each language.
-- **Functions**: the build's route table shows `○` and `●` only, but `/api/search`.
+- **Functions**: the build's route table shows `○` and `●` only.
 - **Any static file under 20 MB**: `find .next -type f -size +15M` lists what is near it. What is
-  built once per language grows with each one: a static search index of three languages passed
-  Vercel's limit (`app/api/search/route.ts`).
+  built once per language grows with each one: the search index is one per language for that
+  (`docs.md`), the largest Russian's 7.5 MB.
 
 Over a budget, or within a tenth of it, is a finding: what grew, and since which commit.
 

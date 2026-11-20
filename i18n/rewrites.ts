@@ -6,6 +6,7 @@ import {
   DRAWINGS_PATH,
   EDITOR_OG_IMAGE_PATH,
   OG_IMAGE_PATH,
+  SEARCH_INDEX_PATH,
   SITE_URL,
 } from "../lib/site"
 
@@ -135,7 +136,8 @@ function shareCardRedirects(routing: LocaleRouting): Redirect[] {
  * are lost once the site is exported (each is a file), so they are named
  * here by the URL the reader asks for: a docs page's Markdown points to its
  * HTML page as the one to index, and what only the site's own scripts fetch
- * (the hero's command list, an exercise's drawing) is kept out of search.
+ * (the hero's command list, an exercise's drawing, the docs' search index)
+ * is kept out of search.
  */
 export function fileHeaders(routing: LocaleRouting): Header[] {
   const prefixed = segments(routing).filter(
@@ -168,6 +170,7 @@ export function fileHeaders(routing: LocaleRouting): Header[] {
           },
         ]),
     { source: `${anyLocale}${COMMAND_LIST_PATH}`, headers: noindex },
+    { source: `${anyLocale}${SEARCH_INDEX_PATH}`, headers: noindex },
     { source: `${anyLocale}${DRAWINGS_PATH}/:name`, headers: noindex },
   ]
 }

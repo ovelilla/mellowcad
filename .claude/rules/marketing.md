@@ -69,7 +69,7 @@ reports, for the same promise.
 ## Rendering
 
 - **Every page is prerendered** (`○`, or `●` per language, in the build output; never `ƒ`, no
-  middleware; the docs' search (`docs.md`) and the MCP server (`mcp.md`) are the functions, and no page). Nothing here reads
+  middleware; the MCP server (`mcp.md`) is the one function, and no page). Nothing here reads
   `cookies()`, `headers()`, `searchParams` or next-intl's `requestLocale`: one such call silently
   turns the page dynamic. The locale comes from `next/root-params`. A route handler serving
   build-time data (OG images, manifests) exports `dynamic = "force-static"`.

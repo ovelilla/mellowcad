@@ -339,8 +339,9 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
   guion, el SVG), 35 con un PNG, y menos de 20 KB de respuesta. En el plan Hobby de Vercel caben unas 350.000 al
   mes por CPU (4 h incluidas) y un millón por invocaciones: mil dibujos al mes son el 0,3 %. No
   hay base de datos, ni blobs, ni cuentas.
-- **La web ya tiene una función**: `app/api/search/route.ts`, la búsqueda de la documentación,
-  una invocación por consulta nueva. El MCP no abre esa puerta; añade otra más pesada.
+- **La web tenía una función**: la búsqueda de la documentación, una invocación por consulta
+  nueva (desde el 21/11/2026 busca el navegador, `docs/next-static-export.md`). El MCP no abría
+  esa puerta; añadía otra más pesada.
 - **El riesgo real** es de Hobby: al pasar un límite no se cobra, **se pausa el equipo entero**,
   la web incluida, hasta 30 días. Una inundación contra la ruta tumbaría el sitio en pleno
   lanzamiento. Es improbable y grave.

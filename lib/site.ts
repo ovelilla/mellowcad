@@ -19,6 +19,9 @@ export const DRAWINGS_PATH = "/drawings"
  */
 export const COMMAND_LIST_PATH = "/command-list.json"
 
+/** The docs' search index in each language (`DocsSearch`), fetched by whoever searches. */
+export const SEARCH_INDEX_PATH = "/search-index.json"
+
 /**
  * Where the editor keeps this device's layout (`CadEditor`'s
  * `layoutStorage`). FROZEN, old product name included: a renamed key orphans

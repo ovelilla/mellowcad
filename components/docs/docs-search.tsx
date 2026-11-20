@@ -1,14 +1,15 @@
 "use client"
 
 import { Dialog } from "@base-ui/react/dialog"
-import { useFetchSearch } from "fumadocs-core/search/client"
+import { experimental_useSearch as useSearch } from "fumadocs-core/search/client"
 import type { SearchResultItem } from "fumadocs-core/search/client"
 import { FileText, Hash, Search, X } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { localePath, unlocalizedPath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"
+import { SEARCH_INDEX_PATH } from "@/lib/site"
 
 export interface DocsSearchLabels {
   search: string
@@ -34,9 +35,20 @@ function results(items: SearchResultItem[]) {
 }
 
 /**
- * Searched on the server (`app/api/search/route.ts`): the dialog sends the
- * query and the page's language and lists what comes back. Ctrl+K or ⌘K
- * opens it from anywhere on a docs page. `empty` holds `{query}`, filled here.
+ * WHY imported when the dialog opens: Fumadocs' static client and its search
+ * engine are some 25 KB of Brotli more than a fetch, on every docs page.
+ */
+const loadStaticClient = () =>
+  import("fumadocs-core/search/client/orama-static").then(
+    ({ staticClient }) => staticClient
+  )
+
+/**
+ * Searched in the browser, in the page's language's index
+ * (`app/[locale]/search-index.json`), fetched once when the dialog first
+ * opens: nothing is downloaded by whoever never searches, and no query
+ * reaches a function. Ctrl+K or ⌘K opens it from anywhere on a docs page.
+ * `empty` holds `{query}`, filled here.
  */
 export function DocsSearch({
   locale,
@@ -46,10 +58,19 @@ export function DocsSearch({
   labels: DocsSearchLabels
 }) {
   const [open, setOpen] = useState(false)
-  const { search, onSearchChange, isLoading, data, error } = useFetchSearch({
-    api: "/api/search",
-    locale,
-  })
+  const from = localePath(locale, SEARCH_INDEX_PATH)
+  // A stable identity is the contract: `useSearch` searches again when it changes.
+  const run = useCallback(
+    async (query: string) => (await loadStaticClient())({ from }).search(query),
+    [from]
+  )
+  const { search, onSearchChange, isLoading, data, error } = useSearch(run)
+
+  // Fumadocs keeps the index it loaded per URL, so the first query finds it
+  // already there; an empty search only loads it.
+  useEffect(() => {
+    if (open) run("").catch(() => {})
+  }, [open, run])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

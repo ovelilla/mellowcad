@@ -8,7 +8,7 @@ paths:
   - "components/docs/**"
   - "app/*/*marketing*/docs/**"
   - "app/*/docs-md/**"
-  - "app/api/search/**"
+  - "app/*/search-index.json/**"
   - "app/llms.txt/**"
   - "app/llms-full.txt/**"
   - "scripts/docs/**"
@@ -173,10 +173,10 @@ claims follow `i18n.md`.
 ## Rendering and weight
 
 - Pages are `●`; the `.md` (`[locale]/docs-md`, reached through `markdownRewrites`, its canonical
-  `Link` from `fileHeaders`), `llms.txt` and `llms-full.txt` are force-static. **`/api/search` is the docs' one `ƒ`, on purpose**: nubigest's static
-  index of three languages passed Vercel's 20 MB limit for a static body
-  (`FALLBACK_BODY_TOO_LARGE`) and every reader downloaded it whole. A day of CDN cache answers a
-  repeated query.
+  `Link` from `fileHeaders`), `llms.txt` and `llms-full.txt` are force-static. **The search is the browser's**: one index per
+  language (`[locale]/search-index.json`, 0.6–0.7 MB in Brotli), fetched when the dialog opens, its
+  client imported then too (25 KB). Never one index of every language: nubigest's of three passed
+  Vercel's 20 MB for a static body and failed the deploy, and ours would be some 75 MB.
 - **A page stays under 1 MB of HTML**, payload included: Googlebot reads the first 2 MB and Bing
   advises under one. Measure a long page on a production build after changing how code or a
   generated page renders.
