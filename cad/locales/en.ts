@@ -139,7 +139,9 @@ export const en: EngineCatalog = {
       "solid": "2D Solid",
       "face3d": "3D Face",
       "leader": "Leader",
-      "wipeout": "Wipeout"
+      "wipeout": "Wipeout",
+      "xline": "Construction Line",
+      "ray": "Ray"
     },
     "description": {
       "U": "Undo the last action",
@@ -456,6 +458,26 @@ export const en: EngineCatalog = {
             "other": "Multileaders"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "XLine",
+            "other": "XLines"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Ray",
+            "other": "Rays"
+          }
+        ]
       ]
     },
     "array": {
@@ -669,6 +691,15 @@ export const en: EngineCatalog = {
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "basePointX": "Basepoint X",
+        "basePointY": "Basepoint Y",
+        "basePointZ": "Basepoint Z",
+        "secondPointX": "Second point X",
+        "secondPointY": "Second point Y",
+        "secondPointZ": "Second point Z",
+        "directionVectorX": "Direction vector X",
+        "directionVectorY": "Direction vector Y",
+        "directionVectorZ": "Direction vector Z",
         "scaleX": "Scale X",
         "scaleY": "Scale Y",
         "scaleZ": "Scale Z",
@@ -792,6 +823,13 @@ export const en: EngineCatalog = {
       "LINE": [
         "LINE",
         "L"
+      ],
+      "XLINE": [
+        "XLINE",
+        "XL"
+      ],
+      "RAY": [
+        "RAY"
       ],
       "PLINE": [
         "PLINE",
@@ -2401,6 +2439,24 @@ export const en: EngineCatalog = {
       "solideditTaperAxis": "Specify another point along the axis of tapering",
       "solideditTaperAngle": "Specify the taper angle",
       "specifyAPoint": "Specify a point",
+      "specifyAPointOr": "Specify a point or",
+      "specifyThroughPoint": "Specify through point",
+      "specifyThroughPointAxis": "Specify through point",
+      "xlineAngleOr": [
+        "Enter angle of xline (",
+        [
+          "angle"
+        ],
+        ") or"
+      ],
+      "xlineAngle": "Enter angle of xline",
+      "selectLineObject": "Select a line object",
+      "specifyAngleVertexPoint": "Specify angle vertex point",
+      "specifyAngleStartPoint": "Specify angle start point",
+      "specifyAngleEndPoint": "Specify angle end point",
+      "xlineOffsetDistanceOr": "Specify offset distance or",
+      "specifySideToOffset": "Specify side to offset",
+      "rayStartPoint": "Specify start point",
       "selectObjectToDivide": "Select object to divide",
       "selectObjectToMeasure": "Select object to measure",
       "divideCountOr": "Enter the number of segments or",
@@ -2441,6 +2497,7 @@ export const en: EngineCatalog = {
       "wipeoutFramesDisplay": "Display but not plot"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -4370,6 +4427,9 @@ export const en: EngineCatalog = {
       "chamferNot3dPolyline": "  3D Polyline objects may not be chamfered.",
       "filletNot3dPolyline": "  3D Polyline objects may not be filleted.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
+      "capNeedsLineOrRay": "The first entity must be a line or a ray for cap filleting.",
+      "startPointMustDiffer": "Start point must differ from vertex point",
+      "noUsableObjectSelected": "No usable object selected",
       "collinearCannotChamfer": "Collinear lines connot be chamfered.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "segmentsNotConsecutive": "Lines belonging to polylines must be consecutive or separated by one segment",
@@ -5410,6 +5470,8 @@ export const en: EngineCatalog = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "ARRAY"
           }
         ]
@@ -5631,6 +5693,46 @@ export const en: EngineCatalog = {
         ", Delta Z =",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   base point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   unit direction, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   angle in XY plane =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   angle from XY plane =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -8154,6 +8256,10 @@ export const en: EngineCatalog = {
         "Noorigin": "Noorigin"
       },
       "OFFSET": {
+        "Through": "Through"
+      },
+      "XLINE": {
+        "Reference": "Reference",
         "Through": "Through"
       },
       "EXTRUDE": {

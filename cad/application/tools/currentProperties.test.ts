@@ -80,6 +80,9 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) => c.command("3DPOLY").click(p(0, 0)).click(p(50, 50)).enter(),
   ],
   ["CIRCLE", (c) => c.command("CIRCLE").click(p(0, 50)).type("10").enter()],
+  // An XLINE and a RAY wear the current properties, as every drawn object.
+  ["XLINE", (c) => c.command("XLINE").click(p(0, 50)).click(p(40, 50)).enter()],
+  ["RAY", (c) => c.command("RAY").click(p(0, 50)).click(p(40, 50)).enter()],
   // divide/p14: CECOLOR on the points, THICKNESS not.
   ["POINT", (c) => c.command("POINT").click(p(0, 50))],
   [

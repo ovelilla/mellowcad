@@ -98,6 +98,8 @@ export function continuePoint(
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         break
       default: {
         const unhandled: never = entity
@@ -166,6 +168,8 @@ export function lastDrawnDirection(
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         break
       default: {
         const unhandled: never = entity

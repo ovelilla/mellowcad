@@ -135,7 +135,9 @@
       "solid": "Solido 2D",
       "face3d": "Faccia 3D",
       "leader": "Direttrice",
-      "wipeout": "Entità coprente"
+      "wipeout": "Entità coprente",
+      "xline": "Linea di costruzione",
+      "ray": "Raggio"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -242,7 +244,9 @@
       "wipeout": "{count, plural, one {Entità coprente} other {Entità coprenti}}",
       "image": "{count, plural, one {Immagine raster} other {Immagini raster}}",
       "table": "{count, plural, one {Tabella} other {Tabelle}}",
-      "mleader": "{count, plural, one {Multidirettrice} other {Multidirettrici}}"
+      "mleader": "{count, plural, one {Multidirettrice} other {Multidirettrici}}",
+      "xline": "{count, plural, one {Xlinea} other {Xlinee}}",
+      "ray": "{count, plural, one {Raggio} other {Raggi}}"
     },
     "array": {
       "rectangular": "Serie (rettangolare)",
@@ -425,6 +429,15 @@
         "positionX": "Posizione X",
         "positionY": "Posizione Y",
         "positionZ": "Posizione Z",
+        "basePointX": "X punto base",
+        "basePointY": "Y punto base",
+        "basePointZ": "Z punto base",
+        "secondPointX": "X secondo punto",
+        "secondPointY": "Y secondo punto",
+        "secondPointZ": "Z secondo punto",
+        "directionVectorX": "Vettore di direzione X",
+        "directionVectorY": "Vettore di direzione Y",
+        "directionVectorZ": "Vettore di direzione Z",
         "scaleX": "Scala X",
         "scaleY": "Scala Y",
         "scaleZ": "Scala Z",
@@ -546,6 +559,8 @@
   "commands": {
     "names": {
       "LINE": ["LINEA", "L"],
+      "XLINE": ["XLINEA", "XL"],
+      "RAY": ["RAGGIO"],
       "PLINE": ["PLINEA", "PL"],
       "3DFACE": ["3DFACCIA", "3F"],
       "3DPOLY": ["3DPOLI", "3P"],
@@ -713,6 +728,16 @@
       "WIPEOUT": ["ENTCOPR"]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "ORizz",
+        "Ver": "Vert",
+        "Ang": "Ang",
+        "Bisect": "Bisett",
+        "Offset": "OFfset",
+        "Reference": "Riferimento",
+        "Through": "Punto",
+        "Thru": "PUnto"
+      },
       "-OSNAP": {
         "ENDpoint": "FINe",
         "MIDpoint": "MEDio",
@@ -2329,6 +2354,18 @@
       "solideditTaperAxis": "Specificare un altro punto lungo l'asse di rastremazione",
       "solideditTaperAngle": "Specificare angolo di rastremazione",
       "specifyAPoint": "Specificare un punto",
+      "specifyAPointOr": "Specificare un punto o",
+      "specifyThroughPoint": "Specificare punto di passaggio",
+      "specifyThroughPointAxis": "Specificare punto di passaggio",
+      "xlineAngleOr": "Digitare angolo di xlinea ({angle}) o",
+      "xlineAngle": "Digitare angolo di xlinea",
+      "selectLineObject": "Selezionare un oggetto linea",
+      "specifyAngleVertexPoint": "Specificare punto sul vertice dell'angolo",
+      "specifyAngleStartPoint": "Specificare punto iniziale dell'angolo",
+      "specifyAngleEndPoint": "Specificare punto finale dell'angolo",
+      "xlineOffsetDistanceOr": "Specificare distanza di offset o",
+      "specifySideToOffset": "Specificare lato di offset",
+      "rayStartPoint": "Specificare punto iniziale",
       "selectObjectToDivide": "Selezionare l'oggetto da dividere",
       "selectObjectToMeasure": "Selezionare l'oggetto da misurare",
       "divideCountOr": "Digitare numero di segmenti o",
@@ -2369,6 +2406,7 @@
       "wipeoutFramesDisplay": "Visualizza ma non stampare"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -2694,6 +2732,9 @@
       "chamferNot3dPolyline": "  Gli oggetti 3D Polilinea non possono essere cimata.",
       "filletNot3dPolyline": "  Gli oggetti 3D Polilinea non possono essere raccordata.",
       "collinearCannotFillet": "Le linee collineari non possono essere raccordata.",
+      "capNeedsLineOrRay": "Il primo oggetto deve essere una linea o un raggio per il raccordo delle estremità.",
+      "startPointMustDiffer": "Il punto iniziale deve essere diverso dal vertice",
+      "noUsableObjectSelected": "Non è stato selezionato alcun oggetto utilizzabile",
       "collinearCannotChamfer": "Le linee collineari non possono essere cimata.",
       "cannotChamferItself": "Impossibile cimare un oggetto con se stesso.",
       "segmentsNotConsecutive": "Le linee appartenenti alle polilinee devono essere consecutive o separate da un segmento",
@@ -2854,7 +2895,7 @@
       "notAFitPoint": "Non è un punto di adattamento.",
       "notAControlVertex": "Non è un vertice di controllo.",
       "allAdditionsUndone": "Tutte le aggiunte sono state annullate.",
-      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {SERIE}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CERCHIO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FINE DELLA SEQUENZA} text {TEXT} mtext {MTEXT} attdef {DEFINIZIONE ATTRIBUTO} attribute {ATTRIBUTO} dimension {QUOTA} hatch {HATCH} insert {RIFERIMENTO DI BLOCCO} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {FACCIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} xline {XLINE} ray {RAY} other {SERIE}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Spazio: Spazio modello",
       "listColor": "                   Colore: {color}    Tipo di linea: \"{linetype}\"",
@@ -2873,6 +2914,10 @@
       "listLineLength": "          {inUcs, select, yes {Nell'UCS corrente, } other {}}Lunghezza ={length}, Angolo nel piano XY = {angle}",
       "listLine3d": "Lunghezza 3D                    ={length}, Angolo dal piano XY = {angle}",
       "listLineDelta": "                  Delta X ={x}, Delta Y = {y}, Delta Z ={z}",
+      "listBasePoint": "                   Punto base, X={x}  Y={y}  Z={z}",
+      "listUnitDirection": "                   Direzione unità, X={x}  Y={y}  Z={z}",
+      "listAngleInXy": "                   Angolo nel piano XY ={angle}",
+      "listAngleFromXy": "                   Angolo dal piano XY ={angle}",
       "listCenter": "            centro punto, X={x}  Y={y}  Z={z}",
       "listRadius": "            raggio {radius}",
       "listLwRadius": "            raggio {radius}",
@@ -3382,6 +3427,10 @@
         "Noorigin": "Nonsuorigine"
       },
       "OFFSET": {
+        "Through": "Punto"
+      },
+      "XLINE": {
+        "Reference": "Riferimento",
         "Through": "Punto"
       },
       "EXTRUDE": {

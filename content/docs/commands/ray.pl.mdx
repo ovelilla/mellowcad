@@ -1,0 +1,54 @@
+---
+title: "Półprosta w AutoCADzie: polecenie PÓŁPROSTA (RAY)"
+metaTitle: "Półprosta w AutoCADzie: PÓŁPROSTA (RAY)"
+description: "Jak narysować półprostą w AutoCADzie poleceniem PÓŁPROSTA (RAY): linia konstrukcyjna od punktu do nieskończoności w jedną stronę i jak uciąć ją do linii."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Czym jest polecenie PÓŁPROSTA w AutoCADzie?","answer":"To linia konstrukcyjna z początkiem: zaczyna się w punkcie i biegnie bez końca w jednym kierunku. Używaj jej jako odniesienia do rysowania, a potem utnij ją do linii albo wymaż."},{"question":"Jak się nazywa polecenie PÓŁPROSTA po angielsku i czy ma skrót?","answer":"RAY. AutoCAD nie daje mu skrótu, więc wpisz PÓŁPROSTA w całości albo _RAY, które działa w AutoCADzie w każdym języku. Jest w rozwiniętym panelu Rysuj na wstążce, a tutaj w narzędziach rysowania obok przycisku Linia konstrukcyjna."},{"question":"Jak zatrzymać półprostą na linii?","answer":"Utnij ją: uruchom polecenie UTNIJ i wskaż część za linią. To, co zostaje od początku do linii, jest obiektem linii."},{"question":"Czym się różni półprosta od linii?","answer":"Linia ma dwa końce; półprosta ma jeden, swój początek, i biegnie dalej bez końca. W pliku DXF półprosta jest zapisywana jako RAY i jako półprosta się otwiera."}]
+---
+
+Polecenie PÓŁPROSTA (RAY) rysuje półproste: linie konstrukcyjne, które zaczynają się w punkcie i biegną do nieskończoności w jednym kierunku. Wskaż punkt początkowy, a potem punkt, przez który ma przejść: półprosta zaczyna się w pierwszym i przechodzi przez drugi. Każdy kolejny punkt tworzy następną półprostą z tego samego początku, dopóki Enter nie zakończy polecenia. Punkt pokrywający się z początkiem jest odrzucany komunikatem `*Błąd*`. Każda półprosta trafia na bieżącą warstwę, z bieżącym kolorem, rodzajem linii i szerokością linii.
+
+Półprosta biegnie przez cały widok, jakkolwiek daleko go przesuniesz lub powiększysz, a zakres rysunku ją pomija, jak w AutoCADzie. Lokalizacja Punkt końcowy znajduje jej początek, Najbliższy punkt, Prostopadle i Punkt przecięcia działają wzdłuż niej. Polecenia [`UTNIJ`](/docs/commands/trim) i [`PRZERWIJ`](/docs/commands/break) zamieniają odcinek, na którym leży początek, w linię, a polecenie [`WYDŁUŻ`](/docs/commands/extend) przesuwa początek wstecz do krawędzi za nim. Polecenie [`PROSTA`](/docs/commands/xline) rysuje linie biegnące w obie strony.
+
+- **Polecenie:** `PÓŁPROSTA`
+- **Po angielsku:** `RAY`, wpisywane jako `_RAY` w każdym języku
+- **Panel:** [Rysuj](/docs/commands#draw)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `PÓŁPROSTA` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
+
+<Session name="ray" caption="Półproste z jednego punktu początkowego przez trzy punkty, każda biegnie dalej poza krawędź widoku." />
+
+## Czego jeszcze nie robi [#missing]
+
+LENGTHEN i JOIN dla półprostej nie są jeszcze sprawdzone z AutoCADem, podobnie jak menu jej uchwytów.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## Pytania [#questions]
+
+### Czym jest polecenie PÓŁPROSTA w AutoCADzie?
+
+To linia konstrukcyjna z początkiem: zaczyna się w punkcie i biegnie bez końca w jednym kierunku. Używaj jej jako odniesienia do rysowania, a potem utnij ją do linii albo wymaż.
+
+### Jak się nazywa polecenie PÓŁPROSTA po angielsku i czy ma skrót?
+
+RAY. AutoCAD nie daje mu skrótu, więc wpisz `PÓŁPROSTA` w całości albo `_RAY`, które działa w AutoCADzie w każdym języku. Jest w rozwiniętym panelu Rysuj na wstążce, a tutaj w narzędziach rysowania obok przycisku Linia konstrukcyjna.
+
+### Jak zatrzymać półprostą na linii?
+
+Utnij ją: uruchom polecenie [`UTNIJ`](/docs/commands/trim) i wskaż część za linią. To, co zostaje od początku do linii, jest obiektem linii.
+
+### Czym się różni półprosta od linii?
+
+Linia ma dwa końce; półprosta ma jeden, swój początek, i biegnie dalej bez końca. W pliku DXF półprosta jest zapisywana jako RAY i jako półprosta się otwiera.
+
+## Powiązane polecenia [#related]
+
+- [Linia konstrukcyjna w AutoCADzie: polecenie PROSTA (XLINE)](/docs/commands/xline)
+- [Polecenie LINIA (LINE) w AutoCADzie](/docs/commands/line)
+- [Polecenie UTNIJ (TRIM) w AutoCADzie](/docs/commands/trim)
+- [Polecenie WYDŁUŻ (EXTEND) w AutoCADzie](/docs/commands/extend)

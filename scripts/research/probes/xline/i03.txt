@@ -1,0 +1,49 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_LINE
+20,-30
+20,-10
+
+(setq l (entlast))
+_EXTEND
+(list l '(20 -11))
+
+(entget l)
+_EXTEND
+(list a '(-50 0))
+
+_EXTEND
+(list c '(55 20))
+
+(entget c)
+_RAY
+50,-40
+40,-40
+
+(setq r2 (entlast))
+_EXTEND
+(list r2 '(45 -40))
+
+(entget r2)

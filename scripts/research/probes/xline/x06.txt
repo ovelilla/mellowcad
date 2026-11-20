@@ -1,0 +1,34 @@
+QAFLAGS
+2
+_CIRCLE
+0,0
+10
+_XLINE
+_O
+5
+(list (entlast) '(10 0))
+
+_XLINE
+_O
+_T
+(list (entlast) '(10 0))
+
+_PLINE
+0,50
+100,50
+100,80
+
+_XLINE
+_O
+5
+(list (entlast) '(50 50))
+50,40
+
+(entget (entlast))
+_XLINE
+_O
+3
+(list (entlast) '(50 40))
+50,30
+
+(entget (entlast))

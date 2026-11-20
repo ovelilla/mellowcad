@@ -23,6 +23,7 @@ import { loopReversed } from "../geometry/planarRegions"
 import { withXAxisAngle } from "./points"
 import { mapSolid2dCorners } from "./solids2d"
 import { mapWipeoutVertices } from "./wipeouts"
+import { withInfinitePlacement } from "./infiniteLines"
 import { mapImage } from "./images"
 import { mapTable } from "./tables"
 import { mapMLeader } from "./multileaders"
@@ -130,6 +131,22 @@ export function linearEntity(
       }
     case "insert":
       return nestedInsert(entity, map)
+    case "xline":
+    case "ray": {
+      const d = applyLinear(map, entity.direction)
+      const length = Math.hypot(d.x, d.y, entity.directionZ ?? 0)
+      return length > 0
+        ? withInfinitePlacement(
+            entity,
+            { ...at(entity.base), z: entity.elevation ?? 0 },
+            {
+              x: d.x / length,
+              y: d.y / length,
+              z: (entity.directionZ ?? 0) / length,
+            }
+          )
+        : null
+    }
     case "point":
       return withXAxisAngle(
         { ...entity, position: at(entity.position) },

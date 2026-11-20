@@ -59,6 +59,8 @@ export function hatchLoopFromEntity(drawn: Entity): HatchLoop | null {
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity

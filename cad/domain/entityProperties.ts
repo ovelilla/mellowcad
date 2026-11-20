@@ -1,6 +1,13 @@
 import type { Vec3 } from "../geometry/Vec3"
 import { withLinetypeScale } from "./entityOverrides"
 import { withSolid2dCorner } from "./solids2d"
+import {
+  InfiniteLineEntity,
+  infiniteBase,
+  infiniteDirection,
+  isInfiniteLine,
+  withInfinitePlacement,
+} from "./infiniteLines"
 import { withLeaderOverride, withLeaderVertex } from "./leaders"
 import { SolidProperty, primitiveRetyped } from "./solidGrips"
 import { solidRemade } from "./solids"
@@ -156,13 +163,29 @@ export type EntityProperty =
   | "leaderScale"
   | "leaderType"
   | "leaderTextAbove"
+  /**
+   * An XLINE's or a RAY's Basepoint and Second point (desktop xline/d02,
+   * d03): the second is the base plus its direction, and retyping it turns
+   * it about the base; the base moves it whole.
+   */
+  | "basePointX"
+  | "basePointY"
+  | "secondPointX"
+  | "secondPointY"
   /** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
   | SolidProperty
   | ZProperty
 
 /** The rows that write an object's Z, all in the WCS here. */
 export type ZProperty =
-  "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ" | "elevation"
+  | "thickness"
+  | "startZ"
+  | "endZ"
+  | "centerZ"
+  | "positionZ"
+  | "elevation"
+  | "basePointZ"
+  | "secondPointZ"
 
 const Z_PROPERTIES: ReadonlySet<EntityProperty> = new Set<ZProperty>([
   "thickness",
@@ -171,6 +194,8 @@ const Z_PROPERTIES: ReadonlySet<EntityProperty> = new Set<ZProperty>([
   "centerZ",
   "positionZ",
   "elevation",
+  "basePointZ",
+  "secondPointZ",
 ])
 
 export function isZProperty(property: EntityProperty): property is ZProperty {
@@ -317,6 +342,9 @@ export function applyEntityProperty(
     case "table":
     case "mleader":
       return null
+    case "xline":
+    case "ray":
+      return applyInfiniteProperty(entity, property, value)
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null
@@ -474,7 +502,50 @@ function applyZProperty(
       return PLANE_ROWS[property].includes(entity.type)
         ? withElevation(entity, value)
         : null
+    case "basePointZ":
+    case "secondPointZ":
+      return isInfiniteLine(entity)
+        ? applyInfiniteProperty(entity, property, value)
+        : null
   }
+}
+
+/**
+ * An XLINE's or a RAY's point rows: its base moves it whole, the second point
+ * (base + direction) turns it about the base towards where it is typed; one
+ * typed onto the base is refused.
+ */
+function applyInfiniteProperty(
+  entity: InfiniteLineEntity,
+  property: EntityProperty,
+  value: number
+): InfiniteLineEntity | null {
+  const base = infiniteBase(entity)
+  const direction = infiniteDirection(entity)
+  const second = {
+    x: base.x + direction.x,
+    y: base.y + direction.y,
+    z: base.z + direction.z,
+  }
+  const axis = { X: "x", Y: "y", Z: "z" } as const
+  const at = property.slice(-1) as keyof typeof axis
+  if (property.startsWith("basePoint")) {
+    return withInfinitePlacement(
+      entity,
+      { ...base, [axis[at]]: value },
+      direction
+    )
+  }
+  if (!property.startsWith("secondPoint")) return null
+  const moved = { ...second, [axis[at]]: value }
+  const d = { x: moved.x - base.x, y: moved.y - base.y, z: moved.z - base.z }
+  const length = Math.hypot(d.x, d.y, d.z)
+  if (!(length > 0)) return null
+  return withInfinitePlacement(entity, base, {
+    x: d.x / length,
+    y: d.y / length,
+    z: d.z / length,
+  })
 }
 
 function applyLineProperty(

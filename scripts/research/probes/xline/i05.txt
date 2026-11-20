@@ -1,0 +1,56 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_STRETCH
+_C
+45,15
+55,25
+
+0,0
+5,5
+(entget c)
+_STRETCH
+_C
+70,15
+80,25
+
+0,0
+5,5
+(entget c)
+_STRETCH
+_C
+-10,-10
+10,10
+
+0,0
+3,3
+(entget a)
+_STRETCH
+_C
+40,-5
+45,5
+
+0,0
+3,3
+(entget a)

@@ -139,7 +139,9 @@ export const it: EngineLocale = {
       "solid": "Solido 2D",
       "face3d": "Faccia 3D",
       "leader": "Direttrice",
-      "wipeout": "Entità coprente"
+      "wipeout": "Entità coprente",
+      "xline": "Linea di costruzione",
+      "ray": "Raggio"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -453,6 +455,26 @@ export const it: EngineLocale = {
             "other": "Multidirettrici"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Xlinea",
+            "other": "Xlinee"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Raggio",
+            "other": "Raggi"
+          }
+        ]
       ]
     },
     "array": {
@@ -666,6 +688,15 @@ export const it: EngineLocale = {
         "positionX": "Posizione X",
         "positionY": "Posizione Y",
         "positionZ": "Posizione Z",
+        "basePointX": "X punto base",
+        "basePointY": "Y punto base",
+        "basePointZ": "Z punto base",
+        "secondPointX": "X secondo punto",
+        "secondPointY": "Y secondo punto",
+        "secondPointZ": "Z secondo punto",
+        "directionVectorX": "Vettore di direzione X",
+        "directionVectorY": "Vettore di direzione Y",
+        "directionVectorZ": "Vettore di direzione Z",
         "scaleX": "Scala X",
         "scaleY": "Scala Y",
         "scaleZ": "Scala Z",
@@ -789,6 +820,13 @@ export const it: EngineLocale = {
       "LINE": [
         "LINEA",
         "L"
+      ],
+      "XLINE": [
+        "XLINEA",
+        "XL"
+      ],
+      "RAY": [
+        "RAGGIO"
       ],
       "PLINE": [
         "PLINEA",
@@ -1400,6 +1438,16 @@ export const it: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "ORizz",
+        "Ver": "Vert",
+        "Ang": "Ang",
+        "Bisect": "Bisett",
+        "Offset": "OFfset",
+        "Reference": "Riferimento",
+        "Through": "Punto",
+        "Thru": "PUnto"
+      },
       "-OSNAP": {
         "ENDpoint": "FINe",
         "MIDpoint": "MEDio",
@@ -3105,6 +3153,24 @@ export const it: EngineLocale = {
       "solideditTaperAxis": "Specificare un altro punto lungo l'asse di rastremazione",
       "solideditTaperAngle": "Specificare angolo di rastremazione",
       "specifyAPoint": "Specificare un punto",
+      "specifyAPointOr": "Specificare un punto o",
+      "specifyThroughPoint": "Specificare punto di passaggio",
+      "specifyThroughPointAxis": "Specificare punto di passaggio",
+      "xlineAngleOr": [
+        "Digitare angolo di xlinea (",
+        [
+          "angle"
+        ],
+        ") o"
+      ],
+      "xlineAngle": "Digitare angolo di xlinea",
+      "selectLineObject": "Selezionare un oggetto linea",
+      "specifyAngleVertexPoint": "Specificare punto sul vertice dell'angolo",
+      "specifyAngleStartPoint": "Specificare punto iniziale dell'angolo",
+      "specifyAngleEndPoint": "Specificare punto finale dell'angolo",
+      "xlineOffsetDistanceOr": "Specificare distanza di offset o",
+      "specifySideToOffset": "Specificare lato di offset",
+      "rayStartPoint": "Specificare punto iniziale",
       "selectObjectToDivide": "Selezionare l'oggetto da dividere",
       "selectObjectToMeasure": "Selezionare l'oggetto da misurare",
       "divideCountOr": "Digitare numero di segmenti o",
@@ -3145,6 +3211,7 @@ export const it: EngineLocale = {
       "wipeoutFramesDisplay": "Visualizza ma non stampare"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5078,6 +5145,9 @@ export const it: EngineLocale = {
       "chamferNot3dPolyline": "  Gli oggetti 3D Polilinea non possono essere cimata.",
       "filletNot3dPolyline": "  Gli oggetti 3D Polilinea non possono essere raccordata.",
       "collinearCannotFillet": "Le linee collineari non possono essere raccordata.",
+      "capNeedsLineOrRay": "Il primo oggetto deve essere una linea o un raggio per il raccordo delle estremità.",
+      "startPointMustDiffer": "Il punto iniziale deve essere diverso dal vertice",
+      "noUsableObjectSelected": "Non è stato selezionato alcun oggetto utilizzabile",
       "collinearCannotChamfer": "Le linee collineari non possono essere cimata.",
       "cannotChamferItself": "Impossibile cimare un oggetto con se stesso.",
       "segmentsNotConsecutive": "Le linee appartenenti alle polilinee devono essere consecutive o separate da un segmento",
@@ -6121,6 +6191,8 @@ export const it: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "SERIE"
           }
         ]
@@ -6342,6 +6414,46 @@ export const it: EngineLocale = {
         ", Delta Z =",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   Punto base, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   Direzione unità, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   Angolo nel piano XY =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   Angolo dal piano XY =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -8867,6 +8979,10 @@ export const it: EngineLocale = {
         "Noorigin": "Nonsuorigine"
       },
       "OFFSET": {
+        "Through": "Punto"
+      },
+      "XLINE": {
+        "Reference": "Riferimento",
         "Through": "Punto"
       },
       "EXTRUDE": {

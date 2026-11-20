@@ -68,6 +68,8 @@ import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
 import { PointTool } from "./tools/PointTool"
+import { RayTool } from "./tools/RayTool"
+import { XlineTool } from "./tools/XlineTool"
 import { SolidTool } from "./tools/SolidTool"
 import { Face3dTool } from "./tools/Face3dTool"
 import { LeaderTool } from "./tools/LeaderTool"
@@ -145,6 +147,8 @@ export function defaultTools(
     new SplineTool("splinefit", "fit", splineSettings),
     new SplineTool("splinecv", "cv", splineSettings),
     new Polyline3dTool(),
+    new XlineTool(),
+    new RayTool(),
     new PointTool(),
     new SolidTool(),
     new Face3dTool(),

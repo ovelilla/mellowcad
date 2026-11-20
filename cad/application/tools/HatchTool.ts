@@ -1,3 +1,4 @@
+import { withInfiniteSpans } from "../infiniteReach"
 import { V, Vec2 } from "../../geometry/Vec2"
 import { normalizeAngle } from "../../geometry/primitives"
 import { textIslandBox, traceBoundaryLoops } from "../../domain/boundary"
@@ -506,7 +507,9 @@ export class HatchTool implements Tool {
       .filter((entity) => ctx.document.isEntityVisible(entity))
     const view = this.visibleBounds(ctx)
     if (!view) return entities
-    return entities.filter((entity) =>
+    // An XLINE or a RAY bounds as the stretch of it across the view
+    // (xline/i14: four xlines enclose a hatch).
+    return withInfiniteSpans(entities, view).filter((entity) =>
       overlaps(entityBounds(entity, ctx.blocks), view)
     )
   }

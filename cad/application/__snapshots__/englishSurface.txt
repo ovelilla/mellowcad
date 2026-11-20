@@ -2,6 +2,8 @@
 LINE ["L"] "Line"
 PLINE ["PL"] "Polyline"
 3DPOLY ["3P"] "3D Polyline"
+XLINE ["XL"] "Construction Line"
+RAY [] "Ray"
 POINT ["PO"] "Multiple Points"
 SOLID ["SO"] "2D Solid"
 3DFACE ["3F"] "3D Face"
@@ -175,6 +177,8 @@ spline "Spline" SPL
 splinefit "Spline Fit" -
 splinecv "Spline CV" -
 polyline3d "3D Polyline" 3P
+xline "Construction Line" XL
+ray "Ray" RAY
 point "Multiple Points" PO
 solid "2D Solid" SO
 face3d "3D Face" 3F
@@ -705,7 +709,7 @@ ptype "Point Style" PTYPE
   properties: -
   cycling: -
   command| OPEN
-  info| 1 object not opened: 1 XLINE.
+  info| 1 object not opened: 1 MLINE.
   info| 1 object in a layout not opened.
   info| 1 object could not be read.
 > after open
@@ -8562,6 +8566,215 @@ Specify next point or
   prompt| Specify third point:
 > pick
   properties: Solid (1) {Linetype scale=1.00~, Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=5.00~, Elevation=0.00~]
+
+## XLINE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> XLINE
+  prompt: XLINE Specify a point or [Hor/Ver/Ang/Bisect/Offset]:
+  asks: ""
+  tip: Specify a point or
+  dyn: "X,Y"=""||*
+  options: [H] Hor, [V] Ver, [A] Ang, [B] Bisect, [O] Offset
+  command| XL XLINE
+> refused
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: FOO
+  error| Point or option keyword required.
+> point
+  prompt: XLINE Specify through point:
+  tip: Specify through point:
+  options: -
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: 0,0
+> on the base
+  prompt| Specify through point: @0,0
+  error| *Invalid*
+> through
+  prompt| Specify through point: @10,5
+> end
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify through point:
+> Hor
+  prompt: XLINE Specify through point:
+  asks: ""
+  tip: Specify through point:
+  dyn: "X,Y"=""||*
+  command| XLINE
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: H
+> through
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify through point: 0,20
+  prompt| Specify through point:
+> Ang
+  prompt: XLINE Enter angle of xline (0) or [Reference]:
+  asks: "Angle"
+  tip: Enter angle of xline (0) or
+  dyn: "Angle"=""||°*
+  options: [R] Reference
+  command| XLINE
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: A
+> Reference
+  prompt: XLINE Select a line object:
+  asks: 
+  tip: Select a line object:
+  dyn: 
+  options: -
+  prompt| Enter angle of xline (0) or [Reference]: R
+> miss
+  prompt| Select a line object:
+  error| No usable object selected
+> line object
+  prompt: XLINE Enter angle of xline <0>:
+  asks: "Angle"
+  tip: Enter angle of xline
+  dyn: "Angle"=""||°*
+  prompt| Select a line object:
+> angle
+  prompt: XLINE Specify through point:
+  asks: ""
+  tip: Specify through point:
+  dyn: "X,Y"=""||*
+  prompt| Enter angle of xline <0>: 30
+> through
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify through point: 0,0
+  prompt| Specify through point:
+> Bisect
+  prompt: XLINE Specify angle vertex point:
+  asks: ""
+  tip: Specify angle vertex point:
+  dyn: "X,Y"=""||*
+  command| XLINE
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: B
+> Enter refused
+  prompt| Specify angle vertex point:
+  error| Invalid point.
+> vertex
+  prompt: XLINE Specify angle start point:
+  tip: Specify angle start point:
+  prompt| Specify angle vertex point: 0,0
+> start on vertex
+  prompt| Specify angle start point: 0,0
+  error| Start point must differ from vertex point
+> start
+  prompt: XLINE Specify angle end point:
+  tip: Specify angle end point:
+  prompt| Specify angle start point: 10,0
+> end
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify angle end point: @0,10
+  prompt| Specify angle end point:
+> Offset
+  prompt: XLINE Specify offset distance or [Through] <Through>:
+  asks: "Offset distance"
+  tip: Specify offset distance or
+  dyn: "Offset distance"=""||mm*
+  options: [T] Through
+  command| XLINE
+  prompt| Specify a point or [Hor/Ver/Ang/Bisect/Offset]: O
+> zero
+  prompt| Specify offset distance or [Through] <Through>: 0
+  error| Value must be positive and nonzero.
+> distance
+  prompt: XLINE Select a line object:
+  asks: 
+  tip: Select a line object:
+  dyn: 
+  options: -
+  prompt| Specify offset distance or [Through] <Through>: 5
+> line object
+  prompt: XLINE Specify side to offset:
+  asks: ""
+  tip: Specify side to offset:
+  dyn: "X,Y"=""||*
+  prompt| Select a line object:
+> side
+  prompt| Specify side to offset: 5,30
+> exit
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify side to offset:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   XLINE     Layer: "0"
+                                    Space: Model space
+                           base point, X=     0.00  Y=    25.00  Z=     0.00
+                           unit direction, X=     1.00  Y=     0.00  Z=     0.00
+                           angle in XY plane =         0
+> pick
+  properties: XLine (1) {Linetype scale=1.00~} [Geometry: Basepoint X=0.00~, Basepoint Y=25.00~, Basepoint Z=0.00~, Second point X=1.00~, Second point Y=25.00~, Second point Z=0.00~, Direction vector X=1.00, Direction vector Y=0.00, Direction vector Z=0.00]
+
+## RAY
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> RAY
+  prompt: RAY Specify start point:
+  asks: ""
+  tip: Specify start point:
+  dyn: "X,Y"=""||*
+  command| RAY
+> start
+  prompt: RAY Specify through point:
+  tip: Specify through point:
+  prompt| Specify start point: 0,0
+> on the start
+  prompt| Specify through point: @0,0
+  error| *Invalid*
+> through
+  prompt| Specify through point: @10,0,10
+> end
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify through point:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   RAY       Layer: "0"
+                                    Space: Model space
+                           base point, X=     0.00  Y=     0.00  Z=     0.00
+                           unit direction, X=     0.71  Y=     0.00  Z=     0.71
+                           angle in XY plane =         0
+                           angle from XY plane =        45
+> EXPLODE
+  command| EXPLODE
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| Cannot explode RAY
 
 ## WIPEOUT
 > start

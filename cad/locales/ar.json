@@ -135,7 +135,9 @@
       "solid": "مجسم ثنائي الأبعاد",
       "face3d": "وجه ثلاثي الأبعاد",
       "leader": "خط إشارة",
-      "wipeout": "قناع"
+      "wipeout": "قناع",
+      "xline": "خط إنشائي",
+      "ray": "شعاع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -242,7 +244,9 @@
       "wipeout": "{count, plural, one {قناع} two {قناعان} other {أقنعة}}",
       "image": "{count, plural, one {صورة نقطية} two {صورتان نقطيتان} other {صور نقطية}}",
       "table": "{count, plural, one {جدول} two {جدولان} other {جداول}}",
-      "mleader": "{count, plural, one {خط إشارة متعدد} two {خطا إشارة متعددان} other {خطوط إشارة متعددة}}"
+      "mleader": "{count, plural, one {خط إشارة متعدد} two {خطا إشارة متعددان} other {خطوط إشارة متعددة}}",
+      "xline": "{count, plural, one {خط إنشائي} two {خطان إنشائيان} other {خطوط إنشائية}}",
+      "ray": "{count, plural, one {شعاع} two {شعاعان} other {أشعة}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",
@@ -425,6 +429,15 @@
         "positionX": "الموضع X",
         "positionY": "الموضع Y",
         "positionZ": "الموضع Z",
+        "basePointX": "النقطة الأساسية X",
+        "basePointY": "النقطة الأساسية Y",
+        "basePointZ": "النقطة الأساسية Z",
+        "secondPointX": "النقطة الثانية X",
+        "secondPointY": "النقطة الثانية Y",
+        "secondPointZ": "النقطة الثانية Z",
+        "directionVectorX": "متجه الاتجاه X",
+        "directionVectorY": "متجه الاتجاه Y",
+        "directionVectorZ": "متجه الاتجاه Z",
         "scaleX": "المقياس X",
         "scaleY": "المقياس Y",
         "scaleZ": "المقياس Z",

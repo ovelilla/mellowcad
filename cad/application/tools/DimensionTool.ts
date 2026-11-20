@@ -634,6 +634,8 @@ export class DimensionTool implements Tool {
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         return { entity, origins: null }
       // WHY no refusal for a hatch: unprobed, so it says nothing was found,
       // as a text does (p118).

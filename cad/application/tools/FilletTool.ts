@@ -700,7 +700,7 @@ export class FilletTool implements Tool {
   private apply(outcome: Outcome, ctx: ToolContext): void {
     switch (outcome.kind) {
       case "made":
-        this.done(cornerCommand(outcome), ctx)
+        this.done(cornerCommand(outcome, ctx), ctx)
         return
       case "none":
         if (outcome.ends) this.done(null, ctx)
@@ -806,6 +806,11 @@ export class FilletTool implements Tool {
     ctx: ToolContext,
     arcId?: EntityId
   ): Outcome {
+    // WHY: the cap starts from the first line's end, and an XLINE has none
+    // (xline/i07, table 20710); the command ends.
+    if (ctx.document.get(line1.id)?.type === "xline") {
+      return refusal("capNeedsLineOrRay", false)
+    }
     const corner = lineCorner(line1, capFrom, line2, pick2, ctx.viewport)
     const capped = corner && this.cap(corner, line1, line2, ctx, arcId)
     if (capped === "collinear") return refusal("collinearCannotFillet", false)

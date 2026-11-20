@@ -32,6 +32,10 @@ import {
   createPolyline,
   distanceToEntity,
   entitiesBounds,
+  Bounds,
+  infiniteLineReaching,
+  infinitePieceOf,
+  isInfiniteLine,
   entityAxes,
   entityBounds,
   entityElevation,
@@ -69,6 +73,7 @@ import {
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
+import { infiniteReachBox } from "../infiniteReach"
 import { ScenePrimitive } from "../../scene/types"
 import type { CursorBadge } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
@@ -829,7 +834,7 @@ export abstract class EdgeEditTool implements Tool {
     const plan = this.preview
     if (!plan || plan.kind === "refuse" || plan.kind === "erase") return []
     const source = ctx.document.get(plan.targetId)
-    const target = source && inPlan(source)
+    const target = source && inPlan(source, this.reach)
     if (!target) return []
     const { added } = this.piecesOf(plan, target, () => PREVIEW_ID)
     if (plan.kind === "extend")
@@ -1262,7 +1267,8 @@ export abstract class EdgeEditTool implements Tool {
           plan.drawing.flatMap((entity) => {
             if (!sourceOf.has(entity.id)) return []
             const source = sourceOf.get(entity.id)
-            return [source ? asStored(source, entity) : entity]
+            const span = source && inPlan(source, this.reach)
+            return [source && span ? asStored(source, entity, span) : entity]
           })
         )
       )
@@ -1372,11 +1378,28 @@ export abstract class EdgeEditTool implements Tool {
    * said (`footprints`).
    */
   private drawing(ctx: ToolContext): Entity[] {
-    return ctx.document.getEntities().flatMap((e) => {
-      const level = ctx.document.isEntityVisible(e) && inPlan(e)
+    const visible = ctx.document
+      .getEntities()
+      .filter((e) => ctx.document.isEntityVisible(e))
+    // An XLINE or a RAY is cut and bounds as its stretch across the drawing
+    // and the view (`infiniteLineReaching`): the commit reads its pieces
+    // against the same stretch.
+    const reach = infiniteReachBox(visible, ctx.viewport, ctx.blocks)
+    this.reach = reach
+    this.xlines = new Set(
+      visible.filter((e) => e.type === "xline").map((e) => e.id)
+    )
+    return visible.flatMap((e) => {
+      const level = inPlan(e, reach)
       return level ? [level] : []
     })
   }
+
+  /** The box the last plan read each XLINE's and RAY's stretch across. */
+  private reach: Bounds | null = null
+
+  /** The XLINEs of the last plan's drawing, which EXTEND refuses. */
+  private xlines: ReadonlySet<EntityId> = new Set()
 
   /** Where the edges standing upright on the UCS's XY plane lie in plan. */
   private footprints(
@@ -1399,7 +1422,8 @@ export abstract class EdgeEditTool implements Tool {
   /** The object picked at `input`, as its plan reads it. */
   private pickFor(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && inPlan(hit)
+    if (hit && isInfiniteLine(hit)) this.drawing(ctx)
+    return hit && inPlan(hit, this.reach)
   }
 
   private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
@@ -1453,6 +1477,11 @@ export abstract class EdgeEditTool implements Tool {
     blocks: BlockLookup,
     edges: ReadonlySet<EntityId> | null = this.edges
   ): EdgeEditPlan | null {
+    // WHY: an XLINE has no end to extend, as the console says (xline/i03);
+    // a RAY's start extends.
+    if (mode === "extend" && this.xlines.has(hit.id)) {
+      return { kind: "refuse", message: "cannotExtendThisObject" }
+    }
     const others = this.boundsFor(hit, drawing, blocks, edges)
     const own = this.isEdge(hit.id, edges)
     // WHY: an edge standing upright on the plane bounds nothing; the console
@@ -1529,11 +1558,11 @@ export abstract class EdgeEditTool implements Tool {
     const source = ctx.document.get(
       plan.kind === "erase" ? plan.target.id : plan.targetId
     )
-    const target = source && inPlan(source)
+    const target = source && inPlan(source, this.reach)
     if (!source || !target) return
     const { id, added } = this.piecesOf(plan, target)
     this.keepEdges(id, added)
-    const stored = added.map((piece) => asStored(source, piece))
+    const stored = added.map((piece) => asStored(source, piece, target))
     if (stored.length === 0) {
       ctx.execute(new RemoveEntitiesCommand([id]))
     } else if (stored.length === 1) {
@@ -1681,6 +1710,10 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     case "leader":
       // No edge: TRIM and EXTEND find nothing to cut it with.
       return []
+    case "xline":
+    case "ray":
+      // Read as its stretch already (`inPlan`); one inside a block is none.
+      return []
     default: {
       const unhandled: never = edge
       return unhandled
@@ -1774,7 +1807,10 @@ const TURNED: ReadonlySet<Entity["type"]> = new Set([
  * one whose normal is -Z lies level, seen from below, and is cut and bounds
  * as its plan reads it (probe trim/p175), as `turnedOver` gives it.
  */
-function inPlan(entity: Entity): Entity | null {
+function inPlan(entity: Entity, reach?: Bounds | null): Entity | null {
+  if (isInfiniteLine(entity)) {
+    return reach ? infiniteLineReaching(entity, reach) : null
+  }
   if (readsInPlan(entity)) return entity
   // WHY a spline at any angle but upright: AutoCAD 2027 trims one in plan,
   // as it trims a 3D one (spline-knots/k25, k26).
@@ -1796,7 +1832,12 @@ function isUpsideDown(entity: Entity): boolean {
 }
 
 /** A piece made in plan of the drawing's `source`, as `source` keeps its points. */
-function asStored(source: Entity, piece: Entity): Entity {
+function asStored(source: Entity, piece: Entity, target: Entity): Entity {
+  if (isInfiniteLine(source) && target.type === "line") {
+    return piece.type === "line"
+      ? infinitePieceOf(source, target, piece)
+      : piece
+  }
   if (source.type === "spline" && piece.type === "spline") {
     return splineInPlaneOf(piece, source)
   }
@@ -2017,6 +2058,9 @@ function planTrim(
     case "leader":
     case "region":
     case "solid3d":
+    // Cut and bounding as its stretch (`inPlan`), never as itself.
+    case "xline":
+    case "ray":
       return null
   }
 }
@@ -2074,7 +2118,8 @@ function extendRefusal(target: Entity): MessageId | null {
     case "hatch":
     case "region":
     case "solid3d":
-    case "solid3d":
+    case "xline":
+    case "ray":
       return "cannotExtendThisObject"
     default: {
       const unhandled: never = target
@@ -2127,6 +2172,9 @@ function planExtend(
     case "leader":
     case "region":
     case "solid3d":
+    // Cut and bounding as its stretch (`inPlan`), never as itself.
+    case "xline":
+    case "ray":
       return null
   }
 }
@@ -2403,6 +2451,8 @@ function circleEdgeCrossPoints(
     case "table":
     case "mleader":
     case "leader":
+    case "xline":
+    case "ray":
       return []
   }
 }

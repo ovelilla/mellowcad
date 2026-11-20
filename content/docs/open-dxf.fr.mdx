@@ -3,7 +3,7 @@ title: Ouvrir un fichier DXF en ligne
 metaTitle: "Ouvrir un fichier DXF en ligne : visionneuse DXF"
 description: "Ouvrez gratuitement un fichier DXF dans votre navigateur, sans l'envoyer : AutoCAD R12 à 2018, texte ou binaire, avec calques, textes, cotes, hachures et blocs."
 type: howTo
-sourceHash: "d0c802844506"
+sourceHash: "dc6533c55826"
 faq:
   - question: "Comment ouvrir un fichier DXF sans AutoCAD ?"
     answer: "Choisissez-le ou déposez-le en haut de cette page : MellowCAD l'ouvre dans son éditeur, dans votre navigateur, sans rien installer et sans compte. Dans l'éditeur, OUVRIR (Ctrl+O) et CHARGDXF en ouvrent un aussi."
@@ -24,7 +24,7 @@ MellowCAD ouvre les fichiers DXF dans votre navigateur et les dessine dans son �
 ## Ce qui s'ouvre [#opens]
 
 - **Le DXF d'AutoCAD R12 à 2018**, le format DXF le plus récent qu'écrit AutoCAD, en texte (ASCII) ou binaire, créé par AutoCAD ou par un autre programme. Son texte garde ses caractères : jusqu'à 2004 dans la page de codes que le fichier indique, à partir de 2007 en UTF-8.
-- **Lignes, arcs, cercles, ellipses et polylignes**, avec leurs largeurs et leurs formes ajustées par courbe ou par spline, polylignes 3D et splines, et les points, dessinés dans le [style des points](/docs/commands/ptype) du dessin, les solides 2D, remplis selon FILLMODE, les faces 3D et les masques (wipeouts).
+- **Lignes, arcs, cercles, ellipses et polylignes**, avec leurs largeurs et leurs formes ajustées par courbe ou par spline, polylignes 3D et splines, et les points, dessinés dans le [style des points](/docs/commands/ptype) du dessin, les solides 2D, remplis selon FILLMODE, les faces 3D, les masques (wipeouts), et les lignes de construction et les demi-droites.
 - **Texte sur une ligne et texte multiligne**, lignes de repère avec leur texte, blocs avec leurs attributs, cotes linéaires, alignées, angulaires, de rayon et de diamètre, et hachures, chacune avec les lignes de motif qu'elle contient, comme AutoCAD la dessine : un motif utilisateur ou celui d'un autre programme aussi.
 - **Le calque de chaque objet**, sa couleur, son type de ligne et son échelle, son épaisseur de ligne, sa hauteur et son élévation, et les calques activés, désactivés ou verrouillés ; un calque gelé s'ouvre désactivé.
 - **Les types de ligne du dessin**, dessinés avec leurs tirets, leurs points et leurs espaces à l'échelle du type de ligne du dessin, et le texte des types complexes comme GAS_LINE.
@@ -35,7 +35,7 @@ MellowCAD ouvre les fichiers DXF dans votre navigateur et les dessine dans son �
 Quand un DXF contient quelque chose pour quoi MellowCAD n'a pas encore d'objet, il ouvre le reste et indique sur la ligne de commande combien d'objets de chaque type il a laissés de côté. Aujourd'hui, ce sont :
 
 - les traces et les maillages ;
-- les lignes de construction et les demi-droites, les multilignes ;
+- les multilignes ;
 - les tolérances ;
 - les solides 3D, les régions et les surfaces ;
 - les cotes superposées et de longueur d'arc.

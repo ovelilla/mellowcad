@@ -110,6 +110,9 @@ export function objectArea(entity: Entity): ObjectArea | null {
     case "image":
     case "table":
     case "mleader":
+    // "Selected object does not have an area" (xline/i06).
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity

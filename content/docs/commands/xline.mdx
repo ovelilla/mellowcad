@@ -1,0 +1,80 @@
+---
+title: "XLINE in AutoCAD"
+metaTitle: "XLINE in AutoCAD: the construction line command"
+description: "How AutoCAD's XLINE (XL) draws construction lines of infinite length: through two points, horizontal, vertical, at an angle, bisecting or offset. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for XLINE in AutoCAD?","answer":"XL, then Enter or Space. The ribbon calls it Construction Line, in the expanded Draw panel; here it is in the Draw tools beside Ray."},{"question":"How do I draw a horizontal or vertical construction line?","answer":"Run XLINE, type H for Hor or V for Ver, and pick the points it passes through. Horizontal and vertical are the current UCS's."},{"question":"How do I trim a construction line?","answer":"With TRIM as any line: cut on one side, an xline becomes a ray; cut on both, a line. The same happens with BREAK."},{"question":"Why does ZOOM Extents ignore my construction lines?","answer":"An xline has no extents: it runs to infinity both ways. AutoCAD leaves xlines and rays out of the drawing's extents, and so does MellowCAD."},{"question":"What is the difference between XLINE and RAY?","answer":"An xline runs to infinity both ways; a RAY starts at a point and runs one way only."}]
+---
+
+XLINE draws construction lines: lines of infinite length, which run across the whole view however far you pan or zoom, to lay out a drawing before the real lines go in. Pick a point, then a through point: an xline passes through both, and every further point makes another through the first, until Enter ends the command. A through point on the first point is refused with `*Invalid*`. Each xline is on the current layer with the current colour, linetype and lineweight.
+
+An xline has no ends: zoom to the drawing's extents and it is left out, as in AutoCAD. The Midpoint snap finds the point it was drawn through, Nearest, Perpendicular and Intersection work along it, and [`TRIM`](/docs/commands/trim) or [`BREAK`](/docs/commands/break) turn it into a ray, or two, which is how construction lines become drawing lines. [`RAY`](/docs/commands/ray) draws the half of it that starts at a point.
+
+- **Command:** `XLINE`
+- **Aliases:** `XL`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `XL` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="xline" caption="Construction lines through a point, a horizontal one, and the bisector of the angle between two lines, each running across the whole view." />
+
+## Options [#options]
+
+### `Hor` (`H`) [#hor]
+
+Horizontal xlines, along the UCS's X axis, each through a point you give, until Enter.
+
+### `Ver` (`V`) [#ver]
+
+Vertical xlines, along the UCS's Y axis, each through a point you give.
+
+### `Ang` (`A`) [#ang]
+
+Xlines at an angle: type it, or give two points, then the through points. Enter at the angle takes 0. `Reference` measures the angle from a line you select, a line, an xline or a ray, anticlockwise: anything else is refused with `No usable object selected`.
+
+### `Bisect` (`B`) [#bisect]
+
+The xline that halves an angle: give its vertex, a point on its first side, then a point on its second side, and the bisector passes through the vertex. Each further point on the second side makes another bisector of the same first side.
+
+### `Offset` (`O`) [#offset]
+
+Xlines parallel to a line object, a line, an xline or a ray: give the distance, select the object and pick the side, again and again until Enter. `Through` passes each through a point you give instead. The distance is the one [`OFFSET`](/docs/commands/offset) remembers, and the one it offers next.
+
+## What it does not do yet [#missing]
+
+LENGTHEN and JOIN of a construction line are not checked against AutoCAD yet, nor the menus of its grips.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Questions [#questions]
+
+### What is the shortcut for XLINE in AutoCAD?
+
+`XL`, then Enter or Space. The ribbon calls it Construction Line, in the expanded Draw panel; here it is in the Draw tools beside Ray.
+
+### How do I draw a horizontal or vertical construction line?
+
+Run XLINE, type `H` for Hor or `V` for Ver, and pick the points it passes through. Horizontal and vertical are the current UCS's.
+
+### How do I trim a construction line?
+
+With [`TRIM`](/docs/commands/trim) as any line: cut on one side, an xline becomes a ray; cut on both, a line. The same happens with [`BREAK`](/docs/commands/break).
+
+### Why does ZOOM Extents ignore my construction lines?
+
+An xline has no extents: it runs to infinity both ways. AutoCAD leaves xlines and rays out of the drawing's extents, and so does MellowCAD.
+
+### What is the difference between XLINE and RAY?
+
+An xline runs to infinity both ways; a [`RAY`](/docs/commands/ray) starts at a point and runs one way only.
+
+## Related commands [#related]
+
+- [RAY in AutoCAD](/docs/commands/ray)
+- [LINE in AutoCAD](/docs/commands/line)
+- [OFFSET in AutoCAD](/docs/commands/offset)
+- [TRIM in AutoCAD](/docs/commands/trim)

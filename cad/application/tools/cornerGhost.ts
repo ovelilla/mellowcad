@@ -1,10 +1,21 @@
-import { Entity, EntityId, PolylineEntity } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  PolylineEntity,
+  infinitePieceOf,
+  isInfiniteLine,
+} from "../../domain/entities"
 import {
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { ScenePrimitive } from "../../scene/types"
-import { cornerEntity, isSegment, pickedEntity } from "./cornerObjects"
+import {
+  cornerEntity,
+  cornerSpan,
+  isSegment,
+  pickedEntity,
+} from "./cornerObjects"
 import type { FilletObject, CurveObject } from "./cornerObjects"
 import { drawn, rollover } from "./ghostLook"
 import { ToolContext } from "./Tool"
@@ -52,11 +63,22 @@ export const ENDS = { kind: "none", ends: true } as const
 
 /** The command a corner made executes. */
 export function cornerCommand(
-  outcome: Extract<CornerOutcome<unknown>, { kind: "made" }>
+  outcome: Extract<CornerOutcome<unknown>, { kind: "made" }>,
+  ctx: ToolContext
 ): ReplaceEntitiesCommand | UpdateEntityCommand {
+  // An XLINE or a RAY was cornered as its stretch: what runs on of it is a
+  // RAY again, what stops both ways a LINE (xline/i07).
+  const built = outcome.built.map((entity) => {
+    const original = ctx.document.get(entity.id)
+    if (!original || !isInfiniteLine(original) || entity.type !== "line") {
+      return entity
+    }
+    const span = cornerSpan(original, ctx)
+    return span ? infinitePieceOf(original, span, entity) : entity
+  })
   return outcome.update
-    ? new UpdateEntityCommand(outcome.built[0])
-    : new ReplaceEntitiesCommand(outcome.replaced, outcome.built)
+    ? new UpdateEntityCommand(built[0])
+    : new ReplaceEntitiesCommand(outcome.replaced, built)
 }
 
 /** The objects the ghost draws as the corner would leave them. */

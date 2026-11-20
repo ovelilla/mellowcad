@@ -853,6 +853,9 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entity.corners]
     case "leader":
       return [...entity.vertices]
+    case "xline":
+    case "ray":
+      return [entity.base]
     case "region":
       return regionGripPoints(entity)
     case "solid3d":

@@ -1,5 +1,15 @@
 // Generated from en.json by `npm run locales`. Do not edit.
 export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
+  "XLINE": [
+    "Hor",
+    "Ver",
+    "Ang",
+    "Bisect",
+    "Offset",
+    "Reference",
+    "Through",
+    "Thru"
+  ],
   "-OSNAP": [
     "ENDpoint",
     "MIDpoint",

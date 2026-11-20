@@ -1,0 +1,54 @@
+---
+title: "Commande DEMIDROITE (RAY) dans AutoCAD"
+metaTitle: "Commande DEMIDROITE (RAY) : ligne à l'infini"
+description: "Comment DEMIDROITE (RAY) d'AutoCAD trace des lignes de construction qui partent d'un point vers l'infini, d'un seul côté, et comment les ajuster. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qu'est-ce que la commande DEMIDROITE dans AutoCAD ?","answer":"Une ligne de construction avec un départ : elle commence à un point et continue sans fin dans une direction. Servez-vous-en comme repère pour dessiner, puis ajustez-la en ligne ou effacez-la."},{"question":"La commande DEMIDROITE a-t-elle un raccourci ?","answer":"Non : AutoCAD ne donne aucun alias à DEMIDROITE, tapez donc DEMIDROITE en entier. Elle est dans le groupe de fonctions Dessin développé du ruban, et ici dans les outils de Dessin, à côté de Ligne de construction."},{"question":"Comment arrêter une demi-droite sur une ligne ?","answer":"Ajustez-la : lancez AJUSTER et désignez la partie au-delà de la ligne. Ce qui reste, du départ à la ligne, est un objet ligne."},{"question":"Quelle est la différence entre une demi-droite et une ligne ?","answer":"Une ligne a deux extrémités ; une demi-droite en a une, son départ, et continue sans fin. Dans un fichier DXF, une demi-droite est enregistrée comme RAY, et s'ouvre comme telle."}]
+---
+
+DEMIDROITE (RAY) dessine des demi-droites : des lignes de construction qui partent d'un point et vont à l'infini dans une direction. Cliquez le point de départ, puis un point de passage : la demi-droite part du premier et passe par le second. Chaque point suivant en crée une autre depuis le même départ, jusqu'à ce qu'Entrée termine la commande. Un point de passage sur le départ est refusé avec `*Incorrect*`. Chaque demi-droite est sur le calque courant avec la couleur, le type de ligne et l'épaisseur de ligne courants.
+
+Une demi-droite traverse la vue quels que soient le panoramique ou le zoom, et l'étendue du dessin la laisse de côté, comme dans AutoCAD. L'accrochage Extrémité trouve son départ ; Le plus proche, Perpendiculaire et Intersection fonctionnent le long de celle-ci. [`AJUSTER`](/docs/commands/trim) et [`COUPURE`](/docs/commands/break) changent en ligne le tronçon qui contient le départ, et [`PROLONGER`](/docs/commands/extend) ramène le départ jusqu'à une arête située derrière lui. [`DROITE`](/docs/commands/xline) dessine des droites qui vont dans les deux sens.
+
+- **Commande :** `DEMIDROITE`
+- **En anglais :** `RAY`, tapé `_RAY` dans toutes les langues
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `DEMIDROITE` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="ray" caption="Des demi-droites partant d'un même point de départ, par trois points, chacune continuant au-delà du bord de la vue." />
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+MODIFLONG (LENGTHEN) et [`JOINDRE`](/docs/commands/join) d'une demi-droite ne sont pas encore vérifiés face à AutoCAD, ni les menus de ses poignées.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## Questions [#questions]
+
+### Qu'est-ce que la commande DEMIDROITE dans AutoCAD ?
+
+Une ligne de construction avec un départ : elle commence à un point et continue sans fin dans une direction. Servez-vous-en comme repère pour dessiner, puis ajustez-la en ligne ou effacez-la.
+
+### La commande DEMIDROITE a-t-elle un raccourci ?
+
+Non : AutoCAD ne donne aucun alias à DEMIDROITE, tapez donc `DEMIDROITE` en entier. Elle est dans le groupe de fonctions Dessin développé du ruban, et ici dans les outils de Dessin, à côté de Ligne de construction.
+
+### Comment arrêter une demi-droite sur une ligne ?
+
+Ajustez-la : lancez [`AJUSTER`](/docs/commands/trim) et désignez la partie au-delà de la ligne. Ce qui reste, du départ à la ligne, est un objet ligne.
+
+### Quelle est la différence entre une demi-droite et une ligne ?
+
+Une ligne a deux extrémités ; une demi-droite en a une, son départ, et continue sans fin. Dans un fichier DXF, une demi-droite est enregistrée comme RAY, et s'ouvre comme telle.
+
+## Commandes associées [#related]
+
+- [Commande DROITE (XLINE) dans AutoCAD](/docs/commands/xline)
+- [Commande LIGNE (LINE) dans AutoCAD](/docs/commands/line)
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)
+- [Commande PROLONGER (EXTEND) dans AutoCAD](/docs/commands/extend)

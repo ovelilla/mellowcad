@@ -137,6 +137,8 @@ declare const source: {
       "face3d": string
       "leader": string
       "wipeout": string
+      "xline": string
+      "ray": string
     }
     "description": {
       "U": string
@@ -270,6 +272,8 @@ declare const source: {
       "image": string
       "table": string
       "mleader": string
+      "xline": string
+      "ray": string
     }
     "array": {
       "rectangular": string
@@ -452,6 +456,15 @@ declare const source: {
         "positionX": string
         "positionY": string
         "positionZ": string
+        "basePointX": string
+        "basePointY": string
+        "basePointZ": string
+        "secondPointX": string
+        "secondPointY": string
+        "secondPointZ": string
+        "directionVectorX": string
+        "directionVectorY": string
+        "directionVectorZ": string
         "scaleX": string
         "scaleY": string
         "scaleZ": string
@@ -573,6 +586,8 @@ declare const source: {
   "commands": {
     "names": {
       "LINE": string[]
+      "XLINE": string[]
+      "RAY": string[]
       "PLINE": string[]
       "3DFACE": string[]
       "3DPOLY": string[]
@@ -732,6 +747,16 @@ declare const source: {
       "WIPEOUT": string[]
     }
     "keywords": {
+      "XLINE": {
+        "Hor": string
+        "Ver": string
+        "Ang": string
+        "Bisect": string
+        "Offset": string
+        "Reference": string
+        "Through": string
+        "Thru": string
+      }
       "-OSNAP": {
         "ENDpoint": string
         "MIDpoint": string
@@ -2352,6 +2377,18 @@ declare const source: {
       "solideditTaperAxis": string
       "solideditTaperAngle": string
       "specifyAPoint": string
+      "specifyAPointOr": string
+      "specifyThroughPoint": string
+      "specifyThroughPointAxis": string
+      "xlineAngleOr": string
+      "xlineAngle": string
+      "selectLineObject": string
+      "specifyAngleVertexPoint": string
+      "specifyAngleStartPoint": string
+      "specifyAngleEndPoint": string
+      "xlineOffsetDistanceOr": string
+      "specifySideToOffset": string
+      "rayStartPoint": string
       "selectObjectToDivide": string
       "selectObjectToMeasure": string
       "divideCountOr": string
@@ -2392,6 +2429,7 @@ declare const source: {
       "wipeoutFramesDisplay": string
     }
     "promptForms": {
+      "specifySideToOffset": string
       "convertToPolylines": string
       "currentLayerOff": string
       "purgeBlock": string
@@ -2719,6 +2757,9 @@ declare const source: {
       "chamferNot3dPolyline": string
       "filletNot3dPolyline": string
       "collinearCannotFillet": string
+      "capNeedsLineOrRay": string
+      "startPointMustDiffer": string
+      "noUsableObjectSelected": string
       "collinearCannotChamfer": string
       "cannotChamferItself": string
       "segmentsNotConsecutive": string
@@ -2898,6 +2939,10 @@ declare const source: {
       "listLineLength": string
       "listLine3d": string
       "listLineDelta": string
+      "listBasePoint": string
+      "listUnitDirection": string
+      "listAngleInXy": string
+      "listAngleFromXy": string
       "listCenter": string
       "listRadius": string
       "listLwRadius": string
@@ -3409,6 +3454,10 @@ declare const source: {
         "Noorigin": string
       }
       "OFFSET": {
+        "Through": string
+      }
+      "XLINE": {
+        "Reference": string
         "Through": string
       }
       "EXTRUDE": {

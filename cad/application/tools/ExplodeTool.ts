@@ -64,6 +64,11 @@ function cannotExplode(entity: Entity): string | null {
       return "SPLINE"
     case "ellipse":
       return "ELLIPSE"
+    // Said by its DXF name in every language (xline/i06).
+    case "xline":
+      return "XLINE"
+    case "ray":
+      return "RAY"
     case "hatch":
       // WHY a pattern with no lines here is named too (a name this build
       // does not ship, read from a file that held none): its lines cannot
@@ -107,8 +112,9 @@ export class ExplodeTool extends SelectionActionTool {
     return "wholeObjects"
   }
 
-  // WHY a spline and an ellipse pass: they are refused by name once the set
-  // is closed, each one (spline/p319, p324; pieces/p261, p265). WHY a
+  // WHY a spline, an ellipse, an XLINE and a RAY pass: they are refused by
+  // name once the set is closed, each one (spline/p319, p324; pieces/p261,
+  // p265; xline/i06). WHY a
   // dimension is refused, though AutoCAD 2027 explodes it into lines, SOLIDs
   // for its arrowheads and an MTEXT (pieces/p258): there is no SOLID object
   // here to make them.
@@ -120,7 +126,9 @@ export class ExplodeTool extends SelectionActionTool {
       rejects: (entity) =>
         (!EXPLODED.has(entity.type) &&
           entity.type !== "spline" &&
-          entity.type !== "ellipse") ||
+          entity.type !== "ellipse" &&
+          entity.type !== "xline" &&
+          entity.type !== "ray") ||
         (entity.type === "solid3d" && solidHasCurvedFaces(entity)),
       message: "explodeRejected",
       // An xref is no block of this drawing's to break up (probes xref/p08,

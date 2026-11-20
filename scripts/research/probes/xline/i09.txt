@@ -1,0 +1,75 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+(osnap '(1 0.5) "_end")
+(osnap '(30 0.5) "_end")
+(osnap '(0.5 0.5) "_mid")
+(osnap '(80 0) "_mid")
+(osnap '(-120 0) "_mid")
+(osnap '(52 20) "_mid")
+(osnap '(-120 0.5) "_nea")
+(osnap '(52 20.5) "_cen")
+(osnap '(-120 0.5) "_per")
+(osnap '(52 20.5) "_nod")
+(osnap '(52 20.5) "_ins")
+_LINE
+-120,40
+_per
+-120,1
+
+(entget (entlast))
+_LINE
+20,-40
+_per
+70,21
+
+(entget (entlast))
+_LINE
+20,-40
+_per
+30,21
+
+(entget (entlast))
+_CIRCLE
+50,60
+10
+_LINE
+_tan
+50,71
+_per
+30,1
+
+(entget (entlast))
+_LINE
+50,30
+_tan
+60,60
+
+(entget (entlast))
+(sslength (ssget "_W" (list -1000 -1000) (list 1000 1000)))
+(sslength (ssget "_C" (list -1000 -1000) (list 1000 1000)))
+(sslength (ssget "_CP" (list (list 40 15) (list 60 15) (list 60 25) (list 40 25))))
+(sslength (ssget "_WP" (list (list 40 15) (list 2000 15) (list 2000 25) (list 40 25))))
+(sslength (ssget "_A"))
+(ssget (list 30 0.5))

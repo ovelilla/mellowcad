@@ -1,5 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, zOf } from "../geometry/Vec3"
+import { Vec3, planar, zOf } from "../geometry/Vec3"
 import { normalizeAngle } from "../geometry/primitives"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import {
@@ -33,8 +33,11 @@ import {
   BlockAttribute,
   InsertEntity,
   Entity,
+  XlineEntity,
+  RayEntity,
 } from "./entityTypes"
 import { withDeltaZ, withElevation } from "./elevation"
+import { withInfinitePlacement } from "./infiniteLines"
 import { nextEntityId } from "./entityIds"
 
 // In a module of its own for `splines.ts`, which `elevation.ts` imports: from
@@ -56,6 +59,58 @@ export function createLine(
     end: { x: end.x, y: end.y },
   }
   return withDeltaZ(withElevation(line, zOf(start)), zOf(end) - zOf(start))
+}
+
+/**
+ * An XLINE through `base` along `direction`, made a unit vector; null where it
+ * has no length. Its points are the WCS's, as a line's.
+ */
+export function createXline(
+  base: Vec2 | Vec3,
+  direction: Vec2 | Vec3,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): XlineEntity | null {
+  const xline: XlineEntity = {
+    id,
+    type: "xline",
+    layerId,
+    base: planar(base),
+    direction: planar(direction),
+  }
+  return placedInfinite(xline, base, direction)
+}
+
+/** A RAY from `base` along `direction`, as {@link createXline}. */
+export function createRay(
+  base: Vec2 | Vec3,
+  direction: Vec2 | Vec3,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): RayEntity | null {
+  const ray: RayEntity = {
+    id,
+    type: "ray",
+    layerId,
+    base: planar(base),
+    direction: planar(direction),
+  }
+  return placedInfinite(ray, base, direction)
+}
+
+function placedInfinite<T extends XlineEntity | RayEntity>(
+  entity: T,
+  base: Vec2 | Vec3,
+  direction: Vec2 | Vec3
+): T | null {
+  const d = { x: direction.x, y: direction.y, z: zOf(direction) }
+  const length = Math.hypot(d.x, d.y, d.z)
+  if (!(length > 0)) return null
+  return withInfinitePlacement(
+    entity,
+    { x: base.x, y: base.y, z: zOf(base) },
+    { x: d.x / length, y: d.y / length, z: d.z / length }
+  )
 }
 
 /** A point object in the WCS's plane, its Z (if any) its elevation. */

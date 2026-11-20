@@ -1,0 +1,34 @@
+QAFLAGS
+2
+_XLINE
+_H
+0,0
+
+_ZOOM
+_C
+0,0
+100
+(getvar "SCREENSIZE")
+(getvar "VIEWSIZE")
+(getvar "VIEWCTR")
+(ssget "_W" (list -10 -10) (list 10 10))
+(ssget "_W" (list -1000 -10) (list 1000 10))
+(ssget "_W" (list -100 -10) (list 100 10))
+(ssget "_W" (list -80 -10) (list 80 10))
+(ssget "_W" (list -90 -10) (list 90 10))
+(ssget "_W" (list -95 -10) (list 95 10))
+(ssget "_W" (list -70 -10) (list 70 10))
+(ssget "_W" (list -1000 -10) (list 0 10))
+_ERASE
+_L
+
+_RAY
+0,0
+1,0
+
+(ssget "_W" (list -10 -10) (list 1000 10))
+(ssget "_W" (list -10 -10) (list 90 10))
+(ssget "_W" (list -10 -10) (list 70 10))
+(ssget "_W" (list 10 -10) (list 1000 10))
+(ssget "_WP" (list (list -10 -10) (list 1000 -10) (list 1000 10) (list -10 10)))
+(ssget "_WP" (list (list -10 -10) (list 70 -10) (list 70 10) (list -10 10)))

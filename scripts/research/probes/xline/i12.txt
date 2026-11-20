@@ -1,0 +1,51 @@
+QAFLAGS
+2
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_OFFSET
+_T
+(list a '(30 0))
+70,10
+_E
+(entget (entlast))
+_OFFSET
+_T
+(list c '(70 20))
+30,40
+_E
+(entget (entlast))
+_OFFSET
+_T
+(list c '(70 20))
+90,40
+_E
+(entget (entlast))
+_OFFSET
+5
+(list a '(30 0))
+30,0
+_E
+(entget (entlast))
+_XLINE
+0,0
+10,10
+
+(setq b (entlast))
+_OFFSET
+2
+(list b '(5 5))
+10,0
+_E
+(entget (entlast))

@@ -1,0 +1,54 @@
+---
+title: "Befehl STRAHL (RAY) in AutoCAD"
+metaTitle: "STRAHL (RAY) in AutoCAD: Linie ins Unendliche"
+description: "Wie STRAHL (RAY) in AutoCAD Konstruktionslinien zeichnet, die an einem Punkt beginnen und in eine Richtung ins Unendliche laufen, und wie sie zu Linien werden."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Was ist der Befehl STRAHL (RAY) in AutoCAD?","answer":"Eine Konstruktionslinie mit einem Anfang: Sie beginnt an einem Punkt und läuft in eine Richtung endlos weiter. Verwenden Sie sie als Bezug, an dem Sie zeichnen, und stutzen Sie sie dann zu einer Linie oder löschen Sie sie."},{"question":"Hat STRAHL ein Kürzel?","answer":"Nein: AutoCAD gibt STRAHL kein Alias, geben Sie also STRAHL vollständig ein, oder _RAY in jeder Sprache von AutoCAD. Er steht in der erweiterten Gruppe Zeichnen der Multifunktionsleiste und hier in den Zeichenwerkzeugen neben Konstruktionslinie."},{"question":"Wie lasse ich einen Strahl an einer Linie enden?","answer":"Stutzen Sie ihn: Starten Sie STUTZEN und wählen Sie den Teil jenseits der Linie. Was vom Startpunkt bis zur Linie bleibt, ist ein Linienobjekt."},{"question":"Was ist der Unterschied zwischen einem Strahl und einer Linie?","answer":"Eine Linie hat zwei Enden; ein Strahl hat eines, seinen Startpunkt, und läuft ohne Ende weiter. In einer DXF-Datei wird ein Strahl als RAY gespeichert und als Strahl wieder geöffnet."}]
+---
+
+STRAHL (RAY) zeichnet Strahlen: Konstruktionslinien, die an einem Punkt beginnen und in eine Richtung ins Unendliche laufen. Wählen Sie den Startpunkt, dann einen Durchgangspunkt: Der Strahl beginnt am ersten und verläuft durch den zweiten. Jeder weitere Punkt erzeugt einen weiteren Strahl vom selben Startpunkt, bis die Eingabetaste den Befehl beendet. Ein Durchgangspunkt auf dem Startpunkt wird mit `*Ungültig*` abgewiesen. Jeder Strahl liegt auf dem aktuellen Layer mit der aktuellen Farbe, dem aktuellen Linientyp und der aktuellen Linienstärke.
+
+Ein Strahl läuft quer durch die Ansicht, wie weit Sie auch pannen oder zoomen, und die Ausdehnung der Zeichnung lässt ihn außen vor, wie in AutoCAD. Der Objektfang Endpunkt findet seinen Startpunkt, Nächster, Lot und Schnittpunkt wirken entlang des Strahls. [`STUTZEN`](/docs/commands/trim) und [`BRUCH`](/docs/commands/break) machen aus dem Stück, das den Startpunkt enthält, eine Linie, und [`DEHNEN`](/docs/commands/extend) führt den Startpunkt zurück bis zu einer Kante hinter ihm. [`KLINIE`](/docs/commands/xline) zeichnet Linien, die in beide Richtungen laufen.
+
+- **Befehl:** `STRAHL`
+- **Auf Englisch:** `RAY`, in jeder Sprache als `_RAY` eingegeben
+- **Gruppe:** [Zeichnen](/docs/commands#draw)
+- **Ausprobieren:** [Öffnen Sie den Editor](/de/draw), geben Sie `STRAHL` ein und drücken Sie die Eingabetaste.
+
+## In der Befehlszeile [#session]
+
+Die Engine zeichnet sie und schreibt ihren Verlauf, wie Sie ihn eingeben würden: die Eingabeaufforderungen in der Reihenfolge von AutoCAD 2027, mit denselben Optionsbuchstaben.
+
+<Session name="ray" caption="Strahlen von einem Startpunkt durch drei Punkte, jeder läuft über den Rand der Ansicht hinaus." />
+
+## Was er noch nicht kann [#missing]
+
+LENGTHEN und JOIN an einem Strahl sind noch nicht mit AutoCAD abgeglichen, ebenso wenig die Menüs seiner Griffe.
+
+[Was er kann und noch nicht kann, im Detail (auf Englisch)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## Fragen [#questions]
+
+### Was ist der Befehl STRAHL (RAY) in AutoCAD?
+
+Eine Konstruktionslinie mit einem Anfang: Sie beginnt an einem Punkt und läuft in eine Richtung endlos weiter. Verwenden Sie sie als Bezug, an dem Sie zeichnen, und stutzen Sie sie dann zu einer Linie oder löschen Sie sie.
+
+### Hat STRAHL ein Kürzel?
+
+Nein: AutoCAD gibt STRAHL kein Alias, geben Sie also `STRAHL` vollständig ein, oder `_RAY` in jeder Sprache von AutoCAD. Er steht in der erweiterten Gruppe Zeichnen der Multifunktionsleiste und hier in den Zeichenwerkzeugen neben Konstruktionslinie.
+
+### Wie lasse ich einen Strahl an einer Linie enden?
+
+Stutzen Sie ihn: Starten Sie [`STUTZEN`](/docs/commands/trim) und wählen Sie den Teil jenseits der Linie. Was vom Startpunkt bis zur Linie bleibt, ist ein Linienobjekt.
+
+### Was ist der Unterschied zwischen einem Strahl und einer Linie?
+
+Eine Linie hat zwei Enden; ein Strahl hat eines, seinen Startpunkt, und läuft ohne Ende weiter. In einer DXF-Datei wird ein Strahl als RAY gespeichert und als Strahl wieder geöffnet.
+
+## Verwandte Befehle [#related]
+
+- [Befehl KLINIE (XLINE) in AutoCAD](/docs/commands/xline)
+- [Befehl LINIE (LINE) in AutoCAD](/docs/commands/line)
+- [Befehl STUTZEN (TRIM) in AutoCAD](/docs/commands/trim)
+- [Befehl DEHNEN (EXTEND) in AutoCAD](/docs/commands/extend)

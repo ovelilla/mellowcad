@@ -1,0 +1,50 @@
+QAFLAGS
+2
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_UCS
+_OB
+(list a '(30 0))
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+_UCS
+_W
+_UCS
+_OB
+(list c '(70 20))
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+_UCS
+_W
+_DIMLINEAR
+
+(list a '(30 0))
+_DIMLINEAR
+
+(list c '(70 20))
+_DIMRADIUS
+(list a '(30 0))
+_LENGTHEN
+(list c '(70 20))
+
+_PEDIT
+(list c '(70 20))
+_CHPROP
+(list a '(30 0))
+
+_T
+5
+
+(entget a)

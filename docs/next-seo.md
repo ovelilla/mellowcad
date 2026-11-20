@@ -22,9 +22,10 @@
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
-> hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; lo que queda del
-> punto 7, XLINE, RAY…, el siguiente) y otro idioma (el coreano o el chino, `global` como el
-> japonés), alternando, además de lo que queda de §7.
+> hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; XLINE y RAY, con sus
+> páginas, hechos el 20/11, sin publicar; lo que queda del punto 7, MINSERT…) y otro idioma (el
+> coreano o el chino, `global` como el japonés, el siguiente), alternando, además de lo que queda
+> de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -1061,4 +1062,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   ya no cuenta las directrices múltiples y las tablas entre lo que un DXF deja fuera.
   **Siguiente**, por orden del dueño: lo que queda del punto 7 del DXF (XLINE, RAY…), y después
   otro idioma (el coreano o el chino, `global`), alternando.
+- DXF, punto 7 de la fase 4 (XLINE y RAY): hechos el 20/11/2026, sin publicar
+  (`docs/next-dxf.md`), las dos entidades y sus comandos, con su página `/docs/commands/xline` y
+  `/ray` en los doce idiomas (dos URL nuevas por idioma: 24, a la cola de indexación de §7 cuando
+  el dueño publique). Las páginas «abrir DXF online», en los doce idiomas, ya no cuentan las líneas
+  auxiliares y los rayos entre lo que queda fuera; «editar DXF online» y la portada no cambian.
+  **Siguiente**, por orden del dueño: otro idioma (el coreano o el chino, `global`), y después lo
+  que queda del punto 7 (MINSERT…), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

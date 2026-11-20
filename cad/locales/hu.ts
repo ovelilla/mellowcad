@@ -139,7 +139,9 @@ export const hu: EngineLocale = {
       "solid": "2D tömör",
       "face3d": "3D lap",
       "leader": "Mutató",
-      "wipeout": "Kitakarás"
+      "wipeout": "Kitakarás",
+      "xline": "Szerkesztővonal",
+      "ray": "Sugár"
     },
     "description": {
       "U": "Az utolsó művelet visszavonása",
@@ -453,6 +455,26 @@ export const hu: EngineLocale = {
             "other": "Többszörös mutató"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Szvonal",
+            "other": "Szvonal"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Sugárvonal",
+            "other": "Sugárvonal"
+          }
+        ]
       ]
     },
     "array": {
@@ -666,6 +688,15 @@ export const hu: EngineLocale = {
         "positionX": "Pozíció - X",
         "positionY": "Pozíció - Y",
         "positionZ": "Pozíció - Z",
+        "basePointX": "Bázispont - X",
+        "basePointY": "Bázispont - Y",
+        "basePointZ": "Bázispont - Z",
+        "secondPointX": "Második pont - X",
+        "secondPointY": "Második pont - Y",
+        "secondPointZ": "Második pont - Z",
+        "directionVectorX": "Irányvektor - X",
+        "directionVectorY": "Irányvektor - Y",
+        "directionVectorZ": "Irányvektor - Z",
         "scaleX": "Lépték - X",
         "scaleY": "Lépték - Y",
         "scaleZ": "Lépték - Z",
@@ -789,6 +820,13 @@ export const hu: EngineLocale = {
       "LINE": [
         "VONAL",
         "VO"
+      ],
+      "XLINE": [
+        "SZVONAL",
+        "SV"
+      ],
+      "RAY": [
+        "SUGÁR"
       ],
       "PLINE": [
         "VLÁNC",
@@ -1400,6 +1438,16 @@ export const hu: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Vízsz",
+        "Ver": "Függ",
+        "Ang": "sZög",
+        "Bisect": "feLező",
+        "Offset": "Eltolás",
+        "Reference": "Referencia",
+        "Through": "Kijelölt",
+        "Thru": "Kijel"
+      },
       "-OSNAP": {
         "ENDpoint": "VÉGpont",
         "MIDpoint": "FELezőpont",
@@ -3106,6 +3154,24 @@ export const hu: EngineLocale = {
       "solideditTaperAxis": "Adjon meg egy másik pontot a szűkítés tengelyén",
       "solideditTaperAngle": "Adja meg a szűkítési szöget",
       "specifyAPoint": "Adja meg a pontot",
+      "specifyAPointOr": "Adjon meg egy pontot vagy",
+      "specifyThroughPoint": "Adja meg, hogy mely ponton keresztül",
+      "specifyThroughPointAxis": "Adja meg, hogy mely ponton keresztül",
+      "xlineAngleOr": [
+        "Adja meg a szerkesztővonal szögét (",
+        [
+          "angle"
+        ],
+        ") vagy"
+      ],
+      "xlineAngle": "Adja meg a szerkesztővonal szögét",
+      "selectLineObject": "Válasszon ki egy vonalat",
+      "specifyAngleVertexPoint": "Adja meg a szög csúcspontját",
+      "specifyAngleStartPoint": "Adja meg a szög kezdőpontját",
+      "specifyAngleEndPoint": "Adja meg a szög végpontját",
+      "xlineOffsetDistanceOr": "Adja meg a párhuzamos távolságot vagy",
+      "specifySideToOffset": "Adja meg, hogy melyik oldalra?",
+      "rayStartPoint": "Adja meg a kezdőpontot",
       "selectObjectToDivide": "Válasszon felosztani kívánt objektumot",
       "selectObjectToMeasure": "Válasszon beosztani kívánt objektumot",
       "divideCountOr": "Adja meg a szakaszok számát vagy",
@@ -3146,6 +3212,7 @@ export const hu: EngineLocale = {
       "wipeoutFramesDisplay": "Megjelenítés nyomtatás nélkül"
     },
     "promptForms": {
+      "specifySideToOffset": "open",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5070,6 +5137,9 @@ export const hu: EngineLocale = {
       "chamferNot3dPolyline": "  3D vonallánc objektumokat nem lehet letörni.",
       "filletNot3dPolyline": "  3D vonallánc objektumokat nem lehet lekerekíteni.",
       "collinearCannotFillet": "Egyvonalú vonalak nem lehetnek lekerekíteni.",
+      "capNeedsLineOrRay": "A lezárás lekerekítésénél az első rajzelem vonal vagy sugár kell legyen.",
+      "startPointMustDiffer": "A szögszár pontja és a csúcspont nem eshet egybe",
+      "noUsableObjectSelected": "Nincs használható objektum kiválasztva",
       "collinearCannotChamfer": "Egyvonalú vonalak nem lehetnek letörni.",
       "cannotChamferItself": "A rajzelem nem törhető le saját magával.",
       "segmentsNotConsecutive": "Vonalláncokhoz tartozó vonalaknak egymást követőnek vagy egy szakasszal elválasztottnak kell lenniük",
@@ -6110,6 +6180,8 @@ export const hu: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "KIOSZT"
           }
         ]
@@ -6331,6 +6403,46 @@ export const hu: EngineLocale = {
         ", Delta Z =",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   bázispont, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   egységirány, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   szög az XY síkban =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   szög az XY síktól mérve =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -8854,6 +8966,10 @@ export const hu: EngineLocale = {
         "Noorigin": "Nincs"
       },
       "OFFSET": {
+        "Through": "Kijelölt"
+      },
+      "XLINE": {
+        "Reference": "Referencia",
         "Through": "Kijelölt"
       },
       "EXTRUDE": {

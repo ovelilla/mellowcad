@@ -124,7 +124,9 @@ AutoCAD's samples (37 hatches that drew no pattern) and acad.pat's inch lines of
 LINE, ANSI31 and others in metric drawings (408 hatches drawn 25.4 times too sparse before): 445
 hatches of 27 samples, and an ANSI31 of 2 other programs' files, drawn as their files say, 3DFACE
 with its WCS corners and hidden edges (face3d/f09, AutoCAD's own file; the 30 of 8 of AutoCAD's
-samples, the labels' backgrounds of its blocks, and 1 of another program's file), WIPEOUT, the
+samples, the labels' backgrounds of its blocks, and 1 of another program's file), XLINE and RAY
+with their WCS base point and unit direction (xline/x10, AutoCAD's own file; none in the corpus),
+WIPEOUT, the
 one-pixel image clipped to its boundary turned into its vertices (10–13, 14/24, a rectangle's 71
 1 or a polygon's 71 2; its plane U×V's; wipeout/w15, AutoCAD's own file: the 11 of 3 of AutoCAD's
 samples, the masks behind a civil plan's labels), and WIPEOUTFRAME from its drawing variable
@@ -253,7 +255,7 @@ line 23.`, t-no-eof), the drawing left as it was; what follows EOF unread, as Au
 `online` for "on line" is Autodesk's). A 50,000-object DXF of 7.1 MB reads in 0.2 s
 
 **Deviations:** what the model has no object for is left out and counted at the command line by
-its DXF type (`5 objects not opened: 1 XLINE, 1 RAY, …`), a layout's apart (`1 object in a
+its DXF type (`5 objects not opened: 1 MLINE, 1 TOLERANCE, …`), a layout's apart (`1 object in a
 layout not opened.`), an object too malformed to make too (`1 object could not be read.`): WHY
 words of our own, AutoCAD having an object for all of it and nothing to say (docs/next-dxf.md);
 an invisible object (60 1) is not opened, and not counted, WHY: AutoCAD draws and selects none,
@@ -296,7 +298,7 @@ and a tilted one's direction (11) read in the WCS, its corner (10) in its OCS as
 (**unverified**: no such table probed)
 
 **Missing:** TRACE (none in the corpus; AutoCAD 2027's TRACE is the markup feature, solid2d/p04),
-XLINE, RAY, TOLERANCE, MLINE, meshes, the ordinate
+TOLERANCE, MLINE, meshes, the ordinate
 and arc-length dimensions, the ACIS objects (3DSOLID, REGION, BODY, SURFACE), layouts and what is
 in them; of an external reference, its drawing (above), XREF and -XREF (Attach, Overlay, Reload,
 Bind, Path…), the External References palette that AutoCAD 2027 opens on a drawing with one it
@@ -374,7 +376,10 @@ and plots them as its own file (g17), a
 point in the WCS with its thickness, plane and DXF 50, and `$PDMODE` and `$PDSIZE` (point/p04), a
 2D solid's corners in its OCS with its thickness and plane (solid2d/p08), a 3D face's WCS corners
 and, only when an edge is hidden, its 70 (face3d/f09: the console opens the 12 files of its drawing
-with no AUDIT error and plots them as its own), a wipeout as AutoCAD writes a new one: a one-pixel
+with no AUDIT error and plots them as its own), an xline and a ray as AutoCAD
+writes them, 10 and 11 in the WCS after AcDbXline or AcDbRay (xline/x10: the console opens the 12
+files of its drawing with no AUDIT error, finds its 6 objects and plots them as its own, to the
+pixel), a wipeout as AutoCAD writes a new one: a one-pixel
 image on the square of its boundary's larger side clipped to its vertices, its WIPEOUT and
 WIPEOUTVARIABLES classes in CLASSES (91 from 2004), 290 from 2010, and WIPEOUTFRAME as
 WIPEOUTVARIABLES' 70 (0 for OFF, 1 for the rest) and, Display but not plot, as its drawing

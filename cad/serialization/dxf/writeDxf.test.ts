@@ -248,6 +248,26 @@ describe("writeDxf", () => {
     }
   })
 
+  it("writes xlines and rays, read back the same", () => {
+    const drawing = parseDxf(fixture("xlines-2018")).drawing
+    const infinite = (entities: readonly Entity[]) =>
+      entities.filter((e) => e.type === "xline" || e.type === "ray")
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        const back = parseDxf(bytes).drawing
+        expect(shape(infinite(back.entities))).toEqual(
+          shape(infinite(drawing.entities))
+        )
+      }
+    }
+  })
+
   it("writes wipeouts and WIPEOUTFRAME, read back the same", () => {
     const drawing = parseDxf(fixture("wipeouts-2018")).drawing
     const wipeouts = (entities: readonly Entity[]) =>
@@ -669,6 +689,7 @@ describe("writeDxf", () => {
       "gradients-2018",
       "faces-2018",
       "wipeouts-2018",
+      "xlines-2018",
       "images-2018",
       "tables-2018",
       "mleaders-2018",

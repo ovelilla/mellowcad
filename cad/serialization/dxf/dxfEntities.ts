@@ -50,6 +50,8 @@ import {
   createHatch,
   createInsert,
   createLine,
+  createRay,
+  createXline,
   createMText,
   createPolyline,
   createPolyline3d,
@@ -148,6 +150,9 @@ export function dxfEntities(
       return made(circle(record, ctx))
     case "POINT":
       return made(pointObject(record, ctx))
+    case "XLINE":
+    case "RAY":
+      return made(infiniteLine(record, ctx))
     case "SOLID":
       return made(solid(record, ctx))
     case "3DFACE":
@@ -297,6 +302,19 @@ function line(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
   const n = normal(r)
   if (n) entity = withNormal(entity, n)
   return common(entity, r, ctx)
+}
+
+/**
+ * An XLINE or a RAY: its base point (10) and unit direction (11), both in the
+ * WCS (the DXF reference); a direction of no length makes none.
+ */
+function infiniteLine(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const base = point(r, 10)
+  const direction = point(r, 11)
+  if (!base || !direction) return null
+  const made =
+    r.type === "RAY" ? createRay(base, direction) : createXline(base, direction)
+  return made && common(made, r, ctx)
 }
 
 function circle(r: DxfRecord, ctx: DxfEntityContext): Entity | null {

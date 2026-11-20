@@ -1,0 +1,28 @@
+QAFLAGS
+2
+_RAY
+FOO
+0,0
+FOO
+10,5
+0,10
+
+(entget (entlast))
+_LIST
+_L
+
+(getvar "LASTPOINT")
+_RAY
+0,0
+0,0
+-5,0
+
+(cdr (assoc 0 (entget (entlast))))
+_RAY
+
+(getvar "LASTPOINT")
+_RAY
+1,2,3
+4,6,15
+
+(entget (entlast))

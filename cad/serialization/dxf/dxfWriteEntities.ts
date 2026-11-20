@@ -27,6 +27,8 @@ import {
   MLeaderEntity,
   MLeaderColor,
   LineEntity,
+  RayEntity,
+  XlineEntity,
   MTextEntity,
   Polyline3dEntity,
   PolylineEntity,
@@ -183,6 +185,9 @@ export function writeEntity(
       return circle(ctx, entity, owner)
     case "point":
       return pointObject(ctx, entity, owner)
+    case "xline":
+    case "ray":
+      return infiniteLine(ctx, entity, owner)
     case "solid2d":
       return solid(ctx, entity, owner)
     case "face3d":
@@ -423,6 +428,20 @@ function line(ctx: DxfWriteContext, e: LineEntity, owner: string): void {
   out.point(10, e.start.x, e.start.y, lineStartZ(e))
   out.point(11, e.end.x, e.end.y, lineEndZ(e))
   writeNormal(ctx, e)
+}
+
+/** Its base point and unit direction in the WCS, as AutoCAD writes them (xline/d08). */
+function infiniteLine(
+  ctx: DxfWriteContext,
+  e: XlineEntity | RayEntity,
+  owner: string
+): void {
+  const { out } = ctx
+  const ray = e.type === "ray"
+  head(ctx, ray ? "RAY" : "XLINE", e, owner)
+  out.str(100, ray ? "AcDbRay" : "AcDbXline")
+  out.point(10, e.base.x, e.base.y, e.elevation ?? 0)
+  out.point(11, e.direction.x, e.direction.y, e.directionZ ?? 0)
 }
 
 function circle(ctx: DxfWriteContext, e: CircleEntity, owner: string): void {

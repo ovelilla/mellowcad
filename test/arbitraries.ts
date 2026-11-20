@@ -22,6 +22,8 @@ import {
   type PointEntity,
   type Solid2dEntity,
   type WipeoutEntity,
+  type XlineEntity,
+  type RayEntity,
   type ImageEntity,
   type MTextAttachment,
   type TableCell,
@@ -210,6 +212,47 @@ export const solid2dEntity: fc.Arbitrary<Solid2dEntity> = fc
       "solid2d"
     )
   )
+
+/**
+ * An XLINE or a RAY: a base and a unit direction, out of the plan a quarter
+ * of the time.
+ */
+function infiniteLineEntity<T extends XlineEntity | RayEntity>(
+  type: T["type"]
+): fc.Arbitrary<T> {
+  return fc
+    .tuple(
+      point,
+      fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+      fc.oneof(
+        { weight: 3, arbitrary: fc.constant(0) },
+        {
+          weight: 1,
+          arbitrary: fc.double({ min: -1.2, max: 1.2, noNaN: true }),
+        }
+      )
+    )
+    .map(([base, angle, tilt]) => {
+      const flat = Math.cos(tilt)
+      const direction = {
+        x: Math.cos(angle) * flat,
+        y: Math.sin(angle) * flat,
+      }
+      return withId<T>(
+        {
+          type,
+          layerId: DEFAULT_LAYER_ID,
+          base,
+          direction,
+          ...(tilt !== 0 ? { directionZ: Math.sin(tilt) } : {}),
+        } as Omit<T, "id">,
+        type
+      )
+    })
+}
+
+export const xlineEntity = infiniteLineEntity<XlineEntity>("xline")
+export const rayEntity = infiniteLineEntity<RayEntity>("ray")
 
 /** A wipeout: three to six vertices, in its plane. */
 export const wipeoutEntity: fc.Arbitrary<WipeoutEntity> = fc
@@ -1451,7 +1494,9 @@ export const entity: fc.Arbitrary<Entity> = fc
       wipeoutEntity,
       imageEntity,
       tableEntity,
-      mleaderEntity
+      mleaderEntity,
+      xlineEntity,
+      rayEntity
     ),
     zValue,
     zValue,
@@ -1489,6 +1534,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       return flat
     }
     let placed: Entity = withElevation(flat, elevation)
+    // An XLINE's or a RAY's points are the WCS's, its rise in its direction.
+    if (placed.type === "xline" || placed.type === "ray") return placed
     if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
     if (hasThickness(placed)) placed = withThickness(placed, thickness)
     if (normal) placed = withNormal(placed, normal)

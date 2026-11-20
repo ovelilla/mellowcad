@@ -22,6 +22,8 @@ import {
   Entity,
   PolylineWidth,
   entityShape,
+  InfiniteLineEntity,
+  nextEntityId,
 } from "../../domain/entities"
 import {
   offsetPolyline,
@@ -99,6 +101,8 @@ import { typedPick } from "./typedPick"
 /** A resolved offset copy (no id/layer yet), used for preview and commit. */
 type OffsetGeom =
   | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
+  /** An XLINE's or a RAY's copy: the source moved across its run. */
+  | { readonly kind: "infinite"; readonly entity: InfiniteLineEntity }
   | { readonly kind: "circle"; readonly center: Vec2; readonly radius: number }
   | {
       readonly kind: "arc"
@@ -493,6 +497,7 @@ export class OffsetTool implements Tool {
         case "polyline":
         case "spline":
         case "ellipse":
+        case "infinite":
           return entityScenePrimitive(
             viewport,
             offsetToEntity(geom, "0", OFFSET_PREVIEW_ID),
@@ -925,6 +930,9 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
   switch (entity.type) {
     case "line":
       return { kind: "line", a: entity.start, b: entity.end }
+    case "xline":
+    case "ray":
+      return { kind: "infinite", entity }
     case "circle":
       return { kind: "circle", center: entity.center, radius: entity.radius }
     case "arc":
@@ -980,6 +988,9 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "arc":
     case "polyline":
     case "ellipse":
+    // A copy of its type, across its run (xline/i04, i12).
+    case "xline":
+    case "ray":
     // Taken, then `Cannot offset that object.` at the side (leader/p21).
     case "leader":
       return "offsets"
@@ -1049,6 +1060,14 @@ function computeOffset(
       const o = offsetSegment(source.start, source.end, distance, side)
       return o ? [{ kind: "line", a: o.a, b: o.b }] : CANNOT_OFFSET
     }
+    case "xline":
+    case "ray": {
+      // A side on it takes the left of its direction (xline/i12).
+      const across = V.normalize(V.perpendicular(source.direction))
+      if (V.lengthSq(across) === 0) return CANNOT_OFFSET
+      const toward = V.dot(V.sub(side, source.base), across) < 0 ? -1 : 1
+      return [infiniteMoved(source, V.scale(across, toward * distance))]
+    }
     case "circle": {
       const radius = concentricRadius(
         source.center,
@@ -1105,6 +1124,14 @@ function computeOffset(
   }
 }
 
+/** An XLINE or a RAY moved by `delta`, as an offset copy. */
+function infiniteMoved(source: InfiniteLineEntity, delta: Vec2): OffsetGeom {
+  return {
+    kind: "infinite",
+    entity: { ...source, base: V.add(source.base, delta) },
+  }
+}
+
 function polylineCopies(shapes: readonly OffsetPolylineShape[]): OffsetResult {
   if (shapes.length === 0) return CANNOT_OFFSET
   return shapes.map((shape) => ({ kind: "polyline", ...shape }))
@@ -1130,6 +1157,17 @@ function curveCopies(shapes: readonly CurveOffsetShape[]): OffsetResult {
 function computeThrough(picked: Entity, point: Vec2): OffsetResult {
   const source = entityShape(picked)
   switch (source.type) {
+    case "xline":
+    case "ray": {
+      // Moved across to the point, a RAY's start held square to it even
+      // behind it (xline/i12).
+      const along = V.normalize(source.direction)
+      if (V.lengthSq(along) === 0) return CANNOT_OFFSET
+      const offset = V.sub(point, source.base)
+      const delta = V.sub(offset, V.scale(along, V.dot(offset, along)))
+      if (V.length(delta) < 1e-9) return ON_OBJECT
+      return [infiniteMoved(source, delta)]
+    }
     case "line": {
       const foot = closestPointOnInfiniteLine(
         source.start,
@@ -1230,6 +1268,8 @@ function offsetToEntity(
   switch (geom.kind) {
     case "line":
       return createLine(geom.a, geom.b, layerId, id)
+    case "infinite":
+      return { ...geom.entity, layerId, id: id ?? nextEntityId() }
     case "circle":
       return createCircle(geom.center, geom.radius, layerId, id)
     case "arc":

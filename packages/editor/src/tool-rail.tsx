@@ -2,6 +2,8 @@
 
 import { Fragment, useState, type ReactElement } from "react"
 import {
+  MoveDiagonal,
+  MoveUpRight,
   ArrowRightToLine,
   ArrowUpFromLine,
   Box,
@@ -104,6 +106,8 @@ import type { PieceProps } from "./piece"
 const TOOL_ICONS: Record<string, LucideIcon> = {
   select: MousePointer2,
   line: Slash,
+  xline: MoveDiagonal,
+  ray: MoveUpRight,
   polyline: PolylineIcon,
   polyline3d: Polyline3dIcon,
   circle: CircleRadiusIcon,
@@ -273,6 +277,10 @@ const PALETTE: readonly PaletteSection[] = [
       // On the ribbon Spline Fit and Spline CV are in the expanded Draw
       // panel; the palette has room for their drop-down.
       flyout("spline", ["splinefit", "splinecv"]),
+      // Construction Line and Ray follow them in the expanded Draw panel
+      // (acad.cuix ID_PanelDraw).
+      "xline",
+      "ray",
       // Also in the expanded Draw panel (acad.cuix ID_PanelDraw), REGION
       // in its Boundary drop-down.
       "polyline3d",

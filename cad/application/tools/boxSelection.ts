@@ -1,4 +1,4 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { V, Vec2 } from "../../geometry/Vec2"
 import { infiniteLineIntersection } from "../../geometry/primitives"
 import { DocumentReader } from "../../domain/Document"
 import {
@@ -7,6 +7,9 @@ import {
   EntityId,
   entityWithinRect,
   entityCrossesRect,
+  infiniteLineSpan,
+  infinitePointAt,
+  isInfiniteLine,
 } from "../../domain/entities"
 import { Viewport, entityInView } from "../Viewport"
 import { drawsTilted, entityScreenOutline } from "../viewOutline"
@@ -95,7 +98,7 @@ export function objectsInWindow(
       if (onScreen(entity, blocks)) hits.push(entity.id)
       continue
     }
-    const seen = entityInView(entity, viewport)
+    const seen = entityInView(visiblePart(entity, viewport), viewport)
     const matches = crossing
       ? entityWithinRect(seen, min, max, blocks) ||
         entityCrossesRect(seen, min, max, blocks)
@@ -103,6 +106,40 @@ export function objectsInWindow(
     if (matches) hits.push(entity.id)
   }
   return hits
+}
+
+/**
+ * An XLINE or a RAY as the stretch of it the view shows: a window takes one
+ * when it holds all of that (xline/i11: a window wider than the view takes a
+ * horizontal xline, one inside it not), and one off the view, nothing.
+ * Anything else as it is.
+ */
+function visiblePart(entity: Entity, viewport: Viewport): Entity {
+  if (!isInfiniteLine(entity)) return entity
+  // Clipped on the screen, which a turned view's world box is not.
+  const origin = viewport.worldToScreen(infinitePointAt(entity, 0))
+  const along = V.sub(
+    viewport.worldToScreen(infinitePointAt(entity, 1)),
+    origin
+  )
+  let t0 = entity.type === "ray" ? 0 : -Infinity
+  let t1 = Infinity
+  for (const [from, d, size] of [
+    [origin.x, along.x, viewport.width],
+    [origin.y, along.y, viewport.height],
+  ] as const) {
+    if (Math.abs(d) < 1e-12) {
+      if (from < 0 || from > size) return infiniteLineSpan(entity, 0, 0)
+      continue
+    }
+    const a = -from / d
+    const b = (size - from) / d
+    t0 = Math.max(t0, Math.min(a, b))
+    t1 = Math.min(t1, Math.max(a, b))
+  }
+  return t0 <= t1 && Number.isFinite(t0) && Number.isFinite(t1)
+    ? infiniteLineSpan(entity, t0, t1)
+    : infiniteLineSpan(entity, 0, 0)
 }
 
 /**
@@ -220,6 +257,9 @@ export function objectsInPolygon(
   const hits: EntityId[] = []
   for (const entity of document.getEntities()) {
     if (!include(entity)) continue
+    // WHY: a window polygon never takes an XLINE or a RAY, however much of
+    // it it holds (xline/i09); a crossing one takes what it crosses.
+    if (!crossing && isInfiniteLine(entity)) continue
     const outline = entityScreenOutline(
       viewport,
       entity,

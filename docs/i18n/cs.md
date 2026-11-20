@@ -133,6 +133,7 @@ Polish, 79 by the row's place, 84 ours (11 of them key names and file types).
 
 | Area | English | Czech | Source | Verified |
 | --- | --- | --- | --- | --- |
+| Palette | An XLINE's and a RAY's Basepoint Y | Refbod Y | ax26res 64, set right: it says `Refbox Y` | — |
 | Status bar | Object Snap, Polar Tracking, Object Snap Tracking, Grid, Snap Mode | Uchopení objektů, Polární trasování, Trasování uchopení objektů, Rastr, Režim kroku | acadres 20020–20029, dwgaidsRes 2 | yes |
 | Ribbon | Draw, Modify, Annotation, Block, Utilities, Clipboard | Kreslit, Modifikace, Poznámka, Blok, Pomůcky, Schránka | the desktop (names/d00) | yes |
 | Tools | Line, Polyline, Move, Rotate, Trim, Copy, Mirror, Fillet, Stretch, Scale | Úsečka, Křivka, Posun, Otočit, Oříznout, Kopírovat, Zrcadlit, Zaoblit, Protáhnout, Měřítko | the ribbon (names/d00) | yes |

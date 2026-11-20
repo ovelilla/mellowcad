@@ -146,6 +146,7 @@ rest ours, below. Changed from the proposal: `Gedreht` for a rotated dimension (
 |  | Change properties, Pan by points, Multiple redo, Linetype scale, Elevation | Eigenschaften ändern, Pan nach Punkten, Mehrfach wiederherstellen, Linientypfaktor, Erhebung | ours, from the neighbouring tables' words | — |
 | Descriptions | The tools' descriptions | «Macht den letzten Vorgang rückgängig»… | ours, in the style of the cuix tooltips | — |
 | Palette | Normal X, Major axis vector X, Text alignment X, First X, Definition points (our own rows); Weight | Normale X, Hauptachsenvektor X, Textausrichtung X, Erstes X, Definitionspunkte; Gewicht | ours, worded from the palette's; ax26res 1255 says `Stärke` | — |
+| Palette | An XLINE's and a RAY's Basepoint Z, Second point Y | Basispunkt Z, Zweiter Punkt Y | ax26res 64, 65, set right: they say `Basispunktt Z`, `Zweiter Punk Y` | — |
 | Objects | Plural entity names; the 2D solid | Linie/Linien, Bogen/Bögen…; Körper | the tables' singulars, plurals ours; `Körper` the Properties palette's (names/d06) | the solid |
 | ViewCube | The cube's faces, the compass, the UCS menu | OBEN, UNTEN, VORNE, HINTEN, LINKS, RECHTS; N, O, S, W; `WKS`, `Neues BKS`, `Unbenannt` | the desktop (names/d05) | yes |
 

@@ -135,7 +135,9 @@
       "solid": "Obszar",
       "face3d": "Powierzchnia 3D",
       "leader": "Linia odniesienia",
-      "wipeout": "Przykryj"
+      "wipeout": "Przykryj",
+      "xline": "Linia konstrukcyjna",
+      "ray": "Półprosta"
     },
     "description": {
       "U": "Cofa ostatnią czynność",
@@ -242,7 +244,9 @@
       "wipeout": "{count, plural, one {Przykrycie} few {Przykrycia} many {Przykryć} other {Przykrycia}}",
       "image": "{count, plural, one {Obraz rastrowy} few {Obrazy rastrowe} many {Obrazów rastrowych} other {Obrazu rastrowego}}",
       "table": "{count, plural, one {Tabela} few {Tabele} many {Tabel} other {Tabeli}}",
-      "mleader": "{count, plural, one {Wielolinia odniesienia} few {Wielolinie odniesienia} many {Wielolinii odniesienia} other {Wielolinii odniesienia}}"
+      "mleader": "{count, plural, one {Wielolinia odniesienia} few {Wielolinie odniesienia} many {Wielolinii odniesienia} other {Wielolinii odniesienia}}",
+      "xline": "{count, plural, one {Prosta} few {Proste} many {Prostych} other {Prostych}}",
+      "ray": "{count, plural, one {Półprosta} few {Półproste} many {Półprostych} other {Półprostych}}"
     },
     "array": {
       "rectangular": "Szyk (Prostokątny)",
@@ -425,6 +429,15 @@
         "positionX": "X położenia",
         "positionY": "Y położenia",
         "positionZ": "Z położenia",
+        "basePointX": "X punktu bazowego",
+        "basePointY": "Y punktu bazowego",
+        "basePointZ": "Z punktu bazowego",
+        "secondPointX": "X drugiego punktu",
+        "secondPointY": "Y drugiego punktu",
+        "secondPointZ": "Z drugiego punktu",
+        "directionVectorX": "X wektora kierunkowego",
+        "directionVectorY": "Y wektora kierunkowego",
+        "directionVectorZ": "Z wektora kierunkowego",
         "scaleX": "Skala X",
         "scaleY": "Skala Y",
         "scaleZ": "Skala Z",
@@ -546,6 +559,8 @@
   "commands": {
     "names": {
       "LINE": ["LINIA", "L"],
+      "XLINE": ["PROSTA", "PRT"],
+      "RAY": ["PÓŁPROSTA"],
       "PLINE": ["PLINIA", "PL"],
       "3DFACE": ["3WPOW", "3PO"],
       "3DPOLY": ["3WPLINIA", "3P"],
@@ -705,6 +720,16 @@
       "WIPEOUT": ["PRZYKRYJ"]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Poziom",
+        "Ver": "pIon",
+        "Ang": "Kąt",
+        "Bisect": "Dwusieczna",
+        "Offset": "Odsuń",
+        "Reference": "oDniesienie",
+        "Through": "przezPunkt",
+        "Thru": "Przez"
+      },
       "-OSNAP": {
         "ENDpoint": "KOŃcowy",
         "MIDpoint": "SYMetria",
@@ -2323,6 +2348,18 @@
       "solideditTaperAxis": "Określ inny punkt wzdłuż osi zwężania",
       "solideditTaperAngle": "Określ kąt zwężania",
       "specifyAPoint": "Określ punkt",
+      "specifyAPointOr": "Określ punkt lub",
+      "specifyThroughPoint": "Określ punkt przechodni",
+      "specifyThroughPointAxis": "Określ punkt przechodni",
+      "xlineAngleOr": "Podaj kąt prostej ({angle}) lub",
+      "xlineAngle": "Podaj kąt prostej",
+      "selectLineObject": "Wybierz obiekt liniowy",
+      "specifyAngleVertexPoint": "Określ wierzchołek kąta",
+      "specifyAngleStartPoint": "Określ pierwsze ramię kąta",
+      "specifyAngleEndPoint": "Określ drugie ramię kąta",
+      "xlineOffsetDistanceOr": "Określ odległość odsunięcia lub",
+      "specifySideToOffset": "Określ stronę odsunięcia",
+      "rayStartPoint": "Określ punkt początkowy",
       "selectObjectToDivide": "Wybierz obiekt do podziału",
       "selectObjectToMeasure": "Wybierz obiekt do odmierzenia",
       "divideCountOr": "Podaj liczbę segmentów lub",
@@ -2363,6 +2400,7 @@
       "wipeoutFramesDisplay": "Wyświetl bez kreślenia"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -2690,6 +2728,9 @@
       "chamferNot3dPolyline": "  Obiekty 3D typu Polilinia nie mogą być fazowane.",
       "filletNot3dPolyline": "  Obiekty 3D typu Polilinia nie mogą być zaokrąglane.",
       "collinearCannotFillet": "Linie współliniowe nie mogą być zaokrąglane.",
+      "capNeedsLineOrRay": "Pierwszym elementem dla łukowego zakończenia musi być linia lub półprosta.",
+      "startPointMustDiffer": "Punkt na pierwszym ramieniu kąta musi się różnić od wierzchołka",
+      "noUsableObjectSelected": "Nie wybrano obiektu możliwego do wykorzystania",
       "collinearCannotChamfer": "Linie współliniowe nie mogą być fazowane.",
       "cannotChamferItself": "Nie można utworzyć fazy elementu przy pomocy jego samego.",
       "segmentsNotConsecutive": "Segmenty polilinii muszą się stykać lub być oddzielone jednym segmentem",
@@ -2850,7 +2891,7 @@
       "notAFitPoint": "Nie jest punktem dopasowania.",
       "notAControlVertex": "Nie jest wierzchołkiem sterującym.",
       "allAdditionsUndone": "Wszystkie dodatkowe punkty zostały cofnięte.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {SZYK}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {KONIEC SEKWENCJI} text {TEXT} mtext {MTEXT} attdef {DEFINICJA ATRYBUTU} attribute {ATRYBUT} dimension {DIMENSION} hatch {HATCH} insert {ODNIESIENIE DO BLOKU} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {POWIERZCHNIA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} xline {XLINE} ray {RAY} other {SZYK}}",
       "listObject": "                  {name}    Warstwa: \"{layer}\"",
       "listSpace": "                              Obszar: Obszar modelu",
       "listColor": "                   Kolor: {color}    Rodzaj linii: \"{linetype}\"",
@@ -2869,6 +2910,10 @@
       "listLineLength": "          {inUcs, select, yes {W bieżącym LUW, } other {}}Długość = {length}, Kąt w pł. XY = {angle}",
       "listLine3d": "                  Długość 3D = {length}, Kąt względem pł. XY = {angle}",
       "listLineDelta": "                  Przyrost X = {x}, Przyrost Y = {y}, Przyrost Z = {z}",
+      "listBasePoint": "                   punkt bazowy, X={x} Y={y} Z={z}",
+      "listUnitDirection": "                   kierunek jednostek, X={x} Y={y} Z={z}",
+      "listAngleInXy": "                   kąt w płaszczyźnie XY ={angle}",
+      "listAngleFromXy": "                   kąt względem płaszczyzny XY ={angle}",
       "listCenter": "            środek punkt, X={x}  Y={y}  Z={z}",
       "listRadius": "           promień {radius}",
       "listLwRadius": "            promień {radius}",
@@ -3380,6 +3425,10 @@
         "Noorigin": "Róg"
       },
       "OFFSET": {
+        "Through": "przezPunkt"
+      },
+      "XLINE": {
+        "Reference": "oDniesienie",
         "Through": "przezPunkt"
       },
       "EXTRUDE": {

@@ -331,7 +331,7 @@ describe("the engine's English surface", () => {
           " 20",
           "1",
           "  0",
-          "XLINE",
+          "MLINE",
           "  8",
           "0",
           " 10",
@@ -2418,6 +2418,47 @@ describe("the engine's English surface", () => {
         .do("triangle", (c) => c.enter())
         .do("exit", (c) => c.enter())
         .do("pick", (c) => c.click(at(5, 2)))
+    )
+    walk("XLINE", createHarness(), (s) =>
+      s
+        .do("XLINE", (c) => c.command("XL"))
+        .do("refused", (c) => c.type("FOO").enter())
+        .do("point", (c) => c.type("0,0").enter())
+        .do("on the base", (c) => c.type("0,0").enter())
+        .do("through", (c) => c.type("10,5").enter())
+        .do("end", (c) => c.enter())
+        .do("Hor", (c) => c.command("XLINE").type("H").enter())
+        .do("through", (c) => c.type("0,20").enter().enter())
+        .do("Ang", (c) => c.command("XLINE").type("A").enter())
+        .do("Reference", (c) => c.type("R").enter())
+        .do("miss", (c) => c.click(at(500, 500)))
+        .do("line object", (c) => c.click(at(5, 20)))
+        .do("angle", (c) => c.type("30").enter())
+        .do("through", (c) => c.type("0,0").enter().enter())
+        .do("Bisect", (c) => c.command("XLINE").type("B").enter())
+        .do("Enter refused", (c) => c.enter())
+        .do("vertex", (c) => c.type("0,0").enter())
+        .do("start on vertex", (c) => c.type("0,0").enter())
+        .do("start", (c) => c.type("10,0").enter())
+        .do("end", (c) => c.type("0,10").enter().enter())
+        .do("Offset", (c) => c.command("XLINE").type("O").enter())
+        .do("zero", (c) => c.type("0").enter())
+        .do("distance", (c) => c.type("5").enter())
+        .do("line object", (c) => c.click(at(5, 20)))
+        .do("side", (c) => c.type("5,30").enter())
+        .do("exit", (c) => c.enter())
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("pick", (c) => c.click(at(5, 25)))
+    )
+    walk("RAY", createHarness(), (s) =>
+      s
+        .do("RAY", (c) => c.command("RAY"))
+        .do("start", (c) => c.type("0,0").enter())
+        .do("on the start", (c) => c.type("0,0").enter())
+        .do("through", (c) => c.type("10,0,10").enter())
+        .do("end", (c) => c.enter())
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("EXPLODE", (c) => submit(c, "EXPLODE", "L", ""))
     )
     walk("WIPEOUT", createHarness(), (s) =>
       s

@@ -24,6 +24,8 @@ export type {
   Polyline3dFit,
   Face3dEntity,
   WipeoutEntity,
+  XlineEntity,
+  RayEntity,
   ImageEntity,
   ImageReference,
   TableEntity,
@@ -141,6 +143,8 @@ export {
   createPolyline3d,
   createFace3d,
   createWipeout,
+  createXline,
+  createRay,
   createImage,
   createHatch,
   createInsert,
@@ -240,6 +244,23 @@ export {
   wipeoutOutlinePolyline,
   withWipeoutVertex,
 } from "./wipeouts"
+
+export {
+  closestOnInfiniteLine,
+  infiniteBase,
+  infiniteDirection,
+  infiniteLineAlong,
+  infiniteLineBounds,
+  infiniteLineClip,
+  infiniteLineReaching,
+  infiniteLineSpan,
+  infinitePieceOf,
+  infiniteParamNearest,
+  infinitePointAt,
+  isInfiniteLine,
+  withInfinitePlacement,
+} from "./infiniteLines"
+export type { InfiniteLineEntity } from "./infiniteLines"
 
 export type { ImageLabel } from "./images"
 export {

@@ -139,7 +139,9 @@ export const ru: EngineLocale = {
       "solid": "2D-фигура",
       "face3d": "3D-грань",
       "leader": "Выноска",
-      "wipeout": "Маскировка"
+      "wipeout": "Маскировка",
+      "xline": "Вспомогательная линия",
+      "ray": "Луч"
     },
     "description": {
       "U": "Отмена предыдущей операции",
@@ -499,6 +501,30 @@ export const ru: EngineLocale = {
             "other": "Мультивыноски"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Прямая",
+            "few": "Прямые",
+            "many": "Прямые",
+            "other": "Прямые"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Луч",
+            "few": "Лучи",
+            "many": "Лучи",
+            "other": "Лучи"
+          }
+        ]
       ]
     },
     "array": {
@@ -720,6 +746,15 @@ export const ru: EngineLocale = {
         "positionX": "Положение X",
         "positionY": "Положение Y",
         "positionZ": "Положение Z",
+        "basePointX": "Базовая точка X",
+        "basePointY": "Базовая точка Y",
+        "basePointZ": "Базовая точка Z",
+        "secondPointX": "Вторая точка X",
+        "secondPointY": "Вторая точка Y",
+        "secondPointZ": "Вторая точка Z",
+        "directionVectorX": "Направляющий вектор X",
+        "directionVectorY": "Направляющий вектор Y",
+        "directionVectorZ": "Направляющий вектор Z",
         "scaleX": "Масштаб X",
         "scaleY": "Масштаб Y",
         "scaleZ": "Масштаб Z",
@@ -843,6 +878,13 @@ export const ru: EngineLocale = {
       "LINE": [
         "ОТРЕЗОК",
         "ОТ"
+      ],
+      "XLINE": [
+        "ПРЯМАЯ",
+        "ПР"
+      ],
+      "RAY": [
+        "ЛУЧ"
       ],
       "PLINE": [
         "ПЛИНИЯ",
@@ -1436,6 +1478,16 @@ export const ru: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Гор",
+        "Ver": "Вер",
+        "Ang": "Угол",
+        "Bisect": "Биссект",
+        "Offset": "Отступ",
+        "Reference": "Базовая",
+        "Through": "Точка",
+        "Thru": "Точка"
+      },
       "-OSNAP": {
         "ENDpoint": "КОНточка",
         "MIDpoint": "СЕРедина",
@@ -3141,6 +3193,24 @@ export const ru: EngineLocale = {
       "solideditTaperAxis": "Укажите другую точку на оси конуса",
       "solideditTaperAngle": "Угол сужения",
       "specifyAPoint": "Укажите точку",
+      "specifyAPointOr": "Укажите точку или",
+      "specifyThroughPoint": "Через точку",
+      "specifyThroughPointAxis": "Через точку",
+      "xlineAngleOr": [
+        "Угол прямой (",
+        [
+          "angle"
+        ],
+        ") или"
+      ],
+      "xlineAngle": "Угол прямой",
+      "selectLineObject": "Выберите линейный объект",
+      "specifyAngleVertexPoint": "Укажите вершину угла",
+      "specifyAngleStartPoint": "Точка на первом луче угла",
+      "specifyAngleEndPoint": "Точка на втором луче угла",
+      "xlineOffsetDistanceOr": "Величина смещения или",
+      "specifySideToOffset": "Укажите сторону смещения",
+      "rayStartPoint": "Начальная точка",
       "selectObjectToDivide": "Выберите объект для деления",
       "selectObjectToMeasure": "Выберите объект для разметки",
       "divideCountOr": "Число сегментов или",
@@ -3181,6 +3251,7 @@ export const ru: EngineLocale = {
       "wipeoutFramesDisplay": "Отображать без печати"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5270,6 +5341,9 @@ export const ru: EngineLocale = {
       "chamferNot3dPolyline": "  Для 3D-объектов полилинии нельзя построить фаску.",
       "filletNot3dPolyline": "  Для 3D-объектов полилинии нельзя построить сопряжение.",
       "collinearCannotFillet": "\"сопряжение\" — недопустимое свойство для коллинеарных отрезков.",
+      "capNeedsLineOrRay": "Для \"cap\"-сопряжения первый объект должен быть отрезком или лучом.",
+      "startPointMustDiffer": "Точка на луче угла должна отличаться от точки вершины",
+      "noUsableObjectSelected": "Среди выбранных объектов нет пригодных",
       "collinearCannotChamfer": "\"фаску\" — недопустимое свойство для коллинеарных отрезков.",
       "cannotChamferItself": "Невозможно соединить фаской объект с самим собой.",
       "segmentsNotConsecutive": "Сегменты полилинии должны быть смежными или разделенными одним сегментом",
@@ -6598,6 +6672,8 @@ export const ru: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "МАССИВ"
           }
         ]
@@ -6819,6 +6895,46 @@ export const ru: EngineLocale = {
         ", Дельта Z =   ",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   базовая точка, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   единич. направление, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   угол в плоскости XY =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   угол от плоскости XY =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -9486,6 +9602,10 @@ export const ru: EngineLocale = {
       },
       "OFFSET": {
         "Through": "Через"
+      },
+      "XLINE": {
+        "Reference": "Базовая линия",
+        "Through": "Точка"
       },
       "EXTRUDE": {
         "Taper": "Угол конусности"

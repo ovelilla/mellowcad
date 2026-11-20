@@ -2378,7 +2378,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity | TableEntity | MLeaderEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity | TableEntity | MLeaderEntity | XlineEntity | RayEntity;
 
 export type { EntityColor }
 /**
@@ -2457,11 +2457,17 @@ export type EntityProperty =
  * choice: 1 Above, 0 Centered.
  */
  | "leaderArrowSize" | "leaderTextGap" | "leaderScale" | "leaderType" | "leaderTextAbove"
+/**
+ * An XLINE's or a RAY's Basepoint and Second point (desktop xline/d02,
+ * d03): the second is the base plus its direction, and retyping it turns
+ * it about the base; the base moves it whole.
+ */
+ | "basePointX" | "basePointY" | "secondPointX" | "secondPointY"
 /** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image" | "table" | "mleader";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image" | "table" | "mleader" | "xline" | "ray";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3486,7 +3492,7 @@ export interface ViewCubeFaceUi {
 
 // domain/entityProperties.ts
 /** The rows that write an object's Z, all in the WCS here. */
-export type ZProperty = "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ" | "elevation";
+export type ZProperty = "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ" | "elevation" | "basePointZ" | "secondPointZ";
 
 // domain/entityTypes.ts
 /**
@@ -3634,6 +3640,24 @@ export type MLeaderColor = "ByBlock" | EntityColor;
 export interface ConePrimitive extends Omit<CylinderPrimitive, "kind"> {
     readonly kind: "cone";
     readonly topRadius: number;
+}
+
+// domain/entityTypes.ts
+/**
+ * A construction line (DXF XLINE, AutoCAD's XLINE): infinite both ways
+ * through its base point along its direction. As a line keeps its ends, it
+ * keeps its points in the WCS, `elevation` being its base's Z: `base` is the
+ * base's X and Y (DXF 10), `direction` and `directionZ` its unit direction
+ * (DXF 11), so a 3D one is a unit vector across the two (xline/x07, r01).
+ * The model never clips it: what shows of it is the view's (`SceneBuilder`),
+ * and the drawing's extents leave it out (xline/i08).
+ */
+export interface XlineEntity extends BaseEntity {
+    readonly type: "xline";
+    readonly base: Vec2;
+    readonly direction: Vec2;
+    /** The direction's Z; absent is 0. */
+    readonly directionZ?: number;
 }
 
 // domain/entityTypes.ts
@@ -3990,6 +4014,18 @@ export interface ImageEntity extends BaseEntity {
         readonly points: readonly Vec2[];
         readonly off?: true;
     };
+}
+
+// domain/entityTypes.ts
+/**
+ * A ray (DXF RAY, AutoCAD's RAY): an {@link XlineEntity} that starts at its
+ * base and runs on along its direction only.
+ */
+export interface RayEntity extends BaseEntity {
+    readonly type: "ray";
+    readonly base: Vec2;
+    readonly direction: Vec2;
+    readonly directionZ?: number;
 }
 
 // domain/entityTypes.ts

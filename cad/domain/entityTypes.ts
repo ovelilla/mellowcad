@@ -49,6 +49,8 @@ export type EntityType =
   | "image"
   | "table"
   | "mleader"
+  | "xline"
+  | "ray"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -152,6 +154,34 @@ export interface Face3dEntity extends BaseEntity {
   readonly type: "face3d"
   readonly corners: readonly [Vec3, Vec3, Vec3, Vec3]
   readonly invisibleEdges?: number
+}
+
+/**
+ * A construction line (DXF XLINE, AutoCAD's XLINE): infinite both ways
+ * through its base point along its direction. As a line keeps its ends, it
+ * keeps its points in the WCS, `elevation` being its base's Z: `base` is the
+ * base's X and Y (DXF 10), `direction` and `directionZ` its unit direction
+ * (DXF 11), so a 3D one is a unit vector across the two (xline/x07, r01).
+ * The model never clips it: what shows of it is the view's (`SceneBuilder`),
+ * and the drawing's extents leave it out (xline/i08).
+ */
+export interface XlineEntity extends BaseEntity {
+  readonly type: "xline"
+  readonly base: Vec2
+  readonly direction: Vec2
+  /** The direction's Z; absent is 0. */
+  readonly directionZ?: number
+}
+
+/**
+ * A ray (DXF RAY, AutoCAD's RAY): an {@link XlineEntity} that starts at its
+ * base and runs on along its direction only.
+ */
+export interface RayEntity extends BaseEntity {
+  readonly type: "ray"
+  readonly base: Vec2
+  readonly direction: Vec2
+  readonly directionZ?: number
 }
 
 /**
@@ -1351,6 +1381,8 @@ export type Entity =
   | ImageEntity
   | TableEntity
   | MLeaderEntity
+  | XlineEntity
+  | RayEntity
 
 export interface Bounds {
   readonly min: Vec2

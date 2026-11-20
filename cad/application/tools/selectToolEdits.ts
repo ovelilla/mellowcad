@@ -10,6 +10,9 @@ import {
   arcStartPoint,
   createArc,
   createCircle,
+  infiniteBase,
+  isInfiniteLine,
+  withInfinitePlacement,
   carryOverrides,
   DimensionEntity,
   dimensionAxisAngle,
@@ -88,6 +91,23 @@ export function withVertexAt(
   }
   if (entity.type === "polyline") {
     return stretchPolylineVertices(entity, new Map([[index, point]]))
+  }
+  if (isInfiniteLine(entity)) {
+    // A direction grip turns it about its base, pointing it at the point
+    // (desktop xline/d01: the grip behind an XLINE's base reverses it).
+    if (index === 0) return null
+    const base = infiniteBase(entity)
+    const d = sub3(
+      { x: point.x, y: point.y, z: "z" in point ? point.z : base.z },
+      base
+    )
+    const length = Math.hypot(d.x, d.y, d.z)
+    if (!(length > 0)) return null
+    return withInfinitePlacement(entity, base, {
+      x: d.x / length,
+      y: d.y / length,
+      z: d.z / length,
+    })
   }
   if (entity.type === "leader") {
     // A vertex goes to the point in its plane; the end takes the hook with

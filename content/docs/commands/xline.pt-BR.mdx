@@ -1,0 +1,81 @@
+---
+title: "Comando XLINE (LINHAINF) no AutoCAD"
+metaTitle: "Comando XLINE (LINHAINF): linha de construção"
+description: "Como o XLINE do AutoCAD, LINHAINF (alias LINF), desenha linhas infinitas: por dois pontos, horizontais, verticais, em ângulo, bissetriz ou deslocadas."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando XLINE no AutoCAD em português?","answer":"LINHAINF, com o alias LINF; digite-o e pressione Enter ou a barra de espaço. A faixa de opções o chama de Linha de construção, no painel Desenhar expandido; aqui ele fica nas ferramentas de Desenhar, ao lado de Raio."},{"question":"Como desenhar uma linha de construção horizontal ou vertical?","answer":"Execute o LINHAINF, digite a letra de Hor ou a de Ver e clique nos pontos por onde ela passa. Horizontal e vertical são as do UCS atual."},{"question":"Como aparar uma linha infinita?","answer":"Com o APARAR, como qualquer linha: cortada de um lado, uma linha infinita vira uma linha semi-infinita; cortada dos dois, uma linha. O mesmo acontece com o QUEBRAR."},{"question":"Por que o ZOOM Estendido ignora as minhas linhas de construção?","answer":"Uma linha infinita não tem extensão: ela vai ao infinito nos dois sentidos. O AutoCAD deixa as linhas infinitas e semi-infinitas fora da extensão do desenho, e o MellowCAD também."},{"question":"Qual a diferença entre XLINE e RAY?","answer":"Uma linha infinita vai ao infinito nos dois sentidos; uma linha semi-infinita, do RAIO, começa num ponto e segue num sentido só."}]
+---
+
+O XLINE, LINHAINF no AutoCAD em português, desenha linhas de construção: linhas de comprimento infinito, que atravessam a vista inteira por mais que você faça pan ou zoom, para traçar um desenho antes de as linhas definitivas entrarem. Indique um ponto e depois um ponto de passagem: a linha infinita passa pelos dois, e cada ponto a mais faz outra pelo primeiro, até Enter encerrar o comando. Um ponto de passagem sobre o primeiro ponto é recusado com `*Inválido*`. Cada linha infinita fica na camada atual com a cor, o tipo de linha e a espessura de linha atuais.
+
+Uma linha infinita não tem pontas: um zoom na extensão do desenho a deixa de fora, como no AutoCAD. O snap ao objeto Meio encontra o ponto pelo qual ela foi desenhada; Mais próximo, Perpendicular e Intersecção funcionam ao longo dela, e o [`APARAR`](/docs/commands/trim) ou o [`QUEBRAR`](/docs/commands/break) a transformam numa linha semi-infinita, ou em duas, que é como as linhas de construção viram linhas do desenho. O [`RAIO`](/docs/commands/ray) desenha a metade dela que começa num ponto.
+
+- **Comando:** `LINHAINF`
+- **Em inglês:** `XLINE`, que se digita `_XLINE` em qualquer idioma
+- **Aliases:** `LINF`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `LINF` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="xline" caption="Linhas infinitas por um ponto, uma horizontal e a bissetriz do ângulo entre duas linhas, cada uma atravessando a vista inteira." />
+
+## Opções [#options]
+
+### `Hor` (`H`) [#hor]
+
+Linhas infinitas horizontais, ao longo do eixo X do UCS, cada uma por um ponto que você indica, até Enter.
+
+### `Ver` (`V`) [#ver]
+
+Linhas infinitas verticais, ao longo do eixo Y do UCS, cada uma por um ponto que você indica.
+
+### `Ang` (`A`) [#ang]
+
+Linhas infinitas em ângulo: digite-o, ou indique dois pontos, e depois os pontos de passagem. Enter no ângulo assume 0. `Referência` mede o ângulo a partir de uma linha que você seleciona, uma linha, uma linha infinita ou uma linha semi-infinita, no sentido anti-horário: qualquer outra coisa é recusada com `Nenhum objeto utilizável foi selecionado`.
+
+### `Bisec` (`B`) [#bisect]
+
+A linha infinita que divide um ângulo ao meio: indique o vértice, um ponto no primeiro lado e depois um ponto no segundo lado, e a bissetriz passa pelo vértice. Cada ponto a mais no segundo lado faz outra bissetriz do mesmo primeiro lado.
+
+### `Deslocamento` (`D`) [#offset]
+
+Linhas infinitas paralelas a um objeto linear, uma linha, uma linha infinita ou uma linha semi-infinita: informe a distância, selecione o objeto e clique no lado, de novo e de novo até Enter. `PAssagem` faz cada uma passar por um ponto que você indica. A distância é a que o [`DESLOCAMENTO`](/docs/commands/offset) lembra, e a que ele oferece em seguida.
+
+## O que ainda não faz [#missing]
+
+O ALONGAR (LENGTHEN) e o [`UNIR`](/docs/commands/join) de uma linha infinita ainda não foram conferidos com o AutoCAD, nem os menus das suas alças.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando XLINE no AutoCAD em português?
+
+LINHAINF, com o alias `LINF`; digite-o e pressione Enter ou a barra de espaço. A faixa de opções o chama de Linha de construção, no painel Desenhar expandido; aqui ele fica nas ferramentas de Desenhar, ao lado de Raio.
+
+### Como desenhar uma linha de construção horizontal ou vertical?
+
+Execute o LINHAINF, digite a letra de `Hor` ou a de `Ver` e clique nos pontos por onde ela passa. Horizontal e vertical são as do UCS atual.
+
+### Como aparar uma linha infinita?
+
+Com o [`APARAR`](/docs/commands/trim), como qualquer linha: cortada de um lado, uma linha infinita vira uma linha semi-infinita; cortada dos dois, uma linha. O mesmo acontece com o [`QUEBRAR`](/docs/commands/break).
+
+### Por que o ZOOM Estendido ignora as minhas linhas de construção?
+
+Uma linha infinita não tem extensão: ela vai ao infinito nos dois sentidos. O AutoCAD deixa as linhas infinitas e semi-infinitas fora da extensão do desenho, e o MellowCAD também.
+
+### Qual a diferença entre XLINE e RAY?
+
+Uma linha infinita vai ao infinito nos dois sentidos; uma linha semi-infinita, do [`RAIO`](/docs/commands/ray), começa num ponto e segue num sentido só.
+
+## Comandos relacionados [#related]
+
+- [Comando RAY (RAIO) no AutoCAD](/docs/commands/ray)
+- [Comando LINE (LINHA) no AutoCAD](/docs/commands/line)
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)

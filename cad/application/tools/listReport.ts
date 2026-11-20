@@ -41,6 +41,9 @@ import {
   imageCorners,
   imageScale,
   leaderHorizontal,
+  InfiniteLineEntity,
+  infiniteBase,
+  infiniteDirection,
 } from "../../domain/entities"
 import { entityAxes, entityPointToWorld } from "../../domain/elevation"
 import {
@@ -107,6 +110,8 @@ export function newestFirst(
 
 type ObjectName =
   | "line"
+  | "xline"
+  | "ray"
   | "circle"
   | "arc"
   | "ellipse"
@@ -240,6 +245,10 @@ class Report {
       case "leader":
         this.leader(entity)
         break
+      case "xline":
+      case "ray":
+        this.infinite(entity)
+        break
     }
     return this.lines
   }
@@ -369,6 +378,30 @@ class Report {
     }
     if (wearing.thickness) {
       this.say("listThickness", { thickness: this.n9(wearing.thickness) })
+    }
+  }
+
+  /**
+   * Its base point and unit direction in the UCS, the direction's angle in
+   * the XY plane, and from it where it rises, as each console writes them
+   * (xline/i10: `angle in XY plane =        33`, the angle at AUPREC
+   * right-aligned in ten).
+   */
+  private infinite(entity: InfiniteLineEntity): void {
+    this.header(entity.type, entity)
+    this.say("listBasePoint", this.xyz(this.ucsPoint(infiniteBase(entity))))
+    const d = worldDirectionToUcs(this.settings.ucs, infiniteDirection(entity))
+    this.say("listUnitDirection", this.xyz(d))
+    const inPlane = Math.hypot(d.x, d.y)
+    this.say("listAngleInXy", {
+      angle: this.angle((Math.atan2(d.y, d.x) * 180) / Math.PI).padStart(10),
+    })
+    if (Math.abs(d.z) > 1e-12) {
+      this.say("listAngleFromXy", {
+        angle: this.angle((Math.atan2(d.z, inPlane) * 180) / Math.PI).padStart(
+          10
+        ),
+      })
     }
   }
 

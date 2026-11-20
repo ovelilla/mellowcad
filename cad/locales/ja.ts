@@ -139,7 +139,9 @@ export const ja: EngineLocale = {
       "solid": "2D 塗り潰し",
       "face3d": "3D 面",
       "leader": "引出線記入",
-      "wipeout": "ワイプアウト"
+      "wipeout": "ワイプアウト",
+      "xline": "構築線",
+      "ray": "放射線"
     },
     "description": {
       "U": "最後の操作を元に戻す",
@@ -430,6 +432,24 @@ export const ja: EngineLocale = {
             "other": "マルチ引出線"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "other": "構築線"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "other": "放射線"
+          }
+        ]
       ]
     },
     "array": {
@@ -639,6 +659,15 @@ export const ja: EngineLocale = {
         "positionX": "位置 X",
         "positionY": "位置 Y",
         "positionZ": "位置 Z",
+        "basePointX": "基点 X",
+        "basePointY": "基点 Y",
+        "basePointZ": "基点 Z",
+        "secondPointX": "2 点目 X",
+        "secondPointY": "2 点目 Y",
+        "secondPointZ": "2 点目 Z",
+        "directionVectorX": "方向ベクトル X",
+        "directionVectorY": "方向ベクトル Y",
+        "directionVectorZ": "方向ベクトル Z",
         "scaleX": "尺度 X",
         "scaleY": "尺度 Y",
         "scaleZ": "尺度 Z",

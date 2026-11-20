@@ -311,6 +311,8 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity

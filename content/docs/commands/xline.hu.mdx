@@ -1,0 +1,81 @@
+---
+title: "AutoCAD SZVONAL (XLINE) parancs"
+metaTitle: "Szerkesztővonal az AutoCAD-ben: SZVONAL (XLINE)"
+description: "Végtelen szerkesztővonal az AutoCAD SZVONAL (XLINE, SV) parancsával: két ponton át, vízszintes, függőleges, szögben, felező vagy párhuzamos. Próbálja ki ingyen."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi az AutoCAD SZVONAL parancs angolul?","answer":"XLINE. A magyar AutoCAD-ben a rövidítése SV: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes SZVONAL név is működik, a _XLINE pedig az AutoCAD bármely nyelvi változatában; az angol XL a magyar változatban nem működik. A szalagon Szerkesztővonal a neve, a Rajz panel kibontott részén; itt a Rajz eszközök között van, a Sugár mellett."},{"question":"Hogyan lehet vízszintes vagy függőleges szerkesztővonalat rajzolni?","answer":"Indítsa el a SZVONAL parancsot, írja be a Vízsz vagy a Függ opció betűjét, majd adja meg a pontokat, amelyeken áthalad. A vízszintes és a függőleges irány az aktuális FKR szerint értendő."},{"question":"Hogyan lehet levágni egy szerkesztővonalat?","answer":"A METSZ paranccsal, mint bármely vonalat: az egyik oldalon elvágva a szerkesztővonalból sugárvonal lesz, mindkét oldalon elvágva vonal. Ugyanez történik a MEGTÖR paranccsal."},{"question":"Miért hagyja figyelmen kívül a ZOOM Terjedelem a szerkesztővonalakat?","answer":"A szerkesztővonalnak nincs terjedelme: mindkét irányban a végtelenbe fut. Az AutoCAD a szerkesztővonalakat és a sugárvonalakat kihagyja a rajz terjedelméből, és a MellowCAD is."},{"question":"Mi a különbség a SZVONAL és a SUGÁR parancs között?","answer":"A szerkesztővonal mindkét irányban a végtelenbe fut; a SUGÁR parancs sugárvonala egy pontból indul, és csak egy irányba fut."}]
+---
+
+A SZVONAL (XLINE) parancs szerkesztővonalakat rajzol: végtelen hosszú vonalakat, amelyek a teljes nézeten átfutnak, bárhogyan is mozgatja vagy nagyítja a nézetet, hogy a rajz kiosztását a valódi vonalak előtt kijelölje. Adjon meg egy pontot, majd egy átmenő pontot: a szerkesztővonal mindkettőn áthalad, és minden további pont egy újabbat készít az első ponton át, amíg az Enter be nem fejezi a parancsot. Az első pontra eső átmenő pontot a parancs a `*Érvénytelen*` üzenettel elutasítja. Minden szerkesztővonal az aktuális fólián, az aktuális színnel, vonaltípussal és vonalvastagsággal készül.
+
+A szerkesztővonalnak nincsenek végei: a rajz terjedelmére nagyítva kimarad, ahogy az AutoCAD-ben. A Felezőpont tárgyraszter azt a pontot találja meg, amelyen át megrajzolták, a Legközelebbi, a Merőleges és a Metszéspont tárgyraszter pedig a hossza mentén működik. A [`METSZ`](/docs/commands/trim) vagy a [`MEGTÖR`](/docs/commands/break) parancs egy vagy két sugárvonallá alakítja: így lesznek a szerkesztővonalakból rajzvonalak. A [`SUGÁR`](/docs/commands/ray) parancs a szerkesztővonal egy pontból induló felét rajzolja meg.
+
+- **Parancs:** `SZVONAL`
+- **Angolul:** `XLINE`, bármely nyelven `_XLINE` formában beírva
+- **Rövidítések:** `SV`
+- **Panel:** [Rajz](/docs/commands#draw)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `SV`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="xline" caption="Szerkesztővonalak egy ponton át, egy vízszintes, és két vonal szögének felezője: mindegyik a teljes nézeten átfut." />
+
+## Opciók [#options]
+
+### `Vízsz` (`V`) [#hor]
+
+Vízszintes szerkesztővonalak, az FKR X tengelye mentén, mindegyik egy megadott ponton át, amíg az Enter le nem zárja.
+
+### `Függ` (`F`) [#ver]
+
+Függőleges szerkesztővonalak, az FKR Y tengelye mentén, mindegyik egy megadott ponton át.
+
+### `sZög` (`Z`) [#ang]
+
+Szögben álló szerkesztővonalak: írja be a szöget, vagy adja meg két ponttal, majd az átmenő pontokat. A szögnél az Enter 0-t vesz. A `Referencia` opció a szöget egy kijelölt vonalobjektumtól – vonaltól, szerkesztővonaltól vagy sugárvonaltól – méri, az óramutató járásával ellentétesen: minden mást a `Nincs használható objektum kiválasztva` üzenettel elutasít.
+
+### `feLező` (`L`) [#bisect]
+
+A szöget megfelező szerkesztővonal: adja meg a szög csúcspontját, egy pontot az első szárán, majd egy pontot a második szárán, és a felező a csúcsponton halad át. A második szár minden további pontja újabb felezőt készít ugyanazzal az első szárral.
+
+### `Eltolás` (`E`) [#offset]
+
+Egy vonalobjektummal – vonallal, szerkesztővonallal vagy sugárvonallal – párhuzamos szerkesztővonalak: adja meg a távolságot, jelölje ki az objektumot, és válassza ki az oldalt, újra és újra, amíg az Enter le nem zárja. A `Kijelölt` opcióval ehelyett mindegyik egy megadott ponton halad át. A távolság ugyanaz, amelyet a [`PÁRH`](/docs/commands/offset) parancs megjegyez, és legközelebb ezt kínálja fel.
+
+## Amit még nem tud [#missing]
+
+A szerkesztővonal módosítása a HOSSZABBÍT (LENGTHEN) és az EGYBEFŰZ (JOIN) paranccsal még nincs összevetve az AutoCAD-del, ahogy a fogóinak menüi sem.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Kérdések [#questions]
+
+### Mi az AutoCAD SZVONAL parancs angolul?
+
+XLINE. A magyar AutoCAD-ben a rövidítése `SV`: írja be, majd nyomja meg az Enter vagy a Szóköz billentyűt. A teljes `SZVONAL` név is működik, a `_XLINE` pedig az AutoCAD bármely nyelvi változatában; az angol `XL` a magyar változatban nem működik. A szalagon Szerkesztővonal a neve, a Rajz panel kibontott részén; itt a Rajz eszközök között van, a Sugár mellett.
+
+### Hogyan lehet vízszintes vagy függőleges szerkesztővonalat rajzolni?
+
+Indítsa el a SZVONAL parancsot, írja be a `Vízsz` vagy a `Függ` opció betűjét, majd adja meg a pontokat, amelyeken áthalad. A vízszintes és a függőleges irány az aktuális FKR szerint értendő.
+
+### Hogyan lehet levágni egy szerkesztővonalat?
+
+A [`METSZ`](/docs/commands/trim) paranccsal, mint bármely vonalat: az egyik oldalon elvágva a szerkesztővonalból sugárvonal lesz, mindkét oldalon elvágva vonal. Ugyanez történik a [`MEGTÖR`](/docs/commands/break) paranccsal.
+
+### Miért hagyja figyelmen kívül a ZOOM Terjedelem a szerkesztővonalakat?
+
+A szerkesztővonalnak nincs terjedelme: mindkét irányban a végtelenbe fut. Az AutoCAD a szerkesztővonalakat és a sugárvonalakat kihagyja a rajz terjedelméből, és a MellowCAD is.
+
+### Mi a különbség a SZVONAL és a SUGÁR parancs között?
+
+A szerkesztővonal mindkét irányban a végtelenbe fut; a [`SUGÁR`](/docs/commands/ray) parancs sugárvonala egy pontból indul, és csak egy irányba fut.
+
+## Kapcsolódó parancsok [#related]
+
+- [AutoCAD SUGÁR (RAY) parancs](/docs/commands/ray)
+- [AutoCAD VONAL (LINE) parancs](/docs/commands/line)
+- [AutoCAD PÁRH (OFFSET) parancs](/docs/commands/offset)
+- [AutoCAD METSZ (TRIM) parancs](/docs/commands/trim)

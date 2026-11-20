@@ -26,6 +26,9 @@ import {
   readsInPlan,
   worldToEntity,
   polylineCurve,
+  infiniteLineReaching,
+  infinitePieceOf,
+  isInfiniteLine,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
@@ -514,6 +517,8 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "polyline",
   "polyline3d",
   "spline",
+  "xline",
+  "ray",
 ])
 
 /**
@@ -573,6 +578,8 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "spline":
     case "polyline":
     case "polyline3d":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity
@@ -650,6 +657,29 @@ function breakPieces(
   view: CameraTransform,
   ghost: boolean
 ): Entity[] | null {
+  if (isInfiniteLine(target)) {
+    // Broken as its stretch past both points, the pieces that run on left
+    // rays, the rest lines (xline/i02).
+    const points = [target.base, first, second]
+    const span = infiniteLineReaching(target, {
+      min: {
+        x: Math.min(...points.map((p) => p.x)),
+        y: Math.min(...points.map((p) => p.y)),
+      },
+      max: {
+        x: Math.max(...points.map((p) => p.x)),
+        y: Math.max(...points.map((p) => p.y)),
+      },
+    })
+    const pieces = span && breakPieces(span, first, second, view, ghost)
+    return (
+      pieces?.map((piece) =>
+        span && piece.type === "line"
+          ? infinitePieceOf(target, span, piece)
+          : piece
+      ) ?? null
+    )
+  }
   const kept = computeBreak(target, first, second, view)
   const newId = ghost ? "break-preview" : undefined
   return (
@@ -707,6 +737,9 @@ function computeBreak(
     case "table":
     case "mleader":
     case "leader":
+    // Broken as its stretch (`breakPieces`).
+    case "xline":
+    case "ray":
       return null
   }
 }

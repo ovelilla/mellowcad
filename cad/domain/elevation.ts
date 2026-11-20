@@ -394,6 +394,15 @@ export function entityZAt(entity: Entity, point: Vec2): number {
   }
   if (entity.type === "face3d") return closestPointOnFace3d(entity, point).z
   if (entity.type === "spline") return splineZAt(entity, point)
+  if (entity.type === "xline" || entity.type === "ray") {
+    // Off its base along its direction, as a line's past its ends.
+    const { x, y } = entity.direction
+    const lengthSq = x * x + y * y
+    if (!entity.directionZ || lengthSq === 0) return entityElevation(entity)
+    const t =
+      ((point.x - entity.base.x) * x + (point.y - entity.base.y) * y) / lengthSq
+    return entityElevation(entity) + t * entity.directionZ
+  }
   if (entity.type !== "line" || !entity.deltaZ) return entityElevation(entity)
   const dx = entity.end.x - entity.start.x
   const dy = entity.end.y - entity.start.y
@@ -439,6 +448,9 @@ export function isLevel(entity: Entity): boolean {
   }
   if (entity.type === "solid3d") return false
   if (entity.type === "spline") return isLevelSpline(entity)
+  if (entity.type === "xline" || entity.type === "ray") {
+    return Math.abs(entity.directionZ ?? 0) <= PLANE_TOLERANCE
+  }
   return (
     entity.type !== "line" || Math.abs(entity.deltaZ ?? 0) <= PLANE_TOLERANCE
   )

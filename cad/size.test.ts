@@ -26,9 +26,10 @@ const ISLAND_MAX_BYTES = 1 * KB
  * (2026-11-17), to 460 KB for gradient fills, to 462 KB for 3DFACE and
  * the 3D face (2026-11-17), to 465 KB for WIPEOUT and the wipeout, to
  * 469 KB for a DXF's images, to 475 KB for its tables and to 481 KB for its
- * multileaders (2026-11-19).
+ * multileaders (2026-11-19), to 487 KB for XLINE, RAY and their objects
+ * (2026-11-20).
  */
-const ENGINE_MAX_GZIP_BYTES = 481 * KB
+const ENGINE_MAX_GZIP_BYTES = 487 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

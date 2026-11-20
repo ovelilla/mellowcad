@@ -310,6 +310,9 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "image":
       case "table":
       case "mleader":
+      // Seen by the caller as the stretch of it in the view, a line.
+      case "xline":
+      case "ray":
         break
       default: {
         const unhandled: never = entity

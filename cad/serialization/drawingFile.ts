@@ -163,7 +163,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 61
+export const DRAWING_FILE_VERSION = 62
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -730,6 +730,17 @@ function cloneEntityShape(entity: Entity): Entity {
         layerId: entity.layerId,
         ...overrides,
         vertices: entity.vertices.map((p) => ({ x: p.x, y: p.y })),
+      }
+    case "xline":
+    case "ray":
+      return {
+        id: entity.id,
+        type: entity.type,
+        layerId: entity.layerId,
+        ...overrides,
+        base: { x: entity.base.x, y: entity.base.y },
+        direction: { x: entity.direction.x, y: entity.direction.y },
+        ...(entity.directionZ ? { directionZ: entity.directionZ } : {}),
       }
     case "mleader": {
       const xy = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
@@ -2036,6 +2047,24 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         layerId,
         ...overrides,
         vertices: vertices as Vec2[],
+      }
+    }
+    case "xline":
+    case "ray": {
+      // Since 62; a direction of no length, nothing.
+      const base = parseVec2(raw.base)
+      const direction = parseVec2(raw.direction)
+      const directionZ = isFiniteNumber(raw.directionZ) ? raw.directionZ : 0
+      if (!base || !direction) return null
+      if (!(Math.hypot(direction.x, direction.y, directionZ) > 0)) return null
+      return {
+        id,
+        type: raw.type,
+        layerId,
+        ...overrides,
+        base,
+        direction,
+        ...(directionZ !== 0 ? { directionZ } : {}),
       }
     }
     case "mleader": {

@@ -1,0 +1,54 @@
+---
+title: "Comando RAGGIO (RAY) in AutoCAD"
+metaTitle: "Comando RAGGIO (RAY): una linea all'infinito"
+description: "Come RAGGIO (RAY) di AutoCAD disegna linee di costruzione che partono da un punto e vanno all'infinito in una direzione, e come tagliarle in linee. Provalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Cos'è il comando RAGGIO in AutoCAD?","answer":"Una linea di costruzione con un inizio: parte da un punto e prosegue all'infinito in una direzione. Usala come riferimento su cui disegnare, poi tagliala in una linea o cancellala."},{"question":"Il comando RAGGIO ha un alias?","answer":"No: AutoCAD non dà alcun alias a RAGGIO, quindi digita RAGGIO per intero. Si trova nel gruppo Disegna espanso della barra multifunzione, e qui negli strumenti di Disegna, accanto a Linea di costruzione."},{"question":"Come si ferma un raggio su una linea?","answer":"Taglialo: avvia TAGLIA e seleziona la parte oltre la linea. Ciò che resta dall'inizio fino alla linea è un oggetto linea."},{"question":"Che differenza c'è tra un raggio e una linea?","answer":"Una linea ha due estremi; un raggio ne ha uno, il suo inizio, e prosegue senza fine. In un file DXF un raggio viene salvato come RAY, e si apre come tale."}]
+---
+
+RAGGIO (RAY) disegna raggi: linee di costruzione che partono da un punto e vanno all'infinito in una direzione. Indica il punto iniziale, poi un punto di passaggio: il raggio parte dal primo e passa per il secondo. Ogni punto successivo crea un altro raggio dallo stesso inizio, finché Invio termina il comando. Un punto di passaggio sull'inizio viene rifiutato con `*Non valido*`. Ogni raggio sta sul layer corrente con il colore, il tipo di linea e lo spessore di linea correnti.
+
+Un raggio attraversa la vista per quanto tu faccia pan o zoom, e l'estensione del disegno lo lascia fuori, come in AutoCAD. Lo snap Punto finale trova il suo inizio; Vicino, Perpendicolare e Intersezione funzionano lungo di esso. [`TAGLIA`](/docs/commands/trim) e [`SPEZZA`](/docs/commands/break) trasformano in una linea il tratto che contiene l'inizio, e [`ESTENDI`](/docs/commands/extend) porta l'inizio indietro fino a uno spigolo alle sue spalle. [`XLINEA`](/docs/commands/xline) disegna linee che vanno in entrambe le direzioni.
+
+- **Comando:** `RAGGIO`
+- **In inglese:** `RAY`, digitato `_RAY` in ogni lingua
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `RAGGIO` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="ray" caption="Raggi da un unico punto iniziale attraverso tre punti, ciascuno prosegue oltre il bordo della vista." />
+
+## Cosa non fa ancora [#missing]
+
+ALLUNGA (LENGTHEN) e [`UNISCI`](/docs/commands/join) di un raggio non sono ancora stati verificati rispetto ad AutoCAD, né i menu dei suoi grip.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## Domande [#questions]
+
+### Cos'è il comando RAGGIO in AutoCAD?
+
+Una linea di costruzione con un inizio: parte da un punto e prosegue all'infinito in una direzione. Usala come riferimento su cui disegnare, poi tagliala in una linea o cancellala.
+
+### Il comando RAGGIO ha un alias?
+
+No: AutoCAD non dà alcun alias a RAGGIO, quindi digita `RAGGIO` per intero. Si trova nel gruppo Disegna espanso della barra multifunzione, e qui negli strumenti di Disegna, accanto a Linea di costruzione.
+
+### Come si ferma un raggio su una linea?
+
+Taglialo: avvia [`TAGLIA`](/docs/commands/trim) e seleziona la parte oltre la linea. Ciò che resta dall'inizio fino alla linea è un oggetto linea.
+
+### Che differenza c'è tra un raggio e una linea?
+
+Una linea ha due estremi; un raggio ne ha uno, il suo inizio, e prosegue senza fine. In un file DXF un raggio viene salvato come RAY, e si apre come tale.
+
+## Comandi correlati [#related]
+
+- [Comando XLINEA (XLINE) in AutoCAD](/docs/commands/xline)
+- [Comando LINEA (LINE) in AutoCAD](/docs/commands/line)
+- [Comando TAGLIA (TRIM) in AutoCAD](/docs/commands/trim)
+- [Comando ESTENDI (EXTEND) in AutoCAD](/docs/commands/extend)

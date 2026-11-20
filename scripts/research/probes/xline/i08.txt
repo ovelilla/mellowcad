@@ -1,0 +1,70 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+(osnap '(70 20) "_end")
+(osnap '(50.5 20) "_end")
+(osnap '(30 0) "_mid")
+(osnap '(70 20) "_mid")
+(osnap '(33 1) "_nea")
+(osnap '(77 21) "_nea")
+(osnap '(1 1) "_int")
+(osnap '(99 19) "_int")
+(osnap '(-500 1) "_nea")
+_LINE
+20,40
+_per
+70,21
+
+(entget (entlast))
+_LINE
+20,40
+_per
+-300,1
+
+(entget (entlast))
+_CIRCLE
+300,0
+10
+(osnap '(291 1) "_int")
+(osnap '(70 20) "_qua")
+(ssget "_W" (list -1000 -1000) (list 1000 1000))
+(ssget "_C" (list 40 15) (list 45 25))
+(ssget "_C" (list 40 -5) (list 45 5))
+(ssget "_C" (list 20 15) (list 30 25))
+(ssget "_F" (list (list 30 -5) (list 30 25)))
+(getvar "EXTMIN")
+(getvar "EXTMAX")
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+_ERASE
+(ssget "_X" (list (cons 0 "LINE,CIRCLE")))
+
+_ZOOM
+_E
+(getvar "EXTMIN")
+(getvar "EXTMAX")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")

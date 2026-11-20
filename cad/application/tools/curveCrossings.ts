@@ -108,6 +108,18 @@ export function ellipseImplicit(ellipse: EllipseEntity): ImplicitEdge {
  */
 export function implicitEdges(o: Entity): ImplicitEdge[] {
   switch (o.type) {
+    case "xline":
+    case "ray": {
+      const { base, direction } = o
+      if (V.lengthSq(direction) === 0) return []
+      const ray = o.type === "ray"
+      return [
+        {
+          f: (p) => V.cross(direction, V.sub(p, base)),
+          within: (p) => !ray || V.dot(V.sub(p, base), direction) >= -PARAM_EPS,
+        },
+      ]
+    }
     case "line": {
       const edge = segmentImplicit(o.start, o.end)
       return edge ? [edge] : []

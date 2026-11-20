@@ -26,6 +26,8 @@ import {
   imageCorners,
   mleaderLandingIndices,
   mleaderStretchPoints,
+  infiniteBase,
+  infinitePointAt,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -467,6 +469,32 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             ...(grip.along && !grip.square
               ? { shape: "arrow", along: grip.along }
               : {}),
+          })
+        }
+        break
+      }
+      case "xline":
+      case "ray": {
+        // Its base, which moves it, and a grip a tenth of the view's height
+        // along it (both ways along an XLINE), which turns it about the base
+        // through where it is dragged (desktop xline/d01: VIEWSIZE / 10).
+        const reach =
+          ctx.viewport.screenToWorldDistance(ctx.viewport.height) / 10
+        grips.push({
+          entityId: id,
+          role: { kind: "move" },
+          world: infiniteBase(entity),
+        })
+        grips.push({
+          entityId: id,
+          role: { kind: "vertex", index: 1 },
+          world: infinitePointAt(entity, reach),
+        })
+        if (entity.type === "xline") {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index: 2 },
+            world: infinitePointAt(entity, -reach),
           })
         }
         break

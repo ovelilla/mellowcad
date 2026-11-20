@@ -1,0 +1,40 @@
+QAFLAGS
+2
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_ZOOM
+_O
+(list a '(30 0))
+
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+_-BLOCK
+bx
+0,0
+(list c '(70 20))
+
+_-INSERT
+bx
+0,0
+2
+2
+0
+(entget (entlast))
+(getvar "EXTMIN")
+(getvar "EXTMAX")
+_EXPLODE
+_L
+
+(entget (entlast))

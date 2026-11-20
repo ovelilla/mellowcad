@@ -135,7 +135,9 @@
       "solid": "Sólido 2D",
       "face3d": "Cara 3D",
       "leader": "Directriz",
-      "wipeout": "Cobertura"
+      "wipeout": "Cobertura",
+      "xline": "Línea de construcción",
+      "ray": "Rayo"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -237,7 +239,9 @@
       "wipeout": "{count, plural, one {Cobertura} other {Coberturas}}",
       "image": "{count, plural, one {Imagen ráster} other {Imágenes ráster}}",
       "table": "{count, plural, one {Tabla} other {Tablas}}",
-      "mleader": "{count, plural, one {Directriz múltiple} other {Directrices múltiples}}"
+      "mleader": "{count, plural, one {Directriz múltiple} other {Directrices múltiples}}",
+      "xline": "{count, plural, one {Línea auxiliar} other {Líneas auxiliares}}",
+      "ray": "{count, plural, one {Rayo} other {Rayos}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -420,6 +424,15 @@
         "positionX": "Posición X",
         "positionY": "Posición Y",
         "positionZ": "Posición Z",
+        "basePointX": "Punto base X",
+        "basePointY": "Punto base Y",
+        "basePointZ": "Punto base Z",
+        "secondPointX": "Segundo punto X",
+        "secondPointY": "Segundo punto Y",
+        "secondPointZ": "Segundo punto Z",
+        "directionVectorX": "Vector de dirección X",
+        "directionVectorY": "Vector de dirección Y",
+        "directionVectorZ": "Vector de dirección Z",
         "scaleX": "Escala X",
         "scaleY": "Escala Y",
         "scaleZ": "Escala Z",
@@ -541,6 +554,8 @@
   "commands": {
     "names": {
       "LINE": ["LINEA", "L"],
+      "XLINE": ["LINEAX", "XL"],
+      "RAY": ["RAYO"],
       "PLINE": ["POL", "PL"],
       "3DFACE": ["3DCARA", "3C"],
       "3DPOLY": ["3DPOL", "3P"],
@@ -700,6 +715,16 @@
       "WIPEOUT": ["COBERTURA"]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Hor",
+        "Ver": "Ver",
+        "Ang": "ángUlo",
+        "Bisect": "Bisectriz",
+        "Offset": "Desfasar",
+        "Reference": "Referencia",
+        "Through": "Punto",
+        "Thru": "Pun"
+      },
       "-OSNAP": {
         "ENDpoint": "FINal",
         "MIDpoint": "MEDio",
@@ -2226,6 +2251,18 @@
       "solideditTaperAxis": "Precise otro punto en el eje de inclinación",
       "solideditTaperAngle": "Precise ángulo de inclinación",
       "specifyAPoint": "Precise un punto",
+      "specifyAPointOr": "Precise un punto u",
+      "specifyThroughPoint": "Precise punto a atravesar",
+      "specifyThroughPointAxis": "Precise punto a atravesar",
+      "xlineAngleOr": "Indique ángulo de líneaX ({angle}) o",
+      "xlineAngle": "Indique ángulo de líneaX",
+      "selectLineObject": "Designe un objeto de línea",
+      "specifyAngleVertexPoint": "Precise punto de vértice de ángulo",
+      "specifyAngleStartPoint": "Precise punto inicial de ángulo",
+      "specifyAngleEndPoint": "Precise punto final de ángulo",
+      "xlineOffsetDistanceOr": "Precise distancia o",
+      "specifySideToOffset": "Precise lado de desfase",
+      "rayStartPoint": "Precise punto inicial",
       "selectObjectToDivide": "Designe objeto que se va a dividir",
       "selectObjectToMeasure": "Designe objeto que se va a medir",
       "divideCountOr": "Indique el número de segmento o",
@@ -2266,6 +2303,7 @@
       "wipeoutFramesDisplay": "Mostrar pero no trazar"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -2591,6 +2629,9 @@
       "chamferNot3dPolyline": "  Puede que los objetos de polilínea 3D no estén unidos con chaflán.",
       "filletNot3dPolyline": "  Puede que los objetos de polilínea 3D no estén unidos con empalme.",
       "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
+      "capNeedsLineOrRay": "El primer objeto debe ser una línea o un rayo para realizar el empalme.",
+      "startPointMustDiffer": "El punto inicial y el vértice no pueden coincidir.",
+      "noUsableObjectSelected": "Designado objeto inadecuado.",
       "collinearCannotChamfer": "Las líneas colineales no pueden ser unidos con chaflán.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "segmentsNotConsecutive": "Las líneas pertenecientes a polilíneas tienen que ser consecutivas o estar separadas por un segmento",
@@ -2751,7 +2792,7 @@
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
       "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
-      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} solid2d {SOLIDO} leader {LEADER} face3d {CARA 3D} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} xline {XLINE} ray {RAY} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
       "listColor": "                   Color: {color}    Tipo de línea: \"{linetype}\"",
@@ -2770,6 +2811,10 @@
       "listLineLength": "          {inUcs, select, yes {En SCP actual, } other {}}Longitud = {length}, Ángulo en el plano XY = {angle}",
       "listLine3d": "                  3D Longitud = {length}, Ángulo del plano XY = {angle}",
       "listLineDelta": "                  Incremento X ={x},  Incremento Y = {y},  Incremento Z = {z}",
+      "listBasePoint": "                   punto base, X={x}  Y={y}  Z={z}",
+      "listUnitDirection": "                   dirección unidad, X={x}  Y={y}  Z={z}",
+      "listAngleInXy": "                   ángulo en el plano XY ={angle}",
+      "listAngleFromXy": "                   ángulo desde el plano XY ={angle}",
       "listCenter": "            centro punto, X={x}  Y={y}  Z={z}",
       "listRadius": "             radio {radius}",
       "listLwRadius": "             radio {radius}",
@@ -3219,6 +3264,10 @@
       "COPY": { "Displacement": "Desplazamiento" },
       "UCSICON": { "Noorigin": "Sin origen" },
       "OFFSET": { "Through": "punto a Atravesar" },
+      "XLINE": {
+        "Reference": "Referencia",
+        "Through": "Punto a atravesar"
+      },
       "EXTRUDE": { "Taper": "ángulo Inclinación" },
       "REVOLVE": { "STart": "ángulo Inicial" },
       "SLICE": { "Object": "Objeto plano", "Both": "mantener Ambos lados" },

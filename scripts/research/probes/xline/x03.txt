@@ -1,0 +1,28 @@
+QAFLAGS
+2
+_LINE
+0,0
+100,50
+
+_XLINE
+_A
+_R
+FOO
+(list (entlast) '(50 25))
+FOO
+30
+0,10
+
+(entget (entlast))
+_XLINE
+_A
+_R
+(list (entlast) '(0 10))
+10
+0,0
+
+(entget (entlast))
+_XLINE
+_A
+_R
+1000,1000

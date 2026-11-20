@@ -23,6 +23,10 @@ import {
   splineDataPoints,
   splineOnItsPlane,
   splineWithPoint,
+  infiniteBase,
+  infiniteDirection,
+  isInfiniteLine,
+  withInfinitePlacement,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -42,7 +46,7 @@ import {
 } from "../domain/ucs"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, planar, sub3 } from "../geometry/Vec3"
+import { Vec3, add3, planar, sub3 } from "../geometry/Vec3"
 import { CommandHistory } from "./commands/Command"
 import type { EngineText } from "./EngineText"
 import {
@@ -264,6 +268,23 @@ export function setSelectionProperty(
   return true
 }
 
+/** An XLINE's or a RAY's point rows (desktop xline/d02, d03). */
+const INFINITE_ROWS: Readonly<
+  Partial<
+    Record<
+      EntityProperty,
+      { readonly point: "base" | "second"; readonly axis: "x" | "y" | "z" }
+    >
+  >
+> = {
+  basePointX: { point: "base", axis: "x" },
+  basePointY: { point: "base", axis: "y" },
+  basePointZ: { point: "base", axis: "z" },
+  secondPointX: { point: "second", axis: "x" },
+  secondPointY: { point: "second", axis: "y" },
+  secondPointZ: { point: "second", axis: "z" },
+}
+
 /** The point each coordinate row reads, and the rows of its X and Y. */
 const COORDINATE_ROWS: Readonly<
   Partial<
@@ -302,6 +323,29 @@ function applyInUcs(
   ucs: Ucs,
   vertex: number
 ): Entity | null {
+  const infinite = INFINITE_ROWS[property]
+  if (infinite && isInfiniteLine(entity)) {
+    // Its points are the WCS's, read in the UCS: the base moves it whole,
+    // the second point (base + direction) turns it about the base.
+    const base = infiniteBase(entity)
+    const direction = infiniteDirection(entity)
+    const at = infinite.point === "base" ? base : add3(base, direction)
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, at),
+      [infinite.axis]: value,
+    })
+    if (infinite.point === "base") {
+      return withInfinitePlacement(entity, target, direction)
+    }
+    const d = sub3(target, base)
+    const length = Math.hypot(d.x, d.y, d.z)
+    if (!(length > 0)) return null
+    return withInfinitePlacement(entity, base, {
+      x: d.x / length,
+      y: d.y / length,
+      z: d.z / length,
+    })
+  }
   if (
     entity.type === "polyline3d" &&
     (property === "vertexX" || property === "vertexY" || property === "vertexZ")

@@ -139,7 +139,9 @@ export const pl: EngineLocale = {
       "solid": "Obszar",
       "face3d": "Powierzchnia 3D",
       "leader": "Linia odniesienia",
-      "wipeout": "Przykryj"
+      "wipeout": "Przykryj",
+      "xline": "Linia konstrukcyjna",
+      "ray": "Półprosta"
     },
     "description": {
       "U": "Cofa ostatnią czynność",
@@ -499,6 +501,30 @@ export const pl: EngineLocale = {
             "other": "Wielolinii odniesienia"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Prosta",
+            "few": "Proste",
+            "many": "Prostych",
+            "other": "Prostych"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Półprosta",
+            "few": "Półproste",
+            "many": "Półprostych",
+            "other": "Półprostych"
+          }
+        ]
       ]
     },
     "array": {
@@ -720,6 +746,15 @@ export const pl: EngineLocale = {
         "positionX": "X położenia",
         "positionY": "Y położenia",
         "positionZ": "Z położenia",
+        "basePointX": "X punktu bazowego",
+        "basePointY": "Y punktu bazowego",
+        "basePointZ": "Z punktu bazowego",
+        "secondPointX": "X drugiego punktu",
+        "secondPointY": "Y drugiego punktu",
+        "secondPointZ": "Z drugiego punktu",
+        "directionVectorX": "X wektora kierunkowego",
+        "directionVectorY": "Y wektora kierunkowego",
+        "directionVectorZ": "Z wektora kierunkowego",
         "scaleX": "Skala X",
         "scaleY": "Skala Y",
         "scaleZ": "Skala Z",
@@ -843,6 +878,13 @@ export const pl: EngineLocale = {
       "LINE": [
         "LINIA",
         "L"
+      ],
+      "XLINE": [
+        "PROSTA",
+        "PRT"
+      ],
+      "RAY": [
+        "PÓŁPROSTA"
       ],
       "PLINE": [
         "PLINIA",
@@ -1444,6 +1486,16 @@ export const pl: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Poziom",
+        "Ver": "pIon",
+        "Ang": "Kąt",
+        "Bisect": "Dwusieczna",
+        "Offset": "Odsuń",
+        "Reference": "oDniesienie",
+        "Through": "przezPunkt",
+        "Thru": "Przez"
+      },
       "-OSNAP": {
         "ENDpoint": "KOŃcowy",
         "MIDpoint": "SYMetria",
@@ -3149,6 +3201,24 @@ export const pl: EngineLocale = {
       "solideditTaperAxis": "Określ inny punkt wzdłuż osi zwężania",
       "solideditTaperAngle": "Określ kąt zwężania",
       "specifyAPoint": "Określ punkt",
+      "specifyAPointOr": "Określ punkt lub",
+      "specifyThroughPoint": "Określ punkt przechodni",
+      "specifyThroughPointAxis": "Określ punkt przechodni",
+      "xlineAngleOr": [
+        "Podaj kąt prostej (",
+        [
+          "angle"
+        ],
+        ") lub"
+      ],
+      "xlineAngle": "Podaj kąt prostej",
+      "selectLineObject": "Wybierz obiekt liniowy",
+      "specifyAngleVertexPoint": "Określ wierzchołek kąta",
+      "specifyAngleStartPoint": "Określ pierwsze ramię kąta",
+      "specifyAngleEndPoint": "Określ drugie ramię kąta",
+      "xlineOffsetDistanceOr": "Określ odległość odsunięcia lub",
+      "specifySideToOffset": "Określ stronę odsunięcia",
+      "rayStartPoint": "Określ punkt początkowy",
       "selectObjectToDivide": "Wybierz obiekt do podziału",
       "selectObjectToMeasure": "Wybierz obiekt do odmierzenia",
       "divideCountOr": "Podaj liczbę segmentów lub",
@@ -3189,6 +3259,7 @@ export const pl: EngineLocale = {
       "wipeoutFramesDisplay": "Wyświetl bez kreślenia"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5203,6 +5274,9 @@ export const pl: EngineLocale = {
       "chamferNot3dPolyline": "  Obiekty 3D typu Polilinia nie mogą być fazowane.",
       "filletNot3dPolyline": "  Obiekty 3D typu Polilinia nie mogą być zaokrąglane.",
       "collinearCannotFillet": "Linie współliniowe nie mogą być zaokrąglane.",
+      "capNeedsLineOrRay": "Pierwszym elementem dla łukowego zakończenia musi być linia lub półprosta.",
+      "startPointMustDiffer": "Punkt na pierwszym ramieniu kąta musi się różnić od wierzchołka",
+      "noUsableObjectSelected": "Nie wybrano obiektu możliwego do wykorzystania",
       "collinearCannotChamfer": "Linie współliniowe nie mogą być fazowane.",
       "cannotChamferItself": "Nie można utworzyć fazy elementu przy pomocy jego samego.",
       "segmentsNotConsecutive": "Segmenty polilinii muszą się stykać lub być oddzielone jednym segmentem",
@@ -6246,6 +6320,8 @@ export const pl: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "SZYK"
           }
         ]
@@ -6467,6 +6543,46 @@ export const pl: EngineLocale = {
         ", Przyrost Z = ",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   punkt bazowy, X=",
+        [
+          "x"
+        ],
+        " Y=",
+        [
+          "y"
+        ],
+        " Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   kierunek jednostek, X=",
+        [
+          "x"
+        ],
+        " Y=",
+        [
+          "y"
+        ],
+        " Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   kąt w płaszczyźnie XY =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   kąt względem płaszczyzny XY =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -8989,6 +9105,10 @@ export const pl: EngineLocale = {
         "Noorigin": "Róg"
       },
       "OFFSET": {
+        "Through": "przezPunkt"
+      },
+      "XLINE": {
+        "Reference": "oDniesienie",
         "Through": "przezPunkt"
       },
       "EXTRUDE": {

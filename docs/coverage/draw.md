@@ -42,6 +42,91 @@ at the first point)
 Perpendiculars; a pick whose object snap lands on the point before is skipped as a double click is
 (**unverified**: the console draws a zero-length line for an APP or PER typed there, line/p32)
 
+### `XLINE` / `XL` · es `LINEAX` / `XL` · pt-BR `LINHAINF` / `LINF` · fr `DROITE` / `DO` · it `XLINEA` / `XL` · de `KLINIE` / `KL` · ru `ПРЯМАЯ` / `ПР` · pl `PROSTA` / `PRT` · cs `PŘÍMKA` / `PK` · hu `SZVONAL` / `SV`
+
+**Implemented:** the construction line — a model type of its own (DXF XLINE: a base point and a
+unit direction, both in the WCS, the direction in 3D) — as AutoCAD 2027's ten consoles ask it
+(probes xline/x01–x10, traced): `Specify a point or [Hor/Ver/Ang/Bisect/Offset]:` (`Point or
+option keyword required.` for `FOO`, Enter ends), then each answer of the option's prompt makes one
+xline and asks again, Enter ending the run. A point: `Specify through point:`, every xline through
+the base and the point, its Z too (x07: 0,0,0 to 10,0,10 rises at 45°), one on the base
+`*Invalid*` (x01). Hor and Ver: along the UCS's X and Y through each point (x07 in UCS Z 30). Ang:
+`Enter angle of xline (0) or [Reference]:` — the parenthesised 0 is no default kept, Enter taking
+0, the UCS's X (x02, x07) —, then through each point; a point there asks ` Specify second point:`
+for a two-point angle. Reference: `Select a line object:` (a LINE, an XLINE or a RAY; a miss, a
+circle or a polyline `No usable object selected`, asked again; Enter ends, x03, x06, x08), then
+`Enter angle of xline <0>:` from its direction (x03: 30 from a line at 26.57° makes 56.57°).
+Bisect: `Specify angle vertex point:` and `Specify angle start point:` (Enter at either `Invalid
+point.`, x09; the start on the vertex `Start point must differ from vertex point`), then each
+`Specify angle end point:` the bisector through the vertex — the sum of the start's and the end's
+unit directions, opposite ones the start's turned 90° anticlockwise (x04). Offset: `Specify offset
+distance or [Through] <Through>:` (OFFSET's OFFSETDIST, written back: 0 or negative `Value must
+be positive and nonzero.`, x08; `Thru` a hidden second word for Through), then round and round
+`Select a line object:` and `Specify side to offset:`, the xline based at the object's base (a
+line's start) moved square across, to the left of its direction for a side on it (x09, i12), or,
+Through, `Specify through point:`, based at the point (x09). German words Hor's and Ver's through
+point apart (`Durchpunkt angeben`, table 21730). Each xline wears the current properties. Drawn
+while each prompt asks: the xline through the base and the cursor, Hor's, Ver's and Ang's through
+the cursor, Bisect's bisector of the start and the cursor, with a dashed rubber band from the
+base and from the vertex (desktop d04–d07).
+
+The xline in the drawing: drawn across the view whatever its pan or zoom, the model holding no
+end (`SceneBuilder` clips it to the frame in screen space), its linetype's dashes from its base,
+as AutoCAD plots a ray's (x10's plot); left out of the extents, ZOOM Extents and a DXF's
+EXTMIN/EXTMAX, a drawing of xlines alone having none (i08). Picked along it; a window takes it when
+it holds what the view shows of it, a window polygon never, a crossing or a fence where it crosses
+(i09, i11). Snaps: MID at
+its base, from anywhere along it, NEA, PER and INT with any object (i08, i09); no END. Grips: its
+base, which moves it, and one a tenth of the view's height along it each way, which turns it about
+the base through where it is dragged, the one behind reversing it (desktop d01, VIEWSIZE / 10).
+The Properties palette's `XLine`: General, then Geometry's Basepoint X, Y, Z and Second point X,
+Y, Z (the base plus its direction), typeable in the UCS, and Direction vector X, Y, Z, greyed
+(d02). LIST: `base point`, `unit direction` in the UCS, `angle in XY plane` and, rising, `angle
+from XY plane`, as each console writes them (i10). What other commands do to it, each probed:
+TRIM leaves it a RAY, the same object, cut on one side, and two rays cut between two edges, the
+first the object (i01, i02); BREAK at two points or at one leaves two rays (i02); EXTEND says
+`Cannot EXTEND this object.` (i03); FILLET and CHAMFER trim it to a ray at the corner on the side
+picked (i07), and FILLET of an xline first and a parallel object says `The first entity must be a
+line or a ray for cap filleting.`, ending (i07, table 20710); OFFSET copies it, Through square to
+the point (i04, i12); MOVE, COPY, ROTATE, SCALE (its base scaled) and MIRROR move it as a line
+(i04); STRETCH moves it whole when the frame catches its base, else leaves it (i05); HATCH takes it
+as a boundary (i14); `Cannot explode XLINE` (i06), DIVIDE `Cannot divide that object.`, AREA
+`Selected object does not have an area`, DIMLINEAR `Object selected is not a line, arc or
+circle.`, DIMRADIUS `Object selected is not a circle or arc.`, PEDIT `Object selected is not a
+polyline`, UCS OBject `This object does not define a coordinate system`, ending (i06, i13). The
+same in a block, which EXPLODE gives back (i15). Saved from drawing file version 62; a DXF opens
+and saves it (clipboard-and-files.md). Not transparent.
+
+**Deviations:** what shows of it, picks it and snaps to it is its stretch across the view and as
+far again past it, and TRIM, BREAK, FILLET and CHAMFER cut it as its stretch across the drawing
+and the view: an intersection or a corner farther out than that is not found, where AutoCAD's is
+anywhere; a window off the plan takes it by its outline as for any object (**unverified** against
+AutoCAD's view-clipped rule there); where AutoCAD starts its linetype's pattern along an xline is
+**unverified** (a ray's, x10, from its start)
+
+**Missing:** LENGTHEN and JOIN of one (a ray at JOIN: `Line, open polyline, arc, elliptical arc, or open spline
+expected.`, i06), not probed further; the grips' hover menus
+
+### `RAY` · es `RAYO` · pt-BR `RAIO` · fr `DEMIDROITE` · it `RAGGIO` · de `STRAHL` · ru `ЛУЧ` · pl `PÓŁPROSTA` · cs `POLOPŘÍMKA` · hu `SUGÁR`
+
+**Implemented:** the ray — a model type of its own (DXF RAY: an XLINE that starts at its base) —
+as AutoCAD 2027's ten consoles ask it (probes xline/r01, x08): `Specify start point:` (Enter ends
+with none; pt-BR `Especificar ponto inicial`, unlike LINE's), then `Specify through point:` again
+and again, each a ray from the start through the point, its Z kept (r01: 1,2,3 to 4,6,15), one on
+the start `*Invalid*`, Enter ending the run; drawn while it asks from the start through the cursor,
+with a dashed rubber band from the start (desktop d07). Each wears the current properties. In the drawing as an XLINE (above), but for its
+one end: END at its start, no MID, PER only where it runs (i08, i09); grips at its start, which
+moves it, and a tenth of the view along it, which turns it (d01); the palette's `Ray` (d03); LIST
+as an xline's (i10). TRIM and BREAK leave a LINE of the stretch from its start and a RAY of the
+rest (i01, i02); EXTEND runs its start back to the next edge behind it (i03); CHAMFER and FILLET
+trim it as a line, a ray when the side picked runs on (i07); UCS OBject puts the origin at its
+start, X pointing back from it (i13); `Cannot explode RAY` (i06); the rest as an xline's. A
+DXF opens and saves it. Not transparent.
+
+**Deviations:** as XLINE's
+
+**Missing:** LENGTHEN and JOIN of one; the grips' hover menus
+
 ### `PLINE` / `PL` · es `POL` / `PL` · pt-BR `PLINHA` / `PL` · fr `POLYLIGNE` / `PO` / `POLYLIGN` · it `PLINEA` / `PL` · de `PLINIE` / `PL` · ru `ПЛИНИЯ` / `ПЛ` · pl `PLINIA` / `PL` · cs `KŘIVKA` / `K` · hu `VLÁNC` / `VL`
 
 **Implemented:** `Specify start point:`, `Current line-width is 0.0000` (at the drawing's

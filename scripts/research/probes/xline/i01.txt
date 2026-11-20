@@ -1,0 +1,49 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_XLINE
+_H
+0,10
+
+(setq b (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_TRIM
+(list a '(150 0))
+
+(entget a)
+(entget (entlast))
+_TRIM
+(list b '(-50 10))
+(list b '(150 10))
+
+(entget b)
+(entget (entlast))
+_TRIM
+(list c '(150 20))
+
+(entget c)
+_TRIM
+(list a '(50 0))
+
+(entget (entlast))
+(getvar "TRIMEXTENDMODE")

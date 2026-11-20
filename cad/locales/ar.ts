@@ -139,7 +139,9 @@ export const ar: EngineLocale = {
       "solid": "مجسم ثنائي الأبعاد",
       "face3d": "وجه ثلاثي الأبعاد",
       "leader": "خط إشارة",
-      "wipeout": "قناع"
+      "wipeout": "قناع",
+      "xline": "خط إنشائي",
+      "ray": "شعاع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -476,6 +478,28 @@ export const ar: EngineLocale = {
             "other": "خطوط إشارة متعددة"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "خط إنشائي",
+            "two": "خطان إنشائيان",
+            "other": "خطوط إنشائية"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "شعاع",
+            "two": "شعاعان",
+            "other": "أشعة"
+          }
+        ]
       ]
     },
     "array": {
@@ -696,6 +720,15 @@ export const ar: EngineLocale = {
         "positionX": "الموضع X",
         "positionY": "الموضع Y",
         "positionZ": "الموضع Z",
+        "basePointX": "النقطة الأساسية X",
+        "basePointY": "النقطة الأساسية Y",
+        "basePointZ": "النقطة الأساسية Z",
+        "secondPointX": "النقطة الثانية X",
+        "secondPointY": "النقطة الثانية Y",
+        "secondPointZ": "النقطة الثانية Z",
+        "directionVectorX": "متجه الاتجاه X",
+        "directionVectorY": "متجه الاتجاه Y",
+        "directionVectorZ": "متجه الاتجاه Z",
         "scaleX": "المقياس X",
         "scaleY": "المقياس Y",
         "scaleZ": "المقياس Z",

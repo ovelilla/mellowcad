@@ -1,0 +1,21 @@
+QAFLAGS
+2
+_XLINE
+_B
+FOO
+0,0
+0,0
+10,0
+FOO
+0,10
+10,-10
+
+(entget (entlast))
+_XLINE
+_B
+0,0
+10,0
+10,0
+-10,0
+
+(entget (entlast))

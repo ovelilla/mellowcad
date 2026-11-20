@@ -39,6 +39,8 @@ import {
   worldToEntity,
   closestOnEntity,
   entityElevation,
+  infiniteBase,
+  infiniteLineSpan,
 } from "../../domain/entities"
 import { Ucs, createUcs, ucsFromAxes } from "../../domain/ucs"
 
@@ -57,6 +59,11 @@ export function alignable(entity: Entity | null): Entity | null {
  */
 export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
   if (entity.type === "line") return ucsAlongLine(entity, pick)
+  if (entity.type === "ray") {
+    // Its start the origin, X pointing back from it (xline/i13: UCSXDIR
+    // -1,0,0 for a ray along +X, wherever it is picked).
+    return ucsAlongLine(infiniteLineSpan(entity, 0, -1), infiniteBase(entity))
+  }
   if (entity.type === "region") {
     // The edge picked, as that object would align it (region/e05).
     const edge = nearestEdge(regionLevelEdgeEntities(entity), pick)
@@ -225,6 +232,8 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
     case "hatch":
     case "region":
     case "solid3d":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity
@@ -282,6 +291,8 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "solid3d":
     case "point":
     case "solid2d":
+    case "xline":
+    case "ray":
       return false
     default: {
       const unhandled: never = entity
@@ -409,6 +420,8 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "solid3d":
     case "point":
     case "solid2d":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity
@@ -500,6 +513,8 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "solid3d":
     case "point":
     case "solid2d":
+    case "xline":
+    case "ray":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

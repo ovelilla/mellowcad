@@ -353,6 +353,8 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity

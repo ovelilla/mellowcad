@@ -258,6 +258,11 @@ export class UcsTool implements Tool {
           ctx.report(ctx.text.message("ucsNoCoordinateSystem"))
           return this.keep(ctx)
         }
+        if (entity.type === "xline") {
+          ctx.report(ctx.text.message("ucsNoCoordinateSystem"))
+          ctx.endCommand()
+          return
+        }
         const ucs = ucsFromFound(entity)
         if (ucs) this.finish(ucs, null, ctx)
       },
@@ -517,6 +522,12 @@ export class UcsTool implements Tool {
     if (!zAxis && hit.type === "polyline3d") {
       // Said by name, and the command ends (3dpoly/p22, table 25596).
       ctx.report(ctx.text.message("polyline3dNoCoordinateSystem"))
+      ctx.endCommand()
+      return
+    }
+    if (!zAxis && hit.type === "xline") {
+      // The command ends (xline/i13).
+      ctx.report(ctx.text.message("ucsNoCoordinateSystem"))
       ctx.endCommand()
       return
     }

@@ -1,0 +1,81 @@
+---
+title: "Comando XLINEA (XLINE) in AutoCAD"
+metaTitle: "Comando XLINEA (XLINE): linea di costruzione"
+description: "Come XLINEA (XLINE, alias XL) di AutoCAD disegna linee di costruzione infinite: per due punti, orizzontali, verticali, inclinate, bisettrici o in offset."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Come si chiama il comando XLINE in italiano?","answer":"XLINEA, alias XL come in inglese, poi Invio o barra spaziatrice. La barra multifunzione lo chiama Linea di costruzione, nel gruppo Disegna espanso; qui è negli strumenti di Disegna, accanto a Raggio."},{"question":"Come si disegna una linea di costruzione orizzontale o verticale?","answer":"Avvia XLINEA, digita la lettera di ORizz o quella di Vert e indica i punti per cui passa. Orizzontale e verticale sono quelle dell'UCS corrente."},{"question":"Come si taglia una xlinea?","answer":"Con TAGLIA, come qualsiasi linea: tagliata da un lato, una xlinea diventa un raggio; tagliata da entrambi, una linea. Lo stesso accade con SPEZZA."},{"question":"Perché ZOOM Estensioni ignora le mie linee di costruzione?","answer":"Una xlinea non ha estensione: va all'infinito in entrambe le direzioni. AutoCAD lascia xlinee e raggi fuori dall'estensione del disegno, e così fa MellowCAD."},{"question":"Che differenza c'è tra XLINEA e RAGGIO?","answer":"Una xlinea va all'infinito in entrambe le direzioni; un raggio, quello di RAGGIO, parte da un punto e va in una sola direzione."}]
+---
+
+XLINEA (XLINE) disegna linee di costruzione: linee di lunghezza infinita, che attraversano tutta la vista per quanto tu faccia pan o zoom, per impostare un disegno prima che arrivino le linee vere. Indica un punto, poi un punto di passaggio: la xlinea passa per entrambi, e ogni punto successivo ne crea un'altra per il primo, finché Invio termina il comando. Un punto di passaggio sul primo punto viene rifiutato con `*Non valido*`. Ogni xlinea sta sul layer corrente con il colore, il tipo di linea e lo spessore di linea correnti.
+
+Una xlinea non ha estremi: uno zoom sull'estensione del disegno la lascia fuori, come in AutoCAD. Lo snap Punto medio trova il punto per cui è stata disegnata; Vicino, Perpendicolare e Intersezione funzionano lungo di essa, e [`TAGLIA`](/docs/commands/trim) o [`SPEZZA`](/docs/commands/break) la trasformano in un raggio, o in due, ed è così che le linee di costruzione diventano linee del disegno. [`RAGGIO`](/docs/commands/ray) disegna la metà che parte da un punto.
+
+- **Comando:** `XLINEA`
+- **In inglese:** `XLINE`, digitato `_XLINE` in ogni lingua
+- **Alias:** `XL`
+- **Gruppo:** [Disegna](/docs/commands#draw)
+- **Provalo:** [Apri l'editor](/it/draw), digita `XL` e premi Invio.
+
+## Sulla riga di comando [#session]
+
+Il motore la disegna e scrive la cronologia come la digiteresti: le richieste nell'ordine di AutoCAD 2027, con le stesse lettere d'opzione.
+
+<Session name="xline" caption="Xlinee per un punto, una orizzontale e la bisettrice dell'angolo tra due linee, ciascuna attraverso tutta la vista." />
+
+## Opzioni [#options]
+
+### `ORizz` (`OR`) [#hor]
+
+Xlinee orizzontali, lungo l'asse X dell'UCS, ciascuna per un punto che indichi, fino a Invio.
+
+### `Vert` (`V`) [#ver]
+
+Xlinee verticali, lungo l'asse Y dell'UCS, ciascuna per un punto che indichi.
+
+### `Ang` (`A`) [#ang]
+
+Xlinee inclinate: digita l'angolo, oppure indica due punti, poi i punti di passaggio. Invio all'angolo prende 0. `Riferimento` misura l'angolo da una linea che selezioni, una linea, una xlinea o un raggio, in senso antiorario: qualsiasi altro oggetto viene rifiutato con `Non è stato selezionato alcun oggetto utilizzabile`.
+
+### `Bisett` (`B`) [#bisect]
+
+La xlinea che divide a metà un angolo: indica il vertice, un punto sul primo lato, poi un punto sul secondo lato, e la bisettrice passa per il vertice. Ogni punto successivo sul secondo lato crea un'altra bisettrice dello stesso primo lato.
+
+### `OFfset` (`OF`) [#offset]
+
+Xlinee parallele a un oggetto lineare, una linea, una xlinea o un raggio: indica la distanza, seleziona l'oggetto e indica il lato, ancora e ancora fino a Invio. `Punto` fa invece passare ciascuna per un punto che indichi. La distanza è quella che [`OFFSET`](/docs/commands/offset) ricorda, e quella che propone dopo.
+
+## Cosa non fa ancora [#missing]
+
+ALLUNGA (LENGTHEN) e [`UNISCI`](/docs/commands/join) di una xlinea non sono ancora stati verificati rispetto ad AutoCAD, né i menu dei suoi grip.
+
+[Cosa fa e cosa ancora manca, in dettaglio (in inglese)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Domande [#questions]
+
+### Come si chiama il comando XLINE in italiano?
+
+XLINEA, alias `XL` come in inglese, poi Invio o barra spaziatrice. La barra multifunzione lo chiama Linea di costruzione, nel gruppo Disegna espanso; qui è negli strumenti di Disegna, accanto a Raggio.
+
+### Come si disegna una linea di costruzione orizzontale o verticale?
+
+Avvia XLINEA, digita la lettera di `ORizz` o quella di `Vert` e indica i punti per cui passa. Orizzontale e verticale sono quelle dell'UCS corrente.
+
+### Come si taglia una xlinea?
+
+Con [`TAGLIA`](/docs/commands/trim), come qualsiasi linea: tagliata da un lato, una xlinea diventa un raggio; tagliata da entrambi, una linea. Lo stesso accade con [`SPEZZA`](/docs/commands/break).
+
+### Perché ZOOM Estensioni ignora le mie linee di costruzione?
+
+Una xlinea non ha estensione: va all'infinito in entrambe le direzioni. AutoCAD lascia xlinee e raggi fuori dall'estensione del disegno, e così fa MellowCAD.
+
+### Che differenza c'è tra XLINEA e RAGGIO?
+
+Una xlinea va all'infinito in entrambe le direzioni; un raggio, quello di [`RAGGIO`](/docs/commands/ray), parte da un punto e va in una sola direzione.
+
+## Comandi correlati [#related]
+
+- [Comando RAGGIO (RAY) in AutoCAD](/docs/commands/ray)
+- [Comando LINEA (LINE) in AutoCAD](/docs/commands/line)
+- [Comando OFFSET in AutoCAD](/docs/commands/offset)
+- [Comando TAGLIA (TRIM) in AutoCAD](/docs/commands/trim)

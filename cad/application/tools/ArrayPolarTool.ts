@@ -5,6 +5,7 @@ import {
   Entity,
   EntityId,
   entityBounds,
+  isInfiniteLine,
 } from "../../domain/entities"
 import { isFullTurn, polarAngleBetween } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
@@ -657,7 +658,10 @@ function centroid(
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of originals) {
-    const b = entityBounds(entity, blocks)
+    // An XLINE or a RAY by its base, having no extents.
+    const b = isInfiniteLine(entity)
+      ? { min: entity.base, max: entity.base }
+      : entityBounds(entity, blocks)
     minX = Math.min(minX, b.min.x)
     minY = Math.min(minY, b.min.y)
     maxX = Math.max(maxX, b.max.x)

@@ -1,5 +1,11 @@
 import { pointInsideSolid2d, solid2dEdges } from "./solids2d"
 import { pointInsideWipeout, wipeoutEdges } from "./wipeouts"
+import {
+  closestOnInfiniteLine,
+  infiniteLineBounds,
+  infiniteLineClip,
+  isInfiniteLine,
+} from "./infiniteLines"
 import { imageCorners, imagePickEdges, pointOnImageLabel } from "./images"
 import { leaderPathEntity } from "./leaders"
 import { regionLevelEdgeEntities } from "./regions"
@@ -413,6 +419,9 @@ export function closestOnEntity(
       }
       return best
     }
+    case "xline":
+    case "ray":
+      return closestOnInfiniteLine(entity, point)
     case "point":
       // WHY by its place alone: what the figure shows is a display of
       // PDMODE, not the object (unverified on the desktop).
@@ -616,6 +625,10 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
     }
     case "point":
       return { min: entity.position, max: entity.position }
+    case "xline":
+    case "ray":
+      // Unbounded where it runs on: the extents leave it out (`entitiesBounds`).
+      return infiniteLineBounds(entity)
     case "leader":
       return entityBounds(leaderPathEntity(entity))
     case "table":
@@ -703,6 +716,9 @@ export function entitiesBounds(
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of entities) {
+    // An XLINE or a RAY has no extents: ZOOM Extents and EXTMIN leave them
+    // out, and a drawing of them alone has none (xline/i08).
+    if (isInfiniteLine(entity)) continue
     const bounds = entityBounds(entity, blocks)
     minX = Math.min(minX, bounds.min.x)
     minY = Math.min(minY, bounds.min.y)
@@ -958,6 +974,9 @@ export function entityCrossesRect(
     }
     case "point":
       return pointInRect(entity.position, min, max)
+    case "xline":
+    case "ray":
+      return infiniteLineClip(entity, min, max) !== null
     case "leader":
       return entityCrossesRect(leaderPathEntity(entity), min, max)
     case "table":

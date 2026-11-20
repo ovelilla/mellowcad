@@ -79,13 +79,13 @@ describe("OPEN of a DXF", () => {
     cad.command("OPEN")
     await opened(cad, files)
 
-    expect(cad.entityCount).toBe(34)
+    expect(cad.entityCount).toBe(36)
     expect(cad.runtime.document.getLayers().map((l) => l.name)).toContain(
       "Señales"
     )
     expect(cad.commandLog().slice(from)).toEqual([
       "OPEN",
-      "4 objects not opened: 1 XLINE, 1 RAY, 1 3DSOLID, 1 REGION.",
+      "2 objects not opened: 1 3DSOLID, 1 REGION.",
       "1 object in a layout not opened.",
     ])
   })
@@ -108,7 +108,7 @@ describe("OPEN of a DXF", () => {
       const cad = createHarness({ files })
       cad.command("OPEN")
       await opened(cad, files)
-      expect(cad.entityCount).toBe(34)
+      expect(cad.entityCount).toBe(36)
     }
   })
 
@@ -123,7 +123,7 @@ describe("OPEN of a DXF", () => {
       await opened(cad, files)
       expect(store.writes.at(-1)).toContain("Señales")
       typed(cad, "_U")
-      expect(cad.entityCount).toBe(34)
+      expect(cad.entityCount).toBe(36)
     } finally {
       vi.useRealTimers()
     }
@@ -224,7 +224,7 @@ describe("in the command languages", () => {
     expect(files.openedKinds).toEqual([["dxf"]])
     expect(cad.commandLog().slice(from)).toEqual([
       "CARGADXF",
-      "4 objetos no abiertos: 1 XLINE, 1 RAY, 1 3DSOLID, 1 REGION.",
+      "2 objetos no abiertos: 1 3DSOLID, 1 REGION.",
       "1 objeto de una presentación no abierto.",
     ])
     const garbage = new MemoryFileTransport({
@@ -248,7 +248,7 @@ describe("in the command languages", () => {
     await opened(cad, files)
     expect(files.openedKinds).toEqual([["dxf"]])
     expect(cad.commandLog().slice(-2)).toEqual([
-      "4 objetos não abertos: 1 XLINE, 1 RAY, 1 3DSOLID, 1 REGION.",
+      "2 objetos não abertos: 1 3DSOLID, 1 REGION.",
       "1 objeto de um layout não aberto.",
     ])
   })
@@ -259,9 +259,9 @@ describe("a file the host already holds (openFile)", () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
     const from = cad.commandLog().length
     await cad.openFile(fixture("fixture-2018"))
-    expect(cad.entityCount).toBe(34)
+    expect(cad.entityCount).toBe(36)
     expect(cad.commandLog().slice(from)).toEqual([
-      "4 objects not opened: 1 XLINE, 1 RAY, 1 3DSOLID, 1 REGION.",
+      "2 objects not opened: 1 3DSOLID, 1 REGION.",
       "1 object in a layout not opened.",
     ])
   })

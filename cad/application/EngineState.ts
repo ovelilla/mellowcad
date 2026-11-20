@@ -1,7 +1,7 @@
 import { regionArea, regionPerimeter } from "../domain/regions"
 import { primitiveInUcs } from "../domain/solids"
 import { V, Vec2 } from "../geometry/Vec2"
-import { Vec3, sub3 } from "../geometry/Vec3"
+import { Vec3, add3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import { axesToWorld } from "../geometry/ocs"
@@ -70,6 +70,8 @@ import {
   planeAxes,
   textInsertionPoint,
   insertReflects,
+  infiniteBase,
+  infiniteDirection,
 } from "../domain/entities"
 import { objectArea } from "../domain/objectArea"
 import type {
@@ -2055,6 +2057,33 @@ function singleEntityInfo(
       return { title: title("table"), count: 1, groups: [] }
     case "mleader":
       return { title: title("mleader"), count: 1, groups: [] }
+    case "xline":
+    case "ray": {
+      // Geometry: Basepoint, Second point (the base plus its direction),
+      // typeable, and the Direction vector, greyed (desktop xline/d02, d03).
+      const base = infiniteBase(entity)
+      const direction = infiniteDirection(entity)
+      const from = worldPointToUcs(settings.ucs, base)
+      const second = worldPointToUcs(settings.ucs, add3(base, direction))
+      const along = worldDirectionToUcs(settings.ucs, direction)
+      return {
+        title: title(entity.type),
+        count: 1,
+        groups: [
+          group("geometry", [
+            coordRow("basePointX", "basePointX", from.x),
+            coordRow("basePointY", "basePointY", from.y),
+            coordRow("basePointZ", "basePointZ", from.z),
+            coordRow("secondPointX", "secondPointX", second.x),
+            coordRow("secondPointY", "secondPointY", second.y),
+            coordRow("secondPointZ", "secondPointZ", second.z),
+            row("directionVectorX", coord(along.x)),
+            row("directionVectorY", coord(along.y)),
+            row("directionVectorZ", coord(along.z)),
+          ]),
+        ],
+      }
+    }
     case "point": {
       // Geometry is its Position, Thickness under General (unverified on the
       // desktop: the palette as a circle's, circle/d10).

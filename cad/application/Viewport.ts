@@ -16,6 +16,7 @@ import {
   Entity,
   entitiesBounds,
   rotateEntity,
+  isInfiniteLine,
 } from "../domain/entities"
 import { drawsTilted, entityScreenOutline } from "./viewOutline"
 
@@ -498,9 +499,11 @@ export function entitiesViewBounds(
   viewport: Viewport,
   blocks?: BlockLookup
 ): Bounds | null {
+  // An XLINE or a RAY has no extents (xline/i08), in any view.
+  const finite = entities.filter((entity) => !isInfiniteLine(entity))
   const onScreen = viewport.isPlan
-    ? entities.filter((entity) => drawsTilted(entity, blocks))
-    : entities
+    ? finite.filter((entity) => drawsTilted(entity, blocks))
+    : finite
   let bounds: Bounds | null = null
   const include = (p: Vec2) => {
     bounds = bounds

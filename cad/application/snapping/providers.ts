@@ -69,7 +69,11 @@ import {
   PolylineEntity,
   PolylineSegmentGeometry,
   tableGeometry,
+  InfiniteLineEntity,
+  infiniteLineReaching,
+  isInfiniteLine,
 } from "../../domain/entities"
+import { viewWorldBounds } from "../infiniteReach"
 import {
   ConstructionGeometry,
   SnapCandidate,
@@ -203,6 +207,9 @@ export const endpointProvider: SnapProvider = {
         for (const vertex of entity.vertices) {
           candidates.push(notable(SnapType.Endpoint, entity, vertex, touch))
         }
+      } else if (entity.type === "ray") {
+        // Its start, its one end (xline/i08); an XLINE has none.
+        candidates.push(notable(SnapType.Endpoint, entity, entity.base, touch))
       } else if (entity.type === "dimension") {
         // A dimension has no geometry of its own to snap along, but its
         // definition points and the ends of its dimension line are the points
@@ -234,6 +241,9 @@ export const midpointProvider: SnapProvider = {
         candidates.push(
           notable(SnapType.Midpoint, entity, lerp3(a, b, 0.5), touch)
         )
+      } else if (entity.type === "xline") {
+        // Its base, wherever it is picked (xline/i08, i09); a RAY has none.
+        candidates.push(notable(SnapType.Midpoint, entity, entity.base, touch))
       } else if (entity.type === "arc") {
         candidates.push(
           notable(SnapType.Midpoint, entity, arcMidpoint(entity), touch)
@@ -514,11 +524,14 @@ export const perpendicularProvider: SnapProvider = {
     anchor,
     cursorOn,
     touch,
+    view,
   }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
-    for (const entity of entities) {
-      if (!document.isEntityVisible(entity)) continue
+    for (const drawn of entities) {
+      if (!document.isEntityVisible(drawn)) continue
+      // A RAY's foot only where it runs (xline/i09).
+      const entity = asSpan(drawn, view)
       if (entity.type === "line") {
         // The foot in space: from a point at another height to a sloped or
         // vertical line, AutoCAD's PER is perpendicular in 3D, in plan and
@@ -901,6 +914,7 @@ export const nearestProvider: SnapProvider = {
     entities,
     cursorOn,
     isNear,
+    view,
     solidPoints = [],
   }: SnapContext): SnapCandidate[] {
     // A cone's apex is an edge of no length: Nearest finds it (primitives/p402).
@@ -911,8 +925,9 @@ export const nearestProvider: SnapProvider = {
         point: p.point,
         sourceIds: [p.id],
       }))
-    for (const entity of entities) {
-      if (!document.isEntityVisible(entity)) continue
+    for (const drawn of entities) {
+      if (!document.isEntityVisible(drawn)) continue
+      const entity = asSpan(drawn, view)
       const cursor = cursorOn(entity)
       if (entity.type === "line") {
         const point = nearestOnLine(entity, cursor)
@@ -965,15 +980,18 @@ export const nearestProvider: SnapProvider = {
 export const intersectionProvider: SnapProvider = {
   type: SnapType.Intersection,
   collect(context: SnapContext): SnapCandidate[] {
-    const { document, entities, cursorOn, isNear, construction } = context
+    const { document, entities, cursorOn, isNear, construction, view } = context
     // WHY filtered before pairing: crossing every pair of the drawing on
     // each pointer move is quadratic — 5 ms a move at 300 lines. A point it
     // keeps lies on both shapes within `INTERSECTION_REACH` of the cursor, so
     // a shape that never comes that close cannot hold one.
-    const shapes = collectShapes(document, entities, construction, {
-      cursorOn,
-      isNear,
-    }).filter((shape) => mayReachCursor(shape, context))
+    const shapes = collectShapes(
+      document,
+      entities,
+      construction,
+      { cursorOn, isNear },
+      view
+    ).filter((shape) => mayReachCursor(shape, context))
     const candidates: SnapCandidate[] = []
 
     for (let i = 0; i < shapes.length; i++) {
@@ -1112,7 +1130,13 @@ export const apparentIntersectionProvider: SnapProvider = {
     view,
     construction,
   }: SnapContext): SnapCandidate[] {
-    const shapes = collectShapes(document, entities, construction)
+    const shapes = collectShapes(
+      document,
+      entities,
+      construction,
+      undefined,
+      view
+    )
     const segments = shapes.filter(
       (s): s is SegmentShape => s.kind === "segment"
     )
@@ -1328,11 +1352,23 @@ function meetingPoint(a: SnapShape, b: SnapShape, point: Vec2): Vec3 | null {
  * `onCurves`), and only those within `near.reach` of the cursor: a whole
  * tessellation would make the pairwise search quadratic in chords.
  */
+/**
+ * An XLINE or a RAY as the stretch of it across the view and as far again:
+ * the snaps find a point near the cursor, or a foot from a point in view,
+ * so nothing past it is wanted. Anything else as it is.
+ */
+function asSpan(entity: Entity, view: CameraTransform): Entity {
+  if (!isInfiniteLine(entity)) return entity
+  const box = viewWorldBounds(view) ?? { min: entity.base, max: entity.base }
+  return infiniteLineReaching(entity as InfiniteLineEntity, box) ?? entity
+}
+
 function collectShapes(
   document: SnapContext["document"],
   entities: SnapContext["entities"],
   construction: readonly ConstructionGeometry[],
-  near?: Pick<SnapContext, "cursorOn" | "isNear">
+  near?: Pick<SnapContext, "cursorOn" | "isNear">,
+  view?: CameraTransform
 ): SnapShape[] {
   const shapes: SnapShape[] = []
   for (const entity of entities) {
@@ -1370,6 +1406,18 @@ function collectShapes(
         sourceIds: [entity.id],
         fromConstruction: false,
         source: entity,
+      })
+    } else if (isInfiniteLine(entity)) {
+      const span = view && asSpan(entity, view)
+      if (span?.type !== "line") continue
+      const [a, b] = lineEnds(span)
+      shapes.push({
+        kind: "segment",
+        a,
+        b,
+        sourceIds: [entity.id],
+        fromConstruction: false,
+        source: span,
       })
     } else if (entity.type === "circle") {
       shapes.push({

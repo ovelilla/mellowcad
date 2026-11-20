@@ -139,7 +139,9 @@ export const cs: EngineLocale = {
       "solid": "2D těleso",
       "face3d": "3D plocha",
       "leader": "Odkaz",
-      "wipeout": "Překrytí"
+      "wipeout": "Překrytí",
+      "xline": "Konstrukční přímka",
+      "ray": "Polopřímka"
     },
     "description": {
       "U": "Vrátí poslední akci",
@@ -499,6 +501,30 @@ export const cs: EngineLocale = {
             "other": "Multiodkazů"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Přímka",
+            "few": "Přímky",
+            "many": "Přímky",
+            "other": "Přímky"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polopřímka",
+            "few": "Polopřímky",
+            "many": "Polopřímky",
+            "other": "Polopřímky"
+          }
+        ]
       ]
     },
     "array": {
@@ -720,6 +746,15 @@ export const cs: EngineLocale = {
         "positionX": "Umístění X",
         "positionY": "Umístění Y",
         "positionZ": "Umístění Z",
+        "basePointX": "Refbod X",
+        "basePointY": "Refbod Y",
+        "basePointZ": "Refbod Z",
+        "secondPointX": "Druhý bod X",
+        "secondPointY": "Druhý bod Y",
+        "secondPointZ": "Druhý bod Z",
+        "directionVectorX": "Směrový vektor X",
+        "directionVectorY": "Směrový vektor Y",
+        "directionVectorZ": "Směrový vektor Z",
         "scaleX": "Měřítko X",
         "scaleY": "Měřítko Y",
         "scaleZ": "Měřítko Z",
@@ -843,6 +878,13 @@ export const cs: EngineLocale = {
       "LINE": [
         "ÚSEČKA",
         "U"
+      ],
+      "XLINE": [
+        "PŘÍMKA",
+        "PK"
+      ],
+      "RAY": [
+        "POLOPŘÍMKA"
       ],
       "PLINE": [
         "KŘIVKA",
@@ -1455,6 +1497,16 @@ export const cs: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Hor",
+        "Ver": "Ver",
+        "Ang": "úheL",
+        "Bisect": "Polovinu",
+        "Offset": "Ekvid",
+        "Reference": "Reference",
+        "Through": "Bodem",
+        "Thru": "Skrz"
+      },
       "-OSNAP": {
         "ENDpoint": "KONcový",
         "MIDpoint": "POLovina",
@@ -3160,6 +3212,24 @@ export const cs: EngineLocale = {
       "solideditTaperAxis": "Zadejte jiný bod podél osy zešikmení",
       "solideditTaperAngle": "Zadejte úhel zešikmení",
       "specifyAPoint": "Určete bod",
+      "specifyAPointOr": "Určete bod nebo",
+      "specifyThroughPoint": "Určete kterým bodem",
+      "specifyThroughPointAxis": "Určete kterým bodem",
+      "xlineAngleOr": [
+        "Zadejte úhel přímky (",
+        [
+          "angle"
+        ],
+        ") nebo"
+      ],
+      "xlineAngle": "Zadejte úhel přímky",
+      "selectLineObject": "Vyberte čárový objekt",
+      "specifyAngleVertexPoint": "Určete bod vrcholu úhlu",
+      "specifyAngleStartPoint": "Určete počátek úhlu",
+      "specifyAngleEndPoint": "Určete konec úhlu",
+      "xlineOffsetDistanceOr": "Určete vzdálenost ekvidistanty nebo",
+      "specifySideToOffset": "Na kterou stranu?",
+      "rayStartPoint": "Určete počáteční bod",
       "selectObjectToDivide": "Vyberte objekt pro dělení dle počtu",
       "selectObjectToMeasure": "Vyberte objekt pro dělení dle měření",
       "divideCountOr": "Zadejte počet segmentů nebo",
@@ -3200,6 +3270,7 @@ export const cs: EngineLocale = {
       "wipeoutFramesDisplay": "Zobrazit bez vykreslení"
     },
     "promptForms": {
+      "specifySideToOffset": "open",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5185,6 +5256,9 @@ export const cs: EngineLocale = {
       "chamferNot3dPolyline": "  Objekty 3D Křivka nemohou být zkoseny.",
       "filletNot3dPolyline": "  Objekty 3D Křivka nemohou být zaobleny.",
       "collinearCannotFillet": "Kolineární úsečky nemohou být zaobleny.",
+      "capNeedsLineOrRay": "Pro zaoblení zakončení musí být prvním objektem úsečka nebo přímka.",
+      "startPointMustDiffer": "Bod počátku musí být odlišný od vrcholu",
+      "noUsableObjectSelected": "Nevybrán žádný použitelný objekt",
       "collinearCannotChamfer": "Kolineární úsečky nemohou být zkoseny.",
       "cannotChamferItself": "Nelze zkosit objekt sám se sebou.",
       "segmentsNotConsecutive": "Úsečkové části křivky musí spolu sousedit nebo být oddělené jedním segmentem",
@@ -6244,6 +6318,8 @@ export const cs: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "POLE"
           }
         ]
@@ -6465,6 +6541,46 @@ export const cs: EngineLocale = {
         ", Delta Z =",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   základní bod, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   jednotkový směr, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   úhel v rovině XY =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   úhel od roviny XY =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -9113,6 +9229,10 @@ export const cs: EngineLocale = {
         "Noorigin": "vLevo"
       },
       "OFFSET": {
+        "Through": "Bodem"
+      },
+      "XLINE": {
+        "Reference": "Reference",
         "Through": "Bodem"
       },
       "EXTRUDE": {

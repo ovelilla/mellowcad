@@ -1,0 +1,68 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_TRIM
+(list a '(50 0))
+
+(entget a)
+(entget (entlast))
+_XLINE
+_H
+0,30
+
+(setq b (entlast))
+_BREAK
+(list b '(10 30))
+20,30
+(entget b)
+(entget (entlast))
+_BREAK
+(list c '(70 20))
+80,20
+(entget c)
+(entget (entlast))
+_XLINE
+_V
+200,0
+
+(setq d (entlast))
+_BREAK
+(list d '(200 10))
+_F
+200,5
+@
+(entget d)
+(entget (entlast))
+_XLINE
+_V
+300,0
+
+(setq e (entlast))
+_BREAK
+(list e '(300 10))
+_F
+300,5
+300,5
+(entget e)
+(entget (entlast))

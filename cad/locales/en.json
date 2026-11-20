@@ -135,7 +135,9 @@
       "solid": "2D Solid",
       "face3d": "3D Face",
       "leader": "Leader",
-      "wipeout": "Wipeout"
+      "wipeout": "Wipeout",
+      "xline": "Construction Line",
+      "ray": "Ray"
     },
     "description": {
       "U": "Undo the last action",
@@ -263,7 +265,9 @@
       "wipeout": "{count, plural, one {Wipeout} other {Wipeouts}}",
       "image": "{count, plural, one {Raster Image} other {Raster Images}}",
       "table": "{count, plural, one {Table} other {Tables}}",
-      "mleader": "{count, plural, one {Multileader} other {Multileaders}}"
+      "mleader": "{count, plural, one {Multileader} other {Multileaders}}",
+      "xline": "{count, plural, one {XLine} other {XLines}}",
+      "ray": "{count, plural, one {Ray} other {Rays}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -446,6 +450,15 @@
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "basePointX": "Basepoint X",
+        "basePointY": "Basepoint Y",
+        "basePointZ": "Basepoint Z",
+        "secondPointX": "Second point X",
+        "secondPointY": "Second point Y",
+        "secondPointZ": "Second point Z",
+        "directionVectorX": "Direction vector X",
+        "directionVectorY": "Direction vector Y",
+        "directionVectorZ": "Direction vector Z",
         "scaleX": "Scale X",
         "scaleY": "Scale Y",
         "scaleZ": "Scale Z",
@@ -567,6 +580,8 @@
   "commands": {
     "names": {
       "LINE": ["LINE", "L"],
+      "XLINE": ["XLINE", "XL"],
+      "RAY": ["RAY"],
       "PLINE": ["PLINE", "PL"],
       "3DFACE": ["3DFACE", "3F"],
       "3DPOLY": ["3DPOLY", "3P"],
@@ -726,6 +741,16 @@
       "WIPEOUT": ["WIPEOUT"]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Hor",
+        "Ver": "Ver",
+        "Ang": "Ang",
+        "Bisect": "Bisect",
+        "Offset": "Offset",
+        "Reference": "Reference",
+        "Through": "Through",
+        "Thru": "Thru"
+      },
       "-OSNAP": {
         "ENDpoint": "ENDpoint",
         "MIDpoint": "MIDpoint",
@@ -2195,6 +2220,18 @@
       "solideditTaperAxis": "Specify another point along the axis of tapering",
       "solideditTaperAngle": "Specify the taper angle",
       "specifyAPoint": "Specify a point",
+      "specifyAPointOr": "Specify a point or",
+      "specifyThroughPoint": "Specify through point",
+      "specifyThroughPointAxis": "Specify through point",
+      "xlineAngleOr": "Enter angle of xline ({angle}) or",
+      "xlineAngle": "Enter angle of xline",
+      "selectLineObject": "Select a line object",
+      "specifyAngleVertexPoint": "Specify angle vertex point",
+      "specifyAngleStartPoint": "Specify angle start point",
+      "specifyAngleEndPoint": "Specify angle end point",
+      "xlineOffsetDistanceOr": "Specify offset distance or",
+      "specifySideToOffset": "Specify side to offset",
+      "rayStartPoint": "Specify start point",
       "selectObjectToDivide": "Select object to divide",
       "selectObjectToMeasure": "Select object to measure",
       "divideCountOr": "Enter the number of segments or",
@@ -2235,6 +2272,7 @@
       "wipeoutFramesDisplay": "Display but not plot"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -2560,6 +2598,9 @@
       "chamferNot3dPolyline": "  3D Polyline objects may not be chamfered.",
       "filletNot3dPolyline": "  3D Polyline objects may not be filleted.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
+      "capNeedsLineOrRay": "The first entity must be a line or a ray for cap filleting.",
+      "startPointMustDiffer": "Start point must differ from vertex point",
+      "noUsableObjectSelected": "No usable object selected",
       "collinearCannotChamfer": "Collinear lines connot be chamfered.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "segmentsNotConsecutive": "Lines belonging to polylines must be consecutive or separated by one segment",
@@ -2720,7 +2761,7 @@
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
       "allAdditionsUndone": "All the additions are undone.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} solid3d {3DSOLID} solid2d {SOLID} leader {LEADER} face3d {3D FACE} wipeout {WIPEOUT} image {IMAGE} table {ACAD_TABLE} mleader {MULTILEADER} xline {XLINE} ray {RAY} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -2739,6 +2780,10 @@
       "listLineLength": "          {inUcs, select, yes {In Current UCS, } other {}}Length ={length},  Angle in XY Plane = {angle}",
       "listLine3d": "                  3D Length  ={length},  Angle from XY Plane = {angle}",
       "listLineDelta": "                  Delta X ={x}, Delta Y = {y}, Delta Z ={z}",
+      "listBasePoint": "                   base point, X={x}  Y={y}  Z={z}",
+      "listUnitDirection": "                   unit direction, X={x}  Y={y}  Z={z}",
+      "listAngleInXy": "                   angle in XY plane ={angle}",
+      "listAngleFromXy": "                   angle from XY plane ={angle}",
       "listCenter": "            center point, X={x}  Y={y}  Z={z}",
       "listRadius": "            radius {radius}",
       "listLwRadius": "            radius {radius}",
@@ -3188,6 +3233,7 @@
       "COPY": { "Displacement": "Displacement" },
       "UCSICON": { "Noorigin": "Noorigin" },
       "OFFSET": { "Through": "Through" },
+      "XLINE": { "Reference": "Reference", "Through": "Through" },
       "EXTRUDE": { "Taper": "Taper angle" },
       "REVOLVE": { "STart": "STart angle" },
       "SLICE": { "Object": "planar Object", "Both": "keep Both sides" },

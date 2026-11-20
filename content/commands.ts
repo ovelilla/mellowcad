@@ -63,6 +63,8 @@ interface Filing {
 
 export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   LINE: { group: "draw" },
+  XLINE: { group: "draw" },
+  RAY: { group: "draw" },
   PLINE: { group: "draw" },
   CIRCLE: { group: "draw" },
   CIRCLED: { group: "draw", variant: true },

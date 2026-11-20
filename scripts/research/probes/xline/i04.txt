@@ -1,0 +1,64 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_OFFSET
+5
+(list a '(50 0))
+50,10
+(list c '(55 20))
+55,30
+_E
+(entget (entlast))
+_MIRROR
+(ssget "_L")
+
+0,0
+0,10
+_N
+(entget (entlast))
+_ROTATE
+(ssget "_L")
+
+0,0
+90
+(entget (entlast))
+_SCALE
+(ssget "_L")
+
+0,0
+2
+(entget (entlast))
+_MOVE
+(ssget "_L")
+
+0,0
+10,10
+(entget (entlast))
+_COPY
+(ssget "_L")
+
+0,0
+1,1
+
+(entget (entlast))

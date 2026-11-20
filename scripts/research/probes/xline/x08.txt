@@ -1,0 +1,44 @@
+QAFLAGS
+2
+_RAY
+0,0
+10,10
+
+_XLINE
+_O
+5
+(list (entlast) '(5 5))
+10,0
+
+(entget (entlast))
+_XLINE
+_O
+_T
+(list (entlast) '(5 5))
+20,0
+
+(entget (entlast))
+_XLINE
+_A
+_R
+(list (entlast) '(20 0))
+
+7,7
+
+(entget (entlast))
+_XLINE
+_A
+_R
+
+_XLINE
+_O
+0
+-3
+_XLINE
+_B
+
+0,0
+
+10,0
+
+(getvar "OFFSETDIST")

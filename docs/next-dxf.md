@@ -20,8 +20,11 @@
 > L8), hecho el 19/11, e IMAGE, hecho el 19/11 (sin publicar), que las llevó a 152 y los ficheros
 > de otros a 574, y la tabla (ACAD_TABLE), hecha el 19/11 (sin publicar), que llevó los ficheros
 > de otros a 575, y MULTILEADER, hecho el 19/11 (sin publicar, sin el comando MLEADER), que llevó
-> las muestras a 153 y los ficheros de otros a 577 de 577; siguiente, por orden del dueño, otro
-> idioma, y después lo que quede del punto 7 (XLINE, RAY…), alternando, una sesión cada vez.
+> las muestras a 153 y los ficheros de otros a 577 de 577; y, después del japonés (L8, 20/11), XLINE
+> y RAY con sus comandos y sus páginas, hechos el 20/11 (sin publicar), sin cambio en el corpus
+> (ninguno las tiene); siguiente, por orden del dueño, otro idioma (el coreano o el chino), y
+> después lo que quede del punto 7 (MINSERT, los colores índice, las sustituciones DSTYLE, la
+> malla), alternando, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -433,7 +436,18 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       el final de la pata es una flecha (hecho); faltan los cuatro de las esquinas del texto y
       sus menús. Las paletas tienen grupos propios tras General (Image Adjust, Geometry y Misc;
       Table, Geometry y Table Breaks; Misc, Leaders y Text), anotados en la cobertura.
-      **Queda del punto 7**, por orden: XLINE, RAY, MINSERT,
+      XLINE y RAY, hechos el 20/11/2026 (sin publicar): las dos entidades (punto base y dirección
+      unitaria en el WCS, 10 y 11) y sus comandos, investigados en las diez consolas (sondas
+      `xline/x01–x10`, `r01`, `i01–i15`, trazadas) y el escritorio (`dsk.sh`: pinzamientos,
+      paleta, lo dibujado mientras se pide); lo que les hacen TRIM, BREAK, EXTEND, FILLET, CHAMFER,
+      OFFSET, las transformaciones, STRETCH, EXPLODE, DIVIDE, AREA, LIST, HATCH, los enganches, la
+      ventana y ZOOM Extensión, cada cosa sondeada (`docs/coverage/draw.md`). DXF en los dos
+      sentidos: la consola abre los 12 ficheros (2000 a 2018, texto y binario) sin un error de
+      AUDIT y los traza píxel a píxel como el suyo (x10). Ninguna muestra ni fichero de otros las
+      tiene: el corpus queda igual (153 de 154, 577 de 577). La escena las recorta a la vista;
+      3000 a 60 fps de mediana al hacer zoom (navegador). Páginas `/docs/commands/xline` y
+      `/ray` en los doce idiomas.
+      **Queda del punto 7**, por orden: MINSERT,
       los colores índice y las sustituciones DSTYLE de cada cota (ninguno con un caso medido en el
       corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de las
       muestras.

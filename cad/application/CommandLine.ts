@@ -255,6 +255,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   line: "LINE",
   polyline: "PLINE",
   polyline3d: "3DPOLY",
+  xline: "XLINE",
+  ray: "RAY",
   point: "POINT",
   solid: "SOLID",
   face3d: "3DFACE",

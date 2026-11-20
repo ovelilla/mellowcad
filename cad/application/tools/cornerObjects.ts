@@ -41,7 +41,11 @@ import {
   turnedOver,
   withNormal,
   withThickness,
+  InfiniteLineEntity,
+  infiniteLineReaching,
+  isInfiniteLine,
 } from "../../domain/entities"
+import { infiniteReachBox } from "../infiniteReach"
 import type { CameraTransform } from "../../scene/types"
 import type { MessageId } from "../EngineText"
 import type { Curve, CurveEnd } from "./curveFillets"
@@ -241,6 +245,15 @@ function cornerObjectAt(
   first: CornerObject | null,
   index = segmentAt(ctx, hit, pick)
 ): CornerObject | null {
+  if (isInfiniteLine(hit)) {
+    // Cornered as its stretch across the drawing, of its id: the command
+    // takes the pieces left back to a RAY or a LINE (`cornerCommand`;
+    // xline/i07).
+    const span = cornerSpan(hit, ctx)
+    return span && (first === null || isSegment(first) || first.id !== hit.id)
+      ? span
+      : null
+  }
   if (hit.type === "line") {
     return first === null || isSegment(first) || first.id !== hit.id
       ? hit
@@ -252,6 +265,29 @@ function cornerObjectAt(
   }
   return segmentsPair(hit, first.index, index) ? { poly: hit, index } : null
 }
+
+/**
+ * An XLINE's or a RAY's stretch as FILLET and CHAMFER read it, across the
+ * drawing and the view, which the pick and the commit share.
+ */
+export function cornerSpan(
+  entity: InfiniteLineEntity,
+  ctx: ToolContext
+): LineEntity | null {
+  // WHY kept per object: a zoom between the pick and the commit would read
+  // another stretch, and the commit would no longer find the piece's far
+  // end on it (xline.test.ts).
+  const kept = cornerSpans.get(entity)
+  if (kept !== undefined) return kept
+  const span = infiniteLineReaching(
+    entity,
+    infiniteReachBox(ctx.document.getEntities(), ctx.viewport, ctx.blocks)
+  )
+  cornerSpans.set(entity, span)
+  return span
+}
+
+const cornerSpans = new WeakMap<InfiniteLineEntity, LineEntity | null>()
 
 /**
  * The object a pick takes where an ARC or a CIRCLE is one too (FILLET's, and
@@ -548,6 +584,8 @@ function middleOf(entity: Entity): Vec2 | null {
     case "leader":
     case "region":
     case "solid3d":
+    case "xline":
+    case "ray":
       return null
     default: {
       const unhandled: never = entity

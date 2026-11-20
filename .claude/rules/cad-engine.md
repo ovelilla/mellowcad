@@ -33,13 +33,9 @@ the guides in `cad/docs/` are what an integrator reads: keep them true. Exports 
 
 ## Ids, not display names
 
-- **Every word the engine shows is in `cad/locales/en.json`**: a tool names prompts and keywords by
-  id and reads them through `ctx.text`; displayed text is read only through `EngineText` (the
-  compiled `cad/locales/en.ts`). Product code imports `en.json` only as a type: a value ships raw.
-- **`domain/` exposes ids, never display names** (colours, linetypes, hatch patterns, `ByLayer`);
-  data names stay data (layer, style and block names). A failure a user reads is a code
-  (`DrawingFileError.code`). Lengths and angles never go through `Intl`: `formatLength` /
-  `formatAngle`. The rest: `cad-catalogs.md`.
+The engine's words are `cad/locales/en.json`'s, read only through `EngineText` (product code
+imports `en.json` as a type alone: a value ships raw); `domain/` exposes ids. The rest:
+`cad-catalogs.md`.
 
 ## No import-time side effects
 
@@ -143,6 +139,10 @@ Dependencies run types → per-type modules → overrides → transforms → que
   kernel's (`brepBoolean`, `solidEdits.ts`, `solidBlends.ts`), never a tool's. A solid's points are
   the WCS's; it moves only by `transformEntity`, holds no -0 (`unsigned0`), is measured per face
   (`faceFlux`, curved by Green), not as a mesh.
+- **An XLINE or a RAY has no end or extents**: the scene clips it; what cuts, picks or snaps it
+  reads its stretch (`infiniteLineReaching`), pieces back through `infinitePieceOf`.
+- **An XLINE or a RAY has no end or extents**: the scene clips it; what cuts, picks or snaps it
+  reads its stretch (`infiniteLineReaching`), pieces back through `infinitePieceOf`.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it but MTEXT's editor, which joins its lines with

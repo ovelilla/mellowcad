@@ -1,0 +1,81 @@
+---
+title: "Konstrukční přímka v AutoCADu: příkaz PŘÍMKA (XLINE)"
+metaTitle: "Konstrukční přímka v AutoCADu: PŘÍMKA (XLINE)"
+description: "Jak v AutoCADu nakreslit konstrukční přímku příkazem PŘÍMKA (XLINE, zkratka PK): dvěma body, vodorovně, svisle, pod úhlem, osou úhlu nebo odsazením."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Jak se jmenuje příkaz PŘÍMKA anglicky a jakou má zkratku?","answer":"XLINE. V české verzi AutoCADu je jeho zkratka PK: zadejte ji a stiskněte Enter nebo mezerník; _XLINE funguje v AutoCADu v každém jazyce. Na pásu karet je to Konstrukční přímka v rozbaleném panelu Kreslit; zde je v nástrojích kreslení vedle Polopřímky."},{"question":"Jak nakreslit vodorovnou nebo svislou konstrukční přímku?","answer":"Spusťte příkaz PŘÍMKA, zadejte H pro Hor nebo V pro Ver a určete body, kterými přímky procházejí. Vodorovně a svisle se rozumí v aktuálním USS."},{"question":"Jak oříznout konstrukční přímku?","answer":"Příkazem OŘEŽ, jako kteroukoli čáru: oříznutá na jedné straně se přímka stane polopřímkou, na obou úsečkou. Totéž udělá příkaz PŘERUŠ."},{"question":"Proč ZOOM Maximálně ignoruje konstrukční přímky?","answer":"Přímka nemá rozsah: vede do nekonečna oběma směry. AutoCAD přímky a polopřímky do rozsahu výkresu nezapočítává a MellowCAD také ne."},{"question":"Jaký je rozdíl mezi přímkou a polopřímkou v AutoCADu?","answer":"Přímka vede do nekonečna oběma směry; polopřímka, kterou kreslí příkaz POLOPŘÍMKA, začíná v bodě a vede jen jedním směrem."}]
+---
+
+Příkaz PŘÍMKA (XLINE) kreslí konstrukční přímky: čáry nekonečné délky, které vedou přes celý pohled, ať ho posunete nebo zvětšíte jakkoli daleko, abyste si rozvrhli výkres dřív, než přijdou skutečné čáry. Určete bod a pak bod, kterým přímka prochází: přímka vede oběma a každý další bod vytvoří další přímku procházející prvním bodem, dokud Enter příkaz neukončí. Bod v místě prvního bodu se odmítne zprávou `*Neplatné*`. Každá přímka leží v aktuální hladině s aktuální barvou, typem čáry a tloušťkou čáry.
+
+Přímka nemá konce: když zobrazíte celý rozsah výkresu, nezapočítá se do něj, jako v AutoCADu. Uchopení Polovina najde bod, kterým byla nakreslena, Nejbližší, Kolmo a Průsečík fungují podél ní a příkaz [`OŘEŽ`](/docs/commands/trim) nebo [`PŘERUŠ`](/docs/commands/break) z ní udělá polopřímku, nebo dvě – tak se z konstrukčních přímek stávají čáry výkresu. Příkaz [`POLOPŘÍMKA`](/docs/commands/ray) kreslí tu její polovinu, která začíná v bodě.
+
+- **Příkaz:** `PŘÍMKA`
+- **Anglicky:** `XLINE`, zadávaný jako `_XLINE` v libovolném jazyce
+- **Aliasy:** `PK`
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `PK` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="xline" caption="Konstrukční přímky procházející bodem, vodorovná přímka a osa úhlu mezi dvěma úsečkami, každá přes celý pohled." />
+
+## Možnosti [#options]
+
+### `Hor` (`H`) [#hor]
+
+Vodorovné přímky, podél osy X systému USS, každá bodem, který zadáte, dokud nestisknete Enter.
+
+### `Ver` (`V`) [#ver]
+
+Svislé přímky, podél osy Y systému USS, každá bodem, který zadáte.
+
+### `úheL` (`L`) [#ang]
+
+Přímky pod úhlem: zadejte ho, nebo určete dva body, a pak body, kterými přímky procházejí. Enter u úhlu převezme 0. Možnost `Reference` měří úhel proti směru hodinových ručiček od vybraného lineárního objektu – úsečky, přímky nebo polopřímky: cokoli jiného se odmítne zprávou `Nevybrán žádný použitelný objekt`.
+
+### `Polovinu` (`P`) [#bisect]
+
+Přímka, která půlí úhel: určete jeho vrchol, bod na prvním rameni, pak bod na druhém rameni, a osa úhlu projde vrcholem. Každý další bod na druhém rameni vytvoří další osu se stejným prvním ramenem.
+
+### `Ekvid` (`E`) [#offset]
+
+Přímky rovnoběžné s lineárním objektem – úsečkou, přímkou nebo polopřímkou: zadejte vzdálenost, vyberte objekt a určete stranu, znovu a znovu, dokud nestisknete Enter. Možnost `Bodem` místo toho vede každou přímku bodem, který zadáte. Vzdálenost je ta, kterou si pamatuje příkaz [`EKVID`](/docs/commands/offset), a ta, kterou příště nabídne.
+
+## Co zatím neumí [#missing]
+
+LENGTHEN a JOIN u konstrukční přímky zatím nejsou ověřené proti AutoCADu, stejně jako nabídky jejích uzlů.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Otázky [#questions]
+
+### Jak se jmenuje příkaz PŘÍMKA anglicky a jakou má zkratku?
+
+XLINE. V české verzi AutoCADu je jeho zkratka `PK`: zadejte ji a stiskněte Enter nebo mezerník; `_XLINE` funguje v AutoCADu v každém jazyce. Na pásu karet je to Konstrukční přímka v rozbaleném panelu Kreslit; zde je v nástrojích kreslení vedle Polopřímky.
+
+### Jak nakreslit vodorovnou nebo svislou konstrukční přímku?
+
+Spusťte příkaz PŘÍMKA, zadejte `H` pro `Hor` nebo `V` pro `Ver` a určete body, kterými přímky procházejí. Vodorovně a svisle se rozumí v aktuálním USS.
+
+### Jak oříznout konstrukční přímku?
+
+Příkazem [`OŘEŽ`](/docs/commands/trim), jako kteroukoli čáru: oříznutá na jedné straně se přímka stane polopřímkou, na obou úsečkou. Totéž udělá příkaz [`PŘERUŠ`](/docs/commands/break).
+
+### Proč ZOOM Maximálně ignoruje konstrukční přímky?
+
+Přímka nemá rozsah: vede do nekonečna oběma směry. AutoCAD přímky a polopřímky do rozsahu výkresu nezapočítává a MellowCAD také ne.
+
+### Jaký je rozdíl mezi přímkou a polopřímkou v AutoCADu?
+
+Přímka vede do nekonečna oběma směry; polopřímka, kterou kreslí příkaz [`POLOPŘÍMKA`](/docs/commands/ray), začíná v bodě a vede jen jedním směrem.
+
+## Související příkazy [#related]
+
+- [Polopřímka v AutoCADu: příkaz POLOPŘÍMKA (RAY)](/docs/commands/ray)
+- [Příkaz ÚSEČKA (LINE) v AutoCADu](/docs/commands/line)
+- [Ekvidistanta v AutoCADu: příkaz EKVID (OFFSET)](/docs/commands/offset)
+- [Příkaz OŘEŽ (TRIM) v AutoCADu](/docs/commands/trim)

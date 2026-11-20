@@ -1,0 +1,53 @@
+QAFLAGS
+2
+_LINE
+0,-50
+0,50
+
+_LINE
+100,-50
+100,50
+
+_XLINE
+_H
+0,0
+
+(setq a (entlast))
+_RAY
+50,20
+60,20
+
+(setq c (entlast))
+_ZOOM
+_C
+50,0
+300
+_FILLET
+(list a '(30 0))
+(list c '(70 20))
+_FILLET
+_R
+5
+(list a '(30 0))
+(list c '(70 20))
+(entget a)
+(entget c)
+(entget (entlast))
+_XLINE
+_V
+200,0
+
+(setq d (entlast))
+_FILLET
+(list a '(150 0))
+(list d '(200 10))
+(entget a)
+(entget d)
+_CHAMFER
+_D
+3
+3
+(list c '(80 20))
+(list d '(200 30))
+(entget c)
+(entget d)

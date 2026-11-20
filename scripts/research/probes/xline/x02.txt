@@ -1,0 +1,32 @@
+QAFLAGS
+2
+_XLINE
+_H
+FOO
+5,5
+7,8
+
+(entget (entlast))
+_XLINE
+_V
+5,5
+
+(entget (entlast))
+_XLINE
+_A
+FOO
+30
+FOO
+0,0
+1,1
+
+(entget (entlast))
+_XLINE
+_A
+
+(cdr (assoc 11 (entget (entlast))))
+_XLINE
+_A
+45
+
+(getvar "LASTANGLE")

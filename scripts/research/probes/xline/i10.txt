@@ -1,0 +1,34 @@
+QAFLAGS
+2
+_XLINE
+0,0,0
+10,0,10
+
+_LIST
+_L
+
+_RAY
+1,2,3
+1,2,10
+
+_LIST
+_L
+
+_XLINE
+_A
+33.3
+5,5
+
+_LIST
+_L
+
+_UCS
+_Z
+30
+_LIST
+_L
+
+_UCS
+_W
+(getvar "EXTMIN")
+(getvar "EXTMAX")

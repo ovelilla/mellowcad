@@ -11,6 +11,12 @@ import {
   zOf,
 } from "../geometry/Vec3"
 import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
+import {
+  InfiniteLineEntity,
+  infiniteLineAlong,
+  infiniteLineSpan,
+  isInfiniteLine,
+} from "./infiniteLines"
 import { sameHeightBulge } from "../geometry/bulgeArcs"
 import { Linear2, composeLinear, rotationLinear } from "../geometry/linear"
 import {
@@ -326,6 +332,9 @@ function translateFlat(entity: FlatEntity, delta: Vec2 | Vec3): FlatEntity {
 
 function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
   if (entity.type === "region") return regionMapped(entity, shiftBy(delta))
+  if (isInfiniteLine(entity)) {
+    return { ...entity, base: V.add(entity.base, delta) }
+  }
   switch (entity.type) {
     case "line":
       return {
@@ -452,6 +461,11 @@ export function stretchEntity(
     // (image/s6): never moved whole. Its plane keeps its Z.
     return imageStretched(entity, inFrame, delta)
   }
+  if (isInfiniteLine(entity)) {
+    // Moved whole when the frame catches its base, else left: the rest of it
+    // has no point to catch (xline/i05).
+    return inFrame(entity.base) ? translateEntity(entity, delta) : entity
+  }
   const dz = zOf(delta)
   const vertices = stretchVertices(entity)
   if (entity.type === "spline") return stretchSpline(entity, delta, inFrame)
@@ -520,6 +534,8 @@ export function stretchEntity(
     case "table":
     case "mleader":
     case "leader":
+    case "xline":
+    case "ray":
       return planar
   }
 }
@@ -596,6 +612,8 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     case "attdef":
     case "insert":
     case "point":
+    case "xline":
+    case "ray":
       return []
     default: {
       const unhandled: never = entity
@@ -619,6 +637,9 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "insert":
     case "point":
       return [entity.position]
+    case "xline":
+    case "ray":
+      return [entity.base]
     case "line":
     case "arc":
     case "polyline":
@@ -648,6 +669,9 @@ function stretchPlanar(
   inFrame: (point: Vec2) => boolean
 ): FlatEntity {
   if (entity.type === "region") return entity
+  if (isInfiniteLine(entity)) {
+    return inFrame(entity.base) ? translatePlanar(entity, delta) : entity
+  }
   const shift = (point: Vec2): Vec2 =>
     inFrame(point) ? V.add(point, delta) : point
 
@@ -906,6 +930,8 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         return freshCopy(translatePlanar(entity, delta))
       case "region":
         return regionLike(entity, shiftBy(delta))
@@ -956,6 +982,9 @@ function rotateFlat(
   pivot: Vec2,
   radians: number
 ): FlatEntity {
+  if (isInfiniteLine(entity)) {
+    return viaLine(entity, (line) => rotateFlat(line, pivot, radians))
+  }
   if (entity.type === "region") {
     return regionMapped(entity, turnAbout(pivot, radians))
   }
@@ -1189,6 +1218,8 @@ export function rotateEntityCopy(
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         return freshCopy(rotateFlat(entity, pivot, radians))
     }
   })()
@@ -1244,6 +1275,11 @@ function scalePlanar(
 ): FlatEntity {
   if (entity.type === "region") {
     return regionMapped(entity, scaleAbout(base, factor))
+  }
+  if (isInfiniteLine(entity)) {
+    // A uniform scale leaves its direction as it is; its base Z is
+    // scaleEntityZ's.
+    return { ...entity, base: scalePoint(entity.base, base, factor) }
   }
   switch (entity.type) {
     case "line":
@@ -1460,6 +1496,8 @@ export function scaleEntityCopy(
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         return freshCopy(scalePlanar(entity, base, factor))
     }
   })()
@@ -1516,6 +1554,9 @@ function mirrorFlat(
   hatch: HatchMirroring
 ): FlatEntity {
   if (entity.type === "region") return regionMapped(entity, reflectAcross(a, b))
+  if (isInfiniteLine(entity)) {
+    return viaLine(entity, (line) => mirrorFlat(line, a, b, hatch))
+  }
   switch (entity.type) {
     case "line":
       return {
@@ -1865,6 +1906,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
       case "table":
       case "mleader":
       case "leader":
+      case "xline":
+      case "ray":
         return freshCopy(mirrorFlat(entity, a, b, "patternReflected"))
     }
   })()
@@ -1982,6 +2025,9 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
     if (entity.thickness)
       line = { ...line, thickness: entity.thickness * map.scale }
     return withNormal(line, normal)
+  }
+  if (isInfiniteLine(entity)) {
+    return viaLine(entity, (line) => transformEntity(line, map))
   }
   if (entity.type === "polyline3d") {
     return {
@@ -2113,6 +2159,18 @@ function regionLike(region: RegionEntity, map: PlanarSimilarity): RegionEntity {
 }
 
 /** A transformed object as a new one: a fresh id, everything else kept. */
+/**
+ * An XLINE or a RAY moved as `map` moves a line along it from its base: an
+ * affine map takes a line to a line, and its direction is measured again.
+ */
+function viaLine<T extends InfiniteLineEntity>(
+  entity: T,
+  map: (line: LineEntity) => Entity
+): T {
+  const moved = map(infiniteLineSpan(entity, 0, 1))
+  return (moved.type === "line" && infiniteLineAlong(entity, moved)) || entity
+}
+
 function freshCopy(entity: Entity): Entity {
   return { ...entity, id: nextEntityId() }
 }

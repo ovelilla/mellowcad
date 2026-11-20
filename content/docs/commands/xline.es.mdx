@@ -1,0 +1,81 @@
+---
+title: "Línea auxiliar en AutoCAD: comando LINEAX (XLINE)"
+metaTitle: "Línea auxiliar en AutoCAD: LINEAX (XLINE)"
+description: "Cómo dibuja LINEAX (XLINE, alias XL) de AutoCAD líneas auxiliares infinitas: por dos puntos, horizontales, verticales, en ángulo, bisectriz o desfase."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cuál es el comando de línea auxiliar en AutoCAD en español?","answer":"LINEAX, con el alias XL, el mismo que en inglés: escríbelo y pulsa Intro o la barra espaciadora. La cinta de opciones lo llama Línea de construcción, en el grupo Dibujo ampliado; aquí está en las herramientas de Dibujo, junto a Rayo."},{"question":"¿Cómo dibujo una línea auxiliar horizontal o vertical?","answer":"Ejecuta LINEAX, escribe la letra de Hor o la de Ver y señala los puntos por los que pasa. Horizontal y vertical son las del SCP actual."},{"question":"¿Cómo recorto una línea auxiliar?","answer":"Con RECORTA, como cualquier línea: cortada por un lado, una línea auxiliar se convierte en un rayo; cortada por los dos, en una línea. Lo mismo ocurre con PARTE."},{"question":"¿Por qué ZOOM Extensión no tiene en cuenta mis líneas auxiliares?","answer":"Una línea auxiliar no tiene extensión: llega al infinito en los dos sentidos. AutoCAD deja las líneas auxiliares y los rayos fuera de la extensión del dibujo, y MellowCAD también."},{"question":"¿Qué diferencia hay entre LINEAX y RAYO?","answer":"Una línea auxiliar llega al infinito en los dos sentidos; un rayo, de RAYO, empieza en un punto y va en un solo sentido."}]
+---
+
+LINEAX (XLINE en inglés) dibuja líneas de construcción: líneas de longitud infinita, que cruzan toda la vista por mucho que encuadres o hagas zoom, para trazar un dibujo antes de que entren las líneas definitivas. Precisa un punto y después un punto a atravesar: la línea auxiliar pasa por los dos, y cada punto más hace otra por el primero, hasta que Intro termina el comando. Un punto a atravesar sobre el primer punto se rechaza con `*No válido*`. Cada línea auxiliar va en la capa actual con el color, el tipo de línea y el grosor de línea actuales.
+
+Una línea auxiliar no tiene extremos: un zoom a la extensión del dibujo la deja fuera, como en AutoCAD. La referencia a objetos Punto medio encuentra el punto por el que se dibujó; Cercano, Perpendicular e Intersección funcionan a lo largo de ella, y [`RECORTA`](/docs/commands/trim) o [`PARTE`](/docs/commands/break) la convierten en un rayo, o en dos, que es como las líneas de construcción se vuelven líneas del dibujo. [`RAYO`](/docs/commands/ray) dibuja la mitad que empieza en un punto.
+
+- **Comando:** `LINEAX`
+- **En inglés:** `XLINE`, que se escribe `_XLINE` en cualquier idioma
+- **Alias:** `XL`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `XL` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="xline" caption="Líneas auxiliares por un punto, una horizontal y la bisectriz del ángulo entre dos líneas, cada una cruzando toda la vista." />
+
+## Opciones [#options]
+
+### `Hor` (`H`) [#hor]
+
+Líneas auxiliares horizontales, según el eje X del SCP, cada una por un punto que precisas, hasta Intro.
+
+### `Ver` (`V`) [#ver]
+
+Líneas auxiliares verticales, según el eje Y del SCP, cada una por un punto que precisas.
+
+### `ángUlo` (`U`) [#ang]
+
+Líneas auxiliares en ángulo: escríbelo, o precisa dos puntos, y después los puntos a atravesar. Intro en el ángulo toma 0. `Referencia` mide el ángulo desde una línea que designas, una línea, una línea auxiliar o un rayo, en sentido contrario a las agujas del reloj: cualquier otra cosa se rechaza con `Designado objeto inadecuado.`.
+
+### `Bisectriz` (`B`) [#bisect]
+
+La línea auxiliar que divide un ángulo en dos: precisa su vértice, un punto en su primer lado y después un punto en su segundo lado, y la bisectriz pasa por el vértice. Cada punto más en el segundo lado hace otra bisectriz del mismo primer lado.
+
+### `Desfasar` (`D`) [#offset]
+
+Líneas auxiliares paralelas a un objeto lineal, una línea, una línea auxiliar o un rayo: indica la distancia, designa el objeto y señala el lado, una y otra vez hasta Intro. `Punto` hace pasar cada una por un punto que precisas. La distancia es la que recuerda [`DESFASE`](/docs/commands/offset), y la que este ofrece después.
+
+## Lo que aún no hace [#missing]
+
+LONGITUD (LENGTHEN) y [`UNIR`](/docs/commands/join) de una línea auxiliar aún no se han comprobado frente a AutoCAD, ni los menús de sus pinzamientos.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cuál es el comando de línea auxiliar en AutoCAD en español?
+
+LINEAX, con el alias `XL`, el mismo que en inglés: escríbelo y pulsa Intro o la barra espaciadora. La cinta de opciones lo llama Línea de construcción, en el grupo Dibujo ampliado; aquí está en las herramientas de Dibujo, junto a Rayo.
+
+### ¿Cómo dibujo una línea auxiliar horizontal o vertical?
+
+Ejecuta LINEAX, escribe la letra de `Hor` o la de `Ver` y señala los puntos por los que pasa. Horizontal y vertical son las del SCP actual.
+
+### ¿Cómo recorto una línea auxiliar?
+
+Con [`RECORTA`](/docs/commands/trim), como cualquier línea: cortada por un lado, una línea auxiliar se convierte en un rayo; cortada por los dos, en una línea. Lo mismo ocurre con [`PARTE`](/docs/commands/break).
+
+### ¿Por qué ZOOM Extensión no tiene en cuenta mis líneas auxiliares?
+
+Una línea auxiliar no tiene extensión: llega al infinito en los dos sentidos. AutoCAD deja las líneas auxiliares y los rayos fuera de la extensión del dibujo, y MellowCAD también.
+
+### ¿Qué diferencia hay entre LINEAX y RAYO?
+
+Una línea auxiliar llega al infinito en los dos sentidos; un rayo, de [`RAYO`](/docs/commands/ray), empieza en un punto y va en un solo sentido.
+
+## Comandos relacionados [#related]
+
+- [Rayo en AutoCAD: comando RAYO (RAY)](/docs/commands/ray)
+- [Línea en AutoCAD: comando LINEA (LINE)](/docs/commands/line)
+- [Desfase en AutoCAD: DESFASE (OFFSET)](/docs/commands/offset)
+- [Recortar en AutoCAD: RECORTA (TRIM)](/docs/commands/trim)

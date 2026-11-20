@@ -139,7 +139,9 @@ export const ptBR: EngineLocale = {
       "solid": "Sólido 2D",
       "face3d": "Face 3D",
       "leader": "Linha de chamada",
-      "wipeout": "Cobertura"
+      "wipeout": "Cobertura",
+      "xline": "Linha de construção",
+      "ray": "Raio"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -453,6 +455,26 @@ export const ptBR: EngineLocale = {
             "other": "Linhas de chamada múltiplas"
           }
         ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Linha infinita",
+            "other": "Linhas infinitas"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "one": "Linha semi-infinita",
+            "other": "Linhas semi-infinitas"
+          }
+        ]
       ]
     },
     "array": {
@@ -666,6 +688,15 @@ export const ptBR: EngineLocale = {
         "positionX": "Posição X",
         "positionY": "Posição Y",
         "positionZ": "Posição Z",
+        "basePointX": "Ponto de referência X",
+        "basePointY": "Ponto de referência Y",
+        "basePointZ": "Ponto de referência Z",
+        "secondPointX": "Segundo ponto X",
+        "secondPointY": "Segundo ponto Y",
+        "secondPointZ": "Segundo ponto Z",
+        "directionVectorX": "Vetor X de direção",
+        "directionVectorY": "Vetor Y de direção",
+        "directionVectorZ": "Vetor Z de direção",
         "scaleX": "Escala X",
         "scaleY": "Escala Y",
         "scaleZ": "Escala Z",
@@ -789,6 +820,13 @@ export const ptBR: EngineLocale = {
       "LINE": [
         "LINHA",
         "L"
+      ],
+      "XLINE": [
+        "LINHAINF",
+        "LINF"
+      ],
+      "RAY": [
+        "RAIO"
       ],
       "PLINE": [
         "PLINHA",
@@ -1403,6 +1441,16 @@ export const ptBR: EngineLocale = {
       ]
     },
     "keywords": {
+      "XLINE": {
+        "Hor": "Hor",
+        "Ver": "Ver",
+        "Ang": "Ang",
+        "Bisect": "Bisec",
+        "Offset": "Deslocamento",
+        "Reference": "Referência",
+        "Through": "PAssagem",
+        "Thru": "Passag"
+      },
       "-OSNAP": {
         "ENDpoint": "pONto",
         "MIDpoint": "MEIo",
@@ -3109,6 +3157,24 @@ export const ptBR: EngineLocale = {
       "solideditTaperAxis": "Especificar outro ponto ao longo do eixo de conicidade",
       "solideditTaperAngle": "Especificar o ângulo de conicidade",
       "specifyAPoint": "Especificar um ponto",
+      "specifyAPointOr": "Especificar um ponto ou",
+      "specifyThroughPoint": "Especificar ponto de passagem",
+      "specifyThroughPointAxis": "Especificar ponto de passagem",
+      "xlineAngleOr": [
+        "Inserir ângulo de linha infinita (",
+        [
+          "angle"
+        ],
+        ") ou"
+      ],
+      "xlineAngle": "Inserir ângulo de linha infinita",
+      "selectLineObject": "Selecionar um objeto linha",
+      "specifyAngleVertexPoint": "Especificar ponto de vértice do ângulo",
+      "specifyAngleStartPoint": "Especificar ponto inicial do ângulo",
+      "specifyAngleEndPoint": "Especificar ponto final do ângulo",
+      "xlineOffsetDistanceOr": "Especificar distância das cópias paralelas ou",
+      "specifySideToOffset": "Especificar lado a deslocar",
+      "rayStartPoint": "Especificar ponto inicial",
       "selectObjectToDivide": "Selecionar objeto a ser dividido",
       "selectObjectToMeasure": "Selecionar objeto a ser medido",
       "divideCountOr": "Inserir o número de segmentos ou",
@@ -3149,6 +3215,7 @@ export const ptBR: EngineLocale = {
       "wipeoutFramesDisplay": "Exibir mas não plotar"
     },
     "promptForms": {
+      "specifySideToOffset": "spaced",
       "convertToPolylines": "open",
       "currentLayerOff": "open",
       "purgeBlock": "open",
@@ -5078,6 +5145,9 @@ export const ptBR: EngineLocale = {
       "chamferNot3dPolyline": "  Objetos Polilinha 3D não podem ser chanfrado.",
       "filletNot3dPolyline": "  Objetos Polilinha 3D não podem ser com concordância.",
       "collinearCannotFillet": "As linhas colineares não podem ser com concordância.",
+      "capNeedsLineOrRay": "A primeira entidade deve ser uma linha ou uma linha semi-infinita para concordância de capeamento.",
+      "startPointMustDiffer": "O ponto inicial deve ser diferente do ponto de vértice",
+      "noUsableObjectSelected": "Nenhum objeto utilizável foi selecionado",
       "collinearCannotChamfer": "As linhas colineares não podem ser chanfrado.",
       "cannotChamferItself": "Não é possível fazer o chanfro entre uma entidade e ela mesma.",
       "segmentsNotConsecutive": "Linhas pertencentes a polilinhas devem ser consecutivas ou serem separadas por um segmento",
@@ -6122,6 +6192,8 @@ export const ptBR: EngineLocale = {
             "image": "IMAGE",
             "table": "ACAD_TABLE",
             "mleader": "MULTILEADER",
+            "xline": "XLINE",
+            "ray": "RAY",
             "other": "MATRIZ"
           }
         ]
@@ -6343,6 +6415,46 @@ export const ptBR: EngineLocale = {
         ", Delta Z =",
         [
           "z"
+        ]
+      ],
+      "listBasePoint": [
+        "                   ponto base, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listUnitDirection": [
+        "                   direção da unidade, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listAngleInXy": [
+        "                   ângulo no plano XY =",
+        [
+          "angle"
+        ]
+      ],
+      "listAngleFromXy": [
+        "                   ângulo no plano XY =",
+        [
+          "angle"
         ]
       ],
       "listCenter": [
@@ -8889,6 +9001,10 @@ export const ptBR: EngineLocale = {
       },
       "OFFSET": {
         "Through": "Através"
+      },
+      "XLINE": {
+        "Reference": "Referência",
+        "Through": "PAssagem"
       },
       "EXTRUDE": {
         "Taper": "ângulo de COnicidade"

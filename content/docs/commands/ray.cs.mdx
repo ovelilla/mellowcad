@@ -1,0 +1,54 @@
+---
+title: "Polopřímka v AutoCADu: příkaz POLOPŘÍMKA (RAY)"
+metaTitle: "Polopřímka v AutoCADu: POLOPŘÍMKA (RAY)"
+description: "Jak v AutoCADu nakreslit polopřímku příkazem POLOPŘÍMKA (RAY): konstrukční čára z bodu do nekonečna jedním směrem a jak ji oříznout na úsečku. Vyzkoušejte."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Co je příkaz POLOPŘÍMKA v AutoCADu?","answer":"Konstrukční čára s počátkem: začíná v bodě a pokračuje donekonečna jedním směrem. Použijte ji jako vodítko, podle kterého kreslíte, a pak ji ořízněte na úsečku nebo vymažte."},{"question":"Jak se jmenuje příkaz POLOPŘÍMKA anglicky a má zkratku?","answer":"RAY. AutoCAD mu žádnou zkratku nedává, takže zadejte POLOPŘÍMKA celé, nebo _RAY, které funguje v AutoCADu v každém jazyce. Je v rozbaleném panelu Kreslit na pásu karet a zde v nástrojích kreslení vedle Konstrukční přímky."},{"question":"Jak zastavit polopřímku na čáře?","answer":"Ořízněte ji: spusťte příkaz OŘEŽ a vyberte část za čárou. Co zbude od počátku k čáře, je objekt úsečka."},{"question":"Jaký je rozdíl mezi polopřímkou a úsečkou?","answer":"Úsečka má dva konce; polopřímka jeden, svůj počátek, a pokračuje bez konce. V souboru DXF se polopřímka ukládá jako RAY a jako polopřímka se i otevře."}]
+---
+
+Příkaz POLOPŘÍMKA (RAY) kreslí polopřímky: konstrukční čáry, které začínají v bodě a vedou do nekonečna jedním směrem. Určete počáteční bod a pak bod, kterým polopřímka prochází: začíná v prvním a prochází druhým. Každý další bod vytvoří další polopřímku ze stejného počátku, dokud Enter příkaz neukončí. Bod v místě počátku se odmítne zprávou `*Neplatné*`. Každá polopřímka leží v aktuální hladině s aktuální barvou, typem čáry a tloušťkou čáry.
+
+Polopřímka vede přes celý pohled, ať ho posunete nebo zvětšíte jakkoli daleko, a do rozsahu výkresu se nezapočítává, jako v AutoCADu. Uchopení Koncový najde její počátek, Nejbližší, Kolmo a Průsečík fungují podél ní. Příkazy [`OŘEŽ`](/docs/commands/trim) a [`PŘERUŠ`](/docs/commands/break) udělají z úseku, na kterém leží počátek, úsečku a příkaz [`PRODLUŽ`](/docs/commands/extend) prodlouží počátek zpět k hraně za ním. Příkaz [`PŘÍMKA`](/docs/commands/xline) kreslí čáry, které vedou oběma směry.
+
+- **Příkaz:** `POLOPŘÍMKA`
+- **Anglicky:** `RAY`, zadávaný jako `_RAY` v libovolném jazyce
+- **Panel:** [Kreslit](/docs/commands#draw)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `POLOPŘÍMKA` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="ray" caption="Polopřímky z jednoho počátečního bodu třemi body, každá pokračuje za okraj pohledu." />
+
+## Co zatím neumí [#missing]
+
+LENGTHEN a JOIN u polopřímky zatím nejsou ověřené proti AutoCADu, stejně jako nabídky jejích uzlů.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ray--es-rayo--pt-br-raio--fr-demidroite--it-raggio--de-strahl--ru-луч--pl-półprosta--cs-polopřímka--hu-sugár)
+
+## Otázky [#questions]
+
+### Co je příkaz POLOPŘÍMKA v AutoCADu?
+
+Konstrukční čára s počátkem: začíná v bodě a pokračuje donekonečna jedním směrem. Použijte ji jako vodítko, podle kterého kreslíte, a pak ji ořízněte na úsečku nebo vymažte.
+
+### Jak se jmenuje příkaz POLOPŘÍMKA anglicky a má zkratku?
+
+RAY. AutoCAD mu žádnou zkratku nedává, takže zadejte `POLOPŘÍMKA` celé, nebo `_RAY`, které funguje v AutoCADu v každém jazyce. Je v rozbaleném panelu Kreslit na pásu karet a zde v nástrojích kreslení vedle Konstrukční přímky.
+
+### Jak zastavit polopřímku na čáře?
+
+Ořízněte ji: spusťte příkaz [`OŘEŽ`](/docs/commands/trim) a vyberte část za čárou. Co zbude od počátku k čáře, je objekt úsečka.
+
+### Jaký je rozdíl mezi polopřímkou a úsečkou?
+
+Úsečka má dva konce; polopřímka jeden, svůj počátek, a pokračuje bez konce. V souboru DXF se polopřímka ukládá jako RAY a jako polopřímka se i otevře.
+
+## Související příkazy [#related]
+
+- [Konstrukční přímka v AutoCADu: příkaz PŘÍMKA (XLINE)](/docs/commands/xline)
+- [Příkaz ÚSEČKA (LINE) v AutoCADu](/docs/commands/line)
+- [Příkaz OŘEŽ (TRIM) v AutoCADu](/docs/commands/trim)
+- [Příkaz PRODLUŽ (EXTEND) v AutoCADu](/docs/commands/extend)

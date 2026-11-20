@@ -17,6 +17,10 @@ import {
   SplineLength,
   Entity,
   EntityId,
+  InfiniteLineEntity,
+  infiniteBase,
+  infinitePointAt,
+  isInfiniteLine,
   HatchEntity,
   LineEntity,
   PointEntity,
@@ -838,6 +842,9 @@ export function entityScenePrimitive(
   if (entity.type === "solid3d") {
     return solidPrimitives(camera, entity, stroke, options)
   }
+  if (isInfiniteLine(entity)) {
+    return infiniteLinePrimitives(camera, entity, stroke, options)
+  }
   if (
     (camera.isPlan && !isTilted(entity)) ||
     isPlaneCamera(camera) ||
@@ -879,6 +886,66 @@ export function entityScenePrimitive(
     ...extrusionEdges(camera, entity, elevation, thickness).map(
       ([a, b]): ScenePrimitive => ({ kind: "segment", a, b, stroke })
     ),
+  ]
+}
+
+/**
+ * How far past the frame, in pixels, the stretch of an XLINE or a RAY drawn
+ * runs: its stroke's width beyond this never reaches the frame.
+ */
+const INFINITE_LINE_MARGIN = 8
+
+/**
+ * An XLINE or a RAY as the stretch of it the frame shows. The model holds no
+ * end, so the builder clips it, in screen space where any view projects a
+ * line onto a line: the base and the point a unit along it give the run, cut
+ * to the frame and a margin. Its linetype keeps its phase from the base, so
+ * panning or zooming never makes the dashes crawl along it (where AutoCAD
+ * starts the pattern is unverified). Seen end-on it shows nothing.
+ */
+function infiniteLinePrimitives(
+  camera: CameraTransform,
+  entity: InfiniteLineEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  const origin = camera.worldToScreen(infiniteBase(entity))
+  const along = V.sub(camera.worldToScreen(infinitePointAt(entity, 1)), origin)
+  const perUnit = V.length(along)
+  if (!(perUnit > 1e-9)) return []
+  const margin = INFINITE_LINE_MARGIN + stroke.width
+  let t0 = entity.type === "ray" ? 0 : -Infinity
+  let t1 = Infinity
+  for (const [from, d, size] of [
+    [origin.x, along.x, camera.width],
+    [origin.y, along.y, camera.height],
+  ] as const) {
+    if (Math.abs(d) < 1e-12) {
+      if (from < -margin || from > size + margin) return []
+      continue
+    }
+    const a = (-margin - from) / d
+    const b = (size + margin - from) / d
+    t0 = Math.max(t0, Math.min(a, b))
+    t1 = Math.min(t1, Math.max(a, b))
+  }
+  if (!(t0 < t1)) return []
+  const a = V.add(origin, V.scale(along, t0))
+  const b = V.add(origin, V.scale(along, t1))
+  const period = stroke.dash?.reduce((sum, run) => sum + run, 0) ?? 0
+  if (!options.linetype || !(period > 0)) {
+    const { color, width } = stroke
+    const solid = options.linetype ? { color, width } : stroke
+    return [{ kind: "segment", a, b, stroke: solid }]
+  }
+  const phase = (((t0 * perUnit) % period) + period) % period
+  return [
+    {
+      kind: "segment",
+      a,
+      b,
+      stroke: phase > 0 ? { ...stroke, dashOffset: phase } : stroke,
+    },
   ]
 }
 
@@ -1236,6 +1303,9 @@ function planarShapes(
       return splinePrimitives(camera, entity, stroke, options, (p) =>
         camera.worldToScreen(p)
       )
+    case "xline":
+    case "ray":
+      return infiniteLinePrimitives(camera, entity, stroke, options)
     case "polyline3d":
       return polyline3dPrimitives(camera, entity, stroke, options)
     case "face3d":

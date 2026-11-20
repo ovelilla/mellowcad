@@ -54,6 +54,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return { ...entity, layerId }
     case "text":
       return { ...entity, layerId }
@@ -111,6 +113,8 @@ export function assignEntityColor(
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return { ...entity, color }
     case "text":
       return { ...entity, color }
@@ -167,6 +171,8 @@ export function assignEntityLinetype(
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return { ...entity, linetype }
     case "text":
       return { ...entity, linetype }
@@ -223,6 +229,8 @@ export function assignEntityLineweight(
     case "image":
     case "table":
     case "mleader":
+    case "xline":
+    case "ray":
       return { ...entity, lineweight }
     case "text":
       return { ...entity, lineweight }

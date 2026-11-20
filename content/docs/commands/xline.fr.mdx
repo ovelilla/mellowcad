@@ -1,0 +1,81 @@
+---
+title: "Commande DROITE (XLINE) dans AutoCAD"
+metaTitle: "Commande DROITE (XLINE) : ligne de construction"
+description: "Tracer des lignes de construction infinies avec DROITE (XLINE, alias DO) d'AutoCAD : par deux points, horizontales, verticales, bissectrices. Essayez-le."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Comment s'appelle la commande XLINE en français ?","answer":"DROITE, avec l'alias DO, puis Entrée ou la barre d'espace. Le ruban l'appelle Ligne de construction, dans le groupe de fonctions Dessin développé ; ici, elle est dans les outils de Dessin, à côté de Demi-droite."},{"question":"Comment tracer une ligne de construction horizontale ou verticale ?","answer":"Lancez DROITE, tapez la lettre de Hor ou celle de Ver, puis cliquez les points par lesquels elle passe. L'horizontale et la verticale sont celles du SCU courant."},{"question":"Comment ajuster une droite ?","answer":"Avec AJUSTER, comme n'importe quelle ligne : coupée d'un côté, une droite devient une demi-droite ; coupée des deux, une ligne. Il en va de même avec COUPURE."},{"question":"Pourquoi le ZOOM Etendu ignore-t-il mes droites ?","answer":"Une droite n'a pas d'étendue : elle va à l'infini dans les deux sens. AutoCAD laisse les droites et les demi-droites hors de l'étendue du dessin, et MellowCAD aussi."},{"question":"Quelle est la différence entre DROITE et DEMIDROITE ?","answer":"Une droite va à l'infini dans les deux sens ; une demi-droite, celle de DEMIDROITE, part d'un point et ne va que dans un sens."}]
+---
+
+DROITE (XLINE) dessine des lignes de construction : des droites de longueur infinie, qui traversent toute la vue quels que soient le panoramique ou le zoom, pour mettre en place un dessin avant que les vraies lignes n'arrivent. Cliquez un point, puis un point de passage : la droite passe par les deux, et chaque point suivant en crée une autre par le premier, jusqu'à ce qu'Entrée termine la commande. Un point de passage sur le premier point est refusé avec `*Incorrect*`. Chaque droite est sur le calque courant avec la couleur, le type de ligne et l'épaisseur de ligne courants.
+
+Une droite n'a pas d'extrémités : un zoom sur l'étendue du dessin la laisse de côté, comme dans AutoCAD. L'accrochage Milieu trouve le point par lequel elle a été tracée ; Le plus proche, Perpendiculaire et Intersection fonctionnent le long de celle-ci, et [`AJUSTER`](/docs/commands/trim) ou [`COUPURE`](/docs/commands/break) la changent en demi-droite, ou en deux, et c'est ainsi que les lignes de construction deviennent des lignes du dessin. [`DEMIDROITE`](/docs/commands/ray) dessine la moitié qui part d'un point.
+
+- **Commande :** `DROITE`
+- **En anglais :** `XLINE`, tapé `_XLINE` dans toutes les langues
+- **Alias :** `DO`
+- **Groupe :** [Dessin](/docs/commands#draw)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `DO` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="xline" caption="Des droites par un point, une horizontale et la bissectrice de l'angle entre deux lignes, chacune traversant toute la vue." />
+
+## Options [#options]
+
+### `Hor` (`H`) [#hor]
+
+Des droites horizontales, le long de l'axe X du SCU, chacune par un point que vous donnez, jusqu'à Entrée.
+
+### `Ver` (`V`) [#ver]
+
+Des droites verticales, le long de l'axe Y du SCU, chacune par un point que vous donnez.
+
+### `Ang` (`A`) [#ang]
+
+Des droites inclinées : tapez l'angle, ou donnez deux points, puis les points de passage. Entrée à l'angle prend 0. `Référence` mesure l'angle depuis une ligne que vous sélectionnez, une ligne, une droite ou une demi-droite, dans le sens inverse des aiguilles d'une montre : tout autre objet est refusé avec `Objet sélectionné inutilisable`.
+
+### `Bissect` (`B`) [#bisect]
+
+La droite qui coupe un angle en deux : donnez son sommet, un point sur son premier côté, puis un point sur son second côté, et la bissectrice passe par le sommet. Chaque point suivant sur le second côté crée une autre bissectrice du même premier côté.
+
+### `Décalage` (`D`) [#offset]
+
+Des droites parallèles à un objet linéaire, une ligne, une droite ou une demi-droite : donnez la distance, sélectionnez l'objet et cliquez le côté, encore et encore jusqu'à Entrée. `Via` fait plutôt passer chacune par un point que vous donnez. La distance est celle que [`DECALER`](/docs/commands/offset) mémorise, et celle qu'elle propose ensuite.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+MODIFLONG (LENGTHEN) et [`JOINDRE`](/docs/commands/join) d'une droite ne sont pas encore vérifiés face à AutoCAD, ni les menus de ses poignées.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#xline--xl--es-lineax--xl--pt-br-linhainf--linf--fr-droite--do--it-xlinea--xl--de-klinie--kl--ru-прямая--пр--pl-prosta--prt--cs-přímka--pk--hu-szvonal--sv)
+
+## Questions [#questions]
+
+### Comment s'appelle la commande XLINE en français ?
+
+DROITE, avec l'alias `DO`, puis Entrée ou la barre d'espace. Le ruban l'appelle Ligne de construction, dans le groupe de fonctions Dessin développé ; ici, elle est dans les outils de Dessin, à côté de Demi-droite.
+
+### Comment tracer une ligne de construction horizontale ou verticale ?
+
+Lancez DROITE, tapez la lettre de `Hor` ou celle de `Ver`, puis cliquez les points par lesquels elle passe. L'horizontale et la verticale sont celles du SCU courant.
+
+### Comment ajuster une droite ?
+
+Avec [`AJUSTER`](/docs/commands/trim), comme n'importe quelle ligne : coupée d'un côté, une droite devient une demi-droite ; coupée des deux, une ligne. Il en va de même avec [`COUPURE`](/docs/commands/break).
+
+### Pourquoi le ZOOM Etendu ignore-t-il mes droites ?
+
+Une droite n'a pas d'étendue : elle va à l'infini dans les deux sens. AutoCAD laisse les droites et les demi-droites hors de l'étendue du dessin, et MellowCAD aussi.
+
+### Quelle est la différence entre DROITE et DEMIDROITE ?
+
+Une droite va à l'infini dans les deux sens ; une demi-droite, celle de [`DEMIDROITE`](/docs/commands/ray), part d'un point et ne va que dans un sens.
+
+## Commandes associées [#related]
+
+- [Commande DEMIDROITE (RAY) dans AutoCAD](/docs/commands/ray)
+- [Commande LIGNE (LINE) dans AutoCAD](/docs/commands/line)
+- [Commande DECALER (OFFSET) dans AutoCAD](/docs/commands/offset)
+- [Commande AJUSTER (TRIM) dans AutoCAD](/docs/commands/trim)

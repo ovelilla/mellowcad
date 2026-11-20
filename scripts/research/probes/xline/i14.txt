@@ -1,0 +1,24 @@
+QAFLAGS
+2
+_XLINE
+_H
+0,0
+0,10
+
+_XLINE
+_V
+0,0
+10,0
+
+_ZOOM
+_C
+5,5
+40
+_-HATCH
+5,5
+
+(entget (entlast))
+_-BOUNDARY
+5,5
+
+(entget (entlast))

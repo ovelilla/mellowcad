@@ -625,7 +625,7 @@ export class ChamferTool implements Tool {
   private apply(outcome: Outcome, ctx: ToolContext): void {
     switch (outcome.kind) {
       case "made":
-        this.done(cornerCommand(outcome), ctx)
+        this.done(cornerCommand(outcome, ctx), ctx)
         return
       case "none":
         if (outcome.ends) this.done(null, ctx)

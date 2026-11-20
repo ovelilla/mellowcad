@@ -121,6 +121,8 @@ export function clipboardSnapshot(
         case "face3d":
         case "wipeout":
         case "image":
+        case "xline":
+        case "ray":
           break
         default: {
           const unhandled: never = entity

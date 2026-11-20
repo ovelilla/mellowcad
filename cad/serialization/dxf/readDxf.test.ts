@@ -22,6 +22,8 @@ import type {
   SplineEntity,
   TextEntity,
   WipeoutEntity,
+  XlineEntity,
+  RayEntity,
   ImageEntity,
 } from "../../domain/entities"
 import { DxfReadError, ParsedDxf, parseDxf } from "./readDxf"
@@ -149,11 +151,15 @@ describe("parseDxf: AutoCAD 2027's files of the first drawing (f001, f002)", () 
 
   it("lists what the model has no object for, by type, and paper space apart", () => {
     expect([...drawing.report.leftOut]).toEqual([
-      ["XLINE", 1],
-      ["RAY", 1],
       ["3DSOLID", 1],
       ["REGION", 1],
     ])
+    // Its xline and ray open (xline/x10).
+    expect(
+      drawing.drawing.entities.filter(
+        (e) => e.type === "xline" || e.type === "ray"
+      )
+    ).toHaveLength(2)
     expect(drawing.report.inLayouts).toBe(1)
     expect(drawing.report.unreadable).toBe(0)
   })
@@ -1110,6 +1116,53 @@ describe("parseDxf: an invisible object (60 1)", () => {
     expect((drawing.entities[0] as LineEntity).end.x).toBe(2)
     expect(report.leftOut.size).toBe(0)
     expect(report.unreadable).toBe(0)
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's xlines and rays (xline/x10)", () => {
+  // A horizontal xline, one at 30°, one rising at 45°, a ray, a red DASHED
+  // ray on layer CONS and an xline drawn in a UCS turned 45°, as AutoCAD's
+  // DXFOUT wrote them: base point and unit direction in the WCS.
+  const { drawing, report } = parseDxf(fixture("xlines-2018"))
+  const infinite = drawing.entities.filter(
+    (e): e is XlineEntity | RayEntity => e.type === "xline" || e.type === "ray"
+  )
+  const round = (v: number) => Math.round(v * 1e6) / 1e6
+  const placed = (e: XlineEntity | RayEntity) => [
+    e.type,
+    round(e.base.x),
+    round(e.base.y),
+    round(e.elevation ?? 0),
+    round(e.direction.x),
+    round(e.direction.y),
+    round(e.directionZ ?? 0),
+  ]
+
+  it("opens every xline and ray, none left out", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(report.unreadable).toBe(0)
+    expect(infinite.map(placed)).toEqual([
+      ["xline", 0, 0, 0, 1, 0, 0],
+      ["xline", 10, 10, 0, round(Math.sqrt(3) / 2), 0.5, 0],
+      ["xline", 0, 0, 0, round(Math.SQRT1_2), 0, round(Math.SQRT1_2)],
+      ["ray", 50, 20, 0, round(Math.SQRT1_2), round(Math.SQRT1_2), 0],
+      ["ray", 100, 0, 0, 0, -1, 0],
+      [
+        "xline",
+        round(-50 * Math.SQRT1_2),
+        round(50 * Math.SQRT1_2),
+        0,
+        round(Math.SQRT1_2),
+        round(Math.SQRT1_2),
+        0,
+      ],
+    ])
+  })
+
+  it("keeps the red DASHED ray's properties", () => {
+    const red = infinite[4]
+    expect(red.color).toBe("#ff0000")
+    expect(red.linetype).toBe("DASHED")
   })
 })
 
