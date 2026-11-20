@@ -9,6 +9,11 @@
  *
  *   node scripts/research/propose-interface.mjs --lang fr --catalog engine [--like pt-BR]
  *   node scripts/research/propose-interface.mjs --lang fr --catalog editor [--like pt-BR]
+ *   node scripts/research/propose-interface.mjs --lang ja --catalog editor --pack <folder>
+ *
+ * `--pack <folder>` reads a pack that is not installed: one folder holding the culture's DLLs,
+ * flat (the update's `acadlp.adix` and the pack's `acadsharedlp.adix`, opened as open-pack.sh
+ * does), and its `acad.CUIX`.
  *
  * `--like <tag>` settles a label its ids word several ways as an installed language already did:
  * the ids whose wording in that language is its catalog's word give this one's (`like`). Its
@@ -52,9 +57,13 @@ const culture = cultureOf(lang)
 const likeAt = rest.indexOf("--like")
 const like = likeAt >= 0 ? rest[likeAt + 1] : null
 const english = join(INSTALL, "en-US")
-const local = join(INSTALL, culture)
+const packAt = rest.indexOf("--pack")
+const pack = packAt >= 0 ? rest[packAt + 1] : null
+const local = pack ?? join(INSTALL, culture)
 if (!existsSync(join(local, "acadres.dll"))) {
-  console.error(`${local} has no acadres.dll: is the ${culture} pack installed?`)
+  console.error(
+    `${local} has no acadres.dll: is the ${culture} pack installed?`
+  )
   process.exit(1)
 }
 
@@ -92,7 +101,8 @@ function dotnetStrings(file) {
       while ((p - at) % 8 !== 0) p++
       p += count * 4
       const positions = []
-      for (let i = 0; i < count; i++) positions.push(bytes.readInt32LE(p + i * 4))
+      for (let i = 0; i < count; i++)
+        positions.push(bytes.readInt32LE(p + i * 4))
       p += count * 4
       const dataSection = at + bytes.readInt32LE(p)
       const names = p + 4
@@ -132,7 +142,10 @@ function cuixNames(file) {
     p += 46 + nameLength + extra + comment
     if (!/\.cui$/i.test(name)) continue
     const start =
-      header + 30 + zip.readUInt16LE(header + 26) + zip.readUInt16LE(header + 28)
+      header +
+      30 +
+      zip.readUInt16LE(header + 26) +
+      zip.readUInt16LE(header + 28)
     const raw = zip.subarray(start, start + size)
     const xml = (method === 8 ? inflateRawSync(raw) : raw).toString("utf8")
     const decode = (text) =>
@@ -143,7 +156,9 @@ function cuixNames(file) {
         .replace(/&apos;/g, "'")
         .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
         .replace(/&amp;/g, "&")
-    for (const m of xml.matchAll(/<(\w+)\b([^>]*)\bUID="([^"]+)"([^>]*)>([^<]*)<\/\1>/g))
+    for (const m of xml.matchAll(
+      /<(\w+)\b([^>]*)\bUID="([^"]+)"([^>]*)>([^<]*)<\/\1>/g
+    ))
       if (m[5].trim()) out.set(m[3], decode(m[5]))
     for (const m of xml.matchAll(/<\w+\b[^>]*>/g)) {
       const uid = /\bUID="([^"]+)"/.exec(m[0])?.[1]
@@ -168,7 +183,10 @@ function sources(folder, cuix) {
       try {
         for (const line of stringTable(path)) {
           const tab = line.indexOf("\t")
-          out.set(`P ${dll} ${line.slice(0, tab)}`, JSON.parse(line.slice(tab + 1)))
+          out.set(
+            `P ${dll} ${line.slice(0, tab)}`,
+            JSON.parse(line.slice(tab + 1))
+          )
         }
       } catch {
         // No string table.
@@ -176,7 +194,10 @@ function sources(folder, cuix) {
       try {
         for (const line of dialogs(path)) {
           const tab = line.indexOf("\t")
-          out.set(`D ${dll} ${line.slice(0, tab)}`, JSON.parse(line.slice(tab + 1)))
+          out.set(
+            `D ${dll} ${line.slice(0, tab)}`,
+            JSON.parse(line.slice(tab + 1))
+          )
         }
       } catch {
         // No dialogs.
@@ -187,9 +208,13 @@ function sources(folder, cuix) {
   return out
 }
 
-const support = (c) => join(INSTALL, "UserDataCache", c.toLowerCase(), "Support/acad.CUIX")
+const support = (c) =>
+  join(INSTALL, "UserDataCache", c.toLowerCase(), "Support/acad.CUIX")
 const englishSources = sources(english, support("en-US"))
-const localSources = sources(local, support(culture))
+const localSources = sources(
+  local,
+  pack ? join(pack, "acad.CUIX") : support(culture)
+)
 const likeSources = like
   ? sources(join(INSTALL, cultureOf(like)), support(cultureOf(like)))
   : null
@@ -215,7 +240,12 @@ for (const [where, text] of englishSources) {
 
 const { file, under } = CATALOGS[which]
 const catalogOf = (tag) =>
-  JSON.parse(readFileSync(new URL(file.replace(/en\.json$/, `${tag}.json`), root), "utf8"))
+  JSON.parse(
+    readFileSync(
+      new URL(file.replace(/en\.json$/, `${tag}.json`), root),
+      "utf8"
+    )
+  )
 const catalog = catalogOf("en")
 const entries = []
 leaves(under ? catalog[under] : catalog, under ?? "", entries)
@@ -260,7 +290,9 @@ for (const [path, value] of entries) {
   for (const [word, from] of counts) {
     const k = word.toLowerCase()
     if (!merged.has(k)) merged.set(k, { words: new Map(), from: [] })
-    merged.get(k).words.set(word, (merged.get(k).words.get(word) ?? 0) + from.length)
+    merged
+      .get(k)
+      .words.set(word, (merged.get(k).words.get(word) ?? 0) + from.length)
     merged.get(k).from.push(...from)
   }
   const candidates = [...merged.values()]
@@ -271,14 +303,22 @@ for (const [path, value] of entries) {
     })
     .sort((a, b) => b.from.length - a.from.length)
   let state =
-    candidates.length === 0 ? "none" : candidates.length === 1 ? "one" : "several"
+    candidates.length === 0
+      ? "none"
+      : candidates.length === 1
+        ? "one"
+        : "several"
   // The ids that give the other language's word, and what they give here.
   const theirs = likeWords.get(path)
   let chosen = state === "one" ? candidates[0].word : null
   if (state === "several" && typeof theirs === "string") {
     const agreeing = new Set(
       wheres
-        .filter((where) => likeSources.has(where) && key(likeSources.get(where)) === key(theirs))
+        .filter(
+          (where) =>
+            likeSources.has(where) &&
+            key(likeSources.get(where)) === key(theirs)
+        )
         .map((where) => localSources.get(where))
         .filter((text) => text !== undefined)
         .map(bare)
@@ -299,7 +339,10 @@ for (const [path, value] of entries) {
 const outDir = new URL("research/proposals/", root)
 mkdirSync(outDir, { recursive: true })
 const base = `${lang}-${which}`
-writeFileSync(new URL(`${base}.json`, outDir), JSON.stringify(settled, null, 2) + "\n")
+writeFileSync(
+  new URL(`${base}.json`, outDir),
+  JSON.stringify(settled, null, 2) + "\n"
+)
 const order = { one: 0, like: 1, several: 2, none: 3, message: 4 }
 const md = [
   `# ${which}'s interface in ${lang}, from the installed ${culture} resources`,
@@ -312,7 +355,9 @@ const md = [
       [
         `- \`${path}\` (${state}) ${JSON.stringify(value)}` +
           (chosen ? ` → ${JSON.stringify(chosen)}` : "") +
-          (like && theirs !== undefined ? ` · ${like}: ${JSON.stringify(theirs)}` : ""),
+          (like && theirs !== undefined
+            ? ` · ${like}: ${JSON.stringify(theirs)}`
+            : ""),
         ...candidates
           .slice(0, 6)
           .map(
