@@ -219,22 +219,39 @@ html:not(:lang(pl)) .font-mono:lang(pl) {
    breaks the joins of a cursive script, and the script has no capitals and no
    italics. Its marks reach far above and below the line, so running text
    opens to 1.8 and headlines to 1.3, past the display's 1.0. What speaks the
-   command language carries its own `lang` and keeps its look. */
-:lang(ar) {
+   command language carries its own `lang` and keeps its look. Japanese
+   (docs/i18n/ja.md, "Script and font") shares what it can, as every rule here
+   reaches every landing: no italic, which the browser would fake by slanting
+   the glyphs, no tracking to crowd kana, running text at 1.8, and a line
+   that breaks between any two characters keeps its punctuation off a line's
+   start (strict) and its headlines whole by phrase where Chrome can. */
+:lang(ar),
+:lang(ja) {
   letter-spacing: 0;
   text-transform: none;
   font-style: normal;
 }
 
+:lang(ja) {
+  line-break: strict;
+}
+
+:is(h1, h2, h3):lang(ja) {
+  word-break: auto-phrase;
+}
+
 html:lang(ar) body,
-.text-lead:lang(ar) {
+.text-lead:lang(ar),
+html:lang(ja) body,
+.text-lead:lang(ja) {
   line-height: 1.8;
 }
 
 .text-display:lang(ar),
 .text-hero:lang(ar),
 .text-h2:lang(ar),
-.text-h3:lang(ar) {
+.text-h3:lang(ar),
+:is(.text-display, .text-hero, .text-h2, .text-h3):lang(ja) {
   line-height: 1.3;
 }
 
@@ -251,28 +268,6 @@ html:lang(ar) body,
 
 .text-h2:lang(ar) {
   font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.25rem);
-}
-
-/* Japanese (docs/i18n/ja.md, "Script and font"), unlayered as Arabic's: the
-   script has no italic, which the browser would fake by slanting the glyphs,
-   and the headlines' negative tracking crowds kana. A Japanese line may break
-   between any two characters: headlines break by phrase where Chrome can
-   (auto-phrase), and running text keeps its punctuation off a line's start
-   (strict). What speaks the command language carries its own `lang`. */
-:lang(ja) {
-  letter-spacing: 0;
-  font-style: normal;
-  line-break: strict;
-}
-
-html:lang(ja) body,
-.text-lead:lang(ja) {
-  line-height: 1.8;
-}
-
-:is(h1, h2, h3, .text-display, .text-hero, .text-h2, .text-h3):lang(ja) {
-  word-break: auto-phrase;
-  line-height: 1.4;
 }
 
 /* Geist Mono has no Arabic but does have a space, 0.6em wide: an Arabic
@@ -305,6 +300,14 @@ html:lang(ja) body,
     #000 30%,
     transparent 100%
   );
+}
+
+/* A command's key cap on the commands board. WHY a utility of its own: the
+   board has one per command, written in the HTML and again in the payload, and
+   its 190-character class list was some 500 of every landing's Brotli bytes
+   (docs/i18n/ja.md, "Going live"). */
+@utility key-cap {
+  @apply inline-flex h-7 items-center gap-2 rounded border border-border bg-bg-raised px-2 font-mono text-xs shadow-[0_1px_0_var(--border)] transition-colors duration-150 group-hover:border-fg-subtle;
 }
 
 @utility underline-link {

@@ -6,17 +6,21 @@ import { languageLinks, unlocalizedPath } from "@/i18n/navigation"
 import { type AppLocale } from "@/i18n/routing"
 
 /**
- * The language links as a list, for the landing; the classes come from each
- * place, which styles it its own way.
+ * The language links as a list, for the landing; the list's class styles its
+ * links (`[&_a]:…`), as each place styles them its own way. WHY on the list
+ * and with no `hrefLang`: every live language adds a link to three lists on
+ * every landing, and a class string and an `hrefLang` per link were some 200
+ * of a landing's Brotli bytes, past its budget (docs/i18n/ja.md, "Going
+ * live"); Google reads the alternates from `<link rel="alternate">` and the
+ * sitemap, never from an anchor's `hreflang`. `lang` stays: a screen reader
+ * reads «日本語» in Japanese.
  */
 export function LanguageLinks({
   current,
   className,
-  linkClassName,
 }: {
   current: AppLocale
   className?: string
-  linkClassName?: string
 }) {
   const links = languageLinks(current, unlocalizedPath(usePathname()))
   if (links.length === 0) return null
@@ -26,10 +30,8 @@ export function LanguageLinks({
         <li key={link.locale}>
           <a
             href={link.href}
-            hrefLang={link.locale}
             lang={link.locale}
             aria-current={link.current ? "true" : undefined}
-            className={linkClassName}
           >
             {link.name}
           </a>

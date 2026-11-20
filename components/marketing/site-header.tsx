@@ -120,8 +120,7 @@ export async function SiteHeader() {
         >
           <LanguageLinks
             current={locale}
-            className="flex flex-col"
-            linkClassName="block rounded-md px-3 py-2.5 text-fg-muted hover:bg-bg aria-[current=true]:text-fg"
+            className="flex flex-col [&_a]:block [&_a]:rounded-md [&_a]:px-3 [&_a]:py-2.5 [&_a]:text-fg-muted [&_a]:hover:bg-bg [&_a]:aria-[current=true]:text-fg"
           />
         </nav>
         <button
@@ -142,8 +141,7 @@ export async function SiteHeader() {
       >
         <LanguageLinks
           current={locale}
-          className="flex flex-col"
-          linkClassName="block rounded-md px-3 py-2 text-sm text-fg-muted hover:bg-bg aria-[current=true]:text-fg"
+          className="flex flex-col [&_a]:block [&_a]:rounded-md [&_a]:px-3 [&_a]:py-2 [&_a]:text-sm [&_a]:text-fg-muted [&_a]:hover:bg-bg [&_a]:aria-[current=true]:text-fg"
         />
       </nav>
     </header>

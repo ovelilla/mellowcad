@@ -161,8 +161,7 @@ export async function SiteFooter() {
           <span className="label-mono">{t("language")}</span>
           <LanguageLinks
             current={locale}
-            className="flex flex-wrap gap-x-4 gap-y-1"
-            linkClassName="underline-link aria-[current=true]:text-fg-muted aria-[current=true]:no-underline"
+            className="flex flex-wrap gap-x-4 gap-y-1 [&_a]:underline-link [&_a]:aria-[current=true]:text-fg-muted [&_a]:aria-[current=true]:no-underline"
           />
         </nav>
 

@@ -15,15 +15,16 @@
 > hechos y publicados el 13/11, y una cuña el 15/11, por encargo del dueño: el brief de un MCP
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
-> `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, sin
-> publicar (el push está congelado: `docs/next-vercel-usage.md` §4); por decisión del dueño la
+> `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, y el
+> japonés (`live` en `/ja`, L8, `global`) hecho el 20/11, sin publicar (el push está congelado:
+> `docs/next-vercel-usage.md` §4); por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
 > hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; lo que queda del
-> punto 7, XLINE, RAY…, después del idioma) y otro idioma (el japonés, `global`, el siguiente), alternando,
-> además de lo que queda de §7.
+> punto 7, XLINE, RAY…, el siguiente) y otro idioma (el coreano o el chino, `global` como el
+> japonés), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -289,8 +290,10 @@ Bielorrusia buscando en ruso; Yandex tiene el 72 % de sus búsquedas; hecho el 1
 `docs/plans/ru-language.md`) y **polaco** (localizado; Polonia, 40 en el índice de la auditoría;
 hecho el 17/11, `docs/plans/pl-language.md`) y **checo** (localizado; Chequia; hecho el 17/11,
 `docs/plans/cs-language.md`) y **húngaro** (localizado; Hungría, 8 en el índice de la auditoría;
-hecho el 19/11, `docs/plans/hu-language.md`). Después, japonés, coreano y chino (AutoCAD conserva allí los
-nombres ingleses: tipo `global`). Fuera del criterio pero con más demanda que varios de esos:
+hecho el 19/11, `docs/plans/hu-language.md`) y **japonés** (`global`: AutoCAD japonés conserva los
+nombres, alias y letras de opción ingleses y traduce solo las solicitudes, que `/ja/draw` muestra en
+inglés hasta copiarlas; hecho el 20/11, `docs/plans/ja-language.md`). Después, coreano y chino
+(como el japonés). Fuera del criterio pero con más demanda que varios de esos:
 persa (el mayor término de AutoCAD en una escritura no latina; antes, comprobar el acceso desde Irán
 y las sanciones), vietnamita e indonesio, sin AutoCAD en su idioma (`languages.md` §B.6): decisión
 del dueño si quiere ampliar el criterio. Cada idioma nuevo, después de L3 y L4, para nacer con
@@ -438,6 +441,12 @@ el dueño dio a las sesiones el 6/11).
    1.155 en la cola, de 1.275 en el sitemap.
    **19/11, 23:40 UTC del 18/11:** la cola, rehecha con el checo publicado: 1.155 de 1.275 en el
    sitemap; la tanda no pidió ninguna, la cuota de Google cortó en la primera.
+   **20/11, 11:07 UTC (sesión del japonés):** la tanda del día, 11 pedidas (`/it/docs/edit-dxf`,
+   `/pl/docs/open-dxf`, `/ar/docs/edit-dxf`, `/pl/docs`, `/es/docs/coordinates`, guías en italiano,
+   ruso, alemán y árabe…) hasta la cuota, en la duodécima: 1.144 en la cola, de 1.275 en el
+   sitemap. El japonés, sin publicar, entra cuando el sitemap publicado lo traiga:
+   `gsc-prioritize.mjs` ya reconoce `/ja` y lo pesa a 0,24 (Japón, 68 en el índice de la
+   auditoría: el 0,4 del italiano × 68/113).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -1040,4 +1049,16 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   LEADER dice que se abren y guardan, sin el comando MLEADER; la portada no cambia.
   **Siguiente**, por orden del dueño: otro idioma (el japonés, `global`), y después lo que queda
   del punto 7 (XLINE, RAY…), alternando.
+- Japonés (L8): hecho el 20/11/2026, sin publicar (`docs/plans/ja-language.md`, `docs/i18n/ja.md`).
+  `global`, como pidió el dueño, comprobado antes en los archivos de Autodesk (el paquete abierto,
+  sin instalar): AutoCAD japonés conserva los nombres de comando, los alias y las letras de opción
+  ingleses y escribe sus solicitudes en japonés (`[元に戻す(U)]`), que `/ja/draw` muestra en inglés:
+  la página de diferencias lo dice en los doce idiomas. La interfaz con las palabras del AutoCAD
+  japonés por id; el sitio, las páginas «Use», las 101 notas y los 12 ejercicios escritos desde lo
+  que se busca en Japón («cad 無料 ブラウザ», «autocad コマンド 一覧», «dxf ビューア»); la fuente del
+  sistema (ninguna web), la tarjeta con Noto Sans JP recortada y el IME arreglado para todos los
+  idiomas. Una segunda lectura por un modelo; la de un hablante nativo, pendiente. De paso, el FAQ
+  ya no cuenta las directrices múltiples y las tablas entre lo que un DXF deja fuera.
+  **Siguiente**, por orden del dueño: lo que queda del punto 7 del DXF (XLINE, RAY…), y después
+  otro idioma (el coreano o el chino, `global`), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

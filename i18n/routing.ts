@@ -103,7 +103,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   pl: "live",
   cs: "live",
   hu: "live",
-  ja: "draft",
+  ja: "live",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(

@@ -123,11 +123,7 @@ export async function CommandsSection() {
                   const cap = (
                     // A key cap of the command language: left to right, or
                     // -MTEXT reads MTEXT- in a right-to-left page.
-                    <span
-                      dir="ltr"
-                      lang={text.commandTag}
-                      className="inline-flex h-7 items-center gap-2 rounded border border-border bg-bg-raised px-2 font-mono text-xs shadow-[0_1px_0_var(--border)] transition-colors duration-150 group-hover:border-fg-subtle"
-                    >
+                    <span dir="ltr" lang={text.commandTag} className="key-cap">
                       <span className="font-semibold text-fg">
                         {command.key}
                       </span>

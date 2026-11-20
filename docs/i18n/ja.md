@@ -1,6 +1,6 @@
 # Japanese (`ja`)
 
-> **Command language:** `global`, English AutoCAD's. **Status:** `draft` since 20/11/2026.
+> **Command language:** `global`, English AutoCAD's. **Status:** `live` since 20/11/2026.
 > **Review:** none by a native speaker yet; a model's second reading (see "Review").
 
 `/ja/draw` is AutoCAD with its interface in Japanese — the palettes, the ribbon's words, the menus,
@@ -199,6 +199,31 @@ no IME composes (no editable target), so a command typed there is latin as typed
 
 The help's Japanese names of the commands with a page (20/11/2026), the brackets of their titles:
 -OSNAP[オブジェクト スナップ設定], 3DORBIT[3D オービット], 3DPOLY[3D ポリライン], ARC[円弧], AREA[面積計算], ARRAY[配列複写], ARRAYPATH[パス配列複写], ARRAYPOLAR[円形状配列複写], ARRAYRECT[矩形状配列複写], ATTDEF[属性定義], ATTDISP[属性表示], ATTEDIT[属性編集], BLOCK[ブロック登録], BOX[直方体], BREAK[部分削除], CHAMFER[面取り], CHAMFEREDGE[面取りエッジ], CHPROP[プロパティ変更], CIRCLE[円], COLOR[色設定], CONE[円錐], COPY[複写], COPYCLIP[コピー], CYLINDER[円柱], DIMALIGNED[平行寸法記入], DIMANGULAR[角度寸法記入], DIMBASELINE[並列寸法記入], DIMCONTINUE[直列寸法記入], DIMDIAMETER[直径寸法記入], DIMLINEAR[長さ寸法記入], DIMRADIUS[半径寸法記入], DIMSPACE[寸法線間隔], DIMSTYLE[寸法スタイル管理], DIST[距離計算], DIVIDE[ディバイダ], EATTEDIT[拡張属性編集], ELLIPSE[楕円], ERASE[削除], EXPLODE[分解], EXTEND[延長], EXTRUDE[押し出し], FILLET[フィレット], FILLETEDGE[フィレット エッジ], HATCH[ハッチング], ID[位置表示], INSERT[ブロック挿入], INTERSECT[交差], JOIN[結合], LAYER[画層管理], LEADER[引出線記入], LINE[線分], LINETYPE[線種設定], LIST[オブジェクト情報], LTSCALE[線種尺度], LWEIGHT[線の太さ], MASSPROP[マス プロパティ], MATCHPROP[プロパティ コピー], MEASURE[メジャー], MIRROR[鏡像], MOVE[移動], MTEXT[マルチ テキスト], OFFSET[オフセット], PAN[画面移動], PEDIT[ポリライン編集], PLAN[プラン ビュー], PLINE[ポリライン], POLYGON[ポリゴン], PRESSPULL[境界引き伸ばし], PROPERTIES[オブジェクト プロパティ管理], PTYPE[点スタイル管理], PURGE[名前削除], PYRAMID[角錐], RECTANG[長方形], REDO[やり直し], REGION[リージョン], REVOLVE[回転ソリッド], ROTATE[回転], SCALE[尺度変更], SECTION[断面], SLICE[切断], SNAP[スナップ], SOLIDEDIT[ソリッド編集], SPHERE[球], SPLINE[スプライン], SPLINEDIT[スプライン編集], STRETCH[ストレッチ], STYLE[文字スタイル管理], SUBTRACT[差], TEXT[文字記入], TEXTEDIT[文字編集], TORUS[トーラス], TRIM[トリム], UCS[UCS 管理], UCSICON[UCS アイコン管理], UNDO[元に戻す], UNION[和], UNITS[単位管理], VIEW[ビュー管理], VSCURRENT[ビューポート表示スタイル], WEDGE[くさび], ZOOM[ズーム].
+
+## Going live
+
+On 20/11/2026, from production builds of this worktree (every page `○` or `●` but `/api/search`
+and `/mcp`):
+
+- **The landing's first load**, Brotli q11 of every response until the network is idle, in bytes,
+  Japanese a draft (`962825fa`) and live with the cuts below: `/` 253,905 → 253,320, `/es`
+  255,198 → 254,666, `/pt-br` 255,462 → 254,927, `/ar` 278,828 → 278,310, `/fr` 256,143 →
+  255,573 (427 under 250 KiB), `/it` 255,275 → 254,817, `/de` 255,628 → 255,073, `/ru` 289,143 →
+  288,500, `/pl` 270,090 → 269,406, `/cs` 269,877 → 269,354, `/hu` 270,390 → 269,750; `/ja`
+  256,186 → 255,554, under the 250 KiB of a page with no script font: the system's faces cost it
+  nothing.
+- **`/fr` was 143 bytes over 250 KiB with Japanese a draft** (`/ja` 186): its `:lang(ja)` rules,
+  the routing tables' `ja` and the IME guard of the command box reach every landing. Going live
+  added some 230 more (its link in three lists, its hreflang link in the head and the payload).
+  Three cuts for every page, none seen: **the commands board's key cap is one utility**,
+  `key-cap` in `marketing.css`, where a 190-character class list was written 298 times (151 caps,
+  in the HTML and again in the payload): some 500 bytes; **the language links' classes sit on
+  their list** (`[&_a]:…`) and **they carry no `hrefLang`** (Google reads the alternates from
+  `<link rel="alternate">` and the sitemap): some 200; and the Japanese rules share Arabic's
+  where they match. Each live language still adds some 100 bytes to every landing.
+- **What did not fit** (the landing at 360 px, the editor at 1280×720): nothing overflows; the H1
+  and the headings break by phrase (`auto-phrase`); the share card's headline broke after «[»,
+  fixed in `cardSentences`.
 
 ## Review
 
