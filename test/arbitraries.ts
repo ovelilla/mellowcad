@@ -234,9 +234,10 @@ function infiniteLineEntity<T extends XlineEntity | RayEntity>(
     )
     .map(([base, angle, tilt]) => {
       const flat = Math.cos(tilt)
+      // + 0: a -0 (an angle of -0) would not survive JSON.
       const direction = {
-        x: Math.cos(angle) * flat,
-        y: Math.sin(angle) * flat,
+        x: Math.cos(angle) * flat + 0,
+        y: Math.sin(angle) * flat + 0,
       }
       return withId<T>(
         {
