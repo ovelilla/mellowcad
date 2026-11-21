@@ -16,15 +16,16 @@
 > (`docs/next-mcp.md`), con su prototipo y su banco, sin publicar nada y sin mover el calendario
 > de L5, y el polaco (`live` en `/pl`, L8) hecho y publicado el 17/11, y el checo (`live` en
 > `/cs`, L8) hecho y publicado el 17/11, y el húngaro (`live` en `/hu`, L8) hecho el 19/11, y el
-> japonés (`live` en `/ja`, L8, `global`) hecho el 20/11, y el coreano (`live` en `/ko`, L8,
-> `global`) hecho el 20/11, sin publicar (el push está congelado: `docs/next-vercel-usage.md` §4);
+> japonés (`live` en `/ja`, L8, `global`) y el coreano (`live` en `/ko`, L8, `global`) hechos el
+> 20/11, los tres publicados el 21/11 con el export estático (el push de las 09:20, hasta
+> `0f86c6ad`; desde entonces el push está congelado otra vez: `docs/next-vercel-usage.md` §4);
 > por decisión del dueño la
 > visibilidad va antes que cualquier funcionalidad; siguiente, por orden del dueño (12/11/2026), una
 > sesión cada vez, nunca en paralelo: lo que quede de la fase 4 del DXF (`docs/next-dxf.md`: las
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
-> degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
-> hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; XLINE y RAY, con sus
-> páginas, hechos el 20/11, sin publicar; MINSERT, con su página, hecho el 21/11, sin publicar; lo
+> degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE, la tabla y
+> MULTILEADER, hechos el 19/11, y XLINE y RAY, con sus páginas, hechos el 20/11, publicados el
+> 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, sin publicar; lo
 > que queda del punto 7, los colores índice…, después) y otro idioma (el chino, `global` como el
 > japonés y el coreano, el siguiente), alternando, además de lo que queda de §7.
 > Esperan detrás
@@ -1013,7 +1014,7 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   conversaciones terminadas (desde el 18/11; hecha el 19/11). **Siguiente**, por orden del dueño:
   el húngaro (L8, hecho el 19/11), y después lo que queda del punto 7 (WIPEOUT, IMAGE, TABLE,
   MULTILEADER…).
-- Húngaro (L8): hecho el 19/11/2026, sin publicar (`580b4d03`, `209f1f08` y el commit que lo pasa
+- Húngaro (L8): hecho el 19/11/2026, publicado el 21/11 (`580b4d03`, `209f1f08` y el commit que lo pasa
   a `live`; `docs/plans/hu-language.md`, `docs/i18n/hu.md`). El paquete de idioma instalado en el
   AutoCAD del dueño, con su permiso, y la 2027.1 otra vez; el lenguaje de comandos de la consola
   húngara (454 sondas: VONAL, PÁRH, METSZ; `P` es PÁRH, `T` deshace aunque el `acad.pgp` se la dé
@@ -1031,36 +1032,35 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   portada**, Brotli q11, con el húngaro en borrador y `live`: `/` 253.842 → 253.802, `/es` 255.023
   → 255.026, `/pt-br` 255.506 → 255.379, `/ar` 278.776 → 278.707, `/fr` 256.028 → 255.879 (121
   bytes bajo 250 KiB), `/it` 255.243 → 255.145, `/de` 255.602 → 255.491, `/ru` 289.084 → 288.971,
-  `/pl` 270.020 → 269.877, `/cs` 269.750 → 269.680, `/hu` 270.398 → 270.357. **Sin publicar**: el
-  push espera a que `docs/next-vercel-usage.md` §4 levante el congelado y al permiso del dueño;
-  después IndexNow, y las fichas de AlternativeTo y SaaSHub, del dueño; la cola de §7 ya pesa
-  `/hu` (0,03) y entrará sola cuando el sitemap la publique. **Siguiente**, por orden del dueño:
+  `/pl` 270.020 → 269.877, `/cs` 269.750 → 269.680, `/hu` 270.398 → 270.357. **Publicado** el
+  21/11 con el export estático (el push de las 09:20, hasta `0f86c6ad`); después IndexNow, y las fichas de AlternativeTo y SaaSHub, del dueño; la cola de §7 ya pesa
+  `/hu` (0,03), y el sitemap publicado la trae. **Siguiente**, por orden del dueño:
   lo que queda del punto 7 de la fase 4 del DXF (WIPEOUT, IMAGE, TABLE, MULTILEADER…), y después
   otro idioma (el japonés, `global`).
-- DXF, punto 7 de la fase 4 (WIPEOUT): hecho el 19/11/2026, sin publicar (`docs/next-dxf.md`).
+- DXF, punto 7 de la fase 4 (WIPEOUT): hecho el 19/11/2026, publicado el 21/11 (`docs/next-dxf.md`).
   Las páginas «abrir DXF online» y «editar DXF online», en los once idiomas, cuentan las coberturas
   entre lo que se abre y ya no entre lo que queda fuera; el índice de comandos tiene WIPEOUT en
   cada idioma; la portada no cambia. **Siguiente**, por orden del dueño: lo que queda del punto 7
   (IMAGE, TABLE, MULTILEADER…) y otro idioma (el japonés, `global`), alternando.
-- DXF, punto 7 de la fase 4 (IMAGE): hecho el 19/11/2026, sin publicar (`docs/next-dxf.md`). Las
+- DXF, punto 7 de la fase 4 (IMAGE): hecho el 19/11/2026, publicado el 21/11 (`docs/next-dxf.md`). Las
   páginas «abrir DXF online» y «editar DXF online», en los once idiomas, ya no cuentan las imágenes
   entre lo que queda fuera: se abren como AutoCAD abre una cuyo fichero no encuentra (su marco y
   su ruta) y se vuelven a guardar; la portada no cambia. **Siguiente**, por orden del dueño: lo que
   queda del punto 7 (TABLE, MULTILEADER…) y otro idioma (el japonés, `global`), alternando.
-- DXF, punto 7 de la fase 4 (la tabla, ACAD_TABLE): hecha el 19/11/2026, sin publicar
+- DXF, punto 7 de la fase 4 (la tabla, ACAD_TABLE): hecha el 19/11/2026, publicada el 21/11
   (`docs/next-dxf.md`). Las páginas «abrir DXF online» y «editar DXF online», en los once
   idiomas, ya no cuentan las tablas entre lo que queda fuera: se abren con sus celdas y su
   estilo, se dibujan como AutoCAD las dibuja y se vuelven a guardar; la portada no cambia.
   **Siguiente**, por orden del dueño: lo que queda del punto 7 (MULTILEADER, XLINE…) y otro idioma
   (el japonés, `global`), alternando.
-- DXF, punto 7 de la fase 4 (MULTILEADER): hecho el 19/11/2026, sin publicar (`docs/next-dxf.md`).
+- DXF, punto 7 de la fase 4 (MULTILEADER): hecho el 19/11/2026, publicado el 21/11 (`docs/next-dxf.md`).
   Las páginas «abrir DXF online» y «editar DXF online», en los once idiomas, ya no cuentan las
   directrices múltiples entre lo que queda fuera: se abren con sus directrices, su texto o
   bloque y su estilo, se dibujan como AutoCAD las dibuja y se vuelven a guardar; la nota de
   LEADER dice que se abren y guardan, sin el comando MLEADER; la portada no cambia.
   **Siguiente**, por orden del dueño: otro idioma (el japonés, `global`), y después lo que queda
   del punto 7 (XLINE, RAY…), alternando.
-- Japonés (L8): hecho el 20/11/2026, sin publicar (`docs/plans/ja-language.md`, `docs/i18n/ja.md`).
+- Japonés (L8): hecho el 20/11/2026, publicado el 21/11 (`docs/plans/ja-language.md`, `docs/i18n/ja.md`).
   `global`, como pidió el dueño, comprobado antes en los archivos de Autodesk (el paquete abierto,
   sin instalar): AutoCAD japonés conserva los nombres de comando, los alias y las letras de opción
   ingleses y escribe sus solicitudes en japonés (`[元に戻す(U)]`), que `/ja/draw` muestra en inglés:
@@ -1072,14 +1072,14 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   ya no cuenta las directrices múltiples y las tablas entre lo que un DXF deja fuera.
   **Siguiente**, por orden del dueño: lo que queda del punto 7 del DXF (XLINE, RAY…), y después
   otro idioma (el coreano o el chino, `global`), alternando.
-- DXF, punto 7 de la fase 4 (XLINE y RAY): hechos el 20/11/2026, sin publicar
+- DXF, punto 7 de la fase 4 (XLINE y RAY): hechos el 20/11/2026, publicados el 21/11
   (`docs/next-dxf.md`), las dos entidades y sus comandos, con su página `/docs/commands/xline` y
   `/ray` en los doce idiomas (dos URL nuevas por idioma: 24, a la cola de indexación de §7 cuando
   el dueño publique). Las páginas «abrir DXF online», en los doce idiomas, ya no cuentan las líneas
   auxiliares y los rayos entre lo que queda fuera; «editar DXF online» y la portada no cambian.
   **Siguiente**, por orden del dueño: otro idioma (el coreano o el chino, `global`), y después lo
   que queda del punto 7 (MINSERT…), alternando.
-- Coreano (L8): hecho el 20/11/2026, sin publicar (`docs/plans/ko-language.md`, `docs/i18n/ko.md`).
+- Coreano (L8): hecho el 20/11/2026, publicado el 21/11 (`docs/plans/ko-language.md`, `docs/i18n/ko.md`).
   `global`, como pidió el dueño, comprobado antes en los archivos de Autodesk (el paquete abierto,
   sin instalar): AutoCAD coreano conserva los nombres de comando, los alias y las letras de opción
   ingleses y escribe sus solicitudes en coreano (`[명령 취소(U)]`), que `/ko/draw` muestra en inglés:

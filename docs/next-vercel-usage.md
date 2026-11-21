@@ -59,9 +59,8 @@ El 19/11 a las 11:10, Observability (últimas 12 h): **15K unidades de lectura**
 12 h anteriores (28K), y 1K peticiones al almacén, casi todas a rutas distintas (438 de 547 en la
 documentación): primeros fallos de la cola larga, no repeticiones. Cloudflare sirve ya el 35 % de
 lo que recibe (22 % el primer día). A ~30K al día el total aún sube, unos 25K al día netos con lo que
-sale de la ventana: no se levanta el congelado. El húngaro (`cdd8d646`, en `main` sin publicar)
-espera a que §4 se cumpla: sus páginas y la fecha nueva de las de comandos traerían otra oleada de
-rastreo.
+sale de la ventana: no se levanta el congelado. El húngaro (`cdd8d646`) esperó a que §4 se cumpliera: sus páginas y la fecha nueva de las de
+comandos traerían otra oleada de rastreo (publicado el 21/11 con el export estático: abajo).
 
 El 20/11 a las 09:18 Vercel avisó del **100 % de las lecturas de ISR** (1.005.030 de 1.000.000 a las
 10:40), y el 19/11 a las 18:31 del 75 % de Fast Origin Transfer (7,9 de 10 GB el 20/11). Las barras
@@ -92,8 +91,14 @@ Hasta principios de diciembre salen de la ventana los días de finales de octubr
 lecturas al día**. Se levanta cuando dos días completos seguidos queden por debajo y el total
 de 30 días baje, o cuando el proxy de §5 esté funcionando y lo confirme la lectura del día
 siguiente, o cuando el export estático (en producción desde el 21/11/2026 a las 09:40) deje las
-lecturas de ISR en cero y lo confirme la lectura del día siguiente. Entonces un push al día como mucho (skill `finish-feature`), y el siguiente idioma
-(el húngaro) solo con margen.
+lecturas de ISR en cero y lo confirme la lectura del día siguiente. Entonces un push al día como mucho (skill `finish-feature`), y cada idioma nuevo solo con margen.
+
+El push del export estático (21/11 a las 09:20, de `a500d37e` a `0f86c6ad`) llevó, con él, todo lo
+que esperaba en `main`: el húngaro, el japonés y el coreano (las 381 URL de `/hu`, `/ja` y `/ko`
+están en el sitemap de producción), WIPEOUT, IMAGE, la tabla, MULTILEADER, XLINE y RAY, la
+búsqueda de la documentación y la función del MCP. Desde entonces el congelado sigue: esperan
+`2348a4df` y `217fe33e` (MINSERT y su página) y el chino, hasta que la lectura del 22/11 confirme
+las lecturas de ISR en cero y el dueño dé su palabra.
 
 ## 5. La caché de Cloudflare delante de Vercel
 

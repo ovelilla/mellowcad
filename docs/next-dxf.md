@@ -15,14 +15,14 @@
 > publicado el 17/11, que dibuja como AutoCAD 445 sombreados de 27 muestras; y el checo
 > (`docs/next-seo.md`, L8), hecho y publicado el 17/11; y los degradados (el punto 6b), hechos
 > y publicados el 17/11, que llevaron las muestras sin nada fuera de 135 a 141 de 154, y del
-> punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148, y WIPEOUT, hecho el 19/11 (sin
-> publicar: el push está congelado), que las llevó a 151, después del húngaro (`docs/next-seo.md`,
-> L8), hecho el 19/11, e IMAGE, hecho el 19/11 (sin publicar), que las llevó a 152 y los ficheros
-> de otros a 574, y la tabla (ACAD_TABLE), hecha el 19/11 (sin publicar), que llevó los ficheros
-> de otros a 575, y MULTILEADER, hecho el 19/11 (sin publicar, sin el comando MLEADER), que llevó
+> punto 7 3DFACE, hecho y publicado el 17/11, que las llevó a 148, y WIPEOUT, hecho el 19/11, que las llevó a 151, después del húngaro (`docs/next-seo.md`,
+> L8), hecho el 19/11, e IMAGE, hecho el 19/11, que las llevó a 152 y los ficheros
+> de otros a 574, y la tabla (ACAD_TABLE), hecha el 19/11, que llevó los ficheros
+> de otros a 575, y MULTILEADER, hecho el 19/11 (sin el comando MLEADER), que llevó
 > las muestras a 153 y los ficheros de otros a 577 de 577; y, después del japonés (L8, 20/11), XLINE
-> y RAY con sus comandos y sus páginas, hechos el 20/11 (sin publicar), sin cambio en el corpus
-> (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (sin publicar), y
+> y RAY con sus comandos y sus páginas, hechos el 20/11, sin cambio en el corpus
+> (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (todo eso, desde
+> WIPEOUT, publicado el 21/11 con el export estático), y
 > MINSERT con su comando y su página, hecho el 21/11 (sin publicar), sin cambio en el corpus
 > (ninguno lo tiene); siguiente, por orden del dueño, otro idioma (el chino), y después lo que quede
 > del punto 7 (los colores índice, las sustituciones DSTYLE, la malla), alternando, una sesión cada
@@ -345,7 +345,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros sin un error de AUDIT y los traza como el suyo. El corpus: abren las 30 de 8 muestras
       y la de otro programa; muestras sin nada fuera, de 141 a 148 de 154; ficheros de otros, de 572
       a 573. Se anotan: su cara en un estilo sombreado u oculto, la región de REGION, EDGE, PFACE y
-      las mallas. **WIPEOUT hecho** (19/11/2026, sin publicar: el push está congelado): la
+      las mallas. **WIPEOUT hecho** (19/11/2026, publicado el 21/11): la
       cobertura (un polígono en su plano que tapa con el fondo lo dibujado antes y queda bajo lo
       dibujado después, su marco según WIPEOUTFRAME, guardado en el dibujo, fichero versión 58) y
       WIPEOUT con Marcos y Polilínea en los diez idiomas de consola (sondas `wipeout/w00`–`w16`; sus
@@ -358,8 +358,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       ficheros de w15 sin un error de AUDIT, lee WIPEOUTFRAME 2 desde 2004 y los traza como el suyo.
       El corpus: abren las 11 de 3 muestras; muestras sin nada fuera, de 148 a 151 de 154; ficheros
       de otros, 573 de 577, como antes. Se anotan: FRAME, DRAWORDER, TEXTMASK y las filas de la
-      paleta tras General (vistas en el escritorio: abajo). **IMAGE hecho** (19/11/2026, sin
-      publicar): la imagen ráster (`ImageEntity`, fichero versión 59) como la abre AutoCAD 2027
+      paleta tras General (vistas en el escritorio: abajo). **IMAGE hecho** (19/11/2026,
+      publicado el 21/11): la imagen ráster (`ImageEntity`, fichero versión 59) como la abre AutoCAD 2027
       cuando no encuentra su fichero, que en el navegador es siempre (sondas `image/i00`–`i15`,
       `s1`–`s11`, variantes de un DXF suyo): su marco según IMAGEFRAME (variable del dibujo,
       RASTERVARIABLES 70 de bits: 2 es 3) y la ruta escrita dentro, de altura el ancho del marco
@@ -379,7 +379,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       de LibreCAD; muestras sin nada fuera, de 151 a 152 de 154; ficheros de otros, de 573 a 574 de
       577. Se anotan: los píxeles, IMAGE (la paleta), -IMAGE, IMAGEATTACH, IMAGECLIP, IMAGEADJUST,
       IMAGEQUALITY, TRANSPARENCY y las filas de la paleta tras General (vistas en el
-      escritorio: abajo). **La tabla hecha** (19/11/2026, sin publicar): la tabla (`TableEntity`,
+      escritorio: abajo). **La tabla hecha** (19/11/2026, publicada el 21/11): la tabla (`TableEntity`,
       fichero versión 60) como la abre AutoCAD 2027, que la redibuja de sus celdas y no de su
       bloque `*T` (sondas `table/t00`–`t11`; t01: un bloque viejo o vacío se redibuja): el texto de
       cada celda a su alineación dentro de los márgenes, el bloque de una celda ajustado a ella
@@ -399,7 +399,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       pinzamientos), TABLESTYLE, los colores, rellenos, bordes y giro de cada celda, campos,
       fórmulas y vínculos de datos, las filas de la paleta tras General (vistas en el
       escritorio: abajo). **MULTILEADER
-      hecho** (19/11/2026, sin publicar): la directriz múltiple (`MLeaderEntity`, fichero versión
+      hecho** (19/11/2026, publicado el 21/11): la directriz múltiple (`MLeaderEntity`, fichero versión
       61) como la abre AutoCAD 2027, que la dibuja de sus datos de contexto, no de los del objeto
       ni de su estilo (sondas `mleader/m00`–`m15`, variantes `v1`–`v23` de un DXF suyo): el texto
       donde dice 12, cada rama con su rellano y la longitud de su segmento de conexión, la flecha
@@ -438,7 +438,7 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       el final de la pata es una flecha (hecho); faltan los cuatro de las esquinas del texto y
       sus menús. Las paletas tienen grupos propios tras General (Image Adjust, Geometry y Misc;
       Table, Geometry y Table Breaks; Misc, Leaders y Text), anotados en la cobertura.
-      XLINE y RAY, hechos el 20/11/2026 (sin publicar): las dos entidades (punto base y dirección
+      XLINE y RAY, hechos el 20/11/2026 (publicados el 21/11): las dos entidades (punto base y dirección
       unitaria en el WCS, 10 y 11) y sus comandos, investigados en las diez consolas (sondas
       `xline/x01–x10`, `r01`, `i01–i15`, trazadas) y el escritorio (`dsk.sh`: pinzamientos,
       paleta, lo dibujado mientras se pide); lo que les hacen TRIM, BREAK, EXTEND, FILLET, CHAMFER,
