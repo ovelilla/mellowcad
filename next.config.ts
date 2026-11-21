@@ -11,7 +11,18 @@ import {
   markdownRewrites,
 } from "./i18n/rewrites"
 
+// WHY a static export: on Vercel every prerendered page lives in the ISR
+// store and each read counts against Hobby's million, where a file costs
+// only its CDN request (`docs/next-static-export.md`). `next build` only
+// warns that headers, redirects and rewrites are not applied: Vercel's
+// builder still emits them from `.next/routes-manifest.json` ("detected
+// `next export`"), which a test over `vercel build`'s output holds.
+// WHY not in `next dev`: there a rewritten path (`/` onto `/en`) answers 500,
+// "missing param in generateStaticParams(), required with output: export".
+const isExport = process.env.NODE_ENV === "production"
+
 const nextConfig: NextConfig = {
+  output: isExport ? "export" : undefined,
   // Every change to the engine's state re-renders the editor's chrome: the
   // compiler's memoization takes that from ~7 ms to ~3 ms, for 1.5 KB more on
   // the landing. The Babel plugin, not the Rust port, which is experimental.
@@ -54,7 +65,8 @@ const nextConfig: NextConfig = {
         ...markdownRewrites(routing),
       ],
       afterFiles: localeRewrites(routing),
-      fallback: localeFallbacks(routing),
+      // Exported, a language's 404 is `vercel.json`'s (`notFoundRoutes`).
+      fallback: isExport ? [] : localeFallbacks(routing),
     }
   },
 }

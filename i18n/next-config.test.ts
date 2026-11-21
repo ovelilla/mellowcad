@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import nextConfig from "../next.config"
 import { localeSegment, routing } from "./routing"
@@ -34,5 +34,29 @@ describe("next.config.ts", () => {
         expect(sources, locale).not.toContain(locale)
       }
     }
+  })
+})
+
+describe("the production build", () => {
+  async function productionConfig() {
+    vi.stubEnv("NODE_ENV", "production")
+    vi.resetModules()
+    try {
+      return (await import("../next.config")).default
+    } finally {
+      vi.unstubAllEnvs()
+      vi.resetModules()
+    }
+  }
+
+  it("is a static export, its 404s left to vercel.json", async () => {
+    const config = await productionConfig()
+    expect(config.output).toBe("export")
+    const rewrites = (await config.rewrites?.()) as Record<string, unknown[]>
+    expect(rewrites.fallback).toEqual([])
+  })
+
+  it("keeps the server, and its 404 rewrites, in next dev", () => {
+    expect(nextConfig.output).toBeUndefined()
   })
 })

@@ -212,16 +212,16 @@ export function localeRewrites(routing: LocaleRouting): Rewrite[] {
   const prefixes = segments(routing).join("|")
   return [
     { source: "/", destination: `/${defaultLocale}` },
-    // WHY: Vercel turns a router request (`RSC` header) into a path before
-    // these rules see it: `/draw` becomes `/draw.rsc` or
-    // `/draw.segments/<segment>.segment.rsc`, which the next rule still sends
-    // under `/en`. The root becomes `/index.…`, but `[locale]` prerendered it
-    // as `/en.…`, so without these the home page's prefetch answers 404 and
-    // its navigations fall back to full page loads.
-    { source: "/index.rsc", destination: `/${defaultLocale}.rsc` },
+    // WHY: the exported site's router asks for files, not headers: a page's
+    // payload is `<path>.txt` and its segments `<path>/__next.<segment>.txt`,
+    // which the next rule still sends under `/en`. The root's are
+    // `/index.txt` and `/__next.…`, a first segment with `_` that rule leaves
+    // alone, but `[locale]` exported them as `/en.txt` and `/en/__next.…`, so
+    // without these the home page's navigations fall back to full page loads.
+    { source: "/index.txt", destination: `/${defaultLocale}.txt` },
     {
-      source: "/index.segments/:path*",
-      destination: `/${defaultLocale}.segments/:path*`,
+      source: "/:file(__next\\.[^/]+\\.txt)",
+      destination: `/${defaultLocale}/:file`,
     },
     {
       source: `/:first((?!(?:${prefixes})(?:/|$)|_)[^/]+)/:rest*`,
@@ -233,13 +233,57 @@ export function localeRewrites(routing: LocaleRouting): Rewrite[] {
 /**
  * `fallback`: after every page and file has been tried, before the 404. An
  * unknown path of a language gets that language's prerendered 404 — English
- * ones arrive here already rewritten under `/en`.
+ * ones arrive here already rewritten under `/en`. In `next dev` only: a
+ * rewrite onto the exported 404's file would answer 200, so on Vercel
+ * `notFoundRoutes` does it, with the status.
  */
 export function localeFallbacks(routing: LocaleRouting): Rewrite[] {
   return [
     {
       source: `/:locale(${segments(routing).join("|")})/:path*`,
       destination: `/:locale${NOT_FOUND_PATH}`,
+    },
+  ]
+}
+
+/** A route of Vercel's routing table (`vercel.json`'s `routes`). */
+export type VercelRoute =
+  | { src: string; status?: number; dest?: string; continue?: boolean }
+  | { handle: "error" }
+
+/**
+ * A language's 404 on Vercel, written into `vercel.json` (held equal by
+ * `test/vercel.test.ts`): each language's `/404` answers with its status,
+ * and in the error phase, once no file matched, an unknown path gets its
+ * language's 404 page with the status, an unprefixed one English's. WHY not
+ * the `fallback` rewrite: onto an exported file it answers 200. Vercel puts
+ * these before its own error route, `.* → /404` (the global one).
+ */
+export function notFoundRoutes(routing: LocaleRouting): VercelRoute[] {
+  const all = segments(routing).join("|")
+  const prefixed = segments(routing)
+    .filter((segment) => segment !== routing.defaultLocale)
+    .join("|")
+  return [
+    {
+      src: `^/(?:(?:${all})/)?404/?$`,
+      status: 404,
+      continue: true,
+    },
+    { handle: "error" },
+    ...(prefixed === ""
+      ? []
+      : [
+          {
+            src: `^/(${prefixed})(?:/.*)?$`,
+            status: 404,
+            dest: `/$1${NOT_FOUND_PATH}`,
+          },
+        ]),
+    {
+      src: "^/.*$",
+      status: 404,
+      dest: `/${routing.defaultLocale}${NOT_FOUND_PATH}`,
     },
   ]
 }

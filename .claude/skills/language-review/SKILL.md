@@ -96,8 +96,8 @@ the shared tree fights the dev server over `.next` (AGENTS.md).
   language's catalog reaches its own pages only: the host loads it on the server, so no file under
   `.next/static/chunks` holds a word only it has, and `.next/server/app/<segment>/draw.html` holds
   no other language's.
-- **A language's first load of the landing**, Brotli: `npx next start` in the worktree and the
-  bytes the browser transferred (skill `browser-verify`), for each language.
+- **A language's first load of the landing**, Brotli: the export served in the worktree (skill
+  `browser-verify`, `scripts/vercel/serve-output.mjs`) and the bytes the browser transferred (skill `browser-verify`), for each language.
 - **Functions**: the build's route table shows `○` and `●` only.
 - **Any static file under 20 MB**: `find .next -type f -size +15M` lists what is near it. What is
   built once per language grows with each one: the search index is one per language for that

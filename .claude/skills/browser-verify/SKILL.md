@@ -19,17 +19,18 @@ clipboard once shipped a hang no harness test could see.
   Lighthouse finds the same Chrome on its own.
 - Check the dev-server port first (it hops to 3001), and remember `localStorage` is per-origin.
   Port 3000 may be another project's server: read the listening process's command line before
-  trusting it. Start your own with `npx next dev -p 3005`, a production build with `npm run build`
-  then `npx next start -p 3006`.
+  trusting it. Start your own with `npx next dev -p 3005`. A production build is a static export,
+  which `next start` does not serve: `vercel build --prod --yes` (offline, see its header) then
+  `node scripts/vercel/serve-output.mjs 3006`, Vercel's routing table and all.
 - A production build prerenders some 2,200 pages with a worker per core, and with dev servers or
   another project's build running it took WSL out of memory and the machine down (13/11/2026).
   Check free memory and other builds first; in a scratch copy, limit the workers with cpus: 4
   under experimental in its next.config.ts: the same pages, and the build that had stopped at 2 GB free then never went
   under 5.7.
 - Next keeps dev output in `.next/dev`, which `next build` leaves alone, so a running dev server
-  survives a build; a running `next start` on the same `.next` must be stopped first. Stopping a
-  background `next start` task does not kill its node process, which keeps the port and serves a
-  rebuilt `.next` whose chunks all 404: free the port by its owner, `fuser -k 3006/tcp`.
+  survives a build. Stopping a background server task may not kill its node process, which keeps
+  the port: free it by its owner, `fuser -k 3006/tcp`. After a restart, a dev page that reloads
+  itself without end ("HMR hash mismatch") wants `.next/dev` deleted.
 - To build uncommitted work without touching `.next`: `git worktree add --detach ../x HEAD`, then
   `rsync -a --delete --exclude node_modules --exclude .next --exclude coverage --exclude .git --exclude tsconfig.tsbuildinfo ./ ../x/`.
   `--exclude .git` matters: without it the source's `.git` directory is copied over the
@@ -122,5 +123,5 @@ extreme inside the canvas. Every icon button starts on a whole pixel. The type i
 
 **Never judge a regression against a number from an earlier session**: Lighthouse scores vary run
 to run. Build the old commit in a worktree (`git worktree add ../mellowcad-a <sha>`, `npm ci`,
-`next start -p 3007`), run both a few times, then `git worktree remove --force`. Best Practices
+served as above on 3007), run both a few times, then `git worktree remove --force`. Best Practices
 reads lower locally only because Vercel Analytics' scripts 404 off Vercel.

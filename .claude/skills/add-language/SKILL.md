@@ -54,7 +54,8 @@ itself), `OG_LOCALE` and `catalogs` (`i18n/messages.ts`). The tests want a site 
 catalog per tag: `messages/<tag>.json` and `packages/editor/src/locales/<tag>.json` as `{}` (a
 draft shows English), `npm run locales`, and the editor's entry point for it (`exports`, tsdown,
 the build's tsconfig, `api.md` by `npx vitest run packages/editor/api.test.ts -u`, its README's
-table, a changeset; a region's tag exports without the hyphen, `ptBR`). A "Use" page a draft lacks
+table, a changeset; a region's tag exports without the hyphen, `ptBR`), and `vercel.json`'s
+`routes`, its 404, as `test/vercel.test.ts` prints them. A "Use" page a draft lacks
 is served in English. Create `docs/i18n/<tag>.md` from the plan's research, with its status lines;
 the plan keeps only a pointer to it.
 

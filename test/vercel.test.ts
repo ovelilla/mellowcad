@@ -4,6 +4,9 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
 
+import { notFoundRoutes } from "../i18n/rewrites"
+import { routing } from "../i18n/routing"
+
 const ROOT = path.resolve(import.meta.dirname, "..")
 const SCRIPT = path.join(ROOT, "scripts/vercel/ignore-build.sh")
 
@@ -20,6 +23,21 @@ describe("vercel.json", () => {
     "installCommand",
     "outputDirectory",
   ]
+
+  it("routes each language's 404 as i18n/rewrites.ts writes it", () => {
+    const config = JSON.parse(
+      readFileSync(path.join(ROOT, "vercel.json"), "utf8")
+    ) as { routes?: unknown }
+    // A language added or removed changes them: copy what is expected.
+    expect(config.routes).toEqual(notFoundRoutes(routing))
+  })
+
+  it("gives the MCP function its deadline", () => {
+    const config = JSON.parse(
+      readFileSync(path.join(ROOT, "vercel.json"), "utf8")
+    ) as { functions?: Record<string, { maxDuration?: number }> }
+    expect(config.functions?.["api/mcp.js"]?.maxDuration).toBe(5)
+  })
 
   it("keeps every capped field within 256 characters", () => {
     const config = JSON.parse(

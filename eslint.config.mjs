@@ -180,6 +180,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // What `vercel build` leaves (scripts/vercel/serve-output.mjs).
+    ".vercel/**",
     // The packages' build output.
     "cad/dist/**",
     "packages/*/dist/**",

@@ -12,6 +12,7 @@ import {
   localeRedirects,
   localeRewrites,
   markdownRewrites,
+  notFoundRoutes,
 } from "./rewrites"
 import { localeSegment, routing } from "./routing"
 
@@ -32,8 +33,10 @@ function apply(routes: readonly Route[], path: string): string | null {
   return null
 }
 
-// What Next serves before `afterFiles`: the pages outside `[locale]`.
-const FILES = new Set(["/sitemap.xml", "/robots.txt"])
+// What Next serves before `afterFiles`: the pages outside `[locale]`, and,
+// exported, a language's home payload, which the generic rule would
+// otherwise send under `/en` (`/es.txt` is no prefix and a slash).
+const FILES = new Set(["/sitemap.xml", "/robots.txt", "/es.txt"])
 
 /** Where a request ends up, the way Next's router orders it. */
 function resolve(path: string, scheme: LocaleRouting = routing): string {
@@ -97,16 +100,16 @@ describe("the locale URL scheme", () => {
     ["/es/docs/commands.md", "route /es/docs-md/commands.md"],
     ["/es/docs/engineering", "route /es/docs/engineering"],
     ["/es/docs", "route /es/docs"],
-    // Router requests, as Vercel rewrites them from the `RSC` header.
-    ["/index.rsc", "route /en.rsc"],
-    [
-      "/index.segments/_tree.segment.rsc",
-      "route /en.segments/_tree.segment.rsc",
-    ],
-    [
-      "/draw.segments/_tree.segment.rsc",
-      "route /en/draw.segments/_tree.segment.rsc",
-    ],
+    // The exported router's requests: a page's payload and its segments.
+    ["/index.txt", "route /en.txt"],
+    ["/__next._tree.txt", "route /en/__next._tree.txt"],
+    ["/__next.$d$locale.txt", "route /en/__next.$d$locale.txt"],
+    ["/draw.txt", "route /en/draw.txt"],
+    ["/docs/commands/line.txt", "route /en/docs/commands/line.txt"],
+    ["/draw/__next._tree.txt", "route /en/draw/__next._tree.txt"],
+    ["/es.txt", "file /es.txt"],
+    ["/es/draw.txt", "route /es/draw.txt"],
+    ["/es/__next._tree.txt", "route /es/__next._tree.txt"],
     // The framework's own paths are never given a locale.
     ["/_next/static/chunk.js", "route /_next/static/chunk.js"],
     ["/_vercel/insights/script.js", "route /_vercel/insights/script.js"],
@@ -204,5 +207,52 @@ describe("a prefix that is not the tag", () => {
   it("sends the prefix's unknown paths to its 404", () => {
     expect(apply(localeFallbacks(scheme), "/zz/nope")).toBe("/zz/404")
     expect(apply(localeFallbacks(scheme), "/xx-YY/nope")).toBeNull()
+  })
+})
+
+describe("a language's 404 on Vercel", () => {
+  /**
+   * Where Vercel's error phase sends a path no file answered, and with which
+   * status, read from `notFoundRoutes` as its router reads `vercel.json`.
+   */
+  function notFound(path: string, scheme: LocaleRouting = routing) {
+    for (const route of notFoundRoutes(scheme)) {
+      if ("handle" in route || route.dest === undefined) continue
+      const match = new RegExp(route.src).exec(path)
+      if (match)
+        return `${route.status} ${route.dest.replace(/\$(\d)/g, (_, n: string) => match[Number(n)] ?? "")}`
+    }
+    return null
+  }
+
+  it.each([
+    ["/es/nope", "404 /es/404"],
+    ["/es", "404 /es/404"],
+    ["/pt-br/docs/nope", "404 /pt-br/404"],
+    ["/ar/nope", "404 /ar/404"],
+    ["/xx/yy", "404 /en/404"],
+    ["/espresso", "404 /en/404"],
+    ["/nope", "404 /en/404"],
+  ])("sends %s to %s", (path, expected) => {
+    expect(notFound(path)).toBe(expected)
+  })
+
+  it("answers each language's 404 page itself with the status", () => {
+    const [own] = notFoundRoutes(routing)
+    expect(own).toMatchObject({ status: 404, continue: true })
+    for (const path of ["/404", "/es/404", "/pt-br/404", "/ja/404/"]) {
+      expect("src" in own && new RegExp(own.src).test(path), path).toBe(true)
+    }
+    expect("src" in own && new RegExp(own.src).test("/es/404x")).toBe(false)
+  })
+
+  it("routes the prefix, never a tag that differs", () => {
+    const scheme: LocaleRouting = {
+      locales: ["en", "xx-YY"],
+      defaultLocale: "en",
+      localePrefix: { prefixes: { "xx-YY": "/zz" } },
+    }
+    expect(notFound("/zz/nope", scheme)).toBe("404 /zz/404")
+    expect(notFound("/xx-YY/nope", scheme)).toBe("404 /en/404")
   })
 })
