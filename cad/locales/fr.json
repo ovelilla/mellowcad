@@ -137,7 +137,8 @@
       "leader": "Ligne de repère",
       "wipeout": "Nettoyer",
       "xline": "Ligne de construction",
-      "ray": "Demi-droite"
+      "ray": "Demi-droite",
+      "minsert": "Insérer un bloc"
     },
     "description": {
       "U": "Annule la dernière action",
@@ -263,7 +264,8 @@
         "alignedDimension": "Cote alignée",
         "angularDimension": "Cote angulaire",
         "radiusDimension": "Cote de rayon",
-        "diameterDimension": "Cote de diamètre"
+        "diameterDimension": "Cote de diamètre",
+        "minsert": "Insérer un bloc"
       },
       "group": {
         "geometry": "Géométrie",
@@ -429,6 +431,13 @@
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "insertionPointX": "Point d'insertion X",
+        "insertionPointY": "Point d'insertion Y",
+        "insertionPointZ": "Point d'insertion Z",
+        "minsertColumns": "Colonnes",
+        "minsertColumnSpacing": "Espacement des colonnes",
+        "minsertRows": "Rangées",
+        "minsertRowSpacing": "Espacement des rangées",
         "basePointX": "Point de base X",
         "basePointY": "Point de base Y",
         "basePointZ": "Point de base Z",
@@ -585,6 +594,7 @@
       "-BLOCK": ["-BLOC", "-B"],
       "INSERT": ["INSERER", "I", "INSERURL"],
       "-INSERT": ["-INSERER", "-I"],
+      "MINSERT": ["INSERM"],
       "ATTEDIT": ["ATTEDIT", "ATE", "DDATTE"],
       "EATTEDIT": ["EATTEDIT"],
       "ATTDEF": ["ATTDEF", "AT", "DDATTDEF"],
@@ -1000,6 +1010,7 @@
         "Scale": "Echelle",
         "Rotate": "rOtation"
       },
+      "MINSERT": { "?": "?", "Scale": "Echelle", "Rotate": "rOtation" },
       "BLOCK": {
         "?": "?",
         "Yes": "Oui",
@@ -1781,6 +1792,11 @@
       "insertRotation": "Spécifiez l'angle de rotation",
       "insertXScale": "Entrez le facteur d'échelle en  X, spécifiez le coin opposé ou [Coin/XYZ]",
       "insertYScale": "Entrez le facteur d'échelle en Y",
+      "minsertRows": "Entrez le nombre de rangées (---)",
+      "minsertColumns": "Entrez le nombre de colonnes (|||)",
+      "minsertRowDistance": "Entrez la distance entre les rangées ou spécifiez la cellule d'unité (---)",
+      "minsertOppositeCorner": "Spécifiez le coin opposé",
+      "minsertColumnDistance": "Spécifiez la distance entre les colonnes (|||)",
       "attributeTag": "Entrez le nom de l'étiquette d'attribut",
       "attributePrompt": "Entrez le message d'invite de l'attribut",
       "attributeDefault": "Entrez la valeur d'attribut par défaut",
@@ -2615,6 +2631,8 @@
       "verifyAttributeValues": "Vérifiez la valeur des attributs.",
       "explodeRejected": "{count, plural, one {# n'a pas pu être décomposé.} other {# n'ont pas pu être décomposés.}}",
       "explodeXref": "{count, plural, one {# était une référence externe.} other {# étaient des références externes.}}",
+      "explodeMinserted": "{count, plural, one {# a été inséré plusieurs fois.} other {# ont été insérés plusieurs fois.}}",
+      "requiresNumberOrTwoCorners": "Nécessite un nombre ou deux coins 2D.",
       "explodeLostWidth": "Les informations relatives à la largeur ont été perdues lors de la décomposition de cette polyligne.\nLa commande ANNULER les restaurera.",
       "explodeCannot": "Impossible de décomposer {name}",
       "noneFound": "Rien trouvé.",
@@ -3039,6 +3057,10 @@
       "listInsertConversion": "Conversion d'unités: {factor}",
       "listInsertUniform": "Mettre à l'échelle uniformément: Non",
       "listInsertExploding": "Autoriser la décomposition: Oui",
+      "listInsertColumns": "        # colonnes {count}",
+      "listInsertColumnSpacing": "  distance entre les colonnes {spacing}",
+      "listInsertRows": "         # rangées {count}",
+      "listInsertRowSpacing": "  distance entre les rangées {spacing}",
       "listArrayType": "  Type de réseau:  {kind, select, rectangular {Rectangulaire} polar {  Polaire} other {Trajectoire}}",
       "listArrayBasePoint": "   Point de base:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "    Point central: X={x}  Y={y}  Z={z}",

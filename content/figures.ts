@@ -44,6 +44,7 @@ import { sessions as distSessions } from "./demos/commands/dist"
 import { sessions as divideSessions } from "./demos/commands/divide"
 import { sessions as xlineSessions } from "./demos/commands/xline"
 import { sessions as raySessions } from "./demos/commands/ray"
+import { sessions as minsertSessions } from "./demos/commands/minsert"
 import { sessions as leaderSessions } from "./demos/commands/leader"
 import { sessions as eatteditSessions } from "./demos/commands/eattedit"
 import { sessions as ellipseSessions } from "./demos/commands/ellipse"
@@ -245,6 +246,7 @@ export const COMMAND_SESSIONS = {
   ...divideSessions,
   ...xlineSessions,
   ...raySessions,
+  ...minsertSessions,
   ...leaderSessions,
   ...eatteditSessions,
   ...ellipseSessions,

@@ -137,7 +137,8 @@
       "leader": "Odkaz",
       "wipeout": "Překrytí",
       "xline": "Konstrukční přímka",
-      "ray": "Polopřímka"
+      "ray": "Polopřímka",
+      "minsert": "NVlož blok"
     },
     "description": {
       "U": "Vrátí poslední akci",
@@ -263,7 +264,8 @@
         "alignedDimension": "Šikmá kóta",
         "angularDimension": "Kóta úhlu",
         "radiusDimension": "Kóta radiální",
-        "diameterDimension": "Kóta průměru"
+        "diameterDimension": "Kóta průměru",
+        "minsert": "NVlož blok"
       },
       "group": {
         "geometry": "Geometrie",
@@ -429,6 +431,13 @@
         "positionX": "Umístění X",
         "positionY": "Umístění Y",
         "positionZ": "Umístění Z",
+        "insertionPointX": "Bod vložení X",
+        "insertionPointY": "Bod vložení Y",
+        "insertionPointZ": "Bod vložení Z",
+        "minsertColumns": "Sloupce",
+        "minsertColumnSpacing": "Rozteč sloupců",
+        "minsertRows": "Řádky",
+        "minsertRowSpacing": "Rozteč řad",
         "basePointX": "Refbod X",
         "basePointY": "Refbod Y",
         "basePointZ": "Refbod Z",
@@ -585,6 +594,7 @@
       "-BLOCK": ["-BLOK", "-B"],
       "INSERT": ["VLOŽ", "VL", "VLOŽURL"],
       "-INSERT": ["-VLOŽ", "-VL"],
+      "MINSERT": ["NVLOŽ"],
       "ATTEDIT": ["ATREDIT", "ATE", "DIATR"],
       "EATTEDIT": ["EATREDIT"],
       "ATTDEF": ["ATRDEF", "AT", "DDATTDEF", "DIATRDEF"],
@@ -1000,6 +1010,7 @@
         "Scale": "Měřítko",
         "Rotate": "Otoč"
       },
+      "MINSERT": { "?": "?", "Scale": "Měřítko", "Rotate": "Otoč" },
       "BLOCK": {
         "?": "?",
         "Yes": "Ano",
@@ -1783,6 +1794,11 @@
       "insertRotation": "Určete úhel otočení",
       "insertXScale": "Zadejte měřítko v ose X, zadejte protější roh nebo [Obdélník/XYZ]",
       "insertYScale": "Zadejte měřítko Y",
+      "minsertRows": "Zadejte počet řádků (---)",
+      "minsertColumns": "Zadejte počet sloupců (|||)",
+      "minsertRowDistance": "Určete vzdálenost mezi řádky nebo jednotkovou buňku (---)",
+      "minsertOppositeCorner": "Zadejte protější roh",
+      "minsertColumnDistance": "Zadejte vzdálenost mezi sloupci (|||)",
       "attributeTag": "Zadejte název atributu",
       "attributePrompt": "Zadejte výzvu atributu",
       "attributeDefault": "Zadejte implicitní hodnotu atributu",
@@ -2619,6 +2635,8 @@
       "verifyAttributeValues": "Ověření hodnot atributů",
       "explodeRejected": "{count, plural, one {# byl nerozložitelný.} other {# byly nerozložitelné.}}",
       "explodeXref": "{count, plural, one {# byl xref.} other {# byly xrefy.}}",
+      "explodeMinserted": "{count, plural, one {# byl násobně vložen.} other {# byly násobně vloženy.}}",
+      "requiresNumberOrTwoCorners": "Vyžaduje číslo nebo dva 2D rohové body.",
       "explodeLostWidth": "Rozložením této křivky ztratíte informace o tloušťce.\nObnovíte je příkazem ZPĚT.",
       "explodeCannot": "Nelze rozložit {name}",
       "noneFound": "Nic nenalezeno.",
@@ -3043,6 +3061,10 @@
       "listInsertConversion": "  Převod jednotky: {factor}",
       "listInsertUniform": "Použít stejné měřítko: Ne",
       "listInsertExploding": "Povolit rozkládání: Ano",
+      "listInsertColumns": "         # sloupců {count}",
+      "listInsertColumnSpacing": "    rozteč sloupců {spacing}",
+      "listInsertRows": "             # řad {count}",
+      "listInsertRowSpacing": "        rozteč řad {spacing}",
       "listArrayType": "        Typ pole:  {kind, select, rectangular {Obdélníkové} polar {  Polárně} other {    Cesta}}",
       "listArrayBasePoint": "    Základní bod:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "    Středový bod:  X={x}  Y={y}  Z={z}",

@@ -141,7 +141,8 @@ export const it: EngineLocale = {
       "leader": "Direttrice",
       "wipeout": "Entità coprente",
       "xline": "Linea di costruzione",
-      "ray": "Raggio"
+      "ray": "Raggio",
+      "minsert": "Blocco da inserire in una serie rettangolare"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -522,7 +523,8 @@ export const it: EngineLocale = {
         "alignedDimension": "Quota allineata",
         "angularDimension": "Quota angolare",
         "radiusDimension": "Quota radiale",
-        "diameterDimension": "Quota diametro"
+        "diameterDimension": "Quota diametro",
+        "minsert": "Blocco da inserire in una serie rettangolare"
       },
       "group": {
         "geometry": "Geometria",
@@ -688,6 +690,13 @@ export const it: EngineLocale = {
         "positionX": "Posizione X",
         "positionY": "Posizione Y",
         "positionZ": "Posizione Z",
+        "insertionPointX": "X punto di inserimento",
+        "insertionPointY": "Y punto di inserimento",
+        "insertionPointZ": "Z punto di inserimento",
+        "minsertColumns": "Colonne",
+        "minsertColumnSpacing": "Distanza fra colonne",
+        "minsertRows": "Righe",
+        "minsertRowSpacing": "Intervallo righe",
         "basePointX": "X punto base",
         "basePointY": "Y punto base",
         "basePointZ": "Z punto base",
@@ -922,6 +931,9 @@ export const it: EngineLocale = {
       "-INSERT": [
         "-INSER",
         "-IN"
+      ],
+      "MINSERT": [
+        "INSERM"
       ],
       "ATTEDIT": [
         "EDITATT",
@@ -1716,6 +1728,11 @@ export const it: EngineLocale = {
         "Undo": "ANnulla"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Scala",
+        "Rotate": "Ruota"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Scala",
         "Rotate": "Ruota"
@@ -2521,6 +2538,11 @@ export const it: EngineLocale = {
       "insertRotation": "Specificare angolo di rotazione",
       "insertXScale": "Digitare fattore di scala X, specificare angolo opposto o [Angolo/XYZ]",
       "insertYScale": "Digitare fattore di scala Y",
+      "minsertRows": "Digitare il numero di righe (---)",
+      "minsertColumns": "Digitare il numero di colonne (|||)",
+      "minsertRowDistance": "Digitare la distanza tra le righe o specificare la cella unitaria (---)",
+      "minsertOppositeCorner": "Specificare angolo opposto",
+      "minsertColumnDistance": "Specificare la distanza tra le colonne (|||)",
       "attributeTag": "Digitare nome etichetta dell'attributo",
       "attributePrompt": "Digitare messaggio di richiesta per l'attributo",
       "attributeDefault": "Digitare valore di default per l'attributo",
@@ -4250,6 +4272,23 @@ export const it: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " è stato inserito in una serie rettangolare."
+            ],
+            "other": [
+              0,
+              " sono stati inseriti in una serie rettangolare."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "È richiesto un numero o due angoli 2D.",
       "explodeLostWidth": "L'esplosione di questa polilinea causa la perdita di informazioni sulla larghezza.\nIl comando ANNULLA le recupererà.",
       "explodeCannot": [
         "Impossibile esplodere ",
@@ -7498,6 +7537,30 @@ export const it: EngineLocale = {
       ],
       "listInsertUniform": "Scala uniformemente: No",
       "listInsertExploding": "Consenti esplosione: Sì",
+      "listInsertColumns": [
+        "         # colonne ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "  distanza fra colonne ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "           # righe ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "  distanza fra righe ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "   Tipo di serie:  ",
         [

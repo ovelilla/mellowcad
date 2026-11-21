@@ -1,0 +1,68 @@
+---
+title: "TBEILL (MINSERT) parancs az AutoCAD-ben"
+metaTitle: "TBEILL (MINSERT) parancs az AutoCAD-ben"
+description: "Hogyan illeszt be az AutoCAD TBEILL (MINSERT) parancsa egy blokkot sorokban és oszlopokban egyetlen objektumként, mit kérdez, és miért utasítja el a SZÉTVET."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Mi a TBEILL parancs az AutoCAD-ben?","answer":"Többszörös beillesztés: egy blokkot sorokból és oszlopokból álló téglalap alakú kiosztásba rak, egyetlen objektumként. A számokat és a távolságokat később a Tulajdonságok palettán módosíthatja."},{"question":"Hogyan lehet szétvetni egy TBEILL paranccsal beillesztett blokkot?","answer":"Sehogy: a SZÉTVET azt feleli, hogy a tbeill paranccsal volt beszúrva, és meghagyja, az AutoCAD-ben ugyanúgy, mint itt, akkor is, ha a sorok és oszlopok száma 1. Illessze be a blokkot újra a -BEILL paranccsal, vagy rakja ki a másolatokat a KIOSZTNÉGYSZ paranccsal, amelynek kiosztása elemeire vethető szét."},{"question":"Hogy hívják a MINSERT parancsot a magyar AutoCAD-ben?","answer":"TBEILL. Nincs rövidítése és gombja a szalagon, ezért teljes egészében kell beírni; a _MINSERT az AutoCAD bármely nyelvén működik."},{"question":"Mi a különbség a TBEILL és a KIOSZT között?","answer":"A TBEILL egy blokkot ismétel egyetlen, szét nem vethető referenciaként. A KIOSZTNÉGYSZ bármilyen objektumot ismétel asszociatív kiosztásként, a számok és távolságok fogóival, és a SZÉTVET szétveti."}]
+---
+
+A TBEILL (angolul MINSERT) a rajzban definiált blokkot sokszor illeszti be, sorokban és oszlopokban, egyetlen objektumként. Ugyanazt kérdezi, mint a `-BEILL` — a blokk nevét (az Enter a felkínáltat veszi, a legutóbb beillesztett blokkot), a beszúrási pontot, az X és az Y léptéktényezőt és az elforgatási szöget —, majd a sorok és az oszlopok számát (az Enter 1), aztán a sorok közötti és az oszlopok közötti távolságot. Csak azokat a távolságokat kérdezi, amelyekre a számok miatt szükség van, és egy sor egy oszloppal közönséges blokkreferencia. Az attribútumos blokk az értékeiket a végén kérdezi, egyszer, és minden másolat megmutatja őket.
+
+A sorok a blokk Y tengelye, az oszlopok az X tengelye mentén haladnak, mindkettő az elforgatással elforgatva; a távolságok rajzi egységben értendők, bármi a lépték, a negatív pedig lefelé vagy balra rakja a másolatokat. A sorok közötti távolságnál két pont egy egységcellát ad meg helyette: szélessége az oszlopok közötti, magassága a sorok közötti távolság. Az eredmény az AutoCAD TBeill blokkja: egyben mozog, másolódik, fordul, léptékeződik és tükröződik, a [`LISTA`](/docs/commands/list) hozzáírja a sorait és oszlopait, a Tulajdonságok paletta pedig Oszlopok, Oszlopok közötti távolság, Sorok és Sorok közötti távolság néven mutatja őket, beírhatóan. A [`SZÉTVET`](/docs/commands/explode) tbeill paranccsal beszúrtként számolja, és egészben hagyja, mint az AutoCAD. A DXF-fájl úgy nyitja meg és menti, mint maga az AutoCAD.
+
+- **Parancs:** `TBEILL`
+- **Angolul:** `MINSERT`, bármely nyelven `_MINSERT` formában beírva
+- **Panel:** [Rendszerezés](/docs/commands#organize)
+- **Próbálja ki:** [Nyissa meg a szerkesztőt](/hu/draw), írja be: `TBEILL`, és nyomja meg az Enter billentyűt.
+
+## A parancssorban [#session]
+
+A motor megrajzolja, és úgy írja ki az előzményeit, ahogy Ön beírná: a promptok az AutoCAD 2027 sorrendjében, ugyanazokkal az opcióbetűkkel.
+
+<Session name="minsert" caption="Blokká alakított ülés, majd a TBEILL paranccsal három, ötös sorba rakva: egyetlen objektum." />
+
+## Opciók [#options]
+
+### `?` [#list]
+
+A blokk nevénél: kilistázza a rajz blokkjait, mint a [`BLOKK`](/docs/commands/block), és befejeződik.
+
+### `Lépték` (`L`) [#scale]
+
+A beszúrási pontnál: egyetlen tényezőt kér mindkét tengelyre, majd újra a pontot. A pont után az X és Y tényezőt nem kérdezi.
+
+### `Forgat` (`F`) [#rotate]
+
+A beszúrási pontnál: a szöget kéri, amely minden másolatot és az egész kiosztást elforgatja, majd újra a pontot. A pont után az elforgatást nem kérdezi.
+
+## Amit még nem tud [#missing]
+
+A beszúrási pontnál a Bázispont, X, Y és Z, az X léptéknél a Sarok és az XYZ, ahogy a -BEILL-nél is hiányoznak; a rajzfájlt megnyitó `~`; a feliratozási blokkok, amelyek itt nincsenek. A lineáris méret az egész TBEILL objektumot választja ki, nem egy objektumot valamelyik másolatából. A Tulajdonságok paletta Feliratozási, Blokk-egység és Egységtényező sorai.
+
+[Mit tud és mi hiányzik még belőle, részletesen (angolul)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## Kérdések [#questions]
+
+### Mi a TBEILL parancs az AutoCAD-ben?
+
+Többszörös beillesztés: egy blokkot sorokból és oszlopokból álló téglalap alakú kiosztásba rak, egyetlen objektumként. A számokat és a távolságokat később a Tulajdonságok palettán módosíthatja.
+
+### Hogyan lehet szétvetni egy TBEILL paranccsal beillesztett blokkot?
+
+Sehogy: a [`SZÉTVET`](/docs/commands/explode) azt feleli, hogy a tbeill paranccsal volt beszúrva, és meghagyja, az AutoCAD-ben ugyanúgy, mint itt, akkor is, ha a sorok és oszlopok száma 1. Illessze be a blokkot újra a `-BEILL` paranccsal, vagy rakja ki a másolatokat a [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect) paranccsal, amelynek kiosztása elemeire vethető szét.
+
+### Hogy hívják a MINSERT parancsot a magyar AutoCAD-ben?
+
+TBEILL. Nincs rövidítése és gombja a szalagon, ezért teljes egészében kell beírni; a `_MINSERT` az AutoCAD bármely nyelvén működik.
+
+### Mi a különbség a TBEILL és a KIOSZT között?
+
+A TBEILL egy blokkot ismétel egyetlen, szét nem vethető referenciaként. A [`KIOSZTNÉGYSZ`](/docs/commands/arrayrect) bármilyen objektumot ismétel asszociatív kiosztásként, a számok és távolságok fogóival, és a [`SZÉTVET`](/docs/commands/explode) szétveti.
+
+## Kapcsolódó parancsok [#related]
+
+- [Blokk beillesztése az AutoCAD-ben: BEILL (INSERT) parancs](/docs/commands/insert)
+- [Négyszögletes kiosztás az AutoCAD-ben: KIOSZTNÉGYSZ (ARRAYRECT) parancs](/docs/commands/arrayrect)
+- [Blokk létrehozása az AutoCAD-ben: BLOKK (BLOCK) parancs](/docs/commands/block)
+- [Szétvetés az AutoCAD-ben: SZÉTVET (EXPLODE) parancs](/docs/commands/explode)

@@ -18,7 +18,9 @@ import { ToolContext } from "./Tool"
 export function pickNested(world: Vec2, ctx: ToolContext): Entity | null {
   let hit = ctx.pick(world)
   for (let depth = 0; depth < MAX_BLOCK_NESTING; depth++) {
-    if (hit?.type !== "insert") return hit
+    // WHY a MINSERT stops here: its cells are one object, and what DIMLINEAR
+    // finds inside one is unprobed.
+    if (hit?.type !== "insert" || hit.grid) return hit
     const parts = insertGeometry(hit, ctx.blocks(hit.blockId))
     let nearest: Entity | null = null
     let best = Infinity

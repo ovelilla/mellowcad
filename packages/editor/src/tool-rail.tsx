@@ -429,6 +429,8 @@ const RAIL_EXCLUDED = new Set([
   // ID_Leader, "Dimension, Leader", is QLEADER's), and the ribbon's Leaders
   // panel is MLEADER's.
   "leader",
+  // MINSERT is typed: no acad.cuix macro runs it in AutoCAD 2027.
+  "minsert",
   // SECTION is typed: the ribbon offers SECTIONPLANE in its place.
   "section",
   // SOLIDEDIT is typed: the ribbon offers its options, as the face buttons.

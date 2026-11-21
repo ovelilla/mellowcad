@@ -139,6 +139,7 @@ declare const source: {
       "wipeout": string
       "xline": string
       "ray": string
+      "minsert": string
     }
     "description": {
       "U": string
@@ -291,6 +292,7 @@ declare const source: {
         "angularDimension": string
         "radiusDimension": string
         "diameterDimension": string
+        "minsert": string
       }
       "group": {
         "geometry": string
@@ -456,6 +458,13 @@ declare const source: {
         "positionX": string
         "positionY": string
         "positionZ": string
+        "insertionPointX": string
+        "insertionPointY": string
+        "insertionPointZ": string
+        "minsertColumns": string
+        "minsertColumnSpacing": string
+        "minsertRows": string
+        "minsertRowSpacing": string
         "basePointX": string
         "basePointY": string
         "basePointZ": string
@@ -612,6 +621,7 @@ declare const source: {
       "-BLOCK": string[]
       "INSERT": string[]
       "-INSERT": string[]
+      "MINSERT": string[]
       "ATTEDIT": string[]
       "EATTEDIT": string[]
       "ATTDEF": string[]
@@ -1025,6 +1035,11 @@ declare const source: {
         "Undo": string
       }
       "INSERT": {
+        "?": string
+        "Scale": string
+        "Rotate": string
+      }
+      "MINSERT": {
         "?": string
         "Scale": string
         "Rotate": string
@@ -1812,6 +1827,11 @@ declare const source: {
       "insertRotation": string
       "insertXScale": string
       "insertYScale": string
+      "minsertRows": string
+      "minsertColumns": string
+      "minsertRowDistance": string
+      "minsertOppositeCorner": string
+      "minsertColumnDistance": string
       "attributeTag": string
       "attributePrompt": string
       "attributeDefault": string
@@ -2648,6 +2668,8 @@ declare const source: {
       "verifyAttributeValues": string
       "explodeRejected": string
       "explodeXref": string
+      "explodeMinserted": string
+      "requiresNumberOrTwoCorners": string
       "explodeLostWidth": string
       "explodeCannot": string
       "noneFound": string
@@ -3072,6 +3094,10 @@ declare const source: {
       "listInsertConversion": string
       "listInsertUniform": string
       "listInsertExploding": string
+      "listInsertColumns": string
+      "listInsertColumnSpacing": string
+      "listInsertRows": string
+      "listInsertRowSpacing": string
       "listArrayType": string
       "listArrayBasePoint": string
       "listArrayCenter": string

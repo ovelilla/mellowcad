@@ -141,7 +141,8 @@ export const es: EngineLocale = {
       "leader": "Directriz",
       "wipeout": "Cobertura",
       "xline": "Línea de construcción",
-      "ray": "Rayo"
+      "ray": "Rayo",
+      "minsert": "InsertM bloque"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -522,7 +523,8 @@ export const es: EngineLocale = {
         "alignedDimension": "Cota alineada",
         "angularDimension": "Cota angular",
         "radiusDimension": "Cota radial",
-        "diameterDimension": "Cota diamétrica"
+        "diameterDimension": "Cota diamétrica",
+        "minsert": "InsertM bloque"
       },
       "group": {
         "geometry": "Geometría",
@@ -688,6 +690,13 @@ export const es: EngineLocale = {
         "positionX": "Posición X",
         "positionY": "Posición Y",
         "positionZ": "Posición Z",
+        "insertionPointX": "Punto de inserción X",
+        "insertionPointY": "Punto de inserción Y",
+        "insertionPointZ": "Punto de inserción Z",
+        "minsertColumns": "Columnas",
+        "minsertColumnSpacing": "Espacio entre columnas",
+        "minsertRows": "Filas",
+        "minsertRowSpacing": "Espacio entre filas",
         "basePointX": "Punto base X",
         "basePointY": "Punto base Y",
         "basePointZ": "Punto base Z",
@@ -922,6 +931,9 @@ export const es: EngineLocale = {
       "-INSERT": [
         "-INSERT",
         "-IN"
+      ],
+      "MINSERT": [
+        "INSERTM"
       ],
       "ATTEDIT": [
         "ATREDIT",
@@ -1708,6 +1720,11 @@ export const es: EngineLocale = {
         "Undo": "desHacer"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Escala",
+        "Rotate": "Girar"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Escala",
         "Rotate": "Girar"
@@ -2513,6 +2530,11 @@ export const es: EngineLocale = {
       "insertRotation": "Precise ángulo de rotación",
       "insertXScale": "Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ]",
       "insertYScale": "Indique factor de escala Y",
+      "minsertRows": "Indique número de filas (---)",
+      "minsertColumns": "Indique número de columnas (|||)",
+      "minsertRowDistance": "Indique distancia entre filas o precise casilla de unidades (---)",
+      "minsertOppositeCorner": "Designe esquina opuesta",
+      "minsertColumnDistance": "Precise distancia entre columnas (|||)",
       "attributeTag": "Indique nombre de identificador de atributo",
       "attributePrompt": "Indique solicitud de atributo",
       "attributeDefault": "Indique valor de atributo por defecto",
@@ -4235,6 +4257,23 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " mal insertado."
+            ],
+            "other": [
+              0,
+              " mal insertados."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Requiere un número o dos esquinas 2D.",
       "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
       "explodeCannot": [
         "No se puede descomponer ",
@@ -7491,6 +7530,30 @@ export const es: EngineLocale = {
       ],
       "listInsertUniform": "Aplicar escala uniforme: No",
       "listInsertExploding": "Permitir descomposición: Sí",
+      "listInsertColumns": [
+        "       nº columnas ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "  espacio entre columnas ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "          nº filas ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "  espacio entre filas ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "  Tipo de matriz:  ",
         [

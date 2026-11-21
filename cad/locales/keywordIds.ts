@@ -282,6 +282,11 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Scale",
     "Rotate"
   ],
+  "MINSERT": [
+    "?",
+    "Scale",
+    "Rotate"
+  ],
   "BLOCK": [
     "?",
     "Yes",

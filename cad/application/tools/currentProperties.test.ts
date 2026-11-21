@@ -417,6 +417,23 @@ const FROM_SCRATCH: ReadonlyArray<
         .enter()
         .enter(),
   ],
+  [
+    "MINSERT",
+    (c) =>
+      c
+        .command("MINSERT")
+        .type("BAR")
+        .enter()
+        .click(p(300, 0))
+        .enter()
+        .enter()
+        .enter()
+        .type("2")
+        .enter()
+        .enter()
+        .type("10")
+        .enter(),
+  ],
   // probe arrays/p403: the array object is on CLAYER and CECOLOR, the objects
   // inside keep their own (DERIVED's rows, which answer `_AS _N`).
   [

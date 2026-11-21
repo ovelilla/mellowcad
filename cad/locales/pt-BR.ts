@@ -141,7 +141,8 @@ export const ptBR: EngineLocale = {
       "leader": "Linha de chamada",
       "wipeout": "Cobertura",
       "xline": "Linha de construção",
-      "ray": "Raio"
+      "ray": "Raio",
+      "minsert": "InserirM bloco"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -522,7 +523,8 @@ export const ptBR: EngineLocale = {
         "alignedDimension": "Cota alinhada",
         "angularDimension": "Cota angular",
         "radiusDimension": "Cota radial",
-        "diameterDimension": "Cota de diâmetro"
+        "diameterDimension": "Cota de diâmetro",
+        "minsert": "InserirM bloco"
       },
       "group": {
         "geometry": "Geometria",
@@ -688,6 +690,13 @@ export const ptBR: EngineLocale = {
         "positionX": "Posição X",
         "positionY": "Posição Y",
         "positionZ": "Posição Z",
+        "insertionPointX": "Ponto de inserção X",
+        "insertionPointY": "Ponto de inserção Y",
+        "insertionPointZ": "Ponto de inserção Z",
+        "minsertColumns": "Colunas",
+        "minsertColumnSpacing": "Espaçamento entre colunas",
+        "minsertRows": "Linhas",
+        "minsertRowSpacing": "Espaçamento entre linhas",
         "basePointX": "Ponto de referência X",
         "basePointY": "Ponto de referência Y",
         "basePointZ": "Ponto de referência Z",
@@ -921,6 +930,9 @@ export const ptBR: EngineLocale = {
       "-INSERT": [
         "-INSERIR",
         "-I"
+      ],
+      "MINSERT": [
+        "INSERIRM"
       ],
       "ATTEDIT": [
         "EDITARATRIB",
@@ -1719,6 +1731,11 @@ export const ptBR: EngineLocale = {
         "Undo": "Desfazer"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Escala",
+        "Rotate": "Rotacionar"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Escala",
         "Rotate": "Rotacionar"
@@ -2524,6 +2541,11 @@ export const ptBR: EngineLocale = {
       "insertRotation": "Especificar ângulo de rotação",
       "insertXScale": "Inserir fator de escala X, especificar canto oposto ou [Canto/XYZ]",
       "insertYScale": "Especificar fator de escala Y ou",
+      "minsertRows": "Inserir número de linhas (---)",
+      "minsertColumns": "Inserir número de colunas (|||)",
+      "minsertRowDistance": "Inserir distância entre linhas ou especificar célula unitária (---)",
+      "minsertOppositeCorner": "Especificar canto oposto",
+      "minsertColumnDistance": "Especificar distância entre colunas (|||)",
       "attributeTag": "Digitar o nome do identificador do atributo",
       "attributePrompt": "Digitar o prompt do atributo",
       "attributeDefault": "Digitar o valor padrão do atributo",
@@ -4251,6 +4273,23 @@ export const ptBR: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " foi minserido."
+            ],
+            "other": [
+              0,
+              " foram minseridos."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Requer um número ou dois pontos de canto 2D.",
       "explodeLostWidth": "A explosão desta polilinha causou a perda das informações de largura.\nO comando DESFAZER irá restaurá-las.",
       "explodeCannot": [
         "Não é possível explodir ",
@@ -7499,6 +7538,30 @@ export const ptBR: EngineLocale = {
       ],
       "listInsertUniform": "  Escala uniforme: Não",
       "listInsertExploding": "Permitir explosão: Sim",
+      "listInsertColumns": [
+        "         # colunas ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "  espaçamento entre colunas ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "          # linhas ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "  espaçamento entre linhas ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "  Tipo de matriz:  ",
         [

@@ -1,0 +1,71 @@
+QAFLAGS
+2
+_CIRCLE
+0,0
+2
+_-BLOCK
+B1
+0,0
+_L
+
+_MINSERT
+B1
+10,10
+2
+3
+30
+2
+3
+10
+20
+_MOVE
+_L
+
+0,0
+5,5
+(entget (entlast))
+_ROTATE
+_L
+
+0,0
+90
+(entget (entlast))
+_SCALE
+_L
+
+0,0
+2
+(entget (entlast))
+_MIRROR
+_L
+
+0,0
+0,10
+_N
+(entget (entlast))
+_MIRROR
+_L
+
+0,0
+10,0
+_Y
+(entget (entlast))
+_EXPLODE
+_L
+
+(entget (entlast))
+_COPY
+_L
+
+0,0
+100,0
+
+(entget (entlast))
+_STRETCH
+_C
+95,-5
+105,5
+
+0,0
+0,50
+(entget (entlast))

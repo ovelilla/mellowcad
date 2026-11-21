@@ -2253,6 +2253,47 @@ drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in sea
 and REpeat at the point; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes
 dialog at insertion); ATTREQ 0
 
+### `MINSERT` · es `INSERTM` · pt-BR `INSERIRM` · fr `INSERM` · it `INSERM` · de `MEINFÜG` · ru `МВСТАВИТЬ` · pl `WWSTAW` · cs `NVLOŽ` · hu `TBEILL`
+
+**Implemented:** -INSERT's prompts, refusals and INSNAME, which the two share (the block's name,
+`?`, the point with Scale and Rotate, the X and Y scales and the rotation: its entry above), then
+`Enter number of rows (---) <1>:` and `Enter number of columns (|||) <1>:` (Enter is 1; anything
+but a whole number from 1 to 32767 says `Requires an integer between 1 and 32767.` and asks again),
+then the distances the counts call for: none for 1 × 1, which makes a plain block reference; with
+rows, `Enter distance between rows or specify unit cell (---):` (a number of any sign or 0; a point
+asks `Specify opposite corner:` and the cell's width and height, signed, along the UCS's axes, are
+the columns' and the rows' spacing, the columns' not asked then; Enter, a word or a word at the
+corner say `Requires number or two 2D corner points.` and ask the rows' distance again); with
+columns, `Specify distance between columns (|||):` (any number, or two points' distance; Enter or
+a word `Requires numeric distance or two points.`); then a block's attribute values, once (consoles
+m01–m03, m05, m07; tables 20823–20826; es `Indique número de filas (---) <1>:`, `Indique
+distancia entre filas o precise casilla de unidades (---):`, `Designe esquina opuesta:`, `Requiere
+un número o dos esquinas 2D.`, and the nine languages of its consoles; names from each console's
+`getcname`, no alias in any `acad.pgp`; `'MINSERT` is refused, m05). The ghost is the block as it
+will be drawn, the unit cell a rubber rectangle. It makes one object, AutoCAD's MInsert block (a
+reference whose block is drawn again in rows and columns, `grid`: the columns along its turned X
+axis, the rows along its Y, the spacing in drawing units whatever the scale, m03, m06), one undo
+step, its attributes drawn in each cell (m06). SCALE scales its spacing, ROTATE turns the grid
+with it, MIRROR negates the X scale and the columns' spacing as AutoCAD's does (m04), STRETCH moves
+it when the frame catches its insertion point, COPY copies it whole; EXPLODE says `1 was
+minserted.` (es `1 mal insertado.`, 25140, 25141) under its count and leaves it (m04, m05); LIST
+adds `# columns`, `column spacing`, `# rows`, `row spacing`, each pair only when there are several,
+in each console's words (m07, m08). Picked by any cell, a window takes it only round every cell, a
+crossing by one (m05); CEN and QUA snap to each cell, INS to its insertion point (m05). One grip,
+at its insertion point (desktop d01, d02). The Properties palette names it `MInsert Block` (es
+`InsertM bloque`, ax26res 299), its Geometry's Insertion point X, Y and Z (ax26res 42), and Misc
+adds Columns, Column spacing, Rows and Row spacing, each typed (ax26res 266–269; desktop d03);
+brought to one row and one column it is still a MInsert block, which EXPLODE still refuses (m10:
+its class, not its count, as a DXF's AcDbMInsertBlock of 1 × 1 opens too). The
+drawing file keeps it (version 63); a DXF opens and saves it as AutoCAD's INSERT of class
+AcDbMInsertBlock (70, 71, 44, 45: DXFIN's and DXFOUT's entries)
+
+**Missing:** Basepoint, X, Y, Z and Corner as -INSERT's Missing say; the `~` that opens the Select
+Drawing File dialog; annotative blocks (`Annotative blocks cannot be minsert.`, 22686: there are
+none here); what DIMLINEAR finds inside a cell (unprobed: it takes the reference whole); the
+attributes' grips, which AutoCAD leaves out too (d01), and their Insertion snaps in the other cells
+(unprobed); the palette's Annotative, Block Unit and Unit factor (as INSERT's)
+
 ### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT` · pt-BR `DEFATRIB` / `DA` / `DEFATR` / `DEFATRIBD` / `-DEFATRIB` / `-DA` / `-DEFATR` · fr `ATTDEF` / `AT` / `DDATTDEF` / `-ATTDEF` / `-AT` · it `DEFATT` / `DE` / `DDATTDEF` / `-DEFATT` / `-DE` · de `ATTDEF` / `AD` / `DDATTDEF` / `-ATTDEF` / `-ATT` · ru `АТОПР` / `АТ` / `ДИАЛАТОП` / `-АТОПР` / `-АТ` · pl `ATRDEF` / `ATR` / `ODATRDEF` / `-ATRDEF` · cs `ATRDEF` / `AT` / `DDATTDEF` / `DIATRDEF` / `-ATRDEF` / `-AT` · hu `ATTDEF` / `ATT` / `DPATTDEF` / `-ATTDEF` / `-ATT`
 
 **Implemented:** -ATTDEF's command-line sequence for every name (ATTDEF's dialog is not built, as

@@ -478,6 +478,27 @@ export function insertAttributePoints(
 }
 
 /**
+ * Where each of a MINSERT's cells lies from its insertion point, in its
+ * plane: row by row, the first `{ x: 0, y: 0 }`. A plain reference has that
+ * one alone.
+ */
+export function insertGridOffsets(insert: InsertEntity): Vec2[] {
+  const { grid } = insert
+  if (!grid) return [{ x: 0, y: 0 }]
+  const c = Math.cos(insert.rotation)
+  const s = Math.sin(insert.rotation)
+  const out: Vec2[] = []
+  for (let row = 0; row < grid.rows; row++) {
+    for (let column = 0; column < grid.columns; column++) {
+      const x = column * grid.columnSpacing
+      const y = row * grid.rowSpacing
+      out.push({ x: x * c - y * s, y: x * s + y * c })
+    }
+  }
+  return out
+}
+
+/**
  * Everything a reference draws, with nested references expanded away — the list
  * rendering, hit-testing and bounds all work from.
  */
@@ -488,6 +509,25 @@ export function insertFlatGeometry(
   depth = 0
 ): Entity[] {
   if (depth >= MAX_BLOCK_NESTING) return []
+  if (insert.grid) {
+    const cell = insertFlatGeometry(
+      { ...insert, grid: undefined },
+      blocks,
+      display,
+      depth
+    )
+    const axes = entityAxes(insert)
+    return insertGridOffsets(insert).flatMap((offset) => {
+      if (offset.x === 0 && offset.y === 0) return cell
+      // In the world: a piece off the reference's plane moves by it too.
+      const delta = {
+        x: axes.x.x * offset.x + axes.y.x * offset.y,
+        y: axes.x.y * offset.x + axes.y.y * offset.y,
+        z: axes.x.z * offset.x + axes.y.z * offset.y,
+      }
+      return cell.map((piece) => translateEntity(piece, delta))
+    })
+  }
   const out: Entity[] = []
   for (const entity of insertDisplayGeometry(
     insert,

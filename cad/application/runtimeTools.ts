@@ -161,6 +161,7 @@ export function defaultTools(
     new HatchTool(),
     new BlockTool(),
     insert,
+    new InsertTool("minsert", insert.name),
     attEdit,
     new AttDefTool(),
     new AttDispTool(),

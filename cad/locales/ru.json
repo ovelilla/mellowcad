@@ -137,7 +137,8 @@
       "leader": "Выноска",
       "wipeout": "Маскировка",
       "xline": "Вспомогательная линия",
-      "ray": "Луч"
+      "ray": "Луч",
+      "minsert": "Мн-блок"
     },
     "description": {
       "U": "Отмена предыдущей операции",
@@ -263,7 +264,8 @@
         "alignedDimension": "Параллельный размер",
         "angularDimension": "Угловой размер",
         "radiusDimension": "Размер радиуса",
-        "diameterDimension": "Диаметр"
+        "diameterDimension": "Диаметр",
+        "minsert": "Мн-блок"
       },
       "group": {
         "geometry": "Геометрия",
@@ -429,6 +431,13 @@
         "positionX": "Положение X",
         "positionY": "Положение Y",
         "positionZ": "Положение Z",
+        "insertionPointX": "Точка вставки X",
+        "insertionPointY": "Точка вставки Y",
+        "insertionPointZ": "Точка вставки Z",
+        "minsertColumns": "Столбцов",
+        "minsertColumnSpacing": "Интервал для столбцов",
+        "minsertRows": "Рядов",
+        "minsertRowSpacing": "Интервал для рядов",
         "basePointX": "Базовая точка X",
         "basePointY": "Базовая точка Y",
         "basePointZ": "Базовая точка Z",
@@ -585,6 +594,7 @@
       "-BLOCK": ["-БЛОК", "-Б"],
       "INSERT": ["ВСТАВИТЬ", "В", "УРЛВСТАВЬ", "ДИАЛВСТ"],
       "-INSERT": ["-ВСТАВИТЬ", "-В"],
+      "MINSERT": ["МВСТАВИТЬ"],
       "ATTEDIT": ["АТРЕД", "АТР", "ДИАЛАТР"],
       "EATTEDIT": ["АТРЕДАКТ"],
       "ATTDEF": ["АТОПР", "АТ", "ДИАЛАТОП"],
@@ -1000,6 +1010,7 @@
         "Scale": "Масштаб",
         "Rotate": "Поворот"
       },
+      "MINSERT": { "?": "?", "Scale": "Масштаб", "Rotate": "Поворот" },
       "BLOCK": {
         "?": "?",
         "Yes": "Да",
@@ -1783,6 +1794,11 @@
       "insertRotation": "Угол поворота",
       "insertXScale": "Введите масштаб по оси X, укажите второй угол или [Угол/XYZ]",
       "insertYScale": "Масштаб по оси Y",
+      "minsertRows": "Число рядов (---)",
+      "minsertColumns": "Число столбцов (|||)",
+      "minsertRowDistance": "Расстояние между рядами или размер ячейки (---)",
+      "minsertOppositeCorner": "Противоположный угол",
+      "minsertColumnDistance": "Расстояние между столбцами (|||)",
       "attributeTag": "Тег атрибута",
       "attributePrompt": "Подсказка атрибута",
       "attributeDefault": "Значение атрибута по умолчанию",
@@ -2617,6 +2633,8 @@
       "verifyAttributeValues": "Проверьте значения атрибутов",
       "explodeRejected": "{count, plural, =1 {Не может быть расчленен: 1.} one {Не могут быть расчленены: #.} few {Не могут быть расчленены: #.} many {Не могут быть расчленены: #.} other {Не могут быть расчленены: #.}}",
       "explodeXref": "{count, plural, =1 {Является внешней ссылкой: 1.} one {Являются внешними ссылками: #.} few {Являются внешними ссылками: #.} many {Являются внешними ссылками: #.} other {Являются внешними ссылками: #.}}",
+      "explodeMinserted": "{count, plural, =1 {Вставлен массивом: 1.} one {Вставлены массивом: #.} few {Вставлены массивом: #.} many {Вставлены массивом: #.} other {Вставлены массивом: #.}}",
+      "requiresNumberOrTwoCorners": "Требуется число или две точки 2D-угла.",
       "explodeLostWidth": "При расчленении этой полилинии потеряны сведения о ширине.\nИх можно восстановить командой ОТМЕНИТЬ.",
       "explodeCannot": "Не удалось расчленить {name}",
       "noneFound": "Ничего не найдено.",
@@ -3041,6 +3059,10 @@
       "listInsertConversion": "Преобразование единиц: {factor}",
       "listInsertUniform": "Одинаковый масштаб: Нет",
       "listInsertExploding": "Разрешить расчленение: Да",
+      "listInsertColumns": "  количество столбцов {count}",
+      "listInsertColumnSpacing": "  интервал между столбцами {spacing}",
+      "listInsertRows": "  количество строк {count}",
+      "listInsertRowSpacing": "  интервал между строками {spacing}",
       "listArrayType": "      Тип массива:  {kind, select, rectangular {Прямоугольный} polar { Полярная} other {     Путь}}",
       "listArrayBasePoint": "    Базовая точка:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "Центральная точка:  X={x}  Y={y}  Z={z}",

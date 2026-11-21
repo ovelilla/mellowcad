@@ -141,7 +141,8 @@ export const pl: EngineLocale = {
       "leader": "Linia odniesienia",
       "wipeout": "Przykryj",
       "xline": "Linia konstrukcyjna",
-      "ray": "Półprosta"
+      "ray": "Półprosta",
+      "minsert": "Wielokrotne wstawienie bloku"
     },
     "description": {
       "U": "Cofa ostatnią czynność",
@@ -580,7 +581,8 @@ export const pl: EngineLocale = {
         "alignedDimension": "Wymiar wyrównany",
         "angularDimension": "Łuk wymiarowy",
         "radiusDimension": "Wymiar promienia",
-        "diameterDimension": "Wymiar średnicy"
+        "diameterDimension": "Wymiar średnicy",
+        "minsert": "Wielokrotne wstawienie bloku"
       },
       "group": {
         "geometry": "Geometria",
@@ -746,6 +748,13 @@ export const pl: EngineLocale = {
         "positionX": "X położenia",
         "positionY": "Y położenia",
         "positionZ": "Z położenia",
+        "insertionPointX": "X punktu wstawienia",
+        "insertionPointY": "Y punktu wstawienia",
+        "insertionPointZ": "Z punktu wstawienia",
+        "minsertColumns": "Kolumny",
+        "minsertColumnSpacing": "Odstępy między kolumnami",
+        "minsertRows": "Wiersze",
+        "minsertRowSpacing": "Odstępy między wierszami",
         "basePointX": "X punktu bazowego",
         "basePointY": "Y punktu bazowego",
         "basePointZ": "Z punktu bazowego",
@@ -979,6 +988,9 @@ export const pl: EngineLocale = {
       "-INSERT": [
         "-WSTAW",
         "-W"
+      ],
+      "MINSERT": [
+        "WWSTAW"
       ],
       "ATTEDIT": [
         "ATRRED",
@@ -1764,6 +1776,11 @@ export const pl: EngineLocale = {
         "Undo": "Cofnij"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Skala",
+        "Rotate": "Obrót"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Skala",
         "Rotate": "Obrót"
@@ -2569,6 +2586,11 @@ export const pl: EngineLocale = {
       "insertRotation": "Określ kąt obrotu",
       "insertXScale": "Podaj współczynnik skali X, określ przeciwległy narożnik lub [Narożnik/XYZ]",
       "insertYScale": "Podaj współczynnik skali Y lub",
+      "minsertRows": "Podaj liczbę wierszy (---)",
+      "minsertColumns": "Podaj liczbę kolumn (|||)",
+      "minsertRowDistance": "Podaj odległość między wierszami lub określ jednostkę komórki (---)",
+      "minsertOppositeCorner": "Określ przeciwległy narożnik",
+      "minsertColumnDistance": "Określ odległość między kolumnami (|||)",
       "attributeTag": "Podaj nazwę oznaczenia atrybutu",
       "attributePrompt": "Podaj monit o wartość atrybutu",
       "attributeDefault": "Podaj domyślną wartość atrybutu",
@@ -4377,6 +4399,23 @@ export const pl: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " był wielokrotnie wstawiony."
+            ],
+            "other": [
+              0,
+              " było wielokrotnie wstawionych."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Wymagana liczba lub dwa narożniki 2D.",
       "explodeLostWidth": "Rozbicie tej polilinii usunęło informacje o jej szerokości.\nPolecenie COFAJ przywróci jej poprzednią postać.",
       "explodeCannot": [
         "Nie można rozbić ",
@@ -7627,6 +7666,30 @@ export const pl: EngineLocale = {
       ],
       "listInsertUniform": "Skaluj proporcjonalnie: Nie",
       "listInsertExploding": "         Pozwól rozbić: Tak",
+      "listInsertColumns": [
+        "     liczba kolumn ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "    odstępy kolumn ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "    liczba wierszy ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "   odstępy wierszy ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "       Typ szyku:  ",
         [

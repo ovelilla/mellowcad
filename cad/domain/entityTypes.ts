@@ -1066,6 +1066,32 @@ export interface InsertEntity extends BaseEntity {
    * derived from these parameters (`domain/arrays.ts`).
    */
   readonly array?: ArrayParameters
+  /**
+   * Present on a MINSERT's reference (AutoCAD's MInsertBlock, still an
+   * INSERT in the file): the block drawn again in rows and columns, one
+   * object (probes minsert/m02–m05).
+   */
+  readonly grid?: InsertGrid
+}
+
+/**
+ * A MINSERT's rows and columns (DXF 71, 70, 45, 44). Cell (row, column) is
+ * the block again, `column × columnSpacing` along the reference's turned X
+ * axis and `row × rowSpacing` along its Y, in drawing units: the scale does
+ * not stretch the spacing, SCALE does, and MIRROR negates the column spacing
+ * with the X scale (probes minsert/m03, m04). Its presence is the class, not
+ * the count: MINSERT makes a plain reference of 1 × 1 (m02), but one brought
+ * to 1 × 1 stays a MINSERT, which EXPLODE still refuses (m10).
+ */
+export interface InsertGrid {
+  /** DXF 70, from 1 to 32767. */
+  readonly columns: number
+  /** DXF 71, from 1 to 32767. */
+  readonly rows: number
+  /** DXF 44, signed. */
+  readonly columnSpacing: number
+  /** DXF 45, signed. */
+  readonly rowSpacing: number
 }
 
 /** One run of a path: a straight piece, or an arc swept from `start` by `sweep` (signed). */

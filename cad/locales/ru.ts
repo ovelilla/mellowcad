@@ -141,7 +141,8 @@ export const ru: EngineLocale = {
       "leader": "Выноска",
       "wipeout": "Маскировка",
       "xline": "Вспомогательная линия",
-      "ray": "Луч"
+      "ray": "Луч",
+      "minsert": "Мн-блок"
     },
     "description": {
       "U": "Отмена предыдущей операции",
@@ -580,7 +581,8 @@ export const ru: EngineLocale = {
         "alignedDimension": "Параллельный размер",
         "angularDimension": "Угловой размер",
         "radiusDimension": "Размер радиуса",
-        "diameterDimension": "Диаметр"
+        "diameterDimension": "Диаметр",
+        "minsert": "Мн-блок"
       },
       "group": {
         "geometry": "Геометрия",
@@ -746,6 +748,13 @@ export const ru: EngineLocale = {
         "positionX": "Положение X",
         "positionY": "Положение Y",
         "positionZ": "Положение Z",
+        "insertionPointX": "Точка вставки X",
+        "insertionPointY": "Точка вставки Y",
+        "insertionPointZ": "Точка вставки Z",
+        "minsertColumns": "Столбцов",
+        "minsertColumnSpacing": "Интервал для столбцов",
+        "minsertRows": "Рядов",
+        "minsertRowSpacing": "Интервал для рядов",
         "basePointX": "Базовая точка X",
         "basePointY": "Базовая точка Y",
         "basePointZ": "Базовая точка Z",
@@ -981,6 +990,9 @@ export const ru: EngineLocale = {
       "-INSERT": [
         "-ВСТАВИТЬ",
         "-В"
+      ],
+      "MINSERT": [
+        "МВСТАВИТЬ"
       ],
       "ATTEDIT": [
         "АТРЕД",
@@ -1756,6 +1768,11 @@ export const ru: EngineLocale = {
         "Undo": "Отменить"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Масштаб",
+        "Rotate": "Поворот"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Масштаб",
         "Rotate": "Поворот"
@@ -2561,6 +2578,11 @@ export const ru: EngineLocale = {
       "insertRotation": "Угол поворота",
       "insertXScale": "Введите масштаб по оси X, укажите второй угол или [Угол/XYZ]",
       "insertYScale": "Масштаб по оси Y",
+      "minsertRows": "Число рядов (---)",
+      "minsertColumns": "Число столбцов (|||)",
+      "minsertRowDistance": "Расстояние между рядами или размер ячейки (---)",
+      "minsertOppositeCorner": "Противоположный угол",
+      "minsertColumnDistance": "Расстояние между столбцами (|||)",
       "attributeTag": "Тег атрибута",
       "attributePrompt": "Подсказка атрибута",
       "attributeDefault": "Значение атрибута по умолчанию",
@@ -4429,6 +4451,36 @@ export const ru: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "=1": "Вставлен массивом: 1.",
+            "one": [
+              "Вставлены массивом: ",
+              0,
+              "."
+            ],
+            "few": [
+              "Вставлены массивом: ",
+              0,
+              "."
+            ],
+            "many": [
+              "Вставлены массивом: ",
+              0,
+              "."
+            ],
+            "other": [
+              "Вставлены массивом: ",
+              0,
+              "."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Требуется число или две точки 2D-угла.",
       "explodeLostWidth": "При расчленении этой полилинии потеряны сведения о ширине.\nИх можно восстановить командой ОТМЕНИТЬ.",
       "explodeCannot": [
         "Не удалось расчленить ",
@@ -7979,6 +8031,30 @@ export const ru: EngineLocale = {
       ],
       "listInsertUniform": "Одинаковый масштаб: Нет",
       "listInsertExploding": "Разрешить расчленение: Да",
+      "listInsertColumns": [
+        "  количество столбцов ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "  интервал между столбцами ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "  количество строк ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "  интервал между строками ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "      Тип массива:  ",
         [

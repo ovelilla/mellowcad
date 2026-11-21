@@ -1395,6 +1395,19 @@ class Report {
     this.say("listInsertConversion", { factor: this.n9(1) })
     this.say("listInsertUniform")
     this.say("listInsertExploding")
+    // A MINSERT's columns, then its rows, each only when there are several
+    // (minsert/m07, m08).
+    const { grid } = insert
+    if (grid && grid.columns > 1) {
+      this.say("listInsertColumns", { count: grid.columns })
+      this.say("listInsertColumnSpacing", {
+        spacing: this.n9(grid.columnSpacing),
+      })
+    }
+    if (grid && grid.rows > 1) {
+      this.say("listInsertRows", { count: grid.rows })
+      this.say("listInsertRowSpacing", { spacing: this.n9(grid.rowSpacing) })
+    }
   }
 
   private insert(insert: InsertEntity): void {

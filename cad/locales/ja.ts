@@ -141,7 +141,8 @@ export const ja: EngineLocale = {
       "leader": "引出線記入",
       "wipeout": "ワイプアウト",
       "xline": "構築線",
-      "ray": "放射線"
+      "ray": "放射線",
+      "minsert": "ブロック一括挿入"
     },
     "description": {
       "U": "最後の操作を元に戻す",
@@ -493,7 +494,8 @@ export const ja: EngineLocale = {
         "alignedDimension": "平行寸法",
         "angularDimension": "角度寸法",
         "radiusDimension": "半径寸法",
-        "diameterDimension": "直径寸法"
+        "diameterDimension": "直径寸法",
+        "minsert": "ブロック一括挿入"
       },
       "group": {
         "geometry": "ジオメトリ",
@@ -659,6 +661,13 @@ export const ja: EngineLocale = {
         "positionX": "位置 X",
         "positionY": "位置 Y",
         "positionZ": "位置 Z",
+        "insertionPointX": "挿入点 X",
+        "insertionPointY": "挿入点 Y",
+        "insertionPointZ": "挿入点 Z",
+        "minsertColumns": "列",
+        "minsertColumnSpacing": "列の間隔",
+        "minsertRows": "行",
+        "minsertRowSpacing": "行の間隔",
         "basePointX": "基点 X",
         "basePointY": "基点 Y",
         "basePointZ": "基点 Z",

@@ -1,0 +1,68 @@
+---
+title: "Příkaz NVLOŽ (MINSERT) v AutoCADu"
+metaTitle: "Příkaz NVLOŽ (MINSERT) v AutoCADu"
+description: "Jak NVLOŽ (MINSERT) v AutoCADu vloží blok v řádcích a sloupcích jako jeden objekt, na co se ptá a proč ho ROZLOŽ odmítne. Vyzkoušejte zdarma."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Co je příkaz NVLOŽ v AutoCADu?","answer":"Násobné vložení: rozloží blok do obdélníkového pole řádků a sloupců jako jeden objekt. Počty a rozteče změníte později v paletě Vlastnosti."},{"question":"Jak rozložit blok vložený příkazem NVLOŽ?","answer":"Nejde to: ROZLOŽ odpoví, že byl násobně vložen, a nechá ho, v AutoCADu stejně jako tady, i když řádky a sloupce nastavíte na 1. Vložte blok znovu příkazem -VLOŽ, nebo rozložte kopie příkazem OBDPOLE, jehož pole se rozloží na položky."},{"question":"Jak se jmenuje MINSERT v českém AutoCADu?","answer":"NVLOŽ. Nemá zkratku ani tlačítko na pásu karet, takže se píše celý; _MINSERT funguje v AutoCADu v každém jazyce."},{"question":"Jaký je rozdíl mezi NVLOŽ a POLE?","answer":"NVLOŽ opakuje jeden blok jako jednu referenci, kterou nelze rozložit. OBDPOLE opakuje libovolné objekty jako asociativní pole s uzlovými body pro počty a rozteče, které ROZLOŽ rozloží."}]
+---
+
+NVLOŽ (anglicky MINSERT) vloží blok definovaný ve výkresu mnohokrát, v řádcích a sloupcích, jako jeden objekt. Ptá se na totéž co `-VLOŽ` — název bloku (Enter vezme nabízený, naposledy vložený blok), bod vložení, měřítko v ose X a Y a úhel otočení —, pak na počet řádků a počet sloupců (Enter je 1) a pak na vzdálenost mezi řádky a vzdálenost mezi sloupci. Ptá se jen na vzdálenosti, které počty potřebují, a jeden řádek o jednom sloupci je obyčejná reference bloku. Blok s atributy se ptá na jejich hodnoty nakonec, jednou, a každá kopie je ukazuje.
+
+Řádky vedou podél osy Y bloku a sloupce podél jeho osy X, obě otočené o úhel otočení; vzdálenosti jsou v jednotkách výkresu, ať je měřítko jakékoli, a záporná klade kopie dolů nebo doleva. U vzdálenosti mezi řádky určí dva body místo ní jednotkovou buňku: její šířka je vzdálenost mezi sloupci a výška vzdálenost mezi řádky. Výsledkem je blok NVlož AutoCADu: přesouvá se, kopíruje, otáčí, mění měřítko a zrcadlí jako celek, [`VÝPIS`](/docs/commands/list) přidá jeho řádky a sloupce a paleta Vlastnosti je ukazuje jako Sloupce, Rozteč sloupců, Řádky a Rozteč řad, které lze zadat. [`ROZLOŽ`](/docs/commands/explode) ho započítá jako násobně vložený a nechá celý, jako AutoCAD. Soubor DXF ho otevře a uloží jako sám AutoCAD.
+
+- **Příkaz:** `NVLOŽ`
+- **Anglicky:** `MINSERT`, zadávaný jako `_MINSERT` v libovolném jazyce
+- **Panel:** [Organizace](/docs/commands#organize)
+- **Vyzkoušejte:** [Otevřete editor](/cs/draw), zadejte `NVLOŽ` a stiskněte Enter.
+
+## V příkazovém řádku [#session]
+
+Jádro ho nakreslí a zapíše jeho historii tak, jak byste ji zadali: výzvy v pořadí AutoCADu 2027, se stejnými písmeny možností.
+
+<Session name="minsert" caption="Sedadlo převedené na blok, pak rozložené příkazem NVLOŽ do tří řádků po pěti: jeden objekt." />
+
+## Možnosti [#options]
+
+### `?` [#list]
+
+U názvu bloku: vypíše bloky výkresu, jako [`BLOK`](/docs/commands/block), a skončí.
+
+### `Měřítko` (`M`) [#scale]
+
+U bodu vložení: zeptá se na jedno měřítko pro obě osy a pak znovu na bod. Po bodu se na měřítka X a Y neptá.
+
+### `Otoč` (`O`) [#rotate]
+
+U bodu vložení: zeptá se na úhel, který otočí každou kopii i celé pole, a pak znovu na bod. Po bodu se na otočení neptá.
+
+## Co zatím neumí [#missing]
+
+U bodu vložení Refbod, X, Y a Z a u měřítka X Obdélník a XYZ, jak chybí i -VLOŽ; `~`, která otevírá soubor výkresu; poznámkové bloky, které tu nejsou. Lineární kóta vybere celý objekt NVLOŽ, ne objekt v jedné z jeho kopií. Řádky Poznámkový, Jednotka bloku a Faktor jednotek palety Vlastnosti.
+
+[Co dělá a co mu zatím chybí, podrobně (anglicky)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## Otázky [#questions]
+
+### Co je příkaz NVLOŽ v AutoCADu?
+
+Násobné vložení: rozloží blok do obdélníkového pole řádků a sloupců jako jeden objekt. Počty a rozteče změníte později v paletě Vlastnosti.
+
+### Jak rozložit blok vložený příkazem NVLOŽ?
+
+Nejde to: [`ROZLOŽ`](/docs/commands/explode) odpoví, že byl násobně vložen, a nechá ho, v AutoCADu stejně jako tady, i když řádky a sloupce nastavíte na 1. Vložte blok znovu příkazem `-VLOŽ`, nebo rozložte kopie příkazem [`OBDPOLE`](/docs/commands/arrayrect), jehož pole se rozloží na položky.
+
+### Jak se jmenuje MINSERT v českém AutoCADu?
+
+NVLOŽ. Nemá zkratku ani tlačítko na pásu karet, takže se píše celý; `_MINSERT` funguje v AutoCADu v každém jazyce.
+
+### Jaký je rozdíl mezi NVLOŽ a POLE?
+
+NVLOŽ opakuje jeden blok jako jednu referenci, kterou nelze rozložit. [`OBDPOLE`](/docs/commands/arrayrect) opakuje libovolné objekty jako asociativní pole s uzlovými body pro počty a rozteče, které [`ROZLOŽ`](/docs/commands/explode) rozloží.
+
+## Související příkazy [#related]
+
+- [Vložení bloku v AutoCADu: příkaz VLOŽ (INSERT)](/docs/commands/insert)
+- [Obdélníkové pole v AutoCADu: příkaz OBDPOLE (ARRAYRECT)](/docs/commands/arrayrect)
+- [Bloky v AutoCADu: příkaz BLOK (BLOCK)](/docs/commands/block)
+- [Příkaz ROZLOŽ (EXPLODE) v AutoCADu](/docs/commands/explode)

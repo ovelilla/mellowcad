@@ -423,18 +423,19 @@ describe("parseDxf: AutoCAD 2027's files of the second drawing (f004, f005)", ()
     expect(user.patternAngle).toBeCloseTo(Math.PI / 4, 12)
   })
 
-  it("opens a MINSERT as one reference per row and column", () => {
+  it("opens a MINSERT as one reference with its rows and columns", () => {
     const parts = ofType<InsertEntity>(drawing, "insert").filter(
-      (i) => i.blockId === "Part" && i.scaleX > 0
+      (i) => i.blockId === "Part" && i.scaleX > 0 && i.grid
     )
-    expect(parts.map((p) => [p.position.x, p.position.y])).toEqual([
-      [400, 200],
-      [420, 200],
-      [440, 200],
-      [400, 230],
-      [420, 230],
-      [440, 230],
-    ])
+    expect(parts).toHaveLength(1)
+    const [minsert] = parts
+    expect(minsert.position).toEqual({ x: 400, y: 200 })
+    expect(minsert.grid).toEqual({
+      columns: 3,
+      rows: 2,
+      columnSpacing: 20,
+      rowSpacing: 30,
+    })
   })
 
   it("brings a mirrored reference's attribute back into its block", () => {
@@ -1387,5 +1388,34 @@ describe("parseDxf: AutoCAD 2027's 3D faces (face3d/f09)", () => {
     expect(faces.map((f) => f.invisibleEdges ?? 0)).toEqual([0, 0, 4, 9, 0, 0])
     expect(faces[5]).toMatchObject({ color: "#ff0000", linetypeScale: 2 })
     expect(faces[5].linetype).toBeDefined()
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's MINSERTs (minsert/m09)", () => {
+  // 3 × 2 of B1 with its attribute; 2 × 3 of B2 at X 2, Y 3, 30°, its cell
+  // (−7, 12); a column of 3 and a row of 3; 2 × 2 at no spacing, mirrored;
+  // 2 × 2 drawn in a UCS turned 45° on layer GRID. As DXFOUT wrote them:
+  // AcDbMInsertBlock, 70 and 71 always, 44 and 45 when not 0.
+  const { drawing, report } = parseDxf(fixture("minserts-2018"))
+  const minserts = drawing.entities.filter(
+    (e): e is InsertEntity => e.type === "insert"
+  )
+
+  it("opens each as one reference with its rows and columns", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(report.unreadable).toBe(0)
+    expect(minserts.map((m) => [m.blockId, m.grid])).toEqual([
+      ["B1", { columns: 3, rows: 2, columnSpacing: 20, rowSpacing: 10 }],
+      ["B2", { columns: 2, rows: 3, columnSpacing: -7, rowSpacing: 12 }],
+      ["B2", { columns: 1, rows: 3, columnSpacing: 0, rowSpacing: 6 }],
+      ["B2", { columns: 3, rows: 1, columnSpacing: -5, rowSpacing: 0 }],
+      ["B1", { columns: 2, rows: 2, columnSpacing: 0, rowSpacing: 0 }],
+      ["B2", { columns: 2, rows: 2, columnSpacing: 9, rowSpacing: 8 }],
+    ])
+    expect(minserts[0].attributes?.[0].value).toBe("VAL")
+    expect(minserts[1]).toMatchObject({ scaleX: 2, scaleY: 3 })
+    expect(minserts[1].rotation).toBeCloseTo(Math.PI / 6, 12)
+    expect(minserts[4].scaleX).toBe(-1)
+    expect(minserts[5].rotation).toBeCloseTo(Math.PI / 4, 12)
   })
 })

@@ -137,7 +137,8 @@
       "leader": "Directriz",
       "wipeout": "Cobertura",
       "xline": "Línea de construcción",
-      "ray": "Rayo"
+      "ray": "Rayo",
+      "minsert": "InsertM bloque"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -258,7 +259,8 @@
         "alignedDimension": "Cota alineada",
         "angularDimension": "Cota angular",
         "radiusDimension": "Cota radial",
-        "diameterDimension": "Cota diamétrica"
+        "diameterDimension": "Cota diamétrica",
+        "minsert": "InsertM bloque"
       },
       "group": {
         "geometry": "Geometría",
@@ -424,6 +426,13 @@
         "positionX": "Posición X",
         "positionY": "Posición Y",
         "positionZ": "Posición Z",
+        "insertionPointX": "Punto de inserción X",
+        "insertionPointY": "Punto de inserción Y",
+        "insertionPointZ": "Punto de inserción Z",
+        "minsertColumns": "Columnas",
+        "minsertColumnSpacing": "Espacio entre columnas",
+        "minsertRows": "Filas",
+        "minsertRowSpacing": "Espacio entre filas",
         "basePointX": "Punto base X",
         "basePointY": "Punto base Y",
         "basePointZ": "Punto base Z",
@@ -580,6 +589,7 @@
       "-BLOCK": ["-BLOQUE", "-BQ"],
       "INSERT": ["INSERT", "IN"],
       "-INSERT": ["-INSERT", "-IN"],
+      "MINSERT": ["INSERTM"],
       "ATTEDIT": ["ATREDIT", "ATR", "DDATTE"],
       "EATTEDIT": ["EDITATR"],
       "ATTDEF": ["ATRDEF", "AT"],
@@ -972,6 +982,7 @@
         "Scale": "Escala",
         "Rotate": "Girar"
       },
+      "MINSERT": { "?": "?", "Scale": "Escala", "Rotate": "Girar" },
       "BLOCK": { "?": "?", "Yes": "Sí", "No": "No" },
       "ATTDEF": {
         "Invisible": "Invisible",
@@ -1686,6 +1697,11 @@
       "insertRotation": "Precise ángulo de rotación",
       "insertXScale": "Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ]",
       "insertYScale": "Indique factor de escala Y",
+      "minsertRows": "Indique número de filas (---)",
+      "minsertColumns": "Indique número de columnas (|||)",
+      "minsertRowDistance": "Indique distancia entre filas o precise casilla de unidades (---)",
+      "minsertOppositeCorner": "Designe esquina opuesta",
+      "minsertColumnDistance": "Precise distancia entre columnas (|||)",
       "attributeTag": "Indique nombre de identificador de atributo",
       "attributePrompt": "Indique solicitud de atributo",
       "attributeDefault": "Indique valor de atributo por defecto",
@@ -2520,6 +2536,8 @@
       "verifyAttributeValues": "Verificar valores de atributo",
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}",
       "explodeXref": "{count, plural, one {# era una referencia externa.} other {# eran referencias externas.}}",
+      "explodeMinserted": "{count, plural, one {# mal insertado.} other {# mal insertados.}}",
+      "requiresNumberOrTwoCorners": "Requiere un número o dos esquinas 2D.",
       "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
       "explodeCannot": "No se puede descomponer {name}",
       "noneFound": "No hallada.",
@@ -2944,6 +2962,10 @@
       "listInsertConversion": "Conversión de unidades: {factor}",
       "listInsertUniform": "Aplicar escala uniforme: No",
       "listInsertExploding": "Permitir descomposición: Sí",
+      "listInsertColumns": "       nº columnas {count}",
+      "listInsertColumnSpacing": "  espacio entre columnas {spacing}",
+      "listInsertRows": "          nº filas {count}",
+      "listInsertRowSpacing": "  espacio entre filas {spacing}",
       "listArrayType": "  Tipo de matriz:  {kind, select, rectangular {Rectangular} polar {    Polar} other {     Ruta}}",
       "listArrayBasePoint": "      Punto base:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "          Centro:  X={x}  Y={y}  Z={z}",

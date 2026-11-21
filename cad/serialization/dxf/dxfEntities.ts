@@ -131,8 +131,8 @@ export interface DxfEntityContext extends DxfMLeaderContext {
 }
 
 /**
- * The objects a DXF entity makes: one, none for what the model has not (it
- * is counted), several for a MINSERT (its references, one per cell).
+ * The objects a DXF entity makes: one, or none for what the model has not (it
+ * is counted).
  */
 export function dxfEntities(
   record: DxfRecord,
@@ -1293,9 +1293,9 @@ function attributeDefinition(
 }
 
 /**
- * A block reference, and a MINSERT's rows and columns as one reference each
- * (WHY: the model has no MINSERT, and so it opens looking the same). Its
- * attributes go into the block's coordinates, where the model keeps them.
+ * A block reference, a MINSERT's with its rows and columns (70, 71, 44, 45,
+ * after AcDbMInsertBlock: probe minsert/m06). Its attributes go into the
+ * block's coordinates, where the model keeps them.
  */
 function insert(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
   const name = str(r, 2)?.trim()
@@ -1320,28 +1320,30 @@ function insert(r: DxfRecord, ctx: DxfEntityContext): Entity[] {
   const attributes = (r.children ?? [])
     .map((a) => blockAttribute(a, placement, ctx))
     .filter((a) => a !== null)
-  const columns = Math.max(1, int(r, 70) ?? 1)
-  const rows = Math.max(1, int(r, 71) ?? 1)
-  const across = num(r, 44) ?? 0
-  const up = num(r, 45) ?? 0
-  const made: Entity[] = []
-  for (let row = 0; row < rows; row++) {
-    for (let column = 0; column < columns; column++) {
-      const offset = rotate({ x: column * across, y: row * up }, rotation)
-      const entity = createInsert(
-        target.id,
-        V.add(placement.position, offset),
-        {
-          scaleX: sx,
-          scaleY: sy,
-          rotation,
-          attributes,
+  const columns = int(r, 70) ?? 1
+  const rows = int(r, 71) ?? 1
+  // Its class, or several cells in a file that leaves the markers out.
+  const minsert =
+    columns > 1 ||
+    rows > 1 ||
+    r.codes.some(
+      (code, i) => code === 100 && r.values[i].trim() === "AcDbMInsertBlock"
+    )
+  const entity = createInsert(target.id, placement.position, {
+    scaleX: sx,
+    scaleY: sy,
+    rotation,
+    attributes,
+    grid: minsert
+      ? {
+          columns,
+          rows,
+          columnSpacing: num(r, 44) ?? 0,
+          rowSpacing: num(r, 45) ?? 0,
         }
-      )
-      made.push(common(onPlane(entity, r, position.z), r, ctx))
-    }
-  }
-  return made
+      : undefined,
+  })
+  return [common(onPlane(entity, r, position.z), r, ctx)]
 }
 
 /** `v` turned `angle` radians counterclockwise. */

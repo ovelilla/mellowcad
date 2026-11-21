@@ -61,6 +61,7 @@ export type {
   XrefSource,
   BlockLookup,
   InsertEntity,
+  InsertGrid,
   ArrayKind,
   ArrayParameters,
   ArrayPath,
@@ -149,6 +150,8 @@ export {
   createHatch,
   createInsert,
   insertReflects,
+  withInsertGrid,
+  MAX_INSERT_GRID_COUNT,
   createBlockDefinition,
 } from "./entityFactories"
 
@@ -164,6 +167,7 @@ export {
   purgeableBlocks,
   insertGeometry,
   insertFlatGeometry,
+  insertGridOffsets,
   insertAttributePoints,
 } from "./blocks"
 

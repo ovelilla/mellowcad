@@ -56,7 +56,7 @@ us to walk again, whereas a command costs the same before or after it.
    plan's L7, `docs/next-seo.md`): opening a DXF (OPEN, DXFIN) first, then saving one (SAVEAS's DXF
    types, DXFOUT, the Save Drawing As dialog), then what real DXF files bring that the model lacks
    (POINT done, with PDMODE, PDSIZE, PTYPE, DIVIDE, MEASURE and the Node snap; SOLID done; LEADER
-   done; a DXF's multileaders done; XLINE and RAY done, the commands and their objects; then the MLEADER command and QLEADER, MINSERT, a drawing's own linetypes and hatch patterns, index colours).
+   done; a DXF's multileaders done; XLINE and RAY done, the commands and their objects; MINSERT done, the command and its object; then the MLEADER command and QLEADER, a drawing's own linetypes and hatch patterns, index colours).
    The brief is `docs/next-dxf.md`.
 
 TRIM, EXTEND and JOIN of 3D
@@ -96,7 +96,7 @@ mode.
 
 Blocks family, not on the near-term path: ByBlock resolution, inserting external drawing files +
 INSUNITS,
-`-BLOCK` Mode keywords, `-INSERT` Basepoint/Corner/XYZ/Explode/Repeat, BASE, WBLOCK, BEDIT, MINSERT,
+`-BLOCK` Mode keywords, `-INSERT` Basepoint/Corner/XYZ/Explode/Repeat, BASE, WBLOCK, BEDIT,
 XREF, BREPLACE, dynamic blocks, a block table manager, ATTSYNC,
 BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
 

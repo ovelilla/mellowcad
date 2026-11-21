@@ -1146,7 +1146,10 @@ function insert(ctx: DxfWriteContext, e: InsertEntity, owner: string): void {
   const block = ctx.block(e.blockId)
   const attributes = arrayBlock ? [] : (e.attributes ?? [])
   head(ctx, "INSERT", e, owner, own)
-  out.str(100, "AcDbBlockReference")
+  // A MINSERT's class, with its rows and columns after the angle (probe
+  // minsert/m06).
+  const grid = arrayBlock ? undefined : e.grid
+  out.str(100, grid ? "AcDbMInsertBlock" : "AcDbBlockReference")
   if (attributes.length > 0) out.int(66, 1)
   out.str(2, arrayBlock ?? ctx.blockName(e.blockId))
   const z = e.elevation ?? 0
@@ -1155,6 +1158,12 @@ function insert(ctx: DxfWriteContext, e: InsertEntity, owner: string): void {
   if (e.scaleY !== 1) out.real(42, e.scaleY)
   if (e.scaleX !== 1 || e.scaleY !== 1) out.real(43, Math.abs(e.scaleX))
   if (e.rotation) out.real(50, e.rotation * DEG)
+  if (grid) {
+    out.int(70, grid.columns)
+    out.int(71, grid.rows)
+    if (grid.columnSpacing) out.real(44, grid.columnSpacing)
+    if (grid.rowSpacing) out.real(45, grid.rowSpacing)
+  }
   writeNormal(ctx, e)
   if (attributes.length === 0) return
   const base = block?.basePoint ?? { x: 0, y: 0 }

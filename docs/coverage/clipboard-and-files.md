@@ -112,7 +112,8 @@ its own linetype scale (48), lineweight, thickness, elevation and normal: LINE, 
 POLYLINE with PEDIT's Fit arcs and Spline frame as AutoCAD left them, the 3D POLYLINE, SPLINE by
 its fit points, end tangents and knot spacing (70's 32, 64, 128, f006) or its control points,
 knots and weights (a closed one, which AutoCAD writes on open knots, as that curve), TEXT, MTEXT,
-ATTDEF, INSERT with its attributes taken into the block's coordinates, the linear, aligned,
+ATTDEF, INSERT with its attributes taken into the block's coordinates and a MINSERT's rows and
+columns (70, 71, 44, 45: minsert/m09, AutoCAD's own file; none in the corpus), the linear, aligned,
 angular (three points, two lines), radius and diameter DIMENSION from their definition points,
 text and moved text, HATCH with its loops and HPORIGIN (the ACAD xdata), its pattern's name read
 without the style code AutoCAD may write after it (`ANSI31,_O`), an unknown one in capitals as
@@ -270,8 +271,7 @@ either (r-*), WHY: they are what other programs write, and the rest opens; a fro
 AcCmColor) and ByBlock as ByLayer (the model has neither); the six linetypes every drawing holds
 here join the file's when it lacks them (WHY at `LINETYPES`), and a linetype an object names that
 the table lacks is added without dashes, drawn continuous; LWDISPLAY stays on, WHY: as every
-drawing here starts, the screen being the only place a lineweight shows; a MINSERT opens as one
-reference per row and column, WHY: there is no MINSERT; TEXT's Align and Fit open left-justified
+drawing here starts, the screen being the only place a lineweight shows; TEXT's Align and Fit open left-justified
 at their first point with their height and rotation, WHY: the model has neither; a radial
 dimension takes its text's middle (11) for the point picked, WHY: AutoCAD keeps that point only in
 the text's place; a hatch's elliptical and spline edges are laid as straight runs, WHY: a loop here
@@ -364,7 +364,9 @@ scale (48), the active viewport framing the drawing, and every
 object the model has, as AutoCAD writes it: a fitted polyline as a POLYLINE with its fit or curve
 vertices, a spline with its fit data or its knots, weights and control points (a closed one
 clamped, f004), a dimension with its `*D` block drawn as the model draws it, an array as a
-reference to an anonymous block of its items, a hatch with its pattern lines and HPORIGIN (its
+reference to an anonymous block of its items, a MINSERT as AutoCAD's INSERT of class
+AcDbMInsertBlock, 70 and 71 always, 44 and 45 when not 0 (minsert/m09: the console opens its 12
+files with no AUDIT error and reads the six references as it reads its own file), a hatch with its pattern lines and HPORIGIN (its
 own lines too, its type in 76 and a User-defined one's Double in 77, as AutoCAD wrote hatchpat/p00:
 the console opens MYPAT and `_U` in the six versions, ASCII and binary, with no AUDIT error and
 plots them as it plots its own file), a gradient from 2004 as AutoCAD writes one (450 to 470,

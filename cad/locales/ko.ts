@@ -141,7 +141,8 @@ export const ko: EngineLocale = {
       "leader": "지시선",
       "wipeout": "객체 가리기",
       "xline": "구성선",
-      "ray": "광선"
+      "ray": "광선",
+      "minsert": "다중 삽입 블록"
     },
     "description": {
       "U": "가장 최근의 작업을 취소합니다",
@@ -493,7 +494,8 @@ export const ko: EngineLocale = {
         "alignedDimension": "정렬된 치수",
         "angularDimension": "각도 치수",
         "radiusDimension": "반지름 치수",
-        "diameterDimension": "지름 치수"
+        "diameterDimension": "지름 치수",
+        "minsert": "다중 삽입 블록"
       },
       "group": {
         "geometry": "형상",
@@ -659,6 +661,13 @@ export const ko: EngineLocale = {
         "positionX": "X 위치",
         "positionY": "Y 위치",
         "positionZ": "Z 위치",
+        "insertionPointX": "삽입점 X",
+        "insertionPointY": "삽입점 Y",
+        "insertionPointZ": "삽입점 Z",
+        "minsertColumns": "열",
+        "minsertColumnSpacing": "열 간격 조정",
+        "minsertRows": "행",
+        "minsertRowSpacing": "행 간격 조정",
         "basePointX": "기준점 X",
         "basePointY": "기준점 Y",
         "basePointZ": "기준점 Z",

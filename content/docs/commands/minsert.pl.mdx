@@ -1,0 +1,68 @@
+---
+title: "Polecenie WWSTAW (MINSERT) w AutoCADzie"
+metaTitle: "Polecenie WWSTAW (MINSERT) w AutoCADzie"
+description: "Jak WWSTAW (MINSERT) w AutoCADzie wstawia blok w wierszach i kolumnach jako jeden obiekt, o co pyta i dlaczego ROZBIJ go odrzuca. Wypróbuj za darmo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Co to jest polecenie WWSTAW w AutoCADzie?","answer":"Wielokrotne wstawienie: układa blok w prostokątny szyk wierszy i kolumn jako jeden obiekt. Liczby i odstępy zmienisz potem w palecie Właściwości."},{"question":"Jak rozbić blok wstawiony poleceniem WWSTAW?","answer":"Nie da się: ROZBIJ odpowiada, że był wielokrotnie wstawiony, i zostawia go, w AutoCADzie tak jak tutaj, nawet gdy wiersze i kolumny ustawisz na 1. Wstaw blok od nowa poleceniem -WSTAW albo ułóż kopie poleceniem SZYKPROST, którego szyk rozbija się na elementy."},{"question":"Jak nazywa się MINSERT w polskim AutoCADzie?","answer":"WWSTAW. Nie ma skrótu ani przycisku na wstążce, więc wpisuje się je w całości; _MINSERT działa w każdej wersji językowej AutoCADa."},{"question":"Czym różni się WWSTAW od SZYK?","answer":"WWSTAW powtarza jeden blok jako jedno odniesienie, którego nie da się rozbić. SZYKPROST powtarza dowolne obiekty jako szyk skojarzony, z uchwytami do zmiany liczb i odstępów, który ROZBIJ rozbija."}]
+---
+
+WWSTAW (po angielsku MINSERT) wstawia blok zdefiniowany w rysunku wiele razy, w wierszach i kolumnach, jako jeden obiekt. Pyta o to samo co `-WSTAW` — nazwę bloku (Enter przyjmuje proponowaną, ostatnio wstawiony blok), punkt wstawienia, współczynniki skali X i Y oraz kąt obrotu — potem o liczbę wierszy i liczbę kolumn (Enter to 1), a potem o odległość między wierszami i odległość między kolumnami. Pyta tylko o odległości, których wymagają te liczby, a jeden wiersz z jedną kolumną to zwykłe odniesienie do bloku. Blok z atrybutami pyta o ich wartości na końcu, raz, i każda kopia je pokazuje.
+
+Wiersze biegną wzdłuż osi Y bloku, a kolumny wzdłuż jego osi X, obie obrócone o kąt obrotu; odległości są w jednostkach rysunku, bez względu na skalę, a ujemna kładzie kopie w dół lub w lewo. Przy odległości między wierszami dwa punkty określają zamiast niej komórkę: jej szerokość to odległość między kolumnami, a wysokość odległość między wierszami. Wynikiem jest blok wielokrotnie wstawiony AutoCADa: przesuwa się, kopiuje, obraca, skaluje i odbija jako całość, [`LISTA`](/docs/commands/list) dodaje jego wiersze i kolumny, a paleta Właściwości pokazuje je jako Kolumny, Odstępy między kolumnami, Wiersze i Odstępy między wierszami, które można wpisać. [`ROZBIJ`](/docs/commands/explode) liczy go jako wielokrotnie wstawiony i zostawia w całości, jak AutoCAD. Plik DXF otwiera go i zapisuje tak jak sam AutoCAD.
+
+- **Polecenie:** `WWSTAW`
+- **Po angielsku:** `MINSERT`, wpisywane jako `_MINSERT` w każdym języku
+- **Panel:** [Organizacja](/docs/commands#organize)
+- **Wypróbuj:** [Otwórz edytor](/pl/draw), wpisz `WWSTAW` i naciśnij Enter.
+
+## W wierszu polecenia [#session]
+
+Silnik je rysuje i zapisuje historię tak, jak się ją wpisuje: monity w kolejności AutoCADa 2027, z tymi samymi literami opcji.
+
+<Session name="minsert" caption="Siedzisko zamienione w blok, potem ułożone poleceniem WWSTAW w trzech wierszach po pięć: jeden obiekt." />
+
+## Opcje [#options]
+
+### `?` [#list]
+
+Przy nazwie bloku: wypisuje bloki rysunku, jak [`BLOK`](/docs/commands/block), i kończy.
+
+### `Skala` (`S`) [#scale]
+
+Przy punkcie wstawienia: pyta o jeden współczynnik dla obu osi, a potem znowu o punkt. Po punkcie nie pyta o współczynniki X i Y.
+
+### `Obrót` (`O`) [#rotate]
+
+Przy punkcie wstawienia: pyta o kąt, który obraca każdą kopię i cały szyk, a potem znowu o punkt. Po punkcie nie pyta o obrót.
+
+## Czego jeszcze nie robi [#missing]
+
+Przy punkcie wstawienia punkt Bazowy, X, Y i Z, a przy skali X Narożnik i XYZ, jak brakuje ich w -WSTAW; `~` otwierająca plik rysunku; bloki opisowe, których tu nie ma. Wymiar liniowy wybiera cały obiekt WWSTAW, a nie obiekt w jednej z jego kopii. Wiersze Opisowy, Jednostka bloku i Współczynnik jednostki palety Właściwości.
+
+[Co robi i czego jeszcze brakuje, szczegółowo (po angielsku)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## Pytania [#questions]
+
+### Co to jest polecenie WWSTAW w AutoCADzie?
+
+Wielokrotne wstawienie: układa blok w prostokątny szyk wierszy i kolumn jako jeden obiekt. Liczby i odstępy zmienisz potem w palecie Właściwości.
+
+### Jak rozbić blok wstawiony poleceniem WWSTAW?
+
+Nie da się: [`ROZBIJ`](/docs/commands/explode) odpowiada, że był wielokrotnie wstawiony, i zostawia go, w AutoCADzie tak jak tutaj, nawet gdy wiersze i kolumny ustawisz na 1. Wstaw blok od nowa poleceniem `-WSTAW` albo ułóż kopie poleceniem [`SZYKPROST`](/docs/commands/arrayrect), którego szyk rozbija się na elementy.
+
+### Jak nazywa się MINSERT w polskim AutoCADzie?
+
+WWSTAW. Nie ma skrótu ani przycisku na wstążce, więc wpisuje się je w całości; `_MINSERT` działa w każdej wersji językowej AutoCADa.
+
+### Czym różni się WWSTAW od SZYK?
+
+WWSTAW powtarza jeden blok jako jedno odniesienie, którego nie da się rozbić. [`SZYKPROST`](/docs/commands/arrayrect) powtarza dowolne obiekty jako szyk skojarzony, z uchwytami do zmiany liczb i odstępów, który [`ROZBIJ`](/docs/commands/explode) rozbija.
+
+## Powiązane polecenia [#related]
+
+- [Wstawianie bloku w AutoCADzie: polecenie WSTAW (INSERT)](/docs/commands/insert)
+- [Szyk prostokątny w AutoCADzie: polecenie SZYKPROST (ARRAYRECT)](/docs/commands/arrayrect)
+- [Bloki w AutoCADzie: polecenie BLOK (BLOCK)](/docs/commands/block)
+- [Polecenie ROZBIJ (EXPLODE) w AutoCADzie](/docs/commands/explode)

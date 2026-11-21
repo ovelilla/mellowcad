@@ -141,7 +141,8 @@ export const hu: EngineLocale = {
       "leader": "Mutató",
       "wipeout": "Kitakarás",
       "xline": "Szerkesztővonal",
-      "ray": "Sugár"
+      "ray": "Sugár",
+      "minsert": "TBeill Blokk"
     },
     "description": {
       "U": "Az utolsó művelet visszavonása",
@@ -522,7 +523,8 @@ export const hu: EngineLocale = {
         "alignedDimension": "Illesztett méretezés",
         "angularDimension": "Szög méretezés",
         "radiusDimension": "Sugaras méretezés",
-        "diameterDimension": "Átmérő méret"
+        "diameterDimension": "Átmérő méret",
+        "minsert": "TBeill Blokk"
       },
       "group": {
         "geometry": "Geometria",
@@ -688,6 +690,13 @@ export const hu: EngineLocale = {
         "positionX": "Pozíció - X",
         "positionY": "Pozíció - Y",
         "positionZ": "Pozíció - Z",
+        "insertionPointX": "Beszúrási pont - X",
+        "insertionPointY": "Beszúrási pont - Y",
+        "insertionPointZ": "Beszúrási pont - Z",
+        "minsertColumns": "Oszlopok",
+        "minsertColumnSpacing": "Oszlopok közötti távolság",
+        "minsertRows": "Sorok",
+        "minsertRowSpacing": "Sorok közötti távolság",
         "basePointX": "Bázispont - X",
         "basePointY": "Bázispont - Y",
         "basePointZ": "Bázispont - Z",
@@ -921,6 +930,9 @@ export const hu: EngineLocale = {
       "-INSERT": [
         "-BEILL",
         "-BE"
+      ],
+      "MINSERT": [
+        "TBEILL"
       ],
       "ATTEDIT": [
         "ATTEDIT",
@@ -1716,6 +1728,11 @@ export const hu: EngineLocale = {
         "Undo": "Vissza"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Lépték",
+        "Rotate": "Forgat"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Lépték",
         "Rotate": "Forgat"
@@ -2521,6 +2538,11 @@ export const hu: EngineLocale = {
       "insertRotation": "Adja meg az elforgatási szöget",
       "insertXScale": "Adja meg az X léptéktényezőt, az ellenkező sarokpontot vagy [Sarok/XYZ]",
       "insertYScale": "Adja meg az Y léptéktényezőt vagy",
+      "minsertRows": "Adja meg a sorok számát (---)",
+      "minsertColumns": "Adja meg az oszlopok számát (|||)",
+      "minsertRowDistance": "Adja meg az egységcellát vagy a sorok közötti távolságot (---)",
+      "minsertOppositeCorner": "Adja meg az ellenkező sarokpontot",
+      "minsertColumnDistance": "Adja meg az oszlopok közötti távolságot (|||)",
       "attributeTag": "Adja meg az attribútumcímke nevét",
       "attributePrompt": "Adja meg az attribútumpromptot",
       "attributeDefault": "Adja meg az alapértelmezés szerinti attribútumértéket",
@@ -4244,6 +4266,23 @@ export const hu: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objektum a tbeill paranccsal volt beszúrva."
+            ],
+            "other": [
+              0,
+              " objektum a tbeill paranccsal volt beszúrva."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Adjon meg egy számot vagy két 2D sarokpontot.",
       "explodeLostWidth": "A vonallánc szétvetése során a szélességi információk elvesztek.\nA VISSZA parancs visszaállítja őket.",
       "explodeCannot": [
         [
@@ -7487,6 +7526,30 @@ export const hu: EngineLocale = {
       ],
       "listInsertUniform": "  Egységes lépték: Nem",
       "listInsertExploding": "Szétvetés engedélyezése: Igen",
+      "listInsertColumns": [
+        "          # oszlop ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "    oszloptávolság ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "             # sor ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "       sortávolság ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         " Kiosztás típusa:  ",
         [

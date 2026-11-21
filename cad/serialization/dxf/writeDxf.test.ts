@@ -268,6 +268,22 @@ describe("writeDxf", () => {
     }
   })
 
+  // minsert/m09's drawing: AutoCAD 2027's console opened each version, ASCII
+  // and binary, with no AUDIT error, and plotted them as its own file.
+  it("writes MINSERTs, read back the same", () => {
+    const drawing = parseDxf(fixture("minserts-2018")).drawing
+    const grids = (entities: readonly Entity[]) =>
+      entities.flatMap((e) => (e.type === "insert" ? [e.grid] : []))
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes } = writeDxf(drawing, { version, binary, precision: 16 })
+        const back = parseDxf(bytes).drawing
+        expect(shape(back.entities)).toEqual(shape(drawing.entities))
+        expect(grids(back.entities)).toHaveLength(6)
+      }
+    }
+  })
+
   it("writes wipeouts and WIPEOUTFRAME, read back the same", () => {
     const drawing = parseDxf(fixture("wipeouts-2018")).drawing
     const wipeouts = (entities: readonly Entity[]) =>
@@ -690,6 +706,7 @@ describe("writeDxf", () => {
       "faces-2018",
       "wipeouts-2018",
       "xlines-2018",
+      "minserts-2018",
       "images-2018",
       "tables-2018",
       "mleaders-2018",

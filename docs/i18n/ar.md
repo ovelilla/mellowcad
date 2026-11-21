@@ -81,6 +81,7 @@ marks a choice between competing terms that a native review should settle first 
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |
 | Block | Create block, Insert, Purge | إنشاء كتلة، إدراج، تنظيف (C) † |
+|  | MINSERT (the tool, the palette's MInsert Block); Insertion point X; Columns, Column spacing, Rows, Row spacing | إدراج متعدد للكتلة؛ نقطة الإدراج X؛ الأعمدة، تباعد الأعمدة، الصفوف، تباعد الصفوف (the array's) † |
 |  | Define attributes, Edit attributes | تعريف السمات، تحرير السمات (C) |
 |  | Attribute display; Attribute definition | عرض السمات؛ تعريف سمة (C) |
 | View | Zoom, Pan; Window, Previous, Extents | تكبير/تصغير، تحريك العرض؛ نافذة، السابق، الامتداد (C) |

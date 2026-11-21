@@ -141,7 +141,8 @@ export const cs: EngineLocale = {
       "leader": "Odkaz",
       "wipeout": "Překrytí",
       "xline": "Konstrukční přímka",
-      "ray": "Polopřímka"
+      "ray": "Polopřímka",
+      "minsert": "NVlož blok"
     },
     "description": {
       "U": "Vrátí poslední akci",
@@ -580,7 +581,8 @@ export const cs: EngineLocale = {
         "alignedDimension": "Šikmá kóta",
         "angularDimension": "Kóta úhlu",
         "radiusDimension": "Kóta radiální",
-        "diameterDimension": "Kóta průměru"
+        "diameterDimension": "Kóta průměru",
+        "minsert": "NVlož blok"
       },
       "group": {
         "geometry": "Geometrie",
@@ -746,6 +748,13 @@ export const cs: EngineLocale = {
         "positionX": "Umístění X",
         "positionY": "Umístění Y",
         "positionZ": "Umístění Z",
+        "insertionPointX": "Bod vložení X",
+        "insertionPointY": "Bod vložení Y",
+        "insertionPointZ": "Bod vložení Z",
+        "minsertColumns": "Sloupce",
+        "minsertColumnSpacing": "Rozteč sloupců",
+        "minsertRows": "Řádky",
+        "minsertRowSpacing": "Rozteč řad",
         "basePointX": "Refbod X",
         "basePointY": "Refbod Y",
         "basePointZ": "Refbod Z",
@@ -982,6 +991,9 @@ export const cs: EngineLocale = {
       "-INSERT": [
         "-VLOŽ",
         "-VL"
+      ],
+      "MINSERT": [
+        "NVLOŽ"
       ],
       "ATTEDIT": [
         "ATREDIT",
@@ -1775,6 +1787,11 @@ export const cs: EngineLocale = {
         "Undo": "Zpět"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Měřítko",
+        "Rotate": "Otoč"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Měřítko",
         "Rotate": "Otoč"
@@ -2580,6 +2597,11 @@ export const cs: EngineLocale = {
       "insertRotation": "Určete úhel otočení",
       "insertXScale": "Zadejte měřítko v ose X, zadejte protější roh nebo [Obdélník/XYZ]",
       "insertYScale": "Zadejte měřítko Y",
+      "minsertRows": "Zadejte počet řádků (---)",
+      "minsertColumns": "Zadejte počet sloupců (|||)",
+      "minsertRowDistance": "Určete vzdálenost mezi řádky nebo jednotkovou buňku (---)",
+      "minsertOppositeCorner": "Zadejte protější roh",
+      "minsertColumnDistance": "Zadejte vzdálenost mezi sloupci (|||)",
       "attributeTag": "Zadejte název atributu",
       "attributePrompt": "Zadejte výzvu atributu",
       "attributeDefault": "Zadejte implicitní hodnotu atributu",
@@ -4362,6 +4384,23 @@ export const cs: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " byl násobně vložen."
+            ],
+            "other": [
+              0,
+              " byly násobně vloženy."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Vyžaduje číslo nebo dva 2D rohové body.",
       "explodeLostWidth": "Rozložením této křivky ztratíte informace o tloušťce.\nObnovíte je příkazem ZPĚT.",
       "explodeCannot": [
         "Nelze rozložit ",
@@ -7625,6 +7664,30 @@ export const cs: EngineLocale = {
       ],
       "listInsertUniform": "Použít stejné měřítko: Ne",
       "listInsertExploding": "Povolit rozkládání: Ano",
+      "listInsertColumns": [
+        "         # sloupců ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "    rozteč sloupců ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "             # řad ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "        rozteč řad ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "        Typ pole:  ",
         [

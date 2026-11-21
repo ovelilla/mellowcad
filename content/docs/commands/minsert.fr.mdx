@@ -1,0 +1,68 @@
+---
+title: "Commande INSERM (MINSERT) dans AutoCAD"
+metaTitle: "Commande INSERM (MINSERT) dans AutoCAD"
+description: "Comment INSERM (MINSERT) d'AutoCAD insère un bloc en rangées et colonnes comme un seul objet, ce qu'elle demande et pourquoi DECOMPOSER le refuse."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qu'est-ce que la commande INSERM dans AutoCAD ?","answer":"L'insertion multiple : elle place un bloc dans un réseau rectangulaire de rangées et de colonnes, comme un seul objet. Modifiez ensuite les nombres ou l'espacement dans la palette Propriétés."},{"question":"Comment décomposer un bloc inséré avec INSERM ?","answer":"C'est impossible : DECOMPOSER répond qu'il a été inséré plusieurs fois et le laisse, dans AutoCAD comme ici, même avec ses rangées et colonnes à 1. Insérez de nouveau le bloc avec -INSERER, ou placez les copies avec RESEAURECT, dont le réseau se décompose en ses éléments."},{"question":"Comment s'appelle MINSERT dans AutoCAD en français ?","answer":"INSERM. Elle n'a ni alias ni bouton dans le ruban : tapez-la en entier ; _MINSERT fonctionne dans toutes les langues d'AutoCAD."},{"question":"Quelle est la différence entre INSERM et RESEAU ?","answer":"INSERM répète un bloc comme une seule référence que l'on ne peut pas décomposer. RESEAURECT répète n'importe quels objets en un réseau associatif, avec des poignées pour changer ses nombres et son espacement, que DECOMPOSER décompose."}]
+---
+
+INSERM (MINSERT en anglais) insère plusieurs fois un bloc défini dans le dessin, en rangées et colonnes, comme un seul objet. Elle demande ce que demande `-INSERER` — le nom du bloc (Entrée prend celui proposé, le dernier bloc inséré), le point d'insertion, les facteurs d'échelle X et Y et l'angle de rotation —, puis le nombre de rangées et le nombre de colonnes (Entrée vaut 1), puis la distance entre les rangées et la distance entre les colonnes. Seules les distances dont les nombres ont besoin sont demandées, et une rangée d'une colonne est une référence de bloc ordinaire. Un bloc avec des attributs demande leurs valeurs en dernier, une fois, et chaque copie les affiche.
+
+Les rangées suivent l'axe Y du bloc et les colonnes son axe X, tous deux tournés par la rotation ; les distances sont en unités de dessin, quelle que soit l'échelle, et une distance négative place les copies vers le bas ou vers la gauche. À la distance entre les rangées, deux points spécifient plutôt une cellule d'unité : sa largeur est la distance entre les colonnes et sa hauteur la distance entre les rangées. Le résultat est le bloc inséré plusieurs fois d'AutoCAD : il se déplace, se copie, tourne, change d'échelle et se symétrise d'un bloc, [`LISTE`](/docs/commands/list) ajoute ses rangées et colonnes, et la palette Propriétés les affiche comme Colonnes, Espacement des colonnes, Rangées et Espacement des rangées, que l'on peut saisir. [`DECOMPOSER`](/docs/commands/explode) le compte comme inséré plusieurs fois et le laisse entier, comme AutoCAD. Un DXF l'ouvre et l'enregistre comme AutoCAD lui-même.
+
+- **Commande :** `INSERM`
+- **En anglais :** `MINSERT`, tapé `_MINSERT` dans toutes les langues
+- **Groupe :** [Organisation](/docs/commands#organize)
+- **Essayez-la :** [Ouvrez l'éditeur](/fr/draw), tapez `INSERM` et appuyez sur Entrée.
+
+## Sur la ligne de commande [#session]
+
+Le moteur la dessine et écrit son historique tel que vous le taperiez : les invites dans l'ordre d'AutoCAD 2027, avec les mêmes lettres d'option.
+
+<Session name="minsert" caption="Un siège transformé en bloc, puis placé par INSERM en trois rangées de cinq : un seul objet." />
+
+## Options [#options]
+
+### `?` [#list]
+
+Au nom du bloc : liste les blocs du dessin, comme le fait [`BLOC`](/docs/commands/block), et termine.
+
+### `Echelle` (`E`) [#scale]
+
+Au point d'insertion : demande un seul facteur pour les deux axes, puis redemande le point. Après le point, les facteurs X et Y ne sont pas demandés.
+
+### `rOtation` (`O`) [#rotate]
+
+Au point d'insertion : demande l'angle, qui tourne chaque copie et tout le réseau, puis redemande le point. Après le point, la rotation n'est pas demandée.
+
+## Ce qu'elle ne fait pas encore [#missing]
+
+Au point d'insertion, Pointdebase, X, Y et Z, et à l'échelle X, Coin et XYZ, comme il en manque à -INSERER ; le `~` qui ouvre un fichier de dessin ; les blocs annotatifs, qui n'existent pas ici. Une cote linéaire sélectionne l'INSERM entier, pas un objet de l'une de ses copies. Les lignes Annotatif, Unité de bloc et Facteur d'unité de la palette Propriétés.
+
+[Ce qu'elle fait et ce qui lui manque, en détail (en anglais)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## Questions [#questions]
+
+### Qu'est-ce que la commande INSERM dans AutoCAD ?
+
+L'insertion multiple : elle place un bloc dans un réseau rectangulaire de rangées et de colonnes, comme un seul objet. Modifiez ensuite les nombres ou l'espacement dans la palette Propriétés.
+
+### Comment décomposer un bloc inséré avec INSERM ?
+
+C'est impossible : [`DECOMPOSER`](/docs/commands/explode) répond qu'il a été inséré plusieurs fois et le laisse, dans AutoCAD comme ici, même avec ses rangées et colonnes à 1. Insérez de nouveau le bloc avec `-INSERER`, ou placez les copies avec [`RESEAURECT`](/docs/commands/arrayrect), dont le réseau se décompose en ses éléments.
+
+### Comment s'appelle MINSERT dans AutoCAD en français ?
+
+INSERM. Elle n'a ni alias ni bouton dans le ruban : tapez-la en entier ; `_MINSERT` fonctionne dans toutes les langues d'AutoCAD.
+
+### Quelle est la différence entre INSERM et RESEAU ?
+
+INSERM répète un bloc comme une seule référence que l'on ne peut pas décomposer. [`RESEAURECT`](/docs/commands/arrayrect) répète n'importe quels objets en un réseau associatif, avec des poignées pour changer ses nombres et son espacement, que [`DECOMPOSER`](/docs/commands/explode) décompose.
+
+## Commandes associées [#related]
+
+- [Commande INSERER (INSERT) dans AutoCAD](/docs/commands/insert)
+- [Commande RESEAURECT (ARRAYRECT) dans AutoCAD](/docs/commands/arrayrect)
+- [Commande BLOC (BLOCK) dans AutoCAD](/docs/commands/block)
+- [Commande DECOMPOSER (EXPLODE) dans AutoCAD](/docs/commands/explode)

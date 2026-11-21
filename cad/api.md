@@ -1133,9 +1133,10 @@ export type { ObjectType }
 /**
  * An object type of the Properties palette's drop-down: an entity's, but an
  * array is a type of its own, its kind's, apart from the block references
- * (`Array (Rectangular)`, desktop properties/d06-2).
+ * (`Array (Rectangular)`, desktop properties/d06-2), and so is a MINSERT's
+ * reference (`MInsert Block`, desktop minsert/d03).
  */
-export type ObjectType = EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension`;
+export type ObjectType = EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension` | "minsert";
 
 export { PALETTE_TABS }
 /** The palette panel's tabs, in their order. */
@@ -2433,6 +2434,8 @@ export type EntityProperty =
  | "originX" | "originY"
 /** A reference's Scale X and Scale Y (desktop blocks/d03-2); its Z is |X|, read-only. */
  | "insertScaleX" | "insertScaleY"
+/** A MINSERT's Columns, Column spacing, Rows and Row spacing (desktop minsert/d03). */
+ | "minsertColumns" | "minsertColumnSpacing" | "minsertRows" | "minsertRowSpacing"
 /** The palette's current vertex of a polyline, or point of a spline, 1-based: the runtime's, no geometry. */
  | "vertex" | "vertexX" | "vertexY"
 /** A 3D polyline's vertex Z, in the WCS here like the Z rows. */
@@ -3598,6 +3601,12 @@ export interface InsertEntity extends BaseEntity {
      * derived from these parameters (`domain/arrays.ts`).
      */
     readonly array?: ArrayParameters;
+    /**
+     * Present on a MINSERT's reference (AutoCAD's MInsertBlock, still an
+     * INSERT in the file): the block drawn again in rows and columns, one
+     * object (probes minsert/m02–m05).
+     */
+    readonly grid?: InsertGrid;
 }
 
 // domain/entityTypes.ts
@@ -3839,6 +3848,27 @@ export interface LeaderEntity extends BaseEntity {
     readonly blockOffset?: Vec2;
     readonly styleId: DimStyleId;
     readonly overrides?: LeaderOverrides;
+}
+
+// domain/entityTypes.ts
+/**
+ * A MINSERT's rows and columns (DXF 71, 70, 45, 44). Cell (row, column) is
+ * the block again, `column × columnSpacing` along the reference's turned X
+ * axis and `row × rowSpacing` along its Y, in drawing units: the scale does
+ * not stretch the spacing, SCALE does, and MIRROR negates the column spacing
+ * with the X scale (probes minsert/m03, m04). Its presence is the class, not
+ * the count: MINSERT makes a plain reference of 1 × 1 (m02), but one brought
+ * to 1 × 1 stays a MINSERT, which EXPLODE still refuses (m10).
+ */
+export interface InsertGrid {
+    /** DXF 70, from 1 to 32767. */
+    readonly columns: number;
+    /** DXF 71, from 1 to 32767. */
+    readonly rows: number;
+    /** DXF 44, signed. */
+    readonly columnSpacing: number;
+    /** DXF 45, signed. */
+    readonly rowSpacing: number;
 }
 
 // domain/entityTypes.ts

@@ -183,7 +183,8 @@ gradient as `Hatch pattern GRADIENT` (es `DEGRADADO`), `Annotative: No`, `Gradie
 and `Gradient Centered` or `Gradient Not Centered` (gradient/g11, g13, in each console).
 BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,
 p437), `InsUnits:` the drawing's unit, `Unit conversion: 1.0000`, `Scale uniformly: No`,
-`Allow exploding: Yes`, then each ATTRIBUTE as the reference shows it (its Y scale the height,
+`Allow exploding: Yes`, a MINSERT's `# columns` and `column spacing`, then `# rows` and `row
+spacing`, each pair only when there are several (minsert/m07, m08, in each console's words), then each ATTRIBUTE as the reference shows it (its Y scale the height,
 X over Y the width factor: 7.5000 and 0.6667 at 2 by 3, p418) and END SEQUENCE. ARRAY:
 rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434). REGION: `Area:`, `Perimeter:` and its `Bounding Box:` lower and upper bounds in the UCS, padded `%-9` (es `Cuadro delimitador: Límite inferior`, pt-BR `Caixa delimitadora: Limite inferior`; region/p01, p07, p13).
 WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one would read as

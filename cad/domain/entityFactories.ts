@@ -32,6 +32,7 @@ import {
   BlockDefinition,
   BlockAttribute,
   InsertEntity,
+  InsertGrid,
   Entity,
   XlineEntity,
   RayEntity,
@@ -359,6 +360,7 @@ export interface InsertOptions {
   readonly layerId?: LayerId
   readonly id?: EntityId
   readonly array?: ArrayParameters
+  readonly grid?: InsertGrid
 }
 
 export function createInsert(
@@ -379,6 +381,32 @@ export function createInsert(
       ? { attributes: options.attributes.slice() }
       : {}),
     ...(options.array ? { array: options.array } : {}),
+    ...withInsertGrid(options.grid),
+  }
+}
+
+/** The largest count of rows or of columns MINSERT takes (minsert/m01). */
+export const MAX_INSERT_GRID_COUNT = 32767
+
+/**
+ * `grid` as a reference stores it: its counts whole and in range, its
+ * spacings finite. One cell is kept: a MINSERT brought to 1 × 1 is still one
+ * (minsert/m10).
+ */
+export function withInsertGrid(grid: InsertGrid | undefined): {
+  readonly grid?: InsertGrid
+} {
+  if (!grid) return {}
+  const count = (n: number) =>
+    Number.isInteger(n) ? Math.min(Math.max(n, 1), MAX_INSERT_GRID_COUNT) : 1
+  const spacing = (d: number) => (Number.isFinite(d) ? d : 0)
+  return {
+    grid: {
+      columns: count(grid.columns),
+      rows: count(grid.rows),
+      columnSpacing: spacing(grid.columnSpacing),
+      rowSpacing: spacing(grid.rowSpacing),
+    },
   }
 }
 

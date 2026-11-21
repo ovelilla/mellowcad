@@ -24,9 +24,9 @@
 > referencias externas, hechas el 16/11 y publicadas el 17/11; el patrón de cada sombreado, los
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE y la tabla,
 > hechos el 19/11, sin publicar, y MULTILEADER, hecho el 19/11, sin publicar; XLINE y RAY, con sus
-> páginas, hechos el 20/11, sin publicar; lo que queda del punto 7, MINSERT…, el siguiente) y otro
-> idioma (el chino, `global` como el japonés y el coreano), alternando, además de lo que queda de
-> §7.
+> páginas, hechos el 20/11, sin publicar; MINSERT, con su página, hecho el 21/11, sin publicar; lo
+> que queda del punto 7, los colores índice…, después) y otro idioma (el chino, `global` como el
+> japonés y el coreano, el siguiente), alternando, además de lo que queda de §7.
 > Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md`, `docs/next-mcp.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
@@ -454,6 +454,10 @@ el dueño dio a las sesiones el 6/11).
    **20/11 (sesión del coreano):** sin tanda (la cuota se renueva el 21/11 a las 11:13 UTC). El
    coreano, sin publicar, entra igual que el japonés: `gsc-prioritize.mjs` reconoce `/ko` y lo pesa
    a 0,22 (Corea, 61 en el índice de la auditoría, solo Google: 0,4 × 61/113).
+   **21/11, 21:07 UTC (sesión de MINSERT):** el sitemap publicado ya trae `/ja` y `/ko` (1.679
+   URLs); la tanda del día, 11 pedidas (`/ja`, `/ko`, sus `/docs/commands`, `/docs/floor-plan`,
+   `/docs/open-dxf`, `/docs` y `/ja/docs/exercises`) hasta la cuota, en la duodécima: 1.534 en la
+   cola, unos 140 días a 11 al día.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -1090,4 +1094,11 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   Unas 130 URL nuevas (`/ko` y sus páginas) entran en la cola de §7 cuando el dueño publique, a
   0,22. **Siguiente**, por orden del dueño: lo que queda del punto 7 del DXF (MINSERT…), y después
   el chino (`global`), alternando.
+- DXF, punto 7 de la fase 4 (MINSERT): hecho el 21/11/2026, sin publicar (`docs/next-dxf.md`): el
+  comando y su objeto, con su página `/docs/commands/minsert` en los trece idiomas (trece URL
+  nuevas, a la cola de §7 cuando el dueño publique), para «comando minsert autocad» y «how to
+  explode minsert block» (la auditoría: su respuesta, que no se puede, ni en AutoCAD). Las páginas
+  «abrir DXF online» y «editar DXF online» no cambian: nunca contaron MINSERT entre lo que queda
+  fuera. **Siguiente**, por orden del dueño: el chino (`global`), y después lo que queda del punto
+  7 (los colores índice, las sustituciones DSTYLE, la malla), alternando.
 - 10 Medición: la primera, un mes después del push de 01–02.

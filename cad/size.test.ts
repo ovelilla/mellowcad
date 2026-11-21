@@ -27,9 +27,9 @@ const ISLAND_MAX_BYTES = 1 * KB
  * the 3D face (2026-11-17), to 465 KB for WIPEOUT and the wipeout, to
  * 469 KB for a DXF's images, to 475 KB for its tables and to 481 KB for its
  * multileaders (2026-11-19), to 487 KB for XLINE, RAY and their objects
- * (2026-11-20).
+ * (2026-11-20), to 489 KB for MINSERT and its grid (2026-11-21).
  */
-const ENGINE_MAX_GZIP_BYTES = 487 * KB
+const ENGINE_MAX_GZIP_BYTES = 489 * KB
 
 /**
  * A language's catalog, gzipped, against English's, which the engine carries:

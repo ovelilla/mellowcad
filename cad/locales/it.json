@@ -137,7 +137,8 @@
       "leader": "Direttrice",
       "wipeout": "Entità coprente",
       "xline": "Linea di costruzione",
-      "ray": "Raggio"
+      "ray": "Raggio",
+      "minsert": "Blocco da inserire in una serie rettangolare"
     },
     "description": {
       "U": "Annulla l'ultima operazione",
@@ -263,7 +264,8 @@
         "alignedDimension": "Quota allineata",
         "angularDimension": "Quota angolare",
         "radiusDimension": "Quota radiale",
-        "diameterDimension": "Quota diametro"
+        "diameterDimension": "Quota diametro",
+        "minsert": "Blocco da inserire in una serie rettangolare"
       },
       "group": {
         "geometry": "Geometria",
@@ -429,6 +431,13 @@
         "positionX": "Posizione X",
         "positionY": "Posizione Y",
         "positionZ": "Posizione Z",
+        "insertionPointX": "X punto di inserimento",
+        "insertionPointY": "Y punto di inserimento",
+        "insertionPointZ": "Z punto di inserimento",
+        "minsertColumns": "Colonne",
+        "minsertColumnSpacing": "Distanza fra colonne",
+        "minsertRows": "Righe",
+        "minsertRowSpacing": "Intervallo righe",
         "basePointX": "X punto base",
         "basePointY": "Y punto base",
         "basePointZ": "Z punto base",
@@ -585,6 +594,7 @@
       "-BLOCK": ["-BLOCCO", "-B"],
       "INSERT": ["INSER", "IN", "INSERURL"],
       "-INSERT": ["-INSER", "-IN"],
+      "MINSERT": ["INSERM"],
       "ATTEDIT": ["EDITATT", "EA", "DDATTE"],
       "EATTEDIT": ["EATTEDIT", "MODIFATTBL"],
       "ATTDEF": ["DEFATT", "DE", "DDATTDEF"],
@@ -1008,6 +1018,7 @@
         "Scale": "Scala",
         "Rotate": "Ruota"
       },
+      "MINSERT": { "?": "?", "Scale": "Scala", "Rotate": "Ruota" },
       "BLOCK": {
         "?": "?",
         "Yes": "Sì",
@@ -1789,6 +1800,11 @@
       "insertRotation": "Specificare angolo di rotazione",
       "insertXScale": "Digitare fattore di scala X, specificare angolo opposto o [Angolo/XYZ]",
       "insertYScale": "Digitare fattore di scala Y",
+      "minsertRows": "Digitare il numero di righe (---)",
+      "minsertColumns": "Digitare il numero di colonne (|||)",
+      "minsertRowDistance": "Digitare la distanza tra le righe o specificare la cella unitaria (---)",
+      "minsertOppositeCorner": "Specificare angolo opposto",
+      "minsertColumnDistance": "Specificare la distanza tra le colonne (|||)",
       "attributeTag": "Digitare nome etichetta dell'attributo",
       "attributePrompt": "Digitare messaggio di richiesta per l'attributo",
       "attributeDefault": "Digitare valore di default per l'attributo",
@@ -2623,6 +2639,8 @@
       "verifyAttributeValues": "Verificare i valori di attributo",
       "explodeRejected": "{count, plural, one {Impossibile esplodere # oggetto.} other {Impossibile esplodere # oggetti.}}",
       "explodeXref": "{count, plural, one {# era un riferimento esterno.} other {# erano riferimenti esterni.}}",
+      "explodeMinserted": "{count, plural, one {# è stato inserito in una serie rettangolare.} other {# sono stati inseriti in una serie rettangolare.}}",
+      "requiresNumberOrTwoCorners": "È richiesto un numero o due angoli 2D.",
       "explodeLostWidth": "L'esplosione di questa polilinea causa la perdita di informazioni sulla larghezza.\nIl comando ANNULLA le recupererà.",
       "explodeCannot": "Impossibile esplodere {name}",
       "noneFound": "Ricerca senza risultato.",
@@ -3047,6 +3065,10 @@
       "listInsertConversion": "Conversione unità: {factor}",
       "listInsertUniform": "Scala uniformemente: No",
       "listInsertExploding": "Consenti esplosione: Sì",
+      "listInsertColumns": "         # colonne {count}",
+      "listInsertColumnSpacing": "  distanza fra colonne {spacing}",
+      "listInsertRows": "           # righe {count}",
+      "listInsertRowSpacing": "  distanza fra righe {spacing}",
       "listArrayType": "   Tipo di serie:  {kind, select, rectangular {Rettangolare} polar {   Polare} other { Percorso}}",
       "listArrayBasePoint": "      Punto base:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "  Punto centrale:  X={x}  Y={y}  Z={z}",

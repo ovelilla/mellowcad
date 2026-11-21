@@ -166,9 +166,11 @@ export class EngineText {
 
   /** One object's name: an array's is its kind's (`Array (Rectangular)`), not a reference's. */
   entityName(entity: Entity): string {
-    return entity.type === "insert" && entity.array
-      ? this.format(this.ui.array[entity.array.kind])
-      : this.entity(entity.type, 1)
+    if (entity.type === "insert" && entity.array)
+      return this.format(this.ui.array[entity.array.kind])
+    if (entity.type === "insert" && entity.grid)
+      return this.propertyTitle("minsert")
+    return this.entity(entity.type, 1)
   }
 
   propertyTitle(id: keyof Property["title"], count = 1): string {
@@ -183,11 +185,16 @@ export class EngineText {
   propertiesFilter(type: ObjectType | null, count?: number): string {
     const title = this.ui.property.title
     if (type === null) return this.format(title.all, { count: count ?? 1 })
-    const name = type.endsWith("Array")
-      ? this.format(this.ui.array[type.slice(0, -"Array".length) as ArrayKind])
-      : type.endsWith("Dimension")
-        ? this.propertyTitle(type as `${DimensionKind}Dimension`)
-        : this.entity(type as EntityType, 1)
+    const name =
+      type === "minsert"
+        ? this.propertyTitle("minsert")
+        : type.endsWith("Array")
+          ? this.format(
+              this.ui.array[type.slice(0, -"Array".length) as ArrayKind]
+            )
+          : type.endsWith("Dimension")
+            ? this.propertyTitle(type as `${DimensionKind}Dimension`)
+            : this.entity(type as EntityType, 1)
     return count === undefined
       ? name
       : this.format(title.type, { type: name, count })

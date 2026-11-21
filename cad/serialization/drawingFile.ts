@@ -36,6 +36,7 @@ import {
   XrefSource,
   createAttributeDefinition,
   createBlockDefinition,
+  withInsertGrid,
   createEllipse,
   createSpline,
   createMText,
@@ -163,7 +164,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 62
+export const DRAWING_FILE_VERSION = 63
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -693,6 +694,7 @@ function cloneEntityShape(entity: Entity): Entity {
           ? { attributes: entity.attributes.map(cloneBlockAttribute) }
           : {}),
         ...(entity.array ? { array: cloneArray(entity.array) } : {}),
+        ...(entity.grid ? { grid: { ...entity.grid } } : {}),
       }
     case "region":
       return {
@@ -1982,6 +1984,19 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
         ...parseBlockAttributes(raw.attributes),
         ...parseArray(raw.array),
+        // Since 63: a MINSERT's rows and columns.
+        ...(isRecord(raw.grid)
+          ? withInsertGrid({
+              columns: isFiniteNumber(raw.grid.columns) ? raw.grid.columns : 1,
+              rows: isFiniteNumber(raw.grid.rows) ? raw.grid.rows : 1,
+              columnSpacing: isFiniteNumber(raw.grid.columnSpacing)
+                ? raw.grid.columnSpacing
+                : 0,
+              rowSpacing: isFiniteNumber(raw.grid.rowSpacing)
+                ? raw.grid.rowSpacing
+                : 0,
+            })
+          : {}),
       }
     }
     case "region": {

@@ -1,0 +1,44 @@
+QAFLAGS
+2
+_CIRCLE
+0,0
+2
+_-BLOCK
+B1
+0,0
+_L
+
+_MINSERT
+B1
+0,0
+
+
+
+2
+3
+10
+20
+(setq e (entget (entlast)))
+(entmod (subst (cons 70 1) (assoc 70 e) (subst (cons 71 1) (assoc 71 e) e)))
+(entget (entlast))
+_EXPLODE
+_L
+
+(cdr (assoc 0 (entget (entlast))))
+_MINSERT
+B1
+100,0
+
+
+
+2
+3
+10
+20
+(setq e (entget (entlast)))
+(entmod (subst (cons 70 1) (assoc 70 e) e))
+(entget (entlast))
+_EXPLODE
+_L
+
+(cdr (assoc 0 (entget (entlast))))

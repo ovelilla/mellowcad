@@ -141,8 +141,6 @@ Dependencies run types → per-type modules → overrides → transforms → que
   (`faceFlux`, curved by Green), not as a mesh.
 - **An XLINE or a RAY has no end or extents**: the scene clips it; what cuts, picks or snaps it
   reads its stretch (`infiniteLineReaching`), pieces back through `infinitePieceOf`.
-- **An XLINE or a RAY has no end or extents**: the scene clips it; what cuts, picks or snaps it
-  reads its stretch (`infiniteLineReaching`), pieces back through `infinitePieceOf`.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it but MTEXT's editor, which joins its lines with
@@ -170,6 +168,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
 - A reference scales X and Y apart (Z is |X|); one negative reflects (`insertReflects`). Unequal
   ones place through `linearEntity` (text at X's size); a hatch shown reflected or stretched
   wears `patternFrame`, never stored.
+- A MINSERT is a reference with `grid`, its class even at 1 × 1: `insertFlatGeometry` draws every
+  cell, `insertGeometry` one; a rebuilt reference carries it (`insertLike`), SCALE scales its spacing.
 
 ## Algorithms over a set of entities
 

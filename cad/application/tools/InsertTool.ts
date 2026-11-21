@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+
 import { DocumentReader } from "../../domain/Document"
 import {
   BlockAttribute,
@@ -7,6 +7,8 @@ import {
   BlockId,
   EntityId,
   InsertEntity,
+  InsertGrid,
+  MAX_INSERT_GRID_COUNT,
   blockAttribute,
   createInsert,
   findBlockNamed,
@@ -17,9 +19,17 @@ import {
   variableAttributes,
 } from "../../domain/entities"
 import { parseAngleDegrees, parseNumber } from "../../domain/units"
-import { ucsAngleToWorld } from "../../domain/ucs"
+import {
+  ucsAngleToWorld,
+  ucsDirectionToWorld,
+  worldDirectionToUcs,
+} from "../../domain/ucs"
+import { Vec3, add3, sub3 } from "../../geometry/Vec3"
 import { AddEntityCommand } from "../commands/entityCommands"
-import { parseCoordinate } from "../input/coordinateInput"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { AttributeValuePrompts } from "./attributeValues"
 import { BLOCKS_TO_LIST, askBlocksToList } from "./blockListing"
@@ -54,11 +64,31 @@ type InsertState =
   | { readonly phase: "scaleX"; readonly at: Vec3 }
   | { readonly phase: "scaleY"; readonly at: Vec3 }
   | { readonly phase: "angle"; readonly at: Vec3; readonly cursor: Vec2 | null }
+  /** MINSERT's grid, after the rotation (probes minsert/m01–m03). */
+  | { readonly phase: "rows"; readonly at: Vec3 }
+  | { readonly phase: "columns"; readonly at: Vec3 }
+  | { readonly phase: "rowDistance"; readonly at: Vec3 }
+  /** The unit cell's other corner, the first given at the row distance. */
+  | {
+      readonly phase: "cellCorner"
+      readonly at: Vec3
+      readonly corner: Vec3
+      readonly cursor: Vec2 | null
+    }
+  | { readonly phase: "columnDistance"; readonly at: Vec3 }
   | {
       readonly phase: "attributes"
       readonly at: Vec3
       readonly prompts: AttributeValuePrompts
     }
+
+/** Whether a reference is placed alone (-INSERT) or in rows and columns (MINSERT). */
+export type InsertMode = "insert" | "minsert"
+
+/** INSNAME, which -INSERT and MINSERT share: per drawing, not saved (rectang/p303). */
+export interface InsertName {
+  id: BlockId
+}
 
 /**
  * AutoCAD's -INSERT (2027's INSERT opens the Blocks palette, whose click
@@ -81,12 +111,10 @@ type InsertState =
  * the point; Corner and XYZ at the X scale.
  */
 export class InsertTool implements Tool {
-  readonly id = "insert"
+  readonly id: InsertMode
 
   private state: InsertState = { phase: "name" }
   private lastScreen: Vec2 | null = null
-  /** INSNAME: per drawing, not saved (rectang/p303). */
-  private blockId = ""
   private scaleX = 1
   private scaleY = 1
   /** Radians from the UCS's X axis. */
@@ -94,12 +122,37 @@ export class InsertTool implements Tool {
   /** Whether Scale or Rotate answered, so the point skips their prompts. */
   private scaleGiven = false
   private rotationGiven = false
+  /** MINSERT's grid as answered so far; 1 × 1 until the counts are given. */
+  private grid: InsertGrid = EMPTY_GRID
+
+  /**
+   * MINSERT is -INSERT with its rows and columns asked after the rotation
+   * (probes minsert/m01–m03): the same block name, INSNAME shared through
+   * `name`, and the same point, scales and angle.
+   */
+  constructor(
+    mode: InsertMode = "insert",
+    readonly name: InsertName = { id: "" }
+  ) {
+    this.id = mode
+  }
+
+  /** INSNAME: the block -INSERT or MINSERT inserted last. */
+  private get blockId(): BlockId {
+    return this.name.id
+  }
+
+  private set blockId(id: BlockId) {
+    this.name.id = id
+  }
 
   onNewDrawing(): void {
     this.blockId = ""
   }
 
   heldVariables(): Partial<HeldVariables> {
+    // One holder for both commands: the plain one answers for it.
+    if (this.id !== "insert") return {}
     return {
       INSNAME: {
         read: () => this.blockId,
@@ -116,6 +169,7 @@ export class InsertTool implements Tool {
     this.rotation = 0
     this.scaleGiven = false
     this.rotationGiven = false
+    this.grid = EMPTY_GRID
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.enterName(ctx)
@@ -140,7 +194,10 @@ export class InsertTool implements Tool {
     this.lastScreen = input.screen
     if (this.state.phase === "point") {
       this.state = { phase: "point", cursor: input.point }
-    } else if (this.state.phase === "angle") {
+    } else if (
+      this.state.phase === "angle" ||
+      this.state.phase === "cellCorner"
+    ) {
       this.state = { ...this.state, cursor: input.point }
     }
     ctx.dynamicInput.setPosition(input.screen)
@@ -148,8 +205,12 @@ export class InsertTool implements Tool {
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.state.phase !== "point") return
-    this.place(input.point, ctx)
+    if (input.button !== 0) return
+    if (this.state.phase === "point") this.place(input.point, ctx)
+    else if (this.state.phase === "rowDistance")
+      this.enterCellCorner(this.state.at, input.point, ctx)
+    else if (this.state.phase === "cellCorner")
+      this.takeCell(this.state, input.point, ctx)
   }
 
   question(): PromptId | ToolQuestion {
@@ -185,6 +246,16 @@ export class InsertTool implements Tool {
         return { id: "insertYScale", enter: "useXScaleFactor" }
       case "angle":
         return { id: "insertRotation", enter: { angle: 0 } }
+      case "rows":
+        return { id: "minsertRows", enter: { count: 1 } }
+      case "columns":
+        return { id: "minsertColumns", enter: { count: 1 } }
+      case "rowDistance":
+        return "minsertRowDistance"
+      case "cellCorner":
+        return "minsertOppositeCorner"
+      case "columnDistance":
+        return "minsertColumnDistance"
       case "attributes":
         return this.state.prompts.question()
     }
@@ -204,6 +275,23 @@ export class InsertTool implements Tool {
         }
       case "scaleX":
         return { refusal: "x2dCornerPointOrKeyword" }
+      // MINSERT's, in AutoCAD 2027's console words (minsert/m01, m02, m07):
+      // getint's range, getcorner's, and getdist's at the column distance,
+      // Enter refused there and at the row distance.
+      case "rows":
+      case "columns":
+        return {
+          refusal: "requiresIntegerBetween",
+          values: { min: 1, max: MAX_INSERT_GRID_COUNT },
+        }
+      case "rowDistance":
+      case "cellCorner":
+        return { refusal: "requiresNumberOrTwoCorners" }
+      case "columnDistance":
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "no" },
+        }
       default:
         return null
     }
@@ -251,6 +339,9 @@ export class InsertTool implements Tool {
       case "scaleX":
       case "scaleY":
       case "angle":
+      case "rows":
+      case "columns":
+      case "columnDistance":
         return false
       default:
         return true
@@ -258,7 +349,14 @@ export class InsertTool implements Tool {
   }
 
   getConstraintAnchor(): Vec3 | null {
-    return this.state.phase === "angle" ? this.state.at : null
+    switch (this.state.phase) {
+      case "angle":
+        return this.state.at
+      case "cellCorner":
+        return this.state.corner
+      default:
+        return null
+    }
   }
 
   /**
@@ -301,6 +399,18 @@ export class InsertTool implements Tool {
           state.prompts.attributes()
         )
         break
+      case "rows":
+      case "columns":
+      case "rowDistance":
+      case "columnDistance":
+        preview = this.pending(state.at, ctx, PREVIEW_ID, defaults())
+        break
+      case "cellCorner": {
+        preview = this.pending(state.at, ctx, PREVIEW_ID, defaults())
+        if (state.cursor)
+          extra.push(...cellBox(state.corner, state.cursor, ctx))
+        break
+      }
       default:
         return []
     }
@@ -340,6 +450,11 @@ export class InsertTool implements Tool {
         layerId: ctx.document.getCurrentLayerId(),
         attributes,
         id,
+        // One cell is a plain reference (minsert/m02).
+        grid:
+          this.id === "minsert" && (this.grid.rows > 1 || this.grid.columns > 1)
+            ? this.grid
+            : undefined,
       }),
       at
     )
@@ -353,7 +468,213 @@ export class InsertTool implements Tool {
 
   private afterScale(at: Vec3, ctx: ToolContext): void {
     if (!this.rotationGiven) this.enterAngle(at, ctx)
+    else this.afterRotation(at, ctx)
+  }
+
+  /** MINSERT asks its grid before the attributes (minsert/m05). */
+  private afterRotation(at: Vec3, ctx: ToolContext): void {
+    if (this.id === "minsert") this.enterCount("rows", at, ctx)
     else this.enterAttributes(at, ctx)
+  }
+
+  /**
+   * The number of rows, then of columns: Enter is 1, anything but a whole
+   * number from 1 to 32767 refused in getint's words (minsert/m01, m07).
+   */
+  private enterCount(
+    phase: "rows" | "columns",
+    at: Vec3,
+    ctx: ToolContext
+  ): void {
+    this.state = { phase, at }
+    const take = (count: number, commitCtx: ToolContext) => {
+      this.grid =
+        phase === "rows"
+          ? { ...this.grid, rows: count }
+          : { ...this.grid, columns: count }
+      if (phase === "rows") this.enterCount("columns", at, commitCtx)
+      else this.afterCounts(at, commitCtx)
+    }
+    ctx.dynamicInput.open({
+      fields: [
+        {
+          id: "count",
+          prompt: phase === "rows" ? "minsertRows" : "minsertColumns",
+          kind: "number",
+        },
+      ],
+      commit: (values, commitCtx) => {
+        const count = values.count
+        if (
+          !Number.isInteger(count) ||
+          count < 1 ||
+          count > MAX_INSERT_GRID_COUNT
+        ) {
+          commitCtx.report(
+            commitCtx.text.message("requiresIntegerBetween", {
+              min: 1,
+              max: MAX_INSERT_GRID_COUNT,
+            }),
+            "error"
+          )
+          return
+        }
+        take(count, commitCtx)
+      },
+      commitRaw: (commitCtx) => {
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        take(1, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /**
+   * The distances the counts call for: none for one cell, which is a plain
+   * reference; the rows' when there are rows, else the columns' (minsert/m02).
+   */
+  private afterCounts(at: Vec3, ctx: ToolContext): void {
+    if (this.grid.rows > 1) this.enterRowDistance(at, ctx)
+    else if (this.grid.columns > 1) this.enterColumnDistance(at, ctx)
+    else this.enterAttributes(at, ctx)
+  }
+
+  /**
+   * A number, the rows' spacing of any sign, or a point, the unit cell's
+   * first corner (minsert/m02, m03); Enter refused (getcorner's words).
+   */
+  private enterRowDistance(at: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "rowDistance", at }
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "distance", prompt: "minsertRowDistance", kind: "coordinate" },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const typed = commitCtx.dynamicInput.getText("distance").trim()
+        // Enter is refused and the prompt asked again (minsert/m02).
+        if (typed === "") {
+          commitCtx.report(
+            commitCtx.text.message("requiresNumberOrTwoCorners"),
+            "error"
+          )
+          return true
+        }
+        if (isCoordinateExpression(typed)) {
+          const corner = parseCoordinate(typed, {
+            lastPoint: commitCtx.lastPoint,
+            relativeByDefault: false,
+            ucs: commitCtx.ucs,
+            elevation: commitCtx.elevation,
+          })
+          if (!corner) return false
+          this.enterCellCorner(at, corner, commitCtx)
+          return true
+        }
+        const distance = parseNumber(typed)
+        if (distance === null) return false
+        this.grid = { ...this.grid, rowSpacing: distance }
+        if (this.grid.columns > 1) this.enterColumnDistance(at, commitCtx)
+        else this.enterAttributes(at, commitCtx)
+        return true
+      },
+      directDistance: "typed",
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  private enterCellCorner(at: Vec3, corner: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "cellCorner", at, corner, cursor: null }
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "corner", prompt: "minsertOppositeCorner", kind: "coordinate" },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const typed = commitCtx.dynamicInput.getText("corner").trim()
+        const opposite =
+          typed !== "" && isCoordinateExpression(typed)
+            ? parseCoordinate(typed, {
+                lastPoint: corner,
+                relativeByDefault: false,
+                ucs: commitCtx.ucs,
+                elevation: commitCtx.elevation,
+              })
+            : null
+        if (!opposite) {
+          // Refused, and the row distance asked again (minsert/m02, m07).
+          commitCtx.report(
+            commitCtx.text.message("requiresNumberOrTwoCorners"),
+            "error"
+          )
+          this.enterRowDistance(at, commitCtx)
+          return true
+        }
+        this.takeCell({ at, corner }, opposite, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /**
+   * The unit cell: its width the columns' spacing, its height the rows',
+   * signed, along the UCS's axes; the column distance is not asked
+   * (minsert/m03, m06).
+   */
+  private takeCell(
+    state: { readonly at: Vec3; readonly corner: Vec3 },
+    opposite: Vec2,
+    ctx: ToolContext
+  ): void {
+    const side = worldDirectionToUcs(
+      ctx.ucs,
+      sub3({ ...opposite, z: 0 }, { ...state.corner, z: 0 })
+    )
+    this.grid = { ...this.grid, columnSpacing: side.x, rowSpacing: side.y }
+    this.enterAttributes(state.at, ctx)
+  }
+
+  /**
+   * Any number, a negative or 0 too, or two points' distance, which the
+   * runtime measures (minsert/m01, m03); Enter refused.
+   */
+  private enterColumnDistance(at: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "columnDistance", at }
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "distance", prompt: "minsertColumnDistance", kind: "distance" },
+      ],
+      commit: (values, commitCtx) => {
+        this.grid = { ...this.grid, columnSpacing: values.distance }
+        this.enterAttributes(at, commitCtx)
+      },
+      commitRaw: (commitCtx) => {
+        const typed = commitCtx.dynamicInput.getText("distance").trim()
+        // Enter is refused and the prompt asked again (minsert/m03).
+        if (typed === "") {
+          commitCtx.report(
+            commitCtx.text.message("requiresDistance", {
+              points: "two",
+              keyword: "no",
+            }),
+            "error"
+          )
+          return true
+        }
+        const distance = parseNumber(typed)
+        if (distance === null) return false
+        this.grid = { ...this.grid, columnSpacing: distance }
+        this.enterAttributes(at, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
   }
 
   private enterAttributes(at: Vec3, ctx: ToolContext): void {
@@ -503,7 +824,7 @@ export class InsertTool implements Tool {
     this.state = { phase: "angle", at, cursor: null }
     this.askAngle(ctx, (degrees, commitCtx) => {
       this.rotation = (degrees * Math.PI) / 180
-      this.enterAttributes(at, commitCtx)
+      this.afterRotation(at, commitCtx)
     })
   }
 
@@ -569,6 +890,39 @@ export class InsertTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
+}
+
+const EMPTY_GRID: InsertGrid = {
+  columns: 1,
+  rows: 1,
+  columnSpacing: 0,
+  rowSpacing: 0,
+}
+
+/** The unit cell's rectangle, along the UCS's axes, rubber-banded from its first corner. */
+function cellBox(
+  corner: Vec3,
+  cursor: Vec2,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const side = worldDirectionToUcs(
+    ctx.ucs,
+    sub3({ ...cursor, z: 0 }, { ...corner, z: 0 })
+  )
+  const along = (x: number, y: number) =>
+    add3(corner, ucsDirectionToWorld(ctx.ucs, { x, y, z: 0 }))
+  const box = [
+    corner,
+    along(side.x, 0),
+    along(side.x, side.y),
+    along(0, side.y),
+  ].map((point) => ctx.viewport.worldToScreen(point))
+  return box.map((a, i): ScenePrimitive => ({
+    kind: "segment",
+    a,
+    b: box[(i + 1) % box.length],
+    stroke: { color: THEME.rubberBand, width: 1 },
+  }))
 }
 
 /**

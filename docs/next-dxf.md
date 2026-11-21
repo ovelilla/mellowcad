@@ -22,9 +22,10 @@
 > de otros a 575, y MULTILEADER, hecho el 19/11 (sin publicar, sin el comando MLEADER), que llevó
 > las muestras a 153 y los ficheros de otros a 577 de 577; y, después del japonés (L8, 20/11), XLINE
 > y RAY con sus comandos y sus páginas, hechos el 20/11 (sin publicar), sin cambio en el corpus
-> (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (sin publicar);
-> siguiente, por orden del dueño, lo que quede del punto 7 (MINSERT, los colores índice, las
-> sustituciones DSTYLE, la malla), y después otro idioma (el chino), alternando, una sesión cada
+> (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (sin publicar), y
+> MINSERT con su comando y su página, hecho el 21/11 (sin publicar), sin cambio en el corpus
+> (ninguno lo tiene); siguiente, por orden del dueño, otro idioma (el chino), y después lo que quede
+> del punto 7 (los colores índice, las sustituciones DSTYLE, la malla), alternando, una sesión cada
 > vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
@@ -448,10 +449,23 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       tiene: el corpus queda igual (153 de 154, 577 de 577). La escena las recorta a la vista;
       3000 a 60 fps de mediana al hacer zoom (navegador). Páginas `/docs/commands/xline` y
       `/ray` en los doce idiomas.
-      **Queda del punto 7**, por orden: MINSERT,
-      los colores índice y las sustituciones DSTYLE de cada cota (ninguno con un caso medido en el
-      corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de las
-      muestras.
+      MINSERT, hecho el 21/11/2026 (sin publicar): la referencia de bloque en filas y columnas
+      (`InsertEntity.grid`, la clase AcDbMInsertBlock de AutoCAD, fichero versión 63), un solo
+      objeto, y el comando, investigado en las diez consolas (sondas `minsert/m01`–`m10`, tablas
+      20823–20826, 25140–25141) y el escritorio (`dsk.sh`: un pinzamiento, el de inserción; la
+      paleta `MInsert Block` con sus filas Columns…Row spacing): las solicitudes de -INSERT, después
+      filas, columnas y las distancias que piden (un número o una celda unitaria de dos esquinas),
+      cada rechazo en las palabras de cada consola. El espaciado va en unidades del dibujo por los
+      ejes girados, sin escalar; SCALE lo escala, MIRROR niega el de las columnas con la X (m04);
+      EXPLODE lo rechaza (`1 was minserted.`) aun llevado a 1 × 1 (m10: la clase, no el número);
+      LIST añade filas y columnas. Lo que antes abría como una referencia por celda abre como el
+      objeto. DXF en los dos sentidos: la consola abre los 12 ficheros del dibujo de m09 sin un
+      error de AUDIT y lee sus seis referencias como las del suyo. Ningún fichero del corpus lo
+      tiene: 153 de 154 y 577 de 577, como antes. Página `/docs/commands/minsert` en los trece
+      idiomas.
+      **Queda del punto 7**, por orden: los colores índice y las sustituciones DSTYLE de cada cota
+      (ninguno con un caso medido en el corpus), y la malla (POLYLINE de caras) de VBA_Tower, lo
+      único que queda fuera de las muestras.
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

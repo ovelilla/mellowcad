@@ -22,6 +22,7 @@ import {
   MTextEntity,
   AttributeDefinitionEntity,
   InsertEntity,
+  InsertGrid,
   PolylineEntity,
   Polyline3dEntity,
   LeaderEntity,
@@ -68,7 +69,11 @@ import {
   withThickness,
 } from "./elevation"
 import { splineDataPoints, splineWithPoint } from "./splines"
-import { insertReflects } from "./entityFactories"
+import {
+  MAX_INSERT_GRID_COUNT,
+  insertReflects,
+  withInsertGrid,
+} from "./entityFactories"
 import { replacePolyline3dVertex } from "./polylines3d"
 import { hatchWithPatternSettings } from "./hatchPatternEdits"
 
@@ -120,6 +125,11 @@ export type EntityProperty =
   /** A reference's Scale X and Scale Y (desktop blocks/d03-2); its Z is |X|, read-only. */
   | "insertScaleX"
   | "insertScaleY"
+  /** A MINSERT's Columns, Column spacing, Rows and Row spacing (desktop minsert/d03). */
+  | "minsertColumns"
+  | "minsertColumnSpacing"
+  | "minsertRows"
+  | "minsertRowSpacing"
   /** The palette's current vertex of a polyline, or point of a spline, 1-based: the runtime's, no geometry. */
   | "vertex"
   | "vertexX"
@@ -765,9 +775,48 @@ function applyInsertProperty(
       return value !== 0 ? { ...insert, scaleY: value } : null
     case "rotation":
       return { ...insert, rotation: toRadians(value) }
+    case "minsertColumns":
+    case "minsertRows":
+    case "minsertColumnSpacing":
+    case "minsertRowSpacing":
+      return insert.grid
+        ? withGridValue(insert, insert.grid, property, value)
+        : null
     default:
       return null
   }
+}
+
+/**
+ * A MINSERT's Misc rows (desktop minsert/d03): a count from 1 to 32767, a
+ * spacing of any sign. Both counts at 1 leave it a MINSERT (minsert/m10).
+ */
+function withGridValue(
+  insert: InsertEntity,
+  grid: InsertGrid,
+  property: EntityProperty,
+  value: number
+): InsertEntity | null {
+  const count =
+    Number.isInteger(value) && value >= 1 && value <= MAX_INSERT_GRID_COUNT
+  switch (property) {
+    case "minsertColumns":
+      return count ? withGrid(insert, { ...grid, columns: value }) : null
+    case "minsertRows":
+      return count ? withGrid(insert, { ...grid, rows: value }) : null
+    case "minsertColumnSpacing":
+      return withGrid(insert, { ...grid, columnSpacing: value })
+    case "minsertRowSpacing":
+      return withGrid(insert, { ...grid, rowSpacing: value })
+    default:
+      return null
+  }
+}
+
+function withGrid(insert: InsertEntity, grid: InsertGrid): InsertEntity {
+  const plain: InsertEntity = { ...insert }
+  delete (plain as { grid?: InsertGrid }).grid
+  return { ...plain, ...withInsertGrid(grid) }
 }
 
 /**

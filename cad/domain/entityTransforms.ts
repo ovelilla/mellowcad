@@ -148,7 +148,7 @@ function hatchLike(
 function insertLike(
   insert: InsertEntity,
   position: Vec2,
-  overrides: Pick<InsertOptions, "scaleX" | "scaleY" | "rotation"> = {}
+  overrides: Pick<InsertOptions, "scaleX" | "scaleY" | "rotation" | "grid"> = {}
 ): InsertEntity {
   return createInsert(insert.blockId, position, {
     scaleX: overrides.scaleX ?? insert.scaleX,
@@ -157,7 +157,25 @@ function insertLike(
     attributes: insert.attributes,
     layerId: insert.layerId,
     array: insert.array,
+    grid: overrides.grid ?? insert.grid,
   })
+}
+
+/** A MINSERT's spacings scaled with it, as SCALE leaves them (minsert/m04). */
+function scaledGrid(
+  insert: InsertEntity,
+  factor: number
+): Pick<InsertEntity, "grid"> {
+  const { grid } = insert
+  return grid
+    ? {
+        grid: {
+          ...grid,
+          columnSpacing: grid.columnSpacing * factor,
+          rowSpacing: grid.rowSpacing * factor,
+        },
+      }
+    : {}
 }
 
 /** Maps every loop of a hatch through `map`, keeping its bulges. */
@@ -1363,6 +1381,7 @@ function scalePlanar(
         position: scalePoint(entity.position, base, factor),
         scaleX: entity.scaleX * factor,
         scaleY: entity.scaleY * factor,
+        ...scaledGrid(entity, factor),
       }
     case "point":
       // Its figure is PDSIZE's, not its own: only the place moves (point/p06).
@@ -1488,6 +1507,7 @@ export function scaleEntityCopy(
         return insertLike(entity, scalePoint(entity.position, base, factor), {
           scaleX: entity.scaleX * factor,
           scaleY: entity.scaleY * factor,
+          ...scaledGrid(entity, factor),
         })
       case "point":
       case "solid2d":
@@ -1695,11 +1715,15 @@ function mirroredInsert(
   insert: InsertEntity,
   a: Vec2,
   b: Vec2
-): Pick<InsertEntity, "position" | "rotation" | "scaleX"> {
+): Pick<InsertEntity, "position" | "rotation" | "scaleX" | "grid"> {
+  const { grid } = insert
   return {
     position: mirrorPoint(insert.position, a, b),
     rotation: mirrorAngle(insert.rotation, a, b) + Math.PI,
     scaleX: -insert.scaleX,
+    // The columns run along the X axis the reflection turned back: AutoCAD
+    // negates their spacing with the X scale (minsert/m04: 44 40 → −40).
+    ...(grid ? { grid: { ...grid, columnSpacing: -grid.columnSpacing } } : {}),
   }
 }
 
@@ -1897,6 +1921,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         return insertLike(entity, reflected.position, {
           rotation: reflected.rotation,
           scaleX: reflected.scaleX,
+          grid: reflected.grid,
         })
       }
       case "point":

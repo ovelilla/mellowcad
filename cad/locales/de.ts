@@ -141,7 +141,8 @@ export const de: EngineLocale = {
       "leader": "Führung",
       "wipeout": "Abdeckung",
       "xline": "Konstruktionslinie",
-      "ray": "Strahl"
+      "ray": "Strahl",
+      "minsert": "Meinfüg Block"
     },
     "description": {
       "U": "Macht den letzten Vorgang rückgängig",
@@ -522,7 +523,8 @@ export const de: EngineLocale = {
         "alignedDimension": "Ausgerichtete Bemaßung",
         "angularDimension": "Winkelbemaßung",
         "radiusDimension": "Radialbemaßung",
-        "diameterDimension": "Diametralbemaßung"
+        "diameterDimension": "Diametralbemaßung",
+        "minsert": "Meinfüg Block"
       },
       "group": {
         "geometry": "Geometrie",
@@ -688,6 +690,13 @@ export const de: EngineLocale = {
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "insertionPointX": "Einfügepunkt X",
+        "insertionPointY": "Einfügepunkt Y",
+        "insertionPointZ": "Einfügepunkt Z",
+        "minsertColumns": "Tabellenspalten",
+        "minsertColumnSpacing": "Tabellenspalten-Abstand",
+        "minsertRows": "Tabellenzeilen",
+        "minsertRowSpacing": "Tabellenzeilen-Abstand",
         "basePointX": "Basispunkt X",
         "basePointY": "Basispunkt Y",
         "basePointZ": "Basispunkt Z",
@@ -921,6 +930,9 @@ export const de: EngineLocale = {
       "-INSERT": [
         "-EINFÜGE",
         "-E"
+      ],
+      "MINSERT": [
+        "MEINFÜG"
       ],
       "ATTEDIT": [
         "ATTEDIT",
@@ -1714,6 +1726,11 @@ export const de: EngineLocale = {
         "Undo": "Zurück"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Faktor",
+        "Rotate": "Drehen"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Faktor",
         "Rotate": "Drehen"
@@ -2519,6 +2536,11 @@ export const de: EngineLocale = {
       "insertRotation": "Drehwinkel angeben",
       "insertXScale": "X-Skalierfaktor eingeben, entgegengesetzte Ecke angeben oder [Ecke/XYZ]",
       "insertYScale": "Y-Skalierfaktor eingeben",
+      "minsertRows": "Anzahl Zeilen eingeben (---)",
+      "minsertColumns": "Anzahl Spalten eingeben (|||)",
+      "minsertRowDistance": "Abstand zwischen Zeilen eingeben oder Zelle angeben (---)",
+      "minsertOppositeCorner": "Entgegengesetzte Ecke angeben",
+      "minsertColumnDistance": "Abstand zwischen Spalten angeben (|||)",
       "attributeTag": "Attributbezeichnung eingeben",
       "attributePrompt": "Attribut-Eingabeaufforderung eingeben",
       "attributeDefault": "Vorgegebenen Attributwert eingeben",
@@ -4268,6 +4290,23 @@ export const de: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " wurde mit MEINFÜG eingefügt."
+            ],
+            "other": [
+              0,
+              " wurden mit MEINFÜG eingefügt."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Erfordert Zahl oder zwei 2D-Eckpunkte.",
       "explodeLostWidth": "Zerlegen dieser Polylinie bewirkte den Verlust von Daten zur Breite.\nMit ZURÜCK kann der Vorgang rückgängig gemacht werden.",
       "explodeCannot": [
         "Kann ",
@@ -7512,6 +7551,30 @@ export const de: EngineLocale = {
       ],
       "listInsertUniform": "Einheitlich skalieren: Nein",
       "listInsertExploding": "Auflösen zulassen: Ja",
+      "listInsertColumns": [
+        "         # Spalten ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "    Spaltenabstand ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "          # Zeilen ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "     Zeilenabstand ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "   Anordnungstyp:  ",
         [

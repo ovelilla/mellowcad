@@ -141,7 +141,8 @@ export const fr: EngineLocale = {
       "leader": "Ligne de repère",
       "wipeout": "Nettoyer",
       "xline": "Ligne de construction",
-      "ray": "Demi-droite"
+      "ray": "Demi-droite",
+      "minsert": "Insérer un bloc"
     },
     "description": {
       "U": "Annule la dernière action",
@@ -522,7 +523,8 @@ export const fr: EngineLocale = {
         "alignedDimension": "Cote alignée",
         "angularDimension": "Cote angulaire",
         "radiusDimension": "Cote de rayon",
-        "diameterDimension": "Cote de diamètre"
+        "diameterDimension": "Cote de diamètre",
+        "minsert": "Insérer un bloc"
       },
       "group": {
         "geometry": "Géométrie",
@@ -688,6 +690,13 @@ export const fr: EngineLocale = {
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "insertionPointX": "Point d'insertion X",
+        "insertionPointY": "Point d'insertion Y",
+        "insertionPointZ": "Point d'insertion Z",
+        "minsertColumns": "Colonnes",
+        "minsertColumnSpacing": "Espacement des colonnes",
+        "minsertRows": "Rangées",
+        "minsertRowSpacing": "Espacement des rangées",
         "basePointX": "Point de base X",
         "basePointY": "Point de base Y",
         "basePointZ": "Point de base Z",
@@ -922,6 +931,9 @@ export const fr: EngineLocale = {
       "-INSERT": [
         "-INSERER",
         "-I"
+      ],
+      "MINSERT": [
+        "INSERM"
       ],
       "ATTEDIT": [
         "ATTEDIT",
@@ -1718,6 +1730,11 @@ export const fr: EngineLocale = {
         "Undo": "annUler"
       },
       "INSERT": {
+        "?": "?",
+        "Scale": "Echelle",
+        "Rotate": "rOtation"
+      },
+      "MINSERT": {
         "?": "?",
         "Scale": "Echelle",
         "Rotate": "rOtation"
@@ -2523,6 +2540,11 @@ export const fr: EngineLocale = {
       "insertRotation": "Spécifiez l'angle de rotation",
       "insertXScale": "Entrez le facteur d'échelle en  X, spécifiez le coin opposé ou [Coin/XYZ]",
       "insertYScale": "Entrez le facteur d'échelle en Y",
+      "minsertRows": "Entrez le nombre de rangées (---)",
+      "minsertColumns": "Entrez le nombre de colonnes (|||)",
+      "minsertRowDistance": "Entrez la distance entre les rangées ou spécifiez la cellule d'unité (---)",
+      "minsertOppositeCorner": "Spécifiez le coin opposé",
+      "minsertColumnDistance": "Spécifiez la distance entre les colonnes (|||)",
       "attributeTag": "Entrez le nom de l'étiquette d'attribut",
       "attributePrompt": "Entrez le message d'invite de l'attribut",
       "attributeDefault": "Entrez la valeur d'attribut par défaut",
@@ -4251,6 +4273,23 @@ export const fr: EngineLocale = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " a été inséré plusieurs fois."
+            ],
+            "other": [
+              0,
+              " ont été insérés plusieurs fois."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Nécessite un nombre ou deux coins 2D.",
       "explodeLostWidth": "Les informations relatives à la largeur ont été perdues lors de la décomposition de cette polyligne.\nLa commande ANNULER les restaurera.",
       "explodeCannot": [
         "Impossible de décomposer ",
@@ -7511,6 +7550,30 @@ export const fr: EngineLocale = {
       ],
       "listInsertUniform": "Mettre à l'échelle uniformément: Non",
       "listInsertExploding": "Autoriser la décomposition: Oui",
+      "listInsertColumns": [
+        "        # colonnes ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "  distance entre les colonnes ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "         # rangées ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "  distance entre les rangées ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "  Type de réseau:  ",
         [

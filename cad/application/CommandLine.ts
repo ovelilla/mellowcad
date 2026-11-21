@@ -281,6 +281,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   hatch: "HATCH",
   block: "BLOCK",
   insert: "INSERT",
+  minsert: "MINSERT",
   attedit: "ATTEDIT",
   attdef: "ATTDEF",
   attdisp: "ATTDISP",

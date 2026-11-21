@@ -158,6 +158,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "-BLOCK": { group: "organize" },
   INSERT: { group: "organize" },
   "-INSERT": { group: "organize" },
+  MINSERT: { group: "organize" },
   ATTDEF: { group: "organize" },
   "-ATTDEF": { group: "organize" },
   ATTEDIT: { group: "organize" },

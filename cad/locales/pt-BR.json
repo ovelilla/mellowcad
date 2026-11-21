@@ -137,7 +137,8 @@
       "leader": "Linha de chamada",
       "wipeout": "Cobertura",
       "xline": "Linha de construção",
-      "ray": "Raio"
+      "ray": "Raio",
+      "minsert": "InserirM bloco"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -263,7 +264,8 @@
         "alignedDimension": "Cota alinhada",
         "angularDimension": "Cota angular",
         "radiusDimension": "Cota radial",
-        "diameterDimension": "Cota de diâmetro"
+        "diameterDimension": "Cota de diâmetro",
+        "minsert": "InserirM bloco"
       },
       "group": {
         "geometry": "Geometria",
@@ -429,6 +431,13 @@
         "positionX": "Posição X",
         "positionY": "Posição Y",
         "positionZ": "Posição Z",
+        "insertionPointX": "Ponto de inserção X",
+        "insertionPointY": "Ponto de inserção Y",
+        "insertionPointZ": "Ponto de inserção Z",
+        "minsertColumns": "Colunas",
+        "minsertColumnSpacing": "Espaçamento entre colunas",
+        "minsertRows": "Linhas",
+        "minsertRowSpacing": "Espaçamento entre linhas",
         "basePointX": "Ponto de referência X",
         "basePointY": "Ponto de referência Y",
         "basePointZ": "Ponto de referência Z",
@@ -585,6 +594,7 @@
       "-BLOCK": ["-BLOCO", "-CB"],
       "INSERT": ["INSERIR", "I", "INSERIRURL", "INSERIRD"],
       "-INSERT": ["-INSERIR", "-I"],
+      "MINSERT": ["INSERIRM"],
       "ATTEDIT": ["EDITARATRIB", "EAT", "EATRIBD"],
       "EATTEDIT": ["EDITARATRIBA"],
       "ATTDEF": ["DEFATRIB", "DA", "DEFATR", "DEFATRIBD"],
@@ -997,6 +1007,7 @@
         "Scale": "Escala",
         "Rotate": "Rotacionar"
       },
+      "MINSERT": { "?": "?", "Scale": "Escala", "Rotate": "Rotacionar" },
       "BLOCK": {
         "?": "?",
         "Yes": "Sim",
@@ -1776,6 +1787,11 @@
       "insertRotation": "Especificar ângulo de rotação",
       "insertXScale": "Inserir fator de escala X, especificar canto oposto ou [Canto/XYZ]",
       "insertYScale": "Especificar fator de escala Y ou",
+      "minsertRows": "Inserir número de linhas (---)",
+      "minsertColumns": "Inserir número de colunas (|||)",
+      "minsertRowDistance": "Inserir distância entre linhas ou especificar célula unitária (---)",
+      "minsertOppositeCorner": "Especificar canto oposto",
+      "minsertColumnDistance": "Especificar distância entre colunas (|||)",
       "attributeTag": "Digitar o nome do identificador do atributo",
       "attributePrompt": "Digitar o prompt do atributo",
       "attributeDefault": "Digitar o valor padrão do atributo",
@@ -2610,6 +2626,8 @@
       "verifyAttributeValues": "Verifique os valores do atributo",
       "explodeRejected": "{count, plural, one {# não pôde ser explodido.} other {# não puderam ser explodidos.}}",
       "explodeXref": "{count, plural, one {# era uma referência externa.} other {# eram uma referência externa.}}",
+      "explodeMinserted": "{count, plural, one {# foi minserido.} other {# foram minseridos.}}",
+      "requiresNumberOrTwoCorners": "Requer um número ou dois pontos de canto 2D.",
       "explodeLostWidth": "A explosão desta polilinha causou a perda das informações de largura.\nO comando DESFAZER irá restaurá-las.",
       "explodeCannot": "Não é possível explodir {name}",
       "noneFound": "Nenhum foi encontrado.",
@@ -3034,6 +3052,10 @@
       "listInsertConversion": "Conversão de unidade:    {factor}",
       "listInsertUniform": "  Escala uniforme: Não",
       "listInsertExploding": "Permitir explosão: Sim",
+      "listInsertColumns": "         # colunas {count}",
+      "listInsertColumnSpacing": "  espaçamento entre colunas {spacing}",
+      "listInsertRows": "          # linhas {count}",
+      "listInsertRowSpacing": "  espaçamento entre linhas {spacing}",
       "listArrayType": "  Tipo de matriz:  {kind, select, rectangular {Retangular} polar {    Polar} other {  Caminho}}",
       "listArrayBasePoint": "      Ponto base:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "   Ponto central:  X={x}  Y={y}  Z={z}",

@@ -141,7 +141,8 @@ export const en: EngineCatalog = {
       "leader": "Leader",
       "wipeout": "Wipeout",
       "xline": "Construction Line",
-      "ray": "Ray"
+      "ray": "Ray",
+      "minsert": "MInsert Block"
     },
     "description": {
       "U": "Undo the last action",
@@ -525,7 +526,8 @@ export const en: EngineCatalog = {
         "alignedDimension": "Aligned Dimension",
         "angularDimension": "Angular Dimension",
         "radiusDimension": "Radial Dimension",
-        "diameterDimension": "Diametric Dimension"
+        "diameterDimension": "Diametric Dimension",
+        "minsert": "MInsert Block"
       },
       "group": {
         "geometry": "Geometry",
@@ -691,6 +693,13 @@ export const en: EngineCatalog = {
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "insertionPointX": "Insertion point X",
+        "insertionPointY": "Insertion point Y",
+        "insertionPointZ": "Insertion point Z",
+        "minsertColumns": "Columns",
+        "minsertColumnSpacing": "Column spacing",
+        "minsertRows": "Rows",
+        "minsertRowSpacing": "Row spacing",
         "basePointX": "Basepoint X",
         "basePointY": "Basepoint Y",
         "basePointZ": "Basepoint Z",
@@ -927,6 +936,9 @@ export const en: EngineCatalog = {
       "-INSERT": [
         "-INSERT",
         "-I"
+      ],
+      "MINSERT": [
+        "MINSERT"
       ],
       "ATTEDIT": [
         "ATTEDIT",
@@ -1807,6 +1819,11 @@ export const en: EngineCatalog = {
       "insertRotation": "Specify rotation angle",
       "insertXScale": "Enter X scale factor, specify opposite corner, or [Corner/XYZ]",
       "insertYScale": "Enter Y scale factor",
+      "minsertRows": "Enter number of rows (---)",
+      "minsertColumns": "Enter number of columns (|||)",
+      "minsertRowDistance": "Enter distance between rows or specify unit cell (---)",
+      "minsertOppositeCorner": "Specify opposite corner",
+      "minsertColumnDistance": "Specify distance between columns (|||)",
       "attributeTag": "Enter attribute tag name",
       "attributePrompt": "Enter attribute prompt",
       "attributeDefault": "Enter default attribute value",
@@ -3533,6 +3550,23 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "explodeMinserted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " was minserted."
+            ],
+            "other": [
+              0,
+              " were minserted."
+            ]
+          }
+        ]
+      ],
+      "requiresNumberOrTwoCorners": "Requires number or two 2D corner points.",
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
       "explodeCannot": [
         "Cannot explode ",
@@ -6777,6 +6811,30 @@ export const en: EngineCatalog = {
       ],
       "listInsertUniform": "  Scale uniformly: No",
       "listInsertExploding": "  Allow exploding: Yes",
+      "listInsertColumns": [
+        "         # columns ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertColumnSpacing": [
+        "    column spacing ",
+        [
+          "spacing"
+        ]
+      ],
+      "listInsertRows": [
+        "            # rows ",
+        [
+          "count"
+        ]
+      ],
+      "listInsertRowSpacing": [
+        "       row spacing ",
+        [
+          "spacing"
+        ]
+      ],
       "listArrayType": [
         "      Array type:  ",
         [

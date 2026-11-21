@@ -137,7 +137,8 @@
       "leader": "Leader",
       "wipeout": "Wipeout",
       "xline": "Construction Line",
-      "ray": "Ray"
+      "ray": "Ray",
+      "minsert": "MInsert Block"
     },
     "description": {
       "U": "Undo the last action",
@@ -284,7 +285,8 @@
         "alignedDimension": "Aligned Dimension",
         "angularDimension": "Angular Dimension",
         "radiusDimension": "Radial Dimension",
-        "diameterDimension": "Diametric Dimension"
+        "diameterDimension": "Diametric Dimension",
+        "minsert": "MInsert Block"
       },
       "group": {
         "geometry": "Geometry",
@@ -450,6 +452,13 @@
         "positionX": "Position X",
         "positionY": "Position Y",
         "positionZ": "Position Z",
+        "insertionPointX": "Insertion point X",
+        "insertionPointY": "Insertion point Y",
+        "insertionPointZ": "Insertion point Z",
+        "minsertColumns": "Columns",
+        "minsertColumnSpacing": "Column spacing",
+        "minsertRows": "Rows",
+        "minsertRowSpacing": "Row spacing",
         "basePointX": "Basepoint X",
         "basePointY": "Basepoint Y",
         "basePointZ": "Basepoint Z",
@@ -606,6 +615,7 @@
       "-BLOCK": ["-BLOCK", "-B"],
       "INSERT": ["INSERT", "I"],
       "-INSERT": ["-INSERT", "-I"],
+      "MINSERT": ["MINSERT"],
       "ATTEDIT": ["ATTEDIT", "ATE", "DDATTE"],
       "EATTEDIT": ["EATTEDIT"],
       "ATTDEF": ["ATTDEF", "ATT", "DDATTDEF"],
@@ -991,6 +1001,7 @@
         "Undo": "Undo"
       },
       "INSERT": { "?": "?", "Scale": "Scale", "Rotate": "Rotate" },
+      "MINSERT": { "?": "?", "Scale": "Scale", "Rotate": "Rotate" },
       "BLOCK": { "?": "?", "Yes": "Yes", "No": "No" },
       "ATTDEF": {
         "Invisible": "Invisible",
@@ -1655,6 +1666,11 @@
       "insertRotation": "Specify rotation angle",
       "insertXScale": "Enter X scale factor, specify opposite corner, or [Corner/XYZ]",
       "insertYScale": "Enter Y scale factor",
+      "minsertRows": "Enter number of rows (---)",
+      "minsertColumns": "Enter number of columns (|||)",
+      "minsertRowDistance": "Enter distance between rows or specify unit cell (---)",
+      "minsertOppositeCorner": "Specify opposite corner",
+      "minsertColumnDistance": "Specify distance between columns (|||)",
       "attributeTag": "Enter attribute tag name",
       "attributePrompt": "Enter attribute prompt",
       "attributeDefault": "Enter default attribute value",
@@ -2489,6 +2505,8 @@
       "verifyAttributeValues": "Verify attribute values",
       "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
       "explodeXref": "{count, plural, one {# was an external reference.} other {# were an external reference.}}",
+      "explodeMinserted": "{count, plural, one {# was minserted.} other {# were minserted.}}",
+      "requiresNumberOrTwoCorners": "Requires number or two 2D corner points.",
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
       "explodeCannot": "Cannot explode {name}",
       "noneFound": "None found.",
@@ -2913,6 +2931,10 @@
       "listInsertConversion": "  Unit conversion: {factor}",
       "listInsertUniform": "  Scale uniformly: No",
       "listInsertExploding": "  Allow exploding: Yes",
+      "listInsertColumns": "         # columns {count}",
+      "listInsertColumnSpacing": "    column spacing {spacing}",
+      "listInsertRows": "            # rows {count}",
+      "listInsertRowSpacing": "       row spacing {spacing}",
       "listArrayType": "      Array type:  {kind, select, rectangular {Rectangular} polar {    Polar} other {     Path}}",
       "listArrayBasePoint": "      Base point:  X={x}  Y={y}  Z={z}",
       "listArrayCenter": "    Center point:  X={x}  Y={y}  Z={z}",

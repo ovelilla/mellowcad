@@ -11,6 +11,7 @@ import type {
   HatchEntity,
   HatchLoop,
   InsertEntity,
+  InsertGrid,
 } from "./entityTypes"
 import { createEllipse } from "./ellipses"
 import { mapSplinePoints } from "./splines"
@@ -225,12 +226,40 @@ function nestedInsert(insert: InsertEntity, map: Linear2): InsertEntity {
   )
   const scaleX = Math.hypot(a, b)
   if (!(scaleX > 0)) return insert
+  const rotation = Math.atan2(b, a)
   return {
     ...insert,
     position: applyLinear(map, insert.position),
-    rotation: Math.atan2(b, a),
+    rotation,
     scaleX,
     scaleY: (a * d - b * c) / scaleX,
+    ...(insert.grid
+      ? { grid: mappedGrid(insert, insert.grid, map, rotation) }
+      : {}),
+  }
+}
+
+/**
+ * A MINSERT's spacing through `map`: each run of cells mapped, measured
+ * along the axes the mapped reference turns to; a shear the grid cannot
+ * hold is dropped, as the reference's own is.
+ */
+function mappedGrid(
+  insert: InsertEntity,
+  grid: InsertGrid,
+  map: Linear2,
+  rotation: number
+): InsertGrid {
+  const c = Math.cos(insert.rotation)
+  const s = Math.sin(insert.rotation)
+  const across = applyLinear(map, { x: c, y: s })
+  const up = applyLinear(map, { x: -s, y: c })
+  const x = { x: Math.cos(rotation), y: Math.sin(rotation) }
+  const y = { x: -x.y, y: x.x }
+  return {
+    ...grid,
+    columnSpacing: grid.columnSpacing * V.dot(across, x),
+    rowSpacing: grid.rowSpacing * V.dot(up, y),
   }
 }
 

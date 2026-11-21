@@ -1261,7 +1261,8 @@ preselection is counted and sifted the same way after the echo; with nothing lef
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
 pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); a wipeout a line per edge, the closing one last, with its layer and properties, and nothing said (wipeout/w08, w10); an image its frame's four lines, up from its insertion corner, across, down and back, its path gone and nothing said (image/i06a); a table its cells' MTEXTs, its block cells' references and its grid's lines, each on its layer and in its properties, and a grey line of no length at its corner, nothing said (table/t06, t06b); a multileader its MTEXT or block reference, each dogleg a line, each leader line a polyline or a spline and each arrowhead a 2D solid, in its order (mleader/m03, m12); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).. A reference to an external reference is refused under the count, after the line of what
 cannot be exploded: `1 was an external reference.` (es `1 era una referencia externa.`, table
-25137–25138; xref/p08, p17)
+25137–25138; xref/p08, p17); a MINSERT's reference so too, `1 was minserted.` (es `1 mal
+insertado.`, 25140–25141; minsert/m04, m05, m07)
 
 **Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
 (pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch

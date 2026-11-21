@@ -36,6 +36,7 @@ import {
   type Entity,
   type HatchEntity,
   type InsertEntity,
+  type InsertGrid,
   type LineEntity,
   type MTextEntity,
   type PolylineEntity,
@@ -1070,6 +1071,16 @@ export const arrayParameters: fc.Arbitrary<ArrayParameters> = fc.oneof(
     }))
 )
 
+/** A MINSERT's rows and columns, never one cell, spacings of either sign. */
+export const insertGrid: fc.Arbitrary<InsertGrid> = fc
+  .record({
+    columns: fc.integer({ min: 1, max: 6 }),
+    rows: fc.integer({ min: 1, max: 6 }),
+    columnSpacing: coordinate,
+    rowSpacing: coordinate,
+  })
+  .filter((grid) => grid.columns > 1 || grid.rows > 1)
+
 export const insertEntity: fc.Arbitrary<InsertEntity> = fc
   .tuple(
     point,
@@ -1079,9 +1090,10 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
     fc.boolean(),
     fc.boolean(),
     fc.array(blockAttribute, { maxLength: 3 }),
-    fc.option(arrayParameters, { freq: 3, nil: undefined })
+    fc.option(arrayParameters, { freq: 3, nil: undefined }),
+    fc.option(insertGrid, { freq: 3, nil: undefined })
   )
-  .map(([position, x, y, rotation, flipX, flipY, attributes, array]) =>
+  .map(([position, x, y, rotation, flipX, flipY, attributes, array, grid]) =>
     withId<InsertEntity>(
       {
         type: "insert",
@@ -1093,7 +1105,7 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
         scaleY: (flipY ? -1 : 1) * (y ?? x),
         rotation,
         ...(attributes.length > 0 ? { attributes } : {}),
-        ...(array ? { array } : {}),
+        ...(array ? { array } : grid ? { grid } : {}),
       },
       "insert"
     )

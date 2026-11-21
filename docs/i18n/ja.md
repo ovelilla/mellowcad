@@ -77,6 +77,7 @@ style (`新しい図面ファイルを作成`). None of it was seen on the deskt
 | Clipboard | Copy; Copy with base point; Paste | コピー クリップ; 基点コピー; 貼り付け | X ID_RBN_CMDBTN_COPYCLIP_0002, …COPYBASE_0002, …PASTECLIP_0001 |
 | Inquiry | Measure; Measure (segments); Divide; Area; List; ID Point | 計測; メジャー; ディバイダ; 面積; オブジェクト情報; 位置表示 | X ID_RBN_SPLITBTN_MEASURE, ID_RBN_0140, …DIVIDE, …AREA, RBN_01740411, ACAD_189 |
 | Block | Create block; Insert block; Purge | ブロック作成; ブロック挿入; 名前削除 | X ID_RBN_SPLITBTN_CREATEBLOCK, MM_1614, ID_RBN_CMDBTN_PURGE |
+| Block | MINSERT (the tool, the palette's MInsert Block); its Insertion point X; Columns, Column spacing, Rows, Row spacing | ブロック一括挿入 †; 挿入点 X †; 列, 列の間隔, 行, 行の間隔 † | the help's bracket name (GUID-A780A2FA, 20853); ax26res 299, 42 and 266–269 not read (the pack is no longer opened): the array's rows' words (1189–1195) |
 | Annotate | Linear; Aligned; Angular; Radius; Baseline; Continue; Rotated; Leader | 長さ寸法記入; 平行寸法記入; 角度寸法記入; 半径寸法記入; 並列寸法記入; 直列寸法記入; 回転寸法; 引出線記入 | X ID_RBN_CMDBTN_DIM*, XLS_0033, XLS_0203 |
 | 3D | Union; Subtract; Intersect; Box; Extrude; Presspull | 和; 差; 交差; 直方体; 押し出し; 境界引き伸ばし | X ID_Union, ID_Subtract, ID_Intersect, ID_RBN_CMDBTN_BOX, ID_RBN_8052, …PRESSPULL |
 | Tools | System variables; Viewpoint; Layer (command line) | 変数設定; 3D 視点; 画層(コマンド ライン) † | X ID_Setvar, MM_0539 |

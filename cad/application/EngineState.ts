@@ -184,10 +184,11 @@ export interface PaletteUi {
 /**
  * An object type of the Properties palette's drop-down: an entity's, but an
  * array is a type of its own, its kind's, apart from the block references
- * (`Array (Rectangular)`, desktop properties/d06-2).
+ * (`Array (Rectangular)`, desktop properties/d06-2), and so is a MINSERT's
+ * reference (`MInsert Block`, desktop minsert/d03).
  */
 export type ObjectType =
-  EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension`
+  EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension` | "minsert"
 
 /**
  * The type the Properties palette's drop-down files `entity` under: an array
@@ -197,6 +198,9 @@ export type ObjectType =
 export function objectType(entity: Entity): ObjectType {
   if (entity.type === "insert" && entity.array)
     return `${entity.array.kind}Array`
+  // `MInsert Block`, another class than a block reference (desktop
+  // minsert/d03).
+  if (entity.type === "insert" && entity.grid) return "minsert"
   if (entity.type === "dimension") return `${entity.kind}Dimension`
   return entity.type
 }
@@ -2110,16 +2114,30 @@ function singleEntityInfo(
       }
       // AutoCAD's sections and order (desktop blocks/d03-2, d03-3): Scale Z
       // is |X| here, never stored, so it reads but takes nothing; Annotative,
-      // Block Unit and Unit factor are not built.
+      // Block Unit and Unit factor are not built. A MINSERT's position rows
+      // are its Insertion point, and Misc holds its grid (minsert/d03).
       const position = at(entity.position)
+      const { grid } = entity
       return {
         title: text.entityName(entity),
         count: 1,
         groups: [
           group("geometry", [
-            coordRow("positionX", "positionX", position.x),
-            coordRow("positionY", "positionY", position.y),
-            coordRow("positionZ", "positionZ", position.z),
+            coordRow(
+              grid ? "insertionPointX" : "positionX",
+              "positionX",
+              position.x
+            ),
+            coordRow(
+              grid ? "insertionPointY" : "positionY",
+              "positionY",
+              position.y
+            ),
+            coordRow(
+              grid ? "insertionPointZ" : "positionZ",
+              "positionZ",
+              position.z
+            ),
             coordRow("scaleX", "insertScaleX", entity.scaleX),
             coordRow("scaleY", "insertScaleY", entity.scaleY),
             row("scaleZ", coord(Math.abs(entity.scaleX))),
@@ -2133,6 +2151,22 @@ function singleEntityInfo(
               "rotation",
               normalizeDegrees((entity.rotation * 180) / Math.PI)
             ),
+            ...(grid
+              ? [
+                  countRow("minsertColumns", "minsertColumns", grid.columns),
+                  lengthRow(
+                    "minsertColumnSpacing",
+                    "minsertColumnSpacing",
+                    grid.columnSpacing
+                  ),
+                  countRow("minsertRows", "minsertRows", grid.rows),
+                  lengthRow(
+                    "minsertRowSpacing",
+                    "minsertRowSpacing",
+                    grid.rowSpacing
+                  ),
+                ]
+              : []),
           ]),
           ...(entity.attributes
             ? [

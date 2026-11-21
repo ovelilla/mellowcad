@@ -139,6 +139,12 @@ export class ExplodeTool extends SelectionActionTool {
             entity.type === "insert" && isXref(ctx.blocks(entity.blockId)),
           message: "explodeXref",
         },
+        // A MINSERT's reference is one object of several cells, never
+        // broken up (minsert/m04, m05: `1 was minserted.`, 25140).
+        {
+          rejects: (entity) => entity.type === "insert" && !!entity.grid,
+          message: "explodeMinserted",
+        },
       ],
     }
   }

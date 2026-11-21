@@ -141,7 +141,8 @@ export const ar: EngineLocale = {
       "leader": "خط إشارة",
       "wipeout": "قناع",
       "xline": "خط إنشائي",
-      "ray": "شعاع"
+      "ray": "شعاع",
+      "minsert": "إدراج متعدد للكتلة"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -554,7 +555,8 @@ export const ar: EngineLocale = {
         "alignedDimension": "بُعد محاذٍ",
         "angularDimension": "بُعد زاوي",
         "radiusDimension": "بُعد نصف قطري",
-        "diameterDimension": "بُعد قطري"
+        "diameterDimension": "بُعد قطري",
+        "minsert": "إدراج متعدد للكتلة"
       },
       "group": {
         "geometry": "الهندسة",
@@ -720,6 +722,13 @@ export const ar: EngineLocale = {
         "positionX": "الموضع X",
         "positionY": "الموضع Y",
         "positionZ": "الموضع Z",
+        "insertionPointX": "نقطة الإدراج X",
+        "insertionPointY": "نقطة الإدراج Y",
+        "insertionPointZ": "نقطة الإدراج Z",
+        "minsertColumns": "الأعمدة",
+        "minsertColumnSpacing": "تباعد الأعمدة",
+        "minsertRows": "الصفوف",
+        "minsertRowSpacing": "تباعد الصفوف",
         "basePointX": "النقطة الأساسية X",
         "basePointY": "النقطة الأساسية Y",
         "basePointZ": "النقطة الأساسية Z",
