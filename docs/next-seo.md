@@ -480,14 +480,19 @@ el dueño dio a las sesiones el 6/11).
    páginas como máximo; Bing avisa por correo al acabar) y «Request indexing» de las 20 primeras
    URLs francesas de la cola de Google, todas «descubiertas pero no rastreadas» (cuota 100 → 81).
    El 6/11, tras el push de la segunda tanda, IndexNow con las 235 URLs del sitemap (200).
-   **Baidu (pendiente del dueño, apuntado el 22/11):** el chino simplificado (`/zh-cn`, L8) busca
-   sobre todo en Baidu, que no lee IndexNow ni la cola de Google. Registrar el sitio en el
-   Baidu 搜索资源平台 (`ziyuan.baidu.com`) con una cuenta del dueño (pide un móvil para
-   verificarla), verificar `mellowcad.com` por fichero o meta (como Google y Bing: una sesión lo
-   pone en el código, con su variable de entorno), enviar el sitemap y, después de cada push con
-   páginas chinas nuevas, su envío por API (普通收录). Antes, comprobar desde China que el sitio
-   carga (Cloudflare no tiene red allí: `docs/i18n/zh-CN.md`, «Reaching the site from China»).
-   Bing, que también sirve a China (cn.bing.com), ya rastrea el sitio y recibe IndexNow.
+   **Baidu (bloqueado, 22/11):** el chino simplificado (`/zh-cn`, L8) busca sobre todo en Baidu,
+   que no lee IndexNow ni la cola de Google. Su 搜索资源平台 (`ziyuan.baidu.com`) pide una cuenta
+   de Baidu, y Baidu no entra con Google: usuario y contraseña, SMS, el QR de su app, WeChat, QQ o
+   Weibo. El 22/11 la sesión lo intentó con el móvil español del dueño, en su Chrome de
+   ~/seo-data: el acceso por SMS y los dos formularios de registro (el del 搜索资源平台 y el general)
+   lo rechazan, como `0034…` y como `+34…` («手机号码格式不正确»), sin selector de país; según
+   guías de 2022–2025, solo alguna app de Baidu registra móviles extranjeros, y no los de la UE. Sin
+   un móvil chino, o una cuenta de WeChat o QQ del dueño, no hay alta. Si llega a haberla: verificar
+   `mellowcad.com` por fichero en `public/` (llega con el push), enviar el sitemap y, tras cada
+   push con páginas chinas nuevas, su envío por API (普通收录); antes, comprobar desde China que el
+   sitio carga (Cloudflare no tiene red allí: `docs/i18n/zh-CN.md`, «Reaching the site from
+   China»). Mientras, Baidu solo descubre el sitio por sus enlaces; Bing, que también sirve a China
+   (cn.bing.com), ya lo rastrea y recibe IndexNow.
 4. **GitHub y npm**: la descripción y los temas del repositorio, puestos el 6/11 (el `gh repo edit`
    de `docs/plans/seo/launch-kit.md` §0); la vista previa social (Settings → Social preview,
    `og-card-en.png`), que GitHub no deja poner por API, puesta el 9/11 por la sesión con la sesión
