@@ -35,7 +35,7 @@ export const EDITOR_LAYOUT_STORAGE = {
 /**
  * The landing's share image in each language, `app/[locale]/og.png`; the
  * editor's is `/og/draw.png`. A static file takes its type from the extension
- * (`docs/next-static-export.md`); the old `/og` and `/og/draw` redirect here.
+ * (`.claude/rules/marketing.md`); the old `/og` and `/og/draw` redirect here.
  */
 export const OG_IMAGE_PATH = "/og.png"
 

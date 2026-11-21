@@ -13,7 +13,7 @@ import {
 
 // WHY a static export: on Vercel every prerendered page lives in the ISR
 // store and each read counts against Hobby's million, where a file costs
-// only its CDN request (`docs/next-static-export.md`). `next build` only
+// only its CDN request (`.claude/rules/i18n.md`). `next build` only
 // warns that headers, redirects and rewrites are not applied: Vercel's
 // builder still emits them from `.next/routes-manifest.json` ("detected
 // `next export`"), which a test over `vercel build`'s output holds.

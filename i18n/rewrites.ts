@@ -104,7 +104,7 @@ function englishOnlyRedirects(routing: LocaleRouting): Redirect[] {
 /**
  * The share cards' old addresses, which the social networks keep in their
  * caches: `/opengraph-image`, then `/og` and `/og/draw` in each language,
- * before a static file needed the extension (`docs/next-static-export.md`).
+ * before a static file needed the extension (`.claude/rules/marketing.md`).
  */
 function shareCardRedirects(routing: LocaleRouting): Redirect[] {
   const prefixed = segments(routing).filter(

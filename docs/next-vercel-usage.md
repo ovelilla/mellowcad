@@ -4,8 +4,8 @@
 > sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en §3, y ninguna sesión
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
 > Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
-> millón (§3): pasarse a Pro está pendiente del dueño, y el export estático que deja esas lecturas
-> en cero está hecho en commits el 21/11, a falta de su despliegue (`docs/next-static-export.md`).
+> millón (§3). Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja
+> las lecturas de ISR de las páginas en cero: la lectura del 22/11 lo confirma (§4).
 
 ## 1. El problema
 
@@ -43,6 +43,7 @@ Traffic. La CLI no sirve: en Hobby sus métricas solo cubren 30 minutos.
 | 19/11 00:40 | 779.111 | 18/11 aún incompleto | 5,97 GB | primer día con Cloudflare: abajo |
 | 19/11 11:10 | 789.877 | 18/11: ~76K | 6,05 GB | ventana hasta las 03:00: +10,8K en 11 h |
 | 20/11 10:40 | **1.005.030** | 19/11: ~50K | 7,9 GB | límite pasado; ventana hasta el 20/11 a las 02:00 |
+| 21/11 09:00 | 1M (el proyecto, 864K) | — | **8,14 GB** (el proyecto, 6,63) | ventana hasta el 21/11 a las 00:00; el mismo día, el export estático a producción |
 
 El 19/11 el panel de uso aún cerraba su ventana el 18/11 a las 16:00, así que el ritmo de después
 se leyó en Observability (últimas 12 h, todas ya con Cloudflare): **28K unidades de lectura de ISR
@@ -89,8 +90,8 @@ Hasta principios de diciembre salen de la ventana los días de finales de octubr
 40K lecturas: para no llegar al millón, el consumo tiene que quedar **por debajo de ~20–25K
 lecturas al día**. Se levanta cuando dos días completos seguidos queden por debajo y el total
 de 30 días baje, o cuando el proxy de §5 esté funcionando y lo confirme la lectura del día
-siguiente, o cuando el sitio se sirva como export estático (`docs/next-static-export.md`, hecho
-en commits el 21/11/2026), que deja las lecturas de ISR en cero. Entonces un push al día como mucho (skill `finish-feature`), y el siguiente idioma
+siguiente, o cuando el export estático (en producción desde el 21/11/2026 a las 09:40) deje las
+lecturas de ISR en cero y lo confirme la lectura del día siguiente. Entonces un push al día como mucho (skill `finish-feature`), y el siguiente idioma
 (el húngaro) solo con margen.
 
 ## 5. La caché de Cloudflare delante de Vercel
@@ -112,7 +113,11 @@ través del proxy (vencen el 27/01/2027).
 
 - Adelgazar el HTML de la documentación: de sus ~123 KB, ~68 KB son el payload del router que Next
   incrusta para hidratar.
-- Servir el sitio como ficheros estáticos: hecho en commits el 21/11/2026, en el mismo proyecto
-  de Vercel (`docs/next-static-export.md`), a falta de su despliegue de prueba; si Hobby se
-  queda corto, Cloudflare Workers Static Assets (su §3). El MCP ya es una función aparte
-  (`api/mcp.js`), lista para irse a Workers (`docs/next-mcp.md` §7).
+- Servir el sitio como ficheros estáticos: en producción desde el 21/11/2026, en el mismo
+  proyecto de Vercel (`.claude/rules/i18n.md`). Lo que no arregla es el millón de CDN Requests al
+  mes de Hobby, que Cloudflare mantiene lejos (unas 5.400 al día con él, 34.000 sin él). Si Hobby
+  se queda corto, la salida es Cloudflare Workers Static Assets: gratis hasta 20.000 ficheros por
+  versión (el export tiene unos 12.200; 4.900 sin los segmentos de prefetch, que nadie pide) y
+  25 MiB por fichero, peticiones a ficheros ilimitadas, y `not_found_handling: "404-page"` da el
+  404 de cada idioma. El MCP no cabe en su plan gratis (10 ms de CPU, `node:vm`); ya es una
+  función aparte (`api/mcp.js`), lista para irse a Workers de pago (`docs/next-mcp.md` §7).

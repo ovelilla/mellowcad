@@ -1,7 +1,7 @@
 // Serves `.vercel/output` (what `vercel build` leaves) the way Vercel's router
 // reads its config.json, closely enough to check the routing, the 404s and
 // the router's payload requests in a browser without deploying. `next start`
-// serves no export (`docs/next-static-export.md`).
+// serves no export (`.claude/rules/i18n.md`).
 //
 //   vercel build --prod --yes
 //   node scripts/vercel/serve-output.mjs 3010

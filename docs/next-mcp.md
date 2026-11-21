@@ -340,7 +340,7 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
   mes por CPU (4 h incluidas) y un millón por invocaciones: mil dibujos al mes son el 0,3 %. No
   hay base de datos, ni blobs, ni cuentas.
 - **La web tenía una función**: la búsqueda de la documentación, una invocación por consulta
-  nueva (desde el 21/11/2026 busca el navegador, `docs/next-static-export.md`). El MCP no abría
+  nueva (desde el 21/11/2026, con el sitio como export estático, busca el navegador). El MCP no abría
   esa puerta; añadía otra más pesada.
 - **El riesgo real** es de Hobby: al pasar un límite no se cobra, **se pausa el equipo entero**,
   la web incluida, hasta 30 días. Una inundación contra la ruta tumbaría el sitio en pleno
@@ -376,7 +376,7 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
 - **Si hay tracción o abuso**, la salida es mover la misma función a Workers de Cloudflare de
   pago (5 $ al mes), que aísla el sitio: su plan gratis da 10 ms de CPU por petición y no llega.
   Es gasto, así que es del dueño. El núcleo se escribe sin nada de Vercel para que el paso sea
-  corto. Desde el 21/11/2026 (`docs/next-static-export.md`) es ya una función fuera de Next,
+  corto. Desde el 21/11/2026 (el sitio, un export estático) es ya una función fuera de Next,
   `api/mcp.js`, que reexporta `lib/mcp/handler.ts` empaquetado: el paso es aún más corto.
 - **Privacidad**: el servidor ve el guion que le mandan y no guarda nada. Hay que decirlo donde
   hoy se dice lo contrario.

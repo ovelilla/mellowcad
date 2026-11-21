@@ -11,7 +11,7 @@ export const dynamic = "force-static"
 export const dynamicParams = false
 
 // WHY `.json` in the param: exported, the route is a file, and a static host
-// takes its type from the extension (`docs/next-static-export.md`).
+// takes its type from the extension (`.claude/rules/marketing.md`).
 export function generateStaticParams() {
   return localeParams().flatMap(({ locale }) =>
     Object.keys(EXERCISES).map((name) => ({ locale, name: `${name}.json` }))
