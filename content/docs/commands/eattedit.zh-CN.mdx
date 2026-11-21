@@ -1,0 +1,53 @@
+---
+title: "AutoCAD EATTEDIT（编辑属性）命令"
+metaTitle: "CAD块属性编辑：EATTEDIT 增强属性编辑器用法"
+description: "CAD块属性怎么修改：AutoCAD 的 EATTEDIT 在增强属性编辑器中编辑块的属性值，以及双击块为什么会执行该命令。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD增强属性编辑器怎么打开？","answer":"双击带属性的块参照，或输入 EATTEDIT 后拾取该块参照。在任何语言版本的 AutoCAD 中都可以输入 _EATTEDIT。"},{"question":"CAD块属性值怎么修改？","answer":"双击块，在该属性的字段中输入新值，然后按 Enter 键。每个块参照保留各自的值：修改一个不会影响其他块参照。"},{"question":"CAD双击块为什么不能编辑属性？","answer":"EATTEDIT 只对块中包含属性的块参照打开，创建时不带属性的块没有属性：请用 ATTDEF 定义属性，并在创建块时将其与其他对象一起选择。如果属性值不显示，请检查 ATTDISP，它可以隐藏不可见属性或全部属性。"},{"question":"EATTEDIT 和 ATTEDIT 有什么区别？","answer":"两者编辑相同的值。EATTEDIT 用标记作为每个字段的标签，与增强属性编辑器的“属性”选项卡相同；ATTEDIT 用提示作为标签，与“编辑属性”对话框相同。在 AutoCAD 中，EATTEDIT 还可以编辑每个属性的文字选项和特性。"}]
+---
+
+EATTEDIT（编辑属性）命令为一个块参照打开 AutoCAD 的增强属性编辑器：命令提示选择块，然后为其每个属性显示一个字段，以标记作为标签，填入其值，与编辑器“属性”选项卡中的列表相同。重新输入值，按 Tab 键在字段之间移动，按 Enter 键一步应用所有修改，`U` 可以放弃；按 Esc 键则不做任何修改。
+
+与 AutoCAD 相同，双击带属性的块参照会执行 EATTEDIT：命令行显示该命令，并以双击的点作为响应，对话框立即打开。拾取的是拾取框下的对象：块参照以外的对象会被拒绝，没有属性的块也会被拒绝，然后再次询问。只有拾取的块参照会改变；块定义及其他块参照保留各自的值。
+
+- **命令：** `EATTEDIT`
+- **面板：** [组织](/docs/commands#organize)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `EATTEDIT`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="eattedit" caption="两张书桌，都是带 NUM 和 PART 属性的块参照：EATTEDIT 拾取第二张，其 PART 字段改为 B-200。" />
+
+## 尚不支持的功能 [#missing]
+
+编辑器的“文字选项”选项卡（每个属性文字的样式、对正、高度、旋转、宽度因子等）和“特性”选项卡（图层、线型、颜色、线宽），以及“选择块”按钮。ATTIPEDIT（在位编辑单个属性）及其 Ctrl+双击。块参照上未锁定属性自身的夹点，以及“特性”选项板中的属性行。`-ATTEDIT`。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr--pt-br-editaratrib--eat--eatribd--editaratriba--fr-attedit--ate--ddatte--eattedit--it-editatt--ea--ddatte--eattedit--modifattbl--de-attedit--ae--ddatte--eattedit--ru-атред--атр--диалатр--атредакт--pl-atrred--ate--odatr--ratrred--cs-atredit--ate--diatr--eatredit--hu-attedit--ate--battedit)
+
+## 常见问题 [#questions]
+
+### CAD增强属性编辑器怎么打开？
+
+双击带属性的块参照，或输入 `EATTEDIT` 后拾取该块参照。在任何语言版本的 AutoCAD 中都可以输入 `_EATTEDIT`。
+
+### CAD块属性值怎么修改？
+
+双击块，在该属性的字段中输入新值，然后按 Enter 键。每个块参照保留各自的值：修改一个不会影响其他块参照。
+
+### CAD双击块为什么不能编辑属性？
+
+EATTEDIT 只对块中包含属性的块参照打开，创建时不带属性的块没有属性：请用 [`ATTDEF`](/docs/commands/attdef) 定义属性，并在创建块时将其与其他对象一起选择。如果属性值不显示，请检查 [`ATTDISP`](/docs/commands/attdisp)，它可以隐藏不可见属性或全部属性。
+
+### EATTEDIT 和 ATTEDIT 有什么区别？
+
+两者编辑相同的值。EATTEDIT 用标记作为每个字段的标签，与增强属性编辑器的“属性”选项卡相同；[`ATTEDIT`](/docs/commands/attedit) 用提示作为标签，与“编辑属性”对话框相同。在 AutoCAD 中，EATTEDIT 还可以编辑每个属性的文字选项和特性。
+
+## 相关命令 [#related]
+
+- [AutoCAD ATTEDIT（编辑属性）命令](/docs/commands/attedit)
+- [AutoCAD ATTDEF（定义属性）命令](/docs/commands/attdef)
+- [AutoCAD ATTDISP（属性显示）命令](/docs/commands/attdisp)
+- [AutoCAD INSERT（插入块）命令](/docs/commands/insert)

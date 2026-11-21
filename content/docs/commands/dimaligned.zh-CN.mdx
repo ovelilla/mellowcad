@@ -1,0 +1,67 @@
+---
+title: "AutoCAD DIMALIGNED（对齐）命令"
+metaTitle: "CAD对齐标注命令（DIMALIGNED）怎么用与快捷键 DAL"
+description: "CAD对齐标注快捷键是什么，斜线怎么标？DIMALIGNED（DAL）按提示顺序讲解：两个原点或一个对象，再放置与之平行的尺寸线。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD对齐标注快捷键是什么？","answer":"DAL 或 DIMALI，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 _DIMALIGNED。"},{"question":"CAD线性标注和对齐标注有什么区别？","answer":"在斜边上，DIMLINEAR 给出它的宽度或高度，因为尺寸线是水平或垂直的；DIMALIGNED 给出它的长度，尺寸线与斜边平行。在沿 X 或 Y 方向的边上，两者给出相同的数值。"},{"question":"CAD斜线怎么标注长度？","answer":"使用 DIMALIGNED：在第一个提示下按 Enter 键，选择直线，然后将标注放在需要的一侧。也可以选择它的两个端点，并使用端点对象捕捉，使原点准确。"},{"question":"CAD标注怎么改成自己的文字？","answer":"放置之前选择 Text 并输入文字：<> 代表测量值，因此 “<> mm” 写出测量值并在后面加上单位；不输入任何内容直接按 Enter 键则只保留测量值。放置之后，可以在“特性”选项板的“文字替代”中修改。"}]
+---
+
+DIMALIGNED（对齐）命令测量两点之间的真实距离：它的尺寸线与通过这两点的直线平行，可以是任意角度，而 [`DIMLINEAR`](/docs/commands/dimlinear) 只沿 X 或 Y 方向测量。它的提示与 [`DIMLINEAR`](/docs/commands/dimlinear) 相同：第一条和第二条尺寸界线原点，或者按 Enter 键并选择直线、圆弧或多段线线段以取其两个端点，然后指定尺寸线位置，两侧均可。选择圆时，标注通过选择点的直径。命令行显示测量值，然后命令结束。
+
+- **命令：** `DIMALIGNED`
+- **快捷键：** `DIMALI`, `DAL`
+- **面板：** [注释](/docs/commands#annotate)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `DAL`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="dimaligned" caption="三角形的斜边沿其长度标注：先指定两个端点，再指定尺寸线的位置。" />
+
+## 选项 [#options]
+
+### `Text` (`T`) [#text]
+
+要求输入代替测量值的文字，测量值作为默认值提供：按 Enter 键保留测量值。在输入的内容中，`<>` 代表测量值。
+
+### `Angle` (`A`) [#angle]
+
+要求指定文字的角度，文字随后按该角度绘制，而不是沿尺寸线方向。输入 0 则恢复为沿尺寸线方向。
+
+## 尚不支持的功能 [#missing]
+
+多行文字：标注文字只有一行，在命令行中用 `Text` 设置，从不在文字编辑器中设置。用 `Angle` 设置了角度时，AutoCAD 将文字放在尺寸线中央；这里文字仍在尺寸线上方，与未设置角度时相同。标注不是关联的：不会随所测量的对象变化。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali--fr-cotali--cota--it-dimallineata--dal--de-bemausg--bma--ru-рзмпарал--рпа--pl-wymnormalny--wn--wymno--cs-kótysrovnej--kso--kotyso--hu-méretilleszt--mil--mill)
+
+## 常见问题 [#questions]
+
+### CAD对齐标注快捷键是什么？
+
+`DAL` 或 `DIMALI`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_DIMALIGNED`。
+
+### CAD线性标注和对齐标注有什么区别？
+
+在斜边上，[`DIMLINEAR`](/docs/commands/dimlinear) 给出它的宽度或高度，因为尺寸线是水平或垂直的；DIMALIGNED 给出它的长度，尺寸线与斜边平行。在沿 X 或 Y 方向的边上，两者给出相同的数值。
+
+### CAD斜线怎么标注长度？
+
+使用 DIMALIGNED：在第一个提示下按 Enter 键，选择直线，然后将标注放在需要的一侧。也可以选择它的两个端点，并使用端点对象捕捉，使原点准确。
+
+### CAD标注怎么改成自己的文字？
+
+放置之前选择 `Text` 并输入文字：`<>` 代表测量值，因此 `<> mm` 写出测量值并在后面加上单位；不输入任何内容直接按 Enter 键则只保留测量值。放置之后，可以在“特性”选项板的“文字替代”中修改。
+
+## 练习 [#practice]
+
+- [CAD 练习图：地块](/docs/exercises/plot-of-land)
+- [CAD 等轴测图练习：阶梯块](/docs/exercises/isometric-block)
+
+## 相关命令 [#related]
+
+- [AutoCAD 尺寸标注：DIMLINEAR（线性）命令](/docs/commands/dimlinear)
+- [AutoCAD DIMANGULAR（角度）命令](/docs/commands/dimangular)
+- [AutoCAD DIMCONTINUE（连续）标注命令](/docs/commands/dimcontinue)
+- [AutoCAD DIMSTYLE（标注样式）命令](/docs/commands/dimstyle)

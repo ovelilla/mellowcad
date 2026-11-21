@@ -35,3 +35,11 @@ system's Korean face (docs/i18n/ko.md) and the card alone has one: Noto Sans KR 
 2.9.0 to every character above U+024F of the Korean `Og.tagline`, `Og.drawTitle` and
 `Hero.tagline`, the weight axis pinned at 600, as WOFF: 3,048 bytes for 18 syllables.
 `lib/og.test.ts` fails when that copy gains one the cut lacks.
+
+**The Simplified Chinese cards' characters** (`noto-sans-sc-card-600.woff`): as Japanese's and
+Korean's, the pages take the system's Chinese face (docs/i18n/zh-CN.md) and the card alone has one:
+Noto Sans SC (Google Fonts' `ofl/notosanssc/NotoSansSC[wght].ttf`, SIL OFL 1.1,
+`OFL-NotoSansSC.txt`) cut with `subset-font` 2.9.0 to every character above U+024F of the Chinese
+`Og.tagline`, `Og.drawTitle` and `Hero.tagline`, the weight axis pinned at 600, as WOFF: 5,156
+bytes for 18 characters, the full-width full stop among them. `lib/og.test.ts` fails when that
+copy gains one the cut lacks.

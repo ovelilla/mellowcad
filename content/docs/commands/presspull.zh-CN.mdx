@@ -1,0 +1,59 @@
+---
+title: "AutoCAD PRESSPULL（按住并拖动）命令"
+metaTitle: "CAD按住并拖动（PRESSPULL）：面、区域与选项"
+description: "CAD按住并拖动怎么用：AutoCAD PRESSPULL（按住并拖动）按提示顺序讲解，按压或拉伸所单击的闭合对象、对象围成的区域或实体的面。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"PRESSPULL 和 EXTRUDE 有什么区别？","answer":"EXTRUDE 处理所选的闭合对象，按 DELOBJ 的设置删除它们，并提供方向、倾斜角和表达式。PRESSPULL 处理单击：闭合对象、多个对象围成的区域，或实体的面（将其加到该实体上或从中切除），并保留原对象。从对象出发时，两者生成相同的实体。"},{"question":"CAD怎么拉伸实体的一个面？","answer":"执行 PRESSPULL，单击该面并指定距离：正值将其向外拉，实体变大；负值将其向内压。单击时按住 Ctrl 键则改为偏移该面。目前只支持平面。"},{"question":"CAD按住并拖动为什么没反应？","answer":"它需要单击一个闭合的对象。对于在第一个提示下输入的数字或点、对开放对象或曲面的单击，PRESSPULL 都以 “Click a face, curve, or inside a bounded area” 回应，并再次询问。请单击一个闭合对象，单击在平面视图中由对象围成的区域内部，或单击实体的一个平面。"},{"question":"PRESSPULL 有快捷键吗？","answer":"它没有别名：请输入 PRESSPULL，或在任何语言版本的 AutoCAD 中输入 _PRESSPULL。AutoCAD 为它设置的组合键 Ctrl+Shift+E 尚未实现。"}]
+---
+
+PRESSPULL（按住并拖动）命令拉伸所单击的对象：一个闭合对象、对象在单击点周围围成的区域，或三维实体的一个平面。单击后，输入高度，或移动光标再单击：正的高度向外拉，负的高度向内压。闭合对象或区域会生成一个新实体，与 [`EXTRUDE`](/docs/commands/extrude) 生成的相同，原对象保留；区域中的孤岛成为实体上的孔，如示例所示。面则把其棱柱加到所属实体上或从中去除：拉动长方体的顶面会使它变高。提示会再次出现，等待下一次单击，直到按 Enter 键；整个过程是一步，用“放弃”即可一次撤销。
+
+按住 Ctrl 键时，单击会选中的面会亮显；按住 Ctrl 键单击则改为偏移该面，相邻的面随之延伸与它相交，因此倾斜的侧面保持其斜度。与 AutoCAD 一样，PRESSPULL 通过单击工作：在第一个提示下输入的数字或点会得到 `Click a face, curve, or inside a bounded area`，并再次询问。
+
+- **命令：** `PRESSPULL`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `PRESSPULL`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="presspull" caption="矩形和圆之间的区域向下按压 8：一块带孔的板，以“隐藏”视觉样式从东南方向观察。" />
+
+## 选项 [#options]
+
+### `Multiple` (`M`) [#multiple]
+
+在高度提示或偏移距离提示下选择：继续单击以添加更多对象（闭合对象和区域，或同一个实体的多个面），然后按 Enter 键，一个高度应用于全部。在对象或区域之后单击的面会被过滤掉。
+
+## 尚不支持的功能 [#missing]
+
+AutoCAD 也能偏移的曲面：在这里单击找不到面。相邻面为圆锥面、球面或圆环面，或者平面和曲面兼有，或者会把面推过对面那个面的偏移：实体保持原样。IMPRINT 和 IMPLIEDFACE 在面上生成的区域，以及 Ctrl+Shift+E。开放对象，AutoCAD 会将其拉伸为曲面：这里还没有曲面。拖动时，预览显示面的棱柱或新实体，而不是完成后的实体，并且只有按住 Ctrl 键时面才会亮显。边界不在 UCS 平面内的区域尚未测试。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#presspull--es-presionartirar--pulsartirar--pt-br-pressionarpuxar--fr-apptirer--it-premtrasc--de-klickziehen--ru-выдавгрань--pl-naciśnijciąg--cs-tlačtáhni--hu-tolhúz)
+
+## 常见问题 [#questions]
+
+### PRESSPULL 和 EXTRUDE 有什么区别？
+
+[`EXTRUDE`](/docs/commands/extrude) 处理所选的闭合对象，按 DELOBJ 的设置删除它们，并提供方向、倾斜角和表达式。PRESSPULL 处理单击：闭合对象、多个对象围成的区域，或实体的面（将其加到该实体上或从中切除），并保留原对象。从对象出发时，两者生成相同的实体。
+
+### CAD怎么拉伸实体的一个面？
+
+执行 PRESSPULL，单击该面并指定距离：正值将其向外拉，实体变大；负值将其向内压。单击时按住 Ctrl 键则改为偏移该面。目前只支持平面。
+
+### CAD按住并拖动为什么没反应？
+
+它需要单击一个闭合的对象。对于在第一个提示下输入的数字或点、对开放对象或曲面的单击，PRESSPULL 都以 `Click a face, curve, or inside a bounded area` 回应，并再次询问。请单击一个闭合对象，单击在平面视图中由对象围成的区域内部，或单击实体的一个平面。
+
+### PRESSPULL 有快捷键吗？
+
+它没有别名：请输入 PRESSPULL，或在任何语言版本的 AutoCAD 中输入 `_PRESSPULL`。AutoCAD 为它设置的组合键 Ctrl+Shift+E 尚未实现。
+
+## 相关命令 [#related]
+
+- [AutoCAD EXTRUDE（拉伸）三维命令](/docs/commands/extrude)
+- [AutoCAD SOLIDEDIT（实体编辑）命令](/docs/commands/solidedit)
+- [AutoCAD REGION（面域）命令](/docs/commands/region)
+- [AutoCAD BOX（长方体）命令](/docs/commands/box)

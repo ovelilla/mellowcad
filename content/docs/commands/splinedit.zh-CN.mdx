@@ -1,0 +1,90 @@
+---
+title: "AutoCAD SPLINEDIT（编辑样条曲线）命令"
+metaTitle: "CAD编辑样条曲线（SPLINEDIT）用法与快捷键 SPE"
+description: "AutoCAD SPLINEDIT（编辑样条曲线，快捷键 SPE）怎么用：按提示顺序说明闭合、合并、拟合数据、编辑顶点、转换为多段线和反转。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD编辑样条曲线的快捷键是什么？","answer":"输入 SPE，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_SPLINEDIT 都有效。双击样条曲线也会执行它。"},{"question":"CAD样条曲线怎么转换成多段线？","answer":"执行 SPLINEDIT，拾取样条曲线并选择 Polyline；精度为 10 时得到光滑的多段线。对样条曲线执行 PEDIT，也会提出将其转换。"},{"question":"CAD样条曲线怎么添加或移动点？","answer":"选择 Fit 编辑它经过的点，然后选择 Add 或 Move。选择 Edit 编辑构成其框架的控制点。"},{"question":"CAD样条曲线怎么闭合？","answer":"选择 Close：样条曲线光滑地闭合，在首尾相接处没有尖角。Open 将其重新打开。"},{"question":"CAD两条样条曲线怎么合并？","answer":"选择 Join，然后选择端点与该样条曲线相接的样条曲线；或使用 JOIN。"}]
+---
+
+SPLINEDIT（编辑样条曲线）命令编辑样条曲线。在 `Select spline:` 提示下拾取一条，或在命令前选择它；双击样条曲线也会对其执行 SPLINEDIT。选择其他对象时显示 `Object selected is not a spline.` 并再次询问；用 PEDIT 的“样条曲线”拟合过的多段线会不加提示地转换为同一曲线的样条曲线。然后反复询问选项，每个选项立即生效，直到选择 `EXit` 或按 Enter 键。样条曲线显示其拟合点的夹点；编辑顶点时，显示其控制点和控制框架。整个编辑是一个可以用 `U` 放弃的步骤。在其任何提示下都可以输入 `'ZOOM`。
+
+- **命令：** `SPLINEDIT`
+- **快捷键：** `SPE`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `SPE`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="splinedit" caption="通过五个拟合点的样条曲线，用 SPLINEDIT 闭合后：成为通过所有点的光滑闭合环。" />
+
+## 选项 [#options]
+
+### `Close` (`C`) [#close]
+
+光滑地闭合样条曲线：拟合样条曲线通过其拟合点闭合，控制点样条曲线在其顶点上闭合。对于闭合的样条曲线，该选项为 `Open`，并且不提供“合并”。
+
+### `Join` (`J`) [#join]
+
+按 JOIN 对样条曲线的规则，合并与其端点相接的开放曲线，并报告合并了多少条。
+
+### `Fit data` (`F`) [#fit-data]
+
+编辑样条曲线经过的点。控制点样条曲线没有拟合点，因此先在其曲线上为其生成拟合点。其选项：`Add` 拾取一个拟合点并在其后反复添加新点（在开放样条曲线的第一个点处，选择 `After` 或 `Before`）；`Delete` 删除拟合点，最少保留两个，闭合样条曲线保留三个（`Cannot delete beyond this.`）；`Move` 用 `Next` 和 `Previous` 或 `Select` 逐个切换拟合点，并将当前点移到指定的点；`Purge` 清除拟合数据，留下控制点样条曲线；`Tangents` 设置起点和端点方向，或 `System`；`Close` 和 `EXit` 与第一个提示中相同。拾取的不是拟合点时，显示 `Not a fit point.`。
+
+### `Edit vertex` (`E`) [#edit-vertex]
+
+编辑控制点；拟合样条曲线在第一次编辑时失去其拟合数据。`Add` 在样条曲线上拾取的点处添加一个顶点；`Delete` 删除一个顶点，最少保留两个，闭合样条曲线保留三个；`Elevate` 提高阶数，最高 26，不能降低；`Move` 移动顶点，切换方式与拟合数据的“移动”相同；`Weight` 设置顶点的权值，先显示 `Spline is not rational. Will make it so.`，使曲线更靠近或更远离该顶点。拾取的不是顶点时，显示 `Not a control vertex.`。
+
+### `convert to Polyline` (`P`) [#convert-to-polyline]
+
+询问 0 到 99 之间的精度，默认值为 10，并用由直线段组成的多段线替换样条曲线，精度越高，段数越多；样条曲线不平放在与 XY 平面平行的平面上时，得到三维多段线。它会结束命令。精度在本次会话中保留，PEDIT 的转换也使用它。
+
+### `Reverse` (`RE`) [#reverse]
+
+反转样条曲线的方向，第一个点变为最后一个：`Spline has been reversed.`。
+
+### `Undo` (`U`) [#undo]
+
+放弃上一个选项，整个“拟合数据”或“编辑顶点”一次放弃。没有可放弃的内容时：`Command has been completely undone.`。
+
+### `eXit` (`EX`) [#exit]
+
+结束命令，与按 Enter 键相同。
+
+## 尚不支持的功能 [#missing]
+
+没有“扭折”（在拟合点或顶点处形成尖角）、“公差”（在公差范围内重新拟合样条曲线），也没有闭合样条曲线的“切线”。“转换为多段线”从拟合样条曲线生成的顶点比 AutoCAD 多得多，从不生成圆弧，并且总是替换样条曲线。`Select spline:` 提示下没有“编组”。逐个切换点时，AutoCAD 在当前点上绘制的 `+` 标记没有提供。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#splinedit--spe--es-editspline--spe--pt-br-editarspline--espl--fr-editspline--esi--it-editspline--esi--de-splineedit--sie--ru-редсплайн--рсп--pl-edsplajn--spe--cs-splinedit--spe--hu-splinedit--spe)
+
+## 常见问题 [#questions]
+
+### CAD编辑样条曲线的快捷键是什么？
+
+输入 `SPE`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_SPLINEDIT` 都有效。双击样条曲线也会执行它。
+
+### CAD样条曲线怎么转换成多段线？
+
+执行 SPLINEDIT，拾取样条曲线并选择 `Polyline`；精度为 10 时得到光滑的多段线。对样条曲线执行 [`PEDIT`](/docs/commands/pedit)，也会提出将其转换。
+
+### CAD样条曲线怎么添加或移动点？
+
+选择 `Fit` 编辑它经过的点，然后选择 `Add` 或 `Move`。选择 `Edit` 编辑构成其框架的控制点。
+
+### CAD样条曲线怎么闭合？
+
+选择 `Close`：样条曲线光滑地闭合，在首尾相接处没有尖角。`Open` 将其重新打开。
+
+### CAD两条样条曲线怎么合并？
+
+选择 `Join`，然后选择端点与该样条曲线相接的样条曲线；或使用 [`JOIN`](/docs/commands/join)。
+
+## 相关命令 [#related]
+
+- [AutoCAD SPLINE（样条曲线）命令](/docs/commands/spline)
+- [AutoCAD PEDIT（编辑多段线）命令](/docs/commands/pedit)
+- [AutoCAD JOIN（合并）命令](/docs/commands/join)
+- [AutoCAD LIST（列表）命令](/docs/commands/list)

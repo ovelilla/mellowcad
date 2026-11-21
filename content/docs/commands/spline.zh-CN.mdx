@@ -1,0 +1,90 @@
+---
+title: "AutoCAD SPLINE（样条曲线）命令"
+metaTitle: "CAD样条曲线命令（SPLINE）怎么画与快捷键 SPL"
+description: "AutoCAD SPLINE（样条曲线，快捷键 SPL）怎么画：按提示顺序说明通过拟合点或由控制点拉动的曲线、节点、阶数、切向和闭合。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD样条曲线的快捷键是什么？","answer":"输入 SPL，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_SPLINE 都有效。"},{"question":"CAD样条曲线的拟合和控制点有什么区别？","answer":"拟合样条曲线通过单击的点，适合必须经过这些点的曲线。控制点样条曲线由其控制点塑形，只是靠近而不经过它们，适合光顺的形状。在第一个提示下用 Method 选择。"},{"question":"CAD样条曲线怎么变成多段线？","answer":"执行 PEDIT 并拾取样条曲线：它显示 “Object selected is not a polyline” 并提出将其转换为多段线，然后询问 0 到 99 之间的精度，默认值为 10。多段线以短直线段沿样条曲线排列，段数比 AutoCAD 生成的多。"},{"question":"CAD多段线怎么变成样条曲线？","answer":"用 PEDIT 的“样条曲线”选项拟合多段线，然后执行 SPLINE 并选择 Object：多段线变为同一曲线的样条曲线。"},{"question":"CAD样条曲线能分解吗？","answer":"不能：与 AutoCAD 一样，EXPLODE 拒绝分解样条曲线。要将其拆成几段，请先用 PEDIT 将其转换为多段线，再将多段线分解为直线。"}]
+---
+
+SPLINE（样条曲线）命令绘制光滑曲线，有两种方式：通过指定的点（拟合，默认），或被放置的控制点拉向它们（控制点）。它首先说明其设置 `Method=Fit   Knots=Chord`，然后询问第一个点；与 AutoCAD 一样，在此处按 Enter 键会被拒绝。之后的每个点都使曲线弯曲，预览随光标移动，按 Enter 键结束。点可以拾取、捕捉或输入；输入长度时沿光标方向量取；点保留其 Z 值，因此样条曲线可以在空间中升高。按 Esc 键放弃曲线；整条样条曲线是一个可以用 `U` 放弃的步骤。功能区的“样条曲线拟合”和“样条曲线控制点”按钮执行 SPLINE 并已回答了方式。
+
+- **命令：** `SPLINE`
+- **快捷键：** `SPL`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `SPL`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="spline" caption="通过五个点的拟合样条曲线，下方是在同样位置的五个顶点上创建的控制点样条曲线：前者通过这些点，后者被拉向这些点。" />
+
+## 选项 [#options]
+
+### `Method` (`M`) [#method]
+
+`Fit` 或 `CV`。拟合样条曲线通过指定的每个点；控制点样条曲线只通过第一个和最后一个顶点，其他顶点将其拉向自己，因此曲线更光滑，离这些顶点也更远。方式与节点、阶数一样，在本次会话的其余时间内保留。
+
+### `Knots` (`K`) [#knots]
+
+拟合样条曲线沿曲线分配其点的方式：`Chord`（默认，按点之间的距离）、该距离的 `Square`，或 `Uniform`（全部相等）。通过同样的点，每种方式得到的曲线略有不同。
+
+### `Degree` (`D`) [#degree]
+
+控制点样条曲线的阶数，从 1（顶点之间为直线）到 10；默认值 3 为三次曲线。顶点数不足以达到该阶数时，曲线采用可能的最高阶数。
+
+### `Object` (`O`) [#object]
+
+将用 PEDIT 的“样条曲线”选项拟合过的多段线（二维或三维）转换为同一曲线的控制点样条曲线，并删除该多段线，作为一个步骤。其他对象会被拒绝，显示 `Only spline fitted polylines can be converted to splines.`。
+
+### `start Tangency` (`T`) [#start-tangency]
+
+在第一个点之后提供：曲线离开该点的方向，从该点拾取或输入。
+
+### `end Tangency` (`T`) [#end-tangency]
+
+曲线到达最后一个点的方向，然后样条曲线结束。
+
+### `Undo` (`U`) [#undo]
+
+放弃上一个点，直到只剩第一个点。
+
+### `Close` (`C`) [#close]
+
+从第三个点起提供：将终点光滑地连回起点，形成没有尖角的闭合环，并结束命令。
+
+## 尚不支持的功能 [#missing]
+
+没有拟合公差：拟合样条曲线总是精确通过其点，不提供“公差”选项。绘制过程中，样条曲线还不能像 AutoCAD 中那样作为对象被捕捉或追踪。“对象”总是删除多段线（DELOBJ）。对于已完成的样条曲线，没有 CVSHOW 和 CVHIDE，也没有用于添加或删除点的夹点菜单；“特性”选项板可以编辑其点，但不能编辑方式、阶数、节点、权值或闭合；几何中心、垂足和切点捕捉不到它。HATCH 不会将样条曲线识别为边界，BLEND 尚不存在。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl--pt-br-spline--spl--fr-spline--spl--it-spline--spl--de-spline--spl--ru-сплайн--спл--pl-splajn--spl--cs-spline--spl--hu-spline--spl)
+
+## 常见问题 [#questions]
+
+### CAD样条曲线的快捷键是什么？
+
+输入 `SPL`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_SPLINE` 都有效。
+
+### CAD样条曲线的拟合和控制点有什么区别？
+
+拟合样条曲线通过单击的点，适合必须经过这些点的曲线。控制点样条曲线由其控制点塑形，只是靠近而不经过它们，适合光顺的形状。在第一个提示下用 `Method` 选择。
+
+### CAD样条曲线怎么变成多段线？
+
+执行 [`PEDIT`](/docs/commands/pedit) 并拾取样条曲线：它显示 `Object selected is not a polyline` 并提出将其转换为多段线，然后询问 0 到 99 之间的精度，默认值为 10。多段线以短直线段沿样条曲线排列，段数比 AutoCAD 生成的多。
+
+### CAD多段线怎么变成样条曲线？
+
+用 [`PEDIT`](/docs/commands/pedit) 的“样条曲线”选项拟合多段线，然后执行 SPLINE 并选择 `Object`：多段线变为同一曲线的样条曲线。
+
+### CAD样条曲线能分解吗？
+
+不能：与 AutoCAD 一样，[`EXPLODE`](/docs/commands/explode) 拒绝分解样条曲线。要将其拆成几段，请先用 [`PEDIT`](/docs/commands/pedit) 将其转换为多段线，再将多段线分解为直线。
+
+## 相关命令 [#related]
+
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)
+- [AutoCAD PEDIT（编辑多段线）命令](/docs/commands/pedit)
+- [AutoCAD SPLINEDIT（编辑样条曲线）命令](/docs/commands/splinedit)
+- [AutoCAD ELLIPSE（椭圆）命令](/docs/commands/ellipse)

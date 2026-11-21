@@ -1,0 +1,72 @@
+---
+title: "AutoCAD LINE（直线）命令"
+metaTitle: "CAD直线命令（LINE）用法与快捷键 L"
+description: "CAD直线怎么画：AutoCAD LINE（直线，快捷键 L）按提示顺序讲解，拾取或输入点、放弃和闭合，以及按 Enter 键从上一条直线继续。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD直线快捷键是什么？","answer":"输入 L，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _LINE。"},{"question":"CAD怎么画指定角度和长度的直线？","answer":"指定第一个点，然后以长度和角度输入下一个点：@100<30 以 30° 绘制长 100 的直线。也可以打开极轴追踪，沿该角度的追踪线只输入长度。"},{"question":"怎么从上一条直线的端点继续画？","answer":"执行 LINE，在第一个点处按 Enter 键：从上一条直线、多段线或圆弧的端点开始。从圆弧继续时，直线与圆弧相切，LINE 只询问其长度。没有可继续的对象时，提示 “No line or arc to continue.”。"},{"question":"CAD画的直线为什么是一段一段分开的？","answer":"与 AutoCAD 一样，LINE 绘制的每一段都是独立的直线。要得到一个对象，请用 PLINE 绘制，或者之后用 JOIN 合并这些直线。"}]
+---
+
+LINE（直线）命令绘制直线段，每一段都是一个独立的对象：指定第一个点，再依次指定下一个点，直到按 Enter 键。点可以拾取、用对象捕捉获取或直接输入。与打开动态输入的 AutoCAD 一样，第一个点之后输入的点从上一个点起算，因此 `80,0` 沿 X 方向绘制 80，历史记录写作 `@80,0`；只输入一个数字表示沿光标方向的距离，`<30` 将下一个点锁定在 30°。在第一个点处按 Enter 键或单击鼠标右键，会从上一条直线、多段线或圆弧的端点继续，从圆弧继续时与其相切，只询问长度。无论绘制了多少段，一次 U 就能放弃整个命令。
+
+- **命令：** `LINE`
+- **快捷键：** `L`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `L`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="line" caption="一个三角形：输入第一个点，后两个点相对于上一个点输入，最后选择闭合。" />
+
+## 选项 [#options]
+
+### `Undo` (`U`) [#undo]
+
+放弃最后一段，并从前一个点重新询问。没有可放弃的线段时，提示 `All segments already undone.`，并重新询问第一个点。
+
+### `Close` (`C`) [#close]
+
+从第二段起提供：从最后一个点绘制一段回到第一个点的线段并结束命令，使图形闭合。
+
+## 尚不支持的功能 [#missing]
+
+在第一个点处输入切点或垂足时，会像 AutoCAD 一样等待下一个点（延迟捕捉），但只对直线、圆和圆弧有效，对多段线线段、椭圆或样条曲线无效，并且不求解两个延迟垂足。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l--fr-ligne--l--it-linea--l--de-linie--l--ru-отрезок--от--pl-linia--l--cs-úsečka--u--hu-vonal--vo)
+
+## 常见问题 [#questions]
+
+### CAD直线快捷键是什么？
+
+输入 `L`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_LINE`。
+
+### CAD怎么画指定角度和长度的直线？
+
+指定第一个点，然后以长度和角度输入下一个点：`@100<30` 以 30° 绘制长 100 的直线。也可以打开极轴追踪，沿该角度的追踪线只输入长度。
+
+### 怎么从上一条直线的端点继续画？
+
+执行 LINE，在第一个点处按 Enter 键：从上一条直线、多段线或圆弧的端点开始。从圆弧继续时，直线与圆弧相切，LINE 只询问其长度。没有可继续的对象时，提示 `No line or arc to continue.`。
+
+### CAD画的直线为什么是一段一段分开的？
+
+与 AutoCAD 一样，LINE 绘制的每一段都是独立的直线。要得到一个对象，请用 [`PLINE`](/docs/commands/pline) 绘制，或者之后用 [`JOIN`](/docs/commands/join) 合并这些直线。
+
+## 练习 [#practice]
+
+- [CAD 练习图：垫片](/docs/exercises/gasket)
+- [CAD 练习图：L 形支架](/docs/exercises/l-bracket)
+- [CAD 练习图：楼梯平面图](/docs/exercises/stairs)
+- [CAD 练习图：法兰盘](/docs/exercises/flange)
+- [CAD 练习图：阶梯轴](/docs/exercises/shaft)
+- [CAD 等轴测图练习：阶梯块](/docs/exercises/isometric-block)
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link)
+
+## 相关命令 [#related]
+
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)
+- [AutoCAD OFFSET（偏移）命令](/docs/commands/offset)
+- [AutoCAD TRIM（修剪）命令](/docs/commands/trim)
+- [AutoCAD JOIN（合并）命令](/docs/commands/join)

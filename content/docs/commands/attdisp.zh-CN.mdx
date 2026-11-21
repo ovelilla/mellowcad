@@ -1,0 +1,59 @@
+---
+title: "AutoCAD ATTDISP（属性显示）命令"
+metaTitle: "CAD属性显示命令（ATTDISP）显示或隐藏块属性"
+description: "CAD块属性怎么显示或隐藏？ATTDISP：普通，开（同时显示不可见属性），关（隐藏所有属性）。设置随图形保存。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD怎么显示不可见的属性？","answer":"输入 ATTDISP 并选择 ON：显示所有属性，包括不可见属性。选择 Normal 可以再次隐藏它们。"},{"question":"CAD块属性不显示是什么原因？","answer":"ATTDISP 可能设为 OFf，即隐藏所有属性；或者设为 Normal，而属性被定义为不可见。选择 ON 可以显示全部属性。如果参照的块没有属性，无论如何设置都不显示属性。"},{"question":"CAD怎么隐藏属性值？","answer":"将属性定义为不可见：在创建块之前，使用 ATTDEF 的 Invisible 模式。ATTDISP OFf 可以一次隐藏整个图形中的所有属性。"}]
+---
+
+ATTDISP（属性显示）命令设置图形中的块参照显示哪些属性。它询问设置，并提供当前设置（新图形中为“普通”）；输入其他词会提示关键字无效并再次提问，按 Enter 键则保持不变。更改后整个图形重新生成，与 AutoCAD 2027 一样显示 `Regenerating model.`，该设置作为 ATTMODE 随图形保存，`U` 可以一步放弃。在命令中加撇号输入，也可以透明使用。
+
+它只改变显示：不可见属性仍保留其值，隐藏的属性仍可以用 [`ATTEDIT`](/docs/commands/attedit) 或 [`EATTEDIT`](/docs/commands/eattedit) 编辑。
+
+- **命令：** `ATTDISP`
+- **面板：** [组织](/docs/commands#organize)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `ATTDISP`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="attdisp" caption="两张办公桌的零件号是不可见属性：ATTDISP ON 将其显示在每张桌子下方，与可见的编号并列。" />
+
+## 选项 [#options]
+
+### `Normal` (`N`) [#normal]
+
+按定义时的设置显示各属性：显示可见属性，不显示用 [`ATTDEF`](/docs/commands/attdef) 的 `Invisible` 定义的属性。
+
+### `ON` [#on]
+
+显示所有属性，包括不可见属性。
+
+### `OFF` (`OF`) [#off]
+
+隐藏所有属性，包括可见属性。
+
+## 常见问题 [#questions]
+
+### CAD怎么显示不可见的属性？
+
+输入 `ATTDISP` 并选择 `ON`：显示所有属性，包括不可见属性。选择 `Normal` 可以再次隐藏它们。
+
+### CAD块属性不显示是什么原因？
+
+`ATTDISP` 可能设为 `OFf`，即隐藏所有属性；或者设为 `Normal`，而属性被定义为不可见。选择 `ON` 可以显示全部属性。如果参照的块没有属性，无论如何设置都不显示属性。
+
+### CAD怎么隐藏属性值？
+
+将属性定义为不可见：在创建块之前，使用 [`ATTDEF`](/docs/commands/attdef) 的 `Invisible` 模式。ATTDISP `OFf` 可以一次隐藏整个图形中的所有属性。
+
+## 相关命令 [#related]
+
+- [AutoCAD ATTDEF（定义属性）命令](/docs/commands/attdef)
+- [AutoCAD ATTEDIT（编辑属性）命令](/docs/commands/attedit)
+- [AutoCAD EATTEDIT（编辑属性）命令](/docs/commands/eattedit)
+- [AutoCAD BLOCK（创建块）命令](/docs/commands/block)
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis--pt-br-visatrib--fr-attecran--it-visatt--de-attzeig--ru-атэкр--pl-atrwid--cs-atrdisp--hu-attláth)

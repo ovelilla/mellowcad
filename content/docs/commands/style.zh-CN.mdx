@@ -1,0 +1,54 @@
+---
+title: "AutoCAD STYLE（文字样式）命令"
+metaTitle: "CAD文字样式设置：STYLE（文字样式）与快捷键 ST"
+description: "AutoCAD STYLE（文字样式，快捷键 ST）怎么管理文字样式：新建、重命名、删除、置为当前、固定高度，以及样式对 TEXT 和 MTEXT 的作用。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD文字样式的快捷键是什么？","answer":"输入 ST，然后按 Enter 键或空格键；DDSTYLE 也可以。在任何语言版本的 AutoCAD 中，_STYLE 都有效。"},{"question":"CAD文字样式怎么修改？","answer":"对于新文字，在 STYLE 打开的“样式”选项板中将样式置为当前，或使用 TEXT 的 Style 选项。对于已写好的文字，选择它们，然后在“特性”选项板的“样式”一行中选择样式。"},{"question":"CAD文字样式的字体怎么改？","answer":"在 AutoCAD 中，在“文字样式”对话框的“字体名”中修改。这里还不能：所有样式都以 Arial 绘制，样式之间只有名称和高度不同。"},{"question":"CAD单行文字为什么不提示输入高度？","answer":"当前样式有自己的高度。在“样式”选项板中将其高度设置为 0，TEXT 就会重新询问高度，并以上次使用的高度作为默认值。"}]
+---
+
+STYLE（文字样式）命令管理图形中的文字样式，即文字的书写方式。每个单行文字、多行文字和属性都有样式，新建的文字采用当前样式，新图形中为 Standard。AutoCAD 的 STYLE 打开“文字样式”对话框；MellowCAD 尚无该对话框，因此 STYLE 打开“样式”选项板的文字表格，[`DIMSTYLE`](/docs/commands/dimstyle) 的标注样式也在该选项板中。命令前所做的选择会被放弃，与对话框的处理相同；在其他命令中加撇号输入 `'STYLE`，它会打开而不结束该命令。
+
+表格列出所有样式，并标出当前样式。“新建”复制所选样式，命名为 `style1`、`style2`……中第一个未使用的名称，并将其置为当前。“置为当前”将某个样式置为当前；样式名可以重新输入，已在使用的名称（不区分大小写）会被拒绝，与 AutoCAD 一样。“删除”删除样式，但不能删除 Standard、当前样式或正在使用的样式。“高度”为样式设置固定高度：默认值 0 表示不固定，[`TEXT`](/docs/commands/text) 每次都会询问高度；设置了高度时，TEXT 不再询问。每次更改都是一个可以用 `U` 放弃的步骤。选择了文字时，“特性”选项板中的“样式”一行可以为其指定另一样式，作为一个步骤。
+
+- **命令：** `STYLE`
+- **快捷键：** `ST`, `DDSTYLE`
+- **面板：** [注释](/docs/commands#annotate)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `ST`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="style" caption="一块铭牌：执行 STYLE，然后执行 TEXT，其“样式”下的 ? 列出图形中的样式（使用 Arial 的 Standard），并用它写出铭牌的名称。" />
+
+## 尚不支持的功能 [#missing]
+
+没有“文字样式”对话框及其预览：STYLE 改为打开“样式”选项板。没有字体、字体样式和大字体，没有宽度因子、倾斜角度，也没有“颠倒”“反向”和“垂直”效果：所有样式都以 Arial 绘制，直立，宽度为 1。没有注释性样式，也没有 AutoCAD 新图形中与 Standard 并存的 Annotative 样式。没有在命令行中询问全部设置的 `-STYLE`。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#style--st--ddstyle--es-estilo--est--estilodd--pt-br-estilo--et--ddstyle--fr-style--s--ddstyle--it-stile--st--ddstile--de-stil--sti--ddstyle--ru-стиль--ст--диалстиль--pl-styl--st--odstyl--cs-písmo--psm--diapísmo--hu-stílus--st--dpstílus)
+
+## 常见问题 [#questions]
+
+### CAD文字样式的快捷键是什么？
+
+输入 `ST`，然后按 Enter 键或空格键；`DDSTYLE` 也可以。在任何语言版本的 AutoCAD 中，`_STYLE` 都有效。
+
+### CAD文字样式怎么修改？
+
+对于新文字，在 STYLE 打开的“样式”选项板中将样式置为当前，或使用 [`TEXT`](/docs/commands/text) 的 `Style` 选项。对于已写好的文字，选择它们，然后在“特性”选项板的“样式”一行中选择样式。
+
+### CAD文字样式的字体怎么改？
+
+在 AutoCAD 中，在“文字样式”对话框的“字体名”中修改。这里还不能：所有样式都以 Arial 绘制，样式之间只有名称和高度不同。
+
+### CAD单行文字为什么不提示输入高度？
+
+当前样式有自己的高度。在“样式”选项板中将其高度设置为 0，[`TEXT`](/docs/commands/text) 就会重新询问高度，并以上次使用的高度作为默认值。
+
+## 相关命令 [#related]
+
+- [AutoCAD TEXT（单行文字）命令](/docs/commands/text)
+- [AutoCAD MTEXT（多行文字）命令](/docs/commands/mtext)
+- [AutoCAD DIMSTYLE（标注样式）命令](/docs/commands/dimstyle)
+- [AutoCAD TEXTEDIT（编辑文字）命令](/docs/commands/textedit)

@@ -66,4 +66,13 @@ describe("scriptFontVariables", () => {
       "--font-mono": `'Geist Mono', ${korean}, 'Geist Mono Fallback'`,
     })
   })
+
+  it("puts the system's Simplified Chinese faces behind Inter and Geist Mono, none of them Japanese", () => {
+    const chinese =
+      '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", "Noto Sans SC"'
+    expect(scriptFontVariables("zh-CN", fonts)).toEqual({
+      "--font-sans": `'Inter', ${chinese}, 'Inter Fallback'`,
+      "--font-mono": `'Geist Mono', ${chinese}, 'Geist Mono Fallback'`,
+    })
+  })
 })

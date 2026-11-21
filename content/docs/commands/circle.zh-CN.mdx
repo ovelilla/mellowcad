@@ -1,0 +1,80 @@
+---
+title: "AutoCAD CIRCLE（圆）命令"
+metaTitle: "CAD画圆命令（CIRCLE）：两点、三点、相切与快捷键 C"
+description: "CAD画圆怎么用？CIRCLE（快捷键 C）按提示顺序讲解：圆心和半径或直径，两点、三点和切点、切点、半径，以及与两个对象相切的圆。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD画圆快捷键是什么？","answer":"输入 C，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 _CIRCLE。"},{"question":"CAD怎么画与两条直线相切的圆？","answer":"选择 Ttr，在圆应相切的位置附近依次拾取第一条和第二条直线，然后输入半径。"},{"question":"CAD怎么画与三个对象相切的圆？","answer":"选择 3P，在三个点的每一个之前输入 _TAN，在圆应相切的位置附近拾取每个对象。"},{"question":"CAD怎么按直径画圆？","answer":"指定圆心，然后选择 Diameter 并输入直径。也可以选择 2P，指定直径的两个端点。"}]
+---
+
+CIRCLE（圆）命令根据圆心和半径绘制圆，半径可以输入，也可以由圆上的一个点给出；也可以用第一个提示提供的其他方式绘制。在半径提示下按 Enter 键会重复上一个圆的大小，该值保存在图形中。指定半径时，一条琥珀色虚线从圆心延伸到光标；指定直径时，虚线延伸到圆周以外，与 AutoCAD 的绘制方式相同。圆位于第一个点所在的平面上；如果该点没有自己的 Z 值，则位于当前标高。
+
+- **命令：** `CIRCLE`
+- **快捷键：** `C`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `C`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="circle" caption="三个圆：圆心和半径，直径的两个端点（两点），圆心和直径。" />
+
+## 选项 [#options]
+
+### `3P` [#3p]
+
+通过三个点。在每个点前输入切点捕捉 `_TAN`，即为 AutoCAD 的“相切, 相切, 相切”：与三个对象相切的圆。
+
+### `2P` [#2p]
+
+由直径的两个端点确定。
+
+### `Ttr (tan tan radius)` (`T`) [#ttr]
+
+与两个对象相切，并指定半径：在圆应相切的位置附近拾取每条直线、圆或圆弧，然后指定半径。在符合条件的圆中，绘制在最靠近拾取点处相切的那个；如果没有，则显示 `Circle does not exist.`。
+
+### `Diameter` (`D`) [#diameter]
+
+在半径提示下：改为指定直径，可以输入数值，也可以用一个点指定。
+
+## 尚不支持的功能 [#missing]
+
+多段线线段上的切点、切点、半径：AutoCAD 接受，MellowCAD 拒绝；工具选项板中的“相切, 相切, 相切”项（输入方式，即三点加三个切点捕捉，可以使用）；双击圆时的快捷特性。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c--pt-br-circulo--ci--fr-cercle--c--it-cerchio--c--de-kreis--k--ru-круг--к--pl-okrąg--o--cs-kružnice--kr--hu-kör--k)
+
+## 常见问题 [#questions]
+
+### CAD画圆快捷键是什么？
+
+输入 `C`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_CIRCLE`。
+
+### CAD怎么画与两条直线相切的圆？
+
+选择 `Ttr`，在圆应相切的位置附近依次拾取第一条和第二条直线，然后输入半径。
+
+### CAD怎么画与三个对象相切的圆？
+
+选择 `3P`，在三个点的每一个之前输入 `_TAN`，在圆应相切的位置附近拾取每个对象。
+
+### CAD怎么按直径画圆？
+
+指定圆心，然后选择 `Diameter` 并输入直径。也可以选择 `2P`，指定直径的两个端点。
+
+## 练习 [#practice]
+
+- [CAD 练习图：垫片](/docs/exercises/gasket)
+- [CAD 练习图：L 形支架](/docs/exercises/l-bracket)
+- [CAD 三维练习图：安装板](/docs/exercises/mounting-plate)
+- [CAD 练习图：法兰盘](/docs/exercises/flange)
+- [CAD 练习图：圆桌和椅子](/docs/exercises/round-table)
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link)
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block)
+
+## 相关命令 [#related]
+
+- [AutoCAD ARC（圆弧）命令](/docs/commands/arc)
+- [AutoCAD ELLIPSE（椭圆）命令](/docs/commands/ellipse)
+- [AutoCAD OFFSET（偏移）命令](/docs/commands/offset)
+- [AutoCAD DIMRADIUS（半径）标注命令](/docs/commands/dimradius)

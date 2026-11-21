@@ -1,0 +1,798 @@
+// Generated from zh-CN.json by `npm run locales`. Do not edit.
+import type { EngineLocale } from "./types"
+
+export const zhCN: EngineLocale = {
+  "tag": "zh-CN",
+  "interface": {
+    "tool": {
+      "select": "选择",
+      "line": "直线",
+      "polyline": "多段线",
+      "polyline3d": "三维多段线",
+      "circle": "圆",
+      "circlediameter": "圆, 圆心、直径",
+      "circle2p": "圆, 两点",
+      "circle3p": "圆, 三点",
+      "arc": "圆弧",
+      "arcsce": "圆弧, 起点、圆心、端点",
+      "arccse": "圆弧, 圆心、起点、端点",
+      "ellipse": "椭圆",
+      "ellipsecenter": "椭圆, 中心点",
+      "ellipsearc": "椭圆弧",
+      "spline": "样条曲线",
+      "splinedit": "编辑样条曲线",
+      "pedit": "编辑多段线",
+      "splinefit": "样条曲线拟合",
+      "splinecv": "样条曲线控制点",
+      "rectangle": "矩形",
+      "polygon": "多边形",
+      "hatch": "图案填充",
+      "block": "创建块",
+      "insert": "插入块",
+      "attedit": "编辑属性",
+      "attdef": "定义属性",
+      "attdisp": "属性显示",
+      "purge": "清理",
+      "text": "单行文字",
+      "mtext": "多行文字",
+      "textedit": "编辑文字",
+      "dimlinear": "线性",
+      "dimaligned": "对齐",
+      "dimhorizontal": "水平",
+      "dimvertical": "垂直",
+      "dimrotated": "转角标注",
+      "dimradius": "半径",
+      "dimdiameter": "直径",
+      "dimangular": "角度",
+      "dimbaseline": "基线",
+      "dimcontinue": "连续",
+      "dimspace": "调整间距",
+      "offset": "偏移",
+      "move": "移动",
+      "copy": "复制",
+      "stretch": "拉伸",
+      "rotate": "旋转",
+      "scale": "缩放",
+      "mirror": "镜像",
+      "arraycommand": "阵列",
+      "array": "矩形阵列",
+      "arraypolar": "环形阵列",
+      "arraypath": "路径阵列",
+      "trim": "修剪",
+      "extend": "延伸",
+      "fillet": "圆角",
+      "chamfer": "倒角",
+      "erase": "删除",
+      "explode": "分解",
+      "join": "合并",
+      "break": "打断",
+      "breakatpoint": "打断于点",
+      "matchprop": "特性匹配",
+      "chprop": "更改特性",
+      "copyclip": "复制剪裁",
+      "cutclip": "剪切",
+      "copybase": "带基点复制",
+      "paste": "粘贴",
+      "measure": "测量",
+      "measurearea": "面积",
+      "id": "点坐标",
+      "list": "列表",
+      "massprop": "面域/质量特性",
+      "zoom": "缩放",
+      "pan": "平移",
+      "dashpan": "平移, 点",
+      "dashdimstyle": "标注样式(命令行)",
+      "ucs": "UCS",
+      "ucsicon": "UCS 图标",
+      "fill": "填充",
+      "ucsiconvariable": "UCS 图标(系统变量)",
+      "plan": "平面视图",
+      "elev": "标高",
+      "vpoint": "视点",
+      "view": "预设视图",
+      "orbit": "三维动态观察",
+      "navvcube": "ViewCube",
+      "vscurrent": "视觉样式",
+      "regen": "重生成",
+      "regenall": "全部重生成",
+      "ltscale": "线型比例",
+      "auprec": "角度精度",
+      "setvar": "设置变量",
+      "undo": "放弃",
+      "mredo": "多重重做",
+      "osnap": "对象捕捉模式",
+      "color": "颜色",
+      "linetype": "线型",
+      "dashlayer": "图层(命令行)",
+      "lweight": "线宽",
+      "snap": "捕捉模式",
+      "region": "面域",
+      "union": "并集",
+      "subtract": "差集",
+      "box": "长方体",
+      "wedge": "楔体",
+      "pyramid": "棱锥体",
+      "cylinder": "圆柱体",
+      "cone": "圆锥体",
+      "sphere": "球体",
+      "torus": "圆环体",
+      "intersect": "交集",
+      "extrude": "拉伸",
+      "revolve": "旋转",
+      "presspull": "按住并拖动",
+      "slice": "剖切",
+      "section": "截面",
+      "filletedge": "圆角边",
+      "chamferedge": "倒角边",
+      "solidedit": "实体编辑",
+      "solideditextrude": "拉伸面",
+      "solideditmove": "移动面",
+      "solideditrotate": "旋转面",
+      "solideditoffset": "偏移面",
+      "solidedittaper": "倾斜面",
+      "solideditdelete": "删除面",
+      "solideditcopy": "复制面",
+      "point": "多点",
+      "divide": "定数等分",
+      "measuresegments": "定距等分",
+      "ptype": "点样式",
+      "solid": "二维实体",
+      "face3d": "三维面",
+      "leader": "引线",
+      "wipeout": "区域覆盖",
+      "xline": "构造线",
+      "ray": "射线",
+      "minsert": "多重插入块"
+    },
+    "description": {
+      "U": "撤消上一个动作",
+      "REDO": "恢复上一个用 UNDO 或 U 命令放弃的效果",
+      "SNAP": "限制光标按指定的捕捉间距移动",
+      "-OSNAP": "设置执行对象捕捉模式",
+      "FROM": "在命令中获取某个点相对于参照点的偏移",
+      "NEW": "创建新的图形文件",
+      "QNEW": "创建新的图形文件",
+      "QSAVE": "保存当前图形",
+      "SAVEAS": "以新文件名保存当前图形",
+      "SAVE": "保存当前图形",
+      "OPEN": "打开现有的图形文件",
+      "DXFIN": "打开 DXF 文件",
+      "DXFOUT": "将当前图形保存为 DXF 文件",
+      "PASTECLIP": "将剪贴板中的对象粘贴到当前图形中",
+      "DIMSTYLE": "创建和修改标注样式",
+      "STYLE": "创建和修改文字样式",
+      "INSERT": "从“块”选项板插入块",
+      "BLOCKSPALETTE": "打开“块”选项板",
+      "PURGE": "删除图形中未使用的块定义",
+      "LAYER": "管理图层和图层特性",
+      "LAYERCLOSE": "关闭图层特性管理器",
+      "PROPERTIES": "显示选定对象的特性",
+      "PROPERTIESCLOSE": "关闭“特性”选项板",
+      "UNITS": "控制坐标和距离的显示精度和格式",
+      "CLEANSCREENON": "清除屏幕上的工具栏和选项板",
+      "CLEANSCREENOFF": "恢复“全屏显示”之前的显示状态"
+    },
+    "snap": {
+      "endpoint": "端点",
+      "midpoint": "中点",
+      "center": "圆心",
+      "node": "节点",
+      "intersection": "交点",
+      "apparentIntersection": "外观交点",
+      "perpendicular": "垂足",
+      "tangent": "切点",
+      "insertion": "插入点",
+      "extension": "延长线",
+      "parallel": "平行线",
+      "quadrant": "象限点",
+      "nearest": "最近点"
+    },
+    "color": {
+      "red": "红",
+      "yellow": "黄",
+      "green": "绿",
+      "cyan": "青",
+      "blue": "蓝",
+      "magenta": "洋红",
+      "white": "白"
+    },
+    "byLayer": "ByLayer",
+    "view": {
+      "Top": "俯视",
+      "Bottom": "仰视",
+      "Front": "前视",
+      "BAck": "后视",
+      "Left": "左视",
+      "Right": "右视",
+      "SWiso": "西南等轴测",
+      "SEiso": "东南等轴测",
+      "NEiso": "东北等轴测",
+      "NWiso": "西北等轴测",
+      "custom": "自定义视图"
+    },
+    "viewCube": {
+      "face": {
+        "top": "俯视",
+        "bottom": "仰视",
+        "front": "前视",
+        "back": "后视",
+        "left": "左视",
+        "right": "右视"
+      },
+      "compass": {
+        "N": "北",
+        "E": "东",
+        "S": "南",
+        "W": "西"
+      }
+    },
+    "entity": {
+      "line": [
+        [
+          "count",
+          2,
+          {
+            "other": "直线"
+          }
+        ]
+      ],
+      "circle": [
+        [
+          "count",
+          2,
+          {
+            "other": "圆"
+          }
+        ]
+      ],
+      "arc": [
+        [
+          "count",
+          2,
+          {
+            "other": "圆弧"
+          }
+        ]
+      ],
+      "ellipse": [
+        [
+          "count",
+          2,
+          {
+            "other": "椭圆"
+          }
+        ]
+      ],
+      "spline": [
+        [
+          "count",
+          2,
+          {
+            "other": "样条曲线"
+          }
+        ]
+      ],
+      "polyline": [
+        [
+          "count",
+          2,
+          {
+            "other": "多段线"
+          }
+        ]
+      ],
+      "polyline3d": [
+        [
+          "count",
+          2,
+          {
+            "other": "三维多段线"
+          }
+        ]
+      ],
+      "text": [
+        [
+          "count",
+          2,
+          {
+            "other": "文字"
+          }
+        ]
+      ],
+      "mtext": [
+        [
+          "count",
+          2,
+          {
+            "other": "多行文字"
+          }
+        ]
+      ],
+      "attdef": [
+        [
+          "count",
+          2,
+          {
+            "other": "属性定义"
+          }
+        ]
+      ],
+      "dimension": [
+        [
+          "count",
+          2,
+          {
+            "other": "标注"
+          }
+        ]
+      ],
+      "hatch": [
+        [
+          "count",
+          2,
+          {
+            "other": "图案填充"
+          }
+        ]
+      ],
+      "insert": [
+        [
+          "count",
+          2,
+          {
+            "other": "块参照"
+          }
+        ]
+      ],
+      "solid3d": [
+        [
+          "count",
+          2,
+          {
+            "other": "三维实体"
+          }
+        ]
+      ],
+      "region": [
+        [
+          "count",
+          2,
+          {
+            "other": "面域"
+          }
+        ]
+      ],
+      "point": [
+        [
+          "count",
+          2,
+          {
+            "other": "点"
+          }
+        ]
+      ],
+      "solid2d": [
+        [
+          "count",
+          2,
+          {
+            "other": "实线"
+          }
+        ]
+      ],
+      "face3d": [
+        [
+          "count",
+          2,
+          {
+            "other": "三维面"
+          }
+        ]
+      ],
+      "leader": [
+        [
+          "count",
+          2,
+          {
+            "other": "引线"
+          }
+        ]
+      ],
+      "wipeout": [
+        [
+          "count",
+          2,
+          {
+            "other": "区域覆盖"
+          }
+        ]
+      ],
+      "image": [
+        [
+          "count",
+          2,
+          {
+            "other": "光栅图像"
+          }
+        ]
+      ],
+      "table": [
+        [
+          "count",
+          2,
+          {
+            "other": "表格"
+          }
+        ]
+      ],
+      "mleader": [
+        [
+          "count",
+          2,
+          {
+            "other": "多重引线"
+          }
+        ]
+      ],
+      "xline": [
+        [
+          "count",
+          2,
+          {
+            "other": "构造线"
+          }
+        ]
+      ],
+      "ray": [
+        [
+          "count",
+          2,
+          {
+            "other": "射线"
+          }
+        ]
+      ]
+    },
+    "array": {
+      "rectangular": "阵列(矩形)",
+      "polar": "阵列(环形)",
+      "path": "阵列(路径)"
+    },
+    "property": {
+      "title": {
+        "ellipticalArc": "椭圆弧",
+        "objects": [
+          [
+            "count",
+            2,
+            {
+              "other": [
+                0,
+                " 个对象"
+              ]
+            }
+          ]
+        ],
+        "all": [
+          "全部 (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "type": [
+          [
+            "type"
+          ],
+          " (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "linearDimension": "转角标注",
+        "alignedDimension": "对齐标注",
+        "angularDimension": "角度标注",
+        "radiusDimension": "半径标注",
+        "diameterDimension": "直径标注",
+        "minsert": "多重插入块"
+      },
+      "group": {
+        "geometry": "几何图形",
+        "solidHistory": "实体历史记录",
+        "endpoints": "端点",
+        "center": "圆心",
+        "text": "文字",
+        "position": "位置",
+        "dimension": "标注",
+        "definitionPoints": "定义点",
+        "pattern": "图案",
+        "block": "块",
+        "attributes": "属性",
+        "misc": "其他",
+        "dataPoints": "数据点",
+        "selection": "选择",
+        "linesArrows": "直线和箭头",
+        "fit": "调整",
+        "primaryUnits": "主单位"
+      },
+      "row": {
+        "length": "长度",
+        "angle": "角度",
+        "deltaX": "增量 X",
+        "deltaY": "增量 Y",
+        "deltaZ": "增量 Z",
+        "startX": "起点 X 坐标",
+        "startY": "起点 Y 坐标",
+        "startZ": "起点 Z 坐标",
+        "endX": "端点 X 坐标",
+        "endY": "端点 Y 坐标",
+        "endZ": "端点 Z 坐标",
+        "centerX": "圆心 X 坐标",
+        "centerY": "圆心 Y 坐标",
+        "centerZ": "圆心 Z 坐标",
+        "radius": "半径",
+        "diameter": "直径",
+        "circumference": "周长",
+        "area": "面积",
+        "normalX": "法向 X 坐标",
+        "normalY": "法向 Y 坐标",
+        "normalZ": "法向 Z 坐标",
+        "x": "X",
+        "y": "Y",
+        "z": "Z",
+        "elevation": "标高",
+        "thickness": "厚度",
+        "linetypeScale": "线型比例",
+        "startAngle": "起点角度",
+        "endAngle": "端点角度",
+        "totalAngle": "总角度",
+        "arcLength": "弧长",
+        "majorRadius": "长轴半径",
+        "minorRadius": "短轴半径",
+        "radiusRatio": "半径比例",
+        "majorAxisVectorX": "长轴矢量 X 坐标",
+        "majorAxisVectorY": "长轴矢量 Y 坐标",
+        "majorAxisVectorZ": "长轴矢量 Z 坐标",
+        "minorAxisVectorX": "短轴矢量 X 坐标",
+        "minorAxisVectorY": "短轴矢量 Y 坐标",
+        "minorAxisVectorZ": "短轴矢量 Z 坐标",
+        "vertices": "顶点",
+        "segments": "线段",
+        "solidType": "实体类型",
+        "baseRadius": "底面半径",
+        "topRadius": "顶面半径",
+        "sides": "侧面",
+        "elliptical": "椭圆",
+        "baseMajorRadius": "底面长轴半径",
+        "baseMinorRadius": "底面短轴半径",
+        "topMajorRadius": "顶面长轴半径",
+        "topMinorRadius": "顶面短轴半径",
+        "torusRadius": "圆环体半径",
+        "tubeRadius": "管半径",
+        "currentVertex": "当前顶点",
+        "vertex": "顶点",
+        "startSegmentWidth": "起始线段宽度",
+        "endSegmentWidth": "终止线段宽度",
+        "globalWidth": "全局宽度",
+        "closed": "闭合",
+        "contents": "内容",
+        "justify": "对正",
+        "height": "高度",
+        "taperAngle": "倾斜角",
+        "angleOfRevolution": "旋转角度",
+        "axisDirectionX": "轴方向 X",
+        "axisDirectionY": "轴方向 Y",
+        "axisDirectionZ": "轴方向 Z",
+        "history": "历史记录",
+        "rotation": "旋转",
+        "lineSpaceFactor": "行距比例",
+        "lineSpaceDistance": "行间距",
+        "lineSpaceStyle": "行距样式",
+        "definedWidth": "定义的宽度",
+        "textHeight": "文字高度",
+        "textAlignmentX": "文字对齐 X 坐标",
+        "textAlignmentY": "文字对齐 Y 坐标",
+        "textAlignmentZ": "文字对齐 Z 坐标",
+        "measurement": "测量单位",
+        "textOverride": "文字替代",
+        "type": "类型",
+        "vertexX": "顶点 X 坐标",
+        "vertexY": "顶点 Y 坐标",
+        "vertexZ": "顶点 Z 坐标",
+        "fitSmooth": "拟合/平滑",
+        "firstX": "第一点 X 坐标",
+        "firstY": "第一点 Y 坐标",
+        "secondX": "第二点 X 坐标",
+        "secondY": "第二点 Y 坐标",
+        "pattern": "图案",
+        "scale": "比例",
+        "boundaries": "边界",
+        "patternName": "图案名",
+        "annotative": "注释性",
+        "originX": "原点 X",
+        "originY": "原点 Y",
+        "associative": "关联",
+        "islandDetectionStyle": "孤岛检测样式",
+        "edge1": "边 1",
+        "edge2": "边 2",
+        "edge3": "边 3",
+        "edge4": "边 4",
+        "gradientName": "渐变色名称",
+        "color1": "颜色 1",
+        "color2": "颜色 2",
+        "gradientAngle": "渐变色角度",
+        "centered": "置中",
+        "cumulativeArea": "累计面积",
+        "name": "名称",
+        "tag": "标记",
+        "prompt": "提示",
+        "value": "值",
+        "invisible": "不可见",
+        "constant": "固定",
+        "verify": "验证",
+        "preset": "预设",
+        "lockPosition": "锁定位置",
+        "method": "方式",
+        "degree": "阶次",
+        "knotParameterization": "节点参数化",
+        "numberOfFitPoints": "拟合点数",
+        "currentFitPoint": "当前拟合点",
+        "fitPointX": "拟合点 X 坐标",
+        "fitPointY": "拟合点 Y 坐标",
+        "fitPointZ": "拟合点 Z 坐标",
+        "numberOfControlPoints": "控制点数",
+        "currentControlPoint": "当前控制点",
+        "controlPointX": "控制点 X 坐标",
+        "controlPointY": "控制点 Y 坐标",
+        "controlPointZ": "控制点 Z 坐标",
+        "weight": "权值",
+        "width": "宽度",
+        "cvFrame": "控制点框架",
+        "periodic": "周期",
+        "planar": "平面",
+        "startTangentVectorX": "起点切向矢量 X 坐标",
+        "startTangentVectorY": "起点切向矢量 Y 坐标",
+        "startTangentVectorZ": "起点切向矢量 Z 坐标",
+        "endTangentVectorX": "端点切向矢量 X 坐标",
+        "endTangentVectorY": "端点切向矢量 Y 坐标",
+        "endTangentVectorZ": "端点切向矢量 Z 坐标",
+        "fitTolerance": "拟合公差",
+        "positionX": "位置 X 坐标",
+        "positionY": "位置 Y 坐标",
+        "positionZ": "位置 Z 坐标",
+        "insertionPointX": "插入点 X 坐标",
+        "insertionPointY": "插入点 Y 坐标",
+        "insertionPointZ": "插入点 Z 坐标",
+        "minsertColumns": "分栏",
+        "minsertColumnSpacing": "列间距",
+        "minsertRows": "行数",
+        "minsertRowSpacing": "行间距",
+        "basePointX": "基点 X 坐标",
+        "basePointY": "基点 Y 坐标",
+        "basePointZ": "基点 Z 坐标",
+        "secondPointX": "第二点 X 坐标",
+        "secondPointY": "第二点 Y 坐标",
+        "secondPointZ": "第二点 Z 坐标",
+        "directionVectorX": "方向矢量 X 坐标",
+        "directionVectorY": "方向矢量 Y 坐标",
+        "directionVectorZ": "方向矢量 Z 坐标",
+        "scaleX": "X 比例",
+        "scaleY": "Y 比例",
+        "scaleZ": "Z 比例",
+        "showHistory": "显示历史记录",
+        "baseX": "基点 X",
+        "baseY": "基点 Y",
+        "baseZ": "基点 Z",
+        "pathLength": "路径长度",
+        "columns": "列",
+        "columnSpacing": "列间距",
+        "rows": "行",
+        "rowSpacing": "行间距",
+        "rowElevationIncrement": "行标高增量",
+        "levels": "级别",
+        "levelSpacing": "层间距",
+        "includedAxisAngle": "轴夹角",
+        "direction": "方向",
+        "items": "项数",
+        "angleBetweenItems": "项目间的角度",
+        "fillAngle": "填充角度",
+        "rotateItems": "旋转项目",
+        "itemSpacing": "项目间距",
+        "alignItems": "对齐项目",
+        "arrowSize": "箭头大小",
+        "centerMarkSize": "圆心标记大小",
+        "extLineExt": "尺寸界线范围",
+        "extLineOffset": "尺寸界线偏移",
+        "textOffset": "文字偏移",
+        "textPositionX": "文字位置 X 坐标",
+        "textPositionY": "文字位置 Y 坐标",
+        "textRotation": "文字旋转",
+        "dimScaleOverall": "标注全局比例",
+        "decimalSeparator": "小数分隔符",
+        "suppressTrailingZeros": "消去后续零",
+        "precision": "精度",
+        "perimeter": "周长",
+        "arrow": "箭头",
+        "textPosVert": "垂直放置文字"
+      },
+      "value": {
+        "yes": "是",
+        "no": "否",
+        "none": "—",
+        "fitNone": "无",
+        "atLeast": "至少",
+        "exactly": "精确",
+        "fitPoints": "拟合",
+        "controlVertices": "控制点",
+        "box": "长方体",
+        "wedge": "楔体",
+        "pyramid": "棱锥体",
+        "inscribed": "内接",
+        "circumscribed": "外切",
+        "cylinder": "圆柱体",
+        "cone": "圆锥体",
+        "sphere": "球体",
+        "torus": "圆环体",
+        "chord": "弦",
+        "sqrtChord": "弦长平方根",
+        "uniform": "统一",
+        "custom": "自定义",
+        "show": "显示",
+        "hide": "隐藏",
+        "counterClockwise": "逆时针",
+        "clockwise": "顺时针",
+        "divide": "定数等分",
+        "historyNone": "无",
+        "measure": "定距等分",
+        "predefined": "预定义",
+        "userDefined": "用户定义",
+        "customPattern": "自定义",
+        "edgeVisible": "可见",
+        "edgeHidden": "隐藏",
+        "gradient": "渐变色",
+        "gradientLinear": "直线形",
+        "gradientCylinder": "圆柱形",
+        "gradientInvCylinder": "反转圆柱形",
+        "gradientSpherical": "球形",
+        "gradientHemispherical": "半球形",
+        "gradientCurved": "曲线形",
+        "gradientInvSpherical": "反转球形",
+        "gradientInvHemispherical": "反转半球形",
+        "gradientInvCurved": "反转曲线形",
+        "outer": "外部",
+        "extrusion": "拉伸",
+        "revolve": "旋转",
+        "lineWithNoArrow": "无箭头直线",
+        "splineWithNoArrow": "无箭头样条曲线",
+        "lineWithArrow": "有箭头直线",
+        "splineWithArrow": "有箭头样条曲线",
+        "closedFilled": "实心闭合",
+        "centered": "居中",
+        "above": "上方"
+      },
+      "justify": {
+        "left": "左对齐",
+        "center": "居中",
+        "right": "右对齐",
+        "middle": "中间",
+        "tl": "左上",
+        "tc": "中上",
+        "tr": "右上",
+        "ml": "左中",
+        "mc": "正中",
+        "mr": "右中",
+        "bl": "左下",
+        "bc": "中下",
+        "br": "右下"
+      },
+      "dimensionKind": {
+        "linear": "线性",
+        "aligned": "对齐",
+        "angular": "角度",
+        "radius": "半径",
+        "diameter": "直径"
+      }
+    }
+  }
+}

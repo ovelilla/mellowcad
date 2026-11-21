@@ -335,6 +335,13 @@ export { ko }
 export declare const ko: EditorLocale;
 ```
 
+## ./locales/zh-CN
+
+```ts
+export { zhCN }
+export declare const zhCN: EditorLocale;
+```
+
 ## ./styles.css
 
 Scoped to `[data-mellowcad-editor]`: its rules match the editor's root and what is inside it, or an element by one of its classes.

@@ -1,0 +1,76 @@
+---
+title: "AutoCAD TORUS（圆环体）命令"
+metaTitle: "CAD三维圆环体怎么画：TORUS 命令与快捷键 TOR"
+description: "AutoCAD TORUS（圆环体，快捷键 TOR）怎么画三维实体圆环：按提示顺序说明中心点、圆环半径、圆管半径、直径、三点、两点和切点切点半径。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD圆环体的快捷键是什么？","answer":"TOR。输入后按 Enter 键或空格键，然后指定中心点、圆环半径和圆管半径：输入 0,0,0、30 和 8，即得到演示中的圆环体。"},{"question":"CAD圆环体的半径和圆管半径有什么区别？","answer":"半径从圆环体的中心量到圆管的中心；圆管半径是圆管本身的半径。外径 76、圆管粗 16 的圆环体，半径为 30，圆管半径为 8。"},{"question":"CAD怎么画橄榄球形的圆环体？","answer":"指定负的半径，再指定大于其绝对值的圆管半径：输入 -5 和 8，得到两端尖的闭合形状。圆管半径不大于该值时会被拒绝并再次询问。"},{"question":"CAD圆环体为什么看起来是两个圆？","answer":"因为是从上方的平面视图观察。请转动视图：使用 ViewCube 的一角、-VIEW 和 SEIso，或 3DORBIT。用 VSCURRENT 选择 Conceptual 可以为其着色。"}]
+---
+
+TORUS（圆环体）命令创建三维实体圆环，即甜甜圈形状：指定中心点，然后指定圆环的半径（从中心点到圆管中心），再指定圆管的半径。圆环位于 UCS 的 XY 平面上，Z 值与中心点相同。在圆管提示下指定的点，从指定圆环半径时的那一点量起。圆环半径是基本体共用的默认值，圆管半径有自己的默认值，按 Enter 键即采用。圆环体位于当前图层上，放弃一步即可撤销。
+
+圆环半径为负且圆管更粗时，得到两端尖的橄榄球形；圆环比圆管细时，得到苹果形。在“二维线框”和“隐藏”视觉样式中，它显示为绕圆管和绕圆环的线条，数量由 `ISOLINES` 决定。[`LIST`](/docs/commands/list) 显示其位置、法线、圆环体半径和圆管半径，在“特性”选项板中可以输入这两个半径。其夹点用于移动圆环体、设置圆环半径和设置圆管半径。它是三维实体，可以用于 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 和 MellowCAD 的其他三维功能；MellowCAD 的三维只有实体，并且仍不完整。
+
+- **命令：** `TORUS`
+- **快捷键：** `TOR`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `TOR`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="torus" caption="半径为 30、圆管半径为 8 的圆环体，以“概念”视觉样式从东南方向观察。" />
+
+## 选项 [#options]
+
+### `3P` [#3p]
+
+在中心点提示下：询问三点，圆环是通过这三点、位于其平面内的圆。
+
+### `2P` [#2p]
+
+在中心点提示下：询问圆环直径的两个端点。
+
+### `Ttr` (`T`) [#ttr]
+
+在中心点提示下：在“切点”捕捉下拾取两条直线、圆或圆弧，然后指定半径：圆环与两者相切，高度与两者相同。
+
+### `Diameter` (`D`) [#diameter]
+
+在圆环半径提示下：改为询问圆环体的直径。在圆管半径提示下：询问圆管的直径。各自以其默认值的两倍作为默认值。
+
+### `2Point` (`2P`) [#2point]
+
+在圆管半径提示下：询问两点，圆管半径为两点之间的距离。
+
+## 尚不支持的功能 [#missing]
+
+不能对圆环体执行 [`EXPLODE`](/docs/commands/explode)（AutoCAD 会将其分解为曲面）：MellowCAD 没有曲面，因此会提示无法分解。热夹点没有移动、旋转、缩放和镜像，也没有 AutoCAD 的 `DISPSILH` 绘制的轮廓线。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#torus--tor--es-toroide--tor--pt-br-toroide--toro--fr-tore--tor--it-toro--tor--de-torus--tor--ru-тор--pl-torus--tor--cs-anuloid--anu--hu-tórusz--tor)
+
+## 常见问题 [#questions]
+
+### CAD圆环体的快捷键是什么？
+
+`TOR`。输入后按 Enter 键或空格键，然后指定中心点、圆环半径和圆管半径：输入 `0,0,0`、`30` 和 `8`，即得到演示中的圆环体。
+
+### CAD圆环体的半径和圆管半径有什么区别？
+
+半径从圆环体的中心量到圆管的中心；圆管半径是圆管本身的半径。外径 76、圆管粗 16 的圆环体，半径为 30，圆管半径为 8。
+
+### CAD怎么画橄榄球形的圆环体？
+
+指定负的半径，再指定大于其绝对值的圆管半径：输入 `-5` 和 `8`，得到两端尖的闭合形状。圆管半径不大于该值时会被拒绝并再次询问。
+
+### CAD圆环体为什么看起来是两个圆？
+
+因为是从上方的平面视图观察。请转动视图：使用 ViewCube 的一角、`-VIEW` 和 `SEIso`，或 [`3DORBIT`](/docs/commands/3dorbit)。用 [`VSCURRENT`](/docs/commands/vscurrent) 选择 `Conceptual` 可以为其着色。
+
+## 相关命令 [#related]
+
+- [AutoCAD SPHERE（球体）命令](/docs/commands/sphere)
+- [AutoCAD CYLINDER（圆柱体）命令](/docs/commands/cylinder)
+- [AutoCAD REVOLVE（旋转）命令](/docs/commands/revolve)
+- [AutoCAD SUBTRACT（差集）命令](/docs/commands/subtract)

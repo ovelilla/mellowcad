@@ -1,0 +1,58 @@
+---
+title: "AutoCAD UNITS（单位）命令"
+metaTitle: "CAD单位设置（UNITS）：图形单位与精度 UN"
+description: "AutoCAD UNITS（单位，快捷键 UN）怎么设置：“图形单位”对话框，0 到 8 位小数的精度，插入时的缩放单位为毫米、厘米或米。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD单位设置的快捷键是什么？","answer":"输入 UN，然后按 Enter 键或空格键；DDUNITS 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_UNITS 都有效。"},{"question":"CAD单位怎么设置成毫米或米？","answer":"打开 UNITS，在“插入时的缩放单位”下选择“毫米”“厘米”或“米”。一个图形单位仍然是一个单位：5 米的墙，以米为单位画成 5，以毫米为单位画成 5000。这里的选择说明是哪一种，状态栏和动态输入会显示它。"},{"question":"CAD怎么设置小数点后几位？","answer":"在 UNITS 中选择“精度”，从 0 到 0.00000000。它只改变长度的书写方式，从不改变几何图形：画成 10.125 长的直线，在任何精度下都是 10.125 长。"},{"question":"CAD标注的小数位数为什么不跟随单位设置？","answer":"标注按其标注样式自身的精度书写数值，而不是图形的精度。请在 DIMSTYLE 的“主单位”中修改。"},{"question":"CAD可以用英尺和英寸画图吗？","answer":"还不能：长度为小数，插入时的缩放单位只提供毫米、厘米和米。没有建筑单位和工程单位。"}]
+---
+
+UNITS（单位）命令打开“图形单位”对话框，设置图形如何书写长度，以及一个图形单位代表什么。与 AutoCAD 一样，该对话框是模态的：命令一直持续到单击“确定”或“取消”将其关闭；“确定”所做的更改是一个可以用 `U` 放弃的步骤，“取消”或按 Esc 键不作任何更改。加撇号输入 `'UNITS`，可以在正在执行的命令中打开它，对话框关闭后该命令继续。状态栏的单位和应用程序菜单中的“图形单位”也会打开它。
+
+长度的“类型”为“小数”，其“精度”（0 到 8 位小数）是书写所有长度时使用的精度：坐标、距离、面积、提示中提供的默认值。这里新图形从两位小数开始，而 AutoCAD 的公制样板从四位开始。“插入时的缩放单位”说明一个图形单位是什么：毫米、厘米或米；状态栏和动态输入会显示它。“输出样例”按所选精度显示一个点。
+
+- **命令：** `UNITS`
+- **快捷键：** `UN`, `DDUNITS`
+- **面板：** [查询与视图](/docs/commands#inquiry)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `UN`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="units" caption="在 100 × 60 的板上打开 UNITS，然后对其远端角点执行 ID：坐标按图形的精度显示，两位小数。" />
+
+## 尚不支持的功能 [#missing]
+
+没有其他长度类型（建筑、工程、分数和科学），也没有用于极大长度的科学记数法。没有“角度”组：角度为十进制度数，从东方向逆时针计量，精度由 AUPREC 设置，需要输入。没有其他插入单位（包括英寸和英尺）、“光源”、“方向”，也没有命令行形式 -UNITS。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits--pt-br-unidades--un--unidadesd--fr-unites--ui--ddunits--it-unita--ut--ddunits--de-einheit--ru-единицы--ед--диаледин--pl-jedn--jed--odjedn--cs-jednotky--jn--diajedn--hu-mértegys--mes--dpmértegys)
+
+## 常见问题 [#questions]
+
+### CAD单位设置的快捷键是什么？
+
+输入 `UN`，然后按 Enter 键或空格键；`DDUNITS` 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_UNITS` 都有效。
+
+### CAD单位怎么设置成毫米或米？
+
+打开 UNITS，在“插入时的缩放单位”下选择“毫米”“厘米”或“米”。一个图形单位仍然是一个单位：5 米的墙，以米为单位画成 5，以毫米为单位画成 5000。这里的选择说明是哪一种，状态栏和动态输入会显示它。
+
+### CAD怎么设置小数点后几位？
+
+在 UNITS 中选择“精度”，从 `0` 到 `0.00000000`。它只改变长度的书写方式，从不改变几何图形：画成 10.125 长的直线，在任何精度下都是 10.125 长。
+
+### CAD标注的小数位数为什么不跟随单位设置？
+
+标注按其标注样式自身的精度书写数值，而不是图形的精度。请在 [`DIMSTYLE`](/docs/commands/dimstyle) 的“主单位”中修改。
+
+### CAD可以用英尺和英寸画图吗？
+
+还不能：长度为小数，插入时的缩放单位只提供毫米、厘米和米。没有建筑单位和工程单位。
+
+## 相关命令 [#related]
+
+- [AutoCAD DIST（距离）命令](/docs/commands/dist)
+- [AutoCAD AREA（面积）命令](/docs/commands/area)
+- [AutoCAD DIMSTYLE（标注样式）命令](/docs/commands/dimstyle)
+- [CAD线型比例：AutoCAD LTSCALE（线型比例）命令](/docs/commands/ltscale)

@@ -1,0 +1,64 @@
+---
+title: "CAD 练习图：阶梯轴"
+metaTitle: "CAD 机械图练习：阶梯轴"
+description: "AutoCAD 机械练习图：用多段线画出阶梯轴的一半轮廓，倒角后沿轴线镜像，再用连续标注标出各段长度。附分步解答，可免费练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+以主视图绘制以下阶梯轴（单位：mm）：总长 150，各段直径为 30、40、30，长度分别为 40、60、50，两端倒角 2 × 2。先用一条多段线画出轴线以上的一半，倒角后镜像；然后画出横跨轴身的可见轮廓线、轴线和长度尺寸。直径以此处给出的为准。
+
+- **练习：** 中级 · 机械 · 二维
+- **命令：** [`PLINE`](/docs/commands/pline), [`CHAMFER`](/docs/commands/chamfer), [`MIRROR`](/docs/commands/mirror), [`LINE`](/docs/commands/line), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMCONTINUE`](/docs/commands/dimcontinue)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=shaft)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/shaft" caption="阶梯轴主视图，总长 150，各段长度为连续标注。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制上半部分 [#half]
+
+在“轮廓线”图层上，用 [`PLINE`](/docs/commands/pline)（多段线）命令从 `0,0` 起画一条多段线：向上 `0,15`，向右 `40,0`，向上 `0,5`，向右 `60,0`，向下 `0,-5`，向右 `50,0`，向下 `0,-15`，回到轴线。按 Enter 键结束。
+
+<Session name="exercises/shaft/half" caption="1. 绘制上半部分" />
+
+### 2. 两端倒角 [#chamfers]
+
+执行 [`CHAMFER`](/docs/commands/chamfer)（倒角）命令，选择 `Distance` 选项并输入 `2`，再按 Enter 键，第二个距离也取 `2`。`Multiple` 选项可以连续倒多个角而无需重新执行命令：在每一端的角点处拾取两条线段。
+
+<Session name="exercises/shaft/chamfers" caption="2. 两端倒角" />
+
+### 3. 镜像 [#mirror]
+
+[`MIRROR`](/docs/commands/mirror)（镜像）命令：选择多段线，按 Enter 键，然后指定镜像线从 `0,0` 到 `150,0`，即轴线，再按 Enter 键保留源对象。
+
+<Session name="exercises/shaft/mirror" caption="3. 镜像" />
+
+### 4. 绘制轮廓线 [#edges]
+
+用 [`LINE`](/docs/commands/line)（直线）命令画出横跨轴身的可见轮廓线，每条都从底边向上 `0,30`：倒角处从 `2,-15` 和 `148,-15` 起，轴肩处从 `40,-15` 和 `100,-15` 起。
+
+<Session name="exercises/shaft/edges" caption="4. 绘制轮廓线" />
+
+### 5. 绘制轴线 [#axis]
+
+在“中心线”图层上画轴线：一条从 `-8,0` 到相对其 `166,0` 处的直线。
+
+<Session name="exercises/shaft/axis" caption="5. 绘制轴线" />
+
+### 6. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令标注第一段长度 40，放在下方。[`DIMCONTINUE`](/docs/commands/dimcontinue)（连续）命令从其第二条尺寸界线继续标注：输入 `#100,-20`，再输入 `#150,-15`，# 表示从原点起算，然后按两次 Enter 键结束。最后再用一次 [`DIMLINEAR`](/docs/commands/dimlinear) 命令，在更下方标出总长 150。
+
+<Session name="exercises/shaft/dimensions" caption="6. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 等轴测图练习：阶梯块](/docs/exercises/isometric-block): 中级 · 机械 · 等轴测
+- [CAD 三维练习图：带轮](/docs/exercises/pulley): 中级 · 机械 · 三维实体
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link): 高级 · 机械 · 二维
+- [AutoCAD 练习图](/docs/exercises)

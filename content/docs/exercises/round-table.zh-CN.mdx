@@ -1,0 +1,52 @@
+---
+title: "CAD 练习图：圆桌和椅子"
+metaTitle: "CAD 平面图练习：圆桌和 6 把椅子"
+description: "AutoCAD 平面图练习：先画一把椅子，再绕圆桌中心环形阵列出 6 把，并标注尺寸。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+绘制直径 120 的圆桌和 6 把椅子（单位：cm）：每把椅子由 44 × 40、圆角半径 4 的座面和深 8 的靠背组成，座面前沿距桌边 8。在桌子上方画一把椅子，再用环形阵列放置全部 6 把。本图形的标注比例已按厘米设置。
+
+- **练习：** 中级 · 建筑 · 二维
+- **命令：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=round-table)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/round-table" caption="直径 120 的圆桌和 6 把椅子的平面图，尺寸单位为 cm。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制桌子 [#table]
+
+在“轮廓线”图层上，用 [`CIRCLE`](/docs/commands/circle)（圆）命令在 `0,0` 处画圆，`Diameter` 为 `120`。
+
+<Session name="exercises/round-table/table" caption="1. 绘制桌子" />
+
+### 2. 绘制椅子 [#chair]
+
+在桌子上方画座面：用 [`RECTANG`](/docs/commands/rectang)（矩形）命令，将 `Fillet` 设为 `4`，从 `-22,68` 画到相对其 `44,40` 处。然后将圆角改回 `0`，画靠背：从 `-22,108` 画到相对其 `44,8` 处。[`RECTANG`](/docs/commands/rectang) 命令会保留圆角半径，直到再次修改。
+
+<Session name="exercises/round-table/chair" caption="2. 绘制椅子" />
+
+### 3. 阵列椅子 [#array]
+
+[`ARRAYPOLAR`](/docs/commands/arraypolar)（环形阵列）命令：选择座面和靠背，按 Enter 键，指定桌子的中心 `0,0`，然后选择 `Items` 并输入 `6`。每把椅子在放置时随之旋转，因此 6 把椅子都朝向桌子。
+
+<Session name="exercises/round-table/array" caption="3. 阵列椅子" />
+
+### 4. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令标注桌子，放在圆内；再用 [`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令标注上方椅子的宽度 44，以及含靠背的深度 48。
+
+<Session name="exercises/round-table/dimensions" caption="4. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：地块](/docs/exercises/plot-of-land): 中级 · 土木 · 二维
+- [CAD 练习图：阶梯轴](/docs/exercises/shaft): 中级 · 机械 · 二维
+- [CAD 等轴测图练习：阶梯块](/docs/exercises/isometric-block): 中级 · 机械 · 等轴测
+- [AutoCAD 练习图](/docs/exercises)

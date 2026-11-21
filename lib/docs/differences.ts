@@ -157,6 +157,16 @@ export const DIFFERENCES: readonly {
       },
     ],
   },
+  {
+    id: "chinese",
+    sources: [
+      {
+        file: "docs/i18n/zh-CN.md",
+        quote:
+          "**The prompts are English** where Chinese AutoCAD words them in Chinese",
+      },
+    ],
+  },
 ]
 
 /** The page whose sections these are. */

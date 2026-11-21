@@ -88,6 +88,10 @@
       "types": "./dist/locales/ko.d.ts",
       "default": "./dist/locales/ko.js"
     },
+    "./locales/zh-CN": {
+      "types": "./dist/locales/zh-CN.d.ts",
+      "default": "./dist/locales/zh-CN.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

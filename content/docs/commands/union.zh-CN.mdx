@@ -1,0 +1,59 @@
+---
+title: "AutoCAD UNION（并集）命令"
+metaTitle: "CAD并集命令（UNION）合并实体与面域 UNI"
+description: "AutoCAD UNION（并集，快捷键 UNI）怎么用：将三维实体或同一平面上的面域合并为一个对象，它忽略哪些对象，以及为什么要选两个。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD并集的快捷键是什么？","answer":"输入 UNI，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_UNION 都有效。"},{"question":"CAD并集为什么用不了？","answer":"它需要两个实体，或同一平面上的两个面域：不足两个时显示 “At least 2 solids, surfaces, or coplanar regions must be selected.” 且不作任何更改。直线、圆弧和多段线即使闭合也不是面域：请先用 REGION 将其转换为面域。与 AutoCAD 2027 一样，UNION 之前选择的对象会被放弃：请在其提示下选择。提示一次布尔运算失败时，说明实体相交的方式 MellowCAD 还无法计算，实体保持原样。"},{"question":"CAD并集后怎么撤销？","answer":"紧接着执行 U 或按 Ctrl+Z：整个命令一步放弃，对象恢复原样。之后就无法拆开了，因为合并后的实体不记录其组成部分。相反的操作是 SUBTRACT，它减去实体而不是加上实体。"},{"question":"CAD面域怎么用并集合并？","answer":"先用 REGION 将每个闭合图形转换为面域，再执行 UNION：每个平面上的面域合并为一个面域，共用的边被合并。围成空隙的图形会留下一个孔，彼此分开的面域成为由几个独立部分组成的一个面域。在其平面上只有一个的面域保持不变。"}]
+---
+
+UNION（并集）命令将两个或多个三维实体合并为一个实体，或将位于同一平面上的两个或多个面域合并为一个面域：重叠部分只算一次，内部的边消失。它询问对象，数量不限，按 Enter 键进行合并。与 AutoCAD 2027 一样，命令前选择的集合会被放弃并重新询问，既不是实体也不是面域的对象被忽略。实体和面域分别合并：所有实体合并为一个，面域按平面逐个合并。
+
+第一个拾取的对象成为结果，保留其图层和颜色，其他对象被删除；用窗口、窗交或“全部”选择时，取其中最新的对象。结果是复合实体：不再是长方体或圆柱体，也没有历史记录（[`LIST`](/docs/commands/list) 显示 History = None），选中时显示一个夹点，用于整体移动。互不接触的实体成为由两部分组成的一个对象。整个命令是一个放弃步骤。MellowCAD 的三维仍不完整：有实体，没有曲面和网格。
+
+- **命令：** `UNION`
+- **快捷键：** `UNI`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `UNI`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="union" caption="两个重叠的长方体用 UNION 合并为一个实体：从东南方向观察，已消隐。" />
+
+## 尚不支持的功能 [#missing]
+
+没有曲面，这里尚不具备。沿 MellowCAD 尚无精确表示的曲线相交的弯曲的面：轴线既不重合也不平行的圆柱体、圆锥体、球体或圆环体（两个圆柱体也可以相交）；圆锥体与平面或位于其轴上的实体以外的对象；圆环体或旋转生成的实体与既不垂直于其轴也不通过其轴的平面，或与不在其轴上的实体；拉伸实体与平面或沿其拉伸方向拉伸的面以外的对象。这些情况会被拒绝，实体保持原样；剖切与边相切、几个面几乎但不完全位于同一曲面上，以及剖切与边之间的极薄的条片，也是如此。沿长方体的面放置的圆柱体合并后体积正确，但比 AutoCAD 的结果少一条边和一个面。不保留实体历史记录（SOLIDHIST、SHOWHISTORY）。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#union--uni--es-union--uni--pt-br-uniao--u--fr-union--uni--it-unione--uni--de-vereinig--vee--ru-объединение--pl-suma--sum--cs-sjednocení--sje--hu-egyesít--eg--egy)
+
+## 常见问题 [#questions]
+
+### CAD并集的快捷键是什么？
+
+输入 `UNI`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_UNION` 都有效。
+
+### CAD并集为什么用不了？
+
+它需要两个实体，或同一平面上的两个面域：不足两个时显示 `At least 2 solids, surfaces, or coplanar regions must be selected.` 且不作任何更改。直线、圆弧和多段线即使闭合也不是面域：请先用 [`REGION`](/docs/commands/region) 将其转换为面域。与 AutoCAD 2027 一样，UNION 之前选择的对象会被放弃：请在其提示下选择。提示一次布尔运算失败时，说明实体相交的方式 MellowCAD 还无法计算，实体保持原样。
+
+### CAD并集后怎么撤销？
+
+紧接着执行 `U` 或按 Ctrl+Z：整个命令一步放弃，对象恢复原样。之后就无法拆开了，因为合并后的实体不记录其组成部分。相反的操作是 [`SUBTRACT`](/docs/commands/subtract)，它减去实体而不是加上实体。
+
+### CAD面域怎么用并集合并？
+
+先用 [`REGION`](/docs/commands/region) 将每个闭合图形转换为面域，再执行 UNION：每个平面上的面域合并为一个面域，共用的边被合并。围成空隙的图形会留下一个孔，彼此分开的面域成为由几个独立部分组成的一个面域。在其平面上只有一个的面域保持不变。
+
+## 练习 [#practice]
+
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block)
+
+## 相关命令 [#related]
+
+- [AutoCAD SUBTRACT（差集）命令](/docs/commands/subtract)
+- [AutoCAD INTERSECT（交集）命令](/docs/commands/intersect)
+- [AutoCAD REGION（面域）命令](/docs/commands/region)
+- [AutoCAD BOX（长方体）命令](/docs/commands/box)
+- [AutoCAD EXTRUDE（拉伸）三维命令](/docs/commands/extrude)

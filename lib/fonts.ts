@@ -76,6 +76,24 @@ export const KOREAN_SYSTEM_FACES = [
   '"Noto Sans KR"',
 ] as const
 
+/**
+ * Simplified Chinese's faces as each system names them: Apple's PingFang SC
+ * and Hiragino Sans GB, Windows' Microsoft YaHei, Android's and Linux's Noto
+ * CJK and Source Han Sans. WHY no web font: Japanese's reason. WHY no
+ * Japanese face among them: a Han character Chinese shares with Japanese is
+ * drawn otherwise in a Japanese face (直, 骨), so a Chinese page names only
+ * Chinese ones (docs/i18n/zh-CN.md, "Script and font").
+ */
+export const SIMPLIFIED_CHINESE_SYSTEM_FACES = [
+  '"PingFang SC"',
+  '"Hiragino Sans GB"',
+  '"Microsoft YaHei UI"',
+  '"Microsoft YaHei"',
+  '"Noto Sans CJK SC"',
+  '"Source Han Sans SC"',
+  '"Noto Sans SC"',
+] as const
+
 /** Each CJK script's system faces, in the order the systems are tried. */
 const SYSTEM_FACES: Record<
   (typeof SYSTEM_FACE_SCRIPTS)[number],
@@ -83,6 +101,7 @@ const SYSTEM_FACES: Record<
 > = {
   japanese: JAPANESE_SYSTEM_FACES,
   korean: KOREAN_SYSTEM_FACES,
+  "simplified-chinese": SIMPLIFIED_CHINESE_SYSTEM_FACES,
 }
 
 /**

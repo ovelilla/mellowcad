@@ -1,0 +1,66 @@
+---
+title: "AutoCAD ROTATE（旋转）命令"
+metaTitle: "CAD旋转命令（ROTATE）怎么用与快捷键 RO"
+description: "AutoCAD ROTATE（旋转，快捷键 RO）怎么用：按提示顺序说明基点和角度、保留原对象的复制、旋转到指定角度的参照。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD旋转命令的快捷键是什么？","answer":"输入 RO，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_ROTATE 都有效。"},{"question":"CAD怎么旋转到和一条线重合？","answer":"选择 Reference，沿对象的边拾取两点，然后选择 Points，沿要对齐的直线拾取两点。"},{"question":"CAD怎么旋转复制，保留原对象？","answer":"在指定角度之前选择 Copy：副本旋转，原对象保留。"},{"question":"CAD旋转方向为什么反了？","answer":"正角度按逆时针方向旋转，与第一行的 ANGDIR 一致。要顺时针旋转，请输入负角度，例如 -30。"}]
+---
+
+ROTATE（旋转）命令将选定的对象绕基点旋转：选择对象，指定基点，然后指定角度，可以输入数值，也可以拾取一点，以该点相对于基点的方向作为角度。第一行说明哪个方向为正（默认为逆时针，ANGDIR）以及 0 度的位置（ANGBASE）。在角度提示下按 Enter 键，重复上一次的旋转角度；新图形中为 0。对象绕一条通过基点、平行于 UCS 的 Z 轴的轴旋转，因此在三维中保持其高度。这次旋转是一个可以放弃的步骤。
+
+- **命令：** `ROTATE`
+- **快捷键：** `RO`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `RO`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="rotate" caption="用“复制”选项将矩形绕其角点旋转 30°，原对象保留。" />
+
+## 选项 [#options]
+
+### `Copy` (`C`) [#copy]
+
+旋转对象的副本，原对象留在原处，并显示 `Rotating a copy of the selected objects.`。然后再次询问角度。
+
+### `Reference` (`R`) [#reference]
+
+从已知的角度旋转到所需的角度：先询问参照角度（输入数值，或拾取两点来量取），再询问新角度，按二者之差旋转。要将一条倾斜的边旋转到水平，拾取它的两个端点作为参照，然后输入 0。
+
+### `Points` (`P`) [#points]
+
+在“参照”的新角度提示下：新角度取拾取的两点之间连线的角度，使对象与已画出的边对齐。
+
+## 尚不支持的功能 [#missing]
+
+指定角度时，旋转中的选择集随光标移动，以各对象的颜色显示，但不显示其线型和线宽。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro--fr-rotation--ri--it-ruota--ru--de-drehen--dh--ru-повернуть--пов--pl-obróć--ob--cs-otoč--ot--hu-forgat--for)
+
+## 常见问题 [#questions]
+
+### CAD旋转命令的快捷键是什么？
+
+输入 `RO`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_ROTATE` 都有效。
+
+### CAD怎么旋转到和一条线重合？
+
+选择 `Reference`，沿对象的边拾取两点，然后选择 `Points`，沿要对齐的直线拾取两点。
+
+### CAD怎么旋转复制，保留原对象？
+
+在指定角度之前选择 `Copy`：副本旋转，原对象保留。
+
+### CAD旋转方向为什么反了？
+
+正角度按逆时针方向旋转，与第一行的 ANGDIR 一致。要顺时针旋转，请输入负角度，例如 `-30`。
+
+## 相关命令 [#related]
+
+- [AutoCAD MOVE（移动）命令](/docs/commands/move)
+- [AutoCAD COPY（复制）命令](/docs/commands/copy)
+- [AutoCAD MIRROR（镜像）命令](/docs/commands/mirror)
+- [AutoCAD SCALE（缩放）命令](/docs/commands/scale)

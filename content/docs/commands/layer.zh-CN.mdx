@@ -1,0 +1,59 @@
+---
+title: "AutoCAD LAYER（图层特性）命令"
+metaTitle: "CAD图层怎么设置：图层特性管理器 LAYER 与快捷键 LA"
+description: "CAD图层怎么设置：AutoCAD 的 LAYER（快捷键 LA）打开图层特性管理器，各列、新建、删除和置为当前，以及开和锁定对对象的作用。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD图层的快捷键是什么？","answer":"输入 LA，然后按 Enter 键或空格键；也可以输入 DDLMODES，在任何语言版本的 AutoCAD 中都可以输入 _LAYER。它打开图层特性管理器，LAYERCLOSE 将其关闭。"},{"question":"CAD怎么把对象换到另一个图层？","answer":"选择对象，然后在顶部栏的“图层”下拉列表中选择图层：对象一步移到该图层，当前图层保持不变。“特性”选项板的“图层”行作用相同。未选择任何对象时，该下拉列表将所选图层置为当前。"},{"question":"CAD图层怎么删除？","answer":"在图层特性管理器中选择该图层，然后按“删除”。0 图层、当前图层和包含对象的图层（包括块定义中的对象）不能删除：请先删除或移走其对象，并将另一个图层置为当前。"},{"question":"CAD图层关闭和锁定有什么区别？","answer":"关闭的图层隐藏其对象：不能拾取或捕捉这些对象，它们也会从选择集中排除。锁定图层上的对象仍然可见（淡显），可以捕捉和选择，但任何命令都不能编辑它们：命令会计入这些对象并将其排除。与 AutoCAD 相同，关闭当前图层时会先询问。"},{"question":"CAD怎么新建图层？","answer":"在图层特性管理器中按“新建”，然后输入图层名：新图层使用选定图层的颜色、线型和线宽，可以随后在其所在行中修改。将其置为当前即可在该图层上绘图。"}]
+---
+
+LAYER（图层特性）命令打开图层特性管理器，在其中创建、命名和设置图形的图层。与 AutoCAD 相同，它是一个选项板，而不是对话框：绘图时保持打开（这里是选项板面板中的一个选项卡），直到用 `LAYERCLOSE` 关闭；在其他命令中以撇号开头输入时，它会打开而不结束该命令。每个对象都位于一个图层上，其颜色、线型和线宽为 ByLayer 时，使用该图层的设置。新对象位于当前图层上。
+
+每个图层占一行，各列按 AutoCAD 的顺序排列：状态（当前图层上有一个对勾），然后是名称、开、锁定、颜色、线型和线宽，以及图层上的对象数；各行按名称排序。“新建”添加一个图层，使用选定图层的颜色、线型和线宽，其名称处于可输入状态，当前图层保持不变。“置为当前”或双击某一行，将该图层置为当前。单击选定图层的名称或按 F2 键可以重命名，已使用的名称或包含 AutoCAD 禁止字符的名称会被拒绝，0 图层也不能重命名。“删除”删除一个图层，但不能删除 0 图层、当前图层或包含对象的图层：AutoCAD 的“图层 - 未删除”对话框会说明原因。在管理器中的每次修改都是 U 可以放弃的一步，连续的修改合为一步。在命令行中，-LAYER 不使用选项板即可完成同样的操作，使用 AutoCAD 的提示，也可以用于脚本。
+
+- **命令：** `LAYER`
+- **快捷键：** `LA`, `DDLMODES`
+- **面板：** [组织](/docs/commands#organize)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `LA`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="layer" caption="三个图层，每个图层在绘图前置为当前：墙为白色，门为黄色，轴线为红色并使用 Center 线型。" />
+
+## 尚不支持的功能 [#missing]
+
+LAYDEL 和“图层”面板中的其他工具：将对象的图层置为当前、图层匹配、上一个图层等，以及其下拉列表中的开、冻结和锁定图标。图层不能冻结，管理器没有冻结、打印、透明度、打印样式、新视口冻结或说明列，不能重新排列各列，没有图层过滤器或树状图，也没有设置对话框。执行 LAYER 本身不是单独的一步放弃。新图层立即排序，而 AutoCAD 在重命名之前将其显示在选定图层下方；0 图层的线宽为 0.25 毫米，而不是“默认”。不能输入 LAYLOCKFADECTL：锁定图层上的对象总是淡显一半。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose---layer---la--es-capa--ca--layer--ddlmodes--cerrarcapa---capa---ca--pt-br-camada--ca--layer--ddlmodes--fecharcamada---camada---ca--fr-calque--layer--pl--ddlmodes--fermercalque---calque---pl--it-layer--la--ddlmodes--chiudilayer---layer---la--de-layer--la--ddlmodes--ddlmodi--layerschl---layer---la--ru-слой--сл--диалслой--слойзакрыть---слой---сл--pl-warstwa--wa--odwarstwa--warstwazamknij---warstwa---wa--cs-hladina--hl--ddlmodes--diahlad--hladzavři---hladina---hl--hu-fólia--fo--dpfmód--fóliabezár---fólia---fo)
+
+## 常见问题 [#questions]
+
+### CAD图层的快捷键是什么？
+
+输入 `LA`，然后按 Enter 键或空格键；也可以输入 `DDLMODES`，在任何语言版本的 AutoCAD 中都可以输入 `_LAYER`。它打开图层特性管理器，`LAYERCLOSE` 将其关闭。
+
+### CAD怎么把对象换到另一个图层？
+
+选择对象，然后在顶部栏的“图层”下拉列表中选择图层：对象一步移到该图层，当前图层保持不变。“特性”选项板的“图层”行作用相同。未选择任何对象时，该下拉列表将所选图层置为当前。
+
+### CAD图层怎么删除？
+
+在图层特性管理器中选择该图层，然后按“删除”。0 图层、当前图层和包含对象的图层（包括块定义中的对象）不能删除：请先删除或移走其对象，并将另一个图层置为当前。
+
+### CAD图层关闭和锁定有什么区别？
+
+关闭的图层隐藏其对象：不能拾取或捕捉这些对象，它们也会从选择集中排除。锁定图层上的对象仍然可见（淡显），可以捕捉和选择，但任何命令都不能编辑它们：命令会计入这些对象并将其排除。与 AutoCAD 相同，关闭当前图层时会先询问。
+
+### CAD怎么新建图层？
+
+在图层特性管理器中按“新建”，然后输入图层名：新图层使用选定图层的颜色、线型和线宽，可以随后在其所在行中修改。将其置为当前即可在该图层上绘图。
+
+## 相关命令 [#related]
+
+- [AutoCAD PROPERTIES（特性）命令](/docs/commands/properties)
+- [AutoCAD MATCHPROP（特性匹配）命令](/docs/commands/matchprop)
+- [AutoCAD COLOR（颜色）命令](/docs/commands/color)
+- [AutoCAD LINETYPE（线型）命令](/docs/commands/linetype)
+- [AutoCAD LWEIGHT（线宽）命令](/docs/commands/lweight)

@@ -1,0 +1,54 @@
+---
+title: "AutoCAD COPYCLIP（复制剪裁）命令"
+metaTitle: "CAD复制剪裁（COPYCLIP）：Ctrl+C 复制与粘贴"
+description: "CAD Ctrl+C 复制怎么用？COPYCLIP（Ctrl+C）与 CUTCLIP、COPYBASE、PASTECLIP 配合：将对象复制到剪贴板，再在指定点粘贴，也可以粘贴到另一个图形。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD中COPY和COPYCLIP有什么区别？","answer":"COPY 在同一个图形中放置副本，从基点到第二个点。COPYCLIP 将对象放到剪贴板，用 PASTECLIP 粘贴到当前图形或另一个图形。"},{"question":"CAD怎么带基点复制？","answer":"按 Ctrl+Shift+C，或输入 COPYBASE，指定基点并选择对象。然后按 Ctrl+V，按该点放置对象。"},{"question":"CAD怎么把对象复制到另一个图形？","answer":"选择对象并按 Ctrl+C，打开另一个图形并按 Ctrl+V，然后指定插入点。对象的图层、样式和块会一起带过去。"},{"question":"CAD粘贴不了是什么原因？","answer":"浏览器可能会询问页面是否可以读取剪贴板：请允许。如果拒绝，PASTECLIP 粘贴同一页面中最后复制的内容。没有复制任何内容时，不会粘贴任何对象。"}]
+---
+
+COPYCLIP（复制剪裁）命令将所选对象连同它们使用的图层、样式和块复制到剪贴板；图形不会改变，命令之前选择的对象保持选中。按 Ctrl+C 会运行它，并取消正在运行的命令。然后 `PASTECLIP`（Ctrl+V）要求指定插入点：对象随光标移动，以其范围的左下角落在该点，位于当前 UCS 中，整个粘贴是一步，`U` 可以一步放弃。可以粘贴到同一个图形，也可以粘贴到另一个图形：剪贴板是系统的，因此另一个标签页中的图形也能读取，前提是浏览器允许页面读取剪贴板。粘贴的图层、样式或块与图形中已有的同名时，使用图形自己的。
+
+`CUTCLIP`（Ctrl+X）复制对象并将其删除，与 ERASE 相同。`COPYBASE`（Ctrl+Shift+C）先要求指定基点，PASTECLIP 随后按该点而不是角点放置对象，使对象准确落在需要的位置。Ctrl+A 选择图形中的所有对象。
+
+- **命令：** `COPYCLIP`
+- **面板：** [文件与剪贴板](/docs/commands#files)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `COPYCLIP`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="copyclip" caption="COPYCLIP 复制板上的孔，然后在 65,20 处 PASTECLIP：副本以左下角放在该点，成为第二个孔。" />
+
+## 尚不支持的功能 [#missing]
+
+PASTEBLOCK 和 CUTBASE，因此 Ctrl+Shift+V 和 Ctrl+Shift+X 留给浏览器，Ctrl+Shift+A 也是如此。PASTEORIG、PASTESPEC、在窗口之间拖动对象，以及将其他程序中的文字粘贴为多行文字。PASTECLIP 在插入点处的隐藏 INSERT 选项，因此粘贴时不能缩放、旋转或分解。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp--pt-br-copiacorte--recortat--copiabase--colarat--fr-copierpress--couperpress--copierbase--collerpress--it-copiaclip--tagliaclip--copiapuntob--incollaclip--de-copyclip--ausschneiden--kopiebasisp--clipeinfüg--ru-кбуфер--вбуфер--бткопировать--встбуфер--pl-kopiuj_s--wytnij--kopiujbaza--wklej--cs-skopie--vyjmis--skopieref--svlož--hu-vgmásol--vgvág--alapmásol--vgbeill)
+
+## 常见问题 [#questions]
+
+### CAD中COPY和COPYCLIP有什么区别？
+
+[`COPY`](/docs/commands/copy) 在同一个图形中放置副本，从基点到第二个点。COPYCLIP 将对象放到剪贴板，用 PASTECLIP 粘贴到当前图形或另一个图形。
+
+### CAD怎么带基点复制？
+
+按 Ctrl+Shift+C，或输入 `COPYBASE`，指定基点并选择对象。然后按 Ctrl+V，按该点放置对象。
+
+### CAD怎么把对象复制到另一个图形？
+
+选择对象并按 Ctrl+C，打开另一个图形并按 Ctrl+V，然后指定插入点。对象的图层、样式和块会一起带过去。
+
+### CAD粘贴不了是什么原因？
+
+浏览器可能会询问页面是否可以读取剪贴板：请允许。如果拒绝，PASTECLIP 粘贴同一页面中最后复制的内容。没有复制任何内容时，不会粘贴任何对象。
+
+## 相关命令 [#related]
+
+- [AutoCAD COPY（复制）命令](/docs/commands/copy)
+- [PASTECLIP](/docs/commands#pasteclip): 将剪贴板中的对象粘贴到当前图形中
+- [COPYBASE](/docs/commands#copybase): 带基点复制
+- [CUTCLIP](/docs/commands#cutclip): 剪切
+- [AutoCAD INSERT（插入块）命令](/docs/commands/insert)

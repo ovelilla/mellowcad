@@ -1,0 +1,73 @@
+---
+title: "AutoCAD ARRAYPATH（路径阵列）命令"
+metaTitle: "CAD路径阵列命令（ARRAYPATH）怎么用"
+description: "CAD路径阵列怎么用？ARRAYPATH 按提示顺序讲解：路径曲线、定距等分或定数等分、项目数以及项目对齐。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD怎么沿曲线阵列对象？","answer":"输入 ARRAYPATH，选择对象，按 Enter 键，并在要作为起点的一端附近拾取路径；或者输入 AR 运行 ARRAY，选择对象后选择 PAth。然后设置间距或项目数，按 Enter 键创建。"},{"question":"CAD路径阵列为什么不跟随路径？","answer":"在这里，阵列保持创建时的路径：以后移动或拉伸路径，阵列保持不变，而 AutoCAD 的关联路径阵列会跟随路径。删除路径后阵列也会保留。如果项目不随路径转动，选择 Align 并回答 Yes。"},{"question":"CAD路径阵列怎么改变方向？","answer":"在路径另一端附近拾取路径：开放路径从靠近拾取点的一端开始。圆始终从其 0 度角处开始按逆时针方向排列。"},{"question":"CAD怎么沿整条路径均匀排列项目？","answer":"选择 Method，再选择 Divide，然后选择 Items 并输入数量：项目均匀分布，开放路径的第一个和最后一个项目位于两端。"}]
+---
+
+ARRAYPATH（路径阵列）命令沿路径（直线、圆弧、圆或多段线）复制选择集，生成一个阵列对象。它先要求选择对象，显示类型和阵列是否关联，再要求选择路径曲线，并立即显示阵列：项目间距为选择集尺寸的 1.5 倍，沿路径排满，每个项目随路径的方向转动。开放路径从靠近拾取点的一端开始，圆从其 0 度角处开始按逆时针方向排列。之后由一个提示实时编辑阵列，直到按 Enter 键创建，可以使用其选项或预览中的夹点，与 AutoCAD 相同。选定的对象保持原位，作为第一个项目。
+
+- **命令：** `ARRAYPATH`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `ARRAYPATH`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="arraypath" caption="圆弧起点处的一个小正方形沿圆弧阵列：定数等分，7 个项目，每个都随圆弧转动。" />
+
+## 选项 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+`Yes`（默认）创建一个阵列对象，以后可以用其夹点和“特性”选项板修改；`No` 在选定对象旁创建各自独立的副本。该回答在本次会话中保留，ARRAYRECT 和 ARRAYPOLAR 也沿用。
+
+### `Method` (`M`) [#method]
+
+`Measure`（默认）按一定距离排列项目，排满为止；`Divide` 将指定数量的项目均匀分布在整条路径上，开放路径的两端各有一个。
+
+### `Items` (`I`) [#items]
+
+定数等分时，为项目数。定距等分时，先指定项目之间的距离，再指定项目数，最多为能排下的数量，命令会显示该数量；`Fill` 则取全部。
+
+### `Align items` (`A`) [#align-items]
+
+`Yes`（默认）使每个项目随路径从起点开始的方向转动；`No` 只沿路径移动项目。
+
+### `eXit` (`X`) [#exit]
+
+创建阵列并结束命令，与按 Enter 键相同。
+
+## 尚不支持的功能 [#missing]
+
+阵列不跟随路径：以后编辑路径，阵列仍保持创建时所用的路径。样条曲线、椭圆和三维多段线还不能作为路径，不在 UCS 平面上的路径也不能。不提供基点、切向、行、层、z 方向和表达式，在选择路径的提示下也不能输入编组，阵列的夹点没有菜单。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho--fr-trajectoirereseau--it-serietraiett--de-reihepfad--ru-массивтраект--pl-ścieżkaszyk--cs-křivpole--hu-kiosztútvonal)
+
+## 常见问题 [#questions]
+
+### CAD怎么沿曲线阵列对象？
+
+输入 `ARRAYPATH`，选择对象，按 Enter 键，并在要作为起点的一端附近拾取路径；或者输入 `AR` 运行 [`ARRAY`](/docs/commands/array)，选择对象后选择 `PAth`。然后设置间距或项目数，按 Enter 键创建。
+
+### CAD路径阵列为什么不跟随路径？
+
+在这里，阵列保持创建时的路径：以后移动或拉伸路径，阵列保持不变，而 AutoCAD 的关联路径阵列会跟随路径。删除路径后阵列也会保留。如果项目不随路径转动，选择 `Align` 并回答 `Yes`。
+
+### CAD路径阵列怎么改变方向？
+
+在路径另一端附近拾取路径：开放路径从靠近拾取点的一端开始。圆始终从其 0 度角处开始按逆时针方向排列。
+
+### CAD怎么沿整条路径均匀排列项目？
+
+选择 `Method`，再选择 `Divide`，然后选择 `Items` 并输入数量：项目均匀分布，开放路径的第一个和最后一个项目位于两端。
+
+## 相关命令 [#related]
+
+- [AutoCAD ARRAY（阵列）命令](/docs/commands/array)
+- [AutoCAD ARRAYRECT（矩形阵列）命令](/docs/commands/arrayrect)
+- [AutoCAD ARRAYPOLAR（环形阵列）命令](/docs/commands/arraypolar)
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)

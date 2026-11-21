@@ -1,0 +1,66 @@
+---
+title: "CAD 三维练习图：轴承座"
+metaTitle: "CAD 三维建模练习题（进阶）：轴承座"
+description: "AutoCAD 三维机械练习图：用拉伸和并集建成轴承座，再用圆柱体差集挖出轴孔和两个螺栓孔。附分步解答，可免费在线练习三维实体。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+按以下尺寸创建轴承座模型（单位：mm）：底板 100 × 60，厚 12，四角圆角半径 10；中间有一个直径 40、高 40 的凸台；一个直径 20 的轴孔贯通凸台，两个直径 10 的螺栓孔贯通底板，孔距 76。底板和凸台由各自的轮廓拉伸而成，再合并为一个实体；轴孔和螺栓孔是从中减去的圆柱体。
+
+- **练习：** 高级 · 机械 · 三维实体
+- **命令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`EXTRUDE`](/docs/commands/extrude), [`UNION`](/docs/commands/union), [`CYLINDER`](/docs/commands/cylinder), [`COPY`](/docs/commands/copy), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`ZOOM`](/docs/commands/zoom)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=bearing-block)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/bearing-block" caption="轴承座平面图，100 × 60，标注凸台、轴孔和螺栓孔尺寸。" />
+
+<Session name="exercises/bearing-block/model" caption="轴承座实体，从东南方向观察，“概念”视觉样式。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制平面图 [#plan]
+
+在“轮廓线”图层上，用 [`RECTANG`](/docs/commands/rectang)（矩形）命令，将 `Fillet` 设为 `10`，从 `0,0` 画到 `100,60`；再在其中心 `50,30` 处画一个圆，`Diameter` 为 `40`。
+
+<Session name="exercises/bearing-block/plan" caption="1. 绘制平面图" />
+
+### 2. 拉伸底板和凸台 [#extrude]
+
+用 [`EXTRUDE`](/docs/commands/extrude)（拉伸）命令将轮廓拉伸 `12` 高，再将圆拉伸 `40` 高，得到两个实体。
+
+<Session name="exercises/bearing-block/extrude" caption="2. 拉伸底板和凸台" />
+
+### 3. 合并 [#union]
+
+[`UNION`](/docs/commands/union)（并集）命令：选择两个实体并按 Enter 键。二者合为一个实体。
+
+<Session name="exercises/bearing-block/union" caption="3. 合并" />
+
+### 4. 绘制圆柱体 [#holes]
+
+用 [`CYLINDER`](/docs/commands/cylinder)（圆柱体）命令将轴孔和一个螺栓孔画成圆柱体：轴孔位于 `50,30`，`Diameter` 为 `20`，高 `40`；螺栓孔位于 `12,30`，直径 `10`，高 `12`。然后用 [`COPY`](/docs/commands/copy)（复制）命令将螺栓孔从 `12,30` 复制到相对其 `76,0` 处。
+
+<Session name="exercises/bearing-block/holes" caption="4. 绘制圆柱体" />
+
+### 5. 差集 [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)（差集）命令：选择轴承座并按 Enter 键，再选择三个圆柱体并按 Enter 键。轴孔和螺栓孔即被挖通。
+
+<Session name="exercises/bearing-block/subtract" caption="5. 差集" />
+
+### 6. 转换视图 [#view]
+
+选择 `-VIEW` 命令的 `SEIso` 选项和 [`VSCURRENT`](/docs/commands/vscurrent)（视觉样式）命令的 `Conceptual` 选项，再用 [`ZOOM`](/docs/commands/zoom)（缩放）命令的 `Extents` 选项并输入 `0.8x`，使实体充满视图。
+
+<Session name="exercises/bearing-block/view" caption="6. 转换视图" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：垫片](/docs/exercises/gasket): 初级 · 机械 · 二维
+- [CAD 练习图：L 形支架](/docs/exercises/l-bracket): 初级 · 机械 · 二维
+- [CAD 练习图：楼梯平面图](/docs/exercises/stairs): 初级 · 建筑 · 二维
+- [AutoCAD 练习图](/docs/exercises)

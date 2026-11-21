@@ -1,0 +1,54 @@
+---
+title: "AutoCAD MATCHPROP（特性匹配）命令"
+metaTitle: "CAD特性匹配命令（MATCHPROP）用法与快捷键 MA"
+description: "CAD特性匹配怎么用：AutoCAD MATCHPROP（特性匹配，快捷键 MA）选择源对象，再选择目标对象，复制其图层、颜色、线型、线宽和样式。在浏览器中免费在线试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD特性匹配快捷键是什么？","answer":"输入 MA，然后按 Enter 键或空格键；PAINTER 也是它的别名。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _MATCHPROP。"},{"question":"CAD怎么把一条线的特性复制给另一条线？","answer":"执行 MATCHPROP，选择具有所需特性的线，然后选择要应用这些特性的线并按 Enter 键。它们会移到源对象的图层上，并使用其颜色、线型和线宽。"},{"question":"CAD特性匹配为什么不起作用？","answer":"锁定图层上的目标对象不会被修改：请先解锁该图层。特性只在都具有该特性的对象之间复制：标注样式只复制给标注，文字样式只复制给文字，图案只复制给图案填充。另外，与 AutoCAD 一样，线型不会复制给图案填充或多行文字。"},{"question":"怎么匹配标注或图案填充的特性？","answer":"选择一个标注作为源对象，其他标注作为目标对象：它们会使用其标注样式，以及其图层和颜色。图案填充把图案、比例和角度传给其他图案填充，而每个图案填充保留自己的原点。"}]
+---
+
+MATCHPROP（特性匹配）命令把一个对象的特性复制到其他对象上，即 AutoCAD 的特性匹配刷子。选择源对象，或在命令之前选择一个对象；锁定图层上的对象也可以作为源对象。然后它显示要复制的特性（`Current active settings:` 及其列表），并询问目标对象：每次拾取或窗口选择都会立即应用，直到按 Enter 键结束。锁定图层上的目标对象保持不变，并提示 `Destination object on a locked layer. Cannot be updated.`。光标带有 AutoCAD 的刷子，整个过程是一步，可以用 `U` 放弃。以撇号输入 `'MATCHPROP` 时，可以在其他命令中透明执行。
+
+复制的是“特性设置”的默认项：图层、颜色和线宽；线型（但不复制到图案填充、多行文字和属性定义）；厚度；文字之间复制样式、高度和旋转角度，单行文字之间还复制对正方式；标注之间复制标注样式；图案填充之间复制图案、比例和角度，但不复制原点。
+
+- **命令：** `MATCHPROP`
+- **快捷键：** `MA`, `PAINTER`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `MA`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="matchprop" caption="一块板和它的孔，一条红色、Center 线型的竖直轴线在其图层上，一条位于图层 0 上的水平线被 MATCHPROP 变成同样的轴线。" />
+
+## 尚不支持的功能 [#missing]
+
+“设置”选项及其“特性设置”对话框：它所知道的每种特性总是全部复制，第一个提示中也不列出 `[Settings]`。线型比例、透明度和打印样式，这里的对象没有这些特性；多段线的宽度、文字的宽度因子和倾斜角度，以及注释性特性。AutoCAD 在光标下显示的更改预览。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop--pt-br-propig--pi--pintor--fr-corresprop--cor--copierprop--it-corrisprop--crp--copiaprop--de-eiganpass--ru-копироватьсв--кпс--кисть--pl-uzgwłaściwości--uzg--malarz--cs-kopievlast--kv--formát--painter--hu-tulmásol--tum--festő)
+
+## 常见问题 [#questions]
+
+### CAD特性匹配快捷键是什么？
+
+输入 `MA`，然后按 Enter 键或空格键；`PAINTER` 也是它的别名。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_MATCHPROP`。
+
+### CAD怎么把一条线的特性复制给另一条线？
+
+执行 MATCHPROP，选择具有所需特性的线，然后选择要应用这些特性的线并按 Enter 键。它们会移到源对象的图层上，并使用其颜色、线型和线宽。
+
+### CAD特性匹配为什么不起作用？
+
+锁定图层上的目标对象不会被修改：请先解锁该图层。特性只在都具有该特性的对象之间复制：标注样式只复制给标注，文字样式只复制给文字，图案只复制给图案填充。另外，与 AutoCAD 一样，线型不会复制给图案填充或多行文字。
+
+### 怎么匹配标注或图案填充的特性？
+
+选择一个标注作为源对象，其他标注作为目标对象：它们会使用其标注样式，以及其图层和颜色。图案填充把图案、比例和角度传给其他图案填充，而每个图案填充保留自己的原点。
+
+## 相关命令 [#related]
+
+- [AutoCAD PROPERTIES（特性）命令](/docs/commands/properties)
+- [AutoCAD LAYER（图层特性）命令](/docs/commands/layer)
+- [AutoCAD LINETYPE（线型）命令](/docs/commands/linetype)
+- [AutoCAD LWEIGHT（线宽）命令](/docs/commands/lweight)

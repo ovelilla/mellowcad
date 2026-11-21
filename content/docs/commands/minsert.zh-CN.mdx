@@ -1,0 +1,67 @@
+---
+title: "AutoCAD MINSERT（多重插入块）命令"
+metaTitle: "CAD多重插入块（MINSERT）：按行列插入块"
+description: "CAD多重插入块怎么用：AutoCAD MINSERT 将块按行和列插入为一个对象，它询问的内容，以及 EXPLODE 为什么不能分解它。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD多重插入块（MINSERT）是什么命令？","answer":"多重插入：它把一个块排列成由行和列组成的矩形网格，作为一个对象。之后可以在“特性”选项板中修改行数、列数或间距。"},{"question":"CAD多重插入块怎么分解？","answer":"不能分解：在 AutoCAD 和这里，EXPLODE 都会提示它是多重插入的块并保持不变，即使把行数和列数都设为 1 也一样。可以用 -INSERT 重新插入该块，或者用 ARRAYRECT 排列副本，其阵列可以分解为各个项目。"},{"question":"MINSERT 有快捷键吗？","answer":"没有：AutoCAD 没有为 MINSERT 提供别名，功能区上也没有按钮，因此请完整输入 MINSERT。在任何语言版本的 AutoCAD 中都可以使用 _MINSERT。"},{"question":"MINSERT 和阵列有什么区别？","answer":"MINSERT 将一个块重复为一个无法分解的参照。ARRAYRECT 将任意对象重复为关联阵列，可以用夹点修改其数目和间距，并且可以用 EXPLODE 分解。"}]
+---
+
+MINSERT（多重插入块）命令将图形中定义的块按行和列多次插入，结果是一个对象。它先询问 `-INSERT` 询问的内容：块名（按 Enter 键接受所提供的名称，即上次插入的块）、插入点、X 和 Y 比例因子以及旋转角度；然后询问行数和列数（按 Enter 键为 1），再询问行间距和列间距。只询问行数和列数所需要的间距，1 行 1 列就是普通的块参照。带属性的块最后询问属性值，只问一次，每个副本都显示这些值。
+
+行沿块的 Y 轴排列，列沿块的 X 轴排列，两者都随旋转角度转动；间距以图形单位计，与比例无关，负值使副本向下或向左排列。在询问行间距时，也可以用两点指定一个单位单元：其宽度为列间距，高度为行间距。结果是 AutoCAD 的多重插入块：它作为一个整体移动、复制、旋转、缩放和镜像，[`LIST`](/docs/commands/list) 会列出其行和列，“特性”选项板将它们显示为“列”“列间距”“行”“行间距”，都可以输入修改。[`EXPLODE`](/docs/commands/explode) 与 AutoCAD 一样，将它计为多重插入的块，保持其完整。DXF 文件按 AutoCAD 自己的方式打开和保存它。
+
+- **命令：** `MINSERT`
+- **面板：** [组织](/docs/commands#organize)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `MINSERT`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="minsert" caption="把一个座椅创建为块，再用 MINSERT 排成 3 行 5 列：一个对象。" />
+
+## 选项 [#options]
+
+### `?` [#list]
+
+在询问块名时选择：像 [`BLOCK`](/docs/commands/block) 一样列出图形中的块，然后结束。
+
+### `Scale` (`S`) [#scale]
+
+在询问插入点时选择：为两个轴询问一个比例因子，然后重新询问插入点。指定插入点之后，不再询问 X 和 Y 比例因子。
+
+### `Rotate` (`R`) [#rotate]
+
+在询问插入点时选择：询问旋转角度，它使每个副本和整个网格一起转动，然后重新询问插入点。指定插入点之后，不再询问旋转角度。
+
+## 尚不支持的功能 [#missing]
+
+询问插入点时的基点、X、Y 和 Z，以及询问 X 比例因子时的角点和 XYZ，因为 -INSERT 也没有这些选项；用于打开图形文件的 `~`；注释性块，这里没有注释性块。线性标注会选中整个 MINSERT，而不是其某个副本中的对象。“特性”选项板中的“注释性”“块单位”和“单位因子”。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#minsert--es-insertm--pt-br-inserirm--fr-inserm--it-inserm--de-meinfüg--ru-мвставить--pl-wwstaw--cs-nvlož--hu-tbeill)
+
+## 常见问题 [#questions]
+
+### CAD多重插入块（MINSERT）是什么命令？
+
+多重插入：它把一个块排列成由行和列组成的矩形网格，作为一个对象。之后可以在“特性”选项板中修改行数、列数或间距。
+
+### CAD多重插入块怎么分解？
+
+不能分解：在 AutoCAD 和这里，[`EXPLODE`](/docs/commands/explode) 都会提示它是多重插入的块并保持不变，即使把行数和列数都设为 1 也一样。可以用 `-INSERT` 重新插入该块，或者用 [`ARRAYRECT`](/docs/commands/arrayrect) 排列副本，其阵列可以分解为各个项目。
+
+### MINSERT 有快捷键吗？
+
+没有：AutoCAD 没有为 MINSERT 提供别名，功能区上也没有按钮，因此请完整输入 `MINSERT`。在任何语言版本的 AutoCAD 中都可以使用 `_MINSERT`。
+
+### MINSERT 和阵列有什么区别？
+
+MINSERT 将一个块重复为一个无法分解的参照。[`ARRAYRECT`](/docs/commands/arrayrect) 将任意对象重复为关联阵列，可以用夹点修改其数目和间距，并且可以用 [`EXPLODE`](/docs/commands/explode) 分解。
+
+## 相关命令 [#related]
+
+- [AutoCAD INSERT（插入块）命令](/docs/commands/insert)
+- [AutoCAD ARRAYRECT（矩形阵列）命令](/docs/commands/arrayrect)
+- [AutoCAD BLOCK（创建块）命令](/docs/commands/block)
+- [AutoCAD EXPLODE（分解）命令](/docs/commands/explode)

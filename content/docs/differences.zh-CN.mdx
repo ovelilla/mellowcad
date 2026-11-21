@@ -1,0 +1,57 @@
+---
+title: 与 AutoCAD 的区别
+metaTitle: "MellowCAD 与 AutoCAD 的区别及原因"
+description: "与 AutoCAD 兼容到什么程度？MellowCAD 与 AutoCAD 不同的地方及其原因：浏览器占用的按键，以及这里没有的功能。"
+type: concept
+sourceHash: "76c7bfcfbadf"
+---
+
+MellowCAD 以 AutoCAD 2027 为准：命令和快捷键相同，提示的顺序相同，选项字母和默认值也相同。只有在浏览器强制要求、或者相关功能在这里不存在时，才与它不同。下面每一项区别都说明 AutoCAD 怎么做、MellowCAD 改为怎么做，以及原因。单个命令仍缺少的功能，可从[命令页面](/docs/commands)中该命令的条目找到链接。
+
+## 一次只有一个图形 [#one-drawing]
+
+AutoCAD 在单独的选项卡中打开新图形，旧图形仍保持打开。MellowCAD 只有一个图形：<Command id="NEW" /> 和 <Command id="OPEN" /> 会替换它，在 <Command id="NEW" /> 之后执行一次 <Command id="U" /> 即可恢复上一个图形。
+
+## 保存即下载文件 [#saving]
+
+MellowCAD 在工作时把图形保存在此浏览器中，且仅限本设备。<Command id="QSAVE" /> 会立即下载一个 MellowCAD 自有的带版本号格式的文件，就像对已命名的图形那样：这里没有任何地方保存图形的名称。<Command id="SAVEAS" /> 和 <Command id="SAVE" /> 会打开“图形另存为”对话框，有文件名和文件类型（包括 DXF），但没有文件夹：浏览器把文件放在它存放所有下载内容的位置。
+
+## 浏览器占用的按键 [#browser-keys]
+
+页面永远收不到用于关闭选项卡的 `Ctrl+W`，也收不到用于打开窗口的 `Ctrl+N`。选择循环在 AutoCAD 中是 `Ctrl+W`，在这里是 `F4`；AutoCAD 将 `F4` 用于三维对象捕捉，而 MellowCAD 还没有三维对象捕捉。新建图形请输入 <Command id="NEW" />。
+
+## 动态输入始终打开 [#dynamic-input]
+
+动态输入无法关闭，因此它的按键 `F12` 留给浏览器使用。
+
+## 只有模型空间 [#model-space]
+
+没有布局，也没有打印：屏幕是查看图形的唯一地方。因此线宽从一开始就显示（`LWDISPLAY` 为打开，而 AutoCAD 启动时为关闭），状态栏上的 `MODEL` 只是一个标签，而不是切换到布局的开关。
+
+## 部分对话框改为命令行版本 [#dialogs]
+
+AutoCAD 打开的对话框在这里不存在时，命令会像带连字符（-）前缀的版本一样在命令行上提问：<Command id="COLOR" /> 运行 <Command id="-COLOR" />，<Command id="LWEIGHT" /> 运行 <Command id="-LWEIGHT" />，<Command id="LINETYPE" /> 运行 <Command id="-LINETYPE" />。<Command id="DIMSTYLE" /> 和 <Command id="STYLE" /> 打开“样式”选项板，显示标注样式或文字样式。
+
+## 每个图形都有六种线型 [#linetypes]
+
+AutoCAD 的新图形只有一种线型，即连续线型，其他线型要在“线型管理器”或下拉列表的“其他…”中选择时才从文件加载。这里两者都不存在，因此每个图形都有六种线型（Continuous、DASHED、HIDDEN、CENTER、PHANTOM 和 DASHDOT）供下拉列表使用；<Command id="LINETYPE" /> 的“加载”从 acadiso.lin 加载其他线型。
+
+## 状态栏中的坐标 [#coordinates]
+
+自 2015 版起，AutoCAD 的状态栏不再显示光标坐标。MellowCAD 显示坐标，因为它没有其他显示光标位置的方式；可以在状态栏的“自定义”中隐藏。
+
+## 阿拉伯语使用英文版 AutoCAD 的命令 [#arabic]
+
+没有阿拉伯语版 AutoCAD，用阿拉伯语绘图的人使用英文版。因此在阿拉伯语中，界面使用阿拉伯语，命令行与英文版 AutoCAD 相同：同样的名称、快捷键、提示和选项字母。与桌面程序一样，`Ctrl` 快捷键不受键盘布局影响：即使阿拉伯语布局输入的是字母，`Ctrl+Z` 仍然是放弃。
+
+## 日文版的提示与英文版 AutoCAD 相同 [#japanese]
+
+日文版 AutoCAD 保留英文的命令名称、快捷键和选项字母，提示则用日语显示：英文版 AutoCAD 显示 `[Undo]` 的地方，日文版显示 `[元に戻す(U)]`。在日语的 MellowCAD 中，界面使用日语，命令行与英文版 AutoCAD 相同：输入的内容与日文版 AutoCAD 相同，而提示在引入日文版 AutoCAD 的提示之前，与英文版相同。
+
+## 韩文版的提示与英文版 AutoCAD 相同 [#korean]
+
+韩文版 AutoCAD 同样保留英文的命令名称、快捷键和选项字母，提示则用韩语显示：英文版 AutoCAD 显示 `[Undo]` 的地方，韩文版显示 `[명령 취소(U)]`。在韩语的 MellowCAD 中，界面使用韩语，命令行与英文版 AutoCAD 相同：输入的内容与韩文版 AutoCAD 相同，而提示在引入韩文版 AutoCAD 的提示之前，与英文版相同。
+
+## 简体中文版的提示与英文版 AutoCAD 相同 [#chinese]
+
+中文版 AutoCAD 同样保留英文的命令名称、快捷键和选项字母，提示则用中文显示：英文版 AutoCAD 显示 `[Undo]` 的地方，中文版显示 `[放弃(U)]`。在简体中文的 MellowCAD 中，界面使用中文，命令行与英文版 AutoCAD 相同：输入的内容与中文版 AutoCAD 相同，而提示在引入中文版 AutoCAD 的提示之前，与英文版相同。

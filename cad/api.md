@@ -3377,6 +3377,13 @@ export { ko }
 export declare const ko: EngineLocale;
 ```
 
+## ./locales/zh-CN
+
+```ts
+export { zhCN }
+export declare const zhCN: EngineLocale;
+```
+
 ## Reached, not exported
 
 What the exports' types name. A host cannot import these names, but their shape is API.

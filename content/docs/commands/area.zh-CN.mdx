@@ -1,0 +1,82 @@
+---
+title: "AutoCAD AREA（面积）命令"
+metaTitle: "CAD面积命令（AREA）怎么算面积与快捷键 AA"
+description: "CAD怎么测量面积？AREA（快捷键 AA）计算拾取的角点或对象的面积和周长，并用增加面积和减少面积累计总面积。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD面积快捷键是什么？","answer":"输入 AA，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 _AREA。"},{"question":"CAD怎么求多段线或填充的面积？","answer":"运行 AREA，按 Enter 键选择 Object，然后拾取闭合的多段线或图案填充：命令提示下显示其面积和周长。图案填充的面积不包括其中的孤岛。"},{"question":"CAD怎么减去面积？","answer":"选择 Add，再选择 Object，拾取外部形状并按 Enter 键；然后选择 Subtract 和 Object，逐个拾取孔。每拾取一个，AREA 都显示剩余的总面积；连按两次 Enter 键结束。"},{"question":"CAD面积怎么换算成平方米？","answer":"AREA 显示的是图形单位的平方。如果以毫米为单位绘图，除以 1,000,000：6,000,000 即 6 m²。以厘米为单位时，除以 10,000。"},{"question":"CAD提示对象没有面积是什么原因？","answer":"只有封闭的形状和曲线才有面积：直线、单独的圆弧、文字和标注都没有。请拾取闭合的多段线、圆或图案填充，或者先用 JOIN 将直线合并为多段线；也可以按角点勾勒形状。"}]
+---
+
+AREA（面积）命令测量封闭形状的面积和周长：可以按角点勾勒形状，也可以拾取一个对象。指定第一个角点，再依次指定后面的角点：从第二个角点起，经过光标闭合的形状以半透明绿色填充，与 AutoCAD 的着色相同。按 Enter 键或选择 `Total`，在命令提示下显示 `Area = …, Perimeter = …` 并结束命令；在第三个角点之前按 Enter 键会被拒绝。使用“增加面积”和“减少面积”，可以对多个形状累计总面积。数值按图形的精度显示；输入 `'AREA` 可以读取最后一次测量的面积。
+
+- **命令：** `AREA`
+- **快捷键：** `AA`
+- **面板：** [查询与视图](/docs/commands#inquiry)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `AA`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="area" caption="一块 100×60 的板上有一个半径 18 的孔：AREA 加上板的面积，减去孔的面积，并显示剩余的总面积。" />
+
+## 选项 [#options]
+
+### `Object` (`O`) [#object]
+
+第一个提示的默认选项，按 Enter 键即选择它：拾取圆、椭圆、闭合的多段线或样条曲线、图案填充或面域，AREA 显示其面积和周长（圆则为圆周长）。开放的多段线、样条曲线或椭圆弧由一条连接两端的直线闭合，AREA 显示其长度。直线或文字没有面积：显示 `Selected object does not have an area`，并再次提问。
+
+### `Add area` (`A`) [#add]
+
+开始累计总面积：此后每次测量的面积，无论按角点还是用 `Object`，都会加入总面积，AREA 显示该面积和总面积。按 Enter 键结束对象或角点的指定并再次提问，直到在第一个提示下按 Enter 键结束。
+
+### `Subtract area` (`S`) [#subtract]
+
+与上一项相同，但从总面积中减去每个面积：先算板，再减去其中的孔。
+
+### `Undo` (`U`) [#undo]
+
+删除最后指定的角点。
+
+### `Total` (`T`) [#total]
+
+显示已指定角点的面积和周长，并结束命令。
+
+## 尚不支持的功能 [#missing]
+
+MEASUREGEOM，即功能区的“测量”工具，及其半径、角度、体积和快速选项：这里功能区的“距离”和“面积”按钮运行 DIST 和 AREA。AREA 在指定下一个点时的“圆弧”和“长度”选项。不在当前 UCS 平面上的角点按平面视图测量，而 AutoCAD 按三维测量；对于与 UCS 成角度的对象，也不显示 AutoCAD 的 `Object not parallel with UCS.`。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa--pt-br-dist--di--fr-dist--di--it-dist--di--de-abstand--ab--ru-дист--ди--pl-odleg--odl--cs-vzd--vz--hu-távs--tá)
+
+## 常见问题 [#questions]
+
+### CAD面积快捷键是什么？
+
+输入 `AA`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_AREA`。
+
+### CAD怎么求多段线或填充的面积？
+
+运行 AREA，按 Enter 键选择 `Object`，然后拾取闭合的多段线或图案填充：命令提示下显示其面积和周长。图案填充的面积不包括其中的孤岛。
+
+### CAD怎么减去面积？
+
+选择 `Add`，再选择 `Object`，拾取外部形状并按 Enter 键；然后选择 `Subtract` 和 `Object`，逐个拾取孔。每拾取一个，AREA 都显示剩余的总面积；连按两次 Enter 键结束。
+
+### CAD面积怎么换算成平方米？
+
+AREA 显示的是图形单位的平方。如果以毫米为单位绘图，除以 1,000,000：6,000,000 即 6 m²。以厘米为单位时，除以 10,000。
+
+### CAD提示对象没有面积是什么原因？
+
+只有封闭的形状和曲线才有面积：直线、单独的圆弧、文字和标注都没有。请拾取闭合的多段线、圆或图案填充，或者先用 [`JOIN`](/docs/commands/join) 将直线合并为多段线；也可以按角点勾勒形状。
+
+## 练习 [#practice]
+
+- [CAD 练习图：地块](/docs/exercises/plot-of-land)
+
+## 相关命令 [#related]
+
+- [AutoCAD DIST（距离）命令](/docs/commands/dist)
+- [AutoCAD LIST（列表）命令](/docs/commands/list)
+- [AutoCAD HATCH（图案填充）命令](/docs/commands/hatch)
+- [AutoCAD UNITS（单位）命令](/docs/commands/units)

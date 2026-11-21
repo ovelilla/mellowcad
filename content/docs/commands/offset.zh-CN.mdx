@@ -1,0 +1,78 @@
+---
+title: "AutoCAD OFFSET（偏移）命令"
+metaTitle: "CAD偏移命令（OFFSET）用法与快捷键 O"
+description: "CAD偏移命令怎么用：AutoCAD OFFSET（偏移，快捷键 O）按提示顺序讲解，偏移距离或通过点、删除和图层选项，一次一个对象、一侧。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD偏移快捷键是什么？","answer":"输入 O，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _OFFSET。"},{"question":"CAD为什么偏移不了？","answer":"OFFSET 可以偏移直线、圆弧、圆、二维多段线、椭圆和样条曲线。文字、多行文字、块参照、标注和图案填充会以 “Cannot offset that object.” 拒绝；当距离会使圆、圆弧或多段线缩小到没有时也是如此。锁定图层上的对象无法选择，三维多段线会被跳过。"},{"question":"CAD怎么把同一条线偏移多次？","answer":"选择这条线，然后在指定一侧的提示下输入 Multiple 的字母：在该侧每单击一次就多一个副本，每个副本都比上一个再远一个距离。也可以保持默认，每次选择最新的副本。"},{"question":"CAD偏移后怎么放在当前图层？","answer":"在第一个提示下选择 Layer，然后选择 Current。此后所有副本都放在当前图层上，直到再次选择 Source。"}]
+---
+
+OFFSET（偏移）命令绘制一个与对象平行的副本，副本与对象相距输入的距离，或通过拾取的点：直线得到平行线，圆或圆弧得到同心圆或同心圆弧，多段线得到其内侧或外侧的轮廓，椭圆或样条曲线得到沿其走向的样条曲线。与 AutoCAD 一样，它一次处理一个对象：先指定一次距离，然后选择对象和放置副本的一侧，可以重复任意次。按 Enter 键结束。
+
+- **命令：** `OFFSET`
+- **快捷键：** `O`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `O`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="offset" caption="矩形向内偏移 6，圆向外偏移 6：分别选择对象，再指定偏移的一侧。" />
+
+## 选项 [#options]
+
+### `Through` (`T`) [#through]
+
+不使用距离，而是让每个副本通过拾取或输入的点。它是第一个提示的默认值，因此在指定距离之前，在该处按 Enter 键即选择它；指定距离之后，在该图形中按 Enter 键会重复上次的距离。
+
+### `Erase` (`E`) [#erase]
+
+询问偏移后是否删除每个源对象，`Yes` 或 `No`（默认值）。选择 `Yes` 时，副本取代原对象。该选择在整个会话中保留，下一次 OFFSET 会在第一行显示它。
+
+### `Layer` (`L`) [#layer]
+
+询问副本放在哪个图层上：`Current` 图层，或 `Source` 对象的图层（默认值）。同样在整个会话中保留。
+
+### `Exit` (`E`) [#exit]
+
+结束命令，与在对象提示下按 Enter 键相同。
+
+### `Multiple` (`M`) [#multiple]
+
+在指定一侧的提示下选择：不必再次选择同一个对象，即可继续偏移它，每个副本都比上一个再远一个距离，直到按 Enter 键或选择 `Exit`。
+
+### `Undo` (`U`) [#undo]
+
+放弃最后一个副本（无论它来自哪个对象），并重新询问对象。没有可放弃的副本时，会给出提示。
+
+## 尚不支持的功能 [#missing]
+
+OFFSETGAPTYPE 1 和 2：偏移多段线的转角总是按 0 的方式闭合，即延伸各段使其相交。样条曲线或椭圆的偏移结果在 AutoCAD 的公差范围内，但其节点位于 MellowCAD 确定的位置，而不是 AutoCAD 的位置。在样条曲线上使用“通过”时，工具提示显示 X 和 Y，而不是距离。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento--fr-decaler--dc--it-offset--of--de-versetz--vs--ru-подобие--под--pl-odsuń--od--cs-ekvid--e--hu-párh--p)
+
+## 常见问题 [#questions]
+
+### CAD偏移快捷键是什么？
+
+输入 `O`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_OFFSET`。
+
+### CAD为什么偏移不了？
+
+OFFSET 可以偏移直线、圆弧、圆、二维多段线、椭圆和样条曲线。文字、多行文字、块参照、标注和图案填充会以 `Cannot offset that object.` 拒绝；当距离会使圆、圆弧或多段线缩小到没有时也是如此。锁定图层上的对象无法选择，三维多段线会被跳过。
+
+### CAD怎么把同一条线偏移多次？
+
+选择这条线，然后在指定一侧的提示下输入 `Multiple` 的字母：在该侧每单击一次就多一个副本，每个副本都比上一个再远一个距离。也可以保持默认，每次选择最新的副本。
+
+### CAD偏移后怎么放在当前图层？
+
+在第一个提示下选择 `Layer`，然后选择 `Current`。此后所有副本都放在当前图层上，直到再次选择 `Source`。
+
+## 相关命令 [#related]
+
+- [AutoCAD TRIM（修剪）命令](/docs/commands/trim)
+- [AutoCAD EXTEND（延伸）命令](/docs/commands/extend)
+- [AutoCAD FILLET（圆角）命令](/docs/commands/fillet)
+- [AutoCAD COPY（复制）命令](/docs/commands/copy)

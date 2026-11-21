@@ -1,0 +1,64 @@
+---
+title: "AutoCAD BLOCK（创建块）命令"
+metaTitle: "CAD创建块命令（BLOCK）怎么用与快捷键 B"
+description: "CAD怎么创建块？BLOCK（快捷键 B）按提示顺序讲解：块名、插入基点和对象，以及重定义块和带属性的块。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD创建块快捷键是什么？","answer":"输入 B，然后按 Enter 键或空格键。在 AutoCAD 中它打开“块定义”对话框；这里它在命令行中询问，与 -B（-BLOCK）相同。在任何语言版本的 AutoCAD 中都可以输入 _BLOCK。"},{"question":"CAD怎么创建块？","answer":"输入 B 和名称，然后拾取基点（一个角点，或块放置时所依靠的那条边的中点），再选择对象。按 Enter 键定义块，并将这些对象变为该块的一个参照。在命令之前选择的对象也会被采用，在指定基点之后。"},{"question":"CAD块怎么重定义？","answer":"以该块的名称运行 BLOCK 并回答 Yes，然后指定基点并选择新的对象：该块的每个参照都显示新的定义。对象中不能包含该块自身的参照；这样的选择集会被拒绝，命令结束。"},{"question":"CAD怎么做带属性的块？","answer":"先用 ATTDEF 命令定义属性，然后将属性与其他对象一起选择：属性按拾取的顺序加入块。替换这些对象的参照会打开一个输入框，每个属性一个字段，以其提示为标签，并填入其默认值：按 Enter 键应用这些值，按 Esc 键保留默认值。"},{"question":"CAD块怎么分解？","answer":"EXPLODE 命令将参照还原为它所显示的对象，每次分解一层嵌套，每个对象回到自身的图层和颜色。属性还原为属性定义，属性值会丢失。"}]
+---
+
+BLOCK（创建块）命令将一组对象以一个名称保存在图形中，以便 [`INSERT`](/docs/commands/insert) 命令可以多次放置它，每个副本都是对这同一个块定义的参照。命令依次要求输入名称、插入基点（放置每个参照所依据的点）和对象。按 Enter 键结束选择并定义块，选中的对象在原位置变为该块的一个参照。整个命令是一步，放弃可以一步撤销。
+
+AutoCAD 的 BLOCK 命令打开“块定义”对话框，MellowCAD 没有该对话框：这里 BLOCK 在命令行中询问 `-BLOCK` 所询问的内容，与 AutoCAD 的控制台相同。名称可以包含空格，最多 255 个字符，但不能包含 `< > / \ " : ; ? * | , =` 中的任何字符，也不能包含反引号：只按 Enter 键或输入这样的名称会显示 `Invalid block name.` 并再次询问。如果图形中已有同名的块（不区分大小写），命令会询问是否重定义该块：`Yes` 或 `No`（默认值，选择后命令结束）。
+
+- **命令：** `BLOCK`
+- **快捷键：** `B`, `ACADBLOCKDIALOG`, `BMAKE`, `BMOD`
+- **面板：** [组织](/docs/commands#organize)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `B`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="block" caption="由一个矩形和一条直线组成的椅子被创建为块 B1：输入块名，以前边的中点为基点，选择这两个对象。" />
+
+## 选项 [#options]
+
+### `?` [#list]
+
+列出图形中的块：询问要列出哪些块，默认为 `*` 表示全部，也可以输入带通配符的名称；然后写出匹配的名称和各类块的数量，命令结束。匿名块（例如阵列使用的块）只计数，不列出名称。
+
+## 尚不支持的功能 [#missing]
+
+AutoCAD 的“块定义”对话框：BLOCK 在命令行中询问。插入基点处的注释性和模式（保留、删除）选项：对象总是转换为参照。ATTREQ 为 0 时跳过属性值输入框，以及 ATTSYNC、ATTREDEF、BATTMAN 和 BATTORDER：重定义的块不改变其参照的属性，与 AutoCAD 相同。ByBlock：块中的对象不能采用参照自身的颜色、线型或线宽，而在 AutoCAD 中以 ByBlock 绘制的对象可以。在旋转过的 UCS 中，AutoCAD 2027 会移动它所转换的对象；这里对象保持在原位置，这是有意为之。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq--pt-br-bloco--cb--acadblockdialog--criarb--defb--bloco---cb--fr-bloc--b--acadblockdialog--_bmake--bmod--bloc---b--it-blocco--b--acadblockdialog--bmod--blocco---b--de-block--bl--acadblockdialog--bmake--bmod--block---bl--ru-блок--б--acadblockdialog--bmod--сблок--блок---б--pl-blok--b--bmod--odtblok--tblok--blok---b--cs-blok--b--acadblockdialog--bvytvoř--vytvořb--bmod--blok---b--hu-blokk--b--acadblockdialog--bkészít--blokk---b)
+
+## 常见问题 [#questions]
+
+### CAD创建块快捷键是什么？
+
+输入 `B`，然后按 Enter 键或空格键。在 AutoCAD 中它打开“块定义”对话框；这里它在命令行中询问，与 `-B`（`-BLOCK`）相同。在任何语言版本的 AutoCAD 中都可以输入 `_BLOCK`。
+
+### CAD怎么创建块？
+
+输入 `B` 和名称，然后拾取基点（一个角点，或块放置时所依靠的那条边的中点），再选择对象。按 Enter 键定义块，并将这些对象变为该块的一个参照。在命令之前选择的对象也会被采用，在指定基点之后。
+
+### CAD块怎么重定义？
+
+以该块的名称运行 BLOCK 并回答 `Yes`，然后指定基点并选择新的对象：该块的每个参照都显示新的定义。对象中不能包含该块自身的参照；这样的选择集会被拒绝，命令结束。
+
+### CAD怎么做带属性的块？
+
+先用 [`ATTDEF`](/docs/commands/attdef) 命令定义属性，然后将属性与其他对象一起选择：属性按拾取的顺序加入块。替换这些对象的参照会打开一个输入框，每个属性一个字段，以其提示为标签，并填入其默认值：按 Enter 键应用这些值，按 Esc 键保留默认值。
+
+### CAD块怎么分解？
+
+[`EXPLODE`](/docs/commands/explode) 命令将参照还原为它所显示的对象，每次分解一层嵌套，每个对象回到自身的图层和颜色。属性还原为属性定义，属性值会丢失。
+
+## 相关命令 [#related]
+
+- [AutoCAD INSERT（插入块）命令](/docs/commands/insert)
+- [AutoCAD ATTDEF（定义属性）命令](/docs/commands/attdef)
+- [AutoCAD EXPLODE（分解）命令](/docs/commands/explode)
+- [AutoCAD PURGE（清理）命令](/docs/commands/purge)

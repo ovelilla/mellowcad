@@ -1,0 +1,42 @@
+---
+title: AutoCAD 从二维到三维
+metaTitle: "CAD 三维：从二维图形到三维实体"
+description: "CAD 三维入门：将闭合轮廓拉伸、按住并拖动、旋转，再做并集和差集，把二维图形变成三维实体。在线免费的三维实体，目前仅部分支持。"
+type: howTo
+sourceHash: "6ead7769724f"
+---
+
+在 AutoCAD 中，实体通常从二维图形开始：一个闭合轮廓，像任何平面图一样画出，然后拉伸到一定高度或绕轴旋转，再与其他实体合并，或被其他实体切除。MellowCAD 的三维实体也用同样的方法、同样的命令创建。三维功能目前仅部分支持：还没有扫掠、放样、网格和渲染。每一节都展示由引擎绘制的操作过程，以及按输入方式记录的命令历史记录。
+
+## 绘制闭合轮廓 [#profile]
+
+实体需要闭合轮廓：闭合多段线、矩形、圆或面域。首尾相连的直线仍然是各自独立的对象：<Command id="JOIN" />（合并）命令把它们合并为一条多段线，<Command id="REGION" />（面域）命令则把它们变成面域。请在平面视图中绘制轮廓，在那里输入点最方便。
+
+## 拉伸 [#extrude]
+
+<Command id="EXTRUDE" />（拉伸）命令：选择轮廓，按 Enter 键，然后输入高度。从上方看，实体与其轮廓完全一样：用 <Command id="VIEW" />（视图管理器）命令或 ViewCube 转动视图来查看它，并用 <Command id="VSCURRENT" />（视觉样式）命令选择它的显示方式。
+
+<Session name="solidExtrude" caption="由一条闭合多段线构成的 L 形轮廓，拉伸 30，从东南方向观察。" />
+
+## 按住并拖动区域 [#presspull]
+
+<Command id="PRESSPULL" />（按住并拖动）命令不需要轮廓：在任意闭合区域内单击，即使该区域由各自独立的直线围成也可以，然后输入高度。在实体的面上单击时，它会推入或拉出该面。
+
+<Session name="presspull" caption="一个闭合区域，从内部按住并拖动后变成实体。" />
+
+## 旋转 [#revolve]
+
+<Command id="REVOLVE" />（旋转）命令使轮廓绕轴旋转：选择轮廓，用两点、对象或 X、Y、Z 轴指定旋转轴，然后指定角度，默认旋转一整圈。
+
+<Session name="revolve" caption="绕 Y 轴旋转的半剖面。" />
+
+## 实体的并集与差集 [#booleans]
+
+<Command id="UNION" />（并集）命令把多个实体合并为一个，<Command id="SUBTRACT" />（差集）命令从一个实体中减去一个或多个实体，<Command id="INTERSECT" />（交集）命令保留它们的公共部分。孔就是从所穿过的实体中减去的圆柱体。
+
+<Session name="subtract" caption="从长方体中减去圆柱体：一个贯穿的孔。" />
+
+## 下一步 [#next]
+
+- 三维[练习](/docs/exercises)：由面域和一次拉伸做成的[安装板](/docs/exercises/mounting-plate)、由剖面旋转而成的[带轮](/docs/exercises/pulley)，以及经过并集和钻孔的[轴承座](/docs/exercises/bearing-block)。
+- <Command id="3DORBIT" />（三维动态观察）命令用鼠标转动视图，<Command id="VSCURRENT" /> 为各个面着色。

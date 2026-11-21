@@ -1,0 +1,85 @@
+---
+title: "AutoCAD ARRAYRECT（矩形阵列）命令"
+metaTitle: "CAD矩形阵列命令（ARRAYRECT）怎么用"
+description: "CAD矩形阵列怎么用？ARRAYRECT 按提示顺序讲解：列数、行数和层数，它们的间距，以及是否关联。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD矩形阵列怎么做？","answer":"输入 ARRAYRECT（没有别名），或者输入 AR 运行 ARRAY，并在其提问时按 Enter 键，因为矩形是默认类型。选择对象并按 Enter 键：阵列立即绘制出来，可以直接编辑。"},{"question":"CAD矩形阵列怎么设置行间距和列间距？","answer":"选择 Spacing，先输入列之间的距离，再输入行之间的距离；负值向左或向下。使用 Unit，用两个角点同时指定两个距离。也可以拖动第二列和第二行处的箭头夹点。"},{"question":"CAD阵列怎么变成单独的对象？","answer":"在按 Enter 键之前，选择 ASsociative 并回答 No：每个副本都是独立的对象。关联阵列以后可以用 EXPLODE 分解为各项目。"},{"question":"CAD怎么做三维阵列？","answer":"选择 Levels：行和列沿 UCS 的 Z 方向向上复制，层数和间距由指定的值决定。Rows 还会询问标高增量，使每行比前一行升高。"}]
+---
+
+ARRAYRECT（矩形阵列）命令按列和行复制选择集，需要时还可以按层复制，生成一个阵列对象。它先要求选择对象，显示类型和阵列是否关联，并立即显示阵列：沿 UCS 的 X 方向 4 列，沿 Y 方向 3 行，间距为选择集尺寸的 1.5 倍。之后由一个提示实时编辑阵列，直到按 Enter 键创建，可以使用其选项或预览中的夹点，与 AutoCAD 相同：单击某个箭头夹点，再单击目标位置或输入数字，即可设置数量或间距。在此提示下按 Esc 键也会创建阵列。选定的对象成为第一个项目。
+
+- **命令：** `ARRAYRECT`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `ARRAYRECT`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="arrayrect" caption="一个正方形和其中的圆排成 5 列 3 行，间距 16 和 14：先指定数量，再指定间距。" />
+
+## 选项 [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+`Yes`（默认）创建一个阵列对象：以后可以用其夹点和“特性”选项板修改，[`EXPLODE`](/docs/commands/explode) 可将其分解为各项目。`No` 在选定对象旁创建各自独立的副本。该回答在本次会话中保留，ARRAYPOLAR 和 ARRAYPATH 也沿用。
+
+### `COUnt` (`COU`) [#count]
+
+先指定列数，再指定行数，各为 1 到 32767。
+
+### `Spacing` (`S`) [#spacing]
+
+先指定列之间的距离，再指定行之间的距离，负值向左或向下。也可以选择 `Unit`：指定一个矩形的两个角点，其两边即为两个距离。
+
+### `COLumns` (`COL`) [#columns]
+
+列数和列之间的距离。
+
+### `Rows` (`R`) [#rows]
+
+行数、行之间的距离，以及每行相对于前一行升高的标高增量。
+
+### `Levels` (`L`) [#levels]
+
+沿 UCS 的 Z 方向叠加的副本：先指定层数，再指定层之间的距离，或者用 `Total` 指定第一层到最后一层的距离。
+
+### `eXit` (`X`) [#exit]
+
+创建阵列并结束命令，与按 Enter 键相同。
+
+## 尚不支持的功能 [#missing]
+
+基点；列间距和行间距处的“总计”（层数有此选项）；表达式，用于将值与图形的参数关联。ARRAYEDIT 和 ARRAYCLOSE，用于编辑阵列的源对象或替换项目。阵列夹点的菜单（列数、列总间距、轴角度等），以及按 Ctrl 键在其间循环，因此不能用夹点设置总间距或轴角度；夹点也不在命令行中显示提示。“特性”选项板中的基点 X 和基点 Y 不能重新输入。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang--fr-reseaurect--it-serierettang--de-reiherechteck--ru-массивпрямоуг--pl-szykprost--cs-obdpole--hu-kiosztnégysz)
+
+## 常见问题 [#questions]
+
+### CAD矩形阵列怎么做？
+
+输入 `ARRAYRECT`（没有别名），或者输入 `AR` 运行 [`ARRAY`](/docs/commands/array)，并在其提问时按 Enter 键，因为矩形是默认类型。选择对象并按 Enter 键：阵列立即绘制出来，可以直接编辑。
+
+### CAD矩形阵列怎么设置行间距和列间距？
+
+选择 `Spacing`，先输入列之间的距离，再输入行之间的距离；负值向左或向下。使用 `Unit`，用两个角点同时指定两个距离。也可以拖动第二列和第二行处的箭头夹点。
+
+### CAD阵列怎么变成单独的对象？
+
+在按 Enter 键之前，选择 `ASsociative` 并回答 `No`：每个副本都是独立的对象。关联阵列以后可以用 [`EXPLODE`](/docs/commands/explode) 分解为各项目。
+
+### CAD怎么做三维阵列？
+
+选择 `Levels`：行和列沿 UCS 的 Z 方向向上复制，层数和间距由指定的值决定。`Rows` 还会询问标高增量，使每行比前一行升高。
+
+## 练习 [#practice]
+
+- [CAD 练习图：楼梯平面图](/docs/exercises/stairs)
+
+## 相关命令 [#related]
+
+- [AutoCAD ARRAY（阵列）命令](/docs/commands/array)
+- [AutoCAD ARRAYPOLAR（环形阵列）命令](/docs/commands/arraypolar)
+- [AutoCAD ARRAYPATH（路径阵列）命令](/docs/commands/arraypath)
+- [AutoCAD COPY（复制）命令](/docs/commands/copy)

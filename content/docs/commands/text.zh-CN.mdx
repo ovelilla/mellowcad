@@ -1,0 +1,64 @@
+---
+title: "AutoCAD TEXT（单行文字）命令"
+metaTitle: "CAD单行文字命令（TEXT）怎么输入与快捷键 DT"
+description: "AutoCAD TEXT（单行文字，快捷键 DT）怎么输入文字：按提示顺序说明起点、高度和旋转角度、对正和样式，每行一个对象。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD单行文字的快捷键是什么？","answer":"输入 DT，然后按 Enter 键或空格键；DTEXT 和 TEXT 也可以，在任何语言版本的 AutoCAD 中，_TEXT 都有效。T 不是 TEXT 的快捷键：它执行 MTEXT，即多行文字。"},{"question":"CAD文字怎么对齐？","answer":"在第一个提示下选择 Justify，或直接在此处输入对正方式的字母，然后指定其所指的点：正中将每行的中心放在该点上，就像把标签放在方框正中。要让文字沿某个角度排列，请在旋转角度提示下输入该角度。"},{"question":"CAD单行文字和多行文字有什么区别？","answer":"TEXT 每行生成一个对象，各行分别移动、编辑和对正，从不自动换行。MTEXT 将段落生成为一个对象，按方框的宽度自动换行，整体对正。两者共用文字高度和文字样式。"},{"question":"CAD文字怎么修改？","answer":"双击文字：TEXTEDIT 将其打开以便重新输入，然后询问下一个要编辑的文字，直到按 Esc 键为止。其高度和旋转是“特性”选项板中的行，其夹点用于移动文字。"}]
+---
+
+TEXT（单行文字）命令创建单行文字。指定起点、高度和旋转角度，然后输入一行文字并按 Enter 键：这一行成为一个独立的对象，下一行从其下方开始。输入空行结束命令。在此之前单击其他位置，后续各行从该点开始；按 Esc 键保留已输入的行，放弃正在输入的行。要创建按宽度自动换行的段落，作为一个对象，请使用 [`MTEXT`](/docs/commands/mtext)。
+
+第一行显示当前样式、高度和对正方式。高度与 [`MTEXT`](/docs/commands/mtext) 和 [`ATTDEF`](/docs/commands/attdef) 共用，保存在图形中，下一次 TEXT 以其作为默认值；样式有自己的高度时，跳过高度提示。在起点提示下按 Enter 键，在 TEXT 上次写的最后一行下方继续，不再询问高度和角度。U 放弃整次执行。
+
+- **命令：** `TEXT`
+- **快捷键：** `DT`, `DTEXT`
+- **面板：** [注释](/docs/commands#annotate)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `DT`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="text" caption="两行单行文字在方框中居中，对正方式为正中：每行都是一个独立的对象。" />
+
+## 选项 [#options]
+
+### `Justify` (`J`) [#justify]
+
+询问文字相对于其点的位置：`Left`（默认）、`Center`、`Right`、`Middle`，或九个点之一，即上、中、下与左、中、右的组合，按提示中列出的顺序。随后起点提示询问对正方式所指的点：对于正中，询问中间点。与 AutoCAD 一样，在第一个提示下也接受这九个未列出的选项，因此在此处输入正中的字母，会立即询问中间点。对正方式保存在图形中，供下一次 TEXT 使用。
+
+### `Style` (`S`) [#style]
+
+询问要置为当前的文字样式名，按 Enter 键保留现有样式。`?` 列出图形中的样式；图形中没有的名称会被拒绝并再次询问。样式在 [`STYLE`](/docs/commands/style) 打开的选项板中创建。
+
+## 尚不支持的功能 [#missing]
+
+没有“对齐”和“布满”对正方式。“样式”的 `?` 一次列出所有样式，不询问要列出哪些，也不逐页暂停。文字在动态输入框中输入，而不是在图形上用光标输入；文字内容不能在“特性”选项板中重新输入，该选项板也没有“注释性”“宽度因子”“倾斜”“颠倒”和“反向”行。在文字框内单击，即使不在字母上也会选中文字；AutoCAD 则什么也不选中。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto--fr-texte--t--textdyn---texte--it-testo--t--td--testodin---testo--de-text--dt--dtext---text--ru-текст--дт--дтекст---текст--pl-tekst--dt--dtekst---tekst--cs-text--dt--dtext---text--hu-szöveg---szöveg)
+
+## 常见问题 [#questions]
+
+### CAD单行文字的快捷键是什么？
+
+输入 `DT`，然后按 Enter 键或空格键；`DTEXT` 和 `TEXT` 也可以，在任何语言版本的 AutoCAD 中，`_TEXT` 都有效。`T` 不是 TEXT 的快捷键：它执行 [`MTEXT`](/docs/commands/mtext)，即多行文字。
+
+### CAD文字怎么对齐？
+
+在第一个提示下选择 `Justify`，或直接在此处输入对正方式的字母，然后指定其所指的点：正中将每行的中心放在该点上，就像把标签放在方框正中。要让文字沿某个角度排列，请在旋转角度提示下输入该角度。
+
+### CAD单行文字和多行文字有什么区别？
+
+TEXT 每行生成一个对象，各行分别移动、编辑和对正，从不自动换行。[`MTEXT`](/docs/commands/mtext) 将段落生成为一个对象，按方框的宽度自动换行，整体对正。两者共用文字高度和文字样式。
+
+### CAD文字怎么修改？
+
+双击文字：[`TEXTEDIT`](/docs/commands/textedit) 将其打开以便重新输入，然后询问下一个要编辑的文字，直到按 Esc 键为止。其高度和旋转是“特性”选项板中的行，其夹点用于移动文字。
+
+## 相关命令 [#related]
+
+- [AutoCAD MTEXT（多行文字）命令](/docs/commands/mtext)
+- [AutoCAD TEXTEDIT（编辑文字）命令](/docs/commands/textedit)
+- [AutoCAD STYLE（文字样式）命令](/docs/commands/style)
+- [AutoCAD MATCHPROP（特性匹配）命令](/docs/commands/matchprop)

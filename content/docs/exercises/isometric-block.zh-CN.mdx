@@ -1,0 +1,52 @@
+---
+title: "CAD 等轴测图练习：阶梯块"
+metaTitle: "CAD 轴测图练习题：阶梯块"
+description: "AutoCAD 等轴测图练习：用 LINE 命令和极坐标沿 30°、90°、150° 轴线画出阶梯块，并标注尺寸。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+按以下尺寸绘制阶梯块的等轴测图（单位：mm）：长 60、深 40、高 40，前部有一个深 20、高 20 的台阶。每条边都沿一条等轴测轴线：长度方向为 30° 和 210°，深度方向为 150° 和 330°，高度方向为 90° 和 270°。MellowCAD 尚不支持 AutoCAD 的等轴测绘图，即等轴测捕捉和等轴测圆，因此各条边都是用极坐标（长度和角度）输入的直线。
+
+- **练习：** 中级 · 机械 · 等轴测
+- **命令：** [`LINE`](/docs/commands/line), [`DIMALIGNED`](/docs/commands/dimaligned)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=isometric-block)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/isometric-block" caption="阶梯块的等轴测图，长 60、深 40、高 40，尺寸沿各边标注。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制台阶的前面 [#front]
+
+在“轮廓线”图层上，用 [`LINE`](/docs/commands/line)（直线）命令从前下角 `0,0` 起，依次输入 `60<30`、`20<90`、`60<210`，然后选择 `Close`。
+
+<Session name="exercises/isometric-block/front" caption="1. 绘制台阶的前面" />
+
+### 2. 绘制侧面 [#side]
+
+再从 `0,0` 起画左侧面：`40<150`、`40<90`、`20<330`、`20<270`、`20<330`。按 Enter 键，直线终止于台阶的前边。
+
+<Session name="exercises/isometric-block/side" caption="2. 绘制侧面" />
+
+### 3. 绘制顶面 [#top]
+
+其余各线从已画出的角点开始：输入 `_END`，即只作用于一个点的端点对象捕捉，然后拾取角点。从前面的右上角起：`20<150`、`20<90`、`20<150`、`60<210`。然后从台阶立面的底端和顶端各画一条 `60<210` 的直线。
+
+<Session name="exercises/isometric-block/top" caption="3. 绘制顶面" />
+
+### 4. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMALIGNED`](/docs/commands/dimaligned)（对齐）命令沿各边标注，每个标注都放在其所在边的旁边：底部为 60 和 40，左侧竖直方向为 40，右侧竖直方向为 20。
+
+<Session name="exercises/isometric-block/dimensions" caption="4. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 三维练习图：带轮](/docs/exercises/pulley): 中级 · 机械 · 三维实体
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link): 高级 · 机械 · 二维
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block): 高级 · 机械 · 三维实体
+- [AutoCAD 练习图](/docs/exercises)

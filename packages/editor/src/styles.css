@@ -181,8 +181,12 @@
 }
 
 /* Japanese (docs/i18n/ja.md): no italic to fake and no tracking to crowd
-   kana; a line keeps its punctuation off its start. */
-:where([data-mellowcad-editor], [data-mellowcad-editor] *):lang(ja) {
+   kana; a line keeps its punctuation off its start. Simplified Chinese's
+   (docs/i18n/zh-CN.md) are the same. */
+:where([data-mellowcad-editor], [data-mellowcad-editor] *):is(
+  :lang(ja),
+  :lang(zh)
+) {
   letter-spacing: 0;
   font-style: normal;
   line-break: strict;

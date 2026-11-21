@@ -30,6 +30,7 @@
     "locales/cs.ts",
     "locales/hu.ts",
     "locales/ja.ts",
-    "locales/ko.ts"
+    "locales/ko.ts",
+    "locales/zh-CN.ts"
   ]
 }

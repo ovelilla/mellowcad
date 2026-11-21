@@ -1,0 +1,58 @@
+---
+title: "CAD 练习图：法兰盘"
+metaTitle: "CAD 机械图练习：带键槽的法兰盘"
+description: "AutoCAD 机械练习图：在轴孔上修剪出键槽，用环形阵列画出 8 个孔，再画中心线并标注直径。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+按以下尺寸绘制法兰盘（单位：mm）：外径 140；轴孔直径 60，带一个宽 16 的键槽，键槽顶面距圆心 36；8 个直径 14 的孔均布在直径 110 的螺栓孔中心圆上；另画出中心线。键槽由一个矩形修剪进轴孔而成；孔由一个圆和环形阵列得到。
+
+- **练习：** 中级 · 机械 · 二维
+- **命令：** [`CIRCLE`](/docs/commands/circle), [`RECTANG`](/docs/commands/rectang), [`TRIM`](/docs/commands/trim), [`ARRAYPOLAR`](/docs/commands/arraypolar), [`LINE`](/docs/commands/line), [`DIMDIAMETER`](/docs/commands/dimdiameter), [`DIMLINEAR`](/docs/commands/dimlinear)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=flange)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/flange" caption="外径 140 的法兰盘，含键槽、8 个孔和直径标注。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制圆 [#circles]
+
+在“轮廓线”图层上，以 `0,0` 为圆心画两个圆，均使用 `Diameter` 选项：`140` 和 `60`。
+
+<Session name="exercises/flange/circles" caption="1. 绘制圆" />
+
+### 2. 切出键槽 [#keyway]
+
+用 [`RECTANG`](/docs/commands/rectang)（矩形）命令从 `-8,20` 画到相对其 `16,16` 处：矩形与轴孔相交。[`TRIM`](/docs/commands/trim)（修剪）命令在对象与其他对象相交处将其剪断：在矩形两边之间拾取轴孔的圆弧，再在轴孔内拾取矩形的底边。剩下的就是键槽，即它的两个侧面和顶面。
+
+<Session name="exercises/flange/keyway" caption="2. 切出键槽" />
+
+### 3. 阵列孔 [#holes]
+
+先在中心圆上画一个孔：在 `55<22.5`（距原点 55、角度 22.5° 处）画一个圆，`Diameter` 为 `14`。[`ARRAYPOLAR`](/docs/commands/arraypolar)（环形阵列）命令：选择该圆，按 Enter 键，指定中心点 `0,0`；`ASsociative` 选择 `No`，得到 8 个独立的圆，标注时可以拾取；`Items` 输入 `8`，使其沿整个圆周分布。然后在“中心线”图层上，以 `0,0` 为圆心画中心圆，直径 `110`。
+
+<Session name="exercises/flange/holes" caption="3. 阵列孔" />
+
+### 4. 绘制中心线 [#centreLines]
+
+仍在“中心线”图层上，用 [`LINE`](/docs/commands/line)（直线）命令画两条过圆心、长 156 的直线：水平线从 `-78,0` 起，向右 `156,0`；竖直线从 `0,-78` 起，向上 `0,156`。
+
+<Session name="exercises/flange/centreLines" caption="4. 绘制中心线" />
+
+### 5. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令标注轴孔、一个孔、中心圆和外轮廓，每个都在尚无标注穿过的位置拾取；再用 [`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令标注键槽顶面的宽度：16。
+
+<Session name="exercises/flange/dimensions" caption="5. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：圆桌和椅子](/docs/exercises/round-table): 中级 · 建筑 · 二维
+- [CAD 练习图：地块](/docs/exercises/plot-of-land): 中级 · 土木 · 二维
+- [CAD 练习图：阶梯轴](/docs/exercises/shaft): 中级 · 机械 · 二维
+- [AutoCAD 练习图](/docs/exercises)

@@ -142,13 +142,17 @@ const MONO_FAMILY = "Geist Mono, Geist Mono Cyrillic, Geist Mono Letters"
 
 /**
  * A CJK card's characters, behind Inter and Geist Mono: Satori draws no
- * system face, so Noto Sans JP or KR 600 cut to that language's cards'
+ * system face, so Noto Sans JP, KR or SC 600 cut to that language's cards'
  * characters (assets/fonts/README.md; `lib/og.test.ts` holds each cut to its
  * copy).
  */
 export const CJK_CARD_FONTS = {
   japanese: { file: "noto-sans-jp-card-600.woff", family: "Noto Sans JP" },
   korean: { file: "noto-sans-kr-card-600.woff", family: "Noto Sans KR" },
+  "simplified-chinese": {
+    file: "noto-sans-sc-card-600.woff",
+    family: "Noto Sans SC",
+  },
 } as const
 
 /**
@@ -224,8 +228,8 @@ export async function ogImage({
   const rtl = DIRECTION[locale as AppLocale] === "rtl"
   const script = SCRIPT[locale as AppLocale]
   const cjk =
-    script === "japanese" || script === "korean"
-      ? CJK_CARD_FONTS[script]
+    script in CJK_CARD_FONTS
+      ? CJK_CARD_FONTS[script as keyof typeof CJK_CARD_FONTS]
       : undefined
   const sans = cjk ? `${SANS_FAMILY}, ${cjk.family}` : SANS_FAMILY
   const monoFamily = cjk ? `${MONO_FAMILY}, ${cjk.family}` : MONO_FAMILY

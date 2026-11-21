@@ -1,0 +1,66 @@
+---
+title: "AutoCAD POLYGON（多边形）命令"
+metaTitle: "CAD多边形命令（POLYGON）：内接于圆和外切于圆"
+description: "CAD多边形怎么画：AutoCAD POLYGON（多边形，快捷键 POL）按提示顺序绘制正多边形，边数、中心点、内接于圆或外切于圆，或按边绘制。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD多边形快捷键是什么？","answer":"输入 POL，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _POLYGON。"},{"question":"CAD怎么画六边形？","answer":"执行 POLYGON，输入边数 6，指定中心点，选择 Inscribed 或 Circumscribed，然后输入半径。外切于圆的六边形，其对边距离是所输入半径的两倍。"},{"question":"CAD多边形内接于圆和外切于圆有什么区别？","answer":"选择 Inscribed 时，多边形的角点与圆接触，因此多边形位于圆内。选择 Circumscribed 时，多边形的边与圆相切，因此圆位于多边形内。半径相同时，外切于圆的多边形较大。"},{"question":"CAD多边形怎么设置边长？","answer":"选择 Edge，指定一条边的两个端点：先输入 0,0，再输入相对于它的长度，例如 40,0。其他各边按逆时针方向随之生成。"}]
+---
+
+POLYGON（多边形）命令绘制正多边形，各边和各角都相等，结果是一条闭合多段线。它先询问边数（3 到 1024），然后询问中心点，以及多边形是内接于圆还是外切于圆，再询问该圆的半径。也可以用“边”选项以其一条边为基础创建。边数以及内接于圆或外切于圆的选择，会作为该图形中下一次 POLYGON 的默认值。以数字输入半径时，底边保持水平；以点（拾取或输入）指定半径时，同时确定多边形的大小和转角。指定半径时，多边形跟随光标，并有一条从中心点引出的琥珀色虚线。
+
+- **命令：** `POLYGON`
+- **快捷键：** `POL`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `POL`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="polygon" caption="两个半径为 30 的圆，一个六边形内接于其中一个，另一个六边形外切于另一个，以及一个按边绘制的五边形。" />
+
+## 选项 [#options]
+
+### `Edge` (`E`) [#edge]
+
+代替中心点：指定一条边的两个端点，多边形从这条边开始按逆时针方向创建。
+
+### `Inscribed in circle` (`I`) [#inscribed]
+
+顶点位于圆上：半径从中心点量到一个顶点。为默认值。
+
+### `Circumscribed about circle` (`C`) [#circumscribed]
+
+各边在其中点与圆相切：半径从中心点量到一条边的中点。
+
+## 尚不支持的功能 [#missing]
+
+旋转的捕捉：以数字输入的半径总是使底边与 UCS 保持水平，而 AutoCAD 会按捕捉角度 SNAPANG 转动它。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg--pt-br-poligono--pol--fr-polygone--pg--it-poligono--pg--de-polygon--pg--ru-мн-угол--мн--pl-wielobok--wbo--cs-polygon--pol--hu-poligon--pol)
+
+## 常见问题 [#questions]
+
+### CAD多边形快捷键是什么？
+
+输入 `POL`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_POLYGON`。
+
+### CAD怎么画六边形？
+
+执行 POLYGON，输入边数 `6`，指定中心点，选择 `Inscribed` 或 `Circumscribed`，然后输入半径。外切于圆的六边形，其对边距离是所输入半径的两倍。
+
+### CAD多边形内接于圆和外切于圆有什么区别？
+
+选择 `Inscribed` 时，多边形的角点与圆接触，因此多边形位于圆内。选择 `Circumscribed` 时，多边形的边与圆相切，因此圆位于多边形内。半径相同时，外切于圆的多边形较大。
+
+### CAD多边形怎么设置边长？
+
+选择 `Edge`，指定一条边的两个端点：先输入 `0,0`，再输入相对于它的长度，例如 `40,0`。其他各边按逆时针方向随之生成。
+
+## 相关命令 [#related]
+
+- [AutoCAD RECTANG（矩形）命令](/docs/commands/rectang)
+- [AutoCAD CIRCLE（圆）命令](/docs/commands/circle)
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)
+- [AutoCAD EXPLODE（分解）命令](/docs/commands/explode)

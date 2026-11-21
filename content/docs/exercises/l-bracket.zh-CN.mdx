@@ -1,0 +1,52 @@
+---
+title: "CAD 练习图：L 形支架"
+metaTitle: "CAD 入门练习图：L 形支架"
+description: "适合 CAD 入门的 AutoCAD 练习图：用相对坐标画出 L 形支架的轮廓、圆角和两个孔，并进行基线标注。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+按以下尺寸绘制支架（单位：mm）：总长 100；底板高 20；立板宽 30、高 80；内角倒圆角，半径 10；底板上有一个直径 8 的孔，立板上有一个直径 10 的孔，各位于所在部分的中间。轮廓用一次 [`LINE`](/docs/commands/line)（直线）命令画出，每一点都以相对上一点的距离输入；所有尺寸都从左下角起标注。
+
+- **练习：** 初级 · 机械 · 二维
+- **命令：** [`LINE`](/docs/commands/line), [`FILLET`](/docs/commands/fillet), [`CIRCLE`](/docs/commands/circle), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMBASELINE`](/docs/commands/dimbaseline), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=l-bracket)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/l-bracket" caption="100 × 80 的 L 形支架，尺寸从左下角起标注。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制轮廓 [#outline]
+
+在“轮廓线”图层上，用 [`LINE`](/docs/commands/line) 命令从 `0,0` 起，之后每一点都以相对上一点的位移输入：`100,0`、`0,20`、`-70,0`、`0,60`、`-30,0`。`Close` 选项画出回到起点的最后一条边并结束命令。
+
+<Session name="exercises/l-bracket/outline" caption="1. 绘制轮廓" />
+
+### 2. 内角倒圆角 [#fillet]
+
+[`FILLET`](/docs/commands/fillet)（圆角）命令：选择 `Radius` 选项，输入 `10`，然后拾取在内角相交的两条直线，即底板的上边和立板的侧边。
+
+<Session name="exercises/l-bracket/fillet" caption="2. 内角倒圆角" />
+
+### 3. 绘制孔 [#holes]
+
+用 [`CIRCLE`](/docs/commands/circle)（圆）命令画两个圆，均使用 `Diameter` 选项：在底板的 `80,10` 处画直径 `8` 的圆，在立板的 `15,65` 处画直径 `10` 的圆。
+
+<Session name="exercises/l-bracket/holes" caption="3. 绘制孔" />
+
+### 4. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令从 `0,0` 标注到底板上的孔 `80,10`，放在下方：80。[`DIMBASELINE`](/docs/commands/dimbaseline)（基线）命令从同一条第一尺寸界线继续标注：输入右端点 `#100,0`（# 表示从原点起算），然后按两次 Enter 键结束。左侧同样向上标注：先到上方的孔，再到顶端 `#0,80`。最后用 [`DIMRADIUS`](/docs/commands/dimradius)（半径）命令标注圆角，用 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令标注每个孔。
+
+<Session name="exercises/l-bracket/dimensions" caption="4. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：楼梯平面图](/docs/exercises/stairs): 初级 · 建筑 · 二维
+- [CAD 三维练习图：安装板](/docs/exercises/mounting-plate): 初级 · 机械 · 三维实体
+- [CAD 练习图：法兰盘](/docs/exercises/flange): 中级 · 机械 · 二维
+- [AutoCAD 练习图](/docs/exercises)

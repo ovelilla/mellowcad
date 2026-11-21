@@ -1,0 +1,66 @@
+---
+title: "AutoCAD MIRROR（镜像）命令"
+metaTitle: "CAD镜像命令（MIRROR）用法与快捷键 MI"
+description: "CAD镜像怎么操作：AutoCAD MIRROR（镜像，快捷键 MI）按提示顺序讲解，选择对象、指定镜像线的两点，再选择保留或删除源对象，镜像后文字不反转。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD镜像快捷键是什么？","answer":"输入 MI，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _MIRROR。"},{"question":"CAD镜像文字不反转怎么设置？","answer":"无需任何设置：与 MIRRTEXT 为 0 的 AutoCAD 一样，镜像后的文字仍然正常阅读，放在其文字框的镜像位置上。"},{"question":"CAD镜像怎么删除原对象？","answer":"当 MIRROR 询问是否删除源对象时，回答 Yes。"},{"question":"CAD怎么水平或垂直镜像？","answer":"打开正交模式（F8），沿要镜像的轴指定镜像线的两个点：竖直的镜像线使对象左右翻转，水平的使其上下翻转。"}]
+---
+
+MIRROR（镜像）命令沿一条直线镜像所选对象：选择对象，指定镜像线的第一点和第二点，然后选择是否删除源对象。镜像结果是一个副本；使用默认值“否”时原对象保留，对称零件就是这样画一半再镜像得到的。两个点在 UCS 的平面内取得，因此打开正交模式时绘制的镜像线会沿水平或竖直方向直接镜像。与 MIRRTEXT 为默认值 0 的 AutoCAD 一样，镜像后的文字仍然从左向右阅读，图案填充也保持其图案角度。整个过程是一步，用“放弃”即可一次撤销。
+
+- **命令：** `MIRROR`
+- **快捷键：** `MI`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `MI`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="mirror" caption="一个闭合轮廓沿竖直镜像线镜像，保留源对象。" />
+
+## 选项 [#options]
+
+### `Yes` (`Y`) [#yes]
+
+删除源对象，只留下镜像结果：即原地翻转。
+
+### `No` (`N`) [#no]
+
+默认值：在镜像结果旁边保留源对象。
+
+## 尚不支持的功能 [#missing]
+
+MIRRTEXT 和 MIRRHATCH 保持为 0：文字从不被镜像成反向阅读，图案填充的图案也从不被镜像。镜像后的块参照中的文字会像独立文字一样转回正常方向，而 AutoCAD 会随块一起镜像它。镜像后的椭圆保持其法向，因此对于同一条曲线，其起点角度和端点角度与 AutoCAD 的读数不同。镜像结果跟随光标移动时，显示每个对象的颜色，但不显示其线型或线宽。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp--fr-miroir--mi--it-specchio--sp--de-spiegeln--sp--ru-зеркало--з--pl-lustro--lus--cs-zrcadli--zi--hu-tükröz--tu)
+
+## 常见问题 [#questions]
+
+### CAD镜像快捷键是什么？
+
+输入 `MI`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_MIRROR`。
+
+### CAD镜像文字不反转怎么设置？
+
+无需任何设置：与 MIRRTEXT 为 0 的 AutoCAD 一样，镜像后的文字仍然正常阅读，放在其文字框的镜像位置上。
+
+### CAD镜像怎么删除原对象？
+
+当 MIRROR 询问是否删除源对象时，回答 `Yes`。
+
+### CAD怎么水平或垂直镜像？
+
+打开正交模式（F8），沿要镜像的轴指定镜像线的两个点：竖直的镜像线使对象左右翻转，水平的使其上下翻转。
+
+## 练习 [#practice]
+
+- [CAD 练习图：阶梯轴](/docs/exercises/shaft)
+
+## 相关命令 [#related]
+
+- [AutoCAD COPY（复制）命令](/docs/commands/copy)
+- [AutoCAD ROTATE（旋转）命令](/docs/commands/rotate)
+- [AutoCAD MOVE（移动）命令](/docs/commands/move)
+- [AutoCAD ARRAYPOLAR（环形阵列）命令](/docs/commands/arraypolar)

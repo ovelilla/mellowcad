@@ -1,0 +1,85 @@
+---
+title: 在线编辑 DXF 文件
+metaTitle: "DXF 在线编辑：免费 DXF 编辑器，编辑并保存 DXF"
+description: "在浏览器中用 AutoCAD 命令免费在线编辑 DXF 文件，并重新保存为 AutoCAD 2000 到 2018 的 DXF。无需安装，不上传文件。"
+type: howTo
+sourceHash: "3b96ee37d43c"
+faq:
+  - question: "如何在线编辑 DXF 文件？"
+    answer: "在本页顶部选择或拖放文件，它会在浏览器中的 MellowCAD 编辑器里打开。用 AutoCAD 命令修改它，然后用 SAVEAS（Ctrl+Shift+S）或 DXFOUT 将其重新保存为 DXF 文件。"
+  - question: "免费吗？需要账户吗？"
+    answer: "免费，无需账户，也无需安装。文件在本机读取，从不上传。"
+  - question: "可以保存为哪些 DXF 版本？"
+    answer: "AutoCAD 2018、2013、2010、2007、2004 和 2000，文本（ASCII）或二进制格式。暂不支持 R12，也不支持 DWG。"
+  - question: "AutoCAD 能打开保存的 DXF 吗？"
+    answer: "能。MellowCAD 写入的每种对象，在每个版本中、以文本和二进制格式，都已用 AutoCAD 2027 打开，其 AUDIT 未发现错误。"
+  - question: "保存时会丢失内容吗？"
+    answer: "未能打开的内容不会出现在保存的文件中：多线、形位公差，以及打开文件时命令行统计的其他对象。三维实体和面域也不会写入，命令行会列出它们。请保留原始文件。"
+  - question: "能从头新建 DXF 文件吗？"
+    answer: "能。打开编辑器，绘图，然后用 SAVEAS 保存，并选择 DXF 文件类型。"
+---
+
+<OpenDxf />
+
+MellowCAD 在浏览器中编辑 DXF 文件，使用 AutoCAD 的命令、提示和选项，输入的内容与中文版 AutoCAD 相同，并将文件重新保存为 DXF，供 AutoCAD 及任何能读取 DXF 的程序使用。文件在本机读取：不上传任何内容，无需安装，也无需注册账户。
+
+## 编辑 [#edit]
+
+在上方选择或拖放 DXF 文件，它就会在编辑器中打开；也可以在编辑器中用 <Command id="OPEN" />（`Ctrl+O`）或 <Command id="DXFIN" /> 打开。之后它就和其他图形一样：
+
+- **修改**：使用 <Command id="MOVE" />（移动）、<Command id="COPY" />（复制）、<Command id="ROTATE" />（旋转）、<Command id="SCALE" />（缩放）、<Command id="STRETCH" />（拉伸）、<Command id="TRIM" />（修剪）、<Command id="EXTEND" />（延伸）、<Command id="OFFSET" />（偏移）或 <Command id="ERASE" />（删除），也可以在上面继续绘制。
+- **修正文字和图层**：使用 <Command id="TEXTEDIT" />（编辑文字）、<Command id="LAYER" />（图层特性）、<Command id="PROPERTIES" />（特性）和 <Command id="MATCHPROP" />（特性匹配）。
+- **测量**：使用 <Command id="DIST" />（距离）和 <Command id="AREA" />（面积）。
+
+[可以打开和会被略去的内容](/docs/open-dxf#opens)见打开 DXF 文件的页面。工作时，图形保存在此浏览器中。
+
+## 保存为 DXF [#save]
+
+与 AutoCAD 一样，<Command id="SAVEAS" />（`Ctrl+Shift+S`）、<Command id="SAVE" /> 和 <Command id="DXFOUT" /> 会打开“图形另存为”对话框：输入文件名，并在 AutoCAD 2018、2013、2010、2007、2004 和 2000 DXF 中选择文件类型（<Command id="DXFOUT" /> 打开时已选中 AutoCAD 2018 DXF）。“工具 ▸ 选项…”会打开“另存为选项”的“DXF 选项”：
+
+- **格式**：ASCII，即大多数程序都能读取的文本格式，或者 BINARY。
+- **选择对象**：对话框关闭后，命令会要求选择对象，文件中只包含所选对象。
+- **精确的小数位数（0 到 16）**：小于 16 时，命令行会像 AutoCAD 一样发出警告，坐标、角度和文字大小会舍入到该位数。
+
+文件会被下载，在这里保存的所有内容都是如此（[保存与 AutoCAD 不完全相同](/docs/differences#saving)）。而 `Ctrl+S` 会以 MellowCAD 自有的带版本号格式保存图形：要保留 DXF，请使用 <Command id="SAVEAS" />。
+
+## DXF 包含的内容 [#holds]
+
+MellowCAD 拥有的每种对象都按 AutoCAD 的方式写入：直线、圆弧、圆、椭圆、带宽度和拟合的多段线、三维多段线、样条曲线、单行文字和多行文字、带属性的块、标注、带图案的图案填充、点、二维填充，以及作为其项目所组成的块写入的阵列。此外还有图层（打开、关闭、锁定）及其颜色、线型和线宽，图形的线型（包括复杂线型），每个对象的线型比例，文字样式和标注样式，块，以及图形的单位和设置。文字保留其原有字符：2004 及更早的版本使用 AutoCAD 所用的 Windows 代码页，其余字符用转义写入；2007 起使用 UTF-8。
+
+## 不会保留的内容 [#lost]
+
+- **未能打开的内容不会保存。** MellowCAD 尚无对应对象的内容（多线、形位公差以及[该列表中的其余内容](/docs/open-dxf#left-out)）会在打开文件时在命令行上计数，并且不在保存的文件中。请保留原始文件。
+- **三维实体和面域不会写入**：命令行会列出略去了多少个。
+- 标注自身的样式替代和阵列的参数不会写入：AutoCAD 会按其样式的设置打开该标注，并将阵列作为由其项目组成的块打开。
+- 目前没有缩略图预览，没有 AutoCAD R12/LT2 DXF 文件类型，也不支持 DWG。
+
+## 从头创建 DXF [#new]
+
+要在没有现成 DXF 的情况下创建一个，请[打开编辑器](/zh-cn/draw)，绘图，然后用 <Command id="SAVEAS" /> 以 DXF 文件类型保存。可以从[快速入门](/docs/getting-started)开始。
+
+## 常见问题 [#questions]
+
+### 如何在线编辑 DXF 文件？ [#how]
+
+在本页顶部选择或拖放文件，它会在浏览器中的 MellowCAD 编辑器里打开。用 AutoCAD 命令修改它，然后用 <Command id="SAVEAS" />（`Ctrl+Shift+S`）或 <Command id="DXFOUT" /> 将其重新保存为 DXF 文件。
+
+### 免费吗？需要账户吗？ [#free]
+
+免费，无需账户，也无需安装。文件在本机读取，从不上传。
+
+### 可以保存为哪些 DXF 版本？ [#versions]
+
+AutoCAD 2018、2013、2010、2007、2004 和 2000，文本（ASCII）或二进制格式。暂不支持 R12，也不支持 DWG。
+
+### AutoCAD 能打开保存的 DXF 吗？ [#autocad]
+
+能。MellowCAD 写入的每种对象，在每个版本中、以文本和二进制格式，都已用 AutoCAD 2027 打开，其 AUDIT 未发现错误。
+
+### 保存时会丢失内容吗？ [#lost-on-save]
+
+未能打开的内容不会出现在保存的文件中：多线、形位公差，以及打开文件时命令行统计的其他对象。三维实体和面域也不会写入，命令行会列出它们。请保留原始文件。
+
+### 能从头新建 DXF 文件吗？ [#from-scratch]
+
+能。[打开编辑器](/zh-cn/draw)，绘图，然后用 <Command id="SAVEAS" /> 保存，并选择 DXF 文件类型。

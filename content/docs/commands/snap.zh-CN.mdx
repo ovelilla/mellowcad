@@ -1,0 +1,73 @@
+---
+title: "AutoCAD SNAP（捕捉）命令"
+metaTitle: "CAD捕捉模式（SNAP）间距设置与快捷键 F9"
+description: "AutoCAD SNAP（捕捉，快捷键 SN、F9）怎么用：光标按设置的间距锁定到点阵上，纵横向间距分别设置 X 和 Y，以及极轴捕捉。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD捕捉的快捷键是什么？","answer":"F9 键打开和关闭捕捉模式。设置间距的命令是 SN，然后按 Enter 键或空格键；也可以输入完整的命令名，在任何语言版本的 AutoCAD 中，_SNAP 都有效。"},{"question":"CAD捕捉和对象捕捉有什么区别？","answer":"捕捉模式将光标取整到空间中的点阵上。对象捕捉（F3）将光标锁定到对象上的点：端点、中点、圆心。两者可以同时使用，都找到点时对象捕捉优先。"},{"question":"CAD光标为什么一跳一跳地移动？","answer":"捕捉模式打开了：按 F9 键或状态栏的捕捉按钮将其关闭。如果想让步长更细，请用 SNAP 设置更小的间距。"},{"question":"CAD怎么分别设置 X 和 Y 的捕捉间距？","answer":"执行 SNAP，选择 Aspect，先指定水平间距，再指定垂直间距。"},{"question":"SNAP 有等轴测捕捉吗？","answer":"还没有：SNAP 的“样式”选项（将点阵转为等轴测绘图用）尚未提供。"}]
+---
+
+捕捉模式将光标锁定到点阵上：每次拾取都落在最近的点上，因此间距为 10 时，在 13,7 处单击得到 10,10。点阵属于当前 UCS，从其原点出发沿其轴排列。F9 键打开和关闭捕捉模式，并显示 `<Snap on>` 或 `<Snap off>`，状态栏上的捕捉按钮也是如此。只有拾取的点会被取整：输入的坐标按输入值采用，对象捕捉优先于点阵。栅格（F7）绘制自己的点阵，无论捕捉是否打开都会显示。
+
+SNAP（捕捉）命令设置间距：输入数值，或指定相隔该距离的两点，捕捉模式随即打开，X 和 Y 都使用该间距。按 Enter 键则按现有间距打开捕捉。0 或更小的间距会被拒绝，显示 `Value must be positive and nonzero.`。加撇号输入 `'SNAP`，可以在其他命令中透明使用。捕捉模式及其间距随图形保存，U 可以放弃一次 SNAP。
+
+状态栏的捕捉菜单可以改为选择极轴捕捉：沿极轴追踪路径，光标按 POLARDIST 步进；POLARDIST 为 0 时，按捕捉的 X 间距步进。
+
+- **命令：** `SNAP`
+- **快捷键：** `SN`
+- **面板：** [查询与视图](/docs/commands#inquiry)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `SN`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="snap" caption="打开栅格并执行 SNAP 10，然后用 LINE 在点阵外拾取：每个点都落在点阵上，光标也是如此。" />
+
+## 选项 [#options]
+
+### `ON` [#on]
+
+按当前间距打开捕捉模式，与按 Enter 键相同。
+
+### `OFF` (`OF`) [#off]
+
+关闭捕捉模式；间距保留。
+
+### `Aspect` (`A`) [#aspect]
+
+先询问水平间距，再询问垂直间距，然后打开捕捉模式：得到高宽不等的点阵。此后提示的默认值为“纵横向间距”，按 Enter 键会再次询问这两个间距。
+
+## 尚不支持的功能 [#missing]
+
+提示中没有“样式”（等轴测捕捉）和“类型”（栅格或极轴）：捕捉类型在状态栏的菜单中选择。没有“传统”、隐藏的“旋转”（SNAPANG）和 SNAPBASE。没有负的 POLARDIST（AutoCAD 的极轴捕捉取其绝对值作为步长：−10 按 10 步进）。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--pt-br-snap--sn--snap-mode-f9--fr-resol--rl--snap-mode-f9--it-snap--sn--snap-mode-f9--de-fang--f--snap-mode-f9--ru-шаг--snap-mode-f9--pl-skok--sko--snap-mode-f9--cs-krok--snap-mode-f9--hu-raszter--ra--snap-mode-f9)
+
+## 常见问题 [#questions]
+
+### CAD捕捉的快捷键是什么？
+
+F9 键打开和关闭捕捉模式。设置间距的命令是 `SN`，然后按 Enter 键或空格键；也可以输入完整的命令名，在任何语言版本的 AutoCAD 中，`_SNAP` 都有效。
+
+### CAD捕捉和对象捕捉有什么区别？
+
+捕捉模式将光标取整到空间中的点阵上。对象捕捉（F3）将光标锁定到对象上的点：端点、中点、圆心。两者可以同时使用，都找到点时对象捕捉优先。
+
+### CAD光标为什么一跳一跳地移动？
+
+捕捉模式打开了：按 F9 键或状态栏的捕捉按钮将其关闭。如果想让步长更细，请用 SNAP 设置更小的间距。
+
+### CAD怎么分别设置 X 和 Y 的捕捉间距？
+
+执行 SNAP，选择 `Aspect`，先指定水平间距，再指定垂直间距。
+
+### SNAP 有等轴测捕捉吗？
+
+还没有：SNAP 的“样式”选项（将点阵转为等轴测绘图用）尚未提供。
+
+## 相关命令 [#related]
+
+- [AutoCAD UCS（用户坐标系）命令](/docs/commands/ucs)
+- [AutoCAD LINE（直线）命令](/docs/commands/line)
+- [FROM](/docs/commands#from): 在命令中获取某个点相对于参照点的偏移

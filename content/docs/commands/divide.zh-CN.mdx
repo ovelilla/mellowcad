@@ -1,0 +1,64 @@
+---
+title: "AutoCAD DIVIDE（定数等分）命令"
+metaTitle: "CAD等分命令：定数等分（DIVIDE）用法与快捷键 DIV"
+description: "CAD定数等分怎么用：AutoCAD 的 DIVIDE（快捷键 DIV）在直线、圆、圆弧或多段线的等分处放置点或块，以及等分后看不到点的原因。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD定数等分的快捷键是什么？","answer":"输入 DIV，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _DIVIDE。"},{"question":"CAD定数等分后为什么看不到点？","answer":"命令多半已经执行了：点就在那里，以小圆点的形式画在线上。打开 PTYPE（DDPTYPE），选择十字或圆圈样式，或输入 PDMODE 再输入 3：图形中所有的点立即改变。要拾取这些点，请使用“节点”对象捕捉（NOD）。"},{"question":"CAD怎么把一条线等分？","answer":"执行 DIVIDE，选择直线，输入段数，例如 5 表示五等分。各段之间的四个点就是捕捉位置：“节点”对象捕捉可以找到它们。"},{"question":"CAD怎么把圆等分？","answer":"方法相同：选择圆，输入段数。闭合对象得到的点数与段数相同，因此输入 6 得到六个点，第一个位于圆的 0° 点，然后按逆时针方向排列。"},{"question":"CAD怎么把一条线断开成几段？","answer":"DIVIDE 只标记位置。要在这些位置切断直线，请使用 BREAK，或在每个点处使用 BREAKATPOINT，并用“节点”对象捕捉捕捉到该点。"}]
+---
+
+DIVIDE（定数等分）命令将对象标记为相等的若干段。选择一条直线、圆弧、圆、椭圆、椭圆弧、多段线、三维多段线或样条曲线（拾取它或输入其上的一个点），然后输入线段数目（2 到 32767）：DIVIDE 在每个等分点处放置一个点对象，然后结束。命令不会切断对象，对象仍是一个整体。开放对象分为 5 段时得到 4 个点，从起点开始排列；闭合对象得到 5 个点，其中包括起点：圆从其 0° 点开始按逆时针方向排列，闭合多段线从其第一个顶点开始。这些点位于对象上，与对象高度相同，位于当前图层上，使用当前的颜色、线型和线宽。
+
+点按图形的点样式绘制，默认是一个隐藏在线下的小圆点：请先用 [`PTYPE`](/docs/commands/ptype) 或 PDMODE 设置一个可见的样式。整个等分操作是一步，`U` 可以放弃；生成的点构成“上一个”选择集，可以直接删除或移动。选择其他对象（例如文字或块参照）时显示 `Cannot divide that object.`，命令结束。“绘图”工具中的“点”下拉菜单也可以启动 DIVIDE。
+
+- **命令：** `DIVIDE`
+- **快捷键：** `DIV`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `DIV`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="divide" caption="先将 PDMODE 设为 3，使点显示为十字，然后将一条直线 5 等分、一个圆 6 等分，圆从其 0° 点开始。" />
+
+## 选项 [#options]
+
+### `Block` (`B`) [#block]
+
+放置图形中已有块的参照而不是点：输入块名，然后选择是否将每个块与对象对齐，`Yes`（默认）或 `No`，再输入线段数目。对齐时，每个块参照随所在位置的对象转动，沿直线方向或与圆弧相切；不对齐时，所有块参照都保持 UCS 的 X 方向。没有对应块的名称会被拒绝，并再次询问块名。与 AutoCAD 相同，不包括块的可变属性。
+
+## 尚不支持的功能 [#missing]
+
+螺旋：MellowCAD 还不能绘制螺旋。沿不在 UCS 平面中的对象放置的块会放在 UCS 平面中，而 AutoCAD 帮助说明会将其放在对象自身的平面中。圆上的点总是从 UCS 的 X 方向开始，而 AutoCAD 从捕捉角度 SNAPANG 开始，MellowCAD 没有该变量。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#divide--div--es-divide--div--pt-br-dividir--div--fr-diviser--div--it-dividi--dd--de-teilen--tl--ru-поделить--пд--pl-podziel--pod--cs-dělú--du--hu-feloszt--fe)
+
+## 常见问题 [#questions]
+
+### CAD定数等分的快捷键是什么？
+
+输入 `DIV`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIVIDE`。
+
+### CAD定数等分后为什么看不到点？
+
+命令多半已经执行了：点就在那里，以小圆点的形式画在线上。打开 [`PTYPE`](/docs/commands/ptype)（`DDPTYPE`），选择十字或圆圈样式，或输入 PDMODE 再输入 `3`：图形中所有的点立即改变。要拾取这些点，请使用“节点”对象捕捉（`NOD`）。
+
+### CAD怎么把一条线等分？
+
+执行 DIVIDE，选择直线，输入段数，例如 `5` 表示五等分。各段之间的四个点就是捕捉位置：“节点”对象捕捉可以找到它们。
+
+### CAD怎么把圆等分？
+
+方法相同：选择圆，输入段数。闭合对象得到的点数与段数相同，因此输入 6 得到六个点，第一个位于圆的 0° 点，然后按逆时针方向排列。
+
+### CAD怎么把一条线断开成几段？
+
+DIVIDE 只标记位置。要在这些位置切断直线，请使用 [`BREAK`](/docs/commands/break)，或在每个点处使用 `BREAKATPOINT`，并用“节点”对象捕捉捕捉到该点。
+
+## 相关命令 [#related]
+
+- [AutoCAD MEASURE（定距等分）命令](/docs/commands/measure)
+- [AutoCAD PTYPE（点样式）命令](/docs/commands/ptype)
+- [POINT](/docs/commands#point): 多点
+- [AutoCAD BREAK（打断）命令](/docs/commands/break)

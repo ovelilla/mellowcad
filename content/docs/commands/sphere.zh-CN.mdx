@@ -1,0 +1,71 @@
+---
+title: "AutoCAD SPHERE（球体）命令"
+metaTitle: "CAD三维球体怎么画：SPHERE（球体）命令与选项"
+description: "AutoCAD SPHERE（球体）怎么画三维实体球体：按提示顺序说明中心点和半径、直径、三点、两点、切点切点半径，以及为什么显示为线条。在线免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD三维球体怎么画？","answer":"执行 SPHERE，指定中心点，再指定半径：输入 0,0,0 和 25，即得到演示中的球体。要看到它的立体形状，请用 ViewCube 的一角，或用 -VIEW 和 SEIso 转动视图。"},{"question":"CAD画的球体为什么像一个圆加几条线？","answer":"“二维线框”和“隐藏”视觉样式将球体显示为经线和纬线；在平面视图中，它们是一个圆和穿过圆的直线。用 VSCURRENT 选择 Conceptual 可以为其着色，ISOLINES 设置显示的线条数。"},{"question":"CAD怎么画半球？","answer":"先画球体，再用 SLICE 通过其中心剖切：在平面上指定三点，或选择 XY 并指定中心点，然后选择要保留的一侧。"},{"question":"CAD怎么按直径画球体？","answer":"在半径提示下选择 Diameter 并输入直径。用 2P 指定直径的两个端点，也可以确定球体。"}]
+---
+
+SPHERE（球体）命令创建三维实体球体：指定中心点，再指定半径。用鼠标拾取的半径在通过中心点的平面上读取；上次的半径作为默认值提供，按 Enter 键即采用，它与 [`CYLINDER`](/docs/commands/cylinder)、[`CONE`](/docs/commands/cone) 和其他基本体共用。球体位于当前图层上，放弃一步即可撤销。
+
+在“二维线框”和“隐藏”视觉样式中，球体显示为线条：经线和纬线，数量由 `ISOLINES` 决定；除中心点外，球体上没有其他可捕捉的点。[`LIST`](/docs/commands/list) 显示其位置和半径，在“特性”选项板中可以输入半径或直径。其夹点用于移动球体，赤道上每个四分点处的夹点用于设置半径。它是三维实体，可以用于 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 和 MellowCAD 的其他三维功能；MellowCAD 的三维只有实体，并且仍不完整。
+
+- **命令：** `SPHERE`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `SPHERE`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="sphere" caption="以中心点和半径 25 创建的球体，以“概念”视觉样式从东南方向观察。" />
+
+## 选项 [#options]
+
+### `3P` [#3p]
+
+在中心点提示下：询问三点，球体的中心位于通过这三点的圆的圆心，半径为该圆的半径。
+
+### `2P` [#2p]
+
+在中心点提示下：询问直径的两个端点，可以位于空间中任意位置。
+
+### `Ttr` (`T`) [#ttr]
+
+在中心点提示下：在“切点”捕捉下拾取两条直线、圆或圆弧，然后指定半径：中心点位于与两者都相切的该半径的圆上，高度与两者相同。
+
+### `Diameter` (`D`) [#diameter]
+
+在半径提示下：改为询问直径，默认值为上次半径的两倍。
+
+## 尚不支持的功能 [#missing]
+
+不能对球体执行 [`EXPLODE`](/docs/commands/explode)（AutoCAD 会将其分解为曲面）：MellowCAD 没有曲面，因此会提示无法分解。热夹点没有移动、旋转、缩放和镜像，也没有相应的三维命令（3DMOVE、3DROTATE、3DSCALE）。没有 AutoCAD 的 `DISPSILH` 绘制的轮廓线。[`VSCURRENT`](/docs/commands/vscurrent) 除“二维线框”“隐藏”和“概念”外，没有其他视觉样式。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera--fr-sphere--it-sfera--de-kugel--ru-шар--pl-sfera--cs-koule--hu-gömb)
+
+## 常见问题 [#questions]
+
+### CAD三维球体怎么画？
+
+执行 SPHERE，指定中心点，再指定半径：输入 `0,0,0` 和 `25`，即得到演示中的球体。要看到它的立体形状，请用 ViewCube 的一角，或用 `-VIEW` 和 `SEIso` 转动视图。
+
+### CAD画的球体为什么像一个圆加几条线？
+
+“二维线框”和“隐藏”视觉样式将球体显示为经线和纬线；在平面视图中，它们是一个圆和穿过圆的直线。用 [`VSCURRENT`](/docs/commands/vscurrent) 选择 `Conceptual` 可以为其着色，`ISOLINES` 设置显示的线条数。
+
+### CAD怎么画半球？
+
+先画球体，再用 [`SLICE`](/docs/commands/slice) 通过其中心剖切：在平面上指定三点，或选择 `XY` 并指定中心点，然后选择要保留的一侧。
+
+### CAD怎么按直径画球体？
+
+在半径提示下选择 `Diameter` 并输入直径。用 `2P` 指定直径的两个端点，也可以确定球体。
+
+## 相关命令 [#related]
+
+- [AutoCAD TORUS（圆环体）命令](/docs/commands/torus)
+- [AutoCAD CYLINDER（圆柱体）命令](/docs/commands/cylinder)
+- [AutoCAD SLICE（剖切）命令](/docs/commands/slice)
+- [AutoCAD SUBTRACT（差集）命令](/docs/commands/subtract)

@@ -1,0 +1,68 @@
+---
+title: "AutoCAD SCALE（缩放）命令"
+metaTitle: "CAD缩放命令（SCALE）参照用法与快捷键 SC"
+description: "AutoCAD SCALE（缩放，快捷键 SC）怎么用：按提示顺序说明如何绕基点放大或缩小对象，比例因子、复制，以及按已知长度缩放的参照。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD缩放命令的快捷键是什么？","answer":"输入 SC，然后按 Enter 键或空格键。在任何语言版本的 AutoCAD 中，_SCALE 都有效。"},{"question":"CAD缩放参照怎么操作？","answer":"在比例因子提示下选择 Reference，拾取一条已知长度的边的两个端点，然后输入它应有的长度。所选的一切都按新长度除以旧长度的比例缩放，因此尺寸不对的图形，只凭一个已知尺寸就能缩放到指定尺寸。"},{"question":"CAD怎么缩放复制，保留原对象？","answer":"在比例因子提示下选择 Copy：副本被缩放，原对象留在原处。"},{"question":"CAD线型比例怎么调整？","answer":"不是用 SCALE，它改变的是对象的大小：LTSCALE 设置所有线型的划线和间隔显示的长度。"},{"question":"CAD怎么设置打印比例或布局比例？","answer":"MellowCAD 没有布局、视口和打印：在模型空间中按 1:1 绘图，SCALE 改变的是对象本身的大小，而不是打印的方式。"}]
+---
+
+SCALE（缩放）命令绕基点放大或缩小选定的对象，基点保持不动：比例因子为 2 时放大一倍，为 0.5 时缩小一半，各个方向相同。选择对象，拾取基点，然后输入比例因子，或移动光标并拾取：对象随光标变化。在此处不输入任何内容就按 Enter 键，按上次使用的比例因子缩放。每次执行是一个可以放弃的步骤。
+
+它像 AutoCAD 一样缩放所选的一切：图案填充的图案随边界一起放大，标注测量其新长度，位于平面上方的对象也绕基点在 Z 方向缩放。
+
+- **命令：** `SCALE`
+- **快捷键：** `SC`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `SC`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="scale" caption="用“参照”将一块板及其孔绕角点缩放为副本：拾取长 40 的边，再使其变为 60。" />
+
+## 选项 [#options]
+
+### `Copy` (`C`) [#copy]
+
+缩放副本，原对象保持不变：显示 `Scaling a copy of the selected objects.` 并再次询问比例因子，`Copy` 仍然列出。
+
+### `Reference` (`R`) [#reference]
+
+询问参照长度（输入数值，或拾取两点），再询问它应有的长度：比例因子为新长度除以参照长度。新长度可以输入，也可以拾取一点，取其到基点的距离；`Points` 则改为询问两点并量取二者之间的距离。两个长度都以上次给出的值作为默认值，新图形中为 1。
+
+## 尚不支持的功能 [#missing]
+
+在 `Points` 的第一点或第二点提示下按 Enter 键，命令结束且不缩放；AutoCAD 则按光标此时的读数缩放。极小的比例因子会被直接应用而不提示；AutoCAD 会说明它忽略该值。拖动中的对象像 [`MOVE`](/docs/commands/move) 拖动时一样显示，只有颜色。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es--fr-echelle--eh--it-scala--ss--de-varia--v--ru-масштаб--мш--pl-skala--s--cs-měřítko--me--hu-lépték--le)
+
+## 常见问题 [#questions]
+
+### CAD缩放命令的快捷键是什么？
+
+输入 `SC`，然后按 Enter 键或空格键。在任何语言版本的 AutoCAD 中，`_SCALE` 都有效。
+
+### CAD缩放参照怎么操作？
+
+在比例因子提示下选择 `Reference`，拾取一条已知长度的边的两个端点，然后输入它应有的长度。所选的一切都按新长度除以旧长度的比例缩放，因此尺寸不对的图形，只凭一个已知尺寸就能缩放到指定尺寸。
+
+### CAD怎么缩放复制，保留原对象？
+
+在比例因子提示下选择 `Copy`：副本被缩放，原对象留在原处。
+
+### CAD线型比例怎么调整？
+
+不是用 SCALE，它改变的是对象的大小：[`LTSCALE`](/docs/commands/ltscale) 设置所有线型的划线和间隔显示的长度。
+
+### CAD怎么设置打印比例或布局比例？
+
+MellowCAD 没有布局、视口和打印：在模型空间中按 1:1 绘图，SCALE 改变的是对象本身的大小，而不是打印的方式。
+
+## 相关命令 [#related]
+
+- [AutoCAD ROTATE（旋转）命令](/docs/commands/rotate)
+- [AutoCAD MOVE（移动）命令](/docs/commands/move)
+- [AutoCAD STRETCH（拉伸）命令](/docs/commands/stretch)
+- [CAD线型比例：AutoCAD LTSCALE（线型比例）命令](/docs/commands/ltscale)

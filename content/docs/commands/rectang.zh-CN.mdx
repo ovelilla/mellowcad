@@ -1,0 +1,95 @@
+---
+title: "AutoCAD RECTANG（矩形）命令"
+metaTitle: "CAD矩形命令（RECTANG）怎么画与快捷键 REC"
+description: "CAD矩形怎么画：AutoCAD RECTANG（矩形，快捷键 REC）用两个角点、尺寸、面积和旋转绘制矩形，用圆角倒圆或用倒角切角。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD矩形快捷键是什么？","answer":"输入 REC，然后按 Enter 键或空格键；RECTANGLE 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 _RECTANG。"},{"question":"CAD矩形怎么输入尺寸？","answer":"指定第一个角点，然后输入相对于它的另一个角点：在动态输入打开时（默认如此）输入 100,50，关闭时输入 @100,50，得到长 100、宽 50 的矩形。也可以选择 Dimensions，输入两条边的长度。"},{"question":"CAD圆角矩形怎么画？","answer":"在第一个提示下选择 Fillet 并输入半径，然后指定两个角点。"},{"question":"CAD画的矩形为什么带圆角或倒角？","answer":"RECTANG 在整个会话中保留圆角和倒角，因此之后绘制的矩形也带着它：第一行会显示这一点。选择 Fillet 并输入 0，即可重新绘制直角。"},{"question":"CAD的矩形是多段线吗？","answer":"是：一条闭合多段线。EXPLODE 将其分解为四条直线，OFFSET 将它整体偏移。"}]
+---
+
+RECTANG（矩形）命令用两个对角点绘制矩形，角点可以拾取或输入：先 `0,0` 再 `100,50`（在动态输入下相对于第一个点）得到一个 100 × 50 的矩形。它是一条有四个顶点的闭合多段线，位于当前图层。第一个提示中的选项决定之后的矩形如何绘制，每个选项的值在整个会话中保留：下一次 RECTANG 会在第一行显示正在生效的选项。其宽度选项为每条边指定多段线宽度。放置另一个角点时，矩形跟随光标；打开动态输入时，可以输入长度，按 Tab 键，再输入宽度。
+
+- **命令：** `RECTANG`
+- **快捷键：** `REC`, `RECTANGLE`
+- **面板：** [绘图](/docs/commands#draw)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `REC`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="rectang" caption="用两个角点绘制的两个矩形，第二个角点相对于第一个输入：一个圆角为 8，下一个倒角为 8。" />
+
+## 选项 [#options]
+
+### `Chamfer` (`C`) [#chamfer]
+
+询问第一个和第二个倒角距离，并按这两个距离切去每个角：得到八个顶点。距离为 0 时关闭该选项。它会取代圆角。
+
+### `Elevation` (`E`) [#elevation]
+
+询问绘制矩形的高度，即其 Z 值。
+
+### `Fillet` (`F`) [#fillet]
+
+询问半径，并按该半径把每个角倒圆。半径为 0 时关闭该选项。它会取代倒角。
+
+### `Thickness` (`T`) [#thickness]
+
+询问厚度：在三维视图中，矩形像墙一样立起该高度。
+
+### `Area` (`A`) [#area]
+
+在另一个角点处选择：询问面积，然后询问依据 `Length` 还是 `Width`，再询问该边的值。另一条边会自动算出（计入角的形状），并立即创建矩形。
+
+### `Dimensions` (`D`) [#dimensions]
+
+在另一个角点处选择：询问长度和宽度，然后询问一个点，以确定矩形位于第一个角点的哪个方向。
+
+### `Rotation` (`R`) [#rotation]
+
+在另一个角点处选择：询问矩形的旋转角度，可以输入，也可以用从第一个角点出发的一个点指定，或者用 `Pick` 指定两个点。该角度在整个会话中保留。
+
+## 尚不支持的功能 [#missing]
+
+`Area` 下长度或宽度为 0 的情况：这里不绘制任何对象，而 AutoCAD 会绘制一条残缺的多段线。在旋转提示下回答被拒绝后，MellowCAD 会完整地重新显示提示，而 AutoCAD 不再输出任何内容。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle--pt-br-retangulo--ret--fr-rectangle--rec--rectang--it-rettangolo--rt--rettang--de-rechteck--re--ru-прямоугольник--прямоуг--пря--pl-prostok--pro--prostokąt--cs-obd--obdélník--hu-tégl--te--téglalap)
+
+## 常见问题 [#questions]
+
+### CAD矩形快捷键是什么？
+
+输入 `REC`，然后按 Enter 键或空格键；`RECTANGLE` 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_RECTANG`。
+
+### CAD矩形怎么输入尺寸？
+
+指定第一个角点，然后输入相对于它的另一个角点：在动态输入打开时（默认如此）输入 `100,50`，关闭时输入 `@100,50`，得到长 100、宽 50 的矩形。也可以选择 `Dimensions`，输入两条边的长度。
+
+### CAD圆角矩形怎么画？
+
+在第一个提示下选择 `Fillet` 并输入半径，然后指定两个角点。
+
+### CAD画的矩形为什么带圆角或倒角？
+
+RECTANG 在整个会话中保留圆角和倒角，因此之后绘制的矩形也带着它：第一行会显示这一点。选择 `Fillet` 并输入 `0`，即可重新绘制直角。
+
+### CAD的矩形是多段线吗？
+
+是：一条闭合多段线。[`EXPLODE`](/docs/commands/explode) 将其分解为四条直线，[`OFFSET`](/docs/commands/offset) 将它整体偏移。
+
+## 练习 [#practice]
+
+- [CAD 练习图：垫片](/docs/exercises/gasket)
+- [CAD 练习图：楼梯平面图](/docs/exercises/stairs)
+- [CAD 三维练习图：安装板](/docs/exercises/mounting-plate)
+- [CAD 练习图：法兰盘](/docs/exercises/flange)
+- [CAD 练习图：圆桌和椅子](/docs/exercises/round-table)
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block)
+
+## 相关命令 [#related]
+
+- [AutoCAD POLYGON（多边形）命令](/docs/commands/polygon)
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)
+- [AutoCAD EXPLODE（分解）命令](/docs/commands/explode)
+- [AutoCAD FILLET（圆角）命令](/docs/commands/fillet)

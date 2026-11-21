@@ -329,6 +329,8 @@ const LABEL_END: Record<AppLocale, string> = {
   // Japanese ends a label with a full-width colon (docs/i18n/ja.md).
   ja: "\uff1a",
   ko: ":",
+  // Chinese ends a label with a full-width colon (docs/i18n/zh-CN.md).
+  "zh-CN": "\uff1a",
 }
 
 /** A list item's bold label, ended as its language ends one. */
@@ -359,6 +361,9 @@ const QUOTES: Record<AppLocale, readonly [string, string]> = {
   ja: ["\u300c", "\u300d"],
   // Korean quotes as English, in curly double quotes (docs/i18n/ko.md).
   ko: ["\u201c", "\u201d"],
+  // Simplified Chinese quotes in curly double quotes, full-width in its
+  // faces: “…” (docs/i18n/zh-CN.md).
+  "zh-CN": ["\u201c", "\u201d"],
 }
 
 /**

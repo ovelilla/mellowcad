@@ -1,0 +1,58 @@
+---
+title: "AutoCAD JOIN（合并）命令"
+metaTitle: "CAD合并线条命令（JOIN）用法与快捷键 J"
+description: "CAD怎么把线合并成多段线：AutoCAD 的 JOIN（快捷键 J）将首尾相连的直线和圆弧合并为多段线，共线的直线合并为一条，圆弧合并为圆。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD合并的快捷键是什么？","answer":"输入 J，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _JOIN。"},{"question":"CAD怎么把多条线合并成多段线？","answer":"执行 JOIN，选择这些直线（也可以用窗口选择），然后按 Enter 键：首尾相连的直线合并为一条多段线。"},{"question":"CAD合并不了是什么原因？","answer":"对象必须精确地首尾相连，并位于同一平面中：有间隙或交叉的对象会被排除，JOIN 会显示放弃了多少个对象。只有共线的直线、同一个圆上的圆弧和同一个椭圆上的椭圆弧可以跨越间隙合并。闭合多段线不能与任何对象合并。"},{"question":"CAD怎么把圆弧合并成圆？","answer":"选择同一个圆上、覆盖整个圆的圆弧，然后按 Enter 键：JOIN 询问是否将其转换为圆，选择默认的 Yes 即可。"}]
+---
+
+JOIN（合并）命令将多个对象合并为一个对象。选择对象（数量不限）后按 Enter 键：首尾相连的直线和圆弧合并为一条多段线，如果其中有多段线，则合并到该多段线中；位于同一条直线上的直线合并为一条直线，无论中间是否有间隙；同一个圆上的圆弧合并为一条圆弧，如果它们闭合，JOIN 会询问是否将其转换为圆，默认为 `Yes`，选择 `No` 则保留为圆弧。同一个椭圆上的椭圆弧合并为一条椭圆弧；相连的曲线中如果有样条曲线或椭圆弧，则合并为样条曲线。然后命令显示生成的对象，以及有多少个对象未合并。多段线只能通过端点合并，闭合多段线不能与任何对象合并。合并操作是一步，可以用放弃撤销。
+
+- **命令：** `JOIN`
+- **快捷键：** `J`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `J`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="join" caption="三条直线合并为一条多段线，OFFSET 拾取一次即可偏移整条多段线。" />
+
+## 选项 [#options]
+
+### `cLose` (`L`) [#close]
+
+当源对象是单独拾取的一条椭圆弧时：将其闭合为完整的椭圆。
+
+## 尚不支持的功能 [#missing]
+
+单独拾取一条直线、圆弧或多段线作为源对象时 AutoCAD 特有的步骤（`Select lines to join to source:`）：这里不会合并任何对象。单独拾取的闭合对象（AutoCAD 会再次询问）。螺旋、位于倾斜平面中或上下颠倒的对象，以及不在同一平面中的直线（AutoCAD 会将其合并为三维多段线或压平为多段线）。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#join--j--es-unir--u--pt-br-unir--une--fr-joindre--j--it-unisci--u--de-verbinden--vb--ru-соединить--со--pl-połącz--cs-spoj--hu-egybefűz)
+
+## 常见问题 [#questions]
+
+### CAD合并的快捷键是什么？
+
+输入 `J`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_JOIN`。
+
+### CAD怎么把多条线合并成多段线？
+
+执行 JOIN，选择这些直线（也可以用窗口选择），然后按 Enter 键：首尾相连的直线合并为一条多段线。
+
+### CAD合并不了是什么原因？
+
+对象必须精确地首尾相连，并位于同一平面中：有间隙或交叉的对象会被排除，JOIN 会显示放弃了多少个对象。只有共线的直线、同一个圆上的圆弧和同一个椭圆上的椭圆弧可以跨越间隙合并。闭合多段线不能与任何对象合并。
+
+### CAD怎么把圆弧合并成圆？
+
+选择同一个圆上、覆盖整个圆的圆弧，然后按 Enter 键：JOIN 询问是否将其转换为圆，选择默认的 `Yes` 即可。
+
+## 相关命令 [#related]
+
+- [AutoCAD PEDIT（编辑多段线）命令](/docs/commands/pedit)
+- [AutoCAD EXPLODE（分解）命令](/docs/commands/explode)
+- [AutoCAD BREAK（打断）命令](/docs/commands/break)
+- [AutoCAD PLINE（多段线）命令](/docs/commands/pline)

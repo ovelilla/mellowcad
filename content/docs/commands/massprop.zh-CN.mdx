@@ -1,0 +1,60 @@
+---
+title: "AutoCAD MASSPROP（面域/质量特性）命令"
+metaTitle: "CAD质量特性（MASSPROP）：体积、质心、惯性矩"
+description: "CAD怎么查体积和质心：AutoCAD MASSPROP（面域/质量特性）报告三维实体和面域的体积、面积、质心、惯性矩，并可写入 .mpr 文件。在浏览器中免费在线试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD怎么查三维实体的体积？","answer":"执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。"},{"question":"CAD怎么求图形的质心？","answer":"用 REGION 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。"},{"question":"MASSPROP 为什么提示未选择实体或面域？","answer":"所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 REGION 将闭合图形转换为面域，或用 EXTRUDE 转换为实体。"},{"question":"为什么质量等于体积？","answer":"与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。"}]
+---
+
+MASSPROP（面域/质量特性）命令测量三维实体和面域。选择对象后按 Enter 键：报告按 AutoCAD 的栏目写在命令行中，然后询问是否将其写入文件。选择集中既没有实体也没有面域时，提示 `No solids or regions selected.` 并结束。
+
+对于实体，选择集作为一个整体、按密度 1 测量，因此质量等于体积：质量、体积、边界框、质心、惯性矩、惯性积和旋转半径，都相对于当前 UCS，然后是相对于质心的主力矩及其方向。相互重叠的实体会重复计算。对于位于 UCS 的 XY 平面内的面域：面积、周长、边界框、质心、惯性矩和惯性积、旋转半径以及主力矩；不在该平面内的面域只给出面积、周长、边界框和质心。先列面域，再列实体；不在第一个面域所在平面内的面域会被排除并计数。数字按图形的精度写出（用 [`UNITS`](/docs/commands/units) 设置），并且是精确值，实体逐面积分计算。MASSPROP 不改变图形中的任何内容；与 AutoCAD 一样需要输入命令，AutoCAD 的功能区上没有它的按钮。
+
+- **命令：** `MASSPROP`
+- **面板：** [查询与视图](/docs/commands#inquiry)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `MASSPROP`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="massprop" caption="一个位于原点、60 × 40 × 25 的长方体：MASSPROP 写出其体积、边界框、质心和惯性矩，按 Enter 键不写入文件。" />
+
+## 选项 [#options]
+
+### `Yes` (`Y`) [#yes]
+
+在默认值为 `No` 的文件问题处选择：像 AutoCAD 一样，将报告逐行写入文件。AutoCAD 会用对话框询问保存位置；在浏览器中，下载就是这个对话框，文件以图形命名，扩展名为 `.mpr`。
+
+## 尚不支持的功能 [#missing]
+
+使用建筑或工程单位时 AutoCAD 在每个数字后写出的单位（`sq in`、`cu in`、`lb`）：这里数字后面不带单位。选择文件名，以及替换已有文件前的询问。远离原点时，AutoCAD 以指数形式写出大数并丢失位数，其最后一位也可能因自身的舍入而不同：MellowCAD 的是精确值。对于有两个相等主力矩的实体，AutoCAD 的舍入所选出的那一对方向。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#massprop--es-propfis--pt-br-propmass--fr-propmeca--it-propmass--de-masseig--ru-масс-хар--pl-paramfiz--cs-hmotv--hu-fizjell)
+
+## 常见问题 [#questions]
+
+### CAD怎么查三维实体的体积？
+
+执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。
+
+### CAD怎么求图形的质心？
+
+用 [`REGION`](/docs/commands/region) 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。
+
+### MASSPROP 为什么提示未选择实体或面域？
+
+所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 [`REGION`](/docs/commands/region) 将闭合图形转换为面域，或用 [`EXTRUDE`](/docs/commands/extrude) 转换为实体。
+
+### 为什么质量等于体积？
+
+与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。
+
+## 相关命令 [#related]
+
+- [AutoCAD AREA（面积）命令](/docs/commands/area)
+- [AutoCAD LIST（列表）命令](/docs/commands/list)
+- [AutoCAD REGION（面域）命令](/docs/commands/region)
+- [AutoCAD BOX（长方体）命令](/docs/commands/box)
+- [AutoCAD UNITS（单位）命令](/docs/commands/units)

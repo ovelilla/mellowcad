@@ -8,7 +8,7 @@
   },
   "routes": [
     {
-      "src": "^/(?:(?:en|es|ar|pt-br|fr|it|de|ru|pl|cs|hu|ja|ko)/)?404/?$",
+      "src": "^/(?:(?:en|es|ar|pt-br|fr|it|de|ru|pl|cs|hu|ja|ko|zh-cn)/)?404/?$",
       "status": 404,
       "continue": true
     },
@@ -16,7 +16,7 @@
       "handle": "error"
     },
     {
-      "src": "^/(es|ar|pt-br|fr|it|de|ru|pl|cs|hu|ja|ko)(?:/.*)?$",
+      "src": "^/(es|ar|pt-br|fr|it|de|ru|pl|cs|hu|ja|ko|zh-cn)(?:/.*)?$",
       "status": 404,
       "dest": "/$1/404"
     },

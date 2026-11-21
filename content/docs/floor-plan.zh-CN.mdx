@@ -1,0 +1,55 @@
+---
+title: 用 CAD 画平面图
+metaTitle: "CAD 平面图怎么画：户型图分步绘制"
+description: "CAD 户型平面图怎么画：用 OFFSET（偏移）画外墙和内墙，用 TRIM（修剪）开洞口，再画带开启线的门、窗和尺寸标注，一步一步完成。"
+type: howTo
+sourceHash: "41b2bdb216d4"
+---
+
+平面图是在离地约一米半的高度把房子水平剖开、从上往下看到的图：每面墙画成两条线，两线之间是墙厚；还有墙上的洞口、按开启状态画出并带开启线的门、窗和尺寸标注。本指南以厘米为单位绘制一套 8 × 6 米、两个房间的房子：一个单位就是一厘米，所以外墙厚 20，内墙厚 10。每一步都显示其图形，以及按输入方式记录的命令历史记录。请在本页旁边[打开编辑器](/zh-cn/draw)，跟着画。
+
+## 设置图层 [#layers]
+
+每类对象放在各自的图层上，并有自己的颜色，以便随时关闭其中任何一类：“墙”、“门”、“窗”和“标注”。在 <Command id="LAYER" />（图层特性）命令的图层选项板中创建这些图层，并在每一步之前在“图层控制”中将相应的图层置为当前。为了让标注在房屋的尺度下清晰可读，请在 <Command id="DIMSTYLE" />（标注样式）命令中设置标注样式的全局比例：此处为 12，因此标注文字高 30。
+
+## 绘制外墙 [#walls]
+
+在“墙”图层上，用 <Command id="RECTANG" />（矩形）命令从 `0,0` 到 `800,600` 画矩形：这是墙的外侧面。用 <Command id="OFFSET" />（偏移）命令得到内侧面：输入墙厚 `20`，选择矩形，然后在其内部单击。
+
+<Session name="floorPlanWalls" caption="外墙：一个矩形及其向内偏移 20 的副本。" />
+
+## 绘制内墙 [#inner-wall]
+
+用 <Command id="LINE" />（直线）命令从 `500,20` 画一条直线，输入 `0,560` 向上画到外墙的内侧面；再用 <Command id="OFFSET" /> 向右偏移 `10`：这就是两个房间之间的墙。
+
+<Session name="floorPlanInnerWall" caption="内墙：一条直线及其向右偏移 10 的副本。" />
+
+## 开洞口 [#openings]
+
+洞口开在横跨墙体的两条线（洞口边线）之间。先用 <Command id="LINE" /> 画出这两条线，再用 <Command id="TRIM" />（修剪）命令逐一拾取，修剪掉两线之间的墙线：入口宽 90，从 `100,0` 起；室内门宽 80，从 `500,200` 起；窗宽 120，分别从上墙的 `200,580` 和右墙的 `780,250` 起。
+
+<Session name="floorPlanOpenings" caption="四个洞口：每个洞口有两条边线，其间的墙线已修剪。" />
+
+## 绘制门 [#doors]
+
+在“门”图层上，每扇门由门扇和开启线组成：门扇用 <Command id="LINE" /> 按打开状态画出，开启线是用 <Command id="ARC" />（圆弧）命令画的圆弧：选择圆心选项，然后以门轴为圆心，依次指定开启线的起点和端点。两端都是已经画好的点，即洞口边线的角点和门扇的端点：输入 `_END`，即只对一个点生效的端点对象捕捉，然后分别拾取。
+
+<Session name="floorPlanDoors" caption="每扇门：打开 90° 的门扇及其开启线圆弧。" />
+
+## 绘制窗 [#windows]
+
+在“窗”图层上，用 <Command id="RECTANG" /> 从洞口边线开始画一个矩形填满每个洞口，再画一条穿过其中间的直线表示玻璃。
+
+<Session name="floorPlanWindows" caption="窗：每个洞口中的矩形，以及表示玻璃的直线。" />
+
+## 标注平面图 [#dimensions]
+
+在“标注”图层上，用 <Command id="DIMLINEAR" />（线性）命令标注外部尺寸，再从内部标注房间：第一个房间的宽度用 <Command id="DIMLINEAR" />，内墙和第二个房间用 <Command id="DIMCONTINUE" />（连续）命令，点用 `#` 从原点输入。
+
+<Session name="floorPlanDimensions" caption="标注完成的平面图：外部 800 × 600，内部为各个房间。" />
+
+## 下一步 [#next]
+
+- 用 <Command id="TEXT" />（单行文字）命令为每个房间注写名称，并用 <Command id="HATCH" />（图案填充）命令填充墙体：在墙的两条线之间拾取一点。
+- 用[练习](/docs/exercises)来练习：[楼梯平面图](/docs/exercises/stairs)和[圆桌和椅子](/docs/exercises/round-table)也以厘米为单位绘制。
+- [坐标](/docs/coordinates)：输入点的所有方式。

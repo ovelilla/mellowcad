@@ -1,0 +1,46 @@
+---
+title: "CAD 练习图：地块"
+metaTitle: "CAD 土木练习图：地块面积与边长"
+description: "AutoCAD 土木练习图：根据各边的长度和角度用极坐标画出地块，然后测量面积并标注尺寸。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+根据各边的长度和方向绘制以下地块（单位：m）：0° 方向 40，80° 方向 30，155° 方向 35，230° 方向 25，然后回到起点。测量其面积和周长，并标注各边以及第二个角点处的角度。用极坐标（长度和角度）从上一条边的终点画出每条边。本图形的标注比例已按米设置。
+
+- **练习：** 中级 · 土木 · 二维
+- **命令：** [`PLINE`](/docs/commands/pline), [`AREA`](/docs/commands/area), [`DIMALIGNED`](/docs/commands/dimaligned), [`DIMANGULAR`](/docs/commands/dimangular)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=plot-of-land)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/plot-of-land" caption="五条边的地块（单位：m），标注各边和一个角度。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制地块边界 [#boundary]
+
+在“轮廓线”图层上，用 [`PLINE`](/docs/commands/pline)（多段线）命令从 `0,0` 起，以长度和角度输入每条边：`40<0`、`30<80`、`35<155`、`25<230`，均从上一点起算。`Close` 选项画出第五条边并闭合边界：得到一个对象，可以用 [`AREA`](/docs/commands/area)（面积）命令测量。
+
+<Session name="exercises/plot-of-land/boundary" caption="1. 绘制地块边界" />
+
+### 2. 测量面积 [#area]
+
+执行 [`AREA`](/docs/commands/area) 命令，选择 `Object` 选项，然后拾取边界：命令行显示其面积（平方米）和周长。
+
+<Session name="exercises/plot-of-land/area" caption="2. 测量面积" />
+
+### 3. 标注尺寸 [#dimensions]
+
+在“标注”图层上，执行 [`DIMALIGNED`](/docs/commands/dimaligned)（对齐）命令，在第一个提示下按 Enter 键：命令随即要求选择对象，拾取一条边即标注该边，尺寸与边平行。每个标注都放在地块外侧。用 [`DIMANGULAR`](/docs/commands/dimangular)（角度）命令拾取在 `40,0` 处相交的两条边，标出二者的夹角 100°。
+
+<Session name="exercises/plot-of-land/dimensions" caption="3. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：阶梯轴](/docs/exercises/shaft): 中级 · 机械 · 二维
+- [CAD 等轴测图练习：阶梯块](/docs/exercises/isometric-block): 中级 · 机械 · 等轴测
+- [CAD 三维练习图：带轮](/docs/exercises/pulley): 中级 · 机械 · 三维实体
+- [AutoCAD 练习图](/docs/exercises)

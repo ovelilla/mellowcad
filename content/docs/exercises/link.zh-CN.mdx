@@ -1,0 +1,58 @@
+---
+title: "CAD 练习图：用切线连接的连杆"
+metaTitle: "CAD 机械练习题（进阶）：连杆与切线"
+description: "AutoCAD 进阶练习图：用切点对象捕捉画出与两个凸台都相切的直线，修剪其间的圆弧并标注尺寸。附分步解答，可免费在线练习。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+按以下尺寸绘制连杆（单位：mm）：两个凸台中心距 90，半径分别为 20 和 12，孔半径分别为 10 和 6；两个凸台用与二者都相切的直线连接，直线之间的圆弧修剪掉。切线的两端都使用切点对象捕捉；然后用 [`TRIM`](/docs/commands/trim)（修剪）命令把每个凸台的圆变成圆弧。
+
+- **练习：** 高级 · 机械 · 二维
+- **命令：** [`CIRCLE`](/docs/commands/circle), [`LINE`](/docs/commands/line), [`TRIM`](/docs/commands/trim), [`DIMLINEAR`](/docs/commands/dimlinear), [`DIMRADIUS`](/docs/commands/dimradius), [`DIMDIAMETER`](/docs/commands/dimdiameter)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=link)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/link" caption="两个凸台中心距 90、用切线连接的连杆，含尺寸标注。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制凸台 [#bosses]
+
+在“轮廓线”图层上，用 [`CIRCLE`](/docs/commands/circle)（圆）命令按半径画四个圆：在 `0,0` 处画半径 `20` 和 `10` 的圆，在 `90,0` 处画半径 `12` 和 `6` 的圆。
+
+<Session name="exercises/link/bosses" caption="1. 绘制凸台" />
+
+### 2. 绘制切线 [#tangents]
+
+执行 [`LINE`](/docs/commands/line)（直线）命令，输入 `_TAN`，即只作用于一个点的切点对象捕捉，在大圆顶部附近拾取；再次输入 `_TAN`，在小圆顶部附近拾取。直线与两个圆都相切。底部同样画一条。
+
+<Session name="exercises/link/tangents" caption="2. 绘制切线" />
+
+### 3. 修剪圆弧 [#trim]
+
+[`TRIM`](/docs/commands/trim) 命令：在两条直线之间、朝向另一个凸台的一侧拾取每个凸台。内侧圆弧被删除，每个圆都成为圆弧。
+
+<Session name="exercises/link/trim" caption="3. 修剪圆弧" />
+
+### 4. 绘制中心线 [#centreLines]
+
+在“中心线”图层上，画出通过两个圆心的轴线，以及横穿每个凸台的直线。
+
+<Session name="exercises/link/centreLines" caption="4. 绘制中心线" />
+
+### 5. 标注尺寸 [#dimensions]
+
+在“标注”图层上，用 [`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令标注中心距，用 [`DIMRADIUS`](/docs/commands/dimradius)（半径）命令标注凸台的半径，用 [`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令标注孔。
+
+<Session name="exercises/link/dimensions" caption="5. 标注尺寸" />
+
+## 更多练习 [#more]
+
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block): 高级 · 机械 · 三维实体
+- [CAD 练习图：垫片](/docs/exercises/gasket): 初级 · 机械 · 二维
+- [CAD 练习图：L 形支架](/docs/exercises/l-bracket): 初级 · 机械 · 二维
+- [AutoCAD 练习图](/docs/exercises)

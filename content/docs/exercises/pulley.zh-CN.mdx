@@ -1,0 +1,48 @@
+---
+title: "CAD 三维练习图：带轮"
+metaTitle: "CAD 三维练习题：旋转生成带轮"
+description: "AutoCAD 三维练习图：把带轮的半截面画成闭合多段线，绕 Y 轴旋转成实体。附分步解答，可免费在线练习三维建模。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+将带轮的半截面绕其轴线旋转，创建以下带轮模型（单位：mm）：轴孔直径 20；轮毂长 30、直径 40；腹板厚 10；轮缘宽 24，直径从 90 到 110，位于轮毂中间。截面按到轴线的距离绘制，轴线沿 Y 轴向上，因此每个直径都按其一半绘制。
+
+- **练习：** 中级 · 机械 · 三维实体
+- **命令：** [`PLINE`](/docs/commands/pline), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`REVOLVE`](/docs/commands/revolve), [`ZOOM`](/docs/commands/zoom)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=pulley)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/pulley" caption="带轮的半截面及其轴线，标注到轴线的距离。" />
+
+<Session name="exercises/pulley/model" caption="带轮实体，从东南方向观察，“概念”视觉样式。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制半截面 [#profile]
+
+在“轮廓线”图层上，用 [`PLINE`](/docs/commands/pline)（多段线）命令从 `10,0` 起画一条闭合多段线，之后每一点都相对上一点输入：`10,0`、`0,10`、`25,0`、`0,-7`、`10,0`、`0,24`、`-10,0`、`0,-7`、`-25,0`、`0,10`、`-10,0`，然后选择 `Close`。
+
+<Session name="exercises/pulley/profile" caption="1. 绘制半截面" />
+
+### 2. 转换视图 [#view]
+
+`-VIEW` 命令的 `SEIso` 选项从东南上方观察；[`VSCURRENT`](/docs/commands/vscurrent)（视觉样式）命令的 `Conceptual` 选项为各面着色，最能看清回转体零件的形状。
+
+<Session name="exercises/pulley/view" caption="2. 转换视图" />
+
+### 3. 旋转 [#revolve]
+
+[`REVOLVE`](/docs/commands/revolve)（旋转）命令：选择截面并按 Enter 键，然后选择 `Y`：Y 轴就是带轮的轴线。按 Enter 键接受默认角度，即旋转一整周。[`ZOOM`](/docs/commands/zoom)（缩放）命令的 `Extents` 选项使其充满视图，比例 `0.8x` 在周围留出空白。
+
+<Session name="exercises/pulley/revolve" caption="3. 旋转" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link): 高级 · 机械 · 二维
+- [CAD 三维练习图：轴承座](/docs/exercises/bearing-block): 高级 · 机械 · 三维实体
+- [CAD 练习图：垫片](/docs/exercises/gasket): 初级 · 机械 · 二维
+- [AutoCAD 练习图](/docs/exercises)

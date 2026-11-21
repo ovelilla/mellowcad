@@ -1,0 +1,87 @@
+---
+title: "AutoCAD TRIM（修剪）命令"
+metaTitle: "CAD修剪命令（TRIM）用法与快捷键 TR"
+description: "AutoCAD TRIM（修剪，快捷键 TR）怎么用：按提示顺序说明快速模式和标准模式、剪切边、栏选和窗交，以及按住 Shift 键延伸。在浏览器中免费试用。"
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"CAD修剪命令的快捷键是什么？","answer":"输入 TR，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_TRIM 都有效。"},{"question":"CAD修剪为什么把整条线都删了？","answer":"因为 TRIM 处于快速模式，这是 AutoCAD 自 2021 版起的默认设置：拾取没有任何边与之相交的对象，会将其删除。选择 mOde，然后选择 Standard，TRIM 就会保留该对象并给出提示。"},{"question":"CAD怎么一次修剪多条线？","answer":"在空白处拾取一点，再拾取第二点：与这条栏选线相交的每个对象都被修剪，作为一个步骤。或者选择 Crossing，在要去掉的部分上画一个窗口。"},{"question":"CAD修剪时怎么延伸直线？","answer":"按住 Shift 键，在要延伸的一端附近拾取直线：它会像使用 EXTEND 一样延伸到最近的边；下一次不按 Shift 键拾取，又恢复为修剪。"}]
+---
+
+TRIM（修剪）命令将对象修剪到其他对象与之相交的位置：拾取要去掉的部分，它会被去掉，直到两侧最近的交点为止。与 AutoCAD 一样，它以快速模式开始：所有对象都是剪切边，没有任何对象与之相交的对象会被整个删除。拾取时按住 Shift 键，则改为像 [`EXTEND`](/docs/commands/extend) 一样，将对象延伸到最近的边。每次拾取是一个可以放弃的步骤；按 Enter 键结束命令。
+
+- **命令：** `TRIM`
+- **快捷键：** `TR`
+- **面板：** [修改](/docs/commands#modify)
+- **试一试：** [打开编辑器](/zh-cn/draw)，输入 `TR`，然后按 Enter 键。
+
+## 在命令行中 [#session]
+
+由引擎绘制，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。
+
+<Session name="trim" caption="将一条直线修剪到与其相交的两条直线处：在快速模式下，两端各拾取一次。" />
+
+## 选项 [#options]
+
+### `cuTting edges` (`T`) [#cutting]
+
+选择用作剪切边的对象：选择对象，或按 Enter 键选择所有对象。此后，无论哪种模式，在命令结束之前都只有这些对象用作剪切边。
+
+### `Fence` (`F`) [#fence]
+
+询问一条线的各点，可以任意多个，直到按 Enter 键为止：与这条线相交的每个对象都在相交处被修剪，作为一个步骤。标准模式会列出该选项；快速模式也接受它，并且在空白处拾取会自动开始两点栏选。
+
+### `Crossing` (`C`) [#crossing]
+
+询问窗口的两个角点：与窗口轮廓相交的所有对象都被修剪，作为一个步骤。完全位于窗口内的对象不与轮廓相交。
+
+### `mOde` (`O`) [#mode]
+
+在 `Quick` 和 `Standard` 之间切换。在标准模式下，TRIM 先询问剪切边（按 Enter 键选择全部），不与任何边相交的对象保持不变并显示 `Does not intersect with the cutting edge.`，列出“栏选”和“边”，在空白处拾取会开始窗交窗口。该模式由 TRIM 和 EXTEND 共用，在本次会话中保留。
+
+### `Edge` (`E`) [#edge]
+
+仅用于标准模式。选择 `Extend` 时，边在其延长后会相交的位置也起剪切作用：直线向两端延长，圆弧沿其所在的圆延长；默认为 `No extend`。
+
+### `eRase` (`R`) [#erase]
+
+不退出命令即可删除对象：选择对象，然后按 Enter 键将其删除，作为 TRIM 中一个可以放弃的步骤。
+
+### `Undo` (`U`) [#undo]
+
+在提示已得到一次回答（拾取、栏选、窗口）后列出：放弃上一次修剪；没有可放弃的修剪时会给出提示。
+
+## 尚不支持的功能 [#missing]
+
+投影：不提供 AutoCAD 的投影选项（无、UCS、视图），一切都投影到 UCS 的 XY 平面上计算，这与 AutoCAD 的默认值 UCS 相同。栏选还不能用光标拖动，只能逐点拾取。修剪模式和“边”的选择只在本次会话中保留，而 AutoCAD 会在各次会话之间保留它们。与 UCS 成角度的对象（样条曲线除外），既不能用作剪切边，也不能被修剪。
+
+[功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est--fr-ajuster--aj--prolonger--pr--prolonge--it-taglia--ta--estendi--es--de-stutzen--su--dehnen--de--ru-обрезать--обр--удлинить--у--pl-utnij--ut--wydłuż--wyd--cs-ořež--or--prodluž--pd--hu-metsz--me--elér--el)
+
+## 常见问题 [#questions]
+
+### CAD修剪命令的快捷键是什么？
+
+输入 `TR`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_TRIM` 都有效。
+
+### CAD修剪为什么把整条线都删了？
+
+因为 TRIM 处于快速模式，这是 AutoCAD 自 2021 版起的默认设置：拾取没有任何边与之相交的对象，会将其删除。选择 `mOde`，然后选择 `Standard`，TRIM 就会保留该对象并给出提示。
+
+### CAD怎么一次修剪多条线？
+
+在空白处拾取一点，再拾取第二点：与这条栏选线相交的每个对象都被修剪，作为一个步骤。或者选择 `Crossing`，在要去掉的部分上画一个窗口。
+
+### CAD修剪时怎么延伸直线？
+
+按住 Shift 键，在要延伸的一端附近拾取直线：它会像使用 [`EXTEND`](/docs/commands/extend) 一样延伸到最近的边；下一次不按 Shift 键拾取，又恢复为修剪。
+
+## 练习 [#practice]
+
+- [CAD 练习图：法兰盘](/docs/exercises/flange)
+- [CAD 练习图：用切线连接的连杆](/docs/exercises/link)
+
+## 相关命令 [#related]
+
+- [AutoCAD EXTEND（延伸）命令](/docs/commands/extend)
+- [AutoCAD OFFSET（偏移）命令](/docs/commands/offset)
+- [AutoCAD FILLET（圆角）命令](/docs/commands/fillet)
+- [AutoCAD BREAK（打断）命令](/docs/commands/break)

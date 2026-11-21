@@ -1,0 +1,60 @@
+---
+title: "CAD 三维练习图：安装板"
+metaTitle: "CAD 三维入门练习图：安装板"
+description: "适合入门的 AutoCAD 三维练习图：先创建面域，用差集减去孔，再拉伸一次得到安装板实体。附分步解答，可免费在线练习三维建模。"
+type: "practice"
+generated: "lib/docs/generate.test.ts"
+---
+
+创建厚 10 的安装板模型（单位：mm）：轮廓 100 × 60，四角圆角半径 8；四个直径 10 的孔，孔心距边缘 15。先在平面上绘制：轮廓和圆转换为面域，在仍为平面时减去孔，再拉伸一次，即得到带孔的实体。
+
+- **练习：** 初级 · 机械 · 三维实体
+- **命令：** [`RECTANG`](/docs/commands/rectang), [`CIRCLE`](/docs/commands/circle), [`COPY`](/docs/commands/copy), [`REGION`](/docs/commands/region), [`SUBTRACT`](/docs/commands/subtract), [`-VIEW`](/docs/commands#-view), [`VSCURRENT`](/docs/commands/vscurrent), [`EXTRUDE`](/docs/commands/extrude), [`ZOOM`](/docs/commands/zoom)
+- **在编辑器中：** [连同图形一起打开](/zh-cn/draw?drawing=mounting-plate)，已标注尺寸的题图位于画图区域旁边
+
+## 题图 [#drawing]
+
+<Session name="exercises/mounting-plate" caption="带 4 个孔的 100 × 60 板的轮廓，含尺寸标注。" />
+
+<Session name="exercises/mounting-plate/model" caption="厚 10 的板实体，从东南方向观察，已消隐。" />
+
+## 分步解答 [#steps]
+
+引擎绘制每一步，并按输入时的样子写出命令历史记录：提示顺序与 AutoCAD 2027 相同，选项字母也相同。在命令的第一个点之后，输入的点从上一个点开始测量，与动态输入的测量方式相同，历史记录中以 @ 开头；\# 表示从原点测量。
+
+### 1. 绘制轮廓 [#profile]
+
+在“轮廓线”图层上，用 [`RECTANG`](/docs/commands/rectang)（矩形）命令，将 `Fillet` 设为 `8`，从 `0,0` 画到 `100,60`。然后在 `15,15` 处画一个圆，`Diameter` 为 `10`，再用 [`COPY`](/docs/commands/copy)（复制）命令以其圆心为基点，复制到相对位置 `70,0`、`70,30` 和 `0,30` 处。
+
+<Session name="exercises/mounting-plate/profile" caption="1. 绘制轮廓" />
+
+### 2. 创建面域 [#region]
+
+[`REGION`](/docs/commands/region)（面域）命令将闭合对象转换为面域：选择轮廓和四个圆，然后按 Enter 键。五个环，生成五个面域。
+
+<Session name="exercises/mounting-plate/region" caption="2. 创建面域" />
+
+### 3. 减去孔 [#subtract]
+
+[`SUBTRACT`](/docs/commands/subtract)（差集）命令：选择板的面域并按 Enter 键，再选择四个圆的面域并按 Enter 键。最后剩下一个带四个孔的面域。
+
+<Session name="exercises/mounting-plate/subtract" caption="3. 减去孔" />
+
+### 4. 转换视图 [#view]
+
+`-VIEW` 命令的 `SEIso` 选项从东南上方观察；[`VSCURRENT`](/docs/commands/vscurrent)（视觉样式）命令的 `Hidden` 选项隐藏被面遮挡的部分。单击 ViewCube 也可以转换视图。
+
+<Session name="exercises/mounting-plate/view" caption="4. 转换视图" />
+
+### 5. 拉伸 [#extrude]
+
+[`EXTRUDE`](/docs/commands/extrude)（拉伸）命令：选择面域，按 Enter 键，输入高度 `10`。板连同孔一起成为实体。[`ZOOM`](/docs/commands/zoom)（缩放）命令的 `Extents` 选项使其充满视图，比例 `0.8x` 在周围留出空白。
+
+<Session name="exercises/mounting-plate/extrude" caption="5. 拉伸" />
+
+## 更多练习 [#more]
+
+- [CAD 练习图：法兰盘](/docs/exercises/flange): 中级 · 机械 · 二维
+- [CAD 练习图：圆桌和椅子](/docs/exercises/round-table): 中级 · 建筑 · 二维
+- [CAD 练习图：地块](/docs/exercises/plot-of-land): 中级 · 土木 · 二维
+- [AutoCAD 练习图](/docs/exercises)

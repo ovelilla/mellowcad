@@ -1,0 +1,75 @@
+---
+title: "AutoCAD SOLIDEDIT（实体编辑）命令"
+metaTitle: "CAD实体编辑命令（SOLIDEDIT）拉伸面与倾斜面"
+description: "AutoCAD SOLIDEDIT（实体编辑）怎么编辑三维实体的面：按提示顺序说明拉伸、移动、旋转、偏移、倾斜、删除和复制。在浏览器中免费试用。"
+figure: "用 SOLIDEDIT 将长方体的顶面向上拉伸 15、倾斜角度为 15 度：长方体上形成一个棱台，从东南方向观察。"
+sourceHash: "775cdc271d4f"
+---
+
+SOLIDEDIT（实体编辑）命令按面编辑三维实体。它先说明是否检查每次编辑，然后询问要编辑什么：<Keyword id="Face" />，然后是面编辑选项，然后是面，然后是该选项需要的内容。每次编辑立即生效，并再次询问面编辑选项，因此一次执行可以完成多次编辑；<Keyword id="eXit" /> 或按 Enter 键退出面编辑选项，再退出命令。面的相邻面随之变化：将长方体的顶面上移，其侧面随之延长与之相接。
+
+实体保留其图层和特性，但失去其创建方式：长方体不再是长方体。整次执行是一个放弃步骤，其中的 <Keyword id="Undo" /> 在命令内逐次放弃编辑。在 `Command:` 提示下按 Enter 键，从第一个问题开始重新执行。“实体编辑”面板的面按钮直接执行各个面编辑选项。MellowCAD 的三维只有实体，并且仍不完整。
+
+## Options
+
+### Face
+
+面编辑选项。每个选项都询问面，直到按 Enter 键为止：单击或输入一点，选取其下方离视点最近的面，或该处一条边的两个面；再次选取已选的面，则选取其后方的面。选取一个面后，<Keyword id="ALL" /> 选取其所属实体的所有面；<Keyword id="Remove" /> 改为从集合中删除面，<Keyword id="Undo" /> 放弃上一次拾取。在空白处拾取显示 <Message id="noSolidsDetected" />。只能选择一个实体的面。
+
+### Extrude
+
+询问高度和倾斜角度：每个面延伸成一个棱柱，加到实体上，或高度为负时从实体中减去；倾斜角度为正时，棱柱随高度逐渐收窄。在高度提示下按 Enter 键，采用基本体或 <Command id="EXTRUDE" /> 上次使用的高度。
+
+### Move
+
+询问基点和第二点：平面沿其法线移动两点连线在该方向上的距离，相邻面随之变化。在第二点提示下按 Enter 键，以基点作为位移。
+
+### Rotate
+
+询问轴（用两点指定，或沿 UCS 的 <Keyword id="Xaxis" />、<Keyword id="Yaxis" /> 或 <Keyword id="Zaxis" />，或用 <Keyword id="View" /> 与屏幕垂直），然后询问角度：面按右手定则绕该轴旋转。
+
+### Offset
+
+询问距离：面沿其法线向外移动，距离为负时向内移动，相邻面随之变化，弯曲的面也绕其轴偏移。向内偏移的距离达到实体外包长方体最长边的一半时会被拒绝，并说明最多可以偏移多少。
+
+### Taper
+
+询问基点、沿倾斜轴的一点和角度：面绕其与通过基点的平面的交线倾斜，正角度使其沿轴向内倾斜。
+
+### Delete
+
+删除孔的侧壁以封闭孔，或删除圆角或倒角的条形面，恢复其所替代的边。
+
+### Copy
+
+将每个平面复制为面域，位于原处，或按两点移动；使用当前图层和当前特性。
+
+### Undo
+
+在面编辑选项中，放弃本次执行的上一次编辑；没有可放弃的编辑时，显示 <Message id="commandCompletelyUndone" />。
+
+### eXit
+
+退出面编辑选项，回到第一个问题；在第一个问题下选择它则退出命令。按 Enter 键效果相同。
+
+## Missing
+
+<Keyword id="Edge" /> 和 <Keyword id="Body" />，以及面的 <Keyword id="coLor" /> 和 <Keyword id="mAterial" />，会列出但拒绝执行；拉伸的 <Keyword id="Path" />、旋转的按对象指定轴及其 <Keyword id="Reference" /> 角度也是如此。不能用窗交、栏选和圈交选择面。不能移动、旋转、倾斜或复制弯曲的面，不能偏移与其他相邻面相接的弯曲的面，不能删除孔的侧壁和条形面以外的面，也不能进行使实体形状变化过大、导致某个面消失的编辑。不能编辑带倾斜角度拉伸的面旁边的面。向外偏移的距离过大而无法生成时，AutoCAD 不提示地放弃，MellowCAD 则照样生成。指定距离或角度时没有预览。
+
+## Questions
+
+### CAD三维实体怎么编辑？
+
+执行 SOLIDEDIT，选择 <Keyword id="Face" />，再选择要执行的操作：<Keyword id="Extrude" /> 或 <Keyword id="Move" /> 一个面使实体变高，<Keyword id="Delete" /> 填平孔，<Keyword id="Taper" /> 使侧面倾斜。拾取面，按 Enter 键，然后回答该选项的提示。要快速推拉，也可以用 <Command id="PRESSPULL" /> 拖动面。
+
+### CAD拉伸面命令怎么用？
+
+执行 SOLIDEDIT，选择 <Keyword id="Face" />、<Keyword id="Extrude" />，拾取面并按 Enter 键，然后指定高度和倾斜角度：演示中输入 `15` 和 `15`，在长方体顶面上生成一个棱台。
+
+### CAD怎么删除实体上的孔？
+
+执行 SOLIDEDIT，选择 <Keyword id="Face" />、<Keyword id="Delete" />，拾取孔的侧壁并按 Enter 键：孔被填平。用同样的方法可以删除圆角或倒角。
+
+### SOLIDEDIT 和 PRESSPULL 有什么区别？
+
+<Command id="PRESSPULL" /> 通过拖动或输入距离，沿面的法线方向移动一个面。SOLIDEDIT 除此之外还能倾斜、旋转、偏移、删除和复制面，并且可以一次编辑多个面。
