@@ -480,6 +480,14 @@ el dueño dio a las sesiones el 6/11).
    páginas como máximo; Bing avisa por correo al acabar) y «Request indexing» de las 20 primeras
    URLs francesas de la cola de Google, todas «descubiertas pero no rastreadas» (cuota 100 → 81).
    El 6/11, tras el push de la segunda tanda, IndexNow con las 235 URLs del sitemap (200).
+   **Baidu (pendiente del dueño, apuntado el 22/11):** el chino simplificado (`/zh-cn`, L8) busca
+   sobre todo en Baidu, que no lee IndexNow ni la cola de Google. Registrar el sitio en el
+   Baidu 搜索资源平台 (`ziyuan.baidu.com`) con una cuenta del dueño (pide un móvil para
+   verificarla), verificar `mellowcad.com` por fichero o meta (como Google y Bing: una sesión lo
+   pone en el código, con su variable de entorno), enviar el sitemap y, después de cada push con
+   páginas chinas nuevas, su envío por API (普通收录). Antes, comprobar desde China que el sitio
+   carga (Cloudflare no tiene red allí: `docs/i18n/zh-CN.md`, «Reaching the site from China»).
+   Bing, que también sirve a China (cn.bing.com), ya rastrea el sitio y recibe IndexNow.
 4. **GitHub y npm**: la descripción y los temas del repositorio, puestos el 6/11 (el `gh repo edit`
    de `docs/plans/seo/launch-kit.md` §0); la vista previa social (Settings → Social preview,
    `og-card-en.png`), que GitHub no deja poner por API, puesta el 9/11 por la sesión con la sesión
