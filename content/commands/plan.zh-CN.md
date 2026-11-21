@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PLAN（平面视图）命令"
-metaTitle: "CAD平面视图命令（PLAN）：UCS 与世界坐标系"
-description: "CAD怎么回到平面视图：AutoCAD PLAN（平面视图）正对当前 UCS、已保存的 UCS 或世界坐标系向下看，当前 UCS、UCS 和世界三个选项。在浏览器中免费试用。"
+metaTitle: "CAD 平面视图命令（PLAN）：UCS 与世界坐标系"
+description: "CAD 怎么回到平面视图：AutoCAD PLAN（平面视图）正对当前 UCS、已保存的 UCS 或世界坐标系向下看，当前 UCS、UCS 和世界三个选项。在浏览器中免费试用。"
 figure: "从西南方向看的台阶状块体，其 UCS 绕 Z 轴转了 30 度：PLAN 加 Enter 键正对该 UCS 向下看，X 轴朝右，因此块体显示为转过的样子。"
 sourceHash: "50d157803309"
 ---
@@ -30,18 +30,18 @@ PLAN（平面视图）命令正对某个 UCS 的 XY 平面向下看，X 轴指�
 
 ## Questions
 
-### CAD怎么回到平面视图？
+### CAD 怎么回到平面视图？
 
 输入 `PLAN` 并按两次 Enter 键：第二次按 Enter 键选择 <Keyword id="Current ucs" />。如果 UCS 已转动而需要世界坐标系的平面视图，请改为选择 <Keyword id="World" />。
 
-### CAD的 UCS 平面视图命令是什么？
+### CAD 的 UCS 平面视图命令是什么？
 
 使用 <Keyword id="Current ucs" /> 的 PLAN：它正对当前 UCS 向下看，X 轴朝右。先用 <Command id="UCS" /> 转动 UCS，再执行 PLAN 并按两次 Enter 键，就可以像在正放的平面上一样在转过的平面上绘图。
 
-### CAD平面视图为什么是斜的？
+### CAD 平面视图为什么是斜的？
 
 视图是一个转动过的 UCS 的平面视图。执行 PLAN 并选择 <Keyword id="World" />，图形就会重新以世界坐标系的 X 轴朝右显示；<Command id="UCS" /> 加 Enter 键也会把 UCS 恢复为世界坐标系。
 
-### PLAN 会改变 UCS 吗？
+### CAD 中 PLAN 会改变 UCS 吗？
 
 不会。它只转动视图，UCS 保持不变。<Command id="VIEW" /> 的正交视图才会同时转动 UCS。

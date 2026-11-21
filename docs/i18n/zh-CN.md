@@ -1,7 +1,7 @@
 # Simplified Chinese (`zh-CN`)
 
-> **Command language:** `global`, English AutoCAD's. **Status:** `draft` since 21/11/2026.
-> **Review:** none by a native speaker yet.
+> **Command language:** `global`, English AutoCAD's. **Status:** `live` since 22/11/2026.
+> **Review:** none by a native speaker yet; a model's second reading (see "Review").
 
 `/zh-cn/draw` is AutoCAD with its interface in Simplified Chinese — the palettes, the ribbon's
 words, the menus, the tooltips, the status bar and the dialogs as Chinese AutoCAD words them — and
@@ -367,6 +367,54 @@ mainland China and is commonly reachable from it, slowly; nothing on a page call
 blocks (the fonts are self-hosted, the analytics same-origin). Not tested from inside China.
 Baidu's webmaster tools (submitting the sitemap) need an account of the owner's.
 
+## Going live
+
+On 22/11/2026, from production builds (`vercel build`, offline; every page `○` or `●` but `/mcp`):
+
+- **The landing's first load**, Brotli q11 of every response until the network is idle, in bytes,
+  Chinese a draft (`435cae6c`) and live with the cut below: `/` 253,707 → 252,007, `/es` 255,000 →
+  253,397, `/pt-br` 255,312 → 253,604, `/ar` 278,613 → 276,959, `/fr` 256,009 → 254,200 (1,800
+  under 250 KiB), `/it` 255,095 → 253,498, `/de` 255,339 → 253,784, `/ru` 288,798 → 287,271, `/pl`
+  269,762 → 268,070, `/cs` 269,635 → 267,973, `/hu` 270,175 → 268,452, `/ja` 255,985 → 254,188,
+  `/ko` 255,580 → 253,897; `/zh-cn` 255,069 → 253,166, under the 250 KiB of a page with no script
+  font: the system's faces cost it nothing.
+- **`/fr` was 9 bytes over 250 KiB with Chinese a draft** (its `:lang(zh)` rules and routing
+  tables reach every landing), and going live adds some 100 more. **The cut**: a server
+  component's inlined SVG is written twice, in the HTML and in the router's payload, a JavaScript
+  string that escapes every `"`, so Brotli found nothing of the first copy in the second (4.3 KB
+  of `/fr` were the figures' payload copies). `inlineSvg` (`lib/svg-inline.ts`) quotes their
+  attributes singly, which the string leaves alone: the payload's copy now matches the HTML's
+  between tags, some 1.7 KB less on every landing, and on every docs page with a figure.
+- **The checks in Chrome**: `/zh-cn` at 360 px, nothing wider than the viewport, the H1 in the
+  system's Chinese face behind Inter, `line-break: strict`, the hreflang set with `zh-CN` and
+  «简体中文» in every landing's language links; `/zh-cn/draw` at 1280×720, no text clipped in the
+  bars or the palettes, the placeholder «键入命令（LINE、TR、CO…）»; the share card. **The IME**:
+  with `LINE` in the command line, a composing Enter (`keyCode` 229) left it there, a character
+  composed through Chrome's IME (`Input.imeSetComposition`) went into the field, and a plain Enter
+  ran LINE. The list of the landing's examples (`L（LINE）、TR（TRIM）和EXT（EXTRUDE）`) is
+  `Intl.ListFormat`'s for `zh-CN`: CLDR's, unspaced around 和.
+
 ## Review
 
-**No native reader yet.**
+**No native reader yet**: pending, as Japanese's and Korean's. Instead, on 22/11/2026, **a model's
+second reading**: an agent given the task and a sample, not this file's reasoning — the site's,
+the editor's and the engine's catalogs, six command notes (OFFSET, TRIM, HATCH, LINE, LAYER,
+DIMLINEAR), three "Use" pages and two exercises, each beside its English — read as a mainland
+technical editor who uses Chinese AutoCAD. It found the editor's and the engine's catalogs
+faithful to Chinese AutoCAD, no Taiwan usage, and: meaning that drifted (HATCH returning "to the
+picked point" where AutoCAD returns to the prompt for one; the open-DXF page promising input
+"exactly" Chinese AutoCAD's; the privacy page's 负责人 for the GDPR's controller, 控制者; the FAQ's
+标准 for "the spec"), option words Chinese AutoCAD contradicts (-HATCH's 绘制边界 and 颜色 for
+绘图边界 and 图案填充颜色, 25031), and patterns then fixed in every file: 快捷键 naming both the
+aliases and the keys' page (the keys are now 键盘快捷键), 别名 beside 快捷键, 撤销 and 撤回 beside
+AutoCAD's 放弃, 账户 beside 账号, «0 图层», the flange's bolt circle named three ways, «CAD» run into
+the Chinese in some titles and spaced in others (now spaced everywhere, as the help spaces latin
+words), and calques (从不, 作为一个步骤, 相对其…处). Every option word the 104 notes name in Chinese
+was then checked against its command's prompt in the tables (14 changed: the hot grip's 比例缩放,
+25365; ARRAYRECT's 轴夹角, AcArrayRes 5734; SPLINE's 阶次, 1829…). UNDO's search title keeps
+«撤销», what its searchers type, beside AutoCAD's 放弃.
+
+Where a native reader should look first: the terms marked † above, the search titles and
+descriptions (written from the suggestions, never tested against a Chinese searcher), the
+dialog and palette labels the tables do not hold (marked unverified above), the exercises' GB
+drafting words, and the ViewCube's faces and compass, never seen on the desktop.

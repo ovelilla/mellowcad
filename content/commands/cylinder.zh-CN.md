@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CYLINDER（圆柱体）命令"
-metaTitle: "CAD圆柱体命令（CYLINDER）怎么画与快捷键 CYL"
-description: "CAD圆柱体快捷键是什么，怎么画？CYLINDER（CYL）按提示顺序绘制三维实体圆柱体：底面中心、半径、高度，三点、两点、切点切点半径、椭圆和轴端点。在浏览器中免费试用。"
+metaTitle: "CAD 圆柱体命令（CYLINDER）怎么画与快捷键 CYL"
+description: "CAD 圆柱体快捷键是什么，怎么画？CYLINDER（CYL）按提示顺序绘制三维实体圆柱体：底面中心、半径、高度，三点、两点、切点切点半径、椭圆和轴端点。在浏览器中免费试用。"
 figure: "半径 20、高度 40 的圆柱体，从底面中心绘制，以隐藏视觉样式从东南方向观察。"
 sourceHash: "ce397d8dcb5d"
 ---
@@ -42,22 +42,22 @@ CYLINDER（圆柱体）命令绘制三维实体圆柱体：指定底面中心，
 
 ## Missing
 
-用 <Command id="EXPLODE" /> 分解圆柱体：AutoCAD 将其分解为两个端面和一个曲面，MellowCAD 没有曲面，因此会提示无法分解。从热夹点进行移动、旋转、缩放和镜像，以及将高度拖过底面。AutoCAD 在指定半径、椭圆各点和轴时绘制的虚线尺寸。在“特性”选项板中把圆形圆柱体改为椭圆圆柱体。AutoCAD 的 `DISPSILH` 绘制的轮廓线。在平面视图中顶面的圆遮住底面的圆时，最近点捕捉找到的是底面的圆，而 AutoCAD 找到的是顶面的圆。<Command id="VSCURRENT" /> 除二维线框、隐藏和概念之外缺少的视觉样式。
+用 <Command id="EXPLODE" /> 分解圆柱体：AutoCAD 将其分解为两个端面和一个曲面，MellowCAD 没有曲面，因此会提示无法分解。从热夹点进行移动、旋转、比例缩放和镜像，以及将高度拖过底面。AutoCAD 在指定半径、椭圆各点和轴时绘制的虚线尺寸。在“特性”选项板中把圆形圆柱体改为椭圆圆柱体。AutoCAD 的 `DISPSILH` 绘制的轮廓线。在平面视图中顶面的圆遮住底面的圆时，最近点捕捉找到的是底面的圆，而 AutoCAD 找到的是顶面的圆。<Command id="VSCURRENT" /> 除二维线框、隐藏和概念之外缺少的视觉样式。
 
 ## Questions
 
-### CAD圆柱体快捷键是什么？
+### CAD 圆柱体快捷键是什么？
 
 `CYL`。输入它并按 Enter 键或空格键，然后指定底面中心、半径和高度：`0,0`、`20` 和 `40` 即可绘制本页示例中的圆柱体。
 
-### CAD怎么画横着的圆柱体？
+### CAD 怎么画横着的圆柱体？
 
 在高度提示下选择 <Keyword id="Axis" />，指定轴的另一个端点：底面在 `0,0,0` 时，点 `60,0,0` 使圆柱体沿 X 方向放置。
 
-### CAD怎么画空心圆柱或管子？
+### CAD 怎么画空心圆柱或管子？
 
 从同一个中心绘制两个圆柱体，内侧的较细，然后运行 <Command id="SUBTRACT" />：选择外侧的圆柱体，按 Enter 键，再选择内侧的圆柱体，按 Enter 键。
 
-### CAD画的圆柱体为什么看起来是个圆？
+### CAD 画的圆柱体为什么看起来是个圆？
 
 这是在平面视图中从上方看。请转动视图：使用 ViewCube 的一个角、<Command id="-VIEW" /> 和 <Keyword command="VIEW" id="SEiso" />，或 <Command id="3DORBIT" />。

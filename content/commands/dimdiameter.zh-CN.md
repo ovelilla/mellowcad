@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMDIAMETER（直径）标注命令"
-metaTitle: "CAD直径标注命令（DIMDIAMETER）用法与快捷键 DDI"
-description: "CAD直径标注怎么用：按提示顺序讲解 AutoCAD 的 DIMDIAMETER（快捷键 DDI）如何标注圆或圆弧：先选择对象，再把直径放在内侧或外侧。在浏览器中免费试用。"
+metaTitle: "CAD 直径标注命令（DIMDIAMETER）用法与快捷键 DDI"
+description: "CAD 直径标注怎么用：按提示顺序讲解 AutoCAD 的 DIMDIAMETER（快捷键 DDI）如何标注圆或圆弧：先选择对象，再把直径放在内侧或外侧。在浏览器中免费试用。"
 figure: "大圆在内侧标注，小圆在外侧标注：先选择每个圆，再放置文字。"
 sourceHash: "76537f5f9854"
 ---
@@ -24,18 +24,18 @@ DIMDIAMETER（直径）命令标注圆、圆弧或多段线圆弧段的直径，
 
 ## Questions
 
-### CAD直径标注的快捷键是什么？
+### CAD 直径标注的快捷键是什么？
 
 输入 `DDI` 或 `DIMDIA`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIMDIAMETER`。
 
-### 小孔的直径怎么标注？
+### CAD 小孔的直径怎么标注？
 
 把文字放在圆外：尺寸线穿过小孔，两侧各有一个箭头，文字位于孔外。放在圆内时，圆内需要有足够的空间容纳文字。
 
-### DIMDIAMETER 可以标注圆弧吗？
+### CAD 中 DIMDIAMETER 可以标注圆弧吗？
 
 可以：圆弧或多段线的圆弧段都可以像圆一样标注，显示的是圆弧所在圆的直径。选择其他对象时显示 <Message id="notCircleOrArc" />，并再次询问。
 
-### 直径标注怎么加上 THRU 或说明文字？
+### CAD 直径标注怎么加上 THRU 或说明文字？
 
 放置标注前选择 <Keyword id="Text" />，输入 `<> THRU`：`<>` 代表带符号的测量值。放置后，可以在“特性”选项板的“文字替代”中修改。

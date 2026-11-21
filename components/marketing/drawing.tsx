@@ -1,3 +1,4 @@
+import { inlineSvg } from "@/lib/svg-inline"
 import { cn } from "@/lib/utils"
 
 function escape(text: string): string {
@@ -31,10 +32,11 @@ export function Drawing({
       role="img"
       className={cn("block h-auto w-full", className)}
       dangerouslySetInnerHTML={{
-        __html:
+        __html: inlineSvg(
           `<title>${escape(title)}</title>` +
-          (description ? `<desc>${escape(description)}</desc>` : "") +
-          markup,
+            (description ? `<desc>${escape(description)}</desc>` : "") +
+            markup
+        ),
       }}
     />
   )

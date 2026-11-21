@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CONE（圆锥体）命令"
-metaTitle: "CAD圆锥体命令（CONE）怎么画：三维圆锥、圆台与选项"
-description: "CAD圆锥体怎么画？CONE 按提示顺序绘制三维实体圆锥体或圆台：底面中心、半径、高度、顶面半径、椭圆和轴端点。在浏览器中免费试用。"
+metaTitle: "CAD 圆锥体命令（CONE）怎么画：三维圆锥、圆台与选项"
+description: "CAD 圆锥体怎么画？CONE 按提示顺序绘制三维实体圆锥体或圆台：底面中心、半径、高度、顶面半径、椭圆和轴端点。在浏览器中免费试用。"
 figure: "半径 20、高度 40 的圆锥体，从底面中心绘制，以隐藏视觉样式从东南方向观察。"
 sourceHash: "1c40f02e6b3c"
 ---
@@ -46,22 +46,22 @@ CONE（圆锥体）命令绘制三维实体圆锥体：指定底面中心，然�
 
 ## Missing
 
-用 <Command id="EXPLODE" /> 分解圆锥体：AutoCAD 将其分解为底面和一个曲面，MellowCAD 没有曲面，因此会提示无法分解。在“特性”选项板中把圆形圆锥体改为椭圆圆锥体。`ISOLINES` 为 0 时 AutoCAD 在顶点处绘制的点。以及 <Command id="CYLINDER" /> 所缺少的：热夹点的移动、旋转、缩放和镜像，指定半径时的虚线尺寸，以及 <Command id="VSCURRENT" /> 所缺少的视觉样式。
+用 <Command id="EXPLODE" /> 分解圆锥体：AutoCAD 将其分解为底面和一个曲面，MellowCAD 没有曲面，因此会提示无法分解。在“特性”选项板中把圆形圆锥体改为椭圆圆锥体。`ISOLINES` 为 0 时 AutoCAD 在顶点处绘制的点。以及 <Command id="CYLINDER" /> 所缺少的：热夹点的移动、旋转、比例缩放和镜像，指定半径时的虚线尺寸，以及 <Command id="VSCURRENT" /> 所缺少的视觉样式。
 
 ## Questions
 
-### CAD圆锥体怎么画？
+### CAD 圆锥体怎么画？
 
 运行 CONE 命令，指定底面中心、半径和高度：`0,0`、`20` 和 `40` 即可绘制本页示例中的圆锥体。要看到它，请转动视图：使用 ViewCube 的一个角，或 <Command id="-VIEW" /> 和 <Keyword command="VIEW" id="SEiso" />。
 
-### CAD圆台怎么画？
+### CAD 圆台怎么画？
 
 在高度提示下选择 <Keyword id="Top" />，输入顶面半径，然后输入高度。圆锥体以该半径的圆结束。
 
-### CAD倒圆锥怎么画？
+### CAD 倒圆锥怎么画？
 
 输入负的高度：圆锥体从底面朝下。或者选择 <Keyword id="Axis" />，在任意位置指定顶点。
 
-### CAD圆锥体的底面可以是椭圆吗？
+### CAD 圆锥体的底面可以是椭圆吗？
 
 可以：在底面中心提示下选择 <Keyword id="Elliptical" />，然后指定它的轴。指定顶面半径时，顶面是同一个椭圆，只是更小。

@@ -1,16 +1,16 @@
 ---
 title: 快速入门
 metaTitle: "CAD 入门：用 AutoCAD 命令画第一张图"
-description: "CAD 入门教程：在 MellowCAD 中画第一张图，学会命令行、提示和选项、绘图辅助工具、放弃和保存。在浏览器中使用，无需安装。"
+description: "CAD 入门教程：在 MellowCAD 中画第一张图，学会命令行、提示和选项、绘图辅助工具、放弃和保存。"
 type: gettingStarted
 sourceHash: "527b2d24b274"
 ---
 
-MellowCAD 的用法与 AutoCAD 相同：输入命令，回答它的提示，图形随之生成。如果已经在使用 AutoCAD，只需看看[命令](/docs/commands)和[区别](/docs/differences)；本页面向最初的十分钟。
+MellowCAD 的用法与 AutoCAD 相同：输入命令，回答它的提示，图形随之生成。如果已经在使用 AutoCAD，只需阅读[命令](/docs/commands)和[区别](/docs/differences)；本页介绍最初十分钟的上手操作。
 
 ## 打开编辑器 [#open]
 
-在桌面浏览器中[打开编辑器](/zh-cn/draw)。无需安装任何软件，也无需注册账户。工作时图形保存在此浏览器中，下次打开时仍然在。
+在桌面浏览器中[打开编辑器](/zh-cn/draw)。无需安装任何软件，也无需注册账号。工作时图形保存在此浏览器中，下次打开时仍会保留。
 
 ## 输入命令 [#command]
 
@@ -18,7 +18,7 @@ MellowCAD 的用法与 AutoCAD 相同：输入命令，回答它的提示，图�
 
 ## 回答提示 [#prompts]
 
-命令一次只问一件事，显示在命令行和光标旁边。点可以在图形上单击指定，也可以按 `x,y` 的格式输入两个坐标。指定第一个点之后，输入的坐标从上一个点开始测量，与 AutoCAD 的动态输入相同，命令历史记录中会在前面加上 `@`；输入 `#x,y` 则从原点开始测量。只输入一个距离时，沿光标方向移动该距离。
+命令每次只提示一项内容，显示在命令行和光标旁边。点可以在图形上单击指定，也可以按 `x,y` 的格式输入两个坐标。指定第一个点之后，输入的坐标从上一个点开始测量，与 AutoCAD 的动态输入相同，命令历史记录中会在前面加上 `@`；输入 `#x,y` 则从原点开始测量。只输入一个距离时，沿光标方向移动该距离。
 
 <Session name="firstLine" />
 
@@ -30,7 +30,7 @@ MellowCAD 的用法与 AutoCAD 相同：输入命令，回答它的提示，图�
 
 ## 结束、重复、取消 [#end]
 
-像 <Command id="LINE" /> 这样连续提问的命令，按 Enter 键或空格键结束；没有命令运行时，按这两个键会重复上一个命令。单击鼠标右键会打开包含相同选项的菜单。按 Esc 键取消。所有按键都在[快捷键页面](/docs/shortcuts)中。
+像 <Command id="LINE" /> 这样连续提示的命令，按 Enter 键或空格键结束；没有命令运行时，按这两个键会重复上一个命令。单击鼠标右键会打开包含相同选项的菜单。按 Esc 键取消。所有按键都在[键盘快捷键页面](/docs/shortcuts)中。
 
 ## 精确绘图 [#precision]
 
@@ -46,16 +46,16 @@ MellowCAD 的用法与 AutoCAD 相同：输入命令，回答它的提示，图�
 
 ## 放弃和重做 [#undo]
 
-<Command id="U" /> 或 `Ctrl+Z` 放弃上一个命令的全部操作，`Ctrl+Y` 重做。在提供放弃选项的命令中，该选项会撤回一步，例如 <Command id="LINE" /> 的一条线段。
+<Command id="U" /> 或 `Ctrl+Z` 放弃上一个命令的全部操作，`Ctrl+Y` 重做。在提供放弃选项的命令中，该选项放弃一步，例如 <Command id="LINE" /> 的一条线段。
 
 ## 保存 [#save]
 
-工作时图形保存在此浏览器中。<Command id="QSAVE" /> 或 `Ctrl+S` 将图形下载为 MellowCAD 自有的带版本号格式的文件，<Command id="OPEN" /> 或 `Ctrl+O` 打开这种文件或 [DXF 文件](/docs/open-dxf)，再用 <Command id="SAVEAS" /> 可以[重新保存为 DXF](/docs/edit-dxf)；[保存与 AutoCAD 不完全相同](/docs/differences#saving)。
+工作时图形保存在此浏览器中。<Command id="QSAVE" /> 或 `Ctrl+S` 将图形下载为 MellowCAD 自有的版本化格式的文件，<Command id="OPEN" /> 或 `Ctrl+O` 打开这种文件或 [DXF 文件](/docs/open-dxf)，再用 <Command id="SAVEAS" /> 可以[重新保存为 DXF](/docs/edit-dxf)；[保存与 AutoCAD 不完全相同](/docs/differences#saving)。
 
 ## 下一步 [#next]
 
 - [练习图](/docs/exercises)：用于练习的图形，每张都有分步解答，并可连同图形一起在编辑器中打开。
 - [坐标](/docs/coordinates)：输入点的所有方式，以及按角度画直线。
 - [命令](/docs/commands)：所有命令、它们的快捷键，以及每个命令首先询问的内容。
-- [快捷键](/docs/shortcuts)：编辑器响应的按键。
+- [键盘快捷键](/docs/shortcuts)：编辑器响应的按键。
 - [与 AutoCAD 的区别](/docs/differences)：哪些地方的工作方式不同，以及原因。

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMCONTINUE（连续）标注命令"
-metaTitle: "CAD连续标注命令（DIMCONTINUE）用法与快捷键 DCO"
-description: "CAD连续标注怎么用：按提示顺序讲解 AutoCAD 的 DIMCONTINUE（快捷键 DCO）如何从上一个标注首尾相连地标注，包括下一个原点、选择和放弃。在浏览器中免费试用。"
+metaTitle: "CAD 连续标注命令（DIMCONTINUE）用法与快捷键 DCO"
+description: "CAD 连续标注怎么用：按提示顺序讲解 AutoCAD 的 DIMCONTINUE（快捷键 DCO）如何从上一个标注首尾相连地标注，包括下一个原点、选择和放弃。在浏览器中免费试用。"
 figure: "阶梯形轮廓标注 30，再沿同一行连续标注 40 和 30：指定两个原点，然后按两次 Enter 键。"
 sourceHash: "11fa474694fd"
 ---
@@ -26,18 +26,18 @@ DIMCONTINUE（连续）命令绘制首尾相连的一串标注：每个标注从
 
 ## Questions
 
-### CAD连续标注的快捷键是什么？
+### CAD 连续标注的快捷键是什么？
 
 输入 `DCO`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIMCONTINUE`。
 
-### 连续标注和基线标注有什么区别？
+### CAD 连续标注和基线标注有什么区别？
 
 DIMCONTINUE 将标注首尾相连放在同一行上，每个标注从上一个标注的终点开始。<Command id="DIMBASELINE" /> 从同一条尺寸界线测量所有标注，每个标注位于更外侧的一行。
 
-### 怎么从不是最后一个的标注继续标注？
+### CAD 怎么从不是最后一个的标注继续标注？
 
 在第一个提示下按 Enter 键，或选择 <Keyword id="Select" />，然后在要继续的尺寸界线附近拾取该标注：这一串标注从那里接着延长。
 
-### CAD连续标注为什么提示选择标注？
+### CAD 连续标注为什么提示选择标注？
 
 因为没有可继续的标注：打开图形以来没有创建过线性或对齐标注（与 AutoCAD 刚打开图形时相同），或最后创建的是角度标注。请拾取要继续的标注。

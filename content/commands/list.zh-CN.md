@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD LIST（列表）命令"
-metaTitle: "CAD列表命令（LIST）查看对象特性，快捷键 LI"
-description: "CAD怎么查看对象信息：AutoCAD LIST（列表，快捷键 LI、LS）选择对象后在命令行读出类型、图层、颜色、坐标、长度和面积。在浏览器中免费在线试用。"
+metaTitle: "CAD 列表命令（LIST）查看对象特性，快捷键 LI"
+description: "CAD 怎么查看对象信息：AutoCAD LIST（列表，快捷键 LI、LS）选择对象后在命令行读出类型、图层、颜色、坐标、长度和面积。在浏览器中免费在线试用。"
 figure: "对板上的孔执行 LIST：圆的图层、圆心、半径、周长和面积。"
 sourceHash: "d0ebcf466ff5"
 ---
@@ -16,22 +16,22 @@ LIST（列表）命令在命令行为所选的每个对象写出一份报告，�
 
 ## Questions
 
-### CAD列表快捷键是什么？
+### CAD 列表快捷键是什么？
 
 输入 `LI` 或 `LS`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_LIST`。
 
-### CAD列表命令能显示什么？
+### CAD 列表命令能显示什么？
 
 AutoCAD 的 LIST 对对象所说的一切：类型、图层、空间和不是 ByLayer 的特性，然后是几何信息，每个点和长度都以数字表示。选择多个对象时，每个对象各有一份报告。
 
-### CAD怎么查看对象的长度或面积？
+### CAD 怎么查看对象的长度或面积？
 
 对它执行 LIST：直线的长度，圆的周长和面积，多段线的长度或周长以及面积。要把多个面积相加，请使用 <Command id="AREA" />。
 
-### CAD怎么查看直线端点的坐标？
+### CAD 怎么查看直线端点的坐标？
 
 对直线执行 LIST：`from point` 和 `to point`，使用当前 UCS 的坐标。只查看一个点时，使用 <Command id="ID" /> 配合对象捕捉。
 
-### LIST 和 PROPERTIES 有什么区别？
+### CAD 中 LIST 和 PROPERTIES 有什么区别？
 
 LIST 写出一份报告，可以在历史记录中阅读和复制。<Command id="PROPERTIES" /> 在选项板中显示同样的值，并且可以在其中修改。

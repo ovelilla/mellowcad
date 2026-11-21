@@ -131,6 +131,8 @@ reports, for the same promise.
   the ViewCube) is drawn on the server from the recording's `EngineState` and the engine's names,
   never the editor's components. Its solid stands clear of the 2D objects on the screen: Hidden
   does not hide a line behind a solid yet.
+- **Inlined SVG markup goes through `inlineSvg`** (`Drawing`, `Glyph`, the hero's turned frame):
+  its single quotes let Brotli find the router payload's copy in the HTML's, some 1.7 KB a landing.
 - Drawing colours are `var(--cad-*)`, written from `THEME` by `themeCustomProperties()`. The OG
   image cannot read CSS variables: `lib/og.tsx` uses literal colours and lays the dimension text
   over the drawing itself (the rasteriser has no fonts for SVG text).

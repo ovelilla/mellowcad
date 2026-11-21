@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CHAMFER（倒角）命令"
-metaTitle: "CAD倒角命令（CHAMFER）怎么用：距离与快捷键 CHA"
-description: "CAD倒角怎么用？CHAMFER（快捷键 CHA）按提示顺序讲解：两个倒角距离，两条直线或多段线的各个角，多个选项和 Shift 键。在浏览器中免费试用。"
+metaTitle: "CAD 倒角命令（CHAMFER）怎么用：距离与快捷键 CHA"
+description: "CAD 倒角怎么用？CHAMFER（快捷键 CHA）按提示顺序讲解：两个倒角距离，两条直线或多段线的各个角，多个选项和 Shift 键。在浏览器中免费试用。"
 figure: "四条直线，然后用距离选项将两个距离都设为 10，并选择多个：两个角被切去，另两个角保持尖角。"
 sourceHash: "e43c5b72ffc8"
 ---
@@ -32,22 +32,22 @@ CHAMFER（倒角）命令用一条斜线切去两条直线之间的角。拾取�
 
 ## Questions
 
-### CAD倒角快捷键是什么？
+### CAD 倒角快捷键是什么？
 
 输入 `CHA`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_CHAMFER`。
 
-### CAD怎么倒45度角？
+### CAD 怎么倒 45 度角？
 
 选择 <Keyword id="Distance" />，输入距离，在第二个距离处按 Enter 键：在直角上，两个相等的距离生成 45 度的倒角。
 
-### CAD倒角和圆角有什么区别？
+### CAD 倒角和圆角有什么区别？
 
 CHAMFER 用一条斜线连接两条直线；<Command id="FILLET" /> 用一条与两者都相切的圆弧连接。二者都将直线修剪或延伸到连接线；值为 0 时，或拾取第二条直线时按住 Shift 键，二者都生成尖角。
 
-### CAD倒角为什么倒不了？
+### CAD 倒角为什么倒不了？
 
 命令会说明原因：距离超出直线的端点时显示 <Message id="chamferDistanceTooLarge" />，平行线显示 <Message id="linesParallel" />，圆弧或圆显示 <Message id="chamferRequiresLines" />。两个距离都为 0 时，生成的是尖角，而不是倒角。
 
-### CAD矩形四个角怎么一次倒角？
+### CAD 矩形四个角怎么一次倒角？
 
 矩形是多段线：选择 <Keyword id="Polyline" /> 并拾取它，所有角都按当前距离倒角。

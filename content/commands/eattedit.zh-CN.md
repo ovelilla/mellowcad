@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD EATTEDIT（编辑属性）命令"
-metaTitle: "CAD块属性编辑：EATTEDIT 增强属性编辑器用法"
-description: "CAD块属性怎么修改：AutoCAD 的 EATTEDIT 在增强属性编辑器中编辑块的属性值，以及双击块为什么会执行该命令。在浏览器中免费试用。"
+metaTitle: "CAD 块属性编辑：EATTEDIT 增强属性编辑器用法"
+description: "CAD 块属性怎么修改：AutoCAD 的 EATTEDIT 在增强属性编辑器中编辑块的属性值，以及双击块为什么会执行该命令。在浏览器中免费试用。"
 figure: "两张书桌，都是带 NUM 和 PART 属性的块参照：EATTEDIT 拾取第二张，其 PART 字段改为 B-200。"
 sourceHash: "3517c89fd5da"
 ---
@@ -16,18 +16,18 @@ EATTEDIT（编辑属性）命令为一个块参照打开 AutoCAD 的增强属性
 
 ## Questions
 
-### CAD增强属性编辑器怎么打开？
+### CAD 增强属性编辑器怎么打开？
 
 双击带属性的块参照，或输入 `EATTEDIT` 后拾取该块参照。在任何语言版本的 AutoCAD 中都可以输入 `_EATTEDIT`。
 
-### CAD块属性值怎么修改？
+### CAD 块属性值怎么修改？
 
 双击块，在该属性的字段中输入新值，然后按 Enter 键。每个块参照保留各自的值：修改一个不会影响其他块参照。
 
-### CAD双击块为什么不能编辑属性？
+### CAD 双击块为什么不能编辑属性？
 
 EATTEDIT 只对块中包含属性的块参照打开，创建时不带属性的块没有属性：请用 <Command id="ATTDEF" /> 定义属性，并在创建块时将其与其他对象一起选择。如果属性值不显示，请检查 <Command id="ATTDISP" />，它可以隐藏不可见属性或全部属性。
 
-### EATTEDIT 和 ATTEDIT 有什么区别？
+### CAD 中 EATTEDIT 和 ATTEDIT 有什么区别？
 
 两者编辑相同的值。EATTEDIT 用标记作为每个字段的标签，与增强属性编辑器的“属性”选项卡相同；<Command id="ATTEDIT" /> 用提示作为标签，与“编辑属性”对话框相同。在 AutoCAD 中，EATTEDIT 还可以编辑每个属性的文字选项和特性。

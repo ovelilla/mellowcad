@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PLINE（多段线）命令"
-metaTitle: "CAD多段线命令（PLINE）用法与快捷键 PL"
-description: "CAD多段线怎么画：AutoCAD PLINE（多段线，快捷键 PL）按提示顺序讲解，直线和圆弧组成一条多段线，宽度和半宽、长度、闭合和放弃。在浏览器中免费试用。"
+metaTitle: "CAD 多段线命令（PLINE）用法与快捷键 PL"
+description: "CAD 多段线怎么画：AutoCAD PLINE（多段线，快捷键 PL）按提示顺序讲解，直线和圆弧组成一条多段线，宽度和半宽、长度、闭合和放弃。在浏览器中免费试用。"
 figure: "一段直线、一段相切圆弧、一段折回的直线，再加一个从宽 10 渐变到 0 的箭头：一条多段线。"
 sourceHash: "216b83656483"
 ---
@@ -64,22 +64,22 @@ PLINEGEN：新多段线逐段生成线型，与 PLINEGEN 为 0 时相同（PEDIT
 
 ## Questions
 
-### CAD多段线快捷键是什么？
+### CAD 多段线快捷键是什么？
 
 输入 `PL`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_PLINE`。
 
-### CAD怎么画带弧线的多段线？
+### CAD 怎么画带弧线的多段线？
 
 选择 <Keyword id="Arc" />：此后每个点都结束一段与前一段相切的圆弧，直到选择 <Keyword id="Line" />。要让已绘制的多段线经过其顶点变得光滑，请使用 <Command id="PEDIT" /> 及其 <Keyword command="PEDIT" id="Fit" /> 或 <Keyword command="PEDIT" id="Spline" />。
 
-### CAD多段线为什么画出来是粗的？
+### CAD 多段线为什么画出来是粗的？
 
 之前的 PLINE 中指定的宽度会保留，下一条多段线也从这个宽度开始，起点之后的那一行会显示它。选择 <Keyword id="Width" /> 并两次输入 0，即可恢复为细线。<Command id="FILL" /> 关闭时，有宽度的多段线只显示轮廓。
 
-### CAD多段线怎么合并成一个整体？
+### CAD 多段线怎么合并成一个整体？
 
 执行 <Command id="JOIN" />，选择首尾相接的直线、圆弧和多段线：每一串都变成一条多段线。或者对一条直线执行 <Command id="PEDIT" />，回答 <Keyword command="PEDIT" id="Yes" /> 把它转换为多段线，再用 <Keyword command="PEDIT" id="Join" /> 添加其余对象。
 
-### CAD怎么测量多段线的长度或面积？
+### CAD 怎么测量多段线的长度或面积？
 
 执行 <Command id="AREA" />，按 Enter 键选择 <Keyword command="AREA" id="Object" />，然后选择多段线：闭合多段线给出面积和周长，开放多段线给出长度。

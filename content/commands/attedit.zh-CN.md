@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ATTEDIT（编辑属性）命令"
-metaTitle: "CAD编辑属性命令（ATTEDIT）修改块属性与快捷键 ATE"
-description: "CAD块属性怎么修改？ATTEDIT（快捷键 ATE）修改块参照的属性值，每个提示一个字段，一步完成，可以一步放弃。在浏览器中免费试用。"
+metaTitle: "CAD 编辑属性命令（ATTEDIT）修改块属性与快捷键 ATE"
+description: "CAD 块属性怎么修改？ATTEDIT（快捷键 ATE）修改块参照的属性值，每个提示一个字段，一步完成，可以一步放弃。在浏览器中免费试用。"
 figure: "三个门编号标记，都是带属性 NUM 的块参照：ATTEDIT 拾取最后一个（插入时为 2），在对话框中将其改为 3。"
 sourceHash: "4a8ee28ecc53"
 ---
@@ -12,22 +12,22 @@ ATTEDIT（编辑属性）命令修改一个块参照的属性值。它要求选�
 
 ## Missing
 
-`-ATTEDIT`，即逐个或全局编辑属性的命令行形式，及其别名 `-ATE` 和 `ATTE`。“编辑属性”对话框的“上一个”和“下一个”按钮（用于属性多于一页的块），以及其中的块名行。ATTIPEDIT（在位编辑单个属性）及其 Ctrl+双击。参照上未锁定属性自身的夹点，以及“特性”选项板中的属性行。
+`-ATTEDIT`，即逐个或全局编辑属性的命令行形式，及其快捷键 `-ATE` 和 `ATTE`。“编辑属性”对话框的“上一个”和“下一个”按钮（用于属性多于一页的块），以及其中的块名行。ATTIPEDIT（在位编辑单个属性）及其 Ctrl+双击。参照上未锁定属性自身的夹点，以及“特性”选项板中的属性行。
 
 ## Questions
 
-### CAD编辑属性快捷键是什么？
+### CAD 编辑属性快捷键是什么？
 
 输入 `ATE`，然后按 Enter 键或空格键；`DDATTE` 也可以。在任何语言版本的 AutoCAD 中都可以输入 `_ATTEDIT`。
 
-### CAD块属性怎么修改？
+### CAD 块属性怎么修改？
 
 输入 `ATE` 并拾取参照，或者双击参照，即运行 <Command id="EATTEDIT" />。在对话框中修改值并按 Enter 键。要修改属性本身（标记、提示或位置），请编辑属性定义，并用 <Command id="BLOCK" /> 重新定义块。
 
-### CAD中ATTEDIT提示块没有可编辑的属性是什么原因？
+### CAD 中 ATTEDIT 提示块没有可编辑的属性是什么原因？
 
 因为所拾取参照的块中没有属性：ATTEDIT 编辑的是带属性的块的参照值。尚未加入块的属性定义用 <Command id="TEXTEDIT" /> 编辑，即双击它。
 
-### CAD中ATTEDIT和EATTEDIT有什么区别？
+### CAD 中 ATTEDIT 和 EATTEDIT 有什么区别？
 
 两者都编辑一个参照的值。ATTEDIT 的对话框以属性的提示作为各字段的标签，与 AutoCAD 的“编辑属性”对话框相同；<Command id="EATTEDIT" />（增强属性编辑器）的对话框则以标记作为标签。在 AutoCAD 中，EATTEDIT 还有用于每个属性文字选项和特性的选项卡。

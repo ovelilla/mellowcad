@@ -1,12 +1,12 @@
 ---
 title: "AutoCAD SPLINEDIT（编辑样条曲线）命令"
-metaTitle: "CAD编辑样条曲线（SPLINEDIT）用法与快捷键 SPE"
+metaTitle: "CAD 编辑样条曲线（SPLINEDIT）用法与快捷键 SPE"
 description: "AutoCAD SPLINEDIT（编辑样条曲线，快捷键 SPE）怎么用：按提示顺序说明闭合、合并、拟合数据、编辑顶点、转换为多段线和反转。在浏览器中免费试用。"
 figure: "通过五个拟合点的样条曲线，用 SPLINEDIT 闭合后：成为通过所有点的光滑闭合环。"
 sourceHash: "bedcaab2fac3"
 ---
 
-SPLINEDIT（编辑样条曲线）命令编辑样条曲线。在 `Select spline:` 提示下拾取一条，或在命令前选择它；双击样条曲线也会对其执行 SPLINEDIT。选择其他对象时显示 <Message id="objectNotSpline" /> 并再次询问；用 PEDIT 的“样条曲线”拟合过的多段线会不加提示地转换为同一曲线的样条曲线。然后反复询问选项，每个选项立即生效，直到选择 <Keyword id="eXit" /> 或按 Enter 键。样条曲线显示其拟合点的夹点；编辑顶点时，显示其控制点和控制框架。整个编辑是一个可以用 <Command id="U" /> 放弃的步骤。在其任何提示下都可以输入 `'ZOOM`。
+SPLINEDIT（编辑样条曲线）命令编辑样条曲线。在 `Select spline:` 提示下拾取一条，或在命令前选择它；双击样条曲线也会对其执行 SPLINEDIT。选择其他对象时显示 <Message id="objectNotSpline" /> 并再次询问；用 PEDIT 的“样条曲线”拟合过的多段线会不加提示地转换为同一曲线的样条曲线。然后反复询问选项，每个选项立即生效，直到选择 <Keyword id="eXit" /> 或按 Enter 键。样条曲线显示其拟合点的夹点；编辑顶点时，显示其控制点和控制框架。整个编辑是一步，可以用 <Command id="U" /> 放弃。在其任何提示下都可以输入 `'ZOOM`。
 
 ## Options
 
@@ -44,26 +44,26 @@ SPLINEDIT（编辑样条曲线）命令编辑样条曲线。在 `Select spline:`
 
 ## Missing
 
-没有“扭折”（在拟合点或顶点处形成尖角）、“公差”（在公差范围内重新拟合样条曲线），也没有闭合样条曲线的“切线”。“转换为多段线”从拟合样条曲线生成的顶点比 AutoCAD 多得多，从不生成圆弧，并且总是替换样条曲线。`Select spline:` 提示下没有“编组”。逐个切换点时，AutoCAD 在当前点上绘制的 `+` 标记没有提供。
+没有“扭折”（在拟合点或顶点处形成尖角）、“公差”（在公差范围内重新拟合样条曲线），也没有闭合样条曲线的“相切”。“转换为多段线”从拟合样条曲线生成的顶点比 AutoCAD 多得多，不会生成圆弧，并且总是替换样条曲线。`Select spline:` 提示下没有“编组”。逐个切换点时，AutoCAD 在当前点上绘制的 `+` 标记没有提供。
 
 ## Questions
 
-### CAD编辑样条曲线的快捷键是什么？
+### CAD 编辑样条曲线的快捷键是什么？
 
 输入 `SPE`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_SPLINEDIT` 都有效。双击样条曲线也会执行它。
 
-### CAD样条曲线怎么转换成多段线？
+### CAD 样条曲线怎么转换成多段线？
 
 执行 SPLINEDIT，拾取样条曲线并选择 <Keyword id="convert to Polyline" />；精度为 10 时得到光滑的多段线。对样条曲线执行 <Command id="PEDIT" />，也会提出将其转换。
 
-### CAD样条曲线怎么添加或移动点？
+### CAD 样条曲线怎么添加或移动点？
 
 选择 <Keyword id="Fit data" /> 编辑它经过的点，然后选择 <Keyword id="Add" /> 或 <Keyword id="Move" />。选择 <Keyword id="Edit vertex" /> 编辑构成其框架的控制点。
 
-### CAD样条曲线怎么闭合？
+### CAD 样条曲线怎么闭合？
 
 选择 <Keyword id="Close" />：样条曲线光滑地闭合，在首尾相接处没有尖角。<Keyword id="Open" /> 将其重新打开。
 
-### CAD两条样条曲线怎么合并？
+### CAD 两条样条曲线怎么合并？
 
 选择 <Keyword id="Join" />，然后选择端点与该样条曲线相接的样条曲线；或使用 <Command id="JOIN" />。

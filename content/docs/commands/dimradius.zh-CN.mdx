@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD DIMRADIUS（半径）标注命令"
-metaTitle: "CAD半径标注命令（DIMRADIUS）用法与快捷键 DRA"
-description: "CAD半径标注怎么用：AutoCAD 的 DIMRADIUS（快捷键 DRA）如何标注圆、圆弧或圆角：选择曲线，再把 R 文字放在内侧或外侧。在浏览器中免费试用。"
+metaTitle: "CAD 半径标注命令（DIMRADIUS）用法与快捷键 DRA"
+description: "CAD 半径标注怎么用：AutoCAD 的 DIMRADIUS（快捷键 DRA）如何标注圆、圆弧或圆角：选择曲线，再把 R 文字放在内侧或外侧。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD半径标注的快捷键是什么？","answer":"输入 DRA 或 DIMRAD，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _DIMRADIUS。"},{"question":"CAD圆角怎么标注半径？","answer":"直接拾取圆角：圆角是圆弧或多段线的圆弧段，例如 RECTANG 用其 Fillet 选项倒出的圆角，DIMRADIUS 两者都能标注。"},{"question":"为什么选不中要标注的对象？","answer":"DIMRADIUS 接受圆、圆弧或多段线的圆弧段，锁定图层上的也可以。其他对象（包括椭圆）会显示 “Object selected is not a circle or arc.”，并再次询问；块参照中的曲线目前还不能拾取。"},{"question":"半径标注怎么加上 TYP？","answer":"放置标注前选择 Text，输入 “<> TYP”：<> 代表带 R 的测量值，因此标注显示为 “R10 TYP”。放置后，可以在“特性”选项板的“文字替代”中修改。"}]
+faq: [{"question":"CAD 半径标注的快捷键是什么？","answer":"输入 DRA 或 DIMRAD，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _DIMRADIUS。"},{"question":"CAD 圆角怎么标注半径？","answer":"直接拾取圆角：圆角是圆弧或多段线的圆弧段，例如 RECTANG 用其 Fillet 选项倒出的圆角，DIMRADIUS 两者都能标注。"},{"question":"CAD 为什么选不中要标注的对象？","answer":"DIMRADIUS 接受圆、圆弧或多段线的圆弧段，锁定图层上的也可以。其他对象（包括椭圆）会显示 “Object selected is not a circle or arc.”，并再次询问；块参照中的曲线目前还不能拾取。"},{"question":"CAD 半径标注怎么加上 TYP？","answer":"放置标注前选择 Text，输入 “<> TYP”：<> 代表带 R 的测量值，因此标注显示为 “R10 TYP”。放置后，可以在“特性”选项板的“文字替代”中修改。"}]
 ---
 
 DIMRADIUS（半径）命令标注圆、圆弧或多段线圆弧段的半径。选择曲线，命令行立即显示测量值；然后放置标注，命令结束。与 AutoCAD 相同，标注文字是 R 后跟半径值，位于沿半径方向的尺寸线上，尺寸线在曲线上以一个箭头结束，根据放置位置位于曲线内侧或外侧。放在外侧时，尺寸线穿过曲线一直延伸到圆心，与 ISO-25 的画法相同。
@@ -38,19 +38,19 @@ DIMRADIUS（半径）命令标注圆、圆弧或多段线圆弧段的半径。�
 
 ## 常见问题 [#questions]
 
-### CAD半径标注的快捷键是什么？
+### CAD 半径标注的快捷键是什么？
 
 输入 `DRA` 或 `DIMRAD`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIMRADIUS`。
 
-### CAD圆角怎么标注半径？
+### CAD 圆角怎么标注半径？
 
 直接拾取圆角：圆角是圆弧或多段线的圆弧段，例如 [`RECTANG`](/docs/commands/rectang) 用其 `Fillet` 选项倒出的圆角，DIMRADIUS 两者都能标注。
 
-### 为什么选不中要标注的对象？
+### CAD 为什么选不中要标注的对象？
 
 DIMRADIUS 接受圆、圆弧或多段线的圆弧段，锁定图层上的也可以。其他对象（包括椭圆）会显示 `Object selected is not a circle or arc.`，并再次询问；块参照中的曲线目前还不能拾取。
 
-### 半径标注怎么加上 TYP？
+### CAD 半径标注怎么加上 TYP？
 
 放置标注前选择 `Text`，输入 `<> TYP`：`<>` 代表带 R 的测量值，因此标注显示为 `R10 TYP`。放置后，可以在“特性”选项板的“文字替代”中修改。
 

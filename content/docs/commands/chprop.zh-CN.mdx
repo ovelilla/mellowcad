@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD CHPROP（更改特性）命令"
-metaTitle: "CAD更改特性命令（CHPROP）：命令行修改对象特性"
-description: "CAD怎么用命令修改对象特性？CHPROP：选择对象，在命令行中更改其颜色、图层、线型及线型比例、线宽或厚度。在浏览器中免费试用。"
+metaTitle: "CAD 更改特性命令（CHPROP）：命令行修改对象特性"
+description: "CAD 怎么用命令修改对象特性？CHPROP：选择对象，在命令行中更改其颜色、图层、线型及线型比例、线宽或厚度。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD CHPROP命令有快捷键吗？","answer":"它没有快捷键（命令别名）：输入 CHPROP，在任何语言版本的 AutoCAD 中都可以输入 _CHPROP。在命令提示下按 Enter 键可重复该命令。"},{"question":"CAD中CHPROP和PROPERTIES有什么区别？","answer":"二者更改同样的特性。PROPERTIES 在选项板中显示特性，还显示每个对象的几何信息；CHPROP 在命令行中询问，双手不必离开键盘。"},{"question":"CAD怎么用命令修改对象颜色？","answer":"输入 CHPROP，选择对象，按 Enter 键，选择 Color 并输入颜色，例如 1 表示红色。再按 Enter 键完成。"},{"question":"CAD怎么把多个对象移到另一个图层？","answer":"运行 CHPROP，选择这些对象，选择 LAyer 并输入图层名。图层必须已经存在：请先在 LAYER 中创建。"}]
+faq: [{"question":"CAD CHPROP 命令有快捷键吗？","answer":"它没有快捷键（命令别名）：输入 CHPROP，在任何语言版本的 AutoCAD 中都可以输入 _CHPROP。在命令提示下按 Enter 键可重复该命令。"},{"question":"CAD 中 CHPROP 和 PROPERTIES 有什么区别？","answer":"二者更改同样的特性。PROPERTIES 在选项板中显示特性，还显示每个对象的几何信息；CHPROP 在命令行中询问，双手不必离开键盘。"},{"question":"CAD 怎么用命令修改对象颜色？","answer":"输入 CHPROP，选择对象，按 Enter 键，选择 Color 并输入颜色，例如 1 表示红色。再按 Enter 键完成。"},{"question":"CAD 怎么把多个对象移到另一个图层？","answer":"运行 CHPROP，选择这些对象，选择 LAyer 并输入图层名。图层必须已经存在：请先在 LAYER 中创建。"}]
 ---
 
 CHPROP（更改特性）命令在命令行中更改所选对象的特性：即“特性”选项板中“常规”部分的各行，以提示的方式询问。选择对象（也可以在命令之前选择），然后选择要更改的特性；每更改一项后再次询问，直到按 Enter 键结束。每个特性的提示以选择集的值作为默认值，对象各不相同时显示 `varies`，此时按 Enter 键会保留每个对象各自的值。所设置的内容在命令结束时才应用，因此按 Esc 键会使所有对象保持原样。锁定图层上的对象会被计数并排除，每个都显示 `The object is on a locked layer.`。整个运行过程是一步，`U` 可以一步放弃。
@@ -53,19 +53,19 @@ CHPROP（更改特性）命令在命令行中更改所选对象的特性：即�
 
 ## 常见问题 [#questions]
 
-### CAD CHPROP命令有快捷键吗？
+### CAD CHPROP 命令有快捷键吗？
 
 它没有快捷键（命令别名）：输入 `CHPROP`，在任何语言版本的 AutoCAD 中都可以输入 `_CHPROP`。在命令提示下按 Enter 键可重复该命令。
 
-### CAD中CHPROP和PROPERTIES有什么区别？
+### CAD 中 CHPROP 和 PROPERTIES 有什么区别？
 
 二者更改同样的特性。[`PROPERTIES`](/docs/commands/properties) 在选项板中显示特性，还显示每个对象的几何信息；CHPROP 在命令行中询问，双手不必离开键盘。
 
-### CAD怎么用命令修改对象颜色？
+### CAD 怎么用命令修改对象颜色？
 
 输入 `CHPROP`，选择对象，按 Enter 键，选择 `Color` 并输入颜色，例如 `1` 表示红色。再按 Enter 键完成。
 
-### CAD怎么把多个对象移到另一个图层？
+### CAD 怎么把多个对象移到另一个图层？
 
 运行 CHPROP，选择这些对象，选择 `LAyer` 并输入图层名。图层必须已经存在：请先在 [`LAYER`](/docs/commands/layer) 中创建。
 

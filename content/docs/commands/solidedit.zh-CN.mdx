@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD SOLIDEDIT（实体编辑）命令"
-metaTitle: "CAD实体编辑命令（SOLIDEDIT）拉伸面与倾斜面"
+metaTitle: "CAD 实体编辑命令（SOLIDEDIT）拉伸面与倾斜面"
 description: "AutoCAD SOLIDEDIT（实体编辑）怎么编辑三维实体的面：按提示顺序说明拉伸、移动、旋转、偏移、倾斜、删除和复制。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD三维实体怎么编辑？","answer":"执行 SOLIDEDIT，选择 Face，再选择要执行的操作：Extrude 或 Move 一个面使实体变高，Delete 填平孔，Taper 使侧面倾斜。拾取面，按 Enter 键，然后回答该选项的提示。要快速推拉，也可以用 PRESSPULL 拖动面。"},{"question":"CAD拉伸面命令怎么用？","answer":"执行 SOLIDEDIT，选择 Face、Extrude，拾取面并按 Enter 键，然后指定高度和倾斜角度：演示中输入 15 和 15，在长方体顶面上生成一个棱台。"},{"question":"CAD怎么删除实体上的孔？","answer":"执行 SOLIDEDIT，选择 Face、Delete，拾取孔的侧壁并按 Enter 键：孔被填平。用同样的方法可以删除圆角或倒角。"},{"question":"SOLIDEDIT 和 PRESSPULL 有什么区别？","answer":"PRESSPULL 通过拖动或输入距离，沿面的法线方向移动一个面。SOLIDEDIT 除此之外还能倾斜、旋转、偏移、删除和复制面，并且可以一次编辑多个面。"}]
+faq: [{"question":"CAD 三维实体怎么编辑？","answer":"执行 SOLIDEDIT，选择 Face，再选择要执行的操作：Extrude 或 Move 一个面使实体变高，Delete 填平孔，Taper 使侧面倾斜。拾取面，按 Enter 键，然后回答该选项的提示。要快速推拉，也可以用 PRESSPULL 拖动面。"},{"question":"CAD 拉伸面命令怎么用？","answer":"执行 SOLIDEDIT，选择 Face、Extrude，拾取面并按 Enter 键，然后指定高度和倾斜角度：演示中输入 15 和 15，在长方体顶面上生成一个棱台。"},{"question":"CAD 怎么删除实体上的孔？","answer":"执行 SOLIDEDIT，选择 Face、Delete，拾取孔的侧壁并按 Enter 键：孔被填平。用同样的方法可以删除圆角或倒角。"},{"question":"CAD 中 SOLIDEDIT 和 PRESSPULL 有什么区别？","answer":"PRESSPULL 通过拖动或输入距离，沿面的法线方向移动一个面。SOLIDEDIT 除此之外还能倾斜、旋转、偏移、删除和复制面，并且可以一次编辑多个面。"}]
 ---
 
 SOLIDEDIT（实体编辑）命令按面编辑三维实体。它先说明是否检查每次编辑，然后询问要编辑什么：`Face`，然后是面编辑选项，然后是面，然后是该选项需要的内容。每次编辑立即生效，并再次询问面编辑选项，因此一次执行可以完成多次编辑；`eXit` 或按 Enter 键退出面编辑选项，再退出命令。面的相邻面随之变化：将长方体的顶面上移，其侧面随之延长与之相接。
@@ -71,19 +71,19 @@ SOLIDEDIT（实体编辑）命令按面编辑三维实体。它先说明是否�
 
 ## 常见问题 [#questions]
 
-### CAD三维实体怎么编辑？
+### CAD 三维实体怎么编辑？
 
 执行 SOLIDEDIT，选择 `Face`，再选择要执行的操作：`Extrude` 或 `Move` 一个面使实体变高，`Delete` 填平孔，`Taper` 使侧面倾斜。拾取面，按 Enter 键，然后回答该选项的提示。要快速推拉，也可以用 [`PRESSPULL`](/docs/commands/presspull) 拖动面。
 
-### CAD拉伸面命令怎么用？
+### CAD 拉伸面命令怎么用？
 
 执行 SOLIDEDIT，选择 `Face`、`Extrude`，拾取面并按 Enter 键，然后指定高度和倾斜角度：演示中输入 `15` 和 `15`，在长方体顶面上生成一个棱台。
 
-### CAD怎么删除实体上的孔？
+### CAD 怎么删除实体上的孔？
 
 执行 SOLIDEDIT，选择 `Face`、`Delete`，拾取孔的侧壁并按 Enter 键：孔被填平。用同样的方法可以删除圆角或倒角。
 
-### SOLIDEDIT 和 PRESSPULL 有什么区别？
+### CAD 中 SOLIDEDIT 和 PRESSPULL 有什么区别？
 
 [`PRESSPULL`](/docs/commands/presspull) 通过拖动或输入距离，沿面的法线方向移动一个面。SOLIDEDIT 除此之外还能倾斜、旋转、偏移、删除和复制面，并且可以一次编辑多个面。
 

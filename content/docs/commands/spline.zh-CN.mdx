@@ -1,13 +1,13 @@
 ---
 title: "AutoCAD SPLINE（样条曲线）命令"
-metaTitle: "CAD样条曲线命令（SPLINE）怎么画与快捷键 SPL"
-description: "AutoCAD SPLINE（样条曲线，快捷键 SPL）怎么画：按提示顺序说明通过拟合点或由控制点拉动的曲线、节点、阶数、切向和闭合。在线免费试用。"
+metaTitle: "CAD 样条曲线命令（SPLINE）怎么画与快捷键 SPL"
+description: "AutoCAD SPLINE（样条曲线，快捷键 SPL）怎么画：按提示顺序说明通过拟合点或由控制点拉动的曲线、节点、阶次、切向和闭合。在线免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD样条曲线的快捷键是什么？","answer":"输入 SPL，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_SPLINE 都有效。"},{"question":"CAD样条曲线的拟合和控制点有什么区别？","answer":"拟合样条曲线通过单击的点，适合必须经过这些点的曲线。控制点样条曲线由其控制点塑形，只是靠近而不经过它们，适合光顺的形状。在第一个提示下用 Method 选择。"},{"question":"CAD样条曲线怎么变成多段线？","answer":"执行 PEDIT 并拾取样条曲线：它显示 “Object selected is not a polyline” 并提出将其转换为多段线，然后询问 0 到 99 之间的精度，默认值为 10。多段线以短直线段沿样条曲线排列，段数比 AutoCAD 生成的多。"},{"question":"CAD多段线怎么变成样条曲线？","answer":"用 PEDIT 的“样条曲线”选项拟合多段线，然后执行 SPLINE 并选择 Object：多段线变为同一曲线的样条曲线。"},{"question":"CAD样条曲线能分解吗？","answer":"不能：与 AutoCAD 一样，EXPLODE 拒绝分解样条曲线。要将其拆成几段，请先用 PEDIT 将其转换为多段线，再将多段线分解为直线。"}]
+faq: [{"question":"CAD 样条曲线的快捷键是什么？","answer":"输入 SPL，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，_SPLINE 都有效。"},{"question":"CAD 样条曲线的拟合和控制点有什么区别？","answer":"拟合样条曲线通过单击的点，适合必须经过这些点的曲线。控制点样条曲线由其控制点塑形，只是靠近而不经过它们，适合光顺的形状。在第一个提示下用 Method 选择。"},{"question":"CAD 样条曲线怎么变成多段线？","answer":"执行 PEDIT 并拾取样条曲线：它显示 “Object selected is not a polyline” 并提出将其转换为多段线，然后询问 0 到 99 之间的精度，默认值为 10。多段线以短直线段沿样条曲线排列，段数比 AutoCAD 生成的多。"},{"question":"CAD 多段线怎么变成样条曲线？","answer":"用 PEDIT 的“样条曲线”选项拟合多段线，然后执行 SPLINE 并选择 Object：多段线变为同一曲线的样条曲线。"},{"question":"CAD 样条曲线能分解吗？","answer":"不能：与 AutoCAD 一样，EXPLODE 拒绝分解样条曲线。要将其拆成几段，请先用 PEDIT 将其转换为多段线，再将多段线分解为直线。"}]
 ---
 
-SPLINE（样条曲线）命令绘制光滑曲线，有两种方式：通过指定的点（拟合，默认），或被放置的控制点拉向它们（控制点）。它首先说明其设置 `Method=Fit   Knots=Chord`，然后询问第一个点；与 AutoCAD 一样，在此处按 Enter 键会被拒绝。之后的每个点都使曲线弯曲，预览随光标移动，按 Enter 键结束。点可以拾取、捕捉或输入；输入长度时沿光标方向量取；点保留其 Z 值，因此样条曲线可以在空间中升高。按 Esc 键放弃曲线；整条样条曲线是一个可以用 `U` 放弃的步骤。功能区的“样条曲线拟合”和“样条曲线控制点”按钮执行 SPLINE 并已回答了方式。
+SPLINE（样条曲线）命令绘制光滑曲线，有两种方式：通过指定的点（拟合，默认），或被放置的控制点拉向它们（控制点）。它首先说明其设置 `Method=Fit   Knots=Chord`，然后询问第一个点；与 AutoCAD 一样，在此处按 Enter 键会被拒绝。之后的每个点都使曲线弯曲，预览随光标移动，按 Enter 键结束。点可以拾取、捕捉或输入；输入长度时沿光标方向量取；点保留其 Z 值，因此样条曲线可以在空间中升高。按 Esc 键放弃曲线；整条样条曲线是一步，可以用 `U` 放弃。功能区的“样条曲线拟合”和“样条曲线控制点”按钮执行 SPLINE 并已回答了方式。
 
 - **命令：** `SPLINE`
 - **快捷键：** `SPL`
@@ -36,7 +36,7 @@ SPLINE（样条曲线）命令绘制光滑曲线，有两种方式：通过指�
 
 ### `Object` (`O`) [#object]
 
-将用 PEDIT 的“样条曲线”选项拟合过的多段线（二维或三维）转换为同一曲线的控制点样条曲线，并删除该多段线，作为一个步骤。其他对象会被拒绝，显示 `Only spline fitted polylines can be converted to splines.`。
+将用 PEDIT 的“样条曲线”选项拟合过的多段线（二维或三维）转换为同一曲线的控制点样条曲线，并删除该多段线，一步完成。其他对象会被拒绝，显示 `Only spline fitted polylines can be converted to splines.`。
 
 ### `start Tangency` (`T`) [#start-tangency]
 
@@ -62,23 +62,23 @@ SPLINE（样条曲线）命令绘制光滑曲线，有两种方式：通过指�
 
 ## 常见问题 [#questions]
 
-### CAD样条曲线的快捷键是什么？
+### CAD 样条曲线的快捷键是什么？
 
 输入 `SPL`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_SPLINE` 都有效。
 
-### CAD样条曲线的拟合和控制点有什么区别？
+### CAD 样条曲线的拟合和控制点有什么区别？
 
 拟合样条曲线通过单击的点，适合必须经过这些点的曲线。控制点样条曲线由其控制点塑形，只是靠近而不经过它们，适合光顺的形状。在第一个提示下用 `Method` 选择。
 
-### CAD样条曲线怎么变成多段线？
+### CAD 样条曲线怎么变成多段线？
 
 执行 [`PEDIT`](/docs/commands/pedit) 并拾取样条曲线：它显示 `Object selected is not a polyline` 并提出将其转换为多段线，然后询问 0 到 99 之间的精度，默认值为 10。多段线以短直线段沿样条曲线排列，段数比 AutoCAD 生成的多。
 
-### CAD多段线怎么变成样条曲线？
+### CAD 多段线怎么变成样条曲线？
 
 用 [`PEDIT`](/docs/commands/pedit) 的“样条曲线”选项拟合多段线，然后执行 SPLINE 并选择 `Object`：多段线变为同一曲线的样条曲线。
 
-### CAD样条曲线能分解吗？
+### CAD 样条曲线能分解吗？
 
 不能：与 AutoCAD 一样，[`EXPLODE`](/docs/commands/explode) 拒绝分解样条曲线。要将其拆成几段，请先用 [`PEDIT`](/docs/commands/pedit) 将其转换为多段线，再将多段线分解为直线。
 

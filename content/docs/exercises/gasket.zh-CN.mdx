@@ -46,7 +46,7 @@ generated: "lib/docs/generate.test.ts"
 
 ### 5. 标注尺寸 [#dimensions]
 
-将“标注”置为当前图层。[`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令先指定两点，再指定尺寸线的位置：总长从 `0,10` 到相对其 `120,0` 处，放在下方；高度标在右侧；孔距 96 和 56 也同样标注。在提示下输入的点不与任何对象相连，因此这些标注都创建为非关联标注，命令行也会如此提示。[`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令拾取一个圆并放置其直径标注：先标中心孔，再标一个孔。
+将“标注”置为当前图层。[`DIMLINEAR`](/docs/commands/dimlinear)（线性）命令先指定两点，再指定尺寸线的位置：总长从 `0,10` 起，再输入相对坐标 `120,0`，放在下方；高度标在右侧；孔距 96 和 56 也同样标注。在提示下输入的点不与任何对象相连，因此这些标注都创建为非关联标注，命令行也会如此提示。[`DIMDIAMETER`](/docs/commands/dimdiameter)（直径）命令拾取一个圆并放置其直径标注：先标中心孔，再标一个孔。
 
 <Session name="exercises/gasket/dimensions" caption="5. 标注尺寸" />
 

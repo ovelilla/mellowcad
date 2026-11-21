@@ -1,6 +1,6 @@
 ---
 title: "AutoCAD UCSICON（UCS 图标）命令"
-metaTitle: "CAD坐标图标怎么关闭：UCSICON（UCS 图标）"
+metaTitle: "CAD 坐标图标怎么关闭：UCSICON（UCS 图标）"
 description: "AutoCAD UCSICON 怎么显示或隐藏 UCS 图标，并将其放在原点或角落：开、关、非原点、原点，以及图标显示的内容。在线免费试用。"
 figure: "UCSICON 非原点将图标移到角落；UCS 将原点移到块的台阶上，原点选项则在该处显示图标，X 为红色，Y 为绿色，Z 为蓝色。"
 sourceHash: "c431e70eda01"
@@ -34,18 +34,18 @@ UCSICON（UCS 图标）命令显示或隐藏 UCS 图标，即表示当前 UCS �
 
 ## Questions
 
-### CAD坐标图标怎么关闭？
+### CAD 坐标图标怎么关闭？
 
 输入 `UCSICON`，按 Enter 键，然后选择 <Keyword id="OFF" />。<Keyword id="ON" /> 将其重新显示。
 
-### CAD坐标图标怎么移到原点？
+### CAD 坐标图标怎么移到原点？
 
 执行 UCSICON，然后选择 <Keyword id="ORigin" />：图标位于 UCS 的原点上。如果图标仍在角落，说明原点在屏幕之外或离边缘太近：请平移或缩小视图。<Keyword id="Noorigin" /> 将图标保持在角落。
 
-### CAD坐标图标上的方框是什么意思？
+### CAD 坐标图标上的方框是什么意思？
 
 表示 UCS 是世界坐标系。用 <Command id="UCS" /> 移动或旋转 UCS，方框就会消失；执行 <Command id="UCS" /> 并按 Enter 键，恢复世界坐标系，方框也随之出现。
 
-### CAD坐标图标的样式、大小或颜色怎么改？
+### CAD 坐标图标的样式、大小或颜色怎么改？
 
 在 AutoCAD 中，使用 UCSICON 的“特性”，即“UCS 图标”对话框。MellowCAD 尚无该对话框：图标按 AutoCAD 2027 的默认样式（三维样式）显示。

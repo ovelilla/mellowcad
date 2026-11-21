@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PROPERTIES（特性）命令"
-metaTitle: "CAD特性选项板（PROPERTIES）：Ctrl+1 与快捷键 PR"
-description: "CAD特性栏怎么调出来：AutoCAD PROPERTIES（特性，快捷键 PR、Ctrl+1）的“常规”和“几何图形”行、*多种*、按对象类型过滤、当前设置。在浏览器中免费在线试用。"
+metaTitle: "CAD 特性选项板（PROPERTIES）：Ctrl+1 与快捷键 PR"
+description: "CAD 特性栏怎么调出来：AutoCAD PROPERTIES（特性，快捷键 PR，键盘快捷键 Ctrl+1）的“常规”和“几何图形”行、*多种*、按对象类型过滤、当前设置。在浏览器中免费在线试用。"
 figure: "在命令提示下选择一个圆，显示其夹点，然后执行 PROPERTIES：选项板在图形旁打开，显示圆的各行。"
 sourceHash: "14d097ac5b0b"
 ---
@@ -16,18 +16,18 @@ PROPERTIES（特性）命令打开“特性”选项板。与 AutoCAD 一样，�
 
 ## Questions
 
-### CAD特性快捷键是什么？
+### CAD 特性快捷键是什么？
 
 Ctrl+1，再按一次会隐藏选项板。输入命令时：`PR`、`CH` 或 `MO`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_PROPERTIES`。
 
-### CAD特性栏不见了怎么调出来？
+### CAD 特性栏不见了怎么调出来？
 
 按 Ctrl+1 或输入 `PR`：选项板会重新显示，作为图形旁选项板面板中的一个选项卡。选项板显示时按 Ctrl+1 会将其隐藏，它通常就是这样不见的。
 
-### CAD怎么同时修改多个对象的特性？
+### CAD 怎么同时修改多个对象的特性？
 
 全部选中，然后修改相应的行：所有选中的对象都会使用新值。值不同的行显示 `*多种*`，直到为其设置值。若只想修改其中的圆，可以在顶部的下拉列表中选择该类型。
 
-### PROPERTIES 和 MATCHPROP 有什么区别？
+### CAD 中 PROPERTIES 和 MATCHPROP 有什么区别？
 
 PROPERTIES 显示和设置所选对象的值。<Command id="MATCHPROP" /> 将这些值从一个对象复制到其他对象，无需输入数值。

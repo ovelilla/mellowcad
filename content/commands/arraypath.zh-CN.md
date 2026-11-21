@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ARRAYPATH（路径阵列）命令"
-metaTitle: "CAD路径阵列命令（ARRAYPATH）怎么用"
-description: "CAD路径阵列怎么用？ARRAYPATH 按提示顺序讲解：路径曲线、定距等分或定数等分、项目数以及项目对齐。在浏览器中免费试用。"
+metaTitle: "CAD 路径阵列命令（ARRAYPATH）怎么用"
+description: "CAD 路径阵列怎么用？ARRAYPATH 按提示顺序讲解：路径曲线、定距等分或定数等分、项目数以及项目对齐。在浏览器中免费试用。"
 figure: "圆弧起点处的一个小正方形沿圆弧阵列：定数等分，7 个项目，每个都随圆弧转动。"
 sourceHash: "d0d77418d682"
 ---
@@ -36,18 +36,18 @@ ARRAYPATH（路径阵列）命令沿路径（直线、圆弧、圆或多段线�
 
 ## Questions
 
-### CAD怎么沿曲线阵列对象？
+### CAD 怎么沿曲线阵列对象？
 
 输入 `ARRAYPATH`，选择对象，按 Enter 键，并在要作为起点的一端附近拾取路径；或者输入 `AR` 运行 <Command id="ARRAY" />，选择对象后选择 <Keyword command="ARRAY" id="PAth" />。然后设置间距或项目数，按 Enter 键创建。
 
-### CAD路径阵列为什么不跟随路径？
+### CAD 路径阵列为什么不跟随路径？
 
 在这里，阵列保持创建时的路径：以后移动或拉伸路径，阵列保持不变，而 AutoCAD 的关联路径阵列会跟随路径。删除路径后阵列也会保留。如果项目不随路径转动，选择 <Keyword id="Align items" /> 并回答 <Keyword id="Yes" />。
 
-### CAD路径阵列怎么改变方向？
+### CAD 路径阵列怎么改变方向？
 
 在路径另一端附近拾取路径：开放路径从靠近拾取点的一端开始。圆始终从其 0 度角处开始按逆时针方向排列。
 
-### CAD怎么沿整条路径均匀排列项目？
+### CAD 怎么沿整条路径均匀排列项目？
 
 选择 <Keyword id="Method" />，再选择 <Keyword id="Divide" />，然后选择 <Keyword id="Items" /> 并输入数量：项目均匀分布，开放路径的第一个和最后一个项目位于两端。

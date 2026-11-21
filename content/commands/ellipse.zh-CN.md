@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ELLIPSE（椭圆）命令"
-metaTitle: "CAD椭圆怎么画：ELLIPSE 命令用法与快捷键 EL"
-description: "CAD椭圆怎么画：按提示顺序讲解 AutoCAD 的 ELLIPSE（快捷键 EL）：一条轴和另一条半轴长度，以及中心点、旋转和椭圆弧。在浏览器中免费试用。"
+metaTitle: "CAD 椭圆怎么画：ELLIPSE 命令用法与快捷键 EL"
+description: "CAD 椭圆怎么画：按提示顺序讲解 AutoCAD 的 ELLIPSE（快捷键 EL）：一条轴和另一条半轴长度，以及中心点、旋转和椭圆弧。在浏览器中免费试用。"
 figure: "一个由轴的两个端点绘制的椭圆，一个由中心点绘制的椭圆，以及从 0 度到 180 度的半个椭圆弧。"
 sourceHash: "2ee0d1b3a8a4"
 ---
@@ -36,18 +36,18 @@ ELLIPSE（椭圆）命令先指定一条轴的两个端点，再指定从中点�
 
 ## Questions
 
-### CAD椭圆的快捷键是什么？
+### CAD 椭圆的快捷键是什么？
 
 输入 `EL`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_ELLIPSE`。
 
-### CAD半个椭圆怎么画？
+### CAD 半个椭圆怎么画？
 
 选择 <Keyword id="Arc" />，指定轴和距离，然后输入起点角度 `0` 和端点角度 `180`。也可以在 <Keyword id="Included angle" /> 提示下按 Enter 键，默认扫过 180 度。
 
-### CAD怎么从中心点画椭圆？
+### CAD 怎么从中心点画椭圆？
 
 选择 <Keyword id="Center" />，指定中心点，然后指定一条轴的端点，再指定从中心点到另一条轴端点的距离：即椭圆的两条半轴。
 
-### CAD等轴测圆怎么画？
+### CAD 等轴测圆怎么画？
 
 AutoCAD 在捕捉样式设为等轴测后，用 ELLIPSE 的“等轴测圆”选项绘制。MellowCAD 尚未实现这两项。

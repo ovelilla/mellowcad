@@ -16,7 +16,7 @@ sourceHash: "1e307bf5e17a"
 
 ### 绘制椅子 [#chair]
 
-在桌子上方画座面：用 <Command id="RECTANG" />（矩形）命令，将 <Keyword command="RECTANG" id="Fillet" /> 设为 `4`，从 `-22,68` 画到相对其 `44,40` 处。然后将圆角改回 `0`，画靠背：从 `-22,108` 画到相对其 `44,8` 处。<Command id="RECTANG" /> 命令会保留圆角半径，直到再次修改。
+在桌子上方画座面：用 <Command id="RECTANG" />（矩形）命令，将 <Keyword command="RECTANG" id="Fillet" /> 设为 `4`，从 `-22,68` 起，再输入相对坐标 `44,40`。然后将圆角改回 `0`，画靠背：从 `-22,108` 起，再输入相对坐标 `44,8`。<Command id="RECTANG" /> 命令会保留圆角半径，直到再次修改。
 
 ### 阵列椅子 [#array]
 

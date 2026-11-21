@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PURGE（清理）命令"
-metaTitle: "CAD清理命令（PURGE）：删除未使用的块"
-description: "CAD怎么清理没用的块：AutoCAD PURGE（清理，快捷键 PU）删除未被使用的块和线型，按名称或一次全部，可逐个确认，包括嵌套的块。在浏览器中免费试用。"
+metaTitle: "CAD 清理命令（PURGE）：删除未使用的块"
+description: "CAD 怎么清理没用的块：AutoCAD PURGE（清理，快捷键 PU）删除未被使用的块和线型，按名称或一次全部，可逐个确认，包括嵌套的块。在浏览器中免费试用。"
 figure: "两个块：TAG 放在墙上，BOX 的唯一一个参照已被删除；PURGE 选择全部名称、不逐个确认，只删除了 BOX。"
 sourceHash: "7a22ff19d409"
 ---
@@ -26,18 +26,18 @@ PURGE（清理）命令删除图形中已定义但未使用的内容；在这里
 
 ## Questions
 
-### CAD清理快捷键是什么？
+### CAD 清理快捷键是什么？
 
 输入 `PU`，然后按 Enter 键或空格键。`-PU` 是命令行版本 <Command id="-PURGE" />，在这里 PURGE 执行的也是它。在任何语言版本的 AutoCAD 中都可以使用 `_PURGE`。
 
-### CAD怎么清理没用的块？
+### CAD 怎么清理没用的块？
 
 输入 `PU`，选择 <Keyword id="Blocks" />，按 Enter 键选择所有名称，然后回答 <Keyword id="No" />，不逐个询问即可全部删除。
 
-### CAD块为什么清理不掉？
+### CAD 块为什么清理不掉？
 
 因为它正在使用：图形中有参照放置了它，或者某个正在使用的块包含它，可能嵌套了好几层。删除它的参照，或分解包含它的块，PURGE 就能删除它。
 
-### CAD怎么清理图层？
+### CAD 怎么清理图层？
 
 在 AutoCAD 中，使用 PURGE 的图层类型。这里还不能，这里的 PURGE 只清理块和线型；请改为在图层特性管理器中删除空图层。

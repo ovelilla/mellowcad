@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD POLYGON（多边形）命令"
-metaTitle: "CAD多边形命令（POLYGON）：内接于圆和外切于圆"
-description: "CAD多边形怎么画：AutoCAD POLYGON（多边形，快捷键 POL）按提示顺序绘制正多边形，边数、中心点、内接于圆或外切于圆，或按边绘制。在浏览器中免费试用。"
+metaTitle: "CAD 多边形命令（POLYGON）：内接于圆和外切于圆"
+description: "CAD 多边形怎么画：AutoCAD POLYGON（多边形，快捷键 POL）按提示顺序绘制正多边形，边数、中心点、内接于圆或外切于圆，或按边绘制。在浏览器中免费试用。"
 figure: "两个半径为 30 的圆，一个六边形内接于其中一个，另一个六边形外切于另一个，以及一个按边绘制的五边形。"
 sourceHash: "90e1cc9a53c4"
 ---
@@ -28,18 +28,18 @@ POLYGON（多边形）命令绘制正多边形，各边和各角都相等，结�
 
 ## Questions
 
-### CAD多边形快捷键是什么？
+### CAD 多边形快捷键是什么？
 
 输入 `POL`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_POLYGON`。
 
-### CAD怎么画六边形？
+### CAD 怎么画六边形？
 
 执行 POLYGON，输入边数 `6`，指定中心点，选择 <Keyword id="Inscribed" /> 或 <Keyword id="Circumscribed" />，然后输入半径。外切于圆的六边形，其对边距离是所输入半径的两倍。
 
-### CAD多边形内接于圆和外切于圆有什么区别？
+### CAD 多边形内接于圆和外切于圆有什么区别？
 
 选择 <Keyword id="Inscribed" /> 时，多边形的角点与圆接触，因此多边形位于圆内。选择 <Keyword id="Circumscribed" /> 时，多边形的边与圆相切，因此圆位于多边形内。半径相同时，外切于圆的多边形较大。
 
-### CAD多边形怎么设置边长？
+### CAD 多边形怎么设置边长？
 
 选择 <Keyword id="Edge" />，指定一条边的两个端点：先输入 `0,0`，再输入相对于它的长度，例如 `40,0`。其他各边按逆时针方向随之生成。

@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD COPYCLIP（复制剪裁）命令"
-metaTitle: "CAD复制剪裁（COPYCLIP）：Ctrl+C 复制与粘贴"
+metaTitle: "CAD 复制剪裁（COPYCLIP）：Ctrl+C 复制与粘贴"
 description: "CAD Ctrl+C 复制怎么用？COPYCLIP（Ctrl+C）与 CUTCLIP、COPYBASE、PASTECLIP 配合：将对象复制到剪贴板，再在指定点粘贴，也可以粘贴到另一个图形。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD中COPY和COPYCLIP有什么区别？","answer":"COPY 在同一个图形中放置副本，从基点到第二个点。COPYCLIP 将对象放到剪贴板，用 PASTECLIP 粘贴到当前图形或另一个图形。"},{"question":"CAD怎么带基点复制？","answer":"按 Ctrl+Shift+C，或输入 COPYBASE，指定基点并选择对象。然后按 Ctrl+V，按该点放置对象。"},{"question":"CAD怎么把对象复制到另一个图形？","answer":"选择对象并按 Ctrl+C，打开另一个图形并按 Ctrl+V，然后指定插入点。对象的图层、样式和块会一起带过去。"},{"question":"CAD粘贴不了是什么原因？","answer":"浏览器可能会询问页面是否可以读取剪贴板：请允许。如果拒绝，PASTECLIP 粘贴同一页面中最后复制的内容。没有复制任何内容时，不会粘贴任何对象。"}]
+faq: [{"question":"CAD 中 COPY 和 COPYCLIP 有什么区别？","answer":"COPY 在同一个图形中放置副本，从基点到第二个点。COPYCLIP 将对象放到剪贴板，用 PASTECLIP 粘贴到当前图形或另一个图形。"},{"question":"CAD 怎么带基点复制？","answer":"按 Ctrl+Shift+C，或输入 COPYBASE，指定基点并选择对象。然后按 Ctrl+V，按该点放置对象。"},{"question":"CAD 怎么把对象复制到另一个图形？","answer":"选择对象并按 Ctrl+C，打开另一个图形并按 Ctrl+V，然后指定插入点。对象的图层、样式和块会一起带过去。"},{"question":"CAD 粘贴不了是什么原因？","answer":"浏览器可能会询问页面是否可以读取剪贴板：请允许。如果拒绝，PASTECLIP 粘贴同一页面中最后复制的内容。没有复制任何内容时，不会粘贴任何对象。"}]
 ---
 
 COPYCLIP（复制剪裁）命令将所选对象连同它们使用的图层、样式和块复制到剪贴板；图形不会改变，命令之前选择的对象保持选中。按 Ctrl+C 会运行它，并取消正在运行的命令。然后 `PASTECLIP`（Ctrl+V）要求指定插入点：对象随光标移动，以其范围的左下角落在该点，位于当前 UCS 中，整个粘贴是一步，`U` 可以一步放弃。可以粘贴到同一个图形，也可以粘贴到另一个图形：剪贴板是系统的，因此另一个标签页中的图形也能读取，前提是浏览器允许页面读取剪贴板。粘贴的图层、样式或块与图形中已有的同名时，使用图形自己的。
@@ -29,19 +29,19 @@ PASTEBLOCK 和 CUTBASE，因此 Ctrl+Shift+V 和 Ctrl+Shift+X 留给浏览器，
 
 ## 常见问题 [#questions]
 
-### CAD中COPY和COPYCLIP有什么区别？
+### CAD 中 COPY 和 COPYCLIP 有什么区别？
 
 [`COPY`](/docs/commands/copy) 在同一个图形中放置副本，从基点到第二个点。COPYCLIP 将对象放到剪贴板，用 PASTECLIP 粘贴到当前图形或另一个图形。
 
-### CAD怎么带基点复制？
+### CAD 怎么带基点复制？
 
 按 Ctrl+Shift+C，或输入 `COPYBASE`，指定基点并选择对象。然后按 Ctrl+V，按该点放置对象。
 
-### CAD怎么把对象复制到另一个图形？
+### CAD 怎么把对象复制到另一个图形？
 
 选择对象并按 Ctrl+C，打开另一个图形并按 Ctrl+V，然后指定插入点。对象的图层、样式和块会一起带过去。
 
-### CAD粘贴不了是什么原因？
+### CAD 粘贴不了是什么原因？
 
 浏览器可能会询问页面是否可以读取剪贴板：请允许。如果拒绝，PASTECLIP 粘贴同一页面中最后复制的内容。没有复制任何内容时，不会粘贴任何对象。
 

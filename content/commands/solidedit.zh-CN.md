@@ -1,6 +1,6 @@
 ---
 title: "AutoCAD SOLIDEDIT（实体编辑）命令"
-metaTitle: "CAD实体编辑命令（SOLIDEDIT）拉伸面与倾斜面"
+metaTitle: "CAD 实体编辑命令（SOLIDEDIT）拉伸面与倾斜面"
 description: "AutoCAD SOLIDEDIT（实体编辑）怎么编辑三维实体的面：按提示顺序说明拉伸、移动、旋转、偏移、倾斜、删除和复制。在浏览器中免费试用。"
 figure: "用 SOLIDEDIT 将长方体的顶面向上拉伸 15、倾斜角度为 15 度：长方体上形成一个棱台，从东南方向观察。"
 sourceHash: "775cdc271d4f"
@@ -58,18 +58,18 @@ SOLIDEDIT（实体编辑）命令按面编辑三维实体。它先说明是否�
 
 ## Questions
 
-### CAD三维实体怎么编辑？
+### CAD 三维实体怎么编辑？
 
 执行 SOLIDEDIT，选择 <Keyword id="Face" />，再选择要执行的操作：<Keyword id="Extrude" /> 或 <Keyword id="Move" /> 一个面使实体变高，<Keyword id="Delete" /> 填平孔，<Keyword id="Taper" /> 使侧面倾斜。拾取面，按 Enter 键，然后回答该选项的提示。要快速推拉，也可以用 <Command id="PRESSPULL" /> 拖动面。
 
-### CAD拉伸面命令怎么用？
+### CAD 拉伸面命令怎么用？
 
 执行 SOLIDEDIT，选择 <Keyword id="Face" />、<Keyword id="Extrude" />，拾取面并按 Enter 键，然后指定高度和倾斜角度：演示中输入 `15` 和 `15`，在长方体顶面上生成一个棱台。
 
-### CAD怎么删除实体上的孔？
+### CAD 怎么删除实体上的孔？
 
 执行 SOLIDEDIT，选择 <Keyword id="Face" />、<Keyword id="Delete" />，拾取孔的侧壁并按 Enter 键：孔被填平。用同样的方法可以删除圆角或倒角。
 
-### SOLIDEDIT 和 PRESSPULL 有什么区别？
+### CAD 中 SOLIDEDIT 和 PRESSPULL 有什么区别？
 
 <Command id="PRESSPULL" /> 通过拖动或输入距离，沿面的法线方向移动一个面。SOLIDEDIT 除此之外还能倾斜、旋转、偏移、删除和复制面，并且可以一次编辑多个面。

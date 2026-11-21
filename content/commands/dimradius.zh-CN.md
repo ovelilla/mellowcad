@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMRADIUS（半径）标注命令"
-metaTitle: "CAD半径标注命令（DIMRADIUS）用法与快捷键 DRA"
-description: "CAD半径标注怎么用：AutoCAD 的 DIMRADIUS（快捷键 DRA）如何标注圆、圆弧或圆角：选择曲线，再把 R 文字放在内侧或外侧。在浏览器中免费试用。"
+metaTitle: "CAD 半径标注命令（DIMRADIUS）用法与快捷键 DRA"
+description: "CAD 半径标注怎么用：AutoCAD 的 DIMRADIUS（快捷键 DRA）如何标注圆、圆弧或圆角：选择曲线，再把 R 文字放在内侧或外侧。在浏览器中免费试用。"
 figure: "板的圆角在外侧标注，孔在内侧标注：先选择每条曲线，再放置文字。"
 sourceHash: "6b1cdea584be"
 ---
@@ -24,18 +24,18 @@ DIMRADIUS（半径）命令标注圆、圆弧或多段线圆弧段的半径。�
 
 ## Questions
 
-### CAD半径标注的快捷键是什么？
+### CAD 半径标注的快捷键是什么？
 
 输入 `DRA` 或 `DIMRAD`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIMRADIUS`。
 
-### CAD圆角怎么标注半径？
+### CAD 圆角怎么标注半径？
 
 直接拾取圆角：圆角是圆弧或多段线的圆弧段，例如 <Command id="RECTANG" /> 用其 <Keyword command="RECTANG" id="Fillet" /> 选项倒出的圆角，DIMRADIUS 两者都能标注。
 
-### 为什么选不中要标注的对象？
+### CAD 为什么选不中要标注的对象？
 
 DIMRADIUS 接受圆、圆弧或多段线的圆弧段，锁定图层上的也可以。其他对象（包括椭圆）会显示 <Message id="notCircleOrArc" />，并再次询问；块参照中的曲线目前还不能拾取。
 
-### 半径标注怎么加上 TYP？
+### CAD 半径标注怎么加上 TYP？
 
 放置标注前选择 <Keyword id="Text" />，输入 `<> TYP`：`<>` 代表带 R 的测量值，因此标注显示为 `R10 TYP`。放置后，可以在“特性”选项板的“文字替代”中修改。

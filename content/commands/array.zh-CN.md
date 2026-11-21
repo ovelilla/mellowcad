@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ARRAY（阵列）命令"
-metaTitle: "CAD阵列命令（ARRAY）怎么用：矩形、环形、路径 AR"
-description: "CAD阵列怎么用？ARRAY（快捷键 AR）按提示顺序讲解：矩形阵列、环形阵列和路径阵列，在创建之前实时编辑。在浏览器中免费试用。"
+metaTitle: "CAD 阵列命令（ARRAY）怎么用：矩形、环形、路径 AR"
+description: "CAD 阵列怎么用？ARRAY（快捷键 AR）按提示顺序讲解：矩形阵列、环形阵列和路径阵列，在创建之前实时编辑。在浏览器中免费试用。"
 figure: "一个正方形和其中的圆按默认值阵列：按 Enter 键选择矩形阵列，4 列 3 行。"
 sourceHash: "5e0a412c9f13"
 ---
@@ -28,18 +28,18 @@ ARRAY（阵列）命令按一定的排列方式复制选择集：按列和行、
 
 ## Questions
 
-### CAD阵列快捷键是什么？
+### CAD 阵列快捷键是什么？
 
-输入 `AR`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_ARRAY`。<Command id="ARRAYRECT" />、<Command id="ARRAYPOLAR" /> 和 <Command id="ARRAYPATH" /> 没有别名，输入完整命令名时会跳过类型的提问。
+输入 `AR`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以输入 `_ARRAY`。<Command id="ARRAYRECT" />、<Command id="ARRAYPOLAR" /> 和 <Command id="ARRAYPATH" /> 没有快捷键，输入完整命令名时会跳过类型的提问。
 
-### CAD环形阵列怎么做？
+### CAD 环形阵列怎么做？
 
 选择 <Keyword id="POlar" />，或者运行 <Command id="ARRAYPOLAR" />，然后拾取中心点：选择集绕中心点复制，初始为 6 个项目。用 <Keyword command="ARRAYPOLAR" id="Items" /> 修改项目数，用 <Keyword command="ARRAYPOLAR" id="Fill angle" /> 设置项目所布满的角度。
 
-### CAD阵列后怎么分解？
+### CAD 阵列后怎么分解？
 
 选择阵列并运行 <Command id="EXPLODE" />：阵列变为各项目中的对象，每个对象位于其各自的图层上。如果一开始就要得到独立的副本，在按 Enter 键之前，对 <Keyword command="ARRAYRECT" id="ASsociative" /> 回答 <Keyword command="ARRAYRECT" id="No" />。
 
-### CAD阵列创建后怎么修改？
+### CAD 阵列创建后怎么修改？
 
 选择阵列。用夹点修改：基点处的方形夹点移动阵列，箭头夹点设置数量和间距，数量箭头夹点为热夹点时输入的数字即为数量。“特性”选项板列出其列数、行数和间距，或项目数和角度，可以重新输入。目前还没有 ARRAYEDIT。

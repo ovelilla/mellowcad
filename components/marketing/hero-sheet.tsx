@@ -12,6 +12,7 @@ import {
 import { HERO_FIGURE } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"
+import { inlineSvg } from "@/lib/svg-inline"
 
 import { CommandTry } from "./command-try"
 import { Drawing } from "./drawing"
@@ -152,7 +153,7 @@ export async function HeroSheet() {
               aria-hidden="true"
               className="turn-in absolute inset-0 block h-auto w-full"
               style={turn}
-              dangerouslySetInnerHTML={{ __html: turned.markup }}
+              dangerouslySetInnerHTML={{ __html: inlineSvg(turned.markup) }}
             />
             {/* The view control, top left, as the editor draws it: AutoCAD's
                 brackets are notation, not words. */}

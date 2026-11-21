@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CHAMFEREDGE（倒角边）命令"
-metaTitle: "CAD三维倒角边命令（CHAMFEREDGE）怎么用"
-description: "CAD三维实体怎么倒角？CHAMFEREDGE 按提示顺序讲解：一个面上的边、环、距离 1 和距离 2，为三维实体的边倒角。在浏览器中免费试用。"
+metaTitle: "CAD 三维倒角边命令（CHAMFEREDGE）怎么用"
+description: "CAD 三维实体怎么倒角？CHAMFEREDGE 按提示顺序讲解：一个面上的边、环、距离 1 和距离 2，为三维实体的边倒角。在浏览器中免费试用。"
 figure: "从东南方向观察的长方体：CHAMFEREDGE 以两个距离均为 6，对前角处的两条顶边倒角，两个倒角交于一条线。"
 sourceHash: "43b1908ad4b3"
 ---
@@ -26,18 +26,18 @@ CHAMFEREDGE（倒角边）命令为三维实体的边倒角。命令先显示当
 
 ## Questions
 
-### CAD三维实体的边怎么倒角？
+### CAD 三维实体的边怎么倒角？
 
 运行 CHAMFEREDGE，选择 <Keyword id="Distance" /> 并输入两个距离，拾取一个面上的边，然后按两次 Enter 键：一次结束拾取，一次接受倒角。示例中的 `6` 和 `6` 对长方体的两条顶边倒角。
 
-### CHAMFEREDGE为什么提示边必须属于同一个面？
+### CAD 中 CHAMFEREDGE 为什么提示边必须属于同一个面？
 
 一次倒角的各条边共享一个面：第一个距离沿该面量取。另一个面上的边请在第二次运行中倒角。
 
-### CAD三维实体为什么用CHAMFER倒不了角？
+### CAD 三维实体为什么用 CHAMFER 倒不了角？
 
 AutoCAD 的 <Command id="CHAMFER" /> 也可以为实体的边倒角，但 MellowCAD 的还不能：请使用 CHAMFEREDGE；要为边倒圆角，请使用 <Command id="FILLETEDGE" />。
 
-### CAD孔的边怎么倒角？
+### CAD 孔的边怎么倒角？
 
 在孔与平面相交处拾取其圆边：倒角是围绕孔的一段圆锥面。

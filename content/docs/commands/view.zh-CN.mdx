@@ -1,15 +1,15 @@
 ---
 title: "AutoCAD VIEW（视图管理器）命令"
-metaTitle: "CAD等轴测视图与俯视图怎么切换（VIEW）"
+metaTitle: "CAD 等轴测视图与俯视图怎么切换（VIEW）"
 description: "AutoCAD VIEW（快捷键 V、-VIEW）怎么切换到六个正交视图和四个等轴测视图，以及每个正交视图设置的 UCS。在线免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD等轴测视图怎么调出来？","answer":"输入 -VIEW，然后选择 SWIso 得到西南等轴测；SEIso、NEIso 和 NWIso 得到其他三个角。也可以在左上角的视图控件中选择 SW Isometric，或单击 ViewCube 的一个上角。用 VSCURRENT 选择 Hidden 可以隐藏后面的边。"},{"question":"CAD俯视图的命令是什么？","answer":"-VIEW，然后选择 Top，它还会将 UCS 设置为世界坐标系的轴。PLAN 则从正上方观察当前 UCS，并保持其不变。"},{"question":"CAD切换到前视图后 UCS 为什么变了？","answer":"正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 UCS 并按 Enter 键恢复为世界坐标系；U 将视图及其 UCS 一起撤销。"},{"question":"CAD等轴测视图和等轴测图是一回事吗？","answer":"不是。等轴测视图是从某个角观察三维模型。等轴测图是二维的，用 SNAP 的等轴测样式在等轴测平面上绘制，MellowCAD 尚不具备。"},{"question":"CAD视图管理器在哪里？","answer":"VIEW 在命令行中执行 -VIEW：没有视图管理器，命名视图（保存、恢复）在这里也尚不具备。"}]
+faq: [{"question":"CAD 等轴测视图怎么调出来？","answer":"输入 -VIEW，然后选择 SWIso 得到西南等轴测；SEIso、NEIso 和 NWIso 得到其他三个角。也可以在左上角的视图控件中选择“西南等轴测”，或单击 ViewCube 的一个上角。用 VSCURRENT 选择 Hidden 可以隐藏后面的边。"},{"question":"CAD 俯视图的命令是什么？","answer":"-VIEW，然后选择 Top，它还会将 UCS 设置为世界坐标系的轴。PLAN 则从正上方观察当前 UCS，并保持其不变。"},{"question":"CAD 切换到前视图后 UCS 为什么变了？","answer":"正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 UCS 并按 Enter 键恢复为世界坐标系；U 将视图及其 UCS 一起放弃。"},{"question":"CAD 等轴测视图和等轴测图是一回事吗？","answer":"不是。等轴测视图是从某个角观察三维模型。等轴测图是二维的，用 SNAP 的等轴测样式在等轴测平面上绘制，MellowCAD 尚不具备。"},{"question":"CAD 视图管理器在哪里？","answer":"VIEW 在命令行中执行 -VIEW：没有视图管理器，命名视图（保存、恢复）在这里也尚不具备。"}]
 ---
 
 VIEW（视图管理器）命令将视图转到 AutoCAD 的十个预设视图之一：六个正交视图，正对模型的某一面；四个等轴测视图，从某个角向下看。图形中的对象都不移动。VIEW 执行命令行形式 `-VIEW`：其第一个提示列出 `Orthographic`，随后询问要看哪一面；它也直接接受视图名，与 AutoCAD 的菜单所回答的一样：`-VIEW`，然后 `SWIso`。每个视图都会缩放到整个图形，并显示 `Regenerating model.`。
 
-图形左上角的视图控件列出同样的十个视图并执行 `-VIEW`；ViewCube 的面和角也会转到这些视图，但保持 UCS 不变。每次 VIEW 是一个放弃步骤，因此 `U` 可以撤销视图及其设置的 UCS。在其他命令中加撇号输入时，它会拒绝并显示 `** Requires a regen, cannot be transparent.`。MellowCAD 的三维只有实体，并且仍不完整。
+图形左上角的视图控件列出同样的十个视图并执行 `-VIEW`；ViewCube 的面和角也会转到这些视图，但保持 UCS 不变。每次 VIEW 是一个放弃步骤，因此 `U` 可以放弃视图及其设置的 UCS。在其他命令中加撇号输入时，它会拒绝并显示 `** Requires a regen, cannot be transparent.`。MellowCAD 的三维只有实体，并且仍不完整。
 
 - **命令：** `VIEW`
 - **快捷键：** `V`
@@ -54,23 +54,23 @@ VIEW（视图管理器）命令将视图转到 AutoCAD 的十个预设视图之�
 
 ## 常见问题 [#questions]
 
-### CAD等轴测视图怎么调出来？
+### CAD 等轴测视图怎么调出来？
 
-输入 `-VIEW`，然后选择 `SWIso` 得到西南等轴测；`SEIso`、`NEIso` 和 `NWIso` 得到其他三个角。也可以在左上角的视图控件中选择 SW Isometric，或单击 ViewCube 的一个上角。用 [`VSCURRENT`](/docs/commands/vscurrent) 选择 `Hidden` 可以隐藏后面的边。
+输入 `-VIEW`，然后选择 `SWIso` 得到西南等轴测；`SEIso`、`NEIso` 和 `NWIso` 得到其他三个角。也可以在左上角的视图控件中选择“西南等轴测”，或单击 ViewCube 的一个上角。用 [`VSCURRENT`](/docs/commands/vscurrent) 选择 `Hidden` 可以隐藏后面的边。
 
-### CAD俯视图的命令是什么？
+### CAD 俯视图的命令是什么？
 
 `-VIEW`，然后选择 `Top`，它还会将 UCS 设置为世界坐标系的轴。[`PLAN`](/docs/commands/plan) 则从正上方观察当前 UCS，并保持其不变。
 
-### CAD切换到前视图后 UCS 为什么变了？
+### CAD 切换到前视图后 UCS 为什么变了？
 
-正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 [`UCS`](/docs/commands/ucs) 并按 Enter 键恢复为世界坐标系；`U` 将视图及其 UCS 一起撤销。
+正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 [`UCS`](/docs/commands/ucs) 并按 Enter 键恢复为世界坐标系；`U` 将视图及其 UCS 一起放弃。
 
-### CAD等轴测视图和等轴测图是一回事吗？
+### CAD 等轴测视图和等轴测图是一回事吗？
 
 不是。等轴测视图是从某个角观察三维模型。等轴测图是二维的，用 SNAP 的等轴测样式在等轴测平面上绘制，MellowCAD 尚不具备。
 
-### CAD视图管理器在哪里？
+### CAD 视图管理器在哪里？
 
 VIEW 在命令行中执行 `-VIEW`：没有视图管理器，命名视图（保存、恢复）在这里也尚不具备。
 

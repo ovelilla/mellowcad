@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD CHPROP（更改特性）命令"
-metaTitle: "CAD更改特性命令（CHPROP）：命令行修改对象特性"
-description: "CAD怎么用命令修改对象特性？CHPROP：选择对象，在命令行中更改其颜色、图层、线型及线型比例、线宽或厚度。在浏览器中免费试用。"
+metaTitle: "CAD 更改特性命令（CHPROP）：命令行修改对象特性"
+description: "CAD 怎么用命令修改对象特性？CHPROP：选择对象，在命令行中更改其颜色、图层、线型及线型比例、线宽或厚度。在浏览器中免费试用。"
 figure: "对横穿板孔的一条直线执行 CHPROP：颜色 1、线型 CENTER，成为一条轴线，仍在原来的图层上。"
 sourceHash: "4ba30c3c6070"
 ---
@@ -40,18 +40,18 @@ CHPROP（更改特性）命令在命令行中更改所选对象的特性：即�
 
 ## Questions
 
-### CAD CHPROP命令有快捷键吗？
+### CAD CHPROP 命令有快捷键吗？
 
 它没有快捷键（命令别名）：输入 `CHPROP`，在任何语言版本的 AutoCAD 中都可以输入 `_CHPROP`。在命令提示下按 Enter 键可重复该命令。
 
-### CAD中CHPROP和PROPERTIES有什么区别？
+### CAD 中 CHPROP 和 PROPERTIES 有什么区别？
 
 二者更改同样的特性。<Command id="PROPERTIES" /> 在选项板中显示特性，还显示每个对象的几何信息；CHPROP 在命令行中询问，双手不必离开键盘。
 
-### CAD怎么用命令修改对象颜色？
+### CAD 怎么用命令修改对象颜色？
 
 输入 `CHPROP`，选择对象，按 Enter 键，选择 <Keyword id="Color" /> 并输入颜色，例如 `1` 表示红色。再按 Enter 键完成。
 
-### CAD怎么把多个对象移到另一个图层？
+### CAD 怎么把多个对象移到另一个图层？
 
 运行 CHPROP，选择这些对象，选择 <Keyword id="LAyer" /> 并输入图层名。图层必须已经存在：请先在 <Command id="LAYER" /> 中创建。

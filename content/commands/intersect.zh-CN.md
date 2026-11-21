@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD INTERSECT（交集）命令"
-metaTitle: "CAD交集命令（INTERSECT）用法与快捷键 IN"
-description: "CAD交集怎么用：AutoCAD 的 INTERSECT（快捷键 IN）将两个或多个三维实体，或同一平面中的面域，修剪为它们的公共部分，其余部分删除。在浏览器中免费试用。"
+metaTitle: "CAD 交集命令（INTERSECT）用法与快捷键 IN"
+description: "CAD 交集怎么用：AutoCAD 的 INTERSECT（快捷键 IN）将两个或多个三维实体，或同一平面中的面域，修剪为它们的公共部分，其余部分删除。在浏览器中免费试用。"
 figure: "一个长方体和一个与之重叠的球体求交集：公共部分是一个带六个平面的球体，从东南方向观察。"
 sourceHash: "c8ea61c0525d"
 ---
@@ -16,18 +16,18 @@ INTERSECT（交集）命令只保留两个或多个三维实体（或同一平�
 
 ## Questions
 
-### CAD交集的快捷键是什么？
+### CAD 交集的快捷键是什么？
 
 输入 `IN`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_INTERSECT`。
 
-### CAD并集、差集、交集有什么区别？
+### CAD 并集、差集、交集有什么区别？
 
 三者都将三维实体（或同一平面中的面域）合为一个对象。<Command id="UNION" /> 保留任一对象覆盖的全部部分，<Command id="SUBTRACT" /> 保留第一组减去第二组后的部分，INTERSECT 只保留所有对象的公共部分。每个命令都是一步放弃，并删除所用的对象。
 
-### CAD怎么求两条线的交点？
+### CAD 怎么求两条线的交点？
 
 不能用 INTERSECT，它只处理实体和面域，会忽略直线。要找到两条直线的交点，请用“交点”对象捕捉；要使它们相交，请使用半径为 0 的 <Command id="FILLET" />、<Command id="TRIM" /> 或 <Command id="EXTEND" />。
 
-### INTERSECT 为什么把对象删除了？
+### CAD 中 INTERSECT 为什么把对象删除了？
 
 因为它们没有公共部分：没有公共部分时，命令显示 <Message id="nullSolid" />（面域则显示 <Message id="nullRegion" />），并将它们删除，与 AutoCAD 相同。<Command id="U" /> 可以恢复它们。一个实体和一个面域，或位于不同平面中的两个面域，根本不会求交集：命令显示 <Message id="booleanNeedsTwo" />，不做任何修改。

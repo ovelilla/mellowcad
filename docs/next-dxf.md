@@ -24,9 +24,9 @@
 > (ninguno las tiene), y el coreano (`docs/next-seo.md`, L8), hecho el 20/11 (todo eso, desde
 > WIPEOUT, publicado el 21/11 con el export estático), y
 > MINSERT con su comando y su página, hecho el 21/11 (sin publicar), sin cambio en el corpus
-> (ninguno lo tiene); siguiente, por orden del dueño, otro idioma (el chino), y después lo que quede
-> del punto 7 (los colores índice, las sustituciones DSTYLE, la malla), alternando, una sesión cada
-> vez.
+> (ninguno lo tiene), y el chino simplificado (`docs/next-seo.md`, L8), hecho el 22/11 (sin
+> publicar); siguiente, por orden del dueño, lo que quede del punto 7 (los colores índice, las
+> sustituciones DSTYLE, la malla), alternando con otro idioma, una sesión cada vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo

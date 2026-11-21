@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD 尺寸标注：DIMLINEAR（线性）命令"
-metaTitle: "CAD标注尺寸命令：线性标注（DIMLINEAR）快捷键 DLI"
-description: "CAD标注尺寸怎么操作：按提示顺序讲解 AutoCAD 的线性标注 DIMLINEAR（快捷键 DLI）：两个原点或一个对象，再放置水平或垂直的尺寸线。在浏览器中免费试用。"
+metaTitle: "CAD 标注尺寸命令：线性标注（DIMLINEAR）快捷键 DLI"
+description: "CAD 标注尺寸怎么操作：按提示顺序讲解 AutoCAD 的线性标注 DIMLINEAR（快捷键 DLI）：两个原点或一个对象，再放置水平或垂直的尺寸线。在浏览器中免费试用。"
 figure: "矩形标注两次：上边通过两个角点标注，右边按 Enter 键后拾取该边标注。"
 sourceHash: "e48a0a6f18c9"
 ---
@@ -38,18 +38,18 @@ DIMLINEAR（线性）命令沿 X 或 Y 方向测量两点之间的距离，并�
 
 ## Questions
 
-### CAD线性标注的快捷键是什么？
+### CAD 线性标注的快捷键是什么？
 
 输入 `DLI` 或 `DIMLIN`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_DIMLINEAR`。
 
-### CAD标注尺寸的命令有哪些？
+### CAD 标注尺寸的命令有哪些？
 
 <Command id="DIMLINEAR" /> 标注水平和垂直距离，<Command id="DIMALIGNED" /> 标注沿斜边的距离，<Command id="DIMRADIUS" /> 和 <Command id="DIMDIAMETER" /> 标注圆弧和圆，<Command id="DIMANGULAR" /> 标注角度，<Command id="DIMCONTINUE" /> 和 <Command id="DIMBASELINE" /> 标注成串的尺寸，<Command id="DIMSPACE" /> 调整它们的间距，<Command id="DIMSTYLE" /> 设置它们的外观。AutoCAD 的 DIM（在一个提示下创建任意类型的标注）和 QDIM（一次标注多个对象）在 MellowCAD 中尚不可用。
 
-### 修改对象后，标注为什么不跟着变？
+### CAD 修改对象后，标注为什么不跟着变？
 
 MellowCAD 的标注还不是关联标注，正如 <Message id="nonAssociativeDimension" /> 所示：标注保留创建时给定的点。可以将它们一起拉伸：在一个 <Command id="STRETCH" /> 交叉窗口中同时框住要移动的端点和该处的标注原点，测量值会重新计算；也可以将原点的夹点拖到新位置。
 
-### CAD标注的文字和箭头大小怎么改？
+### CAD 标注的文字和箭头大小怎么改？
 
 与 AutoCAD 相同，在标注样式中修改：<Command id="DIMSTYLE" />（`D`）打开标注样式，这里位于“样式”选项板中，而 AutoCAD 使用“标注样式管理器”。在其中设置当前样式的文字高度、箭头大小、全局比例和小数位数，使用该样式的所有标注都会随之更新。

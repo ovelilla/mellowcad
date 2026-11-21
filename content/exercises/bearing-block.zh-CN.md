@@ -25,7 +25,7 @@ sourceHash: "5579d6bd5a86"
 
 ### 绘制圆柱体 [#holes]
 
-用 <Command id="CYLINDER" />（圆柱体）命令将轴孔和一个螺栓孔画成圆柱体：轴孔位于 `50,30`，<Keyword command="CYLINDER" id="Diameter" /> 为 `20`，高 `40`；螺栓孔位于 `12,30`，直径 `10`，高 `12`。然后用 <Command id="COPY" />（复制）命令将螺栓孔从 `12,30` 复制到相对其 `76,0` 处。
+用 <Command id="CYLINDER" />（圆柱体）命令将轴孔和一个螺栓孔画成圆柱体：轴孔位于 `50,30`，<Keyword command="CYLINDER" id="Diameter" /> 为 `20`，高 `40`；螺栓孔位于 `12,30`，直径 `10`，高 `12`。然后用 <Command id="COPY" />（复制）命令复制螺栓孔：从 `12,30` 起，再输入相对坐标 `76,0`。
 
 ### 差集 [#subtract]
 

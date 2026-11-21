@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD PEDIT（编辑多段线）命令"
-metaTitle: "CAD编辑多段线（PEDIT）：合并与宽度，快捷键 PE"
-description: "CAD多段线怎么合并：AutoCAD PEDIT（编辑多段线，快捷键 PE）把直线转换为多段线，合并、宽度、拟合和样条曲线、编辑顶点、多条。在浏览器中免费试用。"
+metaTitle: "CAD 编辑多段线（PEDIT）：合并与宽度，快捷键 PE"
+description: "CAD 多段线怎么合并：AutoCAD PEDIT（编辑多段线，快捷键 PE）把直线转换为多段线，合并、宽度、拟合和样条曲线、编辑顶点、多条。在浏览器中免费试用。"
 figure: "三条首尾相接的直线：PEDIT 把第一条转换为多段线，把另外两条合并进来，并赋予宽度 2。"
 sourceHash: "bdc0bf10ac09"
 ---
@@ -56,26 +56,26 @@ PEDIT（编辑多段线）命令编辑多段线。在 `Select polyline or [Multi
 
 ## Missing
 
-PEDITACCEPT：选择直线、圆弧或样条曲线时总是先询问再转换。PLINECONVERTMODE：样条曲线转换为由直线段组成的多段线，段数远多于 AutoCAD 生成的，并且从不生成圆弧。拟合后的多段线在“特性”选项板中显示为普通多段线，没有 AutoCAD 的“二维多段线”标题及其“拟合/平滑”行。选择集中只有三维多段线时，多条模式显示三维提示，而 AutoCAD 显示二维提示。没有可编辑的网格。
+PEDITACCEPT：选择直线、圆弧或样条曲线时总是先询问再转换。PLINECONVERTMODE：样条曲线转换为由直线段组成的多段线，段数远多于 AutoCAD 生成的，并且不会生成圆弧。拟合后的多段线在“特性”选项板中显示为普通多段线，没有 AutoCAD 的“二维多段线”标题及其“拟合/平滑”行。选择集中只有三维多段线时，多条模式显示三维提示，而 AutoCAD 显示二维提示。没有可编辑的网格。
 
 ## Questions
 
-### CAD编辑多段线快捷键是什么？
+### CAD 编辑多段线快捷键是什么？
 
 输入 `PE`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_PEDIT`。双击多段线也会执行它。
 
-### CAD多段线怎么合并？
+### CAD 多段线怎么合并？
 
 执行 PEDIT，选择其中一条直线并按 Enter 键把它转换为多段线，然后选择 <Keyword id="Join" /> 并选择其他直线：首尾相接的直线会合成一条多段线。<Command id="JOIN" /> 一步就能完成同样的操作。
 
-### CAD编辑多段线为什么选不中对象？
+### CAD 编辑多段线为什么选不中对象？
 
 PEDIT 编辑多段线，并提供把直线、圆弧和样条曲线转换为多段线；其他对象（文字、圆、块）会被拒绝并重新询问。锁定图层上的对象会提示 <Message id="objectOnLockedLayer" />。合并只添加端点与多段线端点完全重合的对象：有间隙时，请使用 <Keyword id="Multiple" /> 和模糊距离。
 
-### CAD多段线宽度怎么改？
+### CAD 多段线宽度怎么改？
 
 选择 <Keyword id="Width" /> 并输入宽度：所有线段都使用这个宽度。只修改一段时，使用 <Keyword id="Edit vertex" />，把标记移到该段起点所在的顶点，然后选择其 <Keyword id="Width" />。
 
-### CAD多段线怎么变圆滑曲线？
+### CAD 多段线怎么变圆滑曲线？
 
 <Keyword id="Fit" /> 使圆弧通过每个顶点；<Keyword id="Spline" /> 生成一条以顶点为框架、更光滑的曲线。<Keyword id="Decurve" /> 再把它拉直。

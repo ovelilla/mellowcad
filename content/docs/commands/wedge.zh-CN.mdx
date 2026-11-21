@@ -1,13 +1,13 @@
 ---
 title: "AutoCAD WEDGE（楔体）命令"
-metaTitle: "CAD三维楔体怎么画：WEDGE 命令与快捷键 WE"
+metaTitle: "CAD 三维楔体怎么画：WEDGE 命令与快捷键 WE"
 description: "AutoCAD WEDGE（楔体，快捷键 WE）怎么画三维实体楔体：按提示顺序说明两个角点和高度、中心、立方体、长度和两点。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD楔体的快捷键是什么？","answer":"WE。输入后按 Enter 键或空格键，然后指定第一个角点、其他角点和高度：输入 0,0、60,40 和 25，即得到演示中的楔体。"},{"question":"CAD楔体的斜面朝哪个方向？","answer":"从第一个角点一端沿 UCS 的 X 方向向下倾斜。要改变方向，请在 X 值较小的位置指定其他角点，使其旋转 180°；或在之后用 ROTATE 旋转它。"},{"question":"CAD三棱柱怎么画？","answer":"楔体就是一种三棱柱：两端各是一个直角三角形，沿宽度方向延伸。其他三角形，请用 PLINE 画成闭合图形，再用 EXTRUDE 拉伸。"},{"question":"CAD怎么从中心画楔体？","answer":"选择 Center 并指定中心点，然后指定角点、Cube 或 Length：楔体以该点为中心，高度方向也是如此。"}]
+faq: [{"question":"CAD 楔体的快捷键是什么？","answer":"WE。输入后按 Enter 键或空格键，然后指定第一个角点、其他角点和高度：输入 0,0、60,40 和 25，即得到演示中的楔体。"},{"question":"CAD 楔体的斜面朝哪个方向？","answer":"从第一个角点一端沿 UCS 的 X 方向向下倾斜。要改变方向，请在 X 值较小的位置指定其他角点，使其旋转 180°；或在之后用 ROTATE 旋转它。"},{"question":"CAD 三棱柱怎么画？","answer":"楔体就是一种三棱柱：两端各是一个直角三角形，沿宽度方向延伸。其他三角形，请用 PLINE 画成闭合图形，再用 EXTRUDE 拉伸。"},{"question":"CAD 怎么从中心画楔体？","answer":"选择 Center 并指定中心点，然后指定角点、Cube 或 Length：楔体以该点为中心，高度方向也是如此。"}]
 ---
 
-WEDGE（楔体）命令创建三维实体楔体：顶面从一端向另一端向下倾斜的长方体。它的询问与 [`BOX`](/docs/commands/box) 相同：第一个角点、其他角点，然后是高度。高的一端在第一个角点处，斜面沿 UCS 的 X 方向向另一个角点一侧下降；另一个角点的 X 值较小时，楔体反向。高度沿 UCS 的 Z 方向升高，为负值时向下。长度、宽度和高度采用 [`BOX`](/docs/commands/box) 的默认值，按 Enter 键即采用。楔体位于当前图层上，放弃一步即可撤销。
+WEDGE（楔体）命令创建三维实体楔体：顶面从一端向另一端向下倾斜的长方体。它的询问与 [`BOX`](/docs/commands/box) 相同：第一个角点、其他角点，然后是高度。高的一端在第一个角点处，斜面沿 UCS 的 X 方向向另一个角点一侧下降；另一个角点的 X 值较小时，楔体反向。高度沿 UCS 的 Z 方向升高，为负值时向下。长度、宽度和高度采用 [`BOX`](/docs/commands/box) 的默认值，按 Enter 键即采用。楔体位于当前图层上，可以一次放弃。
 
 [`LIST`](/docs/commands/list) 显示其位置、长度、宽度、高度和旋转，在“特性”选项板中可以输入这些值。其夹点与 [`BOX`](/docs/commands/box) 的相同。它是三维实体，可以用于 [`UNION`](/docs/commands/union)、[`SUBTRACT`](/docs/commands/subtract) 和 MellowCAD 的其他三维功能；MellowCAD 的三维只有实体，并且仍不完整。[`EXPLODE`](/docs/commands/explode) 将其每个面分解为一个面域。
 
@@ -34,7 +34,7 @@ WEDGE（楔体）命令创建三维实体楔体：顶面从一端向另一端向
 
 ### `Length` (`L`) [#length]
 
-在其他角点提示下：询问长度（沿 UCS 的 X 方向），然后询问宽度（沿其 Y 方向）；为负值时反向。指定点时只取其距离，从不取其方向。
+在其他角点提示下：询问长度（沿 UCS 的 X 方向），然后询问宽度（沿其 Y 方向）；为负值时反向。指定点时只取其距离，不取其方向。
 
 ### `2Point` (`2P`) [#2point]
 
@@ -42,25 +42,25 @@ WEDGE（楔体）命令创建三维实体楔体：顶面从一端向另一端向
 
 ## 尚不支持的功能 [#missing]
 
-与 [`BOX`](/docs/commands/box) 相同：热夹点没有移动、旋转、缩放和镜像，没有相应的三维命令，指定角点时没有虚线尺寸，也没有 [`VSCURRENT`](/docs/commands/vscurrent) 缺少的视觉样式。在平面视图中，高的一端下方的端点捕捉找到的是顶面的角点，而 AutoCAD 找到的是底面的角点。
+与 [`BOX`](/docs/commands/box) 相同：热夹点没有移动、旋转、比例缩放和镜像，没有相应的三维命令，指定角点时没有虚线尺寸，也没有 [`VSCURRENT`](/docs/commands/vscurrent) 缺少的视觉样式。在平面视图中，高的一端下方的端点捕捉找到的是顶面的角点，而 AutoCAD 找到的是底面的角点。
 
 [功能及尚缺部分详解（英文）](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#wedge--we--es-cuña--cu--pt-br-cunha--cn--fr-biseau--bi--it-cuneo--cn--de-keil--ke--ru-клин--кл--pl-klin--kl--cs-klín--kl--hu-ék--ek)
 
 ## 常见问题 [#questions]
 
-### CAD楔体的快捷键是什么？
+### CAD 楔体的快捷键是什么？
 
 `WE`。输入后按 Enter 键或空格键，然后指定第一个角点、其他角点和高度：输入 `0,0`、`60,40` 和 `25`，即得到演示中的楔体。
 
-### CAD楔体的斜面朝哪个方向？
+### CAD 楔体的斜面朝哪个方向？
 
 从第一个角点一端沿 UCS 的 X 方向向下倾斜。要改变方向，请在 X 值较小的位置指定其他角点，使其旋转 180°；或在之后用 [`ROTATE`](/docs/commands/rotate) 旋转它。
 
-### CAD三棱柱怎么画？
+### CAD 三棱柱怎么画？
 
 楔体就是一种三棱柱：两端各是一个直角三角形，沿宽度方向延伸。其他三角形，请用 [`PLINE`](/docs/commands/pline) 画成闭合图形，再用 [`EXTRUDE`](/docs/commands/extrude) 拉伸。
 
-### CAD怎么从中心画楔体？
+### CAD 怎么从中心画楔体？
 
 选择 `Center` 并指定中心点，然后指定角点、`Cube` 或 `Length`：楔体以该点为中心，高度方向也是如此。
 

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD DIMSPACE（调整间距）命令"
-metaTitle: "CAD标注对齐与间距调整：DIMSPACE（调整间距）"
-description: "CAD标注间距怎么调整：AutoCAD 的 DIMSPACE（调整间距）如何使标注间距相等，或用间距 0 将标注对齐到一行，以及按文字高度计算的自动间距。在浏览器中免费试用。"
+metaTitle: "CAD 标注对齐与间距调整：DIMSPACE（调整间距）"
+description: "CAD 标注间距怎么调整：AutoCAD 的 DIMSPACE（调整间距）如何使标注间距相等，或用间距 0 将标注对齐到一行，以及按文字高度计算的自动间距。在浏览器中免费试用。"
 before: "板的上边有一串三个连续标注，每个标注都位于绘制时各自的高度。"
 figure: "以第一个标注为基准执行 DIMSPACE，选择另外两个标注，间距为 0：这一串标注对齐到同一行。"
 sourceHash: "7ec7c0eb9883"
@@ -23,18 +23,18 @@ DIMSPACE（调整间距）命令调整平行的线性标注和对齐标注之间
 
 ## Questions
 
-### CAD标注怎么对齐？
+### CAD 标注怎么对齐？
 
 执行 DIMSPACE，拾取其他标注要对齐的那个标注，选择这些标注，按 Enter 键，然后输入 `0`：所有尺寸线都移到基准标注的尺寸线上。
 
-### CAD标注间距怎么调成一样？
+### CAD 标注间距怎么调成一样？
 
 执行 DIMSPACE，拾取离对象最近的标注作为基准，选择其余标注，然后按两次 Enter 键：<Keyword id="Auto" /> 以文字高度的两倍作为间距。也可以输入所需的距离，例如 `8`。
 
-### CAD标注的默认间距是多少？
+### CAD 标注的默认间距是多少？
 
 DIMSPACE 的 <Keyword id="Auto" /> 为标注样式中文字高度的两倍。<Command id="DIMBASELINE" /> 添加每个标注时则使用样式的基线间距，ISO-25 中为 3.75。
 
-### DIMSPACE 为什么不移动某个标注？
+### CAD 中 DIMSPACE 为什么不移动某个标注？
 
 它只调整与基准标注平行的标注：角度不同的标注会计入，但保持原位。角度标注目前还不能调整间距。

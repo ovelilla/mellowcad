@@ -1,4 +1,5 @@
 import type { Glyph as GlyphData } from "@/lib/plot"
+import { inlineSvg } from "@/lib/svg-inline"
 
 /** An engine-drawn glyph (a snap marker, an arrowhead) as inline SVG. */
 export function Glyph({
@@ -13,7 +14,7 @@ export function Glyph({
       viewBox={glyph.viewBox}
       aria-hidden="true"
       className={className}
-      dangerouslySetInnerHTML={{ __html: glyph.markup }}
+      dangerouslySetInnerHTML={{ __html: inlineSvg(glyph.markup) }}
     />
   )
 }

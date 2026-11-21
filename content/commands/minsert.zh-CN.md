@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD MINSERT（多重插入块）命令"
-metaTitle: "CAD多重插入块（MINSERT）：按行列插入块"
-description: "CAD多重插入块怎么用：AutoCAD MINSERT 将块按行和列插入为一个对象，它询问的内容，以及 EXPLODE 为什么不能分解它。在浏览器中免费试用。"
+metaTitle: "CAD 多重插入块（MINSERT）：按行列插入块"
+description: "CAD 多重插入块怎么用：AutoCAD MINSERT 将块按行和列插入为一个对象，它询问的内容，以及 EXPLODE 为什么不能分解它。在浏览器中免费试用。"
 figure: "把一个座椅创建为块，再用 MINSERT 排成 3 行 5 列：一个对象。"
 sourceHash: "d43a50bbc8fe"
 ---
@@ -30,18 +30,18 @@ MINSERT（多重插入块）命令将图形中定义的块按行和列多次插�
 
 ## Questions
 
-### CAD多重插入块（MINSERT）是什么命令？
+### CAD 多重插入块（MINSERT）是什么命令？
 
 多重插入：它把一个块排列成由行和列组成的矩形网格，作为一个对象。之后可以在“特性”选项板中修改行数、列数或间距。
 
-### CAD多重插入块怎么分解？
+### CAD 多重插入块怎么分解？
 
 不能分解：在 AutoCAD 和这里，<Command id="EXPLODE" /> 都会提示它是多重插入的块并保持不变，即使把行数和列数都设为 1 也一样。可以用 <Command id="-INSERT" /> 重新插入该块，或者用 <Command id="ARRAYRECT" /> 排列副本，其阵列可以分解为各个项目。
 
-### MINSERT 有快捷键吗？
+### CAD 中 MINSERT 有快捷键吗？
 
-没有：AutoCAD 没有为 MINSERT 提供别名，功能区上也没有按钮，因此请完整输入 `MINSERT`。在任何语言版本的 AutoCAD 中都可以使用 `_MINSERT`。
+没有：AutoCAD 没有为 MINSERT 提供快捷键，功能区上也没有按钮，因此请完整输入 `MINSERT`。在任何语言版本的 AutoCAD 中都可以使用 `_MINSERT`。
 
-### MINSERT 和阵列有什么区别？
+### CAD 中 MINSERT 和阵列有什么区别？
 
 MINSERT 将一个块重复为一个无法分解的参照。<Command id="ARRAYRECT" /> 将任意对象重复为关联阵列，可以用夹点修改其数目和间距，并且可以用 <Command id="EXPLODE" /> 分解。

@@ -1,7 +1,7 @@
 ---
-title: "CAD线型比例：AutoCAD LTSCALE（线型比例）命令"
-metaTitle: "CAD线型比例怎么设置：LTSCALE 与快捷键 LTS"
-description: "CAD线型比例怎么调：AutoCAD LTSCALE（线型比例，快捷键 LTS）设置整个图形的线型比例，让虚线在任何尺寸的图形中都显示出划线。在浏览器中免费试用。"
+title: "CAD 线型比例：AutoCAD LTSCALE（线型比例）命令"
+metaTitle: "CAD 线型比例怎么设置：LTSCALE 与快捷键 LTS"
+description: "CAD 线型比例怎么调：AutoCAD LTSCALE（线型比例，快捷键 LTS）设置整个图形的线型比例，让虚线在任何尺寸的图形中都显示出划线。在浏览器中免费试用。"
 before: "一块长 4 米的板，孔用 HIDDEN、轴线用 CENTER 绘制，线型比例为默认的 1：划线太细，看不出来。"
 figure: "LTSCALE 设为 20 之后的同一块板：孔和轴线的划线长了 20 倍。"
 sourceHash: "33b956c956fa"
@@ -17,18 +17,18 @@ LTSCALE（线型比例）命令设置全局线型比例因子，即图形中所�
 
 ## Questions
 
-### CAD线型比例快捷键是什么？
+### CAD 线型比例快捷键是什么？
 
 输入 `LTS`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_LTSCALE`。
 
-### CAD虚线为什么显示成实线？
+### CAD 虚线为什么显示成实线？
 
 在当前比例下，它的图案与图形不相适应。短于一个图案重复长度的线显示为实线；较长的线在比例过小时划线挤得太密，看起来也像实线。大图形增大 LTSCALE，小图形减小 LTSCALE，直到划线显示出来。
 
-### CAD线型比例设置多少合适？
+### CAD 线型比例设置多少合适？
 
 设为图形的比例：以毫米为单位、按 1:50 阅读的图形，设为 `50`。图纸大小的图形设为 1。
 
-### LTSCALE 和线型本身有什么区别？
+### CAD 中 LTSCALE 和线型本身有什么区别？
 
 用 <Command id="LINETYPE" /> 或图层设置的线型是图案：划线、点和间隙。LTSCALE 决定这个图案绘制得多长，对图形中的所有对象使用同一个比例因子。

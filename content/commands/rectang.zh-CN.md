@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD RECTANG（矩形）命令"
-metaTitle: "CAD矩形命令（RECTANG）怎么画与快捷键 REC"
-description: "CAD矩形怎么画：AutoCAD RECTANG（矩形，快捷键 REC）用两个角点、尺寸、面积和旋转绘制矩形，用圆角倒圆或用倒角切角。在浏览器中免费试用。"
+metaTitle: "CAD 矩形命令（RECTANG）怎么画与快捷键 REC"
+description: "CAD 矩形怎么画：AutoCAD RECTANG（矩形，快捷键 REC）用两个角点、尺寸、面积和旋转绘制矩形，用圆角倒圆或用倒角切角。在浏览器中免费试用。"
 figure: "用两个角点绘制的两个矩形，第二个角点相对于第一个输入：一个圆角为 8，下一个倒角为 8。"
 sourceHash: "a5d4e90c06aa"
 ---
@@ -44,22 +44,22 @@ RECTANG（矩形）命令用两个对角点绘制矩形，角点可以拾取或�
 
 ## Questions
 
-### CAD矩形快捷键是什么？
+### CAD 矩形快捷键是什么？
 
 输入 `REC`，然后按 Enter 键或空格键；`RECTANGLE` 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_RECTANG`。
 
-### CAD矩形怎么输入尺寸？
+### CAD 矩形怎么输入尺寸？
 
 指定第一个角点，然后输入相对于它的另一个角点：在动态输入打开时（默认如此）输入 `100,50`，关闭时输入 `@100,50`，得到长 100、宽 50 的矩形。也可以选择 <Keyword id="Dimensions" />，输入两条边的长度。
 
-### CAD圆角矩形怎么画？
+### CAD 圆角矩形怎么画？
 
 在第一个提示下选择 <Keyword id="Fillet" /> 并输入半径，然后指定两个角点。
 
-### CAD画的矩形为什么带圆角或倒角？
+### CAD 画的矩形为什么带圆角或倒角？
 
 RECTANG 在整个会话中保留圆角和倒角，因此之后绘制的矩形也带着它：第一行会显示这一点。选择 <Keyword id="Fillet" /> 并输入 `0`，即可重新绘制直角。
 
-### CAD的矩形是多段线吗？
+### CAD 的矩形是多段线吗？
 
 是：一条闭合多段线。<Command id="EXPLODE" /> 将其分解为四条直线，<Command id="OFFSET" /> 将它整体偏移。

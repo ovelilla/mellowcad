@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ARRAYPOLAR（环形阵列）命令"
-metaTitle: "CAD环形阵列命令（ARRAYPOLAR）怎么用"
-description: "CAD环形阵列怎么做？ARRAYPOLAR 按提示顺序讲解：中心点、项目数、项目间角度或填充角度，以及旋转项目。在浏览器中免费试用。"
+metaTitle: "CAD 环形阵列命令（ARRAYPOLAR）怎么用"
+description: "CAD 环形阵列怎么做？ARRAYPOLAR 按提示顺序讲解：中心点、项目数、项目间角度或填充角度，以及旋转项目。在浏览器中免费试用。"
 figure: "法兰上的一个孔绕法兰中心阵列：8 个项目布满整圆。"
 sourceHash: "efed541dea7f"
 ---
@@ -40,18 +40,18 @@ ARRAYPOLAR（环形阵列）命令绕中心点复制选择集，生成一个阵�
 
 ## Questions
 
-### CAD环形阵列怎么做？
+### CAD 环形阵列怎么做？
 
 输入 `ARRAYPOLAR`，选择对象，按 Enter 键，然后拾取中心点；或者输入 `AR` 运行 <Command id="ARRAY" />，选择对象后选择 <Keyword command="ARRAY" id="POlar" />。然后选择 <Keyword id="Items" /> 设置数量，按 Enter 键创建。
 
-### CAD怎么沿部分圆周阵列对象？
+### CAD 怎么沿部分圆周阵列对象？
 
 选择 <Keyword id="Fill angle" /> 并输入角度：180 使项目按逆时针方向布满半圆，-180 则按顺时针方向。项目数保持不变，第一个和最后一个项目分别位于该角度的两端。
 
-### CAD环形阵列怎么让项目不旋转？
+### CAD 环形阵列怎么让项目不旋转？
 
 选择 <Keyword id="ROTate items" /> 并回答 <Keyword id="No" />：每个项目绕中心移动，但不转动。
 
-### CAD环形阵列怎么改半径？
+### CAD 环形阵列怎么改半径？
 
 选择阵列，将基点处的方形夹点朝中心拖近或拖远：到中心的距离即为新半径。也可以在“特性”选项板中重新输入半径。

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ATTDEF（定义属性）命令"
-metaTitle: "CAD定义属性命令（ATTDEF）块属性与快捷键 ATT"
-description: "CAD块属性怎么定义？ATTDEF（快捷键 ATT）定义块属性：模式、标记、提示和默认值，然后指定文字的位置。在浏览器中免费试用。"
+metaTitle: "CAD 定义属性命令（ATTDEF）块属性与快捷键 ATT"
+description: "CAD 块属性怎么定义？ATTDEF（快捷键 ATT）定义块属性：模式、标记、提示和默认值，然后指定文字的位置。在浏览器中免费试用。"
 figure: "门编号标记：属性 NUM 居中位于圆内，提示即标记本身，默认值为 1，可以加入块中。"
 sourceHash: "f0fc3d8763e7"
 ---
@@ -18,7 +18,7 @@ AutoCAD 的 ATTDEF 打开“属性定义”对话框，MellowCAD 没有这个对
 
 ### Constant
 
-每个参照都保存相同的值；ATTDEF 询问该值，而不询问提示和默认值；INSERT 从不询问它。
+每个参照都保存相同的值；ATTDEF 询问该值，而不询问提示和默认值；INSERT 不会询问它。
 
 ### Verify
 
@@ -46,18 +46,18 @@ INSERT 不询问该值：每个参照都取默认值。
 
 ## Questions
 
-### CAD定义属性快捷键是什么？
+### CAD 定义属性快捷键是什么？
 
 输入 `ATT`，然后按 Enter 键或空格键；`DDATTDEF` 也可以。`-ATT` 是 <Command id="-ATTDEF" />，即命令行形式，这里 ATTDEF 运行的也是它。在任何语言版本的 AutoCAD 中都可以输入 `_ATTDEF`。
 
-### CAD怎么创建带属性的块？
+### CAD 怎么创建带属性的块？
 
 先绘制符号，然后对每个属性运行一次 ATTDEF，并将其文字放在值要显示的位置。运行 <Command id="BLOCK" />，拾取基点，按 INSERT 询问的顺序选择符号和各属性。此后每次用 <Command id="INSERT" /> 插入该块，都会为每个属性询问一个值，并提供其默认值。
 
-### CAD属性的标记、提示和默认值有什么区别？
+### CAD 属性的标记、提示和默认值有什么区别？
 
 标记是属性的名称，相当于标识符：属性定义显示的就是它，<Command id="EATTEDIT" /> 中的字段也以它为标签。提示是 INSERT 询问其值时的问题。默认值是提供的值，按 Enter 键即接受。
 
-### CAD属性定义怎么修改？
+### CAD 属性定义怎么修改？
 
 在它加入块之前双击它：<Command id="TEXTEDIT" /> 打开其标记、提示和默认值。加入块之后，每个参照的值用 <Command id="ATTEDIT" /> 或 <Command id="EATTEDIT" /> 编辑。

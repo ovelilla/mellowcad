@@ -1,6 +1,6 @@
 ---
 title: "AutoCAD SUBTRACT（差集）命令"
-metaTitle: "CAD差集命令（SUBTRACT）实体与面域相减 SU"
+metaTitle: "CAD 差集命令（SUBTRACT）实体与面域相减 SU"
 description: "AutoCAD SUBTRACT（差集，快捷键 SU）怎么用：先选要保留的实体或面域，按 Enter 键，再选要减去的对象，开孔和挖面积都可以。在线免费试用。"
 figure: "用 SUBTRACT 从长方体中减去圆柱体，形成通孔：先拾取长方体，再拾取圆柱体。"
 sourceHash: "416991f5f4d1"
@@ -16,22 +16,22 @@ SUBTRACT（差集）命令从实体中减去其他三维实体，或从同一平
 
 ## Questions
 
-### CAD差集的快捷键是什么？
+### CAD 差集的快捷键是什么？
 
 输入 `SU`，然后按 Enter 键或空格键。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中，`_SUBTRACT` 都有效。
 
-### CAD三维实体怎么差集？
+### CAD 三维实体怎么差集？
 
 在要减去的实体与另一实体重叠的位置画出它：例如要开孔，就画一个穿过长方体的圆柱体。执行 SUBTRACT，拾取长方体并按 Enter 键，再拾取圆柱体并按 Enter 键：长方体留下一个孔，圆柱体消失。顺序很重要，先拾取的是保留下来的对象。
 
-### CAD差集为什么用不了？
+### CAD 差集为什么用不了？
 
 通常是顺序问题：要保留的对象放在第一个集合，要减去的放在第二个集合。第一个集合中没有实体或面域，或第二个集合中没有不属于第一个集合的实体或面域时，显示 <Message id="noSolidsOrRegionsSelected" /> 并结束；第二个集合中没有能从第一个集合中减去的对象时（例如从面域中减去实体，或减去另一平面上的面域），显示 <Message id="subtractNeedsTwo" /> 且不作任何更改。直线和多段线必须先转换为面域。提示一次布尔运算失败时，说明实体相交的方式 MellowCAD 还无法计算，实体保持原样。
 
-### CAD怎么减去面积？
+### CAD 怎么减去面积？
 
 要从一个二维图形中挖去另一个，先用 <Command id="REGION" /> 将两者都转换为面域，再用 SUBTRACT 从外面的面域中减去里面的：从正方形中减去圆，得到一个带孔的面域。要只测量面积而不改变图形，<Command id="AREA" /> 可以用 <Keyword command="AREA" id="Subtract" /> 从累计总面积中减去部分区域。
 
-### CAD差集能不删除被减去的对象吗？
+### CAD 差集能不删除被减去的对象吗？
 
 与 AutoCAD 一样，SUBTRACT 会删除被减去的对象。要保留它，请先原位复制一份：执行 <Command id="COPY" />，选择对象并按 Enter 键，指定基点 0,0，再按 Enter 键，以 0,0 的位移将其复制到自身位置。然后 SUBTRACT 只用掉其中一个。

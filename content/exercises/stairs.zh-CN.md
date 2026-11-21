@@ -24,7 +24,7 @@ sourceHash: "ff6e60262cd9"
 
 ### 绘制箭头 [#arrow]
 
-用 <Command id="PLINE" />（多段线）命令从 `14,50` 起，沿楼梯段画到相对其 `226,0` 处；然后选择 <Keyword command="PLINE" id="Width" /> 选项，起点宽度 `10`，端点宽度 `0`，再画最后一段 `24,0`：即箭头。按 Enter 键结束。
+用 <Command id="PLINE" />（多段线）命令从 `14,50` 起，沿楼梯段输入相对坐标 `226,0`；然后选择 <Keyword command="PLINE" id="Width" /> 选项，起点宽度 `10`，端点宽度 `0`，再画最后一段 `24,0`：即箭头。按 Enter 键结束。
 
 ### 标注尺寸 [#dimensions]
 

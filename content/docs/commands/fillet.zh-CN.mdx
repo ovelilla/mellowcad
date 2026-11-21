@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD FILLET（圆角）命令"
-metaTitle: "CAD圆角命令（FILLET）用法与快捷键 F"
-description: "CAD圆角命令怎么用：按提示顺序讲解 AutoCAD 的 FILLET（快捷键 F）：半径、两条直线、多段线的各个角、半径 0 和多个。在浏览器中免费试用。"
+metaTitle: "CAD 圆角命令（FILLET）用法与快捷键 F"
+description: "CAD 圆角命令怎么用：按提示顺序讲解 AutoCAD 的 FILLET（快捷键 F）：半径、两条直线、多段线的各个角、半径 0 和多个。在浏览器中免费试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD圆角的快捷键是什么？","answer":"输入 F，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _FILLET。"},{"question":"CAD两条直线怎么倒圆角？","answer":"选择 Radius 并输入半径，然后在要保留的一侧分别拾取两条直线。不相交的直线会延伸到圆弧，交叉的直线会修剪到圆弧。两条平行直线无论半径多少，都用半圆连接。直线和多段线的线段会合并为一条多段线。"},{"question":"CAD圆角半径为 0 有什么用？","answer":"生成尖角：每条直线都被修剪或延伸到彼此相交，不绘制圆弧。要在不改变半径的情况下生成一个尖角，请在拾取第二个对象时按住 Shift 键。"},{"question":"CAD圆角命令为什么用不了？","answer":"命令行会显示原因。“Fillet radius is too large” 表示圆弧在两条线之间放不下；“Lines belonging to polylines must be consecutive or separated by one segment” 表示同一条多段线的两条线段相隔太远；文字、块、标注和图案填充会被拒绝，高度不同的对象会提示不共面，锁定图层上的对象不会被选中。"},{"question":"三维实体的边怎么倒圆角？","answer":"执行 FILLETEDGE：如果显示的半径不合适，请选择 Radius，拾取实体的边，按 Enter 键，再按一次 Enter 键接受圆角。它用于三维实体，这里的三维实体仍是部分支持。"}]
+faq: [{"question":"CAD 圆角的快捷键是什么？","answer":"输入 F，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 _FILLET。"},{"question":"CAD 两条直线怎么倒圆角？","answer":"选择 Radius 并输入半径，然后在要保留的一侧分别拾取两条直线。不相交的直线会延伸到圆弧，交叉的直线会修剪到圆弧。两条平行直线无论半径多少，都用半圆连接。直线和多段线的线段会合并为一条多段线。"},{"question":"CAD 圆角半径为 0 有什么用？","answer":"生成尖角：每条直线都被修剪或延伸到彼此相交，不绘制圆弧。要在不改变半径的情况下生成一个尖角，请在拾取第二个对象时按住 Shift 键。"},{"question":"CAD 圆角命令为什么用不了？","answer":"命令行会显示原因。“Fillet radius is too large” 表示圆弧在两条线之间放不下；“Lines belonging to polylines must be consecutive or separated by one segment” 表示同一条多段线的两条线段相隔太远；文字、块、标注和图案填充会被拒绝，高度不同的对象会提示不共面，锁定图层上的对象不会被选中。"},{"question":"CAD 三维实体的边怎么倒圆角？","answer":"执行 FILLETEDGE：如果显示的半径不合适，请选择 Radius，拾取实体的边，按 Enter 键，再按一次 Enter 键接受圆角。它用于三维实体，这里的三维实体仍是部分支持。"}]
 ---
 
 FILLET（圆角）命令用指定半径的圆弧将两个对象之间的角倒圆，并将每个对象修剪或延伸到该圆弧。第一行显示当前模式和半径；然后在各自要保留的一侧拾取第一个对象和第二个对象，命令结束。可以处理直线、圆弧、圆、椭圆、样条曲线和二维多段线的线段。两条直线不必相交：与 AutoCAD 相同，它们会延伸到圆弧。半径为 0 时，或拾取第二个对象时按住 Shift 键，则生成尖角而不是圆角。
@@ -46,23 +46,23 @@ FILLET（圆角）命令用指定半径的圆弧将两个对象之间的角倒�
 
 ## 常见问题 [#questions]
 
-### CAD圆角的快捷键是什么？
+### CAD 圆角的快捷键是什么？
 
 输入 `F`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_FILLET`。
 
-### CAD两条直线怎么倒圆角？
+### CAD 两条直线怎么倒圆角？
 
 选择 `Radius` 并输入半径，然后在要保留的一侧分别拾取两条直线。不相交的直线会延伸到圆弧，交叉的直线会修剪到圆弧。两条平行直线无论半径多少，都用半圆连接。直线和多段线的线段会合并为一条多段线。
 
-### CAD圆角半径为 0 有什么用？
+### CAD 圆角半径为 0 有什么用？
 
 生成尖角：每条直线都被修剪或延伸到彼此相交，不绘制圆弧。要在不改变半径的情况下生成一个尖角，请在拾取第二个对象时按住 Shift 键。
 
-### CAD圆角命令为什么用不了？
+### CAD 圆角命令为什么用不了？
 
 命令行会显示原因。`Fillet radius is too large` 表示圆弧在两条线之间放不下；`Lines belonging to polylines must be consecutive or separated by one segment` 表示同一条多段线的两条线段相隔太远；文字、块、标注和图案填充会被拒绝，高度不同的对象会提示不共面，锁定图层上的对象不会被选中。
 
-### 三维实体的边怎么倒圆角？
+### CAD 三维实体的边怎么倒圆角？
 
 执行 [`FILLETEDGE`](/docs/commands/filletedge)：如果显示的半径不合适，请选择 `Radius`，拾取实体的边，按 Enter 键，再按一次 Enter 键接受圆角。它用于三维实体，这里的三维实体仍是部分支持。
 

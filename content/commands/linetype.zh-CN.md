@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD LINETYPE（线型）命令"
-metaTitle: "CAD线型怎么设置：LINETYPE 命令与快捷键 LT"
-description: "CAD线型怎么设置：AutoCAD LINETYPE（线型，快捷键 LT）从 acadiso.lin 加载线型、设置新对象的当前线型、ByLayer，以及虚线为什么显示成实线。在浏览器中免费试用。"
+metaTitle: "CAD 线型怎么设置：LINETYPE 命令与快捷键 LT"
+description: "CAD 线型怎么设置：AutoCAD LINETYPE（线型，快捷键 LT）从 acadiso.lin 加载线型、设置新对象的当前线型、ByLayer，以及虚线为什么显示成实线。在浏览器中免费试用。"
 figure: "一块板，其中的孔以 HIDDEN 为当前线型绘制，两条轴线以 CENTER 绘制，然后 LINETYPE 设回 ByLayer。"
 sourceHash: "d15530a865c1"
 ---
@@ -30,22 +30,22 @@ LINETYPE（线型）命令设置新对象使用的线型。AutoCAD 会打开线�
 
 ## Questions
 
-### CAD线型快捷键是什么？
+### CAD 线型快捷键是什么？
 
 输入 `LT`，然后按 Enter 键或空格键；`LTYPE` 和 `DDLTYPE` 也可以。也可以输入完整的命令名；在任何语言版本的 AutoCAD 中都可以使用 `_LINETYPE`。
 
-### CAD线型不显示虚线怎么办？
+### CAD 线型不显示虚线怎么办？
 
 与 AutoCAD 一样，短于一个图案重复长度的线会显示为实线：在默认比例下，CENTER 的图案长约 51 个单位。增大或减小 <Command id="LTSCALE" />，使图案与图形相适应。同时检查对象的线型（为 ByLayer 时则是其图层的线型）不是 Continuous。
 
-### 怎么修改已有对象的线型？
+### CAD 怎么修改已有对象的线型？
 
 选择对象，在“特性”选项板的“线型”行中选择线型，或者用 <Command id="MATCHPROP" /> 从另一个对象复制。LINETYPE 只设置之后绘制的对象的线型。
 
-### CAD线型比例怎么设置？
+### CAD 线型比例怎么设置？
 
 输入 <Command id="LTSCALE" /> 和新的比例因子：2 使整个图形中的每段划线长一倍。
 
-### CAD线型怎么加载？
+### CAD 线型怎么加载？
 
 AutoCAD 在线型管理器中加载线型。在这里，输入 `-LINETYPE`，选择 <Keyword id="Load" />，输入线型名称（例如 `HIDDEN2` 或 `ACAD_ISO02W100`），然后按 Enter 键在 acadiso.lin 中搜索。<Keyword id="Set" /> 在把 acadiso.lin 中的线型置为当前时会同时加载它。

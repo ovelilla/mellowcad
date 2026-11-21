@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD ATTDISP（属性显示）命令"
-metaTitle: "CAD属性显示命令（ATTDISP）显示或隐藏块属性"
-description: "CAD块属性怎么显示或隐藏？ATTDISP：普通，开（同时显示不可见属性），关（隐藏所有属性）。设置随图形保存。在浏览器中免费试用。"
+metaTitle: "CAD 属性显示命令（ATTDISP）显示或隐藏块属性"
+description: "CAD 块属性怎么显示或隐藏？ATTDISP：普通，开（同时显示不可见属性），关（隐藏所有属性）。设置随图形保存。在浏览器中免费试用。"
 figure: "两张办公桌的零件号是不可见属性：ATTDISP ON 将其显示在每张桌子下方，与可见的编号并列。"
 sourceHash: "8821fdeb2077"
 ---
@@ -26,14 +26,14 @@ ATTDISP（属性显示）命令设置图形中的块参照显示哪些属性。�
 
 ## Questions
 
-### CAD怎么显示不可见的属性？
+### CAD 怎么显示不可见的属性？
 
 输入 `ATTDISP` 并选择 <Keyword id="ON" />：显示所有属性，包括不可见属性。选择 <Keyword id="Normal" /> 可以再次隐藏它们。
 
-### CAD块属性不显示是什么原因？
+### CAD 块属性不显示是什么原因？
 
 <Command id="ATTDISP" /> 可能设为 <Keyword id="OFF" />，即隐藏所有属性；或者设为 <Keyword id="Normal" />，而属性被定义为不可见。选择 <Keyword id="ON" /> 可以显示全部属性。如果参照的块没有属性，无论如何设置都不显示属性。
 
-### CAD怎么隐藏属性值？
+### CAD 怎么隐藏属性值？
 
 将属性定义为不可见：在创建块之前，使用 <Command id="ATTDEF" /> 的 <Keyword command="ATTDEF" id="Invisible" /> 模式。ATTDISP <Keyword id="OFF" /> 可以一次隐藏整个图形中的所有属性。

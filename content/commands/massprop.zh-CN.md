@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD MASSPROP（面域/质量特性）命令"
-metaTitle: "CAD质量特性（MASSPROP）：体积、质心、惯性矩"
-description: "CAD怎么查体积和质心：AutoCAD MASSPROP（面域/质量特性）报告三维实体和面域的体积、面积、质心、惯性矩，并可写入 .mpr 文件。在浏览器中免费在线试用。"
+metaTitle: "CAD 质量特性（MASSPROP）：体积、质心、惯性矩"
+description: "CAD 怎么查体积和质心：AutoCAD MASSPROP（面域/质量特性）报告三维实体和面域的体积、面积、质心、惯性矩，并可写入 .mpr 文件。在浏览器中免费在线试用。"
 figure: "一个位于原点、60 × 40 × 25 的长方体：MASSPROP 写出其体积、边界框、质心和惯性矩，按 Enter 键不写入文件。"
 sourceHash: "a0286a5d599e"
 ---
@@ -22,18 +22,18 @@ MASSPROP（面域/质量特性）命令测量三维实体和面域。选择对�
 
 ## Questions
 
-### CAD怎么查三维实体的体积？
+### CAD 怎么查三维实体的体积？
 
 执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。
 
-### CAD怎么求图形的质心？
+### CAD 怎么求图形的质心？
 
 用 <Command id="REGION" /> 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。
 
-### MASSPROP 为什么提示未选择实体或面域？
+### CAD 中 MASSPROP 为什么提示未选择实体或面域？
 
 所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 <Command id="REGION" /> 将闭合图形转换为面域，或用 <Command id="EXTRUDE" /> 转换为实体。
 
-### 为什么质量等于体积？
+### CAD 为什么质量等于体积？
 
 与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。

@@ -1,7 +1,7 @@
 ---
 title: "AutoCAD FILLETEDGE（圆角边）命令"
-metaTitle: "CAD三维实体倒圆角：FILLETEDGE（圆角边）用法"
-description: "CAD三维倒圆角怎么用：按提示顺序讲解 AutoCAD 的 FILLETEDGE 如何将三维实体的边倒圆：边、链、环、半径和箭头夹点。在浏览器中免费试用。"
+metaTitle: "CAD 三维实体倒圆角：FILLETEDGE（圆角边）用法"
+description: "CAD 三维倒圆角怎么用：按提示顺序讲解 AutoCAD 的 FILLETEDGE 如何将三维实体的边倒圆：边、链、环、半径和箭头夹点。在浏览器中免费试用。"
 figure: "从东南方向观察的长方体：FILLETEDGE 以半径 8 将其右侧两条竖直边倒圆。"
 sourceHash: "403a055efb24"
 ---
@@ -30,18 +30,18 @@ FILLETEDGE（圆角边）命令将三维实体的边倒圆。命令先显示当�
 
 ## Questions
 
-### CAD三维实体的边怎么倒圆角？
+### CAD 三维实体的边怎么倒圆角？
 
 执行 FILLETEDGE，选择 <Keyword id="Radius" /> 并输入半径，拾取边，然后按两次 Enter 键：第一次结束拾取，第二次接受圆角。示例中的 `8` 将长方体的两条边倒圆。
 
-### 怎么给一个面的所有边倒圆角？
+### CAD 怎么给一个面的所有边倒圆角？
 
 选择 <Keyword id="Loop" />，拾取该面的一条边，然后选择 <Keyword id="Accept" />；如果显示的是另一个面的环，则选择 <Keyword id="Next" />。对于彼此相切相连的边（例如已倒圆的块体顶部），<Keyword id="Chain" /> 可以一次全部选中。
 
-### 三维实体为什么不能用 FILLET 倒圆角？
+### CAD 三维实体为什么不能用 FILLET 倒圆角？
 
 AutoCAD 的 <Command id="FILLET" /> 也能将实体的边倒圆，但 MellowCAD 的 FILLET 还不能：请使用 FILLETEDGE；倒斜角请使用 <Command id="CHAMFEREDGE" />。
 
-### 圆角半径怎么修改？
+### CAD 圆角半径怎么修改？
 
 在拾取边之前或在接受提示下选择 <Keyword id="Radius" />，或拖动第一个圆角中间的箭头夹点。下次会再次提供上一次的半径。

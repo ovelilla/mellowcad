@@ -1,10 +1,10 @@
 ---
 title: "AutoCAD MASSPROP（面域/质量特性）命令"
-metaTitle: "CAD质量特性（MASSPROP）：体积、质心、惯性矩"
-description: "CAD怎么查体积和质心：AutoCAD MASSPROP（面域/质量特性）报告三维实体和面域的体积、面积、质心、惯性矩，并可写入 .mpr 文件。在浏览器中免费在线试用。"
+metaTitle: "CAD 质量特性（MASSPROP）：体积、质心、惯性矩"
+description: "CAD 怎么查体积和质心：AutoCAD MASSPROP（面域/质量特性）报告三维实体和面域的体积、面积、质心、惯性矩，并可写入 .mpr 文件。在浏览器中免费在线试用。"
 type: "reference"
 generated: "lib/docs/generate.test.ts"
-faq: [{"question":"CAD怎么查三维实体的体积？","answer":"执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。"},{"question":"CAD怎么求图形的质心？","answer":"用 REGION 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。"},{"question":"MASSPROP 为什么提示未选择实体或面域？","answer":"所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 REGION 将闭合图形转换为面域，或用 EXTRUDE 转换为实体。"},{"question":"为什么质量等于体积？","answer":"与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。"}]
+faq: [{"question":"CAD 怎么查三维实体的体积？","answer":"执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。"},{"question":"CAD 怎么求图形的质心？","answer":"用 REGION 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。"},{"question":"CAD 中 MASSPROP 为什么提示未选择实体或面域？","answer":"所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 REGION 将闭合图形转换为面域，或用 EXTRUDE 转换为实体。"},{"question":"CAD 为什么质量等于体积？","answer":"与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。"}]
 ---
 
 MASSPROP（面域/质量特性）命令测量三维实体和面域。选择对象后按 Enter 键：报告按 AutoCAD 的栏目写在命令行中，然后询问是否将其写入文件。选择集中既没有实体也没有面域时，提示 `No solids or regions selected.` 并结束。
@@ -35,19 +35,19 @@ MASSPROP（面域/质量特性）命令测量三维实体和面域。选择对�
 
 ## 常见问题 [#questions]
 
-### CAD怎么查三维实体的体积？
+### CAD 怎么查三维实体的体积？
 
 执行 MASSPROP，选择实体并按 Enter 键：Volume（体积）是报告的第二行。示例中 60 × 40 × 25 的长方体得到 60000。在文件问题处按 Enter 键结束。
 
-### CAD怎么求图形的质心？
+### CAD 怎么求图形的质心？
 
 用 [`REGION`](/docs/commands/region) 将其创建为面域，或创建为实体，然后执行 MASSPROP 并选择它：Centroid（质心）给出其 X 和 Y（实体还有 Z），使用当前 UCS 的坐标。
 
-### MASSPROP 为什么提示未选择实体或面域？
+### CAD 中 MASSPROP 为什么提示未选择实体或面域？
 
 所选的对象两者都不是：直线、多段线、圆和图案填充没有质量特性，包含实体的块也不是实体。用 [`REGION`](/docs/commands/region) 将闭合图形转换为面域，或用 [`EXTRUDE`](/docs/commands/extrude) 转换为实体。
 
-### 为什么质量等于体积？
+### CAD 为什么质量等于体积？
 
 与 AutoCAD 一样，MASSPROP 按密度 1 测量：这里的实体没有材质。用体积乘以材料的密度即可得到实际质量。
 

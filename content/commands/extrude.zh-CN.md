@@ -1,12 +1,12 @@
 ---
 title: "AutoCAD EXTRUDE（拉伸）三维命令"
-metaTitle: "CAD三维拉伸命令（EXTRUDE）用法与快捷键 EXT"
-description: "CAD三维拉伸怎么用：按提示顺序讲解 AutoCAD 的 EXTRUDE（快捷键 EXT）如何将闭合的二维轮廓拉伸为三维实体：高度、方向和倾斜角。在浏览器中免费试用。"
+metaTitle: "CAD 三维拉伸命令（EXTRUDE）用法与快捷键 EXT"
+description: "CAD 三维拉伸怎么用：按提示顺序讲解 AutoCAD 的 EXTRUDE（快捷键 EXT）如何将闭合的二维轮廓拉伸为三维实体：高度、方向和倾斜角。在浏览器中免费试用。"
 figure: "一条闭合的 L 形多段线拉伸 20 成为实体，然后以“隐藏”视觉样式从东南方向观察。"
 sourceHash: "53bfe3dd1e9c"
 ---
 
-EXTRUDE（拉伸）命令将闭合的二维轮廓转换为三维实体，每个轮廓沿垂直于其平面的方向按指定高度拉出。选择轮廓（圆、椭圆、闭合多段线或样条曲线、面域），按 Enter 键，然后输入高度或用一个点指定高度；上一次的高度是下一次执行的默认值。每个轮廓各自成为一个实体，位于当前图层上，轮廓本身被删除，与 DELOBJ 的默认设置相同。整个命令是一步，可以用放弃撤销。
+EXTRUDE（拉伸）命令将闭合的二维轮廓转换为三维实体，每个轮廓沿垂直于其平面的方向按指定高度拉出。选择轮廓（圆、椭圆、闭合多段线或样条曲线、面域），按 Enter 键，然后输入高度或用一个点指定高度；上一次的高度是下一次执行的默认值。每个轮廓各自成为一个实体，位于当前图层上，轮廓本身被删除，与 DELOBJ 的默认设置相同。整个命令是一步，可以一次放弃。
 
 MellowCAD 的三维只有实体，且仍是部分支持：开放轮廓在 AutoCAD 中会生成曲面，这里则显示 <Message id="sweepRefusedType" />，并从选择集中删除。
 
@@ -38,22 +38,22 @@ MellowCAD 的三维只有实体，且仍是部分支持：开放轮廓在 AutoCA
 
 ## Questions
 
-### CAD拉伸的快捷键是什么？
+### CAD 拉伸的快捷键是什么？
 
 输入 `EXT`，然后按 Enter 键或空格键。也可以输入完整命令名，在任何语言版本的 AutoCAD 中都可以输入 `_EXTRUDE`。
 
-### CAD二维图怎么拉伸成三维？
+### CAD 二维图怎么拉伸成三维？
 
 将轮廓画成一个闭合对象（闭合多段线、圆或面域），执行 EXTRUDE，选择它，按 Enter 键并输入高度。从上方看，实体与其轮廓一样：请用 ViewCube，或 <Command id="-VIEW" /> 和 <Keyword command="VIEW" id="SEiso" /> 转动视图，以三维方式查看。
 
-### CAD拉伸为什么不能生成实体？
+### CAD 拉伸为什么不能生成实体？
 
 轮廓是开放的，或自相交。直线、圆弧或开放多段线在 AutoCAD 中会生成曲面，而 MellowCAD 还没有曲面：EXTRUDE 显示 <Message id="sweepRefusedType" />，并将它们从选择集中删除；自相交的轮廓显示 <Message id="sweepSelfIntersecting" />，同样被删除。请用 <Command id="JOIN" /> 将各段合并，用 <Command id="REGION" /> 将它们创建为面域，或用 <Command id="PRESSPULL" /> 在其内部单击。
 
-### 带孔的图形怎么拉伸？
+### CAD 带孔的图形怎么拉伸？
 
 先将它创建为一个面域：对外轮廓和孔执行 <Command id="REGION" />，再用 <Command id="SUBTRACT" /> 从外轮廓的面域中减去孔的面域。拉伸该面域，孔就贯穿整个实体。也可以执行 <Command id="PRESSPULL" />，在外轮廓和孔之间单击。
 
-### CAD怎么沿路径拉伸？
+### CAD 怎么沿路径拉伸？
 
 目前还不行：<Keyword id="Path" /> 会列出，但会被拒绝，SWEEP 也尚未实现。<Keyword id="Direction" /> 沿两点之间的直线拉伸。

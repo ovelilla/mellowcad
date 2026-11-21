@@ -1,6 +1,6 @@
 ---
 title: "AutoCAD VIEW（视图管理器）命令"
-metaTitle: "CAD等轴测视图与俯视图怎么切换（VIEW）"
+metaTitle: "CAD 等轴测视图与俯视图怎么切换（VIEW）"
 description: "AutoCAD VIEW（快捷键 V、-VIEW）怎么切换到六个正交视图和四个等轴测视图，以及每个正交视图设置的 UCS。在线免费试用。"
 figure: "以平面方式画出的阶梯块：执行 -VIEW 和 SW Isometric 后，以“隐藏”视觉样式从西南上方观察。"
 sourceHash: "261c8657f5f7"
@@ -8,7 +8,7 @@ sourceHash: "261c8657f5f7"
 
 VIEW（视图管理器）命令将视图转到 AutoCAD 的十个预设视图之一：六个正交视图，正对模型的某一面；四个等轴测视图，从某个角向下看。图形中的对象都不移动。VIEW 执行命令行形式 <Command id="-VIEW" />：其第一个提示列出 <Keyword id="Orthographic" />，随后询问要看哪一面；它也直接接受视图名，与 AutoCAD 的菜单所回答的一样：<Command id="-VIEW" />，然后 <Keyword id="SWiso" />。每个视图都会缩放到整个图形，并显示 <Message id="regeneratingModel" />。
 
-图形左上角的视图控件列出同样的十个视图并执行 <Command id="-VIEW" />；ViewCube 的面和角也会转到这些视图，但保持 UCS 不变。每次 VIEW 是一个放弃步骤，因此 <Command id="U" /> 可以撤销视图及其设置的 UCS。在其他命令中加撇号输入时，它会拒绝并显示 <Message id="requiresRegen" />。MellowCAD 的三维只有实体，并且仍不完整。
+图形左上角的视图控件列出同样的十个视图并执行 <Command id="-VIEW" />；ViewCube 的面和角也会转到这些视图，但保持 UCS 不变。每次 VIEW 是一个放弃步骤，因此 <Command id="U" /> 可以放弃视图及其设置的 UCS。在其他命令中加撇号输入时，它会拒绝并显示 <Message id="requiresRegen" />。MellowCAD 的三维只有实体，并且仍不完整。
 
 ## Options
 
@@ -40,22 +40,22 @@ VIEW（视图管理器）命令将视图转到 AutoCAD 的十个预设视图之�
 
 ## Questions
 
-### CAD等轴测视图怎么调出来？
+### CAD 等轴测视图怎么调出来？
 
-输入 <Command id="-VIEW" />，然后选择 <Keyword id="SWiso" /> 得到西南等轴测；<Keyword id="SEiso" />、<Keyword id="NEiso" /> 和 <Keyword id="NWiso" /> 得到其他三个角。也可以在左上角的视图控件中选择 SW Isometric，或单击 ViewCube 的一个上角。用 <Command id="VSCURRENT" /> 选择 <Keyword command="VSCURRENT" id="Hidden" /> 可以隐藏后面的边。
+输入 <Command id="-VIEW" />，然后选择 <Keyword id="SWiso" /> 得到西南等轴测；<Keyword id="SEiso" />、<Keyword id="NEiso" /> 和 <Keyword id="NWiso" /> 得到其他三个角。也可以在左上角的视图控件中选择“西南等轴测”，或单击 ViewCube 的一个上角。用 <Command id="VSCURRENT" /> 选择 <Keyword command="VSCURRENT" id="Hidden" /> 可以隐藏后面的边。
 
-### CAD俯视图的命令是什么？
+### CAD 俯视图的命令是什么？
 
 <Command id="-VIEW" />，然后选择 <Keyword id="Top" />，它还会将 UCS 设置为世界坐标系的轴。<Command id="PLAN" /> 则从正上方观察当前 UCS，并保持其不变。
 
-### CAD切换到前视图后 UCS 为什么变了？
+### CAD 切换到前视图后 UCS 为什么变了？
 
-正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 <Command id="UCS" /> 并按 Enter 键恢复为世界坐标系；<Command id="U" /> 将视图及其 UCS 一起撤销。
+正交视图会将 UCS 转为正对观察者，使绘制的对象平贴屏幕。执行 <Command id="UCS" /> 并按 Enter 键恢复为世界坐标系；<Command id="U" /> 将视图及其 UCS 一起放弃。
 
-### CAD等轴测视图和等轴测图是一回事吗？
+### CAD 等轴测视图和等轴测图是一回事吗？
 
 不是。等轴测视图是从某个角观察三维模型。等轴测图是二维的，用 SNAP 的等轴测样式在等轴测平面上绘制，MellowCAD 尚不具备。
 
-### CAD视图管理器在哪里？
+### CAD 视图管理器在哪里？
 
 VIEW 在命令行中执行 <Command id="-VIEW" />：没有视图管理器，命名视图（保存、恢复）在这里也尚不具备。
