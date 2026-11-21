@@ -77,9 +77,9 @@ describe("Cloudflare's zone", () => {
     ).toEqual([false, false])
   })
 
-  it("blocks the crawlers that send no visitors, never a search engine", () => {
+  it("keeps a switch, off, for the crawlers that send no visitors, never a search engine", () => {
     const rule = FIREWALL_RULES.find((r) => r.ref === "unwanted_crawlers")
-    expect(rule).toMatchObject({ action: "block", enabled: true })
+    expect(rule).toMatchObject({ action: "block", enabled: false })
     expect(rule?.expression).toContain(
       `lower(http.user_agent) contains "semrushbot"`
     )

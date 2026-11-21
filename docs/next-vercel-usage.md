@@ -5,7 +5,8 @@
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
 > Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
 > millón (§3). Desde el 21/11 a las 09:40 el sitio es un export estático en producción, que deja
-> las lecturas de ISR de las páginas en cero: la lectura del 22/11 lo confirma (§4).
+> las lecturas de ISR de las páginas en cero: la lectura del 22/11 lo confirma (§4), y entonces se
+> aplica la zona de Cloudflare, que reabre el sitio a los rastreadores (§5).
 
 ## 1. El problema
 
@@ -104,6 +105,15 @@ la regla `.claude/rules/cloudflare.md`; la zona como código, `scripts/cloudflar
 Desde el 20/11 a las 10:50, una regla del cortafuegos devuelve 403 a los rastreadores que no traen
 visitas (herramientas de SEO, rastreadores de entrenamiento, scrapers: `UNWANTED_CRAWLERS` en
 `scripts/cloudflare/zone.ts`), que eran cerca de un tercio de los fallos de caché (§3).
+
+El 21/11, con el sitio ya estático, el dueño decidió reabrirlo: la regla queda en el código como
+interruptor apagado (como los de `/mcp`), y `robots.txt` ya no excluye a GPTBot ni a
+meta-externalagent. Un fallo de caché es ahora un fichero, una petición de las del millón al mes de
+Hobby, nunca una lectura de ISR: aunque volvieran todos (unas 6–7 mil peticiones al día, el peor
+caso sin un acierto), quedarían bajo las 400 mil al mes con las ~5.400 diarias de ahora; y que los
+modelos conozcan MellowCAD es publicidad gratis. La zona se aplica (`npm run cloudflare -- --apply`)
+tras la lectura del 22/11 que confirme las lecturas de ISR en cero; `robots.txt`, con el primer
+push. Si un rastreador se desmadra (Bytespider no lee `robots.txt`), se vuelve a encender.
 
 Qué mirar en la lectura diaria, además de §2: que las lecturas de ISR caen, y en Cloudflare
 (mellowcad.com → Caching) qué parte sirve la caché. En enero, que Vercel renovó sus certificados a

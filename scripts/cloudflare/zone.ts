@@ -102,12 +102,14 @@ const MCP = `http.request.uri.path in {"/mcp" "/api/mcp"}`
 
 /**
  * Crawlers that never send a visitor: SEO tools' backlink indexes, training
- * crawlers, scrapers. WHY at the edge and not only in `robots.txt`: each of
- * their requests is a cache miss read from Vercel's ISR storage, the team's
- * Hobby reads were past their million on 20/11/2026 (`docs/next-vercel-usage.md`),
- * a block costs Vercel nothing, and robots.txt needs a deploy and a day to be
- * reread. Search engines and the AI ones that cite their sources stay
- * (Googlebot, bingbot, Applebot, YandexBot, OAI-SearchBot, Exa, Keenable…).
+ * crawlers, scrapers. Their rule is a switch, off: on from 20/11/2026, when
+ * each of their requests was a cache miss read from Vercel's ISR storage, past
+ * Hobby's million (`docs/next-vercel-usage.md`). Since the static export a miss
+ * is a file, one CDN request, and the site wants to be known, by the models
+ * too. On again only if one floods Hobby's million CDN requests a month
+ * (Bytespider ignores robots.txt): at the edge it takes no deploy. Search
+ * engines and the AI ones that cite their sources are never on it (Googlebot,
+ * bingbot, Applebot, YandexBot, OAI-SearchBot, Exa, Keenable…).
  */
 export const UNWANTED_CRAWLERS = [
   "semrushbot",
@@ -162,10 +164,10 @@ export const FIREWALL_RULES: Rule[] = [
   },
   {
     ref: "unwanted_crawlers",
-    description: "Crawlers that send no visitors, kept off Vercel's ISR reads",
+    description: "Switch: crawlers that send no visitors",
     expression: crawlerExpression(),
     action: "block",
-    enabled: true,
+    enabled: false,
   },
 ]
 

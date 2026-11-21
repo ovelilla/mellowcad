@@ -34,8 +34,8 @@ The landing and the editor are two **root layouts** under the `[locale]` root pa
 `app/[locale]/(marketing)/layout.tsx` owns `<html>`, `marketing.css`, the header, the footer and the
 metadata base; `app/[locale]/(app)/layout.tsx` owns the editor and `globals.css`. Crossing between
 them is a full page load, so a link to the editor is a plain `<a href={paths.editor}>`, never
-`next/link`. Links _within_ the site use `Link`, always `prefetch={false}` (ESLint): on Hobby an
-uncached prefetch is an ISR read, and a docs page fired 20 to 90. Every href is the page's
+`next/link`. Links _within_ the site use `Link`, always `prefetch={false}` (ESLint): a docs page fired
+20 to 90, payloads nobody asked for, and `/docs` brought its chunks into `/`. Every href is the page's
 language's (`sitePaths()`, `localePath()`; `i18n.md`); a client island gets it as a prop. Copy,
 claims and tone: `i18n.md`.
 
@@ -194,7 +194,7 @@ reports, for the same promise.
   _is_ `<` and the escape does nothing: the home's site, app and publisher (its `sameAs`, the
   repository and the engine's npm page; its `softwareVersion`, the engine's), and each docs page's
   `BreadcrumbList`, the same steps it draws above the article. No invented ratings, ever.
-- `robots.ts` allows all but two training crawlers (its `WHY`), `/draw` included (it must be fetchable for its `noindex` to be
+- `robots.ts` allows every crawler, AI ones included, `/draw` too (it must be fetchable for its `noindex` to be
   read). `sitemap.ts` lists indexable pages once per live language with their `hreflang` and
   `CONTENT_UPDATED` — bump it with the copy; a docs page, the day of its files' last commit
   (`lastCommitDay`), left out where a shallow clone cannot know it.

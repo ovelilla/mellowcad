@@ -7,8 +7,9 @@ paths:
 
 # Cloudflare, in front of Vercel
 
-Since 18/11/2026 mellowcad.com and www are proxied by Cloudflare (Free), to keep Vercel's Hobby ISR
-reads and Fast Origin Transfer under their caps (`docs/next-vercel-usage.md`). **The zone is
+Since 18/11/2026 mellowcad.com and www are proxied by Cloudflare (Free), first for Vercel's Hobby
+ISR reads and, the site a static export since 21/11, for its million CDN requests a month: some
+5,400 a day through Cloudflare, 34,000 without (`docs/next-vercel-usage.md`). **The zone is
 code**: `scripts/cloudflare/zone.ts` declares it, `npm run cloudflare` prints what differs,
 `-- --apply` makes it so and reads it back, `-- --purge` empties the cache. Never change it in the
 dashboard: the next apply undoes it, or the code lies.
@@ -32,8 +33,9 @@ dashboard: the next apply undoes it, or the code lies.
 - **Vercel sees Cloudflare's addresses**, never the client's (Verified Proxy Lite keeps none): its
   per-IP rules count nobody behind the proxy. `/mcp`'s limit and switches are Cloudflare's
   (`mcp.md`), checked by `test/cloudflare.test.ts`.
-- **Crawlers that send no visitors are blocked at the edge** (`UNWANTED_CRAWLERS`: SEO tools,
-  training crawlers, scrapers), by user agent, before they cost Vercel an ISR read; search engines
-  and the AI ones that cite stay. `robots.txt` (`app/robots.ts`) names only two, and needs a deploy.
+- **Crawlers that send no visitors have a switch, off** (`UNWANTED_CRAWLERS`: SEO tools, training
+  crawlers, scrapers): a block by user agent at the edge, on from 20/11 until the static export
+  made each of their misses a file. On again only if one floods the CDN requests; search engines
+  and the AI ones that cite are never on it. `robots.txt` (`app/robots.ts`) shuts no one out.
 - From WSL, past a resolver that still caches Vercel's address:
   `curl --resolve mellowcad.com:443:188.114.97.5 …`; `cf-cache-status` says HIT, MISS or DYNAMIC.
