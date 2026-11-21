@@ -23,10 +23,12 @@ dashboard: the next apply undoes it, or the code lies.
   on Vercel's deployment status, once the domain serves the new commit (the report link names it),
   with the CLOUDFLARE_PURGE_TOKEN secret (purge only, no expiry) and the CLOUDFLARE_ZONE_ID
   variable. Unpurged, a cached page names scripts the new deployment no longer has.
-- **Never cached**: the functions (`/mcp`, `/api/`), Vercel's `/_vercel/` and `/.well-known/`,
-  `/_next/` (its own headers), and the router's requests (an `RSC` header or `_rsc`): Cloudflare
-  ignores `Vary`. Vercel renews its certificates through `/.well-known/acme-challenge/` over plain
-  HTTP, so Always Use HTTPS stays off; theirs run to 27/01/2027: check the renewal in January.
+- **Never cached**: the functions (`/mcp`, `/api/`), Vercel's `/_vercel/` and `/.well-known/`, and
+  `/_next/` (its own headers). The router's payloads are files (`<path>.txt`), kept like the pages:
+  before the export they answered an `RSC` header at the page's URL, and Cloudflare ignores `Vary`.
+  Applied before the export is live, this rule would cache payloads as pages. Vercel renews its
+  certificates through `/.well-known/acme-challenge/` over plain HTTP, so Always Use HTTPS stays
+  off; theirs run to 27/01/2027: check the renewal in January.
 - **Vercel sees Cloudflare's addresses**, never the client's (Verified Proxy Lite keeps none): its
   per-IP rules count nobody behind the proxy. `/mcp`'s limit and switches are Cloudflare's
   (`mcp.md`), checked by `test/cloudflare.test.ts`.

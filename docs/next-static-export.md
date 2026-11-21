@@ -1,10 +1,10 @@
 # mellowcad.com como ficheros estáticos en Vercel Hobby — brief
 
-> **Estado:** sonda hecha el 20–21/11/2026, sin acordar y sin publicar nada: servir el sitio con
-> `output: "export"` desde el mismo proyecto de Vercel, con Cloudflare delante, es viable con
-> condiciones (§2). Falta el sí del dueño para ejecutarlo (§5) y para el despliegue de prueba que
-> lo confirma (§6); el push sigue congelado (`docs/next-vercel-usage.md` §4). Se borra cuando el
-> export esté en producción o se descarte.
+> **Estado:** pasos 1 a 5 de §5 hechos en commits el 21/11/2026, por encargo del dueño, sin
+> publicar nada: el build de producción es un export estático y `vercel build` en local da la
+> tabla de §4.3. Falta, con el sí del dueño, el despliegue de prueba (§6) y lo que va con el push
+> (§5, «Lo que espera»); el push sigue congelado (`docs/next-vercel-usage.md` §4). Se borra cuando
+> el export esté en producción o se descarte.
 
 ## 1. Qué se propone y por qué
 
@@ -223,6 +223,8 @@ El índice de un idioma es un route handler `force-static` dentro de `[locale]` 
 campos que la función de hoy (hoy una sola base guarda todos los idiomas y filtra por `locale`:
 exportada entera serían unos 75 MB). **Sin medir**: lo que añade al navegador el cliente estático
 de Fumadocs; se mide contra los presupuestos de `.claude/rules/i18n.md` antes de darlo por bueno.
+**Medido al ejecutarlo** (21/11): unos 25 KB en Brotli más que el cliente de hoy; se importa al
+abrir el diálogo, así que la primera carga de una página de la documentación no cambia.
 
 ## 5. El plan, en orden
 
@@ -250,6 +252,26 @@ hechos aunque el 4 se retrase.
 5. **Lo que se mueve con ello** (§7): reglas, skills, la zona de Cloudflare y los briefs.
 6. **El despliegue de prueba y sus comprobaciones** (§6), con el sí del dueño. Después, el push,
    también con su sí. La vuelta atrás es revertir el commit del paso 4: los demás valen igual.
+
+**Hecho el 21/11/2026** (rama `worktree-static-export`, sin push): el paso 1 en `0300ac3c`, el 2
+en `1231ac12`, el 3 en `d1eb570b`, el 4 en `c44c0148` y el 5 en el commit de este texto. Medido:
+`npm run build` exporta 3.575 rutas, ninguna función, en 12.149 ficheros y 752 MB (con los 13
+índices de búsqueda); `vercel build`, sin desplegar, da 42 rutas (las 37 de §4.3, más los
+redirects de las tarjetas y el `noindex` del índice), 1.707 páginas sin `.html` y la función del
+MCP (2,3 MB). Recorrido en Chrome sobre esa salida con `scripts/vercel/serve-output.mjs`: lo
+mismo que §4.4, más la búsqueda en coreano. Cambios sobre el plan: las reglas, las skills y el
+`.gitignore` se movieron con el paso que las dejaba viejas, no en el 5; las reglas de `/mcp` de
+Cloudflare cubren también `/api/mcp`, que responde igual por su nombre.
+
+**Lo que espera el sí del dueño**, en este orden:
+
+1. El despliegue de prueba (un preview de la rama) y §6, puntos 1 a 6.
+2. El push a `main`.
+3. Justo después de que producción sirva el export, `npm run cloudflare -- --apply`: la regla de
+   caché ya guarda los `.txt` del router, y aplicada antes guardaría payloads como páginas; las
+   reglas de `/mcp` ganan `/api/mcp`. Después, §6.7.
+4. En el cortafuegos de Vercel (por su API, `.claude/rules/mcp.md`), la ruta `/api/mcp` junto a
+   `/mcp` en sus tres reglas, para quien llame a la dirección de Vercel sin Cloudflare.
 
 ## 6. Sin verificar: las pruebas de un despliegue de prueba
 
@@ -284,7 +306,8 @@ Igual     .github/workflows/purge-cache.yml (el commit va en la página),
 Código    lib/site.ts, package.json (build), .gitignore (el bundle del MCP)
 ```
 
-La sonda sigue en su worktree, sin commit, con `out/` y `.vercel/output` del último build:
+La sonda sigue en su worktree, sin commit, con `out/` y `.vercel/output` del último build (sus
+cambios ya están en los commits de arriba; el worktree se puede quitar):
 
 ```
 .claude/worktrees/static-export-probe          rama worktree-static-export-probe

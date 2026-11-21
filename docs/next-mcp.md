@@ -376,7 +376,8 @@ ejecución con la consola de AutoCAD, las skills y la puerta delante, que cazan 
 - **Si hay tracción o abuso**, la salida es mover la misma función a Workers de Cloudflare de
   pago (5 $ al mes), que aísla el sitio: su plan gratis da 10 ms de CPU por petición y no llega.
   Es gasto, así que es del dueño. El núcleo se escribe sin nada de Vercel para que el paso sea
-  corto.
+  corto. Desde el 21/11/2026 (`docs/next-static-export.md`) es ya una función fuera de Next,
+  `api/mcp.js`, que reexporta `lib/mcp/handler.ts` empaquetado: el paso es aún más corto.
 - **Privacidad**: el servidor ve el guion que le mandan y no guarda nada. Hay que decirlo donde
   hoy se dice lo contrario.
 

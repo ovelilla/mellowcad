@@ -4,7 +4,8 @@
 > sesión de cada día lee el uso de Vercel como dice §2 y anota la lectura en §3, y ninguna sesión
 > hace push (se sigue desarrollando y haciendo commit) hasta que §4 se cumpla. El proxy de
 > Cloudflare (§5) funciona desde el 18/11 a las 00:40. El 20/11 las lecturas de ISR pasaron del
-> millón (§3): pasarse a Pro está pendiente del dueño.
+> millón (§3): pasarse a Pro está pendiente del dueño, y el export estático que deja esas lecturas
+> en cero está hecho en commits el 21/11, a falta de su despliegue (`docs/next-static-export.md`).
 
 ## 1. El problema
 
@@ -88,7 +89,8 @@ Hasta principios de diciembre salen de la ventana los días de finales de octubr
 40K lecturas: para no llegar al millón, el consumo tiene que quedar **por debajo de ~20–25K
 lecturas al día**. Se levanta cuando dos días completos seguidos queden por debajo y el total
 de 30 días baje, o cuando el proxy de §5 esté funcionando y lo confirme la lectura del día
-siguiente. Entonces un push al día como mucho (skill `finish-feature`), y el siguiente idioma
+siguiente, o cuando el sitio se sirva como export estático (`docs/next-static-export.md`, hecho
+en commits el 21/11/2026), que deja las lecturas de ISR en cero. Entonces un push al día como mucho (skill `finish-feature`), y el siguiente idioma
 (el húngaro) solo con margen.
 
 ## 5. La caché de Cloudflare delante de Vercel
@@ -110,5 +112,7 @@ través del proxy (vencen el 27/01/2027).
 
 - Adelgazar el HTML de la documentación: de sus ~123 KB, ~68 KB son el payload del router que Next
   incrusta para hidratar.
-- Servir el sitio estático fuera de Vercel (el brief del MCP, `docs/next-mcp.md` §7, ya prevé
-  llevar allí la función).
+- Servir el sitio como ficheros estáticos: hecho en commits el 21/11/2026, en el mismo proyecto
+  de Vercel (`docs/next-static-export.md`), a falta de su despliegue de prueba; si Hobby se
+  queda corto, Cloudflare Workers Static Assets (su §3). El MCP ya es una función aparte
+  (`api/mcp.js`), lista para irse a Workers (`docs/next-mcp.md` §7).

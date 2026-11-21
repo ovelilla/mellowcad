@@ -33,10 +33,11 @@ export const PROXIED_HOSTS = [ZONE, `www.${ZONE}`]
 
 /**
  * What Cloudflare must never keep: the functions, Vercel's measurements and
- * its validation paths, Next's own assets (they carry their own year-long
- * headers, which Cloudflare's default caching already respects), and the
- * router's requests — Cloudflare ignores `Vary`, so a request with an `RSC`
- * header would leave the router's payload cached under the page's URL.
+ * its validation paths, and Next's own assets (they carry their own year-long
+ * headers, which Cloudflare's default caching already respects). The
+ * router's payloads are kept like the pages: exported, each is a file of its
+ * own (`<path>.txt`), never an answer to a header at the page's URL, which
+ * Cloudflare, ignoring `Vary`, would have cached in the page's place.
  */
 export const BYPASS_PREFIXES = [
   "/mcp",
@@ -52,8 +53,6 @@ export function cacheExpression(prefixes = BYPASS_PREFIXES): string {
     ...prefixes.map(
       (prefix) => `not starts_with(http.request.uri.path, "${prefix}")`
     ),
-    `not any(lower(http.request.headers.names[*])[*] eq "rsc")`,
-    `not http.request.uri.query contains "_rsc="`,
   ].join(" and ")
 }
 

@@ -39,17 +39,16 @@ const matching: ZoneState = {
 }
 
 describe("Cloudflare's zone", () => {
-  it("keeps the functions, Vercel's paths and the router's requests out of the cache", () => {
+  it("keeps the functions and Vercel's paths out of the cache", () => {
     const expression = cacheExpression()
     for (const prefix of ["/mcp", "/api/", "/_vercel/", "/.well-known/"])
       expect(expression).toContain(
         `not starts_with(http.request.uri.path, "${prefix}")`
       )
     expect(BYPASS_PREFIXES).toContain("/_next/")
-    expect(expression).toContain(
-      `not any(lower(http.request.headers.names[*])[*] eq "rsc")`
-    )
-    expect(expression).toContain(`not http.request.uri.query contains "_rsc="`)
+    // Exported, the router's payloads are files (`<path>.txt`), kept like
+    // the pages; no answer depends on a header.
+    expect(expression).not.toContain("rsc")
   })
 
   it("overrides Vercel's max-age=0 at the edge, never in the browser", () => {
