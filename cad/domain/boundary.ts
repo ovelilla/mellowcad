@@ -306,6 +306,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "solid2d":
       case "leader":
       case "face3d":
+      case "polygonMesh":
       case "wipeout":
       case "image":
       case "table":

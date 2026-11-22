@@ -3,7 +3,7 @@ title: "Vonallánc szerkesztése az AutoCAD-ben: VLEDIT (PEDIT) parancs"
 metaTitle: "AutoCAD VLEDIT (PEDIT): vonallánc szerkesztése"
 description: "Az AutoCAD VLEDIT (PEDIT, rövidítése VE) parancsa: vonalakból vonallánc, Egyesít, Szélesség, Görbe és Spline, csúcspont szerkesztése, Több. Próbálja ki ingyen."
 figure: "Három, végpontjaival egymáshoz csatlakozó vonal: a VLEDIT az elsőt vonallánccá alakítja, hozzáfűzi a másik kettőt, és 2-es szélességet ad neki."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 A VLEDIT (PEDIT) parancs egy vonalláncot szerkeszt. Válasszon ki egyet a `Válasszon vonalláncot vagy [Több]:` promptnál, vagy jelölje ki a parancs előtt; a vonalláncra duplán kattintva is a VLEDIT fut le rajta. Ha helyette vonalat, ívet vagy spline-t választ, <Message id="objectNotPolyline" /> üzenetet ír ki, és megkérdezi, hogy vonallánccá alakítsa-e, alapértelmezés szerint Igen: az új vonallánc a helyére lép, és átveszi a tulajdonságait. Ezután újra meg újra opciót kér, és mindegyiket azonnal alkalmazza, amíg az Enter be nem fejezi. A 3D vonallánc rövidebb listát kap, szélesség, görbeillesztés és vonaltípus-generálás nélkül, a spline opciója pedig a <Keyword id="Spline curve" />. Az Esc megtartja az addig elvégzetteket; a teljes szerkesztés egyetlen lépés, amelyet a <Command id="U" /> visszavon.
@@ -56,7 +56,7 @@ Visszavonja ennek a futásnak az utolsó opcióját, és tovább kérdez.
 
 ## Missing
 
-PEDITACCEPT: a vonal, ív vagy spline kiválasztásakor átalakítás előtt mindig rákérdez. PLINECONVERTMODE: a spline egyenes szakaszokból álló vonalláncra alakul, sokkal több szakaszból, mint amennyit az AutoCAD készít, és soha nem ívekből. A görbeillesztett vonallánc a Tulajdonságok palettán egyszerű vonalláncként jelenik meg, az AutoCAD 2D vonallánc címe és Görbe/Simítás sora nélkül. Ha a Több opcióval csak 3D vonalláncokat választ ki, a 3D promptot kapja, míg az AutoCAD a 2D promptot kérdezi. Szerkeszthető hálók nincsenek.
+PEDITACCEPT: a vonal, ív vagy spline kiválasztásakor átalakítás előtt mindig rákérdez. PLINECONVERTMODE: a spline egyenes szakaszokból álló vonalláncra alakul, sokkal több szakaszból, mint amennyit az AutoCAD készít, és soha nem ívekből. A görbeillesztett vonallánc a Tulajdonságok palettán egyszerű vonalláncként jelenik meg, az AutoCAD 2D vonallánc címe és Görbe/Simítás sora nélkül. Ha a Több opcióval csak 3D vonalláncokat választ ki, a 3D promptot kapja, míg az AutoCAD a 2D promptot kérdezi. A <Keyword id="Multiple" /> opció nem szerkeszti a poligonhálókat.
 
 ## Questions
 

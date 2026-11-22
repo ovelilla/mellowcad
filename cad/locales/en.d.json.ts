@@ -135,6 +135,7 @@ declare const source: {
       "ptype": string
       "solid": string
       "face3d": string
+      "mesh3d": string
       "leader": string
       "wipeout": string
       "xline": string
@@ -276,6 +277,7 @@ declare const source: {
       "mleader": string
       "xline": string
       "ray": string
+      "polygonMesh": string
     }
     "array": {
       "rectangular": string
@@ -313,6 +315,7 @@ declare const source: {
         "linesArrows": string
         "fit": string
         "primaryUnits": string
+        "mesh": string
       }
       "row": {
         "length": string
@@ -466,6 +469,12 @@ declare const source: {
         "minsertColumnSpacing": string
         "minsertRows": string
         "minsertRowSpacing": string
+        "meshMClosed": string
+        "meshNClosed": string
+        "meshMDensity": string
+        "meshNDensity": string
+        "meshMVertexCount": string
+        "meshNVertexCount": string
         "basePointX": string
         "basePointY": string
         "basePointZ": string
@@ -519,6 +528,10 @@ declare const source: {
         "no": string
         "none": string
         "fitNone": string
+        "meshFitNone": string
+        "fitQuadratic": string
+        "fitCubic": string
+        "fitBezier": string
         "atLeast": string
         "exactly": string
         "fitPoints": string
@@ -600,6 +613,7 @@ declare const source: {
       "RAY": string[]
       "PLINE": string[]
       "3DFACE": string[]
+      "3DMESH": string[]
       "3DPOLY": string[]
       "CIRCLE": string[]
       "CIRCLED": string[]
@@ -951,6 +965,16 @@ declare const source: {
         "Spline curve": string
         "Decurve": string
         "Defit": string
+        "Smooth surface": string
+        "Desmooth": string
+        "Mclose": string
+        "Mopen": string
+        "Nclose": string
+        "Nopen": string
+        "Left": string
+        "Right": string
+        "Up": string
+        "Down": string
       }
       "BOX": {
         "Center": string
@@ -1722,6 +1746,17 @@ declare const source: {
       "peditWalkOption": {
         "eXit": string
       }
+      "peditMeshOption": {
+        "eXit": string
+        "X": string
+        "Undo": string
+      }
+      "peditMeshVertexOption": {
+        "Regen": string
+        "Previous": string
+        "Move": string
+        "eXit": string
+      }
       "enterFitDataOption": {
         "Add": string
         "Open": string
@@ -2318,6 +2353,11 @@ declare const source: {
       "peditWalkOption": string
       "specifyLocationForNewVertex": string
       "specifyNewLocationForMarkedVertex": string
+      "enterMeshSizeM": string
+      "enterMeshSizeN": string
+      "specifyMeshVertex": string
+      "peditMeshOption": string
+      "peditMeshVertexOption": string
       "startingWidthForNextSegment": string
       "endingWidthForNextSegment": string
       "directionOfVertexTangent": string
@@ -2328,6 +2368,10 @@ declare const source: {
       "exitLower": string
       "nextShort": string
       "previousShort": string
+      "leftShort": string
+      "rightShort": string
+      "upShort": string
+      "downShort": string
       "extrudeSelectOr": string
       "closedProfilesMode": string
       "closedProfilesSolid": string
@@ -2550,6 +2594,8 @@ declare const source: {
       "cannotExtendClosedPolyline": string
       "cannotTrimObject": string
       "cannotTrimThisObject": string
+      "cannotTrimPolygonMesh": string
+      "cannotExtendPolygonMesh": string
       "objectPerpendicularToUcs": string
       "edgePerpendicularToUcs": string
       "noEdgeInThatDirection": string
@@ -2699,6 +2745,13 @@ declare const source: {
       "noSolidSurfaceOrMesh": string
       "ucsNoCoordinateSystem": string
       "polyline3dNoCoordinateSystem": string
+      "polygonMeshNoCoordinateSystem": string
+      "meshCurrentVertex": string
+      "noVisibleVertices": string
+      "tooFewControlVertices": string
+      "tooManyControlVertices": string
+      "surfuOutOfRange": string
+      "surfvOutOfRange": string
       "zAxisNotSupported": string
       "noPreviousUcs": string
       "everythingUndone": string
@@ -2959,6 +3012,9 @@ declare const source: {
       "listFace3dSecond": string
       "listFace3dThird": string
       "listFace3dFourth": string
+      "listMeshState": string
+      "listMeshVertex": string
+      "listMeshPoint": string
       "listSolidTo": string
       "listLineLength": string
       "listLine3d": string
@@ -3456,6 +3512,8 @@ declare const source: {
         "OFF": string
         "Jointype": string
         "Spline curve": string
+        "Smooth surface": string
+        "Desmooth": string
       }
       "HATCH": {
         "Select objects": string
@@ -3525,6 +3583,9 @@ declare const source: {
       }
       "peditMultipleOption": {
         "Ltype gen": string
+      }
+      "peditMeshOption": {
+        "Edit vertex": string
       }
     }
     "listing": {

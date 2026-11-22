@@ -5361,6 +5361,7 @@ export class CadRuntime extends Observable {
     const count =
       entity?.type === "polyline" ||
       entity?.type === "polyline3d" ||
+      entity?.type === "polygonMesh" ||
       entity?.type === "leader"
         ? entity.vertices.length
         : entity?.type === "spline"
@@ -7174,10 +7175,15 @@ export class CadRuntime extends Observable {
       // the run is TEXTEDIT's for U and Enter.
       this.textEdit.startOn(hit, true)
       this.startEchoed(this.textEdit.id, "_mtedit", "TEXTEDIT")
-    } else if (hit?.type === "polyline" || hit?.type === "polyline3d") {
+    } else if (
+      hit?.type === "polyline" ||
+      hit?.type === "polyline3d" ||
+      hit?.type === "polygonMesh"
+    ) {
       // `^C^C_pedit ` with the polyline selected (DoubleClickRoot.cui's
-      // LWPOLYLINE and POLYLINE): straight to its options, as a polyline
-      // selected before PEDIT is (pedit/p37).
+      // LWPOLYLINE and POLYLINE, a polygon mesh's DXF name too; on a mesh
+      // **unverified** on the desktop): straight to its options, as a
+      // polyline selected before PEDIT is (pedit/p37).
       this.pedit.startOn(hit.id)
       this.startEchoed(this.pedit.id, "_pedit", "PEDIT")
     } else if (hit?.type === "spline") {

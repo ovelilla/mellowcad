@@ -28,8 +28,9 @@
 > degradados y 3DFACE, del punto 7, hechos y publicados el 17/11; WIPEOUT, IMAGE, la tabla y
 > MULTILEADER, hechos el 19/11, y XLINE y RAY, con sus páginas, hechos el 20/11, publicados el
 > 21/11 con el export estático; MINSERT, con su página, hecho el 21/11, y los colores índice y
-> las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11; lo que queda del
-> punto 7, la malla de VBA_Tower, el siguiente) y otro idioma (los diez de AutoCAD con
+> las sustituciones DSTYLE, del punto 7, hechos el 22/11, publicados el 22/11, y la malla de
+> VBA_Tower (una malla poligonal, con 3DMESH), hecha el 22/11, sin publicar, que cierra el punto 7;
+> siguiente, la fase 5) y otro idioma (los diez de AutoCAD con
 > criterio de L8 están hechos: queda el chino tradicional, `zh-TW`, o ampliar el criterio, decisión
 > del dueño), alternando, además de lo que queda de §7.
 > Esperan detrás

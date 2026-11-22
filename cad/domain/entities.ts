@@ -23,6 +23,8 @@ export type {
   Polyline3dEntity,
   Polyline3dFit,
   Face3dEntity,
+  PolygonMeshEntity,
+  PolygonMeshSmoothing,
   WipeoutEntity,
   XlineEntity,
   RayEntity,
@@ -143,6 +145,7 @@ export {
   createPolyline,
   createPolyline3d,
   createFace3d,
+  createPolygonMesh,
   createWipeout,
   createXline,
   createRay,
@@ -240,6 +243,19 @@ export {
   face3dEdges,
   isFace3dEdgeVisible,
 } from "./faces3d"
+
+export {
+  MIN_SURFACE_DENSITY,
+  closestPointOnPolygonMesh,
+  isPolygonMeshRefusal,
+  isValidMeshSmoothing,
+  polygonMeshDesmoothed,
+  polygonMeshEdges,
+  polygonMeshFaces,
+  polygonMeshGrid,
+  polygonMeshSmoothed,
+} from "./polygonMeshes"
+export type { PolygonMeshGrid, PolygonMeshSmoothRefusal } from "./polygonMeshes"
 
 export {
   mapWipeoutVertices,

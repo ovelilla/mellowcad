@@ -1,0 +1,45 @@
+_3DMESH
+2
+3
+0,0,0
+50,0,10
+100,0,0
+0,50,0
+50,50,10
+100,50,0
+_MIRROR
+_L
+
+0,100
+10,100
+_N
+(progn (setq v (entnext (entlast))) (repeat 6 (princ "\n") (princ (cdr (assoc 10 (entget v)))) (setq v (entnext v))) (princ))
+_STRETCH
+_C
+-5,40
+5,-140
+
+0,0
+0,-10
+(progn (setq v (entnext (entlast))) (repeat 6 (princ "\n") (princ (cdr (assoc 10 (entget v)))) (setq v (entnext v))) (princ))
+_ROTATE
+_L
+
+0,0
+90
+_SCALE
+_L
+
+0,0
+2
+(progn (setq v (entnext (entlast))) (repeat 6 (princ "\n") (princ (cdr (assoc 10 (entget v)))) (setq v (entnext v))) (princ))
+_CHPROP
+_L
+
+_LT
+DASHED
+_C
+1
+
+(princ (entget (entlast)))
+(princ (entget (entnext (entlast))))

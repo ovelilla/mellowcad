@@ -2410,7 +2410,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity | TableEntity | MLeaderEntity | XlineEntity | RayEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity | PointEntity | Solid2dEntity | LeaderEntity | Face3dEntity | WipeoutEntity | ImageEntity | TableEntity | MLeaderEntity | XlineEntity | RayEntity | PolygonMeshEntity;
 
 export type { EntityColor }
 /**
@@ -2476,6 +2476,8 @@ export type EntityProperty =
  | "vertexZ" | "startSegmentWidth" | "endSegmentWidth" | "globalWidth"
 /** A polyline's Closed, a choice: 1 Yes, 0 No. */
  | "closed"
+/** A polygon mesh's M closed and N closed under Mesh, choices like Closed (desktop mesh/d02). */
+ | "meshMClosed" | "meshNClosed"
 /** An array's rows (desktop arrays/d13); its Radius is `radius`. */
  | "arrayColumns" | "arrayColumnSpacing" | "arrayRows" | "arrayRowSpacing" | "arrayRowElevation" | "arrayLevels" | "arrayLevelSpacing"
 /** A ring's Direction, a choice: 1 Clockwise, 0 Counter-clockwise. */
@@ -2504,7 +2506,7 @@ export type EntityProperty =
  | SolidProperty | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image" | "table" | "mleader" | "xline" | "ray";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d" | "point" | "solid2d" | "leader" | "face3d" | "wipeout" | "image" | "table" | "mleader" | "xline" | "ray" | "polygonMesh";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -4013,6 +4015,34 @@ export interface PointEntity extends BaseEntity, Thick {
 
 // domain/entityTypes.ts
 /**
+ * A polygon mesh (DXF POLYLINE with flag 16, AutoCAD's AcDbPolygonMesh, made
+ * by 3DMESH): `m` rows of `n` vertices in the WCS, each with its own Z, as a
+ * 3D polyline's are, and no plane of its own. `vertices[i * n + j]` is vertex
+ * (i, j) as PEDIT's Edit vertex counts it (mesh/p12): N runs along a row, M
+ * across the rows; each direction may close (DXF 70 flags 1 and 32).
+ *
+ * {@link smooth} is PEDIT's Smooth surface (DXF 70 flag 4, 75): `vertices`
+ * stay its control mesh, which Edit vertex and the palette edit, and what it
+ * draws, picks, snaps and explodes is the fitted mesh (`polygonMeshGrid`),
+ * `mDensity` by `nDensity` points (DXF 73, 74: SURFU + 1 along an open
+ * direction, SURFU round a closed one; mesh/s5–s9, p21).
+ */
+export interface PolygonMeshEntity extends BaseEntity {
+    readonly type: "polygonMesh";
+    readonly m: number;
+    readonly n: number;
+    readonly vertices: readonly Vec3[];
+    readonly closedM: boolean;
+    readonly closedN: boolean;
+    readonly smooth?: {
+        readonly kind: PolygonMeshSmoothing;
+        readonly mDensity: number;
+        readonly nDensity: number;
+    };
+}
+
+// domain/entityTypes.ts
+/**
  * A polyline: a single connected chain of segments through an ordered list of
  * `vertices` (at least two). When `closed`, an extra segment joins the last
  * vertex back to the first, so the outline forms a loop.
@@ -4464,6 +4494,13 @@ export interface MLeaderBranch {
     readonly doglegLength: number;
     readonly lines: readonly (readonly Vec2[])[];
 }
+
+// domain/entityTypes.ts
+/**
+ * PEDIT's Smooth surface on a polygon mesh, by SURFTYPE: a quadratic (5) or
+ * cubic (6) B-spline surface, or a Bezier one (8).
+ */
+export type PolygonMeshSmoothing = 5 | 6 | 8;
 
 // domain/entityTypes.ts
 /**
@@ -5041,6 +5078,11 @@ export interface DocumentSettings {
     readonly splineType: 5 | 6;
     /** SPLINESEGS: PEDIT Spline's points per span, arcs through them when negative, never 0. */
     readonly splineSegments: number;
+    /** SURFTYPE: PEDIT Smooth surface's surface, 5 quadratic, 6 cubic or 8 Bezier. */
+    readonly surfaceType: 5 | 6 | 8;
+    /** SURFU and SURFV: its density along M and N, 0 to 200 (under 2 smooths at 2). */
+    readonly surfaceU: number;
+    readonly surfaceV: number;
     /** ISOLINES: the lines drawn across each curved face of a solid, 0 to 2047. */
     readonly isolines: number;
     /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */

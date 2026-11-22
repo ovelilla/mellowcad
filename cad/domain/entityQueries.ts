@@ -34,6 +34,8 @@ import {
   RegionEntity,
   Solid3dEntity,
   TableEntity,
+  Face3dEntity,
+  PolygonMeshEntity,
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
 import { createInsert } from "./entityFactories"
@@ -60,8 +62,9 @@ import {
 import { polylineOutline } from "./polylineOutline"
 import { polyline3dSegments } from "./polylines3d"
 import { face3dEdges } from "./faces3d"
+import { polygonMeshEdges, polygonMeshGrid } from "./polygonMeshes"
 import { entityShape } from "./polylineFits"
-import { planar } from "../geometry/Vec3"
+import { Vec3, planar } from "../geometry/Vec3"
 import { closedSurfaceReach } from "../geometry/solids"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
@@ -236,14 +239,16 @@ export function closestOnEntity(
       })
       return best
     }
-    case "face3d": {
-      // By its visible edges, in plan (face3d/f04: inside it selects nothing).
+    case "face3d":
+    case "polygonMesh": {
+      // By its visible edges, in plan (face3d/f04: inside it selects nothing;
+      // a mesh by the edges of what it shows, mesh/p11).
       let best: ClosestResult = {
-        point: planar(entity.corners[0]),
+        point: point,
         distance: Infinity,
         t: 0,
       }
-      for (const [a, b] of face3dEdges(entity)) {
+      for (const [a, b] of meshOrFaceEdges(entity)) {
         const candidate = closestPointOnSegment(a, b, point)
         if (candidate.distance < best.distance) {
           best = { ...candidate, point: planar(candidate.point) }
@@ -561,8 +566,14 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
     }
     case "face3d":
+    case "polygonMesh":
     case "polyline3d": {
-      const points = entity.type === "face3d" ? entity.corners : entity.vertices
+      const points =
+        entity.type === "face3d"
+          ? entity.corners
+          : entity.type === "polygonMesh"
+            ? polygonMeshGrid(entity).points
+            : entity.vertices
       const xs = points.map((v) => v.x)
       const ys = points.map((v) => v.y)
       return {
@@ -890,8 +901,9 @@ export function entityCrossesRect(
       }
       return false
     }
-    case "face3d": {
-      for (const [a, b] of face3dEdges(entity)) {
+    case "face3d":
+    case "polygonMesh": {
+      for (const [a, b] of meshOrFaceEdges(entity)) {
         if (pointInRect(a, min, max) || pointInRect(b, min, max)) return true
         for (const [e1, e2] of edges) {
           if (segmentSegmentIntersection(a, b, e1, e2)) return true
@@ -1067,4 +1079,13 @@ export function tableGeometry(
   )
   TABLE_GEOMETRY.set(table, { blocks, definitions, pieces })
   return pieces
+}
+
+/** What a 3D face or a polygon mesh draws, picks and is crossed by: its edges. */
+function meshOrFaceEdges(
+  entity: Face3dEntity | PolygonMeshEntity
+): [Vec3, Vec3][] {
+  return entity.type === "face3d"
+    ? face3dEdges(entity)
+    : polygonMeshEdges(entity)
 }

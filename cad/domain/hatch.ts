@@ -55,6 +55,7 @@ export function hatchLoopFromEntity(drawn: Entity): HatchLoop | null {
     case "solid2d":
     case "leader":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

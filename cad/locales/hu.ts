@@ -5,6 +5,7 @@ export const hu: EngineLocale = {
   "tag": "hu",
   "interface": {
     "tool": {
+      "mesh3d": "3D háló",
       "select": "Kijelölés",
       "line": "Vonal",
       "polyline": "Vonallánc",
@@ -233,6 +234,16 @@ export const hu: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Poligonháló",
+            "other": "Poligonháló"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -533,6 +544,7 @@ export const hu: EngineLocale = {
         "minsert": "TBeill Blokk"
       },
       "group": {
+        "mesh": "Háló",
         "geometry": "Geometria",
         "solidHistory": "Szilárdtest előzményei",
         "endpoints": "Végpontok",
@@ -552,6 +564,12 @@ export const hu: EngineLocale = {
         "primaryUnits": "Elsődleges mértékegységek"
       },
       "row": {
+        "meshMClosed": "M zárt",
+        "meshNClosed": "N zárt",
+        "meshMDensity": "M sűrűség",
+        "meshNDensity": "N sűrűség",
+        "meshMVertexCount": "M csomópont szám",
+        "meshNVertexCount": "N csomópont szám",
         "length": "Hossz",
         "angle": "Szög",
         "deltaX": "Delta X",
@@ -752,6 +770,10 @@ export const hu: EngineLocale = {
         "textPosVert": "Szöveg - függőleges poz."
       },
       "value": {
+        "meshFitNone": "Nincs",
+        "fitQuadratic": "Másodfokú",
+        "fitCubic": "Harmadfokú",
+        "fitBezier": "Bezier",
         "yes": "Igen",
         "no": "Nem",
         "none": "—",
@@ -832,6 +854,9 @@ export const hu: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DHÁLÓ"
+      ],
       "LINE": [
         "VONAL",
         "VO"
@@ -1616,6 +1641,16 @@ export const hu: EngineLocale = {
         "Before": "Előre"
       },
       "PEDIT": {
+        "Smooth surface": "Simuló",
+        "Desmooth": "éRDesít",
+        "Mclose": "Mzár",
+        "Mopen": "Mnyit",
+        "Nclose": "Nzár",
+        "Nopen": "Nnyit",
+        "Left": "Bal",
+        "Right": "Jobb",
+        "Up": "Fel",
+        "Down": "Le",
         "Close": "Bezárás",
         "Open": "Megnyitás",
         "Join": "Egyesít",
@@ -2335,6 +2370,17 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "KIlépés",
+        "X": "X",
+        "Undo": "VIssza"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "Regen",
+        "Previous": "Előző",
+        "Move": "Mozgat",
+        "eXit": "Kilépés"
+      },
       "selectObjects": {
         "Window": "Ablak",
         "Last": "Utolsó",
@@ -2463,6 +2509,25 @@ export const hu: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Adja meg a háló méretét M irányban",
+      "enterMeshSizeN": "Adja meg a háló méretét N irányban",
+      "specifyMeshVertex": [
+        "Adja meg a csomópont helyét (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Válasszon az opciók közül",
+      "peditMeshVertexOption": "Válasszon az opciók közül",
+      "leftShort": "B",
+      "rightShort": "J",
+      "upShort": "F",
+      "downShort": "L",
       "length": "Hossz",
       "width": "Szélesség",
       "angle": "Szög",
@@ -3531,6 +3596,109 @@ export const hu: EngineLocale = {
       "polar": "Táv<Szög"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "poligonháló\nAz objektum nem METSZhető el.",
+      "cannotExtendPolygonMesh": "poligonháló\nAz objektumra nem alkalmazható az ELÉR parancs.",
+      "polygonMeshNoCoordinateSystem": "3D poligonháló objektum nem határoz meg koordináta-rendszert",
+      "meshCurrentVertex": [
+        "Aktuális csomópont (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Nincs látható csomópont",
+      "tooFewControlVertices": [
+        "Kevés vezérlő csomópont van ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "egyik"
+          }
+        ],
+        " irányban. Többnek kell lenni mint ",
+        [
+          "count",
+          1,
+          {
+            "2": "kettő",
+            "other": "három"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Túl sok vezérlő csomópont van. Kevesebbnek kell lenni mint 12.",
+      "surfuOutOfRange": [
+        "SURFU a tartományon kívül van. A használt érték ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV a tartományon kívül van. A használt érték ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline ",
+              [
+                "size"
+              ],
+              " háló (",
+              [
+                "fit"
+              ],
+              " illesztési háló)"
+            ],
+            "other": [
+              [
+                "size"
+              ],
+              " háló"
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-zárt",
+            "n": " N-zárt",
+            "both": " M,N-zárt",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "              Háló",
+      "listMeshPoint": [
+        "                 pontnál, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "A(z) \"",
         [
@@ -9010,6 +9178,8 @@ export const hu: EngineLocale = {
         "System default": "Rendszer alapérték"
       },
       "PEDIT": {
+        "Smooth surface": "Simuló felület",
+        "Desmooth": "éRDesít",
         "Edit vertex": "SZerkeszt csúcspontot",
         "Ltype gen": "VTípus gen",
         "OFF": "KI",
@@ -9067,6 +9237,9 @@ export const hu: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "SZerkeszt töréspontot"
+      },
       "ucsNewUcs": {
         "ZAxis": "ZTeng"
       },

@@ -31,6 +31,7 @@ import {
   XlineEntity,
   MTextEntity,
   Polyline3dEntity,
+  PolygonMeshEntity,
   PolylineEntity,
   SplineEntity,
   TextEntity,
@@ -41,6 +42,7 @@ import { lineEndZ, lineStartZ } from "../../domain/elevation"
 import { leaderSide } from "../../domain/leaders"
 import { isPeriodicSpline, splineCurve } from "../../domain/splines"
 import { polylineCurve, polyline3dCurve } from "../../domain/polylineFits"
+import { polygonMeshGrid } from "../../domain/polygonMeshes"
 import {
   DimensionGeometry,
   dimensionGeometry,
@@ -214,6 +216,8 @@ export function writeEntity(
         : lightPolyline(ctx, entity, owner)
     case "polyline3d":
       return polyline3d(ctx, entity, owner)
+    case "polygonMesh":
+      return polygonMesh(ctx, entity, owner)
     case "spline":
       return spline(ctx, entity, owner)
     case "text":
@@ -857,6 +861,51 @@ function polyline3d(
   if (splined) {
     for (const p of e.vertices) vertex(p, 16)
     for (const p of polyline3dCurve(e).vertices) vertex(p, 8)
+  } else for (const p of e.vertices) vertex(p, 0)
+  seqend(ctx, e, own)
+}
+
+/**
+ * A polygon mesh as AutoCAD writes it (mesh/f01): POLYLINE 70 16, 1 closed
+ * in M, 32 in N, 4 smoothed with its fitted size (73, 74) and SURFTYPE (75),
+ * left out unsmoothed; each VERTEX 64, a smoothed one's control vertices 16
+ * and fitted ones 8, in AutoCAD's order: the first control vertex, the
+ * fitted mesh, the other control vertices.
+ */
+function polygonMesh(
+  ctx: DxfWriteContext,
+  e: PolygonMeshEntity,
+  owner: string
+): void {
+  const { out } = ctx
+  const own = ctx.entityHandle(e)
+  head(ctx, "POLYLINE", e, owner, own)
+  out.str(100, "AcDbPolygonMesh")
+  out.int(66, 1)
+  out.point(10, 0, 0, 0)
+  const smooth = e.smooth
+  out.int(
+    70,
+    16 | (e.closedM ? 1 : 0) | (e.closedN ? 32 : 0) | (smooth ? 4 : 0)
+  )
+  out.int(71, e.m)
+  out.int(72, e.n)
+  if (smooth) {
+    out.int(73, smooth.mDensity)
+    out.int(74, smooth.nDensity)
+    out.int(75, smooth.kind)
+  }
+  const vertex = (p: Vec3, flags: number) => {
+    head(ctx, "VERTEX", e, own)
+    out.str(100, "AcDbVertex")
+    out.str(100, "AcDbPolygonMeshVertex")
+    out.point(10, p.x, p.y, p.z)
+    out.int(70, 64 | flags)
+  }
+  if (smooth) {
+    vertex(e.vertices[0], 16)
+    for (const p of polygonMeshGrid(e).points) vertex(p, 8)
+    for (const p of e.vertices.slice(1)) vertex(p, 16)
   } else for (const p of e.vertices) vertex(p, 0)
   seqend(ctx, e, own)
 }

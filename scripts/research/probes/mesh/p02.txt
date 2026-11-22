@@ -1,0 +1,15 @@
+_3DMESH
+1
+257
+FOO
+2.5
+-3
+2
+2
+0,0
+FOO
+10,0
+
+10,10
+0,10,5
+(princ (entget (entlast)))

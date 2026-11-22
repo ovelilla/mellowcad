@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "mesh3d": "Malla 3D",
       "select": "Seleccionar",
       "line": "Línea",
       "polyline": "Polilínea",
@@ -219,6 +220,7 @@
       "compass": { "N": "N", "E": "E", "S": "S", "W": "O" }
     },
     "entity": {
+      "polygonMesh": "{count, plural, one {Malla poligonal} other {Mallas poligonales}}",
       "line": "{count, plural, one {Línea} other {Líneas}}",
       "circle": "{count, plural, one {Círculo} other {Círculos}}",
       "arc": "{count, plural, one {Arco} other {Arcos}}",
@@ -264,6 +266,7 @@
         "minsert": "InsertM bloque"
       },
       "group": {
+        "mesh": "Malla",
         "geometry": "Geometría",
         "solidHistory": "Historial de sólido",
         "endpoints": "Extremos",
@@ -283,6 +286,12 @@
         "primaryUnits": "Unidades principales"
       },
       "row": {
+        "meshMClosed": "M cerrada",
+        "meshNClosed": "N cerrada",
+        "meshMDensity": "M densidad",
+        "meshNDensity": "N densidad",
+        "meshMVertexCount": "M total vértices",
+        "meshNVertexCount": "N total vértices",
         "length": "Longitud",
         "angle": "Ángulo",
         "deltaX": "Incremento X",
@@ -483,6 +492,10 @@
         "textPosVert": "Pos. texto vert."
       },
       "value": {
+        "meshFitNone": "Ninguno",
+        "fitQuadratic": "Cuadrático",
+        "fitCubic": "Cúbico",
+        "fitBezier": "Bezier",
         "yes": "Sí",
         "no": "No",
         "none": "—",
@@ -563,6 +576,7 @@
   },
   "commands": {
     "names": {
+      "3DMESH": ["3DMALLA"],
       "LINE": ["LINEA", "L"],
       "XLINE": ["LINEAX", "XL"],
       "RAY": ["RAYO"],
@@ -864,6 +878,16 @@
         "Before": "Antes"
       },
       "PEDIT": {
+        "Smooth surface": "Amoldar",
+        "Desmooth": "estadoPrevio",
+        "Mclose": "cerrarM",
+        "Mopen": "abriRM",
+        "Nclose": "cerrarN",
+        "Nopen": "abriRN",
+        "Left": "Izquierda",
+        "Right": "dErecha",
+        "Up": "Arriba",
+        "Down": "aBajo",
         "Close": "Cerrar",
         "Open": "Abrir",
         "Join": "Juntar",
@@ -1558,6 +1582,8 @@
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {"eXit": "Salir", "X": "S", "Undo": "desHacer"},
+      "peditMeshVertexOption": {"Regen": "Regenerar", "Previous": "Precedente", "Move": "Desplazar", "eXit": "Salir"},
       "selectObjects": {
         "Window": "Ventana",
         "Last": "úLTimo",
@@ -1635,6 +1661,15 @@
       "leaderFormatOption": { "None": "Ninguna" }
     },
     "prompts": {
+      "enterMeshSizeM": "Indique tamaño de malla en dirección M",
+      "enterMeshSizeN": "Indique tamaño de malla en dirección N",
+      "specifyMeshVertex": "Precise ubicación de vértice ({m}, {n})",
+      "peditMeshOption": "Indique una opción",
+      "peditMeshVertexOption": "Indique una opción",
+      "leftShort": "I",
+      "rightShort": "E",
+      "upShort": "Ar",
+      "downShort": "aB",
       "length": "Longitud",
       "width": "Anchura",
       "angle": "Ángulo",
@@ -2393,6 +2428,18 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Malla poligonal\nObjeto no procesado por RECORTA.",
+      "cannotExtendPolygonMesh": "Malla poligonal\nObjeto no procesado por ALARGA.",
+      "polygonMeshNoCoordinateSystem": "El objeto malla poligonal 3D no define el sistema de coordenadas",
+      "meshCurrentVertex": "Vértice actual ({m},{n}).",
+      "noVisibleVertices": "No hay vértices visibles",
+      "tooFewControlVertices": "Muy pocos vértices de control en {direction, select, M {M} N {N} other {ambas}} direcciones.  Deberían ser más de {count, select, 2 {dos} other {tres}}.",
+      "tooManyControlVertices": "Demasiados vértices de control.  Deberían ser menos de 12.",
+      "surfuOutOfRange": "SURFU demasiado grande. Utilizando un valor de {value}.",
+      "surfvOutOfRange": "SURFV demasiado grande. Utilizando un valor de {value}.",
+      "listMeshState": "                   {smoothed, select, yes {spline malla {size} (malla {fit})} other {malla {size}}}{closed, select, m { M-cerrada} n { N-cerrada} both { M,N-cerrada} other {}}",
+      "listMeshVertex": "             Malla",
+      "listMeshPoint": "                en punto, X={x}  Y={y}  Z={z}",
       "unknownCommand": "Comando \"{name}\" desconocido. Pulse F1 para obtener ayuda.",
       "cancel": "*Cancelar*",
       "commandCancelled": "*Cancelado*",
@@ -3267,6 +3314,8 @@
         "System default": "Defecto sistema"
       },
       "PEDIT": {
+        "Smooth surface": "Amoldar superficie",
+        "Desmooth": "estadoPrevio superficie",
         "Edit vertex": "Editar vértices",
         "Ltype gen": "generarTlínea",
         "OFF": "DES",
@@ -3305,6 +3354,7 @@
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {"Edit vertex": "Editar vértices"},
       "ucsNewUcs": { "ZAxis": "ejEZ" },
       "filletEdgeLoopOr": { "Edge": "Arista" },
       "splineditOptionClosed": { "Reverse": "Invertir" },

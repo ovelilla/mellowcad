@@ -30,6 +30,7 @@ import { mapTable } from "./tables"
 import { mapMLeader } from "./multileaders"
 import { mapLeader } from "./leaders"
 import { face3dReflected } from "./faces3d"
+import { mapPolygonMesh, polygonMeshReflected } from "./polygonMeshes"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -114,6 +115,11 @@ export function linearEntity(
       const [a, b, c, d] = entity.corners.map((v) => ({ ...at(v), z: v.z }))
       const placed = { ...entity, corners: [a, b, c, d] as const }
       return flips ? face3dReflected(placed) : placed
+    }
+    case "polygonMesh": {
+      // Its Z too; a reflecting map reverses each row, as MIRROR does.
+      const placed = mapPolygonMesh(entity, (v) => ({ ...at(v), z: v.z }))
+      return flips ? polygonMeshReflected(placed) : placed
     }
     case "dimension":
       return {

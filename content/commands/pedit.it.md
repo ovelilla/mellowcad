@@ -2,7 +2,7 @@
 title: "Comando EDITPL (PEDIT) in AutoCAD"
 description: "Come funziona EDITPL (PEDIT, alias EP) di AutoCAD in italiano: linee in una polilinea, Unisci, Larghezza, Adatta e Spline, Edita vertice, Multiplo. Provalo."
 figure: "Tre linee che si toccano di testa: EDITPL trasforma la prima in una polilinea, le unisce le altre due e le dà una larghezza di 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 EDITPL (PEDIT in inglese) modifica una polilinea. Selezionane una a `Selezionare polilinea o [Multiplo]:`, oppure selezionala prima del comando; anche un doppio clic su una polilinea esegue EDITPL su di essa. Se selezioni invece una linea, un arco o una spline, segnala <Message id="objectNotPolyline" /> e chiede se trasformare l'oggetto in polilinea, Sì per impostazione predefinita: la nuova polilinea prende il suo posto e le sue proprietà. Poi chiede un'opzione dopo l'altra, ciascuna applicata subito, finché Invio termina. Una polilinea 3D ha un elenco più corto, senza larghezza, adattamento a curva né generazione del tipo di linea, e la sua opzione spline è <Keyword id="Spline curve" />. Esc mantiene ciò che è stato fatto; l'intera modifica è un solo passaggio che <Command id="U" /> annulla.
@@ -55,7 +55,7 @@ Annulla l'ultima opzione di questa esecuzione, e continua a chiedere.
 
 ## Missing
 
-PEDITACCEPT: selezionare una linea, un arco o una spline chiede sempre prima di convertirla. PLINECONVERTMODE: una spline diventa una polilinea di segmenti rettilinei, molti di più di quelli che crea AutoCAD, mai archi. Una polilinea adattata compare nella tavolozza Proprietà come una semplice polilinea, senza il titolo Polilinea 2D di AutoCAD e la sua riga Adatta/Leviga. Multiplo con solo polilinee 3D nell'insieme mostra la richiesta 3D, dove AutoCAD mostra quella 2D. Non ci sono mesh da modificare.
+PEDITACCEPT: selezionare una linea, un arco o una spline chiede sempre prima di convertirla. PLINECONVERTMODE: una spline diventa una polilinea di segmenti rettilinei, molti di più di quelli che crea AutoCAD, mai archi. Una polilinea adattata compare nella tavolozza Proprietà come una semplice polilinea, senza il titolo Polilinea 2D di AutoCAD e la sua riga Adatta/Leviga. Multiplo con solo polilinee 3D nell'insieme mostra la richiesta 3D, dove AutoCAD mostra quella 2D. <Keyword id="Multiple" /> non modifica le mesh poligonali.
 
 ## Questions
 

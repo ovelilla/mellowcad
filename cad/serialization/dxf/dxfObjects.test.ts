@@ -52,15 +52,17 @@ const at = (code: number, x: number, y: number, z?: number): Group[] => [
 ]
 
 describe("what the model has no object for", () => {
-  it("counts a mesh as a POLYLINE left out", () => {
+  it("counts a polyface mesh as a POLYLINE left out; a polygon mesh short of its vertices is unreadable", () => {
     const parsed = read(
       record("POLYLINE", [70, 64]),
       record("VERTEX", ...at(10, 0, 0)),
       record("SEQEND"),
-      record("POLYLINE", [70, 16]),
+      record("POLYLINE", [70, 16], [71, 2], [72, 2]),
+      record("VERTEX", ...at(10, 0, 0), [70, 64]),
       record("SEQEND")
     )
-    expect([...parsed.report.leftOut]).toEqual([["POLYLINE", 2]])
+    expect([...parsed.report.leftOut]).toEqual([["POLYLINE", 1]])
+    expect(parsed.report.unreadable).toBe(1)
   })
 
   it("counts a gradient of a name AutoCAD has not as a HATCH left out", () => {

@@ -4,7 +4,7 @@ metaTitle: "PEDIT in AutoCAD: edit polylines, Join and Width"
 description: "How AutoCAD's PEDIT (PE) works: turn lines into a polyline, Join, Width, Fit and Spline, Edit vertex, Multiple, prompt by prompt. Try it free in your browser."
 figure: "Three lines meeting end to end: PEDIT turns the first into a polyline, joins the other two to it and gives it a width of 2."
 related: ["PLINE", "JOIN", "EXPLODE", "SPLINE"]
-coverage: "e1a413c15bad"
+coverage: "645a7bb9fc4c"
 ---
 
 PEDIT edits a polyline. Pick one at `Select polyline or [Multiple]:`, or select it before the command; double-clicking a polyline runs PEDIT on it too. Pick a line, an arc or a spline instead and it says <Message id="objectNotPolyline" /> and asks whether to turn it into one, Yes by default: the new polyline takes its place and its properties. Then it asks for an option again and again, each one applied at once, until Enter ends it. A 3D polyline gets a shorter list, with no width, no curve fit and no linetype generation, and its spline option is <Keyword id="Spline curve" />. Escape keeps what was done; the whole edit is one step that <Command id="U" /> takes back.
@@ -57,7 +57,7 @@ Takes back the last option of this run, and goes on asking.
 
 ## Missing
 
-PEDITACCEPT: picking a line, an arc or a spline always asks before converting it. PLINECONVERTMODE: a spline becomes a polyline of straight segments, far more of them than AutoCAD makes, never arcs. A fitted polyline shows in the Properties palette as a plain polyline, without AutoCAD's 2D Polyline title and its Fit/Smooth row. Multiple with only 3D polylines in the set asks the 3D prompt, where AutoCAD asks the 2D one. There are no meshes to edit.
+PEDITACCEPT: picking a line, an arc or a spline always asks before converting it. PLINECONVERTMODE: a spline becomes a polyline of straight segments, far more of them than AutoCAD makes, never arcs. A fitted polyline shows in the Properties palette as a plain polyline, without AutoCAD's 2D Polyline title and its Fit/Smooth row. Multiple with only 3D polylines in the set asks the 3D prompt, where AutoCAD asks the 2D one. <Keyword id="Multiple" /> does not edit polygon meshes.
 
 ## Questions
 

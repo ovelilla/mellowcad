@@ -107,6 +107,20 @@ const FROM_SCRATCH: ReadonlyArray<
         .click(p(0, 90))
         .enter(),
   ],
+  [
+    "3DMESH",
+    (c) =>
+      c
+        .command("3DMESH")
+        .type("2")
+        .enter()
+        .type("2")
+        .enter()
+        .click(p(0, 50))
+        .click(p(40, 50))
+        .click(p(0, 90))
+        .click(p(40, 90)),
+  ],
   // By its points; from a polyline its colour and linetype are the
   // polyline's (wipeout/w11, w13: wipeout.test.ts).
   [

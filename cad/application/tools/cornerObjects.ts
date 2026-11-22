@@ -187,8 +187,10 @@ export function typeRefusal(
         fillet ? "filletRequiresNotDimensions" : "chamferRequiresNotDimensions"
       )
     // Picked first or second, the same words (3dpoly/p26, table 20635;
-    // CHAMFER's by that table, unprobed).
+    // CHAMFER's by that table, unprobed); a polygon mesh is one too
+    // (mesh/p07, p04: `3D Polyline objects may not be chamfered.`).
     case "polyline3d":
+    case "polygonMesh":
       return again(fillet ? "filletNot3dPolyline" : "chamferNot3dPolyline")
     // A fitted one, picked second (pedit/p194, p195; first **unverified**).
     case "polyline":
@@ -577,6 +579,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

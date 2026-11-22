@@ -243,7 +243,7 @@ source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
   two lines in a tilted plane are `linesPlaneNormal`.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` and
   a spread writing a picked point takes `planar(point)`. `entityZAt` is the one reader of an
-  object's Z at a point in plan. **The exceptions are a 3D polyline and a spline.** A 3D
+  object's Z at a point in plan. **The exceptions: a 3D polyline, face or mesh, and a spline.** A 3D
   polyline's vertices (`domain/polylines3d.ts`) are WCS `Vec3`s and it has no plane —
   `withElevation`, `withNormal` and `carryPlane` must never touch it (`shiftEntityZ`,
   `scaleEntityZ` and `entityElevation`, its first vertex's Z, know it); the snaps see it as its

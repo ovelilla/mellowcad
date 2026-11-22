@@ -30,6 +30,7 @@ import {
   planeAxes,
   polyline3dSegments,
   face3dEdges,
+  polygonMeshEdges,
   entityShape,
   solid2dEdges,
   wipeoutEdges,
@@ -232,6 +233,17 @@ function snapEntities(
         // Its visible edges, lines of its id: an invisible one has no
         // Midpoint or Nearest (face3d/f04).
         for (const [a, b] of face3dEdges(piece)) {
+          entities.push(
+            carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+          )
+        }
+        continue
+      }
+      if (piece.type === "polygonMesh") {
+        // The edges of what it shows, lines of its id: END, MID, NEA and PER
+        // on them, no CEN or GCEN (mesh/p11; a smoothed one's fitted mesh,
+        // p13).
+        for (const [a, b] of polygonMeshEdges(piece)) {
           entities.push(
             carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
           )

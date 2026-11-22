@@ -562,6 +562,7 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "solid3d":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -732,6 +733,7 @@ function computeBreak(
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

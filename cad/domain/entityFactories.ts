@@ -26,6 +26,7 @@ import {
   PolylineWidth,
   Polyline3dEntity,
   Face3dEntity,
+  PolygonMeshEntity,
   HatchLoop,
   HatchEntity,
   BlockId,
@@ -294,6 +295,26 @@ export function createPolyline3d(
     layerId,
     vertices: vertices.map((v) => ({ x: v.x, y: v.y, z: zOf(v) })),
     closed,
+  }
+}
+
+/** A polygon mesh of `m` rows of `n` vertices, row by row (3DMESH's order, mesh/p01). */
+export function createPolygonMesh(
+  m: number,
+  n: number,
+  vertices: readonly (Vec2 | Vec3)[],
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): PolygonMeshEntity {
+  return {
+    id,
+    type: "polygonMesh",
+    layerId,
+    m,
+    n,
+    vertices: vertices.map((v) => ({ x: v.x, y: v.y, z: zOf(v) })),
+    closedM: false,
+    closedN: false,
   }
 }
 

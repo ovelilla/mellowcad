@@ -3,7 +3,7 @@ title: "Comando PEDIT (EDITARP) no AutoCAD"
 metaTitle: "Editar polilinha no AutoCAD: PEDIT (EDITARP)"
 description: "Como funciona o PEDIT do AutoCAD em português, EDITARP: linhas em polilinha, Unir, Largura, AJustar, Spline, Editar vértice e Múltiplo. Experimente grátis."
 figure: "Três linhas ligadas pelas extremidades: o EDITARP transforma a primeira em polilinha, une as outras duas a ela e dá a ela uma largura de 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 O PEDIT, EDITARP no AutoCAD em português, edita uma polilinha. Selecione uma em `Selecionar polilinha ou [Múltiplo]:` ou antes do comando; um clique duplo numa polilinha também abre o EDITARP nela. Se você selecionar uma linha, um arco ou uma spline, ele diz <Message id="objectNotPolyline" /> e pergunta se deve transformá-la em uma, Sim por padrão: a nova polilinha toma o lugar dela, com as suas propriedades. Depois ele pede uma opção de novo e de novo, cada uma aplicada na hora, até que Enter o encerre. Uma polilinha 3D tem uma lista mais curta, sem largura, sem ajuste de curva e sem geração do tipo de linha, e a sua opção de spline é <Keyword id="Spline curve" />. Esc mantém o que foi feito; toda a edição é um passo que o <Command id="U" /> desfaz.
@@ -56,7 +56,7 @@ Desfaz a última opção desta execução e continua perguntando.
 
 ## Missing
 
-PEDITACCEPT: ao selecionar uma linha, um arco ou uma spline, ele sempre pergunta antes de convertê-la. PLINECONVERTMODE: uma spline vira uma polilinha de segmentos retos, muito mais do que o AutoCAD faz, nunca de arcos. Uma polilinha ajustada aparece na paleta Propriedades como uma polilinha comum, sem o título Polilinha 2D do AutoCAD e sem a sua linha Ajustar/Suavizar. Múltiplo com só polilinhas 3D no conjunto mostra o prompt 3D, onde o AutoCAD mostra o 2D. Não há malhas para editar.
+PEDITACCEPT: ao selecionar uma linha, um arco ou uma spline, ele sempre pergunta antes de convertê-la. PLINECONVERTMODE: uma spline vira uma polilinha de segmentos retos, muito mais do que o AutoCAD faz, nunca de arcos. Uma polilinha ajustada aparece na paleta Propriedades como uma polilinha comum, sem o título Polilinha 2D do AutoCAD e sem a sua linha Ajustar/Suavizar. Múltiplo com só polilinhas 3D no conjunto mostra o prompt 3D, onde o AutoCAD mostra o 2D. <Keyword id="Multiple" /> não edita malhas poligonais.
 
 ## Questions
 

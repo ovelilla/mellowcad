@@ -5,6 +5,7 @@ export const ptBR: EngineLocale = {
   "tag": "pt-BR",
   "interface": {
     "tool": {
+      "mesh3d": "Malha 3D",
       "select": "Selecionar",
       "line": "Linha",
       "polyline": "Polilinha",
@@ -233,6 +234,16 @@ export const ptBR: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Malha poligonal",
+            "other": "Malhas poligonais"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -533,6 +544,7 @@ export const ptBR: EngineLocale = {
         "minsert": "InserirM bloco"
       },
       "group": {
+        "mesh": "Malha",
         "geometry": "Geometria",
         "solidHistory": "Histórico do sólido",
         "endpoints": "Pontos finais",
@@ -552,6 +564,12 @@ export const ptBR: EngineLocale = {
         "primaryUnits": "Unidades primárias"
       },
       "row": {
+        "meshMClosed": "M fechado",
+        "meshNClosed": "N fechado",
+        "meshMDensity": "Densidade M",
+        "meshNDensity": "Densidade N",
+        "meshMVertexCount": "Contagem de vértices M",
+        "meshNVertexCount": "Contagem de vértices N",
         "length": "Comprimento",
         "angle": "Ângulo",
         "deltaX": "Delta X",
@@ -752,6 +770,10 @@ export const ptBR: EngineLocale = {
         "textPosVert": "Posição vertical do texto"
       },
       "value": {
+        "meshFitNone": "Nenhuma",
+        "fitQuadratic": "Quadrática",
+        "fitCubic": "Cúbica",
+        "fitBezier": "Bezier",
         "yes": "Sim",
         "no": "Não",
         "none": "—",
@@ -832,6 +854,9 @@ export const ptBR: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "MALHA3D"
+      ],
       "LINE": [
         "LINHA",
         "L"
@@ -1619,6 +1644,16 @@ export const ptBR: EngineLocale = {
         "Before": "Antes"
       },
       "PEDIT": {
+        "Smooth surface": "SUavizar",
+        "Desmooth": "desfsuaViz",
+        "Mclose": "fecharM",
+        "Mopen": "abrirM",
+        "Nclose": "fecharN",
+        "Nopen": "abrirN",
+        "Left": "Esquerda",
+        "Right": "Direita",
+        "Up": "aCima",
+        "Down": "aBaixo",
         "Close": "Fechar",
         "Open": "Abrir",
         "Join": "Unir",
@@ -2338,6 +2373,17 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "SAir",
+        "X": "SA",
+        "Undo": "Desfazer"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "Regenerar",
+        "Previous": "Anterior",
+        "Move": "Mover",
+        "eXit": "Sair"
+      },
       "selectObjects": {
         "Window": "Janela",
         "Last": "Último",
@@ -2466,6 +2512,25 @@ export const ptBR: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Digitar o tamanho da malha na direção M",
+      "enterMeshSizeN": "Digitar o tamanho da malha na direção N",
+      "specifyMeshVertex": [
+        "Especificar a localização do vértice (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Inserir uma opção",
+      "peditMeshVertexOption": "Inserir uma opção",
+      "leftShort": "E",
+      "rightShort": "D",
+      "upShort": "C",
+      "downShort": "B",
       "length": "Comprimento",
       "width": "Largura",
       "angle": "Ângulo",
@@ -3534,6 +3599,109 @@ export const ptBR: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Malha poligonal\nNão é possível APARAR este objeto.",
+      "cannotExtendPolygonMesh": "Malha poligonal\nNão é possível ESTENDER este objeto.",
+      "polygonMeshNoCoordinateSystem": "o objeto Malha poligonal 3D não define um sistema de coordenadas",
+      "meshCurrentVertex": [
+        "Vértice atual (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Não há vértices visíveis",
+      "tooFewControlVertices": [
+        "Poucos vértices de controle na direção ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "ambas"
+          }
+        ],
+        ". Devem ser superiores a ",
+        [
+          "count",
+          1,
+          {
+            "2": "dois",
+            "other": "três"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Muitos vértices de controle. Devem ser inferiores a 12.",
+      "surfuOutOfRange": [
+        "SURFU está fora do intervalo. Utilizando um valor de ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV está fora do intervalo. Utilizando um valor de ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline malha ",
+              [
+                "size"
+              ],
+              " (malha de ajuste ",
+              [
+                "fit"
+              ],
+              ")"
+            ],
+            "other": [
+              "malha ",
+              [
+                "size"
+              ]
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M fechado",
+            "n": " N fechado",
+            "both": " M,N fechado",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "             Malha",
+      "listMeshPoint": [
+        "                no ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Comando \"",
         [
@@ -9044,6 +9212,8 @@ export const ptBR: EngineLocale = {
         "System default": "Padrão do sistema"
       },
       "PEDIT": {
+        "Smooth surface": "SUavizar superfície",
+        "Desmooth": "desfsuaViz",
         "Edit vertex": "Editar vértice",
         "Ltype gen": "gerar Tipolinha",
         "OFF": "Desativado",
@@ -9101,6 +9271,9 @@ export const ptBR: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Editar vértice"
+      },
       "ucsNewUcs": {
         "ZAxis": "EIxo z"
       },

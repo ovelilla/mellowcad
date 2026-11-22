@@ -119,6 +119,7 @@ export function clipboardSnapshot(
         case "point":
         case "solid2d":
         case "face3d":
+        case "polygonMesh":
         case "wipeout":
         case "image":
         case "xline":

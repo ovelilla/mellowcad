@@ -192,7 +192,17 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Spline",
     "Spline curve",
     "Decurve",
-    "Defit"
+    "Defit",
+    "Smooth surface",
+    "Desmooth",
+    "Mclose",
+    "Mopen",
+    "Nclose",
+    "Nopen",
+    "Left",
+    "Right",
+    "Up",
+    "Down"
   ],
   "BOX": [
     "Center",

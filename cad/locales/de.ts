@@ -5,6 +5,7 @@ export const de: EngineLocale = {
   "tag": "de",
   "interface": {
     "tool": {
+      "mesh3d": "3D-Netz",
       "select": "Auswählen",
       "line": "Linie",
       "polyline": "Polylinie",
@@ -233,6 +234,16 @@ export const de: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polygonnetz",
+            "other": "Polygonnetze"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -533,6 +544,7 @@ export const de: EngineLocale = {
         "minsert": "Meinfüg Block"
       },
       "group": {
+        "mesh": "Netz",
         "geometry": "Geometrie",
         "solidHistory": "Volumenkörperprotokoll",
         "endpoints": "Endpunkte",
@@ -552,6 +564,12 @@ export const de: EngineLocale = {
         "primaryUnits": "Primäreinheiten"
       },
       "row": {
+        "meshMClosed": "M geschlossen",
+        "meshNClosed": "N geschlossen",
+        "meshMDensity": "M-Dichte",
+        "meshNDensity": "N-Dichte",
+        "meshMVertexCount": "Anzahl der M-Scheitelpunkte",
+        "meshNVertexCount": "Anzahl der N-Scheitelpunkte",
         "length": "Länge",
         "angle": "Winkel",
         "deltaX": "Delta X",
@@ -752,6 +770,10 @@ export const de: EngineLocale = {
         "textPosVert": "Textpos vert"
       },
       "value": {
+        "meshFitNone": "Keine",
+        "fitQuadratic": "Quadratisch",
+        "fitCubic": "Kubisch",
+        "fitBezier": "Bézier",
         "yes": "Ja",
         "no": "Nein",
         "none": "—",
@@ -832,6 +854,9 @@ export const de: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DNETZ"
+      ],
       "LINE": [
         "LINIE",
         "L"
@@ -1614,6 +1639,16 @@ export const de: EngineLocale = {
         "Before": "Vorher"
       },
       "PEDIT": {
+        "Smooth surface": "Oberfläche",
+        "Desmooth": "Glättung",
+        "Mclose": "Mschließen",
+        "Mopen": "Möffnen",
+        "Nclose": "Nschließen",
+        "Nopen": "Nöffnen",
+        "Left": "Links",
+        "Right": "REChts",
+        "Up": "AUf",
+        "Down": "AB",
         "Close": "Schließen",
         "Open": "Öffnen",
         "Join": "Verbinden",
@@ -2333,6 +2368,17 @@ export const de: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "EXit",
+        "X": "X",
+        "Undo": "Zurück"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "REGen",
+        "Previous": "Vorher",
+        "Move": "Schieben",
+        "eXit": "eXit"
+      },
       "selectObjects": {
         "Window": "Fenster",
         "Last": "Letztes",
@@ -2461,6 +2507,25 @@ export const de: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Größe des Netzes in Richtung M eingeben",
+      "enterMeshSizeN": "Größe des Netzes in Richtung N eingeben",
+      "specifyMeshVertex": [
+        "Position des Kontrollpunkts eingeben (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Option eingeben",
+      "peditMeshVertexOption": "Option eingeben",
+      "leftShort": "L",
+      "rightShort": "REC",
+      "upShort": "AU",
+      "downShort": "AB",
       "length": "Länge",
       "width": "Breite",
       "angle": "Winkel",
@@ -3551,6 +3616,109 @@ export const de: EngineLocale = {
       "polar": "Abst<Winkel"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Polygonnetz\nSTUTZEN von Objekt nicht möglich",
+      "cannotExtendPolygonMesh": "Polygonnetz\nDEHNEN von Objekt nicht möglich.",
+      "polygonMeshNoCoordinateSystem": "3D-Polygonnetz Objekt definiert kein Koordinatensystem",
+      "meshCurrentVertex": [
+        "Aktueller Kontrollpunkt (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Keine sichtbaren Kontrollpunkte",
+      "tooFewControlVertices": [
+        "Nicht genug Kontrollpunkte in ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "ein beliebiges"
+          }
+        ],
+        " Richtung.  Es müssen mehr als ",
+        [
+          "count",
+          1,
+          {
+            "2": "zwei",
+            "other": "drei"
+          }
+        ],
+        " sein."
+      ],
+      "tooManyControlVertices": "Zu viele Kontrollpunkte.  Es müssen weniger als 12 sein.",
+      "surfuOutOfRange": [
+        "SURFU zu groß. Verwendet einen Wert von ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV zu groß. Verwendet einen Wert von ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "Spline ",
+              [
+                "size"
+              ],
+              " Netz (",
+              [
+                "fit"
+              ],
+              " geglättetes Netz)"
+            ],
+            "other": [
+              [
+                "size"
+              ],
+              " Netz"
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-geschlossen",
+            "n": " N-geschlossen",
+            "both": " M,N-geschlossen",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "              Netz",
+      "listMeshPoint": [
+        "               bei Punkt, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Unbekannter Befehl \"",
         [
@@ -9028,6 +9196,8 @@ export const de: EngineLocale = {
         "System default": "Systemvorgabe"
       },
       "PEDIT": {
+        "Smooth surface": "Oberfläche glätten",
+        "Desmooth": "Glättung löschen",
         "Edit vertex": "BEarbeiten",
         "Ltype gen": "LInientyp",
         "OFF": "Aus",
@@ -9085,6 +9255,9 @@ export const de: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "BEarbeiten"
+      },
       "ucsNewUcs": {
         "ZAxis": "ZAchse"
       },

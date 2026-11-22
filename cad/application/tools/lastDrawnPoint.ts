@@ -93,6 +93,7 @@ export function continuePoint(
       case "point":
       case "solid2d":
       case "face3d":
+      case "polygonMesh":
       case "wipeout":
       case "image":
       case "table":
@@ -163,6 +164,7 @@ export function lastDrawnDirection(
       case "point":
       case "solid2d":
       case "face3d":
+      case "polygonMesh":
       case "wipeout":
       case "image":
       case "table":

@@ -5,6 +5,7 @@ export const zhCN: EngineLocale = {
   "tag": "zh-CN",
   "interface": {
     "tool": {
+      "mesh3d": "三维网格",
       "select": "选择",
       "line": "直线",
       "polyline": "多段线",
@@ -233,6 +234,15 @@ export const zhCN: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "other": "多边形网格"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -504,6 +514,7 @@ export const zhCN: EngineLocale = {
         "minsert": "多重插入块"
       },
       "group": {
+        "mesh": "网格",
         "geometry": "几何图形",
         "solidHistory": "实体历史记录",
         "endpoints": "端点",
@@ -523,6 +534,12 @@ export const zhCN: EngineLocale = {
         "primaryUnits": "主单位"
       },
       "row": {
+        "meshMClosed": "M 闭合",
+        "meshNClosed": "N 闭合",
+        "meshMDensity": "M 密度",
+        "meshNDensity": "N 密度",
+        "meshMVertexCount": "M 顶点数",
+        "meshNVertexCount": "N 顶点数",
         "length": "长度",
         "angle": "角度",
         "deltaX": "增量 X",
@@ -723,6 +740,10 @@ export const zhCN: EngineLocale = {
         "textPosVert": "垂直放置文字"
       },
       "value": {
+        "meshFitNone": "无",
+        "fitQuadratic": "二次",
+        "fitCubic": "三次",
+        "fitBezier": "Bezier",
         "yes": "是",
         "no": "否",
         "none": "—",

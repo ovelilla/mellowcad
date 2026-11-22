@@ -424,6 +424,42 @@ describe("writeDxf", () => {
     }
   })
 
+  // mesh/f01: AutoCAD's meshes, written in each version and read back the
+  // same; a smoothed one's VERTEXes in AutoCAD's order, the first control
+  // vertex (80), the fitted mesh (72), the other control vertices.
+  it("writes polygon meshes as AutoCAD does, read back the same", () => {
+    const drawing = parseDxf(fixture("meshes-2018")).drawing
+    const meshes = (entities: readonly Entity[]) =>
+      entities.filter((e) => e.type === "polygonMesh")
+    for (const version of VERSIONS) {
+      for (const binary of [false, true]) {
+        const { bytes, report } = writeDxf(drawing, {
+          version,
+          binary,
+          precision: 16,
+        })
+        expect(report.leftOut.size).toBe(0)
+        expect(shape(meshes(parseDxf(bytes).drawing.entities))).toEqual(
+          shape(meshes(drawing.entities))
+        )
+      }
+    }
+    const text = new TextDecoder().decode(
+      writeDxf(drawing, { version: "2018", binary: false, precision: 16 }).bytes
+    )
+    const flags = [
+      ...text.matchAll(
+        /AcDbPolygonMeshVertex\r?\n(?:.*\r?\n){6} *70\r?\n *(\d+)/g
+      ),
+    ].map((m) => Number(m[1]))
+    // The cubic one, third: 1 + 20 + 15 VERTEXes after the first two's 12 + 16.
+    const cubic = flags.slice(28, 28 + 36)
+    expect(cubic[0]).toBe(80)
+    expect(cubic.slice(1, 21).every((f) => f === 72)).toBe(true)
+    expect(cubic.slice(21).every((f) => f === 80)).toBe(true)
+    expect(text).toContain("AcDbPolygonMesh\r\n 66\r\n     1")
+  })
+
   // xref/p04: AutoCAD's DXFOUT of a drawing whose xref it could not find,
   // the BLOCK empty with flag 4 and its path, the reference kept.
   it("writes an external reference as AutoCAD keeps one it cannot find", () => {

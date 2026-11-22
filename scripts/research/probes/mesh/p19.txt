@@ -1,0 +1,14 @@
+_3DMESH
+2
+2
+0,0
+1,0
+0,1
+1,1
+SURFTYPE
+5
+_PEDIT
+_L
+_S
+_X
+(princ (cdr (assoc 75 (entget (entlast)))))

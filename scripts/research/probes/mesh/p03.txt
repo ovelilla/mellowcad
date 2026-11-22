@@ -1,0 +1,47 @@
+_3DMESH
+3
+4
+0,0,0
+10,0,1
+20,0,2
+30,0,3
+0,10,4
+10,10,5
+20,10,6
+30,10,7
+0,20,8
+10,20,9
+20,20,10
+30,20,11
+_PEDIT
+_L
+_M
+_N
+(princ (entget (entlast)))
+_U
+_X
+QAFLAGS
+2
+_LIST
+_L
+
+_PEDIT
+_L
+_E
+
+
+_U
+
+_R
+_D
+_L
+_P
+_M
+15,5,50
+_X
+_X
+(progn (setq v (entnext (entlast))) (repeat 12 (princ "\n") (princ (cdr (assoc 10 (entget v)))) (setq v (entnext v))) (princ))
+_EXPLODE
+_L
+
+(progn (setq s (ssget "_X")) (princ (sslength s)) (princ "\n") (setq i 0) (repeat (sslength s) (princ (entget (ssname s i))) (princ "\n") (setq i (1+ i))) (princ))

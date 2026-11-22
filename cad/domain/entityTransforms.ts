@@ -98,6 +98,12 @@ import {
 } from "./multileaders"
 import { mapSolid2dCorners } from "./solids2d"
 import { face3dReflected } from "./faces3d"
+import {
+  mapPolygonMesh,
+  mapPolygonMeshAt,
+  polygonMeshGrid,
+  polygonMeshReflected,
+} from "./polygonMeshes"
 import { leaderGripIndices, mapLeader, stretchLeaderVertices } from "./leaders"
 import {
   entityAxes,
@@ -381,6 +387,8 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
       }
     case "face3d":
       return planarCorners(entity, (v) => V.add(v, delta))
+    case "polygonMesh":
+      return mapPolygonMesh(entity, (v) => ({ ...V.add(v, delta), z: v.z }))
     case "text":
     case "mtext":
     case "attdef":
@@ -532,6 +540,13 @@ export function stretchEntity(
             ),
           }
         : planar
+    case "polygonMesh":
+      // So does each caught vertex (mesh/p22: 0,0,7 lifts the one caught).
+      return entity.type === "polygonMesh"
+        ? mapPolygonMeshAt(planar, (v, i) =>
+            inFrame(entity.vertices[i]) ? { ...v, z: v.z + dz } : v
+          )
+        : planar
     case "circle":
     case "ellipse":
     case "text":
@@ -593,6 +608,9 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
       return entity.vertices
     case "face3d":
       return entity.corners
+    case "polygonMesh":
+      // A smoothed one's are its fitted mesh's, as its grips (mesh/p13).
+      return polygonMeshGrid(entity).points
     case "spline":
       return entity.points
     case "dimension": {
@@ -673,6 +691,7 @@ function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
     case "mleader":
     case "leader":
     case "face3d":
+    case "polygonMesh":
       return stretchVertices(entity)
     default: {
       const unhandled: never = entity
@@ -747,6 +766,14 @@ function stretchPlanar(
           inFrame(v) ? { ...V.add(v, delta), z: v.z } : v
         ),
       }
+    case "polygonMesh":
+      // A smoothed one keeps its control mesh: STRETCH moves none of it
+      // unless the window takes all of it (mesh/p20), as its grips (d03).
+      return entity.smooth
+        ? entity
+        : mapPolygonMesh(entity, (v) =>
+            inFrame(v) ? { ...V.add(v, delta), z: v.z } : v
+          )
     case "text":
     case "mtext":
     case "attdef":
@@ -864,7 +891,12 @@ function dimensionLinePoint(dim: DimensionEntity): Vec2 | null {
  * `delta`, on the same layer — the building block of the COPY command.
  */
 export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
-  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
+  if (
+    isTilted(entity) ||
+    entity.type === "solid3d" ||
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
+  )
     return freshCopy(translateEntity(entity, delta))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -1036,6 +1068,11 @@ function rotateFlat(
       return planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
     case "face3d":
       return planarCorners(entity, (v) => rotatePoint(v, pivot, radians))
+    case "polygonMesh":
+      return mapPolygonMesh(entity, (v) => ({
+        ...rotatePoint(v, pivot, radians),
+        z: v.z,
+      }))
     case "polyline":
       return {
         ...entity,
@@ -1124,7 +1161,8 @@ export function rotateEntityCopy(
   if (
     isTilted(entity) ||
     entity.type === "solid3d" ||
-    entity.type === "face3d"
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
   ) {
     return freshCopy(rotateEntity(entity, pivot, radians))
   }
@@ -1331,6 +1369,11 @@ function scalePlanar(
       return planarVertices3d(entity, (v) => scalePoint(v, base, factor))
     case "face3d":
       return planarCorners(entity, (v) => scalePoint(v, base, factor))
+    case "polygonMesh":
+      return mapPolygonMesh(entity, (v) => ({
+        ...scalePoint(v, base, factor),
+        z: v.z,
+      }))
     case "polyline":
       return {
         ...entity,
@@ -1415,7 +1458,12 @@ export function scaleEntityCopy(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
-  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
+  if (
+    isTilted(entity) ||
+    entity.type === "solid3d" ||
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
+  )
     return freshCopy(scaleEntity(entity, base, factor))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -1613,6 +1661,10 @@ function mirrorFlat(
       return planarVertices3d(entity, (v) => mirrorPoint(v, a, b))
     case "face3d":
       return face3dReflected(planarCorners(entity, (v) => mirrorPoint(v, a, b)))
+    case "polygonMesh":
+      return polygonMeshReflected(
+        mapPolygonMesh(entity, (v) => ({ ...mirrorPoint(v, a, b), z: v.z }))
+      )
     case "polyline":
       return {
         ...entity,
@@ -1819,7 +1871,12 @@ function mirrorAngle(angle: number, a: Vec2, b: Vec2): number {
  * through `a`,`b`, on the same layer — MIRROR when the source is kept.
  */
 export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
-  if (isTilted(entity) || entity.type === "solid3d" || entity.type === "face3d")
+  if (
+    isTilted(entity) ||
+    entity.type === "solid3d" ||
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
+  )
     return freshCopy(mirrorEntity(entity, a, b))
   const copy: Entity = (() => {
     switch (entity.type) {
@@ -2065,6 +2122,11 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
     const moved = { ...entity, corners: mapCorners(entity.corners, apply) }
     return dot3(cross3(x, y), z) < 0 ? face3dReflected(moved) : moved
   }
+  if (entity.type === "polygonMesh") {
+    const { x, y, z } = map.rotation
+    const moved = mapPolygonMesh(entity, apply)
+    return dot3(cross3(x, y), z) < 0 ? polygonMeshReflected(moved) : moved
+  }
   const from = entityAxes(entity)
   const to = arbitraryAxis(normal) ?? from
   const alongX = worldToAxes(to, axesToWorld(map.rotation, from.x))
@@ -2101,6 +2163,7 @@ export function entityInOcs(entity: Entity, normal: Vec3): Entity {
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
     entity.type !== "face3d" &&
+    entity.type !== "polygonMesh" &&
     entity.type !== "solid3d" &&
     facesAlong(entity, axes.z)
   ) {
@@ -2121,6 +2184,7 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
     entity.type !== "face3d" &&
+    entity.type !== "polygonMesh" &&
     entity.type !== "solid3d" &&
     !isTilted(entity)
   ) {

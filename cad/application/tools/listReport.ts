@@ -25,6 +25,7 @@ import type {
   LineEntity,
   Solid2dEntity,
   Face3dEntity,
+  PolygonMeshEntity,
   WipeoutEntity,
   ImageEntity,
   TableEntity,
@@ -64,6 +65,7 @@ import {
   polylineWidth,
 } from "../../domain/polylines"
 import { polyline3dCurve, polylineCurve } from "../../domain/polylineFits"
+import { polygonMeshGrid } from "../../domain/polygonMeshes"
 import { polyline3dLength } from "../../domain/polylines3d"
 import {
   drawsPeriodic,
@@ -249,6 +251,9 @@ class Report {
       case "xline":
       case "ray":
         this.infinite(entity)
+        break
+      case "polygonMesh":
+        this.polygonMesh(entity)
         break
     }
     return this.lines
@@ -539,6 +544,48 @@ class Report {
     this.say("listFace3dSecond", this.xyz(b))
     this.say("listFace3dThird", this.xyz(c))
     this.say("listFace3dFourth", this.xyz(d))
+  }
+
+  /**
+   * As each console lists it (mesh/p01, p03, p13, p14, p23): a POLYLINE, its
+   * size, a smoothed one's fitted size and which way it closes, then each
+   * VERTEX in the UCS — a smoothed one's as the 3D polyline's are stored, its
+   * first control vertex, the fitted mesh's, the other control vertices.
+   */
+  private polygonMesh(mesh: PolygonMeshEntity): void {
+    this.header("polyline", mesh)
+    const smooth = mesh.smooth
+    this.say("listMeshState", {
+      smoothed: smooth ? "yes" : "no",
+      size: `${mesh.m}x${mesh.n}`,
+      fit: smooth ? `${smooth.mDensity}x${smooth.nDensity}` : "",
+      closed:
+        mesh.closedM && mesh.closedN
+          ? "both"
+          : mesh.closedM
+            ? "m"
+            : mesh.closedN
+              ? "n"
+              : "none",
+    })
+    const vertex = (point: Vec3, mark: MessageId | null) => {
+      this.header("vertex", mesh)
+      this.say("listMeshVertex")
+      this.say("listMeshPoint", this.xyz(this.ucsPoint(point)))
+      if (mark) this.say(mark)
+    }
+    if (smooth) {
+      vertex(mesh.vertices[0], "listVertexControl")
+      for (const point of polygonMeshGrid(mesh).points) {
+        vertex(point, "listVertexSplineFit")
+      }
+      for (const point of mesh.vertices.slice(1)) {
+        vertex(point, "listVertexControl")
+      }
+    } else {
+      for (const point of mesh.vertices) vertex(point, null)
+    }
+    this.header("endSequence", mesh)
   }
 
   /**

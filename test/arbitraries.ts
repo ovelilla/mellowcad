@@ -42,6 +42,9 @@ import {
   type PolylineEntity,
   type Polyline3dEntity,
   type Face3dEntity,
+  type PolygonMeshEntity,
+  polygonMeshSmoothed,
+  isPolygonMeshRefusal,
   type RegionEntity,
   type Solid3dEntity,
   type SolidPrimitive,
@@ -744,6 +747,40 @@ export const face3dEntity: fc.Arbitrary<Face3dEntity> = fc
       },
       "face3d"
     )
+  })
+
+export const polygonMeshEntity: fc.Arbitrary<PolygonMeshEntity> = fc
+  .tuple(
+    fc.integer({ min: 2, max: 5 }),
+    fc.integer({ min: 2, max: 5 }),
+    fc.array(fc.tuple(point, zValue), { minLength: 25, maxLength: 25 }),
+    fc.boolean(),
+    fc.boolean(),
+    // PEDIT's Smooth surface, at SURFU and SURFV.
+    fc.option(
+      fc.tuple(
+        fc.constantFrom(5 as const, 6 as const, 8 as const),
+        fc.integer({ min: 2, max: 6 }),
+        fc.integer({ min: 2, max: 6 })
+      )
+    )
+  )
+  .map(([m, n, points, closedM, closedN, smooth]) => {
+    const mesh = withId<PolygonMeshEntity>(
+      {
+        type: "polygonMesh",
+        layerId: DEFAULT_LAYER_ID,
+        m,
+        n,
+        vertices: points.slice(0, m * n).map(([p, z]) => ({ ...p, z })),
+        closedM,
+        closedN,
+      },
+      "polygonMesh"
+    )
+    if (!smooth) return mesh
+    const smoothed = polygonMeshSmoothed(mesh, ...smooth)
+    return isPolygonMeshRefusal(smoothed) ? mesh : smoothed
   })
 
 export const polyline3dEntity: fc.Arbitrary<Polyline3dEntity> = fc
@@ -1509,7 +1546,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       tableEntity,
       mleaderEntity,
       xlineEntity,
-      rayEntity
+      rayEntity,
+      polygonMeshEntity
     ),
     zValue,
     zValue,
@@ -1542,6 +1580,7 @@ export const entity: fc.Arbitrary<Entity> = fc
     if (
       flat.type === "polyline3d" ||
       flat.type === "face3d" ||
+      flat.type === "polygonMesh" ||
       flat.type === "solid3d"
     ) {
       return flat

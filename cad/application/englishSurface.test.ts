@@ -2513,6 +2513,34 @@ describe("the engine's English surface", () => {
         .do("exit", (c) => c.enter())
         .do("pick", (c) => c.click(at(5, 5)))
     )
+    walk("3DMESH", createHarness(), (s) =>
+      s
+        .do("3DMESH", (c) => c.command("3DMESH"))
+        .do("size refused", (c) => c.type("1").enter())
+        .do("M", (c) => c.type("4").enter())
+        .do("N", (c) => c.type("4").enter())
+        .do("Enter refused", (c) => c.enter())
+        .do("vertices", (c) => {
+          for (let k = 0; k < 16; k++) {
+            c.type(`${(k % 4) * 10},${Math.floor(k / 4) * 10},${k % 3}`).enter()
+          }
+        })
+        .do("pick", (c) => c.click(at(5, 0)))
+        .do("PEDIT", (c) => c.command("PEDIT"))
+        .do("Last", (c) => answer(c, "L"))
+        .do("Mclose", (c) => answer(c, "M"))
+        .do("Smooth surface", (c) => answer(c, "S"))
+        .do("Edit vertex", (c) => answer(c, "E"))
+        .do("Up", (c) => answer(c, "U"))
+        .do("Move", (c) => answer(c, "M"))
+        .do("point", (c) => c.type("15,15,9").enter())
+        .do("exit vertex", (c) => answer(c, "X"))
+        .do("Undo", (c) => answer(c, "U"))
+        .do("exit", (c) => answer(c, "X"))
+        .do("LIST", (c) => c.command("LIST"))
+        .do("Last", (c) => answer(c, "L"))
+        .do("enter", (c) => c.enter())
+    )
     walk("LEADER", createHarness(), (s) =>
       s
         .do("LEADER", (c) => c.command("LEAD"))

@@ -68,6 +68,7 @@ import type { PromptId } from "../../locales/types"
 import { glow, rollover } from "./ghostLook"
 import { joinToPolyline } from "./JoinTool"
 import { lockedObjectAt } from "./lockedPick"
+import { PolygonMeshEdit } from "./polygonMeshEdit"
 import {
   type AddedBy,
   type ModeFind,
@@ -152,6 +153,8 @@ export class PolylineEditTool implements Tool {
   readonly id = "pedit"
 
   private step: Step = { kind: "select", hover: null }
+  /** A polygon mesh picked: its own prompts, to which every answer goes (mesh/p03). */
+  private mesh: PolygonMeshEdit | null = null
   /** The polylines edited: one, or Multiple's. */
   private ids: EntityId[] = []
   private multiple = false
@@ -234,6 +237,8 @@ export class PolylineEditTool implements Tool {
     // set of more is not taken (p38).
     if (preselected && more.length === 0 && editable(preselected)) {
       this.begin([preselected.id], false, ctx)
+    } else if (preselected && more.length === 0) {
+      if (preselected.type === "polygonMesh") this.editMesh(preselected.id, ctx)
     }
   }
 
@@ -244,6 +249,7 @@ export class PolylineEditTool implements Tool {
 
   private reset(): void {
     this.step = { kind: "select", hover: null }
+    this.mesh = null
     this.ids = []
     this.multiple = false
     this.steps = []
@@ -270,6 +276,7 @@ export class PolylineEditTool implements Tool {
   }
 
   question(): PromptId | ToolQuestion | null {
+    if (this.mesh) return this.mesh.question()
     const step = this.step
     switch (step.kind) {
       case "select":
@@ -336,6 +343,7 @@ export class PolylineEditTool implements Tool {
 
   /** Refused as AutoCAD 2027's console refuses them (p03, p07, p12, p22, p28, p75). */
   takes(): QuestionInput | null {
+    if (this.mesh) return this.mesh.takes()
     switch (this.step.kind) {
       case "select":
         return this.modes.inMode()
@@ -383,6 +391,7 @@ export class PolylineEditTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.mesh) return this.mesh.commandOptions()
     const step = this.step
     switch (step.kind) {
       case "select":
@@ -475,6 +484,7 @@ export class PolylineEditTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.mesh) return this.mesh.invokeOption(id, ctx)
     const step = this.step
     switch (step.kind) {
       case "select":
@@ -901,6 +911,10 @@ export class PolylineEditTool implements Tool {
       this.begin([entity.id], false, ctx)
       return
     }
+    if (entity.type === "polygonMesh") {
+      this.editMesh(entity.id, ctx)
+      return
+    }
     ctx.report(ctx.text.message("objectNotPolyline"))
     if (convertible(entity)) {
       this.ask({ kind: "convert", entity }, ctx)
@@ -908,6 +922,12 @@ export class PolylineEditTool implements Tool {
       this.modes.start()
       this.ask({ kind: "select", hover: null }, ctx)
     }
+  }
+
+  /** A polygon mesh's prompts from here on (mesh/p03). */
+  private editMesh(id: EntityId, ctx: ToolContext): void {
+    this.mesh = new PolygonMeshEdit(id)
+    this.mesh.begin(ctx)
   }
 
   /**
@@ -1251,6 +1271,7 @@ export class PolylineEditTool implements Tool {
   }
 
   onEnter(ctx: ToolContext): boolean {
+    if (this.mesh) return this.mesh.onEnter(ctx)
     const step = this.step
     switch (step.kind) {
       case "select":
@@ -1302,6 +1323,8 @@ export class PolylineEditTool implements Tool {
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
+    // A mesh's prompts take keywords and points, never a pick (review).
+    if (this.mesh) return false
     const kind = this.step.kind
     if (kind === "select") return this.modes.answerTyped(text, ctx)
     if (kind === "set") return this.setSelector.answerTyped(text, ctx)
@@ -1310,6 +1333,7 @@ export class PolylineEditTool implements Tool {
   }
 
   wantsSnap(): boolean {
+    if (this.mesh) return this.mesh.wantsSnap()
     switch (this.step.kind) {
       case "select":
         return this.modes.wantsSnap()
@@ -1333,10 +1357,12 @@ export class PolylineEditTool implements Tool {
    * it finds, LASTPOINT (p306).
    */
   takesSnapOverride(): boolean {
+    if (this.mesh) return false
     return this.step.kind === "select" && !this.modes.inMode()
   }
 
   cycleLasso(ctx: ToolContext): boolean {
+    if (this.mesh) return false
     const kind = this.step.kind
     if (kind === "select") return this.modes.cycleLasso(ctx)
     if (kind === "set") return this.setSelector.cycleLasso(ctx)
@@ -1345,6 +1371,7 @@ export class PolylineEditTool implements Tool {
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    if (this.mesh) return this.mesh.onPointerMove(input, ctx)
     const step = this.step
     if (step.kind === "select") {
       if (this.modes.inMode()) {
@@ -1365,6 +1392,7 @@ export class PolylineEditTool implements Tool {
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
+    if (this.mesh) return this.mesh.onPointerDown(input, ctx)
     if (input.button !== 0) return
     const step = this.step
     if (step.kind === "select") {
@@ -1393,6 +1421,7 @@ export class PolylineEditTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (this.mesh) return
     const kind = this.step.kind
     if (kind === "select") this.modes.onPointerUp(input, ctx)
     if (kind === "set") this.setSelector.onPointerUp(input, ctx)
@@ -1401,6 +1430,7 @@ export class PolylineEditTool implements Tool {
 
   /** Where Insert's, Move's, a vertex width's and Tangent's rubber band starts: the X (p23, p22, p28 traces). */
   getConstraintAnchor(ctx: ToolContext): Vec3 | null {
+    if (this.mesh) return this.mesh.getConstraintAnchor(ctx)
     switch (this.step.kind) {
       case "insert":
       case "move":
@@ -1420,6 +1450,7 @@ export class PolylineEditTool implements Tool {
    * it to the cursor, with no ghost (desktop pedit/d01, d02-1).
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.mesh) return this.mesh.buildOverlay(ctx)
     const step = this.step
     switch (step.kind) {
       case "select":

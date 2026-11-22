@@ -5,6 +5,7 @@ export const fr: EngineLocale = {
   "tag": "fr",
   "interface": {
     "tool": {
+      "mesh3d": "Maillage 3D",
       "select": "Sélectionner",
       "line": "Ligne",
       "polyline": "Polyligne",
@@ -233,6 +234,16 @@ export const fr: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Surface maillée",
+            "other": "Surfaces maillées"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -533,6 +544,7 @@ export const fr: EngineLocale = {
         "minsert": "Insérer un bloc"
       },
       "group": {
+        "mesh": "Maillage",
         "geometry": "Géométrie",
         "solidHistory": "Historique du solide",
         "endpoints": "Extrémités",
@@ -552,6 +564,12 @@ export const fr: EngineLocale = {
         "primaryUnits": "Unités principale"
       },
       "row": {
+        "meshMClosed": "Maillage fermé",
+        "meshNClosed": "Surface maillée dans la direction N fermée",
+        "meshMDensity": "Densité du maillage",
+        "meshNDensity": "Densité de la surface maillée dans la direction N",
+        "meshMVertexCount": "Nombre de sommet d'une surface maillée",
+        "meshNVertexCount": "Nombre de sommets d'une surface maillée dans la direction N",
         "length": "Longueur",
         "angle": "Angle",
         "deltaX": "Delta X",
@@ -752,6 +770,10 @@ export const fr: EngineLocale = {
         "textPosVert": "Position verticale du texte"
       },
       "value": {
+        "meshFitNone": "Aucune",
+        "fitQuadratic": "Second ordre",
+        "fitCubic": "Troisième ordre",
+        "fitBezier": "Bézier",
         "yes": "Oui",
         "no": "Non",
         "none": "—",
@@ -832,6 +854,9 @@ export const fr: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DMAILLE"
+      ],
       "LINE": [
         "LIGNE",
         "L"
@@ -1618,6 +1643,16 @@ export const fr: EngineLocale = {
         "Before": "AVant"
       },
       "PEDIT": {
+        "Smooth surface": "Lisser",
+        "Desmooth": "Retrouver",
+        "Mclose": "MClore",
+        "Mopen": "MOUvrir",
+        "Nclose": "NClore",
+        "Nopen": "NOuvrir",
+        "Left": "Gauche",
+        "Right": "DRoite",
+        "Up": "Haut",
+        "Down": "Bas",
         "Close": "Clore",
         "Open": "Ouvrir",
         "Join": "Joindre",
@@ -2337,6 +2372,17 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "Quitter",
+        "X": "Q",
+        "Undo": "annUler"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "Régén",
+        "Previous": "Précédent",
+        "Move": "DEplacer",
+        "eXit": "Quitter"
+      },
       "selectObjects": {
         "Window": "Fenêtre",
         "Last": "Dernier",
@@ -2465,6 +2511,25 @@ export const fr: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Entrez la taille du maillage dans la direction M",
+      "enterMeshSizeN": "Entrez la taille du maillage dans la direction N",
+      "specifyMeshVertex": [
+        "Spécifiez l'emplacement du sommet (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Entrez une option",
+      "peditMeshVertexOption": "Entrez une option",
+      "leftShort": "G",
+      "rightShort": "DR",
+      "upShort": "H",
+      "downShort": "B",
       "length": "Longueur",
       "width": "Largeur",
       "angle": "Angle",
@@ -3532,6 +3597,109 @@ export const fr: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Surface maillée\nImpossible d'AJUSTER cet objet.",
+      "cannotExtendPolygonMesh": "Surface maillée\nImpossible de prolonger cet objet.",
+      "polygonMeshNoCoordinateSystem": "Surface maillée 3D objet ne définit pas un système de coordonnées",
+      "meshCurrentVertex": [
+        "Somment courant (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Pas de sommets visibles",
+      "tooFewControlVertices": [
+        "Trop peu de sommets de contrôle dans la direction ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "autre"
+          }
+        ],
+        ".\nIls doivent être plus de ",
+        [
+          "count",
+          1,
+          {
+            "2": "deux",
+            "other": "trois"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Trop de sommets de contrôle. Ils doivent être moins de 12.",
+      "surfuOutOfRange": [
+        "SURFU est trop grande. Utilise une valeur de ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV est trop grande. Utilise une valeur de ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline maille ",
+              [
+                "size"
+              ],
+              " (maille lissée ",
+              [
+                "fit"
+              ],
+              ")"
+            ],
+            "other": [
+              "maille ",
+              [
+                "size"
+              ]
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-fermée",
+            "n": " N-fermée",
+            "both": " M,N-fermée",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "            Maille",
+      "listMeshPoint": [
+        "      au niveau du point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Commande inconnue \"",
         [
@@ -9037,6 +9205,8 @@ export const fr: EngineLocale = {
         "System default": "Par défaut"
       },
       "PEDIT": {
+        "Smooth surface": "Lisser surface",
+        "Desmooth": "Retrouver",
         "Edit vertex": "Modif-sommet",
         "Ltype gen": "TYpeligne gén",
         "OFF": "INactif",
@@ -9094,6 +9264,9 @@ export const fr: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Modif-sommet"
+      },
       "ucsNewUcs": {
         "ZAxis": "axEZ"
       },

@@ -57,6 +57,9 @@ export function dxfSettings(
   const celweight = integer("$CELWEIGHT", 370)
   const splineType = integer("$SPLINETYPE", 70)
   const splineSegments = integer("$SPLINESEGS", 70)
+  const surfaceType = integer("$SURFTYPE", 70)
+  const density = (value: number | undefined, fallback: number) =>
+    value !== undefined && value >= 0 && value <= 200 ? value : fallback
   const snapRecord = variable("$SNAPUNIT")
   const snapUnit =
     (activeViewport && point(activeViewport, 14)) ??
@@ -94,6 +97,12 @@ export function dxfSettings(
       splineSegments !== undefined && splineSegments !== 0
         ? splineSegments
         : d.splineSegments,
+    surfaceType:
+      surfaceType === 5 || surfaceType === 6 || surfaceType === 8
+        ? surfaceType
+        : d.surfaceType,
+    surfaceU: density(integer("$SURFU", 70), d.surfaceU),
+    surfaceV: density(integer("$SURFV", 70), d.surfaceV),
     isolines: notNegative(integer("$ISOLINES", 70), d.isolines),
     pointMode: pointMode(integer("$PDMODE", 70), d.pointMode),
     pointSize: real("$PDSIZE", 40) ?? d.pointSize,

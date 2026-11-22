@@ -1536,6 +1536,12 @@ function header(
   out.int(70, s.splineType)
   variable("$SPLINESEGS")
   out.int(70, s.splineSegments)
+  variable("$SURFTYPE")
+  out.int(70, s.surfaceType)
+  variable("$SURFU")
+  out.int(70, s.surfaceU)
+  variable("$SURFV")
+  out.int(70, s.surfaceV)
   // WHY no $UCSNAME: the UCS table is not written, and a name it lacks
   // would name nothing.
   const ucs = s.ucs

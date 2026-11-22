@@ -381,6 +381,23 @@ function applyInUcs(
     return { ...entity, corners: [a, b, c, d] }
   }
   if (
+    entity.type === "polygonMesh" &&
+    (property === "vertexX" || property === "vertexY" || property === "vertexZ")
+  ) {
+    // Its vertex is a point in space, as a 3D polyline's is.
+    const at = entity.vertices[vertex]
+    if (!at) return null
+    const axis =
+      property === "vertexX" ? "x" : property === "vertexY" ? "y" : "z"
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, at),
+      [axis]: value,
+    })
+    const vertices = [...entity.vertices]
+    vertices[vertex] = target
+    return { ...entity, vertices }
+  }
+  if (
     entity.type === "spline" &&
     (property === "vertexX" || property === "vertexY" || property === "vertexZ")
   ) {

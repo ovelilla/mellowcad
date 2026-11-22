@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "mesh3d": "3D háló",
       "select": "Kijelölés",
       "line": "Vonal",
       "polyline": "Vonallánc",
@@ -224,6 +225,7 @@
       }
     },
     "entity": {
+      "polygonMesh": "{count, plural, one {Poligonháló} other {Poligonháló}}",
       "line": "{count, plural, one {Vonal} other {Vonal}}",
       "circle": "{count, plural, one {Kör} other {Kör}}",
       "arc": "{count, plural, one {Ív} other {Ív}}",
@@ -269,6 +271,7 @@
         "minsert": "TBeill Blokk"
       },
       "group": {
+        "mesh": "Háló",
         "geometry": "Geometria",
         "solidHistory": "Szilárdtest előzményei",
         "endpoints": "Végpontok",
@@ -288,6 +291,12 @@
         "primaryUnits": "Elsődleges mértékegységek"
       },
       "row": {
+        "meshMClosed": "M zárt",
+        "meshNClosed": "N zárt",
+        "meshMDensity": "M sűrűség",
+        "meshNDensity": "N sűrűség",
+        "meshMVertexCount": "M csomópont szám",
+        "meshNVertexCount": "N csomópont szám",
         "length": "Hossz",
         "angle": "Szög",
         "deltaX": "Delta X",
@@ -488,6 +497,10 @@
         "textPosVert": "Szöveg - függőleges poz."
       },
       "value": {
+        "meshFitNone": "Nincs",
+        "fitQuadratic": "Másodfokú",
+        "fitCubic": "Harmadfokú",
+        "fitBezier": "Bezier",
         "yes": "Igen",
         "no": "Nem",
         "none": "—",
@@ -568,6 +581,7 @@
   },
   "commands": {
     "names": {
+      "3DMESH": ["3DHÁLÓ"],
       "LINE": ["VONAL", "VO"],
       "XLINE": ["SZVONAL", "SV"],
       "RAY": ["SUGÁR"],
@@ -891,6 +905,16 @@
         "Before": "Előre"
       },
       "PEDIT": {
+        "Smooth surface": "Simuló",
+        "Desmooth": "éRDesít",
+        "Mclose": "Mzár",
+        "Mopen": "Mnyit",
+        "Nclose": "Nzár",
+        "Nopen": "Nnyit",
+        "Left": "Bal",
+        "Right": "Jobb",
+        "Up": "Fel",
+        "Down": "Le",
         "Close": "Bezárás",
         "Open": "Megnyitás",
         "Join": "Egyesít",
@@ -1606,6 +1630,8 @@
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {"eXit": "KIlépés", "X": "X", "Undo": "VIssza"},
+      "peditMeshVertexOption": {"Regen": "Regen", "Previous": "Előző", "Move": "Mozgat", "eXit": "Kilépés"},
       "selectObjects": {
         "Window": "Ablak",
         "Last": "Utolsó",
@@ -1734,6 +1760,15 @@
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Adja meg a háló méretét M irányban",
+      "enterMeshSizeN": "Adja meg a háló méretét N irányban",
+      "specifyMeshVertex": "Adja meg a csomópont helyét ({m}, {n})",
+      "peditMeshOption": "Válasszon az opciók közül",
+      "peditMeshVertexOption": "Válasszon az opciók közül",
+      "leftShort": "B",
+      "rightShort": "J",
+      "upShort": "F",
+      "downShort": "L",
       "length": "Hossz",
       "width": "Szélesség",
       "angle": "Szög",
@@ -2494,6 +2529,18 @@
       "polar": "Táv'<'Szög"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "poligonháló\nAz objektum nem METSZhető el.",
+      "cannotExtendPolygonMesh": "poligonháló\nAz objektumra nem alkalmazható az ELÉR parancs.",
+      "polygonMeshNoCoordinateSystem": "3D poligonháló objektum nem határoz meg koordináta-rendszert",
+      "meshCurrentVertex": "Aktuális csomópont ({m},{n}).",
+      "noVisibleVertices": "Nincs látható csomópont",
+      "tooFewControlVertices": "Kevés vezérlő csomópont van {direction, select, M {M} N {N} other {egyik}} irányban. Többnek kell lenni mint {count, select, 2 {kettő} other {három}}.",
+      "tooManyControlVertices": "Túl sok vezérlő csomópont van. Kevesebbnek kell lenni mint 12.",
+      "surfuOutOfRange": "SURFU a tartományon kívül van. A használt érték {value}.",
+      "surfvOutOfRange": "SURFV a tartományon kívül van. A használt érték {value}.",
+      "listMeshState": "                   {smoothed, select, yes {spline {size} háló ({fit} illesztési háló)} other {{size} háló}}{closed, select, m { M-zárt} n { N-zárt} both { M,N-zárt} other {}}",
+      "listMeshVertex": "              Háló",
+      "listMeshPoint": "                 pontnál, X={x}  Y={y}  Z={z}",
       "unknownCommand": "A(z) \"{name}\" ismeretlen parancs. Információért nyomja meg az F1 billentyűt.",
       "cancel": "*Megszakítva*",
       "commandCancelled": "*Megszakítva*",
@@ -3420,6 +3467,8 @@
         "System default": "Rendszer alapérték"
       },
       "PEDIT": {
+        "Smooth surface": "Simuló felület",
+        "Desmooth": "éRDesít",
         "Edit vertex": "SZerkeszt csúcspontot",
         "Ltype gen": "VTípus gen",
         "OFF": "KI",
@@ -3477,6 +3526,7 @@
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {"Edit vertex": "SZerkeszt töréspontot"},
       "ucsNewUcs": {
         "ZAxis": "ZTeng"
       },

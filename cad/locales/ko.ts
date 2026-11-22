@@ -5,6 +5,7 @@ export const ko: EngineLocale = {
   "tag": "ko",
   "interface": {
     "tool": {
+      "mesh3d": "3D 메쉬",
       "select": "선택",
       "line": "선",
       "polyline": "폴리선",
@@ -233,6 +234,15 @@ export const ko: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "other": "폴리곤 메쉬"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -504,6 +514,7 @@ export const ko: EngineLocale = {
         "minsert": "다중 삽입 블록"
       },
       "group": {
+        "mesh": "메쉬",
         "geometry": "형상",
         "solidHistory": "솔리드 사용 내역",
         "endpoints": "끝점",
@@ -523,6 +534,12 @@ export const ko: EngineLocale = {
         "primaryUnits": "1차 단위"
       },
       "row": {
+        "meshMClosed": "M 닫힘",
+        "meshNClosed": "N 닫힘",
+        "meshMDensity": "M 밀도",
+        "meshNDensity": "N 밀도",
+        "meshMVertexCount": "M 정점 수",
+        "meshNVertexCount": "N 정점 수",
         "length": "길이",
         "angle": "각도",
         "deltaX": "X 증분",
@@ -723,6 +740,10 @@ export const ko: EngineLocale = {
         "textPosVert": "문자 세로 위치"
       },
       "value": {
+        "meshFitNone": "없음",
+        "fitQuadratic": "2차원",
+        "fitCubic": "3차원",
+        "fitBezier": "베지어",
         "yes": "예",
         "no": "아니오",
         "none": "—",

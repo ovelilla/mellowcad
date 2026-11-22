@@ -1,0 +1,17 @@
+_3DMESH
+2
+3
+0,0
+50,0
+100,0
+0,50
+50,50
+100,50
+_ZOOM
+_E
+(princ (list (osnap (quote (100 25 0)) "_mid") (osnap (quote (75 1 0)) "_end") (osnap (quote (75 1 0)) "_nea") (osnap (quote (75 1 0)) "_mid") (osnap (quote (75 1 0)) "_cen") (osnap (quote (75 1 0)) "_gcen") (osnap (quote (50 20 0)) "_nea") (osnap (quote (50 20 0)) "_mid") (osnap (quote (25 25 0)) "_nea") (osnap (quote (75 1 0)) "_node") (osnap (quote (75 1 0)) "_ins") (osnap (quote (75 1 0)) "_per")))
+(princ (list (ssget "_C" (quote (24 24)) (quote (26 26))) (ssget (quote (25 25))) (ssget (quote (50 25))) (ssget (quote (75 50)))))
+_UCS
+_OB
+_L
+(princ (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR")))

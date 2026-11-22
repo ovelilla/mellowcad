@@ -2098,6 +2098,33 @@ or circles.` and `Chamfer requires 2 lines.` (p194, p195); MOVE, MIRROR and the 
 arcs (p191). The curve is `polylineCurve`'s: drawn, picked, snapped and measured; the grips are the
 frame's vertices alone.
 
+**A polygon mesh** picked (or selected before it) gets its own prompt, as AutoCAD 2027's console asks
+it (probes mesh/p03, p12, p14, p15, p18–p21, in the ten languages; tables 21136–21143): `Enter an
+option [Edit vertex/Smooth surface/Desmooth/Mclose/Nclose/Undo]:` (es `[Editar vértices/Amoldar
+superficie/estadoPrevio superficie/cerrarM/cerrarN/desHacer]`), Mopen and Nopen in their places
+on a closed direction, X and EXit hidden, each option done at once and one step of its Undo (p03),
+a word `Invalid option keyword.`, Enter, eXit or X ending PEDIT. **Smooth surface** lays SURFTYPE's
+surface (5 a quadratic B-spline, 6 a cubic, 8 a Bezier) at SURFU along M and SURFV along N: SURFU
++ 1 points along an open direction, SURFU round a closed one, each B-spline clamped to an open
+frame's ends and periodic round a closed one, as PEDIT's Spline lays a 3D polyline's curve, sampled
+at equal steps of its parameter (s5–s9, p17; every fitted point of AutoCAD's own file to 9
+decimals, f01); SURFU or SURFV under 2 said and taken as 2 (`SURFU is out of range. Using a value
+of 2.`, p21); a mesh too small or too large for it refused, `Too few control vertices in M
+direction.  Must be more than three.`, `… in either direction.  Must be more than two.` (a
+quadratic's), `Too many control vertices.  Must be less than 12.` (a Bezier's), and left
+unsmoothed (p18, p19). **Desmooth** leaves the control mesh (s10). **Mclose**, **Mopen**,
+**Nclose** and **Nopen** close or open a direction, a smoothed mesh smoothed again at SURFTYPE,
+SURFU and SURFV as they now stand (p21). **Edit vertex**: `Current vertex (0,0).` (es `Vértice
+actual`) and `Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <N>:`, an X on
+the vertex as a polyline's; Next and Previous along the rows, Left and Right along N, Up and Down
+along M, each staying put at an edge, a closed mesh's too (p14), Enter repeating the last of them,
+which the default names (`<U>`); Move's `Specify new location for marked vertex:` with its Z, a
+smoothed mesh smoothed again (p12, p15); REgen; eXit back at the main prompt; with none of its
+vertices in the view, `No visible vertices` and the main prompt again (p03, s10). SURFTYPE (5, 6
+or 8, anything else `Cannot set SURFTYPE to that value.`), SURFU and SURFV (0 to 200, `Requires an
+integer between 0 and 200.`) are saved in the drawing, as AutoCAD's DXF header holds them (p16,
+f01).
+
 **Missing:** PEDITACCEPT (the question left out, p06) and PLINECONVERTMODE's arcs (p08); a spline's vertices
 as SPLINEDIT's convert to Polyline makes them, far finer than AutoCAD's on a fit spline (31 at
 precision 10, p07; SPLINEDIT's entry); Multiple's prompt when the set is all 3D polylines: AutoCAD's is the 2D one, its
@@ -2105,7 +2132,10 @@ Width asked and nothing changed, Fit silent, Ltype gen's `[ON/OFF]` with no defa
 fitting them (p40, p249; the 3D one here, PEDIT-D29); Extend of two arc end segments
 (**unverified**, never here: PEDIT-D23); JOIN of a spline-fit polyline (unprobed; its frame here);
 EXTEND of a Fit one, whose last arc AutoCAD grows off the edge (p211; refused here, as it finds no
-edge); the meshes; the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
+edge); a polygon mesh in Multiple's set (`Cannot edit 3D Mesh and Polyline simultaneously.` and the
+meshes' own prompt, 21268, 21273, unprobed), its double-click, the `Generating segment 2...` Smooth
+surface writes (its number unexplained), and a polyface mesh (`Cannot edit a polyface mesh.`, 21232);
+the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
 (the last segment's end width here, PLINE's and Width's alike, p34, p78), and of an open
 polyline's last vertex, which Edit vertex's Width sets and nothing here keeps (p79); the bulge
 Straighten leaves on an open polyline's last vertex, which a later Close would use (p131);

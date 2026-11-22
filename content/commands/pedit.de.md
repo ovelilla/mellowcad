@@ -2,7 +2,7 @@
 title: "Befehl PEDIT (Polylinie bearbeiten) in AutoCAD"
 description: "So arbeitet AutoCADs PEDIT (Alias PE): Linien zur Polylinie machen, Verbinden, Breite, Angleichen und Spline, Scheitelpunkt bearbeiten, Mehrfach. Gratis testen."
 figure: "Drei Linien, die Ende an Ende aufeinandertreffen: PEDIT macht die erste zur Polylinie, verbindet die beiden anderen mit ihr und gibt ihr die Breite 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 PEDIT bearbeitet eine Polylinie. Wählen Sie bei `Polylinie wählen oder [Mehrfach]:` eine aus, oder wählen Sie sie vor dem Befehl aus; auch ein Doppelklick auf eine Polylinie startet PEDIT für sie. Wählen Sie stattdessen eine Linie, einen Bogen oder einen Spline, meldet der Befehl <Message id="objectNotPolyline" /> und fragt, ob das Objekt in eine Polylinie umgewandelt werden soll, standardmäßig Ja: Die neue Polylinie tritt an seine Stelle und übernimmt seine Eigenschaften. Danach fragt er immer wieder nach einer Option, jede wird sofort angewendet, bis die Eingabetaste den Befehl beendet. Eine 3D-Polylinie bekommt eine kürzere Liste, ohne Breite, ohne Kurvenangleichung und ohne Linientyp-Generierung, und ihre Spline-Option heißt <Keyword id="Spline curve" />. Esc behält, was bereits getan wurde; die gesamte Bearbeitung ist ein einziger Schritt, den <Command id="U" /> zurücknimmt.
@@ -55,7 +55,7 @@ Nimmt die letzte Option dieses Durchlaufs zurück und fragt weiter.
 
 ## Missing
 
-PEDITACCEPT: Wählen Sie eine Linie, einen Bogen oder einen Spline, wird immer vor dem Umwandeln gefragt. PLINECONVERTMODE: Ein Spline wird zu einer Polylinie aus geraden Segmenten, weit mehr Segmente, als AutoCAD erzeugt, nie aus Bögen. Eine angeglichene Polylinie erscheint in der Eigenschaftenpalette als einfache Polylinie, ohne AutoCADs Titel 2D-Polylinie und ihre Zeile Angleichen/Glätten. Mehrfach mit nur 3D-Polylinien in der Auswahl stellt die 3D-Eingabeaufforderung, wo AutoCAD die 2D-Eingabeaufforderung stellt. Netze zum Bearbeiten gibt es nicht.
+PEDITACCEPT: Wählen Sie eine Linie, einen Bogen oder einen Spline, wird immer vor dem Umwandeln gefragt. PLINECONVERTMODE: Ein Spline wird zu einer Polylinie aus geraden Segmenten, weit mehr Segmente, als AutoCAD erzeugt, nie aus Bögen. Eine angeglichene Polylinie erscheint in der Eigenschaftenpalette als einfache Polylinie, ohne AutoCADs Titel 2D-Polylinie und ihre Zeile Angleichen/Glätten. Mehrfach mit nur 3D-Polylinien in der Auswahl stellt die 3D-Eingabeaufforderung, wo AutoCAD die 2D-Eingabeaufforderung stellt. <Keyword id="Multiple" /> bearbeitet keine Polygonnetze.
 
 ## Questions
 

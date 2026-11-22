@@ -56,6 +56,7 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
     case "mleader":
     case "xline":
     case "ray":
+    case "polygonMesh":
       return { ...entity, layerId }
     case "text":
       return { ...entity, layerId }
@@ -115,6 +116,7 @@ export function assignEntityColor(
     case "mleader":
     case "xline":
     case "ray":
+    case "polygonMesh":
       return { ...entity, color }
     case "text":
       return { ...entity, color }
@@ -173,6 +175,7 @@ export function assignEntityLinetype(
     case "mleader":
     case "xline":
     case "ray":
+    case "polygonMesh":
       return { ...entity, linetype }
     case "text":
       return { ...entity, linetype }
@@ -231,6 +234,7 @@ export function assignEntityLineweight(
     case "mleader":
     case "xline":
     case "ray":
+    case "polygonMesh":
       return { ...entity, lineweight }
     case "text":
       return { ...entity, lineweight }

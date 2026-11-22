@@ -51,6 +51,7 @@ export type EntityType =
   | "mleader"
   | "xline"
   | "ray"
+  | "polygonMesh"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -154,6 +155,39 @@ export interface Face3dEntity extends BaseEntity {
   readonly type: "face3d"
   readonly corners: readonly [Vec3, Vec3, Vec3, Vec3]
   readonly invisibleEdges?: number
+}
+
+/**
+ * PEDIT's Smooth surface on a polygon mesh, by SURFTYPE: a quadratic (5) or
+ * cubic (6) B-spline surface, or a Bezier one (8).
+ */
+export type PolygonMeshSmoothing = 5 | 6 | 8
+
+/**
+ * A polygon mesh (DXF POLYLINE with flag 16, AutoCAD's AcDbPolygonMesh, made
+ * by 3DMESH): `m` rows of `n` vertices in the WCS, each with its own Z, as a
+ * 3D polyline's are, and no plane of its own. `vertices[i * n + j]` is vertex
+ * (i, j) as PEDIT's Edit vertex counts it (mesh/p12): N runs along a row, M
+ * across the rows; each direction may close (DXF 70 flags 1 and 32).
+ *
+ * {@link smooth} is PEDIT's Smooth surface (DXF 70 flag 4, 75): `vertices`
+ * stay its control mesh, which Edit vertex and the palette edit, and what it
+ * draws, picks, snaps and explodes is the fitted mesh (`polygonMeshGrid`),
+ * `mDensity` by `nDensity` points (DXF 73, 74: SURFU + 1 along an open
+ * direction, SURFU round a closed one; mesh/s5–s9, p21).
+ */
+export interface PolygonMeshEntity extends BaseEntity {
+  readonly type: "polygonMesh"
+  readonly m: number
+  readonly n: number
+  readonly vertices: readonly Vec3[]
+  readonly closedM: boolean
+  readonly closedN: boolean
+  readonly smooth?: {
+    readonly kind: PolygonMeshSmoothing
+    readonly mDensity: number
+    readonly nDensity: number
+  }
 }
 
 /**
@@ -1414,6 +1448,7 @@ export type Entity =
   | MLeaderEntity
   | XlineEntity
   | RayEntity
+  | PolygonMeshEntity
 
 export interface Bounds {
   readonly min: Vec2

@@ -101,7 +101,11 @@ export function drawingBox(
       }
       continue
     }
-    if (entity.type === "polyline3d" || entity.type === "face3d") {
+    if (
+      entity.type === "polyline3d" ||
+      entity.type === "face3d" ||
+      entity.type === "polygonMesh"
+    ) {
       const points = entity.type === "face3d" ? entity.corners : entity.vertices
       for (const point of points) {
         low = Math.min(low, point.z)

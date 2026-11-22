@@ -5,6 +5,7 @@ export const cs: EngineLocale = {
   "tag": "cs",
   "interface": {
     "tool": {
+      "mesh3d": "3D síť",
       "select": "Vybrat",
       "line": "Úsečka",
       "polyline": "Křivka",
@@ -233,6 +234,18 @@ export const cs: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Mnohoúhelníková síť",
+            "few": "Mnohoúhelníkové sítě",
+            "many": "Mnohoúhelníkové sítě",
+            "other": "Mnohoúhelníkové sítě"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -591,6 +604,7 @@ export const cs: EngineLocale = {
         "minsert": "NVlož blok"
       },
       "group": {
+        "mesh": "Síť",
         "geometry": "Geometrie",
         "solidHistory": "Historie tělesa",
         "endpoints": "Koncové body",
@@ -610,6 +624,12 @@ export const cs: EngineLocale = {
         "primaryUnits": "Primární jednotky"
       },
       "row": {
+        "meshMClosed": "M uzavřená",
+        "meshNClosed": "N uzavřená",
+        "meshMDensity": "M hustota",
+        "meshNDensity": "N hustota",
+        "meshMVertexCount": "Počet vrcholů M",
+        "meshNVertexCount": "Počet vrcholů N",
         "length": "Délka",
         "angle": "Úhel",
         "deltaX": "Rozdíl X",
@@ -810,6 +830,10 @@ export const cs: EngineLocale = {
         "textPosVert": "Vertikální poloha textu"
       },
       "value": {
+        "meshFitNone": "Žádné",
+        "fitQuadratic": "Kvadratická",
+        "fitCubic": "Kubická",
+        "fitBezier": "Beziérova",
         "yes": "Ano",
         "no": "Ne",
         "none": "—",
@@ -890,6 +914,9 @@ export const cs: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DSÍŤ"
+      ],
       "LINE": [
         "ÚSEČKA",
         "U"
@@ -1675,6 +1702,16 @@ export const cs: EngineLocale = {
         "Before": "přeD"
       },
       "PEDIT": {
+        "Smooth surface": "Hladká",
+        "Desmooth": "Kostra",
+        "Mclose": "Muzavři",
+        "Mopen": "Motevři",
+        "Nclose": "Nuzavři",
+        "Nopen": "Notevři",
+        "Left": "vLevo",
+        "Right": "vPravo",
+        "Up": "Nahoru",
+        "Down": "Dolů",
         "Close": "Uzavři",
         "Open": "Otevři",
         "Join": "Připoj",
@@ -2394,6 +2431,17 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "kOnec",
+        "X": "O",
+        "Undo": "Zpět"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "Regen",
+        "Previous": "Zpátky",
+        "Move": "posUv",
+        "eXit": "kOnec"
+      },
       "selectObjects": {
         "Window": "OKno",
         "Last": "posLední",
@@ -2522,6 +2570,25 @@ export const cs: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Zadejte rozměr sítě ve směru M",
+      "enterMeshSizeN": "Zadejte rozměr sítě ve směru N",
+      "specifyMeshVertex": [
+        "Určete polohu vrcholu (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Zadejte možnost",
+      "peditMeshVertexOption": "Zadejte možnost",
+      "leftShort": "L",
+      "rightShort": "P",
+      "upShort": "N",
+      "downShort": "D",
       "length": "Délka",
       "width": "Šířka",
       "angle": "Úhel",
@@ -3589,6 +3656,109 @@ export const cs: EngineLocale = {
       "polar": "Vzd<Úhel"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "mnohoúhelníková síť\nTento objekt nelze oříznout.",
+      "cannotExtendPolygonMesh": "mnohoúhelníková síť\nTento objekt nelze prodloužit.",
+      "polygonMeshNoCoordinateSystem": "Objekt 3D mnohoúhelníková síť nedefinuje souřadnicový systém",
+      "meshCurrentVertex": [
+        "Aktuální vrchol (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Žádné viditelné vrcholy",
+      "tooFewControlVertices": [
+        "Nedostatečný počet vrcholů ve směru ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "buď"
+          }
+        ],
+        ".   Musí jich být více než ",
+        [
+          "count",
+          1,
+          {
+            "2": "dva",
+            "other": "tři"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Příliš mnoho řídících vrcholů. Musí jich být méně než 12.",
+      "surfuOutOfRange": [
+        "SURFU je mimo rozsah. Použita hodnota ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV je mimo rozsah. Použita hodnota ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline síť ",
+              [
+                "size"
+              ],
+              " (interpolovaná síť ",
+              [
+                "fit"
+              ],
+              ")"
+            ],
+            "other": [
+              "síť ",
+              [
+                "size"
+              ]
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-uzavřeno",
+            "n": " N-uzavřeno",
+            "both": " M,N-uzavřeno",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "               Síť",
+      "listMeshPoint": [
+        "                  v bodě, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Neznámý příkaz \"",
         [
@@ -9273,6 +9443,8 @@ export const cs: EngineLocale = {
         "System default": "Systémová výchozí"
       },
       "PEDIT": {
+        "Smooth surface": "Hladká plocha",
+        "Desmooth": "Kostra",
         "Edit vertex": "Editace vrcholů",
         "Ltype gen": "tYpčgen",
         "OFF": "Ne",
@@ -9330,6 +9502,9 @@ export const cs: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Editace vrcholu"
+      },
       "ucsNewUcs": {
         "ZAxis": "ZOsa"
       },

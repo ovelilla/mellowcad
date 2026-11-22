@@ -86,6 +86,7 @@ import {
   STANDARD_MLEADER_STYLE,
   mleaderDoglegEnd,
   clampLineSpacingFactor,
+  isValidMeshSmoothing,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -171,7 +172,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 64
+export const DRAWING_FILE_VERSION = 65
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -250,6 +251,9 @@ type SavedCommandSetting =
   | "filletRadius"
   | "splineType"
   | "splineSegments"
+  | "surfaceType"
+  | "surfaceU"
+  | "surfaceV"
   | "isolines"
   | "visualStyle"
   | "pointMode"
@@ -576,6 +580,21 @@ function cloneEntityShape(entity: Entity): Entity {
         ...(entity.invisibleEdges
           ? { invisibleEdges: entity.invisibleEdges }
           : {}),
+      }
+    }
+    case "polygonMesh": {
+      const at = (v: Vec3): Vec3 => ({ x: v.x, y: v.y, z: v.z })
+      return {
+        id: entity.id,
+        type: "polygonMesh",
+        layerId: entity.layerId,
+        ...overrides,
+        m: entity.m,
+        n: entity.n,
+        vertices: entity.vertices.map(at),
+        closedM: entity.closedM,
+        closedN: entity.closedN,
+        ...(entity.smooth ? { smooth: { ...entity.smooth } } : {}),
       }
     }
     case "text":
@@ -1279,12 +1298,24 @@ function cloneLayer(layer: Layer): Layer {
   }
 }
 
+/** SURFU's or SURFV's 0 to 200, else acadiso's 6. */
+function surfaceDensity(value: unknown): number {
+  return Number.isInteger(value) &&
+    (value as number) >= 0 &&
+    (value as number) <= 200
+    ? (value as number)
+    : 6
+}
+
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
     currentLinetypeScale,
     filletRadius,
     splineType,
     splineSegments,
+    surfaceType,
+    surfaceU,
+    surfaceV,
     isolines,
     visualStyle,
     pointMode,
@@ -1344,6 +1375,9 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(filletRadius ? { filletRadius } : {}),
     ...(splineType !== 6 ? { splineType } : {}),
     ...(splineSegments !== 8 ? { splineSegments } : {}),
+    ...(surfaceType !== 6 ? { surfaceType } : {}),
+    ...(surfaceU !== 6 ? { surfaceU } : {}),
+    ...(surfaceV !== 6 ? { surfaceV } : {}),
     ...(isolines !== 4 ? { isolines } : {}),
     ...(visualStyle !== "2dWireframe" ? { visualStyle } : {}),
     ...(pointMode ? { pointMode } : {}),
@@ -1484,6 +1518,13 @@ function parseSettings(value: unknown, version: number): DocumentSettings {
       Math.abs(value.splineSegments as number) <= 32768
         ? (value.splineSegments as number)
         : 8,
+    // A drawing from before 65 has acadiso's.
+    surfaceType:
+      value.surfaceType === 5 || value.surfaceType === 8
+        ? value.surfaceType
+        : 6,
+    surfaceU: surfaceDensity(value.surfaceU),
+    surfaceV: surfaceDensity(value.surfaceV),
     // A drawing from before 43 has acadiso's.
     isolines:
       Number.isInteger(value.isolines) &&
@@ -1623,6 +1664,7 @@ function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
   if (
     entity.type === "polyline3d" ||
     entity.type === "face3d" ||
+    entity.type === "polygonMesh" ||
     entity.type === "solid3d"
   ) {
     return entity
@@ -1837,6 +1879,46 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         corners: [a, b, c, d],
         ...(typeof bits === "number" && Number.isInteger(bits) && bits & 15
           ? { invisibleEdges: bits & 15 }
+          : {}),
+      }
+    }
+    case "polygonMesh": {
+      // Since 65; m × n vertices with their Z, 2 to 256 each way, or nothing.
+      const { m, n } = raw
+      const size = (k: unknown): k is number =>
+        typeof k === "number" && Number.isInteger(k) && k >= 2 && k <= 256
+      if (!size(m) || !size(n) || !Array.isArray(raw.vertices)) return null
+      const vertices = raw.vertices.flatMap((v) => parseVec3(v) ?? [])
+      if (vertices.length !== m * n) return null
+      const smooth = raw.smooth as Record<string, unknown> | undefined
+      const density = (k: unknown): k is number => typeof k === "number"
+      const kind = smooth?.kind
+      return {
+        id,
+        type: "polygonMesh",
+        layerId,
+        ...overrides,
+        m,
+        n,
+        vertices,
+        closedM: raw.closedM === true,
+        closedN: raw.closedN === true,
+        ...(smooth &&
+        (kind === 5 || kind === 6 || kind === 8) &&
+        density(smooth.mDensity) &&
+        density(smooth.nDensity) &&
+        isValidMeshSmoothing(m, n, {
+          kind,
+          mDensity: smooth.mDensity,
+          nDensity: smooth.nDensity,
+        })
+          ? {
+              smooth: {
+                kind,
+                mDensity: smooth.mDensity,
+                nDensity: smooth.nDensity,
+              },
+            }
           : {}),
       }
     }

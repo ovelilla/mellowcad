@@ -72,6 +72,7 @@ import { RayTool } from "./tools/RayTool"
 import { XlineTool } from "./tools/XlineTool"
 import { SolidTool } from "./tools/SolidTool"
 import { Face3dTool } from "./tools/Face3dTool"
+import { Mesh3dTool } from "./tools/Mesh3dTool"
 import { LeaderTool } from "./tools/LeaderTool"
 import { WipeoutTool } from "./tools/WipeoutTool"
 import { DivideTool } from "./tools/DivideTool"
@@ -152,6 +153,7 @@ export function defaultTools(
     new PointTool(),
     new SolidTool(),
     new Face3dTool(),
+    new Mesh3dTool(),
     new LeaderTool(),
     new WipeoutTool(),
     new DivideTool("divide", "divide"),

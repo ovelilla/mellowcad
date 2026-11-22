@@ -498,6 +498,32 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     (value) =>
       value === 5 || value === 6 ? patch({ splineType: value }) : null
   ),
+  // Any integer taken, then `Cannot set` but for 5, 6 and 8 (mesh/p16).
+  integer(
+    "SURFTYPE",
+    -32768,
+    32767,
+    (settings) => settings.surfaceType,
+    (value) =>
+      value === 5 || value === 6 || value === 8
+        ? patch({ surfaceType: value })
+        : null
+  ),
+  // `Requires an integer between 0 and 200.` past them (mesh/p16).
+  integer(
+    "SURFU",
+    0,
+    200,
+    (settings) => settings.surfaceU,
+    (value) => patch({ surfaceU: value })
+  ),
+  integer(
+    "SURFV",
+    0,
+    200,
+    (settings) => settings.surfaceV,
+    (value) => patch({ surfaceV: value })
+  ),
   {
     type: "real",
     name: "TEXTSIZE",

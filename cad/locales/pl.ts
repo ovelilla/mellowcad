@@ -5,6 +5,7 @@ export const pl: EngineLocale = {
   "tag": "pl",
   "interface": {
     "tool": {
+      "mesh3d": "Siatka 3D",
       "select": "Wybierz",
       "line": "Linia",
       "polyline": "Polilinia",
@@ -233,6 +234,18 @@ export const pl: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Siatka wielokątna",
+            "few": "Siatki wielokątne",
+            "many": "Siatek wielokątnych",
+            "other": "Siatki wielokątnej"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -591,6 +604,7 @@ export const pl: EngineLocale = {
         "minsert": "Wielokrotne wstawienie bloku"
       },
       "group": {
+        "mesh": "Siatka",
         "geometry": "Geometria",
         "solidHistory": "Historia bryły",
         "endpoints": "Punkty końcowe",
@@ -610,6 +624,12 @@ export const pl: EngineLocale = {
         "primaryUnits": "Jednostki podstawowe"
       },
       "row": {
+        "meshMClosed": "Zamknięte M",
+        "meshNClosed": "Zamknięte N",
+        "meshMDensity": "Gęstość w kierunku M",
+        "meshNDensity": "Gęstość w kierunku N",
+        "meshMVertexCount": "Liczba wierzchołków M",
+        "meshNVertexCount": "Liczba wierzchołków N",
         "length": "Długość",
         "angle": "Kąt",
         "deltaX": "Przyrost X",
@@ -810,6 +830,10 @@ export const pl: EngineLocale = {
         "textPosVert": "Pionowe położenie tekstu"
       },
       "value": {
+        "meshFitNone": "Brak",
+        "fitQuadratic": "Kwadratowe",
+        "fitCubic": "Sześcienne",
+        "fitBezier": "Bezier'a",
         "yes": "Tak",
         "no": "Nie",
         "none": "—",
@@ -890,6 +914,9 @@ export const pl: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "SIATKA3W"
+      ],
       "LINE": [
         "LINIA",
         "L"
@@ -1664,6 +1691,16 @@ export const pl: EngineLocale = {
         "Before": "Przed"
       },
       "PEDIT": {
+        "Smooth surface": "Powierzchnia",
+        "Desmooth": "Siatka",
+        "Mclose": "MZamk",
+        "Mopen": "MOtw",
+        "Nclose": "NZamk",
+        "Nopen": "NOtw",
+        "Left": "Lewo",
+        "Right": "pRawo",
+        "Up": "Góra",
+        "Down": "Dół",
         "Close": "Zamknij",
         "Open": "Otwórz",
         "Join": "Dołącz",
@@ -2383,6 +2420,17 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "konIec",
+        "X": "I",
+        "Undo": "Cofaj"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "rEgen",
+        "Previous": "Poprz",
+        "Move": "prZesuń",
+        "eXit": "konIec"
+      },
       "selectObjects": {
         "Window": "okNo",
         "Last": "oStatni",
@@ -2511,6 +2559,25 @@ export const pl: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Podaj rozmiar siatki  w kierunku M",
+      "enterMeshSizeN": "Podaj rozmiar siatki  w kierunku N",
+      "specifyMeshVertex": [
+        "Określ położenie wierzchołka (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Podaj opcję",
+      "peditMeshVertexOption": "Podaj opcję",
+      "leftShort": "L",
+      "rightShort": "R",
+      "upShort": "C",
+      "downShort": "S",
       "length": "Długość",
       "width": "Szerokość",
       "angle": "Kąt",
@@ -3578,6 +3645,109 @@ export const pl: EngineLocale = {
       "polar": "Odl<Kąt"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Siatka wielokątna\nNie można PRZYCIĄĆ tego obiektu.",
+      "cannotExtendPolygonMesh": "Siatka wielokątna\nNie można wydłużyć tego obiektu.",
+      "polygonMeshNoCoordinateSystem": "Siatka wielokątna 3D nie definiuje układu współrzędnych",
+      "meshCurrentVertex": [
+        "Bieżący wierzchołek (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Brak widocznych wierzchołków",
+      "tooFewControlVertices": [
+        "Zbyt mało wierzchołków ustalających w kierunku ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "albo"
+          }
+        ],
+        ". Musi ich być więcej niż ",
+        [
+          "count",
+          1,
+          {
+            "2": "dwa",
+            "other": "trzy"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Zbyt dużo wierzchołków sterujących. Musi ich być mniej niż 12.",
+      "surfuOutOfRange": [
+        "SURFU jest poza zakresem. Wykorzystano wartość ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV jest poza zakresem. Wykorzystano wartość ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "typu splajn siatka ",
+              [
+                "size"
+              ],
+              " (utworzona siatka ",
+              [
+                "fit"
+              ],
+              ")"
+            ],
+            "other": [
+              "siatka ",
+              [
+                "size"
+              ]
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-zamknięte",
+            "n": " N-zamknięte",
+            "both": " M,N-zamknięte",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "            Siatka",
+      "listMeshPoint": [
+        "               od punktu, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Nieznane polecenie \"",
         [
@@ -9149,6 +9319,8 @@ export const pl: EngineLocale = {
         "System default": "Domyślna systemowa"
       },
       "PEDIT": {
+        "Smooth surface": "Powierzchnia",
+        "Desmooth": "Siatka",
         "Edit vertex": "Edwierzch",
         "Ltype gen": "rodzajLinii",
         "OFF": "Nie",
@@ -9206,6 +9378,9 @@ export const pl: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Edwierzch"
+      },
       "ucsNewUcs": {
         "ZAxis": "Ośz"
       },

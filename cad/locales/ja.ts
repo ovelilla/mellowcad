@@ -5,6 +5,7 @@ export const ja: EngineLocale = {
   "tag": "ja",
   "interface": {
     "tool": {
+      "mesh3d": "3D メッシュ",
       "select": "選択",
       "line": "線分",
       "polyline": "ポリライン",
@@ -233,6 +234,15 @@ export const ja: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "other": "ポリゴン メッシュ"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -504,6 +514,7 @@ export const ja: EngineLocale = {
         "minsert": "ブロック一括挿入"
       },
       "group": {
+        "mesh": "メッシュ",
         "geometry": "ジオメトリ",
         "solidHistory": "ソリッド履歴",
         "endpoints": "端点",
@@ -523,6 +534,12 @@ export const ja: EngineLocale = {
         "primaryUnits": "基本単位"
       },
       "row": {
+        "meshMClosed": "M 方向に閉じている",
+        "meshNClosed": "N 方向に閉じている",
+        "meshMDensity": "M 方向の密度",
+        "meshNDensity": "N 方向の密度",
+        "meshMVertexCount": "M 方向の頂点数",
+        "meshNVertexCount": "N 方向の頂点数",
         "length": "長さ",
         "angle": "角度",
         "deltaX": "デルタ X",
@@ -723,6 +740,10 @@ export const ja: EngineLocale = {
         "textPosVert": "垂直方向の寸法値位置"
       },
       "value": {
+        "meshFitNone": "なし",
+        "fitQuadratic": "2 次",
+        "fitCubic": "3 次",
+        "fitBezier": "ベジェ",
         "yes": "はい",
         "no": "いいえ",
         "none": "—",

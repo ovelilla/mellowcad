@@ -1188,6 +1188,7 @@ export class SelectTool implements Tool {
       poly?.type !== "wipeout" &&
       poly?.type !== "image" &&
       poly?.type !== "face3d" &&
+      poly?.type !== "polygonMesh" &&
       poly?.type !== "mleader"
     ) {
       return

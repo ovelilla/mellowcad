@@ -962,7 +962,63 @@ Meshes. Saved from drawing file version 57; a DXF opens and saves it (clipboard-
 2D Wireframe: here only its edges, in every visual style); REGION's region of it (`1 loop
 extracted.`, f07); the palette's Edge rows as choices; UCS OBject's frame from it (origin at its
 first corner, X along its first edge, Y towards its fourth: here as a 3D polyline's,
-**unverified**); EDGE, which hides or shows an edge of one; PFACE and the meshes
+**unverified**); EDGE, which hides or shows an edge of one; PFACE and the polyface mesh, and the
+other meshes (3DMESH's polygon mesh is done: below)
+
+### `3DMESH` · es `3DMALLA` · pt-BR `MALHA3D` · fr `3DMAILLE` · it `3DMESH` · de `3DNETZ` · ru `3DСЕТЬ` · pl `SIATKA3W` · cs `3DSÍŤ` · hu `3DHÁLÓ`
+
+**Implemented:** the polygon mesh — a model type of its own (DXF POLYLINE with flag 16, AutoCAD's
+AcDbPolygonMesh: M rows of N vertices in the WCS, each with its Z, closed in M and in N apart) —
+and 3DMESH as AutoCAD 2027's console asks it (probes mesh/p01, p02, traced; tables 20273–20275;
+the names from table 52539, each language's help page and acad.pgp, which gives none an alias):
+`Enter size of mesh in M direction:`, `Enter size of mesh in N direction:` (es `Indique tamaño de
+malla en dirección M`), integers from 2 to 256, anything else (`1`, `257`, `2.5`, `-3`, `FOO`)
+`Requires an integer between 2 and 256.` and asked again; then `Specify location for vertex (0,
+0):` for each, row by row along N (es `Precise ubicación de vértice (0, 0)`), each point keeping
+its Z, a word or Enter `Invalid point.` (p02); no rubber band (UseBasePoint false); the last
+vertex makes the mesh, open both ways, in the current properties, and ends the command; not
+transparent. Drawn by its edges, along each row and each column and round a closed direction,
+continuous whatever its linetype (f01: a DASHED one plots continuous), and picked, crossed and
+snapped by them — END at its vertices, MID, NEA and PER on its edges, no CEN, GCEN, NOD or INS, a
+click inside it selecting nothing (p11). A smoothed mesh (PEDIT's Smooth surface, modify.md) shows
+its fitted mesh instead, which it draws, picks, snaps, explodes and wears its grips on (p13). A grip
+at each vertex, at its Z, which drags it with its Z (desktop mesh/d01); a smoothed one's on its
+fitted mesh's points, which move nothing (d03). MOVE, COPY, ROTATE and SCALE move its vertices,
+SCALE their Z too (p05); MIRROR reverses each row, the rows as they were (p05, p15); STRETCH moves
+the vertices its window catches with their Z (p22), a smoothed one's none unless it takes all of it
+(p20); a block reference places it, reversed when it reflects. EXPLODE makes a 3D face of each cell
+of what it shows, row by row, from its corner (i, j) round to (i + 1, j), a closed direction's
+cells round to the first row or column too (p03: 6 of a 3 × 4, p14: 16 of a 4 × 4 closed both
+ways, p13: 12 of a fitted 5 × 4), in its layer and properties. OFFSET `Cannot offset that
+object.`, BREAK `Object can't be broken`, FILLET and CHAMFER `  3D Polyline objects may not be
+filleted.` / `chamfered.`, TRIM and EXTEND its name and `Cannot TRIM this object.` / `Cannot
+EXTEND this object.` (es `Malla poligonal` and `Objeto no procesado por RECORTA.`), DIVIDE `Cannot
+divide that object.`, AREA `Selected object does not have an area`, REGION `1 closed, degenerate or
+unsupported object rejected.`, UCS OBject `3D Polygon Mesh object does not define a coordinate
+system`, which ends UCS (p04, p07–p11; table 25596). LIST as each of the ten consoles lists it
+(p01, p03, p13, p14, p23): a POLYLINE, `3x4 mesh`, `M-closed`, `N-closed` or `M,N-closed`
+(es `malla 3x4 M-cerrada`), a smoothed one's `spline 4x4 mesh (5x4 fit mesh)`, then each VERTEX
+`Mesh` and its point in the UCS (es `Malla`, `en punto`), a smoothed one's first control vertex,
+its fitted mesh's points and its other control vertices, each marked `(Spline control point)` or
+`(Inserted by spline fitting)`, as AutoCAD stores them. The Properties palette as the desktop shows
+it (d02, d04; ax26res 60–63, 92–95, 119, 305): `Polygon Mesh`, Geometry's Current Vertex and
+Vertex X, Y and Z (a control vertex, in the UCS), Mesh's M closed and N closed (Yes or No, which
+close it, a smoothed one's fitted mesh following), M density and N density (its fitted mesh's
+size, 0 unsmoothed), M vertex count and N vertex count (read-only), Misc's Fit/Smooth (None,
+Quadratic, Cubic, Bezier). Typed only: acad.cuix's ID_3dmesh is on no ribbon panel, toolbar or
+menu of AutoCAD 2027. Saved from drawing file version 65; a DXF opens and saves it
+(clipboard-and-files.md).
+
+**Deviations:** a smoothed mesh's M and N closed retyped in the palette keep its fitted mesh's
+density, one fewer round a closed direction, rather than smoothing it again at SURFU and SURFV
+(**unverified** on the desktop)
+
+**Missing:** a shaded or hidden view's faces (AutoCAD fills and hides with a mesh's faces off 2D
+Wireframe: here its edges in every visual style, as a 3D face's); the palette's M density, N
+density and Fit/Smooth as edits; SPLFRAME's control mesh beside a smoothed one; the rubber band and
+jig while placing a vertex (**unverified**: none in the trace); REVSURF, TABSURF, RULESURF and
+EDGESURF, which make polygon meshes; PFACE and the polyface mesh (POLYLINE flag 64: none in the
+corpus); CONVTOMESH, CONVTOSOLID and the MESH objects
 
 ### `WIPEOUT` · es `COBERTURA` · pt-BR `COBERTURA` · fr `NETTOYER` · it `ENTCOPR` · de `ABDECKEN` · ru `МАСКИРОВКА` · pl `PRZYKRYJ` · cs `PŘEKRÝT` · hu `KITAKAR`
 

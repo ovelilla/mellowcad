@@ -5,6 +5,7 @@ export const it: EngineLocale = {
   "tag": "it",
   "interface": {
     "tool": {
+      "mesh3d": "Mesh 3D",
       "select": "Seleziona",
       "line": "Linea",
       "polyline": "Polilinea",
@@ -233,6 +234,16 @@ export const it: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Mesh poligonale",
+            "other": "Mesh poligonali"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -533,6 +544,7 @@ export const it: EngineLocale = {
         "minsert": "Blocco da inserire in una serie rettangolare"
       },
       "group": {
+        "mesh": "Mesh",
         "geometry": "Geometria",
         "solidHistory": "Cronologia solidi",
         "endpoints": "Punti finali",
@@ -552,6 +564,12 @@ export const it: EngineLocale = {
         "primaryUnits": "Unità primarie"
       },
       "row": {
+        "meshMClosed": "M chiusa",
+        "meshNClosed": "N chiusa",
+        "meshMDensity": "Densità M",
+        "meshNDensity": "Densità N",
+        "meshMVertexCount": "Calcolo vertici M",
+        "meshNVertexCount": "Calcolo vertici N",
         "length": "Lunghezza",
         "angle": "Angolo",
         "deltaX": "Delta X",
@@ -752,6 +770,10 @@ export const it: EngineLocale = {
         "textPosVert": "Posizione testo verticale"
       },
       "value": {
+        "meshFitNone": "Nessuna",
+        "fitQuadratic": "Quadratica",
+        "fitCubic": "Cubica",
+        "fitBezier": "Bezier",
         "yes": "Sì",
         "no": "No",
         "none": "—",
@@ -832,6 +854,9 @@ export const it: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DMESH"
+      ],
       "LINE": [
         "LINEA",
         "L"
@@ -1616,6 +1641,16 @@ export const it: EngineLocale = {
         "Before": "Prima"
       },
       "PEDIT": {
+        "Smooth surface": "Leviga",
+        "Desmooth": "Crea",
+        "Mclose": "chiudinM",
+        "Mopen": "apriNM",
+        "Nclose": "chiudinN",
+        "Nopen": "apriNN",
+        "Left": "SInistra",
+        "Right": "Destra",
+        "Up": "SOPra",
+        "Down": "SOTto",
         "Close": "CHiudi",
         "Open": "Apri",
         "Join": "Unisci",
@@ -2335,6 +2370,17 @@ export const it: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "eSci",
+        "X": "X",
+        "Undo": "ANnulla"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "RIgenera",
+        "Previous": "Precedente",
+        "Move": "SPosta",
+        "eXit": "eSci"
+      },
       "selectObjects": {
         "Window": "Finestra",
         "Last": "Prec",
@@ -2463,6 +2509,25 @@ export const it: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Digitare dimensione M della mesh",
+      "enterMeshSizeN": "Digitare dimensione N della mesh",
+      "specifyMeshVertex": [
+        "Specificare posizione per il vertice (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Digitare un'opzione",
+      "peditMeshVertexOption": "Digitare un'opzione",
+      "leftShort": "SI",
+      "rightShort": "D",
+      "upShort": "SOP",
+      "downShort": "SOT",
       "length": "Lunghezza",
       "width": "Larghezza",
       "angle": "Angolo",
@@ -3530,6 +3595,109 @@ export const it: EngineLocale = {
       "polar": "Dist<Ang"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Mesh poligonale\nImpossibile tagliare questo oggetto.",
+      "cannotExtendPolygonMesh": "Mesh poligonale\nImpossibile estendere questo oggetto.",
+      "polygonMeshNoCoordinateSystem": "L'oggetto Mesh poligonale 3D non definisce un sistema di coordinate",
+      "meshCurrentVertex": [
+        "Vertice corrente (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Nessun vertice visibile",
+      "tooFewControlVertices": [
+        "Vertici di controllo insufficienti nella direzione ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "entrambe"
+          }
+        ],
+        ". Devono essere più di ",
+        [
+          "count",
+          1,
+          {
+            "2": "due",
+            "other": "tre"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Troppi vertici di controllo. Devono essere meno di 12.",
+      "surfuOutOfRange": [
+        "SURFU non è compreso nell'intervallo. Usare un valore di ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV non è compreso nell'intervallo. Usare un valore di ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline ",
+              [
+                "size"
+              ],
+              " mesh (",
+              [
+                "fit"
+              ],
+              " mesh approssimata)"
+            ],
+            "other": [
+              [
+                "size"
+              ],
+              " mesh"
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-chiusa",
+            "n": " N-chiusa",
+            "both": " M,N-chiusa",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "              Mesh",
+      "listMeshPoint": [
+        "                al punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Comando sconosciuto \"",
         [
@@ -9023,6 +9191,8 @@ export const it: EngineLocale = {
         "System default": "Default di sistema"
       },
       "PEDIT": {
+        "Smooth surface": "Leviga superficie",
+        "Desmooth": "Crea vertici",
         "Edit vertex": "Edita vertici",
         "Ltype gen": "Tipolinea gen.",
         "OFF": "OFF",
@@ -9080,6 +9250,9 @@ export const it: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Edita vertici"
+      },
       "ucsNewUcs": {
         "ZAxis": "Asse-z"
       },

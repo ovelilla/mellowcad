@@ -1703,6 +1703,7 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -1964,6 +1965,9 @@ function trimRefusal(target: Entity): MessageId | null {
     case "mleader":
     case "leader":
       return "cannotTrimObject"
+    // Its name first, then the words (mesh/p08).
+    case "polygonMesh":
+      return "cannotTrimPolygonMesh"
     case "mtext":
     case "hatch":
     case "region":
@@ -2051,6 +2055,7 @@ function planTrim(
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -2114,6 +2119,9 @@ function extendRefusal(target: Entity): MessageId | null {
     case "mleader":
     case "leader":
       return "cannotExtendObject"
+    // Its name first, then the words (mesh/p08).
+    case "polygonMesh":
+      return "cannotExtendPolygonMesh"
     case "mtext":
     case "hatch":
     case "region":
@@ -2165,6 +2173,7 @@ function planExtend(
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -2446,6 +2455,7 @@ function circleEdgeCrossPoints(
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

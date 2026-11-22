@@ -5,6 +5,7 @@ export const ar: EngineLocale = {
   "tag": "ar",
   "interface": {
     "tool": {
+      "mesh3d": "شبكة ثلاثية الأبعاد",
       "select": "تحديد",
       "line": "خط",
       "polyline": "خط متعدد",
@@ -233,6 +234,17 @@ export const ar: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "شبكة مضلعة",
+            "two": "شبكتان مضلعتان",
+            "other": "شبكات مضلعة"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -565,6 +577,7 @@ export const ar: EngineLocale = {
         "minsert": "إدراج متعدد للكتلة"
       },
       "group": {
+        "mesh": "شبكة",
         "geometry": "الهندسة",
         "solidHistory": "سجل المجسم",
         "endpoints": "نقاط النهاية",
@@ -584,6 +597,12 @@ export const ar: EngineLocale = {
         "primaryUnits": "الوحدات الأساسية"
       },
       "row": {
+        "meshMClosed": "M مغلق",
+        "meshNClosed": "N مغلق",
+        "meshMDensity": "كثافة M",
+        "meshNDensity": "كثافة N",
+        "meshMVertexCount": "عدد رؤوس M",
+        "meshNVertexCount": "عدد رؤوس N",
         "length": "الطول",
         "angle": "الزاوية",
         "deltaX": "Δ X",
@@ -784,6 +803,10 @@ export const ar: EngineLocale = {
         "textPosVert": "الموضع العمودي للنص"
       },
       "value": {
+        "meshFitNone": "لا شيء",
+        "fitQuadratic": "تربيعي",
+        "fitCubic": "تكعيبي",
+        "fitBezier": "بيزييه",
         "yes": "نعم",
         "no": "لا",
         "none": "—",

@@ -138,6 +138,7 @@ export const en: EngineCatalog = {
       "ptype": "Point Style",
       "solid": "2D Solid",
       "face3d": "3D Face",
+      "mesh3d": "3D Mesh",
       "leader": "Leader",
       "wipeout": "Wipeout",
       "xline": "Construction Line",
@@ -485,6 +486,16 @@ export const en: EngineCatalog = {
             "other": "Rays"
           }
         ]
+      ],
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polygon Mesh",
+            "other": "Polygon Meshes"
+          }
+        ]
       ]
     },
     "array": {
@@ -552,7 +563,8 @@ export const en: EngineCatalog = {
         "selection": "Selection",
         "linesArrows": "Lines & Arrows",
         "fit": "Fit",
-        "primaryUnits": "Primary Units"
+        "primaryUnits": "Primary Units",
+        "mesh": "Mesh"
       },
       "row": {
         "length": "Length",
@@ -706,6 +718,12 @@ export const en: EngineCatalog = {
         "minsertColumnSpacing": "Column spacing",
         "minsertRows": "Rows",
         "minsertRowSpacing": "Row spacing",
+        "meshMClosed": "M closed",
+        "meshNClosed": "N closed",
+        "meshMDensity": "M density",
+        "meshNDensity": "N density",
+        "meshMVertexCount": "M vertex count",
+        "meshNVertexCount": "N vertex count",
         "basePointX": "Basepoint X",
         "basePointY": "Basepoint Y",
         "basePointZ": "Basepoint Z",
@@ -759,6 +777,10 @@ export const en: EngineCatalog = {
         "no": "No",
         "none": "—",
         "fitNone": "None",
+        "meshFitNone": "None",
+        "fitQuadratic": "Quadratic",
+        "fitCubic": "Cubic",
+        "fitBezier": "Bezier",
         "atLeast": "At least",
         "exactly": "Exactly",
         "fitPoints": "Fit",
@@ -853,6 +875,9 @@ export const en: EngineCatalog = {
       "3DFACE": [
         "3DFACE",
         "3F"
+      ],
+      "3DMESH": [
+        "3DMESH"
       ],
       "3DPOLY": [
         "3DPOLY",
@@ -1503,7 +1528,8 @@ export const en: EngineCatalog = {
         "Edit vertex": "Edit",
         "Ltype gen": "Ltype",
         "OFF": "OFf",
-        "Spline curve": "Spline"
+        "Spline curve": "Spline",
+        "Smooth surface": "Smooth"
       },
       "HATCH": {
         "Select objects": "Select"
@@ -1699,6 +1725,17 @@ export const en: EngineCatalog = {
         "eXit": "EXit"
       },
       "peditWalkOption": {
+        "eXit": "eXit"
+      },
+      "peditMeshOption": {
+        "eXit": "EXit",
+        "X": "X",
+        "Undo": "Undo"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "REgen",
+        "Previous": "Previous",
+        "Move": "Move",
         "eXit": "eXit"
       },
       "enterFitDataOption": {
@@ -2382,6 +2419,21 @@ export const en: EngineCatalog = {
       "peditWalkOption": "Enter an option",
       "specifyLocationForNewVertex": "Specify location for new vertex",
       "specifyNewLocationForMarkedVertex": "Specify new location for marked vertex",
+      "enterMeshSizeM": "Enter size of mesh in M direction",
+      "enterMeshSizeN": "Enter size of mesh in N direction",
+      "specifyMeshVertex": [
+        "Specify location for vertex (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Enter an option",
+      "peditMeshVertexOption": "Enter an option",
       "startingWidthForNextSegment": "Specify starting width for next segment",
       "endingWidthForNextSegment": "Specify ending width for next segment",
       "directionOfVertexTangent": "Specify direction of vertex tangent",
@@ -2392,6 +2444,10 @@ export const en: EngineCatalog = {
       "exitLower": "exit",
       "nextShort": "N",
       "previousShort": "P",
+      "leftShort": "L",
+      "rightShort": "R",
+      "upShort": "U",
+      "downShort": "D",
       "extrudeSelectOr": "Select objects to extrude or",
       "closedProfilesMode": "Closed profiles creation mode",
       "closedProfilesSolid": "Solid",
@@ -2887,6 +2943,8 @@ export const en: EngineCatalog = {
       "cannotExtendClosedPolyline": "Cannot extend a closed polyline.",
       "cannotTrimObject": "Cannot TRIM this object.",
       "cannotTrimThisObject": "Cannot TRIM this object.",
+      "cannotTrimPolygonMesh": "Polygon Mesh\nCannot TRIM this object.",
+      "cannotExtendPolygonMesh": "Polygon Mesh\nCannot EXTEND this object.",
       "objectPerpendicularToUcs": "Object is perpendicular to UCS XY plane.",
       "edgePerpendicularToUcs": "Edge is perpendicular to UCS XY plane.",
       "noEdgeInThatDirection": "No edge in that direction.",
@@ -4003,6 +4061,56 @@ export const en: EngineCatalog = {
       "noSolidSurfaceOrMesh": "No 3D solid, surface or mesh detected.",
       "ucsNoCoordinateSystem": "This object does not define a coordinate system",
       "polyline3dNoCoordinateSystem": "3D Polyline object does not define a coordinate system",
+      "polygonMeshNoCoordinateSystem": "3D Polygon Mesh object does not define a coordinate system",
+      "meshCurrentVertex": [
+        "Current vertex (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "No visible vertices",
+      "tooFewControlVertices": [
+        "Too few control vertices in ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "either"
+          }
+        ],
+        " direction.  Must be more than ",
+        [
+          "count",
+          1,
+          {
+            "2": "two",
+            "other": "three"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Too many control vertices.  Must be less than 12.",
+      "surfuOutOfRange": [
+        "SURFU is out of range. Using a value of ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV is out of range. Using a value of ",
+        [
+          "value"
+        ],
+        "."
+      ],
       "zAxisNotSupported": "Z axis option not supported for selected object.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "everythingUndone": "Everything has been undone",
@@ -5672,6 +5780,57 @@ export const en: EngineCatalog = {
       ],
       "listFace3dFourth": [
         "            fourth point, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "spline ",
+              [
+                "size"
+              ],
+              " mesh (",
+              [
+                "fit"
+              ],
+              " fit mesh)"
+            ],
+            "other": [
+              [
+                "size"
+              ],
+              " mesh"
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-closed",
+            "n": " N-closed",
+            "both": " M,N-closed",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "              Mesh",
+      "listMeshPoint": [
+        "                at point, X=",
         [
           "x"
         ],
@@ -8299,7 +8458,9 @@ export const en: EngineCatalog = {
         "Ltype gen": "Ltype gen",
         "OFF": "OFF",
         "Jointype": "Jointype",
-        "Spline curve": "Spline curve"
+        "Spline curve": "Spline curve",
+        "Smooth surface": "Smooth surface",
+        "Desmooth": "Desmooth"
       },
       "HATCH": {
         "Select objects": "Select objects"
@@ -8369,6 +8530,9 @@ export const en: EngineCatalog = {
       },
       "peditMultipleOption": {
         "Ltype gen": "Ltype gen"
+      },
+      "peditMeshOption": {
+        "Edit vertex": "Edit vertex"
       }
     },
     "listing": {

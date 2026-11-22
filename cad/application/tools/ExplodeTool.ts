@@ -20,6 +20,8 @@ import {
   isXref,
   leaderLook,
   wipeoutEdges,
+  polygonMeshFaces,
+  createFace3d,
   imageEdges,
   tableExploded,
   mleaderExploded,
@@ -49,6 +51,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "solid3d",
   "leader",
   "wipeout",
+  "polygonMesh",
   "image",
   "table",
   "mleader",
@@ -271,6 +274,17 @@ export class ExplodeTool extends SelectionActionTool {
         removedIds.push(entity.id)
         for (const [a, b] of segments) {
           pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
+        }
+        continue
+      }
+      if (entity.type === "polygonMesh") {
+        // A 3D face per cell of what it shows, row by row, with its layer
+        // and properties (mesh/p03, p13, p14).
+        removedIds.push(entity.id)
+        for (const corners of polygonMeshFaces(entity)) {
+          pieces.push(
+            carryOverrides(entity, createFace3d(corners, 0, entity.layerId))
+          )
         }
         continue
       }

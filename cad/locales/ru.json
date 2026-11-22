@@ -1,6 +1,7 @@
 {
   "interface": {
     "tool": {
+      "mesh3d": "3D-сеть",
       "select": "Выбрать",
       "line": "Отрезок",
       "polyline": "Полилиния",
@@ -224,6 +225,7 @@
       }
     },
     "entity": {
+      "polygonMesh": "{count, plural, one {Полигональная сеть} few {Полигональные сети} many {Полигональных сетей} other {Полигональной сети}}",
       "line": "{count, plural, one {Отрезок} few {Отрезки} many {Отрезки} other {Отрезки}}",
       "circle": "{count, plural, one {Круг} few {Круги} many {Круги} other {Круги}}",
       "arc": "{count, plural, one {Дуга} few {Дуги} many {Дуги} other {Дуги}}",
@@ -269,6 +271,7 @@
         "minsert": "Мн-блок"
       },
       "group": {
+        "mesh": "Сеть",
         "geometry": "Геометрия",
         "solidHistory": "Журнал тела",
         "endpoints": "Концы",
@@ -288,6 +291,12 @@
         "primaryUnits": "Основные единицы"
       },
       "row": {
+        "meshMClosed": "M-замкнутая",
+        "meshNClosed": "N-замкнутая",
+        "meshMDensity": "Плотность по M",
+        "meshNDensity": "Плотность по N",
+        "meshMVertexCount": "Число вершин по M",
+        "meshNVertexCount": "Число вершин по N",
         "length": "Длина",
         "angle": "Угол",
         "deltaX": "Дельта X",
@@ -488,6 +497,10 @@
         "textPosVert": "Текст по вертикали"
       },
       "value": {
+        "meshFitNone": "Нет",
+        "fitQuadratic": "Квадратичное",
+        "fitCubic": "Кубическое",
+        "fitBezier": "Безье",
         "yes": "Да",
         "no": "Нет",
         "none": "—",
@@ -568,6 +581,7 @@
   },
   "commands": {
     "names": {
+      "3DMESH": ["3DСЕТЬ"],
       "LINE": ["ОТРЕЗОК", "ОТ"],
       "XLINE": ["ПРЯМАЯ", "ПР"],
       "RAY": ["ЛУЧ"],
@@ -889,6 +903,16 @@
         "Before": "До"
       },
       "PEDIT": {
+        "Smooth surface": "Сгладить",
+        "Desmooth": "Убрать",
+        "Mclose": "Mзамкнуть",
+        "Mopen": "Mразомкнуть",
+        "Nclose": "Nзамкнуть",
+        "Nopen": "Nразомкнуть",
+        "Left": "Левая",
+        "Right": "прАвая",
+        "Up": "Верхняя",
+        "Down": "Нижняя",
         "Close": "Замкнуть",
         "Open": "Разомкнуть",
         "Join": "Добавить",
@@ -1604,6 +1628,8 @@
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {"eXit": "выХод", "X": "Х", "Undo": "Отменить"},
+      "peditMeshVertexOption": {"Regen": "РЕген", "Previous": "Пред", "Move": "ПЕренести", "eXit": "выХод"},
       "selectObjects": {
         "Window": "Рамка",
         "Last": "Последний",
@@ -1732,6 +1758,15 @@
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Размер сети в направлении M",
+      "enterMeshSizeN": "Размер сети в направлении N",
+      "specifyMeshVertex": "Положение вершины ({m}, {n})",
+      "peditMeshOption": "Задайте параметр",
+      "peditMeshVertexOption": "Задайте параметр",
+      "leftShort": "Л",
+      "rightShort": "А",
+      "upShort": "В",
+      "downShort": "Н",
       "length": "Длина",
       "width": "Ширина",
       "angle": "Угол",
@@ -2490,6 +2525,18 @@
       "polar": "Расстояние'<'Угол"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Полигональные сети\nНевозможно применить команду ОБРЕЗАТЬ к этому объекту.",
+      "cannotExtendPolygonMesh": "Полигональные сети\nЭтот объект невозможно УДЛИНИТЬ.",
+      "polygonMeshNoCoordinateSystem": "Объект ЗD полигональная сеть не определяет систему координат",
+      "meshCurrentVertex": "Текущая вершина ({m},{n}).",
+      "noVisibleVertices": "Нет видимых вершин",
+      "tooFewControlVertices": "Слишком мало управляющих вершин в направлении {direction, select, M {M} N {N} other {или}}. Должно быть больше {count, select, 2 {двух} other {трех}}.",
+      "tooManyControlVertices": "Избыточное число управляющих вершин.  Должно быть меньше 12.",
+      "surfuOutOfRange": "SURFU вне допустимого диапазона. Используется значение {value}.",
+      "surfvOutOfRange": "SURFV вне допустимого диапазона. Используется значение {value}.",
+      "listMeshState": "                   {smoothed, select, yes {сплайн сеть {size} (сглаженная сеть {fit})} other {сеть {size}}}{closed, select, m { M-замкнутая} n { N-замкнутая} both { M,N-замкнутая} other {}}",
+      "listMeshVertex": "              Сеть",
+      "listMeshPoint": "                 в точке, X={x}  Y={y}  Z={z}",
       "unknownCommand": "Неизвестная команда \"{name}\".  Для вызова справки нажмите F1.",
       "cancel": "*Прервано*",
       "commandCancelled": "*Прервано*",
@@ -3414,6 +3461,8 @@
         "System default": "по Умолчанию"
       },
       "PEDIT": {
+        "Smooth surface": "Сгладить",
+        "Desmooth": "Убрать сглаживание",
         "Edit vertex": "Вершина",
         "Ltype gen": "Типлин",
         "OFF": "Откл",
@@ -3471,6 +3520,7 @@
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {"Edit vertex": "Вершина"},
       "ucsNewUcs": {
         "ZAxis": "ZОсь"
       },

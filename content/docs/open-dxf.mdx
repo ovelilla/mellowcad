@@ -23,7 +23,7 @@ MellowCAD opens DXF files in your browser and draws them in its editor, where yo
 ## What opens [#opens]
 
 - **DXF from AutoCAD R12 to 2018**, the newest DXF format AutoCAD writes, in text (ASCII) or binary, made by AutoCAD or by another program. Its text keeps its characters: up to 2004 in the code page the file names, from 2007 in UTF-8.
-- **Lines, arcs, circles, ellipses and polylines**, with their widths and their curve-fit and spline-fit forms, 3D polylines and splines, and points, drawn in the drawing's [point style](/docs/commands/ptype), 2D solids, filled as FILLMODE says, 3D faces, wipeouts, and construction lines and rays.
+- **Lines, arcs, circles, ellipses and polylines**, with their widths and their curve-fit and spline-fit forms, 3D polylines and splines, and points, drawn in the drawing's [point style](/docs/commands/ptype), 2D solids, filled as FILLMODE says, 3D faces, polygon meshes, wipeouts, and construction lines and rays.
 - **Single-line and multiline text**, leaders with their text, blocks with their attributes, linear, aligned, angular, radius and diameter dimensions with what each overrides of its style, and hatches, each with the pattern lines it holds, as AutoCAD draws it: a user-defined pattern or another program's too.
 - **Each object's layer**, colour, by its index or as a true colour, linetype and its scale, lineweight, thickness and elevation, and the layers on, off or locked; a frozen layer opens off.
 - **The drawing's linetypes**, drawn with their dashes, dots and gaps at the drawing's linetype scale, and the text of complex ones such as GAS_LINE.
@@ -33,7 +33,7 @@ MellowCAD opens DXF files in your browser and draws them in its editor, where yo
 
 When a DXF holds something MellowCAD has no object for yet, it opens the rest and says on the command line how many objects of each type it left out. Today that is:
 
-- traces and meshes;
+- traces, polyface meshes and MESH objects;
 - multilines;
 - tolerances;
 - 3D solids, regions and surfaces;

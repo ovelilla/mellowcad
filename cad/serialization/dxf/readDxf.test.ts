@@ -12,6 +12,7 @@ import type {
   Entity,
   HatchEntity,
   Face3dEntity,
+  PolygonMeshEntity,
   InsertEntity,
   LineEntity,
   MTextEntity,
@@ -31,6 +32,8 @@ import { writeDxf } from "./writeDxf"
 import { serializeDrawing } from "../drawingFile"
 import { dimensionGeometry, dimensionText } from "../../domain/dimensions"
 import { unicode } from "./dxfEntities"
+import { polygonMeshGrid } from "../../domain/entities"
+import type { Vec3 } from "../../geometry/Vec3"
 
 // AutoCAD 2027's own DXF files of two reference drawings (probes f001–f005 in
 // scripts/research/probes/dxf/, saved with SAVEAS's DXF types): what each
@@ -1391,6 +1394,77 @@ describe("parseDxf: AutoCAD 2027's 3D faces (face3d/f09)", () => {
     expect(faces.map((f) => f.invisibleEdges ?? 0)).toEqual([0, 0, 4, 9, 0, 0])
     expect(faces[5]).toMatchObject({ color: "1", linetypeScale: 2 })
     expect(faces[5].linetype).toBeDefined()
+  })
+})
+
+describe("parseDxf: AutoCAD 2027's polygon meshes (mesh/f01)", () => {
+  // A 3 × 4 rising one a vertex; a 4 × 4 closed in M and N; a cubic 4 × 4
+  // at SURFU 4, SURFV 3; a quadratic 4 × 5 closed in N; a Bezier 4 × 4; a
+  // red DASHED 2 × 3. As DXFOUT wrote them: POLYLINE 70 16 (+1, +32, +4),
+  // each VERTEX 64, a smoothed one's control vertices 80 and fitted ones 72.
+  const bytes = fixture("meshes-2018")
+  const { drawing, report } = parseDxf(bytes)
+  const meshes = drawing.entities.filter(
+    (e): e is PolygonMeshEntity => e.type === "polygonMesh"
+  )
+
+  /** Each POLYLINE's fitted vertices, as AutoCAD wrote them. */
+  const written = (): Vec3[][] => {
+    const lines = new TextDecoder().decode(bytes).split(/\r?\n/)
+    const out: Vec3[][] = []
+    let vertex: { x: number; y: number; z: number; flags: number } | null = null
+    const close = () => {
+      if (vertex && vertex.flags & 8) out[out.length - 1].push(vertex)
+      vertex = null
+    }
+    for (let i = 0; i + 1 < lines.length; i += 2) {
+      const code = lines[i].trim()
+      const value = lines[i + 1].trim()
+      if (code === "0") {
+        close()
+        if (value === "POLYLINE") out.push([])
+        if (value === "VERTEX") vertex = { x: 0, y: 0, z: 0, flags: 0 }
+        continue
+      }
+      if (!vertex) continue
+      if (code === "10") vertex.x = Number(value)
+      if (code === "20") vertex.y = Number(value)
+      if (code === "30") vertex.z = Number(value)
+      if (code === "70") vertex.flags = Number(value)
+    }
+    return out
+  }
+
+  it("opens each, none left out", () => {
+    expect(report.leftOut.size).toBe(0)
+    expect(report.unreadable).toBe(0)
+    expect(
+      meshes.map((m) => [m.m, m.n, m.closedM, m.closedN, m.smooth ?? null])
+    ).toEqual([
+      [3, 4, false, false, null],
+      [4, 4, true, true, null],
+      [4, 4, false, false, { kind: 6, mDensity: 5, nDensity: 4 }],
+      [4, 5, false, true, { kind: 5, mDensity: 5, nDensity: 3 }],
+      [4, 4, false, false, { kind: 8, mDensity: 5, nDensity: 4 }],
+      [2, 3, false, false, null],
+    ])
+    expect(meshes[0].vertices[11]).toEqual({ x: 30, y: 20, z: 11 })
+    expect(meshes[5]).toMatchObject({ color: "1", linetypeScale: 2 })
+    expect(meshes[5].linetype).toBeDefined()
+  })
+
+  it("fits each smoothed one where AutoCAD did, its Bezier and closed quadratic too", () => {
+    const fitted = written()
+    for (const k of [2, 3, 4]) {
+      const ours = polygonMeshGrid(meshes[k]).points
+      expect(ours).toHaveLength(fitted[k].length)
+      ours.forEach((point, i) => {
+        const theirs = fitted[k][i]
+        expect(point.x).toBeCloseTo(theirs.x, 9)
+        expect(point.y).toBeCloseTo(theirs.y, 9)
+        expect(point.z).toBeCloseTo(theirs.z, 9)
+      })
+    }
   })
 })
 

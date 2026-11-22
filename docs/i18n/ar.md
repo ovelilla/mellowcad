@@ -208,6 +208,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Wipeout (the object and the tool) | قناع، أقنعة (L, as the DXF pages' list) † |
 |  | Raster Image (the object, ax26res 307), an image (the DXF pages) | صورة نقطية، صور نقطية (L)؛ صورة (M) † |
 |  | Table (the object, ax26res 341), a table (the DXF pages) | جدول، جدولان، جداول (L) † |
+|  | Polygon Mesh (the object, ax26res 305), 3D Mesh (3DMESH), the palette's Mesh group and its rows (M closed, N closed, M density, N density, M vertex count, N vertex count), Fit/Smooth's Quadratic, Cubic, Bezier | شبكة مضلعة، شبكتان مضلعتان، شبكات مضلعة؛ شبكة ثلاثية الأبعاد؛ شبكة؛ M مغلق، N مغلق، كثافة M، كثافة N، عدد رؤوس M، عدد رؤوس N؛ تربيعي، تكعيبي، بيزييه (L, as the FAQ's meshes) † |
 |  | Leader (the object and the tool), its palette's Arrow, Text pos vert, Line or Spline with or without arrow, Closed filled, Above, Centered | خط إشارة، خطوط إشارة (L, as the FAQ's)؛ السهم؛ الموضع العمودي للنص؛ خط أو منحنى شرائحي بسهم أو بلا سهم؛ مغلق مُصمت؛ فوق؛ في الوسط (L) † |
 | Guides | How-to guide; floor plan (a house's) | دليل، أدلة (M)؛ مخطط منزل، المسقط الأفقي (C) — «رسم مخطط منزل» is the searched phrase, المسقط الأفقي the drawing's name |
 |  | A plan's layers: Walls, Doors, Windows, Dimensions (the reader's own) | الجدران، الأبواب، النوافذ، الأبعاد (M) |

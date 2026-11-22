@@ -55,6 +55,9 @@ import {
   createMText,
   createPolyline,
   createPolyline3d,
+  createPolygonMesh,
+  isValidMeshSmoothing,
+  PolygonMeshEntity,
   createSpline,
   createText,
   withElevation,
@@ -176,11 +179,12 @@ export function dxfEntities(
       return made(lightPolyline(record, ctx))
     case "POLYLINE": {
       const flags = int(record, 70) ?? 0
-      // A polyface or polygon mesh: no meshes here.
-      if (flags & (16 | 64)) {
+      // A polyface mesh: none here.
+      if (flags & 64) {
         ctx.leftOut("POLYLINE")
         return []
       }
+      if (flags & 16) return made(polygonMesh(record, ctx))
       return made(flags & 8 ? polyline3d(record, ctx) : polyline2d(record, ctx))
     }
     case "SPLINE":
@@ -999,6 +1003,42 @@ function polyline3d(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
       ),
     }
     entity = { ...entity, fit }
+  }
+  return common(entity, r, ctx)
+}
+
+/**
+ * A polygon mesh (POLYLINE 70 16, AcDbPolygonMesh): 71 by 72 vertices in the
+ * WCS, closed in M (1) and N (32); smoothed (4), its control vertices are
+ * those flagged 16, its fitted ones (8) derived again from 73, 74 and 75
+ * (mesh/f01). One whose vertices do not make its size is unreadable.
+ */
+function polygonMesh(r: DxfRecord, ctx: DxfEntityContext): Entity | null {
+  const flags = int(r, 70) ?? 0
+  const m = int(r, 71) ?? 0
+  const n = int(r, 72) ?? 0
+  const smoothed = (flags & 4) !== 0
+  const controls = (r.children ?? []).filter((v) =>
+    smoothed ? vertexFlags(v) & 16 : !(vertexFlags(v) & 8)
+  )
+  const points = controls
+    .map((v) => point(v, 10))
+    .filter((p) => p !== undefined)
+  if (m < 2 || n < 2 || m > 256 || n > 256 || points.length !== m * n) {
+    return null
+  }
+  const kind = int(r, 75)
+  const mDensity = int(r, 73) ?? 0
+  const nDensity = int(r, 74) ?? 0
+  const entity: PolygonMeshEntity = {
+    ...createPolygonMesh(m, n, points),
+    closedM: (flags & 1) !== 0,
+    closedN: (flags & 32) !== 0,
+    ...(smoothed &&
+    (kind === 5 || kind === 6 || kind === 8) &&
+    isValidMeshSmoothing(m, n, { kind, mDensity, nDensity })
+      ? { smooth: { kind, mDensity, nDensity } }
+      : {}),
   }
   return common(entity, r, ctx)
 }

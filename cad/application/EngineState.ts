@@ -1590,6 +1590,71 @@ function singleEntityInfo(
         ],
       }
     }
+    case "polygonMesh": {
+      // AutoCAD's groups and rows, in its order (desktop mesh/d02, d04;
+      // ax26res 60–63, 92–95, 119, 305): the current vertex, a control
+      // vertex, its point in the UCS; M and N closed, choices; the fitted
+      // mesh's density, 0 unsmoothed; the vertex counts, read-only; the
+      // smoothing, read-only here.
+      const current = Math.min(vertex, entity.vertices.length - 1)
+      const point = worldPointToUcs(settings.ucs, entity.vertices[current])
+      const yesNo = (closed: boolean) =>
+        text.propertyValue(closed ? "yes" : "no")
+      const closedRow = (
+        id: "meshMClosed" | "meshNClosed",
+        closed: boolean
+      ): PropertyRow => ({
+        ...row(id, yesNo(closed)),
+        edit: {
+          property: id,
+          text: closed ? "1" : "0",
+          unit: "",
+          choices: [
+            { value: "1", label: yesNo(true) },
+            { value: "0", label: yesNo(false) },
+          ],
+        },
+      })
+      const smooth = entity.smooth
+      return {
+        title: title("polygonMesh"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", point.x),
+            coordRow("vertexY", "vertexY", point.y),
+            coordRow("vertexZ", "vertexZ", point.z),
+          ]),
+          group("mesh", [
+            closedRow("meshMClosed", entity.closedM),
+            closedRow("meshNClosed", entity.closedN),
+            row("meshMDensity", String(smooth?.mDensity ?? 0)),
+            row("meshNDensity", String(smooth?.nDensity ?? 0)),
+            row("meshMVertexCount", String(entity.m)),
+            row("meshNVertexCount", String(entity.n)),
+          ]),
+          group("misc", [
+            row(
+              "fitSmooth",
+              text.propertyValue(
+                !smooth
+                  ? "meshFitNone"
+                  : smooth.kind === 5
+                    ? "fitQuadratic"
+                    : smooth.kind === 6
+                      ? "fitCubic"
+                      : "fitBezier"
+              )
+            ),
+          ]),
+        ],
+      }
+    }
     case "spline": {
       // AutoCAD's two groups and rows, in its order (desktop spline/d10-1 to
       // d10-3). Only the current point moves, X, Y and Z, as a 3D polyline's

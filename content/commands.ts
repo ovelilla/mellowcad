@@ -85,6 +85,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   POINT: { group: "draw" },
   SOLID: { group: "draw" },
   "3DFACE": { group: "draw" },
+  "3DMESH": { group: "draw" },
   DIVIDE: { group: "draw" },
   MEASURE: { group: "draw" },
 

@@ -135,6 +135,14 @@ export function withVertexAt(
     )
     return { ...entity, corners: [a, b, c, d] }
   }
+  if (entity.type === "polygonMesh") {
+    // A vertex goes to the point, its Z too (desktop mesh/d01).
+    const at = entity.vertices[index]
+    if (!at || entity.smooth) return null
+    const vertices = [...entity.vertices]
+    vertices[index] = { x: point.x, y: point.y, z: zOf(point) }
+    return { ...entity, vertices }
+  }
   if (entity.type === "solid2d") {
     // A corner goes to the point in its plane, as a polyline's vertex does,
     // and every corner on the same point with it (a triangle's tip).

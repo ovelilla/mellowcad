@@ -1,0 +1,26 @@
+_3DMESH
+2
+3
+0,0
+50,0
+100,0
+0,50
+50,50
+100,50
+_ZOOM
+_E
+_PEDIT
+_L
+_E
+_N
+_N
+_R
+_U
+_D
+_L
+_P
+_M
+15,5,50
+_X
+_X
+(progn (setq v (entnext (entlast))) (repeat 6 (princ "\n") (princ (entget v)) (setq v (entnext v))) (princ))

@@ -3,7 +3,7 @@ title: "AutoCAD PEDIT（编辑多段线）命令"
 metaTitle: "CAD 编辑多段线（PEDIT）：合并与宽度，快捷键 PE"
 description: "CAD 多段线怎么合并：AutoCAD PEDIT（编辑多段线，快捷键 PE）把直线转换为多段线，合并、宽度、拟合和样条曲线、编辑顶点、多条。在浏览器中免费试用。"
 figure: "三条首尾相接的直线：PEDIT 把第一条转换为多段线，把另外两条合并进来，并赋予宽度 2。"
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 PEDIT（编辑多段线）命令编辑多段线。在 `Select polyline or [Multiple]:` 提示下选择一条，或在命令之前选择；双击多段线也会对它执行 PEDIT。如果选择的是直线、圆弧或样条曲线，它会提示 <Message id="objectNotPolyline" />，并询问是否将其转换为多段线，默认为“是”：新多段线取代原对象并继承其特性。然后反复询问选项，每个选项立即生效，直到按 Enter 键结束。三维多段线的选项列表较短，没有宽度、曲线拟合和线型生成，其样条选项为 <Keyword id="Spline curve" />。按 Esc 键会保留已完成的修改；整个编辑是一步，可以用 <Command id="U" /> 放弃。
@@ -56,7 +56,7 @@ PEDIT（编辑多段线）命令编辑多段线。在 `Select polyline or [Multi
 
 ## Missing
 
-PEDITACCEPT：选择直线、圆弧或样条曲线时总是先询问再转换。PLINECONVERTMODE：样条曲线转换为由直线段组成的多段线，段数远多于 AutoCAD 生成的，并且不会生成圆弧。拟合后的多段线在“特性”选项板中显示为普通多段线，没有 AutoCAD 的“二维多段线”标题及其“拟合/平滑”行。选择集中只有三维多段线时，多条模式显示三维提示，而 AutoCAD 显示二维提示。没有可编辑的网格。
+PEDITACCEPT：选择直线、圆弧或样条曲线时总是先询问再转换。PLINECONVERTMODE：样条曲线转换为由直线段组成的多段线，段数远多于 AutoCAD 生成的，并且不会生成圆弧。拟合后的多段线在“特性”选项板中显示为普通多段线，没有 AutoCAD 的“二维多段线”标题及其“拟合/平滑”行。选择集中只有三维多段线时，多条模式显示三维提示，而 AutoCAD 显示二维提示。<Keyword id="Multiple" /> 不编辑多边形网格。
 
 ## Questions
 

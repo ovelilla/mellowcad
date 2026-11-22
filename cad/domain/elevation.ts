@@ -23,6 +23,7 @@ import {
 } from "./entityTypes"
 import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
 import { closestPointOnFace3d } from "./faces3d"
+import { closestPointOnPolygonMesh } from "./polygonMeshes"
 import { isLevelSpline, splineZAt } from "./splines"
 import { brepAnchor, brepMapped, unsigned0 } from "../geometry/solids"
 
@@ -166,6 +167,7 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
 export function entityElevation(entity: Entity): number {
   if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
   if (entity.type === "face3d") return entity.corners[0].z
+  if (entity.type === "polygonMesh") return entity.vertices[0]?.z ?? 0
   if (entity.type === "solid3d") return brepAnchor(entity.brep).z
   if (entity.type === "spline") return entity.points[0]?.z ?? 0
   return entity.elevation ?? 0
@@ -209,7 +211,8 @@ export function withElevation<T extends Entity>(entity: T, z: number): T {
   if (
     entity.type === "spline" ||
     entity.type === "solid3d" ||
-    entity.type === "face3d"
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
   ) {
     return shiftEntityZ(entity, z - entityElevation(entity))
   }
@@ -250,6 +253,12 @@ export function shiftEntityZ<T extends Entity>(entity: T, dz: number): T {
       corners: mapCorners(entity.corners, (v) => ({ ...v, z: v.z + dz })),
     }
   }
+  if (entity.type === "polygonMesh") {
+    return {
+      ...entity,
+      vertices: entity.vertices.map((v) => ({ ...v, z: v.z + dz })),
+    }
+  }
   if (entity.type === "spline") {
     return {
       ...entity,
@@ -281,6 +290,15 @@ export function scaleEntityZ<T extends Entity>(
     return {
       ...entity,
       corners: mapCorners(entity.corners, (v) => ({
+        ...v,
+        z: baseZ + (v.z - baseZ) * factor,
+      })),
+    }
+  }
+  if (entity.type === "polygonMesh") {
+    return {
+      ...entity,
+      vertices: entity.vertices.map((v) => ({
         ...v,
         z: baseZ + (v.z - baseZ) * factor,
       })),
@@ -336,6 +354,8 @@ export function carryPlane<T extends Entity>(source: Entity, target: T): T {
     target.type === "polyline3d" ||
     source.type === "face3d" ||
     target.type === "face3d" ||
+    source.type === "polygonMesh" ||
+    target.type === "polygonMesh" ||
     source.type === "solid3d" ||
     target.type === "solid3d"
   ) {
@@ -393,6 +413,9 @@ export function entityZAt(entity: Entity, point: Vec2): number {
     return closestPointOnPolyline3d(entity, point).z
   }
   if (entity.type === "face3d") return closestPointOnFace3d(entity, point).z
+  if (entity.type === "polygonMesh") {
+    return closestPointOnPolygonMesh(entity, point).z
+  }
   if (entity.type === "spline") return splineZAt(entity, point)
   if (entity.type === "xline" || entity.type === "ray") {
     // Off its base along its direction, as a line's past its ends.
@@ -446,6 +469,11 @@ export function isLevel(entity: Entity): boolean {
       (c) => Math.abs(c.z - entity.corners[0].z) <= PLANE_TOLERANCE
     )
   }
+  if (entity.type === "polygonMesh") {
+    return entity.vertices.every(
+      (v) => Math.abs(v.z - entity.vertices[0].z) <= PLANE_TOLERANCE
+    )
+  }
   if (entity.type === "solid3d") return false
   if (entity.type === "spline") return isLevelSpline(entity)
   if (entity.type === "xline" || entity.type === "ray") {
@@ -492,9 +520,11 @@ export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
         ? entity.vertices.every(on)
         : entity.type === "face3d"
           ? entity.corners.every(on)
-          : isLevel(entity) &&
-            facesAlong(entity, normal) &&
-            Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
+          : entity.type === "polygonMesh"
+            ? entity.vertices.every(on)
+            : isLevel(entity) &&
+              facesAlong(entity, normal) &&
+              Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
   return lies(a) && lies(b)
 }
 

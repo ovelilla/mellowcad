@@ -345,6 +345,9 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
     case "region":
     case "solid3d":
     case "point":
+    // A polygon mesh is refused (mesh/p04: `1 closed, degenerate or
+    // unsupported object rejected.`).
+    case "polygonMesh":
     case "leader":
     // WHY none: AutoCAD makes a region of a 3D face (face3d/f07, `1 loop
     // extracted.`), unbuilt here.

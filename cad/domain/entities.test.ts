@@ -98,6 +98,7 @@ import {
   entityShape,
   imageCorners,
   tableCorners,
+  polygonMeshGrid,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
 import { SOLID_HATCH_PATTERN_ID } from "./hatchPatterns"
@@ -827,6 +828,10 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entityShape(entity).vertices]
     case "face3d":
       return [...entity.corners]
+    case "polygonMesh":
+      // A smoothed one's extents are its fitted mesh's, which its control
+      // vertices may lie outside.
+      return [...polygonMeshGrid(entity).points]
     case "wipeout":
       return [...entity.vertices]
     case "image":

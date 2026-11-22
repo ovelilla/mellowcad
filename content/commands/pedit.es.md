@@ -3,7 +3,7 @@ title: "Editar polilíneas en AutoCAD: EDITPOL (PEDIT)"
 metaTitle: "Editar polilíneas en AutoCAD: comando EDITPOL"
 description: "Cómo funciona EDITPOL (PEDIT, alias PE) de AutoCAD en español: líneas a polilínea, Juntar, Grosor, curVar, Spline, Editar vértices y Múltiple. Pruébalo gratis."
 figure: "Tres líneas unidas por sus extremos: EDITPOL convierte la primera en polilínea, le junta las otras dos y le da un grosor de 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 EDITPOL (PEDIT en inglés) edita una polilínea. Desígnala en `Designe polilínea o [Múltiple]:` o antes del comando; un doble clic en una polilínea también la abre en EDITPOL. Si designas una línea, un arco o una spline, dice <Message id="objectNotPolyline" /> y pregunta si la transforma en una, Sí por defecto: la polilínea nueva ocupa su lugar con sus propiedades. Después pide una opción una y otra vez, cada una aplicada en el acto, hasta que Intro lo termina. Una polilínea 3D tiene una lista más corta, sin grosor, sin ajuste de curva y sin generación del tipo de línea, y su opción de spline es <Keyword id="Spline curve" />. Esc conserva lo hecho; toda la edición es un paso que <Command id="U" /> deshace.
@@ -56,7 +56,7 @@ Deshace la última opción de esta ejecución y sigue preguntando.
 
 ## Missing
 
-PEDITACCEPT: al designar una línea, un arco o una spline, siempre pregunta antes de convertirla. PLINECONVERTMODE: una spline pasa a ser una polilínea de segmentos rectos, muchos más que los que hace AutoCAD, nunca de arcos. Una polilínea ajustada aparece en la paleta Propiedades como una polilínea normal, sin el título Polilínea 2D de AutoCAD ni su fila Ajustar/Suavizar. Múltiple con solo polilíneas 3D en el conjunto pide la solicitud 3D, donde AutoCAD pide la 2D. No hay mallas que editar.
+PEDITACCEPT: al designar una línea, un arco o una spline, siempre pregunta antes de convertirla. PLINECONVERTMODE: una spline pasa a ser una polilínea de segmentos rectos, muchos más que los que hace AutoCAD, nunca de arcos. Una polilínea ajustada aparece en la paleta Propiedades como una polilínea normal, sin el título Polilínea 2D de AutoCAD ni su fila Ajustar/Suavizar. Múltiple con solo polilíneas 3D en el conjunto pide la solicitud 3D, donde AutoCAD pide la 2D. <Keyword id="Multiple" /> no edita mallas poligonales.
 
 ## Questions
 

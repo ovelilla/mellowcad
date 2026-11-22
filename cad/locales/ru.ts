@@ -5,6 +5,7 @@ export const ru: EngineLocale = {
   "tag": "ru",
   "interface": {
     "tool": {
+      "mesh3d": "3D-сеть",
       "select": "Выбрать",
       "line": "Отрезок",
       "polyline": "Полилиния",
@@ -233,6 +234,18 @@ export const ru: EngineLocale = {
       }
     },
     "entity": {
+      "polygonMesh": [
+        [
+          "count",
+          2,
+          {
+            "one": "Полигональная сеть",
+            "few": "Полигональные сети",
+            "many": "Полигональных сетей",
+            "other": "Полигональной сети"
+          }
+        ]
+      ],
       "line": [
         [
           "count",
@@ -591,6 +604,7 @@ export const ru: EngineLocale = {
         "minsert": "Мн-блок"
       },
       "group": {
+        "mesh": "Сеть",
         "geometry": "Геометрия",
         "solidHistory": "Журнал тела",
         "endpoints": "Концы",
@@ -610,6 +624,12 @@ export const ru: EngineLocale = {
         "primaryUnits": "Основные единицы"
       },
       "row": {
+        "meshMClosed": "M-замкнутая",
+        "meshNClosed": "N-замкнутая",
+        "meshMDensity": "Плотность по M",
+        "meshNDensity": "Плотность по N",
+        "meshMVertexCount": "Число вершин по M",
+        "meshNVertexCount": "Число вершин по N",
         "length": "Длина",
         "angle": "Угол",
         "deltaX": "Дельта X",
@@ -810,6 +830,10 @@ export const ru: EngineLocale = {
         "textPosVert": "Текст по вертикали"
       },
       "value": {
+        "meshFitNone": "Нет",
+        "fitQuadratic": "Квадратичное",
+        "fitCubic": "Кубическое",
+        "fitBezier": "Безье",
         "yes": "Да",
         "no": "Нет",
         "none": "—",
@@ -890,6 +914,9 @@ export const ru: EngineLocale = {
   },
   "commands": {
     "names": {
+      "3DMESH": [
+        "3DСЕТЬ"
+      ],
       "LINE": [
         "ОТРЕЗОК",
         "ОТ"
@@ -1656,6 +1683,16 @@ export const ru: EngineLocale = {
         "Before": "До"
       },
       "PEDIT": {
+        "Smooth surface": "Сгладить",
+        "Desmooth": "Убрать",
+        "Mclose": "Mзамкнуть",
+        "Mopen": "Mразомкнуть",
+        "Nclose": "Nзамкнуть",
+        "Nopen": "Nразомкнуть",
+        "Left": "Левая",
+        "Right": "прАвая",
+        "Up": "Верхняя",
+        "Down": "Нижняя",
         "Close": "Замкнуть",
         "Open": "Разомкнуть",
         "Join": "Добавить",
@@ -2375,6 +2412,17 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "peditMeshOption": {
+        "eXit": "выХод",
+        "X": "Х",
+        "Undo": "Отменить"
+      },
+      "peditMeshVertexOption": {
+        "Regen": "РЕген",
+        "Previous": "Пред",
+        "Move": "ПЕренести",
+        "eXit": "выХод"
+      },
       "selectObjects": {
         "Window": "Рамка",
         "Last": "Последний",
@@ -2503,6 +2551,25 @@ export const ru: EngineLocale = {
       }
     },
     "prompts": {
+      "enterMeshSizeM": "Размер сети в направлении M",
+      "enterMeshSizeN": "Размер сети в направлении N",
+      "specifyMeshVertex": [
+        "Положение вершины (",
+        [
+          "m"
+        ],
+        ", ",
+        [
+          "n"
+        ],
+        ")"
+      ],
+      "peditMeshOption": "Задайте параметр",
+      "peditMeshVertexOption": "Задайте параметр",
+      "leftShort": "Л",
+      "rightShort": "А",
+      "upShort": "В",
+      "downShort": "Н",
       "length": "Длина",
       "width": "Ширина",
       "angle": "Угол",
@@ -3570,6 +3637,109 @@ export const ru: EngineLocale = {
       "polar": "Расстояние<Угол"
     },
     "messages": {
+      "cannotTrimPolygonMesh": "Полигональные сети\nНевозможно применить команду ОБРЕЗАТЬ к этому объекту.",
+      "cannotExtendPolygonMesh": "Полигональные сети\nЭтот объект невозможно УДЛИНИТЬ.",
+      "polygonMeshNoCoordinateSystem": "Объект ЗD полигональная сеть не определяет систему координат",
+      "meshCurrentVertex": [
+        "Текущая вершина (",
+        [
+          "m"
+        ],
+        ",",
+        [
+          "n"
+        ],
+        ")."
+      ],
+      "noVisibleVertices": "Нет видимых вершин",
+      "tooFewControlVertices": [
+        "Слишком мало управляющих вершин в направлении ",
+        [
+          "direction",
+          1,
+          {
+            "M": "M",
+            "N": "N",
+            "other": "или"
+          }
+        ],
+        ". Должно быть больше ",
+        [
+          "count",
+          1,
+          {
+            "2": "двух",
+            "other": "трех"
+          }
+        ],
+        "."
+      ],
+      "tooManyControlVertices": "Избыточное число управляющих вершин.  Должно быть меньше 12.",
+      "surfuOutOfRange": [
+        "SURFU вне допустимого диапазона. Используется значение ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "surfvOutOfRange": [
+        "SURFV вне допустимого диапазона. Используется значение ",
+        [
+          "value"
+        ],
+        "."
+      ],
+      "listMeshState": [
+        "                   ",
+        [
+          "smoothed",
+          1,
+          {
+            "yes": [
+              "сплайн сеть ",
+              [
+                "size"
+              ],
+              " (сглаженная сеть ",
+              [
+                "fit"
+              ],
+              ")"
+            ],
+            "other": [
+              "сеть ",
+              [
+                "size"
+              ]
+            ]
+          }
+        ],
+        [
+          "closed",
+          1,
+          {
+            "m": " M-замкнутая",
+            "n": " N-замкнутая",
+            "both": " M,N-замкнутая",
+            "other": ""
+          }
+        ]
+      ],
+      "listMeshVertex": "              Сеть",
+      "listMeshPoint": [
+        "                 в точке, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
       "unknownCommand": [
         "Неизвестная команда \"",
         [
@@ -9658,6 +9828,8 @@ export const ru: EngineLocale = {
         "System default": "по Умолчанию"
       },
       "PEDIT": {
+        "Smooth surface": "Сгладить",
+        "Desmooth": "Убрать сглаживание",
         "Edit vertex": "Вершина",
         "Ltype gen": "Типлин",
         "OFF": "Откл",
@@ -9715,6 +9887,9 @@ export const ru: EngineLocale = {
       }
     },
     "promptKeywordLabels": {
+      "peditMeshOption": {
+        "Edit vertex": "Вершина"
+      },
       "ucsNewUcs": {
         "ZAxis": "ZОсь"
       },

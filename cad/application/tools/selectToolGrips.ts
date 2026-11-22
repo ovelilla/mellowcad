@@ -28,6 +28,7 @@ import {
   mleaderStretchPoints,
   infiniteBase,
   infinitePointAt,
+  polygonMeshGrid,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -354,6 +355,24 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         })
         break
+      case "polygonMesh":
+        // One at each vertex, at its Z, which moves it (desktop mesh/d01);
+        // a smoothed one's at each point of its fitted mesh, which move
+        // nothing (mesh/p13, d03).
+        if (entity.smooth) {
+          for (const point of polygonMeshGrid(entity).points) {
+            grips.push({ entityId: id, role: { kind: "fixed" }, world: point })
+          }
+          break
+        }
+        entity.vertices.forEach((vertex, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: vertex,
+          })
+        })
+        break
       case "wipeout":
         // One at each vertex and none at a side's middle (desktop
         // objects/d01); STRETCH moves its vertices one by one (wipeout/w09).
@@ -524,6 +543,7 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         (entity.type === "line" ||
           entity.type === "polyline3d" ||
           entity.type === "face3d" ||
+          entity.type === "polygonMesh" ||
           entity.type === "solid3d") &&
         "z" in grip.world
           ? grip.world

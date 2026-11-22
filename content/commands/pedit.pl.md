@@ -3,7 +3,7 @@ title: "Edycja polilinii w AutoCADzie: polecenie EDPLIN (PEDIT)"
 metaTitle: "Edycja polilinii w AutoCADzie: EDPLIN (PEDIT)"
 description: "Jak edytować polilinię w AutoCADzie poleceniem EDPLIN (PEDIT, skrót EDP): linie w polilinię, łączenie, szerokość, wygładzanie, wierzchołki. Wypróbuj online."
 figure: "Trzy linie stykające się końcami: EDPLIN zamienia pierwszą w polilinię, dołącza do niej dwie pozostałe i nadaje jej szerokość 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 Polecenie EDPLIN (PEDIT) edytuje polilinię. Wskaż ją przy monicie `Wybierz polilinię lub [Wiele]:` albo wybierz przed poleceniem; dwukrotne kliknięcie polilinii też uruchamia na niej polecenie EDPLIN. Jeśli zamiast tego wskażesz linię, łuk lub splajn, polecenie wyświetli <Message id="objectNotPolyline" /> i zapyta, czy zamienić obiekt w polilinię, domyślnie Tak: nowa polilinia zajmuje jego miejsce i przejmuje jego właściwości. Potem polecenie wciąż pyta o opcję, stosując każdą od razu, aż Enter je zakończy. Polilinia 3D dostaje krótszą listę, bez szerokości, wygładzania łukami i generowania rodzaju linii, a jej opcja splajnu to <Keyword id="Spline curve" />. Esc zachowuje to, co już zrobiono; cała edycja to jeden krok, który cofa <Command id="U" />.
@@ -56,7 +56,7 @@ Cofa ostatnią opcję tego uruchomienia i pyta dalej.
 
 ## Missing
 
-PEDITACCEPT: po wskazaniu linii, łuku lub splajnu polecenie zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja <Keyword id="Multiple" /> z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. Nie ma siatek do edycji.
+PEDITACCEPT: po wskazaniu linii, łuku lub splajnu polecenie zawsze pyta przed zamianą. PLINECONVERTMODE: splajn staje się polilinią z prostych segmentów, znacznie liczniejszych niż w AutoCADzie, nigdy z łuków. Polilinia wygładzona łukami jest pokazywana na palecie Właściwości jako zwykła polilinia, bez tytułu Polilinia 2D z AutoCADa i jej wiersza wygładzania. Opcja <Keyword id="Multiple" /> z samymi poliliniami 3D w zbiorze zadaje monit dla 3D, podczas gdy AutoCAD zadaje monit dla 2D. <Keyword id="Multiple" /> nie edytuje siatek wielokątnych.
 
 ## Questions
 

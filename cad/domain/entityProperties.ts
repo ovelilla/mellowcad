@@ -25,6 +25,7 @@ import {
   InsertGrid,
   PolylineEntity,
   Polyline3dEntity,
+  PolygonMeshEntity,
   LeaderEntity,
   Entity,
   ArrayParameters,
@@ -141,6 +142,9 @@ export type EntityProperty =
   | "globalWidth"
   /** A polyline's Closed, a choice: 1 Yes, 0 No. */
   | "closed"
+  /** A polygon mesh's M closed and N closed under Mesh, choices like Closed (desktop mesh/d02). */
+  | "meshMClosed"
+  | "meshNClosed"
   /** An array's rows (desktop arrays/d13); its Radius is `radius`. */
   | "arrayColumns"
   | "arrayColumnSpacing"
@@ -310,6 +314,8 @@ export function applyEntityProperty(
       corners[vertex] = { ...at, [axis]: value }
       return { ...entity, corners }
     }
+    case "polygonMesh":
+      return applyPolygonMeshProperty(entity, property, value, vertex)
     case "spline": {
       // The palette's current fit point or control point, in the spline's
       // own coordinates; the rest is SPLINEDIT's, which is not built.
@@ -487,6 +493,45 @@ function applyPolyline3dProperty(
         : null
     default:
       return null
+  }
+}
+
+/**
+ * A polygon mesh's Current Vertex's X, Y and Z, a control vertex, and its M
+ * and N closed. WHY a smoothed one's fitted mesh follows (its density round
+ * a closed direction one less than along an open one, as Smooth surface sets
+ * it): unverified on the desktop, where its grips move nothing (mesh/d03).
+ */
+function applyPolygonMeshProperty(
+  mesh: PolygonMeshEntity,
+  property: EntityProperty,
+  value: number,
+  vertex: number
+): PolygonMeshEntity | null {
+  const at = mesh.vertices[vertex]
+  const axis = VERTEX_AXES[property]
+  if (axis) {
+    if (!at) return null
+    const vertices = [...mesh.vertices]
+    vertices[vertex] = { ...at, [axis]: value }
+    return { ...mesh, vertices }
+  }
+  if (property !== "meshMClosed" && property !== "meshNClosed") return null
+  if (value !== 0 && value !== 1) return null
+  const inM = property === "meshMClosed"
+  const closed = value === 1
+  if ((inM ? mesh.closedM : mesh.closedN) === closed) return mesh
+  const step = closed ? -1 : 1
+  const smooth = mesh.smooth && {
+    ...mesh.smooth,
+    ...(inM
+      ? { mDensity: mesh.smooth.mDensity + step }
+      : { nDensity: mesh.smooth.nDensity + step }),
+  }
+  return {
+    ...mesh,
+    ...(inM ? { closedM: closed } : { closedN: closed }),
+    ...(smooth ? { smooth } : {}),
   }
 }
 

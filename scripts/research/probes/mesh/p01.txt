@@ -1,0 +1,21 @@
+_3DMESH
+3
+4
+0,0,0
+10,0,1
+20,0,2
+30,0,3
+0,10,4
+10,10,5
+20,10,6
+30,10,7
+0,20,8
+10,20,9
+20,20,10
+30,20,11
+QAFLAGS
+2
+_LIST
+_L
+
+(progn (setq e (entlast)) (princ (entget e)) (setq v (entnext e)) (while v (princ "\n") (princ (entget v)) (setq v (if (= (cdr (assoc 0 (entget v))) "SEQEND") nil (entnext v)))) (princ))

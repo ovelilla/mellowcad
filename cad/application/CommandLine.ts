@@ -260,6 +260,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   point: "POINT",
   solid: "SOLID",
   face3d: "3DFACE",
+  mesh3d: "3DMESH",
   leader: "LEADER",
   wipeout: "WIPEOUT",
   divide: "DIVIDE",

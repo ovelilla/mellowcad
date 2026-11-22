@@ -285,6 +285,9 @@ describe("round trip", () => {
       gridMode: false,
       splineType: 5 as const,
       splineSegments: -4,
+      surfaceType: 8 as const,
+      surfaceU: 0,
+      surfaceV: 200,
       isolines: 16,
       visualStyle: "hidden" as const,
       pointMode: 35,
@@ -752,6 +755,7 @@ describe("round trip", () => {
       mleader: true,
       xline: true,
       ray: true,
+      polygonMesh: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

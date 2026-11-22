@@ -69,6 +69,11 @@ export interface DocumentSettings {
   readonly splineType: 5 | 6
   /** SPLINESEGS: PEDIT Spline's points per span, arcs through them when negative, never 0. */
   readonly splineSegments: number
+  /** SURFTYPE: PEDIT Smooth surface's surface, 5 quadratic, 6 cubic or 8 Bezier. */
+  readonly surfaceType: 5 | 6 | 8
+  /** SURFU and SURFV: its density along M and N, 0 to 200 (under 2 smooths at 2). */
+  readonly surfaceU: number
+  readonly surfaceV: number
   /** ISOLINES: the lines drawn across each curved face of a solid, 0 to 2047. */
   readonly isolines: number
   /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
@@ -196,6 +201,10 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // Saved in the drawing: OPEN brings back what was set (pedit/p181).
   splineType: 6,
   splineSegments: 8,
+  // Saved in the drawing: AutoCAD's DXF header holds them (mesh/f01).
+  surfaceType: 6,
+  surfaceU: 6,
+  surfaceV: 6,
   // Saved in the drawing (solid/v02, v03).
   isolines: 4,
   visualStyle: "2dWireframe",

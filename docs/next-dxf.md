@@ -26,8 +26,11 @@
 > MINSERT con su comando y su página, hecho el 21/11, sin cambio en el corpus
 > (ninguno lo tiene), y el chino simplificado (`docs/next-seo.md`, L8), hecho el 22/11, y los
 > colores índice como tales y las sustituciones DSTYLE de cada cota, del punto 7, hechos el 22/11
-> (todo eso, desde MINSERT, publicado el 22/11 a las 09:30); siguiente, por orden del dueño, lo
-> que queda del punto 7 (la malla de VBA_Tower), alternando con otro idioma, una sesión cada vez.
+> (todo eso, desde MINSERT, publicado el 22/11 a las 09:30), y la malla de VBA_Tower, una malla
+> poligonal (POLYLINE 70 16, no la de caras, 64), con 3DMESH y las solicitudes de malla de PEDIT,
+> hecha el 22/11, que lleva las muestras sin nada fuera a 154 de 154 y cierra el punto 7 (sin
+> publicar); siguiente, por orden del dueño, la fase 5 (el resto) u otro idioma, una sesión cada
+> vez.
 > Se borra cuando la fase 5 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -491,8 +494,23 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación an
       se compara con el que AutoCAD dejó en su bloque `*D`, 78 escriben ahora el mismo (54 antes),
       ninguna peor; las demás, sobre todo por las unidades arquitectónicas (DIMLUNIT), sin modelar.
       Páginas «abrir/editar DXF online» en los catorce idiomas, y la de COLOR.
-      **Queda del punto 7**: la malla (POLYLINE de caras) de VBA_Tower, lo único que queda fuera de
-      las muestras.
+      **La malla poligonal**, hecha el 22/11/2026 (sin publicar): la de VBA_Tower no era la malla
+      de caras (POLYLINE 70 64, AcDbPolyFaceMesh) sino una poligonal (70 48: 16 más 32, cerrada en
+      N; AcDbPolygonMesh, M × N vértices, 2 × 8, en el bloque FZA), la de 3DMESH. Hechos el objeto
+      (`PolygonMeshEntity`, fichero versión 65) y 3DMESH en las diez consolas (sondas
+      `mesh/p01`–`p23`, `s5`–`s10`, trazadas; tablas 20273–20275, 52539), las solicitudes de malla
+      de PEDIT (Editar vértices, Amoldar superficie por SURFTYPE, SURFU y SURFV, estadoPrevio,
+      cerrarM y cerrarN, desHacer: 21136–21143), lo que le hacen MOVE…STRETCH, EXPLODE (caras 3D),
+      los rechazos, los modos de referencia, LIST en cada consola, los pinzamientos y la paleta
+      del escritorio (`mesh/dsk.sh`, d01–d04). La superficie suavizada es el B-spline sujeto (o
+      periódico, cerrado) de PEDIT Spline en producto tensorial, o un Bézier: cae sobre los
+      vértices ajustados del fichero de AutoCAD a 9 decimales (`f01`). DXF en los dos sentidos: la
+      consola abre los 12 ficheros sin un error de AUDIT y los traza como el suyo. El corpus:
+      muestras sin nada fuera, de 153 a 154 de 154; ficheros de otros, 577 de 577 (ninguno tiene
+      mallas). Se anotan: la malla de caras y PFACE (ninguna en el corpus), los objetos MESH,
+      REVSURF, TABSURF, RULESURF y EDGESURF, Múltiple con mallas, las caras en un estilo sombreado,
+      la densidad y el suavizado como ediciones de la paleta. Páginas «abrir/editar DXF online» en
+      los catorce idiomas. **El punto 7 queda cerrado.**
 
    Y **las presentaciones**: 20 de las 154 muestras no tienen nada en el espacio modelo (47 tienen
    algo en una presentación) y abren vacías, con la línea que cuenta lo que no se abrió. Arreglado

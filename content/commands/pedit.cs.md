@@ -2,7 +2,7 @@
 title: "Úprava křivky v AutoCADu: příkaz KEDIT (PEDIT)"
 description: "Jak upravit křivku v AutoCADu příkazem KEDIT (PEDIT, zkratka KE): úsečky na křivku, připojení, šířka, proložení a spline, úprava vrcholů. Vyzkoušejte online."
 figure: "Tři úsečky navazující koncovými body: KEDIT převede první na křivku, připojí k ní další dvě a dá jí šířku 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 Příkaz KEDIT (PEDIT) upravuje křivku. Vyberte ji ve výzvě `Vyberte křivku nebo [NÁsobně]:`, nebo ji vyberte před příkazem; KEDIT spustí na křivce i poklepání. Vyberete-li místo toho úsečku, oblouk nebo spline, vypíše <Message id="objectNotPolyline" /> a zeptá se, zda ho převést na křivku, ve výchozím stavu ano: nová křivka zaujme jeho místo a převezme jeho vlastnosti. Pak se znovu a znovu ptá na možnost a každou hned použije, dokud ho Enter neukončí. 3D křivka dostane kratší seznam, bez šířky, proložení a generování typu čáry, a její možnost spline je <Keyword id="Spline curve" />. Esc ponechá, co bylo uděláno; celá úprava je jeden krok, který vrátí <Command id="U" />.
@@ -55,7 +55,7 @@ Vrátí poslední možnost tohoto spuštění a ptá se dál.
 
 ## Missing
 
-PEDITACCEPT: po výběru úsečky, oblouku nebo spline se příkaz před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Možnost <Keyword id="Multiple" />, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. Nejsou tu sítě, které by šlo upravovat.
+PEDITACCEPT: po výběru úsečky, oblouku nebo spline se příkaz před převodem vždy zeptá. PLINECONVERTMODE: spline se stane křivkou z přímých segmentů, mnohem většího počtu, než vytvoří AutoCAD, nikdy z oblouků. Proložená křivka se v paletě Vlastnosti ukazuje jako obyčejná křivka, bez titulku 2D křivka a řádku proložení a vyhlazení, které má AutoCAD. Možnost <Keyword id="Multiple" />, když jsou ve výběru jen 3D křivky, klade 3D výzvu, kde AutoCAD klade 2D. <Keyword id="Multiple" /> neupravuje mnohoúhelníkové sítě.
 
 ## Questions
 

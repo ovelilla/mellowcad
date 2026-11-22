@@ -2,7 +2,7 @@
 title: "Commande PEDIT dans AutoCAD"
 description: "Modifier une polyligne avec PEDIT (alias PE) d'AutoCAD en français : lignes en polyligne, Joindre, Largeur, lissage, Spline, sommets, Multiple. Essayez-le."
 figure: "Trois lignes bout à bout : PEDIT transforme la première en polyligne, y joint les deux autres et lui donne une largeur de 2."
-sourceHash: "bdc0bf10ac09"
+sourceHash: "6c9660c15d8a"
 ---
 
 PEDIT modifie une polyligne. Sélectionnez-en une à `Sélectionnez la polyligne ou [Multiple]:`, ou sélectionnez-la avant la commande ; un double-clic sur une polyligne lance aussi PEDIT sur elle. Sélectionnez plutôt une ligne, un arc ou une spline, et elle dit <Message id="objectNotPolyline" /> et demande s'il faut le transformer en polyligne, Oui par défaut : la nouvelle polyligne prend sa place et ses propriétés. Elle demande ensuite une option, encore et encore, chacune appliquée aussitôt, jusqu'à ce qu'Entrée la termine. Une polyligne 3D a une liste plus courte, sans largeur, sans lissage et sans génération du type de ligne, et son option spline est <Keyword id="Spline curve" />. Echap garde ce qui a été fait ; toute la modification est une seule étape que <Command id="U" /> annule.
@@ -55,7 +55,7 @@ Annule la dernière option de cette exécution, et continue à demander.
 
 ## Missing
 
-PEDITACCEPT : sélectionner une ligne, un arc ou une spline demande toujours avant de le convertir. PLINECONVERTMODE : une spline devient une polyligne de segments droits, bien plus nombreux que ceux d'AutoCAD, jamais d'arcs. Une polyligne lissée apparaît dans la palette Propriétés comme une polyligne ordinaire, sans le titre Polyligne 2D d'AutoCAD ni sa ligne Ajustage/Lissage. L'option Multiple avec seulement des polylignes 3D dans le jeu pose l'invite 3D, là où AutoCAD pose l'invite 2D. Il n'y a pas de maillages à modifier.
+PEDITACCEPT : sélectionner une ligne, un arc ou une spline demande toujours avant de le convertir. PLINECONVERTMODE : une spline devient une polyligne de segments droits, bien plus nombreux que ceux d'AutoCAD, jamais d'arcs. Une polyligne lissée apparaît dans la palette Propriétés comme une polyligne ordinaire, sans le titre Polyligne 2D d'AutoCAD ni sa ligne Ajustage/Lissage. L'option Multiple avec seulement des polylignes 3D dans le jeu pose l'invite 3D, là où AutoCAD pose l'invite 2D. <Keyword id="Multiple" /> ne modifie pas les surfaces maillées.
 
 ## Questions
 

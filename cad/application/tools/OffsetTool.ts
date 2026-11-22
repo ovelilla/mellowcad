@@ -963,6 +963,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -1005,6 +1006,7 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -1113,6 +1115,7 @@ function computeOffset(
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":
@@ -1236,6 +1239,7 @@ function computeThrough(picked: Entity, point: Vec2): OffsetResult {
     case "point":
     case "solid2d":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

@@ -7,6 +7,7 @@ RAY [] "Ray"
 POINT ["PO"] "Multiple Points"
 SOLID ["SO"] "2D Solid"
 3DFACE ["3F"] "3D Face"
+3DMESH [] "3D Mesh"
 LEADER ["LEAD"] "Leader"
 WIPEOUT [] "Wipeout"
 DIVIDE ["DIV"] "Divide"
@@ -183,6 +184,7 @@ ray "Ray" RAY
 point "Multiple Points" PO
 solid "2D Solid" SO
 face3d "3D Face" 3F
+mesh3d "3D Mesh" 3DMESH
 leader "Leader" LEAD
 wipeout "Wipeout" WIPEOUT
 divide "Divide" DIV
@@ -9032,6 +9034,428 @@ Specify next point or
   prompt| Specify third point or [Invisible] <exit>:
 > pick
   properties: 3D Face (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=10.00~, Vertex Y=5.00~, Vertex Z=2.00~, Edge 1=Visible, Edge 2=Visible, Edge 3=Visible, Edge 4=Visible]
+
+## 3DMESH
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> 3DMESH
+  prompt: 3DMESH Enter size of mesh in M direction:
+  asks: "Enter size of mesh in M direction"
+  tip: Enter size of mesh in M direction:
+  dyn: "Enter size of mesh in M direction"=""||*
+  command| 3DMESH
+> size refused
+  prompt| Enter size of mesh in M direction: 1
+  error| Requires an integer between 2 and 256.
+> M
+  prompt: 3DMESH Enter size of mesh in N direction:
+  asks: "Enter size of mesh in N direction"
+  tip: Enter size of mesh in N direction:
+  dyn: "Enter size of mesh in N direction"=""||*
+  prompt| Enter size of mesh in M direction: 4
+> N
+  prompt: 3DMESH Specify location for vertex (0, 0):
+  asks: ""
+  tip: Specify location for vertex (0, 0):
+  dyn: "X,Y"=""||*
+  prompt| Enter size of mesh in N direction: 4
+> Enter refused
+  prompt| Specify location for vertex (0, 0):
+  error| Invalid point.
+> vertices
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify location for vertex (0, 0): 0,0,0
+  prompt| Specify location for vertex (0, 1): 10,0,1
+  prompt| Specify location for vertex (0, 2): 20,0,2
+  prompt| Specify location for vertex (0, 3): 30,0,0
+  prompt| Specify location for vertex (1, 0): 0,10,1
+  prompt| Specify location for vertex (1, 1): 10,10,2
+  prompt| Specify location for vertex (1, 2): 20,10,0
+  prompt| Specify location for vertex (1, 3): 30,10,1
+  prompt| Specify location for vertex (2, 0): 0,20,2
+  prompt| Specify location for vertex (2, 1): 10,20,0
+  prompt| Specify location for vertex (2, 2): 20,20,1
+  prompt| Specify location for vertex (2, 3): 30,20,2
+  prompt| Specify location for vertex (3, 0): 0,30,0
+  prompt| Specify location for vertex (3, 1): 10,30,1
+  prompt| Specify location for vertex (3, 2): 20,30,2
+  prompt| Specify location for vertex (3, 3): 30,30,0
+> pick
+  properties: Polygon Mesh (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~] [Mesh: M closed=No~, N closed=No~, M density=0, N density=0, M vertex count=4, N vertex count=4] [Misc: Fit/Smooth=None]
+> PEDIT
+  prompt: PEDIT Enter an option [Edit vertex/Smooth surface/Desmooth/Mclose/Nclose/Undo]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [E] Edit vertex, [S] Smooth surface, [D] Desmooth, [M] Mclose, [N] Nclose, [U] Undo
+  properties: -
+  command| PEDIT
+> Last
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mclose/Nclose/Undo]: L
+  error| Invalid option keyword.
+> Mclose
+  prompt: PEDIT Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]:
+  options: [E] Edit vertex, [S] Smooth surface, [D] Desmooth, [M] Mopen, [N] Nclose, [U] Undo
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mclose/Nclose/Undo]: M
+> Smooth surface
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]: S
+> Edit vertex
+  prompt: PEDIT Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <N>:
+  options: [N] Next, [P] Previous, [L] Left, [R] Right, [U] Up, [D] Down, [M] Move, [RE] REgen, [X] eXit
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]: E
+  info| Current vertex (0,0).
+> Up
+  prompt: PEDIT Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <U>:
+  prompt| Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <N>: U
+  info| Current vertex (1,0).
+> Move
+  prompt: PEDIT Specify new location for marked vertex:
+  asks: ""
+  tip: Specify new location for marked vertex:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <U>: M
+> point
+  prompt: PEDIT Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <U>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [N] Next, [P] Previous, [L] Left, [R] Right, [U] Up, [D] Down, [M] Move, [RE] REgen, [X] eXit
+  prompt| Specify new location for marked vertex: @15,15,9
+  info| Current vertex (1,0).
+> exit vertex
+  prompt: PEDIT Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]:
+  options: [E] Edit vertex, [S] Smooth surface, [D] Desmooth, [M] Mopen, [N] Nclose, [U] Undo
+  prompt| Enter an option [Next/Previous/Left/Right/Up/Down/Move/REgen/eXit] <U>: X
+> Undo
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]: U
+> exit
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [Edit vertex/Smooth surface/Desmooth/Mopen/Nclose/Undo]: X
+> LIST
+  prompt: LIST Select objects:
+  tip: Select objects:
+  dyn: 
+  command| LIST
+> Last
+  properties: Polygon Mesh (1) {Linetype scale=1.00~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~] [Mesh: M closed=Yes~, N closed=No~, M density=6, N density=7, M vertex count=4, N vertex count=4] [Misc: Fit/Smooth=Cubic]
+  prompt| Select objects: L
+  info| 1 found
+> enter
+  prompt: Command:
+  tip: -
+  dyn: -
+  properties: -
+  prompt| Select objects:
+  info|                   POLYLINE  Layer: "0"
+                                    Space: Model space
+                           spline 4x4 mesh (6x7 fit mesh) M-closed
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=     0.00  Z=     0.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    10.00  Z=     1.00
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=    10.00  Z=     1.14
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    10.00  Z=     1.11
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=    10.00  Z=     1.00
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    10.00  Z=     0.89
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=    10.00  Z=     0.86
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    10.00  Z=     1.00
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    16.67  Z=     1.52
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=    16.67  Z=     1.21
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    16.67  Z=     1.01
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=    16.67  Z=     0.94
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    16.67  Z=     0.99
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=    16.67  Z=     1.18
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    16.67  Z=     1.52
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    23.09  Z=     1.20
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=    23.09  Z=     0.96
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    23.09  Z=     0.91
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=    23.09  Z=     0.98
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    23.09  Z=     1.09
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=    23.09  Z=     1.19
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    23.09  Z=     1.20
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    23.33  Z=     0.33
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=    23.33  Z=     0.61
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    23.33  Z=     0.89
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=    23.33  Z=     1.08
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    23.33  Z=     1.11
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=    23.33  Z=     0.89
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    23.33  Z=     0.33
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    11.73  Z=     0.06
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=    11.73  Z=     0.53
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    11.73  Z=     0.91
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=    11.73  Z=     1.12
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    11.73  Z=     1.09
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=    11.73  Z=     0.77
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    11.73  Z=     0.06
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=     5.31  Z=     0.38
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     5.00  Y=     5.31  Z=     0.78
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=     5.31  Z=     1.01
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    15.00  Y=     5.31  Z=     1.08
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=     5.31  Z=     0.99
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    25.00  Y=     5.31  Z=     0.75
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=     5.31  Z=     0.38
+                           (Inserted by spline fitting)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=     0.00  Z=     1.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=     0.00  Z=     2.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=     0.00  Z=     0.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    10.00  Z=     1.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    10.00  Z=     2.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    10.00  Z=     0.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    10.00  Z=     1.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    20.00  Z=     2.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    20.00  Z=     0.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    20.00  Z=     1.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    20.00  Z=     2.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=     0.00  Y=    30.00  Z=     0.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    10.00  Y=    30.00  Z=     1.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    20.00  Y=    30.00  Z=     2.00
+                           (Spline control point)
+                          VERTEX    Layer: "0"
+                                    Space: Model space
+                      Mesh
+                        at point, X=    30.00  Y=    30.00  Z=     0.00
+                           (Spline control point)
+                          END SEQUENCE  Layer: "0"
+                                    Space: Model space
 
 ## LEADER
 > start

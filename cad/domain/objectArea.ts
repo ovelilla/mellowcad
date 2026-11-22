@@ -106,6 +106,7 @@ export function objectArea(entity: Entity): ObjectArea | null {
     // wipeout/w10).
     case "leader":
     case "face3d":
+    case "polygonMesh":
     case "wipeout":
     case "image":
     case "table":

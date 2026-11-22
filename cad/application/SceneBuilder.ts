@@ -47,6 +47,8 @@ import {
   GradientFill,
   face3dEdges,
   Face3dEntity,
+  polygonMeshEdges,
+  PolygonMeshEntity,
   insertFlatGeometry,
   tableGeometry,
   mleaderGeometry,
@@ -858,6 +860,8 @@ export function entityScenePrimitive(
     return polyline3dPrimitives(camera, entity, stroke, options)
   if (entity.type === "face3d")
     return face3dPrimitives(camera, entity, stroke, options)
+  if (entity.type === "polygonMesh")
+    return polygonMeshPrimitives(camera, entity, stroke, options)
   if (entity.type === "spline") {
     // Its points hold their Z, so it is drawn through them, not its plane.
     const axes = planeAxes(entity)
@@ -996,6 +1000,27 @@ function polyline3dPrimitives(
   options: EntityDrawOptions
 ): ScenePrimitive[] {
   return polyline3dSegments(poly).flatMap(([a, b]) =>
+    lineSegments(
+      camera,
+      camera.worldToScreen(a),
+      camera.worldToScreen(b),
+      stroke,
+      options
+    )
+  )
+}
+
+/**
+ * A polygon mesh's edges, or a smoothed one's fitted mesh's, continuous
+ * whatever its linetype (mesh/f01: a DASHED one plots continuous).
+ */
+function polygonMeshPrimitives(
+  camera: CameraTransform,
+  mesh: PolygonMeshEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  return polygonMeshEdges(mesh).flatMap(([a, b]) =>
     lineSegments(
       camera,
       camera.worldToScreen(a),
@@ -1310,6 +1335,8 @@ function planarShapes(
       return polyline3dPrimitives(camera, entity, stroke, options)
     case "face3d":
       return face3dPrimitives(camera, entity, stroke, options)
+    case "polygonMesh":
+      return polygonMeshPrimitives(camera, entity, stroke, options)
     case "wipeout": {
       // It masks what was drawn before it with the background and is
       // covered by what comes after (wipeout/w02's plot), whatever
@@ -2424,7 +2451,11 @@ function pushEntities(
     entity: Entity,
     layer: Layer | undefined
   ): LinetypeTextLook | undefined => {
-    if (entity.type === "polyline3d" || entity.type === "face3d")
+    if (
+      entity.type === "polyline3d" ||
+      entity.type === "face3d" ||
+      entity.type === "polygonMesh"
+    )
       return undefined
     const linetype = (look.linetypes ?? builtInLinetype)(
       entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
@@ -2571,7 +2602,9 @@ export function entityStroke(
   // (3dpoly/p118, p122, p123); a fitted one is the same object. So it does a
   // 3D face (face3d/f09: a DASHED one plotted continuous).
   const dash =
-    entity.type === "polyline3d" || entity.type === "face3d"
+    entity.type === "polyline3d" ||
+    entity.type === "face3d" ||
+    entity.type === "polygonMesh"
       ? undefined
       : dashFor(
           (look.linetypes ?? builtInLinetype)(linetypeId)?.pattern ?? [],

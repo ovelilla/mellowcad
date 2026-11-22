@@ -1,0 +1,19 @@
+SURFU
+0
+SURFU
+1
+SURFU
+201
+SURFU
+200
+SURFV
+-1
+SURFV
+2
+SURFTYPE
+7
+SURFTYPE
+4
+SURFTYPE
+8
+(princ (list (getvar "SURFU") (getvar "SURFV") (getvar "SURFTYPE")))

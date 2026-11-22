@@ -3,7 +3,7 @@ title: Abrir un archivo DXF online
 metaTitle: "Abrir DXF online gratis: visor DXF sin instalar"
 description: "Abre un archivo DXF gratis en tu navegador, sin subirlo: de AutoCAD R12 a 2018, de texto o binario, con sus capas, textos, cotas, sombreados y bloques."
 type: howTo
-sourceHash: "9ec1ebd84955"
+sourceHash: "0d6bc654ece6"
 faq:
   - question: "¿Cómo abrir un archivo DXF sin AutoCAD?"
     answer: "Elígelo o suéltalo arriba, en esta página: MellowCAD lo abre en su editor, en tu navegador, sin instalar nada y sin cuenta. En el editor también lo abren ABRE (Ctrl+O) y CARGADXF."
@@ -24,7 +24,7 @@ MellowCAD abre archivos DXF en tu navegador y los dibuja en su editor, donde pue
 ## Lo que se abre [#opens]
 
 - **DXF de AutoCAD R12 a 2018**, el formato DXF más reciente que escribe AutoCAD, de texto (ASCII) o binario, hecho con AutoCAD o con otro programa. Su texto conserva sus caracteres: hasta 2004, en la página de códigos que indica el archivo; desde 2007, en UTF-8.
-- **Líneas, arcos, círculos, elipses y polilíneas**, con sus grosores y sus formas de ajuste de curva y de spline, polilíneas 3D y splines, y los puntos, dibujados con el [estilo de punto](/docs/commands/ptype) del dibujo, los sólidos 2D, rellenos según diga FILLMODE, las caras 3D, las coberturas, y las líneas auxiliares y los rayos.
+- **Líneas, arcos, círculos, elipses y polilíneas**, con sus grosores y sus formas de ajuste de curva y de spline, polilíneas 3D y splines, y los puntos, dibujados con el [estilo de punto](/docs/commands/ptype) del dibujo, los sólidos 2D, rellenos según diga FILLMODE, las caras 3D, las mallas poligonales, las coberturas, y las líneas auxiliares y los rayos.
 - **Texto de una línea y de líneas múltiples**, directrices con su texto, bloques con sus atributos, cotas lineales, alineadas, angulares, de radio y de diámetro con lo que cada una modifica de su estilo, y sombreados, cada uno con las líneas de patrón que trae, como lo dibuja AutoCAD: también un patrón definido por el usuario o el de otro programa.
 - **La capa de cada objeto**, su color, por su índice o como color verdadero, tipo de línea y su escala, grosor de línea, altura de objeto y elevación, y las capas activadas, desactivadas o bloqueadas; una capa inutilizada se abre desactivada.
 - **Los tipos de línea del dibujo**, dibujados con sus trazos, puntos y huecos a la escala de tipo de línea del dibujo, y el texto de los complejos como GAS_LINE.
@@ -34,7 +34,7 @@ MellowCAD abre archivos DXF en tu navegador y los dibuja en su editor, donde pue
 
 Cuando un DXF tiene algo para lo que MellowCAD aún no tiene objeto, abre el resto y dice en la línea de comandos cuántos objetos de cada tipo dejó fuera. Hoy son:
 
-- trazos y mallas;
+- trazos, mallas policara y objetos MESH;
 - líneas múltiples;
 - tolerancias;
 - sólidos 3D, regiones y superficies;

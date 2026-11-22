@@ -87,7 +87,8 @@ Polyline's vertices AutoCAD's on a CV spline only (k57–k146, modify.md's SPLIN
 PEDIT is done, its Fit, Spline and Decurve with the fitted polylines they make (pedit/p01–p199,
 modify.md's PEDIT): a Fit's arcs kept as AutoCAD keeps them, a Spline's curve derived from its
 frame, SPLINE's Object and SPLINEDIT taking a spline-fit one; Ltype gen a polyline's own. Left: the
-palette's Fit/Smooth words and the meshes. LIST is done, every type of the model listed as AutoCAD
+palette's Fit/Smooth words, Multiple's meshes and the polyface mesh; a polygon mesh's own prompts
+are done (3DMESH, draw.md). LIST is done, every type of the model listed as AutoCAD
 2027's console lists it (inquiry/p400–p446, inquiry.md's LIST).
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
